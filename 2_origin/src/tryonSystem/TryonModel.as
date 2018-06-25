@@ -20,38 +20,38 @@ package tryonSystem
       
       private var _bagItems:DictionaryData;
       
-      public function TryonModel(param1:Array)
+      public function TryonModel($items:Array)
       {
          super();
-         _items = param1;
-         var _loc3_:PlayerInfo = PlayerManager.Instance.Self;
+         _items = $items;
+         var _self:PlayerInfo = PlayerManager.Instance.Self;
          _playerInfo = new PlayerInfo();
-         _playerInfo.updateStyle(_loc3_.Sex,_loc3_.Hide,_loc3_.getPrivateStyle(),_loc3_.Colors,_loc3_.getSkinColor());
+         _playerInfo.updateStyle(_self.Sex,_self.Hide,_self.getPrivateStyle(),_self.Colors,_self.getSkinColor());
          _bagItems = new DictionaryData();
          var _loc5_:int = 0;
-         var _loc4_:* = _loc3_.Bag.items;
-         for each(var _loc2_ in _loc3_.Bag.items)
+         var _loc4_:* = _self.Bag.items;
+         for each(var item in _self.Bag.items)
          {
-            if(_loc2_.Place <= 30)
+            if(item.Place <= 30)
             {
-               _bagItems.add(_loc2_.Place,_loc2_);
+               _bagItems.add(item.Place,item);
             }
          }
       }
       
-      public function set selectedItem(param1:InventoryItemInfo) : void
+      public function set selectedItem(item:InventoryItemInfo) : void
       {
-         if(param1 == _selectedItem)
+         if(item == _selectedItem)
          {
             return;
          }
-         _selectedItem = param1;
-         if(EquipType.isAvatar(param1.CategoryID))
+         _selectedItem = item;
+         if(EquipType.isAvatar(item.CategoryID))
          {
-            _playerInfo.setPartStyle(param1.CategoryID,param1.NeedSex,param1.TemplateID);
-            if(param1.CategoryID == 6)
+            _playerInfo.setPartStyle(item.CategoryID,item.NeedSex,item.TemplateID);
+            if(item.CategoryID == 6)
             {
-               _playerInfo.setSkinColor(param1.Skin);
+               _playerInfo.setSkinColor(item.Skin);
             }
             _bagItems.add(EquipType.CategeryIdToPlace(_selectedItem.CategoryID)[0],_selectedItem);
          }

@@ -20,16 +20,16 @@ package ddt.data.quest
       
       public var isOpitional:Boolean;
       
-      public function QuestCondition(param1:int, param2:int, param3:int, param4:String = "", param5:int = 0, param6:int = 0, param7:int = 0)
+      public function QuestCondition(questId:int, conId:int, type:int, desc:String = "", para1:int = 0, para2:int = 0, turnType:int = 0)
       {
          super();
-         _questId = param1;
-         _conId = param2;
-         _description = param4;
-         _type = param3;
-         _param1 = param5;
-         _param2 = param6;
-         _turnType = param7;
+         _questId = questId;
+         _conId = conId;
+         _description = desc;
+         _type = type;
+         _param1 = para1;
+         _param2 = para2;
+         _turnType = turnType;
       }
       
       public function get target() : int

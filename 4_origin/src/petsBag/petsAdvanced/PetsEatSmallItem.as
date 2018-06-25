@@ -23,9 +23,9 @@ package petsBag.petsAdvanced
       
       private var _tipGapH:int;
       
-      public function PetsEatSmallItem(param1:PetInfo = null)
+      public function PetsEatSmallItem(info:PetInfo = null)
       {
-         super(param1);
+         super(info);
       }
       
       public function initTips() : void
@@ -44,10 +44,10 @@ package petsBag.petsAdvanced
          starMc.gotoAndStop(1);
       }
       
-      override public function set info(param1:PetInfo) : void
+      override public function set info(value:PetInfo) : void
       {
-         .super.info = param1;
-         tipData = param1;
+         .super.info = value;
+         tipData = value;
          starMc.gotoAndStop(_info.StarLevel);
       }
       
@@ -86,49 +86,49 @@ package petsBag.petsAdvanced
          return _tipGapH;
       }
       
-      public function set tipStyle(param1:String) : void
+      public function set tipStyle(value:String) : void
       {
-         if(_tipStyle == param1)
+         if(_tipStyle == value)
          {
             return;
          }
-         _tipStyle = param1;
+         _tipStyle = value;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(value:Object) : void
       {
-         if(_tipData == param1)
+         if(_tipData == value)
          {
             return;
          }
-         _tipData = param1;
+         _tipData = value;
       }
       
-      public function set tipDirctions(param1:String) : void
+      public function set tipDirctions(value:String) : void
       {
-         if(_tipDirctions == param1)
+         if(_tipDirctions == value)
          {
             return;
          }
-         _tipDirctions = param1;
+         _tipDirctions = value;
       }
       
-      public function set tipGapV(param1:int) : void
+      public function set tipGapV(value:int) : void
       {
-         if(_tipGapV == param1)
+         if(_tipGapV == value)
          {
             return;
          }
-         _tipGapV = param1;
+         _tipGapV = value;
       }
       
-      public function set tipGapH(param1:int) : void
+      public function set tipGapH(value:int) : void
       {
-         if(_tipGapH == param1)
+         if(_tipGapH == value)
          {
             return;
          }
-         _tipGapH = param1;
+         _tipGapH = value;
       }
    }
 }

@@ -51,9 +51,9 @@ package church.view.weddingRoom.frame
          return _controller;
       }
       
-      public function set controller(param1:ChurchRoomController) : void
+      public function set controller(value:ChurchRoomController) : void
       {
-         _controller = param1;
+         _controller = value;
       }
       
       protected function initialize() : void
@@ -94,15 +94,15 @@ package church.view.weddingRoom.frame
          _roomContinuationTime3SelectedBtn.addEventListener("click",onBtnClick);
       }
       
-      private function onBtnClick(param1:MouseEvent) : void
+      private function onBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }
       
-      private function onFrameResponse(param1:FrameEvent) : void
+      private function onFrameResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
@@ -126,8 +126,8 @@ package church.view.weddingRoom.frame
       
       private function checkMoney() : Boolean
       {
-         var _loc1_:Array = _roomMoney;
-         if(PlayerManager.Instance.Self.Money < _loc1_[_roomContinuationTimeGroup.selectIndex])
+         var temp:Array = _roomMoney;
+         if(PlayerManager.Instance.Self.Money < temp[_roomContinuationTimeGroup.selectIndex])
          {
             LeavePageManager.showFillFrame();
             dispose();

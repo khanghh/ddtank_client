@@ -14,9 +14,9 @@ package rank.model
       
       public var currentInfo:GmActivityInfo;
       
-      public function RankModel(param1:IEventDispatcher = null)
+      public function RankModel(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public function get beginTime() : String
@@ -24,9 +24,9 @@ package rank.model
          return _beginTime;
       }
       
-      public function set beginTime(param1:String) : void
+      public function set beginTime(value:String) : void
       {
-         _beginTime = param1;
+         _beginTime = value;
       }
       
       public function get endTime() : String
@@ -34,9 +34,9 @@ package rank.model
          return _endTime;
       }
       
-      public function set endTime(param1:String) : void
+      public function set endTime(value:String) : void
       {
-         _endTime = param1;
+         _endTime = value;
       }
    }
 }

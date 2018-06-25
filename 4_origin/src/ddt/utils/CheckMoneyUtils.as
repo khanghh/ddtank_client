@@ -38,20 +38,20 @@ package ddt.utils
          return _instance;
       }
       
-      public function checkMoney(param1:Boolean, param2:int, param3:Function, param4:Function = null, param5:Boolean = true) : void
+      public function checkMoney(bind:Boolean, needMoney:int, completeFun:Function, cancelFun:Function = null, ifChangeMoney:Boolean = true) : void
       {
-         var _loc6_:* = null;
-         _isBind = param1;
-         _needMoney = param2;
-         _completeFun = param3;
-         _cancelFun = param4;
+         var confirmFrame2:* = null;
+         _isBind = bind;
+         _needMoney = needMoney;
+         _completeFun = completeFun;
+         _cancelFun = cancelFun;
          if(_isBind && PlayerManager.Instance.Self.BandMoney < _needMoney)
          {
-            if(param5)
+            if(ifChangeMoney)
             {
-               _loc6_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("sevenDouble.game.useSkillNoEnoughReConfirm"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
-               _loc6_.moveEnable = false;
-               _loc6_.addEventListener("response",reConfirmHandler,false,0,true);
+               confirmFrame2 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("sevenDouble.game.useSkillNoEnoughReConfirm"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
+               confirmFrame2.moveEnable = false;
+               confirmFrame2.addEventListener("response",reConfirmHandler,false,0,true);
                return;
             }
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("bindMoneyPoorNote"));
@@ -67,12 +67,12 @@ package ddt.utils
          complete();
       }
       
-      protected function reConfirmHandler(param1:FrameEvent) : void
+      protected function reConfirmHandler(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",reConfirmHandler);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",reConfirmHandler);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             if(PlayerManager.Instance.Self.Money < _needMoney)
             {

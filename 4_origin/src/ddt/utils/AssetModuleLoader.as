@@ -43,55 +43,54 @@ package ddt.utils
          super();
       }
       
-      public static function addModelLoader(param1:String, param2:int) : void
+      public static function addModelLoader(type:String, loadType:int) : void
       {
-         var _loc3_:Vector.<BaseLoader> = getLoaderResList(param1,param2);
-         _loaderList = _loaderList.concat(_loc3_);
+         var list:Vector.<BaseLoader> = getLoaderResList(type,loadType);
+         _loaderList = _loaderList.concat(list);
       }
       
-      public static function addRequestLoader(param1:BaseLoader, param2:Boolean = false) : void
+      public static function addRequestLoader(loader:BaseLoader, isReset:Boolean = false) : void
       {
-         if(param2)
+         if(isReset)
          {
-            _loaderData.remove(param1.id);
+            _loaderData.remove(loader.id);
          }
-         _loaderList.push(param1);
+         _loaderList.push(loader);
       }
       
-      public static function addCodeLoader(param1:String, param2:String) : void
+      public static function addCodeLoader(codeName:String, className:String) : void
       {
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         if(PathManager.FLASHSITE && PathManager.FLASHSITE != "" && !CodeLoader.loaded(param1))
+         var path:* = null;
+         var codeLoader:* = null;
+         if(PathManager.FLASHSITE && PathManager.FLASHSITE != "" && !CodeLoader.loaded(codeName))
          {
-            _loc3_ = PathManager.FLASHSITE + param1;
-            _loc4_ = LoadResourceManager.Instance.createLoader(_loc3_,9);
-            _loc4_.className = param2;
-            _loaderList.unshift(_loc4_);
+            path = PathManager.FLASHSITE + codeName;
+            codeLoader = LoadResourceManager.Instance.createLoader(path,9);
+            codeLoader.className = className;
+            _loaderList.unshift(codeLoader);
          }
       }
       
-      public static function startLoader(param1:Function = null, param2:Array = null, param3:Boolean = true) : void
+      public static function startLoader(call:Function = null, params:Array = null, isSmallLoading:Boolean = true) : void
       {
-         var _loc6_:int = 0;
-         var _loc4_:* = null;
+         var i:int = 0;
+         var loader:* = null;
          _loaderQueue.reset();
-         _call = param1;
-         _params = param2;
-         var _loc5_:int = _loaderList.length;
-         _loc6_ = 0;
-         while(_loc6_ < _loc5_)
+         _call = call;
+         _params = params;
+         var len:int = _loaderList.length;
+         for(i = 0; i < len; )
          {
-            _loc4_ = _loaderList[_loc6_] as BaseLoader;
-            if(_loc4_ == null)
+            loader = _loaderList[i] as BaseLoader;
+            if(loader == null)
             {
                throw new Error("AssetModelLoader :: 加载项类型错误！请检查");
             }
-            if(!_loaderData.hasKey(_loc4_.id))
+            if(!_loaderData.hasKey(loader.id))
             {
-               _loaderQueue.addLoader(_loc4_);
+               _loaderQueue.addLoader(loader);
             }
-            _loc6_++;
+            i++;
          }
          _loaderList.splice(0,_loaderList.length);
          if(_loaderQueue.length <= 0)
@@ -105,51 +104,50 @@ package ddt.utils
          {
             _loaderQueue.addEventListener("complete",__onLoadComplete);
             _loaderQueue.addEventListener("close",__onLoadClose);
-            _loaderQueue.start(param3);
+            _loaderQueue.start(isSmallLoading);
          }
       }
       
-      public static function startCodeLoader(param1:Function = null, param2:Array = null, param3:Boolean = true, param4:String = "4.png", param5:String = "DDT_Core") : void
+      public static function startCodeLoader(call:Function = null, params:Array = null, isSmallLoading:Boolean = true, codeName:String = "4.png", className:String = "DDT_Core") : void
       {
-         addCodeLoader(param4,param5);
-         startLoader(param1,param2,param3);
+         addCodeLoader(codeName,className);
+         startLoader(call,params,isSmallLoading);
       }
       
-      private static function getLoaderResList(param1:String, param2:int) : Vector.<BaseLoader>
+      private static function getLoaderResList(type:String, loadType:int) : Vector.<BaseLoader>
       {
-         var _loc4_:* = null;
-         var _loc3_:Vector.<BaseLoader> = new Vector.<BaseLoader>();
+         var xmlLoader:* = null;
+         var list:Vector.<BaseLoader> = new Vector.<BaseLoader>();
          if(PathManager.FLASHSITE == null || PathManager.FLASHSITE == "")
          {
-            if(param2 >> 1 & 1)
+            if(loadType >> 1 & 1)
             {
-               _loc4_ = LoadResourceManager.Instance.createLoader(PathManager.getXMLPath(param1),2);
-               _loc4_.analyzer = new XMLNativeAnalyzer(null);
-               _loc3_.push(_loc4_);
+               xmlLoader = LoadResourceManager.Instance.createLoader(PathManager.getXMLPath(type),2);
+               xmlLoader.analyzer = new XMLNativeAnalyzer(null);
+               list.push(xmlLoader);
             }
          }
-         if(param2 >> 0 & 1)
+         if(loadType >> 0 & 1)
          {
-            _loc3_.push(LoadResourceManager.Instance.createLoader(PathManager.getMornUIPath(param1),8));
+            list.push(LoadResourceManager.Instance.createLoader(PathManager.getMornUIPath(type),8));
          }
-         if(param2 >> 2 & 1)
+         if(loadType >> 2 & 1)
          {
-            _loc3_.push(LoadResourceManager.Instance.createLoader(PathManager.getSwfPath(param1),4));
+            list.push(LoadResourceManager.Instance.createLoader(PathManager.getSwfPath(type),4));
          }
-         return _loc3_;
+         return list;
       }
       
-      private static function __onLoadComplete(param1:Event) : void
+      private static function __onLoadComplete(e:Event) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _loaderQueue.loaders.length)
+         var i:int = 0;
+         for(i = 0; i < _loaderQueue.loaders.length; )
          {
-            if(_loaderQueue.loaders[_loc2_].isComplete)
+            if(_loaderQueue.loaders[i].isComplete)
             {
-               _loaderData.add(_loaderQueue.loaders[_loc2_].id,true);
+               _loaderData.add(_loaderQueue.loaders[i].id,true);
             }
-            _loc2_++;
+            i++;
          }
          _loaderQueue.removeEventListener("complete",__onLoadComplete);
          _loaderQueue.removeEventListener("close",__onLoadClose);
@@ -161,7 +159,7 @@ package ddt.utils
          _params = null;
       }
       
-      private static function __onLoadClose(param1:Event) : void
+      private static function __onLoadClose(e:Event) : void
       {
          _loaderQueue.removeEventListener("complete",__onLoadComplete);
          _loaderQueue.removeEventListener("close",__onLoadClose);

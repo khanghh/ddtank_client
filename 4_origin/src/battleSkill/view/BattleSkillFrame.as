@@ -70,48 +70,48 @@ package battleSkill.view
          return _bringSkillView;
       }
       
-      private function bringSkillComplete_Handler(param1:BattleSkillEvent) : void
+      private function bringSkillComplete_Handler(evt:BattleSkillEvent) : void
       {
-         var _loc2_:Array = param1.data as Array;
-         _bringSkillView.updateBringSkill(_loc2_);
+         var skill:Array = evt.data as Array;
+         _bringSkillView.updateBringSkill(skill);
       }
       
-      private function skillCellClick_Handler(param1:BattleSkillEvent) : void
+      private function skillCellClick_Handler(evt:BattleSkillEvent) : void
       {
-         if(param1 && param1.data == null)
+         if(evt && evt.data == null)
          {
             return;
          }
-         var _loc2_:int = param1.data as int;
-         if(!BattleSkillManager.instance.isActivateBySkillID(_loc2_))
+         var skillId:int = evt.data as int;
+         if(!BattleSkillManager.instance.isActivateBySkillID(skillId))
          {
             return;
          }
-         if(BattleSkillManager.instance.isSkillHasEquip(_loc2_))
+         if(BattleSkillManager.instance.isSkillHasEquip(skillId))
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("horse.skillCannotEquipSame"));
             return;
          }
-         var _loc3_:int = BattleSkillManager.instance.isEquipFull(_loc2_);
-         if(_loc3_ == 0)
+         var place:int = BattleSkillManager.instance.isEquipFull(skillId);
+         if(place == 0)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("horse.skillEquipMax"));
             return;
          }
-         GameInSocketOut.sendBringBattleSkill(_loc2_,_loc3_);
+         GameInSocketOut.sendBringBattleSkill(skillId,place);
       }
       
-      private function bringSkillCellClick_Handler(param1:BattleSkillEvent) : void
+      private function bringSkillCellClick_Handler(evt:BattleSkillEvent) : void
       {
-         var _loc2_:int = param1.data as int;
-         var _loc4_:Dictionary = BattleSkillManager.instance.getBringSkillList();
+         var skillId:int = evt.data as int;
+         var bringSkills:Dictionary = BattleSkillManager.instance.getBringSkillList();
          var _loc6_:int = 0;
-         var _loc5_:* = _loc4_;
-         for(var _loc3_ in _loc4_)
+         var _loc5_:* = bringSkills;
+         for(var place in bringSkills)
          {
-            if(_loc4_[_loc3_] == _loc2_)
+            if(bringSkills[place] == skillId)
             {
-               GameInSocketOut.sendBringBattleSkill(_loc2_,0);
+               GameInSocketOut.sendBringBattleSkill(skillId,0);
                return;
             }
          }

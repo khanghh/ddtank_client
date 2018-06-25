@@ -22,6 +22,16 @@ package ddt.data.goods
       
       public var Agility:int;
       
+      public var Recover:int;
+      
+      public var SubDamage:int;
+      
+      public var AddDamage:int;
+      
+      public var Arm:int;
+      
+      public var reducePower:int;
+      
       public var MagicAttack:int;
       
       public var MagicDefence:int;
@@ -141,9 +151,9 @@ package ddt.data.goods
          super();
       }
       
-      public function set Property5(param1:String) : void
+      public function set Property5(value:String) : void
       {
-         _property5 = param1;
+         _property5 = value;
       }
       
       public function get Property5() : String

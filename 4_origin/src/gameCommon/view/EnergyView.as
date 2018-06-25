@@ -73,19 +73,19 @@ package gameCommon.view
       
       private var _dir:int = 1;
       
-      public function EnergyView(param1:LocalPlayer, param2:MapView = null)
+      public function EnergyView(info:LocalPlayer, map:MapView = null)
       {
-         var _loc3_:* = null;
+         var backPath:* = null;
          super();
          if(NewHandGuideManager.Instance.mapID == 111)
          {
-            _loc3_ = "asset.trainer1.power.back";
+            backPath = "asset.trainer1.power.back";
          }
          else
          {
-            _loc3_ = "asset.game.power.back";
+            backPath = "asset.game.power.back";
          }
-         _bg = ComponentFactory.Instance.creatBitmap(_loc3_);
+         _bg = ComponentFactory.Instance.creatBitmap(backPath);
          addChild(_bg);
          _lightStrip = ComponentFactory.Instance.creatBitmap("asset.game.rulingLightStripAsset");
          addChild(_lightStrip);
@@ -110,7 +110,7 @@ package gameCommon.view
          _lightStrip.width = 0;
          _recordeWidth = 0;
          _grayStrip.width = 0;
-         _self = param1;
+         _self = info;
          if(NewHandGuideManager.Instance.hasShowEnergyMsg())
          {
             _shootMsgShape = ComponentFactory.Instance.creatBitmap("asset.game.power.ShootMsg");
@@ -120,7 +120,7 @@ package gameCommon.view
          SocketManager.Instance.addEventListener("gameOver",__over);
       }
       
-      private function __visiableDynamismBar(param1:LivingEvent) : void
+      private function __visiableDynamismBar(evt:LivingEvent) : void
       {
          if(_self.showDisturb)
          {
@@ -150,21 +150,21 @@ package gameCommon.view
          }
       }
       
-      private function __maxForceChanged(param1:LivingEvent) : void
+      private function __maxForceChanged(event:LivingEvent) : void
       {
-         _maxForce = param1.value;
+         _maxForce = event.value;
       }
       
-      private function __over(param1:CrazyTankSocketEvent) : void
+      private function __over(evt:CrazyTankSocketEvent) : void
       {
          StageReferance.stage.removeEventListener("keyDown",__keyDownSpace);
          SocketManager.Instance.removeEventListener("missionOver",__over);
          SocketManager.Instance.removeEventListener("gameOver",__over);
       }
       
-      private function __keyDownSpace(param1:KeyboardEvent) : void
+      private function __keyDownSpace(evt:KeyboardEvent) : void
       {
-         if(param1.keyCode == 32)
+         if(evt.keyCode == 32)
          {
             if(_self.isLiving)
             {
@@ -180,7 +180,7 @@ package gameCommon.view
          }
       }
       
-      private function __attackingChanged(param1:LivingEvent) : void
+      private function __attackingChanged(event:LivingEvent) : void
       {
          if(_self.isAttacking && _self.isLiving && !_self.autoOnHook)
          {
@@ -197,7 +197,7 @@ package gameCommon.view
          }
       }
       
-      private function __enterFrame(param1:Event) : void
+      private function __enterFrame(event:Event) : void
       {
          if(KeyboardManager.isDown(32))
          {
@@ -241,7 +241,7 @@ package gameCommon.view
          }
       }
       
-      private function __beginNewTurn(param1:LivingEvent) : void
+      private function __beginNewTurn(event:LivingEvent) : void
       {
          _self.iscalcForce = false;
          _lightStrip.width = 0;
@@ -274,7 +274,7 @@ package gameCommon.view
          return (_slider.x - _hitArea.x) / 498 * 2000;
       }
       
-      private function __click(param1:MouseEvent) : void
+      private function __click(event:MouseEvent) : void
       {
          if(!_firstShoot)
          {
@@ -282,7 +282,7 @@ package gameCommon.view
             ObjectUtils.disposeObject(_shootMsgShape);
             _shootMsgShape = null;
          }
-         _slider.x = _hitArea.x + param1.localX;
+         _slider.x = _hitArea.x + event.localX;
          dispatchEvent(new Event("change"));
       }
       

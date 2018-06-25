@@ -35,9 +35,9 @@ package explorerManual.view.page
          addChild(_preViewTxt);
       }
       
-      public function set tipData(param1:ManualPageItemInfo) : void
+      public function set tipData(info:ManualPageItemInfo) : void
       {
-         _iconCell.pageInfo = param1;
+         _iconCell.pageInfo = info;
       }
       
       public function dispose() : void

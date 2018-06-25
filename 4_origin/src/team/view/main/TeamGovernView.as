@@ -61,153 +61,153 @@ package team.view.main
          updateFriendList();
       }
       
-      private function __onUpdateFriendList(param1:Event) : void
+      private function __onUpdateFriendList(e:Event) : void
       {
          updateFriendList();
       }
       
-      private function __onRenderFriend(param1:Box, param2:int) : void
+      private function __onRenderFriend(item:Box, index:int) : void
       {
-         var _loc4_:* = null;
-         var _loc5_:NameTextEx = param1.getChildByName("name") as NameTextEx;
-         var _loc6_:Clip = param1.getChildByName("bg") as Clip;
-         var _loc3_:Button = param1.getChildByName("invite") as Button;
-         _loc3_.label = LanguageMgr.GetTranslation("ddt.team.allView.text35");
-         _loc6_.index = param2 % 2;
-         if(param2 < list_friend.array.length)
+         var player:* = null;
+         var name:NameTextEx = item.getChildByName("name") as NameTextEx;
+         var bg:Clip = item.getChildByName("bg") as Clip;
+         var btn:Button = item.getChildByName("invite") as Button;
+         btn.label = LanguageMgr.GetTranslation("ddt.team.allView.text35");
+         bg.index = index % 2;
+         if(index < list_friend.array.length)
          {
-            _loc4_ = list_friend.array[param2] as FriendListPlayer;
-            _loc5_.textType = !!_loc4_.IsVIP?2:1;
-            _loc5_.text = _loc4_.NickName;
-            _loc3_.visible = _loc4_.playerState.StateID != 0;
-            _loc3_.disabled = _invite.hasKey(_loc4_.ID);
+            player = list_friend.array[index] as FriendListPlayer;
+            name.textType = !!player.IsVIP?2:1;
+            name.text = player.NickName;
+            btn.visible = player.playerState.StateID != 0;
+            btn.disabled = _invite.hasKey(player.ID);
          }
          else
          {
-            _loc5_.text = "";
-            _loc3_.visible = false;
+            name.text = "";
+            btn.visible = false;
          }
       }
       
-      private function __onSelectFriend(param1:int) : void
+      private function __onSelectFriend(index:int) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc4_:Component = list_friend.selection;
-         var _loc3_:Button = _loc4_.getChildByName("invite") as Button;
-         _loc3_.disabled = true;
-         _invite.add((list_friend.array[param1] as FriendListPlayer).ID,true);
-         var _loc2_:FriendListPlayer = list_friend.array[param1] as FriendListPlayer;
-         SocketManager.Instance.out.sendTeamInvite(_loc2_.ID);
+         var box:Component = list_friend.selection;
+         var button:Button = box.getChildByName("invite") as Button;
+         button.disabled = true;
+         _invite.add((list_friend.array[index] as FriendListPlayer).ID,true);
+         var player:FriendListPlayer = list_friend.array[index] as FriendListPlayer;
+         SocketManager.Instance.out.sendTeamInvite(player.ID);
       }
       
-      private function __onRenderInvite(param1:Box, param2:int) : void
+      private function __onRenderInvite(item:Box, index:int) : void
       {
-         var _loc3_:TeamGovernInviteItem = param1 as TeamGovernInviteItem;
-         if(param2 < list_invite.array.length)
+         var view:TeamGovernInviteItem = item as TeamGovernInviteItem;
+         if(index < list_invite.array.length)
          {
-            _loc3_.info = list_invite.array[param2] as TeamInvitedMemberInfo;
+            view.info = list_invite.array[index] as TeamInvitedMemberInfo;
          }
          else
          {
-            _loc3_.info = null;
+            view.info = null;
          }
       }
       
-      private function __onRenderMember(param1:Box, param2:int) : void
+      private function __onRenderMember(item:Box, index:int) : void
       {
-         var _loc7_:* = null;
-         var _loc4_:NameTextEx = param1.getChildByName("name") as NameTextEx;
-         var _loc6_:Label = param1.getChildByName("date") as Label;
-         var _loc3_:Button = param1.getChildByName("close") as Button;
-         var _loc5_:Image = param1.getChildByName("img_captain") as Image;
-         if(param2 < list_member.array.length)
+         var info:* = null;
+         var name:NameTextEx = item.getChildByName("name") as NameTextEx;
+         var date:Label = item.getChildByName("date") as Label;
+         var btn:Button = item.getChildByName("close") as Button;
+         var img:Image = item.getChildByName("img_captain") as Image;
+         if(index < list_member.array.length)
          {
-            _loc7_ = list_member.array[param2] as TeamMemberInfo;
-            _loc3_.visible = !_loc7_.isSelf && PlayerManager.Instance.Self.teamDuty == 1;
-            _loc4_.textType = !!_loc7_.IsVIP?2:1;
-            _loc4_.text = _loc7_.NickName;
-            if(_loc7_.teamDuty == 1)
+            info = list_member.array[index] as TeamMemberInfo;
+            btn.visible = !info.isSelf && PlayerManager.Instance.Self.teamDuty == 1;
+            name.textType = !!info.IsVIP?2:1;
+            name.text = info.NickName;
+            if(info.teamDuty == 1)
             {
-               _loc5_.visible = true;
+               img.visible = true;
             }
             else
             {
-               _loc5_.visible = false;
+               img.visible = false;
             }
-            if(_loc7_.playerState.StateID != 0)
+            if(info.playerState.StateID != 0)
             {
-               _loc6_.text = LanguageMgr.GetTranslation("tank.view.im.IMFriendList.online");
+               date.text = LanguageMgr.GetTranslation("tank.view.im.IMFriendList.online");
             }
-            else if(_loc7_.playerState.StateID == 0)
+            else if(info.playerState.StateID == 0)
             {
-               if(_loc7_.OffLineHour == -1)
+               if(info.OffLineHour == -1)
                {
-                  _loc6_.text = _loc7_.minute + LanguageMgr.GetTranslation("minute");
+                  date.text = info.minute + LanguageMgr.GetTranslation("minute");
                }
-               else if(_loc7_.OffLineHour >= 1 && _loc7_.OffLineHour < 24)
+               else if(info.OffLineHour >= 1 && info.OffLineHour < 24)
                {
-                  _loc6_.text = _loc7_.OffLineHour + LanguageMgr.GetTranslation("hour");
+                  date.text = info.OffLineHour + LanguageMgr.GetTranslation("hour");
                }
-               else if(_loc7_.OffLineHour >= 24 && _loc7_.OffLineHour < 720)
+               else if(info.OffLineHour >= 24 && info.OffLineHour < 720)
                {
-                  _loc6_.text = _loc7_.day + LanguageMgr.GetTranslation("day");
+                  date.text = info.day + LanguageMgr.GetTranslation("day");
                }
-               else if(_loc7_.OffLineHour >= 720 && _loc7_.OffLineHour < 999)
+               else if(info.OffLineHour >= 720 && info.OffLineHour < 999)
                {
-                  _loc6_.text = LanguageMgr.GetTranslation("tank.consortia.myconsortia.MyConsortiaMemberInfoItem.month");
+                  date.text = LanguageMgr.GetTranslation("tank.consortia.myconsortia.MyConsortiaMemberInfoItem.month");
                }
                else
                {
-                  _loc6_.text = LanguageMgr.GetTranslation("tank.consortia.myconsortia.MyConsortiaMemberInfoItem.long");
+                  date.text = LanguageMgr.GetTranslation("tank.consortia.myconsortia.MyConsortiaMemberInfoItem.long");
                }
             }
          }
          else
          {
-            _loc3_.visible = false;
-            _loc4_.text = "";
-            _loc6_.text = "";
-            _loc5_.visible = false;
+            btn.visible = false;
+            name.text = "";
+            date.text = "";
+            img.visible = false;
          }
       }
       
-      private function __onSelectMember(param1:int) : void
+      private function __onSelectMember(index:int) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc4_:TeamMemberInfo = list_member.array[list_member.selectedIndex] as TeamMemberInfo;
-         var _loc3_:String = LanguageMgr.GetTranslation("team.govern.expel",_loc4_.NickName);
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc3_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,1,null,"SimpleAlert",60,false);
-         _loc2_.addEventListener("response",__onAlertExpel);
+         var info:TeamMemberInfo = list_member.array[list_member.selectedIndex] as TeamMemberInfo;
+         var tip:String = LanguageMgr.GetTranslation("team.govern.expel",info.NickName);
+         var alertFrame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),tip,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,1,null,"SimpleAlert",60,false);
+         alertFrame.addEventListener("response",__onAlertExpel);
       }
       
-      private function __onAlertExpel(param1:FrameEvent) : void
+      private function __onAlertExpel(e:FrameEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onAlertExpel);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var info:* = null;
+         var alertFrame:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         alertFrame.removeEventListener("response",__onAlertExpel);
+         if(e.responseCode == 2 || e.responseCode == 3)
          {
-            _loc3_ = list_member.array[list_member.selectedIndex] as TeamMemberInfo;
-            if(_loc3_)
+            info = list_member.array[list_member.selectedIndex] as TeamMemberInfo;
+            if(info)
             {
-               SocketManager.Instance.out.sendTeamExpeleMember(_loc3_.ID);
+               SocketManager.Instance.out.sendTeamExpeleMember(info.ID);
             }
          }
-         _loc2_.dispose();
+         alertFrame.dispose();
       }
       
-      protected function __onUpdateTeamInfo(param1:TeamEvent) : void
+      protected function __onUpdateTeamInfo(event:TeamEvent) : void
       {
          updateView();
       }
       
-      protected function __onUpdateMmeber(param1:TeamEvent) : void
+      protected function __onUpdateMmeber(event:TeamEvent) : void
       {
          label_current.text = "（" + TeamManager.instance.model.selfTeamMember.length + "）";
          updateMemberList();
       }
       
-      protected function __onUpdateInvite(param1:TeamEvent) : void
+      protected function __onUpdateInvite(event:TeamEvent) : void
       {
          label_invite.text = "（" + TeamManager.instance.model.selfTeamInviteList.length + "）";
          list_invite.array = TeamManager.instance.model.selfTeamInviteList;
@@ -224,16 +224,16 @@ package team.view.main
       
       private function updateView() : void
       {
-         var _loc1_:TeamInfo = TeamManager.instance.model.selfTeamInfo;
-         if(_loc1_)
+         var info:TeamInfo = TeamManager.instance.model.selfTeamInfo;
+         if(info)
          {
-            clip_division.index = _loc1_.division;
-            label_name.text = _loc1_.name;
-            label_tag.text = "(" + _loc1_.tag + ")";
-            label_grade.text = "lv." + _loc1_.grade;
-            label_createDate.text = LanguageMgr.GetTranslation("team.main.createDate",DateUtils.dateFormat6(_loc1_.createDate));
-            label_count.text = LanguageMgr.GetTranslation("team.active.member",_loc1_.member,_loc1_.totalMember);
-            ex_time.count = _loc1_.totalTime;
+            clip_division.index = info.division;
+            label_name.text = info.name;
+            label_tag.text = "(" + info.tag + ")";
+            label_grade.text = "lv." + info.grade;
+            label_createDate.text = LanguageMgr.GetTranslation("team.main.createDate",DateUtils.dateFormat6(info.createDate));
+            label_count.text = LanguageMgr.GetTranslation("team.active.member",info.member,info.totalMember);
+            ex_time.count = info.totalTime;
             label_invite.text = "（" + TeamManager.instance.model.selfTeamInviteList.length + "）";
             label_current.text = "（" + TeamManager.instance.model.selfTeamMember.length + "）";
             label_tag.x = label_name.x + label_name.width + 5;
@@ -255,10 +255,10 @@ package team.view.main
       
       private function updateMemberList() : void
       {
-         var _loc2_:Array = TeamManager.instance.model.selfTeamMember.concat();
-         var _loc1_:int = 18;
-         _loc2_.sortOn(["OffLineHour","day","minute"],[_loc1_,_loc1_,_loc1_]);
-         list_member.array = _loc2_.reverse();
+         var list:Array = TeamManager.instance.model.selfTeamMember.concat();
+         var sort:int = 18;
+         list.sortOn(["OffLineHour","day","minute"],[sort,sort,sort]);
+         list_member.array = list.reverse();
       }
       
       override public function dispose() : void

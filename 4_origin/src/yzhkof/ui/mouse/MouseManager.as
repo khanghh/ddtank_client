@@ -40,9 +40,9 @@ package yzhkof.ui.mouse
          return instance || new MouseManager();
       }
       
-      public static function set cursor(param1:DisplayObject) : void
+      public static function set cursor(value:DisplayObject) : void
       {
-         MouseManager.getInstance().cursor = param1;
+         MouseManager.getInstance().cursor = value;
       }
       
       public static function get cursor() : DisplayObject
@@ -50,25 +50,24 @@ package yzhkof.ui.mouse
          return MouseManager.getInstance().cursor;
       }
       
-      public static function registExtendMouseEvent(param1:InteractiveObject) : void
+      public static function registExtendMouseEvent(dobj:InteractiveObject) : void
       {
-         param1.addEventListener(MouseEvent.MOUSE_DOWN,__dobjDown);
+         dobj.addEventListener(MouseEvent.MOUSE_DOWN,__dobjDown);
       }
       
-      private static function __dobjDown(param1:MouseEvent) : void
+      private static function __dobjDown(e:MouseEvent) : void
       {
          var dobj:InteractiveObject = null;
          var fun_up:Function = null;
          var fun_move:Function = null;
-         var e:MouseEvent = param1;
          dobj = e.currentTarget as InteractiveObject;
-         fun_up = function(param1:MouseEvent):void
+         fun_up = function(e:MouseEvent):void
          {
             dobj.dispatchEvent(new Event(STAGE_UP_EVENT));
             dobj.stage.removeEventListener(MouseEvent.MOUSE_UP,fun_up);
             dobj.stage.removeEventListener(MouseEvent.MOUSE_MOVE,fun_move);
          };
-         fun_move = function(param1:MouseEvent):void
+         fun_move = function(e:MouseEvent):void
          {
             dobj.dispatchEvent(new Event(MOUSE_DOWN_AND_DRAGING_EVENT));
          };
@@ -106,20 +105,20 @@ package yzhkof.ui.mouse
          StageManager.stage.removeEventListener(MouseEvent.MOUSE_MOVE,this.__mouseMove);
       }
       
-      private function __mouseMove(param1:MouseEvent) : void
+      private function __mouseMove(e:MouseEvent) : void
       {
-         this.cursor.x = param1.stageX;
-         this.cursor.y = param1.stageY;
-         param1.updateAfterEvent();
+         this.cursor.x = e.stageX;
+         this.cursor.y = e.stageY;
+         e.updateAfterEvent();
       }
       
-      public function set cursor(param1:DisplayObject) : void
+      public function set cursor(value:DisplayObject) : void
       {
-         if(param1 == null)
+         if(value == null)
          {
             this.unSetCursor();
          }
-         this._cursor = param1;
+         this._cursor = value;
          if(this._cursor)
          {
             Mouse.hide();

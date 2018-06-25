@@ -84,7 +84,7 @@ package godCardRaise.view
          getView();
       }
       
-      private function __selectGroupHandler(param1:Event) : void
+      private function __selectGroupHandler(event:Event) : void
       {
          SoundManager.instance.playButtonSound();
          getView();
@@ -194,24 +194,23 @@ package godCardRaise.view
          }
       }
       
-      private function addGodCardRaiseAtlasCards(param1:Sprite, param2:int) : void
+      private function addGodCardRaiseAtlasCards($cards:Sprite, $level:int) : void
       {
-         var _loc6_:int = 0;
-         var _loc3_:* = null;
-         var _loc5_:* = null;
-         var _loc4_:Array = GodCardRaiseManager.Instance.getGodCardListInfoListByLevel(param2);
-         if(_loc4_)
+         var i:int = 0;
+         var godCardInfo:* = null;
+         var godAtlasCard:* = null;
+         var arr:Array = GodCardRaiseManager.Instance.getGodCardListInfoListByLevel($level);
+         if(arr)
          {
-            _loc6_ = 0;
-            while(_loc6_ < _loc4_.length)
+            for(i = 0; i < arr.length; )
             {
-               _loc3_ = _loc4_[_loc6_] as GodCardListInfo;
-               _loc5_ = new GodCardRaiseAtlasCard();
-               _loc5_.info = _loc3_;
-               _loc5_.x = _loc6_ % 4 * 166;
-               _loc5_.y = int(_loc6_ / 4) * 260;
-               param1.addChild(_loc5_);
-               _loc6_++;
+               godCardInfo = arr[i] as GodCardListInfo;
+               godAtlasCard = new GodCardRaiseAtlasCard();
+               godAtlasCard.info = godCardInfo;
+               godAtlasCard.x = i % 4 * 166;
+               godAtlasCard.y = int(i / 4) * 260;
+               $cards.addChild(godAtlasCard);
+               i++;
             }
          }
       }
@@ -228,16 +227,15 @@ package godCardRaise.view
          }
       }
       
-      private function updateCards(param1:Sprite) : void
+      private function updateCards($sp:Sprite) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         _loc3_ = 0;
-         while(_loc3_ < param1.numChildren)
+         var i:int = 0;
+         var godAtlasCard:* = null;
+         for(i = 0; i < $sp.numChildren; )
          {
-            _loc2_ = param1.getChildAt(_loc3_) as GodCardRaiseAtlasCard;
-            _loc2_.updateView();
-            _loc3_++;
+            godAtlasCard = $sp.getChildAt(i) as GodCardRaiseAtlasCard;
+            godAtlasCard.updateView();
+            i++;
          }
       }
       

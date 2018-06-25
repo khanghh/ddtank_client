@@ -24,9 +24,9 @@ package superWinner.data
          return _type;
       }
       
-      public function set type(param1:uint) : void
+      public function set type(val:uint) : void
       {
-         _type = param1;
+         _type = val;
       }
       
       public function get goodId() : uint
@@ -34,9 +34,9 @@ package superWinner.data
          return _goodId;
       }
       
-      public function set goodId(param1:uint) : void
+      public function set goodId(val:uint) : void
       {
-         _goodId = param1;
+         _goodId = val;
          formatGood(_goodId);
       }
       
@@ -45,9 +45,9 @@ package superWinner.data
          return _goodName;
       }
       
-      private function formatGood(param1:uint) : void
+      private function formatGood(val:uint) : void
       {
-         _goodName = ItemManager.Instance.getTemplateById(param1).Name;
+         _goodName = ItemManager.Instance.getTemplateById(val).Name;
       }
       
       public function get count() : uint
@@ -55,9 +55,9 @@ package superWinner.data
          return _count;
       }
       
-      public function set count(param1:uint) : void
+      public function set count(val:uint) : void
       {
-         _count = param1;
+         _count = val;
       }
    }
 }

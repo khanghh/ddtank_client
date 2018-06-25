@@ -25,10 +25,10 @@ package fightLib.script
       
       private var _hasRestarted:Boolean;
       
-      public function BaseScript(param1:Object)
+      public function BaseScript(host:Object)
       {
          super();
-         _host = param1;
+         _host = host;
          _initialized = false;
          _commonds = [];
          initializeScript();
@@ -55,9 +55,9 @@ package fightLib.script
       {
          var _loc3_:int = 0;
          var _loc2_:* = _commonds;
-         for each(var _loc1_ in _commonds)
+         for each(var command in _commonds)
          {
-            _loc1_.undo();
+            command.undo();
          }
          removeEvents();
          _isPaused = false;
@@ -83,10 +83,10 @@ package fightLib.script
       {
          var _loc3_:int = 0;
          var _loc2_:* = _commonds;
-         for each(var _loc1_ in _commonds)
+         for each(var command in _commonds)
          {
-            _loc1_.addEventListener("finish",__finishHandler);
-            _loc1_.addEventListener("wait",__waitHandler);
+            command.addEventListener("finish",__finishHandler);
+            command.addEventListener("wait",__waitHandler);
          }
       }
       
@@ -94,14 +94,14 @@ package fightLib.script
       {
          var _loc3_:int = 0;
          var _loc2_:* = _commonds;
-         for each(var _loc1_ in _commonds)
+         for each(var command in _commonds)
          {
-            _loc1_.removeEventListener("complete",__finishHandler);
-            _loc1_.removeEventListener("deactivate",__waitHandler);
+            command.removeEventListener("complete",__finishHandler);
+            command.removeEventListener("deactivate",__waitHandler);
          }
       }
       
-      protected function __finishHandler(param1:Event) : void
+      protected function __finishHandler(evt:Event) : void
       {
          if(!_isPaused)
          {
@@ -109,7 +109,7 @@ package fightLib.script
          }
       }
       
-      protected function __waitHandler(param1:Event) : void
+      protected function __waitHandler(evt:Event) : void
       {
          pause();
       }
@@ -146,9 +146,9 @@ package fightLib.script
          _host = null;
          var _loc3_:int = 0;
          var _loc2_:* = _commonds;
-         for each(var _loc1_ in _commonds)
+         for each(var command in _commonds)
          {
-            _loc1_.dispose();
+            command.dispose();
          }
          _commonds = null;
          _currentCommand = null;

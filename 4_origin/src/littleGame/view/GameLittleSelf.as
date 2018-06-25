@@ -15,10 +15,10 @@ package littleGame.view
       
       private var _self:LittleSelf;
       
-      public function GameLittleSelf(param1:LittleSelf)
+      public function GameLittleSelf(self:LittleSelf)
       {
-         _self = param1;
-         super(param1);
+         _self = self;
+         super(self);
       }
       
       override protected function createBody() : void
@@ -37,7 +37,7 @@ package littleGame.view
          LittleGameManager.Instance.Current.addEventListener("soundEnabledChanged",__soundChanged);
       }
       
-      private function __soundChanged(param1:Event) : void
+      private function __soundChanged(event:Event) : void
       {
          if(_body)
          {
@@ -58,20 +58,20 @@ package littleGame.view
          _self = null;
       }
       
-      private function __getScore(param1:LittleLivingEvent) : void
+      private function __getScore(event:LittleLivingEvent) : void
       {
          SoundManager.instance.play("165");
-         var _loc2_:ScoreShape = new ScoreShape();
-         _loc2_.setScore(param1.paras[0]);
-         _loc2_.x = -_loc2_.width >> 1;
-         _loc2_.y = -180;
-         addChild(_loc2_);
-         TweenLite.to(_loc2_,0.3,{
+         var shape:ScoreShape = new ScoreShape();
+         shape.setScore(event.paras[0]);
+         shape.x = -shape.width >> 1;
+         shape.y = -180;
+         addChild(shape);
+         TweenLite.to(shape,0.3,{
             "delay":1,
             "alpha":0,
             "y":-320,
             "onComplete":ObjectUtils.disposeObject,
-            "onCompleteParams":[_loc2_]
+            "onCompleteParams":[shape]
          });
       }
    }

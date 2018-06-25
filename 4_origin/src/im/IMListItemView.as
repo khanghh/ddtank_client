@@ -250,7 +250,7 @@ package im
          IMControl.Instance.removeEventListener("alertMessage",__alertMessage);
       }
       
-      protected function __alertMessage(param1:Event) : void
+      protected function __alertMessage(event:Event) : void
       {
          if(info && info.type == 1 && info.ID == IMManager.Instance.changeID)
          {
@@ -258,7 +258,7 @@ package im
          }
       }
       
-      protected function __hasNewMessage(param1:Event) : void
+      protected function __hasNewMessage(event:Event) : void
       {
          if(info && info.type == 1 && info.ID == IMManager.Instance.changeID)
          {
@@ -266,7 +266,7 @@ package im
          }
       }
       
-      protected function __doubleClickhandler(param1:InteractiveEvent) : void
+      protected function __doubleClickhandler(event:InteractiveEvent) : void
       {
          if(info.type == 0 && info.titleType >= 10)
          {
@@ -279,15 +279,15 @@ package im
          }
       }
       
-      protected function __customInputHandler(param1:MouseEvent) : void
+      protected function __customInputHandler(event:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
-         param1.stopPropagation();
+         event.stopImmediatePropagation();
+         event.stopPropagation();
       }
       
-      private function _callBackBtnClick(param1:MouseEvent) : void
+      private function _callBackBtnClick(event:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
+         event.stopImmediatePropagation();
          if(_callBackBtn.enable == true)
          {
             SocketManager.Instance.out.sendRegressCall(info.ID);
@@ -295,9 +295,9 @@ package im
          }
       }
       
-      private function __deleteBtnClick(param1:MouseEvent) : void
+      private function __deleteBtnClick(event:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
+         event.stopImmediatePropagation();
          SoundManager.instance.play("008");
          if(info.type == 0)
          {
@@ -317,43 +317,43 @@ package im
          }
       }
       
-      private function __privateChatBtnClick(param1:MouseEvent) : void
+      private function __privateChatBtnClick(event:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
+         event.stopImmediatePropagation();
          SoundManager.instance.play("008");
          ChatManager.Instance.privateChatTo(info.NickName,info.ID,info);
          ChatManager.Instance.setFocus();
       }
       
-      private function __markBtnClick(param1:MouseEvent) : void
+      private function __markBtnClick(e:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
+         e.stopImmediatePropagation();
          (parent.parent.parent.parent as IMListView).currentItem = this;
          _markBtnClicked = true;
          SoundManager.instance.play("008");
          createMarkInput();
       }
       
-      protected function __snsInviteBtnClick(param1:MouseEvent) : void
+      protected function __snsInviteBtnClick(event:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
+         event.stopImmediatePropagation();
          SoundManager.instance.play("008");
-         var _loc3_:InviteDialogFrame = ComponentFactory.Instance.creatComponentByStylename("InviteDialogFrame");
-         _loc3_.setInfo(info.UserName);
-         var _loc2_:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("ddt.view.SnsFrame.snsInviteBtnTipData"));
-         _loc2_.showCancel = false;
-         _loc3_.info = _loc2_;
-         _loc3_.setText(LanguageMgr.GetTranslation("ddt.view.SnsFrame.inputTextText"));
-         _loc3_.show();
+         var frame:InviteDialogFrame = ComponentFactory.Instance.creatComponentByStylename("InviteDialogFrame");
+         frame.setInfo(info.UserName);
+         var ai:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("ddt.view.SnsFrame.snsInviteBtnTipData"));
+         ai.showCancel = false;
+         frame.info = ai;
+         frame.setText(LanguageMgr.GetTranslation("ddt.view.SnsFrame.inputTextText"));
+         frame.show();
       }
       
-      private function __itemClick(param1:InteractiveEvent) : void
+      private function __itemClick(event:InteractiveEvent) : void
       {
          if(_markBtnClicked)
          {
             return;
          }
-         if(!(param1.target is SimpleBitmapButton) && info.type == 1 && info.Relation != 1)
+         if(!(event.target is SimpleBitmapButton) && info.type == 1 && info.Relation != 1)
          {
             SoundManager.instance.play("008");
             IMManager.isInIM = true;
@@ -375,12 +375,12 @@ package im
          }
       }
       
-      public function onMarkClick(param1:CEvent) : void
+      public function onMarkClick(e:CEvent) : void
       {
-         var _loc2_:String = param1.data as String;
-         if(_info && _loc2_ != _info.NickName)
+         var mark:String = e.data as String;
+         if(_info && mark != _info.NickName)
          {
-            _info.Mark = _loc2_;
+            _info.Mark = mark;
             _info.Mark = FilterWordManager.filterWrod(_info.Mark);
             if(_info.Mark == "")
             {
@@ -411,11 +411,11 @@ package im
       
       private function createMarkInput() : void
       {
-         var _loc1_:MarkFrame = ComponentFactory.Instance.creatComponentByStylename("IM.markFrame");
-         LayerManager.Instance.addToLayer(_loc1_,7,true,1);
+         var markFrame:MarkFrame = ComponentFactory.Instance.creatComponentByStylename("IM.markFrame");
+         LayerManager.Instance.addToLayer(markFrame,7,true,1);
       }
       
-      private function __itemOver(param1:MouseEvent) : void
+      private function __itemOver(evt:MouseEvent) : void
       {
          if(!info.titleIsSelected)
          {
@@ -470,7 +470,7 @@ package im
          }
       }
       
-      private function __itemOut(param1:MouseEvent) : void
+      private function __itemOut(evt:MouseEvent) : void
       {
          if(!info.titleIsSelected)
          {
@@ -487,7 +487,7 @@ package im
          }
       }
       
-      public function setListCellStatus(param1:List, param2:Boolean, param3:int) : void
+      public function setListCellStatus(list:List, isSelected:Boolean, index:int) : void
       {
       }
       
@@ -496,9 +496,9 @@ package im
          return info;
       }
       
-      public function setCellValue(param1:*) : void
+      public function setCellValue(value:*) : void
       {
-         info = param1;
+         info = value;
          update();
       }
       
@@ -599,11 +599,11 @@ package im
          _markBtnClicked = false;
       }
       
-      protected function __fucksOutHandler(param1:FocusEvent) : void
+      protected function __fucksOutHandler(event:FocusEvent) : void
       {
-         var _loc4_:* = undefined;
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
+         var customList:* = undefined;
+         var tempId:int = 0;
+         var i:int = 0;
          if(_customInput)
          {
             info.titleIsSelected = false;
@@ -620,29 +620,28 @@ package im
                _titleText.visible = true;
                if(_customInput.text != "" && !PlayerManager.Instance.checkHasGroupName(_customInput.text))
                {
-                  _loc4_ = PlayerManager.Instance.customList;
-                  if(_loc4_.length >= 10 + 2)
+                  customList = PlayerManager.Instance.customList;
+                  if(customList.length >= 10 + 2)
                   {
                      MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("IM.MaxCustom"));
                   }
                   else
                   {
-                     _loc2_ = 10;
-                     _loc3_ = 1;
-                     while(_loc3_ < _loc4_.length - 1)
+                     tempId = 10;
+                     for(i = 1; i < customList.length - 1; )
                      {
-                        if(_loc4_[_loc3_].ID != 9 + _loc3_)
+                        if(customList[i].ID != 9 + i)
                         {
-                           _loc2_ = 9 + _loc3_;
+                           tempId = 9 + i;
                            break;
                         }
-                        if(_loc3_ == _loc4_.length - 2)
+                        if(i == customList.length - 2)
                         {
-                           _loc2_ = 10 + _loc3_;
+                           tempId = 10 + i;
                         }
-                        _loc3_++;
+                        i++;
                      }
-                     SocketManager.Instance.out.sendCustomFriends(1,_loc2_,_customInput.text);
+                     SocketManager.Instance.out.sendCustomFriends(1,tempId,_customInput.text);
                   }
                }
             }
@@ -650,7 +649,7 @@ package im
          }
       }
       
-      protected function __markOutHandler(param1:FocusEvent) : void
+      protected function __markOutHandler(event:FocusEvent) : void
       {
          if(_markInput)
          {
@@ -680,11 +679,11 @@ package im
          _markBtnClicked = false;
       }
       
-      protected function __keyDownHandler(param1:KeyboardEvent) : void
+      protected function __keyDownHandler(event:KeyboardEvent) : void
       {
-         param1.stopImmediatePropagation();
-         param1.stopPropagation();
-         if(param1.keyCode == 13)
+         event.stopImmediatePropagation();
+         event.stopPropagation();
+         if(event.keyCode == 13)
          {
             SoundManager.instance.play("008");
             if(_customInput != null)
@@ -850,19 +849,19 @@ package im
             _markBtn.visible = false;
          }
          updateMasetrIcon();
-         var _loc1_:Array = PlayerManager.Instance.getOnlineFriendForCustom(0);
-         var _loc2_:Date = TimeManager.Instance.serverDate;
+         var onlineArray:Array = PlayerManager.Instance.getOnlineFriendForCustom(0);
+         var nowDate:Date = TimeManager.Instance.serverDate;
          if(info.Relation == 1 || info.Grade < 15)
          {
             _callBackBtn.visible = false;
             _callBackedBitmap.visible = false;
          }
-         else if(info.LastLoginDate == null || _loc2_.time - info.LastLoginDate.time < 2592000000)
+         else if(info.LastLoginDate == null || nowDate.time - info.LastLoginDate.time < 2592000000)
          {
             _callBackBtn.visible = false;
             _callBackedBitmap.visible = false;
          }
-         else if(_loc1_.indexOf(info) != -1)
+         else if(onlineArray.indexOf(info) != -1)
          {
             _callBackBtn.visible = false;
             _callBackedBitmap.visible = false;
@@ -896,7 +895,7 @@ package im
       
       private function updateMasetrIcon() : void
       {
-         var _loc1_:SelfInfo = PlayerManager.Instance.Self;
+         var selfInfo:SelfInfo = PlayerManager.Instance.Self;
       }
       
       private function updateItemState() : void
@@ -911,9 +910,9 @@ package im
          }
       }
       
-      private function setItemSelectedState(param1:Boolean) : void
+      private function setItemSelectedState(value:Boolean) : void
       {
-         if(param1)
+         if(value)
          {
             _triangle.setFrame(2);
             _titleBG.setFrame(3);
@@ -932,31 +931,31 @@ package im
          return this;
       }
       
-      public function dragStop(param1:DragEffect) : void
+      public function dragStop(effect:DragEffect) : void
       {
-         var _loc4_:Boolean = false;
-         var _loc3_:IMListItemView = param1.target as IMListItemView;
-         var _loc2_:FriendListPlayer = param1.data as FriendListPlayer;
-         var _loc5_:FriendListPlayer = _loc3_.getCellValue() as FriendListPlayer;
-         if(_loc3_ && _loc5_ && _loc5_.type == 0 && (_loc5_.titleType >= 10 || _loc5_.titleType == 0))
+         var has:Boolean = false;
+         var item:IMListItemView = effect.target as IMListItemView;
+         var source:FriendListPlayer = effect.data as FriendListPlayer;
+         var info:FriendListPlayer = item.getCellValue() as FriendListPlayer;
+         if(item && info && info.type == 0 && (info.titleType >= 10 || info.titleType == 0))
          {
-            if(_loc2_.Relation == 1)
+            if(source.Relation == 1)
             {
-               IMManager.Instance.addFriend(_loc2_.NickName);
+               IMManager.Instance.addFriend(source.NickName);
             }
             else
             {
-               _loc4_ = PlayerManager.Instance.hasInFriendList(_loc2_.ID);
-               if(_loc4_ || !_loc4_ && !IMManager.Instance.isMaxFriend())
+               has = PlayerManager.Instance.hasInFriendList(source.ID);
+               if(has || !has && !IMManager.Instance.isMaxFriend())
                {
-                  SocketManager.Instance.out.sendAddFriend(_loc2_.NickName,_loc5_.titleType);
+                  SocketManager.Instance.out.sendAddFriend(source.NickName,info.titleType);
                }
             }
          }
-         param1.action = "none";
+         effect.action = "none";
       }
       
-      public function dragDrop(param1:DragEffect) : void
+      public function dragDrop(effect:DragEffect) : void
       {
          if(info.type == 0)
          {
@@ -975,9 +974,9 @@ package im
       
       private function createImg() : DisplayObject
       {
-         var _loc1_:Bitmap = new Bitmap(new BitmapData(width,height,false,0),"auto",true);
-         _loc1_.bitmapData.draw(_colorMatrixSp);
-         return _loc1_;
+         var img:Bitmap = new Bitmap(new BitmapData(width,height,false,0),"auto",true);
+         img.bitmapData.draw(_colorMatrixSp);
+         return img;
       }
       
       public function dispose() : void
@@ -1097,9 +1096,9 @@ package im
          return _callBackBtn;
       }
       
-      public function set callBackBtn(param1:SimpleBitmapButton) : void
+      public function set callBackBtn(value:SimpleBitmapButton) : void
       {
-         _callBackBtn = param1;
+         _callBackBtn = value;
       }
       
       public function get info() : FriendListPlayer
@@ -1107,9 +1106,9 @@ package im
          return _info;
       }
       
-      public function set info(param1:FriendListPlayer) : void
+      public function set info(value:FriendListPlayer) : void
       {
-         _info = param1;
+         _info = value;
       }
    }
 }

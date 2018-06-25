@@ -26,9 +26,9 @@ package league
       
       private var _lsnView:LeagueStartNoticeView;
       
-      public function LeagueControl(param1:IEventDispatcher = null)
+      public function LeagueControl(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : LeagueControl
@@ -45,22 +45,22 @@ package league
          LeagueManager.instance.addEventListener("leagueOpenView",__onOpenView);
       }
       
-      protected function __onOpenView(param1:Event) : void
+      protected function __onOpenView(event:Event) : void
       {
          loadLeagueModule(doShowLeagueShopFrame);
       }
       
       private function doShowLeagueShopFrame() : void
       {
-         var _loc1_:LeagueShopFrame = ComponentFactory.Instance.creatComponentByStylename("league.LeagueShopFrame");
-         LayerManager.Instance.addToLayer(_loc1_,3,true,1);
+         var leagueFrame:LeagueShopFrame = ComponentFactory.Instance.creatComponentByStylename("league.LeagueShopFrame");
+         LayerManager.Instance.addToLayer(leagueFrame,3,true,1);
          SocketManager.Instance.out.sendPersonalLimitShop(93);
       }
       
-      private function loadLeagueModule(param1:Function = null, param2:Array = null) : void
+      private function loadLeagueModule(complete:Function = null, completeParams:Array = null) : void
       {
-         _func = param1;
-         _funcParams = param2;
+         _func = complete;
+         _funcParams = completeParams;
          UIModuleSmallLoading.Instance.progress = 0;
          UIModuleSmallLoading.Instance.show();
          UIModuleLoader.Instance.addEventListener("uiModuleComplete",loadCompleteHandler);
@@ -68,17 +68,17 @@ package league
          UIModuleLoader.Instance.addUIModuleImp("league");
       }
       
-      private function onUimoduleLoadProgress(param1:UIModuleEvent) : void
+      private function onUimoduleLoadProgress(event:UIModuleEvent) : void
       {
-         if(param1.module == "league")
+         if(event.module == "league")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
       
-      private function loadCompleteHandler(param1:UIModuleEvent) : void
+      private function loadCompleteHandler(event:UIModuleEvent) : void
       {
-         if(param1.module == "league")
+         if(event.module == "league")
          {
             UIModuleSmallLoading.Instance.hide();
             UIModuleLoader.Instance.removeEventListener("uiModuleComplete",loadCompleteHandler);

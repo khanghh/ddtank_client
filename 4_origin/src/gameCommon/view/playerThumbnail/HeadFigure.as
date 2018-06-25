@@ -42,13 +42,13 @@ package gameCommon.view.playerThumbnail
       
       private var _displayLoader:DisplayLoader;
       
-      public function HeadFigure(param1:Number, param2:Number, param3:Object = null)
+      public function HeadFigure($width:Number, $height:Number, Obj:Object = null)
       {
          super();
          _defaultFace = ComponentFactory.Instance.creatBitmapData("game.player.gameCharacter");
-         if(param3 is Player)
+         if(Obj is Player)
          {
-            _info = param3 as Player;
+            _info = Obj as Player;
             if(_info && _info.character)
             {
                (_info.character as ShowCharacter).addEventListener("complete",bitmapChange);
@@ -56,31 +56,31 @@ package gameCommon.view.playerThumbnail
          }
          else
          {
-            _living = param3 as Living;
+            _living = Obj as Living;
             _living.addEventListener("complete",bitmapChange);
          }
-         _width = param1;
-         _height = param2;
+         _width = $width;
+         _height = $height;
          initFigure();
-         this.width = param1;
-         this.height = param2;
+         this.width = $width;
+         this.height = $height;
       }
       
       private function initFigure() : void
       {
-         var _loc1_:* = null;
+         var cr:* = null;
          if(_living)
          {
             initLivingHead();
          }
          else
          {
-            _loc1_ = _info.character as ShowCharacter;
-            if(_info && _loc1_ && _loc1_.characterBitmapdata)
+            cr = _info.character as ShowCharacter;
+            if(_info && cr && cr.characterBitmapdata)
             {
-               drawHead(_loc1_.characterBitmapdata);
+               drawHead(cr.characterBitmapdata);
             }
-            else if(_info && _loc1_ && !_loc1_.characterBitmapdata)
+            else if(_info && cr && !cr.characterBitmapdata)
             {
                drawHead(_defaultFace);
             }
@@ -107,16 +107,16 @@ package gameCommon.view.playerThumbnail
          }
       }
       
-      private function __onLoaderComplete(param1:LoaderEvent) : void
+      private function __onLoaderComplete(e:LoaderEvent) : void
       {
          _displayLoader.removeEventListener("complete",__onLoaderComplete);
-         if(param1.loader.isSuccess)
+         if(e.loader.isSuccess)
          {
-            _headC.addChild(param1.loader.content as Bitmap);
+            _headC.addChild(e.loader.content as Bitmap);
          }
       }
       
-      private function bitmapChange(param1:Event) : void
+      private function bitmapChange(e:Event) : void
       {
          if(!_info || !_info.character)
          {
@@ -129,20 +129,20 @@ package gameCommon.view.playerThumbnail
          }
       }
       
-      private function drawHead(param1:BitmapData) : void
+      private function drawHead(source:BitmapData) : void
       {
-         if(param1 == null)
+         if(source == null)
          {
             return;
          }
          ObjectUtils.disposeObject(_head);
          _head = new Bitmap(new BitmapData(_width,_height,true,0),"auto",true);
-         var _loc3_:Rectangle = getHeadRect();
-         var _loc2_:Matrix = new Matrix();
-         _loc2_.identity();
-         _loc2_.scale(_width / _loc3_.width,_height / _loc3_.height);
-         _loc2_.translate(-_loc3_.x * (_width / _loc3_.width),-_loc3_.y * (_height / _loc3_.height));
-         _head.bitmapData.draw(param1,_loc2_);
+         var rect:Rectangle = getHeadRect();
+         var mt:Matrix = new Matrix();
+         mt.identity();
+         mt.scale(_width / rect.width,_height / rect.height);
+         mt.translate(-rect.x * (_width / rect.width),-rect.y * (_height / rect.height));
+         _head.bitmapData.draw(source,mt);
          addChild(_head);
       }
       

@@ -78,11 +78,11 @@ package auctionHouse.view
       
       private var _isAsk:Boolean;
       
-      public function AuctionBrowseView(param1:AuctionHouseController, param2:AuctionHouseModel)
+      public function AuctionBrowseView(controller:AuctionHouseController, model:AuctionHouseModel)
       {
          super();
-         _controller = param1;
-         _model = param2;
+         _controller = controller;
+         _model = model;
          initView();
          addEvent();
       }
@@ -144,7 +144,7 @@ package auctionHouse.view
          SocketManager.Instance.addEventListener(PkgEvent.format(193),__updateAuction);
       }
       
-      protected function sendHander(param1:MouseEvent) : void
+      protected function sendHander(event:MouseEvent) : void
       {
          if(giveFriendOpenFrame)
          {
@@ -161,7 +161,7 @@ package auctionHouse.view
          giveFriendOpenFrame.addEventListener("response",responseHandler,false,0,true);
       }
       
-      protected function askHander(param1:MouseEvent) : void
+      protected function askHander(event:MouseEvent) : void
       {
          if(giveFriendOpenFrame)
          {
@@ -178,17 +178,17 @@ package auctionHouse.view
          giveFriendOpenFrame.addEventListener("response",responseHandler,false,0,true);
       }
       
-      private function presentBtnClick(param1:MouseEvent) : void
+      private function presentBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:String = giveFriendOpenFrame.nameInput.text;
-         var _loc3_:AuctionGoodsInfo = _right.getSelectInfo();
+         var name:String = giveFriendOpenFrame.nameInput.text;
+         var info:AuctionGoodsInfo = _right.getSelectInfo();
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         if(_loc2_ == "")
+         if(name == "")
          {
             if(_isAsk)
             {
@@ -200,30 +200,30 @@ package auctionHouse.view
             }
             return;
          }
-         if(FilterWordManager.IsNullorEmpty(_loc2_))
+         if(FilterWordManager.IsNullorEmpty(name))
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("shop.ShopIIPresentView.space"));
             return;
          }
          if(_isAsk)
          {
-            SocketManager.Instance.out.requestAuctionPay(_loc3_.AuctionID,giveFriendOpenFrame.Name,giveFriendOpenFrame.textArea.text);
+            SocketManager.Instance.out.requestAuctionPay(info.AuctionID,giveFriendOpenFrame.Name,giveFriendOpenFrame.textArea.text);
          }
-         else if(!BuriedManager.Instance.checkMoney(false,_loc3_.Mouthful))
+         else if(!BuriedManager.Instance.checkMoney(false,info.Mouthful))
          {
-            SocketManager.Instance.out.sendForAuction(_loc3_.AuctionID,giveFriendOpenFrame.Name);
+            SocketManager.Instance.out.sendForAuction(info.AuctionID,giveFriendOpenFrame.Name);
          }
          _friendInfo = {};
          _friendInfo["id"] = giveFriendOpenFrame.selectPlayerId;
-         _friendInfo["name"] = _loc2_;
+         _friendInfo["name"] = name;
          _friendInfo["msg"] = FilterWordManager.filterWrod(giveFriendOpenFrame.textArea.text);
          giveFriendOpenFrame.dispose();
          giveFriendOpenFrame = null;
       }
       
-      private function responseHandler(param1:FrameEvent) : void
+      private function responseHandler(event:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1 || param1.responseCode == 4)
+         if(event.responseCode == 0 || event.responseCode == 1 || event.responseCode == 4)
          {
             StageReferance.stage.focus = this;
          }
@@ -247,24 +247,24 @@ package auctionHouse.view
          SocketManager.Instance.removeEventListener(PkgEvent.format(193),__updateAuction);
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(evt:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = BaseAlerFrame(param1.currentTarget);
-         _loc2_.removeEventListener("response",_response);
-         ObjectUtils.disposeObject(param1.target);
+         var alert:BaseAlerFrame = BaseAlerFrame(evt.currentTarget);
+         alert.removeEventListener("response",_response);
+         ObjectUtils.disposeObject(evt.target);
       }
       
-      function addAuction(param1:AuctionGoodsInfo) : void
+      function addAuction(info:AuctionGoodsInfo) : void
       {
          if(AuctionHouseModel._dimBooble != true)
          {
-            _right.addAuction(param1);
+            _right.addAuction(info);
          }
       }
       
-      function updateAuction(param1:AuctionGoodsInfo) : void
+      function updateAuction(info:AuctionGoodsInfo) : void
       {
-         _right.updateAuction(param1);
+         _right.updateAuction(info);
          __selectRightStrip(null);
       }
       
@@ -289,20 +289,20 @@ package auctionHouse.view
          __selectRightStrip(null);
       }
       
-      function setCategory(param1:Vector.<CateCoryInfo>) : void
+      function setCategory(value:Vector.<CateCoryInfo>) : void
       {
-         _list.setCategory(param1);
+         _list.setCategory(value);
       }
       
-      function setPage(param1:int, param2:int) : void
+      function setPage(start:int, totalCount:int) : void
       {
-         _right.setPage(param1,param2);
+         _right.setPage(start,totalCount);
       }
       
-      function setSelectType(param1:CateCoryInfo) : void
+      function setSelectType(type:CateCoryInfo) : void
       {
          initialiseBtn();
-         _list.setSelectType(param1);
+         _list.setSelectType(type);
       }
       
       function getLeftInfo() : CateCoryInfo
@@ -320,60 +320,60 @@ package auctionHouse.view
          return -1;
       }
       
-      function searchByCurCondition(param1:int, param2:int = -1) : void
+      function searchByCurCondition(currentPage:int, playerID:int = -1) : void
       {
-         if(param2 != -1)
+         if(playerID != -1)
          {
-            _controller.searchAuctionList(param1,"",_list.getType(),-1,param2,-1,_right.sortCondition,_right.sortBy.toString());
+            _controller.searchAuctionList(currentPage,"",_list.getType(),-1,playerID,-1,_right.sortCondition,_right.sortBy.toString());
             return;
          }
          if(_isSearch)
          {
-            _controller.searchAuctionList(param1,_list.searchText,_list.getType(),getPayType(),param2,-1,_right.sortCondition,_right.sortBy.toString());
+            _controller.searchAuctionList(currentPage,_list.searchText,_list.getType(),getPayType(),playerID,-1,_right.sortCondition,_right.sortBy.toString());
          }
          else
          {
-            _controller.searchAuctionList(param1,_list.searchText,_list.getType(),-1,param2,-1,_right.sortCondition,_right.sortBy.toString());
+            _controller.searchAuctionList(currentPage,_list.searchText,_list.getType(),-1,playerID,-1,_right.sortCondition,_right.sortBy.toString());
          }
          _bidMoney.cannotBid();
       }
       
       private function getBidPrice() : int
       {
-         var _loc1_:AuctionGoodsInfo = _right.getSelectInfo();
-         if(_loc1_)
+         var info:AuctionGoodsInfo = _right.getSelectInfo();
+         if(info)
          {
-            return _loc1_.BuyerName == ""?_loc1_.Price:_loc1_.Price + _loc1_.Rise;
+            return info.BuyerName == ""?info.Price:info.Price + info.Rise;
          }
          return 0;
       }
       
       private function getPrice() : int
       {
-         var _loc1_:AuctionGoodsInfo = _right.getSelectInfo();
-         return !!_loc1_?_loc1_.Price:0;
+         var info:AuctionGoodsInfo = _right.getSelectInfo();
+         return !!info?info.Price:0;
       }
       
       private function getMouthful() : int
       {
-         var _loc1_:AuctionGoodsInfo = _right.getSelectInfo();
-         return !!_loc1_?_loc1_.Mouthful:0;
+         var info:AuctionGoodsInfo = _right.getSelectInfo();
+         return !!info?info.Mouthful:0;
       }
       
-      private function __searchCondition(param1:MouseEvent) : void
+      private function __searchCondition(event:MouseEvent) : void
       {
          _isSearch = true;
       }
       
-      private function keyEnterHandler(param1:KeyboardEvent) : void
+      private function keyEnterHandler(e:KeyboardEvent) : void
       {
-         if(param1.keyCode == 13)
+         if(e.keyCode == 13)
          {
             __searchCondition(null);
          }
       }
       
-      private function __next(param1:MouseEvent) : void
+      private function __next(event:MouseEvent) : void
       {
          SoundManager.instance.play("047");
          dispatchEvent(new AuctionHouseEvent("nextPage"));
@@ -381,7 +381,7 @@ package auctionHouse.view
          _mouthful_btn.enable = false;
       }
       
-      private function __pre(param1:MouseEvent) : void
+      private function __pre(event:MouseEvent) : void
       {
          SoundManager.instance.play("047");
          dispatchEvent(new AuctionHouseEvent("prePage"));
@@ -389,13 +389,13 @@ package auctionHouse.view
          _mouthful_btn.enable = false;
       }
       
-      private function __selectLeftStrip(param1:AuctionHouseEvent) : void
+      private function __selectLeftStrip(event:AuctionHouseEvent) : void
       {
          _isSearch = false;
          _controller.browseTypeChange(_list.getInfo());
       }
       
-      private function __selectRightStrip(param1:AuctionHouseEvent) : void
+      private function __selectRightStrip(event:AuctionHouseEvent) : void
       {
          _mouthfulAndbid.x = this.globalToLocal(new Point(mouseX,mouseY)).x - 10;
          _mouthfulAndbid.y = this.globalToLocal(new Point(mouseX,mouseY)).y - 10;
@@ -412,48 +412,48 @@ package auctionHouse.view
          {
             return;
          }
-         var _loc2_:AuctionGoodsInfo = _right.getSelectInfo();
-         if(_loc2_ == null || _loc2_.AuctioneerID == PlayerManager.Instance.Self.ID)
+         var info:AuctionGoodsInfo = _right.getSelectInfo();
+         if(info == null || info.AuctioneerID == PlayerManager.Instance.Self.ID)
          {
             initialiseBtn();
             return;
          }
-         if(_loc2_.BuyerID == PlayerManager.Instance.Self.ID)
+         if(info.BuyerID == PlayerManager.Instance.Self.ID)
          {
             initialiseBtn();
             _mouthfulAndbid.visible = true;
-            var _loc3_:* = _loc2_.Mouthful == 0?false:true;
+            var _loc3_:* = info.Mouthful == 0?false:true;
             _mouthful_btn.enable = _loc3_;
             _loc3_ = _loc3_;
             _mouthful_btnR.enable = _loc3_;
             _loc3_ = _loc3_;
             _askBtn.enable = _loc3_;
             _sendBtn.enable = _loc3_;
-            _loc3_ = _loc2_.Mouthful == 0?ComponentFactory.Instance.creatFilters("grayFilter"):ComponentFactory.Instance.creatFilters("lightFilter");
+            _loc3_ = info.Mouthful == 0?ComponentFactory.Instance.creatFilters("grayFilter"):ComponentFactory.Instance.creatFilters("lightFilter");
             _mouthful_btnR.filters = _loc3_;
             _loc3_ = _loc3_;
             _sendBtn.filters = _loc3_;
             _askBtn.filters = _loc3_;
             return;
          }
-         if(param1 && param1.currentTarget == _right)
+         if(event && event.currentTarget == _right)
          {
             _mouthfulAndbid.visible = true;
          }
-         _loc3_ = _loc2_.Mouthful == 0?false:true;
+         _loc3_ = info.Mouthful == 0?false:true;
          _mouthful_btn.enable = _loc3_;
          _loc3_ = _loc3_;
          _mouthful_btnR.enable = _loc3_;
          _loc3_ = _loc3_;
          _askBtn.enable = _loc3_;
          _sendBtn.enable = _loc3_;
-         _loc3_ = _loc2_.Mouthful == 0?ComponentFactory.Instance.creatFilters("grayFilter"):ComponentFactory.Instance.creatFilters("lightFilter");
+         _loc3_ = info.Mouthful == 0?ComponentFactory.Instance.creatFilters("grayFilter"):ComponentFactory.Instance.creatFilters("lightFilter");
          _mouthful_btnR.filters = _loc3_;
          _loc3_ = _loc3_;
          _sendBtn.filters = _loc3_;
          _askBtn.filters = _loc3_;
-         _loc2_.PayType == 0?_bidMoney.canGoldBid(getBidPrice()):_bidMoney.canMoneyBid(getBidPrice());
-         if(param1)
+         info.PayType == 0?_bidMoney.canGoldBid(getBidPrice()):_bidMoney.canMoneyBid(getBidPrice());
+         if(event)
          {
             _loc3_ = true;
             _bid_btn.enable = _loc3_;
@@ -472,41 +472,41 @@ package auctionHouse.view
          {
             return;
          }
-         var _loc1_:AuctionGoodsInfo = _right.getSelectInfo();
-         if(_loc1_ == null || _loc1_.AuctioneerID == PlayerManager.Instance.Self.ID)
+         var info:AuctionGoodsInfo = _right.getSelectInfo();
+         if(info == null || info.AuctioneerID == PlayerManager.Instance.Self.ID)
          {
             initialiseBtn();
             return;
          }
-         if(_loc1_.BuyerID == PlayerManager.Instance.Self.ID)
+         if(info.BuyerID == PlayerManager.Instance.Self.ID)
          {
             initialiseBtn();
-            var _loc2_:* = _loc1_.Mouthful == 0?false:true;
+            var _loc2_:* = info.Mouthful == 0?false:true;
             _mouthful_btn.enable = _loc2_;
             _mouthful_btnR.enable = _loc2_;
-            _mouthful_btnR.filters = _loc1_.Mouthful == 0?ComponentFactory.Instance.creatFilters("grayFilter"):ComponentFactory.Instance.creatFilters("lightFilter");
+            _mouthful_btnR.filters = info.Mouthful == 0?ComponentFactory.Instance.creatFilters("grayFilter"):ComponentFactory.Instance.creatFilters("lightFilter");
             return;
          }
-         _loc2_ = _loc1_.Mouthful == 0?false:true;
+         _loc2_ = info.Mouthful == 0?false:true;
          _mouthful_btn.enable = _loc2_;
          _loc2_ = _loc2_;
          _mouthful_btnR.enable = _loc2_;
          _loc2_ = _loc2_;
          _askBtn.enable = _loc2_;
          _sendBtn.enable = _loc2_;
-         _loc2_ = _loc1_.Mouthful == 0?ComponentFactory.Instance.creatFilters("grayFilter"):ComponentFactory.Instance.creatFilters("lightFilter");
+         _loc2_ = info.Mouthful == 0?ComponentFactory.Instance.creatFilters("grayFilter"):ComponentFactory.Instance.creatFilters("lightFilter");
          _mouthful_btnR.filters = _loc2_;
          _loc2_ = _loc2_;
          _sendBtn.filters = _loc2_;
          _askBtn.filters = _loc2_;
          _bid_btn.enable = true;
          return;
-         §§push(_loc1_.PayType == 0?_bidMoney.canGoldBid(getBidPrice()):_bidMoney.canMoneyBid(getBidPrice()));
+         §§push(info.PayType == 0?_bidMoney.canGoldBid(getBidPrice()):_bidMoney.canMoneyBid(getBidPrice()));
       }
       
-      private function __bid(param1:MouseEvent) : void
+      private function __bid(event:MouseEvent) : void
       {
-         event = param1;
+         event = event;
          SoundManager.instance.play("047");
          _btClickLock = true;
          _right.getSelectInfo().PayType == 0?_bidMoney.canGoldBid(getBidPrice()):_bidMoney.canMoneyBid(getBidPrice());
@@ -516,7 +516,7 @@ package auctionHouse.view
          }
          else
          {
-            _bidKeyUp = function(param1:Event):void
+            _bidKeyUp = function(e:Event):void
             {
                SoundManager.instance.play("008");
                __bidOk();
@@ -526,14 +526,14 @@ package auctionHouse.view
                _bidMoney = ComponentFactory.Instance.creatCustomObject("auctionHouse.view.BidMoneyView");
                _isUpdating = false;
             };
-            _responseII = function(param1:FrameEvent):void
+            _responseII = function(evt:FrameEvent):void
             {
                SoundManager.instance.play("008");
-               _checkResponse(param1.responseCode,__bidOk,__cancel);
-               var _loc2_:BaseAlerFrame = BaseAlerFrame(param1.currentTarget);
-               _loc2_.removeEventListener("response",_responseII);
+               _checkResponse(evt.responseCode,__bidOk,__cancel);
+               var alert:BaseAlerFrame = BaseAlerFrame(evt.currentTarget);
+               alert.removeEventListener("response",_responseII);
                _bidMoney.removeEventListener("money_key_up",_bidKeyUp);
-               ObjectUtils.disposeObject(param1.target);
+               ObjectUtils.disposeObject(evt.target);
                _bidMoney = ComponentFactory.Instance.creatCustomObject("auctionHouse.view.BidMoneyView");
                _isUpdating = false;
             };
@@ -558,19 +558,19 @@ package auctionHouse.view
          }
       }
       
-      private function _checkResponse(param1:int, param2:Function = null, param3:Function = null, param4:Function = null) : void
+      private function _checkResponse(keyCode:int, submitFun:Function = null, cancelFun:Function = null, closeFun:Function = null) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1))
+         switch(int(keyCode))
          {
             case 0:
             case 1:
-               param3();
+               cancelFun();
                break;
             case 2:
             case 3:
             case 4:
-               param2();
+               submitFun();
          }
       }
       
@@ -578,9 +578,9 @@ package auctionHouse.view
       {
       }
       
-      private function __mouthFull(param1:MouseEvent) : void
+      private function __mouthFull(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var alert1:* = null;
          SoundManager.instance.play("047");
          _btClickLock = true;
          _mouthfulAndbid.visible = false;
@@ -599,25 +599,25 @@ package auctionHouse.view
             }
             _mouthful_btn.enable = false;
             _bid_btn.enable = false;
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.auctionHouse.view.AuctionBrowseView.buy"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
-            _loc2_.moveEnable = false;
-            _loc2_.addEventListener("response",_responseIV);
+            alert1 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.auctionHouse.view.AuctionBrowseView.buy"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
+            alert1.moveEnable = false;
+            alert1.addEventListener("response",_responseIV);
          }
       }
       
-      private function _mouthfulAndbidOver(param1:MouseEvent) : void
+      private function _mouthfulAndbidOver(e:MouseEvent) : void
       {
          _mouthfulAndbid.visible = false;
          _bid_btnR.enable = false;
          _mouthful_btnR.enable = false;
       }
       
-      private function _responseIV(param1:FrameEvent) : void
+      private function _responseIV(evt:FrameEvent) : void
       {
-         _checkResponse(param1.responseCode,__mouthFullOk,__cancel);
-         var _loc2_:BaseAlerFrame = BaseAlerFrame(param1.currentTarget);
-         _loc2_.removeEventListener("response",_responseIV);
-         ObjectUtils.disposeObject(param1.target);
+         _checkResponse(evt.responseCode,__mouthFullOk,__cancel);
+         var alert:BaseAlerFrame = BaseAlerFrame(evt.currentTarget);
+         alert.removeEventListener("response",_responseIV);
+         ObjectUtils.disposeObject(evt.target);
          _isUpdating = false;
       }
       
@@ -647,12 +647,12 @@ package auctionHouse.view
                __mouthFullOk();
                return;
             }
-            var _loc1_:AuctionGoodsInfo = _right.getSelectInfo();
-            if(_loc1_)
+            var info:AuctionGoodsInfo = _right.getSelectInfo();
+            if(info)
             {
-               SocketManager.Instance.out.auctionBid(_loc1_.AuctionID,_bidMoney.getData());
-               IMManager.Instance.saveRecentContactsID(_loc1_.AuctioneerID);
-               _loc1_ = null;
+               SocketManager.Instance.out.auctionBid(info.AuctionID,_bidMoney.getData());
+               IMManager.Instance.saveRecentContactsID(info.AuctioneerID);
+               info = null;
             }
             return;
          }
@@ -665,14 +665,14 @@ package auctionHouse.view
       
       private function checkPlayerMoney() : void
       {
-         var _loc1_:AuctionGoodsInfo = _right.getSelectInfo();
+         var info:AuctionGoodsInfo = _right.getSelectInfo();
          _bid_btn.enable = false;
          _mouthful_btn.enable = false;
-         if(_loc1_ == null)
+         if(info == null)
          {
             return;
          }
-         if(_loc1_.Mouthful != 0 && getMouthful() <= PlayerManager.Instance.Self.Money)
+         if(info.Mouthful != 0 && getMouthful() <= PlayerManager.Instance.Self.Money)
          {
             _mouthful_btn.enable = true;
          }
@@ -689,11 +689,11 @@ package auctionHouse.view
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.auctionHouse.view.AuctionBrowseView.Your") + String(getMouthful()) + " " + LanguageMgr.GetTranslation("tank.auctionHouse.view.AuctionBrowseView.stipple"));
                return;
             }
-            var _loc1_:AuctionGoodsInfo = _right.getSelectInfo();
-            if(_loc1_ && _loc1_.AuctionID && _loc1_.Mouthful)
+            var info:AuctionGoodsInfo = _right.getSelectInfo();
+            if(info && info.AuctionID && info.Mouthful)
             {
-               SocketManager.Instance.out.auctionBid(_loc1_.AuctionID,_loc1_.Mouthful);
-               IMManager.Instance.saveRecentContactsID(_loc1_.AuctioneerID);
+               SocketManager.Instance.out.auctionBid(info.AuctionID,info.Mouthful);
+               IMManager.Instance.saveRecentContactsID(info.AuctioneerID);
                _right.clearSelectStrip();
                _right.setSelectEmpty();
                _bidMoney.cannotBid();
@@ -703,31 +703,31 @@ package auctionHouse.view
          }
       }
       
-      private function __updateAuction(param1:PkgEvent) : void
+      private function __updateAuction(evt:PkgEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:Boolean = param1.pkg.readBoolean();
-         if(_loc3_)
+         var auctionID:int = 0;
+         var succes:Boolean = evt.pkg.readBoolean();
+         if(succes)
          {
-            _loc2_ = param1.pkg.readInt();
+            auctionID = evt.pkg.readInt();
             if(SharedManager.Instance.AuctionIDs[PlayerManager.Instance.Self.ID] == null)
             {
                SharedManager.Instance.AuctionIDs[PlayerManager.Instance.Self.ID] = [];
             }
-            SharedManager.Instance.AuctionIDs[PlayerManager.Instance.Self.ID].push(_loc2_);
+            SharedManager.Instance.AuctionIDs[PlayerManager.Instance.Self.ID].push(auctionID);
             SharedManager.Instance.save();
          }
          _isUpdating = false;
       }
       
-      private function __addToStage(param1:Event) : void
+      private function __addToStage(event:Event) : void
       {
          initialiseBtn();
          _bidMoney.cannotBid();
          _right.addStageInit();
       }
       
-      private function sortChange(param1:AuctionHouseEvent) : void
+      private function sortChange(e:AuctionHouseEvent) : void
       {
          __searchCondition(null);
       }

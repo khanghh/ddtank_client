@@ -137,13 +137,13 @@ package room.view.chooseMap
       private function init() : void
       {
          _frame = ComponentFactory.Instance.creatComponentByStylename("asset.ddtChallengeRoom.chooseMapFrame");
-         var _loc1_:AlertInfo = new AlertInfo();
-         _loc1_.title = LanguageMgr.GetTranslation("tank.room.RoomIIMapSetPanel.room");
+         var ai:AlertInfo = new AlertInfo();
+         ai.title = LanguageMgr.GetTranslation("tank.room.RoomIIMapSetPanel.room");
          var _loc3_:* = false;
-         _loc1_.moveEnable = _loc3_;
-         _loc1_.showCancel = _loc3_;
-         _loc1_.submitLabel = LanguageMgr.GetTranslation("ok");
-         _frame.info = _loc1_;
+         ai.moveEnable = _loc3_;
+         ai.showCancel = _loc3_;
+         ai.submitLabel = LanguageMgr.GetTranslation("ok");
+         _frame.info = ai;
          _titlePreview = new Sprite();
          _mapInfoList = new DictionaryData();
          _roundTimeGroup = new SelectedButtonGroup();
@@ -222,15 +222,15 @@ package room.view.chooseMap
          PositionUtils.setPos(_titlePreview,"asset.ddtroom.challenge.chooseMap.titlePreviewPos");
          _mapPreview = ComponentFactory.Instance.creatCustomObject("asset.ddtroom.chooseDungeonPreView");
          PositionUtils.setPos(_mapPreview,"asset.ddtroom.challenge.chooseMap.mapPreviewPos");
-         var _loc2_:HBox = new HBox();
-         _loc2_.spacing = 25;
-         PositionUtils.setPos(_loc2_,"ddtroom.challenge.chooseMap.modeBtnPos");
+         var btnBox:HBox = new HBox();
+         btnBox.spacing = 25;
+         PositionUtils.setPos(btnBox,"ddtroom.challenge.chooseMap.modeBtnPos");
          _defaultModeBtn = ComponentFactory.Instance.creatComponentByStylename("ddtroom.challenge.chooseMap.defaultModeBtn");
          _otherModeBtn = ComponentFactory.Instance.creatComponentByStylename("ddtroom.challenge.chooseMap.otherModeBtn");
          _testModeBtn = ComponentFactory.Instance.creatComponentByStylename("ddtroom.challenge.chooseMap.testModeBtn");
-         _loc2_.addChild(_defaultModeBtn);
-         _loc2_.addChild(_testModeBtn);
-         _loc2_.addChild(_otherModeBtn);
+         btnBox.addChild(_defaultModeBtn);
+         btnBox.addChild(_testModeBtn);
+         btnBox.addChild(_otherModeBtn);
          _btnGroup = new SelectedButtonGroup();
          _frame.addToContent(_chooseMapBg);
          _frame.addToContent(_mapsBg);
@@ -241,7 +241,7 @@ package room.view.chooseMap
          _frame.addToContent(_mapDecription);
          _frame.addToContent(_titlePreview);
          _frame.addToContent(_mapPreview);
-         _frame.addToContent(_loc2_);
+         _frame.addToContent(btnBox);
          _btnGroup.addSelectItem(_defaultModeBtn);
          _btnGroup.addSelectItem(_testModeBtn);
          _btnGroup.addSelectItem(_otherModeBtn);
@@ -255,33 +255,33 @@ package room.view.chooseMap
          _btnGroup.addEventListener("change",__changeHandler);
       }
       
-      private function updateItem(param1:int) : void
+      private function updateItem(index:int) : void
       {
-         var _loc2_:* = null;
+         var item:* = null;
          if(_mapInfoList.length < 3)
          {
             return;
          }
-         var _loc3_:Vector.<MapInfo> = _mapInfoList[param1] as Vector.<MapInfo>;
+         var otherItemList:Vector.<MapInfo> = _mapInfoList[index] as Vector.<MapInfo>;
          var _loc6_:int = 0;
-         var _loc5_:* = _loc3_;
-         for each(var _loc4_ in _loc3_)
+         var _loc5_:* = otherItemList;
+         for each(var j in otherItemList)
          {
-            if(!(_loc4_.Type != 0 && _loc4_.Type != 1 && _loc4_.Type != 3))
+            if(!(j.Type != 0 && j.Type != 1 && j.Type != 3))
             {
-               if(_loc4_.canSelect)
+               if(j.canSelect)
                {
-                  _loc2_ = new BaseMapItem();
-                  _loc2_.selected = false;
-                  if(_loc4_.ID == RoomManager.Instance.current.mapId)
+                  item = new BaseMapItem();
+                  item.selected = false;
+                  if(j.ID == RoomManager.Instance.current.mapId)
                   {
-                     _loc2_.selected = true;
-                     _currentSelectedItem = _loc2_;
-                     mapId = _loc4_.ID;
+                     item.selected = true;
+                     _currentSelectedItem = item;
+                     mapId = j.ID;
                   }
-                  _loc2_.mapId = _loc4_.ID;
-                  _loc2_.addEventListener("select",__mapItemClick);
-                  _mapList.addChild(_loc2_);
+                  item.mapId = j.ID;
+                  item.addEventListener("select",__mapItemClick);
+                  _mapList.addChild(item);
                }
             }
          }
@@ -293,7 +293,7 @@ package room.view.chooseMap
          }
       }
       
-      private function __changeHandler(param1:Event) : void
+      private function __changeHandler(event:Event) : void
       {
          reset();
          switch(int(_btnGroup.selectIndex))
@@ -317,7 +317,7 @@ package room.view.chooseMap
       
       private function reset() : void
       {
-         var _loc1_:* = null;
+         var item:* = null;
          if(_mapList == null)
          {
             return;
@@ -328,10 +328,10 @@ package room.view.chooseMap
          }
          while(_mapList.numChildren)
          {
-            _loc1_ = _mapList.getChildAt(0) as BaseMapItem;
-            _loc1_.removeEventListener("select",__mapItemClick);
-            _mapList.removeChild(_loc1_);
-            ObjectUtils.disposeObject(_loc1_);
+            item = _mapList.getChildAt(0) as BaseMapItem;
+            item.removeEventListener("select",__mapItemClick);
+            _mapList.removeChild(item);
+            ObjectUtils.disposeObject(item);
          }
          _currentSelectedItem = null;
       }
@@ -351,7 +351,7 @@ package room.view.chooseMap
          upadtePassTextBg();
       }
       
-      private function __checkBoxClick(param1:MouseEvent) : void
+      private function __checkBoxClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          upadtePassTextBg();
@@ -373,15 +373,15 @@ package room.view.chooseMap
          }
       }
       
-      private function __roundTimeClick(param1:MouseEvent) : void
+      private function __roundTimeClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(e.responseCode))
          {
             case 0:
             case 1:
@@ -416,11 +416,11 @@ package room.view.chooseMap
          }
       }
       
-      public function set mapId(param1:int) : void
+      public function set mapId(value:int) : void
       {
-         if(param1 != _mapId)
+         if(value != _mapId)
          {
-            _mapId = param1;
+            _mapId = value;
          }
       }
       
@@ -448,65 +448,65 @@ package room.view.chooseMap
          }
       }
       
-      private function __mapItemClick(param1:*) : void
+      private function __mapItemClick(evt:*) : void
       {
-         var _loc2_:BaseMapItem = param1.target as BaseMapItem;
-         if(_currentSelectedItem && _currentSelectedItem != _loc2_)
+         var temItem:BaseMapItem = evt.target as BaseMapItem;
+         if(_currentSelectedItem && _currentSelectedItem != temItem)
          {
             _currentSelectedItem.selected = false;
          }
-         mapId = _loc2_.mapId;
-         _currentSelectedItem = _loc2_;
+         mapId = temItem.mapId;
+         _currentSelectedItem = temItem;
          updateDescription();
          updatePreview();
       }
       
       private function solvePreviewPath() : String
       {
-         var _loc1_:String = PathManager.SITE_MAIN + "image/map/";
+         var result:String = PathManager.SITE_MAIN + "image/map/";
          if(_currentSelectedItem)
          {
-            _loc1_ = _loc1_ + (_currentSelectedItem.mapId.toString() + "/samll_map.png");
+            result = result + (_currentSelectedItem.mapId.toString() + "/samll_map.png");
          }
          else
          {
-            _loc1_ = _loc1_ + "10000/samll_map.png";
+            result = result + "10000/samll_map.png";
          }
-         return _loc1_;
+         return result;
       }
       
       private function solveTitlePath() : String
       {
-         var _loc1_:String = PathManager.SITE_MAIN + "image/map/";
+         var result:String = PathManager.SITE_MAIN + "image/map/";
          if(_currentSelectedItem)
          {
-            _loc1_ = _loc1_ + (_currentSelectedItem.mapId.toString() + "/icon.png");
+            result = result + (_currentSelectedItem.mapId.toString() + "/icon.png");
          }
          else
          {
-            _loc1_ = _loc1_ + "0/icon.png";
+            result = result + "0/icon.png";
          }
-         return _loc1_;
+         return result;
       }
       
-      private function __onPreviewComplete(param1:LoaderEvent) : void
+      private function __onPreviewComplete(evt:LoaderEvent) : void
       {
-         if(param1.currentTarget.isSuccess)
+         if(evt.currentTarget.isSuccess)
          {
             if(_mapPreview)
             {
-               _mapPreview.addChild(Bitmap(param1.currentTarget.content));
+               _mapPreview.addChild(Bitmap(evt.currentTarget.content));
             }
          }
       }
       
-      private function __onTitleComplete(param1:LoaderEvent) : void
+      private function __onTitleComplete(evt:LoaderEvent) : void
       {
-         if(param1.currentTarget.isSuccess)
+         if(evt.currentTarget.isSuccess)
          {
             if(_titlePreview)
             {
-               _titlePreview.addChild(Bitmap(param1.currentTarget.content));
+               _titlePreview.addChild(Bitmap(evt.currentTarget.content));
             }
          }
       }
@@ -514,50 +514,50 @@ package room.view.chooseMap
       public function show() : void
       {
          reset();
-         var _loc2_:int = RoomManager.Instance.current.dungeonMode;
-         var _loc1_:int = 0;
+         var type:int = RoomManager.Instance.current.dungeonMode;
+         var selectIndex:int = 0;
          _mapInfoList = MapManager.getListByType(25);
          if(_mapInfoList == null || _mapInfoList.length <= 0)
          {
             return;
          }
-         var _loc3_:* = _loc2_;
+         var _loc3_:* = type;
          if(2 !== _loc3_)
          {
             if(120 !== _loc3_)
             {
                if(60 !== _loc3_)
                {
-                  _loc1_ = 0;
+                  selectIndex = 0;
                }
                else
                {
-                  _loc1_ = 2;
+                  selectIndex = 2;
                }
             }
             else
             {
-               _loc1_ = 1;
+               selectIndex = 1;
             }
          }
          else
          {
-            _loc1_ = 0;
+            selectIndex = 0;
          }
-         _curMode = _loc2_;
-         _btnGroup.selectIndex = _loc1_;
+         _curMode = type;
+         _btnGroup.selectIndex = selectIndex;
          LayerManager.Instance.addToLayer(this,3,true,1);
          StageReferance.stage.focus = _frame;
       }
       
       public function dispose() : void
       {
-         var _loc1_:* = null;
+         var item:* = null;
          while(_mapList.numChildren)
          {
-            _loc1_ = _mapList.getChildAt(0) as BaseMapItem;
-            _loc1_.removeEventListener("select",__mapItemClick);
-            _mapList.removeChild(_loc1_);
+            item = _mapList.getChildAt(0) as BaseMapItem;
+            item.removeEventListener("select",__mapItemClick);
+            _mapList.removeChild(item);
          }
          _roundTime5sec.removeEventListener("click",__roundTimeClick);
          _roundTime7sec.removeEventListener("click",__roundTimeClick);

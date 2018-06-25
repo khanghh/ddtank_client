@@ -93,19 +93,19 @@ package worldboss.view
          WorldBossManager.Instance.addEventListener("room close",__roomclose);
       }
       
-      private function onChange(param1:PlayerPropertyEvent) : void
+      private function onChange(event:PlayerPropertyEvent) : void
       {
          _pointTxt.text = PlayerManager.Instance.Self.damageScores.toString();
       }
       
-      private function __btnGobackClick(param1:MouseEvent) : void
+      private function __btnGobackClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          dispatchEvent(new Event("close"));
          StateManager.setState("main");
       }
       
-      private function __btnEnterClick(param1:MouseEvent) : void
+      private function __btnEnterClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          WorldBossManager.Instance.show();
@@ -119,7 +119,7 @@ package worldboss.view
          WorldBossManager.Instance.removeEventListener("room close",__roomclose);
       }
       
-      private function __roomclose(param1:WorldBossRoomEvent) : void
+      private function __roomclose(e:WorldBossRoomEvent) : void
       {
          _btnEnter.enable = false;
          _listView.updata();

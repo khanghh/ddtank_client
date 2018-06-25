@@ -47,10 +47,10 @@ package bagAndInfo.ReworkName
          initEvent();
       }
       
-      public function initialize(param1:int, param2:int) : void
+      public function initialize(bagType:int, place:int) : void
       {
-         _bagType = param1;
-         _place = param2;
+         _bagType = bagType;
+         _place = place;
       }
       
       private function initEvent() : void
@@ -63,54 +63,54 @@ package bagAndInfo.ReworkName
          SocketManager.Instance.addEventListener(PkgEvent.format(390,32),__onChangeResult);
       }
       
-      private function __onCheckInput(param1:PkgEvent) : void
+      private function __onCheckInput(e:PkgEvent) : void
       {
-         var _loc3_:Boolean = param1.pkg.readBoolean();
-         var _loc2_:int = param1.pkg.readByte();
-         var _loc4_:* = _loc2_ == 0;
-         if(_loc3_)
+         var isName:Boolean = e.pkg.readBoolean();
+         var errorType:int = e.pkg.readByte();
+         var right:* = errorType == 0;
+         if(isName)
          {
             _nameErrorImg.visible = true;
-            _nameErrorTxt.setFrame(!!_loc4_?1:2);
-            _nameErrorImg.setFrame(!!_loc4_?1:2);
-            _nameErrorTxt.text = LanguageMgr.GetTranslation(getErrorDesc(1,_loc4_,_loc2_));
+            _nameErrorTxt.setFrame(!!right?1:2);
+            _nameErrorImg.setFrame(!!right?1:2);
+            _nameErrorTxt.text = LanguageMgr.GetTranslation(getErrorDesc(1,right,errorType));
             PositionUtils.setPos(_nameErrorTxt,"reworkNameBattleTeam.nameErrorPos");
-            _nameErrorTxt.visible = !_loc4_;
+            _nameErrorTxt.visible = !right;
          }
          else
          {
             _tagErrorImg.visible = true;
-            _tagErrorTxt.setFrame(!!_loc4_?1:2);
-            _tagErrorImg.setFrame(!!_loc4_?1:2);
-            _tagErrorTxt.text = LanguageMgr.GetTranslation(getErrorDesc(2,_loc4_,_loc2_));
+            _tagErrorTxt.setFrame(!!right?1:2);
+            _tagErrorImg.setFrame(!!right?1:2);
+            _tagErrorTxt.text = LanguageMgr.GetTranslation(getErrorDesc(2,right,errorType));
             PositionUtils.setPos(_tagErrorTxt,"reworkNameBattleTeam.tagErrorPos");
-            _tagErrorTxt.visible = !_loc4_;
+            _tagErrorTxt.visible = !right;
          }
       }
       
-      private function __onChangeResult(param1:PkgEvent) : void
+      private function __onChangeResult(e:PkgEvent) : void
       {
          dispose();
       }
       
-      private function getErrorDesc(param1:int, param2:Boolean, param3:int = 0) : String
+      private function getErrorDesc(type:int, value:Boolean, errorType:int = 0) : String
       {
-         var _loc4_:String = "team.change.ok";
-         if(!param2)
+         var link:String = "team.change.ok";
+         if(!value)
          {
-            _loc4_ = "team.create.inputError" + param3;
-            if(param3 == 2)
+            link = "team.create.inputError" + errorType;
+            if(errorType == 2)
             {
-               _loc4_ = _loc4_ + param1;
+               link = link + type;
             }
          }
-         return _loc4_;
+         return link;
       }
       
-      private function onClickHander(param1:MouseEvent) : void
+      private function onClickHander(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:* = param1.target;
+         var _loc2_:* = event.target;
          if(_submit !== _loc2_)
          {
             if(_nameCheck !== _loc2_)
@@ -131,9 +131,9 @@ package bagAndInfo.ReworkName
          }
       }
       
-      protected function __responseHandler(param1:FrameEvent) : void
+      protected function __responseHandler(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -158,20 +158,20 @@ package bagAndInfo.ReworkName
       private function initView() : void
       {
          this.titleText = LanguageMgr.GetTranslation("battleTeam.title");
-         var _loc6_:ScaleBitmapImage = ComponentFactory.Instance.creatComponentByStylename("reworkNameBattleTeam.bg");
-         addToContent(_loc6_);
-         var _loc5_:ScaleBitmapImage = ComponentFactory.Instance.creatComponentByStylename("reworkNameBattleTeam.bg2");
-         addToContent(_loc5_);
-         var _loc2_:ScaleBitmapImage = ComponentFactory.Instance.creatComponentByStylename("reworkNameBattleTeam.inputBg1");
-         addToContent(_loc2_);
-         var _loc3_:ScaleBitmapImage = ComponentFactory.Instance.creatComponentByStylename("reworkNameBattleTeam.inputBg2");
-         addToContent(_loc3_);
-         var _loc4_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("reworkNameBattleTeam.nameTitle");
-         _loc4_.text = LanguageMgr.GetTranslation("battleTeam.nameTitle");
-         addToContent(_loc4_);
-         var _loc1_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("reworkNameBattleTeam.tagTitle");
-         _loc1_.text = LanguageMgr.GetTranslation("battleTeam.tagTitle");
-         addToContent(_loc1_);
+         var bg1:ScaleBitmapImage = ComponentFactory.Instance.creatComponentByStylename("reworkNameBattleTeam.bg");
+         addToContent(bg1);
+         var bg2:ScaleBitmapImage = ComponentFactory.Instance.creatComponentByStylename("reworkNameBattleTeam.bg2");
+         addToContent(bg2);
+         var inputBg1:ScaleBitmapImage = ComponentFactory.Instance.creatComponentByStylename("reworkNameBattleTeam.inputBg1");
+         addToContent(inputBg1);
+         var inputBg2:ScaleBitmapImage = ComponentFactory.Instance.creatComponentByStylename("reworkNameBattleTeam.inputBg2");
+         addToContent(inputBg2);
+         var nameTitle:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("reworkNameBattleTeam.nameTitle");
+         nameTitle.text = LanguageMgr.GetTranslation("battleTeam.nameTitle");
+         addToContent(nameTitle);
+         var tagTitle:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("reworkNameBattleTeam.tagTitle");
+         tagTitle.text = LanguageMgr.GetTranslation("battleTeam.tagTitle");
+         addToContent(tagTitle);
          _nameInput = ComponentFactory.Instance.creatComponentByStylename("reworkNameBattleTeam.name");
          addToContent(_nameInput);
          _tagInput = ComponentFactory.Instance.creatComponentByStylename("reworkNameBattleTeam.tag");

@@ -13,13 +13,13 @@ package gameStarling.animations
       
       protected var _isFinished:Boolean;
       
-      public function BaseStageTween(param1:TweenObject = null)
+      public function BaseStageTween(data:TweenObject = null)
       {
          super();
          _isFinished = false;
-         if(param1)
+         if(data)
          {
-            initData(param1);
+            initData(data);
          }
       }
       
@@ -28,24 +28,24 @@ package gameStarling.animations
          return "BaseStageTween";
       }
       
-      public function initData(param1:TweenObject) : void
+      public function initData(data:TweenObject) : void
       {
-         if(!param1)
+         if(!data)
          {
             return;
          }
-         copyPropertyFromData(param1);
+         copyPropertyFromData(data);
          _prepared = true;
       }
       
-      public function update(param1:DisplayObject) : Point
+      public function update(movie:DisplayObject) : Point
       {
          return null;
       }
       
-      public function set target(param1:Point) : void
+      public function set target(value:Point) : void
       {
-         _target = param1;
+         _target = value;
          _prepared = true;
       }
       
@@ -54,15 +54,15 @@ package gameStarling.animations
          return _target;
       }
       
-      public function copyPropertyFromData(param1:TweenObject) : void
+      public function copyPropertyFromData(data:TweenObject) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = propertysNeed;
-         for each(var _loc2_ in propertysNeed)
+         for each(var prop in propertysNeed)
          {
-            if(param1[_loc2_])
+            if(data[prop])
             {
-               this[_loc2_] = param1[_loc2_];
+               this[prop] = data[prop];
             }
          }
       }

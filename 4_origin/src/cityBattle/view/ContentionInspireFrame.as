@@ -49,9 +49,9 @@ package cityBattle.view
       
       private function initView() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var arr:* = null;
+         var itemSelectBtn:* = null;
          titleText = LanguageMgr.GetTranslation("ddt.cityBattle.inspireTitle");
          _inspireInfo = ComponentFactory.Instance.creatComponentByStylename("contention.inspireInfo.txt");
          addToContent(_inspireInfo);
@@ -59,16 +59,15 @@ package cityBattle.view
          _vBox = ComponentFactory.Instance.creatComponentByStylename("cityBattle.inspireFrame.vBox");
          addToContent(_vBox);
          _itemGroup = new SelectedButtonGroup();
-         _loc3_ = 1;
-         while(_loc3_ <= ServerConfigManager.instance.cityOccupationAddPrice.length)
+         for(i = 1; i <= ServerConfigManager.instance.cityOccupationAddPrice.length; )
          {
-            _loc1_ = ServerConfigManager.instance.cityOccupationAddPrice[_loc3_ - 1].split(",");
-            _loc2_ = ComponentFactory.Instance.creatComponentByStylename("contention.inspireSelected.btn");
-            _loc2_.text = LanguageMgr.GetTranslation("ddt.cityBattle.inspireSelected.info",_loc1_[0],_loc1_[1]);
-            _moneyArray.push(_loc1_[1]);
-            _itemGroup.addSelectItem(_loc2_);
-            _vBox.addChild(_loc2_);
-            _loc3_++;
+            arr = ServerConfigManager.instance.cityOccupationAddPrice[i - 1].split(",");
+            itemSelectBtn = ComponentFactory.Instance.creatComponentByStylename("contention.inspireSelected.btn");
+            itemSelectBtn.text = LanguageMgr.GetTranslation("ddt.cityBattle.inspireSelected.info",arr[0],arr[1]);
+            _moneyArray.push(arr[1]);
+            _itemGroup.addSelectItem(itemSelectBtn);
+            _vBox.addChild(itemSelectBtn);
+            i++;
          }
          _itemGroup.selectIndex = 0;
          _submitButton = ComponentFactory.Instance.creatComponentByStylename("contention.inspireEnter");
@@ -100,10 +99,10 @@ package cityBattle.view
          _submitButton.removeEventListener("click",__buy);
       }
       
-      protected function _responseHandle(param1:FrameEvent) : void
+      protected function _responseHandle(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -116,7 +115,7 @@ package cityBattle.view
          }
       }
       
-      private function __buy(param1:MouseEvent) : void
+      private function __buy(event:MouseEvent) : void
       {
          if(PlayerManager.Instance.Self.bagLocked)
          {

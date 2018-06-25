@@ -32,19 +32,19 @@ package ddt.view.edictum
       
       private function initView() : void
       {
-         var _loc2_:AlertInfo = new AlertInfo();
-         _loc2_.submitLabel = LanguageMgr.GetTranslation("ok");
-         _loc2_.showCancel = false;
-         info = _loc2_;
-         var _loc3_:Scale9CornerImage = ComponentFactory.Instance.creatComponentByStylename("edictum.edictumBGI");
-         var _loc1_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.coreIcon.EdictumTitle");
+         var alerInfo:AlertInfo = new AlertInfo();
+         alerInfo.submitLabel = LanguageMgr.GetTranslation("ok");
+         alerInfo.showCancel = false;
+         info = alerInfo;
+         var bg:Scale9CornerImage = ComponentFactory.Instance.creatComponentByStylename("edictum.edictumBGI");
+         var title:Bitmap = ComponentFactory.Instance.creatBitmap("asset.coreIcon.EdictumTitle");
          _titleTxt = ComponentFactory.Instance.creatComponentByStylename("edictum.edictumTitle");
          _contenTxt = ComponentFactory.Instance.creatComponentByStylename("edictum.edictumContent");
          _panel = ComponentFactory.Instance.creatComponentByStylename("edictum.edictumPanel");
          _panel.setView(_contenTxt);
          _panel.invalidateViewport();
-         addToContent(_loc3_);
-         addToContent(_loc1_);
+         addToContent(bg);
+         addToContent(title);
          addToContent(_titleTxt);
          addToContent(_panel);
       }
@@ -59,16 +59,16 @@ package ddt.view.edictum
          addEventListener("response",__response);
       }
       
-      private function __response(param1:FrameEvent) : void
+      private function __response(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          ObjectUtils.disposeObject(this);
       }
       
-      public function set data(param1:Object) : void
+      public function set data(value:Object) : void
       {
-         _titleTxt.text = param1["Title"];
-         _contenTxt.htmlText = param1["Text"];
+         _titleTxt.text = value["Title"];
+         _contenTxt.htmlText = value["Text"];
          _panel.invalidateViewport();
       }
       

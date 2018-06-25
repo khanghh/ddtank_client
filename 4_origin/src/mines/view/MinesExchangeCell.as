@@ -26,9 +26,9 @@ package mines.view
          return _infoExchange;
       }
       
-      public function set infoExchange(param1:ShopExchangeInfo) : void
+      public function set infoExchange(value:ShopExchangeInfo) : void
       {
-         _infoExchange = param1;
+         _infoExchange = value;
          _bagCell.info = ItemManager.Instance.getTemplateById(_infoExchange.templateID);
          _bagCell.setCount(_infoExchange.limitedCount);
       }
@@ -45,7 +45,7 @@ package mines.view
          _buyBtn.visible = false;
       }
       
-      override protected function __exchangeHandler(param1:MouseEvent) : void
+      override protected function __exchangeHandler(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.bagLocked)
@@ -53,10 +53,10 @@ package mines.view
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:MinesExchangeFrame = ComponentFactory.Instance.creatComponentByStylename("mines.cell.exchangeFrame");
-         _loc2_.setType(2);
-         _loc2_.setData(_infoExchange.templateID,_infoExchange.id,_infoExchange.price);
-         LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+         var quickBuyFrame:MinesExchangeFrame = ComponentFactory.Instance.creatComponentByStylename("mines.cell.exchangeFrame");
+         quickBuyFrame.setType(2);
+         quickBuyFrame.setData(_infoExchange.templateID,_infoExchange.id,_infoExchange.price);
+         LayerManager.Instance.addToLayer(quickBuyFrame,3,true,1);
       }
    }
 }

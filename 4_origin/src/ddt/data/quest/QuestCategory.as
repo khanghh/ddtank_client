@@ -20,19 +20,19 @@ package ddt.data.quest
          _questArray = [];
       }
       
-      public function addNew(param1:QuestInfo) : void
+      public function addNew(questInfo:QuestInfo) : void
       {
-         _newQuestArray.push(param1);
+         _newQuestArray.push(questInfo);
       }
       
-      public function addCompleted(param1:QuestInfo) : void
+      public function addCompleted(questInfo:QuestInfo) : void
       {
-         _completedQuestArray.push(param1);
+         _completedQuestArray.push(questInfo);
       }
       
-      public function addQuest(param1:QuestInfo) : void
+      public function addQuest(questInfo:QuestInfo) : void
       {
-         _questArray.push(param1);
+         _questArray.push(questInfo);
       }
       
       public function get list() : Array
@@ -44,9 +44,9 @@ package ddt.data.quest
       {
          var _loc3_:int = 0;
          var _loc2_:* = _newQuestArray;
-         for each(var _loc1_ in _newQuestArray)
+         for each(var info in _newQuestArray)
          {
-            if(_loc1_.data && _loc1_.data.isNew)
+            if(info.data && info.data.isNew)
             {
                return true;
             }
@@ -56,15 +56,14 @@ package ddt.data.quest
       
       public function get haveRecommend() : Boolean
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < list.length)
+         var i:int = 0;
+         for(i = 0; i < list.length; )
          {
-            if(list[_loc1_].StarLev == 1)
+            if(list[i].StarLev == 1)
             {
                return true;
             }
-            _loc1_++;
+            i++;
          }
          return false;
       }
@@ -73,9 +72,9 @@ package ddt.data.quest
       {
          var _loc3_:int = 0;
          var _loc2_:* = _newQuestArray;
-         for each(var _loc1_ in _newQuestArray)
+         for each(var info in _newQuestArray)
          {
-            if(_loc1_ == TaskManager.instance.currentNewQuest)
+            if(info == TaskManager.instance.currentNewQuest)
             {
                return true;
             }

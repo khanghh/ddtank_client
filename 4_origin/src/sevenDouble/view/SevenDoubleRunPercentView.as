@@ -36,14 +36,14 @@ package sevenDouble.view
          addChild(_txt);
       }
       
-      public function refreshView(param1:int) : void
+      public function refreshView(posX:int) : void
       {
-         var _loc2_:int = 22780 - param1;
-         _loc2_ = _loc2_ < 0?0:_loc2_;
-         var _loc3_:int = Math.ceil(_loc2_ / 22500 * 10);
+         var tmpDis:int = 22780 - posX;
+         tmpDis = tmpDis < 0?0:tmpDis;
+         var tmp:int = Math.ceil(tmpDis / 22500 * 10);
          if(_txt)
          {
-            _txt.text = _recordTxt + _loc3_ * 10 + "%";
+            _txt.text = _recordTxt + tmp * 10 + "%";
          }
       }
       

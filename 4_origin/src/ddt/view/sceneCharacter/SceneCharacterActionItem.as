@@ -10,12 +10,12 @@ package ddt.view.sceneCharacter
       
       public var repeat:Boolean;
       
-      public function SceneCharacterActionItem(param1:String, param2:Array, param3:Boolean)
+      public function SceneCharacterActionItem(type:String, frames:Array, repeat:Boolean)
       {
          super();
-         this.type = param1;
-         this.frames = param2;
-         this.repeat = param3;
+         this.type = type;
+         this.frames = frames;
+         this.repeat = repeat;
       }
       
       public function dispose() : void

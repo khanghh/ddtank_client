@@ -32,17 +32,17 @@ package starling.scene.consortiaGuard
          _bg.setCenter();
       }
       
-      public function __onReset(param1:Event) : void
+      public function __onReset(e:Event) : void
       {
          _rect.width = StageReferance.stage.stageWidth;
          _rect.height = StageReferance.stage.stageHeight;
          _bg.onStageResize();
       }
       
-      public function setPos(param1:Number, param2:Number) : void
+      public function setPos(x:Number, y:Number) : void
       {
-         _rect.x = param1;
-         _rect.y = param2;
+         _rect.x = x;
+         _rect.y = y;
       }
       
       override public function dispose() : void

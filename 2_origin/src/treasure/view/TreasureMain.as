@@ -16,7 +16,7 @@ package treasure.view
          super();
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
          CacheSysManager.lock("treasure");
          MainToolBar.Instance.hide();
@@ -25,15 +25,15 @@ package treasure.view
          ChatManager.Instance.state = 30;
          ChatManager.Instance.lock = ChatManager.HALL_CHAT_LOCK;
          addChild(ChatManager.Instance.view);
-         super.enter(param1,param2);
+         super.enter(prev,data);
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
          CacheSysManager.unlock("treasure");
          CacheSysManager.getInstance().release("treasure");
          MainToolBar.Instance.show();
-         super.leaving(param1);
+         super.leaving(next);
          dispose();
       }
       

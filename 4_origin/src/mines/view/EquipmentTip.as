@@ -57,11 +57,11 @@ package mines.view
          return _tipData;
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         if(param1)
+         if(data)
          {
-            type = param1.type;
+            type = data.type;
             updataTip();
          }
          else
@@ -73,7 +73,7 @@ package mines.view
       
       public function updataTip() : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          _nameTxt.text = nameList[type - 1];
          switch(int(type) - 1)
          {
@@ -89,36 +89,35 @@ package mines.view
             case 3:
                _myPropertyTxt.text = propertyList[type - 1] + "+" + MinesManager.instance.model.equipList[MinesManager.instance.model.shieldLevel - 1].lucky;
          }
-         var _loc1_:String = "";
-         _loc2_ = 0;
-         while(_loc2_ < MinesManager.instance.model.equipList.length)
+         var listStr:String = "";
+         for(i = 0; i < MinesManager.instance.model.equipList.length; )
          {
-            _loc1_ = _loc1_ + LanguageMgr.GetTranslation("ddt.mines.equipmentView.lvlabel",_loc2_ + 1);
+            listStr = listStr + LanguageMgr.GetTranslation("ddt.mines.equipmentView.lvlabel",i + 1);
             switch(int(type) - 1)
             {
                case 0:
-                  _loc1_ = _loc1_ + (String("+" + MinesManager.instance.model.equipList[_loc2_].attack));
+                  listStr = listStr + (String("+" + MinesManager.instance.model.equipList[i].attack));
                   break;
                case 1:
-                  _loc1_ = _loc1_ + (String("+" + MinesManager.instance.model.equipList[_loc2_].defence));
+                  listStr = listStr + (String("+" + MinesManager.instance.model.equipList[i].defence));
                   break;
                case 2:
-                  _loc1_ = _loc1_ + (String("+" + MinesManager.instance.model.equipList[_loc2_].agility));
+                  listStr = listStr + (String("+" + MinesManager.instance.model.equipList[i].agility));
                   break;
                case 3:
-                  _loc1_ = _loc1_ + (String("+" + MinesManager.instance.model.equipList[_loc2_].lucky));
+                  listStr = listStr + (String("+" + MinesManager.instance.model.equipList[i].lucky));
             }
-            if(_loc2_ % 2 != 0)
+            if(i % 2 != 0)
             {
-               _loc1_ = _loc1_ + "\n";
+               listStr = listStr + "\n";
             }
             else
             {
-               _loc1_ = _loc1_ + "          ";
+               listStr = listStr + "          ";
             }
-            _loc2_++;
+            i++;
          }
-         _propertyListTxt.htmlText = _loc1_;
+         _propertyListTxt.htmlText = listStr;
          _tipbackgound.width = _line.width;
          _tipbackgound.height = _propertyListTxt.y + _propertyListTxt.height + 10;
       }

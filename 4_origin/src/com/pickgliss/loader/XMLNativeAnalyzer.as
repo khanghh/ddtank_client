@@ -6,15 +6,15 @@ package com.pickgliss.loader
    {
        
       
-      public function XMLNativeAnalyzer(param1:Function)
+      public function XMLNativeAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc2_:XML = new XML(param1);
-         ComponentFactory.Instance.setup(_loc2_);
+         var xml:XML = new XML(data);
+         ComponentFactory.Instance.setup(xml);
          onAnalyzeComplete();
       }
    }

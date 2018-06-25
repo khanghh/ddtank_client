@@ -33,14 +33,14 @@ package church.model
          return _players;
       }
       
-      public function addPlayer(param1:PlayerVO) : void
+      public function addPlayer(player:PlayerVO) : void
       {
-         _players.add(param1.playerInfo.ID,param1);
+         _players.add(player.playerInfo.ID,player);
       }
       
-      public function removePlayer(param1:int) : void
+      public function removePlayer(id:int) : void
       {
-         _players.remove(param1);
+         _players.remove(id);
       }
       
       public function getPlayers() : DictionaryData
@@ -48,9 +48,9 @@ package church.model
          return _players;
       }
       
-      public function getPlayerFromID(param1:int) : PlayerVO
+      public function getPlayerFromID(id:int) : PlayerVO
       {
-         return _players[param1];
+         return _players[id];
       }
       
       public function reset() : void
@@ -64,9 +64,9 @@ package church.model
          return _playerNameVisible;
       }
       
-      public function set playerNameVisible(param1:Boolean) : void
+      public function set playerNameVisible(value:Boolean) : void
       {
-         _playerNameVisible = param1;
+         _playerNameVisible = value;
          dispatchEvent(new WeddingRoomEvent("playerNameVisible"));
       }
       
@@ -75,15 +75,15 @@ package church.model
          return _playerChatBallVisible;
       }
       
-      public function set playerChatBallVisible(param1:Boolean) : void
+      public function set playerChatBallVisible(value:Boolean) : void
       {
-         _playerChatBallVisible = param1;
+         _playerChatBallVisible = value;
          dispatchEvent(new WeddingRoomEvent("playerChatBallVisible"));
       }
       
-      public function set playerFireVisible(param1:Boolean) : void
+      public function set playerFireVisible(value:Boolean) : void
       {
-         _playerFireVisible = param1;
+         _playerFireVisible = value;
       }
       
       public function get playerFireVisible() : Boolean
@@ -91,9 +91,9 @@ package church.model
          return _playerFireVisible;
       }
       
-      public function set fireEnable(param1:Boolean) : void
+      public function set fireEnable(value:Boolean) : void
       {
-         _fireEnable = param1;
+         _fireEnable = value;
          dispatchEvent(new WeddingRoomEvent("room fire enable change"));
       }
       

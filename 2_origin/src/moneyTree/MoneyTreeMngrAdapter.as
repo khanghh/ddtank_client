@@ -7,9 +7,9 @@ package moneyTree
    {
        
       
-      public function MoneyTreeMngrAdapter(param1:inner)
+      public function MoneyTreeMngrAdapter(single:inner)
       {
-         super(param1);
+         super(single);
       }
       
       override public function get model() : MoneyTreeModel
@@ -21,15 +21,15 @@ package moneyTree
       {
       }
       
-      override public function onPkgUpdateInfo(param1:PkgEvent) : void
+      override public function onPkgUpdateInfo(e:PkgEvent) : void
       {
       }
       
-      override public function onPkgSendRedPkg(param1:PkgEvent) : void
+      override public function onPkgSendRedPkg(e:PkgEvent) : void
       {
       }
       
-      override public function onPkgSpeedUp(param1:PkgEvent) : void
+      override public function onPkgSpeedUp(e:PkgEvent) : void
       {
       }
       
@@ -59,7 +59,7 @@ package moneyTree
       {
       }
       
-      override public function inviteBtnClicked(param1:int, param2:String) : void
+      override public function inviteBtnClicked($id:int, type:String) : void
       {
       }
       
@@ -67,7 +67,7 @@ package moneyTree
       {
       }
       
-      override public function pick(param1:int) : void
+      override public function pick($index:int) : void
       {
       }
       
@@ -80,7 +80,7 @@ package moneyTree
          return 0;
       }
       
-      override public function onSpeedUpClick(param1:int) : void
+      override public function onSpeedUpClick(index:int) : void
       {
       }
       
@@ -93,7 +93,7 @@ package moneyTree
       {
       }
       
-      override public function requirePick(param1:int) : void
+      override public function requirePick(_index:int) : void
       {
       }
       

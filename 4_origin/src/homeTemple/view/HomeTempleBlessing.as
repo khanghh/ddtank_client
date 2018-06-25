@@ -87,29 +87,28 @@ package homeTemple.view
       
       private function creatTipBtn() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         _loc2_ = 0;
-         while(_loc2_ < 6)
+         var i:int = 0;
+         var rectTipBtn:* = null;
+         for(i = 0; i < 6; )
          {
-            _loc1_ = ComponentFactory.Instance.creatComponentByStylename("home.temple.rectTipBtn");
-            _loc1_.tipData = LanguageMgr.GetTranslation("home.temple.rectTipText0");
-            PositionUtils.setPos(_loc1_,"home.temple.rectTipBtnPos" + _loc2_);
-            addChild(_loc1_);
-            _tipBtnVec.push(_loc1_);
-            _loc2_++;
+            rectTipBtn = ComponentFactory.Instance.creatComponentByStylename("home.temple.rectTipBtn");
+            rectTipBtn.tipData = LanguageMgr.GetTranslation("home.temple.rectTipText0");
+            PositionUtils.setPos(rectTipBtn,"home.temple.rectTipBtnPos" + i);
+            addChild(rectTipBtn);
+            _tipBtnVec.push(rectTipBtn);
+            i++;
          }
       }
       
       private function setTextInfo() : void
       {
-         var _loc1_:HomeTempleModel = HomeTempleController.Instance.getPropertyInfoByIndex(StartNum);
-         _bloodText.text = LanguageMgr.GetTranslation("MaxHp") + ":" + _loc1_.Blood.toString();
-         _defenseText.text = LanguageMgr.GetTranslation("defence") + ":" + _loc1_.Defence.toString();
-         _attackText.text = LanguageMgr.GetTranslation("attack") + ":" + _loc1_.Attack.toString();
-         _luckyText.text = LanguageMgr.GetTranslation("luck") + ":" + _loc1_.Luck.toString();
-         _resistanceText.text = LanguageMgr.GetTranslation("enchant.addMagicDenfenceTxt") + _loc1_.MagicDefence.toString();
-         _armorText.text = LanguageMgr.GetTranslation("recovery") + ":" + _loc1_.Guard.toString();
+         var templeModel:HomeTempleModel = HomeTempleController.Instance.getPropertyInfoByIndex(StartNum);
+         _bloodText.text = LanguageMgr.GetTranslation("MaxHp") + ":" + templeModel.Blood.toString();
+         _defenseText.text = LanguageMgr.GetTranslation("defence") + ":" + templeModel.Defence.toString();
+         _attackText.text = LanguageMgr.GetTranslation("attack") + ":" + templeModel.Attack.toString();
+         _luckyText.text = LanguageMgr.GetTranslation("luck") + ":" + templeModel.Luck.toString();
+         _resistanceText.text = LanguageMgr.GetTranslation("enchant.addMagicDenfenceTxt") + templeModel.MagicDefence.toString();
+         _armorText.text = LanguageMgr.GetTranslation("recovery") + ":" + templeModel.Guard.toString();
       }
       
       private function initEvent() : void
@@ -119,66 +118,63 @@ package homeTemple.view
          HomeTempleController.Instance.addEventListener("homeTempleUpdateBlessingState",__onUpdateBlessingState);
       }
       
-      protected function __onUpdateBlessingState(param1:HomeTempleEvent) : void
+      protected function __onUpdateBlessingState(event:HomeTempleEvent) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < 6)
+         var i:int = 0;
+         for(i = 0; i < 6; )
          {
-            if(_loc2_ >= HomeTempleController.Instance.getStarNum())
+            if(i >= HomeTempleController.Instance.getStarNum())
             {
-               _blessList[_loc2_].filters = ComponentFactory.Instance.creatFilters("grayFilter");
+               _blessList[i].filters = ComponentFactory.Instance.creatFilters("grayFilter");
             }
             else
             {
-               _blessList[_loc2_].filters = null;
+               _blessList[i].filters = null;
             }
-            _loc2_++;
+            i++;
          }
          updateBlessPos();
       }
       
       private function creatBless() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < 6)
+         var i:int = 0;
+         var bless:* = null;
+         var index:int = 0;
+         for(i = 0; i < 6; )
          {
-            _loc2_ = new HomeTempleBlessItem(_loc3_);
-            _loc2_.blessBtn.addEventListener("click",__onBlessClick);
-            _loc1_ = getPosIndex(_loc3_);
-            PositionUtils.setPos(_loc2_,_blessPosArr[_loc1_]);
-            var _loc4_:* = _loc1_ == 0?1.2:0.8;
-            _loc2_.blessMovie.scaleY = _loc4_;
-            _loc2_.blessMovie.scaleX = _loc4_;
-            if(_loc3_ >= HomeTempleController.Instance.getStarNum())
+            bless = new HomeTempleBlessItem(i);
+            bless.blessBtn.addEventListener("click",__onBlessClick);
+            index = getPosIndex(i);
+            PositionUtils.setPos(bless,_blessPosArr[index]);
+            var _loc4_:* = index == 0?1.2:0.8;
+            bless.blessMovie.scaleY = _loc4_;
+            bless.blessMovie.scaleX = _loc4_;
+            if(i >= HomeTempleController.Instance.getStarNum())
             {
-               _loc2_.filters = ComponentFactory.Instance.creatFilters("grayFilter");
+               bless.filters = ComponentFactory.Instance.creatFilters("grayFilter");
             }
             else
             {
-               _loc2_.filters = null;
+               bless.filters = null;
             }
-            _blessList[_loc3_] = _loc2_;
-            _blessSprite.addChild(_blessList[_loc3_]);
-            _loc3_++;
+            _blessList[i] = bless;
+            _blessSprite.addChild(_blessList[i]);
+            i++;
          }
       }
       
-      protected function __onBlessClick(param1:MouseEvent) : void
+      protected function __onBlessClick(event:MouseEvent) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _blessList.length)
+         var i:int = 0;
+         for(i = 0; i < _blessList.length; )
          {
-            if(_blessList[_loc2_].blessBtn == param1.currentTarget)
+            if(_blessList[i].blessBtn == event.currentTarget)
             {
-               StartNum = _loc2_ + 1;
+               StartNum = i + 1;
                break;
             }
-            _loc2_++;
+            i++;
          }
          updateBlessPos();
       }
@@ -191,25 +187,24 @@ package homeTemple.view
       
       private function updateBlessPos() : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         var _loc3_:Number = NaN;
-         _loc4_ = 0;
-         while(_loc4_ < 6)
+         var i:int = 0;
+         var index:int = 0;
+         var point:* = null;
+         var scaleValue:Number = NaN;
+         for(i = 0; i < 6; )
          {
-            _loc2_ = getPosIndex(_loc4_);
-            _loc1_ = _blessPosArr[_loc2_];
-            _loc3_ = _loc2_ == 0?1.2:0.8;
-            TweenLite.to(_blessList[_loc4_],1,{
-               "x":_loc1_.x,
-               "y":_loc1_.y
+            index = getPosIndex(i);
+            point = _blessPosArr[index];
+            scaleValue = index == 0?1.2:0.8;
+            TweenLite.to(_blessList[i],1,{
+               "x":point.x,
+               "y":point.y
             });
-            TweenLite.to(_blessList[_loc4_].blessMovie,1,{
-               "scaleX":_loc3_,
-               "scaleY":_loc3_
+            TweenLite.to(_blessList[i].blessMovie,1,{
+               "scaleX":scaleValue,
+               "scaleY":scaleValue
             });
-            _loc4_++;
+            i++;
          }
          setTextInfo();
          updateTipBtn();
@@ -217,31 +212,30 @@ package homeTemple.view
       
       private function updateTipBtn() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < 6)
+         var i:int = 0;
+         for(i = 0; i < 6; )
          {
-            _tipBtnVec[_loc1_].tipData = LanguageMgr.GetTranslation("home.temple.rectTipText" + Math.max(StartNum - 1,0).toString());
-            _loc1_++;
+            _tipBtnVec[i].tipData = LanguageMgr.GetTranslation("home.temple.rectTipText" + Math.max(StartNum - 1,0).toString());
+            i++;
          }
       }
       
-      private function getPosIndex(param1:int) : int
+      private function getPosIndex(i:int) : int
       {
-         var _loc3_:int = StartNum == 0?1:StartNum;
-         var _loc2_:int = param1 + 1 - _loc3_;
-         if(_loc2_ < 0)
+         var num:int = StartNum == 0?1:StartNum;
+         var index:int = i + 1 - num;
+         if(index < 0)
          {
-            _loc2_ = _loc2_ + 6;
+            index = index + 6;
          }
-         else if(_loc2_ > 5)
+         else if(index > 5)
          {
-            _loc2_ = 0;
+            index = 0;
          }
-         return _loc2_;
+         return index;
       }
       
-      protected function __onLeftBtnClick(param1:MouseEvent) : void
+      protected function __onLeftBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          StartNum = Number(StartNum) - 1;
@@ -252,7 +246,7 @@ package homeTemple.view
          updateBlessPos();
       }
       
-      protected function __onRightBtnClick(param1:MouseEvent) : void
+      protected function __onRightBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          StartNum = Number(StartNum) + 1;
@@ -272,28 +266,26 @@ package homeTemple.view
       
       public function dispose() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
+         var i:int = 0;
+         var j:int = 0;
          removeEvent();
          ObjectUtils.disposeObject(_leftBtn);
          _leftBtn = null;
          ObjectUtils.disposeObject(_rightBtn);
          _rightBtn = null;
-         _loc2_ = 0;
-         while(_loc2_ < _blessList.length)
+         for(i = 0; i < _blessList.length; )
          {
-            _blessList[_loc2_].blessBtn.removeEventListener("click",__onBlessClick);
-            ObjectUtils.disposeObject(_blessList[_loc2_]);
-            _blessList[_loc2_] = null;
-            _loc2_++;
+            _blessList[i].blessBtn.removeEventListener("click",__onBlessClick);
+            ObjectUtils.disposeObject(_blessList[i]);
+            _blessList[i] = null;
+            i++;
          }
          _blessList = null;
-         _loc1_ = 0;
-         while(_loc1_ < _tipBtnVec.length)
+         for(j = 0; j < _tipBtnVec.length; )
          {
-            ObjectUtils.disposeObject(_tipBtnVec[_loc1_]);
-            _tipBtnVec[_loc1_] = null;
-            _loc1_++;
+            ObjectUtils.disposeObject(_tipBtnVec[j]);
+            _tipBtnVec[j] = null;
+            j++;
          }
          _tipBtnVec = null;
          ObjectUtils.disposeObject(_bloodText);

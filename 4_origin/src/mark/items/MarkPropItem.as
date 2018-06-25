@@ -14,9 +14,9 @@ package mark.items
          maxTxt.visible = false;
       }
       
-      public function set enable(param1:Boolean) : void
+      public function set enable(value:Boolean) : void
       {
-         radio.selected = param1;
+         radio.selected = value;
       }
       
       public function get enable() : Boolean
@@ -24,14 +24,14 @@ package mark.items
          return radio.selected;
       }
       
-      public function set label(param1:String) : void
+      public function set label(value:String) : void
       {
-         radioTxt.htmlText = param1;
+         radioTxt.htmlText = value;
       }
       
-      public function set markProData(param1:MarkProData) : void
+      public function set markProData(data:MarkProData) : void
       {
-         maxTxt.visible = MarkMgr.inst.model.proIsMax(param1);
+         maxTxt.visible = MarkMgr.inst.model.proIsMax(data);
       }
    }
 }

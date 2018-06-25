@@ -39,11 +39,11 @@ package starling.scene.hall.statue
       
       private var _isDispose:Boolean = false;
       
-      public function SceneKingStatue(param1:int)
+      public function SceneKingStatue(type:int)
       {
          super();
          touchable = false;
-         _type = param1;
+         _type = type;
          if(!int(_type))
          {
             _title = StarlingMain.instance.createImage("image_title_1001");
@@ -55,10 +55,10 @@ package starling.scene.hall.statue
       
       private function createPlayerName() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:* = null;
-         var _loc5_:* = null;
-         var _loc6_:* = 0;
+         var assetName:* = null;
+         var vipImage:* = null;
+         var girlAttest:* = null;
+         var nameWidth:* = 0;
          if(_nameSprite == null)
          {
             _nameSprite = new Sprite();
@@ -69,97 +69,97 @@ package starling.scene.hall.statue
          {
             StarlingObjectUtils.disposeAllChildren(_nameSprite);
          }
-         var _loc4_:Sprite = new Sprite();
-         _nameSprite.addChild(_loc4_);
-         var _loc7_:Number = FilterFrameText.getStringWidthByTextField(_info.name,15);
-         var _loc3_:TextField = new TextField(_loc7_,20,_info.name,"Arial",14,6155281,true);
-         _loc3_.vAlign = "top";
-         _loc3_.x = 5;
-         _nameSprite.addChild(_loc3_);
-         _loc6_ = Number(_loc6_ + (_loc7_ + 10));
+         var bg:Sprite = new Sprite();
+         _nameSprite.addChild(bg);
+         var textWidth:Number = FilterFrameText.getStringWidthByTextField(_info.name,15);
+         var nameText:TextField = new TextField(textWidth,20,_info.name,"Arial",14,6155281,true);
+         nameText.vAlign = "top";
+         nameText.x = 5;
+         _nameSprite.addChild(nameText);
+         nameWidth = Number(nameWidth + (textWidth + 10));
          if(_info.IsVIP)
          {
-            _loc1_ = "image_vipGrade_small" + _info.vipLevel;
-            _loc2_ = StarlingMain.instance.createImage(_loc1_);
-            _loc2_.x = 5;
-            _loc2_.y = -10;
-            _nameSprite.addChild(_loc2_);
-            _loc3_.color = 16116007;
-            _loc3_.x = _loc2_.width + 5;
-            _loc6_ = Number(_loc6_ + (_loc2_.width + 5));
+            assetName = "image_vipGrade_small" + _info.vipLevel;
+            vipImage = StarlingMain.instance.createImage(assetName);
+            vipImage.x = 5;
+            vipImage.y = -10;
+            _nameSprite.addChild(vipImage);
+            nameText.color = 16116007;
+            nameText.x = vipImage.width + 5;
+            nameWidth = Number(nameWidth + (vipImage.width + 5));
          }
          if(_info.isAttest)
          {
-            _loc5_ = StarlingMain.instance.createImage("image_player_girlAttest");
-            _nameSprite.addChild(_loc5_);
-            _loc5_.x = _loc6_;
-            _loc5_.y = -5;
-            _loc6_ = Number(_loc6_ + (_loc5_.width + 5));
+            girlAttest = StarlingMain.instance.createImage("image_player_girlAttest");
+            _nameSprite.addChild(girlAttest);
+            girlAttest.x = nameWidth;
+            girlAttest.y = -5;
+            nameWidth = Number(nameWidth + (girlAttest.width + 5));
          }
-         _loc4_.graphics.beginFill(0,0.5);
-         _loc4_.graphics.drawRect(0,0,_loc6_,20);
-         _loc4_.graphics.endFill();
-         _nameSprite.x = 60 - _loc6_ / 2;
+         bg.graphics.beginFill(0,0.5);
+         bg.graphics.drawRect(0,0,nameWidth,20);
+         bg.graphics.endFill();
+         _nameSprite.x = 60 - nameWidth / 2;
       }
       
-      public function set info(param1:BKingStatueInfo) : void
+      public function set info(info:BKingStatueInfo) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         _info = param1;
+         var playerInfo:* = null;
+         var characterLoader:* = null;
+         _info = info;
          if(_info.name != null && _info.name != "")
          {
             createPlayerName();
-            _loc2_ = new PlayerInfo();
-            _loc2_.Style = param1.style;
-            _loc2_.Colors = param1.color;
-            _loc2_.Sex = param1.sex;
-            _loc3_ = CharactoryFactory.createCharacter(_loc2_) as ShowCharacter;
-            _loc3_.addEventListener("complete",__characterComplete);
-            _loc3_.showGun = true;
-            _loc3_.setShowLight(false,null);
-            _loc3_.stopAnimation();
-            _loc3_.show(true,1);
+            playerInfo = new PlayerInfo();
+            playerInfo.Style = info.style;
+            playerInfo.Colors = info.color;
+            playerInfo.Sex = info.sex;
+            characterLoader = CharactoryFactory.createCharacter(playerInfo) as ShowCharacter;
+            characterLoader.addEventListener("complete",__characterComplete);
+            characterLoader.showGun = true;
+            characterLoader.setShowLight(false,null);
+            characterLoader.stopAnimation();
+            characterLoader.show(true,1);
          }
       }
       
-      private function __characterComplete(param1:Event) : void
+      private function __characterComplete(event:Event) : void
       {
-         var _loc3_:* = null;
+         var figure:* = null;
          if(_isDispose)
          {
             return;
          }
-         var _loc5_:ShowCharacter = param1.target as ShowCharacter;
-         _loc5_.removeEventListener("complete",__characterComplete);
-         _loc3_ = new Bitmap(new BitmapData(250,320));
-         _loc3_.bitmapData.copyPixels(_loc5_.characterBitmapdata,new Rectangle(0,0,250,320),new Point(0,0));
-         _loc3_.scaleX = RANK_SCALE[_info.rank];
-         _loc3_.scaleY = RANK_SCALE[_info.rank];
-         _loc3_.smoothing = true;
-         _loc3_.filters = ComponentFactory.Instance.creatFilters("grayFilter");
-         var _loc2_:Bitmap = ComponentFactory.Instance.creat("bombKing.role.relief" + _type);
-         _loc2_.blendMode = "hardlight";
-         var _loc6_:BitmapData = _loc3_.bitmapData.clone();
-         _loc6_.applyFilter(_loc6_,new Rectangle(0,0,_loc3_.width,_loc3_.height),new Point(0,0),new ColorMatrixFilter([0.3,0.59,0.11,0,0,0.3,0.59,0.11,0,0,0.3,0.59,0.11,0,0,0,0,0,1,0]));
-         var _loc7_:Tile = new Tile(_loc6_,true);
-         PositionUtils.setPos(_loc7_,_loc3_);
-         _loc7_.scaleX = _loc3_.scaleX;
-         _loc7_.scaleY = _loc3_.scaleY;
-         _loc7_.Dig(new Point(_loc3_.width / 2 + 50,_loc3_.height - 45),null,_loc2_);
-         _loc7_.alpha = 0.4;
-         var _loc4_:BitmapData = new BitmapData(250,320,true,0);
-         _loc4_.copyPixels(_loc3_.bitmapData,new Rectangle(0,0,250,320),new Point(0,0));
-         _loc4_.draw(_loc7_,null,null,"overlay");
+         var loader:ShowCharacter = event.target as ShowCharacter;
+         loader.removeEventListener("complete",__characterComplete);
+         figure = new Bitmap(new BitmapData(250,320));
+         figure.bitmapData.copyPixels(loader.characterBitmapdata,new Rectangle(0,0,250,320),new Point(0,0));
+         figure.scaleX = RANK_SCALE[_info.rank];
+         figure.scaleY = RANK_SCALE[_info.rank];
+         figure.smoothing = true;
+         figure.filters = ComponentFactory.Instance.creatFilters("grayFilter");
+         var reliefBitmap:Bitmap = ComponentFactory.Instance.creat("bombKing.role.relief" + _type);
+         reliefBitmap.blendMode = "hardlight";
+         var figureData:BitmapData = figure.bitmapData.clone();
+         figureData.applyFilter(figureData,new Rectangle(0,0,figure.width,figure.height),new Point(0,0),new ColorMatrixFilter([0.3,0.59,0.11,0,0,0.3,0.59,0.11,0,0,0.3,0.59,0.11,0,0,0,0,0,1,0]));
+         var relief:Tile = new Tile(figureData,true);
+         PositionUtils.setPos(relief,figure);
+         relief.scaleX = figure.scaleX;
+         relief.scaleY = figure.scaleY;
+         relief.Dig(new Point(figure.width / 2 + 50,figure.height - 45),null,reliefBitmap);
+         relief.alpha = 0.4;
+         var textureData:BitmapData = new BitmapData(250,320,true,0);
+         textureData.copyPixels(figure.bitmapData,new Rectangle(0,0,250,320),new Point(0,0));
+         textureData.draw(relief,null,null,"overlay");
          StarlingObjectUtils.disposeObject(_image,true);
-         _image = new Image(Texture.fromBitmapData(_loc4_,false));
-         _image.scaleX = _loc3_.scaleX;
-         _image.scaleY = _loc3_.scaleY;
+         _image = new Image(Texture.fromBitmapData(textureData,false));
+         _image.scaleX = figure.scaleX;
+         _image.scaleY = figure.scaleY;
          addChild(_image);
-         _loc3_.bitmapData.dispose();
-         _loc2_.bitmapData.dispose();
-         _loc6_.dispose();
-         _loc7_.dispose();
+         figure.bitmapData.dispose();
+         reliefBitmap.bitmapData.dispose();
+         figureData.dispose();
+         relief.dispose();
       }
       
       override public function dispose() : void

@@ -50,12 +50,12 @@ package yzhkof.debug
          }
          loader = new CompatibleURLLoader();
          loader.loadURL(CONFIG_XML_URL);
-         loader.addEventListener(Event.COMPLETE,function(param1:Event):void
+         loader.addEventListener(Event.COMPLETE,function(e:Event):void
          {
             xml = XML(loader.data);
             analyseXml();
          });
-         loader.addEventListener(IOErrorEvent.IO_ERROR,function(param1:Event):void
+         loader.addEventListener(IOErrorEvent.IO_ERROR,function(e:Event):void
          {
             trace("debug config fail! at \"" + CONFIG_XML_URL + "\"");
          });
@@ -70,43 +70,39 @@ package yzhkof.debug
             DebugSystem._mainContainer.visible = xml.@hide == "false"?true:false;
             length = xml.import_namespace.length();
             import_text = "";
-            i = 0;
-            while(i < length)
+            for(i = 0; i < length; i++)
             {
                import_text = import_text + ("namespace xmlu" + i + " = \"" + xml.import_namespace[i] + "\"; use namespace xmlu" + i + ";\n");
-               i++;
             }
             import_text = import_text + "namespace xmlud = \"yzhkof.debug\"; use namespace xmlud;\n";
             script_xml = xml.script;
             reFreshScript();
-            return;
          }
          catch(e:Error)
          {
             trace("debug config analyseXml fail! at \"" + CONFIG_XML_URL + "\"");
-            return;
          }
       }
       
-      public static function run(param1:String) : void
+      public static function run(script:String) : void
       {
-         var _loc2_:String = import_text;
-         _loc2_ = _loc2_ + convertImport(param1);
-         var _loc3_:ByteArray = runer.eval(_loc2_);
-         ByteLoader.loadBytes(_loc3_);
+         var final_script:String = import_text;
+         final_script = final_script + convertImport(script);
+         var byte:ByteArray = runer.eval(final_script);
+         ByteLoader.loadBytes(byte);
       }
       
-      public static function compile(param1:String) : ByteArray
+      public static function compile(script:String) : ByteArray
       {
-         var _loc2_:String = "";
-         _loc2_ = _loc2_ + convertImport(param1);
-         return runer.eval(_loc2_);
+         var final_script:String = "";
+         final_script = final_script + convertImport(script);
+         return runer.eval(final_script);
       }
       
-      public static function set target(param1:Object) : void
+      public static function set target(value:Object) : void
       {
          weakTarget = new WeakMap();
-         weakTarget.add(0,param1);
+         weakTarget.add(0,value);
       }
       
       public static function get target() : Object
@@ -114,35 +110,34 @@ package yzhkof.debug
          return weakTarget.getValue(0);
       }
       
-      public static function getDefinitionByName(param1:String) : *
+      public static function getDefinitionByName(value:String) : *
       {
-         return getDefinitionByName(param1);
+         return getDefinitionByName(value);
       }
       
-      public static function trace(param1:Object) : void
+      public static function trace(obj:Object) : void
       {
-         debugObjectTrace(param1);
+         debugObjectTrace(obj);
       }
       
-      public static function runScript(param1:String) : ScriptRun
+      public static function runScript(url:String) : ScriptRun
       {
          var logic:ScriptRun = null;
          var urlloader:URLLoader = null;
          var loader:Loader = null;
          var byte:ByteArray = null;
          var script:String = null;
-         var url:String = param1;
          logic = new ScriptRun();
          urlloader = new URLLoader(new URLRequest(url));
          loader = new Loader();
-         loader.contentLoaderInfo.addEventListener(Event.COMPLETE,function(param1:Event):void
+         loader.contentLoaderInfo.addEventListener(Event.COMPLETE,function(e:Event):void
          {
             logic.dispatchEvent(new Event(Event.COMPLETE));
          });
          logic.urlLoader = urlloader;
          logic.loader = loader;
          script = import_text;
-         urlloader.addEventListener(Event.COMPLETE,function(param1:Event):void
+         urlloader.addEventListener(Event.COMPLETE,function(e:Event):void
          {
             script = script + (urlloader.data as String);
             script = script + tailText;
@@ -156,46 +151,44 @@ package yzhkof.debug
          return logic;
       }
       
-      public static function runScriptSynchronous(param1:String, param2:Array, param3:Boolean = false) : *
+      public static function runScriptSynchronous(name:String, param:Array, refresh:Boolean = false) : *
       {
-         if(param3)
+         if(refresh)
          {
             reFreshScript();
          }
-         var _loc4_:Object = scripts[param1];
-         if(!_loc4_)
+         var script:Object = scripts[name];
+         if(!script)
          {
             throw new Error("脚本名字错误!");
          }
-         return _loc4_.run.apply(null,param2);
+         return script.run.apply(null,param);
       }
       
       public static function reFreshScript() : void
       {
-         var _loc2_:XML = null;
-         var _loc1_:uint = script_xml.length();
-         for each(_loc2_ in script_xml)
+         var i:XML = null;
+         var length:uint = script_xml.length();
+         for each(i in script_xml)
          {
-            loadScript(_loc2_,_loc2_.@name);
+            loadScript(i,i.@name);
          }
       }
       
-      public static function loadScript(param1:String, param2:String = null) : void
+      public static function loadScript(url:String, name:String = null) : void
       {
          var urlloader:URLLoader = null;
          var loader:Loader = null;
          var byte:ByteArray = null;
          var script:String = null;
-         var url:String = param1;
-         var name:String = param2;
          urlloader = new URLLoader(new URLRequest(url));
          loader = new Loader();
-         name = name || url;
-         loader.contentLoaderInfo.addEventListener(Event.COMPLETE,function(param1:Event):void
+         var name:String = name || url;
+         loader.contentLoaderInfo.addEventListener(Event.COMPLETE,function(e:Event):void
          {
          });
          script = import_text;
-         urlloader.addEventListener(Event.COMPLETE,function(param1:Event):void
+         urlloader.addEventListener(Event.COMPLETE,function(e:Event):void
          {
             script = script + (urlloader.data as String);
             script = script + (";ScriptRuner.addScript(this,\"" + name + "\");");
@@ -206,34 +199,34 @@ package yzhkof.debug
          });
       }
       
-      public static function addScript(param1:Object, param2:String) : void
+      public static function addScript(script_point:Object, name:String) : void
       {
-         scripts[param2] = param1;
+         scripts[name] = script_point;
       }
       
-      private static function convertImport(param1:String) : String
+      private static function convertImport(str:String) : String
       {
-         var _loc4_:String = null;
-         var _loc2_:RegExp = /import.*/g;
-         var _loc3_:Array = param1.match(_loc2_);
-         for each(_loc4_ in _loc3_)
+         var i:String = null;
+         var reg:RegExp = /import.*/g;
+         var result_arr:Array = str.match(reg);
+         for each(i in result_arr)
          {
-            param1 = param1.replace(_loc4_,getImport(getPackage(_loc4_)));
+            str = str.replace(i,getImport(getPackage(i)));
             importCount++;
          }
-         return param1;
+         return str;
       }
       
-      private static function getPackage(param1:String) : String
+      private static function getPackage(str:String) : String
       {
-         var _loc2_:RegExp = / .*\./;
-         var _loc3_:String = param1.match(_loc2_)[0];
-         return _loc3_.substring(1,_loc3_.length - 1);
+         var reg:RegExp = / .*\./;
+         var t_str:String = str.match(reg)[0];
+         return t_str.substring(1,t_str.length - 1);
       }
       
-      private static function getImport(param1:String) : String
+      private static function getImport(str:String) : String
       {
-         return "namespace importn" + importCount + " = \"" + param1 + "\"; use namespace importn" + importCount + ";\n";
+         return "namespace importn" + importCount + " = \"" + str + "\"; use namespace importn" + importCount + ";\n";
       }
    }
 }

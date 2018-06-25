@@ -87,10 +87,10 @@ package drgnBoatBuild.components
          _area3.addEventListener("mouseOut",__mouseOutHandler);
       }
       
-      protected function __mouseOverHandler(param1:MouseEvent) : void
+      protected function __mouseOverHandler(event:MouseEvent) : void
       {
          _tips.visible = true;
-         var _loc2_:* = param1.target;
+         var _loc2_:* = event.target;
          if(_area1 !== _loc2_)
          {
             if(_area2 !== _loc2_)
@@ -111,15 +111,15 @@ package drgnBoatBuild.components
          }
       }
       
-      protected function __mouseOutHandler(param1:MouseEvent) : void
+      protected function __mouseOutHandler(event:MouseEvent) : void
       {
          _tips.visible = false;
       }
       
-      public function setData(param1:int, param2:int, param3:int) : void
+      public function setData(completed:int, stage:int, total:int) : void
       {
-         _progressMask.scaleX = param1 / param3;
-         _progressTxt.text = LanguageMgr.GetTranslation("drgnBoatBuild.completed",int(param1 / param3 * 100) + "%");
+         _progressMask.scaleX = completed / total;
+         _progressTxt.text = LanguageMgr.GetTranslation("drgnBoatBuild.completed",int(completed / total * 100) + "%");
       }
       
       private function removeEvents() : void

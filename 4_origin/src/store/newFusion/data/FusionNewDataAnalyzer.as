@@ -9,42 +9,41 @@ package store.newFusion.data
       
       private var _data:Object;
       
-      public function FusionNewDataAnalyzer(param1:Function)
+      public function FusionNewDataAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc4_:* = null;
-         var _loc7_:int = 0;
-         var _loc2_:* = null;
-         var _loc5_:int = 0;
-         var _loc6_:* = null;
-         var _loc3_:XML = new XML(param1);
+         var xmllist:* = null;
+         var i:int = 0;
+         var tmpVo:* = null;
+         var tmpType:int = 0;
+         var tmpArray:* = null;
+         var xml:XML = new XML(data);
          _data = {};
-         if(_loc3_.@value == "true")
+         if(xml.@value == "true")
          {
-            _loc4_ = _loc3_..Item;
-            _loc7_ = 0;
-            while(_loc7_ < _loc4_.length())
+            xmllist = xml..Item;
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc2_ = new FusionNewVo();
-               ObjectUtils.copyPorpertiesByXML(_loc2_,_loc4_[_loc7_]);
-               _loc5_ = _loc4_[_loc7_].@FusionType;
-               if(!_data[_loc5_])
+               tmpVo = new FusionNewVo();
+               ObjectUtils.copyPorpertiesByXML(tmpVo,xmllist[i]);
+               tmpType = xmllist[i].@FusionType;
+               if(!_data[tmpType])
                {
-                  _data[_loc5_] = [];
+                  _data[tmpType] = [];
                }
-               _loc6_ = _data[_loc5_];
-               _loc6_.push(_loc2_);
-               _loc7_++;
+               tmpArray = _data[tmpType];
+               tmpArray.push(tmpVo);
+               i++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc3_.@message;
+            message = xml.@message;
             onAnalyzeError();
          }
       }

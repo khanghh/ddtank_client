@@ -93,12 +93,12 @@ package farm.viewx.shop
       {
          super();
          moveEnable = false;
-         var _loc1_:AlertInfo = new AlertInfo();
-         _loc1_.showCancel = false;
-         _loc1_.submitLabel = LanguageMgr.GetTranslation("ddt.farms.shopPayButton");
-         _loc1_.title = LanguageMgr.GetTranslation("ddt.farms.shopPayTitle");
-         _loc1_.bottomGap = 33;
-         this.info = _loc1_;
+         var alertInfo:AlertInfo = new AlertInfo();
+         alertInfo.showCancel = false;
+         alertInfo.submitLabel = LanguageMgr.GetTranslation("ddt.farms.shopPayButton");
+         alertInfo.title = LanguageMgr.GetTranslation("ddt.farms.shopPayTitle");
+         alertInfo.bottomGap = 33;
+         this.info = alertInfo;
          initView();
          initEvent();
       }
@@ -163,7 +163,7 @@ package farm.viewx.shop
          _alertTips.text = LanguageMgr.GetTranslation("ddt.farms.shopPayAlert");
       }
       
-      protected function selectedBandHander(param1:MouseEvent) : void
+      protected function selectedBandHander(event:MouseEvent) : void
       {
          setSeleBtnFalse();
          _selectedBtn.enable = true;
@@ -174,7 +174,7 @@ package farm.viewx.shop
          _isBand = true;
       }
       
-      private function selectedXunzHander(param1:MouseEvent) : void
+      private function selectedXunzHander(event:MouseEvent) : void
       {
          if(_selectedXunzBtn.selected)
          {
@@ -186,7 +186,7 @@ package farm.viewx.shop
          }
       }
       
-      protected function seletedHander(param1:MouseEvent) : void
+      protected function seletedHander(event:MouseEvent) : void
       {
          setSeleBtnFalse();
          _selectedBandBtn.enable = true;
@@ -207,13 +207,13 @@ package farm.viewx.shop
          _selectedXunzBtn.enable = false;
       }
       
-      public function set goodsID(param1:int) : void
+      public function set goodsID(value:int) : void
       {
          if(_shopPayItem)
          {
             _shopPayItem.dispose();
          }
-         _goodsID = param1;
+         _goodsID = value;
          _shopItemInfo = ShopManager.Instance.getShopItemByGoodsID(_goodsID);
          if(!_shopItemInfo)
          {
@@ -265,54 +265,54 @@ package farm.viewx.shop
          }
       }
       
-      private function applyGray(param1:DisplayObject) : void
+      private function applyGray(child:DisplayObject) : void
       {
-         var _loc2_:Array = [];
-         _loc2_ = _loc2_.concat([0.3086,0.6094,0.082,0,0]);
-         _loc2_ = _loc2_.concat([0.3086,0.6094,0.082,0,0]);
-         _loc2_ = _loc2_.concat([0.3086,0.6094,0.082,0,0]);
-         _loc2_ = _loc2_.concat([0,0,0,1,0]);
-         applyFilter(param1,_loc2_);
+         var matrix:Array = [];
+         matrix = matrix.concat([0.3086,0.6094,0.082,0,0]);
+         matrix = matrix.concat([0.3086,0.6094,0.082,0,0]);
+         matrix = matrix.concat([0.3086,0.6094,0.082,0,0]);
+         matrix = matrix.concat([0,0,0,1,0]);
+         applyFilter(child,matrix);
       }
       
-      private function applyFilter(param1:DisplayObject, param2:Array) : void
+      private function applyFilter(child:DisplayObject, matrix:Array) : void
       {
-         var _loc4_:ColorMatrixFilter = new ColorMatrixFilter(param2);
-         var _loc3_:Array = [];
-         _loc3_.push(_loc4_);
-         param1.filters = _loc3_;
+         var filter:ColorMatrixFilter = new ColorMatrixFilter(matrix);
+         var filters:Array = [];
+         filters.push(filter);
+         child.filters = filters;
       }
       
       private function alertMoney() : void
       {
-         var _loc1_:String = "";
+         var alertTxt:String = "";
          if(_isXun)
          {
             _spendValue = _shopItemInfo.getItemPrice(1).ddtMoneyValue * _payNum;
-            _loc1_ = String(_spendValue) + LanguageMgr.GetTranslation("medalMoney");
+            alertTxt = String(_spendValue) + LanguageMgr.GetTranslation("medalMoney");
          }
          else
          {
             _spendValue = _shopItemInfo.getItemPrice(1).bothMoneyValue * _payNum;
             if(_isBand)
             {
-               _loc1_ = String(_spendValue) + LanguageMgr.GetTranslation("ddtMoney");
+               alertTxt = String(_spendValue) + LanguageMgr.GetTranslation("ddtMoney");
             }
             else
             {
-               _loc1_ = String(_spendValue) + LanguageMgr.GetTranslation("money");
+               alertTxt = String(_spendValue) + LanguageMgr.GetTranslation("money");
             }
          }
-         _alertTips2.text = _loc1_;
+         _alertTips2.text = alertTxt;
       }
       
       protected function creatItemCell() : ShopItemCell
       {
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,75,75);
-         _loc1_.graphics.endFill();
-         return CellFactory.instance.createShopItemCell(_loc1_,null,true,true) as ShopItemCell;
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(16777215,0);
+         sp.graphics.drawRect(0,0,75,75);
+         sp.graphics.endFill();
+         return CellFactory.instance.createShopItemCell(sp,null,true,true) as ShopItemCell;
       }
       
       private function initEvent() : void
@@ -336,13 +336,13 @@ package farm.viewx.shop
          _group.removeEventListener("change",__selectedChange);
       }
       
-      protected function __selectedChange(param1:Event) : void
+      protected function __selectedChange(event:Event) : void
       {
          SoundManager.instance.play("008");
          alertMoney();
       }
       
-      private function __txtInputCheck(param1:Event) : void
+      private function __txtInputCheck(e:Event) : void
       {
          _payNum = parseInt(_payNumtxt.text);
          checkInput();
@@ -362,10 +362,10 @@ package farm.viewx.shop
          _payNumtxt.text = _payNum.toString();
       }
       
-      protected function __framePesponse(param1:FrameEvent) : void
+      protected function __framePesponse(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -383,15 +383,15 @@ package farm.viewx.shop
       
       private function sendFarmShop() : void
       {
-         var _loc4_:* = null;
-         var _loc2_:* = null;
-         var _loc7_:* = null;
-         var _loc3_:* = null;
-         var _loc5_:* = null;
-         var _loc8_:* = null;
-         var _loc6_:* = null;
-         var _loc1_:* = null;
-         var _loc9_:int = 0;
+         var alert:* = null;
+         var items:* = null;
+         var types:* = null;
+         var colors:* = null;
+         var dresses:* = null;
+         var skins:* = null;
+         var places:* = null;
+         var bands:* = null;
+         var i:int = 0;
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
@@ -405,26 +405,25 @@ package farm.viewx.shop
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("shop.view.madelLack"));
                return;
             }
-            _loc2_ = [];
-            _loc7_ = [];
-            _loc3_ = [];
-            _loc5_ = [];
-            _loc8_ = [];
-            _loc6_ = [];
-            _loc1_ = [];
-            _loc9_ = 0;
-            while(_loc9_ < _payNum)
+            items = [];
+            types = [];
+            colors = [];
+            dresses = [];
+            skins = [];
+            places = [];
+            bands = [];
+            for(i = 0; i < _payNum; )
             {
-               _loc2_.push(_shopItemInfo.GoodsID);
-               _loc7_.push(1);
-               _loc3_.push("");
-               _loc5_.push(false);
-               _loc8_.push("");
-               _loc6_.push(-1);
-               _loc1_.push(_isBand);
-               _loc9_++;
+               items.push(_shopItemInfo.GoodsID);
+               types.push(1);
+               colors.push("");
+               dresses.push(false);
+               skins.push("");
+               places.push(-1);
+               bands.push(_isBand);
+               i++;
             }
-            SocketManager.Instance.out.sendBuyGoods(_loc2_,_loc7_,_loc3_,_loc6_,_loc5_,_loc8_,0,null,_loc1_);
+            SocketManager.Instance.out.sendBuyGoods(items,types,colors,places,dresses,skins,0,null,bands);
          }
          else
          {
@@ -434,53 +433,52 @@ package farm.viewx.shop
       
       protected function onCheckComplete() : void
       {
-         var _loc8_:int = 0;
-         var _loc2_:Array = [];
-         var _loc6_:Array = [];
-         var _loc3_:Array = [];
-         var _loc4_:Array = [];
-         var _loc7_:Array = [];
-         var _loc5_:Array = [];
-         var _loc1_:Array = [];
-         _loc8_ = 0;
-         while(_loc8_ < _payNum)
+         var i:int = 0;
+         var items:Array = [];
+         var types:Array = [];
+         var colors:Array = [];
+         var dresses:Array = [];
+         var skins:Array = [];
+         var places:Array = [];
+         var bands:Array = [];
+         for(i = 0; i < _payNum; )
          {
-            _loc2_.push(_shopItemInfo.GoodsID);
-            _loc6_.push(1);
-            _loc3_.push("");
-            _loc4_.push(false);
-            _loc7_.push("");
-            _loc5_.push(-1);
-            _loc1_.push(CheckMoneyUtils.instance.isBind);
-            _loc8_++;
+            items.push(_shopItemInfo.GoodsID);
+            types.push(1);
+            colors.push("");
+            dresses.push(false);
+            skins.push("");
+            places.push(-1);
+            bands.push(CheckMoneyUtils.instance.isBind);
+            i++;
          }
-         SocketManager.Instance.out.sendBuyGoods(_loc2_,_loc6_,_loc3_,_loc5_,_loc4_,_loc7_,0,null,_loc1_);
+         SocketManager.Instance.out.sendBuyGoods(items,types,colors,places,dresses,skins,0,null,bands);
       }
       
-      private function __response(param1:FrameEvent) : void
+      private function __response(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.target as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__response);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var alert:BaseAlerFrame = e.target as BaseAlerFrame;
+         alert.removeEventListener("response",__response);
+         if(e.responseCode == 2 || e.responseCode == 3)
          {
             LeavePageManager.leaveToFillPath();
          }
-         _loc2_.dispose();
+         alert.dispose();
       }
       
       private function okFastPurchaseGold() : void
       {
-         var _loc1_:QuickBuyFrame = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
-         _loc1_.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
-         _loc1_.itemID = 11233;
-         LayerManager.Instance.addToLayer(_loc1_,2,true,1);
+         var _quick:QuickBuyFrame = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
+         _quick.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
+         _quick.itemID = 11233;
+         LayerManager.Instance.addToLayer(_quick,2,true,1);
       }
       
-      private function __selectPayNum(param1:MouseEvent) : void
+      private function __selectPayNum(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = e.currentTarget;
          if(_addBtn !== _loc2_)
          {
             if(_removeBtn === _loc2_)

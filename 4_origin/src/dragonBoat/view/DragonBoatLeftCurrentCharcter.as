@@ -75,11 +75,11 @@ package dragonBoat.view
          addChild(_playerBottomText);
       }
       
-      public function updateInfo(param1:PlayerInfo) : void
+      public function updateInfo($info:PlayerInfo) : void
       {
-         if(param1)
+         if($info)
          {
-            _info = param1;
+            _info = $info;
             refreshCharater();
             ObjectUtils.disposeObject(_vipName);
             if(_info.IsVIP)

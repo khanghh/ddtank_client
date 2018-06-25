@@ -26,11 +26,11 @@ package roomList
       
       private var _cellheight:int;
       
-      public function MapItemView(param1:int, param2:int, param3:int)
+      public function MapItemView(mapID:int, cellWidth:int, cellheight:int)
       {
-         _mapID = param1;
-         _cellWidth = param2;
-         _cellheight = param3;
+         _mapID = mapID;
+         _cellWidth = cellWidth;
+         _cellheight = cellheight;
          super();
          init();
       }
@@ -52,17 +52,17 @@ package roomList
          addEventListener("mouseOut",__itemOut);
       }
       
-      protected function __itemOut(param1:MouseEvent) : void
+      protected function __itemOut(event:MouseEvent) : void
       {
          _bgII.visible = false;
       }
       
-      protected function __itemOver(param1:MouseEvent) : void
+      protected function __itemOver(event:MouseEvent) : void
       {
          _bgII.visible = true;
       }
       
-      private function __mapIconLoadComplete(param1:Event) : void
+      private function __mapIconLoadComplete(event:Event) : void
       {
          _mapIcon.removeEventListener("complete",__mapIconLoadComplete);
          _bg = _mapIcon.icon;

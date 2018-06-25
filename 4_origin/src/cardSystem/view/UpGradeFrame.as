@@ -168,12 +168,12 @@ package cardSystem.view
          _progressMoive.removeEventListener("complete",__progressPlayOver);
       }
       
-      private function __progressPlayOver(param1:Event) : void
+      private function __progressPlayOver(event:Event) : void
       {
          _progressMoive.visible = false;
       }
       
-      private function __helpHandler(param1:MouseEvent) : void
+      private function __helpHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_helpFrame == null)
@@ -194,9 +194,9 @@ package cardSystem.view
          LayerManager.Instance.addToLayer(_helpFrame,3,true,2);
       }
       
-      protected function __helpFrameRespose(param1:FrameEvent) : void
+      protected function __helpFrameRespose(event:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(event.responseCode == 0 || event.responseCode == 1)
          {
             SoundManager.instance.play("008");
             disposeHelpFrame();
@@ -213,41 +213,41 @@ package cardSystem.view
          _helpFrame = null;
       }
       
-      protected function __closeHelpFrame(param1:MouseEvent) : void
+      protected function __closeHelpFrame(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          disposeHelpFrame();
       }
       
-      protected function __responseHandler(param1:FrameEvent) : void
+      protected function __responseHandler(event:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(event.responseCode == 0 || event.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();
          }
       }
       
-      private function __upDateHandler(param1:DictionaryEvent) : void
+      private function __upDateHandler(event:DictionaryEvent) : void
       {
-         var _loc2_:CardInfo = param1.data as CardInfo;
-         if(_loc2_.TemplateID != _cardInfo.TemplateID)
+         var cInfo:CardInfo = event.data as CardInfo;
+         if(cInfo.TemplateID != _cardInfo.TemplateID)
          {
             return;
          }
-         if(_loc2_.CardGP - _lastGP == 0)
+         if(cInfo.CardGP - _lastGP == 0)
          {
             return;
          }
-         MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.cardSystem.upgradeFrame.upSuccess",_loc2_.CardGP - _lastGP),0,true);
-         cardInfo = _loc2_;
+         MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.cardSystem.upgradeFrame.upSuccess",cInfo.CardGP - _lastGP),0,true);
+         cardInfo = cInfo;
          _progressMoive.visible = true;
          _progressMoive.gotoAndPlay(1);
          _progressBar.gotoAndPlay(1);
          _progressBar["arrow"].visible = true;
       }
       
-      protected function __upGradeHandler(param1:MouseEvent) : void
+      protected function __upGradeHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_cardInfo.Count < _ruleInfo.UpdateCardCount)
@@ -265,20 +265,19 @@ package cardSystem.view
          §§push(trace("点击按钮"));
       }
       
-      public function set cardInfo(param1:CardInfo) : void
+      public function set cardInfo(value:CardInfo) : void
       {
-         var _loc2_:int = 0;
-         _cardInfo = param1;
+         var i:int = 0;
+         _cardInfo = value;
          _upgradeRuleArr = CardManager.Instance.model.upgradeRuleVec;
-         _loc2_ = 0;
-         while(_loc2_ < _upgradeRuleArr.length)
+         for(i = 0; i < _upgradeRuleArr.length; )
          {
-            if((_upgradeRuleArr[_loc2_] as SetsUpgradeRuleInfo).Level == param1.Level + 1)
+            if((_upgradeRuleArr[i] as SetsUpgradeRuleInfo).Level == value.Level + 1)
             {
-               _ruleInfo = _upgradeRuleArr[_loc2_];
+               _ruleInfo = _upgradeRuleArr[i];
                break;
             }
-            _loc2_++;
+            i++;
          }
          upView();
       }
@@ -329,7 +328,7 @@ package cardSystem.view
          _lastLevel = _cardInfo.Level;
       }
       
-      private function __playOver(param1:Event) : void
+      private function __playOver(event:Event) : void
       {
          upgradeMovie.removeEventListener("complete",__playOver);
          _soundControl.volume = 0;

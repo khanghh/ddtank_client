@@ -26,9 +26,9 @@ package bagAndInfo.ddtKingGrade
          super();
       }
       
-      public function set actionStyle(param1:String) : void
+      public function set actionStyle(value:String) : void
       {
-         _actionStyle = param1;
+         _actionStyle = value;
       }
       
       override protected function init() : void
@@ -54,22 +54,22 @@ package bagAndInfo.ddtKingGrade
          }
       }
       
-      override public function setFrame(param1:int) : void
+      override public function setFrame(frameIndex:int) : void
       {
       }
       
       public function playAction() : void
       {
-         var _loc2_:MovieClip = ClassUtils.CreatInstance(_actionStyle);
-         addChild(_loc2_);
-         PositionUtils.setPos(_loc2_,"ddtKingGrade.buttonActionPos");
-         var _loc1_:MovieClipWrapper = new MovieClipWrapper(_loc2_,true,true);
+         var movie:MovieClip = ClassUtils.CreatInstance(_actionStyle);
+         addChild(movie);
+         PositionUtils.setPos(movie,"ddtKingGrade.buttonActionPos");
+         var wrapper:MovieClipWrapper = new MovieClipWrapper(movie,true,true);
       }
       
-      public function set level(param1:int) : void
+      public function set level(value:int) : void
       {
-         _level = param1;
-         _text.text = param1.toString();
+         _level = value;
+         _text.text = value.toString();
       }
       
       public function get level() : int
@@ -77,13 +77,13 @@ package bagAndInfo.ddtKingGrade
          return _level;
       }
       
-      public function set cost(param1:int) : void
+      public function set cost(value:int) : void
       {
-         if(_cost == param1)
+         if(_cost == value)
          {
             return;
          }
-         _cost = param1;
+         _cost = value;
          level = DDTKingGradeManager.Instance.getInfoByCost(_cost).Level;
       }
       

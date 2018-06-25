@@ -35,138 +35,138 @@ package ddtBuried.map
          super();
       }
       
-      public function searchRoad(param1:MovieClip, param2:MovieClip, param3:Array) : Array
+      public function searchRoad(start:MovieClip, end:MovieClip, map:Array) : Array
       {
-         var _loc4_:* = null;
-         startPoint = param1;
-         endPoint = param2;
-         mapArr = param3;
+         var thisPoint:* = null;
+         startPoint = start;
+         endPoint = end;
+         mapArr = map;
          w = mapArr[0].length - 1;
          h = mapArr.length - 1;
          openList.push(startPoint);
          while(openList.length >= 1)
          {
-            _loc4_ = openList.splice(getMinF(),1)[0];
-            if(_loc4_ == endPoint)
+            thisPoint = openList.splice(getMinF(),1)[0];
+            if(thisPoint == endPoint)
             {
-               while(_loc4_.father != startPoint.father)
+               while(thisPoint.father != startPoint.father)
                {
-                  roadArr.push(_loc4_);
-                  _loc4_ = _loc4_.father;
+                  roadArr.push(thisPoint);
+                  thisPoint = thisPoint.father;
                }
                return roadArr;
             }
-            closeList.push(_loc4_);
-            addAroundPoint(_loc4_);
+            closeList.push(thisPoint);
+            addAroundPoint(thisPoint);
          }
          return roadArr;
       }
       
-      private function addAroundPoint(param1:MovieClip) : void
+      private function addAroundPoint(thisPoint:MovieClip) : void
       {
-         var _loc3_:uint = param1.px;
-         var _loc2_:uint = param1.py;
-         if(_loc3_ > 0 && mapArr[_loc2_][_loc3_ - 1].go == 0)
+         var thisPx:uint = thisPoint.px;
+         var thisPy:uint = thisPoint.py;
+         if(thisPx > 0 && mapArr[thisPy][thisPx - 1].go == 0)
          {
-            if(!inArr(mapArr[_loc2_][_loc3_ - 1],closeList))
+            if(!inArr(mapArr[thisPy][thisPx - 1],closeList))
             {
-               if(!inArr(mapArr[_loc2_][_loc3_ - 1],openList))
+               if(!inArr(mapArr[thisPy][thisPx - 1],openList))
                {
-                  setGHF(mapArr[_loc2_][_loc3_ - 1],param1,10);
-                  openList.push(mapArr[_loc2_][_loc3_ - 1]);
+                  setGHF(mapArr[thisPy][thisPx - 1],thisPoint,10);
+                  openList.push(mapArr[thisPy][thisPx - 1]);
                }
                else
                {
-                  checkG(mapArr[_loc2_][_loc3_ - 1],param1);
+                  checkG(mapArr[thisPy][thisPx - 1],thisPoint);
                }
             }
-            if(_loc2_ > 0 && mapArr[_loc2_ - 1][_loc3_ - 1].go == 0 && mapArr[_loc2_ - 1][_loc3_].go == 0)
+            if(thisPy > 0 && mapArr[thisPy - 1][thisPx - 1].go == 0 && mapArr[thisPy - 1][thisPx].go == 0)
             {
-               if(!inArr(mapArr[_loc2_ - 1][_loc3_ - 1],closeList) && !inArr(mapArr[_loc2_ - 1][_loc3_ - 1],openList))
+               if(!inArr(mapArr[thisPy - 1][thisPx - 1],closeList) && !inArr(mapArr[thisPy - 1][thisPx - 1],openList))
                {
-                  setGHF(mapArr[_loc2_ - 1][_loc3_ - 1],param1,14);
-                  openList.push(mapArr[_loc2_ - 1][_loc3_ - 1]);
+                  setGHF(mapArr[thisPy - 1][thisPx - 1],thisPoint,14);
+                  openList.push(mapArr[thisPy - 1][thisPx - 1]);
                }
             }
-            if(_loc2_ < h && mapArr[_loc2_ + 1][_loc3_ - 1].go == 0 && mapArr[_loc2_ + 1][_loc3_].go == 0)
+            if(thisPy < h && mapArr[thisPy + 1][thisPx - 1].go == 0 && mapArr[thisPy + 1][thisPx].go == 0)
             {
-               if(!inArr(mapArr[_loc2_ + 1][_loc3_ - 1],closeList) && !inArr(mapArr[_loc2_ + 1][_loc3_ - 1],openList))
+               if(!inArr(mapArr[thisPy + 1][thisPx - 1],closeList) && !inArr(mapArr[thisPy + 1][thisPx - 1],openList))
                {
-                  setGHF(mapArr[_loc2_ + 1][_loc3_ - 1],param1,14);
-                  openList.push(mapArr[_loc2_ + 1][_loc3_ - 1]);
+                  setGHF(mapArr[thisPy + 1][thisPx - 1],thisPoint,14);
+                  openList.push(mapArr[thisPy + 1][thisPx - 1]);
                }
             }
          }
-         if(_loc3_ < w && mapArr[_loc2_][_loc3_ + 1].go == 0)
+         if(thisPx < w && mapArr[thisPy][thisPx + 1].go == 0)
          {
-            if(!inArr(mapArr[_loc2_][_loc3_ + 1],closeList))
+            if(!inArr(mapArr[thisPy][thisPx + 1],closeList))
             {
-               if(!inArr(mapArr[_loc2_][_loc3_ + 1],openList))
+               if(!inArr(mapArr[thisPy][thisPx + 1],openList))
                {
-                  setGHF(mapArr[_loc2_][_loc3_ + 1],param1,10);
-                  openList.push(mapArr[_loc2_][_loc3_ + 1]);
+                  setGHF(mapArr[thisPy][thisPx + 1],thisPoint,10);
+                  openList.push(mapArr[thisPy][thisPx + 1]);
                }
                else
                {
-                  checkG(mapArr[_loc2_][_loc3_ + 1],param1);
+                  checkG(mapArr[thisPy][thisPx + 1],thisPoint);
                }
             }
-            if(_loc2_ > 0 && mapArr[_loc2_ - 1][_loc3_ + 1].go == 0 && mapArr[_loc2_ - 1][_loc3_].go == 0)
+            if(thisPy > 0 && mapArr[thisPy - 1][thisPx + 1].go == 0 && mapArr[thisPy - 1][thisPx].go == 0)
             {
-               if(!inArr(mapArr[_loc2_ - 1][_loc3_ + 1],closeList) && !inArr(mapArr[_loc2_ - 1][_loc3_ + 1],openList))
+               if(!inArr(mapArr[thisPy - 1][thisPx + 1],closeList) && !inArr(mapArr[thisPy - 1][thisPx + 1],openList))
                {
-                  setGHF(mapArr[_loc2_ - 1][_loc3_ + 1],param1,14);
-                  openList.push(mapArr[_loc2_ - 1][_loc3_ + 1]);
+                  setGHF(mapArr[thisPy - 1][thisPx + 1],thisPoint,14);
+                  openList.push(mapArr[thisPy - 1][thisPx + 1]);
                }
             }
-            if(_loc2_ < h && mapArr[_loc2_ + 1][_loc3_ + 1].go == 0 && mapArr[_loc2_ + 1][_loc3_].go == 0)
+            if(thisPy < h && mapArr[thisPy + 1][thisPx + 1].go == 0 && mapArr[thisPy + 1][thisPx].go == 0)
             {
-               if(!inArr(mapArr[_loc2_ + 1][_loc3_ + 1],closeList) && !inArr(mapArr[_loc2_ + 1][_loc3_ + 1],openList))
+               if(!inArr(mapArr[thisPy + 1][thisPx + 1],closeList) && !inArr(mapArr[thisPy + 1][thisPx + 1],openList))
                {
-                  setGHF(mapArr[_loc2_ + 1][_loc3_ + 1],param1,14);
-                  openList.push(mapArr[_loc2_ + 1][_loc3_ + 1]);
+                  setGHF(mapArr[thisPy + 1][thisPx + 1],thisPoint,14);
+                  openList.push(mapArr[thisPy + 1][thisPx + 1]);
                }
             }
          }
-         if(_loc2_ > 0 && mapArr[_loc2_ - 1][_loc3_].go == 0)
+         if(thisPy > 0 && mapArr[thisPy - 1][thisPx].go == 0)
          {
-            if(!inArr(mapArr[_loc2_ - 1][_loc3_],closeList))
+            if(!inArr(mapArr[thisPy - 1][thisPx],closeList))
             {
-               if(!inArr(mapArr[_loc2_ - 1][_loc3_],openList))
+               if(!inArr(mapArr[thisPy - 1][thisPx],openList))
                {
-                  setGHF(mapArr[_loc2_ - 1][_loc3_],param1,10);
-                  openList.push(mapArr[_loc2_ - 1][_loc3_]);
+                  setGHF(mapArr[thisPy - 1][thisPx],thisPoint,10);
+                  openList.push(mapArr[thisPy - 1][thisPx]);
                }
                else
                {
-                  checkG(mapArr[_loc2_ - 1][_loc3_],param1);
+                  checkG(mapArr[thisPy - 1][thisPx],thisPoint);
                }
             }
          }
-         if(_loc2_ < h && mapArr[_loc2_ + 1][_loc3_].go == 0)
+         if(thisPy < h && mapArr[thisPy + 1][thisPx].go == 0)
          {
-            if(!inArr(mapArr[_loc2_ + 1][_loc3_],closeList))
+            if(!inArr(mapArr[thisPy + 1][thisPx],closeList))
             {
-               if(!inArr(mapArr[_loc2_ + 1][_loc3_],openList))
+               if(!inArr(mapArr[thisPy + 1][thisPx],openList))
                {
-                  setGHF(mapArr[_loc2_ + 1][_loc3_],param1,10);
-                  openList.push(mapArr[_loc2_ + 1][_loc3_]);
+                  setGHF(mapArr[thisPy + 1][thisPx],thisPoint,10);
+                  openList.push(mapArr[thisPy + 1][thisPx]);
                }
                else
                {
-                  checkG(mapArr[_loc2_ + 1][_loc3_],param1);
+                  checkG(mapArr[thisPy + 1][thisPx],thisPoint);
                }
             }
          }
       }
       
-      private function inArr(param1:MovieClip, param2:Array) : Boolean
+      private function inArr(obj:MovieClip, arr:Array) : Boolean
       {
          var _loc5_:int = 0;
-         var _loc4_:* = param2;
-         for each(var _loc3_ in param2)
+         var _loc4_:* = arr;
+         for each(var mc in arr)
          {
-            if(param1 == _loc3_)
+            if(obj == mc)
             {
                return true;
             }
@@ -174,46 +174,46 @@ package ddtBuried.map
          return false;
       }
       
-      private function setGHF(param1:MovieClip, param2:MovieClip, param3:*) : void
+      private function setGHF(point:MovieClip, thisPoint:MovieClip, G:*) : void
       {
-         if(!param2.G)
+         if(!thisPoint.G)
          {
-            param2.G = 0;
+            thisPoint.G = 0;
          }
-         param1.G = param2.G + param3;
-         param1.H = (Math.abs(param1.px - endPoint.px) + Math.abs(param1.py - endPoint.py)) * 10;
-         param1.F = param1.H + param1.G;
-         param1.father = param2;
+         point.G = thisPoint.G + G;
+         point.H = (Math.abs(point.px - endPoint.px) + Math.abs(point.py - endPoint.py)) * 10;
+         point.F = point.H + point.G;
+         point.father = thisPoint;
       }
       
-      private function checkG(param1:MovieClip, param2:MovieClip) : void
+      private function checkG(chkPoint:MovieClip, thisPoint:MovieClip) : void
       {
-         var _loc3_:* = param2.G + 10;
-         if(_loc3_ <= param1.G)
+         var newG:* = thisPoint.G + 10;
+         if(newG <= chkPoint.G)
          {
-            param1.G = _loc3_;
-            param1.F = param1.H + _loc3_;
-            param1.father = param2;
+            chkPoint.G = newG;
+            chkPoint.F = chkPoint.H + newG;
+            chkPoint.father = thisPoint;
          }
       }
       
       private function getMinF() : uint
       {
-         var _loc3_:* = 0;
-         var _loc4_:* = 100000000;
-         var _loc1_:uint = 0;
+         var rid:* = 0;
+         var tmpF:* = 100000000;
+         var id:uint = 0;
          var _loc6_:int = 0;
          var _loc5_:* = openList;
-         for each(var _loc2_ in openList)
+         for each(var mc in openList)
          {
-            if(_loc2_.F < _loc4_)
+            if(mc.F < tmpF)
             {
-               _loc4_ = uint(_loc2_.F);
-               _loc3_ = _loc1_;
+               tmpF = uint(mc.F);
+               rid = id;
             }
-            _loc1_++;
+            id++;
          }
-         return _loc3_;
+         return rid;
       }
    }
 }

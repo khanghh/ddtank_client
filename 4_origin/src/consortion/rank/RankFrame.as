@@ -125,58 +125,57 @@ package consortion.rank
          addToContent(_itemContent);
       }
       
-      protected function initItemList(param1:Array) : void
+      protected function initItemList(arr:Array) : void
       {
-         var _loc6_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
+         var i:int = 0;
+         var data:* = null;
+         var item:* = null;
          clearItemList();
-         var _loc5_:int = param1.length;
-         var _loc2_:int = 0;
-         while(_loc6_ < _loc5_)
+         var len:int = arr.length;
+         for(var index:int = 0; i < len; )
          {
-            _loc4_ = param1[_loc6_] as RankData;
-            setRankTxt(_loc4_);
-            if(_loc4_.Rank != -1)
+            data = arr[i] as RankData;
+            setRankTxt(data);
+            if(data.Rank != -1)
             {
-               _loc3_ = new RankItem(_loc4_);
-               _loc3_.setView(_loc6_);
-               _loc3_.y = (_loc3_.height + 1) * _loc2_;
-               _itemContent.addChild(_loc3_);
-               _loc2_++;
+               item = new RankItem(data);
+               item.setView(i);
+               item.y = (item.height + 1) * index;
+               _itemContent.addChild(item);
+               index++;
             }
-            _loc6_++;
+            i++;
          }
       }
       
-      protected function setRankTxt(param1:RankData) : void
+      protected function setRankTxt(data:RankData) : void
       {
          if(_type == 8)
          {
-            if(param1.ConsortiaID == PlayerManager.Instance.Self.ConsortiaID)
+            if(data.ConsortiaID == PlayerManager.Instance.Self.ConsortiaID)
             {
-               if(param1.Rank != -1)
+               if(data.Rank != -1)
                {
-                  _totalRank.text = param1.Rank.toString();
+                  _totalRank.text = data.Rank.toString();
                }
                else
                {
                   _totalRank.text = LanguageMgr.GetTranslation("ddt.consortia.norank");
                }
-               _totalScroeTxt.text = param1.Score.toString();
+               _totalScroeTxt.text = data.Score.toString();
             }
          }
-         else if(param1.UserID == PlayerManager.Instance.Self.ID)
+         else if(data.UserID == PlayerManager.Instance.Self.ID)
          {
-            if(param1.Rank != -1)
+            if(data.Rank != -1)
             {
-               _totalRank.text = param1.Rank.toString();
+               _totalRank.text = data.Rank.toString();
             }
             else
             {
                _totalRank.text = LanguageMgr.GetTranslation("ddt.consortia.norank");
             }
-            _totalScroeTxt.text = param1.Score.toString();
+            _totalScroeTxt.text = data.Score.toString();
          }
       }
       
@@ -208,63 +207,62 @@ package consortion.rank
          removeEventListener("response",responseHander);
       }
       
-      private function personerRankListHander(param1:ConsortionEvent) : void
+      private function personerRankListHander(e:ConsortionEvent) : void
       {
          _type = 10;
-         var _loc2_:Array = param1.data as Array;
-         _rankList = setCurrtArr(_loc2_);
-         setPageTxt(_loc2_);
+         var arr:Array = e.data as Array;
+         _rankList = setCurrtArr(arr);
+         setPageTxt(arr);
          setPageArr();
       }
       
-      private function setCurrtArr(param1:Array) : Array
+      private function setCurrtArr(arr:Array) : Array
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < param1.length)
+         var i:int = 0;
+         for(i = 0; i < arr.length; )
          {
-            if(param1[_loc2_].UserID == PlayerManager.Instance.Self.ID)
+            if(arr[i].UserID == PlayerManager.Instance.Self.ID)
             {
-               param1.splice(_loc2_,1);
-               return param1;
+               arr.splice(i,1);
+               return arr;
             }
-            _loc2_++;
+            i++;
          }
-         return param1;
+         return arr;
       }
       
-      private function clubRankListHander(param1:ConsortionEvent) : void
+      private function clubRankListHander(e:ConsortionEvent) : void
       {
          _type = 8;
-         var _loc2_:Array = param1.data as Array;
-         _rankList = _loc2_;
-         setPageTxt(_loc2_);
+         var arr:Array = e.data as Array;
+         _rankList = arr;
+         setPageTxt(arr);
          setPageArr();
       }
       
-      protected function setPageTxt(param1:Array) : void
+      protected function setPageTxt(arr:Array) : void
       {
-         if(!param1)
+         if(!arr)
          {
             return;
          }
-         var _loc2_:int = Math.ceil(param1.length / 10);
-         if(_loc2_ == 0)
+         var num:int = Math.ceil(arr.length / 10);
+         if(num == 0)
          {
-            _loc2_ = 1;
+            num = 1;
          }
-         TOTALPAGE = _loc2_;
+         TOTALPAGE = num;
          _pageNum.text = _index + "/" + TOTALPAGE;
       }
       
-      private function mouseClickHander(param1:MouseEvent) : void
+      private function mouseClickHander(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(!_rankList)
          {
             return;
          }
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = e.currentTarget;
          if(_rightBtn !== _loc2_)
          {
             if(_leftBtn === _loc2_)
@@ -290,53 +288,51 @@ package consortion.rank
       
       protected function setPageArr() : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
+         var i:int = 0;
+         var j:int = 0;
          if(!_rankList)
          {
             return;
          }
-         var _loc2_:int = _rankList.length;
-         var _loc1_:Array = [];
+         var len:int = _rankList.length;
+         var arr:Array = [];
          if(_type == 8)
          {
-            _loc4_ = (_index - 1) * 8;
-            while(_loc4_ < _index * 8)
+            for(i = (_index - 1) * 8; i < _index * 8; )
             {
-               if(_rankList[_loc4_])
+               if(_rankList[i])
                {
-                  _loc1_.push(_rankList[_loc4_]);
+                  arr.push(_rankList[i]);
                }
-               _loc4_++;
+               i++;
             }
          }
          else if(_type == 10)
          {
-            _loc3_ = (_index - 1) * 10;
-            while(_loc3_ < _index * 10)
+            for(j = (_index - 1) * 10; j < _index * 10; )
             {
-               if(_rankList[_loc3_])
+               if(_rankList[j])
                {
-                  _loc1_.push(_rankList[_loc3_]);
+                  arr.push(_rankList[j]);
                }
-               _loc3_++;
+               j++;
             }
          }
-         initItemList(_loc1_);
+         initItemList(arr);
       }
       
-      private function responseHander(param1:FrameEvent) : void
+      private function responseHander(e:FrameEvent) : void
       {
          SoundManager.instance.playButtonSound();
          dispose();
       }
       
-      private function group1changeHandler(param1:Event) : void
+      private function group1changeHandler(e:Event) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:int = _group1.selectIndex;
+         var type:int = _group1.selectIndex;
          _index = 1;
-         switch(int(_loc2_))
+         switch(int(type))
          {
             case 0:
                _prankBit.visible = true;

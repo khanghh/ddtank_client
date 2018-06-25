@@ -33,9 +33,9 @@ package game.objects
       
       private var _timer:Timer;
       
-      public function TransmissionGate(param1:int, param2:int, param3:String, param4:String)
+      public function TransmissionGate(id:int, type:int, model:String, action:String)
       {
-         super(param1,param2,param3,param4);
+         super(id,type,model,action);
          _canCollided = true;
          setCollideRect(-50,-100,50,100);
          getCollideRect();
@@ -62,17 +62,17 @@ package game.objects
          ShowTipManager.Instance.addTip(this);
       }
       
-      protected function __timerComplete(param1:TimerEvent) : void
+      protected function __timerComplete(event:TimerEvent) : void
       {
          GameInSocketOut.sendGameSkipNext(0);
       }
       
-      override protected function creatMovie(param1:String) : void
+      override protected function creatMovie(model:String) : void
       {
-         var _loc2_:Class = ModuleLoader.getDefinition(m_model) as Class;
-         if(_loc2_)
+         var moive_class:Class = ModuleLoader.getDefinition(m_model) as Class;
+         if(moive_class)
          {
-            m_movie = new _loc2_();
+            m_movie = new moive_class();
             var _loc3_:* = 1.7;
             m_movie.scaleY = _loc3_;
             m_movie.scaleX = _loc3_;
@@ -83,11 +83,11 @@ package game.objects
          }
       }
       
-      protected function __onClick(param1:MouseEvent) : void
+      protected function __onClick(event:MouseEvent) : void
       {
       }
       
-      protected function __onOut(param1:MouseEvent) : void
+      protected function __onOut(event:MouseEvent) : void
       {
          if(m_movie && m_movie.transform)
          {
@@ -95,7 +95,7 @@ package game.objects
          }
       }
       
-      protected function __onOver(param1:MouseEvent) : void
+      protected function __onOver(event:MouseEvent) : void
       {
          if(m_movie && m_movie.transform)
          {
@@ -119,13 +119,13 @@ package game.objects
          return _tipData;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(value:Object) : void
       {
-         if(_tipData == param1)
+         if(_tipData == value)
          {
             return;
          }
-         _tipData = param1;
+         _tipData = value;
       }
       
       public function get tipDirctions() : String
@@ -133,13 +133,13 @@ package game.objects
          return _tipDirction;
       }
       
-      public function set tipDirctions(param1:String) : void
+      public function set tipDirctions(value:String) : void
       {
-         if(_tipDirction == param1)
+         if(_tipDirction == value)
          {
             return;
          }
-         _tipDirction = param1;
+         _tipDirction = value;
       }
       
       public function get tipGapV() : int
@@ -147,13 +147,13 @@ package game.objects
          return _tipGapV;
       }
       
-      public function set tipGapV(param1:int) : void
+      public function set tipGapV(value:int) : void
       {
-         if(_tipGapV == param1)
+         if(_tipGapV == value)
          {
             return;
          }
-         _tipGapV = param1;
+         _tipGapV = value;
       }
       
       public function get tipGapH() : int
@@ -161,13 +161,13 @@ package game.objects
          return _tipGapH;
       }
       
-      public function set tipGapH(param1:int) : void
+      public function set tipGapH(value:int) : void
       {
-         if(_tipGapH == param1)
+         if(_tipGapH == value)
          {
             return;
          }
-         _tipGapH = param1;
+         _tipGapH = value;
       }
       
       public function get tipStyle() : String
@@ -175,13 +175,13 @@ package game.objects
          return _tipStyle;
       }
       
-      public function set tipStyle(param1:String) : void
+      public function set tipStyle(value:String) : void
       {
-         if(_tipStyle == param1)
+         if(_tipStyle == value)
          {
             return;
          }
-         _tipStyle = param1;
+         _tipStyle = value;
       }
       
       public function asDisplayObject() : DisplayObject

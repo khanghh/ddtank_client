@@ -18,9 +18,9 @@ package ddt.view
          super();
       }
       
-      public function setup(param1:uint) : void
+      public function setup(color:uint) : void
       {
-         _color = param1;
+         _color = color;
          init();
          initEvent();
       }
@@ -48,12 +48,12 @@ package ddt.view
          removeEventListener("mouseOut",__mouseOut);
       }
       
-      private function __mouseOver(param1:MouseEvent) : void
+      private function __mouseOver(evt:MouseEvent) : void
       {
          _over.visible = true;
       }
       
-      private function __mouseOut(param1:MouseEvent) : void
+      private function __mouseOut(evt:MouseEvent) : void
       {
          _over.visible = false;
       }

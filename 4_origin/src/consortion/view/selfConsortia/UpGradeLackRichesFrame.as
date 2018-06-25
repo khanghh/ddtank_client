@@ -56,23 +56,23 @@ package consortion.view.selfConsortia
          _cancel.removeEventListener("click",__cancelHandler);
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(event:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(event.responseCode == 0 || event.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();
          }
       }
       
-      private function __okHandler(param1:MouseEvent) : void
+      private function __okHandler(vet:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          ConsortionModelManager.Instance.alertTaxFrame();
          dispose();
       }
       
-      private function __cancelHandler(param1:MouseEvent) : void
+      private function __cancelHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          dispose();

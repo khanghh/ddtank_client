@@ -36,12 +36,12 @@ package ddt.view.caddyII.offerPack
       
       private function initView() : void
       {
-         var _loc1_:Point = ComponentFactory.Instance.creatCustomObject("offer.itemCellSize");
-         var _loc2_:Shape = new Shape();
-         _loc2_.graphics.beginFill(16777215,0);
-         _loc2_.graphics.drawRect(0,0,_loc1_.x,_loc1_.y);
-         _loc2_.graphics.endFill();
-         _cell = ComponentFactory.Instance.creatCustomObject("offer.itemCell",[_loc2_,null,false]);
+         var point:Point = ComponentFactory.Instance.creatCustomObject("offer.itemCellSize");
+         var shape:Shape = new Shape();
+         shape.graphics.beginFill(16777215,0);
+         shape.graphics.drawRect(0,0,point.x,point.y);
+         shape.graphics.endFill();
+         _cell = ComponentFactory.Instance.creatCustomObject("offer.itemCell",[shape,null,false]);
          _nameTxt = ComponentFactory.Instance.creatComponentByStylename("offer.itemNameTxt");
          _bg = ComponentFactory.Instance.creatComponentByStylename("offer.comboxItembgB");
          addChild(_bg);
@@ -51,21 +51,21 @@ package ddt.view.caddyII.offerPack
          _bg.visible = false;
       }
       
-      override public function set width(param1:Number) : void
+      override public function set width(value:Number) : void
       {
-         .super.width = param1;
+         .super.width = value;
          if(_bg)
          {
-            _bg.width = param1;
+            _bg.width = value;
          }
       }
       
-      override public function set height(param1:Number) : void
+      override public function set height(value:Number) : void
       {
-         .super.height = param1;
+         .super.height = value;
          if(_bg)
          {
-            _bg.height = param1;
+            _bg.height = value;
          }
       }
       
@@ -81,7 +81,7 @@ package ddt.view.caddyII.offerPack
          removeEventListener("mouseOut",_out);
       }
       
-      private function _over(param1:MouseEvent) : void
+      private function _over(e:MouseEvent) : void
       {
          if(_showBG)
          {
@@ -89,7 +89,7 @@ package ddt.view.caddyII.offerPack
          }
       }
       
-      private function _out(param1:MouseEvent) : void
+      private function _out(e:MouseEvent) : void
       {
          if(_showBG)
          {
@@ -97,9 +97,9 @@ package ddt.view.caddyII.offerPack
          }
       }
       
-      public function set showBG(param1:Boolean) : void
+      public function set showBG(value:Boolean) : void
       {
-         _showBG = param1;
+         _showBG = value;
       }
       
       public function get showBG() : Boolean
@@ -107,9 +107,9 @@ package ddt.view.caddyII.offerPack
          return _showBG;
       }
       
-      public function set info(param1:ItemTemplateInfo) : void
+      public function set info(value:ItemTemplateInfo) : void
       {
-         _cell.info = param1;
+         _cell.info = value;
          _nameTxt.text = _cell.info.Name;
       }
       
@@ -118,7 +118,7 @@ package ddt.view.caddyII.offerPack
          return _cell.info;
       }
       
-      public function setListCellStatus(param1:List, param2:Boolean, param3:int) : void
+      public function setListCellStatus(list:List, isSelected:Boolean, index:int) : void
       {
       }
       
@@ -127,9 +127,9 @@ package ddt.view.caddyII.offerPack
          return _cell.info;
       }
       
-      public function setCellValue(param1:*) : void
+      public function setCellValue(value:*) : void
       {
-         info = param1;
+         info = value;
       }
       
       public function asDisplayObject() : DisplayObject

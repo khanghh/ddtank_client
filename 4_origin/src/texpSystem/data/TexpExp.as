@@ -20,6 +20,20 @@ package texpSystem.data
       
       public var ExerciseMD:int;
       
+      public var TrainCrit:int;
+      
+      public var TrainSunder:int;
+      
+      public var TrainCritDmg:int;
+      
+      public var TrainSpeed:int;
+      
+      public var TrainTricKill:int;
+      
+      public var TrainDmg:int;
+      
+      public var TrainArmor:int;
+      
       public function TexpExp()
       {
          super();

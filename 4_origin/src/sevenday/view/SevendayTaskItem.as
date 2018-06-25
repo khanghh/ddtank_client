@@ -72,21 +72,21 @@ package sevenday.view
          addChild(_taskText);
       }
       
-      private function complete(param1:int) : void
+      private function complete(num:int) : void
       {
          _gotoBtn.setFrame(2);
          _icon.setFrame(2);
       }
       
-      private function uncomplete(param1:int) : void
+      private function uncomplete(num:int) : void
       {
          _gotoBtn.setFrame(1);
          _icon.setFrame(1);
       }
       
-      private function gotowhere(param1:MouseEvent) : void
+      private function gotowhere(e:MouseEvent) : void
       {
-         var _loc2_:int = 0;
+         var limitLev:int = 0;
          SoundManager.instance.playButtonSound();
          var _loc3_:* = _info.conditions[_num].turnType;
          if(-1 !== _loc3_)
@@ -222,10 +222,10 @@ package sevenday.view
                                     }
                                     else
                                     {
-                                       _loc2_ = ServerConfigManager.instance.trialBattleLevelLimit;
-                                       if(PlayerManager.Instance.Self.Grade < _loc2_)
+                                       limitLev = ServerConfigManager.instance.trialBattleLevelLimit;
+                                       if(PlayerManager.Instance.Self.Grade < limitLev)
                                        {
-                                          MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.functionLimitTip",_loc2_));
+                                          MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.functionLimitTip",limitLev));
                                           return;
                                        }
                                        BattleGroudManager.Instance.onShow();
@@ -327,18 +327,18 @@ package sevenday.view
          SevendayManager.instance.hideFrame();
       }
       
-      public function update(param1:QuestInfo, param2:int) : void
+      public function update(info:QuestInfo, num:int) : void
       {
-         _info = param1;
-         _num = param2;
-         _taskText.text = param1.conditions[param2].description;
-         if(param1.conditionStatusBoolean[param2] || !_info.data)
+         _info = info;
+         _num = num;
+         _taskText.text = info.conditions[num].description;
+         if(info.conditionStatusBoolean[num] || !_info.data)
          {
-            complete(param2);
+            complete(num);
          }
          else
          {
-            uncomplete(param2);
+            uncomplete(num);
          }
       }
       

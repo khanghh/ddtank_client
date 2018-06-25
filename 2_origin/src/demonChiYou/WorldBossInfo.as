@@ -50,9 +50,9 @@ package demonChiYou
          super();
       }
       
-      public function set total_Blood(param1:Number) : void
+      public function set total_Blood(value:Number) : void
       {
-         _total_Blood = param1;
+         _total_Blood = value;
       }
       
       public function get total_Blood() : Number
@@ -60,15 +60,15 @@ package demonChiYou
          return _total_Blood;
       }
       
-      public function set current_Blood(param1:Number) : void
+      public function set current_Blood(value:Number) : void
       {
-         if(_current_Blood == param1)
+         if(_current_Blood == value)
          {
             _cutValue = -1;
             return;
          }
-         _cutValue = _current_Blood - param1;
-         _current_Blood = param1;
+         _cutValue = _current_Blood - value;
+         _current_Blood = value;
       }
       
       public function get current_Blood() : Number
@@ -76,9 +76,9 @@ package demonChiYou
          return _current_Blood;
       }
       
-      public function set isLiving(param1:Boolean) : void
+      public function set isLiving(value:Boolean) : void
       {
-         _isLiving = param1;
+         _isLiving = value;
          if(!_isLiving)
          {
             current_Blood = 0;
@@ -95,9 +95,9 @@ package demonChiYou
          return _begin_time;
       }
       
-      public function set begin_time(param1:Date) : void
+      public function set begin_time(value:Date) : void
       {
-         _begin_time = param1;
+         _begin_time = value;
       }
       
       public function get end_time() : Date
@@ -105,9 +105,9 @@ package demonChiYou
          return _end_time;
       }
       
-      public function set end_time(param1:Date) : void
+      public function set end_time(value:Date) : void
       {
-         _end_time = param1;
+         _end_time = value;
       }
       
       public function get fight_time() : int
@@ -115,17 +115,17 @@ package demonChiYou
          return _fight_time;
       }
       
-      public function set fight_time(param1:int) : void
+      public function set fight_time(value:int) : void
       {
-         _fight_time = param1;
+         _fight_time = value;
       }
       
       public function getLeftTime() : int
       {
-         var _loc1_:Number = TimeManager.Instance.TotalSecondToNow(begin_time);
-         if(_loc1_ > 0 && _loc1_ < fight_time * 60)
+         var left_time:Number = TimeManager.Instance.TotalSecondToNow(begin_time);
+         if(left_time > 0 && left_time < fight_time * 60)
          {
-            return fight_time * 60 - _loc1_;
+            return fight_time * 60 - left_time;
          }
          return 0;
       }
@@ -135,9 +135,9 @@ package demonChiYou
          return _fightOver;
       }
       
-      public function set fightOver(param1:Boolean) : void
+      public function set fightOver(value:Boolean) : void
       {
-         _fightOver = param1;
+         _fightOver = value;
       }
       
       public function get roomClose() : Boolean
@@ -145,9 +145,9 @@ package demonChiYou
          return _room_close;
       }
       
-      public function set roomClose(param1:Boolean) : void
+      public function set roomClose(value:Boolean) : void
       {
-         _room_close = param1;
+         _room_close = value;
       }
       
       public function get currentState() : int
@@ -155,14 +155,14 @@ package demonChiYou
          return _currentState;
       }
       
-      public function set currentState(param1:int) : void
+      public function set currentState(value:int) : void
       {
-         _currentState = param1;
+         _currentState = value;
       }
       
-      public function set ticketID(param1:int) : void
+      public function set ticketID(value:int) : void
       {
-         _ticketID = param1;
+         _ticketID = value;
       }
       
       public function get ticketID() : int
@@ -170,9 +170,9 @@ package demonChiYou
          return _ticketID;
       }
       
-      public function set need_ticket_count(param1:int) : void
+      public function set need_ticket_count(value:int) : void
       {
-         _need_ticket_count = param1;
+         _need_ticket_count = value;
       }
       
       public function get need_ticket_count() : int
@@ -185,9 +185,9 @@ package demonChiYou
          return _cutValue;
       }
       
-      public function set name(param1:String) : void
+      public function set name(value:String) : void
       {
-         _name = param1;
+         _name = value;
       }
       
       public function get name() : String
@@ -195,9 +195,9 @@ package demonChiYou
          return _name;
       }
       
-      public function set timeCD(param1:int) : void
+      public function set timeCD(value:int) : void
       {
-         _timeCD = param1;
+         _timeCD = value;
       }
       
       public function get timeCD() : int
@@ -205,9 +205,9 @@ package demonChiYou
          return _timeCD;
       }
       
-      public function set reviveMoney(param1:int) : void
+      public function set reviveMoney(value:int) : void
       {
-         _reviveMoney = param1;
+         _reviveMoney = value;
       }
       
       public function get reviveMoney() : int
@@ -215,9 +215,9 @@ package demonChiYou
          return _reviveMoney;
       }
       
-      public function set playerDefaultPos(param1:Point) : void
+      public function set playerDefaultPos(value:Point) : void
       {
-         _playerDefaultPos = param1;
+         _playerDefaultPos = value;
       }
       
       public function get playerDefaultPos() : Point
@@ -230,9 +230,9 @@ package demonChiYou
          return _reFightMoney;
       }
       
-      public function set reFightMoney(param1:int) : void
+      public function set reFightMoney(value:int) : void
       {
-         _reFightMoney = param1;
+         _reFightMoney = value;
       }
       
       public function get addInjureBuffMoney() : int
@@ -240,9 +240,9 @@ package demonChiYou
          return _addInjureBuffMoney;
       }
       
-      public function set addInjureBuffMoney(param1:int) : void
+      public function set addInjureBuffMoney(value:int) : void
       {
-         _addInjureBuffMoney = param1;
+         _addInjureBuffMoney = value;
       }
       
       public function get addInjureValue() : int
@@ -250,9 +250,9 @@ package demonChiYou
          return _addInjureValue;
       }
       
-      public function set addInjureValue(param1:int) : void
+      public function set addInjureValue(value:int) : void
       {
-         _addInjureValue = param1;
+         _addInjureValue = value;
       }
    }
 }

@@ -8,9 +8,9 @@ package pyramid.view
    {
        
       
-      public function PyramidCell(param1:int, param2:ItemTemplateInfo = null, param3:Boolean = true, param4:DisplayObject = null, param5:Boolean = true)
+      public function PyramidCell(index:int, info:ItemTemplateInfo = null, showLoading:Boolean = true, bg:DisplayObject = null, mouseOverEffBoolean:Boolean = true)
       {
-         super(param1,param2,param3,param4,param5);
+         super(index,info,showLoading,bg,mouseOverEffBoolean);
       }
       
       override public function updateCount() : void

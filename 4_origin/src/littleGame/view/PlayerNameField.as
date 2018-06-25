@@ -22,9 +22,9 @@ package littleGame.view
       
       private var _nameField:FilterFrameText;
       
-      public function PlayerNameField(param1:PlayerInfo)
+      public function PlayerNameField(player:PlayerInfo)
       {
-         _player = param1;
+         _player = player;
          super();
          configUI();
          cacheAsBitmap = true;
@@ -43,14 +43,14 @@ package littleGame.view
       
       private function drawBackground() : void
       {
-         var _loc1_:Graphics = graphics;
-         _loc1_.clear();
-         _loc1_.beginFill(0,0.6);
-         _loc1_.drawRoundRect(_nameField.width - _nameField.textWidth - _nameField.x >> 1,0,_nameField.textWidth + _nameField.x * 2,_nameField.textHeight + _nameField.y * 2,4);
+         var g:Graphics = graphics;
+         g.clear();
+         g.beginFill(0,0.6);
+         g.drawRoundRect(_nameField.width - _nameField.textWidth - _nameField.x >> 1,0,_nameField.textWidth + _nameField.x * 2,_nameField.textHeight + _nameField.y * 2,4);
          if(_player.IsVIP)
          {
          }
-         _loc1_.endFill();
+         g.endFill();
       }
       
       public function dispose() : void

@@ -12,9 +12,9 @@ package ddt.manager
       private static var _instance:VipIntegralShopManager;
        
       
-      public function VipIntegralShopManager(param1:IEventDispatcher = null)
+      public function VipIntegralShopManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get Instance() : VipIntegralShopManager

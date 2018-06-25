@@ -55,11 +55,11 @@ package christmas.view.playingSnowman
       
       private var _timer:TimerJuggler;
       
-      public function ChristmasRoomView(param1:ChristmasRoomController, param2:ChristmasRoomModel)
+      public function ChristmasRoomView(controller:ChristmasRoomController, model:ChristmasRoomModel)
       {
          super();
-         this._contoller = param1;
-         this._model = param2;
+         this._contoller = controller;
+         this._model = model;
          initialize();
       }
       
@@ -104,11 +104,11 @@ package christmas.view.playingSnowman
          ChristmasCoreManager.instance.removeEventListener("update_times_room",__updateRoomTimes);
       }
       
-      private function __updateRoomTimes(param1:CrazyTankSocketEvent) : void
+      private function __updateRoomTimes(event:CrazyTankSocketEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         var _loc3_:Date = _loc2_.readDate();
-         ChristmasCoreController.instance.model.gameEndTime = _loc2_.readDate();
+         var pkg:PackageIn = event.pkg;
+         var begin:Date = pkg.readDate();
+         ChristmasCoreController.instance.model.gameEndTime = pkg.readDate();
          ChristmasScneneMap.packsNum = 1;
          firestGetTime();
       }
@@ -138,22 +138,22 @@ package christmas.view.playingSnowman
          _timer.start();
       }
       
-      private function updateTip(param1:Event) : void
+      private function updateTip(e:Event) : void
       {
          firestGetTime();
       }
       
       private function firestGetTime() : void
       {
-         var _loc1_:Date = TimeManager.Instance.Now();
-         var _loc3_:Number = _loc1_.getTime();
-         var _loc5_:Number = ChristmasCoreController.instance.model.gameEndTime.getTime();
-         var _loc6_:Number = _loc5_ - _loc3_;
-         var _loc2_:int = _loc6_ / 3600000;
-         var _loc4_:int = (_loc6_ - _loc2_ * 1000 * 60 * 60) / 60000;
-         if(_loc4_ >= 0)
+         var now:Date = TimeManager.Instance.Now();
+         var nowNum:Number = now.getTime();
+         var endTime:Number = ChristmasCoreController.instance.model.gameEndTime.getTime();
+         var bettwentime:Number = endTime - nowNum;
+         var hours:int = bettwentime / 3600000;
+         var minitues:int = (bettwentime - hours * 1000 * 60 * 60) / 60000;
+         if(minitues >= 0)
          {
-            _activeTimeTxt.text = LanguageMgr.GetTranslation("christmas.flushTimecut",_loc2_,_loc4_ + 1);
+            _activeTimeTxt.text = LanguageMgr.GetTranslation("christmas.flushTimecut",hours,minitues + 1);
          }
          else
          {
@@ -162,38 +162,38 @@ package christmas.view.playingSnowman
          _snowPackNumTxt.text = ChristmasCoreController.instance.getBagSnowPacksCount() + "";
       }
       
-      public function setMap(param1:Point = null) : void
+      public function setMap(localPos:Point = null) : void
       {
          ChristmasCoreController.isFrameChristmas = true;
          clearMap();
-         var _loc7_:MovieClip = new (ClassUtils.uiSourceDomain.getDefinition(LoaderChristmasUIModule.Instance.getMapRes()) as Class)() as MovieClip;
-         var _loc5_:Sprite = _loc7_.getChildByName("articleLayer") as Sprite;
-         var _loc2_:Sprite = _loc7_.getChildByName("NPCMouse") as Sprite;
-         var _loc9_:Sprite = _loc7_.getChildByName("mesh") as Sprite;
-         var _loc6_:Sprite = _loc7_.getChildByName("bg") as Sprite;
-         var _loc8_:Sprite = _loc7_.getChildByName("bgSize") as Sprite;
-         var _loc4_:Sprite = _loc7_.getChildByName("snowCenter") as Sprite;
-         var _loc3_:Sprite = _loc7_.getChildByName("decoration") as Sprite;
-         if(_loc8_)
+         var mapRes:MovieClip = new (ClassUtils.uiSourceDomain.getDefinition(LoaderChristmasUIModule.Instance.getMapRes()) as Class)() as MovieClip;
+         var entity:Sprite = mapRes.getChildByName("articleLayer") as Sprite;
+         var sky:Sprite = mapRes.getChildByName("NPCMouse") as Sprite;
+         var mesh:Sprite = mapRes.getChildByName("mesh") as Sprite;
+         var bg:Sprite = mapRes.getChildByName("bg") as Sprite;
+         var bgSize:Sprite = mapRes.getChildByName("bgSize") as Sprite;
+         var snow:Sprite = mapRes.getChildByName("snowCenter") as Sprite;
+         var decoration:Sprite = mapRes.getChildByName("decoration") as Sprite;
+         if(bgSize)
          {
-            MAP_SIZEII[0] = _loc8_.width;
-            MAP_SIZEII[1] = _loc8_.height;
+            MAP_SIZEII[0] = bgSize.width;
+            MAP_SIZEII[1] = bgSize.height;
          }
          else
          {
-            MAP_SIZEII[0] = _loc6_.width;
-            MAP_SIZEII[1] = _loc6_.height;
+            MAP_SIZEII[0] = bg.width;
+            MAP_SIZEII[1] = bg.height;
          }
-         _sceneScene.setHitTester(new PathMapHitTester(_loc9_));
+         _sceneScene.setHitTester(new PathMapHitTester(mesh));
          if(!_sceneMap)
          {
-            _sceneMap = new ChristmasScneneMap(_model,_sceneScene,_model.getPlayers(),_model.getObjects(),_loc6_,_loc9_,_loc5_,_loc2_,_loc3_,_loc4_);
+            _sceneMap = new ChristmasScneneMap(_model,_sceneScene,_model.getPlayers(),_model.getObjects(),bg,mesh,entity,sky,decoration,snow);
             addChildAt(_sceneMap,0);
          }
          _sceneMap.sceneMapVO = getSceneMapVO();
-         if(param1)
+         if(localPos)
          {
-            _sceneMap.sceneMapVO.defaultPos = param1;
+            _sceneMap.sceneMapVO.defaultPos = localPos;
          }
          _sceneMap.addSelfPlayer();
          _sceneMap.setCenter();
@@ -201,48 +201,48 @@ package christmas.view.playingSnowman
       
       public function getSceneMapVO() : SceneMapVO
       {
-         var _loc1_:SceneMapVO = new SceneMapVO();
-         _loc1_.mapName = LanguageMgr.GetTranslation("church.churchScene.WeddingMainScene");
-         _loc1_.mapW = MAP_SIZEII[0];
-         _loc1_.mapH = MAP_SIZEII[1];
-         _loc1_.defaultPos = ComponentFactory.Instance.creatCustomObject("christmas.RoomView.sceneMapVOPosII");
-         return _loc1_;
+         var sceneMapVO:SceneMapVO = new SceneMapVO();
+         sceneMapVO.mapName = LanguageMgr.GetTranslation("church.churchScene.WeddingMainScene");
+         sceneMapVO.mapW = MAP_SIZEII[0];
+         sceneMapVO.mapH = MAP_SIZEII[1];
+         sceneMapVO.defaultPos = ComponentFactory.Instance.creatCustomObject("christmas.RoomView.sceneMapVOPosII");
+         return sceneMapVO;
       }
       
-      public function movePlayer(param1:int, param2:Array) : void
+      public function movePlayer(id:int, p:Array) : void
       {
          if(_sceneMap)
          {
-            _sceneMap.movePlayer(param1,param2);
+            _sceneMap.movePlayer(id,p);
          }
       }
       
-      public function updatePlayerStauts(param1:int, param2:int, param3:Point = null) : void
+      public function updatePlayerStauts(id:int, status:int, point:Point = null) : void
       {
          if(_sceneMap)
          {
-            _sceneMap.updatePlayersStauts(param1,param2,param3);
+            _sceneMap.updatePlayersStauts(id,status,point);
          }
       }
       
-      public function updateSelfStatus(param1:int) : void
+      public function updateSelfStatus(value:int) : void
       {
-         _sceneMap.updateSelfStatus(param1);
+         _sceneMap.updateSelfStatus(value);
       }
       
-      public function playerRevive(param1:int) : void
+      public function playerRevive(id:int) : void
       {
-         if(_sceneMap.selfPlayer && param1 == _sceneMap.selfPlayer.ID)
+         if(_sceneMap.selfPlayer && id == _sceneMap.selfPlayer.ID)
          {
             if(_roomMenuView)
             {
                _roomMenuView.visible = true;
             }
          }
-         _sceneMap.playerRevive(param1);
+         _sceneMap.playerRevive(id);
       }
       
-      private function _leaveRoom(param1:Event) : void
+      private function _leaveRoom(e:Event) : void
       {
          StateManager.setState("main");
          _contoller.dispose();

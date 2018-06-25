@@ -36,27 +36,27 @@ package quest
          TaskManager.instance.addEventListener("taskGotoQuest",__taskGotoQuestHandler);
       }
       
-      private function __taskFrameShowHandler(param1:Event) : void
+      private function __taskFrameShowHandler(event:Event) : void
       {
          MainFrame.open();
       }
       
-      private function __taskFrameHideHandler(param1:Event) : void
+      private function __taskFrameHideHandler(event:Event) : void
       {
          ObjectUtils.disposeObject(_mainFrame);
       }
       
-      private function __taskJumpToQuestHandler(param1:CEvent) : void
+      private function __taskJumpToQuestHandler(event:CEvent) : void
       {
-         var _loc2_:QuestInfo = param1.data as QuestInfo;
-         MainFrame.jumpToQuest(_loc2_);
+         var info:QuestInfo = event.data as QuestInfo;
+         MainFrame.jumpToQuest(info);
       }
       
-      private function __taskGotoQuestHandler(param1:CEvent) : void
+      private function __taskGotoQuestHandler(event:CEvent) : void
       {
-         var _loc2_:QuestInfo = param1.data as QuestInfo;
+         var info:QuestInfo = event.data as QuestInfo;
          MainFrame.open();
-         MainFrame.gotoQuest(_loc2_);
+         MainFrame.gotoQuest(info);
       }
       
       public function get MainFrame() : TaskMainFrame
@@ -68,9 +68,9 @@ package quest
          return _mainFrame;
       }
       
-      public function set MainFrame(param1:TaskMainFrame) : void
+      public function set MainFrame(value:TaskMainFrame) : void
       {
-         _mainFrame = param1;
+         _mainFrame = value;
       }
    }
 }

@@ -49,32 +49,32 @@ package trainer.controller
          return _isShow;
       }
       
-      public function set isShow(param1:Boolean) : void
+      public function set isShow(value:Boolean) : void
       {
-         _isShow = param1;
+         _isShow = value;
       }
       
       public function setup() : void
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.getLevelRewardPath(),2);
-         _loc1_.loadErrorMessage = "load levelRewards Failed";
-         _loc1_.analyzer = new LevelRewardAnalyzer(onDataComplete);
-         LoadResourceManager.Instance.startLoad(_loc1_);
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.getLevelRewardPath(),2);
+         loader.loadErrorMessage = "load levelRewards Failed";
+         loader.analyzer = new LevelRewardAnalyzer(onDataComplete);
+         LoadResourceManager.Instance.startLoad(loader);
       }
       
-      private function onDataComplete(param1:LevelRewardAnalyzer) : void
+      private function onDataComplete(analyzer:LevelRewardAnalyzer) : void
       {
          if(!WeakGuildManager.Instance.switchUserGuide || PlayerManager.Instance.Self.IsWeakGuildFinish(950))
          {
             return;
          }
-         _reward = param1.list;
+         _reward = analyzer.list;
          PlayerManager.Instance.Self.addEventListener("propertychange",__onChange);
       }
       
-      private function __onChange(param1:PlayerPropertyEvent) : void
+      private function __onChange(event:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["Grade"] && PlayerManager.Instance.Self.IsUpGrade)
+         if(event.changedProperties["Grade"] && PlayerManager.Instance.Self.IsUpGrade)
          {
             if(PlayerManager.Instance.Self.Grade == 6)
             {
@@ -84,15 +84,15 @@ package trainer.controller
          }
       }
       
-      private function __onResponse(param1:FrameEvent) : void
+      private function __onResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          hide();
       }
       
-      public function getRewardInfo(param1:int, param2:int) : LevelRewardInfo
+      public function getRewardInfo(level:int, sort:int) : LevelRewardInfo
       {
-         return _reward[param1][param2];
+         return _reward[level][sort];
       }
       
       public function showSecFrame() : void
@@ -101,18 +101,18 @@ package trainer.controller
          {
             return;
          }
-         var _loc1_:SecondOnlineView = ComponentFactory.Instance.creat("trainer.second.mainFrame");
+         var secFr:SecondOnlineView = ComponentFactory.Instance.creat("trainer.second.mainFrame");
          if(CacheSysManager.isLock("alertInFight"))
          {
-            CacheSysManager.getInstance().cache("alertInFight",new AlertAction(_loc1_,4,2));
+            CacheSysManager.getInstance().cache("alertInFight",new AlertAction(secFr,4,2));
          }
          else
          {
-            _loc1_.show();
+            secFr.show();
          }
       }
       
-      public function showFrame(param1:int) : void
+      public function showFrame(level:int) : void
       {
          if(!WeakGuildManager.Instance.switchUserGuide || PlayerManager.Instance.Self.Grade == 1 || PlayerManager.Instance.Self.IsWeakGuildFinish(950))
          {
@@ -122,13 +122,13 @@ package trainer.controller
          _fr.addEventListener("response",__onResponse);
          if(CacheSysManager.isLock("alertInFight"))
          {
-            _fr.level = param1;
+            _fr.level = level;
             CacheSysManager.getInstance().cache("alertInFight",new AlertAction(_fr,4,2));
          }
          else
          {
-            _fr.level = param1;
-            _fr.show(param1);
+            _fr.level = level;
+            _fr.show(level);
             isShow = true;
          }
       }

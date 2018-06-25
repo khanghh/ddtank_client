@@ -135,101 +135,101 @@ package starling.display
          mask = null;
       }
       
-      public function removeFromParent(param1:Boolean = false) : void
+      public function removeFromParent(dispose:Boolean = false) : void
       {
          if(mParent)
          {
-            mParent.removeChild(this,param1);
+            mParent.removeChild(this,dispose);
          }
-         else if(param1)
+         else if(dispose)
          {
             this.dispose();
          }
       }
       
-      public function getTransformationMatrix(param1:DisplayObject, param2:Matrix = null) : Matrix
+      public function getTransformationMatrix(targetSpace:DisplayObject, resultMatrix:Matrix = null) : Matrix
       {
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         if(param2)
+         var commonParent:* = null;
+         var currentObject:* = null;
+         if(resultMatrix)
          {
-            param2.identity();
+            resultMatrix.identity();
          }
          else
          {
-            param2 = new Matrix();
+            resultMatrix = new Matrix();
          }
-         if(param1 == this)
+         if(targetSpace == this)
          {
-            return param2;
+            return resultMatrix;
          }
-         if(param1 == mParent || param1 == null && mParent == null)
+         if(targetSpace == mParent || targetSpace == null && mParent == null)
          {
-            param2.copyFrom(transformationMatrix);
-            return param2;
+            resultMatrix.copyFrom(transformationMatrix);
+            return resultMatrix;
          }
-         if(param1 == null || param1 == base)
+         if(targetSpace == null || targetSpace == base)
          {
-            _loc3_ = this;
-            while(_loc3_ != param1)
+            currentObject = this;
+            while(currentObject != targetSpace)
             {
-               param2.concat(_loc3_.transformationMatrix);
-               _loc3_ = _loc3_.mParent;
+               resultMatrix.concat(currentObject.transformationMatrix);
+               currentObject = currentObject.mParent;
             }
-            return param2;
+            return resultMatrix;
          }
-         if(param1.mParent == this)
+         if(targetSpace.mParent == this)
          {
-            param1.getTransformationMatrix(this,param2);
-            param2.invert();
-            return param2;
+            targetSpace.getTransformationMatrix(this,resultMatrix);
+            resultMatrix.invert();
+            return resultMatrix;
          }
-         _loc4_ = findCommonParent(this,param1);
-         _loc3_ = this;
-         while(_loc3_ != _loc4_)
+         commonParent = findCommonParent(this,targetSpace);
+         currentObject = this;
+         while(currentObject != commonParent)
          {
-            param2.concat(_loc3_.transformationMatrix);
-            _loc3_ = _loc3_.mParent;
+            resultMatrix.concat(currentObject.transformationMatrix);
+            currentObject = currentObject.mParent;
          }
-         if(_loc4_ == param1)
+         if(commonParent == targetSpace)
          {
-            return param2;
+            return resultMatrix;
          }
          sHelperMatrix.identity();
-         _loc3_ = param1;
-         while(_loc3_ != _loc4_)
+         currentObject = targetSpace;
+         while(currentObject != commonParent)
          {
-            sHelperMatrix.concat(_loc3_.transformationMatrix);
-            _loc3_ = _loc3_.mParent;
+            sHelperMatrix.concat(currentObject.transformationMatrix);
+            currentObject = currentObject.mParent;
          }
          sHelperMatrix.invert();
-         param2.concat(sHelperMatrix);
-         return param2;
+         resultMatrix.concat(sHelperMatrix);
+         return resultMatrix;
       }
       
-      public function getBounds(param1:DisplayObject, param2:Rectangle = null) : Rectangle
+      public function getBounds(targetSpace:DisplayObject, resultRect:Rectangle = null) : Rectangle
       {
          throw new AbstractMethodError();
       }
       
-      public function hitTest(param1:Point, param2:Boolean = false) : DisplayObject
+      public function hitTest(localPoint:Point, forTouch:Boolean = false) : DisplayObject
       {
-         if(param2 && (!mVisible || !mTouchable))
+         if(forTouch && (!mVisible || !mTouchable))
          {
             return null;
          }
-         if(mMask && !hitTestMask(param1))
+         if(mMask && !hitTestMask(localPoint))
          {
             return null;
          }
-         if(getBounds(this,sHelperRect).containsPoint(param1))
+         if(getBounds(this,sHelperRect).containsPoint(localPoint))
          {
             return this;
          }
          return null;
       }
       
-      public function hitTestMask(param1:Point) : Boolean
+      public function hitTestMask(localPoint:Point) : Boolean
       {
          if(mMask)
          {
@@ -242,36 +242,36 @@ package starling.display
                sHelperMatrixAlt.copyFrom(mMask.transformationMatrix);
                sHelperMatrixAlt.invert();
             }
-            MatrixUtil.transformPoint(sHelperMatrixAlt,param1,sHelperPoint);
+            MatrixUtil.transformPoint(sHelperMatrixAlt,localPoint,sHelperPoint);
             return mMask.hitTest(sHelperPoint,true) != null;
          }
          return true;
       }
       
-      public function localToGlobal(param1:Point, param2:Point = null) : Point
+      public function localToGlobal(localPoint:Point, resultPoint:Point = null) : Point
       {
          if(is3D)
          {
-            sHelperPoint3D.setTo(param1.x,param1.y,0);
-            return local3DToGlobal(sHelperPoint3D,param2);
+            sHelperPoint3D.setTo(localPoint.x,localPoint.y,0);
+            return local3DToGlobal(sHelperPoint3D,resultPoint);
          }
          getTransformationMatrix(base,sHelperMatrixAlt);
-         return MatrixUtil.transformPoint(sHelperMatrixAlt,param1,param2);
+         return MatrixUtil.transformPoint(sHelperMatrixAlt,localPoint,resultPoint);
       }
       
-      public function globalToLocal(param1:Point, param2:Point = null) : Point
+      public function globalToLocal(globalPoint:Point, resultPoint:Point = null) : Point
       {
          if(is3D)
          {
-            globalToLocal3D(param1,sHelperPoint3D);
-            return MathUtil.intersectLineWithXYPlane(stage.cameraPosition,sHelperPoint3D,param2);
+            globalToLocal3D(globalPoint,sHelperPoint3D);
+            return MathUtil.intersectLineWithXYPlane(stage.cameraPosition,sHelperPoint3D,resultPoint);
          }
          getTransformationMatrix(base,sHelperMatrixAlt);
          sHelperMatrixAlt.invert();
-         return MatrixUtil.transformPoint(sHelperMatrixAlt,param1,param2);
+         return MatrixUtil.transformPoint(sHelperMatrixAlt,globalPoint,resultPoint);
       }
       
-      public function render(param1:RenderSupport, param2:Number) : void
+      public function render(support:RenderSupport, parentAlpha:Number) : void
       {
          throw new AbstractMethodError();
       }
@@ -281,145 +281,145 @@ package starling.display
          return mAlpha != 0 && mVisible && !mIsMask && mScaleX != 0 && mScaleY != 0;
       }
       
-      public function alignPivot(param1:String = "center", param2:String = "center") : void
+      public function alignPivot(hAlign:String = "center", vAlign:String = "center") : void
       {
-         var _loc3_:Rectangle = getBounds(this);
+         var bounds:Rectangle = getBounds(this);
          mOrientationChanged = true;
-         if(param1 == "left")
+         if(hAlign == "left")
          {
-            mPivotX = _loc3_.x;
+            mPivotX = bounds.x;
          }
-         else if(param1 == "center")
+         else if(hAlign == "center")
          {
-            mPivotX = _loc3_.x + _loc3_.width / 2;
+            mPivotX = bounds.x + bounds.width / 2;
          }
-         else if(param1 == "right")
+         else if(hAlign == "right")
          {
-            mPivotX = _loc3_.x + _loc3_.width;
-         }
-         else
-         {
-            throw new ArgumentError("Invalid horizontal alignment: " + param1);
-         }
-         if(param2 == "top")
-         {
-            mPivotY = _loc3_.y;
-         }
-         else if(param2 == "center")
-         {
-            mPivotY = _loc3_.y + _loc3_.height / 2;
-         }
-         else if(param2 == "bottom")
-         {
-            mPivotY = _loc3_.y + _loc3_.height;
+            mPivotX = bounds.x + bounds.width;
          }
          else
          {
-            throw new ArgumentError("Invalid vertical alignment: " + param2);
+            throw new ArgumentError("Invalid horizontal alignment: " + hAlign);
+         }
+         if(vAlign == "top")
+         {
+            mPivotY = bounds.y;
+         }
+         else if(vAlign == "center")
+         {
+            mPivotY = bounds.y + bounds.height / 2;
+         }
+         else if(vAlign == "bottom")
+         {
+            mPivotY = bounds.y + bounds.height;
+         }
+         else
+         {
+            throw new ArgumentError("Invalid vertical alignment: " + vAlign);
          }
       }
       
-      public function getTransformationMatrix3D(param1:DisplayObject, param2:Matrix3D = null) : Matrix3D
+      public function getTransformationMatrix3D(targetSpace:DisplayObject, resultMatrix:Matrix3D = null) : Matrix3D
       {
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         if(param2)
+         var commonParent:* = null;
+         var currentObject:* = null;
+         if(resultMatrix)
          {
-            param2.identity();
+            resultMatrix.identity();
          }
          else
          {
-            param2 = new Matrix3D();
+            resultMatrix = new Matrix3D();
          }
-         if(param1 == this)
+         if(targetSpace == this)
          {
-            return param2;
+            return resultMatrix;
          }
-         if(param1 == mParent || param1 == null && mParent == null)
+         if(targetSpace == mParent || targetSpace == null && mParent == null)
          {
-            param2.copyFrom(transformationMatrix3D);
-            return param2;
+            resultMatrix.copyFrom(transformationMatrix3D);
+            return resultMatrix;
          }
-         if(param1 == null || param1 == base)
+         if(targetSpace == null || targetSpace == base)
          {
-            _loc3_ = this;
-            while(_loc3_ != param1)
+            currentObject = this;
+            while(currentObject != targetSpace)
             {
-               param2.append(_loc3_.transformationMatrix3D);
-               _loc3_ = _loc3_.mParent;
+               resultMatrix.append(currentObject.transformationMatrix3D);
+               currentObject = currentObject.mParent;
             }
-            return param2;
+            return resultMatrix;
          }
-         if(param1.mParent == this)
+         if(targetSpace.mParent == this)
          {
-            param1.getTransformationMatrix3D(this,param2);
-            param2.invert();
-            return param2;
+            targetSpace.getTransformationMatrix3D(this,resultMatrix);
+            resultMatrix.invert();
+            return resultMatrix;
          }
-         _loc4_ = findCommonParent(this,param1);
-         _loc3_ = this;
-         while(_loc3_ != _loc4_)
+         commonParent = findCommonParent(this,targetSpace);
+         currentObject = this;
+         while(currentObject != commonParent)
          {
-            param2.append(_loc3_.transformationMatrix3D);
-            _loc3_ = _loc3_.mParent;
+            resultMatrix.append(currentObject.transformationMatrix3D);
+            currentObject = currentObject.mParent;
          }
-         if(_loc4_ == param1)
+         if(commonParent == targetSpace)
          {
-            return param2;
+            return resultMatrix;
          }
          sHelperMatrix3D.identity();
-         _loc3_ = param1;
-         while(_loc3_ != _loc4_)
+         currentObject = targetSpace;
+         while(currentObject != commonParent)
          {
-            sHelperMatrix3D.append(_loc3_.transformationMatrix3D);
-            _loc3_ = _loc3_.mParent;
+            sHelperMatrix3D.append(currentObject.transformationMatrix3D);
+            currentObject = currentObject.mParent;
          }
          sHelperMatrix3D.invert();
-         param2.append(sHelperMatrix3D);
-         return param2;
+         resultMatrix.append(sHelperMatrix3D);
+         return resultMatrix;
       }
       
-      public function local3DToGlobal(param1:Vector3D, param2:Point = null) : Point
+      public function local3DToGlobal(localPoint:Vector3D, resultPoint:Point = null) : Point
       {
-         var _loc3_:Stage = this.stage;
-         if(_loc3_ == null)
+         var stage:Stage = this.stage;
+         if(stage == null)
          {
             throw new IllegalOperationError("Object not connected to stage");
          }
-         getTransformationMatrix3D(_loc3_,sHelperMatrixAlt3D);
-         MatrixUtil.transformPoint3D(sHelperMatrixAlt3D,param1,sHelperPoint3D);
-         return MathUtil.intersectLineWithXYPlane(_loc3_.cameraPosition,sHelperPoint3D,param2);
+         getTransformationMatrix3D(stage,sHelperMatrixAlt3D);
+         MatrixUtil.transformPoint3D(sHelperMatrixAlt3D,localPoint,sHelperPoint3D);
+         return MathUtil.intersectLineWithXYPlane(stage.cameraPosition,sHelperPoint3D,resultPoint);
       }
       
-      public function globalToLocal3D(param1:Point, param2:Vector3D = null) : Vector3D
+      public function globalToLocal3D(globalPoint:Point, resultPoint:Vector3D = null) : Vector3D
       {
-         var _loc3_:Stage = this.stage;
-         if(_loc3_ == null)
+         var stage:Stage = this.stage;
+         if(stage == null)
          {
             throw new IllegalOperationError("Object not connected to stage");
          }
-         getTransformationMatrix3D(_loc3_,sHelperMatrixAlt3D);
+         getTransformationMatrix3D(stage,sHelperMatrixAlt3D);
          sHelperMatrixAlt3D.invert();
-         return MatrixUtil.transformCoords3D(sHelperMatrixAlt3D,param1.x,param1.y,0,param2);
+         return MatrixUtil.transformCoords3D(sHelperMatrixAlt3D,globalPoint.x,globalPoint.y,0,resultPoint);
       }
       
-      function setParent(param1:DisplayObjectContainer) : void
+      function setParent(value:DisplayObjectContainer) : void
       {
-         var _loc2_:DisplayObject = param1;
-         while(_loc2_ != this && _loc2_ != null)
+         var ancestor:DisplayObject = value;
+         while(ancestor != this && ancestor != null)
          {
-            _loc2_ = _loc2_.mParent;
+            ancestor = ancestor.mParent;
          }
-         if(_loc2_ == this)
+         if(ancestor == this)
          {
             throw new ArgumentError("An object cannot be added as a child to itself or one of its children (or children\'s children, etc.)");
          }
-         mParent = param1;
+         mParent = value;
       }
       
-      function setIs3D(param1:Boolean) : void
+      function setIs3D(value:Boolean) : void
       {
-         mIs3D = param1;
+         mIs3D = value;
       }
       
       function get isMask() : Boolean
@@ -427,35 +427,35 @@ package starling.display
          return mIsMask;
       }
       
-      private final function isEquivalent(param1:Number, param2:Number, param3:Number = 1.0E-4) : Boolean
+      private final function isEquivalent(a:Number, b:Number, epsilon:Number = 1.0E-4) : Boolean
       {
-         return param1 - param3 < param2 && param1 + param3 > param2;
+         return a - epsilon < b && a + epsilon > b;
       }
       
-      private final function findCommonParent(param1:DisplayObject, param2:DisplayObject) : DisplayObject
+      private final function findCommonParent(object1:DisplayObject, object2:DisplayObject) : DisplayObject
       {
-         var _loc3_:* = param1;
-         while(_loc3_)
+         var currentObject:* = object1;
+         while(currentObject)
          {
-            sAncestors[sAncestors.length] = _loc3_;
-            _loc3_ = _loc3_.mParent;
+            sAncestors[sAncestors.length] = currentObject;
+            currentObject = currentObject.mParent;
          }
-         _loc3_ = param2;
-         while(_loc3_ && sAncestors.indexOf(_loc3_) == -1)
+         currentObject = object2;
+         while(currentObject && sAncestors.indexOf(currentObject) == -1)
          {
-            _loc3_ = _loc3_.mParent;
+            currentObject = currentObject.mParent;
          }
          sAncestors.length = 0;
-         if(_loc3_)
+         if(currentObject)
          {
-            return _loc3_;
+            return currentObject;
          }
          throw new ArgumentError("Object not connected to target");
       }
       
-      public function set angle(param1:Number) : void
+      public function set angle(value:Number) : void
       {
-         rotation = param1 * 3.14159265358979 / 180;
+         rotation = value * 3.14159265358979 / 180;
       }
       
       public function get angle() : Number
@@ -463,18 +463,18 @@ package starling.display
          return rotation * 180 / 3.14159265358979;
       }
       
-      override public function dispatchEvent(param1:Event) : void
+      override public function dispatchEvent(event:Event) : void
       {
-         if(param1.type == "removedFromStage" && stage == null)
+         if(event.type == "removedFromStage" && stage == null)
          {
             return;
          }
-         super.dispatchEvent(param1);
+         super.dispatchEvent(event);
       }
       
-      override public function addEventListener(param1:String, param2:Function) : void
+      override public function addEventListener(type:String, listener:Function) : void
       {
-         if(param1 == "enterFrame" && !hasEventListener(param1))
+         if(type == "enterFrame" && !hasEventListener(type))
          {
             addEventListener("addedToStage",addEnterFrameListenerToStage);
             addEventListener("removedFromStage",removeEnterFrameListenerFromStage);
@@ -483,13 +483,13 @@ package starling.display
                addEnterFrameListenerToStage();
             }
          }
-         super.addEventListener(param1,param2);
+         super.addEventListener(type,listener);
       }
       
-      override public function removeEventListener(param1:String, param2:Function) : void
+      override public function removeEventListener(type:String, listener:Function) : void
       {
-         super.removeEventListener(param1,param2);
-         if(param1 == "enterFrame" && !hasEventListener(param1))
+         super.removeEventListener(type,listener);
+         if(type == "enterFrame" && !hasEventListener(type))
          {
             removeEventListener("addedToStage",addEnterFrameListenerToStage);
             removeEventListener("removedFromStage",removeEnterFrameListenerFromStage);
@@ -497,15 +497,15 @@ package starling.display
          }
       }
       
-      override public function removeEventListeners(param1:String = null) : void
+      override public function removeEventListeners(type:String = null) : void
       {
-         if((param1 == null || param1 == "enterFrame") && hasEventListener("enterFrame"))
+         if((type == null || type == "enterFrame") && hasEventListener("enterFrame"))
          {
             removeEventListener("addedToStage",addEnterFrameListenerToStage);
             removeEventListener("removedFromStage",removeEnterFrameListenerFromStage);
             removeEnterFrameListenerFromStage();
          }
-         super.removeEventListeners(param1);
+         super.removeEventListeners(type);
       }
       
       private function addEnterFrameListenerToStage() : void
@@ -520,14 +520,14 @@ package starling.display
       
       public function get transformationMatrix() : Matrix
       {
-         var _loc6_:Number = NaN;
-         var _loc7_:Number = NaN;
-         var _loc8_:Number = NaN;
-         var _loc4_:Number = NaN;
-         var _loc5_:Number = NaN;
-         var _loc3_:Number = NaN;
-         var _loc2_:Number = NaN;
-         var _loc1_:Number = NaN;
+         var cos:Number = NaN;
+         var sin:Number = NaN;
+         var a:Number = NaN;
+         var b:Number = NaN;
+         var c:Number = NaN;
+         var d:Number = NaN;
+         var tx:Number = NaN;
+         var ty:Number = NaN;
          if(mOrientationChanged)
          {
             mOrientationChanged = false;
@@ -539,15 +539,15 @@ package starling.display
                }
                else
                {
-                  _loc6_ = Math.cos(mRotation);
-                  _loc7_ = Math.sin(mRotation);
-                  _loc8_ = mScaleX * _loc6_;
-                  _loc4_ = mScaleX * _loc7_;
-                  _loc5_ = mScaleY * -_loc7_;
-                  _loc3_ = mScaleY * _loc6_;
-                  _loc2_ = mX - mPivotX * _loc8_ - mPivotY * _loc5_;
-                  _loc1_ = mY - mPivotX * _loc4_ - mPivotY * _loc3_;
-                  mTransformationMatrix.setTo(_loc8_,_loc4_,_loc5_,_loc3_,_loc2_,_loc1_);
+                  cos = Math.cos(mRotation);
+                  sin = Math.sin(mRotation);
+                  a = mScaleX * cos;
+                  b = mScaleX * sin;
+                  c = mScaleY * -sin;
+                  d = mScaleY * cos;
+                  tx = mX - mPivotX * a - mPivotY * c;
+                  ty = mY - mPivotX * b - mPivotY * d;
+                  mTransformationMatrix.setTo(a,b,c,d,tx,ty);
                }
             }
             else
@@ -567,18 +567,18 @@ package starling.display
          return mTransformationMatrix;
       }
       
-      public function set transformationMatrix(param1:Matrix) : void
+      public function set transformationMatrix(matrix:Matrix) : void
       {
          var _loc2_:* = NaN;
          _loc2_ = 0.785398163397448;
          mOrientationChanged = false;
-         mTransformationMatrix.copyFrom(param1);
+         mTransformationMatrix.copyFrom(matrix);
          mPivotY = 0;
          mPivotX = 0;
-         mX = param1.tx;
-         mY = param1.ty;
-         mSkewX = Math.atan(-param1.c / param1.d);
-         mSkewY = Math.atan(param1.b / param1.a);
+         mX = matrix.tx;
+         mY = matrix.ty;
+         mSkewX = Math.atan(-matrix.c / matrix.d);
+         mSkewY = Math.atan(matrix.b / matrix.a);
          if(mSkewX != mSkewX)
          {
             mSkewX = 0;
@@ -587,8 +587,8 @@ package starling.display
          {
             mSkewY = 0;
          }
-         mScaleY = mSkewX > -0.785398163397448 && mSkewX < 0.785398163397448?param1.d / Math.cos(mSkewX):Number(-param1.c / Math.sin(mSkewX));
-         mScaleX = mSkewY > -0.785398163397448 && mSkewY < 0.785398163397448?param1.a / Math.cos(mSkewY):Number(param1.b / Math.sin(mSkewY));
+         mScaleY = mSkewX > -0.785398163397448 && mSkewX < 0.785398163397448?matrix.d / Math.cos(mSkewX):Number(-matrix.c / Math.sin(mSkewX));
+         mScaleX = mSkewY > -0.785398163397448 && mSkewY < 0.785398163397448?matrix.a / Math.cos(mSkewY):Number(matrix.b / Math.sin(mSkewY));
          if(isEquivalent(mSkewX,mSkewY))
          {
             mRotation = mSkewX;
@@ -620,13 +620,13 @@ package starling.display
          return mUseHandCursor;
       }
       
-      public function set useHandCursor(param1:Boolean) : void
+      public function set useHandCursor(value:Boolean) : void
       {
-         if(param1 == mUseHandCursor)
+         if(value == mUseHandCursor)
          {
             return;
          }
-         mUseHandCursor = param1;
+         mUseHandCursor = value;
          if(mUseHandCursor)
          {
             addEventListener("touch",onTouch);
@@ -637,9 +637,9 @@ package starling.display
          }
       }
       
-      private function onTouch(param1:TouchEvent) : void
+      private function onTouch(event:TouchEvent) : void
       {
-         Mouse.cursor = !!param1.interactsWith(this)?"button":"auto";
+         Mouse.cursor = !!event.interactsWith(this)?"button":"auto";
       }
       
       public function get bounds() : Rectangle
@@ -652,13 +652,13 @@ package starling.display
          return getBounds(mParent,sHelperRect).width;
       }
       
-      public function set width(param1:Number) : void
+      public function set width(value:Number) : void
       {
          scaleX = 1;
-         var _loc2_:Number = width;
-         if(_loc2_ != 0)
+         var actualWidth:Number = width;
+         if(actualWidth != 0)
          {
-            scaleX = param1 / _loc2_;
+            scaleX = value / actualWidth;
          }
       }
       
@@ -667,13 +667,13 @@ package starling.display
          return getBounds(mParent,sHelperRect).height;
       }
       
-      public function set height(param1:Number) : void
+      public function set height(value:Number) : void
       {
          scaleY = 1;
-         var _loc2_:Number = height;
-         if(_loc2_ != 0)
+         var actualHeight:Number = height;
+         if(actualHeight != 0)
          {
-            scaleY = param1 / _loc2_;
+            scaleY = value / actualHeight;
          }
       }
       
@@ -682,11 +682,11 @@ package starling.display
          return mX;
       }
       
-      public function set x(param1:Number) : void
+      public function set x(value:Number) : void
       {
-         if(mX != param1)
+         if(mX != value)
          {
-            mX = param1;
+            mX = value;
             mOrientationChanged = true;
          }
       }
@@ -696,11 +696,11 @@ package starling.display
          return mY;
       }
       
-      public function set y(param1:Number) : void
+      public function set y(value:Number) : void
       {
-         if(mY != param1)
+         if(mY != value)
          {
-            mY = param1;
+            mY = value;
             mOrientationChanged = true;
          }
       }
@@ -710,11 +710,11 @@ package starling.display
          return mPivotX;
       }
       
-      public function set pivotX(param1:Number) : void
+      public function set pivotX(value:Number) : void
       {
-         if(mPivotX != param1)
+         if(mPivotX != value)
          {
-            mPivotX = param1;
+            mPivotX = value;
             mOrientationChanged = true;
          }
       }
@@ -724,11 +724,11 @@ package starling.display
          return mPivotY;
       }
       
-      public function set pivotY(param1:Number) : void
+      public function set pivotY(value:Number) : void
       {
-         if(mPivotY != param1)
+         if(mPivotY != value)
          {
-            mPivotY = param1;
+            mPivotY = value;
             mOrientationChanged = true;
          }
       }
@@ -738,11 +738,11 @@ package starling.display
          return mScaleX;
       }
       
-      public function set scaleX(param1:Number) : void
+      public function set scaleX(value:Number) : void
       {
-         if(mScaleX != param1)
+         if(mScaleX != value)
          {
-            mScaleX = param1;
+            mScaleX = value;
             mOrientationChanged = true;
          }
       }
@@ -752,11 +752,11 @@ package starling.display
          return mScaleY;
       }
       
-      public function set scaleY(param1:Number) : void
+      public function set scaleY(value:Number) : void
       {
-         if(mScaleY != param1)
+         if(mScaleY != value)
          {
-            mScaleY = param1;
+            mScaleY = value;
             mOrientationChanged = true;
          }
       }
@@ -766,12 +766,12 @@ package starling.display
          return mSkewX;
       }
       
-      public function set skewX(param1:Number) : void
+      public function set skewX(value:Number) : void
       {
-         param1 = MathUtil.normalizeAngle(param1);
-         if(mSkewX != param1)
+         value = MathUtil.normalizeAngle(value);
+         if(mSkewX != value)
          {
-            mSkewX = param1;
+            mSkewX = value;
             mOrientationChanged = true;
          }
       }
@@ -781,12 +781,12 @@ package starling.display
          return mSkewY;
       }
       
-      public function set skewY(param1:Number) : void
+      public function set skewY(value:Number) : void
       {
-         param1 = MathUtil.normalizeAngle(param1);
-         if(mSkewY != param1)
+         value = MathUtil.normalizeAngle(value);
+         if(mSkewY != value)
          {
-            mSkewY = param1;
+            mSkewY = value;
             mOrientationChanged = true;
          }
       }
@@ -796,12 +796,12 @@ package starling.display
          return mRotation;
       }
       
-      public function set rotation(param1:Number) : void
+      public function set rotation(value:Number) : void
       {
-         param1 = MathUtil.normalizeAngle(param1);
-         if(mRotation != param1)
+         value = MathUtil.normalizeAngle(value);
+         if(mRotation != value)
          {
-            mRotation = param1;
+            mRotation = value;
             mOrientationChanged = true;
          }
       }
@@ -811,9 +811,9 @@ package starling.display
          return mAlpha;
       }
       
-      public function set alpha(param1:Number) : void
+      public function set alpha(value:Number) : void
       {
-         mAlpha = param1 < 0?0:Number(param1 > 1?1:Number(param1));
+         mAlpha = value < 0?0:Number(value > 1?1:Number(value));
       }
       
       public function get visible() : Boolean
@@ -821,9 +821,9 @@ package starling.display
          return mVisible;
       }
       
-      public function set visible(param1:Boolean) : void
+      public function set visible(value:Boolean) : void
       {
-         mVisible = param1;
+         mVisible = value;
       }
       
       public function get touchable() : Boolean
@@ -831,9 +831,9 @@ package starling.display
          return mTouchable;
       }
       
-      public function set touchable(param1:Boolean) : void
+      public function set touchable(value:Boolean) : void
       {
-         mTouchable = param1;
+         mTouchable = value;
       }
       
       public function get blendMode() : String
@@ -841,9 +841,9 @@ package starling.display
          return mBlendMode;
       }
       
-      public function set blendMode(param1:String) : void
+      public function set blendMode(value:String) : void
       {
-         mBlendMode = param1;
+         mBlendMode = value;
       }
       
       public function get name() : String
@@ -851,9 +851,9 @@ package starling.display
          return mName;
       }
       
-      public function set name(param1:String) : void
+      public function set name(value:String) : void
       {
-         mName = param1;
+         mName = value;
       }
       
       public function get filter() : FragmentFilter
@@ -861,9 +861,9 @@ package starling.display
          return mFilter;
       }
       
-      public function set filter(param1:FragmentFilter) : void
+      public function set filter(value:FragmentFilter) : void
       {
-         mFilter = param1;
+         mFilter = value;
       }
       
       public function get mask() : DisplayObject
@@ -871,19 +871,19 @@ package starling.display
          return mMask;
       }
       
-      public function set mask(param1:DisplayObject) : void
+      public function set mask(value:DisplayObject) : void
       {
-         if(mMask != param1)
+         if(mMask != value)
          {
             if(mMask)
             {
                mMask.mIsMask = false;
             }
-            if(param1)
+            if(value)
             {
-               param1.mIsMask = true;
+               value.mIsMask = true;
             }
-            mMask = param1;
+            mMask = value;
          }
       }
       
@@ -894,24 +894,24 @@ package starling.display
       
       public function get base() : DisplayObject
       {
-         var _loc1_:* = this;
-         while(_loc1_.mParent)
+         var currentObject:* = this;
+         while(currentObject.mParent)
          {
-            _loc1_ = _loc1_.mParent;
+            currentObject = currentObject.mParent;
          }
-         return _loc1_;
+         return currentObject;
       }
       
       public function get root() : DisplayObject
       {
-         var _loc1_:* = this;
-         while(_loc1_.mParent)
+         var currentObject:* = this;
+         while(currentObject.mParent)
          {
-            if(_loc1_.mParent is Stage)
+            if(currentObject.mParent is Stage)
             {
-               return _loc1_;
+               return currentObject;
             }
-            _loc1_ = _loc1_.parent;
+            currentObject = currentObject.parent;
          }
          return null;
       }
@@ -930,9 +930,9 @@ package starling.display
          return _laySortY;
       }
       
-      public function set laySortY(param1:Number) : void
+      public function set laySortY(value:Number) : void
       {
-         _laySortY = param1;
+         _laySortY = value;
       }
    }
 }

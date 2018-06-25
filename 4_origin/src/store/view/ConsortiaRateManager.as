@@ -60,32 +60,31 @@ package store.view
          ConsortionModelManager.Instance.model.addEventListener("useConditionChange",_useConditionChange);
       }
       
-      private function __resultConsortiaEquipContro(param1:ConsortionBuildingUseConditionAnalyer) : void
+      private function __resultConsortiaEquipContro(analyzer:ConsortionBuildingUseConditionAnalyer) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:int = param1.useConditionList.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var i:int = 0;
+         var $info:* = null;
+         var len:int = analyzer.useConditionList.length;
+         for(i = 0; i < len; )
          {
-            _loc2_ = param1.useConditionList[_loc4_];
-            if(_loc2_.Type == 2)
+            $info = analyzer.useConditionList[i];
+            if($info.Type == 2)
             {
-               setStripTipDataRichs(_loc2_.Riches);
+               setStripTipDataRichs($info.Riches);
             }
-            _loc4_++;
+            i++;
          }
       }
       
-      private function __consortiaClubSearchResult(param1:ConsortionListAnalyzer) : void
+      private function __consortiaClubSearchResult(analyzer:ConsortionListAnalyzer) : void
       {
-         var _loc2_:* = null;
-         if(param1.consortionList.length > 0)
+         var info:* = null;
+         if(analyzer.consortionList.length > 0)
          {
-            _loc2_ = param1.consortionList[0];
-            if(_loc2_)
+            info = analyzer.consortionList[0];
+            if(info)
             {
-               _SmithLevel = _loc2_.SmithLevel;
+               _SmithLevel = info.SmithLevel;
             }
             _rate = _SmithLevel;
             setStripTipData();
@@ -111,42 +110,42 @@ package store.view
          }
       }
       
-      private function setStripTipDataRichs(param1:int) : void
+      private function setStripTipDataRichs(riches:int) : void
       {
          _selfRich = PlayerManager.Instance.Self.RichesOffer + PlayerManager.Instance.Self.RichesRob;
-         if(_selfRich < param1)
+         if(_selfRich < riches)
          {
             _rate = 0;
          }
-         _needRich = param1;
+         _needRich = riches;
          _loadComplete();
       }
       
-      private function __onLoadErrorII(param1:LoaderEvent) : void
+      private function __onLoadErrorII(event:LoaderEvent) : void
       {
-         var _loc3_:String = param1.loader.loadErrorMessage;
-         if(param1.loader.analyzer)
+         var msg:String = event.loader.loadErrorMessage;
+         if(event.loader.analyzer)
          {
-            _loc3_ = param1.loader.loadErrorMessage + "\n" + param1.loader.analyzer.message;
+            msg = event.loader.loadErrorMessage + "\n" + event.loader.analyzer.message;
          }
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("alert"),param1.loader.loadErrorMessage,LanguageMgr.GetTranslation("tank.view.bagII.baglocked.sure"));
-         _loc2_.addEventListener("response",__onAlertResponseII);
+         var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("alert"),event.loader.loadErrorMessage,LanguageMgr.GetTranslation("tank.view.bagII.baglocked.sure"));
+         alert.addEventListener("response",__onAlertResponseII);
       }
       
-      private function __onAlertResponseII(param1:FrameEvent) : void
+      private function __onAlertResponseII(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         param1.currentTarget.removeEventListener("response",__onAlertResponseII);
-         ObjectUtils.disposeObject(param1.currentTarget);
+         event.currentTarget.removeEventListener("response",__onAlertResponseII);
+         ObjectUtils.disposeObject(event.currentTarget);
       }
       
-      private function _propertyChange(param1:PlayerPropertyEvent) : void
+      private function _propertyChange(e:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["SmithLevel"])
+         if(e.changedProperties["SmithLevel"])
          {
             _SmithLevel = PlayerManager.Instance.Self.consortiaInfo.SmithLevel;
          }
-         if(param1.changedProperties["RichesOffer"] || param1.changedProperties["RichesRob"])
+         if(e.changedProperties["RichesOffer"] || e.changedProperties["RichesRob"])
          {
             _selfRich = PlayerManager.Instance.Self.RichesOffer + PlayerManager.Instance.Self.RichesRob;
          }
@@ -154,21 +153,20 @@ package store.view
          _loadComplete();
       }
       
-      private function _useConditionChange(param1:ConsortionEvent) : void
+      private function _useConditionChange(e:ConsortionEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:Vector.<ConsortiaAssetLevelOffer> = ConsortionModelManager.Instance.model.useConditionList;
-         var _loc4_:int = _loc3_.length;
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         var i:int = 0;
+         var $info:* = null;
+         var list:Vector.<ConsortiaAssetLevelOffer> = ConsortionModelManager.Instance.model.useConditionList;
+         var len:int = list.length;
+         for(i = 0; i < len; )
          {
-            _loc2_ = _loc3_[_loc5_];
-            if(_loc2_.Type == 2)
+            $info = list[i];
+            if($info.Type == 2)
             {
-               setStripTipDataRichs(_loc2_.Riches);
+               setStripTipDataRichs($info.Riches);
             }
-            _loc5_++;
+            i++;
          }
       }
       
@@ -228,16 +226,16 @@ package store.view
          return _rate;
       }
       
-      public function getConsortiaStrengthenEx(param1:int) : Number
+      public function getConsortiaStrengthenEx(level:int) : Number
       {
-         if(param1 - 1 < 0)
+         if(level - 1 < 0)
          {
             return 0;
          }
-         var _loc2_:Array = ServerConfigManager.instance.ConsortiaStrengthenEx();
-         if(_loc2_)
+         var arr:Array = ServerConfigManager.instance.ConsortiaStrengthenEx();
+         if(arr)
          {
-            return _loc2_[param1 - 1];
+            return arr[level - 1];
          }
          return 0;
       }
@@ -247,9 +245,9 @@ package store.view
          dispatchEvent(new Event("loadComplete_consortia"));
       }
       
-      public function sendTransferShowLightEvent(param1:ItemTemplateInfo, param2:Boolean) : void
+      public function sendTransferShowLightEvent(value:ItemTemplateInfo, isShow:Boolean) : void
       {
-         dispatchEvent(new StoreIIEvent("transferLight",param1,param2));
+         dispatchEvent(new StoreIIEvent("transferLight",value,isShow));
       }
       
       public function dispose() : void

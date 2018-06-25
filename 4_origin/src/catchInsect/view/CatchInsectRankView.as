@@ -44,9 +44,9 @@ package catchInsect.view
       
       private var _type:int;
       
-      public function CatchInsectRankView(param1:int)
+      public function CatchInsectRankView(type:int)
       {
-         _type = param1;
+         _type = type;
          super();
          initView();
          initEvents();
@@ -101,76 +101,74 @@ package catchInsect.view
          }
       }
       
-      protected function __updateSelfInfo(param1:CatchInsectEvent) : void
+      protected function __updateSelfInfo(event:CatchInsectEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readInt();
-         if(_loc2_ > 0)
+         var pkg:PackageIn = event.pkg;
+         var rank:int = pkg.readInt();
+         if(rank > 0)
          {
-            _rankTxt.text = _loc2_.toString();
+            _rankTxt.text = rank.toString();
          }
          else
          {
             _rankTxt.text = LanguageMgr.GetTranslation("bombKing.outOfRank2");
          }
-         _needTxt.text = _loc3_.readInt().toString();
+         _needTxt.text = pkg.readInt().toString();
       }
       
-      protected function __updateRankInfo(param1:CatchInsectEvent) : void
+      protected function __updateRankInfo(event:CatchInsectEvent) : void
       {
-         var _loc8_:int = 0;
-         var _loc7_:* = null;
-         var _loc2_:* = null;
-         var _loc5_:* = null;
-         var _loc3_:* = null;
+         var i:int = 0;
+         var info:* = null;
+         var arr:* = null;
+         var arr2:* = null;
+         var cell:* = null;
          clearItems();
          _listItem = new Vector.<CatchInsectRankCell>();
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc6_:int = _loc4_.readInt();
-         _loc8_ = 0;
-         while(_loc8_ <= _loc6_ - 1)
+         var pkg:PackageIn = event.pkg;
+         var len:int = pkg.readInt();
+         for(i = 0; i <= len - 1; )
          {
-            _loc7_ = new CatchInsectRankInfo();
-            _loc7_.place = _loc4_.readInt();
-            _loc7_.score = _loc4_.readInt();
-            _loc7_.name = _loc4_.readUTF();
-            _loc7_.isVIP = _loc4_.readBoolean();
+            info = new CatchInsectRankInfo();
+            info.place = pkg.readInt();
+            info.score = pkg.readInt();
+            info.name = pkg.readUTF();
+            info.isVIP = pkg.readBoolean();
             if(_type == 0)
             {
-               _loc2_ = ServerConfigManager.instance.catchInsectLocalTitle;
-               if(_loc8_ <= _loc2_.length - 1)
+               arr = ServerConfigManager.instance.catchInsectLocalTitle;
+               if(i <= arr.length - 1)
                {
-                  _loc7_.titleNum = _loc2_[_loc8_];
+                  info.titleNum = arr[i];
                }
             }
             else
             {
-               _loc7_.area = _loc4_.readUTF();
-               _loc5_ = ServerConfigManager.instance.catchInsectAreaTitle;
-               if(_loc8_ <= _loc5_.length - 1)
+               info.area = pkg.readUTF();
+               arr2 = ServerConfigManager.instance.catchInsectAreaTitle;
+               if(i <= arr2.length - 1)
                {
-                  _loc7_.titleNum = _loc5_[_loc8_];
+                  info.titleNum = arr2[i];
                }
             }
-            _loc3_ = new CatchInsectRankCell(_type);
-            _loc3_.setData(_loc7_);
-            _vbox.addChild(_loc3_);
-            _listItem.push(_loc3_);
-            _loc8_++;
+            cell = new CatchInsectRankCell(_type);
+            cell.setData(info);
+            _vbox.addChild(cell);
+            _listItem.push(cell);
+            i++;
          }
          _scrollPanel.invalidateViewport();
       }
       
       private function clearItems() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _vbox.removeAllChild();
-         _loc1_ = 0;
-         while(_loc1_ <= _listItem.length - 1)
+         for(i = 0; i <= _listItem.length - 1; )
          {
-            _listItem[_loc1_].dispose();
-            _listItem[_loc1_] = null;
-            _loc1_++;
+            _listItem[i].dispose();
+            _listItem[i] = null;
+            i++;
          }
       }
       
@@ -184,14 +182,13 @@ package catchInsect.view
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          removeEvents();
-         _loc1_ = 0;
-         while(_loc1_ <= _listItem.length - 1)
+         for(i = 0; i <= _listItem.length - 1; )
          {
-            ObjectUtils.disposeObject(_listItem[_loc1_]);
-            _listItem[_loc1_] = null;
-            _loc1_++;
+            ObjectUtils.disposeObject(_listItem[i]);
+            _listItem[i] = null;
+            i++;
          }
          ObjectUtils.disposeObject(_bg);
          _bg = null;

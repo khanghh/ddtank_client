@@ -48,7 +48,7 @@ package beadSystem.controls
          ShowTipManager.Instance.addTip(this);
       }
       
-      public function setCursor(param1:int) : void
+      public function setCursor(index:int) : void
       {
       }
       
@@ -57,26 +57,26 @@ package beadSystem.controls
          return 0;
       }
       
-      public function setValue(param1:*) : void
+      public function setValue(value:*) : void
       {
-         var _loc4_:* = null;
-         var _loc2_:* = null;
-         var _loc3_:InventoryItemInfo = _data;
-         _itemInfo = param1;
+         var url:* = null;
+         var tipInfo:* = null;
+         var oldData:InventoryItemInfo = _data;
+         _itemInfo = value;
          _data = !!_itemInfo?_itemInfo.itemInfo:null;
          if(_data != null)
          {
-            if(_data != _loc3_)
+            if(_data != oldData)
             {
                ObjectUtils.disposeObject(_dataIcon);
                _dataIcon = null;
-               _loc4_ = PathManager.solveGoodsPath(_data.CategoryID,_data.Pic,_data.NeedSex == 1,"icon","A","1",_data.Level,false,_data.type);
-               _dataIcon = new BitmapLoaderProxy(_loc4_,new Rectangle(0,0,24,24));
+               url = PathManager.solveGoodsPath(_data.CategoryID,_data.Pic,_data.NeedSex == 1,"icon","A","1",_data.Level,false,_data.type);
+               _dataIcon = new BitmapLoaderProxy(url,new Rectangle(0,0,24,24));
                PositionUtils.setPos(_dataIcon,"beadSystem.DrillItemIconPos");
                addChild(_dataIcon);
-               _loc2_ = new GoodTipInfo();
-               _loc2_.itemInfo = ItemManager.Instance.getTemplateById(_data.TemplateID);
-               tipData = _loc2_;
+               tipInfo = new GoodTipInfo();
+               tipInfo.itemInfo = ItemManager.Instance.getTemplateById(_data.TemplateID);
+               tipData = tipInfo;
             }
             PositionUtils.setPos(_frameText,"beadSystem.DrillItemTextPos");
             _frameText.text = _itemInfo.amount.toString();

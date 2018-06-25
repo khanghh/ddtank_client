@@ -35,76 +35,94 @@ package morn.core.components
       
       override protected function initialize() : void
       {
-         var _loc1_:DisplayObject = getChildByName("drag");
-         if(_loc1_)
+         var dragTarget:DisplayObject = getChildByName("drag");
+         if(dragTarget)
          {
-            this.dragArea = _loc1_.x + "," + _loc1_.y + "," + _loc1_.width + "," + _loc1_.height;
-            removeElement(_loc1_);
+            dragArea = dragTarget.x + "," + dragTarget.y + "," + dragTarget.width + "," + dragTarget.height;
+            removeElement(dragTarget);
          }
-         addEventListener(MouseEvent.CLICK,this.onClick);
+         addEventListener("click",onClick);
       }
       
-      protected function onClick(param1:MouseEvent) : void
+      protected function onClick(e:MouseEvent) : void
       {
-         var _loc2_:Button = param1.target as Button;
-         if(_loc2_)
+         var btn:Button = e.target as Button;
+         if(btn)
          {
-            switch(_loc2_.name)
+            var _loc3_:* = btn.name;
+            if("close" !== _loc3_)
             {
-               case CLOSE:
-               case CANCEL:
-               case SURE:
-               case NO:
-               case OK:
-               case YES:
-                  this.close(_loc2_.name);
+               if("cancel" !== _loc3_)
+               {
+                  if("sure" !== _loc3_)
+                  {
+                     if("no" !== _loc3_)
+                     {
+                        if("ok" !== _loc3_)
+                        {
+                           if("yes" !== _loc3_)
+                           {
+                           }
+                        }
+                        addr25:
+                        close(btn.name);
+                     }
+                     addr24:
+                     §§goto(addr25);
+                  }
+                  addr23:
+                  §§goto(addr24);
+               }
+               addr22:
+               §§goto(addr23);
             }
+            §§goto(addr22);
          }
       }
       
-      public function show(param1:Boolean = false) : void
+      public function show(closeOther:Boolean = false) : void
       {
-         App.dialog.show(this,param1);
+         App.dialog.show(this,closeOther);
       }
       
-      public function popup(param1:Boolean = false) : void
+      public function popup(closeOther:Boolean = false) : void
       {
-         App.dialog.popup(this,param1);
+         App.dialog.popup(this,closeOther);
       }
       
-      public function close(param1:String = null) : void
+      public function close(type:String = null) : void
       {
          App.dialog.close(this);
-         if(this._closeHandler != null)
+         if(_closeHandler != null)
          {
-            this._closeHandler.executeWith([param1]);
+            _closeHandler.executeWith([type]);
          }
       }
       
       public function get dragArea() : String
       {
-         return StringUtils.rectToString(this._dragArea);
+         return StringUtils.rectToString(_dragArea);
       }
       
-      public function set dragArea(param1:String) : void
+      public function set dragArea(value:String) : void
       {
-         var _loc2_:Array = null;
-         if(Boolean(param1))
+         var a:* = null;
+         if(value)
          {
-            _loc2_ = StringUtils.fillArray([0,0,0,0],param1);
-            this._dragArea = new Rectangle(_loc2_[0],_loc2_[1],_loc2_[2],_loc2_[3]);
-            addEventListener(MouseEvent.MOUSE_DOWN,this.onMouseDown);
+            a = StringUtils.fillArray([0,0,0,0],value);
+            _dragArea = new Rectangle(a[0],a[1],a[2],a[3]);
+            addEventListener("mouseDown",onMouseDown);
          }
          else
          {
-            this._dragArea = null;
-            removeEventListener(MouseEvent.MOUSE_DOWN,this.onMouseDown);
+            _dragArea = null;
+            removeEventListener("mouseDown",onMouseDown);
          }
       }
       
-      private function onMouseDown(param1:MouseEvent) : void
+      private function onMouseDown(e:MouseEvent) : void
       {
-         if(this._dragArea.contains(mouseX,mouseY))
+         if(_dragArea.contains(mouseX,mouseY))
          {
             App.drag.doDrag(this);
          }
@@ -117,22 +135,22 @@ package morn.core.components
       
       public function get popupCenter() : Boolean
       {
-         return this._popupCenter;
+         return _popupCenter;
       }
       
-      public function set popupCenter(param1:Boolean) : void
+      public function set popupCenter(value:Boolean) : void
       {
-         this._popupCenter = param1;
+         _popupCenter = value;
       }
       
       public function get closeHandler() : Handler
       {
-         return this._closeHandler;
+         return _closeHandler;
       }
       
-      public function set closeHandler(param1:Handler) : void
+      public function set closeHandler(value:Handler) : void
       {
-         this._closeHandler = param1;
+         _closeHandler = value;
       }
    }
 }

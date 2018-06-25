@@ -81,7 +81,7 @@ package homeTemple.view
       
       private function initView() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _primaryImmolation = new BagCell(1,ItemManager.Instance.getTemplateById(11176),true);
          _primaryImmolation.scaleX = 0.7;
          _primaryImmolation.scaleY = 0.7;
@@ -136,11 +136,10 @@ package homeTemple.view
          addChild(_levelLabelBmp);
          _nums = new N_BitmapDataNumber();
          _nums.numList = new Vector.<BitmapData>();
-         _loc1_ = 0;
-         while(_loc1_ < 10)
+         for(i = 0; i < 10; )
          {
-            _nums.numList.push(ComponentFactory.Instance.creatBitmapData("asset.home.temple.n" + _loc1_.toString()));
-            _loc1_++;
+            _nums.numList.push(ComponentFactory.Instance.creatBitmapData("asset.home.temple.n" + i.toString()));
+            i++;
          }
          _nums.rect = new Rectangle(1,1,45,20);
          _nums.gap = -1;
@@ -167,7 +166,7 @@ package homeTemple.view
          HomeTempleController.Instance.addEventListener("homeTempleUpdateBlessingState",__onUpdateBlessingState);
       }
       
-      protected function __onUpdateBlessingState(param1:HomeTempleEvent) : void
+      protected function __onUpdateBlessingState(event:HomeTempleEvent) : void
       {
          creatLevelMovie();
       }
@@ -180,8 +179,8 @@ package homeTemple.view
             ObjectUtils.disposeObject(_levelMovie);
             _levelMovie = null;
          }
-         var _loc1_:int = HomeTempleController.Instance.getStarNum();
-         _levelMovie = ComponentFactory.Instance.creat("asset.home.temple.a00" + _loc1_);
+         var movieId:int = HomeTempleController.Instance.getStarNum();
+         _levelMovie = ComponentFactory.Instance.creat("asset.home.temple.a00" + movieId);
          var _loc2_:* = 0.6;
          _levelMovie.scaleY = _loc2_;
          _levelMovie.scaleX = _loc2_;
@@ -191,41 +190,41 @@ package homeTemple.view
       
       private function setImmolationInfo() : void
       {
-         var _loc1_:int = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(11176);
-         var _loc2_:int = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(11177);
-         _item1Txt.text = _loc1_.toString();
-         _item2Txt.text = _loc2_.toString();
-         _primaryImmolation.setCount(_loc1_);
-         _highImmolation.setCount(_loc2_);
-         setSelectImagePos(_loc1_ > 0?_primaryImmolation:_highImmolation);
+         var primaryNum:int = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(11176);
+         var highNum:int = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(11177);
+         _item1Txt.text = primaryNum.toString();
+         _item2Txt.text = highNum.toString();
+         _primaryImmolation.setCount(primaryNum);
+         _highImmolation.setCount(highNum);
+         setSelectImagePos(primaryNum > 0?_primaryImmolation:_highImmolation);
       }
       
-      private function setSelectImagePos(param1:BagCell) : void
+      private function setSelectImagePos(cell:BagCell) : void
       {
-         if(_selectCell != param1)
+         if(_selectCell != cell)
          {
-            _selectCell = param1;
+            _selectCell = cell;
          }
       }
       
-      protected function __onPrimaryClick(param1:MouseEvent) : void
+      protected function __onPrimaryClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          setSelectImagePos(_primaryImmolation);
       }
       
-      protected function __onHighClick(param1:MouseEvent) : void
+      protected function __onHighClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          setSelectImagePos(_highImmolation);
       }
       
-      protected function __onUpdateProperty(param1:HomeTempleEvent) : void
+      protected function __onUpdateProperty(event:HomeTempleEvent) : void
       {
          _textValue.setPropertyValue();
-         var _loc2_:int = param1.data[0] < 6?param1.data[0]:5;
-         var _loc3_:int = param1.data[1] < 6?param1.data[1]:5;
-         playBombAnimation(_loc2_,_loc3_);
+         var minBombNum:int = event.data[0] < 6?event.data[0]:5;
+         var maxBombNum:int = event.data[1] < 6?event.data[1]:5;
+         playBombAnimation(minBombNum,maxBombNum);
          _progress.setProgress();
          setLevelText();
          _item1Txt.text = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(11176).toString();
@@ -236,14 +235,14 @@ package homeTemple.view
       
       private function setLevelText() : void
       {
-         var _loc1_:int = HomeTempleController.Instance.getStarLevelNum();
-         _levelBmp.bitmapData = _nums.getNumber(_loc1_.toString());
+         var level:int = HomeTempleController.Instance.getStarLevelNum();
+         _levelBmp.bitmapData = _nums.getNumber(level.toString());
       }
       
-      private function playBombAnimation(param1:int, param2:int) : void
+      private function playBombAnimation(min:int, max:int) : void
       {
-         min = param1;
-         max = param2;
+         min = min;
+         max = max;
          playUpradeOver = function():void
          {
             playBombAnimation(min,max);
@@ -295,14 +294,14 @@ package homeTemple.view
          }
       }
       
-      protected function __onImmolationClick(param1:MouseEvent) : void
+      protected function __onImmolationClick(event:MouseEvent) : void
       {
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:Boolean = false;
+         var buyFlag:Boolean = false;
          if(_primaryImmolation.getCount() == 0 && _highImmolation.getCount() == 0)
          {
             _rockBuy.dispatchEvent(new MouseEvent("click"));
@@ -319,10 +318,10 @@ package homeTemple.view
             }
             else
             {
-               _loc2_ = true;
+               buyFlag = true;
                _rockBuy.dispatchEvent(new MouseEvent("click"));
             }
-            if(!_loc2_)
+            if(!buyFlag)
             {
                SoundManager.instance.playButtonSound();
                SocketManager.Instance.out.setHomeTempleImmolation(_selectCell.info.TemplateID,_isInjectSelect.selected);
@@ -330,22 +329,22 @@ package homeTemple.view
          }
       }
       
-      protected function __onImmolationOver(param1:MouseEvent) : void
+      protected function __onImmolationOver(event:MouseEvent) : void
       {
          _textValue.setPropertyValue(true);
       }
       
-      protected function __onImmolationOut(param1:MouseEvent) : void
+      protected function __onImmolationOut(event:MouseEvent) : void
       {
          _textValue.setPropertyValue();
       }
       
-      protected function __onInjectSelectClick(param1:MouseEvent) : void
+      protected function __onInjectSelectClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
       }
       
-      protected function __onBuyRockClick(param1:MouseEvent) : void
+      protected function __onBuyRockClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.bagLocked)
@@ -353,13 +352,13 @@ package homeTemple.view
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:ShopItemInfo = ShopManager.Instance.getGoodsByTemplateID(11177,1);
-         var _loc3_:QuickBuyAlertBase = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickBuyAlert");
-         _loc3_.setData(_loc2_.TemplateID,_loc2_.GoodsID,_loc2_.AValue1);
-         LayerManager.Instance.addToLayer(_loc3_,3,true,1);
+         var shopInfo:ShopItemInfo = ShopManager.Instance.getGoodsByTemplateID(11177,1);
+         var quickBuyFrame:QuickBuyAlertBase = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickBuyAlert");
+         quickBuyFrame.setData(shopInfo.TemplateID,shopInfo.GoodsID,shopInfo.AValue1);
+         LayerManager.Instance.addToLayer(quickBuyFrame,3,true,1);
       }
       
-      protected function __onBagUpdate(param1:BagEvent) : void
+      protected function __onBagUpdate(event:BagEvent) : void
       {
          _item1Txt.text = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(11176).toString();
          _item2Txt.text = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(11177).toString();

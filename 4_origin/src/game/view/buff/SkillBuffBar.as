@@ -25,35 +25,35 @@ package game.view.buff
          addChild(_hBox);
       }
       
-      public function addIcon(param1:int) : void
+      public function addIcon(id:int) : void
       {
-         if(_iconDic.hasKey(param1))
+         if(_iconDic.hasKey(id))
          {
             return;
          }
-         var _loc2_:Bitmap = ComponentFactory.Instance.creatBitmap(PATH + param1);
+         var _icon:Bitmap = ComponentFactory.Instance.creatBitmap(PATH + id);
          if(_hBox)
          {
-            _hBox.addChild(_loc2_);
+            _hBox.addChild(_icon);
          }
-         _iconDic.add(param1,_loc2_);
+         _iconDic.add(id,_icon);
       }
       
-      public function removeIcon(param1:int) : void
+      public function removeIcon(id:int) : void
       {
-         var _loc2_:* = null;
-         if(_iconDic && _iconDic.hasKey(param1))
+         var icon:* = null;
+         if(_iconDic && _iconDic.hasKey(id))
          {
-            _loc2_ = _iconDic[param1] as Bitmap;
-            if(_loc2_ && _hBox)
+            icon = _iconDic[id] as Bitmap;
+            if(icon && _hBox)
             {
-               _hBox.removeChild(_loc2_);
+               _hBox.removeChild(icon);
                _hBox.arrange();
             }
-            _iconDic.remove(param1);
-            _loc2_.bitmapData.dispose();
-            _loc2_.bitmapData = null;
-            _loc2_ = null;
+            _iconDic.remove(id);
+            icon.bitmapData.dispose();
+            icon.bitmapData = null;
+            icon = null;
          }
       }
       

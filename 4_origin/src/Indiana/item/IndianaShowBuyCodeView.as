@@ -48,11 +48,11 @@ package Indiana.item
       
       private var timesarr:Array;
       
-      public function IndianaShowBuyCodeView(param1:Array)
+      public function IndianaShowBuyCodeView(beginNum:Array)
       {
          timesarr = [];
          super();
-         _beginNum = param1;
+         _beginNum = beginNum;
          initView();
          initEvent();
          initItem();
@@ -60,61 +60,58 @@ package Indiana.item
       
       private function initItem() : void
       {
-         var _loc1_:int = 0;
-         var _loc7_:int = 0;
-         var _loc3_:int = 0;
-         var _loc6_:int = 0;
-         var _loc2_:* = null;
-         var _loc5_:int = 0;
-         var _loc4_:int = _beginNum.length;
-         _loc6_ = 0;
-         while(_loc6_ < _loc4_)
+         var time:int = 0;
+         var begin:int = 0;
+         var totle:int = 0;
+         var i:int = 0;
+         var str:* = null;
+         var j:int = 0;
+         var len:int = _beginNum.length;
+         for(i = 0; i < len; )
          {
-            _loc7_ = _beginNum[_loc6_].split("|")[0];
-            _loc1_ = _beginNum[_loc6_].split("|")[1];
-            _loc3_ = _loc3_ + _loc1_;
-            _loc5_ = 0;
-            while(_loc5_ < _loc1_)
+            begin = _beginNum[i].split("|")[0];
+            time = _beginNum[i].split("|")[1];
+            totle = totle + time;
+            for(j = 0; j < time; )
             {
-               timesarr.push((_loc7_ + _loc5_).toString());
-               _loc5_++;
+               timesarr.push((begin + j).toString());
+               j++;
             }
-            _loc6_++;
+            i++;
          }
-         _totlePage = Math.ceil(_loc3_ / 15);
+         _totlePage = Math.ceil(totle / 15);
          _pageTxt.text = _currentPage + "/" + _totlePage;
          setPage(_currentPage);
-         _titletimes.text = _loc3_.toString();
+         _titletimes.text = totle.toString();
          _title1Txt.x = _titletimes.x + _titletimes.textWidth + 8;
          _scroller.setView(_content);
       }
       
-      private function setPage(param1:int) : void
+      private function setPage(page:int) : void
       {
-         var _loc5_:* = 0;
-         var _loc6_:int = (param1 - 1) * 15;
-         var _loc4_:int = _loc6_ + 15;
-         var _loc3_:Array = [];
-         var _loc2_:int = 0;
+         var i:* = 0;
+         var begin:int = (page - 1) * 15;
+         var len:int = begin + 15;
+         var temp:Array = [];
+         var index:int = 0;
          _pageTxt.text = _currentPage + "/" + _totlePage;
-         _loc5_ = _loc6_;
-         while(_loc5_ < _loc4_)
+         for(i = begin; i < len; )
          {
-            if(_loc5_ < timesarr.length)
+            if(i < timesarr.length)
             {
-               _loc2_++;
-               if(_loc2_ % 5 == 0)
+               index++;
+               if(index % 5 == 0)
                {
-                  _loc3_.push(timesarr[_loc5_] + "\n");
+                  temp.push(timesarr[i] + "\n");
                }
                else
                {
-                  _loc3_.push(timesarr[_loc5_] + "  ");
+                  temp.push(timesarr[i] + "  ");
                }
             }
-            _loc5_++;
+            i++;
          }
-         _content.text = _loc3_.join("");
+         _content.text = temp.join("");
       }
       
       private function initEvent() : void
@@ -131,7 +128,7 @@ package Indiana.item
          _leftBtn.removeEventListener("click",__leftClickHandler);
       }
       
-      private function __rightClickHandler(param1:MouseEvent) : void
+      private function __rightClickHandler(e:MouseEvent) : void
       {
          if(_currentPage < _totlePage)
          {
@@ -144,7 +141,7 @@ package Indiana.item
          setPage(_currentPage);
       }
       
-      private function __leftClickHandler(param1:MouseEvent) : void
+      private function __leftClickHandler(e:MouseEvent) : void
       {
          if(_currentPage > 1)
          {
@@ -157,7 +154,7 @@ package Indiana.item
          setPage(_currentPage);
       }
       
-      private function __clickHandler(param1:MouseEvent) : void
+      private function __clickHandler(e:MouseEvent) : void
       {
          dispose();
       }
@@ -177,9 +174,9 @@ package Indiana.item
          _rightBtn = ComponentFactory.Instance.creatComponentByStylename("indiana.buycode.right");
          _leftBtn = ComponentFactory.Instance.creatComponentByStylename("indiana.buycode.left");
          _pageTxt = ComponentFactory.Instance.creatComponentByStylename("indiana.buycontent.Txt");
-         var _loc1_:TextFormat = _pageTxt.defaultTextFormat;
-         _loc1_.align = "center";
-         _pageTxt.defaultTextFormat = _loc1_;
+         var format:TextFormat = _pageTxt.defaultTextFormat;
+         format.align = "center";
+         _pageTxt.defaultTextFormat = format;
          _pageTxt.autoSize = "none";
          _pageTxt.width = 60;
          _pageTxt.height = 20;

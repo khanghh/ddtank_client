@@ -34,7 +34,7 @@ package wonderfulActivity.items
          super();
       }
       
-      public function setState(param1:int, param2:int) : void
+      public function setState(type:int, id:int) : void
       {
       }
       
@@ -68,11 +68,11 @@ package wonderfulActivity.items
          {
             return;
          }
-         var _loc1_:String = WonderfulActivityManager.Instance.getTimeDiff(endData,nowdate);
-         _timerTxt.text = _loc1_;
+         var str:String = WonderfulActivityManager.Instance.getTimeDiff(endData,nowdate);
+         _timerTxt.text = str;
       }
       
-      protected function mouseClickHander(param1:MouseEvent) : void
+      protected function mouseClickHander(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)

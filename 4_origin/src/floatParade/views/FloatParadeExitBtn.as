@@ -56,40 +56,40 @@ package floatParade.views
          _returnBtn.addEventListener("click",exitHandler,false,0,true);
       }
       
-      private function outHandler(param1:MouseEvent) : void
+      private function outHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          setInOutVisible(false);
          TweenLite.to(this,0.5,{"x":966});
       }
       
-      private function setInOutVisible(param1:Boolean) : void
+      private function setInOutVisible(isOut:Boolean) : void
       {
-         _moveOutBtn.visible = param1;
-         _moveInBtn.visible = !param1;
+         _moveOutBtn.visible = isOut;
+         _moveInBtn.visible = !isOut;
       }
       
-      private function inHandler(param1:MouseEvent) : void
+      private function inHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          setInOutVisible(true);
          TweenLite.to(this,0.5,{"x":909});
       }
       
-      private function exitHandler(param1:MouseEvent) : void
+      private function exitHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("floatParade.leaveGamePromptTxt"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
-         _loc2_.moveEnable = false;
-         _loc2_.addEventListener("response",__exitConfirm,false,0,true);
+         var confirmFrame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("floatParade.leaveGamePromptTxt"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
+         confirmFrame.moveEnable = false;
+         confirmFrame.addEventListener("response",__exitConfirm,false,0,true);
       }
       
-      private function __exitConfirm(param1:FrameEvent) : void
+      private function __exitConfirm(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__exitConfirm);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",__exitConfirm);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             StateManager.setState("main");
          }

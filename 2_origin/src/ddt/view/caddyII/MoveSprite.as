@@ -30,10 +30,10 @@ package ddt.view.caddyII
       
       private var _src:ItemTemplateInfo;
       
-      public function MoveSprite(param1:ItemTemplateInfo)
+      public function MoveSprite(source:ItemTemplateInfo)
       {
          super();
-         _src = param1;
+         _src = source;
          initView();
       }
       
@@ -41,12 +41,12 @@ package ddt.view.caddyII
       {
          _moveSprite = CaddyModel.instance.moveSprite;
          addChild(_moveSprite);
-         var _loc2_:Point = ComponentFactory.Instance.creatCustomObject("caddy.selectCellSize");
-         var _loc1_:Shape = new Shape();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,75,75);
-         _loc1_.graphics.endFill();
-         _moveCell = ComponentFactory.Instance.creatCustomObject("caddy.moveCell",[_loc1_]);
+         var size:Point = ComponentFactory.Instance.creatCustomObject("caddy.selectCellSize");
+         var shape:Shape = new Shape();
+         shape.graphics.beginFill(16777215,0);
+         shape.graphics.drawRect(0,0,75,75);
+         shape.graphics.endFill();
+         _moveCell = ComponentFactory.Instance.creatCustomObject("caddy.moveCell",[shape]);
          _moveCell.x = _moveCell.width / 2 * -1;
          _moveCell.y = _moveCell.height / 2 * -1;
          _moveSprite.addChild(_moveCell);
@@ -54,10 +54,10 @@ package ddt.view.caddyII
          _moveSprite.visible = false;
       }
       
-      public function setInfo(param1:InventoryItemInfo) : void
+      public function setInfo(info:InventoryItemInfo) : void
       {
-         _selectedGoodsInfo = param1;
-         _moveCell.info = param1;
+         _selectedGoodsInfo = info;
+         _moveCell.info = info;
       }
       
       public function startMove() : void
@@ -65,9 +65,9 @@ package ddt.view.caddyII
          dispatchEvent(new Event("questCellPoint"));
       }
       
-      public function setMovePoint(param1:Point) : void
+      public function setMovePoint(point:Point) : void
       {
-         var _loc2_:Point = globalToLocal(param1);
+         var myPoint:Point = globalToLocal(point);
          _moveSprite.visible = true;
          if(_selectedGoodsInfo && _selectedGoodsInfo.TemplateID == 11550)
          {
@@ -79,8 +79,8 @@ package ddt.view.caddyII
             });
             TweenMax.to(_moveSprite,0.3,{
                "delay":0.5,
-               "x":_loc2_.x + _moveCell.width / 2 + 7,
-               "y":_loc2_.y + _moveCell.height / 2 + 15,
+               "x":myPoint.x + _moveCell.width / 2 + 7,
+               "y":myPoint.y + _moveCell.height / 2 + 15,
                "scaleX":0.5,
                "scaleY":0.5,
                "onComplete":_moveOk
@@ -89,8 +89,8 @@ package ddt.view.caddyII
          else if(_src && _src.TemplateID == 112101)
          {
             TweenMax.to(_moveSprite,0.3,{
-               "x":_loc2_.x + _moveCell.width / 2 + 7,
-               "y":_loc2_.y + _moveCell.height / 2 + 15,
+               "x":myPoint.x + _moveCell.width / 2 + 7,
+               "y":myPoint.y + _moveCell.height / 2 + 15,
                "onComplete":_moveOk
             });
          }
@@ -104,8 +104,8 @@ package ddt.view.caddyII
             });
             TweenMax.to(_moveSprite,0.15,{
                "delay":0.7,
-               "x":_loc2_.x + _moveCell.width / 2 + 7,
-               "y":_loc2_.y + _moveCell.height / 2 + 15,
+               "x":myPoint.x + _moveCell.width / 2 + 7,
+               "y":myPoint.y + _moveCell.height / 2 + 15,
                "onComplete":_moveOk
             });
          }
@@ -113,9 +113,9 @@ package ddt.view.caddyII
       
       private function _moveOk() : void
       {
-         var _loc1_:CaddyEvent = new CaddyEvent("move_complete");
-         _loc1_.info = _selectedGoodsInfo;
-         dispatchEvent(_loc1_);
+         var evt:CaddyEvent = new CaddyEvent("move_complete");
+         evt.info = _selectedGoodsInfo;
+         dispatchEvent(evt);
          if(_moveSprite)
          {
             _moveSprite.visible = false;

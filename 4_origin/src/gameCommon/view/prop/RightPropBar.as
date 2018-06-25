@@ -80,23 +80,23 @@ package gameCommon.view.prop
       
       private var bmp:Bitmap;
       
-      public function RightPropBar(param1:LocalPlayer, param2:DisplayObjectContainer)
+      public function RightPropBar(self:LocalPlayer, container:DisplayObjectContainer)
       {
          _rightPropBarBorder = [];
          _rightPropBarBorder.push(GameDecorateManager.Instance.createBitmapUI(this,"asset.gameDecorate.rightPropBarBg1"));
          _rightPropBarBorder.push(GameDecorateManager.Instance.createBitmapUI(this,"asset.gameDecorate.rightPropBarBg2"));
          isPackUp = false;
-         _container = param2;
-         super(param1);
+         _container = container;
+         super(self);
          setItems();
          checkArmShellSpring();
       }
       
-      private function setPropBarBorder(param1:int, param2:Boolean) : void
+      private function setPropBarBorder(index:int, vis:Boolean) : void
       {
-         if(_rightPropBarBorder && _rightPropBarBorder[param1])
+         if(_rightPropBarBorder && _rightPropBarBorder[index])
          {
-            _rightPropBarBorder[param1].visible = param2;
+            _rightPropBarBorder[index].visible = vis;
          }
       }
       
@@ -105,9 +105,9 @@ package gameCommon.view.prop
          return _isPackUp;
       }
       
-      public function set isPackUp(param1:Boolean) : void
+      public function set isPackUp(value:Boolean) : void
       {
-         _isPackUp = param1;
+         _isPackUp = value;
          if(_isPackUp)
          {
             setPropBarBorder(0,false);
@@ -120,9 +120,9 @@ package gameCommon.view.prop
          }
       }
       
-      override public function set x(param1:Number) : void
+      override public function set x(value:Number) : void
       {
-         .super.x = param1;
+         .super.x = value;
       }
       
       private function addEvents() : void
@@ -131,7 +131,7 @@ package gameCommon.view.prop
          MaxBtnStateManager.getInstance().addEventListener("maxbtnstate_change",onMaxBtnStateChange);
       }
       
-      protected function onMaxBtnStateChange(param1:Event) : void
+      protected function onMaxBtnStateChange(e:Event) : void
       {
          var _loc2_:* = MaxBtnStateManager.getInstance().maxBtnIsPackUp;
          if(true !== _loc2_)
@@ -147,9 +147,9 @@ package gameCommon.view.prop
          }
       }
       
-      public function setup(param1:DisplayObjectContainer) : void
+      public function setup(container:DisplayObjectContainer) : void
       {
-         _container = param1;
+         _container = container;
          _container.addChild(this);
          if(PlayerManager.Instance.Self.Grade >= 16)
          {
@@ -195,57 +195,57 @@ package gameCommon.view.prop
       
       protected function setItems() : void
       {
-         var _loc7_:* = null;
-         var _loc2_:* = null;
-         var _loc1_:Boolean = false;
-         var _loc5_:InventoryItemInfo = PlayerManager.Instance.Self.PropBag.findFistItemByTemplateId(10200,true,true);
-         var _loc3_:Object = SharedManager.Instance.GameKeySets;
+         var info:* = null;
+         var items:* = null;
+         var hasItem:Boolean = false;
+         var propAllProp:InventoryItemInfo = PlayerManager.Instance.Self.PropBag.findFistItemByTemplateId(10200,true,true);
+         var _sets:Object = SharedManager.Instance.GameKeySets;
          var _loc11_:int = 0;
-         var _loc10_:* = _loc3_;
-         for(var _loc4_ in _loc3_)
+         var _loc10_:* = _sets;
+         for(var propId in _sets)
          {
-            if(int(_loc4_) != 9)
+            if(int(propId) != 9)
             {
-               _loc7_ = new PropInfo(ItemManager.Instance.getTemplateById(_loc3_[_loc4_]));
-               if(_loc5_ || PlayerManager.Instance.Self.hasBuff(15))
+               info = new PropInfo(ItemManager.Instance.getTemplateById(_sets[propId]));
+               if(propAllProp || PlayerManager.Instance.Self.hasBuff(15))
                {
-                  if(_loc5_)
+                  if(propAllProp)
                   {
-                     _loc7_.Place = _loc5_.Place;
+                     info.Place = propAllProp.Place;
                   }
                   else
                   {
-                     _loc7_.Place = -1;
+                     info.Place = -1;
                   }
-                  _loc7_.Count = -1;
-                  _cells[int(_loc4_) - 1].info = _loc7_;
-                  _loc1_ = true;
+                  info.Count = -1;
+                  _cells[int(propId) - 1].info = info;
+                  hasItem = true;
                }
                else
                {
-                  _loc2_ = PlayerManager.Instance.Self.PropBag.findItemsByTempleteID(_loc3_[_loc4_]);
-                  if(_loc2_.length > 0)
+                  items = PlayerManager.Instance.Self.PropBag.findItemsByTempleteID(_sets[propId]);
+                  if(items.length > 0)
                   {
-                     _loc7_.Place = _loc2_[0].Place;
+                     info.Place = items[0].Place;
                      var _loc9_:int = 0;
-                     var _loc8_:* = _loc2_;
-                     for each(var _loc6_ in _loc2_)
+                     var _loc8_:* = items;
+                     for each(var i in items)
                      {
-                        _loc7_.Count = _loc7_.Count + _loc6_.Count;
+                        info.Count = info.Count + i.Count;
                      }
-                     _cells[int(_loc4_) - 1].info = _loc7_;
-                     _loc1_ = true;
+                     _cells[int(propId) - 1].info = info;
+                     hasItem = true;
                   }
                   else
                   {
-                     _cells[int(_loc4_) - 1].info = _loc7_;
+                     _cells[int(propId) - 1].info = info;
                   }
                }
                continue;
             }
             break;
          }
-         if(_loc1_)
+         if(hasItem)
          {
             handleItem();
          }
@@ -253,19 +253,19 @@ package gameCommon.view.prop
       
       private function checkArmShellSpring() : void
       {
-         var _loc1_:* = null;
+         var armShellInfo:* = null;
          if(GameControl.Instance.Current.roomType == 120 || GameControl.Instance.Current.roomType == 123)
          {
-            _loc1_ = PlayerManager.Instance.Self.Bag.getItemAt(20);
-            if(_loc1_ && EquipType.isArmShellSpring(_loc1_))
+            armShellInfo = PlayerManager.Instance.Self.Bag.getItemAt(20);
+            if(armShellInfo && EquipType.isArmShellSpring(armShellInfo))
             {
                var _loc4_:int = 0;
                var _loc3_:* = _cells;
-               for each(var _loc2_ in _cells)
+               for each(var cell in _cells)
                {
-                  if(_loc2_.info.TemplateID == 10003)
+                  if(cell.info.TemplateID == 10003)
                   {
-                     _loc2_.enabled = false;
+                     cell.enabled = false;
                      break;
                   }
                }
@@ -273,13 +273,13 @@ package gameCommon.view.prop
          }
       }
       
-      private function clickPropArmShellTotem(param1:int) : void
+      private function clickPropArmShellTotem(id:int) : void
       {
          if(GameControl.Instance.Current)
          {
             if(GameControl.Instance.Current.roomType == 120 || GameControl.Instance.Current.roomType == 123)
             {
-               if(oneTwoThreeSkill.indexOf(param1) != -1)
+               if(oneTwoThreeSkill.indexOf(id) != -1)
                {
                   _self.totemEnabled = false;
                   if(!_self.totemEnabled)
@@ -293,7 +293,7 @@ package gameCommon.view.prop
       
       protected function handleItem() : void
       {
-         var _loc1_:* = null;
+         var shotCut:* = null;
          if(PlayerManager.Instance.Self.Grade >= 16)
          {
             _greyFilter = ComponentFactory.Instance.creatFilters("grayFilter");
@@ -302,11 +302,11 @@ package gameCommon.view.prop
             bmp.smoothing = true;
             bmp.width = 37;
             bmp.height = 37;
-            _loc1_ = ComponentFactory.Instance.creatBitmap("asset.game.prop.ShortcutKey4");
-            _loc1_.x = 23;
-            _loc1_.y = -1;
+            shotCut = ComponentFactory.Instance.creatBitmap("asset.game.prop.ShortcutKey4");
+            shotCut.x = 23;
+            shotCut.y = -1;
             _maxBtn.addChild(bmp);
-            _maxBtn.addChild(_loc1_);
+            _maxBtn.addChild(shotCut);
             PositionUtils.setPos(_maxBtn,"prop.maxbtn");
             _maxBtn.addEventListener("mouseOver",onMaxOver);
             _maxBtn.addEventListener("mouseOut",onMaxOut);
@@ -325,7 +325,7 @@ package gameCommon.view.prop
          }
       }
       
-      protected function onMaxOut(param1:MouseEvent) : void
+      protected function onMaxOut(me:MouseEvent) : void
       {
          _maxBtn.scaleX = 1;
          _maxBtn.x = _maxBtn.x + 3;
@@ -334,7 +334,7 @@ package gameCommon.view.prop
          _maxBtn.filters = [];
       }
       
-      protected function onMaxOver(param1:MouseEvent) : void
+      protected function onMaxOver(me:MouseEvent) : void
       {
          _maxBtn.scaleX = 1.1;
          _maxBtn.x = _maxBtn.x - 3;
@@ -357,36 +357,36 @@ package gameCommon.view.prop
       
       override protected function updatePropByEnergy() : void
       {
-         var _loc2_:* = null;
+         var info:* = null;
          var _loc4_:int = 0;
          var _loc3_:* = _cells;
-         for each(var _loc1_ in _cells)
+         for each(var cell in _cells)
          {
-            if(_loc1_.info)
+            if(cell.info)
             {
-               _loc2_ = _loc1_.info;
-               if(_loc2_)
+               info = cell.info;
+               if(info)
                {
-                  if(_self.energy < _loc2_.needEnergy)
+                  if(_self.energy < info.needEnergy)
                   {
-                     _loc1_.enabled = false;
-                     clearArrowByProp(_loc2_,false,true);
+                     cell.enabled = false;
+                     clearArrowByProp(info,false,true);
                   }
-                  else if(!_self.twoKillEnabled && (_loc1_.info.TemplateID == 10001 || _loc1_.info.TemplateID == 10002 || _loc1_.info.TemplateID == 10003))
+                  else if(!_self.twoKillEnabled && (cell.info.TemplateID == 10001 || cell.info.TemplateID == 10002 || cell.info.TemplateID == 10003))
                   {
-                     _loc1_.enabled = false;
+                     cell.enabled = false;
                   }
-                  else if(!_self.totemEnabled && oneTwoThreeSkill.indexOf(_loc1_.info.TemplateID) != -1)
+                  else if(!_self.totemEnabled && oneTwoThreeSkill.indexOf(cell.info.TemplateID) != -1)
                   {
-                     _loc1_.enabled = false;
+                     cell.enabled = false;
                   }
-                  else if(_loc1_.info.TemplateID == 10003)
+                  else if(cell.info.TemplateID == 10003)
                   {
-                     _loc1_.enabled = _self.threeKillEnabled;
+                     cell.enabled = _self.threeKillEnabled;
                   }
                   else
                   {
-                     _loc1_.enabled = true;
+                     cell.enabled = true;
                   }
                }
             }
@@ -396,94 +396,93 @@ package gameCommon.view.prop
       
       private function checkMaxFilter() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:int = 0;
+         var filters:* = null;
+         var i:int = 0;
          if(_maxBtn)
          {
             _maxBtn.mouseEnabled = false;
-            _loc1_ = _greyFilter;
-            _loc2_ = 3;
-            while(_loc2_ < _cells.length)
+            filters = _greyFilter;
+            for(i = 3; i < _cells.length; )
             {
-               if(_cells[_loc2_].enabled)
+               if(_cells[i].enabled)
                {
-                  _loc1_ = [];
+                  filters = [];
                   _maxBtn.mouseEnabled = true;
                   break;
                }
-               _loc2_++;
+               i++;
             }
-            bmp.filters = _loc1_;
+            bmp.filters = filters;
          }
       }
       
-      private function clearArrowByProp(param1:PropInfo, param2:Boolean = true, param3:Boolean = false) : void
+      private function clearArrowByProp(prop:PropInfo, isTip:Boolean = true, energy:Boolean = false) : void
       {
          if(!WeakGuildManager.Instance.switchUserGuide || PlayerManager.Instance.Self.IsWeakGuildFinish(950))
          {
             return;
          }
-         switch(int(param1.TemplateID) - 10002)
+         switch(int(prop.TemplateID) - 10002)
          {
             case 0:
-               clearArr(20,param2);
+               clearArr(20,isTip);
                break;
             case 1:
-               clearArr(21,param2);
-               if(!param3)
+               clearArr(21,isTip);
+               if(!energy)
                {
-                  clearArr(18,param2);
+                  clearArr(18,isTip);
                }
                break;
             default:
-               clearArr(21,param2);
-               if(!param3)
+               clearArr(21,isTip);
+               if(!energy)
                {
-                  clearArr(18,param2);
+                  clearArr(18,isTip);
                }
                break;
             default:
-               clearArr(21,param2);
-               if(!param3)
+               clearArr(21,isTip);
+               if(!energy)
                {
-                  clearArr(18,param2);
+                  clearArr(18,isTip);
                }
                break;
             default:
-               clearArr(21,param2);
-               if(!param3)
+               clearArr(21,isTip);
+               if(!energy)
                {
-                  clearArr(18,param2);
+                  clearArr(18,isTip);
                }
                break;
             default:
-               clearArr(21,param2);
-               if(!param3)
+               clearArr(21,isTip);
+               if(!energy)
                {
-                  clearArr(18,param2);
+                  clearArr(18,isTip);
                }
                break;
             case 6:
-               clearArr(19,param2);
+               clearArr(19,isTip);
          }
       }
       
-      private function clearArr(param1:int, param2:Boolean) : void
+      private function clearArr(type:int, isTip:Boolean) : void
       {
-         if(NewHandContainer.Instance.hasArrow(param1))
+         if(NewHandContainer.Instance.hasArrow(type))
          {
-            NewHandContainer.Instance.clearArrowByID(param1);
-            if(param2)
+            NewHandContainer.Instance.clearArrowByID(type);
+            if(isTip)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("game.view.propContainer.ItemContainer.energy"));
             }
          }
       }
       
-      override protected function __itemClicked(param1:MouseEvent) : void
+      override protected function __itemClicked(event:MouseEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var cell:* = null;
+         var result:* = null;
          if(!_localVisible)
          {
             return;
@@ -495,22 +494,22 @@ package gameCommon.view.prop
                return;
             }
             _self.isUsedItem = true;
-            _loc3_ = param1.currentTarget as PropCell;
-            if(!_loc3_.enabled)
+            cell = event.currentTarget as PropCell;
+            if(!cell.enabled)
             {
                return;
             }
             SoundManager.instance.play("008");
-            _loc2_ = _self.useProp(_loc3_.info,1);
-            if(_loc2_ != "-1" && _loc2_ != "0")
+            result = _self.useProp(cell.info,1);
+            if(result != "-1" && result != "0")
             {
-               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.game.prop." + _loc2_));
+               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.game.prop." + result));
             }
-            else if(_loc2_ == "-1")
+            else if(result == "-1")
             {
-               clearArrowByProp(_loc3_.info);
+               clearArrowByProp(cell.info);
             }
-            super.__itemClicked(param1);
+            super.__itemClicked(event);
             if(!_self.autoOnHook)
             {
                StageReferance.stage.focus = null;
@@ -522,10 +521,10 @@ package gameCommon.view.prop
       {
          var _loc3_:int = 0;
          var _loc2_:* = _cells;
-         for each(var _loc1_ in _cells)
+         for each(var cell in _cells)
          {
-            _loc1_.addEventListener("click",__itemClicked);
-            _loc1_.addEventListener("mouseDown",__DownItemHandler);
+            cell.addEventListener("click",__itemClicked);
+            cell.addEventListener("mouseDown",__DownItemHandler);
          }
          _self.addEventListener("threekillChanged",__threeKillChanged);
          _self.addEventListener("rightenabledChanged",__rightEnabledChanged);
@@ -537,28 +536,28 @@ package gameCommon.view.prop
          super.addEvent();
       }
       
-      private function __setEnable(param1:Event) : void
+      private function __setEnable(event:Event) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = _cells;
-         for each(var _loc2_ in _cells)
+         for each(var cell in _cells)
          {
-            if(_loc2_.info.TemplateID == 10001)
+            if(cell.info.TemplateID == 10001)
             {
-               _loc2_.enabled = false;
+               cell.enabled = false;
             }
-            if(_loc2_.info.TemplateID == 10003)
+            if(cell.info.TemplateID == 10003)
             {
-               _loc2_.enabled = false;
+               cell.enabled = false;
             }
-            if(_loc2_.info.TemplateID == 10002)
+            if(cell.info.TemplateID == 10002)
             {
-               _loc2_.enabled = false;
+               cell.enabled = false;
             }
          }
       }
       
-      protected function __transparentChanged(param1:Event) : void
+      protected function __transparentChanged(SharedEvent:Event) : void
       {
          if(_tweenComplete && parent)
          {
@@ -573,7 +572,7 @@ package gameCommon.view.prop
          }
       }
       
-      private function __attackingChanged(param1:LivingEvent) : void
+      private function __attackingChanged(evt:LivingEvent) : void
       {
          if(_self.isAttacking && parent == null && _localVisible)
          {
@@ -653,7 +652,7 @@ package gameCommon.view.prop
          }
       }
       
-      private function __shoot(param1:LivingEvent) : void
+      private function __shoot(evt:LivingEvent) : void
       {
          if(PlayerManager.Instance.Self.Grade > 15)
          {
@@ -665,50 +664,50 @@ package gameCommon.view.prop
          }
       }
       
-      override protected function __enabledChanged(param1:LivingEvent) : void
+      override protected function __enabledChanged(event:LivingEvent) : void
       {
          enabled = _self.propEnabled && _self.rightPropEnabled;
          checkArmShellSpring();
       }
       
-      private function __rightEnabledChanged(param1:LivingEvent) : void
+      private function __rightEnabledChanged(evt:LivingEvent) : void
       {
          enabled = _self.propEnabled && _self.rightPropEnabled;
          checkArmShellSpring();
       }
       
-      private function __usingItem(param1:LivingEvent) : void
+      private function __usingItem(evt:LivingEvent) : void
       {
-         var _loc2_:* = null;
-         if(param1.paras[0] is ItemTemplateInfo)
+         var info:* = null;
+         if(evt.paras[0] is ItemTemplateInfo)
          {
-            _loc2_ = param1.paras[0] as ItemTemplateInfo;
-            clickPropArmShellTotem(_loc2_.TemplateID);
+            info = evt.paras[0] as ItemTemplateInfo;
+            clickPropArmShellTotem(info.TemplateID);
          }
       }
       
-      private function __threeKillChanged(param1:LivingEvent) : void
+      private function __threeKillChanged(evt:LivingEvent) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = _cells;
-         for each(var _loc2_ in _cells)
+         for each(var cell in _cells)
          {
-            if(!_self.totemEnabled && oneTwoThreeSkill.indexOf(_loc2_.info.TemplateID) != -1)
+            if(!_self.totemEnabled && oneTwoThreeSkill.indexOf(cell.info.TemplateID) != -1)
             {
-               _loc2_.enabled = false;
+               cell.enabled = false;
             }
-            else if(_loc2_.info.TemplateID == 10003)
+            else if(cell.info.TemplateID == 10003)
             {
-               _loc2_.enabled = _self.threeKillEnabled;
+               cell.enabled = _self.threeKillEnabled;
             }
          }
       }
       
-      override public function set enabled(param1:Boolean) : void
+      override public function set enabled(val:Boolean) : void
       {
-         if(_enabled != param1)
+         if(_enabled != val)
          {
-            _enabled = param1;
+            _enabled = val;
             if(_enabled)
             {
                _cellSprite.filters = null;
@@ -720,21 +719,21 @@ package gameCommon.view.prop
             }
             var _loc4_:int = 0;
             var _loc3_:* = _cells;
-            for each(var _loc2_ in _cells)
+            for each(var cell in _cells)
             {
-               if(_loc2_.info.TemplateID == 10003)
+               if(cell.info.TemplateID == 10003)
                {
-                  _loc2_.enabled = _self.threeKillEnabled;
+                  cell.enabled = _self.threeKillEnabled;
                }
                else
                {
-                  _loc2_.enabled = _enabled;
+                  cell.enabled = _enabled;
                }
             }
          }
       }
       
-      override protected function __keyDown(param1:KeyboardEvent) : void
+      override protected function __keyDown(event:KeyboardEvent) : void
       {
          if(!_enabled || GameControl.Instance.Current.missionInfo && GameControl.Instance.Current.missionInfo.isWorldCupI || RoomManager.Instance.current.type == 41 || RoomManager.Instance.current.type == 42 || GameControl.Instance.Current.mapIndex == 1405)
          {
@@ -744,7 +743,7 @@ package gameCommon.view.prop
          {
             return;
          }
-         var _loc2_:* = param1.keyCode;
+         var _loc2_:* = event.keyCode;
          if(KeyStroke.VK_1.getCode() !== _loc2_)
          {
             if(KeyStroke.VK_NUMPAD_1.getCode() !== _loc2_)
@@ -818,11 +817,11 @@ package gameCommon.view.prop
                }
                _cells[1].useProp();
             }
-            addr211:
+            addr243:
             return;
          }
          _cells[0].useProp();
-         §§goto(addr211);
+         §§goto(addr243);
       }
       
       override protected function configUI() : void
@@ -834,28 +833,27 @@ package gameCommon.view.prop
       
       override protected function drawCells() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var cell:* = null;
          _cellSprite = new Sprite();
          addChild(_cellSprite);
-         _loc2_ = 0;
-         while(_loc2_ < 8)
+         for(i = 0; i < 8; )
          {
-            _loc1_ = new PropCell(String(_loc2_ + 1),_mode,true);
-            _loc1_.addEventListener("click",__itemClicked);
-            _loc1_.addEventListener("mouseDown",__DownItemHandler);
-            _cellSprite.addChild(_loc1_);
-            _cells.push(_loc1_);
-            _loc2_++;
+            cell = new PropCell(String(i + 1),_mode,true);
+            cell.addEventListener("click",__itemClicked);
+            cell.addEventListener("mouseDown",__DownItemHandler);
+            _cellSprite.addChild(cell);
+            _cells.push(cell);
+            i++;
          }
          drawLayer();
       }
       
-      private function __DownItemHandler(param1:MouseEvent) : void
+      private function __DownItemHandler(evt:MouseEvent) : void
       {
          if(PlayerManager.Instance.Self.IsWeakGuildFinish(5) && PlayerManager.Instance.Self.IsWeakGuildFinish(2) && PlayerManager.Instance.Self.IsWeakGuildFinish(12) && PlayerManager.Instance.Self.IsWeakGuildFinish(51) && PlayerManager.Instance.Self.IsWeakGuildFinish(55) && _tweenComplete == true)
          {
-            cell = param1.currentTarget as PropCell;
+            cell = evt.currentTarget as PropCell;
             _tempPlace = _cells.indexOf(cell) + 1;
             _container.addEventListener("mouseUp",__UpItemHandler);
             TweenLite.to(cell,0.5,{"onComplete":OnCellComplete});
@@ -868,7 +866,7 @@ package gameCommon.view.prop
          cell.dragStart();
       }
       
-      private function __UpItemHandler(param1:MouseEvent) : void
+      private function __UpItemHandler(evt:MouseEvent) : void
       {
          TweenLite.killTweensOf(cell);
          _container.removeEventListener("mouseUp",__UpItemHandler);
@@ -914,10 +912,10 @@ package gameCommon.view.prop
       {
          var _loc3_:int = 0;
          var _loc2_:* = _cells;
-         for each(var _loc1_ in _cells)
+         for each(var cell in _cells)
          {
-            _loc1_.removeEventListener("click",__itemClicked);
-            _loc1_.removeEventListener("mouseDown",__DownItemHandler);
+            cell.removeEventListener("click",__itemClicked);
+            cell.removeEventListener("mouseDown",__DownItemHandler);
          }
          _self.removeEventListener("threekillChanged",__threeKillChanged);
          _self.removeEventListener("rightenabledChanged",__rightEnabledChanged);
@@ -934,39 +932,38 @@ package gameCommon.view.prop
       
       override protected function drawLayer() : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
+         var i:int = 0;
+         var y:int = 0;
+         var x:int = 0;
          _startPos = ComponentFactory.Instance.creatCustomObject("RightPropPos" + _mode);
-         var _loc1_:int = _cells.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc1_)
+         var len:int = _cells.length;
+         for(i = 0; i < len; )
          {
             if(_mode == 2)
             {
-               _loc3_ = _startPos.x + 5;
-               _loc2_ = _startPos.y + 6 + _loc4_ * 39;
+               x = _startPos.x + 5;
+               y = _startPos.y + 6 + i * 39;
             }
             else
             {
-               _loc3_ = _startPos.x + 6 + _loc4_ * 39;
-               _loc2_ = _startPos.y + 5;
+               x = _startPos.x + 6 + i * 39;
+               y = _startPos.y + 5;
             }
-            _cells[_loc4_].setPossiton(_loc3_,_loc2_);
-            _cells[_loc4_].setMode(_mode);
+            _cells[i].setPossiton(x,y);
+            _cells[i].setMode(_mode);
             if(_inited)
             {
-               TweenLite.to(_cells[_loc4_],0.05 * (_loc1_ - _loc4_),{
-                  "x":_loc3_,
-                  "y":_loc2_
+               TweenLite.to(_cells[i],0.05 * (len - i),{
+                  "x":x,
+                  "y":y
                });
             }
             else
             {
-               _cells[_loc4_].x = _loc3_;
-               _cells[_loc4_].y = _loc2_;
+               _cells[i].x = x;
+               _cells[i].y = y;
             }
-            _loc4_++;
+            i++;
          }
          DisplayUtils.setFrame(_background,_mode);
          PositionUtils.setPos(_background,_startPos);
@@ -982,28 +979,28 @@ package gameCommon.view.prop
          return _mode;
       }
       
-      public function setPropVisible(param1:int, param2:Boolean) : void
+      public function setPropVisible(idx:int, v:Boolean) : void
       {
-         if(param1 < _cells.length)
+         if(idx < _cells.length)
          {
-            _cells[param1].setVisible(param2);
-            if(param2)
+            _cells[idx].setVisible(v);
+            if(v)
             {
-               if(!_cells[param1].parent)
+               if(!_cells[idx].parent)
                {
-                  _cellSprite.addChild(_cells[param1]);
+                  _cellSprite.addChild(_cells[idx]);
                }
             }
-            else if(_cells[param1].parent)
+            else if(_cells[idx].parent)
             {
-               _cells[param1].parent.removeChild(_cells[param1]);
+               _cells[idx].parent.removeChild(_cells[idx]);
             }
          }
          var _loc5_:int = 0;
          var _loc4_:* = _cells;
-         for each(var _loc3_ in _cells)
+         for each(var cell in _cells)
          {
-            if(_loc3_.localVisible)
+            if(cell.localVisible)
             {
                setVisible(true);
                return;
@@ -1012,11 +1009,11 @@ package gameCommon.view.prop
          setVisible(false);
       }
       
-      public function setVisible(param1:Boolean) : void
+      public function setVisible(val:Boolean) : void
       {
-         if(_localVisible != param1)
+         if(_localVisible != val)
          {
-            _localVisible = param1;
+            _localVisible = val;
             if(_localVisible)
             {
                if(_self.isAttacking && parent == null)
@@ -1033,22 +1030,21 @@ package gameCommon.view.prop
       
       private function addChildToContainer() : void
       {
-         var _loc1_:* = 0;
-         var _loc2_:int = 0;
+         var childIndex:* = 0;
+         var i:int = 0;
          if(_container)
          {
-            _loc1_ = int(_container.numChildren);
-            _loc2_ = 0;
-            while(_loc2_ < _container.numChildren)
+            childIndex = int(_container.numChildren);
+            for(i = 0; i < _container.numChildren; )
             {
-               if(_container.getChildAt(_loc2_) is LiveState)
+               if(_container.getChildAt(i) is LiveState)
                {
-                  _loc1_ = _loc2_;
+                  childIndex = i;
                   break;
                }
-               _loc2_++;
+               i++;
             }
-            _container.addChildAt(this,_loc1_);
+            _container.addChildAt(this,childIndex);
          }
       }
       
@@ -1064,7 +1060,7 @@ package gameCommon.view.prop
          KeyboardManager.getInstance().addEventListener("keyDown",__keyDown);
       }
       
-      protected function onDropDownClick(param1:MouseEvent) : void
+      protected function onDropDownClick(me:MouseEvent) : void
       {
          dropDownEffect();
          MaxBtnStateManager.getInstance().dropDown();
@@ -1072,14 +1068,13 @@ package gameCommon.view.prop
       
       private function dropDownEffect() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          dropDown();
-         _loc1_ = 3;
-         while(_loc1_ < _cells.length)
+         for(i = 3; i < _cells.length; )
          {
-            _cells[_loc1_].visible = true;
-            _cells[_loc1_].mouseEnabled = true;
-            _loc1_++;
+            _cells[i].visible = true;
+            _cells[i].mouseEnabled = true;
+            i++;
          }
          _maxBtn.parent && _maxBtn.parent.removeChild(_maxBtn);
          _maxBtn.removeEventListener("click",onMaxClick);
@@ -1102,7 +1097,7 @@ package gameCommon.view.prop
          }
       }
       
-      protected function onPackUpClick(param1:MouseEvent) : void
+      protected function onPackUpClick(me:MouseEvent) : void
       {
          packUpEffect();
          MaxBtnStateManager.getInstance().packUp();
@@ -1110,14 +1105,13 @@ package gameCommon.view.prop
       
       private function packUpEffect() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          packUp();
-         _loc1_ = 3;
-         while(_loc1_ < _cells.length)
+         for(i = 3; i < _cells.length; )
          {
-            _cells[_loc1_].visible = false;
-            _cells[_loc1_].mouseEnabled = false;
-            _loc1_++;
+            _cells[i].visible = false;
+            _cells[i].mouseEnabled = false;
+            i++;
          }
          _cellSprite.addChild(_maxBtn);
          _maxBtn.addEventListener("click",onMaxClick);
@@ -1140,7 +1134,7 @@ package gameCommon.view.prop
          }
       }
       
-      protected function onMaxClick(param1:MouseEvent) : void
+      protected function onMaxClick(me:MouseEvent) : void
       {
          if(_enabled)
          {
@@ -1150,54 +1144,52 @@ package gameCommon.view.prop
       
       private function useMaxBtn() : void
       {
-         var _loc1_:LocalPlayer = GameControl.Instance.Current.selfGamePlayer;
-         _loc1_.addEventListener("energyChanged",onChange);
+         var player:LocalPlayer = GameControl.Instance.Current.selfGamePlayer;
+         player.addEventListener("energyChanged",onChange);
          sortPercentProps();
          check();
          updatePropByEnergy();
       }
       
-      private function onChange(param1:LivingEvent) : void
+      private function onChange(event:LivingEvent) : void
       {
          check();
       }
       
       private function check() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:LocalPlayer = GameControl.Instance.Current.selfGamePlayer;
-         _loc2_ = 0;
-         while(_loc2_ < _percentPropsList.length)
+         var i:int = 0;
+         var player:LocalPlayer = GameControl.Instance.Current.selfGamePlayer;
+         for(i = 0; i < _percentPropsList.length; )
          {
-            if(_percentPropsList[_loc2_].info.needEnergy <= _loc1_.energy)
+            if(_percentPropsList[i].info.needEnergy <= player.energy)
             {
-               _percentPropsList[_loc2_].dispatchEvent(new MouseEvent("click"));
+               _percentPropsList[i].dispatchEvent(new MouseEvent("click"));
                return;
             }
-            _loc2_++;
+            i++;
          }
-         _loc1_.removeEventListener("energyChanged",onChange);
+         player.removeEventListener("energyChanged",onChange);
       }
       
       private function sortPercentProps() : void
       {
-         sortPercent = function(param1:PropCell, param2:PropCell):Number
+         sortPercent = function(a:PropCell, b:PropCell):Number
          {
-            var _loc3_:int = param1.info.TemplateID;
-            var _loc4_:int = param2.info.TemplateID;
-            if(_loc3_ < _loc4_)
+            var aID:int = a.info.TemplateID;
+            var bID:int = b.info.TemplateID;
+            if(aID < bID)
             {
                return -1;
             }
-            if(_loc3_ == _loc4_)
+            if(aID == bID)
             {
                return 0;
             }
             return 1;
          };
          _percentPropsList.length = 0;
-         var j:int = 0;
-         while(j < _cells.length)
+         for(var j:int = 0; j < _cells.length; )
          {
             switch(int(_cells[j].info.TemplateID) - 10004)
             {

@@ -27,346 +27,348 @@ package morn.core.components
       public function Tree()
       {
          super();
-         this.width = this.height = 200;
+         height = 200;
+         width = 200;
       }
       
       override protected function createChildren() : void
       {
-         addChild(this._list = new List());
-         this._list.renderHandler = new Handler(this.renderItem);
-         this._list.addEventListener(Event.CHANGE,this.onListChange);
+         _list = new List();
+         addChild(new List());
+         _list.renderHandler = new Handler(renderItem);
+         _list.addEventListener("change",onListChange);
       }
       
-      private function onListChange(param1:Event) : void
+      private function onListChange(e:Event) : void
       {
-         sendEvent(Event.CHANGE);
+         sendEvent("change");
       }
       
       public function get keepOpenStatus() : Boolean
       {
-         return this._keepOpenStatus;
+         return _keepOpenStatus;
       }
       
-      public function set keepOpenStatus(param1:Boolean) : void
+      public function set keepOpenStatus(value:Boolean) : void
       {
-         this._keepOpenStatus = param1;
+         _keepOpenStatus = value;
       }
       
       public function get array() : Array
       {
-         return this._list.array;
+         return _list.array;
       }
       
-      public function set array(param1:Array) : void
+      public function set array(value:Array) : void
       {
-         if(this._keepOpenStatus && this._list.array && param1)
+         if(_keepOpenStatus && _list.array && value)
          {
-            this.parseOpenStatus(this._list.array,param1);
+            parseOpenStatus(_list.array,value);
          }
-         this._source = param1;
-         this._list.array = this.getArray();
+         _source = value;
+         _list.array = getArray();
       }
       
       public function get source() : Array
       {
-         return this._source;
+         return _source;
       }
       
       public function get list() : List
       {
-         return this._list;
+         return _list;
       }
       
       public function get itemRender() : *
       {
-         return this._list.itemRender;
+         return _list.itemRender;
       }
       
-      public function set itemRender(param1:*) : void
+      public function set itemRender(value:*) : void
       {
-         this._list.itemRender = param1;
+         _list.itemRender = value;
       }
       
       public function get scrollBarSkin() : String
       {
-         return this._list.vScrollBarSkin;
+         return _list.vScrollBarSkin;
       }
       
-      public function set scrollBarSkin(param1:String) : void
+      public function set scrollBarSkin(value:String) : void
       {
-         this._list.vScrollBarSkin = param1;
+         _list.vScrollBarSkin = value;
       }
       
       public function get mouseHandler() : Handler
       {
-         return this._list.mouseHandler;
+         return _list.mouseHandler;
       }
       
-      public function set mouseHandler(param1:Handler) : void
+      public function set mouseHandler(value:Handler) : void
       {
-         this._list.mouseHandler = param1;
+         _list.mouseHandler = value;
       }
       
       public function get renderHandler() : Handler
       {
-         return this._renderHandler;
+         return _renderHandler;
       }
       
-      public function set renderHandler(param1:Handler) : void
+      public function set renderHandler(value:Handler) : void
       {
-         this._renderHandler = param1;
+         _renderHandler = value;
       }
       
       public function get spaceLeft() : Number
       {
-         return this._spaceLeft;
+         return _spaceLeft;
       }
       
-      public function set spaceLeft(param1:Number) : void
+      public function set spaceLeft(value:Number) : void
       {
-         this._spaceLeft = param1;
+         _spaceLeft = value;
       }
       
       public function get spaceBottom() : Number
       {
-         return this._list.spaceY;
+         return _list.spaceY;
       }
       
-      public function set spaceBottom(param1:Number) : void
+      public function set spaceBottom(value:Number) : void
       {
-         this._list.spaceY = param1;
+         _list.spaceY = value;
       }
       
       public function get selectedIndex() : int
       {
-         return this._list.selectedIndex;
+         return _list.selectedIndex;
       }
       
-      public function set selectedIndex(param1:int) : void
+      public function set selectedIndex(value:int) : void
       {
-         this._list.selectedIndex = param1;
+         _list.selectedIndex = value;
       }
       
       public function get selectedItem() : Object
       {
-         return this._list.selectedItem;
+         return _list.selectedItem;
       }
       
-      public function set selectedItem(param1:Object) : void
+      public function set selectedItem(value:Object) : void
       {
-         this._list.selectedItem = param1;
+         _list.selectedItem = value;
       }
       
-      override public function set width(param1:Number) : void
+      override public function set width(value:Number) : void
       {
-         super.width = param1;
-         this._list.width = param1;
+         .super.width = value;
+         _list.width = value;
       }
       
-      override public function set height(param1:Number) : void
+      override public function set height(value:Number) : void
       {
-         super.height = param1;
-         this._list.height = param1;
+         .super.height = value;
+         _list.height = value;
       }
       
       protected function getArray() : Array
       {
-         var _loc2_:Object = null;
-         var _loc1_:Array = [];
-         for each(_loc2_ in this._source)
+         var arr:Array = [];
+         var _loc4_:int = 0;
+         var _loc3_:* = _source;
+         for each(var item in _source)
          {
-            if(this.getParentOpenStatus(_loc2_))
+            if(getParentOpenStatus(item))
             {
-               _loc2_.x = this._spaceLeft * this.getDepth(_loc2_);
-               _loc1_.push(_loc2_);
+               item.x = _spaceLeft * getDepth(item);
+               arr.push(item);
             }
          }
-         return _loc1_;
+         return arr;
       }
       
-      protected function getDepth(param1:Object, param2:int = 0) : int
+      protected function getDepth(item:Object, num:int = 0) : int
       {
-         if(param1.nodeParent == null)
+         if(item.nodeParent == null)
          {
-            return param2;
+            return num;
          }
-         return this.getDepth(param1.nodeParent,param2 + 1);
+         return getDepth(item.nodeParent,num + 1);
       }
       
-      protected function getParentOpenStatus(param1:Object) : Boolean
+      protected function getParentOpenStatus(item:Object) : Boolean
       {
-         var _loc2_:Object = param1.nodeParent;
-         if(_loc2_ == null)
+         var parent:Object = item.nodeParent;
+         if(parent == null)
          {
             return true;
          }
-         if(_loc2_.isOpen)
+         if(parent.isOpen)
          {
-            if(_loc2_.nodeParent != null)
+            if(parent.nodeParent != null)
             {
-               return this.getParentOpenStatus(_loc2_);
+               return getParentOpenStatus(parent);
             }
             return true;
          }
          return false;
       }
       
-      private function renderItem(param1:Box, param2:int) : void
+      private function renderItem(cell:Box, index:int) : void
       {
-         var _loc4_:Clip = null;
-         var _loc5_:Clip = null;
-         var _loc3_:Object = param1.dataSource;
-         if(_loc3_)
+         var arrow:* = null;
+         var folder:* = null;
+         var item:Object = cell.dataSource;
+         if(item)
          {
-            param1.left = _loc3_.x;
-            _loc4_ = param1.getChildByName("arrow") as Clip;
-            if(_loc4_)
+            cell.left = item.x;
+            arrow = cell.getChildByName("arrow") as Clip;
+            if(arrow)
             {
-               if(_loc3_.hasChild)
+               if(item.hasChild)
                {
-                  _loc4_.visible = true;
-                  _loc4_.frame = !!_loc3_.isOpen?1:0;
-                  _loc4_.tag = param2;
-                  _loc4_.addEventListener(MouseEvent.CLICK,this.onArrowClick);
+                  arrow.visible = true;
+                  arrow.frame = !!item.isOpen?1:0;
+                  arrow.tag = index;
+                  arrow.addEventListener("click",onArrowClick);
                }
                else
                {
-                  _loc4_.visible = false;
+                  arrow.visible = false;
                }
             }
-            _loc5_ = param1.getChildByName("folder") as Clip;
-            if(_loc5_)
+            folder = cell.getChildByName("folder") as Clip;
+            if(folder)
             {
-               if(_loc5_.clipY == 2)
+               if(folder.clipY == 2)
                {
-                  _loc5_.frame = !!_loc3_.isDirectory?0:1;
+                  folder.frame = !!item.isDirectory?0:1;
                }
                else
                {
-                  _loc5_.frame = !!_loc3_.isDirectory?!!_loc3_.isOpen?1:0:2;
+                  folder.frame = !!item.isDirectory?!!item.isOpen?1:0:2;
                }
             }
-            if(this._renderHandler != null)
+            if(_renderHandler != null)
             {
-               this._renderHandler.executeWith([param1,param2]);
+               _renderHandler.executeWith([cell,index]);
             }
          }
       }
       
-      private function onArrowClick(param1:MouseEvent) : void
+      private function onArrowClick(e:MouseEvent) : void
       {
-         var _loc2_:Clip = param1.currentTarget as Clip;
-         var _loc3_:int = int(_loc2_.tag);
-         this._list.array[_loc3_].isOpen = !this._list.array[_loc3_].isOpen;
-         this._list.array = this.getArray();
+         var arrow:Clip = e.currentTarget as Clip;
+         var index:int = arrow.tag;
+         _list.array[index].isOpen = !_list.array[index].isOpen;
+         _list.array = getArray();
       }
       
-      override public function set dataSource(param1:Object) : void
+      override public function set dataSource(value:Object) : void
       {
-         _dataSource = param1;
-         if(param1 is XML)
+         _dataSource = value;
+         if(value is XML)
          {
-            this.xml = param1 as XML;
+            xml = value as XML;
          }
          else
          {
-            super.dataSource = param1;
+            .super.dataSource = value;
          }
       }
       
       public function get xml() : XML
       {
-         return this._xml;
+         return _xml;
       }
       
-      public function set xml(param1:XML) : void
+      public function set xml(value:XML) : void
       {
-         this._xml = param1;
-         var _loc2_:Array = [];
-         this.parseXml(this.xml,_loc2_,null,true);
-         this.array = _loc2_;
+         _xml = value;
+         var arr:Array = [];
+         parseXml(xml,arr,null,true);
+         array = arr;
       }
       
-      protected function parseXml(param1:XML, param2:Array, param3:Object, param4:Boolean) : void
+      protected function parseXml(xml:XML, source:Array, nodeParent:Object, isRoot:Boolean) : void
       {
-         var _loc5_:Object = null;
-         var _loc9_:XMLList = null;
-         var _loc10_:XML = null;
-         var _loc11_:String = null;
-         var _loc12_:String = null;
-         var _loc13_:XML = null;
-         var _loc6_:XMLList = param1.children();
-         var _loc7_:int = _loc6_.length();
-         if(!param4)
+         var obj:* = null;
+         var list2:* = null;
+         var prop:* = null;
+         var value:* = null;
+         var i:int = 0;
+         var node:* = null;
+         var list:XMLList = xml.children();
+         var childCount:int = list.length();
+         if(!isRoot)
          {
-            _loc5_ = {};
-            _loc9_ = param1.attributes();
-            for each(_loc10_ in _loc9_)
+            obj = {};
+            list2 = xml.attributes();
+            var _loc15_:int = 0;
+            var _loc14_:* = list2;
+            for each(var attrs in list2)
             {
-               _loc11_ = _loc10_.name().toString();
-               _loc12_ = _loc10_;
-               _loc5_[_loc11_] = _loc12_ == "true"?true:_loc12_ == "false"?false:_loc12_;
+               prop = attrs.name().toString();
+               value = attrs;
+               obj[prop] = value == "true"?true:value == "false"?false:value;
             }
-            _loc5_.nodeParent = param3;
-            if(_loc7_ > 0)
+            obj.nodeParent = nodeParent;
+            if(childCount > 0)
             {
-               _loc5_.isDirectory = true;
+               obj.isDirectory = true;
             }
-            _loc5_.hasChild = _loc7_ > 0;
-            param2.push(_loc5_);
+            obj.hasChild = childCount > 0;
+            source.push(obj);
          }
-         var _loc8_:int = 0;
-         while(_loc8_ < _loc7_)
+         for(i = 0; i < childCount; )
          {
-            _loc13_ = _loc6_[_loc8_];
-            this.parseXml(_loc13_,param2,_loc5_,false);
-            _loc8_++;
+            node = list[i];
+            parseXml(node,source,obj,false);
+            i++;
          }
       }
       
-      protected function parseOpenStatus(param1:Array, param2:Array) : void
+      protected function parseOpenStatus(oldSource:Array, newSource:Array) : void
       {
-         var _loc5_:Object = null;
-         var _loc6_:int = 0;
-         var _loc7_:int = 0;
-         var _loc8_:Object = null;
-         var _loc3_:int = 0;
-         var _loc4_:int = param2.length;
-         while(_loc3_ < _loc4_)
+         var i:int = 0;
+         var n:int = 0;
+         var newItem:* = null;
+         var j:int = 0;
+         var m:int = 0;
+         var oldItem:* = null;
+         for(i = 0,n = newSource.length; i < n; )
          {
-            _loc5_ = param2[_loc3_];
-            if(_loc5_.isDirectory)
+            newItem = newSource[i];
+            if(newItem.isDirectory)
             {
-               _loc6_ = 0;
-               _loc7_ = param1.length;
-               while(_loc6_ < _loc7_)
+               for(j = 0,m = oldSource.length; j < m; )
                {
-                  _loc8_ = param1[_loc6_];
-                  if(_loc8_.isDirectory && this.isSameParent(_loc8_,_loc5_) && _loc5_.label == _loc8_.label)
+                  oldItem = oldSource[j];
+                  if(oldItem.isDirectory && isSameParent(oldItem,newItem) && newItem.label == oldItem.label)
                   {
-                     _loc5_.isOpen = _loc8_.isOpen;
+                     newItem.isOpen = oldItem.isOpen;
                      break;
                   }
-                  _loc6_++;
+                  j++;
                }
             }
-            _loc3_++;
+            i++;
          }
       }
       
-      protected function isSameParent(param1:Object, param2:Object) : Boolean
+      protected function isSameParent(item1:Object, item2:Object) : Boolean
       {
-         if(param1.nodeParent == null && param2.nodeParent == null)
+         if(item1.nodeParent == null && item2.nodeParent == null)
          {
             return true;
          }
-         if(param1.nodeParent == null || param2.nodeParent == null)
+         if(item1.nodeParent == null || item2.nodeParent == null)
          {
             return false;
          }
-         if(param1.nodeParent.label == param2.nodeParent.label)
+         if(item1.nodeParent.label == item2.nodeParent.label)
          {
-            return this.isSameParent(param1.nodeParent,param2.nodeParent);
+            return isSameParent(item1.nodeParent,item2.nodeParent);
          }
          return false;
       }
@@ -374,11 +376,11 @@ package morn.core.components
       override public function dispose() : void
       {
          super.dispose();
-         this._list && this._list.dispose();
-         this._list = null;
-         this._source = null;
-         this._xml = null;
-         this._renderHandler = null;
+         _list && _list.dispose();
+         _list = null;
+         _source = null;
+         _xml = null;
+         _renderHandler = null;
       }
    }
 }

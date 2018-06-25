@@ -70,9 +70,9 @@ package im
          _levelIcon.setSize(1);
          addChild(_levelIcon);
          _sexIcon = new SexIcon(false);
-         var _loc1_:Point = ComponentFactory.Instance.creatCustomObject("IM.IMListPlayerItemCell.sexIconPos");
-         _sexIcon.x = _loc1_.x;
-         _sexIcon.y = _loc1_.y;
+         var pos:Point = ComponentFactory.Instance.creatCustomObject("IM.IMListPlayerItemCell.sexIconPos");
+         _sexIcon.x = pos.x;
+         _sexIcon.y = pos.y;
          addChild(_sexIcon);
          _nameText = ComponentFactory.Instance.creat("IM.item.name");
          _nameText.text = "";
@@ -98,23 +98,23 @@ package im
          _privateChatBtn.addEventListener("click",__privateChatBtnClick);
       }
       
-      private function __privateChatBtnClick(param1:MouseEvent) : void
+      private function __privateChatBtnClick(event:MouseEvent) : void
       {
          ChatManager.Instance.privateChatTo(_info.NickName,_info.ID);
          ChatManager.Instance.setFocus();
          SoundManager.instance.play("008");
       }
       
-      private function __itemClick(param1:MouseEvent) : void
+      private function __itemClick(event:MouseEvent) : void
       {
-         if(!(param1.target is SimpleBitmapButton) && _info.type == 1)
+         if(!(event.target is SimpleBitmapButton) && _info.type == 1)
          {
             PlayerTipManager.show(_info,localToGlobal(new Point(0,0)).y);
             SoundManager.instance.play("008");
          }
       }
       
-      private function __itemOver(param1:MouseEvent) : void
+      private function __itemOver(event:MouseEvent) : void
       {
          if(!_info.isSelected)
          {
@@ -130,7 +130,7 @@ package im
          }
       }
       
-      private function __itemOut(param1:MouseEvent) : void
+      private function __itemOut(event:MouseEvent) : void
       {
          if(!_info.isSelected)
          {
@@ -232,7 +232,7 @@ package im
          }
       }
       
-      public function setListCellStatus(param1:List, param2:Boolean, param3:int) : void
+      public function setListCellStatus(list:List, isSelected:Boolean, index:int) : void
       {
       }
       
@@ -241,9 +241,9 @@ package im
          return _info;
       }
       
-      public function setCellValue(param1:*) : void
+      public function setCellValue(value:*) : void
       {
-         _info = param1;
+         _info = value;
          if(_info.type == 1)
          {
             update();
@@ -267,9 +267,9 @@ package im
          }
       }
       
-      private function setItemSelectedState(param1:Boolean) : void
+      private function setItemSelectedState(value:Boolean) : void
       {
-         if(param1)
+         if(value)
          {
             _triangle.setFrame(2);
             _friendBG.setFrame(3);

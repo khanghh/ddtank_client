@@ -66,10 +66,10 @@ package draft.view
          sendPkg();
       }
       
-      private function sendPkg(param1:int = 1) : void
+      private function sendPkg(page:int = 1) : void
       {
          SocketManager.Instance.out.getPlayerSpecialProperty(1);
-         LoadResourceManager.Instance.startLoad(getDraftPlayerData(param1));
+         LoadResourceManager.Instance.startLoad(getDraftPlayerData(page));
       }
       
       private function initView() : void
@@ -98,18 +98,17 @@ package draft.view
       
       private function creatPlayer() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:int = _playerVec.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var i:int = 0;
+         var player:* = null;
+         var count:int = _playerVec.length;
+         for(i = 0; i < count; )
          {
-            _loc1_ = new DraftPlayer();
-            _loc1_.x = 55 + _loc3_ * 147;
-            _loc1_.y = 176;
-            addToContent(_loc1_);
-            _playerVec[_loc3_] = _loc1_;
-            _loc3_++;
+            player = new DraftPlayer();
+            player.x = 55 + i * 147;
+            player.y = 176;
+            addToContent(player);
+            _playerVec[i] = player;
+            i++;
          }
       }
       
@@ -124,19 +123,19 @@ package draft.view
          PlayerManager.Instance.Self.addEventListener("propertychange",__onUpdateProperty);
       }
       
-      protected function __onResponse(param1:KeyboardEvent) : void
+      protected function __onResponse(event:KeyboardEvent) : void
       {
-         if(param1.keyCode == 27)
+         if(event.keyCode == 27)
          {
             __onCloseClick(null);
          }
       }
       
-      protected function __onDraftVote(param1:PkgEvent) : void
+      protected function __onDraftVote(event:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:Boolean = _loc3_.readBoolean();
-         if(_loc2_)
+         var pkg:PackageIn = event.pkg;
+         var flag:Boolean = pkg.readBoolean();
+         if(flag)
          {
             sendPkg(_currentPage);
          }
@@ -146,14 +145,14 @@ package draft.view
          }
       }
       
-      protected function __onLastRankClick(param1:MouseEvent) : void
+      protected function __onLastRankClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:DraftLastWeekRank = new DraftLastWeekRank();
-         LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+         var lastRankView:DraftLastWeekRank = new DraftLastWeekRank();
+         LayerManager.Instance.addToLayer(lastRankView,3,true,1);
       }
       
-      protected function __onForeBtnClick(param1:MouseEvent) : void
+      protected function __onForeBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(_currentPage > 1)
@@ -167,7 +166,7 @@ package draft.view
          LoadResourceManager.Instance.startLoad(getDraftPlayerData(_currentPage));
       }
       
-      protected function __onNextBtnClick(param1:MouseEvent) : void
+      protected function __onNextBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(_currentPage < DraftModel.Total)
@@ -181,9 +180,9 @@ package draft.view
          LoadResourceManager.Instance.startLoad(getDraftPlayerData(_currentPage));
       }
       
-      private function __onUpdateProperty(param1:PlayerPropertyEvent) : void
+      private function __onUpdateProperty(event:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["ticketNum"])
+         if(event.changedProperties["ticketNum"])
          {
             DraftControl.instance.TicketNum = PlayerManager.Instance.Self.ticketNum;
             DraftModel.UploadNum = PlayerManager.Instance.Self.uploadNum;
@@ -191,45 +190,44 @@ package draft.view
          }
       }
       
-      private function getDraftPlayerData(param1:int = 1) : BaseLoader
+      private function getDraftPlayerData(page:int = 1) : BaseLoader
       {
-         var _loc3_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         _loc3_["page"] = param1;
-         _loc3_["size"] = 5;
-         _loc3_["isOrder"] = true;
-         var _loc2_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("GetBeautyVoteList.ashx"),7,_loc3_);
-         _loc2_.loadErrorMessage = LanguageMgr.GetTranslation("tank.draft.loadDraftInfoError");
-         _loc2_.analyzer = new DraftListAnalyzer(getDraftPlayerInfo);
-         return _loc2_;
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         args["page"] = page;
+         args["size"] = 5;
+         args["isOrder"] = true;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("GetBeautyVoteList.ashx"),7,args);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("tank.draft.loadDraftInfoError");
+         loader.analyzer = new DraftListAnalyzer(getDraftPlayerInfo);
+         return loader;
       }
       
-      private function getDraftPlayerInfo(param1:DraftListAnalyzer) : void
+      private function getDraftPlayerInfo(analyzer:DraftListAnalyzer) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
+         var count:int = 0;
+         var i:int = 0;
          _currentPage;
          if(_playerVec != null)
          {
-            _loc2_ = _playerVec.length;
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_)
+            count = _playerVec.length;
+            for(i = 0; i < count; )
             {
-               if(_loc3_ < param1.draftInfoVec.length && param1.draftInfoVec[_loc3_] != null)
+               if(i < analyzer.draftInfoVec.length && analyzer.draftInfoVec[i] != null)
                {
-                  param1.draftInfoVec[_loc3_].rank = (_currentPage - 1) * _loc2_ + _loc3_ + 1;
-                  _playerVec[_loc3_].drafInfo = param1.draftInfoVec[_loc3_];
+                  analyzer.draftInfoVec[i].rank = (_currentPage - 1) * count + i + 1;
+                  _playerVec[i].drafInfo = analyzer.draftInfoVec[i];
                }
                else
                {
-                  _playerVec[_loc3_].drafInfo = null;
+                  _playerVec[i].drafInfo = null;
                }
-               _loc3_++;
+               i++;
             }
             _pageTxt.text = _currentPage.toString() + "/" + DraftModel.Total.toString();
          }
       }
       
-      protected function __onCompetitionClick(param1:MouseEvent) : void
+      protected function __onCompetitionClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.isAttest)
@@ -244,7 +242,7 @@ package draft.view
          }
       }
       
-      override protected function __onCloseClick(param1:MouseEvent) : void
+      override protected function __onCloseClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          DraftControl.instance.hide();
@@ -263,15 +261,14 @@ package draft.view
       
       override public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          removeEvent();
          super.dispose();
-         _loc1_ = 0;
-         while(_loc1_ < _playerVec.length)
+         for(i = 0; i < _playerVec.length; )
          {
-            _playerVec[_loc1_].dispose();
-            _playerVec[_loc1_] = null;
-            _loc1_++;
+            _playerVec[i].dispose();
+            _playerVec[i] = null;
+            i++;
          }
          _playerVec.length = 0;
          _playerVec = null;

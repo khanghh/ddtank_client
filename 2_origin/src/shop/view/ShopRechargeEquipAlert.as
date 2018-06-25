@@ -34,19 +34,19 @@ package shop.view
          _description = ComponentFactory.Instance.creatComponentByStylename("ddtcore.xufei.text");
          _description.text = LanguageMgr.GetTranslation("ddt.shop.rechargeEquipAlert.xufei");
          _frame = ComponentFactory.Instance.creatComponentByStylename("core.ddtshop.RechargeViewAlert");
-         var _loc1_:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.common.AddPricePanel.xu"),LanguageMgr.GetTranslation("cancel"));
-         _frame.info = _loc1_;
+         var ai:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.common.AddPricePanel.xu"),LanguageMgr.GetTranslation("cancel"));
+         _frame.info = ai;
          _frame.moveEnable = false;
          _frame.addToContent(_girl);
          _frame.addToContent(_description);
          _frame.addEventListener("response",__frameEventHandler);
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(e:FrameEvent) : void
       {
-         var _loc2_:* = null;
+         var view:* = null;
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(e.responseCode))
          {
             case 0:
             case 1:
@@ -59,8 +59,8 @@ package shop.view
                break;
             case 3:
             case 4:
-               _loc2_ = new ShopRechargeEquipView();
-               LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+               view = new ShopRechargeEquipView();
+               LayerManager.Instance.addToLayer(view,3,true,1);
                dispose();
          }
       }

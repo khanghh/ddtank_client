@@ -30,80 +30,80 @@ package com.pickgliss.manager
          return instance;
       }
       
-      private static function getReleaseAction(param1:Array, param2:uint = 0) : IAction
+      private static function getReleaseAction(actions:Array, delay:uint = 0) : IAction
       {
-         var _loc3_:IAction = new TickOrderQueueAction(param1,100,param2);
-         return _loc3_;
+         var action:IAction = new TickOrderQueueAction(actions,100,delay);
+         return action;
       }
       
-      public static function lock(param1:String) : void
+      public static function lock(flag:String) : void
       {
-         _lockDic[param1] = true;
+         _lockDic[flag] = true;
       }
       
-      public static function unlock(param1:String) : void
+      public static function unlock(flag:String) : void
       {
       }
       
-      public static function isLock(param1:String) : Boolean
+      public static function isLock(flag:String) : Boolean
       {
-         return !!_lockDic[param1]?true:false;
+         return !!_lockDic[flag]?true:false;
       }
       
       public static function get lockDic() : Dictionary
       {
-         var _loc1_:Dictionary = new Dictionary();
+         var dic:Dictionary = new Dictionary();
          var _loc4_:int = 0;
          var _loc3_:* = _lockDic;
-         for(var _loc2_ in _lockDic)
+         for(var key in _lockDic)
          {
-            _loc1_[_loc2_] = _lockDic[_loc2_];
+            dic[key] = _lockDic[key];
          }
-         return _loc1_;
+         return dic;
       }
       
-      public function cache(param1:String, param2:IAction) : void
+      public function cache(flag:String, action:IAction) : void
       {
-         if(!_cacheDic[param1])
+         if(!_cacheDic[flag])
          {
-            _cacheDic[param1] = [];
+            _cacheDic[flag] = [];
          }
-         _cacheDic[param1].push(param2);
+         _cacheDic[flag].push(action);
       }
       
-      public function release(param1:String, param2:uint = 0) : void
+      public function release(flag:String, delay:uint = 0) : void
       {
-         var _loc3_:* = null;
-         if(_cacheDic[param1])
+         var action:* = null;
+         if(_cacheDic[flag])
          {
-            _loc3_ = getReleaseAction(_cacheDic[param1] as Array,param2);
-            _loc3_.act();
-            delete _cacheDic[param1];
+            action = getReleaseAction(_cacheDic[flag] as Array,delay);
+            action.act();
+            delete _cacheDic[flag];
          }
       }
       
-      public function singleRelease(param1:String) : void
+      public function singleRelease(flag:String) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         if(_cacheDic[param1])
+         var action:* = null;
+         var actQueue:* = null;
+         if(_cacheDic[flag])
          {
-            _loc2_ = _cacheDic[param1];
-            if(_loc2_[0])
+            actQueue = _cacheDic[flag];
+            if(actQueue[0])
             {
-               (_loc2_[0] as IAction).act();
+               (actQueue[0] as IAction).act();
             }
-            _loc2_.shift();
+            actQueue.shift();
          }
       }
       
-      public function cacheFunction(param1:String, param2:IAction) : void
+      public function cacheFunction(flag:String, action:IAction) : void
       {
-         if(!_cacheDic[param1])
+         if(!_cacheDic[flag])
          {
-            _cacheDic[param1] = [];
+            _cacheDic[flag] = [];
          }
-         _cacheDic[param1].push(param2);
+         _cacheDic[flag].push(action);
       }
    }
 }

@@ -17,17 +17,17 @@ package ddt.display
       
       private var _smooth:Boolean;
       
-      public function BitmapShape(param1:BitmapObject = null, param2:Matrix = null, param3:Boolean = true, param4:Boolean = false)
+      public function BitmapShape(bitmap:BitmapObject = null, matrix:Matrix = null, repeat:Boolean = true, smooth:Boolean = false)
       {
          super();
-         _bitmap = param1;
-         _matrix = param2;
-         _repeat = param3;
-         _smooth = param4;
+         _bitmap = bitmap;
+         _matrix = matrix;
+         _repeat = repeat;
+         _smooth = smooth;
          draw();
       }
       
-      public function set bitmapObject(param1:BitmapObject) : void
+      public function set bitmapObject(val:BitmapObject) : void
       {
       }
       
@@ -38,14 +38,14 @@ package ddt.display
       
       protected function draw() : void
       {
-         var _loc1_:* = null;
+         var pen:* = null;
          if(_bitmap)
          {
-            _loc1_ = graphics;
-            _loc1_.clear();
-            _loc1_.beginBitmapFill(_bitmap,_matrix,_repeat,_smooth);
-            _loc1_.drawRect(0,0,_bitmap.width,_bitmap.height);
-            _loc1_.endFill();
+            pen = graphics;
+            pen.clear();
+            pen.beginBitmapFill(_bitmap,_matrix,_repeat,_smooth);
+            pen.drawRect(0,0,_bitmap.width,_bitmap.height);
+            pen.endFill();
          }
       }
       

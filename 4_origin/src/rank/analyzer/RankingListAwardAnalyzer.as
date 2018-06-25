@@ -11,36 +11,35 @@ package rank.analyzer
       
       public var lastUpdateTime:String;
       
-      public function RankingListAwardAnalyzer(param1:Function)
+      public function RankingListAwardAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc6_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var itemData:* = null;
          XML.ignoreWhitespace = true;
          itemList = new Vector.<RankAwardInfo>();
-         var _loc3_:XML = new XML(param1);
-         var _loc5_:int = _loc3_.Item.length();
-         var _loc4_:XMLList = _loc3_..Item;
-         lastUpdateTime = _loc3_.@lastUpdateTime;
-         _loc6_ = 0;
-         while(_loc6_ < _loc4_.length())
+         var xml:XML = new XML(data);
+         var len:int = xml.Item.length();
+         var xmllist:XMLList = xml..Item;
+         lastUpdateTime = xml.@lastUpdateTime;
+         for(i = 0; i < xmllist.length(); )
          {
-            _loc2_ = new RankAwardInfo();
-            _loc2_.activeParam1 = _loc4_[_loc6_].@ActiveParam1;
-            _loc2_.activeParam2 = _loc4_[_loc6_].@ActiveParam2;
-            _loc2_.activeType = _loc4_[_loc6_].@ActiveType;
-            _loc2_.activeValue = _loc4_[_loc6_].@ActiveValue;
-            _loc2_.itemName = _loc4_[_loc6_].@ItemName;
-            _loc2_.nickName = _loc4_[_loc6_].@NickName;
-            _loc2_.subType = _loc4_[_loc6_].@SubType;
-            _loc2_.userID = _loc4_[_loc6_].@UserID;
-            _loc2_.rank = _loc4_[_loc6_].@Rank;
-            itemList.push(_loc2_);
-            _loc6_++;
+            itemData = new RankAwardInfo();
+            itemData.activeParam1 = xmllist[i].@ActiveParam1;
+            itemData.activeParam2 = xmllist[i].@ActiveParam2;
+            itemData.activeType = xmllist[i].@ActiveType;
+            itemData.activeValue = xmllist[i].@ActiveValue;
+            itemData.itemName = xmllist[i].@ItemName;
+            itemData.nickName = xmllist[i].@NickName;
+            itemData.subType = xmllist[i].@SubType;
+            itemData.userID = xmllist[i].@UserID;
+            itemData.rank = xmllist[i].@Rank;
+            itemList.push(itemData);
+            i++;
          }
          onAnalyzeComplete();
       }

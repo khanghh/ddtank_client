@@ -18,21 +18,21 @@ package store.data
          _info = new InventoryItemInfo();
       }
       
-      public function data(param1:int, param2:Number = 7) : void
+      public function data(id:int, beginDate:Number = 7) : void
       {
-         _info.TemplateID = param1;
+         _info.TemplateID = id;
          ItemManager.fill(_info);
          _info.BeginDate = String(getTimer());
-         _info.ValidDate = param2;
+         _info.ValidDate = beginDate;
          _info.IsJudge = true;
       }
       
-      public function setComposeProperty(param1:int, param2:int, param3:int, param4:int) : void
+      public function setComposeProperty(agilityCompose:int, attackCompose:int, defendCompose:int, luckCompose:int) : void
       {
-         _info.AgilityCompose = param1;
-         _info.AttackCompose = param2;
-         _info.DefendCompose = param3;
-         _info.LuckCompose = param4;
+         _info.AgilityCompose = agilityCompose;
+         _info.AttackCompose = attackCompose;
+         _info.DefendCompose = defendCompose;
+         _info.LuckCompose = luckCompose;
       }
       
       public function get info() : InventoryItemInfo
@@ -40,9 +40,9 @@ package store.data
          return this._info;
       }
       
-      public function set rate(param1:int) : void
+      public function set rate($rate:int) : void
       {
-         this._rate = param1;
+         this._rate = $rate;
       }
       
       public function get rate() : int

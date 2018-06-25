@@ -11,23 +11,21 @@ package
       
       protected var _frames:Vector.<int>;
       
-      public function CrossFrameItem(param1:Number, param2:Number, param3:BitmapData, param4:Vector.<int> = null, param5:String = "original", param6:Boolean = false)
+      public function CrossFrameItem($width:Number, $height:Number, source:BitmapData, frames:Vector.<int> = null, $rendmode:String = "original", autoStop:Boolean = false)
       {
-         var _loc7_:int = 0;
-         super(param1,param2,param3,param5,param6);
+         var i:int = 0;
+         super($width,$height,source,$rendmode,autoStop);
          _type = BitmapRendItem.CROSS_FRAME;
-         if(param4 == null)
+         if(frames == null)
          {
-            param4 = new Vector.<int>();
-            _loc7_ = 0;
-            while(_loc7_ < _len)
+            frames = new Vector.<int>();
+            for(i = 0; i < _len; i++)
             {
-               param4.push(_loc7_);
-               _loc7_++;
+               frames.push(i);
             }
          }
-         this.invalid(param4);
-         this._frames = param4;
+         this.invalid(frames);
+         this._frames = frames;
          _len = this._frames.length;
       }
       
@@ -45,26 +43,26 @@ package
          return [_source,new Rectangle(x,y,_itemWidth,_itemHeight),new Point(-x - _rects[this._frames[_index]].x - _itemWidth,y)];
       }
       
-      protected function invalid(param1:Vector.<int>) : void
+      protected function invalid(value:Vector.<int>) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         for each(_loc3_ in param1)
+         var i:int = 0;
+         var endFrame:int = 0;
+         for each(i in value)
          {
-            if(_loc3_ > _loc2_)
+            if(i > endFrame)
             {
-               _loc2_ = _loc3_;
+               endFrame = i;
             }
          }
-         if(_rects && _rects.length <= _loc2_)
+         if(_rects && _rects.length <= endFrame)
          {
             throw new Error("帧数超出了图片的大小");
          }
       }
       
-      public function set _896505829source(param1:BitmapData) : void
+      public function set _896505829source(value:BitmapData) : void
       {
-         super.source = param1;
+         super.source = value;
          this.invalid(this._frames);
       }
       
@@ -98,14 +96,14 @@ package
          return this._frames.concat();
       }
       
-      private function set _1266514778frames(param1:Vector.<int>) : void
+      private function set _1266514778frames(value:Vector.<int>) : void
       {
-         if(this._frames == param1)
+         if(this._frames == value)
          {
             return;
          }
-         this.invalid(param1);
-         this._frames = param1;
+         this.invalid(value);
+         this._frames = value;
          _len = this._frames.length;
       }
       
@@ -116,17 +114,17 @@ package
       
       override public function toXml() : XML
       {
-         var _loc1_:XML = <asset/>;
-         _loc1_.@type = type;
-         _loc1_.@width = _itemWidth;
-         _loc1_.@height = _itemHeight;
-         _loc1_.@resource = _sourceName;
-         _loc1_.@frames = this._frames.toString();
-         _loc1_.@x = x;
-         _loc1_.@y = y;
-         _loc1_.@name = name;
-         _loc1_.@rendMode = rendMode;
-         return _loc1_;
+         var result:XML = <asset/>;
+         result.@type = type;
+         result.@width = _itemWidth;
+         result.@height = _itemHeight;
+         result.@resource = _sourceName;
+         result.@frames = this._frames.toString();
+         result.@x = x;
+         result.@y = y;
+         result.@name = name;
+         result.@rendMode = rendMode;
+         return result;
       }
       
       [Bindable(event="propertyChange")]

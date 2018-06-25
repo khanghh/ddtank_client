@@ -27,19 +27,19 @@ package game.view.propertyWaterBuff
          init();
       }
       
-      public static function getPropertyWaterBuffList(param1:DictionaryData) : DictionaryData
+      public static function getPropertyWaterBuffList(buffInfos:DictionaryData) : DictionaryData
       {
-         var _loc3_:DictionaryData = new DictionaryData();
+         var tempList:DictionaryData = new DictionaryData();
          var _loc5_:int = 0;
-         var _loc4_:* = param1;
-         for each(var _loc2_ in param1)
+         var _loc4_:* = buffInfos;
+         for each(var i in buffInfos)
          {
-            if(EquipType.isPropertyWater(_loc2_.buffItemInfo))
+            if(EquipType.isPropertyWater(i.buffItemInfo))
             {
-               _loc3_.add(_loc2_.Type,_loc2_);
+               tempList.add(i.Type,i);
             }
          }
-         return _loc3_;
+         return tempList;
       }
       
       private function init() : void
@@ -51,15 +51,15 @@ package game.view.propertyWaterBuff
       
       private function createIconList() : void
       {
-         var _loc1_:* = null;
+         var icon:* = null;
          _iconList = new Vector.<PropertyWaterBuffIcon>();
          var _loc4_:int = 0;
          var _loc3_:* = _buffList;
-         for each(var _loc2_ in _buffList)
+         for each(var i in _buffList)
          {
-            _loc1_ = ComponentFactory.Instance.creat("game.view.propertyWaterBuff.propertyWaterBuffIcon",[_loc2_]);
-            _iconList.push(_loc1_);
-            _container.addChild(_loc1_);
+            icon = ComponentFactory.Instance.creat("game.view.propertyWaterBuff.propertyWaterBuffIcon",[i]);
+            _iconList.push(icon);
+            _container.addChild(icon);
          }
       }
       
@@ -67,10 +67,10 @@ package game.view.propertyWaterBuff
       {
          var _loc3_:int = 0;
          var _loc2_:* = _iconList;
-         for each(var _loc1_ in _iconList)
+         for each(var icon in _iconList)
          {
-            ObjectUtils.disposeObject(_loc1_);
-            _loc1_ = null;
+            ObjectUtils.disposeObject(icon);
+            icon = null;
          }
       }
       

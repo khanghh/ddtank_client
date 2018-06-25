@@ -133,35 +133,35 @@ package ddt.view.academyCommon.recommend
          _characteContainer.addEventListener("click",__onClick);
       }
       
-      protected function __chatHandler(param1:MouseEvent) : void
+      protected function __chatHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          IMManager.Instance.alertPrivateFrame(_info.info.ID);
       }
       
-      private function __onClick(param1:MouseEvent) : void
+      private function __onClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          PlayerInfoViewControl.viewByID(info.info.ID,PlayerManager.Instance.Self.ZoneID);
       }
       
-      private function __onOut(param1:MouseEvent) : void
+      private function __onOut(event:MouseEvent) : void
       {
          if(_isSelect)
          {
          }
       }
       
-      private function __onOver(param1:MouseEvent) : void
+      private function __onOver(event:MouseEvent) : void
       {
          if(_isSelect)
          {
          }
       }
       
-      public function set isSelect(param1:Boolean) : void
+      public function set isSelect(value:Boolean) : void
       {
-         _isSelect = param1;
+         _isSelect = value;
          if(_isSelect)
          {
          }
@@ -181,7 +181,7 @@ package ddt.view.academyCommon.recommend
          _characteContainer.addChild(_player as DisplayObject);
       }
       
-      protected function __recommendBtn(param1:MouseEvent) : void
+      protected function __recommendBtn(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(!AcademyManager.Instance.compareState(_info.info,PlayerManager.Instance.Self))
@@ -194,7 +194,7 @@ package ddt.view.academyCommon.recommend
          }
       }
       
-      private function __characterComplete(param1:Event) : void
+      private function __characterComplete(event:Event) : void
       {
          _player.removeEventListener("complete",__characterComplete);
          PositionUtils.setPos(_player,"academy.RecommendPlayerCellView.playerPos");
@@ -203,15 +203,15 @@ package ddt.view.academyCommon.recommend
       
       private function update() : void
       {
-         var _loc2_:PlayerInfo = _info.info;
-         _nameTxt.text = _loc2_.NickName;
-         checkVip(_loc2_);
-         _guildTxt.text = _loc2_.ConsortiaName;
-         var _loc1_:int = AcademyManager.Instance.getMasterHonorLevel(_loc2_.graduatesCount);
-         if(_loc1_ != 0)
+         var player:PlayerInfo = _info.info;
+         _nameTxt.text = player.NickName;
+         checkVip(player);
+         _guildTxt.text = player.ConsortiaName;
+         var masterLevel:int = AcademyManager.Instance.getMasterHonorLevel(player.graduatesCount);
+         if(masterLevel != 0)
          {
             _masterHonor.visible = true;
-            _masterHonor.setFrame(_loc1_);
+            _masterHonor.setFrame(masterLevel);
          }
          else
          {
@@ -221,31 +221,31 @@ package ddt.view.academyCommon.recommend
          updateIcon();
       }
       
-      protected function checkVip(param1:PlayerInfo) : void
+      protected function checkVip(player:PlayerInfo) : void
       {
-         if(param1.IsVIP)
+         if(player.IsVIP)
          {
             ObjectUtils.disposeObject(_vipName);
-            _vipName = VipController.instance.getVipNameTxt(142,param1.typeVIP);
+            _vipName = VipController.instance.getVipNameTxt(142,player.typeVIP);
             _vipName.x = _nameTxt.x;
             _vipName.y = _nameTxt.y;
             _vipName.text = _nameTxt.text;
             addChild(_vipName);
          }
          addChild(_nameTxt);
-         PositionUtils.adaptNameStyle(param1,_nameTxt,_vipName);
+         PositionUtils.adaptNameStyle(player,_nameTxt,_vipName);
       }
       
       protected function updateIcon() : void
       {
-         var _loc1_:PlayerInfo = _info.info;
-         _levelIcon.setInfo(_loc1_.Grade,_loc1_.ddtKingGrade,_loc1_.Repute,_loc1_.WinCount,_loc1_.TotalCount,_loc1_.FightPower,_loc1_.Offer,true,false);
-         if(_loc1_.IsVIP)
+         var player:PlayerInfo = _info.info;
+         _levelIcon.setInfo(player.Grade,player.ddtKingGrade,player.Repute,player.WinCount,player.TotalCount,player.FightPower,player.Offer,true,false);
+         if(player.IsVIP)
          {
             if(_vipIcon == null)
             {
                _vipIcon = ComponentFactory.Instance.creatCustomObject("academy.RecommendPlayerCellView.VipIcon");
-               _vipIcon.setInfo(_loc1_);
+               _vipIcon.setInfo(player);
                _iconContainer.addChild(_vipIcon);
             }
          }
@@ -254,7 +254,7 @@ package ddt.view.academyCommon.recommend
             _vipIcon.dispose();
             _vipIcon = null;
          }
-         if(_loc1_.SpouseID > 0)
+         if(player.SpouseID > 0)
          {
             if(_marriedIcon == null)
             {
@@ -262,8 +262,8 @@ package ddt.view.academyCommon.recommend
                _iconContainer.addChild(_marriedIcon);
             }
             _marriedIcon.tipData = {
-               "nickName":_loc1_.SpouseName,
-               "gender":_loc1_.Sex
+               "nickName":player.SpouseName,
+               "gender":player.Sex
             };
          }
          else
@@ -274,14 +274,14 @@ package ddt.view.academyCommon.recommend
             }
             _marriedIcon = null;
          }
-         if(_loc1_.badgeID > 0)
+         if(player.badgeID > 0)
          {
             if(_badge == null)
             {
                _badge = new Badge();
                _badge.showTip = true;
-               _badge.badgeID = _loc1_.badgeID;
-               _badge.tipData = _loc1_.ConsortiaName;
+               _badge.badgeID = player.badgeID;
+               _badge.tipData = player.ConsortiaName;
                _iconContainer.addChild(_badge);
             }
          }
@@ -292,9 +292,9 @@ package ddt.view.academyCommon.recommend
          }
       }
       
-      public function set info(param1:AcademyPlayerInfo) : void
+      public function set info(value:AcademyPlayerInfo) : void
       {
-         _info = param1;
+         _info = value;
          update();
       }
       
@@ -308,9 +308,9 @@ package ddt.view.academyCommon.recommend
          return _tipData;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(value:Object) : void
       {
-         _tipData = param1;
+         _tipData = value;
       }
       
       public function get tipDirctions() : String
@@ -318,9 +318,9 @@ package ddt.view.academyCommon.recommend
          return _tipDirctions;
       }
       
-      public function set tipDirctions(param1:String) : void
+      public function set tipDirctions(value:String) : void
       {
-         _tipDirctions = param1;
+         _tipDirctions = value;
       }
       
       public function get tipGapH() : int
@@ -328,9 +328,9 @@ package ddt.view.academyCommon.recommend
          return _tipGapH;
       }
       
-      public function set tipGapH(param1:int) : void
+      public function set tipGapH(value:int) : void
       {
-         _tipGapH = param1;
+         _tipGapH = value;
       }
       
       public function get tipGapV() : int
@@ -338,9 +338,9 @@ package ddt.view.academyCommon.recommend
          return _tipGapV;
       }
       
-      public function set tipGapV(param1:int) : void
+      public function set tipGapV(value:int) : void
       {
-         _tipGapV = param1;
+         _tipGapV = value;
       }
       
       public function get tipStyle() : String
@@ -348,9 +348,9 @@ package ddt.view.academyCommon.recommend
          return _tipStyle;
       }
       
-      public function set tipStyle(param1:String) : void
+      public function set tipStyle(value:String) : void
       {
-         _tipStyle = param1;
+         _tipStyle = value;
       }
       
       public function asDisplayObject() : DisplayObject

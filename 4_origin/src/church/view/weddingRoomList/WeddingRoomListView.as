@@ -75,11 +75,11 @@ package church.view.weddingRoomList
       
       private var _lblPageInfoBG:Scale9CornerImage;
       
-      public function WeddingRoomListView(param1:ChurchRoomListController, param2:ChurchRoomListModel)
+      public function WeddingRoomListView(controller:ChurchRoomListController, model:ChurchRoomListModel)
       {
          super();
-         _controller = param1;
-         _model = param2;
+         _controller = controller;
+         _model = model;
          initialize();
       }
       
@@ -270,10 +270,10 @@ package church.view.weddingRoomList
          _btnPageLastAsset.removeEventListener("click",getPageList);
       }
       
-      private function getPageList(param1:MouseEvent) : void
+      private function getPageList(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:* = param1.target;
+         var _loc2_:* = evt.target;
          if(_btnPageFirstAsset !== _loc2_)
          {
             if(_btnPageBackAsset !== _loc2_)
@@ -301,9 +301,9 @@ package church.view.weddingRoomList
          }
       }
       
-      public function updateList(param1:DictionaryEvent = null) : void
+      public function updateList(event:DictionaryEvent = null) : void
       {
-         var _loc3_:* = null;
+         var item:* = null;
          _weddingRoomListBox.disposeAllChildren();
          var _loc5_:* = pageCount > 0 && pageIndex > 1;
          _btnPageBackAsset.enable = _loc5_;
@@ -316,15 +316,15 @@ package church.view.weddingRoomList
          {
             return;
          }
-         var _loc2_:Array = currentDataList.slice(_pageIndex * _pageSize - _pageSize,_pageIndex * _pageSize <= currentDataList.length?_pageIndex * _pageSize:currentDataList.length);
+         var pageList:Array = currentDataList.slice(_pageIndex * _pageSize - _pageSize,_pageIndex * _pageSize <= currentDataList.length?_pageIndex * _pageSize:currentDataList.length);
          var _loc7_:int = 0;
-         var _loc6_:* = _loc2_;
-         for each(var _loc4_ in _loc2_)
+         var _loc6_:* = pageList;
+         for each(var churchRoomInfo in pageList)
          {
-            _loc3_ = ComponentFactory.Instance.creatCustomObject("church.view.WeddingRoomListItemView");
-            _loc3_.churchRoomInfo = _loc4_;
-            _weddingRoomListBox.addChild(_loc3_);
-            _loc3_.addEventListener("click",__itemClick);
+            item = ComponentFactory.Instance.creatCustomObject("church.view.WeddingRoomListItemView");
+            item.churchRoomInfo = churchRoomInfo;
+            _weddingRoomListBox.addChild(item);
+            item.addEventListener("click",__itemClick);
          }
       }
       
@@ -333,25 +333,25 @@ package church.view.weddingRoomList
          _pageInfoText.text = _pageIndex + "/" + _pageCount;
       }
       
-      private function __itemClick(param1:MouseEvent) : void
+      private function __itemClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         param1.stopImmediatePropagation();
-         var _loc2_:WeddingRoomListItemView = param1.currentTarget as WeddingRoomListItemView;
+         event.stopImmediatePropagation();
+         var item:WeddingRoomListItemView = event.currentTarget as WeddingRoomListItemView;
          _enterConfirmView = ComponentFactory.Instance.creat("church.main.weddingRoomList.WeddingRoomEnterConfirmView");
          _enterConfirmView.controller = _controller;
-         _enterConfirmView.churchRoomInfo = _loc2_.churchRoomInfo;
+         _enterConfirmView.churchRoomInfo = item.churchRoomInfo;
          _enterConfirmView.show();
       }
       
       public function get currentDataList() : Array
       {
-         var _loc1_:* = null;
+         var arr:* = null;
          if(_model && _model.roomList)
          {
-            _loc1_ = _model.roomList.list;
-            _loc1_.sortOn("id",16);
-            return _loc1_;
+            arr = _model.roomList.list;
+            arr.sortOn("id",16);
+            return arr;
          }
          return null;
       }
@@ -361,9 +361,9 @@ package church.view.weddingRoomList
          return _pageIndex;
       }
       
-      public function set pageIndex(param1:int) : void
+      public function set pageIndex(value:int) : void
       {
-         _pageIndex = param1;
+         _pageIndex = value;
          updateList();
       }
       

@@ -25,25 +25,25 @@ package times.utils.timerManager
       
       private var _type:String;
       
-      public function TimerJuggler(param1:InternalFlag, param2:Number, param3:int, param4:int, param5:Boolean, param6:String)
+      public function TimerJuggler(internalFag:InternalFlag, $delay:Number, $repeatCount:int, $id:int, $revise:Boolean, type:String)
       {
          super();
-         _delay = param2;
-         _repeatCount = param3;
-         _id = param4;
+         _delay = $delay;
+         _repeatCount = $repeatCount;
+         _id = $id;
          _running = false;
-         _totalTime = param3 * param2;
-         _revise = param5;
+         _totalTime = $repeatCount * $delay;
+         _revise = $revise;
       }
       
-      final function advance(param1:Number) : void
+      final function advance(duration:Number) : void
       {
-         var _loc2_:Boolean = false;
+         var isComplete:Boolean = false;
          if(!_running)
          {
             return;
          }
-         _currentTime = _currentTime + param1;
+         _currentTime = _currentTime + duration;
          if(_currentTime < (_currentCount + 1) * delay)
          {
             return;
@@ -51,14 +51,14 @@ package times.utils.timerManager
          if(_revise)
          {
             _currentCount = _currentTime / delay;
-            _loc2_ = _currentTime >= _totalTime && _totalTime > 0;
+            isComplete = _currentTime >= _totalTime && _totalTime > 0;
          }
          else
          {
             _currentCount = Number(_currentCount) + 1;
-            _loc2_ = _currentCount >= repeatCount && repeatCount > 0;
+            isComplete = _currentCount >= repeatCount && repeatCount > 0;
          }
-         if(_loc2_)
+         if(isComplete)
          {
             _running = false;
             dispatchEvent(new Event("timer"));
@@ -113,9 +113,9 @@ package times.utils.timerManager
          return _repeatCount;
       }
       
-      public function set repeatCount(param1:int) : void
+      public function set repeatCount(value:int) : void
       {
-         _repeatCount = param1;
+         _repeatCount = value;
          _totalTime = _repeatCount * _delay;
       }
       
@@ -124,9 +124,9 @@ package times.utils.timerManager
          return _delay;
       }
       
-      public function set delay(param1:Number) : void
+      public function set delay(value:Number) : void
       {
-         _delay = param1;
+         _delay = value;
          _totalTime = _repeatCount * _delay;
       }
       

@@ -43,21 +43,21 @@ package quest
       
       private var _style:int = 1;
       
-      public function TaskPannelStripView(param1:QuestInfo)
+      public function TaskPannelStripView(info:QuestInfo)
       {
          super();
-         _info = param1;
+         _info = info;
          initView();
          addEvent();
       }
       
-      public function set status(param1:String) : void
+      public function set status(value:String) : void
       {
-         if(param1 == _status)
+         if(value == _status)
          {
             return;
          }
-         _status = param1;
+         _status = value;
          update();
       }
       
@@ -103,9 +103,9 @@ package quest
          update();
       }
       
-      public function set taskStyle(param1:int) : void
+      public function set taskStyle(style:int) : void
       {
-         _style = param1;
+         _style = style;
       }
       
       public function get info() : QuestInfo
@@ -198,7 +198,7 @@ package quest
          }
       }
       
-      private function __onRollOver(param1:MouseEvent) : void
+      private function __onRollOver(event:MouseEvent) : void
       {
          if(isSelected)
          {
@@ -207,7 +207,7 @@ package quest
          status = "hover";
       }
       
-      private function __onRollOut(param1:MouseEvent) : void
+      private function __onRollOut(event:MouseEvent) : void
       {
          if(isSelected)
          {
@@ -216,7 +216,7 @@ package quest
          status = "normal";
       }
       
-      private function __onClick(param1:MouseEvent) : void
+      private function __onClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          TaskControl.instance.MainFrame.currentNewCateView = null;

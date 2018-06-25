@@ -20,10 +20,10 @@ package drgnBoat.views
       
       private var _direction:int;
       
-      public function DrgnBoatNPCpaopao(param1:int = 0)
+      public function DrgnBoatNPCpaopao(direction:int = 0)
       {
          super();
-         _direction = param1;
+         _direction = direction;
          initView();
          initEvents();
       }
@@ -52,9 +52,9 @@ package drgnBoat.views
       {
       }
       
-      public function setTxt(param1:String) : void
+      public function setTxt(str:String) : void
       {
-         _txt.text = param1;
+         _txt.text = str;
       }
       
       private function paopaoComplete() : void

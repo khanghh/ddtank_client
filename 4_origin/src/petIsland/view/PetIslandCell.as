@@ -22,12 +22,12 @@ package petIsland.view
       
       private var _isShine:Boolean;
       
-      public function PetIslandCell(param1:int, param2:int, param3:int)
+      public function PetIslandCell(type:int, row:int, col:int)
       {
          super();
-         _type = param1;
-         _row = param2;
-         _col = param3;
+         _type = type;
+         _row = row;
+         _col = col;
          init();
       }
       
@@ -36,9 +36,9 @@ package petIsland.view
          return _type;
       }
       
-      public function set type(param1:int) : void
+      public function set type(value:int) : void
       {
-         _type = param1;
+         _type = value;
       }
       
       public function get isShine() : Boolean
@@ -46,9 +46,9 @@ package petIsland.view
          return _isShine;
       }
       
-      public function set isShine(param1:Boolean) : void
+      public function set isShine(value:Boolean) : void
       {
-         _isShine = param1;
+         _isShine = value;
          cell["shine"].visible = _isShine;
       }
       
@@ -74,7 +74,7 @@ package petIsland.view
          PetIslandManager.instance.dispatchEvent(new PetIslandEvent("destroy",this));
       }
       
-      private function cellClickHandler(param1:MouseEvent) : void
+      private function cellClickHandler(e:MouseEvent) : void
       {
          PetIslandManager.instance.dispatchEvent(new PetIslandEvent("pet_click",this));
       }

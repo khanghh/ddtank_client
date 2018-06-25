@@ -29,7 +29,7 @@ package littleGame
          super();
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
          InviteManager.Instance.enabled = false;
          _optionView = new LittleGameOptionView();
@@ -40,10 +40,10 @@ package littleGame
          addChild(ChatManager.Instance.view);
          addEvent();
          KeyboardShortcutsManager.Instance.forbiddenFull();
-         super.enter(param1,param2);
+         super.enter(prev,data);
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
          InviteManager.Instance.enabled = true;
          removeEvent();
@@ -53,7 +53,7 @@ package littleGame
             ObjectUtils.disposeObject(_optionView);
          }
          _optionView = null;
-         super.leaving(param1);
+         super.leaving(next);
       }
       
       private function addEvent() : void
@@ -62,16 +62,16 @@ package littleGame
          SocketManager.Instance.addEventListener("gamestart",__gameStart);
       }
       
-      private function __gameStart(param1:LittleGameSocketEvent) : void
+      private function __gameStart(event:LittleGameSocketEvent) : void
       {
-         LittleGameManager.Instance.enterGame(_game,param1.pkg);
+         LittleGameManager.Instance.enterGame(_game,event.pkg);
          StateManager.setState("littleGame",_game);
          _game = null;
       }
       
-      private function __loadGame(param1:LittleGameSocketEvent) : void
+      private function __loadGame(event:LittleGameSocketEvent) : void
       {
-         _game = LittleGameManager.Instance.createGame(param1.pkg);
+         _game = LittleGameManager.Instance.createGame(event.pkg);
          UIModuleSmallLoading.Instance.progress = 0;
          UIModuleSmallLoading.Instance.addEventListener("close",__loadClose);
          UIModuleSmallLoading.Instance.show();
@@ -81,12 +81,12 @@ package littleGame
          _gameLoader.startup();
       }
       
-      private function __gameLoaderProgress(param1:LoaderEvent) : void
+      private function __gameLoaderProgress(event:LoaderEvent) : void
       {
          UIModuleSmallLoading.Instance.progress = _gameLoader.progress;
       }
       
-      private function __loadClose(param1:Event) : void
+      private function __loadClose(event:Event) : void
       {
          UIModuleSmallLoading.Instance.removeEventListener("close",__loadClose);
          _gameLoader.shutdown();
@@ -99,13 +99,13 @@ package littleGame
          UIModuleSmallLoading.Instance.removeEventListener("close",__loadClose);
       }
       
-      private function __gameComplete(param1:LoaderEvent) : void
+      private function __gameComplete(event:LoaderEvent) : void
       {
-         var _loc2_:LittleGameLoader = param1.currentTarget as LittleGameLoader;
-         _loc2_.removeEventListener("complete",__gameComplete);
-         _loc2_.removeEventListener("progress",__gameLoaderProgress);
-         _game.gameLoader = _loc2_;
-         _game.grid = _loc2_.grid;
+         var loader:LittleGameLoader = event.currentTarget as LittleGameLoader;
+         loader.removeEventListener("complete",__gameComplete);
+         loader.removeEventListener("progress",__gameLoaderProgress);
+         _game.gameLoader = loader;
+         _game.grid = loader.grid;
          _game.grid.calculateLinks(0);
          UIModuleSmallLoading.Instance.hide();
          LittleGameManager.Instance.loadComplete();

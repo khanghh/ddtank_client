@@ -81,14 +81,14 @@ package hall.hallInfo.playerInfo
          PlayerManager.Instance.addEventListener("girl_head_photo_change",onHeadSelectChange);
       }
       
-      protected function onHeadSelectChange(param1:CEvent) : void
+      protected function onHeadSelectChange(e:CEvent) : void
       {
          loadHead();
       }
       
-      protected function __onUpdateGrade(param1:PlayerPropertyEvent) : void
+      protected function __onUpdateGrade(event:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["Energy"])
+         if(event.changedProperties["Energy"])
          {
             if(_energyProgress)
             {
@@ -145,7 +145,7 @@ package hall.hallInfo.playerInfo
          PositionUtils.adaptNameStyle(_selfInfo,_nickNameText,_vipName);
       }
       
-      protected function __addEnergyHandler(param1:MouseEvent) : void
+      protected function __addEnergyHandler(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          _energyData = PlayerManager.Instance.energyData[PlayerManager.Instance.Self.buyEnergyCount + 1];
@@ -154,96 +154,96 @@ package hall.hallInfo.playerInfo
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.energy.cannotbuyEnergy"));
             return;
          }
-         var _loc2_:int = 0;
+         var buyEnergyMaxCount:int = 0;
          var _loc8_:int = 0;
          var _loc7_:* = PlayerManager.Instance.energyData;
-         for each(var _loc3_ in PlayerManager.Instance.energyData)
+         for each(var obj in PlayerManager.Instance.energyData)
          {
-            _loc2_++;
+            buyEnergyMaxCount++;
          }
-         var _loc5_:int = _loc2_ - PlayerManager.Instance.Self.buyEnergyCount;
-         var _loc6_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("tank.view.energy.buyEnergy",_energyData.Money,_energyData.Energy),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"hall.buyEnergySimpleAlert",60,false,1);
-         var _loc4_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("hall.buyEnergySimpleAlertCountTxt");
-         _loc4_.htmlText = LanguageMgr.GetTranslation("tank.view.energy.buyEnergyCountTxtMsg",_loc5_);
-         _loc6_.addToContent(_loc4_);
-         _loc6_.addEventListener("response",__alertBuyEnergy);
+         var remainCount:int = buyEnergyMaxCount - PlayerManager.Instance.Self.buyEnergyCount;
+         var alertAsk:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("tank.view.energy.buyEnergy",_energyData.Money,_energyData.Energy),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"hall.buyEnergySimpleAlert",60,false,1);
+         var buyEnergySimpleAlertCountTxt:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("hall.buyEnergySimpleAlertCountTxt");
+         buyEnergySimpleAlertCountTxt.htmlText = LanguageMgr.GetTranslation("tank.view.energy.buyEnergyCountTxtMsg",remainCount);
+         alertAsk.addToContent(buyEnergySimpleAlertCountTxt);
+         alertAsk.addEventListener("response",__alertBuyEnergy);
       }
       
-      protected function __alertBuyEnergy(param1:FrameEvent) : void
+      protected function __alertBuyEnergy(event:FrameEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc3_.removeEventListener("response",__alertBuyEnergy);
-         switch(int(param1.responseCode) - 2)
+         var alertFrame:* = null;
+         var frame:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("response",__alertBuyEnergy);
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
                if(PlayerManager.Instance.Self.bagLocked)
                {
                   BaglockedManager.Instance.show();
-                  param1.currentTarget.removeEventListener("response",__alertBuyEnergy);
-                  ObjectUtils.disposeObject(param1.currentTarget);
+                  event.currentTarget.removeEventListener("response",__alertBuyEnergy);
+                  ObjectUtils.disposeObject(event.currentTarget);
                   return;
                }
                if(PlayerManager.Instance.Self.energy <= 1500 && PlayerManager.Instance.Self.energy > 1450)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.energy.energyEnough"));
-                  _loc3_.dispose();
+                  frame.dispose();
                   return;
                }
-               if(_loc3_.isBand)
+               if(frame.isBand)
                {
                   if(!checkMoney(true))
                   {
-                     _loc3_.dispose();
-                     _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("buried.alertInfo.noBindMoney"),"",LanguageMgr.GetTranslation("cancel"),true,false,false,2);
-                     _loc2_.addEventListener("response",onResponseHander);
+                     frame.dispose();
+                     alertFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("buried.alertInfo.noBindMoney"),"",LanguageMgr.GetTranslation("cancel"),true,false,false,2);
+                     alertFrame.addEventListener("response",onResponseHander);
                      return;
                   }
                }
                else if(!checkMoney(false))
                {
-                  _loc3_.dispose();
-                  _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.title"),LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.content"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
-                  _loc2_.addEventListener("response",_response);
+                  frame.dispose();
+                  alertFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.title"),LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.content"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
+                  alertFrame.addEventListener("response",_response);
                   return;
                }
-               SocketManager.Instance.out.sendBuyEnergy(_loc3_.isBand);
+               SocketManager.Instance.out.sendBuyEnergy(frame.isBand);
                break;
          }
-         _loc3_.dispose();
+         frame.dispose();
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(evt:FrameEvent) : void
       {
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",_response);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         (evt.currentTarget as BaseAlerFrame).removeEventListener("response",_response);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             LeavePageManager.leaveToFillPath();
          }
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(evt.currentTarget);
       }
       
-      private function onResponseHander(param1:FrameEvent) : void
+      private function onResponseHander(e:FrameEvent) : void
       {
-         var _loc2_:* = null;
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",onResponseHander);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var alertFrame:* = null;
+         (e.currentTarget as BaseAlerFrame).removeEventListener("response",onResponseHander);
+         if(e.responseCode == 2 || e.responseCode == 3)
          {
             if(!checkMoney(false))
             {
-               _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.title"),LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.content"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
-               _loc2_.addEventListener("response",_response);
+               alertFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.title"),LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.content"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
+               alertFrame.addEventListener("response",_response);
                return;
             }
             SocketManager.Instance.out.sendBuyEnergy(false);
          }
-         param1.currentTarget.dispose();
+         e.currentTarget.dispose();
       }
       
-      private function checkMoney(param1:Boolean) : Boolean
+      private function checkMoney(isBand:Boolean) : Boolean
       {
-         if(param1)
+         if(isBand)
          {
             if(PlayerManager.Instance.Self.BandMoney < _energyData.Money)
             {
@@ -257,11 +257,11 @@ package hall.hallInfo.playerInfo
          return true;
       }
       
-      private function headLoaderCallBack(param1:SceneCharacterLoaderHead, param2:Boolean = true) : void
+      private function headLoaderCallBack(headLoader:SceneCharacterLoaderHead, isAllLoadSucceed:Boolean = true) : void
       {
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         if(param1)
+         var rectangle:* = null;
+         var headBmp:* = null;
+         if(headLoader)
          {
             if(!_headBitmap)
             {
@@ -277,7 +277,7 @@ package hall.hallInfo.playerInfo
             }
             if(PlayerManager.Instance.Self.ImagePath != "" && PlayerManager.Instance.Self.IsShow)
             {
-               _headBitmap = new Bitmap(param1.getContent()[0] as BitmapData,"auto",true);
+               _headBitmap = new Bitmap(headLoader.getContent()[0] as BitmapData,"auto",true);
                _headBitmap.mask = _headMask;
                addChild(_headMask);
                _headBitmap.x = -96;
@@ -290,23 +290,23 @@ package hall.hallInfo.playerInfo
                {
                   _headBitmap = new Bitmap();
                }
-               _loc3_ = new Rectangle(0,0,HeadWidth,HeadHeight);
-               _loc4_ = new BitmapData(HeadWidth,HeadHeight,true,0);
-               _loc4_.copyPixels(param1.getContent()[0] as BitmapData,_loc3_,new Point(0,0));
-               _headBitmap.bitmapData = _loc4_;
+               rectangle = new Rectangle(0,0,HeadWidth,HeadHeight);
+               headBmp = new BitmapData(HeadWidth,HeadHeight,true,0);
+               headBmp.copyPixels(headLoader.getContent()[0] as BitmapData,rectangle,new Point(0,0));
+               _headBitmap.bitmapData = headBmp;
                _headBitmap.rotationY = 180;
                _headBitmap.mask = null;
                _headMask && _headMask.parent && removeChild(_headMask);
             }
             addChildAt(_headBitmap,0);
-            param1.dispose();
+            headLoader.dispose();
          }
          _headBtn = ComponentFactory.Instance.creatComponentByStylename("hall.playerHeadBtn");
          _headBtn.addEventListener("click",__onHeadClick);
          addChild(_headBtn);
       }
       
-      protected function __onHeadClick(param1:MouseEvent) : void
+      protected function __onHeadClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("003");
          BagAndInfoManager.Instance.showBagAndInfo();

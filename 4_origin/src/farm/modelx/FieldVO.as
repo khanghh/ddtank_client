@@ -45,9 +45,9 @@ package farm.modelx
       
       public function get realNeedTime() : int
       {
-         var _loc2_:int = parseInt(ItemManager.Instance.getTemplateById(seedID).Property3);
-         var _loc1_:int = (TimeManager.Instance.Now().time - plantTime.time) / 60000 + AccelerateTime;
-         return _loc2_ - _loc1_;
+         var needTime:int = parseInt(ItemManager.Instance.getTemplateById(seedID).Property3);
+         var grownTime:int = (TimeManager.Instance.Now().time - plantTime.time) / 60000 + AccelerateTime;
+         return needTime - grownTime;
       }
       
       public function get plantGrownPhase() : int
@@ -56,17 +56,17 @@ package farm.modelx
          {
             return -1;
          }
-         var _loc2_:int = parseInt(ItemManager.Instance.getTemplateById(seedID).Property3);
-         var _loc1_:int = (TimeManager.Instance.Now().time - plantTime.time) / 60000 + AccelerateTime;
-         if(seedID == 332100 && _loc1_ >= 1)
+         var needTime:int = parseInt(ItemManager.Instance.getTemplateById(seedID).Property3);
+         var grownTime:int = (TimeManager.Instance.Now().time - plantTime.time) / 60000 + AccelerateTime;
+         if(seedID == 332100 && grownTime >= 1)
          {
             return 2;
          }
-         if(_loc1_ < 60)
+         if(grownTime < 60)
          {
             return 0;
          }
-         if(_loc1_ < _loc2_)
+         if(grownTime < needTime)
          {
             return 1;
          }

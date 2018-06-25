@@ -18,16 +18,16 @@ package panicBuying.views
       
       private var _buyType:int;
       
-      public function PanicBuyingCell(param1:int, param2:ItemTemplateInfo, param3:int, param4:int)
+      public function PanicBuyingCell(index:int, info:ItemTemplateInfo, buyType:int, expireTime:int)
       {
-         _buyType = param3;
-         _expireTime = param4;
-         super(param1,param2);
+         _buyType = buyType;
+         _expireTime = expireTime;
+         super(index,info);
       }
       
       override protected function setDefaultTipData() : void
       {
-         var _loc1_:* = null;
+         var vItemInfo:* = null;
          if(EquipType.isCardBox(_info))
          {
             tipStyle = "core.CardBoxTipPanel";
@@ -40,14 +40,14 @@ package panicBuying.views
             GoodTipInfo(_tipData).itemInfo = _info;
             GoodTipInfo(_tipData).buyType = _buyType;
             GoodTipInfo(_tipData).expireTime = _expireTime;
-            _loc1_ = _info as InventoryItemInfo;
+            vItemInfo = _info as InventoryItemInfo;
             if(_info.Property1 == "31")
             {
-               if(_loc1_ && _loc1_.Hole2 > 0)
+               if(vItemInfo && vItemInfo.Hole2 > 0)
                {
-                  GoodTipInfo(_tipData).exp = _loc1_.Hole2;
-                  GoodTipInfo(_tipData).upExp = ServerConfigManager.instance.getBeadUpgradeExp()[_loc1_.Hole1 + 1];
-                  GoodTipInfo(_tipData).beadName = _loc1_.Name + "-" + beadSystemManager.Instance.getBeadName(_loc1_);
+                  GoodTipInfo(_tipData).exp = vItemInfo.Hole2;
+                  GoodTipInfo(_tipData).upExp = ServerConfigManager.instance.getBeadUpgradeExp()[vItemInfo.Hole1 + 1];
+                  GoodTipInfo(_tipData).beadName = vItemInfo.Name + "-" + beadSystemManager.Instance.getBeadName(vItemInfo);
                }
                else
                {
@@ -58,9 +58,9 @@ package panicBuying.views
             }
             else if(info.Property1 == "81")
             {
-               if(_loc1_ && _loc1_.StrengthenExp > 0)
+               if(vItemInfo && vItemInfo.StrengthenExp > 0)
                {
-                  GoodTipInfo(_tipData).exp = _loc1_.StrengthenExp - MagicStoneManager.instance.getNeedExp(info.TemplateID,_loc1_.StrengthenLevel);
+                  GoodTipInfo(_tipData).exp = vItemInfo.StrengthenExp - MagicStoneManager.instance.getNeedExp(info.TemplateID,vItemInfo.StrengthenLevel);
                }
                else
                {

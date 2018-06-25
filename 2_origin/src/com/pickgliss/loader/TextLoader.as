@@ -9,9 +9,9 @@ package com.pickgliss.loader
       public static var TextLoaderKey:String;
        
       
-      public function TextLoader(param1:int, param2:String, param3:URLVariables = null, param4:String = "GET")
+      public function TextLoader(id:int, url:String, args:URLVariables = null, requestMethod:String = "GET")
       {
-         super(param1,param2,param3,param4);
+         super(id,url,args,requestMethod);
       }
       
       override public function get content() : *
@@ -19,7 +19,7 @@ package com.pickgliss.loader
          return _loader.data;
       }
       
-      override protected function __onDataLoadComplete(param1:Event) : void
+      override protected function __onDataLoadComplete(event:Event) : void
       {
          removeEvent();
          unload();

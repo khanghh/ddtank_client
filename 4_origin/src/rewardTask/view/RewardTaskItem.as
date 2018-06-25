@@ -102,41 +102,41 @@ package rewardTask.view
       private function rewardItem() : void
       {
          recordX = 0;
-         var _loc1_:int = 0;
+         var index:int = 0;
          if(_taskInfo.RewardGP > 0)
          {
-            addReward("exp",_taskInfo.RewardGP,_loc1_);
-            _loc1_++;
+            addReward("exp",_taskInfo.RewardGP,index);
+            index++;
          }
          if(_taskInfo.RewardGold > 0)
          {
-            addReward("gold",_taskInfo.RewardGold,_loc1_);
-            _loc1_++;
+            addReward("gold",_taskInfo.RewardGold,index);
+            index++;
          }
          if(_taskInfo.RewardMoney > 0)
          {
-            addReward("coin",_taskInfo.RewardMoney,_loc1_);
-            _loc1_++;
+            addReward("coin",_taskInfo.RewardMoney,index);
+            index++;
          }
          if(_taskInfo.RewardOffer > 0)
          {
-            addReward("honor",_taskInfo.RewardOffer,_loc1_);
-            _loc1_++;
+            addReward("honor",_taskInfo.RewardOffer,index);
+            index++;
          }
          if(_taskInfo.RewardRiches > 0)
          {
-            addReward("rich",_taskInfo.RewardRiches,_loc1_);
-            _loc1_++;
+            addReward("rich",_taskInfo.RewardRiches,index);
+            index++;
          }
          if(_taskInfo.RewardBindMoney > 0)
          {
-            addReward("gift",_taskInfo.RewardBindMoney,_loc1_);
-            _loc1_++;
+            addReward("gift",_taskInfo.RewardBindMoney,index);
+            index++;
          }
          if(_taskInfo.Rank != "")
          {
-            addReward("rank",0,_loc1_,true,_taskInfo.Rank);
-            _loc1_++;
+            addReward("rank",0,index,true,_taskInfo.Rank);
+            index++;
          }
          if(_taskInfo.RewardBuffID != 0)
          {
@@ -145,16 +145,16 @@ package rewardTask.view
          }
       }
       
-      private function addReward(param1:String, param2:int, param3:int, param4:Boolean = false, param5:String = "") : void
+      private function addReward(reward:String, count:int, index:int, isRank:Boolean = false, rank:String = "") : void
       {
-         var _loc7_:FilterFrameText = ComponentFactory.Instance.creat("core.quest.MCQuestRewardType");
-         _loc7_.y = 297;
-         if(param3 > 3)
+         var rewardMC:FilterFrameText = ComponentFactory.Instance.creat("core.quest.MCQuestRewardType");
+         rewardMC.y = 297;
+         if(index > 3)
          {
-            _loc7_.y = _loc7_.y + 20;
+            rewardMC.y = rewardMC.y + 20;
          }
-         var _loc6_:FilterFrameText = ComponentFactory.Instance.creat("core.quest.QuestItemRewardQuantity");
-         var _loc8_:* = param1;
+         var quantityTxt:FilterFrameText = ComponentFactory.Instance.creat("core.quest.QuestItemRewardQuantity");
+         var _loc8_:* = reward;
          if("exp" !== _loc8_)
          {
             if("gold" !== _loc8_)
@@ -171,60 +171,60 @@ package rewardTask.view
                            {
                               if("rank" === _loc8_)
                               {
-                                 _loc7_.text = LanguageMgr.GetTranslation("tank.view.effort.EffortRigthItemView.honorNameII");
+                                 rewardMC.text = LanguageMgr.GetTranslation("tank.view.effort.EffortRigthItemView.honorNameII");
                               }
                            }
                            else
                            {
-                              _loc7_.text = LanguageMgr.GetTranslation("gift");
+                              rewardMC.text = LanguageMgr.GetTranslation("gift");
                            }
                         }
                         else
                         {
-                           _loc7_.text = LanguageMgr.GetTranslation("medalMoney");
+                           rewardMC.text = LanguageMgr.GetTranslation("medalMoney");
                         }
                      }
                      else
                      {
-                        _loc7_.text = StringUtils.trim(LanguageMgr.GetTranslation("gongxun"));
+                        rewardMC.text = StringUtils.trim(LanguageMgr.GetTranslation("gongxun"));
                      }
                   }
                   else
                   {
-                     _loc7_.text = LanguageMgr.GetTranslation("consortia.Money");
+                     rewardMC.text = LanguageMgr.GetTranslation("consortia.Money");
                   }
                }
                else
                {
-                  _loc7_.text = LanguageMgr.GetTranslation("money");
+                  rewardMC.text = LanguageMgr.GetTranslation("money");
                }
             }
             else
             {
-               _loc7_.text = LanguageMgr.GetTranslation("gold");
+               rewardMC.text = LanguageMgr.GetTranslation("gold");
             }
          }
          else
          {
-            _loc7_.text = LanguageMgr.GetTranslation("exp");
+            rewardMC.text = LanguageMgr.GetTranslation("exp");
          }
-         _loc7_.x = recordX + 59;
-         _loc6_.x = _loc7_.x + _loc7_.textWidth + 5;
-         _loc6_.y = _loc7_.y;
-         recordX = _loc6_.x + _loc6_.textWidth + 15;
-         if(param4)
+         rewardMC.x = recordX + 59;
+         quantityTxt.x = rewardMC.x + rewardMC.textWidth + 5;
+         quantityTxt.y = rewardMC.y;
+         recordX = quantityTxt.x + quantityTxt.textWidth + 15;
+         if(isRank)
          {
-            _loc6_.text = param5;
+            quantityTxt.text = rank;
          }
          else
          {
-            _loc6_.text = String(param2);
+            quantityTxt.text = String(count);
          }
-         addChildAt(_loc7_,0);
-         addChildAt(_loc6_,0);
+         addChildAt(rewardMC,0);
+         addChildAt(quantityTxt,0);
       }
       
-      private function __onTaskStatusClick(param1:MouseEvent) : void
+      private function __onTaskStatusClick(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(RewardTaskControl.instance.model.times == 0 && RewardTaskControl.instance.model.times == 0)
@@ -237,34 +237,34 @@ package rewardTask.view
          }
       }
       
-      private function __onGotoRewardClick(param1:MouseEvent) : void
+      private function __onGotoRewardClick(e:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var alert:* = null;
          if(!_taskInfo)
          {
             return;
          }
          _quicklyComplete = false;
          SoundManager.instance.play("008");
-         var _loc3_:QuestInfo = _taskInfo;
-         if(_loc3_.RewardBindMoney != 0 && _loc3_.RewardBindMoney + PlayerManager.Instance.Self.DDTMoney > ServerConfigManager.instance.getBindBidLimit(PlayerManager.Instance.Self.Grade,PlayerManager.Instance.Self.VIPLevel))
+         var questInfo:QuestInfo = _taskInfo;
+         if(questInfo.RewardBindMoney != 0 && questInfo.RewardBindMoney + PlayerManager.Instance.Self.DDTMoney > ServerConfigManager.instance.getBindBidLimit(PlayerManager.Instance.Self.Grade,PlayerManager.Instance.Self.VIPLevel))
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.BindBid.tip"),LanguageMgr.GetTranslation("shop.PresentFrame.OkBtnText"),LanguageMgr.GetTranslation("shop.PresentFrame.CancelBtnText"),true,true,true,1);
-            _loc2_.addEventListener("response",__onResponse);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.BindBid.tip"),LanguageMgr.GetTranslation("shop.PresentFrame.OkBtnText"),LanguageMgr.GetTranslation("shop.PresentFrame.CancelBtnText"),true,true,true,1);
+            alert.addEventListener("response",__onResponse);
          }
          else
          {
-            finishQuest(_loc3_);
+            finishQuest(questInfo);
          }
       }
       
-      private function __onResponse(param1:FrameEvent) : void
+      private function __onResponse(pEvent:FrameEvent) : void
       {
-         var _loc2_:* = null;
-         param1.currentTarget.removeEventListener("response",__onResponse);
-         if(param1.responseCode == 3)
+         var questInfo:* = null;
+         pEvent.currentTarget.removeEventListener("response",__onResponse);
+         if(pEvent.responseCode == 3)
          {
-            _loc2_ = _taskInfo;
+            questInfo = _taskInfo;
             if(_quicklyComplete)
             {
                SocketManager.Instance.out.sendQuestFinish(_taskInfo.QuestID,TaskManager.itemAwardSelected,1);
@@ -272,38 +272,38 @@ package rewardTask.view
             }
             else
             {
-               finishQuest(_loc2_);
+               finishQuest(questInfo);
             }
          }
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(pEvent.currentTarget);
       }
       
-      private function finishQuest(param1:QuestInfo) : void
+      private function finishQuest(pQuestInfo:QuestInfo) : void
       {
-         var _loc4_:* = null;
-         var _loc2_:Array = [];
+         var info:* = null;
+         var items:Array = [];
          var _loc6_:int = 0;
          var _loc5_:* = _taskInfo.itemRewards;
-         for each(var _loc3_ in _taskInfo.itemRewards)
+         for each(var temp in _taskInfo.itemRewards)
          {
-            _loc4_ = new InventoryItemInfo();
-            _loc4_.TemplateID = _loc3_.itemID;
-            ItemManager.fill(_loc4_);
-            _loc4_.ValidDate = _loc3_.ValidateTime;
-            _loc4_.TemplateID = _loc3_.itemID;
-            _loc4_.IsJudge = true;
-            _loc4_.IsBinds = _loc3_.isBind;
-            _loc4_.AttackCompose = _loc3_.AttackCompose;
-            _loc4_.DefendCompose = _loc3_.DefendCompose;
-            _loc4_.AgilityCompose = _loc3_.AgilityCompose;
-            _loc4_.LuckCompose = _loc3_.LuckCompose;
-            _loc4_.StrengthenLevel = _loc3_.StrengthenLevel;
-            _loc4_.Count = _loc3_.count[_taskInfo.QuestLevel - 1];
-            if(!(0 != _loc4_.NeedSex && getSexByInt(PlayerManager.Instance.Self.Sex) != _loc4_.NeedSex))
+            info = new InventoryItemInfo();
+            info.TemplateID = temp.itemID;
+            ItemManager.fill(info);
+            info.ValidDate = temp.ValidateTime;
+            info.TemplateID = temp.itemID;
+            info.IsJudge = true;
+            info.IsBinds = temp.isBind;
+            info.AttackCompose = temp.AttackCompose;
+            info.DefendCompose = temp.DefendCompose;
+            info.AgilityCompose = temp.AgilityCompose;
+            info.LuckCompose = temp.LuckCompose;
+            info.StrengthenLevel = temp.StrengthenLevel;
+            info.Count = temp.count[_taskInfo.QuestLevel - 1];
+            if(!(0 != info.NeedSex && getSexByInt(PlayerManager.Instance.Self.Sex) != info.NeedSex))
             {
-               if(_loc3_.isOptional == 1)
+               if(temp.isOptional == 1)
                {
-                  _loc2_.push(_loc4_);
+                  items.push(info);
                }
             }
          }
@@ -312,16 +312,16 @@ package rewardTask.view
          SocketManager.Instance.out.sendRewardTaskQuestOfferInfo();
       }
       
-      private function getSexByInt(param1:Boolean) : int
+      private function getSexByInt(Sex:Boolean) : int
       {
-         if(param1)
+         if(Sex)
          {
             return 1;
          }
          return 2;
       }
       
-      private function __onClickcomplete(param1:MouseEvent) : void
+      private function __onClickcomplete(e:MouseEvent) : void
       {
          _quicklyComplete = true;
          SoundManager.instance.playButtonSound();
@@ -330,24 +330,24 @@ package rewardTask.view
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("tank.manager.TaskManager.completeText",_taskInfo.OneKeyFinishNeedMoney),"",LanguageMgr.GetTranslation("cancel"),true,true,false,2);
-         _loc2_.addEventListener("response",__onComplete);
+         var frame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("tank.manager.TaskManager.completeText",_taskInfo.OneKeyFinishNeedMoney),"",LanguageMgr.GetTranslation("cancel"),true,true,false,2);
+         frame.addEventListener("response",__onComplete);
       }
       
-      private function __onComplete(param1:FrameEvent) : void
+      private function __onComplete(e:FrameEvent) : void
       {
-         e = param1;
+         e = e;
          var frame:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
          frame.removeEventListener("response",__onComplete);
          if(e.responseCode == 3 || e.responseCode == 2)
          {
             CheckMoneyUtils.instance.checkMoney(false,_taskInfo.OneKeyFinishNeedMoney,function():void
             {
-               var _loc1_:* = null;
+               var alert:* = null;
                if(_taskInfo.RewardBindMoney != 0 && _taskInfo.RewardBindMoney + PlayerManager.Instance.Self.DDTMoney > ServerConfigManager.instance.getBindBidLimit(PlayerManager.Instance.Self.Grade,PlayerManager.Instance.Self.VIPLevel))
                {
-                  _loc1_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.BindBid.tip"),LanguageMgr.GetTranslation("shop.PresentFrame.OkBtnText"),LanguageMgr.GetTranslation("shop.PresentFrame.CancelBtnText"),true,true,true,1);
-                  _loc1_.addEventListener("response",__onResponse);
+                  alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.BindBid.tip"),LanguageMgr.GetTranslation("shop.PresentFrame.OkBtnText"),LanguageMgr.GetTranslation("shop.PresentFrame.CancelBtnText"),true,true,true,1);
+                  alert.addEventListener("response",__onResponse);
                }
                else
                {
@@ -372,9 +372,9 @@ package rewardTask.view
          }
       }
       
-      public function taskBtnStatus(param1:int = 0) : void
+      public function taskBtnStatus(status:int = 0) : void
       {
-         if(param1 == 1)
+         if(status == 1)
          {
             _getTaskBtn.enable = false;
             _getTaskBtn.visible = false;
@@ -415,10 +415,10 @@ package rewardTask.view
       
       private function updataItem() : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc1_:int = RewardTaskControl.instance.model.questID;
-         _taskInfo = TaskManager.instance.getQuestByID(_loc1_);
+         var i:int = 0;
+         var info:* = null;
+         var id:int = RewardTaskControl.instance.model.questID;
+         _taskInfo = TaskManager.instance.getQuestByID(id);
          _taskDescriptionText.htmlText = QuestDescTextAnalyz.start(_taskInfo.Detail) + "<br/><br/>";
          _taskTargetText.htmlText = _taskInfo.conditions[0].description;
          if(RewardTaskControl.instance.model.status == 0)
@@ -431,39 +431,38 @@ package rewardTask.view
             _taskTargetStatusText.x = _taskTargetText.x + _taskTargetText.textWidth + 5;
          }
          updataTaskTargetStatusText();
-         var _loc2_:Array = _taskInfo.itemRewards;
-         var _loc3_:int = _loc2_.length > _cellList.length?_loc2_.length:uint(_cellList.length);
-         _loc5_ = 0;
-         while(_loc5_ < _loc3_)
+         var goodArr:Array = _taskInfo.itemRewards;
+         var len:int = goodArr.length > _cellList.length?goodArr.length:uint(_cellList.length);
+         for(i = 0; i < len; )
          {
-            if(_loc5_ < _loc2_.length)
+            if(i < goodArr.length)
             {
-               _loc4_ = ItemManager.fillByID(_loc2_[_loc5_].itemID);
-               _loc4_.IsBinds = _loc2_[_loc5_].isBind;
-               if(_loc5_ == _cellList.length)
+               info = ItemManager.fillByID(goodArr[i].itemID);
+               info.IsBinds = goodArr[i].isBind;
+               if(i == _cellList.length)
                {
                   _cellList.push(new BagCell(0,null,true,ComponentFactory.Instance.creatBitmap("asset.rewardTask.goodbg")));
-                  _goodBox.addChild(_cellList[_loc5_]);
+                  _goodBox.addChild(_cellList[i]);
                }
-               _cellList[_loc5_].info = _loc4_;
-               _cellList[_loc5_].setCount(_loc2_[_loc5_].count[_taskInfo.QuestLevel - 1]);
-               _cellList[_loc5_].visible = true;
+               _cellList[i].info = info;
+               _cellList[i].setCount(goodArr[i].count[_taskInfo.QuestLevel - 1]);
+               _cellList[i].visible = true;
             }
             else
             {
-               _cellList[_loc5_].visible = false;
+               _cellList[i].visible = false;
             }
-            _loc5_++;
+            i++;
          }
          _goodBox.arrange();
          taskBtnStatus(RewardTaskControl.instance.model.status);
          rewardItem();
       }
       
-      private function createCell(param1:InventoryItemInfo) : BagCell
+      private function createCell(info:InventoryItemInfo) : BagCell
       {
-         var _loc2_:BagCell = new BagCell(0,param1,true,ComponentFactory.Instance.creatBitmap("asset.rewardTask.goodbg"));
-         return _loc2_;
+         var bagCell:BagCell = new BagCell(0,info,true,ComponentFactory.Instance.creatBitmap("asset.rewardTask.goodbg"));
+         return bagCell;
       }
       
       public function dispose() : void

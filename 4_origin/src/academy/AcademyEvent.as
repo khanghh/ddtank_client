@@ -22,9 +22,9 @@ package academy
       public static const ACADEMY_PLAYER_CHANGE:String = "academyPlayerChange";
        
       
-      public function AcademyEvent(param1:String)
+      public function AcademyEvent($type:String)
       {
-         super(param1);
+         super($type);
       }
    }
 }

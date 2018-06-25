@@ -48,11 +48,11 @@ package team.view.main
       
       protected function __onTextInput() : void
       {
-         var _loc1_:int = PlayerManager.Instance.Self.Money / _price;
+         var haveMoney:int = PlayerManager.Instance.Self.Money / _price;
          input_text.text = int(input_text.text).toString();
-         if(int(input_text.text) > _loc1_)
+         if(int(input_text.text) > haveMoney)
          {
-            input_text.text = _loc1_.toString();
+            input_text.text = haveMoney.toString();
          }
          _inputPoint = int(input_text.text);
          teamText3.text = LanguageMgr.GetTranslation("ddt.team.allView.text30",_inputPoint);
@@ -67,14 +67,14 @@ package team.view.main
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:int = int(input_text.text) * _price;
-         var _loc1_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("team.active.donate",_loc2_,_inputPoint),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false,0);
-         _loc1_.addEventListener("response",__onAlertSubmit);
+         var price:int = int(input_text.text) * _price;
+         var alertFrame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("team.active.donate",price,_inputPoint),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false,0);
+         alertFrame.addEventListener("response",__onAlertSubmit);
       }
       
-      private function __onAlertSubmit(param1:FrameEvent) : void
+      private function __onAlertSubmit(e:FrameEvent) : void
       {
-         e = param1;
+         e = e;
          var alertFrame:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
          alertFrame.removeEventListener("response",__onAlertSubmit);
          alertFrame.dispose();

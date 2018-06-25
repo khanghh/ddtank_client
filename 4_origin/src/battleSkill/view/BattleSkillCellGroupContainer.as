@@ -25,10 +25,10 @@ package battleSkill.view
       
       private var _cellList:Vector.<BattleSkillCellGroup>;
       
-      public function BattleSkillCellGroupContainer(param1:Array)
+      public function BattleSkillCellGroupContainer(data:Array)
       {
          super();
-         _data = param1;
+         _data = data;
          initView();
       }
       
@@ -40,35 +40,34 @@ package battleSkill.view
          _cellList = new Vector.<BattleSkillCellGroup>();
       }
       
-      public function createSkillGroup(param1:Dictionary) : void
+      public function createSkillGroup(cellsDic:Dictionary) : void
       {
-         var _loc3_:* = null;
-         var _loc5_:int = 0;
-         _cellsDic = param1;
+         var cell:* = null;
+         var i:int = 0;
+         _cellsDic = cellsDic;
          if(_data == null)
          {
             return;
          }
-         var _loc4_:Array = getFiltrationData();
-         var _loc2_:int = _loc4_.length <= 12?12:_loc4_.length;
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_)
+         var data:Array = getFiltrationData();
+         var cellNum:int = data.length <= 12?12:data.length;
+         for(i = 0; i < cellNum; )
          {
-            if(_loc5_ < _loc4_.length)
+            if(i < data.length)
             {
-               _loc3_ = new BattleSkillCellGroup(_loc4_[_loc5_]);
-               _cellsDic[_loc4_[_loc5_].SkillID] = _loc3_;
+               cell = new BattleSkillCellGroup(data[i]);
+               _cellsDic[data[i].SkillID] = cell;
             }
             else
             {
-               _loc3_ = new BattleSkillCellGroup();
+               cell = new BattleSkillCellGroup();
             }
-            _loc3_.x = _loc5_ % 6 * 46 + int(_loc5_ % 6) * 19;
-            _loc3_.y = int(_loc5_ / 6) * 46 + int(_loc5_ / 6) * 34;
-            _loc3_.addEventListener(BattleSkillEvent.SKILLCELL_CLICK,cellMouseClick_Handler);
-            _skillSpri.addChild(_loc3_);
-            _cellList.push(_loc3_);
-            _loc5_++;
+            cell.x = i % 6 * 46 + int(i % 6) * 19;
+            cell.y = int(i / 6) * 46 + int(i / 6) * 34;
+            cell.addEventListener(BattleSkillEvent.SKILLCELL_CLICK,cellMouseClick_Handler);
+            _skillSpri.addChild(cell);
+            _cellList.push(cell);
+            i++;
          }
          _skillSp.setView(_skillSpri);
          update();
@@ -86,9 +85,9 @@ package battleSkill.view
                arr.push(info);
             }
          }
-         arr.sort(function(param1:BattleSkillSkillInfo, param2:BattleSkillSkillInfo):int
+         arr.sort(function(a:BattleSkillSkillInfo, b:BattleSkillSkillInfo):int
          {
-            if(param1.ID < param2.ID)
+            if(a.ID < b.ID)
             {
                return -1;
             }
@@ -97,66 +96,60 @@ package battleSkill.view
          return arr;
       }
       
-      private function update(param1:int = -1) : void
+      private function update(type:int = -1) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < _cellList.length)
+         var info:* = null;
+         var i:int = 0;
+         var real:int = 0;
+         for(i = 0; i < _cellList.length; )
          {
-            if(_cellList[_loc3_].info)
+            if(_cellList[i].info)
             {
-               _loc2_ = param1 == -1?_cellList[_loc3_].info.Type:int(param1);
-               _loc4_ = BattleSkillManager.instance.getActivateSkillInfoByType(_loc2_);
-               if(_loc4_)
+               real = type == -1?_cellList[i].info.Type:int(type);
+               info = BattleSkillManager.instance.getActivateSkillInfoByType(real);
+               if(info)
                {
-                  _cellList[_loc3_].info = _loc4_;
-                  crealListByType(_loc2_);
-                  _cellsDic[_loc4_.SkillID] = _cellList[_loc3_];
-                  if(param1 == _loc2_)
+                  _cellList[i].info = info;
+                  crealListByType(real);
+                  _cellsDic[info.SkillID] = _cellList[i];
+                  if(type == real)
                   {
                      return;
                   }
                }
             }
-            _loc3_++;
+            i++;
          }
       }
       
-      private function crealListByType(param1:int) : void
+      private function crealListByType(type:int) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = _cellsDic;
-         for(var _loc2_ in _cellsDic)
+         for(var id in _cellsDic)
          {
-            if(_cellsDic[_loc2_].info.Type == param1)
+            if(_cellsDic[id].info.Type == type)
             {
+               delete _cellsDic[id];
                return;
-               §§push(delete _cellsDic[_loc2_]);
-            }
-            else
-            {
-               continue;
             }
          }
       }
       
-      private function cellMouseClick_Handler(param1:BattleSkillEvent) : void
+      private function cellMouseClick_Handler(evt:BattleSkillEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         dispatchEvent(new BattleSkillEvent(BattleSkillEvent.SKILLCELL_CLICK,(param1.target as BattleSkillCellGroup).info.SkillID));
+         dispatchEvent(new BattleSkillEvent(BattleSkillEvent.SKILLCELL_CLICK,(evt.target as BattleSkillCellGroup).info.SkillID));
       }
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _cellList.length)
+         var i:int = 0;
+         for(i = 0; i < _cellList.length; )
          {
-            _cellList[_loc1_].removeEventListener(BattleSkillEvent.SKILLCELL_CLICK,cellMouseClick_Handler);
-            _cellList[_loc1_] = null;
-            _loc1_++;
+            _cellList[i].removeEventListener(BattleSkillEvent.SKILLCELL_CLICK,cellMouseClick_Handler);
+            _cellList[i] = null;
+            i++;
          }
          _cellList = null;
          if(_skillSpri)

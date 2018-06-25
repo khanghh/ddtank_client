@@ -36,7 +36,7 @@ package yyvip.view
          _timer.addEventListener("timer",timerHandler,false,0,true);
       }
       
-      private function clickHandler(param1:MouseEvent) : void
+      private function clickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_isCanUsable)
@@ -52,7 +52,7 @@ package yyvip.view
          }
       }
       
-      private function timerHandler(param1:TimerEvent) : void
+      private function timerHandler(event:TimerEvent) : void
       {
          _count = Number(_count) - 1;
          if(_count <= 0)

@@ -37,34 +37,32 @@ package treasureHunting.views
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          _rankBG = ComponentFactory.Instance.creat("treasureHunting.rankBG");
          addChild(_rankBG);
          _ranklist = ComponentFactory.Instance.creatComponentByStylename("treasureHunting.LuckBox");
          addChild(_ranklist);
          _itemList = new Vector.<LuckRankItem>();
-         _loc2_ = 0;
-         while(_loc2_ < 10)
+         for(i = 0; i < 10; )
          {
-            _loc1_ = new LuckRankItem(_loc2_);
-            _loc1_.addEventListener("click",onItemClick);
-            _ranklist.addChild(_loc1_);
-            _itemList.push(_loc1_);
-            _loc2_++;
+            item = new LuckRankItem(i);
+            item.addEventListener("click",onItemClick);
+            _ranklist.addChild(item);
+            _itemList.push(item);
+            i++;
          }
       }
       
-      protected function onItemClick(param1:MouseEvent) : void
+      protected function onItemClick(event:MouseEvent) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ <= _itemList.length - 1)
+         var i:int = 0;
+         for(i = 0; i <= _itemList.length - 1; )
          {
-            (_itemList[_loc2_] as LuckRankItem).selected = false;
-            _loc2_++;
+            (_itemList[i] as LuckRankItem).selected = false;
+            i++;
          }
-         (param1.currentTarget as LuckRankItem).selected = true;
+         (event.currentTarget as LuckRankItem).selected = true;
       }
       
       private function initEvent() : void
@@ -72,17 +70,17 @@ package treasureHunting.views
          RouletteManager.instance.addEventListener("update_badLuck",__getLuckRank);
       }
       
-      protected function __getLuckRank(param1:CaddyEvent) : void
+      protected function __getLuckRank(event:CaddyEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         _dataList = param1.dataList;
-         _loc3_ = 0;
-         while(_loc3_ < 10 && _loc3_ < _dataList.length)
+         var i:int = 0;
+         var obj:* = null;
+         _dataList = event.dataList;
+         i = 0;
+         while(i < 10 && i < _dataList.length)
          {
-            _loc2_ = _dataList[_loc3_];
-            _itemList[_loc3_].update(_loc3_,_loc2_["Nickname"],_loc2_["Count"]);
-            _loc3_++;
+            obj = _dataList[i];
+            _itemList[i].update(i,obj["Nickname"],obj["Count"]);
+            i++;
          }
       }
       

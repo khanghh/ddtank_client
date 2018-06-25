@@ -44,9 +44,9 @@ package cardSystem
          CardManager.Instance.addEventListener("viewDispose",__cardViewDispose);
       }
       
-      protected function __cardViewDispose(param1:CardSystemEvent) : void
+      protected function __cardViewDispose(event:CardSystemEvent) : void
       {
-         var _loc2_:* = param1.info;
+         var _loc2_:* = event.info;
          if(0 !== _loc2_)
          {
             if(1 !== _loc2_)
@@ -66,56 +66,56 @@ package cardSystem
          }
       }
       
-      protected function __cardViewOpen(param1:CardSystemEvent) : void
+      protected function __cardViewOpen(event:CardSystemEvent) : void
       {
-         openCardView(param1.info);
+         openCardView(event.info);
       }
       
-      protected function openCardView(param1:int) : void
+      protected function openCardView(type:int) : void
       {
-         var _loc2_:* = null;
-         switch(int(param1))
+         var event:* = null;
+         switch(int(type))
          {
             case 0:
                if(!_cardEquipView)
                {
                   _cardEquipView = ComponentFactory.Instance.creatCustomObject("cardEquipView");
                }
-               _loc2_ = new CardSystemEvent("bagEquipViewComplete");
-               _loc2_.info = _cardEquipView;
-               CardManager.Instance.dispatchEvent(_loc2_);
+               event = new CardSystemEvent("bagEquipViewComplete");
+               event.info = _cardEquipView;
+               CardManager.Instance.dispatchEvent(event);
                break;
             case 1:
                if(!_cardBagView)
                {
                   _cardBagView = ComponentFactory.Instance.creatComponentByStylename("cardSyste.cardBagList");
                }
-               _loc2_ = new CardSystemEvent("bagBagViewComplete");
-               _loc2_.info = _cardBagView;
-               CardManager.Instance.dispatchEvent(_loc2_);
+               event = new CardSystemEvent("bagBagViewComplete");
+               event.info = _cardBagView;
+               CardManager.Instance.dispatchEvent(event);
                break;
             case 2:
                showCardAchievementFrame();
          }
       }
       
-      public function showUpGradeFrame(param1:CardInfo) : void
+      public function showUpGradeFrame(cardInfo:CardInfo) : void
       {
-         var _loc2_:UpGradeFrame = ComponentFactory.Instance.creatComponentByStylename("UpGradeFrame");
-         _loc2_.cardInfo = param1;
-         LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+         var upGrade:UpGradeFrame = ComponentFactory.Instance.creatComponentByStylename("UpGradeFrame");
+         upGrade.cardInfo = cardInfo;
+         LayerManager.Instance.addToLayer(upGrade,3,true,1);
       }
       
-      public function showPropResetFrame(param1:CardInfo) : void
+      public function showPropResetFrame(cardInfo:CardInfo) : void
       {
-         var _loc2_:PropResetFrame = ComponentFactory.Instance.creatComponentByStylename("PropResetFrame");
-         _loc2_.show(param1);
+         var propReset:PropResetFrame = ComponentFactory.Instance.creatComponentByStylename("PropResetFrame");
+         propReset.show(cardInfo);
       }
       
       public function showCollectView() : void
       {
-         var _loc1_:CardCollectView = ComponentFactory.Instance.creatComponentByStylename("CardCollectView");
-         LayerManager.Instance.addToLayer(_loc1_,3,true,1);
+         var collectView:CardCollectView = ComponentFactory.Instance.creatComponentByStylename("CardCollectView");
+         LayerManager.Instance.addToLayer(collectView,3,true,1);
       }
       
       public function showCardAchievementFrame() : void
@@ -129,7 +129,7 @@ package cardSystem
          }
       }
       
-      private function __onCloseAchievenmentFrame(param1:ComponentEvent) : void
+      private function __onCloseAchievenmentFrame(e:ComponentEvent) : void
       {
          CardManager.Instance.isOpenCardAchievementsView = false;
          _achievementframe.removeEventListener("dispose",__onCloseAchievenmentFrame);

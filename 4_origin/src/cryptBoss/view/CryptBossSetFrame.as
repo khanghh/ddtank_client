@@ -54,10 +54,10 @@ package cryptBoss.view
       
       private var _clickTime:Number = 0;
       
-      public function CryptBossSetFrame(param1:CryptBossItemInfo)
+      public function CryptBossSetFrame(data:CryptBossItemInfo)
       {
          super();
-         _data = param1;
+         _data = data;
          _levelArr = LanguageMgr.GetTranslation("cryptBoss.setFrame.levelTxt").split(",");
          _cellVec = new Vector.<BaseCell>();
          _level = _data.star == 5?_data.star:_data.star + 1;
@@ -93,26 +93,26 @@ package cryptBoss.view
       
       private function updateItems() : void
       {
-         var _loc4_:* = null;
-         var _loc2_:* = null;
-         var _loc5_:* = null;
+         var cell:* = null;
+         var item:* = null;
+         var cell1:* = null;
          while(_cellVec.length > 0)
          {
-            _loc4_ = _cellVec.shift();
-            _loc4_.dispose();
+            cell = _cellVec.shift();
+            cell.dispose();
          }
-         var _loc3_:Array = CryptBossControl.instance.getTemplateIdArr(50200 + _data.id,_level);
-         var _loc6_:Rectangle = ComponentFactory.Instance.creatCustomObject("cryptBoss.setFrame.cellRect");
+         var idArr:Array = CryptBossControl.instance.getTemplateIdArr(50200 + _data.id,_level);
+         var rect:Rectangle = ComponentFactory.Instance.creatCustomObject("cryptBoss.setFrame.cellRect");
          var _loc8_:int = 0;
-         var _loc7_:* = _loc3_;
-         for each(var _loc1_ in _loc3_)
+         var _loc7_:* = idArr;
+         for each(var id in idArr)
          {
-            _loc2_ = ItemManager.Instance.getTemplateById(_loc1_);
-            _loc5_ = new BaseCell(ComponentFactory.Instance.creatBitmap("cryptBoss.dropCellBgAsset"),_loc2_);
-            _loc5_.setContentSize(_loc6_.width,_loc6_.height);
-            _loc5_.PicPos = new Point(_loc6_.x,_loc6_.y);
-            _list.addChild(_loc5_);
-            _cellVec.push(_loc5_);
+            item = ItemManager.Instance.getTemplateById(id);
+            cell1 = new BaseCell(ComponentFactory.Instance.creatBitmap("cryptBoss.dropCellBgAsset"),item);
+            cell1.setContentSize(rect.width,rect.height);
+            cell1.PicPos = new Point(rect.x,rect.y);
+            _list.addChild(cell1);
+            _cellVec.push(cell1);
          }
          _scrollPanel.setView(_list);
          _scrollPanel.invalidateViewport();
@@ -120,30 +120,30 @@ package cryptBoss.view
       
       private function updateLevelComboBox() : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          _levelComboBox.beginChanges();
          _levelComboBox.selctedPropName = "text";
-         var _loc1_:VectorListModel = _levelComboBox.listPanel.vectorListModel;
-         _loc1_.clear();
-         _loc2_ = 0;
-         while(_loc2_ < _data.star + 1 && _loc2_ < _levelArr.length)
+         var comboxModel:VectorListModel = _levelComboBox.listPanel.vectorListModel;
+         comboxModel.clear();
+         i = 0;
+         while(i < _data.star + 1 && i < _levelArr.length)
          {
-            _loc1_.append(_levelArr[_loc2_]);
-            _loc2_++;
+            comboxModel.append(_levelArr[i]);
+            i++;
          }
          _levelComboBox.listPanel.list.updateListView();
          _levelComboBox.commitChanges();
          _levelComboBox.textField.text = _levelArr[_level - 1];
       }
       
-      private function __itemClick(param1:ListItemEvent) : void
+      private function __itemClick(event:ListItemEvent) : void
       {
          SoundManager.instance.play("008");
-         if(_level == param1.index + 1)
+         if(_level == event.index + 1)
          {
             return;
          }
-         _level = param1.index + 1;
+         _level = event.index + 1;
          updateItems();
       }
       
@@ -155,7 +155,7 @@ package cryptBoss.view
          _fightBtn.addEventListener("click",__fightHandler);
       }
       
-      protected function __fightHandler(param1:MouseEvent) : void
+      protected function __fightHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.Grade < 45)
@@ -163,7 +163,7 @@ package cryptBoss.view
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.functionLimitTip",45));
             return;
          }
-         CheckWeaponManager.instance.setFunction(this,__fightHandler,[param1]);
+         CheckWeaponManager.instance.setFunction(this,__fightHandler,[event]);
          if(CheckWeaponManager.instance.isNoWeapon())
          {
             CheckWeaponManager.instance.showAlert();
@@ -176,14 +176,14 @@ package cryptBoss.view
          }
       }
       
-      private function __buttonClick(param1:MouseEvent) : void
+      private function __buttonClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }
       
-      protected function __responseHandler(param1:FrameEvent) : void
+      protected function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();

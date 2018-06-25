@@ -61,10 +61,10 @@ package wonderfulActivity.items
       
       private var tagId:int;
       
-      public function LimitActivityView(param1:int)
+      public function LimitActivityView(id:int)
       {
          super();
-         tagId = param1;
+         tagId = id;
       }
       
       public function init() : void
@@ -112,7 +112,7 @@ package wonderfulActivity.items
          _goodsExchange.addEventListener("ExchangeGoodsChange",__ExchangeGoodsChangeHandler);
       }
       
-      protected function __piccHandler(param1:MouseEvent) : void
+      protected function __piccHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -120,17 +120,17 @@ package wonderfulActivity.items
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ActivityState.confirm.content",10000),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
-         _loc2_.moveEnable = false;
-         _loc2_.addEventListener("response",__responseHandler);
+         var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ActivityState.confirm.content",10000),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
+         alert.moveEnable = false;
+         alert.addEventListener("response",__responseHandler);
       }
       
-      protected function __responseHandler(param1:FrameEvent) : void
+      protected function __responseHandler(event:FrameEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__responseHandler);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var alert2:* = null;
+         var alert:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",__responseHandler);
+         if(event.responseCode == 2 || event.responseCode == 3)
          {
             if(PlayerManager.Instance.Self.Money >= 10000)
             {
@@ -138,47 +138,47 @@ package wonderfulActivity.items
             }
             else
             {
-               _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("poorNote"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
-               _loc3_.moveEnable = false;
-               _loc3_.addEventListener("response",__poorManResponse);
+               alert2 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("poorNote"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
+               alert2.moveEnable = false;
+               alert2.addEventListener("response",__poorManResponse);
             }
          }
-         ObjectUtils.disposeObject(_loc2_);
+         ObjectUtils.disposeObject(alert);
       }
       
-      private function __poorManResponse(param1:FrameEvent) : void
+      private function __poorManResponse(event:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__poorManResponse);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var alert:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",__poorManResponse);
+         if(event.responseCode == 2 || event.responseCode == 3)
          {
             LeavePageManager.leaveToFillPath();
          }
-         ObjectUtils.disposeObject(_loc2_);
+         ObjectUtils.disposeObject(alert);
       }
       
-      private function __back(param1:MouseEvent) : void
+      private function __back(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          CalendarControl.getInstance().closeActivity();
       }
       
-      private function __getAward(param1:MouseEvent) : void
+      private function __getAward(event:MouseEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var alert:* = null;
+         var loader:* = null;
          SoundManager.instance.play("008");
          if(_activityInfo.ActiveType == 0)
          {
             if(_detail.getInputField().text == "" && _activityInfo.HasKey == 1)
             {
-               _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.movement.MovementRightView.pass"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,false,false,2);
-               _loc3_.info.showCancel = false;
+               alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.movement.MovementRightView.pass"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,false,false,2);
+               alert.info.showCancel = false;
                return;
             }
-            _loc2_ = CalendarControl.getInstance().reciveActivityAward(_activityInfo,_detail.getInputField().text);
-            _loc2_.addEventListener("loadError",__onLoadError);
-            _loc2_.addEventListener("complete",__activityLoadComplete);
+            loader = CalendarControl.getInstance().reciveActivityAward(_activityInfo,_detail.getInputField().text);
+            loader.addEventListener("loadError",__onLoadError);
+            loader.addEventListener("complete",__activityLoadComplete);
             _detail.getInputField().text = "";
             if(_activityInfo.HasKey == 1)
             {
@@ -195,7 +195,7 @@ package wonderfulActivity.items
          }
       }
       
-      private function __exchange(param1:MouseEvent) : void
+      private function __exchange(event:MouseEvent) : void
       {
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -206,11 +206,11 @@ package wonderfulActivity.items
          _goodsExchange.sendGoods();
       }
       
-      private function __activityLoadComplete(param1:LoaderEvent) : void
+      private function __activityLoadComplete(event:LoaderEvent) : void
       {
-         var _loc2_:BaseLoader = param1.currentTarget as BaseLoader;
-         _loc2_.removeEventListener("loadError",__onLoadError);
-         _loc2_.removeEventListener("complete",__activityLoadComplete);
+         var loader:BaseLoader = event.currentTarget as BaseLoader;
+         loader.removeEventListener("loadError",__onLoadError);
+         loader.removeEventListener("complete",__activityLoadComplete);
          if(_activityInfo.HasKey == 1)
          {
             _getButton.enable = true;
@@ -221,11 +221,11 @@ package wonderfulActivity.items
          }
       }
       
-      private function __onLoadError(param1:LoaderEvent) : void
+      private function __onLoadError(event:LoaderEvent) : void
       {
-         var _loc2_:BaseLoader = param1.currentTarget as BaseLoader;
-         _loc2_.removeEventListener("loadError",__onLoadError);
-         _loc2_.removeEventListener("complete",__activityLoadComplete);
+         var loader:BaseLoader = event.currentTarget as BaseLoader;
+         loader.removeEventListener("loadError",__onLoadError);
+         loader.removeEventListener("complete",__activityLoadComplete);
          _getButton.enable = !_activityInfo.isAttend;
       }
       
@@ -307,9 +307,9 @@ package wonderfulActivity.items
          }
       }
       
-      private function __ExchangeGoodsChangeHandler(param1:CalendarEvent) : void
+      private function __ExchangeGoodsChangeHandler(event:CalendarEvent) : void
       {
-         if(param1.enable == false)
+         if(event.enable == false)
          {
             _exchangeButton.enable = false;
          }
@@ -391,7 +391,7 @@ package wonderfulActivity.items
          return this;
       }
       
-      public function setState(param1:int, param2:int) : void
+      public function setState(type:int, id:int) : void
       {
       }
    }

@@ -21,58 +21,57 @@ package wasteRecycle.view
       
       private var _waitBagUpdate:Array;
       
-      public function WasteRecyclePropBagView(param1:int, param2:int = 7, param3:int = 49)
+      public function WasteRecyclePropBagView(bagType:int, columnNum:int = 7, cellNun:int = 49)
       {
          _waitBagUpdate = [];
-         super(param1,param2,param3);
+         super(bagType,columnNum,cellNun);
          WasteRecycleController.instance.addEventListener("complete",__onWaitUpdate);
       }
       
       override protected function createCells() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var cell:* = null;
          _cells = new Dictionary();
          _cellMouseOverBg = ComponentFactory.Instance.creatBitmap("bagAndInfo.cell.bagCellOverBgAsset");
-         _loc2_ = 0;
-         while(_loc2_ < _cellNum)
+         for(i = 0; i < _cellNum; )
          {
-            _loc1_ = new WasteRecycleCell(_loc2_,null);
-            _loc1_.mouseOverEffBoolean = false;
-            addChild(_loc1_);
-            _loc1_.bagType = _bagType;
-            _loc1_.addEventListener("interactive_click",__clickHandler);
-            _loc1_.addEventListener("mouseOver",_cellOverEff);
-            _loc1_.addEventListener("mouseOut",_cellOutEff);
-            _loc1_.addEventListener("interactive_double_click",__doubleClickHandler);
-            DoubleClickManager.Instance.enableDoubleClick(_loc1_);
-            _loc1_.addEventListener("lockChanged",__cellChanged);
-            _cells[_loc1_.place] = _loc1_;
-            _cellVec.push(_loc1_);
-            _loc2_++;
+            cell = new WasteRecycleCell(i,null);
+            cell.mouseOverEffBoolean = false;
+            addChild(cell);
+            cell.bagType = _bagType;
+            cell.addEventListener("interactive_click",__clickHandler);
+            cell.addEventListener("mouseOver",_cellOverEff);
+            cell.addEventListener("mouseOut",_cellOutEff);
+            cell.addEventListener("interactive_double_click",__doubleClickHandler);
+            DoubleClickManager.Instance.enableDoubleClick(cell);
+            cell.addEventListener("lockChanged",__cellChanged);
+            _cells[cell.place] = cell;
+            _cellVec.push(cell);
+            i++;
          }
       }
       
-      override protected function __doubleClickHandler(param1:InteractiveEvent) : void
+      override protected function __doubleClickHandler(evt:InteractiveEvent) : void
       {
-         var _loc2_:* = null;
+         var frame:* = null;
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         if((param1.currentTarget as BagCell).info != null)
+         if((evt.currentTarget as BagCell).info != null)
          {
             SoundManager.instance.playButtonSound();
-            _loc2_ = ComponentFactory.Instance.creatComponentByStylename("wasteRecycel.selectedFrame");
-            _loc2_.show(param1.currentTarget as WasteRecycleCell);
+            frame = ComponentFactory.Instance.creatComponentByStylename("wasteRecycel.selectedFrame");
+            frame.show(evt.currentTarget as WasteRecycleCell);
          }
       }
       
-      override public function setData(param1:BagInfo) : void
+      override public function setData(bag:BagInfo) : void
       {
-         var _loc3_:* = null;
-         if(_bagdata == param1)
+         var info:* = null;
+         if(_bagdata == bag)
          {
             return;
          }
@@ -80,119 +79,119 @@ package wasteRecycle.view
          {
             _bagdata.removeEventListener("update",__updateGoods);
          }
-         _bagdata = param1;
-         var _loc2_:Array = [];
+         _bagdata = bag;
+         var _infoArr:Array = [];
          var _loc6_:int = 0;
          var _loc5_:* = _bagdata.items;
-         for(var _loc4_ in _bagdata.items)
+         for(var i in _bagdata.items)
          {
-            _loc3_ = _bagdata.items[_loc4_] as InventoryItemInfo;
-            if(WasteRecycleController.instance.model.data[_loc3_.TemplateID])
+            info = _bagdata.items[i] as InventoryItemInfo;
+            if(WasteRecycleController.instance.model.data[info.TemplateID])
             {
-               _cells[_loc4_].info = _loc3_;
-               _loc2_.push(_cells[_loc4_]);
+               _cells[i].info = info;
+               _infoArr.push(_cells[i]);
             }
          }
          _bagdata.addEventListener("update",__updateGoods);
-         _cellsSort(_loc2_);
+         _cellsSort(_infoArr);
       }
       
-      override protected function __updateGoods(param1:BagEvent) : void
+      override protected function __updateGoods(evt:BagEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc4_:Dictionary = param1.changedSlots;
+         var c:* = null;
+         var changes:Dictionary = evt.changedSlots;
          if(WasteRecycleController.instance.isPlay)
          {
-            _waitBagUpdate.push(_loc4_);
+            _waitBagUpdate.push(changes);
          }
          else
          {
             var _loc6_:int = 0;
-            var _loc5_:* = _loc4_;
-            for each(var _loc3_ in _loc4_)
+            var _loc5_:* = changes;
+            for each(var i in changes)
             {
-               _loc2_ = _bagdata.getItemAt(_loc3_.Place);
-               if(_loc2_ && WasteRecycleController.instance.model.data[_loc2_.TemplateID])
+               c = _bagdata.getItemAt(i.Place);
+               if(c && WasteRecycleController.instance.model.data[c.TemplateID])
                {
-                  setCellInfo(_loc2_.Place,_loc2_);
+                  setCellInfo(c.Place,c);
                }
                else
                {
-                  setCellInfo(_loc3_.Place,null);
+                  setCellInfo(i.Place,null);
                }
                dispatchEvent(new Event("change"));
             }
          }
       }
       
-      private function __onWaitUpdate(param1:Event) : void
+      private function __onWaitUpdate(e:Event) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var data:* = null;
+         var c:* = null;
          while(_waitBagUpdate.length)
          {
-            _loc3_ = _waitBagUpdate.shift();
+            data = _waitBagUpdate.shift();
             var _loc6_:int = 0;
-            var _loc5_:* = _loc3_;
-            for each(var _loc4_ in _loc3_)
+            var _loc5_:* = data;
+            for each(var i in data)
             {
-               _loc2_ = _bagdata.getItemAt(_loc4_.Place);
-               if(_loc2_ && WasteRecycleController.instance.model.data[_loc2_.TemplateID])
+               c = _bagdata.getItemAt(i.Place);
+               if(c && WasteRecycleController.instance.model.data[c.TemplateID])
                {
-                  setCellInfo(_loc2_.Place,_loc2_);
+                  setCellInfo(c.Place,c);
                }
                else
                {
-                  setCellInfo(_loc4_.Place,null);
+                  setCellInfo(i.Place,null);
                }
                dispatchEvent(new Event("change"));
             }
          }
       }
       
-      private function _cellsSort(param1:Array) : void
+      private function _cellsSort(arr:Array) : void
       {
-         var _loc6_:int = 0;
-         var _loc4_:Number = NaN;
-         var _loc5_:Number = NaN;
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         if(param1.length <= 0)
+         var i:int = 0;
+         var oldx:Number = NaN;
+         var oldy:Number = NaN;
+         var n:int = 0;
+         var oldCell:* = null;
+         if(arr.length <= 0)
          {
             return;
          }
-         _loc6_ = 0;
-         while(_loc6_ < param1.length)
+         i = 0;
+         while(i < arr.length)
          {
-            _loc4_ = param1[_loc6_].x;
-            _loc5_ = param1[_loc6_].y;
-            _loc3_ = _cellVec.indexOf(param1[_loc6_]);
-            _loc2_ = _cellVec[_loc6_];
-            param1[_loc6_].x = _loc2_.x;
-            param1[_loc6_].y = _loc2_.y;
-            _loc2_.x = _loc4_;
-            _loc2_.y = _loc5_;
-            _cellVec[_loc6_] = param1[_loc6_];
-            _cellVec[_loc3_] = _loc2_;
-            _loc6_++;
+            oldx = arr[i].x;
+            oldy = arr[i].y;
+            n = _cellVec.indexOf(arr[i]);
+            oldCell = _cellVec[i];
+            arr[i].x = oldCell.x;
+            arr[i].y = oldCell.y;
+            oldCell.x = oldx;
+            oldCell.y = oldy;
+            _cellVec[i] = arr[i];
+            _cellVec[n] = oldCell;
+            i++;
          }
       }
       
       override public function dispose() : void
       {
-         var _loc2_:* = null;
+         var data:* = null;
          WasteRecycleController.instance.removeEventListener("complete",__onWaitUpdate);
          if(_waitBagUpdate)
          {
             while(_waitBagUpdate.length)
             {
-               _loc2_ = _waitBagUpdate.pop();
+               data = _waitBagUpdate.pop();
                var _loc4_:int = 0;
-               var _loc3_:* = _loc2_;
-               for(var _loc1_ in _loc2_)
+               var _loc3_:* = data;
+               for(var s in data)
                {
-                  _loc2_[_loc1_] = null;
-                  delete _loc2_[_loc1_];
+                  data[s] = null;
+                  delete data[s];
                }
             }
          }

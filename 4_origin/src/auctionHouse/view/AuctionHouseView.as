@@ -80,12 +80,12 @@ package auctionHouse.view
       
       private var _explainTxt:FilterFrameText;
       
-      public function AuctionHouseView(param1:AuctionHouseController, param2:AuctionHouseModel)
+      public function AuctionHouseView(controller:AuctionHouseController, model:AuctionHouseModel)
       {
          super();
          _isInit = true;
-         _model = param2;
-         _controller = param1;
+         _model = model;
+         _controller = controller;
          initView();
          addEvent();
       }
@@ -210,35 +210,35 @@ package auctionHouse.view
          _sell_btn.addEventListener("click",__sell);
       }
       
-      private function __browse(param1:MouseEvent) : void
+      private function __browse(event:MouseEvent) : void
       {
          SoundManager.instance.play("047");
          _controller.setState("browse");
       }
       
-      private function __buy(param1:MouseEvent) : void
+      private function __buy(event:MouseEvent) : void
       {
          SoundManager.instance.play("047");
          _controller.setState("buy");
       }
       
-      private function __sell(param1:MouseEvent) : void
+      private function __sell(event:MouseEvent) : void
       {
          SoundManager.instance.play("047");
          _controller.setState("sell");
       }
       
-      private function __changeState(param1:AuctionHouseEvent) : void
+      private function __changeState(event:AuctionHouseEvent) : void
       {
          update();
       }
       
       private function update() : void
       {
-         var _loc1_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
+         var AuctionIDs:* = null;
+         var sAuctionIDs:* = null;
+         var lth:int = 0;
+         var i:int = 0;
          if(_model.state == "browse")
          {
             _btnGroup.selectIndex = 0;
@@ -265,25 +265,24 @@ package auctionHouse.view
             !!_browse.parent?removeChild(_browse):null;
             !!_sell.parent?_sell.hideReady():null;
             !!_sell.parent?removeChild(_sell):null;
-            _loc1_ = SharedManager.Instance.AuctionIDs[PlayerManager.Instance.Self.ID];
-            _loc3_ = "";
-            if(_loc1_ && _loc1_.length > 0)
+            AuctionIDs = SharedManager.Instance.AuctionIDs[PlayerManager.Instance.Self.ID];
+            sAuctionIDs = "";
+            if(AuctionIDs && AuctionIDs.length > 0)
             {
-               _loc2_ = _loc1_.length;
-               _loc3_ = _loc1_[0].toString();
-               if(_loc2_ > 1)
+               lth = AuctionIDs.length;
+               sAuctionIDs = AuctionIDs[0].toString();
+               if(lth > 1)
                {
-                  _loc4_ = 1;
-                  while(_loc4_ < _loc2_)
+                  for(i = 1; i < lth; )
                   {
-                     _loc3_ = _loc3_ + ("," + _loc1_[_loc4_].toString());
-                     _loc4_++;
+                     sAuctionIDs = sAuctionIDs + ("," + AuctionIDs[i].toString());
+                     i++;
                   }
                }
             }
             if(_model.buyAuctionData.length < 50)
             {
-               _controller.searchAuctionList(1,"",-1,-1,-1,PlayerManager.Instance.Self.ID,0,"false",_loc3_);
+               _controller.searchAuctionList(1,"",-1,-1,-1,PlayerManager.Instance.Self.ID,0,"false",sAuctionIDs);
             }
          }
          else if(_model.state == "sell")
@@ -319,7 +318,7 @@ package auctionHouse.view
          }
       }
       
-      private function __updatePage(param1:AuctionHouseEvent) : void
+      private function __updatePage(event:AuctionHouseEvent) : void
       {
          if(_model.state == "sell")
          {
@@ -331,7 +330,7 @@ package auctionHouse.view
          }
       }
       
-      private function __prePage(param1:AuctionHouseEvent) : void
+      private function __prePage(event:AuctionHouseEvent) : void
       {
          if(_model.state == "sell")
          {
@@ -351,7 +350,7 @@ package auctionHouse.view
          }
       }
       
-      private function __nextPage(param1:AuctionHouseEvent) : void
+      private function __nextPage(event:AuctionHouseEvent) : void
       {
          if(_model.state == "sell")
          {
@@ -371,81 +370,81 @@ package auctionHouse.view
          }
       }
       
-      private function __addMyAuction(param1:DictionaryEvent) : void
+      private function __addMyAuction(event:DictionaryEvent) : void
       {
-         _sell.addAuction(param1.data as AuctionGoodsInfo);
+         _sell.addAuction(event.data as AuctionGoodsInfo);
          _sell.clearLeft();
       }
       
-      private function __clearMyAuction(param1:DictionaryEvent) : void
+      private function __clearMyAuction(event:DictionaryEvent) : void
       {
          _sell.clearList();
       }
       
-      private function __removeMyAuction(param1:DictionaryEvent) : void
+      private function __removeMyAuction(event:DictionaryEvent) : void
       {
          _controller.searchAuctionList(_model.sellCurrent,"",-1,-1,PlayerManager.Instance.Self.ID,-1);
       }
       
-      private function __updateMyAuction(param1:DictionaryEvent) : void
+      private function __updateMyAuction(event:DictionaryEvent) : void
       {
-         _sell.updateList(param1.data as AuctionGoodsInfo);
+         _sell.updateList(event.data as AuctionGoodsInfo);
       }
       
-      private function __addBrowse(param1:DictionaryEvent) : void
+      private function __addBrowse(event:DictionaryEvent) : void
       {
-         _browse.addAuction(param1.data as AuctionGoodsInfo);
+         _browse.addAuction(event.data as AuctionGoodsInfo);
       }
       
-      private function __removeBrowse(param1:DictionaryEvent) : void
+      private function __removeBrowse(event:DictionaryEvent) : void
       {
          _browse.searchByCurCondition(_model.browseCurrent);
       }
       
-      private function __updateBrowse(param1:DictionaryEvent) : void
+      private function __updateBrowse(event:DictionaryEvent) : void
       {
-         _browse.updateAuction(param1.data as AuctionGoodsInfo);
+         _browse.updateAuction(event.data as AuctionGoodsInfo);
       }
       
-      private function __clearBrowse(param1:DictionaryEvent) : void
+      private function __clearBrowse(event:DictionaryEvent) : void
       {
          _browse.clearList();
       }
       
-      private function __browserTypeChange(param1:AuctionHouseEvent) : void
+      private function __browserTypeChange(event:AuctionHouseEvent) : void
       {
          _browse.setSelectType(_model.currentBrowseGoodInfo);
          _model.browseCurrent = 1;
          _browse.searchByCurCondition(1);
       }
       
-      private function __addBuyAuction(param1:DictionaryEvent) : void
+      private function __addBuyAuction(event:DictionaryEvent) : void
       {
-         _buy.addAuction(param1.data as AuctionGoodsInfo);
+         _buy.addAuction(event.data as AuctionGoodsInfo);
       }
       
-      private function __removeBuyAuction(param1:DictionaryEvent) : void
+      private function __removeBuyAuction(event:DictionaryEvent) : void
       {
          _buy.removeAuction();
          _controller.searchAuctionList(_model.browseCurrent,"",-1,-1,-1,PlayerManager.Instance.Self.ID);
       }
       
-      private function __clearBuyAuction(param1:DictionaryEvent) : void
+      private function __clearBuyAuction(event:DictionaryEvent) : void
       {
          _buy.clearList();
       }
       
-      private function __updateBuyAuction(param1:DictionaryEvent) : void
+      private function __updateBuyAuction(event:DictionaryEvent) : void
       {
-         _buy.updateAuction(param1.data as AuctionGoodsInfo);
+         _buy.updateAuction(event.data as AuctionGoodsInfo);
       }
       
-      private function __changeMoney(param1:PlayerPropertyEvent) : void
+      private function __changeMoney(event:PlayerPropertyEvent) : void
       {
          updateAccount();
       }
       
-      private function __sellSortChange(param1:AuctionHouseEvent) : void
+      private function __sellSortChange(e:AuctionHouseEvent) : void
       {
          _browse.searchByCurCondition(_model.sellCurrent,PlayerManager.Instance.Self.ID);
       }
@@ -455,7 +454,7 @@ package auctionHouse.view
          _money.text = String(PlayerManager.Instance.Self.Money);
       }
       
-      private function __getCategory(param1:AuctionHouseEvent) : void
+      private function __getCategory(event:AuctionHouseEvent) : void
       {
          _model.browseCurrent = 1;
          _browse.setCategory(_model.category);

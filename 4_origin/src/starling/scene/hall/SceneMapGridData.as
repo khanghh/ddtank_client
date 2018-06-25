@@ -32,10 +32,10 @@ package starling.scene.hall
          return _gridsType;
       }
       
-      public function set gridsType(param1:String) : void
+      public function set gridsType(value:String) : void
       {
-         _gridsType = param1;
-         gridsTypeArrArr = JSON.parse(param1) as Array;
+         _gridsType = value;
+         gridsTypeArrArr = JSON.parse(value) as Array;
       }
    }
 }

@@ -53,26 +53,26 @@ package hall.player
          _viewInfo.addEventListener("click",__onViewInfo);
       }
       
-      public function setInfo(param1:String, param2:int) : void
+      public function setInfo(nickName:String, id:int) : void
       {
-         _nickName = param1;
-         _id = param2;
+         _nickName = nickName;
+         _id = id;
       }
       
-      protected function __onViewInfo(param1:MouseEvent) : void
+      protected function __onViewInfo(event:MouseEvent) : void
       {
          PlayerInfoViewControl.viewByID(_id,-1,true,false);
          PlayerInfoViewControl.isOpenFromBag = false;
          this.visible = false;
       }
       
-      protected function __onPrivateChat(param1:MouseEvent) : void
+      protected function __onPrivateChat(event:MouseEvent) : void
       {
          ChatManager.Instance.privateChatTo(_nickName,_id);
          this.visible = false;
       }
       
-      protected function __onAddFriend(param1:MouseEvent) : void
+      protected function __onAddFriend(event:MouseEvent) : void
       {
          IMManager.Instance.addFriend(_nickName);
          this.visible = false;

@@ -16,9 +16,9 @@ package oldPlayerComeBack.data
          awardItems = new Vector.<AwardItemInfo>();
       }
       
-      public function addInfo(param1:AwardItemInfo) : void
+      public function addInfo(info:AwardItemInfo) : void
       {
-         awardItems.push(param1);
+         awardItems.push(info);
       }
       
       public function get allAwardItems() : Vector.<AwardItemInfo>
@@ -31,9 +31,9 @@ package oldPlayerComeBack.data
          return _curPlace;
       }
       
-      public function set curPlace(param1:int) : void
+      public function set curPlace(value:int) : void
       {
-         _curPlace = param1;
+         _curPlace = value;
       }
    }
 }

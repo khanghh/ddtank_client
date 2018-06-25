@@ -32,9 +32,9 @@ package Indiana.model
          super();
       }
       
-      public function set Items(param1:Vector.<IndianaGoodsItemInfo>) : void
+      public function set Items(value:Vector.<IndianaGoodsItemInfo>) : void
       {
-         _items = param1;
+         _items = value;
       }
       
       public function get Items() : Vector.<IndianaGoodsItemInfo>
@@ -42,21 +42,21 @@ package Indiana.model
          return _items;
       }
       
-      public function set ShopItems(param1:Vector.<IndianaShopItemInfo>) : void
+      public function set ShopItems(value:Vector.<IndianaShopItemInfo>) : void
       {
-         _shopItems = param1;
+         _shopItems = value;
          calculationStartTime();
          calculationEndTime();
       }
       
       public function calculationIsNeedCheck() : Boolean
       {
-         var _loc1_:Date = TimeManager.Instance.Now();
+         var data:Date = TimeManager.Instance.Now();
          if(_endTime == null && _startTime == null)
          {
             return false;
          }
-         if(_loc1_.getTime() - _endTime.getTime() > 0)
+         if(data.getTime() - _endTime.getTime() > 0)
          {
             return false;
          }
@@ -68,96 +68,93 @@ package Indiana.model
          return _shopItems;
       }
       
-      public function getShopItemByid(param1:int) : IndianaShopItemInfo
+      public function getShopItemByid(value:int) : IndianaShopItemInfo
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = _shopItems.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var i:int = 0;
+         var len:int = _shopItems.length;
+         for(i = 0; i < len; )
          {
-            if(_shopItems[_loc3_].PeriodId == param1)
+            if(_shopItems[i].PeriodId == value)
             {
-               return _shopItems[_loc3_];
+               return _shopItems[i];
             }
-            _loc3_++;
+            i++;
          }
          return null;
       }
       
       private function calculationEndTime() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:int = 0;
+         var len:int = 0;
+         var data:* = null;
+         var temp:* = null;
+         var i:int = 0;
          if(_shopItems && _shopItems.length > 0)
          {
-            _loc3_ = _shopItems.length;
-            _loc4_ = 0;
-            while(_loc4_ < _loc3_)
+            len = _shopItems.length;
+            for(i = 0; i < len; )
             {
-               if(_shopItems[_loc4_].Putaway == 1)
+               if(_shopItems[i].Putaway == 1)
                {
-                  if(_loc1_ == null)
+                  if(data == null)
                   {
-                     _loc1_ = DateUtils.decodeDated(_shopItems[_loc4_].EndShowTime);
+                     data = DateUtils.decodeDated(_shopItems[i].EndShowTime);
                   }
                   else
                   {
-                     _loc2_ = DateUtils.decodeDated(_shopItems[_loc4_].EndShowTime);
-                     if(_loc1_.valueOf() - _loc2_.valueOf() < 0)
+                     temp = DateUtils.decodeDated(_shopItems[i].EndShowTime);
+                     if(data.valueOf() - temp.valueOf() < 0)
                      {
-                        _loc1_ = _loc2_;
+                        data = temp;
                      }
                   }
                }
-               _loc4_++;
+               i++;
             }
-            _endTime = _loc1_;
+            _endTime = data;
          }
       }
       
       private function calculationStartTime() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:int = 0;
+         var len:int = 0;
+         var data:* = null;
+         var temp:* = null;
+         var i:int = 0;
          if(_shopItems && _shopItems.length > 0)
          {
-            _loc3_ = _shopItems.length;
-            _loc4_ = 0;
-            while(_loc4_ < _loc3_)
+            len = _shopItems.length;
+            for(i = 0; i < len; )
             {
-               if(_shopItems[_loc4_].Putaway == 1)
+               if(_shopItems[i].Putaway == 1)
                {
-                  if(_loc1_ == null)
+                  if(data == null)
                   {
-                     _loc1_ = DateUtils.decodeDated(_shopItems[_loc4_].StartTime);
+                     data = DateUtils.decodeDated(_shopItems[i].StartTime);
                   }
                   else
                   {
-                     _loc2_ = DateUtils.decodeDated(_shopItems[_loc4_].StartTime);
-                     if(_loc1_.valueOf() - _loc2_.valueOf() > 0)
+                     temp = DateUtils.decodeDated(_shopItems[i].StartTime);
+                     if(data.valueOf() - temp.valueOf() > 0)
                      {
-                        _loc1_ = _loc2_;
+                        data = temp;
                      }
                   }
                }
-               _loc4_++;
+               i++;
             }
-            _startTime = _loc1_;
+            _startTime = data;
          }
       }
       
       public function getActivateState() : int
       {
-         var _loc1_:Date = TimeManager.Instance.Now();
-         if(_endTime && _loc1_.getTime() - _endTime.getTime() >= 0)
+         var nowTime:Date = TimeManager.Instance.Now();
+         if(_endTime && nowTime.getTime() - _endTime.getTime() >= 0)
          {
             return INDIANA_END;
          }
-         if(_startTime && _loc1_.getTime() - _startTime.getTime() >= 0)
+         if(_startTime && nowTime.getTime() - _startTime.getTime() >= 0)
          {
             return INDIANA_START;
          }

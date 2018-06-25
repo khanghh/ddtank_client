@@ -51,9 +51,9 @@ package pet.sprite
       {
       }
       
-      protected function __onGradeChanged(param1:PlayerPropertyEvent) : void
+      protected function __onGradeChanged(event:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["Grade"])
+         if(event.changedProperties["Grade"])
          {
             if(canInitPetSprite())
             {
@@ -69,23 +69,23 @@ package pet.sprite
       
       private function checkFarmCrop() : Boolean
       {
-         var _loc2_:Boolean = false;
-         var _loc1_:Vector.<FieldVO> = FarmModelController.instance.model.selfFieldsInfo;
-         if(_loc1_ == null)
+         var hasCropMature:Boolean = false;
+         var crops:Vector.<FieldVO> = FarmModelController.instance.model.selfFieldsInfo;
+         if(crops == null)
          {
             return false;
          }
          var _loc5_:int = 0;
-         var _loc4_:* = _loc1_;
-         for each(var _loc3_ in _loc1_)
+         var _loc4_:* = crops;
+         for each(var crop in crops)
          {
-            if(_loc3_.plantGrownPhase == 2)
+            if(crop.plantGrownPhase == 2)
             {
-               _loc2_ = true;
+               hasCropMature = true;
                break;
             }
          }
-         return _loc2_;
+         return hasCropMature;
       }
       
       public function canInitPetSprite() : Boolean
@@ -93,29 +93,29 @@ package pet.sprite
          return PlayerManager.Instance.Self.Grade >= ServerConfigManager.instance.minOpenPetSystemLevel;
       }
       
-      public function switchPetSprite(param1:Boolean) : void
+      public function switchPetSprite(val:Boolean) : void
       {
-         sendToControlEvent("pet_switchPetSprite",[param1]);
+         sendToControlEvent("pet_switchPetSprite",[val]);
       }
       
-      public function showPetSprite(param1:Boolean = false, param2:Boolean = false) : void
+      public function showPetSprite(immediately:Boolean = false, showAlways:Boolean = false) : void
       {
-         sendToControlEvent("pet_showPetSprite",[param1,param2]);
+         sendToControlEvent("pet_showPetSprite",[immediately,showAlways]);
       }
       
-      public function hidePetSprite(param1:Boolean = false, param2:Boolean = true) : void
+      public function hidePetSprite(immediately:Boolean = false, canShowNext:Boolean = true) : void
       {
-         sendToControlEvent("pet_hidePetSprite",[param1,param2]);
+         sendToControlEvent("pet_hidePetSprite",[immediately,canShowNext]);
       }
       
-      private function sendToControlEvent(param1:String, param2:Object = null) : void
+      private function sendToControlEvent(eventType:String, data:Object = null) : void
       {
          if(!hasBeenSetup)
          {
             return;
          }
-         var _loc3_:CEvent = new CEvent(param1,param2);
-         pkgs.push(_loc3_);
+         var event:CEvent = new CEvent(eventType,data);
+         pkgs.push(event);
          dispatchEvent(new CEvent("pet_update_data"));
       }
    }

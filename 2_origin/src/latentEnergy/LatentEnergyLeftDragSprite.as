@@ -17,28 +17,28 @@ package latentEnergy
          super();
       }
       
-      public function dragDrop(param1:DragEffect) : void
+      public function dragDrop(effect:DragEffect) : void
       {
-         var _loc2_:* = null;
+         var tmpStr:* = null;
          DragManager.acceptDrag(this,"none");
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc4_:InventoryItemInfo = param1.data as InventoryItemInfo;
-         if(_loc4_.BagType == 0)
+         var tmp:InventoryItemInfo = effect.data as InventoryItemInfo;
+         if(tmp.BagType == 0)
          {
-            _loc2_ = "latentEnergy_equip_move";
+            tmpStr = "latentEnergy_equip_move";
          }
          else
          {
-            _loc2_ = "latentEnergy_item_move";
+            tmpStr = "latentEnergy_item_move";
          }
-         var _loc3_:LatentEnergyEvent = new LatentEnergyEvent(_loc2_);
-         _loc3_.info = _loc4_;
-         _loc3_.moveType = 1;
-         LatentEnergyManager.instance.dispatchEvent(_loc3_);
+         var event:LatentEnergyEvent = new LatentEnergyEvent(tmpStr);
+         event.info = tmp;
+         event.moveType = 1;
+         LatentEnergyManager.instance.dispatchEvent(event);
       }
    }
 }

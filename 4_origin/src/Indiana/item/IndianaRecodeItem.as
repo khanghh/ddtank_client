@@ -64,20 +64,20 @@ package Indiana.item
          _lookMa.removeEventListener("link",__linkHandler);
       }
       
-      private function __linkHandler(param1:TextEvent) : void
+      private function __linkHandler(e:TextEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:Array = param1.text.split("|");
-         if(_loc3_[0] == "clickother")
+         var id:int = 0;
+         var cmdArray:Array = e.text.split("|");
+         if(cmdArray[0] == "clickother")
          {
-            _loc2_ = _loc3_[1];
-            SocketManager.Instance.out.sendIndianaCode(_loc2_,_info.useId);
+            id = cmdArray[1];
+            SocketManager.Instance.out.sendIndianaCode(id,_info.useId);
          }
       }
       
-      public function set info(param1:IndianaData) : void
+      public function set info(value:IndianaData) : void
       {
-         _info = param1;
+         _info = value;
          if(_info)
          {
             _timeTxt.text = _info.joinTime;

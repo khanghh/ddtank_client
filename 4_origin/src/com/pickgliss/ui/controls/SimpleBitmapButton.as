@@ -13,14 +13,14 @@ package com.pickgliss.ui.controls
          _frameFilter = ComponentFactory.Instance.creatFrameFilters(ComponentSetting.SIMPLE_BITMAP_BUTTON_FILTER);
       }
       
-      override public function set backStyle(param1:String) : void
+      override public function set backStyle(stylename:String) : void
       {
-         if(param1 == _backStyle)
+         if(stylename == _backStyle)
          {
             return;
          }
-         _backStyle = param1;
-         backgound = ComponentFactory.Instance.creat(param1);
+         _backStyle = stylename;
+         backgound = ComponentFactory.Instance.creat(stylename);
          _width = _back.width;
          _height = _back.height;
          onPropertiesChanged("backStyle");

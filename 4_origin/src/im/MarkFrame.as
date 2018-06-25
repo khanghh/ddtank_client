@@ -106,16 +106,16 @@ package im
          removeEventListener("addedToStage",__onToStage);
       }
       
-      private function __onToStage(param1:Event) : void
+      private function __onToStage(evt:Event) : void
       {
          removeEventListener("addedToStage",__onToStage);
          StageReferance.stage.focus = _nicknameInput;
       }
       
-      private function __onResponse(param1:FrameEvent) : void
+      private function __onResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
@@ -128,72 +128,72 @@ package im
          }
       }
       
-      private function __onSubmitClick(param1:MouseEvent) : void
+      private function __onSubmitClick(evt:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
+         evt.stopImmediatePropagation();
          SoundManager.instance.play("008");
          PlayerManager.Instance.dispatchEvent(new CEvent("mark",_nicknameInput.text));
          close();
       }
       
-      protected function __onAlertResponse(param1:FrameEvent) : void
+      protected function __onAlertResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onAlertResponse);
-         switch(int(param1.responseCode))
+         var alert:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",__onAlertResponse);
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
             case 2:
             case 3:
             case 4:
-               _loc2_.dispose();
+               alert.dispose();
          }
          StageReferance.stage.focus = _nicknameInput;
       }
       
       protected function nameInputCheck() : Boolean
       {
-         var _loc1_:* = null;
+         var alert:* = null;
          if(_nicknameInput.text != "")
          {
             if(FilterWordManager.isGotForbiddenWords(_nicknameInput.text,"name"))
             {
-               _loc1_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("choosecharacter.ChooseCharacterView.name"),LanguageMgr.GetTranslation("ok"),"",false,false,false,2);
-               _loc1_.addEventListener("response",__onAlertResponse);
+               alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("choosecharacter.ChooseCharacterView.name"),LanguageMgr.GetTranslation("ok"),"",false,false,false,2);
+               alert.addEventListener("response",__onAlertResponse);
                return false;
             }
             if(FilterWordManager.IsNullorEmpty(_nicknameInput.text))
             {
-               _loc1_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("choosecharacter.ChooseCharacterView.space"),LanguageMgr.GetTranslation("ok"),"",false,false,false,2);
-               _loc1_.addEventListener("response",__onAlertResponse);
+               alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("choosecharacter.ChooseCharacterView.space"),LanguageMgr.GetTranslation("ok"),"",false,false,false,2);
+               alert.addEventListener("response",__onAlertResponse);
                return false;
             }
             if(FilterWordManager.containUnableChar(_nicknameInput.text))
             {
-               _loc1_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("choosecharacter.ChooseCharacterView.string"),LanguageMgr.GetTranslation("ok"),"",false,false,false,2);
-               _loc1_.addEventListener("response",__onAlertResponse);
+               alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("choosecharacter.ChooseCharacterView.string"),LanguageMgr.GetTranslation("ok"),"",false,false,false,2);
+               alert.addEventListener("response",__onAlertResponse);
                return false;
             }
             return true;
          }
-         _loc1_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("choosecharacter.ChooseCharacterView.input"),LanguageMgr.GetTranslation("ok"),"",false,false,false,2);
-         _loc1_.addEventListener("response",__onAlertResponse);
+         alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("choosecharacter.ChooseCharacterView.input"),LanguageMgr.GetTranslation("ok"),"",false,false,false,2);
+         alert.addEventListener("response",__onAlertResponse);
          return false;
       }
       
-      public function initialize(param1:int, param2:int) : void
+      public function initialize(bagType:int, place:int) : void
       {
-         _bagType = param1;
-         _place = param2;
+         _bagType = bagType;
+         _place = place;
       }
       
-      public function set complete(param1:Boolean) : void
+      public function set complete(val:Boolean) : void
       {
-         if(_complete != param1)
+         if(_complete != val)
          {
-            _complete = param1;
+            _complete = val;
          }
       }
       

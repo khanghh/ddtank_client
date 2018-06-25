@@ -30,10 +30,10 @@ package auctionHouse.view
          super();
       }
       
-      public function setup(param1:int) : void
+      public function setup(state:int) : void
       {
          initView();
-         state_mc.setFrame(param1);
+         state_mc.setFrame(state);
       }
       
       private function initView() : void
@@ -52,9 +52,9 @@ package auctionHouse.view
          mouseChildren = false;
       }
       
-      function set info(param1:AuctionGoodsInfo) : void
+      function set info(value:AuctionGoodsInfo) : void
       {
-         _info = param1;
+         _info = value;
          update();
       }
       

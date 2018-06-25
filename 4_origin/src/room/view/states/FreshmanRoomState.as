@@ -30,9 +30,9 @@ package room.view.states
          return "freshmanRoom1";
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
-         super.enter(param1,param2);
+         super.enter(prev,data);
          MainToolBar.Instance.hide();
          LayerManager.Instance.clearnGameDynamic();
          black = new Sprite();
@@ -48,13 +48,13 @@ package room.view.states
          GameInSocketOut.sendGameStart();
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
          if(black && black.parent)
          {
             black.parent.removeChild(black);
          }
-         super.leaving(param1);
+         super.leaving(next);
       }
    }
 }

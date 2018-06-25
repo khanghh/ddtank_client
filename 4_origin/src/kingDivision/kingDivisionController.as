@@ -14,7 +14,7 @@ package kingDivision
       
       public var _kingDivFrame:KingDivisionFrame;
       
-      public function kingDivisionController(param1:PrivateClass)
+      public function kingDivisionController(pct:PrivateClass)
       {
          super();
       }
@@ -39,7 +39,7 @@ package kingDivision
          KingDivisionManager.Instance.addEventListener("searchResult",__onSearchResult);
       }
       
-      private function __onSearchResult(param1:Event) : void
+      private function __onSearchResult(evt:Event) : void
       {
          if(_kingDivFrame != null && _kingDivFrame.rankingRoundView != null)
          {
@@ -47,7 +47,7 @@ package kingDivision
          }
       }
       
-      private function __onMatchInfo(param1:Event) : void
+      private function __onMatchInfo(evt:Event) : void
       {
          if(_kingDivFrame != null)
          {
@@ -64,7 +64,7 @@ package kingDivision
          }
       }
       
-      private function __onMatchScore(param1:Event) : void
+      private function __onMatchScore(evt:Event) : void
       {
          if(_kingDivFrame != null && _kingDivFrame.qualificationsFrame != null)
          {
@@ -72,7 +72,7 @@ package kingDivision
          }
       }
       
-      private function __onMatchRank(param1:Event) : void
+      private function __onMatchRank(evt:Event) : void
       {
          if(_kingDivFrame != null && _kingDivFrame.rankingRoundView != null)
          {
@@ -80,7 +80,7 @@ package kingDivision
          }
       }
       
-      private function __onMatchAreaRank(param1:Event) : void
+      private function __onMatchAreaRank(evt:Event) : void
       {
          if(_kingDivFrame != null && _kingDivFrame.qualificationsFrame != null)
          {
@@ -88,7 +88,7 @@ package kingDivision
          }
       }
       
-      private function __onMatchAreaRankInfo(param1:Event) : void
+      private function __onMatchAreaRankInfo(evt:Event) : void
       {
          if(_kingDivFrame != null && _kingDivFrame.rankingRoundView != null)
          {
@@ -96,7 +96,7 @@ package kingDivision
          }
       }
       
-      private function __onKingDivisionOpenFrame(param1:Event) : void
+      private function __onKingDivisionOpenFrame(evt:Event) : void
       {
          _kingDivFrame = ComponentFactory.Instance.creatComponentByStylename("kingdivision.frame");
          LayerManager.Instance.addToLayer(_kingDivFrame,3,true,1);

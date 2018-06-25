@@ -9,17 +9,17 @@ package fightLib.script.TwentyDegree
    {
        
       
-      public function DifficultTwentyDegree(param1:Object)
+      public function DifficultTwentyDegree(fightView:Object)
       {
-         super(param1);
+         super(fightView);
       }
       
       override protected function initializeScript() : void
       {
-         var _loc1_:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.DifficultTwentyDegree.command1"));
-         var _loc2_:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.DifficultTwentyDegree.command2"),LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.startTrain"),startTrain);
-         _commonds.push(_loc1_);
-         _commonds.push(_loc2_);
+         var command1:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.DifficultTwentyDegree.command1"));
+         var command2:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.DifficultTwentyDegree.command2"),LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.startTrain"),startTrain);
+         _commonds.push(command1);
+         _commonds.push(command2);
          super.initializeScript();
       }
       

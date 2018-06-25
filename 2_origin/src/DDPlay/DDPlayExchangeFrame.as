@@ -89,12 +89,12 @@ package DDPlay
          DDPlayManaer.Instance.removeEventListener("update_score",__updateScore);
       }
       
-      private function __numberChange(param1:Event) : void
+      private function __numberChange(e:Event) : void
       {
          SoundManager.instance.play("008");
       }
       
-      private function __updateScore(param1:Event) : void
+      private function __updateScore(e:Event) : void
       {
          _score = DDPlayManaer.Instance.DDPlayScore;
          _currentScore2.text = _score.toString();
@@ -102,7 +102,7 @@ package DDPlay
          _chooseNum.currentValue = Math.floor(_score / _fold);
       }
       
-      private function __exchange(param1:MouseEvent) : void
+      private function __exchange(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_chooseNum.currentValue * _fold > _score || _chooseNum.currentValue == 0)
@@ -113,10 +113,10 @@ package DDPlay
          SocketManager.Instance.out.DDPlayExchange(_chooseNum.currentValue);
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(e.responseCode == 0 || e.responseCode == 1)
          {
             dispose();
          }

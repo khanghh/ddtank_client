@@ -55,13 +55,13 @@ package ddt.view.character
       
       private var _isComplete:Boolean;
       
-      public function BaseLayer(param1:ItemTemplateInfo, param2:String = "", param3:Boolean = false, param4:int = 1, param5:String = null)
+      public function BaseLayer(info:ItemTemplateInfo, color:String = "", gunback:Boolean = false, hairType:int = 1, pic:String = null)
       {
-         _info = param1;
-         _color = param2 == null?"":param2;
-         _gunBack = param3;
-         _hairType = param4 == 1?"B":"A";
-         _pic = param5 == null || String(param5) == "undefined"?_info.Pic:param5;
+         _info = info;
+         _color = color == null?"":color;
+         _gunBack = gunback;
+         _hairType = hairType == 1?"B":"A";
+         _pic = pic == null || String(pic) == "undefined"?_info.Pic:pic;
          super();
          init();
       }
@@ -76,35 +76,34 @@ package ddt.view.character
       
       protected function initLoaders() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var url:* = null;
+         var l:* = null;
          if(_info != null)
          {
-            _loc3_ = 0;
-            while(_loc3_ < _info.Property8.length)
+            for(i = 0; i < _info.Property8.length; )
             {
-               _loc2_ = getUrl(int(_info.Property8.charAt(_loc3_)));
-               _loc2_ = _loc2_.toLocaleLowerCase();
-               if(_loc2_.length != 0)
+               url = getUrl(int(_info.Property8.charAt(i)));
+               url = url.toLocaleLowerCase();
+               if(url.length != 0)
                {
-                  _loc1_ = LoadResourceManager.Instance.createLoader(_loc2_,0);
-                  _queueLoader.addLoader(_loc1_);
+                  l = LoadResourceManager.Instance.createLoader(url,0);
+                  _queueLoader.addLoader(l);
                }
-               _loc3_++;
+               i++;
             }
             _defaultLayer = 0;
             _currentEdit = _queueLoader.length;
          }
       }
       
-      protected function initColors(param1:String) : void
+      protected function initColors(color:String) : void
       {
-         var _loc3_:int = 0;
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc2_:* = null;
-         _colors = param1.split("|");
+         var j:int = 0;
+         var i:int = 0;
+         var lightTransfrom:* = null;
+         var lightBitmap:* = null;
+         _colors = color.split("|");
          if(_bitmaps.length == 0)
          {
             return;
@@ -113,15 +112,14 @@ package ddt.view.character
          {
             removeChildAt(0);
          }
-         _loc3_ = 0;
-         while(_loc3_ < _bitmaps.length)
+         for(j = 0; j < _bitmaps.length; )
          {
-            if(_bitmaps[_loc3_])
+            if(_bitmaps[j])
             {
-               addChild(_bitmaps[_loc3_]);
-               _bitmaps[_loc3_].visible = false;
+               addChild(_bitmaps[j]);
+               _bitmaps[j].visible = false;
             }
-            _loc3_++;
+            j++;
          }
          if(_bitmaps[_defaultLayer])
          {
@@ -129,30 +127,29 @@ package ddt.view.character
          }
          if(_colors.length == _bitmaps.length)
          {
-            _loc5_ = 0;
-            while(_loc5_ < _colors.length)
+            for(i = 0; i < _colors.length; )
             {
-               if(!StringHelper.isNullOrEmpty(_colors[_loc5_]) && _colors[_loc5_].toString() != "undefined" && _colors[_loc5_].toString() != "null")
+               if(!StringHelper.isNullOrEmpty(_colors[i]) && _colors[i].toString() != "undefined" && _colors[i].toString() != "null")
                {
-                  if(_bitmaps[_loc5_] != null)
+                  if(_bitmaps[i] != null)
                   {
-                     _bitmaps[_loc5_].visible = true;
-                     _bitmaps[_loc5_].transform.colorTransform = BitmapUtils.getColorTransfromByColor(_colors[_loc5_]);
-                     _loc4_ = BitmapUtils.getHightlightColorTransfrom(_colors[_loc5_]);
-                     _loc2_ = new Bitmap(_bitmaps[_loc5_].bitmapData,"auto",true);
-                     if(_loc4_)
+                     _bitmaps[i].visible = true;
+                     _bitmaps[i].transform.colorTransform = BitmapUtils.getColorTransfromByColor(_colors[i]);
+                     lightTransfrom = BitmapUtils.getHightlightColorTransfrom(_colors[i]);
+                     lightBitmap = new Bitmap(_bitmaps[i].bitmapData,"auto",true);
+                     if(lightTransfrom)
                      {
-                        _loc2_.transform.colorTransform = _loc4_;
+                        lightBitmap.transform.colorTransform = lightTransfrom;
                      }
-                     _loc2_.blendMode = "hardlight";
-                     addChild(_loc2_);
+                     lightBitmap.blendMode = "hardlight";
+                     addChild(lightBitmap);
                   }
                }
-               else if(_bitmaps[_loc5_] != null)
+               else if(_bitmaps[i] != null)
                {
-                  _bitmaps[_loc5_].transform.colorTransform = new ColorTransform();
+                  _bitmaps[i].transform.colorTransform = new ColorTransform();
                }
-               _loc5_++;
+               i++;
             }
          }
       }
@@ -162,14 +159,14 @@ package ddt.view.character
          return this;
       }
       
-      public function setColor(param1:*) : Boolean
+      public function setColor(color:*) : Boolean
       {
-         if(_info == null || param1 == null)
+         if(_info == null || color == null)
          {
             return false;
          }
-         _color = String(param1);
-         initColors(param1);
+         _color = String(color);
+         initColors(color);
          return true;
       }
       
@@ -178,14 +175,14 @@ package ddt.view.character
          return _info;
       }
       
-      public function set info(param1:ItemTemplateInfo) : void
+      public function set info(value:ItemTemplateInfo) : void
       {
-         if(info == param1)
+         if(info == value)
          {
             return;
          }
          clear();
-         _info = param1;
+         _info = value;
          if(_info)
          {
             initLoaders();
@@ -193,9 +190,9 @@ package ddt.view.character
          }
       }
       
-      public function set currentEdit(param1:int) : void
+      public function set currentEdit(n:int) : void
       {
-         _currentEdit = param1;
+         _currentEdit = n;
          if(_currentEdit > _bitmaps.length)
          {
             _currentEdit = _bitmaps.length;
@@ -242,9 +239,9 @@ package ddt.view.character
          _colors = [];
       }
       
-      public final function load(param1:Function) : void
+      public final function load(callBack:Function) : void
       {
-         _callBack = param1;
+         _callBack = callBack;
          if(_info == null)
          {
             loadCompleteCallBack();
@@ -254,12 +251,12 @@ package ddt.view.character
          _queueLoader.start();
       }
       
-      protected function getUrl(param1:int) : String
+      protected function getUrl(layer:int) : String
       {
-         return PathManager.solveGoodsPath(_info.CategoryID,_pic,_info.NeedSex == 1,"show",_hairType,String(param1),_info.Level,_gunBack,int(_info.Property1));
+         return PathManager.solveGoodsPath(_info.CategoryID,_pic,_info.NeedSex == 1,"show",_hairType,String(layer),_info.Level,_gunBack,int(_info.Property1));
       }
       
-      protected function __loadComplete(param1:Event) : void
+      protected function __loadComplete(event:Event) : void
       {
          reSetBitmap();
          _queueLoader.removeEventListener("complete",__loadComplete);
@@ -270,19 +267,18 @@ package ddt.view.character
       
       public function reSetBitmap() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          clearBitmap();
-         _loc1_ = 0;
-         while(_loc1_ < _queueLoader.loaders.length)
+         for(i = 0; i < _queueLoader.loaders.length; )
          {
-            _bitmaps.push(_queueLoader.loaders[_loc1_].content);
-            if(_bitmaps[_loc1_])
+            _bitmaps.push(_queueLoader.loaders[i].content);
+            if(_bitmaps[i])
             {
-               _bitmaps[_loc1_].smoothing = true;
-               _bitmaps[_loc1_].visible = false;
-               addChild(_bitmaps[_loc1_]);
+               _bitmaps[i].smoothing = true;
+               _bitmaps[i].visible = false;
+               addChild(_bitmaps[i]);
             }
-            _loc1_++;
+            i++;
          }
       }
       
@@ -296,7 +292,7 @@ package ddt.view.character
          dispatchEvent(new Event("complete"));
       }
       
-      private function __onBitmapError(param1:LoaderEvent) : void
+      private function __onBitmapError(event:LoaderEvent) : void
       {
          _isAllLoadSucceed = false;
       }

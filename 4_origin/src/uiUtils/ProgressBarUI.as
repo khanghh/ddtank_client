@@ -80,79 +80,79 @@ package uiUtils
          super();
       }
       
-      public function set progress(param1:Number) : void
+      public function set progress(value:Number) : void
       {
-         if(_progress != param1)
+         if(_progress != value)
          {
             _lastProgress = _progress;
-            _progress = param1;
+            _progress = value;
             updateAction();
             updateProgressBarMark();
             updateTextTips();
          }
       }
       
-      public function set maxProgress(param1:Number) : void
+      public function set maxProgress(value:Number) : void
       {
-         if(_maxProgress != param1)
+         if(_maxProgress != value)
          {
-            _maxProgress = param1;
-            _lastProgress = param1;
+            _maxProgress = value;
+            _lastProgress = value;
             updateProgressBarMark();
             updateTextTips();
          }
       }
       
-      public function set actionType(param1:String) : void
+      public function set actionType(value:String) : void
       {
-         if(_actionType != param1)
+         if(_actionType != value)
          {
-            _actionType = param1;
+            _actionType = value;
          }
       }
       
-      public function set tipViewType(param1:String) : void
+      public function set tipViewType(value:String) : void
       {
-         if(_tipViewType != param1)
+         if(_tipViewType != value)
          {
-            _tipViewType = param1;
+            _tipViewType = value;
             updateTextTips();
          }
       }
       
-      public function set textViewType(param1:String) : void
+      public function set textViewType(value:String) : void
       {
-         if(_textViewType != param1)
+         if(_textViewType != value)
          {
-            _textViewType = param1;
+            _textViewType = value;
             updateTextTips();
          }
       }
       
-      public function set ratio(param1:int) : void
+      public function set ratio(value:int) : void
       {
-         if(_ratio != param1)
+         if(_ratio != value)
          {
-            _ratio = param1;
+            _ratio = value;
             updateTextTips();
          }
       }
       
-      public function set offsetX(param1:int) : void
+      public function set offsetX(value:int) : void
       {
-         if(_offsetX != param1)
+         if(_offsetX != value)
          {
-            _offsetX = param1;
+            _offsetX = value;
             updateProgressBarOffset();
             updateProgressBarMark();
          }
       }
       
-      public function set offsetY(param1:int) : void
+      public function set offsetY(value:int) : void
       {
-         if(_offsetY != param1)
+         if(_offsetY != value)
          {
-            _offsetY = param1;
+            _offsetY = value;
             updateProgressBarOffset();
             updateProgressBarMark();
          }
@@ -197,8 +197,8 @@ package uiUtils
       
       protected function updateProgressBarMark() : void
       {
-         var _loc1_:Number = NaN;
-         var _loc2_:Number = NaN;
+         var w:Number = NaN;
+         var h:Number = NaN;
          if(_mark)
          {
             _mark.graphics.clear();
@@ -210,10 +210,10 @@ package uiUtils
                _mark = new Shape();
                _progressDisplay.mask = _mark;
             }
-            _loc1_ = _progress / _maxProgress * _progressDisplay.width;
-            _loc2_ = _progressDisplay.height;
+            w = _progress / _maxProgress * _progressDisplay.width;
+            h = _progressDisplay.height;
             _mark.graphics.beginFill(0);
-            _mark.graphics.drawRect(_offsetX,_offsetY,_loc1_,_loc2_);
+            _mark.graphics.drawRect(_offsetX,_offsetY,w,h);
             _mark.graphics.endFill();
             addChild(_mark);
          }
@@ -221,62 +221,62 @@ package uiUtils
       
       protected function updateTextTips() : void
       {
-         var _loc3_:* = null;
+         var text:* = null;
          if(_maxProgress <= 0)
          {
             return;
          }
-         var _loc6_:int = _progress / _maxProgress * _ratio;
-         if(_loc6_ <= 1 && _progress > 0)
+         var ratioInt:int = _progress / _maxProgress * _ratio;
+         if(ratioInt <= 1 && _progress > 0)
          {
-            _loc6_ = 1;
+            ratioInt = 1;
          }
-         var _loc5_:String = _loc6_ + "%";
-         var _loc1_:String = _progress.toString();
-         var _loc2_:String = _progress + "/" + _maxProgress;
-         var _loc4_:String = _maxProgress.toString();
+         var ratio:String = ratioInt + "%";
+         var progress:String = _progress.toString();
+         var real:String = _progress + "/" + _maxProgress;
+         var max:String = _maxProgress.toString();
          if(_textLabel)
          {
-            _loc3_ = "";
+            text = "";
             if(_textViewType == "normalView")
             {
-               _loc3_ = _loc1_;
+               text = progress;
             }
             else if(_textViewType == "realView")
             {
-               _loc3_ = _loc2_;
+               text = real;
             }
             else if(_textViewType == "ratioView")
             {
-               _loc3_ = _loc5_;
+               text = ratio;
             }
             else if(_textViewType == "maxView")
             {
-               _loc3_ = _loc4_;
+               text = max;
             }
             if(_actionType == "slowAction")
             {
-               _loc3_ = "";
+               text = "";
             }
-            _textLabel.text = _loc3_;
+            _textLabel.text = text;
          }
          if(_textLabel)
          {
             if(_tipViewType == "normalView")
             {
-               tipData = _loc1_;
+               tipData = progress;
             }
             else if(_tipViewType == "realView")
             {
-               tipData = _loc2_;
+               tipData = real;
             }
             else if(_tipViewType == "ratioView")
             {
-               tipData = _loc5_;
+               tipData = ratio;
             }
             else if(_tipViewType == "maxView")
             {
-               tipData = _loc4_;
+               tipData = max;
             }
             else
             {
@@ -337,21 +337,21 @@ package uiUtils
          });
       }
       
-      public function set backStyleName(param1:String) : void
+      public function set backStyleName(styleName:String) : void
       {
-         _backStyleName = param1;
+         _backStyleName = styleName;
          onPropertiesChanged("back");
       }
       
-      public function set progressStyleName(param1:String) : void
+      public function set progressStyleName(styleName:String) : void
       {
-         _progressStyleName = param1;
+         _progressStyleName = styleName;
          onPropertiesChanged("progress");
       }
       
-      public function set textStyleName(param1:String) : void
+      public function set textStyleName(styleName:String) : void
       {
-         _textStyleName = param1;
+         _textStyleName = styleName;
          onPropertiesChanged("text");
       }
       

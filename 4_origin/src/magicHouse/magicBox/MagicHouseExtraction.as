@@ -174,8 +174,8 @@ package magicHouse.magicBox
          addChild(_itemTitleText);
          addChild(_equipmentTipText);
          addChild(_itemTipText);
-         var _loc1_:MutipleImage = ComponentFactory.Instance.creatComponentByStylename("magicbox.StoreBagView.MoneyPanelBg");
-         addChild(_loc1_);
+         var showMoneyBG:MutipleImage = ComponentFactory.Instance.creatComponentByStylename("magicbox.StoreBagView.MoneyPanelBg");
+         addChild(showMoneyBG);
          moneyTxt = ComponentFactory.Instance.creatComponentByStylename("magicbox.StoreBagView.TicketText");
          addChild(moneyTxt);
          giftTxt = ComponentFactory.Instance.creatComponentByStylename("magicbox.StoreBagView.GiftText");
@@ -186,8 +186,8 @@ package magicHouse.magicBox
          _goldButton.tipData = LanguageMgr.GetTranslation("tank.view.bagII.GoldDirections");
          addChild(_goldButton);
          _giftButton = ComponentFactory.Instance.creatCustomObject("magicbox.StoreBagView.GiftButton");
-         var _loc4_:int = ServerConfigManager.instance.getBindBidLimit(PlayerManager.Instance.Self.Grade,PlayerManager.Instance.Self.VIPLevel);
-         _giftButton.tipData = LanguageMgr.GetTranslation("tank.view.bagII.GiftDirections",_loc4_.toString());
+         var levelNum:int = ServerConfigManager.instance.getBindBidLimit(PlayerManager.Instance.Self.Grade,PlayerManager.Instance.Self.VIPLevel);
+         _giftButton.tipData = LanguageMgr.GetTranslation("tank.view.bagII.GiftDirections",levelNum.toString());
          addChild(_giftButton);
          _moneyButton = ComponentFactory.Instance.creatCustomObject("magicbox.StoreBagView.MoneyButton");
          _moneyButton.tipData = LanguageMgr.GetTranslation("tank.view.bagII.MoneyDirections");
@@ -195,10 +195,10 @@ package magicHouse.magicBox
          _helpBtn = ComponentFactory.Instance.creatComponentByStylename("magicHouse.collectionMainView.helpBtn");
          PositionUtils.setPos(_helpBtn,"magicHouse.magicbox.helpbtnPos");
          addChild(_helpBtn);
-         var _loc2_:Sprite = new Sprite();
-         var _loc3_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtstore.EquipCellBG");
-         _loc2_.addChild(_loc3_);
-         _extractionCell = new MagicBoxExtractionCell(_loc2_,1);
+         var bg:Sprite = new Sprite();
+         var bgBit:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtstore.EquipCellBG");
+         bg.addChild(bgBit);
+         _extractionCell = new MagicBoxExtractionCell(bg,1);
          addChild(_extractionCell);
          PositionUtils.setPos(_extractionCell,"magicbox.extractionview.extractioncellPos");
          _extractionCell.setContentSize(72,72);
@@ -253,12 +253,12 @@ package magicHouse.magicBox
          }
       }
       
-      private function __messageUpdate(param1:Event) : void
+      private function __messageUpdate(e:Event) : void
       {
          refreshTxtData();
       }
       
-      private function __fusionComplete(param1:Event) : void
+      private function __fusionComplete(e:Event) : void
       {
          _mashArea = new MagicBoxMashArea();
          LayerManager.Instance.addToLayer(_mashArea,2);
@@ -272,10 +272,10 @@ package magicHouse.magicBox
          _extractionMc.addEventListener("COMPLETE_EXTRACTION",__extractionMcComplete);
       }
       
-      private function __extractionMcComplete(param1:Event) : void
+      private function __extractionMcComplete(e:Event) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var mc:* = null;
          _selfEliteCountsTxt2.visible = false;
          _extractionMc.removeEventListener("COMPLETE_EXTRACTION",__extractionMcComplete);
          if(_extractionMc)
@@ -284,18 +284,17 @@ package magicHouse.magicBox
             _extractionMc = null;
          }
          _extractionCell.info = null;
-         _loc3_ = 0;
-         while(_loc3_ < _selfEliteCountsTxt.text.length)
+         for(i = 0; i < _selfEliteCountsTxt.text.length; )
          {
-            _loc2_ = ClassUtils.CreatInstance("magicbox.extractionview.numMc");
-            _loc2_.gotoAndPlay(_selfEliteCountsTxt.text.charAt(_loc3_));
-            _numBox.addChild(_loc2_);
-            _loc3_++;
+            mc = ClassUtils.CreatInstance("magicbox.extractionview.numMc");
+            mc.gotoAndPlay(_selfEliteCountsTxt.text.charAt(i));
+            _numBox.addChild(mc);
+            i++;
          }
          addEventListener("enterFrame",__numberMcProgress);
       }
       
-      private function __numberMcProgress(param1:Event) : void
+      private function __numberMcProgress(e:Event) : void
       {
          if((_numBox.getChildAt(_numBox.numChildren - 1) as MovieClip).currentFrame >= 23)
          {
@@ -315,25 +314,25 @@ package magicHouse.magicBox
          }
       }
       
-      private function __mashAreaClickHandler(param1:MouseEvent) : void
+      private function __mashAreaClickHandler(e:MouseEvent) : void
       {
          MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("magichouse.magicboxView.inExtraction"));
       }
       
-      private function __cellDoubleClick(param1:CellEvent) : void
+      private function __cellDoubleClick(evt:CellEvent) : void
       {
-         param1.stopImmediatePropagation();
+         evt.stopImmediatePropagation();
          if(PlayerManager.Instance.Self.bagLocked)
          {
             SoundManager.instance.play("008");
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:BagCell = param1.data as StoreBagCell;
-         dragDrop(_loc2_);
+         var sourceCell:BagCell = evt.data as StoreBagCell;
+         dragDrop(sourceCell);
       }
       
-      private function __extractionBtnHandler(param1:MouseEvent) : void
+      private function __extractionBtnHandler(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_extractionCell.info)
@@ -347,58 +346,58 @@ package magicHouse.magicBox
          }
       }
       
-      private function __cellClick(param1:CellEvent) : void
+      private function __cellClick(evt:CellEvent) : void
       {
-         var _loc3_:* = null;
-         param1.stopImmediatePropagation();
-         var _loc2_:BagCell = param1.data as BagCell;
-         if(_loc2_)
+         var info:* = null;
+         evt.stopImmediatePropagation();
+         var cell:BagCell = evt.data as BagCell;
+         if(cell)
          {
-            _loc3_ = _loc2_.info as InventoryItemInfo;
+            info = cell.info as InventoryItemInfo;
          }
-         if(_loc3_ == null)
+         if(info == null)
          {
             return;
          }
-         if(!_loc2_.locked)
+         if(!cell.locked)
          {
             SoundManager.instance.play("008");
-            _loc2_.dragStart();
+            cell.dragStart();
          }
       }
       
-      private function startShine(param1:StoreDargEvent) : void
+      private function startShine(evt:StoreDargEvent) : void
       {
       }
       
-      private function stopShine(param1:StoreDargEvent) : void
+      private function stopShine(evt:StoreDargEvent) : void
       {
       }
       
-      private function __itemInfoChange(param1:Event) : void
+      private function __itemInfoChange(e:Event) : void
       {
       }
       
-      private function _getItemInfoByCellInfo(param1:int = 1) : String
+      private function _getItemInfoByCellInfo(count:int = 1) : String
       {
-         var _loc2_:* = null;
+         var arr:* = null;
          if(_extractionCell.info)
          {
-            _loc2_ = MagicHouseModel.instance.itemExtrationEnableList;
+            arr = MagicHouseModel.instance.itemExtrationEnableList;
             var _loc5_:int = 0;
-            var _loc4_:* = _loc2_;
-            for each(var _loc3_ in _loc2_)
+            var _loc4_:* = arr;
+            for each(var info in arr)
             {
-               if(_extractionCell.info.TemplateID == _loc3_.ItemID)
+               if(_extractionCell.info.TemplateID == info.ItemID)
                {
-                  return (_loc3_.GetKeys * param1).toString();
+                  return (info.GetKeys * count).toString();
                }
             }
          }
          return "0";
       }
       
-      private function __helpClick(param1:MouseEvent) : void
+      private function __helpClick(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(!_helpFrame)
@@ -418,16 +417,16 @@ package magicHouse.magicBox
          LayerManager.Instance.addToLayer(_helpFrame,3,true,2);
       }
       
-      private function __helpFrameRespose(param1:FrameEvent) : void
+      private function __helpFrameRespose(e:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(e.responseCode == 0 || e.responseCode == 1)
          {
             SoundManager.instance.playButtonSound();
             _helpFrame.parent.removeChild(_helpFrame);
          }
       }
       
-      private function __closeHelpFrame(param1:MouseEvent) : void
+      private function __closeHelpFrame(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          _helpFrame.parent.removeChild(_helpFrame);
@@ -435,41 +434,41 @@ package magicHouse.magicBox
       
       public function refreshEquipPropList() : void
       {
-         var _loc5_:* = null;
-         var _loc8_:* = null;
-         var _loc1_:BagInfo = PlayerManager.Instance.Self.getBag(0);
-         var _loc7_:BagInfo = PlayerManager.Instance.Self.getBag(1);
-         var _loc9_:Array = MagicHouseModel.instance.itemExtrationEnableList;
-         var _loc4_:DictionaryData = new DictionaryData();
-         var _loc6_:DictionaryData = new DictionaryData();
+         var equips:* = null;
+         var props:* = null;
+         var equipBag:BagInfo = PlayerManager.Instance.Self.getBag(0);
+         var propBag:BagInfo = PlayerManager.Instance.Self.getBag(1);
+         var extractionArr:Array = MagicHouseModel.instance.itemExtrationEnableList;
+         var equipD:DictionaryData = new DictionaryData();
+         var propD:DictionaryData = new DictionaryData();
          var _loc16_:int = 0;
-         var _loc15_:* = _loc9_;
-         for each(var _loc10_ in _loc9_)
+         var _loc15_:* = extractionArr;
+         for each(var info in extractionArr)
          {
-            _loc5_ = _loc1_.findItemsByTempleteIDNoValidate(_loc10_.ItemID);
-            _loc8_ = _loc7_.findItemsByTempleteIDNoValidate(_loc10_.ItemID);
-            if(_loc5_.length > 0)
+            equips = equipBag.findItemsByTempleteIDNoValidate(info.ItemID);
+            props = propBag.findItemsByTempleteIDNoValidate(info.ItemID);
+            if(equips.length > 0)
             {
                var _loc12_:int = 0;
-               var _loc11_:* = _loc5_;
-               for each(var _loc2_ in _loc5_)
+               var _loc11_:* = equips;
+               for each(var e in equips)
                {
-                  _loc4_.add(_loc4_.length,_loc2_);
+                  equipD.add(equipD.length,e);
                }
             }
-            if(_loc8_.length > 0)
+            if(props.length > 0)
             {
                var _loc14_:int = 0;
-               var _loc13_:* = _loc8_;
-               for each(var _loc3_ in _loc8_)
+               var _loc13_:* = props;
+               for each(var p in props)
                {
-                  _loc6_.add(_loc6_.length,_loc3_);
+                  propD.add(propD.length,p);
                }
                continue;
             }
          }
-         _equipListView.setData(_loc4_);
-         _propListView.setData(_loc6_);
+         _equipListView.setData(equipD);
+         _propListView.setData(propD);
       }
       
       private function refreshTxtData() : void
@@ -482,35 +481,35 @@ package magicHouse.magicBox
          _getCountsTxt.text = "0";
       }
       
-      private function dragDrop(param1:BagCell) : void
+      private function dragDrop(source:BagCell) : void
       {
-         if(param1 == null)
+         if(source == null)
          {
             return;
          }
-         var _loc2_:InventoryItemInfo = param1.info as InventoryItemInfo;
-         if(_loc2_.Count == 1)
+         var info:InventoryItemInfo = source.info as InventoryItemInfo;
+         if(info.Count == 1)
          {
-            SocketManager.Instance.out.sendMoveGoods(_loc2_.BagType,_loc2_.Place,12,1,1);
+            SocketManager.Instance.out.sendMoveGoods(info.BagType,info.Place,12,1,1);
          }
          else
          {
-            showNumAlert(_loc2_,1);
+            showNumAlert(info,1);
          }
       }
       
-      private function showNumAlert(param1:InventoryItemInfo, param2:int) : void
+      private function showNumAlert(info:InventoryItemInfo, index:int) : void
       {
          _aler = ComponentFactory.Instance.creatComponentByStylename("magicbox.selectNumAlertFrame");
          _aler.addExeFunction(sellFunction,notSellFunction);
-         _aler.goodsinfo = param1;
-         _aler.index = param2;
-         _aler.show(param1.Count);
+         _aler.goodsinfo = info;
+         _aler.index = index;
+         _aler.show(info.Count);
       }
       
-      private function sellFunction(param1:int, param2:InventoryItemInfo, param3:int) : void
+      private function sellFunction(_nowNum:int, goodsinfo:InventoryItemInfo, index:int) : void
       {
-         SocketManager.Instance.out.sendMoveGoods(param2.BagType,param2.Place,12,param3,param1,true);
+         SocketManager.Instance.out.sendMoveGoods(goodsinfo.BagType,goodsinfo.Place,12,index,_nowNum,true);
          if(_aler)
          {
             _aler.dispose();
@@ -535,37 +534,37 @@ package magicHouse.magicBox
          _aler = null;
       }
       
-      private function __updateStoreBag(param1:BagEvent) : void
+      private function __updateStoreBag(evt:BagEvent) : void
       {
-         _refreshData(param1.changedSlots);
+         _refreshData(evt.changedSlots);
       }
       
-      private function __updateBag(param1:BagEvent) : void
+      private function __updateBag(evt:BagEvent) : void
       {
-         _refreshData(param1.changedSlots);
+         _refreshData(evt.changedSlots);
       }
       
-      private function _refreshData(param1:Dictionary) : void
+      private function _refreshData(items:Dictionary) : void
       {
-         var _loc2_:* = 0;
-         var _loc4_:* = null;
+         var itemPlace:* = 0;
+         var info:* = null;
          _deleteExtractionCell();
          refreshEquipPropList();
          var _loc6_:int = 0;
-         var _loc5_:* = param1;
-         for(_loc2_ in param1)
+         var _loc5_:* = items;
+         for(itemPlace in items)
          {
-            _loc4_ = PlayerManager.Instance.Self.StoreBag.items[_loc2_];
-            _createExtractionCell(_loc4_);
+            info = PlayerManager.Instance.Self.StoreBag.items[itemPlace];
+            _createExtractionCell(info);
          }
       }
       
-      private function _createExtractionCell(param1:InventoryItemInfo) : void
+      private function _createExtractionCell(info:InventoryItemInfo) : void
       {
-         _extractionCell.info = param1;
-         if(param1)
+         _extractionCell.info = info;
+         if(info)
          {
-            _getCountsTxt.text = _getItemInfoByCellInfo(param1.Count);
+            _getCountsTxt.text = _getItemInfoByCellInfo(info.Count);
          }
          else
          {
@@ -577,13 +576,13 @@ package magicHouse.magicBox
       {
       }
       
-      private function __extractionCellClickHandler(param1:InteractiveEvent) : void
+      private function __extractionCellClickHandler(evt:InteractiveEvent) : void
       {
          SoundManager.instance.play("008");
          _extractionCell.dragStart();
       }
       
-      private function __extractionCellDoubleClickHandler(param1:InteractiveEvent) : void
+      private function __extractionCellDoubleClickHandler(evt:InteractiveEvent) : void
       {
          SocketManager.Instance.out.sendClearStoreBag();
       }

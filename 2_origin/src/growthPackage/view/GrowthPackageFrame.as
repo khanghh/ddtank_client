@@ -33,8 +33,8 @@ package growthPackage.view
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          titleText = LanguageMgr.GetTranslation("ddt.growthPackage.frameTitle");
          _bg = ComponentFactory.Instance.creatBitmap("assets.growthPackage.FrameBg");
          addToContent(_bg);
@@ -44,14 +44,13 @@ package growthPackage.view
          _itemsSprite = new Sprite();
          addToContent(_itemsSprite);
          _items = new Vector.<GrowthPackageItem>();
-         _loc2_ = 0;
-         while(_loc2_ < GrowthPackageManager.indexMax)
+         for(i = 0; i < GrowthPackageManager.indexMax; )
          {
-            _loc1_ = new GrowthPackageItem(_loc2_);
-            _loc1_.y = _loc2_ * 54;
-            _itemsSprite.addChild(_loc1_);
-            _items.push(_loc1_);
-            _loc2_++;
+            item = new GrowthPackageItem(i);
+            item.y = i * 54;
+            _itemsSprite.addChild(item);
+            _items.push(item);
+            i++;
          }
       }
       
@@ -61,34 +60,33 @@ package growthPackage.view
          GrowthPackageManager.instance.model.addEventListener("dataChange",__dataChange);
       }
       
-      private function __dataChange(param1:GrowthPackageEvent) : void
+      private function __dataChange(evt:GrowthPackageEvent) : void
       {
          updateItems();
       }
       
       private function updateItems() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(_items)
          {
-            _loc1_ = 0;
-            while(_loc1_ < _items.length)
+            for(i = 0; i < _items.length; )
             {
-               updateItem(_loc1_);
-               _loc1_++;
+               updateItem(i);
+               i++;
             }
          }
       }
       
-      private function updateItem(param1:int) : void
+      private function updateItem(index:int) : void
       {
-         var _loc2_:GrowthPackageItem = GrowthPackageItem(_items[param1]);
-         _loc2_.updateState();
+         var tempItem:GrowthPackageItem = GrowthPackageItem(_items[index]);
+         tempItem.updateState();
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();
@@ -103,8 +101,8 @@ package growthPackage.view
       
       override public function dispose() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var tempItem:* = null;
          super.dispose();
          removeEvent();
          ObjectUtils.disposeObject(_bg);
@@ -113,12 +111,11 @@ package growthPackage.view
          _explainTxt = null;
          if(_items)
          {
-            _loc2_ = 0;
-            while(_loc2_ < _items.length)
+            for(i = 0; i < _items.length; )
             {
-               _loc1_ = _items[_loc2_];
-               ObjectUtils.disposeObject(_loc1_);
-               _loc2_++;
+               tempItem = _items[i];
+               ObjectUtils.disposeObject(tempItem);
+               i++;
             }
             _items = null;
          }

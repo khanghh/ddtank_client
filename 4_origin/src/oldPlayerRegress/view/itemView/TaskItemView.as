@@ -24,10 +24,10 @@ package oldPlayerRegress.view.itemView
       
       private var _bmpOK:Bitmap;
       
-      public function TaskItemView(param1:Function)
+      public function TaskItemView(func:Function)
       {
          super();
-         _func = param1;
+         _func = func;
          initView();
          initEvent();
       }
@@ -54,17 +54,17 @@ package oldPlayerRegress.view.itemView
          addEventListener("mouseOut",__MouseOut);
       }
       
-      protected function __MouseOver(param1:MouseEvent) : void
+      protected function __MouseOver(event:MouseEvent) : void
       {
          _light.visible = true;
       }
       
-      protected function __MouseOut(param1:MouseEvent) : void
+      protected function __MouseOut(event:MouseEvent) : void
       {
          _light.visible = false;
       }
       
-      protected function __MouseClick(param1:MouseEvent) : void
+      protected function __MouseClick(event:MouseEvent) : void
       {
       }
       
@@ -115,9 +115,9 @@ package oldPlayerRegress.view.itemView
          return _clickID;
       }
       
-      public function set clickID(param1:int) : void
+      public function set clickID(value:int) : void
       {
-         _clickID = param1;
+         _clickID = value;
       }
       
       public function get itemBg() : ScaleFrameImage
@@ -125,9 +125,9 @@ package oldPlayerRegress.view.itemView
          return _itemBg;
       }
       
-      public function set itemBg(param1:ScaleFrameImage) : void
+      public function set itemBg(value:ScaleFrameImage) : void
       {
-         _itemBg = param1;
+         _itemBg = value;
       }
       
       public function get titleField() : FilterFrameText
@@ -135,9 +135,9 @@ package oldPlayerRegress.view.itemView
          return _titleField;
       }
       
-      public function set titleField(param1:FilterFrameText) : void
+      public function set titleField(value:FilterFrameText) : void
       {
-         _titleField = param1;
+         _titleField = value;
       }
       
       public function get bmpOK() : Bitmap
@@ -145,9 +145,9 @@ package oldPlayerRegress.view.itemView
          return _bmpOK;
       }
       
-      public function set bmpOK(param1:Bitmap) : void
+      public function set bmpOK(value:Bitmap) : void
       {
-         _bmpOK = param1;
+         _bmpOK = value;
       }
    }
 }

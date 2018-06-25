@@ -70,7 +70,7 @@ package petsBag.view
          _nextBtn.removeEventListener("click",__nextBtnClick);
       }
       
-      protected function __prevBtnClick(param1:MouseEvent) : void
+      protected function __prevBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(curPage > 1)
@@ -84,7 +84,7 @@ package petsBag.view
          update();
       }
       
-      protected function __nextBtnClick(param1:MouseEvent) : void
+      protected function __nextBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(curPage < 3)
@@ -103,32 +103,32 @@ package petsBag.view
          return _curPage;
       }
       
-      public function set curPage(param1:int) : void
+      public function set curPage(value:int) : void
       {
-         _curPage = param1;
+         _curPage = value;
          _pageTxt.text = _curPage + "/" + 3;
       }
       
-      protected function __onHideView(param1:UpdatePetInfoEvent) : void
+      protected function __onHideView(event:UpdatePetInfoEvent) : void
       {
          ObjectUtils.disposeObject(this);
       }
       
-      protected function onUpdatePet(param1:CEvent) : void
+      protected function onUpdatePet(e:CEvent) : void
       {
          update();
       }
       
-      protected function __onPetCellUnlock(param1:UpdatePetInfoEvent) : void
+      protected function __onPetCellUnlock(e:UpdatePetInfoEvent) : void
       {
          update();
       }
       
       override protected function init() : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
+         var len:int = 0;
+         var i:int = 0;
+         var cell:* = null;
          super.init();
          titleText = LanguageMgr.GetTranslation("ddt.pets.bench.bag.titleTxt");
          _content = new Sprite();
@@ -151,21 +151,20 @@ package petsBag.view
          _detailTxt.text = LanguageMgr.GetTranslation("ddt.pets.bench.bag.detail");
          addToContent(_detailTxt);
          _cellList = new Vector.<PetSmallItemButton>();
-         _loc2_ = _cellTotalCount;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         len = _cellTotalCount;
+         for(i = 0; i < len; )
          {
-            _loc1_ = new PetSmallItemButton();
-            _loc1_.setButtonStyleName("assets.petsBagCellLock");
-            _loc1_.place = _loc3_ + 3;
-            _loc1_.x = 30 + _loc3_ % 5 * 79;
-            _loc1_.y = 80 + int(_loc3_ / 5) * 95;
-            _content.addChild(_loc1_);
-            _loc1_.doubleClickEnabled = true;
-            _loc1_.addEventListener("doubleClick",onCellDoubleClick);
-            _loc1_.addEventListener("click",onClick);
-            _cellList.push(_loc1_);
-            _loc3_++;
+            cell = new PetSmallItemButton();
+            cell.setButtonStyleName("assets.petsBagCellLock");
+            cell.place = i + 3;
+            cell.x = 30 + i % 5 * 79;
+            cell.y = 80 + int(i / 5) * 95;
+            _content.addChild(cell);
+            cell.doubleClickEnabled = true;
+            cell.addEventListener("doubleClick",onCellDoubleClick);
+            cell.addEventListener("click",onClick);
+            _cellList.push(cell);
+            i++;
          }
          addEventListener("response",_response);
          update();
@@ -173,41 +172,40 @@ package petsBag.view
       
       private function addBG() : void
       {
-         var _loc4_:* = null;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
-         var _loc3_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < 4)
+         var _petBg:* = null;
+         var _petBg2:* = null;
+         var _petBg0:* = null;
+         var i:int = 0;
+         for(i = 0; i < 4; )
          {
-            _loc1_ = ComponentFactory.Instance.creat("petsBag.benchBG.bottomBg0");
-            _content.addChild(_loc1_);
-            _loc2_ = ComponentFactory.Instance.creat("petsBag.benchBG.bottomBg");
-            _content.addChild(_loc2_);
-            _loc1_.x = 18;
-            _loc1_.y = 71 + _loc3_ * 95;
-            _loc2_.x = 20;
-            _loc2_.y = 73 + _loc3_ * 95;
-            _loc3_++;
+            _petBg0 = ComponentFactory.Instance.creat("petsBag.benchBG.bottomBg0");
+            _content.addChild(_petBg0);
+            _petBg2 = ComponentFactory.Instance.creat("petsBag.benchBG.bottomBg");
+            _content.addChild(_petBg2);
+            _petBg0.x = 18;
+            _petBg0.y = 71 + i * 95;
+            _petBg2.x = 20;
+            _petBg2.y = 73 + i * 95;
+            i++;
          }
       }
       
-      protected function onClick(param1:MouseEvent) : void
+      protected function onClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:PetSmallItemButton = param1.target as PetSmallItemButton;
-         PetsBagManager.instance().onBenchBagPetCellClick(_loc2_.place + _cellTotalCount * (curPage - 1));
+         var btn:PetSmallItemButton = e.target as PetSmallItemButton;
+         PetsBagManager.instance().onBenchBagPetCellClick(btn.place + _cellTotalCount * (curPage - 1));
       }
       
-      protected function onCellDoubleClick(param1:MouseEvent) : void
+      protected function onCellDoubleClick(e:MouseEvent) : void
       {
-         var _loc2_:PetSmallItemButton = param1.target as PetSmallItemButton;
-         PetsBagManager.instance().onBenchBagPetCellDoubleClick(_loc2_.info);
+         var btn:PetSmallItemButton = e.target as PetSmallItemButton;
+         PetsBagManager.instance().onBenchBagPetCellDoubleClick(btn.info);
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             close();
          }
@@ -221,58 +219,56 @@ package petsBag.view
       
       public function update() : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
+         var i:int = 0;
+         var len:int = 0;
          updateEmptyCells(0);
-         var _loc2_:Array = PetsBagManager.instance().petModel.petsListInBenchBag;
-         var _loc1_:int = _cellTotalCount * (curPage - 1);
-         _loc4_ = 0;
-         while(_loc4_ < _cellTotalCount)
+         var list:Array = PetsBagManager.instance().petModel.petsListInBenchBag;
+         var index:int = _cellTotalCount * (curPage - 1);
+         for(i = 0; i < _cellTotalCount; )
          {
-            _loc3_ = _loc4_ + _loc1_;
-            if(_loc2_.length > _loc3_)
+            len = i + index;
+            if(list.length > len)
             {
-               _cellList[_loc4_].info = _loc2_[_loc3_];
+               _cellList[i].info = list[len];
             }
             else
             {
-               _cellList[_loc4_].info = null;
+               _cellList[i].info = null;
             }
-            _loc4_++;
+            i++;
          }
       }
       
-      private function updateEmptyCells(param1:int) : void
+      private function updateEmptyCells(i:int) : void
       {
-         var _loc2_:int = PetsBagManager.instance().petModel.unlockedCellNum - _cellTotalCount * (curPage - 1);
-         while(param1 < _cellTotalCount)
+         var cellUnlockNum:int = PetsBagManager.instance().petModel.unlockedCellNum - _cellTotalCount * (curPage - 1);
+         while(i < _cellTotalCount)
          {
-            if(param1 >= _loc2_)
+            if(i >= cellUnlockNum)
             {
-               _cellList[param1].setButtonStyleName("assets.petsBagCellLock");
+               _cellList[i].setButtonStyleName("assets.petsBagCellLock");
             }
             else
             {
-               _cellList[param1].setButtonStyleName(null);
+               _cellList[i].setButtonStyleName(null);
             }
-            param1++;
+            i++;
          }
       }
       
       override public function dispose() : void
       {
-         var _loc1_:int = 0;
-         var _loc2_:int = 0;
+         var len:int = 0;
+         var i:int = 0;
          removeEventListener("response",_response);
          removeEvents();
-         _loc1_ = _cellList.length;
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_)
+         len = _cellList.length;
+         for(i = 0; i < len; )
          {
-            ObjectUtils.disposeObject(_cellList[_loc2_]);
-            _cellList[_loc2_].removeEventListener("doubleClick",onCellDoubleClick);
-            _cellList[_loc2_] = null;
-            _loc2_++;
+            ObjectUtils.disposeObject(_cellList[i]);
+            _cellList[i].removeEventListener("doubleClick",onCellDoubleClick);
+            _cellList[i] = null;
+            i++;
          }
          _cellList.length = 0;
          _cellList = null;

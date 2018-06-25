@@ -24,19 +24,18 @@ package superWinner.view.smallAwards
       
       private function init() : void
       {
-         var _loc3_:* = 0;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
-         _loc3_ = uint(1);
-         while(_loc3_ <= 6)
+         var i:* = 0;
+         var awards:* = null;
+         var point:* = null;
+         for(i = uint(1); i <= 6; )
          {
-            _loc2_ = new SuperWinnerSmallAward(_loc3_);
-            _loc1_ = ComponentFactory.Instance.creatCustomObject("superWinner.smallAward" + _loc3_);
-            _loc2_.x = _loc1_.x;
-            _loc2_.y = _loc1_.y;
-            _awardsArr[_loc3_ - 1] = _loc2_;
-            addChild(_loc2_);
-            _loc3_++;
+            awards = new SuperWinnerSmallAward(i);
+            point = ComponentFactory.Instance.creatCustomObject("superWinner.smallAward" + i);
+            awards.x = point.x;
+            awards.y = point.y;
+            _awardsArr[i - 1] = awards;
+            addChild(awards);
+            i++;
          }
       }
       
@@ -45,15 +44,14 @@ package superWinner.view.smallAwards
          SuperWinnerController.instance.model.addEventListener("flush_my_awards",flushAwards);
       }
       
-      private function flushAwards(param1:SuperWinnerEvent) : void
+      private function flushAwards(e:SuperWinnerEvent) : void
       {
-         var _loc3_:* = 0;
-         var _loc2_:Array = SuperWinnerController.instance.model.myAwards;
-         _loc3_ = uint(0);
-         while(_loc3_ < _awardsArr.length)
+         var i:* = 0;
+         var awards:Array = SuperWinnerController.instance.model.myAwards;
+         for(i = uint(0); i < _awardsArr.length; )
          {
-            _awardsArr[_loc3_].awardNum = _loc2_[_loc3_];
-            _loc3_++;
+            _awardsArr[i].awardNum = awards[i];
+            i++;
          }
       }
       

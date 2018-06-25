@@ -20,11 +20,11 @@ package ddt.events
       
       private var _index:uint;
       
-      public function ItemEvent(param1:String, param2:Object, param3:uint)
+      public function ItemEvent(type:String, item:Object, index:uint)
       {
-         super(param1);
-         _item = param2;
-         _index = param3;
+         super(type);
+         _item = item;
+         _index = index;
       }
       
       public function get item() : Object

@@ -138,11 +138,11 @@ package carnivalActivity.view
       
       private var _rookieRankIcon:Bitmap;
       
-      public function CarnivalActivityView(param1:int, param2:int = 0, param3:String = "")
+      public function CarnivalActivityView(type:int, childType:int = 0, $id:String = "")
       {
-         _type = param1;
-         _childType = param2;
-         _id = param3;
+         _type = type;
+         _childType = childType;
+         _id = $id;
          _itemVec = new Vector.<CarnivalActivityItem>();
          super();
       }
@@ -161,80 +161,77 @@ package carnivalActivity.view
       
       private function initData() : void
       {
-         var _loc6_:int = 0;
-         var _loc7_:int = 0;
-         var _loc5_:int = 0;
+         var k:int = 0;
+         var i:int = 0;
+         var j:int = 0;
          _giftInfoVec = new Vector.<GiftBagInfo>();
          _infoVec = new Vector.<GmActivityInfo>();
-         var _loc4_:Dictionary = WonderfulActivityManager.Instance.activityData;
-         var _loc2_:Date = TimeManager.Instance.Now();
+         var dic:Dictionary = WonderfulActivityManager.Instance.activityData;
+         var now:Date = TimeManager.Instance.Now();
          var _loc9_:int = 0;
          var _loc8_:* = WonderfulActivityManager.Instance.activityData;
-         for each(var _loc3_ in WonderfulActivityManager.Instance.activityData)
+         for each(var item in WonderfulActivityManager.Instance.activityData)
          {
-            if(!(_loc2_.time < Date.parse(_loc3_.beginTime) || _loc2_.time > Date.parse(_loc3_.endShowTime)))
+            if(!(now.time < Date.parse(item.beginTime) || now.time > Date.parse(item.endShowTime)))
             {
-               if(_loc3_.activityType == _type && _loc3_.activityType == 18)
+               if(item.activityType == _type && item.activityType == 18)
                {
-                  initItem(_loc3_);
+                  initItem(item);
                }
-               else if(_childType == 4 && _loc3_.activityType == _type && (_loc3_.activityChildType == 4 || _loc3_.activityChildType == 4 + 8))
+               else if(_childType == 4 && item.activityType == _type && (item.activityChildType == 4 || item.activityChildType == 4 + 8))
                {
-                  initItem(_loc3_);
+                  initItem(item);
                }
-               else if(_loc3_.activityType == 20 && _loc3_.activityChildType == 0 && WonderfulActivityManager.Instance.leftViewInfoDic[_loc3_.activityId] != null)
+               else if(item.activityType == 20 && item.activityChildType == 0 && WonderfulActivityManager.Instance.leftViewInfoDic[item.activityId] != null)
                {
-                  if(_id == _loc3_.activityId)
+                  if(_id == item.activityId)
                   {
-                     initItem(_loc3_);
+                     initItem(item);
                      break;
                   }
                }
-               else if(_loc3_.activityType == _type && _loc3_.activityChildType == _childType)
+               else if(item.activityType == _type && item.activityChildType == _childType)
                {
-                  initItem(_loc3_);
+                  initItem(item);
                   break;
                }
             }
          }
          CarnivalActivityControl.instance.currentType = _type;
          CarnivalActivityControl.instance.currentChildType = _childType;
-         _loc6_ = 0;
-         while(_loc6_ < _infoVec.length)
+         for(k = 0; k < _infoVec.length; )
          {
-            _loc7_ = 0;
-            while(_loc7_ < _infoVec[_loc6_].giftbagArray.length)
+            for(i = 0; i < _infoVec[k].giftbagArray.length; )
             {
-               if(_infoVec[_loc6_].giftbagArray[_loc7_].rewardMark == 100)
+               if(_infoVec[k].giftbagArray[i].rewardMark == 100)
                {
-                  _loc5_ = 0;
-                  while(_loc5_ < _infoVec[_loc6_].giftbagArray[_loc7_].giftConditionArr.length)
+                  for(j = 0; j < _infoVec[k].giftbagArray[i].giftConditionArr.length; )
                   {
-                     if(_infoVec[_loc6_].giftbagArray[_loc7_].giftConditionArr[_loc5_].conditionIndex == 101 && _infoVec[_loc6_].giftbagArray[_loc7_].giftConditionArr[_loc5_].conditionValue == 1)
+                     if(_infoVec[k].giftbagArray[i].giftConditionArr[j].conditionIndex == 101 && _infoVec[k].giftbagArray[i].giftConditionArr[j].conditionValue == 1)
                      {
                         _hasBuyGift = true;
-                        _buyGiftActId = _infoVec[_loc6_].giftbagArray[_loc7_].giftConditionArr[_loc5_].remain2;
+                        _buyGiftActId = _infoVec[k].giftbagArray[i].giftConditionArr[j].remain2;
                         break;
                      }
-                     _loc5_++;
+                     j++;
                   }
                }
                if(!_hasBuyGift)
                {
-                  _loc7_++;
+                  i++;
                   continue;
                }
                break;
             }
-            _loc6_++;
+            k++;
          }
          var _loc11_:int = 0;
          var _loc10_:* = WonderfulActivityManager.Instance.activityData;
-         for each(var _loc1_ in WonderfulActivityManager.Instance.activityData)
+         for each(var giftItem in WonderfulActivityManager.Instance.activityData)
          {
-            if(_loc1_.activityId == _buyGiftActId)
+            if(giftItem.activityId == _buyGiftActId)
             {
-               _buyGiftItem = _loc1_;
+               _buyGiftItem = giftItem;
                _buyGiftLimitType = _buyGiftItem.giftbagArray[0].giftConditionArr[0].conditionValue;
                _buyGiftLimitCount = _buyGiftItem.giftbagArray[0].giftConditionArr[1].conditionValue;
                _buyGiftType = _buyGiftItem.giftbagArray[0].giftConditionArr[2].conditionValue;
@@ -244,53 +241,53 @@ package carnivalActivity.view
          }
       }
       
-      private function initItem(param1:GmActivityInfo) : void
+      private function initItem(item:GmActivityInfo) : void
       {
-         var _loc2_:int = 0;
+         var k:int = 0;
          if(!_item)
          {
-            _item = param1;
+            _item = item;
          }
          if(_sumTime == 0)
          {
-            _sumTime = Date.parse(param1.endTime) - new Date().time;
+            _sumTime = Date.parse(item.endTime) - new Date().time;
          }
-         _loc2_ = 0;
-         while(_loc2_ < param1.giftbagArray.length)
+         k = 0;
+         while(k < item.giftbagArray.length)
          {
-            _giftInfoVec.push(param1.giftbagArray[_loc2_]);
-            _loc2_++;
+            _giftInfoVec.push(item.giftbagArray[k]);
+            k++;
          }
-         _infoVec.push(param1);
+         _infoVec.push(item);
       }
       
       private function updateTime() : void
       {
-         var _loc2_:int = _sumTime <= 0?0:Number(_sumTime / 3600000);
-         var _loc1_:int = _sumTime <= 0?0:Number((_sumTime / 3600000 - _loc2_) * 60);
-         var _loc3_:String = "";
-         if(_loc2_ < 10)
+         var hours:int = _sumTime <= 0?0:Number(_sumTime / 3600000);
+         var minutes:int = _sumTime <= 0?0:Number((_sumTime / 3600000 - hours) * 60);
+         var _sumTimeStr:String = "";
+         if(hours < 10)
          {
-            _loc3_ = _loc3_ + ("0" + _loc2_);
+            _sumTimeStr = _sumTimeStr + ("0" + hours);
          }
          else
          {
-            _loc3_ = _loc3_ + _loc2_;
+            _sumTimeStr = _sumTimeStr + hours;
          }
-         _loc3_ = _loc3_ + LanguageMgr.GetTranslation("church.weddingRoom.frame.AddWeddingRoomFrame.hour");
-         if(_loc1_ < 10)
+         _sumTimeStr = _sumTimeStr + LanguageMgr.GetTranslation("church.weddingRoom.frame.AddWeddingRoomFrame.hour");
+         if(minutes < 10)
          {
-            _loc3_ = _loc3_ + ("0" + _loc1_);
+            _sumTimeStr = _sumTimeStr + ("0" + minutes);
          }
          else
          {
-            _loc3_ = _loc3_ + _loc1_;
+            _sumTimeStr = _sumTimeStr + minutes;
          }
-         _loc3_ = _loc3_ + LanguageMgr.GetTranslation("church.weddingRoom.frame.AddWeddingRoomFrame.minute");
-         _timeTxt.text = _loc3_;
+         _sumTimeStr = _sumTimeStr + LanguageMgr.GetTranslation("church.weddingRoom.frame.AddWeddingRoomFrame.minute");
+         _timeTxt.text = _sumTimeStr;
       }
       
-      protected function __timerHandler(param1:Event) : void
+      protected function __timerHandler(event:Event) : void
       {
          _sumTime = _sumTime - 60000;
          updateTime();
@@ -298,17 +295,17 @@ package carnivalActivity.view
       
       protected function initView() : void
       {
-         var _loc8_:* = null;
-         var _loc6_:int = 0;
-         var _loc12_:int = 0;
-         var _loc9_:* = null;
-         var _loc11_:* = null;
-         var _loc3_:* = null;
-         var _loc1_:* = null;
-         var _loc14_:* = null;
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
-         var _loc10_:* = null;
+         var awardStr:* = null;
+         var ki:int = 0;
+         var bi:int = 0;
+         var giftInfo:* = null;
+         var name:* = null;
+         var info:* = null;
+         var beadInfo:* = null;
+         var petInfo:* = null;
+         var k:int = 0;
+         var i:int = 0;
+         var item:* = null;
          CarnivalActivityControl.instance.getBeginTime = Date.parse(_item.beginShowTime);
          CarnivalActivityControl.instance.getEndTime = Date.parse(_item.endShowTime);
          CarnivalActivityControl.instance.actBeginTime = Date.parse(_item.beginTime);
@@ -317,13 +314,13 @@ package carnivalActivity.view
          addChild(_bg);
          var _loc18_:int = 0;
          var _loc17_:* = _infoVec;
-         for each(var _loc13_ in _infoVec)
+         for each(var gmInfo in _infoVec)
          {
             var _loc16_:* = 0;
             var _loc15_:* = WonderfulActivityManager.Instance.rankActDic;
-            for(var _loc5_ in WonderfulActivityManager.Instance.rankActDic)
+            for(var id in WonderfulActivityManager.Instance.rankActDic)
             {
-               if(_loc13_.activityId == _loc5_ && WonderfulActivityManager.Instance.rankActDic[_loc5_].length > 0)
+               if(gmInfo.activityId == id && WonderfulActivityManager.Instance.rankActDic[id].length > 0)
                {
                   _rookieRankIcon = ComponentFactory.Instance.creat("wonderfulactivity.rookie.rankIcon");
                   addChild(_rookieRankIcon);
@@ -332,7 +329,7 @@ package carnivalActivity.view
                   _rookieRankView.y = 195;
                   _rookieRankView.tipStyle = "carnivalActivity.view.RookieRankTip";
                   _rookieRankView.tipDirctions = "7,3,2";
-                  _rookieRankView.tipData = WonderfulActivityManager.Instance.rankActDic[_loc5_];
+                  _rookieRankView.tipData = WonderfulActivityManager.Instance.rankActDic[id];
                   addChild(_rookieRankView);
                   break;
                }
@@ -384,14 +381,14 @@ package carnivalActivity.view
          _descTxt = ComponentFactory.Instance.creatComponentByStylename("carnivalAct.descTxt");
          _descSp = new Sprite();
          _descSp.addChild(_descTxt);
-         var _loc7_:String = _item.desc;
-         _descTxt.text = _loc7_;
+         var str:String = _item.desc;
+         _descTxt.text = str;
          addChild(_descSp);
          _allDescBg = ComponentFactory.Instance.creatComponentByStylename("core.commonTipBg");
          _allDescBg.x = _descTxt.x;
          _allDescBg.y = _descTxt.y + 25;
          _allDescTxt = ComponentFactory.Instance.creatComponentByStylename("carnivalAct.allDescTxt");
-         _allDescTxt.text = _loc7_;
+         _allDescTxt.text = str;
          _allDescBg.width = _allDescTxt.width + 16;
          _allDescBg.height = _allDescTxt.height + 8;
          _allDescTxt.x = _allDescBg.x + 8;
@@ -425,42 +422,40 @@ package carnivalActivity.view
             _gift = new CarnivalActivityGift();
             _gift.tipStyle = "ddt.view.tips.OneLineTip";
             _gift.tipDirctions = "2,7,5";
-            _loc8_ = LanguageMgr.GetTranslation("ddt.bagandinfo.awardsTitle") + "\n";
-            _loc6_ = 0;
-            while(_loc6_ < _buyGiftItem.giftbagArray.length)
+            awardStr = LanguageMgr.GetTranslation("ddt.bagandinfo.awardsTitle") + "\n";
+            for(ki = 0; ki < _buyGiftItem.giftbagArray.length; )
             {
-               _loc12_ = 0;
-               while(_loc12_ < _buyGiftItem.giftbagArray[_loc6_].giftRewardArr.length)
+               for(bi = 0; bi < _buyGiftItem.giftbagArray[ki].giftRewardArr.length; )
                {
-                  _loc9_ = _buyGiftItem.giftbagArray[_loc6_].giftRewardArr[_loc12_];
-                  _loc11_ = "";
-                  _loc3_ = new InventoryItemInfo();
-                  _loc3_.TemplateID = _loc9_.templateId;
-                  _loc3_ = ItemManager.fill(_loc3_);
-                  if(EquipType.isBead(parseInt(_loc3_.Property1)))
+                  giftInfo = _buyGiftItem.giftbagArray[ki].giftRewardArr[bi];
+                  name = "";
+                  info = new InventoryItemInfo();
+                  info.TemplateID = giftInfo.templateId;
+                  info = ItemManager.fill(info);
+                  if(EquipType.isBead(parseInt(info.Property1)))
                   {
-                     _loc1_ = BeadTemplateManager.Instance.GetBeadInfobyID(_loc3_.TemplateID);
-                     _loc11_ = _loc3_.Name + "-" + _loc1_.Name + "Lv" + _loc1_.BaseLevel;
+                     beadInfo = BeadTemplateManager.Instance.GetBeadInfobyID(info.TemplateID);
+                     name = info.Name + "-" + beadInfo.Name + "Lv" + beadInfo.BaseLevel;
                   }
-                  else if(EquipType.isMagicStone(_loc3_.CategoryID))
+                  else if(EquipType.isMagicStone(info.CategoryID))
                   {
-                     _loc11_ = _loc3_.Name + "(" + QualityType.QUALITY_STRING[_loc3_.Quality] + ")";
+                     name = info.Name + "(" + QualityType.QUALITY_STRING[info.Quality] + ")";
                   }
-                  else if(EquipType.isPetEgg(_loc3_.CategoryID))
+                  else if(EquipType.isPetEgg(info.CategoryID))
                   {
-                     _loc14_ = PetInfoManager.getPetByTemplateID(parseInt(_loc3_.Property5));
-                     _loc11_ = LanguageMgr.GetTranslation("returnActivity.petTxt",_loc14_.StarLevel,_loc14_.Name);
+                     petInfo = PetInfoManager.getPetByTemplateID(parseInt(info.Property5));
+                     name = LanguageMgr.GetTranslation("returnActivity.petTxt",petInfo.StarLevel,petInfo.Name);
                   }
                   else
                   {
-                     _loc11_ = _loc3_.Name;
+                     name = info.Name;
                   }
-                  _loc8_ = _loc8_ + (_loc11_ + " x" + _loc9_.count + (_loc12_ == _buyGiftItem.giftbagArray[_loc6_].giftRewardArr.length - 1?"":"、\n"));
-                  _loc12_++;
+                  awardStr = awardStr + (name + " x" + giftInfo.count + (bi == _buyGiftItem.giftbagArray[ki].giftRewardArr.length - 1?"":"、\n"));
+                  bi++;
                }
-               _loc6_++;
+               ki++;
             }
-            _gift.tipData = _loc8_;
+            _gift.tipData = awardStr;
             _gift.x = _buyBg.x + 12;
             _gift.y = _buyBg.y + 11;
             addChild(_gift);
@@ -479,13 +474,11 @@ package carnivalActivity.view
          _scrollPanel = ComponentFactory.Instance.creatComponentByStylename("carnivalAct.scroll");
          _scrollPanel.setView(_vBox);
          addChild(_scrollPanel);
-         _loc2_ = 0;
-         while(_loc2_ < _infoVec.length)
+         for(k = 0; k < _infoVec.length; )
          {
-            _loc4_ = 0;
-            for(; _loc4_ < _infoVec[_loc2_].giftbagArray.length; _loc4_++)
+            for(i = 0; i < _infoVec[k].giftbagArray.length; i++)
             {
-               if(_infoVec[_loc2_].giftbagArray[_loc4_].rewardMark != 100)
+               if(_infoVec[k].giftbagArray[i].rewardMark != 100)
                {
                   _loc15_ = _type;
                   if(16 !== _loc15_)
@@ -520,90 +513,90 @@ package carnivalActivity.view
                                                             {
                                                                if(39 === _loc15_)
                                                                {
-                                                                  _loc10_ = new PlayerRegisterRwardItem(_type,_infoVec[_loc2_].giftbagArray[_loc4_],_loc4_ % 2);
+                                                                  item = new PlayerRegisterRwardItem(_type,_infoVec[k].giftbagArray[i],i % 2);
                                                                }
                                                             }
                                                             else
                                                             {
-                                                               _loc10_ = new PetUpgradeItem(_type,_infoVec[_loc2_].giftbagArray[_loc4_],_loc4_ % 2);
+                                                               item = new PetUpgradeItem(_type,_infoVec[k].giftbagArray[i],i % 2);
                                                             }
                                                          }
                                                          else
                                                          {
-                                                            _loc10_ = new UsePropsItem(_type,_infoVec[_loc2_].giftbagArray[_loc4_],_loc4_ % 2);
+                                                            item = new UsePropsItem(_type,_infoVec[k].giftbagArray[i],i % 2);
                                                          }
                                                       }
                                                       else
                                                       {
-                                                         _loc10_ = new TurnRoundEggItem(_type,_infoVec[_loc2_].giftbagArray[_loc4_],_loc4_ % 2);
+                                                         item = new TurnRoundEggItem(_type,_infoVec[k].giftbagArray[i],i % 2);
                                                       }
                                                    }
                                                    else
                                                    {
-                                                      _loc10_ = new ActivationPotentialItem(_type,_infoVec[_loc2_].giftbagArray[_loc4_],_loc4_ % 2);
+                                                      item = new ActivationPotentialItem(_type,_infoVec[k].giftbagArray[i],i % 2);
                                                    }
                                                 }
                                                 else
                                                 {
-                                                   _loc10_ = new WashPointCardItem(_type,_infoVec[_loc2_].giftbagArray[_loc4_],_loc4_ % 2);
+                                                   item = new WashPointCardItem(_type,_infoVec[k].giftbagArray[i],i % 2);
                                                 }
                                              }
                                              else
                                              {
-                                                _loc10_ = new BuildUpgradeItem(_type,_infoVec[_loc2_].giftbagArray[_loc4_],_loc4_ % 2);
+                                                item = new BuildUpgradeItem(_type,_infoVec[k].giftbagArray[i],i % 2);
                                              }
                                           }
                                        }
-                                       _loc10_ = new UseUpEnergyItem(_type,_infoVec[_loc2_].giftbagArray[_loc4_],_loc4_ % 2);
+                                       item = new UseUpEnergyItem(_type,_infoVec[k].giftbagArray[i],i % 2);
                                     }
                                     else if(_childType == 4)
                                     {
-                                       _loc10_ = new RookieItem(_type,_infoVec[_loc2_].giftbagArray[_loc4_],_loc4_ % 2);
+                                       item = new RookieItem(_type,_infoVec[k].giftbagArray[i],i % 2);
                                     }
                                     else
                                     {
-                                       _loc10_ = new CarnivalActivityItem(_type,_infoVec[_loc2_].giftbagArray[_loc4_],_loc4_ % 2);
+                                       item = new CarnivalActivityItem(_type,_infoVec[k].giftbagArray[i],i % 2);
                                     }
                                  }
                                  else
                                  {
-                                    _loc10_ = new GodTempleItem(_type,_infoVec[_loc2_].giftbagArray[_loc4_],_loc4_ % 2);
+                                    item = new GodTempleItem(_type,_infoVec[k].giftbagArray[i],i % 2);
                                  }
                               }
                               else
                               {
-                                 _loc10_ = new HorseDarenItem(_type,_infoVec[_loc2_].giftbagArray[_loc4_],_loc4_ % 2);
+                                 item = new HorseDarenItem(_type,_infoVec[k].giftbagArray[i],i % 2);
                               }
                            }
                            else
                            {
-                              _loc10_ = new RookieItem(_type,_infoVec[_loc2_].giftbagArray[_loc4_],_loc4_ % 2);
+                              item = new RookieItem(_type,_infoVec[k].giftbagArray[i],i % 2);
                            }
                         }
                         else
                         {
-                           _loc10_ = new DailyGiftItem(_type,_infoVec[_loc2_].giftbagArray[_loc4_],_loc4_ % 2);
+                           item = new DailyGiftItem(_type,_infoVec[k].giftbagArray[i],i % 2);
                         }
                      }
                      else
                      {
-                        _loc10_ = new WholePeoplePetActItem(_type,_infoVec[_loc2_].giftbagArray[_loc4_],_loc4_ % 2);
+                        item = new WholePeoplePetActItem(_type,_infoVec[k].giftbagArray[i],i % 2);
                      }
                   }
                   else
                   {
-                     _loc10_ = new WholePeopleVipActItem(_type,_infoVec[_loc2_].giftbagArray[_loc4_],_loc4_ % 2);
+                     item = new WholePeopleVipActItem(_type,_infoVec[k].giftbagArray[i],i % 2);
                   }
-                  if(_loc10_)
+                  if(item)
                   {
-                     _itemVec.push(_loc10_);
-                     _vBox.addChild(_loc10_);
+                     _itemVec.push(item);
+                     _vBox.addChild(item);
                      continue;
                   }
                   continue;
                }
             }
-            _loc2_++;
+            k++;
          }
          _scrollPanel.invalidateViewport();
          _timer = TimerManager.getInstance().addTimerJuggler(60000,int(_sumTime / 1000));
@@ -618,9 +611,9 @@ package carnivalActivity.view
       {
          var _loc3_:int = 0;
          var _loc2_:* = _itemVec;
-         for each(var _loc1_ in _itemVec)
+         for each(var cItem in _itemVec)
          {
-            _loc1_.updateView();
+            cItem.updateView();
          }
          if(!_buyGiftItem)
          {
@@ -662,31 +655,31 @@ package carnivalActivity.view
          _descSp.addEventListener("mouseOut",__outHandler);
       }
       
-      protected function __showRookieTip(param1:MouseEvent) : void
+      protected function __showRookieTip(event:MouseEvent) : void
       {
       }
       
-      protected function __hideRookieTip(param1:MouseEvent) : void
+      protected function __hideRookieTip(event:MouseEvent) : void
       {
       }
       
-      protected function __outHandler(param1:MouseEvent) : void
+      protected function __outHandler(event:MouseEvent) : void
       {
          var _loc2_:Boolean = false;
          _allDescTxt.visible = _loc2_;
          _allDescBg.visible = _loc2_;
       }
       
-      protected function __overHandler(param1:MouseEvent) : void
+      protected function __overHandler(event:MouseEvent) : void
       {
          var _loc2_:Boolean = true;
          _allDescTxt.visible = _loc2_;
          _allDescBg.visible = _loc2_;
       }
       
-      protected function __buyGiftPackHandler(param1:MouseEvent) : void
+      protected function __buyGiftPackHandler(event:MouseEvent) : void
       {
-         var _loc2_:int = 0;
+         var type:int = 0;
          SoundManager.instance.playButtonSound();
          if(!_buyGiftItem)
          {
@@ -694,102 +687,101 @@ package carnivalActivity.view
          }
          if(_buyGiftType == -8)
          {
-            _loc2_ = 0;
+            type = 0;
          }
          else
          {
-            _loc2_ = 0;
+            type = 0;
          }
-         var _loc3_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("carnival.awardGiftBuyTxt",_buyGiftPrice),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false,_loc2_);
-         _loc3_.addEventListener("response",__alertBuyGift);
+         var alertAsk:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("carnival.awardGiftBuyTxt",_buyGiftPrice),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false,type);
+         alertAsk.addEventListener("response",__alertBuyGift);
       }
       
-      protected function buyGift(param1:Boolean) : void
+      protected function buyGift(isBand:Boolean) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:Vector.<SendGiftInfo> = new Vector.<SendGiftInfo>();
-         var _loc5_:SendGiftInfo = new SendGiftInfo();
-         _loc5_.activityId = _buyGiftItem.activityId;
-         var _loc2_:Array = [];
-         _loc4_ = 0;
-         while(_loc4_ < _buyGiftItem.giftbagArray.length)
+         var i:int = 0;
+         var sendInfoVec:Vector.<SendGiftInfo> = new Vector.<SendGiftInfo>();
+         var info:SendGiftInfo = new SendGiftInfo();
+         info.activityId = _buyGiftItem.activityId;
+         var temp:Array = [];
+         for(i = 0; i < _buyGiftItem.giftbagArray.length; )
          {
-            _loc2_.push(_buyGiftItem.giftbagArray[_loc4_].giftbagId + "," + (!!param1?-9:-8));
-            _loc4_++;
+            temp.push(_buyGiftItem.giftbagArray[i].giftbagId + "," + (!!isBand?-9:-8));
+            i++;
          }
-         _loc5_.giftIdArr = _loc2_;
-         _loc3_.push(_loc5_);
-         SocketManager.Instance.out.sendWonderfulActivityGetReward(_loc3_);
+         info.giftIdArr = temp;
+         sendInfoVec.push(info);
+         SocketManager.Instance.out.sendWonderfulActivityGetReward(sendInfoVec);
       }
       
-      protected function __alertBuyGift(param1:FrameEvent) : void
+      protected function __alertBuyGift(event:FrameEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc3_.removeEventListener("response",__alertBuyGift);
-         switch(int(param1.responseCode) - 2)
+         var alertFrame:* = null;
+         var frame:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("response",__alertBuyGift);
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
                if(PlayerManager.Instance.Self.bagLocked)
                {
                   BaglockedManager.Instance.show();
-                  ObjectUtils.disposeObject(param1.currentTarget);
+                  ObjectUtils.disposeObject(event.currentTarget);
                   return;
                }
-               if(_loc3_.isBand)
+               if(frame.isBand)
                {
                   if(!checkMoney(true))
                   {
-                     _loc3_.dispose();
-                     _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("buried.alertInfo.noBindMoney"),"",LanguageMgr.GetTranslation("cancel"),true,false,false,2);
-                     _loc2_.addEventListener("response",onResponseHander);
+                     frame.dispose();
+                     alertFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("buried.alertInfo.noBindMoney"),"",LanguageMgr.GetTranslation("cancel"),true,false,false,2);
+                     alertFrame.addEventListener("response",onResponseHander);
                      return;
                   }
                }
                else if(!checkMoney(false))
                {
-                  _loc3_.dispose();
-                  _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.title"),LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.content"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
-                  _loc2_.addEventListener("response",_response);
+                  frame.dispose();
+                  alertFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.title"),LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.content"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
+                  alertFrame.addEventListener("response",_response);
                   return;
                }
-               buyGift(_loc3_.isBand);
+               buyGift(frame.isBand);
                break;
          }
-         _loc3_.dispose();
+         frame.dispose();
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(evt:FrameEvent) : void
       {
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",_response);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         (evt.currentTarget as BaseAlerFrame).removeEventListener("response",_response);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             LeavePageManager.leaveToFillPath();
          }
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(evt.currentTarget);
       }
       
-      private function onResponseHander(param1:FrameEvent) : void
+      private function onResponseHander(e:FrameEvent) : void
       {
-         var _loc2_:* = null;
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",onResponseHander);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var alertFrame:* = null;
+         (e.currentTarget as BaseAlerFrame).removeEventListener("response",onResponseHander);
+         if(e.responseCode == 2 || e.responseCode == 3)
          {
             if(!checkMoney(false))
             {
-               _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.title"),LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.content"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
-               _loc2_.addEventListener("response",_response);
+               alertFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.title"),LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.content"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
+               alertFrame.addEventListener("response",_response);
                return;
             }
             buyGift(false);
          }
-         param1.currentTarget.dispose();
+         e.currentTarget.dispose();
       }
       
-      private function checkMoney(param1:Boolean) : Boolean
+      private function checkMoney(isBand:Boolean) : Boolean
       {
-         if(param1)
+         if(isBand)
          {
             if(PlayerManager.Instance.Self.BandMoney < _buyGiftPrice)
             {
@@ -828,7 +820,7 @@ package carnivalActivity.view
          return this;
       }
       
-      public function setState(param1:int, param2:int) : void
+      public function setState(type:int, id:int) : void
       {
       }
       

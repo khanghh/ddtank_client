@@ -28,28 +28,28 @@ package serverlist.view
          addChild(_text);
       }
       
-      public function set info(param1:ServerInfo) : void
+      public function set info(value:ServerInfo) : void
       {
-         _info = param1;
+         _info = value;
          _text.text = _info.Name;
          addEventListener("click",__onClick);
          addEventListener("mouseOver",__onMouseOver);
       }
       
-      private function __onClick(param1:MouseEvent) : void
+      private function __onClick(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          ServerManager.Instance.connentServer(_info);
       }
       
-      private function __onMouseOver(param1:MouseEvent) : void
+      private function __onMouseOver(e:MouseEvent) : void
       {
          addEventListener("mouseOut",__onMouseOut);
          _text.background = true;
          _text.textFormatStyle = "serverlist.ServerNameTextFormatHover";
       }
       
-      private function __onMouseOut(param1:MouseEvent) : void
+      private function __onMouseOut(e:MouseEvent) : void
       {
          removeEventListener("mouseOut",__onMouseOut);
          _text.background = false;

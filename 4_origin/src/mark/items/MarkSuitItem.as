@@ -23,14 +23,14 @@ package mark.items
          MarkMgr.inst.addEventListener("updateOperation",updateStaus);
       }
       
-      public function set data(param1:MarkBagData) : void
+      public function set data(value:MarkBagData) : void
       {
-         _data = param1;
+         _data = value;
          clipSuit.index = _data.type % 1000 - 1;
          updateStaus();
       }
       
-      private function updateStaus(param1:MarkEvent = null) : void
+      private function updateStaus(event:MarkEvent = null) : void
       {
          if(!_data)
          {

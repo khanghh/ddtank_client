@@ -29,11 +29,11 @@ package powerUp
       
       private var _frame:int;
       
-      public function NumMovieSprite(param1:int, param2:int)
+      public function NumMovieSprite(powerNum:int, addPowerNum:int)
       {
          super();
-         _powerNum = param1;
-         _addPowerNum = param2;
+         _powerNum = powerNum;
+         _addPowerNum = addPowerNum;
          _allPowerNum = _powerNum + _addPowerNum;
          _powerString = String(_powerNum);
          _allPowerString = String(_allPowerNum);
@@ -44,14 +44,14 @@ package powerUp
          addEventListener("enterFrame",__updateNumHandler);
       }
       
-      protected function __updateNumHandler(param1:Event) : void
+      protected function __updateNumHandler(event:Event) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:* = null;
-         var _loc7_:int = 0;
-         var _loc6_:int = 0;
-         var _loc5_:int = 0;
-         var _loc8_:int = 0;
+         var num:int = 0;
+         var str:* = null;
+         var k:int = 0;
+         var num1:int = 0;
+         var num2:int = 0;
+         var i:int = 0;
          _frame = Number(_frame) + 1;
          if(_frame <= 10)
          {
@@ -59,41 +59,39 @@ package powerUp
          }
          if(_frame > 10 && _frame < 20)
          {
-            _loc3_ = _allPowerString.substr(_allPowerString.length - _powerString.length,_powerString.length);
-            _loc7_ = _powerString.length - 1;
-            while(_loc7_ >= 0)
+            str = _allPowerString.substr(_allPowerString.length - _powerString.length,_powerString.length);
+            for(k = _powerString.length - 1; k >= 0; )
             {
-               _loc6_ = _loc3_.charAt(_loc7_);
-               _loc5_ = _powerString.charAt(_loc7_);
-               if(_loc6_ < _loc5_)
+               num1 = str.charAt(k);
+               num2 = _powerString.charAt(k);
+               if(num1 < num2)
                {
-                  _loc6_ = _loc6_ + 10;
+                  num1 = num1 + 10;
                }
-               _loc2_ = _loc6_ - _loc5_;
-               _moveNumArr[_loc7_] = _loc2_;
-               _loc7_--;
+               num = num1 - num2;
+               _moveNumArr[k] = num;
+               k--;
             }
-            _loc8_ = 0;
-            while(_loc8_ < _iconArr.length)
+            for(i = 0; i < _iconArr.length; )
             {
-               if(_moveNumArr[_loc8_] > 0 && _moveNumArr[_loc8_] >= _frame - 10)
+               if(_moveNumArr[i] > 0 && _moveNumArr[i] >= _frame - 10)
                {
-                  (_iconArr[_loc8_] as MovieClip).gotoAndStop(_frame + 1 - 10);
+                  (_iconArr[i] as MovieClip).gotoAndStop(_frame + 1 - 10);
                }
                else
                {
-                  (_iconArr[_loc8_] as MovieClip).stop();
+                  (_iconArr[i] as MovieClip).stop();
                }
-               _loc8_++;
+               i++;
             }
          }
          else
          {
             var _loc10_:int = 0;
             var _loc9_:* = _iconArr2;
-            for each(var _loc4_ in _iconArr2)
+            for each(var item in _iconArr2)
             {
-               addChild(_loc4_);
+               addChild(item);
             }
             removeEventListener("enterFrame",__updateNumHandler);
          }
@@ -101,59 +99,55 @@ package powerUp
       
       private function initView() : void
       {
-         var _loc3_:int = 0;
-         var _loc5_:* = null;
-         var _loc2_:int = 0;
-         var _loc4_:* = null;
-         var _loc1_:int = _allPowerString.length - _powerString.length;
-         _loc3_ = 0;
-         while(_loc3_ < _powerString.length)
+         var k:int = 0;
+         var powerNumMc2:* = null;
+         var m:int = 0;
+         var powerNumMc:* = null;
+         var num:int = _allPowerString.length - _powerString.length;
+         for(k = 0; k < _powerString.length; )
          {
-            _loc5_ = ComponentFactory.Instance.creat("num" + _powerString.charAt(_loc3_));
-            _loc5_.x = 210 + _loc5_.width / 1.6 * _loc1_ + _loc5_.width / 1.6 * _loc3_;
-            _loc5_.y = -28;
-            addChild(_loc5_);
-            _loc5_.stop();
-            _iconArr.push(_loc5_);
+            powerNumMc2 = ComponentFactory.Instance.creat("num" + _powerString.charAt(k));
+            powerNumMc2.x = 210 + powerNumMc2.width / 1.6 * num + powerNumMc2.width / 1.6 * k;
+            powerNumMc2.y = -28;
+            addChild(powerNumMc2);
+            powerNumMc2.stop();
+            _iconArr.push(powerNumMc2);
             _moveNumArr.push(0);
-            _loc3_++;
+            k++;
          }
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_)
+         for(m = 0; m < num; )
          {
-            _loc4_ = ComponentFactory.Instance.creat("num" + _allPowerString.charAt(_loc2_));
-            _loc4_.x = 210 + _loc4_.width / 1.6 * _loc1_ - _loc4_.width / 1.6 * (_loc1_ - _loc2_);
-            _loc4_.y = -28;
-            _loc4_.stop();
-            _iconArr2.push(_loc4_);
-            _loc2_++;
+            powerNumMc = ComponentFactory.Instance.creat("num" + _allPowerString.charAt(m));
+            powerNumMc.x = 210 + powerNumMc.width / 1.6 * num - powerNumMc.width / 1.6 * (num - m);
+            powerNumMc.y = -28;
+            powerNumMc.stop();
+            _iconArr2.push(powerNumMc);
+            m++;
          }
       }
       
       public function dispose() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _iconArr.length)
+         var k:int = 0;
+         var m:int = 0;
+         for(k = 0; k < _iconArr.length; )
          {
-            if(_iconArr[_loc2_])
+            if(_iconArr[k])
             {
-               ObjectUtils.disposeObject(_iconArr[_loc2_]);
-               _iconArr[_loc2_] = null;
+               ObjectUtils.disposeObject(_iconArr[k]);
+               _iconArr[k] = null;
             }
-            _loc2_++;
+            k++;
          }
          _iconArr = null;
-         _loc1_ = 0;
-         while(_loc1_ < _iconArr2.length)
+         for(m = 0; m < _iconArr2.length; )
          {
-            if(_iconArr2[_loc1_])
+            if(_iconArr2[m])
             {
-               ObjectUtils.disposeObject(_iconArr2[_loc1_]);
-               _iconArr2[_loc1_] = null;
+               ObjectUtils.disposeObject(_iconArr2[m]);
+               _iconArr2[m] = null;
             }
-            _loc1_++;
+            m++;
          }
          _iconArr2 = null;
          _moveNumArr = null;

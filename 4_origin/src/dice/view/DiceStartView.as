@@ -36,14 +36,14 @@ package dice.view
          preInitialize();
       }
       
-      public function play(param1:int, param2:int) : void
+      public function play(type:int, result:int) : void
       {
-         _type = param1;
-         _result = param2;
+         _type = type;
+         _result = result;
          if(_type == 1)
          {
             _left = int(Math.random() * 6) + 1;
-            if(_left >= param2)
+            if(_left >= result)
             {
                _left = 1;
             }
@@ -71,45 +71,43 @@ package dice.view
          }
       }
       
-      private function __onEnterFrame(param1:Event) : void
+      private function __onEnterFrame(event:Event) : void
       {
-         var _loc2_:MovieClip = param1.currentTarget as MovieClip;
-         if(_loc2_.currentLabel == "endLabel")
+         var _target:MovieClip = event.currentTarget as MovieClip;
+         if(_target.currentLabel == "endLabel")
          {
             DiceController.Instance.dispatchEvent(new DiceEvent("movie_finish"));
-            _loc2_.removeEventListener("enterFrame",__onEnterFrame);
-            _loc2_.stop();
+            _target.removeEventListener("enterFrame",__onEnterFrame);
+            _target.stop();
          }
       }
       
       public function removeAllMovie() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _leftArr.length)
+         var i:int = 0;
+         for(i = 0; i < _leftArr.length; )
          {
-            if(_leftArr[_loc1_].parent)
+            if(_leftArr[i].parent)
             {
-               removeChild(_leftArr[_loc1_]);
+               removeChild(_leftArr[i]);
             }
-            if(_rightArr[_loc1_].parent)
+            if(_rightArr[i].parent)
             {
-               removeChild(_rightArr[_loc1_]);
+               removeChild(_rightArr[i]);
             }
-            _loc1_++;
+            i++;
          }
       }
       
       private function preInitialize() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < 6)
+         var i:int = 0;
+         for(i = 0; i < 6; )
          {
-            _leftArr[_loc1_] = ComponentFactory.Instance.creat("asset.dice.movie" + (_loc1_ + 1));
-            _leftArr[_loc1_].x = 50;
-            _rightArr[_loc1_] = ComponentFactory.Instance.creat("asset.dice.movie" + (_loc1_ + 7));
-            _loc1_++;
+            _leftArr[i] = ComponentFactory.Instance.creat("asset.dice.movie" + (i + 1));
+            _leftArr[i].x = 50;
+            _rightArr[i] = ComponentFactory.Instance.creat("asset.dice.movie" + (i + 7));
+            i++;
          }
       }
       

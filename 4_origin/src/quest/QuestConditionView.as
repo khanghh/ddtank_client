@@ -20,7 +20,7 @@ package quest
       
       private var statusText:FilterFrameText;
       
-      public function QuestConditionView(param1:QuestCondition)
+      public function QuestConditionView(condition:QuestCondition)
       {
          super();
          _bg = ComponentFactory.Instance.creat("asset.core.quest.QuestConditionBGHighlight");
@@ -29,24 +29,24 @@ package quest
          addChild(conditionText);
          statusText = ComponentFactory.Instance.creat("core.quest.QuestConditionStatus");
          addChild(statusText);
-         _cond = param1;
+         _cond = condition;
          text = _cond.description;
       }
       
-      public function set status(param1:String) : void
+      public function set status(value:String) : void
       {
-         statusText.text = param1;
+         statusText.text = value;
       }
       
-      public function set text(param1:String) : void
+      public function set text(value:String) : void
       {
-         conditionText.text = param1;
+         conditionText.text = value;
          statusText.x = conditionText.x + conditionText.width;
       }
       
-      public function set isComplete(param1:Boolean) : void
+      public function set isComplete(value:Boolean) : void
       {
-         if(param1 == true)
+         if(value == true)
          {
          }
       }

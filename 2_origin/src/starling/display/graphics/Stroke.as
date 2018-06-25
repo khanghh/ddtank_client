@@ -40,304 +40,302 @@ package starling.display.graphics
       }
       
       [inline]
-      protected static function createPolyLinePreAlloc(param1:Vector.<StrokeVertex>, param2:Vector.<Number>, param3:Vector.<uint>, param4:Boolean, param5:int) : void
+      protected static function createPolyLinePreAlloc(_line:Vector.<StrokeVertex>, vertices:Vector.<Number>, indices:Vector.<uint>, _hasDegenerates:Boolean, indexOfLastRenderedVertex:int) : void
       {
          var _loc53_:* = NaN;
          _loc53_ = 3.14159265358979;
-         var _loc45_:* = false;
-         var _loc19_:* = false;
-         var _loc50_:* = 0;
-         var _loc32_:Boolean = false;
-         var _loc20_:* = 0;
-         var _loc22_:* = 0;
-         var _loc7_:* = null;
-         var _loc6_:* = null;
-         var _loc10_:* = null;
-         var _loc28_:Number = NaN;
-         var _loc25_:Number = NaN;
-         var _loc26_:Number = NaN;
-         var _loc40_:Number = NaN;
-         var _loc39_:Number = NaN;
-         var _loc52_:Number = NaN;
-         var _loc54_:Number = NaN;
-         var _loc18_:Number = NaN;
-         var _loc17_:Number = NaN;
-         var _loc56_:Number = NaN;
-         var _loc57_:Number = NaN;
-         var _loc13_:* = NaN;
-         var _loc14_:* = NaN;
-         var _loc41_:Number = NaN;
-         var _loc11_:Number = NaN;
-         var _loc27_:Number = NaN;
-         var _loc42_:Number = NaN;
-         var _loc43_:Number = NaN;
-         var _loc29_:Number = NaN;
-         var _loc31_:Number = NaN;
-         var _loc44_:Number = NaN;
-         var _loc46_:Number = NaN;
-         var _loc49_:Number = NaN;
-         var _loc36_:Number = NaN;
-         var _loc35_:Number = NaN;
-         var _loc12_:Number = NaN;
-         var _loc33_:Number = NaN;
-         var _loc30_:* = 0;
-         var _loc24_:int = param1.length;
-         var _loc38_:* = 0;
-         var _loc37_:* = 0;
-         var _loc16_:uint = 0;
-         var _loc48_:uint = 0;
-         var _loc47_:int = param5 <= 0?0:Number(param5 - 1);
-         var _loc34_:int = _loc47_ * 18;
-         var _loc55_:int = _loc47_ * 6;
-         var _loc21_:* = 0;
-         var _loc51_:* = 0;
-         var _loc15_:* = 0;
-         var _loc8_:* = 0;
-         var _loc23_:Boolean = false;
-         var _loc9_:Boolean = false;
-         _loc50_ = _loc47_;
-         while(_loc50_ < _loc24_)
+         var treatAsFirst:* = false;
+         var treatAsLast:* = false;
+         var i:* = 0;
+         var treatAsRegular:Boolean = false;
+         var idx0:* = 0;
+         var idx2:* = 0;
+         var v0:* = null;
+         var v1:* = null;
+         var v2:* = null;
+         var vThickness:Number = NaN;
+         var v0x:Number = NaN;
+         var v0y:Number = NaN;
+         var v1x:Number = NaN;
+         var v1y:Number = NaN;
+         var v2x:Number = NaN;
+         var v2y:Number = NaN;
+         var d0x:Number = NaN;
+         var d0y:Number = NaN;
+         var d1x:Number = NaN;
+         var d1y:Number = NaN;
+         var d0:* = NaN;
+         var d1:* = NaN;
+         var elbowThickness:Number = NaN;
+         var dot:Number = NaN;
+         var arcCosDot:Number = NaN;
+         var n0x:Number = NaN;
+         var n0y:Number = NaN;
+         var n1x:Number = NaN;
+         var n1y:Number = NaN;
+         var cnx:Number = NaN;
+         var cny:Number = NaN;
+         var c:Number = NaN;
+         var v1xPos:Number = NaN;
+         var v1yPos:Number = NaN;
+         var v1xNeg:Number = NaN;
+         var v1yNeg:Number = NaN;
+         var i2:* = 0;
+         var _loc24_:int = _line.length;
+         var lastD0:* = 0;
+         var lastD1:* = 0;
+         var degenerate:uint = 0;
+         var idx:uint = 0;
+         var startIndex:int = indexOfLastRenderedVertex <= 0?0:Number(indexOfLastRenderedVertex - 1);
+         var vertCounter:int = startIndex * 18;
+         var indiciesCounter:int = startIndex * 6;
+         var prevV1xPos:* = 0;
+         var prevV1xNeg:* = 0;
+         var prevV1yPos:* = 0;
+         var prevV1yNeg:* = 0;
+         var usePreviousVertPositionsOnNextLoop:Boolean = false;
+         var usePreviousVertPositions:Boolean = false;
+         for(i = startIndex; i < _loc24_; )
          {
-            _loc48_ = _loc50_;
-            if(param4)
+            idx = i;
+            if(_hasDegenerates)
             {
-               _loc16_ = param1[_loc50_].degenerate;
-               if(_loc16_ != 0)
+               degenerate = _line[i].degenerate;
+               if(degenerate != 0)
                {
-                  _loc48_ = _loc16_ == 2?_loc50_ - 1:Number(_loc50_ + 1);
+                  idx = degenerate == 2?i - 1:Number(i + 1);
                }
-               _loc45_ = Boolean(_loc48_ == 0 || param1[_loc48_ - 1].degenerate > 0);
-               _loc19_ = Boolean(_loc48_ == _loc24_ - 1 || param1[_loc48_ + 1].degenerate > 0);
+               treatAsFirst = Boolean(idx == 0 || _line[idx - 1].degenerate > 0);
+               treatAsLast = Boolean(idx == _loc24_ - 1 || _line[idx + 1].degenerate > 0);
             }
             else
             {
-               _loc45_ = _loc48_ == 0;
-               _loc19_ = _loc48_ == _loc24_ - 1;
+               treatAsFirst = idx == 0;
+               treatAsLast = idx == _loc24_ - 1;
             }
-            if(_loc23_)
+            if(usePreviousVertPositionsOnNextLoop)
             {
-               _loc23_ = false;
-               _loc9_ = true;
+               usePreviousVertPositionsOnNextLoop = false;
+               usePreviousVertPositions = true;
             }
             else
             {
-               _loc9_ = false;
+               usePreviousVertPositions = false;
             }
-            _loc32_ = _loc45_ == false && _loc19_ == false;
-            _loc20_ = uint(!!_loc45_?_loc48_:_loc48_ - 1);
-            _loc22_ = uint(!!_loc19_?_loc48_:_loc48_ + 1);
-            _loc7_ = param1[_loc20_];
-            _loc6_ = param1[_loc48_];
-            _loc10_ = param1[_loc22_];
-            _loc28_ = _loc6_.thickness;
-            _loc25_ = _loc7_.x;
-            _loc26_ = _loc7_.y;
-            _loc40_ = _loc6_.x;
-            _loc39_ = _loc6_.y;
-            _loc52_ = _loc10_.x;
-            _loc54_ = _loc10_.y;
-            _loc18_ = _loc40_ - _loc25_;
-            _loc17_ = _loc39_ - _loc26_;
-            _loc56_ = _loc52_ - _loc40_;
-            _loc57_ = _loc54_ - _loc39_;
-            if(_loc32_ == false)
+            treatAsRegular = treatAsFirst == false && treatAsLast == false;
+            idx0 = uint(!!treatAsFirst?idx:idx - 1);
+            idx2 = uint(!!treatAsLast?idx:idx + 1);
+            v0 = _line[idx0];
+            v1 = _line[idx];
+            v2 = _line[idx2];
+            vThickness = v1.thickness;
+            v0x = v0.x;
+            v0y = v0.y;
+            v1x = v1.x;
+            v1y = v1.y;
+            v2x = v2.x;
+            v2y = v2.y;
+            d0x = v1x - v0x;
+            d0y = v1y - v0y;
+            d1x = v2x - v1x;
+            d1y = v2y - v1y;
+            if(treatAsRegular == false)
             {
-               if(_loc19_)
+               if(treatAsLast)
                {
-                  _loc52_ = _loc52_ + _loc18_;
-                  _loc54_ = _loc54_ + _loc17_;
-                  _loc56_ = _loc52_ - _loc40_;
-                  _loc57_ = _loc54_ - _loc39_;
+                  v2x = v2x + d0x;
+                  v2y = v2y + d0y;
+                  d1x = v2x - v1x;
+                  d1y = v2y - v1y;
                }
-               if(_loc45_)
+               if(treatAsFirst)
                {
-                  _loc25_ = _loc25_ - _loc56_;
-                  _loc26_ = _loc26_ - _loc57_;
-                  _loc18_ = _loc40_ - _loc25_;
-                  _loc17_ = _loc39_ - _loc26_;
+                  v0x = v0x - d1x;
+                  v0y = v0y - d1y;
+                  d0x = v1x - v0x;
+                  d0y = v1y - v0y;
                }
             }
-            _loc13_ = Number(Math.sqrt(_loc18_ * _loc18_ + _loc17_ * _loc17_));
-            _loc14_ = Number(Math.sqrt(_loc56_ * _loc56_ + _loc57_ * _loc57_));
-            _loc41_ = _loc28_ * 0.5;
-            if(_loc32_)
+            d0 = Number(Math.sqrt(d0x * d0x + d0y * d0y));
+            d1 = Number(Math.sqrt(d1x * d1x + d1y * d1y));
+            elbowThickness = vThickness * 0.5;
+            if(treatAsRegular)
             {
-               if(_loc13_ == 0)
+               if(d0 == 0)
                {
-                  _loc13_ = _loc38_;
+                  d0 = lastD0;
                }
                else
                {
-                  _loc38_ = _loc13_;
+                  lastD0 = d0;
                }
-               if(_loc14_ == 0)
+               if(d1 == 0)
                {
-                  _loc14_ = _loc37_;
+                  d1 = lastD1;
                }
                else
                {
-                  _loc37_ = _loc14_;
+                  lastD1 = d1;
                }
-               _loc11_ = (_loc18_ * _loc56_ + _loc17_ * _loc57_) / (_loc13_ * _loc14_);
-               _loc27_ = Math.acos(_loc11_);
-               _loc41_ = _loc41_ / Math.sin((3.14159265358979 - _loc27_) * 0.5);
-               if(_loc41_ != _loc41_)
+               dot = (d0x * d1x + d0y * d1y) / (d0 * d1);
+               arcCosDot = Math.acos(dot);
+               elbowThickness = elbowThickness / Math.sin((3.14159265358979 - arcCosDot) * 0.5);
+               if(elbowThickness != elbowThickness)
                {
-                  _loc41_ = _loc28_ * 0.5;
+                  elbowThickness = vThickness * 0.5;
                }
-               else if(_loc41_ > _loc28_ * 4)
+               else if(elbowThickness > vThickness * 4)
                {
-                  _loc41_ = _loc28_ * 4;
+                  elbowThickness = vThickness * 4;
                }
-               if(_loc11_ <= 0 && _loc14_ < _loc28_ * 0.5)
+               if(dot <= 0 && d1 < vThickness * 0.5)
                {
-                  _loc23_ = true;
+                  usePreviousVertPositionsOnNextLoop = true;
                }
             }
             else
             {
-               _loc38_ = _loc13_;
-               _loc37_ = _loc14_;
+               lastD0 = d0;
+               lastD1 = d1;
             }
-            _loc42_ = -_loc17_ / _loc13_;
-            _loc43_ = _loc18_ / _loc13_;
-            _loc29_ = -_loc57_ / _loc14_;
-            _loc31_ = _loc56_ / _loc14_;
-            _loc44_ = _loc42_ + _loc29_;
-            _loc46_ = _loc43_ + _loc31_;
-            _loc49_ = 1 / Math.sqrt(_loc44_ * _loc44_ + _loc46_ * _loc46_) * _loc41_;
-            _loc44_ = _loc44_ * _loc49_;
-            _loc46_ = _loc46_ * _loc49_;
-            _loc36_ = _loc40_ + _loc44_;
-            _loc35_ = _loc39_ + _loc46_;
-            _loc12_ = !!_loc16_?_loc36_:Number(_loc40_ - _loc44_);
-            _loc33_ = !!_loc16_?_loc35_:Number(_loc39_ - _loc46_);
-            _loc34_++;
-            param2[_loc34_] = _loc9_ == false?_loc36_:Number(_loc21_);
-            _loc34_++;
-            param2[_loc34_] = _loc9_ == false?_loc35_:Number(_loc15_);
-            _loc34_++;
-            param2[_loc34_] = 0;
-            _loc34_++;
-            param2[_loc34_] = _loc6_.r2;
-            _loc34_++;
-            param2[_loc34_] = _loc6_.g2;
-            _loc34_++;
-            param2[_loc34_] = _loc6_.b2;
-            _loc34_++;
-            param2[_loc34_] = _loc6_.a2;
-            _loc34_++;
-            param2[_loc34_] = _loc6_.u;
-            _loc34_++;
-            param2[_loc34_] = 1;
-            _loc34_++;
-            param2[_loc34_] = _loc12_;
-            _loc34_++;
-            param2[_loc34_] = _loc33_;
-            _loc34_++;
-            param2[_loc34_] = 0;
-            _loc34_++;
-            param2[_loc34_] = _loc6_.r1;
-            _loc34_++;
-            param2[_loc34_] = _loc6_.g1;
-            _loc34_++;
-            param2[_loc34_] = _loc6_.b1;
-            _loc34_++;
-            param2[_loc34_] = _loc6_.a1;
-            _loc34_++;
-            param2[_loc34_] = _loc6_.u;
-            _loc34_++;
-            param2[_loc34_] = 0;
-            _loc21_ = _loc36_;
-            _loc51_ = _loc12_;
-            _loc15_ = _loc35_;
-            _loc8_ = _loc33_;
-            if(_loc50_ < _loc24_ - 1)
+            n0x = -d0y / d0;
+            n0y = d0x / d0;
+            n1x = -d1y / d1;
+            n1y = d1x / d1;
+            cnx = n0x + n1x;
+            cny = n0y + n1y;
+            c = 1 / Math.sqrt(cnx * cnx + cny * cny) * elbowThickness;
+            cnx = cnx * c;
+            cny = cny * c;
+            v1xPos = v1x + cnx;
+            v1yPos = v1y + cny;
+            v1xNeg = !!degenerate?v1xPos:Number(v1x - cnx);
+            v1yNeg = !!degenerate?v1yPos:Number(v1y - cny);
+            vertCounter++;
+            vertices[vertCounter] = usePreviousVertPositions == false?v1xPos:Number(prevV1xPos);
+            vertCounter++;
+            vertices[vertCounter] = usePreviousVertPositions == false?v1yPos:Number(prevV1yPos);
+            vertCounter++;
+            vertices[vertCounter] = 0;
+            vertCounter++;
+            vertices[vertCounter] = v1.r2;
+            vertCounter++;
+            vertices[vertCounter] = v1.g2;
+            vertCounter++;
+            vertices[vertCounter] = v1.b2;
+            vertCounter++;
+            vertices[vertCounter] = v1.a2;
+            vertCounter++;
+            vertices[vertCounter] = v1.u;
+            vertCounter++;
+            vertices[vertCounter] = 1;
+            vertCounter++;
+            vertices[vertCounter] = v1xNeg;
+            vertCounter++;
+            vertices[vertCounter] = v1yNeg;
+            vertCounter++;
+            vertices[vertCounter] = 0;
+            vertCounter++;
+            vertices[vertCounter] = v1.r1;
+            vertCounter++;
+            vertices[vertCounter] = v1.g1;
+            vertCounter++;
+            vertices[vertCounter] = v1.b1;
+            vertCounter++;
+            vertices[vertCounter] = v1.a1;
+            vertCounter++;
+            vertices[vertCounter] = v1.u;
+            vertCounter++;
+            vertices[vertCounter] = 0;
+            prevV1xPos = v1xPos;
+            prevV1xNeg = v1xNeg;
+            prevV1yPos = v1yPos;
+            prevV1yNeg = v1yNeg;
+            if(i < _loc24_ - 1)
             {
-               _loc30_ = _loc50_ << 1;
-               _loc55_++;
-               param3[_loc55_] = _loc30_;
-               _loc55_++;
-               param3[_loc55_] = _loc30_ + 1;
-               _loc55_++;
-               param3[_loc55_] = _loc30_ + 2;
-               _loc55_++;
-               param3[_loc55_] = _loc30_ + 3;
-               _loc55_++;
-               param3[_loc55_] = _loc30_ + 2;
-               _loc55_++;
-               param3[_loc55_] = _loc30_ + 1;
+               i2 = i << 1;
+               indiciesCounter++;
+               indices[indiciesCounter] = i2;
+               indiciesCounter++;
+               indices[indiciesCounter] = i2 + 1;
+               indiciesCounter++;
+               indices[indiciesCounter] = i2 + 2;
+               indiciesCounter++;
+               indices[indiciesCounter] = i2 + 3;
+               indiciesCounter++;
+               indices[indiciesCounter] = i2 + 2;
+               indiciesCounter++;
+               indices[indiciesCounter] = i2 + 1;
             }
-            _loc50_++;
+            i++;
          }
       }
       
-      protected static function fixUpPolyLine(param1:Vector.<StrokeVertex>) : int
+      protected static function fixUpPolyLine(vertices:Vector.<StrokeVertex>) : int
       {
-         if(param1.length > 0 && param1[0].degenerate > 0)
+         if(vertices.length > 0 && vertices[0].degenerate > 0)
          {
             throw new Error("Degenerate on first line vertex");
          }
-         var _loc2_:int = param1.length - 1;
-         while(_loc2_ > 0 && param1[_loc2_].degenerate > 0)
+         var idx:int = vertices.length - 1;
+         while(idx > 0 && vertices[idx].degenerate > 0)
          {
-            param1.pop();
-            _loc2_--;
+            vertices.pop();
+            idx--;
          }
-         return param1.length;
+         return vertices.length;
       }
       
-      protected static function cullPolyLineByDistance(param1:Vector.<StrokeVertex>, param2:Number, param3:int) : int
+      protected static function cullPolyLineByDistance(line:Vector.<StrokeVertex>, cullDistanceSquared:Number, indexOfLastRenderedVertex:int) : int
       {
-         var _loc10_:* = 0;
-         var _loc7_:Number = NaN;
-         var _loc9_:Number = NaN;
-         var _loc6_:Number = NaN;
-         if(param1 == null)
+         var i:* = 0;
+         var xDist:Number = NaN;
+         var yDist:Number = NaN;
+         var distanceFromLast:Number = NaN;
+         if(line == null)
          {
             return 0;
          }
-         if(param1.length < 2)
+         if(line.length < 2)
          {
-            return param1.length;
+            return line.length;
          }
-         var _loc4_:int = param1.length;
-         var _loc5_:int = param3 < 2?1:Number(param3 - 1);
-         var _loc8_:* = int(_loc5_ - 1);
-         _loc10_ = _loc5_;
-         while(_loc10_ < _loc4_)
+         var num:int = line.length;
+         var startIndex:int = indexOfLastRenderedVertex < 2?1:Number(indexOfLastRenderedVertex - 1);
+         var prevIndex:* = int(startIndex - 1);
+         for(i = startIndex; i < num; )
          {
-            _loc7_ = param1[_loc8_].x - param1[_loc10_].x;
-            _loc9_ = param1[_loc8_].y - param1[_loc10_].y;
-            _loc6_ = _loc7_ * _loc7_ + _loc9_ * _loc9_;
-            if(_loc6_ < param2)
+            xDist = line[prevIndex].x - line[i].x;
+            yDist = line[prevIndex].y - line[i].y;
+            distanceFromLast = xDist * xDist + yDist * yDist;
+            if(distanceFromLast < cullDistanceSquared)
             {
-               StrokeVertexUtil.removeStrokeVertexAt(param1,_loc10_);
-               _loc4_--;
-               if(_loc10_ > _loc4_)
+               StrokeVertexUtil.removeStrokeVertexAt(line,i);
+               num--;
+               if(i > num)
                {
-                  return _loc4_;
+                  return num;
                }
-               _loc10_--;
+               i--;
             }
             else
             {
-               _loc8_ = _loc10_;
+               prevIndex = i;
             }
-            _loc10_++;
+            i++;
          }
-         return param1.length;
+         return line.length;
       }
       
-      public static function strokeCollideTest(param1:Stroke, param2:Stroke, param3:Point, param4:Vector.<Point> = null) : Boolean
+      public static function strokeCollideTest(s1:Stroke, s2:Stroke, intersectPoint:Point, staticLenIntersectPoints:Vector.<Point> = null) : Boolean
       {
-         var _loc9_:int = 0;
-         var _loc12_:* = null;
-         var _loc11_:* = null;
-         var _loc6_:int = 0;
-         var _loc13_:* = null;
-         var _loc16_:* = null;
-         if(param1 == null || param2 == null || param1._line == null || param1._line == null)
+         var i:int = 0;
+         var s1v0:* = null;
+         var s1v1:* = null;
+         var j:int = 0;
+         var s2v0:* = null;
+         var s2v1:* = null;
+         if(s1 == null || s2 == null || s1._line == null || s1._line == null)
          {
             return false;
          }
@@ -347,178 +345,176 @@ package starling.display.graphics
          }
          sCollissionHelper.testIntersectPoint.x = 0;
          sCollissionHelper.testIntersectPoint.y = 0;
-         param3.x = 0;
-         param3.y = 0;
-         var _loc15_:Boolean = false;
-         if(param1.parent == param2.parent)
+         intersectPoint.x = 0;
+         intersectPoint.y = 0;
+         var hasSameParent:Boolean = false;
+         if(s1.parent == s2.parent)
          {
-            _loc15_ = true;
+            hasSameParent = true;
          }
-         param1.getBounds(!!_loc15_?param1.parent:param1.stage,sCollissionHelper.bounds1);
-         param2.getBounds(!!_loc15_?param2.parent:param2.stage,sCollissionHelper.bounds2);
+         s1.getBounds(!!hasSameParent?s1.parent:s1.stage,sCollissionHelper.bounds1);
+         s2.getBounds(!!hasSameParent?s2.parent:s2.stage,sCollissionHelper.bounds2);
          if(sCollissionHelper.bounds1.intersects(sCollissionHelper.bounds2) == false)
          {
             return false;
          }
-         if(param3 == null)
+         if(intersectPoint == null)
          {
-            param3 = new Point();
+            intersectPoint = new Point();
          }
-         var _loc8_:int = param1._line.length;
-         var _loc5_:int = param2._line.length;
-         var _loc14_:Boolean = false;
-         if(sCollissionHelper.s2v0Vector == null || sCollissionHelper.s2v0Vector.length < _loc5_)
+         var numLinesS1:int = s1._line.length;
+         var numLinesS2:int = s2._line.length;
+         var hasHit:Boolean = false;
+         if(sCollissionHelper.s2v0Vector == null || sCollissionHelper.s2v0Vector.length < numLinesS2)
          {
-            sCollissionHelper.s2v0Vector = new Vector.<Point>(_loc5_,true);
-            sCollissionHelper.s2v1Vector = new Vector.<Point>(_loc5_,true);
+            sCollissionHelper.s2v0Vector = new Vector.<Point>(numLinesS2,true);
+            sCollissionHelper.s2v1Vector = new Vector.<Point>(numLinesS2,true);
          }
-         var _loc10_:int = 0;
-         var _loc7_:int = 0;
-         if(param4 != null)
+         var pointCounter:int = 0;
+         var maxPointCounter:int = 0;
+         if(staticLenIntersectPoints != null)
          {
-            _loc7_ = param4.length;
+            maxPointCounter = staticLenIntersectPoints.length;
          }
-         _loc9_ = 1;
-         while(_loc9_ < _loc8_)
+         i = 1;
+         while(i < numLinesS1)
          {
-            _loc12_ = param1._line[_loc9_ - 1];
-            _loc11_ = param1._line[_loc9_];
-            sCollissionHelper.localPT1.setTo(_loc12_.x,_loc12_.y);
-            sCollissionHelper.localPT2.setTo(_loc11_.x,_loc11_.y);
-            if(_loc15_)
+            s1v0 = s1._line[i - 1];
+            s1v1 = s1._line[i];
+            sCollissionHelper.localPT1.setTo(s1v0.x,s1v0.y);
+            sCollissionHelper.localPT2.setTo(s1v1.x,s1v1.y);
+            if(hasSameParent)
             {
-               param1.localToParent(sCollissionHelper.localPT1,sCollissionHelper.globalPT1);
-               param1.localToParent(sCollissionHelper.localPT2,sCollissionHelper.globalPT2);
+               s1.localToParent(sCollissionHelper.localPT1,sCollissionHelper.globalPT1);
+               s1.localToParent(sCollissionHelper.localPT2,sCollissionHelper.globalPT2);
             }
             else
             {
-               param1.localToGlobal(sCollissionHelper.localPT1,sCollissionHelper.globalPT1);
-               param1.localToGlobal(sCollissionHelper.localPT2,sCollissionHelper.globalPT2);
+               s1.localToGlobal(sCollissionHelper.localPT1,sCollissionHelper.globalPT1);
+               s1.localToGlobal(sCollissionHelper.localPT2,sCollissionHelper.globalPT2);
             }
-            _loc6_ = 1;
-            while(_loc6_ < _loc5_)
+            for(j = 1; j < numLinesS2; )
             {
-               _loc13_ = param2._line[_loc6_ - 1];
-               _loc16_ = param2._line[_loc6_];
-               if(_loc9_ == 1)
+               s2v0 = s2._line[j - 1];
+               s2v1 = s2._line[j];
+               if(i == 1)
                {
-                  sCollissionHelper.localPT3.setTo(_loc13_.x,_loc13_.y);
-                  sCollissionHelper.localPT4.setTo(_loc16_.x,_loc16_.y);
-                  if(_loc15_)
+                  sCollissionHelper.localPT3.setTo(s2v0.x,s2v0.y);
+                  sCollissionHelper.localPT4.setTo(s2v1.x,s2v1.y);
+                  if(hasSameParent)
                   {
-                     param2.localToParent(sCollissionHelper.localPT3,sCollissionHelper.globalPT3);
-                     param2.localToParent(sCollissionHelper.localPT4,sCollissionHelper.globalPT4);
+                     s2.localToParent(sCollissionHelper.localPT3,sCollissionHelper.globalPT3);
+                     s2.localToParent(sCollissionHelper.localPT4,sCollissionHelper.globalPT4);
                   }
                   else
                   {
-                     param2.localToGlobal(sCollissionHelper.localPT3,sCollissionHelper.globalPT3);
-                     param2.localToGlobal(sCollissionHelper.localPT4,sCollissionHelper.globalPT4);
+                     s2.localToGlobal(sCollissionHelper.localPT3,sCollissionHelper.globalPT3);
+                     s2.localToGlobal(sCollissionHelper.localPT4,sCollissionHelper.globalPT4);
                   }
-                  if(sCollissionHelper.s2v0Vector[_loc6_] == null)
+                  if(sCollissionHelper.s2v0Vector[j] == null)
                   {
-                     sCollissionHelper.s2v0Vector[_loc6_] = new Point(sCollissionHelper.globalPT3.x,sCollissionHelper.globalPT3.y);
-                     sCollissionHelper.s2v1Vector[_loc6_] = new Point(sCollissionHelper.globalPT4.x,sCollissionHelper.globalPT4.y);
+                     sCollissionHelper.s2v0Vector[j] = new Point(sCollissionHelper.globalPT3.x,sCollissionHelper.globalPT3.y);
+                     sCollissionHelper.s2v1Vector[j] = new Point(sCollissionHelper.globalPT4.x,sCollissionHelper.globalPT4.y);
                   }
                   else
                   {
-                     sCollissionHelper.s2v0Vector[_loc6_].x = sCollissionHelper.globalPT3.x;
-                     sCollissionHelper.s2v0Vector[_loc6_].y = sCollissionHelper.globalPT3.y;
-                     sCollissionHelper.s2v1Vector[_loc6_].x = sCollissionHelper.globalPT4.x;
-                     sCollissionHelper.s2v1Vector[_loc6_].y = sCollissionHelper.globalPT4.y;
+                     sCollissionHelper.s2v0Vector[j].x = sCollissionHelper.globalPT3.x;
+                     sCollissionHelper.s2v0Vector[j].y = sCollissionHelper.globalPT3.y;
+                     sCollissionHelper.s2v1Vector[j].x = sCollissionHelper.globalPT4.x;
+                     sCollissionHelper.s2v1Vector[j].y = sCollissionHelper.globalPT4.y;
                   }
                }
                else
                {
-                  sCollissionHelper.globalPT3.x = sCollissionHelper.s2v0Vector[_loc6_].x;
-                  sCollissionHelper.globalPT3.y = sCollissionHelper.s2v0Vector[_loc6_].y;
-                  sCollissionHelper.globalPT4.x = sCollissionHelper.s2v1Vector[_loc6_].x;
-                  sCollissionHelper.globalPT4.y = sCollissionHelper.s2v1Vector[_loc6_].y;
+                  sCollissionHelper.globalPT3.x = sCollissionHelper.s2v0Vector[j].x;
+                  sCollissionHelper.globalPT3.y = sCollissionHelper.s2v0Vector[j].y;
+                  sCollissionHelper.globalPT4.x = sCollissionHelper.s2v1Vector[j].x;
+                  sCollissionHelper.globalPT4.y = sCollissionHelper.s2v1Vector[j].y;
                }
                if(TriangleUtil.lineIntersectLine(sCollissionHelper.globalPT1.x,sCollissionHelper.globalPT1.y,sCollissionHelper.globalPT2.x,sCollissionHelper.globalPT2.y,sCollissionHelper.globalPT3.x,sCollissionHelper.globalPT3.y,sCollissionHelper.globalPT4.x,sCollissionHelper.globalPT4.y,sCollissionHelper.testIntersectPoint))
                {
-                  if(param4 != null && _loc10_ < _loc7_ - 1)
+                  if(staticLenIntersectPoints != null && pointCounter < maxPointCounter - 1)
                   {
-                     if(_loc15_)
+                     if(hasSameParent)
                      {
-                        param1.parent.localToGlobal(sCollissionHelper.testIntersectPoint,param4[_loc10_]);
+                        s1.parent.localToGlobal(sCollissionHelper.testIntersectPoint,staticLenIntersectPoints[pointCounter]);
                      }
                      else
                      {
-                        param4[_loc10_].x = sCollissionHelper.testIntersectPoint.x;
-                        param4[_loc10_].y = sCollissionHelper.testIntersectPoint.y;
+                        staticLenIntersectPoints[pointCounter].x = sCollissionHelper.testIntersectPoint.x;
+                        staticLenIntersectPoints[pointCounter].y = sCollissionHelper.testIntersectPoint.y;
                      }
-                     _loc10_++;
-                     param4[_loc10_].x = NaN;
-                     param4[_loc10_].y = NaN;
+                     pointCounter++;
+                     staticLenIntersectPoints[pointCounter].x = NaN;
+                     staticLenIntersectPoints[pointCounter].y = NaN;
                   }
-                  if(sCollissionHelper.testIntersectPoint.length > param3.length)
+                  if(sCollissionHelper.testIntersectPoint.length > intersectPoint.length)
                   {
-                     if(_loc15_)
+                     if(hasSameParent)
                      {
-                        param1.parent.localToGlobal(sCollissionHelper.testIntersectPoint,param3);
+                        s1.parent.localToGlobal(sCollissionHelper.testIntersectPoint,intersectPoint);
                      }
                      else
                      {
-                        param3.x = sCollissionHelper.testIntersectPoint.x;
-                        param3.y = sCollissionHelper.testIntersectPoint.y;
+                        intersectPoint.x = sCollissionHelper.testIntersectPoint.x;
+                        intersectPoint.y = sCollissionHelper.testIntersectPoint.y;
                      }
                   }
-                  _loc14_ = true;
+                  hasHit = true;
                }
-               _loc6_++;
+               j++;
             }
-            _loc9_++;
+            i++;
          }
-         return _loc14_;
+         return hasHit;
       }
       
-      protected static function adjustThicknessOfGeometry(param1:Vector.<Number>, param2:Number, param3:Number) : void
+      protected static function adjustThicknessOfGeometry(vertices:Vector.<Number>, oldScale:Number, newScale:Number) : void
       {
-         var _loc12_:int = 0;
-         var _loc8_:Number = NaN;
-         var _loc7_:Number = NaN;
-         var _loc16_:Number = NaN;
-         var _loc15_:Number = NaN;
-         var _loc14_:* = NaN;
-         var _loc13_:* = NaN;
-         var _loc19_:* = NaN;
-         var _loc18_:* = NaN;
-         var _loc10_:Number = NaN;
-         var _loc11_:Number = NaN;
-         var _loc17_:Number = NaN;
-         var _loc20_:Number = NaN;
-         var _loc5_:Number = NaN;
-         var _loc6_:Number = NaN;
-         var _loc4_:int = param1.length;
-         var _loc9_:Number = param2 / param3;
-         _loc12_ = 0;
-         while(_loc12_ < _loc4_)
+         var i:int = 0;
+         var posX:Number = NaN;
+         var posY:Number = NaN;
+         var negX:Number = NaN;
+         var negY:Number = NaN;
+         var helpPointA_x:* = NaN;
+         var helpPointA_y:* = NaN;
+         var helpPointB_x:* = NaN;
+         var helpPointB_y:* = NaN;
+         var distance_x:Number = NaN;
+         var distance_y:Number = NaN;
+         var halfDistance_x:Number = NaN;
+         var halfDistance_y:Number = NaN;
+         var midPoint_x:Number = NaN;
+         var midPoint_y:Number = NaN;
+         var numVerts:int = vertices.length;
+         var scaleFactor:Number = oldScale / newScale;
+         for(i = 0; i < numVerts; )
          {
-            _loc8_ = param1[_loc12_];
-            _loc7_ = param1[_loc12_ + 1];
-            _loc16_ = param1[_loc12_ + 9];
-            _loc15_ = param1[_loc12_ + 10];
-            _loc14_ = _loc8_;
-            _loc13_ = _loc7_;
-            _loc19_ = _loc16_;
-            _loc18_ = _loc15_;
-            _loc10_ = _loc19_ - _loc14_;
-            _loc11_ = _loc18_ - _loc13_;
-            _loc17_ = _loc10_ * 0.5;
-            _loc20_ = _loc11_ * 0.5;
-            _loc5_ = _loc14_ + _loc17_;
-            _loc6_ = _loc13_ + _loc20_;
-            _loc17_ = _loc17_ * _loc9_;
-            _loc20_ = _loc20_ * _loc9_;
-            _loc8_ = _loc5_ + _loc17_;
-            _loc7_ = _loc6_ + _loc20_;
-            _loc16_ = _loc5_ - _loc17_;
-            _loc15_ = _loc6_ - _loc20_;
-            param1[_loc12_] = _loc8_;
-            param1[_loc12_ + 1] = _loc7_;
-            param1[_loc12_ + 9] = _loc16_;
-            param1[_loc12_ + 10] = _loc15_;
-            _loc12_ = _loc12_ + 18;
+            posX = vertices[i];
+            posY = vertices[i + 1];
+            negX = vertices[i + 9];
+            negY = vertices[i + 10];
+            helpPointA_x = posX;
+            helpPointA_y = posY;
+            helpPointB_x = negX;
+            helpPointB_y = negY;
+            distance_x = helpPointB_x - helpPointA_x;
+            distance_y = helpPointB_y - helpPointA_y;
+            halfDistance_x = distance_x * 0.5;
+            halfDistance_y = distance_y * 0.5;
+            midPoint_x = helpPointA_x + halfDistance_x;
+            midPoint_y = helpPointA_y + halfDistance_y;
+            halfDistance_x = halfDistance_x * scaleFactor;
+            halfDistance_y = halfDistance_y * scaleFactor;
+            posX = midPoint_x + halfDistance_x;
+            posY = midPoint_y + halfDistance_y;
+            negX = midPoint_x - halfDistance_x;
+            negY = midPoint_y - halfDistance_y;
+            vertices[i] = posX;
+            vertices[i + 1] = posY;
+            vertices[i + 9] = negX;
+            vertices[i + 10] = negY;
+            i = i + 18;
          }
       }
       
@@ -533,9 +529,9 @@ package starling.display.graphics
          super.dispose();
       }
       
-      public function setPointCullDistance(param1:Number = 0.0) : void
+      public function setPointCullDistance(cullDistance:Number = 0.0) : void
       {
-         _cullDistanceSquared = param1 * param1;
+         _cullDistanceSquared = cullDistance * cullDistance;
       }
       
       public function clearForReuse() : void
@@ -589,148 +585,148 @@ package starling.display.graphics
          _isReusingLine = false;
       }
       
-      public function addDegenerates(param1:Number, param2:Number) : void
+      public function addDegenerates(destX:Number, destY:Number) : void
       {
          if(_numVertices < 1)
          {
             return;
          }
-         var _loc3_:StrokeVertex = _line[_numVertices - 1];
-         addVertexInternal(_loc3_.x,_loc3_.y,0);
+         var lastVertex:StrokeVertex = _line[_numVertices - 1];
+         addVertexInternal(lastVertex.x,lastVertex.y,0);
          setLastVertexAsDegenerate(2);
-         addVertexInternal(param1,param2,0);
+         addVertexInternal(destX,destY,0);
          setLastVertexAsDegenerate(1);
          _hasDegenerates = true;
       }
       
-      protected function setLastVertexAsDegenerate(param1:uint) : void
+      protected function setLastVertexAsDegenerate(type:uint) : void
       {
-         _line[_numVertices - 1].degenerate = param1;
+         _line[_numVertices - 1].degenerate = type;
          _line[_numVertices - 1].u = 0;
       }
       
-      public function lineTo(param1:Number, param2:Number, param3:Number = 1, param4:uint = 16777215, param5:Number = 1) : void
+      public function lineTo(x:Number, y:Number, thickness:Number = 1, color:uint = 16777215, alpha:Number = 1) : void
       {
-         addVertexInternal(param1,param2,param3,param4,param5,param4,param5);
+         addVertexInternal(x,y,thickness,color,alpha,color,alpha);
       }
       
-      public function moveTo(param1:Number, param2:Number, param3:Number = 1, param4:uint = 16777215, param5:Number = 1.0) : void
+      public function moveTo(x:Number, y:Number, thickness:Number = 1, color:uint = 16777215, alpha:Number = 1.0) : void
       {
-         addDegenerates(param1,param2);
+         addDegenerates(x,y);
       }
       
-      public function modifyVertexPosition(param1:int, param2:Number, param3:Number) : void
+      public function modifyVertexPosition(index:int, x:Number, y:Number) : void
       {
-         var _loc4_:StrokeVertex = _line[param1];
-         _loc4_.x = param2;
-         _loc4_.y = param3;
+         var v:StrokeVertex = _line[index];
+         v.x = x;
+         v.y = y;
          if(buffersInvalid == false)
          {
             setGeometryInvalid();
          }
       }
       
-      public function fromBounds(param1:Rectangle, param2:int = 1) : void
+      public function fromBounds(boundingBox:Rectangle, thickness:int = 1) : void
       {
          clear();
-         addVertex(param1.x,param1.y,param2);
-         addVertex(param1.x + param1.width,param1.y,param2);
-         addVertex(param1.x + param1.width,param1.y + param1.height,param2);
-         addVertex(param1.x,param1.y + param1.height,param2);
-         addVertex(param1.x,param1.y,param2);
+         addVertex(boundingBox.x,boundingBox.y,thickness);
+         addVertex(boundingBox.x + boundingBox.width,boundingBox.y,thickness);
+         addVertex(boundingBox.x + boundingBox.width,boundingBox.y + boundingBox.height,thickness);
+         addVertex(boundingBox.x,boundingBox.y + boundingBox.height,thickness);
+         addVertex(boundingBox.x,boundingBox.y,thickness);
       }
       
-      public function addVertex(param1:Number, param2:Number, param3:Number = 1, param4:uint = 16777215, param5:Number = 1, param6:uint = 16777215, param7:Number = 1) : void
+      public function addVertex(x:Number, y:Number, thickness:Number = 1, color0:uint = 16777215, alpha0:Number = 1, color1:uint = 16777215, alpha1:Number = 1) : void
       {
-         addVertexInternal(param1,param2,param3,param4,param5,param6,param7);
+         addVertexInternal(x,y,thickness,color0,alpha0,color1,alpha1);
       }
       
-      protected function addVertexInternal(param1:Number, param2:Number, param3:Number = 1, param4:uint = 16777215, param5:Number = 1, param6:uint = 16777215, param7:Number = 1) : void
+      protected function addVertexInternal(x:Number, y:Number, thickness:Number = 1, color0:uint = 16777215, alpha0:Number = 1, color1:uint = 16777215, alpha1:Number = 1) : void
       {
-         var _loc22_:* = null;
-         var _loc10_:Number = NaN;
-         var _loc11_:Number = NaN;
-         var _loc8_:Number = NaN;
-         var _loc21_:Number = NaN;
-         var _loc23_:Number = NaN;
-         var _loc13_:* = null;
-         var _loc14_:* = 0;
-         var _loc12_:Vector.<Texture> = _material.textures;
-         if(_loc12_.length > 0 && _numVertices > 0)
+         var prevVertex:* = null;
+         var dx:Number = NaN;
+         var dy:Number = NaN;
+         var d:Number = NaN;
+         var cullDX:Number = NaN;
+         var cullDY:Number = NaN;
+         var v:* = null;
+         var u:* = 0;
+         var textures:Vector.<Texture> = _material.textures;
+         if(textures.length > 0 && _numVertices > 0)
          {
-            _loc22_ = _line[_numVertices - 1];
-            _loc10_ = param1 - _loc22_.x;
-            _loc11_ = param2 - _loc22_.y;
-            _loc8_ = Math.sqrt(_loc10_ * _loc10_ + _loc11_ * _loc11_);
-            _loc14_ = Number(_loc22_.u + _loc8_ / _loc12_[0].width);
+            prevVertex = _line[_numVertices - 1];
+            dx = x - prevVertex.x;
+            dy = y - prevVertex.y;
+            d = Math.sqrt(dx * dx + dy * dy);
+            u = Number(prevVertex.u + d / textures[0].width);
          }
-         var _loc19_:Number = (param4 >> 16) / 255;
-         var _loc18_:Number = ((param4 & 65280) >> 8) / 255;
-         var _loc15_:Number = (param4 & 255) / 255;
-         var _loc20_:Number = (param6 >> 16) / 255;
-         var _loc17_:Number = ((param6 & 65280) >> 8) / 255;
-         var _loc16_:Number = (param6 & 255) / 255;
+         var r0:Number = (color0 >> 16) / 255;
+         var g0:Number = ((color0 & 65280) >> 8) / 255;
+         var b0:Number = (color0 & 255) / 255;
+         var r1:Number = (color1 >> 16) / 255;
+         var g1:Number = ((color1 & 65280) >> 8) / 255;
+         var b1:Number = (color1 & 255) / 255;
          if(_cullDistanceSquared > 0 && _numVertices > 0)
          {
-            _loc21_ = (param1 - _line[_numVertices - 1].x) * (param1 - _line[_numVertices - 1].x);
-            _loc23_ = (param2 - _line[_numVertices - 1].y) * (param2 - _line[_numVertices - 1].y);
-            if(_loc23_ + _loc21_ < _cullDistanceSquared)
+            cullDX = (x - _line[_numVertices - 1].x) * (x - _line[_numVertices - 1].x);
+            cullDY = (y - _line[_numVertices - 1].y) * (y - _line[_numVertices - 1].y);
+            if(cullDY + cullDX < _cullDistanceSquared)
             {
                return;
             }
          }
          if(_isReusingLine)
          {
-            _loc13_ = _line[_numVertices];
+            v = _line[_numVertices];
          }
          else
          {
-            _loc13_ = StrokeVertex.getInstance();
-            _line[_numVertices] = _loc13_;
+            v = StrokeVertex.getInstance();
+            _line[_numVertices] = v;
          }
-         _loc13_.x = param1;
-         _loc13_.y = param2;
-         _loc13_.r1 = _loc19_;
-         _loc13_.g1 = _loc18_;
-         _loc13_.b1 = _loc15_;
-         _loc13_.a1 = param5;
-         _loc13_.r2 = _loc20_;
-         _loc13_.g2 = _loc17_;
-         _loc13_.b2 = _loc16_;
-         _loc13_.a2 = param7;
-         _loc13_.u = _loc14_;
-         _loc13_.v = 0;
-         _loc13_.thickness = param3;
-         _loc13_.degenerate = 0;
+         v.x = x;
+         v.y = y;
+         v.r1 = r0;
+         v.g1 = g0;
+         v.b1 = b0;
+         v.a1 = alpha0;
+         v.r2 = r1;
+         v.g2 = g1;
+         v.b2 = b1;
+         v.a2 = alpha1;
+         v.u = u;
+         v.v = 0;
+         v.thickness = thickness;
+         v.degenerate = 0;
          if(_numAllocedVertices == _numVertices)
          {
             _numAllocedVertices = Number(_numAllocedVertices) + 1;
          }
          _numVertices = Number(_numVertices) + 1;
-         var _loc9_:Number = 0.5 * param3;
-         if(param1 - _loc9_ < minBounds.x)
+         var halfThickness:Number = 0.5 * thickness;
+         if(x - halfThickness < minBounds.x)
          {
-            minBounds.x = param1 - _loc9_;
+            minBounds.x = x - halfThickness;
          }
-         else if(param1 + _loc9_ > maxBounds.x)
+         else if(x + halfThickness > maxBounds.x)
          {
-            maxBounds.x = param1 + _loc9_;
+            maxBounds.x = x + halfThickness;
          }
-         if(param2 - _loc9_ < minBounds.y)
+         if(y - halfThickness < minBounds.y)
          {
-            minBounds.y = param2 - _loc9_;
+            minBounds.y = y - halfThickness;
          }
-         else if(param2 + _loc9_ > maxBounds.y)
+         else if(y + halfThickness > maxBounds.y)
          {
-            maxBounds.y = param2 + _loc9_;
+            maxBounds.y = y + halfThickness;
          }
          if(maxBounds.x == -Infinity)
          {
-            maxBounds.x = param1;
+            maxBounds.x = x;
          }
          if(maxBounds.y == -Infinity)
          {
-            maxBounds.y = param2;
+            maxBounds.y = y;
          }
          if(_isReusingLine == false && buffersInvalid == false)
          {
@@ -738,16 +734,16 @@ package starling.display.graphics
          }
       }
       
-      public function getVertexPosition(param1:int, param2:Point = null) : Point
+      public function getVertexPosition(index:int, prealloc:Point = null) : Point
       {
-         var _loc3_:* = param2;
-         if(_loc3_ == null)
+         var point:* = prealloc;
+         if(point == null)
          {
-            _loc3_ = new Point();
+            point = new Point();
          }
-         _loc3_.x = _line[param1].x;
-         _loc3_.y = _line[param1].y;
-         return _loc3_;
+         point.x = _line[index].x;
+         point.y = _line[index].y;
+         return point;
       }
       
       override protected function buildGeometry() : void
@@ -767,24 +763,24 @@ package starling.display.graphics
          {
             throw new Error("Stroke: Only use clearForReuse() when adding exactly the right number of vertices");
          }
-         var _loc3_:int = 0;
+         var indexOffset:int = 0;
          _numVertices = fixUpPolyLine(_line);
          if(_cullDistanceSquared > 0.1)
          {
             _numVertices = cullPolyLineByDistance(_line,_cullDistanceSquared,_indexOfLastRenderedVertex);
             _numAllocedVertices = _numVertices;
          }
-         var _loc2_:int = _line.length * 18;
-         var _loc1_:int = (_line.length - 1) * 6;
+         var numVerts:int = _line.length * 18;
+         var numIndices:int = (_line.length - 1) * 6;
          if(_indexOfLastRenderedVertex == -1)
          {
-            if(vertices == null || _loc2_ != vertices.length)
+            if(vertices == null || numVerts != vertices.length)
             {
-               vertices = new Vector.<Number>(_loc2_,true);
+               vertices = new Vector.<Number>(numVerts,true);
             }
-            if(indices == null || _loc1_ != indices.length)
+            if(indices == null || numIndices != indices.length)
             {
-               indices = new Vector.<uint>(_loc1_,true);
+               indices = new Vector.<uint>(numIndices,true);
             }
          }
          else
@@ -799,22 +795,22 @@ package starling.display.graphics
             }
          }
          createPolyLinePreAlloc(_line,vertices,indices,_hasDegenerates,_indexOfLastRenderedVertex);
-         var _loc4_:int = 0;
-         _loc3_ = _loc3_ + (vertices.length - _loc4_) * 0.111111111111111;
+         var oldVerticesLength:int = 0;
+         indexOffset = indexOffset + (vertices.length - oldVerticesLength) * 0.111111111111111;
          _indexOfLastRenderedVertex = _line.length - 1;
       }
       
-      override protected function shapeHitTestLocalInternal(param1:Number, param2:Number) : Boolean
+      override protected function shapeHitTestLocalInternal(localX:Number, localY:Number) : Boolean
       {
-         var _loc12_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc6_:Number = NaN;
-         var _loc10_:Number = NaN;
-         var _loc9_:Number = NaN;
-         var _loc7_:Number = NaN;
-         var _loc8_:Number = NaN;
-         var _loc11_:Number = NaN;
+         var i:int = 0;
+         var v0:* = null;
+         var v1:* = null;
+         var lineLengthSquared:Number = NaN;
+         var interpolation:Number = NaN;
+         var intersectionX:Number = NaN;
+         var intersectionY:Number = NaN;
+         var distanceSquared:Number = NaN;
+         var intersectThickness:Number = NaN;
          if(_line == null)
          {
             return false;
@@ -823,45 +819,44 @@ package starling.display.graphics
          {
             return false;
          }
-         var _loc5_:int = _line.length;
-         _loc12_ = 1;
-         while(_loc12_ < _loc5_)
+         var numLines:int = _line.length;
+         for(i = 1; i < numLines; )
          {
-            _loc4_ = _line[_loc12_ - 1];
-            _loc3_ = _line[_loc12_];
-            _loc6_ = (_loc3_.x - _loc4_.x) * (_loc3_.x - _loc4_.x) + (_loc3_.y - _loc4_.y) * (_loc3_.y - _loc4_.y);
-            _loc10_ = ((param1 - _loc4_.x) * (_loc3_.x - _loc4_.x) + (param2 - _loc4_.y) * (_loc3_.y - _loc4_.y)) / _loc6_;
-            if(!(_loc10_ < 0 || _loc10_ > 1))
+            v0 = _line[i - 1];
+            v1 = _line[i];
+            lineLengthSquared = (v1.x - v0.x) * (v1.x - v0.x) + (v1.y - v0.y) * (v1.y - v0.y);
+            interpolation = ((localX - v0.x) * (v1.x - v0.x) + (localY - v0.y) * (v1.y - v0.y)) / lineLengthSquared;
+            if(!(interpolation < 0 || interpolation > 1))
             {
-               _loc9_ = _loc4_.x + _loc10_ * (_loc3_.x - _loc4_.x);
-               _loc7_ = _loc4_.y + _loc10_ * (_loc3_.y - _loc4_.y);
-               _loc8_ = (param1 - _loc9_) * (param1 - _loc9_) + (param2 - _loc7_) * (param2 - _loc7_);
-               _loc11_ = _loc4_.thickness * (1 - _loc10_) + _loc3_.thickness * _loc10_;
-               _loc11_ = _loc11_ + _precisionHitTestDistance;
-               if(_loc8_ <= _loc11_ * _loc11_)
+               intersectionX = v0.x + interpolation * (v1.x - v0.x);
+               intersectionY = v0.y + interpolation * (v1.y - v0.y);
+               distanceSquared = (localX - intersectionX) * (localX - intersectionX) + (localY - intersectionY) * (localY - intersectionY);
+               intersectThickness = v0.thickness * (1 - interpolation) + v1.thickness * interpolation;
+               intersectThickness = intersectThickness + _precisionHitTestDistance;
+               if(distanceSquared <= intersectThickness * intersectThickness)
                {
                   return true;
                }
             }
-            _loc12_++;
+            i++;
          }
          return false;
       }
       
-      public function localToParent(param1:Point, param2:Point = null) : Point
+      public function localToParent(localPoint:Point, resultPoint:Point = null) : Point
       {
-         return MatrixUtil.transformCoords(transformationMatrix,param1.x,param1.y,param2);
+         return MatrixUtil.transformCoords(transformationMatrix,localPoint.x,localPoint.y,resultPoint);
       }
       
-      public function scaleGeometry(param1:Number) : void
+      public function scaleGeometry(newScale:Number) : void
       {
-         if(param1 == _lastScale || param1 <= 0)
+         if(newScale == _lastScale || newScale <= 0)
          {
             return;
          }
-         adjustThicknessOfGeometry(vertices,_lastScale,param1);
+         adjustThicknessOfGeometry(vertices,_lastScale,newScale);
          isGeometryScaled = true;
-         _lastScale = param1;
+         _lastScale = newScale;
       }
    }
 }

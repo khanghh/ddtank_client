@@ -111,8 +111,8 @@ package ddt.view.tips
       
       public function updateTips() : void
       {
-         var _loc2_:Number = NaN;
-         var _loc1_:Number = NaN;
+         var nameWidth:Number = NaN;
+         var rate:Number = NaN;
          _teamLevel.visible = false;
          _teamName.visible = false;
          _teamWinRate.visible = false;
@@ -136,16 +136,16 @@ package ddt.view.tips
             _teamLevel.setFrame(_tipInfo.teamDivision + 1);
             _integralField.text = _tipInfo.teamPersonalScore;
          }
-         if(_tipInfo.teamName != "")
+         if(_tipInfo.teamName != "" && _tipInfo.teamPersonalScore != 0)
          {
             _nameField.text = _tipInfo.teamName;
-            _loc2_ = _nameField.x + _nameField.width + 5;
-            if(_bg.width < _loc2_)
+            nameWidth = _nameField.x + _nameField.width + 5;
+            if(_bg.width < nameWidth)
             {
-               _bg.width = _loc2_;
+               _bg.width = nameWidth;
             }
-            _loc1_ = _tipInfo.teamTotalTime > 0?_tipInfo.teamWinTime / _tipInfo.teamTotalTime * 100:0;
-            _winRateField.text = _loc1_.toFixed(2) + "%";
+            rate = _tipInfo.teamTotalTime > 0?_tipInfo.teamWinTime / _tipInfo.teamTotalTime * 100:0;
+            _winRateField.text = rate.toFixed(2) + "%";
          }
          else if(_tipInfo.teamName == "")
          {
@@ -159,9 +159,9 @@ package ddt.view.tips
          return _tipInfo;
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         if(param1 is PlayerInfo)
+         if(data is PlayerInfo)
          {
             this.visible = true;
          }
@@ -169,7 +169,7 @@ package ddt.view.tips
          {
             this.visible = false;
          }
-         _tipInfo = param1;
+         _tipInfo = data;
          updateTips();
       }
       
@@ -178,11 +178,11 @@ package ddt.view.tips
          return _tipWidth;
       }
       
-      public function set tipWidth(param1:int) : void
+      public function set tipWidth(w:int) : void
       {
-         if(_tipWidth != param1)
+         if(_tipWidth != w)
          {
-            _tipWidth = param1;
+            _tipWidth = w;
             updateTips();
          }
       }
@@ -192,7 +192,7 @@ package ddt.view.tips
          return _bg.height;
       }
       
-      public function set tipHeight(param1:int) : void
+      public function set tipHeight(h:int) : void
       {
       }
       

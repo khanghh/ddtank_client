@@ -18,9 +18,9 @@ package guardCore.tips
       
       private var _name:FilterFrameText;
       
-      public function GuardCoreBuffTipsItem(param1:GuardCoreInfo)
+      public function GuardCoreBuffTipsItem(info:GuardCoreInfo)
       {
-         _info = param1;
+         _info = info;
          super();
          init();
       }

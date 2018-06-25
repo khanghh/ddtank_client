@@ -22,19 +22,19 @@ package consortionBattle.view
          return _scb.selected;
       }
       
-      override public function set info(param1:AlertInfo) : void
+      override public function set info(value:AlertInfo) : void
       {
-         .super.info = param1;
+         .super.info = value;
          _scb = ComponentFactory.Instance.creatComponentByStylename("consortiaBattle.buyConfirmNo.scb");
          addToContent(_scb);
          _scb.text = LanguageMgr.GetTranslation("ddt.consortiaBattle.buyConfirm.noAlertTxt");
          _scb.x = _seleContent.x + (_seleContent.width - _scb.width) / 2;
       }
       
-      public function resetPoint(param1:int, param2:int) : void
+      public function resetPoint(x:int, y:int) : void
       {
-         _seleContent.x = param1;
-         _seleContent.y = param2;
+         _seleContent.x = x;
+         _seleContent.y = y;
       }
       
       override protected function onProppertiesUpdate() : void

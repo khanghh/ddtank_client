@@ -24,9 +24,9 @@ package consortion
          super();
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
-         super.enter(param1,param2);
+         super.enter(prev,data);
          MainToolBar.Instance.show();
          ChatManager.Instance.state = 12;
          if(PlayerManager.Instance.Self.ConsortiaID != 0)
@@ -38,9 +38,9 @@ package consortion
          initEvent();
          enterCurrentView();
          addChild(ChatManager.Instance.view);
-         if(param2 is Function)
+         if(data is Function)
          {
-            param2();
+            data();
          }
       }
       
@@ -56,14 +56,14 @@ package consortion
          }
       }
       
-      private function set consortiaState(param1:String) : void
+      private function set consortiaState(state:String) : void
       {
-         if(_state == param1)
+         if(_state == state)
          {
             return;
          }
-         _state = param1;
-         if(param1 == "consortiaClub")
+         _state = state;
+         if(state == "consortiaClub")
          {
             if(_selfConsortia)
             {
@@ -93,9 +93,9 @@ package consortion
          }
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
-         super.leaving(param1);
+         super.leaving(next);
          _state = "";
          removeEvent();
          if(_club)
@@ -132,7 +132,7 @@ package consortion
          ConsortionModelManager.Instance.removeEventListener("consortionStateChange",____consortiaStateChannge);
       }
       
-      private function ____consortiaStateChannge(param1:Event) : void
+      private function ____consortiaStateChannge(event:Event) : void
       {
          enterCurrentView();
       }

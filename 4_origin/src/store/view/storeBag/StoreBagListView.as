@@ -48,18 +48,18 @@ package store.view.storeBag
       
       private var showlock:Boolean = false;
       
-      public function StoreBagListView(param1:Boolean = false)
+      public function StoreBagListView(_showLock:Boolean = false)
       {
          super();
-         showlock = param1;
+         showlock = _showLock;
       }
       
-      public function setup(param1:int, param2:StoreBagController, param3:int, param4:int = 7) : void
+      public function setup(bagType:int, controller:StoreBagController, number:int, columnNum:int = 7) : void
       {
-         _bagType = param1;
-         _controller = param2;
-         beginGridNumber = param3;
-         _columnNum = param4;
+         _bagType = bagType;
+         _controller = controller;
+         beginGridNumber = number;
+         _columnNum = columnNum;
          init();
       }
       
@@ -87,24 +87,24 @@ package store.view.storeBag
          _cells = new DictionaryData();
       }
       
-      protected function __doubleClickHandler(param1:InteractiveEvent) : void
+      protected function __doubleClickHandler(evt:InteractiveEvent) : void
       {
          if(FineBringUpController.getInstance().usingLock)
          {
             return;
          }
-         param1.stopImmediatePropagation();
-         if((param1.currentTarget as BagCell).info != null)
+         evt.stopImmediatePropagation();
+         if((evt.currentTarget as BagCell).info != null)
          {
-            if((param1.currentTarget as BagCell).info != null)
+            if((evt.currentTarget as BagCell).info != null)
             {
-               dispatchEvent(new CellEvent("doubleclick",param1.currentTarget,true));
+               dispatchEvent(new CellEvent("doubleclick",evt.currentTarget,true));
                SoundManager.instance.play("008");
             }
          }
       }
       
-      protected function __clickHandler(param1:InteractiveEvent) : void
+      protected function __clickHandler(e:InteractiveEvent) : void
       {
          if(FineBringUpController.getInstance().usingLock)
          {
@@ -114,89 +114,89 @@ package store.view.storeBag
          {
             return;
          }
-         if(param1.currentTarget)
+         if(e.currentTarget)
          {
-            dispatchEvent(new CellEvent("itemclick",param1.currentTarget));
+            dispatchEvent(new CellEvent("itemclick",e.currentTarget));
          }
       }
       
-      protected function __cellChanged(param1:Event) : void
+      protected function __cellChanged(event:Event) : void
       {
          dispatchEvent(new Event("change"));
       }
       
-      protected function __cellClick(param1:MouseEvent) : void
+      protected function __cellClick(evt:MouseEvent) : void
       {
       }
       
-      public function getCellByPlace(param1:int) : BagCell
+      public function getCellByPlace(place:int) : BagCell
       {
-         return _cells[param1];
+         return _cells[place];
       }
       
-      public function setCellInfo(param1:int, param2:InventoryItemInfo) : void
+      public function setCellInfo(index:int, info:InventoryItemInfo) : void
       {
-         if(param2 == null)
+         if(info == null)
          {
-            if(_cells && _cells[param1])
+            if(_cells && _cells[index])
             {
-               _cells[param1].info = null;
+               _cells[index].info = null;
             }
             return;
          }
-         if(param2.Count == 0)
+         if(info.Count == 0)
          {
-            if(_cells && _cells[param1])
+            if(_cells && _cells[index])
             {
-               _cells[param1].info = null;
+               _cells[index].info = null;
             }
          }
          else
          {
-            if(!_cells[param1])
+            if(!_cells[index])
             {
-               _appendCell(param1);
+               _appendCell(index);
             }
-            if(param2.BagType == 0 && param2.Place < 17)
+            if(info.BagType == 0 && info.Place < 17)
             {
-               _cells[param1].isUsed = true;
+               _cells[index].isUsed = true;
             }
             else
             {
-               _cells[param1].isUsed = false;
+               _cells[index].isUsed = false;
             }
-            _cells[param1].info = param2;
+            _cells[index].info = info;
          }
       }
       
-      public function setData(param1:DictionaryData) : void
+      public function setData(list:DictionaryData) : void
       {
-         var _loc2_:* = null;
+         var arr:* = null;
          if(_bagdata != null)
          {
             _bagdata.removeEventListener("add",__addGoods);
             _bagdata.removeEventListener("storeBagRemove",__removeGoods);
             _bagdata.removeEventListener("updateItemEvent",__updateGoods);
          }
-         _bagdata = param1;
-         addGrid(param1);
-         if(param1)
+         _bagdata = list;
+         addGrid(list);
+         if(list)
          {
-            _loc2_ = [];
+            arr = [];
             var _loc6_:int = 0;
-            var _loc5_:* = param1;
-            for(var _loc3_ in param1)
+            var _loc5_:* = list;
+            for(var key in list)
             {
-               _loc2_.push(_loc3_);
+               arr.push(key);
             }
-            _loc2_.sort(16);
+            arr.sort(16);
             var _loc8_:int = 0;
-            var _loc7_:* = _loc2_;
-            for(var _loc4_ in _loc2_)
+            var _loc7_:* = arr;
+            for(var i in arr)
             {
-               if(_cells[_loc4_] != null)
+               if(_cells[i] != null)
                {
-                  _cells[_loc4_].info = param1[_loc2_[_loc4_]];
+                  _cells[i].info = list[arr[i]];
                }
             }
          }
@@ -206,112 +206,109 @@ package store.view.storeBag
          updateScrollBar();
       }
       
-      private function addGrid(param1:DictionaryData) : void
+      private function addGrid(list:DictionaryData) : void
       {
-         var _loc5_:int = 0;
+         var i:int = 0;
          _cells.clear();
          _list.disposeAllChildren();
-         var _loc3_:int = 0;
+         var n:int = 0;
          var _loc7_:int = 0;
-         var _loc6_:* = param1;
-         for(var _loc4_ in param1)
+         var _loc6_:* = list;
+         for(var key in list)
          {
-            _loc3_++;
+            n++;
          }
-         var _loc2_:int = (int((_loc3_ - 1) / _columnNum) + 1) * _columnNum;
-         _loc2_ = _loc2_ < beginGridNumber?beginGridNumber:int(_loc2_);
-         cellNum = _loc2_;
+         var needGrid:int = (int((n - 1) / _columnNum) + 1) * _columnNum;
+         needGrid = needGrid < beginGridNumber?beginGridNumber:int(needGrid);
+         cellNum = needGrid;
          _list.beginChanges();
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_)
+         for(i = 0; i < needGrid; )
          {
-            createCell(_loc5_);
-            _loc5_++;
+            createCell(i);
+            i++;
          }
          _list.commitChanges();
          invalidatePanel();
       }
       
-      protected function createCell(param1:int) : void
+      protected function createCell(index:int) : void
       {
-         var _loc2_:StoreBagCell = new StoreBagCell(param1);
-         _loc2_.lockDisplayObject = ComponentFactory.Instance.creatBitmap("asset.store.bringup.lock");
-         PositionUtils.setPos(_loc2_.lockDisplayObject,"storeBringUp.cellLockPos");
-         _loc2_.showLock = showlock;
-         _loc2_.bagType = _bagType;
-         _loc2_.tipDirctions = "7,5,2,6,4,1";
-         _loc2_.addEventListener("interactive_click",__clickHandler);
-         _loc2_.addEventListener("interactive_double_click",__doubleClickHandler);
-         DoubleClickManager.Instance.enableDoubleClick(_loc2_);
-         _loc2_.addEventListener("click",__cellClick);
-         _loc2_.addEventListener("lockChanged",__cellChanged);
-         _cells.add(_loc2_.place,_loc2_);
-         _list.addChild(_loc2_);
+         var cell:StoreBagCell = new StoreBagCell(index);
+         cell.lockDisplayObject = ComponentFactory.Instance.creatBitmap("asset.store.bringup.lock");
+         PositionUtils.setPos(cell.lockDisplayObject,"storeBringUp.cellLockPos");
+         cell.showLock = showlock;
+         cell.bagType = _bagType;
+         cell.tipDirctions = "7,5,2,6,4,1";
+         cell.addEventListener("interactive_click",__clickHandler);
+         cell.addEventListener("interactive_double_click",__doubleClickHandler);
+         DoubleClickManager.Instance.enableDoubleClick(cell);
+         cell.addEventListener("click",__cellClick);
+         cell.addEventListener("lockChanged",__cellChanged);
+         _cells.add(cell.place,cell);
+         _list.addChild(cell);
       }
       
-      private function _appendCell(param1:int) : void
+      private function _appendCell(sum:int) : void
       {
-         var _loc2_:* = 0;
-         _loc2_ = param1;
-         while(_loc2_ < param1 + _columnNum)
+         var i:* = 0;
+         for(i = sum; i < sum + _columnNum; )
          {
-            createCell(_loc2_);
-            _loc2_++;
+            createCell(i);
+            i++;
          }
       }
       
-      private function updateScrollBar(param1:Boolean = true) : void
+      private function updateScrollBar(updatePosition:Boolean = true) : void
       {
       }
       
-      protected function __addGoods(param1:DictionaryEvent) : void
+      protected function __addGoods(evt:DictionaryEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:InventoryItemInfo = param1.data as InventoryItemInfo;
-         _loc3_ = 0;
-         while(_loc3_ < cellNum)
+         var i:int = 0;
+         var t:InventoryItemInfo = evt.data as InventoryItemInfo;
+         for(i = 0; i < cellNum; )
          {
-            if(_bagdata[_loc3_] == _loc2_)
+            if(_bagdata[i] == t)
             {
-               setCellInfo(_loc3_,_loc2_);
+               setCellInfo(i,t);
                break;
             }
-            _loc3_++;
+            i++;
          }
          updateScrollBar();
       }
       
-      private function checkShouldAutoLink(param1:InventoryItemInfo) : Boolean
+      private function checkShouldAutoLink(item:InventoryItemInfo) : Boolean
       {
          if(_controller.model.NeedAutoLink <= 0)
          {
             return false;
          }
-         if(param1.TemplateID == 11018 || param1.TemplateID == 11020 || param1.TemplateID == 11023 || param1.StrengthenLevel >= 10)
+         if(item.TemplateID == 11018 || item.TemplateID == 11020 || item.TemplateID == 11023 || item.StrengthenLevel >= 10)
          {
             return true;
          }
          return false;
       }
       
-      protected function __removeGoods(param1:StoreBagEvent) : void
+      protected function __removeGoods(evt:StoreBagEvent) : void
       {
-         _cells[param1.pos].info = null;
+         _cells[evt.pos].info = null;
          updateScrollBar(false);
       }
       
-      private function __updateGoods(param1:UpdateItemEvent) : void
+      private function __updateGoods(evt:UpdateItemEvent) : void
       {
-         if(_cells && _cells.length > param1.pos)
+         if(_cells && _cells.length > evt.pos)
          {
-            _cells[param1.pos].info = param1.item as InventoryItemInfo;
+            _cells[evt.pos].info = evt.item as InventoryItemInfo;
             updateScrollBar(false);
          }
       }
       
-      public function getCellByPos(param1:int) : BagCell
+      public function getCellByPos(pos:int) : BagCell
       {
-         return _cells[param1];
+         return _cells[pos];
       }
       
       private function invalidatePanel() : void
@@ -331,14 +328,14 @@ package store.view.storeBag
          }
          var _loc3_:int = 0;
          var _loc2_:* = _cells;
-         for each(var _loc1_ in _cells)
+         for each(var i in _cells)
          {
-            _loc1_.removeEventListener("interactive_click",__clickHandler);
-            _loc1_.removeEventListener("interactive_double_click",__doubleClickHandler);
-            DoubleClickManager.Instance.disableDoubleClick(_loc1_);
-            _loc1_.removeEventListener("click",__cellClick);
-            _loc1_.removeEventListener("lockChanged",__cellChanged);
-            ObjectUtils.disposeObject(_loc1_);
+            i.removeEventListener("interactive_click",__clickHandler);
+            i.removeEventListener("interactive_double_click",__doubleClickHandler);
+            DoubleClickManager.Instance.disableDoubleClick(i);
+            i.removeEventListener("click",__cellClick);
+            i.removeEventListener("lockChanged",__cellChanged);
+            ObjectUtils.disposeObject(i);
          }
          if(_cells)
          {

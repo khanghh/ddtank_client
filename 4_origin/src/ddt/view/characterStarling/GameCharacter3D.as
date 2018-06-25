@@ -177,85 +177,83 @@ package ddt.view.characterStarling
       
       private var closeEys:int;
       
-      public function GameCharacter3D(param1:PlayerInfo)
+      public function GameCharacter3D(info:PlayerInfo)
       {
          _frameStartPoint = new Point(0,0);
          _cryTypes = [0,16,13,10];
          _index = 90 * Math.random();
-         super(param1,true);
+         super(info,true);
          _defaultAction = STAND;
          _currentAction = STAND;
          _defaultFace = StarlingMain.instance.createImage("game_defaultCharacter");
       }
       
-      override public function show(param1:Boolean = true, param2:int = 1, param3:Boolean = true) : void
+      override public function show(clearLoader:Boolean = true, dir:int = 1, small:Boolean = true) : void
       {
-         super.show(param1,param2,param3);
+         super.show(clearLoader,dir,small);
          _useLackHpSuit = false;
          _useLackHpTurn = -1;
          _isLackHp = false;
       }
       
-      protected function CreateCryFrace(param1:String) : void
+      protected function CreateCryFrace(color:String) : void
       {
-         var _loc4_:int = 0;
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
-         var _loc3_:* = null;
+         var j:int = 0;
+         var i:int = 0;
+         var lightTransfrom:* = null;
+         var lightBitmap:* = null;
          ObjectUtils.disposeObject(_tempCryFace);
          _tempCryFace = null;
          if(_cryBmps)
          {
-            _loc4_ = 0;
-            while(_loc4_ < _cryBmps.length)
+            for(j = 0; j < _cryBmps.length; )
             {
-               ObjectUtils.disposeObject(_cryBmps[_loc4_]);
-               _cryBmps[_loc4_] = null;
-               _loc4_++;
+               ObjectUtils.disposeObject(_cryBmps[j]);
+               _cryBmps[j] = null;
+               j++;
             }
             _cryBmps = null;
          }
-         _colors = param1.split("|");
-         var _loc2_:Sprite = new Sprite();
+         _colors = color.split("|");
+         var cryFrace:Sprite = new Sprite();
          _cryBmps = new Vector.<Bitmap>(3);
          _cryBmps[0] = ComponentFactory.Instance.creatBitmap("asset.game.character.cryFaceAsset");
-         _loc2_.addChild(_cryBmps[0]);
+         cryFrace.addChild(_cryBmps[0]);
          _cryBmps[1] = ComponentFactory.Instance.creatBitmap("asset.game.character.cryChangeColorAsset");
-         _loc2_.addChild(_cryBmps[1]);
+         cryFrace.addChild(_cryBmps[1]);
          _cryBmps[1].visible = false;
          if(_colors.length == _cryBmps.length)
          {
-            _loc6_ = 0;
-            while(_loc6_ < _colors.length)
+            for(i = 0; i < _colors.length; )
             {
-               if(!StringHelper.isNullOrEmpty(_colors[_loc6_]) && _colors[_loc6_].toString() != "undefined" && _colors[_loc6_].toString() != "null" && _cryBmps[_loc6_])
+               if(!StringHelper.isNullOrEmpty(_colors[i]) && _colors[i].toString() != "undefined" && _colors[i].toString() != "null" && _cryBmps[i])
                {
-                  _cryBmps[_loc6_].visible = true;
-                  _cryBmps[_loc6_].transform.colorTransform = BitmapUtils.getColorTransfromByColor(_colors[_loc6_]);
-                  _loc5_ = BitmapUtils.getHightlightColorTransfrom(_colors[_loc6_]);
-                  _loc3_ = new Bitmap(_cryBmps[_loc6_].bitmapData,"auto",true);
-                  if(_loc5_)
+                  _cryBmps[i].visible = true;
+                  _cryBmps[i].transform.colorTransform = BitmapUtils.getColorTransfromByColor(_colors[i]);
+                  lightTransfrom = BitmapUtils.getHightlightColorTransfrom(_colors[i]);
+                  lightBitmap = new Bitmap(_cryBmps[i].bitmapData,"auto",true);
+                  if(lightTransfrom)
                   {
-                     _loc3_.transform.colorTransform = _loc5_;
+                     lightBitmap.transform.colorTransform = lightTransfrom;
                   }
-                  _loc3_.blendMode = "hardlight";
-                  _loc2_.addChild(_loc3_);
+                  lightBitmap.blendMode = "hardlight";
+                  cryFrace.addChild(lightBitmap);
                }
-               else if(_cryBmps[_loc6_])
+               else if(_cryBmps[i])
                {
-                  _cryBmps[_loc6_].transform.colorTransform = new ColorTransform();
+                  _cryBmps[i].transform.colorTransform = new ColorTransform();
                }
-               _loc6_++;
+               i++;
             }
          }
-         _tempCryFace = new BitmapData(_loc2_.width,_loc2_.height,true,0);
-         _tempCryFace.draw(_loc2_,null,null,"normal");
-         ObjectUtils.disposeAllChildren(_loc2_);
+         _tempCryFace = new BitmapData(cryFrace.width,cryFrace.height,true,0);
+         _tempCryFace.draw(cryFrace,null,null,"normal");
+         ObjectUtils.disposeAllChildren(cryFrace);
       }
       
-      public function set isLackHp(param1:Boolean) : void
+      public function set isLackHp(value:Boolean) : void
       {
-         _isLackHp = param1;
+         _isLackHp = value;
       }
       
       public function get State() : int
@@ -263,13 +261,13 @@ package ddt.view.characterStarling
          return _state;
       }
       
-      public function set State(param1:int) : void
+      public function set State(value:int) : void
       {
-         if(_state == param1)
+         if(_state == value)
          {
             return;
          }
-         _state = param1;
+         _state = value;
       }
       
       override protected function initSizeAndPics() : void
@@ -441,25 +439,24 @@ package ddt.view.characterStarling
          _container.y = _body.y;
       }
       
-      private function drawBlack(param1:BitmapData) : void
+      private function drawBlack(bmd:BitmapData) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:Rectangle = new Rectangle(0,0,param1.width,param1.height);
-         var _loc3_:Vector.<uint> = param1.getVector(_loc4_);
-         var _loc2_:uint = _loc3_.length;
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_)
+         var i:int = 0;
+         var rect:Rectangle = new Rectangle(0,0,bmd.width,bmd.height);
+         var pixels:Vector.<uint> = bmd.getVector(rect);
+         var len:uint = pixels.length;
+         for(i = 0; i < len; )
          {
-            _loc3_[_loc5_] = _loc3_[_loc5_] >> 24 << 24 | 0 | 0 | 0;
-            _loc5_++;
+            pixels[i] = pixels[i] >> 24 << 24 | 0 | 0 | 0;
+            i++;
          }
-         param1.setVector(_loc4_,_loc3_);
+         bmd.setVector(rect,pixels);
       }
       
       public function changeToNormal() : void
       {
-         var _loc1_:TweenMax = TweenMax.to(blackBm,0.25,{"alpha":0});
-         _loc1_.addEventListener("complete",setBlack);
+         var t:TweenMax = TweenMax.to(blackBm,0.25,{"alpha":0});
+         t.addEventListener("complete",setBlack);
          StarlingObjectUtils.disposeObject(blackEyes);
          blackEyes = null;
          if(_bodyImage)
@@ -477,9 +474,9 @@ package ddt.view.characterStarling
          return _currentAction == SOUL || _currentAction == SOUL_CRY || _currentAction == SOUL_MOVE || _currentAction == SOUL_SMILE;
       }
       
-      private function setBlack(param1:TweenEvent) : void
+      private function setBlack(event:TweenEvent) : void
       {
-         TweenMax(param1.target).removeEventListener("complete",setBlack);
+         TweenMax(event.target).removeEventListener("complete",setBlack);
          StarlingObjectUtils.removeObject(blackBm);
          black = false;
       }
@@ -538,12 +535,12 @@ package ddt.view.characterStarling
          }
       }
       
-      override public function doAction(param1:*) : void
+      override public function doAction(actionType:*) : void
       {
-         var _loc2_:* = null;
-         if(_currentAction.canReplace(param1))
+         var playSuits:* = null;
+         if(_currentAction.canReplace(actionType))
          {
-            _currentAction = param1;
+            _currentAction = actionType;
             _index = 0;
          }
          if(_currentAction == STAND || _currentAction == STAND_LACK_HP)
@@ -568,8 +565,8 @@ package ddt.view.characterStarling
                }
                else
                {
-                  _loc2_ = !!_info.getShowSuits()?"1":"2";
-                  _ghostMovie.play(!!_info.Sex?"man" + _loc2_:"girl" + _loc2_);
+                  playSuits = !!_info.getShowSuits()?"1":"2";
+                  _ghostMovie.play(!!_info.Sex?"man" + playSuits:"girl" + playSuits);
                   _ghostMovie.x = 35;
                   _ghostMovie.y = 35;
                }
@@ -626,17 +623,17 @@ package ddt.view.characterStarling
          return _currentAction;
       }
       
-      override public function setDefaultAction(param1:*) : void
+      override public function setDefaultAction(actionType:*) : void
       {
-         if(param1 is PlayerAction)
+         if(actionType is PlayerAction)
          {
-            _currentAction = param1;
+            _currentAction = actionType;
          }
       }
       
       override protected function setContent() : void
       {
-         var _loc2_:* = null;
+         var t:* = null;
          if(_loader != null)
          {
             this.scaleX = -1;
@@ -647,7 +644,7 @@ package ddt.view.characterStarling
             }
             try
             {
-               _loc2_ = _loader.getContent();
+               t = _loader.getContent();
             }
             catch(e:Error)
             {
@@ -658,11 +655,11 @@ package ddt.view.characterStarling
             {
                try
                {
-                  if(_normalSuit && _normalSuit != _loc2_[6])
+                  if(_normalSuit && _normalSuit != t[6])
                   {
                      _normalSuit.dispose();
                   }
-                  _normalSuit = _loc2_[6];
+                  _normalSuit = t[6];
                }
                catch(e:Error)
                {
@@ -670,11 +667,11 @@ package ddt.view.characterStarling
                }
                try
                {
-                  if(_lackHpSuit && _lackHpSuit != _loc2_[7])
+                  if(_lackHpSuit && _lackHpSuit != t[7])
                   {
                      _lackHpSuit.dispose();
                   }
-                  _lackHpSuit = _loc2_[7];
+                  _lackHpSuit = t[7];
                   _hasSuitSoul = checkHasSuitsSoul(_lackHpSuit);
                }
                catch(e:Error)
@@ -688,16 +685,16 @@ package ddt.view.characterStarling
             {
                try
                {
-                  if(_spBitmapData && _spBitmapData != _loc2_[1])
+                  if(_spBitmapData && _spBitmapData != t[1])
                   {
                      var _loc12_:int = 0;
                      var _loc11_:* = _spBitmapData;
-                     for each(var _loc1_ in _spBitmapData)
+                     for each(var bmd in _spBitmapData)
                      {
-                        _loc1_.dispose();
+                        bmd.dispose();
                      }
                   }
-                  _spBitmapData = _loc2_[1];
+                  _spBitmapData = t[1];
                }
                catch(e:Error)
                {
@@ -705,11 +702,11 @@ package ddt.view.characterStarling
                }
                try
                {
-                  if(_faceupBitmapData && _faceupBitmapData != _loc2_[2])
+                  if(_faceupBitmapData && _faceupBitmapData != t[2])
                   {
                      _faceupBitmapData.dispose();
                   }
-                  _faceupBitmapData = _loc2_[2];
+                  _faceupBitmapData = t[2];
                }
                catch(e:Error)
                {
@@ -717,11 +714,11 @@ package ddt.view.characterStarling
                }
                try
                {
-                  if(_faceBitmapData && _faceBitmapData != _loc2_[3])
+                  if(_faceBitmapData && _faceBitmapData != t[3])
                   {
                      _faceBitmapData.dispose();
                   }
-                  _faceBitmapData = _loc2_[3];
+                  _faceBitmapData = t[3];
                }
                catch(e:Error)
                {
@@ -729,16 +726,16 @@ package ddt.view.characterStarling
                }
                try
                {
-                  if(_lackHpFaceBitmapdata && _lackHpFaceBitmapdata != _loc2_[4])
+                  if(_lackHpFaceBitmapdata && _lackHpFaceBitmapdata != t[4])
                   {
                      var _loc18_:int = 0;
                      var _loc17_:* = _lackHpFaceBitmapdata;
-                     for each(var _loc3_ in _lackHpFaceBitmapdata)
+                     for each(var bmd1 in _lackHpFaceBitmapdata)
                      {
-                        _loc3_.dispose();
+                        bmd1.dispose();
                      }
                   }
-                  _lackHpFaceBitmapdata = _loc2_[4];
+                  _lackHpFaceBitmapdata = t[4];
                }
                catch(e:Error)
                {
@@ -746,11 +743,11 @@ package ddt.view.characterStarling
                }
                try
                {
-                  if(_faceDownBitmapdata && _faceDownBitmapdata != _loc2_[5])
+                  if(_faceDownBitmapdata && _faceDownBitmapdata != t[5])
                   {
                      _faceDownBitmapdata.dispose();
                   }
-                  _faceDownBitmapdata = _loc2_[5];
+                  _faceDownBitmapdata = t[5];
                }
                catch(e:Error)
                {
@@ -773,33 +770,33 @@ package ddt.view.characterStarling
          }
       }
       
-      public function getEquipID(param1:int) : String
+      public function getEquipID(type:int) : String
       {
-         var _loc2_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
+         var id:int = 0;
+         var _recordStyle:* = null;
+         var str:* = null;
          try
          {
-            _loc4_ = _info.Style.split(",");
-            _loc3_ = " type: " + param1;
-            switch(int(param1) - 1)
+            _recordStyle = _info.Style.split(",");
+            str = " type: " + type;
+            switch(int(type) - 1)
             {
                case 0:
-                  _loc3_ = _loc3_ + String(_loc4_[5].split("|")[0]);
+                  str = str + String(_recordStyle[5].split("|")[0]);
                   break;
                case 1:
-                  _loc3_ = _loc3_ + (String(_loc4_[1].split("|")[0]) + String(_loc4_[0].split("|")[0]) + String(_loc4_[3].split("|")[0]) + String(_loc4_[4].split("|")[0]) + String(_loc4_[2].split("|")[0]));
+                  str = str + (String(_recordStyle[1].split("|")[0]) + String(_recordStyle[0].split("|")[0]) + String(_recordStyle[3].split("|")[0]) + String(_recordStyle[4].split("|")[0]) + String(_recordStyle[2].split("|")[0]));
                   break;
                case 2:
                case 3:
-                  _loc3_ = _loc3_ + String(_loc4_[5].split("|")[0]);
+                  str = str + String(_recordStyle[5].split("|")[0]);
                   break;
                case 4:
-                  _loc3_ = _loc3_ + String(_loc4_[6].split("|")[0]);
+                  str = str + String(_recordStyle[6].split("|")[0]);
                   break;
                case 5:
                case 6:
-                  _loc3_ = _loc3_ + (String(_loc4_[6].split("|")[0]) + "|" + String(_loc4_[7].split("|")[0]));
+                  str = str + (String(_recordStyle[6].split("|")[0]) + "|" + String(_recordStyle[7].split("|")[0]));
             }
          }
          catch(e:Error)
@@ -807,87 +804,85 @@ package ddt.view.characterStarling
             var _loc6_:String = " 记录取 style失败!";
             return _loc6_;
          }
-         return _loc3_;
+         return str;
       }
       
-      private function checkHasSuitsSoul(param1:BitmapData) : Boolean
+      private function checkHasSuitsSoul(suit:BitmapData) : Boolean
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         if(!param1)
+         var m:int = 0;
+         var n:int = 0;
+         if(!suit)
          {
             return false;
          }
-         var _loc4_:Point = new Point(_characterWidth * 11 - _characterWidth / 2,_characterHeight * 3 - _characterHeight / 2);
-         _loc3_ = _loc4_.x - 5;
-         while(_loc3_ < _loc4_.x + 5)
+         var pos:Point = new Point(_characterWidth * 11 - _characterWidth / 2,_characterHeight * 3 - _characterHeight / 2);
+         for(m = pos.x - 5; m < pos.x + 5; )
          {
-            _loc2_ = _loc4_.y - 5;
-            while(_loc2_ < _loc4_.y + 5)
+            for(n = pos.y - 5; n < pos.y + 5; )
             {
-               if(param1.getPixel(_loc3_,_loc2_) != 0)
+               if(suit.getPixel(m,n) != 0)
                {
                   return true;
                }
-               _loc2_++;
+               n++;
             }
-            _loc3_++;
+            m++;
          }
          return false;
       }
       
-      public function switchWingVisible(param1:Boolean) : void
+      public function switchWingVisible(v:Boolean) : void
       {
          if(_leftWing)
          {
-            _leftWing.visible = param1;
+            _leftWing.visible = v;
          }
          if(_rightWing)
          {
-            _rightWing.visible = param1;
+            _rightWing.visible = v;
          }
       }
       
-      public function setWingPos(param1:Number, param2:Number) : void
+      public function setWingPos(xPos:Number, yPos:Number) : void
       {
          if(_leftWing)
          {
-            _leftWing.x = param1;
-            _leftWing.y = param2;
+            _leftWing.x = xPos;
+            _leftWing.y = yPos;
          }
          if(_rightWing)
          {
-            _rightWing.x = param1;
-            _rightWing.y = param2;
+            _rightWing.x = xPos;
+            _rightWing.y = yPos;
          }
       }
       
-      public function setWingScale(param1:Number, param2:Number) : void
+      public function setWingScale(xScale:Number, yScale:Number) : void
       {
          if(_leftWing)
          {
-            _leftWing.scaleX = param1;
-            _leftWing.scaleY = param2;
+            _leftWing.scaleX = xScale;
+            _leftWing.scaleY = yScale;
          }
          if(_rightWing)
          {
-            _rightWing.scaleX = param1;
-            _rightWing.scaleY = param2;
+            _rightWing.scaleX = xScale;
+            _rightWing.scaleY = yScale;
          }
       }
       
-      public function set WingState(param1:String) : void
+      public function set WingState($wingState:String) : void
       {
-         var _loc2_:* = param1;
+         var realState:* = $wingState;
          if(_leftWing)
          {
-            _loc2_ = param1 == "shot"?"shot":"stand";
+            realState = $wingState == "shot"?"shot":"stand";
          }
-         if(_wingState == _loc2_)
+         if(_wingState == realState)
          {
             return;
          }
-         _wingState = _loc2_;
+         _wingState = realState;
          if(_rightWing)
          {
             _rightWing.play(_wingState);
@@ -900,18 +895,18 @@ package ddt.view.characterStarling
       
       private function initCharacterWing() : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc1_:int = _info.Style.split(",")[8].split("|")[0];
-         if(!_leftWing && !_rightWing && _loc1_ != 15001)
+         var leftName:* = null;
+         var rightName:* = null;
+         var id:int = _info.Style.split(",")[8].split("|")[0];
+         if(!_leftWing && !_rightWing && id != 15001)
          {
-            _loc3_ = "bonesGameWing" + _loc1_ + "left";
-            _loc2_ = "bonesGameWing" + _loc1_ + "right";
-            if(BoneMovieFactory.instance.model.getBonesStyle(_loc3_) != null)
+            leftName = "bonesGameWing" + id + "left";
+            rightName = "bonesGameWing" + id + "right";
+            if(BoneMovieFactory.instance.model.getBonesStyle(leftName) != null)
             {
-               _leftWing = BoneMovieFactory.instance.creatBoneMovie(_loc3_,0,"fighting3d");
+               _leftWing = BoneMovieFactory.instance.creatBoneMovie(leftName,0,"fighting3d");
             }
-            _rightWing = BoneMovieFactory.instance.creatBoneMovie(_loc2_,0,"fighting3d");
+            _rightWing = BoneMovieFactory.instance.creatBoneMovie(rightName,0,"fighting3d");
             if(_leftWing)
             {
                _leftWing.x = -12;
@@ -941,7 +936,7 @@ package ddt.view.characterStarling
          }
       }
       
-      private function __onLoadWingComplete(param1:Event) : void
+      private function __onLoadWingComplete(e:Event) : void
       {
          _rightWing.removeEventListener("complete",__onLoadWingComplete);
          showCharacterWing();
@@ -959,14 +954,14 @@ package ddt.view.characterStarling
          }
       }
       
-      public function updateBuffEffect(param1:int, param2:Boolean) : void
+      public function updateBuffEffect(buffId:int, show:Boolean) : void
       {
-         if(param1 == 304)
+         if(buffId == 304)
          {
             StarlingObjectUtils.disposeObject(_buffEffect);
             _buffEffect = StarlingMain.instance.createImage("game_toxicosis","game.view.playerToxicosisPos");
          }
-         if(param2 && _buffEffect)
+         if(show && _buffEffect)
          {
             addChild(_buffEffect);
          }
@@ -979,7 +974,7 @@ package ddt.view.characterStarling
       
       override public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          StarlingObjectUtils.disposeObject(_ghostMovie);
          _ghostMovie = null;
          StarlingObjectUtils.disposeObject(_ghostShine);
@@ -1006,12 +1001,11 @@ package ddt.view.characterStarling
          _tempCryFace = null;
          if(_cryBmps)
          {
-            _loc1_ = 0;
-            while(_loc1_ < _cryBmps.length)
+            for(i = 0; i < _cryBmps.length; )
             {
-               ObjectUtils.disposeObject(_cryBmps[_loc1_]);
-               _cryBmps[_loc1_] = null;
-               _loc1_++;
+               ObjectUtils.disposeObject(_cryBmps[i]);
+               _cryBmps[i] = null;
+               i++;
             }
          }
          if(_rightWing)
@@ -1035,151 +1029,148 @@ package ddt.view.characterStarling
       
       private function drawSoul() : void
       {
-         var _loc8_:int = 0;
-         var _loc1_:int = 0;
-         var _loc4_:* = null;
-         var _loc5_:* = null;
-         var _loc6_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:* = NaN;
-         var _loc7_:Point = new Point(0,0);
+         var i:int = 0;
+         var frame:int = 0;
+         var tempMatrix:* = null;
+         var tempBitmapData:* = null;
+         var j:int = 0;
+         var tempRect:* = null;
+         var n:* = NaN;
+         var tempPoint:Point = new Point(0,0);
          if(_info.getShowSuits())
          {
             _soulFace = new BitmapData(_normalSuit.width,_normalSuit.height,true,0);
-            _loc8_ = 0;
-            while(_loc8_ < 4)
+            for(i = 0; i < 4; )
             {
-               _loc7_.x = _characterWidth * _loc8_;
-               _soulFace.copyPixels(_lackHpSuit,_frames[36],_loc7_,null,null,true);
-               _loc8_++;
+               tempPoint.x = _characterWidth * i;
+               _soulFace.copyPixels(_lackHpSuit,_frames[36],tempPoint,null,null,true);
+               i++;
             }
          }
          else
          {
             _soulFace = new BitmapData(_faceBitmapData.width,_faceBitmapData.height,true,0);
-            _loc1_ = 0;
-            _loc4_ = new Matrix();
-            _loc5_ = new BitmapData(_faceBitmapData.width,_faceBitmapData.height,true,0);
-            _loc6_ = 0;
-            while(_loc6_ < 4)
+            frame = 0;
+            tempMatrix = new Matrix();
+            tempBitmapData = new BitmapData(_faceBitmapData.width,_faceBitmapData.height,true,0);
+            for(j = 0; j < 4; )
             {
-               _loc7_.x = _characterWidth * _loc6_;
-               switch(int(_loc6_))
+               tempPoint.x = _characterWidth * j;
+               switch(int(j))
                {
                   case 0:
-                     _loc1_ = 0;
+                     frame = 0;
                      break;
                   case 1:
-                     _loc1_ = 10;
+                     frame = 10;
                      break;
                   case 2:
-                     _loc1_ = 14;
+                     frame = 14;
                      break;
                   case 3:
-                     _loc1_ = 17;
+                     frame = 17;
                }
-               _loc7_.x = _characterWidth * _loc6_;
-               _soulFace.copyPixels(_faceBitmapData,_frames[_loc1_],_loc7_,null,null,true);
-               _loc6_++;
+               tempPoint.x = _characterWidth * j;
+               _soulFace.copyPixels(_faceBitmapData,_frames[frame],tempPoint,null,null,true);
+               j++;
             }
-            _loc4_.scale(0.75,0.75);
+            tempMatrix.scale(0.75,0.75);
             var _loc9_:int = 0;
-            _loc7_.y = _loc9_;
-            _loc7_.x = _loc9_;
-            _loc5_.draw(_soulFace,_loc4_,null,null,null,true);
-            _loc2_ = new Rectangle(0,0,_characterWidth,_characterHeight);
+            tempPoint.y = _loc9_;
+            tempPoint.x = _loc9_;
+            tempBitmapData.draw(_soulFace,tempMatrix,null,null,null,true);
+            tempRect = new Rectangle(0,0,_characterWidth,_characterHeight);
             _soulFace.fillRect(_soulFace.rect,0);
-            _loc3_ = 0;
-            while(_loc3_ < 4)
+            for(n = 0; n < 4; )
             {
-               _loc2_.x = _loc3_ * _characterWidth * 0.75;
-               _loc7_.x = _characterWidth * _loc3_ + 7;
-               _loc7_.y = 5;
-               _soulFace.copyPixels(_faceDownBitmapdata,_frames[36],new Point(_loc3_ * _characterWidth,0),null,null,true);
-               _soulFace.copyPixels(_loc5_,_loc2_,_loc7_,null,null,true);
-               _soulFace.copyPixels(_faceupBitmapData,_frames[36],new Point(_loc3_ * _characterWidth,0),null,null,true);
-               _loc3_++;
+               tempRect.x = n * _characterWidth * 0.75;
+               tempPoint.x = _characterWidth * n + 7;
+               tempPoint.y = 5;
+               _soulFace.copyPixels(_faceDownBitmapdata,_frames[36],new Point(n * _characterWidth,0),null,null,true);
+               _soulFace.copyPixels(tempBitmapData,tempRect,tempPoint,null,null,true);
+               _soulFace.copyPixels(_faceupBitmapData,_frames[36],new Point(n * _characterWidth,0),null,null,true);
+               n++;
             }
             _loc9_ = 0;
-            _loc7_.y = _loc9_;
-            _loc7_.x = _loc9_;
-            _soulFace.applyFilter(_soulFace,_soulFace.rect,_loc7_,grayFilter);
-            _loc5_.dispose();
+            tempPoint.y = _loc9_;
+            tempPoint.x = _loc9_;
+            _soulFace.applyFilter(_soulFace,_soulFace.rect,tempPoint,grayFilter);
+            tempBitmapData.dispose();
          }
       }
       
       private function drawBomd() : void
       {
-         var _loc1_:BitmapData = new BitmapData(_body.width,_body.height,true,0);
-         _loc1_.fillRect(new Rectangle(0,0,_loc1_.height,_loc1_.height),0);
+         var blackBmd:BitmapData = new BitmapData(_body.width,_body.height,true,0);
+         blackBmd.fillRect(new Rectangle(0,0,blackBmd.height,blackBmd.height),0);
          if(_info.getShowSuits())
          {
-            _loc1_.copyPixels(_normalSuit,_frames[1],_frameStartPoint,null,null,true);
+            blackBmd.copyPixels(_normalSuit,_frames[1],_frameStartPoint,null,null,true);
          }
          else
          {
-            _loc1_.copyPixels(_faceDownBitmapdata,_frames[1],_frameStartPoint,null,null,true);
-            _loc1_.copyPixels(_faceBitmapData,_frames[1],_frameStartPoint,null,null,true);
-            _loc1_.copyPixels(_faceupBitmapData,_frames[1],_frameStartPoint,null,null,true);
+            blackBmd.copyPixels(_faceDownBitmapdata,_frames[1],_frameStartPoint,null,null,true);
+            blackBmd.copyPixels(_faceBitmapData,_frames[1],_frameStartPoint,null,null,true);
+            blackBmd.copyPixels(_faceupBitmapData,_frames[1],_frameStartPoint,null,null,true);
          }
-         drawBlack(_loc1_);
+         drawBlack(blackBmd);
          StarlingObjectUtils.disposeObject(blackBm,true);
-         blackBm = Image.fromBitmap(new Bitmap(_loc1_),false);
+         blackBm = Image.fromBitmap(new Bitmap(blackBmd),false);
       }
       
-      override public function drawFrame(param1:int, param2:int = 0, param3:Boolean = true) : void
+      override public function drawFrame(frame:int, type:int = 0, clearOld:Boolean = true) : void
       {
-         var _loc4_:BitmapData = null;
-         if(param2 == 1)
+         var bmd:BitmapData = null;
+         if(type == 1)
          {
-            _loc4_ = _faceDownBitmapdata;
+            bmd = _faceDownBitmapdata;
          }
-         else if(param2 == 2)
+         else if(type == 2)
          {
             if(_lackHpFaceBitmapdata)
             {
-               _loc4_ = _lackHpFaceBitmapdata[_specialType];
+               bmd = _lackHpFaceBitmapdata[_specialType];
             }
          }
-         else if(param2 == 3)
+         else if(type == 3)
          {
             if(_currentAction == CRY && _cryType > 0)
             {
-               _loc4_ = _tempCryFace;
+               bmd = _tempCryFace;
             }
             else
             {
-               _loc4_ = _faceBitmapData;
+               bmd = _faceBitmapData;
             }
          }
-         else if(param2 == 4)
+         else if(type == 4)
          {
-            _loc4_ = _faceupBitmapData;
+            bmd = _faceupBitmapData;
          }
-         else if(param2 == 5)
+         else if(type == 5)
          {
             if(_spBitmapData)
             {
-               _loc4_ = _spBitmapData[_specialType];
+               bmd = _spBitmapData[_specialType];
             }
          }
-         else if(param2 == 6)
+         else if(type == 6)
          {
-            _loc4_ = _normalSuit;
+            bmd = _normalSuit;
          }
-         else if(param2 == 7)
+         else if(type == 7)
          {
-            _loc4_ = _lackHpSuit;
+            bmd = _lackHpSuit;
          }
-         else if(param2 == 8)
+         else if(type == 8)
          {
-            _loc4_ = _soulFace;
+            bmd = _soulFace;
          }
          if(_currentAction == SOUL)
          {
             if(closeEys < 4)
             {
-               param1 = 1;
+               frame = 1;
             }
             else if(Math.random() < 0.008)
             {
@@ -1187,24 +1178,24 @@ package ddt.view.characterStarling
             }
             closeEys = Number(closeEys) + 1;
          }
-         if(_loc4_ != null)
+         if(bmd != null)
          {
-            if(param1 < 0 || param1 >= _frames.length)
+            if(frame < 0 || frame >= _frames.length)
             {
-               param1 = 0;
+               frame = 0;
             }
-            _currentframe = param1;
-            if(param3)
+            _currentframe = frame;
+            if(clearOld)
             {
                _body.bitmapData.fillRect(_rect,0);
             }
-            if(_currentAction == CRY && (param2 == 2 || param2 == 3))
+            if(_currentAction == CRY && (type == 2 || type == 3))
             {
-               _body.bitmapData.copyPixels(_loc4_,_frames[param1 - _cryTypes[_cryType]],_frameStartPoint,null,null,true);
+               _body.bitmapData.copyPixels(bmd,_frames[frame - _cryTypes[_cryType]],_frameStartPoint,null,null,true);
             }
             else
             {
-               _body.bitmapData.copyPixels(_loc4_,_frames[param1],_frameStartPoint,null,null,true);
+               _body.bitmapData.copyPixels(bmd,_frames[frame],_frameStartPoint,null,null,true);
             }
             if(_defaultFace.parent)
             {
@@ -1215,11 +1206,11 @@ package ddt.view.characterStarling
          }
          else
          {
-            if(param1 < 0 || param1 >= _frames.length)
+            if(frame < 0 || frame >= _frames.length)
             {
-               param1 = 0;
+               frame = 0;
             }
-            _currentframe = param1;
+            _currentframe = frame;
             StarlingObjectUtils.removeObject(_bodyImage);
             _container.addChild(_defaultFace);
             if(this.parent)
@@ -1234,9 +1225,9 @@ package ddt.view.characterStarling
          return _useLackHpSuit;
       }
       
-      public function set useLackHpSuit(param1:Boolean) : void
+      public function set useLackHpSuit(value:Boolean) : void
       {
-         _useLackHpSuit = param1;
+         _useLackHpSuit = value;
       }
       
       public function get useLackHpTurn() : int
@@ -1244,9 +1235,9 @@ package ddt.view.characterStarling
          return _useLackHpTurn;
       }
       
-      public function set useLackHpTurn(param1:int) : void
+      public function set useLackHpTurn(value:int) : void
       {
-         _useLackHpTurn = param1;
+         _useLackHpTurn = value;
       }
    }
 }

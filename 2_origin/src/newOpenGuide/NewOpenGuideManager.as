@@ -50,9 +50,9 @@ package newOpenGuide
       
       private var _coverSpriteInPlayCartoon:Sprite;
       
-      public function NewOpenGuideManager(param1:IEventDispatcher = null)
+      public function NewOpenGuideManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : NewOpenGuideManager
@@ -66,49 +66,47 @@ package newOpenGuide
       
       public function getMovePos() : Point
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc2_:int = PlayerManager.Instance.Self.Grade;
-         var _loc1_:int = openLevelList.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc1_)
+         var i:int = 0;
+         var tmpPos:* = null;
+         var curLevel:int = PlayerManager.Instance.Self.Grade;
+         var tmpLen:int = openLevelList.length;
+         for(i = 0; i < tmpLen; )
          {
-            if(_loc2_ == openLevelList[_loc4_])
+            if(curLevel == openLevelList[i])
             {
-               _loc3_ = openMovePosList[_loc4_];
-               if(_loc3_.x == 0 && _loc3_.y == 0)
+               tmpPos = openMovePosList[i];
+               if(tmpPos.x == 0 && tmpPos.y == 0)
                {
                   return MainToolBar.Instance.newBtnOpenCartoon();
                }
-               return _loc3_;
+               return tmpPos;
             }
-            _loc4_++;
+            i++;
          }
          return new Point(445,-10);
       }
       
-      public function getTitleStrIndexByLevel(param1:int) : Array
+      public function getTitleStrIndexByLevel(level:int) : Array
       {
-         var _loc6_:int = 0;
-         var _loc3_:Array = [-1,"",-1];
-         var _loc4_:String = "";
-         var _loc5_:int = -1;
-         var _loc2_:int = openLevelList.length;
-         _loc6_ = 0;
-         while(_loc6_ < _loc2_)
+         var i:int = 0;
+         var reArray:Array = [-1,"",-1];
+         var titleStr:String = "";
+         var tmpIndex:int = -1;
+         var tmpLen:int = openLevelList.length;
+         for(i = 0; i < tmpLen; )
          {
-            if(param1 == openLevelList[_loc6_])
+            if(level == openLevelList[i])
             {
-               _loc4_ = titleStrList[_loc6_];
-               _loc5_ = _loc6_ + 1;
+               titleStr = titleStrList[i];
+               tmpIndex = i + 1;
                break;
             }
-            _loc6_++;
+            i++;
          }
-         _loc3_[0] = _loc5_;
-         _loc3_[1] = _loc4_;
-         _loc3_[2] = param1;
-         return _loc3_;
+         reArray[0] = tmpIndex;
+         reArray[1] = titleStr;
+         reArray[2] = level;
+         return reArray;
       }
       
       public function closeShow() : void
@@ -119,10 +117,10 @@ package newOpenGuide
          PlayerManager.Instance.Self.removeEventListener("propertychange",__propertyChange);
       }
       
-      public function checkShow(param1:HallPlayerView, param2:IHallStateView) : void
+      public function checkShow(playerView:HallPlayerView, $hall:IHallStateView) : void
       {
-         _hall = param2;
-         _playerView = param1;
+         _hall = $hall;
+         _playerView = playerView;
          _rightView = new NewOpenGuideRightView();
          _rightView.x = 845;
          _rightView.y = 140;
@@ -132,15 +130,15 @@ package newOpenGuide
          PlayerManager.Instance.Self.addEventListener("propertychange",__propertyChange);
       }
       
-      private function __propertyChange(param1:PlayerPropertyEvent) : void
+      private function __propertyChange(event:PlayerPropertyEvent) : void
       {
-         var _loc2_:Boolean = false;
-         var _loc3_:int = 0;
-         if(param1.changedProperties["Grade"])
+         var canShowONS:Boolean = false;
+         var grade:int = 0;
+         if(event.changedProperties["Grade"])
          {
-            _loc2_ = false;
-            _loc3_ = PlayerManager.Instance.Self.Grade;
-            var _loc4_:* = _loc3_;
+            canShowONS = false;
+            grade = PlayerManager.Instance.Self.Grade;
+            var _loc4_:* = grade;
             if(14 !== _loc4_)
             {
                if(17 !== _loc4_)
@@ -159,7 +157,7 @@ package newOpenGuide
                                  {
                                     if(70 !== _loc4_)
                                     {
-                                       _loc2_ = true;
+                                       canShowONS = true;
                                     }
                                     else
                                     {
@@ -205,7 +203,7 @@ package newOpenGuide
             {
                CacheSysManager.lock("church_guide");
             }
-            if(_loc2_ == false)
+            if(canShowONS == false)
             {
                CityWideManager.Instance.hideView();
             }
@@ -238,8 +236,8 @@ package newOpenGuide
       
       private function judgeMiddleView() : void
       {
-         var _loc1_:Array = getTitleStrIndexByLevel(PlayerManager.Instance.Self.Grade);
-         if(_loc1_[0] > 0 && !PlayerManager.Instance.Self.isNewOnceFinish(200 + _loc1_[2]))
+         var tmp:Array = getTitleStrIndexByLevel(PlayerManager.Instance.Self.Grade);
+         if(tmp[0] > 0 && !PlayerManager.Instance.Self.isNewOnceFinish(200 + tmp[2]))
          {
             setTimeout(createOpenView,1000);
          }
@@ -247,47 +245,47 @@ package newOpenGuide
       
       private function createOpenCartoon() : void
       {
-         var _loc1_:MovieClip = ComponentFactory.Instance.creat(getOpenCartoonClassName());
-         _loc1_.mouseChildren = false;
-         _loc1_.mouseEnabled = false;
-         _loc1_.addEventListener("enterFrame",openCartoonPlayFrame);
-         _loc1_.gotoAndPlay(1);
-         var _loc2_:HallStateView = StateManager.getState("main") as HallStateView;
-         if(_loc2_)
+         var mc:MovieClip = ComponentFactory.Instance.creat(getOpenCartoonClassName());
+         mc.mouseChildren = false;
+         mc.mouseEnabled = false;
+         mc.addEventListener("enterFrame",openCartoonPlayFrame);
+         mc.gotoAndPlay(1);
+         var hallStateView:HallStateView = StateManager.getState("main") as HallStateView;
+         if(hallStateView)
          {
-            _loc2_.bgSprite.addChild(_loc1_);
+            hallStateView.bgSprite.addChild(mc);
          }
       }
       
-      private function openCartoonPlayFrame(param1:Event) : void
+      private function openCartoonPlayFrame(event:Event) : void
       {
-         var _loc2_:MovieClip = param1.currentTarget as MovieClip;
-         if(_loc2_.currentFrame == _loc2_.totalFrames)
+         var mc:MovieClip = event.currentTarget as MovieClip;
+         if(mc.currentFrame == mc.totalFrames)
          {
-            if(_loc2_.parent)
+            if(mc.parent)
             {
-               _loc2_.parent.removeChild(_loc2_);
+               mc.parent.removeChild(mc);
             }
-            _loc2_.stop();
-            _loc2_.removeEventListener("enterFrame",openCartoonPlayFrame);
+            mc.stop();
+            mc.removeEventListener("enterFrame",openCartoonPlayFrame);
             checkGuide();
          }
       }
       
       private function checkGuide() : void
       {
-         var _loc6_:* = null;
-         var _loc3_:* = null;
-         var _loc1_:* = null;
-         var _loc5_:Boolean = false;
+         var coverType:* = null;
+         var argsArr:* = null;
+         var arrowPos:* = null;
+         var isClickBag:Boolean = false;
          if(PlayerManager.Instance.Self.Grade >= 10)
          {
             _playerView.mapID = 0;
             SocketManager.Instance.out.sendLoadOtherPlayer();
          }
-         var _loc4_:int = PlayerManager.Instance.Self.Grade;
-         var _loc2_:int = 135;
-         var _loc7_:* = _loc4_;
+         var grade:int = PlayerManager.Instance.Self.Grade;
+         var rotation:int = 135;
+         var _loc7_:* = grade;
          if(14 !== _loc7_)
          {
             if(17 !== _loc7_)
@@ -306,89 +304,89 @@ package newOpenGuide
                               {
                                  if(70 === _loc7_)
                                  {
-                                    _loc6_ = "circle";
-                                    _loc3_ = [644,565,22];
-                                    _loc1_ = new Point(646,481);
-                                    _loc2_ = 0;
+                                    coverType = "circle";
+                                    argsArr = [644,565,22];
+                                    arrowPos = new Point(646,481);
+                                    rotation = 0;
                                     CacheSysManager.unlock("ddtkingGrade");
-                                    _loc5_ = true;
+                                    isClickBag = true;
                                  }
                               }
                               else
                               {
-                                 _loc6_ = "circle";
-                                 _loc3_ = [644,565,22];
-                                 _loc1_ = new Point(646,481);
-                                 _loc2_ = 0;
+                                 coverType = "circle";
+                                 argsArr = [644,565,22];
+                                 arrowPos = new Point(646,481);
+                                 rotation = 0;
                                  CacheSysManager.unlock("guard_core");
-                                 _loc5_ = true;
+                                 isClickBag = true;
                               }
                            }
                            else
                            {
-                              _loc6_ = "rect";
-                              _loc3_ = [785,385,220,150];
-                              _loc1_ = new Point(710,326);
-                              _loc2_ = -45;
+                              coverType = "rect";
+                              argsArr = [785,385,220,150];
+                              arrowPos = new Point(710,326);
+                              rotation = -45;
                               CacheSysManager.unlock("crypt_guide");
                            }
                         }
                         else
                         {
-                           _loc6_ = "ellipse";
-                           _loc3_ = [445,0,300,400];
-                           _loc1_ = new Point(760,385);
+                           coverType = "ellipse";
+                           argsArr = [445,0,300,400];
+                           arrowPos = new Point(760,385);
                            CacheSysManager.unlock("secret_area_guide");
                         }
                      }
                      else
                      {
-                        _loc6_ = "rect";
-                        _loc3_ = [685,0,335,380];
-                        _loc1_ = new Point(607,206);
-                        _loc2_ = -90;
+                        coverType = "rect";
+                        argsArr = [685,0,335,380];
+                        arrowPos = new Point(607,206);
+                        rotation = -90;
                         CacheSysManager.unlock("arena_guide");
                      }
                   }
                   else
                   {
-                     _loc6_ = "circle";
-                     _loc3_ = [589,173,142];
-                     _loc1_ = new Point(739,329);
+                     coverType = "circle";
+                     argsArr = [589,173,142];
+                     arrowPos = new Point(739,329);
                      CacheSysManager.unlock("farm_guide");
                   }
                }
                else
                {
-                  _loc6_ = "ellipse";
-                  _loc3_ = [439,173,142,223];
-                  _loc1_ = new Point(608,395);
+                  coverType = "ellipse";
+                  argsArr = [439,173,142,223];
+                  arrowPos = new Point(608,395);
                   CacheSysManager.unlock("sales_room_guide");
                }
             }
             else
             {
-               _loc6_ = "ellipse";
-               _loc3_ = [395,210,100,200];
-               _loc1_ = new Point(540,436);
+               coverType = "ellipse";
+               argsArr = [395,210,100,200];
+               arrowPos = new Point(540,436);
                CacheSysManager.unlock("consortia_guide");
             }
          }
          else
          {
-            _loc6_ = "ellipse";
-            _loc3_ = [436,190,100,180];
-            _loc1_ = new Point(579,342);
+            coverType = "ellipse";
+            argsArr = [436,190,100,180];
+            arrowPos = new Point(579,342);
             CacheSysManager.unlock("church_guide");
          }
-         if(_loc4_ > 10 && _loc6_ != null)
+         if(grade > 10 && coverType != null)
          {
             _hall.hideRightGrid();
             TweenLite.to(_rightView,0.8,{"x":1000});
             _playerView.touchable = false;
-            NewHandContainer.Instance.showGuideCover(_loc6_,_loc3_);
-            NewHandContainer.Instance.showArrow(100000,_loc2_,_loc1_,"","",LayerManager.Instance.getLayerByType(4),0,true);
-            if(_loc5_)
+            NewHandContainer.Instance.showGuideCover(coverType,argsArr);
+            NewHandContainer.Instance.showArrow(100000,rotation,arrowPos,"","",LayerManager.Instance.getLayerByType(4),0,true);
+            if(isClickBag)
             {
                BagAndInfoManager.Instance.addEventListener("open",__onBagOpenClikc);
             }
@@ -398,7 +396,7 @@ package newOpenGuide
                (_hall as EventDispatcher).addEventListener("hall_player_arrived",onHallPlayerArrived);
             }
          }
-         if(_loc4_ <= 10)
+         if(grade <= 10)
          {
             _playerView.setCenter();
          }
@@ -409,7 +407,7 @@ package newOpenGuide
          _coverSpriteInPlayCartoon = null;
       }
       
-      protected function __onBagOpenClikc(param1:Event) : void
+      protected function __onBagOpenClikc(e:Event) : void
       {
          if(_playerView)
          {
@@ -422,7 +420,7 @@ package newOpenGuide
          }
       }
       
-      protected function onHallAreaClick(param1:CEvent) : void
+      protected function onHallAreaClick(e:CEvent) : void
       {
          if(_playerView)
          {
@@ -434,7 +432,7 @@ package newOpenGuide
          }
       }
       
-      protected function onHallPlayerArrived(param1:CEvent) : void
+      protected function onHallPlayerArrived(e:CEvent) : void
       {
          _rightView.x = 845;
          (_hall as EventDispatcher).removeEventListener("hall_player_arrived",onHallPlayerArrived);
@@ -443,19 +441,19 @@ package newOpenGuide
       
       private function createOpenView() : void
       {
-         var _loc1_:NewOpenGuideMiddleView = new NewOpenGuideMiddleView();
-         _loc1_.addEventListener("complete",middleViewCompleteHandler);
-         LayerManager.Instance.addToLayer(_loc1_,0,true,1);
+         var middleView:NewOpenGuideMiddleView = new NewOpenGuideMiddleView();
+         middleView.addEventListener("complete",middleViewCompleteHandler);
+         LayerManager.Instance.addToLayer(middleView,0,true,1);
       }
       
-      private function middleViewCompleteHandler(param1:Event) : void
+      private function middleViewCompleteHandler(event:Event) : void
       {
-         var _loc6_:* = null;
-         var _loc3_:* = null;
-         var _loc5_:Number = NaN;
-         var _loc4_:NewOpenGuideMiddleView = param1.currentTarget as NewOpenGuideMiddleView;
-         _loc4_.removeEventListener("complete",middleViewCompleteHandler);
-         var _loc2_:int = PlayerManager.Instance.Self.Grade;
+         var tmpPos:* = null;
+         var selfPos:* = null;
+         var delay:Number = NaN;
+         var tmp:NewOpenGuideMiddleView = event.currentTarget as NewOpenGuideMiddleView;
+         tmp.removeEventListener("complete",middleViewCompleteHandler);
+         var level:int = PlayerManager.Instance.Self.Grade;
          if(isHasOpenCartoon())
          {
             _coverSpriteInPlayCartoon = new Sprite();
@@ -463,15 +461,15 @@ package newOpenGuide
             _coverSpriteInPlayCartoon.graphics.drawRect(-500,-300,2000,1200);
             _coverSpriteInPlayCartoon.graphics.endFill();
             LayerManager.Instance.addToLayer(_coverSpriteInPlayCartoon,0);
-            if(_loc2_ >= 3)
+            if(level >= 3)
             {
-               _loc6_ = getMapMovePos();
-               if(_loc6_)
+               tmpPos = getMapMovePos();
+               if(tmpPos)
                {
-                  _loc3_ = _playerView.getSelfPlayerPos();
-                  _loc5_ = Math.abs(_loc6_.x - _loc3_.x) / 1000;
-                  _playerView.moveBgToTargetPos(_loc6_.x,_loc6_.y,_loc5_);
-                  setTimeout(createOpenCartoon,_loc5_ * 1000);
+                  selfPos = _playerView.getSelfPlayerPos();
+                  delay = Math.abs(tmpPos.x - selfPos.x) / 1000;
+                  _playerView.moveBgToTargetPos(tmpPos.x,tmpPos.y,delay);
+                  setTimeout(createOpenCartoon,delay * 1000);
                }
             }
             else
@@ -479,15 +477,15 @@ package newOpenGuide
                createOpenCartoon();
             }
          }
-         else if(_loc2_ > 10)
+         else if(level > 10)
          {
-            _loc6_ = getMapMovePos();
-            if(_loc6_.x != 0)
+            tmpPos = getMapMovePos();
+            if(tmpPos.x != 0)
             {
-               _loc3_ = _playerView.getSelfPlayerPos();
-               _loc5_ = Math.abs(_loc6_.x - _loc3_.x) / 1000;
-               _playerView.moveBgToTargetPos(_loc6_.x,_loc6_.y,_loc5_);
-               setTimeout(checkGuide,(_loc5_ + 1) * 1000);
+               selfPos = _playerView.getSelfPlayerPos();
+               delay = Math.abs(tmpPos.x - selfPos.x) / 1000;
+               _playerView.moveBgToTargetPos(tmpPos.x,tmpPos.y,delay);
+               setTimeout(checkGuide,(delay + 1) * 1000);
             }
             else
             {
@@ -495,22 +493,22 @@ package newOpenGuide
             }
          }
          disposeDialogView();
-         if((_loc2_ == 3 || _loc2_ == 5 || _loc2_ == 6 || _loc2_ == 10) && !PlayerManager.Instance.Self.IsWeakGuildFinish(144))
+         if((level == 3 || level == 5 || level == 6 || level == 10) && !PlayerManager.Instance.Self.IsWeakGuildFinish(144))
          {
             _dialog = new NewOpenGuideDialogView();
-            if(_loc2_ == 3)
+            if(level == 3)
             {
                _dialog.show(LanguageMgr.GetTranslation("newOpenGuide.roomListOpenPrompt"));
             }
-            else if(_loc2_ == 5)
+            else if(level == 5)
             {
                _dialog.show(LanguageMgr.GetTranslation("newOpenGuide.storeOpenPrompt"));
             }
-            else if(_loc2_ == 6)
+            else if(level == 6)
             {
                _dialog.show(LanguageMgr.GetTranslation("newOpenGuide.reFight"));
             }
-            else if(_loc2_ == 10)
+            else if(level == 10)
             {
                _dialog.show(LanguageMgr.GetTranslation("newOpenGuide.crossDoorPrompt"));
             }
@@ -526,7 +524,7 @@ package newOpenGuide
          disposeDialogView();
       }
       
-      protected function onDialogClick(param1:MouseEvent) : void
+      protected function onDialogClick(me:MouseEvent) : void
       {
          TweenLite.killTweensOf(_dialog);
          _dialog.removeEventListener("click",onDialogClick);
@@ -541,8 +539,8 @@ package newOpenGuide
       
       private function getBuildOrNpcName() : String
       {
-         var _loc1_:int = PlayerManager.Instance.Self.Grade;
-         var _loc2_:* = _loc1_;
+         var tmpGrade:int = PlayerManager.Instance.Self.Grade;
+         var _loc2_:* = tmpGrade;
          if(3 !== _loc2_)
          {
             if(5 !== _loc2_)
@@ -584,14 +582,14 @@ package newOpenGuide
       
       private function isHasOpenCartoon() : Boolean
       {
-         var _loc1_:int = PlayerManager.Instance.Self.Grade;
-         return _loc1_ == 3 || _loc1_ == 5 || _loc1_ == 10 || _loc1_ == 14 || _loc1_ == 17 || _loc1_ == 18 || _loc1_ == 28 || _loc1_ == 30 || _loc1_ == 46;
+         var tmpGrade:int = PlayerManager.Instance.Self.Grade;
+         return tmpGrade == 3 || tmpGrade == 5 || tmpGrade == 10 || tmpGrade == 14 || tmpGrade == 17 || tmpGrade == 18 || tmpGrade == 28 || tmpGrade == 30 || tmpGrade == 46;
       }
       
       private function getMapMovePos() : Point
       {
-         var _loc1_:int = PlayerManager.Instance.Self.Grade;
-         var _loc2_:* = _loc1_;
+         var tmpGrade:int = PlayerManager.Instance.Self.Grade;
+         var _loc2_:* = tmpGrade;
          if(3 !== _loc2_)
          {
             if(5 !== _loc2_)

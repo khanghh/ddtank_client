@@ -25,7 +25,7 @@ package ddt.view.academyCommon.recommend
          addChild(_recommendBtn);
       }
       
-      override protected function __recommendBtn(param1:MouseEvent) : void
+      override protected function __recommendBtn(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(!AcademyManager.Instance.compareState(_info.info,PlayerManager.Instance.Self))

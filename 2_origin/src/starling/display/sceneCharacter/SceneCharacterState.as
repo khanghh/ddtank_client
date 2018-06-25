@@ -20,13 +20,13 @@ package starling.display.sceneCharacter
       
       protected var _currentType:String;
       
-      public function SceneCharacterState(param1:SceneCharacterTextureSet, param2:SceneCharacterActionSet, param3:SceneCharacterActionPointSet, param4:SceneCharacterDrawBase = null)
+      public function SceneCharacterState(textureSet:SceneCharacterTextureSet, actionSet:SceneCharacterActionSet, actionPointSet:SceneCharacterActionPointSet, draw:SceneCharacterDrawBase = null)
       {
          super();
-         _sceneCharacterSet = param1;
-         _sceneCharacterActionSet = param2;
-         _sceneCharacterActionPointSet = param3;
-         _sceneCharacterDraw = param4 || new SceneCharacterDrawBase();
+         _sceneCharacterSet = textureSet;
+         _sceneCharacterActionSet = actionSet;
+         _sceneCharacterActionPointSet = actionPointSet;
+         _sceneCharacterDraw = draw || new SceneCharacterDrawBase();
          updateSynthesis();
       }
       
@@ -44,30 +44,30 @@ package starling.display.sceneCharacter
          _sceneCharacterSynthesis = new SceneCharacterSynthesisBase(_sceneCharacterSet,sceneCharacterSynthesisCallBack);
       }
       
-      protected function sceneCharacterSynthesisCallBack(param1:SceneCharacterSynthesisBase) : void
+      protected function sceneCharacterSynthesisCallBack(synthesis:SceneCharacterSynthesisBase) : void
       {
-         _sceneCharacterDraw.setup(param1,_sceneCharacterActionSet,_sceneCharacterActionPointSet);
+         _sceneCharacterDraw.setup(synthesis,_sceneCharacterActionSet,_sceneCharacterActionPointSet);
          setSceneCharacterActionState = defaultActionState;
       }
       
-      public function updateTexture(param1:SceneCharacterTextureItem) : void
+      public function updateTexture(textureItem:SceneCharacterTextureItem) : void
       {
-         _sceneCharacterSet.replace(param1);
-         _sceneCharacterSynthesis.addCharacterFrames(param1);
+         _sceneCharacterSet.replace(textureItem);
+         _sceneCharacterSynthesis.addCharacterFrames(textureItem);
       }
       
-      public function removeTexture(param1:String) : void
+      public function removeTexture(type:String) : void
       {
-         _sceneCharacterSet.removeItem(param1);
-         _sceneCharacterSynthesis.removeCharacterFrames(param1);
+         _sceneCharacterSet.removeItem(type);
+         _sceneCharacterSynthesis.removeCharacterFrames(type);
       }
       
-      public function set setSceneCharacterActionState(param1:String) : void
+      public function set setSceneCharacterActionState(state:String) : void
       {
-         if(_currentType != param1)
+         if(_currentType != state)
          {
-            _currentType = param1;
-            _sceneCharacterDraw.state = param1;
+            _currentType = state;
+            _sceneCharacterDraw.state = state;
          }
       }
       
@@ -81,13 +81,13 @@ package starling.display.sceneCharacter
          return _currentType;
       }
       
-      public function set sceneCharacterDirection(param1:SceneCharacterDirection) : void
+      public function set sceneCharacterDirection(value:SceneCharacterDirection) : void
       {
-         if(_sceneCharacterDirection == param1)
+         if(_sceneCharacterDirection == value)
          {
             return;
          }
-         _sceneCharacterDirection = param1;
+         _sceneCharacterDirection = value;
       }
       
       public function get sceneCharacterSet() : SceneCharacterTextureSet
@@ -95,19 +95,19 @@ package starling.display.sceneCharacter
          return _sceneCharacterSet;
       }
       
-      public function set sceneCharacterSet(param1:SceneCharacterTextureSet) : void
+      public function set sceneCharacterSet(value:SceneCharacterTextureSet) : void
       {
-         _sceneCharacterSet = param1;
+         _sceneCharacterSet = value;
          updateSynthesis();
       }
       
-      public function set sceneCharacterBase(param1:SceneCharacterDrawBase) : void
+      public function set sceneCharacterBase(value:SceneCharacterDrawBase) : void
       {
          if(_sceneCharacterDraw)
          {
             _sceneCharacterDraw.dispose();
          }
-         _sceneCharacterDraw = param1;
+         _sceneCharacterDraw = value;
       }
       
       public function get sceneCharacterBase() : SceneCharacterDrawBase

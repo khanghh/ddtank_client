@@ -27,126 +27,126 @@ package dragonBones.cache
          super();
       }
       
-      public static function initWithArmatureData(param1:ArmatureData, param2:Number = 0) : AnimationCacheManager
+      public static function initWithArmatureData(armatureData:ArmatureData, frameRate:Number = 0) : AnimationCacheManager
       {
-         var _loc3_:* = null;
-         var _loc4_:AnimationCacheManager = new AnimationCacheManager();
-         _loc4_.armatureData = param1;
-         if(param2 <= 0)
+         var animationData:* = null;
+         var output:AnimationCacheManager = new AnimationCacheManager();
+         output.armatureData = armatureData;
+         if(frameRate <= 0)
          {
-            _loc3_ = param1.animationDataList[0];
-            if(_loc3_)
+            animationData = armatureData.animationDataList[0];
+            if(animationData)
             {
-               _loc4_.frameRate = _loc3_.frameRate;
+               output.frameRate = animationData.frameRate;
             }
          }
          else
          {
-            _loc4_.frameRate = param2;
+            output.frameRate = frameRate;
          }
-         return _loc4_;
+         return output;
       }
       
       public function initAllAnimationCache() : void
       {
          var _loc3_:int = 0;
          var _loc2_:* = armatureData.animationDataList;
-         for each(var _loc1_ in armatureData.animationDataList)
+         for each(var animationData in armatureData.animationDataList)
          {
-            animationCacheDic[_loc1_.name] = AnimationCache.initWithAnimationData(_loc1_,armatureData);
+            animationCacheDic[animationData.name] = AnimationCache.initWithAnimationData(animationData,armatureData);
          }
       }
       
-      public function initAnimationCache(param1:String) : void
+      public function initAnimationCache(animationName:String) : void
       {
-         animationCacheDic[param1] = AnimationCache.initWithAnimationData(armatureData.getAnimationData(param1),armatureData);
+         animationCacheDic[animationName] = AnimationCache.initWithAnimationData(armatureData.getAnimationData(animationName),armatureData);
       }
       
-      public function bindCacheUserArmatures(param1:Array) : void
+      public function bindCacheUserArmatures(armatures:Array) : void
       {
          var _loc4_:int = 0;
-         var _loc3_:* = param1;
-         for each(var _loc2_ in param1)
+         var _loc3_:* = armatures;
+         for each(var armature in armatures)
          {
-            bindCacheUserArmature(_loc2_);
+            bindCacheUserArmature(armature);
          }
       }
       
-      public function bindCacheUserArmature(param1:ICacheableArmature) : void
+      public function bindCacheUserArmature(armature:ICacheableArmature) : void
       {
-         var _loc2_:* = null;
-         param1.getAnimation().animationCacheManager = this;
-         var _loc3_:Object = param1.getSlotDic();
+         var cacheUser:* = null;
+         armature.getAnimation().animationCacheManager = this;
+         var slotDic:Object = armature.getSlotDic();
          var _loc5_:int = 0;
-         var _loc4_:* = _loc3_;
-         for each(_loc2_ in _loc3_)
+         var _loc4_:* = slotDic;
+         for each(cacheUser in slotDic)
          {
-            _loc2_.frameCache = slotFrameCacheDic[_loc2_.name];
+            cacheUser.frameCache = slotFrameCacheDic[cacheUser.name];
          }
       }
       
-      public function setCacheGeneratorArmature(param1:ICacheableArmature) : void
+      public function setCacheGeneratorArmature(armature:ICacheableArmature) : void
       {
-         var _loc3_:* = null;
-         cacheGeneratorArmature = param1;
-         var _loc4_:Object = param1.getSlotDic();
+         var cacheUser:* = null;
+         cacheGeneratorArmature = armature;
+         var slotDic:Object = armature.getSlotDic();
          var _loc6_:int = 0;
-         var _loc5_:* = param1.getSlotDic();
-         for each(_loc3_ in param1.getSlotDic())
+         var _loc5_:* = armature.getSlotDic();
+         for each(cacheUser in armature.getSlotDic())
          {
-            slotFrameCacheDic[_loc3_.name] = new SlotFrameCache();
+            slotFrameCacheDic[cacheUser.name] = new SlotFrameCache();
          }
          var _loc8_:int = 0;
          var _loc7_:* = animationCacheDic;
-         for each(var _loc2_ in animationCacheDic)
+         for each(var animationCache in animationCacheDic)
          {
-            _loc2_.initSlotTimelineCacheDic(_loc4_,slotFrameCacheDic);
+            animationCache.initSlotTimelineCacheDic(slotDic,slotFrameCacheDic);
          }
       }
       
-      public function generateAllAnimationCache(param1:Boolean) : void
+      public function generateAllAnimationCache(loop:Boolean) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = animationCacheDic;
-         for each(var _loc2_ in animationCacheDic)
+         for each(var animationCache in animationCacheDic)
          {
-            generateAnimationCache(_loc2_.name,param1);
+            generateAnimationCache(animationCache.name,loop);
          }
       }
       
-      public function generateAnimationCache(param1:String, param2:Boolean) : void
+      public function generateAnimationCache(animationName:String, loop:Boolean) : void
       {
-         var _loc8_:Number = NaN;
-         var _loc7_:Boolean = cacheGeneratorArmature.enableCache;
+         var lastProgress:Number = NaN;
+         var temp:Boolean = cacheGeneratorArmature.enableCache;
          cacheGeneratorArmature.enableCache = false;
-         var _loc5_:AnimationCache = animationCacheDic[param1];
-         if(!_loc5_)
+         var animationCache:AnimationCache = animationCacheDic[animationName];
+         if(!animationCache)
          {
             return;
          }
-         var _loc4_:IAnimationState = cacheGeneratorArmature.getAnimation().animationState;
-         var _loc6_:Number = 1 / frameRate;
-         if(param2)
+         var animationState:IAnimationState = cacheGeneratorArmature.getAnimation().animationState;
+         var passTime:Number = 1 / frameRate;
+         if(loop)
          {
-            cacheGeneratorArmature.getAnimation().gotoAndPlay(param1,0,-1,0);
+            cacheGeneratorArmature.getAnimation().gotoAndPlay(animationName,0,-1,0);
          }
          else
          {
-            cacheGeneratorArmature.getAnimation().gotoAndPlay(param1,0,-1,1);
+            cacheGeneratorArmature.getAnimation().gotoAndPlay(animationName,0,-1,1);
          }
-         var _loc3_:Boolean = cacheGeneratorArmature.enableEventDispatch;
+         var tempEnableEventDispatch:Boolean = cacheGeneratorArmature.enableEventDispatch;
          cacheGeneratorArmature.enableEventDispatch = false;
          do
          {
-            _loc8_ = _loc4_.progress;
-            cacheGeneratorArmature.advanceTime(_loc6_);
-            _loc5_.addFrame();
+            lastProgress = animationState.progress;
+            cacheGeneratorArmature.advanceTime(passTime);
+            animationCache.addFrame();
          }
-         while(_loc4_.progress >= _loc8_ && _loc4_.progress < 1);
+         while(animationState.progress >= lastProgress && animationState.progress < 1);
          
-         cacheGeneratorArmature.enableEventDispatch = _loc3_;
+         cacheGeneratorArmature.enableEventDispatch = tempEnableEventDispatch;
          resetCacheGeneratorArmature();
-         cacheGeneratorArmature.enableCache = _loc7_;
+         cacheGeneratorArmature.enableCache = temp;
       }
       
       public function resetCacheGeneratorArmature() : void
@@ -154,9 +154,9 @@ package dragonBones.cache
          cacheGeneratorArmature.resetAnimation();
       }
       
-      public function getAnimationCache(param1:String) : AnimationCache
+      public function getAnimationCache(animationName:String) : AnimationCache
       {
-         return animationCacheDic[param1];
+         return animationCacheDic[animationName];
       }
    }
 }

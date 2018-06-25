@@ -53,87 +53,86 @@ package starling.display
          addEventListener("removed",onRemovedChild);
       }
       
-      override public function render(param1:RenderSupport, param2:Number) : void
+      override public function render(support:RenderSupport, parentAlpha:Number) : void
       {
          if(is2D)
          {
-            super.render(param1,param2);
+            super.render(support,parentAlpha);
          }
          else
          {
-            param1.finishQuadBatch();
-            param1.pushMatrix3D();
-            param1.transformMatrix3D(this);
-            super.render(param1,param2);
-            param1.finishQuadBatch();
-            param1.popMatrix3D();
+            support.finishQuadBatch();
+            support.pushMatrix3D();
+            support.transformMatrix3D(this);
+            super.render(support,parentAlpha);
+            support.finishQuadBatch();
+            support.popMatrix3D();
          }
       }
       
-      override public function hitTest(param1:Point, param2:Boolean = false) : DisplayObject
+      override public function hitTest(localPoint:Point, forTouch:Boolean = false) : DisplayObject
       {
          if(is2D)
          {
-            return super.hitTest(param1,param2);
+            return super.hitTest(localPoint,forTouch);
          }
-         if(param2 && (!visible || !touchable))
+         if(forTouch && (!visible || !touchable))
          {
             return null;
          }
          sHelperMatrix.copyFrom(transformationMatrix3D);
          sHelperMatrix.invert();
          stage.getCameraPosition(this,sHelperPoint);
-         MatrixUtil.transformCoords3D(sHelperMatrix,param1.x,param1.y,0,sHelperPointAlt);
-         MathUtil.intersectLineWithXYPlane(sHelperPoint,sHelperPointAlt,param1);
-         return super.hitTest(param1,param2);
+         MatrixUtil.transformCoords3D(sHelperMatrix,localPoint.x,localPoint.y,0,sHelperPointAlt);
+         MathUtil.intersectLineWithXYPlane(sHelperPoint,sHelperPointAlt,localPoint);
+         return super.hitTest(localPoint,forTouch);
       }
       
-      private function onAddedChild(param1:Event) : void
+      private function onAddedChild(event:Event) : void
       {
-         recursivelySetIs3D(param1.target as DisplayObject,true);
+         recursivelySetIs3D(event.target as DisplayObject,true);
       }
       
-      private function onRemovedChild(param1:Event) : void
+      private function onRemovedChild(event:Event) : void
       {
-         recursivelySetIs3D(param1.target as DisplayObject,false);
+         recursivelySetIs3D(event.target as DisplayObject,false);
       }
       
-      private function recursivelySetIs3D(param1:DisplayObject, param2:Boolean) : void
+      private function recursivelySetIs3D(object:DisplayObject, value:Boolean) : void
       {
-         var _loc3_:* = null;
-         var _loc4_:int = 0;
-         var _loc5_:int = 0;
-         if(param1 is Sprite3D)
+         var container:* = null;
+         var numChildren:int = 0;
+         var i:int = 0;
+         if(object is Sprite3D)
          {
             return;
          }
-         if(param1 is DisplayObjectContainer)
+         if(object is DisplayObjectContainer)
          {
-            _loc3_ = param1 as DisplayObjectContainer;
-            _loc4_ = _loc3_.numChildren;
-            _loc5_ = 0;
-            while(_loc5_ < _loc4_)
+            container = object as DisplayObjectContainer;
+            numChildren = container.numChildren;
+            for(i = 0; i < numChildren; )
             {
-               recursivelySetIs3D(_loc3_.getChildAt(_loc5_),param2);
-               _loc5_++;
+               recursivelySetIs3D(container.getChildAt(i),value);
+               i++;
             }
          }
-         param1.setIs3D(param2);
+         object.setIs3D(value);
       }
       
       private function updateMatrices() : void
       {
-         var _loc7_:Number = this.x;
-         var _loc6_:Number = this.y;
-         var _loc1_:Number = this.scaleX;
-         var _loc2_:Number = this.scaleY;
-         var _loc3_:Number = this.pivotX;
-         var _loc4_:Number = this.pivotY;
-         var _loc5_:Number = this.rotation;
+         var x:Number = this.x;
+         var y:Number = this.y;
+         var scaleX:Number = this.scaleX;
+         var scaleY:Number = this.scaleY;
+         var pivotX:Number = this.pivotX;
+         var pivotY:Number = this.pivotY;
+         var rotationZ:Number = this.rotation;
          mTransformationMatrix3D.identity();
-         if(_loc1_ != 1 || _loc2_ != 1 || mScaleZ != 1)
+         if(scaleX != 1 || scaleY != 1 || mScaleZ != 1)
          {
-            mTransformationMatrix3D.appendScale(_loc1_ || 0.00001,_loc2_ || 0.00001,mScaleZ || 0.00001);
+            mTransformationMatrix3D.appendScale(scaleX || 0.00001,scaleY || 0.00001,mScaleZ || 0.00001);
          }
          if(mRotationX != 0)
          {
@@ -143,17 +142,17 @@ package starling.display
          {
             mTransformationMatrix3D.appendRotation(rad2deg(mRotationY),Vector3D.Y_AXIS);
          }
-         if(_loc5_ != 0)
+         if(rotationZ != 0)
          {
-            mTransformationMatrix3D.appendRotation(rad2deg(_loc5_),Vector3D.Z_AXIS);
+            mTransformationMatrix3D.appendRotation(rad2deg(rotationZ),Vector3D.Z_AXIS);
          }
-         if(_loc7_ != 0 || _loc6_ != 0 || mZ != 0)
+         if(x != 0 || y != 0 || mZ != 0)
          {
-            mTransformationMatrix3D.appendTranslation(_loc7_,_loc6_,mZ);
+            mTransformationMatrix3D.appendTranslation(x,y,mZ);
          }
-         if(_loc3_ != 0 || _loc4_ != 0 || mPivotZ != 0)
+         if(pivotX != 0 || pivotY != 0 || mPivotZ != 0)
          {
-            mTransformationMatrix3D.prependTranslation(-_loc3_,-_loc4_,-mPivotZ);
+            mTransformationMatrix3D.prependTranslation(-pivotX,-pivotY,-mPivotZ);
          }
          if(is2D)
          {
@@ -181,9 +180,9 @@ package starling.display
          return mTransformationMatrix;
       }
       
-      override public function set transformationMatrix(param1:Matrix) : void
+      override public function set transformationMatrix(value:Matrix) : void
       {
-         .super.transformationMatrix = param1;
+         .super.transformationMatrix = value;
          mZ = 0;
          mPivotZ = 0;
          mRotationY = 0;
@@ -201,15 +200,15 @@ package starling.display
          return mTransformationMatrix3D;
       }
       
-      override public function set x(param1:Number) : void
+      override public function set x(value:Number) : void
       {
-         .super.x = param1;
+         .super.x = value;
          mTransformationChanged = true;
       }
       
-      override public function set y(param1:Number) : void
+      override public function set y(value:Number) : void
       {
-         .super.y = param1;
+         .super.y = value;
          mTransformationChanged = true;
       }
       
@@ -218,21 +217,21 @@ package starling.display
          return mZ;
       }
       
-      public function set z(param1:Number) : void
+      public function set z(value:Number) : void
       {
-         mZ = param1;
+         mZ = value;
          mTransformationChanged = true;
       }
       
-      override public function set pivotX(param1:Number) : void
+      override public function set pivotX(value:Number) : void
       {
-         .super.pivotX = param1;
+         .super.pivotX = value;
          mTransformationChanged = true;
       }
       
-      override public function set pivotY(param1:Number) : void
+      override public function set pivotY(value:Number) : void
       {
-         .super.pivotY = param1;
+         .super.pivotY = value;
          mTransformationChanged = true;
       }
       
@@ -241,21 +240,21 @@ package starling.display
          return mPivotZ;
       }
       
-      public function set pivotZ(param1:Number) : void
+      public function set pivotZ(value:Number) : void
       {
-         mPivotZ = param1;
+         mPivotZ = value;
          mTransformationChanged = true;
       }
       
-      override public function set scaleX(param1:Number) : void
+      override public function set scaleX(value:Number) : void
       {
-         .super.scaleX = param1;
+         .super.scaleX = value;
          mTransformationChanged = true;
       }
       
-      override public function set scaleY(param1:Number) : void
+      override public function set scaleY(value:Number) : void
       {
-         .super.scaleY = param1;
+         .super.scaleY = value;
          mTransformationChanged = true;
       }
       
@@ -264,25 +263,25 @@ package starling.display
          return mScaleZ;
       }
       
-      public function set scaleZ(param1:Number) : void
+      public function set scaleZ(value:Number) : void
       {
-         mScaleZ = param1;
+         mScaleZ = value;
          mTransformationChanged = true;
       }
       
-      override public function set skewX(param1:Number) : void
+      override public function set skewX(value:Number) : void
       {
          throw new Error("3D objects do not support skewing");
       }
       
-      override public function set skewY(param1:Number) : void
+      override public function set skewY(value:Number) : void
       {
          throw new Error("3D objects do not support skewing");
       }
       
-      override public function set rotation(param1:Number) : void
+      override public function set rotation(value:Number) : void
       {
-         .super.rotation = param1;
+         .super.rotation = value;
          mTransformationChanged = true;
       }
       
@@ -291,9 +290,9 @@ package starling.display
          return mRotationX;
       }
       
-      public function set rotationX(param1:Number) : void
+      public function set rotationX(value:Number) : void
       {
-         mRotationX = MathUtil.normalizeAngle(param1);
+         mRotationX = MathUtil.normalizeAngle(value);
          mTransformationChanged = true;
       }
       
@@ -302,9 +301,9 @@ package starling.display
          return mRotationY;
       }
       
-      public function set rotationY(param1:Number) : void
+      public function set rotationY(value:Number) : void
       {
-         mRotationY = MathUtil.normalizeAngle(param1);
+         mRotationY = MathUtil.normalizeAngle(value);
          mTransformationChanged = true;
       }
       
@@ -313,9 +312,9 @@ package starling.display
          return rotation;
       }
       
-      public function set rotationZ(param1:Number) : void
+      public function set rotationZ(value:Number) : void
       {
-         rotation = param1;
+         rotation = value;
       }
    }
 }

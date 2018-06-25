@@ -69,23 +69,22 @@ package happyLittleGame.cubesGame
       
       private function initView() : void
       {
-         var _loc3_:* = 0;
-         var _loc1_:* = null;
-         var _loc2_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.cubeGameRankView.bg");
-         addChild(_loc2_);
+         var i:* = 0;
+         var item:* = null;
+         var bg:Bitmap = ComponentFactory.Instance.creatBitmap("asset.cubeGameRankView.bg");
+         addChild(bg);
          _todayBtn = ComponentFactory.Instance.creatComponentByStylename("cubeGameRankView.todayBtn");
          addChild(_todayBtn);
          _totalBtn = ComponentFactory.Instance.creatComponentByStylename("cubeGameRankView.totalBtn");
          addChild(_totalBtn);
          _list = ComponentFactory.Instance.creatComponentByStylename("cubeGameRankView.list");
          addChild(_list);
-         _loc3_ = uint(0);
-         while(_loc3_ < 10)
+         for(i = uint(0); i < 10; )
          {
-            _loc1_ = new CubeGameRankItem();
-            _list.addChild(_loc1_);
-            _items.push(_loc1_);
-            _loc3_++;
+            item = new CubeGameRankItem();
+            _list.addChild(item);
+            _items.push(item);
+            i++;
          }
          _restartBtn = ComponentFactory.Instance.creatComponentByStylename("cubeGameRankView.restartBtn");
          _restartBtn.addEventListener("click",__onClick);
@@ -130,16 +129,16 @@ package happyLittleGame.cubesGame
       
       private function setPageMaxCnt() : void
       {
-         var _loc1_:Vector.<CubeGameRankData> = CubeGameManager.getInstance().getRankDataList(0,16777215,_isTotalRank);
-         var _loc2_:uint = Math.ceil(_loc1_.length / 10);
-         _loc2_ = _loc2_ == 0?1:_loc2_;
-         _pageTxt.text = _pageIdx + "/" + _loc2_;
+         var rankDataList:Vector.<CubeGameRankData> = CubeGameManager.getInstance().getRankDataList(0,16777215,_isTotalRank);
+         var len:uint = Math.ceil(rankDataList.length / 10);
+         len = len == 0?1:len;
+         _pageTxt.text = _pageIdx + "/" + len;
       }
       
-      private function __onClick(param1:MouseEvent) : void
+      private function __onClick(evt:MouseEvent) : void
       {
-         var _loc2_:SimpleBitmapButton = param1.currentTarget as SimpleBitmapButton;
-         var _loc3_:* = _loc2_;
+         var target:SimpleBitmapButton = evt.currentTarget as SimpleBitmapButton;
+         var _loc3_:* = target;
          if(_totalBtn !== _loc3_)
          {
             if(_todayBtn !== _loc3_)
@@ -173,12 +172,12 @@ package happyLittleGame.cubesGame
          SoundManager.instance.playButtonSound();
       }
       
-      private function __pageClick(param1:MouseEvent) : void
+      private function __pageClick(evt:MouseEvent) : void
       {
-         var _loc3_:BaseButton = param1.currentTarget as BaseButton;
-         var _loc2_:Vector.<CubeGameRankData> = CubeGameManager.getInstance().getRankDataList(0,16777215,_isTotalRank);
-         var _loc4_:uint = Math.ceil(_loc2_.length / 10);
-         var _loc5_:* = _loc3_;
+         var target:BaseButton = evt.currentTarget as BaseButton;
+         var rankDataList:Vector.<CubeGameRankData> = CubeGameManager.getInstance().getRankDataList(0,16777215,_isTotalRank);
+         var len:uint = Math.ceil(rankDataList.length / 10);
+         var _loc5_:* = target;
          if(_pagerightBtn !== _loc5_)
          {
             if(_pageleftBtn !== _loc5_)
@@ -192,7 +191,7 @@ package happyLittleGame.cubesGame
                }
                else
                {
-                  _pageIdx = _loc4_;
+                  _pageIdx = len;
                }
             }
             else
@@ -211,9 +210,9 @@ package happyLittleGame.cubesGame
          }
          else
          {
-            if(_pageIdx >= _loc4_)
+            if(_pageIdx >= len)
             {
-               §§push(_loc4_);
+               §§push(len);
             }
             else
             {
@@ -226,36 +225,35 @@ package happyLittleGame.cubesGame
          SoundManager.instance.playButtonSound();
       }
       
-      private function updateView(param1:FunnyGamesEvent = null) : void
+      private function updateView(evt:FunnyGamesEvent = null) : void
       {
-         var _loc8_:int = 0;
-         var _loc5_:* = null;
+         var i:int = 0;
+         var item:* = null;
          setPageMaxCnt();
-         var _loc3_:uint = (_pageIdx - 1) * 10;
-         var _loc7_:uint = this._pageIdx * 10;
-         var _loc6_:Vector.<CubeGameRankData> = CubeGameManager.getInstance().getRankDataList(_loc3_,_loc7_,_isTotalRank);
-         _loc8_ = 0;
-         while(_loc8_ < 10)
+         var startIndex:uint = (_pageIdx - 1) * 10;
+         var endIndex:uint = this._pageIdx * 10;
+         var rankDataList:Vector.<CubeGameRankData> = CubeGameManager.getInstance().getRankDataList(startIndex,endIndex,_isTotalRank);
+         for(i = 0; i < 10; )
          {
-            _loc5_ = _items[_loc8_];
-            if(_loc5_)
+            item = _items[i];
+            if(item)
             {
-               _loc5_.clear();
-               if(_loc8_ < _loc6_.length)
+               item.clear();
+               if(i < rankDataList.length)
                {
-                  _loc5_.data = _loc6_[_loc8_];
+                  item.data = rankDataList[i];
                }
             }
-            _loc8_++;
+            i++;
          }
          _list.arrange();
-         var _loc2_:int = CubeGameManager.getInstance().getSelfRank(true);
-         _myTotalRankTxt.text = _loc2_ == -1?LanguageMgr.GetTranslation("ddt.simpleGameRank.frame.noRank"):_loc2_.toString();
-         var _loc4_:int = CubeGameManager.getInstance().getSelfRank();
-         _myTodayRankTxt.text = _loc4_ == -1?LanguageMgr.GetTranslation("ddt.simpleGameRank.frame.noRank"):_loc4_.toString();
+         var myTotalRank:int = CubeGameManager.getInstance().getSelfRank(true);
+         _myTotalRankTxt.text = myTotalRank == -1?LanguageMgr.GetTranslation("ddt.simpleGameRank.frame.noRank"):myTotalRank.toString();
+         var myTodayRank:int = CubeGameManager.getInstance().getSelfRank();
+         _myTodayRankTxt.text = myTodayRank == -1?LanguageMgr.GetTranslation("ddt.simpleGameRank.frame.noRank"):myTodayRank.toString();
       }
       
-      private function updateGameInfo(param1:CubeGameEvent = null) : void
+      private function updateGameInfo(evt:CubeGameEvent = null) : void
       {
          _historyScoreTxt.text = CubeGameManager.getInstance().gameInfo.historyHgihScore.toString();
          _todayScoreTxt.text = CubeGameManager.getInstance().gameInfo.dailyHighScore.toString();

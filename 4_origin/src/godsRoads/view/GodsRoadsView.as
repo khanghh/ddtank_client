@@ -100,8 +100,8 @@ package godsRoads.view
       public function initView() : void
       {
          addToContent(_view);
-         var _loc1_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.GodsRoads.bg");
-         _view.addChild(_loc1_);
+         var bg:Bitmap = ComponentFactory.Instance.creatBitmap("asset.GodsRoads.bg");
+         _view.addChild(bg);
          _listPanel = ComponentFactory.Instance.creatComponentByStylename("godsRoads.missionList");
          _view.addChild(_listPanel);
          _listPanel.list.setListData(_model.godsRoadsData.currentSteps.missionVos);
@@ -149,22 +149,21 @@ package godsRoads.view
       
       private function initBtn() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < 7)
+         var i:int = 0;
+         for(i = 0; i < 7; )
          {
-            _btnArr[_loc1_] = ComponentFactory.Instance.creat("godsRoads.GodsRoadsFlag" + (_loc1_ + 1),[_loc1_ + 1]);
-            _btnArr[_loc1_].enable = false;
-            _view.addChild(_btnArr[_loc1_]);
-            _loc1_++;
+            _btnArr[i] = ComponentFactory.Instance.creat("godsRoads.GodsRoadsFlag" + (i + 1),[i + 1]);
+            _btnArr[i].enable = false;
+            _view.addChild(_btnArr[i]);
+            i++;
          }
       }
       
-      public function changeSteps(param1:int, param2:int = 0) : void
+      public function changeSteps(lv:int, mission:int = 0) : void
       {
          _listPanel.vectorListModel.clear();
-         _stepIsOpen = _btnArr[param1 - 1].isOpened;
-         _currentLv = param1;
+         _stepIsOpen = _btnArr[lv - 1].isOpened;
+         _currentLv = lv;
          _currentStep = _model.godsRoadsData.steps[_currentLv - 1];
          if(_currentStep.getFinishPerNum() == 100)
          {
@@ -183,41 +182,40 @@ package godsRoads.view
          }
          _listPanel.list.setListData(_currentStep.missionVos);
          _listPanel.list.updateListView();
-         _listPanel.list.currentSelectedIndex = param2;
+         _listPanel.list.currentSelectedIndex = mission;
          _stepProgressTxt.text = LanguageMgr.GetTranslation("ddt.godsRoads.stepProgress");
          _stepProgressNum.text = _currentStep.getFinishPerString();
          GodRoadsController.instance.lastStep = _currentStep.currentStep;
          flushStepAwards();
       }
       
-      public function updateView(param1:GodsRoadsModel, param2:int = 0, param3:int = 0) : void
+      public function updateView(_model:GodsRoadsModel, stepIndex:int = 0, missionIndex:int = 0) : void
       {
-         var _loc4_:int = 0;
-         _data = param1.godsRoadsData;
-         _loc4_ = 0;
-         while(_loc4_ < 7)
+         var i:int = 0;
+         _data = _model.godsRoadsData;
+         for(i = 0; i < 7; )
          {
-            if(_loc4_ + 1 <= _data.currentLevel)
+            if(i + 1 <= _data.currentLevel)
             {
-               _btnArr[_loc4_].enable = true;
-               if(_loc4_ + 1 <= _data.currentLevel)
+               _btnArr[i].enable = true;
+               if(i + 1 <= _data.currentLevel)
                {
-                  _btnArr[_loc4_].progressNum = _data.steps[_loc4_].getFinishPerNum();
+                  _btnArr[i].progressNum = _data.steps[i].getFinishPerNum();
                }
                else
                {
-                  _btnArr[_loc4_].showProgress = false;
+                  _btnArr[i].showProgress = false;
                }
             }
             else
             {
-               _btnArr[_loc4_].enable = false;
+               _btnArr[i].enable = false;
             }
-            _loc4_++;
+            i++;
          }
-         if(param2)
+         if(stepIndex)
          {
-            changeSteps(param2,param3);
+            changeSteps(stepIndex,missionIndex);
          }
          else
          {
@@ -227,24 +225,23 @@ package godsRoads.view
       
       private function flushStepAwards() : void
       {
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var awardsBox:* = null;
+         var itemInfo:* = null;
+         var cell:* = null;
          ObjectUtils.disposeAllChildren(_stepAwardsView);
-         var _loc4_:Array = _currentStep.awards;
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_.length)
+         var awardsArr:Array = _currentStep.awards;
+         for(i = 0; i < awardsArr.length; )
          {
-            _loc2_ = ComponentFactory.Instance.creatBitmap("asset.godsRoads.stepAwardsBox");
-            _loc3_ = _loc4_[_loc5_] as InventoryItemInfo;
-            _loc1_ = new BagCell(_loc5_,_loc3_,false,_loc2_,false);
-            _loc1_.setContentSize(48,48);
-            _loc1_.setCount(_loc4_[_loc5_].Count);
-            _loc1_.x = _loc5_ % 5 * 50;
-            _loc1_.y = int(_loc5_ / 5) * 50;
-            _stepAwardsView.addChild(_loc1_);
-            _loc5_++;
+            awardsBox = ComponentFactory.Instance.creatBitmap("asset.godsRoads.stepAwardsBox");
+            itemInfo = awardsArr[i] as InventoryItemInfo;
+            cell = new BagCell(i,itemInfo,false,awardsBox,false);
+            cell.setContentSize(48,48);
+            cell.setCount(awardsArr[i].Count);
+            cell.x = i % 5 * 50;
+            cell.y = int(i / 5) * 50;
+            _stepAwardsView.addChild(cell);
+            i++;
          }
       }
       
@@ -260,74 +257,73 @@ package godsRoads.view
          _bigBtn.addEventListener("click",getStepAwards);
       }
       
-      private function __response(param1:FrameEvent) : void
+      private function __response(e:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1 || param1.responseCode == 4)
+         if(e.responseCode == 0 || e.responseCode == 1 || e.responseCode == 4)
          {
             removeEventListener("response",__response);
             dispose();
          }
       }
       
-      private function getMissionAwards(param1:MouseEvent) : void
+      private function getMissionAwards(e:MouseEvent) : void
       {
          SocketManager.Instance.out.getGodsRoadsAwards(1,_currentMissionID);
       }
       
-      private function getStepAwards(param1:MouseEvent) : void
+      private function getStepAwards(e:MouseEvent) : void
       {
          SocketManager.Instance.out.getGodsRoadsAwards(2,_currentLv);
       }
       
-      private function __itemClick(param1:ListItemEvent) : void
+      private function __itemClick(e:ListItemEvent) : void
       {
-         var _loc10_:int = 0;
-         var _loc5_:* = null;
-         var _loc7_:* = null;
-         var _loc4_:* = null;
+         var i:int = 0;
+         var awardsBox:* = null;
+         var itemInfo:* = null;
+         var cell:* = null;
          ObjectUtils.disposeAllChildren(_missionAwardsView);
-         var _loc6_:GodsRoadsMisstionCell = param1.cell as GodsRoadsMisstionCell;
-         var _loc3_:GodsRoadsMissionVo = _loc6_.getCellValue();
-         _currentMissionID = _loc3_.ID;
-         GodRoadsController.instance.lastMssion = param1.index;
-         var _loc8_:Array = _loc3_.awards;
-         _loc10_ = 0;
-         while(_loc10_ < _loc8_.length)
+         var missionCell:GodsRoadsMisstionCell = e.cell as GodsRoadsMisstionCell;
+         var mVo:GodsRoadsMissionVo = missionCell.getCellValue();
+         _currentMissionID = mVo.ID;
+         GodRoadsController.instance.lastMssion = e.index;
+         var awardsArr:Array = mVo.awards;
+         for(i = 0; i < awardsArr.length; )
          {
-            _loc5_ = ComponentFactory.Instance.creatBitmap("asset.godsRoads.missionAwardsBox");
-            _loc7_ = _loc8_[_loc10_] as InventoryItemInfo;
-            _loc4_ = new BagCell(_loc10_,_loc7_,false,_loc5_,false);
-            _loc4_.setContentSize(42,42);
-            _loc4_.setCount(_loc8_[_loc10_].Count);
-            _loc4_.x = _loc10_ % 5 * 44;
-            _loc4_.y = int(_loc10_ / 5) * 44;
-            _missionAwardsView.addChild(_loc4_);
-            _loc10_++;
+            awardsBox = ComponentFactory.Instance.creatBitmap("asset.godsRoads.missionAwardsBox");
+            itemInfo = awardsArr[i] as InventoryItemInfo;
+            cell = new BagCell(i,itemInfo,false,awardsBox,false);
+            cell.setContentSize(42,42);
+            cell.setCount(awardsArr[i].Count);
+            cell.x = i % 5 * 44;
+            cell.y = int(i / 5) * 44;
+            _missionAwardsView.addChild(cell);
+            i++;
          }
-         var _loc9_:GodsRoadsMissionInfo = _model.getMissionInfoById(_loc3_.ID);
-         if(_loc9_.Detail.length > 26)
+         var info:GodsRoadsMissionInfo = _model.getMissionInfoById(mVo.ID);
+         if(info.Detail.length > 26)
          {
-            _contentTxt.text = _loc9_.Detail.substring(0,26) + "...";
+            _contentTxt.text = info.Detail.substring(0,26) + "...";
          }
          else
          {
-            _contentTxt.text = _loc9_.Detail;
+            _contentTxt.text = info.Detail;
          }
-         var _loc2_:int = _loc3_.condition1;
-         if(_loc2_ > _loc9_.Para2)
+         var tempInt:int = mVo.condition1;
+         if(tempInt > info.Para2)
          {
-            _loc2_ = _loc9_.Para2;
+            tempInt = info.Para2;
          }
-         _progressTxt.text = _loc2_ + "/" + _loc9_.Para2;
-         if(_loc3_.isFinished)
+         _progressTxt.text = tempInt + "/" + info.Para2;
+         if(mVo.isFinished)
          {
-            _progressTxt.text = _loc9_.Para2 + "/" + _loc9_.Para2;
+            _progressTxt.text = info.Para2 + "/" + info.Para2;
             _statusTxt.textFormatStyle = "godsRoads.TextFormat5";
             _statusTxt.filterString = "godsRoads.GF5";
             _statusTxt.mouseEnabled = false;
             _statusTxt.htmlText = LanguageMgr.GetTranslation("ddt.godsRoads.finishedTxt");
             _statusTxt.removeEventListener("link",__linkFunc);
-            if(_loc3_.isGetAwards)
+            if(mVo.isGetAwards)
             {
                _smallBtn.enable = false;
             }
@@ -344,7 +340,7 @@ package godsRoads.view
                _statusTxt.textFormatStyle = "godsRoads.TextFormat6";
                _statusTxt.filterString = "godsRoads.GF6";
                _statusTxt.mouseEnabled = true;
-               _statusTxt.htmlText = "<u><a href=\'event:" + _loc9_.IndexType + "\'>" + LanguageMgr.GetTranslation("ddt.godsRoads.gotoView") + "</a></u>";
+               _statusTxt.htmlText = "<u><a href=\'event:" + info.IndexType + "\'>" + LanguageMgr.GetTranslation("ddt.godsRoads.gotoView") + "</a></u>";
                _statusTxt.addEventListener("link",__linkFunc);
             }
             else
@@ -361,10 +357,10 @@ package godsRoads.view
          }
       }
       
-      private function __linkFunc(param1:TextEvent) : void
+      private function __linkFunc(e:TextEvent) : void
       {
-         var _loc2_:int = param1.text;
-         switch(int(_loc2_) - 31)
+         var indexType:int = e.text;
+         switch(int(indexType) - 31)
          {
             case 0:
                if(PlayerManager.Instance.Self.Grade < 8)

@@ -23,37 +23,35 @@ package AvatarCollection.view
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var tmp:* = null;
          _itemList = new Vector.<AvatarCollectionItemCell>();
-         _loc2_ = 0;
-         while(_loc2_ < 12)
+         for(i = 0; i < 12; )
          {
-            _loc1_ = new AvatarCollectionItemCell();
-            _loc1_.x = _loc2_ % 6 * 84;
-            _loc1_.y = int(_loc2_ / 6) * 87;
-            addChild(_loc1_);
-            _itemList.push(_loc1_);
-            _loc2_++;
+            tmp = new AvatarCollectionItemCell();
+            tmp.x = i % 6 * 84;
+            tmp.y = int(i / 6) * 87;
+            addChild(tmp);
+            _itemList.push(tmp);
+            i++;
          }
       }
       
-      public function refreshView(param1:Array) : void
+      public function refreshView(dataList:Array) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         _dataList = param1;
-         var _loc3_:int = !!_dataList?_dataList.length:0;
-         _loc4_ = 0;
-         while(_loc4_ < 12)
+         var i:int = 0;
+         var tmpData:* = null;
+         _dataList = dataList;
+         var tmpLen:int = !!_dataList?_dataList.length:0;
+         for(i = 0; i < 12; )
          {
-            _loc2_ = null;
-            if(_loc4_ < _loc3_)
+            tmpData = null;
+            if(i < tmpLen)
             {
-               _loc2_ = _dataList[_loc4_];
+               tmpData = _dataList[i];
             }
-            _itemList[_loc4_].refreshView(_loc2_);
-            _loc4_++;
+            _itemList[i].refreshView(tmpData);
+            i++;
          }
       }
       

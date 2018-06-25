@@ -28,9 +28,9 @@ package hotSpring.controller
          super.prepare();
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
-         super.enter(param1,param2);
+         super.enter(prev,data);
          _model = HotSpringRoomListModel.Instance;
          if(_view)
          {
@@ -60,24 +60,24 @@ package hotSpring.controller
          SocketManager.Instance.removeEventListener(PkgEvent.format(174),roomRemove);
       }
       
-      private function roomAddOrUpdate(param1:CrazyTankSocketEvent) : void
+      private function roomAddOrUpdate(event:CrazyTankSocketEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         var _loc3_:HotSpringRoomInfo = new HotSpringRoomInfo();
-         _loc3_.roomNumber = _loc2_.readInt();
-         _loc3_.roomID = _loc2_.readInt();
-         _loc3_.roomName = _loc2_.readUTF();
-         _loc3_.roomPassword = _loc2_.readUTF();
-         _loc3_.effectiveTime = _loc2_.readInt();
-         _loc3_.curCount = _loc2_.readInt();
-         _loc3_.playerID = _loc2_.readInt();
-         _loc3_.playerName = _loc2_.readUTF();
-         _loc3_.startTime = _loc2_.readDate();
-         _loc3_.roomIntroduction = _loc2_.readUTF();
-         _loc3_.roomType = _loc2_.readInt();
-         _loc3_.maxCount = _loc2_.readInt();
-         _loc3_.roomIsPassword = _loc3_.roomPassword != "" && _loc3_.roomPassword.length > 0;
-         _model.roomAddOrUpdate(_loc3_);
+         var pkg:PackageIn = event.pkg;
+         var roomVO:HotSpringRoomInfo = new HotSpringRoomInfo();
+         roomVO.roomNumber = pkg.readInt();
+         roomVO.roomID = pkg.readInt();
+         roomVO.roomName = pkg.readUTF();
+         roomVO.roomPassword = pkg.readUTF();
+         roomVO.effectiveTime = pkg.readInt();
+         roomVO.curCount = pkg.readInt();
+         roomVO.playerID = pkg.readInt();
+         roomVO.playerName = pkg.readUTF();
+         roomVO.startTime = pkg.readDate();
+         roomVO.roomIntroduction = pkg.readUTF();
+         roomVO.roomType = pkg.readInt();
+         roomVO.maxCount = pkg.readInt();
+         roomVO.roomIsPassword = roomVO.roomPassword != "" && roomVO.roomPassword.length > 0;
+         _model.roomAddOrUpdate(roomVO);
       }
       
       public function hotSpringEnter() : void
@@ -85,79 +85,78 @@ package hotSpring.controller
          SocketManager.Instance.out.sendHotSpringEnter();
       }
       
-      private function roomCreateSucceed(param1:CrazyTankSocketEvent) : void
+      private function roomCreateSucceed(event:CrazyTankSocketEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:Boolean = _loc3_.readBoolean();
-         if(!_loc2_)
+         var pkg:PackageIn = event.pkg;
+         var result:Boolean = pkg.readBoolean();
+         if(!result)
          {
             return;
          }
-         var _loc4_:HotSpringRoomInfo = new HotSpringRoomInfo();
-         _loc4_.roomID = _loc3_.readInt();
-         _loc4_.roomName = _loc3_.readUTF();
-         _loc4_.roomPassword = _loc3_.readUTF();
-         _loc4_.effectiveTime = _loc3_.readInt();
-         _loc4_.curCount = _loc3_.readInt();
-         _loc4_.playerID = _loc3_.readInt();
-         _loc4_.playerName = _loc3_.readUTF();
-         _loc4_.startTime = _loc3_.readDate();
-         _loc4_.roomIntroduction = _loc3_.readUTF();
-         _loc4_.roomType = _loc3_.readInt();
-         _loc4_.maxCount = _loc3_.readInt();
-         if(_loc4_.roomPassword && _loc4_.roomPassword != "" && _loc4_.roomPassword.length > 0)
+         var roomVO:HotSpringRoomInfo = new HotSpringRoomInfo();
+         roomVO.roomID = pkg.readInt();
+         roomVO.roomName = pkg.readUTF();
+         roomVO.roomPassword = pkg.readUTF();
+         roomVO.effectiveTime = pkg.readInt();
+         roomVO.curCount = pkg.readInt();
+         roomVO.playerID = pkg.readInt();
+         roomVO.playerName = pkg.readUTF();
+         roomVO.startTime = pkg.readDate();
+         roomVO.roomIntroduction = pkg.readUTF();
+         roomVO.roomType = pkg.readInt();
+         roomVO.maxCount = pkg.readInt();
+         if(roomVO.roomPassword && roomVO.roomPassword != "" && roomVO.roomPassword.length > 0)
          {
-            _loc4_.roomIsPassword = true;
+            roomVO.roomIsPassword = true;
          }
          else
          {
-            _loc4_.roomIsPassword = false;
+            roomVO.roomIsPassword = false;
          }
-         _model.roomSelf = _loc4_;
+         _model.roomSelf = roomVO;
       }
       
-      private function roomListGet(param1:CrazyTankSocketEvent) : void
+      private function roomListGet(event:CrazyTankSocketEvent) : void
       {
-         var _loc4_:* = null;
-         var _loc5_:int = 0;
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readInt();
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_)
+         var roomVO:* = null;
+         var i:int = 0;
+         var pkg:PackageIn = event.pkg;
+         var roomCount:int = pkg.readInt();
+         for(i = 0; i < roomCount; )
          {
-            _loc4_ = new HotSpringRoomInfo();
-            _loc4_.roomNumber = _loc3_.readInt();
-            _loc4_.roomID = _loc3_.readInt();
-            _loc4_.roomName = _loc3_.readUTF();
-            _loc4_.roomPassword = _loc3_.readUTF();
-            _loc4_.effectiveTime = _loc3_.readInt();
-            _loc4_.curCount = _loc3_.readInt();
-            _loc4_.playerID = _loc3_.readInt();
-            _loc4_.playerName = _loc3_.readUTF();
-            _loc4_.startTime = _loc3_.readDate();
-            _loc4_.roomIntroduction = _loc3_.readUTF();
-            _loc4_.roomType = _loc3_.readInt();
-            _loc4_.maxCount = _loc3_.readInt();
-            _model.roomAddOrUpdate(_loc4_);
-            _loc5_++;
+            roomVO = new HotSpringRoomInfo();
+            roomVO.roomNumber = pkg.readInt();
+            roomVO.roomID = pkg.readInt();
+            roomVO.roomName = pkg.readUTF();
+            roomVO.roomPassword = pkg.readUTF();
+            roomVO.effectiveTime = pkg.readInt();
+            roomVO.curCount = pkg.readInt();
+            roomVO.playerID = pkg.readInt();
+            roomVO.playerName = pkg.readUTF();
+            roomVO.startTime = pkg.readDate();
+            roomVO.roomIntroduction = pkg.readUTF();
+            roomVO.roomType = pkg.readInt();
+            roomVO.maxCount = pkg.readInt();
+            _model.roomAddOrUpdate(roomVO);
+            i++;
          }
       }
       
-      private function roomRemove(param1:CrazyTankSocketEvent) : void
+      private function roomRemove(event:CrazyTankSocketEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         var _loc3_:int = _loc2_.readInt();
-         _model.roomRemove(_loc3_);
+         var pkg:PackageIn = event.pkg;
+         var roomID:int = pkg.readInt();
+         _model.roomRemove(roomID);
       }
       
-      public function roomEnterConfirm(param1:int) : void
+      public function roomEnterConfirm(roomID:int) : void
       {
-         SocketManager.Instance.out.sendHotSpringRoomEnterConfirm(param1);
+         SocketManager.Instance.out.sendHotSpringRoomEnterConfirm(roomID);
       }
       
-      public function roomEnter(param1:int, param2:String) : void
+      public function roomEnter(roomID:int, inputPassword:String) : void
       {
-         SocketManager.Instance.out.sendHotSpringRoomEnter(param1,param2);
+         SocketManager.Instance.out.sendHotSpringRoomEnter(roomID,inputPassword);
       }
       
       public function quickEnterRoom() : void
@@ -165,14 +164,14 @@ package hotSpring.controller
          SocketManager.Instance.out.sendHotSpringRoomQuickEnter();
       }
       
-      public function roomCreate(param1:HotSpringRoomInfo) : void
+      public function roomCreate(roomVO:HotSpringRoomInfo) : void
       {
-         SocketManager.Instance.out.sendHotSpringRoomCreate(param1);
+         SocketManager.Instance.out.sendHotSpringRoomCreate(roomVO);
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
-         super.leaving(param1);
+         super.leaving(next);
          MainToolBar.Instance.hide();
          dispose();
       }

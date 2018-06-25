@@ -87,9 +87,9 @@ package AvatarCollection
       
       private var cevent:CEvent;
       
-      public function AvatarCollectionManager(param1:IEventDispatcher = null)
+      public function AvatarCollectionManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : AvatarCollectionManager
@@ -101,96 +101,96 @@ package AvatarCollection
          return _instance;
       }
       
-      private function honourNeedPerPage(param1:AvatarCollectionUnitVo) : Number
+      private function honourNeedPerPage(_data:AvatarCollectionUnitVo) : Number
       {
-         var _loc4_:int = 0;
-         if(!param1)
+         var _needHonour:int = 0;
+         if(!_data)
          {
             return 0;
          }
-         var _loc3_:int = param1.totalItemList.length;
-         var _loc2_:int = param1.totalActivityItemCount;
-         if(_loc2_ < _loc3_ / 2)
+         var totalCount:int = _data.totalItemList.length;
+         var activityCount:int = _data.totalActivityItemCount;
+         if(activityCount < totalCount / 2)
          {
             return 0;
          }
-         if(_loc2_ == _loc3_)
+         if(activityCount == totalCount)
          {
-            return param1.needHonor * 2;
+            return _data.needHonor * 2;
          }
-         return param1.needHonor;
+         return _data.needHonor;
       }
       
       public function honourNeedTotalPerDay() : Number
       {
-         var _loc4_:* = 0;
+         var __honourNeed:* = 0;
          var _loc6_:int = 0;
          var _loc5_:* = _maleUnitList;
-         for each(var _loc2_ in _maleUnitList)
+         for each(var v in _maleUnitList)
          {
-            if(_loc2_.selected)
+            if(v.selected)
             {
-               _loc4_ = Number(_loc4_ + honourNeedPerPage(_loc2_));
+               __honourNeed = Number(__honourNeed + honourNeedPerPage(v));
             }
          }
          var _loc8_:int = 0;
          var _loc7_:* = _femaleUnitList;
-         for each(var _loc1_ in _femaleUnitList)
+         for each(var v1 in _femaleUnitList)
          {
-            if(_loc1_.selected)
+            if(v1.selected)
             {
-               _loc4_ = Number(_loc4_ + honourNeedPerPage(_loc1_));
+               __honourNeed = Number(__honourNeed + honourNeedPerPage(v1));
             }
          }
          var _loc10_:int = 0;
          var _loc9_:* = _weaponUnitList;
-         for each(var _loc3_ in _weaponUnitList)
+         for each(var v2 in _weaponUnitList)
          {
-            if(_loc3_.selected)
+            if(v2.selected)
             {
-               _loc4_ = Number(_loc4_ + honourNeedPerPage(_loc3_));
+               __honourNeed = Number(__honourNeed + honourNeedPerPage(v2));
             }
          }
-         return _loc4_;
+         return __honourNeed;
       }
       
-      public function onListCellClick(param1:AvatarCollectionUnitVo, param2:Boolean) : void
+      public function onListCellClick($data:AvatarCollectionUnitVo, $selected:Boolean) : void
       {
-         var _loc6_:* = undefined;
-         var _loc5_:* = null;
-         if(param1.Type == 1)
+         var list:* = undefined;
+         var listUnit:* = null;
+         if($data.Type == 1)
          {
-            _loc6_ = param1.sex == 1?_maleItemList:_femaleItemList;
+            list = $data.sex == 1?_maleItemList:_femaleItemList;
          }
          else
          {
-            _loc6_ = _weaponItemList;
+            list = _weaponItemList;
          }
-         if(param1.Type == 1)
+         if($data.Type == 1)
          {
-            _loc5_ = param1.sex == 1?_maleUnitList:_femaleUnitList;
+            listUnit = $data.sex == 1?_maleUnitList:_femaleUnitList;
          }
          else
          {
-            _loc5_ = _weaponUnitList;
+            listUnit = _weaponUnitList;
          }
          var _loc8_:int = 0;
-         var _loc7_:* = _loc6_;
-         for each(var _loc4_ in _loc6_)
+         var _loc7_:* = list;
+         for each(var v in list)
          {
-            if(_loc4_.id == param1.id)
+            if(v.id == $data.id)
             {
-               _loc4_.selected = param2;
+               v.selected = $selected;
                break;
             }
          }
          var _loc10_:int = 0;
-         var _loc9_:* = _loc5_;
-         for each(var _loc3_ in _loc5_)
+         var _loc9_:* = listUnit;
+         for each(var vv in listUnit)
          {
-            if(_loc3_.id == param1.id)
+            if(vv.id == $data.id)
             {
-               _loc3_.selected = param2;
+               vv.selected = $selected;
                break;
             }
          }
@@ -201,71 +201,71 @@ package AvatarCollection
          return _isSelectAll;
       }
       
-      public function set isSelectAll(param1:Boolean) : void
+      public function set isSelectAll(value:Boolean) : void
       {
-         _isSelectAll = param1;
+         _isSelectAll = value;
          if(_pageType == 0)
          {
             var _loc9_:int = 0;
             var _loc8_:* = _maleItemList;
-            for each(var _loc3_ in _maleItemList)
+            for each(var v in _maleItemList)
             {
-               _loc3_.selected = param1;
+               v.selected = value;
             }
             var _loc11_:int = 0;
             var _loc10_:* = _femaleItemList;
-            for each(var _loc2_ in _femaleItemList)
+            for each(var v1 in _femaleItemList)
             {
-               _loc2_.selected = param1;
+               v1.selected = value;
             }
             var _loc13_:int = 0;
             var _loc12_:* = _maleUnitList;
-            for each(var _loc7_ in _maleUnitList)
+            for each(var v2 in _maleUnitList)
             {
-               _loc7_.selected = param1;
+               v2.selected = value;
             }
             var _loc15_:int = 0;
             var _loc14_:* = _femaleUnitList;
-            for each(var _loc6_ in _femaleUnitList)
+            for each(var v3 in _femaleUnitList)
             {
-               _loc6_.selected = param1;
+               v3.selected = value;
             }
          }
          else
          {
             var _loc17_:int = 0;
             var _loc16_:* = _weaponUnitList;
-            for each(var _loc5_ in _weaponUnitList)
+            for each(var v4 in _weaponUnitList)
             {
-               _loc5_.selected = param1;
+               v4.selected = value;
             }
             var _loc19_:int = 0;
             var _loc18_:* = _weaponItemList;
-            for each(var _loc4_ in _weaponItemList)
+            for each(var v5 in _weaponItemList)
             {
-               _loc4_.selected = param1;
+               v5.selected = value;
             }
          }
       }
       
-      public function getSelectState(param1:AvatarCollectionUnitVo) : Boolean
+      public function getSelectState(data:AvatarCollectionUnitVo) : Boolean
       {
-         var _loc3_:* = undefined;
-         if(param1.Type == 1)
+         var list:* = undefined;
+         if(data.Type == 1)
          {
-            _loc3_ = param1.sex == 1?_maleItemList:_femaleItemList;
+            list = data.sex == 1?_maleItemList:_femaleItemList;
          }
          else
          {
-            _loc3_ = _weaponItemList;
+            list = _weaponItemList;
          }
          var _loc5_:int = 0;
-         var _loc4_:* = _loc3_;
-         for each(var _loc2_ in _loc3_)
+         var _loc4_:* = list;
+         for each(var v in list)
          {
-            if(_loc2_.id == param1.id)
+            if(v.id == data.id)
             {
-               return _loc2_.selected;
+               return v.selected;
             }
          }
          return false;
@@ -276,16 +276,16 @@ package AvatarCollection
          return _pageType;
       }
       
-      public function set pageType(param1:int) : void
+      public function set pageType(value:int) : void
       {
-         _pageType = param1;
+         _pageType = value;
       }
       
-      public function selectAllClicked(param1:Object = null) : void
+      public function selectAllClicked(bool:Object = null) : void
       {
-         if(param1 != null)
+         if(bool != null)
          {
-            isSelectAll = Boolean(param1);
+            isSelectAll = Boolean(bool);
          }
          else if(_listState != "normal")
          {
@@ -302,107 +302,107 @@ package AvatarCollection
       
       public function getDelayTimeCollectionCount() : Number
       {
-         var _loc3_:* = 0;
+         var num:* = 0;
          var _loc6_:int = 0;
          var _loc5_:* = _maleUnitList;
-         for each(var _loc2_ in _maleUnitList)
+         for each(var v in _maleUnitList)
          {
-            if(_loc2_.selected == true)
+            if(v.selected == true)
             {
-               _loc3_++;
+               num++;
             }
          }
          var _loc8_:int = 0;
          var _loc7_:* = _femaleUnitList;
-         for each(var _loc1_ in _femaleUnitList)
+         for each(var v1 in _femaleUnitList)
          {
-            if(_loc1_.selected == true)
+            if(v1.selected == true)
             {
-               _loc3_++;
+               num++;
             }
          }
          var _loc10_:int = 0;
          var _loc9_:* = _weaponUnitList;
-         for each(var _loc4_ in _weaponUnitList)
+         for each(var v2 in _weaponUnitList)
          {
-            if(_loc4_.selected == true)
+            if(v2.selected == true)
             {
-               _loc3_++;
+               num++;
             }
          }
-         return _loc3_;
+         return num;
       }
       
-      public function delayTheTimeConfirmed(param1:int) : void
+      public function delayTheTimeConfirmed(count:int) : void
       {
          var _loc6_:int = 0;
          var _loc5_:* = _maleUnitList;
-         for each(var _loc3_ in _maleUnitList)
+         for each(var v in _maleUnitList)
          {
-            if(_loc3_.selected)
+            if(v.selected)
             {
-               SocketManager.Instance.out.sendAvatarCollectionDelayTime(_loc3_.id,param1,1);
+               SocketManager.Instance.out.sendAvatarCollectionDelayTime(v.id,count,1);
             }
          }
          var _loc8_:int = 0;
          var _loc7_:* = _femaleUnitList;
-         for each(var _loc2_ in _femaleUnitList)
+         for each(var v1 in _femaleUnitList)
          {
-            if(_loc2_.selected)
+            if(v1.selected)
             {
-               SocketManager.Instance.out.sendAvatarCollectionDelayTime(_loc2_.id,param1,1);
+               SocketManager.Instance.out.sendAvatarCollectionDelayTime(v1.id,count,1);
             }
          }
          var _loc10_:int = 0;
          var _loc9_:* = _weaponUnitList;
-         for each(var _loc4_ in _weaponUnitList)
+         for each(var v2 in _weaponUnitList)
          {
-            if(_loc4_.selected)
+            if(v2.selected)
             {
-               SocketManager.Instance.out.sendAvatarCollectionDelayTime(_loc4_.id,param1,2);
+               SocketManager.Instance.out.sendAvatarCollectionDelayTime(v2.id,count,2);
             }
          }
       }
       
-      public function listState(param1:String) : void
+      public function listState(state:String) : void
       {
          _isSelectAll = true;
-         _listState = param1;
+         _listState = state;
          var _loc9_:int = 0;
          var _loc8_:* = _maleUnitList;
-         for(var _loc7_ in _maleUnitList)
+         for(var key in _maleUnitList)
          {
-            _maleUnitList[_loc7_].selected = false;
+            _maleUnitList[key].selected = false;
          }
          var _loc11_:int = 0;
          var _loc10_:* = _femaleUnitList;
-         for(var _loc6_ in _femaleUnitList)
+         for(var key1 in _femaleUnitList)
          {
-            _femaleUnitList[_loc6_].selected = false;
+            _femaleUnitList[key1].selected = false;
          }
          var _loc13_:int = 0;
          var _loc12_:* = _weaponUnitList;
-         for(var _loc4_ in _weaponUnitList)
+         for(var key2 in _weaponUnitList)
          {
-            _weaponUnitList[_loc4_].selected = false;
+            _weaponUnitList[key2].selected = false;
          }
          var _loc15_:int = 0;
          var _loc14_:* = _maleItemList;
-         for each(var _loc3_ in _maleItemList)
+         for each(var v in _maleItemList)
          {
-            _loc3_.selected = false;
+            v.selected = false;
          }
          var _loc17_:int = 0;
          var _loc16_:* = _femaleItemList;
-         for each(var _loc2_ in _femaleItemList)
+         for each(var v1 in _femaleItemList)
          {
-            _loc2_.selected = false;
+            v1.selected = false;
          }
          var _loc19_:int = 0;
          var _loc18_:* = _weaponItemList;
-         for each(var _loc5_ in _weaponItemList)
+         for each(var v2 in _weaponItemList)
          {
-            _loc5_.selected = false;
+            v2.selected = false;
          }
       }
       
@@ -417,39 +417,39 @@ package AvatarCollection
          _listState = "normal";
          var _loc8_:int = 0;
          var _loc7_:* = _maleUnitList;
-         for(var _loc6_ in _maleUnitList)
+         for(var key in _maleUnitList)
          {
-            _maleUnitList[_loc6_].selected = false;
+            _maleUnitList[key].selected = false;
          }
          var _loc10_:int = 0;
          var _loc9_:* = _femaleUnitList;
-         for(var _loc5_ in _femaleUnitList)
+         for(var key1 in _femaleUnitList)
          {
-            _femaleUnitList[_loc5_].selected = false;
+            _femaleUnitList[key1].selected = false;
          }
          var _loc12_:int = 0;
          var _loc11_:* = _weaponUnitList;
-         for(var _loc3_ in _weaponUnitList)
+         for(var key2 in _weaponUnitList)
          {
-            _weaponUnitList[_loc3_].selected = false;
+            _weaponUnitList[key2].selected = false;
          }
          var _loc14_:int = 0;
          var _loc13_:* = _maleItemList;
-         for each(var _loc2_ in _maleItemList)
+         for each(var v in _maleItemList)
          {
-            _loc2_.selected = false;
+            v.selected = false;
          }
          var _loc16_:int = 0;
          var _loc15_:* = _femaleItemList;
-         for each(var _loc1_ in _femaleItemList)
+         for each(var v1 in _femaleItemList)
          {
-            _loc1_.selected = false;
+            v1.selected = false;
          }
          var _loc18_:int = 0;
          var _loc17_:* = _weaponItemList;
-         for each(var _loc4_ in _weaponItemList)
+         for each(var v2 in _weaponItemList)
          {
-            _loc4_.selected = false;
+            v2.selected = false;
          }
       }
       
@@ -468,184 +468,180 @@ package AvatarCollection
          return _weaponUnitList;
       }
       
-      public function getItemListById(param1:int, param2:int, param3:int = 1) : Array
+      public function getItemListById(sex:int, id:int, type:int = 1) : Array
       {
-         if(param3 == 1)
+         if(type == 1)
          {
-            if(param1 == 1)
+            if(sex == 1)
             {
-               return _maleItemDic[param2].list;
+               return _maleItemDic[id].list;
             }
-            return _femaleItemDic[param2].list;
+            return _femaleItemDic[id].list;
          }
-         if(param3 == 2)
+         if(type == 2)
          {
-            return _weaponItemDic[param2].list;
+            return _weaponItemDic[id].list;
          }
          return null;
       }
       
-      public function unitListDataSetup(param1:AvatarCollectionUnitDataAnalyzer) : void
+      public function unitListDataSetup(analyzer:AvatarCollectionUnitDataAnalyzer) : void
       {
          if(_maleUnitDic)
          {
-            unitDicDataConvert(_maleUnitDic,param1.maleUnitDic);
+            unitDicDataConvert(_maleUnitDic,analyzer.maleUnitDic);
          }
          else
          {
-            _maleUnitDic = param1.maleUnitDic;
+            _maleUnitDic = analyzer.maleUnitDic;
          }
          if(_femaleUnitDic)
          {
-            unitDicDataConvert(_femaleUnitDic,param1.femaleUnitDic);
+            unitDicDataConvert(_femaleUnitDic,analyzer.femaleUnitDic);
          }
          else
          {
-            _femaleUnitDic = param1.femaleUnitDic;
+            _femaleUnitDic = analyzer.femaleUnitDic;
          }
          if(_weaponUnitDic)
          {
-            unitDicDataConvert(_weaponUnitDic,param1.weaponUnitDic);
+            unitDicDataConvert(_weaponUnitDic,analyzer.weaponUnitDic);
          }
          else
          {
-            _weaponUnitDic = param1.weaponUnitDic;
+            _weaponUnitDic = analyzer.weaponUnitDic;
          }
          _maleUnitList = _maleUnitDic.list;
          _femaleUnitList = _femaleUnitDic.list;
          _weaponUnitList = _weaponUnitDic.list;
       }
       
-      private function unitDicDataConvert(param1:DictionaryData, param2:DictionaryData) : void
+      private function unitDicDataConvert(dicDest:DictionaryData, dicOrig:DictionaryData) : void
       {
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         _loc5_ = 0;
-         while(_loc5_ < param2.list.length)
+         var i:int = 0;
+         var obj1:* = null;
+         var obj2:* = null;
+         for(i = 0; i < dicOrig.list.length; )
          {
-            _loc3_ = param2.list[_loc5_];
-            _loc4_ = param1[_loc3_.id];
-            if(_loc4_)
+            obj1 = dicOrig.list[i];
+            obj2 = dicDest[obj1.id];
+            if(obj2)
             {
-               _loc3_.endTime = _loc4_.endTime;
+               obj1.endTime = obj2.endTime;
             }
-            param1.add(_loc3_.id,_loc3_);
-            _loc5_++;
+            dicDest.add(obj1.id,obj1);
+            i++;
          }
       }
       
-      public function itemListDataSetup(param1:AvatarCollectionItemDataAnalyzer) : void
+      public function itemListDataSetup(analyzer:AvatarCollectionItemDataAnalyzer) : void
       {
          if(_maleItemDic)
          {
-            itemDicDataConvert(_maleItemDic,param1.maleItemDic);
+            itemDicDataConvert(_maleItemDic,analyzer.maleItemDic);
          }
          else
          {
-            _maleItemDic = param1.maleItemDic;
+            _maleItemDic = analyzer.maleItemDic;
          }
          if(_femaleItemDic)
          {
-            itemDicDataConvert(_femaleItemDic,param1.femaleItemDic);
+            itemDicDataConvert(_femaleItemDic,analyzer.femaleItemDic);
          }
          else
          {
-            _femaleItemDic = param1.femaleItemDic;
+            _femaleItemDic = analyzer.femaleItemDic;
          }
          if(_weaponItemDic)
          {
-            itemDicDataConvert(_weaponItemDic,param1.weaponItemDic);
+            itemDicDataConvert(_weaponItemDic,analyzer.weaponItemDic);
          }
          else
          {
-            _weaponItemDic = param1.weaponItemDic;
+            _weaponItemDic = analyzer.weaponItemDic;
          }
-         _maleItemList = param1.maleItemList;
-         _femaleItemList = param1.femaleItemList;
-         _weaponItemList = param1.weaponItemList;
-         _allGoodsTemplateIDlist = param1.allGoodsTemplateIDlist;
-         _realItemIdDic = param1.realItemIdDic;
+         _maleItemList = analyzer.maleItemList;
+         _femaleItemList = analyzer.femaleItemList;
+         _weaponItemList = analyzer.weaponItemList;
+         _allGoodsTemplateIDlist = analyzer.allGoodsTemplateIDlist;
+         _realItemIdDic = analyzer.realItemIdDic;
       }
       
-      private function itemDicDataConvert(param1:DictionaryData, param2:DictionaryData) : void
+      private function itemDicDataConvert(dicDest:DictionaryData, dicOrig:DictionaryData) : void
       {
-         var _loc6_:* = null;
-         var _loc7_:* = null;
-         var _loc3_:* = null;
-         var _loc4_:* = null;
+         var obj1:* = null;
+         var obj2:* = null;
+         var obj3:* = null;
+         var obj4:* = null;
          var _loc12_:int = 0;
-         var _loc11_:* = param2;
-         for(var _loc8_ in param2)
+         var _loc11_:* = dicOrig;
+         for(var key1 in dicOrig)
          {
-            _loc6_ = param2[_loc8_];
-            _loc7_ = param1[_loc8_];
-            if(_loc7_)
+            obj1 = dicOrig[key1];
+            obj2 = dicDest[key1];
+            if(obj2)
             {
                var _loc10_:int = 0;
-               var _loc9_:* = _loc6_;
-               for(var _loc5_ in _loc6_)
+               var _loc9_:* = obj1;
+               for(var key2 in obj1)
                {
-                  _loc3_ = _loc6_[_loc5_];
-                  _loc4_ = _loc7_[_loc5_];
-                  if(_loc4_)
+                  obj3 = obj1[key2];
+                  obj4 = obj2[key2];
+                  if(obj4)
                   {
-                     _loc3_.isActivity = _loc4_.isActivity;
+                     obj3.isActivity = obj4.isActivity;
                   }
-                  _loc7_.add(_loc5_,_loc3_);
+                  obj2.add(key2,obj3);
                }
             }
-            param1.add(_loc8_,_loc6_);
+            dicDest.add(key1,obj1);
          }
       }
       
       public function initShopItemInfoList() : void
       {
-         var _loc1_:* = null;
-         var _loc3_:int = 0;
-         var _loc9_:int = 0;
-         var _loc4_:* = null;
-         var _loc8_:int = 0;
-         var _loc7_:int = 0;
-         var _loc2_:* = null;
-         var _loc6_:int = 0;
-         var _loc5_:int = 0;
+         var maleTypeArray:* = null;
+         var tmplen:int = 0;
+         var i:int = 0;
+         var femaleTypeArray:* = null;
+         var tmplen2:int = 0;
+         var k:int = 0;
+         var weaponTypeArray:* = null;
+         var tmplen3:int = 0;
+         var j:int = 0;
          if(!_maleShopItemInfoList)
          {
             _maleShopItemInfoList = new Vector.<ShopItemInfo>();
-            _loc1_ = [9,11,13,17,19,21];
-            _loc3_ = _loc1_.length;
-            _loc9_ = 0;
-            while(_loc9_ < _loc3_)
+            maleTypeArray = [9,11,13,17,19,21];
+            tmplen = maleTypeArray.length;
+            for(i = 0; i < tmplen; )
             {
-               _maleShopItemInfoList = _maleShopItemInfoList.concat(ShopManager.Instance.getValidGoodByType(_loc1_[_loc9_]));
-               _loc9_++;
+               _maleShopItemInfoList = _maleShopItemInfoList.concat(ShopManager.Instance.getValidGoodByType(maleTypeArray[i]));
+               i++;
             }
             _maleShopItemInfoList = _maleShopItemInfoList.concat(ShopManager.Instance.getDisCountValidGoodByType(1));
          }
          if(!_femaleShopItemInfoList)
          {
             _femaleShopItemInfoList = new Vector.<ShopItemInfo>();
-            _loc4_ = [10,12,14,18,20,22];
-            _loc8_ = _loc4_.length;
-            _loc7_ = 0;
-            while(_loc7_ < _loc8_)
+            femaleTypeArray = [10,12,14,18,20,22];
+            tmplen2 = femaleTypeArray.length;
+            for(k = 0; k < tmplen2; )
             {
-               _femaleShopItemInfoList = _femaleShopItemInfoList.concat(ShopManager.Instance.getValidGoodByType(_loc4_[_loc7_]));
-               _loc7_++;
+               _femaleShopItemInfoList = _femaleShopItemInfoList.concat(ShopManager.Instance.getValidGoodByType(femaleTypeArray[k]));
+               k++;
             }
             _femaleShopItemInfoList = _femaleShopItemInfoList.concat(ShopManager.Instance.getDisCountValidGoodByType(1));
          }
          if(!_weaponShopItemInfoList)
          {
             _weaponShopItemInfoList = new Vector.<ShopItemInfo>();
-            _loc2_ = [7,8];
-            _loc6_ = _loc2_.length;
-            _loc5_ = 0;
-            while(_loc5_ < _loc6_)
+            weaponTypeArray = [7,8];
+            tmplen3 = weaponTypeArray.length;
+            for(j = 0; j < tmplen3; )
             {
-               _weaponShopItemInfoList = _weaponShopItemInfoList.concat(ShopManager.Instance.getValidGoodByType(_loc2_[_loc5_]));
-               _loc5_++;
+               _weaponShopItemInfoList = _weaponShopItemInfoList.concat(ShopManager.Instance.getValidGoodByType(weaponTypeArray[j]));
+               j++;
             }
             _weaponShopItemInfoList = _weaponShopItemInfoList.concat(ShopManager.Instance.getDisCountValidGoodByType(1));
          }
@@ -659,57 +655,57 @@ package AvatarCollection
          }
          var _loc10_:int = 0;
          var _loc9_:* = _maleItemList;
-         for each(var _loc3_ in _maleItemList)
+         for each(var tmpItem in _maleItemList)
          {
-            _loc3_.canBuyStatus = 0;
+            tmpItem.canBuyStatus = 0;
             var _loc8_:int = 0;
             var _loc7_:* = _maleShopItemInfoList;
-            for each(var _loc6_ in _maleShopItemInfoList)
+            for each(var tmpShopItem in _maleShopItemInfoList)
             {
-               if(_loc3_.itemId == _loc6_.TemplateID)
+               if(tmpItem.itemId == tmpShopItem.TemplateID)
                {
-                  _loc3_.canBuyStatus = 1;
-                  _loc3_.buyPrice = _loc6_.getItemPrice(1).bothMoneyValue;
-                  _loc3_.isDiscount = _loc6_.isDiscount;
-                  _loc3_.goodsId = _loc6_.GoodsID;
+                  tmpItem.canBuyStatus = 1;
+                  tmpItem.buyPrice = tmpShopItem.getItemPrice(1).bothMoneyValue;
+                  tmpItem.isDiscount = tmpShopItem.isDiscount;
+                  tmpItem.goodsId = tmpShopItem.GoodsID;
                   break;
                }
             }
          }
          var _loc14_:int = 0;
          var _loc13_:* = _femaleItemList;
-         for each(var _loc5_ in _femaleItemList)
+         for each(var tmpItem2 in _femaleItemList)
          {
-            _loc5_.canBuyStatus = 0;
+            tmpItem2.canBuyStatus = 0;
             var _loc12_:int = 0;
             var _loc11_:* = _femaleShopItemInfoList;
-            for each(var _loc2_ in _femaleShopItemInfoList)
+            for each(var tmpShopItem2 in _femaleShopItemInfoList)
             {
-               if(_loc5_.itemId == _loc2_.TemplateID)
+               if(tmpItem2.itemId == tmpShopItem2.TemplateID)
                {
-                  _loc5_.canBuyStatus = 1;
-                  _loc5_.buyPrice = _loc2_.getItemPrice(1).bothMoneyValue;
-                  _loc5_.isDiscount = _loc2_.isDiscount;
-                  _loc5_.goodsId = _loc2_.GoodsID;
+                  tmpItem2.canBuyStatus = 1;
+                  tmpItem2.buyPrice = tmpShopItem2.getItemPrice(1).bothMoneyValue;
+                  tmpItem2.isDiscount = tmpShopItem2.isDiscount;
+                  tmpItem2.goodsId = tmpShopItem2.GoodsID;
                   break;
                }
             }
          }
          var _loc18_:int = 0;
          var _loc17_:* = _weaponItemList;
-         for each(var _loc4_ in _weaponItemList)
+         for each(var tmpItem3 in _weaponItemList)
          {
-            _loc4_.canBuyStatus = 0;
+            tmpItem3.canBuyStatus = 0;
             var _loc16_:int = 0;
             var _loc15_:* = _weaponShopItemInfoList;
-            for each(var _loc1_ in _weaponShopItemInfoList)
+            for each(var tmpShopItem3 in _weaponShopItemInfoList)
             {
-               if(_loc4_.itemId == _loc1_.TemplateID)
+               if(tmpItem3.itemId == tmpShopItem3.TemplateID)
                {
-                  _loc4_.canBuyStatus = 1;
-                  _loc4_.buyPrice = _loc1_.getItemPrice(1).bothMoneyValue;
-                  _loc4_.isDiscount = _loc1_.isDiscount;
-                  _loc4_.goodsId = _loc1_.GoodsID;
+                  tmpItem3.canBuyStatus = 1;
+                  tmpItem3.buyPrice = tmpShopItem3.getItemPrice(1).bothMoneyValue;
+                  tmpItem3.isDiscount = tmpShopItem3.isDiscount;
+                  tmpItem3.goodsId = tmpShopItem3.GoodsID;
                   break;
                }
             }
@@ -717,31 +713,31 @@ package AvatarCollection
          _isHasCheckedBuy = true;
       }
       
-      public function getShopItemInfoByItemId(param1:int, param2:int, param3:int) : ShopItemInfo
+      public function getShopItemInfoByItemId(itemId:int, sex:int, type:int) : ShopItemInfo
       {
-         var _loc5_:* = undefined;
-         if(param3 == 1)
+         var tmpItemList:* = undefined;
+         if(type == 1)
          {
-            if(param2 == 1)
+            if(sex == 1)
             {
-               _loc5_ = _maleShopItemInfoList;
+               tmpItemList = _maleShopItemInfoList;
             }
             else
             {
-               _loc5_ = _femaleShopItemInfoList;
+               tmpItemList = _femaleShopItemInfoList;
             }
          }
          else
          {
-            _loc5_ = _weaponShopItemInfoList;
+            tmpItemList = _weaponShopItemInfoList;
          }
          var _loc7_:int = 0;
-         var _loc6_:* = _loc5_;
-         for each(var _loc4_ in _loc5_)
+         var _loc6_:* = tmpItemList;
+         for each(var tmp in tmpItemList)
          {
-            if(param1 == _loc4_.TemplateID)
+            if(itemId == tmp.TemplateID)
             {
-               return _loc4_;
+               return tmp;
             }
          }
          return null;
@@ -758,141 +754,138 @@ package AvatarCollection
          SocketManager.Instance.addEventListener(PkgEvent.format(402),pkgHandler);
       }
       
-      private function pkgHandler(param1:PkgEvent) : void
+      private function pkgHandler(event:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readByte();
-         switch(int(_loc2_) - 3)
+         var pkg:PackageIn = event.pkg;
+         var cmd:int = pkg.readByte();
+         switch(int(cmd) - 3)
          {
             case 0:
-               activeHandler(_loc3_);
+               activeHandler(pkg);
                break;
             case 1:
-               delayTimeHandler(_loc3_);
+               delayTimeHandler(pkg);
                break;
             case 2:
-               getAllInfoHandler(_loc3_);
+               getAllInfoHandler(pkg);
          }
       }
       
-      private function getAllInfoHandler(param1:PackageIn) : void
+      private function getAllInfoHandler(pkg:PackageIn) : void
       {
-         var _loc9_:int = 0;
-         var _loc5_:int = 0;
-         var _loc3_:int = 0;
-         var _loc6_:int = 0;
-         var _loc10_:int = 0;
-         var _loc2_:int = 0;
-         var _loc13_:* = null;
-         var _loc12_:* = null;
-         var _loc14_:int = 0;
-         var _loc8_:int = 0;
-         var _loc7_:int = 0;
-         var _loc4_:int = 0;
-         var _loc11_:int = param1.readInt();
-         _loc9_ = 0;
-         while(_loc9_ < _loc11_)
+         var i:int = 0;
+         var type:int = 0;
+         var count:int = 0;
+         var j:int = 0;
+         var id:int = 0;
+         var sex:int = 0;
+         var unitVo:* = null;
+         var itemVoDic:* = null;
+         var itemCount:int = 0;
+         var k:int = 0;
+         var itemId:int = 0;
+         var realId:int = 0;
+         var allCount:int = pkg.readInt();
+         for(i = 0; i < allCount; )
          {
-            _loc5_ = param1.readInt();
-            _loc3_ = param1.readInt();
-            _loc6_ = 0;
-            while(_loc6_ < _loc3_)
+            type = pkg.readInt();
+            count = pkg.readInt();
+            for(j = 0; j < count; )
             {
-               _loc10_ = param1.readInt();
-               _loc2_ = param1.readInt();
-               _loc13_ = new AvatarCollectionUnitVo();
-               if(_loc5_ == 1)
+               id = pkg.readInt();
+               sex = pkg.readInt();
+               unitVo = new AvatarCollectionUnitVo();
+               if(type == 1)
                {
-                  if(_loc2_ == 1)
+                  if(sex == 1)
                   {
-                     _maleUnitDic.add(_loc10_,_loc13_);
-                     _loc12_ = _maleItemDic[_loc10_];
+                     _maleUnitDic.add(id,unitVo);
+                     itemVoDic = _maleItemDic[id];
                   }
                   else
                   {
-                     _femaleUnitDic.add(_loc10_,_loc13_);
-                     _loc12_ = _femaleItemDic[_loc10_];
+                     _femaleUnitDic.add(id,unitVo);
+                     itemVoDic = _femaleItemDic[id];
                   }
                }
-               else if(_loc5_ == 2)
+               else if(type == 2)
                {
-                  _weaponUnitDic.add(_loc10_,_loc13_);
-                  _loc12_ = _weaponItemDic[_loc10_];
+                  _weaponUnitDic.add(id,unitVo);
+                  itemVoDic = _weaponItemDic[id];
                }
-               _loc14_ = param1.readInt();
-               _loc8_ = 0;
-               while(_loc8_ < _loc14_)
+               itemCount = pkg.readInt();
+               for(k = 0; k < itemCount; )
                {
-                  _loc7_ = param1.readInt();
-                  _loc4_ = _realItemIdDic[_loc7_];
-                  (_loc12_[_loc4_] as AvatarCollectionItemVo).isActivity = true;
-                  _loc8_++;
+                  itemId = pkg.readInt();
+                  realId = _realItemIdDic[itemId];
+                  (itemVoDic[realId] as AvatarCollectionItemVo).isActivity = true;
+                  k++;
                }
-               _loc13_.endTime = param1.readDate();
-               _loc6_++;
+               unitVo.endTime = pkg.readDate();
+               j++;
             }
-            _loc9_++;
+            i++;
          }
          isDataComplete = true;
          dispatchEvent(new Event("avatar_collection_data_complete"));
       }
       
-      private function activeHandler(param1:PackageIn) : void
+      private function activeHandler(pkg:PackageIn) : void
       {
-         var _loc2_:int = param1.readInt();
-         var _loc5_:int = param1.readInt();
-         _loc5_ = _realItemIdDic[_loc5_];
-         var _loc3_:int = param1.readInt();
-         var _loc4_:int = param1.readInt();
-         if(_loc4_ == 1)
+         var id:int = pkg.readInt();
+         var itemId:int = pkg.readInt();
+         itemId = _realItemIdDic[itemId];
+         var sex:int = pkg.readInt();
+         var type:int = pkg.readInt();
+         if(type == 1)
          {
-            if(_loc3_ == 1)
+            if(sex == 1)
             {
-               (_maleItemDic[_loc2_][_loc5_] as AvatarCollectionItemVo).isActivity = true;
+               (_maleItemDic[id][itemId] as AvatarCollectionItemVo).isActivity = true;
             }
             else
             {
-               (_femaleItemDic[_loc2_][_loc5_] as AvatarCollectionItemVo).isActivity = true;
+               (_femaleItemDic[id][itemId] as AvatarCollectionItemVo).isActivity = true;
             }
          }
-         else if(_loc4_ == 2)
+         else if(type == 2)
          {
-            (_weaponItemDic[_loc2_][_loc5_] as AvatarCollectionItemVo).isActivity = true;
+            (_weaponItemDic[id][itemId] as AvatarCollectionItemVo).isActivity = true;
          }
          dispatchEvent(new Event("avatar_collection_refresh_view"));
       }
       
-      private function delayTimeHandler(param1:PackageIn) : void
+      private function delayTimeHandler(pkg:PackageIn) : void
       {
-         var _loc2_:int = param1.readInt();
-         var _loc3_:int = param1.readInt();
-         var _loc4_:int = param1.readInt();
-         if(_loc4_ == 1)
+         var id:int = pkg.readInt();
+         var sex:int = pkg.readInt();
+         var type:int = pkg.readInt();
+         if(type == 1)
          {
-            if(_loc3_ == 1)
+            if(sex == 1)
             {
-               (_maleUnitDic[_loc2_] as AvatarCollectionUnitVo).endTime = param1.readDate();
+               (_maleUnitDic[id] as AvatarCollectionUnitVo).endTime = pkg.readDate();
             }
             else
             {
-               (_femaleUnitDic[_loc2_] as AvatarCollectionUnitVo).endTime = param1.readDate();
+               (_femaleUnitDic[id] as AvatarCollectionUnitVo).endTime = pkg.readDate();
             }
          }
-         else if(_loc4_ == 2)
+         else if(type == 2)
          {
-            (_weaponUnitDic[_loc2_] as AvatarCollectionUnitVo).endTime = param1.readDate();
+            (_weaponUnitDic[id] as AvatarCollectionUnitVo).endTime = pkg.readDate();
          }
          dispatchEvent(new Event("avatar_collection_refresh_view"));
       }
       
-      public function isCollectionGoodsByTemplateID(param1:int) : Boolean
+      public function isCollectionGoodsByTemplateID(id:int) : Boolean
       {
-         return _allGoodsTemplateIDlist[param1];
+         return _allGoodsTemplateIDlist[id];
       }
       
-      public function showFrame(param1:Sprite) : void
+      public function showFrame(value:Sprite) : void
       {
-         cevent = new CEvent("openview",{"parent":param1});
+         cevent = new CEvent("openview",{"parent":value});
          AssetModuleLoader.addModelLoader("avatarcollection",6);
          AssetModuleLoader.startCodeLoader(show);
       }
@@ -909,9 +902,9 @@ package AvatarCollection
          dispatchEvent(new CEvent("closeView"));
       }
       
-      public function visible(param1:Boolean) : void
+      public function visible(value:Boolean) : void
       {
-         dispatchEvent(new CEvent("visible",{"visible":param1}));
+         dispatchEvent(new CEvent("visible",{"visible":value}));
       }
    }
 }

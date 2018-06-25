@@ -42,43 +42,43 @@ package beadSystem.model
       
       public static function getDrills() : DictionaryData
       {
-         var _loc2_:DictionaryData = new DictionaryData();
+         var _drillBag:DictionaryData = new DictionaryData();
          var _loc4_:int = 0;
          var _loc3_:* = PlayerManager.Instance.Self.PropBag.items;
-         for each(var _loc1_ in PlayerManager.Instance.Self.PropBag.items)
+         for each(var item in PlayerManager.Instance.Self.PropBag.items)
          {
-            if(EquipType.isDrill(_loc1_))
+            if(EquipType.isDrill(item))
             {
-               _loc2_.add(_loc2_.length,_loc1_);
+               _drillBag.add(_drillBag.length,item);
             }
          }
-         return _loc2_;
+         return _drillBag;
       }
       
       public static function getDrillsIgnoreBindState() : DictionaryData
       {
-         var _loc3_:* = null;
-         var _loc1_:DictionaryData = new DictionaryData();
+         var info:* = null;
+         var _drills:DictionaryData = new DictionaryData();
          var _loc5_:int = 0;
          var _loc4_:* = PlayerManager.Instance.Self.PropBag.items;
-         for each(var _loc2_ in PlayerManager.Instance.Self.PropBag.items)
+         for each(var item in PlayerManager.Instance.Self.PropBag.items)
          {
-            if(EquipType.isDrill(_loc2_))
+            if(EquipType.isDrill(item))
             {
-               if(_loc1_[_loc2_.TemplateID] != null)
+               if(_drills[item.TemplateID] != null)
                {
-                  DrillItemInfo(_loc1_[_loc2_.TemplateID]).amount = DrillItemInfo(_loc1_[_loc2_.TemplateID]).amount + _loc2_.Count;
+                  DrillItemInfo(_drills[item.TemplateID]).amount = DrillItemInfo(_drills[item.TemplateID]).amount + item.Count;
                }
                else
                {
-                  _loc3_ = new DrillItemInfo();
-                  _loc3_.itemInfo = _loc2_;
-                  _loc3_.amount = _loc2_.Count;
-                  _loc1_.add(_loc2_.TemplateID,_loc3_);
+                  info = new DrillItemInfo();
+                  info.itemInfo = item;
+                  info.amount = item.Count;
+                  _drills.add(item.TemplateID,info);
                }
             }
          }
-         return _loc1_;
+         return _drills;
       }
       
       public static function getHoleMaxOpLv() : int
@@ -90,9 +90,9 @@ package beadSystem.model
          return _holeExpModel.getMaxOpLv();
       }
       
-      public static function getHoleExpByLv(param1:int) : int
+      public static function getHoleExpByLv(lv:int) : int
       {
-         return ServerConfigManager.instance.getBeadHoleUpExp()[param1];
+         return ServerConfigManager.instance.getBeadHoleUpExp()[lv];
       }
    }
 }

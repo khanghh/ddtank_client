@@ -47,9 +47,9 @@ package baglocked.phoneServiceFrames
          super();
       }
       
-      public function init2(param1:int) : void
+      public function init2(value:int) : void
       {
-         type = param1;
+         type = value;
          this.titleText = LanguageMgr.GetTranslation("tank.view.bagII.baglocked.changePhoneTxt");
          _phoneNum = ComponentFactory.Instance.creatComponentByStylename("baglocked.whiteTxt");
          PositionUtils.setPos(_phoneNum,"bagLocked.phoneNumPos");
@@ -70,32 +70,32 @@ package baglocked.phoneServiceFrames
          _nextBtn = ComponentFactory.Instance.creatComponentByStylename("core.simplebt");
          PositionUtils.setPos(_nextBtn,"bagLocked.nextBtnPos2");
          addToContent(_nextBtn);
-         var _loc2_:String = BagLockedController.Instance.phoneNum;
+         var num:String = BagLockedController.Instance.phoneNum;
          switch(int(type))
          {
             case 0:
-               _phoneNum.text = LanguageMgr.GetTranslation("tank.view.bagII.baglocked.formerNum",_loc2_.substr(0,3),_loc2_.substr(6));
+               _phoneNum.text = LanguageMgr.GetTranslation("tank.view.bagII.baglocked.formerNum",num.substr(0,3),num.substr(6));
                _tips.text = LanguageMgr.GetTranslation("tank.view.bagII.baglocked.tip2");
                _nextBtn.text = LanguageMgr.GetTranslation("tank.view.bagII.baglocked.next");
                break;
             case 1:
             case 2:
-               _phoneNum.text = LanguageMgr.GetTranslation("tank.view.bagII.baglocked.bindedNum",_loc2_.substr(0,3),_loc2_.substr(6));
+               _phoneNum.text = LanguageMgr.GetTranslation("tank.view.bagII.baglocked.bindedNum",num.substr(0,3),num.substr(6));
                _tips.text = LanguageMgr.GetTranslation("tank.view.bagII.baglocked.tip4");
                _nextBtn.text = LanguageMgr.GetTranslation("tank.view.bagII.baglocked.complete");
          }
          addEvent();
       }
       
-      protected function __getConfirmBtnClick(param1:MouseEvent) : void
+      protected function __getConfirmBtnClick(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var alertAsk:* = null;
          SoundManager.instance.play("008");
          switch(int(type))
          {
             case 0:
-               _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("tank.view.bagII.baglocked.confirmNeedMoney"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
-               _loc2_.addEventListener("response",__alertGetConfirmNum);
+               alertAsk = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("tank.view.bagII.baglocked.confirmNeedMoney"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
+               alertAsk.addEventListener("response",__alertGetConfirmNum);
                break;
             case 1:
             case 2:
@@ -103,36 +103,36 @@ package baglocked.phoneServiceFrames
          }
       }
       
-      protected function __alertGetConfirmNum(param1:FrameEvent) : void
+      protected function __alertGetConfirmNum(event:FrameEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc3_.removeEventListener("response",__alertGetConfirmNum);
-         switch(int(param1.responseCode) - 2)
+         var alertFrame:* = null;
+         var frame:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("response",__alertGetConfirmNum);
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
                if(PlayerManager.Instance.Self.Money < 50)
                {
-                  _loc3_.dispose();
-                  _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.title"),LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.content"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
-                  _loc2_.addEventListener("response",_response);
+                  frame.dispose();
+                  alertFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.title"),LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.content"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
+                  alertFrame.addEventListener("response",_response);
                   return;
                }
                getConfirmMsn();
                break;
          }
-         _loc3_.dispose();
+         frame.dispose();
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(evt:FrameEvent) : void
       {
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",_response);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         (evt.currentTarget as BaseAlerFrame).removeEventListener("response",_response);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             LeavePageManager.leaveToFillPath();
          }
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(evt.currentTarget);
       }
       
       private function getConfirmMsn() : void
@@ -150,7 +150,7 @@ package baglocked.phoneServiceFrames
          }
       }
       
-      protected function __nextBtnClick(param1:MouseEvent) : void
+      protected function __nextBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_confirmInput.text.length != 6)
@@ -171,9 +171,9 @@ package baglocked.phoneServiceFrames
          }
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -182,9 +182,9 @@ package baglocked.phoneServiceFrames
          }
       }
       
-      public function set bagLockedController(param1:BagLockedController) : void
+      public function set bagLockedController(value:BagLockedController) : void
       {
-         _bagLockedController = param1;
+         _bagLockedController = value;
       }
       
       public function show() : void

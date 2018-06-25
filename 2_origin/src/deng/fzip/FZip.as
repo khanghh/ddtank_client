@@ -59,10 +59,10 @@ package deng.fzip
       
       protected var ddCompressedSize:uint;
       
-      public function FZip(param1:String = "utf-8")
+      public function FZip(filenameEncoding:String = "utf-8")
       {
          super();
-         charEncoding = param1;
+         charEncoding = filenameEncoding;
          parseFunc = parseIdle;
       }
       
@@ -71,7 +71,7 @@ package deng.fzip
          return parseFunc !== parseIdle;
       }
       
-      public function load(param1:URLRequest) : void
+      public function load(request:URLRequest) : void
       {
          if(!urlStream && parseFunc == parseIdle)
          {
@@ -81,20 +81,20 @@ package deng.fzip
             filesList = [];
             filesDict = new Dictionary();
             parseFunc = parseSignature;
-            urlStream.load(param1);
+            urlStream.load(request);
          }
       }
       
-      public function loadBytes(param1:ByteArray) : void
+      public function loadBytes(bytes:ByteArray) : void
       {
          if(!urlStream && parseFunc == parseIdle)
          {
             filesList = [];
             filesDict = new Dictionary();
-            param1.position = 0;
-            param1.endian = "littleEndian";
+            bytes.position = 0;
+            bytes.endian = "littleEndian";
             parseFunc = parseSignature;
-            if(parse(param1))
+            if(parse(bytes))
             {
                parseFunc = parseIdle;
                dispatchEvent(new Event("complete"));
@@ -117,48 +117,47 @@ package deng.fzip
          }
       }
       
-      public function serialize(param1:IDataOutput, param2:Boolean = false) : void
+      public function serialize(stream:IDataOutput, includeAdler32:Boolean = false) : void
       {
-         var _loc5_:* = null;
-         var _loc4_:* = null;
-         var _loc7_:* = 0;
-         var _loc3_:* = 0;
-         var _loc8_:int = 0;
-         var _loc6_:* = null;
-         if(param1 != null && filesList.length > 0)
+         var endian:* = null;
+         var ba:* = null;
+         var offset:* = 0;
+         var files:* = 0;
+         var i:int = 0;
+         var file:* = null;
+         if(stream != null && filesList.length > 0)
          {
-            _loc5_ = param1.endian;
-            _loc4_ = new ByteArray();
+            endian = stream.endian;
+            ba = new ByteArray();
             var _loc9_:String = "littleEndian";
-            _loc4_.endian = _loc9_;
-            param1.endian = _loc9_;
-            _loc7_ = uint(0);
-            _loc3_ = uint(0);
-            _loc8_ = 0;
-            while(_loc8_ < filesList.length)
+            ba.endian = _loc9_;
+            stream.endian = _loc9_;
+            offset = uint(0);
+            files = uint(0);
+            for(i = 0; i < filesList.length; )
             {
-               _loc6_ = filesList[_loc8_] as FZipFile;
-               if(_loc6_ != null)
+               file = filesList[i] as FZipFile;
+               if(file != null)
                {
-                  _loc6_.serialize(_loc4_,param2,true,_loc7_);
-                  _loc7_ = uint(_loc7_ + _loc6_.serialize(param1,param2));
-                  _loc3_++;
+                  file.serialize(ba,includeAdler32,true,offset);
+                  offset = uint(offset + file.serialize(stream,includeAdler32));
+                  files++;
                }
-               _loc8_++;
+               i++;
             }
-            if(_loc4_.length > 0)
+            if(ba.length > 0)
             {
-               param1.writeBytes(_loc4_);
+               stream.writeBytes(ba);
             }
-            param1.writeUnsignedInt(101010256);
-            param1.writeShort(0);
-            param1.writeShort(0);
-            param1.writeShort(_loc3_);
-            param1.writeShort(_loc3_);
-            param1.writeUnsignedInt(_loc4_.length);
-            param1.writeUnsignedInt(_loc7_);
-            param1.writeShort(0);
-            param1.endian = _loc5_;
+            stream.writeUnsignedInt(101010256);
+            stream.writeShort(0);
+            stream.writeShort(0);
+            stream.writeShort(files);
+            stream.writeShort(files);
+            stream.writeUnsignedInt(ba.length);
+            stream.writeUnsignedInt(offset);
+            stream.writeShort(0);
+            stream.endian = endian;
          }
       }
       
@@ -167,27 +166,27 @@ package deng.fzip
          return !!filesList?filesList.length:0;
       }
       
-      public function getFileAt(param1:uint) : FZipFile
+      public function getFileAt(index:uint) : FZipFile
       {
-         return !!filesList?filesList[param1] as FZipFile:null;
+         return !!filesList?filesList[index] as FZipFile:null;
       }
       
-      public function getFileByName(param1:String) : FZipFile
+      public function getFileByName(name:String) : FZipFile
       {
-         return !!filesDict[param1]?filesDict[param1] as FZipFile:null;
+         return !!filesDict[name]?filesDict[name] as FZipFile:null;
       }
       
-      public function addFile(param1:String, param2:ByteArray = null, param3:Boolean = true) : FZipFile
+      public function addFile(name:String, content:ByteArray = null, doCompress:Boolean = true) : FZipFile
       {
-         return addFileAt(!!filesList?filesList.length:0,param1,param2,param3);
+         return addFileAt(!!filesList?filesList.length:0,name,content,doCompress);
       }
       
-      public function addFileFromString(param1:String, param2:String, param3:String = "utf-8", param4:Boolean = true) : FZipFile
+      public function addFileFromString(name:String, content:String, charset:String = "utf-8", doCompress:Boolean = true) : FZipFile
       {
-         return addFileFromStringAt(!!filesList?filesList.length:0,param1,param2,param3,param4);
+         return addFileFromStringAt(!!filesList?filesList.length:0,name,content,charset,doCompress);
       }
       
-      public function addFileAt(param1:uint, param2:String, param3:ByteArray = null, param4:Boolean = true) : FZipFile
+      public function addFileAt(index:uint, name:String, content:ByteArray = null, doCompress:Boolean = true) : FZipFile
       {
          if(filesList == null)
          {
@@ -197,26 +196,26 @@ package deng.fzip
          {
             filesDict = new Dictionary();
          }
-         else if(filesDict[param2])
+         else if(filesDict[name])
          {
-            throw new Error("File already exists: " + param2 + ". Please remove first.");
+            throw new Error("File already exists: " + name + ". Please remove first.");
          }
-         var _loc5_:FZipFile = new FZipFile();
-         _loc5_.filename = param2;
-         _loc5_.setContent(param3,param4);
-         if(param1 >= filesList.length)
+         var file:FZipFile = new FZipFile();
+         file.filename = name;
+         file.setContent(content,doCompress);
+         if(index >= filesList.length)
          {
-            filesList.push(_loc5_);
+            filesList.push(file);
          }
          else
          {
-            filesList.splice(param1,0,_loc5_);
+            filesList.splice(index,0,file);
          }
-         filesDict[param2] = _loc5_;
-         return _loc5_;
+         filesDict[name] = file;
+         return file;
       }
       
-      public function addFileFromStringAt(param1:uint, param2:String, param3:String, param4:String = "utf-8", param5:Boolean = true) : FZipFile
+      public function addFileFromStringAt(index:uint, name:String, content:String, charset:String = "utf-8", doCompress:Boolean = true) : FZipFile
       {
          if(filesList == null)
          {
@@ -226,61 +225,61 @@ package deng.fzip
          {
             filesDict = new Dictionary();
          }
-         else if(filesDict[param2])
+         else if(filesDict[name])
          {
-            throw new Error("File already exists: " + param2 + ". Please remove first.");
+            throw new Error("File already exists: " + name + ". Please remove first.");
          }
-         var _loc6_:FZipFile = new FZipFile();
-         _loc6_.filename = param2;
-         _loc6_.setContentAsString(param3,param4,param5);
-         if(param1 >= filesList.length)
+         var file:FZipFile = new FZipFile();
+         file.filename = name;
+         file.setContentAsString(content,charset,doCompress);
+         if(index >= filesList.length)
          {
-            filesList.push(_loc6_);
+            filesList.push(file);
          }
          else
          {
-            filesList.splice(param1,0,_loc6_);
+            filesList.splice(index,0,file);
          }
-         filesDict[param2] = _loc6_;
-         return _loc6_;
+         filesDict[name] = file;
+         return file;
       }
       
-      public function removeFileAt(param1:uint) : FZipFile
+      public function removeFileAt(index:uint) : FZipFile
       {
-         var _loc2_:* = null;
-         if(filesList != null && filesDict != null && param1 < filesList.length)
+         var file:* = null;
+         if(filesList != null && filesDict != null && index < filesList.length)
          {
-            _loc2_ = filesList[param1] as FZipFile;
-            if(_loc2_ != null)
+            file = filesList[index] as FZipFile;
+            if(file != null)
             {
-               filesList.splice(param1,1);
-               delete filesDict[_loc2_.filename];
-               return _loc2_;
+               filesList.splice(index,1);
+               delete filesDict[file.filename];
+               return file;
             }
          }
          return null;
       }
       
-      protected function parse(param1:IDataInput) : Boolean
+      protected function parse(stream:IDataInput) : Boolean
       {
-         while(parseFunc(param1))
+         while(parseFunc(stream))
          {
          }
          return parseFunc === parseIdle;
       }
       
-      protected function parseIdle(param1:IDataInput) : Boolean
+      protected function parseIdle(stream:IDataInput) : Boolean
       {
          return false;
       }
       
-      protected function parseSignature(param1:IDataInput) : Boolean
+      protected function parseSignature(stream:IDataInput) : Boolean
       {
-         var _loc2_:* = 0;
-         if(param1.bytesAvailable >= 4)
+         var sig:* = 0;
+         if(stream.bytesAvailable >= 4)
          {
-            _loc2_ = uint(param1.readUnsignedInt());
-            var _loc3_:* = _loc2_;
+            sig = uint(stream.readUnsignedInt());
+            var _loc3_:* = sig;
             if(67324752 !== _loc3_)
             {
                if(33639248 !== _loc3_)
@@ -301,31 +300,31 @@ package deng.fzip
                                     {
                                        if(134695760 !== _loc3_)
                                        {
-                                          throw new Error("Unknown record signature: 0x" + _loc2_.toString(16));
+                                          throw new Error("Unknown record signature: 0x" + sig.toString(16));
                                        }
                                     }
-                                    addr35:
+                                    addr43:
                                     parseFunc = parseIdle;
                                  }
-                                 addr34:
-                                 §§goto(addr35);
+                                 addr42:
+                                 §§goto(addr43);
                               }
-                              addr33:
-                              §§goto(addr34);
+                              addr41:
+                              §§goto(addr42);
                            }
-                           addr32:
-                           §§goto(addr33);
+                           addr40:
+                           §§goto(addr41);
                         }
-                        addr31:
-                        §§goto(addr32);
+                        addr39:
+                        §§goto(addr40);
                      }
-                     addr30:
-                     §§goto(addr31);
+                     addr38:
+                     §§goto(addr39);
                   }
-                  addr29:
-                  §§goto(addr30);
+                  addr37:
+                  §§goto(addr38);
                }
-               §§goto(addr29);
+               §§goto(addr37);
             }
             else
             {
@@ -337,9 +336,9 @@ package deng.fzip
          return false;
       }
       
-      protected function parseLocalfile(param1:IDataInput) : Boolean
+      protected function parseLocalfile(stream:IDataInput) : Boolean
       {
-         if(currentFile.parse(param1))
+         if(currentFile.parse(stream))
          {
             if(currentFile.hasDataDescriptor)
             {
@@ -359,49 +358,49 @@ package deng.fzip
          return false;
       }
       
-      protected function findDataDescriptor(param1:IDataInput) : Boolean
+      protected function findDataDescriptor(stream:IDataInput) : Boolean
       {
-         var _loc2_:* = 0;
-         while(param1.bytesAvailable > 0)
+         var c:* = 0;
+         while(stream.bytesAvailable > 0)
          {
-            _loc2_ = uint(param1.readUnsignedByte());
-            ddSignature = ddSignature >>> 8 | _loc2_ << 24;
+            c = uint(stream.readUnsignedByte());
+            ddSignature = ddSignature >>> 8 | c << 24;
             if(ddSignature == 134695760)
             {
                ddBuffer.length = ddBuffer.length - 3;
                parseFunc = validateDataDescriptor;
                return true;
             }
-            ddBuffer.writeByte(_loc2_);
+            ddBuffer.writeByte(c);
          }
          return false;
       }
       
-      protected function validateDataDescriptor(param1:IDataInput) : Boolean
+      protected function validateDataDescriptor(stream:IDataInput) : Boolean
       {
-         var _loc4_:* = 0;
-         var _loc3_:* = 0;
-         var _loc2_:* = 0;
-         if(param1.bytesAvailable >= 12)
+         var ddCRC32:* = 0;
+         var ddSizeCompressed:* = 0;
+         var ddSizeUncompressed:* = 0;
+         if(stream.bytesAvailable >= 12)
          {
-            _loc4_ = uint(param1.readUnsignedInt());
-            _loc3_ = uint(param1.readUnsignedInt());
-            _loc2_ = uint(param1.readUnsignedInt());
-            if(ddBuffer.length == _loc3_)
+            ddCRC32 = uint(stream.readUnsignedInt());
+            ddSizeCompressed = uint(stream.readUnsignedInt());
+            ddSizeUncompressed = uint(stream.readUnsignedInt());
+            if(ddBuffer.length == ddSizeCompressed)
             {
                ddBuffer.position = 0;
-               currentFile._crc32 = _loc4_;
-               currentFile._sizeCompressed = _loc3_;
-               currentFile._sizeUncompressed = _loc2_;
+               currentFile._crc32 = ddCRC32;
+               currentFile._sizeCompressed = ddSizeCompressed;
+               currentFile._sizeUncompressed = ddSizeUncompressed;
                currentFile.parseContent(ddBuffer);
                onFileLoaded();
                parseFunc = parseSignature;
             }
             else
             {
-               ddBuffer.writeUnsignedInt(_loc4_);
-               ddBuffer.writeUnsignedInt(_loc3_);
-               ddBuffer.writeUnsignedInt(_loc2_);
+               ddBuffer.writeUnsignedInt(ddCRC32);
+               ddBuffer.writeUnsignedInt(ddSizeCompressed);
+               ddBuffer.writeUnsignedInt(ddSizeUncompressed);
                parseFunc = findDataDescriptor;
             }
             return true;
@@ -420,9 +419,9 @@ package deng.fzip
          currentFile = null;
       }
       
-      protected function progressHandler(param1:Event) : void
+      protected function progressHandler(evt:Event) : void
       {
-         dispatchEvent(param1.clone());
+         dispatchEvent(evt.clone());
          try
          {
             if(parse(urlStream))
@@ -447,15 +446,15 @@ package deng.fzip
          }
       }
       
-      protected function defaultHandler(param1:Event) : void
+      protected function defaultHandler(evt:Event) : void
       {
-         dispatchEvent(param1.clone());
+         dispatchEvent(evt.clone());
       }
       
-      protected function defaultErrorHandler(param1:Event) : void
+      protected function defaultErrorHandler(evt:Event) : void
       {
          close();
-         dispatchEvent(param1.clone());
+         dispatchEvent(evt.clone());
       }
       
       protected function addEventHandlers() : void

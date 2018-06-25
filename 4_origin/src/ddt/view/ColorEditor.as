@@ -106,31 +106,29 @@ package ddt.view
       
       private function initColors() : void
       {
-         var _loc4_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:int = 0;
-         var _loc3_:* = null;
-         _loc4_ = 0;
-         while(_loc4_ < _colors.length)
+         var i:int = 0;
+         var ci:* = null;
+         var j:int = 0;
+         var si:* = null;
+         for(i = 0; i < _colors.length; )
          {
-            _loc1_ = ComponentFactory.Instance.creatComponentByStylename("shop.ColorItem");
-            _loc1_.setup(_colors[_loc4_]);
-            _colorsArr.push(_loc1_);
-            _colorlist.addChild(_loc1_);
-            _ciGroup.addSelectItem(_loc1_);
-            _loc1_.addEventListener("mouseDown",__colorItemClick);
-            _loc4_++;
+            ci = ComponentFactory.Instance.creatComponentByStylename("shop.ColorItem");
+            ci.setup(_colors[i]);
+            _colorsArr.push(ci);
+            _colorlist.addChild(ci);
+            _ciGroup.addSelectItem(ci);
+            ci.addEventListener("mouseDown",__colorItemClick);
+            i++;
          }
-         _loc2_ = 0;
-         while(_loc2_ < _skins.length)
+         for(j = 0; j < _skins.length; )
          {
-            _loc3_ = ComponentFactory.Instance.creatComponentByStylename("shop.ColorItem");
-            _loc3_.setup(_skins[_loc2_]);
-            _skinsArr.push(_loc3_);
-            _skincolorlist.addChild(_loc3_);
-            _siGroup.addSelectItem(_loc3_);
-            _loc3_.addEventListener("mouseDown",__skinItemClick);
-            _loc2_++;
+            si = ComponentFactory.Instance.creatComponentByStylename("shop.ColorItem");
+            si.setup(_skins[j]);
+            _skinsArr.push(si);
+            _skincolorlist.addChild(si);
+            _siGroup.addSelectItem(si);
+            si.addEventListener("mouseDown",__skinItemClick);
+            j++;
          }
       }
       
@@ -149,9 +147,9 @@ package ddt.view
          return _colorRestorable;
       }
       
-      public function set colorRestorable(param1:Boolean) : void
+      public function set colorRestorable(value:Boolean) : void
       {
-         _colorRestorable = param1;
+         _colorRestorable = value;
          if(colorEditable && selectedType == 1)
          {
             _restoreColorBtn.enable = _colorRestorable;
@@ -163,18 +161,18 @@ package ddt.view
          return _skinRestorable;
       }
       
-      public function set skinRestorable(param1:Boolean) : void
+      public function set skinRestorable(value:Boolean) : void
       {
-         _skinRestorable = param1;
+         _skinRestorable = value;
          if(skinEditable && selectedType == 2)
          {
             _restoreColorBtn.enable = _skinRestorable;
          }
       }
       
-      public function set restorable(param1:Boolean) : void
+      public function set restorable(value:Boolean) : void
       {
-         _restoreColorBtn.visible = param1;
+         _restoreColorBtn.visible = value;
       }
       
       public function get colorEditable() : Boolean
@@ -182,12 +180,12 @@ package ddt.view
          return _colorBtn.enable;
       }
       
-      public function set colorEditable(param1:Boolean) : void
+      public function set colorEditable(value:Boolean) : void
       {
-         if(_colorBtn.enable != param1)
+         if(_colorBtn.enable != value)
          {
-            _colorBtn.enable = param1;
-            if(!param1 && _colorlist.visible)
+            _colorBtn.enable = value;
+            if(!value && _colorlist.visible)
             {
                _colorlist.visible = false;
                _colorPanelMask.visible = true;
@@ -201,12 +199,12 @@ package ddt.view
          return _textureBtn.enable;
       }
       
-      public function set skinEditable(param1:Boolean) : void
+      public function set skinEditable(value:Boolean) : void
       {
-         if(_textureBtn.enable != param1)
+         if(_textureBtn.enable != value)
          {
-            _textureBtn.enable = param1;
-            if(!param1 && _skincolorlist.visible)
+            _textureBtn.enable = value;
+            if(!value && _skincolorlist.visible)
             {
                _skincolorlist.visible = false;
                _colorPanelMask.visible = true;
@@ -227,32 +225,32 @@ package ddt.view
          }
       }
       
-      public function editColor(param1:int = -1) : void
+      public function editColor(color:int = -1) : void
       {
          if(colorEditable)
          {
-            selectedColor = param1;
+            selectedColor = color;
             _colorlist.visible = true;
             _restoreColorBtn.enable = _selectedColor != -1 || _colorRestorable;
             _skincolorlist.visible = false;
             _colorPanelMask.visible = false;
-            if(param1 == -1)
+            if(color == -1)
             {
                _ciGroup.selectIndex = -1;
             }
          }
       }
       
-      public function editSkin(param1:int = -1) : void
+      public function editSkin(skin:int = -1) : void
       {
          if(skinEditable)
          {
-            selectedSkin = param1;
+            selectedSkin = skin;
             _colorlist.visible = false;
             _restoreColorBtn.enable = _selectedSkin != -1 || _skinRestorable;
             _skincolorlist.visible = true;
             _colorPanelMask.visible = false;
-            if(param1 == -1)
+            if(skin == -1)
             {
                _siGroup.selectIndex = -1;
             }
@@ -264,9 +262,9 @@ package ddt.view
          return _btnGroup.selectIndex + 1;
       }
       
-      public function set selectedType(param1:int) : void
+      public function set selectedType(value:int) : void
       {
-         _btnGroup.selectIndex = param1 - 1;
+         _btnGroup.selectIndex = value - 1;
       }
       
       public function get selectedColor() : int
@@ -274,12 +272,12 @@ package ddt.view
          return _selectedColor;
       }
       
-      public function set selectedColor(param1:int) : void
+      public function set selectedColor(value:int) : void
       {
-         if(param1 != _selectedColor && colorEditable)
+         if(value != _selectedColor && colorEditable)
          {
-            _selectedColor = param1;
-            _colorlist.selectedIndex = _colors.indexOf(param1);
+            _selectedColor = value;
+            _colorlist.selectedIndex = _colors.indexOf(value);
             updateReductiveColorBtn();
             dispatchEvent(new Event("change"));
          }
@@ -290,12 +288,12 @@ package ddt.view
          return _selectedSkin;
       }
       
-      public function set selectedSkin(param1:int) : void
+      public function set selectedSkin(value:int) : void
       {
-         if(param1 != _selectedSkin && skinEditable)
+         if(value != _selectedSkin && skinEditable)
          {
-            _selectedSkin = param1;
-            _skincolorlist.selectedIndex = _skins.indexOf(param1);
+            _selectedSkin = value;
+            _skincolorlist.selectedIndex = _skins.indexOf(value);
             updateReductiveColorBtn();
             dispatchEvent(new Event("change"));
          }
@@ -314,34 +312,34 @@ package ddt.view
          _skincolorlist.selectedIndex = _skins.indexOf(_selectedSkin);
       }
       
-      private function __colorItemClick(param1:Event) : void
+      private function __colorItemClick(event:Event) : void
       {
          SoundManager.instance.play("047");
-         var _loc2_:ColorItem = param1.currentTarget as ColorItem;
-         selectedColor = _loc2_.getColor();
+         var item:ColorItem = event.currentTarget as ColorItem;
+         selectedColor = item.getColor();
          dispatchEvent(new Event("change_color"));
       }
       
-      private function __skinItemClick(param1:Event) : void
+      private function __skinItemClick(event:Event) : void
       {
          SoundManager.instance.play("047");
-         var _loc2_:ColorItem = param1.currentTarget as ColorItem;
-         selectedSkin = _loc2_.getColor();
+         var item:ColorItem = event.currentTarget as ColorItem;
+         selectedSkin = item.getColor();
       }
       
-      private function __colorEditClick(param1:Event) : void
+      private function __colorEditClick(event:Event) : void
       {
          SoundManager.instance.play("047");
          editColor(selectedColor);
       }
       
-      private function __skinEditClick(param1:Event) : void
+      private function __skinEditClick(event:Event) : void
       {
          SoundManager.instance.play("047");
          editSkin(selectedSkin);
       }
       
-      protected function __restoreColorBtnClick(param1:MouseEvent) : void
+      protected function __restoreColorBtnClick(event:MouseEvent) : void
       {
          if(selectedType == 1)
          {
@@ -358,29 +356,27 @@ package ddt.view
       
       public function dispose() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
+         var i:int = 0;
+         var j:int = 0;
          _colorBtn.removeEventListener("click",__colorEditClick);
          _textureBtn.removeEventListener("click",__skinEditClick);
          _restoreColorBtn.removeEventListener("click",__restoreColorBtnClick);
          _colorBtn = null;
          _textureBtn = null;
          _restoreColorBtn = null;
-         _loc2_ = 0;
-         while(_loc2_ < _colors.length)
+         for(i = 0; i < _colors.length; )
          {
-            _colorsArr[_loc2_].removeEventListener("mouseDown",__colorItemClick);
-            _colorsArr[_loc2_].dispose();
-            _colorsArr[_loc2_] = null;
-            _loc2_++;
+            _colorsArr[i].removeEventListener("mouseDown",__colorItemClick);
+            _colorsArr[i].dispose();
+            _colorsArr[i] = null;
+            i++;
          }
-         _loc1_ = 0;
-         while(_loc1_ < _skinsArr.length)
+         for(j = 0; j < _skinsArr.length; )
          {
-            _skinsArr[_loc1_].removeEventListener("mouseDown",__skinItemClick);
-            _skinsArr[_loc1_].dispose();
-            _skinsArr[_loc1_] = null;
-            _loc1_++;
+            _skinsArr[j].removeEventListener("mouseDown",__skinItemClick);
+            _skinsArr[j].dispose();
+            _skinsArr[j] = null;
+            j++;
          }
          if(_colorlist)
          {

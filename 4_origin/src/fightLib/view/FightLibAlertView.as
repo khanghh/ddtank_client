@@ -52,24 +52,24 @@ package fightLib.view
       
       private var _WeaponCellArr:Array;
       
-      public function FightLibAlertView(param1:String, param2:String = null, param3:Function = null, param4:String = null, param5:Function = null, param6:Boolean = true, param7:Boolean = false, param8:Array = null)
+      public function FightLibAlertView(infoString:String, okLabel:String = null, okFun:Function = null, cancelLabel:String = null, cancelFun:Function = null, showOkBtn:Boolean = true, showCancelBtn:Boolean = false, weaponArr:Array = null)
       {
          _okLabel = LanguageMgr.GetTranslation("ok");
          _cancelLabel = LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.watchAgain");
          super();
-         _infoStr = param1;
-         if(param2)
+         _infoStr = infoString;
+         if(okLabel)
          {
-            _okLabel = param2;
+            _okLabel = okLabel;
          }
-         _okFun = param3;
-         if(param4)
+         _okFun = okFun;
+         if(cancelLabel)
          {
-            _cancelLabel = param4;
+            _cancelLabel = cancelLabel;
          }
-         _cancelFun = param5;
-         _showOkBtn = param6;
-         _showCancelBtn = param7;
+         _cancelFun = cancelFun;
+         _showOkBtn = showOkBtn;
+         _showCancelBtn = showCancelBtn;
          configUI();
          addEvent();
          if(!_showCancelBtn)
@@ -86,56 +86,54 @@ package fightLib.view
          _okBtn.y = _loc9_;
          _okBtn.visible = _showOkBtn;
          _cancelBtn.visible = _showCancelBtn;
-         if(param8 != null)
+         if(weaponArr != null)
          {
-            ShowWeaponIcon(param8);
+            ShowWeaponIcon(weaponArr);
          }
       }
       
-      private function ShowWeaponIcon(param1:Array) : void
+      private function ShowWeaponIcon(_arr:Array) : void
       {
-         var _loc7_:* = null;
-         var _loc8_:int = 0;
-         var _loc4_:* = null;
-         var _loc5_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var cardTempInfo:* = null;
+         var i:int = 0;
+         var s:* = null;
+         var cell:* = null;
+         var _NameTxt:* = null;
+         var _WeaponNameField:* = null;
          _WeaponCellArr = [];
-         var _loc6_:int = param1.length;
-         _loc8_ = 0;
-         while(_loc8_ < _loc6_)
+         var Max:int = _arr.length;
+         for(i = 0; i < Max; )
          {
-            _loc4_ = new Sprite();
-            _loc4_.graphics.beginFill(16777215,0);
-            _loc4_.graphics.drawRect(0,0,60,60);
-            _loc4_.graphics.endFill();
-            _loc7_ = ItemManager.Instance.getTemplateById(param1[_loc8_]);
-            _loc5_ = new BaseCell(_loc4_,_loc7_,true,false);
-            _loc5_.x = 30 + _loc8_ * 70;
-            _loc5_.y = 50;
-            addChild(_loc5_);
-            _WeaponCellArr.push(_loc5_);
-            _loc3_ = _loc7_.Name.slice(2);
-            _loc2_ = ComponentFactory.Instance.creatComponentByStylename("fightLib.WeaponNameField");
-            _loc2_.x = 58 + _loc8_ * 70;
-            _loc2_.y = 110;
-            _loc2_.text = _loc3_;
-            addChild(_loc2_);
-            _loc8_++;
+            s = new Sprite();
+            s.graphics.beginFill(16777215,0);
+            s.graphics.drawRect(0,0,60,60);
+            s.graphics.endFill();
+            cardTempInfo = ItemManager.Instance.getTemplateById(_arr[i]);
+            cell = new BaseCell(s,cardTempInfo,true,false);
+            cell.x = 30 + i * 70;
+            cell.y = 50;
+            addChild(cell);
+            _WeaponCellArr.push(cell);
+            _NameTxt = cardTempInfo.Name.slice(2);
+            _WeaponNameField = ComponentFactory.Instance.creatComponentByStylename("fightLib.WeaponNameField");
+            _WeaponNameField.x = 58 + i * 70;
+            _WeaponNameField.y = 110;
+            _WeaponNameField.text = _NameTxt;
+            addChild(_WeaponNameField);
+            i++;
          }
       }
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          removeEvent();
          if(_WeaponCellArr != null)
          {
-            _loc1_ = 0;
-            while(_loc1_ < _WeaponCellArr.length)
+            for(i = 0; i < _WeaponCellArr.length; )
             {
-               _WeaponCellArr[_loc1_].dispose();
-               _loc1_++;
+               _WeaponCellArr[i].dispose();
+               i++;
             }
          }
          ObjectUtils.disposeAllChildren(this);
@@ -170,9 +168,9 @@ package fightLib.view
          }
       }
       
-      public function set alert(param1:String) : void
+      public function set alert(val:String) : void
       {
-         _txt.text = param1;
+         _txt.text = val;
       }
       
       public function get alert() : String
@@ -219,7 +217,7 @@ package fightLib.view
          _cancelBtn.addEventListener("click",__cancelClicked);
       }
       
-      private function __cancelClicked(param1:MouseEvent) : void
+      private function __cancelClicked(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_cancelFun != null)
@@ -228,7 +226,7 @@ package fightLib.view
          }
       }
       
-      private function __submitClicked(param1:MouseEvent) : void
+      private function __submitClicked(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_okFun != null)

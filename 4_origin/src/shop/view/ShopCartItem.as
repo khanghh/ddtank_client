@@ -97,7 +97,7 @@ package shop.view
          return _closeBtn;
       }
       
-      protected function drawBackground(param1:Boolean = false) : void
+      protected function drawBackground(bool:Boolean = false) : void
       {
          _bg = ComponentFactory.Instance.creatComponentByStylename("ddtshop.CartItemBg");
          _itemCellBg = ComponentFactory.Instance.creat("ddtshop.CartItemCellBg");
@@ -125,9 +125,9 @@ package shop.view
          return _isBand;
       }
       
-      public function set isBand(param1:Boolean) : void
+      public function set isBand(bool:Boolean) : void
       {
-         _isBand = param1;
+         _isBand = bool;
       }
       
       protected function initListener() : void
@@ -136,7 +136,7 @@ package shop.view
          addEventListener("click",clickHander);
       }
       
-      public function addItem(param1:Boolean = false) : void
+      public function addItem(bool:Boolean = false) : void
       {
          if(_shopItemInfo.getCurrentPrice().PriceType == -2)
          {
@@ -151,7 +151,7 @@ package shop.view
          _movieBack.x = 177;
          _movieBack.y = 94;
          addChild(_movieBack);
-         _isBand = param1;
+         _isBand = bool;
          if(Price.ONLYDDT_MONEY)
          {
             addSelectedBandBtn();
@@ -207,7 +207,7 @@ package shop.view
          _bandMoneyTxt.y = 84;
       }
       
-      private function selectedHander(param1:MouseEvent) : void
+      private function selectedHander(e:MouseEvent) : void
       {
          if(_selectedBtn.selected)
          {
@@ -223,7 +223,7 @@ package shop.view
          setDianquanType(_isBand);
       }
       
-      private function selectedBandHander(param1:MouseEvent) : void
+      private function selectedBandHander(e:MouseEvent) : void
       {
          if(_selectedBandBtn.selected)
          {
@@ -239,47 +239,46 @@ package shop.view
          setDianquanType(_isBand);
       }
       
-      public function setDianquanType(param1:Boolean = false) : void
+      public function setDianquanType(bool:Boolean = false) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:int = 0;
-         var _loc6_:int = 0;
-         var _loc2_:int = 0;
-         var _loc5_:int = _items.length;
-         _loc6_ = 0;
-         while(_loc6_ < _loc5_)
+         var vTimeString:* = null;
+         var num:int = 0;
+         var i:int = 0;
+         var index:int = 0;
+         var len:int = _items.length;
+         for(i = 0; i < len; )
          {
-            _loc2_ = _loc6_ + 1;
-            if(param1)
+            index = i + 1;
+            if(bool)
             {
-               _loc4_ = _shopItemInfo.getTimeToString(_loc2_) != LanguageMgr.GetTranslation("ddt.shop.buyTime1")?_shopItemInfo.getTimeToString(_loc2_):LanguageMgr.GetTranslation("ddt.shop.buyTime2");
-               _items[_loc6_].text = _shopItemInfo.getItemPrice(_loc2_).toString(true) + "/" + _loc4_;
-               _loc3_ = rigthValue(_loc2_);
+               vTimeString = _shopItemInfo.getTimeToString(index) != LanguageMgr.GetTranslation("ddt.shop.buyTime1")?_shopItemInfo.getTimeToString(index):LanguageMgr.GetTranslation("ddt.shop.buyTime2");
+               _items[i].text = _shopItemInfo.getItemPrice(index).toString(true) + "/" + vTimeString;
+               num = rigthValue(index);
             }
             else
             {
-               _loc4_ = _shopItemInfo.getTimeToString(_loc2_) != LanguageMgr.GetTranslation("ddt.shop.buyTime1")?_shopItemInfo.getTimeToString(_loc2_):LanguageMgr.GetTranslation("ddt.shop.buyTime2");
-               _items[_loc6_].text = _shopItemInfo.getItemPrice(_loc2_).toString() + "/" + _loc4_;
-               _loc3_ = rigthValue(_loc2_);
+               vTimeString = _shopItemInfo.getTimeToString(index) != LanguageMgr.GetTranslation("ddt.shop.buyTime1")?_shopItemInfo.getTimeToString(index):LanguageMgr.GetTranslation("ddt.shop.buyTime2");
+               _items[i].text = _shopItemInfo.getItemPrice(index).toString() + "/" + vTimeString;
+               num = rigthValue(index);
             }
-            _loc6_++;
+            i++;
          }
          if(parent && seleBand != null)
          {
-            seleBand(id,_loc3_,param1);
+            seleBand(id,num,bool);
          }
       }
       
-      private function rigthValue(param1:int) : int
+      private function rigthValue(index:int) : int
       {
-         if(param1 == _shopItemInfo.currentBuyType)
+         if(index == _shopItemInfo.currentBuyType)
          {
-            return _shopItemInfo.getItemPrice(param1).bothMoneyValue;
+            return _shopItemInfo.getItemPrice(index).bothMoneyValue;
          }
          return 0;
       }
       
-      protected function clickHander(param1:Event) : void
+      protected function clickHander(event:Event) : void
       {
          if(type == 2 || type == 4)
          {
@@ -289,15 +288,15 @@ package shop.view
          {
             return;
          }
-         if(param1.currentTarget.id == ShopBuyManager.crrItemId)
+         if(event.currentTarget.id == ShopBuyManager.crrItemId)
          {
             return;
          }
-         if(param1.target is SelectedCheckButton)
+         if(event.target is SelectedCheckButton)
          {
             return;
          }
-         if(param1.target is FilterFrameText)
+         if(event.target is FilterFrameText)
          {
             return;
          }
@@ -326,71 +325,70 @@ package shop.view
          }
       }
       
-      protected function __closeClick(param1:MouseEvent) : void
+      protected function __closeClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          dispatchEvent(new Event("deleteitem"));
       }
       
-      protected function __cartItemGroupChange(param1:Event) : void
+      protected function __cartItemGroupChange(event:Event) : void
       {
          _shopItemInfo.currentBuyType = _cartItemGroup.selectIndex + 1;
          dispatchEvent(new Event("conditionchange"));
       }
       
-      public function setShopItemInfo(param1:ShopCarItemInfo, param2:int = -10, param3:Boolean = false) : void
+      public function setShopItemInfo(value:ShopCarItemInfo, $id:int = -10, bool:Boolean = false) : void
       {
-         if(_shopItemInfo != param1)
+         if(_shopItemInfo != value)
          {
-            _cell.info = param1.TemplateInfo;
-            _shopItemInfo = param1;
-            if(id == param2)
+            _cell.info = value.TemplateInfo;
+            _shopItemInfo = value;
+            if(id == $id)
             {
-               addItem(param3);
+               addItem(bool);
             }
-            if(param1 == null)
+            if(value == null)
             {
                _itemName.text = "";
             }
             else
             {
-               _itemName.text = String(param1.TemplateInfo.Name);
+               _itemName.text = String(value.TemplateInfo.Name);
                cartItemSelectVBoxInit();
-               setDianquanType(param3);
+               setDianquanType(bool);
             }
          }
       }
       
-      public function set showCloseButton(param1:Boolean) : void
+      public function set showCloseButton(value:Boolean) : void
       {
-         _closeBtn.visible = param1;
+         _closeBtn.visible = value;
       }
       
       protected function cartItemSelectVBoxInit() : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var cartItemSelectBtn:* = null;
+         var vTimeString:* = null;
+         var str:* = null;
          clearitem();
          _cartItemGroup = new SelectedButtonGroup();
          _cartItemGroup.addEventListener("change",__cartItemGroupChange);
          _items = new Vector.<SelectedCheckButton>();
-         _loc4_ = 1;
-         while(_loc4_ < 4)
+         for(i = 1; i < 4; )
          {
-            if(_shopItemInfo.getItemPrice(_loc4_).IsValid)
+            if(_shopItemInfo.getItemPrice(i).IsValid)
             {
-               _loc3_ = ComponentFactory.Instance.creatComponentByStylename("ddtshop.CartItemSelectBtn");
-               _loc2_ = _shopItemInfo.getTimeToString(_loc4_) != LanguageMgr.GetTranslation("ddt.shop.buyTime1")?_shopItemInfo.getTimeToString(_loc4_):LanguageMgr.GetTranslation("ddt.shop.buyTime2");
-               _loc1_ = _shopItemInfo.getItemPrice(_loc4_).toString();
-               _loc3_.text = _shopItemInfo.getItemPrice(_loc4_).toString() + "/" + _loc2_;
-               _cartItemSelectVBox.addChild(_loc3_);
-               _loc3_.addEventListener("click",__soundPlay);
-               _items.push(_loc3_);
-               _cartItemGroup.addSelectItem(_loc3_);
+               cartItemSelectBtn = ComponentFactory.Instance.creatComponentByStylename("ddtshop.CartItemSelectBtn");
+               vTimeString = _shopItemInfo.getTimeToString(i) != LanguageMgr.GetTranslation("ddt.shop.buyTime1")?_shopItemInfo.getTimeToString(i):LanguageMgr.GetTranslation("ddt.shop.buyTime2");
+               str = _shopItemInfo.getItemPrice(i).toString();
+               cartItemSelectBtn.text = _shopItemInfo.getItemPrice(i).toString() + "/" + vTimeString;
+               _cartItemSelectVBox.addChild(cartItemSelectBtn);
+               cartItemSelectBtn.addEventListener("click",__soundPlay);
+               _items.push(cartItemSelectBtn);
+               _cartItemGroup.addSelectItem(cartItemSelectBtn);
             }
-            _loc4_++;
+            i++;
          }
          _cartItemGroup.selectIndex = _shopItemInfo.currentBuyType - 1 < 1?0:Number(_shopItemInfo.currentBuyType - 1);
          if(_cartItemSelectVBox.numChildren == 2)
@@ -405,7 +403,7 @@ package shop.view
       
       private function clearitem() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(_cartItemGroup)
          {
             _cartItemGroup.removeEventListener("change",__cartItemGroupChange);
@@ -413,16 +411,15 @@ package shop.view
          }
          if(_items)
          {
-            _loc1_ = 0;
-            while(_loc1_ < _items.length)
+            for(i = 0; i < _items.length; )
             {
-               if(_items[_loc1_])
+               if(_items[i])
                {
-                  ObjectUtils.disposeObject(_items[_loc1_]);
-                  _items[_loc1_].removeEventListener("click",__soundPlay);
+                  ObjectUtils.disposeObject(_items[i]);
+                  _items[i].removeEventListener("click",__soundPlay);
                }
-               _items[_loc1_] = null;
-               _loc1_++;
+               _items[i] = null;
+               i++;
             }
          }
          if(_cartItemSelectVBox)
@@ -431,7 +428,7 @@ package shop.view
          }
       }
       
-      protected function __soundPlay(param1:MouseEvent) : void
+      protected function __soundPlay(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }
@@ -455,9 +452,9 @@ package shop.view
          return _cell.info.TemplateID;
       }
       
-      public function setColor(param1:*) : void
+      public function setColor(color:*) : void
       {
-         _cell.setColor(param1);
+         _cell.setColor(color);
       }
       
       public function dispose() : void

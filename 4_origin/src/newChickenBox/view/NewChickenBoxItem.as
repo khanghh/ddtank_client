@@ -30,11 +30,11 @@ package newChickenBox.view
       
       protected var _tbxCount:FilterFrameText;
       
-      public function NewChickenBoxItem(param1:NewChickenBoxCell, param2:MovieClip)
+      public function NewChickenBoxItem(cell:NewChickenBoxCell, bg:MovieClip)
       {
          super();
-         _cell = param1;
-         _bg = param2;
+         _cell = cell;
+         _bg = bg;
          _bg.addEventListener("showItem",showItem);
          _bg.addEventListener("hideItem",hideItem);
          _bg.addEventListener("alphaItem",alphaItem);
@@ -83,24 +83,24 @@ package newChickenBox.view
          }
       }
       
-      public function setBg(param1:int) : void
+      public function setBg(state:int) : void
       {
-         if(param1 == 0)
+         if(state == 0)
          {
             bg = ClassUtils.CreatInstance("asset.newChickenBox.chickenStand") as MovieClip;
             cell.visible = true;
          }
-         else if(param1 == 1)
+         else if(state == 1)
          {
             bg = ClassUtils.CreatInstance("asset.newChickenBox.chickenMove") as MovieClip;
             cell.visible = true;
          }
-         else if(param1 == 2)
+         else if(state == 2)
          {
             bg = ClassUtils.CreatInstance("asset.newChickenBox.chickenOver") as MovieClip;
             cell.visible = true;
          }
-         else if(param1 == 3)
+         else if(state == 3)
          {
             bg = ClassUtils.CreatInstance("asset.newChickenBox.chickenBack") as MovieClip;
             cell.visible = false;
@@ -134,13 +134,13 @@ package newChickenBox.view
          }
       }
       
-      public function set filterString(param1:String) : void
+      public function set filterString(value:String) : void
       {
-         if(_filterString == param1)
+         if(_filterString == value)
          {
             return;
          }
-         _filterString = param1;
+         _filterString = value;
          _frameFilter = ComponentFactory.Instance.creatFrameFilters(_filterString);
       }
       
@@ -149,12 +149,12 @@ package newChickenBox.view
          return _frameFilter;
       }
       
-      public function set frameFilter(param1:Array) : void
+      public function set frameFilter(value:Array) : void
       {
-         _frameFilter = param1;
+         _frameFilter = value;
       }
       
-      private function alphaItem(param1:Event) : void
+      private function alphaItem(e:Event) : void
       {
          _cell.visible = true;
          _cell.alpha = 0.5;
@@ -165,13 +165,13 @@ package newChickenBox.view
          }
       }
       
-      private function showItem(param1:Event) : void
+      private function showItem(e:Event) : void
       {
          _cell.visible = true;
          updateCount();
       }
       
-      private function hideItem(param1:Event) : void
+      private function hideItem(e:Event) : void
       {
          _cell.visible = false;
          if(_tbxCount)
@@ -185,13 +185,13 @@ package newChickenBox.view
          return _cell;
       }
       
-      public function set cell(param1:NewChickenBoxCell) : void
+      public function set cell(value:NewChickenBoxCell) : void
       {
          if(_cell != null && _cell.parent != null)
          {
             _cell.parent.removeChild(_cell);
          }
-         _cell = param1;
+         _cell = value;
          this.addChild(_cell);
       }
       
@@ -200,7 +200,7 @@ package newChickenBox.view
          return _bg;
       }
       
-      public function set bg(param1:MovieClip) : void
+      public function set bg(value:MovieClip) : void
       {
          if(_bg != null && _bg.parent != null)
          {
@@ -210,7 +210,7 @@ package newChickenBox.view
             _bg.parent.removeChild(_bg);
             _bg = null;
          }
-         _bg = param1;
+         _bg = value;
          _bg.addEventListener("showItem",showItem);
          _bg.addEventListener("hideItem",hideItem);
          _bg.addEventListener("alphaItem",alphaItem);
@@ -222,22 +222,22 @@ package newChickenBox.view
          return _position;
       }
       
-      public function set position(param1:int) : void
+      public function set position(value:int) : void
       {
-         _position = param1;
+         _position = value;
       }
       
-      public function setFrame(param1:int) : void
+      public function setFrame(frameIndex:int) : void
       {
-         filters = _frameFilter[param1 - 1];
+         filters = _frameFilter[frameIndex - 1];
       }
       
-      private function __onMouseRollout(param1:MouseEvent) : void
+      private function __onMouseRollout(event:MouseEvent) : void
       {
          setFrame(1);
       }
       
-      private function __onMouseRollover(param1:MouseEvent) : void
+      private function __onMouseRollover(event:MouseEvent) : void
       {
          setFrame(2);
       }

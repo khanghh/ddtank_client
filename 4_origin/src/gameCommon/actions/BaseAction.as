@@ -14,12 +14,12 @@ package gameCommon.actions
          _isFinished = false;
       }
       
-      public function connect(param1:BaseAction) : Boolean
+      public function connect(action:BaseAction) : Boolean
       {
          return false;
       }
       
-      public function canReplace(param1:BaseAction) : Boolean
+      public function canReplace(action:BaseAction) : Boolean
       {
          return false;
       }

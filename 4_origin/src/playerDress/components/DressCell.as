@@ -14,9 +14,9 @@ package playerDress.components
    {
        
       
-      public function DressCell(param1:int = 0, param2:ItemTemplateInfo = null, param3:Boolean = true)
+      public function DressCell(index:int = 0, info:ItemTemplateInfo = null, showLoading:Boolean = true)
       {
-         super(param1,param2,param3);
+         super(index,info,showLoading);
          _bg.visible = false;
          _picPos = new Point(2,0);
          initEvents();
@@ -36,20 +36,20 @@ package playerDress.components
          DoubleClickManager.Instance.disableDoubleClick(this);
       }
       
-      override protected function onMouseOver(param1:MouseEvent) : void
+      override protected function onMouseOver(evt:MouseEvent) : void
       {
       }
       
-      override protected function onMouseClick(param1:MouseEvent) : void
+      override protected function onMouseClick(evt:MouseEvent) : void
       {
       }
       
-      protected function onClick(param1:InteractiveEvent) : void
+      protected function onClick(evt:InteractiveEvent) : void
       {
          dispatchEvent(new CellEvent("itemclick",this));
       }
       
-      protected function onDoubleClick(param1:InteractiveEvent) : void
+      protected function onDoubleClick(evt:InteractiveEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(info)

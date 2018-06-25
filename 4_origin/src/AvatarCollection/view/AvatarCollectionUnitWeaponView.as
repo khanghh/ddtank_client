@@ -6,9 +6,9 @@ package AvatarCollection.view
    {
        
       
-      public function AvatarCollectionUnitWeaponView(param1:int, param2:AvatarCollectionRightView)
+      public function AvatarCollectionUnitWeaponView(index:int, rightView:AvatarCollectionRightView)
       {
-         super(param1,param2);
+         super(index,rightView);
       }
       
       override protected function initView() : void

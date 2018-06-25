@@ -13,58 +13,56 @@ package
       
       private var tempcopyInfo:Array;
       
-      public function ComplexItem(param1:Number, param2:Number, param3:String = "original", param4:String = "auto", param5:Boolean = false)
+      public function ComplexItem($width:Number, $height:Number, $rendmode:String = "original", pixelSnapping:String = "auto", smoothing:Boolean = false)
       {
-         super(param1,param2,param3,param4,param5);
+         super($width,$height,$rendmode,pixelSnapping,smoothing);
          _type = BitmapRendItem.COMPLEX;
          this._items = new Vector.<BitmapRendItem>();
       }
       
-      public function addItem(param1:FrameByFrameItem) : void
+      public function addItem(item:FrameByFrameItem) : void
       {
-         this._items.push(param1);
+         this._items.push(item);
          if(rendMode == BitmapRendMode.COPY_PIXEL)
          {
-            param1.scaleX = scaleX;
+            item.scaleX = scaleX;
          }
       }
       
-      public function removeItem(param1:FrameByFrameItem) : void
+      public function removeItem(item:FrameByFrameItem) : void
       {
-         var _loc2_:int = this._items.indexOf(param1);
-         if(_loc2_ > -1)
+         var index:int = this._items.indexOf(item);
+         if(index > -1)
          {
-            this._items.splice(_loc2_,1);
+            this._items.splice(index,1);
          }
       }
       
-      override public function set scaleX(param1:Number) : void
+      override public function set scaleX(value:Number) : void
       {
-         var _loc2_:BitmapRendItem = null;
-         super.scaleX = param1;
+         var item:BitmapRendItem = null;
+         super.scaleX = value;
          if(rendMode == BitmapRendMode.COPY_PIXEL)
          {
-            for each(_loc2_ in this._items)
+            for each(item in this._items)
             {
-               _loc2_.scaleX = scaleX;
+               item.scaleX = scaleX;
             }
          }
       }
       
       override protected function update() : void
       {
-         var _loc1_:BitmapRendItem = null;
-         var _loc2_:int = 0;
+         var item:BitmapRendItem = null;
+         var i:int = 0;
          if(_realRender && rendMode != BitmapRendMode.COPY_PIXEL)
          {
             bitmapData.lock();
             bitmapData.fillRect(_selfRect,0);
-            _loc2_ = 0;
-            while(_loc2_ < this._items.length)
+            for(i = 0; i < this._items.length; i++)
             {
-               _loc1_ = this._items[_loc2_];
-               bitmapData.copyPixels(_loc1_.copyInfo[0],_loc1_.copyInfo[1],_loc1_.copyInfo[2],null,null,true);
-               _loc2_++;
+               item = this._items[i];
+               bitmapData.copyPixels(item.copyInfo[0],item.copyInfo[1],item.copyInfo[2],null,null,true);
             }
             bitmapData.unlock();
          }
@@ -72,28 +70,26 @@ package
       
       override function get copyInfo() : Array
       {
-         var _loc3_:Rectangle = null;
-         var _loc1_:Array = [];
-         var _loc2_:int = 0;
-         while(_loc2_ < this._items.length)
+         var rect:Rectangle = null;
+         var result:Array = [];
+         for(var i:int = 0; i < this._items.length; i++)
          {
-            this.item = this._items[_loc2_];
+            this.item = this._items[i];
             this.tempcopyInfo = this.item.copyInfo;
-            _loc1_.push(this.tempcopyInfo[0]);
+            result.push(this.tempcopyInfo[0]);
             if(scaleX == 1)
             {
-               _loc1_.push(this.tempcopyInfo[1]);
-               _loc1_.push(new Point(x + this.item.x,y + this.item.y));
+               result.push(this.tempcopyInfo[1]);
+               result.push(new Point(x + this.item.x,y + this.item.y));
             }
             else
             {
-               _loc3_ = Rectangle(this.tempcopyInfo[1]);
-               _loc1_.push(new Rectangle(x + this.item.x,y + this.item.y,_loc3_.width,_loc3_.height));
-               _loc1_.push(new Point(-x + this.tempcopyInfo[2].x,y + this.tempcopyInfo[2].y));
+               rect = Rectangle(this.tempcopyInfo[1]);
+               result.push(new Rectangle(x + this.item.x,y + this.item.y,rect.width,rect.height));
+               result.push(new Point(-x + this.tempcopyInfo[2].x,y + this.tempcopyInfo[2].y));
             }
-            _loc2_++;
          }
-         return _loc1_;
+         return result;
       }
       
       override public function dispose() : void
@@ -111,23 +107,21 @@ package
       
       override public function toXml() : XML
       {
-         var _loc3_:BitmapRendItem = null;
-         var _loc1_:XML = <asset></asset>;
-         var _loc2_:int = 0;
-         while(_loc2_ < this._items.length)
+         var it:BitmapRendItem = null;
+         var result:XML = <asset></asset>;
+         for(var i:int = 0; i < this._items.length; i++)
          {
-            _loc3_ = this._items[_loc2_];
-            _loc1_.appendChild(_loc3_.toXml());
-            _loc2_++;
+            it = this._items[i];
+            result.appendChild(it.toXml());
          }
-         _loc1_.@width = _itemWidth;
-         _loc1_.@height = _itemHeight;
-         _loc1_.@name = name;
-         _loc1_.@type = _type;
-         _loc1_.@x = x;
-         _loc1_.@y = y;
-         _loc1_.@rendMode = rendMode;
-         return _loc1_;
+         result.@width = _itemWidth;
+         result.@height = _itemHeight;
+         result.@name = name;
+         result.@type = _type;
+         result.@x = x;
+         result.@y = y;
+         result.@rendMode = rendMode;
+         return result;
       }
    }
 }

@@ -80,21 +80,21 @@ package starling.text
       
       private var mQuadBatch:QuadBatch;
       
-      public function TextField(param1:int, param2:int, param3:String, param4:String = "Verdana", param5:Number = 12, param6:uint = 0, param7:Boolean = false)
+      public function TextField(width:int, height:int, text:String, fontName:String = "Verdana", fontSize:Number = 12, color:uint = 0, bold:Boolean = false)
       {
          super();
-         mText = !!param3?param3:"";
-         mFontSize = param5;
-         mColor = param6;
+         mText = !!text?text:"";
+         mFontSize = fontSize;
+         mColor = color;
          mHAlign = "center";
          mVAlign = "center";
          mBorder = null;
          mKerning = true;
          mLeading = 0;
-         mBold = param7;
+         mBold = bold;
          mAutoSize = "none";
-         mHitArea = new Rectangle(0,0,param1,param2);
-         this.fontName = param4;
+         mHitArea = new Rectangle(0,0,width,height);
+         this.fontName = fontName;
          addEventListener("flatten",onFlatten);
       }
       
@@ -103,55 +103,55 @@ package starling.text
          return sDefaultTextureFormat;
       }
       
-      public static function set defaultTextureFormat(param1:String) : void
+      public static function set defaultTextureFormat(value:String) : void
       {
-         sDefaultTextureFormat = param1;
+         sDefaultTextureFormat = value;
       }
       
-      public static function registerBitmapFont(param1:BitmapFont, param2:String = null) : String
+      public static function registerBitmapFont(bitmapFont:BitmapFont, name:String = null) : String
       {
-         if(param2 == null)
+         if(name == null)
          {
-            param2 = param1.name;
+            name = bitmapFont.name;
          }
-         bitmapFonts[convertToLowerCase(param2)] = param1;
-         return param2;
+         bitmapFonts[convertToLowerCase(name)] = bitmapFont;
+         return name;
       }
       
-      public static function unregisterBitmapFont(param1:String, param2:Boolean = true) : void
+      public static function unregisterBitmapFont(name:String, dispose:Boolean = true) : void
       {
-         param1 = convertToLowerCase(param1);
-         if(param2 && bitmapFonts[param1] != undefined)
+         name = convertToLowerCase(name);
+         if(dispose && bitmapFonts[name] != undefined)
          {
-            bitmapFonts[param1].dispose();
+            bitmapFonts[name].dispose();
          }
       }
       
-      public static function getBitmapFont(param1:String) : BitmapFont
+      public static function getBitmapFont(name:String) : BitmapFont
       {
-         return bitmapFonts[convertToLowerCase(param1)];
+         return bitmapFonts[convertToLowerCase(name)];
       }
       
       private static function get bitmapFonts() : Dictionary
       {
-         var _loc1_:Dictionary = Starling.current.contextData["starling.display.TextField.BitmapFonts"] as Dictionary;
-         if(_loc1_ == null)
+         var fonts:Dictionary = Starling.current.contextData["starling.display.TextField.BitmapFonts"] as Dictionary;
+         if(fonts == null)
          {
-            _loc1_ = new Dictionary();
-            Starling.current.contextData["starling.display.TextField.BitmapFonts"] = _loc1_;
+            fonts = new Dictionary();
+            Starling.current.contextData["starling.display.TextField.BitmapFonts"] = fonts;
          }
-         return _loc1_;
+         return fonts;
       }
       
-      private static function convertToLowerCase(param1:String) : String
+      private static function convertToLowerCase(string:String) : String
       {
-         var _loc2_:String = sStringCache[param1];
-         if(_loc2_ == null)
+         var result:String = sStringCache[string];
+         if(result == null)
          {
-            _loc2_ = param1.toLowerCase();
-            sStringCache[param1] = _loc2_;
+            result = string.toLowerCase();
+            sStringCache[string] = result;
          }
-         return _loc2_;
+         return result;
       }
       
       override public function dispose() : void
@@ -176,13 +176,13 @@ package starling.text
          }
       }
       
-      override public function render(param1:RenderSupport, param2:Number) : void
+      override public function render(support:RenderSupport, parentAlpha:Number) : void
       {
          if(mRequiresRedraw)
          {
             redraw();
          }
-         super.render(param1,param2);
+         super.render(support,parentAlpha);
       }
       
       public function redraw() : void
@@ -255,32 +255,32 @@ package starling.text
          }
       }
       
-      protected function formatText(param1:flash.text.TextField, param2:TextFormat) : void
+      protected function formatText(textField:flash.text.TextField, textFormat:TextFormat) : void
       {
       }
       
-      private function renderText(param1:Number, param2:Rectangle) : BitmapData
+      private function renderText(scale:Number, resultTextBounds:Rectangle) : BitmapData
       {
-         var _loc5_:* = Number(mHitArea.width * param1);
-         var _loc11_:* = Number(mHitArea.height * param1);
-         var _loc6_:String = mHAlign;
-         var _loc4_:String = mVAlign;
+         var width:* = Number(mHitArea.width * scale);
+         var height:* = Number(mHitArea.height * scale);
+         var hAlign:String = mHAlign;
+         var vAlign:String = mVAlign;
          if(isHorizontalAutoSize)
          {
-            _loc5_ = 2147483647;
-            _loc6_ = "left";
+            width = 2147483647;
+            hAlign = "left";
          }
          if(isVerticalAutoSize)
          {
-            _loc11_ = 2147483647;
-            _loc4_ = "top";
+            height = 2147483647;
+            vAlign = "top";
          }
-         var _loc12_:TextFormat = new TextFormat(mFontName,mFontSize * param1,mColor,mBold,mItalic,mUnderline,null,null,_loc6_);
-         _loc12_.kerning = mKerning;
-         _loc12_.leading = mLeading;
-         sNativeTextField.defaultTextFormat = _loc12_;
-         sNativeTextField.width = _loc5_;
-         sNativeTextField.height = _loc11_;
+         var textFormat:TextFormat = new TextFormat(mFontName,mFontSize * scale,mColor,mBold,mItalic,mUnderline,null,null,hAlign);
+         textFormat.kerning = mKerning;
+         textFormat.leading = mLeading;
+         sNativeTextField.defaultTextFormat = textFormat;
+         sNativeTextField.width = width;
+         sNativeTextField.height = height;
          sNativeTextField.antiAliasType = "advanced";
          sNativeTextField.selectable = false;
          sNativeTextField.multiline = true;
@@ -299,95 +299,95 @@ package starling.text
          {
             sNativeTextField.embedFonts = false;
          }
-         formatText(sNativeTextField,_loc12_);
+         formatText(sNativeTextField,textFormat);
          if(mAutoScale)
          {
             autoScaleNativeTextField(sNativeTextField);
          }
-         var _loc10_:Number = sNativeTextField.textWidth;
-         var _loc3_:Number = sNativeTextField.textHeight;
+         var textWidth:Number = sNativeTextField.textWidth;
+         var textHeight:Number = sNativeTextField.textHeight;
          if(isHorizontalAutoSize)
          {
-            _loc5_ = Number(Math.ceil(_loc10_ + 5));
-            sNativeTextField.width = Math.ceil(_loc10_ + 5);
+            width = Number(Math.ceil(textWidth + 5));
+            sNativeTextField.width = Math.ceil(textWidth + 5);
          }
          if(isVerticalAutoSize)
          {
-            _loc11_ = Number(Math.ceil(_loc3_ + 4));
-            sNativeTextField.height = Math.ceil(_loc3_ + 4);
+            height = Number(Math.ceil(textHeight + 4));
+            sNativeTextField.height = Math.ceil(textHeight + 4);
          }
-         if(_loc5_ < 1)
+         if(width < 1)
          {
-            _loc5_ = 1;
+            width = 1;
          }
-         if(_loc11_ < 1)
+         if(height < 1)
          {
-            _loc11_ = 1;
+            height = 1;
          }
-         var _loc7_:* = 0;
-         if(_loc6_ == "left")
+         var textOffsetX:* = 0;
+         if(hAlign == "left")
          {
-            _loc7_ = 2;
+            textOffsetX = 2;
          }
-         else if(_loc6_ == "center")
+         else if(hAlign == "center")
          {
-            _loc7_ = Number((_loc5_ - _loc10_) / 2);
+            textOffsetX = Number((width - textWidth) / 2);
          }
-         else if(_loc6_ == "right")
+         else if(hAlign == "right")
          {
-            _loc7_ = Number(_loc5_ - _loc10_ - 2);
+            textOffsetX = Number(width - textWidth - 2);
          }
-         var _loc8_:* = 0;
-         if(_loc4_ == "top")
+         var textOffsetY:* = 0;
+         if(vAlign == "top")
          {
-            _loc8_ = 2;
+            textOffsetY = 2;
          }
-         else if(_loc4_ == "center")
+         else if(vAlign == "center")
          {
-            _loc8_ = Number((_loc11_ - _loc3_) / 2);
+            textOffsetY = Number((height - textHeight) / 2);
          }
-         else if(_loc4_ == "bottom")
+         else if(vAlign == "bottom")
          {
-            _loc8_ = Number(_loc11_ - _loc3_ - 2);
+            textOffsetY = Number(height - textHeight - 2);
          }
-         var _loc15_:Point = calculateFilterOffset(sNativeTextField,_loc6_,_loc4_);
-         var _loc13_:BitmapData = new BitmapData(_loc5_,_loc11_,true,0);
-         var _loc14_:Matrix = new Matrix(1,0,0,1,_loc15_.x,_loc15_.y + int(_loc8_) - 2);
-         var _loc9_:Function = "drawWithQuality" in _loc13_?_loc13_["drawWithQuality"]:null;
-         if(_loc9_ is Function)
+         var filterOffset:Point = calculateFilterOffset(sNativeTextField,hAlign,vAlign);
+         var bitmapData:BitmapData = new BitmapData(width,height,true,0);
+         var drawMatrix:Matrix = new Matrix(1,0,0,1,filterOffset.x,filterOffset.y + int(textOffsetY) - 2);
+         var drawWithQualityFunc:Function = "drawWithQuality" in bitmapData?bitmapData["drawWithQuality"]:null;
+         if(drawWithQualityFunc is Function)
          {
-            _loc9_.call(_loc13_,sNativeTextField,_loc14_,null,null,null,false,"medium");
+            drawWithQualityFunc.call(bitmapData,sNativeTextField,drawMatrix,null,null,null,false,"medium");
          }
          else
          {
-            _loc13_.draw(sNativeTextField,_loc14_);
+            bitmapData.draw(sNativeTextField,drawMatrix);
          }
          sNativeTextField.text = "";
-         param2.setTo((_loc7_ + _loc15_.x) / param1,(_loc8_ + _loc15_.y) / param1,_loc10_ / param1,_loc3_ / param1);
-         return _loc13_;
+         resultTextBounds.setTo((textOffsetX + filterOffset.x) / scale,(textOffsetY + filterOffset.y) / scale,textWidth / scale,textHeight / scale);
+         return bitmapData;
       }
       
-      private function autoScaleNativeTextField(param1:flash.text.TextField) : void
+      private function autoScaleNativeTextField(textField:flash.text.TextField) : void
       {
-         var _loc4_:* = null;
-         var _loc5_:Number = param1.defaultTextFormat.size;
-         var _loc3_:int = param1.height - 4;
-         var _loc2_:int = param1.width - 4;
-         while(param1.textWidth > _loc2_ || param1.textHeight > _loc3_)
+         var format:* = null;
+         var size:Number = textField.defaultTextFormat.size;
+         var maxHeight:int = textField.height - 4;
+         var maxWidth:int = textField.width - 4;
+         while(textField.textWidth > maxWidth || textField.textHeight > maxHeight)
          {
-            if(_loc5_ > 4)
+            if(size > 4)
             {
-               _loc4_ = param1.defaultTextFormat;
-               _loc5_--;
-               _loc4_.size = _loc5_;
-               param1.defaultTextFormat = _loc4_;
+               format = textField.defaultTextFormat;
+               size--;
+               format.size = size;
+               textField.defaultTextFormat = format;
                if(mIsHtmlText)
                {
-                  param1.htmlText = mText;
+                  textField.htmlText = mText;
                }
                else
                {
-                  param1.text = mText;
+                  textField.text = mText;
                }
                continue;
             }
@@ -395,62 +395,62 @@ package starling.text
          }
       }
       
-      private function calculateFilterOffset(param1:flash.text.TextField, param2:String, param3:String) : Point
+      private function calculateFilterOffset(textField:flash.text.TextField, hAlign:String, vAlign:String) : Point
       {
-         var _loc9_:Number = NaN;
-         var _loc4_:Number = NaN;
-         var _loc11_:* = null;
-         var _loc5_:Number = NaN;
-         var _loc6_:Number = NaN;
-         var _loc14_:Number = NaN;
-         var _loc13_:Number = NaN;
-         var _loc10_:Number = NaN;
-         var _loc19_:Number = NaN;
-         var _loc16_:Number = NaN;
-         var _loc8_:Number = NaN;
-         var _loc7_:Number = NaN;
-         var _loc15_:* = null;
-         var _loc12_:Point = new Point();
-         var _loc17_:Array = param1.filters;
-         if(_loc17_ != null && _loc17_.length > 0)
+         var textWidth:Number = NaN;
+         var textHeight:Number = NaN;
+         var bounds:* = null;
+         var blurX:Number = NaN;
+         var blurY:Number = NaN;
+         var angleDeg:Number = NaN;
+         var distance:Number = NaN;
+         var angle:Number = NaN;
+         var marginX:Number = NaN;
+         var marginY:Number = NaN;
+         var offsetX:Number = NaN;
+         var offsetY:Number = NaN;
+         var filterBounds:* = null;
+         var resultOffset:Point = new Point();
+         var filters:Array = textField.filters;
+         if(filters != null && filters.length > 0)
          {
-            _loc9_ = param1.textWidth;
-            _loc4_ = param1.textHeight;
-            _loc11_ = new Rectangle();
+            textWidth = textField.textWidth;
+            textHeight = textField.textHeight;
+            bounds = new Rectangle();
             var _loc21_:int = 0;
-            var _loc20_:* = _loc17_;
-            for each(var _loc18_ in _loc17_)
+            var _loc20_:* = filters;
+            for each(var filter in filters)
             {
-               _loc5_ = "blurX" in _loc18_?_loc18_["blurX"]:0;
-               _loc6_ = "blurY" in _loc18_?_loc18_["blurY"]:0;
-               _loc14_ = "angle" in _loc18_?_loc18_["angle"]:0;
-               _loc13_ = "distance" in _loc18_?_loc18_["distance"]:0;
-               _loc10_ = deg2rad(_loc14_);
-               _loc19_ = _loc5_ * 1.33;
-               _loc16_ = _loc6_ * 1.33;
-               _loc8_ = Math.cos(_loc10_) * _loc13_ - _loc19_ / 2;
-               _loc7_ = Math.sin(_loc10_) * _loc13_ - _loc16_ / 2;
-               _loc15_ = new Rectangle(_loc8_,_loc7_,_loc9_ + _loc19_,_loc4_ + _loc16_);
-               _loc11_ = _loc11_.union(_loc15_);
+               blurX = "blurX" in filter?filter["blurX"]:0;
+               blurY = "blurY" in filter?filter["blurY"]:0;
+               angleDeg = "angle" in filter?filter["angle"]:0;
+               distance = "distance" in filter?filter["distance"]:0;
+               angle = deg2rad(angleDeg);
+               marginX = blurX * 1.33;
+               marginY = blurY * 1.33;
+               offsetX = Math.cos(angle) * distance - marginX / 2;
+               offsetY = Math.sin(angle) * distance - marginY / 2;
+               filterBounds = new Rectangle(offsetX,offsetY,textWidth + marginX,textHeight + marginY);
+               bounds = bounds.union(filterBounds);
             }
-            if(param2 == "left" && _loc11_.x < 0)
+            if(hAlign == "left" && bounds.x < 0)
             {
-               _loc12_.x = -_loc11_.x;
+               resultOffset.x = -bounds.x;
             }
-            else if(param2 == "right" && _loc11_.y > 0)
+            else if(hAlign == "right" && bounds.y > 0)
             {
-               _loc12_.x = -(_loc11_.right - _loc9_);
+               resultOffset.x = -(bounds.right - textWidth);
             }
-            if(param3 == "top" && _loc11_.y < 0)
+            if(vAlign == "top" && bounds.y < 0)
             {
-               _loc12_.y = -_loc11_.y;
+               resultOffset.y = -bounds.y;
             }
-            else if(param3 == "bottom" && _loc11_.y > 0)
+            else if(vAlign == "bottom" && bounds.y > 0)
             {
-               _loc12_.y = -(_loc11_.bottom - _loc4_);
+               resultOffset.y = -(bounds.bottom - textHeight);
             }
          }
-         return _loc12_;
+         return resultOffset;
       }
       
       private function createComposedContents() : void
@@ -471,26 +471,26 @@ package starling.text
          {
             mQuadBatch.reset();
          }
-         var _loc5_:BitmapFont = getBitmapFont(mFontName);
-         if(_loc5_ == null)
+         var bitmapFont:BitmapFont = getBitmapFont(mFontName);
+         if(bitmapFont == null)
          {
             throw new Error("Bitmap font not registered: " + mFontName);
          }
-         var _loc4_:* = Number(mHitArea.width);
-         var _loc1_:* = Number(mHitArea.height);
-         var _loc3_:String = mHAlign;
-         var _loc2_:String = mVAlign;
+         var width:* = Number(mHitArea.width);
+         var height:* = Number(mHitArea.height);
+         var hAlign:String = mHAlign;
+         var vAlign:String = mVAlign;
          if(isHorizontalAutoSize)
          {
-            _loc4_ = 2147483647;
-            _loc3_ = "left";
+            width = 2147483647;
+            hAlign = "left";
          }
          if(isVerticalAutoSize)
          {
-            _loc1_ = 2147483647;
-            _loc2_ = "top";
+            height = 2147483647;
+            vAlign = "top";
          }
-         _loc5_.fillQuadBatch(mQuadBatch,_loc4_,_loc1_,mText,mFontSize,mColor,_loc3_,_loc2_,mAutoScale,mKerning,mLeading);
+         bitmapFont.fillQuadBatch(mQuadBatch,width,height,mText,mFontSize,mColor,hAlign,vAlign,mAutoScale,mKerning,mLeading);
          mQuadBatch.batchable = mBatchable;
          if(mAutoSize != "none")
          {
@@ -516,29 +516,29 @@ package starling.text
          {
             return;
          }
-         var _loc3_:Number = mHitArea.width;
-         var _loc2_:Number = mHitArea.height;
-         var _loc1_:Quad = mBorder.getChildAt(0) as Quad;
-         var _loc6_:Quad = mBorder.getChildAt(1) as Quad;
-         var _loc4_:Quad = mBorder.getChildAt(2) as Quad;
-         var _loc5_:Quad = mBorder.getChildAt(3) as Quad;
-         _loc1_.width = _loc3_;
-         _loc1_.height = 1;
-         _loc4_.width = _loc3_;
-         _loc4_.height = 1;
-         _loc5_.width = 1;
-         _loc5_.height = _loc2_;
-         _loc6_.width = 1;
-         _loc6_.height = _loc2_;
-         _loc6_.x = _loc3_ - 1;
-         _loc4_.y = _loc2_ - 1;
+         var width:Number = mHitArea.width;
+         var height:Number = mHitArea.height;
+         var topLine:Quad = mBorder.getChildAt(0) as Quad;
+         var rightLine:Quad = mBorder.getChildAt(1) as Quad;
+         var bottomLine:Quad = mBorder.getChildAt(2) as Quad;
+         var leftLine:Quad = mBorder.getChildAt(3) as Quad;
+         topLine.width = width;
+         topLine.height = 1;
+         bottomLine.width = width;
+         bottomLine.height = 1;
+         leftLine.width = 1;
+         leftLine.height = height;
+         rightLine.width = 1;
+         rightLine.height = height;
+         rightLine.x = width - 1;
+         bottomLine.y = height - 1;
          var _loc7_:* = mColor;
-         _loc5_.color = _loc7_;
+         leftLine.color = _loc7_;
          _loc7_ = _loc7_;
-         _loc4_.color = _loc7_;
+         bottomLine.color = _loc7_;
          _loc7_ = _loc7_;
-         _loc6_.color = _loc7_;
-         _loc1_.color = _loc7_;
+         rightLine.color = _loc7_;
+         topLine.color = _loc7_;
       }
       
       private function get isHorizontalAutoSize() : Boolean
@@ -564,38 +564,38 @@ package starling.text
          return mTextBounds.clone();
       }
       
-      override public function getBounds(param1:DisplayObject, param2:Rectangle = null) : Rectangle
+      override public function getBounds(targetSpace:DisplayObject, resultRect:Rectangle = null) : Rectangle
       {
          if(mRequiresRedraw)
          {
             redraw();
          }
-         getTransformationMatrix(param1,sHelperMatrix);
-         return RectangleUtil.getBounds(mHitArea,sHelperMatrix,param2);
+         getTransformationMatrix(targetSpace,sHelperMatrix);
+         return RectangleUtil.getBounds(mHitArea,sHelperMatrix,resultRect);
       }
       
-      override public function hitTest(param1:Point, param2:Boolean = false) : DisplayObject
+      override public function hitTest(localPoint:Point, forTouch:Boolean = false) : DisplayObject
       {
-         if(param2 && (!visible || !touchable))
+         if(forTouch && (!visible || !touchable))
          {
             return null;
          }
-         if(mHitArea.containsPoint(param1) && hitTestMask(param1))
+         if(mHitArea.containsPoint(localPoint) && hitTestMask(localPoint))
          {
             return this;
          }
          return null;
       }
       
-      override public function set width(param1:Number) : void
+      override public function set width(value:Number) : void
       {
-         mHitArea.width = param1;
+         mHitArea.width = value;
          mRequiresRedraw = true;
       }
       
-      override public function set height(param1:Number) : void
+      override public function set height(value:Number) : void
       {
-         mHitArea.height = param1;
+         mHitArea.height = value;
          mRequiresRedraw = true;
       }
       
@@ -604,15 +604,15 @@ package starling.text
          return mText;
       }
       
-      public function set text(param1:String) : void
+      public function set text(value:String) : void
       {
-         if(param1 == null)
+         if(value == null)
          {
-            param1 = "";
+            value = "";
          }
-         if(mText != param1)
+         if(mText != value)
          {
-            mText = param1;
+            mText = value;
             mRequiresRedraw = true;
          }
       }
@@ -622,15 +622,15 @@ package starling.text
          return mFontName;
       }
       
-      public function set fontName(param1:String) : void
+      public function set fontName(value:String) : void
       {
-         if(mFontName != param1)
+         if(mFontName != value)
          {
-            if(param1 == "mini" && bitmapFonts[param1] == undefined)
+            if(value == "mini" && bitmapFonts[value] == undefined)
             {
                registerBitmapFont(new BitmapFont());
             }
-            mFontName = param1;
+            mFontName = value;
             mRequiresRedraw = true;
          }
       }
@@ -640,11 +640,11 @@ package starling.text
          return mFontSize;
       }
       
-      public function set fontSize(param1:Number) : void
+      public function set fontSize(value:Number) : void
       {
-         if(mFontSize != param1)
+         if(mFontSize != value)
          {
-            mFontSize = param1;
+            mFontSize = value;
             mRequiresRedraw = true;
          }
       }
@@ -654,11 +654,11 @@ package starling.text
          return mColor;
       }
       
-      public function set color(param1:uint) : void
+      public function set color(value:uint) : void
       {
-         if(mColor != param1)
+         if(mColor != value)
          {
-            mColor = param1;
+            mColor = value;
             mRequiresRedraw = true;
          }
       }
@@ -668,15 +668,15 @@ package starling.text
          return mHAlign;
       }
       
-      public function set hAlign(param1:String) : void
+      public function set hAlign(value:String) : void
       {
-         if(!HAlign.isValid(param1))
+         if(!HAlign.isValid(value))
          {
-            throw new ArgumentError("Invalid horizontal align: " + param1);
+            throw new ArgumentError("Invalid horizontal align: " + value);
          }
-         if(mHAlign != param1)
+         if(mHAlign != value)
          {
-            mHAlign = param1;
+            mHAlign = value;
             mRequiresRedraw = true;
          }
       }
@@ -686,15 +686,15 @@ package starling.text
          return mVAlign;
       }
       
-      public function set vAlign(param1:String) : void
+      public function set vAlign(value:String) : void
       {
-         if(!VAlign.isValid(param1))
+         if(!VAlign.isValid(value))
          {
-            throw new ArgumentError("Invalid vertical align: " + param1);
+            throw new ArgumentError("Invalid vertical align: " + value);
          }
-         if(mVAlign != param1)
+         if(mVAlign != value)
          {
-            mVAlign = param1;
+            mVAlign = value;
             mRequiresRedraw = true;
          }
       }
@@ -704,22 +704,21 @@ package starling.text
          return mBorder != null;
       }
       
-      public function set border(param1:Boolean) : void
+      public function set border(value:Boolean) : void
       {
-         var _loc2_:int = 0;
-         if(param1 && mBorder == null)
+         var i:int = 0;
+         if(value && mBorder == null)
          {
             mBorder = new Sprite();
             addChild(mBorder);
-            _loc2_ = 0;
-            while(_loc2_ < 4)
+            for(i = 0; i < 4; )
             {
                mBorder.addChild(new Quad(1,1));
-               _loc2_++;
+               i++;
             }
             updateBorder();
          }
-         else if(!param1 && mBorder != null)
+         else if(!value && mBorder != null)
          {
             mBorder.removeFromParent(true);
             mBorder = null;
@@ -731,11 +730,11 @@ package starling.text
          return mBold;
       }
       
-      public function set bold(param1:Boolean) : void
+      public function set bold(value:Boolean) : void
       {
-         if(mBold != param1)
+         if(mBold != value)
          {
-            mBold = param1;
+            mBold = value;
             mRequiresRedraw = true;
          }
       }
@@ -745,11 +744,11 @@ package starling.text
          return mItalic;
       }
       
-      public function set italic(param1:Boolean) : void
+      public function set italic(value:Boolean) : void
       {
-         if(mItalic != param1)
+         if(mItalic != value)
          {
-            mItalic = param1;
+            mItalic = value;
             mRequiresRedraw = true;
          }
       }
@@ -759,11 +758,11 @@ package starling.text
          return mUnderline;
       }
       
-      public function set underline(param1:Boolean) : void
+      public function set underline(value:Boolean) : void
       {
-         if(mUnderline != param1)
+         if(mUnderline != value)
          {
-            mUnderline = param1;
+            mUnderline = value;
             mRequiresRedraw = true;
          }
       }
@@ -773,11 +772,11 @@ package starling.text
          return mKerning;
       }
       
-      public function set kerning(param1:Boolean) : void
+      public function set kerning(value:Boolean) : void
       {
-         if(mKerning != param1)
+         if(mKerning != value)
          {
-            mKerning = param1;
+            mKerning = value;
             mRequiresRedraw = true;
          }
       }
@@ -787,11 +786,11 @@ package starling.text
          return mAutoScale;
       }
       
-      public function set autoScale(param1:Boolean) : void
+      public function set autoScale(value:Boolean) : void
       {
-         if(mAutoScale != param1)
+         if(mAutoScale != value)
          {
-            mAutoScale = param1;
+            mAutoScale = value;
             mRequiresRedraw = true;
          }
       }
@@ -801,11 +800,11 @@ package starling.text
          return mAutoSize;
       }
       
-      public function set autoSize(param1:String) : void
+      public function set autoSize(value:String) : void
       {
-         if(mAutoSize != param1)
+         if(mAutoSize != value)
          {
-            mAutoSize = param1;
+            mAutoSize = value;
             mRequiresRedraw = true;
          }
       }
@@ -815,12 +814,12 @@ package starling.text
          return mBatchable;
       }
       
-      public function set batchable(param1:Boolean) : void
+      public function set batchable(value:Boolean) : void
       {
-         mBatchable = param1;
+         mBatchable = value;
          if(mQuadBatch)
          {
-            mQuadBatch.batchable = param1;
+            mQuadBatch.batchable = value;
          }
       }
       
@@ -829,9 +828,9 @@ package starling.text
          return mNativeFilters;
       }
       
-      public function set nativeFilters(param1:Array) : void
+      public function set nativeFilters(value:Array) : void
       {
-         mNativeFilters = param1.concat();
+         mNativeFilters = value.concat();
          mRequiresRedraw = true;
       }
       
@@ -840,11 +839,11 @@ package starling.text
          return mIsHtmlText;
       }
       
-      public function set isHtmlText(param1:Boolean) : void
+      public function set isHtmlText(value:Boolean) : void
       {
-         if(mIsHtmlText != param1)
+         if(mIsHtmlText != value)
          {
-            mIsHtmlText = param1;
+            mIsHtmlText = value;
             mRequiresRedraw = true;
          }
       }
@@ -854,11 +853,11 @@ package starling.text
          return mLeading;
       }
       
-      public function set leading(param1:Number) : void
+      public function set leading(value:Number) : void
       {
-         if(mLeading != param1)
+         if(mLeading != value)
          {
-            mLeading = param1;
+            mLeading = value;
             mRequiresRedraw = true;
          }
       }

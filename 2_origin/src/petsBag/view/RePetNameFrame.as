@@ -96,90 +96,90 @@ package petsBag.view
          removeEventListener("addedToStage",__getFocus);
       }
       
-      private function __getFocus(param1:Event) : void
+      private function __getFocus(evt:Event) : void
       {
          removeEventListener("addedToStage",__getFocus);
          _inputText.setFocus();
       }
       
-      override protected function __onSubmitClick(param1:MouseEvent) : void
+      override protected function __onSubmitClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(nameInputCheck())
          {
             _petName = _inputText.text;
-            super.__onSubmitClick(param1);
+            super.__onSubmitClick(event);
             return;
          }
       }
       
-      override protected function __onCancelClick(param1:MouseEvent) : void
+      override protected function __onCancelClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         super.__onCancelClick(param1);
+         super.__onCancelClick(event);
          dispose();
       }
       
-      override protected function __onCloseClick(param1:MouseEvent) : void
+      override protected function __onCloseClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         super.__onCloseClick(param1);
+         super.__onCloseClick(event);
          dispose();
       }
       
-      private function __inputChange(param1:Event) : void
+      private function __inputChange(e:Event) : void
       {
          StringHelper.checkTextFieldLength(_inputText,14);
       }
       
-      private function getStrActualLen(param1:String) : int
+      private function getStrActualLen(sChars:String) : int
       {
-         return param1.replace(/[^\x00-\xff]/g,"xx").length;
+         return sChars.replace(/[^\x00-\xff]/g,"xx").length;
       }
       
       private function nameInputCheck() : Boolean
       {
-         var _loc1_:* = null;
+         var alert:* = null;
          if(_inputText.text != "")
          {
             if(FilterWordManager.isGotForbiddenWords(_inputText.text,"name"))
             {
-               _loc1_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("choosecharacter.ChooseCharacterView.name"),LanguageMgr.GetTranslation("ok"),"",false,false,false,2);
-               _loc1_.addEventListener("response",__onAlertResponse);
+               alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("choosecharacter.ChooseCharacterView.name"),LanguageMgr.GetTranslation("ok"),"",false,false,false,2);
+               alert.addEventListener("response",__onAlertResponse);
                return false;
             }
             if(FilterWordManager.IsNullorEmpty(_inputText.text))
             {
-               _loc1_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("choosecharacter.ChooseCharacterView.space"),LanguageMgr.GetTranslation("ok"),"",false,false,false,2);
-               _loc1_.addEventListener("response",__onAlertResponse);
+               alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("choosecharacter.ChooseCharacterView.space"),LanguageMgr.GetTranslation("ok"),"",false,false,false,2);
+               alert.addEventListener("response",__onAlertResponse);
                return false;
             }
             if(FilterWordManager.containUnableChar(_inputText.text))
             {
-               _loc1_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("choosecharacter.ChooseCharacterView.string"),LanguageMgr.GetTranslation("ok"),"",false,false,false,2);
-               _loc1_.addEventListener("response",__onAlertResponse);
+               alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("choosecharacter.ChooseCharacterView.string"),LanguageMgr.GetTranslation("ok"),"",false,false,false,2);
+               alert.addEventListener("response",__onAlertResponse);
                return false;
             }
             return true;
          }
-         _loc1_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("choosecharacter.ChooseCharacterView.input"),LanguageMgr.GetTranslation("ok"),"",false,false,false,2);
-         _loc1_.addEventListener("response",__onAlertResponse);
+         alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("choosecharacter.ChooseCharacterView.input"),LanguageMgr.GetTranslation("ok"),"",false,false,false,2);
+         alert.addEventListener("response",__onAlertResponse);
          return false;
       }
       
-      protected function __onAlertResponse(param1:FrameEvent) : void
+      protected function __onAlertResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onAlertResponse);
-         switch(int(param1.responseCode))
+         var alert:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",__onAlertResponse);
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
             case 2:
             case 3:
             case 4:
-               _loc2_.dispose();
+               alert.dispose();
          }
          StageReferance.stage.focus = _inputText;
       }

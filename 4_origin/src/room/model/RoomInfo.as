@@ -102,6 +102,8 @@ package room.model
       
       public static const TEAM_ROOM:int = 58;
       
+      public static const DREAM_LAND:int = 70;
+      
       public static const DUNGEON_TESTMODE:int = 120;
       
       public static const CONSORTIA_GUARD_ROOM:int = 151;
@@ -209,9 +211,9 @@ package room.model
          return _pic;
       }
       
-      public function set pic(param1:String) : void
+      public function set pic(value:String) : void
       {
-         _pic = param1;
+         _pic = value;
       }
       
       public function get isOpenBoss() : Boolean
@@ -219,13 +221,13 @@ package room.model
          return _isOpenBoss;
       }
       
-      public function set isOpenBoss(param1:Boolean) : void
+      public function set isOpenBoss(value:Boolean) : void
       {
-         if(_isOpenBoss == param1)
+         if(_isOpenBoss == value)
          {
             return;
          }
-         _isOpenBoss = param1;
+         _isOpenBoss = value;
          dispatchEvent(new RoomEvent("openBossChange",_isOpenBoss));
       }
       
@@ -234,13 +236,13 @@ package room.model
          return _roomPass;
       }
       
-      public function set roomPass(param1:String) : void
+      public function set roomPass(value:String) : void
       {
-         if(_roomPass == param1)
+         if(_roomPass == value)
          {
             return;
          }
-         _roomPass = param1;
+         _roomPass = value;
       }
       
       public function get roomName() : String
@@ -248,13 +250,13 @@ package room.model
          return Name;
       }
       
-      public function set roomName(param1:String) : void
+      public function set roomName(value:String) : void
       {
-         if(Name == param1)
+         if(Name == value)
          {
             return;
          }
-         Name = param1;
+         Name = value;
          dispatchEvent(new RoomEvent("roomNameChanged"));
       }
       
@@ -263,9 +265,9 @@ package room.model
          return _defyInfo;
       }
       
-      public function set defyInfo(param1:Array) : void
+      public function set defyInfo(value:Array) : void
       {
-         _defyInfo = param1;
+         _defyInfo = value;
       }
       
       public function get placesState() : Array
@@ -273,58 +275,56 @@ package room.model
          return _placesState;
       }
       
-      public function updatePlaceState(param1:Array) : void
+      public function updatePlaceState(states:Array) : void
       {
-         var _loc10_:Boolean = false;
-         var _loc9_:int = 0;
-         var _loc3_:* = null;
-         var _loc7_:int = 0;
-         var _loc8_:int = 0;
-         var _loc4_:int = 0;
-         var _loc5_:int = type == 1?8:4;
-         var _loc2_:* = -100;
-         _loc9_ = 0;
-         while(_loc9_ < 10)
+         var changed:Boolean = false;
+         var i:int = 0;
+         var player:* = null;
+         var j:int = 0;
+         var k:int = 0;
+         var temp:int = 0;
+         var l:int = type == 1?8:4;
+         var changedIdx:* = -100;
+         for(i = 0; i < 10; )
          {
-            if(_placesState[_loc9_] != param1[_loc9_])
+            if(_placesState[i] != states[i])
             {
-               if(_loc9_ >= 8)
+               if(i >= 8)
                {
-                  if(param1[_loc9_] != -1)
+                  if(states[i] != -1)
                   {
-                     _loc3_ = findPlayerByID(param1[_loc9_]);
-                     if(_loc3_ != null)
+                     player = findPlayerByID(states[i]);
+                     if(player != null)
                      {
-                        _loc3_.place = _loc9_;
+                        player.place = i;
                      }
                   }
-                  else if(_placesState[_loc9_] != -1)
+                  else if(_placesState[i] != -1)
                   {
-                     _loc3_ = findPlayerByID(_placesState[_loc9_]);
-                     if(_loc3_ != null)
+                     player = findPlayerByID(_placesState[i]);
+                     if(player != null)
                      {
-                        if(_loc2_ != -100)
+                        if(changedIdx != -100)
                         {
-                           _loc3_.place = _loc2_;
+                           player.place = changedIdx;
                         }
                      }
                   }
                }
-               _loc2_ = _loc9_;
-               _loc10_ = true;
+               changedIdx = i;
+               changed = true;
             }
-            _loc9_++;
+            i++;
          }
-         _loc7_ = 0;
-         while(_loc7_ < _loc5_)
+         for(j = 0; j < l; )
          {
-            if(param1[_loc7_] == -1)
+            if(states[j] == -1)
             {
-               _loc4_++;
+               temp++;
             }
-            _loc7_++;
+            j++;
          }
-         var _loc6_:int = 0;
+         var len:int = 0;
          var _loc11_:* = _type;
          if(120 !== _loc11_)
          {
@@ -332,164 +332,168 @@ package room.model
             {
                if(49 !== _loc11_)
                {
-                  if(1 !== _loc11_)
+                  if(70 !== _loc11_)
                   {
-                     if(4 !== _loc11_)
+                     if(1 !== _loc11_)
                      {
-                        if(11 !== _loc11_)
+                        if(4 !== _loc11_)
                         {
-                           if(21 !== _loc11_)
+                           if(11 !== _loc11_)
                            {
-                              if(56 !== _loc11_)
+                              if(21 !== _loc11_)
                               {
-                                 if(23 !== _loc11_)
+                                 if(56 !== _loc11_)
                                  {
-                                    if(47 !== _loc11_)
+                                    if(23 !== _loc11_)
                                     {
-                                       if(48 !== _loc11_)
+                                       if(47 !== _loc11_)
                                        {
-                                          if(123 !== _loc11_)
+                                          if(48 !== _loc11_)
                                           {
+                                             if(123 !== _loc11_)
+                                             {
+                                             }
                                           }
+                                          addr162:
+                                          len = 10;
                                        }
-                                       addr119:
-                                       _loc6_ = 10;
+                                       addr161:
+                                       §§goto(addr162);
                                     }
-                                    addr118:
-                                    §§goto(addr119);
+                                    addr160:
+                                    §§goto(addr161);
                                  }
-                                 addr117:
-                                 §§goto(addr118);
+                                 addr159:
+                                 §§goto(addr160);
                               }
-                              addr116:
-                              §§goto(addr117);
+                              addr158:
+                              §§goto(addr159);
                            }
-                           addr115:
-                           §§goto(addr116);
+                           addr157:
+                           §§goto(addr158);
                         }
-                        addr114:
-                        §§goto(addr115);
+                        addr156:
+                        §§goto(addr157);
                      }
-                     addr113:
-                     §§goto(addr114);
+                     §§goto(addr156);
                   }
-                  §§goto(addr113);
-               }
-               addr159:
-               _loc8_ = 8;
-               while(_loc8_ < _loc6_)
-               {
-                  if(param1[_loc8_] == -1)
+                  addr220:
+                  for(k = 8; k < len; )
                   {
-                     _loc4_++;
+                     if(states[k] == -1)
+                     {
+                        temp++;
+                     }
+                     k++;
                   }
-                  _loc8_++;
+                  placeCount = temp;
+                  if(changed)
+                  {
+                     _placesState = states;
+                     dispatchEvent(new RoomEvent("roomplaceChanged"));
+                  }
+                  return;
                }
-               placeCount = _loc4_;
-               if(_loc10_)
-               {
-                  _placesState = param1;
-                  dispatchEvent(new RoomEvent("roomplaceChanged"));
-               }
-               return;
+               addr149:
+               len = 9;
+               §§goto(addr220);
             }
-            addr107:
-            _loc6_ = 9;
-            §§goto(addr159);
+            addr148:
+            §§goto(addr149);
          }
-         §§goto(addr107);
+         §§goto(addr148);
       }
       
-      public function updatePlayerState(param1:Array) : void
+      public function updatePlayerState(states:Array) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = players;
-         for each(var _loc2_ in players)
+         for each(var p in players)
          {
-            _loc2_.isReady = param1[_loc2_.place] == 1;
-            _loc2_.isHost = param1[_loc2_.place] == 2;
+            p.isReady = states[p.place] == 1;
+            p.isHost = states[p.place] == 2;
          }
          dispatchEvent(new RoomEvent("playerStateChanged"));
       }
       
-      public function setPlayerReadyState(param1:int, param2:Boolean) : void
+      public function setPlayerReadyState(id:int, isReady:Boolean) : void
       {
-         findPlayerByID(param1).isReady = param2;
+         findPlayerByID(id).isReady = isReady;
          dispatchEvent(new RoomEvent("playerStateChanged"));
       }
       
-      public function updatePlayerTeam(param1:int, param2:int, param3:int) : void
+      public function updatePlayerTeam(id:int, team:int, place:int) : void
       {
-         var _loc4_:RoomPlayer = _players[param1];
-         if(_loc4_)
+         var p:RoomPlayer = _players[id];
+         if(p)
          {
-            _loc4_.team = param2;
-            _loc4_.place = param3;
+            p.team = team;
+            p.place = place;
          }
          dispatchEvent(new RoomEvent("roomplaceChanged"));
       }
       
-      public function addPlayer(param1:RoomPlayer) : void
+      public function addPlayer(player:RoomPlayer) : void
       {
-         _players.add(param1.playerInfo.ID,param1);
-         dispatchEvent(new RoomEvent("addPlayer",param1));
+         _players.add(player.playerInfo.ID,player);
+         dispatchEvent(new RoomEvent("addPlayer",player));
       }
       
-      public function removePlayer(param1:int, param2:int) : RoomPlayer
+      public function removePlayer(zoneID:int, id:int) : RoomPlayer
       {
-         if(param1 != PlayerManager.Instance.Self.ZoneID)
+         if(zoneID != PlayerManager.Instance.Self.ZoneID)
          {
             return null;
          }
-         var _loc3_:RoomPlayer = players[param2];
-         if(_loc3_)
+         var info:RoomPlayer = players[id];
+         if(info)
          {
-            _players.remove(param2);
-            dispatchEvent(new RoomEvent("removePlayer",_loc3_));
+            _players.remove(id);
+            dispatchEvent(new RoomEvent("removePlayer",info));
          }
-         return _loc3_;
+         return info;
       }
       
-      public function findPlayerByID(param1:int, param2:int = -1) : RoomPlayer
+      public function findPlayerByID(id:int, zoneID:int = -1) : RoomPlayer
       {
-         if(param2 == -1)
+         if(zoneID == -1)
          {
-            if(_players[param1] && _players[param1].playerInfo)
+            if(_players[id] && _players[id].playerInfo)
             {
-               return _players[param1] as RoomPlayer;
+               return _players[id] as RoomPlayer;
             }
             return null;
          }
-         if(_players[param1] && _players[param1].playerInfo && _players[param1].playerInfo.ZoneID == param2)
+         if(_players[id] && _players[id].playerInfo && _players[id].playerInfo.ZoneID == zoneID)
          {
-            return _players[param1] as RoomPlayer;
+            return _players[id] as RoomPlayer;
          }
          return null;
       }
       
-      public function findPlayerByPlace(param1:int) : RoomPlayer
+      public function findPlayerByPlace(place:int) : RoomPlayer
       {
-         var _loc2_:* = null;
+         var result:* = null;
          var _loc5_:int = 0;
          var _loc4_:* = players;
-         for each(var _loc3_ in players)
+         for each(var player in players)
          {
-            if(_loc3_.place == param1)
+            if(player.place == place)
             {
-               _loc2_ = _loc3_;
+               result = player;
                break;
             }
          }
-         return _loc2_;
+         return result;
       }
       
       public function dispose() : void
       {
          var _loc3_:int = 0;
          var _loc2_:* = _players;
-         for each(var _loc1_ in _players)
+         for each(var player in _players)
          {
-            _loc1_.dispose();
+            player.dispose();
          }
          _players.clear();
          _players = null;
@@ -526,19 +530,19 @@ package room.model
          return _type;
       }
       
-      public function set type(param1:int) : void
+      public function set type(value:int) : void
       {
-         if(_type == param1)
+         if(_type == value)
          {
             return;
          }
-         _type = param1;
+         _type = value;
          dispatchEvent(new Event("change"));
       }
       
       public function isYellowBg() : Boolean
       {
-         return _type == 4 || _type == 0 || _type == 11 || _type == 21 || _type == 23 || _type == 12 || _type == 13 || _type == 28 || _type == 120 || _type == 68 || _type == 123 || _type == 58;
+         return _type == 4 || _type == 0 || _type == 11 || _type == 21 || _type == 23 || _type == 12 || _type == 13 || _type == 28 || _type == 120 || _type == 68 || _type == 123 || _type == 70 || _type == 58;
       }
       
       public function canShowTitle() : Boolean
@@ -551,19 +555,19 @@ package room.model
          return _gameMode;
       }
       
-      public function set gameMode(param1:int) : void
+      public function set gameMode(value:int) : void
       {
-         if(_gameMode == param1)
+         if(_gameMode == value)
          {
             return;
          }
-         _gameMode = param1;
+         _gameMode = value;
          dispatchEvent(new RoomEvent("gameModeChange"));
       }
       
       public function canPlayGuidMode() : Boolean
       {
-         var _loc4_:int = 0;
+         var guildID:int = 0;
          if(_players.length - currentViewerCnt <= 1)
          {
             return false;
@@ -572,43 +576,43 @@ package room.model
          {
             var _loc6_:int = 0;
             var _loc5_:* = players;
-            for each(var _loc3_ in players)
+            for each(var p in players)
             {
-               if(_loc3_ != selfRoomPlayer)
+               if(p != selfRoomPlayer)
                {
-                  _loc4_ = _loc3_.playerInfo.ConsortiaID;
+                  guildID = p.playerInfo.ConsortiaID;
                   break;
                }
             }
          }
          else
          {
-            _loc4_ = selfRoomPlayer.playerInfo.ConsortiaID;
+            guildID = selfRoomPlayer.playerInfo.ConsortiaID;
          }
-         if(_loc4_ <= 0)
+         if(guildID <= 0)
          {
             return false;
          }
-         var _loc1_:Boolean = true;
+         var result:Boolean = true;
          var _loc8_:int = 0;
          var _loc7_:* = players;
-         for each(var _loc2_ in players)
+         for each(var player in players)
          {
-            if(!_loc2_.isViewer)
+            if(!player.isViewer)
             {
-               if(_loc2_.playerInfo.ConsortiaID != _loc4_)
+               if(player.playerInfo.ConsortiaID != guildID)
                {
-                  _loc1_ = false;
+                  result = false;
                   break;
                }
             }
          }
-         return _loc1_;
+         return result;
       }
       
       public function isAllReady() : Boolean
       {
-         var _loc1_:Boolean = true;
+         var result:Boolean = true;
          if(type == 1)
          {
             if(_players.length == 1)
@@ -618,20 +622,20 @@ package room.model
          }
          var _loc4_:int = 0;
          var _loc3_:* = _players;
-         for each(var _loc2_ in _players)
+         for each(var player in _players)
          {
-            if(!_loc2_.isReady && !_loc2_.isHost && !_loc2_.isViewer)
+            if(!player.isReady && !player.isHost && !player.isViewer)
             {
-               _loc1_ = false;
+               result = false;
                break;
             }
          }
-         return _loc1_;
+         return result;
       }
       
-      public function getDifficulty(param1:int) : String
+      public function getDifficulty(hardlevel:int) : String
       {
-         switch(int(param1))
+         switch(int(hardlevel))
          {
             case 0:
                if(_type == 5)
@@ -663,13 +667,13 @@ package room.model
          return _mapId;
       }
       
-      public function set mapId(param1:int) : void
+      public function set mapId(value:int) : void
       {
-         if(_mapId == param1)
+         if(_mapId == value)
          {
             return;
          }
-         _mapId = param1;
+         _mapId = value;
          dispatchEvent(new RoomEvent("mapChanged"));
       }
       
@@ -678,13 +682,13 @@ package room.model
          return _timeType;
       }
       
-      public function set timeType(param1:int) : void
+      public function set timeType(value:int) : void
       {
-         if(_timeType == param1)
+         if(_timeType == value)
          {
             return;
          }
-         _timeType = param1;
+         _timeType = value;
          dispatchEvent(new RoomEvent("mapTimeChanged"));
       }
       
@@ -693,13 +697,13 @@ package room.model
          return _hardLevel;
       }
       
-      public function set hardLevel(param1:int) : void
+      public function set hardLevel(value:int) : void
       {
-         if(_hardLevel == param1)
+         if(_hardLevel == value)
          {
             return;
          }
-         _hardLevel = param1;
+         _hardLevel = value;
          dispatchEvent(new RoomEvent("hardLevelChanged"));
       }
       
@@ -708,9 +712,9 @@ package room.model
          return _levelLimits;
       }
       
-      public function set levelLimits(param1:int) : void
+      public function set levelLimits(value:int) : void
       {
-         _levelLimits = param1;
+         _levelLimits = value;
       }
       
       public function get totalPlayer() : int
@@ -718,59 +722,59 @@ package room.model
          return _totalPlayer;
       }
       
-      public function set totalPlayer(param1:int) : void
+      public function set totalPlayer(value:int) : void
       {
-         if(_totalPlayer == param1)
+         if(_totalPlayer == value)
          {
             return;
          }
-         _totalPlayer = param1;
+         _totalPlayer = value;
          dispatchEvent(new Event("change"));
       }
       
       public function get currentViewerCnt() : int
       {
-         var _loc2_:int = 0;
+         var cnt:int = 0;
          var _loc4_:int = 0;
          var _loc3_:* = _players;
-         for each(var _loc1_ in _players)
+         for each(var rp in _players)
          {
-            if(_loc1_.isViewer)
+            if(rp.isViewer)
             {
-               _loc2_++;
+               cnt++;
             }
          }
-         return _loc2_;
+         return cnt;
       }
       
       public function get currentPlayerCount() : int
       {
-         var _loc2_:int = 0;
+         var cnt:int = 0;
          var _loc4_:int = 0;
          var _loc3_:* = _players;
-         for each(var _loc1_ in _players)
+         for each(var rp in _players)
          {
-            if(!_loc1_.isViewer)
+            if(!rp.isViewer)
             {
-               _loc2_++;
+               cnt++;
             }
          }
-         return _loc2_;
+         return cnt;
       }
       
       public function get currentPlayers() : Array
       {
-         var _loc2_:Array = [];
+         var players:Array = [];
          var _loc4_:int = 0;
          var _loc3_:* = _players;
-         for each(var _loc1_ in _players)
+         for each(var rp in _players)
          {
-            if(!_loc1_.isViewer)
+            if(!rp.isViewer)
             {
-               _loc2_.push(_loc1_);
+               players.push(rp);
             }
          }
-         return _loc2_;
+         return players;
       }
       
       public function get viewerCnt() : int
@@ -778,13 +782,13 @@ package room.model
          return _viewerCnt;
       }
       
-      public function set viewerCnt(param1:int) : void
+      public function set viewerCnt(value:int) : void
       {
-         if(_viewerCnt == param1)
+         if(_viewerCnt == value)
          {
             return;
          }
-         _viewerCnt = param1;
+         _viewerCnt = value;
          dispatchEvent(new Event("change"));
       }
       
@@ -793,13 +797,13 @@ package room.model
          return _placeCount;
       }
       
-      public function set placeCount(param1:int) : void
+      public function set placeCount(value:int) : void
       {
-         if(_placeCount == param1)
+         if(_placeCount == value)
          {
             return;
          }
-         _placeCount = param1;
+         _placeCount = value;
          dispatchEvent(new RoomEvent("placeCountChanged"));
       }
       
@@ -808,13 +812,13 @@ package room.model
          return _started;
       }
       
-      public function set started(param1:Boolean) : void
+      public function set started(value:Boolean) : void
       {
-         if(_started == param1)
+         if(_started == value)
          {
             return;
          }
-         _started = param1;
+         _started = value;
          dispatchEvent(new RoomEvent("startedChanged"));
       }
       
@@ -823,13 +827,13 @@ package room.model
          return _isCrossZone;
       }
       
-      public function set isCrossZone(param1:Boolean) : void
+      public function set isCrossZone(value:Boolean) : void
       {
-         if(_isCrossZone == param1)
+         if(_isCrossZone == value)
          {
             return;
          }
-         _isCrossZone = param1;
+         _isCrossZone = value;
          dispatchEvent(new RoomEvent("allowCrossChange"));
       }
       
@@ -837,9 +841,9 @@ package room.model
       {
          var _loc3_:int = 0;
          var _loc2_:* = _players;
-         for each(var _loc1_ in _players)
+         for each(var player in _players)
          {
-            _loc1_.isReady = false;
+            player.isReady = false;
          }
          _started = false;
       }
@@ -849,9 +853,9 @@ package room.model
          return _isPlaying;
       }
       
-      public function set isPlaying(param1:Boolean) : void
+      public function set isPlaying(value:Boolean) : void
       {
-         _isPlaying = param1;
+         _isPlaying = value;
       }
       
       public function get IsLocked() : Boolean
@@ -859,9 +863,9 @@ package room.model
          return _isLocked;
       }
       
-      public function set IsLocked(param1:Boolean) : void
+      public function set IsLocked(value:Boolean) : void
       {
-         _isLocked = param1;
+         _isLocked = value;
       }
       
       public function get dungeonType() : int
@@ -869,13 +873,13 @@ package room.model
          return _dungeonType;
       }
       
-      public function set dungeonType(param1:int) : void
+      public function set dungeonType(value:int) : void
       {
-         if(_dungeonType == param1)
+         if(_dungeonType == value)
          {
             return;
          }
-         _dungeonType = param1;
+         _dungeonType = value;
       }
       
       public function get isDungeonType() : Boolean
@@ -893,13 +897,13 @@ package room.model
          return _dungeonMode;
       }
       
-      public function set dungeonMode(param1:int) : void
+      public function set dungeonMode(value:int) : void
       {
-         if(_dungeonMode == param1)
+         if(_dungeonMode == value)
          {
             return;
          }
-         _dungeonMode = param1;
+         _dungeonMode = value;
       }
    }
 }

@@ -25,11 +25,11 @@ package starlingPhy.object
       
       private var _drawPointContainer:Sprite;
       
-      public function PhysicalObj3D(param1:int, param2:int = 1, param3:Number = 1, param4:Number = 1, param5:Number = 1, param6:Number = 1)
+      public function PhysicalObj3D(id:int, layerType:int = 1, mass:Number = 1, gravityFactor:Number = 1, windFactor:Number = 1, airResitFactor:Number = 1)
       {
-         super(param3,param4,param5,param6);
-         _id = param1;
-         _layerType = param2;
+         super(mass,gravityFactor,windFactor,airResitFactor);
+         _id = id;
+         _layerType = layerType;
          _canCollided = false;
          _testRect = new Rectangle(-5,-5,10,10);
          _isLiving = true;
@@ -45,12 +45,12 @@ package starlingPhy.object
          return _layerType;
       }
       
-      public function setCollideRect(param1:int, param2:int, param3:int, param4:int) : void
+      public function setCollideRect(left:int, top:int, right:int, buttom:int) : void
       {
-         _testRect.top = param2;
-         _testRect.left = param1;
-         _testRect.right = param3;
-         _testRect.bottom = param4;
+         _testRect.top = top;
+         _testRect.left = left;
+         _testRect.right = right;
+         _testRect.bottom = buttom;
       }
       
       public function getCollideRect() : Rectangle
@@ -63,9 +63,9 @@ package starlingPhy.object
          return _canCollided;
       }
       
-      public function set canCollided(param1:Boolean) : void
+      public function set canCollided(value:Boolean) : void
       {
-         _canCollided = param1;
+         _canCollided = value;
       }
       
       public function get smallView() : SmallObject
@@ -78,376 +78,357 @@ package starlingPhy.object
          return _isLiving;
       }
       
-      override public function moveTo(param1:Point) : void
+      override public function moveTo(p:Point) : void
       {
-         var _loc6_:Number = NaN;
-         var _loc7_:Number = NaN;
-         var _loc5_:int = 0;
-         var _loc2_:Number = NaN;
-         var _loc8_:* = null;
-         var _loc4_:* = null;
-         var _loc3_:int = 0;
-         var _loc10_:* = null;
-         var _loc9_:* = null;
-         if(Point.distance(param1,pos) >= 3)
+         var dx:Number = NaN;
+         var dy:Number = NaN;
+         var count:int = 0;
+         var dt:Number = NaN;
+         var cur:* = null;
+         var dest:* = null;
+         var t:int = 0;
+         var rect:* = null;
+         var list:* = null;
+         if(Point.distance(p,pos) >= 3)
          {
-            _loc6_ = Math.abs(int(param1.x) - int(x));
-            _loc7_ = Math.abs(int(param1.y) - int(y));
-            _loc5_ = _loc6_ > _loc7_?_loc6_:Number(_loc7_);
-            _loc2_ = 1 / _loc5_;
-            _loc8_ = pos;
-            _loc3_ = Math.abs(_loc5_);
-            while(_loc3_ > 0)
+            dx = Math.abs(int(p.x) - int(x));
+            dy = Math.abs(int(p.y) - int(y));
+            count = dx > dy?dx:Number(dy);
+            dt = 1 / count;
+            cur = pos;
+            for(t = Math.abs(count); t > 0; )
             {
-               _loc4_ = Point.interpolate(_loc8_,param1,_loc2_ * _loc3_);
-               _loc10_ = getCollideRect();
-               _loc10_.offset(_loc4_.x,_loc4_.y);
-               _loc9_ = _map.getPhysicalObjects(_loc10_,this);
-               if(_loc9_.length > 0)
+               dest = Point.interpolate(cur,p,dt * t);
+               rect = getCollideRect();
+               rect.offset(dest.x,dest.y);
+               list = _map.getPhysicalObjects(rect,this);
+               if(list.length > 0)
                {
-                  pos = _loc4_;
-                  collideObject(_loc9_);
+                  pos = dest;
+                  collideObject(list);
                }
-               else if(!_map.IsRectangleEmpty(_loc10_))
+               else if(!_map.IsRectangleEmpty(rect))
                {
-                  pos = _loc4_;
+                  pos = dest;
                   collideGround();
                }
-               else if(_map.IsOutMap(_loc4_.x,_loc4_.y))
+               else if(_map.IsOutMap(dest.x,dest.y))
                {
-                  pos = _loc4_;
+                  pos = dest;
                   flyOutMap();
                }
                if(!_isMoving)
                {
                   return;
                }
-               _loc3_ = _loc3_ - 3;
+               t = t - 3;
             }
-            pos = param1;
+            pos = p;
          }
       }
       
-      public function calcObjectAngle(param1:Number = 16) : Number
+      public function calcObjectAngle(bounds:Number = 16) : Number
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         var _loc6_:* = null;
-         var _loc10_:* = NaN;
-         var _loc8_:* = NaN;
-         var _loc11_:int = 0;
-         var _loc9_:int = 0;
-         var _loc7_:* = NaN;
-         var _loc5_:* = NaN;
+         var pre_array:* = null;
+         var next_array:* = null;
+         var pre:* = null;
+         var next:* = null;
+         var bound:* = NaN;
+         var m:* = NaN;
+         var i:int = 0;
+         var j:int = 0;
+         var n:* = NaN;
+         var nn:* = NaN;
          if(_map)
          {
-            _loc2_ = [];
-            _loc3_ = [];
-            _loc4_ = new Point();
-            _loc6_ = new Point();
-            _loc10_ = param1;
-            _loc8_ = 1;
-            while(_loc8_ <= _loc10_)
+            pre_array = [];
+            next_array = [];
+            pre = new Point();
+            next = new Point();
+            bound = bounds;
+            for(m = 1; m <= bound; )
             {
-               _loc11_ = -10;
-               while(_loc11_ <= 10)
+               for(i = -10; i <= 10; )
                {
-                  if(_map.IsEmpty(x + _loc8_,y - _loc11_))
+                  if(_map.IsEmpty(x + m,y - i))
                   {
-                     if(_loc11_ != -10)
+                     if(i != -10)
                      {
-                        _loc2_.push(new Point(x + _loc8_,y - _loc11_));
+                        pre_array.push(new Point(x + m,y - i));
                         break;
                      }
                      break;
                   }
-                  _loc11_++;
+                  i++;
                }
-               _loc9_ = -10;
-               while(_loc9_ <= 10)
+               j = -10;
+               while(j <= 10)
                {
-                  if(_map.IsEmpty(x - _loc8_,y - _loc9_))
+                  if(_map.IsEmpty(x - m,y - j))
                   {
-                     if(_loc9_ != -10)
+                     if(j != -10)
                      {
-                        _loc3_.push(new Point(x - _loc8_,y - _loc9_));
+                        next_array.push(new Point(x - m,y - j));
                         break;
                      }
                      break;
                   }
-                  _loc9_++;
+                  j++;
                }
-               _loc8_ = Number(_loc8_ + 2);
+               m = Number(m + 2);
             }
-            _loc4_ = new Point(x,y);
-            _loc6_ = new Point(x,y);
-            _loc7_ = 0;
-            while(_loc7_ < _loc2_.length)
+            pre = new Point(x,y);
+            next = new Point(x,y);
+            for(n = 0; n < pre_array.length; )
             {
-               _loc4_ = _loc4_.add(_loc2_[_loc7_]);
-               _loc7_++;
+               pre = pre.add(pre_array[n]);
+               n++;
             }
-            _loc5_ = 0;
-            while(_loc5_ < _loc3_.length)
+            for(nn = 0; nn < next_array.length; )
             {
-               _loc6_ = _loc6_.add(_loc3_[_loc5_]);
-               _loc5_++;
+               next = next.add(next_array[nn]);
+               nn++;
             }
-            _loc4_.x = _loc4_.x / (_loc2_.length + 1);
-            _loc4_.y = _loc4_.y / (_loc2_.length + 1);
-            _loc6_.x = _loc6_.x / (_loc3_.length + 1);
-            _loc6_.y = _loc6_.y / (_loc3_.length + 1);
-            return MathUtils.GetAngleTwoPoint(_loc4_,_loc6_);
+            pre.x = pre.x / (pre_array.length + 1);
+            pre.y = pre.y / (pre_array.length + 1);
+            next.x = next.x / (next_array.length + 1);
+            next.y = next.y / (next_array.length + 1);
+            return MathUtils.GetAngleTwoPoint(pre,next);
          }
          return 0;
       }
       
-      public function calcObjectAngle2(param1:Number = 16, param2:int = 10) : Number
+      public function calcObjectAngle2(bounds:Number = 16, dis:int = 10) : Number
       {
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         var _loc5_:* = null;
-         var _loc7_:* = null;
-         var _loc11_:* = NaN;
-         var _loc9_:* = NaN;
-         var _loc12_:int = 0;
-         var _loc10_:int = 0;
-         var _loc8_:* = NaN;
-         var _loc6_:* = NaN;
+         var pre_array:* = null;
+         var next_array:* = null;
+         var pre:* = null;
+         var next:* = null;
+         var bound:* = NaN;
+         var m:* = NaN;
+         var i:int = 0;
+         var j:int = 0;
+         var n:* = NaN;
+         var nn:* = NaN;
          if(_map)
          {
-            _loc3_ = [];
-            _loc4_ = [];
-            _loc5_ = new Point();
-            _loc7_ = new Point();
-            _loc11_ = param1;
-            _loc9_ = 1;
-            while(_loc9_ <= _loc11_)
+            pre_array = [];
+            next_array = [];
+            pre = new Point();
+            next = new Point();
+            bound = bounds;
+            for(m = 1; m <= bound; )
             {
-               _loc12_ = -param2;
-               while(_loc12_ <= param2)
+               for(i = -dis; i <= dis; )
                {
-                  if(_map.IsEmpty(x + _loc9_,y - _loc12_))
+                  if(_map.IsEmpty(x + m,y - i))
                   {
-                     if(_loc12_ != -param2)
+                     if(i != -dis)
                      {
-                        _loc3_.push(new Point(x + _loc9_,y - _loc12_));
+                        pre_array.push(new Point(x + m,y - i));
                         break;
                      }
                      break;
                   }
-                  _loc12_++;
+                  i++;
                }
-               _loc10_ = -param2;
-               while(_loc10_ <= param2)
+               for(j = -dis; j <= dis; )
                {
-                  if(_map.IsEmpty(x - _loc9_,y - _loc10_))
+                  if(_map.IsEmpty(x - m,y - j))
                   {
-                     if(_loc10_ != -param2)
+                     if(j != -dis)
                      {
-                        _loc4_.push(new Point(x - _loc9_,y - _loc10_));
+                        next_array.push(new Point(x - m,y - j));
                         break;
                      }
                      break;
                   }
-                  _loc10_++;
+                  j++;
                }
-               _loc9_ = Number(_loc9_ + 2);
+               m = Number(m + 2);
             }
-            _loc5_ = new Point(x,y);
-            _loc7_ = new Point(x,y);
-            _loc8_ = 0;
-            while(_loc8_ < _loc3_.length)
+            pre = new Point(x,y);
+            next = new Point(x,y);
+            for(n = 0; n < pre_array.length; )
             {
-               _loc5_ = _loc5_.add(_loc3_[_loc8_]);
-               _loc8_++;
+               pre = pre.add(pre_array[n]);
+               n++;
             }
-            _loc6_ = 0;
-            while(_loc6_ < _loc4_.length)
+            for(nn = 0; nn < next_array.length; )
             {
-               _loc7_ = _loc7_.add(_loc4_[_loc6_]);
-               _loc6_++;
+               next = next.add(next_array[nn]);
+               nn++;
             }
-            _loc5_.x = _loc5_.x / (_loc3_.length + 1);
-            _loc5_.y = _loc5_.y / (_loc3_.length + 1);
-            _loc7_.x = _loc7_.x / (_loc4_.length + 1);
-            _loc7_.y = _loc7_.y / (_loc4_.length + 1);
-            return MathUtils.GetAngleTwoPoint(_loc5_,_loc7_);
+            pre.x = pre.x / (pre_array.length + 1);
+            pre.y = pre.y / (pre_array.length + 1);
+            next.x = next.x / (next_array.length + 1);
+            next.y = next.y / (next_array.length + 1);
+            return MathUtils.GetAngleTwoPoint(pre,next);
          }
          return 0;
       }
       
-      public function calcObjectAngleDebug(param1:Number = 16) : Number
+      public function calcObjectAngleDebug(bounds:Number = 16) : Number
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         var _loc6_:* = null;
-         var _loc10_:* = NaN;
-         var _loc8_:* = NaN;
-         var _loc11_:int = 0;
-         var _loc9_:int = 0;
-         var _loc7_:* = NaN;
-         var _loc5_:* = NaN;
+         var pre_array:* = null;
+         var next_array:* = null;
+         var pre:* = null;
+         var next:* = null;
+         var bound:* = NaN;
+         var m:* = NaN;
+         var i:int = 0;
+         var j:int = 0;
+         var n:* = NaN;
+         var nn:* = NaN;
          if(_map)
          {
-            _loc2_ = [];
-            _loc3_ = [];
-            _loc4_ = new Point();
-            _loc6_ = new Point();
-            _loc10_ = param1;
-            _loc8_ = 1;
-            while(_loc8_ <= _loc10_)
+            pre_array = [];
+            next_array = [];
+            pre = new Point();
+            next = new Point();
+            bound = bounds;
+            for(m = 1; m <= bound; )
             {
-               _loc11_ = -10;
-               while(_loc11_ <= 10)
+               for(i = -10; i <= 10; )
                {
-                  if(_map.IsEmpty(x + _loc8_,y - _loc11_))
+                  if(_map.IsEmpty(x + m,y - i))
                   {
-                     if(_loc11_ != -10)
+                     if(i != -10)
                      {
-                        _loc2_.push(new Point(x + _loc8_,y - _loc11_));
+                        pre_array.push(new Point(x + m,y - i));
                         break;
                      }
                      break;
                   }
-                  _loc11_++;
+                  i++;
                }
-               _loc9_ = -10;
-               while(_loc9_ <= 10)
+               j = -10;
+               while(j <= 10)
                {
-                  if(_map.IsEmpty(x - _loc8_,y - _loc9_))
+                  if(_map.IsEmpty(x - m,y - j))
                   {
-                     if(_loc9_ != -10)
+                     if(j != -10)
                      {
-                        _loc3_.push(new Point(x - _loc8_,y - _loc9_));
+                        next_array.push(new Point(x - m,y - j));
                         break;
                      }
                      break;
                   }
-                  _loc9_++;
+                  j++;
                }
-               _loc8_ = Number(_loc8_ + 2);
+               m = Number(m + 2);
             }
-            _loc4_ = new Point(x,y);
-            _loc6_ = new Point(x,y);
-            _loc7_ = 0;
-            while(_loc7_ < _loc2_.length)
+            pre = new Point(x,y);
+            next = new Point(x,y);
+            for(n = 0; n < pre_array.length; )
             {
-               _loc4_ = _loc4_.add(_loc2_[_loc7_]);
-               _loc7_++;
+               pre = pre.add(pre_array[n]);
+               n++;
             }
-            _loc5_ = 0;
-            while(_loc5_ < _loc3_.length)
+            for(nn = 0; nn < next_array.length; )
             {
-               _loc6_ = _loc6_.add(_loc3_[_loc5_]);
-               _loc5_++;
+               next = next.add(next_array[nn]);
+               nn++;
             }
-            _loc4_.x = _loc4_.x / (_loc2_.length + 1);
-            _loc4_.y = _loc4_.y / (_loc2_.length + 1);
-            _loc6_.x = _loc6_.x / (_loc3_.length + 1);
-            _loc6_.y = _loc6_.y / (_loc3_.length + 1);
-            return MathUtils.GetAngleTwoPoint(_loc4_,_loc6_);
+            pre.x = pre.x / (pre_array.length + 1);
+            pre.y = pre.y / (pre_array.length + 1);
+            next.x = next.x / (next_array.length + 1);
+            next.y = next.y / (next_array.length + 1);
+            return MathUtils.GetAngleTwoPoint(pre,next);
          }
          return 0;
       }
       
-      public function calcObjectAngleDebug2(param1:Number = 16, param2:int = 10) : Number
+      public function calcObjectAngleDebug2(bounds:Number = 16, dis:int = 10) : Number
       {
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         var _loc5_:* = null;
-         var _loc7_:* = null;
-         var _loc11_:* = NaN;
-         var _loc9_:* = NaN;
-         var _loc12_:int = 0;
-         var _loc10_:int = 0;
-         var _loc8_:* = NaN;
-         var _loc6_:* = NaN;
+         var pre_array:* = null;
+         var next_array:* = null;
+         var pre:* = null;
+         var next:* = null;
+         var bound:* = NaN;
+         var m:* = NaN;
+         var i:int = 0;
+         var j:int = 0;
+         var n:* = NaN;
+         var nn:* = NaN;
          if(_map)
          {
-            _loc3_ = [];
-            _loc4_ = [];
-            _loc5_ = new Point();
-            _loc7_ = new Point();
-            _loc11_ = param1;
-            _loc9_ = 1;
-            while(_loc9_ <= _loc11_)
+            pre_array = [];
+            next_array = [];
+            pre = new Point();
+            next = new Point();
+            bound = bounds;
+            for(m = 1; m <= bound; )
             {
-               _loc12_ = -param2;
-               while(_loc12_ <= param2)
+               for(i = -dis; i <= dis; )
                {
-                  if(_map.IsEmpty(x + _loc9_,y - _loc12_))
+                  if(_map.IsEmpty(x + m,y - i))
                   {
-                     if(_loc12_ != -param2)
+                     if(i != -dis)
                      {
-                        _loc3_.push(new Point(x + _loc9_,y - _loc12_));
+                        pre_array.push(new Point(x + m,y - i));
                         break;
                      }
                      break;
                   }
-                  _loc12_++;
+                  i++;
                }
-               _loc10_ = -param2;
-               while(_loc10_ <= param2)
+               for(j = -dis; j <= dis; )
                {
-                  if(_map.IsEmpty(x - _loc9_,y - _loc10_))
+                  if(_map.IsEmpty(x - m,y - j))
                   {
-                     if(_loc10_ != -param2)
+                     if(j != -dis)
                      {
-                        _loc4_.push(new Point(x - _loc9_,y - _loc10_));
+                        next_array.push(new Point(x - m,y - j));
                         break;
                      }
                      break;
                   }
-                  _loc10_++;
+                  j++;
                }
-               _loc9_ = Number(_loc9_ + 2);
+               m = Number(m + 2);
             }
-            _loc5_ = new Point(x,y);
-            _loc7_ = new Point(x,y);
-            _loc8_ = 0;
-            while(_loc8_ < _loc3_.length)
+            pre = new Point(x,y);
+            next = new Point(x,y);
+            for(n = 0; n < pre_array.length; )
             {
-               _loc5_ = _loc5_.add(_loc3_[_loc8_]);
-               _loc8_++;
+               pre = pre.add(pre_array[n]);
+               n++;
             }
-            drawPoint(_loc3_,true);
-            _loc6_ = 0;
-            while(_loc6_ < _loc4_.length)
+            drawPoint(pre_array,true);
+            for(nn = 0; nn < next_array.length; )
             {
-               _loc7_ = _loc7_.add(_loc4_[_loc6_]);
-               _loc6_++;
+               next = next.add(next_array[nn]);
+               nn++;
             }
-            drawPoint(_loc4_,false);
-            _loc5_.x = _loc5_.x / (_loc3_.length + 1);
-            _loc5_.y = _loc5_.y / (_loc3_.length + 1);
-            _loc7_.x = _loc7_.x / (_loc4_.length + 1);
-            _loc7_.y = _loc7_.y / (_loc4_.length + 1);
-            return MathUtils.GetAngleTwoPoint(_loc5_,_loc7_);
+            drawPoint(next_array,false);
+            pre.x = pre.x / (pre_array.length + 1);
+            pre.y = pre.y / (pre_array.length + 1);
+            next.x = next.x / (next_array.length + 1);
+            next.y = next.y / (next_array.length + 1);
+            return MathUtils.GetAngleTwoPoint(pre,next);
          }
          return 0;
       }
       
-      private function drawPoint(param1:Array, param2:Boolean) : void
+      private function drawPoint(data:Array, clear:Boolean) : void
       {
-         var _loc3_:int = 0;
+         var i:int = 0;
          if(_drawPointContainer == null)
          {
             _drawPointContainer = new Sprite();
          }
-         if(param2)
+         if(clear)
          {
             _drawPointContainer.graphics.clear();
          }
-         _loc3_ = 0;
-         while(_loc3_ < param1.length)
+         i = 0;
+         while(i < data.length)
          {
             _drawPointContainer.graphics.beginFill(16711680);
-            _drawPointContainer.graphics.drawCircle(param1[_loc3_].x,param1[_loc3_].y,2);
+            _drawPointContainer.graphics.drawCircle(data[i].x,data[i].y,2);
             _drawPointContainer.graphics.endFill();
-            _loc3_++;
+            i++;
          }
          _map.addChild(_drawPointContainer);
       }
@@ -460,13 +441,13 @@ package starlingPhy.object
          }
       }
       
-      protected function collideObject(param1:Array) : void
+      protected function collideObject(list:Array) : void
       {
          var _loc4_:int = 0;
-         var _loc3_:* = param1;
-         for each(var _loc2_ in param1)
+         var _loc3_:* = list;
+         for each(var obj in list)
          {
-            _loc2_.collidedByObject(this);
+            obj.collidedByObject(this);
          }
       }
       
@@ -478,11 +459,11 @@ package starlingPhy.object
          }
       }
       
-      public function collidedByObject(param1:PhysicalObj3D) : void
+      public function collidedByObject(obj:PhysicalObj3D) : void
       {
       }
       
-      public function setActionMapping(param1:String, param2:String) : void
+      public function setActionMapping(source:String, target:String) : void
       {
       }
       

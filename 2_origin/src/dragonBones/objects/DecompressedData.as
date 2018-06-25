@@ -40,28 +40,28 @@ package dragonBones.objects
       
       public function parseTextureAtlasBytes() : void
       {
-         var _loc1_:TextureAtlasByteArrayLoader = new TextureAtlasByteArrayLoader();
-         _loc1_.contentLoaderInfo.addEventListener("complete",loaderCompleteHandler);
-         _loc1_.loadBytes(textureAtlasBytes);
+         var loader:TextureAtlasByteArrayLoader = new TextureAtlasByteArrayLoader();
+         loader.contentLoaderInfo.addEventListener("complete",loaderCompleteHandler);
+         loader.loadBytes(textureAtlasBytes);
       }
       
-      private function loaderCompleteHandler(param1:Event) : void
+      private function loaderCompleteHandler(e:Event) : void
       {
-         param1.target.removeEventListener("complete",loaderCompleteHandler);
-         var _loc3_:Loader = param1.target.loader;
-         var _loc2_:Object = param1.target.content;
-         _loc3_.unloadAndStop();
-         if(_loc2_ is Bitmap)
+         e.target.removeEventListener("complete",loaderCompleteHandler);
+         var loader:Loader = e.target.loader;
+         var content:Object = e.target.content;
+         loader.unloadAndStop();
+         if(content is Bitmap)
          {
-            textureAtlas = (_loc2_ as Bitmap).bitmapData;
+            textureAtlas = (content as Bitmap).bitmapData;
          }
-         else if(_loc2_ is Sprite)
+         else if(content is Sprite)
          {
-            textureAtlas = (_loc2_ as Sprite).getChildAt(0) as MovieClip;
+            textureAtlas = (content as Sprite).getChildAt(0) as MovieClip;
          }
          else
          {
-            textureAtlas = _loc2_;
+            textureAtlas = content;
          }
          this.dispatchEvent(new Event("complete"));
       }

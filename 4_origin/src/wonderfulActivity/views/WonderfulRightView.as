@@ -44,30 +44,30 @@ package wonderfulActivity.views
          super();
       }
       
-      public function setState(param1:int, param2:int) : void
+      public function setState(type:int, id:int) : void
       {
          if(!_view)
          {
             return;
          }
-         _view.setState(param1,param2);
+         _view.setState(type,id);
       }
       
-      public function updateView(param1:String) : void
+      public function updateView(id:String) : void
       {
-         var _loc4_:* = null;
-         var _loc2_:* = null;
+         var leftViewInfoDic:* = null;
+         var data:* = null;
          dispose();
          if(WonderfulActivityManager.Instance.isExchangeAct)
          {
-            _loc4_ = WonderfulActivityManager.Instance.exchangeActLeftViewInfoDic;
+            leftViewInfoDic = WonderfulActivityManager.Instance.exchangeActLeftViewInfoDic;
          }
          else
          {
-            _loc4_ = WonderfulActivityManager.Instance.leftViewInfoDic;
+            leftViewInfoDic = WonderfulActivityManager.Instance.leftViewInfoDic;
          }
-         var _loc3_:int = _loc4_[param1].viewType;
-         var _loc5_:* = _loc3_;
+         var type:int = leftViewInfoDic[id].viewType;
+         var _loc5_:* = type;
          if(3001 !== _loc5_)
          {
             if(4001 !== _loc5_)
@@ -175,7 +175,7 @@ package wonderfulActivity.views
                                                                                                                                                 }
                                                                                                                                                 else
                                                                                                                                                 {
-                                                                                                                                                   _view = new DaySupplyAwardItem(param1);
+                                                                                                                                                   _view = new DaySupplyAwardItem(id);
                                                                                                                                                 }
                                                                                                                                              }
                                                                                                                                              else
@@ -295,7 +295,7 @@ package wonderfulActivity.views
                                                                         }
                                                                         else
                                                                         {
-                                                                           _view = new CarnivalActivityView(20,0,param1);
+                                                                           _view = new CarnivalActivityView(20,0,id);
                                                                         }
                                                                      }
                                                                      else
@@ -320,37 +320,37 @@ package wonderfulActivity.views
                                                          }
                                                          else
                                                          {
-                                                            _view = new GetRewardActView(param1);
+                                                            _view = new GetRewardActView(id);
                                                          }
                                                       }
                                                       else
                                                       {
-                                                         _view = new AnnouncementActView(param1);
+                                                         _view = new AnnouncementActView(id);
                                                       }
                                                    }
                                                    else
                                                    {
-                                                      _view = new ExchangeActView(param1);
+                                                      _view = new ExchangeActView(id);
                                                    }
                                                 }
                                                 else
                                                 {
-                                                   _view = new ReturnActivityView(3,param1);
+                                                   _view = new ReturnActivityView(3,id);
                                                 }
                                              }
                                              else
                                              {
-                                                _view = new ReturnActivityView(1,param1);
+                                                _view = new ReturnActivityView(1,id);
                                              }
                                           }
                                           else
                                           {
-                                             _view = new ReturnActivityView(0,param1);
+                                             _view = new ReturnActivityView(0,id);
                                           }
                                        }
                                        else
                                        {
-                                          _view = new ReturnActivityView(2,param1);
+                                          _view = new ReturnActivityView(2,id);
                                        }
                                     }
                                     else
@@ -390,24 +390,24 @@ package wonderfulActivity.views
                }
                else
                {
-                  _loc2_ = WonderfulActivityManager.Instance.activityFighterList[0];
-                  _view = new FighterRutrunView(_loc2_);
+                  data = WonderfulActivityManager.Instance.activityFighterList[0];
+                  _view = new FighterRutrunView(data);
                }
             }
             else
             {
-               _loc2_ = WonderfulActivityManager.Instance.activityExpList[0];
-               _view = new RechargeReturnView(2,_loc2_);
+               data = WonderfulActivityManager.Instance.activityExpList[0];
+               _view = new RechargeReturnView(2,data);
             }
          }
          else
          {
-            _loc2_ = WonderfulActivityManager.Instance.activityRechargeList[0];
-            _view = new RechargeReturnView(1,_loc2_);
+            data = WonderfulActivityManager.Instance.activityRechargeList[0];
+            _view = new RechargeReturnView(1,data);
          }
-         if(_loc3_ >= 10000 && _loc3_ <= 11000)
+         if(type >= 10000 && type <= 11000)
          {
-            _view = new LimitActivityView(_loc3_);
+            _view = new LimitActivityView(type);
          }
          if(_view)
          {

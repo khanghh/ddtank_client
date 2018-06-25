@@ -52,8 +52,8 @@ package dayActivity.view.dayActtivityView
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          _list = new Vector.<DayActivityRightViewItem>();
          _back = ComponentFactory.Instance.creatComponentByStylename("dayActivityView.right.SignedAwardBack");
          addChild(_back);
@@ -83,16 +83,15 @@ package dayActivity.view.dayActtivityView
          _bar.x = 60;
          _bar.y = 75;
          addChild(_bar);
-         _loc2_ = 0;
-         while(_loc2_ < 5)
+         for(i = 0; i < 5; )
          {
-            _loc1_ = new DayActivityRightViewItem(_activeList[_loc2_]);
-            _loc1_.y = (_loc1_.height + 3) * _loc2_ + 158;
-            _loc1_.x = 13;
-            _loc1_.id = _loc2_ + 1;
-            addChild(_loc1_);
-            _list.push(_loc1_);
-            _loc2_++;
+            item = new DayActivityRightViewItem(_activeList[i]);
+            item.y = (item.height + 3) * i + 158;
+            item.x = 13;
+            item.id = i + 1;
+            addChild(item);
+            _list.push(item);
+            i++;
          }
       }
       
@@ -104,7 +103,7 @@ package dayActivity.view.dayActtivityView
          }
       }
       
-      protected function __onDailyCollection(param1:MouseEvent) : void
+      protected function __onDailyCollection(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          CalendarControl.getInstance().reciveDayAward();
@@ -121,52 +120,51 @@ package dayActivity.view.dayActtivityView
          }
       }
       
-      public function updataBtn(param1:int) : void
+      public function updataBtn(id:int) : void
       {
-         _list[param1 - 1].showBtn(true);
+         _list[id - 1].showBtn(true);
       }
       
-      public function setBarValue(param1:int) : void
+      public function setBarValue($num:int) : void
       {
-         _bar.initBar(param1);
-         var _loc2_:Array = DayActivityManager.Instance.btnArr;
-         if(param1 >= 30 && param1 < 60)
+         _bar.initBar($num);
+         var arr:Array = DayActivityManager.Instance.btnArr;
+         if($num >= 30 && $num < 60)
          {
             setBtnState(1);
          }
-         else if(param1 >= 60 && param1 < 80)
+         else if($num >= 60 && $num < 80)
          {
             setBtnState(2);
          }
-         else if(param1 >= 80 && param1 < 100)
+         else if($num >= 80 && $num < 100)
          {
             setBtnState(3);
          }
-         else if(param1 >= 100 && param1 < 120)
+         else if($num >= 100 && $num < 120)
          {
             setBtnState(4);
          }
-         else if(param1 >= 120)
+         else if($num >= 120)
          {
             setBtnState(5);
          }
       }
       
-      private function setBtnState(param1:int) : void
+      private function setBtnState(i:int) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < param1)
+         var j:int = 0;
+         for(j = 0; j < i; )
          {
-            if(DayActivityManager.Instance.btnArr[_loc2_][1] == 0)
+            if(DayActivityManager.Instance.btnArr[j][1] == 0)
             {
-               _list[_loc2_].showBtn(false);
+               _list[j].showBtn(false);
             }
             else
             {
-               _list[_loc2_].showBtn(true);
+               _list[j].showBtn(true);
             }
-            _loc2_++;
+            j++;
          }
       }
       

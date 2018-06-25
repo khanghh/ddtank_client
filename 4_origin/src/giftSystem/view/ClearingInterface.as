@@ -148,24 +148,24 @@ package giftSystem.view
          _moneyIsEnough.setFrame(1);
       }
       
-      private function selectName(param1:String, param2:int = 0) : void
+      private function selectName(nick:String, id:int = 0) : void
       {
-         setName(param1);
+         setName(nick);
          _friendList.setVisible = false;
       }
       
-      public function setName(param1:String) : void
+      public function setName(value:String) : void
       {
-         _nameInput.text = param1;
+         _nameInput.text = value;
       }
       
-      public function set info(param1:ShopItemInfo) : void
+      public function set info(value:ShopItemInfo) : void
       {
-         if(_info == param1)
+         if(_info == value)
          {
             return;
          }
-         _info = param1;
+         _info = value;
          updateMoneyType();
          _giftCartItem.info = _info;
          __numberChange(null);
@@ -200,9 +200,9 @@ package giftSystem.view
          GiftController.Instance.addEventListener("sendGiftReturn",__sendRetrunHandler);
       }
       
-      protected function __sendRetrunHandler(param1:GiftEvent) : void
+      protected function __sendRetrunHandler(event:GiftEvent) : void
       {
-         if(param1.str == "true")
+         if(event.str == "true")
          {
             dispose();
          }
@@ -212,22 +212,22 @@ package giftSystem.view
          }
       }
       
-      private function __numberChange(param1:Event) : void
+      private function __numberChange(event:Event) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
+         var total:int = 0;
+         var poor:int = 0;
          switch(int(_info.getItemPrice(1).PriceType) - -2)
          {
             case 0:
-               _loc2_ = _info.getItemPrice(1).ddtMoneyValue * _giftCartItem.number;
-               _loc3_ = PlayerManager.Instance.Self.DDTMoney - _loc2_;
+               total = _info.getItemPrice(1).ddtMoneyValue * _giftCartItem.number;
+               poor = PlayerManager.Instance.Self.DDTMoney - total;
                break;
             case 1:
-               _loc2_ = _info.getItemPrice(1).bothMoneyValue * _giftCartItem.number;
-               _loc3_ = PlayerManager.Instance.Self.Money - _loc2_;
+               total = _info.getItemPrice(1).bothMoneyValue * _giftCartItem.number;
+               poor = PlayerManager.Instance.Self.Money - total;
          }
-         _totalMoney.text = _loc2_.toString();
-         if(_loc3_ < 0)
+         _totalMoney.text = total.toString();
+         if(poor < 0)
          {
             _moneyIsEnough.setFrame(2);
          }
@@ -238,9 +238,9 @@ package giftSystem.view
          _giftNum.text = _giftCartItem.number.toString();
       }
       
-      private function __present(param1:MouseEvent) : void
+      private function __present(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var confirm:* = null;
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -249,9 +249,9 @@ package giftSystem.view
          }
          if(parseInt(_poorMoney.text) < 0)
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.comon.lack"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
-            _loc2_.moveEnable = false;
-            _loc2_.addEventListener("response",__confirmResponse);
+            confirm = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.comon.lack"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
+            confirm.moveEnable = false;
+            confirm.addEventListener("response",__confirmResponse);
             return;
          }
          if(_nameInput.text == "")
@@ -277,25 +277,25 @@ package giftSystem.view
          SocketManager.Instance.out.sendBuyGift(_nameInput.text,_info.GoodsID,_giftCartItem.number,1);
       }
       
-      private function __buyMoney(param1:MouseEvent) : void
+      private function __buyMoney(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          LeavePageManager.leaveToFillPath();
       }
       
-      private function __showFramePanel(param1:MouseEvent) : void
+      private function __showFramePanel(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:Point = _chooseFriendBtn.localToGlobal(new Point(0,0));
-         _friendList.x = _loc2_.x - 95;
-         _friendList.y = _loc2_.y + _chooseFriendBtn.height;
+         var pos:Point = _chooseFriendBtn.localToGlobal(new Point(0,0));
+         _friendList.x = pos.x - 95;
+         _friendList.y = pos.y + _chooseFriendBtn.height;
          _friendList.setVisible = true;
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(event.responseCode == 0 || event.responseCode == 1)
          {
             dispose();
          }
@@ -345,9 +345,9 @@ package giftSystem.view
          }
       }
       
-      protected function __hideDropList(param1:Event) : void
+      protected function __hideDropList(event:Event) : void
       {
-         if(param1.target is FilterFrameText)
+         if(event.target is FilterFrameText)
          {
             return;
          }
@@ -357,83 +357,81 @@ package giftSystem.view
          }
       }
       
-      protected function __onReceiverChange(param1:Event) : void
+      protected function __onReceiverChange(event:Event) : void
       {
          if(_nameInput.text == "")
          {
             _dropList.dataList = null;
             return;
          }
-         var _loc2_:Array = PlayerManager.Instance.onlineFriendList.concat(PlayerManager.Instance.offlineFriendList).concat(ConsortionModelManager.Instance.model.onlineConsortiaMemberList).concat(ConsortionModelManager.Instance.model.offlineConsortiaMemberList);
-         _dropList.dataList = filterSearch(filterRepeatInArray(_loc2_),_nameInput.text);
+         var list:Array = PlayerManager.Instance.onlineFriendList.concat(PlayerManager.Instance.offlineFriendList).concat(ConsortionModelManager.Instance.model.onlineConsortiaMemberList).concat(ConsortionModelManager.Instance.model.offlineConsortiaMemberList);
+         _dropList.dataList = filterSearch(filterRepeatInArray(list),_nameInput.text);
       }
       
-      private function filterRepeatInArray(param1:Array) : Array
+      private function filterRepeatInArray(filterArr:Array) : Array
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         var _loc2_:Array = [];
-         _loc4_ = 0;
-         while(_loc4_ < param1.length)
+         var i:int = 0;
+         var j:int = 0;
+         var arr:Array = [];
+         for(i = 0; i < filterArr.length; )
          {
-            if(_loc4_ == 0)
+            if(i == 0)
             {
-               _loc2_.push(param1[_loc4_]);
+               arr.push(filterArr[i]);
             }
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_.length)
+            j = 0;
+            while(j < arr.length)
             {
-               if(_loc2_[_loc3_].NickName != param1[_loc4_].NickName)
+               if(arr[j].NickName != filterArr[i].NickName)
                {
-                  if(_loc3_ == _loc2_.length - 1)
+                  if(j == arr.length - 1)
                   {
-                     _loc2_.push(param1[_loc4_]);
+                     arr.push(filterArr[i]);
                   }
-                  _loc3_++;
+                  j++;
                   continue;
                }
                break;
             }
-            _loc4_++;
+            i++;
          }
-         return _loc2_;
+         return arr;
       }
       
-      private function filterSearch(param1:Array, param2:String) : Array
+      private function filterSearch(list:Array, targetStr:String) : Array
       {
-         var _loc4_:int = 0;
-         var _loc3_:Array = [];
-         _loc4_ = 0;
-         while(_loc4_ < param1.length)
+         var i:int = 0;
+         var result:Array = [];
+         for(i = 0; i < list.length; )
          {
-            if(param1[_loc4_].NickName.indexOf(param2) != -1)
+            if(list[i].NickName.indexOf(targetStr) != -1)
             {
-               _loc3_.push(param1[_loc4_]);
+               result.push(list[i]);
             }
-            _loc4_++;
+            i++;
          }
-         return _loc3_;
+         return result;
       }
       
-      protected function __moneyChange(param1:PlayerPropertyEvent) : void
+      protected function __moneyChange(event:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["Money"])
+         if(event.changedProperties["Money"])
          {
             __numberChange(null);
          }
       }
       
-      protected function __confirmResponse(param1:FrameEvent) : void
+      protected function __confirmResponse(event:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__confirmResponse);
-         ObjectUtils.disposeObject(_loc2_);
-         if(_loc2_.parent)
+         var frame:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("response",__confirmResponse);
+         ObjectUtils.disposeObject(frame);
+         if(frame.parent)
          {
-            _loc2_.parent.removeChild(_loc2_);
+            frame.parent.removeChild(frame);
          }
-         _loc2_ = null;
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         frame = null;
+         if(event.responseCode == 3 || event.responseCode == 2)
          {
             LeavePageManager.leaveToFillPath();
          }

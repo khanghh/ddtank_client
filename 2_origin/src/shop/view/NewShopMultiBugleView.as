@@ -14,63 +14,74 @@ package shop.view
       
       private var _shopData:DictionaryData;
       
-      public function NewShopMultiBugleView(param1:uint)
+      public function NewShopMultiBugleView(type:uint)
       {
          _shopData = new DictionaryData();
-         super(param1);
+         KeyboardShortcutsManager.Instance.prohibitNewHandBag(false);
+         super(type);
       }
       
-      override protected function __onKeyDownd(param1:KeyboardEvent) : void
+      override protected function __onKeyDownd(e:KeyboardEvent) : void
       {
-         param1.stopImmediatePropagation();
-         param1.stopPropagation();
+         e.stopImmediatePropagation();
+         e.stopPropagation();
       }
       
       override protected function addItems() : void
       {
-         var _loc1_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc5_:int = 0;
-         var _loc2_:int = 0;
-         if(_type == 6)
+         var id:int = 0;
+         var shopIdList:* = null;
+         var indexList:* = null;
+         var i:int = 0;
+         var index:int = 0;
+         if(_type == 40002)
          {
             _itemContainer.x = 1;
             _itemContainer.y = 5;
             _itemContainer.spacing = 10;
             _frame.titleText = LanguageMgr.GetTranslation("tank.dialog.showbugleframe.texpQuickBuy");
             _buyFrom = 6;
-            _loc4_ = [40003,40006];
-            _loc3_ = [2,2];
+            shopIdList = [40003,40006];
+            indexList = [2,2];
          }
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_.length)
+         else if(_type == 40008)
          {
-            _loc1_ = _loc4_[_loc5_];
-            _info = ShopManager.Instance.getMoneyShopItemByTemplateID(_loc1_);
-            if(!_shopData.hasKey(_loc1_))
-            {
-               _shopData.add(_loc1_,_info);
-            }
-            _loc2_ = 1;
-            while(_loc2_ <= 3)
-            {
-               if(_loc2_ >= _loc3_[_loc5_] && _info.getItemPrice(_loc2_).IsValid)
-               {
-                  addItem(_info,_loc2_);
-               }
-               _loc2_++;
-            }
-            _loc5_++;
+            _itemContainer.x = 70;
+            _itemContainer.y = 2;
+            _itemContainer.spacing = 60;
+            _frame.titleText = LanguageMgr.GetTranslation("tank.dialog.showbugleframe.texpQuickBuy");
+            _buyFrom = 6;
+            shopIdList = [40008];
+            indexList = [2];
          }
-         _info = _shopData[_loc4_[0]] as ShopItemInfo;
+         i = 0;
+         while(i < shopIdList.length)
+         {
+            id = shopIdList[i];
+            _info = ShopManager.Instance.getMoneyShopItemByTemplateID(id);
+            if(!_shopData.hasKey(id))
+            {
+               _shopData.add(id,_info);
+            }
+            index = 1;
+            while(index <= 3)
+            {
+               if(index >= indexList[i] && _info.getItemPrice(index).IsValid)
+               {
+                  addItem(_info,index);
+               }
+               index++;
+            }
+            i++;
+         }
+         _info = _shopData[shopIdList[0]] as ShopItemInfo;
       }
       
-      override protected function __click(param1:MouseEvent) : void
+      override protected function __click(e:MouseEvent) : void
       {
-         var _loc2_:NewShopBugViewItem = param1.currentTarget as NewShopBugViewItem;
-         _info = _shopData[_loc2_.info.TemplateID] as ShopItemInfo;
-         super.__click(param1);
+         var item:NewShopBugViewItem = e.currentTarget as NewShopBugViewItem;
+         _info = _shopData[item.info.TemplateID] as ShopItemInfo;
+         super.__click(e);
       }
       
       override public function dispose() : void

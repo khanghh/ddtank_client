@@ -43,9 +43,9 @@ package redEnvelope.model
          return _beginDateStr;
       }
       
-      public function set beginDateStr(param1:String) : void
+      public function set beginDateStr(value:String) : void
       {
-         _beginDateStr = param1;
+         _beginDateStr = value;
       }
       
       public function get endDateStr() : String
@@ -53,9 +53,9 @@ package redEnvelope.model
          return _endDateStr;
       }
       
-      public function set endDateStr(param1:String) : void
+      public function set endDateStr(value:String) : void
       {
-         _endDateStr = param1;
+         _endDateStr = value;
       }
       
       public function get hasGotList() : Array
@@ -63,9 +63,9 @@ package redEnvelope.model
          return _hasGotList;
       }
       
-      public function set hasGotList(param1:Array) : void
+      public function set hasGotList(value:Array) : void
       {
-         _hasGotList = param1;
+         _hasGotList = value;
       }
       
       public function get canGetList() : Array
@@ -73,9 +73,9 @@ package redEnvelope.model
          return _canGetList;
       }
       
-      public function set canGetList(param1:Array) : void
+      public function set canGetList(value:Array) : void
       {
-         _canGetList = param1;
+         _canGetList = value;
       }
       
       public function get currentRedList() : Array
@@ -83,9 +83,9 @@ package redEnvelope.model
          return _currentRedList;
       }
       
-      public function set currentRedList(param1:Array) : void
+      public function set currentRedList(value:Array) : void
       {
-         _currentRedList = param1;
+         _currentRedList = value;
       }
       
       public function get myRedEnvelopeList() : Array
@@ -93,9 +93,9 @@ package redEnvelope.model
          return _myRedEnvelopeList;
       }
       
-      public function set myRedEnvelopeList(param1:Array) : void
+      public function set myRedEnvelopeList(value:Array) : void
       {
-         _myRedEnvelopeList = param1;
+         _myRedEnvelopeList = value;
       }
       
       public function get currentRedId() : int
@@ -103,9 +103,9 @@ package redEnvelope.model
          return _currentRedId;
       }
       
-      public function set currentRedId(param1:int) : void
+      public function set currentRedId(value:int) : void
       {
-         _currentRedId = param1;
+         _currentRedId = value;
       }
       
       public function get newRedEnvelope() : RedInfo
@@ -113,9 +113,9 @@ package redEnvelope.model
          return _newRedEnvelope;
       }
       
-      public function set newRedEnvelope(param1:RedInfo) : void
+      public function set newRedEnvelope(value:RedInfo) : void
       {
-         _newRedEnvelope = param1;
+         _newRedEnvelope = value;
       }
    }
 }

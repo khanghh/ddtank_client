@@ -38,7 +38,7 @@ package godOfWealth
       
       private var _isOpen:Boolean = false;
       
-      public function GodOfWealthManager(param1:inner)
+      public function GodOfWealthManager(single:inner)
       {
          super();
       }
@@ -79,23 +79,23 @@ package godOfWealth
          SocketManager.Instance.addEventListener(PkgEvent.format(341,3),onInfo);
       }
       
-      protected function onInfo(param1:PkgEvent) : void
+      protected function onInfo(e:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _nextPayNeeded = _loc2_.readInt();
-         _nextRewardMin = _loc2_.readInt();
-         _nextRewardMax = _loc2_.readInt();
-         _dateEndTime = _loc2_.readDate().time;
+         var pkg:PackageIn = e.pkg;
+         _nextPayNeeded = pkg.readInt();
+         _nextRewardMin = pkg.readInt();
+         _nextRewardMax = pkg.readInt();
+         _dateEndTime = pkg.readDate().time;
          dispatchEvent(new CEvent("gow_update"));
       }
       
-      protected function onPay(param1:PkgEvent) : void
+      protected function onPay(e:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _reward = _loc2_.readInt();
-         _nextPayNeeded = _loc2_.readInt();
-         _nextRewardMin = _loc2_.readInt();
-         _nextRewardMax = _loc2_.readInt();
+         var pkg:PackageIn = e.pkg;
+         _reward = pkg.readInt();
+         _nextPayNeeded = pkg.readInt();
+         _nextRewardMin = pkg.readInt();
+         _nextRewardMax = pkg.readInt();
          if(_reward > 0)
          {
             dispatchEvent(new CEvent("gow_result_suc"));
@@ -103,11 +103,11 @@ package godOfWealth
          dispatchEvent(new CEvent("gow_update"));
       }
       
-      protected function onIsOpen(param1:PkgEvent) : void
+      protected function onIsOpen(e:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         var _loc3_:Boolean = _loc2_.readBoolean();
-         if(_loc3_)
+         var pkg:PackageIn = e.pkg;
+         var isOpen:Boolean = pkg.readBoolean();
+         if(isOpen)
          {
             ChatManager.Instance.sysChatAmaranth(LanguageMgr.GetTranslation("godOfWealth.activity.isOpen"));
          }
@@ -115,11 +115,11 @@ package godOfWealth
          {
             ChatManager.Instance.sysChatAmaranth(LanguageMgr.GetTranslation("godOfWealth.activity.isClose"));
          }
-         _isOpen = _loc3_;
+         _isOpen = isOpen;
          HallIconManager.instance.updateSwitchHandler("godOfWealth",_isOpen);
       }
       
-      private function onEnterBtnClick(param1:MouseEvent) : void
+      private function onEnterBtnClick(e:MouseEvent) : void
       {
          show();
       }

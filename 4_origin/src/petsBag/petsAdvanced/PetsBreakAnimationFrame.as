@@ -69,10 +69,10 @@ package petsBag.petsAdvanced
          addEventListener("response",_response);
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             this.parent && this.parent.removeChild(this);
          }
@@ -87,8 +87,8 @@ package petsBag.petsAdvanced
          this.escEnable = true;
          this.closeButton.enable = true;
          this._btnBreak.enable = true;
-         var _loc1_:PetInfo = PetsBagManager.instance().petModel.currentPetInfo;
-         _petsBasicInfoView.setInfo(_loc1_);
+         var petInfo:PetInfo = PetsBagManager.instance().petModel.currentPetInfo;
+         _petsBasicInfoView.setInfo(petInfo);
          this.addEventListener("enterFrame",onEF);
       }
       
@@ -97,13 +97,13 @@ package petsBag.petsAdvanced
          this.removeEventListener("enterFrame",onEF);
       }
       
-      public function result(param1:Boolean) : void
+      public function result(isSuccess:Boolean) : void
       {
          this.removeEventListener("enterFrame",onEF);
          this.escEnable = false;
          this.closeButton.enable = false;
          this._btnBreak.enable = false;
-         if(param1)
+         if(isSuccess)
          {
             TweenMax.killTweensOf(_progressBar);
             TweenMax.to(_progressBar,1,{
@@ -131,17 +131,17 @@ package petsBag.petsAdvanced
       {
       }
       
-      protected function onEF(param1:Event) : void
+      protected function onEF(e:Event) : void
       {
-         var _loc2_:Number = NaN;
+         var rnd:Number = NaN;
          _flag = Number(_flag) + 1;
          if(_flag > 15)
          {
             _flag = 0;
-            _loc2_ = Math.random() * _maxProgressWidth;
+            rnd = Math.random() * _maxProgressWidth;
             _progressBar && TweenMax.killTweensOf(_progressBar);
             _progressBar && TweenMax.to(_progressBar,0.5,{
-               "width":_loc2_,
+               "width":rnd,
                "ease":Linear.easeNone
             });
          }

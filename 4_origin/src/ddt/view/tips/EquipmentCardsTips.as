@@ -83,8 +83,8 @@ package ddt.view.tips
       
       override public function dispose() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
+         var j:int = 0;
+         var n:int = 0;
          super.dispose();
          ObjectUtils.disposeAllChildren(this);
          _cardName = null;
@@ -93,20 +93,18 @@ package ddt.view.tips
          _cardLevel = null;
          _rule1 = null;
          _band = null;
-         _loc2_ = 0;
-         while(_loc2_ < _propVec.length)
+         for(j = 0; j < _propVec.length; )
          {
-            _propVec[_loc2_] = null;
-            _loc2_++;
+            _propVec[j] = null;
+            j++;
          }
          _propVec = null;
          _rule2 = null;
          _setsName = null;
-         _loc1_ = 0;
-         while(_loc1_ < _setsPropVec.length)
+         for(n = 0; n < _setsPropVec.length; )
          {
-            _setsPropVec[_loc1_] = null;
-            _loc1_++;
+            _setsPropVec[n] = null;
+            n++;
          }
          _setsPropVec = null;
          _validity = null;
@@ -119,8 +117,8 @@ package ddt.view.tips
       
       override protected function init() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
+         var j:int = 0;
+         var n:int = 0;
          _bg = ComponentFactory.Instance.creatComponentByStylename("core.GoodsTipBg");
          _rule1 = ComponentFactory.Instance.creatComponentByStylename("HRuleAsset");
          _rule2 = ComponentFactory.Instance.creatComponentByStylename("HRuleAsset");
@@ -132,19 +130,17 @@ package ddt.view.tips
          _cardLevel = ComponentFactory.Instance.creatBitmap("asset.core.tip.GoodsLevel");
          _cardLevelDetail = ComponentFactory.Instance.creatComponentByStylename("cardSystem.level.big");
          _propVec = new Vector.<FilterFrameText>(4);
-         _loc2_ = 0;
-         while(_loc2_ < 6)
+         for(j = 0; j < 6; )
          {
-            _propVec[_loc2_] = ComponentFactory.Instance.creatComponentByStylename("CardsTipPanel.basePropTitle");
-            _loc2_++;
+            _propVec[j] = ComponentFactory.Instance.creatComponentByStylename("CardsTipPanel.basePropTitle");
+            j++;
          }
          _setsName = ComponentFactory.Instance.creatComponentByStylename("CardsTipPanel.basePropTitle");
          _setsPropVec = new Vector.<FilterFrameText>(4);
-         _loc1_ = 0;
-         while(_loc1_ < 4)
+         for(n = 0; n < 4; )
          {
-            _setsPropVec[_loc1_] = ComponentFactory.Instance.creatComponentByStylename("CardsTipPanel.setsPropText1");
-            _loc1_++;
+            _setsPropVec[n] = ComponentFactory.Instance.creatComponentByStylename("CardsTipPanel.setsPropText1");
+            n++;
          }
          _validity = ComponentFactory.Instance.creatComponentByStylename("CardsTipPanel.basePropTitle");
          _Quality = ComponentFactory.Instance.creatComponentByStylename("CardsTipPanel.QualityTitle");
@@ -157,8 +153,8 @@ package ddt.view.tips
       
       override protected function addChildren() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
+         var j:int = 0;
+         var n:int = 0;
          super.addChildren();
          addChild(_cardName);
          addChild(_cardType);
@@ -167,19 +163,17 @@ package ddt.view.tips
          addChild(_band);
          addChild(_Quality);
          addChild(_QualityDetail);
-         _loc2_ = 0;
-         while(_loc2_ < 6)
+         for(j = 0; j < 6; )
          {
-            addChild(_propVec[_loc2_]);
-            _loc2_++;
+            addChild(_propVec[j]);
+            j++;
          }
          addChild(_rule2);
          addChild(_setsName);
-         _loc1_ = 0;
-         while(_loc1_ < 4)
+         for(n = 0; n < 4; )
          {
-            addChild(_setsPropVec[_loc1_]);
-            _loc1_++;
+            addChild(_setsPropVec[n]);
+            n++;
          }
          addChild(_validity);
          addChild(_laterEquipmentView);
@@ -193,11 +187,11 @@ package ddt.view.tips
          return _tipData;
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         if(param1 is CardInfo)
+         if(data is CardInfo)
          {
-            _cardInfo = param1 as CardInfo;
+            _cardInfo = data as CardInfo;
             this.visible = true;
             _tipData = _cardInfo;
             _place = _cardInfo.Place;
@@ -246,13 +240,13 @@ package ddt.view.tips
          upBackground();
       }
       
-      private function laterEquipment(param1:CardInfo) : void
+      private function laterEquipment(cardInfo:CardInfo) : void
       {
          if(!_laterEquipmentView)
          {
             _laterEquipmentView = new LaterEquipmentGrooveView();
          }
-         _laterEquipmentView.tipData = param1;
+         _laterEquipmentView.tipData = cardInfo;
       }
       
       private function showHeadPart() : void
@@ -264,14 +258,14 @@ package ddt.view.tips
          _QualityDetail.x = _Quality.x + _Quality.textWidth + 10;
          _QualityDetail.y = _Quality.y;
          _band.setFrame(_cardInfo.templateInfo.BindType == 0?2:1);
-         var _loc1_:int = _cardInfo.Level == 30?3:Number(_cardInfo.Level >= 20?2:Number(_cardInfo.Level >= 10?1:0));
+         var level:int = _cardInfo.Level == 30?3:Number(_cardInfo.Level >= 20?2:Number(_cardInfo.Level >= 10?1:0));
          if(_cardInfo.Level == 0)
          {
             _cardName.textColor = 16777215;
          }
          else
          {
-            _cardName.textColor = QualityType.QUALITY_COLOR[_loc1_ + 1];
+            _cardName.textColor = QualityType.QUALITY_COLOR[level + 1];
          }
          if(_cardInfo.CardType == 1)
          {
@@ -298,152 +292,151 @@ package ddt.view.tips
       
       private function showMiddlePart() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:Array = [];
-         var _loc2_:CardTemplateInfo = CardTemplateInfoManager.instance.getInfoByCardId(String(_cardInfo.TemplateID),String(_cardInfo.CardType));
+         var j:int = 0;
+         var propArr:Array = [];
+         var cardTempleInfo:CardTemplateInfo = CardTemplateInfoManager.instance.getInfoByCardId(String(_cardInfo.TemplateID),String(_cardInfo.CardType));
          if(!_isGroove)
          {
-            if(Number(_loc2_.AttackRate) < 1 || int(_loc2_.AddAttack) + _cardInfo.Attack != 0)
+            if(Number(cardTempleInfo.AttackRate) < 1 || int(cardTempleInfo.AddAttack) + _cardInfo.Attack != 0)
             {
-               _loc1_.push(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Attack1") + (Number(_loc2_.AttackRate) < 1?_loc2_.AttackRate * 100 + "%":"") + (int(_loc2_.AddAttack) != 0?int(_loc2_.AddAttack) > 0?"+" + int(_loc2_.AddAttack):int(_loc2_.AddAttack):"") + (_cardInfo.Attack != 0?"(" + (_cardInfo.Attack > 0?"+" + _cardInfo.Attack:_cardInfo.Attack) + ")":""));
+               propArr.push(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Attack1") + (Number(cardTempleInfo.AttackRate) < 1?cardTempleInfo.AttackRate * 100 + "%":"") + (int(cardTempleInfo.AddAttack) != 0?int(cardTempleInfo.AddAttack) > 0?"+" + int(cardTempleInfo.AddAttack):int(cardTempleInfo.AddAttack):"") + (_cardInfo.Attack != 0?"(" + (_cardInfo.Attack > 0?"+" + _cardInfo.Attack:_cardInfo.Attack) + ")":""));
             }
-            if(Number(_loc2_.DefendRate) < 1 || int(_loc2_.AddDefend) + _cardInfo.Defence != 0)
+            if(Number(cardTempleInfo.DefendRate) < 1 || int(cardTempleInfo.AddDefend) + _cardInfo.Defence != 0)
             {
-               _loc1_.push(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Defence1") + (Number(_loc2_.DefendRate) < 1?_loc2_.DefendRate * 100 + "%":"") + (int(_loc2_.AddDefend) != 0?int(_loc2_.AddDefend) > 0?"+" + int(_loc2_.AddDefend):int(_loc2_.AddDefend):"") + (_cardInfo.Defence != 0?"(" + (_cardInfo.Defence > 0?"+" + _cardInfo.Defence:_cardInfo.Defence) + ")":""));
+               propArr.push(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Defence1") + (Number(cardTempleInfo.DefendRate) < 1?cardTempleInfo.DefendRate * 100 + "%":"") + (int(cardTempleInfo.AddDefend) != 0?int(cardTempleInfo.AddDefend) > 0?"+" + int(cardTempleInfo.AddDefend):int(cardTempleInfo.AddDefend):"") + (_cardInfo.Defence != 0?"(" + (_cardInfo.Defence > 0?"+" + _cardInfo.Defence:_cardInfo.Defence) + ")":""));
             }
-            if(Number(_loc2_.AgilityRate) < 1 || int(_loc2_.AddAgility) + _cardInfo.Agility != 0)
+            if(Number(cardTempleInfo.AgilityRate) < 1 || int(cardTempleInfo.AddAgility) + _cardInfo.Agility != 0)
             {
-               _loc1_.push(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Agility1") + (Number(_loc2_.AgilityRate) < 1?_loc2_.AgilityRate * 100 + "%":"") + (int(_loc2_.AddAgility) != 0?int(_loc2_.AddAgility) > 0?"+" + int(_loc2_.AddAgility):int(_loc2_.AddAgility):"") + (_cardInfo.Agility != 0?"(" + (_cardInfo.Agility > 0?"+" + _cardInfo.Agility:_cardInfo.Agility) + ")":""));
+               propArr.push(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Agility1") + (Number(cardTempleInfo.AgilityRate) < 1?cardTempleInfo.AgilityRate * 100 + "%":"") + (int(cardTempleInfo.AddAgility) != 0?int(cardTempleInfo.AddAgility) > 0?"+" + int(cardTempleInfo.AddAgility):int(cardTempleInfo.AddAgility):"") + (_cardInfo.Agility != 0?"(" + (_cardInfo.Agility > 0?"+" + _cardInfo.Agility:_cardInfo.Agility) + ")":""));
             }
-            if(Number(_loc2_.LuckyRate) < 1 || int(_loc2_.AddLucky) + _cardInfo.Luck != 0)
+            if(Number(cardTempleInfo.LuckyRate) < 1 || int(cardTempleInfo.AddLucky) + _cardInfo.Luck != 0)
             {
-               _loc1_.push(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Luck1") + (Number(_loc2_.LuckyRate) < 1?_loc2_.LuckyRate * 100 + "%":"") + (int(_loc2_.AddLucky) != 0?int(_loc2_.AddLucky) > 0?"+" + int(_loc2_.AddLucky):int(_loc2_.AddLucky):"") + (_cardInfo.Luck != 0?"(" + (_cardInfo.Luck > 0?"+" + _cardInfo.Luck:_cardInfo.Luck) + ")":""));
+               propArr.push(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Luck1") + (Number(cardTempleInfo.LuckyRate) < 1?cardTempleInfo.LuckyRate * 100 + "%":"") + (int(cardTempleInfo.AddLucky) != 0?int(cardTempleInfo.AddLucky) > 0?"+" + int(cardTempleInfo.AddLucky):int(cardTempleInfo.AddLucky):"") + (_cardInfo.Luck != 0?"(" + (_cardInfo.Luck > 0?"+" + _cardInfo.Luck:_cardInfo.Luck) + ")":""));
             }
-            if(Number(_loc2_.DamageRate) < 1 || int(_loc2_.AddDamage) + _cardInfo.Damage != 0)
+            if(Number(cardTempleInfo.DamageRate) < 1 || int(cardTempleInfo.AddDamage) + _cardInfo.Damage != 0)
             {
-               _loc1_.push(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Damage1") + (Number(_loc2_.DamageRate) < 1?_loc2_.DamageRate * 100 + "%":"") + (int(_loc2_.AddDamage) != 0?int(_loc2_.AddDamage) > 0?"+" + int(_loc2_.AddDamage):int(_loc2_.AddDamage):"") + (_cardInfo.Damage != 0?"(" + (_cardInfo.Damage > 0?"+" + _cardInfo.Damage:_cardInfo.Damage) + ")":""));
+               propArr.push(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Damage1") + (Number(cardTempleInfo.DamageRate) < 1?cardTempleInfo.DamageRate * 100 + "%":"") + (int(cardTempleInfo.AddDamage) != 0?int(cardTempleInfo.AddDamage) > 0?"+" + int(cardTempleInfo.AddDamage):int(cardTempleInfo.AddDamage):"") + (_cardInfo.Damage != 0?"(" + (_cardInfo.Damage > 0?"+" + _cardInfo.Damage:_cardInfo.Damage) + ")":""));
             }
-            if(Number(_loc2_.GuardRate) < 1 || int(_loc2_.AddGuard) + _cardInfo.Guard != 0)
+            if(Number(cardTempleInfo.GuardRate) < 1 || int(cardTempleInfo.AddGuard) + _cardInfo.Guard != 0)
             {
-               _loc1_.push(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Guard1") + (Number(_loc2_.GuardRate) < 1?_loc2_.GuardRate * 100 + "%":"") + (int(_loc2_.AddGuard) != 0?int(_loc2_.AddGuard) > 0?"+" + int(_loc2_.AddGuard):int(_loc2_.AddGuard):"") + (_cardInfo.Guard != 0?"(" + (_cardInfo.Guard > 0?"+" + _cardInfo.Guard:_cardInfo.Guard) + ")":""));
+               propArr.push(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Guard1") + (Number(cardTempleInfo.GuardRate) < 1?cardTempleInfo.GuardRate * 100 + "%":"") + (int(cardTempleInfo.AddGuard) != 0?int(cardTempleInfo.AddGuard) > 0?"+" + int(cardTempleInfo.AddGuard):int(cardTempleInfo.AddGuard):"") + (_cardInfo.Guard != 0?"(" + (_cardInfo.Guard > 0?"+" + _cardInfo.Guard:_cardInfo.Guard) + ")":""));
             }
          }
          else
          {
-            if(int(_loc2_.AddAttack) + _cardInfo.Attack != 0)
+            if(int(cardTempleInfo.AddAttack) + _cardInfo.Attack != 0)
             {
-               _loc1_.push(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Attack1") + (int(_loc2_.AddAttack) != 0?int(_loc2_.AddAttack) > 0?"+" + int(_loc2_.AddAttack):int(_loc2_.AddAttack):"") + (_cardInfo.Attack != 0?"(" + (_cardInfo.Attack > 0?"+" + _cardInfo.Attack:_cardInfo.Attack) + ")":""));
+               propArr.push(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Attack1") + (int(cardTempleInfo.AddAttack) != 0?int(cardTempleInfo.AddAttack) > 0?"+" + int(cardTempleInfo.AddAttack):int(cardTempleInfo.AddAttack):"") + (_cardInfo.Attack != 0?"(" + (_cardInfo.Attack > 0?"+" + _cardInfo.Attack:_cardInfo.Attack) + ")":""));
             }
-            if(int(_loc2_.AddDefend) + _cardInfo.Defence != 0)
+            if(int(cardTempleInfo.AddDefend) + _cardInfo.Defence != 0)
             {
-               _loc1_.push(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Defence1") + (int(_loc2_.AddDefend) != 0?int(_loc2_.AddDefend) > 0?"+" + int(_loc2_.AddDefend):int(_loc2_.AddDefend):"") + (_cardInfo.Defence != 0?"(" + (_cardInfo.Defence > 0?"+" + _cardInfo.Defence:_cardInfo.Defence) + ")":""));
+               propArr.push(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Defence1") + (int(cardTempleInfo.AddDefend) != 0?int(cardTempleInfo.AddDefend) > 0?"+" + int(cardTempleInfo.AddDefend):int(cardTempleInfo.AddDefend):"") + (_cardInfo.Defence != 0?"(" + (_cardInfo.Defence > 0?"+" + _cardInfo.Defence:_cardInfo.Defence) + ")":""));
             }
-            if(int(_loc2_.AddAgility) + _cardInfo.Agility != 0)
+            if(int(cardTempleInfo.AddAgility) + _cardInfo.Agility != 0)
             {
-               _loc1_.push(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Agility1") + (int(_loc2_.AddAgility) != 0?int(_loc2_.AddAgility) > 0?"+" + int(_loc2_.AddAgility):int(_loc2_.AddAgility):"") + (_cardInfo.Agility != 0?"(" + (_cardInfo.Agility > 0?"+" + _cardInfo.Agility:_cardInfo.Agility) + ")":""));
+               propArr.push(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Agility1") + (int(cardTempleInfo.AddAgility) != 0?int(cardTempleInfo.AddAgility) > 0?"+" + int(cardTempleInfo.AddAgility):int(cardTempleInfo.AddAgility):"") + (_cardInfo.Agility != 0?"(" + (_cardInfo.Agility > 0?"+" + _cardInfo.Agility:_cardInfo.Agility) + ")":""));
             }
-            if(int(_loc2_.AddLucky) + _cardInfo.Luck != 0)
+            if(int(cardTempleInfo.AddLucky) + _cardInfo.Luck != 0)
             {
-               _loc1_.push(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Luck1") + (int(_loc2_.AddLucky) != 0?int(_loc2_.AddLucky) > 0?"+" + int(_loc2_.AddLucky):int(_loc2_.AddLucky):"") + (_cardInfo.Luck != 0?"(" + (_cardInfo.Luck > 0?"+" + _cardInfo.Luck:_cardInfo.Luck) + ")":""));
+               propArr.push(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Luck1") + (int(cardTempleInfo.AddLucky) != 0?int(cardTempleInfo.AddLucky) > 0?"+" + int(cardTempleInfo.AddLucky):int(cardTempleInfo.AddLucky):"") + (_cardInfo.Luck != 0?"(" + (_cardInfo.Luck > 0?"+" + _cardInfo.Luck:_cardInfo.Luck) + ")":""));
             }
-            if(int(_loc2_.AddDamage) + _cardInfo.Damage != 0)
+            if(int(cardTempleInfo.AddDamage) + _cardInfo.Damage != 0)
             {
-               _loc1_.push(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Damage1") + (int(_loc2_.AddDamage) != 0?int(_loc2_.AddDamage) > 0?"+" + int(_loc2_.AddDamage):int(_loc2_.AddDamage):"") + (_cardInfo.Damage != 0?"(" + (_cardInfo.Damage > 0?"+" + _cardInfo.Damage:_cardInfo.Damage) + ")":""));
+               propArr.push(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Damage1") + (int(cardTempleInfo.AddDamage) != 0?int(cardTempleInfo.AddDamage) > 0?"+" + int(cardTempleInfo.AddDamage):int(cardTempleInfo.AddDamage):"") + (_cardInfo.Damage != 0?"(" + (_cardInfo.Damage > 0?"+" + _cardInfo.Damage:_cardInfo.Damage) + ")":""));
             }
-            if(int(_loc2_.AddGuard) + _cardInfo.Guard != 0)
+            if(int(cardTempleInfo.AddGuard) + _cardInfo.Guard != 0)
             {
-               _loc1_.push(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Guard1") + (int(_loc2_.AddGuard) != 0?int(_loc2_.AddGuard) > 0?"+" + int(_loc2_.AddGuard):int(_loc2_.AddGuard):"") + (_cardInfo.Guard != 0?"(" + (_cardInfo.Guard > 0?"+" + _cardInfo.Guard:_cardInfo.Guard) + ")":""));
+               propArr.push(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Guard1") + (int(cardTempleInfo.AddGuard) != 0?int(cardTempleInfo.AddGuard) > 0?"+" + int(cardTempleInfo.AddGuard):int(cardTempleInfo.AddGuard):"") + (_cardInfo.Guard != 0?"(" + (_cardInfo.Guard > 0?"+" + _cardInfo.Guard:_cardInfo.Guard) + ")":""));
             }
          }
-         _loc3_ = 0;
-         while(_loc3_ < 6)
+         j = 0;
+         while(j < 6)
          {
-            if(_loc3_ < _loc1_.length)
+            if(j < propArr.length)
             {
-               _propVec[_loc3_].visible = true;
-               _propVec[_loc3_].text = _loc1_[_loc3_];
-               _propVec[_loc3_].textColor = QualityType.QUALITY_COLOR[5];
-               _propVec[_loc3_].y = _rule1.y + _rule1.height + 8 + 24 * _loc3_;
-               if(_loc3_ == _loc1_.length - 1)
+               _propVec[j].visible = true;
+               _propVec[j].text = propArr[j];
+               _propVec[j].textColor = QualityType.QUALITY_COLOR[5];
+               _propVec[j].y = _rule1.y + _rule1.height + 8 + 24 * j;
+               if(j == propArr.length - 1)
                {
-                  _rule2.x = _propVec[_loc3_].x;
-                  _rule2.y = _propVec[_loc3_].y + _propVec[_loc3_].textHeight + 12;
+                  _rule2.x = _propVec[j].x;
+                  _rule2.y = _propVec[j].y + _propVec[j].textHeight + 12;
                }
             }
             else
             {
-               _propVec[_loc3_].visible = false;
+               _propVec[j].visible = false;
             }
-            _loc3_++;
+            j++;
          }
          _thisHeight = _rule2.y + _rule2.height;
       }
       
       private function showButtomPart() : void
       {
-         var _loc2_:* = null;
-         var _loc9_:int = 0;
-         var _loc7_:int = 0;
-         var _loc11_:* = null;
-         var _loc14_:* = null;
-         var _loc1_:int = 0;
-         var _loc15_:Vector.<int> = new Vector.<int>();
-         var _loc16_:PlayerInfo = PlayerManager.Instance.findPlayer(_cardInfo.UserID);
-         var _loc17_:DictionaryData = _loc16_.cardEquipDic;
+         var grooveinfo:* = null;
+         var i:int = 0;
+         var j:int = 0;
+         var valueArr:* = null;
+         var value:* = null;
+         var con:int = 0;
+         var equipLevelVec:Vector.<int> = new Vector.<int>();
+         var playerInfo:PlayerInfo = PlayerManager.Instance.findPlayer(_cardInfo.UserID);
+         var equipCard:DictionaryData = playerInfo.cardEquipDic;
          var _loc21_:int = 0;
-         var _loc20_:* = _loc17_;
-         for each(var _loc10_ in _loc17_)
+         var _loc20_:* = equipCard;
+         for each(var cInfo in equipCard)
          {
-            if(_loc10_.templateInfo.Property7 == _cardInfo.templateInfo.Property7 && _loc10_.Count > -1)
+            if(cInfo.templateInfo.Property7 == _cardInfo.templateInfo.Property7 && cInfo.Count > -1)
             {
                if(!_isGroove)
                {
-                  _loc15_.push(_loc10_.Level);
+                  equipLevelVec.push(cInfo.Level);
                }
                else
                {
-                  _loc2_ = CardManager.Instance.model.GrooveInfoVector[_loc10_.Place];
-                  _loc15_.push(_loc2_.Level);
+                  grooveinfo = CardManager.Instance.model.GrooveInfoVector[cInfo.Place];
+                  equipLevelVec.push(grooveinfo.Level);
                }
             }
          }
-         _loc15_.sort(compareFun);
-         var _loc18_:Vector.<int> = new Vector.<int>();
-         var _loc19_:DictionaryData = _loc16_.cardBagDic;
+         equipLevelVec.sort(compareFun);
+         var bagLevelVec:Vector.<int> = new Vector.<int>();
+         var bagCard:DictionaryData = playerInfo.cardBagDic;
          var _loc23_:int = 0;
-         var _loc22_:* = _loc19_;
-         for each(var _loc4_ in _loc19_)
+         var _loc22_:* = bagCard;
+         for each(var bagCInfo in bagCard)
          {
-            if(_loc4_.templateInfo.Property7 == _cardInfo.templateInfo.Property7)
+            if(bagCInfo.templateInfo.Property7 == _cardInfo.templateInfo.Property7)
             {
                if(!_isGroove)
                {
-                  _loc18_.push(_loc4_.Level);
+                  bagLevelVec.push(bagCInfo.Level);
                }
                else
                {
-                  _loc18_.push(_cardGrooveInfo.Level);
+                  bagLevelVec.push(_cardGrooveInfo.Level);
                }
             }
          }
-         _loc18_.sort(compareFun);
-         var _loc5_:int = 0;
-         var _loc12_:Vector.<SetsInfo> = CardManager.Instance.model.setsSortRuleVector;
-         var _loc6_:int = _loc12_.length;
-         var _loc13_:String = "";
-         _loc9_ = 0;
-         while(_loc9_ < _loc6_)
+         bagLevelVec.sort(compareFun);
+         var m:int = 0;
+         var setsVec:Vector.<SetsInfo> = CardManager.Instance.model.setsSortRuleVector;
+         var len:int = setsVec.length;
+         var name:String = "";
+         for(i = 0; i < len; )
          {
-            if(_loc12_[_loc9_].ID == _cardInfo.templateInfo.Property7)
+            if(setsVec[i].ID == _cardInfo.templateInfo.Property7)
             {
-               _loc5_ = _loc12_[_loc9_].cardIdVec.length;
-               _loc13_ = _loc12_[_loc9_].name;
+               m = setsVec[i].cardIdVec.length;
+               name = setsVec[i].name;
                break;
             }
-            _loc9_++;
+            i++;
          }
-         _setsName.text = LanguageMgr.GetTranslation("ddt.cardSystem.cardsTipPanel.setsName",_loc13_,_loc15_.length,_loc5_);
-         if(_loc15_.length > 0)
+         _setsName.text = LanguageMgr.GetTranslation("ddt.cardSystem.cardsTipPanel.setsName",name,equipLevelVec.length,m);
+         if(equipLevelVec.length > 0)
          {
             _setsName.textColor = 16777215;
          }
@@ -453,58 +446,57 @@ package ddt.view.tips
          }
          _setsName.y = _thisHeight + 5;
          _thisHeight = _setsName.y + _setsName.textHeight;
-         var _loc8_:Vector.<SetsPropertyInfo> = CardManager.Instance.model.setsList[_cardInfo.templateInfo.Property7];
-         var _loc3_:int = _loc8_.length;
-         _loc7_ = 0;
-         while(_loc7_ < 4)
+         var setsInfoVec:Vector.<SetsPropertyInfo> = CardManager.Instance.model.setsList[_cardInfo.templateInfo.Property7];
+         var len2:int = setsInfoVec.length;
+         for(j = 0; j < 4; )
          {
-            if(_loc7_ < _loc3_)
+            if(j < len2)
             {
-               _setsPropVec[_loc7_].visible = true;
-               _loc11_ = _loc8_[_loc7_].value.split("|");
-               _loc14_ = "";
-               _loc1_ = _loc8_[_loc7_].condition;
-               if(_loc15_.length >= _loc1_)
+               _setsPropVec[j].visible = true;
+               valueArr = setsInfoVec[j].value.split("|");
+               value = "";
+               con = setsInfoVec[j].condition;
+               if(equipLevelVec.length >= con)
                {
-                  if(_loc11_.length == 4)
+                  if(valueArr.length == 4)
                   {
-                     _loc14_ = _loc15_[_loc1_ - 1] == 40?_loc11_[3]:_loc15_[_loc1_ - 1] >= 30?_loc11_[3]:_loc15_[_loc1_ - 1] >= 20?_loc11_[2]:_loc15_[_loc1_ - 1] >= 10?_loc11_[1]:_loc11_[0];
+                     value = equipLevelVec[con - 1] == 40?valueArr[3]:equipLevelVec[con - 1] >= 30?valueArr[3]:equipLevelVec[con - 1] >= 20?valueArr[2]:equipLevelVec[con - 1] >= 10?valueArr[1]:valueArr[0];
                   }
                   else
                   {
-                     _loc14_ = _loc11_[0];
+                     value = valueArr[0];
                   }
-                  _setsPropVec[_loc7_].text = LanguageMgr.GetTranslation("ddt.cardSystem.cardsTipPanel.equip",_loc1_) + "\n    " + _loc8_[_loc7_].Description.replace("{0}",_loc14_);
-                  _setsPropVec[_loc7_].textColor = QualityType.QUALITY_COLOR[2];
+                  _setsPropVec[j].text = LanguageMgr.GetTranslation("ddt.cardSystem.cardsTipPanel.equip",con) + "\n    " + setsInfoVec[j].Description.replace("{0}",value);
+                  _setsPropVec[j].textColor = QualityType.QUALITY_COLOR[2];
                }
                else
                {
-                  if(_loc11_.length == 4)
+                  if(valueArr.length == 4)
                   {
-                     if(_loc18_.length >= _loc1_)
+                     if(bagLevelVec.length >= con)
                      {
-                        _loc14_ = _loc18_[_loc1_ - 1] == 40?_loc11_[3]:_loc18_[_loc1_ - 1] >= 30?_loc11_[3]:_loc18_[_loc1_ - 1] >= 20?_loc11_[2]:_loc18_[_loc1_ - 1] >= 10?_loc11_[1]:_loc11_[0];
+                        value = bagLevelVec[con - 1] == 40?valueArr[3]:bagLevelVec[con - 1] >= 30?valueArr[3]:bagLevelVec[con - 1] >= 20?valueArr[2]:bagLevelVec[con - 1] >= 10?valueArr[1]:valueArr[0];
                      }
                      else
                      {
-                        _loc14_ = _loc11_[0];
+                        value = valueArr[0];
                      }
                   }
                   else
                   {
-                     _loc14_ = _loc11_[0];
+                     value = valueArr[0];
                   }
-                  _setsPropVec[_loc7_].text = LanguageMgr.GetTranslation("ddt.cardSystem.cardsTipPanel.equip",_loc1_) + "\n    " + _loc8_[_loc7_].Description.replace("{0}",_loc14_);
-                  _setsPropVec[_loc7_].textColor = 10066329;
+                  _setsPropVec[j].text = LanguageMgr.GetTranslation("ddt.cardSystem.cardsTipPanel.equip",con) + "\n    " + setsInfoVec[j].Description.replace("{0}",value);
+                  _setsPropVec[j].textColor = 10066329;
                }
-               _setsPropVec[_loc7_].y = _thisHeight + 4;
-               _thisHeight = _setsPropVec[_loc7_].y + _setsPropVec[_loc7_].textHeight;
+               _setsPropVec[j].y = _thisHeight + 4;
+               _thisHeight = _setsPropVec[j].y + _setsPropVec[j].textHeight;
             }
             else
             {
-               _setsPropVec[_loc7_].visible = false;
+               _setsPropVec[j].visible = false;
             }
-            _loc7_++;
+            j++;
          }
          _validity.text = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.use");
          _validity.textColor = 16776960;
@@ -512,13 +504,13 @@ package ddt.view.tips
          _thisHeight = _validity.y + _validity.textHeight;
       }
       
-      private function compareFun(param1:int, param2:int) : Number
+      private function compareFun(x:int, y:int) : Number
       {
-         if(param1 < param2)
+         if(x < y)
          {
             return 1;
          }
-         if(param1 > param2)
+         if(x > y)
          {
             return -1;
          }

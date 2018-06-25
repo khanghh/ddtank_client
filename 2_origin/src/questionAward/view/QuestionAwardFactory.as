@@ -8,7 +8,7 @@ package questionAward.view
       private static var _instance:QuestionAwardFactory;
        
       
-      public function QuestionAwardFactory(param1:QuestionAwardFactoryEnforcer)
+      public function QuestionAwardFactory(enforcer:QuestionAwardFactoryEnforcer)
       {
          super();
       }
@@ -22,33 +22,33 @@ package questionAward.view
          return _instance;
       }
       
-      public function createQuestionView(param1:QuestionDataBaseInfo) : QuestionViewBase
+      public function createQuestionView(info:QuestionDataBaseInfo) : QuestionViewBase
       {
-         var _loc3_:QuestionViewBase = null;
-         var _loc2_:int = param1.type;
-         switch(int(_loc2_) - 1)
+         var view:QuestionViewBase = null;
+         var temType:int = info.type;
+         switch(int(temType) - 1)
          {
             case 0:
-               _loc3_ = createSelectview(param1);
+               view = createSelectview(info);
                break;
             case 1:
-               _loc3_ = createAnswerView(param1);
+               view = createAnswerView(info);
          }
-         return _loc3_;
+         return view;
       }
       
-      private function createSelectview(param1:QuestionDataBaseInfo) : QuestionViewBase
+      private function createSelectview(data:QuestionDataBaseInfo) : QuestionViewBase
       {
-         if(param1.isMultiSelect)
+         if(data.isMultiSelect)
          {
-            return new QuestionMultiSelectView(param1);
+            return new QuestionMultiSelectView(data);
          }
-         return new QuestionSingleSelectionView(param1);
+         return new QuestionSingleSelectionView(data);
       }
       
-      private function createAnswerView(param1:QuestionDataBaseInfo) : QuestionViewBase
+      private function createAnswerView(data:QuestionDataBaseInfo) : QuestionViewBase
       {
-         return new QuestionInputView(param1);
+         return new QuestionInputView(data);
       }
    }
 }

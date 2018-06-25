@@ -8,64 +8,64 @@ package littleGame.data
       
       private var _justMinFunc:Function;
       
-      public function BinaryHeap(param1:Function)
+      public function BinaryHeap(justMinFunc:Function)
       {
          a = [];
          super();
          a.push(-1);
-         _justMinFunc = param1;
+         _justMinFunc = justMinFunc;
       }
       
-      public function ins(param1:Node) : void
+      public function ins(node:Node) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = int(a.length);
-         a[_loc2_] = param1;
-         var _loc4_:* = _loc2_ >> 1;
-         while(_loc2_ > 1 && _justMinFunc(a[_loc2_],a[_loc4_]))
+         var temp:* = null;
+         var p:* = int(a.length);
+         a[p] = node;
+         var parent:* = p >> 1;
+         while(p > 1 && _justMinFunc(a[p],a[parent]))
          {
-            _loc3_ = a[_loc2_];
-            a[_loc2_] = a[_loc4_];
-            a[_loc4_] = _loc3_;
-            _loc2_ = _loc4_;
-            _loc4_ = _loc2_ >> 1;
+            temp = a[p];
+            a[p] = a[parent];
+            a[parent] = temp;
+            p = parent;
+            parent = p >> 1;
          }
       }
       
       public function pop() : Node
       {
-         var _loc2_:* = 0;
-         var _loc4_:* = null;
-         var _loc1_:Object = a[1];
+         var minp:* = 0;
+         var temp:* = null;
+         var min:Object = a[1];
          a[1] = a[a.length - 1];
          a.pop();
-         var _loc3_:* = 1;
-         var _loc5_:int = a.length;
-         var _loc6_:* = _loc3_ << 1;
-         var _loc7_:int = _loc6_ + 1;
-         while(_loc6_ < _loc5_)
+         var p:* = 1;
+         var l:int = a.length;
+         var child1:* = p << 1;
+         var child2:int = child1 + 1;
+         while(child1 < l)
          {
-            if(_loc7_ < _loc5_)
+            if(child2 < l)
             {
-               _loc2_ = int(!!_justMinFunc(a[_loc7_],a[_loc6_])?_loc7_:int(_loc6_));
+               minp = int(!!_justMinFunc(a[child2],a[child1])?child2:int(child1));
             }
             else
             {
-               _loc2_ = _loc6_;
+               minp = child1;
             }
-            if(_justMinFunc(a[_loc2_],a[_loc3_]))
+            if(_justMinFunc(a[minp],a[p]))
             {
-               _loc4_ = a[_loc3_];
-               a[_loc3_] = a[_loc2_];
-               a[_loc2_] = _loc4_;
-               _loc3_ = _loc2_;
-               _loc6_ = _loc3_ << 1;
-               _loc7_ = _loc6_ + 1;
+               temp = a[p];
+               a[p] = a[minp];
+               a[minp] = temp;
+               p = minp;
+               child1 = p << 1;
+               child2 = child1 + 1;
                continue;
             }
             break;
          }
-         return _loc1_ as Node;
+         return min as Node;
       }
    }
 }

@@ -45,23 +45,23 @@ package littleGame.clock
          _maxDeltas = 10;
       }
       
-      public function start(param1:int, param2:int = -1, param3:Boolean = true) : void
+      public function start(start:int, pingDelay:int = -1, burst:Boolean = true) : void
       {
          if(running)
          {
             return;
          }
-         if(param2 != -1)
+         if(pingDelay != -1)
          {
-            _backgroundTimer = new Timer(param2);
+            _backgroundTimer = new Timer(pingDelay);
             _backgroundTimer.addEventListener("timer",__onTimer);
             _backgroundTimer.start();
          }
-         _internalClock = param1;
+         _internalClock = start;
          _deltas = new Vector.<TimeDelta>();
          _lockedInServerTime = false;
          _responsePending = false;
-         _bursting = param3;
+         _bursting = burst;
          addEvent();
          ProcessManager.Instance.addObject(this);
          ping();
@@ -78,10 +78,10 @@ package littleGame.clock
          SocketManager.Instance.addEventListener("pong",__pong);
       }
       
-      private function __pong(param1:LittleGameSocketEvent) : void
+      private function __pong(event:LittleGameSocketEvent) : void
       {
-         var _loc2_:int = param1.pkg.readInt();
-         addTimeDelta(_timeRequestSent,_internalClock,_loc2_);
+         var serverTimeStamp:int = event.pkg.readInt();
+         addTimeDelta(_timeRequestSent,_internalClock,serverTimeStamp);
          _responsePending = false;
          if(_bursting)
          {
@@ -93,13 +93,13 @@ package littleGame.clock
          }
       }
       
-      private function addTimeDelta(param1:int, param2:int, param3:int) : void
+      private function addTimeDelta(clientSendTime:int, clientReceiveTime:int, serverTime:int) : void
       {
-         var _loc5_:Number = (param2 - param1) / 2;
-         var _loc7_:int = param3 - param2;
-         var _loc4_:int = _loc7_ + _loc5_;
-         var _loc6_:TimeDelta = new TimeDelta(_loc5_,_loc4_);
-         _deltas.push(_loc6_);
+         var latency:Number = (clientReceiveTime - clientSendTime) / 2;
+         var clientServerDelta:int = serverTime - clientReceiveTime;
+         var timeSyncDelta:int = clientServerDelta + latency;
+         var delta:TimeDelta = new TimeDelta(latency,timeSyncDelta);
+         _deltas.push(delta);
          if(_deltas.length > _maxDeltas)
          {
             _deltas.shift();
@@ -109,88 +109,85 @@ package littleGame.clock
       
       private function recalculate() : void
       {
-         var _loc2_:Vector.<TimeDelta> = _deltas.slice(0);
-         _loc2_.sort(compare);
-         var _loc1_:int = determineMedian(_loc2_);
-         pruneOutliers(_loc2_,_loc1_,1.5);
-         _latency = determineAverageLatency(_loc2_);
+         var tmp_deltas:Vector.<TimeDelta> = _deltas.slice(0);
+         tmp_deltas.sort(compare);
+         var medianLatency:int = determineMedian(tmp_deltas);
+         pruneOutliers(tmp_deltas,medianLatency,1.5);
+         _latency = determineAverageLatency(tmp_deltas);
          if(!_lockedInServerTime)
          {
-            _syncTimeDelta = determineAverage(_loc2_);
+            _syncTimeDelta = determineAverage(tmp_deltas);
             _lockedInServerTime = _deltas.length == _maxDeltas;
          }
       }
       
-      private function determineAverage(param1:Vector.<TimeDelta>) : int
+      private function determineAverage(deltas:Vector.<TimeDelta>) : int
       {
-         var _loc4_:* = NaN;
-         var _loc3_:* = null;
-         var _loc2_:* = 0;
-         _loc4_ = 0;
-         while(_loc4_ < param1.length)
+         var i:* = NaN;
+         var td:* = null;
+         var total:* = 0;
+         for(i = 0; i < deltas.length; )
          {
-            _loc3_ = param1[_loc4_];
-            _loc2_ = Number(_loc2_ + _loc3_.timeSyncDelta);
-            _loc4_++;
+            td = deltas[i];
+            total = Number(total + td.timeSyncDelta);
+            i++;
          }
-         return _loc2_ / param1.length;
+         return total / deltas.length;
       }
       
-      private function determineAverageLatency(param1:Vector.<TimeDelta>) : int
+      private function determineAverageLatency(deltas:Vector.<TimeDelta>) : int
       {
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
-         var _loc2_:int = 0;
-         _loc5_ = 0;
-         while(_loc5_ < param1.length)
+         var i:int = 0;
+         var td:* = null;
+         var total:int = 0;
+         for(i = 0; i < deltas.length; )
          {
-            _loc3_ = param1[_loc5_];
-            _loc2_ = _loc2_ + _loc3_.latency;
-            _loc5_++;
+            td = deltas[i];
+            total = total + td.latency;
+            i++;
          }
-         var _loc4_:int = _loc2_ / param1.length;
-         _latencyError = Math.abs(TimeDelta(param1[param1.length - 1]).latency - _loc4_);
-         return _loc4_;
+         var lat:int = total / deltas.length;
+         _latencyError = Math.abs(TimeDelta(deltas[deltas.length - 1]).latency - lat);
+         return lat;
       }
       
-      private function pruneOutliers(param1:Vector.<TimeDelta>, param2:int, param3:Number) : void
+      private function pruneOutliers(deltas:Vector.<TimeDelta>, median:int, threshold:Number) : void
       {
-         var _loc5_:Number = NaN;
-         var _loc4_:* = null;
-         var _loc6_:Number = param2 * param3;
-         _loc5_ = param1.length - 1;
-         while(_loc5_ >= 0)
+         var i:Number = NaN;
+         var td:* = null;
+         var maxValue:Number = median * threshold;
+         for(i = deltas.length - 1; i >= 0; )
          {
-            _loc4_ = param1[_loc5_];
-            if(_loc4_.latency > _loc6_)
+            td = deltas[i];
+            if(td.latency > maxValue)
             {
-               param1.splice(_loc5_,1);
-               _loc5_--;
+               deltas.splice(i,1);
+               i--;
                continue;
             }
             break;
          }
       }
       
-      private function determineMedian(param1:Vector.<TimeDelta>) : int
+      private function determineMedian(deltas:Vector.<TimeDelta>) : int
       {
-         var _loc2_:Number = NaN;
-         if(param1.length % 2 == 0)
+         var ind:Number = NaN;
+         if(deltas.length % 2 == 0)
          {
-            _loc2_ = param1.length / 2 - 1;
-            return (param1[_loc2_].latency + param1[_loc2_ + 1].latency) / 2;
+            ind = deltas.length / 2 - 1;
+            return (deltas[ind].latency + deltas[ind + 1].latency) / 2;
          }
-         _loc2_ = Math.floor(param1.length / 2);
-         return param1[_loc2_].latency;
+         ind = Math.floor(deltas.length / 2);
+         return deltas[ind].latency;
       }
       
-      private function compare(param1:TimeDelta, param2:TimeDelta) : Number
+      private function compare(a:TimeDelta, b:TimeDelta) : Number
       {
-         if(param1.latency < param2.latency)
+         if(a.latency < b.latency)
          {
             return -1;
          }
-         if(param1.latency > param2.latency)
+         if(a.latency > b.latency)
          {
             return 1;
          }
@@ -210,9 +207,9 @@ package littleGame.clock
          return _onProcess;
       }
       
-      public function set onProcess(param1:Boolean) : void
+      public function set onProcess(val:Boolean) : void
       {
-         _onProcess = param1;
+         _onProcess = val;
       }
       
       public function get running() : Boolean
@@ -220,12 +217,12 @@ package littleGame.clock
          return _onProcess;
       }
       
-      public function process(param1:Number) : void
+      public function process(rate:Number) : void
       {
-         _internalClock = _internalClock + param1;
+         _internalClock = _internalClock + rate;
       }
       
-      private function __onTimer(param1:TimerEvent) : void
+      private function __onTimer(event:TimerEvent) : void
       {
          if(!_responsePending && !_bursting)
          {
@@ -253,9 +250,9 @@ package littleGame.clock
          return _maxDeltas;
       }
       
-      public function set maxDeltas(param1:Number) : void
+      public function set maxDeltas(val:Number) : void
       {
-         _maxDeltas = param1;
+         _maxDeltas = val;
       }
    }
 }

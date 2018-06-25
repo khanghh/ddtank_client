@@ -26,30 +26,30 @@ package store.view.transfer
       
       private var _noteField:FilterFrameText;
       
-      public function HoleConfirmAlert(param1:int, param2:int)
+      public function HoleConfirmAlert(state1:int, state2:int)
       {
          super();
-         var _loc3_:AlertInfo = new AlertInfo();
-         _loc3_.submitLabel = LanguageMgr.GetTranslation("ok");
-         _loc3_.cancelLabel = LanguageMgr.GetTranslation("cancel");
-         _loc3_.title = LanguageMgr.GetTranslation("AlertDialog.Info");
-         this.info = _loc3_;
+         var info:AlertInfo = new AlertInfo();
+         info.submitLabel = LanguageMgr.GetTranslation("ok");
+         info.cancelLabel = LanguageMgr.GetTranslation("cancel");
+         info.title = LanguageMgr.GetTranslation("AlertDialog.Info");
+         this.info = info;
          addEvent();
-         if(param1 == -1)
+         if(state1 == -1)
          {
             _beforeCheck.enable = false;
          }
          else
          {
-            _beforeCheck.selected = param1 == 1?true:false;
+            _beforeCheck.selected = state1 == 1?true:false;
          }
-         if(param2 == -1)
+         if(state2 == -1)
          {
             _afterCheck.enable = false;
          }
          else
          {
-            _afterCheck.selected = param2 == 1?true:false;
+            _afterCheck.selected = state2 == 1?true:false;
          }
       }
       
@@ -74,15 +74,15 @@ package store.view.transfer
          _afterCheck.addEventListener("select",__selectChanged);
       }
       
-      private function __selectChanged(param1:Event) : void
+      private function __selectChanged(event:Event) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:SelectedCheckButton = param1.currentTarget as SelectedCheckButton;
-         if(_loc2_ == _beforeCheck)
+         var check:SelectedCheckButton = event.currentTarget as SelectedCheckButton;
+         if(check == _beforeCheck)
          {
             _state1 = _beforeCheck.selected;
          }
-         else if(_loc2_ == _afterCheck)
+         else if(check == _afterCheck)
          {
             _state2 = _beforeCheck.selected;
          }

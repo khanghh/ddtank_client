@@ -60,9 +60,9 @@ package ddt.view
          switchView(1);
       }
       
-      public function set text(param1:String) : void
+      public function set text(value:String) : void
       {
-         _nameInput.text = param1;
+         _nameInput.text = value;
       }
       
       public function get text() : String
@@ -70,9 +70,9 @@ package ddt.view
          return _nameInput.text;
       }
       
-      public function switchView(param1:int) : void
+      public function switchView(type:int) : void
       {
-         switch(int(param1) - 1)
+         switch(int(type) - 1)
          {
             case 0:
                _lookBtn.visible = true;
@@ -91,9 +91,9 @@ package ddt.view
          _nameInput.addEventListener("focusIn",_focusHandler);
       }
       
-      public function set enable(param1:Boolean) : void
+      public function set enable(value:Boolean) : void
       {
-         _nameInput.enable = param1;
+         _nameInput.enable = value;
       }
       
       private function removeEvent() : void
@@ -103,9 +103,9 @@ package ddt.view
          _nameInput.removeEventListener("focusIn",_focusHandler);
       }
       
-      public function setCursor(param1:int) : void
+      public function setCursor(index:int) : void
       {
-         _nameInput.textField.setSelection(param1,param1);
+         _nameInput.textField.setSelection(index,index);
       }
       
       public function get caretIndex() : int
@@ -113,11 +113,11 @@ package ddt.view
          return _nameInput.textField.caretIndex;
       }
       
-      public function setValue(param1:*) : void
+      public function setValue(value:*) : void
       {
-         if(param1)
+         if(value)
          {
-            _nameInput.text = param1.NickName;
+            _nameInput.text = value.NickName;
          }
       }
       
@@ -161,13 +161,13 @@ package ddt.view
          }
       }
       
-      protected function __clearhandler(param1:MouseEvent) : void
+      protected function __clearhandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          dispatchEvent(new Event("clearClick"));
       }
       
-      protected function __closeHandler(param1:MouseEvent) : void
+      protected function __closeHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _nameInput.text = "";
@@ -175,7 +175,7 @@ package ddt.view
          dispatchEvent(new Event("closeClick"));
       }
       
-      protected function __changeDropList(param1:Event) : void
+      protected function __changeDropList(event:Event) : void
       {
          StringHelper.checkTextFieldLength(_nameInput.textField,14);
          if(_nameInput.text == "")
@@ -189,7 +189,7 @@ package ddt.view
          dispatchEvent(new Event("change"));
       }
       
-      protected function _focusHandler(param1:FocusEvent) : void
+      protected function _focusHandler(event:FocusEvent) : void
       {
          __changeDropList(null);
       }

@@ -1,0 +1,4 @@
+package worldcup{   import flash.events.EventDispatcher;      public class WorldcupModel extends EventDispatcher   {                   public var isOpen:Boolean;            private var _state:int;            public var promotionCountry:Array;            public var returnRate:int = 0;            public var supportCountry:int = 0;            public var selectCountry:int = 0;            public var totalRecharge:int;            public var awardIndex:int;            public var countryList:Array;            public function WorldcupModel() { super(); }
+            public function get state() : int { return 0; }
+            public function set state(value:int) : void { }
+   }}

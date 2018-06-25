@@ -54,11 +54,11 @@ package dragonBoat.view
          _cannotBuyTipTxt = ComponentFactory.Instance.creatComponentByStylename("dragonBoat.shopFrame.cellCannotBuyTipTxt");
          _cannotBuyTipTxt.text = LanguageMgr.GetTranslation("ddt.dragonBoat.shopScoreNotEnough");
          _cannotBuyTipTxt.visible = false;
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,70,70);
-         _loc1_.graphics.endFill();
-         _itemCell = CellFactory.instance.createShopItemCell(_loc1_,null,true,true) as ShopItemCell;
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(16777215,0);
+         sp.graphics.drawRect(0,0,70,70);
+         sp.graphics.endFill();
+         _itemCell = CellFactory.instance.createShopItemCell(sp,null,true,true) as ShopItemCell;
          PositionUtils.setPos(_itemCell,"dragonBoat.shopFrame.cellItemCellPos");
          addChild(_bg);
          addChild(_moneyTxt);
@@ -70,7 +70,7 @@ package dragonBoat.view
          _buyBtn.addEventListener("click",buyHandler,false,0,true);
       }
       
-      private function buyHandler(param1:MouseEvent) : void
+      private function buyHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -78,15 +78,15 @@ package dragonBoat.view
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:ScoreExchangeFrame = ComponentFactory.Instance.creatComponentByStylename("ddtcore.exchangeFrame");
-         _loc2_.type = 1;
-         _loc2_.shopItem = _shopItemInfo;
-         LayerManager.Instance.addToLayer(_loc2_,2,true,1);
+         var _quickFrame:ScoreExchangeFrame = ComponentFactory.Instance.creatComponentByStylename("ddtcore.exchangeFrame");
+         _quickFrame.type = 1;
+         _quickFrame.shopItem = _shopItemInfo;
+         LayerManager.Instance.addToLayer(_quickFrame,2,true,1);
       }
       
-      public function refreshShow(param1:ShopItemInfo) : void
+      public function refreshShow(value:ShopItemInfo) : void
       {
-         _shopItemInfo = param1;
+         _shopItemInfo = value;
          if(_shopItemInfo)
          {
             _itemCell.visible = true;

@@ -18,60 +18,59 @@ package com.greensock.plugins
          _colors = [];
       }
       
-      override public function onInitTween(param1:Object, param2:*, param3:TweenLite) : Boolean
+      override public function onInitTween(target:Object, value:*, tween:TweenLite) : Boolean
       {
          var _loc6_:int = 0;
-         var _loc5_:* = param2;
-         for(var _loc4_ in param2)
+         var _loc5_:* = value;
+         for(var p in value)
          {
-            initColor(param1,_loc4_,uint(param1[_loc4_]),uint(param2[_loc4_]));
+            initColor(target,p,uint(target[p]),uint(value[p]));
          }
          return true;
       }
       
-      public function initColor(param1:Object, param2:String, param3:uint, param4:uint) : void
+      public function initColor(target:Object, propName:String, start:uint, end:uint) : void
       {
-         var _loc7_:Number = NaN;
-         var _loc5_:Number = NaN;
-         var _loc6_:Number = NaN;
-         if(param3 != param4)
+         var r:Number = NaN;
+         var g:Number = NaN;
+         var b:Number = NaN;
+         if(start != end)
          {
-            _loc7_ = param3 >> 16;
-            _loc5_ = param3 >> 8 & 255;
-            _loc6_ = param3 & 255;
-            _colors[_colors.length] = [param1,param2,_loc7_,(param4 >> 16) - _loc7_,_loc5_,(param4 >> 8 & 255) - _loc5_,_loc6_,(param4 & 255) - _loc6_];
-            this.overwriteProps[this.overwriteProps.length] = param2;
+            r = start >> 16;
+            g = start >> 8 & 255;
+            b = start & 255;
+            _colors[_colors.length] = [target,propName,r,(end >> 16) - r,g,(end >> 8 & 255) - g,b,(end & 255) - b];
+            this.overwriteProps[this.overwriteProps.length] = propName;
          }
       }
       
-      override public function killProps(param1:Object) : void
+      override public function killProps(lookup:Object) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = _colors.length - 1;
-         while(_loc2_ > -1)
+         var i:int = 0;
+         for(i = _colors.length - 1; i > -1; )
          {
-            if(param1[_colors[_loc2_][1]] != undefined)
+            if(lookup[_colors[i][1]] != undefined)
             {
-               _colors.splice(_loc2_,1);
+               _colors.splice(i,1);
             }
-            _loc2_--;
+            i--;
          }
-         super.killProps(param1);
+         super.killProps(lookup);
       }
       
-      override public function set changeFactor(param1:Number) : void
+      override public function set changeFactor(n:Number) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:int = _colors.length;
+         var a:* = null;
+         var i:int = _colors.length;
          while(true)
          {
-            _loc3_--;
-            if(_loc3_ <= -1)
+            i--;
+            if(i <= -1)
             {
                break;
             }
-            _loc2_ = _colors[_loc3_];
-            _loc2_[0][_loc2_[1]] = _loc2_[2] + param1 * _loc2_[3] << 16 | _loc2_[4] + param1 * _loc2_[5] << 8 | _loc2_[6] + param1 * _loc2_[7];
+            a = _colors[i];
+            a[0][a[1]] = a[2] + n * a[3] << 16 | a[4] + n * a[5] << 8 | a[6] + n * a[7];
          }
       }
    }

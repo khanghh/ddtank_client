@@ -40,31 +40,31 @@ package hall.systemPost
          _postHtmlText.mouseEnabled = true;
       }
       
-      public function update(param1:String, param2:int) : void
+      public function update(msg:String, type:int) : void
       {
          var _loc3_:String = "";
          _postText.text = _loc3_;
          _postHtmlText.htmlText = _loc3_;
-         _type = param2;
+         _type = type;
          if(_type > 0)
          {
             if(_type == 4)
             {
-               _postHtmlText.htmlText = param1;
+               _postHtmlText.htmlText = msg;
             }
             else
             {
-               _postHtmlText.htmlText = "<a href=\"event:1\"><u>" + param1 + "</u></a>";
+               _postHtmlText.htmlText = "<a href=\"event:1\"><u>" + msg + "</u></a>";
             }
             _postHtmlText.addEventListener("link",__onTextLink);
          }
          else
          {
-            _postText.text = param1;
+            _postText.text = msg;
          }
       }
       
-      protected function __onTextLink(param1:TextEvent) : void
+      protected function __onTextLink(event:TextEvent) : void
       {
          if(_type == 1)
          {
@@ -72,7 +72,7 @@ package hall.systemPost
          }
          else
          {
-            navigateToURL(new URLRequest(param1.text));
+            navigateToURL(new URLRequest(event.text));
          }
       }
       

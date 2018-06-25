@@ -42,10 +42,10 @@ package dice.vo
       
       private var _isWalking:Boolean;
       
-      public function DicePlayer(param1:Function = null)
+      public function DicePlayer(callBack:Function = null)
       {
          _playerInfo = PlayerManager.Instance.Self;
-         super(_playerInfo,SynchronousPosition,param1);
+         super(_playerInfo,SynchronousPosition,callBack);
          preInitialize();
          initialize();
          addEvent();
@@ -56,15 +56,15 @@ package dice.vo
          return _isWalking;
       }
       
-      public function set isWalking(param1:Boolean) : void
+      public function set isWalking(value:Boolean) : void
       {
-         var _loc2_:* = null;
-         if(_isWalking != param1)
+         var proxy:* = null;
+         if(_isWalking != value)
          {
-            _isWalking = param1;
-            _loc2_ = {};
-            _loc2_.isWalking = _isWalking;
-            DiceController.Instance.dispatchEvent(new DiceEvent("dice_player_iswalking",_loc2_));
+            _isWalking = value;
+            proxy = {};
+            proxy.isWalking = _isWalking;
+            DiceController.Instance.dispatchEvent(new DiceEvent("dice_player_iswalking",proxy));
             if(_isWalking)
             {
                _light.visible = false;
@@ -90,9 +90,9 @@ package dice.vo
          addEventListener("enterFrame",__update);
       }
       
-      private function characterDirectionChange(param1:SceneCharacterEvent) : void
+      private function characterDirectionChange(evt:SceneCharacterEvent) : void
       {
-         isWalking = Boolean(param1.data);
+         isWalking = Boolean(evt.data);
          if(_isWalking)
          {
             if(sceneCharacterDirection == SceneCharacterDirection.LT || sceneCharacterDirection == SceneCharacterDirection.RT)
@@ -170,7 +170,7 @@ package dice.vo
          }
       }
       
-      private function __update(param1:Event) : void
+      private function __update(event:Event) : void
       {
          if(character)
          {
@@ -215,56 +215,56 @@ package dice.vo
          }
       }
       
-      private function SynchronousPosition(param1:Point) : void
+      private function SynchronousPosition(value:Point) : void
       {
       }
       
-      public function PlayerWalkByPosition(param1:int, param2:int) : void
+      public function PlayerWalkByPosition(start:int, end:int) : void
       {
-         var _loc3_:* = null;
-         trace(param1,param2,"===============================================================================================");
-         var _loc4_:Array = [];
-         if(param1 < 0 || param1 >= DiceController.Instance.CELL_COUNT)
+         var pt:* = null;
+         trace(start,end,"===============================================================================================");
+         var path:Array = [];
+         if(start < 0 || start >= DiceController.Instance.CELL_COUNT)
          {
             return;
          }
-         if(param2 == 0 && !DiceController.Instance.hasUsedFirstCell)
+         if(end == 0 && !DiceController.Instance.hasUsedFirstCell)
          {
-            param2 = 1;
+            end = 1;
          }
-         _loc4_.push(GetCoordinatesByPosition(param1));
-         while(param1 != param2)
+         path.push(GetCoordinatesByPosition(start));
+         while(start != end)
          {
-            param1++;
-            param1 = param1 % DiceController.Instance.CELL_COUNT;
-            _loc4_.push(GetCoordinatesByPosition(param1));
+            start++;
+            start = start % DiceController.Instance.CELL_COUNT;
+            path.push(GetCoordinatesByPosition(start));
          }
-         playerWalk(_loc4_);
+         playerWalk(path);
       }
       
-      public function GetCoordinatesByPosition(param1:int) : Point
+      public function GetCoordinatesByPosition(value:int) : Point
       {
-         var _loc2_:* = null;
-         if(param1 < 0)
+         var cell:* = null;
+         if(value < 0)
          {
-            param1 = 0;
+            value = 0;
          }
-         else if(param1 >= DiceController.Instance.CELL_COUNT)
+         else if(value >= DiceController.Instance.CELL_COUNT)
          {
-            param1 = DiceController.Instance.CELL_COUNT - 1;
+            value = DiceController.Instance.CELL_COUNT - 1;
          }
          if(DiceController.Instance.cellPosition == null)
          {
             DiceController.Instance.setCellInfo();
          }
-         return (DiceController.Instance.cellPosition[param1] as DiceCellInfo).CellCenterPosition;
+         return (DiceController.Instance.cellPosition[value] as DiceCellInfo).CellCenterPosition;
       }
       
-      public function set CurrentPosition(param1:int) : void
+      public function set CurrentPosition(value:int) : void
       {
-         var _loc2_:Point = GetCoordinatesByPosition(param1);
-         x = _loc2_.x;
-         y = _loc2_.y;
+         var pt:Point = GetCoordinatesByPosition(value);
+         x = pt.x;
+         y = pt.y;
       }
       
       override public function dispose() : void

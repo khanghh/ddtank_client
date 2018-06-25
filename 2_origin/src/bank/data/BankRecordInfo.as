@@ -24,9 +24,9 @@ package bank.data
          return _tempId;
       }
       
-      public function set tempId(param1:int) : void
+      public function set tempId(value:int) : void
       {
-         _tempId = param1;
+         _tempId = value;
       }
       
       public function get userId() : int
@@ -34,9 +34,9 @@ package bank.data
          return _userId;
       }
       
-      public function set userId(param1:int) : void
+      public function set userId(value:int) : void
       {
-         _userId = param1;
+         _userId = value;
       }
       
       public function get Amount() : int
@@ -44,9 +44,9 @@ package bank.data
          return _Amount;
       }
       
-      public function set Amount(param1:int) : void
+      public function set Amount(value:int) : void
       {
-         _Amount = param1;
+         _Amount = value;
       }
       
       public function get begainTime() : Date
@@ -54,9 +54,9 @@ package bank.data
          return _begainTime;
       }
       
-      public function set begainTime(param1:Date) : void
+      public function set begainTime(value:Date) : void
       {
-         _begainTime = param1;
+         _begainTime = value;
       }
       
       public function get bankId() : int
@@ -64,9 +64,9 @@ package bank.data
          return _bankId;
       }
       
-      public function set bankId(param1:int) : void
+      public function set bankId(value:int) : void
       {
-         _bankId = param1;
+         _bankId = value;
       }
    }
 }

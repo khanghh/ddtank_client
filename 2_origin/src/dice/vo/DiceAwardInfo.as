@@ -13,13 +13,13 @@ package dice.vo
       
       private var _templateInfo:Vector.<DiceAwardCell>;
       
-      public function DiceAwardInfo(param1:int, param2:int, param3:String)
+      public function DiceAwardInfo($level:int, $integral:int, $templateString:String)
       {
          super();
          _templateInfo = new Vector.<DiceAwardCell>();
-         _level = param1;
-         _integral = param2;
-         setTemplateInfo = param3;
+         _level = $level;
+         _integral = $integral;
+         setTemplateInfo = $templateString;
       }
       
       public function get level() : int
@@ -37,44 +37,42 @@ package dice.vo
          return _templateInfo;
       }
       
-      private function set setTemplateInfo(param1:String) : void
+      private function set setTemplateInfo(templateString:String) : void
       {
-         var _loc4_:* = null;
-         var _loc7_:* = null;
-         var _loc5_:* = null;
-         var _loc2_:* = null;
-         var _loc6_:int = 0;
-         if(param1 == null || param1 == "")
+         var cell:* = null;
+         var info:* = null;
+         var bg:* = null;
+         var str:* = null;
+         var i:int = 0;
+         if(templateString == null || templateString == "")
          {
             return;
          }
-         var _loc3_:Array = param1.split(",");
-         _loc6_ = _loc3_.length;
-         while(_loc6_ > 0)
+         var arr:Array = templateString.split(",");
+         for(i = arr.length; i > 0; )
          {
-            _loc2_ = _loc3_[_loc6_ - 1];
-            if(_loc2_ != null && _loc2_ != "")
+            str = arr[i - 1];
+            if(str != null && str != "")
             {
-               _loc7_ = ItemManager.Instance.getTemplateById(int(_loc2_.split("|")[0]));
-               _loc4_ = new DiceAwardCell(_loc7_,int(_loc2_.split("|")[1]));
-               _templateInfo.push(_loc4_);
+               info = ItemManager.Instance.getTemplateById(int(str.split("|")[0]));
+               cell = new DiceAwardCell(info,int(str.split("|")[1]));
+               _templateInfo.push(cell);
             }
-            _loc6_--;
+            i--;
          }
       }
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = _templateInfo.length;
-         while(_loc1_ > 0)
+         var i:int = 0;
+         for(i = _templateInfo.length; i > 0; )
          {
-            if(_templateInfo[_loc1_ - 1])
+            if(_templateInfo[i - 1])
             {
-               _templateInfo[_loc1_ - 1].dispose();
-               _templateInfo[_loc1_ - 1] = null;
+               _templateInfo[i - 1].dispose();
+               _templateInfo[i - 1] = null;
             }
-            _loc1_--;
+            i--;
          }
          _templateInfo = null;
       }

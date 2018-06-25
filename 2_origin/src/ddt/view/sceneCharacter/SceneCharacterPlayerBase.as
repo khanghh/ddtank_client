@@ -50,11 +50,11 @@ package ddt.view.sceneCharacter
       
       private var vFlag:int = 0;
       
-      public function SceneCharacterPlayerBase(param1:Function = null)
+      public function SceneCharacterPlayerBase(callBack:Function = null)
       {
          _sceneCharacterDirection = SceneCharacterDirection.RB;
          super();
-         _callBack = param1;
+         _callBack = callBack;
          initialize();
       }
       
@@ -63,9 +63,9 @@ package ddt.view.sceneCharacter
          return _loadComplete;
       }
       
-      public function set loadComplete(param1:Boolean) : void
+      public function set loadComplete(value:Boolean) : void
       {
-         _loadComplete = param1;
+         _loadComplete = value;
       }
       
       private function initialize() : void
@@ -94,25 +94,25 @@ package ddt.view.sceneCharacter
          }
       }
       
-      private function __change(param1:Event) : void
+      private function __change(event:Event) : void
       {
          dispatchEvent(new SceneCharacterEvent("characterMovement",null));
          _playerY = (this.y + Math.random()) * 10000;
       }
       
-      private function __finish(param1:Event) : void
+      private function __finish(event:Event) : void
       {
          playerWalk(_walkPath);
          dispatchEvent(new SceneCharacterEvent("characterArrivedNextStep"));
       }
       
-      public function playerWalk(param1:Array) : void
+      public function playerWalk(walkPath:Array) : void
       {
          if(_walkPath != null && !isWalkPathChange && _tween.isPlaying)
          {
             return;
          }
-         _walkPath = param1;
+         _walkPath = walkPath;
          isWalkPathChange = false;
          if(_walkPath && _walkPath.length > 0)
          {
@@ -130,14 +130,14 @@ package ddt.view.sceneCharacter
          }
       }
       
-      public function set sceneCharacterActionType(param1:String) : void
+      public function set sceneCharacterActionType(value:String) : void
       {
-         if(!_sceneCharacterStateItem || _sceneCharacterStateItem.setSceneCharacterActionType == param1)
+         if(!_sceneCharacterStateItem || _sceneCharacterStateItem.setSceneCharacterActionType == value)
          {
             return;
          }
-         _sceneCharacterStateItem.setSceneCharacterActionType = param1;
-         dispatchEvent(new SceneCharacterEvent("characterActionChange",param1));
+         _sceneCharacterStateItem.setSceneCharacterActionType = value;
+         dispatchEvent(new SceneCharacterEvent("characterActionChange",value));
       }
       
       public function get playerPoint() : Point
@@ -145,10 +145,10 @@ package ddt.view.sceneCharacter
          return new Point(this.x,this.y);
       }
       
-      public function set playerPoint(param1:Point) : void
+      public function set playerPoint(value:Point) : void
       {
-         this.x = param1.x;
-         this.y = param1.y;
+         this.x = value.x;
+         this.y = value.y;
          _playerY = (this.y + Math.random()) * 10000;
       }
       
@@ -157,13 +157,13 @@ package ddt.view.sceneCharacter
          return _moveSpeed;
       }
       
-      public function set moveSpeed(param1:Number) : void
+      public function set moveSpeed(value:Number) : void
       {
-         if(_moveSpeed == param1)
+         if(_moveSpeed == value)
          {
             return;
          }
-         _moveSpeed = param1;
+         _moveSpeed = value;
       }
       
       public function get walkPath() : Array
@@ -171,14 +171,14 @@ package ddt.view.sceneCharacter
          return _walkPath;
       }
       
-      public function set walkPath(param1:Array) : void
+      public function set walkPath(value:Array) : void
       {
-         _walkPath = param1;
+         _walkPath = value;
       }
       
-      protected function set sceneCharacterStateSet(param1:SceneCharacterStateSet) : void
+      protected function set sceneCharacterStateSet(value:SceneCharacterStateSet) : void
       {
-         _sceneCharacterStateSet = param1;
+         _sceneCharacterStateSet = value;
          sceneCharacterStateType = _sceneCharacterStateSet.dataSet[0].type;
          if(_callBack != null)
          {
@@ -200,14 +200,14 @@ package ddt.view.sceneCharacter
          return _sceneCharacterStateType;
       }
       
-      public function set sceneCharacterStateType(param1:String) : void
+      public function set sceneCharacterStateType(value:String) : void
       {
-         if(_sceneCharacterStateType == param1 && !loadComplete)
+         if(_sceneCharacterStateType == value && !loadComplete)
          {
             return;
          }
          loadComplete = false;
-         _sceneCharacterStateType = param1;
+         _sceneCharacterStateType = value;
          if(!_sceneCharacterStateSet)
          {
             return;
@@ -229,13 +229,13 @@ package ddt.view.sceneCharacter
          return _sceneCharacterDirection;
       }
       
-      protected function setCharacterFilter(param1:Boolean) : void
+      protected function setCharacterFilter(value:Boolean) : void
       {
          if(!this.character)
          {
             return;
          }
-         if(param1)
+         if(value)
          {
             this.character.filters = MOUSE_ON_GLOW_FILTER;
          }
@@ -245,13 +245,13 @@ package ddt.view.sceneCharacter
          }
       }
       
-      public function set sceneCharacterDirection(param1:SceneCharacterDirection) : void
+      public function set sceneCharacterDirection(value:SceneCharacterDirection) : void
       {
-         if(_sceneCharacterDirection == param1)
+         if(_sceneCharacterDirection == value)
          {
             return;
          }
-         _sceneCharacterDirection = param1;
+         _sceneCharacterDirection = value;
          if(_sceneCharacterStateItem)
          {
             _sceneCharacterStateItem.sceneCharacterDirection = _sceneCharacterDirection;
@@ -300,9 +300,9 @@ package ddt.view.sceneCharacter
          return _playerY;
       }
       
-      public function set playerY(param1:Number) : void
+      public function set playerY(value:Number) : void
       {
-         _playerY = param1;
+         _playerY = value;
       }
    }
 }

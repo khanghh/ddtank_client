@@ -65,74 +65,74 @@ package lanternriddles
          SocketManager.Instance.addEventListener("lanternRiddles_begin",__onAddLanternIcon);
       }
       
-      protected function __onBeginTips(param1:PkgEvent) : void
+      protected function __onBeginTips(event:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc4_:int = _loc3_.readInt();
+         var pkg:PackageIn = event.pkg;
+         var minite:int = pkg.readInt();
          if(StateManager.currentStateType != "fighting")
          {
-            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("lanternRiddles.view.beginTipsText",_loc4_));
+            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("lanternRiddles.view.beginTipsText",minite));
          }
-         var _loc2_:ChatData = new ChatData();
-         _loc2_.channel = 14;
-         _loc2_.msg = LanguageMgr.GetTranslation("lanternRiddles.view.beginTipsText",_loc4_);
-         ChatManager.Instance.chat(_loc2_);
+         var data:ChatData = new ChatData();
+         data.channel = 14;
+         data.msg = LanguageMgr.GetTranslation("lanternRiddles.view.beginTipsText",minite);
+         ChatManager.Instance.chat(data);
       }
       
-      protected function __onAddLanternIcon(param1:CrazyTankSocketEvent) : void
+      protected function __onAddLanternIcon(e:CrazyTankSocketEvent) : void
       {
          if(ServerConfigManager.instance.getLightRiddleIsNew)
          {
             return;
          }
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:int = param1._cmd;
-         var _loc3_:CrazyTankSocketEvent = null;
-         switch(int(_loc2_) - 37)
+         var pkg:PackageIn = e.pkg;
+         var cmd:int = e._cmd;
+         var events:CrazyTankSocketEvent = null;
+         switch(int(cmd) - 37)
          {
             case 0:
-               openOrclose(_loc4_);
+               openOrclose(pkg);
                break;
             case 1:
-               _loc3_ = new CrazyTankSocketEvent("lanternRiddles_question",_loc4_);
+               events = new CrazyTankSocketEvent("lanternRiddles_question",pkg);
                break;
             case 2:
-               _loc3_ = new CrazyTankSocketEvent("lanternRiddles_answer",_loc4_);
+               events = new CrazyTankSocketEvent("lanternRiddles_answer",pkg);
                break;
             default:
-               _loc3_ = new CrazyTankSocketEvent("lanternRiddles_answer",_loc4_);
+               events = new CrazyTankSocketEvent("lanternRiddles_answer",pkg);
                break;
             case 4:
-               _loc3_ = new CrazyTankSocketEvent("lanternRiddles_skill",_loc4_);
+               events = new CrazyTankSocketEvent("lanternRiddles_skill",pkg);
                break;
             case 5:
-               _loc3_ = new CrazyTankSocketEvent("lanternRiddles_rankinfo",_loc4_);
+               events = new CrazyTankSocketEvent("lanternRiddles_rankinfo",pkg);
                break;
             case 6:
-               onBeginTips(_loc4_);
+               onBeginTips(pkg);
          }
-         if(_loc3_)
+         if(events)
          {
-            dispatchEvent(_loc3_);
+            dispatchEvent(events);
          }
       }
       
-      protected function onBeginTips(param1:PackageIn) : void
+      protected function onBeginTips(pkg:PackageIn) : void
       {
-         var _loc3_:int = param1.readInt();
+         var minite:int = pkg.readInt();
          if(StateManager.currentStateType != "fighting")
          {
-            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("lanternRiddles.view.beginTipsText",_loc3_));
+            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("lanternRiddles.view.beginTipsText",minite));
          }
-         var _loc2_:ChatData = new ChatData();
-         _loc2_.channel = 14;
-         _loc2_.msg = LanguageMgr.GetTranslation("lanternRiddles.view.beginTipsText",_loc3_);
-         ChatManager.Instance.chat(_loc2_);
+         var data:ChatData = new ChatData();
+         data.channel = 14;
+         data.msg = LanguageMgr.GetTranslation("lanternRiddles.view.beginTipsText",minite);
+         ChatManager.Instance.chat(data);
       }
       
-      private function openOrclose(param1:PackageIn) : void
+      private function openOrclose(pkg:PackageIn) : void
       {
-         _isBegin = param1.readBoolean();
+         _isBegin = pkg.readBoolean();
          if(_isBegin)
          {
             smallBugleTips();
@@ -146,11 +146,11 @@ package lanternriddles
       
       private function smallBugleTips() : void
       {
-         var _loc1_:ChatData = new ChatData();
-         _loc1_.type = 104;
-         _loc1_.channel = 1;
-         _loc1_.msg = LanguageMgr.GetTranslation("hall.view.LanternBegin");
-         ChatManager.Instance.chat(_loc1_);
+         var data:ChatData = new ChatData();
+         data.type = 104;
+         data.channel = 1;
+         data.msg = LanguageMgr.GetTranslation("hall.view.LanternBegin");
+         ChatManager.Instance.chat(data);
       }
       
       private function showLanternBtn() : void
@@ -158,13 +158,13 @@ package lanternriddles
          HallIconManager.instance.updateSwitchHandler("lanternRiddles",true);
       }
       
-      public function onLanternShow(param1:MouseEvent = null) : void
+      public function onLanternShow(event:MouseEvent = null) : void
       {
          SoundManager.instance.playButtonSound();
          show();
       }
       
-      private function createLanternBtn(param1:Boolean) : void
+      private function createLanternBtn(flag:Boolean) : void
       {
          if(!_showIcon)
          {
@@ -173,12 +173,12 @@ package lanternriddles
             _showIcon.addActIcon(_lanternMovie);
             _showIcon.resetPos();
          }
-         _showIcon.buttonMode = param1;
+         _showIcon.buttonMode = flag;
       }
       
-      protected function __onSetLanternTime(param1:LanternEvent) : void
+      protected function __onSetLanternTime(event:LanternEvent) : void
       {
-         HallIconManager.instance.updateSwitchHandler("lanternRiddles",true,param1.Time);
+         HallIconManager.instance.updateSwitchHandler("lanternRiddles",true,event.Time);
       }
       
       public function deleteLanternBtn() : void
@@ -186,9 +186,9 @@ package lanternriddles
          HallIconManager.instance.updateSwitchHandler("lanternRiddles",false);
       }
       
-      public function questionInfo(param1:LanternDataAnalyzer) : void
+      public function questionInfo(analyer:LanternDataAnalyzer) : void
       {
-         _questionInfo = param1.data;
+         _questionInfo = analyer.data;
       }
       
       public function get info() : Object

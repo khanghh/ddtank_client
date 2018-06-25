@@ -34,7 +34,7 @@ package mines
       
       public var viewOpen:Boolean;
       
-      public function MinesManager(param1:inner)
+      public function MinesManager(single:inner)
       {
          super();
       }
@@ -75,86 +75,84 @@ package mines
          }
       }
       
-      private function levelUpArm(param1:PkgEvent) : void
+      private function levelUpArm(e:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _model.headExp = _loc2_.readInt();
-         _model.clothExp = _loc2_.readInt();
-         _model.weaponExp = _loc2_.readInt();
-         _model.shieldExp = _loc2_.readInt();
+         var pkg:PackageIn = e.pkg;
+         _model.headExp = pkg.readInt();
+         _model.clothExp = pkg.readInt();
+         _model.weaponExp = pkg.readInt();
+         _model.shieldExp = pkg.readInt();
          _model.setEquipLevel();
          dispatchEvent(new Event(LEVEL_UP_ARM));
       }
       
-      private function levelUpTool(param1:PkgEvent) : void
+      private function levelUpTool(e:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _model.toolExp = _loc2_.readInt();
-         _loc2_.readInt();
+         var pkg:PackageIn = e.pkg;
+         _model.toolExp = pkg.readInt();
+         pkg.readInt();
          dispatchEvent(new Event(LEVEL_UP_TOOL));
       }
       
-      private function shopInfo(param1:PkgEvent) : void
+      private function shopInfo(e:PkgEvent) : void
       {
-         var _loc8_:int = 0;
-         var _loc7_:* = null;
-         var _loc6_:int = 0;
-         var _loc3_:* = null;
+         var i:int = 0;
+         var info:* = null;
+         var j:int = 0;
+         var info1:* = null;
          _model.shopDropList = new Vector.<ShopDropInfo>();
          _model.shopExchangeList = new Vector.<ShopExchangeInfo>();
-         var _loc5_:PackageIn = param1.pkg;
-         viewOpen = _loc5_.readBoolean();
-         var _loc2_:int = _loc5_.readInt();
-         _loc8_ = 0;
-         while(_loc8_ < _loc2_)
+         var pkg:PackageIn = e.pkg;
+         viewOpen = pkg.readBoolean();
+         var count:int = pkg.readInt();
+         for(i = 0; i < count; )
          {
-            _loc7_ = new ShopDropInfo();
-            _loc7_.templateID = _loc5_.readInt();
-            _loc7_.price = _loc5_.readInt();
-            _loc7_.limitedCount = _loc5_.readInt();
-            _model.shopDropList.push(_loc7_);
-            _loc8_++;
+            info = new ShopDropInfo();
+            info.templateID = pkg.readInt();
+            info.price = pkg.readInt();
+            info.limitedCount = pkg.readInt();
+            _model.shopDropList.push(info);
+            i++;
          }
-         var _loc4_:int = _loc5_.readInt();
-         _loc6_ = 0;
-         while(_loc6_ < _loc4_)
+         var count1:int = pkg.readInt();
+         for(j = 0; j < count1; )
          {
-            _loc3_ = new ShopExchangeInfo();
-            _loc3_.id = _loc5_.readInt();
-            _loc3_.activityType = _loc5_.readInt();
-            _loc3_.quality = _loc5_.readInt();
-            _loc3_.templateID = _loc5_.readInt();
-            _loc3_.name = _loc5_.readUTF();
-            _loc3_.price = _loc5_.readInt();
-            _loc3_.strengthLevel = _loc5_.readInt();
-            _loc3_.attackCompose = _loc5_.readInt();
-            _loc3_.defendCompose = _loc5_.readInt();
-            _loc3_.agilityCompose = _loc5_.readInt();
-            _loc3_.luckCompose = _loc5_.readInt();
-            _loc3_.isBind = _loc5_.readBoolean();
-            _loc3_.validDate = _loc5_.readInt();
-            _loc3_.count = _loc5_.readInt();
-            _loc5_.readInt();
-            _loc5_.readBoolean();
-            _loc5_.readBoolean();
-            _loc5_.readBoolean();
-            _loc3_.position = _loc5_.readInt();
-            _loc3_.limitedCount = _loc5_.readInt();
-            _model.shopExchangeList.push(_loc3_);
-            _loc6_++;
+            info1 = new ShopExchangeInfo();
+            info1.id = pkg.readInt();
+            info1.activityType = pkg.readInt();
+            info1.quality = pkg.readInt();
+            info1.templateID = pkg.readInt();
+            info1.name = pkg.readUTF();
+            info1.price = pkg.readInt();
+            info1.strengthLevel = pkg.readInt();
+            info1.attackCompose = pkg.readInt();
+            info1.defendCompose = pkg.readInt();
+            info1.agilityCompose = pkg.readInt();
+            info1.luckCompose = pkg.readInt();
+            info1.isBind = pkg.readBoolean();
+            info1.validDate = pkg.readInt();
+            info1.count = pkg.readInt();
+            pkg.readInt();
+            pkg.readBoolean();
+            pkg.readBoolean();
+            pkg.readBoolean();
+            info1.position = pkg.readInt();
+            info1.limitedCount = pkg.readInt();
+            _model.shopExchangeList.push(info1);
+            j++;
          }
          dispatchEvent(new Event(UPDATA_SHOP));
       }
       
-      private function digHandler(param1:PkgEvent) : void
+      private function digHandler(e:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         _loc3_.readInt();
-         _model.isFull = _loc3_.readBoolean();
-         var _loc2_:Array = [];
-         _loc2_[0] = _loc3_.readUTF();
-         _loc2_[1] = _loc3_.readInt();
-         if(_loc2_[1] != 0 || _model.isFull)
+         var pkg:PackageIn = e.pkg;
+         pkg.readInt();
+         _model.isFull = pkg.readBoolean();
+         var arr:Array = [];
+         arr[0] = pkg.readUTF();
+         arr[1] = pkg.readInt();
+         if(arr[1] != 0 || _model.isFull)
          {
             if(_model.digShowList.length > 9)
             {
@@ -166,20 +164,20 @@ package mines
             }
             else
             {
-               _model.digShowList.push(_loc2_);
+               _model.digShowList.push(arr);
             }
             dispatchEvent(new Event(INFOLABEL));
          }
       }
       
-      private function openHandler(param1:PkgEvent) : void
+      private function openHandler(e:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _model.toolExp = _loc2_.readInt();
-         _model.headExp = _loc2_.readInt();
-         _model.clothExp = _loc2_.readInt();
-         _model.weaponExp = _loc2_.readInt();
-         _model.shieldExp = _loc2_.readInt();
+         var pkg:PackageIn = e.pkg;
+         _model.toolExp = pkg.readInt();
+         _model.headExp = pkg.readInt();
+         _model.clothExp = pkg.readInt();
+         _model.weaponExp = pkg.readInt();
+         _model.shieldExp = pkg.readInt();
          _model.setEquipLevel();
          show();
       }
@@ -189,25 +187,25 @@ package mines
          AssetModuleLoader.addModelLoader("mines",7);
          AssetModuleLoader.startCodeLoader(function():void
          {
-            var _loc1_:* = ClassUtils.CreatInstance("mines.MinesMainFrame");
-            LayerManager.Instance.addToLayer(_loc1_,3,true,1);
+            var frame:* = ClassUtils.CreatInstance("mines.MinesMainFrame");
+            LayerManager.Instance.addToLayer(frame,3,true,1);
          });
       }
       
-      public function templateDropDataSetup(param1:MinesDropAnalyzer) : void
+      public function templateDropDataSetup(analyzer:MinesDropAnalyzer) : void
       {
-         if(param1 is MinesDropAnalyzer)
+         if(analyzer is MinesDropAnalyzer)
          {
-            _model.dropList = param1.list;
+            _model.dropList = analyzer.list;
          }
       }
       
-      public function templateLevelDataSetup(param1:MinesLevelAnalyzer) : void
+      public function templateLevelDataSetup(analyzer:MinesLevelAnalyzer) : void
       {
-         if(param1 is MinesLevelAnalyzer)
+         if(analyzer is MinesLevelAnalyzer)
          {
-            _model.toolList = param1.toolList;
-            _model.equipList = param1.equipList;
+            _model.toolList = analyzer.toolList;
+            _model.equipList = analyzer.equipList;
          }
       }
       

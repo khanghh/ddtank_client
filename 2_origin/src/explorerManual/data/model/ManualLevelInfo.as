@@ -18,9 +18,9 @@ package explorerManual.data.model
          return _full;
       }
       
-      public function set full(param1:int) : void
+      public function set full(value:int) : void
       {
-         _full = param1;
+         _full = value;
       }
       
       public function get level() : int
@@ -28,9 +28,9 @@ package explorerManual.data.model
          return _level;
       }
       
-      public function set level(param1:int) : void
+      public function set level(value:int) : void
       {
-         _level = param1;
+         _level = value;
       }
    }
 }

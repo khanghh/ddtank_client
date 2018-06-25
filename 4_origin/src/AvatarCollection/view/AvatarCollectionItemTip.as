@@ -82,16 +82,16 @@ package AvatarCollection.view
          return _tempData;
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         _tempData = param1 as AvatarCollectionItemVo;
+         _tempData = data as AvatarCollectionItemVo;
          if(!_tempData)
          {
             return;
          }
-         var _loc2_:ItemTemplateInfo = _tempData.itemInfo;
-         _titleTxt.text = _loc2_.Name;
-         _typeValueTxt.text = LanguageMgr.GetTranslation("avatarCollection.itemTip.typeValueTxt",EquipType.PARTNAME[_loc2_.CategoryID]);
+         var tmp:ItemTemplateInfo = _tempData.itemInfo;
+         _titleTxt.text = tmp.Name;
+         _typeValueTxt.text = LanguageMgr.GetTranslation("avatarCollection.itemTip.typeValueTxt",EquipType.PARTNAME[tmp.CategoryID]);
          _placeTxt.text = LanguageMgr.GetTranslation("avatarCollection.itemTip.placeTxt") + _placeTxtList[int(_tempData.proArea) - 1];
          if(_tempData.isActivity)
          {

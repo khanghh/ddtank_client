@@ -17,13 +17,13 @@ package starling.display.shaders
          super();
       }
       
-      protected function compileAGAL(param1:String, param2:String) : void
+      protected function compileAGAL(shaderType:String, agal:String) : void
       {
          if(assembler == null)
          {
             assembler = new AGALMiniAssembler();
          }
-         assembler.assemble(param1,param2);
+         assembler.assemble(shaderType,agal);
          _opCode = assembler.agalcode;
       }
       
@@ -32,7 +32,7 @@ package starling.display.shaders
          return _opCode;
       }
       
-      public function setConstants(param1:Context3D, param2:int) : void
+      public function setConstants(context:Context3D, firstRegister:int) : void
       {
       }
    }

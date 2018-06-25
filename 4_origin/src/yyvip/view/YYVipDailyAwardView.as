@@ -48,35 +48,33 @@ package yyvip.view
       
       private function initView() : void
       {
-         var _loc6_:int = 0;
-         var _loc2_:* = null;
-         var _loc5_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var tmp:* = null;
+         var j:int = 0;
+         var tmp2:* = null;
          _bg = ComponentFactory.Instance.creatBitmap("asset.yyvip.dailyView.bg");
          addChild(_bg);
          _levelAwardList = new Vector.<YYVipLevelAwardCell>();
-         _loc6_ = 1;
-         while(_loc6_ <= 7)
+         for(i = 1; i <= 7; )
          {
-            _loc2_ = new YYVipLevelAwardCell(_loc6_);
-            _loc2_.x = 42;
-            _loc2_.y = 31 + _loc6_ * 44;
-            addChild(_loc2_);
-            _levelAwardList.push(_loc2_);
-            _loc6_++;
+            tmp = new YYVipLevelAwardCell(i);
+            tmp.x = 42;
+            tmp.y = 31 + i * 44;
+            addChild(tmp);
+            _levelAwardList.push(tmp);
+            i++;
          }
          _yearAwardList = new Vector.<YYVipAwardCell>();
-         var _loc4_:Vector.<Object> = YYVipControl.instance.dailyViewYearAwardList;
-         var _loc3_:int = _loc4_.length;
-         _loc5_ = 0;
-         while(_loc5_ < _loc3_)
+         var tmpAwardInfoList:Vector.<Object> = YYVipControl.instance.dailyViewYearAwardList;
+         var len:int = tmpAwardInfoList.length;
+         for(j = 0; j < len; )
          {
-            _loc1_ = new YYVipAwardCell(_loc4_[_loc5_]);
-            _loc1_.x = 492 + _loc5_ % 2 * 104;
-            _loc1_.y = 132 + int(_loc5_ / 2) * 124;
-            addChild(_loc1_);
-            _yearAwardList.push(_loc1_);
-            _loc5_++;
+            tmp2 = new YYVipAwardCell(tmpAwardInfoList[j]);
+            tmp2.x = 492 + j % 2 * 104;
+            tmp2.y = 132 + int(j / 2) * 124;
+            addChild(tmp2);
+            _yearAwardList.push(tmp2);
+            j++;
          }
          _getBtn = ComponentFactory.Instance.creatComponentByStylename("yyvip.view.getBtn");
          _getBtn.enable = false;
@@ -94,9 +92,9 @@ package yyvip.view
          _yearGetBtn.addEventListener("click",getClickHandler,false,0,true);
       }
       
-      public function refreshBtnStatus(param1:int, param2:int) : void
+      public function refreshBtnStatus(isCanGet:int, isYearCanGet:int) : void
       {
-         if(param1 == 0)
+         if(isCanGet == 0)
          {
             _getBtn.enable = false;
          }
@@ -104,7 +102,7 @@ package yyvip.view
          {
             _getBtn.enable = true;
          }
-         if(param2 == 0)
+         if(isYearCanGet == 0)
          {
             _yearGetBtn.enable = false;
          }
@@ -114,58 +112,58 @@ package yyvip.view
          }
       }
       
-      private function getClickHandler(param1:MouseEvent) : void
+      private function getClickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc4_:String = "2";
-         var _loc5_:SimpleBitmapButton = param1.currentTarget as SimpleBitmapButton;
-         _loc5_.enable = false;
-         var _loc6_:* = _loc5_;
+         var tmp:String = "2";
+         var tmpBtn:SimpleBitmapButton = event.currentTarget as SimpleBitmapButton;
+         tmpBtn.enable = false;
+         var _loc6_:* = tmpBtn;
          if(_getBtn !== _loc6_)
          {
             if(_yearGetBtn === _loc6_)
             {
-               _loc4_ = "3";
+               tmp = "3";
             }
          }
          else
          {
-            _loc4_ = "2";
+            tmp = "2";
          }
-         var _loc3_:URLVariables = new URLVariables();
-         _loc3_["uid"] = PlayerManager.Instance.Self.ID;
-         _loc3_["type"] = "2";
-         _loc3_["reward"] = _loc4_;
-         var _loc2_:RequestLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ProxyVIP.ashx"),6,_loc3_);
-         _loc2_.addEventListener("loadError",__onRequestError,false,0,true);
-         _loc2_.addEventListener("complete",__onRequestComplete,false,0,true);
-         LoadResourceManager.Instance.startLoad(_loc2_);
+         var args:URLVariables = new URLVariables();
+         args["uid"] = PlayerManager.Instance.Self.ID;
+         args["type"] = "2";
+         args["reward"] = tmp;
+         var loader:RequestLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ProxyVIP.ashx"),6,args);
+         loader.addEventListener("loadError",__onRequestError,false,0,true);
+         loader.addEventListener("complete",__onRequestComplete,false,0,true);
+         LoadResourceManager.Instance.startLoad(loader);
       }
       
-      private function __onRequestError(param1:LoaderEvent) : void
+      private function __onRequestError(evt:LoaderEvent) : void
       {
          trace("RequestError");
-         var _loc2_:RequestLoader = param1.target as RequestLoader;
-         _loc2_.removeEventListener("loadError",__onRequestError);
-         _loc2_.removeEventListener("complete",__onRequestComplete);
+         var tmpLoader:RequestLoader = evt.target as RequestLoader;
+         tmpLoader.removeEventListener("loadError",__onRequestError);
+         tmpLoader.removeEventListener("complete",__onRequestComplete);
          MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("yyVip.requestData.failTipTxt"));
       }
       
-      private function __onRequestComplete(param1:LoaderEvent) : void
+      private function __onRequestComplete(evt:LoaderEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:RequestLoader = param1.target as RequestLoader;
-         _loc3_.removeEventListener("loadError",__onRequestError);
-         _loc3_.removeEventListener("complete",__onRequestComplete);
-         var _loc4_:XML = new XML(param1.loader.content);
-         if(_loc4_.@value == "true")
+         var type:int = 0;
+         var result:int = 0;
+         var tmpLoader:RequestLoader = evt.target as RequestLoader;
+         tmpLoader.removeEventListener("loadError",__onRequestError);
+         tmpLoader.removeEventListener("complete",__onRequestComplete);
+         var xml:XML = new XML(evt.loader.content);
+         if(xml.@value == "true")
          {
-            _loc5_ = _loc4_.@Type;
-            if(_loc5_ == 2)
+            type = xml.@Type;
+            if(type == 2)
             {
-               _loc2_ = _loc4_.@Reward;
-               if(_loc2_ == 1)
+               result = xml.@Reward;
+               if(result == 1)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("yyVip.getReward.successTxt"));
                }
@@ -181,19 +179,19 @@ package yyvip.view
          }
       }
       
-      private function guideToOpen(param1:String) : void
+      private function guideToOpen(tip:String) : void
       {
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),param1,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
-         _loc2_.moveEnable = false;
-         _loc2_.addEventListener("response",confirmHandler,false,0,true);
+         var confirmFrame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),tip,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
+         confirmFrame.moveEnable = false;
+         confirmFrame.addEventListener("response",confirmHandler,false,0,true);
       }
       
-      private function confirmHandler(param1:FrameEvent) : void
+      private function confirmHandler(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",confirmHandler);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",confirmHandler);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             YYVipControl.instance.gotoOpenUrl();
          }

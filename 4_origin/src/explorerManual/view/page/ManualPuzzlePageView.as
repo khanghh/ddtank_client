@@ -45,15 +45,15 @@ package explorerManual.view.page
          return _isPuzzleSucceed;
       }
       
-      public function set isPuzzleSucceed(param1:Boolean) : void
+      public function set isPuzzleSucceed(value:Boolean) : void
       {
-         _isPuzzleSucceed = param1;
+         _isPuzzleSucceed = value;
          this.dispatchEvent(new CEvent("PuzzleSucceed",_isPuzzleSucceed));
       }
       
-      public function set isCanClick(param1:Boolean) : void
+      public function set isCanClick(value:Boolean) : void
       {
-         _isCanClick = param1;
+         _isCanClick = value;
       }
       
       public function get isCanClick() : Boolean
@@ -61,72 +61,69 @@ package explorerManual.view.page
          return _isCanClick;
       }
       
-      public function set debrisInfo(param1:Array) : void
+      public function set debrisInfo(info:Array) : void
       {
-         _debrisInfo = param1;
+         _debrisInfo = info;
          isCanClick = _count <= _debrisInfo.length;
          initPuzzleItem();
       }
       
-      public function set totalDebrisCount(param1:int) : void
+      public function set totalDebrisCount(value:int) : void
       {
-         _count = param1;
+         _count = value;
       }
       
       public function correctionPuzzle() : void
       {
-         var _loc2_:* = null;
-         var _loc6_:int = 0;
-         var _loc1_:int = 0;
-         var _loc5_:int = 0;
-         var _loc8_:int = 0;
-         var _loc4_:* = 0;
-         var _loc3_:int = _debrisInfo.length;
-         var _loc7_:Array = [];
+         var correction1:* = null;
+         var correction2:int = 0;
+         var numb:int = 0;
+         var k:int = 0;
+         var i:int = 0;
+         var j:* = 0;
+         var len:int = _debrisInfo.length;
+         var temDebris:Array = [];
          if(_isCanClick)
          {
-            _loc5_ = 0;
-            while(_loc5_ < _debrisInfo.length)
+            for(k = 0; k < _debrisInfo.length; )
             {
-               _loc7_.push(_debrisInfo[_loc5_].Sort);
-               _loc5_++;
+               temDebris.push(_debrisInfo[k].Sort);
+               k++;
             }
-            _loc8_ = 0;
-            while(_loc8_ < _loc3_)
+            for(i = 0; i < len; )
             {
-               if(_loc7_[_loc8_] != _loc8_ + 1)
+               if(temDebris[i] != i + 1)
                {
-                  _loc4_ = _loc8_;
-                  while(_loc4_ < _loc3_)
+                  for(j = i; j < len; )
                   {
-                     if(_loc7_[_loc4_] == _loc8_ + 1)
+                     if(temDebris[j] == i + 1)
                      {
-                        _loc6_ = _loc7_[_loc4_];
-                        _loc7_[_loc4_] = _loc7_[_loc8_];
-                        _loc7_[_loc8_] = _loc6_;
-                        _loc1_++;
+                        correction2 = temDebris[j];
+                        temDebris[j] = temDebris[i];
+                        temDebris[i] = correction2;
+                        numb++;
                         break;
                      }
-                     _loc4_++;
+                     j++;
                   }
                }
-               _loc8_++;
+               i++;
             }
-            if(_loc1_ % 2 > 0)
+            if(numb % 2 > 0)
             {
-               _loc2_ = _debrisInfo[_loc3_ - 1];
-               _debrisInfo[_loc3_ - 1] = _debrisInfo[_loc3_ - 2];
-               _debrisInfo[_loc3_ - 2] = _loc2_;
+               correction1 = _debrisInfo[len - 1];
+               _debrisInfo[len - 1] = _debrisInfo[len - 2];
+               _debrisInfo[len - 2] = correction1;
             }
          }
       }
       
       private function initPuzzleItem() : void
       {
-         var _loc1_:* = null;
-         var _loc4_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
+         var piecesItem:* = null;
+         var temIndex:int = 0;
+         var j:int = 0;
+         var k:int = 0;
          _rows = Math.sqrt(_count + 1);
          _cols = _rows;
          _allDebrisState = new Array(_rows);
@@ -134,34 +131,32 @@ package explorerManual.view.page
          _itemW = _totalWidth / _rows;
          _itemH = _totalHeight / _cols;
          correctionPuzzle();
-         _loc2_ = 0;
-         while(_loc2_ < _rows)
+         for(j = 0; j < _rows; )
          {
-            _allDebrisState[_loc2_] = new Array(_cols);
-            _loc3_ = 0;
-            while(_loc3_ < _cols)
+            _allDebrisState[j] = new Array(_cols);
+            for(k = 0; k < _cols; )
             {
-               _loc4_ = _loc2_ * _cols + _loc3_;
-               if(_loc4_ < _debrisInfo.length)
+               temIndex = j * _cols + k;
+               if(temIndex < _debrisInfo.length)
                {
-                  _loc1_ = new ManualPiecesItem(_loc4_,_itemW,_itemH);
-                  _loc1_.info = _debrisInfo[_loc4_];
-                  _loc1_.x = _loc3_ * _itemW;
-                  _loc1_.y = _loc2_ * _itemH;
-                  _loc1_.xOffset = _loc3_;
-                  _loc1_.yOffset = _loc2_;
-                  addChild(_loc1_);
-                  _allDebrisState[_loc2_][_loc3_] = 0;
-                  _loc1_.addEventListener("click",__itemClickHandler);
-                  _allDebris.push(_loc1_);
+                  piecesItem = new ManualPiecesItem(temIndex,_itemW,_itemH);
+                  piecesItem.info = _debrisInfo[temIndex];
+                  piecesItem.x = k * _itemW;
+                  piecesItem.y = j * _itemH;
+                  piecesItem.xOffset = k;
+                  piecesItem.yOffset = j;
+                  addChild(piecesItem);
+                  _allDebrisState[j][k] = 0;
+                  piecesItem.addEventListener("click",__itemClickHandler);
+                  _allDebris.push(piecesItem);
                }
                else
                {
-                  _allDebrisState[_loc2_][_loc3_] = 1;
+                  _allDebrisState[j][k] = 1;
                }
-               _loc3_++;
+               k++;
             }
-            _loc2_++;
+            j++;
          }
          if(isCanClick)
          {
@@ -169,108 +164,106 @@ package explorerManual.view.page
          }
       }
       
-      private function __itemClickHandler(param1:MouseEvent) : void
+      private function __itemClickHandler(evt:MouseEvent) : void
       {
          if(!_isCanClick)
          {
             return;
          }
-         var _loc2_:ManualPiecesItem = param1.target as ManualPiecesItem;
-         var _loc4_:int = _loc2_.xOffset - 1;
-         var _loc5_:int = _loc2_.xOffset + 1;
-         var _loc6_:int = _loc2_.yOffset - 1;
-         var _loc3_:int = _loc2_.yOffset + 1;
-         if(_loc4_ != -1 && _allDebrisState[_loc4_][_loc2_.yOffset] == 1)
+         var item:ManualPiecesItem = evt.target as ManualPiecesItem;
+         var left:int = item.xOffset - 1;
+         var right:int = item.xOffset + 1;
+         var top:int = item.yOffset - 1;
+         var bottom:int = item.yOffset + 1;
+         if(left != -1 && _allDebrisState[left][item.yOffset] == 1)
          {
-            _allDebrisState[_loc4_][_loc2_.yOffset] = 0;
-            _allDebrisState[_loc2_.xOffset][_loc2_.yOffset] = 1;
-            _loc2_.xOffset = _loc4_;
-            _loc2_.x = _loc4_ * _itemW;
-            _loc2_.index = _loc2_.index - 1;
+            _allDebrisState[left][item.yOffset] = 0;
+            _allDebrisState[item.xOffset][item.yOffset] = 1;
+            item.xOffset = left;
+            item.x = left * _itemW;
+            item.index = item.index - 1;
          }
-         else if(_loc5_ < _rows && _allDebrisState[_loc5_][_loc2_.yOffset] == 1)
+         else if(right < _rows && _allDebrisState[right][item.yOffset] == 1)
          {
-            _allDebrisState[_loc2_.xOffset][_loc2_.yOffset] = 1;
-            _allDebrisState[_loc5_][_loc2_.yOffset] = 0;
-            _loc2_.xOffset = _loc5_;
-            _loc2_.x = _loc5_ * _itemW;
-            _loc2_.index = _loc2_.index + 1;
+            _allDebrisState[item.xOffset][item.yOffset] = 1;
+            _allDebrisState[right][item.yOffset] = 0;
+            item.xOffset = right;
+            item.x = right * _itemW;
+            item.index = item.index + 1;
          }
-         else if(_loc6_ != -1 && _allDebrisState[_loc2_.xOffset][_loc6_] == 1)
+         else if(top != -1 && _allDebrisState[item.xOffset][top] == 1)
          {
-            _allDebrisState[_loc2_.xOffset][_loc2_.yOffset] = 1;
-            _allDebrisState[_loc2_.xOffset][_loc6_] = 0;
-            _loc2_.yOffset = _loc6_;
-            _loc2_.y = _loc6_ * _itemH;
-            _loc2_.index = _loc2_.index - _rows;
+            _allDebrisState[item.xOffset][item.yOffset] = 1;
+            _allDebrisState[item.xOffset][top] = 0;
+            item.yOffset = top;
+            item.y = top * _itemH;
+            item.index = item.index - _rows;
          }
-         else if(_loc3_ < _cols && _allDebrisState[_loc2_.xOffset][_loc3_] == 1)
+         else if(bottom < _cols && _allDebrisState[item.xOffset][bottom] == 1)
          {
-            _allDebrisState[_loc2_.xOffset][_loc2_.yOffset] = 1;
-            _allDebrisState[_loc2_.xOffset][_loc3_] = 0;
-            _loc2_.yOffset = _loc3_;
-            _loc2_.y = _loc3_ * _itemH;
-            _loc2_.index = _loc2_.index + _rows;
+            _allDebrisState[item.xOffset][item.yOffset] = 1;
+            _allDebrisState[item.xOffset][bottom] = 0;
+            item.yOffset = bottom;
+            item.y = bottom * _itemH;
+            item.index = item.index + _rows;
          }
          checkPuzzleResult();
       }
       
       private function checkPuzzleResult() : void
       {
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
-         var _loc1_:Boolean = true;
-         _loc3_ = 0;
-         while(_loc3_ < _allDebris.length)
+         var item:* = null;
+         var i:int = 0;
+         var isSucceed:Boolean = true;
+         for(i = 0; i < _allDebris.length; )
          {
-            if(!(_allDebris[_loc3_] as ManualPiecesItem).isRight)
+            if(!(_allDebris[i] as ManualPiecesItem).isRight)
             {
-               _loc1_ = false;
+               isSucceed = false;
                break;
             }
-            _loc3_++;
+            i++;
          }
-         if(_loc1_)
+         if(isSucceed)
          {
-            isPuzzleSucceed = _loc1_;
+            isPuzzleSucceed = isSucceed;
             isCanClick = false;
          }
       }
       
       public function akey() : void
       {
-         var _loc6_:* = null;
-         var _loc3_:int = 0;
-         var _loc1_:int = 0;
-         var _loc7_:int = 0;
-         var _loc8_:int = Math.sqrt(_count + 1);
-         var _loc2_:int = _rows;
-         var _loc5_:int = _totalWidth / _rows;
-         var _loc4_:int = _totalHeight / _cols;
-         _loc7_ = 0;
-         while(_loc7_ < _allDebris.length)
+         var item:* = null;
+         var xOffset:int = 0;
+         var yOffset:int = 0;
+         var i:int = 0;
+         var rows:int = Math.sqrt(_count + 1);
+         var cols:int = _rows;
+         var itemW:int = _totalWidth / _rows;
+         var itemH:int = _totalHeight / _cols;
+         for(i = 0; i < _allDebris.length; )
          {
-            _loc6_ = _allDebris[_loc7_] as ManualPiecesItem;
-            _loc3_ = (_loc6_.info.Sort - 1) % _loc8_;
-            _loc1_ = (_loc6_.info.Sort - 1) / _loc8_;
-            _loc6_.x = _loc3_ * _loc5_;
-            _loc6_.y = _loc1_ * _loc4_;
-            _loc6_.index = _loc1_ * _loc2_ + _loc3_;
-            _loc7_++;
+            item = _allDebris[i] as ManualPiecesItem;
+            xOffset = (item.info.Sort - 1) % rows;
+            yOffset = (item.info.Sort - 1) / rows;
+            item.x = xOffset * itemW;
+            item.y = yOffset * itemH;
+            item.index = yOffset * cols + xOffset;
+            i++;
          }
          checkPuzzleResult();
       }
       
       public function clear() : void
       {
-         var _loc1_:* = null;
+         var item:* = null;
          if(_allDebris && _allDebris.length > 0)
          {
             while(_allDebris.length > 0)
             {
-               _loc1_ = _allDebris.shift();
-               _loc1_.removeEventListener("click",__itemClickHandler);
-               ObjectUtils.disposeObject(_loc1_);
+               item = _allDebris.shift();
+               item.removeEventListener("click",__itemClickHandler);
+               ObjectUtils.disposeObject(item);
             }
          }
          _allDebris = null;

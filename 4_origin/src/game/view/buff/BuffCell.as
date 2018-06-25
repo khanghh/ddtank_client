@@ -34,10 +34,10 @@ package game.view.buff
       
       private var _buffAnimation:MovieClip;
       
-      public function BuffCell(param1:BitmapObject = null, param2:Matrix = null, param3:Boolean = true, param4:Boolean = false)
+      public function BuffCell(bitmap:BitmapObject = null, matrix:Matrix = null, repeat:Boolean = true, smooth:Boolean = false)
       {
          _tipData = new PropTxtTipInfo();
-         super(param1,param2,false,true);
+         super(bitmap,matrix,false,true);
          _bitmapMgr = BitmapManager.getBitmapMgr("GameView");
          _tipData = new PropTxtTipInfo();
          _tipData.color = 15790320;
@@ -93,7 +93,7 @@ package game.view.buff
          deleteBuffAnimation();
       }
       
-      public function setInfo(param1:FightBuffInfo) : void
+      public function setInfo(val:FightBuffInfo) : void
       {
          if(_loaderProxy)
          {
@@ -102,7 +102,7 @@ package game.view.buff
          _loaderProxy = null;
          bitmapObject = null;
          deleteBuffAnimation();
-         _info = param1;
+         _info = val;
          _tipData.property = _info.buffName;
          _tipData.detail = _info.description;
          if(isContainerBuff(_info))
@@ -120,23 +120,23 @@ package game.view.buff
                bitmapObject = _bitmapMgr.getBitmap("asset.game.buffCard");
             }
          }
-         else if(param1.type == 5)
+         else if(val.type == 5)
          {
-            _loaderProxy = new BitmapLoaderProxy(PathManager.solvePetBuff(param1.buffPic),new Rectangle(0,0,32 / this.scaleX,32 / this.scaleY));
+            _loaderProxy = new BitmapLoaderProxy(PathManager.solvePetBuff(val.buffPic),new Rectangle(0,0,32 / this.scaleX,32 / this.scaleY));
             addChild(_loaderProxy);
             ShowTipManager.Instance.addTip(this);
          }
-         else if(param1.type == 6)
+         else if(val.type == 6)
          {
-            if(param1.showType == 1)
+            if(val.showType == 1)
             {
-               _loaderProxy = new BitmapLoaderProxy(PathManager.solvePetBuff(param1.buffPic),new Rectangle(0,0,32 / this.scaleX,32 / this.scaleY));
+               _loaderProxy = new BitmapLoaderProxy(PathManager.solvePetBuff(val.buffPic),new Rectangle(0,0,32 / this.scaleX,32 / this.scaleY));
                addChild(_loaderProxy);
                ShowTipManager.Instance.addTip(this);
             }
             else
             {
-               _loaderProxy = new BitmapLoaderProxy(PathManager.solvePetBuff(param1.buffPic),new Rectangle(0,0,20 / this.scaleX,20 / this.scaleY));
+               _loaderProxy = new BitmapLoaderProxy(PathManager.solvePetBuff(val.buffPic),new Rectangle(0,0,20 / this.scaleX,20 / this.scaleY));
                addChild(_loaderProxy);
             }
          }
@@ -173,17 +173,17 @@ package game.view.buff
          return _tipData;
       }
       
-      private function isContainerBuff(param1:FightBuffInfo) : Boolean
+      private function isContainerBuff(buff:FightBuffInfo) : Boolean
       {
-         return param1.type == 2 || param1.type == 3 || param1.type == 4;
+         return buff.type == 2 || buff.type == 3 || buff.type == 4;
       }
       
-      private function isActivityDunBuff(param1:FightBuffInfo) : Boolean
+      private function isActivityDunBuff(buff:FightBuffInfo) : Boolean
       {
-         return param1.displayid == 114 || param1.displayid == 115;
+         return buff.displayid == 114 || buff.displayid == 115;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(value:Object) : void
       {
       }
       
@@ -192,7 +192,7 @@ package game.view.buff
          return "7,6,5,1,6,4";
       }
       
-      public function set tipDirctions(param1:String) : void
+      public function set tipDirctions(value:String) : void
       {
       }
       
@@ -201,7 +201,7 @@ package game.view.buff
          return 6;
       }
       
-      public function set tipGapH(param1:int) : void
+      public function set tipGapH(value:int) : void
       {
       }
       
@@ -210,7 +210,7 @@ package game.view.buff
          return 6;
       }
       
-      public function set tipGapV(param1:int) : void
+      public function set tipGapV(value:int) : void
       {
       }
       
@@ -223,7 +223,7 @@ package game.view.buff
          return "core.FightBuffTip";
       }
       
-      public function set tipStyle(param1:String) : void
+      public function set tipStyle(value:String) : void
       {
       }
    }

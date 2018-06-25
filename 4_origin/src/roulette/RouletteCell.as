@@ -19,9 +19,9 @@ package roulette
       
       private var _selectMovie:MovieClip;
       
-      public function RouletteCell(param1:DisplayObject)
+      public function RouletteCell(bg:DisplayObject)
       {
-         super(param1);
+         super(bg);
          initII();
       }
       
@@ -45,9 +45,9 @@ package roulette
          _selectMovie.gotoAndStop(1);
       }
       
-      public function set count(param1:int) : void
+      public function set count(n:int) : void
       {
-         _count = param1;
+         _count = n;
       }
       
       public function get count() : int
@@ -64,9 +64,9 @@ package roulette
          }
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         _selected = param1;
+         _selected = value;
          _selectMovie.visible = _selected;
          if(_selected == false)
          {

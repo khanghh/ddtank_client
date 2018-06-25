@@ -39,9 +39,9 @@ package team.view.rank
          }
       }
       
-      override protected function onResponse(param1:int) : void
+      override protected function onResponse(type:int) : void
       {
-         if(param1 == 0 || param1 == 4 || param1 == 1)
+         if(type == 0 || type == 4 || type == 1)
          {
             SoundManager.instance.playButtonSound();
             dispose();

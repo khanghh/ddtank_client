@@ -65,7 +65,7 @@ package farm.viewx.shop
       
       private function initView() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _titleShop = ComponentFactory.Instance.creat("assets.farmShop.title");
          addToContent(_titleShop);
          _pageInputBg = ComponentFactory.Instance.creat("farm.farmShopView.fontBG");
@@ -87,13 +87,12 @@ package farm.viewx.shop
          _btnGroup.selectIndex = 0;
          _goodItemContainerAll = ComponentFactory.Instance.creat("farm.simpleTileList.farmShop",[5]);
          addToContent(_goodItemContainerAll);
-         _loc1_ = 0;
-         while(_loc1_ < 10)
+         for(i = 0; i < 10; )
          {
-            _goodItems[_loc1_] = ComponentFactory.Instance.creatCustomObject("farmShop.farmShopItem");
-            _goodItemContainerAll.addChild(_goodItems[_loc1_]);
-            _goodItems[_loc1_].addEventListener("itemClick",__itemClick);
-            _loc1_++;
+            _goodItems[i] = ComponentFactory.Instance.creatCustomObject("farmShop.farmShopItem");
+            _goodItemContainerAll.addChild(_goodItems[i]);
+            _goodItems[i].addEventListener("itemClick",__itemClick);
+            i++;
          }
          if(PetsBagManager.instance().petModel.IsFinishTask5)
          {
@@ -120,12 +119,12 @@ package farm.viewx.shop
          _endPageBtn.removeEventListener("click",__pageBtnClick);
       }
       
-      private function __itemClick(param1:ItemEvent) : void
+      private function __itemClick(evt:ItemEvent) : void
       {
-         var _loc2_:FarmShopItem = param1.currentTarget as FarmShopItem;
+         var item:FarmShopItem = evt.currentTarget as FarmShopItem;
       }
       
-      private function __changeHandler(param1:Event) : void
+      private function __changeHandler(event:Event) : void
       {
          SoundManager.instance.play("008");
          switch(int(_btnGroup.selectIndex))
@@ -140,10 +139,10 @@ package farm.viewx.shop
          loadList();
       }
       
-      private function __pageBtnClick(param1:MouseEvent) : void
+      private function __pageBtnClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = evt.currentTarget;
          if(_firstPage !== _loc2_)
          {
             if(_prePageBtn !== _loc2_)
@@ -188,29 +187,28 @@ package farm.viewx.shop
          setList(ShopManager.Instance.getValidSortedGoodsByType(getType(),CURRENT_PAGE,10));
       }
       
-      public function setList(param1:Vector.<ShopItemInfo>) : void
+      public function setList(list:Vector.<ShopItemInfo>) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < 10)
+         var i:int = 0;
+         for(i = 0; i < 10; )
          {
-            if(_loc2_ < param1.length && param1[_loc2_])
+            if(i < list.length && list[i])
             {
-               _goodItems[_loc2_].shopItemInfo = param1[_loc2_];
+               _goodItems[i].shopItemInfo = list[i];
             }
             else
             {
-               _goodItems[_loc2_].shopItemInfo = null;
+               _goodItems[i].shopItemInfo = null;
             }
-            _loc2_++;
+            i++;
          }
          _currentPageTxt.text = CURRENT_PAGE + "/" + ShopManager.Instance.getResultPages(getType(),10);
       }
       
       private function getType() : int
       {
-         var _loc1_:int = _currentType;
-         return _loc1_;
+         var shopType:int = _currentType;
+         return shopType;
       }
       
       public function show() : void
@@ -221,14 +219,13 @@ package farm.viewx.shop
       
       override public function dispose() : void
       {
-         var _loc1_:* = 0;
-         _loc1_ = uint(0);
-         while(_loc1_ < 10)
+         var i:* = 0;
+         for(i = uint(0); i < 10; )
          {
-            _goodItems[_loc1_].removeEventListener("itemClick",__itemClick);
-            _goodItems[_loc1_].dispose();
-            _goodItems[_loc1_] = null;
-            _loc1_++;
+            _goodItems[i].removeEventListener("itemClick",__itemClick);
+            _goodItems[i].dispose();
+            _goodItems[i] = null;
+            i++;
          }
          _goodItems.splice(0,_goodItems.length);
          if(_goodItemContainerAll)

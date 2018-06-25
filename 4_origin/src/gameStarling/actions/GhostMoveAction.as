@@ -26,13 +26,13 @@ package gameStarling.actions
       
       private var _pickBoxActions:Array;
       
-      public function GhostMoveAction(param1:GamePlayer3D, param2:Point, param3:Array = null)
+      public function GhostMoveAction(player:GamePlayer3D, target:Point, actions:Array = null)
       {
          super();
-         _target = param2;
-         _player = param1;
+         _target = target;
+         _player = player;
          _startPos = _player.pos;
-         _pickBoxActions = param3;
+         _pickBoxActions = actions;
          _vp = _target.subtract(_startPos);
          _vp.normalize(2);
       }
@@ -51,8 +51,8 @@ package gameStarling.actions
       
       override public function execute() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var posA:* = null;
+         var posB:* = null;
          _player.info.direction = _vp.x > 0?1:-1;
          if(Point.distance(_startPos,_target) > _vp.length)
          {
@@ -60,13 +60,13 @@ package gameStarling.actions
             {
                _vp.normalize(_vp.length * 1.1);
             }
-            _loc2_ = _startPos;
+            posA = _startPos;
             _startPos = _startPos.add(_vp);
             _player.info.pos = _startPos;
-            _loc1_ = _startPos;
+            posB = _startPos;
             if(_player is GameLocalPlayer3D)
             {
-               (_player as GameLocalPlayer3D).localPlayer.energy = (_player as GameLocalPlayer3D).localPlayer.energy - Math.round(Point.distance(_loc2_,_loc1_) / 1.5);
+               (_player as GameLocalPlayer3D).localPlayer.energy = (_player as GameLocalPlayer3D).localPlayer.energy - Math.round(Point.distance(posA,posB) / 1.5);
             }
          }
          else
@@ -81,11 +81,11 @@ package gameStarling.actions
          _life = _life + 40;
          var _loc5_:int = 0;
          var _loc4_:* = _pickBoxActions;
-         for each(var _loc3_ in _pickBoxActions)
+         for each(var act in _pickBoxActions)
          {
-            if(_life >= _loc3_.time && !_loc3_.executed)
+            if(_life >= act.time && !act.executed)
             {
-               _loc3_.execute(_player);
+               act.execute(_player);
             }
          }
       }

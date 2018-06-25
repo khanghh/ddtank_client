@@ -52,21 +52,21 @@ package calendar.view
       
       private var receivedBG:Bitmap;
       
-      public function SignAwardBar(param1:CalendarModel)
+      public function SignAwardBar(model:CalendarModel)
       {
          _items = new Vector.<NavigItem>();
          super();
-         _model = param1;
+         _model = model;
          configUI();
          addEvent();
       }
       
       private function configUI() : void
       {
-         var _loc5_:* = null;
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         var _loc2_:Boolean = false;
+         var itemInfo:* = null;
+         var tInfo:* = null;
+         var cell:* = null;
+         var flag:Boolean = false;
          _signCoundField = ComponentFactory.Instance.creatComponentByStylename("ddtcalendar.SignCountField");
          _signCoundField.text = _model.signCount.toString();
          addChild(_signCoundField);
@@ -75,26 +75,26 @@ package calendar.view
          _itemsHbox = ComponentFactory.Instance.creatComponentByStylename("ddtcalendar.hBox");
          addChild(_itemsHbox);
          drawCells();
-         var _loc1_:Object = returnPetID();
-         if(_loc1_ != null)
+         var goodaObj:Object = returnPetID();
+         if(goodaObj != null)
          {
-            _loc5_ = ItemManager.Instance.getTemplateById(_loc1_.Remark) as ItemTemplateInfo;
-            _loc3_ = new InventoryItemInfo();
-            ObjectUtils.copyProperties(_loc3_,_loc5_);
-            _loc3_.ValidDate = _loc1_.ValidDate;
-            _loc3_.IsBinds = true;
-            _loc3_.Count = _loc1_.Count;
-            _loc4_ = new BagCell(0,_loc3_,false);
-            _loc4_.setBgVisible(false);
-            _loc4_.width = 38;
-            _loc4_.height = 37;
-            _loc4_.x = 247;
-            _loc4_.y = 0;
+            itemInfo = ItemManager.Instance.getTemplateById(goodaObj.Remark) as ItemTemplateInfo;
+            tInfo = new InventoryItemInfo();
+            ObjectUtils.copyProperties(tInfo,itemInfo);
+            tInfo.ValidDate = goodaObj.ValidDate;
+            tInfo.IsBinds = true;
+            tInfo.Count = goodaObj.Count;
+            cell = new BagCell(0,tInfo,false);
+            cell.setBgVisible(false);
+            cell.width = 38;
+            cell.height = 37;
+            cell.x = 247;
+            cell.y = 0;
             _petBtn = ComponentFactory.Instance.creatComponentByStylename("ddtcalendar.petBtn");
             addChild(_petBtn);
-            addChild(_loc4_);
-            _loc2_ = returnPetIsShow(CalendarManager.getInstance().model.signCount);
-            var _loc6_:* = _loc2_;
+            addChild(cell);
+            flag = returnPetIsShow(CalendarManager.getInstance().model.signCount);
+            var _loc6_:* = flag;
             _petBtn.mouseEnabled = _loc6_;
             _loc6_ = _loc6_;
             _petBtn.mouseChildren = _loc6_;
@@ -105,13 +105,13 @@ package calendar.view
          }
       }
       
-      private function returnPetIsShow(param1:int) : Boolean
+      private function returnPetIsShow(count:int) : Boolean
       {
-         var _loc2_:Date = TimeManager.Instance.Now();
-         var _loc3_:Date = new Date(_loc2_.getFullYear(),_loc2_.getMonth() + 1);
-         _loc3_.time = _loc3_.time - 1;
-         var _loc4_:int = _loc3_.date;
-         if(param1 == _loc4_ && !CalendarManager.getInstance().isOK)
+         var serverTime:Date = TimeManager.Instance.Now();
+         var date:Date = new Date(serverTime.getFullYear(),serverTime.getMonth() + 1);
+         date.time = date.time - 1;
+         var totalDay:int = date.date;
+         if(count == totalDay && !CalendarManager.getInstance().isOK)
          {
             return true;
          }
@@ -120,67 +120,65 @@ package calendar.view
       
       private function returnPetID() : Object
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:Date = TimeManager.Instance.Now();
-         _loc3_ = 0;
-         while(_loc3_ < CalendarManager.getInstance().signPetInfo.length)
+         var i:int = 0;
+         var obj:* = null;
+         var serverDate:Date = TimeManager.Instance.Now();
+         for(i = 0; i < CalendarManager.getInstance().signPetInfo.length; )
          {
-            if(CalendarManager.getInstance().signPetInfo[_loc3_].AwardDays == _loc2_.getMonth() + 1)
+            if(CalendarManager.getInstance().signPetInfo[i].AwardDays == serverDate.getMonth() + 1)
             {
-               _loc1_ = {};
-               _loc1_.Remark = CalendarManager.getInstance().signPetInfo[_loc3_].Remark;
-               _loc1_.ValidDate = CalendarManager.getInstance().signPetInfo[_loc3_].ValidDate;
-               _loc1_.Count = CalendarManager.getInstance().signPetInfo[_loc3_].Count;
-               return _loc1_;
+               obj = {};
+               obj.Remark = CalendarManager.getInstance().signPetInfo[i].Remark;
+               obj.ValidDate = CalendarManager.getInstance().signPetInfo[i].ValidDate;
+               obj.Count = CalendarManager.getInstance().signPetInfo[i].Count;
+               return obj;
             }
-            _loc3_++;
+            i++;
          }
          return null;
       }
       
       private function drawCells() : void
       {
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
-         var _loc4_:int = _model.awardCounts.length;
-         var _loc3_:int = 0;
-         var _loc1_:Point = ComponentFactory.Instance.creatCustomObject("ddtcalendar.Award.TopLeft");
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         var i:int = 0;
+         var item:* = null;
+         var len:int = _model.awardCounts.length;
+         var receivedCount:int = 0;
+         var start:Point = ComponentFactory.Instance.creatCustomObject("ddtcalendar.Award.TopLeft");
+         for(i = 0; i < len; )
          {
-            _loc2_ = new NavigItem(_model.awardCounts[_loc5_]);
-            _loc2_.addEventListener("click",__itemClick);
-            _items.push(_loc2_);
-            _itemsHbox.addChild(_loc2_);
-            if(_model.hasReceived(_model.awardCounts[_loc5_]))
+            item = new NavigItem(_model.awardCounts[i]);
+            item.addEventListener("click",__itemClick);
+            _items.push(item);
+            _itemsHbox.addChild(item);
+            if(_model.hasReceived(_model.awardCounts[i]))
             {
-               _loc2_.received = true;
-               _loc3_++;
+               item.received = true;
+               receivedCount++;
             }
-            _loc5_++;
+            i++;
          }
-         if(_loc3_ < _items.length)
+         if(receivedCount < _items.length)
          {
-            _items[_loc3_].selected = true;
-            _selectedItem = _items[_loc3_];
+            _items[receivedCount].selected = true;
+            _selectedItem = _items[receivedCount];
             _awardHolder.setAwardsByCount(_selectedItem.count);
          }
-         else if(_loc3_ == _items.length)
+         else if(receivedCount == _items.length)
          {
-            _items[_loc3_ - 1].selected = true;
-            _selectedItem = _items[_loc3_ - 1];
+            _items[receivedCount - 1].selected = true;
+            _selectedItem = _items[receivedCount - 1];
             _awardHolder.setAwardsByCount(_selectedItem.count);
          }
       }
       
-      private function __itemClick(param1:MouseEvent) : void
+      private function __itemClick(event:MouseEvent) : void
       {
-         var _loc2_:NavigItem = param1.currentTarget as NavigItem;
-         if(_selectedItem != _loc2_)
+         var item:NavigItem = event.currentTarget as NavigItem;
+         if(_selectedItem != item)
          {
             _selectedItem.selected = false;
-            _selectedItem = _loc2_;
+            _selectedItem = item;
             _selectedItem.selected = true;
             _awardHolder.setAwardsByCount(_selectedItem.count);
             SoundManager.instance.play("008");
@@ -189,27 +187,26 @@ package calendar.view
       
       private function reset() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = _model.awardCounts.length;
-         var _loc1_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var i:int = 0;
+         var len:int = _model.awardCounts.length;
+         var receivedCount:int = 0;
+         for(i = 0; i < len; )
          {
             var _loc4_:Boolean = false;
-            _items[_loc3_].received = _loc4_;
-            _items[_loc3_].selected = _loc4_;
-            _loc3_++;
+            _items[i].received = _loc4_;
+            _items[i].selected = _loc4_;
+            i++;
          }
          _selectedItem = _items[0];
          _selectedItem.selected = true;
          _awardHolder.setAwardsByCount(_selectedItem.count);
       }
       
-      private function __signCountChanged(param1:Event) : void
+      private function __signCountChanged(event:Event) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
+         var len:int = 0;
+         var receivedCount:int = 0;
+         var i:int = 0;
          _signCoundField.text = _model.signCount.toString();
          if(_model.signCount == 0)
          {
@@ -217,26 +214,25 @@ package calendar.view
          }
          else
          {
-            _loc3_ = _model.awardCounts.length;
-            _loc2_ = 0;
-            _loc4_ = 0;
-            while(_loc4_ < _loc3_)
+            len = _model.awardCounts.length;
+            receivedCount = 0;
+            for(i = 0; i < len; )
             {
-               if(_model.hasReceived(_model.awardCounts[_loc4_]))
+               if(_model.hasReceived(_model.awardCounts[i]))
                {
-                  _items[_loc4_].received = true;
-                  if(_items[_loc4_] == _selectedItem)
+                  _items[i].received = true;
+                  if(_items[i] == _selectedItem)
                   {
                      _selectedItem = null;
                   }
-                  _loc2_++;
+                  receivedCount++;
                }
-               _loc4_++;
+               i++;
             }
-            if(_loc2_ < _items.length && _selectedItem == null)
+            if(receivedCount < _items.length && _selectedItem == null)
             {
-               _items[_loc2_].selected = true;
-               _selectedItem = _items[_loc2_];
+               _items[receivedCount].selected = true;
+               _selectedItem = _items[receivedCount];
                _awardHolder.setAwardsByCount(_selectedItem.count);
             }
             else if(_selectedItem == null)
@@ -260,7 +256,7 @@ package calendar.view
          _petBtn.removeEventListener("click",__onPetBtnClick);
       }
       
-      private function __onPetShow(param1:Event) : void
+      private function __onPetShow(e:Event) : void
       {
          var _loc2_:* = true;
          _petBtn.mouseEnabled = _loc2_;
@@ -269,7 +265,7 @@ package calendar.view
          _petBtn.enable = _loc2_;
       }
       
-      private function __onPetBtnClick(param1:MouseEvent) : void
+      private function __onPetBtnClick(e:MouseEvent) : void
       {
          _petBtn.removeEventListener("click",__onPetBtnClick);
          CalendarManager.getInstance().isOK = true;
@@ -298,11 +294,11 @@ package calendar.view
             ObjectUtils.disposeObject(_itemsHbox);
          }
          _itemsHbox = null;
-         var _loc1_:NavigItem = _items.shift();
-         while(_loc1_ != null)
+         var item:NavigItem = _items.shift();
+         while(item != null)
          {
-            ObjectUtils.disposeObject(_loc1_);
-            _loc1_ = _items.shift();
+            ObjectUtils.disposeObject(item);
+            item = _items.shift();
          }
          _selectedItem = null;
          _current = null;

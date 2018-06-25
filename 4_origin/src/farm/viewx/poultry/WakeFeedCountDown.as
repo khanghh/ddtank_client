@@ -59,7 +59,7 @@ package farm.viewx.poultry
          _feedTimer.addEventListener("timer",__onTimer);
       }
       
-      protected function __onTimer(param1:TimerEvent) : void
+      protected function __onTimer(event:TimerEvent) : void
       {
          _cdTime = Number(_cdTime) - 1;
          if(_cdTime > 0)
@@ -75,10 +75,10 @@ package farm.viewx.poultry
          }
       }
       
-      public function setCountDownTime(param1:Date) : void
+      public function setCountDownTime(countDownTime:Date) : void
       {
-         var _loc2_:Number = param1.time - TimeManager.Instance.Now().time;
-         if(_loc2_ <= 0)
+         var millisecond:Number = countDownTime.time - TimeManager.Instance.Now().time;
+         if(millisecond <= 0)
          {
             var _loc3_:Boolean = false;
             _timeText.visible = _loc3_;
@@ -90,7 +90,7 @@ package farm.viewx.poultry
             _loc3_ = true;
             _timeText.visible = _loc3_;
             _bg.visible = _loc3_;
-            _cdTime = _loc2_ / 1000;
+            _cdTime = millisecond / 1000;
             if(!_feedTimer.running)
             {
                _timeText.text = transSecond(_cdTime);
@@ -99,15 +99,15 @@ package farm.viewx.poultry
          }
       }
       
-      private function transSecond(param1:Number) : String
+      private function transSecond(num:Number) : String
       {
-         var _loc3_:int = Math.floor(param1 / 3600);
-         var _loc4_:int = Math.floor((param1 - _loc3_ * 3600) / 60);
-         var _loc2_:int = param1 - _loc3_ * 3600 - _loc4_ * 60;
-         return (String("0" + _loc3_)).substr(-2) + ":" + (String("0" + _loc4_)).substr(-2) + ":" + (String("0" + _loc2_)).substr(-2);
+         var hour:int = Math.floor(num / 3600);
+         var minite:int = Math.floor((num - hour * 3600) / 60);
+         var second:int = num - hour * 3600 - minite * 60;
+         return (String("0" + hour)).substr(-2) + ":" + (String("0" + minite)).substr(-2) + ":" + (String("0" + second)).substr(-2);
       }
       
-      protected function __onWakeFeedClick(param1:MouseEvent) : void
+      protected function __onWakeFeedClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(_wakeFeed.getFrame == 1)
@@ -135,22 +135,22 @@ package farm.viewx.poultry
          }
       }
       
-      protected function __onFeedOver(param1:PkgEvent) : void
+      protected function __onFeedOver(event:PkgEvent) : void
       {
          FarmModelController.instance.updateFriendListStolen();
       }
       
-      public function setFrame(param1:int) : void
+      public function setFrame(frameIndex:int) : void
       {
-         _wakeFeed.setFrame(param1);
-         var _loc2_:* = param1 != 1;
+         _wakeFeed.setFrame(frameIndex);
+         var _loc2_:* = frameIndex != 1;
          _timeText.visible = _loc2_;
          _bg.visible = _loc2_;
       }
       
-      public function set tipData(param1:*) : void
+      public function set tipData(value:*) : void
       {
-         _wakeFeed.tipData = param1;
+         _wakeFeed.tipData = value;
       }
       
       private function initEvent() : void

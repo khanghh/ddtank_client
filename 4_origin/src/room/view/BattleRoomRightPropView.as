@@ -82,35 +82,33 @@ package room.view
       
       protected function createInitiativeSkillList() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var cell:* = null;
          _upSkillCells = new DictionaryData();
-         _loc2_ = 1;
-         while(_loc2_ <= 3)
+         for(i = 1; i <= 3; )
          {
-            _loc1_ = new RoomBattleSkillCell(true,_loc2_);
-            _upCellsContainer.addChild(_loc1_);
-            _upSkillCells[_loc2_] = _loc1_;
-            _allSkillCells[_loc2_] = _loc1_;
-            _loc2_++;
+            cell = new RoomBattleSkillCell(true,i);
+            _upCellsContainer.addChild(cell);
+            _upSkillCells[i] = cell;
+            _allSkillCells[i] = cell;
+            i++;
          }
       }
       
       protected function createPassiveSkillList() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var j:int = 0;
+         var cell1:* = null;
          _downCells = new DictionaryData();
-         _loc2_ = 4;
-         while(_loc2_ <= 6)
+         for(j = 4; j <= 6; )
          {
-            _loc1_ = new RoomBattleSkillCell(true,_loc2_);
-            _loc1_.x = 2 + _loc2_ % 3 * 65;
-            _loc1_.y = 2 + int(_loc2_ / 3) * 49;
-            _downContainer.addChild(_loc1_);
-            _downCells[_loc2_] = _loc1_;
-            _allSkillCells[_loc2_] = _loc1_;
-            _loc2_++;
+            cell1 = new RoomBattleSkillCell(true,j);
+            cell1.x = 2 + j % 3 * 65;
+            cell1.y = 2 + int(j / 3) * 49;
+            _downContainer.addChild(cell1);
+            _downCells[j] = cell1;
+            _allSkillCells[j] = cell1;
+            j++;
          }
       }
       
@@ -127,10 +125,10 @@ package room.view
          addChild(_roomNameTxt);
          _roomIdTxt = ComponentFactory.Instance.creatComponentByStylename("room.roomID.text");
          addChild(_roomIdTxt);
-         var _loc1_:RoomInfo = RoomManager.Instance.current;
-         if(_loc1_)
+         var roomInfo:RoomInfo = RoomManager.Instance.current;
+         if(roomInfo)
          {
-            _roomIdTxt.text = _loc1_.ID.toString();
+            _roomIdTxt.text = roomInfo.ID.toString();
             _roomNameTxt.text = RoomManager.Instance.current.Name;
          }
       }
@@ -142,10 +140,10 @@ package room.view
       
       private function get getFightRemainData() : String
       {
-         var _loc1_:String = "";
-         var _loc2_:int = BattleGroudControl.Instance.orderdata.prestigeTimes;
-         _loc1_ = (_loc2_ < 0?0:_loc2_) + "/" + ServerConfigManager.instance.getPrestigeTimes + "\n\n";
-         return _loc1_ + BattleGroudControl.Instance.orderdata.addDayPrestge.toString() + "/" + ServerConfigManager.instance.getDayMaxAddPrestige;
+         var str:String = "";
+         var prestigeTimes:int = BattleGroudControl.Instance.orderdata.prestigeTimes;
+         str = (prestigeTimes < 0?0:prestigeTimes) + "/" + ServerConfigManager.instance.getPrestigeTimes + "\n\n";
+         return str + BattleGroudControl.Instance.orderdata.addDayPrestge.toString() + "/" + ServerConfigManager.instance.getDayMaxAddPrestige;
       }
       
       override protected function initEvents() : void
@@ -157,27 +155,27 @@ package room.view
          BattleSkillManager.instance.addEventListener(BattleSkillEvent.UPDATE_SKILL,updateProView);
       }
       
-      protected function updateProView(param1:BattleSkillEvent) : void
+      protected function updateProView(evt:BattleSkillEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:Dictionary = BattleSkillManager.instance.getBringSkillList();
+         var cellPlace:int = 0;
+         var skillDic:Dictionary = BattleSkillManager.instance.getBringSkillList();
          var _loc6_:int = 0;
          var _loc5_:* = _allSkillCells;
-         for(var _loc4_ in _allSkillCells)
+         for(var key in _allSkillCells)
          {
-            _loc3_ = _allSkillCells[_loc4_].place;
-            if(_loc2_[_loc3_] == 0)
+            cellPlace = _allSkillCells[key].place;
+            if(skillDic[cellPlace] == 0)
             {
-               _allSkillCells[_loc4_].removeInfo();
+               _allSkillCells[key].removeInfo();
             }
             else
             {
-               _allSkillCells[_loc4_].skillId = _loc2_[_loc3_];
+               _allSkillCells[key].skillId = skillDic[cellPlace];
             }
          }
       }
       
-      protected function __updateBattleRemainData(param1:CEvent) : void
+      protected function __updateBattleRemainData(e:CEvent) : void
       {
          updateRemainCount();
       }
@@ -201,11 +199,11 @@ package room.view
          addChild(_downCellsStripTip);
       }
       
-      override protected function updateSkillStatus(param1:Event) : void
+      override protected function updateSkillStatus(event:Event) : void
       {
       }
       
-      private function openBattleSkillFrame(param1:MouseEvent) : void
+      private function openBattleSkillFrame(evt:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          BattleSkillManager.instance.show();

@@ -51,16 +51,16 @@ package vip.view
          _buttomBit.y = 372;
          openVip = ComponentFactory.Instance.creatComponentByStylename("GiveYourselfOpenView.openVipBtn");
          addToContent(openVip);
-         var _loc1_:Point = ComponentFactory.Instance.creatCustomObject("vipHelpFrame.openBtnPos");
-         openVip.x = _loc1_.x;
-         openVip.y = _loc1_.y;
+         var pos:Point = ComponentFactory.Instance.creatCustomObject("vipHelpFrame.openBtnPos");
+         openVip.x = pos.x;
+         openVip.y = pos.y;
          StageReferance.stage.focus = this;
          openVip.addEventListener("click",__open);
       }
       
-      public function set openFun(param1:Function) : void
+      public function set openFun(fun:Function) : void
       {
-         _openFun = param1;
+         _openFun = fun;
       }
       
       public function show() : void
@@ -72,7 +72,7 @@ package vip.view
          LayerManager.Instance.addToLayer(this,3,true,2);
       }
       
-      private function __open(param1:MouseEvent) : void
+      private function __open(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.Grade < 3)

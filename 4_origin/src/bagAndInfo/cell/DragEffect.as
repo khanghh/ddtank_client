@@ -23,13 +23,13 @@ package bagAndInfo.cell
       
       public var data;
       
-      public function DragEffect(param1:IDragable, param2:*, param3:String = "none", param4:IAcceptDrag = null)
+      public function DragEffect(source:IDragable, data:*, action:String = "none", target:IAcceptDrag = null)
       {
          super();
-         this.source = param1;
-         this.target = param4;
-         this.action = param3;
-         this.data = param2;
+         this.source = source;
+         this.target = target;
+         this.action = action;
+         this.data = data;
       }
       
       public function get hasAccpeted() : Boolean

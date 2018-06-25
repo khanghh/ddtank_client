@@ -27,14 +27,14 @@ package gameCommon.view.smallMap
       
       override protected function draw() : void
       {
-         var _loc2_:Number = NaN;
-         var _loc4_:Number = NaN;
-         var _loc3_:Number = NaN;
+         var rate:Number = NaN;
+         var offset:Number = NaN;
+         var alpha:Number = NaN;
          if(GameControl.Instance.smallMapPoint())
          {
             return;
          }
-         var _loc1_:Graphics = graphics;
+         var pen:Graphics = graphics;
          if(onMap)
          {
             if(GameControl.Instance.smallMapShape())
@@ -43,45 +43,45 @@ package gameCommon.view.smallMap
             }
             else
             {
-               _loc1_.clear();
-               _loc1_.beginFill(_color);
-               _loc1_.drawCircle(0,0,_radius);
+               pen.clear();
+               pen.beginFill(_color);
+               pen.drawCircle(0,0,_radius);
             }
             if(_elapsed >= 300)
             {
-               _loc2_ = (0.6 * 1000 - _elapsed) / 300;
+               rate = (0.6 * 1000 - _elapsed) / 300;
             }
             else
             {
-               _loc2_ = _elapsed / 300;
+               rate = _elapsed / 300;
             }
             if(_isAttacking)
             {
-               _loc4_ = 4 * _loc2_;
-               _loc1_.moveTo(triangleCoords[0].x,triangleCoords[0].y - _loc4_);
-               _loc1_.lineTo(triangleCoords[1].x,triangleCoords[1].y - _loc4_);
-               _loc1_.lineTo(triangleCoords[2].x,triangleCoords[2].y - _loc4_);
+               offset = 4 * rate;
+               pen.moveTo(triangleCoords[0].x,triangleCoords[0].y - offset);
+               pen.lineTo(triangleCoords[1].x,triangleCoords[1].y - offset);
+               pen.lineTo(triangleCoords[2].x,triangleCoords[2].y - offset);
             }
-            _loc1_.endFill();
+            pen.endFill();
             if(isSelf)
             {
-               _loc1_.lineStyle(2,_color,_loc2_);
-               _loc1_.beginFill(0,0);
-               _loc1_.drawCircle(0,0,_radius + 2 + 2 * _loc2_);
-               _loc1_.endFill();
+               pen.lineStyle(2,_color,rate);
+               pen.beginFill(0,0);
+               pen.drawCircle(0,0,_radius + 2 + 2 * rate);
+               pen.endFill();
             }
          }
          else
          {
-            _loc1_.beginFill(_color);
-            _loc1_.drawCircle(0,0,_radius);
-            _loc1_.endFill();
+            pen.beginFill(_color);
+            pen.drawCircle(0,0,_radius);
+            pen.endFill();
          }
       }
       
-      override public function onFrame(param1:int) : void
+      override public function onFrame(frameRate:int) : void
       {
-         _elapsed = _elapsed + param1;
+         _elapsed = _elapsed + frameRate;
          if(_elapsed >= 0.6 * 1000)
          {
             _elapsed = 0;
@@ -89,9 +89,9 @@ package gameCommon.view.smallMap
          draw();
       }
       
-      override public function set isAttacking(param1:Boolean) : void
+      override public function set isAttacking(val:Boolean) : void
       {
-         .super.isAttacking = param1;
+         .super.isAttacking = val;
          draw();
       }
       

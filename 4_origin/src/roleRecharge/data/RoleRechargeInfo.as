@@ -22,9 +22,9 @@ package roleRecharge.data
          return _giftRewardArr;
       }
       
-      public function set giftRewardArr(param1:Vector.<GiftRewardInfo>) : void
+      public function set giftRewardArr(value:Vector.<GiftRewardInfo>) : void
       {
-         _giftRewardArr = param1;
+         _giftRewardArr = value;
       }
       
       public function get beginIndex() : int
@@ -32,9 +32,9 @@ package roleRecharge.data
          return _beginIndex;
       }
       
-      public function set beginIndex(param1:int) : void
+      public function set beginIndex(value:int) : void
       {
-         _beginIndex = param1;
+         _beginIndex = value;
       }
       
       public function get endIndex() : int
@@ -42,9 +42,9 @@ package roleRecharge.data
          return _endIndex;
       }
       
-      public function set endIndex(param1:int) : void
+      public function set endIndex(value:int) : void
       {
-         _endIndex = param1;
+         _endIndex = value;
       }
    }
 }

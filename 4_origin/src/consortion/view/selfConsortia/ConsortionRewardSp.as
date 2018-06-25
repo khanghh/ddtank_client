@@ -40,8 +40,8 @@ package consortion.view.selfConsortia
       {
          _contentSp = new Sprite();
          addChild(_contentSp);
-         var _loc1_:Bitmap = ComponentFactory.Instance.creat("asset.placardAndEvent.callback3");
-         _contentSp.addChild(_loc1_);
+         var bg:Bitmap = ComponentFactory.Instance.creat("asset.placardAndEvent.callback3");
+         _contentSp.addChild(bg);
          _weekRewardBtn = ComponentFactory.Instance.creat("asset.placardAndEvent.weekRewardBtn");
          _callBackBtn = ComponentFactory.Instance.creat("asset.placardAndEvent.callBackBtn");
          _callBackBtn.setFocusFrame();
@@ -66,22 +66,22 @@ package consortion.view.selfConsortia
          ConsortionModelManager.Instance.removeEventListener("leave_call_back_view",onLeaveCallBackView);
       }
       
-      private function onBtnClick(param1:MouseEvent) : void
+      private function onBtnClick(evt:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          _contentSp.visible = false;
-         var _loc2_:Object = param1.target;
-         if(_loc2_ == _weekRewardBtn)
+         var target:Object = evt.target;
+         if(target == _weekRewardBtn)
          {
             _weekRewardView = new ConsortionWeekRewardView();
             addChild(_weekRewardView);
          }
-         else if(_loc2_ == _callBackBtn)
+         else if(target == _callBackBtn)
          {
             _callBackView = new CallBackView();
             addChild(_callBackView);
          }
-         else if(_loc2_ == _targetBtn)
+         else if(target == _targetBtn)
          {
             ConsortionModelManager.Instance.initConsortionActiveTarget();
             _targetView = new ConsortionActiveTargetView();
@@ -90,7 +90,7 @@ package consortion.view.selfConsortia
          }
       }
       
-      private function onLeaveCallBackView(param1:Event) : void
+      private function onLeaveCallBackView(evt:Event) : void
       {
          _contentSp.visible = true;
          ObjectUtils.disposeObject(_callBackView);

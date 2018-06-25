@@ -44,9 +44,9 @@ package baglocked
          super();
       }
       
-      public function set bagLockedController(param1:BagLockedController) : void
+      public function set bagLockedController(value:BagLockedController) : void
       {
-         _bagLockedController = param1;
+         _bagLockedController = value;
       }
       
       public function show() : void
@@ -93,21 +93,21 @@ package baglocked
          addEvent();
       }
       
-      protected function onSettingClick(param1:MouseEvent) : void
+      protected function onSettingClick(me:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          LayerManager.Instance.addToLayer(_pswNeededSelecterFrame,3,true,1);
          _pswNeededSelecterFrame.refresh();
       }
       
-      private function __onSelecterFrameResponse(param1:FrameEvent) : void
+      private function __onSelecterFrameResponse(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -116,7 +116,7 @@ package baglocked
          }
       }
       
-      private function __setPassBtnClick(param1:Event) : void
+      private function __setPassBtnClick(event:Event) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.questionOne == "")
@@ -130,28 +130,28 @@ package baglocked
          _bagLockedController.closeExplainFrame();
       }
       
-      private function __delPassBtnClick(param1:Event) : void
+      private function __delPassBtnClick(event:Event) : void
       {
          SoundManager.instance.play("008");
          _bagLockedController.openDelPassFrame();
          _bagLockedController.closeExplainFrame();
       }
       
-      private function __removeLockBtnClick(param1:Event) : void
+      private function __removeLockBtnClick(event:Event) : void
       {
          SoundManager.instance.play("008");
          _bagLockedController.close();
          BaglockedManager.Instance.show();
       }
       
-      private function __updatePassBtnClick(param1:Event) : void
+      private function __updatePassBtnClick(event:Event) : void
       {
          SoundManager.instance.play("008");
          _bagLockedController.openUpdatePassFrame();
          _bagLockedController.closeExplainFrame();
       }
       
-      protected function __resetQustionBtnClick(param1:MouseEvent) : void
+      protected function __resetQustionBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          BagLockedController.Instance.openGetConfirmFrame();

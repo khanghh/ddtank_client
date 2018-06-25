@@ -63,16 +63,16 @@ package ddt.view.caddyII
       {
          _list = ComponentFactory.Instance.creatComponentByStylename("bead.quickBox");
          PositionUtils.setPos(_list,"caddy.QuickBuy.ListPos");
-         var _loc2_:Image = ComponentFactory.Instance.creatComponentByStylename("caddy.quickFont1");
-         var _loc1_:Image = ComponentFactory.Instance.creatComponentByStylename("caddy.quickFont2");
-         var _loc4_:Image = ComponentFactory.Instance.creatComponentByStylename("caddy.quickFont3");
-         var _loc5_:Image = ComponentFactory.Instance.creatComponentByStylename("caddy.quickMoneyBG");
-         var _loc3_:Image = ComponentFactory.Instance.creatComponentByStylename("caddy.quickGiftBG");
+         var font1:Image = ComponentFactory.Instance.creatComponentByStylename("caddy.quickFont1");
+         var font2:Image = ComponentFactory.Instance.creatComponentByStylename("caddy.quickFont2");
+         var font3:Image = ComponentFactory.Instance.creatComponentByStylename("caddy.quickFont3");
+         var moneyBG:Image = ComponentFactory.Instance.creatComponentByStylename("caddy.quickMoneyBG");
+         var giftBG:Image = ComponentFactory.Instance.creatComponentByStylename("caddy.quickGiftBG");
          _moneyTxt = ComponentFactory.Instance.creatComponentByStylename("caddy.moneyTxt");
          _giftTxt = ComponentFactory.Instance.creatComponentByStylename("caddy.giftTxt");
-         addToContent(_loc2_);
-         addToContent(_loc1_);
-         addToContent(_loc5_);
+         addToContent(font1);
+         addToContent(font2);
+         addToContent(moneyBG);
          addToContent(_moneyTxt);
          creatCell();
       }
@@ -87,51 +87,50 @@ package ddt.view.caddyII
          removeEventListener("response",_response);
          var _loc3_:int = 0;
          var _loc2_:* = _cellItems;
-         for each(var _loc1_ in _cellItems)
+         for each(var item in _cellItems)
          {
-            _loc1_.removeEventListener("change",_numberChange);
-            _loc1_.removeEventListener("click",__itemClick);
-            _loc1_.removeEventListener("number_close",_numberClose);
-            _loc1_.removeEventListener("number_enter",_numberEnter);
+            item.removeEventListener("change",_numberChange);
+            item.removeEventListener("click",__itemClick);
+            item.removeEventListener("number_close",_numberClose);
+            item.removeEventListener("number_enter",_numberEnter);
          }
       }
       
       private function creatCell() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          _cellItems = new Vector.<QuickBuyItem>();
          _shopItemInfoList = new Vector.<ShopItemInfo>();
          _list.beginChanges();
-         _loc2_ = 0;
-         while(_loc2_ < _cellId.length)
+         for(i = 0; i < _cellId.length; )
          {
-            _loc1_ = new QuickBuyItem();
-            _loc1_.itemID = _cellId[_loc2_];
-            _loc1_.addEventListener("change",_numberChange);
-            _loc1_.addEventListener("click",__itemClick);
-            _loc1_.addEventListener("number_close",_numberClose);
-            _loc1_.addEventListener("number_enter",_numberEnter);
-            _list.addChild(_loc1_);
-            _cellItems.push(_loc1_);
-            _loc2_++;
+            item = new QuickBuyItem();
+            item.itemID = _cellId[i];
+            item.addEventListener("change",_numberChange);
+            item.addEventListener("click",__itemClick);
+            item.addEventListener("number_close",_numberClose);
+            item.addEventListener("number_enter",_numberEnter);
+            _list.addChild(item);
+            _cellItems.push(item);
+            i++;
          }
          _list.commitChanges();
          _shopItemInfoList.push(ShopManager.Instance.getMoneyShopItemByTemplateID(_cellId[0]));
          _shopItemInfoList.push(ShopManager.Instance.getGiftShopItemByTemplateID(_cellId[1]));
       }
       
-      private function __itemClick(param1:MouseEvent) : void
+      private function __itemClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:QuickBuyItem = param1.currentTarget as QuickBuyItem;
-         selectedItem = _loc2_;
+         var item:QuickBuyItem = evt.currentTarget as QuickBuyItem;
+         selectedItem = item;
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         if(e.responseCode == 3 || e.responseCode == 2)
          {
             if(money > 0 || gift > 0)
             {
@@ -149,19 +148,19 @@ package ddt.view.caddyII
          }
       }
       
-      private function _numberChange(param1:Event) : void
+      private function _numberChange(e:Event) : void
       {
          money = _cellItems[0].count * _shopItemInfoList[0].getItemPrice(1).bothMoneyValue;
-         var _loc2_:QuickBuyItem = param1.currentTarget as QuickBuyItem;
-         selectedItem = _loc2_;
+         var item:QuickBuyItem = e.currentTarget as QuickBuyItem;
+         selectedItem = item;
       }
       
-      private function _numberClose(param1:Event) : void
+      private function _numberClose(e:Event) : void
       {
          ObjectUtils.disposeObject(this);
       }
       
-      private function _numberEnter(param1:Event) : void
+      private function _numberEnter(e:Event) : void
       {
          if(money > 0 || gift > 0)
          {
@@ -176,9 +175,9 @@ package ddt.view.caddyII
       
       private function buy() : void
       {
-         var _loc3_:* = null;
-         var _loc9_:int = 0;
-         var _loc6_:int = 0;
+         var alert:* = null;
+         var i:int = 0;
+         var j:int = 0;
          if(money > 0 && !_shopItemInfoList[0].isValid || gift > 0 && !_shopItemInfoList[1].isValid)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.caddy.quickDate"));
@@ -186,44 +185,42 @@ package ddt.view.caddyII
          }
          if(PlayerManager.Instance.Self.Money < money)
          {
-            _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.comon.lack"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
-            _loc3_.moveEnable = false;
-            _loc3_.addEventListener("response",_responseI);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.comon.lack"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
+            alert.moveEnable = false;
+            alert.addEventListener("response",_responseI);
             return;
          }
-         var _loc1_:Array = [];
-         var _loc7_:Array = [];
-         var _loc2_:Array = [];
-         var _loc4_:Array = [];
-         var _loc8_:Array = [];
-         var _loc5_:Array = [];
-         _loc9_ = 0;
-         while(_loc9_ < _cellItems.length)
+         var items:Array = [];
+         var types:Array = [];
+         var colors:Array = [];
+         var dresses:Array = [];
+         var skins:Array = [];
+         var places:Array = [];
+         for(i = 0; i < _cellItems.length; )
          {
-            _loc6_ = 0;
-            while(_loc6_ < _cellItems[_loc9_].count)
+            for(j = 0; j < _cellItems[i].count; )
             {
-               _loc1_.push(_shopItemInfoList[_loc9_].GoodsID);
-               _loc7_.push(1);
-               _loc2_.push("");
-               _loc4_.push(false);
-               _loc8_.push("");
-               _loc5_.push(-1);
-               _loc6_++;
+               items.push(_shopItemInfoList[i].GoodsID);
+               types.push(1);
+               colors.push("");
+               dresses.push(false);
+               skins.push("");
+               places.push(-1);
+               j++;
             }
-            _loc9_++;
+            i++;
          }
-         SocketManager.Instance.out.sendBuyGoods(_loc1_,_loc7_,_loc2_,_loc5_,_loc4_,_loc8_,0);
+         SocketManager.Instance.out.sendBuyGoods(items,types,colors,places,dresses,skins,0);
       }
       
-      private function _responseI(param1:FrameEvent) : void
+      private function _responseI(e:FrameEvent) : void
       {
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",_responseI);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         (e.currentTarget as BaseAlerFrame).removeEventListener("response",_responseI);
+         if(e.responseCode == 3 || e.responseCode == 2)
          {
             LeavePageManager.leaveToFillPath();
          }
-         ObjectUtils.disposeObject(param1.target);
+         ObjectUtils.disposeObject(e.target);
       }
       
       private function _showTip() : void
@@ -231,9 +228,9 @@ package ddt.view.caddyII
          MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.bead.quickNoBuy"));
       }
       
-      public function set money(param1:int) : void
+      public function set money(value:int) : void
       {
-         _money = param1;
+         _money = value;
          _moneyTxt.text = String(_money);
       }
       
@@ -242,9 +239,9 @@ package ddt.view.caddyII
          return _money;
       }
       
-      public function set gift(param1:int) : void
+      public function set gift(value:int) : void
       {
-         _gift = param1;
+         _gift = value;
       }
       
       public function get gift() : int
@@ -252,25 +249,25 @@ package ddt.view.caddyII
          return _gift;
       }
       
-      public function set clickNumber(param1:int) : void
+      public function set clickNumber(value:int) : void
       {
-         _clickNumber = param1;
+         _clickNumber = value;
          _cellItems[_clickNumber].count = 1;
          _cellItems[_clickNumber].setFocus();
       }
       
-      public function show(param1:int) : void
+      public function show(number:int) : void
       {
-         var _loc2_:AlertInfo = new AlertInfo();
-         _loc2_.title = LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy");
-         _loc2_.data = _list;
-         _loc2_.submitLabel = LanguageMgr.GetTranslation("store.view.shortcutBuy.buyBtn");
-         _loc2_.showCancel = false;
-         _loc2_.moveEnable = false;
-         info = _loc2_;
+         var alertInfo:AlertInfo = new AlertInfo();
+         alertInfo.title = LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy");
+         alertInfo.data = _list;
+         alertInfo.submitLabel = LanguageMgr.GetTranslation("store.view.shortcutBuy.buyBtn");
+         alertInfo.showCancel = false;
+         alertInfo.moveEnable = false;
+         info = alertInfo;
          addToContent(_list);
          LayerManager.Instance.addToLayer(this,2,true,1);
-         clickNumber = param1;
+         clickNumber = number;
       }
       
       override public function dispose() : void
@@ -278,9 +275,9 @@ package ddt.view.caddyII
          removeEvents();
          var _loc3_:int = 0;
          var _loc2_:* = _cellItems;
-         for each(var _loc1_ in _cellItems)
+         for each(var item in _cellItems)
          {
-            ObjectUtils.disposeObject(_loc1_);
+            ObjectUtils.disposeObject(item);
          }
          _cellItems = null;
          _cellId = null;
@@ -308,14 +305,14 @@ package ddt.view.caddyII
          return _selectedItem;
       }
       
-      public function set selectedItem(param1:QuickBuyItem) : void
+      public function set selectedItem(val:QuickBuyItem) : void
       {
-         var _loc2_:QuickBuyItem = _selectedItem;
-         _selectedItem = param1;
+         var selectedItem:QuickBuyItem = _selectedItem;
+         _selectedItem = val;
          _selectedItem.selected = true;
-         if(_loc2_ && _selectedItem != _loc2_)
+         if(selectedItem && _selectedItem != selectedItem)
          {
-            _loc2_.selected = false;
+            selectedItem.selected = false;
          }
       }
    }

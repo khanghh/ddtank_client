@@ -137,13 +137,13 @@ package church
          return _currentScene;
       }
       
-      public function set currentScene(param1:int) : void
+      public function set currentScene(value:int) : void
       {
-         if(_currentScene == param1)
+         if(_currentScene == value)
          {
             return;
          }
-         _currentScene = param1;
+         _currentScene = value;
          dispatchEvent(new WeddingRoomEvent("scene change",_currentScene));
       }
       
@@ -152,18 +152,18 @@ package church
          return _selfRoom;
       }
       
-      public function set selfRoom(param1:ChurchRoomInfo) : void
+      public function set selfRoom(value:ChurchRoomInfo) : void
       {
-         _selfRoom = param1;
+         _selfRoom = value;
       }
       
-      public function set currentRoom(param1:ChurchRoomInfo) : void
+      public function set currentRoom(value:ChurchRoomInfo) : void
       {
-         if(_currentRoom == param1)
+         if(_currentRoom == value)
          {
             return;
          }
-         _currentRoom = param1;
+         _currentRoom = value;
          onChurchRoomInfoChange();
       }
       
@@ -193,7 +193,7 @@ package church
          LoadResourceManager.Instance.startLoad(_mapLoader02);
       }
       
-      protected function onMapSrcLoadedComplete(param1:LoaderEvent = null) : void
+      protected function onMapSrcLoadedComplete(event:LoaderEvent = null) : void
       {
          if(_mapLoader01.isSuccess && _mapLoader02.isSuccess)
          {
@@ -211,7 +211,7 @@ package church
          StateManager.setState("churchRoom");
       }
       
-      private function __loadingIsClose(param1:Event) : void
+      private function __loadingIsClose(event:Event) : void
       {
          _isRemoveLoading = true;
          UIModuleSmallLoading.Instance.removeEventListener("close",__loadingIsClose);
@@ -243,17 +243,17 @@ package church
          this.addEventListener("submitRefund",__onSubmitRefund);
       }
       
-      private function reqeustPayHander(param1:PkgEvent) : void
+      private function reqeustPayHander(e:PkgEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:int = param1.pkg.readByte();
-         if(_loc2_ == 1)
+         var name:* = null;
+         var cmd:int = e.pkg.readByte();
+         if(cmd == 1)
          {
             isUnwedding = true;
-            _userID = param1.pkg.readInt();
-            _loc3_ = param1.pkg.readUTF();
-            money = param1.pkg.readInt();
-            unwedingmsg = LanguageMgr.GetTranslation("ddt.friendPay.action",_loc3_,money);
+            _userID = e.pkg.readInt();
+            name = e.pkg.readUTF();
+            money = e.pkg.readInt();
+            unwedingmsg = LanguageMgr.GetTranslation("ddt.friendPay.action",name,money);
             if(!CampBattleManager.instance.isFighting)
             {
                openAlert();
@@ -264,16 +264,16 @@ package church
       public function openAlert() : void
       {
          isUnwedding = false;
-         var _loc1_:ChurchAlertFrame = ComponentFactory.Instance.creat("church.view.ChurchAlertFrame");
-         _loc1_.setTxt(unwedingmsg);
-         LayerManager.Instance.addToLayer(_loc1_,3,true,2);
-         _loc1_.addEventListener("response",reponseHander);
+         var confirmFrame:ChurchAlertFrame = ComponentFactory.Instance.creat("church.view.ChurchAlertFrame");
+         confirmFrame.setTxt(unwedingmsg);
+         LayerManager.Instance.addToLayer(confirmFrame,3,true,2);
+         confirmFrame.addEventListener("response",reponseHander);
       }
       
-      private function reponseHander(param1:FrameEvent) : void
+      private function reponseHander(e:FrameEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         if(e.responseCode == 2 || e.responseCode == 3)
          {
             if(PlayerManager.Instance.Self.bagLocked)
             {
@@ -286,46 +286,46 @@ package church
             }
             SocketManager.Instance.out.isAcceptPay(true,_userID);
          }
-         else if(param1.responseCode == 1 || param1.responseCode == 4 || param1.responseCode == 0)
+         else if(e.responseCode == 1 || e.responseCode == 4 || e.responseCode == 0)
          {
             SocketManager.Instance.out.isAcceptPay(false,_userID);
          }
-         var _loc2_:ChurchAlertFrame = param1.currentTarget as ChurchAlertFrame;
-         _loc2_.removeEventListener("response",reponseHander);
-         _loc2_.dispose();
-         _loc2_ = null;
+         var confirmFrame:ChurchAlertFrame = e.currentTarget as ChurchAlertFrame;
+         confirmFrame.removeEventListener("response",reponseHander);
+         confirmFrame.dispose();
+         confirmFrame = null;
       }
       
-      private function __onSubmitRefund(param1:Event) : void
+      private function __onSubmitRefund(e:Event) : void
       {
          SocketManager.Instance.out.refund();
       }
       
-      private function __upCivilPlayerView(param1:PkgEvent) : void
+      private function __upCivilPlayerView(e:PkgEvent) : void
       {
-         PlayerManager.Instance.Self.MarryInfoID = param1.pkg.readInt();
-         var _loc2_:Boolean = param1.pkg.readBoolean();
-         if(_loc2_)
+         PlayerManager.Instance.Self.MarryInfoID = e.pkg.readInt();
+         var note:Boolean = e.pkg.readBoolean();
+         if(note)
          {
-            PlayerManager.Instance.Self.ID = param1.pkg.readInt();
-            PlayerManager.Instance.Self.IsPublishEquit = param1.pkg.readBoolean();
-            PlayerManager.Instance.Self.Introduction = param1.pkg.readUTF();
+            PlayerManager.Instance.Self.ID = e.pkg.readInt();
+            PlayerManager.Instance.Self.IsPublishEquit = e.pkg.readBoolean();
+            PlayerManager.Instance.Self.Introduction = e.pkg.readUTF();
          }
          dispatchEvent(new Event("civilplayerinfomodify"));
       }
       
-      private function __getMarryInfo(param1:PkgEvent) : void
+      private function __getMarryInfo(e:PkgEvent) : void
       {
-         PlayerManager.Instance.Self.Introduction = param1.pkg.readUTF();
-         PlayerManager.Instance.Self.IsPublishEquit = param1.pkg.readBoolean();
+         PlayerManager.Instance.Self.Introduction = e.pkg.readUTF();
+         PlayerManager.Instance.Self.IsPublishEquit = e.pkg.readBoolean();
          dispatchEvent(new Event("civilselfinfochange"));
       }
       
-      public function __showPropose(param1:PkgEvent) : void
+      public function __showPropose(event:PkgEvent) : void
       {
-         var _loc3_:int = param1.pkg.readInt();
-         var _loc2_:Boolean = param1.pkg.readBoolean();
-         if(_loc2_)
+         var spouseID:int = event.pkg.readInt();
+         var isMarried:Boolean = event.pkg.readBoolean();
+         if(isMarried)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.manager.PlayerManager.married"));
          }
@@ -337,12 +337,12 @@ package church
          {
             _churchProposeFrame = ComponentFactory.Instance.creat("common.church.ChurchProposeFrame");
             _churchProposeFrame.addEventListener("close",churchProposeFrameClose);
-            _churchProposeFrame.spouseID = _loc3_;
+            _churchProposeFrame.spouseID = spouseID;
             _churchProposeFrame.show();
          }
       }
       
-      private function churchProposeFrameClose(param1:Event) : void
+      private function churchProposeFrameClose(evt:Event) : void
       {
          if(_churchProposeFrame)
          {
@@ -355,31 +355,31 @@ package church
          _churchProposeFrame = null;
       }
       
-      private function __marryApply(param1:PkgEvent) : void
+      private function __marryApply(event:PkgEvent) : void
       {
-         var _loc4_:int = param1.pkg.readInt();
-         var _loc5_:String = param1.pkg.readUTF();
-         var _loc2_:String = param1.pkg.readUTF();
-         var _loc3_:int = param1.pkg.readInt();
-         if(_loc4_ == PlayerManager.Instance.Self.ID)
+         var spouseID:int = event.pkg.readInt();
+         var spouseName:String = event.pkg.readUTF();
+         var str:String = event.pkg.readUTF();
+         var answerId:int = event.pkg.readInt();
+         if(spouseID == PlayerManager.Instance.Self.ID)
          {
             _churchMarryApplySuccess = ComponentFactory.Instance.creat("common.church.ChurchMarryApplySuccess");
             _churchMarryApplySuccess.addEventListener("close",churchMarryApplySuccessClose);
             _churchMarryApplySuccess.show();
             return;
          }
-         if(checkMarryApplyList(_loc3_))
+         if(checkMarryApplyList(answerId))
          {
             return;
          }
-         marryApplyList.push(_loc3_);
+         marryApplyList.push(answerId);
          SoundManager.instance.play("018");
          _proposeResposeFrame = ComponentFactory.Instance.creat("common.church.ChurchProposeResponseFrame");
          _proposeResposeFrame.addEventListener("close",ProposeResposeFrameClose);
-         _proposeResposeFrame.spouseID = _loc4_;
-         _proposeResposeFrame.spouseName = _loc5_;
-         _proposeResposeFrame.answerId = _loc3_;
-         _proposeResposeFrame.love = _loc2_;
+         _proposeResposeFrame.spouseID = spouseID;
+         _proposeResposeFrame.spouseName = spouseName;
+         _proposeResposeFrame.answerId = answerId;
+         _proposeResposeFrame.love = str;
          if(CacheSysManager.isLock("alertInFight"))
          {
             CacheSysManager.getInstance().cache("alertInFight",new AlertAction(_proposeResposeFrame,4,1));
@@ -394,22 +394,21 @@ package church
          }
       }
       
-      private function checkMarryApplyList(param1:int) : Boolean
+      private function checkMarryApplyList(id:int) : Boolean
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < marryApplyList.length)
+         var i:int = 0;
+         for(i = 0; i < marryApplyList.length; )
          {
-            if(param1 == marryApplyList[_loc2_])
+            if(id == marryApplyList[i])
             {
                return true;
             }
-            _loc2_++;
+            i++;
          }
          return false;
       }
       
-      private function churchMarryApplySuccessClose(param1:Event) : void
+      private function churchMarryApplySuccessClose(evt:Event) : void
       {
          if(_churchMarryApplySuccess)
          {
@@ -423,7 +422,7 @@ package church
          _churchMarryApplySuccess = null;
       }
       
-      private function ProposeResposeFrameClose(param1:Event) : void
+      private function ProposeResposeFrameClose(evt:Event) : void
       {
          if(_proposeResposeFrame)
          {
@@ -437,36 +436,36 @@ package church
          _proposeResposeFrame = null;
       }
       
-      private function __marryApplyReply(param1:PkgEvent) : void
+      private function __marryApplyReply(event:PkgEvent) : void
       {
-         var _loc6_:* = null;
-         var _loc4_:* = null;
-         var _loc5_:int = param1.pkg.readInt();
-         var _loc2_:Boolean = param1.pkg.readBoolean();
-         var _loc7_:String = param1.pkg.readUTF();
-         var _loc3_:Boolean = param1.pkg.readBoolean();
-         if(_loc2_)
+         var msg:* = null;
+         var msgTxt:* = null;
+         var spouseID:int = event.pkg.readInt();
+         var result:Boolean = event.pkg.readBoolean();
+         var spouseName:String = event.pkg.readUTF();
+         var isApplicant:Boolean = event.pkg.readBoolean();
+         if(result)
          {
             PlayerManager.Instance.Self.IsMarried = true;
-            PlayerManager.Instance.Self.SpouseID = _loc5_;
-            PlayerManager.Instance.Self.SpouseName = _loc7_;
+            PlayerManager.Instance.Self.SpouseID = spouseID;
+            PlayerManager.Instance.Self.SpouseName = spouseName;
             TaskManager.instance.onMarriaged();
             TaskManager.instance.requestCanAcceptTask();
             if(PathManager.solveExternalInterfaceEnabel())
             {
-               ExternalInterfaceManager.sendToAgent(7,PlayerManager.Instance.Self.ID,PlayerManager.Instance.Self.NickName,ServerManager.Instance.zoneName,-1,"",_loc7_);
+               ExternalInterfaceManager.sendToAgent(7,PlayerManager.Instance.Self.ID,PlayerManager.Instance.Self.NickName,ServerManager.Instance.zoneName,-1,"",spouseName);
             }
          }
-         if(_loc3_)
+         if(isApplicant)
          {
-            _loc6_ = new ChatData();
-            _loc4_ = "";
-            if(_loc2_)
+            msg = new ChatData();
+            msgTxt = "";
+            if(result)
             {
-               _loc6_.channel = 6;
-               _loc4_ = "<" + _loc7_ + ">" + LanguageMgr.GetTranslation("tank.manager.PlayerManager.isApplicant");
+               msg.channel = 6;
+               msgTxt = "<" + spouseName + ">" + LanguageMgr.GetTranslation("tank.manager.PlayerManager.isApplicant");
                _churchDialogueAgreePropose = ComponentFactory.Instance.creat("common.church.ChurchDialogueAgreePropose");
-               _churchDialogueAgreePropose.msgInfo = _loc7_;
+               _churchDialogueAgreePropose.msgInfo = spouseName;
                _churchDialogueAgreePropose.addEventListener("close",churchDialogueAgreeProposeClose);
                if(CacheSysManager.isLock("alertInFight"))
                {
@@ -479,15 +478,15 @@ package church
             }
             else
             {
-               _loc6_.channel = 7;
-               _loc4_ = "<" + _loc7_ + ">" + LanguageMgr.GetTranslation("tank.manager.PlayerManager.refuseMarry");
+               msg.channel = 7;
+               msgTxt = "<" + spouseName + ">" + LanguageMgr.GetTranslation("tank.manager.PlayerManager.refuseMarry");
                if(_churchDialogueRejectPropose)
                {
                   _churchDialogueRejectPropose.dispose();
                   _churchDialogueRejectPropose = null;
                }
                _churchDialogueRejectPropose = ComponentFactory.Instance.creat("common.church.ChurchDialogueRejectPropose");
-               _churchDialogueRejectPropose.msgInfo = _loc7_;
+               _churchDialogueRejectPropose.msgInfo = spouseName;
                _churchDialogueRejectPropose.addEventListener("close",churchDialogueRejectProposeClose);
                if(CacheSysManager.isLock("alertInFight"))
                {
@@ -498,20 +497,20 @@ package church
                   _churchDialogueRejectPropose.show();
                }
             }
-            _loc6_.msg = StringHelper.rePlaceHtmlTextField(_loc4_);
-            ChatManager.Instance.chat(_loc6_);
+            msg.msg = StringHelper.rePlaceHtmlTextField(msgTxt);
+            ChatManager.Instance.chat(msg);
          }
-         else if(_loc2_)
+         else if(result)
          {
-            _alertMarried = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.view.task.TaskCatalogContentView.tip"),LanguageMgr.GetTranslation("tank.manager.PlayerManager.youAndOtherMarried",_loc7_),LanguageMgr.GetTranslation("ok"),"",false,false,false,0,"alertInFight");
+            _alertMarried = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.view.task.TaskCatalogContentView.tip"),LanguageMgr.GetTranslation("tank.manager.PlayerManager.youAndOtherMarried",spouseName),LanguageMgr.GetTranslation("ok"),"",false,false,false,0,"alertInFight");
             _alertMarried.addEventListener("response",marriedResponse);
          }
       }
       
-      private function marriedResponse(param1:FrameEvent) : void
+      private function marriedResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
@@ -537,10 +536,10 @@ package church
                }
                _alertMarried = null;
          }
-         ObjectUtils.disposeObject(param1.target);
+         ObjectUtils.disposeObject(evt.target);
       }
       
-      private function churchDialogueRejectProposeClose(param1:Event) : void
+      private function churchDialogueRejectProposeClose(evt:Event) : void
       {
          if(_churchDialogueRejectPropose)
          {
@@ -554,7 +553,7 @@ package church
          _churchDialogueRejectPropose = null;
       }
       
-      private function churchDialogueAgreeProposeClose(param1:Event) : void
+      private function churchDialogueAgreeProposeClose(evt:Event) : void
       {
          if(_churchDialogueAgreePropose)
          {
@@ -568,11 +567,11 @@ package church
          _churchDialogueAgreePropose = null;
       }
       
-      private function __divorceApply(param1:PkgEvent) : void
+      private function __divorceApply(event:PkgEvent) : void
       {
-         var _loc3_:Boolean = param1.pkg.readBoolean();
-         var _loc2_:Boolean = param1.pkg.readBoolean();
-         if(!_loc3_)
+         var result:Boolean = event.pkg.readBoolean();
+         var isActive:Boolean = event.pkg.readBoolean();
+         if(!result)
          {
             return;
          }
@@ -580,7 +579,7 @@ package church
          PlayerManager.Instance.Self.SpouseID = 0;
          PlayerManager.Instance.Self.SpouseName = "";
          ChurchManager.instance.selfRoom = null;
-         if(!_loc2_)
+         if(!isActive)
          {
             SoundManager.instance.play("018");
             _churchDialogueUnmarried = ComponentFactory.Instance.creat("ddt.common.church.ChurchDialogueUnmarried");
@@ -604,7 +603,7 @@ package church
          }
       }
       
-      private function churchDialogueUnmarriedClose(param1:Event) : void
+      private function churchDialogueUnmarriedClose(evt:Event) : void
       {
          SoundManager.instance.play("008");
          if(_churchDialogueUnmarried)
@@ -619,51 +618,51 @@ package church
          _churchDialogueUnmarried = null;
       }
       
-      private function __churchInvite(param1:PkgEvent) : void
+      private function __churchInvite(event:PkgEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         var _loc2_:* = null;
+         var pkg:* = null;
+         var obj:* = null;
+         var invitePanel:* = null;
          if(InviteManager.Instance.enabled)
          {
-            _loc3_ = param1.pkg;
-            _loc4_ = {};
-            _loc4_["inviteID"] = _loc3_.readInt();
-            _loc4_["inviteName"] = _loc3_.readUTF();
-            _loc4_["IsVip"] = _loc3_.readBoolean();
-            _loc4_["VIPLevel"] = _loc3_.readInt();
-            _loc4_["roomID"] = _loc3_.readInt();
-            _loc4_["roomName"] = _loc3_.readUTF();
-            _loc4_["pwd"] = _loc3_.readUTF();
-            _loc4_["sceneIndex"] = _loc3_.readInt();
+            pkg = event.pkg;
+            obj = {};
+            obj["inviteID"] = pkg.readInt();
+            obj["inviteName"] = pkg.readUTF();
+            obj["IsVip"] = pkg.readBoolean();
+            obj["VIPLevel"] = pkg.readInt();
+            obj["roomID"] = pkg.readInt();
+            obj["roomName"] = pkg.readUTF();
+            obj["pwd"] = pkg.readUTF();
+            obj["sceneIndex"] = pkg.readInt();
             if(BuriedManager.Instance.isOpening)
             {
                return;
             }
-            _loc2_ = ComponentFactory.Instance.creatComponentByStylename("common.church.ChurchInviteFrame");
-            _loc2_.msgInfo = _loc4_;
-            _loc2_.show();
+            invitePanel = ComponentFactory.Instance.creatComponentByStylename("common.church.ChurchInviteFrame");
+            invitePanel.msgInfo = obj;
+            invitePanel.show();
             SoundManager.instance.play("018");
          }
       }
       
-      private function __marryPropGet(param1:PkgEvent) : void
+      private function __marryPropGet(event:PkgEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc4_:PackageIn = param1.pkg;
-         PlayerManager.Instance.Self.IsMarried = _loc4_.readBoolean();
-         PlayerManager.Instance.Self.SpouseID = _loc4_.readInt();
-         PlayerManager.Instance.Self.SpouseName = _loc4_.readUTF();
-         var _loc2_:Boolean = _loc4_.readBoolean();
-         var _loc6_:int = _loc4_.readInt();
-         var _loc5_:Boolean = _loc4_.readBoolean();
-         if(_loc2_)
+         var roomInfo:* = null;
+         var pkg:PackageIn = event.pkg;
+         PlayerManager.Instance.Self.IsMarried = pkg.readBoolean();
+         PlayerManager.Instance.Self.SpouseID = pkg.readInt();
+         PlayerManager.Instance.Self.SpouseName = pkg.readUTF();
+         var isCreatedMarryRoom:Boolean = pkg.readBoolean();
+         var roomID:int = pkg.readInt();
+         var isGotRing:Boolean = pkg.readBoolean();
+         if(isCreatedMarryRoom)
          {
             if(!ChurchManager.instance.selfRoom)
             {
-               _loc3_ = new ChurchRoomInfo();
-               _loc3_.id = _loc6_;
-               ChurchManager.instance.selfRoom = _loc3_;
+               roomInfo = new ChurchRoomInfo();
+               roomInfo.id = roomID;
+               ChurchManager.instance.selfRoom = roomInfo;
             }
          }
          else
@@ -672,31 +671,31 @@ package church
          }
       }
       
-      private function __roomLogin(param1:PkgEvent) : void
+      private function __roomLogin(event:PkgEvent) : void
       {
-         var _loc8_:int = 0;
-         var _loc6_:int = 0;
-         var _loc10_:* = null;
-         var _loc4_:* = null;
-         var _loc7_:PackageIn = param1.pkg;
-         var _loc3_:Boolean = _loc7_.readBoolean();
-         if(!_loc3_)
+         var failType:int = 0;
+         var roomId:int = 0;
+         var msg:* = null;
+         var _tipsMarryRoomframe:* = null;
+         var pkg:PackageIn = event.pkg;
+         var result:Boolean = pkg.readBoolean();
+         if(!result)
          {
-            _loc8_ = _loc7_.readInt();
-            if(MailManager.Instance.linkChurchRoomId != -1 && (_loc8_ == 5 || _loc8_ == 6))
+            failType = pkg.readInt();
+            if(MailManager.Instance.linkChurchRoomId != -1 && (failType == 5 || failType == 6))
             {
                StateManager.setState("ddtchurchroomlist");
                MailManager.Instance.hide();
             }
-            else if(_loc8_ == 7)
+            else if(failType == 7)
             {
-               _loc6_ = _loc7_.readInt();
-               _linkServerInfo = ServerManager.Instance.getServerInfoByID(_loc6_);
+               roomId = pkg.readInt();
+               _linkServerInfo = ServerManager.Instance.getServerInfoByID(roomId);
                if(_linkServerInfo)
                {
-                  _loc10_ = LanguageMgr.GetTranslation("ddt.church.serverInFail",_linkServerInfo.Name,MailManager.Instance.linkChurchRoomId);
-                  _loc4_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),_loc10_,"",LanguageMgr.GetTranslation("cancel"),true,true,false,2);
-                  _loc4_.addEventListener("response",__tipsMarryRoomframeResponse);
+                  msg = LanguageMgr.GetTranslation("ddt.church.serverInFail",_linkServerInfo.Name,MailManager.Instance.linkChurchRoomId);
+                  _tipsMarryRoomframe = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),msg,"",LanguageMgr.GetTranslation("cancel"),true,true,false,2);
+                  _tipsMarryRoomframe.addEventListener("response",__tipsMarryRoomframeResponse);
                }
                else
                {
@@ -709,47 +708,47 @@ package church
             }
             return;
          }
-         var _loc5_:ChurchRoomInfo = new ChurchRoomInfo();
-         _loc5_.id = _loc7_.readInt();
-         _loc5_.roomName = _loc7_.readUTF();
-         _loc5_.mapID = _loc7_.readInt();
-         _loc5_.valideTimes = _loc7_.readInt();
-         _loc5_.currentNum = _loc7_.readInt();
-         _loc5_.createID = _loc7_.readInt();
-         _loc5_.createName = _loc7_.readUTF();
-         _loc5_.groomID = _loc7_.readInt();
-         _loc5_.groomName = _loc7_.readUTF();
-         _loc5_.brideID = _loc7_.readInt();
-         _loc5_.brideName = _loc7_.readUTF();
-         _loc5_.creactTime = _loc7_.readDate();
-         _loc5_.isStarted = _loc7_.readBoolean();
-         var _loc9_:int = _loc7_.readByte();
-         if(_loc9_ == 1)
+         var roomInfo:ChurchRoomInfo = new ChurchRoomInfo();
+         roomInfo.id = pkg.readInt();
+         roomInfo.roomName = pkg.readUTF();
+         roomInfo.mapID = pkg.readInt();
+         roomInfo.valideTimes = pkg.readInt();
+         roomInfo.currentNum = pkg.readInt();
+         roomInfo.createID = pkg.readInt();
+         roomInfo.createName = pkg.readUTF();
+         roomInfo.groomID = pkg.readInt();
+         roomInfo.groomName = pkg.readUTF();
+         roomInfo.brideID = pkg.readInt();
+         roomInfo.brideName = pkg.readUTF();
+         roomInfo.creactTime = pkg.readDate();
+         roomInfo.isStarted = pkg.readBoolean();
+         var statu:int = pkg.readByte();
+         if(statu == 1)
          {
-            _loc5_.status = "wedding_none";
+            roomInfo.status = "wedding_none";
          }
          else
          {
-            _loc5_.status = "wedding_ing";
+            roomInfo.status = "wedding_ing";
          }
-         _loc5_.discription = _loc7_.readUTF();
-         _loc5_.canInvite = _loc7_.readBoolean();
-         var _loc2_:int = _loc7_.readInt();
-         ChurchManager.instance.currentScene = _loc2_;
-         _loc5_.isUsedSalute = _loc7_.readBoolean();
-         seniorType = _loc7_.readInt();
-         _loc5_.seniorType = seniorType;
-         currentRoom = _loc5_;
+         roomInfo.discription = pkg.readUTF();
+         roomInfo.canInvite = pkg.readBoolean();
+         var sceneIndex:int = pkg.readInt();
+         ChurchManager.instance.currentScene = sceneIndex;
+         roomInfo.isUsedSalute = pkg.readBoolean();
+         seniorType = pkg.readInt();
+         roomInfo.seniorType = seniorType;
+         currentRoom = roomInfo;
          if(isAdmin(PlayerManager.Instance.Self))
          {
-            selfRoom = _loc5_;
+            selfRoom = roomInfo;
          }
       }
       
-      private function __tipsMarryRoomframeResponse(param1:FrameEvent) : void
+      private function __tipsMarryRoomframeResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         if(evt.responseCode == 2 || evt.responseCode == 3)
          {
             ServerManager.Instance.current = _linkServerInfo;
             ServerManager.Instance.connentCurrentServer();
@@ -760,19 +759,19 @@ package church
             MailManager.Instance.linkChurchRoomId = -1;
          }
          _linkServerInfo = null;
-         var _loc2_:Frame = Frame(param1.currentTarget);
-         _loc2_.removeEventListener("response",__tipsMarryRoomframeResponse);
-         ObjectUtils.disposeAllChildren(_loc2_);
-         ObjectUtils.disposeObject(_loc2_);
-         _loc2_ = null;
+         var _tipsframe:Frame = Frame(evt.currentTarget);
+         _tipsframe.removeEventListener("response",__tipsMarryRoomframeResponse);
+         ObjectUtils.disposeAllChildren(_tipsframe);
+         ObjectUtils.disposeObject(_tipsframe);
+         _tipsframe = null;
       }
       
-      private function __updateSelfRoom(param1:PkgEvent) : void
+      private function __updateSelfRoom(event:PkgEvent) : void
       {
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc4_.readInt();
-         var _loc3_:Boolean = _loc4_.readBoolean();
-         if(!_loc3_)
+         var pkg:PackageIn = event.pkg;
+         var userID:int = pkg.readInt();
+         var state:Boolean = pkg.readBoolean();
+         if(!state)
          {
             selfRoom = null;
             return;
@@ -781,43 +780,43 @@ package church
          {
             selfRoom = new ChurchRoomInfo();
          }
-         selfRoom.id = _loc4_.readInt();
-         selfRoom.roomName = _loc4_.readUTF();
-         selfRoom.mapID = _loc4_.readInt();
-         selfRoom.valideTimes = _loc4_.readInt();
-         selfRoom.createID = _loc4_.readInt();
-         selfRoom.groomID = _loc4_.readInt();
-         selfRoom.brideID = _loc4_.readInt();
-         selfRoom.creactTime = _loc4_.readDate();
-         selfRoom.isUsedSalute = _loc4_.readBoolean();
-         selfRoom.seniorType = _loc4_.readInt();
+         selfRoom.id = pkg.readInt();
+         selfRoom.roomName = pkg.readUTF();
+         selfRoom.mapID = pkg.readInt();
+         selfRoom.valideTimes = pkg.readInt();
+         selfRoom.createID = pkg.readInt();
+         selfRoom.groomID = pkg.readInt();
+         selfRoom.brideID = pkg.readInt();
+         selfRoom.creactTime = pkg.readDate();
+         selfRoom.isUsedSalute = pkg.readBoolean();
+         selfRoom.seniorType = pkg.readInt();
       }
       
-      public function __removePlayer(param1:PkgEvent) : void
+      public function __removePlayer(event:PkgEvent) : void
       {
-         var _loc2_:int = param1.pkg.clientId;
-         if(_loc2_ == PlayerManager.Instance.Self.ID)
+         var id:int = event.pkg.clientId;
+         if(id == PlayerManager.Instance.Self.ID)
          {
             StateManager.setState("ddtchurchroomlist");
          }
       }
       
-      public function isAdmin(param1:PlayerInfo) : Boolean
+      public function isAdmin(info:PlayerInfo) : Boolean
       {
-         if(_currentRoom && param1)
+         if(_currentRoom && info)
          {
-            return param1.ID == _currentRoom.groomID || param1.ID == _currentRoom.brideID;
+            return info.ID == _currentRoom.groomID || info.ID == _currentRoom.brideID;
          }
          return false;
       }
       
-      public function sendValidateMarry(param1:BasePlayer) : void
+      public function sendValidateMarry(info:BasePlayer) : void
       {
          if(PlayerManager.Instance.Self.Grade < 14)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.manager.PlayerManager.notLvWoo",14));
          }
-         else if(param1.Grade < 14)
+         else if(info.Grade < 14)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.manager.PlayerManager.notOtherLvWoo",14));
          }
@@ -825,7 +824,7 @@ package church
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.manager.PlayerManager.IsMarried"));
          }
-         else if(PlayerManager.Instance.Self.Sex == param1.Sex)
+         else if(PlayerManager.Instance.Self.Sex == info.Sex)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.manager.PlayerManager.notAllow"));
          }
@@ -835,7 +834,7 @@ package church
          }
          else
          {
-            SocketManager.Instance.out.sendValidateMarry(param1.ID);
+            SocketManager.Instance.out.sendValidateMarry(info.ID);
          }
       }
    }

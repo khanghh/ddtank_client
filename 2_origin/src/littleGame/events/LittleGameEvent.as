@@ -26,10 +26,10 @@ package littleGame.events
       
       private var _paras:Array;
       
-      public function LittleGameEvent(param1:String, ... rest)
+      public function LittleGameEvent(type:String, ... arg)
       {
-         _paras = rest;
-         super(param1);
+         _paras = arg;
+         super(type);
       }
       
       public function get paras() : Array

@@ -25,9 +25,9 @@ package dice.controller
       
       private var _isFirst:Boolean = true;
       
-      public function DiceController(param1:IEventDispatcher = null)
+      public function DiceController(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get Instance() : DiceController
@@ -39,9 +39,9 @@ package dice.controller
          return _instance;
       }
       
-      public function set isFirst(param1:Boolean) : void
+      public function set isFirst(value:Boolean) : void
       {
-         _isFirst = param1;
+         _isFirst = value;
       }
       
       public function get hasUsedFirstCell() : Boolean
@@ -69,9 +69,9 @@ package dice.controller
          return _model.freeCount;
       }
       
-      public function set freeCount(param1:int) : void
+      public function set freeCount(value:int) : void
       {
-         _model.freeCount = param1;
+         _model.freeCount = value;
       }
       
       public function get diceType() : int
@@ -119,14 +119,14 @@ package dice.controller
          return _model.rewardItems;
       }
       
-      public function set rewardItems(param1:Array) : void
+      public function set rewardItems(value:Array) : void
       {
-         _model.rewardItems = param1;
+         _model.rewardItems = value;
       }
       
-      public function setPopupNextRefreshWindow(param1:Boolean) : void
+      public function setPopupNextRefreshWindow(value:Boolean) : void
       {
-         if(param1)
+         if(value)
          {
             _model.popupAlert = _model.popupAlert | 1;
          }
@@ -136,9 +136,9 @@ package dice.controller
          }
       }
       
-      public function setPopupNextStartWindow(param1:Boolean) : void
+      public function setPopupNextStartWindow(value:Boolean) : void
       {
-         if(param1)
+         if(value)
          {
             _model.popupAlert = _model.popupAlert | 2;
          }
@@ -153,9 +153,9 @@ package dice.controller
          _model.popupAlert = _model.popupAlert | 2;
       }
       
-      public function set isPlayDownMovie(param1:Boolean) : void
+      public function set isPlayDownMovie(value:Boolean) : void
       {
-         _model.isPlayDownMovie = param1;
+         _model.isPlayDownMovie = value;
       }
       
       public function get isPlayDownMovie() : Boolean
@@ -163,31 +163,30 @@ package dice.controller
          return _model.isPlayDownMovie;
       }
       
-      public function setDestinationCell(param1:int) : void
+      public function setDestinationCell(value:int) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:Array = _model.cellIDs;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_.length)
+         var i:int = 0;
+         var list:Array = _model.cellIDs;
+         for(i = 0; i < list.length; )
          {
-            if(_loc2_[_loc3_])
+            if(list[i])
             {
-               if(_loc3_ != param1)
+               if(i != value)
                {
-                  _loc2_[_loc3_].isDestination = false;
+                  list[i].isDestination = false;
                }
                else
                {
-                  _loc2_[_loc3_].isDestination = true;
+                  list[i].isDestination = true;
                }
             }
-            _loc3_++;
+            i++;
          }
       }
       
-      public function set diceType(param1:int) : void
+      public function set diceType(value:int) : void
       {
-         _model.diceType = param1;
+         _model.diceType = value;
       }
       
       public function get LuckIntegralLevel() : int
@@ -204,9 +203,9 @@ package dice.controller
          return false;
       }
       
-      public function set LuckIntegralLevel(param1:int) : void
+      public function set LuckIntegralLevel(value:int) : void
       {
-         _model.LuckIntegralLevel = param1;
+         _model.LuckIntegralLevel = value;
       }
       
       public function get LuckIntegral() : int
@@ -224,9 +223,9 @@ package dice.controller
          return _model.currentPosition;
       }
       
-      public function set CurrentPosition(param1:int) : void
+      public function set CurrentPosition(value:int) : void
       {
-         _model.currentPosition = param1;
+         _model.currentPosition = value;
       }
       
       public function setCellInfo() : void
@@ -239,9 +238,9 @@ package dice.controller
          return _model.levelInfo;
       }
       
-      public function install(param1:PackageIn) : void
+      public function install(pkg:PackageIn) : void
       {
-         initialize(param1);
+         initialize(pkg);
          addEvent();
       }
       
@@ -256,36 +255,34 @@ package dice.controller
          }
       }
       
-      private function initialize(param1:PackageIn) : void
+      private function initialize(pkg:PackageIn) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         var _loc4_:* = null;
-         var _loc6_:int = 0;
-         var _loc5_:int = 0;
+         var _temp1:int = 0;
+         var _temp2:int = 0;
+         var _str:* = null;
+         var i:int = 0;
+         var j:int = 0;
          _model = new DiceModel();
-         _model.freeCount = param1.readInt();
-         _model.refreshPrice = param1.readInt();
-         _model.commonDicePrice = param1.readInt();
-         _model.doubleDicePrice = param1.readInt();
-         _model.bigDicePrice = param1.readInt();
-         _model.smallDicePrice = param1.readInt();
-         _model.MAX_LEVEL = param1.readInt();
-         _loc6_ = 0;
-         while(_loc6_ < _model.MAX_LEVEL)
+         _model.freeCount = pkg.readInt();
+         _model.refreshPrice = pkg.readInt();
+         _model.commonDicePrice = pkg.readInt();
+         _model.doubleDicePrice = pkg.readInt();
+         _model.bigDicePrice = pkg.readInt();
+         _model.smallDicePrice = pkg.readInt();
+         _model.MAX_LEVEL = pkg.readInt();
+         for(i = 0; i < _model.MAX_LEVEL; )
          {
-            _loc3_ = param1.readInt();
-            _loc2_ = param1.readInt();
-            _loc4_ = "";
-            _loc5_ = 0;
-            while(_loc5_ < _loc2_)
+            _temp1 = pkg.readInt();
+            _temp2 = pkg.readInt();
+            _str = "";
+            for(j = 0; j < _temp2; )
             {
-               _loc4_ = _loc4_ + ("," + param1.readInt() + "|" + param1.readInt());
-               _loc5_++;
+               _str = _str + ("," + pkg.readInt() + "|" + pkg.readInt());
+               j++;
             }
-            _loc4_ = _loc4_.substring(1);
-            _model.levelInfo[_loc6_] = new DiceAwardInfo(_loc6_ + 1,_loc3_,_loc4_);
-            _loc6_++;
+            _str = _str.substring(1);
+            _model.levelInfo[i] = new DiceAwardInfo(i + 1,_temp1,_str);
+            i++;
          }
       }
       
@@ -301,88 +298,87 @@ package dice.controller
          SocketManager.Instance.removeEventListener("dice_receive_result",__receiveResult);
       }
       
-      private function __onReceiveData(param1:CrazyTankSocketEvent) : void
+      private function __onReceiveData(event:CrazyTankSocketEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         var _loc4_:PackageIn = param1.pkg;
-         _model.userFirstCell = _loc4_.readBoolean();
-         _model.currentPosition = _loc4_.readInt() + 1;
-         _loc3_ = _loc4_.readInt();
-         _loc2_ = _loc4_.readInt();
+         var temp_level:int = 0;
+         var temp_luckintegral:int = 0;
+         var pkg:PackageIn = event.pkg;
+         _model.userFirstCell = pkg.readBoolean();
+         _model.currentPosition = pkg.readInt() + 1;
+         temp_level = pkg.readInt();
+         temp_luckintegral = pkg.readInt();
          if(_isFirst)
          {
-            _model.LuckIntegralLevel = _loc3_;
+            _model.LuckIntegralLevel = temp_level;
             _isFirst = false;
          }
-         if(DiceController.Instance.LuckIntegralLevel != _loc3_ + 1 || _loc3_ == -1 && _loc2_ < _model.LuckIntegral)
+         if(DiceController.Instance.LuckIntegralLevel != temp_level + 1 || temp_level == -1 && temp_luckintegral < _model.LuckIntegral)
          {
-            _model.LuckIntegralLevel = _loc3_;
+            _model.LuckIntegralLevel = temp_level;
             _model.isPlayDownMovie = true;
             dispatchEvent(new DiceEvent("dice_level_changed"));
          }
-         _model.LuckIntegral = _loc2_;
-         _model.freeCount = _loc4_.readInt();
-         ReceiveListByPkg(_loc4_);
+         _model.LuckIntegral = temp_luckintegral;
+         _model.freeCount = pkg.readInt();
+         ReceiveListByPkg(pkg);
       }
       
-      private function ReceiveListByPkg(param1:PackageIn) : void
+      private function ReceiveListByPkg(pkg:PackageIn) : void
       {
-         var _loc4_:* = null;
-         var _loc5_:* = null;
-         var _loc6_:* = null;
-         var _loc8_:* = null;
-         var _loc2_:int = 0;
-         var _loc7_:int = 0;
-         var _loc3_:int = !!_model.userFirstCell?0:1;
+         var cell:* = null;
+         var bg:* = null;
+         var shape:* = null;
+         var info:* = null;
+         var count:int = 0;
+         var i:int = 0;
+         var start:int = !!_model.userFirstCell?0:1;
          _model.removeAllItem();
-         _loc2_ = param1.readInt() + _loc3_;
-         _model.cellCount = param1.readInt() + _loc3_;
-         _loc2_ = _loc2_ - _loc3_;
+         count = pkg.readInt() + start;
+         _model.cellCount = pkg.readInt() + start;
+         count = count - start;
          _model.setCellInfo();
-         _loc7_ = 0;
-         while(_loc7_ < _loc2_)
+         for(i = 0; i < count; )
          {
-            _loc5_ = ComponentFactory.Instance.creat("asset.dice.bg" + (_loc3_ + _loc7_ + 1));
-            _loc6_ = ComponentFactory.Instance.creat("asset.cell.mask" + (_loc3_ + _loc7_));
-            _loc8_ = ItemManager.Instance.getTemplateById(param1.readInt());
-            _loc4_ = new DiceCell(_loc5_,_model.cellPosition[_loc7_ + _loc3_],_loc8_,_loc6_);
-            _loc4_.position = param1.readInt();
-            _loc4_.strengthLevel = param1.readInt();
-            _loc4_.count = param1.readInt();
-            _loc4_.validate = param1.readInt();
-            _loc4_.isBind = param1.readBoolean();
-            _model.addCellItem(_loc4_);
-            _loc7_++;
+            bg = ComponentFactory.Instance.creat("asset.dice.bg" + (start + i + 1));
+            shape = ComponentFactory.Instance.creat("asset.cell.mask" + (start + i));
+            info = ItemManager.Instance.getTemplateById(pkg.readInt());
+            cell = new DiceCell(bg,_model.cellPosition[i + start],info,shape);
+            cell.position = pkg.readInt();
+            cell.strengthLevel = pkg.readInt();
+            cell.count = pkg.readInt();
+            cell.validate = pkg.readInt();
+            cell.isBind = pkg.readBoolean();
+            _model.addCellItem(cell);
+            i++;
          }
          dispatchEvent(new DiceEvent("dice_refresh_data"));
          dispatchEvent(new DiceEvent("showMainView"));
       }
       
-      private function __receiveResult(param1:CrazyTankSocketEvent) : void
+      private function __receiveResult(event:CrazyTankSocketEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:Object = {};
-         _loc2_.position = _loc3_.readInt() + 1;
-         _loc2_.result = _loc3_.readInt();
-         trace("点数：",_loc2_.result,"当前位置：",_loc2_.position - 1,"-----------------------------------");
-         _loc2_.luckIntegral = _loc3_.readInt();
-         _loc2_.level = _loc3_.readInt();
-         _loc2_.freeCount = _loc3_.readInt();
-         _loc2_.rewardItem = _loc3_.readUTF();
-         if(DiceController.Instance.CurrentPosition != _loc2_.position)
+         var pkg:PackageIn = event.pkg;
+         var proxy:Object = {};
+         proxy.position = pkg.readInt() + 1;
+         proxy.result = pkg.readInt();
+         trace("点数：",proxy.result,"当前位置：",proxy.position - 1,"-----------------------------------");
+         proxy.luckIntegral = pkg.readInt();
+         proxy.level = pkg.readInt();
+         proxy.freeCount = pkg.readInt();
+         proxy.rewardItem = pkg.readUTF();
+         if(DiceController.Instance.CurrentPosition != proxy.position)
          {
-            DiceController.Instance.CurrentPosition = _loc2_.position;
+            DiceController.Instance.CurrentPosition = proxy.position;
          }
-         _model.freeCount = _loc2_.freeCount;
-         if(DiceController.Instance.LuckIntegralLevel != _loc2_.level + 1 || _loc2_.level == -1 && _model.LuckIntegral > _loc2_.luckIntegral)
+         _model.freeCount = proxy.freeCount;
+         if(DiceController.Instance.LuckIntegralLevel != proxy.level + 1 || proxy.level == -1 && _model.LuckIntegral > proxy.luckIntegral)
          {
-            _model.LuckIntegralLevel = _loc2_.level;
+            _model.LuckIntegralLevel = proxy.level;
             _model.isPlayDownMovie = true;
             dispatchEvent(new DiceEvent("dice_level_changed"));
          }
-         _model.LuckIntegral = _loc2_.luckIntegral;
-         dispatchEvent(new DiceEvent("get_dice_result_data",_loc2_));
+         _model.LuckIntegral = proxy.luckIntegral;
+         dispatchEvent(new DiceEvent("get_dice_result_data",proxy));
       }
    }
 }

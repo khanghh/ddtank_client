@@ -24,33 +24,32 @@ package ddt.utils
          return _instance;
       }
       
-      public function convertToImg(param1:int, param2:String, param3:int = 9) : Sprite
+      public function convertToImg(num:int, cmpStr:String, gap:int = 9) : Sprite
       {
-         var _loc5_:* = null;
-         var _loc7_:int = 0;
-         var _loc4_:Sprite = new Sprite();
-         var _loc8_:Array = [];
-         if(param1 <= 0)
+         var img:* = null;
+         var i:int = 0;
+         var sp:Sprite = new Sprite();
+         var numArr:Array = [];
+         if(num <= 0)
          {
-            param1 = 0;
+            num = 0;
          }
-         while(param1 >= 10)
+         while(num >= 10)
          {
-            _loc8_.push(param1 % 10);
-            param1 = Math.floor(param1 / 10);
+            numArr.push(num % 10);
+            num = Math.floor(num / 10);
          }
-         _loc8_.push(param1);
-         var _loc6_:int = _loc8_.length;
-         _loc7_ = 0;
-         while(_loc7_ <= _loc6_ - 1)
+         numArr.push(num);
+         var len:int = numArr.length;
+         for(i = 0; i <= len - 1; )
          {
-            _loc5_ = ComponentFactory.Instance.creat(param2 + _loc8_.pop());
-            _loc5_.smoothing = true;
-            _loc5_.x = _loc7_ * param3;
-            _loc4_.addChild(_loc5_);
-            _loc7_++;
+            img = ComponentFactory.Instance.creat(cmpStr + numArr.pop());
+            img.smoothing = true;
+            img.x = i * gap;
+            sp.addChild(img);
+            i++;
          }
-         return _loc4_;
+         return sp;
       }
    }
 }

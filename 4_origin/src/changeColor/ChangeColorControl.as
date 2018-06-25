@@ -36,7 +36,7 @@ package changeColor
          ChangeColorManager.instance.addEventListener(ChangeColorManager.CHAGNECOLOR_OPENVIEW,__onOpenView);
       }
       
-      private function __onOpenView(param1:Event) : void
+      private function __onOpenView(event:Event) : void
       {
          UIModuleSmallLoading.Instance.progress = 0;
          UIModuleSmallLoading.Instance.show();
@@ -46,7 +46,7 @@ package changeColor
          UIModuleLoader.Instance.addUIModuleImp("changecolor");
       }
       
-      private function __onClose(param1:Event) : void
+      private function __onClose(event:Event) : void
       {
          UIModuleSmallLoading.Instance.hide();
          UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);
@@ -54,17 +54,17 @@ package changeColor
          UIModuleLoader.Instance.removeEventListener("uiModuleComplete",__changeColorComplete);
       }
       
-      private function __changeColorProgress(param1:UIModuleEvent) : void
+      private function __changeColorProgress(event:UIModuleEvent) : void
       {
-         if(param1.module == "changecolor")
+         if(event.module == "changecolor")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
       
-      private function __changeColorComplete(param1:UIModuleEvent) : void
+      private function __changeColorComplete(event:UIModuleEvent) : void
       {
-         if(param1.module == "changecolor")
+         if(event.module == "changecolor")
          {
             UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);
             UIModuleLoader.Instance.removeEventListener("uiMoudleProgress",__changeColorProgress);

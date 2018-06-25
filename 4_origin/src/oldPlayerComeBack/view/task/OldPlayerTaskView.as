@@ -37,18 +37,17 @@ package oldPlayerComeBack.view.task
       
       private function initTaskData() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:int = 0;
+         var tInfo:* = null;
+         var i:int = 0;
          _taskList.clearAllChild();
-         var _loc3_:Array = TaskManager.instance.getAllQuestInfoByType(11);
-         if(_loc3_.length > 0)
+         var taskInfo:Array = TaskManager.instance.getAllQuestInfoByType(11);
+         if(taskInfo.length > 0)
          {
-            _loc2_ = 0;
-            while(_loc2_ < _loc3_.length)
+            for(i = 0; i < taskInfo.length; )
             {
-               _loc1_ = _loc3_[_loc2_];
-               addTaskItem(_loc1_);
-               _loc2_++;
+               tInfo = taskInfo[i];
+               addTaskItem(tInfo);
+               i++;
             }
             sortTaskItem();
             _taskList.refreshChildPos();
@@ -56,29 +55,28 @@ package oldPlayerComeBack.view.task
          _scrollPanel.invalidateViewport();
       }
       
-      private function addTaskItem(param1:QuestInfo) : void
+      private function addTaskItem(info:QuestInfo) : void
       {
          _taskItem = new OldPlayerTaskItem();
-         _taskItem.info = param1;
+         _taskItem.info = info;
          _taskList.addChild(_taskItem);
       }
       
-      public function updateTaskItem(param1:QuestInfo) : void
+      public function updateTaskItem(info:QuestInfo) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
+         var item:* = null;
+         var i:int = 0;
          if(_taskList)
          {
-            _loc3_ = 0;
-            while(_loc3_ < _taskList.numChildren)
+            for(i = 0; i < _taskList.numChildren; )
             {
-               _loc2_ = _taskList.getChildAt(_loc3_) as OldPlayerTaskItem;
-               if(param1.QuestID == _loc2_.getInfo().QuestID)
+               item = _taskList.getChildAt(i) as OldPlayerTaskItem;
+               if(info.QuestID == item.getInfo().QuestID)
                {
-                  _loc2_.info = param1;
+                  item.info = info;
                   break;
                }
-               _loc3_++;
+               i++;
             }
             sortTaskItem();
          }
@@ -86,19 +84,19 @@ package oldPlayerComeBack.view.task
       
       private function sortTaskItem() : void
       {
-         var _loc1_:* = null;
+         var itemArr:* = null;
          if(_taskList)
          {
-            _loc1_ = [];
+            itemArr = [];
             while(_taskList.numChildren > 0)
             {
-               _loc1_.push(_taskList.removeChildAt(0));
+               itemArr.push(_taskList.removeChildAt(0));
             }
             _taskList.removeAllChild();
-            _loc1_.sortOn("completeType");
-            while(_loc1_.length > 0)
+            itemArr.sortOn("completeType");
+            while(itemArr.length > 0)
             {
-               _taskList.addChild(_loc1_.shift());
+               _taskList.addChild(itemArr.shift());
             }
          }
       }

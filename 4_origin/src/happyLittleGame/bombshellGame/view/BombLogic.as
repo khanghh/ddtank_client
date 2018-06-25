@@ -99,9 +99,9 @@ package happyLittleGame.bombshellGame.view
          return _checkallBomb;
       }
       
-      public function set checkallBomb(param1:Boolean) : void
+      public function set checkallBomb(value:Boolean) : void
       {
-         _checkallBomb = param1;
+         _checkallBomb = value;
       }
       
       public function get currentGameType() : int
@@ -109,9 +109,9 @@ package happyLittleGame.bombshellGame.view
          return _currentGameType;
       }
       
-      public function set currentGameType(param1:int) : void
+      public function set currentGameType(value:int) : void
       {
-         _currentGameType = param1;
+         _currentGameType = value;
       }
       
       private function initEvent() : void
@@ -126,55 +126,52 @@ package happyLittleGame.bombshellGame.view
       
       private function CheckBombNextLv() : Boolean
       {
-         var _loc5_:* = null;
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         var _loc1_:int = bombPool.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc1_)
+         var vo:* = null;
+         var i:int = 0;
+         var lenII:int = 0;
+         var j:int = 0;
+         var len:int = bombPool.length;
+         for(i = 0; i < len; )
          {
-            _loc3_ = bombPool[_loc4_].length;
-            _loc2_ = 0;
-            while(_loc2_ < _loc3_)
+            lenII = bombPool[i].length;
+            for(j = 0; j < lenII; )
             {
-               if(bombPool[_loc4_][_loc2_] is BombVo)
+               if(bombPool[i][j] is BombVo)
                {
-                  _loc5_ = bombPool[_loc4_][_loc2_] as BombVo;
-                  if(_loc5_.state != BombState.Bomb_Obs && _loc5_.state != BombState.Bomb)
+                  vo = bombPool[i][j] as BombVo;
+                  if(vo.state != BombState.Bomb_Obs && vo.state != BombState.Bomb)
                   {
                      return true;
                   }
                }
-               _loc2_++;
+               j++;
             }
-            _loc4_++;
+            i++;
          }
          return false;
       }
       
-      private function __enterFrameHandler(param1:Event) : void
+      private function __enterFrameHandler(evt:Event) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
+         var len:int = 0;
+         var i:int = 0;
          if(bulletPool.length > 0)
          {
-            _loc2_ = bulletPool.length;
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_)
+            len = bulletPool.length;
+            for(i = 0; i < len; )
             {
-               if(bulletPool[_loc3_])
+               if(bulletPool[i])
                {
-                  bulletPool[_loc3_].BulletMc();
-                  if(CheckBulletHit(bulletPool[_loc3_]))
+                  bulletPool[i].BulletMc();
+                  if(CheckBulletHit(bulletPool[i]))
                   {
-                     ObjectUtils.disposeObject(bulletPool[_loc3_]);
-                     bulletPool[_loc3_] = null;
-                     bulletPool.splice(_loc3_,1);
-                     _loc3_--;
+                     ObjectUtils.disposeObject(bulletPool[i]);
+                     bulletPool[i] = null;
+                     bulletPool.splice(i,1);
+                     i--;
                   }
                }
-               _loc3_++;
+               i++;
             }
          }
          if(callBack != null)
@@ -259,51 +256,49 @@ package happyLittleGame.bombshellGame.view
       
       private function checkMapHasBomb() : Boolean
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         var _loc1_:int = bombPool.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc1_)
+         var lenII:int = 0;
+         var vo:* = null;
+         var i:int = 0;
+         var j:int = 0;
+         var len:int = bombPool.length;
+         for(i = 0; i < len; )
          {
-            _loc5_ = bombPool[0].length;
-            _loc2_ = 0;
-            while(_loc2_ < _loc5_)
+            lenII = bombPool[0].length;
+            for(j = 0; j < lenII; )
             {
-               if(bombPool[_loc3_][_loc2_] is BombVo)
+               if(bombPool[i][j] is BombVo)
                {
-                  _loc4_ = bombPool[_loc3_][_loc2_];
-                  if(_loc4_.state == BombState.Bomb_1 || _loc4_.state == BombState.Bomb_2 || _loc4_.state == BombState.Bomb_3 || _loc4_.state == BombState.Bomb_4 || _loc4_.state == BombState.Bomb_5)
+                  vo = bombPool[i][j];
+                  if(vo.state == BombState.Bomb_1 || vo.state == BombState.Bomb_2 || vo.state == BombState.Bomb_3 || vo.state == BombState.Bomb_4 || vo.state == BombState.Bomb_5)
                   {
                      return true;
                   }
                }
-               _loc2_++;
+               j++;
             }
-            _loc3_++;
+            i++;
          }
          return false;
       }
       
-      private function CheckBulletHit(param1:BombGameBullet) : Boolean
+      private function CheckBulletHit(target:BombGameBullet) : Boolean
       {
-         var _loc3_:* = null;
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
-         var _loc5_:Boolean = false;
-         if(param1 != null)
+         var hitTarget:* = null;
+         var index:int = 0;
+         var len:int = 0;
+         var checkborder:Boolean = false;
+         if(target != null)
          {
-            _loc3_ = GetHitBombVo(param1.Direc,param1.VX,param1.VY);
-            if(_loc3_ && _loc3_.MC && param1.MC && _loc3_.MC.hitTestObject(param1.MC))
+            hitTarget = GetHitBombVo(target.Direc,target.VX,target.VY);
+            if(hitTarget && hitTarget.MC && target.MC && hitTarget.MC.hitTestObject(target.MC))
             {
-               if(_loc3_.state != BombState.Bomb_Obs && !_loc3_.IsLock)
+               if(hitTarget.state != BombState.Bomb_Obs && !hitTarget.IsLock)
                {
-                  if(!_loc3_.showNextBomb())
+                  if(!hitTarget.showNextBomb())
                   {
-                     willbombvo.push(_loc3_);
-                     _loc3_.order = param1.order + 1;
-                     _loc3_.showScores();
+                     willbombvo.push(hitTarget);
+                     hitTarget.order = target.order + 1;
+                     hitTarget.showScores();
                      stepMirror = Number(stepMirror) + 1;
                      if(stepMirror == _stepPreCount)
                      {
@@ -316,22 +311,22 @@ package happyLittleGame.bombshellGame.view
                   }
                   return true;
                }
-               if(_loc3_.state == BombState.Bomb_Obs)
+               if(hitTarget.state == BombState.Bomb_Obs)
                {
                   return true;
                }
                return false;
             }
-            _loc5_ = false;
-            if(param1.x > 542 || param1.x < -13)
+            checkborder = false;
+            if(target.x > 542 || target.x < -13)
             {
-               _loc5_ = true;
+               checkborder = true;
             }
-            if(param1.y > 550 || param1.y < -24)
+            if(target.y > 550 || target.y < -24)
             {
-               _loc5_ = true;
+               checkborder = true;
             }
-            if(_loc5_)
+            if(checkborder)
             {
                return true;
             }
@@ -340,12 +335,12 @@ package happyLittleGame.bombshellGame.view
          return false;
       }
       
-      private function GetHitBombVo(param1:int, param2:int, param3:int) : BombVo
+      private function GetHitBombVo(_dir:int, _sx:int, _sy:int) : BombVo
       {
-         var _loc6_:int = 0;
-         var _loc5_:int = 0;
-         var _loc4_:BombVo = null;
-         var _loc7_:* = param1;
+         var dirX:int = 0;
+         var dirY:int = 0;
+         var tempVo:BombVo = null;
+         var _loc7_:* = _dir;
          if(BulletDirection.Down !== _loc7_)
          {
             if(BulletDirection.Up !== _loc7_)
@@ -354,163 +349,155 @@ package happyLittleGame.bombshellGame.view
                {
                   if(BulletDirection.Right === _loc7_)
                   {
-                     _loc5_ = param3 + 1;
-                     while(_loc5_ < 10)
+                     for(dirY = _sy + 1; dirY < 10; )
                      {
-                        if(bombPool[param2][_loc5_] is BombVo)
+                        if(bombPool[_sx][dirY] is BombVo)
                         {
-                           _loc4_ = bombPool[param2][_loc5_];
-                           if(!_loc4_.IsLock)
+                           tempVo = bombPool[_sx][dirY];
+                           if(!tempVo.IsLock)
                            {
-                              return _loc4_;
+                              return tempVo;
                            }
                         }
-                        _loc5_++;
+                        dirY++;
                      }
                   }
                }
                else
                {
-                  _loc5_ = param3 - 1;
-                  while(_loc5_ >= 0)
+                  for(dirY = _sy - 1; dirY >= 0; )
                   {
-                     if(bombPool[param2][_loc5_] is BombVo)
+                     if(bombPool[_sx][dirY] is BombVo)
                      {
-                        _loc4_ = bombPool[param2][_loc5_];
-                        if(!_loc4_.IsLock)
+                        tempVo = bombPool[_sx][dirY];
+                        if(!tempVo.IsLock)
                         {
-                           return _loc4_;
+                           return tempVo;
                         }
                      }
-                     _loc5_--;
+                     dirY--;
                   }
                }
             }
             else
             {
-               _loc6_ = param2 - 1;
-               while(_loc6_ >= 0)
+               for(dirX = _sx - 1; dirX >= 0; )
                {
-                  if(bombPool[_loc6_][param3] is BombVo)
+                  if(bombPool[dirX][_sy] is BombVo)
                   {
-                     _loc4_ = bombPool[_loc6_][param3];
-                     if(!_loc4_.IsLock)
+                     tempVo = bombPool[dirX][_sy];
+                     if(!tempVo.IsLock)
                      {
-                        return _loc4_;
+                        return tempVo;
                      }
                   }
-                  _loc6_--;
+                  dirX--;
                }
             }
          }
          else
          {
-            _loc6_ = param2 + 1;
-            while(_loc6_ < 10)
+            for(dirX = _sx + 1; dirX < 10; )
             {
-               if(bombPool[_loc6_][param3] is BombVo)
+               if(bombPool[dirX][_sy] is BombVo)
                {
-                  _loc4_ = bombPool[_loc6_][param3];
-                  if(!_loc4_.IsLock)
+                  tempVo = bombPool[dirX][_sy];
+                  if(!tempVo.IsLock)
                   {
-                     return _loc4_;
+                     return tempVo;
                   }
                }
-               _loc6_++;
+               dirX++;
             }
          }
-         return _loc4_;
+         return tempVo;
       }
       
       private function initPool() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < 10)
+         var i:int = 0;
+         var j:int = 0;
+         for(i = 0; i < 10; )
          {
-            bombPool[_loc2_] = [];
-            senddata[_loc2_] = [];
-            _loc1_ = 0;
-            while(_loc1_ < 10)
+            bombPool[i] = [];
+            senddata[i] = [];
+            for(j = 0; j < 10; )
             {
-               bombPool[_loc2_][_loc1_] = [];
-               senddata[_loc2_][_loc1_] = [];
-               _loc1_++;
+               bombPool[i][j] = [];
+               senddata[i][j] = [];
+               j++;
             }
-            _loc2_++;
+            i++;
          }
       }
       
       private function initBomb() : void
       {
-         var _loc2_:int = 0;
-         var _loc5_:* = null;
-         var _loc4_:int = 0;
-         var _loc6_:int = 0;
-         var _loc8_:* = null;
-         var _loc1_:Array = HappyLittleGameManager.instance.bombManager.model.BombTrain;
-         var _loc3_:Array = HappyLittleGameManager.instance.bombManager.model.bombPos;
-         var _loc7_:int = _loc1_.length;
-         _loc2_ = 0;
-         while(_loc2_ < _loc7_)
+         var index:int = 0;
+         var arr:* = null;
+         var indexII:int = 0;
+         var state:int = 0;
+         var vo:* = null;
+         var dataArr:Array = HappyLittleGameManager.instance.bombManager.model.BombTrain;
+         var posArr:Array = HappyLittleGameManager.instance.bombManager.model.bombPos;
+         var length:int = dataArr.length;
+         for(index = 0; index < length; )
          {
-            _loc5_ = _loc1_[_loc2_];
-            _loc4_ = 0;
-            while(_loc4_ < _loc5_.length)
+            arr = dataArr[index];
+            for(indexII = 0; indexII < arr.length; )
             {
-               _loc6_ = _loc5_[_loc4_];
-               if(_loc6_ != BombState.Bomb_None)
+               state = arr[indexII];
+               if(state != BombState.Bomb_None)
                {
-                  _loc8_ = new BombVo(_loc6_);
-                  _loc8_.visible = false;
-                  _loc8_.MC.addEventListener("click",__clickhandler);
-                  _loc8_.MC.addEventListener("mouseOver",__overhandler);
-                  _loc8_.MC.addEventListener("mouseOut",__outhandler);
-                  _loc8_.addEventListener("shootbullet",__bulletShootHandler);
-                  _loc8_.vx = _loc2_;
-                  _loc8_.vy = _loc4_;
-                  _loc8_.name = "vx_" + _loc2_ + "_vy_" + _loc4_;
-                  _loc8_.x = _loc3_[_loc2_][_loc4_][0];
-                  _loc8_.y = _loc3_[_loc2_][_loc4_][1] - 6;
-                  bombPool[_loc2_][_loc4_] = _loc8_;
-                  showbomb.push(_loc8_);
-                  addChild(_loc8_);
+                  vo = new BombVo(state);
+                  vo.visible = false;
+                  vo.MC.addEventListener("click",__clickhandler);
+                  vo.MC.addEventListener("mouseOver",__overhandler);
+                  vo.MC.addEventListener("mouseOut",__outhandler);
+                  vo.addEventListener("shootbullet",__bulletShootHandler);
+                  vo.vx = index;
+                  vo.vy = indexII;
+                  vo.name = "vx_" + index + "_vy_" + indexII;
+                  vo.x = posArr[index][indexII][0];
+                  vo.y = posArr[index][indexII][1] - 6;
+                  bombPool[index][indexII] = vo;
+                  showbomb.push(vo);
+                  addChild(vo);
                }
-               _loc4_++;
+               indexII++;
             }
-            _loc2_++;
+            index++;
          }
       }
       
-      private function __clickhandler(param1:Event) : void
+      private function __clickhandler(evt:Event) : void
       {
-         var _loc2_:BombVo = (param1.currentTarget as MovieClip).parent as BombVo;
-         if(_loc2_.state == BombState.Bomb_Obs)
+         var vo:BombVo = (evt.currentTarget as MovieClip).parent as BombVo;
+         if(vo.state == BombState.Bomb_Obs)
          {
             return;
          }
-         if(_mcComplete && _loc2_.canClick && bulletPool.length == 0 && willbombvo.length == 0 && HappyLittleGameManager.instance.bombManager.model.CurrentGameCanBeClickTimes > 0)
+         if(_mcComplete && vo.canClick && bulletPool.length == 0 && willbombvo.length == 0 && HappyLittleGameManager.instance.bombManager.model.CurrentGameCanBeClickTimes > 0)
          {
-            _loc2_.canClick = false;
-            _currentClickVo = _loc2_;
+            vo.canClick = false;
+            _currentClickVo = vo;
             if(gameBtnClick)
             {
                gameBtnClick(false);
             }
             SoundManager.instance.play("218");
-            if(!_loc2_.showNextBomb())
+            if(!vo.showNextBomb())
             {
                _isSendMapdata = true;
-               willbombvo.push(_loc2_);
-               _loc2_.order = 1;
-               _loc2_.showScores();
+               willbombvo.push(vo);
+               vo.order = 1;
+               vo.showScores();
                stepMirror = 0;
             }
             else
             {
                _isSendMapdata = false;
-               SocketManager.Instance.out.sendBombPos(HappyLittleGameManager.instance.currentGameType,_loc2_.vx,_loc2_.vy,false,null,null);
+               SocketManager.Instance.out.sendBombPos(HappyLittleGameManager.instance.currentGameType,vo.vx,vo.vy,false,null,null);
             }
             if(gameStepSub)
             {
@@ -521,266 +508,264 @@ package happyLittleGame.bombshellGame.view
       
       private function clearBombInfo() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:int = bombinfo.length;
-         while(_loc2_ > 0)
+         var obj:* = null;
+         var len:int = bombinfo.length;
+         while(len > 0)
          {
-            _loc1_ = bombinfo.shift();
-            _loc1_ = null;
-            _loc2_ = bombinfo.length;
+            obj = bombinfo.shift();
+            obj = null;
+            len = bombinfo.length;
          }
       }
       
       public function sendCurrenMapdata() : void
       {
-         var _loc7_:int = 0;
-         var _loc6_:* = null;
-         var _loc5_:* = null;
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         var _loc2_:int = bombPool.length;
-         var _loc1_:String = "";
+         var lenII:int = 0;
+         var vo:* = null;
+         var info:* = null;
+         var i:int = 0;
+         var j:int = 0;
+         var len:int = bombPool.length;
+         var temp:String = "";
          clearBombInfo();
-         _loc4_ = 0;
-         while(_loc4_ < _loc2_)
+         for(i = 0; i < len; )
          {
-            _loc7_ = bombPool[0].length;
-            _loc3_ = 0;
-            while(_loc3_ < _loc7_)
+            lenII = bombPool[0].length;
+            for(j = 0; j < lenII; )
             {
-               if(bombPool[_loc4_][_loc3_] is BombVo)
+               if(bombPool[i][j] is BombVo)
                {
-                  _loc6_ = bombPool[_loc4_][_loc3_] as BombVo;
-                  if(_loc6_.state != BombState.Bomb)
+                  vo = bombPool[i][j] as BombVo;
+                  if(vo.state != BombState.Bomb)
                   {
-                     senddata[_loc4_][_loc3_] = _loc6_.state;
+                     senddata[i][j] = vo.state;
                   }
                   else
                   {
-                     if(_loc6_.isSelect == false)
+                     if(vo.isSelect == false)
                      {
-                        _loc5_ = {};
-                        _loc5_.vx = _loc4_;
-                        _loc5_.vy = _loc3_;
-                        _loc5_.order = _loc6_.order;
-                        _loc6_.isSelect = true;
-                        bombinfo.push(_loc5_);
+                        info = {};
+                        info.vx = i;
+                        info.vy = j;
+                        info.order = vo.order;
+                        vo.isSelect = true;
+                        bombinfo.push(info);
                      }
-                     senddata[_loc4_][_loc3_] = 0;
+                     senddata[i][j] = 0;
                   }
                }
                else
                {
-                  senddata[_loc4_][_loc3_] = 0;
+                  senddata[i][j] = 0;
                }
-               _loc3_++;
+               j++;
             }
-            _loc4_++;
+            i++;
          }
          SocketManager.Instance.out.sendBombPos(HappyLittleGameManager.instance.currentGameType,_currentClickVo.vx,_currentClickVo.vy,true,senddata,bombinfo);
       }
       
-      private function __overhandler(param1:Event) : void
+      private function __overhandler(evt:Event) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
+         var mc:* = null;
+         var vo:* = null;
          if(bulletPool.length == 0)
          {
-            _loc2_ = param1.currentTarget as MovieClip;
-            _loc3_ = _loc2_.parent as BombVo;
-            if(_loc3_.state == BombState.Bomb_Obs)
+            mc = evt.currentTarget as MovieClip;
+            vo = mc.parent as BombVo;
+            if(vo.state == BombState.Bomb_Obs)
             {
                return;
             }
-            _loc3_.buttonMode = true;
-            _loc2_.scaleX = 0.9;
-            _loc2_.scaleY = 0.9;
+            vo.buttonMode = true;
+            mc.scaleX = 0.9;
+            mc.scaleY = 0.9;
          }
       }
       
-      private function __outhandler(param1:Event) : void
+      private function __outhandler(evt:Event) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
+         var mc:* = null;
+         var vo:* = null;
          if(bulletPool.length == 0)
          {
-            _loc2_ = param1.currentTarget as MovieClip;
-            _loc3_ = _loc2_.parent as BombVo;
-            if(_loc3_.state == BombState.Bomb_Obs)
+            mc = evt.currentTarget as MovieClip;
+            vo = mc.parent as BombVo;
+            if(vo.state == BombState.Bomb_Obs)
             {
                return;
             }
-            _loc3_.buttonMode = false;
-            _loc2_.scaleX = 0.8;
-            _loc2_.scaleY = 0.8;
+            vo.buttonMode = false;
+            mc.scaleX = 0.8;
+            mc.scaleY = 0.8;
          }
       }
       
-      private function __bulletShootHandler(param1:Event) : void
+      private function __bulletShootHandler(evt:Event) : void
       {
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         var _loc6_:* = null;
-         var _loc5_:* = null;
-         var _loc7_:BombVo = param1.currentTarget as BombVo;
+         var bulletL:* = null;
+         var bulletR:* = null;
+         var bulletU:* = null;
+         var bulletD:* = null;
+         var vo:BombVo = evt.currentTarget as BombVo;
          if(scoreCallBack)
          {
-            scoreCallBack(_loc7_.scores);
+            scoreCallBack(vo.scores);
          }
-         _loc7_.removeEventListener("shootbullet",__bulletShootHandler);
-         _loc7_.MC.removeEventListener("click",__clickhandler);
-         _loc7_.MC.removeEventListener("mouseOver",__overhandler);
-         _loc7_.MC.removeEventListener("mouseOut",__outhandler);
-         var _loc2_:int = willbombvo.indexOf(_loc7_);
-         if(_loc2_ >= 0)
+         vo.removeEventListener("shootbullet",__bulletShootHandler);
+         vo.MC.removeEventListener("click",__clickhandler);
+         vo.MC.removeEventListener("mouseOver",__overhandler);
+         vo.MC.removeEventListener("mouseOut",__outhandler);
+         var index:int = willbombvo.indexOf(vo);
+         if(index >= 0)
          {
-            willbombvo.splice(_loc2_,1);
+            willbombvo.splice(index,1);
          }
-         if(_loc7_ != null)
+         if(vo != null)
          {
-            if(_loc7_.vx == 0 && _loc7_.vy == 0)
+            if(vo.vx == 0 && vo.vy == 0)
             {
-               _loc5_ = new BombGameBullet(BulletDirection.Down,_loc7_.vx,_loc7_.vy,_loc7_.x,_loc7_.y);
-               _loc4_ = new BombGameBullet(BulletDirection.Right,_loc7_.vx,_loc7_.vy,_loc7_.x,_loc7_.y);
-               bulletPool.push(_loc5_);
-               bulletPool.push(_loc4_);
-               var _loc8_:* = _loc7_.order;
-               _loc5_.order = _loc8_;
-               _loc4_.order = _loc8_;
-               addChild(_loc4_);
-               addChild(_loc5_);
+               bulletD = new BombGameBullet(BulletDirection.Down,vo.vx,vo.vy,vo.x,vo.y);
+               bulletR = new BombGameBullet(BulletDirection.Right,vo.vx,vo.vy,vo.x,vo.y);
+               bulletPool.push(bulletD);
+               bulletPool.push(bulletR);
+               var _loc8_:* = vo.order;
+               bulletD.order = _loc8_;
+               bulletR.order = _loc8_;
+               addChild(bulletR);
+               addChild(bulletD);
                return;
             }
-            if(_loc7_.vx == 0 && _loc7_.vy == 9)
+            if(vo.vx == 0 && vo.vy == 9)
             {
-               _loc5_ = new BombGameBullet(BulletDirection.Down,_loc7_.vx,_loc7_.vy,_loc7_.x,_loc7_.y);
-               _loc3_ = new BombGameBullet(BulletDirection.Left,_loc7_.vx,_loc7_.vy,_loc7_.x,_loc7_.y);
-               bulletPool.push(_loc5_);
-               bulletPool.push(_loc3_);
-               addChild(_loc3_);
-               addChild(_loc5_);
-               _loc8_ = _loc7_.order;
-               _loc5_.order = _loc8_;
-               _loc3_.order = _loc8_;
+               bulletD = new BombGameBullet(BulletDirection.Down,vo.vx,vo.vy,vo.x,vo.y);
+               bulletL = new BombGameBullet(BulletDirection.Left,vo.vx,vo.vy,vo.x,vo.y);
+               bulletPool.push(bulletD);
+               bulletPool.push(bulletL);
+               addChild(bulletL);
+               addChild(bulletD);
+               _loc8_ = vo.order;
+               bulletD.order = _loc8_;
+               bulletL.order = _loc8_;
                return;
             }
-            if(_loc7_.vx == 9 && _loc7_.vy == 9)
+            if(vo.vx == 9 && vo.vy == 9)
             {
-               _loc6_ = new BombGameBullet(BulletDirection.Up,_loc7_.vx,_loc7_.vy,_loc7_.x,_loc7_.y);
-               _loc3_ = new BombGameBullet(BulletDirection.Left,_loc7_.vx,_loc7_.vy,_loc7_.x,_loc7_.y);
-               bulletPool.push(_loc6_);
-               bulletPool.push(_loc3_);
-               addChild(_loc3_);
-               addChild(_loc6_);
-               _loc8_ = _loc7_.order;
-               _loc6_.order = _loc8_;
-               _loc3_.order = _loc8_;
+               bulletU = new BombGameBullet(BulletDirection.Up,vo.vx,vo.vy,vo.x,vo.y);
+               bulletL = new BombGameBullet(BulletDirection.Left,vo.vx,vo.vy,vo.x,vo.y);
+               bulletPool.push(bulletU);
+               bulletPool.push(bulletL);
+               addChild(bulletL);
+               addChild(bulletU);
+               _loc8_ = vo.order;
+               bulletU.order = _loc8_;
+               bulletL.order = _loc8_;
                return;
             }
-            if(_loc7_.vx == 9 && _loc7_.vy == 0)
+            if(vo.vx == 9 && vo.vy == 0)
             {
-               _loc6_ = new BombGameBullet(BulletDirection.Up,_loc7_.vx,_loc7_.vy,_loc7_.x,_loc7_.y);
-               _loc4_ = new BombGameBullet(BulletDirection.Right,_loc7_.vx,_loc7_.vy,_loc7_.x,_loc7_.y);
-               bulletPool.push(_loc6_);
-               bulletPool.push(_loc4_);
-               addChild(_loc4_);
-               addChild(_loc6_);
-               _loc8_ = _loc7_.order;
-               _loc6_.order = _loc8_;
-               _loc4_.order = _loc8_;
+               bulletU = new BombGameBullet(BulletDirection.Up,vo.vx,vo.vy,vo.x,vo.y);
+               bulletR = new BombGameBullet(BulletDirection.Right,vo.vx,vo.vy,vo.x,vo.y);
+               bulletPool.push(bulletU);
+               bulletPool.push(bulletR);
+               addChild(bulletR);
+               addChild(bulletU);
+               _loc8_ = vo.order;
+               bulletU.order = _loc8_;
+               bulletR.order = _loc8_;
                return;
             }
-            if(_loc7_.vx == 0)
+            if(vo.vx == 0)
             {
-               _loc5_ = new BombGameBullet(BulletDirection.Down,_loc7_.vx,_loc7_.vy,_loc7_.x,_loc7_.y);
-               _loc3_ = new BombGameBullet(BulletDirection.Left,_loc7_.vx,_loc7_.vy,_loc7_.x,_loc7_.y);
-               _loc4_ = new BombGameBullet(BulletDirection.Right,_loc7_.vx,_loc7_.vy,_loc7_.x,_loc7_.y);
-               bulletPool.push(_loc5_);
-               bulletPool.push(_loc3_);
-               bulletPool.push(_loc4_);
-               addChild(_loc4_);
-               addChild(_loc3_);
-               addChild(_loc5_);
-               _loc8_ = _loc7_.order;
-               _loc5_.order = _loc8_;
+               bulletD = new BombGameBullet(BulletDirection.Down,vo.vx,vo.vy,vo.x,vo.y);
+               bulletL = new BombGameBullet(BulletDirection.Left,vo.vx,vo.vy,vo.x,vo.y);
+               bulletR = new BombGameBullet(BulletDirection.Right,vo.vx,vo.vy,vo.x,vo.y);
+               bulletPool.push(bulletD);
+               bulletPool.push(bulletL);
+               bulletPool.push(bulletR);
+               addChild(bulletR);
+               addChild(bulletL);
+               addChild(bulletD);
+               _loc8_ = vo.order;
+               bulletD.order = _loc8_;
                _loc8_ = _loc8_;
-               _loc3_.order = _loc8_;
-               _loc4_.order = _loc8_;
+               bulletL.order = _loc8_;
+               bulletR.order = _loc8_;
                return;
             }
-            if(_loc7_.vx == 9)
+            if(vo.vx == 9)
             {
-               _loc6_ = new BombGameBullet(BulletDirection.Up,_loc7_.vx,_loc7_.vy,_loc7_.x,_loc7_.y);
-               _loc3_ = new BombGameBullet(BulletDirection.Left,_loc7_.vx,_loc7_.vy,_loc7_.x,_loc7_.y);
-               _loc4_ = new BombGameBullet(BulletDirection.Right,_loc7_.vx,_loc7_.vy,_loc7_.x,_loc7_.y);
-               bulletPool.push(_loc6_);
-               bulletPool.push(_loc3_);
-               bulletPool.push(_loc4_);
-               addChild(_loc3_);
-               addChild(_loc6_);
-               addChild(_loc4_);
-               _loc8_ = _loc7_.order;
-               _loc6_.order = _loc8_;
+               bulletU = new BombGameBullet(BulletDirection.Up,vo.vx,vo.vy,vo.x,vo.y);
+               bulletL = new BombGameBullet(BulletDirection.Left,vo.vx,vo.vy,vo.x,vo.y);
+               bulletR = new BombGameBullet(BulletDirection.Right,vo.vx,vo.vy,vo.x,vo.y);
+               bulletPool.push(bulletU);
+               bulletPool.push(bulletL);
+               bulletPool.push(bulletR);
+               addChild(bulletL);
+               addChild(bulletU);
+               addChild(bulletR);
+               _loc8_ = vo.order;
+               bulletU.order = _loc8_;
                _loc8_ = _loc8_;
-               _loc3_.order = _loc8_;
-               _loc4_.order = _loc8_;
+               bulletL.order = _loc8_;
+               bulletR.order = _loc8_;
                return;
             }
-            if(_loc7_.vy == 0)
+            if(vo.vy == 0)
             {
-               _loc4_ = new BombGameBullet(BulletDirection.Right,_loc7_.vx,_loc7_.vy,_loc7_.x,_loc7_.y);
-               _loc6_ = new BombGameBullet(BulletDirection.Up,_loc7_.vx,_loc7_.vy,_loc7_.x,_loc7_.y);
-               _loc5_ = new BombGameBullet(BulletDirection.Down,_loc7_.vx,_loc7_.vy,_loc7_.x,_loc7_.y);
-               bulletPool.push(_loc6_);
-               bulletPool.push(_loc5_);
-               bulletPool.push(_loc4_);
-               addChild(_loc4_);
-               addChild(_loc6_);
-               addChild(_loc5_);
-               _loc8_ = _loc7_.order;
-               _loc6_.order = _loc8_;
+               bulletR = new BombGameBullet(BulletDirection.Right,vo.vx,vo.vy,vo.x,vo.y);
+               bulletU = new BombGameBullet(BulletDirection.Up,vo.vx,vo.vy,vo.x,vo.y);
+               bulletD = new BombGameBullet(BulletDirection.Down,vo.vx,vo.vy,vo.x,vo.y);
+               bulletPool.push(bulletU);
+               bulletPool.push(bulletD);
+               bulletPool.push(bulletR);
+               addChild(bulletR);
+               addChild(bulletU);
+               addChild(bulletD);
+               _loc8_ = vo.order;
+               bulletU.order = _loc8_;
                _loc8_ = _loc8_;
-               _loc5_.order = _loc8_;
-               _loc4_.order = _loc8_;
+               bulletD.order = _loc8_;
+               bulletR.order = _loc8_;
                return;
             }
-            if(_loc7_.vy == 9)
+            if(vo.vy == 9)
             {
-               _loc3_ = new BombGameBullet(BulletDirection.Left,_loc7_.vx,_loc7_.vy,_loc7_.x,_loc7_.y);
-               _loc5_ = new BombGameBullet(BulletDirection.Down,_loc7_.vx,_loc7_.vy,_loc7_.x,_loc7_.y);
-               _loc6_ = new BombGameBullet(BulletDirection.Up,_loc7_.vx,_loc7_.vy,_loc7_.x,_loc7_.y);
-               bulletPool.push(_loc6_);
-               bulletPool.push(_loc5_);
-               bulletPool.push(_loc3_);
-               addChild(_loc3_);
-               addChild(_loc5_);
-               addChild(_loc6_);
-               _loc8_ = _loc7_.order;
-               _loc6_.order = _loc8_;
+               bulletL = new BombGameBullet(BulletDirection.Left,vo.vx,vo.vy,vo.x,vo.y);
+               bulletD = new BombGameBullet(BulletDirection.Down,vo.vx,vo.vy,vo.x,vo.y);
+               bulletU = new BombGameBullet(BulletDirection.Up,vo.vx,vo.vy,vo.x,vo.y);
+               bulletPool.push(bulletU);
+               bulletPool.push(bulletD);
+               bulletPool.push(bulletL);
+               addChild(bulletL);
+               addChild(bulletD);
+               addChild(bulletU);
+               _loc8_ = vo.order;
+               bulletU.order = _loc8_;
                _loc8_ = _loc8_;
-               _loc5_.order = _loc8_;
-               _loc3_.order = _loc8_;
+               bulletD.order = _loc8_;
+               bulletL.order = _loc8_;
                return;
             }
-            _loc3_ = new BombGameBullet(BulletDirection.Left,_loc7_.vx,_loc7_.vy,_loc7_.x,_loc7_.y);
-            _loc4_ = new BombGameBullet(BulletDirection.Right,_loc7_.vx,_loc7_.vy,_loc7_.x,_loc7_.y);
-            _loc6_ = new BombGameBullet(BulletDirection.Up,_loc7_.vx,_loc7_.vy,_loc7_.x,_loc7_.y);
-            _loc5_ = new BombGameBullet(BulletDirection.Down,_loc7_.vx,_loc7_.vy,_loc7_.x,_loc7_.y);
-            bulletPool.push(_loc6_);
-            bulletPool.push(_loc5_);
-            bulletPool.push(_loc3_);
-            bulletPool.push(_loc4_);
-            addChild(_loc6_);
-            addChild(_loc5_);
-            addChild(_loc3_);
-            addChild(_loc4_);
-            _loc8_ = _loc7_.order;
-            _loc6_.order = _loc8_;
+            bulletL = new BombGameBullet(BulletDirection.Left,vo.vx,vo.vy,vo.x,vo.y);
+            bulletR = new BombGameBullet(BulletDirection.Right,vo.vx,vo.vy,vo.x,vo.y);
+            bulletU = new BombGameBullet(BulletDirection.Up,vo.vx,vo.vy,vo.x,vo.y);
+            bulletD = new BombGameBullet(BulletDirection.Down,vo.vx,vo.vy,vo.x,vo.y);
+            bulletPool.push(bulletU);
+            bulletPool.push(bulletD);
+            bulletPool.push(bulletL);
+            bulletPool.push(bulletR);
+            addChild(bulletU);
+            addChild(bulletD);
+            addChild(bulletL);
+            addChild(bulletR);
+            _loc8_ = vo.order;
+            bulletU.order = _loc8_;
             _loc8_ = _loc8_;
-            _loc5_.order = _loc8_;
+            bulletD.order = _loc8_;
             _loc8_ = _loc8_;
-            _loc3_.order = _loc8_;
-            _loc4_.order = _loc8_;
+            bulletL.order = _loc8_;
+            bulletR.order = _loc8_;
             return;
          }
       }
@@ -797,51 +782,49 @@ package happyLittleGame.bombshellGame.view
       
       public function clear() : void
       {
-         var _loc7_:* = null;
-         var _loc4_:int = 0;
-         var _loc2_:int = 0;
-         var _loc6_:int = 0;
-         var _loc1_:* = null;
-         var _loc3_:int = 0;
-         var _loc5_:* = null;
+         var vo:* = null;
+         var lenx:int = 0;
+         var leny:int = 0;
+         var i:int = 0;
+         var arr:* = null;
+         var j:int = 0;
+         var bullet:* = null;
          if(bombPool != null)
          {
-            _loc4_ = bombPool.length;
-            _loc6_ = 0;
-            while(_loc6_ < _loc4_)
+            lenx = bombPool.length;
+            for(i = 0; i < lenx; )
             {
-               _loc1_ = bombPool[_loc6_];
-               _loc2_ = _loc1_.length;
-               _loc3_ = 0;
-               while(_loc3_ < _loc2_)
+               arr = bombPool[i];
+               leny = arr.length;
+               for(j = 0; j < leny; )
                {
-                  if(bombPool[_loc6_][_loc3_] is BombVo)
+                  if(bombPool[i][j] is BombVo)
                   {
-                     _loc7_ = bombPool[_loc6_][_loc3_] as BombVo;
-                     if(_loc7_.MC)
+                     vo = bombPool[i][j] as BombVo;
+                     if(vo.MC)
                      {
-                        _loc7_.MC.removeEventListener("click",__clickhandler);
-                        _loc7_.MC.removeEventListener("mouseOver",__overhandler);
-                        _loc7_.MC.removeEventListener("mouseOut",__outhandler);
+                        vo.MC.removeEventListener("click",__clickhandler);
+                        vo.MC.removeEventListener("mouseOver",__overhandler);
+                        vo.MC.removeEventListener("mouseOut",__outhandler);
                      }
-                     if(_loc7_ != null)
+                     if(vo != null)
                      {
-                        ObjectUtils.disposeObject(_loc7_);
-                        _loc7_ = null;
+                        ObjectUtils.disposeObject(vo);
+                        vo = null;
                      }
                   }
-                  _loc3_++;
+                  j++;
                }
-               _loc6_++;
+               i++;
             }
          }
          if(bulletPool != null)
          {
             while(bulletPool.length > 0)
             {
-               _loc5_ = bulletPool.shift();
-               ObjectUtils.disposeObject(_loc5_);
-               _loc5_ = null;
+               bullet = bulletPool.shift();
+               ObjectUtils.disposeObject(bullet);
+               bullet = null;
             }
          }
          if(willbombvo != null)

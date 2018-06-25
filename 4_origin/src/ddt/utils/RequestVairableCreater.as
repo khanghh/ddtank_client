@@ -13,16 +13,16 @@ package ddt.utils
          super();
       }
       
-      public static function creatWidthKey(param1:Boolean) : URLVariables
+      public static function creatWidthKey(mustNew:Boolean) : URLVariables
       {
-         var _loc2_:URLVariables = new URLVariables();
-         _loc2_["selfid"] = PlayerManager.Instance.Self.ID;
-         _loc2_["key"] = MD5.hash(PlayerManager.Instance.Account.Password);
-         if(param1)
+         var data:URLVariables = new URLVariables();
+         data["selfid"] = PlayerManager.Instance.Self.ID;
+         data["key"] = MD5.hash(PlayerManager.Instance.Account.Password);
+         if(mustNew)
          {
-            _loc2_["rnd"] = Math.random();
+            data["rnd"] = Math.random();
          }
-         return _loc2_;
+         return data;
       }
    }
 }

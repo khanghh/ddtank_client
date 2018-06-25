@@ -32,9 +32,9 @@ package worldboss.view
          return "worldbossRoom";
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
-         super.enter(param1,param2);
+         super.enter(prev,data);
          MainToolBar.Instance.hide();
          LayerManager.Instance.clearnGameDynamic();
          black = new Sprite();
@@ -63,7 +63,7 @@ package worldboss.view
          timer.start();
       }
       
-      private function __gotoBack(param1:TimerEvent) : void
+      private function __gotoBack(evt:TimerEvent) : void
       {
          timer.reset();
          timer.removeEventListener("timer",__gotoBack);
@@ -71,7 +71,7 @@ package worldboss.view
          StateManager.setState("worldboss");
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
          if(timer && timer.running)
          {
@@ -82,7 +82,7 @@ package worldboss.view
          {
             black.parent.removeChild(black);
          }
-         super.leaving(param1);
+         super.leaving(next);
       }
    }
 }

@@ -24,9 +24,9 @@ package consortion.data
          return _processValue;
       }
       
-      public function set processValue(param1:int) : void
+      public function set processValue(value:int) : void
       {
-         _processValue = param1;
+         _processValue = value;
       }
    }
 }

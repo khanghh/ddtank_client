@@ -39,13 +39,13 @@ package ddt.view.vote
       
       private var _voteInfo:VoteInfo;
       
-      public function VoteSelectItem(param1:int, param2:VoteInfo, param3:Boolean = false)
+      public function VoteSelectItem(type:int, voteInfo:VoteInfo, otherSelect:Boolean = false)
       {
          _scoreArr = [1,2,3,4,5,6,7,8,9,10];
          super();
-         _type = param1;
-         _voteInfo = param2;
-         _otherSelect = param3;
+         _type = type;
+         _voteInfo = voteInfo;
+         _otherSelect = otherSelect;
          initView();
       }
       
@@ -92,22 +92,22 @@ package ddt.view.vote
          }
       }
       
-      protected function __onListClick(param1:ListItemEvent) : void
+      protected function __onListClick(event:ListItemEvent) : void
       {
          SoundManager.instance.play("008");
-         _currentScore = param1.cellValue;
-         updateComboBox(param1.cellValue);
+         _currentScore = event.cellValue;
+         updateComboBox(event.cellValue);
       }
       
-      private function updateComboBox(param1:* = null) : void
+      private function updateComboBox(obj:* = null) : void
       {
-         var _loc2_:VectorListModel = _scoreCombox.listPanel.vectorListModel;
-         _loc2_.clear();
-         _loc2_.appendAll(_scoreArr);
-         _loc2_.remove(param1);
+         var comboxModel:VectorListModel = _scoreCombox.listPanel.vectorListModel;
+         comboxModel.clear();
+         comboxModel.appendAll(_scoreArr);
+         comboxModel.remove(obj);
       }
       
-      private function __playSound(param1:MouseEvent) : void
+      private function __playSound(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_type == 1 && _otherSelect)
@@ -123,11 +123,11 @@ package ddt.view.vote
          }
       }
       
-      public function set inputEnable(param1:Boolean) : void
+      public function set inputEnable(value:Boolean) : void
       {
          if(_type == 1 && _otherSelect)
          {
-            _inputTxt.mouseEnabled = param1;
+            _inputTxt.mouseEnabled = value;
          }
       }
       
@@ -182,15 +182,15 @@ package ddt.view.vote
          return _inputTxt.text;
       }
       
-      public function set text(param1:String) : void
+      public function set text(value:String) : void
       {
          if(_type == 1)
          {
-            _item.text = param1;
+            _item.text = value;
          }
          else if(_type == 2)
          {
-            _textTxt.text = param1;
+            _textTxt.text = value;
          }
       }
       

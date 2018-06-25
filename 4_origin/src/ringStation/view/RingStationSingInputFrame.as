@@ -24,21 +24,21 @@ package ringStation.view
       override protected function init() : void
       {
          super.init();
-         var _loc1_:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("ringstation.view.signFrameTitle"));
-         _loc1_.moveEnable = false;
-         _loc1_.submitLabel = LanguageMgr.GetTranslation("ringstation.view.signFrameTitle.ok.text");
-         _loc1_.customPos = ComponentFactory.Instance.creatCustomObject("ringstation.view.ok.textPos");
-         info = _loc1_;
+         var alertInfo:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("ringstation.view.signFrameTitle"));
+         alertInfo.moveEnable = false;
+         alertInfo.submitLabel = LanguageMgr.GetTranslation("ringstation.view.signFrameTitle.ok.text");
+         alertInfo.customPos = ComponentFactory.Instance.creatCustomObject("ringstation.view.ok.textPos");
+         info = alertInfo;
          _inputTxt.maxChars = 25;
          _remainTxt.text = _remainStr + _inputTxt.maxChars.toString();
       }
       
-      override protected function __onResponse(param1:FrameEvent) : void
+      override protected function __onResponse(e:FrameEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         switch(int(param1.responseCode))
+         var str:* = null;
+         var reg:* = null;
+         var signEvent:* = null;
+         switch(int(e.responseCode))
          {
             case 0:
             case 1:
@@ -68,12 +68,12 @@ package ringStation.view
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("chat.BugleInputNull"));
                   return;
                }
-               _loc2_ = FilterWordManager.filterWrod(_inputTxt.text);
-               _loc3_ = /\r/gm;
-               _loc2_ = _loc2_.replace(_loc3_,"");
-               SocketManager.Instance.out.sendSignMsg(_loc2_);
-               _loc4_ = new RingStationEvent("ringStation_sign",null,_loc2_);
-               dispatchEvent(_loc4_);
+               str = FilterWordManager.filterWrod(_inputTxt.text);
+               reg = /\r/gm;
+               str = str.replace(reg,"");
+               SocketManager.Instance.out.sendSignMsg(str);
+               signEvent = new RingStationEvent("ringStation_sign",null,str);
+               dispatchEvent(signEvent);
                _inputTxt.text = "";
                _remainTxt.text = _remainStr + _inputTxt.maxChars.toString();
                if(parent)

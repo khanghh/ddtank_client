@@ -25,42 +25,40 @@ package godsRoads.data
       
       public function getFinishPerNum() : int
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc1_:int = 0;
-         var _loc2_:int = 0;
-         _loc4_ = 0;
-         while(_loc4_ < missionVos.length)
+         var i:int = 0;
+         var vo:* = null;
+         var per:int = 0;
+         var tmp:int = 0;
+         for(i = 0; i < missionVos.length; )
          {
-            _loc3_ = missionVos[_loc4_] as GodsRoadsMissionVo;
-            if(_loc3_.isFinished)
+            vo = missionVos[i] as GodsRoadsMissionVo;
+            if(vo.isFinished)
             {
-               _loc2_++;
+               tmp++;
             }
-            _loc4_++;
+            i++;
          }
-         _loc1_ = _loc2_ / missionVos.length * 100;
-         return _loc1_;
+         per = tmp / missionVos.length * 100;
+         return per;
       }
       
       public function getFinishPerString() : String
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc1_:String = "";
-         var _loc2_:int = 0;
-         _loc4_ = 0;
-         while(_loc4_ < missionVos.length)
+         var i:int = 0;
+         var vo:* = null;
+         var per:String = "";
+         var tmp:int = 0;
+         for(i = 0; i < missionVos.length; )
          {
-            _loc3_ = missionVos[_loc4_] as GodsRoadsMissionVo;
-            if(_loc3_.isFinished)
+            vo = missionVos[i] as GodsRoadsMissionVo;
+            if(vo.isFinished)
             {
-               _loc2_++;
+               tmp++;
             }
-            _loc4_++;
+            i++;
          }
-         _loc1_ = _loc2_ + "/" + missionVos.length;
-         return _loc1_;
+         per = tmp + "/" + missionVos.length;
+         return per;
       }
    }
 }

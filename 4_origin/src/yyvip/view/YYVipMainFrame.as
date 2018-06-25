@@ -85,51 +85,51 @@ package yyvip.view
       
       private function initData() : void
       {
-         var _loc2_:URLVariables = new URLVariables();
-         _loc2_["uid"] = PlayerManager.Instance.Self.ID;
-         _loc2_["type"] = "1";
-         var _loc1_:RequestLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ProxyVIP.ashx"),6,_loc2_);
-         _loc1_.addEventListener("loadError",__onRequestDataError,false,0,true);
-         _loc1_.addEventListener("complete",__onRequestDataComplete,false,0,true);
-         LoadResourceManager.Instance.startLoad(_loc1_);
+         var args:URLVariables = new URLVariables();
+         args["uid"] = PlayerManager.Instance.Self.ID;
+         args["type"] = "1";
+         var loader:RequestLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ProxyVIP.ashx"),6,args);
+         loader.addEventListener("loadError",__onRequestDataError,false,0,true);
+         loader.addEventListener("complete",__onRequestDataComplete,false,0,true);
+         LoadResourceManager.Instance.startLoad(loader);
       }
       
-      private function __onRequestDataError(param1:LoaderEvent) : void
+      private function __onRequestDataError(evt:LoaderEvent) : void
       {
          trace("RequestError");
-         var _loc2_:RequestLoader = param1.target as RequestLoader;
-         _loc2_.removeEventListener("loadError",__onRequestDataError);
-         _loc2_.removeEventListener("complete",__onRequestDataComplete);
+         var tmpLoader:RequestLoader = evt.target as RequestLoader;
+         tmpLoader.removeEventListener("loadError",__onRequestDataError);
+         tmpLoader.removeEventListener("complete",__onRequestDataComplete);
          MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("yyVip.requestData.failTipTxt"));
       }
       
-      private function __onRequestDataComplete(param1:LoaderEvent) : void
+      private function __onRequestDataComplete(evt:LoaderEvent) : void
       {
-         var _loc6_:int = 0;
-         var _loc3_:int = 0;
-         var _loc8_:int = 0;
-         var _loc2_:int = 0;
-         var _loc7_:int = 0;
-         var _loc4_:RequestLoader = param1.target as RequestLoader;
-         _loc4_.removeEventListener("loadError",__onRequestDataError);
-         _loc4_.removeEventListener("complete",__onRequestDataComplete);
-         var _loc5_:XML = new XML(param1.loader.content);
-         if(_loc5_.@value == "true")
+         var type:int = 0;
+         var isVip:int = 0;
+         var isCanGetOpenAward:int = 0;
+         var isCanGetDailyAward:int = 0;
+         var isCanGetYearDailyAward:int = 0;
+         var tmpLoader:RequestLoader = evt.target as RequestLoader;
+         tmpLoader.removeEventListener("loadError",__onRequestDataError);
+         tmpLoader.removeEventListener("complete",__onRequestDataComplete);
+         var xml:XML = new XML(evt.loader.content);
+         if(xml.@value == "true")
          {
-            _loc6_ = _loc5_.@Type;
-            if(_loc6_ == 1)
+            type = xml.@Type;
+            if(type == 1)
             {
-               _loc3_ = _loc5_.@IsVip;
-               _loc8_ = _loc5_.@IsReceiveOpenPack;
-               _loc2_ = _loc5_.@IsReceiveEveryDayPack;
-               _loc7_ = _loc5_.@IsReceiveYearPack;
+               isVip = xml.@IsVip;
+               isCanGetOpenAward = xml.@IsReceiveOpenPack;
+               isCanGetDailyAward = xml.@IsReceiveEveryDayPack;
+               isCanGetYearDailyAward = xml.@IsReceiveYearPack;
                if(_openView)
                {
-                  _openView.refreshOpenOrCostBtn(_loc3_,_loc8_);
+                  _openView.refreshOpenOrCostBtn(isVip,isCanGetOpenAward);
                }
                if(_dailyView)
                {
-                  _dailyView.refreshBtnStatus(_loc2_,_loc7_);
+                  _dailyView.refreshBtnStatus(isCanGetDailyAward,isCanGetYearDailyAward);
                }
             }
          }
@@ -139,7 +139,7 @@ package yyvip.view
          }
       }
       
-      private function __changeHandler(param1:Event) : void
+      private function __changeHandler(event:Event) : void
       {
          switch(int(_btnGroup.selectIndex))
          {
@@ -153,14 +153,14 @@ package yyvip.view
          }
       }
       
-      private function __soundPlay(param1:MouseEvent) : void
+      private function __soundPlay(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();

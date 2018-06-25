@@ -67,22 +67,22 @@ package guardCore.view
       
       private function updateView() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var info:* = null;
+         var nextInfo:* = null;
          _vBox.disposeAllChildren();
          if(GuardCoreManager.instance.getGuardCoreIsOpen(_grade,_type))
          {
-            _loc2_ = GuardCoreManager.instance.getGuardCoreInfo(_guardGrade,_type);
-            _loc1_ = GuardCoreManager.instance.getGuardCoreInfoBySkillGrade(_loc2_.SkillGrade + 1,_type);
-            _name.text = _loc2_.Name;
-            _describe.text = LanguageMgr.GetTranslation("guardCore.tipsGuardEffect",_loc2_.Description);
-            if(_loc2_.KeepTurn == 0)
+            info = GuardCoreManager.instance.getGuardCoreInfo(_guardGrade,_type);
+            nextInfo = GuardCoreManager.instance.getGuardCoreInfoBySkillGrade(info.SkillGrade + 1,_type);
+            _name.text = info.Name;
+            _describe.text = LanguageMgr.GetTranslation("guardCore.tipsGuardEffect",info.Description);
+            if(info.KeepTurn == 0)
             {
                _keepTurn.text = LanguageMgr.GetTranslation("guardCore.tipsKeepTurnForever");
             }
             else
             {
-               _keepTurn.text = LanguageMgr.GetTranslation("guardCore.tipsKeepTurn",_loc2_.KeepTurn);
+               _keepTurn.text = LanguageMgr.GetTranslation("guardCore.tipsKeepTurn",info.KeepTurn);
             }
             _vBox.addChild(_name);
             _vBox.addChild(getLine());
@@ -90,23 +90,23 @@ package guardCore.view
             _vBox.addChild(_keepTurn);
             _vBox.addChild(getLine());
             _vBox.addChild(_next);
-            if(_loc1_ == null)
+            if(nextInfo == null)
             {
                _nextDescribe.text = LanguageMgr.GetTranslation("guardCore.tipsMaxGrade");
                _vBox.addChild(_nextDescribe);
             }
             else
             {
-               _nextGrade.text = LanguageMgr.GetTranslation("guardCore.tipsNeedGuard",_loc1_.GuardGrade);
+               _nextGrade.text = LanguageMgr.GetTranslation("guardCore.tipsNeedGuard",nextInfo.GuardGrade);
                _nextGrade.textColor = 16711680;
-               _nextDescribe.text = LanguageMgr.GetTranslation("guardCore.tipsGuardEffect",_loc1_.Description);
-               if(_loc1_.KeepTurn == 0)
+               _nextDescribe.text = LanguageMgr.GetTranslation("guardCore.tipsGuardEffect",nextInfo.Description);
+               if(nextInfo.KeepTurn == 0)
                {
                   _nextKeepTurn.text = LanguageMgr.GetTranslation("guardCore.tipsKeepTurnForever");
                }
                else
                {
-                  _nextKeepTurn.text = LanguageMgr.GetTranslation("guardCore.tipsKeepTurn",_loc1_.KeepTurn);
+                  _nextKeepTurn.text = LanguageMgr.GetTranslation("guardCore.tipsKeepTurn",nextInfo.KeepTurn);
                }
                _vBox.addChild(_nextGrade);
                _vBox.addChild(_nextDescribe);
@@ -115,19 +115,19 @@ package guardCore.view
          }
          else
          {
-            _loc2_ = GuardCoreManager.instance.getGuardCoreInfoBySkillGrade(1,_type);
-            _name.text = _loc2_.Name;
+            info = GuardCoreManager.instance.getGuardCoreInfoBySkillGrade(1,_type);
+            _name.text = info.Name;
             _describe.text = LanguageMgr.GetTranslation("guardCore.tipsNotOpen");
-            _nextGrade.text = LanguageMgr.GetTranslation("guardCore.tipsNeedGrade",_loc2_.GainGrade);
+            _nextGrade.text = LanguageMgr.GetTranslation("guardCore.tipsNeedGrade",info.GainGrade);
             _nextGrade.textColor = 16711680;
-            _nextDescribe.text = LanguageMgr.GetTranslation("guardCore.tipsGuardEffect",_loc2_.Description);
-            if(_loc2_.KeepTurn == 0)
+            _nextDescribe.text = LanguageMgr.GetTranslation("guardCore.tipsGuardEffect",info.Description);
+            if(info.KeepTurn == 0)
             {
                _nextKeepTurn.text = LanguageMgr.GetTranslation("guardCore.tipsKeepTurnForever");
             }
             else
             {
-               _nextKeepTurn.text = LanguageMgr.GetTranslation("guardCore.tipsKeepTurn",_loc2_.KeepTurn);
+               _nextKeepTurn.text = LanguageMgr.GetTranslation("guardCore.tipsKeepTurn",info.KeepTurn);
             }
             _vBox.addChild(_name);
             _vBox.addChild(getLine());
@@ -146,38 +146,38 @@ package guardCore.view
          this.height = _bg.height;
       }
       
-      private function resetTextSize(param1:FilterFrameText) : void
+      private function resetTextSize(text:FilterFrameText) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         if(param1.textWidth > 160)
+         var p:int = 0;
+         var str1:* = null;
+         var str2:* = null;
+         if(text.textWidth > 160)
          {
-            _loc4_ = param1.getCharIndexAtPoint(160,23);
-            _loc3_ = param1.text.substring(0,_loc4_);
-            _loc2_ = param1.text.substring(_loc4_,param1.text.length);
-            param1.text = _loc3_ + "\n" + _loc2_;
+            p = text.getCharIndexAtPoint(160,23);
+            str1 = text.text.substring(0,p);
+            str2 = text.text.substring(p,text.text.length);
+            text.text = str1 + "\n" + str2;
          }
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(value:Object) : void
       {
-         if(_type == param1.type && _grade == param1.grade && _guardGrade == param1.guardGrade)
+         if(_type == value.type && _grade == value.grade && _guardGrade == value.guardGrade)
          {
             return;
          }
-         _tipData = param1;
-         _type = param1.type;
-         _grade = param1.grade;
-         _guardGrade = param1.guardGrade;
+         _tipData = value;
+         _type = value.type;
+         _grade = value.grade;
+         _guardGrade = value.guardGrade;
          updateView();
       }
       
       private function getLine() : Image
       {
-         var _loc1_:Image = ComponentFactory.Instance.creatComponentByStylename("HRuleAsset");
-         _loc1_.width = 160;
-         return _loc1_;
+         var line:Image = ComponentFactory.Instance.creatComponentByStylename("HRuleAsset");
+         line.width = 160;
+         return line;
       }
       
       override public function get tipData() : Object

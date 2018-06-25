@@ -16,18 +16,18 @@ package wasteRecycle.view
    {
        
       
-      public function WasteRecycleCell(param1:int, param2:DisplayObject = null)
+      public function WasteRecycleCell(index:int, bg:DisplayObject = null)
       {
-         super(param1,null,true,param2,true);
+         super(index,null,true,bg,true);
       }
       
-      override public function dragDrop(param1:DragEffect) : void
+      override public function dragDrop(effect:DragEffect) : void
       {
-         var _loc2_:* = null;
-         if(param1.action == "move" && param1.source is WasteRecycleGoodsCell)
+         var info:* = null;
+         if(effect.action == "move" && effect.source is WasteRecycleGoodsCell)
          {
-            _loc2_ = param1.data as InventoryItemInfo;
-            if(_loc2_)
+            info = effect.data as InventoryItemInfo;
+            if(info)
             {
                SocketManager.Instance.out.sendClearStoreBag();
                DragManager.acceptDrag(this,"none");
@@ -39,12 +39,12 @@ package wasteRecycle.view
          }
       }
       
-      override public function dragStop(param1:DragEffect) : void
+      override public function dragStop(effect:DragEffect) : void
       {
          SoundManager.instance.playButtonSound();
-         if(param1.target != null)
+         if(effect.target != null)
          {
-            if(param1.action == "none")
+            if(effect.action == "none")
             {
                locked = false;
             }

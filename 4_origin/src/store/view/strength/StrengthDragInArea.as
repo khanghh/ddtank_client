@@ -21,58 +21,58 @@ package store.view.strength
       
       private var _effect:DragEffect;
       
-      public function StrengthDragInArea(param1:Array)
+      public function StrengthDragInArea(cells:Array)
       {
-         super(param1);
+         super(cells);
       }
       
-      override public function dragDrop(param1:DragEffect) : void
+      override public function dragDrop(effect:DragEffect) : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc3_:InventoryItemInfo = param1.data as InventoryItemInfo;
-         _effect = param1;
-         if(_loc3_ && param1.action != "split")
+         var info:InventoryItemInfo = effect.data as InventoryItemInfo;
+         _effect = effect;
+         if(info && effect.action != "split")
          {
-            param1.action = "none";
-            if(_loc3_.getRemainDate() <= 0)
+            effect.action = "none";
+            if(info.getRemainDate() <= 0)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.view.fusion.AccessoryDragInArea.overdue"));
                DragManager.acceptDrag(this);
             }
             else
             {
-               _loc2_ = 0;
-               while(_loc2_ < 5)
+               i = 0;
+               while(i < 5)
                {
-                  if(_loc2_ == 0 || _loc2_ == 3 || _loc2_ == 4)
+                  if(i == 0 || i == 3 || i == 4)
                   {
-                     if(_cells[_loc2_].itemInfo != null)
+                     if(_cells[i].itemInfo != null)
                      {
                         _hasStone = true;
-                        _stonePlace = _loc2_;
+                        _stonePlace = i;
                         break;
                      }
                   }
-                  _loc2_++;
+                  i++;
                }
                if(_cells[2].itemInfo != null)
                {
                   _hasItem = true;
                }
-               if(_loc3_.CanEquip)
+               if(info.CanEquip)
                {
                   if(!_hasStone)
                   {
-                     _cells[2].dragDrop(param1);
+                     _cells[2].dragDrop(effect);
                   }
-                  else if(_loc3_.RefineryLevel > 0 && _cells[_stonePlace].itemInfo.Property1 == "35" || _loc3_.RefineryLevel == 0 && _cells[_stonePlace].itemInfo.Property1 == "2")
+                  else if(info.RefineryLevel > 0 && _cells[_stonePlace].itemInfo.Property1 == "35" || info.RefineryLevel == 0 && _cells[_stonePlace].itemInfo.Property1 == "2")
                   {
-                     _cells[2].dragDrop(param1);
+                     _cells[2].dragDrop(effect);
                      reset();
                   }
                   else
@@ -80,14 +80,14 @@ package store.view.strength
                      MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.view.strength.unpare"));
                   }
                }
-               else if(_cells[2].itemInfo.RefineryLevel > 0 && _loc3_.Property1 == "35" || _cells[2].itemInfo.RefineryLevel == 0 && _loc3_.Property1 == "2")
+               else if(_cells[2].itemInfo.RefineryLevel > 0 && info.Property1 == "35" || _cells[2].itemInfo.RefineryLevel == 0 && info.Property1 == "2")
                {
                   if(!_hasStone)
                   {
                      findCellAndDrop();
                      reset();
                   }
-                  else if(_cells[_stonePlace].itemInfo.Property1 == _loc3_.Property1)
+                  else if(_cells[_stonePlace].itemInfo.Property1 == info.Property1)
                   {
                      findCellAndDrop();
                      reset();
@@ -107,20 +107,19 @@ package store.view.strength
       
       private function findCellAndDrop() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < 5)
+         var i:int = 0;
+         for(i = 0; i < 5; )
          {
-            if(_loc1_ == 0 || _loc1_ == 3 || _loc1_ == 4)
+            if(i == 0 || i == 3 || i == 4)
             {
-               if(_cells[_loc1_].itemInfo == null)
+               if(_cells[i].itemInfo == null)
                {
-                  _cells[_loc1_].dragDrop(_effect);
+                  _cells[i].dragDrop(_effect);
                   reset();
                   return;
                }
             }
-            _loc1_++;
+            i++;
          }
          _cells[0].dragDrop(_effect);
          reset();

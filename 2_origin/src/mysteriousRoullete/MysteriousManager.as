@@ -66,14 +66,14 @@ package mysteriousRoullete
          SocketManager.Instance.addEventListener(PkgEvent.format(110,16),__getMysteriousData);
       }
       
-      private function __getMysteriousData(param1:PkgEvent) : void
+      private function __getMysteriousData(event:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         lotteryTimes = _loc2_.readInt();
-         freeGetTimes = _loc2_.readInt();
-         discountBuyTimes = _loc2_.readInt();
-         startTime = _loc2_.readDate();
-         endTime = _loc2_.readDate();
+         var pkg:PackageIn = event.pkg;
+         lotteryTimes = pkg.readInt();
+         freeGetTimes = pkg.readInt();
+         discountBuyTimes = pkg.readInt();
+         startTime = pkg.readDate();
+         endTime = pkg.readDate();
          if(lotteryTimes <= 0)
          {
             if(freeGetTimes != 0 || discountBuyTimes != 0)
@@ -143,7 +143,7 @@ package mysteriousRoullete
          }
       }
       
-      private function onMaskClick(param1:MouseEvent) : void
+      private function onMaskClick(event:MouseEvent) : void
       {
          MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("mysteriousRoulette.running"));
       }

@@ -195,17 +195,17 @@ package guildMemberWeek.view
          }
       }
       
-      private function __onClickHelpHandler(param1:MouseEvent) : void
+      private function __onClickHelpHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:DisplayObject = ComponentFactory.Instance.creat("guildmemberweek.HelpPrompt");
-         var _loc3_:GuildMemberWeekHelpFrame = ComponentFactory.Instance.creat("guildmemberweek.HelpFrame");
-         _loc3_.setView(_loc2_);
-         _loc3_.titleText = LanguageMgr.GetTranslation("guildMemberWeek.MainFrame.guildMemberWeek.readme");
-         LayerManager.Instance.addToLayer(_loc3_,1,true,1);
+         var helpBd:DisplayObject = ComponentFactory.Instance.creat("guildmemberweek.HelpPrompt");
+         var helpPage:GuildMemberWeekHelpFrame = ComponentFactory.Instance.creat("guildmemberweek.HelpFrame");
+         helpPage.setView(helpBd);
+         helpPage.titleText = LanguageMgr.GetTranslation("guildMemberWeek.MainFrame.guildMemberWeek.readme");
+         LayerManager.Instance.addToLayer(helpPage,1,true,1);
       }
       
-      private function __onClickAddRankingHandler(param1:MouseEvent) : void
+      private function __onClickAddRankingHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -237,9 +237,9 @@ package guildMemberWeek.view
          _AddRanking.UpRecord();
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
             GuildMemberWeekManager.instance.disposeAllFrame();

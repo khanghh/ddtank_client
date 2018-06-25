@@ -29,7 +29,7 @@ package accumulativeLogin.view
       
       private var _data:AccumulativeLoginRewardData;
       
-      public function AccumulativeMovieSprite(param1:String)
+      public function AccumulativeMovieSprite(mivieClipName:String)
       {
          super();
          tipStyle = "core.GoodsTip";
@@ -37,7 +37,7 @@ package accumulativeLogin.view
          mouseChildren = true;
          mouseEnabled = false;
          buttonMode = true;
-         _movieClip = ComponentFactory.Instance.creat(param1);
+         _movieClip = ComponentFactory.Instance.creat(mivieClipName);
          _movieClip.gotoAndStop(1);
          addChild(_movieClip);
          ShowTipManager.Instance.addTip(this);
@@ -48,9 +48,9 @@ package accumulativeLogin.view
          return _tipData;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(value:Object) : void
       {
-         _tipData = param1;
+         _tipData = value;
       }
       
       public function get tipDirctions() : String
@@ -58,9 +58,9 @@ package accumulativeLogin.view
          return _tipDirection;
       }
       
-      public function set tipDirctions(param1:String) : void
+      public function set tipDirctions(value:String) : void
       {
-         _tipDirection = param1;
+         _tipDirection = value;
       }
       
       public function get tipGapH() : int
@@ -68,9 +68,9 @@ package accumulativeLogin.view
          return _tipGapH;
       }
       
-      public function set tipGapH(param1:int) : void
+      public function set tipGapH(value:int) : void
       {
-         _tipGapH = param1;
+         _tipGapH = value;
       }
       
       public function get tipGapV() : int
@@ -78,9 +78,9 @@ package accumulativeLogin.view
          return _tipGapV;
       }
       
-      public function set tipGapV(param1:int) : void
+      public function set tipGapV(value:int) : void
       {
-         _tipGapV = param1;
+         _tipGapV = value;
       }
       
       public function get tipStyle() : String
@@ -88,9 +88,9 @@ package accumulativeLogin.view
          return _tipStyle;
       }
       
-      public function set tipStyle(param1:String) : void
+      public function set tipStyle(value:String) : void
       {
-         _tipStyle = param1;
+         _tipStyle = value;
       }
       
       public function asDisplayObject() : DisplayObject
@@ -109,9 +109,9 @@ package accumulativeLogin.view
          }
       }
       
-      public function set state(param1:int) : void
+      public function set state(value:int) : void
       {
-         _state = param1;
+         _state = value;
          _movieClip.gotoAndStop(_state);
       }
       
@@ -125,9 +125,9 @@ package accumulativeLogin.view
          return _data;
       }
       
-      public function set data(param1:AccumulativeLoginRewardData) : void
+      public function set data(value:AccumulativeLoginRewardData) : void
       {
-         _data = param1;
+         _data = value;
       }
    }
 }

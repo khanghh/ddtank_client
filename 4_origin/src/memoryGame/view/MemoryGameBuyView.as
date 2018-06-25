@@ -38,8 +38,8 @@ package memoryGame.view
       
       private function initView() : void
       {
-         var _loc1_:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("shop.PresentFrame.OkBtnText"),LanguageMgr.GetTranslation("shop.PresentFrame.CancelBtnText"));
-         info = _loc1_;
+         var alerInfo:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("shop.PresentFrame.OkBtnText"),LanguageMgr.GetTranslation("shop.PresentFrame.CancelBtnText"));
+         info = alerInfo;
          _selecedItem = new DoubleSelectedItem();
          _selecedItem.x = 193;
          _selecedItem.y = 137;
@@ -61,11 +61,11 @@ package memoryGame.view
          _timesSelector.addEventListener("change",onMoneyChange);
       }
       
-      protected function onMoneyChange(param1:Event) : void
+      protected function onMoneyChange(e:Event) : void
       {
-         var _loc2_:Number = _timesSelector.number * ServerConfigManager.instance.memoryGameCardMoney();
-         var _loc3_:String = LanguageMgr.GetTranslation(!!_selecedItem.isBind?"ddtMoney":"money");
-         _txt.text = LanguageMgr.GetTranslation("memoryGame.cardTips",_loc2_,_loc3_,_timesSelector.number.toString());
+         var moneyNeed:Number = _timesSelector.number * ServerConfigManager.instance.memoryGameCardMoney();
+         var moneyType:String = LanguageMgr.GetTranslation(!!_selecedItem.isBind?"ddtMoney":"money");
+         _txt.text = LanguageMgr.GetTranslation("memoryGame.cardTips",moneyNeed,moneyType,_timesSelector.number.toString());
       }
       
       private function removeEvnets() : void
@@ -75,9 +75,9 @@ package memoryGame.view
          _timesSelector.removeEventListener("change",onMoneyChange);
       }
       
-      private function responseHander(param1:FrameEvent) : void
+      private function responseHander(e:FrameEvent) : void
       {
-         e = param1;
+         e = e;
          SoundManager.instance.playButtonSound();
          if(e.responseCode == 3 || e.responseCode == 2)
          {

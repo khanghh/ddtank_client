@@ -39,11 +39,11 @@ package roleRecharge.view
       
       private var condition:int;
       
-      public function RoleRechargeItem(param1:int, param2:int)
+      public function RoleRechargeItem($money:int, $index:int)
       {
          super();
-         _money = param1;
-         _index = param2;
+         _money = $money;
+         _index = $index;
          initView();
          initEvent();
       }
@@ -67,20 +67,20 @@ package roleRecharge.view
          }
       }
       
-      public function setGetBtnEnalbe(param1:*) : void
+      public function setGetBtnEnalbe($flag:*) : void
       {
-         _btn.enable = param1;
+         _btn.enable = $flag;
       }
       
-      public function setGoods(param1:GiftBagInfo) : void
+      public function setGoods(info:GiftBagInfo) : void
       {
-         var _loc9_:* = null;
-         var _loc8_:* = null;
-         var _loc3_:Number = NaN;
-         var _loc7_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:* = null;
-         giftInfo = param1;
+         var array:* = null;
+         var bg:* = null;
+         var dx:Number = NaN;
+         var itemInfo:* = null;
+         var tInfo:* = null;
+         var cell:* = null;
+         giftInfo = info;
          condition = _money;
          if(_goodItemContainerAll)
          {
@@ -90,62 +90,62 @@ package roleRecharge.view
          _goodItemContainerAll = new Sprite();
          _goodItemContainerAll.x = 128;
          _goodItemContainerAll.y = -18;
-         var _loc6_:int = 0;
+         var length:int = 0;
          var _loc11_:int = 0;
          var _loc10_:* = giftInfo.giftRewardArr;
-         for each(var _loc5_ in giftInfo.giftRewardArr)
+         for each(var item in giftInfo.giftRewardArr)
          {
-            _loc9_ = _loc5_.property.split(",");
-            _loc8_ = ComponentFactory.Instance.creatBitmap("roleRecharge.item");
-            _loc3_ = _loc8_.width + 5;
-            _loc3_ = _loc3_ * (int(_loc6_ % 5));
-            _loc8_.x = _loc3_;
-            _loc8_.y = 20;
-            _loc7_ = ItemManager.Instance.getTemplateById(_loc5_.templateId) as ItemTemplateInfo;
-            _loc2_ = new InventoryItemInfo();
-            ObjectUtils.copyProperties(_loc2_,_loc7_);
-            _loc2_.StrengthenLevel = _loc9_[0];
-            _loc2_.AttackCompose = _loc9_[1];
-            _loc2_.DefendCompose = _loc9_[2];
-            _loc2_.AgilityCompose = _loc9_[3];
-            _loc2_.LuckCompose = _loc9_[4];
-            _loc2_.MagicAttack = _loc9_[6];
-            _loc2_.MagicDefence = _loc9_[7];
-            _loc2_.ValidDate = _loc5_.validDate;
-            _loc2_.IsBinds = _loc5_.isBind;
-            _loc2_.Count = _loc5_.count;
-            _loc4_ = new BagCell(0,_loc2_,false);
-            _loc4_.x = _loc3_ + 2;
-            _loc4_.y = 23;
-            _loc4_.setBgVisible(false);
-            _goodItemContainerAll.addChild(_loc8_);
-            _goodItemContainerAll.addChild(_loc4_);
-            _loc6_++;
+            array = item.property.split(",");
+            bg = ComponentFactory.Instance.creatBitmap("roleRecharge.item");
+            dx = bg.width + 5;
+            dx = dx * (int(length % 5));
+            bg.x = dx;
+            bg.y = 20;
+            itemInfo = ItemManager.Instance.getTemplateById(item.templateId) as ItemTemplateInfo;
+            tInfo = new InventoryItemInfo();
+            ObjectUtils.copyProperties(tInfo,itemInfo);
+            tInfo.StrengthenLevel = array[0];
+            tInfo.AttackCompose = array[1];
+            tInfo.DefendCompose = array[2];
+            tInfo.AgilityCompose = array[3];
+            tInfo.LuckCompose = array[4];
+            tInfo.MagicAttack = array[6];
+            tInfo.MagicDefence = array[7];
+            tInfo.ValidDate = item.validDate;
+            tInfo.IsBinds = item.isBind;
+            tInfo.Count = item.count;
+            cell = new BagCell(0,tInfo,false);
+            cell.x = dx + 2;
+            cell.y = 23;
+            cell.setBgVisible(false);
+            _goodItemContainerAll.addChild(bg);
+            _goodItemContainerAll.addChild(cell);
+            length++;
          }
          addChild(_goodItemContainerAll);
       }
       
-      public function setStatus(param1:Array, param2:Dictionary) : void
+      public function setStatus(statusArr:Array, giftStatusDic:Dictionary) : void
       {
-         var _loc4_:int = 0;
-         var _loc6_:int = 0;
+         var remain:int = 0;
+         var payValue:int = 0;
          clearBtn();
-         var _loc3_:int = (param2[giftInfo.giftbagId] as GiftCurInfo).times;
+         var alreadyGet:int = (giftStatusDic[giftInfo.giftbagId] as GiftCurInfo).times;
          var _loc8_:int = 0;
-         var _loc7_:* = param1;
-         for each(var _loc5_ in param1)
+         var _loc7_:* = statusArr;
+         for each(var playerStatus in statusArr)
          {
-            if(_loc5_.statusID == condition)
+            if(playerStatus.statusID == condition)
             {
-               _loc4_ = _loc5_.statusValue - _loc3_;
+               remain = playerStatus.statusValue - alreadyGet;
             }
          }
-         if(_loc3_ == 0)
+         if(alreadyGet == 0)
          {
             _btn = ComponentFactory.Instance.creat("RoleRechargeItem.getBtn");
             addChild(_btn);
             _btn.enable = false;
-            if(_loc4_ > 0)
+            if(remain > 0)
             {
                _btn.enable = true;
                _btn.addEventListener("click",getRewardBtnClick);
@@ -159,22 +159,21 @@ package roleRecharge.view
          }
       }
       
-      private function getRewardBtnClick(param1:MouseEvent) : void
+      private function getRewardBtnClick(e:MouseEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc5_:SendGiftInfo = new SendGiftInfo();
-         _loc5_.activityId = RoleRechargeMgr.instance.model.actId;
-         var _loc2_:Array = [];
-         _loc4_ = 0;
-         while(_loc4_ < giftInfo.giftRewardArr.length)
+         var i:int = 0;
+         var getAwardInfo:SendGiftInfo = new SendGiftInfo();
+         getAwardInfo.activityId = RoleRechargeMgr.instance.model.actId;
+         var arr:Array = [];
+         for(i = 0; i < giftInfo.giftRewardArr.length; )
          {
-            _loc2_[_loc4_] = giftInfo.giftbagId;
-            _loc4_++;
+            arr[i] = giftInfo.giftbagId;
+            i++;
          }
-         _loc5_.giftIdArr = _loc2_;
-         var _loc3_:Vector.<SendGiftInfo> = new Vector.<SendGiftInfo>();
-         _loc3_.push(_loc5_);
-         SocketManager.Instance.out.sendWonderfulActivityGetReward(_loc3_);
+         getAwardInfo.giftIdArr = arr;
+         var data:Vector.<SendGiftInfo> = new Vector.<SendGiftInfo>();
+         data.push(getAwardInfo);
+         SocketManager.Instance.out.sendWonderfulActivityGetReward(data);
          setGetBtnEnalbe(false);
       }
       

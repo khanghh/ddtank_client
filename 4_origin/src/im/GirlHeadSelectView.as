@@ -127,19 +127,19 @@ package im
          this.addEventListener("removedFromStage",onRFS);
       }
       
-      protected function onConfirmUsingCurHead(param1:MouseEvent) : void
+      protected function onConfirmUsingCurHead(e:MouseEvent) : void
       {
          _onCurHeadSelectedCallBack && _onCurHeadSelectedCallBack(_curHeadUseGirlPic);
          ObjectUtils.disposeObject(this);
       }
       
-      protected function onConfirmUsingNewHead(param1:MouseEvent) : void
+      protected function onConfirmUsingNewHead(e:MouseEvent) : void
       {
          _onNewHeadSelectedCallBack && _onNewHeadSelectedCallBack();
          ObjectUtils.disposeObject(this);
       }
       
-      protected function onSelectChange(param1:Event) : void
+      protected function onSelectChange(e:Event) : void
       {
          switch(int(_selectGroup.selectIndex))
          {
@@ -153,30 +153,30 @@ package im
          }
       }
       
-      protected function onSelectClick(param1:MouseEvent) : void
+      protected function onSelectClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }
       
-      protected function onRFS(param1:Event) : void
+      protected function onRFS(e:Event) : void
       {
          this.removeEventListener("removedFromStage",onRFS);
          _onCloseCallBack && _onCloseCallBack();
          _onCloseCallBack = null;
       }
       
-      protected function onKeyDown(param1:KeyboardEvent) : void
+      protected function onKeyDown(e:KeyboardEvent) : void
       {
-         if(param1.keyCode == 27)
+         if(e.keyCode == 27)
          {
             KeyboardManager.getInstance().removeEventListener("keyDown",onKeyDown);
             ObjectUtils.disposeObject(this);
          }
       }
       
-      protected function onCurHeadSelectHandler(param1:MouseEvent) : void
+      protected function onCurHeadSelectHandler(e:MouseEvent) : void
       {
-         var _loc2_:* = param1.target;
+         var _loc2_:* = e.target;
          if(_headGirlPhoto !== _loc2_)
          {
             if(_headGameHead === _loc2_)
@@ -194,19 +194,19 @@ package im
          }
       }
       
-      public function set onUseNewPic(param1:Function) : void
+      public function set onUseNewPic(value:Function) : void
       {
-         _onNewHeadSelectedCallBack = param1;
+         _onNewHeadSelectedCallBack = value;
       }
       
-      public function set onCurHeadSelected(param1:Function) : void
+      public function set onCurHeadSelected(value:Function) : void
       {
-         _onCurHeadSelectedCallBack = param1;
+         _onCurHeadSelectedCallBack = value;
       }
       
-      public function set onClose(param1:Function) : void
+      public function set onClose(value:Function) : void
       {
-         _onCloseCallBack = param1;
+         _onCloseCallBack = value;
       }
       
       public function dispose() : void
@@ -226,7 +226,7 @@ package im
          _onCurHeadSelectedCallBack = null;
       }
       
-      private function onCloseBtnClick(param1:MouseEvent) : void
+      private function onCloseBtnClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          ObjectUtils.disposeObject(this);

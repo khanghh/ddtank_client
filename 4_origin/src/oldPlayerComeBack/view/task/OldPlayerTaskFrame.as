@@ -49,19 +49,19 @@ package oldPlayerComeBack.view.task
          TaskManager.instance.removeEventListener("changed",__taskChangedHandler);
       }
       
-      private function __taskChangedHandler(param1:TaskEvent) : void
+      private function __taskChangedHandler(evt:TaskEvent) : void
       {
-         var _loc3_:QuestInfo = param1.info;
-         var _loc2_:QuestDataInfo = param1.data;
+         var info:QuestInfo = evt.info;
+         var data:QuestDataInfo = evt.data;
          if(_view)
          {
-            _view.updateTaskItem(_loc3_);
+            _view.updateTaskItem(info);
          }
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             dispose();
          }

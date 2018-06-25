@@ -50,9 +50,9 @@ package consortion.view.guard
       
       private function init() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var name:* = null;
+         var text:* = null;
          _bg = ComponentFactory.Instance.creatComponentByStylename("consortiaGuard.rankViewBg");
          addChild(_bg);
          _selectBtn = ComponentFactory.Instance.creatComponentByStylename("consortiaGuard.rankViewSelectBtn");
@@ -66,22 +66,21 @@ package consortion.view.guard
          addChild(_valueVBox);
          _nameList = new Vector.<FilterFrameText>();
          _valueList = new Vector.<FilterFrameText>();
-         _loc3_ = 0;
-         while(_loc3_ < 10)
+         for(i = 0; i < 10; )
          {
-            _loc2_ = ComponentFactory.Instance.creatComponentByStylename("consortiaGuard.rank.nameText");
-            _loc1_ = ComponentFactory.Instance.creatComponentByStylename("consortiaGuard.rank.rankText");
-            _nameList.push(_loc2_);
-            _valueList.push(_loc1_);
-            _nameVBox.addChild(_loc2_);
-            _valueVBox.addChild(_loc1_);
-            _loc3_++;
+            name = ComponentFactory.Instance.creatComponentByStylename("consortiaGuard.rank.nameText");
+            text = ComponentFactory.Instance.creatComponentByStylename("consortiaGuard.rank.rankText");
+            _nameList.push(name);
+            _valueList.push(text);
+            _nameVBox.addChild(name);
+            _valueVBox.addChild(text);
+            i++;
          }
          this.x = 787;
          __onUpdateRank(null);
       }
       
-      private function __onSelectClikc(param1:MouseEvent) : void
+      private function __onSelectClikc(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          updateRankPos();
@@ -89,39 +88,38 @@ package consortion.view.guard
       
       private function updateRankPos() : void
       {
-         var _loc1_:int = 0;
+         var pos:int = 0;
          if(_selectBtn.selected)
          {
-            _loc1_ = 983;
+            pos = 983;
          }
          else
          {
-            _loc1_ = 787;
+            pos = 787;
          }
          TweenLite.killTweensOf(this,true);
-         TweenLite.to(this,0.5,{"x":_loc1_});
+         TweenLite.to(this,0.5,{"x":pos});
       }
       
-      private function __onUpdateRank(param1:ConsortiaGuardEvent) : void
+      private function __onUpdateRank(e:ConsortiaGuardEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc2_:DictionaryData = ConsortiaGuardControl.Instance.model.rankList;
-         _loc4_ = 0;
-         while(_loc4_ < 10)
+         var i:int = 0;
+         var vo:* = null;
+         var list:DictionaryData = ConsortiaGuardControl.Instance.model.rankList;
+         for(i = 0; i < 10; )
          {
-            _loc3_ = _loc2_[_loc4_ + 1] as ConsortiaBossDataVo;
-            if(_loc3_)
+            vo = list[i + 1] as ConsortiaBossDataVo;
+            if(vo)
             {
-               _nameList[_loc4_].text = _loc3_.rank + "." + _loc3_.name;
-               _valueList[_loc4_].text = _loc3_.damage.toString();
+               _nameList[i].text = vo.rank + "." + vo.name;
+               _valueList[i].text = vo.damage.toString();
             }
             else
             {
-               _nameList[_loc4_].text = "";
-               _valueList[_loc4_].text = "";
+               _nameList[i].text = "";
+               _valueList[i].text = "";
             }
-            _loc4_++;
+            i++;
          }
          _nameVBox.arrange();
          _valueVBox.arrange();

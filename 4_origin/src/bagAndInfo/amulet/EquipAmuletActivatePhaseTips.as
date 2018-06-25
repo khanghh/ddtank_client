@@ -60,48 +60,47 @@ package bagAndInfo.amulet
          }
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(value:Object) : void
       {
-         var _loc9_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc8_:int = 0;
-         var _loc4_:* = null;
-         var _loc6_:* = null;
-         var _loc5_:int = 0;
-         var _loc7_:int = 0;
-         var _loc10_:InventoryItemInfo = param1 as InventoryItemInfo;
-         if(_loc10_)
+         var vo:* = null;
+         var t1:* = null;
+         var t2:* = null;
+         var i:int = 0;
+         var p:* = null;
+         var k:* = null;
+         var heightMax:int = 0;
+         var widthMax:int = 0;
+         var info:InventoryItemInfo = value as InventoryItemInfo;
+         if(info)
          {
-            _loc9_ = EquipAmuletManager.Instance.getAmuletPhaseVoByGrade(_loc10_.StrengthenLevel);
-            _title.text = LanguageMgr.GetTranslation("tank.equipAmulet.activatePhase",_loc9_.Phase);
-            _loc5_ = _title.y + _title.height;
-            _loc7_ = _title.x + _title.width;
-            _loc3_ = "";
-            _loc2_ = "";
-            _loc8_ = 1;
-            while(_loc8_ <= 9)
+            vo = EquipAmuletManager.Instance.getAmuletPhaseVoByGrade(info.StrengthenLevel);
+            _title.text = LanguageMgr.GetTranslation("tank.equipAmulet.activatePhase",vo.Phase);
+            heightMax = _title.y + _title.height;
+            widthMax = _title.x + _title.width;
+            t1 = "";
+            t2 = "";
+            for(i = 1; i <= 9; )
             {
-               _loc4_ = HorseAmuletManager.instance.getByExtendType(_loc8_);
-               _loc6_ = LanguageMgr.GetTranslation("tank.equipAmulet.activatePhaseTip",_loc4_,_loc9_["property" + _loc8_]) + "\n";
-               if(_loc8_ % 2 == 0)
+               p = HorseAmuletManager.instance.getByExtendType(i);
+               k = LanguageMgr.GetTranslation("tank.equipAmulet.activatePhaseTip",p,vo["property" + i]) + "\n";
+               if(i % 2 == 0)
                {
-                  _loc3_ = _loc3_ + _loc6_;
+                  t1 = t1 + k;
                }
                else
                {
-                  _loc2_ = _loc2_ + _loc6_;
+                  t2 = t2 + k;
                }
-               _loc8_++;
+               i++;
             }
-            _text1.htmlText = _loc3_;
-            _loc5_ = _text1.y + _text1.height > _loc5_?_text1.y + _text1.height:_loc5_;
-            _loc7_ = _text1.x + _text1.width > _loc7_?_text1.x + _text1.width:_loc7_;
-            _text2.htmlText = _loc2_;
-            _loc5_ = _text2.y + _text2.height > _loc5_?_text2.y + _text2.height:_loc5_;
-            _loc7_ = _text2.x + _text2.width > _loc7_?_text2.x + _text2.width:_loc7_;
-            _bg.width = _loc7_ + 5;
-            _bg.height = _loc5_ + 5;
+            _text1.htmlText = t1;
+            heightMax = _text1.y + _text1.height > heightMax?_text1.y + _text1.height:heightMax;
+            widthMax = _text1.x + _text1.width > widthMax?_text1.x + _text1.width:widthMax;
+            _text2.htmlText = t2;
+            heightMax = _text2.y + _text2.height > heightMax?_text2.y + _text2.height:heightMax;
+            widthMax = _text2.x + _text2.width > widthMax?_text2.x + _text2.width:widthMax;
+            _bg.width = widthMax + 5;
+            _bg.height = heightMax + 5;
          }
       }
       

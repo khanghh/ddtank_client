@@ -9,53 +9,51 @@ package sevenDayTarget.dataAnalyzer
       
       public var dataList:Array;
       
-      public function SevenDayTargetDataAnalyzer(param1:Function)
+      public function SevenDayTargetDataAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc5_:* = null;
-         var _loc7_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         var _loc6_:int = 0;
-         var _loc4_:XML = new XML(param1);
+         var xmllist:* = null;
+         var i:int = 0;
+         var questinfo:* = null;
+         var questItem:* = null;
+         var j:int = 0;
+         var xml:XML = new XML(data);
          dataList = [];
-         if(_loc4_.@value == "true")
+         if(xml.@value == "true")
          {
-            _loc5_ = _loc4_..Item;
-            _loc7_ = 0;
-            while(_loc7_ < _loc5_.length())
+            xmllist = xml..Item;
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc2_ = new NewTargetQuestionInfo();
-               _loc2_.questId = _loc5_[_loc7_].@ID;
-               _loc2_.Period = _loc5_[_loc7_].@Period;
-               _loc3_ = _loc5_[_loc7_]..Item_Condiction;
-               _loc6_ = 0;
-               while(_loc6_ < _loc3_.length())
+               questinfo = new NewTargetQuestionInfo();
+               questinfo.questId = xmllist[i].@ID;
+               questinfo.Period = xmllist[i].@Period;
+               questItem = xmllist[i]..Item_Condiction;
+               for(j = 0; j < questItem.length(); )
                {
-                  _loc2_.linkId = _loc3_[_loc6_].@IndexType;
-                  if(_loc3_[_loc6_].@CondictionID == "1")
+                  questinfo.linkId = questItem[j].@IndexType;
+                  if(questItem[j].@CondictionID == "1")
                   {
-                     _loc2_.condition1Title = _loc3_[_loc6_].@CondictionTitle;
-                     _loc2_.condition1Para = _loc3_[_loc6_].@Para2;
+                     questinfo.condition1Title = questItem[j].@CondictionTitle;
+                     questinfo.condition1Para = questItem[j].@Para2;
                   }
-                  else if(_loc3_[_loc6_].@CondictionID == "2")
+                  else if(questItem[j].@CondictionID == "2")
                   {
-                     _loc2_.condition2Title = _loc3_[_loc6_].@CondictionTitle;
-                     _loc2_.condition2Para = _loc3_[_loc6_].@Para2;
+                     questinfo.condition2Title = questItem[j].@CondictionTitle;
+                     questinfo.condition2Para = questItem[j].@Para2;
                   }
-                  else if(_loc3_[_loc6_].@CondictionID == "3")
+                  else if(questItem[j].@CondictionID == "3")
                   {
-                     _loc2_.condition3Title = _loc3_[_loc6_].@CondictionTitle;
-                     _loc2_.condition3Para = _loc3_[_loc6_].@Para2;
+                     questinfo.condition3Title = questItem[j].@CondictionTitle;
+                     questinfo.condition3Para = questItem[j].@Para2;
                   }
-                  _loc6_++;
+                  j++;
                }
-               dataList.push(_loc2_);
-               _loc7_++;
+               dataList.push(questinfo);
+               i++;
             }
             onAnalyzeComplete();
          }

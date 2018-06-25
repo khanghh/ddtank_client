@@ -31,74 +31,74 @@ package store.fineStore.view.pageBringUp
          super.addChildren();
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         .super.tipData = param1;
-         bringUpUpgradeTip(param1 as GoodTipInfo);
+         .super.tipData = data;
+         bringUpUpgradeTip(data as GoodTipInfo);
       }
       
-      override public function showTip(param1:ItemTemplateInfo, param2:Boolean = false) : void
+      override public function showTip(info:ItemTemplateInfo, typeIsSecond:Boolean = false) : void
       {
-         super.showTip(param1,param2);
+         super.showTip(info,typeIsSecond);
       }
       
-      private function bringUpUpgradeTip(param1:GoodTipInfo) : void
+      private function bringUpUpgradeTip(pTipInfo:GoodTipInfo) : void
       {
-         var _loc5_:* = null;
-         var _loc6_:* = null;
-         var _loc4_:* = null;
-         var _loc3_:InventoryItemInfo = null;
-         var _loc2_:GoodTipInfo = null;
-         var _loc7_:InventoryItemInfo = null;
-         if(param1)
+         var next:* = null;
+         var bg:* = null;
+         var _rightArrows:* = null;
+         var tInfo:InventoryItemInfo = null;
+         var tGoodTipInfo:GoodTipInfo = null;
+         var itemInfo:InventoryItemInfo = null;
+         if(pTipInfo)
          {
-            _loc7_ = param1.itemInfo as InventoryItemInfo;
+            itemInfo = pTipInfo.itemInfo as InventoryItemInfo;
          }
-         if(_loc7_ && _loc7_.FusionType != 0)
+         if(itemInfo && itemInfo.FusionType != 0)
          {
-            _loc2_ = new GoodTipInfo();
-            _loc3_ = new InventoryItemInfo();
-            ObjectUtils.copyProperties(_loc3_,_loc7_);
-            _loc5_ = ItemManager.Instance.getTemplateById(_loc7_.FusionType);
-            _loc3_.TemplateID = _loc5_.TemplateID;
-            _loc3_.Name = _loc5_.Name;
-            _loc3_.Attack = _loc5_.Attack;
-            _loc3_.Defence = _loc5_.Defence;
-            _loc3_.Agility = _loc5_.Agility;
-            _loc3_.Luck = _loc5_.Luck;
-            _loc3_.FusionType = _loc5_.FusionType;
-            _loc3_.curExp = int(_loc5_.Property2);
-            _loc3_.Property1 = _loc5_.Property1;
-            if(_loc5_.FusionType == 0)
+            tGoodTipInfo = new GoodTipInfo();
+            tInfo = new InventoryItemInfo();
+            ObjectUtils.copyProperties(tInfo,itemInfo);
+            next = ItemManager.Instance.getTemplateById(itemInfo.FusionType);
+            tInfo.TemplateID = next.TemplateID;
+            tInfo.Name = next.Name;
+            tInfo.Attack = next.Attack;
+            tInfo.Defence = next.Defence;
+            tInfo.Agility = next.Agility;
+            tInfo.Luck = next.Luck;
+            tInfo.FusionType = next.FusionType;
+            tInfo.curExp = int(next.Property2);
+            tInfo.Property1 = next.Property1;
+            if(next.FusionType == 0)
             {
-               _loc3_.Property2 = "0";
+               tInfo.Property2 = "0";
             }
             else
             {
-               _loc3_.Property2 = ItemManager.Instance.getTemplateById(_loc5_.FusionType).Property2;
+               tInfo.Property2 = ItemManager.Instance.getTemplateById(next.FusionType).Property2;
             }
-            _loc2_.itemInfo = _loc3_;
-            _loc2_.beadName = ItemManager.Instance.getTemplateById(_loc3_.TemplateID).Name;
+            tGoodTipInfo.itemInfo = tInfo;
+            tGoodTipInfo.beadName = ItemManager.Instance.getTemplateById(tInfo.TemplateID).Name;
             if(!_upgradeBeadTip)
             {
                _upgradeBeadTip = new GoodTip();
             }
-            _upgradeBeadTip.tipData = _loc2_;
-            _loc6_ = ComponentFactory.Instance.creat("ddtstore.strengthTips.strengthenImageBG");
-            _upgradeBeadTip.tipbackgound = _loc6_;
-            _loc6_.width = _loc6_.width + 10;
-            _loc6_.height = _loc6_.height + 10;
-            _loc6_.x = _loc6_.x - 5;
-            _loc6_.y = _loc6_.y - 5;
+            _upgradeBeadTip.tipData = tGoodTipInfo;
+            bg = ComponentFactory.Instance.creat("ddtstore.strengthTips.strengthenImageBG");
+            _upgradeBeadTip.tipbackgound = bg;
+            bg.width = bg.width + 10;
+            bg.height = bg.height + 10;
+            bg.x = bg.x - 5;
+            bg.y = bg.y - 5;
             _upgradeBeadTip.x = _tipbackgound.x + _tipbackgound.width + 35;
             if(!this.contains(_upgradeBeadTip))
             {
                addChild(_upgradeBeadTip);
             }
-            _loc4_ = ComponentFactory.Instance.creatBitmap("asset.ddtstore.rightArrows");
-            _loc4_.x = 190;
-            _loc4_.y = 90;
-            addChild(_loc4_);
+            _rightArrows = ComponentFactory.Instance.creatBitmap("asset.ddtstore.rightArrows");
+            _rightArrows.x = 190;
+            _rightArrows.y = 90;
+            addChild(_rightArrows);
          }
          else
          {

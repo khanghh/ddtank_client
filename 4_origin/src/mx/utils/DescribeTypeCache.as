@@ -27,57 +27,57 @@ package mx.utils
          super();
       }
       
-      public static function describeType(param1:*) : DescribeTypeCacheRecord
+      public static function describeType(o:*) : DescribeTypeCacheRecord
       {
-         var _loc2_:String = null;
-         var _loc3_:String = null;
-         var _loc4_:XML = null;
-         var _loc5_:DescribeTypeCacheRecord = null;
-         if(param1 is String)
+         var className:String = null;
+         var cacheKey:String = null;
+         var typeDescription:XML = null;
+         var record:DescribeTypeCacheRecord = null;
+         if(o is String)
          {
-            _loc3_ = _loc2_ = param1;
+            cacheKey = className = o;
          }
          else
          {
-            _loc3_ = _loc2_ = getQualifiedClassName(param1);
+            cacheKey = className = getQualifiedClassName(o);
          }
-         if(param1 is Class)
+         if(o is Class)
          {
-            _loc3_ = _loc3_ + "$";
+            cacheKey = cacheKey + "$";
          }
-         if(_loc3_ in typeCache)
+         if(cacheKey in typeCache)
          {
-            return typeCache[_loc3_];
+            return typeCache[cacheKey];
          }
-         if(param1 is String)
+         if(o is String)
          {
-            param1 = getDefinitionByName(param1);
+            o = getDefinitionByName(o);
          }
-         _loc4_ = describeType(param1);
-         _loc5_ = new DescribeTypeCacheRecord();
-         _loc5_.typeDescription = _loc4_;
-         _loc5_.typeName = _loc2_;
-         typeCache[_loc3_] = _loc5_;
-         return _loc5_;
+         typeDescription = describeType(o);
+         record = new DescribeTypeCacheRecord();
+         record.typeDescription = typeDescription;
+         record.typeName = className;
+         typeCache[cacheKey] = record;
+         return record;
       }
       
-      public static function registerCacheHandler(param1:String, param2:Function) : void
+      public static function registerCacheHandler(valueName:String, handler:Function) : void
       {
-         cacheHandlers[param1] = param2;
+         cacheHandlers[valueName] = handler;
       }
       
-      static function extractValue(param1:String, param2:DescribeTypeCacheRecord) : *
+      static function extractValue(valueName:String, record:DescribeTypeCacheRecord) : *
       {
-         if(param1 in cacheHandlers)
+         if(valueName in cacheHandlers)
          {
-            return cacheHandlers[param1](param2);
+            return cacheHandlers[valueName](record);
          }
          return undefined;
       }
       
-      private static function bindabilityInfoHandler(param1:DescribeTypeCacheRecord) : *
+      private static function bindabilityInfoHandler(record:DescribeTypeCacheRecord) : *
       {
-         return new BindabilityInfo(param1.typeDescription);
+         return new BindabilityInfo(record.typeDescription);
       }
    }
 }

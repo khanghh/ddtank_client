@@ -58,11 +58,11 @@ package room.view
          addEvent();
       }
       
-      public function setup(param1:int, param2:int, param3:int = 7) : void
+      public function setup(bagType:int, number:int, columnNum:int = 7) : void
       {
-         _bagType = param1;
-         beginGridNumber = param2;
-         _columnNum = param3;
+         _bagType = bagType;
+         beginGridNumber = number;
+         _columnNum = columnNum;
          init();
       }
       
@@ -96,35 +96,35 @@ package room.view
          CellMenu.instance.removeEventListener("relieve",__cellRelieve);
       }
       
-      private function __cellRelieve(param1:Event) : void
+      private function __cellRelieve(e:Event) : void
       {
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:BagCell = CellMenu.instance.cell;
-         if(_loc2_.info.CategoryID == 73)
+         var cell:BagCell = CellMenu.instance.cell;
+         if(cell.info.CategoryID == 73)
          {
-            SocketManager.Instance.out.sendUseRoomBorden(false,_loc2_.itemInfo.ItemID);
+            SocketManager.Instance.out.sendUseRoomBorden(false,cell.itemInfo.ItemID);
          }
       }
       
-      private function __cellUse(param1:Event) : void
+      private function __cellUse(e:Event) : void
       {
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:BagCell = CellMenu.instance.cell;
-         if(_loc2_.info.CategoryID == 73)
+         var cell:BagCell = CellMenu.instance.cell;
+         if(cell.info.CategoryID == 73)
          {
-            SocketManager.Instance.out.sendUseRoomBorden(true,_loc2_.itemInfo.ItemID);
+            SocketManager.Instance.out.sendUseRoomBorden(true,cell.itemInfo.ItemID);
          }
       }
       
-      private function __cellSell(param1:Event) : void
+      private function __cellSell(e:Event) : void
       {
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -132,17 +132,17 @@ package room.view
             return;
          }
          _cell = CellMenu.instance.cell;
-         var _loc4_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(_cell.info.TemplateID);
-         var _loc3_:String = LanguageMgr.GetTranslation("tank.room.sellRommBorden",_loc4_.ReclaimValue);
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),_loc3_,LanguageMgr.GetTranslation("shop.PresentFrame.OkBtnText"),LanguageMgr.GetTranslation("shop.PresentFrame.CancelBtnText"),true,false,false,2);
-         _loc2_.addEventListener("response",onResponse);
+         var info:ItemTemplateInfo = ItemManager.Instance.getTemplateById(_cell.info.TemplateID);
+         var msg:String = LanguageMgr.GetTranslation("tank.room.sellRommBorden",info.ReclaimValue);
+         var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),msg,LanguageMgr.GetTranslation("shop.PresentFrame.OkBtnText"),LanguageMgr.GetTranslation("shop.PresentFrame.CancelBtnText"),true,false,false,2);
+         alert.addEventListener("response",onResponse);
       }
       
-      protected function onResponse(param1:FrameEvent) : void
+      protected function onResponse(e:FrameEvent) : void
       {
-         param1.target.removeEventListener("response",onResponse);
+         e.target.removeEventListener("response",onResponse);
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(e.responseCode))
          {
             default:
             default:
@@ -170,48 +170,47 @@ package room.view
          panel.vScrollProxy = 0;
       }
       
-      protected function createCell(param1:int) : void
+      protected function createCell(index:int) : void
       {
-         var _loc2_:StoreBagCell = new StoreBagCell(param1);
-         _loc2_.bagType = _bagType;
-         _loc2_.tipDirctions = "7,5,2,6,4,1";
-         _loc2_.addEventListener("interactive_click",__clickHandler);
-         DoubleClickManager.Instance.enableDoubleClick(_loc2_);
-         _loc2_.addEventListener("click",__cellClick);
-         _loc2_.addEventListener("doubleClick",__doubleCellClick);
-         _cells.add(_loc2_.place,_loc2_);
-         _list.addChild(_loc2_);
+         var cell:StoreBagCell = new StoreBagCell(index);
+         cell.bagType = _bagType;
+         cell.tipDirctions = "7,5,2,6,4,1";
+         cell.addEventListener("interactive_click",__clickHandler);
+         DoubleClickManager.Instance.enableDoubleClick(cell);
+         cell.addEventListener("click",__cellClick);
+         cell.addEventListener("doubleClick",__doubleCellClick);
+         _cells.add(cell.place,cell);
+         _list.addChild(cell);
       }
       
-      protected function __clickHandler(param1:InteractiveEvent) : void
+      protected function __clickHandler(e:InteractiveEvent) : void
       {
-         if(param1.currentTarget)
+         if(e.currentTarget)
          {
-            dispatchEvent(new CellEvent("itemclick",param1.currentTarget));
+            dispatchEvent(new CellEvent("itemclick",e.currentTarget));
          }
       }
       
-      private function addGrid(param1:DictionaryData) : void
+      private function addGrid(list:DictionaryData) : void
       {
-         var _loc5_:int = 0;
+         var i:int = 0;
          _cells.clear();
          _list.disposeAllChildren();
-         var _loc3_:int = 0;
+         var n:int = 0;
          var _loc7_:int = 0;
-         var _loc6_:* = param1;
-         for(var _loc4_ in param1)
+         var _loc6_:* = list;
+         for(var key in list)
          {
-            _loc3_++;
+            n++;
          }
-         var _loc2_:int = (int((_loc3_ - 1) / _columnNum) + 1) * _columnNum;
-         _loc2_ = _loc2_ < beginGridNumber?beginGridNumber:int(_loc2_);
-         cellNum = _loc2_;
+         var needGrid:int = (int((n - 1) / _columnNum) + 1) * _columnNum;
+         needGrid = needGrid < beginGridNumber?beginGridNumber:int(needGrid);
+         cellNum = needGrid;
          _list.beginChanges();
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_)
+         for(i = 0; i < needGrid; )
          {
-            createCell(_loc5_);
-            _loc5_++;
+            createCell(i);
+            i++;
          }
          _list.commitChanges();
          invalidatePanel();
@@ -222,52 +221,52 @@ package room.view
          panel.invalidateViewport();
       }
       
-      public function setData(param1:DictionaryData) : void
+      public function setData(list:DictionaryData) : void
       {
-         var _loc2_:* = null;
-         _bagdata = param1;
-         addGrid(param1);
-         if(param1)
+         var arr:* = null;
+         _bagdata = list;
+         addGrid(list);
+         if(list)
          {
-            _loc2_ = [];
+            arr = [];
             var _loc6_:int = 0;
-            var _loc5_:* = param1;
-            for(var _loc3_ in param1)
+            var _loc5_:* = list;
+            for(var key in list)
             {
-               _loc2_.push(_loc3_);
+               arr.push(key);
             }
-            _loc2_.sort(16);
+            arr.sort(16);
             var _loc8_:int = 0;
-            var _loc7_:* = _loc2_;
-            for(var _loc4_ in _loc2_)
+            var _loc7_:* = arr;
+            for(var i in arr)
             {
-               if(_cells[_loc4_] != null)
+               if(_cells[i] != null)
                {
-                  _cells[_loc4_].info = param1[_loc2_[_loc4_]];
+                  _cells[i].info = list[arr[i]];
                }
             }
          }
       }
       
-      protected function __doubleCellClick(param1:MouseEvent) : void
+      protected function __doubleCellClick(e:MouseEvent) : void
       {
          __cellUse(null);
       }
       
-      protected function __cellClick(param1:MouseEvent) : void
+      protected function __cellClick(e:MouseEvent) : void
       {
-         var _loc4_:* = null;
-         var _loc2_:* = param1.currentTarget as BagCell;
-         if(_loc2_)
+         var info:* = null;
+         var cell:* = e.currentTarget as BagCell;
+         if(cell)
          {
-            _loc4_ = _loc2_.itemInfo as InventoryItemInfo;
+            info = cell.itemInfo as InventoryItemInfo;
          }
-         if(_loc4_ == null)
+         if(info == null)
          {
             return;
          }
-         var _loc3_:Point = _loc2_.parent.localToGlobal(new Point(_loc2_.x,_loc2_.y));
-         CellMenu.instance.show(_loc2_,_loc3_.x + 20,_loc3_.y + 20);
+         var pos:Point = cell.parent.localToGlobal(new Point(cell.x,cell.y));
+         CellMenu.instance.show(cell,pos.x + 20,pos.y + 20);
       }
       
       public function get cells() : DictionaryData
@@ -280,12 +279,12 @@ package room.view
          removeEvent();
          var _loc3_:int = 0;
          var _loc2_:* = _cells;
-         for each(var _loc1_ in _cells)
+         for each(var i in _cells)
          {
-            _loc1_.removeEventListener("interactive_click",__clickHandler);
-            DoubleClickManager.Instance.disableDoubleClick(_loc1_);
-            _loc1_.removeEventListener("click",__cellClick);
-            ObjectUtils.disposeObject(_loc1_);
+            i.removeEventListener("interactive_click",__clickHandler);
+            DoubleClickManager.Instance.disableDoubleClick(i);
+            i.removeEventListener("click",__cellClick);
+            ObjectUtils.disposeObject(i);
          }
          if(_cells)
          {

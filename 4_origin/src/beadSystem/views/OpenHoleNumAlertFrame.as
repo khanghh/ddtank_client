@@ -66,11 +66,11 @@ package beadSystem.views
          _cellBg = ComponentFactory.Instance.creatComponentByStylename("ddtcore.CellBg");
          PositionUtils.setPos(_cellBg,"gemstone.alertFrame.cellbgPos");
          addToContent(_cellBg);
-         var _loc1_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(curItemID);
-         _cell = new BagCell(0,_loc1_);
+         var stoneInfo:ItemTemplateInfo = ItemManager.Instance.getTemplateById(curItemID);
+         _cell = new BagCell(0,stoneInfo);
          PositionUtils.setPos(_cell,"gemstone.alertFrame.cellPos");
-         var _loc2_:BagInfo = PlayerManager.Instance.Self.getBag(1);
-         maxLimit = _loc2_.getItemCountByTemplateId(curItemID);
+         var bagInfo:BagInfo = PlayerManager.Instance.Self.getBag(1);
+         maxLimit = bagInfo.getItemCountByTemplateId(curItemID);
          _cell.setCount(maxLimit);
          addToContent(_cell);
          _descript = ComponentFactory.Instance.creatComponentByStylename("gemstone.alertFrame.descriptTxt");
@@ -93,44 +93,44 @@ package beadSystem.views
          _maxBtn.addEventListener("click",__maxBtnClick);
       }
       
-      protected function __maxBtnClick(param1:MouseEvent) : void
+      protected function __maxBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _inputTxt.text = maxLimit.toString();
       }
       
-      protected function __inputChange(param1:Event) : void
+      protected function __inputChange(event:Event) : void
       {
-         var _loc2_:int = parseInt(_inputTxt.text);
-         if(_loc2_ <= 0)
+         var num:int = parseInt(_inputTxt.text);
+         if(num <= 0)
          {
             _inputTxt.text = "1";
          }
-         else if(_loc2_ > maxLimit)
+         else if(num > maxLimit)
          {
             _inputTxt.text = maxLimit.toString();
          }
       }
       
-      protected function _response(param1:FrameEvent) : void
+      protected function _response(event:FrameEvent) : void
       {
-         var _loc2_:int = 0;
+         var num:int = 0;
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             default:
             default:
             default:
             case 3:
-               _loc2_ = parseInt(_inputTxt.text);
-               submitFunc(_loc2_);
+               num = parseInt(_inputTxt.text);
+               submitFunc(num);
          }
          ObjectUtils.disposeObject(this);
       }
       
-      public function callBack(param1:Function) : void
+      public function callBack(func:Function) : void
       {
-         submitFunc = param1;
+         submitFunc = func;
       }
       
       private function removeEvents() : void

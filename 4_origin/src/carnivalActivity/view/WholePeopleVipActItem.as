@@ -44,43 +44,42 @@ package carnivalActivity.view
       
       private var _getCount:int = -1;
       
-      public function WholePeopleVipActItem(param1:int, param2:GiftBagInfo, param3:int)
+      public function WholePeopleVipActItem(type:int, info:GiftBagInfo, index:int)
       {
-         super(param1,param2,param3);
+         super(type,info,index);
       }
       
       override protected function initItem() : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          _awardCountTxt = ComponentFactory.Instance.creatComponentByStylename("carnivalAct.countTxt");
          addChild(_awardCountTxt);
-         _loc2_ = 0;
-         while(_loc2_ < _info.giftConditionArr.length)
+         for(i = 0; i < _info.giftConditionArr.length; )
          {
-            if(_info.giftConditionArr[_loc2_].conditionIndex == 0)
+            if(_info.giftConditionArr[i].conditionIndex == 0)
             {
-               _selfGrade = _info.giftConditionArr[_loc2_].conditionValue;
+               _selfGrade = _info.giftConditionArr[i].conditionValue;
             }
-            else if(_info.giftConditionArr[_loc2_].conditionIndex == 1)
+            else if(_info.giftConditionArr[i].conditionIndex == 1)
             {
-               _vipGd = _info.giftConditionArr[_loc2_].conditionValue;
-               _personNum = _info.giftConditionArr[_loc2_].remain1;
+               _vipGd = _info.giftConditionArr[i].conditionValue;
+               _personNum = _info.giftConditionArr[i].remain1;
             }
-            else if(_info.giftConditionArr[_loc2_].conditionIndex == 2)
+            else if(_info.giftConditionArr[i].conditionIndex == 2)
             {
-               _addedVipGd = _info.giftConditionArr[_loc2_].conditionValue;
-               _addedNum = _info.giftConditionArr[_loc2_].remain1;
+               _addedVipGd = _info.giftConditionArr[i].conditionValue;
+               _addedNum = _info.giftConditionArr[i].remain1;
             }
-            else if(_info.giftConditionArr[_loc2_].conditionIndex == 3)
+            else if(_info.giftConditionArr[i].conditionIndex == 3)
             {
-               _getCount = _info.giftConditionArr[_loc2_].conditionValue;
+               _getCount = _info.giftConditionArr[i].conditionValue;
             }
-            _loc2_++;
+            i++;
          }
-         var _loc1_:String = "";
+         var desc:String = "";
          if(_addedNum != -1)
          {
-            _loc1_ = LanguageMgr.GetTranslation("wholePeople.vip.descTxt3",_addedVipGd,_addedNum);
+            desc = LanguageMgr.GetTranslation("wholePeople.vip.descTxt3",_addedVipGd,_addedNum);
             if(_selfGrade != -1)
             {
                _tipStr = LanguageMgr.GetTranslation("wholePeople.vip.tipTxt",_selfGrade);
@@ -88,7 +87,7 @@ package carnivalActivity.view
          }
          else if(_personNum != -1)
          {
-            _loc1_ = LanguageMgr.GetTranslation("wholePeople.vip.descTxt2",_vipGd,_personNum);
+            desc = LanguageMgr.GetTranslation("wholePeople.vip.descTxt2",_vipGd,_personNum);
             if(_selfGrade != -1)
             {
                _tipStr = LanguageMgr.GetTranslation("wholePeople.vip.tipTxt",_selfGrade);
@@ -96,45 +95,45 @@ package carnivalActivity.view
          }
          else
          {
-            _loc1_ = LanguageMgr.GetTranslation("wholePeople.vip.descTxt1",_selfGrade);
+            desc = LanguageMgr.GetTranslation("wholePeople.vip.descTxt1",_selfGrade);
          }
-         _descTxt.text = _loc1_;
+         _descTxt.text = desc;
       }
       
       override public function updateView() : void
       {
-         var _loc1_:int = 0;
-         var _loc2_:int = 0;
-         var _loc6_:int = 0;
+         var addedNum:int = 0;
+         var personNum:int = 0;
+         var selfGrade:int = 0;
          _giftCurInfo = WonderfulActivityManager.Instance.activityInitData[_info.activityId].giftInfoDic[_info.giftbagId];
          _statusArr = WonderfulActivityManager.Instance.activityInitData[_info.activityId].statusArr;
          var _loc11_:int = 0;
          var _loc10_:* = _statusArr;
-         for each(var _loc9_ in _statusArr)
+         for each(var info in _statusArr)
          {
-            if(_loc9_.statusID == 0)
+            if(info.statusID == 0)
             {
-               _loc6_ = _loc9_.statusValue;
+               selfGrade = info.statusValue;
             }
-            else if(_loc9_.statusID == _vipGd)
+            else if(info.statusID == _vipGd)
             {
-               _loc2_ = _loc9_.statusValue;
+               personNum = info.statusValue;
             }
-            else if(_loc9_.statusID == _addedVipGd)
+            else if(info.statusID == _addedVipGd)
             {
-               _loc1_ = _loc9_.statusValue;
+               addedNum = info.statusValue;
             }
          }
-         var _loc7_:Boolean = _addedNum != -1?int(_loc1_ / _addedNum) > _giftCurInfo.times:true;
-         var _loc5_:Boolean = _personNum != -1?_loc2_ >= _personNum:true;
-         var _loc4_:Boolean = _selfGrade != -1?_loc6_ >= _selfGrade:true;
-         var _loc3_:Boolean = _getCount == 0?true:_giftCurInfo.times < _getCount;
-         var _loc8_:Boolean = CarnivalActivityControl.instance.canGetAward() && _loc7_ && _loc5_ && _loc4_ && _loc3_;
+         var addedBoolean:Boolean = _addedNum != -1?int(addedNum / _addedNum) > _giftCurInfo.times:true;
+         var personBoolean:Boolean = _personNum != -1?personNum >= _personNum:true;
+         var selfBoolean:Boolean = _selfGrade != -1?selfGrade >= _selfGrade:true;
+         var timeBoolean:Boolean = _getCount == 0?true:_giftCurInfo.times < _getCount;
+         var canGet:Boolean = CarnivalActivityControl.instance.canGetAward() && addedBoolean && personBoolean && selfBoolean && timeBoolean;
          if(_addedNum != -1)
          {
             ObjectUtils.disposeObject(_getBtn);
             _getBtn = null;
-            if(_loc8_ && int(_loc1_ / _addedNum) - _giftCurInfo.times >= 1)
+            if(canGet && int(addedNum / _addedNum) - _giftCurInfo.times >= 1)
             {
                _getBtn = ComponentFactory.Instance.creatComponentByStylename("wonderfulactivity.smallGetBtn");
                _btnTxt = ComponentFactory.Instance.creatComponentByStylename("wonderfulactivity.right.btnTxt");
@@ -146,31 +145,31 @@ package carnivalActivity.view
                _tipsBtn.x = _getBtn.x + 45;
                _tipsBtn.y = _getBtn.y - 16;
                addChild(_tipsBtn);
-               _btnTxt.text = "(" + (int(_loc1_ / _addedNum) - _giftCurInfo.times) + ")";
-               _awardCount = int(_loc1_ / _addedNum) - _giftCurInfo.times;
+               _btnTxt.text = "(" + (int(addedNum / _addedNum) - _giftCurInfo.times) + ")";
+               _awardCount = int(addedNum / _addedNum) - _giftCurInfo.times;
             }
             else
             {
                _getBtn = ComponentFactory.Instance.creatComponentByStylename("wonderfulactivity.bigGetBtn");
                addChild(_getBtn);
             }
-            _getBtn.enable = !PlayerManager.Instance.Self.snapVip && _loc8_ && int(_loc1_ / _addedNum) - _giftCurInfo.times >= 1;
+            _getBtn.enable = !PlayerManager.Instance.Self.snapVip && canGet && int(addedNum / _addedNum) - _giftCurInfo.times >= 1;
             _getBtn.addEventListener("click",__getAwardHandler);
             PositionUtils.setPos(_getBtn,"carnivalAct.getButtonPos");
-            _awardCountTxt.text = "" + _loc1_;
+            _awardCountTxt.text = "" + addedNum;
          }
          else if(_personNum != -1)
          {
-            _awardCountTxt.text = _loc2_ + "/" + _personNum;
+            _awardCountTxt.text = personNum + "/" + _personNum;
             _alreadyGetBtn.visible = _giftCurInfo.times > 0;
-            _getBtn.enable = !PlayerManager.Instance.Self.snapVip && _loc8_ && _giftCurInfo.times == 0;
+            _getBtn.enable = !PlayerManager.Instance.Self.snapVip && canGet && _giftCurInfo.times == 0;
             _getBtn.visible = !_alreadyGetBtn.visible;
          }
          else
          {
             _descTxt.y = _descTxt.y + 9;
             _alreadyGetBtn.visible = _giftCurInfo.times > 0;
-            _getBtn.enable = !PlayerManager.Instance.Self.snapVip && _loc8_ && _giftCurInfo.times == 0;
+            _getBtn.enable = !PlayerManager.Instance.Self.snapVip && canGet && _giftCurInfo.times == 0;
             _getBtn.visible = !_alreadyGetBtn.visible;
          }
          if(_tipStr != "")
@@ -198,7 +197,7 @@ package carnivalActivity.view
          }
       }
       
-      override protected function __getAwardHandler(param1:MouseEvent) : void
+      override protected function __getAwardHandler(event:MouseEvent) : void
       {
          if(getTimer() - CarnivalActivityControl.instance.lastClickTime < 2000)
          {
@@ -207,20 +206,20 @@ package carnivalActivity.view
          }
          CarnivalActivityControl.instance.lastClickTime = getTimer();
          SoundManager.instance.playButtonSound();
-         var _loc2_:Vector.<SendGiftInfo> = new Vector.<SendGiftInfo>();
-         var _loc3_:SendGiftInfo = new SendGiftInfo();
-         _loc3_.activityId = _info.activityId;
-         _loc3_.giftIdArr = [_info.giftbagId];
+         var sendInfoVec:Vector.<SendGiftInfo> = new Vector.<SendGiftInfo>();
+         var info:SendGiftInfo = new SendGiftInfo();
+         info.activityId = _info.activityId;
+         info.giftIdArr = [_info.giftbagId];
          if(_addedNum != -1)
          {
-            _loc3_.awardCount = _awardCount;
+            info.awardCount = _awardCount;
          }
          else
          {
-            _loc3_.awardCount = 1;
+            info.awardCount = 1;
          }
-         _loc2_.push(_loc3_);
-         SocketManager.Instance.out.sendWonderfulActivityGetReward(_loc2_);
+         sendInfoVec.push(info);
+         SocketManager.Instance.out.sendWonderfulActivityGetReward(sendInfoVec);
       }
       
       override public function dispose() : void

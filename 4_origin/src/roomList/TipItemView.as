@@ -22,12 +22,12 @@ package roomList
       
       private var _cellheight:int;
       
-      public function TipItemView(param1:Bitmap, param2:int, param3:int, param4:int)
+      public function TipItemView(bg:Bitmap, value:int, cellWidth:int, cellheight:int)
       {
-         _value = param2;
-         _bg = param1;
-         _cellWidth = param3;
-         _cellheight = param4;
+         _value = value;
+         _bg = bg;
+         _cellWidth = cellWidth;
+         _cellheight = cellheight;
          super();
          init();
       }
@@ -51,12 +51,12 @@ package roomList
          addEventListener("mouseOut",__itemOut);
       }
       
-      protected function __itemOut(param1:MouseEvent) : void
+      protected function __itemOut(event:MouseEvent) : void
       {
          _bgII.visible = false;
       }
       
-      protected function __itemOver(param1:MouseEvent) : void
+      protected function __itemOver(event:MouseEvent) : void
       {
          _bgII.visible = true;
       }

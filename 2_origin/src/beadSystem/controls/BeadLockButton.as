@@ -33,7 +33,7 @@ package beadSystem.controls
          this.removeEventListener("click",clickthis);
       }
       
-      private function clickthis(param1:MouseEvent) : void
+      private function clickthis(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          this.dragStart(stage.mouseX,stage.mouseY);
@@ -44,7 +44,7 @@ package beadSystem.controls
          return this;
       }
       
-      public function dragStop(param1:DragEffect) : void
+      public function dragStop(effect:DragEffect) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -52,16 +52,16 @@ package beadSystem.controls
             BaglockedManager.Instance.show();
             return;
          }
-         if(param1.target is BeadCell)
+         if(effect.target is BeadCell)
          {
-            if((param1.target as BeadCell).LockBead())
+            if((effect.target as BeadCell).LockBead())
             {
                setTimeout(continueDrag,75);
             }
          }
-         if(param1.target is EmbedStoneCell)
+         if(effect.target is EmbedStoneCell)
          {
-            if((param1.target as EmbedStoneCell).LockBead())
+            if((effect.target as EmbedStoneCell).LockBead())
             {
                setTimeout(continueDrag,75);
             }
@@ -76,10 +76,10 @@ package beadSystem.controls
          }
       }
       
-      public function dragStart(param1:Number, param2:Number) : void
+      public function dragStart(stageX:Number, stageY:Number) : void
       {
-         var _loc3_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.beadSystem.beadInset.lockIcon");
-         DragManager.startDrag(this,this,_loc3_,param1,param2,"move",false);
+         var dragAsset:Bitmap = ComponentFactory.Instance.creatBitmap("asset.beadSystem.beadInset.lockIcon");
+         DragManager.startDrag(this,this,dragAsset,stageX,stageY,"move",false);
       }
       
       override public function get width() : Number

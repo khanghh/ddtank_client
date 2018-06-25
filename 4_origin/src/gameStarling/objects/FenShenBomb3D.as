@@ -8,31 +8,30 @@ package gameStarling.objects
    {
        
       
-      public function FenShenBomb3D(param1:Bomb, param2:Living, param3:int = 0)
+      public function FenShenBomb3D(info:Bomb, owner:Living, refineryLevel:int = 0)
       {
-         super(param1,param2,param3);
+         super(info,owner,refineryLevel);
       }
       
       override public function die() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var childBomb:* = null;
+         var simpleBomb:* = null;
          if(_info.childs.length > 0)
          {
             SoundManager.instance.play(_info.Template.ShootSound);
-            _loc3_ = 0;
-            while(_loc3_ < _info.childs.length)
+            for(i = 0; i < _info.childs.length; )
             {
-               _loc1_ = _info.childs[_loc3_] as Bomb;
-               _loc2_ = new SimpleBomb3D(_loc1_,_owner,_refineryLevel);
-               _loc2_.sceneEffectCollideId = this.sceneEffectCollideId;
-               this.map.addPhysical(_loc2_);
+               childBomb = _info.childs[i] as Bomb;
+               simpleBomb = new SimpleBomb3D(childBomb,_owner,_refineryLevel);
+               simpleBomb.sceneEffectCollideId = this.sceneEffectCollideId;
+               this.map.addPhysical(simpleBomb);
                if(fastModel)
                {
-                  _loc2_.bombAtOnce();
+                  simpleBomb.bombAtOnce();
                }
-               _loc3_++;
+               i++;
             }
          }
          super.die();

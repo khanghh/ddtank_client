@@ -13,10 +13,10 @@ package gameStarling.actions
       
       private var _count:int;
       
-      public function PlayerBeatAction(param1:GamePlayer3D)
+      public function PlayerBeatAction(player:GamePlayer3D)
       {
          super();
-         _player = param1;
+         _player = player;
          _count = 0;
       }
       

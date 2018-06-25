@@ -33,11 +33,11 @@ package ddt.view.roulette
       
       private var _stop:Bitmap;
       
-      public function RouletteGoodsCell(param1:DisplayObject, param2:int, param3:int)
+      public function RouletteGoodsCell(bg:DisplayObject, text_x:int, text_y:int)
       {
-         super(param1);
-         _text_x = param2;
-         _text_y = param3;
+         super(bg);
+         _text_x = text_x;
+         _text_y = text_y;
          initII();
       }
       
@@ -68,17 +68,17 @@ package ddt.view.roulette
          _selectMovie.gotoAndStop(1);
       }
       
-      public function set count(param1:int) : void
+      public function set count(n:int) : void
       {
-         _count = param1;
+         _count = n;
          count_txt.parent.removeChild(count_txt);
          addChild(count_txt);
-         if(param1 <= 1)
+         if(n <= 1)
          {
             count_txt.text = "";
             return;
          }
-         count_txt.text = String(param1);
+         count_txt.text = String(n);
       }
       
       public function get count() : int
@@ -95,9 +95,9 @@ package ddt.view.roulette
          }
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         _selected = param1;
+         _selected = value;
          _selectMovie.visible = _selected;
          if(_selected == false)
          {
@@ -110,9 +110,9 @@ package ddt.view.roulette
          return _selected;
       }
       
-      public function addCellBg(param1:DisplayObject) : void
+      public function addCellBg(value:DisplayObject) : void
       {
-         addChildAt(param1,0);
+         addChildAt(value,0);
       }
       
       public function out() : void

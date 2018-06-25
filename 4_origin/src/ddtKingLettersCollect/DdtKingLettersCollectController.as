@@ -23,7 +23,7 @@ package ddtKingLettersCollect
       
       private var ddtKingLettersView:DdtKingLettersView;
       
-      public function DdtKingLettersCollectController(param1:inner)
+      public function DdtKingLettersCollectController(single:inner)
       {
          super();
       }
@@ -48,21 +48,20 @@ package ddtKingLettersCollect
          addEventsMap([["dklc_show",onEvtShow]],_manager);
       }
       
-      protected function __onGetNationInfo(param1:PkgEvent) : void
+      protected function __onGetNationInfo(e:PkgEvent) : void
       {
-         var _loc6_:int = 0;
-         var _loc5_:int = 0;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc3_:int = _loc4_.readInt();
+         var i:int = 0;
+         var type:int = 0;
+         var pkg:PackageIn = e.pkg;
+         var count:int = pkg.readInt();
          var _loc7_:* = new Dictionary();
          DdtKingLettersCollectManager.getInstance().WordArray = _loc7_;
-         var _loc2_:* = _loc7_;
-         _loc6_ = 0;
-         while(_loc6_ < _loc3_)
+         var wordArr:* = _loc7_;
+         for(i = 0; i < count; )
          {
-            _loc5_ = _loc4_.readInt();
-            _loc2_[_loc5_] = _loc4_.readInt();
-            _loc6_++;
+            type = pkg.readInt();
+            wordArr[type] = pkg.readInt();
+            i++;
          }
          if(isShow)
          {
@@ -74,7 +73,7 @@ package ddtKingLettersCollect
          }
       }
       
-      private function onEvtShow(param1:CEvent) : void
+      private function onEvtShow(e:CEvent) : void
       {
          SocketManager.Instance.out.getNationDayInfo();
       }
@@ -84,9 +83,9 @@ package ddtKingLettersCollect
          return _isShow;
       }
       
-      public function set isShow(param1:Boolean) : void
+      public function set isShow(value:Boolean) : void
       {
-         _isShow = param1;
+         _isShow = value;
          if(_isShow == false)
          {
             ddtKingLettersView = null;

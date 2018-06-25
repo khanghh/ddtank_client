@@ -54,9 +54,9 @@ package ddt.manager
       
       private var _boxLoader:BaseLoader;
       
-      public function CSMBoxManager(param1:IEventDispatcher = null)
+      public function CSMBoxManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : CSMBoxManager
@@ -82,17 +82,17 @@ package ddt.manager
          UIModuleLoader.Instance.addUIModuleImp("ddtawardsystem");
       }
       
-      private function onUimoduleLoadProgress(param1:UIModuleEvent) : void
+      private function onUimoduleLoadProgress(event:UIModuleEvent) : void
       {
-         if(param1.module == "ddtawardsystem")
+         if(event.module == "ddtawardsystem")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
       
-      private function loadCompleteHandler(param1:UIModuleEvent) : void
+      private function loadCompleteHandler(event:UIModuleEvent) : void
       {
-         if(param1.module == "ddtawardsystem")
+         if(event.module == "ddtawardsystem")
          {
             UIModuleSmallLoading.Instance.hide();
             UIModuleLoader.Instance.removeEventListener("uiModuleComplete",loadCompleteHandler);
@@ -107,11 +107,11 @@ package ddt.manager
          }
       }
       
-      private function _getGSMTimeBox(param1:CrazyTankSocketEvent) : void
+      private function _getGSMTimeBox(evt:CrazyTankSocketEvent) : void
       {
          isShowBox = true;
-         _currentLevel = param1.pkg.readInt();
-         _currentNum = param1.pkg.readInt();
+         _currentLevel = evt.pkg.readInt();
+         _currentNum = evt.pkg.readInt();
          if(_currentLevel < 9)
          {
             if(CSMBoxList)
@@ -127,9 +127,9 @@ package ddt.manager
          }
       }
       
-      private function __onBoxLoaderComplete(param1:LoaderEvent) : void
+      private function __onBoxLoaderComplete(evt:LoaderEvent) : void
       {
-         BaseLoader(param1.currentTarget).removeEventListener("complete",__onBoxLoaderComplete);
+         BaseLoader(evt.currentTarget).removeEventListener("complete",__onBoxLoaderComplete);
          if(CSMBoxList)
          {
             createBoxAndTimer();
@@ -138,8 +138,8 @@ package ddt.manager
       
       private function createBoxAndTimer() : void
       {
-         var _loc1_:TimeBoxInfo = TimeBoxInfo(CSMBoxList[_currentLevel].info);
-         _remainTime = _loc1_.Condition * 60 - _currentNum;
+         var tempInfo:TimeBoxInfo = TimeBoxInfo(CSMBoxList[_currentLevel].info);
+         _remainTime = tempInfo.Condition * 60 - _currentNum;
          _startTime = getTimer();
          showBox();
          if(_timer == null)
@@ -150,11 +150,11 @@ package ddt.manager
          }
       }
       
-      public function showBox(param1:HallStateView = null) : void
+      public function showBox($hall:HallStateView = null) : void
       {
-         if(param1)
+         if($hall)
          {
-            _hall = param1;
+            _hall = $hall;
          }
          if(_hall && isShowBox)
          {
@@ -171,31 +171,30 @@ package ddt.manager
          }
       }
       
-      public function showAwards(param1:int = 0) : void
+      public function showAwards(type:int = 0) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc6_:int = 0;
-         var _loc4_:int = 0;
-         var _loc5_:* = null;
+         var goodListIds:* = null;
+         var goodList:* = null;
+         var i:int = 0;
+         var tempId:int = 0;
+         var tempItemList:* = null;
          if(CSMBoxList)
          {
             _awards = ComponentFactory.Instance.creat("bossbox.AwardsViewAsset");
             _awards.addEventListener("_haveBtnClick",__sendGetAwards);
             _awards.addEventListener("response",__awardsFrameEventHandler);
             _awards.boxType = 0;
-            _loc3_ = CSMBoxList[_currentLevel].goodListIds;
-            _loc2_ = [];
-            _loc6_ = 0;
-            while(_loc6_ < _loc3_.length)
+            goodListIds = CSMBoxList[_currentLevel].goodListIds;
+            goodList = [];
+            for(i = 0; i < goodListIds.length; )
             {
-               _loc4_ = _loc3_[_loc6_];
-               _loc5_ = BossBoxManager.instance.inventoryItemList[_loc4_];
-               _loc2_ = _loc2_.concat(_loc5_);
-               _loc6_++;
+               tempId = goodListIds[i];
+               tempItemList = BossBoxManager.instance.inventoryItemList[tempId];
+               goodList = goodList.concat(tempItemList);
+               i++;
             }
-            _awards.goodsList = _loc2_;
-            if(param1 == 0)
+            _awards.goodsList = goodList;
+            if(type == 0)
             {
                _awards.setCheck();
             }
@@ -203,23 +202,23 @@ package ddt.manager
          }
       }
       
-      private function __awardsFrameEventHandler(param1:FrameEvent) : void
+      private function __awardsFrameEventHandler(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             default:
          }
       }
       
-      private function getTemplateInfo(param1:int) : InventoryItemInfo
+      private function getTemplateInfo(id:int) : InventoryItemInfo
       {
-         var _loc2_:InventoryItemInfo = new InventoryItemInfo();
-         _loc2_.TemplateID = param1;
-         ItemManager.fill(_loc2_);
-         return _loc2_;
+         var itemInfo:InventoryItemInfo = new InventoryItemInfo();
+         itemInfo.TemplateID = id;
+         ItemManager.fill(itemInfo);
+         return itemInfo;
       }
       
-      private function __sendGetAwards(param1:Event) : void
+      private function __sendGetAwards(evt:Event) : void
       {
          SocketManager.Instance.out.sendGetCSMTimeBox();
          removeAwards();
@@ -227,18 +226,18 @@ package ddt.manager
          removeTimer();
       }
       
-      private function __updateBoxTime(param1:TimerEvent) : void
+      private function __updateBoxTime(evt:TimerEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
+         var tempNum:int = 0;
+         var second:int = 0;
          if(_GSMBox)
          {
-            _loc3_ = (getTimer() - _startTime) / 1000;
-            if(_loc3_ < _remainTime)
+            tempNum = (getTimer() - _startTime) / 1000;
+            if(tempNum < _remainTime)
             {
-               _loc2_ = _remainTime - _loc3_;
+               second = _remainTime - tempNum;
                _GSMBox.showBox(0);
-               _GSMBox.updateTime(_loc2_);
+               _GSMBox.updateTime(second);
             }
             else
             {

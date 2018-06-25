@@ -18,9 +18,9 @@ package collectionTask.view
       
       private var _completeFunc:Function;
       
-      public function ProgressSprite(param1:Function)
+      public function ProgressSprite(fun:Function)
       {
-         _completeFunc = param1;
+         _completeFunc = fun;
          super();
          initView();
          addEvent();
@@ -38,7 +38,7 @@ package collectionTask.view
          addEventListener("enterFrame",__enterHandler);
       }
       
-      protected function __enterHandler(param1:Event) : void
+      protected function __enterHandler(event:Event) : void
       {
          _currentFrame = Number(_currentFrame) + 1;
          if(_currentFrame >= 117)

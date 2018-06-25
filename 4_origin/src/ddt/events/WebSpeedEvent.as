@@ -8,9 +8,9 @@ package ddt.events
       public static const STATE_CHANE:String = "stateChange";
        
       
-      public function WebSpeedEvent(param1:String)
+      public function WebSpeedEvent(type:String)
       {
-         super(param1,bubbles,cancelable);
+         super(type,bubbles,cancelable);
       }
    }
 }

@@ -196,27 +196,26 @@ package cardSystem.view.cardEquip
          cardGuide();
       }
       
-      public function set clickEnable(param1:Boolean) : void
+      public function set clickEnable(value:Boolean) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         if(_clickEnable == param1)
+         var i:int = 0;
+         var j:int = 0;
+         if(_clickEnable == value)
          {
             return;
          }
-         _clickEnable = param1;
+         _clickEnable = value;
          if(_clickEnable)
          {
-            _loc3_ = 0;
-            while(_loc3_ < 5)
+            for(i = 0; i < 5; )
             {
-               if(_equipCells[_loc3_])
+               if(_equipCells[i])
                {
-                  _equipCells[_loc3_].addEventListener("interactive_click",__clickHandler);
-                  _equipCells[_loc3_].addEventListener("interactive_double_click",__doubleClickHandler);
-                  _equipCells[_loc2_].setBtnVisible(true);
+                  _equipCells[i].addEventListener("interactive_click",__clickHandler);
+                  _equipCells[i].addEventListener("interactive_double_click",__doubleClickHandler);
+                  _equipCells[j].setBtnVisible(true);
                }
-               _loc3_++;
+               i++;
             }
             if(_equipCells[3].open)
             {
@@ -231,15 +230,15 @@ package cardSystem.view.cardEquip
          }
          else
          {
-            _loc2_ = 0;
-            while(_loc2_ < 5)
+            j = 0;
+            while(j < 5)
             {
-               if(_equipCells[_loc2_])
+               if(_equipCells[j])
                {
-                  _equipCells[_loc2_].removeEventListener("interactive_click",__clickHandler);
-                  _equipCells[_loc2_].removeEventListener("interactive_double_click",__doubleClickHandler);
+                  _equipCells[j].removeEventListener("interactive_click",__clickHandler);
+                  _equipCells[j].removeEventListener("interactive_double_click",__doubleClickHandler);
                }
-               _loc2_++;
+               j++;
             }
             if(!_equipCells[3].open)
             {
@@ -264,13 +263,13 @@ package cardSystem.view.cardEquip
       
       private function cardGuide() : void
       {
-         var _loc1_:* = null;
+         var data:* = null;
          if(!PlayerManager.Instance.Self.isNewOnceFinish(125))
          {
             if(PlayerManager.Instance.Self.Grade == 14 && TaskManager.instance.isAchieved(TaskManager.instance.getQuestByID(25)))
             {
-               _loc1_ = PlayerManager.Instance.Self.cardBagDic;
-               if(_loc1_.length > 0)
+               data = PlayerManager.Instance.Self.cardBagDic;
+               if(data.length > 0)
                {
                   NewHandContainer.Instance.showArrow(141,0,new Point(486,-107),"asset.trainer.txtCardGuide2","guide.card.txtPos2",this,0,true);
                   PlayerManager.Instance.Self.cardEquipDic.addEventListener("add",cardGuideComplete);
@@ -279,7 +278,7 @@ package cardSystem.view.cardEquip
          }
       }
       
-      private function cardGuideComplete(param1:DictionaryEvent) : void
+      private function cardGuideComplete(event:DictionaryEvent) : void
       {
          PlayerManager.Instance.Self.cardEquipDic.removeEventListener("add",cardGuideComplete);
          NewHandContainer.Instance.clearArrowByID(141);
@@ -288,9 +287,9 @@ package cardSystem.view.cardEquip
       
       private function initView() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:int = 0;
+         var i:int = 0;
+         var cell:* = null;
+         var j:int = 0;
          _equipCells = new Vector.<CardCell>(5);
          _CardGrove = new GrooveInfo();
          _background = ComponentFactory.Instance.creatBitmap("asset.cardEquipView.BG");
@@ -402,20 +401,19 @@ package cardSystem.view.cardEquip
          addChild(_ballPlay);
          addChild(_achievementBtn);
          _cardList = new CardSelect();
-         _loc3_ = 0;
-         while(_loc3_ < 5)
+         for(i = 0; i < 5; )
          {
-            if(_loc3_ == 0)
+            if(i == 0)
             {
-               _loc1_ = new CardCell(ComponentFactory.Instance.creatBitmap("asset.cardEquipView.mainCard"),_loc3_);
-               _loc1_.setContentSize(110,155);
-               _loc1_.setStarPos(59,154);
+               cell = new CardCell(ComponentFactory.Instance.creatBitmap("asset.cardEquipView.mainCard"),i);
+               cell.setContentSize(110,155);
+               cell.setStarPos(59,154);
                _levelPorgress = ComponentFactory.Instance.creatComponentByStylename("CardEquipView.levelProgress");
             }
             else
             {
-               _loc1_ = new CardCell(ComponentFactory.Instance.creatComponentByStylename("CardEquipView.viceCardBG" + _loc3_),_loc3_);
-               _loc1_.setContentSize(94,133);
+               cell = new CardCell(ComponentFactory.Instance.creatComponentByStylename("CardEquipView.viceCardBG" + i),i);
+               cell.setContentSize(94,133);
                _levelPorgress1 = ComponentFactory.Instance.creatComponentByStylename("CardEquipView.levelProgress1");
                _levelPorgress2 = ComponentFactory.Instance.creatComponentByStylename("CardEquipView.levelProgress2");
                _levelPorgress3 = ComponentFactory.Instance.creatComponentByStylename("CardEquipView.levelProgress3");
@@ -423,22 +421,21 @@ package cardSystem.view.cardEquip
             }
             if(_clickEnable)
             {
-               _loc1_.addEventListener("interactive_click",__clickHandler);
-               _loc1_.addEventListener("interactive_double_click",__doubleClickHandler);
+               cell.addEventListener("interactive_click",__clickHandler);
+               cell.addEventListener("interactive_double_click",__doubleClickHandler);
             }
-            _loc1_.addEventListener("mouseOver",_cellOverEff);
-            _loc1_.addEventListener("mouseOut",_cellOutEff);
-            DoubleClickManager.Instance.enableDoubleClick(_loc1_);
-            _equipCells[_loc3_] = _loc1_;
-            addChild(_loc1_);
-            _loc3_++;
+            cell.addEventListener("mouseOver",_cellOverEff);
+            cell.addEventListener("mouseOut",_cellOutEff);
+            DoubleClickManager.Instance.enableDoubleClick(cell);
+            _equipCells[i] = cell;
+            addChild(cell);
+            i++;
          }
          _viceCardBit = new Vector.<Bitmap>(4);
-         _loc2_ = 0;
-         while(_loc2_ < 4)
+         for(j = 0; j < 4; )
          {
-            _viceCardBit[_loc2_] = ComponentFactory.Instance.creatBitmap("asset.cardEquipView.viceCardBG");
-            _loc2_++;
+            _viceCardBit[j] = ComponentFactory.Instance.creatBitmap("asset.cardEquipView.viceCardBG");
+            j++;
          }
          _mainCardBit = ComponentFactory.Instance.creatBitmap("asset.cardEquipView.mainCardBorder");
          setCellPos();
@@ -465,25 +462,25 @@ package cardSystem.view.cardEquip
          isBallPlaySpTip();
       }
       
-      private function setCardsVisible(param1:Boolean) : void
+      private function setCardsVisible(bool:Boolean) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = _equipCells;
-         for each(var _loc2_ in _equipCells)
+         for each(var card in _equipCells)
          {
-            if(_loc2_)
+            if(card)
             {
-               _loc2_.updatebtnVible = param1;
+               card.updatebtnVible = bool;
             }
          }
       }
       
-      private function __ballPlaySpMouseOver(param1:MouseEvent) : void
+      private function __ballPlaySpMouseOver(event:MouseEvent) : void
       {
          _ballPlaySpTip.visible = true;
       }
       
-      private function __ballPlaySpMouseOut(param1:MouseEvent) : void
+      private function __ballPlaySpMouseOut(event:MouseEvent) : void
       {
          isBallPlaySpTip();
       }
@@ -509,46 +506,46 @@ package cardSystem.view.cardEquip
          }
       }
       
-      protected function __onUpdateProperty(param1:Event) : void
+      protected function __onUpdateProperty(event:Event) : void
       {
-         var _loc2_:PlayerInfo = _playerInfo;
-         if(_playerInfo == null || _loc2_.propertyAddition == null)
+         var _info:PlayerInfo = _playerInfo;
+         if(_playerInfo == null || _info.propertyAddition == null)
          {
             return;
          }
       }
       
-      private function createSprite(param1:CardCell) : Sprite
+      private function createSprite(obj:CardCell) : Sprite
       {
-         var _loc2_:Sprite = new Sprite();
-         _loc2_.graphics.beginFill(16777215,0);
-         _loc2_.graphics.drawRect(0,0,param1.width,param1.height);
-         _loc2_.graphics.endFill();
-         _loc2_.x = param1.x;
-         _loc2_.y = param1.y;
-         _loc2_.addEventListener("rollOver",__showOpenBtn);
-         _loc2_.addEventListener("rollOut",__hideOpenBtn);
-         return _loc2_;
+         var s:Sprite = new Sprite();
+         s.graphics.beginFill(16777215,0);
+         s.graphics.drawRect(0,0,obj.width,obj.height);
+         s.graphics.endFill();
+         s.x = obj.x;
+         s.y = obj.y;
+         s.addEventListener("rollOver",__showOpenBtn);
+         s.addEventListener("rollOut",__hideOpenBtn);
+         return s;
       }
       
-      private function removeSprite(param1:Sprite, param2:BaseButton) : void
+      private function removeSprite(s:Sprite, openBtn:BaseButton) : void
       {
-         if(param1)
+         if(s)
          {
-            param1.removeEventListener("rollOver",__showOpenBtn);
-            param1.removeEventListener("rollOut",__hideOpenBtn);
-            param2.removeEventListener("click",_openHandler);
-            ObjectUtils.disposeObject(param1);
-            ObjectUtils.disposeObject(param2);
+            s.removeEventListener("rollOver",__showOpenBtn);
+            s.removeEventListener("rollOut",__hideOpenBtn);
+            openBtn.removeEventListener("click",_openHandler);
+            ObjectUtils.disposeObject(s);
+            ObjectUtils.disposeObject(openBtn);
          }
-         param1 = null;
-         param2 = null;
+         s = null;
+         openBtn = null;
       }
       
-      private function __showOpenBtn(param1:MouseEvent) : void
+      private function __showOpenBtn(event:MouseEvent) : void
       {
-         var _loc2_:Sprite = param1.currentTarget as Sprite;
-         if(_loc2_ == _cell3MouseSprite)
+         var s:Sprite = event.currentTarget as Sprite;
+         if(s == _cell3MouseSprite)
          {
             _show3 = true;
             TweenLite.to(_open3Btn,0.25,{
@@ -566,7 +563,7 @@ package cardSystem.view.cardEquip
          }
       }
       
-      private function __hideOpenBtn(param1:MouseEvent) : void
+      private function __hideOpenBtn(event:MouseEvent) : void
       {
          if(_show3)
          {
@@ -591,36 +588,34 @@ package cardSystem.view.cardEquip
       
       public function shineVice() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 1;
-         while(_loc1_ < 5)
+         var i:int = 0;
+         for(i = 1; i < 5; )
          {
-            if(_equipCells[_loc1_].open)
+            if(_equipCells[i].open)
             {
-               _equipCells[_loc1_].shine();
+               _equipCells[i].shine();
             }
-            _loc1_++;
+            i++;
          }
       }
       
       public function stopShine() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < 5)
+         var i:int = 0;
+         for(i = 0; i < 5; )
          {
-            _equipCells[_loc1_].stopShine();
-            _loc1_++;
+            _equipCells[i].stopShine();
+            i++;
          }
       }
       
-      public function set playerInfo(param1:PlayerInfo) : void
+      public function set playerInfo(value:PlayerInfo) : void
       {
-         if(_playerInfo == param1)
+         if(_playerInfo == value)
          {
             return;
          }
-         _playerInfo = param1;
+         _playerInfo = value;
          initEvent();
          setCellsData();
          __onUpdateProperty(null);
@@ -632,9 +627,9 @@ package cardSystem.view.cardEquip
          return _showSelfOperation;
       }
       
-      public function set showSelfOperation(param1:Boolean) : void
+      public function set showSelfOperation(value:Boolean) : void
       {
-         _showSelfOperation = param1;
+         _showSelfOperation = value;
          checkAchievementBtn();
       }
       
@@ -659,34 +654,32 @@ package cardSystem.view.cardEquip
       {
          var _loc3_:int = 0;
          var _loc2_:* = playerInfo.cardEquipDic;
-         for each(var _loc1_ in playerInfo.cardEquipDic)
+         for each(var cardInfo in playerInfo.cardEquipDic)
          {
-            if(_loc1_.Count <= -1)
+            if(cardInfo.Count <= -1)
             {
-               _equipCells[_loc1_.Place].cardInfo = null;
+               _equipCells[cardInfo.Place].cardInfo = null;
             }
             else
             {
-               _equipCells[_loc1_.Place].cardInfo = _loc1_;
+               _equipCells[cardInfo.Place].cardInfo = cardInfo;
             }
          }
       }
       
       private function setCellPos() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < 5)
+         var i:int = 0;
+         var j:int = 0;
+         for(i = 0; i < 5; )
          {
-            PositionUtils.setPos(_equipCells[_loc2_],"CardCell.Pos" + _loc2_);
-            _loc2_++;
+            PositionUtils.setPos(_equipCells[i],"CardCell.Pos" + i);
+            i++;
          }
-         _loc1_ = 0;
-         while(_loc1_ < 4)
+         for(j = 0; j < 4; )
          {
-            PositionUtils.setPos(_viceCardBit[_loc1_],"CardCell.viceBorder.Pos" + _loc1_);
-            _loc1_++;
+            PositionUtils.setPos(_viceCardBit[j],"CardCell.viceBorder.Pos" + j);
+            j++;
          }
          PositionUtils.setPos(_mainCardBit,"CardCell.mainBorder.Pos");
       }
@@ -706,7 +699,7 @@ package cardSystem.view.cardEquip
          SocketManager.Instance.addEventListener("cards_soul",__getSoul);
       }
       
-      private function __ballPlaySpClickHandler(param1:MouseEvent) : void
+      private function __ballPlaySpClickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -736,8 +729,8 @@ package cardSystem.view.cardEquip
       
       private function showBuyCardSoulTips() : void
       {
-         var _loc1_:Number = ServerConfigManager.instance.buyCardSoulValueMoney;
-         _tipsframe = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.cardSystem.getCardSoulMoneyMsg",_loc1_),"",LanguageMgr.GetTranslation("cancel"),true,true,false,2);
+         var buyMoney:Number = ServerConfigManager.instance.buyCardSoulValueMoney;
+         _tipsframe = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.cardSystem.getCardSoulMoneyMsg",buyMoney),"",LanguageMgr.GetTranslation("cancel"),true,true,false,2);
          _selectedCheckButton = ComponentFactory.Instance.creatComponentByStylename("cardSystem.buyFrameSelectedCheckButton");
          _selectedCheckButton.text = LanguageMgr.GetTranslation("ddt.cardSystem.buyFrameSelectedCheckButtonTextMsg");
          _selectedCheckButton.addEventListener("click",__onselectedCheckButtoClick);
@@ -745,11 +738,11 @@ package cardSystem.view.cardEquip
          _tipsframe.addEventListener("response",__onResponse);
       }
       
-      private function __onResponse(param1:FrameEvent) : void
+      private function __onResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          tipsDispose();
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         if(evt.responseCode == 2 || evt.responseCode == 3)
          {
             if(PlayerManager.Instance.Self.GetSoulCount != 0)
             {
@@ -776,13 +769,13 @@ package cardSystem.view.cardEquip
          }
       }
       
-      private function __onselectedCheckButtoClick(param1:MouseEvent) : void
+      private function __onselectedCheckButtoClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          CardTemplateInfoManager.instance.isShowBuyFrameSelectedCheck = !_selectedCheckButton.selected;
       }
       
-      protected function __buyCardBoxHandler(param1:MouseEvent) : void
+      protected function __buyCardBoxHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -790,34 +783,34 @@ package cardSystem.view.cardEquip
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:ShopItemInfo = ShopManager.Instance.getGoodsByTemplateID(112150,1);
-         var _loc3_:QuickBuyAlertBase = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickBuyAlert");
-         _loc3_.setData(_loc2_.TemplateID,_loc2_.GoodsID,_loc2_.AValue1);
-         LayerManager.Instance.addToLayer(_loc3_,3,true,1);
+         var shopInfo:ShopItemInfo = ShopManager.Instance.getGoodsByTemplateID(112150,1);
+         var quickBuyFrame:QuickBuyAlertBase = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickBuyAlert");
+         quickBuyFrame.setData(shopInfo.TemplateID,shopInfo.GoodsID,shopInfo.AValue1);
+         LayerManager.Instance.addToLayer(quickBuyFrame,3,true,1);
       }
       
-      private function __changeSoul(param1:PlayerPropertyEvent) : void
+      private function __changeSoul(event:PlayerPropertyEvent) : void
       {
          _GrooveTxt.text = PlayerManager.Instance.Self.CardSoul.toString();
          _ballPlayCountTxt.text = PlayerManager.Instance.Self.GetSoulCount.toString();
          isBallPlaySpTip();
       }
       
-      private function __getSoul(param1:CrazyTankSocketEvent) : void
+      private function __getSoul(event:CrazyTankSocketEvent) : void
       {
-         var _loc4_:int = 0;
+         var cardSoul:int = 0;
          if(!CardTemplateInfoManager.instance.isBuyCardsSoul)
          {
             return;
          }
          CardTemplateInfoManager.instance.isBuyCardsSoul = false;
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:Boolean = _loc3_.readBoolean();
-         if(_loc2_)
+         var pkg:PackageIn = event.pkg;
+         var b:Boolean = pkg.readBoolean();
+         if(b)
          {
-            _loc4_ = _loc3_.readInt();
-            PlayerManager.Instance.Self.CardSoul = PlayerManager.Instance.Self.CardSoul + _loc4_;
-            PlayerManager.Instance.Self.GetSoulCount = _loc3_.readInt();
+            cardSoul = pkg.readInt();
+            PlayerManager.Instance.Self.CardSoul = PlayerManager.Instance.Self.CardSoul + cardSoul;
+            PlayerManager.Instance.Self.GetSoulCount = pkg.readInt();
          }
       }
       
@@ -834,223 +827,221 @@ package cardSystem.view.cardEquip
          _buyCardBoxBtn.removeEventListener("click",__buyCardBoxHandler);
       }
       
-      private function __GetCard(param1:PkgEvent) : void
+      private function __GetCard(event:PkgEvent) : void
       {
-         var _loc11_:int = 0;
-         var _loc10_:* = null;
-         var _loc6_:* = null;
-         var _loc5_:* = null;
-         var _loc7_:int = 0;
-         var _loc2_:int = 0;
-         var _loc8_:PackageIn = param1.pkg;
-         CardManager.Instance.model.PlayerId = _loc8_.readInt();
-         var _loc12_:int = _loc8_.readInt();
-         var _loc3_:int = _loc8_.readInt();
-         var _loc9_:int = _loc8_.readInt();
-         var _loc4_:Vector.<GrooveInfo> = null;
+         var i:int = 0;
+         var Grooveinfo:* = null;
+         var cardInfo:* = null;
+         var cardInfo1:* = null;
+         var current:int = 0;
+         var difference:int = 0;
+         var pkg:PackageIn = event.pkg;
+         CardManager.Instance.model.PlayerId = pkg.readInt();
+         var zoneId:int = pkg.readInt();
+         var num:int = pkg.readInt();
+         var len:int = pkg.readInt();
+         var grooveInfos:Vector.<GrooveInfo> = null;
          if(CardManager.Instance.model.GrooveInfoVector)
          {
-            _loc4_ = CardManager.Instance.model.GrooveInfoVector;
+            grooveInfos = CardManager.Instance.model.GrooveInfoVector;
          }
          else
          {
-            _loc4_ = new Vector.<GrooveInfo>(5);
+            grooveInfos = new Vector.<GrooveInfo>(5);
          }
-         _loc11_ = 0;
-         while(_loc11_ < _loc9_)
+         for(i = 0; i < len; )
          {
-            _loc10_ = new GrooveInfo();
-            _loc10_.Place = _loc8_.readInt();
-            _loc10_.Type = _loc8_.readInt();
-            _loc10_.Level = _loc8_.readInt();
-            _loc10_.GP = _loc8_.readInt();
-            _loc6_ = GrooveInfoManager.instance.getInfoByLevel(String(_loc10_.Level),String(_loc10_.Type));
-            _loc5_ = GrooveInfoManager.instance.getInfoByLevel(String(_loc10_.Level + 1),String(_loc10_.Type));
-            if(_loc9_ == 1)
+            Grooveinfo = new GrooveInfo();
+            Grooveinfo.Place = pkg.readInt();
+            Grooveinfo.Type = pkg.readInt();
+            Grooveinfo.Level = pkg.readInt();
+            Grooveinfo.GP = pkg.readInt();
+            cardInfo = GrooveInfoManager.instance.getInfoByLevel(String(Grooveinfo.Level),String(Grooveinfo.Type));
+            cardInfo1 = GrooveInfoManager.instance.getInfoByLevel(String(Grooveinfo.Level + 1),String(Grooveinfo.Type));
+            if(len == 1)
             {
-               if(_loc10_.Level > _loc4_[_loc10_.Place].Level)
+               if(Grooveinfo.Level > grooveInfos[Grooveinfo.Place].Level)
                {
-                  if(_loc10_.Place == 0)
+                  if(Grooveinfo.Place == 0)
                   {
-                     MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.card.MainUpdateCard",String(_loc10_.Level)));
+                     MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.card.MainUpdateCard",String(Grooveinfo.Level)));
                   }
                   else
                   {
-                     MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.card.UpdateCard",String(_loc10_.Place),String(_loc10_.Level)));
+                     MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.card.UpdateCard",String(Grooveinfo.Place),String(Grooveinfo.Level)));
                   }
                }
             }
-            if(_loc10_.Level == 45)
+            if(Grooveinfo.Level == 45)
             {
-               if(_loc10_.Place == 0)
+               if(Grooveinfo.Place == 0)
                {
-                  _levelNumTxt1.text = _loc10_.Level.toString();
+                  _levelNumTxt1.text = Grooveinfo.Level.toString();
                   _levelPorgress.setProgress(0,0);
                   _levelPorgress.labelText = "0%";
-                  _loc4_[0] = _loc10_;
+                  grooveInfos[0] = Grooveinfo;
                }
-               else if(_loc10_.Place == 1)
+               else if(Grooveinfo.Place == 1)
                {
-                  _levelNumTxt2.text = _loc10_.Level.toString();
+                  _levelNumTxt2.text = Grooveinfo.Level.toString();
                   _levelPorgress1.setProgress(0,0);
                   _levelPorgress1.labelText = "0%";
-                  _loc4_[1] = _loc10_;
+                  grooveInfos[1] = Grooveinfo;
                }
-               else if(_loc10_.Place == 2)
+               else if(Grooveinfo.Place == 2)
                {
-                  _levelNumTxt3.text = _loc10_.Level.toString();
+                  _levelNumTxt3.text = Grooveinfo.Level.toString();
                   _levelPorgress2.setProgress(0,0);
                   _levelPorgress2.labelText = "0%";
-                  _loc4_[2] = _loc10_;
+                  grooveInfos[2] = Grooveinfo;
                }
-               else if(_loc10_.Place == 3)
+               else if(Grooveinfo.Place == 3)
                {
-                  _levelNumTxt4.text = _loc10_.Level.toString();
+                  _levelNumTxt4.text = Grooveinfo.Level.toString();
                   _levelPorgress3.setProgress(0,0);
                   _levelPorgress3.labelText = "0%";
-                  _loc4_[3] = _loc10_;
+                  grooveInfos[3] = Grooveinfo;
                }
-               if(_loc10_.Place == 4)
+               if(Grooveinfo.Place == 4)
                {
-                  _levelNumTxt5.text = _loc10_.Level.toString();
+                  _levelNumTxt5.text = Grooveinfo.Level.toString();
                   _levelPorgress4.setProgress(0,0);
                   _levelPorgress4.labelText = "0%";
-                  _loc4_[4] = _loc10_;
+                  grooveInfos[4] = Grooveinfo;
                }
             }
             else
             {
-               _loc7_ = _loc10_.GP - int(_loc6_.Exp);
-               _loc2_ = int(_loc5_.Exp) - int(_loc6_.Exp);
-               if(_loc7_ >= _loc2_)
+               current = Grooveinfo.GP - int(cardInfo.Exp);
+               difference = int(cardInfo1.Exp) - int(cardInfo.Exp);
+               if(current >= difference)
                {
                   if(_playerInfo)
                   {
                      if(_playerInfo.ID == PlayerManager.Instance.Self.ID)
                      {
-                        SocketManager.Instance.out.sendUpdateSLOT(_loc10_.Place,0);
+                        SocketManager.Instance.out.sendUpdateSLOT(Grooveinfo.Place,0);
                      }
                   }
                }
-               if(_loc10_.Place == 0)
+               if(Grooveinfo.Place == 0)
                {
-                  _levelNumTxt1.text = _loc10_.Level.toString();
-                  if(_loc10_.GP == 0)
+                  _levelNumTxt1.text = Grooveinfo.Level.toString();
+                  if(Grooveinfo.GP == 0)
                   {
-                     _levelPorgress.setProgress(0,Number(_loc2_));
+                     _levelPorgress.setProgress(0,Number(difference));
                   }
                   else
                   {
-                     _levelPorgress.setProgress(_loc7_,Number(_loc2_));
+                     _levelPorgress.setProgress(current,Number(difference));
                   }
-                  _loc4_[0] = _loc10_;
+                  grooveInfos[0] = Grooveinfo;
                }
-               if(_loc10_.Place == 1)
+               if(Grooveinfo.Place == 1)
                {
-                  _levelNumTxt2.text = _loc10_.Level.toString();
-                  if(_loc10_.GP == 0)
+                  _levelNumTxt2.text = Grooveinfo.Level.toString();
+                  if(Grooveinfo.GP == 0)
                   {
-                     _levelPorgress1.setProgress(0,Number(_loc2_));
+                     _levelPorgress1.setProgress(0,Number(difference));
                   }
                   else
                   {
-                     _levelPorgress1.setProgress(_loc7_,Number(_loc2_));
+                     _levelPorgress1.setProgress(current,Number(difference));
                   }
-                  _loc4_[1] = _loc10_;
+                  grooveInfos[1] = Grooveinfo;
                }
-               if(_loc10_.Place == 2)
+               if(Grooveinfo.Place == 2)
                {
-                  _levelNumTxt3.text = _loc10_.Level.toString();
-                  if(_loc10_.GP == 0)
+                  _levelNumTxt3.text = Grooveinfo.Level.toString();
+                  if(Grooveinfo.GP == 0)
                   {
-                     _levelPorgress2.setProgress(0,Number(_loc2_));
+                     _levelPorgress2.setProgress(0,Number(difference));
                   }
                   else
                   {
-                     _levelPorgress2.setProgress(_loc7_,Number(_loc2_));
+                     _levelPorgress2.setProgress(current,Number(difference));
                   }
-                  _loc4_[2] = _loc10_;
+                  grooveInfos[2] = Grooveinfo;
                }
-               if(_loc10_.Place == 3)
+               if(Grooveinfo.Place == 3)
                {
-                  _levelNumTxt4.text = _loc10_.Level.toString();
-                  if(_loc10_.GP == 0)
+                  _levelNumTxt4.text = Grooveinfo.Level.toString();
+                  if(Grooveinfo.GP == 0)
                   {
-                     _levelPorgress3.setProgress(0,Number(_loc2_));
+                     _levelPorgress3.setProgress(0,Number(difference));
                   }
                   else
                   {
-                     _levelPorgress3.setProgress(_loc7_,Number(_loc2_));
+                     _levelPorgress3.setProgress(current,Number(difference));
                   }
-                  _loc4_[3] = _loc10_;
+                  grooveInfos[3] = Grooveinfo;
                }
-               if(_loc10_.Place == 4)
+               if(Grooveinfo.Place == 4)
                {
-                  _levelNumTxt5.text = _loc10_.Level.toString();
-                  if(_loc10_.GP == 0)
+                  _levelNumTxt5.text = Grooveinfo.Level.toString();
+                  if(Grooveinfo.GP == 0)
                   {
-                     _levelPorgress4.setProgress(0,Number(_loc2_));
+                     _levelPorgress4.setProgress(0,Number(difference));
                   }
                   else
                   {
-                     _levelPorgress4.setProgress(_loc7_,Number(_loc2_));
+                     _levelPorgress4.setProgress(current,Number(difference));
                   }
-                  _loc4_[4] = _loc10_;
+                  grooveInfos[4] = Grooveinfo;
                }
             }
-            _loc11_++;
+            i++;
          }
-         CardManager.Instance.model.GrooveInfoVector = _loc4_;
-         PlayerManager.Instance.Self.CardSoul = _loc3_;
+         CardManager.Instance.model.GrooveInfoVector = grooveInfos;
+         PlayerManager.Instance.Self.CardSoul = num;
       }
       
-      private function __collectHandler(param1:MouseEvent) : void
+      private function __collectHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          CardControl.Instance.showCollectView();
       }
       
-      private function __resetSoulHandler(param1:MouseEvent) : void
+      private function __resetSoulHandler(event:MouseEvent) : void
       {
-         var _loc7_:int = 0;
+         var i:int = 0;
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc3_:Vector.<GrooveInfo> = CardManager.Instance.model.GrooveInfoVector;
-         var _loc6_:int = 0;
-         _loc7_ = 0;
-         while(_loc7_ < _loc3_.length)
+         var grooveInfos:Vector.<GrooveInfo> = CardManager.Instance.model.GrooveInfoVector;
+         var allGP:int = 0;
+         for(i = 0; i < grooveInfos.length; )
          {
-            _loc6_ = _loc6_ + _loc3_[_loc7_].GP;
-            _loc7_++;
+            allGP = allGP + grooveInfos[i].GP;
+            i++;
          }
-         if(_loc6_ <= 0)
+         if(allGP <= 0)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.card.resetCardSoulNo"));
             return;
          }
-         var _loc5_:String = LanguageMgr.GetTranslation("tank.view.card.resetCardSoulText1");
-         var _loc2_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("CardSystem.resetCardSoul.alertText");
-         var _loc4_:String = ServerConfigManager.instance.cardResetCardSoulMoney;
-         _loc2_.htmlText = LanguageMgr.GetTranslation("tank.view.card.resetCardSoulText2",_loc6_,_loc4_);
-         _resetAlert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc5_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2,null,"SimpleAlert",30,true,1,-11);
+         var msg1:String = LanguageMgr.GetTranslation("tank.view.card.resetCardSoulText1");
+         var msgFilterFrameText:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("CardSystem.resetCardSoul.alertText");
+         var money:String = ServerConfigManager.instance.cardResetCardSoulMoney;
+         msgFilterFrameText.htmlText = LanguageMgr.GetTranslation("tank.view.card.resetCardSoulText2",allGP,money);
+         _resetAlert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),msg1,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2,null,"SimpleAlert",30,true,1,-11);
          _resetAlert.height = 210;
          _resetAlert.containerY = 73;
-         _resetAlert.addChild(_loc2_);
+         _resetAlert.addChild(msgFilterFrameText);
          _resetAlert.mouseEnabled = false;
          _resetAlert.addEventListener("response",__resetAlertResponse);
       }
       
-      private function __resetAlertResponse(param1:FrameEvent) : void
+      private function __resetAlertResponse(event:FrameEvent) : void
       {
          if(_resetAlert.hasEventListener("response"))
          {
             _resetAlert.removeEventListener("response",__resetAlertResponse);
          }
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -1072,12 +1063,12 @@ package cardSystem.view.cardEquip
          __resetAllText();
       }
       
-      private function __moneyConfirmHandler(param1:FrameEvent) : void
+      private function __moneyConfirmHandler(evt:FrameEvent) : void
       {
          _moneyConfirm.removeEventListener("response",__moneyConfirmHandler);
          _moneyConfirm.dispose();
          _moneyConfirm = null;
-         switch(int(param1.responseCode) - 2)
+         switch(int(evt.responseCode) - 2)
          {
             case 0:
             case 1:
@@ -1106,28 +1097,28 @@ package cardSystem.view.cardEquip
          _ballPlayCountTxt.text = PlayerManager.Instance.Self.GetSoulCount.toString();
       }
       
-      private function __cardHandler(param1:MouseEvent) : void
+      private function __cardHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:Point = _cardBtn.localToGlobal(new Point(0,0));
-         _cardList.x = _loc2_.x + _cardBtn.width;
+         var pos:Point = _cardBtn.localToGlobal(new Point(0,0));
+         _cardList.x = pos.x + _cardBtn.width;
          _cardList.y = 440;
          _cardList.setVisible = true;
       }
       
-      private function _openHandler(param1:MouseEvent) : void
+      private function _openHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc3_:String = !!_show3?LanguageMgr.GetTranslation("ddt.cardSystem.cardEquip.openVice3"):LanguageMgr.GetTranslation("ddt.cardSystem.cardEquip.openVice4");
-         var _loc2_:String = !!_show3?LanguageMgr.GetTranslation("ddt.cardSystem.cardEquip.open3"):LanguageMgr.GetTranslation("ddt.cardSystem.cardEquip.open4");
-         _openFrame = AlertManager.Instance.simpleAlert(_loc3_,_loc2_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,1);
+         var title:String = !!_show3?LanguageMgr.GetTranslation("ddt.cardSystem.cardEquip.openVice3"):LanguageMgr.GetTranslation("ddt.cardSystem.cardEquip.openVice4");
+         var content:String = !!_show3?LanguageMgr.GetTranslation("ddt.cardSystem.cardEquip.open3"):LanguageMgr.GetTranslation("ddt.cardSystem.cardEquip.open4");
+         _openFrame = AlertManager.Instance.simpleAlert(title,content,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,1);
          _openFrame.addEventListener("response",__openFramehandler);
       }
       
-      private function __openFramehandler(param1:FrameEvent) : void
+      private function __openFramehandler(event:FrameEvent) : void
       {
          _openFrame.removeEventListener("response",__openFramehandler);
-         switch(int(param1.responseCode) - 2)
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
@@ -1139,7 +1130,7 @@ package cardSystem.view.cardEquip
       
       private function openActive() : void
       {
-         var _loc1_:* = null;
+         var content:* = null;
          if(_show3 && CardManager.Instance.model.fourIsOpen() || !_show3 && (CardManager.Instance.model.fiveIsOpen() || CardManager.Instance.model.fiveIsOpen2()))
          {
             if(_show3)
@@ -1157,46 +1148,46 @@ package cardSystem.view.cardEquip
          }
          else
          {
-            _loc1_ = !!_show3?LanguageMgr.GetTranslation("ddt.cardSystem.cardEquip.cannotOpen3"):LanguageMgr.GetTranslation("ddt.cardSystem.cardEquip.cannotOpen4");
-            _configFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc1_,LanguageMgr.GetTranslation("ok"),"",false,false,true,1);
+            content = !!_show3?LanguageMgr.GetTranslation("ddt.cardSystem.cardEquip.cannotOpen3"):LanguageMgr.GetTranslation("ddt.cardSystem.cardEquip.cannotOpen4");
+            _configFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),content,LanguageMgr.GetTranslation("ok"),"",false,false,true,1);
             _configFrame.addEventListener("response",__configResponseHandler);
          }
       }
       
-      private function __configResponseHandler(param1:FrameEvent) : void
+      private function __configResponseHandler(event:FrameEvent) : void
       {
          _configFrame.removeEventListener("response",__configResponseHandler);
          _configFrame.dispose();
          _configFrame = null;
       }
       
-      private function __remove(param1:DictionaryEvent) : void
+      private function __remove(event:DictionaryEvent) : void
       {
-         var _loc2_:CardInfo = param1.data as CardInfo;
-         if(_equipCells[_loc2_.Place])
+         var cInfo:CardInfo = event.data as CardInfo;
+         if(_equipCells[cInfo.Place])
          {
-            _equipCells[_loc2_.Place].cardInfo = null;
+            _equipCells[cInfo.Place].cardInfo = null;
          }
       }
       
-      private function __upData(param1:DictionaryEvent) : void
+      private function __upData(event:DictionaryEvent) : void
       {
-         var _loc2_:CardInfo = param1.data as CardInfo;
-         if(_loc2_ && _equipCells[_loc2_.Place])
+         var cInfo:CardInfo = event.data as CardInfo;
+         if(cInfo && _equipCells[cInfo.Place])
          {
-            if(_loc2_.Count <= -1)
+            if(cInfo.Count <= -1)
             {
-               _equipCells[_loc2_.Place].cardInfo = null;
+               _equipCells[cInfo.Place].cardInfo = null;
             }
             else
             {
-               _equipCells[_loc2_.Place].cardInfo = _loc2_;
-               _equipCells[_loc2_.Place].playerInfo = _playerInfo;
+               _equipCells[cInfo.Place].cardInfo = cInfo;
+               _equipCells[cInfo.Place].playerInfo = _playerInfo;
             }
          }
       }
       
-      private function __onClickAchievement(param1:MouseEvent) : void
+      private function __onClickAchievement(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          CardControl.Instance.showCardAchievementFrame();
@@ -1204,8 +1195,8 @@ package cardSystem.view.cardEquip
       
       public function dispose() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
+         var i:int = 0;
+         var j:int = 0;
          PlayerManager.Instance.Self.isViewOther = false;
          SocketManager.Instance.removeEventListener("cards_soul",__getSoul);
          TweenLite.killTweensOf(_open3Btn);
@@ -1414,30 +1405,28 @@ package cardSystem.view.cardEquip
          ObjectUtils.disposeObject(_line);
          _line = null;
          PlayerManager.Instance.removeEventListener("updatePlayerState",__onUpdateProperty);
-         _loc2_ = 0;
-         while(_loc2_ < 5)
+         for(i = 0; i < 5; )
          {
-            if(_equipCells[_loc2_])
+            if(_equipCells[i])
             {
-               _equipCells[_loc2_].dispose();
-               _equipCells[_loc2_].removeEventListener("interactive_click",__clickHandler);
-               _equipCells[_loc2_].removeEventListener("interactive_double_click",__doubleClickHandler);
-               _equipCells[_loc2_].removeEventListener("mouseOver",_cellOverEff);
-               _equipCells[_loc2_].removeEventListener("mouseOut",_cellOutEff);
-               _equipCells[_loc2_] = null;
+               _equipCells[i].dispose();
+               _equipCells[i].removeEventListener("interactive_click",__clickHandler);
+               _equipCells[i].removeEventListener("interactive_double_click",__doubleClickHandler);
+               _equipCells[i].removeEventListener("mouseOver",_cellOverEff);
+               _equipCells[i].removeEventListener("mouseOut",_cellOutEff);
+               _equipCells[i] = null;
             }
-            _loc2_++;
+            i++;
          }
          _equipCells = null;
-         _loc1_ = 0;
-         while(_loc1_ < _viceCardBit.length)
+         for(j = 0; j < _viceCardBit.length; )
          {
-            if(_viceCardBit[_loc1_])
+            if(_viceCardBit[j])
             {
-               ObjectUtils.disposeObject(_viceCardBit[_loc1_]);
+               ObjectUtils.disposeObject(_viceCardBit[j]);
             }
-            _viceCardBit[_loc1_] = null;
-            _loc1_++;
+            _viceCardBit[j] = null;
+            j++;
          }
          _viceCardBit = null;
          if(this.parent)
@@ -1446,49 +1435,49 @@ package cardSystem.view.cardEquip
          }
       }
       
-      protected function __clickHandler(param1:Event) : void
+      protected function __clickHandler(event:Event) : void
       {
-         var _loc3_:* = null;
-         param1.stopImmediatePropagation();
-         if(param1.target is BaseButton)
+         var info:* = null;
+         event.stopImmediatePropagation();
+         if(event.target is BaseButton)
          {
             return;
          }
-         var _loc2_:CardCell = param1.currentTarget as CardCell;
-         if(_loc2_)
+         var cell:CardCell = event.currentTarget as CardCell;
+         if(cell)
          {
-            _loc3_ = _loc2_.info as ItemTemplateInfo;
+            info = cell.info as ItemTemplateInfo;
          }
-         if(_loc3_ == null)
+         if(info == null)
          {
             return;
          }
-         if(!_loc2_.locked)
+         if(!cell.locked)
          {
             SoundManager.instance.play("008");
-            _loc2_.dragStart();
+            cell.dragStart();
          }
       }
       
-      protected function __doubleClickHandler(param1:Event) : void
+      protected function __doubleClickHandler(event:Event) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:CardCell = param1.currentTarget as CardCell;
-         if(_loc2_.cardInfo)
+         var cell:CardCell = event.currentTarget as CardCell;
+         if(cell.cardInfo)
          {
-            param1.stopImmediatePropagation();
-            if(_loc2_ && !_loc2_.locked)
+            event.stopImmediatePropagation();
+            if(cell && !cell.locked)
             {
-               SocketManager.Instance.out.sendMoveCards(_loc2_.cardInfo.Place,_loc2_.cardInfo.Place);
+               SocketManager.Instance.out.sendMoveCards(cell.cardInfo.Place,cell.cardInfo.Place);
             }
          }
       }
       
-      protected function _cellOverEff(param1:MouseEvent) : void
+      protected function _cellOverEff(event:MouseEvent) : void
       {
       }
       
-      protected function _cellOutEff(param1:MouseEvent) : void
+      protected function _cellOutEff(event:MouseEvent) : void
       {
       }
    }

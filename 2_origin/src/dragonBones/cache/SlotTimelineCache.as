@@ -16,15 +16,15 @@ package dragonBones.cache
       
       override public function addFrame() : void
       {
-         var _loc1_:SlotFrameCache = new SlotFrameCache();
-         _loc1_.globalTransform.copy(cacheGenerator.global);
-         _loc1_.globalTransformMatrix.copyFrom(cacheGenerator.globalTransformMatrix);
+         var cache:SlotFrameCache = new SlotFrameCache();
+         cache.globalTransform.copy(cacheGenerator.global);
+         cache.globalTransformMatrix.copyFrom(cacheGenerator.globalTransformMatrix);
          if(cacheGenerator.colorChanged)
          {
-            _loc1_.colorTransform = ColorTransformUtil.cloneColor(cacheGenerator.colorTransform);
+            cache.colorTransform = ColorTransformUtil.cloneColor(cacheGenerator.colorTransform);
          }
-         _loc1_.displayIndex = cacheGenerator.displayIndex;
-         frameCacheList.push(_loc1_);
+         cache.displayIndex = cacheGenerator.displayIndex;
+         frameCacheList.push(cache);
       }
    }
 }

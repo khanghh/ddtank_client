@@ -22,9 +22,9 @@ package starling.scene.hall.event
       public static const SHOWPETS:String = "showPets";
        
       
-      public function NewHallEventStarling(param1:String, param2:Object = null)
+      public function NewHallEventStarling(type:String, data:Object = null)
       {
-         super(param1,bubbles,param2);
+         super(type,bubbles,data);
       }
    }
 }

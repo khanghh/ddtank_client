@@ -30,362 +30,355 @@ package com.pickgliss.utils
          super();
       }
       
-      public static function removeDisplay(... rest) : DisplayObject
+      public static function removeDisplay(... args) : DisplayObject
       {
          var _loc4_:int = 0;
-         var _loc3_:* = rest;
-         for each(var _loc2_ in rest)
+         var _loc3_:* = args;
+         for each(var display in args)
          {
-            if(_loc2_ && _loc2_.parent)
+            if(display && display.parent)
             {
-               _loc2_.parent.removeChild(_loc2_);
+               display.parent.removeChild(display);
             }
          }
-         return rest[0];
+         return args[0];
       }
       
-      public static function drawRectShape(param1:Number, param2:Number, param3:Shape = null) : Shape
+      public static function drawRectShape($width:Number, $height:Number, target:Shape = null) : Shape
       {
-         var _loc4_:* = null;
-         if(param3 == null)
+         var sp:* = null;
+         if(target == null)
          {
-            _loc4_ = new Shape();
+            sp = new Shape();
          }
          else
          {
-            _loc4_ = param3;
+            sp = target;
          }
-         _loc4_.graphics.clear();
-         _loc4_.graphics.beginFill(16711680,1);
-         _loc4_.graphics.drawRect(0,0,param1,param2);
-         _loc4_.graphics.endFill();
-         return _loc4_;
+         sp.graphics.clear();
+         sp.graphics.beginFill(16711680,1);
+         sp.graphics.drawRect(0,0,$width,$height);
+         sp.graphics.endFill();
+         return sp;
       }
       
-      public static function drawTextShape(param1:TextField) : DisplayObject
+      public static function drawTextShape(sourceTextField:TextField) : DisplayObject
       {
-         var _loc8_:* = 0;
-         var _loc6_:* = 0;
-         var _loc3_:* = 0;
-         var _loc2_:* = 0;
-         var _loc4_:Number = NaN;
-         var _loc5_:BitmapData = new BitmapData(param1.width,param1.height,true,16711680);
-         _loc5_.draw(param1);
-         var _loc7_:Shape = new Shape();
-         _loc7_.cacheAsBitmap = true;
-         _loc8_ = uint(0);
-         while(_loc8_ < _loc5_.width)
+         var i:* = 0;
+         var j:* = 0;
+         var col:* = 0;
+         var alphaChannel:* = 0;
+         var alphaValue:Number = NaN;
+         var textBitmapData:BitmapData = new BitmapData(sourceTextField.width,sourceTextField.height,true,16711680);
+         textBitmapData.draw(sourceTextField);
+         var textGraphics:Shape = new Shape();
+         textGraphics.cacheAsBitmap = true;
+         for(i = uint(0); i < textBitmapData.width; )
          {
-            _loc6_ = uint(0);
-            while(_loc6_ < _loc5_.height)
+            for(j = uint(0); j < textBitmapData.height; )
             {
-               _loc3_ = uint(_loc5_.getPixel32(_loc8_,_loc6_));
-               _loc2_ = uint(_loc3_ >> 24 & 255);
-               _loc4_ = _loc2_ / 255;
-               if(_loc3_ > 0)
+               col = uint(textBitmapData.getPixel32(i,j));
+               alphaChannel = uint(col >> 24 & 255);
+               alphaValue = alphaChannel / 255;
+               if(col > 0)
                {
-                  _loc7_.graphics.beginFill(0,_loc4_);
-                  _loc7_.graphics.drawCircle(_loc8_,_loc6_,1);
+                  textGraphics.graphics.beginFill(0,alphaValue);
+                  textGraphics.graphics.drawCircle(i,j,1);
                }
-               _loc6_++;
+               j++;
             }
-            _loc8_++;
+            i++;
          }
-         return _loc7_;
+         return textGraphics;
       }
       
-      public static function isInTheStage(param1:Point, param2:DisplayObjectContainer = null) : Boolean
+      public static function isInTheStage(point:Point, parent:DisplayObjectContainer = null) : Boolean
       {
-         var _loc3_:* = param1;
-         if(param2)
+         var stagePoint:* = point;
+         if(parent)
          {
-            _loc3_ = param2.localToGlobal(param1);
+            stagePoint = parent.localToGlobal(point);
          }
-         if(_loc3_.x < 0 || _loc3_.y < 0 || _loc3_.x > StageReferance.stageWidth || _loc3_.y > StageReferance.stageHeight)
+         if(stagePoint.x < 0 || stagePoint.y < 0 || stagePoint.x > StageReferance.stageWidth || stagePoint.y > StageReferance.stageHeight)
          {
             return false;
          }
          return true;
       }
       
-      public static function layoutDisplayWithInnerRect(param1:DisplayObject, param2:InnerRectangle, param3:int, param4:int) : void
+      public static function layoutDisplayWithInnerRect(com:DisplayObject, innerRect:InnerRectangle, width:int, height:int) : void
       {
-         if(param2 == null)
+         if(innerRect == null)
          {
             return;
          }
-         if(param1 is Component)
+         if(com is Component)
          {
-            Component(param1).beginChanges();
+            Component(com).beginChanges();
          }
-         var _loc5_:Rectangle = param2.getInnerRect(param3,param4);
-         param1.x = _loc5_.x;
-         param1.y = _loc5_.y;
-         param1.width = _loc5_.width;
-         param1.height = _loc5_.height;
-         if(param1 is Component)
+         var rect:Rectangle = innerRect.getInnerRect(width,height);
+         com.x = rect.x;
+         com.y = rect.y;
+         com.width = rect.width;
+         com.height = rect.height;
+         if(com is Component)
          {
-            Component(param1).commitChanges();
-         }
-      }
-      
-      public static function setFrame(param1:DisplayObject, param2:int) : void
-      {
-         if(param1 is Image)
-         {
-            Image(param1).setFrame(param2);
-         }
-         else if(param1 is MovieClip)
-         {
-            MovieClip(param1).gotoAndStop(param2);
-         }
-         else if(param1 is FilterFrameText)
-         {
-            FilterFrameText(param1).setFrame(param2);
-         }
-         else if(param1 is GradientText)
-         {
-            GradientText(param1).setFrame(param2);
+            Component(com).commitChanges();
          }
       }
       
-      public static function setDisplayObjectNotEnable(param1:DisplayObject) : void
+      public static function setFrame(display:DisplayObject, frameIndex:int) : void
       {
-         if(param1 is InteractiveObject)
+         if(display is Image)
          {
-            InteractiveObject(param1).mouseEnabled = false;
+            Image(display).setFrame(frameIndex);
          }
-         if(param1 is DisplayObjectContainer)
+         else if(display is MovieClip)
          {
-            DisplayObjectContainer(param1).mouseChildren = false;
-            DisplayObjectContainer(param1).mouseEnabled = false;
+            MovieClip(display).gotoAndStop(frameIndex);
+         }
+         else if(display is FilterFrameText)
+         {
+            FilterFrameText(display).setFrame(frameIndex);
+         }
+         else if(display is GradientText)
+         {
+            GradientText(display).setFrame(frameIndex);
          }
       }
       
-      public static function getTextFieldLineHeight(param1:TextField) : int
+      public static function setDisplayObjectNotEnable(display:DisplayObject) : void
       {
-         return param1.getLineMetrics(0).height;
+         if(display is InteractiveObject)
+         {
+            InteractiveObject(display).mouseEnabled = false;
+         }
+         if(display is DisplayObjectContainer)
+         {
+            DisplayObjectContainer(display).mouseChildren = false;
+            DisplayObjectContainer(display).mouseEnabled = false;
+         }
       }
       
-      public static function getTextFieldCareLinePosY(param1:TextField) : Number
+      public static function getTextFieldLineHeight(field:TextField) : int
       {
-         var _loc2_:int = param1.caretIndex - 1;
-         var _loc5_:int = param1.text.charCodeAt(_loc2_);
-         var _loc3_:int = param1.getLineIndexOfChar(_loc2_);
-         var _loc4_:* = 0;
-         if(_loc5_ == 13)
+         return field.getLineMetrics(0).height;
+      }
+      
+      public static function getTextFieldCareLinePosY(field:TextField) : Number
+      {
+         var lastCareCharIndex:int = field.caretIndex - 1;
+         var charCode:int = field.text.charCodeAt(lastCareCharIndex);
+         var lastCareCharlineIndex:int = field.getLineIndexOfChar(lastCareCharIndex);
+         var careCharLineIndex:* = 0;
+         if(charCode == 13)
          {
-            _loc4_ = int(_loc3_ + 1);
+            careCharLineIndex = int(lastCareCharlineIndex + 1);
          }
          else
          {
-            _loc4_ = _loc3_;
+            careCharLineIndex = lastCareCharlineIndex;
          }
-         return getTextFieldLineHeight(param1) * _loc4_;
+         return getTextFieldLineHeight(field) * careCharLineIndex;
       }
       
-      public static function getTextFieldCareLinePosX(param1:TextField) : Number
+      public static function getTextFieldCareLinePosX(field:TextField) : Number
       {
-         var _loc2_:int = param1.caretIndex - 1;
-         var _loc3_:Rectangle = param1.getCharBoundaries(_loc2_);
-         if(_loc3_ == null)
+         var lastCareCharIndex:int = field.caretIndex - 1;
+         var lastCharPos:Rectangle = field.getCharBoundaries(lastCareCharIndex);
+         if(lastCharPos == null)
          {
             return 0;
          }
-         return _loc3_.x + _loc3_.width;
+         return lastCharPos.x + lastCharPos.width;
       }
       
-      public static function getVisibleSize(param1:DisplayObject) : Rectangle
+      public static function getVisibleSize(o:DisplayObject) : Rectangle
       {
-         var _loc2_:* = null;
-         var _loc5_:int = 2000;
-         var _loc3_:BitmapData = new BitmapData(_loc5_,_loc5_,true,0);
-         _loc3_.draw(param1);
-         _loc2_ = _loc3_.getColorBoundsRect(4278190080,0,false);
-         _loc3_.dispose();
-         var _loc4_:Rectangle = new Rectangle(_loc2_.x,_loc2_.y,_loc2_.x + _loc2_.width,_loc2_.y + _loc2_.height);
-         return _loc4_;
+         var bounds:* = null;
+         var bitmapDataSize:int = 2000;
+         var bitmapData:BitmapData = new BitmapData(bitmapDataSize,bitmapDataSize,true,0);
+         bitmapData.draw(o);
+         bounds = bitmapData.getColorBoundsRect(4278190080,0,false);
+         bitmapData.dispose();
+         var retultRect:Rectangle = new Rectangle(bounds.x,bounds.y,bounds.x + bounds.width,bounds.y + bounds.height);
+         return retultRect;
       }
       
-      public static function getTextFieldMaxLineWidth(param1:String, param2:TextFormat, param3:Boolean) : Number
+      public static function getTextFieldMaxLineWidth(value:String, format:TextFormat, isHtmlText:Boolean) : Number
       {
-         var _loc6_:* = null;
-         var _loc7_:int = 0;
-         var _loc5_:TextField = new TextField();
-         _loc5_.autoSize = "left";
-         if(param3)
+         var linesText:* = null;
+         var i:int = 0;
+         var textField:TextField = new TextField();
+         textField.autoSize = "left";
+         if(isHtmlText)
          {
-            param1 = param1.replace("<BR>","\n");
-            param1 = param1.replace("<Br>","\n");
-            param1 = param1.replace("<bR>","\n");
-            param1 = param1.replace("<br>","\n");
+            value = value.replace("<BR>","\n");
+            value = value.replace("<Br>","\n");
+            value = value.replace("<bR>","\n");
+            value = value.replace("<br>","\n");
          }
-         _loc6_ = param1.split("\n");
-         var _loc4_:* = 0;
-         _loc7_ = 0;
-         while(_loc7_ < _loc6_.length)
+         linesText = value.split("\n");
+         var maxWidth:* = 0;
+         for(i = 0; i < linesText.length; )
          {
-            if(param3)
+            if(isHtmlText)
             {
-               _loc5_.htmlText = _loc6_[_loc7_];
+               textField.htmlText = linesText[i];
             }
             else
             {
-               _loc5_.text = _loc6_[_loc7_];
-               _loc5_.setTextFormat(param2);
+               textField.text = linesText[i];
+               textField.setTextFormat(format);
             }
-            _loc4_ = Number(Math.max(_loc4_,_loc5_.width));
-            _loc7_++;
+            maxWidth = Number(Math.max(maxWidth,textField.width));
+            i++;
          }
-         return _loc4_ + 2;
+         return maxWidth + 2;
       }
       
-      public static function isTargetOrContain(param1:DisplayObject, param2:DisplayObject) : Boolean
+      public static function isTargetOrContain(target:DisplayObject, container:DisplayObject) : Boolean
       {
-         if(param1 == null)
+         if(target == null)
          {
             return false;
          }
-         if(param1 == param2)
+         if(target == container)
          {
             return true;
          }
-         if(param2 is DisplayObjectContainer)
+         if(container is DisplayObjectContainer)
          {
-            return DisplayObjectContainer(param2).contains(param1);
+            return DisplayObjectContainer(container).contains(target);
          }
          return false;
       }
       
-      public static function getPointFromObject(param1:Point, param2:DisplayObject, param3:DisplayObject) : Point
+      public static function getPointFromObject(point:Point, pointInDisplay:DisplayObject, targetDisplay:DisplayObject) : Point
       {
-         var _loc4_:Point = param2.localToGlobal(param1);
-         var _loc5_:Point = param3.globalToLocal(_loc4_);
-         return _loc5_;
+         var pt:Point = pointInDisplay.localToGlobal(point);
+         var targetLocalPoint:Point = targetDisplay.globalToLocal(pt);
+         return targetLocalPoint;
       }
       
-      public static function clearChildren(param1:Sprite) : void
+      public static function clearChildren(container:Sprite) : void
       {
-         while(param1.numChildren > 0)
+         while(container.numChildren > 0)
          {
-            param1.removeChildAt(0);
+            container.removeChildAt(0);
          }
       }
       
-      public static function getDisplayBitmapData(param1:DisplayObject) : BitmapData
+      public static function getDisplayBitmapData(display:DisplayObject) : BitmapData
       {
-         if(param1 is Bitmap)
+         if(display is Bitmap)
          {
-            return Bitmap(param1).bitmapData;
+            return Bitmap(display).bitmapData;
          }
-         var _loc2_:BitmapData = new BitmapData(param1.width,param1.height,true,0);
-         _loc2_.draw(param1);
-         return _loc2_;
+         var bmd:BitmapData = new BitmapData(display.width,display.height,true,0);
+         bmd.draw(display);
+         return bmd;
       }
       
-      public static function localizePoint(param1:DisplayObject, param2:DisplayObject, param3:Point = null) : Point
+      public static function localizePoint(to:DisplayObject, from:DisplayObject, p:Point = null) : Point
       {
-         return param1.globalToLocal(param2.localToGlobal(!!param3?param3:new Point(0,0)));
+         return to.globalToLocal(from.localToGlobal(!!p?p:new Point(0,0)));
       }
       
-      public static function setDisplayPos(param1:DisplayObject, param2:Point) : void
+      public static function setDisplayPos(display:DisplayObject, pos:Point) : void
       {
-         param1.x = param2.x;
-         param1.y = param2.y;
+         display.x = pos.x;
+         display.y = pos.y;
       }
       
-      public static function changeSize(param1:DisplayObject, param2:int, param3:int) : void
+      public static function changeSize(obj:DisplayObject, w:int, h:int) : void
       {
-         param1.width = param2;
-         param1.height = param3;
+         obj.width = w;
+         obj.height = h;
       }
       
-      public static function horizontalArrange(param1:Sprite, param2:int = 1, param3:Number = 0, param4:Number = 0) : void
+      public static function horizontalArrange(obj:Sprite, column:int = 1, hSpace:Number = 0, vSpace:Number = 0) : void
       {
-         var _loc9_:int = 0;
-         var _loc12_:int = 0;
-         var _loc8_:int = 0;
-         var _loc13_:* = null;
-         var _loc7_:int = 0;
-         var _loc6_:int = ZERO_POINT.x;
-         var _loc5_:int = ZERO_POINT.y;
-         var _loc11_:int = 0;
-         var _loc10_:int = 0;
-         var _loc14_:int = Math.ceil(param1.numChildren / param2);
-         _loc9_ = 0;
-         while(_loc9_ < _loc14_)
+         var i:int = 0;
+         var maxHeight:int = 0;
+         var j:int = 0;
+         var ch:* = null;
+         var n:int = 0;
+         var posX:int = ZERO_POINT.x;
+         var posY:int = ZERO_POINT.y;
+         var tempWidth:int = 0;
+         var tempHeight:int = 0;
+         var rowNum:int = Math.ceil(obj.numChildren / column);
+         for(i = 0; i < rowNum; )
          {
-            _loc12_ = 0;
-            _loc8_ = 0;
-            while(_loc8_ < param2)
+            maxHeight = 0;
+            for(j = 0; j < column; )
             {
-               _loc7_++;
-               _loc13_ = param1.getChildAt(_loc7_);
-               _loc13_.x = _loc6_;
-               _loc13_.y = _loc5_;
-               _loc11_ = Math.max(_loc11_,_loc6_ + _loc13_.width);
-               _loc10_ = Math.max(_loc10_,_loc5_ + _loc13_.height);
-               _loc6_ = _loc6_ + (_loc13_.width + param3);
-               if(_loc12_ < _loc13_.height)
+               n++;
+               ch = obj.getChildAt(n);
+               ch.x = posX;
+               ch.y = posY;
+               tempWidth = Math.max(tempWidth,posX + ch.width);
+               tempHeight = Math.max(tempHeight,posY + ch.height);
+               posX = posX + (ch.width + hSpace);
+               if(maxHeight < ch.height)
                {
-                  _loc12_ = _loc13_.height;
+                  maxHeight = ch.height;
                }
-               if(_loc7_ >= param1.numChildren)
+               if(n >= obj.numChildren)
                {
-                  changeSize(param1,_loc11_,_loc10_);
+                  changeSize(obj,tempWidth,tempHeight);
                   return;
                }
-               _loc8_++;
+               j++;
             }
-            _loc6_ = ZERO_POINT.x;
-            _loc5_ = _loc5_ + (_loc12_ + param4);
-            _loc9_++;
+            posX = ZERO_POINT.x;
+            posY = posY + (maxHeight + vSpace);
+            i++;
          }
-         changeSize(param1,_loc11_,_loc10_);
+         changeSize(obj,tempWidth,tempHeight);
       }
       
-      public static function verticalArrange(param1:Sprite, param2:int = 1, param3:Number = 0, param4:Number = 0) : void
+      public static function verticalArrange(obj:Sprite, column:int = 1, hSpace:Number = 0, vSpace:Number = 0) : void
       {
-         var _loc9_:int = 0;
-         var _loc12_:int = 0;
-         var _loc8_:int = 0;
-         var _loc13_:* = null;
-         var _loc7_:int = 0;
-         var _loc6_:int = ZERO_POINT.x;
-         var _loc5_:int = ZERO_POINT.y;
-         var _loc11_:int = 0;
-         var _loc10_:int = 0;
-         var _loc14_:int = Math.ceil(param1.numChildren / param2);
-         _loc9_ = 0;
-         while(_loc9_ < _loc14_)
+         var i:int = 0;
+         var maxWidth:int = 0;
+         var j:int = 0;
+         var ch:* = null;
+         var n:int = 0;
+         var posX:int = ZERO_POINT.x;
+         var posY:int = ZERO_POINT.y;
+         var tempWidth:int = 0;
+         var tempHeight:int = 0;
+         var rowNum:int = Math.ceil(obj.numChildren / column);
+         for(i = 0; i < rowNum; )
          {
-            _loc12_ = 0;
-            _loc8_ = 0;
-            while(_loc8_ < param2)
+            maxWidth = 0;
+            for(j = 0; j < column; )
             {
-               _loc7_++;
-               _loc13_ = param1.getChildAt(_loc7_);
-               _loc13_.x = _loc6_;
-               _loc13_.y = _loc5_;
-               _loc11_ = Math.max(_loc11_,_loc6_ + _loc13_.width);
-               _loc10_ = Math.max(_loc10_,_loc5_ + _loc13_.height);
-               _loc5_ = _loc5_ + (_loc13_.height + param4);
-               if(_loc12_ < _loc13_.width)
+               n++;
+               ch = obj.getChildAt(n);
+               ch.x = posX;
+               ch.y = posY;
+               tempWidth = Math.max(tempWidth,posX + ch.width);
+               tempHeight = Math.max(tempHeight,posY + ch.height);
+               posY = posY + (ch.height + vSpace);
+               if(maxWidth < ch.width)
                {
-                  _loc12_ = _loc13_.width;
+                  maxWidth = ch.width;
                }
-               if(_loc7_ >= param1.numChildren)
+               if(n >= obj.numChildren)
                {
-                  changeSize(param1,_loc11_,_loc10_);
+                  changeSize(obj,tempWidth,tempHeight);
                   return;
                }
-               _loc8_++;
+               j++;
             }
-            _loc6_ = _loc6_ + (_loc12_ + param3);
-            _loc5_ = ZERO_POINT.y;
-            _loc9_++;
+            posX = posX + (maxWidth + hSpace);
+            posY = ZERO_POINT.y;
+            i++;
          }
-         changeSize(param1,_loc11_,_loc10_);
+         changeSize(obj,tempWidth,tempHeight);
       }
    }
 }

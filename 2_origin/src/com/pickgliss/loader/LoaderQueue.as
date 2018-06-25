@@ -15,27 +15,26 @@ package com.pickgliss.loader
          _loaders = new Vector.<BaseLoader>();
       }
       
-      public function addLoader(param1:BaseLoader) : void
+      public function addLoader(loader:BaseLoader) : void
       {
-         _loaders.push(param1);
+         _loaders.push(loader);
       }
       
       public function start() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = _loaders.length;
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_)
+         var i:int = 0;
+         var count:int = _loaders.length;
+         for(i = 0; i < count; )
          {
             if(_loaders == null)
             {
                return;
             }
-            _loaders[_loc2_].addEventListener("complete",__loadComplete);
-            LoadResourceManager.Instance.startLoad(_loaders[_loc2_]);
-            _loc2_++;
+            _loaders[i].addEventListener("complete",__loadComplete);
+            LoadResourceManager.Instance.startLoad(_loaders[i]);
+            i++;
          }
-         if(_loc1_ == 0)
+         if(count == 0)
          {
             dispatchEvent(new Event("complete"));
          }
@@ -49,12 +48,11 @@ package com.pickgliss.loader
       
       public function removeEvent() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _loaders.length)
+         var i:int = 0;
+         for(i = 0; i < _loaders.length; )
          {
-            _loaders[_loc1_].removeEventListener("complete",__loadComplete);
-            _loc1_++;
+            _loaders[i].removeEventListener("complete",__loadComplete);
+            i++;
          }
       }
       
@@ -68,9 +66,9 @@ package com.pickgliss.loader
          return _loaders;
       }
       
-      private function __loadComplete(param1:LoaderEvent) : void
+      private function __loadComplete(event:LoaderEvent) : void
       {
-         param1.loader.removeEventListener("complete",__loadComplete);
+         event.loader.removeEventListener("complete",__loadComplete);
          if(isComplete)
          {
             removeEvent();
@@ -80,15 +78,14 @@ package com.pickgliss.loader
       
       public function get isComplete() : Boolean
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _loaders.length)
+         var i:int = 0;
+         for(i = 0; i < _loaders.length; )
          {
-            if(!_loaders[_loc1_].isComplete)
+            if(!_loaders[i].isComplete)
             {
                return false;
             }
-            _loc1_++;
+            i++;
          }
          return true;
       }

@@ -2,7 +2,6 @@ package morn.core.ex
 {
    import com.pickgliss.ui.ShowTipManager;
    import com.pickgliss.utils.ObjectUtils;
-   import flash.display.BlendMode;
    import flash.display.Sprite;
    import morn.core.components.Component;
    import morn.core.components.FrameClip;
@@ -45,172 +44,177 @@ package morn.core.ex
       
       public function get level() : int
       {
-         return this._level;
+         return _level;
       }
       
-      public function set level(param1:int) : void
+      public function set level(value:int) : void
       {
-         var _loc2_:int = this.getValueInRange(param1,MIN,MAX);
-         if(this._level != _loc2_)
+         var l:int = getValueInRange(value,1,70);
+         if(_level != l)
          {
-            this._level = _loc2_;
-            this.updateView();
+            _level = l;
+            updateView();
          }
       }
       
       override protected function createChildren() : void
       {
-         addChild(this._bmContainer = new Sprite());
-         this._bmContainer.addChild(this._levelImage = new Image());
-         this._bmContainer.addChild(this._levelEffect = new FrameClip());
+         _bmContainer = new Sprite();
+         addChild(new Sprite());
+         _levelImage = new Image();
+         _bmContainer.addChild(new Image());
+         _levelEffect = new FrameClip();
+         _bmContainer.addChild(new FrameClip());
       }
       
       override protected function initialize() : void
       {
-         this._levelEffect.blendMode = BlendMode.ADD;
-         this._bmContainer.buttonMode = true;
-         this._levelImage.smoothing = true;
+         _levelEffect.blendMode = "add";
+         _bmContainer.buttonMode = true;
+         _levelImage.smoothing = true;
          _tipStyle = "core.LevelTips";
          _tipGapV = 5;
          _tipGapH = 5;
          _tipDirctions = "7,6,5";
-         this._size = SMALL;
-         this._levelTipInfo = {};
+         _size = "small";
+         _levelTipInfo = {};
          ShowTipManager.Instance.addTip(this);
       }
       
-      public function setInfo(param1:int, param2:int, param3:int, param4:int, param5:int, param6:int, param7:int, param8:Boolean = true, param9:Boolean = true, param10:int = 1) : void
+      public function setInfo(lev:int, ddtKingGraed:int, reputeCount:int, win:int, total:int, battle:int, exploit:int, enableTip:Boolean = true, isBitmap:Boolean = true, team:int = 1) : void
       {
-         var _loc11_:int = this.getValueInRange(param1,MIN,MAX);
-         this._isBitmap = param9;
-         this._levelTipInfo.Level = _loc11_;
-         this._levelTipInfo.Battle = param6;
-         this._levelTipInfo.Win = param4;
-         this._levelTipInfo.Repute = param3;
-         this._levelTipInfo.Total = param5;
-         this._levelTipInfo.exploit = param7;
-         this._levelTipInfo.enableTip = param8;
-         this._levelTipInfo.team = param10;
-         this._levelTipInfo.ddtKingGraed = param2;
-         this.level = _loc11_;
+         var l:int = getValueInRange(lev,1,70);
+         _isBitmap = isBitmap;
+         _levelTipInfo.Level = l;
+         _levelTipInfo.Battle = battle;
+         _levelTipInfo.Win = win;
+         _levelTipInfo.Repute = reputeCount;
+         _levelTipInfo.Total = total;
+         _levelTipInfo.exploit = exploit;
+         _levelTipInfo.enableTip = enableTip;
+         _levelTipInfo.team = team;
+         _levelTipInfo.ddtKingGraed = ddtKingGraed;
+         level = l;
       }
       
       private function updateView() : void
       {
-         this.addCurrentLevelBitmap();
-         this.addCurrentLevelEffect();
-         this.updateSize();
+         addCurrentLevelBitmap();
+         addCurrentLevelEffect();
+         updateSize();
       }
       
       private function addCurrentLevelBitmap() : void
       {
-         this._levelImage.skin = LEVEL_ICON_CLASSPATH + this._level.toString();
+         _levelImage.skin = "asset.LevelIcon.Level_" + _level.toString();
       }
       
       private function addCurrentLevelEffect() : void
       {
-         var _loc1_:int = 0;
-         if(this.isInRange(this._level,10,20))
+         var effectLevel:int = 0;
+         if(isInRange(_level,10,20))
          {
-            _loc1_ = 1;
+            effectLevel = 1;
          }
-         else if(this.isInRange(this._level,20,30))
+         else if(isInRange(_level,20,30))
          {
-            _loc1_ = 2;
+            effectLevel = 2;
          }
-         else if(this.isInRange(this._level,30,40))
+         else if(isInRange(_level,30,40))
          {
-            _loc1_ = 3;
+            effectLevel = 3;
          }
-         else if(this.isInRange(this._level,40,50))
+         else if(isInRange(_level,40,50))
          {
-            _loc1_ = 4;
+            effectLevel = 4;
          }
-         else if(this.isInRange(this._level,50,60))
+         else if(isInRange(_level,50,60))
          {
-            _loc1_ = 5;
+            effectLevel = 5;
          }
-         else if(this.isInRange(this._level,60,70))
+         else if(isInRange(_level,60,70))
          {
-            _loc1_ = 6;
+            effectLevel = 6;
          }
-         if(_loc1_ && !this._isBitmap)
+         if(effectLevel && !_isBitmap)
          {
-            this._levelEffect.skin = LEVEL_EFFECT_CLASSPATH + _loc1_.toString();
-            this._levelEffect.play();
+            _levelEffect.skin = "asset.LevelIcon.LevelEffect_" + effectLevel.toString();
+            _levelEffect.play();
          }
          else
          {
-            this._levelEffect.skin = null;
+            _levelEffect.skin = null;
          }
       }
       
-      private function getValueInRange(param1:Number, param2:Number, param3:Number) : Number
+      private function getValueInRange(value:Number, min:Number, max:Number) : Number
       {
-         if(param1 <= param2)
+         if(value <= min)
          {
-            return param2;
+            return min;
          }
-         if(param1 >= param3)
+         if(value >= max)
          {
-            return param3;
+            return max;
          }
-         return param1;
+         return value;
       }
       
-      private function isInRange(param1:Number, param2:Number, param3:Number, param4:Boolean = false, param5:Boolean = true) : Boolean
+      private function isInRange(value:Number, min:Number, max:Number, equalMin:Boolean = false, equleMax:Boolean = true) : Boolean
       {
-         if(param1 < param2 || param1 > param3)
+         if(value < min || value > max)
          {
             return false;
          }
-         if(param1 == param2)
+         if(value == min)
          {
-            return param4;
+            return equalMin;
          }
-         if(param1 == param3)
+         if(value == max)
          {
-            return param5;
+            return equleMax;
          }
          return true;
       }
       
       override public function get tipData() : Object
       {
-         return this._levelTipInfo;
+         return _levelTipInfo;
       }
       
-      public function set size(param1:String) : void
+      public function set size(value:String) : void
       {
-         if(this._size == param1)
+         if(_size == value)
          {
             return;
          }
-         this._size = param1;
-         this.updateSize();
+         _size = value;
+         updateSize();
       }
       
       public function get size() : String
       {
-         return this._size;
+         return _size;
       }
       
       private function updateSize() : void
       {
-         if(this._size == SMALL)
+         if(_size == "small")
          {
-            scaleX = scaleY = 0.6;
+            scaleY = 0.6;
+            scaleX = 0.6;
          }
-         else if(this._size == BIG)
+         else if(_size == "big")
          {
-            scaleX = scaleY = 0.75;
+            scaleY = 0.75;
+            scaleX = 0.75;
          }
       }
       
       override public function dispose() : void
       {
-         ObjectUtils.disposeAllChildren(this._bmContainer);
-         ObjectUtils.disposeObject(this._bmContainer);
+         ObjectUtils.disposeAllChildren(_bmContainer);
+         ObjectUtils.disposeObject(_bmContainer);
          super.dispose();
       }
    }

@@ -73,26 +73,26 @@ package consortion.view.selfConsortia
          _input.removeEventListener("change",__inputChangeHandler);
       }
       
-      private function __addToStageHandler(param1:Event) : void
+      private function __addToStageHandler(event:Event) : void
       {
          _input.textField.setFocus();
          _input.textField.setSelection(_input.text.length,_input.text.length);
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(event.responseCode == 0 || event.responseCode == 1)
          {
             dispose();
          }
-         if(param1.responseCode == 2)
+         if(event.responseCode == 2)
          {
             sendDeclar();
          }
       }
       
-      private function __okHandler(param1:MouseEvent) : void
+      private function __okHandler(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          sendDeclar();
@@ -100,9 +100,9 @@ package consortion.view.selfConsortia
       
       private function sendDeclar() : void
       {
-         var _loc2_:ByteArray = new ByteArray();
-         _loc2_.writeUTF(StringHelper.trim(_input.text));
-         if(_loc2_.length > 300)
+         var b:ByteArray = new ByteArray();
+         b.writeUTF(StringHelper.trim(_input.text));
+         if(b.length > 300)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaDeclarationFrame.long"));
             return;
@@ -112,21 +112,21 @@ package consortion.view.selfConsortia
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaAfficheFrame"));
             return;
          }
-         var _loc1_:String = FilterWordManager.filterWrod(_input.text);
-         _loc1_.replace("\r","");
-         _loc1_.replace("\n","");
-         _loc1_ = StringHelper.trim(_loc1_);
-         SocketManager.Instance.out.sendConsortiaUpdateDescription(_loc1_);
+         var str:String = FilterWordManager.filterWrod(_input.text);
+         str.replace("\r","");
+         str.replace("\n","");
+         str = StringHelper.trim(str);
+         SocketManager.Instance.out.sendConsortiaUpdateDescription(str);
          dispose();
       }
       
-      private function __cancelHandler(param1:MouseEvent) : void
+      private function __cancelHandler(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          dispose();
       }
       
-      private function __inputChangeHandler(param1:Event) : void
+      private function __inputChangeHandler(event:Event) : void
       {
          StringHelper.checkTextFieldLength(_input.textField,300);
          if(_input.text != PlayerManager.Instance.Self.consortiaInfo.Description)

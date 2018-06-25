@@ -27,9 +27,9 @@ package worldboss
          super();
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
-         super.enter(param1,param2);
+         super.enter(prev,data);
          LayerManager.Instance.clearnGameDynamic();
          LayerManager.Instance.clearnStageDynamic();
          init();
@@ -52,14 +52,14 @@ package worldboss
          WorldBossManager.Instance.addEventListener("can enter",__gotoWorldBossRoom);
       }
       
-      private function __gotoWorldBossRoom(param1:WorldBossRoomEvent) : void
+      private function __gotoWorldBossRoom(event:WorldBossRoomEvent) : void
       {
          _mapLoader = LoadResourceManager.Instance.createLoader(WorldBossManager.Instance.mapPath,4);
          _mapLoader.addEventListener("complete",onMapSrcLoadedComplete);
          LoadResourceManager.Instance.startLoad(_mapLoader);
       }
       
-      private function onMapSrcLoadedComplete(param1:Event) : void
+      private function onMapSrcLoadedComplete(e:Event) : void
       {
          if(StateManager.getState("worldboss") == null)
          {
@@ -68,7 +68,7 @@ package worldboss
          StateManager.setState("worldboss");
       }
       
-      private function __loadingIsCloseRoom(param1:Event) : void
+      private function __loadingIsCloseRoom(e:Event) : void
       {
          UIModuleSmallLoading.Instance.removeEventListener("close",__loadingIsCloseRoom);
       }
@@ -83,7 +83,7 @@ package worldboss
          return "worldbossAward";
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
          InviteManager.Instance.enabled = true;
          KeyboardShortcutsManager.Instance.cancelForbidden();

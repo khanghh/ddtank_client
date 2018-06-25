@@ -41,36 +41,36 @@ package store.view.embed
          draw();
       }
       
-      override public function set visible(param1:Boolean) : void
+      override public function set visible(value:Boolean) : void
       {
-         .super.visible = param1;
+         .super.visible = value;
       }
       
       override public function draw() : void
       {
-         var _loc1_:int = 0;
-         var _loc3_:* = null;
+         var w:int = 0;
+         var matrix:* = null;
          super.draw();
-         var _loc2_:Graphics = graphics;
-         _loc2_.clear();
-         _loc2_.beginBitmapFill(_back);
-         _loc2_.drawRect(0,0,_width,_height);
-         _loc2_.endFill();
+         var pen:Graphics = graphics;
+         pen.clear();
+         pen.beginBitmapFill(_back);
+         pen.drawRect(0,0,_width,_height);
+         pen.endFill();
          if(_width > thickness * 3 && _height > thickness * 3 && _rate > 0)
          {
-            _loc1_ = _width - thickness * 2;
-            _loc3_ = new Matrix();
-            _loc3_.translate(thickness,thickness);
-            _loc2_.beginBitmapFill(_thumb,_loc3_);
-            _loc2_.drawRect(thickness,thickness,_loc1_ * _rate,_height - thickness * 2);
-            _loc2_.endFill();
+            w = _width - thickness * 2;
+            matrix = new Matrix();
+            matrix.translate(thickness,thickness);
+            pen.beginBitmapFill(_thumb,matrix);
+            pen.drawRect(thickness,thickness,w * _rate,_height - thickness * 2);
+            pen.endFill();
          }
          _rateField.text = int(_rate * 100) + "%";
       }
       
-      public function setProgress(param1:int, param2:int = 100) : void
+      public function setProgress(value:int, max:int = 100) : void
       {
-         _rate = param1 / param2;
+         _rate = value / max;
          _rate = _rate > 1?1:Number(_rate);
          onPropertiesChanged("p_rate");
       }

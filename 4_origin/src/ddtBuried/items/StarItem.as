@@ -19,58 +19,56 @@ package ddtBuried.items
       
       private function initStarList() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var _starMc:* = null;
          _list = new Vector.<MovieClip>();
-         _loc2_ = 0;
-         while(_loc2_ < 5)
+         for(i = 0; i < 5; )
          {
-            _loc1_ = ComponentFactory.Instance.creat("buried.core.improveEffect");
-            _loc1_.x = (_loc1_.width + 2) * _loc2_;
-            _loc1_.stop();
-            addChild(_loc1_);
-            _list.push(_loc1_);
-            _loc2_++;
+            _starMc = ComponentFactory.Instance.creat("buried.core.improveEffect");
+            _starMc.x = (_starMc.width + 2) * i;
+            _starMc.stop();
+            addChild(_starMc);
+            _list.push(_starMc);
+            i++;
          }
       }
       
       private function clearMc() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         _loc2_ = 0;
-         while(_loc2_ < 5)
+         var i:int = 0;
+         var mc:* = null;
+         for(i = 0; i < 5; )
          {
-            _list[_loc2_].stop();
-            while(_list[_loc2_].numChildren)
+            _list[i].stop();
+            while(_list[i].numChildren)
             {
-               if(_list[_loc2_].getChildAt(0) is MovieClip)
+               if(_list[i].getChildAt(0) is MovieClip)
                {
-                  _loc1_ = _list[_loc2_].getChildAt(0) as MovieClip;
-                  while(_loc1_.numChildren)
+                  mc = _list[i].getChildAt(0) as MovieClip;
+                  while(mc.numChildren)
                   {
-                     ObjectUtils.disposeObject(_loc1_.getChildAt(0));
+                     ObjectUtils.disposeObject(mc.getChildAt(0));
                   }
                }
-               ObjectUtils.disposeObject(_list[_loc2_].getChildAt(0));
+               ObjectUtils.disposeObject(_list[i].getChildAt(0));
             }
-            _loc2_++;
+            i++;
          }
       }
       
-      public function setStarList(param1:int) : void
+      public function setStarList(num:int) : void
       {
-         var _loc2_:int = 0;
-         while(_loc2_ < param1)
+         var i:int = 0;
+         while(i < num)
          {
-            _list[_loc2_].play();
-            _loc2_++;
+            _list[i].play();
+            i++;
          }
       }
       
-      public function updataStarLevel(param1:int) : void
+      public function updataStarLevel(num:int) : void
       {
-         _list[param1 - 1].play();
+         _list[num - 1].play();
       }
       
       public function dispose() : void

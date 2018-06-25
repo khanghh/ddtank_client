@@ -19,22 +19,22 @@ package com.greensock.plugins
          this.overwriteProps = ["alpha","visible"];
       }
       
-      override public function onInitTween(param1:Object, param2:*, param3:TweenLite) : Boolean
+      override public function onInitTween(target:Object, value:*, tween:TweenLite) : Boolean
       {
-         _target = param1;
-         addTween(param1,"alpha",param1.alpha,param2,"alpha");
+         _target = target;
+         addTween(target,"alpha",target.alpha,value,"alpha");
          return true;
       }
       
-      override public function killProps(param1:Object) : void
+      override public function killProps(lookup:Object) : void
       {
-         super.killProps(param1);
-         _ignoreVisible = "visible" in param1;
+         super.killProps(lookup);
+         _ignoreVisible = "visible" in lookup;
       }
       
-      override public function set changeFactor(param1:Number) : void
+      override public function set changeFactor(n:Number) : void
       {
-         updateTweens(param1);
+         updateTweens(n);
          if(!_ignoreVisible)
          {
             _target.visible = _target.alpha != 0;

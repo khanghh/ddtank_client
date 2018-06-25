@@ -12,27 +12,27 @@ package panicBuying.components
          super();
       }
       
-      public static function newDeleteLine(param1:FilterFrameText) : Shape
+      public static function newDeleteLine(fft:FilterFrameText) : Shape
       {
-         var _loc2_:Shape = new Shape();
-         _loc2_.graphics.lineStyle(1,param1.textColor,1);
-         _loc2_.graphics.moveTo(0,param1.height / 2);
-         _loc2_.graphics.lineTo(param1.width,param1.height / 2);
-         _loc2_.graphics.endFill();
-         _loc2_.x = param1.x;
-         _loc2_.y = param1.y;
-         return _loc2_;
+         var line:Shape = new Shape();
+         line.graphics.lineStyle(1,fft.textColor,1);
+         line.graphics.moveTo(0,fft.height / 2);
+         line.graphics.lineTo(fft.width,fft.height / 2);
+         line.graphics.endFill();
+         line.x = fft.x;
+         line.y = fft.y;
+         return line;
       }
       
-      public static function setDeleteLine(param1:Shape, param2:FilterFrameText) : void
+      public static function setDeleteLine(line:Shape, fft:FilterFrameText) : void
       {
-         param1.graphics.clear();
-         param1.graphics.lineStyle(1,param2.textColor,1);
-         param1.graphics.moveTo(0,param2.height / 2);
-         param1.graphics.lineTo(param2.width,param2.height / 2);
-         param1.graphics.endFill();
-         param1.x = param2.x;
-         param1.y = param2.y;
+         line.graphics.clear();
+         line.graphics.lineStyle(1,fft.textColor,1);
+         line.graphics.moveTo(0,fft.height / 2);
+         line.graphics.lineTo(fft.width,fft.height / 2);
+         line.graphics.endFill();
+         line.x = fft.x;
+         line.y = fft.y;
       }
    }
 }

@@ -42,9 +42,9 @@ package bagAndInfo.info
          update();
       }
       
-      private function __propertyChange(param1:PlayerPropertyEvent) : void
+      private function __propertyChange(event:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["honor"] == true)
+         if(event.changedProperties["honor"] == true)
          {
             if(PlayerManager.Instance.Self.honor != "")
             {
@@ -60,7 +60,7 @@ package bagAndInfo.info
          }
       }
       
-      private function __buttonClick(param1:MouseEvent) : void
+      private function __buttonClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          NewTitleManager.instance.show();
@@ -78,12 +78,12 @@ package bagAndInfo.info
          }
       }
       
-      private function __onSelectTitle(param1:NewTitleEvent) : void
+      private function __onSelectTitle(event:NewTitleEvent) : void
       {
-         var _loc2_:String = param1.data[0];
-         if(_loc2_)
+         var honor:String = event.data[0];
+         if(honor)
          {
-            SocketManager.Instance.out.sendReworkRank(_loc2_);
+            SocketManager.Instance.out.sendReworkRank(honor);
          }
          else
          {
@@ -92,10 +92,10 @@ package bagAndInfo.info
          }
       }
       
-      public function setlist(param1:Array) : void
+      public function setlist(honorArray:Array) : void
       {
          _honorArray = [];
-         _honorArray = param1;
+         _honorArray = honorArray;
          if(!_honorArray)
          {
             return;

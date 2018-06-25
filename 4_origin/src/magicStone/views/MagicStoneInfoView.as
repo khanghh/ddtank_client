@@ -123,14 +123,14 @@ package magicStone.views
          initEvent();
       }
       
-      public function updataCharacter(param1:PlayerInfo) : void
+      public function updataCharacter(_info:PlayerInfo) : void
       {
          if(_character)
          {
             _character.dispose();
             _character = null;
          }
-         _character = CharactoryFactory.createCharacter(param1,"room") as RoomCharacter;
+         _character = CharactoryFactory.createCharacter(_info,"room") as RoomCharacter;
          _character.showGun = false;
          _character.show(false,-1);
          PositionUtils.setPos(_character,"magicStone.characterPos");
@@ -139,9 +139,9 @@ package magicStone.views
       
       private function initView() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var place:int = 0;
+         var cell:* = null;
          _bg = ComponentFactory.Instance.creat("magicStone.bg");
          addChild(_bg);
          _lightBg = ComponentFactory.Instance.creat("magicStone.lightBg");
@@ -160,19 +160,18 @@ package magicStone.views
          PositionUtils.setPos(_progress,"magicStone.progressPos");
          addChild(_progress);
          updataCharacter(_currentModel.model);
-         _loc3_ = 0;
-         while(_loc3_ <= 9 - 1)
+         for(i = 0; i <= 9 - 1; )
          {
-            _loc2_ = MgStoneUtils.getPlace(_loc3_);
-            _loc1_ = createEmbedMgStoneCell(_loc2_) as EmbedMgStoneCell;
-            _loc1_.addEventListener("interactive_click",__cellClickHandler);
-            _loc1_.addEventListener("interactive_double_click",__doubleClickHandler);
-            DoubleClickManager.Instance.enableDoubleClick(_loc1_);
-            PositionUtils.setPos(_loc1_,"magicStone.mgStoneCellPos" + _loc3_);
-            addChild(_loc1_);
-            _mgStoneCells.push(_loc1_);
-            _cells[_loc2_] = _loc1_;
-            _loc3_++;
+            place = MgStoneUtils.getPlace(i);
+            cell = createEmbedMgStoneCell(place) as EmbedMgStoneCell;
+            cell.addEventListener("interactive_click",__cellClickHandler);
+            cell.addEventListener("interactive_double_click",__doubleClickHandler);
+            DoubleClickManager.Instance.enableDoubleClick(cell);
+            PositionUtils.setPos(cell,"magicStone.mgStoneCellPos" + i);
+            addChild(cell);
+            _mgStoneCells.push(cell);
+            _cells[place] = cell;
+            i++;
          }
          _whiteStone = ComponentFactory.Instance.creat("magicStone.white");
          _lightFilters = ComponentFactory.Instance.creatFilters("lightFilter");
@@ -188,109 +187,107 @@ package magicStone.views
          }
       }
       
-      public function createEmbedMgStoneCell(param1:int = 0, param2:ItemTemplateInfo = null, param3:Boolean = true) : ICell
+      public function createEmbedMgStoneCell(place:int = 0, info:ItemTemplateInfo = null, showLoading:Boolean = true) : ICell
       {
-         var _loc4_:Sprite = new Sprite();
-         _loc4_.graphics.beginFill(16777215,0);
-         _loc4_.graphics.drawRect(0,0,60,60);
-         _loc4_.graphics.endFill();
-         var _loc5_:EmbedMgStoneCell = new EmbedMgStoneCell(param1,param2,param3,_loc4_);
-         fillTipProp(_loc5_);
-         return _loc5_;
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(16777215,0);
+         sp.graphics.drawRect(0,0,60,60);
+         sp.graphics.endFill();
+         var cell:EmbedMgStoneCell = new EmbedMgStoneCell(place,info,showLoading,sp);
+         fillTipProp(cell);
+         return cell;
       }
       
-      private function fillTipProp(param1:ICell) : void
+      private function fillTipProp(cell:ICell) : void
       {
-         param1.tipDirctions = "7,6,2,1,5,4,0,3,6";
-         param1.tipGapV = 10;
-         param1.tipGapH = 10;
-         param1.tipStyle = "core.GoodsTip";
+         cell.tipDirctions = "7,6,2,1,5,4,0,3,6";
+         cell.tipGapV = 10;
+         cell.tipGapH = 10;
+         cell.tipStyle = "core.GoodsTip";
       }
       
       public function updateModel() : void
       {
-         var _loc6_:* = null;
-         var _loc3_:* = null;
-         var _loc11_:int = 0;
-         var _loc1_:int = 0;
-         var _loc7_:int = 0;
-         var _loc10_:int = 0;
-         var _loc9_:SelfInfo = PlayerManager.Instance.Self;
-         var _loc2_:int = PlayerDressManager.instance.currentIndex;
-         if(_loc9_.Sex)
+         var sItem:* = null;
+         var tItem:* = null;
+         var i:int = 0;
+         var templateId:int = 0;
+         var itemId:int = 0;
+         var key:int = 0;
+         var _self:SelfInfo = PlayerManager.Instance.Self;
+         var _currentIndex:int = PlayerDressManager.instance.currentIndex;
+         if(_self.Sex)
          {
-            _currentModel.model.updateStyle(_loc9_.Sex,_loc9_.Hide,DressModel.DEFAULT_MAN_STYLE,",,,,,,","");
+            _currentModel.model.updateStyle(_self.Sex,_self.Hide,DressModel.DEFAULT_MAN_STYLE,",,,,,,","");
          }
          else
          {
-            _currentModel.model.updateStyle(_loc9_.Sex,_loc9_.Hide,DressModel.DEFAULT_WOMAN_STYLE,",,,,,,","");
+            _currentModel.model.updateStyle(_self.Sex,_self.Hide,DressModel.DEFAULT_WOMAN_STYLE,",,,,,,","");
          }
-         var _loc4_:DictionaryData = new DictionaryData();
-         var _loc8_:Array = PlayerDressManager.instance.modelArr[_loc2_];
-         var _loc5_:Boolean = false;
-         if(_loc8_)
+         var _bodyThings:DictionaryData = new DictionaryData();
+         var dressArr:Array = PlayerDressManager.instance.modelArr[_currentIndex];
+         var reSave:Boolean = false;
+         if(dressArr)
          {
-            _loc11_ = 0;
-            while(_loc11_ <= _loc8_.length - 1)
+            for(i = 0; i <= dressArr.length - 1; )
             {
-               _loc1_ = (_loc8_[_loc11_] as DressVo).templateId;
-               _loc7_ = (_loc8_[_loc11_] as DressVo).itemId;
-               _loc3_ = new InventoryItemInfo();
-               _loc6_ = _loc9_.Bag.getItemByItemId(_loc7_);
-               if(!_loc6_)
+               templateId = (dressArr[i] as DressVo).templateId;
+               itemId = (dressArr[i] as DressVo).itemId;
+               tItem = new InventoryItemInfo();
+               sItem = _self.Bag.getItemByItemId(itemId);
+               if(!sItem)
                {
-                  _loc6_ = _loc9_.Bag.getItemByTemplateId(_loc1_);
-                  _loc5_ = true;
+                  sItem = _self.Bag.getItemByTemplateId(templateId);
+                  reSave = true;
                }
-               if(_loc6_)
+               if(sItem)
                {
-                  _loc3_.setIsUsed(_loc6_.IsUsed);
-                  ObjectUtils.copyProperties(_loc3_,_loc6_);
-                  _loc10_ = DressUtils.findItemPlace(_loc3_);
-                  _loc4_.add(_loc10_,_loc3_);
-                  if(_loc3_.CategoryID == 6)
+                  tItem.setIsUsed(sItem.IsUsed);
+                  ObjectUtils.copyProperties(tItem,sItem);
+                  key = DressUtils.findItemPlace(tItem);
+                  _bodyThings.add(key,tItem);
+                  if(tItem.CategoryID == 6)
                   {
-                     _currentModel.model.Skin = _loc3_.Skin;
+                     _currentModel.model.Skin = tItem.Skin;
                   }
-                  _currentModel.model.setPartStyle(_loc3_.CategoryID,_loc3_.NeedSex,_loc3_.TemplateID,_loc3_.Color);
+                  _currentModel.model.setPartStyle(tItem.CategoryID,tItem.NeedSex,tItem.TemplateID,tItem.Color);
                }
-               _loc11_++;
+               i++;
             }
          }
-         _currentModel.model.Bag.items = _loc4_;
+         _currentModel.model.Bag.items = _bodyThings;
       }
       
       private function initData() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var place:int = 0;
+         var item:* = null;
          _mgStonebag = PlayerManager.Instance.Self.magicStoneBag;
          clearCells();
-         _loc3_ = 0;
-         while(_loc3_ <= 9 - 1)
+         for(i = 0; i <= 9 - 1; )
          {
-            _loc2_ = MgStoneUtils.getPlace(_loc3_);
-            _loc1_ = _mgStonebag.getItemAt(_loc2_);
-            if(_loc1_)
+            place = MgStoneUtils.getPlace(i);
+            item = _mgStonebag.getItemAt(place);
+            if(item)
             {
-               setCellInfo(_loc1_.Place,_loc1_);
+               setCellInfo(item.Place,item);
             }
-            _loc3_++;
+            i++;
          }
          updateProgress();
       }
       
       private function updateProgress() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
-         var _loc3_:InventoryItemInfo = _mgStonebag.getItemAt(31);
-         if(_loc3_)
+         var completed:int = 0;
+         var total:int = 0;
+         var updateItem:InventoryItemInfo = _mgStonebag.getItemAt(31);
+         if(updateItem)
          {
-            _loc2_ = _loc3_.StrengthenExp - MagicStoneManager.instance.getNeedExp(_loc3_.TemplateID,_loc3_.StrengthenLevel);
-            _loc1_ = MagicStoneManager.instance.getNeedExpPerLevel(_loc3_.TemplateID,_loc3_.StrengthenLevel + 1);
-            _progress.setData(_loc2_,_loc1_);
+            completed = updateItem.StrengthenExp - MagicStoneManager.instance.getNeedExp(updateItem.TemplateID,updateItem.StrengthenLevel);
+            total = MagicStoneManager.instance.getNeedExpPerLevel(updateItem.TemplateID,updateItem.StrengthenLevel + 1);
+            _progress.setData(completed,total);
          }
          else
          {
@@ -300,12 +297,11 @@ package magicStone.views
       
       private function clearCells() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ <= 9 - 1)
+         var i:int = 0;
+         for(i = 0; i <= 9 - 1; )
          {
-            _mgStoneCells[_loc1_].info = null;
-            _loc1_++;
+            _mgStoneCells[i].info = null;
+            i++;
          }
       }
       
@@ -320,22 +316,22 @@ package magicStone.views
          MagicStoneControl.instance.addEventListener("showExploreView",__showExploreView);
       }
       
-      private function __magicStoneDoubleScore(param1:MagicStoneEvent) : void
+      private function __magicStoneDoubleScore(evt:MagicStoneEvent) : void
       {
       }
       
-      protected function __cellClickHandler(param1:InteractiveEvent) : void
+      protected function __cellClickHandler(event:InteractiveEvent) : void
       {
-         if((param1.currentTarget as BagCell).info != null)
+         if((event.currentTarget as BagCell).info != null)
          {
-            dispatchEvent(new CellEvent("itemclick",param1.currentTarget,false,false,param1.ctrlKey));
+            dispatchEvent(new CellEvent("itemclick",event.currentTarget,false,false,event.ctrlKey));
          }
       }
       
-      protected function __doubleClickHandler(param1:InteractiveEvent) : void
+      protected function __doubleClickHandler(event:InteractiveEvent) : void
       {
-         var _loc2_:InventoryItemInfo = (param1.currentTarget as BagCell).info as InventoryItemInfo;
-         if(_loc2_ != null)
+         var info:InventoryItemInfo = (event.currentTarget as BagCell).info as InventoryItemInfo;
+         if(info != null)
          {
             SoundManager.instance.play("008");
             if(PlayerManager.Instance.Self.bagLocked)
@@ -349,66 +345,65 @@ package magicStone.views
             }
             else
             {
-               SocketManager.Instance.out.moveMagicStone(_loc2_.Place,-1);
+               SocketManager.Instance.out.moveMagicStone(info.Place,-1);
             }
          }
       }
       
       private function isBagFull() : Boolean
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         _loc2_ = 32;
-         while(_loc2_ <= 143)
+         var i:int = 0;
+         var item:* = null;
+         for(i = 32; i <= 143; )
          {
-            _loc1_ = _mgStonebag.getItemAt(_loc2_);
-            if(!_loc1_)
+            item = _mgStonebag.getItemAt(i);
+            if(!item)
             {
                return false;
             }
-            _loc2_++;
+            i++;
          }
          return true;
       }
       
-      protected function __cellClick(param1:CellEvent) : void
+      protected function __cellClick(event:CellEvent) : void
       {
-         var _loc3_:* = null;
-         param1.stopImmediatePropagation();
-         var _loc2_:MgStoneCell = param1.data as MgStoneCell;
-         if(_loc2_)
+         var info:* = null;
+         event.stopImmediatePropagation();
+         var cell:MgStoneCell = event.data as MgStoneCell;
+         if(cell)
          {
-            _loc3_ = _loc2_.itemInfo as InventoryItemInfo;
+            info = cell.itemInfo as InventoryItemInfo;
          }
-         if(_loc3_ == null)
+         if(info == null)
          {
             return;
          }
-         if(!_loc2_.locked)
+         if(!cell.locked)
          {
             SoundManager.instance.play("008");
-            _loc2_.dragStart();
+            cell.dragStart();
          }
       }
       
-      protected function __updateGoods(param1:BagEvent) : void
+      protected function __updateGoods(event:BagEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc4_:Dictionary = param1.changedSlots;
+         var c:* = null;
+         var changes:Dictionary = event.changedSlots;
          var _loc6_:int = 0;
-         var _loc5_:* = _loc4_;
-         for each(var _loc3_ in _loc4_)
+         var _loc5_:* = changes;
+         for each(var item in changes)
          {
-            if(_loc3_.Place >= 0 && _loc3_.Place <= 31)
+            if(item.Place >= 0 && item.Place <= 31)
             {
-               _loc2_ = _mgStonebag.getItemAt(_loc3_.Place);
-               if(_loc2_)
+               c = _mgStonebag.getItemAt(item.Place);
+               if(c)
                {
-                  setCellInfo(_loc2_.Place,_loc2_);
+                  setCellInfo(c.Place,c);
                }
                else
                {
-                  setCellInfo(_loc3_.Place,null);
+                  setCellInfo(item.Place,null);
                }
                MagicStoneManager.instance.removeWeakGuide(2);
                dispatchEvent(new Event("change"));
@@ -417,44 +412,44 @@ package magicStone.views
          updateProgress();
       }
       
-      public function setCellInfo(param1:int, param2:InventoryItemInfo) : void
+      public function setCellInfo(index:int, info:InventoryItemInfo) : void
       {
-         var _loc3_:String = String(param1);
-         if(param2 == null)
+         var key:String = String(index);
+         if(info == null)
          {
-            if(_cells[_loc3_])
+            if(_cells[key])
             {
-               _cells[_loc3_].info = null;
+               _cells[key].info = null;
             }
             return;
          }
-         if(param2.Count == 0)
+         if(info.Count == 0)
          {
-            _cells[_loc3_].info = null;
+            _cells[key].info = null;
          }
          else
          {
-            _cells[_loc3_].info = param2;
+            _cells[key].info = info;
          }
       }
       
-      protected function __covertBtnClick(param1:MouseEvent) : void
+      protected function __covertBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:MagicStoneShopFrame = ComponentFactory.Instance.creatCustomObject("magicStone.magicStoneShopFrame");
-         _loc2_.addEventListener("response",__frameEvent);
-         _loc2_.show();
+         var frame:MagicStoneShopFrame = ComponentFactory.Instance.creatCustomObject("magicStone.magicStoneShopFrame");
+         frame.addEventListener("response",__frameEvent);
+         frame.show();
       }
       
-      protected function __frameEvent(param1:FrameEvent) : void
+      protected function __frameEvent(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:Disposeable = param1.target as Disposeable;
-         _loc2_.dispose();
-         _loc2_ = null;
+         var frame:Disposeable = event.target as Disposeable;
+         frame.dispose();
+         frame = null;
       }
       
-      protected function __exploreBtnClick(param1:MouseEvent) : void
+      protected function __exploreBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -462,15 +457,15 @@ package magicStone.views
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:int = getNeedMoney();
+         var tmpNeedMoney:int = getNeedMoney();
          if(MagicStoneControl.instance.isNoPrompt)
          {
-            if(MagicStoneControl.instance.isBand && PlayerManager.Instance.Self.BandMoney < _loc2_)
+            if(MagicStoneControl.instance.isBand && PlayerManager.Instance.Self.BandMoney < tmpNeedMoney)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("bindMoneyPoorNote"));
                MagicStoneControl.instance.isNoPrompt = false;
             }
-            else if(!MagicStoneControl.instance.isBand && PlayerManager.Instance.Self.Money < _loc2_)
+            else if(!MagicStoneControl.instance.isBand && PlayerManager.Instance.Self.Money < tmpNeedMoney)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("moneyPoorNote"));
                MagicStoneControl.instance.isNoPrompt = false;
@@ -486,15 +481,15 @@ package magicStone.views
          _confirmFrame.addEventListener("response",comfirmHandler,false,0,true);
       }
       
-      private function comfirmHandler(param1:FrameEvent) : void
+      private function comfirmHandler(event:FrameEvent) : void
       {
-         var _loc2_:int = 0;
+         var tmpNeedMoney:int = 0;
          SoundManager.instance.play("008");
          _confirmFrame.removeEventListener("response",comfirmHandler);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         if(event.responseCode == 3 || event.responseCode == 2)
          {
-            _loc2_ = getNeedMoney();
-            CheckMoneyUtils.instance.checkMoney(_confirmFrame.isBand,_loc2_,onCheckComplete);
+            tmpNeedMoney = getNeedMoney();
+            CheckMoneyUtils.instance.checkMoney(_confirmFrame.isBand,tmpNeedMoney,onCheckComplete);
          }
       }
       
@@ -510,49 +505,49 @@ package magicStone.views
       
       public function getNeedMoney() : int
       {
-         var _loc1_:* = null;
-         var _loc4_:* = null;
-         var _loc2_:* = null;
-         var _loc3_:Object = ServerConfigManager.instance.serverConfigInfo["OpenMagicBoxMoney"];
-         if(_loc3_)
+         var serverStr:* = null;
+         var strArr:* = null;
+         var arr:* = null;
+         var obj:Object = ServerConfigManager.instance.serverConfigInfo["OpenMagicBoxMoney"];
+         if(obj)
          {
-            _loc1_ = _loc3_.Value;
-            if(_loc1_ && _loc1_ != "")
+            serverStr = obj.Value;
+            if(serverStr && serverStr != "")
             {
-               _loc4_ = _loc1_.split("|");
-               if(_loc4_[selectedIndex - 1])
+               strArr = serverStr.split("|");
+               if(strArr[selectedIndex - 1])
                {
-                  _loc2_ = _loc4_[selectedIndex - 1].split(",");
-                  return parseInt(_loc2_[0]);
+                  arr = strArr[selectedIndex - 1].split(",");
+                  return parseInt(arr[0]);
                }
             }
          }
          return 0;
       }
       
-      public function getNeedMoney2(param1:int) : int
+      public function getNeedMoney2(index:int) : int
       {
-         var _loc2_:* = null;
-         var _loc5_:* = null;
-         var _loc3_:* = null;
-         var _loc4_:Object = ServerConfigManager.instance.serverConfigInfo["OpenMagicBoxMoney"];
-         if(_loc4_)
+         var serverStr:* = null;
+         var strArr:* = null;
+         var arr:* = null;
+         var obj:Object = ServerConfigManager.instance.serverConfigInfo["OpenMagicBoxMoney"];
+         if(obj)
          {
-            _loc2_ = _loc4_.Value;
-            if(_loc2_ && _loc2_ != "")
+            serverStr = obj.Value;
+            if(serverStr && serverStr != "")
             {
-               _loc5_ = _loc2_.split("|");
-               if(_loc5_[param1])
+               strArr = serverStr.split("|");
+               if(strArr[index])
                {
-                  _loc3_ = _loc5_[param1].split(",");
-                  return parseInt(_loc3_[0]);
+                  arr = strArr[index].split(",");
+                  return parseInt(arr[0]);
                }
             }
          }
          return 0;
       }
       
-      protected function __exploreBatBtnClick(param1:MouseEvent) : void
+      protected function __exploreBatBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -560,16 +555,16 @@ package magicStone.views
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:int = getBagRemain();
-         var _loc3_:int = getNeedMoney() * 10;
+         var remain:int = getBagRemain();
+         var tmpNeedMoney:int = getNeedMoney() * 10;
          if(MagicStoneControl.instance.isBatNoPrompt)
          {
-            if(MagicStoneControl.instance.isBatBand && PlayerManager.Instance.Self.BandMoney < _loc3_)
+            if(MagicStoneControl.instance.isBatBand && PlayerManager.Instance.Self.BandMoney < tmpNeedMoney)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("bindMoneyPoorNote"));
                MagicStoneControl.instance.isBatNoPrompt = false;
             }
-            else if(!MagicStoneControl.instance.isBatBand && PlayerManager.Instance.Self.Money < _loc3_)
+            else if(!MagicStoneControl.instance.isBatBand && PlayerManager.Instance.Self.Money < tmpNeedMoney)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("moneyPoorNote"));
                MagicStoneControl.instance.isBatNoPrompt = false;
@@ -580,7 +575,7 @@ package magicStone.views
                return;
             }
          }
-         if(_loc2_ == 0)
+         if(remain == 0)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("magicStone.bagFull"));
          }
@@ -592,15 +587,15 @@ package magicStone.views
          }
       }
       
-      private function confirmBatHandler(param1:FrameEvent) : void
+      private function confirmBatHandler(event:FrameEvent) : void
       {
-         var _loc2_:int = 0;
+         var tmpNeedMoney:int = 0;
          SoundManager.instance.play("008");
          _confirmFrame1.removeEventListener("response",confirmBatHandler);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         if(event.responseCode == 3 || event.responseCode == 2)
          {
-            _loc2_ = getNeedMoney() * 10;
-            CheckMoneyUtils.instance.checkMoney(_confirmFrame1.isBand,_loc2_,onBatCheckComplete);
+            tmpNeedMoney = getNeedMoney() * 10;
+            CheckMoneyUtils.instance.checkMoney(_confirmFrame1.isBand,tmpNeedMoney,onBatCheckComplete);
          }
       }
       
@@ -616,41 +611,40 @@ package magicStone.views
       
       private function getBagRemain() : int
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:int = 0;
-         _loc3_ = 32;
-         while(_loc3_ <= 143)
+         var i:int = 0;
+         var item:* = null;
+         var count:int = 0;
+         for(i = 32; i <= 143; )
          {
-            _loc2_ = _mgStonebag.getItemAt(_loc3_);
-            if(!_loc2_)
+            item = _mgStonebag.getItemAt(i);
+            if(!item)
             {
-               _loc1_++;
+               count++;
             }
-            _loc3_++;
+            i++;
          }
-         return _loc1_;
+         return count;
       }
       
-      private function __stoneExploreClick(param1:MouseEvent) : void
+      private function __stoneExploreClick(e:MouseEvent) : void
       {
          SocketManager.Instance.out.sendCheckMagicStoneNumber();
       }
       
-      private function __showExploreView(param1:Event) : void
+      private function __showExploreView(e:Event) : void
       {
          _stoneExploreView = ComponentFactory.Instance.creatComponentByStylename("MagicStone.StoneExploreViewFrame");
          LayerManager.Instance.addToLayer(_stoneExploreView,3,true,1);
       }
       
-      public function updateScore(param1:int) : void
+      public function updateScore(num:int) : void
       {
-         _scoreTxt.text = param1.toString();
+         _scoreTxt.text = num.toString();
       }
       
       private function removeEvents() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          removeEventListener("itemclick",__cellClick);
          _covertBtn.removeEventListener("click",__covertBtnClick);
          _exploreBtn.removeEventListener("click",__exploreBtnClick);
@@ -658,21 +652,20 @@ package magicStone.views
          _stoneExploreBtn.removeEventListener("click",__stoneExploreClick);
          PlayerManager.Instance.Self.magicStoneBag.removeEventListener("update",__updateGoods);
          MagicStoneControl.instance.removeEventListener("showExploreView",__showExploreView);
-         _loc1_ = 0;
-         while(_loc1_ <= _mgStoneCells.length - 1)
+         for(i = 0; i <= _mgStoneCells.length - 1; )
          {
-            if(_mgStoneCells[_loc1_])
+            if(_mgStoneCells[i])
             {
-               _mgStoneCells[_loc1_].removeEventListener("interactive_click",__cellClickHandler);
-               _mgStoneCells[_loc1_].removeEventListener("interactive_double_click",__doubleClickHandler);
+               _mgStoneCells[i].removeEventListener("interactive_click",__cellClickHandler);
+               _mgStoneCells[i].removeEventListener("interactive_double_click",__doubleClickHandler);
             }
-            _loc1_++;
+            i++;
          }
       }
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          NewHandContainer.Instance.clearArrowByID(-1);
          MagicStoneControl.instance.infoView = null;
          if(_cells[31] && _cells[31].info)
@@ -683,12 +676,11 @@ package magicStone.views
             }
          }
          removeEvents();
-         _loc1_ = 0;
-         while(_loc1_ <= _mgStoneCells.length - 1)
+         for(i = 0; i <= _mgStoneCells.length - 1; )
          {
-            ObjectUtils.disposeObject(_mgStoneCells[_loc1_]);
-            _mgStoneCells[_loc1_] = null;
-            _loc1_++;
+            ObjectUtils.disposeObject(_mgStoneCells[i]);
+            _mgStoneCells[i] = null;
+            i++;
          }
          _cells = null;
          ObjectUtils.disposeObject(_bg);

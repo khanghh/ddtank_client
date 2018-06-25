@@ -98,9 +98,9 @@ package shop.view
          return _selectPlayerId;
       }
       
-      public function setType(param1:int = 0) : void
+      public function setType(type:int = 0) : void
       {
-         _type = param1;
+         _type = type;
          if(_type == 0)
          {
             this.titleText = LanguageMgr.GetTranslation("shop.view.present");
@@ -185,16 +185,16 @@ package shop.view
          this.height = this.height - 172;
       }
       
-      protected function selectName(param1:String, param2:int = 0) : void
+      protected function selectName(nick:String, id:int = 0) : void
       {
-         _selectPlayerId = param2;
-         setName(param1);
+         _selectPlayerId = id;
+         setName(nick);
          _friendList.setVisible = false;
       }
       
-      public function setName(param1:String) : void
+      public function setName(value:String) : void
       {
-         _nameInput.text = param1;
+         _nameInput.text = value;
       }
       
       public function get Name() : String
@@ -211,33 +211,33 @@ package shop.view
          StageReferance.stage.addEventListener("click",__hideDropList);
       }
       
-      private function __cancelPresent(param1:MouseEvent) : void
+      private function __cancelPresent(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          dispatchEvent(new FrameEvent(4));
          dispose();
       }
       
-      private function __buyMoney(param1:MouseEvent) : void
+      private function __buyMoney(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          LeavePageManager.leaveToFillPath();
       }
       
-      private function __showFramePanel(param1:MouseEvent) : void
+      private function __showFramePanel(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:Point = _chooseFriendBtn.localToGlobal(new Point(0,0));
-         _friendList.x = _loc2_.x - 95;
-         _friendList.y = _loc2_.y + _chooseFriendBtn.height;
+         var pos:Point = _chooseFriendBtn.localToGlobal(new Point(0,0));
+         _friendList.x = pos.x - 95;
+         _friendList.y = pos.y + _chooseFriendBtn.height;
          _friendList.setVisible = true;
          LayerManager.Instance.addToLayer(_friendList,3);
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(event.responseCode == 0 || event.responseCode == 1)
          {
             dispose();
          }
@@ -261,9 +261,9 @@ package shop.view
          StageReferance.stage.removeEventListener("click",__hideDropList);
       }
       
-      protected function __hideDropList(param1:Event) : void
+      protected function __hideDropList(event:Event) : void
       {
-         if(param1.target is FilterFrameText)
+         if(event.target is FilterFrameText)
          {
             return;
          }
@@ -302,62 +302,60 @@ package shop.view
          }
       }
       
-      protected function __onReceiverChange(param1:Event) : void
+      protected function __onReceiverChange(event:Event) : void
       {
          if(_nameInput.text == "")
          {
             _dropList.dataList = null;
             return;
          }
-         var _loc2_:Array = PlayerManager.Instance.onlineFriendList.concat(PlayerManager.Instance.offlineFriendList).concat(ConsortionModelManager.Instance.model.onlineConsortiaMemberList).concat(ConsortionModelManager.Instance.model.offlineConsortiaMemberList);
-         _dropList.dataList = filterSearch(filterRepeatInArray(_loc2_),_nameInput.text);
+         var list:Array = PlayerManager.Instance.onlineFriendList.concat(PlayerManager.Instance.offlineFriendList).concat(ConsortionModelManager.Instance.model.onlineConsortiaMemberList).concat(ConsortionModelManager.Instance.model.offlineConsortiaMemberList);
+         _dropList.dataList = filterSearch(filterRepeatInArray(list),_nameInput.text);
       }
       
-      private function filterRepeatInArray(param1:Array) : Array
+      private function filterRepeatInArray(filterArr:Array) : Array
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         var _loc2_:Array = [];
-         _loc4_ = 0;
-         while(_loc4_ < param1.length)
+         var i:int = 0;
+         var j:int = 0;
+         var arr:Array = [];
+         for(i = 0; i < filterArr.length; )
          {
-            if(_loc4_ == 0)
+            if(i == 0)
             {
-               _loc2_.push(param1[_loc4_]);
+               arr.push(filterArr[i]);
             }
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_.length)
+            j = 0;
+            while(j < arr.length)
             {
-               if(_loc2_[_loc3_].NickName != param1[_loc4_].NickName)
+               if(arr[j].NickName != filterArr[i].NickName)
                {
-                  if(_loc3_ == _loc2_.length - 1)
+                  if(j == arr.length - 1)
                   {
-                     _loc2_.push(param1[_loc4_]);
+                     arr.push(filterArr[i]);
                   }
-                  _loc3_++;
+                  j++;
                   continue;
                }
                break;
             }
-            _loc4_++;
+            i++;
          }
-         return _loc2_;
+         return arr;
       }
       
-      private function filterSearch(param1:Array, param2:String) : Array
+      private function filterSearch(list:Array, targetStr:String) : Array
       {
-         var _loc4_:int = 0;
-         var _loc3_:Array = [];
-         _loc4_ = 0;
-         while(_loc4_ < param1.length)
+         var i:int = 0;
+         var result:Array = [];
+         for(i = 0; i < list.length; )
          {
-            if(param1[_loc4_].NickName.indexOf(param2) != -1)
+            if(list[i].NickName.indexOf(targetStr) != -1)
             {
-               _loc3_.push(param1[_loc4_]);
+               result.push(list[i]);
             }
-            _loc4_++;
+            i++;
          }
-         return _loc3_;
+         return result;
       }
    }
 }

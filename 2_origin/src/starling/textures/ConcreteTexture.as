@@ -51,18 +51,18 @@ package starling.textures
       
       private var mTextureReadyCallback:Function;
       
-      public function ConcreteTexture(param1:TextureBase, param2:String, param3:int, param4:int, param5:Boolean, param6:Boolean, param7:Boolean = false, param8:Number = 1, param9:Boolean = false)
+      public function ConcreteTexture(base:TextureBase, format:String, width:int, height:int, mipMapping:Boolean, premultipliedAlpha:Boolean, optimizedForRenderTexture:Boolean = false, scale:Number = 1, repeat:Boolean = false)
       {
          super();
-         mScale = param8 <= 0?1:Number(param8);
-         mBase = param1;
-         mFormat = param2;
-         mWidth = param3;
-         mHeight = param4;
-         mMipMapping = param5;
-         mPremultipliedAlpha = param6;
-         mOptimizedForRenderTexture = param7;
-         mRepeat = param9;
+         mScale = scale <= 0?1:Number(scale);
+         mBase = base;
+         mFormat = format;
+         mWidth = width;
+         mHeight = height;
+         mMipMapping = mipMapping;
+         mPremultipliedAlpha = premultipliedAlpha;
+         mOptimizedForRenderTexture = optimizedForRenderTexture;
+         mRepeat = repeat;
          mOnRestore = null;
          mDataUploaded = false;
          mTextureReadyCallback = null;
@@ -79,107 +79,107 @@ package starling.textures
          super.dispose();
       }
       
-      public function uploadBitmap(param1:Bitmap) : void
+      public function uploadBitmap(bitmap:Bitmap) : void
       {
-         uploadBitmapData(param1.bitmapData);
+         uploadBitmapData(bitmap.bitmapData);
       }
       
-      public function uploadBitmapData(param1:BitmapData) : void
+      public function uploadBitmapData(data:BitmapData) : void
       {
-         var _loc5_:* = null;
-         var _loc7_:* = null;
-         var _loc4_:* = 0;
-         var _loc8_:* = 0;
-         var _loc6_:int = 0;
-         var _loc9_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         if(param1.width != mWidth || param1.height != mHeight)
+         var potData:* = null;
+         var potTexture:* = null;
+         var currentWidth:* = 0;
+         var currentHeight:* = 0;
+         var level:int = 0;
+         var canvas:* = null;
+         var transform:* = null;
+         var bounds:* = null;
+         if(data.width != mWidth || data.height != mHeight)
          {
-            _loc5_ = new BitmapData(mWidth,mHeight,true,0);
-            _loc5_.copyPixels(param1,param1.rect,sOrigin);
-            param1 = _loc5_;
+            potData = new BitmapData(mWidth,mHeight,true,0);
+            potData.copyPixels(data,data.rect,sOrigin);
+            data = potData;
          }
          if(mBase is flash.display3D.textures.Texture)
          {
-            _loc7_ = mBase as flash.display3D.textures.Texture;
-            _loc7_.uploadFromBitmapData(param1);
-            if(mMipMapping && param1.width > 1 && param1.height > 1)
+            potTexture = mBase as flash.display3D.textures.Texture;
+            potTexture.uploadFromBitmapData(data);
+            if(mMipMapping && data.width > 1 && data.height > 1)
             {
-               _loc4_ = param1.width >> 1;
-               _loc8_ = param1.height >> 1;
-               _loc6_ = 1;
-               _loc9_ = new BitmapData(_loc4_,_loc8_,true,0);
-               _loc3_ = new Matrix(0.5,0,0,0.5);
-               _loc2_ = new Rectangle();
-               while(_loc4_ >= 1 || _loc8_ >= 1)
+               currentWidth = data.width >> 1;
+               currentHeight = data.height >> 1;
+               level = 1;
+               canvas = new BitmapData(currentWidth,currentHeight,true,0);
+               transform = new Matrix(0.5,0,0,0.5);
+               bounds = new Rectangle();
+               while(currentWidth >= 1 || currentHeight >= 1)
                {
-                  _loc2_.width = _loc4_;
-                  _loc2_.height = _loc8_;
-                  _loc9_.fillRect(_loc2_,0);
-                  _loc9_.draw(param1,_loc3_,null,null,null,true);
-                  _loc6_++;
-                  _loc7_.uploadFromBitmapData(_loc9_,_loc6_);
-                  _loc3_.scale(0.5,0.5);
-                  _loc4_ = _loc4_ >> 1;
-                  _loc8_ = _loc8_ >> 1;
+                  bounds.width = currentWidth;
+                  bounds.height = currentHeight;
+                  canvas.fillRect(bounds,0);
+                  canvas.draw(data,transform,null,null,null,true);
+                  level++;
+                  potTexture.uploadFromBitmapData(canvas,level);
+                  transform.scale(0.5,0.5);
+                  currentWidth = currentWidth >> 1;
+                  currentHeight = currentHeight >> 1;
                }
-               _loc9_.dispose();
+               canvas.dispose();
             }
          }
          else
          {
-            mBase["uploadFromBitmapData"](param1);
+            mBase["uploadFromBitmapData"](data);
          }
-         if(_loc5_)
+         if(potData)
          {
-            _loc5_.dispose();
+            potData.dispose();
          }
          mDataUploaded = true;
       }
       
-      public function uploadAtfData(param1:ByteArray, param2:int = 0, param3:* = null) : void
+      public function uploadAtfData(data:ByteArray, offset:int = 0, async:* = null) : void
       {
-         var _loc5_:Boolean = param3 is Function || param3 === true;
-         var _loc4_:flash.display3D.textures.Texture = mBase as flash.display3D.textures.Texture;
-         if(_loc4_ == null)
+         var isAsync:Boolean = async is Function || async === true;
+         var potTexture:flash.display3D.textures.Texture = mBase as flash.display3D.textures.Texture;
+         if(potTexture == null)
          {
             throw new Error("This texture type does not support ATF data");
          }
-         if(param3 is Function)
+         if(async is Function)
          {
-            mTextureReadyCallback = param3 as Function;
+            mTextureReadyCallback = async as Function;
             mBase.addEventListener("textureReady",onTextureReady);
          }
-         _loc4_.uploadCompressedTextureFromByteArray(param1,param2,_loc5_);
+         potTexture.uploadCompressedTextureFromByteArray(data,offset,isAsync);
          mDataUploaded = true;
       }
       
-      public function attachNetStream(param1:NetStream, param2:Function = null) : void
+      public function attachNetStream(netStream:NetStream, onComplete:Function = null) : void
       {
-         attachVideo("NetStream",param1,param2);
+         attachVideo("NetStream",netStream,onComplete);
       }
       
-      public function attachCamera(param1:Camera, param2:Function = null) : void
+      public function attachCamera(camera:Camera, onComplete:Function = null) : void
       {
-         attachVideo("Camera",param1,param2);
+         attachVideo("Camera",camera,onComplete);
       }
       
-      function attachVideo(param1:String, param2:Object, param3:Function = null) : void
+      function attachVideo(type:String, attachment:Object, onComplete:Function = null) : void
       {
          var _loc4_:String = getQualifiedClassName(mBase);
          if(_loc4_ == "flash.display3D.textures::VideoTexture")
          {
             mDataUploaded = true;
-            mTextureReadyCallback = param3;
-            mBase["attach" + param1](param2);
+            mTextureReadyCallback = onComplete;
+            mBase["attach" + type](attachment);
             mBase.addEventListener("textureReady",onTextureReady);
             return;
          }
-         throw new Error("This texture type does not support " + param1 + " data");
+         throw new Error("This texture type does not support " + type + " data");
       }
       
-      private function onTextureReady(param1:Object) : void
+      private function onTextureReady(event:Object) : void
       {
          mBase.removeEventListener("textureReady",onTextureReady);
          execute(mTextureReadyCallback,this);
@@ -201,47 +201,47 @@ package starling.textures
       
       function createBase() : void
       {
-         var _loc1_:Context3D = Starling.context;
-         var _loc2_:String = getQualifiedClassName(mBase);
-         if(_loc2_ == "flash.display3D.textures::Texture")
+         var context:Context3D = Starling.context;
+         var className:String = getQualifiedClassName(mBase);
+         if(className == "flash.display3D.textures::Texture")
          {
-            mBase = _loc1_.createTexture(mWidth,mHeight,mFormat,mOptimizedForRenderTexture);
+            mBase = context.createTexture(mWidth,mHeight,mFormat,mOptimizedForRenderTexture);
          }
-         else if(_loc2_ == "flash.display3D.textures::RectangleTexture")
+         else if(className == "flash.display3D.textures::RectangleTexture")
          {
-            mBase = _loc1_["createRectangleTexture"](mWidth,mHeight,mFormat,mOptimizedForRenderTexture);
+            mBase = context["createRectangleTexture"](mWidth,mHeight,mFormat,mOptimizedForRenderTexture);
          }
-         else if(_loc2_ == "flash.display3D.textures::VideoTexture")
+         else if(className == "flash.display3D.textures::VideoTexture")
          {
-            mBase = _loc1_["createVideoTexture"]();
+            mBase = context["createVideoTexture"]();
          }
          else
          {
-            throw new NotSupportedError("Texture type not supported: " + _loc2_);
+            throw new NotSupportedError("Texture type not supported: " + className);
          }
          mDataUploaded = false;
       }
       
-      public function clear(param1:uint = 0, param2:Number = 0.0) : void
+      public function clear(color:uint = 0, alpha:Number = 0.0) : void
       {
-         var _loc3_:Context3D = Starling.context;
-         if(_loc3_ == null)
+         var context:Context3D = Starling.context;
+         if(context == null)
          {
             throw new MissingContextError();
          }
-         if(mPremultipliedAlpha && param2 < 1)
+         if(mPremultipliedAlpha && alpha < 1)
          {
-            param1 = Color.rgb(Color.getRed(param1) * param2,Color.getGreen(param1) * param2,Color.getBlue(param1) * param2);
+            color = Color.rgb(Color.getRed(color) * alpha,Color.getGreen(color) * alpha,Color.getBlue(color) * alpha);
          }
-         _loc3_.setRenderToTexture(mBase);
+         context.setRenderToTexture(mBase);
          try
          {
-            RenderSupport.clear(param1,param2);
+            RenderSupport.clear(color,alpha);
          }
          catch(e:Error)
          {
          }
-         _loc3_.setRenderToBackBuffer();
+         context.setRenderToBackBuffer();
          mDataUploaded = true;
       }
       
@@ -255,12 +255,12 @@ package starling.textures
          return mOnRestore;
       }
       
-      public function set onRestore(param1:Function) : void
+      public function set onRestore(value:Function) : void
       {
          Starling.current.removeEventListener("context3DCreate",onContextCreated);
-         if(Starling.handleLostContext && param1 != null)
+         if(Starling.handleLostContext && value != null)
          {
-            mOnRestore = param1;
+            mOnRestore = value;
             Starling.current.addEventListener("context3DCreate",onContextCreated);
          }
          else

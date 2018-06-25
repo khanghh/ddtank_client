@@ -30,9 +30,9 @@ package ddt.manager
          return _lifeTime;
       }
       
-      public static function setup(param1:Stage) : void
+      public static function setup(stage:Stage) : void
       {
-         param1.addEventListener("enterFrame",frameHandler);
+         stage.addEventListener("enterFrame",frameHandler);
       }
       
       public static function pause() : void
@@ -45,76 +45,74 @@ package ddt.manager
          _running = true;
       }
       
-      public static function setLifeTime(param1:int) : void
+      public static function setLifeTime(value:int) : void
       {
-         _lifeTime = param1;
+         _lifeTime = value;
          _executable.concat(_waitlist);
       }
       
-      public static function addQueue(param1:CrazyTankSocketEvent) : void
+      public static function addQueue(e:CrazyTankSocketEvent) : void
       {
-         _waitlist.push(param1);
+         _waitlist.push(e);
       }
       
-      private static function frameHandler(param1:Event) : void
+      private static function frameHandler(event:Event) : void
       {
-         var _loc4_:int = 0;
-         var _loc7_:int = 0;
-         var _loc5_:* = null;
-         var _loc2_:int = 0;
-         var _loc6_:int = 0;
+         var count:int = 0;
+         var i:int = 0;
+         var evt:* = null;
+         var index:int = 0;
+         var j:int = 0;
          _lifeTime = Number(_lifeTime) + 1;
          if(_running)
          {
-            _loc4_ = 0;
-            _loc7_ = 0;
-            _loc7_ = 0;
-            while(_loc7_ < _waitlist.length)
+            count = 0;
+            i = 0;
+            for(i = 0; i < _waitlist.length; )
             {
-               _loc5_ = _waitlist[_loc7_];
-               if(_loc5_.pkg.extend2 <= _lifeTime)
+               evt = _waitlist[i];
+               if(evt.pkg.extend2 <= _lifeTime)
                {
-                  _executable.push(_loc5_);
-                  _loc4_++;
+                  _executable.push(evt);
+                  count++;
                }
-               _loc7_++;
+               i++;
             }
             var _loc9_:int = 0;
             var _loc8_:* = _executable;
-            for each(var _loc3_ in _executable)
+            for each(var e in _executable)
             {
-               _loc2_ = _waitlist.indexOf(_loc3_);
-               if(_loc2_ != -1)
+               index = _waitlist.indexOf(e);
+               if(index != -1)
                {
-                  _waitlist.splice(_loc2_,1);
+                  _waitlist.splice(index,1);
                }
             }
-            _loc4_ = 0;
-            _loc6_ = 0;
-            while(_loc6_ < _executable.length)
+            count = 0;
+            for(j = 0; j < _executable.length; )
             {
                if(_running)
                {
-                  dispatchEvent(_executable[_loc6_]);
-                  _loc4_++;
+                  dispatchEvent(_executable[j]);
+                  count++;
                }
-               _loc6_++;
+               j++;
             }
-            _executable.splice(0,_loc4_);
+            _executable.splice(0,count);
          }
       }
       
-      private static function dispatchEvent(param1:Event) : void
+      private static function dispatchEvent(event:Event) : void
       {
          try
          {
-            SocketManager.Instance.dispatchEvent(param1);
+            SocketManager.Instance.dispatchEvent(event);
             return;
          }
          catch(err:Error)
          {
-            SocketManager.Instance.out.sendErrorMsg("type:" + param1.type + "msg:" + err.message + "\r\n" + err.getStackTrace());
-            trace(param1.type,err.message,err.getStackTrace());
+            SocketManager.Instance.out.sendErrorMsg("type:" + event.type + "msg:" + err.message + "\r\n" + err.getStackTrace());
+            trace(event.type,err.message,err.getStackTrace());
             return;
          }
       }

@@ -43,19 +43,18 @@ package ringStation.view
       
       private function initItemData() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var infoItem:* = null;
          _itemVec = new Vector.<BattleFieldsItem>();
-         var _loc3_:Point = PositionUtils.creatPoint("ringStation.view.battleField.itemPos");
-         _loc2_ = 0;
-         while(_loc2_ < 11)
+         var pos:Point = PositionUtils.creatPoint("ringStation.view.battleField.itemPos");
+         for(i = 0; i < 11; )
          {
-            _loc1_ = new BattleFieldsItem(_loc2_);
-            _loc1_.x = _loc3_.x;
-            _loc1_.y = _loc3_.y + _loc2_ * 34;
-            addToContent(_loc1_);
-            _itemVec.push(_loc1_);
-            _loc2_++;
+            infoItem = new BattleFieldsItem(i);
+            infoItem.x = pos.x;
+            infoItem.y = pos.y + i * 34;
+            addToContent(infoItem);
+            _itemVec.push(infoItem);
+            i++;
          }
       }
       
@@ -70,22 +69,21 @@ package ringStation.view
          SocketManager.Instance.addEventListener(PkgEvent.format(404,4),__onUpdateNewBattleField);
       }
       
-      protected function __onUpdateNewBattleField(param1:PkgEvent) : void
+      protected function __onUpdateNewBattleField(event:PkgEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc6_:BattleFieldListItemInfo = new BattleFieldListItemInfo();
-         var _loc2_:int = _loc4_.readInt();
-         var _loc3_:String = "";
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_)
+         var i:int = 0;
+         var pkg:PackageIn = event.pkg;
+         var info:BattleFieldListItemInfo = new BattleFieldListItemInfo();
+         var count:int = pkg.readInt();
+         var newString:String = "";
+         for(i = 0; i < count; )
          {
-            _loc6_.DareFlag = _loc4_.readBoolean();
-            _loc6_.UserName = _loc4_.readUTF();
-            _loc6_.SuccessFlag = _loc4_.readBoolean();
-            _loc6_.Level = _loc4_.readInt();
-            _itemVec[_loc5_].update(_loc6_);
-            _loc5_++;
+            info.DareFlag = pkg.readBoolean();
+            info.UserName = pkg.readUTF();
+            info.SuccessFlag = pkg.readBoolean();
+            info.Level = pkg.readInt();
+            _itemVec[i].update(info);
+            i++;
          }
       }
       
@@ -100,10 +98,10 @@ package ringStation.view
          SocketManager.Instance.removeEventListener(PkgEvent.format(404,4),__onUpdateNewBattleField);
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -113,7 +111,7 @@ package ringStation.view
       
       override public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          super.dispose();
          removeEvent();
          if(_bg)
@@ -121,15 +119,14 @@ package ringStation.view
             ObjectUtils.disposeObject(_bg);
          }
          _bg = null;
-         _loc1_ = 0;
-         while(_loc1_ < _itemVec.length)
+         for(i = 0; i < _itemVec.length; )
          {
-            if(_itemVec[_loc1_])
+            if(_itemVec[i])
             {
-               ObjectUtils.disposeObject(_itemVec[_loc1_]);
-               _itemVec[_loc1_] = null;
+               ObjectUtils.disposeObject(_itemVec[i]);
+               _itemVec[i] = null;
             }
-            _loc1_++;
+            i++;
          }
          _itemVec.length = 0;
          _itemVec = null;

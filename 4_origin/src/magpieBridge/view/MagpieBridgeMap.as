@@ -46,64 +46,62 @@ package magpieBridge.view
       
       private function creatMap() : void
       {
-         var _loc5_:int = 0;
-         var _loc1_:* = null;
-         var _loc4_:* = null;
-         var _loc3_:Array = _mapArray[MagpieBridgeManager.instance.magpieModel.MapId];
-         var _loc6_:Bitmap = ComponentFactory.Instance.creat("asset.magpieMap.begin");
-         var _loc2_:Sprite = new Sprite();
-         _loc2_.addChild(_loc6_);
-         addChild(_loc2_);
-         _mapVec.push(_loc2_);
-         _loc5_ = 0;
-         while(_loc5_ < _loc3_.length)
+         var i:int = 0;
+         var icon:* = null;
+         var iconSprite:* = null;
+         var map:Array = _mapArray[MagpieBridgeManager.instance.magpieModel.MapId];
+         var begin:Bitmap = ComponentFactory.Instance.creat("asset.magpieMap.begin");
+         var beginSprite:Sprite = new Sprite();
+         beginSprite.addChild(begin);
+         addChild(beginSprite);
+         _mapVec.push(beginSprite);
+         for(i = 0; i < map.length; )
          {
-            _loc1_ = ComponentFactory.Instance.creat("asset.magpieMap.icon");
-            _loc4_ = new Sprite();
-            _loc4_.addChild(_loc1_);
-            PositionUtils.setPos(_loc4_,getIconPos(_mapVec[_loc5_],_loc4_,_loc3_[_loc5_]));
-            addChild(_loc4_);
-            _mapVec.push(_loc4_);
-            _loc5_++;
+            icon = ComponentFactory.Instance.creat("asset.magpieMap.icon");
+            iconSprite = new Sprite();
+            iconSprite.addChild(icon);
+            PositionUtils.setPos(iconSprite,getIconPos(_mapVec[i],iconSprite,map[i]));
+            addChild(iconSprite);
+            _mapVec.push(iconSprite);
+            i++;
          }
       }
       
       private function addProps() : void
       {
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         var _loc1_:* = null;
-         var _loc4_:Vector.<MapItemData> = MagpieBridgeManager.instance.magpieModel.MapDataVec;
-         _loc6_ = 0;
-         while(_loc6_ < _loc4_.length)
+         var i:int = 0;
+         var props:* = null;
+         var magpieImage:* = null;
+         var bagCellInfo:* = null;
+         var bagCell:* = null;
+         var mapDataVec:Vector.<MapItemData> = MagpieBridgeManager.instance.magpieModel.MapDataVec;
+         for(i = 0; i < mapDataVec.length; )
          {
-            if(_loc4_[_loc6_].tempID <= 0 && _loc4_[_loc6_].tempID >= -5)
+            if(mapDataVec[i].tempID <= 0 && mapDataVec[i].tempID >= -5)
             {
-               _loc5_ = ComponentFactory.Instance.creat("asset.magpieMap.props" + _loc4_[_loc6_].tempID.toString());
-               _loc5_.x = (_mapVec[_loc4_[_loc6_].type].width - _loc5_.width) / 2;
-               _loc5_.y = (_mapVec[_loc4_[_loc6_].type].height - _loc5_.height) / 2;
-               _mapVec[_loc4_[_loc6_].type].addChild(_loc5_);
+               props = ComponentFactory.Instance.creat("asset.magpieMap.props" + mapDataVec[i].tempID.toString());
+               props.x = (_mapVec[mapDataVec[i].type].width - props.width) / 2;
+               props.y = (_mapVec[mapDataVec[i].type].height - props.height) / 2;
+               _mapVec[mapDataVec[i].type].addChild(props);
             }
-            else if(_loc4_[_loc6_].tempID == -6)
+            else if(mapDataVec[i].tempID == -6)
             {
-               _loc2_ = ComponentFactory.Instance.creatComponentByStylename("magpieBridge.magpieMap.magpieImage");
-               _loc2_.tipData = LanguageMgr.GetTranslation("magpieBridgeView.magpie.tipsTxt");
-               _mapVec[_loc4_[_loc6_].type].addChild(_loc2_);
+               magpieImage = ComponentFactory.Instance.creatComponentByStylename("magpieBridge.magpieMap.magpieImage");
+               magpieImage.tipData = LanguageMgr.GetTranslation("magpieBridgeView.magpie.tipsTxt");
+               _mapVec[mapDataVec[i].type].addChild(magpieImage);
             }
             else
             {
-               _loc3_ = ItemManager.Instance.getTemplateById(_loc4_[_loc6_].tempID);
-               _loc1_ = new BagCell(0,_loc3_);
-               _loc1_.setBgVisible(false);
-               _loc1_.width = _mapVec[_loc4_[_loc6_].type].width;
-               _loc1_.height = _mapVec[_loc4_[_loc6_].type].height;
-               _loc1_.x = 4;
-               _loc1_.y = 6;
-               _mapVec[_loc4_[_loc6_].type].addChild(_loc1_);
+               bagCellInfo = ItemManager.Instance.getTemplateById(mapDataVec[i].tempID);
+               bagCell = new BagCell(0,bagCellInfo);
+               bagCell.setBgVisible(false);
+               bagCell.width = _mapVec[mapDataVec[i].type].width;
+               bagCell.height = _mapVec[mapDataVec[i].type].height;
+               bagCell.x = 4;
+               bagCell.y = 6;
+               _mapVec[mapDataVec[i].type].addChild(bagCell);
             }
-            _loc6_++;
+            i++;
          }
          _light = ComponentFactory.Instance.creat("asset.magpieBridge.overLight");
          _mapVec[_mapVec.length - 1].addChildAt(_light,0);
@@ -111,43 +109,43 @@ package magpieBridge.view
       
       public function closeIcon() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:int = MagpieBridgeManager.instance.magpieModel.NowPosition;
-         if(_loc1_ < _mapVec.length - 1 && _mapVec[_loc1_].numChildren >= 2)
+         var props:* = null;
+         var id:int = MagpieBridgeManager.instance.magpieModel.NowPosition;
+         if(id < _mapVec.length - 1 && _mapVec[id].numChildren >= 2)
          {
-            _mapVec[_loc1_].removeChildAt(1);
-            _loc2_ = ComponentFactory.Instance.creat("asset.magpieMap.props0");
-            _loc2_.x = (_mapVec[_loc1_].width - _loc2_.width) / 2;
-            _loc2_.y = (_mapVec[_loc1_].height - _loc2_.height) / 2;
-            _mapVec[_loc1_].addChild(_loc2_);
+            _mapVec[id].removeChildAt(1);
+            props = ComponentFactory.Instance.creat("asset.magpieMap.props0");
+            props.x = (_mapVec[id].width - props.width) / 2;
+            props.y = (_mapVec[id].height - props.height) / 2;
+            _mapVec[id].addChild(props);
          }
       }
       
-      private function getIconPos(param1:Sprite, param2:Sprite, param3:int) : Point
+      private function getIconPos(preIcon:Sprite, curIcon:Sprite, iconId:int) : Point
       {
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         if(param3 == 1)
+         var xPos:int = 0;
+         var yPos:int = 0;
+         if(iconId == 1)
          {
-            _loc5_ = param1.x - 70;
-            _loc4_ = param1.y + (param1.height - param2.height) / 2;
+            xPos = preIcon.x - 70;
+            yPos = preIcon.y + (preIcon.height - curIcon.height) / 2;
          }
-         else if(param3 == 2)
+         else if(iconId == 2)
          {
-            _loc5_ = param1.x;
-            _loc4_ = param1.y - 70;
+            xPos = preIcon.x;
+            yPos = preIcon.y - 70;
          }
-         else if(param3 == 3)
+         else if(iconId == 3)
          {
-            _loc5_ = param1.x + 70;
-            _loc4_ = param1.y + (param1.height - param2.height) / 2;
+            xPos = preIcon.x + 70;
+            yPos = preIcon.y + (preIcon.height - curIcon.height) / 2;
          }
-         else if(param3 == 4)
+         else if(iconId == 4)
          {
-            _loc5_ = param1.x;
-            _loc4_ = param1.y + 70;
+            xPos = preIcon.x;
+            yPos = preIcon.y + 70;
          }
-         return new Point(_loc5_,_loc4_);
+         return new Point(xPos,yPos);
       }
       
       public function dispose() : void

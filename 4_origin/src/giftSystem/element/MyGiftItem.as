@@ -53,11 +53,11 @@ package giftSystem.element
          _name = ComponentFactory.Instance.creat("MyGiftItem.name");
          _ownCount = ComponentFactory.Instance.creat("MyGiftItem.ownCount");
          _count = ComponentFactory.Instance.creat("MyGiftItem.count");
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,59,59);
-         _loc1_.graphics.endFill();
-         _itemCell = CellFactory.instance.createShopItemCell(_loc1_,null,true,true) as ShopItemCell;
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(16777215,0);
+         sp.graphics.drawRect(0,0,59,59);
+         sp.graphics.endFill();
+         _itemCell = CellFactory.instance.createShopItemCell(sp,null,true,true) as ShopItemCell;
          _itemCell.cellSize = 50;
          PositionUtils.setPos(_itemCell,"MyGiftItem.cellPos");
          addChild(_BG);
@@ -74,9 +74,9 @@ package giftSystem.element
          return _info;
       }
       
-      public function set info(param1:MyGiftCellInfo) : void
+      public function set info(value:MyGiftCellInfo) : void
       {
-         _info = param1;
+         _info = value;
          upView();
       }
       
@@ -86,19 +86,19 @@ package giftSystem.element
          {
             return;
          }
-         var _loc1_:ShopItemInfo = _info.info;
-         if(_loc1_ == null)
+         var shopItemInfo:ShopItemInfo = _info.info;
+         if(shopItemInfo == null)
          {
             return;
          }
-         _itemCell.info = _loc1_.TemplateInfo;
+         _itemCell.info = shopItemInfo.TemplateInfo;
          _name.text = _itemCell.info.Name;
          upCountAndownCount();
       }
       
-      public function set ownCount(param1:int) : void
+      public function set ownCount(value:int) : void
       {
-         _info.amount = param1;
+         _info.amount = value;
          upCountAndownCount();
       }
       
@@ -108,21 +108,20 @@ package giftSystem.element
          _ownCount.text = LanguageMgr.GetTranslation("ddt.giftSystem.MyGiftItem.ownIII",getSpace(_count.text));
       }
       
-      private function getSpace(param1:String) : String
+      private function getSpace(s:String) : String
       {
-         var _loc3_:int = 0;
-         if(!param1)
+         var i:int = 0;
+         if(!s)
          {
             return "";
          }
-         var _loc2_:String = "";
-         _loc3_ = 0;
-         while(_loc3_ < param1.length)
+         var temp:String = "";
+         for(i = 0; i < s.length; )
          {
-            _loc2_ = _loc2_ + " ";
-            _loc3_++;
+            temp = temp + " ";
+            i++;
          }
-         return _loc2_;
+         return temp;
       }
       
       override public function get height() : Number

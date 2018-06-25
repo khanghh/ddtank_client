@@ -42,169 +42,166 @@ package gameStarling.actions
       
       private var _turnTime:int;
       
-      public function ChangePlayerAction(param1:MapView3D, param2:Living, param3:CrazyTankSocketEvent, param4:PackageIn, param5:Number = 200, param6:int = -1)
+      public function ChangePlayerAction(map:MapView3D, info:Living, event:CrazyTankSocketEvent, sysMap:PackageIn, waitTime:Number = 200, turnTime:int = -1)
       {
          super();
-         _event = param3;
+         _event = event;
          _event.executed = false;
-         _pkg = param4;
-         _map = param1;
-         _info = param2;
-         _count = param5 / 40;
-         _turnTime = param6;
+         _pkg = sysMap;
+         _map = map;
+         _info = info;
+         _count = waitTime / 40;
+         _turnTime = turnTime;
       }
       
       private function syncMap() : void
       {
-         var _loc1_:* = null;
-         var _loc28_:* = 0;
-         var _loc14_:int = 0;
-         var _loc9_:int = 0;
-         var _loc8_:int = 0;
-         var _loc33_:int = 0;
-         var _loc36_:* = null;
-         var _loc25_:int = 0;
-         var _loc15_:int = 0;
-         var _loc10_:Boolean = false;
-         var _loc31_:int = 0;
-         var _loc30_:int = 0;
-         var _loc23_:int = 0;
-         var _loc18_:Boolean = false;
-         var _loc19_:int = 0;
-         var _loc13_:int = 0;
-         var _loc20_:int = 0;
-         var _loc22_:int = 0;
-         var _loc2_:int = 0;
-         var _loc32_:int = 0;
-         var _loc16_:int = 0;
-         var _loc38_:int = 0;
-         var _loc3_:* = null;
-         var _loc27_:int = 0;
-         var _loc12_:* = null;
-         var _loc26_:int = 0;
-         var _loc34_:* = null;
-         var _loc11_:Boolean = _pkg.readBoolean();
-         var _loc5_:int = _pkg.readByte();
-         var _loc7_:int = _pkg.readByte();
-         var _loc6_:int = _pkg.readByte();
-         var _loc21_:int = _pkg.readInt();
-         var _loc35_:Number = _pkg.readInt() / 100;
-         var _loc39_:int = _pkg.readInt();
-         var _loc37_:Array = [_loc11_,_loc5_,_loc7_,_loc6_,_loc21_,_loc39_];
-         GameControl.Instance.Current.setWind(GameControl.Instance.Current.wind,_info.LivingID == GameControl.Instance.Current.selfGamePlayer.LivingID,_loc37_);
+         var localPlayer:* = null;
+         var i:* = 0;
+         var bid:int = 0;
+         var bx:int = 0;
+         var by:int = 0;
+         var subType:int = 0;
+         var box:* = null;
+         var j:int = 0;
+         var livingID:int = 0;
+         var isLiving:Boolean = false;
+         var tx:int = 0;
+         var ty:int = 0;
+         var blood:int = 0;
+         var nonole:Boolean = false;
+         var maxEnergy:int = 0;
+         var psychic:int = 0;
+         var dander:int = 0;
+         var petMaxMP:int = 0;
+         var petMP:int = 0;
+         var shootCount:int = 0;
+         var flyCount:int = 0;
+         var turnCount:int = 0;
+         var player:* = null;
+         var outBombsLength:int = 0;
+         var outBombs:* = null;
+         var k:int = 0;
+         var bomb:* = null;
+         var windDic:Boolean = _pkg.readBoolean();
+         var windPowerNum0:int = _pkg.readByte();
+         var windPowerNum1:int = _pkg.readByte();
+         var windPowerNum2:int = _pkg.readByte();
+         var weatherLevel:int = _pkg.readInt();
+         var weatherRate:Number = _pkg.readInt() / 100;
+         var weatherRotation:int = _pkg.readInt();
+         var windNumArr:Array = [windDic,windPowerNum0,windPowerNum1,windPowerNum2,weatherLevel,weatherRotation];
+         GameControl.Instance.Current.setWind(GameControl.Instance.Current.wind,_info.LivingID == GameControl.Instance.Current.selfGamePlayer.LivingID,windNumArr);
          _info.isHidden = _pkg.readBoolean();
-         var _loc17_:int = _pkg.readInt();
+         var turnTime:int = _pkg.readInt();
          if(_info is LocalPlayer)
          {
-            _loc1_ = LocalPlayer(_info);
+            localPlayer = LocalPlayer(_info);
             if(_turnTime == -1)
             {
-               if(_loc17_ > 0)
+               if(turnTime > 0)
                {
-                  _loc1_.turnTime = _loc17_;
+                  localPlayer.turnTime = turnTime;
                }
                else
                {
-                  _loc1_.turnTime = RoomManager.getTurnTimeByType(RoomManager.Instance.current.timeType);
+                  localPlayer.turnTime = RoomManager.getTurnTimeByType(RoomManager.Instance.current.timeType);
                }
             }
             else
             {
-               _loc1_.turnTime = _turnTime;
+               localPlayer.turnTime = _turnTime;
                GameInSocketOut.sendGameSkipNext(0);
             }
-            if(_loc17_ == RoomManager.getTurnTimeByType(RoomManager.Instance.current.timeType))
+            if(turnTime == RoomManager.getTurnTimeByType(RoomManager.Instance.current.timeType))
             {
             }
          }
-         var _loc4_:int = _pkg.readInt();
-         _loc28_ = uint(0);
-         while(_loc28_ < _loc4_)
+         var boxCount:int = _pkg.readInt();
+         for(i = uint(0); i < boxCount; )
          {
-            _loc14_ = _pkg.readInt();
-            _loc9_ = _pkg.readInt();
-            _loc8_ = _pkg.readInt();
-            _loc33_ = _pkg.readInt();
-            _loc36_ = new SimpleBox3D(_loc14_,String(PathInfo.GAME_BOXPIC),_loc33_);
-            _loc36_.x = _loc9_;
-            _loc36_.y = _loc8_;
-            _map.addPhysical(_loc36_);
-            _loc28_++;
+            bid = _pkg.readInt();
+            bx = _pkg.readInt();
+            by = _pkg.readInt();
+            subType = _pkg.readInt();
+            box = new SimpleBox3D(bid,String(PathInfo.GAME_BOXPIC),subType);
+            box.x = bx;
+            box.y = by;
+            _map.addPhysical(box);
+            i++;
          }
-         var _loc24_:int = _pkg.readInt();
-         _loc25_ = 0;
-         while(_loc25_ < _loc24_)
+         var playerCount:int = _pkg.readInt();
+         for(j = 0; j < playerCount; )
          {
-            _loc15_ = _pkg.readInt();
-            _loc10_ = _pkg.readBoolean();
-            _loc31_ = _pkg.readInt();
-            _loc30_ = _pkg.readInt();
-            _loc23_ = _pkg.readInt();
-            _loc18_ = _pkg.readBoolean();
-            _loc19_ = _pkg.readInt();
-            _loc13_ = _pkg.readInt();
-            _loc20_ = _pkg.readInt();
-            _loc22_ = _pkg.readInt();
-            _loc2_ = _pkg.readInt();
-            _loc32_ = _pkg.readInt();
-            _loc16_ = _pkg.readInt();
-            _loc38_ = _pkg.readInt();
-            _loc3_ = GameControl.Instance.Current.livings[_loc15_];
-            if(_loc3_)
+            livingID = _pkg.readInt();
+            isLiving = _pkg.readBoolean();
+            tx = _pkg.readInt();
+            ty = _pkg.readInt();
+            blood = _pkg.readInt();
+            nonole = _pkg.readBoolean();
+            maxEnergy = _pkg.readInt();
+            psychic = _pkg.readInt();
+            dander = _pkg.readInt();
+            petMaxMP = _pkg.readInt();
+            petMP = _pkg.readInt();
+            shootCount = _pkg.readInt();
+            flyCount = _pkg.readInt();
+            turnCount = _pkg.readInt();
+            player = GameControl.Instance.Current.livings[livingID];
+            if(player)
             {
-               if(!_loc3_.isLiving && _loc10_)
+               if(!player.isLiving && isLiving)
                {
-                  (_map.gameView as GameView3D).revivePlayerChangePlayer(_loc3_.LivingID);
+                  (_map.gameView as GameView3D).revivePlayerChangePlayer(player.LivingID);
                }
-               _loc3_.updateBlood(_loc23_,5);
-               _loc3_.isNoNole = _loc18_;
-               _loc3_.maxEnergy = _loc19_;
-               _loc3_.psychic = _loc13_;
-               _loc3_.turnCount = _loc38_;
-               if(_loc3_.isSelf)
+               player.updateBlood(blood,5);
+               player.isNoNole = nonole;
+               player.maxEnergy = maxEnergy;
+               player.psychic = psychic;
+               player.turnCount = turnCount;
+               if(player.isSelf)
                {
-                  _loc1_ = LocalPlayer(_loc3_);
-                  _loc1_.energy = _loc3_.maxEnergy;
-                  _loc1_.shootCount = _loc32_;
-                  _loc1_.dander = _loc20_;
-                  if(_loc1_.currentPet)
+                  localPlayer = LocalPlayer(player);
+                  localPlayer.energy = player.maxEnergy;
+                  localPlayer.shootCount = shootCount;
+                  localPlayer.dander = dander;
+                  if(localPlayer.currentPet)
                   {
-                     _loc1_.currentPet.MaxMP = _loc22_;
-                     _loc1_.currentPet.MP = _loc2_;
+                     localPlayer.currentPet.MaxMP = petMaxMP;
+                     localPlayer.currentPet.MP = petMP;
                   }
-                  _loc1_.soulPropCount = 0;
-                  _loc1_.flyCount = _loc16_;
+                  localPlayer.soulPropCount = 0;
+                  localPlayer.flyCount = flyCount;
                }
-               if(!_loc10_)
+               if(!isLiving)
                {
-                  _loc3_.die();
+                  player.die();
                }
                else
                {
-                  _loc3_.onChange = false;
-                  _loc3_.pos = new Point(_loc31_,_loc30_);
-                  _loc3_.onChange = true;
+                  player.onChange = false;
+                  player.pos = new Point(tx,ty);
+                  player.onChange = true;
                }
             }
-            _loc25_++;
+            j++;
          }
          _map.currentTurn = _pkg.readInt();
-         var _loc29_:Boolean = _pkg.readBoolean();
-         if(_loc29_)
+         var isOutCrater:Boolean = _pkg.readBoolean();
+         if(isOutCrater)
          {
-            _loc27_ = _pkg.readInt();
-            _loc12_ = new DictionaryData();
-            _loc26_ = 0;
-            while(_loc26_ < _loc27_)
+            outBombsLength = _pkg.readInt();
+            outBombs = new DictionaryData();
+            for(k = 0; k < outBombsLength; )
             {
-               _loc34_ = new Bomb();
-               _loc34_.Id = _pkg.readInt();
-               _loc34_.X = _pkg.readInt();
-               _loc34_.Y = _pkg.readInt();
-               _loc12_.add(_loc26_,_loc34_);
-               _loc26_++;
+               bomb = new Bomb();
+               bomb.Id = _pkg.readInt();
+               bomb.X = _pkg.readInt();
+               bomb.Y = _pkg.readInt();
+               outBombs.add(k,bomb);
+               k++;
             }
-            _map.DigOutCrater(_loc12_);
+            _map.DigOutCrater(outBombs);
          }
       }
       
@@ -242,10 +239,10 @@ package gameStarling.actions
          _event.executed = true;
       }
       
-      private function executeImp(param1:Boolean) : void
+      private function executeImp(fastModel:Boolean) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var gameLiving:* = null;
+         var _turnMovie:* = null;
          if(!_info.isExist)
          {
             _isFinished = true;
@@ -262,33 +259,33 @@ package gameStarling.actions
             }
             var _loc6_:* = 0;
             var _loc5_:* = GameControl.Instance.Current.livings;
-            for each(var _loc4_ in GameControl.Instance.Current.livings)
+            for each(var p in GameControl.Instance.Current.livings)
             {
-               _loc4_.beginNewTurn();
+               p.beginNewTurn();
             }
             _map.gameView.setCurrentPlayer(_info);
-            _loc3_ = _map.getPhysical(_info.LivingID) as GameLiving3D;
-            if(_loc3_)
+            gameLiving = _map.getPhysical(_info.LivingID) as GameLiving3D;
+            if(gameLiving)
             {
-               _loc3_.needFocus(0,0,{"priority":3});
+               gameLiving.needFocus(0,0,{"priority":3});
             }
             else
             {
                trace("ChangePlayerAction->infoLivingID:" + _info.LivingID + " 未在map.getPhysical方法中找到！");
             }
             _info.gemDefense = false;
-            if(_info is LocalPlayer && !param1 && !BombKingManager.instance.Recording)
+            if(_info is LocalPlayer && !fastModel && !BombKingManager.instance.Recording)
             {
                KeyboardManager.getInstance().reset();
                SoundManager.instance.play("016");
-               _loc2_ = new MovieClipWrapper(MovieClip(ClassUtils.CreatInstance("asset.game.TurnAsset")),true,true);
-               _loc2_.repeat = false;
+               _turnMovie = new MovieClipWrapper(MovieClip(ClassUtils.CreatInstance("asset.game.TurnAsset")),true,true);
+               _turnMovie.repeat = false;
                _loc6_ = false;
-               _loc2_.movie.mouseEnabled = _loc6_;
-               _loc2_.movie.mouseChildren = _loc6_;
-               _loc2_.movie.x = 440;
-               _loc2_.movie.y = 180;
-               _map.gameView.addChild(_loc2_.movie);
+               _turnMovie.movie.mouseEnabled = _loc6_;
+               _turnMovie.movie.mouseChildren = _loc6_;
+               _turnMovie.movie.x = 440;
+               _turnMovie.movie.y = 180;
+               _map.gameView.addChild(_turnMovie.movie);
             }
             else
             {

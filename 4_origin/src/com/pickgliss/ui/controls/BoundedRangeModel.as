@@ -17,16 +17,16 @@ package com.pickgliss.ui.controls
       
       private var isAdjusting:Boolean;
       
-      public function BoundedRangeModel(param1:int = 0, param2:int = 0, param3:int = 0, param4:int = 100)
+      public function BoundedRangeModel(value:int = 0, extent:int = 0, min:int = 0, max:int = 100)
       {
          super();
          isAdjusting = false;
-         if(param4 >= param3 && param1 >= param3 && param1 + param2 >= param1 && param1 + param2 <= param4)
+         if(max >= min && value >= min && value + extent >= value && value + extent <= max)
          {
-            this.value = param1;
-            this.extent = param2;
-            this.min = param3;
-            this.max = param4;
+            this.value = value;
+            this.extent = extent;
+            this.min = min;
+            this.max = max;
             return;
          }
          throw new RangeError("invalid range properties");
@@ -52,42 +52,42 @@ package com.pickgliss.ui.controls
          return max;
       }
       
-      public function setValue(param1:int) : void
+      public function setValue(n:int) : void
       {
-         param1 = Math.min(param1,max - extent);
-         var _loc2_:int = Math.max(param1,min);
-         setRangeProperties(_loc2_,extent,min,max,isAdjusting);
+         n = Math.min(n,max - extent);
+         var newValue:int = Math.max(n,min);
+         setRangeProperties(newValue,extent,min,max,isAdjusting);
       }
       
-      public function setExtent(param1:int) : void
+      public function setExtent(n:int) : void
       {
-         var _loc2_:int = Math.max(0,param1);
-         if(value + _loc2_ > max)
+         var newExtent:int = Math.max(0,n);
+         if(value + newExtent > max)
          {
-            _loc2_ = max - value;
+            newExtent = max - value;
          }
-         setRangeProperties(value,_loc2_,min,max,isAdjusting);
+         setRangeProperties(value,newExtent,min,max,isAdjusting);
       }
       
-      public function setMinimum(param1:int) : void
+      public function setMinimum(n:int) : void
       {
-         var _loc3_:int = Math.max(param1,max);
-         var _loc2_:int = Math.max(param1,value);
-         var _loc4_:int = Math.min(_loc3_ - _loc2_,extent);
-         setRangeProperties(_loc2_,_loc4_,param1,_loc3_,isAdjusting);
+         var newMax:int = Math.max(n,max);
+         var newValue:int = Math.max(n,value);
+         var newExtent:int = Math.min(newMax - newValue,extent);
+         setRangeProperties(newValue,newExtent,n,newMax,isAdjusting);
       }
       
-      public function setMaximum(param1:int) : void
+      public function setMaximum(n:int) : void
       {
-         var _loc3_:int = Math.min(param1,min);
-         var _loc4_:int = Math.min(param1 - _loc3_,extent);
-         var _loc2_:int = Math.min(param1 - _loc4_,value);
-         setRangeProperties(_loc2_,_loc4_,_loc3_,param1,isAdjusting);
+         var newMin:int = Math.min(n,min);
+         var newExtent:int = Math.min(n - newMin,extent);
+         var newValue:int = Math.min(n - newExtent,value);
+         setRangeProperties(newValue,newExtent,newMin,n,isAdjusting);
       }
       
-      public function setValueIsAdjusting(param1:Boolean) : void
+      public function setValueIsAdjusting(b:Boolean) : void
       {
-         setRangeProperties(value,extent,min,max,param1);
+         setRangeProperties(value,extent,min,max,b);
       }
       
       public function getValueIsAdjusting() : Boolean
@@ -95,48 +95,48 @@ package com.pickgliss.ui.controls
          return isAdjusting;
       }
       
-      public function setRangeProperties(param1:int, param2:int, param3:int, param4:int, param5:Boolean) : void
+      public function setRangeProperties(newValue:int, newExtent:int, newMin:int, newMax:int, adjusting:Boolean) : void
       {
-         if(param3 > param4)
+         if(newMin > newMax)
          {
-            param3 = param4;
+            newMin = newMax;
          }
-         if(param1 > param4)
+         if(newValue > newMax)
          {
-            param4 = param1;
+            newMax = newValue;
          }
-         if(param1 < param3)
+         if(newValue < newMin)
          {
-            param3 = param1;
+            newMin = newValue;
          }
-         if(param2 + param1 > param4)
+         if(newExtent + newValue > newMax)
          {
-            param2 = param4 - param1;
+            newExtent = newMax - newValue;
          }
-         if(param2 < 0)
+         if(newExtent < 0)
          {
-            param2 = 0;
+            newExtent = 0;
          }
-         var _loc6_:Boolean = param1 != value || param2 != extent || param3 != min || param4 != max || param5 != isAdjusting;
-         if(_loc6_)
+         var isChange:Boolean = newValue != value || newExtent != extent || newMin != min || newMax != max || adjusting != isAdjusting;
+         if(isChange)
          {
-            value = param1;
-            extent = param2;
-            min = param3;
-            max = param4;
-            isAdjusting = param5;
+            value = newValue;
+            extent = newExtent;
+            min = newMin;
+            max = newMax;
+            isAdjusting = adjusting;
             fireStateChanged();
          }
       }
       
-      public function addStateListener(param1:Function, param2:int = 0, param3:Boolean = false) : void
+      public function addStateListener(listener:Function, priority:int = 0, useWeakReference:Boolean = false) : void
       {
-         addEventListener("stateChange",param1,false,param2);
+         addEventListener("stateChange",listener,false,priority);
       }
       
-      public function removeStateListener(param1:Function) : void
+      public function removeStateListener(listener:Function) : void
       {
-         removeEventListener("stateChange",param1);
+         removeEventListener("stateChange",listener);
       }
       
       protected function fireStateChanged() : void
@@ -146,8 +146,8 @@ package com.pickgliss.ui.controls
       
       override public function toString() : String
       {
-         var _loc1_:String = "value=" + getValue() + ", " + "extent=" + getExtent() + ", " + "min=" + getMinimum() + ", " + "max=" + getMaximum() + ", " + "adj=" + getValueIsAdjusting();
-         return "BoundedRangeModel[" + _loc1_ + "]";
+         var modelString:String = "value=" + getValue() + ", " + "extent=" + getExtent() + ", " + "min=" + getMinimum() + ", " + "max=" + getMaximum() + ", " + "adj=" + getValueIsAdjusting();
+         return "BoundedRangeModel[" + modelString + "]";
       }
    }
 }

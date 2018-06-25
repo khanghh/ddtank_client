@@ -51,9 +51,9 @@ package consortion.view.selfConsortia
          initEvent();
       }
       
-      public function set isMetal(param1:Boolean) : void
+      public function set isMetal(value:Boolean) : void
       {
-         _isMetal = param1;
+         _isMetal = value;
       }
       
       private function initView() : void
@@ -94,16 +94,16 @@ package consortion.view.selfConsortia
          _ok.removeEventListener("click",__okHandler);
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(event:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(event.responseCode == 0 || event.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();
          }
       }
       
-      private function __numberSelecterChange(param1:Event) : void
+      private function __numberSelecterChange(event:Event) : void
       {
          SoundManager.instance.play("008");
          _riches.text = String(_numSelected.currentValue * _info.riches);
@@ -113,10 +113,10 @@ package consortion.view.selfConsortia
          }
       }
       
-      private function __okHandler(param1:MouseEvent) : void
+      private function __okHandler(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
+         var enoughFrame:* = null;
+         var temp:int = 0;
          SoundManager.instance.play("008");
          if(_info)
          {
@@ -130,8 +130,8 @@ package consortion.view.selfConsortia
             }
             else if(_info.type == 1 && PlayerManager.Instance.Self.consortiaInfo.Riches < int(_riches.text) || _info.type == 2 && PlayerManager.Instance.Self.Riches < int(_riches.text))
             {
-               _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.consortion.skillItem.click.enough" + _info.type),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
-               _loc2_.addEventListener("response",__noEnoughHandler);
+               enoughFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.consortion.skillItem.click.enough" + _info.type),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
+               enoughFrame.addEventListener("response",__noEnoughHandler);
                return;
             }
             if(ConsortionModelManager.Instance.model.hasSomeGroupSkill(_info.group,_info.id))
@@ -140,63 +140,63 @@ package consortion.view.selfConsortia
                _alertFrame.addEventListener("response",__alertResponseHandler);
                return;
             }
-            _loc3_ = !!_isMetal?2:1;
-            SocketManager.Instance.out.sendConsortionSkill(true,_info.id,int(_numSelected.currentValue),_loc3_);
+            temp = !!_isMetal?2:1;
+            SocketManager.Instance.out.sendConsortionSkill(true,_info.id,int(_numSelected.currentValue),temp);
             dispose();
          }
       }
       
-      private function __noEnoughHandler(param1:FrameEvent) : void
+      private function __noEnoughHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode) - 2)
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
                ConsortionModelManager.Instance.alertTaxFrame();
          }
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__noEnoughHandler);
-         _loc2_.dispose();
-         _loc2_ = null;
+         var frame:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("response",__noEnoughHandler);
+         frame.dispose();
+         frame = null;
       }
       
-      private function __alertResponseHandler(param1:FrameEvent) : void
+      private function __alertResponseHandler(event:FrameEvent) : void
       {
-         var _loc2_:int = 0;
+         var temp:int = 0;
          _alertFrame.removeEventListener("response",__alertResponseHandler);
          _alertFrame.dispose();
          _alertFrame = null;
-         switch(int(param1.responseCode) - 2)
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
                if(_info && _numSelected)
                {
-                  _loc2_ = !!_isMetal?2:1;
-                  SocketManager.Instance.out.sendConsortionSkill(true,_info.id,int(_numSelected.currentValue),_loc2_);
+                  temp = !!_isMetal?2:1;
+                  SocketManager.Instance.out.sendConsortionSkill(true,_info.id,int(_numSelected.currentValue),temp);
                   dispose();
                   break;
                }
          }
       }
       
-      public function set info(param1:ConsortionSkillInfo) : void
+      public function set info(value:ConsortionSkillInfo) : void
       {
-         _info = param1;
+         _info = value;
          _riches.text = String(_info.riches * _numSelected.currentValue);
          if(_isMetal)
          {
             _riches.text = String(_info.metal * _numSelected.currentValue);
          }
-         _richesbg.setFrame(param1.type);
-         _richesTxt.text = LanguageMgr.GetTranslation("consortion.openSkillFrame.richesText" + param1.type);
+         _richesbg.setFrame(value.type);
+         _richesTxt.text = LanguageMgr.GetTranslation("consortion.openSkillFrame.richesText" + value.type);
          if(_isMetal)
          {
             _richesbg.setFrame(3);
             _richesTxt.text = LanguageMgr.GetTranslation("consortion.openSkillFrame.richesText3");
          }
-         _cell.tipData = param1;
+         _cell.tipData = value;
          _cell.contentRect(60,59);
          _cell.setGray(false);
       }

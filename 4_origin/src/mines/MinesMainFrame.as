@@ -59,9 +59,9 @@ package mines
          LabyrinthManager.Instance.chat();
       }
       
-      private function select(param1:int) : void
+      private function select(index:int) : void
       {
-         _index = param1;
+         _index = index;
          switch(int(_index))
          {
             case 0:
@@ -146,7 +146,7 @@ package mines
          }
       }
       
-      private function openShopView(param1:Event) : void
+      private function openShopView(e:Event) : void
       {
          if(!MinesManager.instance.viewOpen)
          {
@@ -190,13 +190,13 @@ package mines
          PositionUtils.setPos(_bagView,"mines.mainFrame.bagViewPos");
       }
       
-      private function doubleClick(param1:CellEvent) : void
+      private function doubleClick(e:CellEvent) : void
       {
          if(_toolView && _toolView.visible)
          {
-            if(param1.data)
+            if(e.data)
             {
-               _toolView.cellChange(param1.data as BagCell);
+               _toolView.cellChange(e.data as BagCell);
             }
             else
             {
@@ -205,9 +205,9 @@ package mines
          }
          if(_equipmentView && _equipmentView.visible)
          {
-            if(param1.data)
+            if(e.data)
             {
-               _equipmentView.cellChange(param1.data as BagCell);
+               _equipmentView.cellChange(e.data as BagCell);
             }
             else
             {
@@ -218,8 +218,8 @@ package mines
       
       private function openHelp() : void
       {
-         var _loc1_:* = ClassUtils.CreatInstance("mines.view.HelpFrame");
-         LayerManager.Instance.addToLayer(_loc1_,3,false,1);
+         var frame:* = ClassUtils.CreatInstance("mines.view.HelpFrame");
+         LayerManager.Instance.addToLayer(frame,3,false,1);
       }
       
       private function removeEvent() : void

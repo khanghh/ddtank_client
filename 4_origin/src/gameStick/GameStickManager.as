@@ -25,7 +25,7 @@ package gameStick
       
       private var _frameRank:GameStickRankFrame;
       
-      public function GameStickManager(param1:inner)
+      public function GameStickManager(single:inner)
       {
          super();
       }

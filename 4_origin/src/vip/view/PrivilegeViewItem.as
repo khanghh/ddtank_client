@@ -54,11 +54,11 @@ package vip.view
       
       private var _crossFilter:String = "0";
       
-      public function PrivilegeViewItem(param1:int = 3, param2:* = null)
+      public function PrivilegeViewItem(type:int = 3, object:* = null)
       {
          super();
-         _itemType = param1;
-         _extraDisplayObject = param2;
+         _itemType = type;
+         _extraDisplayObject = object;
          _extraDisplayObjectList = new Vector.<DisplayObject>();
          _analyzeFunction = analyzeContent;
          if(_itemType == 4)
@@ -78,137 +78,136 @@ package vip.view
          addChild(_titleTxt);
       }
       
-      protected function analyzeContentForTypeIcon(param1:Array) : Vector.<DisplayObject>
+      protected function analyzeContentForTypeIcon(content:Array) : Vector.<DisplayObject>
       {
-         var _loc8_:* = null;
-         var _loc6_:* = null;
-         var _loc7_:int = 0;
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:Vector.<DisplayObject> = new Vector.<DisplayObject>();
-         var _loc4_:Point = ComponentFactory.Instance.creatCustomObject("vip.levelPrivilegeItemTxtStartPos2");
-         _loc7_ = 0;
-         while(_loc7_ < param1.length)
+         var info:* = null;
+         var bg:* = null;
+         var i:int = 0;
+         var lv:int = 0;
+         var icon:* = null;
+         var result:Vector.<DisplayObject> = new Vector.<DisplayObject>();
+         var startPos:Point = ComponentFactory.Instance.creatCustomObject("vip.levelPrivilegeItemTxtStartPos2");
+         for(i = 0; i < content.length; )
          {
-            _loc8_ = param1[_loc7_] as ItemTemplateInfo;
-            _loc5_ = _loc7_ + 1;
-            _loc6_ = ComponentFactory.Instance.creat("vip.reward.lv" + _loc5_);
-            _loc2_ = new BaseCell(_loc6_);
-            _loc2_.info = _loc8_;
-            _loc2_.getContent().visible = false;
-            PositionUtils.setPos(_loc2_,_loc4_);
-            _loc4_.x = _loc4_.x + (_loc2_.width + 7);
-            _loc3_.push(_loc2_);
-            _loc7_++;
+            info = content[i] as ItemTemplateInfo;
+            lv = i + 1;
+            bg = ComponentFactory.Instance.creat("vip.reward.lv" + lv);
+            icon = new BaseCell(bg);
+            icon.info = info;
+            icon.getContent().visible = false;
+            PositionUtils.setPos(icon,startPos);
+            startPos.x = startPos.x + (icon.width + 7);
+            result.push(icon);
+            i++;
          }
-         return _loc3_;
+         return result;
       }
       
-      protected function analyzeContent(param1:Vector.<String>) : Vector.<DisplayObject>
+      protected function analyzeContent(content:Vector.<String>) : Vector.<DisplayObject>
       {
-         var _loc10_:* = null;
-         var _loc4_:* = null;
-         var _loc8_:* = null;
-         var _loc7_:* = null;
-         var _loc6_:* = null;
-         var _loc11_:* = null;
-         var _loc9_:* = null;
-         var _loc3_:Vector.<DisplayObject> = new Vector.<DisplayObject>();
-         var _loc5_:Point = ComponentFactory.Instance.creatCustomObject("vip.levelPrivilegeItemTxtStartPos");
+         var txt:* = null;
+         var crossImg:* = null;
+         var img:* = null;
+         var sprite:* = null;
+         var dis:* = null;
+         var info:* = null;
+         var _itemCell:* = null;
+         var result:Vector.<DisplayObject> = new Vector.<DisplayObject>();
+         var startPos:Point = ComponentFactory.Instance.creatCustomObject("vip.levelPrivilegeItemTxtStartPos");
          var _loc14_:int = 0;
-         var _loc13_:* = param1;
-         for each(var _loc2_ in param1)
+         var _loc13_:* = content;
+         for each(var con in content)
          {
-            _loc10_ = ComponentFactory.Instance.creatComponentByStylename("vip.PrivilegeViewItemTxt");
-            _loc10_.text = _interceptor == null?_loc2_:_interceptor(_loc2_);
-            PositionUtils.setPos(_loc10_,_loc5_);
-            _loc5_.x = _loc5_.x + (_loc10_.width + 5);
-            if(_loc2_ == _crossFilter)
+            txt = ComponentFactory.Instance.creatComponentByStylename("vip.PrivilegeViewItemTxt");
+            txt.text = _interceptor == null?con:_interceptor(con);
+            PositionUtils.setPos(txt,startPos);
+            startPos.x = startPos.x + (txt.width + 5);
+            if(con == _crossFilter)
             {
-               _loc4_ = ComponentFactory.Instance.creatComponentByStylename("vip.PrivilegeViewItem.cross");
-               _loc4_.x = _loc10_.width - _loc4_.width + _loc10_.x;
-               _loc4_.y = _loc10_.y;
-               _loc3_.push(_loc4_);
+               crossImg = ComponentFactory.Instance.creatComponentByStylename("vip.PrivilegeViewItem.cross");
+               crossImg.x = txt.width - crossImg.width + txt.x;
+               crossImg.y = txt.y;
+               result.push(crossImg);
                continue;
             }
             switch(int(_itemType))
             {
                case 0:
-                  _loc8_ = _loc2_ == "1"?ComponentFactory.Instance.creatComponentByStylename("vip.PrivilegeViewItem.Tick"):ComponentFactory.Instance.creatComponentByStylename("vip.PrivilegeViewItem.cross");
-                  _loc8_.x = _loc10_.width - _loc8_.width + _loc10_.x;
-                  _loc8_.y = _loc10_.y;
-                  _loc3_.push(_loc8_);
+                  img = con == "1"?ComponentFactory.Instance.creatComponentByStylename("vip.PrivilegeViewItem.Tick"):ComponentFactory.Instance.creatComponentByStylename("vip.PrivilegeViewItem.cross");
+                  img.x = txt.width - img.width + txt.x;
+                  img.y = txt.y;
+                  result.push(img);
                   continue;
                case 1:
-                  _loc10_.text = _loc10_.text + String(_extraDisplayObject);
+                  txt.text = txt.text + String(_extraDisplayObject);
                case 2:
-                  _loc7_ = new Sprite();
-                  _loc6_ = ComponentFactory.Instance.creatBitmap(_extraDisplayObject);
-                  _extraDisplayObjectList.push(_loc6_);
-                  _extraDisplayObjectList.push(_loc10_);
-                  _loc10_.width = _loc10_.width - _loc6_.width;
-                  _loc6_.x = _loc10_.width + _loc10_.x;
-                  _loc6_.y = _loc10_.y;
-                  _loc7_.addChild(_loc10_);
-                  _loc7_.addChild(_loc6_);
-                  _loc3_.push(_loc7_);
+                  sprite = new Sprite();
+                  dis = ComponentFactory.Instance.creatBitmap(_extraDisplayObject);
+                  _extraDisplayObjectList.push(dis);
+                  _extraDisplayObjectList.push(txt);
+                  txt.width = txt.width - dis.width;
+                  dis.x = txt.width + txt.x;
+                  dis.y = txt.y;
+                  sprite.addChild(txt);
+                  sprite.addChild(dis);
+                  result.push(sprite);
                   continue;
                default:
                default:
-                  _loc3_.push(_loc10_);
+                  result.push(txt);
                   continue;
                case 5:
-                  _loc11_ = ItemManager.fillByID(int(_loc2_));
-                  _loc11_.IsBinds = true;
-                  _loc9_ = new BagCell(0);
-                  _loc9_.info = _loc11_;
-                  _loc9_.setCountNotVisible();
+                  info = ItemManager.fillByID(int(con));
+                  info.IsBinds = true;
+                  _itemCell = new BagCell(0);
+                  _itemCell.info = info;
+                  _itemCell.setCountNotVisible();
                   var _loc12_:int = 30;
-                  _loc9_.height = _loc12_;
-                  _loc9_.width = _loc12_;
-                  _loc9_.x = _loc10_.width - 32 + _loc10_.x;
-                  _loc9_.y = 2;
-                  _loc3_.push(_loc9_);
+                  _itemCell.height = _loc12_;
+                  _itemCell.width = _loc12_;
+                  _itemCell.x = txt.width - 32 + txt.x;
+                  _itemCell.y = 2;
+                  result.push(_itemCell);
                   continue;
             }
          }
-         return _loc3_;
+         return result;
       }
       
-      public function set crossFilter(param1:String) : void
+      public function set crossFilter(value:String) : void
       {
-         _crossFilter = param1;
+         _crossFilter = value;
       }
       
-      public function set contentInterceptor(param1:Function) : void
+      public function set contentInterceptor(value:Function) : void
       {
-         _interceptor = param1;
+         _interceptor = value;
       }
       
-      public function set itemTitleText(param1:String) : void
+      public function set itemTitleText(value:String) : void
       {
-         _titleTxt.text = param1;
+         _titleTxt.text = value;
          if(_titleTxt.textHeight > 20)
          {
             _titleTxt.y = 2;
          }
       }
       
-      public function set analyzeFunction(param1:Function) : void
+      public function set analyzeFunction(val:Function) : void
       {
-         _analyzeFunction = param1;
+         _analyzeFunction = val;
       }
       
-      public function set itemContent(param1:Vector.<String>) : void
+      public function set itemContent(contents:Vector.<String>) : void
       {
-         _content = param1;
+         _content = contents;
          _displayContent = _analyzeFunction(_content);
          updateView();
       }
       
-      public function set itemContentForIcontype(param1:Array) : void
+      public function set itemContentForIcontype(contents:Array) : void
       {
-         _displayContent = _analyzeFunction(param1);
+         _displayContent = _analyzeFunction(contents);
          updateView();
       }
       
@@ -216,9 +215,9 @@ package vip.view
       {
          var _loc3_:int = 0;
          var _loc2_:* = _displayContent;
-         for each(var _loc1_ in _displayContent)
+         for each(var dis in _displayContent)
          {
-            addChild(_loc1_);
+            addChild(dis);
          }
       }
       
@@ -228,17 +227,17 @@ package vip.view
          {
             var _loc4_:int = 0;
             var _loc3_:* = _displayContent;
-            for each(var _loc2_ in _displayContent)
+            for each(var o in _displayContent)
             {
-               ObjectUtils.disposeObject(_loc2_);
+               ObjectUtils.disposeObject(o);
             }
          }
          _displayContent = null;
          var _loc6_:int = 0;
          var _loc5_:* = _extraDisplayObjectList;
-         for each(var _loc1_ in _extraDisplayObjectList)
+         for each(var dis in _extraDisplayObjectList)
          {
-            ObjectUtils.disposeObject(_loc1_);
+            ObjectUtils.disposeObject(dis);
          }
          _extraDisplayObjectList = null;
          ObjectUtils.disposeObject(_bg);

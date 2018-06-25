@@ -16,24 +16,24 @@ package dayActivity.items
       
       private var _txt:FilterFrameText;
       
-      public function DayActivityLeftTitleItem(param1:String, param2:int)
+      public function DayActivityLeftTitleItem(str:String, num:int)
       {
          super();
-         initView(param1,param2);
+         initView(str,num);
       }
       
-      private function initView(param1:String, param2:int) : void
+      private function initView(str:String, num:int) : void
       {
-         _back = ComponentFactory.Instance.creat(param1);
+         _back = ComponentFactory.Instance.creat(str);
          addChild(_back);
          _txt = ComponentFactory.Instance.creatComponentByStylename("day.activityView.left.txt1");
-         _txt.text = LanguageMgr.GetTranslation("ddt.dayActivity.activityNoOver",param2);
+         _txt.text = LanguageMgr.GetTranslation("ddt.dayActivity.activityNoOver",num);
          addChild(_txt);
       }
       
-      public function setTxt(param1:String) : void
+      public function setTxt(str:String) : void
       {
-         _txt.text = param1;
+         _txt.text = str;
       }
       
       public function dispose() : void

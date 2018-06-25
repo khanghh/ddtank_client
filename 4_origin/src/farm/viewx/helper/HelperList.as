@@ -103,11 +103,11 @@ package farm.viewx.helper
          setListData();
       }
       
-      private function setTip(param1:BaseButton, param2:String) : void
+      private function setTip(btn:BaseButton, value:String) : void
       {
-         param1.tipStyle = "ddt.view.tips.OneLineTip";
-         param1.tipDirctions = "0";
-         param1.tipData = param2;
+         btn.tipStyle = "ddt.view.tips.OneLineTip";
+         btn.tipDirctions = "0";
+         btn.tipData = value;
       }
       
       public function get helperItemList() : Array
@@ -115,152 +115,149 @@ package farm.viewx.helper
          return _helperItemList;
       }
       
-      private function findNumState(param1:int, param2:int) : int
+      private function findNumState(seedId:int, fertilizerId:int) : int
       {
-         var _loc10_:* = null;
-         var _loc5_:int = 0;
-         var _loc3_:int = 0;
-         var _loc8_:int = 0;
-         var _loc9_:int = 0;
-         var _loc7_:int = 0;
+         var obj:* = null;
+         var id1:int = 0;
+         var id2:int = 0;
+         var state:int = 0;
+         var count1:int = 0;
+         var count2:int = 0;
          var _loc13_:int = 0;
          var _loc12_:* = _helperItemList;
-         for each(var _loc6_ in _helperItemList)
+         for each(var item in _helperItemList)
          {
-            _loc10_ = _loc6_.getSetViewItemData;
-            if(!_loc10_)
+            obj = item.getSetViewItemData;
+            if(!obj)
             {
-               _loc10_ = _loc6_.getItemData;
+               obj = item.getItemData;
             }
-            _loc5_ = _loc10_.currentSeedText;
-            if(param1 > 0 && _loc5_ == param1)
+            id1 = obj.currentSeedText;
+            if(seedId > 0 && id1 == seedId)
             {
-               _loc9_ = _loc9_ + int(_loc10_.currentSeedNum);
+               count1 = count1 + int(obj.currentSeedNum);
             }
-            _loc3_ = _loc10_.currentFertilizerText;
-            if(param2 > 0 && _loc3_ == param2)
+            id2 = obj.currentFertilizerText;
+            if(fertilizerId > 0 && id2 == fertilizerId)
             {
-               _loc7_ = _loc7_ + int(_loc10_.currentFertilizerNum);
+               count2 = count2 + int(obj.currentFertilizerNum);
             }
          }
-         var _loc11_:InventoryItemInfo = FarmModelController.instance.model.findItemInfo(32,param1);
-         if(_loc11_ && _loc9_ > _loc11_.Count)
+         var seedinfo:InventoryItemInfo = FarmModelController.instance.model.findItemInfo(32,seedId);
+         if(seedinfo && count1 > seedinfo.Count)
          {
-            _loc8_ = 1;
+            state = 1;
          }
-         var _loc4_:InventoryItemInfo = FarmModelController.instance.model.findItemInfo(33,param2);
-         if(_loc4_ && _loc7_ > _loc4_.Count)
+         var fertilireInfo:InventoryItemInfo = FarmModelController.instance.model.findItemInfo(33,fertilizerId);
+         if(fertilireInfo && count2 > fertilireInfo.Count)
          {
-            _loc8_ = 2;
+            state = 2;
          }
-         return _loc8_;
+         return state;
       }
       
       private function setListData() : void
       {
-         var _loc11_:int = 0;
-         var _loc2_:* = null;
-         var _loc10_:* = null;
-         var _loc8_:int = 0;
-         var _loc7_:* = null;
-         var _loc9_:int = 0;
-         var _loc5_:* = null;
+         var i:int = 0;
+         var helperItem:* = null;
+         var fieldVO:* = null;
+         var m:int = 0;
+         var itemInfo:* = null;
+         var k:int = 0;
+         var itemInfo1:* = null;
          _vbox.disposeAllChildren();
          _helperItemList = [];
-         var _loc1_:Vector.<FieldVO> = FarmModelController.instance.model.fieldsInfo;
-         var _loc6_:int = !!_loc1_?_loc1_.length:0;
-         _loc11_ = 0;
-         while(_loc11_ < _loc6_)
+         var fieldsInfo:Vector.<FieldVO> = FarmModelController.instance.model.fieldsInfo;
+         var length:int = !!fieldsInfo?fieldsInfo.length:0;
+         for(i = 0; i < length; )
          {
-            _loc2_ = new HelperItem();
-            _loc2_.addEventListener("click",__onItemClickHandler);
-            _loc2_.findNumState = findNumState;
-            _loc2_.index = _loc11_;
-            _loc10_ = null;
-            _loc10_ = _loc1_[_loc11_];
-            if(_loc10_.isDig)
+            helperItem = new HelperItem();
+            helperItem.addEventListener("click",__onItemClickHandler);
+            helperItem.findNumState = findNumState;
+            helperItem.index = i;
+            fieldVO = null;
+            fieldVO = fieldsInfo[i];
+            if(fieldVO.isDig)
             {
-               _loc2_.initView(1);
-               _loc2_.setCellValue(_loc10_);
-               _helperItemList.push(_loc2_);
-               _vbox.addChild(_loc2_);
+               helperItem.initView(1);
+               helperItem.setCellValue(fieldVO);
+               _helperItemList.push(helperItem);
+               _vbox.addChild(helperItem);
             }
-            _loc11_++;
+            i++;
          }
          _scrollPanel.invalidateViewport();
          _seedInfos = new Dictionary();
          _fertilizerInfos = new Dictionary();
-         var _loc4_:Vector.<ShopItemInfo> = ShopManager.Instance.getValidGoodByType(88);
-         var _loc3_:Vector.<ShopItemInfo> = ShopManager.Instance.getValidGoodByType(89);
-         _loc8_ = 0;
-         while(_loc8_ < _loc4_.length)
+         var arr:Vector.<ShopItemInfo> = ShopManager.Instance.getValidGoodByType(88);
+         var autoFertilizer:Vector.<ShopItemInfo> = ShopManager.Instance.getValidGoodByType(89);
+         for(m = 0; m < arr.length; )
          {
-            _loc7_ = _loc4_[_loc8_];
-            _seedInfos[_loc7_.TemplateInfo.Name] = _loc7_.TemplateInfo.TemplateID;
-            _loc8_++;
+            itemInfo = arr[m];
+            _seedInfos[itemInfo.TemplateInfo.Name] = itemInfo.TemplateInfo.TemplateID;
+            m++;
          }
-         _loc9_ = 0;
-         while(_loc9_ < _loc3_.length)
+         for(k = 0; k < autoFertilizer.length; )
          {
-            _loc5_ = _loc3_[_loc9_];
-            _fertilizerInfos[_loc5_.TemplateInfo.Name] = _loc5_.TemplateInfo.TemplateID;
-            _loc9_++;
+            itemInfo1 = autoFertilizer[k];
+            _fertilizerInfos[itemInfo1.TemplateInfo.Name] = itemInfo1.TemplateInfo.TemplateID;
+            k++;
          }
       }
       
       public function onKeyStart() : void
       {
-         var _loc2_:Array = [];
+         var temp:Array = [];
          var _loc4_:int = 0;
          var _loc3_:* = _helperItemList;
-         for each(var _loc1_ in _helperItemList)
+         for each(var item in _helperItemList)
          {
-            if(_loc1_.onKeyStart())
+            if(item.onKeyStart())
             {
-               _loc2_.push(_loc1_.getItemData);
+               temp.push(item.getItemData);
             }
          }
-         if(_loc2_.length == 0)
+         if(temp.length == 0)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.farm.helperItem.onKeyStartFail"));
          }
          else
          {
-            FarmModelController.instance.farmHelperSetSwitch(_loc2_,true);
+            FarmModelController.instance.farmHelperSetSwitch(temp,true);
          }
       }
       
       public function onKeyStop() : void
       {
-         var _loc2_:Array = [];
+         var temp:Array = [];
          var _loc4_:int = 0;
          var _loc3_:* = _helperItemList;
-         for each(var _loc1_ in _helperItemList)
+         for each(var item in _helperItemList)
          {
-            if(_loc1_.onKeyStop())
+            if(item.onKeyStop())
             {
-               _loc2_.push(_loc1_.getItemData);
+               temp.push(item.getItemData);
             }
          }
-         if(_loc2_.length == 0)
+         if(temp.length == 0)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.farm.helperItem.onKeyStopFail"));
          }
          else
          {
-            FarmModelController.instance.farmHelperSetSwitch(_loc2_,false);
+            FarmModelController.instance.farmHelperSetSwitch(temp,false);
          }
       }
       
-      private function __onItemClickHandler(param1:MouseEvent) : void
+      private function __onItemClickHandler(event:MouseEvent) : void
       {
-         var _loc2_:HelperItem = HelperItem(param1.currentTarget);
-         _loc2_.isSelelct(true);
-         if(_currentSelectHelperItem && _currentSelectHelperItem != _loc2_)
+         var helperItem:HelperItem = HelperItem(event.currentTarget);
+         helperItem.isSelelct(true);
+         if(_currentSelectHelperItem && _currentSelectHelperItem != helperItem)
          {
             _currentSelectHelperItem.isSelelct(false);
          }
-         _currentSelectHelperItem = _loc2_;
+         _currentSelectHelperItem = helperItem;
       }
       
       private function initEvent() : void
@@ -269,42 +266,41 @@ package farm.viewx.helper
          FarmModelController.instance.addEventListener("helperkeyfield",__helperKeyHandler);
       }
       
-      private function __helperSwitchHandler(param1:FarmEvent) : void
+      private function __helperSwitchHandler(e:FarmEvent) : void
       {
-         var _loc2_:FieldVO = FarmModelController.instance.model.getfieldInfoById(FarmModelController.instance.model.isAutoId);
-         if(_loc2_.isDig)
+         var field1:FieldVO = FarmModelController.instance.model.getfieldInfoById(FarmModelController.instance.model.isAutoId);
+         if(field1.isDig)
          {
-            HelperItem(getHelperItem(_loc2_.fieldID)).setCellValue(_loc2_);
+            HelperItem(getHelperItem(field1.fieldID)).setCellValue(field1);
          }
          FarmModelController.instance.model.dispatchEvent(new FarmEvent("updateHelperIsAuto"));
       }
       
-      private function __helperKeyHandler(param1:FarmEvent) : void
+      private function __helperKeyHandler(e:FarmEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         _loc3_ = 0;
-         while(_loc3_ < FarmModelController.instance.model.batchFieldIDArray.length)
+         var i:int = 0;
+         var field1:* = null;
+         for(i = 0; i < FarmModelController.instance.model.batchFieldIDArray.length; )
          {
-            _loc2_ = FarmModelController.instance.model.getfieldInfoById(FarmModelController.instance.model.batchFieldIDArray[_loc3_]);
-            if(_loc2_.isDig)
+            field1 = FarmModelController.instance.model.getfieldInfoById(FarmModelController.instance.model.batchFieldIDArray[i]);
+            if(field1.isDig)
             {
-               HelperItem(getHelperItem(_loc2_.fieldID)).setCellValue(_loc2_);
+               HelperItem(getHelperItem(field1.fieldID)).setCellValue(field1);
             }
-            _loc3_++;
+            i++;
          }
          FarmModelController.instance.model.dispatchEvent(new FarmEvent("updateHelperIsAuto"));
       }
       
-      public function getHelperItem(param1:int) : HelperItem
+      public function getHelperItem(pFieldID:int) : HelperItem
       {
          var _loc4_:int = 0;
          var _loc3_:* = _helperItemList;
-         for each(var _loc2_ in _helperItemList)
+         for each(var helpItem in _helperItemList)
          {
-            if(_loc2_.currentFieldID == param1)
+            if(helpItem.currentFieldID == pFieldID)
             {
-               return _loc2_;
+               return helpItem;
             }
          }
          return null;
@@ -318,10 +314,10 @@ package farm.viewx.helper
          {
             var _loc3_:int = 0;
             var _loc2_:* = _helperItemList;
-            for each(var _loc1_ in _helperItemList)
+            for each(var helperItem in _helperItemList)
             {
-               _loc1_.removeEventListener("click",__onItemClickHandler);
-               _loc1_.dispose();
+               helperItem.removeEventListener("click",__onItemClickHandler);
+               helperItem.dispose();
             }
             _helperItemList = null;
          }

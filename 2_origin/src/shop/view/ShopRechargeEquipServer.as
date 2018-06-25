@@ -34,19 +34,19 @@ package shop.view
          _description = ComponentFactory.Instance.creatComponentByStylename("ddtcore.xufei.text");
          _description.text = LanguageMgr.GetTranslation("ddt.shop.rechargeEquipAlert.xufei");
          _frame = ComponentFactory.Instance.creatComponentByStylename("core.ddtshop.RechargeViewServer");
-         var _loc1_:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ok"));
-         _loc1_.showCancel = false;
-         _frame.info = _loc1_;
+         var ai:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ok"));
+         ai.showCancel = false;
+         _frame.info = ai;
          _frame.moveEnable = false;
          _frame.addToContent(_girl);
          _frame.addToContent(_description);
          _frame.addEventListener("response",__frameEventHandler);
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(e.responseCode))
          {
             case 0:
             case 1:

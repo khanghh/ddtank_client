@@ -32,17 +32,17 @@ package store.fineStore.view.pageBringUp
       
       private var _lastLevel:int;
       
-      public function FineBringUpCell(param1:int, param2:ItemTemplateInfo = null, param3:Boolean = true, param4:DisplayObject = null, param5:Boolean = true)
+      public function FineBringUpCell(index:int, info:ItemTemplateInfo = null, showLoading:Boolean = true, bg:DisplayObject = null, mouseOverEffBoolean:Boolean = true)
       {
-         var _loc7_:Shape = new Shape();
-         _loc7_.graphics.beginFill(0,0);
-         _loc7_.graphics.drawRect(0,0,65,65);
-         _loc7_.graphics.endFill();
-         var _loc6_:Bitmap = new Bitmap(new BitmapData(65,65));
-         _loc6_.bitmapData.draw(_loc7_);
-         param4 = _loc6_;
-         param4.alpha = 0;
-         super(param1,param2,param3,param4,param5);
+         var shap:Shape = new Shape();
+         shap.graphics.beginFill(0,0);
+         shap.graphics.drawRect(0,0,65,65);
+         shap.graphics.endFill();
+         var bmp:Bitmap = new Bitmap(new BitmapData(65,65));
+         bmp.bitmapData.draw(shap);
+         bg = bmp;
+         bg.alpha = 0;
+         super(index,info,showLoading,bg,mouseOverEffBoolean);
          _text = ComponentFactory.Instance.creatComponentByStylename("ddtbagAndInfo.reworkname.Text1");
          _text.x = 13;
          _text.y = 21;
@@ -50,7 +50,7 @@ package store.fineStore.view.pageBringUp
          addChild(_text);
          lockDisplayObject = ComponentFactory.Instance.creatBitmap("asset.store.bringup.lock");
          PositionUtils.setPos(lockDisplayObject,"storeBringUp.leftCellLockPos");
-         param5 = false;
+         mouseOverEffBoolean = false;
       }
       
       public function get lastLevel() : int
@@ -58,9 +58,9 @@ package store.fineStore.view.pageBringUp
          return _lastLevel;
       }
       
-      public function set latentEnergyItemId(param1:int) : void
+      public function set latentEnergyItemId(value:int) : void
       {
-         _latentEnergyItemId = param1;
+         _latentEnergyItemId = value;
          if(_tipData && _tipData is GoodTipInfo)
          {
             (_tipData as GoodTipInfo).latentEnergyItemId = _latentEnergyItemId;
@@ -73,9 +73,9 @@ package store.fineStore.view.pageBringUp
          return "store.fineStore.view.pageBringUp.FineBringUpUpgradeTip";
       }
       
-      public function register(param1:IObserver) : void
+      public function register(ob:IObserver) : void
       {
-         _observer = param1;
+         _observer = ob;
       }
       
       override protected function addEnchantMc() : void
@@ -88,15 +88,15 @@ package store.fineStore.view.pageBringUp
          _enchantMc.y = -1;
       }
       
-      override public function set info(param1:ItemTemplateInfo) : void
+      override public function set info(value:ItemTemplateInfo) : void
       {
-         .super.info = param1;
-         param1 && int(param1.Property1);
+         .super.info = value;
+         value && int(value.Property1);
          if(_tipData && _tipData is GoodTipInfo)
          {
             (_tipData as GoodTipInfo).latentEnergyItemId = _latentEnergyItemId;
          }
-         if(param1 != null)
+         if(value != null)
          {
             FineBringUpController.getInstance().showNewHandTip();
          }
@@ -116,44 +116,44 @@ package store.fineStore.view.pageBringUp
          FineBringUpController.getInstance().addEventListener("latentEnergy_equip_move2",equipMoveHandler2);
       }
       
-      private function equipMoveHandler(param1:LatentEnergyEvent) : void
+      private function equipMoveHandler(event:LatentEnergyEvent) : void
       {
-         var _loc2_:* = null;
-         if(info == param1.info)
+         var event2:* = null;
+         if(info == event.info)
          {
             return;
          }
          if(info)
          {
-            _loc2_ = new LatentEnergyEvent("latentEnergy_equip_move2");
-            _loc2_.info = info as InventoryItemInfo;
-            _loc2_.moveType = 3;
-            FineBringUpController.getInstance().dispatchEvent(_loc2_);
+            event2 = new LatentEnergyEvent("latentEnergy_equip_move2");
+            event2.info = info as InventoryItemInfo;
+            event2.moveType = 3;
+            FineBringUpController.getInstance().dispatchEvent(event2);
          }
-         info = param1.info;
+         info = event.info;
       }
       
-      private function equipMoveHandler2(param1:LatentEnergyEvent) : void
+      private function equipMoveHandler2(event:LatentEnergyEvent) : void
       {
-         if(info != param1.info || param1.moveType != 2)
+         if(info != event.info || event.moveType != 2)
          {
             return;
          }
-         SocketManager.Instance.out.sendMoveGoods(12,0,0,-1);
+         SocketManager.Instance.out.sendMoveGoods(12,0,0,0);
          info = null;
       }
       
-      protected function __doubleClickHandler(param1:InteractiveEvent) : void
+      protected function __doubleClickHandler(evt:InteractiveEvent) : void
       {
          if(!info)
          {
             return;
          }
          SoundManager.instance.play("008");
-         var _loc2_:LatentEnergyEvent = new LatentEnergyEvent("latentEnergy_equip_move2");
-         _loc2_.info = info as InventoryItemInfo;
-         _loc2_.moveType = 2;
-         FineBringUpController.getInstance().dispatchEvent(_loc2_);
+         var event:LatentEnergyEvent = new LatentEnergyEvent("latentEnergy_equip_move2");
+         event.info = info as InventoryItemInfo;
+         event.moveType = 2;
+         FineBringUpController.getInstance().dispatchEvent(event);
       }
       
       override protected function removeEvent() : void
@@ -166,7 +166,7 @@ package store.fineStore.view.pageBringUp
          FineBringUpController.getInstance().removeEventListener("latentEnergy_equip_move2",equipMoveHandler2);
       }
       
-      protected function __clickHandler(param1:InteractiveEvent) : void
+      protected function __clickHandler(evt:InteractiveEvent) : void
       {
          if(FineBringUpView.isEatStatus)
          {
@@ -181,13 +181,13 @@ package store.fineStore.view.pageBringUp
       
       public function clearInfo() : void
       {
-         var _loc1_:* = null;
+         var event:* = null;
          if(info)
          {
-            _loc1_ = new LatentEnergyEvent("latentEnergy_equip_move2");
-            _loc1_.info = info as InventoryItemInfo;
-            _loc1_.moveType = 2;
-            FineBringUpController.getInstance().dispatchEvent(_loc1_);
+            event = new LatentEnergyEvent("latentEnergy_equip_move2");
+            event.info = info as InventoryItemInfo;
+            event.moveType = 2;
+            FineBringUpController.getInstance().dispatchEvent(event);
          }
       }
       

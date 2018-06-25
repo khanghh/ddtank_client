@@ -37,9 +37,9 @@ package nationDay
       
       private var _hallView:HallStateView;
       
-      public function NationDayManager(param1:IEventDispatcher = null)
+      public function NationDayManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : NationDayManager
@@ -70,10 +70,10 @@ package nationDay
          dispatchEvent(new Event("nationOpenView"));
       }
       
-      protected function __onGetHideTitleFlag(param1:PkgEvent) : void
+      protected function __onGetHideTitleFlag(event:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _openFlag = _loc2_.readBoolean();
+         var pkg:PackageIn = event.pkg;
+         _openFlag = pkg.readBoolean();
          if(_openFlag)
          {
             showNationIcon();
@@ -105,41 +105,39 @@ package nationDay
       
       public function setIconFrame() : void
       {
-         var _loc1_:int = 0;
+         var j:int = 0;
          _nationDayIcon.setFrame(1);
-         _loc1_ = 0;
-         while(_loc1_ < WordInfo.length)
+         for(j = 0; j < WordInfo.length; j++)
          {
-            if(_nationModel && getExchangeNum(_loc1_) > 0)
+            if(_nationModel && getExchangeNum(j) > 0)
             {
                _nationDayIcon.setFrame(2);
                break;
             }
-            _loc1_++;
          }
       }
       
-      private function getExchangeNum(param1:int) : int
+      private function getExchangeNum(index:int) : int
       {
-         var _loc2_:int = 65535;
+         var num:int = 65535;
          var _loc5_:int = 0;
-         var _loc4_:* = WordInfo[param1];
-         for(var _loc3_ in WordInfo[param1])
+         var _loc4_:* = WordInfo[index];
+         for(var i in WordInfo[index])
          {
-            _loc2_ = Math.min(_loc2_,_nationModel.WordArray[WordInfo[param1][_loc3_]]);
+            num = Math.min(num,_nationModel.WordArray[WordInfo[index][i]]);
          }
-         return _loc2_;
+         return num;
       }
       
-      protected function __onNationDayClick(param1:MouseEvent) : void
+      protected function __onNationDayClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          show();
       }
       
-      public function addNationBtn(param1:HallStateView) : void
+      public function addNationBtn(hall:HallStateView) : void
       {
-         _hallView = param1;
+         _hallView = hall;
          if(_openFlag)
          {
             createNationBtn();
@@ -166,9 +164,9 @@ package nationDay
          return _nationModel;
       }
       
-      public function set nationModel(param1:NationModel) : void
+      public function set nationModel(value:NationModel) : void
       {
-         _nationModel = param1;
+         _nationModel = value;
       }
    }
 }

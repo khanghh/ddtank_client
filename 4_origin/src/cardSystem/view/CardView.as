@@ -57,14 +57,14 @@ package cardSystem.view
          addChild(_helpBtn);
       }
       
-      public function set playerInfo(param1:PlayerInfo) : void
+      public function set playerInfo(value:PlayerInfo) : void
       {
-         if(_playerInfo == param1)
+         if(_playerInfo == value)
          {
             return;
          }
-         _playerInfo = param1;
-         _cardEquip.playerInfo = param1;
+         _playerInfo = value;
+         _cardEquip.playerInfo = value;
       }
       
       private function initEvent() : void
@@ -81,10 +81,10 @@ package cardSystem.view
          _helpBtn.removeEventListener("click",__helpHandler);
       }
       
-      private function __dragStartHandler(param1:CellEvent) : void
+      private function __dragStartHandler(event:CellEvent) : void
       {
-         var _loc2_:CardInfo = param1.data as CardInfo;
-         if(_loc2_.templateInfo.Property8 == "1")
+         var cInfo:CardInfo = event.data as CardInfo;
+         if(cInfo.templateInfo.Property8 == "1")
          {
             _cardEquip.shineMain();
          }
@@ -94,7 +94,7 @@ package cardSystem.view
          }
       }
       
-      private function __dragStopHandler(param1:CellEvent) : void
+      private function __dragStopHandler(event:CellEvent) : void
       {
          _cardEquip.stopShine();
       }
@@ -123,7 +123,7 @@ package cardSystem.view
          }
       }
       
-      private function __helpHandler(param1:MouseEvent) : void
+      private function __helpHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_helpFrame == null)
@@ -142,9 +142,9 @@ package cardSystem.view
          LayerManager.Instance.addToLayer(_helpFrame,3,true,2);
       }
       
-      protected function __helpFrameRespose(param1:FrameEvent) : void
+      protected function __helpFrameRespose(event:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(event.responseCode == 0 || event.responseCode == 1)
          {
             SoundManager.instance.play("008");
             disposeHelpFrame();
@@ -161,7 +161,7 @@ package cardSystem.view
          _helpFrame = null;
       }
       
-      protected function __closeHelpFrame(param1:MouseEvent) : void
+      protected function __closeHelpFrame(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          disposeHelpFrame();

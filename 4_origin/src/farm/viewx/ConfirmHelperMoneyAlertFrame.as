@@ -55,12 +55,12 @@ package farm.viewx
       public function ConfirmHelperMoneyAlertFrame()
       {
          super();
-         var _loc1_:AlertInfo = new AlertInfo();
-         _loc1_.title = LanguageMgr.GetTranslation("ddt.farms.helperMoneyComfirmPnlTitle");
-         _loc1_.bottomGap = 37;
-         _loc1_.buttonGape = 115;
-         _loc1_.customPos = ComponentFactory.Instance.creat("farm.confirmHelperMoneyAlertBtnPos");
-         this.info = _loc1_;
+         var alertInfo:AlertInfo = new AlertInfo();
+         alertInfo.title = LanguageMgr.GetTranslation("ddt.farms.helperMoneyComfirmPnlTitle");
+         alertInfo.bottomGap = 37;
+         alertInfo.buttonGape = 115;
+         alertInfo.customPos = ComponentFactory.Instance.creat("farm.confirmHelperMoneyAlertBtnPos");
+         this.info = alertInfo;
          initView();
          initEvent();
       }
@@ -99,22 +99,22 @@ package farm.viewx
          _secondBtnGroup.addEventListener("change",__upPayNum);
       }
       
-      protected function __framePesponse(param1:FrameEvent) : void
+      protected function __framePesponse(event:FrameEvent) : void
       {
-         var _loc2_:int = 0;
+         var hour:int = 0;
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode) - 2)
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
-               _loc2_ = 0;
+               hour = 0;
                switch(int(_secondBtnGroup.selectIndex))
                {
                   case 0:
-                     _loc2_ = FarmModelController.instance.model.payAutoTimeToWeek;
+                     hour = FarmModelController.instance.model.payAutoTimeToWeek;
                      break;
                   case 1:
-                     _loc2_ = FarmModelController.instance.model.payAutoTimeToMonth;
+                     hour = FarmModelController.instance.model.payAutoTimeToMonth;
                }
                if(BuriedManager.Instance.checkMoney(false,payNum))
                {
@@ -127,19 +127,19 @@ package farm.viewx
                   _moneyConfirm.addEventListener("response",__moneyConfirmHandler);
                   break;
                }
-               FarmModelController.instance.helperRenewMoney(_loc2_,false);
+               FarmModelController.instance.helperRenewMoney(hour,false);
                break;
          }
          removeEventListener("response",__framePesponse);
          dispose();
       }
       
-      private function __moneyConfirmHandler(param1:FrameEvent) : void
+      private function __moneyConfirmHandler(evt:FrameEvent) : void
       {
          _moneyConfirm.removeEventListener("response",__moneyConfirmHandler);
          _moneyConfirm.dispose();
          _moneyConfirm = null;
-         switch(int(param1.responseCode) - 2)
+         switch(int(evt.responseCode) - 2)
          {
             case 0:
             case 1:
@@ -147,7 +147,7 @@ package farm.viewx
          }
       }
       
-      private function __upPayNum(param1:Event) : void
+      private function __upPayNum(e:Event) : void
       {
          SoundManager.instance.play("008");
          upPayMoneyText();

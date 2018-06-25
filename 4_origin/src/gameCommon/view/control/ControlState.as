@@ -20,10 +20,10 @@ package gameCommon.view.control
       
       protected var _background:DisplayObject;
       
-      public function ControlState(param1:LocalPlayer)
+      public function ControlState(self:LocalPlayer)
       {
          super();
-         _self = param1;
+         _self = self;
          configUI();
       }
       
@@ -39,9 +39,9 @@ package gameCommon.view.control
       {
       }
       
-      public function enter(param1:DisplayObjectContainer) : void
+      public function enter(container:DisplayObjectContainer) : void
       {
-         _container = param1;
+         _container = container;
          _container.addChild(this);
          addEvent();
          tweenIn();
@@ -64,9 +64,9 @@ package gameCommon.view.control
          });
       }
       
-      public function leaving(param1:Function = null) : void
+      public function leaving(onComplete:Function = null) : void
       {
-         _leavingFunc = param1;
+         _leavingFunc = onComplete;
          removeEvent();
          tweenOut();
       }

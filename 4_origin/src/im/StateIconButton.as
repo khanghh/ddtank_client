@@ -32,14 +32,14 @@ package im
          addChild(_stateIcon);
       }
       
-      public function setCursor(param1:int) : void
+      public function setCursor(index:int) : void
       {
-         _stateIcon.setFrame(param1);
+         _stateIcon.setFrame(index);
       }
       
-      public function setFrame(param1:int) : void
+      public function setFrame(index:int) : void
       {
-         _stateIcon.setFrame(param1);
+         _stateIcon.setFrame(index);
       }
       
       public function get caretIndex() : int
@@ -47,14 +47,14 @@ package im
          return 0;
       }
       
-      public function setValue(param1:*) : void
+      public function setValue(value:*) : void
       {
-         _stateIcon.setFrame(PlayerState(param1).StateID);
-         if(PlayerManager.Instance.Self.playerState.StateID != PlayerState(param1).StateID)
+         _stateIcon.setFrame(PlayerState(value).StateID);
+         if(PlayerManager.Instance.Self.playerState.StateID != PlayerState(value).StateID)
          {
-            SocketManager.Instance.out.sendFriendState(PlayerState(param1).StateID);
+            SocketManager.Instance.out.sendFriendState(PlayerState(value).StateID);
          }
-         PlayerManager.Instance.Self.playerState = param1;
+         PlayerManager.Instance.Self.playerState = value;
       }
       
       public function getValueLength() : int

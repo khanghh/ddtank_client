@@ -35,9 +35,9 @@ package academy
          _academyPlayers = new Vector.<AcademyPlayerInfo>();
       }
       
-      public function set list(param1:Vector.<AcademyPlayerInfo>) : void
+      public function set list(players:Vector.<AcademyPlayerInfo>) : void
       {
-         _academyPlayers = param1;
+         _academyPlayers = players;
       }
       
       public function get list() : Vector.<AcademyPlayerInfo>
@@ -45,9 +45,9 @@ package academy
          return _academyPlayers;
       }
       
-      public function set sex(param1:Boolean) : void
+      public function set sex(value:Boolean) : void
       {
-         _currentSex = param1;
+         _currentSex = value;
       }
       
       public function get sex() : Boolean
@@ -55,9 +55,9 @@ package academy
          return _currentSex;
       }
       
-      public function set state(param1:Boolean) : void
+      public function set state(value:Boolean) : void
       {
-         _appshipStateType = param1;
+         _appshipStateType = value;
       }
       
       public function get state() : Boolean
@@ -65,9 +65,9 @@ package academy
          return _appshipStateType;
       }
       
-      public function set info(param1:AcademyPlayerInfo) : void
+      public function set info(value:AcademyPlayerInfo) : void
       {
-         _currentAcademyItemInfo = param1;
+         _currentAcademyItemInfo = value;
       }
       
       public function get info() : AcademyPlayerInfo
@@ -75,9 +75,9 @@ package academy
          return _currentAcademyItemInfo;
       }
       
-      public function set totalPage(param1:int) : void
+      public function set totalPage(value:int) : void
       {
-         _totalPage = param1;
+         _totalPage = value;
       }
       
       public function get totalPage() : int
@@ -85,9 +85,9 @@ package academy
          return _totalPage;
       }
       
-      public function set selfIsRegister(param1:Boolean) : void
+      public function set selfIsRegister(value:Boolean) : void
       {
-         _selfIsRegister = param1;
+         _selfIsRegister = value;
       }
       
       public function get selfIsRegister() : Boolean
@@ -95,9 +95,9 @@ package academy
          return _selfIsRegister;
       }
       
-      public function set selfDescribe(param1:String) : void
+      public function set selfDescribe(value:String) : void
       {
-         _selfDescribe = param1;
+         _selfDescribe = value;
       }
       
       public function get selfDescribe() : String

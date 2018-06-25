@@ -36,56 +36,54 @@ package exitPrompt
          }
       }
       
-      private function _returnList0Arr(param1:Array) : Array
+      private function _returnList0Arr(arr:Array) : Array
       {
-         var _loc3_:int = 0;
-         var _loc2_:Array = [];
-         _loc3_ = 0;
-         while(_loc3_ < param1.length)
+         var i:int = 0;
+         var arr0:Array = [];
+         for(i = 0; i < arr.length; )
          {
-            _loc2_[_loc3_] = [];
-            _loc2_[_loc3_][0] = QuestInfo(param1[_loc3_]).Title;
-            if(QuestInfo(param1[_loc3_]).RepeatMax > 50)
+            arr0[i] = [];
+            arr0[i][0] = QuestInfo(arr[i]).Title;
+            if(QuestInfo(arr[i]).RepeatMax > 50)
             {
-               _loc2_[_loc3_][1] = LanguageMgr.GetTranslation("ddt.exitPrompt.alotofTask");
+               arr0[i][1] = LanguageMgr.GetTranslation("ddt.exitPrompt.alotofTask");
             }
-            else if(QuestInfo(param1[_loc3_]).RepeatMax == 1)
+            else if(QuestInfo(arr[i]).RepeatMax == 1)
             {
-               _loc2_[_loc3_][1] = "0/" + String(QuestInfo(param1[_loc3_]).RepeatMax);
+               arr0[i][1] = "0/" + String(QuestInfo(arr[i]).RepeatMax);
             }
             else
             {
-               _loc2_[_loc3_][1] = String(QuestInfo(param1[_loc3_]).RepeatMax - QuestInfo(param1[_loc3_]).data.repeatLeft) + "/" + String(QuestInfo(param1[_loc3_]).RepeatMax);
+               arr0[i][1] = String(QuestInfo(arr[i]).RepeatMax - QuestInfo(arr[i]).data.repeatLeft) + "/" + String(QuestInfo(arr[i]).RepeatMax);
             }
-            _loc3_++;
+            i++;
          }
-         return _loc2_;
+         return arr0;
       }
       
-      private function _returnList1Arr(param1:Array) : Array
+      private function _returnList1Arr(arr:Array) : Array
       {
-         var _loc3_:int = 0;
-         var _loc2_:Array = [];
-         _loc3_ = 0;
-         while(_loc3_ < param1.length)
+         var i:int = 0;
+         var arr0:Array = [];
+         for(i = 0; i < arr.length; )
          {
-            _loc2_[_loc3_] = [];
-            _loc2_[_loc3_][0] = QuestInfo(param1[_loc3_]).Title;
-            if(QuestInfo(param1[_loc3_]).RepeatMax > 50)
+            arr0[i] = [];
+            arr0[i][0] = QuestInfo(arr[i]).Title;
+            if(QuestInfo(arr[i]).RepeatMax > 50)
             {
-               _loc2_[_loc3_][1] = LanguageMgr.GetTranslation("ddt.exitPrompt.alotofTask");
+               arr0[i][1] = LanguageMgr.GetTranslation("ddt.exitPrompt.alotofTask");
             }
-            else if(QuestInfo(param1[_loc3_]).RepeatMax == 1)
+            else if(QuestInfo(arr[i]).RepeatMax == 1)
             {
-               _loc2_[_loc3_][1] = "0/" + String(QuestInfo(param1[_loc3_]).RepeatMax);
+               arr0[i][1] = "0/" + String(QuestInfo(arr[i]).RepeatMax);
             }
             else
             {
-               _loc2_[_loc3_][1] = String(QuestInfo(param1[_loc3_]).RepeatMax - QuestInfo(param1[_loc3_]).data.repeatLeft) + "/" + String(QuestInfo(param1[_loc3_]).RepeatMax);
+               arr0[i][1] = String(QuestInfo(arr[i]).RepeatMax - QuestInfo(arr[i]).data.repeatLeft) + "/" + String(QuestInfo(arr[i]).RepeatMax);
             }
-            _loc3_++;
+            i++;
          }
-         return _loc2_;
+         return arr0;
       }
       
       public function get list0Arr() : Array

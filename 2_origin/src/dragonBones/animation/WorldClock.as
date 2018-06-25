@@ -15,11 +15,11 @@ package dragonBones.animation
       
       private var _timeScale:Number;
       
-      public function WorldClock(param1:Number = -1, param2:Number = 1)
+      public function WorldClock(time:Number = -1, timeScale:Number = 1)
       {
          super();
-         _time = param1 >= 0?param1:Number(getTimer() * 0.001);
-         _timeScale = !!isNaN(param2)?1:Number(param2);
+         _time = time >= 0?time:Number(getTimer() * 0.001);
+         _timeScale = !!isNaN(timeScale)?1:Number(timeScale);
          _animatableList = new Vector.<IAnimatable>();
       }
       
@@ -33,34 +33,34 @@ package dragonBones.animation
          return _timeScale;
       }
       
-      public function set timeScale(param1:Number) : void
+      public function set timeScale(value:Number) : void
       {
-         if(isNaN(param1) || param1 < 0)
+         if(isNaN(value) || value < 0)
          {
-            param1 = 1;
+            value = 1;
          }
-         _timeScale = param1;
+         _timeScale = value;
       }
       
-      public function contains(param1:IAnimatable) : Boolean
+      public function contains(animatable:IAnimatable) : Boolean
       {
-         return _animatableList.indexOf(param1) >= 0;
+         return _animatableList.indexOf(animatable) >= 0;
       }
       
-      public function add(param1:IAnimatable) : void
+      public function add(animatable:IAnimatable) : void
       {
-         if(param1 && _animatableList.indexOf(param1) == -1)
+         if(animatable && _animatableList.indexOf(animatable) == -1)
          {
-            _animatableList.push(param1);
+            _animatableList.push(animatable);
          }
       }
       
-      public function remove(param1:IAnimatable) : void
+      public function remove(animatable:IAnimatable) : void
       {
-         var _loc2_:int = _animatableList.indexOf(param1);
-         if(_loc2_ >= 0)
+         var index:int = _animatableList.indexOf(animatable);
+         if(index >= 0)
          {
-            _animatableList[_loc2_] = null;
+            _animatableList[index] = null;
          }
       }
       
@@ -69,48 +69,47 @@ package dragonBones.animation
          _animatableList.length = 0;
       }
       
-      public function advanceTime(param1:Number) : void
+      public function advanceTime(passedTime:Number) : void
       {
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
-         if(param1 < 0)
+         var i:int = 0;
+         var animatable:* = null;
+         if(passedTime < 0)
          {
-            param1 = getTimer() * 0.001 - _time;
+            passedTime = getTimer() * 0.001 - _time;
          }
-         _time = _time + param1;
-         param1 = param1 * _timeScale;
-         var _loc4_:int = _animatableList.length;
-         if(_loc4_ == 0)
+         _time = _time + passedTime;
+         passedTime = passedTime * _timeScale;
+         var length:int = _animatableList.length;
+         if(length == 0)
          {
             return;
          }
-         var _loc2_:int = 0;
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         var currentIndex:int = 0;
+         for(i = 0; i < length; )
          {
-            _loc3_ = _animatableList[_loc5_];
-            if(_loc3_)
+            animatable = _animatableList[i];
+            if(animatable)
             {
-               if(_loc2_ != _loc5_)
+               if(currentIndex != i)
                {
-                  _animatableList[_loc2_] = _loc3_;
-                  _animatableList[_loc5_] = null;
+                  _animatableList[currentIndex] = animatable;
+                  _animatableList[i] = null;
                }
-               _loc3_.advanceTime(param1);
-               _loc2_++;
+               animatable.advanceTime(passedTime);
+               currentIndex++;
             }
-            _loc5_++;
+            i++;
          }
-         if(_loc2_ != _loc5_)
+         if(currentIndex != i)
          {
-            _loc4_ = _animatableList.length;
-            while(_loc5_ < _loc4_)
+            length = _animatableList.length;
+            while(i < length)
             {
-               _loc2_++;
-               _loc5_++;
-               _animatableList[_loc2_] = _animatableList[_loc5_];
+               currentIndex++;
+               i++;
+               _animatableList[currentIndex] = _animatableList[i];
             }
-            _animatableList.length = _loc2_;
+            _animatableList.length = currentIndex;
          }
       }
    }

@@ -30,25 +30,25 @@ package character
       
       protected var _soundEnabled:Boolean = false;
       
-      public function ComplexBitmapCharacter(param1:Dictionary, param2:XML = null, param3:String = "", param4:Number = 0, param5:Number = 0, param6:String = "original", param7:Boolean = false)
+      public function ComplexBitmapCharacter(assets:Dictionary, $description:XML = null, label:String = "", $width:Number = 0, $height:Number = 0, $rendmode:String = "original", autoStop:Boolean = false)
       {
          this._registerPoint = new Point(0,0);
          this._bitmapRendItems = new Vector.<FrameByFrameItem>();
-         this._assets = param1;
+         this._assets = assets;
          this._actionSet = new ActionSet();
-         if(param2)
+         if($description)
          {
-            param4 = int(param2.@width);
-            param5 = int(param2.@height);
+            $width = int($description.@width);
+            $height = int($description.@height);
          }
-         this._autoStop = param7;
-         super(param4,param5,param6,"auto",true);
+         this._autoStop = autoStop;
+         super($width,$height,$rendmode,"auto",true);
          _type = CharacterType.COMPLEX_BITMAP_TYPE;
-         if(param2)
+         if($description)
          {
-            this.description = param2;
+            this.description = $description;
          }
-         this._label = param3;
+         this._label = label;
       }
       
       public function get soundEnabled() : Boolean
@@ -56,79 +56,77 @@ package character
          return this._soundEnabled;
       }
       
-      private function set _164832462soundEnabled(param1:Boolean) : void
+      private function set _164832462soundEnabled(value:Boolean) : void
       {
-         if(this._soundEnabled == param1)
+         if(this._soundEnabled == value)
          {
             return;
          }
-         this._soundEnabled = param1;
+         this._soundEnabled = value;
       }
       
-      public function set description(param1:XML) : void
+      public function set description(des:XML) : void
       {
-         var _loc3_:XML = null;
-         var _loc4_:String = null;
-         var _loc5_:Array = null;
-         var _loc6_:XMLList = null;
-         var _loc7_:Vector.<FrameByFrameItem> = null;
-         var _loc8_:int = 0;
-         var _loc9_:ComplexBitmapAction = null;
-         var _loc10_:XML = null;
-         var _loc11_:BitmapRendItem = null;
+         var action:XML = null;
+         var r:String = null;
+         var ar:Array = null;
+         var s:XMLList = null;
+         var st:Vector.<FrameByFrameItem> = null;
+         var i:int = 0;
+         var a:ComplexBitmapAction = null;
+         var t:XML = null;
+         var asset:BitmapRendItem = null;
          this._actionSet = new ActionSet();
-         var _loc2_:XMLList = param1..action;
-         this._label = param1.@label;
-         if(param1.hasOwnProperty("@registerX"))
+         var actions:XMLList = des..action;
+         this._label = des.@label;
+         if(des.hasOwnProperty("@registerX"))
          {
-            this._registerPoint.x = param1.@registerX;
+            this._registerPoint.x = des.@registerX;
          }
-         if(param1.hasOwnProperty("@registerY"))
+         if(des.hasOwnProperty("@registerY"))
          {
-            this._registerPoint.y = param1.@registerY;
+            this._registerPoint.y = des.@registerY;
          }
-         if(param1.hasOwnProperty("@rect"))
+         if(des.hasOwnProperty("@rect"))
          {
-            _loc4_ = String(param1.@rect);
+            r = String(des.@rect);
             this._rect = new Rectangle();
-            _loc5_ = _loc4_.split("|");
-            this._rect.x = _loc5_[0];
-            this._rect.y = _loc5_[1];
-            this._rect.width = _loc5_[2];
-            this._rect.height = _loc5_[3];
+            ar = r.split("|");
+            this._rect.x = ar[0];
+            this._rect.y = ar[1];
+            this._rect.width = ar[2];
+            this._rect.height = ar[3];
          }
-         for each(_loc3_ in _loc2_)
+         for each(action in actions)
          {
-            _loc6_ = _loc3_.asset;
-            _loc7_ = new Vector.<FrameByFrameItem>();
-            _loc8_ = 0;
-            while(_loc8_ < _loc6_.length())
+            s = action.asset;
+            st = new Vector.<FrameByFrameItem>();
+            for(i = 0; i < s.length(); i++)
             {
-               _loc10_ = _loc6_[_loc8_];
-               _loc11_ = _loc10_.@frames == ""?new FrameByFrameItem(_loc10_.@width,_loc10_.@height,this._assets[String(_loc10_.@resource)]):new CrossFrameItem(_loc10_.@width,_loc10_.@height,this._assets[String(_loc10_.@resource)],CharacterUtils.creatFrames(_loc10_.@frames));
-               FrameByFrameItem(_loc11_).sourceName = String(_loc10_.@resource);
-               _loc11_.name = _loc10_.@name;
-               if(_loc10_.hasOwnProperty("@x"))
+               t = s[i];
+               asset = t.@frames == ""?new FrameByFrameItem(t.@width,t.@height,this._assets[String(t.@resource)]):new CrossFrameItem(t.@width,t.@height,this._assets[String(t.@resource)],CharacterUtils.creatFrames(t.@frames));
+               FrameByFrameItem(asset).sourceName = String(t.@resource);
+               asset.name = t.@name;
+               if(t.hasOwnProperty("@x"))
                {
-                  _loc11_.x = _loc10_.@x;
+                  asset.x = t.@x;
                }
-               if(_loc10_.hasOwnProperty("@y"))
+               if(t.hasOwnProperty("@y"))
                {
-                  _loc11_.y = _loc10_.@y;
+                  asset.y = t.@y;
                }
-               if(_loc10_.hasOwnProperty("@points"))
+               if(t.hasOwnProperty("@points"))
                {
-                  FrameByFrameItem(_loc11_).moveInfo = CharacterUtils.creatPoints(_loc10_.@points);
+                  FrameByFrameItem(asset).moveInfo = CharacterUtils.creatPoints(t.@points);
                }
-               _loc7_.push(_loc11_);
-               this._bitmapRendItems.push(_loc11_);
-               _loc8_++;
+               st.push(asset);
+               this._bitmapRendItems.push(asset);
             }
-            _loc9_ = new ComplexBitmapAction(_loc7_,_loc3_.@name,_loc3_.@next,int(_loc3_.@priority));
-            _loc9_.sound = _loc3_.@sound;
-            _loc9_.endStop = String(_loc3_.@endStop) == "true";
-            _loc9_.sound = String(_loc3_.@sound);
-            this._actionSet.addAction(_loc9_);
+            a = new ComplexBitmapAction(st,action.@name,action.@next,int(action.@priority));
+            a.sound = action.@sound;
+            a.endStop = String(action.@endStop) == "true";
+            a.sound = String(action.@sound);
+            this._actionSet.addAction(a);
          }
          if(this._actionSet.actions.length > 0)
          {
@@ -136,12 +134,12 @@ package character
          }
       }
       
-      public function getActionFrames(param1:String) : int
+      public function getActionFrames(action:String) : int
       {
-         var _loc2_:BaseAction = this._actionSet.getAction(param1);
-         if(_loc2_)
+         var act:BaseAction = this._actionSet.getAction(action);
+         if(act)
          {
-            return _loc2_.len;
+            return act.len;
          }
          return 0;
       }
@@ -151,19 +149,19 @@ package character
          return this._label;
       }
       
-      private function set _102727412label(param1:String) : void
+      private function set _102727412label(value:String) : void
       {
-         this._label = param1;
+         this._label = value;
       }
       
-      public function hasAction(param1:String) : Boolean
+      public function hasAction(action:String) : Boolean
       {
-         return this._actionSet.getAction(param1) != null;
+         return this._actionSet.getAction(action) != null;
       }
       
-      private function set _1408207997assets(param1:Dictionary) : void
+      private function set _1408207997assets(value:Dictionary) : void
       {
-         this._assets = param1;
+         this._assets = value;
       }
       
       public function get assets() : Dictionary
@@ -176,56 +174,56 @@ package character
          return this._actionSet.actions;
       }
       
-      public function addAction(param1:BaseAction) : void
+      public function addAction(action:BaseAction) : void
       {
-         if(param1 is ComplexBitmapAction)
+         if(action is ComplexBitmapAction)
          {
-            this._actionSet.addAction(param1);
+            this._actionSet.addAction(action);
             if(this._currentAction == null)
             {
-               this.currentAction = param1 as ComplexBitmapAction;
+               this.currentAction = action as ComplexBitmapAction;
             }
-            dispatchEvent(new CharacterEvent(CharacterEvent.ADD_ACTION,param1));
+            dispatchEvent(new CharacterEvent(CharacterEvent.ADD_ACTION,action));
             return;
          }
          throw new Error("ComplexBitmapCharacter\'s action must be ComplexBitmapAction");
       }
       
-      public function doAction(param1:String) : void
+      public function doAction(action:String) : void
       {
-         var _loc3_:FrameByFrameItem = null;
+         var item:FrameByFrameItem = null;
          play();
-         var _loc2_:ComplexBitmapAction = this._actionSet.getAction(param1) as ComplexBitmapAction;
-         if(_loc2_)
+         var a:ComplexBitmapAction = this._actionSet.getAction(action) as ComplexBitmapAction;
+         if(a)
          {
             if(this._currentAction == null)
             {
-               this.currentAction = _loc2_;
+               this.currentAction = a;
             }
-            else if(_loc2_.priority >= this._currentAction.priority)
+            else if(a.priority >= this._currentAction.priority)
             {
-               for each(_loc3_ in this._currentAction.assets)
+               for each(item in this._currentAction.assets)
                {
-                  _loc3_.stop();
-                  removeItem(_loc3_);
+                  item.stop();
+                  removeItem(item);
                }
                this._currentAction.reset();
-               this.currentAction = _loc2_;
+               this.currentAction = a;
             }
          }
       }
       
-      protected function set currentAction(param1:ComplexBitmapAction) : void
+      protected function set currentAction(action:ComplexBitmapAction) : void
       {
-         var _loc2_:FrameByFrameItem = null;
-         param1.reset();
-         this._currentAction = param1;
+         var item1:FrameByFrameItem = null;
+         action.reset();
+         this._currentAction = action;
          this._autoStop = this._currentAction.endStop;
-         for each(_loc2_ in this._currentAction.assets)
+         for each(item1 in this._currentAction.assets)
          {
-            _loc2_.reset();
-            _loc2_.play();
-            addItem(_loc2_);
+            item1.reset();
+            item1.play();
+            addItem(item1);
          }
          if(this._currentAction.sound != "" && this._soundEnabled)
          {
@@ -270,42 +268,42 @@ package character
       
       override public function toXml() : XML
       {
-         var _loc1_:XML = <character></character>;
-         _loc1_.@type = _type;
-         _loc1_.@width = _itemWidth;
-         _loc1_.@height = _itemHeight;
-         _loc1_.@label = this._label;
-         _loc1_.@registerX = this._registerPoint.x;
-         _loc1_.@registerY = this._registerPoint.y;
-         _loc1_.@rect = [this.rect.x,this.rect.y,this.rect.width,this.rect.height].join("|");
-         _loc1_.appendChild(this._actionSet.toXml());
-         return _loc1_;
+         var result:XML = <character></character>;
+         result.@type = _type;
+         result.@width = _itemWidth;
+         result.@height = _itemHeight;
+         result.@label = this._label;
+         result.@registerX = this._registerPoint.x;
+         result.@registerY = this._registerPoint.y;
+         result.@rect = [this.rect.x,this.rect.y,this.rect.width,this.rect.height].join("|");
+         result.appendChild(this._actionSet.toXml());
+         return result;
       }
       
-      public function removeAction(param1:String) : void
+      public function removeAction(action:String) : void
       {
-         var _loc3_:FrameByFrameItem = null;
-         var _loc2_:BaseAction = this._actionSet.getAction(param1);
-         if(_loc2_ && this._currentAction == _loc2_)
+         var item:FrameByFrameItem = null;
+         var act:BaseAction = this._actionSet.getAction(action);
+         if(act && this._currentAction == act)
          {
-            for each(_loc3_ in this._currentAction.assets)
+            for each(item in this._currentAction.assets)
             {
-               _loc3_.stop();
-               removeItem(_loc3_);
+               item.stop();
+               removeItem(item);
             }
             this._currentAction = null;
          }
-         this._actionSet.removeAction(param1);
+         this._actionSet.removeAction(action);
          dispatchEvent(new CharacterEvent(CharacterEvent.REMOVE_ACTION));
       }
       
       override public function dispose() : void
       {
-         var _loc1_:FrameByFrameItem = null;
+         var item:FrameByFrameItem = null;
          super.dispose();
-         for each(_loc1_ in this._bitmapRendItems)
+         for each(item in this._bitmapRendItems)
          {
-            _loc1_.dispose();
+            item.dispose();
          }
          this._bitmapRendItems = null;
          this._assets = null;

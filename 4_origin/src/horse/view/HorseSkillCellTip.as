@@ -79,9 +79,9 @@ package horse.view
          return _tipInfo;
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         _tipInfo = param1 as HorseSkillVo;
+         _tipInfo = data as HorseSkillVo;
          updateView();
       }
       

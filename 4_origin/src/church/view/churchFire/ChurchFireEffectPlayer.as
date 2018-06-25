@@ -24,41 +24,41 @@ package church.view.churchFire
       
       public var owerID:int;
       
-      public function ChurchFireEffectPlayer(param1:int)
+      public function ChurchFireEffectPlayer(fireTemplateID:int)
       {
-         _fireTemplateID = param1;
+         _fireTemplateID = fireTemplateID;
          addFire();
          super();
       }
       
       private function addFire() : void
       {
-         var _loc1_:String = "";
+         var fireClassPath:String = "";
          switch(int(_fireTemplateID) - 21002)
          {
             case 0:
-               _loc1_ = "tank.church.fireAcect.FireItemAccect02";
+               fireClassPath = "tank.church.fireAcect.FireItemAccect02";
                break;
             default:
-               _loc1_ = "tank.church.fireAcect.FireItemAccect02";
+               fireClassPath = "tank.church.fireAcect.FireItemAccect02";
                break;
             default:
-               _loc1_ = "tank.church.fireAcect.FireItemAccect02";
+               fireClassPath = "tank.church.fireAcect.FireItemAccect02";
                break;
             default:
-               _loc1_ = "tank.church.fireAcect.FireItemAccect02";
+               fireClassPath = "tank.church.fireAcect.FireItemAccect02";
                break;
             case 4:
-               _loc1_ = "tank.church.fireAcect.FireItemAccect06";
+               fireClassPath = "tank.church.fireAcect.FireItemAccect06";
          }
-         if(!_loc1_ || _loc1_ == "" || _loc1_.length <= 0)
+         if(!fireClassPath || fireClassPath == "" || fireClassPath.length <= 0)
          {
             return;
          }
-         var _loc2_:Class = ClassUtils.uiSourceDomain.getDefinition(_loc1_) as Class;
-         if(_loc2_)
+         var fireClass:Class = ClassUtils.uiSourceDomain.getDefinition(fireClassPath) as Class;
+         if(fireClass)
          {
-            _fireMovie = new _loc2_() as MovieClip;
+            _fireMovie = new fireClass() as MovieClip;
             if(_fireMovie)
             {
                addChild(_fireMovie);
@@ -66,9 +66,9 @@ package church.view.churchFire
          }
       }
       
-      public function firePlayer(param1:Boolean = true) : void
+      public function firePlayer(playSound:Boolean = true) : void
       {
-         if(param1)
+         if(playSound)
          {
             SoundManager.instance.play("117");
          }
@@ -105,7 +105,7 @@ package church.view.churchFire
          dispatchEvent(new Event("complete"));
       }
       
-      private function timerHander(param1:Event) : void
+      private function timerHander(evt:Event) : void
       {
          if(_playerTimer)
          {
@@ -117,7 +117,7 @@ package church.view.churchFire
          removeFire();
       }
       
-      private function enterFrameHander(param1:Event) : void
+      private function enterFrameHander(e:Event) : void
       {
          _playerFramesCount = Number(_playerFramesCount) + 1;
          if(_playerFramesCount >= _fireMovie.totalFrames)

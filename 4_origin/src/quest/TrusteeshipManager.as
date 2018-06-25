@@ -113,29 +113,28 @@ package quest
          SocketManager.Instance.addEventListener(PkgEvent.format(140,4),updateSpiritValue);
       }
       
-      private function updateSpiritValue(param1:PkgEvent) : void
+      private function updateSpiritValue(event:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _spiritValue = _loc2_.readInt();
+         var pkg:PackageIn = event.pkg;
+         _spiritValue = pkg.readInt();
          dispatchEvent(new Event("update_spirit_value"));
       }
       
-      private function updateData(param1:PkgEvent) : void
+      private function updateData(event:PkgEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:PackageIn = param1.pkg;
-         _spiritValue = _loc3_.readInt();
+         var i:int = 0;
+         var tmpvo:* = null;
+         var pkg:PackageIn = event.pkg;
+         _spiritValue = pkg.readInt();
          _list = new Vector.<TrusteeshipDataVo>();
-         var _loc2_:int = _loc3_.readInt();
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_)
+         var count:int = pkg.readInt();
+         for(i = 0; i < count; )
          {
-            _loc4_ = new TrusteeshipDataVo();
-            _loc4_.id = _loc3_.readInt();
-            _loc4_.endTime = _loc3_.readDate();
-            _list.push(_loc4_);
-            _loc5_++;
+            tmpvo = new TrusteeshipDataVo();
+            tmpvo.id = pkg.readInt();
+            tmpvo.endTime = pkg.readDate();
+            _list.push(tmpvo);
+            i++;
          }
          dispatchEvent(new Event("update_all_data"));
          isHasTrusteeshipQuestUnaviable();
@@ -143,53 +142,53 @@ package quest
       
       public function isHasTrusteeshipQuestUnaviable() : Boolean
       {
-         var _loc3_:* = null;
-         var _loc2_:Boolean = false;
+         var tmpInfo:* = null;
+         var tmpTag:Boolean = false;
          var _loc5_:int = 0;
          var _loc4_:* = _list;
-         for each(var _loc1_ in _list)
+         for each(var tmpData in _list)
          {
-            _loc3_ = TaskManager.instance.getQuestByID(_loc1_.id);
-            if(!_loc3_ || !TaskManager.instance.isAvailableQuest(_loc3_,true))
+            tmpInfo = TaskManager.instance.getQuestByID(tmpData.id);
+            if(!tmpInfo || !TaskManager.instance.isAvailableQuest(tmpInfo,true))
             {
-               SocketManager.Instance.out.sendTrusteeshipCancel(_loc1_.id);
-               _loc2_ = true;
+               SocketManager.Instance.out.sendTrusteeshipCancel(tmpData.id);
+               tmpTag = true;
             }
          }
          TaskManager.instance.checkSendRequestAddQuestDic();
-         return _loc2_;
+         return tmpTag;
       }
       
-      public function isTrusteeshipQuestEnd(param1:int) : Boolean
+      public function isTrusteeshipQuestEnd(questId:int) : Boolean
       {
-         var _loc4_:TrusteeshipDataVo = getTrusteeshipInfo(param1);
-         if(!_loc4_)
+         var vo:TrusteeshipDataVo = getTrusteeshipInfo(questId);
+         if(!vo)
          {
             return false;
          }
-         var _loc3_:Number = _loc4_.endTime.getTime();
-         var _loc2_:Number = TimeManager.Instance.Now().getTime();
-         if(int((_loc3_ - _loc2_) / 1000) > 0)
+         var endTimestamp:Number = vo.endTime.getTime();
+         var nowTimestamp:Number = TimeManager.Instance.Now().getTime();
+         if(int((endTimestamp - nowTimestamp) / 1000) > 0)
          {
             return false;
          }
          return true;
       }
       
-      public function getTrusteeshipInfo(param1:int) : TrusteeshipDataVo
+      public function getTrusteeshipInfo(questId:int) : TrusteeshipDataVo
       {
-         var _loc3_:* = null;
+         var info:* = null;
          var _loc5_:int = 0;
          var _loc4_:* = _list;
-         for each(var _loc2_ in _list)
+         for each(var tmp in _list)
          {
-            if(_loc2_.id == param1)
+            if(tmp.id == questId)
             {
-               _loc3_ = _loc2_;
+               info = tmp;
                break;
             }
          }
-         return _loc3_;
+         return info;
       }
    }
 }

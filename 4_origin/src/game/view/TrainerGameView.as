@@ -87,11 +87,11 @@ package game.view
          return "trainer1";
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         super.enter(param1,param2);
+         var audioLoader:* = null;
+         var loaderQueue:* = null;
+         super.enter(prev,data);
          ChatManager.Instance.state = 20;
          ChatManager.Instance.view.visible = false;
          ChatManager.Instance.chatDisabled = true;
@@ -102,43 +102,43 @@ package game.view
          {
             if(!SoundManager.instance.audioiiComplete)
             {
-               _loc3_ = LoaderCreate.Instance.createAudioIILoader();
-               _loc3_.addEventListener("complete",__onAudioIILoadComplete);
-               LoadResourceManager.Instance.startLoad(_loc3_);
+               audioLoader = LoaderCreate.Instance.createAudioIILoader();
+               audioLoader.addEventListener("complete",__onAudioIILoadComplete);
+               LoadResourceManager.Instance.startLoad(audioLoader);
             }
          }
          else if(!SoundManager.instance.audioAllComplete)
          {
-            _loc4_ = new QueueLoader();
+            loaderQueue = new QueueLoader();
             if(!SoundManager.instance.audioComplete)
             {
-               _loc4_.addLoader(LoaderCreate.Instance.createAudioILoader());
+               loaderQueue.addLoader(LoaderCreate.Instance.createAudioILoader());
             }
             if(!SoundManager.instance.audioiiComplete)
             {
-               _loc4_.addLoader(LoaderCreate.Instance.createAudioIILoader());
+               loaderQueue.addLoader(LoaderCreate.Instance.createAudioIILoader());
             }
             if(!SoundManager.instance.audioLiteComplete)
             {
-               _loc4_.addLoader(LoaderCreate.Instance.createAudioLiteLoader());
+               loaderQueue.addLoader(LoaderCreate.Instance.createAudioLiteLoader());
             }
-            _loc4_.addEventListener("complete",__onAudioLoadComplete);
-            _loc4_.start();
+            loaderQueue.addEventListener("complete",__onAudioLoadComplete);
+            loaderQueue.start();
          }
       }
       
-      private function __onAudioIILoadComplete(param1:LoaderEvent) : void
+      private function __onAudioIILoadComplete(event:LoaderEvent) : void
       {
-         param1.loader.removeEventListener("complete",__onAudioLoadComplete);
-         if(param1.loader.isSuccess)
+         event.loader.removeEventListener("complete",__onAudioLoadComplete);
+         if(event.loader.isSuccess)
          {
             SoundManager.instance.setupAudioResource(["audioii","audiolite"]);
          }
       }
       
-      private function __onAudioLoadComplete(param1:Event) : void
+      private function __onAudioLoadComplete(event:Event) : void
       {
-         param1.currentTarget.removeEventListener("complete",__onAudioLoadComplete);
+         event.currentTarget.removeEventListener("complete",__onAudioLoadComplete);
          SoundManager.instance.setupAudioResource();
       }
       
@@ -230,21 +230,21 @@ package game.view
          skip();
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
-         super.leaving(param1);
+         super.leaving(next);
          NewHandGuideManager.Instance.mapID = 0;
          disposeThis();
       }
       
       private function showAchieve() : void
       {
-         var _loc1_:MovieClipWrapper = new MovieClipWrapper(ClassUtils.CreatInstance("game.trainer.achiveAsset"),true,true);
-         PositionUtils.setPos(_loc1_.movie,"trainer.posAchieve");
-         LayerManager.Instance.addToLayer(_loc1_.movie,2,false);
+         var mc:MovieClipWrapper = new MovieClipWrapper(ClassUtils.CreatInstance("game.trainer.achiveAsset"),true,true);
+         PositionUtils.setPos(mc.movie,"trainer.posAchieve");
+         LayerManager.Instance.addToLayer(mc.movie,2,false);
       }
       
-      override protected function __playerChange(param1:CrazyTankSocketEvent) : void
+      override protected function __playerChange(event:CrazyTankSocketEvent) : void
       {
          if(_locked)
          {
@@ -252,7 +252,7 @@ package game.view
          }
          if(_shouldShowTurn)
          {
-            super.__playerChange(param1);
+            super.__playerChange(event);
             _selfMarkBar.enabled = true;
          }
          else
@@ -262,18 +262,18 @@ package game.view
          setPropBarClickEnable(true,true);
       }
       
-      override protected function __shoot(param1:CrazyTankSocketEvent) : void
+      override protected function __shoot(event:CrazyTankSocketEvent) : void
       {
-         super.__shoot(param1);
+         super.__shoot(event);
          if(_locked)
          {
             _map.releaseFocus();
          }
       }
       
-      public function set shouldShowTurn(param1:Boolean) : void
+      public function set shouldShowTurn(value:Boolean) : void
       {
-         _shouldShowTurn = param1;
+         _shouldShowTurn = value;
       }
       
       public function skip() : void
@@ -281,9 +281,9 @@ package game.view
          GameInSocketOut.sendGameSkipNext(1);
       }
       
-      private function enableSpace(param1:Boolean) : void
+      private function enableSpace(enable:Boolean) : void
       {
-         if(param1)
+         if(enable)
          {
             StageReferance.stage.removeEventListener("keyDown",__keyDownSpace,true);
             StageReferance.stage.removeEventListener("keyDown",__keyDownSpace,false);
@@ -295,9 +295,9 @@ package game.view
          }
       }
       
-      private function enableLeftAndRight(param1:Boolean) : void
+      private function enableLeftAndRight(enable:Boolean) : void
       {
-         if(param1)
+         if(enable)
          {
             StageReferance.stage.removeEventListener("keyDown",__keyDownLeftRight,true);
             StageReferance.stage.removeEventListener("keyDown",__keyDownLeftRight,false);
@@ -309,9 +309,9 @@ package game.view
          }
       }
       
-      private function enableUpAndDown(param1:Boolean) : void
+      private function enableUpAndDown(enable:Boolean) : void
       {
-         if(param1)
+         if(enable)
          {
             StageReferance.stage.removeEventListener("keyDown",__keyDownUpDown,true);
             StageReferance.stage.removeEventListener("keyDown",__keyDownUpDown,false);
@@ -323,27 +323,27 @@ package game.view
          }
       }
       
-      private function __keyDownSpace(param1:KeyboardEvent) : void
+      private function __keyDownSpace(evt:KeyboardEvent) : void
       {
-         if(param1.keyCode == 32)
+         if(evt.keyCode == 32)
          {
-            param1.stopImmediatePropagation();
+            evt.stopImmediatePropagation();
          }
       }
       
-      private function __keyDownLeftRight(param1:KeyboardEvent) : void
+      private function __keyDownLeftRight(evt:KeyboardEvent) : void
       {
-         if(param1.keyCode == 37 || param1.keyCode == 39 || param1.keyCode == 65 || param1.keyCode == 68)
+         if(evt.keyCode == 37 || evt.keyCode == 39 || evt.keyCode == 65 || evt.keyCode == 68)
          {
-            param1.stopImmediatePropagation();
+            evt.stopImmediatePropagation();
          }
       }
       
-      private function __keyDownUpDown(param1:KeyboardEvent) : void
+      private function __keyDownUpDown(evt:KeyboardEvent) : void
       {
-         if(param1.keyCode == 38 || param1.keyCode == 40 || param1.keyCode == 87 || param1.keyCode == 83)
+         if(evt.keyCode == 38 || evt.keyCode == 40 || evt.keyCode == 87 || evt.keyCode == 83)
          {
-            param1.stopImmediatePropagation();
+            evt.stopImmediatePropagation();
          }
       }
       
@@ -380,18 +380,18 @@ package game.view
       
       private function exeMove() : Boolean
       {
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var eatWeapon:* = null;
+         var eatEquip:* = null;
          if(_weapon)
          {
             if(_player.pos.x - _weapon.pos.x < 65)
             {
                GameInSocketOut.sendUpdatePlayStep("pickUpWeapon");
-               _loc2_ = new MovieClipWrapper(ClassUtils.CreatInstance("asset.game.ghostPcikPropAsset"),true,true);
-               _loc2_.addFrameScriptAt(12,headWeaponEffect);
+               eatWeapon = new MovieClipWrapper(ClassUtils.CreatInstance("asset.game.ghostPcikPropAsset"),true,true);
+               eatWeapon.addFrameScriptAt(12,headWeaponEffect);
                SoundManager.instance.play("039");
-               _loc2_.movie.y = -10;
-               _player.addChild(_loc2_.movie);
+               eatWeapon.movie.y = -10;
+               _player.addChild(eatWeapon.movie);
                _player.doAction(GameCharacter.HANDCLIP);
                _weapon.dispose();
                _weapon = null;
@@ -407,11 +407,11 @@ package game.view
             if(_player.pos.x - _equip.pos.x > -10)
             {
                GameInSocketOut.sendUpdatePlayStep("pickUpHat");
-               _loc1_ = new MovieClipWrapper(ClassUtils.CreatInstance("asset.game.ghostPcikPropAsset"),true,true);
-               _loc1_.addFrameScriptAt(12,headEquipEffect);
+               eatEquip = new MovieClipWrapper(ClassUtils.CreatInstance("asset.game.ghostPcikPropAsset"),true,true);
+               eatEquip.addFrameScriptAt(12,headEquipEffect);
                SoundManager.instance.play("039");
-               _loc1_.movie.y = -10;
-               _player.addChild(_loc1_.movie);
+               eatEquip.movie.y = -10;
+               _player.addChild(eatEquip.movie);
                _player.doAction(GameCharacter.HANDCLIP);
                _equip.dispose();
                _equip = null;
@@ -425,9 +425,9 @@ package game.view
          return !_weapon && !_equip && _count >= 55;
       }
       
-      private function __playerPropChanged(param1:PlayerPropertyEvent) : void
+      private function __playerPropChanged(evt:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["WeaponID"])
+         if(evt.changedProperties["WeaponID"])
          {
             setDefaultAngle();
          }
@@ -445,17 +445,17 @@ package game.view
       
       private function headEquipEffect() : void
       {
-         var _loc1_:String = !!PlayerManager.Instance.Self.Sex?"asset.trainer.TrainerManEquipIcon":"asset.trainer.TrainerWomanEquipIcon";
-         headEffect(ComponentFactory.Instance.creatBitmap(_loc1_));
+         var str:String = !!PlayerManager.Instance.Self.Sex?"asset.trainer.TrainerManEquipIcon":"asset.trainer.TrainerWomanEquipIcon";
+         headEffect(ComponentFactory.Instance.creatBitmap(str));
       }
       
-      private function headEffect(param1:DisplayObject) : void
+      private function headEffect(movie:DisplayObject) : void
       {
-         var _loc2_:AutoPropEffect = new AutoPropEffect(param1);
-         PositionUtils.setPos(_loc2_,"trainer1.posHeadEffect");
-         param1.width = 62;
-         param1.height = 62;
-         _player.addChild(_loc2_);
+         var head:AutoPropEffect = new AutoPropEffect(movie);
+         PositionUtils.setPos(head,"trainer1.posHeadEffect");
+         movie.width = 62;
+         movie.height = 62;
+         _player.addChild(head);
       }
       
       private function finMove() : void
@@ -594,9 +594,9 @@ package game.view
          disposeBogu();
       }
       
-      private function __addBogu(param1:DictionaryEvent) : void
+      private function __addBogu(event:DictionaryEvent) : void
       {
-         bogu = param1.data as Living;
+         bogu = event.data as Living;
       }
       
       private function disposeBogu() : void
@@ -709,14 +709,14 @@ package game.view
          _gameInfo.livings.addEventListener("add",__onAddLiving);
       }
       
-      private function __onAddLiving(param1:DictionaryEvent) : void
+      private function __onAddLiving(event:DictionaryEvent) : void
       {
          _gameInfo.livings.removeEventListener("add",__onAddLiving);
-         bogu = param1.data as Living;
+         bogu = event.data as Living;
          bogu.addEventListener("die",__onLivingDie);
       }
       
-      private function __onLivingDie(param1:LivingEvent) : void
+      private function __onLivingDie(evt:LivingEvent) : void
       {
          TrainStep.send(TrainStep.Step.GET_POW);
          SocketManager.Instance.removeEventListener("missionOver",__missionOver);
@@ -742,22 +742,22 @@ package game.view
          _gameInfo.selfGamePlayer.addEventListener("attackingChanged",__showThreeArrow);
       }
       
-      private function __add(param1:DictionaryEvent) : void
+      private function __add(evt:DictionaryEvent) : void
       {
-         var _loc2_:Living = param1.data as Living;
-         if(_loc2_.typeLiving == 5)
+         var living:Living = evt.data as Living;
+         if(living.typeLiving == 5)
          {
-            bogu = _loc2_;
+            bogu = living;
          }
          else
          {
-            _loc2_.addEventListener("die",__die);
+            living.addEventListener("die",__die);
          }
       }
       
-      private function __die(param1:LivingEvent) : void
+      private function __die(evt:LivingEvent) : void
       {
-         (param1.currentTarget as EventDispatcher).removeEventListener("die",__die);
+         (evt.currentTarget as EventDispatcher).removeEventListener("die",__die);
          _dieNum = Number(_dieNum) + 1;
       }
       
@@ -809,7 +809,7 @@ package game.view
          SocketManager.Instance.out.syncWeakStep(11);
       }
       
-      private function __showThreeArrow(param1:LivingEvent) : void
+      private function __showThreeArrow(evt:LivingEvent) : void
       {
          if(_gameInfo.selfGamePlayer.isAttacking)
          {
@@ -821,7 +821,7 @@ package game.view
          }
       }
       
-      private function __showPowerArrow(param1:LivingEvent) : void
+      private function __showPowerArrow(evt:LivingEvent) : void
       {
          if(_gameInfo.selfGamePlayer.isAttacking)
          {
@@ -836,7 +836,7 @@ package game.view
          }
       }
       
-      private function __showArrow(param1:LivingEvent) : void
+      private function __showArrow(evt:LivingEvent) : void
       {
          if(_gameInfo.selfGamePlayer.isAttacking)
          {
@@ -853,13 +853,13 @@ package game.view
          _gameInfo.livings.addEventListener("add",__addJianjiaoBogu);
       }
       
-      private function __addJianjiaoBogu(param1:DictionaryEvent) : void
+      private function __addJianjiaoBogu(evt:DictionaryEvent) : void
       {
-         var _loc2_:Living = param1.data as Living;
-         if(_loc2_.typeLiving == 5)
+         var living:Living = evt.data as Living;
+         if(living.typeLiving == 5)
          {
             _gameInfo.livings.removeEventListener("add",__addJianjiaoBogu);
-            bogu = _loc2_;
+            bogu = living;
          }
       }
       
@@ -898,13 +898,13 @@ package game.view
          _gameInfo.livings.addEventListener("add",__addRobot);
       }
       
-      private function __addRobot(param1:DictionaryEvent) : void
+      private function __addRobot(evt:DictionaryEvent) : void
       {
-         var _loc2_:Living = param1.data as Living;
-         if(_loc2_.typeLiving == 5)
+         var living:Living = evt.data as Living;
+         if(living.typeLiving == 5)
          {
             _gameInfo.livings.removeEventListener("add",__addRobot);
-            bogu = _loc2_;
+            bogu = living;
          }
       }
       
@@ -938,7 +938,7 @@ package game.view
          SocketManager.Instance.out.syncWeakStep(57);
       }
       
-      private function __missionOver(param1:CrazyTankSocketEvent) : void
+      private function __missionOver(evt:CrazyTankSocketEvent) : void
       {
          SocketManager.Instance.removeEventListener("missionOver",__missionOver);
          NewHandQueue.Instance.dispose();
@@ -951,14 +951,14 @@ package game.view
          return bogu && !bogu.isLiving;
       }
       
-      private function creatToolForPick(param1:String) : void
+      private function creatToolForPick(style:String) : void
       {
-         var _loc2_:Point = _map.localToGlobal(new Point(bogu.pos.x,bogu.pos.y));
-         toolForPick = ClassUtils.CreatInstance(param1) as MovieClip;
+         var pos:Point = _map.localToGlobal(new Point(bogu.pos.x,bogu.pos.y));
+         toolForPick = ClassUtils.CreatInstance(style) as MovieClip;
          toolForPick.buttonMode = true;
          toolForPick.addEventListener("click",__pickTool);
-         toolForPick.x = _loc2_.x;
-         toolForPick.y = _loc2_.y;
+         toolForPick.x = pos.x;
+         toolForPick.y = pos.y;
          toolForPick.addEventListener("mouseOver",__overHandler);
          toolForPick.addEventListener("mouseOut",__outHandler);
          LayerManager.Instance.addToLayer(toolForPick,3,false,1);
@@ -976,17 +976,17 @@ package game.view
          TweenLite.to(this,2,{"onComplete":toolFlyAway});
       }
       
-      private function __outHandler(param1:MouseEvent) : void
+      private function __outHandler(event:MouseEvent) : void
       {
          toolForPick.filters = null;
       }
       
-      private function __overHandler(param1:MouseEvent) : void
+      private function __overHandler(event:MouseEvent) : void
       {
          toolForPick.filters = [new GlowFilter(16737792,1,30,30,2)];
       }
       
-      private function __pickTool(param1:MouseEvent) : void
+      private function __pickTool(event:MouseEvent) : void
       {
          TweenLite.killTweensOf(this);
          toolFlyAway();

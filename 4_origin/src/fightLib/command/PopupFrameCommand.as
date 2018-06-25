@@ -18,14 +18,14 @@ package fightLib.command
       
       private var _cancelFunc:Function;
       
-      public function PopupFrameCommand(param1:String, param2:String = "", param3:Function = null, param4:String = "", param5:Function = null, param6:Boolean = true, param7:Boolean = false, param8:Array = null)
+      public function PopupFrameCommand(infoString:String, okLabel:String = "", okCallBack:Function = null, cancelLabel:String = "", cancelCallBack:Function = null, showOkBtn:Boolean = true, showCancelBtn:Boolean = false, WeaponArr:Array = null)
       {
          super();
-         _frame = ComponentFactory.Instance.creatCustomObject("fightLib.view.FightLibAlertView",[param1,param2,finish,param4,param5,param6,param7,param8]);
-         _callBack = param3;
-         _okLable = param2;
-         _cancelLabel = param4;
-         _cancelFunc = param5;
+         _frame = ComponentFactory.Instance.creatCustomObject("fightLib.view.FightLibAlertView",[infoString,okLabel,finish,cancelLabel,cancelCallBack,showOkBtn,showCancelBtn,WeaponArr]);
+         _callBack = okCallBack;
+         _okLable = okLabel;
+         _cancelLabel = cancelLabel;
+         _cancelFunc = cancelCallBack;
       }
       
       override public function excute() : void

@@ -9,8 +9,6 @@ package morn.core.components
    import flash.events.MouseEvent;
    import flash.geom.Point;
    import flash.text.TextField;
-   import flash.text.TextFieldType;
-   import flash.ui.Keyboard;
    import morn.core.handlers.Handler;
    
    [Event(name="change",type="flash.events.Event")]
@@ -46,7 +44,7 @@ package morn.core.components
       
       public function ColorPicker()
       {
-         this._colors = [];
+         _colors = [];
          super();
          mouseChildren = true;
       }
@@ -54,313 +52,318 @@ package morn.core.components
       override public function dispose() : void
       {
          super.dispose();
-         this._colorPanel && this._colorPanel.dispose();
-         this._colorButton && this._colorButton.dispose();
-         this._colorPanel = null;
-         this._colorTiles = null;
-         this._colorBlock = null;
-         this._colorField = null;
-         this._colorButton = null;
-         this._colors = null;
-         this._changeHandler = null;
+         _colorPanel && _colorPanel.dispose();
+         _colorButton && _colorButton.dispose();
+         _colorPanel = null;
+         _colorTiles = null;
+         _colorBlock = null;
+         _colorField = null;
+         _colorButton = null;
+         _colors = null;
+         _changeHandler = null;
       }
       
       override protected function createChildren() : void
       {
-         addChild(this._colorButton = new Button());
-         this._colorPanel = new Box();
-         this._colorPanel.setSize(230,166);
-         this._colorPanel.addChild(this._colorTiles = new Sprite());
-         this._colorPanel.addChild(this._colorBlock = new Shape());
-         this._colorPanel.addChild(this._colorField = new TextField());
+         _colorButton = new Button();
+         addChild(new Button());
+         _colorPanel = new Box();
+         _colorPanel.setSize(230,166);
+         _colorTiles = new Sprite();
+         _colorPanel.addChild(new Sprite());
+         _colorBlock = new Shape();
+         _colorPanel.addChild(new Shape());
+         _colorField = new TextField();
+         _colorPanel.addChild(new TextField());
       }
       
       override protected function initialize() : void
       {
-         this._colorButton.addEventListener(MouseEvent.CLICK,this.onColorButtonClick);
-         this._colorBlock.x = this._colorBlock.y = 5;
-         this._colorField.x = 60;
-         this._colorField.y = 5;
-         this._colorField.width = 50;
-         this._colorField.height = 20;
-         this._colorField.border = true;
-         this._colorField.background = true;
-         this._colorField.type = TextFieldType.INPUT;
-         this._colorField.addEventListener(Event.CHANGE,this.onColorFieldChange);
-         this._colorField.addEventListener(KeyboardEvent.KEY_DOWN,this.onColorFieldKeyDown);
-         this._colorTiles.x = 5;
-         this._colorTiles.y = 30;
-         this._colorTiles.addEventListener(MouseEvent.MOUSE_MOVE,this.onColorTilesMouseMove);
-         this._colorTiles.addEventListener(MouseEvent.CLICK,this.onColorTilesClick);
-         this.panelBgColor = this._panelBgColor;
+         _colorButton.addEventListener("click",onColorButtonClick);
+         var _loc1_:int = 5;
+         _colorBlock.y = _loc1_;
+         _colorBlock.x = _loc1_;
+         _colorField.x = 60;
+         _colorField.y = 5;
+         _colorField.width = 50;
+         _colorField.height = 20;
+         _colorField.border = true;
+         _colorField.background = true;
+         _colorField.type = "input";
+         _colorField.addEventListener("change",onColorFieldChange);
+         _colorField.addEventListener("keyDown",onColorFieldKeyDown);
+         _colorTiles.x = 5;
+         _colorTiles.y = 30;
+         _colorTiles.addEventListener("mouseMove",onColorTilesMouseMove);
+         _colorTiles.addEventListener("click",onColorTilesClick);
+         panelBgColor = _panelBgColor;
       }
       
       protected function changePanel() : void
       {
-         var _loc4_:int = 0;
-         var _loc5_:uint = 0;
-         var _loc6_:int = 0;
-         var _loc7_:int = 0;
-         var _loc1_:Graphics = this._colorPanel.graphics;
-         _loc1_.clear();
-         _loc1_.beginFill(this._panelBgColor);
-         _loc1_.drawRect(0,0,230,166);
-         _loc1_.endFill();
-         _loc1_.lineStyle(1,this._panelBorderColor);
-         _loc1_.drawRect(0,0,230,166);
-         this.drawBlock(this._selectedColor);
-         this._colorField.borderColor = this._panelBorderColor;
-         this._colorField.backgroundColor = this._panelTextBgColor;
-         this._colorField.textColor = this._panelTextColor;
-         _loc1_ = this._colorTiles.graphics;
-         _loc1_.clear();
-         var _loc2_:Array = [0,3355443,6710886,10066329,13421772,16777215,16711680,65280,255,16776960,65535,16711935];
-         var _loc3_:int = 0;
-         while(_loc3_ < 12)
+         var i:int = 0;
+         var j:int = 0;
+         var color:* = 0;
+         var x:int = 0;
+         var y:int = 0;
+         var g:Graphics = _colorPanel.graphics;
+         g.clear();
+         g.beginFill(_panelBgColor);
+         g.drawRect(0,0,230,166);
+         g.endFill();
+         g.lineStyle(1,_panelBorderColor);
+         g.drawRect(0,0,230,166);
+         drawBlock(_selectedColor);
+         _colorField.borderColor = _panelBorderColor;
+         _colorField.backgroundColor = _panelTextBgColor;
+         _colorField.textColor = _panelTextColor;
+         g = _colorTiles.graphics;
+         g.clear();
+         var mainColors:Array = [0,3355443,6710886,10066329,13421772,16777215,16711680,65280,255,16776960,65535,16711935];
+         for(i = 0; i < 12; )
          {
-            _loc4_ = 0;
-            while(_loc4_ < 20)
+            for(j = 0; j < 20; )
             {
-               if(_loc4_ == 0)
+               if(j == 0)
                {
-                  _loc5_ = _loc2_[_loc3_];
+                  color = uint(mainColors[i]);
                }
-               else if(_loc4_ == 1)
+               else if(j == 1)
                {
-                  _loc5_ = 0;
+                  color = uint(0);
                }
                else
                {
-                  _loc5_ = (((_loc3_ * 3 + _loc4_ / 6) % 3 << 0) + (_loc3_ / 6 << 0) * 3) * 51 << 16 | _loc4_ % 6 * 51 << 8 | (_loc3_ << 0) % 6 * 51;
+                  color = uint((((i * 3 + j / 6) % 3 << 0) + (i / 6 << 0) * 3) * 51 << 16 | j % 6 * 51 << 8 | (i << 0) % 6 * 51);
                }
-               this._colors.push(_loc5_);
-               _loc6_ = _loc4_ * this._gridSize;
-               _loc7_ = _loc3_ * this._gridSize;
-               _loc1_.beginFill(0);
-               _loc1_.drawRect(_loc6_,_loc7_,this._gridSize,this._gridSize);
-               _loc1_.endFill();
-               _loc1_.beginFill(_loc5_);
-               _loc1_.drawRect(_loc6_ + 1,_loc7_ + 1,this._gridSize - 1,this._gridSize - 1);
-               _loc1_.endFill();
-               _loc4_++;
+               _colors.push(color);
+               x = j * _gridSize;
+               y = i * _gridSize;
+               g.beginFill(0);
+               g.drawRect(x,y,_gridSize,_gridSize);
+               g.endFill();
+               g.beginFill(color);
+               g.drawRect(x + 1,y + 1,_gridSize - 1,_gridSize - 1);
+               g.endFill();
+               j++;
             }
-            _loc3_++;
+            i++;
          }
-         _loc1_.lineStyle(1,0,1,true);
-         _loc1_.moveTo(this._gridSize * 20,0);
-         _loc1_.lineTo(this._gridSize * 20,this._gridSize * 12);
-         _loc1_.moveTo(0,this._gridSize * 12);
-         _loc1_.lineTo(this._gridSize * 20,this._gridSize * 12);
+         g.lineStyle(1,0,1,true);
+         g.moveTo(_gridSize * 20,0);
+         g.lineTo(_gridSize * 20,_gridSize * 12);
+         g.moveTo(0,_gridSize * 12);
+         g.lineTo(_gridSize * 20,_gridSize * 12);
       }
       
-      private function onColorButtonClick(param1:MouseEvent) : void
+      private function onColorButtonClick(e:MouseEvent) : void
       {
-         if(this._colorPanel.parent)
+         if(_colorPanel.parent)
          {
-            this.close();
+            close();
          }
          else
          {
-            this.open();
+            open();
          }
       }
       
       public function open() : void
       {
-         var _loc1_:Point = localToGlobal(new Point());
-         var _loc2_:Number = _loc1_.x + this._colorPanel.width <= App.stage.stageWidth?Number(_loc1_.x):Number(App.stage.stageWidth - this._colorPanel.width);
-         var _loc3_:Number = _loc1_.y + this._colorButton.height;
-         _loc3_ = _loc3_ + this._colorPanel.height <= App.stage.stageHeight?Number(_loc3_):Number(_loc1_.y - this._colorPanel.height);
-         this._colorPanel.setPosition(_loc2_,_loc3_);
-         App.stage.addChild(this._colorPanel);
-         App.stage.addEventListener(MouseEvent.MOUSE_DOWN,this.removeColorBox);
+         var p:Point = localToGlobal(new Point());
+         var px:Number = p.x + _colorPanel.width <= App.stage.stageWidth?p.x:Number(App.stage.stageWidth - _colorPanel.width);
+         var py:Number = p.y + _colorButton.height;
+         py = py + _colorPanel.height <= App.stage.stageHeight?py:Number(p.y - _colorPanel.height);
+         _colorPanel.setPosition(px,py);
+         App.stage.addChild(_colorPanel);
+         App.stage.addEventListener("mouseDown",removeColorBox);
       }
       
       public function close() : void
       {
-         App.stage.removeEventListener(MouseEvent.MOUSE_DOWN,this.removeColorBox);
-         this._colorPanel.remove();
+         App.stage.removeEventListener("mouseDown",removeColorBox);
+         _colorPanel.remove();
       }
       
-      private function removeColorBox(param1:Event = null) : void
+      private function removeColorBox(e:Event = null) : void
       {
-         var _loc2_:DisplayObject = param1.target as DisplayObject;
-         if(!this._colorButton.contains(_loc2_) && !this._colorPanel.contains(_loc2_))
+         var target:DisplayObject = e.target as DisplayObject;
+         if(!_colorButton.contains(target) && !_colorPanel.contains(target))
          {
-            this.close();
+            close();
          }
       }
       
-      private function onColorFieldKeyDown(param1:KeyboardEvent) : void
+      private function onColorFieldKeyDown(e:KeyboardEvent) : void
       {
-         if(param1.keyCode == Keyboard.ENTER)
+         if(e.keyCode == 13)
          {
-            if(Boolean(this._colorField.text) && this._colorField.text != "-1")
+            if(_colorField.text && _colorField.text != "-1")
             {
-               this.selectedColor = uint("0x" + this._colorField.text);
+               selectedColor = uint("0x" + _colorField.text);
             }
             else
             {
-               this.selectedColor = -1;
+               selectedColor = -1;
             }
-            this.close();
-            param1.stopPropagation();
+            close();
+            e.stopPropagation();
          }
       }
       
-      private function onColorFieldChange(param1:Event) : void
+      private function onColorFieldChange(e:Event) : void
       {
-         if(Boolean(this._colorField.text) && this._colorField.text != "-1")
+         if(_colorField.text && _colorField.text != "-1")
          {
-            this.drawBlock(int("0x" + this._colorField.text));
+            drawBlock(int("0x" + _colorField.text));
          }
          else
          {
-            this.drawBlock(-1);
+            drawBlock(-1);
          }
       }
       
-      private function onColorTilesClick(param1:MouseEvent) : void
+      private function onColorTilesClick(e:MouseEvent) : void
       {
-         this.selectedColor = this.getColorByMouse();
-         this.close();
+         selectedColor = getColorByMouse();
+         close();
       }
       
-      private function onColorTilesMouseMove(param1:MouseEvent) : void
+      private function onColorTilesMouseMove(e:MouseEvent) : void
       {
-         var _loc2_:uint = this.getColorByMouse();
-         this._colorField.text = _loc2_.toString(16);
-         this.drawBlock(_loc2_);
+         var color:uint = getColorByMouse();
+         _colorField.text = color.toString(16);
+         drawBlock(color);
       }
       
       protected function getColorByMouse() : uint
       {
-         var _loc1_:int = this._colorTiles.mouseX / this._gridSize;
-         var _loc2_:int = this._colorTiles.mouseY / this._gridSize;
-         return this._colors[_loc2_ * 20 + _loc1_];
+         var x:int = _colorTiles.mouseX / _gridSize;
+         var y:int = _colorTiles.mouseY / _gridSize;
+         return _colors[y * 20 + x];
       }
       
-      private function drawColorButton(param1:int) : void
+      private function drawColorButton(color:int) : void
       {
-         var _loc2_:Graphics = this._colorButton.graphics;
-         _loc2_.clear();
-         var _loc3_:uint = param1 != -1?uint(param1):uint(16777215);
-         _loc2_.beginFill(_loc3_);
-         _loc2_.drawRect(0,0,this._colorButton.width,this._colorButton.height);
-         _loc2_.endFill();
-         if(param1 == -1)
+         var g:Graphics = _colorButton.graphics;
+         g.clear();
+         var showColor:uint = color != -1?color:16777215;
+         g.beginFill(showColor);
+         g.drawRect(0,0,_colorButton.width,_colorButton.height);
+         g.endFill();
+         if(color == -1)
          {
-            _loc2_.lineStyle(1,16711680);
-            _loc2_.lineTo(this._colorButton.width,this._colorButton.height);
+            g.lineStyle(1,16711680);
+            g.lineTo(_colorButton.width,_colorButton.height);
          }
       }
       
-      private function drawBlock(param1:int) : void
+      private function drawBlock(color:int) : void
       {
-         var _loc2_:Graphics = this._colorBlock.graphics;
-         _loc2_.clear();
-         var _loc3_:uint = param1 != -1?uint(param1):uint(16777215);
-         _loc2_.beginFill(_loc3_);
-         _loc2_.drawRect(0,0,50,20);
-         _loc2_.endFill();
-         _loc2_.lineStyle(1,this._panelBorderColor);
-         _loc2_.drawRect(0,0,50,20);
-         if(param1 == -1)
+         var g:Graphics = _colorBlock.graphics;
+         g.clear();
+         var showColor:uint = color != -1?color:16777215;
+         g.beginFill(showColor);
+         g.drawRect(0,0,50,20);
+         g.endFill();
+         g.lineStyle(1,_panelBorderColor);
+         g.drawRect(0,0,50,20);
+         if(color == -1)
          {
-            _loc2_.lineStyle(1,16711680);
-            _loc2_.lineTo(50,20);
+            g.lineStyle(1,16711680);
+            g.lineTo(50,20);
          }
       }
       
       public function get selectedColor() : int
       {
-         return this._selectedColor;
+         return _selectedColor;
       }
       
-      public function set selectedColor(param1:int) : void
+      public function set selectedColor(value:int) : void
       {
-         if(this._selectedColor != param1)
+         if(_selectedColor != value)
          {
-            this._selectedColor = param1;
-            this._colorField.text = param1.toString(16);
-            this.drawBlock(param1);
-            callLater(this.changeColor);
-            if(this._changeHandler)
+            _selectedColor = value;
+            _colorField.text = value.toString(16);
+            drawBlock(value);
+            callLater(changeColor);
+            if(_changeHandler)
             {
-               this._changeHandler.executeWith([this._selectedColor]);
+               _changeHandler.executeWith([_selectedColor]);
             }
-            sendEvent(Event.CHANGE);
+            sendEvent("change");
          }
       }
       
       public function get changeHandler() : Handler
       {
-         return this._changeHandler;
+         return _changeHandler;
       }
       
-      public function set changeHandler(param1:Handler) : void
+      public function set changeHandler(value:Handler) : void
       {
-         this._changeHandler = param1;
+         _changeHandler = value;
       }
       
       public function get skin() : String
       {
-         return this._colorButton.skin;
+         return _colorButton.skin;
       }
       
-      public function set skin(param1:String) : void
+      public function set skin(value:String) : void
       {
-         this._colorButton.skin = param1;
-         callLater(this.changeColor);
+         _colorButton.skin = value;
+         callLater(changeColor);
       }
       
       private function changeColor() : void
       {
-         this.drawColorButton(this._selectedColor);
+         drawColorButton(_selectedColor);
       }
       
       public function get panelBgColor() : uint
       {
-         return this._panelBgColor;
+         return _panelBgColor;
       }
       
-      public function set panelBgColor(param1:uint) : void
+      public function set panelBgColor(value:uint) : void
       {
-         this._panelBgColor = param1;
-         callLater(this.changePanel);
+         _panelBgColor = value;
+         callLater(changePanel);
       }
       
       public function get panelBorderColor() : uint
       {
-         return this._panelBorderColor;
+         return _panelBorderColor;
       }
       
-      public function set panelBorderColor(param1:uint) : void
+      public function set panelBorderColor(value:uint) : void
       {
-         this._panelBorderColor = param1;
-         callLater(this.changePanel);
+         _panelBorderColor = value;
+         callLater(changePanel);
       }
       
       public function get panelTextColor() : uint
       {
-         return this._panelTextColor;
+         return _panelTextColor;
       }
       
-      public function set panelTextColor(param1:uint) : void
+      public function set panelTextColor(value:uint) : void
       {
-         this._panelTextColor = param1;
-         callLater(this.changePanel);
+         _panelTextColor = value;
+         callLater(changePanel);
       }
       
       public function get panelTextBgColor() : uint
       {
-         return this._panelTextBgColor;
+         return _panelTextBgColor;
       }
       
-      public function set panelTextBgColor(param1:uint) : void
+      public function set panelTextBgColor(value:uint) : void
       {
-         this._panelTextBgColor = param1;
-         callLater(this.changePanel);
+         _panelTextBgColor = value;
+         callLater(changePanel);
       }
    }
 }

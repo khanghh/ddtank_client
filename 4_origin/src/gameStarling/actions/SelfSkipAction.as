@@ -10,10 +10,10 @@ package gameStarling.actions
       
       private var _info:LocalPlayer;
       
-      public function SelfSkipAction(param1:LocalPlayer)
+      public function SelfSkipAction(info:LocalPlayer)
       {
          super();
-         _info = param1;
+         _info = info;
       }
       
       override public function prepare() : void

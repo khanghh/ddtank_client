@@ -33,16 +33,16 @@ package ddt.data.email
       
       public var lastTime:String;
       
-      public function EmailModel(param1:IEventDispatcher = null)
+      public function EmailModel(target:IEventDispatcher = null)
       {
          _sendedMails = [];
          _emails = [];
-         super(param1);
+         super(target);
       }
       
-      public function set sendedMails(param1:Array) : void
+      public function set sendedMails(value:Array) : void
       {
-         _sendedMails = param1;
+         _sendedMails = value;
          if(_mailType == "sended mails")
          {
             dispatchEvent(new EmailEvent("initEmail"));
@@ -64,27 +64,25 @@ package ddt.data.email
          return _emails.slice(0);
       }
       
-      public function set emails(param1:Array) : void
+      public function set emails(value:Array) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:Number = NaN;
-         var _loc3_:* = 0;
+         var i:int = 0;
+         var remain:Number = NaN;
+         var j:* = 0;
          _emails = [];
-         _loc4_ = 0;
-         while(_loc4_ < param1.length)
+         for(i = 0; i < value.length; )
          {
-            _loc2_ = calculateRemainTime(param1[_loc4_].SendTime,param1[_loc4_].ValidDate);
-            if(_loc2_ > -1)
+            remain = calculateRemainTime(value[i].SendTime,value[i].ValidDate);
+            if(remain > -1)
             {
-               _emails.push(param1[_loc4_]);
+               _emails.push(value[i]);
             }
-            _loc4_++;
+            i++;
          }
-         _loc3_ = uint(0);
-         while(_loc3_ < _emails.length)
+         for(j = uint(0); j < _emails.length; )
          {
-            _emails[_loc3_].sendDate = DateUtils.getDateByStr(_emails[_loc3_].SendTime).valueOf();
-            _loc3_++;
+            _emails[j].sendDate = DateUtils.getDateByStr(_emails[j].SendTime).valueOf();
+            j++;
          }
          _emails.sortOn("sendDate",16 | 2);
          getNoReadMails();
@@ -92,30 +90,29 @@ package ddt.data.email
          dispatchEvent(new EmailEvent("initEmail"));
       }
       
-      public function getValidateMails(param1:Array) : Array
+      public function getValidateMails(arr:Array) : Array
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc2_:Array = [];
-         _loc4_ = 0;
-         while(_loc4_ < param1.length)
+         var i:int = 0;
+         var ei:* = null;
+         var result:Array = [];
+         for(i = 0; i < arr.length; )
          {
-            _loc3_ = param1[_loc4_] as EmailInfo;
-            if(_loc3_)
+            ei = arr[i] as EmailInfo;
+            if(ei)
             {
-               if(MailManager.Instance.calculateRemainTime(_loc3_.SendTime,_loc3_.ValidDate) > 0)
+               if(MailManager.Instance.calculateRemainTime(ei.SendTime,ei.ValidDate) > 0)
                {
-                  _loc2_.push(_loc3_);
+                  result.push(ei);
                }
             }
-            _loc4_++;
+            i++;
          }
-         return _loc2_;
+         return result;
       }
       
-      public function set mailType(param1:String) : void
+      public function set mailType(value:String) : void
       {
-         _mailType = param1;
+         _mailType = value;
          resetModel();
          dispatchEvent(new EmailEvent("changeType"));
       }
@@ -153,9 +150,9 @@ package ddt.data.email
          return _currentDate;
       }
       
-      public function set state(param1:String) : void
+      public function set state(value:String) : void
       {
-         _state = param1;
+         _state = value;
          dispatchEvent(new EmailEvent("changeState"));
       }
       
@@ -192,9 +189,9 @@ package ddt.data.email
          return _currentPage;
       }
       
-      public function set currentPage(param1:int) : void
+      public function set currentPage(value:int) : void
       {
-         _currentPage = param1;
+         _currentPage = value;
          dispatchEvent(new EmailEvent("changePage"));
       }
       
@@ -203,68 +200,67 @@ package ddt.data.email
          _noReadMails = [];
          var _loc3_:int = 0;
          var _loc2_:* = _emails;
-         for each(var _loc1_ in _emails)
+         for each(var info in _emails)
          {
-            if(SharedManager.Instance.spacialReadedMail[PlayerManager.Instance.Self.ID] && SharedManager.Instance.spacialReadedMail[PlayerManager.Instance.Self.ID].indexOf(_loc1_.ID) > -1)
+            if(SharedManager.Instance.spacialReadedMail[PlayerManager.Instance.Self.ID] && SharedManager.Instance.spacialReadedMail[PlayerManager.Instance.Self.ID].indexOf(info.ID) > -1)
             {
-               _loc1_.IsRead = true;
+               info.IsRead = true;
             }
-            if(!_loc1_.IsRead)
+            if(!info.IsRead)
             {
-               _noReadMails.push(_loc1_);
+               _noReadMails.push(info);
             }
          }
       }
       
-      public function getMailByID(param1:int) : EmailInfo
+      public function getMailByID(id:int) : EmailInfo
       {
-         var _loc3_:* = 0;
-         var _loc2_:int = _emails.length;
-         _loc3_ = uint(0);
-         while(_loc3_ < _loc2_)
+         var i:* = 0;
+         var le:int = _emails.length;
+         for(i = uint(0); i < le; )
          {
-            if((_emails[_loc3_] as EmailInfo).ID == param1)
+            if((_emails[i] as EmailInfo).ID == id)
             {
-               return _emails[_loc3_] as EmailInfo;
+               return _emails[i] as EmailInfo;
             }
-            _loc3_++;
+            i++;
          }
          return null;
       }
       
       public function getViewData() : Array
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
+         var begin:int = 0;
+         var end:int = 0;
          if(_mailType == "no read mails")
          {
             getNoReadMails();
          }
-         var _loc1_:Array = [];
+         var result:Array = [];
          if(currentDate)
          {
-            _loc3_ = currentPage * 7 - 7;
-            _loc2_ = _loc3_ + 7 > currentDate.length?currentDate.length:_loc3_ + 7;
-            _loc1_ = currentDate.slice(_loc3_,_loc2_);
+            begin = currentPage * 7 - 7;
+            end = begin + 7 > currentDate.length?currentDate.length:begin + 7;
+            result = currentDate.slice(begin,end);
          }
-         if(_loc1_.length > 7)
+         if(result.length > 7)
          {
             trace("fdfdfd");
          }
-         return _loc1_;
+         return result;
       }
       
-      private function calculateRemainTime(param1:String, param2:Number) : Number
+      private function calculateRemainTime(startTime:String, validHours:Number) : Number
       {
-         var _loc5_:* = param1;
-         var _loc3_:Date = new Date(Number(_loc5_.substr(0,4)),_loc5_.substr(5,2) - 1,Number(_loc5_.substr(8,2)),Number(_loc5_.substr(11,2)),Number(_loc5_.substr(14,2)),Number(_loc5_.substr(17,2)));
-         var _loc6_:Date = TimeManager.Instance.Now();
-         var _loc4_:Number = param2 - (_loc6_.time - _loc3_.time) / 3600000;
-         if(_loc4_ < 0)
+         var str:* = startTime;
+         var startDate:Date = new Date(Number(str.substr(0,4)),str.substr(5,2) - 1,Number(str.substr(8,2)),Number(str.substr(11,2)),Number(str.substr(14,2)),Number(str.substr(17,2)));
+         var nowDate:Date = TimeManager.Instance.Now();
+         var remain:Number = validHours - (nowDate.time - startDate.time) / 3600000;
+         if(remain < 0)
          {
             return -1;
          }
-         return _loc4_;
+         return remain;
       }
       
       public function get selectEmail() : EmailInfo
@@ -272,17 +268,17 @@ package ddt.data.email
          return _selectEmail;
       }
       
-      public function set selectEmail(param1:EmailInfo) : void
+      public function set selectEmail(value:EmailInfo) : void
       {
-         if(param1)
+         if(value)
          {
-            if(_emails.indexOf(param1) <= -1 && _sendedMails.indexOf(param1) <= -1)
+            if(_emails.indexOf(value) <= -1 && _sendedMails.indexOf(value) <= -1)
             {
                _selectEmail = null;
             }
             else
             {
-               _selectEmail = param1;
+               _selectEmail = value;
             }
          }
          else
@@ -292,48 +288,48 @@ package ddt.data.email
          dispatchEvent(new EmailEvent("selectEmail",_selectEmail));
       }
       
-      public function addEmail(param1:EmailInfo) : void
+      public function addEmail(info:EmailInfo) : void
       {
-         _emails.push(param1);
-         dispatchEvent(new EmailEvent("addEmail",param1));
+         _emails.push(info);
+         dispatchEvent(new EmailEvent("addEmail",info));
       }
       
-      public function addEmailToSended(param1:EmailInfoOfSended) : void
+      public function addEmailToSended(info:EmailInfoOfSended) : void
       {
-         _sendedMails.unshift(param1);
+         _sendedMails.unshift(info);
          if(_sendedMails.length > 21)
          {
             _sendedMails.pop();
          }
       }
       
-      public function removeFromNoRead(param1:EmailInfo) : void
+      public function removeFromNoRead(info:EmailInfo) : void
       {
-         var _loc2_:int = _noReadMails.indexOf(param1);
-         if(_loc2_ > -1)
+         var index:int = _noReadMails.indexOf(info);
+         if(index > -1)
          {
-            _noReadMails.splice(_loc2_,1);
+            _noReadMails.splice(index,1);
          }
       }
       
-      public function removeEmail(param1:EmailInfo) : void
+      public function removeEmail(info:EmailInfo) : void
       {
-         var _loc2_:int = _emails.indexOf(param1);
-         if(_loc2_ > -1)
+         var index:int = _emails.indexOf(info);
+         if(index > -1)
          {
-            _emails.splice(_loc2_,1);
+            _emails.splice(index,1);
             getNoReadMails();
-            dispatchEvent(new EmailEvent("removeEmail",param1));
+            dispatchEvent(new EmailEvent("removeEmail",info));
          }
       }
       
-      public function changeEmail(param1:EmailInfo) : void
+      public function changeEmail(info:EmailInfo) : void
       {
-         var _loc2_:int = _emails.indexOf(param1);
-         param1.IsRead = true;
-         if(_loc2_ > -1)
+         var index:int = _emails.indexOf(info);
+         info.IsRead = true;
+         if(index > -1)
          {
-            dispatchEvent(new EmailEvent("selectEmail",param1));
+            dispatchEvent(new EmailEvent("selectEmail",info));
          }
       }
       
@@ -352,9 +348,9 @@ package ddt.data.email
       {
          var _loc3_:int = 0;
          var _loc2_:* = _emails;
-         for each(var _loc1_ in _emails)
+         for each(var info in _emails)
          {
-            if(!_loc1_.IsRead)
+            if(!info.IsRead)
             {
                return true;
             }
@@ -366,9 +362,9 @@ package ddt.data.email
       {
          var _loc3_:int = 0;
          var _loc2_:* = _emails;
-         for each(var _loc1_ in _emails)
+         for each(var info in _emails)
          {
-            if(!_loc1_.IsRead && _loc1_.MailType == 1)
+            if(!info.IsRead && info.MailType == 1)
             {
                return true;
             }

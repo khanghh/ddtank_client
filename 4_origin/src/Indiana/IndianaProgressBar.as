@@ -56,13 +56,13 @@ package Indiana
          setProgress(0);
       }
       
-      public function setProgress(param1:Number) : void
+      public function setProgress(value:Number) : void
       {
-         if(param1 <= 1)
+         if(value <= 1)
          {
-            _mask.width = param1 * _barWidth;
+            _mask.width = value * _barWidth;
             _bar.x = _mask.width - _bar.width / 2;
-            _progressTxt.text = (param1 * 100).toFixed(2) + "%";
+            _progressTxt.text = (value * 100).toFixed(2) + "%";
          }
       }
       

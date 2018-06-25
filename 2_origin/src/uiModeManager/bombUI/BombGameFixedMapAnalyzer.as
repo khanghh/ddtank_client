@@ -11,34 +11,33 @@ package uiModeManager.bombUI
       
       private var _data:DictionaryData;
       
-      public function BombGameFixedMapAnalyzer(param1:Function)
+      public function BombGameFixedMapAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc2_:* = null;
-         var _loc4_:* = null;
-         var _loc5_:int = 0;
-         var _loc3_:XML = new XML(param1);
-         if(_loc3_.@value == "true")
+         var map:* = null;
+         var xmllist:* = null;
+         var i:int = 0;
+         var xml:XML = new XML(data);
+         if(xml.@value == "true")
          {
             _data = new DictionaryData();
-            _loc4_ = _loc3_..item;
-            _loc5_ = 0;
-            while(_loc5_ < _loc4_.length())
+            xmllist = xml..item;
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc2_ = new FixedMapData();
-               ObjectUtils.copyPorpertiesByXML(_loc2_,_loc4_[_loc5_]);
-               _data.add(_loc2_.Level,_loc2_);
-               _loc5_++;
+               map = new FixedMapData();
+               ObjectUtils.copyPorpertiesByXML(map,xmllist[i]);
+               _data.add(map.Level,map);
+               i++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc3_.@message;
+            message = xml.@message;
             onAnalyzeError();
          }
       }

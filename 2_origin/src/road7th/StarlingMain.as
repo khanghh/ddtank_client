@@ -47,25 +47,25 @@ package road7th
          Starling.current.stage.addEventListener("resize",onStageResize);
       }
       
-      private function onStageResize(param1:ResizeEvent) : void
+      private function onStageResize(evt:ResizeEvent) : void
       {
-         var _loc2_:int = param1.width;
-         var _loc3_:int = param1.height;
-         Starling.current.viewPort = new Rectangle(0,0,_loc2_,_loc3_);
+         var stageWidth:int = evt.width;
+         var stageHeight:int = evt.height;
+         Starling.current.viewPort = new Rectangle(0,0,stageWidth,stageHeight);
          if(StarlingPre.stageWidth == 0)
          {
-            StarlingPre.originalWidth = _loc2_;
-            StarlingPre.originalHeight = _loc3_;
+            StarlingPre.originalWidth = stageWidth;
+            StarlingPre.originalHeight = stageHeight;
          }
          else
          {
             StarlingPre.originalWidth = StarlingPre.stageWidth;
             StarlingPre.originalHeight = StarlingPre.stageHeight;
          }
-         StarlingPre.stageWidth = _loc2_;
-         StarlingPre.stageHeight = _loc3_;
-         Starling.current.stage.stageWidth = _loc2_;
-         Starling.current.stage.stageHeight = _loc3_;
+         StarlingPre.stageWidth = stageWidth;
+         StarlingPre.stageHeight = stageHeight;
+         Starling.current.stage.stageWidth = stageWidth;
+         Starling.current.stage.stageHeight = stageHeight;
       }
       
       public function leaveCurrentScene() : void
@@ -74,10 +74,10 @@ package road7th
          currentScene = null;
       }
       
-      public function enterScene(param1:Scene) : void
+      public function enterScene(scene:Scene) : void
       {
          currentScene && currentScene.leaving();
-         currentScene = param1;
+         currentScene = scene;
          if(currentScene)
          {
             currentScene.enter();
@@ -85,56 +85,56 @@ package road7th
          }
       }
       
-      public function createImage(param1:String = "default", param2:* = null) : Image
+      public function createImage(styleName:String = "default", posObject:* = null) : Image
       {
-         var _loc5_:* = null;
-         var _loc4_:* = null;
-         var _loc6_:* = null;
-         var _loc3_:Texture = DDTAssetManager.instance.getTexture(param1);
-         if(_loc3_)
+         var image:* = null;
+         var btmd:* = null;
+         var pos:* = null;
+         var texture:Texture = DDTAssetManager.instance.getTexture(styleName);
+         if(texture)
          {
-            _loc5_ = new Image(_loc3_);
+            image = new Image(texture);
          }
          else
          {
-            _loc4_ = null;
+            btmd = null;
             try
             {
-               _loc4_ = ComponentFactory.Instance.creatBitmapData(param1);
+               btmd = ComponentFactory.Instance.creatBitmapData(styleName);
             }
             catch(e:Error)
             {
-               _loc4_ = null;
+               btmd = null;
             }
-            if(_loc4_ == null)
+            if(btmd == null)
             {
-               trace("create starling Image Error: styleName : " + param1);
-               _loc5_ = new Image(DDTAssetManager.instance.getTexture("default"));
+               trace("create starling Image Error: styleName : " + styleName);
+               image = new Image(DDTAssetManager.instance.getTexture("default"));
             }
             else
             {
-               _loc3_ = Texture.fromBitmapData(_loc4_);
-               DDTAssetManager.instance.addTexture(param1,_loc3_,"default");
-               _loc5_ = new Image(_loc3_);
-               trace("create starling Image by ComponentFactiory : " + param1);
+               texture = Texture.fromBitmapData(btmd);
+               DDTAssetManager.instance.addTexture(styleName,texture,"default");
+               image = new Image(texture);
+               trace("create starling Image by ComponentFactiory : " + styleName);
             }
          }
-         if(param2 != null)
+         if(posObject != null)
          {
-            if(param2 is String)
+            if(posObject is String)
             {
-               _loc6_ = ComponentFactory.Instance.creatCustomObject(param2);
-               _loc5_.x = _loc6_.x;
-               _loc5_.y = _loc6_.y;
+               pos = ComponentFactory.Instance.creatCustomObject(posObject);
+               image.x = pos.x;
+               image.y = pos.y;
             }
-            else if(param2 is Object)
+            else if(posObject is Object)
             {
-               _loc5_.x = param2.x;
-               _loc5_.y = param2.y;
+               image.x = posObject.x;
+               image.y = posObject.y;
             }
          }
-         _loc5_.touchable = false;
-         return _loc5_;
+         image.touchable = false;
+         return image;
       }
    }
 }

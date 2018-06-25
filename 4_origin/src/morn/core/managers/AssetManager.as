@@ -16,121 +16,122 @@ package morn.core.managers
       
       public function AssetManager()
       {
-         this._bmdMap = {};
-         this._clipsMap = {};
+         _bmdMap = {};
+         _clipsMap = {};
          super();
       }
       
-      public function setDomain(param1:ApplicationDomain) : void
+      public function setDomain(domain:ApplicationDomain) : void
       {
-         this._domain = param1 || ApplicationDomain.currentDomain;
+         _domain = domain || ApplicationDomain.currentDomain;
       }
       
-      public function hasClass(param1:String) : Boolean
+      public function hasClass(name:String) : Boolean
       {
-         return this._domain.hasDefinition(param1);
+         return _domain.hasDefinition(name);
       }
       
-      public function getClass(param1:String) : Class
+      public function getClass(name:String) : Class
       {
-         if(this.hasClass(param1))
+         if(hasClass(name))
          {
-            return this._domain.getDefinition(param1) as Class;
+            return _domain.getDefinition(name) as Class;
          }
-         App.log.error("Miss Asset:",param1);
+         App.log.error("Miss Asset:",name);
          return null;
       }
       
-      public function getAsset(param1:String) : *
+      public function getAsset(name:String) : *
       {
-         var _loc2_:Class = this.getClass(param1);
-         if(_loc2_ != null)
+         var assetClass:Class = getClass(name);
+         if(assetClass != null)
          {
-            return new _loc2_();
+            return new assetClass();
          }
          return null;
       }
       
-      public function getBitmapData(param1:String, param2:Boolean = false) : BitmapData
+      public function getBitmapData(name:String, cache:Boolean = false) : BitmapData
       {
-         var _loc4_:Class = null;
-         var _loc3_:BitmapData = this._bmdMap[param1];
-         if(_loc3_ == null)
+         var bmdClass:* = null;
+         var bmd:BitmapData = _bmdMap[name];
+         if(bmd == null)
          {
-            _loc4_ = this.getClass(param1);
-            if(_loc4_ != null)
+            bmdClass = getClass(name);
+            if(bmdClass != null)
             {
-               _loc3_ = new _loc4_(1,1);
-               if(param2)
+               bmd = new bmdClass(1,1);
+               if(cache)
                {
-                  this._bmdMap[param1] = _loc3_;
+                  _bmdMap[name] = bmd;
                }
             }
          }
-         return _loc3_;
+         return bmd;
       }
       
-      public function getClips(param1:String, param2:int, param3:int, param4:Boolean = false, param5:BitmapData = null) : Vector.<BitmapData>
+      public function getClips(name:String, xNum:int, yNum:int, cache:Boolean = false, source:BitmapData = null) : Vector.<BitmapData>
       {
-         var _loc7_:BitmapData = null;
-         var _loc6_:Vector.<BitmapData> = this._clipsMap[param1];
-         if(_loc6_ == null)
+         var bmd:* = null;
+         var clips:Vector.<BitmapData> = _clipsMap[name];
+         if(clips == null)
          {
-            _loc7_ = param5 || this.getBitmapData(param1,false);
-            if(_loc7_)
+            bmd = source || getBitmapData(name,false);
+            if(bmd)
             {
-               _loc6_ = BitmapUtils.createClips(_loc7_,param2,param3);
-               if(param4)
+               clips = BitmapUtils.createClips(bmd,xNum,yNum);
+               if(cache)
                {
-                  this._clipsMap[param1] = _loc6_;
+                  _clipsMap[name] = clips;
                }
             }
          }
-         if(_loc7_)
+         if(bmd)
          {
-            _loc7_.dispose();
+            bmd.dispose();
          }
-         return _loc6_;
+         return clips;
       }
       
-      public function cacheBitmapData(param1:String, param2:BitmapData) : void
+      public function cacheBitmapData(name:String, bmd:BitmapData) : void
       {
-         if(param2)
+         if(bmd)
          {
-            this._bmdMap[param1] = param2;
-         }
-      }
-      
-      public function disposeBitmapData(param1:String) : void
-      {
-         var _loc2_:BitmapData = this._bmdMap[param1];
-         if(_loc2_)
-         {
-            delete this._bmdMap[param1];
-            _loc2_.dispose();
+            _bmdMap[name] = bmd;
          }
       }
       
-      public function cacheClips(param1:String, param2:Vector.<BitmapData>) : void
+      public function disposeBitmapData(name:String) : void
       {
-         if(param2)
+         var bmd:BitmapData = _bmdMap[name];
+         if(bmd)
          {
-            this._clipsMap[param1] = param2;
+            delete _bmdMap[name];
+            bmd.dispose();
          }
       }
       
-      public function destroyClips(param1:String) : void
+      public function cacheClips(name:String, clips:Vector.<BitmapData>) : void
       {
-         var _loc3_:BitmapData = null;
-         var _loc2_:Vector.<BitmapData> = this._clipsMap[param1];
-         if(_loc2_)
+         if(clips)
          {
-            for each(_loc3_ in _loc2_)
+            _clipsMap[name] = clips;
+         }
+      }
+      
+      public function destroyClips(name:String) : void
+      {
+         var clips:Vector.<BitmapData> = _clipsMap[name];
+         if(clips)
+         {
+            var _loc5_:int = 0;
+            var _loc4_:* = clips;
+            for each(var item in clips)
             {
-               _loc3_.dispose();
+               item.dispose();
             }
-            _loc2_.length = 0;
-            delete this._clipsMap[param1];
+            clips.length = 0;
+            delete _clipsMap[name];
          }
       }
    }

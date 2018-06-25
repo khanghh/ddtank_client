@@ -16,114 +16,114 @@ package ddt.utils
          super();
       }
       
-      public static function setPos(param1:*, param2:*) : *
+      public static function setPos(obj:*, posObject:*) : *
       {
-         var _loc3_:* = null;
-         if(param2 != null)
+         var pos:* = null;
+         if(posObject != null)
          {
-            if(param2 is String)
+            if(posObject is String)
             {
-               _loc3_ = ComponentFactory.Instance.creatCustomObject(param2);
-               param1.x = _loc3_.x;
-               param1.y = _loc3_.y;
+               pos = ComponentFactory.Instance.creatCustomObject(posObject);
+               obj.x = pos.x;
+               obj.y = pos.y;
             }
-            else if(param2 is Object)
+            else if(posObject is Object)
             {
-               param1.x = param2.x;
-               param1.y = param2.y;
+               obj.x = posObject.x;
+               obj.y = posObject.y;
             }
          }
-         return param1;
+         return obj;
       }
       
-      public static function creatPoint(param1:String) : Point
+      public static function creatPoint(pointStyle:String) : Point
       {
-         var _loc2_:Point = ComponentFactory.Instance.creatCustomObject(param1);
-         return _loc2_;
+         var point:Point = ComponentFactory.Instance.creatCustomObject(pointStyle);
+         return point;
       }
       
-      public static function adaptNameStyleByType(param1:String, param2:FilterFrameText, param3:GradientText) : void
+      public static function adaptNameStyleByType(type:String, nameTxt:FilterFrameText, vipTxt:GradientText) : void
       {
-         var _loc4_:* = param1;
+         var _loc4_:* = type;
          if("isOld" !== _loc4_)
          {
             if("isVIP" !== _loc4_)
             {
-               param2.filterString = "core.playerNameTxt.GF2";
-               Helpers.setTextfieldFormat(param2,{
+               nameTxt.filterString = "core.playerNameTxt.GF2";
+               Helpers.setTextfieldFormat(nameTxt,{
                   "color":0,
                   "bold":false,
                   "font":LanguageMgr.GetTranslation("songti")
                },true);
-               param2.visible = true;
-               if(param3)
+               nameTxt.visible = true;
+               if(vipTxt)
                {
-                  param3.visible = false;
+                  vipTxt.visible = false;
                }
             }
             else
             {
-               if(param3)
+               if(vipTxt)
                {
-                  param3.visible = true;
+                  vipTxt.visible = true;
                }
-               param2.visible = false;
+               nameTxt.visible = false;
             }
          }
          else
          {
-            param2.filterString = "core.playerNameTxt.GF";
-            Helpers.setTextfieldFormat(param2,{
+            nameTxt.filterString = "core.playerNameTxt.GF";
+            Helpers.setTextfieldFormat(nameTxt,{
                "color":11400447,
                "bold":false,
                "font":LanguageMgr.GetTranslation("songti")
             },true);
-            param2.visible = true;
-            if(param3)
+            nameTxt.visible = true;
+            if(vipTxt)
             {
-               param3.visible = false;
+               vipTxt.visible = false;
             }
          }
       }
       
-      public static function adaptNameStyle(param1:BasePlayer, param2:FilterFrameText, param3:GradientText) : void
+      public static function adaptNameStyle(player:BasePlayer, nameTxt:FilterFrameText, vipTxt:GradientText) : void
       {
-         if(param1)
+         if(player)
          {
-            if(param1.isOld)
+            if(player.isOld)
             {
-               param2.filterString = "core.playerNameTxt.GF";
-               Helpers.setTextfieldFormat(param2,{
+               nameTxt.filterString = "core.playerNameTxt.GF";
+               Helpers.setTextfieldFormat(nameTxt,{
                   "color":11400447,
                   "bold":false,
                   "font":LanguageMgr.GetTranslation("songti")
                },true);
-               param2.visible = true;
-               if(param3)
+               nameTxt.visible = true;
+               if(vipTxt)
                {
-                  param3.visible = false;
+                  vipTxt.visible = false;
                }
             }
-            else if(param1.IsVIP)
+            else if(player.IsVIP)
             {
-               if(param3)
+               if(vipTxt)
                {
-                  param3.visible = true;
+                  vipTxt.visible = true;
                }
-               param2.visible = false;
+               nameTxt.visible = false;
             }
             else
             {
-               param2.filterString = "core.playerNameTxt.GF2";
-               Helpers.setTextfieldFormat(param2,{
+               nameTxt.filterString = "core.playerNameTxt.GF2";
+               Helpers.setTextfieldFormat(nameTxt,{
                   "color":0,
                   "bold":false,
                   "font":LanguageMgr.GetTranslation("songti")
                },true);
-               param2.visible = true;
-               if(param3)
+               nameTxt.visible = true;
+               if(vipTxt)
                {
-                  param3.visible = false;
+                  vipTxt.visible = false;
                }
             }
          }

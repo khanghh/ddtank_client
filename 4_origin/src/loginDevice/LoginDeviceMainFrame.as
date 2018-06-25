@@ -78,24 +78,24 @@ package loginDevice
          _btnGroup.removeEventListener("change",__selectedChangeHandler);
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(e:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(e.responseCode == 0 || e.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();
          }
       }
       
-      private function __selectedChangeHandler(param1:Event) : void
+      private function __selectedChangeHandler(e:Event) : void
       {
          _showView(_btnGroup.selectIndex);
       }
       
-      private function _showView(param1:int) : void
+      private function _showView(type:int) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1))
+         switch(int(type))
          {
             case 0:
                if(_rewardView == null)

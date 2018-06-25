@@ -18,9 +18,9 @@ package starling.utils
          throw new AbstractClassError();
       }
       
-      public static function isValid(param1:String) : Boolean
+      public static function isValid(vAlign:String) : Boolean
       {
-         return param1 == "top" || param1 == "center" || param1 == "bottom";
+         return vAlign == "top" || vAlign == "center" || vAlign == "bottom";
       }
    }
 }

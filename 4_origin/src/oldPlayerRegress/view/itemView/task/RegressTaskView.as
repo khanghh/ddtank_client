@@ -91,9 +91,9 @@ package oldPlayerRegress.view.itemView.task
          getAwardBtn = ComponentFactory.Instance.creat("regress.getAward");
          gotoBtn = ComponentFactory.Instance.creat("regress.goto");
          gotoBtn.visible = false;
-         var _loc1_:Object = {};
-         _loc1_["color"] = "gold";
-         _questBtnShine = EffectManager.Instance.creatEffect(3,getAwardBtn,_loc1_);
+         var shineData:Object = {};
+         shineData["color"] = "gold";
+         _questBtnShine = EffectManager.Instance.creatEffect(3,getAwardBtn,shineData);
          _questBtnShine.stop();
          addChild(_bottomBtnBg);
          addChild(getAwardBtn);
@@ -109,27 +109,27 @@ package oldPlayerRegress.view.itemView.task
          SocketManager.Instance.addEventListener(PkgEvent.format(129,30),consortiaBossHandler);
       }
       
-      protected function __onGetAwardBtnClick(param1:MouseEvent) : void
+      protected function __onGetAwardBtnClick(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var alert:* = null;
          if(!taskInfo)
          {
             return;
          }
          SoundManager.instance.playButtonSound();
-         var _loc3_:QuestInfo = taskInfo;
-         if(_loc3_.RewardBindMoney != 0 && _loc3_.RewardBindMoney + PlayerManager.Instance.Self.DDTMoney > ServerConfigManager.instance.getBindBidLimit(PlayerManager.Instance.Self.Grade,PlayerManager.Instance.Self.VIPLevel))
+         var questInfo:QuestInfo = taskInfo;
+         if(questInfo.RewardBindMoney != 0 && questInfo.RewardBindMoney + PlayerManager.Instance.Self.DDTMoney > ServerConfigManager.instance.getBindBidLimit(PlayerManager.Instance.Self.Grade,PlayerManager.Instance.Self.VIPLevel))
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.BindBid.tip"),LanguageMgr.GetTranslation("shop.PresentFrame.OkBtnText"),LanguageMgr.GetTranslation("shop.PresentFrame.CancelBtnText"),false,false,true,1);
-            _loc2_.addEventListener("response",__onResponse);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.BindBid.tip"),LanguageMgr.GetTranslation("shop.PresentFrame.OkBtnText"),LanguageMgr.GetTranslation("shop.PresentFrame.CancelBtnText"),false,false,true,1);
+            alert.addEventListener("response",__onResponse);
          }
          else
          {
-            finishQuest(_loc3_);
+            finishQuest(questInfo);
          }
       }
       
-      protected function __onGotoBtnClick(param1:MouseEvent) : void
+      protected function __onGotoBtnClick(event:MouseEvent) : void
       {
          if(_gotoFunc != null)
          {
@@ -137,27 +137,27 @@ package oldPlayerRegress.view.itemView.task
          }
       }
       
-      private function finishQuest(param1:QuestInfo) : void
+      private function finishQuest(pQuestInfo:QuestInfo) : void
       {
-         if(param1 && !param1.isCompleted)
+         if(pQuestInfo && !pQuestInfo.isCompleted)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.task.TaskCatalogContentView.dropTaskIII"));
             return;
          }
-         if(param1)
+         if(pQuestInfo)
          {
-            TaskManager.instance.sendQuestFinish(param1.QuestID);
+            TaskManager.instance.sendQuestFinish(pQuestInfo.QuestID);
          }
       }
       
-      private function __onResponse(param1:FrameEvent) : void
+      private function __onResponse(pEvent:FrameEvent) : void
       {
-         param1.currentTarget.removeEventListener("response",__onResponse);
-         if(param1.responseCode == 3)
+         pEvent.currentTarget.removeEventListener("response",__onResponse);
+         if(pEvent.responseCode == 3)
          {
             finishQuest(taskInfo);
          }
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(pEvent.currentTarget);
       }
       
       private function removeEvent() : void
@@ -214,21 +214,20 @@ package oldPlayerRegress.view.itemView.task
          }
       }
       
-      private function getFuncID(param1:int) : int
+      private function getFuncID(taskId:int) : int
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = 0;
-         _loc3_ = 0;
-         while(_loc3_ < _taskIdArray.length)
+         var i:int = 0;
+         var id:* = 0;
+         for(i = 0; i < _taskIdArray.length; )
          {
-            if(_taskIdArray[_loc3_].indexOf(param1) != -1)
+            if(_taskIdArray[i].indexOf(taskId) != -1)
             {
-               _loc2_ = _loc3_;
+               id = i;
                break;
             }
-            _loc3_++;
+            i++;
          }
-         return _loc2_;
+         return id;
       }
       
       private function notGo() : void
@@ -292,11 +291,11 @@ package oldPlayerRegress.view.itemView.task
          (parent.parent.parent as RegressView).dispatchEvent(new FrameEvent(0));
       }
       
-      private function battleOpenHandler(param1:ActivitStateEvent) : void
+      private function battleOpenHandler(event:ActivitStateEvent) : void
       {
-         var _loc3_:Array = param1.data as Array;
-         var _loc2_:int = _loc3_[0];
-         if(_loc2_ == 5)
+         var arr:Array = event.data as Array;
+         var id:int = arr[0];
+         if(id == 5)
          {
             _isBattleOpen = true;
             if(_gotoFunc == gotoBattle)
@@ -306,7 +305,7 @@ package oldPlayerRegress.view.itemView.task
          }
       }
       
-      private function battleOverHandler(param1:PkgEvent) : void
+      private function battleOverHandler(event:PkgEvent) : void
       {
          _isBattleOpen = false;
          if(_gotoFunc == gotoBattle)
@@ -319,10 +318,10 @@ package oldPlayerRegress.view.itemView.task
       {
          trace("进入试炼之地");
          SoundManager.instance.play("008");
-         var _loc1_:int = ServerConfigManager.instance.trialBattleLevelLimit;
-         if(PlayerManager.Instance.Self.Grade < _loc1_)
+         var limitLev:int = ServerConfigManager.instance.trialBattleLevelLimit;
+         if(PlayerManager.Instance.Self.Grade < limitLev)
          {
-            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.functionLimitTip",_loc1_));
+            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.functionLimitTip",limitLev));
             return;
          }
          if(getTimer() - _lastCreatTime > 1000)
@@ -339,10 +338,10 @@ package oldPlayerRegress.view.itemView.task
          BuriedManager.Instance.enter();
       }
       
-      private function consortiaBossHandler(param1:PkgEvent) : void
+      private function consortiaBossHandler(event:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _bossState = _loc2_.readByte();
+         var pkg:PackageIn = event.pkg;
+         _bossState = pkg.readByte();
          if(_gotoFunc == gotoConsortiria)
          {
             gotoBtn.enable = _bossState == 1?true:false;
@@ -382,121 +381,121 @@ package oldPlayerRegress.view.itemView.task
          RoomManager.Instance.addEventListener("gameRoomCreate",__gameStart);
       }
       
-      private function __gameStart(param1:CrazyTankSocketEvent) : void
+      private function __gameStart(e:CrazyTankSocketEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
+         var _difficulty:int = 0;
+         var _infoId:int = 0;
+         var _sencondType:int = 0;
          RoomManager.Instance.removeEventListener("gameRoomCreate",__gameStart);
          switch(int(TaskManager.instance.guideId) - 10)
          {
             case 0:
-               _loc2_ = 0;
-               _loc4_ = 1000;
+               _difficulty = 0;
+               _infoId = 1000;
                break;
             case 1:
-               _loc2_ = 1;
-               _loc4_ = 1000;
+               _difficulty = 1;
+               _infoId = 1000;
                break;
             case 2:
-               _loc2_ = 2;
-               _loc4_ = 1000;
+               _difficulty = 2;
+               _infoId = 1000;
                break;
             case 3:
-               _loc2_ = 0;
-               _loc4_ = 1001;
+               _difficulty = 0;
+               _infoId = 1001;
                break;
             case 4:
-               _loc2_ = 1;
-               _loc4_ = 1001;
+               _difficulty = 1;
+               _infoId = 1001;
                break;
             case 5:
-               _loc2_ = 2;
-               _loc4_ = 1001;
+               _difficulty = 2;
+               _infoId = 1001;
                break;
             case 6:
-               _loc2_ = 0;
-               _loc4_ = 1002;
+               _difficulty = 0;
+               _infoId = 1002;
                break;
             case 7:
-               _loc2_ = 1;
-               _loc4_ = 1002;
+               _difficulty = 1;
+               _infoId = 1002;
                break;
             case 8:
-               _loc2_ = 2;
-               _loc4_ = 1002;
+               _difficulty = 2;
+               _infoId = 1002;
                break;
             case 9:
-               _loc2_ = 0;
-               _loc4_ = 1003;
+               _difficulty = 0;
+               _infoId = 1003;
                break;
             case 10:
-               _loc2_ = 1;
-               _loc4_ = 1003;
+               _difficulty = 1;
+               _infoId = 1003;
                break;
             case 11:
-               _loc2_ = 2;
-               _loc4_ = 1003;
+               _difficulty = 2;
+               _infoId = 1003;
                break;
             case 12:
-               _loc2_ = 0;
-               _loc4_ = 1004;
+               _difficulty = 0;
+               _infoId = 1004;
                break;
             case 13:
-               _loc2_ = 1;
-               _loc4_ = 1004;
+               _difficulty = 1;
+               _infoId = 1004;
                break;
             case 14:
-               _loc2_ = 2;
-               _loc4_ = 1004;
+               _difficulty = 2;
+               _infoId = 1004;
          }
-         _loc3_ = getSecondType(_loc4_,_loc2_);
-         GameInSocketOut.sendGameRoomSetUp(_loc4_,5,false,"","",_loc3_,_loc2_,0,false,0);
-         FightLibManager.Instance.currentInfoID = _loc4_;
-         FightLibManager.Instance.currentInfo.difficulty = _loc2_;
+         _sencondType = getSecondType(_infoId,_difficulty);
+         GameInSocketOut.sendGameRoomSetUp(_infoId,5,false,"","",_sencondType,_difficulty,0,false,0);
+         FightLibManager.Instance.currentInfoID = _infoId;
+         FightLibManager.Instance.currentInfo.difficulty = _difficulty;
          StateManager.setState("fightLib");
       }
       
-      private function getSecondType(param1:int, param2:int) : int
+      private function getSecondType(infoId:int, difficulty:int) : int
       {
-         var _loc3_:int = 0;
-         if(param1 == 1001 || param1 == 1002 || param1 == 1003)
+         var secondType:int = 0;
+         if(infoId == 1001 || infoId == 1002 || infoId == 1003)
          {
-            if(param2 == 0)
+            if(difficulty == 0)
             {
-               _loc3_ = 6;
+               secondType = 6;
             }
-            else if(param2 == 1)
+            else if(difficulty == 1)
             {
-               _loc3_ = 5;
+               secondType = 5;
             }
             else
             {
-               _loc3_ = 3;
+               secondType = 3;
             }
          }
-         else if(param1 == 1004)
+         else if(infoId == 1004)
          {
-            if(param2 == 0)
+            if(difficulty == 0)
             {
-               _loc3_ = 5;
+               secondType = 5;
             }
-            else if(param2 == 1)
+            else if(difficulty == 1)
             {
-               _loc3_ = 4;
+               secondType = 4;
             }
             else
             {
-               _loc3_ = 3;
+               secondType = 3;
             }
          }
-         return _loc3_;
+         return secondType;
       }
       
       override public function dispose() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
+         var i:int = 0;
+         var j:int = 0;
          super.dispose();
          removeEvent();
          _gotoFunc = null;
@@ -524,18 +523,17 @@ package oldPlayerRegress.view.itemView.task
          {
             taskInfo = null;
          }
-         _loc2_ = 0;
-         while(_loc2_ < _taskIdArray.length)
+         i = 0;
+         while(i < _taskIdArray.length)
          {
-            _taskIdArray[_loc2_] = null;
-            _loc2_++;
+            _taskIdArray[i] = null;
+            i++;
          }
          _taskIdArray.length = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _funcArray.length)
+         for(j = 0; j < _funcArray.length; )
          {
-            _funcArray[_loc1_] = null;
-            _loc1_++;
+            _funcArray[j] = null;
+            j++;
          }
          _funcArray.length = 0;
       }
@@ -545,9 +543,9 @@ package oldPlayerRegress.view.itemView.task
          return _taskInfo;
       }
       
-      public function set taskInfo(param1:QuestInfo) : void
+      public function set taskInfo(value:QuestInfo) : void
       {
-         _taskInfo = param1;
+         _taskInfo = value;
          if(taskInfo)
          {
             setModuleInfo();
@@ -559,9 +557,9 @@ package oldPlayerRegress.view.itemView.task
          return _getAwardBtn;
       }
       
-      public function set getAwardBtn(param1:BaseButton) : void
+      public function set getAwardBtn(value:BaseButton) : void
       {
-         _getAwardBtn = param1;
+         _getAwardBtn = value;
       }
       
       public function get questBtnShine() : IEffect
@@ -569,9 +567,9 @@ package oldPlayerRegress.view.itemView.task
          return _questBtnShine;
       }
       
-      public function set questBtnShine(param1:IEffect) : void
+      public function set questBtnShine(value:IEffect) : void
       {
-         _questBtnShine = param1;
+         _questBtnShine = value;
       }
       
       public function get gotoBtn() : BaseButton
@@ -579,9 +577,9 @@ package oldPlayerRegress.view.itemView.task
          return _gotoBtn;
       }
       
-      public function set gotoBtn(param1:BaseButton) : void
+      public function set gotoBtn(value:BaseButton) : void
       {
-         _gotoBtn = param1;
+         _gotoBtn = value;
       }
    }
 }

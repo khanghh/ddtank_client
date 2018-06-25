@@ -10,10 +10,10 @@ package ddt.events
       
       public var action:String;
       
-      public function PhyobjEvent(param1:String, param2:Boolean = false, param3:Boolean = false)
+      public function PhyobjEvent(actionType:String, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         super("phyobjChange",param2,param3);
-         action = param1;
+         super("phyobjChange",bubbles,cancelable);
+         action = actionType;
       }
    }
 }

@@ -30,45 +30,45 @@ package team.view.main
          TeamManager.instance.addEventListener("updateselfinfo",__onUpdateSelfInfo);
       }
       
-      private function __onRenderTab(param1:Box, param2:int) : void
+      private function __onRenderTab(item:Box, index:int) : void
       {
-         var _loc3_:Label = param1.getChildByName("lv") as Label;
-         _loc3_.text = "Lv." + list_select.array[param2];
+         var lv:Label = item.getChildByName("lv") as Label;
+         lv.text = "Lv." + list_select.array[index];
       }
       
-      private function __onSelectTab(param1:int) : void
+      private function __onSelectTab(index:int) : void
       {
          SoundManager.instance.playButtonSound();
-         tabToShop(param1);
+         tabToShop(index);
       }
       
-      private function __onRenderShop(param1:Box, param2:int) : void
+      private function __onRenderShop(item:Box, index:int) : void
       {
-         var _loc3_:TeamShopViewItem = param1 as TeamShopViewItem;
-         if(param2 < list_shop.array.length)
+         var view:TeamShopViewItem = item as TeamShopViewItem;
+         if(index < list_shop.array.length)
          {
-            _loc3_.info = list_shop.array[param2] as TeamShopInfo;
+            view.info = list_shop.array[index] as TeamShopInfo;
          }
          else
          {
-            _loc3_.info = null;
+            view.info = null;
          }
       }
       
-      private function tabToShop(param1:int) : void
+      private function tabToShop(tabIndex:int) : void
       {
-         var _loc2_:int = ShopType.TEAM_SHOP[param1];
-         var _loc3_:Array = TeamManager.instance.model.shopList[_loc2_];
-         list_shop.array = _loc3_;
+         var shopType:int = ShopType.TEAM_SHOP[tabIndex];
+         var list:Array = TeamManager.instance.model.shopList[shopType];
+         list_shop.array = list;
          list_shop.page = 1;
          page_select.maxPage = list_shop.totalPage;
          page_select.currentPage = 1;
       }
       
-      private function __onPageSelect(param1:int) : void
+      private function __onPageSelect(index:int) : void
       {
          SoundManager.instance.playButtonSound();
-         list_shop.page = param1 - 1;
+         list_shop.page = index - 1;
       }
       
       public function update() : void
@@ -77,7 +77,7 @@ package team.view.main
          list_select.selectedIndex = 0;
       }
       
-      private function __onUpdateSelfInfo(param1:TeamEvent) : void
+      private function __onUpdateSelfInfo(e:TeamEvent) : void
       {
          ex_active.count = TeamManager.instance.model.selfActive;
       }

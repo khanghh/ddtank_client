@@ -47,7 +47,7 @@ package ddt.view.enthrall
          removeEventListener("focusIn",__focusIn);
       }
       
-      private function __focusIn(param1:FocusEvent) : void
+      private function __focusIn(evt:FocusEvent) : void
       {
       }
       
@@ -74,7 +74,7 @@ package ddt.view.enthrall
          titleText = LanguageMgr.GetTranslation("tank.view.enthrallCheckFrame.checkTitle");
       }
       
-      private function __check(param1:MouseEvent) : void
+      private function __check(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_nameInput.text == null || _nameInput.text == "")
@@ -106,9 +106,9 @@ package ddt.view.enthrall
          _errorText.text = "";
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:

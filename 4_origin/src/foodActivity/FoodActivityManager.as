@@ -65,11 +65,11 @@ package foodActivity
          SocketManager.Instance.addEventListener(PkgEvent.format(274),pkgHandler);
       }
       
-      protected function pkgHandler(param1:PkgEvent) : void
+      protected function pkgHandler(event:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readByte();
-         var _loc4_:* = _loc2_;
+         var pkg:PackageIn = event.pkg;
+         var cmd:int = pkg.readByte();
+         var _loc4_:* = cmd;
          if(FoodActivityEvent.ACTIVITY_STATE !== _loc4_)
          {
             if(FoodActivityEvent.UPDATE_COUNT !== _loc4_)
@@ -82,36 +82,36 @@ package foodActivity
                      {
                         if(FoodActivityEvent.CLEAN_DATA === _loc4_)
                         {
-                           cleanDataHandler(_loc3_);
+                           cleanDataHandler(pkg);
                         }
                      }
                      else
                      {
-                        dispatchEvent(new FoodActivityEvent(FoodActivityEvent.FOOD_REWARD,_loc3_));
+                        dispatchEvent(new FoodActivityEvent(FoodActivityEvent.FOOD_REWARD,pkg));
                      }
                   }
                   else
                   {
-                     cookingHanlder(_loc3_);
+                     cookingHanlder(pkg);
                   }
                }
                else
                {
-                  cookingHanlder(_loc3_);
+                  cookingHanlder(pkg);
                }
             }
             else
             {
-               updateCookingCount(_loc3_);
+               updateCookingCount(pkg);
             }
          }
          else
          {
-            openOrCloseHandler(_loc3_);
+            openOrCloseHandler(pkg);
          }
       }
       
-      private function cleanDataHandler(param1:PackageIn) : void
+      private function cleanDataHandler(pkg:PackageIn) : void
       {
          ripeNum = 0;
          cookingCount = 0;
@@ -128,10 +128,10 @@ package foodActivity
          }
       }
       
-      private function cookingHanlder(param1:PackageIn) : void
+      private function cookingHanlder(pkg:PackageIn) : void
       {
-         cookingCount = param1.readInt();
-         ripeNum = param1.readInt();
+         cookingCount = pkg.readInt();
+         ripeNum = pkg.readInt();
          updateView();
       }
       
@@ -144,11 +144,11 @@ package foodActivity
          dispatchEvent(new FoodActivityEvent(FoodActivityEvent.FOOD_UPDATEVIEW));
       }
       
-      private function updateCookingCount(param1:PackageIn) : void
+      private function updateCookingCount(pkg:PackageIn) : void
       {
-         cookingCount = param1.readInt();
-         currentSumTime = param1.readInt();
-         delayTime = param1.readInt();
+         cookingCount = pkg.readInt();
+         currentSumTime = pkg.readInt();
+         delayTime = pkg.readInt();
          if(!_info)
          {
             return;
@@ -167,14 +167,14 @@ package foodActivity
          updateView();
       }
       
-      private function openOrCloseHandler(param1:PackageIn) : void
+      private function openOrCloseHandler(pkg:PackageIn) : void
       {
-         _actId = param1.readUTF();
-         _isStart = param1.readBoolean();
-         cookingCount = param1.readInt();
-         ripeNum = param1.readInt();
-         state = param1.readInt();
-         currentSumTime = param1.readInt();
+         _actId = pkg.readUTF();
+         _isStart = pkg.readBoolean();
+         cookingCount = pkg.readInt();
+         ripeNum = pkg.readInt();
+         state = pkg.readInt();
+         currentSumTime = pkg.readInt();
          if(_isStart)
          {
             initData();
@@ -210,15 +210,15 @@ package foodActivity
       
       private function initData() : void
       {
-         var _loc2_:Date = TimeManager.Instance.Now();
-         var _loc1_:Dictionary = WonderfulActivityManager.Instance.activityData;
+         var now:Date = TimeManager.Instance.Now();
+         var activityData:Dictionary = WonderfulActivityManager.Instance.activityData;
          var _loc5_:int = 0;
-         var _loc4_:* = _loc1_;
-         for each(var _loc3_ in _loc1_)
+         var _loc4_:* = activityData;
+         for each(var item in activityData)
          {
-            if(_loc3_.activityType == 13 && (_loc3_.activityChildType == 0 || _loc3_.activityChildType == 1) && _loc2_.time >= Date.parse(_loc3_.beginTime) && _loc2_.time <= Date.parse(_loc3_.endShowTime))
+            if(item.activityType == 13 && (item.activityChildType == 0 || item.activityChildType == 1) && now.time >= Date.parse(item.beginTime) && now.time <= Date.parse(item.endShowTime))
             {
-               _info = !!_loc1_[_actId]?_loc1_[_actId]:null;
+               _info = !!activityData[_actId]?activityData[_actId]:null;
                break;
             }
          }
@@ -236,11 +236,11 @@ package foodActivity
          }
       }
       
-      public function startTime(param1:Boolean = false) : void
+      public function startTime(isUpdateCount:Boolean = false) : void
       {
          if(_foodActivityEnterIcon)
          {
-            _foodActivityEnterIcon.startTime(param1);
+            _foodActivityEnterIcon.startTime(isUpdateCount);
          }
          if(_timer)
          {
@@ -273,7 +273,7 @@ package foodActivity
          }
       }
       
-      protected function __timerHandler(param1:TimerEvent) : void
+      protected function __timerHandler(event:TimerEvent) : void
       {
          sumTime = Number(sumTime) - 1;
          if(_foodActivityEnterIcon)
@@ -307,9 +307,9 @@ package foodActivity
          return _info;
       }
       
-      public function set info(param1:GmActivityInfo) : void
+      public function set info(value:GmActivityInfo) : void
       {
-         _info = param1;
+         _info = value;
       }
       
       public function get isStart() : Boolean

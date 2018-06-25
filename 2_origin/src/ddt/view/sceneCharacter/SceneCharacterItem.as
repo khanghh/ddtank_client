@@ -29,20 +29,20 @@ package ddt.view.sceneCharacter
       
       private var _repeatNumber:int;
       
-      public function SceneCharacterItem(param1:String, param2:String, param3:BitmapData, param4:int, param5:int, param6:Number, param7:Number, param8:int = 0, param9:Vector.<Point> = null, param10:Boolean = false, param11:int = 0)
+      public function SceneCharacterItem(type:String, groupType:String, source:BitmapData, rowNumber:int, rowCellNumber:int, cellWitdh:Number, cellHeight:Number, sortOrder:int = 0, points:Vector.<Point> = null, isRepeat:Boolean = false, repeatNumber:int = 0)
       {
          super();
-         _type = param1;
-         _groupType = param2;
-         _source = param3;
-         _rowNumber = param4;
-         _rowCellNumber = param5;
-         _cellWitdh = param6;
-         _cellHeight = param7;
-         _points = param9;
-         _sortOrder = param8;
-         _isRepeat = param10;
-         _repeatNumber = param11;
+         _type = type;
+         _groupType = groupType;
+         _source = source;
+         _rowNumber = rowNumber;
+         _rowCellNumber = rowCellNumber;
+         _cellWitdh = cellWitdh;
+         _cellHeight = cellHeight;
+         _points = points;
+         _sortOrder = sortOrder;
+         _isRepeat = isRepeat;
+         _repeatNumber = repeatNumber;
       }
       
       public function get type() : String
@@ -60,9 +60,9 @@ package ddt.view.sceneCharacter
          return _source;
       }
       
-      public function set source(param1:BitmapData) : void
+      public function set source(value:BitmapData) : void
       {
-         _source = param1;
+         _source = value;
       }
       
       public function get points() : Vector.<Point>
@@ -85,9 +85,9 @@ package ddt.view.sceneCharacter
          return _rowNumber;
       }
       
-      public function set rowNumber(param1:int) : void
+      public function set rowNumber(value:int) : void
       {
-         _rowNumber = param1;
+         _rowNumber = value;
       }
       
       public function get rowCellNumber() : int
@@ -95,9 +95,9 @@ package ddt.view.sceneCharacter
          return _rowCellNumber;
       }
       
-      public function set rowCellNumber(param1:int) : void
+      public function set rowCellNumber(value:int) : void
       {
-         _rowCellNumber = param1;
+         _rowCellNumber = value;
       }
       
       public function get sortOrder() : int

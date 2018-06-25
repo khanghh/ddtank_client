@@ -8,14 +8,14 @@ package ddt.data.analyze
       
       public var updateContent:String;
       
-      public function PlayerRegressNotificationAnalyzer(param1:Function)
+      public function PlayerRegressNotificationAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         updateContent = String(param1);
+         updateContent = String(data);
          onAnalyzeComplete();
       }
    }

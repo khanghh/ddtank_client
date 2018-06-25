@@ -32,46 +32,46 @@ package socialContact.friendBirthday
       
       public function findFriendBirthday() : void
       {
-         var _loc4_:* = null;
-         var _loc1_:Vector.<FriendListPlayer> = new Vector.<FriendListPlayer>();
-         var _loc3_:DictionaryData = PlayerManager.Instance.friendList;
+         var friend:* = null;
+         var brithdayVec:Vector.<FriendListPlayer> = new Vector.<FriendListPlayer>();
+         var dic:DictionaryData = PlayerManager.Instance.friendList;
          var _loc6_:int = 0;
-         var _loc5_:* = _loc3_;
-         for(var _loc2_ in _loc3_)
+         var _loc5_:* = dic;
+         for(var str in dic)
          {
-            _loc4_ = _loc3_[_loc2_] as FriendListPlayer;
-            if(_loc4_.BirthdayDate && _countBrithday(_loc4_.BirthdayDate) && _countNameInShare(_loc4_.NickName))
+            friend = dic[str] as FriendListPlayer;
+            if(friend.BirthdayDate && _countBrithday(friend.BirthdayDate) && _countNameInShare(friend.NickName))
             {
-               _loc1_.push(_loc4_);
-               SharedManager.Instance.friendBrithdayName = SharedManager.Instance.friendBrithdayName + "," + _loc4_.NickName;
+               brithdayVec.push(friend);
+               SharedManager.Instance.friendBrithdayName = SharedManager.Instance.friendBrithdayName + "," + friend.NickName;
                SharedManager.Instance.save();
             }
          }
-         if(_loc1_.length > 0)
+         if(brithdayVec.length > 0)
          {
-            _sendMySelfEmail(_loc1_);
+            _sendMySelfEmail(brithdayVec);
          }
       }
       
-      private function _countBrithday(param1:Date) : Boolean
+      private function _countBrithday(date:Date) : Boolean
       {
-         var _loc3_:Date = new Date();
-         var _loc2_:Boolean = false;
-         if(_loc3_.monthUTC == param1.monthUTC && param1.dateUTC - _loc3_.dateUTC <= 1 && param1.dateUTC - _loc3_.dateUTC > -1)
+         var nowDate:Date = new Date();
+         var boo:Boolean = false;
+         if(nowDate.monthUTC == date.monthUTC && date.dateUTC - nowDate.dateUTC <= 1 && date.dateUTC - nowDate.dateUTC > -1)
          {
-            _loc2_ = true;
+            boo = true;
          }
-         return _loc2_;
+         return boo;
       }
       
-      private function _sendMySelfEmail(param1:Vector.<FriendListPlayer>) : void
+      private function _sendMySelfEmail(vec:Vector.<FriendListPlayer>) : void
       {
-         SocketManager.Instance.out.sendWithBrithday(param1);
+         SocketManager.Instance.out.sendWithBrithday(vec);
       }
       
-      public function set friendName(param1:String) : void
+      public function set friendName(str:String) : void
       {
-         _friendName = param1;
+         _friendName = str;
       }
       
       public function get friendName() : String
@@ -79,18 +79,17 @@ package socialContact.friendBirthday
          return _friendName;
       }
       
-      private function _countNameInShare(param1:String) : Boolean
+      private function _countNameInShare(str:String) : Boolean
       {
-         var _loc3_:int = 0;
-         var _loc2_:Array = SharedManager.Instance.friendBrithdayName.split(/,/);
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_.length)
+         var i:int = 0;
+         var arr:Array = SharedManager.Instance.friendBrithdayName.split(/,/);
+         for(i = 0; i < arr.length; )
          {
-            if(param1 == _loc2_[_loc3_])
+            if(str == arr[i])
             {
                return false;
             }
-            _loc3_++;
+            i++;
          }
          return true;
       }

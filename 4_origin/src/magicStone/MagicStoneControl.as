@@ -76,29 +76,29 @@ package magicStone
          SocketManager.Instance.addEventListener(PkgEvent.format(284),__MagicStoneMonsterInfo);
       }
       
-      private function __MagicStoneMonsterInfo(param1:CrazyTankSocketEvent) : void
+      private function __MagicStoneMonsterInfo(event:CrazyTankSocketEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _model.normalFightNum = _loc2_.readInt();
-         _model.hardFightNum = _loc2_.readInt();
+         var pkg:PackageIn = event.pkg;
+         _model.normalFightNum = pkg.readInt();
+         _model.hardFightNum = pkg.readInt();
          dispatchEvent(new Event("showExploreView"));
       }
       
-      private function __getMagicStoneDoubleScore(param1:CrazyTankSocketEvent) : void
+      private function __getMagicStoneDoubleScore(event:CrazyTankSocketEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         isDoubleScore = _loc2_.readBoolean();
-         _loc2_.readDate();
-         _loc2_.readDate();
+         var pkg:PackageIn = event.pkg;
+         isDoubleScore = pkg.readBoolean();
+         pkg.readDate();
+         pkg.readDate();
          dispatchEvent(new MagicStoneEvent("magicStoneDoubleScore"));
       }
       
-      protected function __disposeView(param1:MagicStoneEvent) : void
+      protected function __disposeView(event:MagicStoneEvent) : void
       {
          magicStoneView = null;
       }
       
-      private function __openView(param1:MagicStoneEvent) : void
+      private function __openView(event:MagicStoneEvent) : void
       {
          AssetModuleLoader.addModelLoader("magicStone",6);
          AssetModuleLoader.startCodeLoader(openMagicStoneView);
@@ -107,15 +107,15 @@ package magicStone
       private function openMagicStoneView() : void
       {
          magicStoneView = ComponentFactory.Instance.creatCustomObject("magicStoneMainView");
-         var _loc1_:MagicStoneEvent = new MagicStoneEvent("magicStoneLoadComplete");
-         _loc1_.info = magicStoneView;
-         MagicStoneManager.instance.dispatchEvent(_loc1_);
+         var event:MagicStoneEvent = new MagicStoneEvent("magicStoneLoadComplete");
+         event.info = magicStoneView;
+         MagicStoneManager.instance.dispatchEvent(event);
       }
       
-      protected function __getMagicStoneScore(param1:PkgEvent) : void
+      protected function __getMagicStoneScore(event:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         mgStoneScore = _loc2_.readInt();
+         var pkg:PackageIn = event.pkg;
+         mgStoneScore = pkg.readInt();
          if(_infoView)
          {
             _infoView.updateScore(mgStoneScore);
@@ -139,15 +139,15 @@ package magicStone
          }
       }
       
-      protected function __disposeUpgradeMC(param1:Event) : void
+      protected function __disposeUpgradeMC(event:Event) : void
       {
-         var _loc2_:MovieClip = param1.target as MovieClip;
-         if(_loc2_.currentFrame == _loc2_.totalFrames)
+         var mc:MovieClip = event.target as MovieClip;
+         if(mc.currentFrame == mc.totalFrames)
          {
-            _loc2_.gotoAndStop(1);
-            _loc2_.removeEventListener("enterFrame",__disposeUpgradeMC);
-            ObjectUtils.disposeObject(_loc2_);
-            _loc2_ = null;
+            mc.gotoAndStop(1);
+            mc.removeEventListener("enterFrame",__disposeUpgradeMC);
+            ObjectUtils.disposeObject(mc);
+            mc = null;
          }
       }
       
@@ -156,9 +156,9 @@ package magicStone
          return _infoView;
       }
       
-      public function set infoView(param1:MagicStoneInfoView) : void
+      public function set infoView(value:MagicStoneInfoView) : void
       {
-         _infoView = param1;
+         _infoView = value;
       }
       
       public function get shopFrame() : MagicStoneShopFrame
@@ -166,9 +166,9 @@ package magicStone
          return _shopFrame;
       }
       
-      public function set shopFrame(param1:MagicStoneShopFrame) : void
+      public function set shopFrame(value:MagicStoneShopFrame) : void
       {
-         _shopFrame = param1;
+         _shopFrame = value;
       }
       
       public function get model() : StoneExploreModel
@@ -176,9 +176,9 @@ package magicStone
          return _model;
       }
       
-      public function set model(param1:StoneExploreModel) : void
+      public function set model(value:StoneExploreModel) : void
       {
-         _model = param1;
+         _model = value;
       }
    }
 }

@@ -1,9 +1,8 @@
 package yzhkof.debug
 {
-   public function debugTrace(... rest) : void
+   public function debugTrace(... text) : void
    {
       var i:Object = null;
-      var text:Array = rest;
       if(DebugSystem.isInited == false)
       {
          return;

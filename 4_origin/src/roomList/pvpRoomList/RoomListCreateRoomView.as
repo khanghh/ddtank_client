@@ -72,11 +72,11 @@ package roomList.pvpRoomList
          _textBG.setFrame(2);
          addToContent(_textBG);
          _explainTxt = ComponentFactory.Instance.creat("roomList.pvpRoomList.ExplainText");
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(16777215);
-         _loc1_.graphics.drawRect(_explainTxt.x,_explainTxt.y,_explainTxt.width,_explainTxt.height);
-         _loc1_.graphics.endFill();
-         addToContent(_loc1_);
+         var testBg:Sprite = new Sprite();
+         testBg.graphics.beginFill(16777215);
+         testBg.graphics.drawRect(_explainTxt.x,_explainTxt.y,_explainTxt.width,_explainTxt.height);
+         testBg.graphics.endFill();
+         addToContent(testBg);
          _explainTxt.text = RoomListEnumerate.PREWORD[int(Math.random() * RoomListEnumerate.PREWORD.length)];
          addToContent(_explainTxt);
          _passTxt = ComponentFactory.Instance.creat("roomList.pvpRoomList.passText");
@@ -109,14 +109,14 @@ package roomList.pvpRoomList
          addEventListener("response",__frameEvent);
       }
       
-      private function __btnClick(param1:MouseEvent) : void
+      private function __btnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }
       
-      private function __frameEvent(param1:FrameEvent) : void
+      private function __frameEvent(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -129,22 +129,22 @@ package roomList.pvpRoomList
          }
       }
       
-      protected function __passBtnClick(param1:MouseEvent) : void
+      protected function __passBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _checkBox.selected = !_checkBox.selected;
          upadtePassTextBg();
       }
       
-      private function __checkBoxClick(param1:MouseEvent) : void
+      private function __checkBoxClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          upadtePassTextBg();
       }
       
-      private function __passKeyDown(param1:KeyboardEvent) : void
+      private function __passKeyDown(evt:KeyboardEvent) : void
       {
-         if(param1.keyCode == 13)
+         if(evt.keyCode == 13)
          {
             submit();
          }

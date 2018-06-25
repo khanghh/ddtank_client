@@ -52,9 +52,9 @@ package cardSystem.data
       
       public var isFirstGet:Boolean = true;
       
-      public function CardInfo(param1:IEventDispatcher = null)
+      public function CardInfo(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public function get templateInfo() : ItemTemplateInfo
@@ -64,110 +64,104 @@ package cardSystem.data
       
       public function get realAttack() : int
       {
-         var _loc1_:int = 0;
-         var _loc2_:int = 0;
+         var increate:int = 0;
+         var i:int = 0;
          if(Level != 0)
          {
-            _loc1_ = 0;
-            _loc2_ = 1;
-            while(_loc2_ <= Level)
+            increate = 0;
+            for(i = 1; i <= Level; )
             {
-               _loc1_ = _loc1_ + CardManager.Instance.model.propIncreaseDic[TemplateID][_loc2_].Attack;
-               _loc2_++;
+               increate = increate + CardManager.Instance.model.propIncreaseDic[TemplateID][i].Attack;
+               i++;
             }
-            return templateInfo.Attack + _loc1_;
+            return templateInfo.Attack + increate;
          }
          return templateInfo.Attack;
       }
       
       public function get realDefence() : int
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         var _loc3_:int = 0;
+         var increate:int = 0;
+         var dic:* = null;
+         var i:int = 0;
          if(Level != 0)
          {
-            _loc2_ = 0;
-            _loc1_ = CardManager.Instance.model.propIncreaseDic[TemplateID];
-            _loc3_ = 1;
-            while(_loc3_ <= Level)
+            increate = 0;
+            dic = CardManager.Instance.model.propIncreaseDic[TemplateID];
+            for(i = 1; i <= Level; )
             {
-               _loc2_ = _loc2_ + _loc1_[_loc3_].Defend;
-               _loc3_++;
+               increate = increate + dic[i].Defend;
+               i++;
             }
-            return templateInfo.Defence + _loc2_;
+            return templateInfo.Defence + increate;
          }
          return templateInfo.Defence;
       }
       
       public function get realAgility() : int
       {
-         var _loc1_:int = 0;
-         var _loc2_:int = 0;
+         var increate:int = 0;
+         var i:int = 0;
          if(Level != 0)
          {
-            _loc1_ = 0;
-            _loc2_ = 1;
-            while(_loc2_ <= Level)
+            increate = 0;
+            for(i = 1; i <= Level; )
             {
-               _loc1_ = _loc1_ + CardManager.Instance.model.propIncreaseDic[TemplateID][_loc2_].Agility;
-               _loc2_++;
+               increate = increate + CardManager.Instance.model.propIncreaseDic[TemplateID][i].Agility;
+               i++;
             }
-            return templateInfo.Agility + _loc1_;
+            return templateInfo.Agility + increate;
          }
          return templateInfo.Agility;
       }
       
       public function get realLuck() : int
       {
-         var _loc1_:int = 0;
-         var _loc2_:int = 0;
+         var increate:int = 0;
+         var i:int = 0;
          if(Level != 0)
          {
-            _loc1_ = 0;
-            _loc2_ = 1;
-            while(_loc2_ <= Level)
+            increate = 0;
+            for(i = 1; i <= Level; )
             {
-               _loc1_ = _loc1_ + CardManager.Instance.model.propIncreaseDic[TemplateID][_loc2_].Lucky;
-               _loc2_++;
+               increate = increate + CardManager.Instance.model.propIncreaseDic[TemplateID][i].Lucky;
+               i++;
             }
-            return templateInfo.Luck + _loc1_;
+            return templateInfo.Luck + increate;
          }
          return templateInfo.Luck;
       }
       
       public function get realDamage() : int
       {
-         var _loc1_:int = 0;
-         var _loc2_:int = 0;
+         var increate:int = 0;
+         var i:int = 0;
          if(Level != 0)
          {
-            _loc1_ = 0;
-            _loc2_ = 1;
-            while(_loc2_ <= Level)
+            increate = 0;
+            for(i = 1; i <= Level; )
             {
-               _loc1_ = _loc1_ + CardManager.Instance.model.propIncreaseDic[TemplateID][_loc2_].Damage;
-               _loc2_++;
+               increate = increate + CardManager.Instance.model.propIncreaseDic[TemplateID][i].Damage;
+               i++;
             }
-            return int(templateInfo.Property4) + _loc1_;
+            return int(templateInfo.Property4) + increate;
          }
          return int(templateInfo.Property4);
       }
       
       public function get realGuard() : int
       {
-         var _loc1_:int = 0;
-         var _loc2_:int = 0;
+         var increate:int = 0;
+         var i:int = 0;
          if(Level != 0)
          {
-            _loc1_ = 0;
-            _loc2_ = 1;
-            while(_loc2_ <= Level)
+            increate = 0;
+            for(i = 1; i <= Level; )
             {
-               _loc1_ = _loc1_ + CardManager.Instance.model.propIncreaseDic[TemplateID][_loc2_].Guard;
-               _loc2_++;
+               increate = increate + CardManager.Instance.model.propIncreaseDic[TemplateID][i].Guard;
+               i++;
             }
-            return int(templateInfo.Property5) + _loc1_;
+            return int(templateInfo.Property5) + increate;
          }
          return int(templateInfo.Property5);
       }

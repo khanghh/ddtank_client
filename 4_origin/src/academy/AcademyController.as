@@ -30,9 +30,9 @@ package academy
          super.prepare();
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
-         super.enter(param1,param2);
+         super.enter(prev,data);
          init();
          MainToolBar.Instance.show();
          loadAcademyMemberList(true,_model.state,1,"",true);
@@ -63,9 +63,9 @@ package academy
          }
       }
       
-      public function loadAcademyMemberList(param1:Boolean = true, param2:Boolean = false, param3:int = 1, param4:String = "", param5:Boolean = false) : void
+      public function loadAcademyMemberList(requestType:Boolean = true, appshipStateType:Boolean = false, page:int = 1, name:String = "", isReturnSelf:Boolean = false) : void
       {
-         AcademyManager.Instance.loadAcademyMemberList(__loadAcademyMemberList,param1,param2,param3,param4,0,true,param5);
+         AcademyManager.Instance.loadAcademyMemberList(__loadAcademyMemberList,requestType,appshipStateType,page,name,0,true,isReturnSelf);
       }
       
       public function get model() : AcademyModel
@@ -73,24 +73,24 @@ package academy
          return _model;
       }
       
-      public function set currentAcademyInfo(param1:AcademyPlayerInfo) : void
+      public function set currentAcademyInfo(value:AcademyPlayerInfo) : void
       {
-         _model.info = param1;
+         _model.info = value;
          dispatchEvent(new AcademyEvent("academyPlayerChange"));
       }
       
-      private function __loadAcademyMemberList(param1:AcademyMemberListAnalyze) : void
+      private function __loadAcademyMemberList(action:AcademyMemberListAnalyze) : void
       {
-         _model.list = param1.academyMemberList;
-         _model.totalPage = param1.totalPage;
-         AcademyManager.Instance.isSelfPublishEquip = param1.isSelfPublishEquip;
-         if(param1.isAlter)
+         _model.list = action.academyMemberList;
+         _model.totalPage = action.totalPage;
+         AcademyManager.Instance.isSelfPublishEquip = action.isSelfPublishEquip;
+         if(action.isAlter)
          {
-            AcademyManager.Instance.selfIsRegister = param1.selfIsRegister;
+            AcademyManager.Instance.selfIsRegister = action.selfIsRegister;
          }
-         if(param1.selfDescribe && param1.selfDescribe != "")
+         if(action.selfDescribe && action.selfDescribe != "")
          {
-            AcademyManager.Instance.selfDescribe = param1.selfDescribe;
+            AcademyManager.Instance.selfDescribe = action.selfDescribe;
          }
          if(_model.list.length != 0)
          {
@@ -99,10 +99,10 @@ package academy
          dispatchEvent(new AcademyEvent("AcademyUpdateList"));
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
          MainToolBar.Instance.hide();
-         super.leaving(param1);
+         super.leaving(next);
          dispose();
       }
       

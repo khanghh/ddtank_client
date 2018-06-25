@@ -13,10 +13,10 @@ package store.view.fusion
       
       public function PreviewItemCell()
       {
-         var _loc1_:Sprite = new Sprite();
-         var _loc2_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.store.FusionCellBG");
-         _loc1_.addChild(_loc2_);
-         super(_loc1_);
+         var bg:Sprite = new Sprite();
+         var bgBit:Bitmap = ComponentFactory.Instance.creatBitmap("asset.store.FusionCellBG");
+         bg.addChild(bgBit);
+         super(bg);
          if(_cellMouseOverBg)
          {
             ObjectUtils.disposeObject(_cellMouseOverBg);
@@ -24,7 +24,7 @@ package store.view.fusion
          _cellMouseOverBg = null;
       }
       
-      override public function dragDrop(param1:DragEffect) : void
+      override public function dragDrop(effect:DragEffect) : void
       {
       }
    }

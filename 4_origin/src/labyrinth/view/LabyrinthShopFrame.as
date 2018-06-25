@@ -69,30 +69,30 @@ package labyrinth.view
       
       override protected function init() : void
       {
-         var _loc1_:* = null;
-         var _loc6_:* = null;
-         var _loc5_:* = null;
-         var _loc7_:* = null;
-         var _loc8_:int = 0;
-         var _loc2_:Number = NaN;
-         var _loc3_:Number = NaN;
+         var title:* = null;
+         var descript:* = null;
+         var coinTxt:* = null;
+         var coinNum:* = null;
+         var i:int = 0;
+         var dx:Number = NaN;
+         var dy:Number = NaN;
          super.init();
          if(BuriedManager.Instance.isOpening)
          {
-            _loc1_ = LanguageMgr.GetTranslation("buried.alertInfo.shopTitle");
-            _loc6_ = LanguageMgr.GetTranslation("buried.alertInfo.ligthStoneOver.text2");
-            _loc5_ = LanguageMgr.GetTranslation("buried.alertInfo.LabyrinthShopFrame.text1");
-            _loc7_ = BuriedManager.Instance.getBuriedStoneNum();
+            title = LanguageMgr.GetTranslation("buried.alertInfo.shopTitle");
+            descript = LanguageMgr.GetTranslation("buried.alertInfo.ligthStoneOver.text2");
+            coinTxt = LanguageMgr.GetTranslation("buried.alertInfo.LabyrinthShopFrame.text1");
+            coinNum = BuriedManager.Instance.getBuriedStoneNum();
          }
          else
          {
-            _loc1_ = LanguageMgr.GetTranslation("ddt.labyrinth.LabyrinthShopFrame.title");
-            _loc6_ = LanguageMgr.GetTranslation("ddt.labyrinth.LabyrinthShopFrame.text2");
-            _loc5_ = LanguageMgr.GetTranslation("dt.labyrinth.LabyrinthShopFrame.text1");
-            _loc7_ = PlayerManager.Instance.Self.hardCurrency.toString();
+            title = LanguageMgr.GetTranslation("ddt.labyrinth.LabyrinthShopFrame.title");
+            descript = LanguageMgr.GetTranslation("ddt.labyrinth.LabyrinthShopFrame.text2");
+            coinTxt = LanguageMgr.GetTranslation("dt.labyrinth.LabyrinthShopFrame.text1");
+            coinNum = PlayerManager.Instance.Self.hardCurrency.toString();
          }
-         var _loc4_:AlertInfo = new AlertInfo(_loc1_,"",LanguageMgr.GetTranslation("tank.calendar.Activity.BackButtonText"));
-         info = _loc4_;
+         var alerInfo:AlertInfo = new AlertInfo(title,"",LanguageMgr.GetTranslation("tank.calendar.Activity.BackButtonText"));
+         info = alerInfo;
          _goodItems = new Vector.<LabyrinthShopItem>();
          _rightItemLightMc = ComponentFactory.Instance.creatCustomObject("labyrinth.LabyrinthShopFrame.RightItemLightMc");
          _goodItemContainerAll = ComponentFactory.Instance.creatCustomObject("labyrinth.LabyrinthShopFrame.GoodItemContainerAll");
@@ -104,11 +104,11 @@ package labyrinth.view
          _currentPageTxt = UICreatShortcut.creatAndAdd("ddtshop.CurrentPage",_navigationBarContainer);
          _coinNumBG = ComponentFactory.Instance.creatComponentByStylename("ddt.labyrinth.LabyrinthShopFrame.coinBG");
          _coinText = ComponentFactory.Instance.creatComponentByStylename("ddt.labyrinth.LabyrinthShopFrame.coinText");
-         _coinText.text = _loc5_;
+         _coinText.text = coinTxt;
          _coinNumText = ComponentFactory.Instance.creatComponentByStylename("ddt.labyrinth.LabyrinthShopFrame.coinNumText");
-         _coinNumText.text = _loc7_;
+         _coinNumText.text = coinNum;
          _lable = ComponentFactory.Instance.creatComponentByStylename("ddt.labyrinth.LabyrinthShopFrame.lable");
-         _lable.text = _loc6_;
+         _lable.text = descript;
          addToContent(_goodItemContainerBg);
          addToContent(_goodItemContainerAll);
          addToContent(_navigationBarContainer);
@@ -116,19 +116,18 @@ package labyrinth.view
          addToContent(_coinText);
          addToContent(_coinNumText);
          addToContent(_lable);
-         _loc8_ = 0;
-         while(_loc8_ < 8)
+         for(i = 0; i < 8; )
          {
-            _goodItems[_loc8_] = ComponentFactory.Instance.creatCustomObject("labyrinth.view.labyrinthShopItem");
-            _loc2_ = _goodItems[_loc8_].width;
-            _loc3_ = _goodItems[_loc8_].height;
-            _loc2_ = _loc2_ * (int(_loc8_ % 2));
-            _loc3_ = _loc3_ * (int(_loc8_ / 2));
-            _goodItems[_loc8_].x = _loc2_;
-            _goodItems[_loc8_].y = _loc3_ + _loc8_ / 2 * 2;
-            _goodItemContainerAll.addChild(_goodItems[_loc8_]);
-            _goodItems[_loc8_].setItemLight(_rightItemLightMc);
-            _loc8_++;
+            _goodItems[i] = ComponentFactory.Instance.creatCustomObject("labyrinth.view.labyrinthShopItem");
+            dx = _goodItems[i].width;
+            dy = _goodItems[i].height;
+            dx = dx * (int(i % 2));
+            dy = dy * (int(i / 2));
+            _goodItems[i].x = dx;
+            _goodItems[i].y = dy + i / 2 * 2;
+            _goodItemContainerAll.addChild(_goodItems[i]);
+            _goodItems[i].setItemLight(_rightItemLightMc);
+            i++;
          }
          loadList();
          initEvent();
@@ -142,7 +141,7 @@ package labyrinth.view
          PlayerManager.Instance.Self.addEventListener("propertychange",__onUpdate);
       }
       
-      private function upDateStoneHander(param1:BuriedEvent) : void
+      private function upDateStoneHander(e:BuriedEvent) : void
       {
          if(BuriedManager.Instance.isOpening)
          {
@@ -158,9 +157,9 @@ package labyrinth.view
          PlayerManager.Instance.Self.removeEventListener("propertychange",__onUpdate);
       }
       
-      protected function __onUpdate(param1:PlayerPropertyEvent) : void
+      protected function __onUpdate(event:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["hardCurrency"] == true)
+         if(event.changedProperties["hardCurrency"] == true)
          {
             _coinNumText.text = PlayerManager.Instance.Self.hardCurrency.toString();
          }
@@ -168,12 +167,11 @@ package labyrinth.view
       
       private function clearitems() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < 8)
+         var i:int = 0;
+         for(i = 0; i < 8; )
          {
-            _goodItems[_loc1_].shopItemInfo = null;
-            _loc1_++;
+            _goodItems[i].shopItemInfo = null;
+            i++;
          }
       }
       
@@ -182,21 +180,20 @@ package labyrinth.view
          setList(ShopManager.Instance.getValidSortedGoodsByType(getType(),CURRENT_PAGE));
       }
       
-      public function setList(param1:Vector.<ShopItemInfo>) : void
+      public function setList(list:Vector.<ShopItemInfo>) : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          clearitems();
-         _loc2_ = 0;
-         while(_loc2_ < 8)
+         for(i = 0; i < 8; )
          {
-            _goodItems[_loc2_].selected = false;
-            if(param1)
+            _goodItems[i].selected = false;
+            if(list)
             {
-               if(_loc2_ < param1.length && param1[_loc2_])
+               if(i < list.length && list[i])
                {
-                  _goodItems[_loc2_].shopItemInfo = param1[_loc2_];
+                  _goodItems[i].shopItemInfo = list[i];
                }
-               _loc2_++;
+               i++;
                continue;
             }
             break;
@@ -204,14 +201,14 @@ package labyrinth.view
          _currentPageTxt.text = CURRENT_PAGE + "/" + ShopManager.Instance.getResultPages(getType());
       }
       
-      private function __pageBtnClick(param1:MouseEvent) : void
+      private function __pageBtnClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(ShopManager.Instance.getResultPages(getType()) == 0)
          {
             return;
          }
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = evt.currentTarget;
          if(_firstPage !== _loc2_)
          {
             if(_prePageBtn !== _loc2_)
@@ -263,13 +260,12 @@ package labyrinth.view
       
       private function disposeItems() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _goodItems.length)
+         var i:int = 0;
+         for(i = 0; i < _goodItems.length; )
          {
-            ObjectUtils.disposeObject(_goodItems[_loc1_]);
-            _goodItems[_loc1_] = null;
-            _loc1_++;
+            ObjectUtils.disposeObject(_goodItems[i]);
+            _goodItems[i] = null;
+            i++;
          }
          _goodItems = null;
       }

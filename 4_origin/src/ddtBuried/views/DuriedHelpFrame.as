@@ -21,8 +21,8 @@ package ddtBuried.views
       override protected function init() : void
       {
          super.init();
-         var _loc1_:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("store.view.HelpButtonText"),"",LanguageMgr.GetTranslation("shop.PresentFrame.OkBtnText"));
-         info = _loc1_;
+         var alerInfo:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("store.view.HelpButtonText"),"",LanguageMgr.GetTranslation("shop.PresentFrame.OkBtnText"));
+         info = alerInfo;
          _mc = ComponentFactory.Instance.creat("buried.shaizi.descript");
          _mc.x = -7;
          _mc.y = -1;

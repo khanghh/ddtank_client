@@ -50,7 +50,7 @@ package bank
       
       private var _icon:BaseButton;
       
-      public function BankManager(param1:inner)
+      public function BankManager($inner:inner)
       {
          super(null);
       }
@@ -72,10 +72,10 @@ package bank
       
       private function showFrame() : void
       {
-         var _loc1_:Sprite = ClassUtils.CreatInstance("bank.view.BankMainFrameView");
-         _loc1_.width = 500;
-         _loc1_.height = 300;
-         LayerManager.Instance.addToLayer(_loc1_,3,true,1);
+         var frame:Sprite = ClassUtils.CreatInstance("bank.view.BankMainFrameView");
+         frame.width = 500;
+         frame.height = 300;
+         LayerManager.Instance.addToLayer(frame,3,true,1);
       }
       
       public function showIcon() : void
@@ -90,94 +90,92 @@ package bank
          }
       }
       
-      private function __bankInfo(param1:PkgEvent) : void
+      private function __bankInfo(e:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         var _loc3_:int = _loc2_.readInt();
-         switch(int(_loc3_) - 1)
+         var pkg:PackageIn = e.pkg;
+         var type:int = pkg.readInt();
+         switch(int(type) - 1)
          {
             case 0:
-               getBankInfo(_loc2_);
+               getBankInfo(pkg);
                break;
             case 1:
-               addBankInfo(_loc2_);
+               addBankInfo(pkg);
                break;
             case 2:
-               UpdateBankInfo(_loc2_);
+               UpdateBankInfo(pkg);
          }
       }
       
-      private function getBankInfo(param1:PackageIn) : void
+      private function getBankInfo(pkg:PackageIn) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var info:* = null;
          while(_model.list.length)
          {
             _model.list.shift();
          }
-         var _loc4_:int = param1.readInt();
-         _loc3_ = 0;
-         while(_loc3_ < _loc4_)
+         var size:int = pkg.readInt();
+         for(i = 0; i < size; )
          {
-            _loc2_ = new BankRecordInfo();
-            _loc2_.bankId = param1.readInt();
-            _loc2_.tempId = param1.readInt();
-            _loc2_.userId = param1.readInt();
-            _loc2_.Amount = param1.readInt();
-            _loc2_.begainTime = param1.readDate();
-            _model.list.push(_loc2_);
-            _loc3_++;
+            info = new BankRecordInfo();
+            info.bankId = pkg.readInt();
+            info.tempId = pkg.readInt();
+            info.userId = pkg.readInt();
+            info.Amount = pkg.readInt();
+            info.begainTime = pkg.readDate();
+            _model.list.push(info);
+            i++;
          }
       }
       
-      private function addBankInfo(param1:PackageIn) : void
+      private function addBankInfo(pkg:PackageIn) : void
       {
-         var _loc3_:BankRecordInfo = new BankRecordInfo();
-         var _loc2_:int = param1.readInt();
-         _loc3_.bankId = param1.readInt();
-         _loc3_.tempId = param1.readInt();
-         _loc3_.userId = param1.readInt();
-         _loc3_.Amount = param1.readInt();
-         _loc3_.begainTime = param1.readDate();
-         _model.list.unshift(_loc3_);
+         var info:BankRecordInfo = new BankRecordInfo();
+         var size:int = pkg.readInt();
+         info.bankId = pkg.readInt();
+         info.tempId = pkg.readInt();
+         info.userId = pkg.readInt();
+         info.Amount = pkg.readInt();
+         info.begainTime = pkg.readDate();
+         _model.list.unshift(info);
          this.dispatchEvent(new GameBankEvent("bank_save_success"));
       }
       
-      private function UpdateBankInfo(param1:PackageIn) : void
+      private function UpdateBankInfo(pkg:PackageIn) : void
       {
-         var _loc3_:int = 0;
-         var _loc4_:BankRecordInfo = new BankRecordInfo();
-         var _loc2_:Boolean = false;
-         _loc4_.bankId = param1.readInt();
-         _loc4_.Amount = param1.readInt();
-         _loc3_ = 0;
-         while(_loc3_ < _model.list.length)
+         var i:int = 0;
+         var info:BankRecordInfo = new BankRecordInfo();
+         var isDelete:Boolean = false;
+         info.bankId = pkg.readInt();
+         info.Amount = pkg.readInt();
+         for(i = 0; i < _model.list.length; )
          {
-            if(_model.list[_loc3_].bankId == _loc4_.bankId)
+            if(_model.list[i].bankId == info.bankId)
             {
-               if(_loc4_.Amount == 0)
+               if(info.Amount == 0)
                {
-                  _model.list.splice(_loc3_,1);
-                  _loc2_ = true;
+                  _model.list.splice(i,1);
+                  isDelete = true;
                }
                else
                {
-                  _model.list[_loc3_].Amount = _loc4_.Amount;
+                  _model.list[i].Amount = info.Amount;
                }
             }
-            _loc3_++;
+            i++;
          }
-         this.dispatchEvent(new GameBankEvent("bank_get_success",{"isDelete":_loc2_}));
+         this.dispatchEvent(new GameBankEvent("bank_get_success",{"isDelete":isDelete}));
       }
       
       public function show() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:int = PlayerManager.Instance.Self.Grade;
-         if(_loc1_ < 21)
+         var msg:* = null;
+         var temLev:int = PlayerManager.Instance.Self.Grade;
+         if(temLev < 21)
          {
-            _loc2_ = LanguageMgr.GetTranslation("tank.bank.notOpen",21);
-            MessageTipManager.getInstance().show(_loc2_,0,true,1);
+            msg = LanguageMgr.GetTranslation("tank.bank.notOpen",21);
+            MessageTipManager.getInstance().show(msg,0,true,1);
             return;
          }
          AssetModuleLoader.addRequestLoader(LoaderCreate.Instance.createBankLoader());
@@ -186,68 +184,66 @@ package bank
          AssetModuleLoader.startCodeLoader(showFrame);
       }
       
-      public function onDataComplete(param1:BankInvestmentDataAnalyzer) : void
+      public function onDataComplete(analyzer:BankInvestmentDataAnalyzer) : void
       {
-         _model.data = param1.data;
+         _model.data = analyzer.data;
       }
       
       public function get totleSaveMoney() : int
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _totleSaveMoney = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _model.list.length)
+         for(i = 0; i < _model.list.length; )
          {
-            _totleSaveMoney = _totleSaveMoney + _model.list[_loc1_].Amount;
-            _loc1_++;
+            _totleSaveMoney = _totleSaveMoney + _model.list[i].Amount;
+            i++;
          }
          return _totleSaveMoney;
       }
       
       public function get totleProfitMoney() : int
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _totleProfitMoney = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _model.list.length)
+         for(i = 0; i < _model.list.length; )
          {
-            _totleProfitMoney = _totleProfitMoney + getProfitNum(_model.list[_loc1_],true);
-            _loc1_++;
+            _totleProfitMoney = _totleProfitMoney + getProfitNum(_model.list[i],true);
+            i++;
          }
          return _totleProfitMoney;
       }
       
-      public function getProfitNum(param1:BankRecordInfo, param2:Boolean = false, param3:int = 0, param4:Boolean = true) : int
+      public function getProfitNum(info:BankRecordInfo, isExpect:Boolean = false, getNum:int = 0, isAchieve:Boolean = true) : int
       {
-         var _loc5_:int = 0;
-         var _loc7_:int = !!param2?param1.Amount:int(param3);
-         var _loc6_:Number = TimeManager.Instance.Now().time;
-         var _loc8_:int = (_loc6_ - param1.begainTime.time) / 1000 / 60 / 60 / 24;
-         if(_loc8_ == 0 && param2)
+         var profit:int = 0;
+         var money:int = !!isExpect?info.Amount:int(getNum);
+         var now:Number = TimeManager.Instance.Now().time;
+         var day:int = (now - info.begainTime.time) / 1000 / 60 / 60 / 24;
+         if(day == 0 && isExpect)
          {
-            _loc8_ = 1;
+            day = 1;
          }
-         if(_model.data[param1.tempId].DeadLine == 0)
+         if(_model.data[info.tempId].DeadLine == 0)
          {
-            _loc5_ = _loc7_ * model.data[param1.tempId].InterestRate * _loc8_ / 10000;
+            profit = money * model.data[info.tempId].InterestRate * day / 10000;
          }
-         else if(param4)
+         else if(isAchieve)
          {
-            _loc5_ = _loc7_ * model.data[param1.tempId].InterestRate * _model.data[param1.tempId].DeadLine * 30 / 10000;
+            profit = money * model.data[info.tempId].InterestRate * _model.data[info.tempId].DeadLine * 30 / 10000;
          }
          else
          {
-            _loc5_ = _loc7_ * model.data[param1.tempId].InterestRate * _loc8_ / 10000;
+            profit = money * model.data[info.tempId].InterestRate * day / 10000;
          }
-         return _loc5_;
+         return profit;
       }
       
-      public function isAchieve(param1:BankRecordInfo) : Boolean
+      public function isAchieve(info:BankRecordInfo) : Boolean
       {
-         var _loc2_:Boolean = false;
-         var _loc3_:Number = TimeManager.Instance.Now().time;
-         var _loc4_:int = (_loc3_ - param1.begainTime.time) / 1000 / 60 / 60 / 24;
-         if(_loc4_ >= _model.data[param1.tempId].DeadLine * 30)
+         var boo:Boolean = false;
+         var now:Number = TimeManager.Instance.Now().time;
+         var day:int = (now - info.begainTime.time) / 1000 / 60 / 60 / 24;
+         if(day >= _model.data[info.tempId].DeadLine * 30)
          {
             return true;
          }

@@ -56,11 +56,11 @@ package draft.view
       
       private var _userId:int;
       
-      public function DraftVoteView(param1:int, param2:int)
+      public function DraftVoteView(userid:int, id:int)
       {
          super();
-         _userId = param1;
-         _id = param2;
+         _userId = userid;
+         _id = id;
          initView();
          initEvent();
       }
@@ -125,7 +125,7 @@ package draft.view
          _selectBtnGroup.addEventListener("change",__onSelectedChange);
       }
       
-      protected function __onTextInput(param1:Event) : void
+      protected function __onTextInput(event:Event) : void
       {
          _voteNum = int(_ticketNum.text);
          if(_voteNum >= 999)
@@ -136,15 +136,15 @@ package draft.view
          setMoneyText();
       }
       
-      protected function __onResponse(param1:KeyboardEvent) : void
+      protected function __onResponse(event:KeyboardEvent) : void
       {
-         if(param1.keyCode == 27)
+         if(event.keyCode == 27)
          {
             __onCloseClick(null);
          }
       }
       
-      protected function __onSelectedChange(param1:Event) : void
+      protected function __onSelectedChange(event:Event) : void
       {
          SoundManager.instance.playButtonSound();
          _ticketNum.type = "dynamic";
@@ -174,7 +174,7 @@ package draft.view
          _money.text = (300 * _voteNum).toString();
       }
       
-      protected function __onConfirmClick(param1:MouseEvent) : void
+      protected function __onConfirmClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          CheckMoneyUtils.instance.checkMoney(false,int(_money.text),onCheckComplete);
@@ -186,7 +186,7 @@ package draft.view
          SocketManager.Instance.out.sendDraftVoteTicket(_voteNum,_id);
       }
       
-      protected function __onCloseClick(param1:MouseEvent) : void
+      protected function __onCloseClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          dispose();

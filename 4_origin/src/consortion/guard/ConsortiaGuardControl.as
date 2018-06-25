@@ -116,38 +116,37 @@ package consortion.guard
          SocketManager.Instance.removeEventListener(PkgEvent.format(316,19),__onBossRankList);
       }
       
-      private function __onBossRankList(param1:PkgEvent) : void
+      private function __onBossRankList(e:PkgEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc2_:int = param1.pkg.readInt();
-         var _loc3_:int = param1.pkg.readInt();
+         var i:int = 0;
+         var vo:* = null;
+         var BYTE:int = e.pkg.readInt();
+         var count:int = e.pkg.readInt();
          ConsortiaGuardControl.Instance.model.rankBossList.clear();
-         _loc5_ = 0;
-         while(_loc5_ < _loc3_)
+         for(i = 0; i < count; )
          {
-            _loc4_ = new ConsortiaBossDataVo();
-            _loc4_.rank = param1.pkg.readInt();
-            _loc4_.name = param1.pkg.readUTF();
-            _loc4_.damage = param1.pkg.readInt();
-            _loc4_.attacksCount = param1.pkg.readInt();
-            ConsortiaGuardControl.Instance.model.rankBossList.add(_loc4_.rank,_loc4_);
-            _loc5_++;
+            vo = new ConsortiaBossDataVo();
+            vo.rank = e.pkg.readInt();
+            vo.name = e.pkg.readUTF();
+            vo.damage = e.pkg.readInt();
+            vo.attacksCount = e.pkg.readInt();
+            ConsortiaGuardControl.Instance.model.rankBossList.add(vo.rank,vo);
+            i++;
          }
-         dispatchEvent(new ConsortiaGuardEvent("showBossRank",_loc2_));
+         dispatchEvent(new ConsortiaGuardEvent("showBossRank",BYTE));
       }
       
-      public function bossLocation(param1:Point) : void
+      public function bossLocation(point:Point) : void
       {
-         dispatchEvent(new ConsortiaGuardEvent("clickBossIcon",param1));
+         dispatchEvent(new ConsortiaGuardEvent("clickBossIcon",point));
       }
       
-      private function __onOpenActivity(param1:PkgEvent) : void
+      private function __onOpenActivity(e:PkgEvent) : void
       {
-         _model.isOpen = param1.pkg.readBoolean();
-         _model.openTime = param1.pkg.readDate();
-         _model.openLevel = param1.pkg.readInt();
-         _model.isFight = param1.pkg.readBoolean();
+         _model.isOpen = e.pkg.readBoolean();
+         _model.openTime = e.pkg.readDate();
+         _model.openLevel = e.pkg.readInt();
+         _model.isFight = e.pkg.readBoolean();
          removeEvent();
          if(_model.isOpen)
          {
@@ -166,151 +165,148 @@ package consortion.guard
          }
       }
       
-      private function __onBuyBuff(param1:PkgEvent) : void
+      private function __onBuyBuff(e:PkgEvent) : void
       {
-         var _loc2_:int = param1.pkg.readInt();
-         _model.buffLevel = _loc2_;
+         var buffLevel:int = e.pkg.readInt();
+         _model.buffLevel = buffLevel;
       }
       
-      private function __onInitScene(param1:PkgEvent) : void
+      private function __onInitScene(e:PkgEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:PackageIn = param1.pkg;
-         _loc5_ = 0;
-         while(_loc5_ < _loc3_.extend1)
+         var i:int = 0;
+         var id:int = 0;
+         var pkg:PackageIn = e.pkg;
+         for(i = 0; i < pkg.extend1; )
          {
-            _loc2_ = _loc3_.readInt();
-            addPlayer(_loc2_,_loc3_);
-            _loc5_++;
+            id = pkg.readInt();
+            addPlayer(id,pkg);
+            i++;
          }
-         var _loc4_:Boolean = param1.pkg.readBoolean();
-         if(_loc4_ && StateManager.currentStateType != "consortiaGuard")
+         var bool:Boolean = e.pkg.readBoolean();
+         if(bool && StateManager.currentStateType != "consortiaGuard")
          {
             StateManager.setState("consortiaGuard");
          }
       }
       
-      private function __onPlayer(param1:PkgEvent) : void
+      private function __onPlayer(e:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readInt();
-         addPlayer(_loc2_,_loc3_);
-         dispatchEvent(new ConsortiaGuardEvent("addPlayer",_loc2_));
+         var pkg:PackageIn = e.pkg;
+         var id:int = pkg.readInt();
+         addPlayer(id,pkg);
+         dispatchEvent(new ConsortiaGuardEvent("addPlayer",id));
       }
       
-      private function addPlayer(param1:int, param2:PackageIn) : void
+      private function addPlayer(id:int, pkg:PackageIn) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:Boolean = true;
-         if(_model.playerList.hasKey(param1))
+         var vo:* = null;
+         var newPlayer:Boolean = true;
+         if(_model.playerList.hasKey(id))
          {
-            _loc4_ = _model.playerList[param1];
-            _loc3_ = false;
+            vo = _model.playerList[id];
+            newPlayer = false;
          }
          else
          {
-            _loc4_ = new FightPlayerVo();
-            _loc4_.playerInfo = new PlayerInfo();
+            vo = new FightPlayerVo();
+            vo.playerInfo = new PlayerInfo();
          }
-         _loc4_.playerInfo.beginChanges();
-         _loc4_.playerInfo.ID = param1;
-         _loc4_.playerInfo.Sex = param2.readBoolean();
-         _loc4_.playerInfo.Style = param2.readUTF();
-         _loc4_.playerInfo.Colors = param2.readUTF();
-         _loc4_.playerInfo.Skin = param2.readUTF();
-         _loc4_.playerInfo.NickName = param2.readUTF();
-         _loc4_.currentWalkStartPoint = new Point(param2.readInt(),param2.readInt());
-         _loc4_.state = param2.readInt();
-         _loc4_.reviveTime = new Date(param2.readDate().getTime() + ServerConfigManager.instance.consortiaGuardReviveTime * 1000);
-         _loc4_.playerInfo.IsVIP = param2.readBoolean();
-         _loc4_.playerInfo.VIPLevel = param2.readInt();
-         _loc4_.playerInfo.MountsType = param2.readInt();
-         _loc4_.playerInfo.commitChanges();
-         if(_loc3_)
+         vo.playerInfo.beginChanges();
+         vo.playerInfo.ID = id;
+         vo.playerInfo.Sex = pkg.readBoolean();
+         vo.playerInfo.Style = pkg.readUTF();
+         vo.playerInfo.Colors = pkg.readUTF();
+         vo.playerInfo.Skin = pkg.readUTF();
+         vo.playerInfo.NickName = pkg.readUTF();
+         vo.currentWalkStartPoint = new Point(pkg.readInt(),pkg.readInt());
+         vo.state = pkg.readInt();
+         vo.reviveTime = new Date(pkg.readDate().getTime() + ServerConfigManager.instance.consortiaGuardReviveTime * 1000);
+         vo.playerInfo.IsVIP = pkg.readBoolean();
+         vo.playerInfo.VIPLevel = pkg.readInt();
+         vo.playerInfo.MountsType = pkg.readInt();
+         vo.playerInfo.commitChanges();
+         if(newPlayer)
          {
-            _model.playerList.add(param1,_loc4_);
+            _model.playerList.add(id,vo);
          }
       }
       
-      private function __onUpdateBossState(param1:PkgEvent) : void
+      private function __onUpdateBossState(e:PkgEvent) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < 4)
+         var i:int = 0;
+         for(i = 0; i < 4; )
          {
-            _model.setBossMaxHp(_loc2_,param1.pkg.readDouble());
-            _model.setBossHp(_loc2_,param1.pkg.readDouble());
-            _model.setBossState(_loc2_,param1.pkg.readInt());
-            _loc2_++;
+            _model.setBossMaxHp(i,e.pkg.readDouble());
+            _model.setBossHp(i,e.pkg.readDouble());
+            _model.setBossState(i,e.pkg.readInt());
+            i++;
          }
-         _model.statueHp = param1.pkg.readDouble();
-         _model.statueMaxHp = param1.pkg.readDouble();
+         _model.statueHp = e.pkg.readDouble();
+         _model.statueMaxHp = e.pkg.readDouble();
          dispatchEvent(new ConsortiaGuardEvent("updateBossState"));
       }
       
-      private function __onUpdatePlayerState(param1:PkgEvent) : void
+      private function __onUpdatePlayerState(e:PkgEvent) : void
       {
-         var _loc4_:* = null;
-         var _loc2_:int = param1.pkg.readInt();
-         if(_loc2_ == PlayerManager.Instance.Self.ID)
+         var vo:* = null;
+         var id:int = e.pkg.readInt();
+         if(id == PlayerManager.Instance.Self.ID)
          {
-            _loc4_ = PlayerManager.Instance.fightVo;
+            vo = PlayerManager.Instance.fightVo;
          }
          else
          {
-            _loc4_ = _model.playerList[_loc2_] as FightPlayerVo;
+            vo = _model.playerList[id] as FightPlayerVo;
          }
-         if(_loc4_ == null)
+         if(vo == null)
          {
             return;
          }
-         _loc4_.state = param1.pkg.readInt();
-         var _loc3_:Number = ServerConfigManager.instance.consortiaGuardReviveTime * 1000;
-         _loc4_.reviveTime = new Date(TimeManager.Instance.NowTime() + _loc3_);
-         dispatchEvent(new ConsortiaGuardEvent("updatePlayerState",_loc2_));
+         vo.state = e.pkg.readInt();
+         var time:Number = ServerConfigManager.instance.consortiaGuardReviveTime * 1000;
+         vo.reviveTime = new Date(TimeManager.Instance.NowTime() + time);
+         dispatchEvent(new ConsortiaGuardEvent("updatePlayerState",id));
       }
       
-      private function __onRemovePlayer(param1:PkgEvent) : void
+      private function __onRemovePlayer(e:PkgEvent) : void
       {
-         var _loc2_:int = param1.pkg.readInt();
-         _model.playerList.remove(_loc2_);
-         dispatchEvent(new ConsortiaGuardEvent("removePlayer",_loc2_));
+         var id:int = e.pkg.readInt();
+         _model.playerList.remove(id);
+         dispatchEvent(new ConsortiaGuardEvent("removePlayer",id));
       }
       
-      private function __onRankList(param1:PkgEvent) : void
+      private function __onRankList(e:PkgEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:Boolean = param1.pkg.readBoolean();
-         if(_loc3_)
+         var i:int = 0;
+         var isSelf:Boolean = e.pkg.readBoolean();
+         if(isSelf)
          {
-            addRankVo(param1.pkg,true);
+            addRankVo(e.pkg,true);
          }
          else
          {
             ConsortiaGuardControl.Instance.model.rankList.remove(0);
          }
-         var _loc2_:int = param1.pkg.readByte();
-         _loc4_ = 0;
-         while(_loc4_ < _loc2_)
+         var count:int = e.pkg.readByte();
+         for(i = 0; i < count; )
          {
-            addRankVo(param1.pkg,false);
-            _loc4_++;
+            addRankVo(e.pkg,false);
+            i++;
          }
          dispatchEvent(new ConsortiaGuardEvent("updateRank"));
       }
       
-      private function __onGameState(param1:PkgEvent) : void
+      private function __onGameState(e:PkgEvent) : void
       {
-         var _loc3_:Boolean = param1.pkg.readBoolean();
-         var _loc2_:Boolean = param1.pkg.readBoolean();
-         var _loc4_:int = param1.pkg.readInt();
-         _model.isFight = _loc3_;
-         _model.isWin = _loc2_;
-         _model.endTime = TimeManager.Instance.NowTime() + _loc4_ * 60000;
-         if(_loc3_ == false)
+         var isFight:Boolean = e.pkg.readBoolean();
+         var isWin:Boolean = e.pkg.readBoolean();
+         var endTime:int = e.pkg.readInt();
+         _model.isFight = isFight;
+         _model.isWin = isWin;
+         _model.endTime = TimeManager.Instance.NowTime() + endTime * 60000;
+         if(isFight == false)
          {
-            if(_loc2_)
+            if(isWin)
             {
                ChatManager.Instance.sysChatConsortia(LanguageMgr.GetTranslation("tank.consortiaGurad.win"));
             }
@@ -319,7 +315,7 @@ package consortion.guard
                ChatManager.Instance.sysChatConsortia(LanguageMgr.GetTranslation("tank.consortiaGurad.fail1"));
                ChatManager.Instance.sysChatConsortia(LanguageMgr.GetTranslation("tank.consortiaGurad.fail2"));
             }
-            ChatManager.Instance.sysChatConsortia(LanguageMgr.GetTranslation("tank.consortiaGurad.closeRoom",_loc4_));
+            ChatManager.Instance.sysChatConsortia(LanguageMgr.GetTranslation("tank.consortiaGurad.closeRoom",endTime));
          }
          dispatchEvent(new ConsortiaGuardEvent("updateGameState"));
       }
@@ -333,7 +329,7 @@ package consortion.guard
          }
       }
       
-      private function __onTimer(param1:TimerEvent) : void
+      private function __onTimer(e:TimerEvent) : void
       {
          if(TimeManager.Instance.NowTime() > _model.endTime)
          {
@@ -351,25 +347,25 @@ package consortion.guard
          }
       }
       
-      private function addRankVo(param1:PackageIn, param2:Boolean = false) : void
+      private function addRankVo(e:PackageIn, isSelf:Boolean = false) : void
       {
-         var _loc3_:ConsortiaBossDataVo = new ConsortiaBossDataVo();
-         if(param2)
+         var vo:ConsortiaBossDataVo = new ConsortiaBossDataVo();
+         if(isSelf)
          {
-            _loc3_.name = PlayerManager.Instance.Self.NickName;
+            vo.name = PlayerManager.Instance.Self.NickName;
          }
          else
          {
-            _loc3_.name = param1.readUTF();
+            vo.name = e.readUTF();
          }
-         _loc3_.rank = param1.readInt();
-         _loc3_.damage = param1.readInt();
-         _loc3_.honor = param1.readInt();
-         _loc3_.contribution = param1.readInt();
-         ConsortiaGuardControl.Instance.model.rankList.add(_loc3_.rank,_loc3_);
-         if(param2)
+         vo.rank = e.readInt();
+         vo.damage = e.readInt();
+         vo.honor = e.readInt();
+         vo.contribution = e.readInt();
+         ConsortiaGuardControl.Instance.model.rankList.add(vo.rank,vo);
+         if(isSelf)
          {
-            ConsortiaGuardControl.Instance.model.rankList.add(0,_loc3_);
+            ConsortiaGuardControl.Instance.model.rankList.add(0,vo);
          }
       }
       
@@ -378,13 +374,13 @@ package consortion.guard
          return _showPlayer;
       }
       
-      public function set showPlayer(param1:Boolean) : void
+      public function set showPlayer(value:Boolean) : void
       {
-         if(_showPlayer == param1)
+         if(_showPlayer == value)
          {
             return;
          }
-         _showPlayer = param1;
+         _showPlayer = value;
          dispatchEvent(new ConsortiaGuardEvent("updatePlayerView"));
       }
       

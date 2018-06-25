@@ -50,6 +50,8 @@ package team.model
       public static const CHANGE_BORDEN:int = 25;
       
       public static const CHANGE_TEAM_NAME:int = 32;
+      
+      public static const CAPTAIN_TRANSFER:int = 34;
        
       
       public function TeamPackageType()

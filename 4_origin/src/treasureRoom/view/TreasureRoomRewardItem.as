@@ -20,52 +20,51 @@ package treasureRoom.view
       
       private var _info:InventoryItemInfo;
       
-      public function TreasureRoomRewardItem(param1:InventoryItemInfo, param2:int)
+      public function TreasureRoomRewardItem(info:InventoryItemInfo, logoId:int)
       {
-         _info = param1;
-         _id = param2;
+         _info = info;
+         _id = logoId;
          super();
       }
       
       override protected function initialize() : void
       {
-         var _loc1_:* = null;
+         var markChipInfo:* = null;
          _cell = new BagCell(0,_info,true,ComponentFactory.Instance.creatBitmap("asset.treasureRoom.view.cellBg"));
          addChildAt(_cell,0);
          _cell.tipData = null;
          super.initialize();
          imgStatus.visible = false;
-         var _loc2_:Clip = getChildByName("selectBg") as Clip;
-         _loc2_.visible = false;
+         var bg:Clip = getChildByName("selectBg") as Clip;
+         bg.visible = false;
          itemBox.visible = false;
          if(_id > 0)
          {
-            _loc1_ = MarkMgr.inst.model.getChipById(_id);
-            showStars(_loc1_.bornLv + _loc1_.hammerLv);
+            markChipInfo = MarkMgr.inst.model.getChipById(_id);
+            showStars(markChipInfo.bornLv + markChipInfo.hammerLv);
             tipStyle = "mark.MarkChipTip";
-            tipData = _loc1_;
+            tipData = markChipInfo;
          }
       }
       
-      private function showStars(param1:int) : void
+      private function showStars(index:int) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:Array = ["",conStars1,conStars2,conStars3,conStars4,conStars5];
-         _loc3_ = 1;
-         while(_loc3_ < _loc2_.length)
+         var i:int = 0;
+         var containers:Array = ["",conStars1,conStars2,conStars3,conStars4,conStars5];
+         for(i = 1; i < containers.length; )
          {
-            if(_loc3_ == param1)
+            if(i == index)
             {
-               if(param1 != 0)
+               if(index != 0)
                {
-                  _loc2_[_loc3_].visible = true;
+                  containers[i].visible = true;
                }
             }
             else
             {
-               _loc2_[_loc3_].visible = false;
+               containers[i].visible = false;
             }
-            _loc3_++;
+            i++;
          }
       }
       

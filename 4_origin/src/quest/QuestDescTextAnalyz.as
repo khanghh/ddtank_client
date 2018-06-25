@@ -9,19 +9,18 @@ package quest
          super();
       }
       
-      public static function start(param1:String) : String
+      public static function start(str:String) : String
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = param1;
-         var _loc3_:Array = new Array(/cr>|cg>|cb>/gi,/<cr/gi,/<cg/gi,/<cb/gi,/【/gi,/】/gi);
-         var _loc5_:Array = new Array("</font><font>","</font><font COLOR=\'#FF0000\'>","</font><font COLOR=\'#00FF00\'>","</font><font COLOR=\'#0000FF\'>","</font><a href=\'http://blog.163.com/redirect.html\'><font COLOR=\'#00FF00\'><u>","</u></font></a><font>");
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_.length)
+         var i:int = 0;
+         var newstr:* = str;
+         var regArr:Array = new Array(/cr>|cg>|cb>/gi,/<cr/gi,/<cg/gi,/<cb/gi,/【/gi,/】/gi);
+         var strArr:Array = new Array("</font><font>","</font><font COLOR=\'#FF0000\'>","</font><font COLOR=\'#00FF00\'>","</font><font COLOR=\'#0000FF\'>","</font><a href=\'http://blog.163.com/redirect.html\'><font COLOR=\'#00FF00\'><u>","</u></font></a><font>");
+         for(i = 0; i < regArr.length; )
          {
-            _loc2_ = _loc2_.replace(_loc3_[_loc4_],_loc5_[_loc4_]);
-            _loc4_++;
+            newstr = newstr.replace(regArr[i],strArr[i]);
+            i++;
          }
-         return "<font>" + _loc2_ + "</font>";
+         return "<font>" + newstr + "</font>";
       }
    }
 }

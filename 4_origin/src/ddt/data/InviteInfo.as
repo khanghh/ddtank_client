@@ -50,9 +50,9 @@ package ddt.data
          return typeVIP > 0;
       }
       
-      public function set isOld(param1:Boolean) : void
+      public function set isOld(value:Boolean) : void
       {
-         _isOld = param1;
+         _isOld = value;
       }
       
       public function get playerType() : String

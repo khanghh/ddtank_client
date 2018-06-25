@@ -37,29 +37,29 @@ package hotSpring.model
          return _roomList;
       }
       
-      public function roomAddOrUpdate(param1:HotSpringRoomInfo) : void
+      public function roomAddOrUpdate(roomVO:HotSpringRoomInfo) : void
       {
-         if(HotSpringManager.instance.roomCurrently && HotSpringManager.instance.roomCurrently.roomID == param1.roomID)
+         if(HotSpringManager.instance.roomCurrently && HotSpringManager.instance.roomCurrently.roomID == roomVO.roomID)
          {
-            HotSpringManager.instance.roomCurrently = param1;
+            HotSpringManager.instance.roomCurrently = roomVO;
          }
-         if(_roomList[param1.roomID] != null)
+         if(_roomList[roomVO.roomID] != null)
          {
-            _roomList.add(param1.roomID,param1);
-            dispatchEvent(new HotSpringRoomListEvent("roomUpdate",param1));
+            _roomList.add(roomVO.roomID,roomVO);
+            dispatchEvent(new HotSpringRoomListEvent("roomUpdate",roomVO));
          }
          else
          {
-            _roomList.add(param1.roomID,param1);
-            dispatchEvent(new HotSpringRoomListEvent("roomAdd",param1));
+            _roomList.add(roomVO.roomID,roomVO);
+            dispatchEvent(new HotSpringRoomListEvent("roomAdd",roomVO));
             dispatchEvent(new HotSpringRoomListEvent("roomListUpdate"));
          }
       }
       
-      public function roomRemove(param1:int) : void
+      public function roomRemove(roomID:int) : void
       {
-         _roomList.remove(param1);
-         dispatchEvent(new HotSpringRoomListEvent("roomRemove",param1));
+         _roomList.remove(roomID);
+         dispatchEvent(new HotSpringRoomListEvent("roomRemove",roomID));
          dispatchEvent(new HotSpringRoomListEvent("roomListUpdate"));
       }
       
@@ -68,9 +68,9 @@ package hotSpring.model
          return _roomSelf;
       }
       
-      public function set roomSelf(param1:HotSpringRoomInfo) : void
+      public function set roomSelf(value:HotSpringRoomInfo) : void
       {
-         _roomSelf = param1;
+         _roomSelf = value;
          dispatchEvent(new HotSpringRoomListEvent("roomCreate",_roomSelf));
       }
       

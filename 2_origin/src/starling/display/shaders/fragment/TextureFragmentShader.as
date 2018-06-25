@@ -9,8 +9,8 @@ package starling.display.shaders.fragment
       public function TextureFragmentShader()
       {
          super();
-         var _loc1_:String = "tex ft1, v1, fs0 <2d, repeat, linear> \nmul oc, ft1, fc0";
-         compileAGAL("fragment",_loc1_);
+         var agal:String = "tex ft1, v1, fs0 <2d, repeat, linear> \nmul oc, ft1, fc0";
+         compileAGAL("fragment",agal);
       }
    }
 }

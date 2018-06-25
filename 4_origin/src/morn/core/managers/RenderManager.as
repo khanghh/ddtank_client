@@ -2,7 +2,6 @@ package morn.core.managers
 {
    import flash.events.Event;
    import flash.utils.Dictionary;
-   import morn.core.events.UIEvent;
    
    public class RenderManager
    {
@@ -12,7 +11,7 @@ package morn.core.managers
       
       public function RenderManager()
       {
-         this._methods = new Dictionary();
+         _methods = new Dictionary();
          super();
       }
       
@@ -20,76 +19,81 @@ package morn.core.managers
       {
          if(App.stage)
          {
-            App.stage.addEventListener(Event.ENTER_FRAME,this.onValidate);
-            App.stage.addEventListener(Event.RENDER,this.onValidate);
+            App.stage.addEventListener("enterFrame",onValidate);
+            App.stage.addEventListener("render",onValidate);
             App.stage.invalidate();
          }
       }
       
-      private function onValidate(param1:Event) : void
+      private function onValidate(e:Event) : void
       {
-         App.stage.removeEventListener(Event.RENDER,this.onValidate);
-         App.stage.removeEventListener(Event.ENTER_FRAME,this.onValidate);
-         this.renderAll();
-         App.stage.dispatchEvent(new Event(UIEvent.RENDER_COMPLETED));
+         App.stage.removeEventListener("render",onValidate);
+         App.stage.removeEventListener("enterFrame",onValidate);
+         renderAll();
+         App.stage.dispatchEvent(new Event("renderCompleted"));
       }
       
       public function renderAll() : void
       {
-         var _loc1_:* = null;
-         for(_loc1_ in this._methods)
+         var _loc3_:int = 0;
+         var _loc2_:* = _methods;
+         for(var method in _methods)
          {
-            this.exeCallLater(_loc1_ as Function);
+            exeCallLater(method as Function);
          }
-         for each(_loc1_ in this._methods)
+         var _loc5_:int = 0;
+         var _loc4_:* = _methods;
+         for each(method in _methods)
          {
-            return this.renderAll();
-         }
-      }
-      
-      public function callLater(param1:Function, param2:Array = null) : void
-      {
-         if(this._methods[param1] == null)
-         {
-            this._methods[param1] = param2 || [];
-            this.invalidate();
+            return renderAll();
          }
       }
       
-      public function exeCallLater(param1:Function) : void
+      public function callLater(method:Function, args:Array = null) : void
       {
-         var _loc2_:Array = null;
-         if(this._methods[param1] != null)
+         if(_methods[method] == null)
          {
-            _loc2_ = this._methods[param1];
-            delete this._methods[param1];
-            _loc2_.splice(0,1);
-            param1.apply(null,_loc2_);
+            _methods[method] = args || [];
+            invalidate();
          }
       }
       
-      public function removeCallLaterByObj(param1:Object) : void
+      public function exeCallLater(method:Function) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:Array = null;
-         for(_loc2_ in this._methods)
+         var args:* = null;
+         if(_methods[method] != null)
          {
-            _loc3_ = this._methods[_loc2_];
-            if(param1 == _loc3_[0])
+            args = _methods[method];
+            delete _methods[method];
+            args.splice(0,1);
+            method.apply(null,args);
+         }
+      }
+      
+      public function removeCallLaterByObj(obj:Object) : void
+      {
+         var args:* = null;
+         var _loc5_:int = 0;
+         var _loc4_:* = _methods;
+         for(var method in _methods)
+         {
+            args = _methods[method];
+            if(obj == args[0])
             {
-               delete this._methods[_loc2_];
+               delete _methods[method];
             }
          }
       }
       
-      public function removeCallLater(param1:Function) : void
+      public function removeCallLater(fun:Function) : void
       {
-         var _loc2_:* = null;
-         for(_loc2_ in this._methods)
+         var _loc4_:int = 0;
+         var _loc3_:* = _methods;
+         for(var method in _methods)
          {
-            if(_loc2_ == param1)
+            if(method == fun)
             {
-               delete this._methods[_loc2_];
+               delete _methods[method];
             }
          }
       }

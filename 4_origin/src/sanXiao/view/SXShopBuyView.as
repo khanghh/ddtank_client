@@ -35,29 +35,29 @@ package sanXiao.view
       
       override protected function refreshNumText() : void
       {
-         var _loc1_:String = String(_number.number * _perPrice);
-         totalText.text = _loc1_ + "\n\n" + _buyNum;
+         var priceStr:String = String(_number.number * _perPrice);
+         totalText.text = priceStr + "\n\n" + _buyNum;
       }
       
-      override public function setData(param1:int, param2:int, param3:int) : void
+      override public function setData(templateId:int, goodsId:int, perPrice:int) : void
       {
-         super.setData(param1,param2,param3);
+         super.setData(templateId,goodsId,perPrice);
       }
       
-      public function setID(param1:int) : void
+      public function setID(id:int) : void
       {
-         _ShopID = param1;
+         _ShopID = id;
       }
       
-      public function setBuyNum(param1:int) : void
+      public function setBuyNum(value:int) : void
       {
-         _buyNum = param1;
+         _buyNum = value;
          refreshNumText();
          _number.maximum = _buyNum;
          _submitButton.enable = _buyNum > 0;
       }
       
-      override protected function __buy(param1:MouseEvent) : void
+      override protected function __buy(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          dispose();

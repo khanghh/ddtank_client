@@ -32,19 +32,19 @@ package gameCommon.view.experience
       
       private var _result:String;
       
-      public function ExpResultSeal(param1:String = "lose", param2:Boolean = false, param3:Boolean = false)
+      public function ExpResultSeal(str:String = "lose", luckyExp:Boolean = false, luckyOffer:Boolean = false)
       {
          _luckyShapes = new Vector.<DisplayObject>();
          super();
-         _result = param1;
-         _luckyExp = param2;
-         _luckyOffer = param3;
+         _result = str;
+         _luckyExp = luckyExp;
+         _luckyOffer = luckyOffer;
          init();
       }
       
       protected function init() : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          PositionUtils.setPos(this,"experience.ResultSealPos");
          if(_result == "win")
          {
@@ -67,13 +67,12 @@ package gameCommon.view.experience
          {
             _luckyShapes.push(ComponentFactory.Instance.creat("asset.expView.LuckyOffer"));
          }
-         var _loc1_:Point = ComponentFactory.Instance.creat("experience.ResultSealLuckyLeft");
-         _loc2_ = 0;
-         while(_loc2_ < _luckyShapes.length)
+         var left:Point = ComponentFactory.Instance.creat("experience.ResultSealLuckyLeft");
+         for(i = 0; i < _luckyShapes.length; )
          {
-            _luckyShapes[_loc2_].x = _loc1_.x + _loc2_ * 124;
-            addChild(_luckyShapes[_loc2_]);
-            _loc2_++;
+            _luckyShapes[i].x = left.x + i * 124;
+            addChild(_luckyShapes[i]);
+            i++;
          }
       }
       
@@ -98,11 +97,11 @@ package gameCommon.view.experience
          {
             parent.removeChild(this);
          }
-         var _loc1_:DisplayObject = _luckyShapes.shift();
-         while(_loc1_ != null)
+         var lucky:DisplayObject = _luckyShapes.shift();
+         while(lucky != null)
          {
-            ObjectUtils.disposeObject(_loc1_);
-            _loc1_ = _luckyShapes.shift();
+            ObjectUtils.disposeObject(lucky);
+            lucky = _luckyShapes.shift();
          }
       }
    }

@@ -89,13 +89,13 @@ package auctionHouse.view
          _mouthfulAndbid.addEventListener("rollOut",_mouthfulAndbidOver);
       }
       
-      private function __nextPage(param1:MouseEvent) : void
+      private function __nextPage(evt:MouseEvent) : void
       {
          SoundManager.instance.play("047");
          dispatchEvent(new AuctionHouseEvent("nextPage"));
       }
       
-      private function __prePage(param1:MouseEvent) : void
+      private function __prePage(evt:MouseEvent) : void
       {
          SoundManager.instance.play("047");
          dispatchEvent(new AuctionHouseEvent("prePage"));
@@ -114,17 +114,17 @@ package auctionHouse.view
       
       private function getBidPrice() : int
       {
-         var _loc1_:int = 0;
-         var _loc2_:AuctionGoodsInfo = _right.getSelectInfo();
-         if(_loc2_.BuyerName == "")
+         var min:int = 0;
+         var info:AuctionGoodsInfo = _right.getSelectInfo();
+         if(info.BuyerName == "")
          {
-            _loc1_ = _loc2_.Price;
+            min = info.Price;
          }
          else
          {
-            _loc1_ = _loc2_.Price + _loc2_.Rise;
+            min = info.Price + info.Rise;
          }
-         return _loc1_;
+         return min;
       }
       
       function hide() : void
@@ -142,9 +142,9 @@ package auctionHouse.view
          _bidMoney.cannotBid();
       }
       
-      function addAuction(param1:AuctionGoodsInfo) : void
+      function addAuction(info:AuctionGoodsInfo) : void
       {
-         _right.addAuction(param1);
+         _right.addAuction(info);
       }
       
       function removeAuction() : void
@@ -152,9 +152,9 @@ package auctionHouse.view
          _bidMoney.cannotBid();
       }
       
-      function updateAuction(param1:AuctionGoodsInfo) : void
+      function updateAuction(info:AuctionGoodsInfo) : void
       {
-         _right.updateAuction(param1);
+         _right.updateAuction(info);
          __selectRightStrip(null);
       }
       
@@ -163,12 +163,12 @@ package auctionHouse.view
          _right.clearList();
       }
       
-      private function _mouthfulAndbidOver(param1:MouseEvent) : void
+      private function _mouthfulAndbidOver(e:MouseEvent) : void
       {
          _mouthfulAndbid.visible = false;
       }
       
-      private function __selectRightStrip(param1:AuctionHouseEvent) : void
+      private function __selectRightStrip(event:AuctionHouseEvent) : void
       {
          _mouthfulAndbid.x = this.globalToLocal(new Point(mouseX,mouseY)).x - 10;
          _mouthfulAndbid.y = this.globalToLocal(new Point(mouseX,mouseY)).y - 10;
@@ -177,29 +177,29 @@ package auctionHouse.view
             _mouthfulAndbid.x = _mouthfulAndbid.x - _mouthfulAndbid.width + 20;
          }
          this.setChildIndex(_mouthfulAndbid,this.numChildren - 1);
-         if(param1)
+         if(event)
          {
             _mouthfulAndbid.visible = true;
          }
-         var _loc2_:AuctionGoodsInfo = _right.getSelectInfo();
-         if(_loc2_)
+         var info:AuctionGoodsInfo = _right.getSelectInfo();
+         if(info)
          {
-            if(_loc2_.AuctioneerID == PlayerManager.Instance.Self.ID)
+            if(info.AuctioneerID == PlayerManager.Instance.Self.ID)
             {
                initialiseBtn();
                return;
             }
-            var _loc3_:* = _loc2_.Mouthful == 0?false:true;
+            var _loc3_:* = info.Mouthful == 0?false:true;
             _mouthful_btn.enable = _loc3_;
             _mouthful_btnR.enable = _loc3_;
-            _mouthful_btnR.filters = _loc2_.Mouthful == 0?ComponentFactory.Instance.creatFilters("grayFilter"):ComponentFactory.Instance.creatFilters("lightFilter");
-            _loc3_ = _loc2_.BuyerID == PlayerManager.Instance.Self.ID?false:true;
+            _mouthful_btnR.filters = info.Mouthful == 0?ComponentFactory.Instance.creatFilters("grayFilter"):ComponentFactory.Instance.creatFilters("lightFilter");
+            _loc3_ = info.BuyerID == PlayerManager.Instance.Self.ID?false:true;
             _bid_btn.enable = _loc3_;
             _bid_btnR.enable = _loc3_;
-            _bid_btnR.filters = _loc2_.BuyerID == PlayerManager.Instance.Self.ID?ComponentFactory.Instance.creatFilters("grayFilter"):ComponentFactory.Instance.creatFilters("lightFilter");
-            if(_loc2_.BuyerID != PlayerManager.Instance.Self.ID)
+            _bid_btnR.filters = info.BuyerID == PlayerManager.Instance.Self.ID?ComponentFactory.Instance.creatFilters("grayFilter"):ComponentFactory.Instance.creatFilters("lightFilter");
+            if(info.BuyerID != PlayerManager.Instance.Self.ID)
             {
-               _bidMoney.canMoneyBid(_loc2_.Price + _loc2_.Rise);
+               _bidMoney.canMoneyBid(info.Price + info.Rise);
             }
             else
             {
@@ -208,10 +208,10 @@ package auctionHouse.view
          }
       }
       
-      private function __bid(param1:MouseEvent) : void
+      private function __bid(event:MouseEvent) : void
       {
-         event = param1;
-         _bidKeyUp = function(param1:Event):void
+         event = event;
+         _bidKeyUp = function(e:Event):void
          {
             SoundManager.instance.play("008");
             __bidII();
@@ -220,14 +220,14 @@ package auctionHouse.view
             ObjectUtils.disposeObject(alert1);
             _bidMoney = ComponentFactory.Instance.creatCustomObject("auctionHouse.view.BidMoneyView");
          };
-         _responseII = function(param1:FrameEvent):void
+         _responseII = function(evt:FrameEvent):void
          {
             SoundManager.instance.play("008");
-            _checkResponse(param1.responseCode,__bidII,__cannel);
-            var _loc2_:BaseAlerFrame = BaseAlerFrame(param1.currentTarget);
-            _loc2_.removeEventListener("response",_responseII);
+            _checkResponse(evt.responseCode,__bidII,__cannel);
+            var alert:BaseAlerFrame = BaseAlerFrame(evt.currentTarget);
+            alert.removeEventListener("response",_responseII);
             _bidMoney.removeEventListener("money_key_up",_bidKeyUp);
-            ObjectUtils.disposeObject(param1.target);
+            ObjectUtils.disposeObject(evt.target);
             _bidMoney = ComponentFactory.Instance.creatCustomObject("auctionHouse.view.BidMoneyView");
          };
          SoundManager.instance.play("047");
@@ -267,18 +267,18 @@ package auctionHouse.view
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.auctionHouse.view.AuctionBuyView.price") + String(_bidMoney.getData()) + LanguageMgr.GetTranslation("tank.auctionHouse.view.AuctionBuyView.less") + String(getBidPrice()));
                return;
             }
-            var _loc1_:AuctionGoodsInfo = _right.getSelectInfo();
-            if(_loc1_)
+            var info:AuctionGoodsInfo = _right.getSelectInfo();
+            if(info)
             {
-               SocketManager.Instance.out.auctionBid(_loc1_.AuctionID,_bidMoney.getData());
+               SocketManager.Instance.out.auctionBid(info.AuctionID,_bidMoney.getData());
             }
             return;
          }
       }
       
-      private function __mouthFull(param1:MouseEvent) : void
+      private function __mouthFull(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var alert:* = null;
          SoundManager.instance.play("047");
          _mouthfulAndbid.visible = false;
          if(PlayerManager.Instance.Self.bagLocked)
@@ -295,59 +295,58 @@ package auctionHouse.view
          _mouthful_btnR.filters = ComponentFactory.Instance.creatFilters("grayFilter");
          _bid_btnR.filters = ComponentFactory.Instance.creatFilters("grayFilter");
          _btClickLock = true;
-         var _loc4_:AuctionGoodsInfo = _right.getSelectInfo();
-         if(_loc4_.Mouthful > PlayerManager.Instance.Self.Money)
+         var info:AuctionGoodsInfo = _right.getSelectInfo();
+         if(info.Mouthful > PlayerManager.Instance.Self.Money)
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.comon.lack"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
-            _loc2_.addEventListener("response",_responseI);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.comon.lack"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
+            alert.addEventListener("response",_responseI);
             return;
          }
-         var _loc3_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.auctionHouse.view.AuctionBrowseView.buy"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
-         _loc3_.moveEnable = false;
-         _loc3_.addEventListener("response",_responseII);
+         var alert1:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.auctionHouse.view.AuctionBrowseView.buy"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
+         alert1.moveEnable = false;
+         alert1.addEventListener("response",_responseII);
       }
       
-      private function _responseI(param1:FrameEvent) : void
+      private function _responseI(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         _checkResponse(param1.responseCode,LeavePageManager.leaveToFillPath,_cancelFun);
-         var _loc2_:BaseAlerFrame = BaseAlerFrame(param1.currentTarget);
-         _loc2_.removeEventListener("response",_responseI);
-         ObjectUtils.disposeObject(param1.target);
+         _checkResponse(evt.responseCode,LeavePageManager.leaveToFillPath,_cancelFun);
+         var alert:BaseAlerFrame = BaseAlerFrame(evt.currentTarget);
+         alert.removeEventListener("response",_responseI);
+         ObjectUtils.disposeObject(evt.target);
       }
       
-      private function _responseII(param1:FrameEvent) : void
+      private function _responseII(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         _checkResponse(param1.responseCode,__callMouthFull,__cannel);
-         var _loc2_:BaseAlerFrame = BaseAlerFrame(param1.currentTarget);
-         _loc2_.removeEventListener("response",_responseII);
-         ObjectUtils.disposeObject(param1.target);
+         _checkResponse(evt.responseCode,__callMouthFull,__cannel);
+         var alert:BaseAlerFrame = BaseAlerFrame(evt.currentTarget);
+         alert.removeEventListener("response",_responseII);
+         ObjectUtils.disposeObject(evt.target);
       }
       
       private function __callMouthFull() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(_btClickLock)
          {
             _btClickLock = false;
-            var _loc2_:AuctionGoodsInfo = _right.getSelectInfo();
-            if(_loc2_)
+            var info:AuctionGoodsInfo = _right.getSelectInfo();
+            if(info)
             {
-               SocketManager.Instance.out.auctionBid(_loc2_.AuctionID,_loc2_.Mouthful);
-               IMManager.Instance.saveRecentContactsID(_loc2_.AuctioneerID);
+               SocketManager.Instance.out.auctionBid(info.AuctionID,info.Mouthful);
+               IMManager.Instance.saveRecentContactsID(info.AuctioneerID);
                if(SharedManager.Instance.AuctionIDs[PlayerManager.Instance.Self.ID] == null)
                {
                   SharedManager.Instance.AuctionIDs[PlayerManager.Instance.Self.ID] = [];
                }
-               _loc1_ = 0;
-               while(_loc1_ < SharedManager.Instance.AuctionIDs[PlayerManager.Instance.Self.ID].length)
+               for(i = 0; i < SharedManager.Instance.AuctionIDs[PlayerManager.Instance.Self.ID].length; )
                {
-                  if(SharedManager.Instance.AuctionIDs[PlayerManager.Instance.Self.ID][_loc1_] == _loc2_.AuctionID)
+                  if(SharedManager.Instance.AuctionIDs[PlayerManager.Instance.Self.ID][i] == info.AuctionID)
                   {
-                     SharedManager.Instance.AuctionIDs[PlayerManager.Instance.Self.ID].splice(_loc1_,1);
+                     SharedManager.Instance.AuctionIDs[PlayerManager.Instance.Self.ID].splice(i,1);
                   }
-                  _loc1_++;
+                  i++;
                }
                SharedManager.Instance.save();
                _bidMoney.cannotBid();
@@ -359,17 +358,17 @@ package auctionHouse.view
       
       private function __cannel() : void
       {
-         var _loc1_:AuctionGoodsInfo = _right.getSelectInfo();
-         if(_loc1_)
+         var info:AuctionGoodsInfo = _right.getSelectInfo();
+         if(info)
          {
-            var _loc2_:* = _loc1_.Mouthful == 0?false:true;
+            var _loc2_:* = info.Mouthful == 0?false:true;
             _mouthful_btn.enable = _loc2_;
             _mouthful_btnR.enable = _loc2_;
-            _mouthful_btnR.filters = _loc1_.Mouthful == 0?ComponentFactory.Instance.creatFilters("grayFilter"):ComponentFactory.Instance.creatFilters("lightFilter");
-            _loc2_ = _loc1_.BuyerID == PlayerManager.Instance.Self.ID?false:true;
+            _mouthful_btnR.filters = info.Mouthful == 0?ComponentFactory.Instance.creatFilters("grayFilter"):ComponentFactory.Instance.creatFilters("lightFilter");
+            _loc2_ = info.BuyerID == PlayerManager.Instance.Self.ID?false:true;
             _bid_btn.enable = _loc2_;
             _bid_btnR.enable = _loc2_;
-            _bid_btnR.filters = _loc1_.BuyerID == PlayerManager.Instance.Self.ID?ComponentFactory.Instance.creatFilters("grayFilter"):ComponentFactory.Instance.creatFilters("lightFilter");
+            _bid_btnR.filters = info.BuyerID == PlayerManager.Instance.Self.ID?ComponentFactory.Instance.creatFilters("grayFilter"):ComponentFactory.Instance.creatFilters("lightFilter");
          }
          else
          {
@@ -388,24 +387,24 @@ package auctionHouse.view
       {
       }
       
-      private function __addToStage(param1:Event) : void
+      private function __addToStage(event:Event) : void
       {
          initialiseBtn();
          _bidMoney.cannotBid();
       }
       
-      private function _checkResponse(param1:int, param2:Function = null, param3:Function = null, param4:Function = null) : void
+      private function _checkResponse(keyCode:int, submitFun:Function = null, cancelFun:Function = null, closeFun:Function = null) : void
       {
-         switch(int(param1))
+         switch(int(keyCode))
          {
             case 0:
             case 1:
-               param3();
+               cancelFun();
                break;
             case 2:
             case 3:
             case 4:
-               param2();
+               submitFun();
          }
       }
       

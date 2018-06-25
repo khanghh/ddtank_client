@@ -19,10 +19,10 @@ package store.view.exalt
          super();
       }
       
-      override protected function laterEquipment(param1:GoodTipInfo) : void
+      override protected function laterEquipment(goodTipInfo:GoodTipInfo) : void
       {
-         var _loc6_:* = null;
-         var _loc4_:* = null;
+         var itemStrengthenGoodsInfo:* = null;
+         var itemTemplateInfo:* = null;
          if(syahTip != null)
          {
             syahTip.visible = false;
@@ -31,36 +31,36 @@ package store.view.exalt
          {
             _laterEquipmentGoodView.visible = false;
          }
-         var _loc3_:InventoryItemInfo = null;
-         var _loc2_:GoodTipInfo = null;
-         var _loc5_:InventoryItemInfo = null;
-         if(param1)
+         var tInfo:InventoryItemInfo = null;
+         var tGoodTipInfo:GoodTipInfo = null;
+         var itemInfo:InventoryItemInfo = null;
+         if(goodTipInfo)
          {
-            _loc5_ = param1.itemInfo as InventoryItemInfo;
+            itemInfo = goodTipInfo.itemInfo as InventoryItemInfo;
          }
-         if(_loc5_ && _loc5_.StrengthenLevel < 15)
+         if(itemInfo && itemInfo.StrengthenLevel < 15)
          {
-            _loc2_ = new GoodTipInfo();
-            _loc3_ = new InventoryItemInfo();
-            ObjectUtils.copyProperties(_loc3_,_loc5_);
-            _loc3_.StrengthenLevel = _loc3_.StrengthenLevel + 1;
-            if(!_loc3_.isGold)
+            tGoodTipInfo = new GoodTipInfo();
+            tInfo = new InventoryItemInfo();
+            ObjectUtils.copyProperties(tInfo,itemInfo);
+            tInfo.StrengthenLevel = tInfo.StrengthenLevel + 1;
+            if(!tInfo.isGold)
             {
-               _loc6_ = ItemStrengthenGoodsInfoManager.findItemStrengthenGoodsInfo(_loc3_.TemplateID,_loc3_.StrengthenLevel);
-               if(_loc6_)
+               itemStrengthenGoodsInfo = ItemStrengthenGoodsInfoManager.findItemStrengthenGoodsInfo(tInfo.TemplateID,tInfo.StrengthenLevel);
+               if(itemStrengthenGoodsInfo)
                {
-                  _loc3_.TemplateID = _loc6_.GainEquip;
-                  _loc4_ = ItemManager.Instance.getTemplateById(_loc3_.TemplateID);
-                  if(_loc4_)
+                  tInfo.TemplateID = itemStrengthenGoodsInfo.GainEquip;
+                  itemTemplateInfo = ItemManager.Instance.getTemplateById(tInfo.TemplateID);
+                  if(itemTemplateInfo)
                   {
-                     _loc3_.Attack = _loc4_.Attack;
-                     _loc3_.Defence = _loc4_.Defence;
-                     _loc3_.Agility = _loc4_.Agility;
-                     _loc3_.Luck = _loc4_.Luck;
+                     tInfo.Attack = itemTemplateInfo.Attack;
+                     tInfo.Defence = itemTemplateInfo.Defence;
+                     tInfo.Agility = itemTemplateInfo.Agility;
+                     tInfo.Luck = itemTemplateInfo.Luck;
                   }
                }
             }
-            _loc2_.itemInfo = _loc3_;
+            tGoodTipInfo.itemInfo = tInfo;
             if(!_laterEquipmentView)
             {
                _laterEquipmentView = new LaterEquipmentView();
@@ -70,7 +70,7 @@ package store.view.exalt
             {
                addChild(_laterEquipmentView);
             }
-            _laterEquipmentView.tipData = _loc2_;
+            _laterEquipmentView.tipData = tGoodTipInfo;
          }
          else
          {

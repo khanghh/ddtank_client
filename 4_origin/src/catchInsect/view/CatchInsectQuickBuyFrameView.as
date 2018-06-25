@@ -23,7 +23,7 @@ package catchInsect.view
          PositionUtils.setPos(_view.totalText,"catchInsect.CatchInsectQuickBuyFrameView.totalTextPos");
       }
       
-      override protected function doPay(param1:Event) : void
+      override protected function doPay(e:Event) : void
       {
          SoundManager.instance.play("008");
          if(_shopItemInfo == null || !_shopItemInfo.isValid)

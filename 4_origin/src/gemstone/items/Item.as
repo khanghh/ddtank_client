@@ -33,9 +33,9 @@ package gemstone.items
          addChild(_icon);
       }
       
-      public function upDataIcon(param1:ItemTemplateInfo) : void
+      public function upDataIcon(info:ItemTemplateInfo) : void
       {
-         if(!param1)
+         if(!info)
          {
             ObjectUtils.disposeObject(_icon);
             _icon = null;
@@ -49,14 +49,14 @@ package gemstone.items
             _icon.y = 39;
             addChild(_icon);
          }
-         _icon.info = param1;
+         _icon.info = info;
       }
       
-      public function updataInfo(param1:Vector.<GemstListInfo>) : void
+      public function updataInfo(liststone:Vector.<GemstListInfo>) : void
       {
          if(_icon)
          {
-            (_icon.info as InventoryItemInfo).gemstoneList = param1;
+            (_icon.info as InventoryItemInfo).gemstoneList = liststone;
          }
       }
       

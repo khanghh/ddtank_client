@@ -26,9 +26,9 @@ package happyLittleGame
          _selectImage.visible = false;
       }
       
-      public function set gameType(param1:int) : void
+      public function set gameType(value:int) : void
       {
-         _gameType = param1;
+         _gameType = value;
          if(_gameType == 2)
          {
             _cardImage = ComponentFactory.Instance.creatBitmap("asset.bombgame.outpos");
@@ -47,20 +47,20 @@ package happyLittleGame
          addChild(_selectImage);
       }
       
-      private function __overHandler(param1:MouseEvent) : void
+      private function __overHandler(evt:MouseEvent) : void
       {
          buttonMode = true;
       }
       
-      private function __outHandler(param1:MouseEvent) : void
+      private function __outHandler(evt:MouseEvent) : void
       {
          buttonMode = false;
       }
       
-      public function set select(param1:Boolean) : void
+      public function set select(value:Boolean) : void
       {
-         _select = param1;
-         if(param1)
+         _select = value;
+         if(value)
          {
             _selectImage.visible = true;
             _cardImage.filters = ComponentFactory.Instance.creatFilters("lightFilter");

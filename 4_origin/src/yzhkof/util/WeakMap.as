@@ -31,21 +31,21 @@ package yzhkof.util
       
       public function get valueSet() : Array
       {
-         var _loc2_:* = undefined;
-         var _loc1_:Array = new Array();
-         for(_loc2_ in this.map)
+         var i:* = undefined;
+         var re_arr:Array = new Array();
+         for(i in this.map)
          {
-            _loc1_.push(_loc2_);
+            re_arr.push(i);
          }
-         return _loc1_;
+         return re_arr;
       }
       
-      public function contentValue(param1:*) : Boolean
+      public function contentValue(value:*) : Boolean
       {
-         var _loc2_:* = undefined;
-         for(_loc2_ in this.map)
+         var i:* = undefined;
+         for(i in this.map)
          {
-            if(_loc2_ == param1)
+            if(i == value)
             {
                return true;
             }
@@ -53,13 +53,13 @@ package yzhkof.util
          return false;
       }
       
-      public function contentKey(param1:*) : Boolean
+      public function contentKey(key:*) : Boolean
       {
-         var _loc3_:* = undefined;
-         var _loc2_:Array = this.keySet;
-         for each(_loc3_ in _loc2_)
+         var i:* = undefined;
+         var key_arr:Array = this.keySet;
+         for each(i in key_arr)
          {
-            if(_loc3_ == param1)
+            if(i == key)
             {
                return true;
             }
@@ -67,65 +67,65 @@ package yzhkof.util
          return false;
       }
       
-      public function add(param1:*, param2:*) : void
+      public function add(key:*, value:*) : void
       {
-         var _loc3_:Array = null;
-         if(this.contentKey(param1))
+         var i:Array = null;
+         if(this.contentKey(key))
          {
-            for each(_loc3_ in this.map)
+            for each(i in this.map)
             {
-               _loc3_.splice(_loc3_.indexOf(param1),1);
+               i.splice(i.indexOf(key),1);
             }
             this._length--;
          }
-         if(this.contentValue(param2))
+         if(this.contentValue(value))
          {
-            this.map[param2].push(param1);
+            this.map[value].push(key);
          }
          else
          {
-            this.map[param2] = [param1];
+            this.map[value] = [key];
          }
          this._length++;
-         if(this.key_set.indexOf(param1) < 0)
+         if(this.key_set.indexOf(key) < 0)
          {
-            this.key_set.push(param1);
+            this.key_set.push(key);
          }
       }
       
-      public function getValue(param1:*) : *
+      public function getValue(key:*) : *
       {
-         var _loc2_:* = undefined;
-         var _loc3_:Array = null;
-         var _loc4_:* = undefined;
-         for(_loc2_ in this.map)
+         var i:* = undefined;
+         var key_arr:Array = null;
+         var k:* = undefined;
+         for(i in this.map)
          {
-            _loc3_ = this.map[_loc2_];
-            for each(_loc4_ in _loc3_)
+            key_arr = this.map[i];
+            for each(k in key_arr)
             {
-               if(_loc4_ == param1)
+               if(k == key)
                {
-                  return _loc2_;
+                  return i;
                }
             }
          }
          return null;
       }
       
-      public function remove(param1:*) : void
+      public function remove(key:*) : void
       {
-         var _loc2_:* = this.getValue(param1);
-         var _loc3_:Array = this.map[this.getValue(param1)];
-         if(_loc3_)
+         var value:* = this.getValue(key);
+         var key_arr:Array = this.map[this.getValue(key)];
+         if(key_arr)
          {
-            _loc3_.splice(_loc3_.indexOf(param1),1);
-            if(_loc3_.length <= 0)
+            key_arr.splice(key_arr.indexOf(key),1);
+            if(key_arr.length <= 0)
             {
-               delete this.map[_loc2_];
+               delete this.map[value];
             }
             this._length--;
          }
-         this.key_set.splice(this.key_set.indexOf(param1),1);
+         this.key_set.splice(this.key_set.indexOf(key),1);
       }
    }
 }

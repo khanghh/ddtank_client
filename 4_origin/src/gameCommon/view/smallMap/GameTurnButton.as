@@ -18,19 +18,19 @@ package gameCommon.view.smallMap
       
       public var isFirst:Boolean = true;
       
-      public function GameTurnButton(param1:DisplayObjectContainer)
+      public function GameTurnButton(container:DisplayObjectContainer)
       {
-         _container = param1;
+         _container = container;
          super();
       }
       
       override protected function init() : void
       {
          super.init();
-         var _loc1_:MovieClip = ComponentFactory.Instance.creat("asset.game.smallmap.TurnShine");
-         _loc1_.x = 27;
-         _loc1_.y = 7;
-         _turnShine = new MovieClipWrapper(_loc1_);
+         var shineMovie:MovieClip = ComponentFactory.Instance.creat("asset.game.smallmap.TurnShine");
+         shineMovie.x = 27;
+         shineMovie.y = 7;
+         _turnShine = new MovieClipWrapper(shineMovie);
       }
       
       public function shine() : void
@@ -47,7 +47,7 @@ package gameCommon.view.smallMap
          }
       }
       
-      private function __shineComplete(param1:Event) : void
+      private function __shineComplete(evt:Event) : void
       {
          _turnShine.removeEventListener("complete",__shineComplete);
          if(_turnShine.movie.parent)

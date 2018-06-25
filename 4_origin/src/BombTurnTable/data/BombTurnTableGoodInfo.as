@@ -26,9 +26,9 @@ package BombTurnTable.data
          return _isReceive;
       }
       
-      public function set isReceive(param1:int) : void
+      public function set isReceive(value:int) : void
       {
-         _isReceive = param1;
+         _isReceive = value;
       }
       
       public function get sex() : int
@@ -36,9 +36,9 @@ package BombTurnTable.data
          return _sex;
       }
       
-      public function set sex(param1:int) : void
+      public function set sex(value:int) : void
       {
-         _sex = param1;
+         _sex = value;
       }
       
       public function get validDate() : int
@@ -46,9 +46,9 @@ package BombTurnTable.data
          return _validDate;
       }
       
-      public function set validDate(param1:int) : void
+      public function set validDate(value:int) : void
       {
-         _validDate = param1;
+         _validDate = value;
       }
       
       public function get goodCount() : int
@@ -56,9 +56,9 @@ package BombTurnTable.data
          return _goodCount;
       }
       
-      public function set goodCount(param1:int) : void
+      public function set goodCount(value:int) : void
       {
-         _goodCount = param1;
+         _goodCount = value;
       }
       
       public function get templateId() : int
@@ -66,9 +66,9 @@ package BombTurnTable.data
          return _templateId;
       }
       
-      public function set templateId(param1:int) : void
+      public function set templateId(value:int) : void
       {
-         _templateId = param1;
+         _templateId = value;
       }
       
       public function get place() : int
@@ -76,9 +76,9 @@ package BombTurnTable.data
          return _place;
       }
       
-      public function set place(param1:int) : void
+      public function set place(value:int) : void
       {
-         _place = param1;
+         _place = value;
       }
    }
 }

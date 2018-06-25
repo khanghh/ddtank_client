@@ -22,9 +22,9 @@ package ddt.manager
       
       private var _hall:HallStateView;
       
-      public function PolarRegionManager(param1:IEventDispatcher = null)
+      public function PolarRegionManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get Instance() : PolarRegionManager
@@ -42,10 +42,10 @@ package ddt.manager
          SocketManager.Instance.addEventListener(PkgEvent.format(305,0),__onOpenIcon);
       }
       
-      protected function __onOpenIcon(param1:PkgEvent) : void
+      protected function __onOpenIcon(event:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         isOpen = _loc2_.readBoolean();
+         var pkg:PackageIn = event.pkg;
+         isOpen = pkg.readBoolean();
          if(isOpen)
          {
             ChatManager.Instance.sysChatAmaranth(LanguageMgr.GetTranslation("polarRegion.open.text"));

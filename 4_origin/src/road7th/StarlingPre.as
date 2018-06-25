@@ -21,10 +21,10 @@ package road7th
          super();
       }
       
-      public function start(param1:Stage, param2:Function) : void
+      public function start(stage:Stage, onComplete:Function) : void
       {
-         stage = param1;
-         onComplete = param2;
+         stage = stage;
+         onComplete = onComplete;
          onRootCreate = function():void
          {
             mainStarling.stage.color = 4278190080;

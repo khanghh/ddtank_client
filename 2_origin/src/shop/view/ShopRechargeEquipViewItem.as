@@ -65,7 +65,7 @@ package shop.view
          addChild(_orderRadioBtn);
       }
       
-      override protected function drawBackground(param1:Boolean = false) : void
+      override protected function drawBackground(bool:Boolean = false) : void
       {
          _bg = ComponentFactory.Instance.creatComponentByStylename("ddtshop.RechargeView.CartItemBg");
          _itemCellBg = ComponentFactory.Instance.creat("ddtshop.CartItemCellBg");
@@ -81,30 +81,29 @@ package shop.view
          _orderRadioBtn.addEventListener("click",__selectRadioBtn);
       }
       
-      public function set itemInfo(param1:InventoryItemInfo) : void
+      public function set itemInfo(value:InventoryItemInfo) : void
       {
-         var _loc2_:int = 0;
-         _cell.info = param1;
-         _shopItems = ShopManager.Instance.getShopRechargeItemByTemplateId(param1.TemplateID);
+         var i:int = 0;
+         _cell.info = value;
+         _shopItems = ShopManager.Instance.getShopRechargeItemByTemplateId(value.TemplateID);
          _shopItemInfo = null;
-         _loc2_ = 0;
-         while(_loc2_ < _shopItems.length)
+         for(i = 0; i < _shopItems.length; )
          {
-            if(_shopItems[_loc2_].getItemPrice(1).IsBothMoneyType)
+            if(_shopItems[i].getItemPrice(1).IsBothMoneyType)
             {
-               _shopItemInfo = fillToShopCarInfo(_shopItems[_loc2_]);
+               _shopItemInfo = fillToShopCarInfo(_shopItems[i]);
                break;
             }
-            _loc2_++;
+            i++;
          }
          if(_shopItemInfo == null)
          {
             _shopItemInfo = fillToShopCarInfo(_shopItems[0]);
          }
-         resetRadioBtn(param1.IsBinds);
+         resetRadioBtn(value.IsBinds);
          cartItemSelectVBoxInit();
          _cartItemGroup.selectIndex = _cartItemSelectVBox.numChildren - 1;
-         _itemName.text = param1.Name;
+         _itemName.text = value.Name;
       }
       
       override protected function cartItemSelectVBoxInit() : void
@@ -124,16 +123,16 @@ package shop.view
          }
       }
       
-      private function __selectRadioBtn(param1:MouseEvent) : void
+      private function __selectRadioBtn(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.currentTarget == _moneyRadioBtn)
+         if(evt.currentTarget == _moneyRadioBtn)
          {
             updateCurrentShopItem(-1);
             moneType = 1;
             _orderRadioBtn.selected = false;
          }
-         else if(param1.currentTarget == _orderRadioBtn)
+         else if(evt.currentTarget == _orderRadioBtn)
          {
             updateCurrentShopItem(-2);
             moneType = 2;
@@ -155,24 +154,23 @@ package shop.view
          return _isDelete;
       }
       
-      private function updateCurrentShopItem(param1:int) : void
+      private function updateCurrentShopItem(type:int) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _shopItems.length)
+         var i:int = 0;
+         for(i = 0; i < _shopItems.length; )
          {
-            if(_shopItems[_loc2_].getItemPrice(1).PriceType == param1)
+            if(_shopItems[i].getItemPrice(1).PriceType == type)
             {
-               _shopItemInfo = fillToShopCarInfo(_shopItems[_loc2_]);
+               _shopItemInfo = fillToShopCarInfo(_shopItems[i]);
                break;
             }
-            _loc2_++;
+            i++;
          }
       }
       
-      private function resetRadioBtn(param1:Boolean) : void
+      private function resetRadioBtn(bind:Boolean) : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          var _loc3_:Boolean = false;
          _moneyRadioBtn.selected = _loc3_;
          _moneyRadioBtn.enable = _loc3_;
@@ -182,19 +180,18 @@ package shop.view
          _orderRadioBtn.visible = false;
          _moneyRadioBtn.filters = fileterArr;
          _orderRadioBtn.filters = fileterArr;
-         _loc2_ = 0;
-         while(_loc2_ < _shopItems.length)
+         for(i = 0; i < _shopItems.length; )
          {
-            if(_shopItems[_loc2_].getItemPrice(1).IsMixed || _shopItems[_loc2_].getItemPrice(2).IsMixed)
+            if(_shopItems[i].getItemPrice(1).IsMixed || _shopItems[i].getItemPrice(2).IsMixed)
             {
                throw new Error("续费价格填错了！！！");
             }
-            if(_shopItems[_loc2_].getItemPrice(1).IsBothMoneyType)
+            if(_shopItems[i].getItemPrice(1).IsBothMoneyType)
             {
                _moneyRadioBtn.enable = true;
                _moneyRadioBtn.filters = null;
             }
-            else if(_shopItems[_loc2_].getItemPrice(1).IsBandDDTMoneyType && (_cell.info as InventoryItemInfo).IsBinds)
+            else if(_shopItems[i].getItemPrice(1).IsBandDDTMoneyType && (_cell.info as InventoryItemInfo).IsBinds)
             {
                if(_shopItems.length == 1 || !_shopItems[0].getItemPrice(1).isArmShellClipType)
                {
@@ -210,7 +207,7 @@ package shop.view
             {
                _orderRadioBtn.visible = true;
             }
-            _loc2_++;
+            i++;
          }
          if(_shopItemInfo.getItemPrice(1).IsMoneyType)
          {
@@ -219,15 +216,15 @@ package shop.view
          }
       }
       
-      override protected function __closeClick(param1:MouseEvent) : void
+      override protected function __closeClick(evt:MouseEvent) : void
       {
-         evt = param1;
+         evt = evt;
          SoundManager.instance.play("008");
          filters = fileterArr;
          _isDelete = true;
          mouseChildren = false;
          evt.stopPropagation();
-         addEventListener("click",function(param1:Event):void
+         addEventListener("click",function(e:Event):void
          {
             SoundManager.instance.play("008");
             mouseChildren = true;
@@ -239,15 +236,15 @@ package shop.view
          dispatchEvent(new Event("conditionchange"));
       }
       
-      private function fillToShopCarInfo(param1:ShopItemInfo) : ShopCarItemInfo
+      private function fillToShopCarInfo(item:ShopItemInfo) : ShopCarItemInfo
       {
-         if(!param1)
+         if(!item)
          {
             return null;
          }
-         var _loc2_:ShopCarItemInfo = new ShopCarItemInfo(param1.GoodsID,param1.TemplateID,_cell.info.CategoryID);
-         ObjectUtils.copyProperties(_loc2_,param1);
-         return _loc2_;
+         var t:ShopCarItemInfo = new ShopCarItemInfo(item.GoodsID,item.TemplateID,_cell.info.CategoryID);
+         ObjectUtils.copyProperties(t,item);
+         return t;
       }
       
       override public function dispose() : void

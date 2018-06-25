@@ -41,75 +41,71 @@ package ddt.view.buff.buffButton
       
       private function addOpenButton() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < 5)
+         var i:int = 0;
+         for(i = 0; i < 5; )
          {
             _openBtn.push(ComponentFactory.Instance.creatComponentByStylename("bagBuffer.growHelp.openBtn"));
-            _openBtn[_loc1_].text = LanguageMgr.GetTranslation("ddt.bagandinfo.buffBuf");
-            _openBtn[_loc1_].addEventListener("click",__onClick);
-            PositionUtils.setPos(_openBtn[_loc1_],"growhelp.buffPos" + (String(_loc1_ + 1)));
-            _openBtn[_loc1_].x = _openBtn[_loc1_].x + 50;
-            _openBtn[_loc1_].y = _openBtn[_loc1_].y - 4;
-            addChild(_openBtn[_loc1_]);
-            PositionUtils.setPos(_buffArray[_loc1_],"growhelp.buffPos" + (String(_loc1_ + 1)));
-            _loc1_++;
+            _openBtn[i].text = LanguageMgr.GetTranslation("ddt.bagandinfo.buffBuf");
+            _openBtn[i].addEventListener("click",__onClick);
+            PositionUtils.setPos(_openBtn[i],"growhelp.buffPos" + (String(i + 1)));
+            _openBtn[i].x = _openBtn[i].x + 50;
+            _openBtn[i].y = _openBtn[i].y - 4;
+            addChild(_openBtn[i]);
+            PositionUtils.setPos(_buffArray[i],"growhelp.buffPos" + (String(i + 1)));
+            i++;
          }
       }
       
-      protected function __onClick(param1:MouseEvent) : void
+      protected function __onClick(event:MouseEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = _openBtn.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var i:int = 0;
+         var length:int = _openBtn.length;
+         for(i = 0; i < length; )
          {
-            if(_openBtn[_loc3_] == param1.currentTarget)
+            if(_openBtn[i] == event.currentTarget)
             {
-               _buffArray[_loc3_].dispatchEvent(new MouseEvent("click"));
+               _buffArray[i].dispatchEvent(new MouseEvent("click"));
                break;
             }
-            _loc3_++;
+            i++;
          }
       }
       
-      public function addBuff(param1:Array) : void
+      public function addBuff(buffArray:Array) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = param1.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var i:int = 0;
+         var length:int = buffArray.length;
+         for(i = 0; i < length; )
          {
-            _buffArray.push(param1[_loc3_]);
-            addChild(param1[_loc3_]);
-            _loc3_++;
+            _buffArray.push(buffArray[i]);
+            addChild(buffArray[i]);
+            i++;
          }
          addOpenButton();
       }
       
       public function dispose() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
+         var i:int = 0;
+         var j:int = 0;
          if(_viewBg)
          {
             _viewBg.dispose();
             _viewBg = null;
          }
-         _loc2_ = 0;
-         while(_loc2_ < _buffArray.length)
+         i = 0;
+         while(i < _buffArray.length)
          {
-            _buffArray[_loc2_].dispose();
-            _buffArray[_loc2_] = null;
-            _loc2_++;
+            _buffArray[i].dispose();
+            _buffArray[i] = null;
+            i++;
          }
          _buffArray = null;
-         _loc1_ = 0;
-         while(_loc1_ < _openBtn.length)
+         for(j = 0; j < _openBtn.length; )
          {
-            _openBtn[_loc1_].dispose();
-            _openBtn[_loc1_] = null;
-            _loc1_++;
+            _openBtn[j].dispose();
+            _openBtn[j] = null;
+            j++;
          }
          _openBtn = null;
       }

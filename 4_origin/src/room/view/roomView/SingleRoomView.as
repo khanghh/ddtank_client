@@ -135,9 +135,9 @@ package room.view.roomView
       
       protected var _isCancelWait:Boolean = true;
       
-      public function SingleRoomView(param1:int = 6)
+      public function SingleRoomView(type:int = 6)
       {
-         _type = param1;
+         _type = type;
          super();
       }
       
@@ -320,7 +320,7 @@ package room.view.roomView
          initEvent();
       }
       
-      protected function __BtnGroupChange(param1:Event) : void
+      protected function __BtnGroupChange(event:Event) : void
       {
          SoundManager.instance.play("008");
          RoomControl.instance.fightTypeLastSelected = _BtnGroup.selectIndex;
@@ -373,15 +373,15 @@ package room.view.roomView
          _chatBtn.addEventListener("click",__chatClick);
       }
       
-      protected function __onStartMatch(param1:Event) : void
+      protected function __onStartMatch(event:Event) : void
       {
          StateManager.setState("singleBattleMatching",GameControl.Instance.Current);
       }
       
-      protected function __onStart(param1:MouseEvent) : void
+      protected function __onStart(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         CheckWeaponManager.instance.setFunction(this,__onStart,[param1]);
+         CheckWeaponManager.instance.setFunction(this,__onStart,[event]);
          if(CheckWeaponManager.instance.isNoWeapon())
          {
             CheckWeaponManager.instance.showAlert();
@@ -404,10 +404,10 @@ package room.view.roomView
          _cancelMatchBtn.visible = true;
       }
       
-      private function changeState(param1:int) : void
+      private function changeState(type:int) : void
       {
-         _singBattleState = param1;
-         if(param1 == 1)
+         _singBattleState = type;
+         if(type == 1)
          {
             if(_1v1Btn)
             {
@@ -486,7 +486,7 @@ package room.view.roomView
          }
       }
       
-      protected function __chatClick(param1:MouseEvent) : void
+      protected function __chatClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          LayerManager.Instance.addToLayer(ChatManager.Instance.view,3);
@@ -512,10 +512,10 @@ package room.view.roomView
          _chatBtn.removeEventListener("click",__chatClick);
       }
       
-      protected function __onStartLoad(param1:Event) : void
+      protected function __onStartLoad(event:Event) : void
       {
          _isCancelWait = false;
-         var _loc2_:RoomInfo = RoomManager.Instance.current;
+         var roomInfo:RoomInfo = RoomManager.Instance.current;
          if(GameControl.Instance.Current == null)
          {
             return;
@@ -523,12 +523,12 @@ package room.view.roomView
          StateManager.setState("roomLoading",GameControl.Instance.Current);
       }
       
-      protected function __onCancel(param1:MouseEvent) : void
+      protected function __onCancel(event:MouseEvent) : void
       {
          dispatchEvent(new FrameEvent(4));
       }
       
-      protected function __onCancelMatch(param1:MouseEvent) : void
+      protected function __onCancelMatch(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _cancelMatchBtn.visible = false;
@@ -537,11 +537,11 @@ package room.view.roomView
          GameInSocketOut.sendCancelWait();
       }
       
-      protected function __timer(param1:TimerEvent) : void
+      protected function __timer(evt:TimerEvent) : void
       {
-         var _loc2_:uint = _timer.currentCount / 60;
-         var _loc3_:uint = _timer.currentCount % 60;
-         _timerText.text = _loc3_ > 9?_loc3_.toString():"0" + _loc3_;
+         var min:uint = _timer.currentCount / 60;
+         var sec:uint = _timer.currentCount % 60;
+         _timerText.text = sec > 9?sec.toString():"0" + sec;
       }
       
       public function show() : void
@@ -698,9 +698,9 @@ package room.view.roomView
          super.dispose();
       }
       
-      public function set isCloseOrEscClick(param1:Boolean) : void
+      public function set isCloseOrEscClick(value:Boolean) : void
       {
-         _isCloseOrEscClick = param1;
+         _isCloseOrEscClick = value;
       }
    }
 }

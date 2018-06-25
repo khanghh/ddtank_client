@@ -49,11 +49,11 @@ package church.view.weddingRoomList
       
       private var _weddingUnmarryView:WeddingUnmarryView;
       
-      public function WeddingRoomListNavView(param1:ChurchRoomListController, param2:ChurchRoomListModel)
+      public function WeddingRoomListNavView(controller:ChurchRoomListController, model:ChurchRoomListModel)
       {
          super();
-         _controller = param1;
-         _model = param2;
+         _controller = controller;
+         _model = model;
          initialize();
       }
       
@@ -84,10 +84,10 @@ package church.view.weddingRoomList
       
       private function highClassWeddingBtnEnable() : Boolean
       {
-         var _loc2_:Number = ServerConfigManager.instance.getSeniorMarryBegin().getTime();
-         var _loc3_:Number = ServerConfigManager.instance.getSeniorMarryEnd().getTime();
-         var _loc1_:Number = TimeManager.Instance.Now().getTime();
-         if(_loc1_ >= _loc2_ && _loc1_ <= _loc3_)
+         var seniorMarryBegin:Number = ServerConfigManager.instance.getSeniorMarryBegin().getTime();
+         var seniorMarryEnd:Number = ServerConfigManager.instance.getSeniorMarryEnd().getTime();
+         var now:Number = TimeManager.Instance.Now().getTime();
+         if(now >= seniorMarryBegin && now <= seniorMarryEnd)
          {
             return true;
          }
@@ -160,10 +160,10 @@ package church.view.weddingRoomList
          _btnDivorceAsset.removeEventListener("click",onClickListener);
       }
       
-      private function onClickListener(param1:MouseEvent) : void
+      private function onClickListener(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = evt.currentTarget;
          if(_highClassWeddingBtn !== _loc2_)
          {
             if(_btnCreateAsset !== _loc2_)
@@ -202,17 +202,17 @@ package church.view.weddingRoomList
          SocketManager.Instance.out.sendMateTime(PlayerManager.Instance.Self.SpouseID);
       }
       
-      private function __mateTime(param1:PkgEvent) : void
+      private function __mateTime(e:PkgEvent) : void
       {
          SocketManager.Instance.removeEventListener(PkgEvent.format(85),__mateTime);
-         var _loc3_:Date = param1.pkg.readDate();
-         var _loc2_:int = CalculateDate.needMoney(_loc3_);
-         showUnmarryFrame(_loc3_,_loc2_);
+         var _date:Date = e.pkg.readDate();
+         var needMoney:int = CalculateDate.needMoney(_date);
+         showUnmarryFrame(_date,needMoney);
       }
       
       private function showHighClassWeddingFrame() : void
       {
-         var _loc1_:int = 0;
+         var type:int = 0;
          if(!PlayerManager.Instance.Self.IsMarried)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("church.weddingRoom.WeddingRoomControler.showCreateFrame"));
@@ -220,8 +220,8 @@ package church.view.weddingRoomList
          }
          if(ChurchManager.instance.selfRoom)
          {
-            _loc1_ = ChurchManager.instance.selfRoom.seniorType;
-            if(_loc1_ >= 1 && _loc1_ <= 3)
+            type = ChurchManager.instance.selfRoom.seniorType;
+            if(type >= 1 && type <= 3)
             {
                SocketManager.Instance.out.sendEnterRoom(0,"",2);
             }
@@ -240,27 +240,27 @@ package church.view.weddingRoomList
          SocketManager.Instance.out.sendRequestSeniorChurch();
       }
       
-      private function __onRequestSeniorChurch(param1:PkgEvent) : void
+      private function __onRequestSeniorChurch(e:PkgEvent) : void
       {
          SocketManager.Instance.removeEventListener(PkgEvent.format(338),__onRequestSeniorChurch);
-         var _loc2_:HighClassWeddingFrame = ComponentFactory.Instance.creat("church.highClassWeddingFrame");
-         _loc2_.setController(_controller);
-         _loc2_.isSaleWedding = param1.pkg.readBoolean();
-         if(_loc2_.isSaleWedding)
+         var view:HighClassWeddingFrame = ComponentFactory.Instance.creat("church.highClassWeddingFrame");
+         view.setController(_controller);
+         view.isSaleWedding = e.pkg.readBoolean();
+         if(view.isSaleWedding)
          {
-            _loc2_.WeddingMoney = param1.pkg.readUTF();
+            view.WeddingMoney = e.pkg.readUTF();
          }
          else
          {
-            _loc2_.WeddingMoney = ServerConfigManager.instance.firstSeniorMarryMoney();
+            view.WeddingMoney = ServerConfigManager.instance.firstSeniorMarryMoney();
          }
-         _loc2_.initView();
-         LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+         view.initView();
+         LayerManager.Instance.addToLayer(view,3,true,1);
       }
       
       public function showWeddingRoomCreateView() : void
       {
-         var _loc1_:int = 0;
+         var type:int = 0;
          if(!PlayerManager.Instance.Self.IsMarried)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("church.weddingRoom.WeddingRoomControler.showCreateFrame"));
@@ -270,17 +270,17 @@ package church.view.weddingRoomList
          {
             if(ChurchManager.instance.selfRoom.seniorType == 0)
             {
-               _loc1_ = 1;
+               type = 1;
             }
             else if(ChurchManager.instance.selfRoom.seniorType == 4)
             {
-               _loc1_ = 3;
+               type = 3;
             }
             else
             {
-               _loc1_ = 2;
+               type = 2;
             }
-            SocketManager.Instance.out.sendEnterRoom(0,"",_loc1_);
+            SocketManager.Instance.out.sendEnterRoom(0,"",type);
             return;
          }
          if(PlayerManager.Instance.Self.bagLocked)
@@ -293,13 +293,13 @@ package church.view.weddingRoomList
          _createRoomFrame.show();
       }
       
-      public function showUnmarryFrame(param1:Date, param2:int) : void
+      public function showUnmarryFrame(spouseLastDate:Date, needMoney:int) : void
       {
          _weddingUnmarryView = ComponentFactory.Instance.creat("church.weddingRoomList.frame.WeddingUnmarryView");
          _weddingUnmarryView.controller = _controller;
-         var _loc3_:Array = CalculateDate.start(param1);
-         _weddingUnmarryView.setText(_loc3_[0],param2.toString());
-         _weddingUnmarryView.show(param2);
+         var arr:Array = CalculateDate.start(spouseLastDate);
+         _weddingUnmarryView.setText(arr[0],needMoney.toString());
+         _weddingUnmarryView.show(needMoney);
       }
       
       public function dispose() : void

@@ -85,7 +85,7 @@ package starling.filters
       
       private var mHelperRect2:Rectangle;
       
-      public function FragmentFilter(param1:int = 1, param2:Number = 1.0)
+      public function FragmentFilter(numPasses:int = 1, resolution:Number = 1.0)
       {
          mHelperMatrix = new Matrix();
          mHelperMatrix3D = new Matrix3D();
@@ -96,16 +96,16 @@ package starling.filters
          {
             throw new AbstractClassError();
          }
-         if(param1 < 1)
+         if(numPasses < 1)
          {
             throw new ArgumentError("At least one pass is required.");
          }
-         mNumPasses = param1;
+         mNumPasses = numPasses;
          mMarginY = 0;
          mMarginX = 0;
          mOffsetY = 0;
          mOffsetX = 0;
-         mResolution = param2;
+         mResolution = resolution;
          mPassTextures = new Vector.<Texture>(0);
          mMode = "replace";
          mVertexData = new VertexData(4);
@@ -137,7 +137,7 @@ package starling.filters
          disposeCache();
       }
       
-      private function onContextCreated(param1:Object) : void
+      private function onContextCreated(event:Object) : void
       {
          mVertexBuffer = null;
          mIndexBuffer = null;
@@ -149,220 +149,218 @@ package starling.filters
          }
       }
       
-      public function render(param1:DisplayObject, param2:RenderSupport, param3:Number) : void
+      public function render(object:DisplayObject, support:RenderSupport, parentAlpha:Number) : void
       {
          if(mode == "above")
          {
-            param1.render(param2,param3);
+            object.render(support,parentAlpha);
          }
          if(mCacheRequested)
          {
             mCacheRequested = false;
-            mCache = renderPasses(param1,param2,1,true);
+            mCache = renderPasses(object,support,1,true);
             disposePassTextures();
          }
          if(mCache)
          {
-            mCache.render(param2,param3);
+            mCache.render(support,parentAlpha);
          }
          else
          {
-            renderPasses(param1,param2,param3,false);
+            renderPasses(object,support,parentAlpha,false);
          }
          if(mode == "below")
          {
-            param1.render(param2,param3);
+            object.render(support,parentAlpha);
          }
       }
       
-      private function renderPasses(param1:DisplayObject, param2:RenderSupport, param3:Number, param4:Boolean = false) : QuadBatch
+      private function renderPasses(object:DisplayObject, support:RenderSupport, parentAlpha:Number, intoCache:Boolean = false) : QuadBatch
       {
-         var _loc8_:* = null;
-         var _loc18_:* = 0;
-         var _loc16_:* = null;
-         var _loc19_:Boolean = false;
-         var _loc11_:int = 0;
-         var _loc6_:* = null;
-         var _loc7_:* = null;
-         var _loc12_:Texture = null;
-         var _loc20_:Context3D = Starling.context;
-         var _loc15_:DisplayObject = param1.stage;
-         var _loc10_:Stage = Starling.current.stage;
-         var _loc5_:Number = Starling.current.contentScaleFactor;
-         var _loc17_:Matrix = mHelperMatrix;
-         var _loc9_:Matrix3D = mHelperMatrix3D;
-         var _loc13_:Rectangle = mHelperRect;
-         var _loc14_:Rectangle = mHelperRect2;
-         if(_loc20_ == null)
+         var passTexture:* = null;
+         var previousStencilRefValue:* = 0;
+         var previousRenderTarget:* = null;
+         var intersectWithStage:Boolean = false;
+         var i:int = 0;
+         var quadBatch:* = null;
+         var image:* = null;
+         var cacheTexture:Texture = null;
+         var context:Context3D = Starling.context;
+         var targetSpace:DisplayObject = object.stage;
+         var stage:Stage = Starling.current.stage;
+         var scale:Number = Starling.current.contentScaleFactor;
+         var projMatrix:Matrix = mHelperMatrix;
+         var projMatrix3D:Matrix3D = mHelperMatrix3D;
+         var bounds:Rectangle = mHelperRect;
+         var boundsPot:Rectangle = mHelperRect2;
+         if(context == null)
          {
             throw new MissingContextError();
          }
-         _loc19_ = !param4 && mOffsetX == 0 && mOffsetY == 0;
-         calculateBounds(param1,_loc15_,mResolution * _loc5_,_loc19_,_loc13_,_loc14_);
-         if(_loc13_.isEmpty())
+         intersectWithStage = !intoCache && mOffsetX == 0 && mOffsetY == 0;
+         calculateBounds(object,targetSpace,mResolution * scale,intersectWithStage,bounds,boundsPot);
+         if(bounds.isEmpty())
          {
             disposePassTextures();
-            return !!param4?new QuadBatch():null;
+            return !!intoCache?new QuadBatch():null;
          }
-         updateBuffers(_loc20_,_loc14_);
-         updatePassTextures(_loc14_.width,_loc14_.height,mResolution * _loc5_);
-         param2.finishQuadBatch();
-         param2.raiseDrawCount(mNumPasses);
-         param2.pushMatrix();
-         param2.pushMatrix3D();
-         param2.pushClipRect(_loc14_,false);
-         _loc17_.copyFrom(param2.projectionMatrix);
-         _loc9_.copyFrom(param2.projectionMatrix3D);
-         _loc16_ = param2.renderTarget;
-         _loc18_ = uint(param2.stencilReferenceValue);
-         if(_loc16_ && !SystemUtil.supportsRelaxedTargetClearRequirement)
+         updateBuffers(context,boundsPot);
+         updatePassTextures(boundsPot.width,boundsPot.height,mResolution * scale);
+         support.finishQuadBatch();
+         support.raiseDrawCount(mNumPasses);
+         support.pushMatrix();
+         support.pushMatrix3D();
+         support.pushClipRect(boundsPot,false);
+         projMatrix.copyFrom(support.projectionMatrix);
+         projMatrix3D.copyFrom(support.projectionMatrix3D);
+         previousRenderTarget = support.renderTarget;
+         previousStencilRefValue = uint(support.stencilReferenceValue);
+         if(previousRenderTarget && !SystemUtil.supportsRelaxedTargetClearRequirement)
          {
             throw new IllegalOperationError("To nest filters, you need at least Flash Player / AIR version 15.");
          }
-         if(param4)
+         if(intoCache)
          {
-            _loc12_ = Texture.empty(_loc14_.width,_loc14_.height,true,false,true,mResolution * _loc5_);
+            cacheTexture = Texture.empty(boundsPot.width,boundsPot.height,true,false,true,mResolution * scale);
          }
-         param2.renderTarget = mPassTextures[0];
-         param2.clear();
-         param2.blendMode = "normal";
-         param2.stencilReferenceValue = 0;
-         param2.setProjectionMatrix(_loc13_.x,_loc13_.y,_loc14_.width,_loc14_.height,_loc10_.stageWidth,_loc10_.stageHeight,_loc10_.cameraPosition);
-         param1.render(param2,param3);
-         param2.finishQuadBatch();
+         support.renderTarget = mPassTextures[0];
+         support.clear();
+         support.blendMode = "normal";
+         support.stencilReferenceValue = 0;
+         support.setProjectionMatrix(bounds.x,bounds.y,boundsPot.width,boundsPot.height,stage.stageWidth,stage.stageHeight,stage.cameraPosition);
+         object.render(support,parentAlpha);
+         support.finishQuadBatch();
          RenderSupport.setBlendFactors(true);
-         param2.loadIdentity();
-         _loc20_.setVertexBufferAt(mVertexPosAtID,mVertexBuffer,0,"float2");
-         _loc20_.setVertexBufferAt(mTexCoordsAtID,mVertexBuffer,6,"float2");
-         _loc11_ = 0;
-         while(_loc11_ < mNumPasses)
+         support.loadIdentity();
+         context.setVertexBufferAt(mVertexPosAtID,mVertexBuffer,0,"float2");
+         context.setVertexBufferAt(mTexCoordsAtID,mVertexBuffer,6,"float2");
+         for(i = 0; i < mNumPasses; )
          {
-            if(_loc11_ < mNumPasses - 1)
+            if(i < mNumPasses - 1)
             {
-               param2.renderTarget = getPassTexture(_loc11_ + 1);
-               param2.clear();
+               support.renderTarget = getPassTexture(i + 1);
+               support.clear();
             }
-            else if(param4)
+            else if(intoCache)
             {
-               param2.renderTarget = _loc12_;
-               param2.clear();
+               support.renderTarget = cacheTexture;
+               support.clear();
             }
             else
             {
-               param2.popClipRect();
-               param2.projectionMatrix = _loc17_;
-               param2.projectionMatrix3D = _loc9_;
-               param2.renderTarget = _loc16_;
-               param2.translateMatrix(mOffsetX,mOffsetY);
-               param2.stencilReferenceValue = _loc18_;
-               param2.blendMode = param1.blendMode;
-               param2.applyBlendMode(true);
+               support.popClipRect();
+               support.projectionMatrix = projMatrix;
+               support.projectionMatrix3D = projMatrix3D;
+               support.renderTarget = previousRenderTarget;
+               support.translateMatrix(mOffsetX,mOffsetY);
+               support.stencilReferenceValue = previousStencilRefValue;
+               support.blendMode = object.blendMode;
+               support.applyBlendMode(true);
             }
-            _loc8_ = getPassTexture(_loc11_);
-            _loc20_.setProgramConstantsFromMatrix("vertex",mMvpConstantID,param2.mvpMatrix3D,true);
-            _loc20_.setTextureAt(mBaseTextureID,_loc8_.base);
-            activate(_loc11_,_loc20_,_loc8_);
-            _loc20_.drawTriangles(mIndexBuffer,0,2);
-            deactivate(_loc11_,_loc20_,_loc8_);
-            _loc11_++;
+            passTexture = getPassTexture(i);
+            context.setProgramConstantsFromMatrix("vertex",mMvpConstantID,support.mvpMatrix3D,true);
+            context.setTextureAt(mBaseTextureID,passTexture.base);
+            activate(i,context,passTexture);
+            context.drawTriangles(mIndexBuffer,0,2);
+            deactivate(i,context,passTexture);
+            i++;
          }
-         _loc20_.setVertexBufferAt(mVertexPosAtID,null);
-         _loc20_.setVertexBufferAt(mTexCoordsAtID,null);
-         _loc20_.setTextureAt(mBaseTextureID,null);
-         param2.popMatrix();
-         param2.popMatrix3D();
-         if(param4)
+         context.setVertexBufferAt(mVertexPosAtID,null);
+         context.setVertexBufferAt(mTexCoordsAtID,null);
+         context.setTextureAt(mBaseTextureID,null);
+         support.popMatrix();
+         support.popMatrix3D();
+         if(intoCache)
          {
-            param2.projectionMatrix.copyFrom(_loc17_);
-            param2.projectionMatrix3D.copyFrom(_loc9_);
-            param2.renderTarget = _loc16_;
-            param2.popClipRect();
-            _loc6_ = new QuadBatch();
-            _loc7_ = new Image(_loc12_);
-            param1.getTransformationMatrix(_loc15_,sTransformationMatrix).invert();
-            MatrixUtil.prependTranslation(sTransformationMatrix,_loc13_.x + mOffsetX,_loc13_.y + mOffsetY);
-            _loc6_.addImage(_loc7_,1,sTransformationMatrix);
-            _loc6_.ownsTexture = true;
-            return _loc6_;
+            support.projectionMatrix.copyFrom(projMatrix);
+            support.projectionMatrix3D.copyFrom(projMatrix3D);
+            support.renderTarget = previousRenderTarget;
+            support.popClipRect();
+            quadBatch = new QuadBatch();
+            image = new Image(cacheTexture);
+            object.getTransformationMatrix(targetSpace,sTransformationMatrix).invert();
+            MatrixUtil.prependTranslation(sTransformationMatrix,bounds.x + mOffsetX,bounds.y + mOffsetY);
+            quadBatch.addImage(image,1,sTransformationMatrix);
+            quadBatch.ownsTexture = true;
+            return quadBatch;
          }
          return null;
       }
       
-      private function updateBuffers(param1:Context3D, param2:Rectangle) : void
+      private function updateBuffers(context:Context3D, bounds:Rectangle) : void
       {
-         mVertexData.setPosition(0,param2.x,param2.y);
-         mVertexData.setPosition(1,param2.right,param2.y);
-         mVertexData.setPosition(2,param2.x,param2.bottom);
-         mVertexData.setPosition(3,param2.right,param2.bottom);
+         mVertexData.setPosition(0,bounds.x,bounds.y);
+         mVertexData.setPosition(1,bounds.right,bounds.y);
+         mVertexData.setPosition(2,bounds.x,bounds.bottom);
+         mVertexData.setPosition(3,bounds.right,bounds.bottom);
          if(mVertexBuffer == null)
          {
-            mVertexBuffer = param1.createVertexBuffer(4,8);
-            mIndexBuffer = param1.createIndexBuffer(6);
+            mVertexBuffer = context.createVertexBuffer(4,8);
+            mIndexBuffer = context.createIndexBuffer(6);
             mIndexBuffer.uploadFromVector(mIndexData,0,6);
          }
          mVertexBuffer.uploadFromVector(mVertexData.rawData,0,4);
       }
       
-      private function updatePassTextures(param1:Number, param2:Number, param3:Number) : void
+      private function updatePassTextures(width:Number, height:Number, scale:Number) : void
       {
-         var _loc6_:int = 0;
-         var _loc4_:int = mNumPasses > 1?2:1;
-         var _loc5_:Boolean = mPassTextures.length != _loc4_ || Math.abs(mPassTextures[0].nativeWidth - param1 * param3) > 0.1 || Math.abs(mPassTextures[0].nativeHeight - param2 * param3) > 0.1;
-         if(_loc5_)
+         var i:int = 0;
+         var numPassTextures:int = mNumPasses > 1?2:1;
+         var needsUpdate:Boolean = mPassTextures.length != numPassTextures || Math.abs(mPassTextures[0].nativeWidth - width * scale) > 0.1 || Math.abs(mPassTextures[0].nativeHeight - height * scale) > 0.1;
+         if(needsUpdate)
          {
             disposePassTextures();
-            _loc6_ = 0;
-            while(_loc6_ < _loc4_)
+            for(i = 0; i < numPassTextures; )
             {
-               mPassTextures[_loc6_] = Texture.empty(param1,param2,true,false,true,param3);
-               _loc6_++;
+               mPassTextures[i] = Texture.empty(width,height,true,false,true,scale);
+               i++;
             }
          }
       }
       
-      private function getPassTexture(param1:int) : Texture
+      private function getPassTexture(pass:int) : Texture
       {
-         return mPassTextures[param1 % 2];
+         return mPassTextures[pass % 2];
       }
       
-      private function calculateBounds(param1:DisplayObject, param2:DisplayObject, param3:Number, param4:Boolean, param5:Rectangle, param6:Rectangle) : void
+      private function calculateBounds(object:DisplayObject, targetSpace:DisplayObject, scale:Number, intersectWithStage:Boolean, resultRect:Rectangle, resultPotRect:Rectangle) : void
       {
-         var _loc10_:* = null;
-         var _loc8_:int = 0;
-         var _loc9_:Number = NaN;
-         var _loc7_:Number = NaN;
-         var _loc12_:Number = mMarginX;
-         var _loc11_:Number = mMarginY;
-         if(param2 is Stage)
+         var stage:* = null;
+         var minSize:int = 0;
+         var minWidth:Number = NaN;
+         var minHeight:Number = NaN;
+         var marginX:Number = mMarginX;
+         var marginY:Number = mMarginY;
+         if(targetSpace is Stage)
          {
-            _loc10_ = param2 as Stage;
-            if(param1 == _loc10_ || param1 == param1.root)
+            stage = targetSpace as Stage;
+            if(object == stage || object == object.root)
             {
-               _loc11_ = 0;
-               _loc12_ = 0;
-               param5.setTo(0,0,_loc10_.stageWidth,_loc10_.stageHeight);
+               marginY = 0;
+               marginX = 0;
+               resultRect.setTo(0,0,stage.stageWidth,stage.stageHeight);
             }
             else
             {
-               param1.getBounds(_loc10_,param5);
+               object.getBounds(stage,resultRect);
             }
-            if(param4)
+            if(intersectWithStage)
             {
-               sStageBounds.setTo(0,0,_loc10_.stageWidth,_loc10_.stageHeight);
-               RectangleUtil.intersect(param5,sStageBounds,param5);
+               sStageBounds.setTo(0,0,stage.stageWidth,stage.stageHeight);
+               RectangleUtil.intersect(resultRect,sStageBounds,resultRect);
             }
          }
          else
          {
-            param1.getBounds(param2,param5);
+            object.getBounds(targetSpace,resultRect);
          }
-         if(!param5.isEmpty())
+         if(!resultRect.isEmpty())
          {
-            param5.inflate(_loc12_,_loc11_);
-            _loc8_ = 64 / param3;
-            _loc9_ = param5.width > _loc8_?param5.width:_loc8_;
-            _loc7_ = param5.height > _loc8_?param5.height:_loc8_;
-            param6.setTo(param5.x,param5.y,getNextPowerOfTwo(_loc9_ * param3) / param3,getNextPowerOfTwo(_loc7_ * param3) / param3);
+            resultRect.inflate(marginX,marginY);
+            minSize = 64 / scale;
+            minWidth = resultRect.width > minSize?resultRect.width:minSize;
+            minHeight = resultRect.height > minSize?resultRect.height:minSize;
+            resultPotRect.setTo(resultRect.x,resultRect.y,getNextPowerOfTwo(minWidth * scale) / scale,getNextPowerOfTwo(minHeight * scale) / scale);
          }
       }
       
@@ -370,9 +368,9 @@ package starling.filters
       {
          var _loc3_:int = 0;
          var _loc2_:* = mPassTextures;
-         for each(var _loc1_ in mPassTextures)
+         for each(var texture in mPassTextures)
          {
-            _loc1_.dispose();
+            texture.dispose();
          }
          mPassTextures.length = 0;
       }
@@ -391,26 +389,26 @@ package starling.filters
          throw new Error("Method has to be implemented in subclass!");
       }
       
-      protected function activate(param1:int, param2:Context3D, param3:Texture) : void
+      protected function activate(pass:int, context:Context3D, texture:Texture) : void
       {
          throw new Error("Method has to be implemented in subclass!");
       }
       
-      protected function deactivate(param1:int, param2:Context3D, param3:Texture) : void
+      protected function deactivate(pass:int, context:Context3D, texture:Texture) : void
       {
       }
       
-      protected function assembleAgal(param1:String = null, param2:String = null) : Program3D
+      protected function assembleAgal(fragmentShader:String = null, vertexShader:String = null) : Program3D
       {
-         if(param1 == null)
+         if(fragmentShader == null)
          {
-            param1 = "tex oc, v0, fs0 <2d, clamp, linear, mipnone>";
+            fragmentShader = "tex oc, v0, fs0 <2d, clamp, linear, mipnone>";
          }
-         if(param2 == null)
+         if(vertexShader == null)
          {
-            param2 = "m44 op, va0, vc0 \nmov v0, va1      \n";
+            vertexShader = "m44 op, va0, vc0 \nmov v0, va1      \n";
          }
-         return RenderSupport.assembleAgal(param2,param1);
+         return RenderSupport.assembleAgal(vertexShader,fragmentShader);
       }
       
       public function cache() : void
@@ -425,21 +423,21 @@ package starling.filters
          disposeCache();
       }
       
-      function compile(param1:DisplayObject) : QuadBatch
+      function compile(object:DisplayObject) : QuadBatch
       {
-         var _loc2_:* = null;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
+         var support:* = null;
+         var stage:* = null;
+         var quadBatch:* = null;
          if(mCache)
          {
             return mCache;
          }
-         _loc4_ = param1.stage;
-         _loc2_ = new RenderSupport();
-         param1.getTransformationMatrix(_loc4_,_loc2_.modelViewMatrix);
-         _loc3_ = renderPasses(param1,_loc2_,1,true);
-         _loc2_.dispose();
-         return _loc3_;
+         stage = object.stage;
+         support = new RenderSupport();
+         object.getTransformationMatrix(stage,support.modelViewMatrix);
+         quadBatch = renderPasses(object,support,1,true);
+         support.dispose();
+         return quadBatch;
       }
       
       public function get isCached() : Boolean
@@ -452,13 +450,13 @@ package starling.filters
          return mResolution;
       }
       
-      public function set resolution(param1:Number) : void
+      public function set resolution(value:Number) : void
       {
-         if(param1 <= 0)
+         if(value <= 0)
          {
             throw new ArgumentError("Resolution must be > 0");
          }
-         mResolution = param1;
+         mResolution = value;
       }
       
       public function get mode() : String
@@ -466,9 +464,9 @@ package starling.filters
          return mMode;
       }
       
-      public function set mode(param1:String) : void
+      public function set mode(value:String) : void
       {
-         mMode = param1;
+         mMode = value;
       }
       
       public function get offsetX() : Number
@@ -476,9 +474,9 @@ package starling.filters
          return mOffsetX;
       }
       
-      public function set offsetX(param1:Number) : void
+      public function set offsetX(value:Number) : void
       {
-         mOffsetX = param1;
+         mOffsetX = value;
       }
       
       public function get offsetY() : Number
@@ -486,9 +484,9 @@ package starling.filters
          return mOffsetY;
       }
       
-      public function set offsetY(param1:Number) : void
+      public function set offsetY(value:Number) : void
       {
-         mOffsetY = param1;
+         mOffsetY = value;
       }
       
       protected function get marginX() : Number
@@ -496,9 +494,9 @@ package starling.filters
          return mMarginX;
       }
       
-      protected function set marginX(param1:Number) : void
+      protected function set marginX(value:Number) : void
       {
-         mMarginX = param1;
+         mMarginX = value;
       }
       
       protected function get marginY() : Number
@@ -506,14 +504,14 @@ package starling.filters
          return mMarginY;
       }
       
-      protected function set marginY(param1:Number) : void
+      protected function set marginY(value:Number) : void
       {
-         mMarginY = param1;
+         mMarginY = value;
       }
       
-      protected function set numPasses(param1:int) : void
+      protected function set numPasses(value:int) : void
       {
-         mNumPasses = param1;
+         mNumPasses = value;
       }
       
       protected function get numPasses() : int
@@ -526,9 +524,9 @@ package starling.filters
          return mVertexPosAtID;
       }
       
-      protected final function set vertexPosAtID(param1:int) : void
+      protected final function set vertexPosAtID(value:int) : void
       {
-         mVertexPosAtID = param1;
+         mVertexPosAtID = value;
       }
       
       protected final function get texCoordsAtID() : int
@@ -536,9 +534,9 @@ package starling.filters
          return mTexCoordsAtID;
       }
       
-      protected final function set texCoordsAtID(param1:int) : void
+      protected final function set texCoordsAtID(value:int) : void
       {
-         mTexCoordsAtID = param1;
+         mTexCoordsAtID = value;
       }
       
       protected final function get baseTextureID() : int
@@ -546,9 +544,9 @@ package starling.filters
          return mBaseTextureID;
       }
       
-      protected final function set baseTextureID(param1:int) : void
+      protected final function set baseTextureID(value:int) : void
       {
-         mBaseTextureID = param1;
+         mBaseTextureID = value;
       }
       
       protected final function get mvpConstantID() : int
@@ -556,9 +554,9 @@ package starling.filters
          return mMvpConstantID;
       }
       
-      protected final function set mvpConstantID(param1:int) : void
+      protected final function set mvpConstantID(value:int) : void
       {
-         mMvpConstantID = param1;
+         mMvpConstantID = value;
       }
    }
 }

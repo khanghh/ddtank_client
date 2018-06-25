@@ -19,37 +19,37 @@ package store.godRefining.view
       
       protected var _types:Array;
       
-      public function GodRefiningResetStoneCell(param1:Array, param2:int)
+      public function GodRefiningResetStoneCell(stoneType:Array, $index:int)
       {
-         var _loc3_:Sprite = new Sprite();
-         var _loc4_:Bitmap = new Bitmap(new BitmapData(75,75));
-         _loc4_.visible = false;
-         _loc3_.addChild(_loc4_);
-         super(_loc3_,param2);
-         _types = param1;
+         var bg:Sprite = new Sprite();
+         var bgBit:Bitmap = new Bitmap(new BitmapData(75,75));
+         bgBit.visible = false;
+         bg.addChild(bgBit);
+         super(bg,$index);
+         _types = stoneType;
          setContentSize(62,62);
          PicPos = new Point(9,10);
       }
       
-      override public function dragDrop(param1:DragEffect) : void
+      override public function dragDrop(effect:DragEffect) : void
       {
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:InventoryItemInfo = param1.data as InventoryItemInfo;
-         if(_loc2_.BagType == 12 && info != null)
+         var sourceInfo:InventoryItemInfo = effect.data as InventoryItemInfo;
+         if(sourceInfo.BagType == 12 && info != null)
          {
             return;
          }
-         if(_loc2_ && param1.action != "split")
+         if(sourceInfo && effect.action != "split")
          {
-            param1.action = "none";
-            if(EquipType.isArmShellResetStone(_loc2_))
+            effect.action = "none";
+            if(EquipType.isArmShellResetStone(sourceInfo))
             {
-               SocketManager.Instance.out.sendMoveGoods(_loc2_.BagType,_loc2_.Place,12,index,_loc2_.Count,true);
-               param1.action = "none";
+               SocketManager.Instance.out.sendMoveGoods(sourceInfo.BagType,sourceInfo.Place,12,index,sourceInfo.Count,true);
+               effect.action = "none";
                DragManager.acceptDrag(this);
             }
          }

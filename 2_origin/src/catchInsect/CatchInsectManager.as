@@ -83,78 +83,78 @@ package catchInsect
          SocketManager.Instance.addEventListener("catchInsect",pkgHandler);
       }
       
-      private function pkgHandler(param1:CatchInsectEvent) : void
+      private function pkgHandler(e:CatchInsectEvent) : void
       {
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:int = param1.cmd;
-         var _loc3_:CatchInsectEvent = null;
-         switch(int(_loc2_) - 128)
+         var pkg:PackageIn = e.pkg;
+         var cmd:int = e.cmd;
+         var event:CatchInsectEvent = null;
+         switch(int(cmd) - 128)
          {
             case 0:
-               openOrclose(_loc4_);
+               openOrclose(pkg);
                break;
             case 1:
-               _loc3_ = new CatchInsectEvent("addplayer_room",_loc4_);
+               event = new CatchInsectEvent("addplayer_room",pkg);
                break;
             case 2:
-               _loc3_ = new CatchInsectEvent("removePlayer",_loc4_);
+               event = new CatchInsectEvent("removePlayer",pkg);
                break;
             case 3:
-               _loc3_ = new CatchInsectEvent("player_statue",_loc4_);
+               event = new CatchInsectEvent("player_statue",pkg);
                break;
             case 4:
-               _loc3_ = new CatchInsectEvent("areaSelfInfo",_loc4_);
+               event = new CatchInsectEvent("areaSelfInfo",pkg);
                break;
             case 5:
-               _loc3_ = new CatchInsectEvent("addMonster",_loc4_);
+               event = new CatchInsectEvent("addMonster",pkg);
                break;
             case 6:
-               _loc3_ = new CatchInsectEvent("cakeStatus",_loc4_);
+               event = new CatchInsectEvent("cakeStatus",pkg);
                break;
             case 7:
-               updateScore(_loc4_);
+               updateScore(pkg);
                break;
             case 8:
-               _loc3_ = new CatchInsectEvent("updateLocalRank",_loc4_);
+               event = new CatchInsectEvent("updateLocalRank",pkg);
                break;
             case 9:
-               _loc3_ = new CatchInsectEvent("updateAreaRank",_loc4_);
+               event = new CatchInsectEvent("updateAreaRank",pkg);
                break;
             case 10:
-               _loc3_ = new CatchInsectEvent("localSelfInfo",_loc4_);
+               event = new CatchInsectEvent("localSelfInfo",pkg);
                break;
             case 11:
-               _loc3_ = new CatchInsectEvent("fightMonster",_loc4_);
+               event = new CatchInsectEvent("fightMonster",pkg);
                break;
             default:
-               _loc3_ = new CatchInsectEvent("fightMonster",_loc4_);
+               event = new CatchInsectEvent("fightMonster",pkg);
                break;
             case 13:
-               _loc3_ = new CatchInsectEvent("move",_loc4_);
+               event = new CatchInsectEvent("move",pkg);
                break;
             default:
-               _loc3_ = new CatchInsectEvent("move",_loc4_);
+               event = new CatchInsectEvent("move",pkg);
                break;
             case 15:
-               enterScene(_loc4_);
+               enterScene(pkg);
          }
-         if(_loc3_)
+         if(event)
          {
-            dispatchEvent(_loc3_);
+            dispatchEvent(event);
          }
       }
       
-      private function updateScore(param1:PackageIn) : void
+      private function updateScore(pkg:PackageIn) : void
       {
-         model.score = param1.readInt();
-         model.avaibleScore = param1.readInt();
-         model.prizeStatus = param1.readInt();
+         model.score = pkg.readInt();
+         model.avaibleScore = pkg.readInt();
+         model.prizeStatus = pkg.readInt();
          dispatchEvent(new Event("updateInfo"));
       }
       
-      private function enterScene(param1:PackageIn) : void
+      private function enterScene(pkg:PackageIn) : void
       {
-         _model.isEnter = param1.readBoolean();
+         _model.isEnter = pkg.readBoolean();
          if(_model.isEnter)
          {
             initSceneData();
@@ -179,9 +179,9 @@ package catchInsect
          return PathManager.SITE_MAIN + "image/scene/catchInsect";
       }
       
-      public function solveMonsterPath(param1:String) : String
+      public function solveMonsterPath(pPath:String) : String
       {
-         return getCatchInsectResource() + "/monsters/" + param1 + ".swf";
+         return getCatchInsectResource() + "/monsters/" + pPath + ".swf";
       }
       
       public function reConnectCatchInectFunc() : void
@@ -212,39 +212,39 @@ package catchInsect
          SocketManager.Instance.out.enterOrLeaveInsectScene(0);
       }
       
-      private function openOrclose(param1:PackageIn) : void
+      private function openOrclose(pkg:PackageIn) : void
       {
-         _model.isOpen = param1.readBoolean();
+         _model.isOpen = pkg.readBoolean();
          showEnterIcon(_model.isOpen);
       }
       
-      protected function __timerHandler(param1:Event) : void
+      protected function __timerHandler(event:Event) : void
       {
-         var _loc6_:int = 0;
-         var _loc2_:int = 0;
-         var _loc7_:int = model.endTime.getTime() / 1000;
-         var _loc5_:Date = TimeManager.Instance.Now();
-         var _loc4_:int = _loc5_.getTime() / 1000;
-         var _loc3_:int = _loc7_ - _loc4_;
-         if(_loc3_ > 0)
+         var residue:int = 0;
+         var onTime:int = 0;
+         var endTime:int = model.endTime.getTime() / 1000;
+         var now:Date = TimeManager.Instance.Now();
+         var nowTimeSec:int = now.getTime() / 1000;
+         var diff:int = endTime - nowTimeSec;
+         if(diff > 0)
          {
-            _loc6_ = _loc3_ % 3600;
-            if(_loc6_ < 5)
+            residue = diff % 3600;
+            if(residue < 5)
             {
-               _loc2_ = _loc3_ / 3600;
-               if(_loc2_ <= 48 && _loc2_ > 0 && !_hasPrompted.hasKey(_loc2_))
+               onTime = diff / 3600;
+               if(onTime <= 48 && onTime > 0 && !_hasPrompted.hasKey(onTime))
                {
-                  ChatManager.Instance.sysChatAmaranth(LanguageMgr.GetTranslation("catchInsect.willEnd.promptTxt",_loc2_));
-                  _hasPrompted.add(_loc2_,1);
+                  ChatManager.Instance.sysChatAmaranth(LanguageMgr.GetTranslation("catchInsect.willEnd.promptTxt",onTime));
+                  _hasPrompted.add(onTime,1);
                }
             }
          }
       }
       
-      public function showEnterIcon(param1:Boolean) : void
+      public function showEnterIcon(flag:Boolean) : void
       {
-         HallIconManager.instance.updateSwitchHandler("catchinsect",param1);
-         if(param1)
+         HallIconManager.instance.updateSwitchHandler("catchinsect",flag);
+         if(flag)
          {
             _catchInsectInfo = new CatchInsectItemInfo();
             _catchInsectInfo.myPlayerVO = new PlayerVO();

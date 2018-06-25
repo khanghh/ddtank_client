@@ -39,11 +39,11 @@ package hall.tasktrack
       
       private var _hasOpenCommitViewList:DictionaryData;
       
-      public function HallTaskTrackManager(param1:IEventDispatcher = null)
+      public function HallTaskTrackManager(target:IEventDispatcher = null)
       {
          _completeTaskList = new DictionaryData();
          _hasOpenCommitViewList = new DictionaryData();
-         super(param1);
+         super(target);
          btnIndexMap = new Dictionary();
       }
       
@@ -56,10 +56,10 @@ package hall.tasktrack
          return _instance;
       }
       
-      public function moduleLoad(param1:Function = null, param2:Array = null) : void
+      public function moduleLoad(complete:Function = null, completeParams:Array = null) : void
       {
-         _func = param1;
-         _funcParams = param2;
+         _func = complete;
+         _funcParams = completeParams;
          UIModuleSmallLoading.Instance.progress = 0;
          UIModuleSmallLoading.Instance.show();
          UIModuleSmallLoading.Instance.addEventListener("close",__onClose);
@@ -68,9 +68,9 @@ package hall.tasktrack
          UIModuleLoader.Instance.addUIModuleImp("quest");
       }
       
-      private function __onTaskLoadComplete(param1:UIModuleEvent) : void
+      private function __onTaskLoadComplete(event:UIModuleEvent) : void
       {
-         if(param1.module == "quest")
+         if(event.module == "quest")
          {
             UIModuleLoader.Instance.removeEventListener("uiModuleComplete",__onTaskLoadComplete);
             UIModuleLoader.Instance.removeEventListener("uiMoudleProgress",__onTaskLoadProgress);
@@ -85,32 +85,32 @@ package hall.tasktrack
          }
       }
       
-      private function __onTaskLoadProgress(param1:UIModuleEvent) : void
+      private function __onTaskLoadProgress(event:UIModuleEvent) : void
       {
-         if(param1.module == "quest")
+         if(event.module == "quest")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
       
-      private function __onClose(param1:Event) : void
+      private function __onClose(event:Event) : void
       {
          UIModuleLoader.Instance.removeEventListener("uiModuleComplete",__onTaskLoadComplete);
          UIModuleLoader.Instance.removeEventListener("uiMoudleProgress",__onTaskLoadProgress);
          UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);
       }
       
-      public function addCompleteTask(param1:int) : void
+      public function addCompleteTask(questId:int) : void
       {
          if(StateManager.currentStateType == "main" || StateManager.currentStateType == "matchRoom" || StateManager.currentStateType == "challengeRoom" || StateManager.currentStateType == "dungeonRoom" || StateManager.currentStateType == "freshmanRoom2" || StateManager.currentStateType == "freshmanRoom1" || StateManager.currentStateType == "missionResult" || StateManager.currentStateType == "worldbossRoom")
          {
-            openCommitView(param1);
+            openCommitView(questId);
          }
-         else if(!_completeTaskList.hasKey(param1))
+         else if(!_completeTaskList.hasKey(questId))
          {
-            _completeTaskList.add(param1,param1);
+            _completeTaskList.add(questId,questId);
          }
-         if(param1 == 558)
+         if(questId == 558)
          {
             HallTaskGuideManager.instance.clearTask1Arrow();
             NoviceDataManager.instance.saveNoviceData(360,PathManager.userName(),PathManager.solveRequestPath());
@@ -121,133 +121,127 @@ package hall.tasktrack
       {
          var _loc3_:int = 0;
          var _loc2_:* = _completeTaskList;
-         for each(var _loc1_ in _completeTaskList)
+         for each(var questId in _completeTaskList)
          {
-            openCommitView(_loc1_);
+            openCommitView(questId);
          }
       }
       
-      private function openCommitView(param1:int) : void
+      private function openCommitView(questId:int) : void
       {
-         var _loc3_:Number = NaN;
-         var _loc10_:Number = NaN;
-         var _loc2_:Number = NaN;
-         var _loc7_:int = 0;
-         var _loc6_:int = 0;
-         var _loc9_:int = 0;
-         var _loc12_:QuestInfo = TaskManager.instance.getQuestByID(param1);
-         if(_loc12_.Type == 13 || _loc12_.Type == 14)
+         var startTime:Number = NaN;
+         var endTime:Number = NaN;
+         var currentTime:Number = NaN;
+         var questIndex:int = 0;
+         var index1:int = 0;
+         var index2:int = 0;
+         var questInfo:QuestInfo = TaskManager.instance.getQuestByID(questId);
+         if(questInfo.Type == 13 || questInfo.Type == 14)
          {
-            _loc2_ = TimeManager.Instance.Now().time;
-            _loc7_ = 0;
-            if(_loc12_.Type == 13)
+            currentTime = TimeManager.Instance.Now().time;
+            questIndex = 0;
+            if(questInfo.Type == 13)
             {
-               _loc6_ = SevendayManager.QUEST_LIST_1.indexOf(param1);
-               _loc9_ = SevendayManager.QUEST_LIST_2.indexOf(param1);
-               if(_loc6_ < 0 && _loc9_ < 0)
+               index1 = SevendayManager.QUEST_LIST_1.indexOf(questId);
+               index2 = SevendayManager.QUEST_LIST_2.indexOf(questId);
+               if(index1 < 0 && index2 < 0)
                {
+                  trace("当前任务类型13，id:" + questInfo.Id + ", 七日目标任务配置出问题！尽快解决(HallTaskTraceManager.as)");
                   return;
-                  §§push(trace("当前任务类型13，id:" + _loc12_.Id + ", 七日目标任务配置出问题！尽快解决(HallTaskTraceManager.as)"));
                }
-               else
-               {
-                  _loc7_ = _loc6_ == -1?_loc9_:int(_loc6_);
-                  _loc3_ = PlayerManager.Instance.Self.createPlayerDate.time + _loc7_ * 86400000;
-                  _loc10_ = PlayerManager.Instance.Self.createPlayerDate.time + 7 * 86400000;
-               }
+               questIndex = index1 == -1?index2:int(index1);
+               startTime = PlayerManager.Instance.Self.createPlayerDate.time + questIndex * 86400000;
+               endTime = PlayerManager.Instance.Self.createPlayerDate.time + 7 * 86400000;
             }
-            else if(_loc12_.Type == 14)
+            else if(questInfo.Type == 14)
             {
-               _loc7_ = DDTKingWayManager.QUEST_LIST.indexOf(param1);
-               if(_loc7_ < 0)
+               questIndex = DDTKingWayManager.QUEST_LIST.indexOf(questId);
+               if(questIndex < 0)
                {
+                  trace("当前任务类型14，id:" + questInfo.Id + ", 弹王之路任务配置出问题！尽快解决(HallTaskTraceManager.as)");
                   return;
-                  §§push(trace("当前任务类型14，id:" + _loc12_.Id + ", 弹王之路任务配置出问题！尽快解决(HallTaskTraceManager.as)"));
                }
-               else
-               {
-                  _loc3_ = _loc12_.data.AddTiemsDate.time;
-                  _loc10_ = _loc12_.data.AddTiemsDate.time + DDTKingWayManager.instance.model[DDTKingWayManager.QUEST_LIST[_loc7_]].Validay * 86400000;
-               }
+               startTime = questInfo.data.AddTiemsDate.time;
+               endTime = questInfo.data.AddTiemsDate.time + DDTKingWayManager.instance.model[DDTKingWayManager.QUEST_LIST[questIndex]].Validay * 86400000;
             }
-            if(_loc2_ < _loc3_ || _loc2_ > _loc10_)
+            if(currentTime < startTime || currentTime > endTime)
             {
                return;
             }
          }
-         if(_hasOpenCommitViewList.hasKey(param1))
+         if(_hasOpenCommitViewList.hasKey(questId))
          {
             return;
          }
-         var _loc8_:ChatData = new ChatData();
-         var _loc5_:QuestInfo = TaskManager.instance.getQuestByID(param1);
-         getTypeStr(_loc5_) + LanguageMgr.GetTranslation("hall.taskCompleteCommit.contentTxt",_loc5_.Title);
-         var _loc4_:String = "<CT7>" + getTypeStr(_loc5_) + LanguageMgr.GetTranslation("hall.taskCompleteCommit.contentTxt",_loc5_.Title) + " " + "</CT7>";
-         var _loc11_:String = "<CT14><u><a href=\'event:clicktype:114|questId:" + param1 + "\'>" + LanguageMgr.GetTranslation("hall.taskCompleteCommit.getPrize") + "</a></u></CT14><BR>";
-         _loc8_.htmlMessage = _loc4_ + _loc11_;
-         _loc8_.channel = 31;
-         ChatManager.Instance.chat(_loc8_,false);
-         _hasOpenCommitViewList.add(param1,param1);
+         var chatData:ChatData = new ChatData();
+         var _questInfo:QuestInfo = TaskManager.instance.getQuestByID(questId);
+         getTypeStr(_questInfo) + LanguageMgr.GetTranslation("hall.taskCompleteCommit.contentTxt",_questInfo.Title);
+         var taskStr:String = "<CT7>" + getTypeStr(_questInfo) + LanguageMgr.GetTranslation("hall.taskCompleteCommit.contentTxt",_questInfo.Title) + " " + "</CT7>";
+         var getStr:String = "<CT14><u><a href=\'event:clicktype:114|questId:" + questId + "\'>" + LanguageMgr.GetTranslation("hall.taskCompleteCommit.getPrize") + "</a></u></CT14><BR>";
+         chatData.htmlMessage = taskStr + getStr;
+         chatData.channel = 31;
+         ChatManager.Instance.chat(chatData,false);
+         _hasOpenCommitViewList.add(questId,questId);
       }
       
-      private function getTypeStr(param1:QuestInfo) : String
+      private function getTypeStr(questInfo:QuestInfo) : String
       {
-         var _loc2_:String = "";
-         switch(int(param1.Type))
+         var tmp:String = "";
+         switch(int(questInfo.Type))
          {
             case 0:
-               _loc2_ = LanguageMgr.GetTranslation("tank.view.quest.bubble.TankLink");
+               tmp = LanguageMgr.GetTranslation("tank.view.quest.bubble.TankLink");
                break;
             case 1:
-               _loc2_ = LanguageMgr.GetTranslation("tank.view.quest.bubble.BranchLine");
+               tmp = LanguageMgr.GetTranslation("tank.view.quest.bubble.BranchLine");
                break;
             case 2:
-               _loc2_ = LanguageMgr.GetTranslation("tank.view.quest.bubble.Daily");
+               tmp = LanguageMgr.GetTranslation("tank.view.quest.bubble.Daily");
                break;
             case 3:
-               _loc2_ = LanguageMgr.GetTranslation("tank.view.quest.bubble.Act");
+               tmp = LanguageMgr.GetTranslation("tank.view.quest.bubble.Act");
                break;
             default:
-               _loc2_ = LanguageMgr.GetTranslation("tank.view.quest.bubble.Act");
+               tmp = LanguageMgr.GetTranslation("tank.view.quest.bubble.Act");
                break;
             default:
             case 6:
-               _loc2_ = LanguageMgr.GetTranslation("tank.view.quest.bubble.Act");
+               tmp = LanguageMgr.GetTranslation("tank.view.quest.bubble.Act");
                break;
             default:
-               _loc2_ = LanguageMgr.GetTranslation("tank.view.quest.bubble.Act");
+               tmp = LanguageMgr.GetTranslation("tank.view.quest.bubble.Act");
                break;
             default:
-               _loc2_ = LanguageMgr.GetTranslation("tank.view.quest.bubble.Act");
+               tmp = LanguageMgr.GetTranslation("tank.view.quest.bubble.Act");
                break;
             default:
-               _loc2_ = LanguageMgr.GetTranslation("tank.view.quest.bubble.Act");
+               tmp = LanguageMgr.GetTranslation("tank.view.quest.bubble.Act");
                break;
             case 10:
-               _loc2_ = LanguageMgr.GetTranslation("tank.view.quest.bubble.buried");
+               tmp = LanguageMgr.GetTranslation("tank.view.quest.bubble.buried");
                break;
             default:
-               _loc2_ = LanguageMgr.GetTranslation("tank.view.quest.bubble.buried");
+               tmp = LanguageMgr.GetTranslation("tank.view.quest.bubble.buried");
                break;
             case 12:
-               _loc2_ = LanguageMgr.GetTranslation("tank.view.quest.bubble.reward");
+               tmp = LanguageMgr.GetTranslation("tank.view.quest.bubble.reward");
                break;
             case 13:
-               _loc2_ = LanguageMgr.GetTranslation("tank.view.quest.bubble.sevenday");
+               tmp = LanguageMgr.GetTranslation("tank.view.quest.bubble.sevenday");
                break;
             case 14:
-               _loc2_ = LanguageMgr.GetTranslation("tank.view.quest.bubble.danwang");
+               tmp = LanguageMgr.GetTranslation("tank.view.quest.bubble.danwang");
                break;
             default:
-               _loc2_ = LanguageMgr.GetTranslation("tank.view.quest.bubble.danwang");
+               tmp = LanguageMgr.GetTranslation("tank.view.quest.bubble.danwang");
                break;
             case 16:
-               _loc2_ = LanguageMgr.GetTranslation("tank.view.quest.bubble.sevenHappy");
+               tmp = LanguageMgr.GetTranslation("tank.view.quest.bubble.sevenHappy");
                break;
             case 17:
-               _loc2_ = LanguageMgr.GetTranslation("tank.view.quest.bubble.weak");
+               tmp = LanguageMgr.GetTranslation("tank.view.quest.bubble.weak");
          }
-         return _loc2_;
+         return tmp;
       }
    }
 }

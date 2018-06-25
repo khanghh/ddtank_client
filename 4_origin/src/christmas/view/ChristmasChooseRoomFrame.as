@@ -103,7 +103,7 @@ package christmas.view
          }
       }
       
-      private function __onClickEnterHandler(param1:MouseEvent) : void
+      private function __onClickEnterHandler(e:MouseEvent) : void
       {
          if(new Date().time - _clickDate > 1000)
          {
@@ -113,25 +113,25 @@ package christmas.view
          }
       }
       
-      private function __onClickEnterHeapHandler(param1:MouseEvent) : void
+      private function __onClickEnterHeapHandler(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          SocketManager.Instance.out.enterMakingSnowManRoom();
       }
       
-      private function __onClickHelpHandler(param1:MouseEvent) : void
+      private function __onClickHelpHandler(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:DisplayObject = ComponentFactory.Instance.creat("christmas.HelpPrompt");
-         var _loc3_:HelpFrame = ComponentFactory.Instance.creat("christmas.HelpFrame");
-         _loc3_.setView(_loc2_);
-         _loc3_.titleText = LanguageMgr.GetTranslation("christmas.christmas.readme");
-         LayerManager.Instance.addToLayer(_loc3_,1,true,1);
+         var helpBd:DisplayObject = ComponentFactory.Instance.creat("christmas.HelpPrompt");
+         var helpPage:HelpFrame = ComponentFactory.Instance.creat("christmas.HelpFrame");
+         helpPage.setView(helpBd);
+         helpPage.titleText = LanguageMgr.GetTranslation("christmas.christmas.readme");
+         LayerManager.Instance.addToLayer(helpPage,1,true,1);
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();

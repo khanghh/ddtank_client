@@ -34,84 +34,83 @@ package homeTemple.view
          super();
       }
       
-      public function getNumber(param1:String, param2:String = "left") : BitmapData
+      public function getNumber(num:String, align:String = "left") : BitmapData
       {
-         var _loc4_:* = null;
-         var _loc7_:* = null;
-         var _loc8_:int = 0;
-         var _loc6_:* = null;
+         var char:* = null;
+         var bd:* = null;
+         var i:int = 0;
+         var tempData:* = null;
          _bitmapdata = new BitmapData(_bitmapdata.width,_bitmapdata.height,true,0);
-         var _loc3_:int = 0;
-         var _loc5_:int = param1.length;
-         _loc8_ = 0;
-         while(_loc8_ < _loc5_)
+         var __position:int = 0;
+         var len:int = num.length;
+         for(i = 0; i < len; )
          {
-            _loc4_ = param1.charAt(_loc8_);
-            if(_loc4_ == ".")
+            char = num.charAt(i);
+            if(char == ".")
             {
-               _loc7_ = dot;
+               bd = dot;
                _tempRect.width = dot.width;
                _tempRect.height = dot.height;
-               _point.x = _loc3_;
+               _point.x = __position;
                _point.y = 0;
             }
-            else if(_loc4_ == "+")
+            else if(char == "+")
             {
-               _loc7_ = add;
+               bd = add;
                _tempRect.width = add.width;
                _tempRect.height = add.height;
-               _point.x = _loc3_;
+               _point.x = __position;
                _point.y = 0;
             }
-            else if(_loc4_ == "/")
+            else if(char == "/")
             {
-               _loc7_ = sprit;
+               bd = sprit;
                _tempRect.width = sprit.width;
                _tempRect.height = sprit.height;
-               _point.x = _loc3_;
+               _point.x = __position;
                _point.y = 0;
             }
-            else if(_loc4_ == "-")
+            else if(char == "-")
             {
-               _loc7_ = reduce;
+               bd = reduce;
                _tempRect.width = reduce.width;
                _tempRect.height = reduce.height;
-               _point.x = _loc3_;
+               _point.x = __position;
                _point.y = 0;
             }
             else
             {
-               _loc7_ = numList[int(_loc4_)];
-               _tempRect.width = _loc7_.width;
-               _tempRect.height = _loc7_.height;
-               _tempRect.width = _loc7_.width;
-               _point.x = _loc3_;
+               bd = numList[int(char)];
+               _tempRect.width = bd.width;
+               _tempRect.height = bd.height;
+               _tempRect.width = bd.width;
+               _point.x = __position;
                _point.y = 0;
             }
-            _loc3_ = _loc3_ + (_loc7_.width + gap);
-            _bitmapdata.copyPixels(_loc7_,_tempRect,_point);
-            _loc8_++;
+            __position = __position + (bd.width + gap);
+            _bitmapdata.copyPixels(bd,_tempRect,_point);
+            i++;
          }
-         var _loc9_:* = param2;
+         var _loc9_:* = align;
          if("center" !== _loc9_)
          {
             if("right" !== _loc9_)
             {
                return _bitmapdata;
             }
-            _loc6_ = new BitmapData(rect.width,rect.height,true,0);
+            tempData = new BitmapData(rect.width,rect.height,true,0);
             _tempRect.x = 0;
-            _tempRect.width = _loc3_;
-            _point.x = _rect.width - _loc3_;
-            _loc6_.copyPixels(_bitmapdata,_tempRect,_point);
-            return _loc6_;
+            _tempRect.width = __position;
+            _point.x = _rect.width - __position;
+            tempData.copyPixels(_bitmapdata,_tempRect,_point);
+            return tempData;
          }
-         _loc6_ = new BitmapData(rect.width,rect.height,true,0);
+         tempData = new BitmapData(rect.width,rect.height,true,0);
          _tempRect.x = 0;
-         _tempRect.width = _loc3_;
-         _point.x = _rect.width - _loc3_ >> 1;
-         _loc6_.copyPixels(_bitmapdata,_tempRect,_point);
-         return _loc6_;
+         _tempRect.width = __position;
+         _point.x = _rect.width - __position >> 1;
+         tempData.copyPixels(_bitmapdata,_tempRect,_point);
+         return tempData;
       }
       
       public function get rect() : Rectangle
@@ -119,11 +118,11 @@ package homeTemple.view
          return _rect;
       }
       
-      public function set rect(param1:Rectangle) : void
+      public function set rect(value:Rectangle) : void
       {
-         _rect = param1;
+         _rect = value;
          _bitmapdata = new BitmapData(_rect.width,_rect.height);
-         _tempRect = new Rectangle(0,0,10,param1.height);
+         _tempRect = new Rectangle(0,0,10,value.height);
       }
    }
 }

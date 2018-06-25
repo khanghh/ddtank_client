@@ -75,30 +75,30 @@ package ddt.view.chat
          return _channel;
       }
       
-      public function set channel(param1:int) : void
+      public function set channel(channel:int) : void
       {
-         if(_channel == param1)
+         if(_channel == channel)
          {
             return;
          }
-         _channel = param1;
+         _channel = channel;
          setPrivateChatName("");
          setTextFormat(ChatFormats.getTextFormatByChannel(_channel));
       }
       
       public function isFocus() : Boolean
       {
-         var _loc1_:* = false;
+         var isF:* = false;
          if(StageReferance.stage)
          {
-            _loc1_ = StageReferance.stage.focus == _inputField;
+            isF = StageReferance.stage.focus == _inputField;
          }
-         return _loc1_;
+         return isF;
       }
       
-      public function set maxInputWidth(param1:Number) : void
+      public function set maxInputWidth($width:Number) : void
       {
-         _maxInputWidth = param1;
+         _maxInputWidth = $width;
          updatePosAndSize();
       }
       
@@ -119,10 +119,10 @@ package ddt.view.chat
       
       public function sendCurrnetText() : void
       {
-         var _loc9_:int = 0;
-         var _loc6_:* = undefined;
-         var _loc5_:* = null;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var list:* = undefined;
+         var name:* = null;
+         var msgs:* = null;
          if(_channel == 1 || _channel == 0 || _channel == 15)
          {
             if(PlayerManager.Instance.Self.bagLocked)
@@ -131,37 +131,35 @@ package ddt.view.chat
                return;
             }
          }
-         var _loc4_:RegExp = /\/\S*\s?/;
-         var _loc1_:Array = _loc4_.exec(_inputField.text);
-         var _loc3_:String = _inputField.text.toLocaleLowerCase();
-         var _loc8_:Boolean = false;
-         var _loc7_:Boolean = false;
-         if(_loc3_.indexOf("/") == 0)
+         var reg:RegExp = /\/\S*\s?/;
+         var result:Array = reg.exec(_inputField.text);
+         var allLowString:String = _inputField.text.toLocaleLowerCase();
+         var isChangedChannel:Boolean = false;
+         var isFastReply:Boolean = false;
+         if(allLowString.indexOf("/") == 0)
          {
-            _loc9_ = 0;
-            while(_loc9_ < CHANNEL_KEY_SET.length)
+            for(i = 0; i < CHANNEL_KEY_SET.length; )
             {
-               if(_loc3_.indexOf("/" + CHANNEL_KEY_SET[_loc9_]) == 0)
+               if(allLowString.indexOf("/" + CHANNEL_KEY_SET[i]) == 0)
                {
-                  _loc8_ = true;
+                  isChangedChannel = true;
                   SoundManager.instance.play("008");
-                  _inputField.text = _loc3_.substring(2);
-                  dispatchEvent(new ChatEvent("inputChannelChanged",CHANNEL_SET[_loc9_]));
+                  _inputField.text = allLowString.substring(2);
+                  dispatchEvent(new ChatEvent("inputChannelChanged",CHANNEL_SET[i]));
                }
-               _loc9_++;
+               i++;
             }
-            if(!_loc8_)
+            if(!isChangedChannel)
             {
-               _loc6_ = ChatManager.Instance.model.customFastReply;
-               _loc9_ = 0;
-               while(_loc9_ < 5)
+               list = ChatManager.Instance.model.customFastReply;
+               for(i = 0; i < 5; )
                {
-                  if(_loc3_.indexOf("/" + (String(_loc9_ + 1))) == 0 && (_loc3_.length == 2 || _loc3_.charAt(2) == " "))
+                  if(allLowString.indexOf("/" + (String(i + 1))) == 0 && (allLowString.length == 2 || allLowString.charAt(2) == " "))
                   {
-                     _loc7_ = true;
-                     if(_loc6_.length > _loc9_)
+                     isFastReply = true;
+                     if(list.length > i)
                      {
-                        _inputField.text = _loc6_[_loc9_];
+                        _inputField.text = list[i];
                      }
                      else
                      {
@@ -169,34 +167,34 @@ package ddt.view.chat
                      }
                      break;
                   }
-                  _loc9_++;
+                  i++;
                }
             }
-            if(_loc1_ && !_loc8_ && !_loc7_)
+            if(result && !isChangedChannel && !isFastReply)
             {
-               _loc5_ = String(_loc1_[0]).replace(" ","");
-               _loc5_ = _loc5_.replace("/","");
-               if(_loc5_ == "")
+               name = String(result[0]).replace(" ","");
+               name = name.replace("/","");
+               if(name == "")
                {
                   return;
                }
-               _inputField.text = _inputField.text.replace(_loc4_,"");
+               _inputField.text = _inputField.text.replace(reg,"");
                dispatchEvent(new ChatEvent("customSetPrivateChatTo",{
                   "channel":2,
-                  "nickName":_loc5_
+                  "nickName":name
                }));
                return;
             }
          }
-         if(_loc3_.substr(0,2) != "/" + CHANNEL_KEY_SET[2])
+         if(allLowString.substr(0,2) != "/" + CHANNEL_KEY_SET[2])
          {
-            _loc2_ = parasMsgs(_inputField.text);
+            msgs = parasMsgs(_inputField.text);
             _inputField.text = "";
-            if(_loc2_ == "")
+            if(msgs == "")
             {
                return;
             }
-            dispatchEvent(new ChatEvent("inputTextChanged",_loc2_));
+            dispatchEvent(new ChatEvent("inputTextChanged",msgs));
          }
       }
       
@@ -212,35 +210,35 @@ package ddt.view.chat
          }
       }
       
-      public function setInputText(param1:String) : void
+      public function setInputText(text:String) : void
       {
-         if(param1.indexOf("&lt;") > -1 || param1.indexOf("&gt;") > -1)
+         if(text.indexOf("&lt;") > -1 || text.indexOf("&gt;") > -1)
          {
-            _inputField.htmlText = param1;
+            _inputField.htmlText = text;
             _inputField.textColor = ChatFormats.CHAT_COLORS[_channel];
          }
          else
          {
-            _inputField.text = param1;
+            _inputField.text = text;
          }
          _inputField.setTextFormat(ChatFormats.getTextFormatByChannel(_channel));
       }
       
-      public function setPrivateChatName(param1:String, param2:int = 0, param3:Object = null) : void
+      public function setPrivateChatName(name:String, useID:int = 0, info:Object = null) : void
       {
-         var _loc4_:* = null;
+         var txt:* = null;
          setTextFocus();
-         _privateChatName = param1;
-         _userID = param2;
-         _privateChatInfo = param3;
+         _privateChatName = name;
+         _userID = useID;
+         _privateChatInfo = info;
          if(_privateChatName != "")
          {
-            _loc4_ = "";
-            _loc4_ = _privateChatName;
-            _nameTextField.htmlText = LanguageMgr.GetTranslation("tank.view.chat.ChatInput.usernameField.text",_loc4_);
+            txt = "";
+            txt = _privateChatName;
+            _nameTextField.htmlText = LanguageMgr.GetTranslation("tank.view.chat.ChatInput.usernameField.text",txt);
             if(_privateChatInfo && !(_privateChatInfo is FriendListPlayer))
             {
-               _nameTextField.htmlText = LanguageMgr.GetTranslation("tank.view.chat.ChatInput.usernameField.textII",_privateChatInfo.areaName,_loc4_);
+               _nameTextField.htmlText = LanguageMgr.GetTranslation("tank.view.chat.ChatInput.usernameField.textII",_privateChatInfo.areaName,txt);
             }
          }
          else
@@ -250,19 +248,19 @@ package ddt.view.chat
          updatePosAndSize();
       }
       
-      private function __onAddToStage(param1:Event) : void
+      private function __onAddToStage(e:Event) : void
       {
          setTextFocus();
          removeEventListener("addedToStage",arguments.callee);
       }
       
-      private function __onFieldKeyDown(param1:KeyboardEvent) : void
+      private function __onFieldKeyDown(event:KeyboardEvent) : void
       {
          if(isFocus())
          {
-            param1.stopImmediatePropagation();
-            param1.stopPropagation();
-            if(param1.keyCode == 38)
+            event.stopImmediatePropagation();
+            event.stopPropagation();
+            if(event.keyCode == 38)
             {
                currentHistoryOffset = Number(currentHistoryOffset) - 1;
                if(getHistoryChat(currentHistoryOffset) != "")
@@ -272,13 +270,13 @@ package ddt.view.chat
                   _inputField.addEventListener("enterFrame",__setSelectIndexSync);
                }
             }
-            else if(param1.keyCode == 40)
+            else if(event.keyCode == 40)
             {
                currentHistoryOffset = Number(currentHistoryOffset) + 1;
                _inputField.text = getHistoryChat(currentHistoryOffset);
             }
          }
-         if(param1.keyCode == 13 && !ChatManager.Instance.chatDisabled)
+         if(event.keyCode == 13 && !ChatManager.Instance.chatDisabled)
          {
             if(_inputField.text.substr(0,1) == "#")
             {
@@ -340,7 +338,7 @@ package ddt.view.chat
          return false;
       }
       
-      private function __onInputFieldChange(param1:Event) : void
+      private function __onInputFieldChange(e:Event) : void
       {
          if(_inputField.text)
          {
@@ -348,7 +346,7 @@ package ddt.view.chat
          }
       }
       
-      private function __setSelectIndexSync(param1:Event) : void
+      private function __setSelectIndexSync(event:Event) : void
       {
          _inputField.removeEventListener("enterFrame",__setSelectIndexSync);
          _inputField.setSelection(_inputField.text.length,_inputField.text.length);
@@ -359,39 +357,39 @@ package ddt.view.chat
          return _currentHistoryOffset;
       }
       
-      private function set currentHistoryOffset(param1:int) : void
+      private function set currentHistoryOffset(value:int) : void
       {
-         if(param1 < 0)
+         if(value < 0)
          {
-            param1 = 0;
+            value = 0;
          }
-         if(param1 > ChatManager.Instance.model.resentChats.length - 1)
+         if(value > ChatManager.Instance.model.resentChats.length - 1)
          {
-            param1 = ChatManager.Instance.model.resentChats.length - 1;
+            value = ChatManager.Instance.model.resentChats.length - 1;
          }
-         _currentHistoryOffset = param1;
+         _currentHistoryOffset = value;
       }
       
-      private function getHistoryChat(param1:int) : String
+      private function getHistoryChat(chatOffset:int) : String
       {
-         if(param1 == -1)
+         if(chatOffset == -1)
          {
             return "";
          }
-         var _loc2_:String = Helpers.deCodeString(ChatManager.Instance.model.resentChats[param1].msg);
-         return _loc2_;
+         var str:String = Helpers.deCodeString(ChatManager.Instance.model.resentChats[chatOffset].msg);
+         return str;
       }
       
       private function initView() : void
       {
-         var _loc1_:Point = ComponentFactory.Instance.creatCustomObject("chat.InputFieldTextFieldStartPos");
+         var startPos:Point = ComponentFactory.Instance.creatCustomObject("chat.InputFieldTextFieldStartPos");
          _nameTextField = new TextField();
          _nameTextField.type = "dynamic";
          _nameTextField.mouseEnabled = false;
          _nameTextField.selectable = false;
          _nameTextField.autoSize = "left";
-         _nameTextField.x = _loc1_.x;
-         _nameTextField.y = _loc1_.y;
+         _nameTextField.x = startPos.x;
+         _nameTextField.y = startPos.y;
          addChild(_nameTextField);
          _inputField = new TextField();
          _inputField.type = "input";
@@ -399,8 +397,8 @@ package ddt.view.chat
          _inputField.multiline = false;
          _inputField.wordWrap = false;
          _inputField.maxChars = 100;
-         _inputField.x = _loc1_.x;
-         _inputField.y = _loc1_.y;
+         _inputField.x = startPos.x;
+         _inputField.y = startPos.y;
          _inputField.height = 20;
          addChild(_inputField);
          _inputField.addEventListener("change",__onInputFieldChange);
@@ -409,13 +407,13 @@ package ddt.view.chat
          StageReferance.stage.addEventListener("keyDown",__onFieldKeyDown,false,2147483647);
       }
       
-      private function parasMsgs(param1:String) : String
+      private function parasMsgs(fieldText:String) : String
       {
-         var _loc2_:* = param1;
-         _loc2_ = StringHelper.trim(_loc2_);
-         _loc2_ = FilterWordManager.filterWrod(_loc2_);
-         _loc2_ = StringHelper.rePlaceHtmlTextField(_loc2_);
-         return _loc2_;
+         var result:* = fieldText;
+         result = StringHelper.trim(result);
+         result = FilterWordManager.filterWrod(result);
+         result = StringHelper.rePlaceHtmlTextField(result);
+         return result;
       }
       
       private function setTextFocus() : void
@@ -424,12 +422,12 @@ package ddt.view.chat
          _inputField.setSelection(_inputField.text.length,_inputField.text.length);
       }
       
-      private function setTextFormat(param1:TextFormat) : void
+      private function setTextFormat(textFormat:TextFormat) : void
       {
-         _nameTextField.defaultTextFormat = param1;
-         _nameTextField.setTextFormat(param1);
-         _inputField.defaultTextFormat = param1;
-         _inputField.setTextFormat(param1);
+         _nameTextField.defaultTextFormat = textFormat;
+         _nameTextField.setTextFormat(textFormat);
+         _inputField.defaultTextFormat = textFormat;
+         _inputField.setTextFormat(textFormat);
       }
       
       private function updatePosAndSize() : void

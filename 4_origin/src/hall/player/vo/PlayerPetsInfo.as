@@ -14,17 +14,16 @@ package hall.player.vo
          _disDic = new Dictionary();
       }
       
-      public function set distanceDic(param1:String) : void
+      public function set distanceDic(value:String) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:Array = param1.split(",");
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_.length)
+         var i:int = 0;
+         var disArr:* = null;
+         var dicArr:Array = value.split(",");
+         for(i = 0; i < dicArr.length; )
          {
-            _loc2_ = _loc3_[_loc4_].split(":");
-            _disDic[_loc2_[0]] = _loc2_[1];
-            _loc4_++;
+            disArr = dicArr[i].split(":");
+            _disDic[disArr[0]] = disArr[1];
+            i++;
          }
       }
       

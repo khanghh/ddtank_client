@@ -86,9 +86,9 @@ package gameCommon.view
          return true;
       }
       
-      public function set roomInfo(param1:RoomInfo) : void
+      public function set roomInfo(value:RoomInfo) : void
       {
-         _roomInfo = param1;
+         _roomInfo = value;
       }
       
       public function show() : void
@@ -96,15 +96,15 @@ package gameCommon.view
          LayerManager.Instance.addToLayer(this,3,true,1);
       }
       
-      private function __alertSendDefy(param1:FrameEvent) : void
+      private function __alertSendDefy(event:FrameEvent) : void
       {
-         param1.currentTarget.removeEventListener("response",__alertSendDefy);
+         event.currentTarget.removeEventListener("response",__alertSendDefy);
          SoundManager.instance.play("008");
          handleString();
          _str = _str + _textInput.text;
-         if(!(int(param1.responseCode) - 3))
+         if(!(int(event.responseCode) - 3))
          {
-            CheckMoneyUtils.instance.checkMoney(param1.currentTarget.isBand,500,onCheckComplete);
+            CheckMoneyUtils.instance.checkMoney(event.currentTarget.isBand,500,onCheckComplete);
          }
       }
       
@@ -115,15 +115,15 @@ package gameCommon.view
          dispose();
       }
       
-      private function __cancelClick(param1:MouseEvent) : void
+      private function __cancelClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          dispose();
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -132,47 +132,46 @@ package gameCommon.view
          }
       }
       
-      private function __leaveToFill(param1:FrameEvent) : void
+      private function __leaveToFill(event:FrameEvent) : void
       {
-         param1.currentTarget.removeEventListener("response",__alertSendDefy);
+         event.currentTarget.removeEventListener("response",__alertSendDefy);
          SoundManager.instance.play("008");
-         if(!(int(param1.responseCode) - 3))
+         if(!(int(event.responseCode) - 3))
          {
             LeavePageManager.leaveToFillPath();
          }
       }
       
-      private function __okClick(param1:MouseEvent) : void
+      private function __okClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(!inputCheck())
          {
             return;
          }
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.DefyAfficheView.hint",500),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"SimpleAlert",30,true);
-         _loc2_.moveEnable = false;
-         _loc2_.addEventListener("response",__alertSendDefy);
+         var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.DefyAfficheView.hint",500),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"SimpleAlert",30,true);
+         alert.moveEnable = false;
+         alert.addEventListener("response",__alertSendDefy);
       }
       
-      private function __texeInput(param1:Event) : void
+      private function __texeInput(evt:Event) : void
       {
-         var _loc2_:String = String(30 - _textInput.text.length);
-         _titText.text = LanguageMgr.GetTranslation("tank.view.DefyAfficheView.afficheTitText",_loc2_);
+         var n:String = String(30 - _textInput.text.length);
+         _titText.text = LanguageMgr.GetTranslation("tank.view.DefyAfficheView.afficheTitText",n);
       }
       
       private function handleString() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _str = "";
          _str = "[" + PlayerManager.Instance.Self.NickName + "]";
          _str = _str + LanguageMgr.GetTranslation("tank.view.DefyAfficheView.afficheCaput");
          if(_roomInfo.defyInfo)
          {
-            _loc1_ = 0;
-            while(_loc1_ < _roomInfo.defyInfo[1].length)
+            for(i = 0; i < _roomInfo.defyInfo[1].length; )
             {
-               _str = _str + ("[" + _roomInfo.defyInfo[1][_loc1_] + "]");
-               _loc1_++;
+               _str = _str + ("[" + _roomInfo.defyInfo[1][i] + "]");
+               i++;
             }
          }
          _str = _str + LanguageMgr.GetTranslation("tank.view.DefyAfficheView.afficheLast");
@@ -193,17 +192,17 @@ package gameCommon.view
          _defyAffichebtn1.removeEventListener("click",__cancelClick);
       }
       
-      private function selectedBandHander(param1:MouseEvent) : void
+      private function selectedBandHander(e:MouseEvent) : void
       {
       }
       
       private function initView() : void
       {
-         var _loc1_:* = null;
+         var self:* = null;
          if(PathManager.solveExternalInterfaceEnabel())
          {
-            _loc1_ = PlayerManager.Instance.Self;
-            ExternalInterfaceManager.sendToAgent(10,_loc1_.ID,_loc1_.NickName,ServerManager.Instance.zoneName);
+            self = PlayerManager.Instance.Self;
+            ExternalInterfaceManager.sendToAgent(10,self.ID,self.NickName,ServerManager.Instance.zoneName);
          }
          titleText = LanguageMgr.GetTranslation("tank.view.DefyAfficheView.affiche");
          _bg = ComponentFactory.Instance.creatComponentByStylename("game.view.DefyAfficheViewFrame.bg");

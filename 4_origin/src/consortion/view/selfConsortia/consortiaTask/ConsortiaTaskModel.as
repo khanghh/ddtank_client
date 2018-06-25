@@ -33,9 +33,11 @@ package consortion.view.selfConsortia.consortiaTask
       
       public var isHaveTask_noRelease:Boolean = false;
       
-      public function ConsortiaTaskModel(param1:IEventDispatcher = null)
+      public var lockNum:int = 0;
+      
+      public function ConsortiaTaskModel(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
          initEvents();
       }
       
@@ -44,101 +46,99 @@ package consortion.view.selfConsortia.consortiaTask
          SocketManager.Instance.addEventListener(PkgEvent.format(129,22),__releaseTaskCallBack);
       }
       
-      private function __releaseTaskCallBack(param1:PkgEvent) : void
+      private function __releaseTaskCallBack(e:PkgEvent) : void
       {
-         var _loc4_:Boolean = false;
-         var _loc9_:Boolean = false;
-         var _loc5_:int = 0;
-         var _loc22_:int = 0;
-         var _loc18_:int = 0;
-         var _loc21_:int = 0;
-         var _loc12_:int = 0;
-         var _loc3_:int = 0;
-         var _loc20_:* = null;
-         var _loc19_:* = null;
-         var _loc2_:int = 0;
-         var _loc13_:int = 0;
-         var _loc15_:int = 0;
-         var _loc7_:int = 0;
-         var _loc14_:* = null;
-         var _loc10_:int = 0;
-         var _loc17_:int = 0;
-         var _loc16_:int = 0;
-         var _loc8_:PackageIn = param1.pkg as PackageIn;
-         var _loc11_:int = _loc8_.readByte();
-         if(_loc11_ == 2)
+         var status:Boolean = false;
+         var sf:Boolean = false;
+         var id1:int = 0;
+         var currentValue1:int = 0;
+         var finishValue1:int = 0;
+         var count1:int = 0;
+         var j:int = 0;
+         var id2:int = 0;
+         var content1:* = null;
+         var events2:* = null;
+         var count:int = 0;
+         var i:int = 0;
+         var id:int = 0;
+         var taskType:int = 0;
+         var content:* = null;
+         var currentValue:int = 0;
+         var targetValue:int = 0;
+         var finishValue:int = 0;
+         var pkg:PackageIn = e.pkg as PackageIn;
+         var type:int = pkg.readByte();
+         if(type == 2)
          {
-            _loc4_ = _loc8_.readBoolean();
-            if(!_loc4_)
+            status = pkg.readBoolean();
+            if(!status)
             {
                taskInfo = null;
             }
          }
-         else if(_loc11_ == 5)
+         else if(type == 5)
          {
-            _loc9_ = _loc8_.readBoolean();
+            sf = pkg.readBoolean();
             taskInfo = null;
          }
-         else if(_loc11_ == 4)
+         else if(type == 4)
          {
-            _loc5_ = _loc8_.readInt();
-            _loc22_ = _loc8_.readInt();
-            _loc18_ = _loc8_.readInt();
+            id1 = pkg.readInt();
+            currentValue1 = pkg.readInt();
+            finishValue1 = pkg.readInt();
             if(taskInfo != null)
             {
-               taskInfo.updateItemData(_loc5_,_loc22_,_loc18_);
+               taskInfo.updateItemData(id1,currentValue1,finishValue1);
             }
          }
-         else if(_loc11_ == 0 || _loc11_ == 1)
+         else if(type == 0 || type == 1)
          {
-            _loc21_ = _loc8_.readInt();
+            count1 = pkg.readInt();
             taskInfo = new ConsortiaTaskInfo();
-            _loc12_ = 0;
-            while(_loc12_ < _loc21_)
+            for(j = 0; j < count1; )
             {
-               _loc3_ = _loc8_.readInt();
-               _loc20_ = _loc8_.readUTF();
-               taskInfo.addItemData(_loc3_,_loc20_);
-               _loc12_++;
+               id2 = pkg.readInt();
+               content1 = pkg.readUTF();
+               taskInfo.addItemData(id2,content1);
+               j++;
             }
          }
          else
          {
-            if(_loc11_ == 6)
+            if(type == 6)
             {
-               _loc19_ = new ConsortiaTaskEvent("Consortia_Delay_Task_Time");
-               _loc19_.value = _loc8_.readInt();
-               dispatchEvent(_loc19_);
-               PlayerManager.Instance.Self.consortiaInfo.Riches = _loc8_.readInt();
+               events2 = new ConsortiaTaskEvent("Consortia_Delay_Task_Time");
+               events2.value = pkg.readInt();
+               dispatchEvent(events2);
+               PlayerManager.Instance.Self.consortiaInfo.Riches = pkg.readInt();
                return;
             }
-            _loc2_ = _loc8_.readInt();
-            if(_loc2_ > 0)
+            count = pkg.readInt();
+            if(count > 0)
             {
                taskInfo = new ConsortiaTaskInfo();
-               _loc13_ = 0;
-               while(_loc13_ < _loc2_)
+               for(i = 0; i < count; )
                {
-                  _loc15_ = _loc8_.readInt();
-                  _loc7_ = _loc8_.readInt();
-                  _loc14_ = _loc8_.readUTF();
-                  _loc10_ = _loc8_.readInt();
-                  _loc17_ = _loc8_.readInt();
-                  _loc16_ = _loc8_.readInt();
-                  taskInfo.addItemData(_loc15_,_loc14_,_loc7_,_loc10_,_loc17_,_loc16_);
-                  _loc13_++;
+                  id = pkg.readInt();
+                  taskType = pkg.readInt();
+                  content = pkg.readUTF();
+                  currentValue = pkg.readInt();
+                  targetValue = pkg.readInt();
+                  finishValue = pkg.readInt();
+                  taskInfo.addItemData(id,content,taskType,currentValue,targetValue,finishValue);
+                  i++;
                }
                taskInfo.sortItem();
-               taskInfo.exp = _loc8_.readInt();
-               taskInfo.offer = _loc8_.readInt();
-               taskInfo.contribution = _loc8_.readInt();
-               taskInfo.riches = _loc8_.readInt();
-               taskInfo.buffID = _loc8_.readInt();
-               taskInfo.beginTime = _loc8_.readDate();
-               taskInfo.time = _loc8_.readInt();
-               taskInfo.level = _loc8_.readInt();
+               taskInfo.exp = pkg.readInt();
+               taskInfo.offer = pkg.readInt();
+               taskInfo.contribution = pkg.readInt();
+               taskInfo.riches = pkg.readInt();
+               taskInfo.buffID = pkg.readInt();
+               taskInfo.beginTime = pkg.readDate();
+               taskInfo.time = pkg.readInt();
+               taskInfo.level = pkg.readInt();
             }
-            else if(_loc2_ == -1)
+            else if(count == -1)
             {
                taskInfo = null;
                isHaveTask_noRelease = true;
@@ -148,9 +148,9 @@ package consortion.view.selfConsortia.consortiaTask
                taskInfo = null;
             }
          }
-         var _loc6_:ConsortiaTaskEvent = new ConsortiaTaskEvent("getConsortiaTaskInfo");
-         _loc6_.value = _loc11_;
-         dispatchEvent(_loc6_);
+         var events:ConsortiaTaskEvent = new ConsortiaTaskEvent("getConsortiaTaskInfo");
+         events.value = type;
+         dispatchEvent(events);
       }
       
       public function showReleaseFrame() : void
@@ -164,8 +164,8 @@ package consortion.view.selfConsortia.consortiaTask
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("consortia.task.havetaskNoRelease"));
          }
-         var _loc1_:ConsortiaReleaseTaskFrame = ComponentFactory.Instance.creatComponentByStylename("ConsortiaReleaseTaskFrame");
-         LayerManager.Instance.addToLayer(_loc1_,3,true,1);
+         var taskFrame:ConsortiaReleaseTaskFrame = ComponentFactory.Instance.creatComponentByStylename("ConsortiaReleaseTaskFrame");
+         LayerManager.Instance.addToLayer(taskFrame,3,true,1);
       }
    }
 }

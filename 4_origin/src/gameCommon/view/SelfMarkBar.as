@@ -55,14 +55,14 @@ package gameCommon.view
       
       private var _enabled:Boolean = true;
       
-      public function SelfMarkBar(param1:LocalPlayer, param2:DisplayObjectContainer)
+      public function SelfMarkBar(self:LocalPlayer, container:DisplayObjectContainer)
       {
          _nums = new Vector.<DisplayObject>();
          _animateFilter = new BlurFilter();
          _numDic = new Dictionary();
          super();
-         _self = param1;
-         _container = param2;
+         _self = self;
+         _container = container;
          _numContainer = new Sprite();
          var _loc3_:Boolean = false;
          _numContainer.mouseEnabled = _loc3_;
@@ -78,22 +78,20 @@ package gameCommon.view
       
       private function creatNums() : void
       {
-         var _loc1_:* = null;
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < 10)
+         var bitmap:* = null;
+         var i:int = 0;
+         var j:int = 0;
+         for(i = 0; i < 10; )
          {
-            _loc1_ = ComponentFactory.Instance.creatBitmap("asset.game.mark.Blue" + _loc3_);
-            _numDic["Blue" + _loc3_] = _loc1_;
-            _loc3_++;
+            bitmap = ComponentFactory.Instance.creatBitmap("asset.game.mark.Blue" + i);
+            _numDic["Blue" + i] = bitmap;
+            i++;
          }
-         _loc2_ = 0;
-         while(_loc2_ < 5)
+         for(j = 0; j < 5; )
          {
-            _loc1_ = ComponentFactory.Instance.creatBitmap("asset.game.mark.Red" + _loc2_);
-            _numDic["Red" + _loc2_] = _loc1_;
-            _loc2_++;
+            bitmap = ComponentFactory.Instance.creatBitmap("asset.game.mark.Red" + j);
+            _numDic["Red" + j] = bitmap;
+            j++;
          }
       }
       
@@ -106,12 +104,12 @@ package gameCommon.view
          StageReferance.stage.addEventListener("mouseMove",onMouseMove);
       }
       
-      protected function onMouseMove(param1:MouseEvent) : void
+      protected function onMouseMove(event:MouseEvent) : void
       {
          _noActionTurn = 0;
       }
       
-      private function __skip(param1:MouseEvent) : void
+      private function __skip(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_skipButton.enabled && !_self.autoOnHook)
@@ -132,13 +130,13 @@ package gameCommon.view
          StageReferance.stage.removeEventListener("mouseMove",onMouseMove);
       }
       
-      private function __beginShoot(param1:LivingEvent) : void
+      private function __beginShoot(evt:LivingEvent) : void
       {
          pause();
          _skipButton.enabled = false;
       }
       
-      private function __attackChanged(param1:LivingEvent) : void
+      private function __attackChanged(event:LivingEvent) : void
       {
          if(_self.isAttacking && GameControl.Instance.Current.currentLiving && GameControl.Instance.Current.currentLiving.isSelf)
          {
@@ -162,10 +160,10 @@ package gameCommon.view
          }
          var _loc3_:int = 0;
          var _loc2_:* = _numDic;
-         for(var _loc1_ in _numDic)
+         for(var key in _numDic)
          {
-            ObjectUtils.disposeObject(_numDic[_loc1_]);
-            delete _numDic[_loc1_];
+            ObjectUtils.disposeObject(_numDic[key]);
+            delete _numDic[key];
          }
          if(_numContainer)
          {
@@ -178,16 +176,16 @@ package gameCommon.view
          }
       }
       
-      public function startup(param1:int) : void
+      public function startup(time:int) : void
       {
          if(!_enabled)
          {
             return;
          }
          _skipButton.enabled = true;
-         _alreadyTime = param1;
+         _alreadyTime = time;
          __mark(null);
-         _timer = new Timer(1000,param1);
+         _timer = new Timer(1000,time);
          _timer.addEventListener("timer",__mark);
          _timer.addEventListener("timerComplete",__markComplete);
          _timer.start();
@@ -201,10 +199,10 @@ package gameCommon.view
          });
       }
       
-      private function __keyDown(param1:KeyboardEvent) : void
+      private function __keyDown(evt:KeyboardEvent) : void
       {
          _noActionTurn = 0;
-         if(param1.keyCode == KeyStroke.VK_P.getCode() && _self.isAttacking && NewHandGuideManager.Instance.mapID != 111)
+         if(evt.keyCode == KeyStroke.VK_P.getCode() && _self.isAttacking && NewHandGuideManager.Instance.mapID != 111)
          {
             SoundManager.instance.play("008");
             skip();
@@ -234,14 +232,14 @@ package gameCommon.view
       
       private function clear() : void
       {
-         var _loc1_:DisplayObject = _nums.shift();
-         while(_loc1_)
+         var num:DisplayObject = _nums.shift();
+         while(num)
          {
-            if(_loc1_.parent)
+            if(num.parent)
             {
-               _loc1_.parent.removeChild(_loc1_);
+               num.parent.removeChild(num);
             }
-            _loc1_ = _nums.shift();
+            num = _nums.shift();
          }
       }
       
@@ -261,7 +259,7 @@ package gameCommon.view
          filters = null;
       }
       
-      private function __markComplete(param1:TimerEvent) : void
+      private function __markComplete(event:TimerEvent) : void
       {
          _noActionTurn = Number(_noActionTurn) + 1;
          shutdown();
@@ -277,11 +275,11 @@ package gameCommon.view
          return _timer != null && _timer.running;
       }
       
-      public function set enabled(param1:Boolean) : void
+      public function set enabled(val:Boolean) : void
       {
-         if(_enabled != param1)
+         if(_enabled != val)
          {
-            _enabled = param1;
+            _enabled = val;
             if(_enabled && runnning)
             {
                _container.addChild(this);
@@ -293,46 +291,46 @@ package gameCommon.view
          }
       }
       
-      private function __mark(param1:TimerEvent) : void
+      private function __mark(event:TimerEvent) : void
       {
-         var _loc4_:* = null;
-         var _loc7_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc5_:Number = NaN;
+         var num:* = null;
+         var shape:* = null;
+         var bmd:* = null;
+         var pen:* = null;
+         var rate:Number = NaN;
          TweenLite.killTweensOf(this);
          clear();
          _alreadyTime = Number(_alreadyTime) - 1;
-         var _loc6_:String = _alreadyTime.toString();
+         var numStr:String = _alreadyTime.toString();
          if(_alreadyTime > 9)
          {
             if(_alreadyTime % 11 == 0)
             {
-               _loc4_ = _numDic["Blue" + _loc6_.substr(0,1)];
-               _loc4_.x = 0;
-               _numContainer.addChild(_loc4_);
-               _nums.push(_loc4_);
-               _loc7_ = new Shape();
-               _loc3_ = _numDic["Blue" + _loc6_.substr(0,1)].bitmapData;
-               _loc2_ = _loc7_.graphics;
-               _loc2_.beginBitmapFill(_loc3_);
-               _loc2_.drawRect(0,0,_loc3_.width,_loc3_.height);
-               _loc2_.endFill();
-               _loc7_.x = _nums[0].width;
-               _numContainer.addChild(_loc7_);
-               _nums.push(_loc7_);
+               num = _numDic["Blue" + numStr.substr(0,1)];
+               num.x = 0;
+               _numContainer.addChild(num);
+               _nums.push(num);
+               shape = new Shape();
+               bmd = _numDic["Blue" + numStr.substr(0,1)].bitmapData;
+               pen = shape.graphics;
+               pen.beginBitmapFill(bmd);
+               pen.drawRect(0,0,bmd.width,bmd.height);
+               pen.endFill();
+               shape.x = _nums[0].width;
+               _numContainer.addChild(shape);
+               _nums.push(shape);
                _numContainer.x = -_numContainer.width >> 1;
             }
             else
             {
-               _loc4_ = _numDic["Blue" + _loc6_.substr(0,1)];
-               _loc4_.x = 0;
-               _numContainer.addChild(_loc4_);
-               _nums.push(_loc4_);
-               _loc4_ = _numDic["Blue" + _loc6_.substr(1,1)];
-               _loc4_.x = _nums[0].width;
-               _numContainer.addChild(_loc4_);
-               _nums.push(_loc4_);
+               num = _numDic["Blue" + numStr.substr(0,1)];
+               num.x = 0;
+               _numContainer.addChild(num);
+               _nums.push(num);
+               num = _numDic["Blue" + numStr.substr(1,1)];
+               num.x = _nums[0].width;
+               _numContainer.addChild(num);
+               _nums.push(num);
                _numContainer.x = -_numContainer.width >> 1;
             }
             SoundManager.instance.play("014");
@@ -341,20 +339,20 @@ package gameCommon.view
          {
             if(_alreadyTime <= 4)
             {
-               _loc4_ = _numDic["Red" + _loc6_];
-               Bitmap(_loc4_).smoothing = true;
-               _numContainer.addChild(_loc4_);
-               _nums.push(_loc4_);
+               num = _numDic["Red" + numStr];
+               Bitmap(num).smoothing = true;
+               _numContainer.addChild(num);
+               _nums.push(num);
                SoundManager.instance.stop("067");
                SoundManager.instance.play("067");
-               _loc5_ = _scale - 1;
+               rate = _scale - 1;
                _numContainer.x = -_numContainer.width * _scale >> 1;
-               _numContainer.y = -_numContainer.height * _loc5_ >> 1;
+               _numContainer.y = -_numContainer.height * rate >> 1;
                var _loc8_:* = _scale;
                _numContainer.scaleY = _loc8_;
                _numContainer.scaleX = _loc8_;
                TweenLite.to(_numContainer,0.2,{
-                  "x":-_loc4_.width >> 1,
+                  "x":-num.width >> 1,
                   "y":0,
                   "scaleX":1,
                   "scaleY":1
@@ -362,13 +360,13 @@ package gameCommon.view
             }
             else
             {
-               _loc4_ = _numDic["Blue" + _loc6_];
-               if(_loc4_)
+               num = _numDic["Blue" + numStr];
+               if(num)
                {
-                  _loc4_.x = 0;
-                  _numContainer.addChild(_loc4_);
+                  num.x = 0;
+                  _numContainer.addChild(num);
                   _numContainer.x = -_numContainer.width >> 1;
-                  _nums.push(_loc4_);
+                  _nums.push(num);
                }
                SoundManager.instance.play("014");
             }

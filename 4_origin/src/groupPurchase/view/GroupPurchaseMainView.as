@@ -151,7 +151,7 @@ package groupPurchase.view
          SocketManager.Instance.out.sendGroupPurchaseRefreshData();
       }
       
-      private function requestRefreshData(param1:TimerEvent) : void
+      private function requestRefreshData(event:TimerEvent) : void
       {
          SocketManager.Instance.out.sendGroupPurchaseRefreshData();
          _timer2.delay = getRefreshDelay();
@@ -159,18 +159,18 @@ package groupPurchase.view
       
       private function getRefreshDelay() : int
       {
-         var _loc1_:Number = (_endTime.getTime() - TimeManager.Instance.Now().getTime()) / 1000;
-         if(_loc1_ > 3600)
+         var differ:Number = (_endTime.getTime() - TimeManager.Instance.Now().getTime()) / 1000;
+         if(differ > 3600)
          {
             return 180000;
          }
          return 15000;
       }
       
-      private function rankBtnClickHandler(param1:MouseEvent) : void
+      private function rankBtnClickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:WonderfulFrame = WonderfulActivityControl.Instance.frame;
+         var tmpFrame:WonderfulFrame = WonderfulActivityControl.Instance.frame;
          if(!_rankFrame)
          {
             _rankFrame = ComponentFactory.Instance.creatComponentByStylename("GroupPurchaseRankFrame");
@@ -186,39 +186,39 @@ package groupPurchase.view
          }
       }
       
-      private function rankFrameDisposeHandler(param1:ComponentEvent) : void
+      private function rankFrameDisposeHandler(event:ComponentEvent) : void
       {
          _rankFrame.removeEventListener("dispose",rankFrameDisposeHandler);
          _rankFrame = null;
       }
       
-      private function refreshView(param1:Event) : void
+      private function refreshView(event:Event) : void
       {
-         var _loc2_:Array = GroupPurchaseManager.instance.viewData;
-         _curDiscountTxt.text = _loc2_[0] + "%";
-         if(_loc2_[1] == -1)
+         var viewData:Array = GroupPurchaseManager.instance.viewData;
+         _curDiscountTxt.text = viewData[0] + "%";
+         if(viewData[1] == -1)
          {
             _nextDiscountTxt.text = LanguageMgr.GetTranslation("ddt.groupPurchase.discountHighestTxt");
          }
          else
          {
-            _nextDiscountTxt.text = _loc2_[1] + "%";
+            _nextDiscountTxt.text = viewData[1] + "%";
          }
-         if(_loc2_[2] == -1)
+         if(viewData[2] == -1)
          {
             _nextNeedNumTxt.text = "";
          }
          else
          {
-            _nextNeedNumTxt.text = LanguageMgr.GetTranslation("ddt.groupPurchase.nextNeedNumTxt",_loc2_[2]);
+            _nextNeedNumTxt.text = LanguageMgr.GetTranslation("ddt.groupPurchase.nextNeedNumTxt",viewData[2]);
          }
-         _totalNumTxt.text = _loc2_[3];
-         _myNumTxt.text = _loc2_[4];
-         _curRebateTxt.text = _loc2_[5];
-         _nextRebateTxt.text = _loc2_[6];
+         _totalNumTxt.text = viewData[3];
+         _myNumTxt.text = viewData[4];
+         _curRebateTxt.text = viewData[5];
+         _nextRebateTxt.text = viewData[6];
       }
       
-      private function refreshCountDownTime(param1:TimerEvent) : void
+      private function refreshCountDownTime(event:TimerEvent) : void
       {
          _countDownTxt.text = TimeManager.Instance.getMaxRemainDateStr(_endTime);
       }
@@ -232,7 +232,7 @@ package groupPurchase.view
          return this;
       }
       
-      public function setState(param1:int, param2:int) : void
+      public function setState(type:int, id:int) : void
       {
       }
       

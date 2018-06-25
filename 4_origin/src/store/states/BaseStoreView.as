@@ -76,10 +76,10 @@ package store.states
       
       private var _view:DisplayObject;
       
-      public function BaseStoreView(param1:StoreController)
+      public function BaseStoreView(controller:StoreController)
       {
          super();
-         _controller = param1;
+         _controller = controller;
          _model = _controller.Model;
          init();
          initEvent();
@@ -89,9 +89,9 @@ package store.states
       
       private function init() : void
       {
-         var _loc1_:Image = ComponentFactory.Instance.creatComponentByStylename("ddt.bagStore.BagStoreFrameTitle");
-         var _loc2_:DisplayObject = ComponentFactory.Instance.creatCustomObject("ddtstore.BagStoreFrame.ContentBg");
-         addChild(_loc2_);
+         var title:Image = ComponentFactory.Instance.creatComponentByStylename("ddt.bagStore.BagStoreFrameTitle");
+         var contentBg:DisplayObject = ComponentFactory.Instance.creatCustomObject("ddtstore.BagStoreFrame.ContentBg");
+         addChild(contentBg);
          _consortiaManagerBtn = ComponentFactory.Instance.creat("ddtstore.BagStoreFrame.GuildManagerBtn");
          _consortiaManagerBtn.text = LanguageMgr.GetTranslation("store.view.GuildManagerText");
          addChild(_consortiaManagerBtn);
@@ -147,122 +147,122 @@ package store.states
          _storeview.StrengthPanel.removeEventListener("weaponUpgradesPlay",__weaponUpgradesPlay);
       }
       
-      public function setAutoLinkNum(param1:int) : void
+      public function setAutoLinkNum(num:int) : void
       {
-         _model.NeedAutoLink = param1;
+         _model.NeedAutoLink = num;
       }
       
-      private function refresh(param1:ChoosePanelEvnet) : void
+      private function refresh(evt:ChoosePanelEvnet) : void
       {
-         _model.currentPanel = param1.currentPanle;
+         _model.currentPanel = evt.currentPanle;
          _storeBag.setList(_model);
          _storeBag.changeMsg(_model.currentPanel + 1);
       }
       
-      private function __cellDoubleClick(param1:CellEvent) : void
+      private function __cellDoubleClick(evt:CellEvent) : void
       {
-         param1.stopImmediatePropagation();
+         evt.stopImmediatePropagation();
          if(PlayerManager.Instance.Self.bagLocked)
          {
             SoundManager.instance.play("008");
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc3_:BagCell = param1.data as StoreBagCell;
-         var _loc2_:IStoreViewBG = _storeview.currentPanel;
-         _loc2_.dragDrop(_loc3_);
+         var sourceCell:BagCell = evt.data as StoreBagCell;
+         var currentPanel:IStoreViewBG = _storeview.currentPanel;
+         currentPanel.dragDrop(sourceCell);
       }
       
-      private function autoLink(param1:int, param2:int) : void
+      private function autoLink(bagType:int, pos:int) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:IStoreViewBG = _storeview.currentPanel;
-         if(param1 == 0)
+         var sourceCell:* = null;
+         var currentPanel:IStoreViewBG = _storeview.currentPanel;
+         if(bagType == 0)
          {
-            _loc4_ = _storeBag.getEquipCell(param2);
+            sourceCell = _storeBag.getEquipCell(pos);
          }
          else
          {
-            _loc4_ = _storeBag.getPropCell(param2);
+            sourceCell = _storeBag.getPropCell(pos);
          }
-         _loc3_.dragDrop(_loc4_);
+         currentPanel.dragDrop(sourceCell);
       }
       
-      private function startShine(param1:StoreDargEvent) : void
+      private function startShine(evt:StoreDargEvent) : void
       {
-         var _loc4_:* = null;
-         var _loc2_:* = null;
-         var _loc5_:* = null;
-         var _loc3_:IStoreViewBG = _storeview.currentPanel;
-         if(_loc3_ is StoreIIStrengthBG)
+         var spnl:* = null;
+         var cpnl:* = null;
+         var fpnl:* = null;
+         var currentPanel:IStoreViewBG = _storeview.currentPanel;
+         if(currentPanel is StoreIIStrengthBG)
          {
-            _loc4_ = _loc3_ as StoreIIStrengthBG;
-            if(param1.sourceInfo.CanEquip)
+            spnl = currentPanel as StoreIIStrengthBG;
+            if(evt.sourceInfo.CanEquip)
             {
-               _loc4_.startShine(1);
+               spnl.startShine(1);
             }
-            else if(EquipType.isStrengthStone(param1.sourceInfo))
+            else if(EquipType.isStrengthStone(evt.sourceInfo))
             {
-               _loc4_.startShine(0);
+               spnl.startShine(0);
             }
          }
-         else if(_loc3_ is StoreIIComposeBG)
+         else if(currentPanel is StoreIIComposeBG)
          {
-            _loc2_ = _loc3_ as StoreIIComposeBG;
-            if(param1.sourceInfo.CanEquip)
+            cpnl = currentPanel as StoreIIComposeBG;
+            if(evt.sourceInfo.CanEquip)
             {
-               _loc2_.startShine(1);
+               cpnl.startShine(1);
             }
-            else if(param1.sourceInfo.Property1 == "1")
+            else if(evt.sourceInfo.Property1 == "1")
             {
-               _loc2_.startShine(2);
+               cpnl.startShine(2);
             }
-            else if(param1.sourceInfo.Property1 == "3")
+            else if(evt.sourceInfo.Property1 == "3")
             {
-               _loc2_.startShine(0);
+               cpnl.startShine(0);
             }
          }
-         else if(_loc3_ is StoreIIFusionBG)
+         else if(currentPanel is StoreIIFusionBG)
          {
-            _loc5_ = _loc3_ as StoreIIFusionBG;
-            if(param1.sourceInfo.Property1 == "8")
+            fpnl = currentPanel as StoreIIFusionBG;
+            if(evt.sourceInfo.Property1 == "8")
             {
-               _loc5_.startShine(0);
+               fpnl.startShine(0);
             }
-            else if(EquipType.isFusion(param1.sourceInfo))
+            else if(EquipType.isFusion(evt.sourceInfo))
             {
-               _loc5_.startShine(1);
-               _loc5_.startShine(2);
-               _loc5_.startShine(3);
-               _loc5_.startShine(4);
+               fpnl.startShine(1);
+               fpnl.startShine(2);
+               fpnl.startShine(3);
+               fpnl.startShine(4);
             }
          }
-         else if(_loc3_ is StoreEmbedBG)
+         else if(currentPanel is StoreEmbedBG)
          {
-            if(param1.sourceInfo.CanEquip)
+            if(evt.sourceInfo.CanEquip)
             {
-               (_loc3_ as StoreEmbedBG).startShine();
+               (currentPanel as StoreEmbedBG).startShine();
             }
             else
             {
-               if(param1.sourceInfo.Property1 == "31" && param1.sourceInfo.Property2 == "1")
+               if(evt.sourceInfo.Property1 == "31" && evt.sourceInfo.Property2 == "1")
                {
-                  (_loc3_ as StoreEmbedBG).stoneStartShine(1,param1.sourceInfo as InventoryItemInfo);
+                  (currentPanel as StoreEmbedBG).stoneStartShine(1,evt.sourceInfo as InventoryItemInfo);
                }
-               if(param1.sourceInfo.Property1 == "31" && param1.sourceInfo.Property2 == "2")
+               if(evt.sourceInfo.Property1 == "31" && evt.sourceInfo.Property2 == "2")
                {
-                  (_loc3_ as StoreEmbedBG).stoneStartShine(2,param1.sourceInfo as InventoryItemInfo);
+                  (currentPanel as StoreEmbedBG).stoneStartShine(2,evt.sourceInfo as InventoryItemInfo);
                }
-               if(param1.sourceInfo.Property1 == "31" && param1.sourceInfo.Property2 == "3")
+               if(evt.sourceInfo.Property1 == "31" && evt.sourceInfo.Property2 == "3")
                {
-                  (_loc3_ as StoreEmbedBG).stoneStartShine(3,param1.sourceInfo as InventoryItemInfo);
+                  (currentPanel as StoreEmbedBG).stoneStartShine(3,evt.sourceInfo as InventoryItemInfo);
                }
             }
-            _loc3_ = null;
+            currentPanel = null;
          }
       }
       
-      private function stopShine(param1:StoreDargEvent) : void
+      private function stopShine(evt:StoreDargEvent) : void
       {
          if(_storeview.currentPanel is StoreIIStrengthBG)
          {
@@ -286,74 +286,74 @@ package store.states
          }
       }
       
-      private function __weaponUpgradesPlay(param1:Event) : void
+      private function __weaponUpgradesPlay(e:Event) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:StoreIIStrengthBG = _storeview.StrengthPanel;
+         var info:* = null;
+         var storeIIStrengthBG:StoreIIStrengthBG = _storeview.StrengthPanel;
          TaskManager.instance.checkHighLight();
-         _tip.showStrengthSuccess(_loc2_.getStrengthItemCellInfo(),_tipFlag);
+         _tip.showStrengthSuccess(storeIIStrengthBG.getStrengthItemCellInfo(),_tipFlag);
          if(_tipFlag)
          {
-            _loc3_ = _loc2_.getStrengthItemCellInfo();
-            appearHoleTips(_loc3_);
-            checkHasStrengthLevelThree(_loc3_);
+            info = storeIIStrengthBG.getStrengthItemCellInfo();
+            appearHoleTips(info);
+            checkHasStrengthLevelThree(info);
          }
       }
       
-      private function __showTip(param1:PkgEvent) : void
+      private function __showTip(evt:PkgEvent) : void
       {
          _tip.isDisplayerTip = true;
-         var _loc3_:int = param1.pkg.readByte();
-         _tipFlag = param1.pkg.readBoolean();
-         var _loc2_:StoreIIStrengthBG = _storeview.currentPanel as StoreIIStrengthBG;
-         if(_loc3_ != 0)
+         var success:int = evt.pkg.readByte();
+         _tipFlag = evt.pkg.readBoolean();
+         var storeIIStrengthBG:StoreIIStrengthBG = _storeview.currentPanel as StoreIIStrengthBG;
+         if(success != 0)
          {
-            if(_loc3_ == 1)
+            if(success == 1)
             {
-               _loc2_.starMoviePlay();
+               storeIIStrengthBG.starMoviePlay();
             }
-            else if(_loc3_ == 2)
+            else if(success == 2)
             {
                _tip.showFiveFail();
             }
-            else if(_loc3_ == 3)
+            else if(success == 3)
             {
                ConsortiaRateManager.instance.reset();
             }
          }
       }
       
-      protected function __showExaltTips(param1:PkgEvent) : void
+      protected function __showExaltTips(event:PkgEvent) : void
       {
-         var _loc3_:int = param1.pkg.readByte();
-         var _loc2_:int = param1.pkg.readInt();
-         if(_loc3_ == 0)
+         var success:int = event.pkg.readByte();
+         var lucky:int = event.pkg.readInt();
+         if(success == 0)
          {
             _tip.showSuccess();
             StrengthDataManager.instance.exaltFinish();
          }
          else
          {
-            StrengthDataManager.instance.exaltFail(_loc2_);
+            StrengthDataManager.instance.exaltFail(lucky);
          }
       }
       
-      private function checkHasStrengthLevelThree(param1:InventoryItemInfo) : void
+      private function checkHasStrengthLevelThree(info:InventoryItemInfo) : void
       {
-         if(PlayerManager.Instance.Self.Grade < 15 && _model.checkEmbeded() && SharedManager.Instance.hasStrength3[PlayerManager.Instance.Self.ID] == undefined && param1.StrengthenLevel == 3)
+         if(PlayerManager.Instance.Self.Grade < 15 && _model.checkEmbeded() && SharedManager.Instance.hasStrength3[PlayerManager.Instance.Self.ID] == undefined && info.StrengthenLevel == 3)
          {
             SharedManager.Instance.hasStrength3[PlayerManager.Instance.Self.ID] = true;
             SharedManager.Instance.save();
          }
       }
       
-      private function __showTipsIII(param1:PkgEvent) : void
+      private function __showTipsIII(evt:PkgEvent) : void
       {
          _tip.isDisplayerTip = true;
-         var _loc2_:int = param1.pkg.readByte();
-         if(_loc2_ == 0)
+         var success:int = evt.pkg.readByte();
+         if(success == 0)
          {
-            var _loc3_:* = param1.type;
+            var _loc3_:* = evt.type;
             if(PkgEvent.format(61) !== _loc3_)
             {
                if("itemEmbed" !== _loc3_)
@@ -374,47 +374,47 @@ package store.states
                }
             }
          }
-         else if(_loc2_ == 1)
+         else if(success == 1)
          {
-            _loc3_ = param1.type;
+            _loc3_ = evt.type;
             if(PkgEvent.format(138) !== _loc3_)
             {
                _tip.showFail();
             }
          }
-         else if(_loc2_ == 3)
+         else if(success == 3)
          {
             ConsortiaRateManager.instance.reset();
          }
       }
       
-      private function __openHoleComplete(param1:PkgEvent) : void
+      private function __openHoleComplete(evt:PkgEvent) : void
       {
-         var _loc2_:* = null;
+         var embedPannel:* = null;
          _tip.isDisplayerTip = true;
-         var _loc4_:int = param1.pkg.readByte();
-         var _loc3_:Boolean = param1.pkg.readBoolean();
-         var _loc5_:int = param1.pkg.readInt();
-         if(_loc4_ == 0)
+         var success:int = evt.pkg.readByte();
+         var isLvUp:Boolean = evt.pkg.readBoolean();
+         var hole:int = evt.pkg.readInt();
+         if(success == 0)
          {
-            _loc2_ = _storeview.currentPanel as StoreEmbedBG;
-            if(_loc3_)
+            embedPannel = _storeview.currentPanel as StoreEmbedBG;
+            if(isLvUp)
             {
                SoundManager.instance.pauseMusic();
                SoundManager.instance.play("063",false,false);
                _soundTimer.reset();
                _soundTimer.addEventListener("timerComplete",__soundComplete);
                _soundTimer.start();
-               _loc2_.holeLvUp(_loc5_ - 1);
+               embedPannel.holeLvUp(hole - 1);
             }
          }
-         else if(_loc4_ == 1)
+         else if(success == 1)
          {
             _tip.showFail();
          }
       }
       
-      private function __soundComplete(param1:TimerEvent) : void
+      private function __soundComplete(event:TimerEvent) : void
       {
          _soundTimer.stop();
          _soundTimer.removeEventListener("timerComplete",__soundComplete);
@@ -423,53 +423,53 @@ package store.states
          SoundManager.instance.stop("064");
       }
       
-      private function __showTipII(param1:CrazyTankSocketEvent) : void
+      private function __showTipII(evt:CrazyTankSocketEvent) : void
       {
       }
       
-      private function appearHoleTips(param1:InventoryItemInfo) : void
+      private function appearHoleTips(info:InventoryItemInfo) : void
       {
          SoundManager.instance.play("1001");
       }
       
-      private function showHoleTip(param1:InventoryItemInfo) : void
+      private function showHoleTip(info:InventoryItemInfo) : void
       {
-         if(param1.CategoryID == 1)
+         if(info.CategoryID == 1)
          {
-            if(param1.StrengthenLevel == 3 || param1.StrengthenLevel == 9 || param1.StrengthenLevel == 12)
+            if(info.StrengthenLevel == 3 || info.StrengthenLevel == 9 || info.StrengthenLevel == 12)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.states.hatOpenProperty"));
             }
-            if(param1.StrengthenLevel == 6)
+            if(info.StrengthenLevel == 6)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.states.hatOpenDefense"));
             }
          }
-         if(param1.CategoryID == 5)
+         if(info.CategoryID == 5)
          {
-            if(param1.StrengthenLevel == 3 || param1.StrengthenLevel == 9 || param1.StrengthenLevel == 12)
+            if(info.StrengthenLevel == 3 || info.StrengthenLevel == 9 || info.StrengthenLevel == 12)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.states.clothOpenProperty"));
             }
-            if(param1.StrengthenLevel == 6)
+            if(info.StrengthenLevel == 6)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.states.clothOpenDefense"));
             }
          }
-         if(param1.CategoryID == 7)
+         if(info.CategoryID == 7)
          {
-            if(param1.StrengthenLevel == 3)
+            if(info.StrengthenLevel == 3)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.states.weaponOpenAttack"));
             }
-            if(param1.StrengthenLevel == 6 || param1.StrengthenLevel == 9 || param1.StrengthenLevel == 12)
+            if(info.StrengthenLevel == 6 || info.StrengthenLevel == 9 || info.StrengthenLevel == 12)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.states.weaponOpenProperty"));
             }
          }
       }
       
-      private function assetBtnClickHandler(param1:MouseEvent) : void
+      private function assetBtnClickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          ConsortionModelManager.Instance.alertManagerFrame();
@@ -482,7 +482,7 @@ package store.states
          LayerManager.Instance.addToLayer(_guideEmbed,2);
       }
       
-      private function embedClickHandler(param1:StoreIIEvent) : void
+      private function embedClickHandler(event:StoreIIEvent) : void
       {
          if(_guideEmbed)
          {
@@ -490,30 +490,30 @@ package store.states
          }
       }
       
-      private function embedInfoChangeHandler(param1:StoreIIEvent) : void
+      private function embedInfoChangeHandler(event:StoreIIEvent) : void
       {
-         var _loc2_:* = null;
+         var alert:* = null;
          if(_guideEmbed)
          {
             _guideEmbed.gotoAndStop(11);
-            param1.stopImmediatePropagation();
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("store.states.embedTitle"),LanguageMgr.GetTranslation("tank.view.store.matteTips"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,true,2);
-            _loc2_.info.showCancel = false;
-            _loc2_.moveEnable = false;
-            _loc2_.addEventListener("response",_response);
+            event.stopImmediatePropagation();
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("store.states.embedTitle"),LanguageMgr.GetTranslation("tank.view.store.matteTips"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,true,2);
+            alert.info.showCancel = false;
+            alert.moveEnable = false;
+            alert.addEventListener("response",_response);
          }
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",_response);
-         if(param1.responseCode == 3 || param1.responseCode == 2 || param1.responseCode == 0 || param1.responseCode == 1 || param1.responseCode == 4)
+         var alert:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",_response);
+         if(evt.responseCode == 3 || evt.responseCode == 2 || evt.responseCode == 0 || evt.responseCode == 1 || evt.responseCode == 4)
          {
             okFunction();
          }
-         ObjectUtils.disposeObject(param1.target);
+         ObjectUtils.disposeObject(evt.target);
       }
       
       private function okFunction() : void
@@ -525,14 +525,14 @@ package store.states
          _guideEmbed = null;
       }
       
-      private function _changeConsortia(param1:Event) : void
+      private function _changeConsortia(e:Event) : void
       {
          _consortiaManagerBtn.visible = PlayerManager.Instance.Self.ConsortiaID != 0?true:false;
       }
       
-      override public function set visible(param1:Boolean) : void
+      override public function set visible(value:Boolean) : void
       {
-         .super.visible = param1;
+         .super.visible = value;
          if(_storeview)
          {
             if(visible)

@@ -64,12 +64,12 @@ package room.view.chooseMap
       {
          _frame = ComponentFactory.Instance.creatComponentByStylename("asset.ddtdungeonRoom.ChooseMap.Frame");
          addChild(_frame);
-         var _loc1_:AlertInfo = new AlertInfo();
-         _loc1_.title = LanguageMgr.GetTranslation("tank.room.RoomIIMapSetPanel.room");
-         _loc1_.submitLabel = LanguageMgr.GetTranslation("ok");
-         _loc1_.showCancel = false;
-         _loc1_.moveEnable = false;
-         _frame.info = _loc1_;
+         var alertInfo:AlertInfo = new AlertInfo();
+         alertInfo.title = LanguageMgr.GetTranslation("tank.room.RoomIIMapSetPanel.room");
+         alertInfo.submitLabel = LanguageMgr.GetTranslation("ok");
+         alertInfo.showCancel = false;
+         alertInfo.moveEnable = false;
+         _frame.info = alertInfo;
          _view = ComponentFactory.Instance.creatCustomObject("asset.ddtroom.dungeonChooseMapView");
          _frame.addToContent(_view);
       }
@@ -84,21 +84,21 @@ package room.view.chooseMap
          _timeTimer.start();
       }
       
-      private function __timeHandler(param1:Event) : void
+      private function __timeHandler(evt:Event) : void
       {
-         var _loc3_:Number = TimeManager.Instance.Now().time;
-         var _loc2_:Boolean = MapManager.Instance.checkActiveAndSigleDic(MapManager.Instance.activeDoubleDic,_loc3_);
-         if(!_loc2_)
+         var nowTime:Number = TimeManager.Instance.Now().time;
+         var bool:Boolean = MapManager.Instance.checkActiveAndSigleDic(MapManager.Instance.activeDoubleDic,nowTime);
+         if(!bool)
          {
-            _loc2_ = MapManager.Instance.checkActiveAndSigleDic(MapManager.Instance.singleDoubleDic,_loc3_);
+            bool = MapManager.Instance.checkActiveAndSigleDic(MapManager.Instance.singleDoubleDic,nowTime);
          }
-         if(_loc2_ && _view)
+         if(bool && _view)
          {
             _view.updateActityAndSingleView();
          }
       }
       
-      private function onUpdateActivePveInfo(param1:CEvent) : void
+      private function onUpdateActivePveInfo(event:CEvent) : void
       {
          if(_view)
          {
@@ -116,23 +116,23 @@ package room.view.chooseMap
          }
       }
       
-      private function __responeHandler(param1:FrameEvent) : void
+      private function __responeHandler(evt:FrameEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc4_:int = 0;
-         var _loc2_:int = 0;
+         var dungeon:* = null;
+         var type:int = 0;
+         var currentPlayerCount:int = 0;
          NewHandContainer.Instance.clearArrowByID(-1);
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();
          }
-         else if(param1.responseCode == 3)
+         else if(evt.responseCode == 3)
          {
             SoundManager.instance.play("008");
             if(_view.checkState())
             {
-               _loc3_ = MapManager.getDungeonInfo(_view.selectedMapID);
+               dungeon = MapManager.getDungeonInfo(_view.selectedMapID);
                if(_view.selectedMapID == 70020)
                {
                   openDesert();
@@ -156,35 +156,35 @@ package room.view.chooseMap
                }
                else
                {
-                  if(_loc3_.Type == 6)
+                  if(dungeon.Type == 6)
                   {
                      GameInSocketOut.sendGameRoomSetUp(_view.selectedMapID,11,false,_view.roomPass,_view.roomName,1,_view.selectedLevel,0,false,0);
                   }
-                  else if(MapManager.PVE_ADVANCED_MAP.indexOf(_loc3_.ID) != -1)
+                  else if(MapManager.PVE_ADVANCED_MAP.indexOf(dungeon.ID) != -1)
                   {
                      GameInSocketOut.sendGameRoomSetUp(_view.selectedMapID,4,false,_view.roomPass,_view.roomName,1,_view.selectedLevel,0,false,0);
                   }
-                  else if(_loc3_.Type == 21 && _loc3_.ID == 70001)
+                  else if(dungeon.Type == 21 && dungeon.ID == 70001)
                   {
                      GameInSocketOut.sendGameRoomSetUp(_view.selectedMapID,21,false,_view.roomPass,_view.roomName,1,_view.selectedLevel,0,false,0);
                   }
-                  else if(_loc3_.Type == 23 || _loc3_.Type == 47 || _loc3_.Type == 48)
+                  else if(dungeon.Type == 23 || dungeon.Type == 47 || dungeon.Type == 48)
                   {
-                     if(_loc3_.Type == 47)
+                     if(dungeon.Type == 47)
                      {
-                        _loc4_ = 47;
+                        type = 47;
                      }
-                     else if(_loc3_.Type == 48)
+                     else if(dungeon.Type == 48)
                      {
-                        _loc4_ = 48;
+                        type = 48;
                      }
                      else
                      {
-                        _loc4_ = _loc3_.Type;
+                        type = dungeon.Type;
                      }
-                     GameInSocketOut.sendGameRoomSetUp(_view.selectedMapID,_loc4_,false,_view.roomPass,_view.roomName,1,_view.selectedLevel,0,false,0);
+                     GameInSocketOut.sendGameRoomSetUp(_view.selectedMapID,type,false,_view.roomPass,_view.roomName,1,_view.selectedLevel,0,false,0);
                   }
-                  else if(_loc3_.Type == 24)
+                  else if(dungeon.Type == 24)
                   {
                      GameInSocketOut.sendGameRoomSetUp(_view.selectedMapID,123,false,_view.roomPass,_view.roomName,1,_view.selectedLevel,0,false,0);
                   }
@@ -192,10 +192,10 @@ package room.view.chooseMap
                   {
                      if(MapManager.Instance.singleDoubleIds.indexOf(_view.selectedMapID) != -1)
                      {
-                        _loc2_ = RoomManager.Instance.current.currentPlayerCount;
-                        if(_loc2_ > 1)
+                        currentPlayerCount = RoomManager.Instance.current.currentPlayerCount;
+                        if(currentPlayerCount > 1)
                         {
-                           MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.room.singleDungeonMaxPlayerLimitMsg",_loc2_));
+                           MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.room.singleDungeonMaxPlayerLimitMsg",currentPlayerCount));
                            return;
                         }
                      }
@@ -222,24 +222,24 @@ package room.view.chooseMap
       
       private function openDesert() : void
       {
-         var _loc4_:* = null;
+         var msg:* = null;
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:int = ServerConfigManager.instance.getDesertFreeEnterCount();
-         var _loc3_:int = ServerConfigManager.instance.getDesertFeeEnterCount();
-         var _loc1_:int = PlayerManager.Instance.Self.desertEnterCount;
-         if(_loc1_ < _loc2_)
+         var freeCount:int = ServerConfigManager.instance.getDesertFreeEnterCount();
+         var feeCount:int = ServerConfigManager.instance.getDesertFeeEnterCount();
+         var currentCount:int = PlayerManager.Instance.Self.desertEnterCount;
+         if(currentCount < freeCount)
          {
             GameInSocketOut.sendGameRoomSetUp(_view.selectedMapID,4,false,_view.roomPass,_view.roomName,1,_view.selectedLevel,0,false,0);
             dispose();
          }
-         else if(_loc1_ >= _loc2_ && _loc1_ < _loc2_ + _loc3_)
+         else if(currentCount >= freeCount && currentCount < freeCount + feeCount)
          {
-            _loc4_ = LanguageMgr.GetTranslation("ddt.dungeonRoom.enterDesertMsg");
-            _confirmFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc4_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"SimpleAlert",30,true,0);
+            msg = LanguageMgr.GetTranslation("ddt.dungeonRoom.enterDesertMsg");
+            _confirmFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),msg,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"SimpleAlert",30,true,0);
             _confirmFrame.moveEnable = false;
             _confirmFrame.addEventListener("response",__confirmBuySpirit);
          }
@@ -249,13 +249,13 @@ package room.view.chooseMap
          }
       }
       
-      private function __confirmBuySpirit(param1:FrameEvent) : void
+      private function __confirmBuySpirit(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          _confirmFrame.removeEventListener("response",__confirmBuySpirit);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
-            CheckMoneyUtils.instance.checkMoney(param1.currentTarget.isBand,2000,onCheckComplete);
+            CheckMoneyUtils.instance.checkMoney(evt.currentTarget.isBand,2000,onCheckComplete);
             _confirmFrame.dispose();
             _confirmFrame = null;
          }
@@ -269,37 +269,37 @@ package room.view.chooseMap
       
       private function getPrice() : String
       {
-         var _loc3_:Array = [];
-         var _loc1_:String = "";
-         var _loc2_:String = MapManager.getDungeonInfo(_view.selectedMapID).BossFightNeedMoney;
-         if(_loc2_)
+         var arr:Array = [];
+         var price:String = "";
+         var str:String = MapManager.getDungeonInfo(_view.selectedMapID).BossFightNeedMoney;
+         if(str)
          {
-            _loc3_ = _loc2_.split("|");
+            arr = str.split("|");
          }
-         if(_loc3_ && _loc3_.length > 0)
+         if(arr && arr.length > 0)
          {
             switch(int(_view.selectedLevel))
             {
                case 0:
-                  _loc1_ = _loc3_[0];
+                  price = arr[0];
                   break;
                case 1:
-                  _loc1_ = _loc3_[1];
+                  price = arr[1];
                   break;
                case 2:
-                  _loc1_ = _loc3_[2];
+                  price = arr[2];
                   break;
                case 3:
-                  _loc1_ = _loc3_[3];
+                  price = arr[3];
                   break;
                case 4:
-                  _loc1_ = _loc3_[4];
+                  price = arr[4];
                   break;
                case 5:
-                  _loc1_ = _loc3_[5];
+                  price = arr[5];
             }
          }
-         return _loc1_;
+         return price;
       }
       
       private function showAlert() : void
@@ -314,16 +314,16 @@ package room.view.chooseMap
       
       private function getName() : String
       {
-         var _loc1_:String = "";
+         var name:String = "";
          if(_view.selectedMapID == 27 || _view.selectedMapID == 30)
          {
-            _loc1_ = ItemManager.Instance.getTemplateById(12578).Name;
+            name = ItemManager.Instance.getTemplateById(12578).Name;
          }
          else
          {
-            _loc1_ = ItemManager.Instance.getTemplateById(201531).Name;
+            name = ItemManager.Instance.getTemplateById(201531).Name;
          }
-         return _loc1_;
+         return name;
       }
       
       private function disposeAlert() : void
@@ -337,13 +337,13 @@ package room.view.chooseMap
          _alert = null;
       }
       
-      private function __alertResponse(param1:FrameEvent) : void
+      private function __alertResponse(evt:FrameEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
+         var bagInfo:* = null;
+         var id:int = 0;
+         var count:int = 0;
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
@@ -358,17 +358,17 @@ package room.view.chooseMap
                   return;
                }
                _selfInfo = PlayerManager.Instance.Self;
-               _loc3_ = _selfInfo.getBag(1);
+               bagInfo = _selfInfo.getBag(1);
                if(_view.selectedMapID == 27 || _view.selectedMapID == 30)
                {
-                  _loc2_ = 12578;
+                  id = 12578;
                }
                else
                {
-                  _loc2_ = 201531;
+                  id = 201531;
                }
-               _loc4_ = _loc3_.getItemCountByTemplateId(_loc2_);
-               if(_loc4_ < Number(getPrice()))
+               count = bagInfo.getItemCountByTemplateId(id);
+               if(count < Number(getPrice()))
                {
                   showVoucherAlert();
                }
@@ -417,24 +417,24 @@ package room.view.chooseMap
          }
       }
       
-      private function __onNoMoneyResponse(param1:FrameEvent) : void
+      private function __onNoMoneyResponse(e:FrameEvent) : void
       {
-         var _loc2_:* = null;
+         var _quick:* = null;
          SoundManager.instance.play("008");
          disposeVoucherAlert();
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         if(e.responseCode == 3 || e.responseCode == 2)
          {
-            _loc2_ = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
-            _loc2_.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
+            _quick = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
+            _quick.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
             if(_view.selectedMapID == 27 || _view.selectedMapID == 30)
             {
-               _loc2_.itemID = 12578;
+               _quick.itemID = 12578;
             }
             else
             {
-               _loc2_.itemID = 201531;
+               _quick.itemID = 201531;
             }
-            LayerManager.Instance.addToLayer(_loc2_,2,true,1);
+            LayerManager.Instance.addToLayer(_quick,2,true,1);
          }
       }
       

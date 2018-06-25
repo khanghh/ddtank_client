@@ -26,9 +26,9 @@ package magicHouse
          initView();
       }
       
-      public function set item(param1:DoubleSelectedItem) : void
+      public function set item(value:DoubleSelectedItem) : void
       {
-         _item = param1;
+         _item = value;
       }
       
       public function get item() : DoubleSelectedItem
@@ -63,24 +63,24 @@ package magicHouse
          return _cancelBtn;
       }
       
-      public function setTipText(param1:String) : void
+      public function setTipText(str:String) : void
       {
-         this._tipTxt.text = param1;
+         this._tipTxt.text = str;
       }
       
-      public function setTipHtmlText(param1:String) : void
+      public function setTipHtmlText(str:String) : void
       {
-         this._tipTxt.htmlText = param1;
+         this._tipTxt.htmlText = str;
       }
       
-      public function setFrameWidth(param1:int) : void
+      public function setFrameWidth($w:int) : void
       {
-         this.width = param1;
+         this.width = $w;
       }
       
-      public function setFrameHeight(param1:int) : void
+      public function setFrameHeight($h:int) : void
       {
-         this.height = param1;
+         this.height = $h;
       }
       
       override public function dispose() : void

@@ -90,7 +90,7 @@ package church.view.invite
          _inviteBtn.addEventListener("click",__mouseClick);
       }
       
-      private function __mouseClick(param1:MouseEvent) : void
+      private function __mouseClick(evt:MouseEvent) : void
       {
          if(_playerInfo.invited)
          {
@@ -100,7 +100,7 @@ package church.view.invite
          _inviteBtn.enable = false;
          _inviteBtn.filters = [ComponentFactory.Instance.model.getSet("church.room.inviteItemInviteBtnAssetGF1")];
          _playerInfo.invited = true;
-         var _loc2_:ChurchRoomInfo = ChurchManager.instance.currentRoom;
+         var roominfo:ChurchRoomInfo = ChurchManager.instance.currentRoom;
          if(_playerInfo is ConsortiaPlayerInfo)
          {
             SocketManager.Instance.out.sendChurchInvite(_playerInfo.ID);
@@ -112,9 +112,9 @@ package church.view.invite
          _playerInfo.invited = true;
       }
       
-      public function set isInvite(param1:Boolean) : void
+      public function set isInvite(value:Boolean) : void
       {
-         _isInvite = param1;
+         _isInvite = value;
          if(_playerInfo.invited)
          {
             _inviteBtn.removeEventListener("click",__mouseClick);
@@ -125,9 +125,9 @@ package church.view.invite
          }
       }
       
-      public function setListCellStatus(param1:List, param2:Boolean, param3:int) : void
+      public function setListCellStatus(list:List, isSelected:Boolean, index:int) : void
       {
-         _isSelected = param2;
+         _isSelected = isSelected;
       }
       
       public function getCellValue() : *
@@ -135,11 +135,11 @@ package church.view.invite
          return _data;
       }
       
-      public function setCellValue(param1:*) : void
+      public function setCellValue(value:*) : void
       {
-         _data = param1;
-         _playerInfo = param1.playerInfo;
-         _index = param1.index;
+         _data = value;
+         _playerInfo = value.playerInfo;
+         _index = value.index;
          update();
       }
       

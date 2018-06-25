@@ -46,38 +46,37 @@ package lotteryTicket
          SocketManager.Instance.addEventListener("lotteryTicket",lotteryHandler);
       }
       
-      public function templateDataSetup(param1:Array) : void
+      public function templateDataSetup(dataList:Array) : void
       {
-         model.itemInfoList = param1;
+         model.itemInfoList = dataList;
       }
       
-      private function lotteryHandler(param1:CrazyTankSocketEvent) : void
+      private function lotteryHandler(e:CrazyTankSocketEvent) : void
       {
-         var _loc7_:int = 0;
-         var _loc6_:* = null;
-         var _loc5_:* = null;
-         var _loc3_:* = null;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc4_.readInt();
-         switch(int(_loc2_) - 1)
+         var i:int = 0;
+         var ballInfo:* = null;
+         var ticketInfo:* = null;
+         var player:* = null;
+         var pkg:PackageIn = e.pkg;
+         var cmd:int = pkg.readInt();
+         switch(int(cmd) - 1)
          {
             case 0:
-               model.isopen = _loc4_.readBoolean();
-               model.isCanBuyBall = _loc4_.readBoolean();
-               model.gameIndex = _loc4_.readInt();
+               model.isopen = pkg.readBoolean();
+               model.isCanBuyBall = pkg.readBoolean();
+               model.gameIndex = pkg.readInt();
                model.dataList = [];
-               _loc7_ = 0;
-               while(_loc7_ < 8)
+               for(i = 0; i < 8; )
                {
-                  _loc6_ = _loc4_.readUTF();
-                  if(_loc6_ != "")
+                  ballInfo = pkg.readUTF();
+                  if(ballInfo != "")
                   {
-                     _loc5_ = new LotteryTicketInfo();
-                     _loc5_.ifBuy = true;
-                     _loc5_.ticketArr = [_loc6_.substr(0,1),_loc6_.substr(1,1),_loc6_.substr(2,1),_loc6_.substr(3,1)];
-                     model.dataList.push(_loc5_);
+                     ticketInfo = new LotteryTicketInfo();
+                     ticketInfo.ifBuy = true;
+                     ticketInfo.ticketArr = [ballInfo.substr(0,1),ballInfo.substr(1,1),ballInfo.substr(2,1),ballInfo.substr(3,1)];
+                     model.dataList.push(ticketInfo);
                   }
-                  _loc7_++;
+                  i++;
                }
                if(_main)
                {
@@ -89,25 +88,25 @@ package lotteryTicket
                }
                break;
             case 1:
-               model.poolCount = _loc4_.readInt();
-               model.displayResults = _loc4_.readUTF();
-               model.firstCount = _loc4_.readInt();
-               model.firstMoney = _loc4_.readInt();
-               _loc3_ = _loc4_.readUTF();
-               if(_loc3_.length > 0)
+               model.poolCount = pkg.readInt();
+               model.displayResults = pkg.readUTF();
+               model.firstCount = pkg.readInt();
+               model.firstMoney = pkg.readInt();
+               player = pkg.readUTF();
+               if(player.length > 0)
                {
-                  model.firstPlayerInfo = _loc3_.split("|");
+                  model.firstPlayerInfo = player.split("|");
                }
                else
                {
                   model.firstPlayerInfo = [];
                }
-               model.secondCount = _loc4_.readInt();
-               model.secondMoney = _loc4_.readInt();
-               model.thirdCount = _loc4_.readInt();
-               model.thirdMoney = _loc4_.readInt();
-               model.fourthCount = _loc4_.readInt();
-               model.fourthMoney = _loc4_.readInt();
+               model.secondCount = pkg.readInt();
+               model.secondMoney = pkg.readInt();
+               model.thirdCount = pkg.readInt();
+               model.thirdMoney = pkg.readInt();
+               model.fourthCount = pkg.readInt();
+               model.fourthMoney = pkg.readInt();
                if(_main)
                {
                   closeFrame();

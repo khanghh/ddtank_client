@@ -23,40 +23,40 @@ package com.pickgliss.loader
       
       private var _isSecondLoad:Boolean = false;
       
-      public function ModuleLoader(param1:int, param2:String, param3:ApplicationDomain)
+      public function ModuleLoader(id:int, url:String, domain:ApplicationDomain)
       {
-         this.domain = param3;
-         super(param1,param2);
+         this.domain = domain;
+         super(id,url);
       }
       
-      public static function decry(param1:ByteArray) : ByteArray
+      public static function decry(src:ByteArray) : ByteArray
       {
-         var _loc3_:Object = loader.init();
-         var _loc2_:ByteArray = _loc3_.decry(param1);
-         return _loc2_;
+         var lib:Object = loader.init();
+         var bytes:ByteArray = lib.decry(src);
+         return bytes;
       }
       
-      public static function getDefinition(param1:String) : *
+      public static function getDefinition(classname:String) : *
       {
-         return getDefinitionByName(param1);
+         return getDefinitionByName(classname);
       }
       
-      public static function hasDefinition(param1:String) : Boolean
+      public static function hasDefinition(classname:String) : Boolean
       {
-         return DisplayLoader.Context.applicationDomain.hasDefinition(param1);
+         return DisplayLoader.Context.applicationDomain.hasDefinition(classname);
       }
       
-      override public function loadFromBytes(param1:ByteArray) : void
+      override public function loadFromBytes(data:ByteArray) : void
       {
          _starTime = getTimer();
          _displayLoader.contentLoaderInfo.addEventListener("complete",__onContentLoadComplete);
-         analyMd5(param1);
+         analyMd5(data);
       }
       
-      override protected function __onDataLoadComplete(param1:Event) : void
+      override protected function __onDataLoadComplete(event:Event) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var temp:* = null;
+         var tempII:* = null;
          removeEvent();
          unload();
          if(DisplayLoader.isDebug)
@@ -66,19 +66,19 @@ package com.pickgliss.loader
             {
                return;
             }
-            _loc3_ = _loader.data;
-            _loc3_ = NewCrypto.decry(_loc3_);
-            if(_loc3_[0] != 67 || _loc3_[1] != 87 || _loc3_[2] != 83)
+            temp = _loader.data;
+            temp = NewCrypto.decry(temp);
+            if(temp[0] != 67 || temp[1] != 87 || temp[2] != 83)
             {
-               _loc3_ = decry(_loc3_);
+               temp = decry(temp);
             }
             if(domain != null)
             {
-               _displayLoader.loadBytes(_loc3_,DisplayLoader.Context);
+               _displayLoader.loadBytes(temp,DisplayLoader.Context);
             }
             else
             {
-               _displayLoader.loadBytes(_loc3_,Context);
+               _displayLoader.loadBytes(temp,Context);
             }
          }
          else
@@ -88,26 +88,26 @@ package com.pickgliss.loader
             {
                return;
             }
-            _loc2_ = _loader.data;
-            LoaderSavingManager.cacheFile(_url,_loc2_,false);
-            analyMd5(_loc2_);
+            tempII = _loader.data;
+            LoaderSavingManager.cacheFile(_url,tempII,false);
+            analyMd5(tempII);
          }
       }
       
-      public function analyMd5(param1:ByteArray) : void
+      public function analyMd5(content:ByteArray) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:String = getName();
-         if(ComponentSetting.USEMD5 && (ComponentSetting.md5Dic[_loc2_] || hasHead(param1)))
+         var temp:* = null;
+         var name:String = getName();
+         if(ComponentSetting.USEMD5 && (ComponentSetting.md5Dic[name] || hasHead(content)))
          {
-            if(compareMD5(param1,_loc2_))
+            if(compareMD5(content,name))
             {
                try
                {
-                  _loc3_ = new ByteArray();
-                  param1.position = 37;
-                  param1.readBytes(_loc3_);
-                  handleModule(_loc3_);
+                  temp = new ByteArray();
+                  content.position = 37;
+                  content.readBytes(temp);
+                  handleModule(temp);
                }
                catch(e:Error)
                {
@@ -132,7 +132,7 @@ package com.pickgliss.loader
          }
          else
          {
-            handleModule(param1);
+            handleModule(content);
          }
       }
       
@@ -146,53 +146,32 @@ package com.pickgliss.loader
       
       private function getName() : String
       {
-         var _loc2_:int = 0;
-         var _loc1_:String = "";
-         _loc2_ = 0;
-         while(_loc2_ < ComponentSetting.MD5_OBJECT.length)
+         var i:int = 0;
+         var name:String = "";
+         for(i = 0; i < ComponentSetting.MD5_OBJECT.length; )
          {
-            if(_url.indexOf(ComponentSetting.MD5_OBJECT[_loc2_]) != -1)
+            if(_url.indexOf(ComponentSetting.MD5_OBJECT[i]) != -1)
             {
-               _loc1_ = _url.substring(_url.lastIndexOf("/") + 1,_url.indexOf(ComponentSetting.MD5_OBJECT[_loc2_]) + ComponentSetting.MD5_OBJECT[_loc2_].length);
+               name = _url.substring(_url.lastIndexOf("/") + 1,_url.indexOf(ComponentSetting.MD5_OBJECT[i]) + ComponentSetting.MD5_OBJECT[i].length);
             }
-            _loc2_++;
+            i++;
          }
-         return _loc1_.toLowerCase();
+         return name.toLowerCase();
       }
       
-      private function compareMD5(param1:ByteArray, param2:String) : Boolean
+      private function compareMD5(temp:ByteArray, fileName:String) : Boolean
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         var _loc5_:ByteArray = new ByteArray();
-         _loc5_.writeUTFBytes(ComponentSetting.md5Dic[param2]);
-         _loc5_.position = 0;
-         param1.position = 5;
-         while(_loc5_.bytesAvailable > 0)
+         var source:int = 0;
+         var target:int = 0;
+         var md5Bytes:ByteArray = new ByteArray();
+         md5Bytes.writeUTFBytes(ComponentSetting.md5Dic[fileName]);
+         md5Bytes.position = 0;
+         temp.position = 5;
+         while(md5Bytes.bytesAvailable > 0)
          {
-            _loc3_ = _loc5_.readByte();
-            _loc4_ = param1.readByte();
-            if(_loc3_ != _loc4_)
-            {
-               return false;
-            }
-         }
-         return true;
-      }
-      
-      private function hasHead(param1:ByteArray) : Boolean
-      {
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:ByteArray = new ByteArray();
-         _loc2_.writeUTFBytes(ComponentSetting.swf_head);
-         _loc2_.position = 0;
-         param1.position = 0;
-         while(_loc2_.bytesAvailable > 0)
-         {
-            _loc3_ = _loc2_.readByte();
-            _loc4_ = param1.readByte();
-            if(_loc3_ != _loc4_)
+            source = md5Bytes.readByte();
+            target = temp.readByte();
+            if(source != target)
             {
                return false;
             }
@@ -200,21 +179,41 @@ package com.pickgliss.loader
          return true;
       }
       
-      private function handleModule(param1:ByteArray) : void
+      private function hasHead(temp:ByteArray) : Boolean
       {
-         param1.position = 0;
-         param1 = NewCrypto.decry(param1);
-         if(param1[0] != 67 || param1[1] != 87 || param1[2] != 83)
+         var source:int = 0;
+         var target:int = 0;
+         var road7Byte:ByteArray = new ByteArray();
+         road7Byte.writeUTFBytes(ComponentSetting.swf_head);
+         road7Byte.position = 0;
+         temp.position = 0;
+         while(road7Byte.bytesAvailable > 0)
          {
-            param1 = decry(param1);
+            source = road7Byte.readByte();
+            target = temp.readByte();
+            if(source != target)
+            {
+               return false;
+            }
+         }
+         return true;
+      }
+      
+      private function handleModule(temp:ByteArray) : void
+      {
+         temp.position = 0;
+         temp = NewCrypto.decry(temp);
+         if(temp[0] != 67 || temp[1] != 87 || temp[2] != 83)
+         {
+            temp = decry(temp);
          }
          if(domain != null)
          {
-            _displayLoader.loadBytes(param1,new LoaderContext(false,domain));
+            _displayLoader.loadBytes(temp,new LoaderContext(false,domain));
          }
          else
          {
-            _displayLoader.loadBytes(param1,Context);
+            _displayLoader.loadBytes(temp,Context);
          }
       }
       

@@ -3,6 +3,7 @@ package totem
    import com.pickgliss.ui.ComponentFactory;
    import com.pickgliss.utils.ObjectUtils;
    import ddt.events.CEvent;
+   import totem.data.TotemUpGradDataVo;
    import totem.view.TotemInfoView;
    import totem.view.TotemMainView;
    
@@ -36,9 +37,19 @@ package totem
          TotemManager.instance.addEventListener("totemview",__onTotemView);
       }
       
-      private function __onInfoView(param1:CEvent) : void
+      public function getGradeByTotemPage(page:int) : int
       {
-         var _loc2_:* = param1.data.type;
+         return TotemManager.instance.getGradeByTotemPage(page);
+      }
+      
+      public function getUpGradeInfo(page:int, grade:int) : TotemUpGradDataVo
+      {
+         return TotemManager.instance.getUpGradeInfo(page,grade);
+      }
+      
+      private function __onInfoView(e:CEvent) : void
+      {
+         var _loc2_:* = e.data.type;
          if("openview" !== _loc2_)
          {
             if("closeView" !== _loc2_)
@@ -47,7 +58,7 @@ package totem
                {
                   if(_infoView)
                   {
-                     _infoView.visible = param1.data.visible;
+                     _infoView.visible = e.data.visible;
                   }
                }
             }
@@ -59,14 +70,14 @@ package totem
          }
          else if(!_infoView)
          {
-            _infoView = new TotemInfoView(param1.data.info);
-            param1.data.parent.addChild(_infoView);
+            _infoView = new TotemInfoView(e.data.info);
+            e.data.parent.addChild(_infoView);
          }
       }
       
-      private function __onTotemView(param1:CEvent) : void
+      private function __onTotemView(e:CEvent) : void
       {
-         var _loc2_:* = param1.data.type;
+         var _loc2_:* = e.data.type;
          if("openview" !== _loc2_)
          {
             if("closeView" !== _loc2_)
@@ -75,7 +86,7 @@ package totem
                {
                   if(_totemView)
                   {
-                     _totemView.visible = param1.data.visible;
+                     _totemView.visible = e.data.visible;
                   }
                }
             }
@@ -88,7 +99,7 @@ package totem
          else if(!_totemView)
          {
             _totemView = ComponentFactory.Instance.creatCustomObject("totemView");
-            param1.data.parent.addChild(_totemView);
+            e.data.parent.addChild(_totemView);
          }
       }
    }

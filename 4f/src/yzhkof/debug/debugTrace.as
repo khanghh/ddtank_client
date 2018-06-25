@@ -1,4 +1,2 @@
-package yzhkof.debug
-{
-   public function debugTrace(... rest) : void{}
-}
+package yzhkof.debug{   public function debugTrace(... text) : void { }
+}

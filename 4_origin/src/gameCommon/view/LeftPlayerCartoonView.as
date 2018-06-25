@@ -73,9 +73,9 @@ package gameCommon.view
          initView();
       }
       
-      public function set isClose(param1:Boolean) : void
+      public function set isClose(b:Boolean) : void
       {
-         _isClose = param1;
+         _isClose = b;
       }
       
       private function initView() : void
@@ -95,7 +95,7 @@ package gameCommon.view
          _movie["leftCite"].addChild(_vipIcon);
          _badge = new Badge();
          _movie.gotoAndStop(1);
-         var _loc1_:int = RoomManager.getTurnTimeByType(RoomManager.Instance.current.timeType);
+         var time:int = RoomManager.getTurnTimeByType(RoomManager.Instance.current.timeType);
          update();
          addEventListener("enterFrame",__frameFunctionHandler);
       }
@@ -136,7 +136,7 @@ package gameCommon.view
          _roomPlayerItemPet = null;
       }
       
-      private function __frameFunctionHandler(param1:Event) : void
+      private function __frameFunctionHandler(event:Event) : void
       {
          if(_movie.currentFrame == 7)
          {
@@ -148,11 +148,11 @@ package gameCommon.view
          }
       }
       
-      public function set info(param1:Living) : void
+      public function set info(living:Living) : void
       {
          updateTimerState(false,false);
-         var _loc2_:* = _info != null;
-         if(_info != param1)
+         var needEasingOut:* = _info != null;
+         if(_info != living)
          {
             if(_info)
             {
@@ -162,7 +162,7 @@ package gameCommon.view
                   _info.removeEventListener("attackingChanged",__isAttackingChanged);
                }
             }
-            _info = param1;
+            _info = living;
             if(_info)
             {
                if(_info.isSelf && !_isClose)
@@ -177,7 +177,7 @@ package gameCommon.view
                }
             }
          }
-         if(_loc2_)
+         if(needEasingOut)
          {
             easingOut();
          }
@@ -319,18 +319,18 @@ package gameCommon.view
          }
       }
       
-      private function setBodyBitmap(param1:DisplayObject, param2:Boolean = false) : void
+      private function setBodyBitmap(value:DisplayObject, isPlayer:Boolean = false) : void
       {
-         if(_body != param1)
+         if(_body != value)
          {
             if(_body && _body.parent)
             {
                _movie["leftCite"].removeChild(_body);
             }
-            _body = param1;
+            _body = value;
             if(_body)
             {
-               if(param2)
+               if(isPlayer)
                {
                   _body.scaleX = -1;
                   if(_info.playerInfo.getShowSuits() && _info.playerInfo.getSuitsType() == 1)
@@ -386,20 +386,20 @@ package gameCommon.view
          }
       }
       
-      public function updateTimerState(param1:Boolean, param2:Boolean) : void
+      public function updateTimerState(visible:Boolean, enabled:Boolean) : void
       {
-         if(param1)
+         if(visible)
          {
             if(_info && _info.isSelf)
             {
             }
-            if(param2)
+            if(enabled)
             {
             }
          }
       }
       
-      private function __isAttackingChanged(param1:LivingEvent) : void
+      private function __isAttackingChanged(event:LivingEvent) : void
       {
          if((_info as TurnedLiving).isAttacking)
          {
@@ -414,11 +414,11 @@ package gameCommon.view
          }
       }
       
-      private function __stopCountDown(param1:LivingEvent) : void
+      private function __stopCountDown(event:LivingEvent) : void
       {
       }
       
-      private function __skip(param1:Event = null) : void
+      private function __skip(event:Event = null) : void
       {
          if(_info && _info.isSelf)
          {

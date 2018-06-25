@@ -31,44 +31,42 @@ package giftSystem.view
          addChild(_containerAll);
       }
       
-      public function setList(param1:Vector.<ShopItemInfo>) : void
+      public function setList(list:Vector.<ShopItemInfo>) : void
       {
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var item:* = null;
          clear();
          _container = new Vector.<HBox>();
-         var _loc4_:int = 0;
-         var _loc3_:int = param1.length < 6?param1.length:6;
-         _loc5_ = 0;
-         while(_loc5_ < 6)
+         var k:int = 0;
+         var sum:int = list.length < 6?list.length:6;
+         for(i = 0; i < 6; )
          {
-            if(_loc5_ % 2 == 0)
+            if(i % 2 == 0)
             {
-               _loc4_ = _loc5_ / 2;
-               _container[_loc4_] = ComponentFactory.Instance.creatComponentByStylename("GiftGoodsListView.container");
-               _containerAll.addChild(_container[_loc4_]);
+               k = i / 2;
+               _container[k] = ComponentFactory.Instance.creatComponentByStylename("GiftGoodsListView.container");
+               _containerAll.addChild(_container[k]);
             }
-            _loc2_ = new GiftGoodItem();
-            if(_loc5_ < _loc3_)
+            item = new GiftGoodItem();
+            if(i < sum)
             {
-               _loc2_.info = param1[_loc5_];
+               item.info = list[i];
             }
-            _container[_loc4_].addChild(_loc2_);
-            _loc5_++;
+            _container[k].addChild(item);
+            i++;
          }
       }
       
       private function clear() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          ObjectUtils.disposeAllChildren(_containerAll);
          if(_container.length > 0)
          {
-            _loc1_ = 0;
-            while(_loc1_ < 3)
+            for(i = 0; i < 3; )
             {
-               _container[_loc1_] = null;
-               _loc1_++;
+               _container[i] = null;
+               i++;
             }
          }
          _container = null;

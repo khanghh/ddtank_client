@@ -21,9 +21,9 @@ package magpieBridge.view
       override protected function init() : void
       {
          super.init();
-         var _loc1_:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("store.view.HelpButtonText"),LanguageMgr.GetTranslation("shop.PresentFrame.OkBtnText"));
-         _loc1_.showCancel = false;
-         info = _loc1_;
+         var alerInfo:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("store.view.HelpButtonText"),LanguageMgr.GetTranslation("shop.PresentFrame.OkBtnText"));
+         alerInfo.showCancel = false;
+         info = alerInfo;
          _mc = ComponentFactory.Instance.creat("asset.magpieView.helpInfo");
          _mc.x = -7;
          _mc.y = 1;

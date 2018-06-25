@@ -65,28 +65,28 @@ package particleSystem.extensions
       
       protected var mCenterOffset:Point;
       
-      public function ParticleSystem(param1:Texture, param2:Number, param3:int = 128, param4:int = 8192, param5:String = null, param6:String = null)
+      public function ParticleSystem(texture:Texture, emissionRate:Number, initialCapacity:int = 128, maxCapacity:int = 8192, blendFactorSource:String = null, blendFactorDest:String = null)
       {
          super();
-         if(param1 == null)
+         if(texture == null)
          {
             throw new ArgumentError("texture must not be null");
          }
-         mTexture = param1;
-         mPremultipliedAlpha = param1.premultipliedAlpha;
+         mTexture = texture;
+         mPremultipliedAlpha = texture.premultipliedAlpha;
          mParticles = new Vector.<Particle>(0,false);
          mVertexData = new VertexData(0);
          mIndices = new Vector.<uint>(0);
-         mEmissionRate = param2;
+         mEmissionRate = emissionRate;
          mEmissionTime = 0;
          mFrameTime = 0;
          mEmitterY = 0;
          mEmitterX = 0;
-         mMaxCapacity = Math.min(8192,param4);
-         mBlendFactorDestination = param6 || "oneMinusSourceAlpha";
-         mBlendFactorSource = param5 || (!!mPremultipliedAlpha?"one":"sourceAlpha");
+         mMaxCapacity = Math.min(8192,maxCapacity);
+         mBlendFactorDestination = blendFactorDest || "oneMinusSourceAlpha";
+         mBlendFactorSource = blendFactorSource || (!!mPremultipliedAlpha?"one":"sourceAlpha");
          createProgram();
-         raiseCapacity(param3);
+         raiseCapacity(initialCapacity);
          Starling.current.stage3D.addEventListener("context3DCreate",onContextCreated,false,0,true);
       }
       
@@ -104,7 +104,7 @@ package particleSystem.extensions
          super.dispose();
       }
       
-      private function onContextCreated(param1:Object) : void
+      private function onContextCreated(event:Object) : void
       {
          createProgram();
          raiseCapacity(0);
@@ -115,57 +115,56 @@ package particleSystem.extensions
          return new Particle();
       }
       
-      protected function initParticle(param1:Particle) : void
+      protected function initParticle(particle:Particle) : void
       {
-         param1.x = mEmitterX;
-         param1.y = mEmitterY;
-         param1.currentTime = 0;
-         param1.totalTime = 1;
-         param1.color = Math.random() * 16777215;
+         particle.x = mEmitterX;
+         particle.y = mEmitterY;
+         particle.currentTime = 0;
+         particle.totalTime = 1;
+         particle.color = Math.random() * 16777215;
       }
       
-      protected function advanceParticle(param1:Particle, param2:Number) : void
+      protected function advanceParticle(particle:Particle, passedTime:Number) : void
       {
-         param1.y = param1.y + param2 * 250;
-         param1.alpha = 1 - param1.currentTime / param1.totalTime;
-         param1.scale = 1 - param1.alpha;
-         param1.currentTime = param1.currentTime + param2;
+         particle.y = particle.y + passedTime * 250;
+         particle.alpha = 1 - particle.currentTime / particle.totalTime;
+         particle.scale = 1 - particle.alpha;
+         particle.currentTime = particle.currentTime + passedTime;
       }
       
-      private function raiseCapacity(param1:int) : void
+      private function raiseCapacity(byAmount:int) : void
       {
-         var _loc8_:* = 0;
-         var _loc7_:int = 0;
-         var _loc2_:int = 0;
-         var _loc5_:int = capacity;
-         var _loc4_:int = Math.min(mMaxCapacity,capacity + param1);
-         var _loc6_:Context3D = Starling.context;
-         if(_loc6_ == null)
+         var i:* = 0;
+         var numVertices:int = 0;
+         var numIndices:int = 0;
+         var oldCapacity:int = capacity;
+         var newCapacity:int = Math.min(mMaxCapacity,capacity + byAmount);
+         var context:Context3D = Starling.context;
+         if(context == null)
          {
             throw new MissingContextError();
          }
-         var _loc3_:VertexData = new VertexData(4);
-         _loc3_.setTexCoords(0,0,0);
-         _loc3_.setTexCoords(1,1,0);
-         _loc3_.setTexCoords(2,0,1);
-         _loc3_.setTexCoords(3,1,1);
-         mTexture.adjustVertexData(_loc3_,0,4);
+         var baseVertexData:VertexData = new VertexData(4);
+         baseVertexData.setTexCoords(0,0,0);
+         baseVertexData.setTexCoords(1,1,0);
+         baseVertexData.setTexCoords(2,0,1);
+         baseVertexData.setTexCoords(3,1,1);
+         mTexture.adjustVertexData(baseVertexData,0,4);
          mParticles.fixed = false;
          mIndices.fixed = false;
-         _loc8_ = _loc5_;
-         while(_loc8_ < _loc4_)
+         for(i = oldCapacity; i < newCapacity; )
          {
-            _loc7_ = _loc8_ * 4;
-            _loc2_ = _loc8_ * 6;
-            mParticles[_loc8_] = createParticle();
-            mVertexData.append(_loc3_);
-            mIndices[_loc2_] = _loc7_;
-            mIndices[int(_loc2_ + 1)] = _loc7_ + 1;
-            mIndices[int(_loc2_ + 2)] = _loc7_ + 2;
-            mIndices[int(_loc2_ + 3)] = _loc7_ + 1;
-            mIndices[int(_loc2_ + 4)] = _loc7_ + 3;
-            mIndices[int(_loc2_ + 5)] = _loc7_ + 2;
-            _loc8_++;
+            numVertices = i * 4;
+            numIndices = i * 6;
+            mParticles[i] = createParticle();
+            mVertexData.append(baseVertexData);
+            mIndices[numIndices] = numVertices;
+            mIndices[int(numIndices + 1)] = numVertices + 1;
+            mIndices[int(numIndices + 2)] = numVertices + 2;
+            mIndices[int(numIndices + 3)] = numVertices + 1;
+            mIndices[int(numIndices + 4)] = numVertices + 3;
+            mIndices[int(numIndices + 5)] = numVertices + 2;
+            i++;
          }
          mParticles.fixed = true;
          mIndices.fixed = true;
@@ -177,85 +176,85 @@ package particleSystem.extensions
          {
             mIndexBuffer.dispose();
          }
-         mVertexBuffer = _loc6_.createVertexBuffer(_loc4_ * 4,8);
-         mVertexBuffer.uploadFromVector(mVertexData.rawData,0,_loc4_ * 4);
-         mIndexBuffer = _loc6_.createIndexBuffer(_loc4_ * 6);
-         mIndexBuffer.uploadFromVector(mIndices,0,_loc4_ * 6);
+         mVertexBuffer = context.createVertexBuffer(newCapacity * 4,8);
+         mVertexBuffer.uploadFromVector(mVertexData.rawData,0,newCapacity * 4);
+         mIndexBuffer = context.createIndexBuffer(newCapacity * 6);
+         mIndexBuffer.uploadFromVector(mIndices,0,newCapacity * 6);
       }
       
-      public function start(param1:Number = 1.7976931348623157E308) : void
+      public function start(duration:Number = 1.7976931348623157E308) : void
       {
          if(mEmissionRate != 0)
          {
-            mEmissionTime = param1;
+            mEmissionTime = duration;
          }
       }
       
-      public function stop(param1:Boolean = false) : void
+      public function stop(clearParticles:Boolean = false) : void
       {
          mEmissionTime = 0;
-         if(param1)
+         if(clearParticles)
          {
             mNumParticles = 0;
          }
       }
       
-      override public function getBounds(param1:DisplayObject, param2:Rectangle = null) : Rectangle
+      override public function getBounds(targetSpace:DisplayObject, resultRect:Rectangle = null) : Rectangle
       {
-         if(param2 == null)
+         if(resultRect == null)
          {
-            param2 = new Rectangle();
+            resultRect = new Rectangle();
          }
-         getTransformationMatrix(param1,sHelperMatrix);
+         getTransformationMatrix(targetSpace,sHelperMatrix);
          MatrixUtil.transformCoords(sHelperMatrix,0,0,sHelperPoint);
-         param2.x = sHelperPoint.x;
-         param2.y = sHelperPoint.y;
+         resultRect.x = sHelperPoint.x;
+         resultRect.y = sHelperPoint.y;
          var _loc3_:int = 0;
-         param2.height = _loc3_;
-         param2.width = _loc3_;
-         return param2;
+         resultRect.height = _loc3_;
+         resultRect.width = _loc3_;
+         return resultRect;
       }
       
-      public function advanceTime(param1:Number) : void
+      public function advanceTime(passedTime:Number) : void
       {
-         var _loc8_:* = null;
-         var _loc27_:* = null;
-         var _loc14_:Number = NaN;
-         var _loc19_:* = 0;
-         var _loc13_:Number = NaN;
-         var _loc10_:Number = NaN;
-         var _loc25_:Number = NaN;
-         var _loc26_:Number = NaN;
-         var _loc4_:Number = NaN;
-         var _loc18_:Number = NaN;
-         var _loc17_:int = 0;
-         var _loc2_:Number = NaN;
-         var _loc3_:Number = NaN;
-         var _loc16_:int = 0;
-         var _loc5_:Number = NaN;
-         var _loc20_:Number = NaN;
-         var _loc12_:Number = NaN;
-         var _loc9_:Number = NaN;
-         var _loc22_:Number = NaN;
-         var _loc23_:Number = NaN;
-         var _loc7_:Number = NaN;
-         var _loc15_:Number = NaN;
-         var _loc24_:int = 0;
-         while(_loc24_ < mNumParticles)
+         var particle:* = null;
+         var nextParticle:* = null;
+         var timeBetweenParticles:Number = NaN;
+         var color:* = 0;
+         var alpha:Number = NaN;
+         var rotation:Number = NaN;
+         var y:Number = NaN;
+         var x:Number = NaN;
+         var yOffset:Number = NaN;
+         var xOffset:Number = NaN;
+         var i:int = 0;
+         var centerOffsetX:Number = NaN;
+         var centerOffsetY:Number = NaN;
+         var j:int = 0;
+         var cos:Number = NaN;
+         var sin:Number = NaN;
+         var cosX:Number = NaN;
+         var cosY:Number = NaN;
+         var sinX:Number = NaN;
+         var sinY:Number = NaN;
+         var x2:Number = NaN;
+         var y2:Number = NaN;
+         var particleIndex:int = 0;
+         while(particleIndex < mNumParticles)
          {
-            _loc8_ = mParticles[_loc24_] as Particle;
-            if(_loc8_.currentTime < _loc8_.totalTime)
+            particle = mParticles[particleIndex] as Particle;
+            if(particle.currentTime < particle.totalTime)
             {
-               advanceParticle(_loc8_,param1);
-               _loc24_++;
+               advanceParticle(particle,passedTime);
+               particleIndex++;
             }
             else
             {
-               if(_loc24_ != mNumParticles - 1)
+               if(particleIndex != mNumParticles - 1)
                {
-                  _loc27_ = mParticles[int(mNumParticles - 1)] as Particle;
-                  mParticles[int(mNumParticles - 1)] = _loc8_;
-                  mParticles[_loc24_] = _loc27_;
+                  nextParticle = mParticles[int(mNumParticles - 1)] as Particle;
+                  mParticles[int(mNumParticles - 1)] = particle;
+                  mParticles[particleIndex] = nextParticle;
                }
                mNumParticles = mNumParticles - 1;
                if(mNumParticles == 0 && mEmissionTime == 0)
@@ -266,8 +265,8 @@ package particleSystem.extensions
          }
          if(mEmissionTime > 0)
          {
-            _loc14_ = 1 / mEmissionRate;
-            mFrameTime = mFrameTime + param1;
+            timeBetweenParticles = 1 / mEmissionRate;
+            mFrameTime = mFrameTime + passedTime;
             while(mFrameTime > 0)
             {
                if(mNumParticles < mMaxCapacity)
@@ -277,158 +276,156 @@ package particleSystem.extensions
                      raiseCapacity(capacity);
                   }
                   mNumParticles = Number(mNumParticles) + 1;
-                  _loc8_ = mParticles[int(Number(mNumParticles))] as Particle;
-                  initParticle(_loc8_);
-                  advanceParticle(_loc8_,mFrameTime);
+                  particle = mParticles[int(Number(mNumParticles))] as Particle;
+                  initParticle(particle);
+                  advanceParticle(particle,mFrameTime);
                }
-               mFrameTime = mFrameTime - _loc14_;
+               mFrameTime = mFrameTime - timeBetweenParticles;
             }
             if(mEmissionTime != 1.79769313486232e308)
             {
-               mEmissionTime = Math.max(0,mEmissionTime - param1);
+               mEmissionTime = Math.max(0,mEmissionTime - passedTime);
             }
          }
-         var _loc6_:* = 0;
-         var _loc11_:Number = mTexture.width;
-         var _loc21_:Number = mTexture.height;
-         _loc17_ = 0;
-         while(_loc17_ < mNumParticles)
+         var vertexID:* = 0;
+         var textureWidth:Number = mTexture.width;
+         var textureHeight:Number = mTexture.height;
+         for(i = 0; i < mNumParticles; )
          {
-            _loc6_ = _loc17_ << 2;
-            _loc8_ = mParticles[_loc17_] as Particle;
-            _loc19_ = uint(_loc8_.color);
-            _loc13_ = _loc8_.alpha;
-            _loc10_ = _loc8_.rotation;
-            _loc26_ = _loc8_.x;
-            _loc25_ = _loc8_.y;
-            _loc18_ = _loc11_ * _loc8_.scale >> 1;
-            _loc4_ = _loc21_ * _loc8_.scale >> 1;
-            _loc2_ = mCenterOffset.x;
-            _loc3_ = mCenterOffset.y;
-            _loc16_ = 0;
-            while(_loc16_ < 4)
+            vertexID = i << 2;
+            particle = mParticles[i] as Particle;
+            color = uint(particle.color);
+            alpha = particle.alpha;
+            rotation = particle.rotation;
+            x = particle.x;
+            y = particle.y;
+            xOffset = textureWidth * particle.scale >> 1;
+            yOffset = textureHeight * particle.scale >> 1;
+            centerOffsetX = mCenterOffset.x;
+            centerOffsetY = mCenterOffset.y;
+            for(j = 0; j < 4; )
             {
-               mVertexData.setColor(_loc6_ + _loc16_,_loc19_);
-               mVertexData.setAlpha(_loc6_ + _loc16_,_loc13_);
-               _loc16_++;
+               mVertexData.setColor(vertexID + j,color);
+               mVertexData.setAlpha(vertexID + j,alpha);
+               j++;
             }
-            if(_loc10_)
+            if(rotation)
             {
-               _loc5_ = Math.cos(_loc10_);
-               _loc20_ = Math.sin(_loc10_);
-               _loc12_ = _loc5_ * _loc18_;
-               _loc9_ = _loc5_ * _loc4_;
-               _loc22_ = _loc20_ * _loc18_;
-               _loc23_ = _loc20_ * _loc4_;
-               _loc7_ = _loc5_ * _loc2_ - _loc20_ * _loc3_;
-               _loc15_ = _loc5_ * _loc3_ + _loc20_ * _loc2_;
-               mVertexData.setPosition(_loc6_,_loc26_ - _loc12_ + _loc23_ + _loc7_,_loc25_ - _loc22_ - _loc9_ + _loc15_);
-               mVertexData.setPosition(_loc6_ + 1,_loc26_ + _loc12_ + _loc23_ + _loc7_,_loc25_ + _loc22_ - _loc9_ + _loc15_);
-               mVertexData.setPosition(_loc6_ + 2,_loc26_ - _loc12_ - _loc23_ + _loc7_,_loc25_ - _loc22_ + _loc9_ + _loc15_);
-               mVertexData.setPosition(_loc6_ + 3,_loc26_ + _loc12_ - _loc23_ + _loc7_,_loc25_ + _loc22_ + _loc9_ + _loc15_);
+               cos = Math.cos(rotation);
+               sin = Math.sin(rotation);
+               cosX = cos * xOffset;
+               cosY = cos * yOffset;
+               sinX = sin * xOffset;
+               sinY = sin * yOffset;
+               x2 = cos * centerOffsetX - sin * centerOffsetY;
+               y2 = cos * centerOffsetY + sin * centerOffsetX;
+               mVertexData.setPosition(vertexID,x - cosX + sinY + x2,y - sinX - cosY + y2);
+               mVertexData.setPosition(vertexID + 1,x + cosX + sinY + x2,y + sinX - cosY + y2);
+               mVertexData.setPosition(vertexID + 2,x - cosX - sinY + x2,y - sinX + cosY + y2);
+               mVertexData.setPosition(vertexID + 3,x + cosX - sinY + x2,y + sinX + cosY + y2);
             }
             else
             {
-               mVertexData.setPosition(_loc6_,_loc26_ - _loc18_ + _loc2_,_loc25_ - _loc4_ + _loc3_);
-               mVertexData.setPosition(_loc6_ + 1,_loc26_ + _loc18_ + _loc2_,_loc25_ - _loc4_ + _loc3_);
-               mVertexData.setPosition(_loc6_ + 2,_loc26_ - _loc18_ + _loc2_,_loc25_ + _loc4_ + _loc3_);
-               mVertexData.setPosition(_loc6_ + 3,_loc26_ + _loc18_ + _loc2_,_loc25_ + _loc4_ + _loc3_);
+               mVertexData.setPosition(vertexID,x - xOffset + centerOffsetX,y - yOffset + centerOffsetY);
+               mVertexData.setPosition(vertexID + 1,x + xOffset + centerOffsetX,y - yOffset + centerOffsetY);
+               mVertexData.setPosition(vertexID + 2,x - xOffset + centerOffsetX,y + yOffset + centerOffsetY);
+               mVertexData.setPosition(vertexID + 3,x + xOffset + centerOffsetX,y + yOffset + centerOffsetY);
             }
-            _loc17_++;
+            i++;
          }
       }
       
-      override public function render(param1:RenderSupport, param2:Number) : void
+      override public function render(support:RenderSupport, alpha:Number) : void
       {
          if(mNumParticles == 0)
          {
             return;
          }
-         param1.finishQuadBatch();
-         if(param1.hasOwnProperty("raiseDrawCount"))
+         support.finishQuadBatch();
+         if(support.hasOwnProperty("raiseDrawCount"))
          {
-            param1.raiseDrawCount();
+            support.raiseDrawCount();
          }
-         param2 = param2 * this.alpha;
-         var _loc3_:Context3D = Starling.context;
-         var _loc4_:Boolean = texture.premultipliedAlpha;
-         var _loc5_:* = !!_loc4_?param2:1;
+         alpha = alpha * this.alpha;
+         var context:Context3D = Starling.context;
+         var pma:Boolean = texture.premultipliedAlpha;
+         var _loc5_:* = !!pma?alpha:1;
          sRenderAlpha[2] = _loc5_;
          _loc5_ = _loc5_;
          sRenderAlpha[1] = _loc5_;
          sRenderAlpha[0] = _loc5_;
-         sRenderAlpha[3] = param2;
-         if(_loc3_ == null)
+         sRenderAlpha[3] = alpha;
+         if(context == null)
          {
             throw new MissingContextError();
          }
          mVertexBuffer.uploadFromVector(mVertexData.rawData,0,mNumParticles * 4);
          mIndexBuffer.uploadFromVector(mIndices,0,mNumParticles * 6);
-         _loc3_.setBlendFactors(mBlendFactorSource,mBlendFactorDestination);
-         _loc3_.setTextureAt(0,mTexture.base);
-         _loc3_.setProgram(mProgram);
-         _loc3_.setProgramConstantsFromMatrix("vertex",0,param1.mvpMatrix3D,true);
-         _loc3_.setProgramConstantsFromVector("vertex",4,sRenderAlpha,1);
-         _loc3_.setVertexBufferAt(0,mVertexBuffer,0,"float2");
-         _loc3_.setVertexBufferAt(1,mVertexBuffer,2,"float4");
-         _loc3_.setVertexBufferAt(2,mVertexBuffer,6,"float2");
-         _loc3_.drawTriangles(mIndexBuffer,0,mNumParticles * 2);
-         _loc3_.setTextureAt(0,null);
-         _loc3_.setVertexBufferAt(0,null);
-         _loc3_.setVertexBufferAt(1,null);
-         _loc3_.setVertexBufferAt(2,null);
+         context.setBlendFactors(mBlendFactorSource,mBlendFactorDestination);
+         context.setTextureAt(0,mTexture.base);
+         context.setProgram(mProgram);
+         context.setProgramConstantsFromMatrix("vertex",0,support.mvpMatrix3D,true);
+         context.setProgramConstantsFromVector("vertex",4,sRenderAlpha,1);
+         context.setVertexBufferAt(0,mVertexBuffer,0,"float2");
+         context.setVertexBufferAt(1,mVertexBuffer,2,"float4");
+         context.setVertexBufferAt(2,mVertexBuffer,6,"float2");
+         context.drawTriangles(mIndexBuffer,0,mNumParticles * 2);
+         context.setTextureAt(0,null);
+         context.setVertexBufferAt(0,null);
+         context.setVertexBufferAt(1,null);
+         context.setVertexBufferAt(2,null);
       }
       
-      public function populate(param1:int) : void
+      public function populate(count:int) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
-         param1 = Math.min(param1,mMaxCapacity - mNumParticles);
-         if(mNumParticles + param1 > capacity)
+         var p:* = null;
+         var i:int = 0;
+         count = Math.min(count,mMaxCapacity - mNumParticles);
+         if(mNumParticles + count > capacity)
          {
-            raiseCapacity(param1 - capacity);
+            raiseCapacity(count - capacity);
          }
-         _loc3_ = 0;
-         while(_loc3_ < param1)
+         i = 0;
+         while(i < count)
          {
-            _loc2_ = mParticles[mNumParticles + _loc3_];
-            initParticle(_loc2_);
-            advanceParticle(_loc2_,Math.random() * _loc2_.totalTime);
-            _loc3_++;
+            p = mParticles[mNumParticles + i];
+            initParticle(p);
+            advanceParticle(p,Math.random() * p.totalTime);
+            i++;
          }
-         mNumParticles = mNumParticles + param1;
+         mNumParticles = mNumParticles + count;
       }
       
       private function createProgram() : void
       {
-         var _loc4_:* = null;
-         var _loc2_:* = null;
-         var _loc5_:* = null;
-         var _loc1_:* = null;
-         var _loc3_:* = null;
-         var _loc8_:Boolean = mTexture.mipMapping;
-         var _loc7_:String = mTexture.format;
-         var _loc6_:String = "ext.ParticleSystem." + _loc7_ + (!!_loc8_?"+mm":"");
-         mProgram = Starling.current.getProgram(_loc6_);
+         var textureOptions:* = null;
+         var vertexProgramCode:* = null;
+         var fragmentProgramCode:* = null;
+         var vertexProgramAssembler:* = null;
+         var fragmentProgramAssembler:* = null;
+         var mipmap:Boolean = mTexture.mipMapping;
+         var textureFormat:String = mTexture.format;
+         var programName:String = "ext.ParticleSystem." + textureFormat + (!!mipmap?"+mm":"");
+         mProgram = Starling.current.getProgram(programName);
          if(mProgram == null)
          {
-            _loc4_ = "2d, clamp, linear, " + (!!_loc8_?"mipnearest":"mipnone");
-            if(_loc7_ == "compressed")
+            textureOptions = "2d, clamp, linear, " + (!!mipmap?"mipnearest":"mipnone");
+            if(textureFormat == "compressed")
             {
-               _loc4_ = _loc4_ + ", dxt1";
+               textureOptions = textureOptions + ", dxt1";
             }
-            else if(_loc7_ == "compressedAlpha")
+            else if(textureFormat == "compressedAlpha")
             {
-               _loc4_ = _loc4_ + ", dxt5";
+               textureOptions = textureOptions + ", dxt5";
             }
-            _loc2_ = "m44 op, va0, vc0 \nmul v0, va1, vc4 \nmov v1, va2      \n";
-            _loc5_ = "tex ft1, v1, fs0 <" + _loc4_ + "> \n" + "mul oc, ft1, v0";
-            _loc1_ = new AGALMiniAssembler();
-            _loc1_.assemble("vertex",_loc2_);
-            _loc3_ = new AGALMiniAssembler();
-            _loc3_.assemble("fragment",_loc5_);
-            Starling.current.registerProgram(_loc6_,_loc1_.agalcode,_loc3_.agalcode);
-            mProgram = Starling.current.getProgram(_loc6_);
+            vertexProgramCode = "m44 op, va0, vc0 \nmul v0, va1, vc4 \nmov v1, va2      \n";
+            fragmentProgramCode = "tex ft1, v1, fs0 <" + textureOptions + "> \n" + "mul oc, ft1, v0";
+            vertexProgramAssembler = new AGALMiniAssembler();
+            vertexProgramAssembler.assemble("vertex",vertexProgramCode);
+            fragmentProgramAssembler = new AGALMiniAssembler();
+            fragmentProgramAssembler.assemble("fragment",fragmentProgramCode);
+            Starling.current.registerProgram(programName,vertexProgramAssembler.agalcode,fragmentProgramAssembler.agalcode);
+            mProgram = Starling.current.getProgram(programName);
          }
       }
       
@@ -452,9 +449,9 @@ package particleSystem.extensions
          return mMaxCapacity;
       }
       
-      public function set maxCapacity(param1:int) : void
+      public function set maxCapacity(value:int) : void
       {
-         mMaxCapacity = Math.min(8192,param1);
+         mMaxCapacity = Math.min(8192,value);
       }
       
       public function get emissionRate() : Number
@@ -462,9 +459,9 @@ package particleSystem.extensions
          return mEmissionRate;
       }
       
-      public function set emissionRate(param1:Number) : void
+      public function set emissionRate(value:Number) : void
       {
-         mEmissionRate = param1;
+         mEmissionRate = value;
       }
       
       public function get emitterX() : Number
@@ -472,9 +469,9 @@ package particleSystem.extensions
          return mEmitterX;
       }
       
-      public function set emitterX(param1:Number) : void
+      public function set emitterX(value:Number) : void
       {
-         mEmitterX = param1;
+         mEmitterX = value;
       }
       
       public function get emitterY() : Number
@@ -482,9 +479,9 @@ package particleSystem.extensions
          return mEmitterY;
       }
       
-      public function set emitterY(param1:Number) : void
+      public function set emitterY(value:Number) : void
       {
-         mEmitterY = param1;
+         mEmitterY = value;
       }
       
       public function get blendFactorSource() : String
@@ -492,9 +489,9 @@ package particleSystem.extensions
          return mBlendFactorSource;
       }
       
-      public function set blendFactorSource(param1:String) : void
+      public function set blendFactorSource(value:String) : void
       {
-         mBlendFactorSource = param1;
+         mBlendFactorSource = value;
       }
       
       public function get blendFactorDestination() : String
@@ -502,9 +499,9 @@ package particleSystem.extensions
          return mBlendFactorDestination;
       }
       
-      public function set blendFactorDestination(param1:String) : void
+      public function set blendFactorDestination(value:String) : void
       {
-         mBlendFactorDestination = param1;
+         mBlendFactorDestination = value;
       }
       
       public function get texture() : Texture
@@ -512,9 +509,9 @@ package particleSystem.extensions
          return mTexture;
       }
       
-      public function set texture(param1:Texture) : void
+      public function set texture(value:Texture) : void
       {
-         mTexture = param1;
+         mTexture = value;
          createProgram();
       }
       
@@ -523,9 +520,9 @@ package particleSystem.extensions
          return mCenterOffset;
       }
       
-      public function set centerOffset(param1:Point) : void
+      public function set centerOffset(value:Point) : void
       {
-         mCenterOffset = param1;
+         mCenterOffset = value;
       }
    }
 }

@@ -15,7 +15,7 @@ package cardSystem.view
          setContentSize(100,144);
       }
       
-      override protected function onMouseOver(param1:MouseEvent) : void
+      override protected function onMouseOver(evt:MouseEvent) : void
       {
          if(open && !locked)
          {
@@ -23,14 +23,14 @@ package cardSystem.view
          }
       }
       
-      override protected function updateSize(param1:Sprite) : void
+      override protected function updateSize(sp:Sprite) : void
       {
-         if(param1)
+         if(sp)
          {
-            param1.height = _contentHeight;
-            param1.width = _contentWidth;
-            param1.x = 7;
-            param1.y = 6;
+            sp.height = _contentHeight;
+            sp.width = _contentWidth;
+            sp.x = 7;
+            sp.y = 6;
          }
       }
    }

@@ -9,32 +9,32 @@ package ddt.data.analyze
       
       public var list:Dictionary;
       
-      public function FriendsMountTypeAnalyzer(param1:Function)
+      public function FriendsMountTypeAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:XML = new XML(param1);
-         if(_loc3_.@value == "true")
+         var len:int = 0;
+         var xmllist:* = null;
+         var xml:XML = new XML(data);
+         if(xml.@value == "true")
          {
             list = new Dictionary();
-            _loc5_ = _loc3_.Item.length();
-            _loc4_ = _loc3_.Item;
+            len = xml.Item.length();
+            xmllist = xml.Item;
             var _loc7_:int = 0;
-            var _loc6_:* = _loc4_;
-            for each(var _loc2_ in _loc4_)
+            var _loc6_:* = xmllist;
+            for each(var v in xmllist)
             {
-               list[_loc2_.@UserID.toString()] = Math.max(1,int(_loc2_.@CurrentID));
+               list[v.@UserID.toString()] = Math.max(1,int(v.@CurrentID));
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc3_.@message;
+            message = xml.@message;
             onAnalyzeError();
             onAnalyzeComplete();
          }

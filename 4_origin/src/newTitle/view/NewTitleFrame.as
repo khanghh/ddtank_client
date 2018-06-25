@@ -148,14 +148,14 @@ package newTitle.view
          _titleList.updateOwnTitleList();
       }
       
-      public function __onSetSelectTitleForCurrent(param1:NewTitleEvent) : void
+      public function __onSetSelectTitleForCurrent(event:NewTitleEvent) : void
       {
          ObjectUtils.disposeObject(_currentTitle);
          _currentTitle = null;
          loadIcon(_selectTitle);
       }
       
-      protected function __onUseClick(param1:MouseEvent) : void
+      protected function __onUseClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_selectTitle)
@@ -170,7 +170,7 @@ package newTitle.view
          }
       }
       
-      protected function __onHideTitleClick(param1:MouseEvent) : void
+      protected function __onHideTitleClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          NewTitleManager.instance.ShowTitle = !_hideBtn.selected;
@@ -178,17 +178,17 @@ package newTitle.view
          SocketManager.Instance.dispatchEvent(new NewHallEvent("newhallupdatetitle"));
       }
       
-      protected function __onItemClick(param1:NewTitleEvent) : void
+      protected function __onItemClick(event:NewTitleEvent) : void
       {
          SoundManager.instance.play("008");
          if(_selectedButtonGroup.selectIndex == 0)
          {
-            _selectTitle = EffortManager.Instance.getHonorArray()[param1.data[0]];
+            _selectTitle = EffortManager.Instance.getHonorArray()[event.data[0]];
             _useBtn.enable = true;
          }
          else
          {
-            _selectTitle = NewTitleManager.instance.titleArray[param1.data[0]];
+            _selectTitle = NewTitleManager.instance.titleArray[event.data[0]];
             _useBtn.enable = isOwnTitle(_selectTitle.Name);
          }
          setPropertyText();
@@ -198,82 +198,81 @@ package newTitle.view
       
       private function setPropertyText() : void
       {
-         var _loc1_:String = "";
+         var replaceStr:String = "";
          _propertyText.text = LanguageMgr.GetTranslation("newTitleView.propertyTxt",_selectTitle.Att,_selectTitle.Def,_selectTitle.Agi,_selectTitle.Luck,_selectTitle.Valid,_selectTitle.Desc);
          if(_selectTitle.Valid <= 0)
          {
-            _loc1_ = LanguageMgr.GetTranslation("newTitleView.hasnoTitleTxt");
+            replaceStr = LanguageMgr.GetTranslation("newTitleView.hasnoTitleTxt");
          }
          else if(_selectTitle.Valid > 1825)
          {
-            _loc1_ = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.use");
+            replaceStr = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.use");
          }
-         if(_loc1_.length > 0)
+         if(replaceStr.length > 0)
          {
-            _propertyText.text = _propertyText.text.replace(_selectTitle.Valid + LanguageMgr.GetTranslation("day"),_loc1_);
+            _propertyText.text = _propertyText.text.replace(_selectTitle.Valid + LanguageMgr.GetTranslation("day"),replaceStr);
          }
       }
       
-      private function isOwnTitle(param1:String) : Boolean
+      private function isOwnTitle(name:String) : Boolean
       {
-         var _loc4_:int = 0;
-         var _loc2_:Boolean = false;
-         var _loc3_:Array = EffortManager.Instance.getHonorArray();
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_.length)
+         var i:int = 0;
+         var flag:Boolean = false;
+         var ownTitleArr:Array = EffortManager.Instance.getHonorArray();
+         for(i = 0; i < ownTitleArr.length; )
          {
-            if(param1 == _loc3_[_loc4_].Name)
+            if(name == ownTitleArr[i].Name)
             {
-               _loc2_ = true;
+               flag = true;
                break;
             }
-            _loc4_++;
+            i++;
          }
-         return _loc2_;
+         return flag;
       }
       
-      private function loadIcon(param1:NewTitleModel) : void
+      private function loadIcon(titleModel:NewTitleModel) : void
       {
-         var _loc2_:* = null;
-         if(param1 && param1.Pic && param1.Pic != "0")
+         var loader:* = null;
+         if(titleModel && titleModel.Pic && titleModel.Pic != "0")
          {
-            _loc2_ = LoadResourceManager.Instance.createLoader(PathManager.solvePath("image/title/" + param1.Pic + "/icon.png"),0);
-            _loc2_.addEventListener("complete",__onComplete);
-            LoadResourceManager.Instance.startLoad(_loc2_,true);
+            loader = LoadResourceManager.Instance.createLoader(PathManager.solvePath("image/title/" + titleModel.Pic + "/icon.png"),0);
+            loader.addEventListener("complete",__onComplete);
+            LoadResourceManager.Instance.startLoad(loader,true);
          }
-         else if(param1)
+         else if(titleModel)
          {
-            _oldTitleText.text = param1.Name;
+            _oldTitleText.text = titleModel.Name;
             _oldTitleText.x = (_titleSprite.width - _oldTitleText.width) / 2;
             _oldTitleText.y = (_titleSprite.height - _oldTitleText.height) / 2;
             _titleSprite.addChild(_oldTitleText);
          }
       }
       
-      protected function __onComplete(param1:LoaderEvent) : void
+      protected function __onComplete(event:LoaderEvent) : void
       {
-         var _loc3_:BaseLoader = param1.loader;
-         _loc3_.removeEventListener("complete",__onComplete);
-         var _loc2_:Bitmap = _loc3_.content;
-         if(_loc2_)
+         var loader:BaseLoader = event.loader;
+         loader.removeEventListener("complete",__onComplete);
+         var bitmap:Bitmap = loader.content;
+         if(bitmap)
          {
             if(!_currentTitle && PlayerManager.Instance.Self.honorId >= NewTitleManager.FIRST_TITLEID)
             {
-               _currentTitle = new Bitmap(_loc2_.bitmapData.clone());
+               _currentTitle = new Bitmap(bitmap.bitmapData.clone());
                _currentTitle.x = _titleBg.x + (_titleBg.width - _currentTitle.width) / 2;
                _currentTitle.y = _titleBg.y + (_titleBg.height - _currentTitle.height) / 2;
                addToContent(_currentTitle);
             }
             else
             {
-               _loc2_.x = (_titleSprite.width - _loc2_.width) / 2;
-               _loc2_.y = (_titleSprite.height - _loc2_.height) / 2;
-               _titleSprite.addChild(_loc2_);
+               bitmap.x = (_titleSprite.width - bitmap.width) / 2;
+               bitmap.y = (_titleSprite.height - bitmap.height) / 2;
+               _titleSprite.addChild(bitmap);
             }
          }
       }
       
-      protected function __onSelectChange(param1:Event) : void
+      protected function __onSelectChange(event:Event) : void
       {
          SoundManager.instance.play("008");
          switch(int(_selectedButtonGroup.selectIndex))
@@ -286,7 +285,7 @@ package newTitle.view
          }
       }
       
-      private function __upadteTitle(param1:EffortEvent) : void
+      private function __upadteTitle(event:EffortEvent) : void
       {
          if(_selectedButtonGroup.selectIndex == 0)
          {
@@ -299,10 +298,10 @@ package newTitle.view
          LayerManager.Instance.addToLayer(this,2,true,1);
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:

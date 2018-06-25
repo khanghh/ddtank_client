@@ -75,15 +75,15 @@ package ddt.view.im
          return _stateImg.height;
       }
       
-      protected function __deleteHandler(param1:MouseEvent) : void
+      protected function __deleteHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         param1.stopImmediatePropagation();
+         event.stopImmediatePropagation();
          IMManager.Instance.removePrivateMessage(_recordInfo.id);
          dispatchEvent(new Event("delete"));
       }
       
-      protected function __outHandler(param1:MouseEvent) : void
+      protected function __outHandler(event:MouseEvent) : void
       {
          if(_recordInfo.exist == 2)
          {
@@ -97,17 +97,17 @@ package ddt.view.im
          _delete.visible = false;
       }
       
-      protected function __overHandler(param1:MouseEvent) : void
+      protected function __overHandler(event:MouseEvent) : void
       {
          _delete.visible = true;
          _stateImg.visible = true;
          _stateImg.setFrame(1);
       }
       
-      public function set recordInfo(param1:PresentRecordInfo) : void
+      public function set recordInfo(info:PresentRecordInfo) : void
       {
-         _recordInfo = param1;
-         if(param1.exist == 2)
+         _recordInfo = info;
+         if(info.exist == 2)
          {
             _newSign.visible = true;
             _stateImg.visible = true;
@@ -118,7 +118,7 @@ package ddt.view.im
             _newSign.visible = false;
             _stateImg.visible = false;
          }
-         if(param1.teamId)
+         if(info.teamId)
          {
             _sex.visible = false;
             _team.visible = true;
@@ -126,10 +126,10 @@ package ddt.view.im
          }
          else
          {
-            _PlayerInfo = PlayerManager.Instance.findPlayer(param1.id);
+            _PlayerInfo = PlayerManager.Instance.findPlayer(info.id);
             if(!_PlayerInfo.NickName)
             {
-               SocketManager.Instance.out.sendItemEquip(param1.id,false);
+               SocketManager.Instance.out.sendItemEquip(info.id,false);
                _PlayerInfo.addEventListener("propertychange",__infoHandler);
             }
             else
@@ -142,7 +142,7 @@ package ddt.view.im
          }
       }
       
-      protected function __infoHandler(param1:Event) : void
+      protected function __infoHandler(event:Event) : void
       {
          _PlayerInfo.removeEventListener("propertychange",__infoHandler);
          _sex.setFrame(!!_PlayerInfo.Sex?1:2);

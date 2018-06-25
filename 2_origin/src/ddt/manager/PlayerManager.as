@@ -240,9 +240,9 @@ package ddt.manager
          return _instance;
       }
       
-      public static function readLuckyPropertyName(param1:int) : String
+      public static function readLuckyPropertyName(id:int) : String
       {
-         switch(int(param1) - 1)
+         switch(int(id) - 1)
          {
             case 0:
                return LanguageMgr.GetTranslation("exp");
@@ -268,9 +268,9 @@ package ddt.manager
          return _curcentId;
       }
       
-      public function set curcentId(param1:int) : void
+      public function set curcentId(value:int) : void
       {
-         _curcentId = param1;
+         _curcentId = value;
       }
       
       public function get Self() : SelfInfo
@@ -288,9 +288,9 @@ package ddt.manager
          return _fightVo;
       }
       
-      public function setup(param1:AccountInfo) : void
+      public function setup(acc:AccountInfo) : void
       {
-         _account = param1;
+         _account = acc;
          customList = new Vector.<CustomInfo>();
          _friendList = new DictionaryData();
          _blackList = new DictionaryData();
@@ -302,182 +302,180 @@ package ddt.manager
          return _account;
       }
       
-      public function getDressEquipPlace(param1:InventoryItemInfo) : int
+      public function getDressEquipPlace(info:InventoryItemInfo) : int
       {
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         var _loc5_:int = 0;
-         if(EquipType.isWeddingRing(param1) && Self.Bag.getItemAt(16) == null)
+         var toPlace:int = 0;
+         var j:int = 0;
+         var i:int = 0;
+         if(EquipType.isWeddingRing(info) && Self.Bag.getItemAt(16) == null)
          {
             return 16;
          }
-         var _loc4_:Array = EquipType.CategeryIdToPlace(param1.CategoryID,param1.Place);
-         if(_loc4_.length == 1)
+         var toPlaces:Array = EquipType.CategeryIdToPlace(info.CategoryID,info.Place);
+         if(toPlaces.length == 1)
          {
-            _loc2_ = _loc4_[0];
+            toPlace = toPlaces[0];
          }
          else
          {
-            _loc3_ = 0;
-            _loc5_ = 0;
-            while(_loc5_ < _loc4_.length)
+            j = 0;
+            for(i = 0; i < toPlaces.length; )
             {
-               if(PlayerManager.Instance.Self.Bag.getItemAt(_loc4_[_loc5_]) == null)
+               if(PlayerManager.Instance.Self.Bag.getItemAt(toPlaces[i]) == null)
                {
-                  _loc2_ = _loc4_[_loc5_];
+                  toPlace = toPlaces[i];
                   break;
                }
-               _loc3_++;
-               if(_loc3_ == _loc4_.length)
+               j++;
+               if(j == toPlaces.length)
                {
-                  _loc2_ = _loc4_[0];
+                  toPlace = toPlaces[0];
                }
-               _loc5_++;
+               i++;
             }
          }
-         return _loc2_;
+         return toPlace;
       }
       
-      private function __updateInventorySlot(param1:PkgEvent) : void
+      private function __updateInventorySlot(evt:PkgEvent) : void
       {
-         var _loc11_:int = 0;
-         var _loc9_:int = 0;
-         var _loc10_:Boolean = false;
-         var _loc5_:* = null;
-         var _loc8_:* = null;
-         var _loc2_:Boolean = false;
-         var _loc6_:PackageIn = param1.pkg as PackageIn;
-         var _loc3_:int = _loc6_.readInt();
-         var _loc7_:int = _loc6_.readInt();
-         var _loc4_:BagInfo = _self.getBag(_loc3_);
-         if(_loc3_ == 21)
+         var i:int = 0;
+         var slot:int = 0;
+         var isUpdate:Boolean = false;
+         var item:* = null;
+         var date:* = null;
+         var sign:Boolean = false;
+         var pkg:PackageIn = evt.pkg as PackageIn;
+         var bagType:int = pkg.readInt();
+         var len:int = pkg.readInt();
+         var bag:BagInfo = _self.getBag(bagType);
+         if(bagType == 21)
          {
-            _loc2_ = true;
+            sign = true;
          }
-         _loc4_.beginChanges();
+         bag.beginChanges();
          var _loc12_:int = 0;
          try
          {
-            _loc11_ = 0;
-            while(_loc11_ < _loc7_)
+            for(i = 0; i < len; )
             {
-               _loc9_ = _loc6_.readInt();
-               _loc10_ = _loc6_.readBoolean();
-               if(_loc10_)
+               slot = pkg.readInt();
+               isUpdate = pkg.readBoolean();
+               if(isUpdate)
                {
-                  _loc5_ = _loc4_.getItemAt(_loc9_);
-                  if(_loc5_ == null)
+                  item = bag.getItemAt(slot);
+                  if(item == null)
                   {
-                     _loc5_ = new InventoryItemInfo();
-                     _loc5_.Place = _loc9_;
+                     item = new InventoryItemInfo();
+                     item.Place = slot;
                   }
-                  _loc5_.UserID = _loc6_.readInt();
-                  _loc5_.ItemID = _loc6_.readInt();
-                  _loc5_.Count = _loc6_.readInt();
-                  _loc5_.Place = _loc6_.readInt();
-                  _loc5_.TemplateID = _loc6_.readInt();
-                  _loc5_.AttackCompose = _loc6_.readInt();
-                  _loc5_.DefendCompose = _loc6_.readInt();
-                  _loc5_.AgilityCompose = _loc6_.readInt();
-                  _loc5_.LuckCompose = _loc6_.readInt();
-                  _loc5_.StrengthenLevel = _loc6_.readInt();
-                  _loc5_.StrengthenExp = _loc6_.readInt();
-                  _loc5_.IsBinds = _loc6_.readBoolean();
-                  _loc5_.IsJudge = _loc6_.readBoolean();
-                  _loc5_.BeginDate = _loc6_.readDateString();
-                  _loc5_.ValidDate = _loc6_.readInt();
-                  _loc5_.Color = _loc6_.readUTF();
-                  _loc5_.Skin = _loc6_.readUTF();
-                  _loc5_.IsUsed = _loc6_.readBoolean();
-                  _loc5_.Hole1 = _loc6_.readInt();
-                  _loc5_.Hole2 = _loc6_.readInt();
-                  _loc5_.Hole3 = _loc6_.readInt();
-                  _loc5_.Hole4 = _loc6_.readInt();
-                  _loc5_.Hole5 = _loc6_.readInt();
-                  _loc5_.Hole6 = _loc6_.readInt();
-                  ItemManager.fill(_loc5_);
-                  _loc5_.Pic = _loc6_.readUTF();
-                  _loc5_.RefineryLevel = _loc6_.readInt();
-                  _loc5_.DiscolorValidDate = _loc6_.readDateString();
-                  _loc5_.StrengthenTimes = _loc6_.readInt();
-                  _loc5_.Hole5Level = _loc6_.readByte();
-                  _loc5_.Hole5Exp = _loc6_.readInt();
-                  _loc5_.Hole6Level = _loc6_.readByte();
-                  _loc5_.Hole6Exp = _loc6_.readInt();
-                  _loc5_.curExp = _loc6_.readInt();
-                  _loc5_.cellLocked = _loc6_.readBoolean();
-                  _loc5_.isGold = _loc6_.readBoolean();
-                  if(_loc5_.isGold)
+                  item.UserID = pkg.readInt();
+                  item.ItemID = pkg.readInt();
+                  item.Count = pkg.readInt();
+                  item.Place = pkg.readInt();
+                  item.TemplateID = pkg.readInt();
+                  item.AttackCompose = pkg.readInt();
+                  item.DefendCompose = pkg.readInt();
+                  item.AgilityCompose = pkg.readInt();
+                  item.LuckCompose = pkg.readInt();
+                  item.StrengthenLevel = pkg.readInt();
+                  item.StrengthenExp = pkg.readInt();
+                  item.IsBinds = pkg.readBoolean();
+                  item.IsJudge = pkg.readBoolean();
+                  item.BeginDate = pkg.readDateString();
+                  item.ValidDate = pkg.readInt();
+                  item.Color = pkg.readUTF();
+                  item.Skin = pkg.readUTF();
+                  item.IsUsed = pkg.readBoolean();
+                  item.Hole1 = pkg.readInt();
+                  item.Hole2 = pkg.readInt();
+                  item.Hole3 = pkg.readInt();
+                  item.Hole4 = pkg.readInt();
+                  item.Hole5 = pkg.readInt();
+                  item.Hole6 = pkg.readInt();
+                  ItemManager.fill(item);
+                  item.Pic = pkg.readUTF();
+                  item.RefineryLevel = pkg.readInt();
+                  item.DiscolorValidDate = pkg.readDateString();
+                  item.StrengthenTimes = pkg.readInt();
+                  item.Hole5Level = pkg.readByte();
+                  item.Hole5Exp = pkg.readInt();
+                  item.Hole6Level = pkg.readByte();
+                  item.Hole6Exp = pkg.readInt();
+                  item.curExp = pkg.readInt();
+                  item.cellLocked = pkg.readBoolean();
+                  item.isGold = pkg.readBoolean();
+                  if(item.isGold)
                   {
-                     _loc5_.goldValidDate = _loc6_.readInt();
-                     _loc5_.goldBeginTime = _loc6_.readDateString();
+                     item.goldValidDate = pkg.readInt();
+                     item.goldBeginTime = pkg.readDateString();
                   }
-                  _loc5_.latentEnergyCurStr = _loc6_.readUTF();
-                  _loc5_.latentEnergyNewStr = _loc6_.readUTF();
-                  _loc5_.latentEnergyEndTime = _loc6_.readDate();
-                  _loc8_ = new Date();
-                  _loc8_.time;
-                  if(EquipType.isMagicStone(_loc5_.CategoryID))
+                  item.latentEnergyCurStr = pkg.readUTF();
+                  item.latentEnergyNewStr = pkg.readUTF();
+                  item.latentEnergyEndTime = pkg.readDate();
+                  date = new Date();
+                  date.time;
+                  if(EquipType.isMagicStone(item.CategoryID))
                   {
-                     _loc5_.Level = _loc5_.StrengthenLevel;
-                     _loc5_.Attack = _loc5_.AttackCompose;
-                     _loc5_.Defence = _loc5_.DefendCompose;
-                     _loc5_.Agility = _loc5_.AgilityCompose;
-                     _loc5_.Luck = _loc5_.LuckCompose;
-                     _loc5_.MagicAttack = _loc6_.readInt();
-                     _loc5_.MagicDefence = _loc6_.readInt();
+                     item.Level = item.StrengthenLevel;
+                     item.Attack = item.AttackCompose;
+                     item.Defence = item.DefendCompose;
+                     item.Agility = item.AgilityCompose;
+                     item.Luck = item.LuckCompose;
+                     item.MagicAttack = pkg.readInt();
+                     item.MagicDefence = pkg.readInt();
                   }
                   else
                   {
-                     _loc6_.readInt();
-                     _loc6_.readInt();
+                     pkg.readInt();
+                     pkg.readInt();
                   }
-                  _loc5_.goodsLock = _loc6_.readBoolean();
-                  _loc5_.MagicExp = _loc6_.readInt();
-                  _loc5_.MagicLevel = _loc6_.readInt();
-                  if(EquipType.isWeddingRing(_loc5_))
+                  item.goodsLock = pkg.readBoolean();
+                  item.MagicExp = pkg.readInt();
+                  item.MagicLevel = pkg.readInt();
+                  if(EquipType.isWeddingRing(item))
                   {
-                     _loc5_.RingExp = _self.RingExp;
+                     item.RingExp = _self.RingExp;
                   }
-                  if(int(PlayerManager._instance.Self.Grade) >= 10 && !_loc5_.IsUsed && _loc3_ == 0 && !BagAndInfoManager.Instance.isInBagAndInfoView && SystemOpenPromptManager.instance.isShowNewEuipTip && !BagStore.instance.isInBagStoreFrame && _playerEquipCategaryIdArr.indexOf(_loc5_.CategoryID) != -1 && int(PlayerManager._instance.Self.Grade) >= int(_loc5_.Property1))
+                  if(int(PlayerManager._instance.Self.Grade) >= 10 && !item.IsUsed && bagType == 0 && !BagAndInfoManager.Instance.isInBagAndInfoView && SystemOpenPromptManager.instance.isShowNewEuipTip && !BagStore.instance.isInBagStoreFrame && _playerEquipCategaryIdArr.indexOf(item.CategoryID) != -1 && int(PlayerManager._instance.Self.Grade) >= int(item.Property1))
                   {
-                     showTipWithEquip(_loc5_);
+                     showTipWithEquip(item);
                   }
-                  _loc4_.addItem(_loc5_);
-                  if(_loc5_.Place == 15 && _loc3_ == 0 && _loc5_.UserID == Self.ID)
+                  bag.addItem(item);
+                  if(item.Place == 15 && bagType == 0 && item.UserID == Self.ID)
                   {
-                     _self.DeputyWeaponID = _loc5_.TemplateID;
+                     _self.DeputyWeaponID = item.TemplateID;
                   }
-                  if(PathManager.solveExternalInterfaceEnabel() && _loc3_ == 12 && _loc5_.StrengthenLevel >= 7)
+                  if(PathManager.solveExternalInterfaceEnabel() && bagType == 12 && item.StrengthenLevel >= 7)
                   {
-                     ExternalInterfaceManager.sendToAgent(3,Self.ID,Self.NickName,ServerManager.Instance.zoneName,_loc5_.StrengthenLevel);
+                     ExternalInterfaceManager.sendToAgent(3,Self.ID,Self.NickName,ServerManager.Instance.zoneName,item.StrengthenLevel);
                   }
-                  trace(_loc3_ + "全部：",_loc5_.Name,_loc5_.latentEnergyEndTime.fullYear,_loc5_.latentEnergyEndTime.month,_loc5_.latentEnergyEndTime.date);
+                  trace(bagType + "全部：",item.Name,item.latentEnergyEndTime.fullYear,item.latentEnergyEndTime.month,item.latentEnergyEndTime.date);
                }
                else
                {
-                  _loc4_.removeItemAt(_loc9_);
+                  bag.removeItemAt(slot);
                }
-               _loc11_++;
+               i++;
             }
          }
          catch(_loc13_:*)
          {
             _loc12_ = 1;
          }
-         _loc4_.commiteChanges();
+         bag.commiteChanges();
          if(!int(_loc12_))
          {
-            if(_loc2_)
+            if(sign)
             {
                dispatchEvent(new BeadEvent("equip",0));
             }
             BuriedManager.Instance.dispatchEvent(new BuriedEvent("buried_UpDate_Stone_Count"));
-            if(_loc3_ == 0)
+            if(bagType == 0)
             {
                dispatchEvent(new Event("bag_update"));
             }
-            else if(_loc3_ == 1)
+            else if(bagType == 1)
             {
                dispatchEvent(new Event("propbag_update"));
             }
@@ -487,539 +485,537 @@ package ddt.manager
          throw _loc13_;
       }
       
-      public function getPlaceOfEquip(param1:InventoryItemInfo) : int
+      public function getPlaceOfEquip(item:InventoryItemInfo) : int
       {
-         var _loc3_:* = null;
-         if(EquipType.isWeddingRing(param1))
+         var placeArr:* = null;
+         if(EquipType.isWeddingRing(item))
          {
-            _loc3_ = [16];
+            placeArr = [16];
          }
          else
          {
-            _loc3_ = EquipType.CategeryIdToPlace(param1.CategoryID);
+            placeArr = EquipType.CategeryIdToPlace(item.CategoryID);
          }
-         var _loc2_:Array = _self.Bag.findIsEquipedByPlace(_loc3_);
-         if(_loc2_.length > 0)
+         var arr:Array = _self.Bag.findIsEquipedByPlace(placeArr);
+         if(arr.length > 0)
          {
-            return _loc2_[0];
+            return arr[0];
          }
          return -1;
       }
       
-      private function showTipWithEquip(param1:InventoryItemInfo) : void
+      private function showTipWithEquip(item:InventoryItemInfo) : void
       {
-         var _loc3_:* = null;
-         if(EquipType.isWeddingRing(param1))
+         var placeArr:* = null;
+         if(EquipType.isWeddingRing(item))
          {
-            _loc3_ = [16];
+            placeArr = [16];
          }
          else
          {
-            _loc3_ = EquipType.CategeryIdToPlace(param1.CategoryID);
+            placeArr = EquipType.CategeryIdToPlace(item.CategoryID);
          }
-         var _loc2_:Array = _self.Bag.findIsEquipedByPlace(_loc3_);
-         if(_loc2_.length > 0)
+         var arr:Array = _self.Bag.findIsEquipedByPlace(placeArr);
+         if(arr.length > 0)
          {
-            SystemOpenPromptManager.instance.showEquipTipFrame(param1);
+            SystemOpenPromptManager.instance.showEquipTipFrame(item);
          }
       }
       
-      private function __itemEquip(param1:PkgEvent) : void
+      private function __itemEquip(evt:PkgEvent) : void
       {
-         var _loc36_:int = 0;
-         var _loc30_:* = 0;
-         var _loc37_:* = null;
-         var _loc5_:int = 0;
-         var _loc25_:* = 0;
-         var _loc33_:* = null;
-         var _loc3_:int = 0;
-         var _loc26_:int = 0;
-         var _loc7_:* = null;
-         var _loc34_:* = null;
-         var _loc20_:* = null;
-         var _loc24_:* = undefined;
-         var _loc9_:int = 0;
-         var _loc35_:* = null;
-         var _loc6_:* = null;
-         var _loc27_:int = 0;
-         var _loc12_:* = null;
-         var _loc2_:* = null;
-         var _loc14_:int = 0;
-         var _loc29_:int = 0;
-         var _loc28_:* = null;
-         var _loc32_:int = 0;
-         var _loc15_:int = 0;
-         var _loc19_:int = 0;
-         var _loc21_:* = null;
-         var _loc22_:int = 0;
-         var _loc4_:int = 0;
-         var _loc17_:* = null;
-         var _loc16_:* = null;
-         var _loc13_:int = 0;
-         var _loc18_:* = null;
-         var _loc23_:PackageIn = param1.pkg;
-         _loc23_.deCompress();
-         var _loc10_:int = _loc23_.readInt();
-         var _loc31_:int = _loc23_.readInt();
-         var _loc11_:String = _loc23_.readUTF();
-         var _loc8_:PlayerInfo = findPlayer(_loc10_,_loc31_,_loc11_);
-         _loc8_.ID = _loc10_;
-         if(_loc8_ != null)
+         var _itemNum:int = 0;
+         var i:* = 0;
+         var item:* = null;
+         var beadCount:int = 0;
+         var m:* = 0;
+         var bead:* = null;
+         var count:int = 0;
+         var j:int = 0;
+         var gemstoneInfo:* = null;
+         var str:* = null;
+         var arr:* = null;
+         var list:* = undefined;
+         var t_i:int = 0;
+         var gems1:* = null;
+         var ginfo:* = null;
+         var k:int = 0;
+         var tmp:* = null;
+         var equip:* = null;
+         var horseIndex:int = 0;
+         var size:int = 0;
+         var equipGhost:* = null;
+         var bagType:int = 0;
+         var place:int = 0;
+         var idx:int = 0;
+         var bag:* = null;
+         var chipCount:int = 0;
+         var cot:int = 0;
+         var chip:* = null;
+         var mainPro:* = null;
+         var cCot:int = 0;
+         var subPro:* = null;
+         var totemGradeLen:int = 0;
+         var index:int = 0;
+         var pkg:PackageIn = evt.pkg;
+         pkg.deCompress();
+         var _id:int = pkg.readInt();
+         var zoneId:int = pkg.readInt();
+         var nickName:String = pkg.readUTF();
+         var info:PlayerInfo = findPlayer(_id,zoneId,nickName);
+         info.ID = _id;
+         if(info != null)
          {
-            _loc8_.beginChanges();
-            _loc8_.Agility = _loc23_.readInt();
-            _loc8_.Attack = _loc23_.readInt();
-            if(!PlayerManager.Instance.isChangeStyleTemp(_loc10_))
+            info.beginChanges();
+            info.Agility = pkg.readInt();
+            info.Attack = pkg.readInt();
+            if(!PlayerManager.Instance.isChangeStyleTemp(_id))
             {
-               _loc8_.Colors = _loc23_.readUTF();
-               _loc8_.Skin = _loc23_.readUTF();
+               info.Colors = pkg.readUTF();
+               info.Skin = pkg.readUTF();
             }
             else
             {
-               _loc23_.readUTF();
-               _loc23_.readUTF();
-               _loc8_.Colors = changedStyle[_loc10_]["Colors"];
-               _loc8_.Skin = changedStyle[_loc10_]["Skin"];
+               pkg.readUTF();
+               pkg.readUTF();
+               info.Colors = changedStyle[_id]["Colors"];
+               info.Skin = changedStyle[_id]["Skin"];
             }
-            _loc8_.Defence = _loc23_.readInt();
-            _loc8_.GP = _loc23_.readInt();
-            _loc8_.Grade = _loc23_.readInt();
-            _loc8_.ddtKingGrade = _loc23_.readInt();
-            _loc8_.Luck = _loc23_.readInt();
-            _loc8_.hp = _loc23_.readInt();
-            if(!PlayerManager.Instance.isChangeStyleTemp(_loc10_))
+            info.Defence = pkg.readInt();
+            info.GP = pkg.readInt();
+            info.Grade = pkg.readInt();
+            info.ddtKingGrade = pkg.readInt();
+            info.Luck = pkg.readInt();
+            info.hp = pkg.readInt();
+            if(!PlayerManager.Instance.isChangeStyleTemp(_id))
             {
-               _loc8_.Hide = _loc23_.readInt();
+               info.Hide = pkg.readInt();
             }
             else
             {
-               _loc23_.readInt();
-               _loc8_.Hide = changedStyle[_loc10_]["Hide"];
+               pkg.readInt();
+               info.Hide = changedStyle[_id]["Hide"];
             }
-            _loc8_.Repute = _loc23_.readInt();
-            if(!PlayerManager.Instance.isChangeStyleTemp(_loc10_))
+            info.Repute = pkg.readInt();
+            if(!PlayerManager.Instance.isChangeStyleTemp(_id))
             {
-               _loc8_.Sex = _loc23_.readBoolean();
-               _loc8_.Style = _loc23_.readUTF();
+               info.Sex = pkg.readBoolean();
+               info.Style = pkg.readUTF();
             }
             else
             {
-               _loc23_.readBoolean();
-               _loc23_.readUTF();
-               _loc8_.Sex = changedStyle[_loc10_]["Sex"];
-               _loc8_.Style = changedStyle[_loc10_]["Style"];
+               pkg.readBoolean();
+               pkg.readUTF();
+               info.Sex = changedStyle[_id]["Sex"];
+               info.Style = changedStyle[_id]["Style"];
             }
-            _loc8_.Offer = _loc23_.readInt();
-            _loc8_.NickName = _loc11_;
-            _loc8_.typeVIP = _loc23_.readByte();
-            _loc8_.VIPLevel = _loc23_.readInt();
-            _loc8_.isOpenKingBless = _loc23_.readBoolean();
-            _loc8_.WinCount = _loc23_.readInt();
-            _loc8_.TotalCount = _loc23_.readInt();
-            _loc8_.EscapeCount = _loc23_.readInt();
-            _loc8_.ConsortiaID = _loc23_.readInt();
-            _loc8_.ConsortiaName = _loc23_.readUTF();
-            _loc8_.badgeID = _loc23_.readInt();
-            _loc8_.RichesOffer = _loc23_.readInt();
-            _loc8_.RichesRob = _loc23_.readInt();
-            _loc8_.IsMarried = _loc23_.readBoolean();
-            _loc8_.SpouseID = _loc23_.readInt();
-            _loc8_.SpouseName = _loc23_.readUTF();
-            _loc8_.DutyName = _loc23_.readUTF();
-            _loc8_.Nimbus = _loc23_.readInt();
-            _loc8_.FightPower = _loc23_.readInt();
-            _loc8_.apprenticeshipState = _loc23_.readInt();
-            _loc8_.masterID = _loc23_.readInt();
-            _loc8_.setMasterOrApprentices(_loc23_.readUTF());
-            _loc8_.graduatesCount = _loc23_.readInt();
-            _loc8_.honourOfMaster = _loc23_.readUTF();
-            _loc8_.AchievementPoint = _loc23_.readInt();
-            _loc8_.honor = _loc23_.readUTF();
-            _loc8_.LastLoginDate = _loc23_.readDate();
-            _loc8_.spdTexpExp = _loc23_.readInt();
-            _loc8_.attTexpExp = _loc23_.readInt();
-            _loc8_.defTexpExp = _loc23_.readInt();
-            _loc8_.hpTexpExp = _loc23_.readInt();
-            _loc8_.lukTexpExp = _loc23_.readInt();
-            _loc8_.magicAtkTexpExp = _loc23_.readInt();
-            _loc8_.magicDefTexpExp = _loc23_.readInt();
-            _loc8_.DailyLeagueFirst = _loc23_.readBoolean();
-            _loc8_.DailyLeagueLastScore = _loc23_.readInt();
-            _loc8_.totemId = _loc23_.readInt();
-            _loc8_.necklaceExp = _loc23_.readInt();
-            _loc8_.isAttest = _loc23_.readBoolean();
-            _loc8_.curHorseLevel = _loc23_.readInt();
-            _loc8_.RingExp = _loc23_.readInt();
-            _loc8_.commitChanges();
-            _loc36_ = _loc23_.readInt();
-            _loc8_.Bag.beginChanges();
-            if(!(_loc8_ is SelfInfo))
+            info.Offer = pkg.readInt();
+            info.NickName = nickName;
+            info.typeVIP = pkg.readByte();
+            info.VIPLevel = pkg.readInt();
+            info.isOpenKingBless = pkg.readBoolean();
+            info.WinCount = pkg.readInt();
+            info.TotalCount = pkg.readInt();
+            info.EscapeCount = pkg.readInt();
+            info.ConsortiaID = pkg.readInt();
+            info.ConsortiaName = pkg.readUTF();
+            info.badgeID = pkg.readInt();
+            info.RichesOffer = pkg.readInt();
+            info.RichesRob = pkg.readInt();
+            info.IsMarried = pkg.readBoolean();
+            info.SpouseID = pkg.readInt();
+            info.SpouseName = pkg.readUTF();
+            info.DutyName = pkg.readUTF();
+            info.Nimbus = pkg.readInt();
+            info.FightPower = pkg.readInt();
+            info.apprenticeshipState = pkg.readInt();
+            info.masterID = pkg.readInt();
+            info.setMasterOrApprentices(pkg.readUTF());
+            info.graduatesCount = pkg.readInt();
+            info.honourOfMaster = pkg.readUTF();
+            info.AchievementPoint = pkg.readInt();
+            info.honor = pkg.readUTF();
+            info.LastLoginDate = pkg.readDate();
+            info.spdTexpExp = pkg.readInt();
+            info.attTexpExp = pkg.readInt();
+            info.defTexpExp = pkg.readInt();
+            info.hpTexpExp = pkg.readInt();
+            info.lukTexpExp = pkg.readInt();
+            info.magicAtkTexpExp = pkg.readInt();
+            info.magicDefTexpExp = pkg.readInt();
+            info.DailyLeagueFirst = pkg.readBoolean();
+            info.DailyLeagueLastScore = pkg.readInt();
+            info.totemId = pkg.readInt();
+            info.necklaceExp = pkg.readInt();
+            info.isAttest = pkg.readBoolean();
+            info.curHorseLevel = pkg.readInt();
+            info.RingExp = pkg.readInt();
+            info.commitChanges();
+            _itemNum = pkg.readInt();
+            info.Bag.beginChanges();
+            if(!(info is SelfInfo))
             {
-               _loc8_.Bag.clearnAll();
+               info.Bag.clearnAll();
             }
-            _loc30_ = uint(0);
-            while(_loc30_ < _loc36_)
+            for(i = uint(0); i < _itemNum; )
             {
-               _loc37_ = new InventoryItemInfo();
-               _loc37_.BagType = _loc23_.readByte();
-               _loc37_.UserID = _loc23_.readInt();
-               _loc37_.ItemID = _loc23_.readInt();
-               _loc37_.Count = _loc23_.readInt();
-               _loc37_.Place = _loc23_.readInt();
-               _loc37_.TemplateID = _loc23_.readInt();
-               _loc37_.AttackCompose = _loc23_.readInt();
-               _loc37_.DefendCompose = _loc23_.readInt();
-               _loc37_.AgilityCompose = _loc23_.readInt();
-               _loc37_.LuckCompose = _loc23_.readInt();
-               _loc37_.StrengthenLevel = _loc23_.readInt();
-               _loc37_.IsBinds = _loc23_.readBoolean();
-               _loc37_.IsJudge = _loc23_.readBoolean();
-               _loc37_.BeginDate = _loc23_.readDateString();
-               _loc37_.ValidDate = _loc23_.readInt();
-               _loc37_.Color = _loc23_.readUTF();
-               _loc37_.Skin = _loc23_.readUTF();
-               _loc37_.IsUsed = _loc23_.readBoolean();
-               ItemManager.fill(_loc37_);
-               _loc37_.Hole1 = _loc23_.readInt();
-               _loc37_.Hole2 = _loc23_.readInt();
-               _loc37_.Hole3 = _loc23_.readInt();
-               _loc37_.Hole4 = _loc23_.readInt();
-               _loc37_.Hole5 = _loc23_.readInt();
-               _loc37_.Hole6 = _loc23_.readInt();
-               _loc37_.Pic = _loc23_.readUTF();
-               _loc37_.RefineryLevel = _loc23_.readInt();
-               _loc37_.DiscolorValidDate = _loc23_.readDateString();
-               _loc37_.Hole5Level = _loc23_.readByte();
-               _loc37_.Hole5Exp = _loc23_.readInt();
-               _loc37_.Hole6Level = _loc23_.readByte();
-               _loc37_.Hole6Exp = _loc23_.readInt();
-               _loc37_.curExp = _loc23_.readInt();
-               _loc37_.isGold = _loc23_.readBoolean();
-               if(_loc37_.isGold)
+               item = new InventoryItemInfo();
+               item.BagType = pkg.readByte();
+               item.UserID = pkg.readInt();
+               item.ItemID = pkg.readInt();
+               item.Count = pkg.readInt();
+               item.Place = pkg.readInt();
+               item.TemplateID = pkg.readInt();
+               item.AttackCompose = pkg.readInt();
+               item.DefendCompose = pkg.readInt();
+               item.AgilityCompose = pkg.readInt();
+               item.LuckCompose = pkg.readInt();
+               item.StrengthenLevel = pkg.readInt();
+               item.IsBinds = pkg.readBoolean();
+               item.IsJudge = pkg.readBoolean();
+               item.BeginDate = pkg.readDateString();
+               item.ValidDate = pkg.readInt();
+               item.Color = pkg.readUTF();
+               item.Skin = pkg.readUTF();
+               item.IsUsed = pkg.readBoolean();
+               ItemManager.fill(item);
+               item.Hole1 = pkg.readInt();
+               item.Hole2 = pkg.readInt();
+               item.Hole3 = pkg.readInt();
+               item.Hole4 = pkg.readInt();
+               item.Hole5 = pkg.readInt();
+               item.Hole6 = pkg.readInt();
+               item.Pic = pkg.readUTF();
+               item.RefineryLevel = pkg.readInt();
+               item.DiscolorValidDate = pkg.readDateString();
+               item.Hole5Level = pkg.readByte();
+               item.Hole5Exp = pkg.readInt();
+               item.Hole6Level = pkg.readByte();
+               item.Hole6Exp = pkg.readInt();
+               item.curExp = pkg.readInt();
+               item.isGold = pkg.readBoolean();
+               if(item.isGold)
                {
-                  _loc37_.goldValidDate = _loc23_.readInt();
-                  _loc37_.goldBeginTime = _loc23_.readDateString();
+                  item.goldValidDate = pkg.readInt();
+                  item.goldBeginTime = pkg.readDateString();
                }
-               _loc37_.latentEnergyCurStr = _loc23_.readUTF();
-               _loc37_.latentEnergyNewStr = _loc23_.readUTF();
-               _loc37_.latentEnergyEndTime = _loc23_.readDate();
-               _loc37_.MagicLevel = _loc23_.readInt();
-               if(EquipType.isWeddingRing(_loc37_))
+               item.latentEnergyCurStr = pkg.readUTF();
+               item.latentEnergyNewStr = pkg.readUTF();
+               item.latentEnergyEndTime = pkg.readDate();
+               item.MagicLevel = pkg.readInt();
+               if(EquipType.isWeddingRing(item))
                {
-                  _loc37_.RingExp = _loc8_.RingExp;
+                  item.RingExp = info.RingExp;
                }
-               if(_loc37_.Place == 18)
+               if(item.Place == 18)
                {
                }
-               _loc8_.Bag.addItem(_loc37_);
-               _loc30_++;
+               info.Bag.addItem(item);
+               i++;
             }
-            _loc5_ = _loc23_.readInt();
-            if(!(_loc8_ is SelfInfo))
+            beadCount = pkg.readInt();
+            if(!(info is SelfInfo))
             {
-               _loc8_.BeadBag.clearnAll();
+               info.BeadBag.clearnAll();
             }
-            _loc8_.BeadBag.beginChanges();
-            _loc25_ = uint(0);
-            while(_loc25_ < _loc5_)
+            info.BeadBag.beginChanges();
+            for(m = uint(0); m < beadCount; )
             {
-               _loc33_ = new InventoryItemInfo();
-               _loc33_.BagType = _loc23_.readByte();
-               _loc33_.UserID = _loc23_.readInt();
-               _loc33_.ItemID = _loc23_.readInt();
-               _loc33_.Count = _loc23_.readInt();
-               _loc33_.Place = _loc23_.readInt();
-               _loc33_.TemplateID = _loc23_.readInt();
-               _loc33_.AttackCompose = _loc23_.readInt();
-               _loc33_.DefendCompose = _loc23_.readInt();
-               _loc33_.AgilityCompose = _loc23_.readInt();
-               _loc33_.LuckCompose = _loc23_.readInt();
-               _loc33_.StrengthenLevel = _loc23_.readInt();
-               _loc33_.IsBinds = _loc23_.readBoolean();
-               _loc33_.IsJudge = _loc23_.readBoolean();
-               _loc33_.BeginDate = _loc23_.readDateString();
-               _loc33_.ValidDate = _loc23_.readInt();
-               _loc33_.Color = _loc23_.readUTF();
-               _loc33_.Skin = _loc23_.readUTF();
-               _loc33_.IsUsed = _loc23_.readBoolean();
-               ItemManager.fill(_loc33_);
-               _loc33_.Hole1 = _loc23_.readInt();
-               _loc33_.Hole2 = _loc23_.readInt();
-               _loc33_.Hole3 = _loc23_.readInt();
-               _loc33_.Hole4 = _loc23_.readInt();
-               _loc33_.Hole5 = _loc23_.readInt();
-               _loc33_.Hole6 = _loc23_.readInt();
-               _loc33_.Pic = _loc23_.readUTF();
-               _loc33_.RefineryLevel = _loc23_.readInt();
-               _loc33_.DiscolorValidDate = _loc23_.readDateString();
-               _loc33_.Hole5Level = _loc23_.readByte();
-               _loc33_.Hole5Exp = _loc23_.readInt();
-               _loc33_.Hole6Level = _loc23_.readByte();
-               _loc33_.Hole6Exp = _loc23_.readInt();
-               _loc33_.isGold = _loc23_.readBoolean();
-               _loc8_.BeadBag.addItem(_loc33_);
-               _loc25_++;
+               bead = new InventoryItemInfo();
+               bead.BagType = pkg.readByte();
+               bead.UserID = pkg.readInt();
+               bead.ItemID = pkg.readInt();
+               bead.Count = pkg.readInt();
+               bead.Place = pkg.readInt();
+               bead.TemplateID = pkg.readInt();
+               bead.AttackCompose = pkg.readInt();
+               bead.DefendCompose = pkg.readInt();
+               bead.AgilityCompose = pkg.readInt();
+               bead.LuckCompose = pkg.readInt();
+               bead.StrengthenLevel = pkg.readInt();
+               bead.IsBinds = pkg.readBoolean();
+               bead.IsJudge = pkg.readBoolean();
+               bead.BeginDate = pkg.readDateString();
+               bead.ValidDate = pkg.readInt();
+               bead.Color = pkg.readUTF();
+               bead.Skin = pkg.readUTF();
+               bead.IsUsed = pkg.readBoolean();
+               ItemManager.fill(bead);
+               bead.Hole1 = pkg.readInt();
+               bead.Hole2 = pkg.readInt();
+               bead.Hole3 = pkg.readInt();
+               bead.Hole4 = pkg.readInt();
+               bead.Hole5 = pkg.readInt();
+               bead.Hole6 = pkg.readInt();
+               bead.Pic = pkg.readUTF();
+               bead.RefineryLevel = pkg.readInt();
+               bead.DiscolorValidDate = pkg.readDateString();
+               bead.Hole5Level = pkg.readByte();
+               bead.Hole5Exp = pkg.readInt();
+               bead.Hole6Level = pkg.readByte();
+               bead.Hole6Exp = pkg.readInt();
+               bead.isGold = pkg.readBoolean();
+               info.BeadBag.addItem(bead);
+               m++;
             }
-            _loc3_ = _loc23_.readInt();
+            count = pkg.readInt();
             gemstoneInfoList = new Vector.<GemstonInitInfo>();
-            _loc26_ = 0;
-            while(_loc26_ < _loc3_)
+            for(j = 0; j < count; )
             {
-               _loc7_ = new GemstonInitInfo();
-               _loc7_.figSpiritId = _loc23_.readInt();
-               _loc34_ = _loc23_.readUTF();
-               _loc20_ = rezArr(_loc34_);
-               _loc24_ = new Vector.<GemstListInfo>();
-               _loc9_ = 0;
-               while(_loc9_ < 3)
+               gemstoneInfo = new GemstonInitInfo();
+               gemstoneInfo.figSpiritId = pkg.readInt();
+               str = pkg.readUTF();
+               arr = rezArr(str);
+               list = new Vector.<GemstListInfo>();
+               for(t_i = 0; t_i < 3; )
                {
-                  _loc35_ = _loc20_[_loc9_].split(",");
-                  _loc6_ = new GemstListInfo();
-                  _loc6_.fightSpiritId = _loc7_.figSpiritId;
-                  _loc6_.level = _loc35_[0];
-                  _loc6_.exp = _loc35_[1];
-                  _loc6_.place = _loc35_[2];
-                  _loc24_.push(_loc6_);
-                  _loc9_++;
+                  gems1 = arr[t_i].split(",");
+                  ginfo = new GemstListInfo();
+                  ginfo.fightSpiritId = gemstoneInfo.figSpiritId;
+                  ginfo.level = gems1[0];
+                  ginfo.exp = gems1[1];
+                  ginfo.place = gems1[2];
+                  list.push(ginfo);
+                  t_i++;
                }
-               _loc7_.equipPlace = _loc23_.readInt();
-               if(_loc8_.Bag.getItemAt(_loc7_.equipPlace))
+               gemstoneInfo.equipPlace = pkg.readInt();
+               if(info.Bag.getItemAt(gemstoneInfo.equipPlace))
                {
-                  _loc8_.Bag.getItemAt(_loc7_.equipPlace).gemstoneList = _loc24_;
+                  info.Bag.getItemAt(gemstoneInfo.equipPlace).gemstoneList = list;
                }
-               _loc7_.list = _loc24_;
-               gemstoneInfoList.push(_loc7_);
-               _loc26_++;
+               gemstoneInfo.list = list;
+               gemstoneInfoList.push(gemstoneInfo);
+               j++;
             }
-            _loc8_.gemstoneList = gemstoneInfoList;
-            _loc8_.evolutionGrade = _loc23_.readInt();
-            _loc8_.evolutionExp = _loc23_.readInt();
-            _loc8_.MagicAttack = _loc23_.readInt();
-            _loc8_.MagicDefence = _loc23_.readInt();
-            _loc3_ = _loc23_.readInt();
-            _loc27_ = 0;
-            while(_loc27_ <= _loc3_ - 1)
+            info.gemstoneList = gemstoneInfoList;
+            info.evolutionGrade = pkg.readInt();
+            info.evolutionExp = pkg.readInt();
+            info.MagicAttack = pkg.readInt();
+            info.MagicDefence = pkg.readInt();
+            count = pkg.readInt();
+            for(k = 0; k <= count - 1; )
             {
-               _loc12_ = new MagicStoneInfo();
-               _loc12_.place = _loc23_.readInt();
-               _loc12_.templateId = _loc23_.readInt();
-               _loc12_.level = _loc23_.readInt();
-               _loc12_.attack = _loc23_.readInt();
-               _loc12_.defence = _loc23_.readInt();
-               _loc12_.agility = _loc23_.readInt();
-               _loc12_.luck = _loc23_.readInt();
-               _loc12_.magicAttack = _loc23_.readInt();
-               _loc12_.magicDefence = _loc23_.readInt();
-               _loc2_ = _loc8_.Bag.getItemAt(_loc12_.place);
-               if(_loc2_)
+               tmp = new MagicStoneInfo();
+               tmp.place = pkg.readInt();
+               tmp.templateId = pkg.readInt();
+               tmp.level = pkg.readInt();
+               tmp.attack = pkg.readInt();
+               tmp.defence = pkg.readInt();
+               tmp.agility = pkg.readInt();
+               tmp.luck = pkg.readInt();
+               tmp.magicAttack = pkg.readInt();
+               tmp.magicDefence = pkg.readInt();
+               equip = info.Bag.getItemAt(tmp.place);
+               if(equip)
                {
-                  _loc2_.magicStoneAttr = _loc12_;
+                  equip.magicStoneAttr = tmp;
                }
-               _loc27_++;
+               k++;
             }
-            _loc8_.MountsType = _loc23_.readInt();
-            _loc14_ = 0;
-            while(_loc14_ < 9)
+            info.MountsType = pkg.readInt();
+            for(horseIndex = 0; horseIndex < 9; )
             {
-               _loc8_.horseAmuletProperty[_loc14_] = _loc23_.readInt();
-               _loc14_++;
+               info.horseAmuletProperty[horseIndex] = pkg.readInt();
+               horseIndex++;
             }
-            _loc8_.horseAmuletHp = _loc23_.readInt();
-            _loc8_.manualProInfo.manual_Level = _loc23_.readInt();
-            _loc8_.manualProInfo.pro_Agile = _loc23_.readInt();
-            _loc8_.manualProInfo.pro_Armor = _loc23_.readInt();
-            _loc8_.manualProInfo.pro_Attack = _loc23_.readInt();
-            _loc8_.manualProInfo.pro_Damage = _loc23_.readInt();
-            _loc8_.manualProInfo.pro_Defense = _loc23_.readInt();
-            _loc8_.manualProInfo.pro_HP = _loc23_.readInt();
-            _loc8_.manualProInfo.pro_Lucky = _loc23_.readInt();
-            _loc8_.manualProInfo.pro_MagicAttack = _loc23_.readInt();
-            _loc8_.manualProInfo.pro_MagicResistance = _loc23_.readInt();
-            _loc8_.manualProInfo.pro_Stamina = _loc23_.readInt();
-            _loc8_.guardCoreGrade = _loc23_.readInt();
-            _loc8_.guardCoreID = _loc23_.readInt();
-            _loc29_ = _loc23_.readInt();
-            if(_loc29_ > 0)
+            info.horseAmuletHp = pkg.readInt();
+            info.manualProInfo.manual_Level = pkg.readInt();
+            info.manualProInfo.pro_Agile = pkg.readInt();
+            info.manualProInfo.pro_Armor = pkg.readInt();
+            info.manualProInfo.pro_Attack = pkg.readInt();
+            info.manualProInfo.pro_Damage = pkg.readInt();
+            info.manualProInfo.pro_Defense = pkg.readInt();
+            info.manualProInfo.pro_HP = pkg.readInt();
+            info.manualProInfo.pro_Lucky = pkg.readInt();
+            info.manualProInfo.pro_MagicAttack = pkg.readInt();
+            info.manualProInfo.pro_MagicResistance = pkg.readInt();
+            info.manualProInfo.pro_Stamina = pkg.readInt();
+            info.guardCoreGrade = pkg.readInt();
+            info.guardCoreID = pkg.readInt();
+            size = pkg.readInt();
+            if(size > 0)
             {
-               _loc28_ = null;
-               _loc32_ = 0;
-               _loc15_ = 0;
-               _loc19_ = 0;
-               while(_loc19_ < _loc29_)
+               equipGhost = null;
+               bagType = 0;
+               place = 0;
+               for(idx = 0; idx < size; )
                {
-                  _loc32_ = _loc23_.readInt();
-                  _loc15_ = _loc23_.readInt();
-                  _loc28_ = new EquipGhostData(_loc32_,_loc15_);
-                  _loc28_.level = _loc23_.readInt();
-                  _loc28_.totalGhost = _loc23_.readInt();
-                  _loc8_.addGhostData(_loc28_);
-                  _loc19_++;
+                  bagType = pkg.readInt();
+                  place = pkg.readInt();
+                  equipGhost = new EquipGhostData(bagType,place);
+                  equipGhost.level = pkg.readInt();
+                  equipGhost.totalGhost = pkg.readInt();
+                  info.addGhostData(equipGhost);
+                  idx++;
                }
             }
-            _loc8_.teamID = _loc23_.readInt();
-            _loc8_.teamName = _loc23_.readUTF();
-            _loc8_.teamTag = _loc23_.readUTF();
-            _loc8_.teamGrade = _loc23_.readInt();
-            _loc8_.teamWinTime = _loc23_.readInt();
-            _loc8_.teamTotalTime = _loc23_.readInt();
-            _loc8_.teamDivision = _loc23_.readInt();
-            _loc8_.teamScore = _loc23_.readInt();
-            _loc8_.teamDuty = _loc23_.readInt();
-            _loc8_.teamPersonalScore = _loc23_.readInt();
-            _loc21_ = new MarkBagData();
-            _loc22_ = _loc23_.readInt();
-            _loc4_ = 0;
-            while(_loc4_ < _loc22_)
+            info.teamID = pkg.readInt();
+            info.teamName = pkg.readUTF();
+            info.teamTag = pkg.readUTF();
+            info.teamGrade = pkg.readInt();
+            info.teamWinTime = pkg.readInt();
+            info.teamTotalTime = pkg.readInt();
+            info.teamDivision = pkg.readInt();
+            info.teamScore = pkg.readInt();
+            info.teamDuty = pkg.readInt();
+            info.teamPersonalScore = pkg.readInt();
+            bag = new MarkBagData();
+            chipCount = pkg.readInt();
+            for(cot = 0; cot < chipCount; )
             {
-               _loc17_ = new MarkChipData();
-               _loc17_.itemID = _loc23_.readInt();
-               _loc17_.templateId = _loc23_.readInt();
-               _loc17_.position = _loc23_.readInt();
-               _loc17_.isExist = _loc23_.readBoolean();
-               if(!_loc17_.isExist)
+               chip = new MarkChipData();
+               chip.itemID = pkg.readInt();
+               chip.templateId = pkg.readInt();
+               chip.position = pkg.readInt();
+               chip.isExist = pkg.readBoolean();
+               if(!chip.isExist)
                {
-                  _loc23_.readBoolean();
+                  pkg.readBoolean();
                }
                else
                {
-                  _loc23_.readBoolean();
-                  _loc17_.isbind = _loc23_.readBoolean();
-                  _loc17_.bornLv = _loc23_.readInt();
-                  _loc17_.hammerLv = _loc23_.readInt();
-                  _loc17_.hLv = _loc23_.readInt();
-                  _loc16_ = new MarkProData();
-                  _loc16_.type = _loc23_.readInt();
-                  _loc16_.value = _loc23_.readInt();
-                  _loc16_.attachValue = _loc23_.readInt();
-                  _loc17_.mainPro = _loc16_;
-                  _loc17_.props = new Vector.<MarkProData>();
-                  _loc13_ = 0;
-                  while(_loc13_ < 4)
+                  pkg.readBoolean();
+                  chip.isbind = pkg.readBoolean();
+                  chip.bornLv = pkg.readInt();
+                  chip.hammerLv = pkg.readInt();
+                  chip.hLv = pkg.readInt();
+                  mainPro = new MarkProData();
+                  mainPro.type = pkg.readInt();
+                  mainPro.value = pkg.readInt();
+                  mainPro.attachValue = pkg.readInt();
+                  chip.mainPro = mainPro;
+                  chip.props = new Vector.<MarkProData>();
+                  for(cCot = 0; cCot < 4; )
                   {
-                     _loc18_ = new MarkProData();
-                     _loc18_.type = _loc23_.readInt();
-                     _loc18_.value = _loc23_.readInt();
-                     _loc18_.attachValue = _loc23_.readInt();
-                     _loc18_.hummerCount = _loc23_.readInt();
-                     _loc17_.props.push(_loc18_);
-                     _loc13_++;
+                     subPro = new MarkProData();
+                     subPro.type = pkg.readInt();
+                     subPro.value = pkg.readInt();
+                     subPro.attachValue = pkg.readInt();
+                     subPro.hummerCount = pkg.readInt();
+                     chip.props.push(subPro);
+                     cCot++;
                   }
-                  _loc21_.chips[_loc17_.itemID] = _loc17_;
+                  bag.chips[chip.itemID] = chip;
                }
-               _loc4_++;
+               cot++;
             }
-            _loc8_.Markbag = _loc21_;
-            _loc8_.Bag.commiteChanges();
-            _loc8_.BeadBag.commiteChanges();
-            _loc8_.commitChanges();
-            dispatchEvent(new CEvent("playerEquipItem",_loc10_));
+            info.Markbag = bag;
+            totemGradeLen = pkg.readInt();
+            for(index = 0; index < totemGradeLen; )
+            {
+               info.addTotemGrade(pkg.readInt(),pkg.readInt());
+               index++;
+            }
+            info.Bag.commiteChanges();
+            info.BeadBag.commiteChanges();
+            info.commitChanges();
+            dispatchEvent(new CEvent("playerEquipItem",_id));
          }
       }
       
-      private function rezArr(param1:String) : Array
+      private function rezArr(str:String) : Array
       {
-         var _loc2_:Array = param1.split("|");
-         return _loc2_;
+         var arr:Array = str.split("|");
+         return arr;
       }
       
-      private function __onsItemEquip(param1:PkgEvent) : void
+      private function __onsItemEquip(evt:PkgEvent) : void
       {
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc4_.readInt();
-         var _loc3_:String = _loc4_.readUTF();
-         var _loc5_:PlayerInfo = findPlayer(_loc2_);
-         if(_loc5_ != null)
+         var pkg:PackageIn = evt.pkg;
+         var _id:int = pkg.readInt();
+         var nickName:String = pkg.readUTF();
+         var info:PlayerInfo = findPlayer(_id);
+         if(info != null)
          {
-            _loc5_.beginChanges();
-            _loc5_.Agility = _loc4_.readInt();
-            _loc5_.Attack = _loc4_.readInt();
-            if(!PlayerManager.Instance.isChangeStyleTemp(_loc2_))
+            info.beginChanges();
+            info.Agility = pkg.readInt();
+            info.Attack = pkg.readInt();
+            if(!PlayerManager.Instance.isChangeStyleTemp(_id))
             {
-               _loc5_.Colors = _loc4_.readUTF();
-               _loc5_.Skin = _loc4_.readUTF();
+               info.Colors = pkg.readUTF();
+               info.Skin = pkg.readUTF();
             }
             else
             {
-               _loc4_.readUTF();
-               _loc4_.readUTF();
-               _loc5_.Colors = changedStyle[_loc2_]["Colors"];
-               _loc5_.Skin = changedStyle[_loc2_]["Skin"];
+               pkg.readUTF();
+               pkg.readUTF();
+               info.Colors = changedStyle[_id]["Colors"];
+               info.Skin = changedStyle[_id]["Skin"];
             }
-            _loc5_.Defence = _loc4_.readInt();
-            _loc5_.GP = _loc4_.readInt();
-            _loc5_.Grade = _loc4_.readInt();
-            _loc5_.ddtKingGrade = _loc4_.readInt();
-            _loc5_.Luck = _loc4_.readInt();
-            if(!PlayerManager.Instance.isChangeStyleTemp(_loc2_))
+            info.Defence = pkg.readInt();
+            info.GP = pkg.readInt();
+            info.Grade = pkg.readInt();
+            info.ddtKingGrade = pkg.readInt();
+            info.Luck = pkg.readInt();
+            if(!PlayerManager.Instance.isChangeStyleTemp(_id))
             {
-               _loc5_.Hide = _loc4_.readInt();
+               info.Hide = pkg.readInt();
             }
             else
             {
-               _loc4_.readInt();
-               _loc5_.Hide = changedStyle[_loc2_]["Hide"];
+               pkg.readInt();
+               info.Hide = changedStyle[_id]["Hide"];
             }
-            _loc5_.Repute = _loc4_.readInt();
-            if(!PlayerManager.Instance.isChangeStyleTemp(_loc2_))
+            info.Repute = pkg.readInt();
+            if(!PlayerManager.Instance.isChangeStyleTemp(_id))
             {
-               _loc5_.Sex = _loc4_.readBoolean();
-               _loc5_.Style = _loc4_.readUTF();
+               info.Sex = pkg.readBoolean();
+               info.Style = pkg.readUTF();
             }
             else
             {
-               _loc4_.readBoolean();
-               _loc4_.readUTF();
-               _loc5_.Sex = changedStyle[_loc2_]["Sex"];
-               _loc5_.Style = changedStyle[_loc2_]["Style"];
+               pkg.readBoolean();
+               pkg.readUTF();
+               info.Sex = changedStyle[_id]["Sex"];
+               info.Style = changedStyle[_id]["Style"];
             }
-            _loc5_.Offer = _loc4_.readInt();
-            _loc5_.NickName = _loc3_;
-            _loc5_.typeVIP = _loc4_.readByte();
-            _loc5_.VIPLevel = _loc4_.readInt();
-            _loc5_.WinCount = _loc4_.readInt();
-            _loc5_.TotalCount = _loc4_.readInt();
-            _loc5_.EscapeCount = _loc4_.readInt();
-            _loc5_.ConsortiaID = _loc4_.readInt();
-            _loc5_.ConsortiaName = _loc4_.readUTF();
-            _loc5_.RichesOffer = _loc4_.readInt();
-            _loc5_.RichesRob = _loc4_.readInt();
-            _loc5_.IsMarried = _loc4_.readBoolean();
-            _loc5_.SpouseID = _loc4_.readInt();
-            _loc5_.SpouseName = _loc4_.readUTF();
-            _loc5_.DutyName = _loc4_.readUTF();
-            _loc5_.Nimbus = _loc4_.readInt();
-            _loc5_.FightPower = _loc4_.readInt();
-            _loc5_.apprenticeshipState = _loc4_.readInt();
-            _loc5_.masterID = _loc4_.readInt();
-            _loc5_.setMasterOrApprentices(_loc4_.readUTF());
-            _loc5_.graduatesCount = _loc4_.readInt();
-            _loc5_.honourOfMaster = _loc4_.readUTF();
-            _loc5_.AchievementPoint = _loc4_.readInt();
-            _loc5_.honor = _loc4_.readUTF();
-            _loc5_.LastLoginDate = _loc4_.readDate();
-            _loc5_.commitChanges();
-            _loc5_.Bag.beginChanges();
-            _loc5_.Bag.commiteChanges();
-            _loc5_.commitChanges();
+            info.Offer = pkg.readInt();
+            info.NickName = nickName;
+            info.typeVIP = pkg.readByte();
+            info.VIPLevel = pkg.readInt();
+            info.WinCount = pkg.readInt();
+            info.TotalCount = pkg.readInt();
+            info.EscapeCount = pkg.readInt();
+            info.ConsortiaID = pkg.readInt();
+            info.ConsortiaName = pkg.readUTF();
+            info.RichesOffer = pkg.readInt();
+            info.RichesRob = pkg.readInt();
+            info.IsMarried = pkg.readBoolean();
+            info.SpouseID = pkg.readInt();
+            info.SpouseName = pkg.readUTF();
+            info.DutyName = pkg.readUTF();
+            info.Nimbus = pkg.readInt();
+            info.FightPower = pkg.readInt();
+            info.apprenticeshipState = pkg.readInt();
+            info.masterID = pkg.readInt();
+            info.setMasterOrApprentices(pkg.readUTF());
+            info.graduatesCount = pkg.readInt();
+            info.honourOfMaster = pkg.readUTF();
+            info.AchievementPoint = pkg.readInt();
+            info.honor = pkg.readUTF();
+            info.LastLoginDate = pkg.readDate();
+            info.commitChanges();
+            info.Bag.beginChanges();
+            info.Bag.commiteChanges();
+            info.commitChanges();
          }
-         super.dispatchEvent(new CityWideEvent("ons_playerInfo",_loc5_));
+         super.dispatchEvent(new CityWideEvent("ons_playerInfo",info));
       }
       
-      protected function __onGetBagLockedList(param1:PkgEvent) : void
+      protected function __onGetBagLockedList(e:PkgEvent) : void
       {
-         e = param1;
-         formatArr = function(param1:Array, param2:int):void
+         e = e;
+         formatArr = function(arr:Array, length:int):void
          {
-            var _loc3_:int = 0;
-            if(param1.length == param2)
+            var i:int = 0;
+            if(arr.length == length)
             {
                return;
             }
-            _loc3_ = param1.length;
-            while(_loc3_ < param2)
+            for(i = arr.length; i < length; )
             {
-               param1.unshift("0");
-               _loc3_++;
+               arr.unshift("0");
+               i++;
             }
          };
          var bytes:ByteArray = e.pkg;
@@ -1034,19 +1030,19 @@ package ddt.manager
          _bagLockStateList = stateList;
       }
       
-      public function isBagLockedPSWNeeded(param1:int) : Boolean
+      public function isBagLockedPSWNeeded(type:int) : Boolean
       {
-         var _loc2_:Boolean = false;
+         var result:Boolean = false;
          if(_bagLockStateList == null)
          {
             return true;
          }
-         if(param1 < 0 || param1 >= _bagLockStateList.length)
+         if(type < 0 || type >= _bagLockStateList.length)
          {
             return true;
          }
-         var _loc3_:int = _bagLockStateList.length;
-         if(_bagLockStateList[_loc3_ - param1 - 1] == 0)
+         var len:int = _bagLockStateList.length;
+         if(_bagLockStateList[len - type - 1] == 0)
          {
             return false;
          }
@@ -1066,55 +1062,53 @@ package ddt.manager
          }
       }
       
-      public function submitBagLockPSWNeededList(param1:Array) : void
+      public function submitBagLockPSWNeededList(list:Array) : void
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         _loc3_ = param1.length;
-         while(_loc3_ < 32)
+         var n:int = 0;
+         var i:int = 0;
+         for(n = list.length; n < 32; )
          {
-            param1.unshift(0);
-            _loc3_++;
+            list.unshift(0);
+            n++;
          }
-         var _loc2_:ByteArray = new ByteArray();
-         _loc4_ = 0;
-         while(_loc4_ < param1.length)
+         var bytes:ByteArray = new ByteArray();
+         for(i = 0; i < list.length; )
          {
-            _loc2_.writeByte((param1[_loc4_ + 0] << 7) + (param1[_loc4_ + 1] << 6) + (param1[_loc4_ + 2] << 5) + (param1[_loc4_ + 3] << 4) + (param1[_loc4_ + 4] << 3) + (param1[_loc4_ + 5] << 2) + (param1[_loc4_ + 6] << 1) + param1[_loc4_ + 7]);
-            _loc4_ = _loc4_ + 8;
+            bytes.writeByte((list[i + 0] << 7) + (list[i + 1] << 6) + (list[i + 2] << 5) + (list[i + 3] << 4) + (list[i + 4] << 3) + (list[i + 5] << 2) + (list[i + 6] << 1) + list[i + 7]);
+            i = i + 8;
          }
-         GameInSocketOut.sendBagLockStates(_loc2_);
+         GameInSocketOut.sendBagLockStates(bytes);
       }
       
-      private function __bagLockedHandler(param1:PkgEvent) : void
+      private function __bagLockedHandler(evt:PkgEvent) : void
       {
-         var _loc5_:int = param1.pkg.readInt();
-         var _loc6_:int = param1.pkg.readInt();
-         var _loc8_:Boolean = param1.pkg.readBoolean();
-         var _loc3_:Boolean = param1.pkg.readBoolean();
-         var _loc7_:String = param1.pkg.readUTF();
-         var _loc4_:int = param1.pkg.readInt();
-         var _loc9_:String = param1.pkg.readUTF();
-         var _loc2_:String = param1.pkg.readUTF();
-         if(_loc8_)
+         var userId:int = evt.pkg.readInt();
+         var type:int = evt.pkg.readInt();
+         var isSussect:Boolean = evt.pkg.readBoolean();
+         var boo:Boolean = evt.pkg.readBoolean();
+         var msg:String = evt.pkg.readUTF();
+         var count:int = evt.pkg.readInt();
+         var questionOne:String = evt.pkg.readUTF();
+         var questionTwo:String = evt.pkg.readUTF();
+         if(isSussect)
          {
-            switch(int(_loc6_) - 1)
+            switch(int(type) - 1)
             {
                case 0:
                   _self.bagPwdState = true;
                   _self.bagLocked = true;
                   _self.onReceiveTypes("changePassword");
                   BaglockedManager.PWD = BaglockedManager.TEMP_PWD;
-                  MessageTipManager.getInstance().show(_loc7_);
+                  MessageTipManager.getInstance().show(msg);
                   break;
                case 1:
                   _self.bagPwdState = true;
                   _self.bagLocked = false;
                   if(!ServerManager.AUTO_UNLOCK)
                   {
-                     if(_loc7_ != "")
+                     if(msg != "")
                      {
-                        MessageTipManager.getInstance().show(_loc7_);
+                        MessageTipManager.getInstance().show(msg);
                      }
                      ServerManager.AUTO_UNLOCK = false;
                   }
@@ -1124,110 +1118,110 @@ package ddt.manager
                case 2:
                   _self.onReceiveTypes("updateSuccess");
                   BaglockedManager.PWD = BaglockedManager.TEMP_PWD;
-                  MessageTipManager.getInstance().show(_loc7_);
+                  MessageTipManager.getInstance().show(msg);
                   break;
                case 3:
                   _self.bagPwdState = false;
                   _self.bagLocked = false;
                   _self.onReceiveTypes("afterDel");
-                  MessageTipManager.getInstance().show(_loc7_);
+                  MessageTipManager.getInstance().show(msg);
                   break;
                case 4:
                   _self.bagPwdState = true;
                   _self.bagLocked = true;
-                  MessageTipManager.getInstance().show(_loc7_);
+                  MessageTipManager.getInstance().show(msg);
                default:
                   _self.bagPwdState = true;
                   _self.bagLocked = true;
-                  MessageTipManager.getInstance().show(_loc7_);
+                  MessageTipManager.getInstance().show(msg);
             }
          }
          else
          {
-            MessageTipManager.getInstance().show(_loc7_);
+            MessageTipManager.getInstance().show(msg);
          }
       }
       
-      private function __friendAdd(param1:PkgEvent) : void
+      private function __friendAdd(evt:PkgEvent) : void
       {
-         var _loc5_:* = null;
-         var _loc3_:* = null;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:Boolean = _loc4_.readBoolean();
-         if(_loc2_)
+         var info:* = null;
+         var existInfo:* = null;
+         var pkg:PackageIn = evt.pkg;
+         var b:Boolean = pkg.readBoolean();
+         if(b)
          {
-            _loc5_ = new FriendListPlayer();
-            _loc5_.beginChanges();
-            _loc5_.ID = _loc4_.readInt();
-            _loc5_.NickName = _loc4_.readUTF();
-            _loc5_.typeVIP = _loc4_.readByte();
-            _loc5_.VIPLevel = _loc4_.readInt();
-            _loc5_.Sex = _loc4_.readBoolean();
-            _loc3_ = findPlayer(_loc5_.ID);
-            if(!PlayerManager.Instance.isChangeStyleTemp(_loc5_.ID))
+            info = new FriendListPlayer();
+            info.beginChanges();
+            info.ID = pkg.readInt();
+            info.NickName = pkg.readUTF();
+            info.typeVIP = pkg.readByte();
+            info.VIPLevel = pkg.readInt();
+            info.Sex = pkg.readBoolean();
+            existInfo = findPlayer(info.ID);
+            if(!PlayerManager.Instance.isChangeStyleTemp(info.ID))
             {
-               _loc5_.Style = _loc4_.readUTF();
-               _loc5_.Colors = _loc4_.readUTF();
-               _loc5_.Skin = _loc4_.readUTF();
+               info.Style = pkg.readUTF();
+               info.Colors = pkg.readUTF();
+               info.Skin = pkg.readUTF();
             }
             else
             {
-               _loc4_.readUTF();
-               _loc4_.readUTF();
-               _loc4_.readUTF();
-               _loc5_.Style = _loc3_.Style;
-               _loc5_.Colors = _loc3_.Colors;
-               _loc5_.Skin = _loc3_.Skin;
+               pkg.readUTF();
+               pkg.readUTF();
+               pkg.readUTF();
+               info.Style = existInfo.Style;
+               info.Colors = existInfo.Colors;
+               info.Skin = existInfo.Skin;
             }
-            _loc5_.playerState = new PlayerState(_loc4_.readInt());
-            _loc5_.Grade = _loc4_.readInt();
-            _loc5_.ddtKingGrade = _loc4_.readInt();
-            if(!PlayerManager.Instance.isChangeStyleTemp(_loc5_.ID))
+            info.playerState = new PlayerState(pkg.readInt());
+            info.Grade = pkg.readInt();
+            info.ddtKingGrade = pkg.readInt();
+            if(!PlayerManager.Instance.isChangeStyleTemp(info.ID))
             {
-               _loc5_.Hide = _loc4_.readInt();
+               info.Hide = pkg.readInt();
             }
             else
             {
-               _loc4_.readInt();
-               _loc5_.Hide = _loc3_.Hide;
+               pkg.readInt();
+               info.Hide = existInfo.Hide;
             }
-            _loc5_.ConsortiaName = _loc4_.readUTF();
-            _loc5_.TotalCount = _loc4_.readInt();
-            _loc5_.EscapeCount = _loc4_.readInt();
-            _loc5_.WinCount = _loc4_.readInt();
-            _loc5_.Offer = _loc4_.readInt();
-            _loc5_.Repute = _loc4_.readInt();
-            _loc5_.Relation = _loc4_.readInt();
-            _loc5_.LoginName = _loc4_.readUTF();
-            _loc5_.Nimbus = _loc4_.readInt();
-            _loc5_.FightPower = _loc4_.readInt();
-            _loc5_.apprenticeshipState = _loc4_.readInt();
-            _loc5_.masterID = _loc4_.readInt();
-            _loc5_.setMasterOrApprentices(_loc4_.readUTF());
-            _loc5_.graduatesCount = _loc4_.readInt();
-            _loc5_.honourOfMaster = _loc4_.readUTF();
-            _loc5_.AchievementPoint = _loc4_.readInt();
-            _loc5_.honor = _loc4_.readUTF();
-            _loc5_.IsMarried = _loc4_.readBoolean();
-            _loc5_.isOld = _loc4_.readBoolean();
-            _loc5_.LastLoginDate = _loc4_.readDate();
-            _loc5_.ImagePath = _loc4_.readUTF();
-            _loc5_.IsShow = _loc4_.readBoolean();
-            _loc5_.isAttest = _loc4_.readBoolean();
-            _loc5_.commitChanges();
-            if(_loc5_.Relation != 1)
+            info.ConsortiaName = pkg.readUTF();
+            info.TotalCount = pkg.readInt();
+            info.EscapeCount = pkg.readInt();
+            info.WinCount = pkg.readInt();
+            info.Offer = pkg.readInt();
+            info.Repute = pkg.readInt();
+            info.Relation = pkg.readInt();
+            info.LoginName = pkg.readUTF();
+            info.Nimbus = pkg.readInt();
+            info.FightPower = pkg.readInt();
+            info.apprenticeshipState = pkg.readInt();
+            info.masterID = pkg.readInt();
+            info.setMasterOrApprentices(pkg.readUTF());
+            info.graduatesCount = pkg.readInt();
+            info.honourOfMaster = pkg.readUTF();
+            info.AchievementPoint = pkg.readInt();
+            info.honor = pkg.readUTF();
+            info.IsMarried = pkg.readBoolean();
+            info.isOld = pkg.readBoolean();
+            info.LastLoginDate = pkg.readDate();
+            info.ImagePath = pkg.readUTF();
+            info.IsShow = pkg.readBoolean();
+            info.isAttest = pkg.readBoolean();
+            info.commitChanges();
+            if(info.Relation != 1)
             {
-               addFriend(_loc5_);
+               addFriend(info);
                if(PathInfo.isUserAddFriend)
                {
-                  new AddCommunityFriend(_loc5_.LoginName,_loc5_.NickName);
+                  new AddCommunityFriend(info.LoginName,info.NickName);
                }
             }
             else
             {
-               addBlackList(_loc5_);
+               addBlackList(info);
             }
-            dispatchEvent(new IMEvent("addnewfriend",_loc5_));
+            dispatchEvent(new IMEvent("addnewfriend",info));
          }
          else
          {
@@ -1235,153 +1229,153 @@ package ddt.manager
          }
       }
       
-      public function isNeedPSW(param1:int) : Boolean
+      public function isNeedPSW(type:int) : Boolean
       {
          return false;
       }
       
-      public function addFriend(param1:PlayerInfo) : void
+      public function addFriend(player:PlayerInfo) : void
       {
          if(!blackList && !friendList)
          {
             return;
          }
-         blackList.remove(param1.ID);
-         friendList.add(param1.ID,param1);
+         blackList.remove(player.ID);
+         friendList.add(player.ID,player);
       }
       
-      public function addBlackList(param1:FriendListPlayer) : void
+      public function addBlackList(player:FriendListPlayer) : void
       {
          if(!blackList && !friendList)
          {
             return;
          }
-         friendList.remove(param1.ID);
-         blackList.add(param1.ID,param1);
+         friendList.remove(player.ID);
+         blackList.add(player.ID,player);
       }
       
-      public function removeFriend(param1:int) : void
+      public function removeFriend(id:int) : void
       {
          if(!blackList && !friendList)
          {
             return;
          }
-         friendList.remove(param1);
-         blackList.remove(param1);
+         friendList.remove(id);
+         blackList.remove(id);
       }
       
-      private function __friendRemove(param1:PkgEvent) : void
+      private function __friendRemove(evt:PkgEvent) : void
       {
-         removeFriend(param1.pkg.clientId);
+         removeFriend(evt.pkg.clientId);
       }
       
-      private function __playerState(param1:PkgEvent) : void
+      private function __playerState(evt:PkgEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:PackageIn = param1.pkg;
-         if(_loc2_.clientId != _self.ID)
+         var obj:* = null;
+         var pkg:PackageIn = evt.pkg;
+         if(pkg.clientId != _self.ID)
          {
-            _loc3_ = {};
-            _loc3_["clientId"] = _loc2_.clientId;
-            _loc3_["state"] = _loc2_.readInt();
-            _loc3_["typeVip"] = _loc2_.readByte();
-            _loc3_["viplevel"] = _loc2_.readInt();
-            _loc3_["isSameCity"] = _loc2_.readBoolean();
-            playerStateChange(_loc3_);
-            ConsortionModelManager.Instance.model.consortiaPlayerStateChange(_loc3_.clientId,_loc3_.state);
+            obj = {};
+            obj["clientId"] = pkg.clientId;
+            obj["state"] = pkg.readInt();
+            obj["typeVip"] = pkg.readByte();
+            obj["viplevel"] = pkg.readInt();
+            obj["isSameCity"] = pkg.readBoolean();
+            playerStateChange(obj);
+            ConsortionModelManager.Instance.model.consortiaPlayerStateChange(obj.clientId,obj.state);
          }
       }
       
-      private function spouseStateChange(param1:int) : void
+      private function spouseStateChange(state:int) : void
       {
-         var _loc2_:* = null;
-         if(param1 == 1)
+         var msg:* = null;
+         if(state == 1)
          {
-            _loc2_ = !!Self.Sex?LanguageMgr.GetTranslation("ddt.manager.playerManager.wifeOnline",Self.SpouseName):LanguageMgr.GetTranslation("ddt.manager.playerManager.hushandOnline",Self.SpouseName);
-            ChatManager.Instance.sysChatYellow(_loc2_);
+            msg = !!Self.Sex?LanguageMgr.GetTranslation("ddt.manager.playerManager.wifeOnline",Self.SpouseName):LanguageMgr.GetTranslation("ddt.manager.playerManager.hushandOnline",Self.SpouseName);
+            ChatManager.Instance.sysChatYellow(msg);
          }
       }
       
-      private function masterStateChange(param1:int, param2:int) : void
+      private function masterStateChange(state:int, clientId:int) : void
       {
-         var _loc3_:* = null;
-         if(param1 == 1 && param2 != Self.SpouseID)
+         var msg:* = null;
+         if(state == 1 && clientId != Self.SpouseID)
          {
-            if(param2 == Self.masterID)
+            if(clientId == Self.masterID)
             {
-               _loc3_ = LanguageMgr.GetTranslation("ddt.manager.playerManager.masterState",Self.getMasterOrApprentices()[param2]);
+               msg = LanguageMgr.GetTranslation("ddt.manager.playerManager.masterState",Self.getMasterOrApprentices()[clientId]);
             }
-            else if(Self.getMasterOrApprentices()[param2])
+            else if(Self.getMasterOrApprentices()[clientId])
             {
-               _loc3_ = LanguageMgr.GetTranslation("ddt.manager.playerManager.ApprenticeState",Self.getMasterOrApprentices()[param2]);
+               msg = LanguageMgr.GetTranslation("ddt.manager.playerManager.ApprenticeState",Self.getMasterOrApprentices()[clientId]);
             }
             else
             {
                return;
             }
-            ChatManager.Instance.sysChatYellow(_loc3_);
+            ChatManager.Instance.sysChatYellow(msg);
          }
       }
       
-      private function playerStateChange(param1:Object) : void
+      private function playerStateChange(obj:Object) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
-         var _loc4_:* = null;
-         var _loc5_:PlayerInfo = friendList[param1.clientId];
-         if(_loc5_)
+         var strII:* = null;
+         var beforeState:int = 0;
+         var playerInfo:* = null;
+         var info:PlayerInfo = friendList[obj.clientId];
+         if(info)
          {
-            if(_loc5_.playerState.StateID != param1.state || _loc5_.typeVIP != param1.typeVIP || _loc5_.isSameCity != param1.isSameCity)
+            if(info.playerState.StateID != obj.state || info.typeVIP != obj.typeVIP || info.isSameCity != obj.isSameCity)
             {
-               _loc5_.typeVIP = param1.typeVip;
-               _loc5_.VIPLevel = param1.viplevel;
-               _loc5_.isSameCity = param1.isSameCity;
-               if(param1.state == 1)
+               info.typeVIP = obj.typeVip;
+               info.VIPLevel = obj.viplevel;
+               info.isSameCity = obj.isSameCity;
+               if(obj.state == 1)
                {
-                  _loc5_.LastLoginDate = TimeManager.Instance.serverDate;
+                  info.LastLoginDate = TimeManager.Instance.serverDate;
                }
-               _loc2_ = "";
-               _loc3_ = _loc5_.playerState.StateID;
-               if(_loc5_.playerState.StateID != param1.state)
+               strII = "";
+               beforeState = info.playerState.StateID;
+               if(info.playerState.StateID != obj.state)
                {
-                  _loc5_.playerState = new PlayerState(param1.state);
-                  friendList.add(param1.clientId,_loc5_);
-                  if(_loc3_ == 4)
+                  info.playerState = new PlayerState(obj.state);
+                  friendList.add(obj.clientId,info);
+                  if(beforeState == 4)
                   {
                      return;
                   }
-                  if(param1.clientId == Self.SpouseID)
+                  if(obj.clientId == Self.SpouseID)
                   {
-                     spouseStateChange(param1.state);
+                     spouseStateChange(obj.state);
                      return;
                   }
-                  if(param1.clientId == Self.masterID || Self.getMasterOrApprentices()[param1.clientId])
+                  if(obj.clientId == Self.masterID || Self.getMasterOrApprentices()[obj.clientId])
                   {
-                     masterStateChange(param1.state,param1.clientId);
+                     masterStateChange(obj.state,obj.clientId);
                      return;
                   }
-                  if(param1.state == 1 && SharedManager.Instance.showOL)
+                  if(obj.state == 1 && SharedManager.Instance.showOL)
                   {
-                     _loc2_ = LanguageMgr.GetTranslation("tank.view.chat.ChatInputView.friend") + "[" + _loc5_.NickName + "]" + LanguageMgr.GetTranslation("tank.manager.PlayerManger.friendOnline");
-                     ChatManager.Instance.sysChatYellow(_loc2_);
+                     strII = LanguageMgr.GetTranslation("tank.view.chat.ChatInputView.friend") + "[" + info.NickName + "]" + LanguageMgr.GetTranslation("tank.manager.PlayerManger.friendOnline");
+                     ChatManager.Instance.sysChatYellow(strII);
                      return;
                   }
                   return;
                }
             }
-            friendList.add(param1.clientId,_loc5_);
+            friendList.add(obj.clientId,info);
          }
          else if(myAcademyPlayers)
          {
-            _loc4_ = myAcademyPlayers[param1.clientId];
-            if(_loc4_)
+            playerInfo = myAcademyPlayers[obj.clientId];
+            if(playerInfo)
             {
-               if(_loc4_.playerState.StateID != param1.state || _loc4_.IsVIP != param1.typeVip)
+               if(playerInfo.playerState.StateID != obj.state || playerInfo.IsVIP != obj.typeVip)
                {
-                  _loc4_.typeVIP = param1.typeVip;
-                  _loc4_.VIPLevel = param1.viplevel;
-                  _loc4_.playerState = new PlayerState(param1.state);
-                  myAcademyPlayers.add(param1.clientId,_loc4_);
+                  playerInfo.typeVIP = obj.typeVip;
+                  playerInfo.VIPLevel = obj.viplevel;
+                  playerInfo.playerState = new PlayerState(obj.state);
+                  myAcademyPlayers.add(obj.clientId,playerInfo);
                }
             }
          }
@@ -1431,100 +1425,99 @@ package ddt.manager
          SocketManager.Instance.addEventListener(PkgEvent.format(390,23),__useRoomBordenBoxHanlder);
       }
       
-      private function __useRoomBordenBoxHanlder(param1:PkgEvent) : void
+      private function __useRoomBordenBoxHanlder(e:PkgEvent) : void
       {
-         var _loc4_:* = null;
-         var _loc5_:PackageIn = param1.pkg as PackageIn;
-         var _loc3_:BagInfo = _self.getBag(43);
-         _loc3_.beginChanges();
-         if(_loc4_ == null)
+         var item:* = null;
+         var pkg:PackageIn = e.pkg as PackageIn;
+         var bag:BagInfo = _self.getBag(43);
+         bag.beginChanges();
+         if(item == null)
          {
-            _loc4_ = new InventoryItemInfo();
+            item = new InventoryItemInfo();
          }
-         var _loc2_:String = _loc5_.readUTF();
-         _loc4_.Count = _loc5_.readInt();
-         _loc4_.ItemID = _loc5_.readInt();
-         _loc4_.TemplateID = _loc5_.readInt();
-         _loc4_.ValidDate = _loc5_.readInt();
-         _loc4_.BeginDate = _loc5_.readDateString();
-         _loc4_.IsUsed = _loc5_.readBoolean();
-         _loc4_.IsBinds = true;
-         ItemManager.fill(_loc4_);
-         _loc3_.items.add(_loc4_.ItemID,_loc4_);
-         BagAndInfoManager.Instance.showPreviewFrame(_loc2_,[_loc4_]);
+         var itemName:String = pkg.readUTF();
+         item.Count = pkg.readInt();
+         item.ItemID = pkg.readInt();
+         item.TemplateID = pkg.readInt();
+         item.ValidDate = pkg.readInt();
+         item.BeginDate = pkg.readDateString();
+         item.IsUsed = pkg.readBoolean();
+         item.IsBinds = true;
+         ItemManager.fill(item);
+         bag.items.add(item.ItemID,item);
+         BagAndInfoManager.Instance.showPreviewFrame(itemName,[item]);
       }
       
-      private function __updateRoomBordenBag(param1:PkgEvent) : void
+      private function __updateRoomBordenBag(e:PkgEvent) : void
       {
-         var _loc7_:int = 0;
-         var _loc4_:* = null;
-         var _loc6_:PackageIn = param1.pkg as PackageIn;
-         var _loc3_:BagInfo = _self.getBag(43);
-         _loc3_.beginChanges();
-         var _loc5_:Boolean = _loc6_.readBoolean();
-         var _loc2_:int = _loc6_.readInt();
-         _loc7_ = 0;
-         while(_loc7_ < _loc2_)
+         var i:int = 0;
+         var item:* = null;
+         var pkg:PackageIn = e.pkg as PackageIn;
+         var bag:BagInfo = _self.getBag(43);
+         bag.beginChanges();
+         var bol:Boolean = pkg.readBoolean();
+         var count:int = pkg.readInt();
+         for(i = 0; i < count; )
          {
-            _loc4_ = new InventoryItemInfo();
-            _loc4_.ItemID = _loc6_.readInt();
-            _loc4_.TemplateID = _loc6_.readInt();
-            _loc4_.ValidDate = _loc6_.readInt();
-            _loc4_.BeginDate = _loc6_.readDateString();
-            _loc4_.IsUsed = _loc6_.readBoolean();
-            _loc4_.BagType = 43;
-            _loc4_.IsBinds = true;
-            ItemManager.fill(_loc4_);
-            if(_loc5_)
+            item = new InventoryItemInfo();
+            item.ItemID = pkg.readInt();
+            item.TemplateID = pkg.readInt();
+            item.ValidDate = pkg.readInt();
+            item.BeginDate = pkg.readDateString();
+            item.IsUsed = pkg.readBoolean();
+            item.BagType = 43;
+            item.IsBinds = true;
+            ItemManager.fill(item);
+            if(bol)
             {
-               _loc3_.items.add(_loc4_.ItemID,_loc4_);
+               bag.items.add(item.ItemID,item);
             }
             else
             {
-               _loc3_.items.remove(_loc4_.ItemID);
+               bag.items.remove(item.ItemID);
             }
-            _loc7_++;
+            i++;
          }
-         curcentId = _loc6_.readInt();
-         if(!_loc5_)
+         curcentId = pkg.readInt();
+         if(!bol)
          {
-            _loc3_.dispatchEvent(new BagEvent("update",null));
+            bag.dispatchEvent(new BagEvent("update",null));
          }
       }
       
-      private function __gameRate(param1:PkgEvent) : void
+      private function __gameRate(event:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc4_:int = _loc3_.readInt();
-         _self.experience_Rate = Number((_loc4_ / 100).toFixed(1));
-         var _loc2_:int = _loc3_.readInt();
-         _self.offer_Rate = Number((_loc2_ / 100).toFixed(1));
+         var pkg:PackageIn = event.pkg;
+         var experience_Rate:int = pkg.readInt();
+         _self.experience_Rate = Number((experience_Rate / 100).toFixed(1));
+         var offer_Rate:int = pkg.readInt();
+         _self.offer_Rate = Number((offer_Rate / 100).toFixed(1));
       }
       
-      private function __vipMerryDiscountInfo(param1:CrazyTankSocketEvent) : void
+      private function __vipMerryDiscountInfo(event:CrazyTankSocketEvent) : void
       {
-         var _loc4_:* = null;
-         var _loc7_:* = null;
-         var _loc10_:* = null;
-         var _loc5_:* = null;
-         var _loc2_:* = null;
-         var _loc9_:int = 0;
-         var _loc11_:* = null;
-         var _loc13_:* = null;
-         var _loc8_:int = 0;
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc6_:int = _loc3_.readInt();
-         var _loc12_:Boolean = _loc3_.readBoolean();
-         if(_loc6_ == 1)
+         var beginTime:* = null;
+         var endTime:* = null;
+         var merryDiscountInfo:* = null;
+         var vipDiscountInfo:* = null;
+         var arr:* = null;
+         var i:int = 0;
+         var kingBuffDiscountInfo:* = null;
+         var array:* = null;
+         var k:int = 0;
+         var pkg:PackageIn = event.pkg;
+         var type:int = pkg.readInt();
+         var bool:Boolean = pkg.readBoolean();
+         if(type == 1)
          {
             merryDiscountArr = ["0","0","0"];
-            if(_loc12_)
+            if(bool)
             {
-               _loc10_ = _loc3_.readUTF();
-               _loc4_ = _loc3_.readUTF();
-               _loc7_ = _loc3_.readUTF();
-               merryDiscountTime = _loc4_ + "--" + _loc7_;
-               merryDiscountArr = _loc10_.split("|");
+               merryDiscountInfo = pkg.readUTF();
+               beginTime = pkg.readUTF();
+               endTime = pkg.readUTF();
+               merryDiscountTime = beginTime + "--" + endTime;
+               merryDiscountArr = merryDiscountInfo.split("|");
                merryActivity = true;
             }
             else
@@ -1534,24 +1527,23 @@ package ddt.manager
                merryActivity = false;
             }
          }
-         else if(_loc6_ == 2)
+         else if(type == 2)
          {
             vipDiscountArr = ["0","0","0"];
             vipPriceArr = ["0","0","0"];
-            if(_loc12_)
+            if(bool)
             {
-               _loc5_ = _loc3_.readUTF();
-               _loc2_ = _loc5_.split("|");
-               _loc9_ = 0;
-               while(_loc9_ < _loc2_.length)
+               vipDiscountInfo = pkg.readUTF();
+               arr = vipDiscountInfo.split("|");
+               for(i = 0; i < arr.length; )
                {
-                  vipDiscountArr[_loc9_] = _loc2_[_loc9_].split(",")[1];
-                  vipPriceArr[_loc9_] = _loc2_[_loc9_].split(",")[0];
-                  _loc9_++;
+                  vipDiscountArr[i] = arr[i].split(",")[1];
+                  vipPriceArr[i] = arr[i].split(",")[0];
+                  i++;
                }
-               _loc4_ = _loc3_.readUTF();
-               _loc7_ = _loc3_.readUTF();
-               vipDiscountTime = _loc4_ + "--" + _loc7_;
+               beginTime = pkg.readUTF();
+               endTime = pkg.readUTF();
+               vipDiscountTime = beginTime + "--" + endTime;
                vipActivity = true;
             }
             else
@@ -1560,24 +1552,23 @@ package ddt.manager
                vipActivity = false;
             }
          }
-         else if(_loc6_ == 3)
+         else if(type == 3)
          {
             kingBuffDiscountArr = ["0","0","0"];
             kingBuffPriceArr = ["0","0","0"];
-            if(_loc12_)
+            if(bool)
             {
-               _loc11_ = _loc3_.readUTF();
-               _loc13_ = _loc11_.split("|");
-               _loc8_ = 0;
-               while(_loc8_ < _loc13_.length)
+               kingBuffDiscountInfo = pkg.readUTF();
+               array = kingBuffDiscountInfo.split("|");
+               for(k = 0; k < array.length; )
                {
-                  kingBuffDiscountArr[_loc8_] = _loc13_[_loc8_].split(",")[1];
-                  kingBuffPriceArr[_loc8_] = _loc13_[_loc8_].split(",")[0];
-                  _loc8_++;
+                  kingBuffDiscountArr[k] = array[k].split(",")[1];
+                  kingBuffPriceArr[k] = array[k].split(",")[0];
+                  k++;
                }
-               _loc4_ = _loc3_.readUTF();
-               _loc7_ = _loc3_.readUTF();
-               kingBuffDiscountTime = _loc4_ + "--" + _loc7_;
+               beginTime = pkg.readUTF();
+               endTime = pkg.readUTF();
+               kingBuffDiscountTime = beginTime + "--" + endTime;
                kingBuffActivity = true;
             }
             else
@@ -1587,101 +1578,98 @@ package ddt.manager
          }
       }
       
-      private function __onGetPlayerRspecial(param1:PkgEvent) : void
+      private function __onGetPlayerRspecial(e:PkgEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc12_:int = 0;
-         var _loc7_:int = 0;
-         var _loc9_:int = 0;
-         var _loc6_:* = null;
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         var _loc11_:int = 0;
-         var _loc5_:int = 0;
-         var _loc8_:PackageIn = param1.pkg;
-         var _loc10_:int = _loc8_.readInt();
-         if(_loc10_ == 1)
+         var count:int = 0;
+         var i:int = 0;
+         var ticketNum:int = 0;
+         var uploadNum:int = 0;
+         var dic:* = null;
+         var index:int = 0;
+         var num:int = 0;
+         var mapID:int = 0;
+         var value:int = 0;
+         var pkg:PackageIn = e.pkg;
+         var type:int = pkg.readInt();
+         if(type == 1)
          {
-            _loc7_ = param1.pkg.readInt();
-            _loc9_ = param1.pkg.readInt();
-            _self.uploadNum = _loc9_;
-            _self.ticketNum = _loc7_;
+            ticketNum = e.pkg.readInt();
+            uploadNum = e.pkg.readInt();
+            _self.uploadNum = uploadNum;
+            _self.ticketNum = ticketNum;
          }
-         else if(_loc10_ == 2)
+         else if(type == 2)
          {
-            _loc4_ = _loc8_.readInt();
-            _loc6_ = new DictionaryData();
-            _loc12_ = 0;
-            while(_loc12_ < _loc4_)
+            count = pkg.readInt();
+            dic = new DictionaryData();
+            for(i = 0; i < count; )
             {
-               _loc3_ = _loc8_.readInt();
-               _loc2_ = _loc8_.readInt();
-               _loc6_.add(_loc3_,_loc2_);
-               _loc12_++;
+               index = pkg.readInt();
+               num = pkg.readInt();
+               dic.add(index,num);
+               i++;
             }
-            _self.ringUseNum = _loc6_;
+            _self.ringUseNum = dic;
          }
-         else if(_loc10_ == 3)
+         else if(type == 3)
          {
-            _loc4_ = _loc8_.readInt();
-            _loc12_ = 0;
-            while(_loc12_ < _loc4_)
+            count = pkg.readInt();
+            for(i = 0; i < count; )
             {
-               _loc11_ = _loc8_.readInt();
-               _loc5_ = _loc8_.readInt();
-               _self.setDungeonCount(_loc11_,_loc5_);
-               _loc12_++;
+               mapID = pkg.readInt();
+               value = pkg.readInt();
+               _self.setDungeonCount(mapID,value);
+               i++;
             }
          }
       }
       
-      protected function __totalCharge(param1:PkgEvent) : void
+      protected function __totalCharge(event:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _self.totalCharge = _loc2_.readInt();
+         var pkg:PackageIn = event.pkg;
+         _self.totalCharge = pkg.readInt();
       }
       
-      protected function __onUpdateDungeonExp(param1:PkgEvent) : void
+      protected function __onUpdateDungeonExp(event:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _self.DungeonExpReceiveNum = _loc2_.readInt();
-         _self.DungeonExpTotalNum = _loc2_.readInt();
+         var pkg:PackageIn = event.pkg;
+         _self.DungeonExpReceiveNum = pkg.readInt();
+         _self.DungeonExpTotalNum = pkg.readInt();
       }
       
-      protected function __updatePeerID(param1:PkgEvent) : void
+      protected function __updatePeerID(event:PkgEvent) : void
       {
-         var _loc4_:int = param1.pkg.readInt();
-         var _loc2_:int = param1.pkg.readInt();
-         var _loc3_:PlayerInfo = findPlayer(_loc2_,_loc4_);
-         _loc3_.peerID = param1.pkg.readUTF();
-         FlashP2PManager.Instance.addReadStream(_loc3_.peerID,_loc3_.ID);
+         var zoneID:int = event.pkg.readInt();
+         var userID:int = event.pkg.readInt();
+         var player:PlayerInfo = findPlayer(userID,zoneID);
+         player.peerID = event.pkg.readUTF();
+         FlashP2PManager.Instance.addReadStream(player.peerID,player.ID);
       }
       
-      protected function __updateEnergyHandler(param1:PkgEvent) : void
+      protected function __updateEnergyHandler(event:PkgEvent) : void
       {
-         Self.energy = param1.pkg.readInt();
-         Self.buyEnergyCount = param1.pkg.readInt();
+         Self.energy = event.pkg.readInt();
+         Self.buyEnergyCount = event.pkg.readInt();
       }
       
-      protected function __necklaceStrengthInfoUpadte(param1:PkgEvent) : void
+      protected function __necklaceStrengthInfoUpadte(event:PkgEvent) : void
       {
-         Self.necklaceExp = param1.pkg.readInt();
-         Self.necklaceExpAdd = param1.pkg.readInt();
+         Self.necklaceExp = event.pkg.readInt();
+         Self.necklaceExpAdd = event.pkg.readInt();
       }
       
-      protected function __updateAreaInfo(param1:PkgEvent) : void
+      protected function __updateAreaInfo(event:PkgEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:int = param1.pkg.readInt();
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var i:int = 0;
+         var areaInfo:* = null;
+         var len:int = event.pkg.readInt();
+         for(i = 0; i < len; )
          {
-            _loc2_ = new AreaInfo();
-            _loc2_.areaID = param1.pkg.readInt();
-            _loc2_.areaName = param1.pkg.readUTF();
-            _areaList.add(_loc2_.areaName,_loc2_);
-            _loc4_++;
+            areaInfo = new AreaInfo();
+            areaInfo.areaID = event.pkg.readInt();
+            areaInfo.areaName = event.pkg.readUTF();
+            _areaList.add(areaInfo.areaName,areaInfo);
+            i++;
          }
       }
       
@@ -1694,157 +1682,179 @@ package ddt.manager
       {
          var _loc3_:int = 0;
          var _loc2_:* = _areaList;
-         for each(var _loc1_ in _areaList)
+         for each(var i in _areaList)
          {
-            if(_loc1_.areaID == Self.ZoneID)
+            if(i.areaID == Self.ZoneID)
             {
-               return _loc1_.areaName;
+               return i.areaName;
             }
          }
          return "";
       }
       
-      public function getAreaNameByAreaID(param1:int) : String
+      public function getAreaNameByAreaID(areaID:int) : String
       {
          var _loc4_:int = 0;
          var _loc3_:* = _areaList;
-         for each(var _loc2_ in _areaList)
+         for each(var i in _areaList)
          {
-            if(_loc2_.areaID == param1)
+            if(i.areaID == areaID)
             {
-               return _loc2_.areaName;
+               return i.areaName;
             }
          }
          return "";
       }
       
-      private function __onOpenHole(param1:PkgEvent) : void
+      private function __onOpenHole(pEvent:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg as PackageIn;
-         var _loc2_:int = _loc3_.readInt();
+         var pkg:PackageIn = pEvent.pkg as PackageIn;
+         var id:int = pkg.readInt();
          BeadModel.drillInfo.clear();
-         BeadModel.drillInfo.add(131,_loc3_.readInt());
-         BeadModel.drillInfo.add(141,_loc3_.readInt());
-         BeadModel.drillInfo.add(151,_loc3_.readInt());
-         BeadModel.drillInfo.add(161,_loc3_.readInt());
-         BeadModel.drillInfo.add(171,_loc3_.readInt());
-         BeadModel.drillInfo.add(181,_loc3_.readInt());
-         BeadModel.drillInfo.add(132,_loc3_.readInt());
-         BeadModel.drillInfo.add(142,_loc3_.readInt());
-         BeadModel.drillInfo.add(152,_loc3_.readInt());
-         BeadModel.drillInfo.add(162,_loc3_.readInt());
-         BeadModel.drillInfo.add(172,_loc3_.readInt());
-         BeadModel.drillInfo.add(182,_loc3_.readInt());
+         BeadModel.drillInfo.add(131,pkg.readInt());
+         BeadModel.drillInfo.add(141,pkg.readInt());
+         BeadModel.drillInfo.add(151,pkg.readInt());
+         BeadModel.drillInfo.add(161,pkg.readInt());
+         BeadModel.drillInfo.add(171,pkg.readInt());
+         BeadModel.drillInfo.add(181,pkg.readInt());
+         BeadModel.drillInfo.add(132,pkg.readInt());
+         BeadModel.drillInfo.add(142,pkg.readInt());
+         BeadModel.drillInfo.add(152,pkg.readInt());
+         BeadModel.drillInfo.add(162,pkg.readInt());
+         BeadModel.drillInfo.add(172,pkg.readInt());
+         BeadModel.drillInfo.add(182,pkg.readInt());
          dispatchEvent(new BeadEvent("openBeadHole",0));
       }
       
-      protected function __updatePlayerProperty(param1:PkgEvent) : void
+      protected function __updatePlayerProperty(event:PkgEvent) : void
       {
-         var _loc7_:PackageIn = param1.pkg;
-         var _loc4_:Array = ["Attack","Defence","Agility","Luck"];
-         var _loc5_:DictionaryData = new DictionaryData();
-         var _loc6_:DictionaryData = null;
-         var _loc3_:int = -1;
-         _loc3_ = _loc7_.readInt();
-         var _loc9_:int = _loc7_.readInt();
-         var _loc12_:* = 0;
-         var _loc11_:* = _loc4_;
-         for each(var _loc2_ in _loc4_)
+         var pkg:PackageIn = event.pkg;
+         var arr:Array = ["Attack","Defence","Agility","Luck"];
+         var dic:DictionaryData = new DictionaryData();
+         var tmp:DictionaryData = null;
+         var playerId:int = -1;
+         playerId = pkg.readInt();
+         var zoneId:int = pkg.readInt();
+         var _loc13_:* = 0;
+         var _loc12_:* = arr;
+         for each(var s in arr)
          {
-            var _loc10_:* = new DictionaryData();
-            _loc5_[_loc2_] = _loc10_;
-            _loc6_ = _loc10_;
-            _loc7_.readInt();
-            _loc6_["Texp"] = _loc7_.readInt();
-            _loc6_["Card"] = _loc7_.readInt();
-            _loc6_["Pet"] = _loc7_.readInt();
-            _loc6_["Suit"] = _loc7_.readInt();
-            _loc6_["gem"] = _loc7_.readInt();
-            _loc6_["Bead"] = _loc7_.readInt();
-            _loc6_["Avatar"] = _loc7_.readInt();
-            _loc6_["MagicStone"] = _loc7_.readInt();
-            _loc6_["Temple"] = _loc7_.readInt();
-            _loc6_["PetAtlas"] = _loc7_.readInt();
+            var _loc11_:* = new DictionaryData();
+            dic[s] = _loc11_;
+            tmp = _loc11_;
+            pkg.readInt();
+            tmp["Texp"] = pkg.readInt();
+            tmp["Card"] = pkg.readInt();
+            tmp["Pet"] = pkg.readInt();
+            tmp["Suit"] = pkg.readInt();
+            tmp["gem"] = pkg.readInt();
+            tmp["Bead"] = pkg.readInt();
+            tmp["Avatar"] = pkg.readInt();
+            tmp["MagicStone"] = pkg.readInt();
+            tmp["Temple"] = pkg.readInt();
+            tmp["PetAtlas"] = pkg.readInt();
          }
-         _loc10_ = new DictionaryData();
-         _loc5_["MagicAttack"] = _loc10_;
-         _loc6_ = _loc10_;
-         _loc6_["MagicStone"] = _loc7_.readInt();
-         _loc6_["Horse"] = _loc7_.readInt();
-         _loc6_["HorsePicCherish"] = _loc7_.readInt();
-         _loc6_["Enchant"] = _loc7_.readInt();
-         _loc6_["Suit"] = _loc7_.readInt();
-         _loc6_["Texp"] = _loc7_.readInt();
-         _loc6_["Card"] = _loc7_.readInt();
-         _loc12_ = new DictionaryData();
-         _loc5_["MagicDefence"] = _loc12_;
-         _loc6_ = _loc12_;
-         _loc6_["MagicStone"] = _loc7_.readInt();
-         _loc6_["Horse"] = _loc7_.readInt();
-         _loc6_["HorsePicCherish"] = _loc7_.readInt();
-         _loc6_["Enchant"] = _loc7_.readInt();
-         _loc6_["Suit"] = _loc7_.readInt();
-         _loc6_["Temple"] = _loc7_.readInt();
-         _loc6_["Texp"] = _loc7_.readInt();
-         _loc6_["Card"] = _loc7_.readInt();
          _loc11_ = new DictionaryData();
-         _loc5_["HP"] = _loc11_;
-         _loc6_ = _loc11_;
-         _loc7_.readInt();
-         _loc6_["Texp"] = _loc7_.readInt();
-         _loc6_["Pet"] = _loc7_.readInt();
-         _loc6_["Bead"] = _loc7_.readInt();
-         _loc6_["Suit"] = _loc7_.readInt();
-         _loc6_["gem"] = _loc7_.readInt();
-         _loc6_["Avatar"] = _loc7_.readInt();
-         _loc6_["Horse"] = _loc7_.readInt();
-         _loc6_["HorsePicCherish"] = _loc7_.readInt();
-         _loc6_["Temple"] = _loc7_.readInt();
-         _loc10_ = new DictionaryData();
-         _loc5_["Damage"] = _loc10_;
-         _loc6_ = _loc10_;
-         _loc6_["Suit"] = _loc7_.readInt();
+         dic["MagicAttack"] = _loc11_;
+         tmp = _loc11_;
+         tmp["MagicStone"] = pkg.readInt();
+         tmp["Horse"] = pkg.readInt();
+         tmp["HorsePicCherish"] = pkg.readInt();
+         tmp["Enchant"] = pkg.readInt();
+         tmp["Suit"] = pkg.readInt();
+         tmp["Texp"] = pkg.readInt();
+         tmp["Card"] = pkg.readInt();
+         tmp["Temple"] = 0;
+         _loc13_ = new DictionaryData();
+         dic["MagicDefence"] = _loc13_;
+         tmp = _loc13_;
+         tmp["MagicStone"] = pkg.readInt();
+         tmp["Horse"] = pkg.readInt();
+         tmp["HorsePicCherish"] = pkg.readInt();
+         tmp["Enchant"] = pkg.readInt();
+         tmp["Suit"] = pkg.readInt();
+         tmp["Temple"] = pkg.readInt();
+         tmp["Texp"] = pkg.readInt();
+         tmp["Card"] = pkg.readInt();
          _loc12_ = new DictionaryData();
-         _loc5_["Guard"] = _loc12_;
-         _loc6_ = _loc12_;
-         _loc6_["Suit"] = _loc7_.readInt();
-         _loc5_["Damage"]["Bead"] = _loc7_.readInt();
-         _loc5_["Damage"]["Avatar"] = _loc7_.readInt();
-         _loc5_["Damage"]["Horse"] = _loc7_.readInt();
-         _loc5_["Damage"]["HorsePicCherish"] = _loc7_.readInt();
-         _loc5_["Armor"] = new DictionaryData();
-         _loc5_["Armor"]["Bead"] = _loc7_.readInt();
-         _loc5_["Armor"]["Avatar"] = _loc7_.readInt();
-         _loc5_["Armor"]["Horse"] = _loc7_.readInt();
-         _loc5_["Armor"]["HorsePicCherish"] = _loc7_.readInt();
-         _loc5_["Armor"]["Temple"] = _loc7_.readInt();
-         _loc5_["Armor"]["Pet"] = _loc7_.readInt();
-         SyahManager.Instance.totalDamage = _loc7_.readInt();
-         SyahManager.Instance.totalArmor = _loc7_.readInt();
-         var _loc8_:PlayerInfo = findPlayer(_loc3_,_loc9_);
-         _loc8_.fineSuitExp = _loc7_.readInt();
-         _loc7_.readInt();
-         _loc7_.readInt();
-         _loc7_.readInt();
-         _loc5_["Damage"]["mark"] = _loc7_.readInt();
-         _loc5_["Armor"]["mark"] = _loc7_.readInt();
-         _loc5_["Attack"]["mark"] = _loc7_.readInt();
-         _loc5_["Defence"]["mark"] = _loc7_.readInt();
-         _loc5_["Agility"]["mark"] = _loc7_.readInt();
-         _loc5_["Luck"]["mark"] = _loc7_.readInt();
-         _loc5_["HP"]["mark"] = _loc7_.readInt();
-         _loc5_["MagicAttack"]["mark"] = _loc7_.readInt();
-         _loc5_["MagicDefence"]["mark"] = _loc7_.readInt();
-         _loc7_.readInt();
-         _loc7_.readInt();
-         _loc7_.readInt();
-         _loc7_.readInt();
-         _loc7_.readInt();
-         FineSuitManager.Instance.updateFineSuitProperty(_loc8_.fineSuitExp,_loc5_);
-         TotemManager.instance.updatePropertyAddtion(_loc8_.totemId,_loc5_);
-         _loc8_.propertyAddition = _loc5_;
+         dic["HP"] = _loc12_;
+         tmp = _loc12_;
+         pkg.readInt();
+         tmp["Texp"] = pkg.readInt();
+         tmp["Pet"] = pkg.readInt();
+         tmp["Bead"] = pkg.readInt();
+         tmp["Suit"] = pkg.readInt();
+         tmp["gem"] = pkg.readInt();
+         tmp["Avatar"] = pkg.readInt();
+         tmp["Horse"] = pkg.readInt();
+         tmp["HorsePicCherish"] = pkg.readInt();
+         tmp["Temple"] = pkg.readInt();
+         dic["Damage"] = new DictionaryData();
+         dic["Damage"]["Suit"] = pkg.readInt();
+         dic["Armor"] = new DictionaryData();
+         dic["Armor"]["Suit"] = pkg.readInt();
+         dic["Damage"]["Bead"] = pkg.readInt();
+         dic["Damage"]["Avatar"] = pkg.readInt();
+         dic["Damage"]["Horse"] = pkg.readInt();
+         dic["Damage"]["HorsePicCherish"] = pkg.readInt();
+         dic["Damage"]["Texp"] = pkg.readInt();
+         dic["Armor"]["Bead"] = pkg.readInt();
+         dic["Armor"]["Avatar"] = pkg.readInt();
+         dic["Armor"]["Horse"] = pkg.readInt();
+         dic["Armor"]["HorsePicCherish"] = pkg.readInt();
+         dic["Armor"]["Temple"] = pkg.readInt();
+         dic["Armor"]["Texp"] = pkg.readInt();
+         dic["Armor"]["Pet"] = pkg.readInt();
+         SyahManager.Instance.totalDamage = pkg.readInt();
+         SyahManager.Instance.totalArmor = pkg.readInt();
+         var info:PlayerInfo = findPlayer(playerId,zoneId);
+         info.fineSuitExp = pkg.readInt();
+         info.cardAchievementHp = pkg.readInt();
+         info.cardAchievementDamage = pkg.readInt();
+         info.cardAchievementArmor = pkg.readInt();
+         dic["Damage"]["mark"] = pkg.readInt();
+         dic["Armor"]["mark"] = pkg.readInt();
+         dic["Attack"]["mark"] = pkg.readInt();
+         dic["Defence"]["mark"] = pkg.readInt();
+         dic["Agility"]["mark"] = pkg.readInt();
+         dic["Luck"]["mark"] = pkg.readInt();
+         dic["HP"]["mark"] = pkg.readInt();
+         dic["MagicAttack"]["mark"] = pkg.readInt();
+         dic["MagicDefence"]["mark"] = pkg.readInt();
+         dic["Attack"]["marKing"] = pkg.readInt();
+         dic["Defence"]["marKing"] = pkg.readInt();
+         dic["Agility"]["marKing"] = pkg.readInt();
+         dic["Luck"]["marKing"] = pkg.readInt();
+         dic["MagicAttack"]["marKing"] = pkg.readInt();
+         dic["MagicDefence"]["marKing"] = pkg.readInt();
+         dic["Attack"]["titleAdd"] = pkg.readInt();
+         dic["Defence"]["titleAdd"] = pkg.readInt();
+         dic["Agility"]["titleAdd"] = pkg.readInt();
+         dic["Luck"]["titleAdd"] = pkg.readInt();
+         dic["Attack"]["dig"] = pkg.readInt();
+         dic["Defence"]["dig"] = pkg.readInt();
+         dic["Agility"]["dig"] = pkg.readInt();
+         dic["Luck"]["dig"] = pkg.readInt();
+         dic["MagicAttack"]["dig"] = pkg.readInt();
+         dic["MagicDefence"]["dig"] = pkg.readInt();
+         dic["MagicAttack"]["magicHouse"] = 10 * pkg.readInt();
+         dic["MagicDefence"]["magicHouse"] = 10 * pkg.readInt();
+         dic["SecondPro"] = new DictionaryData();
+         dic["SecondPro"]["Crit"] = pkg.readInt();
+         dic["SecondPro"]["Tenacity"] = pkg.readInt();
+         dic["SecondPro"]["SunderArmor"] = pkg.readInt();
+         dic["SecondPro"]["AvoidInjury"] = pkg.readInt();
+         dic["SecondPro"]["Kill"] = pkg.readInt();
+         dic["SecondPro"]["WillFight"] = pkg.readInt();
+         dic["SecondPro"]["ViolenceInjury"] = pkg.readInt();
+         dic["SecondPro"]["Speed"] = pkg.readInt();
+         dic["SecondPro"]["Guard"] = pkg.readInt();
+         FineSuitManager.Instance.updateFineSuitProperty(info.fineSuitExp,dic);
+         var isSelf:Boolean = info.isSelf;
+         TotemManager.instance.updatePropertyAddtion(info.totemId,dic,!!isSelf?null:info.totemGrades);
+         info.propertyAddition = dic;
          dispatchEvent(new Event("updatePlayerState"));
-         _loc8_.commitChanges();
+         info.commitChanges();
       }
       
       public function get propertyAdditions() : DictionaryData
@@ -1852,176 +1862,174 @@ package ddt.manager
          return _propertyAdditions;
       }
       
-      private function __roomListPass(param1:CrazyTankSocketEvent) : void
+      private function __roomListPass(evt:CrazyTankSocketEvent) : void
       {
-         var _loc2_:int = param1.pkg.readInt();
-         var _loc3_:PassInputFrame = ComponentFactory.Instance.creat("asset.ddtroomList.RoomList.passInputFrame");
-         LayerManager.Instance.addToLayer(_loc3_,3,true,1);
-         _loc3_.ID = _loc2_;
+         var id:int = evt.pkg.readInt();
+         var passInput:PassInputFrame = ComponentFactory.Instance.creat("asset.ddtroomList.RoomList.passInputFrame");
+         LayerManager.Instance.addToLayer(passInput,3,true,1);
+         passInput.ID = id;
       }
       
-      private function __sameCity(param1:PkgEvent) : void
+      private function __sameCity(event:PkgEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:int = param1.pkg.readInt();
-         while(_loc4_ < _loc3_)
+         var i:int = 0;
+         var id:int = 0;
+         var len:int = event.pkg.readInt();
+         while(i < len)
          {
-            _loc2_ = param1.pkg.readInt();
-            findPlayer(_loc2_,Self.ZoneID).isSameCity = true;
+            id = event.pkg.readInt();
+            findPlayer(id,Self.ZoneID).isSameCity = true;
             if(!_sameCityList)
             {
                _sameCityList = [];
             }
-            _sameCityList.push(_loc2_);
-            _loc4_++;
+            _sameCityList.push(id);
+            i++;
          }
          initSameCity();
       }
       
       private function initSameCity() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(!_sameCityList)
          {
             _sameCityList = [];
          }
-         _loc1_ = 0;
-         while(_loc1_ < _sameCityList.length)
+         i = 0;
+         while(i < _sameCityList.length)
          {
-            findPlayer(_sameCityList[_loc1_]).isSameCity = true;
-            _loc1_++;
+            findPlayer(_sameCityList[i]).isSameCity = true;
+            i++;
          }
          _friendList[_self.ZoneID].dispatchEvent(new DictionaryEvent("update"));
       }
       
-      private function __chatFilteringFriendsShare(param1:PkgEvent) : void
+      private function __chatFilteringFriendsShare(event:PkgEvent) : void
       {
          if(!_cmFriendList)
          {
             return;
          }
-         var _loc5_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc5_.readInt();
-         var _loc4_:String = _loc5_.readUTF();
-         var _loc3_:Boolean = false;
+         var pkg:PackageIn = event.pkg;
+         var playerID:int = pkg.readInt();
+         var notifyMsg:String = pkg.readUTF();
+         var isHasInfo:Boolean = false;
          var _loc8_:int = 0;
          var _loc7_:* = _cmFriendList;
-         for each(var _loc6_ in _cmFriendList)
+         for each(var info in _cmFriendList)
          {
-            if(_loc6_.UserId == _loc2_)
+            if(info.UserId == playerID)
             {
-               _loc3_ = true;
+               isHasInfo = true;
             }
          }
-         if(_loc3_)
+         if(isHasInfo)
          {
-            ChatManager.Instance.sysChatYellow(_loc4_);
+            ChatManager.Instance.sysChatYellow(notifyMsg);
          }
       }
       
-      private function __updateUerGuild(param1:PkgEvent) : void
+      private function __updateUerGuild(event:PkgEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:ByteArray = new ByteArray();
-         var _loc4_:int = param1.pkg.readInt();
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         var i:int = 0;
+         var bit:int = 0;
+         var b:ByteArray = new ByteArray();
+         var l:int = event.pkg.readInt();
+         for(i = 0; i < l; )
          {
-            _loc2_ = param1.pkg.readByte();
-            _loc3_.writeByte(_loc2_);
-            _loc5_++;
+            bit = event.pkg.readByte();
+            b.writeByte(bit);
+            i++;
          }
-         _self.weaklessGuildProgress = _loc3_;
+         _self.weaklessGuildProgress = b;
       }
       
-      private function __getCards(param1:PkgEvent) : void
+      private function __getCards(event:PkgEvent) : void
       {
-         var _loc9_:int = 0;
-         var _loc13_:int = 0;
-         var _loc2_:Boolean = false;
-         var _loc3_:* = null;
-         var _loc4_:* = undefined;
-         var _loc10_:* = null;
+         var i:int = 0;
+         var place:int = 0;
+         var b:Boolean = false;
+         var cardInfo:* = null;
+         var tempArr:* = undefined;
+         var adinfo:* = null;
          _whoGetCards = true;
-         var _loc11_:* = false;
-         var _loc5_:PackageIn = param1.pkg;
-         var _loc12_:int = _loc5_.readInt();
-         var _loc7_:int = _loc5_.readInt();
-         var _loc6_:int = _loc5_.readInt();
-         var _loc8_:PlayerInfo = findPlayer(_loc12_,_loc7_);
-         _loc9_ = 0;
-         while(_loc9_ < _loc6_)
+         var isSelfAddCard:* = false;
+         var pkg:PackageIn = event.pkg;
+         var userId:int = pkg.readInt();
+         var zoneId:int = pkg.readInt();
+         var len:int = pkg.readInt();
+         var info:PlayerInfo = findPlayer(userId,zoneId);
+         for(i = 0; i < len; )
          {
-            _loc13_ = _loc5_.readInt();
-            _loc2_ = _loc5_.readBoolean();
-            if(_loc2_)
+            place = pkg.readInt();
+            b = pkg.readBoolean();
+            if(b)
             {
-               _loc3_ = new CardInfo();
-               _loc3_.CardID = _loc5_.readInt();
-               _loc3_.CardType = _loc5_.readInt();
-               _loc3_.UserID = _loc5_.readInt();
-               _loc3_.Place = _loc5_.readInt();
-               _loc3_.TemplateID = _loc5_.readInt();
-               _loc3_.isFirstGet = _loc5_.readBoolean();
-               _loc3_.Attack = _loc5_.readInt();
-               _loc3_.Defence = _loc5_.readInt();
-               _loc3_.Agility = _loc5_.readInt();
-               _loc3_.Luck = _loc5_.readInt();
-               _loc3_.Damage = _loc5_.readInt();
-               _loc3_.Guard = _loc5_.readInt();
+               cardInfo = new CardInfo();
+               cardInfo.CardID = pkg.readInt();
+               cardInfo.CardType = pkg.readInt();
+               cardInfo.UserID = pkg.readInt();
+               cardInfo.Place = pkg.readInt();
+               cardInfo.TemplateID = pkg.readInt();
+               cardInfo.isFirstGet = pkg.readBoolean();
+               cardInfo.Attack = pkg.readInt();
+               cardInfo.Defence = pkg.readInt();
+               cardInfo.Agility = pkg.readInt();
+               cardInfo.Luck = pkg.readInt();
+               cardInfo.Damage = pkg.readInt();
+               cardInfo.Guard = pkg.readInt();
                if(CaddyModel.instance.type == 6 || CaddyModel.instance.type == 9 || CaddyModel.instance.type == 8)
                {
-                  if(_loc3_.TemplateID != 0)
+                  if(cardInfo.TemplateID != 0)
                   {
-                     _self.cardInfo = _loc3_;
+                     _self.cardInfo = cardInfo;
                      dispatchEvent(new Event("cards_name"));
                   }
                }
-               if(_loc3_.Place <= 4 && _loc3_.TemplateID > 0)
+               if(cardInfo.Place <= 4 && cardInfo.TemplateID > 0)
                {
-                  _loc8_.cardEquipDic.add(_loc3_.Place,_loc3_);
+                  info.cardEquipDic.add(cardInfo.Place,cardInfo);
                }
-               else if(_loc3_.Place <= 4 && _loc3_.TemplateID == 0)
+               else if(cardInfo.Place <= 4 && cardInfo.TemplateID == 0)
                {
-                  _loc8_.cardEquipDic.remove(_loc13_);
+                  info.cardEquipDic.remove(place);
                }
-               else if(_loc3_.Place > 4 && _loc3_.TemplateID == 0)
+               else if(cardInfo.Place > 4 && cardInfo.TemplateID == 0)
                {
-                  _loc8_.cardBagDic.remove(_loc13_);
+                  info.cardBagDic.remove(place);
                }
                else
                {
-                  _loc8_.cardBagDic.add(_loc3_.Place,_loc3_);
-                  _loc4_ = new Vector.<AwardsInfo>();
-                  _loc10_ = new AwardsInfo();
-                  _loc10_.name = _loc3_.templateInfo.Name;
-                  _loc10_.TemplateId = _loc3_.TemplateID;
-                  _loc10_.channel = _loc3_.CardType;
-                  _loc10_.zone = String(_loc3_.Place);
-                  _loc10_.zoneID = 0;
-                  _loc4_.push(_loc10_);
-                  CaddyModel.instance.addAwardsInfoByArr(_loc4_);
-                  if(!_loc11_)
+                  info.cardBagDic.add(cardInfo.Place,cardInfo);
+                  tempArr = new Vector.<AwardsInfo>();
+                  adinfo = new AwardsInfo();
+                  adinfo.name = cardInfo.templateInfo.Name;
+                  adinfo.TemplateId = cardInfo.TemplateID;
+                  adinfo.channel = cardInfo.CardType;
+                  adinfo.zone = String(cardInfo.Place);
+                  adinfo.zoneID = 0;
+                  tempArr.push(adinfo);
+                  CaddyModel.instance.addAwardsInfoByArr(tempArr);
+                  if(!isSelfAddCard)
                   {
-                     _loc11_ = _loc12_ == Self.ID;
+                     isSelfAddCard = userId == Self.ID;
                   }
                }
             }
-            else if(_loc13_ <= 4)
+            else if(place <= 4)
             {
-               _loc8_.cardEquipDic.remove(_loc13_);
+               info.cardEquipDic.remove(place);
             }
             else
             {
-               _loc8_.cardBagDic.remove(_loc13_);
+               info.cardBagDic.remove(place);
             }
-            if(_loc11_)
+            if(isSelfAddCard)
             {
                SocketManager.Instance.out.requestCardAchievement();
             }
-            _loc9_++;
+            i++;
          }
       }
       
@@ -2030,194 +2038,190 @@ package ddt.manager
          return _whoGetCards;
       }
       
-      public function set whoGetCards(param1:Boolean) : void
+      public function set whoGetCards(value:Boolean) : void
       {
-         _whoGetCards = param1;
+         _whoGetCards = value;
       }
       
-      private function __sysNotice(param1:CrazyTankSocketEvent) : void
+      private function __sysNotice(event:CrazyTankSocketEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc6_:int = _loc3_.readInt();
-         var _loc9_:String = _loc3_.readUTF();
-         var _loc7_:int = _loc3_.readByte();
-         var _loc4_:int = _loc3_.readInt();
-         var _loc10_:int = _loc3_.readInt();
-         var _loc2_:int = _loc3_.readInt();
-         var _loc5_:String = _loc3_.readUTF();
-         var _loc8_:ChatData = new ChatData();
-         _loc8_.type = 1;
-         _loc8_.msg = _loc9_;
-         _loc8_.channel = _loc6_;
+         var pkg:PackageIn = event.pkg;
+         var sysNoticeType:int = pkg.readInt();
+         var msg:String = pkg.readUTF();
+         var type:int = pkg.readByte();
+         var tmp0Length:int = pkg.readInt();
+         var cardTempID:int = pkg.readInt();
+         var cardID:int = pkg.readInt();
+         var itemGuid:String = pkg.readUTF();
+         var chatMsg:ChatData = new ChatData();
+         chatMsg.type = 1;
+         chatMsg.msg = msg;
+         chatMsg.channel = sysNoticeType;
          trace("---------------------");
-         trace(_loc8_.msg);
+         trace(chatMsg.msg);
       }
       
-      private function __canReLoadGift(param1:PkgEvent) : void
+      private function __canReLoadGift(event:PkgEvent) : void
       {
-         var _loc2_:Boolean = param1.pkg.readBoolean();
-         if(_loc2_)
+         var b:Boolean = event.pkg.readBoolean();
+         if(b)
          {
             SocketManager.Instance.out.sendPlayerGift(_self.ID);
          }
       }
       
-      private function __addGiftItem(param1:PkgEvent) : void
+      private function __addGiftItem(event:PkgEvent) : void
       {
-         var _loc6_:int = 0;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc3_:int = _loc4_.readInt();
-         var _loc2_:int = _loc4_.readInt();
-         var _loc5_:int = _self.myGiftData.length;
-         if(_loc5_ != 0)
+         var i:int = 0;
+         var pkg:PackageIn = event.pkg;
+         var templateId:int = pkg.readInt();
+         var amount:int = pkg.readInt();
+         var len:int = _self.myGiftData.length;
+         if(len != 0)
          {
-            _loc6_ = 0;
-            while(_loc6_ < _loc5_)
+            for(i = 0; i < len; )
             {
-               if(_self.myGiftData[_loc6_].TemplateID == _loc3_)
+               if(_self.myGiftData[i].TemplateID == templateId)
                {
-                  _self.myGiftData[_loc6_].amount = _loc2_;
-                  dispatchEvent(new DictionaryEvent("update",_self.myGiftData[_loc6_]));
+                  _self.myGiftData[i].amount = amount;
+                  dispatchEvent(new DictionaryEvent("update",_self.myGiftData[i]));
                   break;
                }
-               if(_loc6_ == _loc5_ - 1)
+               if(i == len - 1)
                {
-                  addItem(_loc3_,_loc2_);
+                  addItem(templateId,amount);
                }
-               _loc6_++;
+               i++;
             }
          }
          else
          {
-            addItem(_loc3_,_loc2_);
+            addItem(templateId,amount);
          }
          GiftManager.Instance.loadRecord("GiftRecieveLog.ashx",_self.ID);
       }
       
-      private function addItem(param1:int, param2:int) : void
+      private function addItem(templateId:int, amount:int) : void
       {
-         var _loc3_:MyGiftCellInfo = new MyGiftCellInfo();
-         _loc3_.TemplateID = param1;
-         _loc3_.amount = param2;
-         _self.myGiftData.push(_loc3_);
+         var cellInfo:MyGiftCellInfo = new MyGiftCellInfo();
+         cellInfo.TemplateID = templateId;
+         cellInfo.amount = amount;
+         _self.myGiftData.push(cellInfo);
          dispatchEvent(new DictionaryEvent("add",_self.myGiftData[_self.myGiftData.length - 1]));
       }
       
-      private function __getGifts(param1:PkgEvent) : void
+      private function __getGifts(event:PkgEvent) : void
       {
-         var _loc6_:* = undefined;
-         var _loc10_:int = 0;
-         var _loc8_:* = null;
-         var _loc3_:* = undefined;
-         var _loc9_:int = 0;
-         var _loc7_:* = null;
-         var _loc4_:int = 0;
-         var _loc5_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc5_.readInt();
-         var _loc11_:PlayerInfo = findPlayer(_loc2_);
-         if(_loc2_ == _self.ID)
+         var list:* = undefined;
+         var i:int = 0;
+         var cellInfo:* = null;
+         var list2:* = undefined;
+         var j:int = 0;
+         var cellInfo2:* = null;
+         var num:int = 0;
+         var pkg:PackageIn = event.pkg;
+         var id:int = pkg.readInt();
+         var info:PlayerInfo = findPlayer(id);
+         if(id == _self.ID)
          {
-            _self.charmGP = _loc5_.readInt();
-            _loc4_ = _loc5_.readInt();
-            _loc6_ = new Vector.<MyGiftCellInfo>();
-            _loc10_ = 0;
-            while(_loc10_ < _loc4_)
+            _self.charmGP = pkg.readInt();
+            num = pkg.readInt();
+            list = new Vector.<MyGiftCellInfo>();
+            for(i = 0; i < num; )
             {
-               _loc8_ = new MyGiftCellInfo();
-               _loc8_.TemplateID = _loc5_.readInt();
-               _loc8_.amount = _loc5_.readInt();
-               _loc6_.push(_loc8_);
-               _loc10_++;
+               cellInfo = new MyGiftCellInfo();
+               cellInfo.TemplateID = pkg.readInt();
+               cellInfo.amount = pkg.readInt();
+               list.push(cellInfo);
+               i++;
             }
-            _self.myGiftData = _loc6_;
+            _self.myGiftData = list;
             dispatchEvent(new Event("selfGiftInfoChange"));
          }
          else
          {
-            _loc11_.beginChanges();
-            _loc11_.charmGP = _loc5_.readInt();
-            _loc4_ = _loc5_.readInt();
-            _loc3_ = new Vector.<MyGiftCellInfo>();
-            _loc9_ = 0;
-            while(_loc9_ < _loc4_)
+            info.beginChanges();
+            info.charmGP = pkg.readInt();
+            num = pkg.readInt();
+            list2 = new Vector.<MyGiftCellInfo>();
+            for(j = 0; j < num; )
             {
-               _loc7_ = new MyGiftCellInfo();
-               _loc7_.TemplateID = _loc5_.readInt();
-               _loc7_.amount = _loc5_.readInt();
-               _loc3_.push(_loc7_);
-               _loc9_++;
+               cellInfo2 = new MyGiftCellInfo();
+               cellInfo2.TemplateID = pkg.readInt();
+               cellInfo2.amount = pkg.readInt();
+               list2.push(cellInfo2);
+               j++;
             }
-            _loc11_.myGiftData = _loc3_;
-            _loc11_.commitChanges();
+            info.myGiftData = list2;
+            info.commitChanges();
             dispatchEvent(new Event("giftInfoChange"));
          }
       }
       
-      private function __upVipInfo(param1:PkgEvent) : void
+      private function __upVipInfo(evt:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _self.typeVIP = _loc2_.readByte();
-         _self.VIPLevel = _loc2_.readInt();
-         _self.VIPExp = _loc2_.readInt();
-         _self.VIPExpireDay = _loc2_.readDate();
-         _self.LastDate = _loc2_.readDate();
-         _self.VIPNextLevelDaysNeeded = _loc2_.readInt();
-         _self.canTakeVipReward = _loc2_.readBoolean();
+         var pkg:PackageIn = evt.pkg;
+         _self.typeVIP = pkg.readByte();
+         _self.VIPLevel = pkg.readInt();
+         _self.VIPExp = pkg.readInt();
+         _self.VIPExpireDay = pkg.readDate();
+         _self.LastDate = pkg.readDate();
+         _self.VIPNextLevelDaysNeeded = pkg.readInt();
+         _self.canTakeVipReward = pkg.readBoolean();
          dispatchEvent(new Event("VIPStateChange"));
       }
       
-      public function setupFriendList(param1:FriendListAnalyzer) : void
+      public function setupFriendList(analyzer:FriendListAnalyzer) : void
       {
-         customList = param1.customList;
-         friendList = param1.friendlist;
-         blackList = param1.blackList;
+         customList = analyzer.customList;
+         friendList = analyzer.friendlist;
+         blackList = analyzer.blackList;
          initSameCity();
       }
       
-      public function setupEnergyData(param1:EnergyDataAnalyzer) : void
+      public function setupEnergyData(analyzer:EnergyDataAnalyzer) : void
       {
-         energyData = param1.data;
+         energyData = analyzer.data;
       }
       
-      public function checkHasGroupName(param1:String) : Boolean
+      public function checkHasGroupName(name:String) : Boolean
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < customList.length)
+         var i:int = 0;
+         for(i = 0; i < customList.length; )
          {
-            if(customList[_loc2_].Name == param1)
+            if(customList[i].Name == name)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("IM.addFirend.repet"),0,true);
                return true;
             }
-            _loc2_++;
+            i++;
          }
          return false;
       }
       
-      public function setupMyacademyPlayers(param1:MyAcademyPlayersAnalyze) : void
+      public function setupMyacademyPlayers(analyzer:MyAcademyPlayersAnalyze) : void
       {
-         _myAcademyPlayers = param1.myAcademyPlayers;
+         _myAcademyPlayers = analyzer.myAcademyPlayers;
       }
       
       private function romoveAcademyPlayers() : void
       {
          var _loc3_:int = 0;
          var _loc2_:* = _myAcademyPlayers;
-         for each(var _loc1_ in _myAcademyPlayers)
+         for each(var i in _myAcademyPlayers)
          {
-            friendList.remove(_loc1_.ID);
+            friendList.remove(i.ID);
          }
       }
       
-      public function setupRecentContacts(param1:RecentContactsAnalyze) : void
+      public function setupRecentContacts(analyzer:RecentContactsAnalyze) : void
       {
-         recentContacts = param1.recentContacts;
+         recentContacts = analyzer.recentContacts;
       }
       
-      public function set friendList(param1:DictionaryData) : void
+      public function set friendList(value:DictionaryData) : void
       {
-         _friendList[_self.ZoneID] = param1;
+         _friendList[_self.ZoneID] = value;
          IMManager.Instance.isLoadComplete = true;
          dispatchEvent(new Event("friendListComplete"));
       }
@@ -2233,52 +2237,52 @@ package ddt.manager
       
       public function get friendListOnline() : DictionaryData
       {
-         var _loc1_:* = null;
+         var list:* = null;
          if(friendList.length > 0)
          {
-            _loc1_ = new DictionaryData();
+            list = new DictionaryData();
             var _loc4_:int = 0;
             var _loc3_:* = friendList;
-            for each(var _loc2_ in friendList)
+            for each(var info in friendList)
             {
-               if(_loc2_.playerState.StateID != 0)
+               if(info.playerState.StateID != 0)
                {
-                  _loc1_.add(_loc2_.ID,_loc2_);
+                  list.add(info.ID,info);
                }
             }
-            return _loc1_;
+            return list;
          }
          return friendList;
       }
       
-      public function getFriendForCustom(param1:int) : DictionaryData
+      public function getFriendForCustom(relation:int) : DictionaryData
       {
-         var _loc2_:DictionaryData = new DictionaryData();
+         var temp:DictionaryData = new DictionaryData();
          if(_friendList[_self.ZoneID] == null)
          {
             _friendList[PlayerManager.Instance.Self.ZoneID] = new DictionaryData();
          }
          var _loc5_:int = 0;
          var _loc4_:* = _friendList[_self.ZoneID];
-         for each(var _loc3_ in _friendList[_self.ZoneID])
+         for each(var info in _friendList[_self.ZoneID])
          {
-            if(_loc3_.Relation == param1)
+            if(info.Relation == relation)
             {
-               _loc2_.add(_loc3_.ID,_loc3_);
+               temp.add(info.ID,info);
             }
          }
-         return _loc2_;
+         return temp;
       }
       
-      public function deleteCustomGroup(param1:int) : void
+      public function deleteCustomGroup(relation:int) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = _friendList[_self.ZoneID];
-         for each(var _loc2_ in _friendList[_self.ZoneID])
+         for each(var info in _friendList[_self.ZoneID])
          {
-            if(_loc2_.Relation == param1)
+            if(info.Relation == relation)
             {
-               _loc2_.Relation = 0;
+               info.Relation = 0;
             }
          }
       }
@@ -2297,175 +2301,174 @@ package ddt.manager
          return _recentContacts;
       }
       
-      public function set recentContacts(param1:DictionaryData) : void
+      public function set recentContacts(value:DictionaryData) : void
       {
-         _recentContacts = param1;
+         _recentContacts = value;
          dispatchEvent(new Event("recentContactsComplete"));
       }
       
       public function get onlineRecentContactList() : Array
       {
-         var _loc1_:Array = [];
+         var temp:Array = [];
          var _loc4_:int = 0;
          var _loc3_:* = recentContacts;
-         for each(var _loc2_ in recentContacts)
+         for each(var i in recentContacts)
          {
-            if(_loc2_.playerState.StateID != 0 || findPlayer(_loc2_.ID) && findPlayer(_loc2_.ID).playerState.StateID != 0)
+            if(i.playerState.StateID != 0 || findPlayer(i.ID) && findPlayer(i.ID).playerState.StateID != 0)
             {
-               _loc1_.push(_loc2_);
+               temp.push(i);
             }
          }
-         return _loc1_;
+         return temp;
       }
       
       public function get offlineRecentContactList() : Array
       {
-         var _loc1_:Array = [];
+         var temp:Array = [];
          var _loc4_:int = 0;
          var _loc3_:* = recentContacts;
-         for each(var _loc2_ in recentContacts)
+         for each(var i in recentContacts)
          {
-            if(_loc2_.playerState.StateID == 0)
+            if(i.playerState.StateID == 0)
             {
-               _loc1_.push(_loc2_);
+               temp.push(i);
             }
          }
-         return _loc1_;
+         return temp;
       }
       
-      public function getByNameFriend(param1:String) : FriendListPlayer
+      public function getByNameFriend(name:String) : FriendListPlayer
       {
          var _loc4_:int = 0;
          var _loc3_:* = recentContacts;
-         for each(var _loc2_ in recentContacts)
+         for each(var info in recentContacts)
          {
-            if(_loc2_.NickName == param1)
+            if(info.NickName == name)
             {
-               return _loc2_;
+               return info;
             }
          }
          return null;
       }
       
-      public function deleteRecentContact(param1:int) : void
+      public function deleteRecentContact(id:int) : void
       {
-         recentContacts.remove(param1);
+         recentContacts.remove(id);
       }
       
       public function get friendAndCustomTitle() : Array
       {
-         var _loc4_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:Array = [];
-         var _loc3_:int = customList.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_ - 1)
+         var i:int = 0;
+         var title:* = null;
+         var _titleList:Array = [];
+         var len:int = customList.length;
+         for(i = 0; i < len - 1; )
          {
-            _loc1_ = new FriendListPlayer();
-            _loc1_.type = 0;
-            _loc1_.titleType = customList[_loc4_].ID;
-            _loc1_.titleIsSelected = false;
-            _loc1_.titleNumText = "[" + String(getOnlineFriendForCustom(customList[_loc4_].ID).length) + "]";
-            _loc1_.titleText = customList[_loc4_].Name;
-            _loc2_.push(_loc1_);
-            _loc4_++;
+            title = new FriendListPlayer();
+            title.type = 0;
+            title.titleType = customList[i].ID;
+            title.titleIsSelected = false;
+            title.titleNumText = "[" + String(getOnlineFriendForCustom(customList[i].ID).length) + "]";
+            title.titleText = customList[i].Name;
+            _titleList.push(title);
+            i++;
          }
-         return _loc2_;
+         return _titleList;
       }
       
       public function get onlineFriendList() : Array
       {
-         var _loc1_:Array = [];
+         var temp:Array = [];
          var _loc4_:int = 0;
          var _loc3_:* = friendList;
-         for each(var _loc2_ in friendList)
+         for each(var i in friendList)
          {
-            if(_loc2_.playerState.StateID != 0)
+            if(i.playerState.StateID != 0)
             {
-               _loc1_.push(_loc2_);
+               temp.push(i);
             }
          }
-         return _loc1_;
+         return temp;
       }
       
-      public function getOnlineFriendForCustom(param1:int) : Array
+      public function getOnlineFriendForCustom(relation:int) : Array
       {
-         var _loc2_:Array = [];
+         var temp:Array = [];
          var _loc5_:int = 0;
          var _loc4_:* = friendList;
-         for each(var _loc3_ in friendList)
+         for each(var i in friendList)
          {
-            if(_loc3_.playerState.StateID != 0 && _loc3_.Relation == param1)
+            if(i.playerState.StateID != 0 && i.Relation == relation)
             {
-               _loc2_.push(_loc3_);
+               temp.push(i);
             }
          }
-         return _loc2_;
+         return temp;
       }
       
       public function get offlineFriendList() : Array
       {
-         var _loc1_:Array = [];
+         var temp:Array = [];
          var _loc4_:int = 0;
          var _loc3_:* = friendList;
-         for each(var _loc2_ in friendList)
+         for each(var i in friendList)
          {
-            if(_loc2_.playerState.StateID == 0)
+            if(i.playerState.StateID == 0)
             {
-               _loc1_.push(_loc2_);
+               temp.push(i);
             }
          }
-         return _loc1_;
+         return temp;
       }
       
-      public function getOfflineFriendForCustom(param1:int) : Array
+      public function getOfflineFriendForCustom(relation:int) : Array
       {
-         var _loc2_:Array = [];
+         var temp:Array = [];
          var _loc5_:int = 0;
          var _loc4_:* = friendList;
-         for each(var _loc3_ in friendList)
+         for each(var i in friendList)
          {
-            if(_loc3_.playerState.StateID == 0 && _loc3_.Relation == param1)
+            if(i.playerState.StateID == 0 && i.Relation == relation)
             {
-               _loc2_.push(_loc3_);
+               temp.push(i);
             }
          }
-         return _loc2_;
+         return temp;
       }
       
       public function get onlineMyAcademyPlayers() : Array
       {
-         var _loc1_:Array = [];
+         var temp:Array = [];
          var _loc4_:int = 0;
          var _loc3_:* = _myAcademyPlayers;
-         for each(var _loc2_ in _myAcademyPlayers)
+         for each(var i in _myAcademyPlayers)
          {
-            if(_loc2_.playerState.StateID != 0)
+            if(i.playerState.StateID != 0)
             {
-               _loc1_.push(_loc2_ as FriendListPlayer);
+               temp.push(i as FriendListPlayer);
             }
          }
-         return _loc1_;
+         return temp;
       }
       
       public function get offlineMyAcademyPlayers() : Array
       {
-         var _loc1_:Array = [];
+         var temp:Array = [];
          var _loc4_:int = 0;
          var _loc3_:* = _myAcademyPlayers;
-         for each(var _loc2_ in _myAcademyPlayers)
+         for each(var i in _myAcademyPlayers)
          {
-            if(_loc2_.playerState.StateID == 0)
+            if(i.playerState.StateID == 0)
             {
-               _loc1_.push(_loc2_ as FriendListPlayer);
+               temp.push(i as FriendListPlayer);
             }
          }
-         return _loc1_;
+         return temp;
       }
       
-      public function set blackList(param1:DictionaryData) : void
+      public function set blackList(value:DictionaryData) : void
       {
-         _blackList[_self.ZoneID] = param1;
+         _blackList[_self.ZoneID] = value;
       }
       
       public function get blackList() : DictionaryData
@@ -2482,9 +2485,9 @@ package ddt.manager
          return _cmFriendList;
       }
       
-      public function set CMFriendList(param1:DictionaryData) : void
+      public function set CMFriendList(value:DictionaryData) : void
       {
-         _cmFriendList = param1;
+         _cmFriendList = value;
       }
       
       public function get PlayCMFriendList() : Array
@@ -2505,20 +2508,20 @@ package ddt.manager
          return [];
       }
       
-      private function __updatePrivateInfo(param1:PkgEvent) : void
+      private function __updatePrivateInfo(e:PkgEvent) : void
       {
          _self.beginChanges();
-         _self.Money = param1.pkg.readInt();
-         _self.DDTMoney = param1.pkg.readInt();
-         _self.BandMoney = param1.pkg.readInt();
-         _self.Score = param1.pkg.readInt();
-         _self.Gold = param1.pkg.readInt();
-         _self.badLuckNumber = param1.pkg.readInt();
-         _self.damageScores = param1.pkg.readInt();
-         param1.pkg.readInt();
-         _self.myHonor = param1.pkg.readInt();
-         _self.hardCurrency = param1.pkg.readInt();
-         _self.jampsCurrency = param1.pkg.readInt();
+         _self.Money = e.pkg.readInt();
+         _self.DDTMoney = e.pkg.readInt();
+         _self.BandMoney = e.pkg.readInt();
+         _self.Score = e.pkg.readInt();
+         _self.Gold = e.pkg.readInt();
+         _self.badLuckNumber = e.pkg.readInt();
+         _self.damageScores = e.pkg.readInt();
+         e.pkg.readInt();
+         _self.myHonor = e.pkg.readInt();
+         _self.hardCurrency = e.pkg.readInt();
+         _self.jampsCurrency = e.pkg.readInt();
          _self.commitChanges();
       }
       
@@ -2527,179 +2530,177 @@ package ddt.manager
          return tempStyle.length > 0;
       }
       
-      public function isChangeStyleTemp(param1:int) : Boolean
+      public function isChangeStyleTemp(id:int) : Boolean
       {
-         return changedStyle.hasOwnProperty(param1) && changedStyle[param1] != null;
+         return changedStyle.hasOwnProperty(id) && changedStyle[id] != null;
       }
       
-      public function setStyleTemply(param1:Object) : void
+      public function setStyleTemply(tempPlayerStyle:Object) : void
       {
-         var _loc2_:PlayerInfo = findPlayer(param1.ID);
-         if(_loc2_)
+         var player:PlayerInfo = findPlayer(tempPlayerStyle.ID);
+         if(player)
          {
-            storeTempStyle(_loc2_);
-            _loc2_.beginChanges();
-            _loc2_.Sex = param1.Sex;
-            _loc2_.Hide = param1.Hide;
-            _loc2_.Style = param1.Style;
-            _loc2_.Colors = param1.Colors;
-            _loc2_.Skin = param1.Skin;
-            _loc2_.commitChanges();
+            storeTempStyle(player);
+            player.beginChanges();
+            player.Sex = tempPlayerStyle.Sex;
+            player.Hide = tempPlayerStyle.Hide;
+            player.Style = tempPlayerStyle.Style;
+            player.Colors = tempPlayerStyle.Colors;
+            player.Skin = tempPlayerStyle.Skin;
+            player.commitChanges();
          }
       }
       
-      private function storeTempStyle(param1:PlayerInfo) : void
+      private function storeTempStyle(player:PlayerInfo) : void
       {
-         var _loc2_:Object = {};
-         _loc2_.Style = param1.getPrivateStyle();
-         _loc2_.Hide = param1.Hide;
-         _loc2_.Sex = param1.Sex;
-         _loc2_.Skin = param1.Skin;
-         _loc2_.Colors = param1.Colors;
-         _loc2_.ID = param1.ID;
-         tempStyle.push(_loc2_);
+         var o:Object = {};
+         o.Style = player.getPrivateStyle();
+         o.Hide = player.Hide;
+         o.Sex = player.Sex;
+         o.Skin = player.Skin;
+         o.Colors = player.Colors;
+         o.ID = player.ID;
+         tempStyle.push(o);
       }
       
       public function readAllTempStyleEvent() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         _loc2_ = 0;
-         while(_loc2_ < tempStyle.length)
+         var i:int = 0;
+         var player:* = null;
+         for(i = 0; i < tempStyle.length; )
          {
-            _loc1_ = findPlayer(tempStyle[_loc2_].ID);
-            if(_loc1_)
+            player = findPlayer(tempStyle[i].ID);
+            if(player)
             {
-               _loc1_.beginChanges();
-               _loc1_.Sex = tempStyle[_loc2_].Sex;
-               _loc1_.Hide = tempStyle[_loc2_].Hide;
-               _loc1_.Style = tempStyle[_loc2_].Style;
-               _loc1_.Colors = tempStyle[_loc2_].Colors;
-               _loc1_.Skin = tempStyle[_loc2_].Skin;
-               _loc1_.commitChanges();
+               player.beginChanges();
+               player.Sex = tempStyle[i].Sex;
+               player.Hide = tempStyle[i].Hide;
+               player.Style = tempStyle[i].Style;
+               player.Colors = tempStyle[i].Colors;
+               player.Skin = tempStyle[i].Skin;
+               player.commitChanges();
             }
-            _loc2_++;
+            i++;
          }
          tempStyle = [];
          changedStyle.clear();
       }
       
-      private function __readTempStyle(param1:CrazyTankSocketEvent) : void
+      private function __readTempStyle(evt:CrazyTankSocketEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc4_:int = _loc3_.readInt();
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         var i:int = 0;
+         var o:* = null;
+         var pkg:PackageIn = evt.pkg;
+         var len:int = pkg.readInt();
+         for(i = 0; i < len; )
          {
-            _loc2_ = {};
-            _loc2_.Style = _loc3_.readUTF();
-            _loc2_.Hide = _loc3_.readInt();
-            _loc2_.Sex = _loc3_.readBoolean();
-            _loc2_.Skin = _loc3_.readUTF();
-            _loc2_.Colors = _loc3_.readUTF();
-            _loc2_.ID = _loc3_.readInt();
-            setStyleTemply(_loc2_);
-            changedStyle.add(_loc2_.ID,_loc2_);
-            _loc5_++;
+            o = {};
+            o.Style = pkg.readUTF();
+            o.Hide = pkg.readInt();
+            o.Sex = pkg.readBoolean();
+            o.Skin = pkg.readUTF();
+            o.Colors = pkg.readUTF();
+            o.ID = pkg.readInt();
+            setStyleTemply(o);
+            changedStyle.add(o.ID,o);
+            i++;
          }
       }
       
-      private function __updatePlayerInfo(param1:PkgEvent) : void
+      private function __updatePlayerInfo(evt:PkgEvent) : void
       {
-         var _loc4_:* = null;
-         var _loc11_:* = null;
-         var _loc12_:* = null;
-         var _loc13_:* = null;
-         var _loc14_:int = 0;
-         var _loc8_:int = 0;
-         var _loc9_:int = 0;
-         var _loc5_:int = 0;
-         var _loc3_:int = 0;
-         var _loc7_:int = 0;
-         var _loc10_:int = 0;
-         var _loc2_:int = 0;
-         var _loc6_:PlayerInfo = findPlayer(param1.pkg.clientId);
-         if(_loc6_)
+         var pkg:* = null;
+         var style:* = null;
+         var arm:* = null;
+         var offHand:* = null;
+         var unknown1:int = 0;
+         var unknown2:int = 0;
+         var unknown3:int = 0;
+         var len:int = 0;
+         var n:int = 0;
+         var mapId:int = 0;
+         var flag:int = 0;
+         var gradeId:int = 0;
+         var info:PlayerInfo = findPlayer(evt.pkg.clientId);
+         if(info)
          {
-            _loc6_.beginChanges();
+            info.beginChanges();
             var _loc15_:int = 0;
             try
             {
-               _loc4_ = param1.pkg;
-               _loc6_.GP = _loc4_.readInt();
-               _loc6_.ddtKingGrade = _loc4_.readInt();
-               _loc6_.Offer = _loc4_.readInt();
-               _loc6_.RichesOffer = _loc4_.readInt();
-               _loc6_.RichesRob = _loc4_.readInt();
-               _loc6_.WinCount = _loc4_.readInt();
-               _loc6_.TotalCount = _loc4_.readInt();
-               _loc6_.EscapeCount = _loc4_.readInt();
-               _loc6_.Attack = _loc4_.readInt();
-               _loc6_.Defence = _loc4_.readInt();
-               _loc6_.Agility = _loc4_.readInt();
-               _loc6_.Luck = _loc4_.readInt();
-               _loc6_.MagicAttack = _loc4_.readInt();
-               _loc6_.MagicDefence = _loc4_.readInt();
-               _loc6_.hp = _loc4_.readInt();
-               if(!isChangeStyleTemp(_loc6_.ID))
+               pkg = evt.pkg;
+               info.GP = pkg.readInt();
+               info.ddtKingGrade = pkg.readInt();
+               info.Offer = pkg.readInt();
+               info.RichesOffer = pkg.readInt();
+               info.RichesRob = pkg.readInt();
+               info.WinCount = pkg.readInt();
+               info.TotalCount = pkg.readInt();
+               info.EscapeCount = pkg.readInt();
+               info.Attack = pkg.readInt();
+               info.Defence = pkg.readInt();
+               info.Agility = pkg.readInt();
+               info.Luck = pkg.readInt();
+               info.MagicAttack = pkg.readInt();
+               info.MagicDefence = pkg.readInt();
+               info.hp = pkg.readInt();
+               if(!isChangeStyleTemp(info.ID))
                {
-                  _loc6_.Hide = _loc4_.readInt();
+                  info.Hide = pkg.readInt();
                }
                else
                {
-                  _loc4_.readInt();
+                  pkg.readInt();
                }
-               _loc11_ = _loc4_.readUTF();
-               if(!isChangeStyleTemp(_loc6_.ID))
+               style = pkg.readUTF();
+               if(!isChangeStyleTemp(info.ID))
                {
-                  _loc6_.Style = _loc11_;
+                  info.Style = style;
                }
-               _loc12_ = _loc11_.split(",")[6].split("|")[0];
-               _loc13_ = _loc11_.split(",")[10].split("|")[0];
-               if(_loc12_ == "-1" || _loc12_ == "0" || _loc12_ == "")
+               arm = style.split(",")[6].split("|")[0];
+               offHand = style.split(",")[10].split("|")[0];
+               if(arm == "-1" || arm == "0" || arm == "")
                {
-                  _loc6_.WeaponID = -1;
-               }
-               else
-               {
-                  _loc6_.WeaponID = int(_loc12_);
-               }
-               if(_loc13_ == "0" || _loc13_ == "")
-               {
-                  _loc6_.DeputyWeaponID = -1;
+                  info.WeaponID = -1;
                }
                else
                {
-                  _loc6_.DeputyWeaponID = int(_loc13_);
+                  info.WeaponID = int(arm);
                }
-               if(!isChangeStyleTemp(_loc6_.ID))
+               if(offHand == "0" || offHand == "")
                {
-                  _loc6_.Colors = _loc4_.readUTF();
-                  _loc6_.Skin = _loc4_.readUTF();
+                  info.DeputyWeaponID = -1;
                }
                else
                {
-                  _loc4_.readUTF();
-                  _loc4_.readUTF();
+                  info.DeputyWeaponID = int(offHand);
                }
-               _loc6_.IsShowConsortia = _loc4_.readBoolean();
-               _loc6_.ConsortiaID = _loc4_.readInt();
-               _loc6_.ConsortiaName = _loc4_.readUTF();
-               _loc6_.badgeID = _loc4_.readInt();
-               _loc14_ = _loc4_.readInt();
-               _loc8_ = _loc4_.readInt();
-               _loc6_.Nimbus = _loc4_.readInt();
-               _loc6_.PvePermission = _loc4_.readUTF();
-               _loc6_.fightLibMission = _loc4_.readUTF();
-               _loc6_.FightPower = _loc4_.readInt();
-               if(_loc6_.isSelf)
+               if(!isChangeStyleTemp(info.ID))
                {
-                  _fightPower = _loc6_.FightPower;
+                  info.Colors = pkg.readUTF();
+                  info.Skin = pkg.readUTF();
+               }
+               else
+               {
+                  pkg.readUTF();
+                  pkg.readUTF();
+               }
+               info.IsShowConsortia = pkg.readBoolean();
+               info.ConsortiaID = pkg.readInt();
+               info.ConsortiaName = pkg.readUTF();
+               info.badgeID = pkg.readInt();
+               unknown1 = pkg.readInt();
+               unknown2 = pkg.readInt();
+               info.Nimbus = pkg.readInt();
+               info.PvePermission = pkg.readUTF();
+               info.fightLibMission = pkg.readUTF();
+               info.FightPower = pkg.readInt();
+               if(info.isSelf)
+               {
+                  _fightPower = info.FightPower;
                   if(PowerUpMovieManager.isCanPlayMovie && StateManager.currentStateType != "fighting" && StateManager.currentStateType != "fighting3d")
                   {
-                     if(_loc6_.FightPower < PowerUpMovieManager.powerNum)
+                     if(info.FightPower < PowerUpMovieManager.powerNum)
                      {
                         if(!_timer2.hasEventListener("timer"))
                         {
@@ -2707,7 +2708,7 @@ package ddt.manager
                            _timer2.start();
                         }
                      }
-                     if(_loc6_.FightPower > PowerUpMovieManager.powerNum)
+                     if(info.FightPower > PowerUpMovieManager.powerNum)
                      {
                         if(!_timer1.hasEventListener("timer"))
                         {
@@ -2717,71 +2718,78 @@ package ddt.manager
                      }
                   }
                }
-               _loc6_.apprenticeshipState = _loc4_.readInt();
-               _loc6_.masterID = _loc4_.readInt();
-               _loc6_.setMasterOrApprentices(_loc4_.readUTF());
-               _loc6_.graduatesCount = _loc4_.readInt();
-               _loc6_.honourOfMaster = _loc4_.readUTF();
-               _loc6_.AchievementPoint = _loc4_.readInt();
-               _loc6_.honor = _loc4_.readUTF();
-               _loc6_.honorId = _loc4_.readInt();
-               _loc6_.LastSpaDate = _loc4_.readDate();
-               _loc6_.charmGP = _loc4_.readInt();
-               _loc9_ = _loc4_.readInt();
-               _loc6_.shopFinallyGottenTime = _loc4_.readDate();
-               _loc6_.UseOffer = _loc4_.readInt();
-               _loc6_.matchInfo.dailyScore = _loc4_.readInt();
-               _loc6_.matchInfo.dailyWinCount = _loc4_.readInt();
-               _loc6_.matchInfo.dailyGameCount = _loc4_.readInt();
-               _loc6_.matchInfo.weeklyScore = _loc4_.readInt();
-               _loc6_.matchInfo.weeklyGameCount = _loc4_.readInt();
-               _loc6_.leagueMoney = _loc4_.readInt();
-               _loc6_.spdTexpExp = _loc4_.readInt();
-               _loc6_.attTexpExp = _loc4_.readInt();
-               _loc6_.defTexpExp = _loc4_.readInt();
-               _loc6_.hpTexpExp = _loc4_.readInt();
-               _loc6_.lukTexpExp = _loc4_.readInt();
-               _loc6_.magicAtkTexpExp = _loc4_.readInt();
-               _loc6_.magicDefTexpExp = _loc4_.readInt();
-               _loc6_.texpTaskCount = _loc4_.readInt();
-               _loc6_.texpCount = _loc4_.readInt();
-               _loc6_.magicTexpCount = _loc4_.readInt();
-               _loc6_.texpTaskDate = _loc4_.readDate();
-               _loc5_ = _loc4_.readInt();
-               _loc3_ = 0;
-               while(_loc3_ < _loc5_)
+               info.apprenticeshipState = pkg.readInt();
+               info.masterID = pkg.readInt();
+               info.setMasterOrApprentices(pkg.readUTF());
+               info.graduatesCount = pkg.readInt();
+               info.honourOfMaster = pkg.readUTF();
+               info.AchievementPoint = pkg.readInt();
+               info.honor = pkg.readUTF();
+               info.honorId = pkg.readInt();
+               info.LastSpaDate = pkg.readDate();
+               info.charmGP = pkg.readInt();
+               unknown3 = pkg.readInt();
+               info.shopFinallyGottenTime = pkg.readDate();
+               info.UseOffer = pkg.readInt();
+               info.matchInfo.dailyScore = pkg.readInt();
+               info.matchInfo.dailyWinCount = pkg.readInt();
+               info.matchInfo.dailyGameCount = pkg.readInt();
+               info.matchInfo.weeklyScore = pkg.readInt();
+               info.matchInfo.weeklyGameCount = pkg.readInt();
+               info.leagueMoney = pkg.readInt();
+               info.spdTexpExp = pkg.readInt();
+               info.attTexpExp = pkg.readInt();
+               info.defTexpExp = pkg.readInt();
+               info.hpTexpExp = pkg.readInt();
+               info.lukTexpExp = pkg.readInt();
+               info.magicAtkTexpExp = pkg.readInt();
+               info.magicDefTexpExp = pkg.readInt();
+               info.texpTaskCount = pkg.readInt();
+               info.texpCount = pkg.readInt();
+               info.magicTexpCount = pkg.readInt();
+               info.texpTaskDate = pkg.readDate();
+               len = pkg.readInt();
+               for(n = 0; n < len; )
                {
-                  _loc7_ = _loc4_.readInt();
-                  _loc10_ = _loc4_.readByte();
-                  _loc6_.dungeonFlag[_loc7_] = _loc10_;
-                  _loc3_++;
+                  mapId = pkg.readInt();
+                  flag = pkg.readByte();
+                  info.dungeonFlag[mapId] = flag;
+                  n++;
                }
-               _loc6_.PveEpicPermission = _loc4_.readUTF();
-               _loc2_ = _loc4_.readInt();
-               _loc6_.evolutionGrade = _loc2_;
-               _loc6_.evolutionExp = _loc4_.readInt();
-               _loc6_.desertEnterCount = _loc4_.readInt();
-               _loc6_.BattleCount = _loc4_.readInt();
-               _loc6_.VipIntegral = _loc4_.readInt();
-               _loc6_.RingExp = _loc4_.readInt();
-               _loc6_.guardCoreID = _loc4_.readInt();
-               _loc6_.guardCoreGrade = _loc4_.readInt();
-               _loc6_.teamID = _loc4_.readInt();
-               _loc6_.teamName = _loc4_.readUTF();
-               _loc6_.teamTag = _loc4_.readUTF();
-               _loc6_.teamGrade = _loc4_.readInt();
-               _loc6_.teamWinTime = _loc4_.readInt();
-               _loc6_.teamTotalTime = _loc4_.readInt();
-               _loc6_.teamDivision = _loc4_.readInt();
-               _loc6_.teamScore = _loc4_.readInt();
-               _loc6_.teamDuty = _loc4_.readInt();
-               _loc6_.teamPersonalScore = _loc4_.readInt();
+               info.PveEpicPermission = pkg.readUTF();
+               gradeId = pkg.readInt();
+               info.evolutionGrade = gradeId;
+               info.evolutionExp = pkg.readInt();
+               info.desertEnterCount = pkg.readInt();
+               info.BattleCount = pkg.readInt();
+               info.VipIntegral = pkg.readInt();
+               info.RingExp = pkg.readInt();
+               info.guardCoreID = pkg.readInt();
+               info.guardCoreGrade = pkg.readInt();
+               info.teamID = pkg.readInt();
+               info.teamName = pkg.readUTF();
+               info.teamTag = pkg.readUTF();
+               info.teamGrade = pkg.readInt();
+               info.teamWinTime = pkg.readInt();
+               info.teamTotalTime = pkg.readInt();
+               info.teamDivision = pkg.readInt();
+               info.teamScore = pkg.readInt();
+               info.teamDuty = pkg.readInt();
+               info.teamPersonalScore = pkg.readInt();
+               info.critTexpExp = pkg.readInt();
+               info.sunderArmorTexpExp = pkg.readInt();
+               info.critDmgTexpExp = pkg.readInt();
+               info.speedTexpExp = pkg.readInt();
+               info.uniqueSkillTexpExp = pkg.readInt();
+               info.dmgTexpExp = pkg.readInt();
+               info.armorDefTexpExp = pkg.readInt();
+               info.nsTexpCount = pkg.readInt();
             }
             catch(_loc16_:*)
             {
                _loc15_ = 1;
             }
-            _loc6_.commitChanges();
+            info.commitChanges();
             if(int(_loc15_))
             {
                throw _loc16_;
@@ -2789,7 +2797,7 @@ package ddt.manager
          }
       }
       
-      protected function __onTimer1Handler(param1:Event) : void
+      protected function __onTimer1Handler(event:Event) : void
       {
          _timer1.stop();
          _timer1.removeEventListener("timer",__onTimer1Handler);
@@ -2804,47 +2812,47 @@ package ddt.manager
          }
       }
       
-      protected function __onTimer2Handler(param1:Event) : void
+      protected function __onTimer2Handler(event:Event) : void
       {
          _timer2.stop();
          _timer2.removeEventListener("timer",__onTimer2Handler);
          PowerUpMovieManager.powerNum = _fightPower;
       }
       
-      public function getDeputyWeaponIcon(param1:InventoryItemInfo, param2:int = 0) : DisplayObject
+      public function getDeputyWeaponIcon(deputyWeapon:InventoryItemInfo, type:int = 0) : DisplayObject
       {
-         var _loc3_:* = null;
-         if(param1)
+         var cell:* = null;
+         if(deputyWeapon)
          {
-            _loc3_ = new BagCell(param1.Place,param1);
-            if(param2 == 0)
+            cell = new BagCell(deputyWeapon.Place,deputyWeapon);
+            if(type == 0)
             {
-               return _loc3_.getContent();
+               return cell.getContent();
             }
-            if(param2 == 1)
+            if(type == 1)
             {
-               return _loc3_.getSmallContent();
+               return cell.getSmallContent();
             }
          }
          return null;
       }
       
-      private function __dailyAwardHandler(param1:PkgEvent) : void
+      private function __dailyAwardHandler(evt:PkgEvent) : void
       {
-         var _loc3_:Boolean = param1.pkg.readBoolean();
-         var _loc2_:int = param1.pkg.readInt();
-         if(_loc2_ == 0)
+         var bool:Boolean = evt.pkg.readBoolean();
+         var getWay:int = evt.pkg.readInt();
+         if(getWay == 0)
          {
-            CalendarManager.getInstance().dailyAwardState = _loc3_;
-            MainButtnController.instance.DailyAwardState = _loc3_;
+            CalendarManager.getInstance().dailyAwardState = bool;
+            MainButtnController.instance.DailyAwardState = bool;
          }
-         else if(_loc2_ != 1)
+         else if(getWay != 1)
          {
-            if(_loc2_ != 2)
+            if(getWay != 2)
             {
-               if(_loc2_ == 6)
+               if(getWay == 6)
                {
-                  CalendarManager.getInstance().times = param1.pkg.readInt();
+                  CalendarManager.getInstance().times = evt.pkg.readInt();
                }
             }
          }
@@ -2860,10 +2868,10 @@ package ddt.manager
          return true;
       }
       
-      public function __checkCodePopup(param1:PkgEvent) : void
+      public function __checkCodePopup(e:PkgEvent) : void
       {
-         e = param1;
-         readComplete = function(param1:Event):void
+         e = e;
+         readComplete = function(e:Event):void
          {
             checkCodeData.pic = bitmapReader.bitmap;
             CheckCodeFrame.Instance.data = checkCodeData;
@@ -2904,132 +2912,130 @@ package ddt.manager
          CheckCodeFrame.Instance.close();
       }
       
-      private function __buffObtain(param1:CrazyTankSocketEvent) : void
+      private function __buffObtain(evt:CrazyTankSocketEvent) : void
       {
-         var _loc12_:int = 0;
-         var _loc11_:int = 0;
-         var _loc3_:Boolean = false;
-         var _loc7_:* = null;
-         var _loc4_:int = 0;
-         var _loc6_:int = 0;
-         var _loc5_:int = 0;
-         var _loc8_:int = 0;
-         var _loc10_:* = null;
-         var _loc9_:PackageIn = param1.pkg;
-         if(_loc9_.clientId != _self.ID)
+         var i:int = 0;
+         var type:int = 0;
+         var isExist:Boolean = false;
+         var beginData:* = null;
+         var validDate:int = 0;
+         var value:int = 0;
+         var validCount:int = 0;
+         var TemplateID:int = 0;
+         var buff:* = null;
+         var pkg:PackageIn = evt.pkg;
+         if(pkg.clientId != _self.ID)
          {
             return;
          }
          _self.clearBuff();
-         var _loc2_:int = _loc9_.readInt();
-         _loc12_ = 0;
-         while(_loc12_ < _loc2_)
+         var lth:int = pkg.readInt();
+         for(i = 0; i < lth; )
          {
-            _loc11_ = _loc9_.readInt();
-            _loc3_ = _loc9_.readBoolean();
-            _loc7_ = _loc9_.readDate();
-            _loc4_ = _loc9_.readInt();
-            _loc6_ = _loc9_.readInt();
-            _loc5_ = _loc9_.readInt();
-            _loc8_ = _loc9_.readInt();
-            _loc10_ = new BuffInfo(_loc11_,_loc3_,_loc7_,_loc4_,_loc6_,_loc5_,_loc8_);
-            _self.addBuff(_loc10_);
-            _loc12_++;
+            type = pkg.readInt();
+            isExist = pkg.readBoolean();
+            beginData = pkg.readDate();
+            validDate = pkg.readInt();
+            value = pkg.readInt();
+            validCount = pkg.readInt();
+            TemplateID = pkg.readInt();
+            buff = new BuffInfo(type,isExist,beginData,validDate,value,validCount,TemplateID);
+            _self.addBuff(buff);
+            i++;
          }
-         param1.stopImmediatePropagation();
+         evt.stopImmediatePropagation();
       }
       
-      private function __buffUpdate(param1:CrazyTankSocketEvent) : void
+      private function __buffUpdate(evt:CrazyTankSocketEvent) : void
       {
-         var _loc12_:* = 0;
-         var _loc11_:int = 0;
-         var _loc2_:Boolean = false;
-         var _loc6_:* = null;
-         var _loc3_:int = 0;
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         var _loc7_:int = 0;
-         var _loc9_:* = null;
-         var _loc8_:PackageIn = param1.pkg;
-         if(_loc8_.clientId != _self.ID)
+         var i:* = 0;
+         var type:int = 0;
+         var isExist:Boolean = false;
+         var beginData:* = null;
+         var validDate:int = 0;
+         var value:int = 0;
+         var validCount:int = 0;
+         var TemplateID:int = 0;
+         var buff:* = null;
+         var pkg:PackageIn = evt.pkg;
+         if(pkg.clientId != _self.ID)
          {
             return;
          }
-         var _loc10_:int = _loc8_.readInt();
-         _loc12_ = uint(0);
-         while(_loc12_ < _loc10_)
+         var len:int = pkg.readInt();
+         for(i = uint(0); i < len; )
          {
-            _loc11_ = _loc8_.readInt();
-            _loc2_ = _loc8_.readBoolean();
-            _loc6_ = _loc8_.readDate();
-            _loc3_ = _loc8_.readInt();
-            _loc5_ = _loc8_.readInt();
-            _loc4_ = _loc8_.readInt();
-            _loc7_ = _loc8_.readInt();
-            _loc9_ = new BuffInfo(_loc11_,_loc2_,_loc6_,_loc3_,_loc5_,_loc4_,_loc7_);
-            if(_loc11_ == 51)
+            type = pkg.readInt();
+            isExist = pkg.readBoolean();
+            beginData = pkg.readDate();
+            validDate = pkg.readInt();
+            value = pkg.readInt();
+            validCount = pkg.readInt();
+            TemplateID = pkg.readInt();
+            buff = new BuffInfo(type,isExist,beginData,validDate,value,validCount,TemplateID);
+            if(type == 51)
             {
-               _loc9_.additionCount = KingBlessManager.instance.getOneBuffData(4);
+               buff.additionCount = KingBlessManager.instance.getOneBuffData(4);
             }
-            if(_loc2_)
+            if(isExist)
             {
-               _self.addBuff(_loc9_);
+               _self.addBuff(buff);
             }
             else
             {
-               _self.buffInfo.remove(_loc9_.Type);
+               _self.buffInfo.remove(buff.Type);
             }
-            _loc12_++;
+            i++;
          }
-         param1.stopImmediatePropagation();
+         evt.stopImmediatePropagation();
       }
       
-      public function findPlayerByNickName(param1:PlayerInfo, param2:String) : PlayerInfo
+      public function findPlayerByNickName(info:PlayerInfo, nickName:String) : PlayerInfo
       {
-         if(param2)
+         if(nickName)
          {
             if(_tempList[_self.ZoneID] == null)
             {
                _tempList[_self.ZoneID] = new DictionaryData();
             }
-            if(_self.NickName == param2)
+            if(_self.NickName == nickName)
             {
                return _self;
             }
             var _loc6_:int = 0;
             var _loc5_:* = _friendList[_self.ZoneID];
-            for each(var _loc4_ in _friendList[_self.ZoneID])
+            for each(var playerInfo in _friendList[_self.ZoneID])
             {
-               if(_loc4_.NickName == param2)
+               if(playerInfo.NickName == nickName)
                {
-                  return _loc4_;
+                  return playerInfo;
                }
             }
-            if(_tempList[_self.ZoneID][param2] != null)
+            if(_tempList[_self.ZoneID][nickName] != null)
             {
-               return _tempList[_self.ZoneID][param2] as PlayerInfo;
+               return _tempList[_self.ZoneID][nickName] as PlayerInfo;
             }
             var _loc8_:int = 0;
             var _loc7_:* = _tempList[_self.ZoneID];
-            for each(var _loc3_ in _tempList[_self.ZoneID])
+            for each(var player in _tempList[_self.ZoneID])
             {
-               if(_loc3_.NickName == param2)
+               if(player.NickName == nickName)
                {
-                  return _loc3_;
+                  return player;
                }
             }
-            param1.NickName = param2;
-            _tempList[_self.ZoneID][param2] = param1;
-            return param1;
+            info.NickName = nickName;
+            _tempList[_self.ZoneID][nickName] = info;
+            return info;
          }
-         return param1;
+         return info;
       }
       
-      public function findPlayer(param1:int, param2:int = -1, param3:String = "") : PlayerInfo
+      public function findPlayer(id:int, zoneID:int = -1, nickName:String = "") : PlayerInfo
       {
-         var _loc4_:* = null;
-         var _loc6_:* = null;
-         if(param2 == -1 || param2 == _self.ZoneID)
+         var player:* = null;
+         var player1:* = null;
+         if(zoneID == -1 || zoneID == _self.ZoneID)
          {
             if(_friendList[_self.ZoneID] == null)
             {
@@ -3047,91 +3053,91 @@ package ddt.manager
             {
                _myAcademyPlayers = new DictionaryData();
             }
-            if(param1 == _self.ID && (param2 == -1 || param2 == _self.ZoneID))
+            if(id == _self.ID && (zoneID == -1 || zoneID == _self.ZoneID))
             {
                return _self;
             }
-            if(_friendList[_self.ZoneID][param1])
+            if(_friendList[_self.ZoneID][id])
             {
-               return _friendList[_self.ZoneID][param1];
+               return _friendList[_self.ZoneID][id];
             }
-            if(_clubPlays[_self.ZoneID][param1])
+            if(_clubPlays[_self.ZoneID][id])
             {
-               return _clubPlays[_self.ZoneID][param1];
+               return _clubPlays[_self.ZoneID][id];
             }
-            if(_tempList[_self.ZoneID][param3])
+            if(_tempList[_self.ZoneID][nickName])
             {
-               return _tempList[_self.ZoneID][param3];
+               return _tempList[_self.ZoneID][nickName];
             }
-            if(_myAcademyPlayers[param1])
+            if(_myAcademyPlayers[id])
             {
-               return _myAcademyPlayers[param1];
+               return _myAcademyPlayers[id];
             }
-            if(_tempList[_self.ZoneID][param1])
+            if(_tempList[_self.ZoneID][id])
             {
-               if(_tempList[_self.ZoneID][_tempList[_self.ZoneID][param1].NickName])
+               if(_tempList[_self.ZoneID][_tempList[_self.ZoneID][id].NickName])
                {
-                  return _tempList[_self.ZoneID][_tempList[_self.ZoneID][param1].NickName];
+                  return _tempList[_self.ZoneID][_tempList[_self.ZoneID][id].NickName];
                }
-               return _tempList[_self.ZoneID][param1];
+               return _tempList[_self.ZoneID][id];
             }
             var _loc8_:int = 0;
             var _loc7_:* = _tempList[_self.ZoneID];
-            for each(var _loc5_ in _tempList[_self.ZoneID])
+            for each(var tempInfo in _tempList[_self.ZoneID])
             {
-               if(_loc5_.ID == param1)
+               if(tempInfo.ID == id)
                {
-                  _tempList[_self.ZoneID][param1] = _loc5_;
-                  return _loc5_;
+                  _tempList[_self.ZoneID][id] = tempInfo;
+                  return tempInfo;
                }
             }
-            _loc4_ = new PlayerInfo();
-            _loc4_.ID = param1;
-            _loc4_.ZoneID = _self.ZoneID;
-            _tempList[_self.ZoneID][param1] = _loc4_;
-            return _loc4_;
+            player = new PlayerInfo();
+            player.ID = id;
+            player.ZoneID = _self.ZoneID;
+            _tempList[_self.ZoneID][id] = player;
+            return player;
          }
-         if(param1 == _self.ID && (param2 == _self.ZoneID || _self.ZoneID == 0))
+         if(id == _self.ID && (zoneID == _self.ZoneID || _self.ZoneID == 0))
          {
             return _self;
          }
-         if(_friendList[param2] && _friendList[param2][param1])
+         if(_friendList[zoneID] && _friendList[zoneID][id])
          {
-            return _friendList[param2][param1];
+            return _friendList[zoneID][id];
          }
-         if(_clubPlays[param2] && _clubPlays[param2][param1])
+         if(_clubPlays[zoneID] && _clubPlays[zoneID][id])
          {
-            return _clubPlays[param2][param1];
+            return _clubPlays[zoneID][id];
          }
-         if(_tempList[param2] && _tempList[param2][param1])
+         if(_tempList[zoneID] && _tempList[zoneID][id])
          {
-            return _tempList[param2][param1];
+            return _tempList[zoneID][id];
          }
-         _loc6_ = new PlayerInfo();
-         _loc6_.ID = param1;
-         _loc6_.ZoneID = param2;
-         if(_tempList[param2] == null)
+         player1 = new PlayerInfo();
+         player1.ID = id;
+         player1.ZoneID = zoneID;
+         if(_tempList[zoneID] == null)
          {
-            _tempList[param2] = new DictionaryData();
+            _tempList[zoneID] = new DictionaryData();
          }
-         _tempList[param2][param1] = _loc6_;
-         return _loc6_;
+         _tempList[zoneID][id] = player1;
+         return player1;
       }
       
-      public function hasInMailTempList(param1:int) : Boolean
+      public function hasInMailTempList(id:int) : Boolean
       {
          if(_mailTempList[_self.ZoneID] == null)
          {
             _mailTempList[_self.ZoneID] = new DictionaryData();
          }
-         if(_mailTempList[_self.ZoneID][param1])
+         if(_mailTempList[_self.ZoneID][id])
          {
             return true;
          }
          return false;
       }
       
-      public function set mailTempList(param1:DictionaryData) : void
+      public function set mailTempList(value:DictionaryData) : void
       {
          if(_mailTempList == null)
          {
@@ -3141,38 +3147,38 @@ package ddt.manager
          {
             _mailTempList[_self.ZoneID] = new DictionaryData();
          }
-         _mailTempList[_self.ZoneID] = param1;
+         _mailTempList[_self.ZoneID] = value;
       }
       
-      public function hasInFriendList(param1:int) : Boolean
+      public function hasInFriendList(id:int) : Boolean
       {
          if(_friendList[_self.ZoneID] == null)
          {
             _friendList[_self.ZoneID] = new DictionaryData();
          }
-         if(_friendList[_self.ZoneID][param1])
+         if(_friendList[_self.ZoneID][id])
          {
             return true;
          }
          return false;
       }
       
-      public function hasInClubPlays(param1:int) : Boolean
+      public function hasInClubPlays(id:int) : Boolean
       {
          if(_clubPlays[_self.ZoneID] == null)
          {
             _clubPlays[_self.ZoneID] = new DictionaryData();
          }
-         if(_clubPlays[_self.ZoneID][param1])
+         if(_clubPlays[_self.ZoneID][id])
          {
             return true;
          }
          return false;
       }
       
-      private function __selfPopChange(param1:PlayerPropertyEvent) : void
+      private function __selfPopChange(e:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["TotalCount"])
+         if(e.changedProperties["TotalCount"])
          {
             switch(int(PlayerManager.Instance.Self.TotalCount) - 1)
             {
@@ -3207,7 +3213,7 @@ package ddt.manager
                   StatisticManager.Instance().startAction("gameOver10","yes");
             }
          }
-         if(param1.changedProperties["Grade"])
+         if(e.changedProperties["Grade"])
          {
             if(isReportGameProfile && PathManager.isDuoWanSDKInterface)
             {
@@ -3219,166 +3225,162 @@ package ddt.manager
       
       private function reportGameProfile() : void
       {
-         var _loc9_:String = Account.Account;
-         var _loc4_:int = 0;
-         var _loc8_:String = "DDT";
-         var _loc7_:String = PathManager.solveFillPage();
-         var _loc3_:String = "";
-         if(_loc7_.indexOf("quest") != -1)
+         var passport:String = Account.Account;
+         var udbid:int = 0;
+         var gameddt:String = "DDT";
+         var sitePath:String = PathManager.solveFillPage();
+         var gameServer:String = "";
+         if(sitePath.indexOf("quest") != -1)
          {
-            _loc3_ = "s" + _loc7_.slice(_loc7_.indexOf("quest") + 5);
+            gameServer = "s" + sitePath.slice(sitePath.indexOf("quest") + 5);
          }
-         var _loc6_:String = Self.NickName;
-         var _loc5_:int = Self.Grade;
-         var _loc2_:String = "level_change";
-         var _loc1_:GameProfileParams = null;
-         GameMsgCollector.instance.reportGameProfile(_loc9_,_loc4_,_loc8_,_loc3_,_loc6_,_loc5_,_loc2_,_loc1_);
+         var roleName:String = Self.NickName;
+         var roleLevel:int = Self.Grade;
+         var gameEvent:String = "level_change";
+         var otherParams:GameProfileParams = null;
+         GameMsgCollector.instance.reportGameProfile(passport,udbid,gameddt,gameServer,roleName,roleLevel,gameEvent,otherParams);
       }
       
-      private function __updatePet(param1:PkgEvent) : void
+      private function __updatePet(event:PkgEvent) : void
       {
-         var _loc22_:int = 0;
-         var _loc11_:int = 0;
-         var _loc12_:Boolean = false;
-         var _loc18_:int = 0;
-         var _loc9_:int = 0;
-         var _loc27_:* = null;
-         var _loc10_:int = 0;
-         var _loc21_:int = 0;
-         var _loc3_:int = 0;
-         var _loc4_:* = null;
-         var _loc8_:int = 0;
-         var _loc20_:int = 0;
-         var _loc26_:int = 0;
-         var _loc13_:int = 0;
-         var _loc16_:Boolean = false;
-         var _loc6_:int = 0;
-         var _loc14_:int = 0;
-         var _loc24_:* = null;
-         var _loc5_:* = null;
-         var _loc25_:* = null;
-         var _loc15_:* = null;
-         var _loc17_:PackageIn = param1.pkg;
-         var _loc19_:int = _loc17_.readInt();
-         var _loc23_:int = _loc17_.readInt();
-         var _loc7_:PlayerInfo = findPlayer(_loc19_,_loc23_);
-         _loc7_.ID = _loc19_;
-         var _loc2_:int = _loc17_.readInt();
-         _loc22_ = 0;
-         while(_loc22_ < _loc2_)
+         var i:int = 0;
+         var place:int = 0;
+         var isUpdate:Boolean = false;
+         var pid:int = 0;
+         var ptid:int = 0;
+         var p:* = null;
+         var skillCount:int = 0;
+         var k:int = 0;
+         var skillid:int = 0;
+         var petskill:* = null;
+         var activedSkillCount:int = 0;
+         var j:int = 0;
+         var splace:int = 0;
+         var sid:int = 0;
+         var isEquip:Boolean = false;
+         var petEquipCount:int = 0;
+         var p_i:int = 0;
+         var equipData:* = null;
+         var equInfo:* = null;
+         var newInfo:* = null;
+         var temInfo:* = null;
+         var pkg:PackageIn = event.pkg;
+         var playerid:int = pkg.readInt();
+         var zoneId:int = pkg.readInt();
+         var info:PlayerInfo = findPlayer(playerid,zoneId);
+         info.ID = playerid;
+         var count:int = pkg.readInt();
+         for(i = 0; i < count; )
          {
-            _loc11_ = _loc17_.readInt();
-            _loc12_ = _loc17_.readBoolean();
-            if(_loc12_)
+            place = pkg.readInt();
+            isUpdate = pkg.readBoolean();
+            if(isUpdate)
             {
-               _loc18_ = _loc17_.readInt();
-               _loc9_ = _loc17_.readInt();
-               _loc27_ = new PetInfo();
-               _loc27_.TemplateID = _loc9_;
-               _loc27_.ID = _loc18_;
-               PetInfoManager.fillPetInfo(_loc27_);
-               _loc27_.Name = _loc17_.readUTF();
-               _loc27_.UserID = _loc17_.readInt();
-               _loc27_.Attack = _loc17_.readInt();
-               _loc27_.Defence = _loc17_.readInt();
-               _loc27_.Luck = _loc17_.readInt();
-               _loc27_.Agility = _loc17_.readInt();
-               _loc27_.Blood = _loc17_.readInt();
-               _loc27_.Damage = _loc17_.readInt();
-               _loc27_.Guard = _loc17_.readInt();
-               _loc27_.AttackGrow = _loc17_.readInt();
-               _loc27_.DefenceGrow = _loc17_.readInt();
-               _loc27_.LuckGrow = _loc17_.readInt();
-               _loc27_.AgilityGrow = _loc17_.readInt();
-               _loc27_.BloodGrow = _loc17_.readInt();
-               _loc27_.DamageGrow = _loc17_.readInt();
-               _loc27_.GuardGrow = _loc17_.readInt();
-               _loc27_.Level = _loc17_.readInt();
-               _loc27_.GP = _loc17_.readInt();
-               _loc27_.MaxGP = _loc17_.readInt();
-               _loc27_.Hunger = _loc17_.readInt();
-               _loc27_.breakGrade = _loc17_.readInt();
-               _loc27_.breakBlood = _loc17_.readUnsignedInt();
-               _loc27_.breakAttack = _loc17_.readUnsignedInt();
-               _loc27_.breakDefence = _loc17_.readUnsignedInt();
-               _loc27_.breakAgility = _loc17_.readUnsignedInt();
-               _loc27_.breakLuck = _loc17_.readUnsignedInt();
-               _loc27_.PetHappyStar = _loc17_.readInt();
-               _loc27_.MP = _loc17_.readInt();
-               _loc27_.clearSkills();
-               _loc27_.clearEquipedSkills();
-               _loc10_ = _loc17_.readInt();
-               _loc21_ = 0;
-               while(_loc21_ < _loc10_)
+               pid = pkg.readInt();
+               ptid = pkg.readInt();
+               p = new PetInfo();
+               p.TemplateID = ptid;
+               p.ID = pid;
+               PetInfoManager.fillPetInfo(p);
+               p.Name = pkg.readUTF();
+               p.UserID = pkg.readInt();
+               p.Attack = pkg.readInt();
+               p.Defence = pkg.readInt();
+               p.Luck = pkg.readInt();
+               p.Agility = pkg.readInt();
+               p.Blood = pkg.readInt();
+               p.Damage = pkg.readInt();
+               p.Guard = pkg.readInt();
+               p.AttackGrow = pkg.readInt();
+               p.DefenceGrow = pkg.readInt();
+               p.LuckGrow = pkg.readInt();
+               p.AgilityGrow = pkg.readInt();
+               p.BloodGrow = pkg.readInt();
+               p.DamageGrow = pkg.readInt();
+               p.GuardGrow = pkg.readInt();
+               p.Level = pkg.readInt();
+               p.GP = pkg.readInt();
+               p.MaxGP = pkg.readInt();
+               p.Hunger = pkg.readInt();
+               p.breakGrade = pkg.readInt();
+               p.breakBlood = pkg.readUnsignedInt();
+               p.breakAttack = pkg.readUnsignedInt();
+               p.breakDefence = pkg.readUnsignedInt();
+               p.breakAgility = pkg.readUnsignedInt();
+               p.breakLuck = pkg.readUnsignedInt();
+               p.PetHappyStar = pkg.readInt();
+               p.MP = pkg.readInt();
+               p.clearSkills();
+               p.clearEquipedSkills();
+               skillCount = pkg.readInt();
+               for(k = 0; k < skillCount; )
                {
-                  _loc3_ = _loc17_.readInt();
-                  _loc4_ = new PetSkill(_loc3_);
-                  _loc4_.exclusiveID = _loc17_.readInt();
-                  _loc27_.addSkill(_loc4_);
-                  _loc21_++;
+                  skillid = pkg.readInt();
+                  petskill = new PetSkill(skillid);
+                  petskill.exclusiveID = pkg.readInt();
+                  p.addSkill(petskill);
+                  k++;
                }
-               _loc8_ = _loc17_.readInt();
-               _loc20_ = 0;
-               while(_loc20_ < _loc8_)
+               activedSkillCount = pkg.readInt();
+               for(j = 0; j < activedSkillCount; )
                {
-                  _loc26_ = _loc17_.readInt();
-                  _loc13_ = _loc17_.readInt();
-                  _loc27_.equipdSkills.add(_loc26_,_loc13_);
-                  _loc20_++;
+                  splace = pkg.readInt();
+                  sid = pkg.readInt();
+                  p.equipdSkills.add(splace,sid);
+                  j++;
                }
-               _loc16_ = _loc17_.readBoolean();
-               _loc27_.IsEquip = _loc16_;
-               _loc27_.Place = _loc11_;
-               _loc6_ = _loc17_.readInt();
-               _loc14_ = 0;
-               while(_loc14_ < _loc6_)
+               isEquip = pkg.readBoolean();
+               p.IsEquip = isEquip;
+               p.Place = place;
+               petEquipCount = pkg.readInt();
+               for(p_i = 0; p_i < petEquipCount; )
                {
-                  _loc24_ = new PetEquipData();
-                  _loc24_.eqType = _loc17_.readInt();
-                  _loc24_.eqTemplateID = _loc17_.readInt();
-                  _loc24_.startTime = _loc17_.readDateString();
-                  _loc24_.ValidDate = _loc17_.readInt();
-                  _loc5_ = new InventoryItemInfo();
-                  _loc5_.TemplateID = _loc24_.eqTemplateID;
-                  _loc5_.ValidDate = _loc24_.ValidDate;
-                  _loc5_.BeginDate = _loc24_.startTime;
-                  _loc5_.IsBinds = true;
-                  _loc5_.IsUsed = true;
-                  _loc5_.Place = _loc24_.eqType;
-                  _loc5_.AttackCompose = _loc17_.readInt();
-                  _loc5_.DefendCompose = _loc17_.readInt();
-                  _loc5_.AgilityCompose = _loc17_.readInt();
-                  _loc5_.LuckCompose = _loc17_.readInt();
-                  _loc5_.ItemID = _loc17_.readInt();
-                  _loc25_ = ItemManager.fill(_loc5_) as InventoryItemInfo;
-                  if(_loc27_.equipList[_loc25_.Place])
+                  equipData = new PetEquipData();
+                  equipData.eqType = pkg.readInt();
+                  equipData.eqTemplateID = pkg.readInt();
+                  equipData.startTime = pkg.readDateString();
+                  equipData.ValidDate = pkg.readInt();
+                  equInfo = new InventoryItemInfo();
+                  equInfo.TemplateID = equipData.eqTemplateID;
+                  equInfo.ValidDate = equipData.ValidDate;
+                  equInfo.BeginDate = equipData.startTime;
+                  equInfo.IsBinds = true;
+                  equInfo.IsUsed = true;
+                  equInfo.Place = equipData.eqType;
+                  equInfo.AttackCompose = pkg.readInt();
+                  equInfo.DefendCompose = pkg.readInt();
+                  equInfo.AgilityCompose = pkg.readInt();
+                  equInfo.LuckCompose = pkg.readInt();
+                  equInfo.ItemID = pkg.readInt();
+                  newInfo = ItemManager.fill(equInfo) as InventoryItemInfo;
+                  if(p.equipList[newInfo.Place])
                   {
-                     _loc15_ = _loc27_.equipList[_loc25_.Place];
-                     _loc25_.awakenEquipPro = _loc15_.awakenEquipPro;
+                     temInfo = p.equipList[newInfo.Place];
+                     newInfo.awakenEquipPro = temInfo.awakenEquipPro;
                   }
-                  _loc27_.equipList.add(_loc25_.Place,_loc25_);
-                  _loc14_++;
+                  p.equipList.add(newInfo.Place,newInfo);
+                  p_i++;
                }
-               _loc27_.currentStarExp = _loc17_.readInt();
-               _loc7_.pets.add(_loc27_.Place,_loc27_);
+               p.currentStarExp = pkg.readInt();
+               info.pets.add(p.Place,p);
             }
             else
             {
-               _loc7_.pets.remove(_loc11_);
+               info.pets.remove(place);
             }
-            _loc7_.commitChanges();
-            _loc22_++;
+            info.commitChanges();
+            i++;
          }
-         _loc7_.petsEatWeaponLevel = _loc17_.readInt();
-         _loc7_.petsEatClothesLevel = _loc17_.readInt();
-         _loc7_.petsEatHatLevel = _loc17_.readInt();
+         info.petsEatWeaponLevel = pkg.readInt();
+         info.petsEatClothesLevel = pkg.readInt();
+         info.petsEatHatLevel = pkg.readInt();
          dispatchEvent(new CEvent("updatePet"));
       }
       
-      private function __updateOneKeyFinish(param1:PkgEvent) : void
+      private function __updateOneKeyFinish(event:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _self.uesedFinishTime = _loc2_.readInt();
+         var pkg:PackageIn = event.pkg;
+         _self.uesedFinishTime = pkg.readInt();
       }
       
       public function get isReportGameProfile() : Boolean
@@ -3386,9 +3388,9 @@ package ddt.manager
          return _isReportGameProfile;
       }
       
-      public function set isReportGameProfile(param1:Boolean) : void
+      public function set isReportGameProfile(value:Boolean) : void
       {
-         _isReportGameProfile = param1;
+         _isReportGameProfile = value;
       }
    }
 }

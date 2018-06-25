@@ -45,9 +45,9 @@ package levelFund.view
          removeEventListener("response",__responseHandler);
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(event:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(event.responseCode == 0 || event.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();

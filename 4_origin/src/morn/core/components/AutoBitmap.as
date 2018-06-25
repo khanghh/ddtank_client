@@ -28,206 +28,205 @@ package morn.core.components
       
       public function AutoBitmap()
       {
-         this._smoothing = Styles.smoothing;
+         _smoothing = Styles.smoothing;
          super();
       }
       
       override public function get width() : Number
       {
-         return !!isNaN(this._width)?!!super.bitmapData?Number(super.bitmapData.width):Number(super.width):Number(this._width);
+         return !!isNaN(_width)?!!super.bitmapData?super.bitmapData.width:super.width:_width;
       }
       
-      override public function set width(param1:Number) : void
+      override public function set width(value:Number) : void
       {
-         if(this._width != param1)
+         if(_width != value)
          {
-            this._width = param1;
-            this.callLater(this.changeSize);
+            _width = value;
+            callLater(changeSize);
          }
       }
       
       override public function get height() : Number
       {
-         return !!isNaN(this._height)?!!super.bitmapData?Number(super.bitmapData.height):Number(super.height):Number(this._height);
+         return !!isNaN(_height)?!!super.bitmapData?super.bitmapData.height:super.height:_height;
       }
       
-      override public function set height(param1:Number) : void
+      override public function set height(value:Number) : void
       {
-         if(this._height != param1)
+         if(_height != value)
          {
-            this._height = param1;
-            this.callLater(this.changeSize);
+            _height = value;
+            callLater(changeSize);
          }
       }
       
       public function get sizeGrid() : Array
       {
-         return this._sizeGrid;
+         return _sizeGrid;
       }
       
-      public function set sizeGrid(param1:Array) : void
+      public function set sizeGrid(value:Array) : void
       {
-         this._sizeGrid = param1;
-         this.callLater(this.changeSize);
+         _sizeGrid = value;
+         callLater(changeSize);
       }
       
-      override public function set bitmapData(param1:BitmapData) : void
+      override public function set bitmapData(value:BitmapData) : void
       {
-         if(param1)
+         if(value)
          {
-            this.clips = new <BitmapData>[param1];
+            clips = new <BitmapData>[value];
          }
          else
          {
-            this.disposeTempBitmapdata();
-            this._source = this._clips = null;
-            super.bitmapData = null;
+            disposeTempBitmapdata();
+            _clips = null;
+            _source = null;
+            .super.bitmapData = null;
          }
       }
       
       public function get clips() : Vector.<BitmapData>
       {
-         return this._source;
+         return _source;
       }
       
-      public function set clips(param1:Vector.<BitmapData>) : void
+      public function set clips(value:Vector.<BitmapData>) : void
       {
-         this.disposeTempBitmapdata();
-         this._source = param1;
-         if(param1 && param1.length > 0)
+         disposeTempBitmapdata();
+         _source = value;
+         if(value && value.length > 0)
          {
-            super.bitmapData = param1[0];
-            this.callLater(this.changeSize);
+            .super.bitmapData = value[0];
+            callLater(changeSize);
          }
       }
       
       public function get index() : int
       {
-         return this._index;
+         return _index;
       }
       
-      public function set index(param1:int) : void
+      public function set index(value:int) : void
       {
-         this._index = param1;
-         if(this._clips && this._clips.length > 0)
+         _index = value;
+         if(_clips && _clips.length > 0)
          {
-            this._index = this._index < this._clips.length && this._index > -1?int(this._index):0;
-            super.bitmapData = this._clips[this._index];
-            super.smoothing = this._smoothing;
+            _index = _index < _clips.length && _index > -1?_index:0;
+            .super.bitmapData = _clips[_index];
+            .super.smoothing = _smoothing;
          }
       }
       
       private function changeSize() : void
       {
-         var _loc1_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:Vector.<BitmapData> = null;
-         var _loc4_:int = 0;
-         var _loc5_:int = 0;
-         if(this._source && this._source.length > 0)
+         var w:int = 0;
+         var h:int = 0;
+         var temp:* = undefined;
+         var i:int = 0;
+         var n:int = 0;
+         if(_source && _source.length > 0)
          {
-            _loc1_ = Math.round(this.width);
-            _loc2_ = Math.round(this.height);
-            this.disposeTempBitmapdata();
-            _loc3_ = new Vector.<BitmapData>();
-            _loc4_ = 0;
-            _loc5_ = this._source.length;
-            while(_loc4_ < _loc5_)
+            w = Math.round(width);
+            h = Math.round(height);
+            disposeTempBitmapdata();
+            temp = new Vector.<BitmapData>();
+            for(i = 0,n = _source.length; i < n; )
             {
-               if(this._sizeGrid)
+               if(_sizeGrid)
                {
-                  _loc3_.push(BitmapUtils.scale9Bmd(this._source[_loc4_],this._sizeGrid,_loc1_,_loc2_));
+                  temp.push(BitmapUtils.scale9Bmd(_source[i],_sizeGrid,w,h));
                }
                else
                {
-                  _loc3_.push(this._source[_loc4_]);
+                  temp.push(_source[i]);
                }
-               _loc4_++;
+               i++;
             }
-            this._clips = _loc3_;
-            this.index = this._index;
-            super.width = _loc1_;
-            super.height = _loc2_;
+            _clips = temp;
+            index = _index;
+            .super.width = w;
+            .super.height = h;
          }
-         if(!isNaN(this._anchorX))
+         if(!isNaN(_anchorX))
          {
-            super.x = -Math.round(this._anchorX * this.width);
+            .super.x = -Math.round(_anchorX * width);
          }
-         if(!isNaN(this._anchorY))
+         if(!isNaN(_anchorY))
          {
-            super.y = -Math.round(this._anchorY * this.height);
+            .super.y = -Math.round(_anchorY * height);
          }
       }
       
       private function disposeTempBitmapdata() : void
       {
-         var _loc1_:int = 0;
-         if(this._clips)
+         var i:int = 0;
+         if(_clips)
          {
-            _loc1_ = this._clips.length - 1;
-            while(_loc1_ > -1)
+            for(i = _clips.length - 1; i > -1; )
             {
-               if(!this._source.length)
+               if(!_source.length)
                {
                   return;
                }
-               if(this._clips[_loc1_] != this._source[_loc1_])
+               if(_clips[i] != _source[i])
                {
-                  this._clips[_loc1_].dispose();
+                  _clips[i].dispose();
                }
-               _loc1_--;
+               i--;
             }
-            this._clips.length = 0;
+            _clips.length = 0;
          }
       }
       
       override public function get smoothing() : Boolean
       {
-         return this._smoothing;
+         return _smoothing;
       }
       
-      override public function set smoothing(param1:Boolean) : void
+      override public function set smoothing(value:Boolean) : void
       {
-         super.smoothing = this._smoothing = param1;
+         _smoothing = value;
+         .super.smoothing = value;
       }
       
       public function get anchorX() : Number
       {
-         return this._anchorX;
+         return _anchorX;
       }
       
-      public function set anchorX(param1:Number) : void
+      public function set anchorX(value:Number) : void
       {
-         this._anchorX = param1;
+         _anchorX = value;
       }
       
       public function get anchorY() : Number
       {
-         return this._anchorY;
+         return _anchorY;
       }
       
-      public function set anchorY(param1:Number) : void
+      public function set anchorY(value:Number) : void
       {
-         this._anchorY = param1;
+         _anchorY = value;
       }
       
-      public function callLater(param1:Function, param2:Array = null) : void
+      public function callLater(method:Function, args:Array = null) : void
       {
-         var _loc3_:Array = [this];
-         if(param2 && param2.length > 0)
+         var oargs:Array = [this];
+         if(args && args.length > 0)
          {
-            _loc3_ = _loc3_.concat(param2);
+            oargs = oargs.concat(args);
          }
-         App.render.callLater(param1,_loc3_);
+         App.render.callLater(method,oargs);
       }
       
       public function dispose() : void
       {
          App.render.removeCallLaterByObj(this);
-         this._sizeGrid = null;
-         this._source = null;
-         this._clips = null;
-         this.bitmapData = null;
+         _sizeGrid = null;
+         _source = null;
+         _clips = null;
+         bitmapData = null;
       }
    }
 }

@@ -23,7 +23,7 @@ package ddt.view.buff.buffButton
          info = new BuffInfo(18);
       }
       
-      override protected function __onMouseOver(param1:MouseEvent) : void
+      override protected function __onMouseOver(evt:MouseEvent) : void
       {
          if(_info && _info.IsExist)
          {
@@ -31,7 +31,7 @@ package ddt.view.buff.buffButton
          }
       }
       
-      override protected function __onMouseOut(param1:MouseEvent) : void
+      override protected function __onMouseOut(evt:MouseEvent) : void
       {
          if(_info && _info.IsExist)
          {
@@ -39,14 +39,14 @@ package ddt.view.buff.buffButton
          }
       }
       
-      override protected function __onclick(param1:MouseEvent) : void
+      override protected function __onclick(evt:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var alert:* = null;
          if(Setting)
          {
             return;
          }
-         super.__onclick(param1);
+         super.__onclick(evt);
          ShowTipManager.Instance.removeCurrentTip();
          if(!checkBagLocked())
          {
@@ -54,28 +54,28 @@ package ddt.view.buff.buffButton
          }
          if(!(_info && _info.IsExist))
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaTax.info"),LanguageMgr.GetTranslation("tank.view.buff.doubleExp",ShopManager.Instance.getMoneyShopItemByTemplateID(_info.buffItemInfo.TemplateID).getItemPrice(1).bothMoneyValue),"",LanguageMgr.GetTranslation("cancel"),false,false,false,2,null,"SimpleAlert",30,true,1);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaTax.info"),LanguageMgr.GetTranslation("tank.view.buff.doubleExp",ShopManager.Instance.getMoneyShopItemByTemplateID(_info.buffItemInfo.TemplateID).getItemPrice(1).bothMoneyValue),"",LanguageMgr.GetTranslation("cancel"),false,false,false,2,null,"SimpleAlert",30,true,1);
          }
          else
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaTax.info"),LanguageMgr.GetTranslation("tank.view.buff.addPrice",ShopManager.Instance.getMoneyShopItemByTemplateID(_info.buffItemInfo.TemplateID).getItemPrice(1).bothMoneyValue),"",LanguageMgr.GetTranslation("cancel"),false,false,false,2,null,"SimpleAlert",30,true,1);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaTax.info"),LanguageMgr.GetTranslation("tank.view.buff.addPrice",ShopManager.Instance.getMoneyShopItemByTemplateID(_info.buffItemInfo.TemplateID).getItemPrice(1).bothMoneyValue),"",LanguageMgr.GetTranslation("cancel"),false,false,false,2,null,"SimpleAlert",30,true,1);
          }
          Setting = true;
-         _loc2_.addEventListener("response",__onBuyResponse);
+         alert.addEventListener("response",__onBuyResponse);
       }
       
-      override protected function __onBuyResponse(param1:FrameEvent) : void
+      override protected function __onBuyResponse(evt:FrameEvent) : void
       {
-         var _loc2_:int = 0;
+         var needMoney:int = 0;
          Setting = false;
          SoundManager.instance.play("008");
-         var _loc3_:Boolean = (param1.target as BaseAlerFrame).isBand;
-         (param1.target as BaseAlerFrame).removeEventListener("response",__onBuyResponse);
-         (param1.target as BaseAlerFrame).dispose();
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var isBand:Boolean = (evt.target as BaseAlerFrame).isBand;
+         (evt.target as BaseAlerFrame).removeEventListener("response",__onBuyResponse);
+         (evt.target as BaseAlerFrame).dispose();
+         if(evt.responseCode == 2 || evt.responseCode == 3)
          {
-            _loc2_ = ShopManager.Instance.getMoneyShopItemByTemplateID(_info.buffItemInfo.TemplateID).getItemPrice(1).bothMoneyValue;
-            CheckMoneyUtils.instance.checkMoney(_loc3_,_loc2_,onCheckComplete);
+            needMoney = ShopManager.Instance.getMoneyShopItemByTemplateID(_info.buffItemInfo.TemplateID).getItemPrice(1).bothMoneyValue;
+            CheckMoneyUtils.instance.checkMoney(isBand,needMoney,onCheckComplete);
          }
       }
       

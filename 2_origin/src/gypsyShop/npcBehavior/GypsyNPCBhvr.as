@@ -21,24 +21,24 @@ package gypsyShop.npcBehavior
       
       private var _gypsyNPC:MovieClip;
       
-      public function GypsyNPCBhvr(param1:Sprite)
+      public function GypsyNPCBhvr(container:Sprite)
       {
          super();
-         _container = param1;
+         _container = container;
       }
       
       public function show() : void
       {
-         var _loc1_:* = null;
+         var staticLayer:* = null;
          if(_hotArea == null)
          {
             return;
          }
-         var _loc2_:HallScene = StarlingMain.instance.currentScene as HallScene;
-         if(_loc2_)
+         var currentScene:HallScene = StarlingMain.instance.currentScene as HallScene;
+         if(currentScene)
          {
-            _loc1_ = _loc2_.playerView.staticLayer;
-            _loc1_.setBuildVisible("gypsy",true);
+            staticLayer = currentScene.playerView.staticLayer;
+            staticLayer.setBuildVisible("gypsy",true);
          }
          _hotArea.visible = true;
          _hotArea.mouseEnabled = true;
@@ -55,12 +55,12 @@ package gypsyShop.npcBehavior
       
       public function hide() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:HallScene = StarlingMain.instance.currentScene as HallScene;
-         if(_loc2_)
+         var staticLayer:* = null;
+         var currentScene:HallScene = StarlingMain.instance.currentScene as HallScene;
+         if(currentScene)
          {
-            _loc1_ = _loc2_.playerView.staticLayer;
-            _loc1_.setBuildVisible("gypsy",false);
+            staticLayer = currentScene.playerView.staticLayer;
+            staticLayer.setBuildVisible("gypsy",false);
          }
          if(_hotArea != null)
          {
@@ -87,19 +87,19 @@ package gypsyShop.npcBehavior
          _hall = null;
       }
       
-      public function set container(param1:Sprite) : void
+      public function set container(value:Sprite) : void
       {
-         _container = param1;
+         _container = value;
       }
       
-      public function set hotArea(param1:InteractiveObject) : void
+      public function set hotArea(value:InteractiveObject) : void
       {
-         _hotArea = param1 as Component;
+         _hotArea = value as Component;
       }
       
-      public function set hallView(param1:HallStateView) : void
+      public function set hallView(value:HallStateView) : void
       {
-         _hall = param1;
+         _hall = value;
       }
    }
 }

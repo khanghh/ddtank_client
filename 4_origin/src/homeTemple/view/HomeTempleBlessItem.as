@@ -18,10 +18,10 @@ package homeTemple.view
       
       private var _blessBtn:BaseButton;
       
-      public function HomeTempleBlessItem(param1:int)
+      public function HomeTempleBlessItem(id:int)
       {
          super();
-         _id = param1;
+         _id = id;
          initView();
          initEvent();
       }

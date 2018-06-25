@@ -33,14 +33,14 @@ package happyLittleGame.cubesGame
          addChild(_scoreTxt);
       }
       
-      public function set data(param1:CubeGameRankData) : void
+      public function set data(value:CubeGameRankData) : void
       {
          var _loc2_:* = true;
          _scoreTxt.visible = _loc2_;
          _loc2_ = _loc2_;
          _nameTxt.visible = _loc2_;
          _rankTxt.visible = _loc2_;
-         if(param1.rank == 1)
+         if(value.rank == 1)
          {
             _loc2_ = "cubeGameRankView.rank1TF";
             _rankTxt.textFormatStyle = _loc2_;
@@ -48,7 +48,7 @@ package happyLittleGame.cubesGame
             _scoreTxt.textFormatStyle = _loc2_;
             _nameTxt.textFormatStyle = _loc2_;
          }
-         else if(param1.rank == 2)
+         else if(value.rank == 2)
          {
             _loc2_ = "cubeGameRankView.rank2TF";
             _rankTxt.textFormatStyle = _loc2_;
@@ -64,9 +64,9 @@ package happyLittleGame.cubesGame
             _scoreTxt.textFormatStyle = _loc2_;
             _nameTxt.textFormatStyle = _loc2_;
          }
-         _rankTxt.text = param1.rank.toString();
-         _nameTxt.text = param1.name;
-         _scoreTxt.text = param1.score.toString();
+         _rankTxt.text = value.rank.toString();
+         _nameTxt.text = value.name;
+         _scoreTxt.text = value.score.toString();
       }
       
       public function clear() : void

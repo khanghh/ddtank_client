@@ -46,10 +46,10 @@ package angelInvestment.view
       
       private var _cell:BagCell;
       
-      public function AngelInvestmentItem(param1:AngelInvestmentItemData)
+      public function AngelInvestmentItem(info:AngelInvestmentItemData)
       {
          super();
-         _info = param1;
+         _info = info;
          init();
       }
       
@@ -85,17 +85,17 @@ package angelInvestment.view
          _tips.tipData = LanguageMgr.GetTranslation("ddt.angelInvestment.itmeTips",_info.Count,_cell.info.Name);
       }
       
-      public function updateInfo(param1:int, param2:Boolean) : void
+      public function updateInfo(day:int, isGet:Boolean) : void
       {
-         if(param1 >= 0)
+         if(day >= 0)
          {
-            _dayText.text = LanguageMgr.GetTranslation("ddt.angelInvestment.dayTips",param1);
-            _getBtn.enable = !param2;
+            _dayText.text = LanguageMgr.GetTranslation("ddt.angelInvestment.dayTips",day);
+            _getBtn.enable = !isGet;
             _buyBtn.enable = false;
          }
       }
       
-      private function __onBuy(param1:MouseEvent) : void
+      private function __onBuy(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.bagLocked)
@@ -103,13 +103,13 @@ package angelInvestment.view
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.angelInvestment.buyAlter",_info.Money),"",LanguageMgr.GetTranslation("cancel"),true,true,false,2);
-         _loc2_.addEventListener("response",__onBuyResponse);
+         var frame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.angelInvestment.buyAlter",_info.Money),"",LanguageMgr.GetTranslation("cancel"),true,true,false,2);
+         frame.addEventListener("response",__onBuyResponse);
       }
       
-      private function __onBuyResponse(param1:FrameEvent) : void
+      private function __onBuyResponse(e:FrameEvent) : void
       {
-         e = param1;
+         e = e;
          var frame:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
          frame.removeEventListener("response",__onBuyResponse);
          if(e.responseCode == 3 || e.responseCode == 2)
@@ -123,7 +123,7 @@ package angelInvestment.view
          frame.dispose();
       }
       
-      private function __onGet(param1:MouseEvent) : void
+      private function __onGet(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.bagLocked)

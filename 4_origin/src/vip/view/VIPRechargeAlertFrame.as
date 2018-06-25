@@ -46,9 +46,9 @@ package vip.view
          initFrame();
       }
       
-      public function set content(param1:DisplayObject) : void
+      public function set content(value:DisplayObject) : void
       {
-         _content = param1;
+         _content = value;
          _contentScroll.setView(_content);
       }
       
@@ -63,9 +63,9 @@ package vip.view
          addToContent(_buttomBit);
          _renewalVipBtn = ComponentFactory.Instance.creatComponentByStylename("GiveYourselfOpenView.renewalVipBtn");
          addToContent(_renewalVipBtn);
-         var _loc1_:Point = ComponentFactory.Instance.creatCustomObject("VIPRechargeAlert.renewalVipBtnPos");
-         _renewalVipBtn.x = _loc1_.x;
-         _renewalVipBtn.y = _loc1_.y;
+         var pos:Point = ComponentFactory.Instance.creatCustomObject("VIPRechargeAlert.renewalVipBtnPos");
+         _renewalVipBtn.x = pos.x;
+         _renewalVipBtn.y = pos.y;
          _scrollBg = ComponentFactory.Instance.creatComponentByStylename("vip.rechargeLVBg");
          addToContent(_scrollBg);
          _contentScroll = ComponentFactory.Instance.creatComponentByStylename("vipRechargeAlertFrame.scroll");
@@ -90,11 +90,11 @@ package vip.view
       
       private function updata() : void
       {
-         var _loc1_:Date = PlayerManager.Instance.Self.VIPExpireDay as Date;
-         _dueData.text = _loc1_.fullYear + "-" + (_loc1_.month + 1) + "-" + _loc1_.date;
+         var date:Date = PlayerManager.Instance.Self.VIPExpireDay as Date;
+         _dueData.text = date.fullYear + "-" + (date.month + 1) + "-" + date.date;
       }
       
-      private function __OK(param1:MouseEvent) : void
+      private function __OK(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          VipController.instance.show();

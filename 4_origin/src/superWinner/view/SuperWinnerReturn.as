@@ -54,9 +54,9 @@ package superWinner.view
          _returnBtn.addEventListener("click",__onReturnClick);
       }
       
-      private function __onStretchBtnClick(param1:MouseEvent) : void
+      private function __onStretchBtnClick(event:MouseEvent) : void
       {
-         event = param1;
+         event = event;
          var tl:TweenLite = TweenLite.to(this,0.5,{
             "x":(!!_stretchBtn.selected?_pos.y:Number(_pos.x)),
             "onComplete":function():void
@@ -66,7 +66,7 @@ package superWinner.view
          });
       }
       
-      private function __onReturnClick(param1:MouseEvent) : void
+      private function __onReturnClick(event:MouseEvent) : void
       {
          SuperWinnerManager.instance.dispatchEvent(new SuperWinnerEvent("return_hall"));
       }

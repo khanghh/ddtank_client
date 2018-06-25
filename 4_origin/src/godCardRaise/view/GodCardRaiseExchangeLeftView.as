@@ -47,10 +47,10 @@ package godCardRaise.view
          _list.list.addEventListener("listItemClick",__itemClick);
       }
       
-      public function setData(param1:Array, param2:Function) : void
+      public function setData(value:Array, rightFun:Function) : void
       {
-         dataList = param1;
-         _updateFun = param2;
+         dataList = value;
+         _updateFun = rightFun;
          initData();
          _list.list.currentSelectedIndex = 0;
       }
@@ -64,25 +64,25 @@ package godCardRaise.view
       
       public function updateView() : void
       {
-         var _loc1_:* = undefined;
-         var _loc2_:* = null;
+         var cells:* = undefined;
+         var exchangeLeftCell:* = null;
          if(_list && _list.list)
          {
-            _loc1_ = _list.list.cell;
+            cells = _list.list.cell;
             var _loc5_:int = 0;
-            var _loc4_:* = _loc1_;
-            for each(var _loc3_ in _loc1_)
+            var _loc4_:* = cells;
+            for each(var cell in cells)
             {
-               _loc2_ = _loc3_ as GodCardRaiseExchangeLeftCell;
-               _loc2_.updateView();
+               exchangeLeftCell = cell as GodCardRaiseExchangeLeftCell;
+               exchangeLeftCell.updateView();
             }
          }
       }
       
-      private function __itemClick(param1:ListItemEvent) : void
+      private function __itemClick(event:ListItemEvent) : void
       {
          SoundManager.instance.play("008");
-         _selectedValue = param1.cellValue as GodCardListGroupInfo;
+         _selectedValue = event.cellValue as GodCardListGroupInfo;
          if(_selectedValue.GroupID == _currentID)
          {
             return;

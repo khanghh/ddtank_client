@@ -46,14 +46,14 @@ package baglocked.phoneServiceFrames
          addEvent();
       }
       
-      protected function __startBtnClick(param1:MouseEvent) : void
+      protected function __startBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _bagLockedController.close();
          TaskManager.instance.jumpToQuestByID(545);
       }
       
-      protected function __nextTimeBtnClick(param1:MouseEvent) : void
+      protected function __nextTimeBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _bagLockedController.close();
@@ -68,9 +68,9 @@ package baglocked.phoneServiceFrames
          BagLockedController.Instance.removeLockPwdEvent();
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -79,9 +79,9 @@ package baglocked.phoneServiceFrames
          }
       }
       
-      public function set bagLockedController(param1:BagLockedController) : void
+      public function set bagLockedController(value:BagLockedController) : void
       {
-         _bagLockedController = param1;
+         _bagLockedController = value;
       }
       
       public function show() : void

@@ -34,11 +34,11 @@ package trainer.view
          return _index;
       }
       
-      public function setData(param1:int, param2:String) : void
+      public function setData(index:int, answer:String) : void
       {
-         _index = param1;
+         _index = index;
          _imgIcon.setFrame(_index);
-         _txtContext.text = param2;
+         _txtContext.text = answer;
       }
       
       private function initView() : void
@@ -60,9 +60,9 @@ package trainer.view
          addChild(_txtContext);
       }
       
-      private function __mouseHandler(param1:MouseEvent) : void
+      private function __mouseHandler(evt:MouseEvent) : void
       {
-         var _loc2_:* = param1.type;
+         var _loc2_:* = evt.type;
          if("rollOver" !== _loc2_)
          {
             if("mouseUp" !== _loc2_)
@@ -79,11 +79,11 @@ package trainer.view
                   filters = _filters[1];
                }
             }
-            addr41:
+            addr52:
             return;
          }
          filters = _filters[0];
-         §§goto(addr41);
+         §§goto(addr52);
       }
       
       public function dispose() : void

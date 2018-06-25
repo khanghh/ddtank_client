@@ -2,16 +2,21 @@ package totem
 {
    import ddt.data.Experience;
    import ddt.events.CEvent;
+   import ddt.events.PkgEvent;
    import ddt.loader.LoaderCreate;
    import ddt.manager.PlayerManager;
+   import ddt.manager.SocketManager;
    import ddt.utils.AssetModuleLoader;
    import ddt.utils.HelperDataModuleLoad;
    import flash.events.EventDispatcher;
    import flash.events.IEventDispatcher;
+   import road7th.comm.PackageIn;
    import road7th.data.DictionaryData;
    import totem.data.TotemAddInfo;
    import totem.data.TotemDataAnalyz;
    import totem.data.TotemDataVo;
+   import totem.data.TotemUpGradDataVo;
+   import totem.data.TotemUpGradeAnalyz;
    
    public class TotemManager extends EventDispatcher
    {
@@ -21,6 +26,8 @@ package totem
       public static const TOTEM_VIEW:String = "totemview";
       
       public static const SET_VISIBLE:String = "setvisible";
+      
+      public static const UPDATE_UPGRADE:String = "updateUpGrade";
       
       private static var _instance:TotemManager;
        
@@ -35,11 +42,15 @@ package totem
       
       private var _dataList2:Object;
       
+      private var _upGradeData:DictionaryData;
+      
+      private var _totemGrades:DictionaryData;
+      
       private var cevent:CEvent;
       
-      public function TotemManager(param1:IEventDispatcher = null)
+      public function TotemManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : TotemManager
@@ -51,16 +62,16 @@ package totem
          return _instance;
       }
       
-      public function showView(param1:String, param2:Object) : void
+      public function showView($type:String, data:Object) : void
       {
-         param2.type = "openview";
-         cevent = new CEvent(param1,param2);
+         data.type = "openview";
+         cevent = new CEvent($type,data);
          new HelperDataModuleLoad().loadDataModule([LoaderCreate.Instance.createHonorUpTemplateLoader],loadUIModule);
       }
       
       private function loadUIModule() : void
       {
-         AssetModuleLoader.addModelLoader("totem",6);
+         AssetModuleLoader.addModelLoader("totem",7);
          AssetModuleLoader.startCodeLoader(loadComplete);
       }
       
@@ -69,86 +80,199 @@ package totem
          dispatchEvent(cevent);
       }
       
-      public function setVisible(param1:String, param2:Boolean) : void
+      public function setVisible($type:String, $visible:Boolean) : void
       {
-         dispatchEvent(new CEvent(param1,{
+         dispatchEvent(new CEvent($type,{
             "type":"setvisible",
-            "visible":param2
+            "visible":$visible
          }));
       }
       
-      public function closeView(param1:String) : void
+      public function closeView($type:String) : void
       {
-         dispatchEvent(new CEvent(param1,{"type":"closeView"}));
+         dispatchEvent(new CEvent($type,{"type":"closeView"}));
       }
       
-      public function setup(param1:TotemDataAnalyz) : void
+      public function setup() : void
       {
-         _dataList = param1.dataList;
-         _dataList2 = param1.dataList2;
+         SocketManager.Instance.addEventListener(PkgEvent.format(619),__onTotemUpGradeInfo);
+         SocketManager.Instance.addEventListener(PkgEvent.format(617),__onTotemUpGradeUpdate);
       }
       
-      public function getCurInfoByLevel(param1:int) : TotemDataVo
+      private function __onTotemUpGradeInfo(evt:PkgEvent) : void
       {
-         return _dataList2[param1];
-      }
-      
-      public function getCurInfoById(param1:int) : TotemDataVo
-      {
-         if(param1 == 0)
+         var totemPage:int = 0;
+         var grades:int = 0;
+         var i:int = 0;
+         _totemGrades = new DictionaryData();
+         var pkg:PackageIn = evt.pkg;
+         var len:int = pkg.readInt();
+         for(i = 0; i < len; )
          {
-            return new TotemDataVo();
+            totemPage = pkg.readInt();
+            grades = pkg.readInt();
+            _totemGrades.add(totemPage,grades);
+            i++;
          }
-         return _dataList[param1];
       }
       
-      public function getNextInfoByLevel(param1:int) : TotemDataVo
+      private function __onTotemUpGradeUpdate(evt:PkgEvent) : void
       {
-         return _dataList2[param1 + 1];
-      }
-      
-      public function getNextInfoById(param1:int) : TotemDataVo
-      {
-         var _loc2_:int = 0;
-         if(param1 == 0)
+         var pkg:PackageIn = evt.pkg;
+         var totemPage:int = pkg.readInt();
+         var grades:int = pkg.readInt();
+         if(!_totemGrades.hasKey(totemPage))
          {
-            _loc2_ = 0;
+            _totemGrades.add(totemPage,grades);
          }
          else
          {
-            _loc2_ = _dataList[param1].Point;
+            _totemGrades[totemPage] = grades;
          }
-         return _dataList2[_loc2_ + 1];
+         this.dispatchEvent(new CEvent("updateUpGrade",totemPage));
       }
       
-      public function getAddInfo(param1:int, param2:int = 1) : TotemAddInfo
+      public function getGradeByTotemPage(page:int) : int
       {
-         var _loc4_:TotemAddInfo = new TotemAddInfo();
-         var _loc6_:int = 0;
-         var _loc5_:* = _dataList;
-         for each(var _loc3_ in _dataList)
+         if(_totemGrades.hasKey(page))
          {
-            if(_loc3_.Point <= param1 && _loc3_.Point >= param2)
+            return _totemGrades[page];
+         }
+         return 0;
+      }
+      
+      public function getTotemAddAllProByProType(maxTotemID:int) : TotemAddInfo
+      {
+         return otherPlayerTotemAllPro(maxTotemID,_totemGrades);
+      }
+      
+      public function otherPlayerTotemAllPro(maxTotemID:int, grades:DictionaryData) : TotemAddInfo
+      {
+         var proValue:* = null;
+         var grade:int = 0;
+         var add:Number = NaN;
+         var upGradeVo:* = null;
+         var page:int = 0;
+         var temLev:int = 0;
+         if(grades == null)
+         {
+            return null;
+         }
+         var totalProValue:TotemAddInfo = new TotemAddInfo();
+         var maxLev:int = TotemManager.instance.getTotemPointLevel(maxTotemID);
+         for(page = 1; page <= 5; )
+         {
+            temLev = Math.min(maxLev,page * 70);
+            proValue = getAddInfo(temLev,(page - 1) * 70 + 1);
+            if(grades.hasKey(page))
             {
-               _loc4_.Agility = _loc4_.Agility + _loc3_.AddAgility;
-               _loc4_.Attack = _loc4_.Attack + _loc3_.AddAttack;
-               _loc4_.Blood = _loc4_.Blood + _loc3_.AddBlood;
-               _loc4_.Damage = _loc4_.Damage + _loc3_.AddDamage;
-               _loc4_.Defence = _loc4_.Defence + _loc3_.AddDefence;
-               _loc4_.Guard = _loc4_.Guard + _loc3_.AddGuard;
-               _loc4_.Luck = _loc4_.Luck + _loc3_.AddLuck;
+               grade = grades[page];
+               upGradeVo = getUpGradeInfo(page,grade);
+               add = upGradeVo.data / 1000;
+               proValue.addGradePro(add);
+            }
+            totalProValue.add(proValue);
+            page++;
+         }
+         return totalProValue;
+      }
+      
+      public function inittotmeData(analyzer:TotemDataAnalyz) : void
+      {
+         _dataList = analyzer.dataList;
+         _dataList2 = analyzer.dataList2;
+      }
+      
+      public function upGradeData(analyzer:TotemUpGradeAnalyz) : void
+      {
+         _upGradeData = analyzer.dataList;
+      }
+      
+      public function getUpGradeInfo(page:int, grade:int) : TotemUpGradDataVo
+      {
+         var temInfo:* = null;
+         var grades:* = null;
+         var i:int = 0;
+         if(_upGradeData && _upGradeData.length > 0)
+         {
+            if(_upGradeData.hasKey(page))
+            {
+               grades = _upGradeData[page] as Array;
+               for(i = 0; i < grades.length; )
+               {
+                  temInfo = grades[i] as TotemUpGradDataVo;
+                  if(temInfo && temInfo.grades == grade)
+                  {
+                     return temInfo;
+                  }
+                  i++;
+               }
             }
          }
-         return _loc4_;
+         return null;
       }
       
-      public function getTotemPointLevel(param1:int) : int
+      public function getCurInfoByLevel(totemLevel:int) : TotemDataVo
       {
-         if(param1 == 0)
+         return _dataList2[totemLevel];
+      }
+      
+      public function getCurInfoById(id:int) : TotemDataVo
+      {
+         if(id == 0)
+         {
+            return new TotemDataVo();
+         }
+         return _dataList[id];
+      }
+      
+      public function getNextInfoByLevel(totemLevel:int) : TotemDataVo
+      {
+         return _dataList2[totemLevel + 1];
+      }
+      
+      public function getNextInfoById(id:int) : TotemDataVo
+      {
+         var level:int = 0;
+         if(id == 0)
+         {
+            level = 0;
+         }
+         else
+         {
+            level = _dataList[id].Point;
+         }
+         return _dataList2[level + 1];
+      }
+      
+      public function getAddInfo(totemLevel:int, startTotemLevel:int = 1) : TotemAddInfo
+      {
+         var totemAddInfo:TotemAddInfo = new TotemAddInfo();
+         var _loc6_:int = 0;
+         var _loc5_:* = _dataList;
+         for each(var tmpVo in _dataList)
+         {
+            if(tmpVo.Point <= totemLevel && tmpVo.Point >= startTotemLevel)
+            {
+               totemAddInfo.Agility = totemAddInfo.Agility + tmpVo.AddAgility;
+               totemAddInfo.Attack = totemAddInfo.Attack + tmpVo.AddAttack;
+               totemAddInfo.Blood = totemAddInfo.Blood + tmpVo.AddBlood;
+               totemAddInfo.Damage = totemAddInfo.Damage + tmpVo.AddDamage;
+               totemAddInfo.Defence = totemAddInfo.Defence + tmpVo.AddDefence;
+               totemAddInfo.Guard = totemAddInfo.Guard + tmpVo.AddGuard;
+               totemAddInfo.Luck = totemAddInfo.Luck + tmpVo.AddLuck;
+            }
+         }
+         return totemAddInfo;
+      }
+      
+      public function getTotemPointLevel(id:int) : int
+      {
+         if(id == 0)
          {
             return 0;
          }
-         return _dataList[param1].Point;
+         return _dataList[id].Point;
       }
       
       public function get usableGP() : int
@@ -156,41 +280,45 @@ package totem
          return PlayerManager.Instance.Self.GP - Experience.expericence[PlayerManager.Instance.Self.Grade - 1];
       }
       
-      public function getCurrentLv(param1:int) : int
+      public function getCurrentLv(totemLevel:int) : int
       {
-         return int(param1 / 7);
+         return int(totemLevel / 7);
       }
       
-      public function updatePropertyAddtion(param1:int, param2:DictionaryData) : void
+      public function updatePropertyAddtion(totemId:int, dic:DictionaryData, grades:DictionaryData) : void
       {
-         if(!param2["Attack"])
+         if(!dic["Attack"])
          {
             return;
          }
-         var _loc3_:TotemAddInfo = getAddInfo(getCurInfoById(param1).Point);
-         param2["Attack"]["Totem"] = _loc3_.Attack;
-         param2["Defence"]["Totem"] = _loc3_.Defence;
-         param2["Agility"]["Totem"] = _loc3_.Agility;
-         param2["Luck"]["Totem"] = _loc3_.Luck;
-         param2["HP"]["Totem"] = _loc3_.Blood;
-         param2["Damage"]["Totem"] = _loc3_.Damage;
-         param2["Armor"]["Totem"] = _loc3_.Guard;
+         var totemAddInfo:TotemAddInfo = grades == null?getTotemAddAllProByProType(totemId):otherPlayerTotemAllPro(totemId,grades);
+         if(totemAddInfo == null)
+         {
+            return;
+         }
+         dic["Attack"]["Totem"] = totemAddInfo.Attack;
+         dic["Defence"]["Totem"] = totemAddInfo.Defence;
+         dic["Agility"]["Totem"] = totemAddInfo.Agility;
+         dic["Luck"]["Totem"] = totemAddInfo.Luck;
+         dic["HP"]["Totem"] = totemAddInfo.Blood;
+         dic["Damage"]["Totem"] = totemAddInfo.Damage;
+         dic["Armor"]["Totem"] = totemAddInfo.Guard;
       }
       
-      public function getSamePageLocationList(param1:int, param2:int) : Array
+      public function getSamePageLocationList(page:int, location:int) : Array
       {
-         var _loc3_:Array = [];
+         var dataArray:Array = [];
          var _loc6_:int = 0;
          var _loc5_:* = _dataList;
-         for each(var _loc4_ in _dataList)
+         for each(var tmp in _dataList)
          {
-            if(_loc4_.Page == param1 && _loc4_.Location == param2)
+            if(tmp.Page == page && tmp.Location == location)
             {
-               _loc3_.push(_loc4_);
+               dataArray.push(tmp);
             }
          }
-         _loc3_.sortOn("Layers",16);
-         return _loc3_;
+         dataArray.sortOn("Layers",16);
+         return dataArray;
       }
    }
 }

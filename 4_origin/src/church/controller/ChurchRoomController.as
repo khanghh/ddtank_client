@@ -62,11 +62,11 @@ package church.controller
          return "ddtchurchroomlist";
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
          ChurchManager.instance.removeLoadingEvent();
          CacheSysManager.lock("alertInMarry");
-         super.enter(param1,param2);
+         super.enter(prev,data);
          LayerManager.Instance.clearnGameDynamic();
          LayerManager.Instance.clearnStageDynamic();
          SocketManager.Instance.out.sendCurrentState(0);
@@ -85,31 +85,31 @@ package church.controller
       
       public function resetTimer() : void
       {
-         var _loc3_:* = null;
-         var _loc2_:Number = NaN;
-         var _loc1_:Number = NaN;
+         var beginDate:* = null;
+         var diff:Number = NaN;
+         var valid:Number = NaN;
          if(ChurchManager.instance.isAdmin(PlayerManager.Instance.Self))
          {
-            _loc3_ = ChurchManager.instance.currentRoom.creactTime;
-            _loc2_ = TimeManager.Instance.TotalDaysToNow(_loc3_) * 24;
-            _loc1_ = (ChurchManager.instance.currentRoom.valideTimes - _loc2_) * 60;
-            if(_loc1_ > 10)
+            beginDate = ChurchManager.instance.currentRoom.creactTime;
+            diff = TimeManager.Instance.TotalDaysToNow(beginDate) * 24;
+            valid = (ChurchManager.instance.currentRoom.valideTimes - diff) * 60;
+            if(valid > 10)
             {
                stopTimer();
-               timer = TimerManager.getInstance().addTimerJuggler((_loc1_ - 10) * 60 * 1000,1);
+               timer = TimerManager.getInstance().addTimerJuggler((valid - 10) * 60 * 1000,1);
                timer.addEventListener("timerComplete",__timerComplete);
                timer.start();
             }
          }
       }
       
-      private function __timerComplete(param1:Event) : void
+      private function __timerComplete(event:Event) : void
       {
          MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("church.churchScene.SceneControler.timerComplete"));
-         var _loc2_:ChatData = new ChatData();
-         _loc2_.channel = 6;
-         _loc2_.msg = LanguageMgr.GetTranslation("church.churchScene.SceneControler.timerComplete.msg");
-         ChatManager.Instance.chat(_loc2_);
+         var msg:ChatData = new ChatData();
+         msg.channel = 6;
+         msg.msg = LanguageMgr.GetTranslation("church.churchScene.SceneControler.timerComplete.msg");
+         ChatManager.Instance.chat(msg);
          stopTimer();
       }
       
@@ -154,26 +154,26 @@ package church.controller
          ChurchManager.instance.removeEventListener("scene change",__sceneChange);
       }
       
-      private function __continuation(param1:PkgEvent) : void
+      private function __continuation(event:PkgEvent) : void
       {
          if(ChurchManager.instance.currentRoom)
          {
-            ChurchManager.instance.currentRoom.valideTimes = param1.pkg.readInt();
+            ChurchManager.instance.currentRoom.valideTimes = event.pkg.readInt();
          }
       }
       
-      private function __updateValidTime(param1:WeddingRoomEvent) : void
+      private function __updateValidTime(event:WeddingRoomEvent) : void
       {
          resetTimer();
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
          dispose();
          ChurchManager.instance.currentRoom = null;
          ChurchManager.instance.currentScene = ChurchManager.instance.lastScene;
          SocketManager.Instance.out.sendExitRoom();
-         super.leaving(param1);
+         super.leaving(next);
       }
       
       override public function getType() : String
@@ -181,44 +181,44 @@ package church.controller
          return "churchRoom";
       }
       
-      public function __addPlayer(param1:PkgEvent) : void
+      public function __addPlayer(event:PkgEvent) : void
       {
-         var _loc5_:PackageIn = param1.pkg;
-         var _loc6_:PlayerInfo = new PlayerInfo();
-         _loc6_.beginChanges();
-         _loc6_.Grade = _loc5_.readInt();
-         _loc6_.Hide = _loc5_.readInt();
-         _loc6_.Repute = _loc5_.readInt();
-         _loc6_.ID = _loc5_.readInt();
-         _loc6_.NickName = _loc5_.readUTF();
-         _loc6_.typeVIP = _loc5_.readByte();
-         _loc6_.VIPLevel = _loc5_.readInt();
-         _loc6_.Sex = _loc5_.readBoolean();
-         _loc6_.Style = _loc5_.readUTF();
-         _loc6_.Colors = _loc5_.readUTF();
-         _loc6_.Skin = _loc5_.readUTF();
-         var _loc4_:int = _loc5_.readInt();
-         var _loc2_:int = _loc5_.readInt();
-         _loc6_.FightPower = _loc5_.readInt();
-         _loc6_.WinCount = _loc5_.readInt();
-         _loc6_.TotalCount = _loc5_.readInt();
-         _loc6_.Offer = _loc5_.readInt();
-         _loc6_.isOld = _loc5_.readBoolean();
-         _loc6_.commitChanges();
-         var _loc3_:PlayerVO = new PlayerVO();
-         _loc3_.playerInfo = _loc6_;
-         _loc3_.playerPos = new Point(_loc4_,_loc2_);
-         if(_loc6_.ID == PlayerManager.Instance.Self.ID)
+         var pkg:PackageIn = event.pkg;
+         var playerInfo:PlayerInfo = new PlayerInfo();
+         playerInfo.beginChanges();
+         playerInfo.Grade = pkg.readInt();
+         playerInfo.Hide = pkg.readInt();
+         playerInfo.Repute = pkg.readInt();
+         playerInfo.ID = pkg.readInt();
+         playerInfo.NickName = pkg.readUTF();
+         playerInfo.typeVIP = pkg.readByte();
+         playerInfo.VIPLevel = pkg.readInt();
+         playerInfo.Sex = pkg.readBoolean();
+         playerInfo.Style = pkg.readUTF();
+         playerInfo.Colors = pkg.readUTF();
+         playerInfo.Skin = pkg.readUTF();
+         var posx:int = pkg.readInt();
+         var posy:int = pkg.readInt();
+         playerInfo.FightPower = pkg.readInt();
+         playerInfo.WinCount = pkg.readInt();
+         playerInfo.TotalCount = pkg.readInt();
+         playerInfo.Offer = pkg.readInt();
+         playerInfo.isOld = pkg.readBoolean();
+         playerInfo.commitChanges();
+         var playerVO:PlayerVO = new PlayerVO();
+         playerVO.playerInfo = playerInfo;
+         playerVO.playerPos = new Point(posx,posy);
+         if(playerInfo.ID == PlayerManager.Instance.Self.ID)
          {
             return;
          }
-         _sceneModel.addPlayer(_loc3_);
+         _sceneModel.addPlayer(playerVO);
       }
       
-      public function __removePlayer(param1:PkgEvent) : void
+      public function __removePlayer(event:PkgEvent) : void
       {
-         var _loc2_:int = param1.pkg.clientId;
-         if(_loc2_ == PlayerManager.Instance.Self.ID)
+         var id:int = event.pkg.clientId;
+         if(id == PlayerManager.Instance.Self.ID)
          {
             StateManager.setState("ddtchurchroomlist");
          }
@@ -228,39 +228,38 @@ package church.controller
             {
                return;
             }
-            _sceneModel.removePlayer(_loc2_);
+            _sceneModel.removePlayer(id);
          }
       }
       
-      public function __movePlayer(param1:PkgEvent) : void
+      public function __movePlayer(event:PkgEvent) : void
       {
-         var _loc9_:* = 0;
-         var _loc6_:* = null;
-         var _loc2_:int = param1.pkg.clientId;
-         var _loc5_:int = param1.pkg.readInt();
-         var _loc3_:int = param1.pkg.readInt();
-         var _loc8_:String = param1.pkg.readUTF();
+         var i:* = 0;
+         var p:* = null;
+         var id:int = event.pkg.clientId;
+         var posX:int = event.pkg.readInt();
+         var posY:int = event.pkg.readInt();
+         var pathStr:String = event.pkg.readUTF();
          if(ChurchManager.instance.currentRoom.status == "wedding_ing")
          {
             return;
          }
-         if(_loc2_ == PlayerManager.Instance.Self.ID)
+         if(id == PlayerManager.Instance.Self.ID)
          {
             return;
          }
-         var _loc4_:Array = _loc8_.split(",");
-         var _loc7_:Array = [];
-         _loc9_ = uint(0);
-         while(_loc9_ < _loc4_.length)
+         var arr:Array = pathStr.split(",");
+         var path:Array = [];
+         for(i = uint(0); i < arr.length; )
          {
-            _loc6_ = new Point(_loc4_[_loc9_],_loc4_[_loc9_ + 1]);
-            _loc7_.push(_loc6_);
-            _loc9_ = uint(_loc9_ + 2);
+            p = new Point(arr[i],arr[i + 1]);
+            path.push(p);
+            i = uint(i + 2);
          }
-         _view.movePlayer(_loc2_,_loc7_);
+         _view.movePlayer(id,path);
       }
       
-      private function __updateWeddingStatus(param1:WeddingRoomEvent) : void
+      private function __updateWeddingStatus(event:WeddingRoomEvent) : void
       {
          if(ChurchManager.instance.currentScene != 0)
          {
@@ -275,22 +274,22 @@ package church.controller
       
       public function startWedding() : void
       {
-         var _loc4_:* = null;
-         var _loc2_:Number = NaN;
-         var _loc1_:Number = NaN;
-         var _loc3_:* = null;
+         var beginDate:* = null;
+         var diff:Number = NaN;
+         var valid:Number = NaN;
+         var spouse:* = null;
          if(ChurchManager.instance.isAdmin(PlayerManager.Instance.Self) && ChurchManager.instance.currentRoom.status != "wedding_ing")
          {
-            _loc4_ = ChurchManager.instance.currentRoom.creactTime;
-            _loc2_ = TimeManager.Instance.TotalDaysToNow(_loc4_) * 24;
-            _loc1_ = (ChurchManager.instance.currentRoom.valideTimes - _loc2_) * 60;
-            if(_loc1_ < 10)
+            beginDate = ChurchManager.instance.currentRoom.creactTime;
+            diff = TimeManager.Instance.TotalDaysToNow(beginDate) * 24;
+            valid = (ChurchManager.instance.currentRoom.valideTimes - diff) * 60;
+            if(valid < 10)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("church.churchScene.SceneControler.startWedding.valid"));
                return;
             }
-            _loc3_ = _sceneModel.getPlayerFromID(PlayerManager.Instance.Self.SpouseID);
-            if(!_loc3_)
+            spouse = _sceneModel.getPlayerFromID(PlayerManager.Instance.Self.SpouseID);
+            if(!spouse)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("church.churchScene.SceneControler.startWedding.spouse"));
                return;
@@ -310,16 +309,16 @@ package church.controller
          }
       }
       
-      private function __frameEvent(param1:FrameEvent) : void
+      private function __frameEvent(event:FrameEvent) : void
       {
-         var _loc2_:* = null;
+         var spouse:* = null;
          if(_baseAlerFrame)
          {
             _baseAlerFrame.removeEventListener("response",__frameEvent);
             _baseAlerFrame.dispose();
             _baseAlerFrame = null;
          }
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             default:
             default:
@@ -330,8 +329,8 @@ package church.controller
                   LeavePageManager.showFillFrame();
                   return;
                }
-               _loc2_ = _sceneModel.getPlayerFromID(PlayerManager.Instance.Self.SpouseID);
-               if(!_loc2_)
+               spouse = _sceneModel.getPlayerFromID(PlayerManager.Instance.Self.SpouseID);
+               if(!spouse)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("church.churchScene.SceneControler.startWedding.spouse"));
                   return;
@@ -344,8 +343,8 @@ package church.controller
                   LeavePageManager.showFillFrame();
                   return;
                }
-               _loc2_ = _sceneModel.getPlayerFromID(PlayerManager.Instance.Self.SpouseID);
-               if(!_loc2_)
+               spouse = _sceneModel.getPlayerFromID(PlayerManager.Instance.Self.SpouseID);
+               if(!spouse)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("church.churchScene.SceneControler.startWedding.spouse"));
                   return;
@@ -355,51 +354,51 @@ package church.controller
          }
       }
       
-      private function __startWedding(param1:PkgEvent) : void
+      private function __startWedding(event:PkgEvent) : void
       {
-         var _loc3_:int = param1.pkg.readInt();
-         var _loc2_:Boolean = param1.pkg.readBoolean();
-         if(_loc2_)
+         var roomID:int = event.pkg.readInt();
+         var result:Boolean = event.pkg.readBoolean();
+         if(result)
          {
             ChurchManager.instance.currentRoom.isStarted = true;
             ChurchManager.instance.currentRoom.status = "wedding_ing";
          }
       }
       
-      private function __stopWedding(param1:PkgEvent) : void
+      private function __stopWedding(event:PkgEvent) : void
       {
          ChurchManager.instance.currentRoom.status = "wedding_none";
       }
       
-      public function modifyDiscription(param1:String, param2:Boolean, param3:String, param4:String) : void
+      public function modifyDiscription(roomName:String, modifyPSW:Boolean, psw:String, discription:String) : void
       {
-         SocketManager.Instance.out.sendModifyChurchDiscription(param1,param2,param3,param4);
+         SocketManager.Instance.out.sendModifyChurchDiscription(roomName,modifyPSW,psw,discription);
       }
       
-      public function useFire(param1:int, param2:int) : void
+      public function useFire(playerID:int, fireTemplateID:int) : void
       {
-         _view.useFire(param1,param2);
+         _view.useFire(playerID,fireTemplateID);
       }
       
-      private function __onUseFire(param1:PkgEvent) : void
+      private function __onUseFire(e:PkgEvent) : void
       {
-         var _loc2_:int = param1.pkg.readInt();
-         var _loc3_:int = param1.pkg.readInt();
-         useFire(_loc2_,_loc3_);
+         var userID:int = e.pkg.readInt();
+         var fireID:int = e.pkg.readInt();
+         useFire(userID,fireID);
       }
       
-      private function __onUseSalute(param1:PkgEvent) : void
+      private function __onUseSalute(event:PkgEvent) : void
       {
-         var _loc2_:int = param1.pkg.readInt();
-         setSaulte(_loc2_);
+         var userID:int = event.pkg.readInt();
+         setSaulte(userID);
       }
       
-      public function setSaulte(param1:int) : void
+      public function setSaulte(id:int) : void
       {
-         _view.setSaulte(param1);
+         _view.setSaulte(id);
       }
       
-      private function __sceneChange(param1:WeddingRoomEvent) : void
+      private function __sceneChange(event:WeddingRoomEvent) : void
       {
          readyEnterScene();
       }
@@ -408,60 +407,60 @@ package church.controller
       {
          LayerManager.Instance.clearnGameDynamic();
          LayerManager.Instance.clearnStageDynamic();
-         var _loc1_:WeddingRoomSwitchMovie = new WeddingRoomSwitchMovie(true,0.06);
-         addChild(_loc1_);
-         _loc1_.playMovie();
-         _loc1_.addEventListener("switch complete",__readyEnterOk);
+         var switchMovie:WeddingRoomSwitchMovie = new WeddingRoomSwitchMovie(true,0.06);
+         addChild(switchMovie);
+         switchMovie.playMovie();
+         switchMovie.addEventListener("switch complete",__readyEnterOk);
       }
       
-      private function __readyEnterOk(param1:Event) : void
+      private function __readyEnterOk(event:Event) : void
       {
-         param1.currentTarget.removeEventListener("switch complete",__readyEnterOk);
+         event.currentTarget.removeEventListener("switch complete",__readyEnterOk);
          enterScene();
       }
       
       public function enterScene() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:int = 0;
+         var pos:* = null;
+         var sceneIndex:int = 0;
          _sceneModel.reset();
          if(ChurchManager.instance.currentScene != 0)
          {
-            _loc2_ = new Point(514,637);
+            pos = new Point(514,637);
          }
-         _view.setMap(_loc2_);
+         _view.setMap(pos);
          switch(int(ChurchManager.instance.currentScene))
          {
             case 0:
-               _loc1_ = 0;
+               sceneIndex = 0;
                break;
             case 1:
-               _loc1_ = 1;
+               sceneIndex = 1;
                break;
             case 2:
-               _loc1_ = 2;
+               sceneIndex = 2;
          }
-         SocketManager.Instance.out.sendSceneChange(_loc1_);
+         SocketManager.Instance.out.sendSceneChange(sceneIndex);
       }
       
-      public function giftSubmit(param1:uint) : void
+      public function giftSubmit(money:uint) : void
       {
-         SocketManager.Instance.out.sendChurchLargess(param1);
+         SocketManager.Instance.out.sendChurchLargess(money);
       }
       
-      public function roomContinuation(param1:int) : void
+      public function roomContinuation(secondType:int) : void
       {
-         SocketManager.Instance.out.sendChurchContinuation(param1);
+         SocketManager.Instance.out.sendChurchContinuation(secondType);
       }
       
       private function getWeddingMoney() : int
       {
-         var _loc1_:int = 300;
+         var money:int = 300;
          if(ChurchManager.instance.currentScene == 3)
          {
-            _loc1_ = 8000;
+            money = 8000;
          }
-         return _loc1_;
+         return money;
       }
       
       override public function dispose() : void

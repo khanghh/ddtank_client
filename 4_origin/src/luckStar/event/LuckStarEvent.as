@@ -18,9 +18,9 @@ package luckStar.event
       
       public var code:int;
       
-      public function LuckStarEvent(param1:int)
+      public function LuckStarEvent(type:int)
       {
-         code = param1;
+         code = type;
          super("luckystarevent");
       }
    }

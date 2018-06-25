@@ -46,9 +46,9 @@ package ddt.view
          initView();
       }
       
-      public function useMoneyType(param1:String) : void
+      public function useMoneyType($type:String) : void
       {
-         var _loc2_:* = param1;
+         var _loc2_:* = $type;
          if("bind" !== _loc2_)
          {
             if("noBind" !== _loc2_)
@@ -88,9 +88,9 @@ package ddt.view
          }
       }
       
-      public function lockMoneyType(param1:String) : void
+      public function lockMoneyType($type:String) : void
       {
-         var _loc2_:* = param1;
+         var _loc2_:* = $type;
          if("bind" !== _loc2_)
          {
             if("noBind" !== _loc2_)
@@ -178,10 +178,10 @@ package ddt.view
          _group1.addEventListener("change",changeHander);
       }
       
-      private function changeHander(param1:Event) : void
+      private function changeHander(e:Event) : void
       {
-         var _loc2_:int = _group1.selectIndex;
-         switch(int(_loc2_))
+         var type:int = _group1.selectIndex;
+         switch(int(type))
          {
             case 0:
                _isBind = true;

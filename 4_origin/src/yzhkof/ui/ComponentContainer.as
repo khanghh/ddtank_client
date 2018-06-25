@@ -16,39 +16,39 @@ package yzhkof.ui
          addEventListener(Event.REMOVED,this.__childRemove);
       }
       
-      private function __childAdd(param1:Event) : void
+      private function __childAdd(e:Event) : void
       {
          commitChage(CHILD_CHANGE);
-         this.addChildEvent(param1.target);
+         this.addChildEvent(e.target);
       }
       
-      private function __childRemove(param1:Event) : void
+      private function __childRemove(e:Event) : void
       {
          commitChage(CHILD_CHANGE);
-         this.removeChildEvent(param1.target);
+         this.removeChildEvent(e.target);
       }
       
-      private function addChildEvent(param1:Object) : void
+      private function addChildEvent(child:Object) : void
       {
-         if(!(param1 is ComponentBase))
+         if(!(child is ComponentBase))
          {
             return;
          }
-         var _loc2_:ComponentBase = param1 as ComponentBase;
-         _loc2_.addEventListener(ComponentEvent.COMPONENT_CHANGE,this.__childUpdate);
+         var comp:ComponentBase = child as ComponentBase;
+         comp.addEventListener(ComponentEvent.COMPONENT_CHANGE,this.__childUpdate);
       }
       
-      private function removeChildEvent(param1:Object) : void
+      private function removeChildEvent(child:Object) : void
       {
-         if(!(param1 is ComponentBase))
+         if(!(child is ComponentBase))
          {
             return;
          }
-         var _loc2_:ComponentBase = param1 as ComponentBase;
-         _loc2_.removeEventListener(ComponentEvent.COMPONENT_CHANGE,this.__childUpdate);
+         var comp:ComponentBase = child as ComponentBase;
+         comp.removeEventListener(ComponentEvent.COMPONENT_CHANGE,this.__childUpdate);
       }
       
-      private function __childUpdate(param1:Event) : void
+      private function __childUpdate(e:Event) : void
       {
       }
    }

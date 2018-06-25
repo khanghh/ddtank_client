@@ -97,12 +97,12 @@ package gameCommon.view.card
       
       private var tPrice:int;
       
-      public function LuckyCard(param1:int, param2:int, param3:int = 0)
+      public function LuckyCard(idx:int, cardType:int, $luckCardBuffType:int = 0)
       {
          super();
-         _idx = param1;
-         _cardType = param2;
-         _luckCardBuffType = param3;
+         _idx = idx;
+         _cardType = cardType;
+         _luckCardBuffType = $luckCardBuffType;
          init();
       }
       
@@ -119,7 +119,7 @@ package gameCommon.view.card
          addChild(_luckyCardMc);
       }
       
-      private function __checkMovie(param1:Event) : void
+      private function __checkMovie(event:Event) : void
       {
          if(_luckyCardMc.numChildren == 6)
          {
@@ -131,10 +131,10 @@ package gameCommon.view.card
          }
       }
       
-      public function set enabled(param1:Boolean) : void
+      public function set enabled(value:Boolean) : void
       {
-         buttonMode = param1;
-         if(param1)
+         buttonMode = value;
+         if(value)
          {
             _overEffectPoint = new Point(y,y - 14);
             addEventListener("click",__onClick);
@@ -150,7 +150,7 @@ package gameCommon.view.card
          }
       }
       
-      private function __onRollOver(param1:MouseEvent = null) : void
+      private function __onRollOver(event:MouseEvent = null) : void
       {
          if(!_overEffectPoint)
          {
@@ -164,7 +164,7 @@ package gameCommon.view.card
          });
       }
       
-      private function __onRollOut(param1:MouseEvent = null) : void
+      private function __onRollOut(event:MouseEvent = null) : void
       {
          if(!_overEffectPoint)
          {
@@ -181,7 +181,7 @@ package gameCommon.view.card
          });
       }
       
-      protected function __onClick(param1:MouseEvent) : void
+      protected function __onClick(event:MouseEvent) : void
       {
          if(allowClick)
          {
@@ -228,25 +228,25 @@ package gameCommon.view.card
       
       private function payAlert() : void
       {
-         var _loc1_:* = null;
-         var _loc3_:int = ServerConfigManager.instance.VIPTakeCardDisCount[PlayerManager.Instance.Self.VIPLevel - 1];
-         var _loc2_:int = Math.floor(_loc3_ / 100 * 500);
-         if(_loc3_ == 100 || _loc3_ == 0)
+         var content:* = null;
+         var takeCardDiscount:int = ServerConfigManager.instance.VIPTakeCardDisCount[PlayerManager.Instance.Self.VIPLevel - 1];
+         var actualPrice:int = Math.floor(takeCardDiscount / 100 * 500);
+         if(takeCardDiscount == 100 || takeCardDiscount == 0)
          {
-            _loc1_ = LanguageMgr.GetTranslation("tank.gameover.payConfirm.contentCommonNoDiscount",500);
+            content = LanguageMgr.GetTranslation("tank.gameover.payConfirm.contentCommonNoDiscount",500);
             tPrice = 500;
          }
          else if(PlayerManager.Instance.Self.IsVIP)
          {
-            tPrice = 500 - _loc2_;
-            _loc1_ = LanguageMgr.GetTranslation("tank.gameover.payConfirm.contentVip",_loc2_,500 - _loc2_);
+            tPrice = 500 - actualPrice;
+            content = LanguageMgr.GetTranslation("tank.gameover.payConfirm.contentVip",actualPrice,500 - actualPrice);
          }
          else
          {
-            _loc1_ = LanguageMgr.GetTranslation("tank.gameover.payConfirm.contentCommon",500,500 - Math.floor(_loc3_ / 100 * 500));
-            tPrice = 500 - _loc2_;
+            content = LanguageMgr.GetTranslation("tank.gameover.payConfirm.contentCommon",500,500 - Math.floor(takeCardDiscount / 100 * 500));
+            tPrice = 500 - actualPrice;
          }
-         _payAlert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.gameover.payConfirm.title"),_loc1_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2,null,"SimpleAlert",50,true,1);
+         _payAlert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.gameover.payConfirm.title"),content,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2,null,"SimpleAlert",50,true,1);
          if(_payAlert.parent)
          {
             _payAlert.parent.removeChild(_payAlert);
@@ -256,9 +256,9 @@ package gameCommon.view.card
          __onRollOut();
       }
       
-      private function onFrameResponse(param1:FrameEvent) : void
+      private function onFrameResponse(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             CheckMoneyUtils.instance.checkMoney(_payAlert.isBand,tPrice,onCheckComplete);
          }
@@ -285,20 +285,20 @@ package gameCommon.view.card
          _payAlert = null;
       }
       
-      public function play(param1:Player, param2:int, param3:int, param4:Boolean, param5:Boolean = false) : void
+      public function play(info:Player, tid:int, count:int, isVip:Boolean, isShowAll:Boolean = false) : void
       {
-         _info = param1;
-         _templateID = param2;
-         _count = param3;
-         _isVip = param4;
-         if(!param1 || !_info.isSelf)
+         _info = info;
+         _templateID = tid;
+         _count = count;
+         _isVip = isVip;
+         if(!info || !_info.isSelf)
          {
             _luckyCardMc.lightFrame.visible = false;
             _luckyCardMc.vipLightFrame.visible = false;
             _luckyCardMc.starMc.visible = false;
          }
          SoundManager.instance.play("048");
-         if(param4)
+         if(isVip)
          {
             openVipCard();
          }
@@ -306,7 +306,7 @@ package gameCommon.view.card
          {
             openNormalCard();
          }
-         setCardLabel(!!param5?0:MapManager.Instance.curMapCardLabelType);
+         setCardLabel(!!isShowAll?0:MapManager.Instance.curMapCardLabelType);
          enabled = false;
          if(_info)
          {
@@ -314,9 +314,9 @@ package gameCommon.view.card
          }
       }
       
-      private function setCardLabel(param1:int) : void
+      private function setCardLabel($type:int) : void
       {
-         switch(int(param1))
+         switch(int($type))
          {
             case 0:
                _luckyCardMc["double"].gotoAndStop(1);
@@ -346,9 +346,9 @@ package gameCommon.view.card
       
       private function showResult() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
+         var textFormat:* = null;
+         var tempInfo:* = null;
+         var beadInfo:* = null;
          var _loc4_:int = 0;
          try
          {

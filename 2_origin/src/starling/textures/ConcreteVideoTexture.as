@@ -7,13 +7,13 @@ package starling.textures
    {
        
       
-      function ConcreteVideoTexture(param1:TextureBase, param2:Number = 1)
+      function ConcreteVideoTexture(base:TextureBase, scale:Number = 1)
       {
-         var _loc5_:String = "bgra";
-         var _loc4_:Number = "videoWidth" in param1?param1["videoWidth"]:0;
-         var _loc3_:Number = "videoHeight" in param1?param1["videoHeight"]:0;
-         super(param1,_loc5_,_loc4_,_loc3_,false,false,false,param2,false);
-         if(getQualifiedClassName(param1) != "flash.display3D.textures::VideoTexture")
+         var format:String = "bgra";
+         var width:Number = "videoWidth" in base?base["videoWidth"]:0;
+         var height:Number = "videoHeight" in base?base["videoHeight"]:0;
+         super(base,format,width,height,false,false,false,scale,false);
+         if(getQualifiedClassName(base) != "flash.display3D.textures::VideoTexture")
          {
             throw new ArgumentError("\'base\' must be VideoTexture");
          }

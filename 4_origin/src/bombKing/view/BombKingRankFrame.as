@@ -141,51 +141,50 @@ package bombKing.view
          SocketManager.Instance.addEventListener(PkgEvent.format(263,5),__updateRank);
       }
       
-      protected function __updateRank(param1:PkgEvent) : void
+      protected function __updateRank(event:PkgEvent) : void
       {
-         var _loc7_:int = 0;
-         var _loc6_:* = null;
-         var _loc4_:* = null;
-         var _loc5_:PackageIn = param1.pkg;
-         _currentIndex = _loc5_.readInt();
+         var i:int = 0;
+         var info:* = null;
+         var item:* = null;
+         var pkg:PackageIn = event.pkg;
+         _currentIndex = pkg.readInt();
          _btnGroup.selectIndex = _currentIndex;
-         _totalPage = _loc5_.readInt();
-         _curPage = _loc5_.readInt();
+         _totalPage = pkg.readInt();
+         _curPage = pkg.readInt();
          _curPage = _totalPage <= 0?0:_curPage;
          _pageTxt.text = _curPage + "/" + _totalPage;
          clearItems();
-         var _loc3_:int = _loc5_.readInt();
-         _loc7_ = 0;
-         while(_loc7_ <= _loc3_ - 1)
+         var count:int = pkg.readInt();
+         for(i = 0; i <= count - 1; )
          {
-            _loc6_ = new BKingRankInfo();
-            _loc6_.place = _loc5_.readInt();
-            _loc6_.userId = _loc5_.readInt();
-            _loc6_.areaId = _loc5_.readInt();
-            _loc6_.name = _loc5_.readUTF();
-            _loc6_.areaName = _loc5_.readUTF();
-            _loc6_.vipType = _loc5_.readInt();
-            _loc6_.vipLvl = _loc5_.readInt();
-            _loc6_.num = _loc5_.readInt();
-            _loc4_ = new BKingRankItem();
-            _loc4_.info = _loc6_;
-            _itemList.push(_loc4_);
-            _vbox.addChild(_loc4_);
-            _loc7_++;
+            info = new BKingRankInfo();
+            info.place = pkg.readInt();
+            info.userId = pkg.readInt();
+            info.areaId = pkg.readInt();
+            info.name = pkg.readUTF();
+            info.areaName = pkg.readUTF();
+            info.vipType = pkg.readInt();
+            info.vipLvl = pkg.readInt();
+            info.num = pkg.readInt();
+            item = new BKingRankItem();
+            item.info = info;
+            _itemList.push(item);
+            _vbox.addChild(item);
+            i++;
          }
-         var _loc2_:int = _loc5_.readInt();
-         if(_loc2_ <= 0)
+         var rank:int = pkg.readInt();
+         if(rank <= 0)
          {
             _myRank.text = LanguageMgr.GetTranslation("bombKing.outOfRank2");
          }
          else
          {
-            _myRank.text = _loc2_.toString();
+            _myRank.text = rank.toString();
          }
-         _myScore.text = _loc5_.readInt().toString();
+         _myScore.text = pkg.readInt().toString();
       }
       
-      protected function __changeHandler(param1:Event) : void
+      protected function __changeHandler(event:Event) : void
       {
          if(_btnGroup.selectIndex == _currentIndex)
          {
@@ -196,7 +195,7 @@ package bombKing.view
          SocketManager.Instance.out.updateBombKingRank(_currentIndex,1);
       }
       
-      protected function __prevBtnClick(param1:MouseEvent) : void
+      protected function __prevBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_curPage <= 1)
@@ -206,7 +205,7 @@ package bombKing.view
          SocketManager.Instance.out.updateBombKingRank(_currentIndex,_curPage - 1);
       }
       
-      protected function __nextBtnClick(param1:MouseEvent) : void
+      protected function __nextBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_curPage >= _totalPage)
@@ -216,11 +215,11 @@ package bombKing.view
          SocketManager.Instance.out.updateBombKingRank(_currentIndex,_curPage + 1);
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         param1.currentTarget.removeEventListener("response",__frameEventHandler);
-         switch(int(param1.responseCode))
+         event.currentTarget.removeEventListener("response",__frameEventHandler);
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -230,13 +229,12 @@ package bombKing.view
       
       private function clearItems() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ <= _itemList.length - 1)
+         var i:int = 0;
+         for(i = 0; i <= _itemList.length - 1; )
          {
-            ObjectUtils.disposeObject(_itemList[_loc1_]);
-            _itemList[_loc1_] = null;
-            _loc1_++;
+            ObjectUtils.disposeObject(_itemList[i]);
+            _itemList[i] = null;
+            i++;
          }
       }
       

@@ -60,41 +60,41 @@ package com.pickgliss.loader
          return _instance;
       }
       
-      public function addUIModlue(param1:String) : void
+      public function addUIModlue(module:String) : void
       {
-         if(_queue.indexOf(param1) != -1)
+         if(_queue.indexOf(module) != -1)
          {
             return;
          }
-         _queue.push(param1);
+         _queue.push(module);
          if(!isLoading && _zipLoadComplete)
          {
             loadNextModule();
          }
       }
       
-      public function addUIModuleImp(param1:String, param2:String = null) : void
+      public function addUIModuleImp(module:String, state:String = null) : void
       {
-         var _loc3_:int = _queue.indexOf(param1);
-         if(_loc3_ != -1)
+         var index:int = _queue.indexOf(module);
+         if(index != -1)
          {
-            _queue.splice(_loc3_,1);
+            _queue.splice(index,1);
          }
          if(_zipLoadComplete)
          {
-            loadModuleConfig(param1,param2);
+            loadModuleConfig(module,state);
          }
          else
          {
-            _queue.unshift(param1);
+            _queue.unshift(module);
             loadNextModule();
          }
       }
       
-      public function setup(param1:String = "", param2:String = "") : void
+      public function setup(baseUrl:String = "", backupUrl:String = "") : void
       {
-         _baseUrl = param1;
-         _backupUrl = param2;
+         _baseUrl = baseUrl;
+         _backupUrl = backupUrl;
          ComponentSetting.FLASHSITE = _baseUrl;
          ComponentSetting.BACKUP_FLASHSITE = _backupUrl;
          _zipPath = _baseUrl + ComponentSetting.getUIConfigZIPPath();
@@ -119,23 +119,23 @@ package com.pickgliss.loader
          LoadResourceManager.Instance.startLoad(_zipLoader);
       }
       
-      private function __onLoadZipComplete(param1:LoaderEvent) : void
+      private function __onLoadZipComplete(event:LoaderEvent) : void
       {
-         var _loc2_:ByteArray = _zipLoader.content;
-         analyMd5(_loc2_);
+         var temp:ByteArray = _zipLoader.content;
+         analyMd5(temp);
       }
       
-      public function analyMd5(param1:ByteArray) : void
+      public function analyMd5(content:ByteArray) : void
       {
-         var _loc2_:* = null;
-         if(ComponentSetting.USEMD5 && (ComponentSetting.md5Dic["xml.png"] || hasHead(param1)))
+         var temp:* = null;
+         if(ComponentSetting.USEMD5 && (ComponentSetting.md5Dic["xml.png"] || hasHead(content)))
          {
-            if(compareMD5(param1))
+            if(compareMD5(content))
             {
-               _loc2_ = new ByteArray();
-               param1.position = 37;
-               param1.readBytes(_loc2_);
-               zipLoad(_loc2_);
+               temp = new ByteArray();
+               content.position = 37;
+               content.readBytes(temp);
+               zipLoad(temp);
             }
             else
             {
@@ -158,23 +158,23 @@ package com.pickgliss.loader
          }
          else
          {
-            zipLoad(param1);
+            zipLoad(content);
          }
       }
       
-      private function compareMD5(param1:ByteArray) : Boolean
+      private function compareMD5(temp:ByteArray) : Boolean
       {
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         var _loc4_:ByteArray = new ByteArray();
-         _loc4_.writeUTFBytes(ComponentSetting.md5Dic["xml.png"]);
-         _loc4_.position = 0;
-         param1.position = 5;
-         while(_loc4_.bytesAvailable > 0)
+         var source:int = 0;
+         var target:int = 0;
+         var md5Bytes:ByteArray = new ByteArray();
+         md5Bytes.writeUTFBytes(ComponentSetting.md5Dic["xml.png"]);
+         md5Bytes.position = 0;
+         temp.position = 5;
+         while(md5Bytes.bytesAvailable > 0)
          {
-            _loc2_ = _loc4_.readByte();
-            _loc3_ = param1.readByte();
-            if(_loc2_ != _loc3_)
+            source = md5Bytes.readByte();
+            target = temp.readByte();
+            if(source != target)
             {
                return false;
             }
@@ -182,19 +182,19 @@ package com.pickgliss.loader
          return true;
       }
       
-      private function hasHead(param1:ByteArray) : Boolean
+      private function hasHead(temp:ByteArray) : Boolean
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:ByteArray = new ByteArray();
-         _loc2_.writeUTFBytes(ComponentSetting.swf_head);
-         _loc2_.position = 0;
-         param1.position = 0;
-         while(_loc2_.bytesAvailable > 0)
+         var source:int = 0;
+         var target:int = 0;
+         var road7Byte:ByteArray = new ByteArray();
+         road7Byte.writeUTFBytes(ComponentSetting.swf_head);
+         road7Byte.position = 0;
+         temp.position = 0;
+         while(road7Byte.bytesAvailable > 0)
          {
-            _loc3_ = _loc2_.readByte();
-            _loc4_ = param1.readByte();
-            if(_loc3_ != _loc4_)
+            source = road7Byte.readByte();
+            target = temp.readByte();
+            if(source != target)
             {
                return false;
             }
@@ -202,29 +202,28 @@ package com.pickgliss.loader
          return true;
       }
       
-      private function zipLoad(param1:ByteArray) : void
+      private function zipLoad(content:ByteArray) : void
       {
-         var _loc2_:FZip = new FZip();
-         _loc2_.addEventListener("complete",__onZipParaComplete);
-         _loc2_.loadBytes(param1);
+         var zip:FZip = new FZip();
+         zip.addEventListener("complete",__onZipParaComplete);
+         zip.loadBytes(content);
       }
       
-      private function __onZipParaComplete(param1:Event) : void
+      private function __onZipParaComplete(event:Event) : void
       {
-         var _loc6_:int = 0;
-         var _loc4_:* = null;
-         var _loc5_:* = null;
+         var i:int = 0;
+         var file:* = null;
+         var xml:* = null;
          _zipLoader.removeEventListener("complete",__onLoadZipComplete);
-         var _loc2_:FZip = param1.currentTarget as FZip;
-         _loc2_.removeEventListener("complete",__onZipParaComplete);
-         var _loc3_:int = _loc2_.getFileCount();
-         _loc6_ = 0;
-         while(_loc6_ < _loc3_)
+         var zip:FZip = event.currentTarget as FZip;
+         zip.removeEventListener("complete",__onZipParaComplete);
+         var count:int = zip.getFileCount();
+         for(i = 0; i < count; )
          {
-            _loc4_ = _loc2_.getFileAt(_loc6_);
-            _loc5_ = new XML(_loc4_.content.toString());
-            ComponentFactory.Instance.setup(_loc5_);
-            _loc6_++;
+            file = zip.getFileAt(i);
+            xml = new XML(file.content.toString());
+            ComponentFactory.Instance.setup(xml);
+            i++;
          }
          _zipLoadComplete = true;
          loadNextModule();
@@ -235,61 +234,61 @@ package com.pickgliss.loader
          return _loadingLoaders.length > 0;
       }
       
-      private function __onConfigLoadComplete(param1:LoaderEvent) : void
+      private function __onConfigLoadComplete(event:LoaderEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         param1.loader.removeEventListener("complete",__onConfigLoadComplete);
-         param1.loader.removeEventListener("loadError",__onLoadError);
-         _loadingLoaders.splice(_loadingLoaders.indexOf(param1.loader),1);
-         if(param1.loader.isSuccess)
+         var config:* = null;
+         var resourcePath:* = null;
+         event.loader.removeEventListener("complete",__onConfigLoadComplete);
+         event.loader.removeEventListener("loadError",__onLoadError);
+         _loadingLoaders.splice(_loadingLoaders.indexOf(event.loader),1);
+         if(event.loader.isSuccess)
          {
-            _loc3_ = new XML(param1.loader.content);
-            _loc2_ = _loc3_.@source;
-            ComponentFactory.Instance.setup(_loc3_);
-            loadModuleUI(_loc2_,param1.loader.loadProgressMessage,param1.loader.loadCompleteMessage);
+            config = new XML(event.loader.content);
+            resourcePath = config.@source;
+            ComponentFactory.Instance.setup(config);
+            loadModuleUI(resourcePath,event.loader.loadProgressMessage,event.loader.loadCompleteMessage);
          }
          else
          {
-            removeLastLoader(param1.loader);
-            dispatchEvent(new UIModuleEvent("uiModuleComplete",param1.loader));
+            removeLastLoader(event.loader);
+            dispatchEvent(new UIModuleEvent("uiModuleComplete",event.loader));
             loadNextModule();
          }
       }
       
-      private function __onLoadError(param1:LoaderEvent) : void
+      private function __onLoadError(event:LoaderEvent) : void
       {
-         param1.loader.removeEventListener("loadError",__onLoadError);
-         param1.loader.removeEventListener("progress",__onResourceProgress);
-         param1.loader.removeEventListener("complete",__onResourceComplete);
-         dispatchEvent(new UIModuleEvent("uiModuleError",param1.loader));
+         event.loader.removeEventListener("loadError",__onLoadError);
+         event.loader.removeEventListener("progress",__onResourceProgress);
+         event.loader.removeEventListener("complete",__onResourceComplete);
+         dispatchEvent(new UIModuleEvent("uiModuleError",event.loader));
       }
       
-      private function __onResourceComplete(param1:LoaderEvent) : void
+      private function __onResourceComplete(event:LoaderEvent) : void
       {
-         param1.loader.removeEventListener("loadError",__onLoadError);
-         param1.loader.removeEventListener("progress",__onResourceProgress);
-         param1.loader.removeEventListener("complete",__onResourceComplete);
-         removeLastLoader(param1.loader);
-         dispatchEvent(new UIModuleEvent("uiModuleComplete",param1.loader));
+         event.loader.removeEventListener("loadError",__onLoadError);
+         event.loader.removeEventListener("progress",__onResourceProgress);
+         event.loader.removeEventListener("complete",__onResourceComplete);
+         removeLastLoader(event.loader);
+         dispatchEvent(new UIModuleEvent("uiModuleComplete",event.loader));
          loadNextModule();
       }
       
-      private function removeLastLoader(param1:BaseLoader) : void
+      private function removeLastLoader(loader:BaseLoader) : void
       {
-         if(_loadingLoaders.indexOf(param1) != -1)
+         if(_loadingLoaders.indexOf(loader) != -1)
          {
-            _loadingLoaders.splice(_loadingLoaders.indexOf(param1),1);
+            _loadingLoaders.splice(_loadingLoaders.indexOf(loader),1);
          }
-         if(_queue.indexOf(param1.loadProgressMessage) != -1)
+         if(_queue.indexOf(loader.loadProgressMessage) != -1)
          {
-            _queue.splice(_queue.indexOf(param1.loadProgressMessage),1);
+            _queue.splice(_queue.indexOf(loader.loadProgressMessage),1);
          }
       }
       
-      private function __onResourceProgress(param1:LoaderEvent) : void
+      private function __onResourceProgress(event:LoaderEvent) : void
       {
-         dispatchEvent(new UIModuleEvent("uiMoudleProgress",param1.loader));
+         dispatchEvent(new UIModuleEvent("uiMoudleProgress",event.loader));
       }
       
       private function loadNextModule() : void
@@ -299,65 +298,64 @@ package com.pickgliss.loader
             dispatchEvent(new LoaderResourceEvent("loadxmlComplete"));
             return;
          }
-         var _loc1_:String = _queue[0];
-         if(!isLoadingModule(_loc1_))
+         var loadingModule:String = _queue[0];
+         if(!isLoadingModule(loadingModule))
          {
-            loadModuleConfig(_loc1_);
+            loadModuleConfig(loadingModule);
          }
       }
       
-      private function isLoadingModule(param1:String) : Boolean
+      private function isLoadingModule(module:String) : Boolean
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _loadingLoaders.length)
+         var i:int = 0;
+         for(i = 0; i < _loadingLoaders.length; )
          {
-            if(_loadingLoaders[_loc2_].loadProgressMessage == param1)
+            if(_loadingLoaders[i].loadProgressMessage == module)
             {
                return true;
             }
-            _loc2_++;
+            i++;
          }
          return false;
       }
       
-      private function loadModuleConfig(param1:String, param2:String = "") : void
+      private function loadModuleConfig(module:String, state:String = "") : void
       {
-         var _loc3_:* = null;
+         var textLoader:* = null;
          if(_uiModuleLoadMode == "configXml")
          {
-            _loc3_ = LoadResourceManager.Instance.createLoader(_baseUrl + ComponentSetting.getUIConfigXMLPath(param1),2);
-            _loc3_.loadProgressMessage = param1;
-            _loc3_.loadCompleteMessage = param2;
-            _loc3_.addEventListener("complete",__onConfigLoadComplete);
-            _loc3_.addEventListener("loadError",__onLoadError);
-            _loc3_.loadErrorMessage = "加载UI配置文件" + _loc3_.url + "出现错误";
-            if(_loadingLoaders.indexOf(_loc3_) == -1)
+            textLoader = LoadResourceManager.Instance.createLoader(_baseUrl + ComponentSetting.getUIConfigXMLPath(module),2);
+            textLoader.loadProgressMessage = module;
+            textLoader.loadCompleteMessage = state;
+            textLoader.addEventListener("complete",__onConfigLoadComplete);
+            textLoader.addEventListener("loadError",__onLoadError);
+            textLoader.loadErrorMessage = "加载UI配置文件" + textLoader.url + "出现错误";
+            if(_loadingLoaders.indexOf(textLoader) == -1)
             {
-               _loadingLoaders.push(_loc3_);
+               _loadingLoaders.push(textLoader);
             }
-            LoadResourceManager.Instance.startLoad(_loc3_,true);
+            LoadResourceManager.Instance.startLoad(textLoader,true);
          }
          else
          {
-            loadModuleUI(_baseUrl + ComponentSetting.getUISourcePath(param1),param1,param2);
+            loadModuleUI(_baseUrl + ComponentSetting.getUISourcePath(module),module,state);
          }
       }
       
-      private function loadModuleUI(param1:String, param2:String = "", param3:String = "") : void
+      private function loadModuleUI(uipath:String, module:String = "", state:String = "") : void
       {
-         var _loc4_:BaseLoader = LoadResourceManager.Instance.createLoader(param1,4);
-         _loc4_.loadProgressMessage = param2;
-         _loc4_.loadCompleteMessage = param3;
-         _loc4_.loadErrorMessage = "加载ui资源：" + _loc4_.url + "出现错误";
-         _loc4_.addEventListener("loadError",__onLoadError);
-         _loc4_.addEventListener("progress",__onResourceProgress);
-         _loc4_.addEventListener("complete",__onResourceComplete);
-         if(_loadingLoaders.indexOf(_loc4_) == -1)
+         var uiResourceLoader:BaseLoader = LoadResourceManager.Instance.createLoader(uipath,4);
+         uiResourceLoader.loadProgressMessage = module;
+         uiResourceLoader.loadCompleteMessage = state;
+         uiResourceLoader.loadErrorMessage = "加载ui资源：" + uiResourceLoader.url + "出现错误";
+         uiResourceLoader.addEventListener("loadError",__onLoadError);
+         uiResourceLoader.addEventListener("progress",__onResourceProgress);
+         uiResourceLoader.addEventListener("complete",__onResourceComplete);
+         if(_loadingLoaders.indexOf(uiResourceLoader) == -1)
          {
-            _loadingLoaders.push(_loc4_);
+            _loadingLoaders.push(uiResourceLoader);
          }
-         LoadResourceManager.Instance.startLoad(_loc4_,true);
+         LoadResourceManager.Instance.startLoad(uiResourceLoader,true);
       }
    }
 }

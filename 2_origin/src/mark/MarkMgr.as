@@ -35,6 +35,8 @@ package mark
    import mark.data.MarkHammerTemplateData;
    import mark.data.MarkModel;
    import mark.data.MarkProData;
+   import mark.data.MarkSchemeInfo;
+   import mark.data.MarkSchemeModel;
    import mark.data.MarkTransferTemplateData;
    import mark.event.MarkEvent;
    import road7th.comm.PackageIn;
@@ -46,6 +48,8 @@ package mark
        
       
       private var _model:MarkModel;
+      
+      private var _schemeModel:MarkSchemeModel = null;
       
       private var _markContainer:DisplayObjectContainer = null;
       
@@ -67,12 +71,14 @@ package mark
       
       public var isOther:Boolean = false;
       
-      public function MarkMgr(param1:SingTon)
+      public var needSave:Boolean = false;
+      
+      public function MarkMgr(sigle:SingTon)
       {
          treasureRoomLogoIdArr = [];
          treasureRoomRewardArr = [];
          super();
-         if(!param1)
+         if(!sigle)
          {
             throw new Error("this is a single instance");
          }
@@ -90,6 +96,7 @@ package mark
       public function setup() : void
       {
          _model = new MarkModel();
+         _schemeModel = new MarkSchemeModel();
          SocketManager.Instance.addEventListener(PkgEvent.format(529,2),__resSyncOrUpdateChips);
          SocketManager.Instance.addEventListener(PkgEvent.format(529,16),__resMarkMoney);
          SocketManager.Instance.addEventListener(PkgEvent.format(529,26),__updateChipsInfo);
@@ -100,102 +107,103 @@ package mark
          SocketManager.Instance.addEventListener(PkgEvent.format(529,23),__onVaultsData);
          SocketManager.Instance.addEventListener(PkgEvent.format(529,22),__onVaultsReward);
          SocketManager.Instance.addEventListener(PkgEvent.format(533),__auctionGetMarkTips);
+         SocketManager.Instance.addEventListener(PkgEvent.format(529,29),__resEquipScheme);
+         SocketManager.Instance.addEventListener(PkgEvent.format(529,31),__resAddEquipScheme);
+         SocketManager.Instance.addEventListener(PkgEvent.format(529,32),__resSwitchEquipScheme);
+         SocketManager.Instance.addEventListener(PkgEvent.format(529,30),__resSaveScheme);
       }
       
-      private function __updateChipsInfo(param1:PkgEvent) : void
+      private function __updateChipsInfo(pkg:PkgEvent) : void
       {
-         var _loc8_:int = 0;
-         var _loc2_:* = null;
-         var _loc7_:* = null;
-         var _loc6_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:Vector.<MarkChipData> = new Vector.<MarkChipData>();
-         var _loc5_:int = param1.pkg.readInt();
-         _loc8_ = 0;
-         while(_loc8_ < _loc5_)
+         var i:int = 0;
+         var chip:* = null;
+         var mainPro:* = null;
+         var j:int = 0;
+         var subPro:* = null;
+         var changeChips:Vector.<MarkChipData> = new Vector.<MarkChipData>();
+         var count:int = pkg.pkg.readInt();
+         for(i = 0; i < count; )
          {
-            _loc2_ = new MarkChipData();
-            _loc2_.itemID = param1.pkg.readInt();
-            _loc2_.templateId = param1.pkg.readInt();
-            _loc2_.position = param1.pkg.readInt();
-            _loc2_.isExist = param1.pkg.readBoolean();
-            if(!_loc2_.isExist)
+            chip = new MarkChipData();
+            chip.itemID = pkg.pkg.readInt();
+            chip.templateId = pkg.pkg.readInt();
+            chip.position = pkg.pkg.readInt();
+            chip.isExist = pkg.pkg.readBoolean();
+            if(!chip.isExist)
             {
-               param1.pkg.readBoolean();
-               _loc4_.push(_loc2_);
+               pkg.pkg.readBoolean();
+               changeChips.push(chip);
             }
             else
             {
-               param1.pkg.readBoolean();
-               _loc2_.isbind = param1.pkg.readBoolean();
-               _loc2_.bornLv = param1.pkg.readInt();
-               _loc2_.hammerLv = param1.pkg.readInt();
-               _loc2_.hLv = param1.pkg.readInt();
-               _loc7_ = new MarkProData();
-               _loc7_.type = param1.pkg.readInt();
-               _loc7_.value = param1.pkg.readInt();
-               _loc7_.attachValue = param1.pkg.readInt();
-               _loc2_.mainPro = _loc7_;
-               _loc2_.props = new Vector.<MarkProData>();
-               _loc6_ = 0;
-               while(_loc6_ < 4)
+               pkg.pkg.readBoolean();
+               chip.isbind = pkg.pkg.readBoolean();
+               chip.bornLv = pkg.pkg.readInt();
+               chip.hammerLv = pkg.pkg.readInt();
+               chip.hLv = pkg.pkg.readInt();
+               mainPro = new MarkProData();
+               mainPro.type = pkg.pkg.readInt();
+               mainPro.value = pkg.pkg.readInt();
+               mainPro.attachValue = pkg.pkg.readInt();
+               chip.mainPro = mainPro;
+               chip.props = new Vector.<MarkProData>();
+               for(j = 0; j < 4; )
                {
-                  _loc3_ = new MarkProData();
-                  _loc3_.type = param1.pkg.readInt();
-                  _loc3_.value = param1.pkg.readInt();
-                  _loc3_.attachValue = param1.pkg.readInt();
-                  _loc3_.hummerCount = param1.pkg.readInt();
-                  _loc2_.props.push(_loc3_);
-                  _loc6_++;
+                  subPro = new MarkProData();
+                  subPro.type = pkg.pkg.readInt();
+                  subPro.value = pkg.pkg.readInt();
+                  subPro.attachValue = pkg.pkg.readInt();
+                  subPro.hummerCount = pkg.pkg.readInt();
+                  chip.props.push(subPro);
+                  j++;
                }
-               _loc4_.push(_loc2_);
+               changeChips.push(chip);
             }
-            _loc8_++;
+            i++;
          }
-         updateChips(_loc4_);
+         updateChips(changeChips);
       }
       
-      public function updateChips(param1:Vector.<MarkChipData>) : void
+      public function updateChips(list:Vector.<MarkChipData>) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         _loc3_ = 0;
-         while(_loc3_ < param1.length)
+         var n:int = 0;
+         var chip:* = null;
+         for(n = 0; n < list.length; )
          {
-            _loc2_ = param1[_loc3_] as MarkChipData;
-            if(!_model.getChipById(_loc2_.itemID))
+            chip = list[n] as MarkChipData;
+            if(!_model.getChipById(chip.itemID))
             {
-               _model.bags[_loc2_.position > 1000?_loc2_.position:1].chips[_loc2_.itemID] = _loc2_;
+               _model.bags[chip.position > 1000?chip.position:1].chips[chip.itemID] = chip;
             }
             else
             {
-               delete _model.bags[_model.getChipById(_loc2_.itemID).position > 1000?_model.getChipById(_loc2_.itemID).position:1].chips[_loc2_.itemID];
-               if(_loc2_.isExist)
+               delete _model.bags[_model.getChipById(chip.itemID).position > 1000?_model.getChipById(chip.itemID).position:1].chips[chip.itemID];
+               if(chip.isExist)
                {
-                  _model.bags[_loc2_.position > 1000?_loc2_.position:1].chips[_loc2_.itemID] = _loc2_;
+                  _model.bags[chip.position > 1000?chip.position:1].chips[chip.itemID] = chip;
                }
             }
-            _loc3_++;
+            n++;
          }
          dispatchEvent(new MarkEvent("updateChips"));
       }
       
-      private function __auctionGetMarkTips(param1:PkgEvent) : void
+      private function __auctionGetMarkTips(e:PkgEvent) : void
       {
       }
       
-      public function showMarkView(param1:DisplayObjectContainer, param2:PlayerInfo = null) : void
+      public function showMarkView(parent:DisplayObjectContainer, info:PlayerInfo = null) : void
       {
-         parent = param1;
-         info = param2;
+         parent = parent;
+         info = info;
          AssetModuleLoader.addRequestLoader(LoaderCreate.Instance.createMarkSetLoader());
          AssetModuleLoader.addRequestLoader(LoaderCreate.Instance.createMarkHammerLoader());
          AssetModuleLoader.addModelLoader("mark",7);
          AssetModuleLoader.startCodeLoader(function():void
          {
-            var _loc2_:* = null;
-            var _loc3_:* = null;
-            var _loc1_:* = null;
+            var leftView:* = null;
+            var rightView:* = null;
+            var otherView:* = null;
             if(parent)
             {
                if(!info)
@@ -219,10 +227,10 @@ package mark
                   }
                   isOther = false;
                   _markContainer.visible = true;
-                  _loc2_ = ComponentFactory.Instance.creatCustomObject("mark.leftView");
-                  _markContainer.addChild(_loc2_);
-                  _loc3_ = ComponentFactory.Instance.creatCustomObject("mark.rightView");
-                  _markContainer.addChild(_loc3_);
+                  leftView = ComponentFactory.Instance.creatCustomObject("mark.leftView");
+                  _markContainer.addChild(leftView);
+                  rightView = ComponentFactory.Instance.creatCustomObject("mark.rightView");
+                  _markContainer.addChild(rightView);
                }
                else
                {
@@ -233,8 +241,8 @@ package mark
                   }
                   isOther = true;
                   _otherContainer.visible = true;
-                  _loc1_ = ComponentFactory.Instance.creatCustomObject("mark.otherView",[info]);
-                  _otherContainer.addChild(_loc1_);
+                  otherView = ComponentFactory.Instance.creatCustomObject("mark.otherView",[info]);
+                  _otherContainer.addChild(otherView);
                   if(!_otherContainer.parent)
                   {
                      parent.addChild(_otherContainer);
@@ -278,34 +286,34 @@ package mark
          });
       }
       
-      public function setMarkChipTempalte(param1:MarkChipAnalyzer) : void
+      public function setMarkChipTempalte(analyzer:MarkChipAnalyzer) : void
       {
-         _model.cfgChip = param1.chips;
+         _model.cfgChip = analyzer.chips;
       }
       
-      public function setMarkSuitTempalte(param1:MarkSuitAnalyzer) : void
+      public function setMarkSuitTempalte(analyzer:MarkSuitAnalyzer) : void
       {
-         _model.cfgSuit = param1.suits;
+         _model.cfgSuit = analyzer.suits;
       }
       
-      public function setMarkProInfo(param1:MarkProAnalyzer) : void
+      public function setMarkProInfo(analyzer:MarkProAnalyzer) : void
       {
-         _model.proNumInfoArr = param1.proNumDic;
+         _model.proNumInfoArr = analyzer.proNumDic;
       }
       
-      public function setMarkSetTempalte(param1:MarkSetAnalyzer) : void
+      public function setMarkSetTempalte(analyzer:MarkSetAnalyzer) : void
       {
-         _model.cfgSet = param1.sets;
+         _model.cfgSet = analyzer.sets;
       }
       
-      public function setMarkHammerTempalte(param1:MarkHammerAnalyzer) : void
+      public function setMarkHammerTempalte(analyzer:MarkHammerAnalyzer) : void
       {
-         _model.cfgHammer = param1.hammers;
+         _model.cfgHammer = analyzer.hammers;
       }
       
-      public function setMarkTransferTempalte(param1:MarkTransferAnalyzer) : void
+      public function setMarkTransferTempalte(analyzer:MarkTransferAnalyzer) : void
       {
-         _model.cfgTransfer = param1.transfers;
+         _model.cfgTransfer = analyzer.transfers;
       }
       
       public function showMarkMainFrame() : void
@@ -315,8 +323,8 @@ package mark
          AssetModuleLoader.addRequestLoader(LoaderCreate.Instance.createMarkTransferLoader());
          AssetModuleLoader.startCodeLoader(function():void
          {
-            var _loc1_:* = ComponentFactory.Instance.creatCustomObject("mark.mainFrame");
-            LayerManager.Instance.addToLayer(_loc1_,3,false,1);
+            var frame:* = ComponentFactory.Instance.creatCustomObject("mark.mainFrame");
+            LayerManager.Instance.addToLayer(frame,3,false,1);
          });
       }
       
@@ -345,106 +353,102 @@ package mark
          disposeBooksAndTreasureRoom();
       }
       
-      public function chooseEquip(param1:int) : void
+      public function chooseEquip(index:int) : void
       {
-         _model.equip = MarkModel.EQUIP_LIST[param1];
+         _model.equip = MarkModel.EQUIP_LIST[index];
          dispatchEvent(new MarkEvent("choose_equip"));
       }
       
       public function getEquipList() : Array
       {
-         var _loc2_:int = 0;
-         var _loc1_:Array = [];
-         _loc2_ = 0;
-         while(_loc2_ < MarkModel.EQUIP_LIST.length)
+         var i:int = 0;
+         var list:Array = [];
+         for(i = 0; i < MarkModel.EQUIP_LIST.length; )
          {
-            _loc1_.push(PlayerManager.Instance.Self.Bag.items[MarkModel.EQUIP_LIST[_loc2_]]);
-            _loc2_++;
+            list.push(PlayerManager.Instance.Self.Bag.items[MarkModel.EQUIP_LIST[i]]);
+            i++;
          }
-         return _loc1_;
+         return list;
       }
       
-      public function checkTip(param1:int, param2:int) : Boolean
+      public function checkTip(catergyId:int, place:int) : Boolean
       {
-         if(param2 == 0 && param1 == 1 || param2 == 2 && param1 == 3 || param2 == 3 && param1 == 4 || param2 == 5 && param1 == 6 || param2 == 11 && param1 == 13 || param2 == 4 && param1 == 5)
+         if(place == 0 && catergyId == 1 || place == 2 && catergyId == 3 || place == 3 && catergyId == 4 || place == 5 && catergyId == 6 || place == 11 && catergyId == 13 || place == 4 && catergyId == 5)
          {
             return true;
          }
          return false;
       }
       
-      public function reqOperationStatus(param1:int, param2:int) : void
+      public function reqOperationStatus(type:int, id:int) : void
       {
-         SocketManager.Instance.out.sendOperationStatus(param1,param2);
-         var _loc4_:Array = _model.newSuits;
-         var _loc3_:int = _loc4_.indexOf(param2);
-         if(_loc3_ > -1)
+         SocketManager.Instance.out.sendOperationStatus(type,id);
+         var list:Array = _model.newSuits;
+         var index:int = list.indexOf(id);
+         if(index > -1)
          {
-            _loc4_.splice(_loc3_,1);
+            list.splice(index,1);
          }
          dispatchEvent(new MarkEvent("updateOperation"));
       }
       
-      public function getHammerData(param1:int, param2:int) : MarkHammerTemplateData
+      public function getHammerData(lv:int, charater:int) : MarkHammerTemplateData
       {
-         var _loc4_:int = 0;
-         param1 = Math.min(param1 + 1,getHammerTopLv(param2));
-         var _loc3_:MarkHammerTemplateData = null;
-         _loc4_ = 0;
-         while(_loc4_ < _model.cfgHammer.length)
+         var i:int = 0;
+         lv = Math.min(lv + 1,getHammerTopLv(charater));
+         var data:MarkHammerTemplateData = null;
+         for(i = 0; i < _model.cfgHammer.length; )
          {
-            _loc3_ = _model.cfgHammer[_loc4_];
-            if(_loc3_.Character == param2 && _loc3_.Level == param1)
+            data = _model.cfgHammer[i];
+            if(data.Character == charater && data.Level == lv)
             {
-               return _loc3_;
+               return data;
             }
-            _loc4_++;
+            i++;
          }
          return null;
       }
       
-      public function getHammerTopLv(param1:int) : int
+      public function getHammerTopLv(charater:int) : int
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < _model.cfgHammer.length)
+         var i:int = 0;
+         var lv:int = 0;
+         for(i = 0; i < _model.cfgHammer.length; )
          {
-            if(_model.cfgHammer[_loc3_].Character == param1 && _model.cfgHammer[_loc3_].Level >= _loc2_)
+            if(_model.cfgHammer[i].Character == charater && _model.cfgHammer[i].Level >= lv)
             {
-               _loc2_ = _model.cfgHammer[_loc3_].Level;
+               lv = _model.cfgHammer[i].Level;
             }
-            _loc3_++;
+            i++;
          }
-         return _loc2_;
+         return lv;
       }
       
-      public function getTransferData(param1:int, param2:int) : MarkTransferTemplateData
+      public function getTransferData(charater:int, starLv:int) : MarkTransferTemplateData
       {
-         var _loc4_:int = 0;
-         var _loc3_:MarkTransferTemplateData = null;
-         _loc4_ = 0;
-         while(_loc4_ < _model.cfgTransfer.length)
+         var i:int = 0;
+         var data:MarkTransferTemplateData = null;
+         for(i = 0; i < _model.cfgTransfer.length; )
          {
-            _loc3_ = _model.cfgTransfer[_loc4_];
-            if(_loc3_.Character == param1 && _loc3_.Grade == param2)
+            data = _model.cfgTransfer[i];
+            if(data.Character == charater && data.Grade == starLv)
             {
-               return _loc3_;
+               return data;
             }
-            _loc4_++;
+            i++;
          }
          return null;
       }
       
-      public function getAttributeAdd(param1:int, param2:int) : int
+      public function getAttributeAdd(id:int, type:int) : int
       {
-         var _loc3_:MarkChipTemplateData = _model.cfgChip[param1];
-         if(!_loc3_)
+         var chipTemplateData:MarkChipTemplateData = _model.cfgChip[id];
+         if(!chipTemplateData)
          {
             return 0;
          }
-         var _loc4_:int = 0;
-         var _loc5_:* = param2;
+         var proValue:int = 0;
+         var _loc5_:* = type;
          if(31 !== _loc5_)
          {
             if(32 !== _loc5_)
@@ -473,99 +477,99 @@ package mark
                                              {
                                                 if(5 === _loc5_)
                                                 {
-                                                   _loc4_ = _loc3_.AttributeAdd14;
+                                                   proValue = chipTemplateData.AttributeAdd14;
                                                 }
                                              }
                                              else
                                              {
-                                                _loc4_ = _loc3_.AttributeAdd13;
+                                                proValue = chipTemplateData.AttributeAdd13;
                                              }
                                           }
                                           else
                                           {
-                                             _loc4_ = _loc3_.AttributeAdd12;
+                                             proValue = chipTemplateData.AttributeAdd12;
                                           }
                                        }
                                        else
                                        {
-                                          _loc4_ = _loc3_.AttributeAdd11;
+                                          proValue = chipTemplateData.AttributeAdd11;
                                        }
                                     }
                                     else
                                     {
-                                       _loc4_ = _loc3_.AttributeAdd10;
+                                       proValue = chipTemplateData.AttributeAdd10;
                                     }
                                  }
                                  else
                                  {
-                                    _loc4_ = _loc3_.AttributeAdd9;
+                                    proValue = chipTemplateData.AttributeAdd9;
                                  }
                               }
                               else
                               {
-                                 _loc4_ = _loc3_.AttributeAdd8;
+                                 proValue = chipTemplateData.AttributeAdd8;
                               }
                            }
                            else
                            {
-                              _loc4_ = _loc3_.AttributeAdd7;
+                              proValue = chipTemplateData.AttributeAdd7;
                            }
                         }
                         else
                         {
-                           _loc4_ = _loc3_.AttributeAdd6;
+                           proValue = chipTemplateData.AttributeAdd6;
                         }
                      }
                      else
                      {
-                        _loc4_ = _loc3_.AttributeAdd5;
+                        proValue = chipTemplateData.AttributeAdd5;
                      }
                   }
                   else
                   {
-                     _loc4_ = _loc3_.AttributeAdd4;
+                     proValue = chipTemplateData.AttributeAdd4;
                   }
                }
                else
                {
-                  _loc4_ = _loc3_.AttributeAdd3;
+                  proValue = chipTemplateData.AttributeAdd3;
                }
             }
             else
             {
-               _loc4_ = _loc3_.AttributeAdd2;
+               proValue = chipTemplateData.AttributeAdd2;
             }
          }
          else
          {
-            _loc4_ = _loc3_.AttributeAdd1;
+            proValue = chipTemplateData.AttributeAdd1;
          }
-         return int(_loc4_ * 0.1 * (_model.getChipById(_model.chipItemID).hLv + 1));
+         return int(proValue * 0.1 * (_model.getChipById(_model.chipItemID).hLv + 1));
       }
       
-      public function getMarkProValue(param1:MarkChipData, param2:int) : int
+      public function getMarkProValue(chip:MarkChipData, type:int) : int
       {
-         var _loc4_:int = 0;
-         if(param1.mainPro.type == param2)
+         var proValue:int = 0;
+         if(chip.mainPro.type == type)
          {
-            _loc4_ = _loc4_ + (param1.mainPro.value + param1.mainPro.attachValue);
+            proValue = proValue + (chip.mainPro.value + chip.mainPro.attachValue);
          }
          var _loc6_:int = 0;
-         var _loc5_:* = param1.props;
-         for each(var _loc3_ in param1.props)
+         var _loc5_:* = chip.props;
+         for each(var pro in chip.props)
          {
-            if(_loc3_.type == param2)
+            if(pro.type == type)
             {
-               _loc4_ = _loc4_ + (_loc3_.value + _loc3_.attachValue);
+               proValue = proValue + (pro.value + pro.attachValue);
             }
          }
-         return _loc4_;
+         return proValue;
       }
       
-      public function checkMarkOpen(param1:PlayerInfo = null) : Boolean
+      public function checkMarkOpen(info:PlayerInfo = null) : Boolean
       {
-         param1 = !!param1?param1:PlayerManager.Instance.Self;
-         return param1.Grade >= ServerConfigManager.instance.markOpenLevel;
+         info = !!info?info:PlayerManager.Instance.Self;
+         return info.Grade >= ServerConfigManager.instance.markOpenLevel;
       }
       
       public function get model() : MarkModel
@@ -587,56 +591,54 @@ package mark
       
       private function getSellDemand() : int
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(_model.sellList == null || _model.sellList.length == 0)
          {
             return 0;
          }
-         var _loc2_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _model.sellList.length)
+         var demand:int = 0;
+         for(i = 0; i < _model.sellList.length; )
          {
-            _loc2_ = _loc2_ + calculateDemand(_model.sellList[_loc1_]);
-            _loc1_++;
+            demand = demand + calculateDemand(_model.sellList[i]);
+            i++;
          }
-         return _loc2_;
+         return demand;
       }
       
-      private function calculateDemand(param1:int) : int
+      private function calculateDemand(id:int) : int
       {
-         var _loc6_:int = 0;
-         var _loc8_:int = 0;
-         var _loc5_:MarkChipData = _model.getChipById(param1);
-         var _loc3_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(_loc5_.templateId);
-         var _loc4_:MarkChipTemplateData = _model.cfgChip[_loc5_.templateId];
-         _loc8_ = _loc8_ + _loc3_.ReclaimValue;
-         _loc8_ = _loc8_ + _loc5_.bornLv * ServerConfigManager.instance.EngraveSaleStarConfig;
-         var _loc7_:int = 0;
-         var _loc2_:MarkHammerTemplateData = null;
-         _loc6_ = 0;
-         while(_loc6_ < _loc5_.hLv)
+         var lv:int = 0;
+         var demand:int = 0;
+         var data:MarkChipData = _model.getChipById(id);
+         var itemData:ItemTemplateInfo = ItemManager.Instance.getTemplateById(data.templateId);
+         var chipData:MarkChipTemplateData = _model.cfgChip[data.templateId];
+         demand = demand + itemData.ReclaimValue;
+         demand = demand + data.bornLv * ServerConfigManager.instance.EngraveSaleStarConfig;
+         var hammerDemand:int = 0;
+         var hammerData:MarkHammerTemplateData = null;
+         for(lv = 0; lv < data.hLv; )
          {
-            _loc2_ = getHammerData(_loc6_,_loc4_.Character);
-            if(_loc2_)
+            hammerData = getHammerData(lv,chipData.Character);
+            if(hammerData)
             {
-               _loc7_ = _loc7_ + _loc2_.Expend;
+               hammerDemand = hammerDemand + hammerData.Expend;
             }
-            _loc6_++;
+            lv++;
          }
-         _loc8_ = _loc8_ + _loc7_ * ServerConfigManager.instance.EngraveSaleTemperConsumeConfig / 100;
-         return _loc8_;
+         demand = demand + hammerDemand * ServerConfigManager.instance.EngraveSaleTemperConsumeConfig / 100;
+         return demand;
       }
       
-      private function alertHandler(param1:FrameEvent) : void
+      private function alertHandler(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",alertHandler);
-         switch(int(param1.responseCode))
+         var alert:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",alertHandler);
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
-               if(_loc2_ == _sellAlert)
+               if(alert == _sellAlert)
                {
                   _model.sellList.length = 0;
                   MarkMgr.inst.dispatchEvent(new MarkEvent("cancelSell"));
@@ -646,11 +648,11 @@ package mark
             case 2:
             case 3:
             case 4:
-               if(_loc2_ == _alert)
+               if(alert == _alert)
                {
                   SocketManager.Instance.out.sendSubmitTransfer(1);
                }
-               else if(_loc2_ == _sellAlert)
+               else if(alert == _sellAlert)
                {
                   if(!MarkMgr.inst.model.sellStatus)
                   {
@@ -669,16 +671,16 @@ package mark
                   }
                }
          }
-         _loc2_.dispose();
-         _loc2_ = null;
+         alert.dispose();
+         alert = null;
       }
       
-      private function alertSecondHandler(param1:FrameEvent) : void
+      private function alertSecondHandler(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",alertSecondHandler);
-         switch(int(param1.responseCode))
+         var alert:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",alertSecondHandler);
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
@@ -690,8 +692,8 @@ package mark
             case 4:
                reqSellChips();
          }
-         _loc2_.dispose();
-         _loc2_ = null;
+         alert.dispose();
+         alert = null;
       }
       
       public function submitHighStarSell() : void
@@ -700,22 +702,22 @@ package mark
          _sellAlert.addEventListener("response",alertSecondHandler);
       }
       
-      public function sortedProps(param1:Dictionary) : Array
+      public function sortedProps(props:Dictionary) : Array
       {
-         var _loc4_:Array = [null,null,null,null,null,null,null,null,null,null,null,null,null,null];
-         var _loc5_:Array = [31,32,33,34,101,102,36,35,37,9,1,3,7,5];
-         var _loc2_:int = -1;
+         var arr:Array = [null,null,null,null,null,null,null,null,null,null,null,null,null,null];
+         var rules:Array = [31,32,33,34,101,102,36,35,37,9,1,3,7,5];
+         var index:int = -1;
          var _loc7_:int = 0;
-         var _loc6_:* = param1;
-         for each(var _loc3_ in param1)
+         var _loc6_:* = props;
+         for each(var it in props)
          {
-            _loc2_ = _loc5_.indexOf(_loc3_.type);
-            if(_loc2_ > -1)
+            index = rules.indexOf(it.type);
+            if(index > -1)
             {
-               _loc4_[_loc2_] = _loc3_;
+               arr[index] = it;
             }
          }
-         return _loc4_;
+         return arr;
       }
       
       public function getEquipProps() : Dictionary
@@ -723,96 +725,93 @@ package mark
          return calculateEquipProps(_model.equip);
       }
       
-      public function calculateEquipProps(param1:int) : Dictionary
+      public function calculateEquipProps(place:int) : Dictionary
       {
-         var _loc6_:int = 0;
-         var _loc2_:* = null;
-         var _loc5_:Dictionary = new Dictionary();
-         var _loc4_:MarkProData = null;
-         _loc6_ = 0;
-         while(_loc6_ < _model.getChipsByEquipType(param1).length)
+         var i:int = 0;
+         var chip:* = null;
+         var dic:Dictionary = new Dictionary();
+         var pro:MarkProData = null;
+         for(i = 0; i < _model.getChipsByEquipType(place).length; )
          {
-            _loc2_ = _model.getChipsByEquipType(param1)[_loc6_];
-            if(_loc2_)
+            chip = _model.getChipsByEquipType(place)[i];
+            if(chip)
             {
-               _loc4_ = _loc2_.mainPro;
-               if(!_loc5_.hasOwnProperty(_loc4_.type))
+               pro = chip.mainPro;
+               if(!dic.hasOwnProperty(pro.type))
                {
-                  _loc5_[_loc4_.type] = new MarkProData();
+                  dic[pro.type] = new MarkProData();
                }
-               _loc5_[_loc4_.type].type = _loc2_.mainPro.type;
-               _loc5_[_loc4_.type].value = _loc5_[_loc4_.type].value + _loc4_.value;
-               _loc5_[_loc4_.type].attachValue = _loc5_[_loc4_.type].attachValue + _loc4_.attachValue;
+               dic[pro.type].type = chip.mainPro.type;
+               dic[pro.type].value = dic[pro.type].value + pro.value;
+               dic[pro.type].attachValue = dic[pro.type].attachValue + pro.attachValue;
                var _loc8_:int = 0;
-               var _loc7_:* = _loc2_.props;
-               for each(var _loc3_ in _loc2_.props)
+               var _loc7_:* = chip.props;
+               for each(var item in chip.props)
                {
-                  if(!_loc5_.hasOwnProperty(_loc3_.type))
+                  if(!dic.hasOwnProperty(item.type))
                   {
-                     _loc5_[_loc3_.type] = new MarkProData();
+                     dic[item.type] = new MarkProData();
                   }
-                  _loc5_[_loc3_.type].type = _loc3_.type;
-                  _loc5_[_loc3_.type].value = _loc5_[_loc3_.type].value + _loc3_.value;
-                  _loc5_[_loc3_.type].attachValue = _loc5_[_loc3_.type].attachValue + _loc3_.attachValue;
+                  dic[item.type].type = item.type;
+                  dic[item.type].value = dic[item.type].value + item.value;
+                  dic[item.type].attachValue = dic[item.type].attachValue + item.attachValue;
                }
             }
-            _loc6_++;
+            i++;
          }
-         return _loc5_;
+         return dic;
       }
       
-      private function __resSyncOrUpdateChips(param1:PkgEvent) : void
+      private function __resSyncOrUpdateChips(pkg:PkgEvent) : void
       {
-         var _loc9_:int = 0;
-         var _loc2_:* = null;
-         var _loc5_:Boolean = false;
-         var _loc8_:* = null;
-         var _loc7_:int = 0;
-         var _loc3_:* = null;
-         var _loc6_:MarkBagData = new MarkBagData();
-         _loc6_.type = param1.pkg.readInt();
-         var _loc4_:int = param1.pkg.readInt();
-         _loc9_ = 0;
-         while(_loc9_ < _loc4_)
+         var i:int = 0;
+         var chip:* = null;
+         var isExist:Boolean = false;
+         var mainPro:* = null;
+         var j:int = 0;
+         var subPro:* = null;
+         var bag:MarkBagData = new MarkBagData();
+         bag.type = pkg.pkg.readInt();
+         var count:int = pkg.pkg.readInt();
+         for(i = 0; i < count; )
          {
-            _loc2_ = new MarkChipData();
-            _loc2_.itemID = param1.pkg.readInt();
-            _loc2_.templateId = param1.pkg.readInt();
-            _loc2_.position = param1.pkg.readInt();
-            _loc5_ = param1.pkg.readBoolean();
-            if(!_loc5_)
+            chip = new MarkChipData();
+            chip.itemID = pkg.pkg.readInt();
+            chip.templateId = pkg.pkg.readInt();
+            chip.position = pkg.pkg.readInt();
+            isExist = pkg.pkg.readBoolean();
+            if(!isExist)
             {
-               param1.pkg.readBoolean();
+               pkg.pkg.readBoolean();
             }
             else
             {
-               param1.pkg.readBoolean();
-               _loc2_.isbind = param1.pkg.readBoolean();
-               _loc2_.bornLv = param1.pkg.readInt();
-               _loc2_.hammerLv = param1.pkg.readInt();
-               _loc2_.hLv = param1.pkg.readInt();
-               _loc8_ = new MarkProData();
-               _loc8_.type = param1.pkg.readInt();
-               _loc8_.value = param1.pkg.readInt();
-               _loc8_.attachValue = param1.pkg.readInt();
-               _loc2_.mainPro = _loc8_;
-               _loc2_.props = new Vector.<MarkProData>();
-               _loc7_ = 0;
-               while(_loc7_ < 4)
+               pkg.pkg.readBoolean();
+               chip.isbind = pkg.pkg.readBoolean();
+               chip.bornLv = pkg.pkg.readInt();
+               chip.hammerLv = pkg.pkg.readInt();
+               chip.hLv = pkg.pkg.readInt();
+               mainPro = new MarkProData();
+               mainPro.type = pkg.pkg.readInt();
+               mainPro.value = pkg.pkg.readInt();
+               mainPro.attachValue = pkg.pkg.readInt();
+               chip.mainPro = mainPro;
+               chip.props = new Vector.<MarkProData>();
+               for(j = 0; j < 4; )
                {
-                  _loc3_ = new MarkProData();
-                  _loc3_.type = param1.pkg.readInt();
-                  _loc3_.value = param1.pkg.readInt();
-                  _loc3_.attachValue = param1.pkg.readInt();
-                  _loc3_.hummerCount = param1.pkg.readInt();
-                  _loc2_.props.push(_loc3_);
-                  _loc7_++;
+                  subPro = new MarkProData();
+                  subPro.type = pkg.pkg.readInt();
+                  subPro.value = pkg.pkg.readInt();
+                  subPro.attachValue = pkg.pkg.readInt();
+                  subPro.hummerCount = pkg.pkg.readInt();
+                  chip.props.push(subPro);
+                  j++;
                }
-               _loc6_.chips[_loc2_.itemID] = _loc2_;
+               bag.chips[chip.itemID] = chip;
             }
-            _loc9_++;
+            i++;
          }
-         _model.bags[_loc6_.type] = _loc6_;
+         _model.bags[bag.type] = bag;
       }
       
       public function reqSyncOrUpdateChips() : void
@@ -820,19 +819,19 @@ package mark
          SocketManager.Instance.out.sendUserAllDebris();
       }
       
-      public function moveChip(param1:int) : void
+      public function moveChip(id:int) : void
       {
-         var _loc2_:int = 0;
-         if(checkChipExist(param1))
+         var index:int = 0;
+         if(checkChipExist(id))
          {
-            _loc2_ = MarkModel.EQUIP_LIST.indexOf(_model.equip) + 1;
-            SocketManager.Instance.out.sendOnOrOffChip(param1,_loc2_);
+            index = MarkModel.EQUIP_LIST.indexOf(_model.equip) + 1;
+            SocketManager.Instance.out.sendOnOrOffChip(id,index);
          }
       }
       
-      private function checkChipExist(param1:int) : Boolean
+      private function checkChipExist(itemId:int) : Boolean
       {
-         if(!_model.getChipById(param1))
+         if(!_model.getChipById(itemId))
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("mark.error1"));
             return false;
@@ -842,121 +841,121 @@ package mark
       
       public function reqSellChips() : void
       {
-         var _loc1_:Array = _model.sellList;
-         if(!_loc1_ || _loc1_.length == 0)
+         var arr:Array = _model.sellList;
+         if(!arr || arr.length == 0)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("mark.error4"));
          }
          else
          {
-            SocketManager.Instance.out.sendSellChips(_loc1_);
+            SocketManager.Instance.out.sendSellChips(arr);
          }
          MarkMgr.inst.dispatchEvent(new MarkEvent("cancelSell"));
       }
       
-      private function __resHammerChip(param1:PkgEvent) : void
+      private function __resHammerChip(pkg:PkgEvent) : void
       {
-         var _loc3_:Boolean = param1.pkg.readBoolean();
-         var _loc2_:int = param1.pkg.readInt();
-         var _loc4_:int = param1.pkg.readInt();
+         var result:Boolean = pkg.pkg.readBoolean();
+         var id:int = pkg.pkg.readInt();
+         var cnt:int = pkg.pkg.readInt();
          dispatchEvent(new MarkEvent("hammerResult",{
-            "result":_loc3_,
-            "cnt":_loc4_ - 1
+            "result":result,
+            "cnt":cnt - 1
          }));
       }
       
-      public function reqHammerChip(param1:int = 1) : void
+      public function reqHammerChip(cnt:int = 1) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
+         var chip:* = null;
+         var data:* = null;
          if(checkChipExist(_model.chipItemID))
          {
-            _loc2_ = _model.getChipById(_model.chipItemID);
-            _loc3_ = getHammerData(_loc2_.hLv,_model.cfgChip[_loc2_.templateId].Character);
-            if(_loc3_.Expend > _model.markMoney)
+            chip = _model.getChipById(_model.chipItemID);
+            data = getHammerData(chip.hLv,_model.cfgChip[chip.templateId].Character);
+            if(data.Expend > _model.markMoney)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("mark.error5"));
                return;
             }
-            if(_loc2_.hLv >= getHammerTopLv(_model.cfgChip[_loc2_.templateId].Character))
+            if(chip.hLv >= getHammerTopLv(_model.cfgChip[chip.templateId].Character))
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("mark.error6"));
                return;
             }
-            SocketManager.Instance.out.sendHammerChip(_model.chipItemID,param1);
+            SocketManager.Instance.out.sendHammerChip(_model.chipItemID,cnt);
          }
       }
       
-      private function __resMarkMoney(param1:PkgEvent) : void
+      private function __resMarkMoney(pkg:PkgEvent) : void
       {
-         _model.markMoney = param1.pkg.readInt();
+         _model.markMoney = pkg.pkg.readInt();
          dispatchEvent(new MarkEvent("markMoney"));
       }
       
-      public function reqTransferChip(param1:int) : void
+      public function reqTransferChip(proKey:int) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         var _loc4_:* = null;
+         var chip:* = null;
+         var item:* = null;
+         var transferData:* = null;
          if(checkChipExist(_model.chipItemID))
          {
-            if(verfyPro(param1))
+            if(verfyPro(proKey))
             {
-               _loc2_ = _model.getChipById(_model.chipItemID);
-               _loc3_ = ItemManager.Instance.getTemplateById(_loc2_.templateId);
-               _loc4_ = this.getTransferData(_loc3_.Quality,_loc2_.bornLv + _loc2_.hammerLv);
-               if(_loc4_.Expend > _model.markMoney)
+               chip = _model.getChipById(_model.chipItemID);
+               item = ItemManager.Instance.getTemplateById(chip.templateId);
+               transferData = this.getTransferData(item.Quality,chip.bornLv + chip.hammerLv);
+               if(transferData.Expend > _model.markMoney)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("mark.error9"));
                   return;
                }
-               if(_loc4_.NeedMaterial > PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(12200))
+               if(transferData.NeedMaterial > PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(12200))
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("mark.error10"));
                   return;
                }
-               SocketManager.Instance.out.sendTransferChip(_model.chipItemID,param1);
+               SocketManager.Instance.out.sendTransferChip(_model.chipItemID,proKey);
             }
          }
       }
       
-      private function verfyPro(param1:int) : Boolean
+      private function verfyPro(proKey:int) : Boolean
       {
-         var _loc3_:Boolean = false;
-         var _loc4_:int = 0;
-         var _loc2_:MarkChipData = _model.getChipById(_model.chipItemID);
-         if(_loc2_)
+         var exist:Boolean = false;
+         var i:int = 0;
+         var chip:MarkChipData = _model.getChipById(_model.chipItemID);
+         if(chip)
          {
-            _loc3_ = false;
-            _loc4_ = 0;
-            while(_loc2_.props && _loc4_ < _loc2_.props.length)
+            exist = false;
+            i = 0;
+            while(chip.props && i < chip.props.length)
             {
-               if(_loc2_.props[_loc4_].type == param1)
+               if(chip.props[i].type == proKey)
                {
                   return true;
                }
-               _loc4_++;
+               i++;
             }
          }
          MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("mark.error8"));
          return false;
       }
       
-      private function __resTransferChip(param1:PkgEvent) : void
+      private function __resTransferChip(pkg:PkgEvent) : void
       {
-         var _loc4_:MarkProData = new MarkProData();
-         var _loc2_:int = param1.pkg.readInt();
-         var _loc3_:int = param1.pkg.readInt();
-         _loc4_.type = param1.pkg.readInt();
-         _loc4_.value = param1.pkg.readInt();
-         _loc4_.hummerCount = param1.pkg.readInt();
-         _model.transferPro = _loc4_;
+         var pro:MarkProData = new MarkProData();
+         var id:int = pkg.pkg.readInt();
+         var oType:int = pkg.pkg.readInt();
+         pro.type = pkg.pkg.readInt();
+         pro.value = pkg.pkg.readInt();
+         pro.hummerCount = pkg.pkg.readInt();
+         _model.transferPro = pro;
          dispatchEvent(new MarkEvent("transferResult"));
       }
       
-      public function reqTransferSubmit(param1:Boolean = true) : void
+      public function reqTransferSubmit(submit:Boolean = true) : void
       {
-         if(!param1)
+         if(!submit)
          {
             submitTransfer();
          }
@@ -966,68 +965,247 @@ package mark
          }
       }
       
-      private function __resTransferSubmit(param1:PkgEvent) : void
+      private function __resTransferSubmit(pkg:PkgEvent) : void
       {
-         var _loc2_:Boolean = param1.pkg.readBoolean();
+         var result:Boolean = pkg.pkg.readBoolean();
          _model.transferPro = null;
          dispatchEvent(new MarkEvent("submitResult"));
       }
       
-      private function __resOperationStatus(param1:PkgEvent) : void
+      private function __resOperationStatus(pkg:PkgEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:int = param1.pkg.readInt();
-         var _loc3_:Array = _model.newSuits;
-         _loc3_.length = 0;
-         var _loc2_:int = param1.pkg.readInt();
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_)
+         var i:int = 0;
+         var type:int = pkg.pkg.readInt();
+         var list:Array = _model.newSuits;
+         list.length = 0;
+         var cnt:int = pkg.pkg.readInt();
+         for(i = 0; i < cnt; )
          {
-            _loc3_.push(param1.pkg.readInt());
-            _loc5_++;
+            list.push(pkg.pkg.readInt());
+            i++;
          }
          dispatchEvent(new MarkEvent("updateOperation"));
       }
       
-      protected function __onVaultsData(param1:PkgEvent) : void
+      protected function __onVaultsData(e:PkgEvent) : void
       {
-         var _loc5_:PackageIn = param1.pkg;
-         var _loc4_:Array = [];
-         var _loc3_:Number = _loc5_.readLong();
-         _loc4_.push(_loc3_);
-         var _loc2_:int = _loc5_.readInt();
-         _loc4_.push(_loc2_);
-         dispatchEvent(new MarkEvent("vaultsData",_loc4_));
+         var pkg:PackageIn = e.pkg;
+         var arr:Array = [];
+         var freeTimeNum:Number = pkg.readLong();
+         arr.push(freeTimeNum);
+         var useFreeNum:int = pkg.readInt();
+         arr.push(useFreeNum);
+         dispatchEvent(new MarkEvent("vaultsData",arr));
       }
       
-      protected function __onVaultsReward(param1:PkgEvent) : void
+      protected function __onVaultsReward(e:PkgEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc8_:int = 0;
-         var _loc2_:int = 0;
-         var _loc7_:* = null;
-         var _loc6_:int = 0;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc5_:int = _loc4_.readInt();
-         isFull = _loc4_.readBoolean();
+         var count:int = 0;
+         var i:int = 0;
+         var templateID:int = 0;
+         var info:* = null;
+         var logoId:int = 0;
+         var pkg:PackageIn = e.pkg;
+         var type:int = pkg.readInt();
+         isFull = pkg.readBoolean();
          if(!isFull)
          {
-            _loc3_ = _loc4_.readInt();
+            count = pkg.readInt();
             treasureRoomRewardArr = [];
             treasureRoomLogoIdArr = [];
-            _loc8_ = 0;
-            while(_loc8_ < _loc3_)
+            for(i = 0; i < count; )
             {
-               _loc2_ = _loc4_.readInt();
-               _loc7_ = ItemManager.fillByID(_loc2_);
-               _loc7_.Count = _loc4_.readInt();
-               treasureRoomRewardArr.push(_loc7_);
-               _loc6_ = _loc4_.readInt();
-               treasureRoomLogoIdArr.push(_loc6_);
-               _loc8_++;
+               templateID = pkg.readInt();
+               info = ItemManager.fillByID(templateID);
+               info.Count = pkg.readInt();
+               treasureRoomRewardArr.push(info);
+               logoId = pkg.readInt();
+               treasureRoomLogoIdArr.push(logoId);
+               i++;
             }
          }
-         dispatchEvent(new MarkEvent("vaultsReward",_loc5_));
+         dispatchEvent(new MarkEvent("vaultsReward",type));
+      }
+      
+      public function get schemeModel() : MarkSchemeModel
+      {
+         return _schemeModel;
+      }
+      
+      public function isCanSellByDebrisID(id:int) : Boolean
+      {
+         var schemes:String = _schemeModel.getAllSchemeData;
+         var temStr:String = "," + id + ",";
+         return schemes.indexOf(temStr) == -1;
+      }
+      
+      public function checkEquipSchemeBagFull(schemeInfo:MarkSchemeInfo) : Boolean
+      {
+         var i:int = 0;
+         var j:int = 0;
+         var chip1Arr:Array = [];
+         var chip2Arr:Array = [];
+         var numArr:Array = [];
+         var _loc11_:* = 0;
+         var _loc10_:* = _model.cfgSet;
+         for(var n in _model.cfgSet)
+         {
+            chip1Arr.push(0);
+            chip2Arr.push(0);
+            numArr.push(0);
+         }
+         var currentScheme:MarkSchemeInfo = _schemeModel.getSchemeInfo(_schemeModel.curScheme);
+         for(i = 0; i < schemeInfo.chips.length; )
+         {
+            if(schemeInfo.chips[i] != 0)
+            {
+               if(_model.getSetById(schemeInfo.chips[i]) != 0)
+               {
+                  _loc11_ = _model.getSetById(schemeInfo.chips[i]) - 1001;
+                  _loc10_ = chip1Arr[_loc11_] + 1;
+                  chip1Arr[_loc11_] = _loc10_;
+               }
+            }
+            if(currentScheme.chips[i] != 0)
+            {
+               if(_model.getSetById(currentScheme.chips[i]) != 0)
+               {
+                  _loc10_ = _model.getSetById(currentScheme.chips[i]) - 1001;
+                  _loc11_ = chip2Arr[_loc10_] + 1;
+                  chip2Arr[_loc10_] = _loc11_;
+               }
+            }
+            i++;
+         }
+         var _loc13_:int = 0;
+         var _loc12_:* = _model.bags;
+         for each(var bag in _model.bags)
+         {
+            if(bag.type > 1)
+            {
+               numArr[bag.type - 1001] = bag.chipCnt;
+            }
+         }
+         for(j = 0; j < chip2Arr.length; )
+         {
+            if(numArr[j] + chip2Arr[j] - chip1Arr[j] > 100)
+            {
+               return false;
+            }
+            j++;
+         }
+         return true;
+      }
+      
+      public function reqSaveMarkScheme(schemeID:int) : void
+      {
+         SocketManager.Instance.out.sendSaveEquipScheme(schemeID);
+      }
+      
+      public function reqSwitchEquipScheme(schemeID:int) : void
+      {
+         SocketManager.Instance.out.sendSwitchEquipScheme(schemeID);
+      }
+      
+      public function reqAddEquipScheme() : void
+      {
+         SocketManager.Instance.out.sendAddEquipScheme();
+      }
+      
+      public function promptSchemeSave(callFun:Function, params:int = -1) : void
+      {
+         callFun = callFun;
+         params = params;
+         var alertAsk:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("mark.switchScheme.noSave.tipMgs"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false,0);
+         alertAsk.addEventListener("response",function():*
+         {
+            var /*UnknownSlot*/:* = function(evt:FrameEvent):void
+            {
+               var frame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+               frame.removeEventListener("response",__switchSchemeNoSave);
+               SoundManager.instance.playButtonSound();
+               switch(int(evt.responseCode) - 2)
+               {
+                  case 0:
+                  case 1:
+                     callFun.call(this,true);
+               }
+               frame.dispose();
+            };
+            return function(evt:FrameEvent):void
+            {
+               var frame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+               frame.removeEventListener("response",__switchSchemeNoSave);
+               SoundManager.instance.playButtonSound();
+               switch(int(evt.responseCode) - 2)
+               {
+                  case 0:
+                  case 1:
+                     callFun.call(this,true);
+               }
+               frame.dispose();
+            };
+         }());
+      }
+      
+      protected function __resEquipScheme(evt:PkgEvent) : void
+      {
+         var data:* = null;
+         var schemeInfo:* = null;
+         var i:int = 0;
+         var pkg:PackageIn = evt.pkg;
+         _schemeModel.clearScheme();
+         for(i = 0; i < 5; )
+         {
+            data = pkg.readUTF();
+            schemeInfo = new MarkSchemeInfo(i,data);
+            _schemeModel.updateScheme(i,schemeInfo);
+            i++;
+         }
+         var curScheme:int = pkg.readInt();
+         _schemeModel.curScheme = curScheme;
+         _schemeModel.schemCount = pkg.readInt();
+      }
+      
+      protected function __resAddEquipScheme(evt:PkgEvent) : void
+      {
+         var pkg:PackageIn = evt.pkg;
+         _schemeModel.schemCount = pkg.readInt();
+         var schemData:String = pkg.readUTF();
+         var schemeInfo:MarkSchemeInfo = new MarkSchemeInfo(_schemeModel.schemCount - 1,schemData);
+         _schemeModel.updateScheme(_schemeModel.schemCount - 1,schemeInfo);
+         this.dispatchEvent(new MarkEvent("addScheme"));
+      }
+      
+      protected function __resSwitchEquipScheme(evt:PkgEvent) : void
+      {
+         var pkg:PackageIn = evt.pkg;
+         var schemeID:int = pkg.readInt();
+         var result:Boolean = pkg.readBoolean();
+         if(result)
+         {
+            _schemeModel.curScheme = schemeID;
+            dispatchEvent(new MarkEvent("curSchemeChange"));
+         }
+         else
+         {
+            dispatchEvent(new MarkEvent("curSchemeChangeDEF"));
+         }
+      }
+      
+      protected function __resSaveScheme(evt:PkgEvent) : void
+      {
+         var schemeInfo:* = null;
+         var pkg:PackageIn = evt.pkg;
+         var schemeID:int = pkg.readInt();
+         var result:Boolean = pkg.readBoolean();
+         var schemData:String = pkg.readUTF();
+         if(result)
+         {
+            schemeInfo = new MarkSchemeInfo(schemeID,schemData);
+            _schemeModel.updateScheme(schemeID,schemeInfo);
+            this.dispatchEvent(new MarkEvent("saveScheme"));
+         }
       }
       
       public function showMark() : void

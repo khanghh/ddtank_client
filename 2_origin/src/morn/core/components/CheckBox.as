@@ -4,9 +4,9 @@ package morn.core.components
    {
        
       
-      public function CheckBox(param1:String = null, param2:String = "")
+      public function CheckBox(skin:String = null, label:String = "")
       {
-         super(param1,param2);
+         super(skin,label);
       }
       
       override protected function preinitialize() : void
@@ -31,23 +31,23 @@ package morn.core.components
       
       override public function commitMeasure() : void
       {
-         exeCallLater(this.changeLabelSize);
+         exeCallLater(changeLabelSize);
       }
       
-      override public function set dataSource(param1:Object) : void
+      override public function set dataSource(value:Object) : void
       {
-         _dataSource = param1;
-         if(param1 is Boolean)
+         _dataSource = value;
+         if(value is Boolean)
          {
-            selected = param1;
+            selected = value;
          }
-         else if(param1 is String)
+         else if(value is String)
          {
-            selected = param1 == "true";
+            selected = value == "true";
          }
          else
          {
-            super.dataSource = param1;
+            .super.dataSource = value;
          }
       }
    }

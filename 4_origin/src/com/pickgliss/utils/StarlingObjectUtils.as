@@ -17,91 +17,91 @@ package com.pickgliss.utils
          super();
       }
       
-      public static function disposeObject(param1:Object, param2:Boolean = false) : void
+      public static function disposeObject(target:Object, disposeTexture:Boolean = false) : void
       {
-         var _loc5_:* = null;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         if(param1 == null)
+         var targetImage:* = null;
+         var targetDisplay:* = null;
+         var targetTexture:* = null;
+         if(target == null)
          {
             return;
          }
-         if(param1 is Image)
+         if(target is Image)
          {
-            _loc5_ = param1 as Image;
-            if(_loc5_.parent)
+            targetImage = target as Image;
+            if(targetImage.parent)
             {
-               _loc5_.parent.removeChild(_loc5_);
+               targetImage.parent.removeChild(targetImage);
             }
-            if(param2)
+            if(disposeTexture)
             {
-               _loc5_.texture.dispose();
+               targetImage.texture.dispose();
             }
-            _loc5_.dispose();
+            targetImage.dispose();
          }
-         else if(param1 is DisplayObject)
+         else if(target is DisplayObject)
          {
-            _loc4_ = param1 as DisplayObject;
-            if(_loc4_.parent)
+            targetDisplay = target as DisplayObject;
+            if(targetDisplay.parent)
             {
-               _loc4_.parent.removeChild(_loc4_);
+               targetDisplay.parent.removeChild(targetDisplay);
             }
-            _loc4_.dispose();
+            targetDisplay.dispose();
          }
-         else if(param1 is Texture)
+         else if(target is Texture)
          {
-            _loc3_ = param1 as Texture;
-            _loc3_.dispose();
+            targetTexture = target as Texture;
+            targetTexture.dispose();
          }
-         else if(param1 is Disposeable)
+         else if(target is Disposeable)
          {
-            Disposeable(param1).dispose();
+            Disposeable(target).dispose();
          }
       }
       
-      public static function disposeAllChildren(param1:DisplayObjectContainer, param2:Boolean = false) : void
+      public static function disposeAllChildren(container:DisplayObjectContainer, disposeTexture:Boolean = false) : void
       {
-         var _loc3_:* = null;
-         if(param1 == null)
+         var child:* = null;
+         if(container == null)
          {
             return;
          }
-         while(param1.numChildren > 0)
+         while(container.numChildren > 0)
          {
-            _loc3_ = param1.getChildAt(0);
-            disposeObject(_loc3_,param2);
+            child = container.getChildAt(0);
+            disposeObject(child,disposeTexture);
          }
       }
       
-      public static function removeObject(param1:DisplayObject) : void
+      public static function removeObject(target:DisplayObject) : void
       {
-         if(param1 == null)
+         if(target == null)
          {
             return;
          }
-         if(param1 is IBoneMovie)
+         if(target is IBoneMovie)
          {
-            (param1 as IBoneMovie).stop();
+            (target as IBoneMovie).stop();
          }
-         if(param1 is BoneMovieFastStarling)
+         if(target is BoneMovieFastStarling)
          {
-            (param1 as BoneMovieFastStarling).stop();
+            (target as BoneMovieFastStarling).stop();
          }
-         if(param1.parent)
+         if(target.parent)
          {
-            param1.parent.removeChild(param1);
+            target.parent.removeChild(target);
          }
       }
       
-      public static function removeChildAllChildren(param1:DisplayObjectContainer, param2:Boolean = true) : void
+      public static function removeChildAllChildren(container:DisplayObjectContainer, isDispose:Boolean = true) : void
       {
-         if(param1 == null)
+         if(container == null)
          {
             return;
          }
-         while(param1.numChildren > 0)
+         while(container.numChildren > 0)
          {
-            param1.removeChildAt(0,param2);
+            container.removeChildAt(0,isDispose);
          }
       }
    }

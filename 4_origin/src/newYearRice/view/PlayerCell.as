@@ -51,14 +51,14 @@ package newYearRice.view
          super();
       }
       
-      public function setNickName(param1:int, param2:String = "left", param3:String = "", param4:String = "", param5:Boolean = false) : void
+      public function setNickName($playerID:int, $direction:String = "left", $style:String = "", $nikeName:String = "", $sex:Boolean = false) : void
       {
          NewYearRiceManager.instance.model.playerNum = NewYearRiceManager.instance.model.playerNum + 1;
-         _playerID = param1;
-         _directrion = param2;
-         _style = param3;
-         _nikeName = param4;
-         _sex = param5;
+         _playerID = $playerID;
+         _directrion = $direction;
+         _style = $style;
+         _nikeName = $nikeName;
+         _sex = $sex;
          setInfo();
       }
       
@@ -87,7 +87,7 @@ package newYearRice.view
          }
       }
       
-      private function __playerInfoChange(param1:PlayerPropertyEvent) : void
+      private function __playerInfoChange(event:PlayerPropertyEvent) : void
       {
          _info.removeEventListener("propertychange",__playerInfoChange);
          updateCharacter();
@@ -120,7 +120,7 @@ package newYearRice.view
          _character.buttonMode = _loc1_;
       }
       
-      private function __characterComplete(param1:Event) : void
+      private function __characterComplete(evt:Event) : void
       {
          if(_figure && _figure.parent && _figure.bitmapData)
          {
@@ -183,9 +183,9 @@ package newYearRice.view
          _nikeName = "";
       }
       
-      public function set info(param1:PlayerInfo) : void
+      public function set info(value:PlayerInfo) : void
       {
-         _info = param1;
+         _info = value;
       }
       
       public function get nikeName() : String
@@ -193,9 +193,9 @@ package newYearRice.view
          return _nikeName;
       }
       
-      public function set nikeName(param1:String) : void
+      public function set nikeName(value:String) : void
       {
-         _nikeName = param1;
+         _nikeName = value;
       }
    }
 }

@@ -25,16 +25,16 @@ package ddt.view.characterStarling
       
       private var _isComplete:Boolean;
       
-      public function BaseLightLayer3D(param1:int, param2:int = 0)
+      public function BaseLightLayer3D(nimbus:int, showType:int = 0)
       {
          super();
-         _nimbus = param1;
-         _type = param2;
+         _nimbus = nimbus;
+         _type = showType;
       }
       
-      public function load(param1:Function) : void
+      public function load(callBack:Function) : void
       {
-         _callBack = param1;
+         _callBack = callBack;
          initLoader();
       }
       
@@ -48,9 +48,9 @@ package ddt.view.characterStarling
          }
       }
       
-      private function __onLoaderComplete(param1:BonesLoaderEvent) : void
+      private function __onLoaderComplete(e:BonesLoaderEvent) : void
       {
-         if(_styleName == param1.vo.styleName)
+         if(_styleName == e.vo.styleName)
          {
             BonesLoaderManager.instance.removeEventListener("complete",__onLoaderComplete);
             _light = BoneMovieFactory.instance.creatBoneMovie(_styleName);
@@ -77,10 +77,10 @@ package ddt.view.characterStarling
          {
             return "00";
          }
-         var _loc1_:String = _nimbus.toString();
-         _loc1_ = _loc1_.substr(_loc1_.length - 2,_loc1_.length);
-         _loc1_ = Number(_loc1_).toString();
-         return _loc1_;
+         var nimbus:String = _nimbus.toString();
+         nimbus = nimbus.substr(nimbus.length - 2,nimbus.length);
+         nimbus = Number(nimbus).toString();
+         return nimbus;
       }
       
       public function getContent3D() : BoneMovieStarling
@@ -109,7 +109,7 @@ package ddt.view.characterStarling
          return null;
       }
       
-      public function set info(param1:ItemTemplateInfo) : void
+      public function set info(value:ItemTemplateInfo) : void
       {
       }
       
@@ -118,7 +118,7 @@ package ddt.view.characterStarling
          return null;
       }
       
-      public function set currentEdit(param1:int) : void
+      public function set currentEdit(n:int) : void
       {
       }
       
@@ -127,7 +127,7 @@ package ddt.view.characterStarling
          return 0;
       }
       
-      public function setColor(param1:*) : Boolean
+      public function setColor(color:*) : Boolean
       {
          return false;
       }

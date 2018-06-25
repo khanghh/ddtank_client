@@ -11,9 +11,9 @@ package ddt.view.tips
          super();
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         _data = param1;
+         _data = data;
          _contentTxt.htmlText = StringHelper.trim(String(_data));
          if(_contentTxt.width > 200)
          {

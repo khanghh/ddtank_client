@@ -30,21 +30,21 @@ package ddt.view.horse
       
       private var _countVisible:Boolean;
       
-      public function HorseFrameRightBottomItemCell(param1:int, param2:int = 0, param3:Boolean = true)
+      public function HorseFrameRightBottomItemCell(itemId:int, goodsId:int = 0, countVisible:Boolean = true)
       {
          super();
          this.buttonMode = true;
-         _itemId = param1;
-         _goodsId = param2 == 0?param1:int(param2);
-         _countVisible = param3;
+         _itemId = itemId;
+         _goodsId = goodsId == 0?itemId:int(goodsId);
+         _countVisible = countVisible;
          initView();
          initEvent();
       }
       
       private function initView() : void
       {
-         var _loc1_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.horse.frame.itemBg");
-         _itemCell = new BagCell(1,ItemManager.Instance.getTemplateById(_itemId),true,_loc1_,false);
+         var bg:Bitmap = ComponentFactory.Instance.creatBitmap("asset.horse.frame.itemBg");
+         _itemCell = new BagCell(1,ItemManager.Instance.getTemplateById(_itemId),true,bg,false);
          _itemCell.PicPos = new Point(9,9);
          _itemCell.setContentSize(59,59);
          addChild(_itemCell);
@@ -78,12 +78,12 @@ package ddt.view.horse
          }
       }
       
-      private function itemUpdateHandler(param1:BagEvent) : void
+      private function itemUpdateHandler(event:BagEvent) : void
       {
          updateItemCellCount();
       }
       
-      private function clickHandler(param1:MouseEvent) : void
+      private function clickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -94,12 +94,12 @@ package ddt.view.horse
          ShopBuyManager.Instance.buy(_goodsId,1,-1);
       }
       
-      private function overHandler(param1:MouseEvent) : void
+      private function overHandler(event:MouseEvent) : void
       {
          TweenLite.to(_buyImage,0.25,{"alpha":1});
       }
       
-      private function outHandler(param1:MouseEvent) : void
+      private function outHandler(event:MouseEvent) : void
       {
          TweenLite.to(_buyImage,0.25,{"alpha":0});
       }

@@ -13,9 +13,9 @@ package superWinner.data
          super();
       }
       
-      public function set IsOnline(param1:Boolean) : void
+      public function set IsOnline(val:Boolean) : void
       {
-         _isOnline = param1;
+         _isOnline = val;
       }
       
       public function get IsOnline() : Boolean

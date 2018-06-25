@@ -43,40 +43,40 @@ package calendar.view
       
       private var _signFieldNumber:FilterFrameText;
       
-      public function CalendarGrid(param1:CalendarModel)
+      public function CalendarGrid(model:CalendarModel)
       {
          _dayCells = new Vector.<DayCell>();
          super();
-         _model = param1;
+         _model = model;
          configUI();
          addEvent();
       }
       
       private function configUI() : void
       {
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
-         var _loc3_:* = null;
+         var i:int = 0;
+         var date:* = null;
+         var cell:* = null;
          _back = ComponentFactory.Instance.creatCustomObject("ddtcalendar.CalendarBackBg");
          addChild(_back);
          _front = ComponentFactory.Instance.creatCustomObject("ddtcalendar.CalendarFrontBg");
          addChild(_front);
          _title = ComponentFactory.Instance.creatBitmap("asset.ddtcalendar.CalendarGridTitleBg");
          addChild(_title);
-         var _loc4_:Date = _model.today;
+         var today:Date = _model.today;
          _monthField = ComponentFactory.Instance.creatComponentByStylename("ddtcalendar.CalendarGrid.NumMonthField");
-         _monthField.text = String(_loc4_.month + 1);
+         _monthField.text = String(today.month + 1);
          addChild(_monthField);
          _enMonthField = ComponentFactory.Instance.creatComponentByStylename("ddtcalendar.CalendarGrid.EnMonthField");
-         _enMonthField.text = LanguageMgr.GetTranslation("tank.calendar.grid.month" + _loc4_.month);
+         _enMonthField.text = LanguageMgr.GetTranslation("tank.calendar.grid.month" + today.month);
          _enMonthField.x = _monthField.x + _monthField.width;
          addChild(_enMonthField);
          _enYearField = ComponentFactory.Instance.creatComponentByStylename("ddtcalendar.CalendarGrid.EnYearField");
-         _enYearField.text = _loc4_.fullYear + "";
+         _enYearField.text = today.fullYear + "";
          addChild(_enYearField);
          _todyField = ComponentFactory.Instance.creatComponentByStylename("ddtcalendar.CalendarGrid.TodayField");
-         _todyField.text = LanguageMgr.GetTranslation("tank.calendar.grid.today",_loc4_.fullYear,_loc4_.month + 1,_loc4_.date);
-         _todyField.text = _todyField.text + LanguageMgr.GetTranslation("tank.calendar.grid.week" + _loc4_.day);
+         _todyField.text = LanguageMgr.GetTranslation("tank.calendar.grid.today",today.fullYear,today.month + 1,today.date);
+         _todyField.text = _todyField.text + LanguageMgr.GetTranslation("tank.calendar.grid.week" + today.day);
          addChild(_todyField);
          _signField = ComponentFactory.Instance.creatComponentByStylename("ddtcalendar.CalendarGrid.SignField");
          _signField.text = LanguageMgr.GetTranslation("tank.calendar.grid.Sign",CalendarManager.getInstance().price);
@@ -84,32 +84,32 @@ package calendar.view
          _signFieldNumber = ComponentFactory.Instance.creatComponentByStylename("ddtcalendar.CalendarGrid.SignFieldNumber");
          _signFieldNumber.text = LanguageMgr.GetTranslation("tank.calendar.grid.signFieldNumber",CalendarManager.getInstance().price);
          addChild(_signFieldNumber);
-         var _loc2_:Point = ComponentFactory.Instance.creatCustomObject("ddtcalendar.CalendarGrid.TopLeft");
-         var _loc1_:Date = new Date();
-         _loc1_.time = _loc4_.time;
-         _loc1_.setDate(1);
-         if(_loc1_.day != 0)
+         var topLeft:Point = ComponentFactory.Instance.creatCustomObject("ddtcalendar.CalendarGrid.TopLeft");
+         var last:Date = new Date();
+         last.time = today.time;
+         last.setDate(1);
+         if(last.day != 0)
          {
-            if(_loc1_.month > 0)
+            if(last.month > 0)
             {
-               _loc1_.setMonth(_loc4_.month - 1,CalendarModel.getMonthMaxDay(_loc4_.month - 1,_loc4_.fullYear) - _loc1_.day + 1);
+               last.setMonth(today.month - 1,CalendarModel.getMonthMaxDay(today.month - 1,today.fullYear) - last.day + 1);
             }
             else
             {
-               _loc1_.setFullYear(_loc4_.fullYear - 1,11,31 - _loc1_.day + 1);
+               last.setFullYear(today.fullYear - 1,11,31 - last.day + 1);
             }
          }
-         _loc6_ = 0;
-         while(_loc6_ < 42)
+         i = 0;
+         while(i < 42)
          {
-            _loc5_ = new Date();
-            _loc5_.time = _loc1_.time + _loc6_ * 86400000;
-            _loc3_ = new DayCell(_loc5_,_model);
-            _loc3_.x = _loc2_.x + _loc6_ % 7 * 57;
-            _loc3_.y = _loc2_.y + Math.floor(_loc6_ / 7) * 26;
-            addChild(_loc3_);
-            _dayCells.push(_loc3_);
-            _loc6_++;
+            date = new Date();
+            date.time = last.time + i * 86400000;
+            cell = new DayCell(date,_model);
+            cell.x = topLeft.x + i % 7 * 57;
+            cell.y = topLeft.y + Math.floor(i / 7) * 26;
+            addChild(cell);
+            _dayCells.push(cell);
+            i++;
          }
       }
       
@@ -122,39 +122,38 @@ package calendar.view
          _model.addEventListener("TodayChanged",__todayChanged);
       }
       
-      private function __todayChanged(param1:Event) : void
+      private function __todayChanged(event:Event) : void
       {
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
-         var _loc3_:Date = _model.today;
-         _monthField.text = String(_loc3_.month + 1);
-         _enMonthField.text = LanguageMgr.GetTranslation("tank.calendar.grid.month" + _loc3_.month);
+         var i:int = 0;
+         var date:* = null;
+         var today:Date = _model.today;
+         _monthField.text = String(today.month + 1);
+         _enMonthField.text = LanguageMgr.GetTranslation("tank.calendar.grid.month" + today.month);
          _enMonthField.x = _monthField.x + _monthField.width;
-         _todyField.text = LanguageMgr.GetTranslation("tank.calendar.grid.today",_loc3_.fullYear,_loc3_.month + 1,_loc3_.date);
-         _todyField.text = _todyField.text + LanguageMgr.GetTranslation("tank.calendar.grid.week" + _loc3_.day);
-         var _loc2_:Date = new Date();
-         _loc2_.time = _loc3_.time;
-         _loc2_.setDate(1);
-         if(_loc2_.day != 0)
+         _todyField.text = LanguageMgr.GetTranslation("tank.calendar.grid.today",today.fullYear,today.month + 1,today.date);
+         _todyField.text = _todyField.text + LanguageMgr.GetTranslation("tank.calendar.grid.week" + today.day);
+         var last:Date = new Date();
+         last.time = today.time;
+         last.setDate(1);
+         if(last.day != 0)
          {
-            if(_loc2_.month > 0)
+            if(last.month > 0)
             {
-               _loc2_.setMonth(_loc3_.month - 1,CalendarModel.getMonthMaxDay(_loc3_.month - 1,_loc3_.fullYear) - _loc2_.day + 1);
+               last.setMonth(today.month - 1,CalendarModel.getMonthMaxDay(today.month - 1,today.fullYear) - last.day + 1);
             }
             else
             {
-               _loc2_.setUTCFullYear(_loc3_.fullYear - 1,11,31 - _loc2_.day + 1);
+               last.setUTCFullYear(today.fullYear - 1,11,31 - last.day + 1);
             }
          }
-         var _loc4_:int = _dayCells.length;
-         _loc6_ = 0;
-         while(_loc6_ < _loc4_)
+         var len:int = _dayCells.length;
+         for(i = 0; i < len; )
          {
-            _loc5_ = new Date();
-            _loc5_.time = _loc2_.time + _loc6_ * 86400000;
-            _dayCells[_loc6_].date = _loc5_;
-            _dayCells[_loc6_].signed = _model.hasSigned(_dayCells[_loc6_].date) || _model.hasRestroSigned(_dayCells[_loc6_].date);
-            _loc6_++;
+            date = new Date();
+            date.time = last.time + i * 86400000;
+            _dayCells[i].date = date;
+            _dayCells[i].signed = _model.hasSigned(_dayCells[i].date) || _model.hasRestroSigned(_dayCells[i].date);
+            i++;
          }
       }
       
@@ -182,11 +181,11 @@ package calendar.view
          _todyField = null;
          ObjectUtils.disposeObject(_enYearField);
          _enYearField = null;
-         var _loc1_:DayCell = _dayCells.shift();
-         while(_loc1_ != null)
+         var daycell:DayCell = _dayCells.shift();
+         while(daycell != null)
          {
-            ObjectUtils.disposeObject(_loc1_);
-            _loc1_ = _dayCells.shift();
+            ObjectUtils.disposeObject(daycell);
+            daycell = _dayCells.shift();
          }
          if(parent)
          {

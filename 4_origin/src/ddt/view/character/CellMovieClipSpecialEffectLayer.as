@@ -19,29 +19,29 @@ package ddt.view.character
       
       protected var _movieClips:Vector.<MovieClip>;
       
-      public function CellMovieClipSpecialEffectLayer(param1:int = 1)
+      public function CellMovieClipSpecialEffectLayer(layer:int = 1)
       {
-         _specialType = param1;
+         _specialType = layer;
          _movieClips = new Vector.<MovieClip>();
          super(new ItemTemplateInfo());
       }
       
-      override protected function getUrl(param1:int) : String
+      override protected function getUrl(layer:int) : String
       {
-         return PathManager.cellMovieClipSpecialEffectPath(param1.toString());
+         return PathManager.cellMovieClipSpecialEffectPath(layer.toString());
       }
       
       override protected function initLoaders() : void
       {
-         var _loc3_:String = getUrl(_specialType);
-         _loc3_ = _loc3_.toLocaleLowerCase();
-         var _loc1_:URLVariables = new URLVariables();
-         _loc1_.rnd = new Date().time;
-         var _loc2_:DisplayLoader = LoadResourceManager.Instance.createLoader(_loc3_,1,_loc1_);
-         _queueLoader.addLoader(_loc2_);
+         var url:String = getUrl(_specialType);
+         url = url.toLocaleLowerCase();
+         var args:URLVariables = new URLVariables();
+         args.rnd = new Date().time;
+         var l:DisplayLoader = LoadResourceManager.Instance.createLoader(url,1,args);
+         _queueLoader.addLoader(l);
       }
       
-      override protected function __loadComplete(param1:Event) : void
+      override protected function __loadComplete(event:Event) : void
       {
          reSetBitmap();
          _queueLoader.removeEventListener("complete",__loadComplete);
@@ -52,21 +52,20 @@ package ddt.view.character
       
       override public function reSetBitmap() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          clearBitmap();
-         _loc1_ = 0;
-         while(_loc1_ < _queueLoader.loaders.length)
+         for(i = 0; i < _queueLoader.loaders.length; )
          {
-            _movieClips.push(_queueLoader.loaders[_loc1_].content);
-            if(_movieClips[_loc1_])
+            _movieClips.push(_queueLoader.loaders[i].content);
+            if(_movieClips[i])
             {
-               _movieClips[_loc1_].smoothing = true;
-               _movieClips[_loc1_].visible = true;
-               _movieClips[_loc1_].scaleX = 1.1;
-               _movieClips[_loc1_].scaleY = 1.1;
-               addChild(_movieClips[_loc1_]);
+               _movieClips[i].smoothing = true;
+               _movieClips[i].visible = true;
+               _movieClips[i].scaleX = 1.1;
+               _movieClips[i].scaleY = 1.1;
+               addChild(_movieClips[i]);
             }
-            _loc1_++;
+            i++;
          }
       }
       

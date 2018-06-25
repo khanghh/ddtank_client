@@ -14,10 +14,10 @@ package store.forge.wishBead
    {
        
       
-      public function WishBeadBagListView(param1:int, param2:int = 7, param3:int = 49)
+      public function WishBeadBagListView(bagType:int, columnNum:int = 7, cellNun:int = 49)
       {
-         super(param1,param2,param3);
-         if(param1 == 0)
+         super(bagType,columnNum,cellNun);
+         if(bagType == 0)
          {
             WishBeadManager.instance.addEventListener("wishBead_equip_move",equipMoveHandler);
             WishBeadManager.instance.addEventListener("wishBead_equip_move2",equipMoveHandler2);
@@ -31,91 +31,89 @@ package store.forge.wishBead
       
       override protected function createCells() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var cell:* = null;
          _cells = new Dictionary();
          _cellMouseOverBg = ComponentFactory.Instance.creatBitmap("bagAndInfo.cell.bagCellOverBgAsset");
-         _loc2_ = 0;
-         while(_loc2_ < _cellNum)
+         for(i = 0; i < _cellNum; )
          {
-            _loc1_ = createBagCell(_loc2_);
-            _loc1_.mouseOverEffBoolean = false;
-            addChild(_loc1_);
-            _loc1_.bagType = _bagType;
-            _loc1_.addEventListener("interactive_click",__clickHandler);
-            _loc1_.addEventListener("mouseOver",_cellOverEff);
-            _loc1_.addEventListener("mouseOut",_cellOutEff);
-            _loc1_.addEventListener("interactive_double_click",__doubleClickHandler);
-            DoubleClickManager.Instance.enableDoubleClick(_loc1_);
-            _loc1_.addEventListener("lockChanged",__cellChanged);
-            _cells[_loc1_.place] = _loc1_;
-            _cellVec.push(_loc1_);
-            _loc2_++;
+            cell = createBagCell(i);
+            cell.mouseOverEffBoolean = false;
+            addChild(cell);
+            cell.bagType = _bagType;
+            cell.addEventListener("interactive_click",__clickHandler);
+            cell.addEventListener("mouseOver",_cellOverEff);
+            cell.addEventListener("mouseOut",_cellOutEff);
+            cell.addEventListener("interactive_double_click",__doubleClickHandler);
+            DoubleClickManager.Instance.enableDoubleClick(cell);
+            cell.addEventListener("lockChanged",__cellChanged);
+            _cells[cell.place] = cell;
+            _cellVec.push(cell);
+            i++;
          }
       }
       
-      private function createBagCell(param1:int, param2:ItemTemplateInfo = null, param3:Boolean = true) : WishBeadEquipListCell
+      private function createBagCell(place:int, info:ItemTemplateInfo = null, showLoading:Boolean = true) : WishBeadEquipListCell
       {
-         var _loc4_:WishBeadEquipListCell = new WishBeadEquipListCell(param1,param2,param3);
-         fillTipProp(_loc4_);
-         return _loc4_;
+         var cell:WishBeadEquipListCell = new WishBeadEquipListCell(place,info,showLoading);
+         fillTipProp(cell);
+         return cell;
       }
       
-      private function fillTipProp(param1:ICell) : void
+      private function fillTipProp(cell:ICell) : void
       {
-         param1.tipDirctions = "7,6,2,1,5,4,0,3,6";
-         param1.tipGapV = 10;
-         param1.tipGapH = 10;
-         param1.tipStyle = "core.GoodsTip";
+         cell.tipDirctions = "7,6,2,1,5,4,0,3,6";
+         cell.tipGapV = 10;
+         cell.tipGapH = 10;
+         cell.tipStyle = "core.GoodsTip";
       }
       
-      private function equipMoveHandler(param1:WishBeadEvent) : void
+      private function equipMoveHandler(event:WishBeadEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:InventoryItemInfo = param1.info;
-         _loc3_ = 0;
-         while(_loc3_ < _cellNum)
+         var i:int = 0;
+         var itemInfo:InventoryItemInfo = event.info;
+         for(i = 0; i < _cellNum; )
          {
-            if(_cells[_loc3_].info == _loc2_)
+            if(_cells[i].info == itemInfo)
             {
-               _cells[_loc3_].info = null;
+               _cells[i].info = null;
                break;
             }
-            _loc3_++;
+            i++;
          }
       }
       
-      private function equipMoveHandler2(param1:WishBeadEvent) : void
+      private function equipMoveHandler2(event:WishBeadEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:InventoryItemInfo = param1.info;
-         if(param1.moveType == 2)
+         var k:int = 0;
+         var itemInfo:InventoryItemInfo = event.info;
+         if(event.moveType == 2)
          {
             var _loc6_:int = 0;
             var _loc5_:* = _cells;
-            for each(var _loc2_ in _cells)
+            for each(var cell in _cells)
             {
-               if(_loc2_.info == _loc3_)
+               if(cell.info == itemInfo)
                {
                   return;
                }
             }
          }
-         _loc4_ = 0;
-         while(_loc4_ < _cellNum)
+         k = 0;
+         while(k < _cellNum)
          {
-            if(!_cells[_loc4_].info)
+            if(!_cells[k].info)
             {
-               _cells[_loc4_].info = _loc3_;
+               _cells[k].info = itemInfo;
                break;
             }
-            _loc4_++;
+            k++;
          }
       }
       
-      override public function setData(param1:BagInfo) : void
+      override public function setData(bag:BagInfo) : void
       {
-         if(_bagdata == param1)
+         if(_bagdata == bag)
          {
             return;
          }
@@ -124,26 +122,26 @@ package store.forge.wishBead
             _bagdata.removeEventListener("update",__updateGoods);
          }
          clearDataCells();
-         _bagdata = param1;
-         var _loc3_:int = 0;
-         var _loc2_:Array = [];
+         _bagdata = bag;
+         var k:int = 0;
+         var arr:Array = [];
          var _loc7_:int = 0;
          var _loc6_:* = _bagdata.items;
-         for(var _loc4_ in _bagdata.items)
+         for(var key in _bagdata.items)
          {
-            _loc2_.push(_loc4_);
+            arr.push(key);
          }
-         _loc2_.sort(16);
+         arr.sort(16);
          var _loc9_:int = 0;
-         var _loc8_:* = _loc2_;
-         for each(var _loc5_ in _loc2_)
+         var _loc8_:* = arr;
+         for each(var i in arr)
          {
-            if(_cells[_loc3_] != null)
+            if(_cells[k] != null)
             {
-               _bagdata.items[_loc5_].isMoveSpace = true;
-               _cells[_loc3_].info = _bagdata.items[_loc5_];
+               _bagdata.items[i].isMoveSpace = true;
+               _cells[k].info = _bagdata.items[i];
             }
-            _loc3_++;
+            k++;
          }
          _bagdata.addEventListener("update",__updateGoods);
       }

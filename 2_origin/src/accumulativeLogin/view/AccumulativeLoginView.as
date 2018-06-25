@@ -82,7 +82,7 @@ package accumulativeLogin.view
          _fiveWeaponArr = [];
       }
       
-      public function setState(param1:int, param2:int) : void
+      public function setState(type:int, id:int) : void
       {
       }
       
@@ -98,12 +98,12 @@ package accumulativeLogin.view
       
       private function createFilter() : void
       {
-         var _loc1_:Array = [];
-         _loc1_ = _loc1_.concat([0.3086,0.6094,0.082,0,0]);
-         _loc1_ = _loc1_.concat([0.3086,0.6094,0.082,0,0]);
-         _loc1_ = _loc1_.concat([0.3086,0.6094,0.082,0,0]);
-         _loc1_ = _loc1_.concat([0,0,0,1,0]);
-         _filter = new ColorMatrixFilter(_loc1_);
+         var matrix:Array = [];
+         matrix = matrix.concat([0.3086,0.6094,0.082,0,0]);
+         matrix = matrix.concat([0.3086,0.6094,0.082,0,0]);
+         matrix = matrix.concat([0.3086,0.6094,0.082,0,0]);
+         matrix = matrix.concat([0,0,0,1,0]);
+         _filter = new ColorMatrixFilter(matrix);
       }
       
       public function initEvent() : void
@@ -111,7 +111,7 @@ package accumulativeLogin.view
          AccumulativeManager.instance.addEventListener("accumulativeLoginAwardRefresh",__refreshAward);
       }
       
-      protected function __refreshAward(param1:Event) : void
+      protected function __refreshAward(event:Event) : void
       {
          _loginDayNum = PlayerManager.Instance.Self.accumulativeLoginDays > 7?7:PlayerManager.Instance.Self.accumulativeLoginDays;
          _awardDayNum = PlayerManager.Instance.Self.accumulativeAwardDays;
@@ -129,122 +129,118 @@ package accumulativeLogin.view
       
       private function initView() : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc6_:int = 0;
-         var _loc3_:* = null;
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         var _loc8_:int = 0;
-         var _loc7_:* = null;
+         var j:int = 0;
+         var dayTxt:* = null;
+         var k:int = 0;
+         var progressBarItem:* = null;
+         var ll:int = 0;
+         var clickSp:* = null;
+         var i:int = 0;
+         var movieClip:* = null;
          _back = ComponentFactory.Instance.creat("wonderfulactivity.login.back");
          addChild(_back);
          _loginDayTxt = ComponentFactory.Instance.creatComponentByStylename("wonderfulactivity.accumulativeLogin.dayTxt");
          addChild(_loginDayTxt);
-         _loc5_ = 1;
-         while(_loc5_ < 8)
+         for(j = 1; j < 8; )
          {
-            _loc4_ = ComponentFactory.Instance.creatComponentByStylename("wonderfulactivity.accumulativeLogin.dayTxt");
-            addChild(_loc4_);
-            _loc4_.text = "" + _loc5_;
-            _loc4_.x = _loc5_ == 7?700:Number(334 + 62 * (_loc5_ - 1));
-            _loc4_.y = 150;
-            _dayTxtArr.push(_loc4_);
-            _loc5_++;
+            dayTxt = ComponentFactory.Instance.creatComponentByStylename("wonderfulactivity.accumulativeLogin.dayTxt");
+            addChild(dayTxt);
+            dayTxt.text = "" + j;
+            dayTxt.x = j == 7?700:Number(334 + 62 * (j - 1));
+            dayTxt.y = 150;
+            _dayTxtArr.push(dayTxt);
+            j++;
          }
          _progressBarBack = ComponentFactory.Instance.creat("wonderfulactivity.login.barback");
          addChild(_progressBarBack);
          _progressBar = ComponentFactory.Instance.creat("wonderfulactivity.login.bar");
          addChild(_progressBar);
-         _loc6_ = 0;
-         while(_loc6_ < 6)
+         for(k = 0; k < 6; )
          {
-            _loc3_ = ComponentFactory.Instance.creat("wonderfulactivity.login.barItem");
-            _loc3_.x = 334 + 62 * _loc6_;
-            _loc3_.y = 170;
-            addChild(_loc3_);
-            _progressBarItemArr.push(_loc3_);
-            _loc6_++;
+            progressBarItem = ComponentFactory.Instance.creat("wonderfulactivity.login.barItem");
+            progressBarItem.x = 334 + 62 * k;
+            progressBarItem.y = 170;
+            addChild(progressBarItem);
+            _progressBarItemArr.push(progressBarItem);
+            k++;
          }
          _progressCompleteItem = ComponentFactory.Instance.creat("wonderfulactivity.login.barCompleteItem");
          addChild(_progressCompleteItem);
          _progressCompleteItem.y = 170;
-         _loc2_ = 0;
-         while(_loc2_ < 7)
+         for(ll = 0; ll < 7; )
          {
-            _loc1_ = new Sprite();
-            _loc1_.buttonMode = true;
-            _loc1_.graphics.beginFill(0,0);
-            if(_loc2_ != 6)
+            clickSp = new Sprite();
+            clickSp.buttonMode = true;
+            clickSp.graphics.beginFill(0,0);
+            if(ll != 6)
             {
-               _loc1_.graphics.drawRect(_progressBarItemArr[_loc2_].x,170,_progressBarItemArr[_loc2_].width,_progressBarItemArr[_loc2_].height);
+               clickSp.graphics.drawRect(_progressBarItemArr[ll].x,170,_progressBarItemArr[ll].width,_progressBarItemArr[ll].height);
             }
             else
             {
-               _loc1_.graphics.drawRect(_progressBarItemArr[5].x + 58,170,_progressBarItemArr[5].width + 8,_progressBarItemArr[5].height);
+               clickSp.graphics.drawRect(_progressBarItemArr[5].x + 58,170,_progressBarItemArr[5].width + 8,_progressBarItemArr[5].height);
             }
-            _loc1_.graphics.endFill();
-            _loc1_.addEventListener("click",__showAwardHandler);
-            addChild(_loc1_);
-            _clickSpriteArr.push(_loc1_);
-            _loc2_++;
+            clickSp.graphics.endFill();
+            clickSp.addEventListener("click",__showAwardHandler);
+            addChild(clickSp);
+            _clickSpriteArr.push(clickSp);
+            ll++;
          }
          _hBox = ComponentFactory.Instance.creatComponentByStylename("wonderful.accumulativeLogin.Hbox");
          addChild(_hBox);
-         _loc8_ = 0;
-         while(_loc8_ < _movieStringArr.length)
+         for(i = 0; i < _movieStringArr.length; )
          {
-            _loc7_ = new AccumulativeMovieSprite(_movieStringArr[_loc8_]);
-            _loc7_.addEventListener("click",__onClickHandler);
-            addChild(_loc7_);
-            PositionUtils.setPos(_loc7_,"wonderful.accumulativeLogin.moviePos" + (_loc8_ + 1));
-            _movieVector.push(_loc7_);
-            _loc8_++;
+            movieClip = new AccumulativeMovieSprite(_movieStringArr[i]);
+            movieClip.addEventListener("click",__onClickHandler);
+            addChild(movieClip);
+            PositionUtils.setPos(movieClip,"wonderful.accumulativeLogin.moviePos" + (i + 1));
+            _movieVector.push(movieClip);
+            i++;
          }
          _getButton = ComponentFactory.Instance.creatComponentByStylename("wonderful.ActivityState.GetButton");
          addChild(_getButton);
          _getButton.enable = false;
       }
       
-      protected function __showAwardHandler(param1:MouseEvent) : void
+      protected function __showAwardHandler(event:MouseEvent) : void
       {
-         var _loc2_:int = _clickSpriteArr.indexOf(param1.target);
-         if(_loc2_ != -1 && _loc2_ + 1 != selectedDay)
+         var index:int = _clickSpriteArr.indexOf(event.target);
+         if(index != -1 && index + 1 != selectedDay)
          {
-            selectedDay = _loc2_ + 1;
+            selectedDay = index + 1;
          }
       }
       
-      protected function __onClickHandler(param1:MouseEvent) : void
+      protected function __onClickHandler(event:MouseEvent) : void
       {
          if(_loginDayNum < 7)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("wonderfulactivity.accumulativelogin.txt"));
             return;
          }
-         if(param1.currentTarget.state == 3)
+         if(event.currentTarget.state == 3)
          {
             return;
          }
          var _loc4_:int = 0;
          var _loc3_:* = _movieVector;
-         for each(var _loc2_ in _movieVector)
+         for each(var movie in _movieVector)
          {
-            if(_loc2_ == param1.currentTarget)
+            if(movie == event.currentTarget)
             {
-               _loc2_.state = 3;
-               _selectedFiveWeaponId = _loc2_.data.ID;
+               movie.state = 3;
+               _selectedFiveWeaponId = movie.data.ID;
             }
             else
             {
-               _loc2_.state = 1;
+               movie.state = 1;
             }
          }
       }
       
-      protected function __onOverHandler(param1:MouseEvent) : void
+      protected function __onOverHandler(event:MouseEvent) : void
       {
-         (param1.target as MovieClip).gotoAndPlay(2);
+         (event.target as MovieClip).gotoAndPlay(2);
       }
       
       private function checkMovieCanClick() : void
@@ -253,19 +249,19 @@ package accumulativeLogin.view
          {
             var _loc4_:int = 0;
             var _loc3_:* = _movieVector;
-            for each(var _loc1_ in _movieVector)
+            for each(var movie in _movieVector)
             {
-               _loc1_.removeEventListener("click",__onClickHandler);
-               _loc1_.state = 1;
+               movie.removeEventListener("click",__onClickHandler);
+               movie.state = 1;
             }
          }
          if(_loginDayNum >= 7 && _awardDayNum < 7)
          {
             var _loc6_:int = 0;
             var _loc5_:* = _movieVector;
-            for each(var _loc2_ in _movieVector)
+            for each(var accMovie in _movieVector)
             {
-               _loc2_.state = 2;
+               accMovie.state = 2;
             }
          }
       }
@@ -288,10 +284,10 @@ package accumulativeLogin.view
       
       private function initViewWithData() : void
       {
-         var _loc4_:int = 0;
-         var _loc1_:* = null;
-         var _loc3_:* = null;
-         var _loc5_:int = 0;
+         var k:int = 0;
+         var arr:* = null;
+         var bagCellSp:* = null;
+         var i:int = 0;
          checkMovieCanClick();
          _loginDayTxt.text = "" + _loginDayNum;
          if(_loginDayNum < 7)
@@ -308,30 +304,29 @@ package accumulativeLogin.view
          {
             return;
          }
-         _loc4_ = 1;
-         while(_loc4_ < 8)
+         k = 1;
+         while(k < 8)
          {
-            _loc1_ = [];
+            arr = [];
             var _loc7_:int = 0;
-            var _loc6_:* = _dataDic[_loc4_];
-            for each(var _loc2_ in _dataDic[_loc4_])
+            var _loc6_:* = _dataDic[k];
+            for each(var data in _dataDic[k])
             {
-               _loc3_ = createBagCellSp(_loc2_,_loc4_);
-               _loc1_.push(_loc3_);
+               bagCellSp = createBagCellSp(data,k);
+               arr.push(bagCellSp);
             }
-            _dayGiftPackDic[_loc4_] = _loc1_;
-            _loc4_++;
+            _dayGiftPackDic[k] = arr;
+            k++;
          }
-         _loc5_ = 0;
-         while(_loc5_ < _movieVector.length)
+         for(i = 0; i < _movieVector.length; )
          {
-            _movieVector[_loc5_].tipData = _fiveWeaponArr[_loc5_].tipData;
-            _movieVector[_loc5_].data = _dataDic[7][_loc5_];
-            _loc5_++;
+            _movieVector[i].tipData = _fiveWeaponArr[i].tipData;
+            _movieVector[i].data = _dataDic[7][i];
+            i++;
          }
       }
       
-      private function __getAward(param1:MouseEvent) : void
+      private function __getAward(event:MouseEvent) : void
       {
          if(_loginDayNum >= 7 && _selectedFiveWeaponId == 0)
          {
@@ -341,9 +336,9 @@ package accumulativeLogin.view
          SocketManager.Instance.out.sendAccumulativeLoginAward(_selectedFiveWeaponId);
       }
       
-      private function set selectedDay(param1:int) : void
+      private function set selectedDay(value:int) : void
       {
-         _selectedDay = param1;
+         _selectedDay = value;
          if(_selectedDay > 7)
          {
             _selectedDay = 7;
@@ -351,23 +346,23 @@ package accumulativeLogin.view
          _hBox.removeAllChild();
          var _loc4_:int = 0;
          var _loc3_:* = _dayGiftPackDic[_selectedDay];
-         for each(var _loc2_ in _dayGiftPackDic[_selectedDay])
+         for each(var bagCellSp in _dayGiftPackDic[_selectedDay])
          {
             if(_selectedDay <= _awardDayNum)
             {
-               graySp(_loc2_);
+               graySp(bagCellSp);
             }
             else
             {
-               _loc2_.filters = null;
+               bagCellSp.filters = null;
             }
-            _hBox.addChild(_loc2_);
+            _hBox.addChild(bagCellSp);
          }
       }
       
-      private function graySp(param1:Sprite) : void
+      private function graySp(sp:Sprite) : void
       {
-         param1.filters = [_filter];
+         sp.filters = [_filter];
       }
       
       private function get selectedDay() : int
@@ -375,37 +370,37 @@ package accumulativeLogin.view
          return _selectedDay;
       }
       
-      private function createBagCellSp(param1:AccumulativeLoginRewardData, param2:int) : Sprite
+      private function createBagCellSp(data:AccumulativeLoginRewardData, index:int) : Sprite
       {
-         var _loc5_:Sprite = new Sprite();
-         var _loc4_:Bitmap = ComponentFactory.Instance.creat("wonderfulactivity.login.bagCellBg");
+         var sp:Sprite = new Sprite();
+         var bagCellBg:Bitmap = ComponentFactory.Instance.creat("wonderfulactivity.login.bagCellBg");
          var _loc7_:* = 0.7;
-         _loc4_.scaleY = _loc7_;
-         _loc4_.scaleX = _loc7_;
-         _loc5_.addChild(_loc4_);
-         var _loc6_:InventoryItemInfo = new InventoryItemInfo();
-         _loc6_.TemplateID = param1.RewardItemID;
-         _loc6_ = ItemManager.fill(_loc6_);
-         _loc6_.IsBinds = param1.IsBind;
-         _loc6_.ValidDate = param1.RewardItemValid;
-         _loc6_.StrengthenLevel = param1.StrengthenLevel;
-         _loc6_.AttackCompose = param1.AttackCompose;
-         _loc6_.DefendCompose = param1.DefendCompose;
-         _loc6_.AgilityCompose = param1.AgilityCompose;
-         _loc6_.LuckCompose = param1.LuckCompose;
-         var _loc3_:BagCell = new BagCell(0);
-         _loc3_.info = _loc6_;
-         _loc3_.setCount(param1.RewardItemCount);
-         _loc3_.setBgVisible(false);
+         bagCellBg.scaleY = _loc7_;
+         bagCellBg.scaleX = _loc7_;
+         sp.addChild(bagCellBg);
+         var info:InventoryItemInfo = new InventoryItemInfo();
+         info.TemplateID = data.RewardItemID;
+         info = ItemManager.fill(info);
+         info.IsBinds = data.IsBind;
+         info.ValidDate = data.RewardItemValid;
+         info.StrengthenLevel = data.StrengthenLevel;
+         info.AttackCompose = data.AttackCompose;
+         info.DefendCompose = data.DefendCompose;
+         info.AgilityCompose = data.AgilityCompose;
+         info.LuckCompose = data.LuckCompose;
+         var bagCell:BagCell = new BagCell(0);
+         bagCell.info = info;
+         bagCell.setCount(data.RewardItemCount);
+         bagCell.setBgVisible(false);
          _loc7_ = 4;
-         _loc3_.y = _loc7_;
-         _loc3_.x = _loc7_;
-         _loc5_.addChild(_loc3_);
-         if(param2 == 7)
+         bagCell.y = _loc7_;
+         bagCell.x = _loc7_;
+         sp.addChild(bagCell);
+         if(index == 7)
          {
-            _fiveWeaponArr.push(_loc3_);
+            _fiveWeaponArr.push(bagCell);
          }
-         return _loc5_;
+         return sp;
       }
       
       public function content() : Sprite
@@ -415,73 +410,71 @@ package accumulativeLogin.view
       
       public function dispose() : void
       {
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
-         var _loc8_:int = 0;
+         var k:int = 0;
+         var sprite:* = null;
+         var i:int = 0;
          AccumulativeManager.instance.removeEventListener("accumulativeLoginAwardRefresh",__refreshAward);
          var _loc10_:int = 0;
          var _loc9_:* = _dayGiftPackDic;
-         for each(var _loc4_ in _dayGiftPackDic)
+         for each(var bagCellArr in _dayGiftPackDic)
          {
-            _loc6_ = 0;
-            while(_loc6_ < _loc4_.length)
+            for(k = 0; k < bagCellArr.length; )
             {
-               _loc5_ = _loc4_[_loc6_];
-               ObjectUtils.disposeAllChildren(_loc5_);
-               ObjectUtils.disposeObject(_loc5_);
-               _loc6_++;
+               sprite = bagCellArr[k];
+               ObjectUtils.disposeAllChildren(sprite);
+               ObjectUtils.disposeObject(sprite);
+               k++;
             }
          }
          _dayGiftPackDic = null;
          var _loc12_:int = 0;
          var _loc11_:* = _fiveWeaponArr;
-         for each(var _loc3_ in _fiveWeaponArr)
+         for each(var bCell in _fiveWeaponArr)
          {
-            ObjectUtils.disposeObject(_loc3_);
-            _loc3_ = null;
+            ObjectUtils.disposeObject(bCell);
+            bCell = null;
          }
          _fiveWeaponArr = null;
-         _loc8_ = 0;
-         while(_loc8_ < _movieVector.length)
+         for(i = 0; i < _movieVector.length; )
          {
-            _movieVector[_loc8_].removeEventListener("click",__onClickHandler);
-            _movieVector[_loc8_].dispose();
-            _movieVector[_loc8_] = null;
-            _loc8_++;
+            _movieVector[i].removeEventListener("click",__onClickHandler);
+            _movieVector[i].dispose();
+            _movieVector[i] = null;
+            i++;
          }
          _movieVector = null;
          var _loc14_:int = 0;
          var _loc13_:* = _progressBarItemArr;
-         for each(var _loc2_ in _progressBarItemArr)
+         for each(var bitmap in _progressBarItemArr)
          {
-            if(_loc2_)
+            if(bitmap)
             {
-               ObjectUtils.disposeObject(_loc2_);
+               ObjectUtils.disposeObject(bitmap);
             }
-            _loc2_ = null;
+            bitmap = null;
          }
          _progressBarItemArr = null;
          var _loc16_:int = 0;
          var _loc15_:* = _clickSpriteArr;
-         for each(var _loc1_ in _clickSpriteArr)
+         for each(var sp in _clickSpriteArr)
          {
-            if(_loc1_)
+            if(sp)
             {
-               _loc1_.graphics.clear();
+               sp.graphics.clear();
             }
-            _loc1_.removeEventListener("click",__showAwardHandler);
-            _loc1_ = null;
+            sp.removeEventListener("click",__showAwardHandler);
+            sp = null;
          }
          _clickSpriteArr = null;
          var _loc18_:int = 0;
          var _loc17_:* = _dayTxtArr;
-         for each(var _loc7_ in _dayTxtArr)
+         for each(var txt in _dayTxtArr)
          {
-            if(_loc7_)
+            if(txt)
             {
-               ObjectUtils.disposeObject(_loc7_);
+               ObjectUtils.disposeObject(txt);
             }
-            _loc7_ = null;
+            txt = null;
          }
          _dayTxtArr = null;
          if(_back)

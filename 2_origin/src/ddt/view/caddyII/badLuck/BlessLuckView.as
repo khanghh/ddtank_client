@@ -96,28 +96,28 @@ package ddt.view.caddyII.badLuck
          PlayerManager.Instance.Self.removeEventListener("propertychange",__changeBadLuckNumber);
       }
       
-      private function __awardBtnClick(param1:MouseEvent) : void
+      private function __awardBtnClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _caddyBadLuckView.visible = false;
          _readView.visible = true;
       }
       
-      private function __badLuckBtnClick(param1:MouseEvent) : void
+      private function __badLuckBtnClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _caddyBadLuckView.visible = true;
          _readView.visible = false;
       }
       
-      private function __updateLastTime(param1:CaddyEvent) : void
+      private function __updateLastTime(e:CaddyEvent) : void
       {
-         _lastTimeTxt.text = "最后更新:" + param1.lastTime;
+         _lastTimeTxt.text = "最后更新:" + e.lastTime;
       }
       
-      private function __changeBadLuckNumber(param1:PlayerPropertyEvent) : void
+      private function __changeBadLuckNumber(event:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["BadLuckNumber"])
+         if(event.changedProperties["BadLuckNumber"])
          {
             if(PlayerManager.Instance.Self.badLuckNumber == 0)
             {

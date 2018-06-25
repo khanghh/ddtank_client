@@ -41,18 +41,18 @@ package bagAndInfo.ddtKingGrade
       
       private function onComplete() : void
       {
-         var _loc1_:* = undefined;
+         var view:* = undefined;
          if(isOpen == false)
          {
             isOpen = true;
-            _loc1_ = ComponentFactory.Instance.creatComponentByStylename("ddtKingGrade.mainView");
-            _loc1_.show();
+            view = ComponentFactory.Instance.creatComponentByStylename("ddtKingGrade.mainView");
+            view.show();
          }
       }
       
-      public function analyzer(param1:DDTKingGradeAnalyzer) : void
+      public function analyzer(analyzer:DDTKingGradeAnalyzer) : void
       {
-         _data = param1.data;
+         _data = analyzer.data;
       }
       
       public function get data() : DictionaryData
@@ -60,19 +60,19 @@ package bagAndInfo.ddtKingGrade
          return _data;
       }
       
-      public function getInfoByCost(param1:int) : DDTKingGradeInfo
+      public function getInfoByCost(value:int) : DDTKingGradeInfo
       {
-         var _loc2_:* = null;
+         var result:* = null;
          var _loc5_:int = 0;
          var _loc4_:* = _data;
-         for each(var _loc3_ in _data)
+         for each(var info in _data)
          {
-            if(param1 >= _loc3_.Cost)
+            if(value >= info.Cost)
             {
-               _loc2_ = _loc3_;
+               result = info;
             }
          }
-         return _loc2_;
+         return result;
       }
    }
 }

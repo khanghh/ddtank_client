@@ -60,32 +60,32 @@ package ddt.view.tips
          return _tempData;
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         if(param1 is ChangeNumToolTipInfo)
+         if(data is ChangeNumToolTipInfo)
          {
-            update(param1.currentTxt,param1.title,param1.current,param1.total,param1.content);
+            update(data.currentTxt,data.title,data.current,data.total,data.content);
          }
          else
          {
             this.visible = false;
          }
-         _tempData = param1;
+         _tempData = data;
       }
       
-      private function update(param1:FilterFrameText, param2:String, param3:int, param4:int, param5:String) : void
+      private function update(currentTxt:FilterFrameText, title:String, current:int, total:int, content:String) : void
       {
-         var _loc6_:FilterFrameText = _currentTxt;
-         _currentTxt = param1;
+         var crntTxt:FilterFrameText = _currentTxt;
+         _currentTxt = currentTxt;
          _container.addChild(_currentTxt);
-         _title.text = param2;
-         _currentTxt.text = String(param3);
-         _totalTxt.text = "/" + String(param4);
-         _contentTxt.text = param5;
+         _title.text = title;
+         _currentTxt.text = String(current);
+         _totalTxt.text = "/" + String(total);
+         _contentTxt.text = content;
          drawBG();
-         if(_loc6_ != null && _loc6_ != _currentTxt && _loc6_.parent)
+         if(crntTxt != null && crntTxt != _currentTxt && crntTxt.parent)
          {
-            _loc6_.parent.removeChild(_loc6_);
+            crntTxt.parent.removeChild(crntTxt);
          }
       }
       
@@ -95,17 +95,17 @@ package ddt.view.tips
          _bg.width = 0;
       }
       
-      private function drawBG(param1:int = 0) : void
+      private function drawBG($width:int = 0) : void
       {
          reset();
-         if(param1 == 0)
+         if($width == 0)
          {
             _bg.width = _container.width + 10;
             _bg.height = _container.height + 10;
          }
          else
          {
-            _bg.width = param1 + 2;
+            _bg.width = $width + 2;
             _bg.height = _container.height + 10;
          }
          _width = _bg.width;
@@ -117,7 +117,7 @@ package ddt.view.tips
          return 0;
       }
       
-      public function set tipWidth(param1:int) : void
+      public function set tipWidth(w:int) : void
       {
       }
       
@@ -126,7 +126,7 @@ package ddt.view.tips
          return 0;
       }
       
-      public function set tipHeight(param1:int) : void
+      public function set tipHeight(h:int) : void
       {
       }
       

@@ -35,9 +35,9 @@ package AvatarCollection.view
       {
          cancelButtonStyle = "core.simplebt";
          submitButtonStyle = "core.simplebt";
-         var _loc1_:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("avatarCollection.delayConfirmFrame.titleTxt"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"));
-         _loc1_.moveEnable = false;
-         info = _loc1_;
+         var alertInfo:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("avatarCollection.delayConfirmFrame.titleTxt"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"));
+         alertInfo.moveEnable = false;
+         info = alertInfo;
          this.escEnable = true;
          _text = ComponentFactory.Instance.creatComponentByStylename("avatarColl.delayConfirmFrame.dayNameTxt");
          _text.text = LanguageMgr.GetTranslation("avatarCollection.delayConfirmFrame.dayNameTxt");
@@ -50,16 +50,16 @@ package AvatarCollection.view
          addToContent(_needFoodText);
       }
       
-      private function __seleterChange(param1:Event) : void
+      private function __seleterChange(event:Event) : void
       {
          SoundManager.instance.play("008");
          _needFoodText.htmlText = LanguageMgr.GetTranslation("avatarCollection.delayConfirmFrame.promptTxt",_numberSelecter.currentValue * _dayHonour,count);
       }
       
-      public function show(param1:int, param2:int) : void
+      public function show(needHonor:int, maxCount:int) : void
       {
          count = AvatarCollectionManager.instance.getDelayTimeCollectionCount();
-         _dayHonour = param1;
+         _dayHonour = needHonor;
          _needFoodText.htmlText = LanguageMgr.GetTranslation("avatarCollection.delayConfirmFrame.promptTxt",_dayHonour,count);
          _numberSelecter.valueLimit = "1,99";
       }

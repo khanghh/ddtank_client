@@ -28,27 +28,27 @@ package game.view.stage
          graphics.drawRect(0,0,2000,2000);
       }
       
-      public function fadeIn(param1:uint = 25) : void
+      public function fadeIn(duration:uint = 25) : void
       {
          StageReferance.stage.addChild(this);
          visible = true;
          alpha = 0;
-         _duration = param1;
+         _duration = duration;
          _life = 0;
          addEventListener("enterFrame",__updateFadeIn);
       }
       
-      public function fadeOut(param1:uint = 25) : void
+      public function fadeOut(duration:uint = 25) : void
       {
          StageReferance.stage.addChild(this);
          visible = true;
          alpha = 1;
-         _duration = param1;
+         _duration = duration;
          _life = 0;
          addEventListener("enterFrame",__updateFadeOut);
       }
       
-      private function __updateFadeIn(param1:Event) : void
+      private function __updateFadeIn(evt:Event) : void
       {
          if(_life == _duration)
          {
@@ -57,12 +57,12 @@ package game.view.stage
             alpha = 1;
             end();
          }
-         var _loc2_:Number = _life / _duration;
-         alpha = _loc2_;
+         var progress:Number = _life / _duration;
+         alpha = progress;
          _life = Number(_life) + 1;
       }
       
-      private function __updateFadeOut(param1:Event) : void
+      private function __updateFadeOut(evt:Event) : void
       {
          if(_life == _duration)
          {
@@ -71,8 +71,8 @@ package game.view.stage
             alpha = 0;
             end();
          }
-         var _loc2_:Number = _life / _duration;
-         alpha = 1 - _loc2_;
+         var progress:Number = _life / _duration;
+         alpha = 1 - progress;
          _life = Number(_life) + 1;
       }
       
@@ -82,17 +82,17 @@ package game.view.stage
          dispatchEvent(new Event("complete"));
       }
       
-      public function play(param1:uint = 25) : void
+      public function play(duration:uint = 25) : void
       {
          StageReferance.stage.addChild(this);
          visible = true;
          alpha = 0;
-         _duration = param1;
+         _duration = duration;
          _life = 0;
          addEventListener("enterFrame",__updatePlay);
       }
       
-      private function __updatePlay(param1:Event) : void
+      private function __updatePlay(e:Event) : void
       {
          if(_life == _duration)
          {
@@ -100,14 +100,14 @@ package game.view.stage
             alpha = 0;
             end();
          }
-         var _loc2_:Number = _life / _duration;
-         if(_loc2_ < 0.2)
+         var progress:Number = _life / _duration;
+         if(progress < 0.2)
          {
-            alpha = _loc2_ / 0.2;
+            alpha = progress / 0.2;
          }
          else
          {
-            alpha = 1 - _loc2_ / 0.8;
+            alpha = 1 - progress / 0.8;
          }
          _life = Number(_life) + 1;
       }

@@ -41,8 +41,8 @@ package magicStone
       
       public function disposeView() : void
       {
-         var _loc1_:MagicStoneEvent = new MagicStoneEvent("magicStoneDispose");
-         dispatchEvent(_loc1_);
+         var event:MagicStoneEvent = new MagicStoneEvent("magicStoneDispose");
+         dispatchEvent(event);
       }
       
       public function show() : void
@@ -50,127 +50,124 @@ package magicStone
          dispatchEvent(new MagicStoneEvent("magicStoneOpenView"));
       }
       
-      public function loadMgStoneTempComplete(param1:MagicStoneTempAnalyer) : void
+      public function loadMgStoneTempComplete(analyzer:MagicStoneTempAnalyer) : void
       {
-         _mgStoneTempArr = param1.mgStoneTempArr;
+         _mgStoneTempArr = analyzer.mgStoneTempArr;
       }
       
-      public function fillPropertys(param1:ItemTemplateInfo) : void
+      public function fillPropertys(item:ItemTemplateInfo) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         _loc3_ = 0;
-         while(_loc3_ <= _mgStoneTempArr.length - 1)
+         var i:int = 0;
+         var vo:* = null;
+         for(i = 0; i <= _mgStoneTempArr.length - 1; )
          {
-            _loc2_ = _mgStoneTempArr[_loc3_] as MgStoneTempVO;
-            if(_loc2_.TemplateID == param1.TemplateID && _loc2_.Level == param1.Level)
+            vo = _mgStoneTempArr[i] as MgStoneTempVO;
+            if(vo.TemplateID == item.TemplateID && vo.Level == item.Level)
             {
-               param1.Attack = _loc2_.Attack;
-               param1.Defence = _loc2_.Defence;
-               param1.Agility = _loc2_.Agility;
-               param1.Luck = _loc2_.Luck;
-               param1.MagicAttack = _loc2_.MagicAttack;
-               param1.MagicDefence = _loc2_.MagicDefence;
+               item.Attack = vo.Attack;
+               item.Defence = vo.Defence;
+               item.Agility = vo.Agility;
+               item.Luck = vo.Luck;
+               item.MagicAttack = vo.MagicAttack;
+               item.MagicDefence = vo.MagicDefence;
             }
-            _loc3_++;
+            i++;
          }
       }
       
-      public function getNeedExp(param1:int, param2:int) : int
+      public function getNeedExp(templateId:int, level:int) : int
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         _loc4_ = 0;
-         while(_loc4_ <= _mgStoneTempArr.length - 1)
+         var i:int = 0;
+         var vo:* = null;
+         for(i = 0; i <= _mgStoneTempArr.length - 1; )
          {
-            _loc3_ = _mgStoneTempArr[_loc4_] as MgStoneTempVO;
-            if(_loc3_.TemplateID == param1 && _loc3_.Level == param2)
+            vo = _mgStoneTempArr[i] as MgStoneTempVO;
+            if(vo.TemplateID == templateId && vo.Level == level)
             {
-               return _loc3_.Exp;
+               return vo.Exp;
             }
-            _loc4_++;
+            i++;
          }
          return 0;
       }
       
-      public function getNeedExpPerLevel(param1:int, param2:int) : int
+      public function getNeedExpPerLevel(templateId:int, level:int) : int
       {
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         _loc6_ = 0;
-         while(_loc6_ <= _mgStoneTempArr.length - 1)
+         var i:int = 0;
+         var vo:* = null;
+         var lastExp:int = 0;
+         var curExp:int = 0;
+         for(i = 0; i <= _mgStoneTempArr.length - 1; )
          {
-            _loc5_ = _mgStoneTempArr[_loc6_] as MgStoneTempVO;
-            if(_loc5_.TemplateID == param1)
+            vo = _mgStoneTempArr[i] as MgStoneTempVO;
+            if(vo.TemplateID == templateId)
             {
-               if(_loc5_.Level == param2 - 1)
+               if(vo.Level == level - 1)
                {
-                  _loc3_ = _loc5_.Exp;
+                  lastExp = vo.Exp;
                }
-               else if(_loc5_.Level == param2)
+               else if(vo.Level == level)
                {
-                  _loc4_ = _loc5_.Exp;
+                  curExp = vo.Exp;
                }
             }
-            _loc6_++;
+            i++;
          }
-         return _loc4_ - _loc3_ > 0?_loc4_ - _loc3_:0;
+         return curExp - lastExp > 0?curExp - lastExp:0;
       }
       
-      public function getExpOfCurLevel(param1:int, param2:int) : int
+      public function getExpOfCurLevel(templateId:int, exp:int) : int
       {
-         var _loc4_:int = 1;
-         var _loc3_:int = getNeedExpPerLevel(param1,_loc4_);
-         while(_loc3_ > 0 && param2 >= _loc3_)
+         var i:int = 1;
+         var levelExp:int = getNeedExpPerLevel(templateId,i);
+         while(levelExp > 0 && exp >= levelExp)
          {
-            _loc4_++;
-            param2 = param2 - _loc3_;
-            _loc3_ = getNeedExpPerLevel(param1,_loc4_);
+            i++;
+            exp = exp - levelExp;
+            levelExp = getNeedExpPerLevel(templateId,i);
          }
-         return param2;
+         return exp;
       }
       
-      public function weakGuide(param1:int, param2:DisplayObjectContainer = null) : void
+      public function weakGuide(type:int, container:DisplayObjectContainer = null) : void
       {
-         if(!param2)
+         if(!container)
          {
-            param2 = LayerManager.Instance.getLayerByType(2);
+            container = LayerManager.Instance.getLayerByType(2);
          }
-         switch(int(param1))
+         switch(int(type))
          {
             case 0:
                if(upTo40Flag && !PlayerManager.Instance.Self.isMagicStoneGuideFinish(117))
                {
-                  NewHandContainer.Instance.showArrow(124,0,"hall.mgStoneGuide.openPos","","",param2,0,true);
+                  NewHandContainer.Instance.showArrow(124,0,"hall.mgStoneGuide.openPos","","",container,0,true);
                   MainToolBar.Instance.showBagShineEffect(true);
                }
                break;
             case 1:
                if(upTo40Flag && !PlayerManager.Instance.Self.isMagicStoneGuideFinish(118))
                {
-                  NewHandContainer.Instance.showArrow(125,0,"hall.mgStoneGuide.explorePos","magicStone.clickToExplore","hall.mgStoneGuide.exploreTipPos",param2,0,true);
+                  NewHandContainer.Instance.showArrow(125,0,"hall.mgStoneGuide.explorePos","magicStone.clickToExplore","hall.mgStoneGuide.exploreTipPos",container,0,true);
                }
                break;
             case 2:
                if(upTo40Flag && !PlayerManager.Instance.Self.isMagicStoneGuideFinish(119))
                {
-                  NewHandContainer.Instance.showArrow(126,225,"hall.mgStoneGuide.equipPos","magicStone.doubleClickToEquip","hall.mgStoneGuide.equipTipPos",param2,0,true);
+                  NewHandContainer.Instance.showArrow(126,225,"hall.mgStoneGuide.equipPos","magicStone.doubleClickToEquip","hall.mgStoneGuide.equipTipPos",container,0,true);
                }
                break;
             case 3:
                if(upTo40Flag && !PlayerManager.Instance.Self.isMagicStoneGuideFinish(127))
                {
-                  NewHandContainer.Instance.showArrow(138,180,"hall.mgStoneGuide.bagPos","","",param2,0,true);
+                  NewHandContainer.Instance.showArrow(138,180,"hall.mgStoneGuide.bagPos","","",container,0,true);
                   break;
                }
          }
       }
       
-      public function removeWeakGuide(param1:int) : void
+      public function removeWeakGuide(type:int) : void
       {
-         switch(int(param1))
+         switch(int(type))
          {
             case 0:
                if(PlayerManager.Instance.Self.Grade >= 45 && !PlayerManager.Instance.Self.isMagicStoneGuideFinish(117))

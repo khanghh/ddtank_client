@@ -23,10 +23,10 @@ package bank.view
       
       private var _index:int;
       
-      public function BankSaveRecordView(param1:int)
+      public function BankSaveRecordView(index:int)
       {
          super();
-         _index = param1;
+         _index = index;
          _btnSprite = new Sprite();
          _btnSprite.graphics.beginFill(16777215,0);
          _btnSprite.graphics.drawRect(22,115,267,78);
@@ -38,20 +38,20 @@ package bank.view
          _btnSprite.addEventListener("click",changeView);
       }
       
-      public function setInfo(param1:BankRecordInfo) : void
+      public function setInfo(info:BankRecordInfo) : void
       {
-         var _loc2_:DictionaryData = BankManager.instance.model.data;
-         if(_loc2_[param1.tempId].DeadLine == 0)
+         var data:DictionaryData = BankManager.instance.model.data;
+         if(data[info.tempId].DeadLine == 0)
          {
             saveTypeImg.skin = "asset.bank.checking";
-            timeNum.text = LanguageMgr.GetTranslation("tank.bank.checkingAccount",Number(_loc2_[param1.tempId].InterestRate / 100));
+            timeNum.text = LanguageMgr.GetTranslation("tank.bank.checkingAccount",Number(data[info.tempId].InterestRate / 100));
             overTimeImg.skin = "";
          }
          else
          {
             saveTypeImg.skin = "asset.bank.regular";
-            timeNum.text = LanguageMgr.GetTranslation("tank.bank.regular",_loc2_[param1.tempId].DeadLine,Number(_loc2_[param1.tempId].InterestRate / 100));
-            if(BankManager.instance.isAchieve(param1))
+            timeNum.text = LanguageMgr.GetTranslation("tank.bank.regular",data[info.tempId].DeadLine,Number(data[info.tempId].InterestRate / 100));
+            if(BankManager.instance.isAchieve(info))
             {
                overTimeImg.skin = "asset.bank.complete";
             }
@@ -60,17 +60,17 @@ package bank.view
                overTimeImg.skin = "asset.bank.notComplete";
             }
          }
-         startTimeTxt.text = getTime(param1.begainTime);
-         moneyNum.text = LanguageMgr.GetTranslation("tank.bank.moneyNum",param1.Amount);
-         profitNum.text = LanguageMgr.GetTranslation("tank.bank.Interest",BankManager.instance.getProfitNum(param1,true));
+         startTimeTxt.text = getTime(info.begainTime);
+         moneyNum.text = LanguageMgr.GetTranslation("tank.bank.moneyNum",info.Amount);
+         profitNum.text = LanguageMgr.GetTranslation("tank.bank.Interest",BankManager.instance.getProfitNum(info,true));
       }
       
-      private function getTime(param1:Date) : String
+      private function getTime(data:Date) : String
       {
-         return param1.fullYear + "-" + (param1.month + 1) + "-" + param1.date;
+         return data.fullYear + "-" + (data.month + 1) + "-" + data.date;
       }
       
-      private function changeView(param1:MouseEvent) : void
+      private function changeView(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          BankManager.instance.dispatchEvent(new GameBankEvent("bank_left_view_line_show",{"index":_index}));

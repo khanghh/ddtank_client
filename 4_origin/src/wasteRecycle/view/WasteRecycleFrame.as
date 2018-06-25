@@ -171,7 +171,7 @@ package wasteRecycle.view
          }
       }
       
-      private function __onRecycleClick(param1:MouseEvent) : void
+      private function __onRecycleClick(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.bagLocked)
@@ -199,13 +199,13 @@ package wasteRecycle.view
          }
       }
       
-      private function __onHelpClick(param1:MouseEvent) : void
+      private function __onHelpClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          WasteRecycleController.instance.openHelpFram();
       }
       
-      private function __onComplete(param1:Event) : void
+      private function __onComplete(e:Event) : void
       {
          if(_continuousOpenBtn.selected)
          {
@@ -213,7 +213,7 @@ package wasteRecycle.view
          }
       }
       
-      private function __onStartClick(param1:MouseEvent) : void
+      private function __onStartClick(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.bagLocked)
@@ -240,7 +240,7 @@ package wasteRecycle.view
          SocketManager.Instance.out.sendWasteRecycleStartTurn();
       }
       
-      private function __onAwardClick(param1:MouseEvent) : void
+      private function __onAwardClick(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(WasteRecycleController.instance.isPlay)
@@ -251,16 +251,16 @@ package wasteRecycle.view
          _lookTrophy.show(WasteRecycleController.instance.model.trophyList);
       }
       
-      private function updateLottery(param1:int, param2:int) : void
+      private function updateLottery(score:int, donateScore:int) : void
       {
-         _currentScore = param1;
-         WasteRecycleController.instance.model.lotteryDonateScore = param2;
-         _scoreText.text = LanguageMgr.GetTranslation("ddt.wasteRecycle.lotteryScore",param1);
-         var _loc3_:int = WasteRecycleController.instance.model.lotteryLimitScore;
-         _limitText.text = LanguageMgr.GetTranslation("ddt.wasteRecycle.lotteryLimit",param2,_loc3_);
+         _currentScore = score;
+         WasteRecycleController.instance.model.lotteryDonateScore = donateScore;
+         _scoreText.text = LanguageMgr.GetTranslation("ddt.wasteRecycle.lotteryScore",score);
+         var limit:int = WasteRecycleController.instance.model.lotteryLimitScore;
+         _limitText.text = LanguageMgr.GetTranslation("ddt.wasteRecycle.lotteryLimit",donateScore,limit);
       }
       
-      override protected function onResponse(param1:int) : void
+      override protected function onResponse(type:int) : void
       {
          SoundManager.instance.playButtonSound();
          if(WasteRecycleController.instance.isPlay)
@@ -268,7 +268,7 @@ package wasteRecycle.view
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.wasteRecycle.turning"));
             return;
          }
-         super.onResponse(param1);
+         super.onResponse(type);
       }
       
       override protected function onFrameClose() : void
@@ -276,38 +276,37 @@ package wasteRecycle.view
          this.dispose();
       }
       
-      private function __onStartTurn(param1:PkgEvent) : void
+      private function __onStartTurn(e:PkgEvent) : void
       {
-         var _loc10_:int = 0;
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
-         var _loc6_:* = null;
-         var _loc3_:int = param1.pkg.readInt();
-         var _loc5_:int = param1.pkg.readInt();
-         var _loc8_:int = param1.pkg.readInt();
-         var _loc7_:int = param1.pkg.readInt();
-         var _loc9_:String = "";
-         _loc10_ = 0;
-         while(_loc10_ < _loc7_)
+         var i:int = 0;
+         var id:int = 0;
+         var count:int = 0;
+         var name:* = null;
+         var socre:int = e.pkg.readInt();
+         var donateScore:int = e.pkg.readInt();
+         var type:int = e.pkg.readInt();
+         var goodsCount:int = e.pkg.readInt();
+         var goodsNames:String = "";
+         for(i = 0; i < goodsCount; )
          {
-            _loc2_ = param1.pkg.readInt();
-            _loc4_ = param1.pkg.readInt();
-            _loc6_ = ItemManager.Instance.getTemplateById(_loc2_).Name + " x " + _loc4_ + " ";
-            _loc9_ = _loc9_ + _loc6_;
-            _loc10_++;
+            id = e.pkg.readInt();
+            count = e.pkg.readInt();
+            name = ItemManager.Instance.getTemplateById(id).Name + " x " + count + " ";
+            goodsNames = goodsNames + name;
+            i++;
          }
-         _turnView.playAction(_loc8_,_loc9_);
-         updateLottery(_loc3_,_loc5_);
+         _turnView.playAction(type,goodsNames);
+         updateLottery(socre,donateScore);
       }
       
-      private function __onUpdateScore(param1:PkgEvent) : void
+      private function __onUpdateScore(e:PkgEvent) : void
       {
-         var _loc2_:int = param1.pkg.readInt();
-         var _loc3_:int = param1.pkg.readInt();
-         updateLottery(_loc2_,_loc3_);
+         var socre:int = e.pkg.readInt();
+         var donateScore:int = e.pkg.readInt();
+         updateLottery(socre,donateScore);
       }
       
-      private function __updateGoods(param1:BagEvent) : void
+      private function __updateGoods(e:BagEvent) : void
       {
          _recycleCell.info = PlayerManager.Instance.Self.StoreBag.items[0];
       }
@@ -338,11 +337,11 @@ package wasteRecycle.view
       
       private function cellBg() : Sprite
       {
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(0,0);
-         _loc1_.graphics.drawRect(0,0,70,70);
-         _loc1_.graphics.endFill();
-         return _loc1_;
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(0,0);
+         sp.graphics.drawRect(0,0,70,70);
+         sp.graphics.endFill();
+         return sp;
       }
       
       override public function dispose() : void

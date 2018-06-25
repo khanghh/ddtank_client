@@ -14,14 +14,14 @@ package store.equipGhost.data
       
       private var _agility:uint;
       
-      public function GhostPropertyData(param1:uint, param2:uint = 0, param3:uint = 0, param4:uint = 0, param5:uint = 0)
+      public function GhostPropertyData(mainProperty:uint, attack:uint = 0, lucky:uint = 0, defend:uint = 0, agility:uint = 0)
       {
          super();
-         _mainProperty = param1;
-         _attack = param2;
-         _lucky = param3;
-         _defend = param4;
-         _agility = param5;
+         _mainProperty = mainProperty;
+         _attack = attack;
+         _lucky = lucky;
+         _defend = defend;
+         _agility = agility;
       }
       
       public function get mainProperty() : uint

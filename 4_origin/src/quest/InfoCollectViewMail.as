@@ -12,16 +12,16 @@ package quest
       
       private const DomainArray:Array = ["163.com","qq.com"];
       
-      public function InfoCollectViewMail(param1:int = 0)
+      public function InfoCollectViewMail(id:int = 0)
       {
-         super(param1);
+         super(id);
          Type = 1;
       }
       
-      override protected function fillArgs(param1:URLVariables) : URLVariables
+      override protected function fillArgs(args:URLVariables) : URLVariables
       {
-         param1["mail"] = param1["input"];
-         return param1;
+         args["mail"] = args["input"];
+         return args;
       }
       
       override protected function modifyView() : void
@@ -35,31 +35,31 @@ package quest
          _dataLabel.text = LanguageMgr.GetTranslation("ddt.quest.collectInfo.email");
       }
       
-      override protected function updateHelper(param1:String) : String
+      override protected function updateHelper(value:String) : String
       {
-         if(param1 == "")
+         if(value == "")
          {
             return "";
          }
-         if(param1.indexOf("@") < 0)
+         if(value.indexOf("@") < 0)
          {
             return "ddt.quest.collectInfo.notValidMailAddress";
          }
-         var _loc2_:String = param1.substr(param1.indexOf("@") + 1);
-         if(_loc2_.indexOf(".") < 0)
+         var domain:String = value.substr(value.indexOf("@") + 1);
+         if(domain.indexOf(".") < 0)
          {
             return "ddt.quest.collectInfo.notValidMailAddress";
          }
          return "ddt.quest.collectInfo.validMailAddress";
       }
       
-      private function cansearch(param1:String) : Boolean
+      private function cansearch(domain:String) : Boolean
       {
          var _loc4_:int = 0;
          var _loc3_:* = DomainArray;
-         for each(var _loc2_ in DomainArray)
+         for each(var i in DomainArray)
          {
-            if(_loc2_ == param1)
+            if(i == domain)
             {
                return true;
             }
@@ -67,7 +67,7 @@ package quest
          return false;
       }
       
-      override protected function __onSendBtn(param1:MouseEvent) : void
+      override protected function __onSendBtn(evt:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(_inputData.text.length < 1)

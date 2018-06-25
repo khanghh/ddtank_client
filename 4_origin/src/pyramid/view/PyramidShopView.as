@@ -54,9 +54,9 @@ package pyramid.view
       
       private function initView() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:Number = NaN;
-         var _loc2_:Number = NaN;
+         var i:int = 0;
+         var dx:Number = NaN;
+         var dy:Number = NaN;
          _bg = ComponentFactory.Instance.creatBitmap("assets.pyramid.shopViewBg");
          addChild(_bg);
          _goodItemContainerAll = ComponentFactory.Instance.creatCustomObject("pyramid.view.goodItemContainerAll");
@@ -70,18 +70,17 @@ package pyramid.view
          _currentPageInput = UICreatShortcut.creatAndAdd("ddtshop.CurrentPageInput",_navigationBarContainer);
          _currentPageTxt = UICreatShortcut.creatAndAdd("ddtshop.CurrentPage",_navigationBarContainer);
          _goodItems = new Vector.<PyramidShopItem>();
-         _loc3_ = 0;
-         while(_loc3_ < SHOP_ITEM_NUM)
+         for(i = 0; i < SHOP_ITEM_NUM; )
          {
-            _goodItems[_loc3_] = ComponentFactory.Instance.creatCustomObject("pyramid.view.pyramidShopItem");
-            _loc1_ = _goodItems[_loc3_].width;
-            _loc2_ = _goodItems[_loc3_].height;
-            _loc1_ = _loc1_ * (int(_loc3_ % 2));
-            _loc2_ = _loc2_ * (int(_loc3_ / 2));
-            _goodItems[_loc3_].x = _loc1_;
-            _goodItems[_loc3_].y = _loc2_ + _loc3_ / 2 * 2;
-            _goodItemContainerAll.addChild(_goodItems[_loc3_]);
-            _loc3_++;
+            _goodItems[i] = ComponentFactory.Instance.creatCustomObject("pyramid.view.pyramidShopItem");
+            dx = _goodItems[i].width;
+            dy = _goodItems[i].height;
+            dx = dx * (int(i % 2));
+            dy = dy * (int(i / 2));
+            _goodItems[i].x = dx;
+            _goodItems[i].y = dy + i / 2 * 2;
+            _goodItemContainerAll.addChild(_goodItems[i]);
+            i++;
          }
       }
       
@@ -90,20 +89,19 @@ package pyramid.view
          setList(ShopManager.Instance.getValidSortedGoodsByType(getType(),CURRENT_PAGE));
       }
       
-      public function setList(param1:Vector.<ShopItemInfo>) : void
+      public function setList(list:Vector.<ShopItemInfo>) : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          clearitems();
-         _loc2_ = 0;
-         while(_loc2_ < SHOP_ITEM_NUM)
+         for(i = 0; i < SHOP_ITEM_NUM; )
          {
-            if(param1)
+            if(list)
             {
-               if(_loc2_ < param1.length && param1[_loc2_])
+               if(i < list.length && list[i])
                {
-                  _goodItems[_loc2_].shopItemInfo = param1[_loc2_];
+                  _goodItems[i].shopItemInfo = list[i];
                }
-               _loc2_++;
+               i++;
                continue;
             }
             break;
@@ -121,38 +119,37 @@ package pyramid.view
          PyramidManager.instance.model.addEventListener("dataChange",__dataChangeHandler);
       }
       
-      private function __stopScoreUpdateHandler(param1:PyramidEvent) : void
+      private function __stopScoreUpdateHandler(event:PyramidEvent) : void
       {
          updateShopItemGreyState();
       }
       
-      private function __dataChangeHandler(param1:PyramidEvent) : void
+      private function __dataChangeHandler(event:PyramidEvent) : void
       {
          updateShopItemGreyState();
       }
       
       private function updateShopItemGreyState() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(_goodItems)
          {
-            _loc1_ = 0;
-            while(_loc1_ < _goodItems.length)
+            for(i = 0; i < _goodItems.length; )
             {
-               _goodItems[_loc1_].updateGreyState();
-               _loc1_++;
+               _goodItems[i].updateGreyState();
+               i++;
             }
          }
       }
       
-      private function __pageBtnClick(param1:MouseEvent) : void
+      private function __pageBtnClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(ShopManager.Instance.getResultPages(getType()) == 0)
          {
             return;
          }
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = evt.currentTarget;
          if(_firstPageBtn !== _loc2_)
          {
             if(_prePageBtn !== _loc2_)
@@ -194,12 +191,11 @@ package pyramid.view
       
       private function clearitems() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < SHOP_ITEM_NUM)
+         var i:int = 0;
+         for(i = 0; i < SHOP_ITEM_NUM; )
          {
-            _goodItems[_loc1_].shopItemInfo = null;
-            _loc1_++;
+            _goodItems[i].shopItemInfo = null;
+            i++;
          }
       }
       
@@ -220,13 +216,12 @@ package pyramid.view
       
       private function disposeItems() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _goodItems.length)
+         var i:int = 0;
+         for(i = 0; i < _goodItems.length; )
          {
-            ObjectUtils.disposeObject(_goodItems[_loc1_]);
-            _goodItems[_loc1_] = null;
-            _loc1_++;
+            ObjectUtils.disposeObject(_goodItems[i]);
+            _goodItems[i] = null;
+            i++;
          }
          _goodItems = null;
       }

@@ -58,19 +58,18 @@ package campbattle.view.rank
       
       private function addRankItem() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          _itemList = new Vector.<CampRankItem>();
-         _loc2_ = 0;
-         while(_loc2_ < 4)
+         for(i = 0; i < 4; )
          {
-            _loc1_ = new CampRankItem();
-            _loc1_.tipData = _capList[_loc2_];
-            _loc1_.y = 32 * _loc2_ - 32;
-            _loc1_.x = 109;
-            addChild(_loc1_);
-            _itemList.push(_loc1_);
-            _loc2_++;
+            item = new CampRankItem();
+            item.tipData = _capList[i];
+            item.y = 32 * i - 32;
+            item.x = 109;
+            addChild(item);
+            _itemList.push(item);
+            i++;
          }
       }
       
@@ -81,37 +80,36 @@ package campbattle.view.rank
          CampBattleControl.instance.addEventListener("camp_score_rank",__onUpdateScore);
       }
       
-      private function __onUpdateScore(param1:MapEvent) : void
+      private function __onUpdateScore(event:MapEvent) : void
       {
          upDateRankList(CampBattleControl.instance.model.scoreList);
       }
       
-      private function upDateRankList(param1:Array) : void
+      private function upDateRankList(arr:Array) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         if(param1)
+         var len:int = 0;
+         var i:int = 0;
+         if(arr)
          {
-            _loc2_ = Math.min(param1.length,_itemList.length);
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_)
+            len = Math.min(arr.length,_itemList.length);
+            for(i = 0; i < len; )
             {
-               _itemList[_loc3_].setItemTxt(param1[_loc3_]);
-               _loc3_++;
+               _itemList[i].setItemTxt(arr[i]);
+               i++;
             }
          }
       }
       
-      private function __onRankBtnClick(param1:MouseEvent) : void
+      private function __onRankBtnClick(event:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
+         event.stopImmediatePropagation();
          SoundManager.instance.playButtonSound();
          SocketManager.Instance.out.requestPRankList();
       }
       
-      private function __onClickHander(param1:MouseEvent) : void
+      private function __onClickHander(e:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
+         e.stopImmediatePropagation();
          SoundManager.instance.playButtonSound();
          if(_isOut)
          {
@@ -136,7 +134,7 @@ package campbattle.view.rank
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          removeEvent();
          if(_backBtn)
          {
@@ -155,15 +153,14 @@ package campbattle.view.rank
          _rankBtn = null;
          if(_itemList)
          {
-            _loc1_ = 0;
-            while(_loc1_ < _itemList.length)
+            for(i = 0; i < _itemList.length; )
             {
-               if(_itemList[_loc1_])
+               if(_itemList[i])
                {
-                  ObjectUtils.disposeObject(_itemList[_loc1_]);
+                  ObjectUtils.disposeObject(_itemList[i]);
                }
-               _itemList[_loc1_] = null;
-               _loc1_++;
+               _itemList[i] = null;
+               i++;
             }
             _itemList.length = 0;
             _itemList = null;

@@ -42,12 +42,12 @@ package foodActivity
          FoodActivityManager.Instance.addEventListener(FoodActivityEvent.FOOD_REWARD,__onGetReward);
       }
       
-      protected function __onGetReward(param1:FoodActivityEvent) : void
+      protected function __onGetReward(event:FoodActivityEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         var _loc3_:Boolean = _loc2_.readBoolean();
-         FoodActivityManager.Instance.ripeNum = _loc2_.readInt();
-         if(_loc3_)
+         var pkg:PackageIn = event.pkg;
+         var isSuccess:Boolean = pkg.readBoolean();
+         FoodActivityManager.Instance.ripeNum = pkg.readInt();
+         if(isSuccess)
          {
             if(_frame)
             {
@@ -71,12 +71,12 @@ package foodActivity
          }
       }
       
-      protected function __onCloseView(param1:FoodActivityEvent) : void
+      protected function __onCloseView(event:FoodActivityEvent) : void
       {
          disposeFrame();
       }
       
-      private function __onUpdateView(param1:FoodActivityEvent) : void
+      private function __onUpdateView(event:FoodActivityEvent) : void
       {
          if(_frame)
          {
@@ -93,7 +93,7 @@ package foodActivity
          _frame = null;
       }
       
-      protected function __onOpenView(param1:FoodActivityEvent) : void
+      protected function __onOpenView(event:FoodActivityEvent) : void
       {
          UIModuleSmallLoading.Instance.progress = 0;
          UIModuleSmallLoading.Instance.show();
@@ -104,9 +104,9 @@ package foodActivity
          UIModuleLoader.Instance.addUIModuleImp("foodactivity");
       }
       
-      protected function _loaderCompleteHandle(param1:UIModuleEvent) : void
+      protected function _loaderCompleteHandle(event:UIModuleEvent) : void
       {
-         if(param1.module == "foodactivity")
+         if(event.module == "foodactivity")
          {
             UIModuleLoader.Instance.removeEventListener("uiModuleComplete",_loaderCompleteHandle);
             UIModuleLoader.Instance.removeEventListener("uiMoudleProgress",_loaderProgressHandle);
@@ -119,7 +119,7 @@ package foodActivity
          }
       }
       
-      protected function _loaderErrorHandle(param1:UIModuleEvent) : void
+      protected function _loaderErrorHandle(event:UIModuleEvent) : void
       {
          UIModuleLoader.Instance.removeEventListener("uiModuleComplete",_loaderCompleteHandle);
          UIModuleLoader.Instance.removeEventListener("uiMoudleProgress",_loaderProgressHandle);
@@ -128,12 +128,12 @@ package foodActivity
          UIModuleSmallLoading.Instance.hide();
       }
       
-      protected function _loaderProgressHandle(param1:UIModuleEvent) : void
+      protected function _loaderProgressHandle(event:UIModuleEvent) : void
       {
-         UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+         UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
       }
       
-      protected function _loadingCloseHandle(param1:Event) : void
+      protected function _loadingCloseHandle(event:Event) : void
       {
          UIModuleLoader.Instance.removeEventListener("uiModuleComplete",_loaderCompleteHandle);
          UIModuleLoader.Instance.removeEventListener("uiMoudleProgress",_loaderProgressHandle);

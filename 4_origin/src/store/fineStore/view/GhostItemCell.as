@@ -25,12 +25,12 @@ package store.fineStore.view
    {
        
       
-      public function GhostItemCell(param1:int)
+      public function GhostItemCell($index:int)
       {
-         var _loc2_:Sprite = new Sprite();
-         var _loc3_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtstore.EquipCellBG");
-         _loc2_.addChild(_loc3_);
-         super(_loc2_,param1);
+         var bg:Sprite = new Sprite();
+         var bgBit:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtstore.EquipCellBG");
+         bg.addChild(bgBit);
+         super(bg,$index);
          setContentSize(68,68);
          PicPos = new Point(-3,0);
       }
@@ -42,46 +42,46 @@ package store.fineStore.view
          super.addEnchantMc();
       }
       
-      override public function dragDrop(param1:DragEffect) : void
+      override public function dragDrop(effect:DragEffect) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:* = false;
+         var equipIDs:* = null;
+         var ghost:* = null;
+         var isUp:* = false;
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc5_:InventoryItemInfo = param1.data as InventoryItemInfo;
-         if(_loc5_ && param1.action != "split")
+         var info:InventoryItemInfo = effect.data as InventoryItemInfo;
+         if(info && effect.action != "split")
          {
-            _loc4_ = [1,5,7];
-            if(_loc4_.indexOf(_loc5_.CategoryID) == -1)
+            equipIDs = [1,5,7];
+            if(equipIDs.indexOf(info.CategoryID) == -1)
             {
-               param1.action = "none";
+               effect.action = "none";
                return;
             }
-            _loc3_ = PlayerManager.Instance.Self.getGhostDataByCategoryID(_loc5_.CategoryID);
-            if(_loc3_)
+            ghost = PlayerManager.Instance.Self.getGhostDataByCategoryID(info.CategoryID);
+            if(ghost)
             {
-               _loc2_ = _loc3_.level >= EquipGhostManager.getInstance().model.topLvDic[_loc3_.categoryID];
-               if(_loc2_)
+               isUp = ghost.level >= EquipGhostManager.getInstance().model.topLvDic[ghost.categoryID];
+               if(isUp)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("equipGhost.upLevel"));
-                  param1.action = "none";
+                  effect.action = "none";
                   return;
                }
             }
-            EquipGhostManager.getInstance().chooseEquip(_loc5_);
-            SocketManager.Instance.out.sendMoveGoods(_loc5_.BagType,_loc5_.Place,12,index,1);
-            param1.action = "none";
+            EquipGhostManager.getInstance().chooseEquip(info);
+            SocketManager.Instance.out.sendMoveGoods(info.BagType,info.Place,12,index,1);
+            effect.action = "none";
             DragManager.acceptDrag(this);
          }
       }
       
-      override protected function __doubleClickHandler(param1:InteractiveEvent) : void
+      override protected function __doubleClickHandler(evt:InteractiveEvent) : void
       {
-         var _loc2_:* = null;
+         var data:* = null;
          if(!DoubleClickEnabled)
          {
             return;
@@ -90,12 +90,12 @@ package store.fineStore.view
          {
             return;
          }
-         if((param1.currentTarget as BagCell).info != null)
+         if((evt.currentTarget as BagCell).info != null)
          {
-            _loc2_ = EquipGhostManager.getInstance().model.getGhostData(info.CategoryID,1);
-            if(_loc2_ != null)
+            data = EquipGhostManager.getInstance().model.getGhostData(info.CategoryID,1);
+            if(data != null)
             {
-               SocketManager.Instance.out.sendMoveGoods(12,index,_loc2_.bagType,_loc2_.place,1);
+               SocketManager.Instance.out.sendMoveGoods(12,index,data.bagType,data.place,1);
             }
             EquipGhostManager.getInstance().clearEquip();
             if(!mouseSilenced)
@@ -105,9 +105,9 @@ package store.fineStore.view
          }
       }
       
-      override public function set info(param1:ItemTemplateInfo) : void
+      override public function set info(value:ItemTemplateInfo) : void
       {
-         .super.info = param1;
+         .super.info = value;
          tipStyle = "ddtstore.GhostTips";
       }
       

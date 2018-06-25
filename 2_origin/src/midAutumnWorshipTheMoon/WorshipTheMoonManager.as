@@ -44,7 +44,7 @@ package midAutumnWorshipTheMoon
       
       public var dataEndTime:String = "";
       
-      public function WorshipTheMoonManager(param1:inner)
+      public function WorshipTheMoonManager(single:inner)
       {
          super();
       }
@@ -63,41 +63,41 @@ package midAutumnWorshipTheMoon
          showFrame();
       }
       
-      public function init(param1:HallStateView = null) : void
+      public function init(hall:HallStateView = null) : void
       {
-         _hall = param1;
+         _hall = hall;
          initEvents();
       }
       
       private function initEvents() : void
       {
-         var _loc1_:int = 281;
-         SocketManager.Instance.addEventListener(PkgEvent.format(_loc1_,1),onResultIsActivityOpen);
-         SocketManager.Instance.addEventListener(PkgEvent.format(_loc1_,4),onResultAwardsList);
-         SocketManager.Instance.addEventListener(PkgEvent.format(_loc1_,2),onResultFreeCounts);
-         SocketManager.Instance.addEventListener(PkgEvent.format(_loc1_,3),onResultWorshipTheMoon);
+         var eType:int = 281;
+         SocketManager.Instance.addEventListener(PkgEvent.format(eType,1),onResultIsActivityOpen);
+         SocketManager.Instance.addEventListener(PkgEvent.format(eType,4),onResultAwardsList);
+         SocketManager.Instance.addEventListener(PkgEvent.format(eType,2),onResultFreeCounts);
+         SocketManager.Instance.addEventListener(PkgEvent.format(eType,3),onResultWorshipTheMoon);
       }
       
       private function removeEvents() : void
       {
-         var _loc1_:int = 281;
-         SocketManager.Instance.removeEventListener(PkgEvent.format(_loc1_,1),onResultIsActivityOpen);
-         SocketManager.Instance.removeEventListener(PkgEvent.format(_loc1_,4),onResultAwardsList);
-         SocketManager.Instance.removeEventListener(PkgEvent.format(_loc1_,2),onResultFreeCounts);
-         SocketManager.Instance.removeEventListener(PkgEvent.format(_loc1_,3),onResultWorshipTheMoon);
+         var eType:int = 281;
+         SocketManager.Instance.removeEventListener(PkgEvent.format(eType,1),onResultIsActivityOpen);
+         SocketManager.Instance.removeEventListener(PkgEvent.format(eType,4),onResultAwardsList);
+         SocketManager.Instance.removeEventListener(PkgEvent.format(eType,2),onResultFreeCounts);
+         SocketManager.Instance.removeEventListener(PkgEvent.format(eType,3),onResultWorshipTheMoon);
       }
       
-      protected function onResultIsActivityOpen(param1:PkgEvent) : void
+      protected function onResultIsActivityOpen(e:PkgEvent) : void
       {
-         var _loc2_:ByteArray = param1.pkg;
-         var _loc3_:Boolean = _loc2_.readBoolean();
-         _isOpen = _loc3_;
-         WorshipTheMoonModel.getInstance().updateIsOpen(_loc3_);
-         worshipTheMoonIcon(_loc3_);
-         if(_loc3_)
+         var bytes:ByteArray = e.pkg;
+         var isOpen:Boolean = bytes.readBoolean();
+         _isOpen = isOpen;
+         WorshipTheMoonModel.getInstance().updateIsOpen(isOpen);
+         worshipTheMoonIcon(isOpen);
+         if(isOpen)
          {
-            dataTime = _loc2_.readUTF();
-            dataEndTime = _loc2_.readUTF();
+            dataTime = bytes.readUTF();
+            dataEndTime = bytes.readUTF();
             ChatManager.Instance.sysChatAmaranth(LanguageMgr.GetTranslation("worshipTheMoon.chatMsg.open"));
          }
          else if(_isOpen)
@@ -106,9 +106,9 @@ package midAutumnWorshipTheMoon
          }
       }
       
-      public function worshipTheMoonIcon(param1:Boolean) : void
+      public function worshipTheMoonIcon(flag:Boolean) : void
       {
-         HallIconManager.instance.updateSwitchHandler("worshipTheMoon",param1);
+         HallIconManager.instance.updateSwitchHandler("worshipTheMoon",flag);
       }
       
       public function showFrame() : void
@@ -128,43 +128,43 @@ package midAutumnWorshipTheMoon
          requireFreeCount();
       }
       
-      protected function onResultAwardsList(param1:PkgEvent) : void
+      protected function onResultAwardsList(e:PkgEvent) : void
       {
-         var _loc2_:ByteArray = param1.pkg;
-         var _loc5_:int = _loc2_.readInt();
-         var _loc3_:int = _loc2_.readInt();
-         var _loc4_:Vector.<int> = new Vector.<int>();
-         while(_loc2_.bytesAvailable)
+         var bytes:ByteArray = e.pkg;
+         var the200ItemID:int = bytes.readInt();
+         var count:int = bytes.readInt();
+         var list:Vector.<int> = new Vector.<int>();
+         while(bytes.bytesAvailable)
          {
-            _loc4_.push(_loc2_.readInt());
+            list.push(bytes.readInt());
          }
-         WorshipTheMoonModel.getInstance().update200TimesGain(_loc5_);
-         WorshipTheMoonModel.getInstance().updateItemsCanGainsIDList(_loc4_);
+         WorshipTheMoonModel.getInstance().update200TimesGain(the200ItemID);
+         WorshipTheMoonModel.getInstance().updateItemsCanGainsIDList(list);
       }
       
-      protected function onResultFreeCounts(param1:PkgEvent) : void
+      protected function onResultFreeCounts(e:PkgEvent) : void
       {
-         var _loc4_:ByteArray = param1.pkg;
-         var _loc5_:int = _loc4_.readInt();
-         var _loc6_:int = _loc4_.readInt();
-         var _loc2_:int = _loc4_.readInt();
-         var _loc3_:int = _loc4_.readInt();
-         WorshipTheMoonModel.getInstance().updateFreeCounts(_loc5_);
-         WorshipTheMoonModel.getInstance().updateWorshipedCounts(_loc6_);
-         WorshipTheMoonModel.getInstance().update200State(_loc2_);
-         WorshipTheMoonModel.getInstance().updatePrice(_loc3_);
+         var bytes:ByteArray = e.pkg;
+         var freeCount:int = bytes.readInt();
+         var counts:int = bytes.readInt();
+         var gainedTimes:int = bytes.readInt();
+         var price:int = bytes.readInt();
+         WorshipTheMoonModel.getInstance().updateFreeCounts(freeCount);
+         WorshipTheMoonModel.getInstance().updateWorshipedCounts(counts);
+         WorshipTheMoonModel.getInstance().update200State(gainedTimes);
+         WorshipTheMoonModel.getInstance().updatePrice(price);
       }
       
-      protected function onResultWorshipTheMoon(param1:PkgEvent) : void
+      protected function onResultWorshipTheMoon(e:PkgEvent) : void
       {
-         var _loc2_:ByteArray = param1.pkg;
-         var _loc3_:Vector.<WorshipTheMoonAwardsBoxInfo> = new Vector.<WorshipTheMoonAwardsBoxInfo>();
-         _loc2_.readInt();
-         while(_loc2_.bytesAvailable)
+         var bytes:ByteArray = e.pkg;
+         var list:Vector.<WorshipTheMoonAwardsBoxInfo> = new Vector.<WorshipTheMoonAwardsBoxInfo>();
+         bytes.readInt();
+         while(bytes.bytesAvailable)
          {
-            _loc3_.push(new WorshipTheMoonAwardsBoxInfo(_loc2_.readInt(),_loc2_.readInt()));
+            list.push(new WorshipTheMoonAwardsBoxInfo(bytes.readInt(),bytes.readInt()));
          }
-         WorshipTheMoonModel.getInstance().updateAwardsBoxInfoList(_loc3_);
+         WorshipTheMoonModel.getInstance().updateAwardsBoxInfoList(list);
       }
       
       public function requireFreeCount() : void
@@ -177,18 +177,18 @@ package midAutumnWorshipTheMoon
          GameInSocketOut.sendWorshipTheMoonAwardsList();
       }
       
-      public function requireWorshipTheMoon(param1:int) : void
+      public function requireWorshipTheMoon(counts:int) : void
       {
-         var _loc2_:Boolean = false;
-         if(param1 == 1)
+         var isBindTickets:Boolean = false;
+         if(counts == 1)
          {
-            _loc2_ = WorshipTheMoonModel.getInstance().getIsOnceBtnUseBindMoney();
+            isBindTickets = WorshipTheMoonModel.getInstance().getIsOnceBtnUseBindMoney();
          }
          else
          {
-            _loc2_ = WorshipTheMoonModel.getInstance().getIsTensBtnUseBindMoney();
+            isBindTickets = WorshipTheMoonModel.getInstance().getIsTensBtnUseBindMoney();
          }
-         GameInSocketOut.sendWorshipTheMoon(param1,_loc2_);
+         GameInSocketOut.sendWorshipTheMoon(counts,isBindTickets);
       }
       
       public function requireWorship200AwardBox() : void

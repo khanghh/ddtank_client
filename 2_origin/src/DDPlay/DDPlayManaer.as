@@ -38,18 +38,18 @@ package DDPlay
       
       private var _ddPlayView:DDPlayView;
       
-      public function DDPlayManaer(param1:DDPlayInstance, param2:IEventDispatcher = null)
+      public function DDPlayManaer(ddplay:DDPlayInstance, target:IEventDispatcher = null)
       {
-         super(param2);
+         super(target);
       }
       
       public static function get Instance() : DDPlayManaer
       {
-         var _loc1_:* = null;
+         var ddplayinstance:* = null;
          if(_instance == null)
          {
-            _loc1_ = new DDPlayInstance();
-            _instance = new DDPlayManaer(_loc1_);
+            ddplayinstance = new DDPlayInstance();
+            _instance = new DDPlayManaer(ddplayinstance);
          }
          return _instance;
       }
@@ -64,35 +64,35 @@ package DDPlay
          SocketManager.Instance.addEventListener("DDPlay_brgin",__addDDPlayBtn);
       }
       
-      protected function __addDDPlayBtn(param1:CrazyTankSocketEvent) : void
+      protected function __addDDPlayBtn(event:CrazyTankSocketEvent) : void
       {
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:int = param1._cmd;
-         var _loc3_:CrazyTankSocketEvent = null;
-         switch(int(_loc2_) - 74)
+         var pkg:PackageIn = event.pkg;
+         var cmd:int = event._cmd;
+         var events:CrazyTankSocketEvent = null;
+         switch(int(cmd) - 74)
          {
             case 0:
-               openOrClose(_loc4_);
+               openOrClose(pkg);
                break;
             case 1:
-               _loc3_ = new CrazyTankSocketEvent("DDPlay_enter",_loc4_);
+               events = new CrazyTankSocketEvent("DDPlay_enter",pkg);
                break;
             case 2:
-               _loc3_ = new CrazyTankSocketEvent("DDPlay_start",_loc4_);
+               events = new CrazyTankSocketEvent("DDPlay_start",pkg);
          }
-         if(_loc3_)
+         if(events)
          {
-            dispatchEvent(_loc3_);
+            dispatchEvent(events);
          }
       }
       
-      private function openOrClose(param1:PackageIn) : void
+      private function openOrClose(pkg:PackageIn) : void
       {
-         isOpen = param1.readBoolean();
-         beginDate = param1.readDate();
-         endDate = param1.readDate();
-         DDPlayMoney = param1.readInt();
-         exchangeFold = param1.readInt();
+         isOpen = pkg.readBoolean();
+         beginDate = pkg.readDate();
+         endDate = pkg.readDate();
+         DDPlayMoney = pkg.readInt();
+         exchangeFold = pkg.readInt();
          if(isOpen)
          {
             createDDPlayBtn();
@@ -130,7 +130,7 @@ package DDPlay
          }
       }
       
-      protected function __onClose(param1:Event) : void
+      protected function __onClose(event:Event) : void
       {
          UIModuleSmallLoading.Instance.hide();
          UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);
@@ -138,17 +138,17 @@ package DDPlay
          UIModuleLoader.Instance.removeEventListener("uiModuleComplete",__complainShow);
       }
       
-      private function __progressShow(param1:UIModuleEvent) : void
+      private function __progressShow(event:UIModuleEvent) : void
       {
-         if(param1.module == "ddplay")
+         if(event.module == "ddplay")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
       
-      private function __complainShow(param1:UIModuleEvent) : void
+      private function __complainShow(event:UIModuleEvent) : void
       {
-         if(param1.module == "ddplay")
+         if(event.module == "ddplay")
          {
             UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);
             UIModuleLoader.Instance.removeEventListener("uiMoudleProgress",__progressShow);

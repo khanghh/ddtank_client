@@ -48,34 +48,34 @@ package consortionBattle.view
          _timer.start();
       }
       
-      protected function __startCount(param1:Event) : void
+      protected function __startCount(e:Event) : void
       {
          if(_totalCount < 0)
          {
             __timerComplete();
             return;
          }
-         var _loc2_:String = setFormat(int(_totalCount / 3600)) + ":" + setFormat(int(_totalCount / 60 % 60)) + ":" + setFormat(int(_totalCount % 60));
-         (_timeCD["timeHour2"] as MovieClip).gotoAndStop("num_" + _loc2_.charAt(0));
-         (_timeCD["timeHour"] as MovieClip).gotoAndStop("num_" + _loc2_.charAt(1));
-         (_timeCD["timeMint2"] as MovieClip).gotoAndStop("num_" + _loc2_.charAt(3));
-         (_timeCD["timeMint"] as MovieClip).gotoAndStop("num_" + _loc2_.charAt(4));
-         (_timeCD["timeSecond2"] as MovieClip).gotoAndStop("num_" + _loc2_.charAt(6));
-         (_timeCD["timeSecond"] as MovieClip).gotoAndStop("num_" + _loc2_.charAt(7));
+         var str:String = setFormat(int(_totalCount / 3600)) + ":" + setFormat(int(_totalCount / 60 % 60)) + ":" + setFormat(int(_totalCount % 60));
+         (_timeCD["timeHour2"] as MovieClip).gotoAndStop("num_" + str.charAt(0));
+         (_timeCD["timeHour"] as MovieClip).gotoAndStop("num_" + str.charAt(1));
+         (_timeCD["timeMint2"] as MovieClip).gotoAndStop("num_" + str.charAt(3));
+         (_timeCD["timeMint"] as MovieClip).gotoAndStop("num_" + str.charAt(4));
+         (_timeCD["timeSecond2"] as MovieClip).gotoAndStop("num_" + str.charAt(6));
+         (_timeCD["timeSecond"] as MovieClip).gotoAndStop("num_" + str.charAt(7));
          _totalCount = Number(_totalCount) - 1;
       }
       
-      protected function setFormat(param1:int) : String
+      protected function setFormat(value:int) : String
       {
-         var _loc2_:String = param1.toString();
-         if(param1 < 10)
+         var str:String = value.toString();
+         if(value < 10)
          {
-            _loc2_ = "0" + _loc2_;
+            str = "0" + str;
          }
-         return _loc2_;
+         return str;
       }
       
-      protected function __timerComplete(param1:Event = null) : void
+      protected function __timerComplete(e:Event = null) : void
       {
          dispatchEvent(new Event("complete"));
       }

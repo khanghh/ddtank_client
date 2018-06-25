@@ -653,6 +653,12 @@ package ddt.events
       public static const ISLAND_INFO:String = "islandInfo";
       
       public static const PVE_POWER_BUFF:String = "pvePowerBuff";
+      
+      public static const SIMPLEOBJECT_MOVEPOS:String = "simpleobjectMovePos";
+      
+      public static const DREAMLAND_HURTUPDATE:String = "dreamLandHurtUpdate";
+      
+      public static const WORLDCUP_GUESS:String = "worldcup_guess";
        
       
       private var _pkg:PackageIn;
@@ -661,11 +667,11 @@ package ddt.events
       
       public var _cmd:int;
       
-      public function CrazyTankSocketEvent(param1:String, param2:PackageIn = null, param3:int = 0)
+      public function CrazyTankSocketEvent(type:String, pkg:PackageIn = null, cmd:int = 0)
       {
-         super(param1,bubbles,cancelable);
-         _pkg = param2;
-         _cmd = param3;
+         super(type,bubbles,cancelable);
+         _pkg = pkg;
+         _cmd = cmd;
       }
       
       public function get pkg() : PackageIn

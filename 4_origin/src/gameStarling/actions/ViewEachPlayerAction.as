@@ -22,19 +22,19 @@ package gameStarling.actions
       
       private var _count:int;
       
-      public function ViewEachPlayerAction(param1:MapView3D, param2:Array, param3:Number = 1500)
+      public function ViewEachPlayerAction(map:MapView3D, players:Array, interval:Number = 1500)
       {
          super();
-         _players = param2.sortOn("x",16);
-         _map = param1;
-         _interval = param3 / 40;
+         _players = players.sortOn("x",16);
+         _map = map;
+         _interval = interval / 40;
          _index = 0;
          _count = 0;
       }
       
       override public function execute() : void
       {
-         var _loc1_:* = null;
+         var player:* = null;
          if(GameControl.Instance.Current == null)
          {
             return;
@@ -55,18 +55,18 @@ package gameStarling.actions
          _count = Number(_count) - 1;
          if(_count == 20)
          {
-            _loc1_ = (_players[_index - 1] as GamePlayer3D).player;
-            if(_loc1_ == null)
+            player = (_players[_index - 1] as GamePlayer3D).player;
+            if(player == null)
             {
                return;
             }
-            if(_loc1_.ringFlag)
+            if(player.ringFlag)
             {
                GameControl.Instance.dispatchEvent(new GameEvent("addringanamition",_players[_index - 1]));
             }
             if(GameControl.Instance.Current.guardCoreEnable)
             {
-               if(_loc1_.playerInfo.guardCoreID != 0 && _loc1_.playerInfo.Grade >= GuardCoreManager.instance.guardCoreMinLevel)
+               if(player.playerInfo.guardCoreID != 0 && player.playerInfo.Grade >= GuardCoreManager.instance.guardCoreMinLevel)
                {
                   GameControl.Instance.dispatchEvent(new GameEvent("addguardcoreeffect",_players[_index - 1]));
                }

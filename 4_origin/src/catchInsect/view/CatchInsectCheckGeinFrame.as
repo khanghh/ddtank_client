@@ -121,32 +121,32 @@ package catchInsect.view
          CatchInsectManager.instance.addEventListener("updateInfo",__updateView);
       }
       
-      protected function __updateView(param1:Event) : void
+      protected function __updateView(event:Event) : void
       {
-         var _loc2_:int = CatchInsectManager.instance.model.score;
-         var _loc3_:int = CatchInsectManager.instance.model.avaibleScore;
-         var _loc4_:int = CatchInsectManager.instance.model.prizeStatus;
-         _scoreTxt.text = _loc3_ + "/" + _loc2_;
-         _indivPrizeView.setPrizeStatus(_loc4_);
+         var total:int = CatchInsectManager.instance.model.score;
+         var avaible:int = CatchInsectManager.instance.model.avaibleScore;
+         var prizeStatus:int = CatchInsectManager.instance.model.prizeStatus;
+         _scoreTxt.text = avaible + "/" + total;
+         _indivPrizeView.setPrizeStatus(prizeStatus);
       }
       
-      protected function __convertBtnClick(param1:MouseEvent) : void
-      {
-         SoundManager.instance.play("008");
-         var _loc2_:CatchInsectShopFrame = ComponentFactory.Instance.creatCustomObject("catchInsect.shopFrame");
-         _loc2_.addEventListener("response",__frameEvent);
-         _loc2_.show();
-      }
-      
-      protected function __frameEvent(param1:FrameEvent) : void
+      protected function __convertBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:Disposeable = param1.target as Disposeable;
-         _loc2_.dispose();
-         _loc2_ = null;
+         var frame:CatchInsectShopFrame = ComponentFactory.Instance.creatCustomObject("catchInsect.shopFrame");
+         frame.addEventListener("response",__frameEvent);
+         frame.show();
       }
       
-      protected function __changeHandler(param1:Event) : void
+      protected function __frameEvent(event:FrameEvent) : void
+      {
+         SoundManager.instance.play("008");
+         var frame:Disposeable = event.target as Disposeable;
+         frame.dispose();
+         frame = null;
+      }
+      
+      protected function __changeHandler(event:Event) : void
       {
          if(_btnGroup.selectIndex == currentIndex)
          {

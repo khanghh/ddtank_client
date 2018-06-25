@@ -49,32 +49,31 @@ package roomList.pveRoomList
          return _isAddEnd;
       }
       
-      public function updateRoom(param1:Array) : void
+      public function updateRoom(arr:Array) : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          _roomList.clear();
          _isAddEnd = false;
-         if(param1.length == 0)
+         if(arr.length == 0)
          {
             return;
          }
-         param1 = RoomListController.disorder(param1);
-         _loc2_ = 0;
-         while(_loc2_ < param1.length)
+         arr = RoomListController.disorder(arr);
+         for(i = 0; i < arr.length; )
          {
-            if(_loc2_ == param1.length - 1)
+            if(i == arr.length - 1)
             {
                _isAddEnd = true;
             }
-            _roomList.add((param1[_loc2_] as RoomInfo).ID,param1[_loc2_] as RoomInfo);
-            _loc2_++;
+            _roomList.add((arr[i] as RoomInfo).ID,arr[i] as RoomInfo);
+            i++;
          }
          dispatchEvent(new Event("DungeonListUpdate"));
       }
       
-      public function set roomTotal(param1:int) : void
+      public function set roomTotal(value:int) : void
       {
-         _roomTotal = param1;
+         _roomTotal = value;
       }
       
       public function get roomTotal() : int
@@ -82,9 +81,9 @@ package roomList.pveRoomList
          return _roomTotal;
       }
       
-      public function getRoomById(param1:int) : RoomInfo
+      public function getRoomById(id:int) : RoomInfo
       {
-         return _roomList[param1];
+         return _roomList[id];
       }
       
       public function getRoomList() : DictionaryData
@@ -92,14 +91,14 @@ package roomList.pveRoomList
          return _roomList;
       }
       
-      public function addWaitingPlayer(param1:PlayerInfo) : void
+      public function addWaitingPlayer(info:PlayerInfo) : void
       {
-         _playerlist.add(param1.ID,param1);
+         _playerlist.add(info.ID,info);
       }
       
-      public function removeWaitingPlayer(param1:int) : void
+      public function removeWaitingPlayer(id:int) : void
       {
-         _playerlist.remove(param1);
+         _playerlist.remove(id);
       }
       
       public function getPlayerList() : DictionaryData
@@ -112,9 +111,9 @@ package roomList.pveRoomList
          return _roomShowMode;
       }
       
-      public function set roomShowMode(param1:int) : void
+      public function set roomShowMode(value:int) : void
       {
-         _roomShowMode = param1;
+         _roomShowMode = value;
          dispatchEvent(new Event("roomshowmodechange"));
       }
       

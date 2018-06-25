@@ -25,10 +25,10 @@ package latentEnergy
          addChild(_txt);
       }
       
-      public function setView(param1:int, param2:int) : void
+      public function setView(type:int, value:int) : void
       {
-         var _loc3_:String = LanguageMgr.GetTranslation("ddt.latentEnergy.proListTxt").split(",")[param1];
-         _txt.text = LanguageMgr.GetTranslation("ddt.latentEnergy.tipItemTxt",_loc3_,param2.toString());
+         var pro:String = LanguageMgr.GetTranslation("ddt.latentEnergy.proListTxt").split(",")[type];
+         _txt.text = LanguageMgr.GetTranslation("ddt.latentEnergy.tipItemTxt",pro,value.toString());
       }
       
       public function dispose() : void

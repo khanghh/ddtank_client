@@ -34,10 +34,10 @@ package ddt.view.chat
       
       public var data:Object;
       
-      public function ChatEvent(param1:String, param2:Object = null, param3:Boolean = false, param4:Boolean = false)
+      public function ChatEvent(type:String, data:Object = null, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         super(param1,param3,param4);
-         this.data = param2;
+         super(type,bubbles,cancelable);
+         this.data = data;
       }
       
       override public function clone() : Event

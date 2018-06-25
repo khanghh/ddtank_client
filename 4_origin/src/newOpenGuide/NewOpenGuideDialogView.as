@@ -30,34 +30,34 @@ package newOpenGuide
          this.graphics.beginFill(0,0.4);
          this.graphics.drawRect(0,0,1000,600);
          this.graphics.endFill();
-         var _loc2_:Sprite = new Sprite();
-         _loc2_.graphics.beginFill(0);
-         _loc2_.graphics.drawRect(0,0,1000,100);
-         _loc2_.graphics.endFill();
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(0);
-         _loc1_.graphics.drawRect(0,0,1000,130);
-         _loc1_.graphics.endFill();
-         _loc1_.y = 470;
+         var topBlack:Sprite = new Sprite();
+         topBlack.graphics.beginFill(0);
+         topBlack.graphics.drawRect(0,0,1000,100);
+         topBlack.graphics.endFill();
+         var bottomBlack:Sprite = new Sprite();
+         bottomBlack.graphics.beginFill(0);
+         bottomBlack.graphics.drawRect(0,0,1000,130);
+         bottomBlack.graphics.endFill();
+         bottomBlack.y = 470;
          _headImg = ComponentFactory.Instance.creatBitmap("asset.hall.nikeImg");
          _titleTxt = ComponentFactory.Instance.creatComponentByStylename("hall.taskManuGetView.titleTxt");
          _titleTxt.x = 390;
          _titleTxt.y = 488;
          _titleTxt.text = LanguageMgr.GetTranslation("hall.taskManuGetView.titleTxt");
          _descTxt = ComponentFactory.Instance.creatComponentByStylename("hall.guideDialog.contentTxt");
-         addChild(_loc2_);
-         addChild(_loc1_);
+         addChild(topBlack);
+         addChild(bottomBlack);
          addChild(_headImg);
          addChild(_titleTxt);
          addChild(_descTxt);
       }
       
-      public function show(param1:String, param2:String = "", param3:Bitmap = null, param4:Point = null) : void
+      public function show(desc:String, name:String = "", img:Bitmap = null, pos:Point = null) : void
       {
-         _descTxt.htmlText = param1;
-         if(param2 != "")
+         _descTxt.htmlText = desc;
+         if(name != "")
          {
-            _titleTxt.text = param2 + "：";
+            _titleTxt.text = name + "：";
          }
          else
          {
@@ -67,11 +67,11 @@ package newOpenGuide
          {
             _headImg.parent.removeChild(_headImg);
          }
-         if(param3)
+         if(img)
          {
-            _headImg = param3;
-            _headImg.x = param4.x;
-            _headImg.y = param4.y;
+            _headImg = img;
+            _headImg.x = pos.x;
+            _headImg.y = pos.y;
          }
          else
          {

@@ -21,11 +21,11 @@ package ddt.view.im
          _content.height = 294;
       }
       
-      public function set teamId(param1:int) : void
+      public function set teamId(id:int) : void
       {
-         if(SharedManager.Instance.teamChatRecord[param1])
+         if(SharedManager.Instance.teamChatRecord[id])
          {
-            _messages = SharedManager.Instance.teamChatRecord[param1];
+            _messages = SharedManager.Instance.teamChatRecord[id];
          }
          else
          {

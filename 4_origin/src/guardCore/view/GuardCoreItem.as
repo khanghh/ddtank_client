@@ -37,10 +37,10 @@ package guardCore.view
       
       private var _clickTime:int;
       
-      public function GuardCoreItem(param1:int)
+      public function GuardCoreItem(type:int)
       {
          super();
-         _type = param1;
+         _type = type;
          init();
          initEvent();
       }
@@ -69,12 +69,12 @@ package guardCore.view
       
       public function updateTipsData() : void
       {
-         var _loc2_:int = PlayerManager.Instance.Self.Grade;
-         var _loc1_:int = PlayerManager.Instance.Self.guardCoreGrade;
+         var grade:int = PlayerManager.Instance.Self.Grade;
+         var guardGrade:int = PlayerManager.Instance.Self.guardCoreGrade;
          _tips.tipData = {
             "type":_type,
-            "grade":_loc2_,
-            "guardGrade":_loc1_
+            "grade":grade,
+            "guardGrade":guardGrade
          };
       }
       
@@ -92,7 +92,7 @@ package guardCore.view
          }
       }
       
-      private function __onGuardBtn(param1:MouseEvent) : void
+      private function __onGuardBtn(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.bagLocked)
@@ -105,14 +105,14 @@ package guardCore.view
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("farm.poultry.wakefeedLimitTxt"));
          }
          _clickTime = getTimer();
-         var _loc2_:GuardCoreInfo = GuardCoreManager.instance.getGuardCoreInfo(PlayerManager.Instance.Self.guardCoreGrade,_type);
-         if(PlayerManager.Instance.Self.guardCoreID == _loc2_.ID)
+         var info:GuardCoreInfo = GuardCoreManager.instance.getGuardCoreInfo(PlayerManager.Instance.Self.guardCoreGrade,_type);
+         if(PlayerManager.Instance.Self.guardCoreID == info.ID)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("guardCore.notEquip"));
          }
          else
          {
-            SocketManager.Instance.out.sendGuardCoreEquip(_loc2_.ID);
+            SocketManager.Instance.out.sendGuardCoreEquip(info.ID);
          }
       }
       

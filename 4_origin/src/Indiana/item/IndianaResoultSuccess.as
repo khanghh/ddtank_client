@@ -110,20 +110,20 @@ package Indiana.item
          _lookNum.removeEventListener("link",__linkHandler);
       }
       
-      private function __linkHandler(param1:TextEvent) : void
+      private function __linkHandler(e:TextEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:Array = param1.text.split("|");
-         var _loc4_:String = _loc3_[0];
-         if(_loc4_ == "clickother")
+         var id:int = 0;
+         var cmdArray:Array = e.text.split("|");
+         var cmd:String = cmdArray[0];
+         if(cmd == "clickother")
          {
-            _loc2_ = _loc3_[1];
+            id = cmdArray[1];
          }
-         if(_loc4_ == "clickself")
+         if(cmd == "clickself")
          {
-            _loc2_ = PlayerManager.Instance.Self.ID;
+            id = PlayerManager.Instance.Self.ID;
          }
-         SocketManager.Instance.out.sendIndianaCode(_data.per_id,_loc2_);
+         SocketManager.Instance.out.sendIndianaCode(_data.per_id,id);
       }
       
       private function setShowData() : void
@@ -152,9 +152,9 @@ package Indiana.item
          }
       }
       
-      public function setInfo(param1:IndianaShopItemInfo) : void
+      public function setInfo($_info:IndianaShopItemInfo) : void
       {
-         _info = param1;
+         _info = $_info;
          setShowData();
       }
       

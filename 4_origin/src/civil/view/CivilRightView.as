@@ -88,10 +88,10 @@ package civil.view
       
       private var _isBusy:Boolean;
       
-      public function CivilRightView(param1:CivilController, param2:CivilModel)
+      public function CivilRightView(controller:CivilController, model:CivilModel)
       {
-         _model = param2;
-         _controller = param1;
+         _model = model;
+         _controller = controller;
          super();
          init();
          initButton();
@@ -306,17 +306,17 @@ package civil.view
          _model.removeEventListener("register_change",__onRegisterChange);
       }
       
-      private function __onRegisterChange(param1:CivilEvent) : void
+      private function __onRegisterChange(evt:CivilEvent) : void
       {
       }
       
-      private function __btnClick(param1:MouseEvent) : void
+      private function __btnClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _controller.Register();
       }
       
-      private function __addBtnClick(param1:MouseEvent) : void
+      private function __addBtnClick(e:MouseEvent) : void
       {
          if(_controller.currentcivilInfo && _controller.currentcivilInfo.info)
          {
@@ -325,11 +325,11 @@ package civil.view
          }
       }
       
-      private function __sexBtnClick(param1:MouseEvent) : void
+      private function __sexBtnClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _currentPage = 1;
-         if(param1.currentTarget == _femaleBtn)
+         if(evt.currentTarget == _femaleBtn)
          {
             _sex = false;
             if(_sex == _model.sex)
@@ -360,7 +360,7 @@ package civil.view
          _seachKey = "";
       }
       
-      private function __leafBtnClick(param1:MouseEvent) : void
+      private function __leafBtnClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_loadMember)
@@ -371,7 +371,7 @@ package civil.view
          {
             return;
          }
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = evt.currentTarget;
          if(_preBtn !== _loc2_)
          {
             if(_nextBtn !== _loc2_)
@@ -407,7 +407,7 @@ package civil.view
          _controller.loadCivilMemberList(_currentPage,_sex,_seachKey);
       }
       
-      private function __searchTxtClick(param1:MouseEvent) : void
+      private function __searchTxtClick(evt:MouseEvent) : void
       {
          if(_searchTxt.text == LanguageMgr.GetTranslation("academy.view.AcademyMemberListView.searchTxt"))
          {
@@ -415,9 +415,9 @@ package civil.view
          }
       }
       
-      private function __memberSelectedChange(param1:CivilEvent) : void
+      private function __memberSelectedChange(evt:CivilEvent) : void
       {
-         if(param1.data)
+         if(evt.data)
          {
             _addBigBtn.enable = _menberList.selectedItem.info.UserId == PlayerManager.Instance.Self.ID?false:true;
          }
@@ -470,19 +470,19 @@ package civil.view
          _sex = _model.sex;
       }
       
-      private function __updateRegisterGlow(param1:CivilEvent) : void
+      private function __updateRegisterGlow(evt:CivilEvent) : void
       {
       }
       
-      private function setButtonState(param1:Boolean, param2:Boolean) : void
+      private function setButtonState($pre:Boolean, $next:Boolean) : void
       {
-         _preBtn.mouseChildren = param1;
-         _preBtn.enable = param1;
-         _nextBtn.mouseChildren = param2;
-         _nextBtn.enable = param2;
+         _preBtn.mouseChildren = $pre;
+         _preBtn.enable = $pre;
+         _nextBtn.mouseChildren = $next;
+         _nextBtn.enable = $next;
       }
       
-      private function __updateView(param1:CivilEvent) : void
+      private function __updateView(evt:CivilEvent) : void
       {
          _isBusy = false;
          updateButton();

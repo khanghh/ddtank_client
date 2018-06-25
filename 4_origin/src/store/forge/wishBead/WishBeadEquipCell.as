@@ -12,9 +12,9 @@ package store.forge.wishBead
    {
        
       
-      public function WishBeadEquipCell(param1:int, param2:ItemTemplateInfo = null, param3:Boolean = true, param4:DisplayObject = null, param5:Boolean = true)
+      public function WishBeadEquipCell(index:int, info:ItemTemplateInfo = null, showLoading:Boolean = true, bg:DisplayObject = null, mouseOverEffBoolean:Boolean = true)
       {
-         super(param1,param2,param3,param4,param5);
+         super(index,info,showLoading,bg,mouseOverEffBoolean);
       }
       
       override protected function initEvent() : void
@@ -27,43 +27,43 @@ package store.forge.wishBead
          WishBeadManager.instance.addEventListener("wishBead_equip_move2",equipMoveHandler2);
       }
       
-      private function equipMoveHandler(param1:WishBeadEvent) : void
+      private function equipMoveHandler(event:WishBeadEvent) : void
       {
-         var _loc2_:* = null;
-         if(info == param1.info)
+         var event2:* = null;
+         if(info == event.info)
          {
             return;
          }
          if(info)
          {
-            _loc2_ = new WishBeadEvent("wishBead_equip_move2");
-            _loc2_.info = info as InventoryItemInfo;
-            _loc2_.moveType = 3;
-            WishBeadManager.instance.dispatchEvent(_loc2_);
+            event2 = new WishBeadEvent("wishBead_equip_move2");
+            event2.info = info as InventoryItemInfo;
+            event2.moveType = 3;
+            WishBeadManager.instance.dispatchEvent(event2);
          }
-         info = param1.info;
+         info = event.info;
       }
       
-      private function equipMoveHandler2(param1:WishBeadEvent) : void
+      private function equipMoveHandler2(event:WishBeadEvent) : void
       {
-         if(info != param1.info || param1.moveType != 2)
+         if(info != event.info || event.moveType != 2)
          {
             return;
          }
          info = null;
       }
       
-      protected function __doubleClickHandler(param1:InteractiveEvent) : void
+      protected function __doubleClickHandler(evt:InteractiveEvent) : void
       {
          if(!info)
          {
             return;
          }
          SoundManager.instance.play("008");
-         var _loc2_:WishBeadEvent = new WishBeadEvent("wishBead_equip_move2");
-         _loc2_.info = info as InventoryItemInfo;
-         _loc2_.moveType = 2;
-         WishBeadManager.instance.dispatchEvent(_loc2_);
+         var event:WishBeadEvent = new WishBeadEvent("wishBead_equip_move2");
+         event.info = info as InventoryItemInfo;
+         event.moveType = 2;
+         WishBeadManager.instance.dispatchEvent(event);
       }
       
       override protected function removeEvent() : void
@@ -76,7 +76,7 @@ package store.forge.wishBead
          WishBeadManager.instance.removeEventListener("wishBead_equip_move2",equipMoveHandler2);
       }
       
-      protected function __clickHandler(param1:InteractiveEvent) : void
+      protected function __clickHandler(evt:InteractiveEvent) : void
       {
          SoundManager.instance.play("008");
          dragStart();
@@ -84,13 +84,13 @@ package store.forge.wishBead
       
       public function clearInfo() : void
       {
-         var _loc1_:* = null;
+         var event:* = null;
          if(info)
          {
-            _loc1_ = new WishBeadEvent("wishBead_equip_move2");
-            _loc1_.info = info as InventoryItemInfo;
-            _loc1_.moveType = 2;
-            WishBeadManager.instance.dispatchEvent(_loc1_);
+            event = new WishBeadEvent("wishBead_equip_move2");
+            event.info = info as InventoryItemInfo;
+            event.moveType = 2;
+            WishBeadManager.instance.dispatchEvent(event);
          }
       }
    }

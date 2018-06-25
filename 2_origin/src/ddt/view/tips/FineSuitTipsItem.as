@@ -30,31 +30,31 @@ package ddt.view.tips
          addChild(_image);
       }
       
-      public function set type(param1:int) : void
+      public function set type(type:int) : void
       {
-         _type = param1;
-         _image.setFrame(param1);
-         _title.setFrame(param1);
-         _text.setFrame(param1);
+         _type = type;
+         _image.setFrame(type);
+         _title.setFrame(type);
+         _text.setFrame(type);
       }
       
-      public function set complete(param1:Boolean) : void
+      public function set complete(value:Boolean) : void
       {
-         if(!param1)
+         if(!value)
          {
             return;
          }
          _text.setFrame(6);
       }
       
-      public function set titleText(param1:String) : void
+      public function set titleText(value:String) : void
       {
-         _title.text = param1;
+         _title.text = value;
       }
       
-      public function set text(param1:String) : void
+      public function set text(value:String) : void
       {
-         _text.text = param1;
+         _text.text = value;
       }
       
       public function dispose() : void

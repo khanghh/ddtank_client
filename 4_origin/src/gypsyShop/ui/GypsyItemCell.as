@@ -48,11 +48,11 @@ package gypsyShop.ui
          super();
          _bg = ComponentFactory.Instance.creatBitmap("gypsy.frame.cell.bg");
          addChild(_bg);
-         var _loc1_:Shape = new Shape();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,60,60);
-         _loc1_.graphics.endFill();
-         _bagCell = new ShopItemCell(_loc1_);
+         var cellBG:Shape = new Shape();
+         cellBG.graphics.beginFill(16777215,0);
+         cellBG.graphics.drawRect(0,0,60,60);
+         cellBG.graphics.endFill();
+         _bagCell = new ShopItemCell(cellBG);
          PositionUtils.setPos(_bagCell,{
             "x":4,
             "y":4
@@ -79,7 +79,7 @@ package gypsyShop.ui
          _buyBtn.addEventListener("click",onClick);
       }
       
-      protected function onClick(param1:MouseEvent) : void
+      protected function onClick(me:MouseEvent) : void
       {
          GypsyShopManager.getInstance().itemBuyBtnClicked(id);
       }
@@ -93,16 +93,16 @@ package gypsyShop.ui
          _buyBtn.enable = false;
       }
       
-      public function updateCell(param1:GypsyItemData) : void
+      public function updateCell(data:GypsyItemData) : void
       {
-         _id = param1.id;
-         _bagCell.info = ItemManager.Instance.getTemplateById(param1.infoID);
+         _id = data.id;
+         _bagCell.info = ItemManager.Instance.getTemplateById(data.infoID);
          if(_bagCell.info != null)
          {
             _nameTxt.text = _bagCell.info.Name;
-            if(AvatarCollectionManager.instance.isCollectionGoodsByTemplateID(param1.infoID))
+            if(AvatarCollectionManager.instance.isCollectionGoodsByTemplateID(data.infoID))
             {
-               if(GypsyShopManager.getInstance().isAvatarActivated(param1.infoID))
+               if(GypsyShopManager.getInstance().isAvatarActivated(data.infoID))
                {
                   _clctActivatedText.text = LanguageMgr.GetTranslation("ddt.gypsy.activated");
                   _clctActivatedText.setFrame(1);
@@ -118,7 +118,7 @@ package gypsyShop.ui
             }
             else
             {
-               if(param1.quality > 0 && !AvatarCollectionManager.instance.isCollectionGoodsByTemplateID(param1.infoID))
+               if(data.quality > 0 && !AvatarCollectionManager.instance.isCollectionGoodsByTemplateID(data.infoID))
                {
                   _collectQualityText.visible = true;
                   _collectText.visible = false;
@@ -131,14 +131,14 @@ package gypsyShop.ui
                _clctActivatedText.visible = false;
             }
          }
-         _priceUnitIcon.setFrame(param1.unit);
-         _priceTxt.text = param1.price.toString();
-         _buyBtn.enable = param1.canBuy == 0?false:true;
+         _priceUnitIcon.setFrame(data.unit);
+         _priceTxt.text = data.price.toString();
+         _buyBtn.enable = data.canBuy == 0?false:true;
       }
       
-      public function updateBuyButtonState(param1:int) : void
+      public function updateBuyButtonState(state:int) : void
       {
-         if(!int(param1))
+         if(!int(state))
          {
             _buyBtn.enable = false;
          }

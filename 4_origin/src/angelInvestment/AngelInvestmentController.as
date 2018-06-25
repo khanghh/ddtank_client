@@ -11,7 +11,7 @@ package angelInvestment
       private static var _instance:AngelInvestmentController;
        
       
-      public function AngelInvestmentController(param1:inner)
+      public function AngelInvestmentController($inner:inner)
       {
          super();
       }
@@ -30,10 +30,10 @@ package angelInvestment
          AngelInvestmentManager.instance.addEventListener("complete",__onComplete);
       }
       
-      private function __onComplete(param1:Event) : void
+      private function __onComplete(e:Event) : void
       {
-         var _loc2_:AngelInvestmentMainView = ComponentFactory.Instance.creatComponentByStylename("angelInvestment.mainView");
-         _loc2_.show();
+         var frame:AngelInvestmentMainView = ComponentFactory.Instance.creatComponentByStylename("angelInvestment.mainView");
+         frame.show();
       }
       
       public function get buyAllDay() : int

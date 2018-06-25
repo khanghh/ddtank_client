@@ -25,9 +25,9 @@ package ddt.data.fightLib
          return _easyAward;
       }
       
-      public function set easyAward(param1:Array) : void
+      public function set easyAward(value:Array) : void
       {
-         _easyAward = param1;
+         _easyAward = value;
       }
       
       public function get normalAward() : Array
@@ -35,9 +35,9 @@ package ddt.data.fightLib
          return _normalAward;
       }
       
-      public function set normalAward(param1:Array) : void
+      public function set normalAward(value:Array) : void
       {
-         _normalAward = param1;
+         _normalAward = value;
       }
       
       public function get difficultAward() : Array
@@ -45,9 +45,9 @@ package ddt.data.fightLib
          return _difficultAward;
       }
       
-      public function set difficultAward(param1:Array) : void
+      public function set difficultAward(value:Array) : void
       {
-         _difficultAward = param1;
+         _difficultAward = value;
       }
       
       public function get id() : int
@@ -55,9 +55,9 @@ package ddt.data.fightLib
          return _id;
       }
       
-      public function set id(param1:int) : void
+      public function set id(value:int) : void
       {
-         _id = param1;
+         _id = value;
       }
    }
 }

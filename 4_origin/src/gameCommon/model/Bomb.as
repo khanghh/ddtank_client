@@ -56,9 +56,9 @@ package gameCommon.model
          super();
       }
       
-      private function checkFly(param1:Array, param2:Array) : Boolean
+      private function checkFly(arr1:Array, arr2:Array) : Boolean
       {
-         if(int(param1[0]) != int(param2[0]))
+         if(int(arr1[0]) != int(arr2[0]))
          {
             return true;
          }
@@ -67,48 +67,45 @@ package gameCommon.model
       
       public function get target() : Point
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < Actions.length)
+         var i:int = 0;
+         var j:int = 0;
+         for(i = 0; i < Actions.length; )
          {
-            if(Actions[_loc2_].type == 2)
+            if(Actions[i].type == 2)
             {
-               return new Point(Actions[_loc2_].param1,Actions[_loc2_].param2);
+               return new Point(Actions[i].param1,Actions[i].param2);
             }
-            if(Actions[_loc2_].type == 4)
+            if(Actions[i].type == 4)
             {
-               return new Point(Actions[_loc2_].param1,Actions[_loc2_].param2);
+               return new Point(Actions[i].param1,Actions[i].param2);
             }
-            _loc2_++;
+            i++;
          }
-         _loc1_ = 0;
-         while(_loc1_ < UsedActions.length)
+         for(j = 0; j < UsedActions.length; )
          {
-            if(UsedActions[_loc1_].type == 2)
+            if(UsedActions[j].type == 2)
             {
-               return new Point(UsedActions[_loc1_].param1,UsedActions[_loc1_].param2);
+               return new Point(UsedActions[j].param1,UsedActions[j].param2);
             }
-            if(UsedActions[_loc1_].type == 4)
+            if(UsedActions[j].type == 4)
             {
-               return new Point(UsedActions[_loc1_].param1,UsedActions[_loc1_].param2);
+               return new Point(UsedActions[j].param1,UsedActions[j].param2);
             }
-            _loc1_++;
+            j++;
          }
          return null;
       }
       
       public function get isCritical() : Boolean
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < Actions.length)
+         var i:int = 0;
+         for(i = 0; i < Actions.length; )
          {
-            if(Actions[_loc1_].type == 17)
+            if(Actions[i].type == 17)
             {
                return true;
             }
-            _loc1_++;
+            i++;
          }
          return false;
       }

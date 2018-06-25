@@ -65,34 +65,34 @@ package com.pickgliss.ui.controls
          super();
       }
       
-      public function set back(param1:DisplayObject) : void
+      public function set back(display:DisplayObject) : void
       {
-         if(_back == param1)
+         if(_back == display)
          {
             return;
          }
          ObjectUtils.disposeObject(_back);
-         _back = param1;
+         _back = display;
          onPropertiesChanged("back");
       }
       
-      public function set backStyle(param1:String) : void
+      public function set backStyle(stylename:String) : void
       {
-         if(_backStyle == param1)
+         if(_backStyle == stylename)
          {
             return;
          }
-         _backStyle = param1;
+         _backStyle = stylename;
          back = ComponentFactory.Instance.creat(_backStyle);
       }
       
-      public function set backgroundColor(param1:uint) : void
+      public function set backgroundColor(color:uint) : void
       {
-         if(_back || !param1)
+         if(_back || !color)
          {
             return;
          }
-         _backgroundColor = param1;
+         _backgroundColor = color;
          onPropertiesChanged("backgroundColor");
       }
       
@@ -101,13 +101,13 @@ package com.pickgliss.ui.controls
          return _backgroundColor;
       }
       
-      public function set filterString(param1:String) : void
+      public function set filterString(value:String) : void
       {
-         if(_filterString == param1)
+         if(_filterString == value)
          {
             return;
          }
-         _filterString = param1;
+         _filterString = value;
          _frameFilter = ComponentFactory.Instance.creatFrameFilters(_filterString);
       }
       
@@ -116,25 +116,25 @@ package com.pickgliss.ui.controls
          return _enable;
       }
       
-      public function set enable(param1:Boolean) : void
+      public function set enable(value:Boolean) : void
       {
-         if(_enable == param1)
+         if(_enable == value)
          {
             return;
          }
-         _enable = param1;
+         _enable = value;
          onPropertiesChanged("enable");
       }
       
-      protected function setFrame(param1:int) : void
+      protected function setFrame(frameIndex:int) : void
       {
-         _currentFrameIndex = param1;
+         _currentFrameIndex = frameIndex;
          DisplayUtils.setFrame(_back,_currentFrameIndex);
-         if(_frameFilter == null || param1 <= 0 || param1 > _frameFilter.length)
+         if(_frameFilter == null || frameIndex <= 0 || frameIndex > _frameFilter.length)
          {
             return;
          }
-         filters = _frameFilter[param1 - 1];
+         filters = _frameFilter[frameIndex - 1];
       }
       
       override public function dispose() : void
@@ -154,36 +154,36 @@ package com.pickgliss.ui.controls
          super.dispose();
       }
       
-      public function set focusBack(param1:DisplayObject) : void
+      public function set focusBack(display:DisplayObject) : void
       {
-         if(_focusBack == param1)
+         if(_focusBack == display)
          {
             return;
          }
          ObjectUtils.disposeObject(_focusBack);
-         _focusBack = param1;
+         _focusBack = display;
          _focusBack.visible = false;
          onPropertiesChanged();
       }
       
-      public function set focusBackgoundInnerRectString(param1:String) : void
+      public function set focusBackgoundInnerRectString(value:String) : void
       {
-         if(_focusBackgoundInnerRectString == param1)
+         if(_focusBackgoundInnerRectString == value)
          {
             return;
          }
-         _focusBackgoundInnerRectString = param1;
+         _focusBackgoundInnerRectString = value;
          _focusBackgoundInnerRect = ClassUtils.CreatInstance("com.pickgliss.geom.InnerRectangle",ComponentFactory.parasArgs(_focusBackgoundInnerRectString));
          onPropertiesChanged("focusBackOuterRect");
       }
       
-      public function set focusBackStyle(param1:String) : void
+      public function set focusBackStyle(value:String) : void
       {
-         if(_focusBackStyle == param1)
+         if(_focusBackStyle == value)
          {
             return;
          }
-         _focusBackStyle = param1;
+         _focusBackStyle = value;
          focusBack = ComponentFactory.Instance.creat(_focusBackStyle);
       }
       
@@ -192,43 +192,43 @@ package com.pickgliss.ui.controls
          return _textField;
       }
       
-      public function set textField(param1:TextField) : void
+      public function set textField(field:TextField) : void
       {
-         if(_textField == param1)
+         if(_textField == field)
          {
             return;
          }
          ObjectUtils.disposeObject(_textField);
-         _textField = param1;
+         _textField = field;
          onPropertiesChanged("textField");
       }
       
-      public function set textInnerRectString(param1:String) : void
+      public function set textInnerRectString(value:String) : void
       {
-         if(_textInnerRectString == param1)
+         if(_textInnerRectString == value)
          {
             return;
          }
-         _textInnerRectString = param1;
+         _textInnerRectString = value;
          _textInnerRect = ClassUtils.CreatInstance("com.pickgliss.geom.InnerRectangle",ComponentFactory.parasArgs(_textInnerRectString));
          onPropertiesChanged("textInnerRect");
       }
       
-      public function set textStyle(param1:String) : void
+      public function set textStyle(stylename:String) : void
       {
-         if(_textStyle == param1)
+         if(_textStyle == stylename)
          {
             return;
          }
-         _textStyle = param1;
+         _textStyle = stylename;
          textField = ComponentFactory.Instance.creat(_textStyle);
       }
       
-      protected function __onFocusText(param1:Event) : void
+      protected function __onFocusText(event:Event) : void
       {
          if(_focusBack)
          {
-            _focusBack.visible = param1.type == "focusIn";
+            _focusBack.visible = event.type == "focusIn";
          }
       }
       
@@ -249,9 +249,9 @@ package com.pickgliss.ui.controls
          }
       }
       
-      public function set displayAsPassword(param1:Boolean) : void
+      public function set displayAsPassword(value:Boolean) : void
       {
-         _textField.displayAsPassword = param1;
+         _textField.displayAsPassword = value;
       }
       
       public function get displayAsPassword() : Boolean
@@ -259,9 +259,9 @@ package com.pickgliss.ui.controls
          return _textField.displayAsPassword;
       }
       
-      public function set multiline(param1:Boolean) : void
+      public function set multiline(value:Boolean) : void
       {
-         _textField.multiline = param1;
+         _textField.multiline = value;
       }
       
       public function get multiline() : Boolean
@@ -269,9 +269,9 @@ package com.pickgliss.ui.controls
          return _textField.multiline;
       }
       
-      public function set maxChars(param1:int) : void
+      public function set maxChars(value:int) : void
       {
-         _textField.maxChars = param1;
+         _textField.maxChars = value;
       }
       
       public function get maxChars() : int
@@ -279,9 +279,9 @@ package com.pickgliss.ui.controls
          return _textField.maxChars;
       }
       
-      public function set autoSize(param1:String) : void
+      public function set autoSize(value:String) : void
       {
-         _textField.autoSize = param1;
+         _textField.autoSize = value;
       }
       
       public function get autoSize() : String
@@ -289,9 +289,9 @@ package com.pickgliss.ui.controls
          return _textField.autoSize;
       }
       
-      public function set text(param1:String) : void
+      public function set text(value:String) : void
       {
-         _textField.text = param1;
+         _textField.text = value;
       }
       
       public function get text() : String
@@ -299,9 +299,9 @@ package com.pickgliss.ui.controls
          return _textField.text;
       }
       
-      public function appendText(param1:String) : void
+      public function appendText(newText:String) : void
       {
-         _textField.appendText(param1);
+         _textField.appendText(newText);
       }
       
       public function setFocus() : void
@@ -311,7 +311,7 @@ package com.pickgliss.ui.controls
       
       override protected function onProppertiesUpdate() : void
       {
-         var _loc1_:* = null;
+         var textInnerRect:* = null;
          super.onProppertiesUpdate();
          if(_changedPropeties["textField"])
          {
@@ -324,11 +324,11 @@ package com.pickgliss.ui.controls
          {
             _back.width = _width;
             _back.height = _height;
-            _loc1_ = _textInnerRect.getInnerRect(_width,_height);
-            _textField.width = _loc1_.width;
-            _textField.height = _loc1_.height;
-            _textField.x = _loc1_.x;
-            _textField.y = _loc1_.y;
+            textInnerRect = _textInnerRect.getInnerRect(_width,_height);
+            _textField.width = textInnerRect.width;
+            _textField.height = textInnerRect.height;
+            _textField.x = textInnerRect.x;
+            _textField.y = textInnerRect.y;
             if(_focusBack)
             {
                DisplayUtils.layoutDisplayWithInnerRect(_focusBack,_focusBackgoundInnerRect,_width,_height);

@@ -72,7 +72,7 @@ package HappyRecharge
          HappyRechargeManager.instance.removeEventListener("HAPPYRECHARGE_UPDATE_TICKET",__updateTicketHandler);
       }
       
-      private function __exchangeHandler(param1:MouseEvent) : void
+      private function __exchangeHandler(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(HappyRechargeManager.instance.mouseClickEnable)
@@ -92,18 +92,18 @@ package HappyRecharge
          }
       }
       
-      private function __updateTicketHandler(param1:Event) : void
+      private function __updateTicketHandler(e:Event) : void
       {
          refreshView(HappyRechargeManager.instance.ticketCount);
       }
       
       private function _createCell() : void
       {
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(61440,0);
-         _loc1_.graphics.drawRect(0,0,33,33);
-         _loc1_.graphics.endFill();
-         _cell = new BagCell(0,null,true,_loc1_,false);
+         var bg:Sprite = new Sprite();
+         bg.graphics.beginFill(61440,0);
+         bg.graphics.drawRect(0,0,33,33);
+         bg.graphics.endFill();
+         _cell = new BagCell(0,null,true,bg,false);
          addChild(_cell);
          _cell.setContentSize(33,33);
          PositionUtils.setPos(_cell,"exchangeView.cell.pos");
@@ -114,19 +114,19 @@ package HappyRecharge
          _exchangeBtn.enable = _selfCount >= _needCount?true:false;
       }
       
-      public function setInfo(param1:ItemTemplateInfo, param2:int, param3:int, param4:int) : void
+      public function setInfo(info:ItemTemplateInfo, itemCount:int, selfCount:int, needCount:int) : void
       {
-         _cell.info = param1;
+         _cell.info = info;
          _cell.PicPos = new Point(2,2);
-         _selfCount = param3;
-         _needCount = param4;
+         _selfCount = selfCount;
+         _needCount = needCount;
          _numTxt.text = LanguageMgr.GetTranslation("happyRecharge.exchangeView.numTxt",_selfCount,_needCount);
          updateBtnEnable();
       }
       
-      public function refreshView(param1:int) : void
+      public function refreshView(selfCount:int) : void
       {
-         _selfCount = param1;
+         _selfCount = selfCount;
          _numTxt.text = LanguageMgr.GetTranslation("happyRecharge.exchangeView.numTxt",_selfCount,_needCount);
          updateBtnEnable();
       }

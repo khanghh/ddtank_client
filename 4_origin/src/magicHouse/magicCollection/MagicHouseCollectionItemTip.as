@@ -71,31 +71,31 @@ package magicHouse.magicCollection
          addChild(_notActivityTxt);
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         if(!param1)
+         if(!data)
          {
             return;
          }
-         _titleTxt.text = param1.titleName;
+         _titleTxt.text = data.titleName;
          _typeNameTxt.text = LanguageMgr.GetTranslation("avatarCollection.itemTip.typeNameTxt");
-         _typeValueTxt.text = param1.type;
-         _placeTxt.text = param1.placed;
-         var _loc2_:Array = LanguageMgr.GetTranslation("avatarCollection.itemTip.activityTxt").split(",");
-         if(param1.activate)
+         _typeValueTxt.text = data.type;
+         _placeTxt.text = data.placed;
+         var activateTxts:Array = LanguageMgr.GetTranslation("avatarCollection.itemTip.activityTxt").split(",");
+         if(data.activate)
          {
-            _activityTxt.text = _loc2_[0];
+            _activityTxt.text = activateTxts[0];
             _notActivityTxt.visible = false;
             _activityTxt.visible = true;
          }
          else
          {
-            _notActivityTxt.text = _loc2_[1];
+            _notActivityTxt.text = activateTxts[1];
             _notActivityTxt.visible = true;
             _activityTxt.visible = false;
          }
          _activityStatusTxt.text = LanguageMgr.GetTranslation("avatarCollection.itemTip.activityStatusTxt");
-         _detailTxt.text = param1.datail;
+         _detailTxt.text = data.datail;
          _bg.height = _placeTxt.y + 32;
       }
       

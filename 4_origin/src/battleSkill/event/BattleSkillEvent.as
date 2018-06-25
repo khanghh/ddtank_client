@@ -20,10 +20,10 @@ package battleSkill.event
       
       private var _data:Object;
       
-      public function BattleSkillEvent(param1:String, param2:Object = null, param3:Boolean = false, param4:Boolean = false)
+      public function BattleSkillEvent(type:String, data:Object = null, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         super(param1,param3,param4);
-         _data = param2;
+         super(type,bubbles,cancelable);
+         _data = data;
       }
       
       public function get data() : Object

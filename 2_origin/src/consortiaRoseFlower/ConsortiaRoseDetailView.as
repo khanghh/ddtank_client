@@ -23,12 +23,12 @@ package consortiaRoseFlower
       
       private var _detailTxt:FilterFrameText;
       
-      public function ConsortiaRoseDetailView(param1:Boolean, param2:String, param3:String)
+      public function ConsortiaRoseDetailView(canClose:Boolean, consortiaName:String, nickName:String)
       {
          super();
          _bg = ComponentFactory.Instance.creatBitmap("ast.rose.bg");
          addChild(_bg);
-         if(param1)
+         if(canClose)
          {
             _close = ComponentFactory.Instance.creat("rose.closeBtn");
             addChild(_close);
@@ -36,19 +36,19 @@ package consortiaRoseFlower
             KeyboardManager.getInstance().addEventListener("keyDown",onKeyDown);
          }
          _detailTxt = ComponentFactory.Instance.creat("rose.detailTxt");
-         _detailTxt.text = LanguageMgr.GetTranslation("consortia.roseFlower.Tip",param2,param3);
+         _detailTxt.text = LanguageMgr.GetTranslation("consortia.roseFlower.Tip",consortiaName,nickName);
          addChild(_detailTxt);
       }
       
-      protected function onKeyDown(param1:KeyboardEvent) : void
+      protected function onKeyDown(e:KeyboardEvent) : void
       {
-         if(param1.keyCode == 27)
+         if(e.keyCode == 27)
          {
             closeRose();
          }
       }
       
-      protected function onCloseClick(param1:MouseEvent) : void
+      protected function onCloseClick(event:MouseEvent) : void
       {
          closeRose();
       }

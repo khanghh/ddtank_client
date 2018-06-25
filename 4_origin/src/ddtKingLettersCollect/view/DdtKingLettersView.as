@@ -51,7 +51,7 @@ package ddtKingLettersCollect.view
       
       private function init() : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          _bg = ComponentFactory.Instance.creatBitmap("ast.dkletter.bg");
          addChild(_bg);
          _closeBtn = ComponentFactory.Instance.creat("core.roundClosebt");
@@ -72,14 +72,13 @@ package ddtKingLettersCollect.view
          _letterCellList.push(new BagCell(0,ItemManager.Instance.getTemplateById(12515)));
          _letterCellList.push(new BagCell(0,ItemManager.Instance.getTemplateById(12516)));
          _letterCellList.push(new BagCell(0,ItemManager.Instance.getTemplateById(12517)));
-         var _loc1_:int = _letterCellList.length;
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_)
+         var len:int = _letterCellList.length;
+         for(i = 0; i < len; )
          {
-            _letterCellList[_loc2_].x = 163 + _loc2_ % 4 * 66;
-            _letterCellList[_loc2_].y = 208 + int(_loc2_ / 4) * 55;
-            addChild(_letterCellList[_loc2_]);
-            _loc2_++;
+            _letterCellList[i].x = 163 + i % 4 * 66;
+            _letterCellList[i].y = 208 + int(i / 4) * 55;
+            addChild(_letterCellList[i]);
+            i++;
          }
          _letterCellComposed = new BagCell(0,ItemManager.Instance.getTemplateById(1120370));
          PositionUtils.setPos(_letterCellComposed,"ddtkingletter.cell");
@@ -94,19 +93,19 @@ package ddtKingLettersCollect.view
          update();
       }
       
-      protected function __onExchangeGoods(param1:PkgEvent) : void
+      protected function __onExchangeGoods(e:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:Boolean = _loc3_.readBoolean();
-         var _loc4_:int = _loc3_.readInt();
-         if(_loc2_)
+         var pkg:PackageIn = e.pkg;
+         var flag:Boolean = pkg.readBoolean();
+         var type:int = pkg.readInt();
+         if(flag)
          {
             update();
             SocketManager.Instance.out.getNationDayInfo();
          }
       }
       
-      protected function onComposeClick(param1:MouseEvent) : void
+      protected function onComposeClick(e:MouseEvent) : void
       {
          if(_letterCellList.every(canCompose) == false)
          {
@@ -118,26 +117,25 @@ package ddtKingLettersCollect.view
          }
       }
       
-      private function canCompose(param1:*, param2:int, param3:Vector.<BagCell>) : Boolean
+      private function canCompose(item:*, index:int, array:Vector.<BagCell>) : Boolean
       {
-         return int((param1 as BagCell).tbxCount.text) > 0;
+         return int((item as BagCell).tbxCount.text) > 0;
       }
       
-      public function update(param1:CEvent = null) : void
+      public function update(e:CEvent = null) : void
       {
-         var _loc5_:int = 0;
-         var _loc2_:Date = DateUtils.getDateByStr(ServerConfigManager.instance.nationalDayDropBeginDate);
-         var _loc3_:Date = DateUtils.getDateByStr(ServerConfigManager.instance.nationalDayDropEndDate);
-         _timeTxt.text = addZero(_loc2_.fullYear) + "." + addZero(_loc2_.month + 1) + "." + addZero(_loc2_.date);
-         _timeTxt.text = _timeTxt.text + ("-" + addZero(_loc3_.fullYear) + "." + addZero(_loc3_.month + 1) + "." + addZero(_loc3_.date));
-         var _loc4_:int = _letterCellList.length;
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         var i:int = 0;
+         var startDate:Date = DateUtils.getDateByStr(ServerConfigManager.instance.nationalDayDropBeginDate);
+         var endDate:Date = DateUtils.getDateByStr(ServerConfigManager.instance.nationalDayDropEndDate);
+         _timeTxt.text = addZero(startDate.fullYear) + "." + addZero(startDate.month + 1) + "." + addZero(startDate.date);
+         _timeTxt.text = _timeTxt.text + ("-" + addZero(endDate.fullYear) + "." + addZero(endDate.month + 1) + "." + addZero(endDate.date));
+         var len:int = _letterCellList.length;
+         for(i = 0; i < len; )
          {
-            _letterCellList[_loc5_].tbxCount.visible = true;
-            _letterCellList[_loc5_].addChild(_letterCellList[_loc5_].tbxCount);
-            _letterCellList[_loc5_].tbxCount.text = DdtKingLettersCollectManager.getInstance().WordArray[_loc5_ + 1];
-            _loc5_++;
+            _letterCellList[i].tbxCount.visible = true;
+            _letterCellList[i].addChild(_letterCellList[i].tbxCount);
+            _letterCellList[i].tbxCount.text = DdtKingLettersCollectManager.getInstance().WordArray[i + 1];
+            i++;
          }
          if(_letterCellList.every(canCompose) == false)
          {
@@ -149,20 +147,20 @@ package ddtKingLettersCollect.view
          }
       }
       
-      private function addZero(param1:Number) : String
+      private function addZero(value:Number) : String
       {
-         return Helpers.fixZero(String(param1));
+         return Helpers.fixZero(String(value));
       }
       
-      protected function onKeyDown(param1:KeyboardEvent) : void
+      protected function onKeyDown(e:KeyboardEvent) : void
       {
-         if(!(int(param1.keyCode) - 27))
+         if(!(int(e.keyCode) - 27))
          {
             close();
          }
       }
       
-      protected function onCloseBtnClick(param1:MouseEvent) : void
+      protected function onCloseBtnClick(e:MouseEvent) : void
       {
          close();
       }

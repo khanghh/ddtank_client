@@ -48,18 +48,18 @@ package store.view.strength
          _alertText.text = LanguageMgr.GetTranslation("store.view.strength.noneSymble");
          addToContent(_alertText);
          _cell = CellFactory.instance.createPersonalInfoCell(-1,ItemManager.Instance.getTemplateById(11020),true) as BagCell;
-         var _loc1_:Point = ComponentFactory.Instance.creatCustomObject("ddtstore.view.strength.cellPos");
-         _cell.x = _loc1_.x;
-         _cell.y = _loc1_.y;
+         var pos:Point = ComponentFactory.Instance.creatCustomObject("ddtstore.view.strength.cellPos");
+         _cell.x = pos.x;
+         _cell.y = pos.y;
          _cell.setContentSize(60,60);
          addToContent(_cell);
          addEventListener("response",__frameEvent);
       }
       
-      private function __frameEvent(param1:FrameEvent) : void
+      private function __frameEvent(event:FrameEvent) : void
       {
          dispose();
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:

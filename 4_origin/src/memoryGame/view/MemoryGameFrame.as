@@ -88,7 +88,7 @@ package memoryGame.view
          }
       }
       
-      override protected function onResponse(param1:int) : void
+      override protected function onResponse(type:int) : void
       {
          if(MemoryGameManager.instance.playActionAllComplete() && !MemoryGameManager.instance.turning)
          {
@@ -105,7 +105,7 @@ package memoryGame.view
          LayerManager.Instance.addToLayer(this,3,true,1);
       }
       
-      private function __changeHandler(param1:Event) : void
+      private function __changeHandler(e:Event) : void
       {
          SoundManager.instance.playButtonSound();
          switch(int(_btnGroup.selectIndex))
@@ -149,9 +149,9 @@ package memoryGame.view
       
       private function checkActivity() : void
       {
-         var _loc1_:Boolean = MemoryGameManager.instance.isValid;
+         var isValid:Boolean = MemoryGameManager.instance.isValid;
          __changeHandler(null);
-         if(!_loc1_)
+         if(!isValid)
          {
             _gameBtn.enable = false;
             _btnGroup.selectIndex = 1;

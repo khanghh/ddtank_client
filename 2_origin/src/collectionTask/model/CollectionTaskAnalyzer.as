@@ -11,35 +11,34 @@ package collectionTask.model
       
       private var _collectionTaskInfoList:Vector.<CollectionRobertVo>;
       
-      public function CollectionTaskAnalyzer(param1:Function)
+      public function CollectionTaskAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc4_:* = null;
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:XML = new XML(param1);
+         var xmllist:* = null;
+         var i:int = 0;
+         var tmpVo:* = null;
+         var xml:XML = new XML(data);
          _collectionTaskInfoList = new Vector.<CollectionRobertVo>();
-         if(_loc3_.@value == "true")
+         if(xml.@value == "true")
          {
-            _loc4_ = _loc3_..item;
-            _loc5_ = 0;
-            while(_loc5_ < _loc4_.length())
+            xmllist = xml..item;
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc2_ = new CollectionRobertVo();
-               ObjectUtils.copyPorpertiesByXML(_loc2_,_loc4_[_loc5_]);
-               _loc2_.Style = "," + _loc2_.Glass + "|" + ItemManager.Instance.getTemplateById(_loc2_.Glass).Pic + "," + _loc2_.Hair + "|" + ItemManager.Instance.getTemplateById(_loc2_.Hair).Pic + "," + _loc2_.Eye + "|" + ItemManager.Instance.getTemplateById(_loc2_.Eye).Pic + "," + "," + _loc2_.Face + "|" + ItemManager.Instance.getTemplateById(_loc2_.Face).Pic + ",,,,,";
-               _collectionTaskInfoList.push(_loc2_);
-               _loc5_++;
+               tmpVo = new CollectionRobertVo();
+               ObjectUtils.copyPorpertiesByXML(tmpVo,xmllist[i]);
+               tmpVo.Style = "," + tmpVo.Glass + "|" + ItemManager.Instance.getTemplateById(tmpVo.Glass).Pic + "," + tmpVo.Hair + "|" + ItemManager.Instance.getTemplateById(tmpVo.Hair).Pic + "," + tmpVo.Eye + "|" + ItemManager.Instance.getTemplateById(tmpVo.Eye).Pic + "," + "," + tmpVo.Face + "|" + ItemManager.Instance.getTemplateById(tmpVo.Face).Pic + ",,,,,";
+               _collectionTaskInfoList.push(tmpVo);
+               i++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc3_.@message;
+            message = xml.@message;
             onAnalyzeError();
             onAnalyzeError();
          }

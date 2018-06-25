@@ -42,7 +42,7 @@ package sanXiao.game
       
       private var _moneyData:ConfirmAlertData;
       
-      public function SanXiaoGameMediator(param1:inner)
+      public function SanXiaoGameMediator(single:inner)
       {
          super();
       }
@@ -92,21 +92,21 @@ package sanXiao.game
             return;
          }
          startAnimation();
-         var _loc1_:Array = SanXiaoManager.getInstance().mapInfo;
-         if(_loc1_ == null || _loc1_.length == 0)
+         var mapInfo:Array = SanXiaoManager.getInstance().mapInfo;
+         if(mapInfo == null || mapInfo.length == 0)
          {
             _model.createNewMap();
             GameInSocketOut.sendSXCreateMap(_model.mapInfo());
          }
          else
          {
-            _model.setMap(_loc1_);
+            _model.setMap(mapInfo);
          }
          var _loc4_:int = 0;
          var _loc3_:* = _timeUpdateList;
-         for(var _loc2_ in _timeUpdateList)
+         for(var k in _timeUpdateList)
          {
-            delete _timeUpdateList[_loc2_];
+            delete _timeUpdateList[k];
          }
          _boomListList = [];
          _fallListList = [];
@@ -114,13 +114,13 @@ package sanXiao.game
          _game.resetGame();
       }
       
-      protected function onEF(param1:Event) : void
+      protected function onEF(e:Event) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = _timeUpdateList;
-         for each(var _loc2_ in _timeUpdateList)
+         for each(var fun in _timeUpdateList)
          {
-            _loc2_ && _loc2_();
+            fun && fun();
          }
       }
       
@@ -141,35 +141,35 @@ package sanXiao.game
          SanXiaoController.getInstance().unLockFrame();
       }
       
-      public function addTween(param1:DisplayObject, param2:Function) : void
+      public function addTween($target:DisplayObject, $handler:Function) : void
       {
-         _timeUpdateList[param1] = param2;
+         _timeUpdateList[$target] = $handler;
       }
       
-      public function removeTween(param1:DisplayObject) : void
+      public function removeTween($target:DisplayObject) : void
       {
       }
       
       public function get stepRemain() : Number
       {
-         var _loc1_:Number = SanXiaoManager.getInstance().stepRemain;
-         if(_loc1_ <= 0)
+         var __stepRemain:Number = SanXiaoManager.getInstance().stepRemain;
+         if(__stepRemain <= 0)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("sanxiao.stepNoRemaining"));
          }
-         return _loc1_;
+         return __stepRemain;
       }
       
-      public function set curProp(param1:int) : void
+      public function set curProp(value:int) : void
       {
       }
       
-      public function checkProp(param1:Pos) : void
+      public function checkProp($curPos:Pos) : void
       {
-         $curPos = param1;
-         onUsePropConfirm = function(param1:BaseAlerFrame):void
+         $curPos = $curPos;
+         onUsePropConfirm = function(frame:BaseAlerFrame):void
          {
-            _moneyData.notShowAlertAgain = param1["isNoPrompt"];
+            _moneyData.notShowAlertAgain = frame["isNoPrompt"];
          };
          onUsePropCheckOut = function():void
          {
@@ -219,55 +219,53 @@ package sanXiao.game
          GameInSocketOut.sendSXPropClearColor(_moneyData.isBind,_moneyData.moneyNeeded);
       }
       
-      public function sendUseChangeColor(param1:int, param2:int) : void
+      public function sendUseChangeColor(originalType:int, cellItemChangeToType:int) : void
       {
-         GameInSocketOut.sendSXPropChangeColor(_moneyData.isBind,_moneyData.moneyNeeded,param1,param2);
+         GameInSocketOut.sendSXPropChangeColor(_moneyData.isBind,_moneyData.moneyNeeded,originalType,cellItemChangeToType);
       }
       
-      public function sendBoomList(param1:SXCellItem, param2:SXCellItem, param3:Vector.<SXCellData>) : void
+      public function sendBoomList($itemA:SXCellItem, $itemB:SXCellItem, boomList:Vector.<SXCellData>) : void
       {
-         var _loc8_:int = 0;
-         var _loc4_:Array = [];
-         var _loc7_:Dictionary = new Dictionary();
-         _loc8_ = 1;
-         while(_loc8_ <= _model.typeCount)
+         var i:int = 0;
+         var _boomArr:Array = [];
+         var _boomDic:Dictionary = new Dictionary();
+         for(i = 1; i <= _model.typeCount; )
          {
-            _loc7_[_loc8_] = [];
-            _loc8_++;
+            _boomDic[i] = [];
+            i++;
          }
-         var _loc6_:int = param3.length;
-         _loc8_ = 0;
-         while(_loc8_ < _loc6_)
+         var len:int = boomList.length;
+         for(i = 0; i < len; )
          {
-            (_loc7_[param3[_loc8_].type] as Array).push(param3[_loc8_].row,param3[_loc8_].column);
-            _loc8_++;
+            (_boomDic[boomList[i].type] as Array).push(boomList[i].row,boomList[i].column);
+            i++;
          }
          var _loc10_:int = 0;
-         var _loc9_:* = _loc7_;
-         for each(var _loc5_ in _loc7_)
+         var _loc9_:* = _boomDic;
+         for each(var arr in _boomDic)
          {
-            if(_loc5_.length > 0)
+            if(arr.length > 0)
             {
-               _loc4_.push(_loc5_);
+               _boomArr.push(arr);
             }
          }
-         if(param1 == null || param2 == null)
+         if($itemA == null || $itemB == null)
          {
-            _boomListList.push(-1,-1,-1,-1,_loc4_);
+            _boomListList.push(-1,-1,-1,-1,_boomArr);
          }
          else
          {
-            _boomListList.push(param1.curPos.row,param1.curPos.column,param2.curPos.row,param2.curPos.column,_loc4_);
+            _boomListList.push($itemA.curPos.row,$itemA.curPos.column,$itemB.curPos.row,$itemB.curPos.column,_boomArr);
          }
-         param1 = null;
-         param2 = null;
-         _loc4_ = null;
-         _loc7_ = null;
+         $itemA = null;
+         $itemB = null;
+         _boomArr = null;
+         _boomDic = null;
       }
       
-      public function sendFillList(param1:Vector.<SXCellData>) : void
+      public function sendFillList($list:Vector.<SXCellData>) : void
       {
-         _fallListList.push(param1);
+         _fallListList.push($list);
       }
       
       public function sendHitsEnd() : void
@@ -282,9 +280,9 @@ package sanXiao.game
          GameInSocketOut.sendSXHitsEnd();
       }
       
-      public function buyTimes(param1:int, param2:Boolean) : void
+      public function buyTimes(times:int, isBind:Boolean) : void
       {
-         GameInSocketOut.sendSXBuyOneTimes(param1,param2);
+         GameInSocketOut.sendSXBuyOneTimes(times,isBind);
       }
       
       public function get model() : SXModel

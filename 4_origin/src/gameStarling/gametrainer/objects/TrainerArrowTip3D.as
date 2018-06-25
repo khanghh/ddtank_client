@@ -11,9 +11,9 @@ package gameStarling.gametrainer.objects
       
       private var _bannerAsset:BoneMovieStarling;
       
-      public function TrainerArrowTip3D(param1:int, param2:int = 1, param3:Number = 1, param4:Number = 1, param5:Number = 1, param6:Number = 1)
+      public function TrainerArrowTip3D(id:int, layerType:int = 1, mass:Number = 1, gravityFactor:Number = 1, windFactor:Number = 1, airResitFactor:Number = 1)
       {
-         super(param1,param2,param3,param4,param5,param6);
+         super(id,layerType,mass,gravityFactor,windFactor,airResitFactor);
          init();
       }
       
@@ -23,11 +23,11 @@ package gameStarling.gametrainer.objects
          this.addChild(_bannerAsset);
       }
       
-      public function play(param1:String) : void
+      public function play(action:String) : void
       {
          if(_bannerAsset)
          {
-            _bannerAsset.play(param1);
+            _bannerAsset.play(action);
          }
       }
       

@@ -58,75 +58,75 @@ package team.view.main
          dateBtn.label = LanguageMgr.GetTranslation("ddt.team.allView.text39");
       }
       
-      protected function __onUpdateMmeber(param1:Event) : void
+      protected function __onUpdateMmeber(event:Event) : void
       {
          update();
       }
       
-      private function __onRenderMemeber(param1:Box, param2:int) : void
+      private function __onRenderMemeber(item:Box, index:int) : void
       {
-         var _loc10_:* = null;
-         var _loc5_:NameTextEx = param1.getChildByName("name") as NameTextEx;
-         var _loc7_:Label = param1.getChildByName("score") as Label;
-         var _loc4_:Label = param1.getChildByName("time") as Label;
-         var _loc9_:Label = param1.getChildByName("totalActive") as Label;
-         var _loc3_:Label = param1.getChildByName("weekActive") as Label;
-         var _loc8_:Label = param1.getChildByName("date") as Label;
-         var _loc6_:Image = param1.getChildByName("img_captain") as Image;
-         if(param2 < list_member.array.length)
+         var info:* = null;
+         var name:NameTextEx = item.getChildByName("name") as NameTextEx;
+         var score:Label = item.getChildByName("score") as Label;
+         var time:Label = item.getChildByName("time") as Label;
+         var totalActive:Label = item.getChildByName("totalActive") as Label;
+         var weekActive:Label = item.getChildByName("weekActive") as Label;
+         var date:Label = item.getChildByName("date") as Label;
+         var img:Image = item.getChildByName("img_captain") as Image;
+         if(index < list_member.array.length)
          {
-            _loc10_ = list_member.array[param2] as TeamMemberInfo;
-            _loc5_.textType = _loc10_ && _loc10_.IsVIP?2:1;
-            _loc5_.text = _loc10_.NickName;
-            _loc7_.text = _loc10_.teamSocre.toString();
-            _loc4_.text = _loc10_.totalTiems.toString();
-            _loc9_.text = _loc10_.seasonActiveScore.toString();
-            _loc3_.text = _loc10_.weekActiveScore.toString();
-            if(_loc10_.teamDuty == 1)
+            info = list_member.array[index] as TeamMemberInfo;
+            name.textType = info && info.IsVIP?2:1;
+            name.text = info.NickName;
+            score.text = info.teamSocre.toString();
+            time.text = info.totalTiems.toString();
+            totalActive.text = info.seasonActiveScore.toString();
+            weekActive.text = info.weekActiveScore.toString();
+            if(info.teamDuty == 1)
             {
-               _loc6_.visible = true;
+               img.visible = true;
             }
             else
             {
-               _loc6_.visible = false;
+               img.visible = false;
             }
-            if(_loc10_.playerState.StateID != 0)
+            if(info.playerState.StateID != 0)
             {
-               _loc8_.text = LanguageMgr.GetTranslation("tank.view.im.IMFriendList.online");
+               date.text = LanguageMgr.GetTranslation("tank.view.im.IMFriendList.online");
             }
-            else if(_loc10_.playerState.StateID == 0)
+            else if(info.playerState.StateID == 0)
             {
-               if(_loc10_.OffLineHour == -1)
+               if(info.OffLineHour == -1)
                {
-                  _loc8_.text = _loc10_.minute + LanguageMgr.GetTranslation("minute");
+                  date.text = info.minute + LanguageMgr.GetTranslation("minute");
                }
-               else if(_loc10_.OffLineHour >= 1 && _loc10_.OffLineHour < 24)
+               else if(info.OffLineHour >= 1 && info.OffLineHour < 24)
                {
-                  _loc8_.text = _loc10_.OffLineHour + LanguageMgr.GetTranslation("hour");
+                  date.text = info.OffLineHour + LanguageMgr.GetTranslation("hour");
                }
-               else if(_loc10_.OffLineHour >= 24 && _loc10_.OffLineHour < 720)
+               else if(info.OffLineHour >= 24 && info.OffLineHour < 720)
                {
-                  _loc8_.text = _loc10_.day + LanguageMgr.GetTranslation("day");
+                  date.text = info.day + LanguageMgr.GetTranslation("day");
                }
-               else if(_loc10_.OffLineHour >= 720 && _loc10_.OffLineHour < 999)
+               else if(info.OffLineHour >= 720 && info.OffLineHour < 999)
                {
-                  _loc8_.text = LanguageMgr.GetTranslation("tank.consortia.myconsortia.MyConsortiaMemberInfoItem.month");
+                  date.text = LanguageMgr.GetTranslation("tank.consortia.myconsortia.MyConsortiaMemberInfoItem.month");
                }
                else
                {
-                  _loc8_.text = LanguageMgr.GetTranslation("tank.consortia.myconsortia.MyConsortiaMemberInfoItem.long");
+                  date.text = LanguageMgr.GetTranslation("tank.consortia.myconsortia.MyConsortiaMemberInfoItem.long");
                }
             }
          }
          else
          {
-            _loc5_.text = "";
-            _loc7_.text = "";
-            _loc4_.text = "";
-            _loc9_.text = "";
-            _loc3_.text = "";
-            _loc8_.text = "";
-            _loc6_.visible = false;
+            name.text = "";
+            score.text = "";
+            time.text = "";
+            totalActive.text = "";
+            weekActive.text = "";
+            date.text = "";
+            img.visible = false;
          }
       }
       
@@ -172,15 +172,15 @@ package team.view.main
          sort(6);
       }
       
-      private function sort(param1:int) : void
+      private function sort(type:int) : void
       {
-         if(_sortType == param1)
+         if(_sortType == type)
          {
             _memberList = _memberList.reverse();
          }
          else
          {
-            _sortType = param1;
+            _sortType = type;
             _memberList = TeamManager.instance.model.selfTeamMember.concat();
             switch(int(_sortType) - 1)
             {

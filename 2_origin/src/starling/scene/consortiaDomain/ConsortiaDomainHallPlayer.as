@@ -46,28 +46,28 @@ package starling.scene.consortiaDomain
       
       private var _walkTarget:DisplayObject;
       
-      public function ConsortiaDomainHallPlayer(param1:PlayerVO)
+      public function ConsortiaDomainHallPlayer(playerVO:PlayerVO)
       {
-         super(param1);
+         super(playerVO);
          _playerView = ConsortiaDomainScene(StarlingMain.instance.currentScene).playerView;
          ChatManager.Instance.addEventListener("addFace",__getFace);
          ChatManager.Instance.model.addEventListener("addChat",__getChat);
          ConsortiaDomainManager.instance.addEventListener("event_get_consortia_info_res",onGetConsortiaInfoRes);
       }
       
-      private function __getFace(param1:ChatEvent) : void
+      private function __getFace(evt:ChatEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:Object = param1.data;
-         if(_loc3_["playerid"] == playerVO.playerInfo.ID)
+         var senceLayer:* = null;
+         var data:Object = evt.data;
+         if(data["playerid"] == playerVO.playerInfo.ID)
          {
-            _loc2_ = LayerManager.Instance.getLayerByType(5);
+            senceLayer = LayerManager.Instance.getLayerByType(5);
             if(!_face)
             {
                _face = new FaceContainer(true);
             }
-            _loc2_.addChild(_face);
-            _face.setFace(_loc3_["faceid"]);
+            senceLayer.addChild(_face);
+            _face.setFace(data["faceid"]);
          }
          onPlayerViewPosUpdate();
       }
@@ -138,65 +138,65 @@ package starling.scene.consortiaDomain
          }
       }
       
-      private function __getChat(param1:ChatEvent) : void
+      private function __getChat(evt:ChatEvent) : void
       {
-         var _loc2_:* = null;
-         if(!param1.data)
+         var senceLayer:* = null;
+         if(!evt.data)
          {
             return;
          }
-         var _loc3_:ChatData = ChatData(param1.data).clone();
-         if(!_loc3_)
+         var data:ChatData = ChatData(evt.data).clone();
+         if(!data)
          {
             return;
          }
-         _loc3_.msg = Helpers.deCodeString(_loc3_.msg);
-         if(_loc3_.channel == 2 || _loc3_.channel == 3)
+         data.msg = Helpers.deCodeString(data.msg);
+         if(data.channel == 2 || data.channel == 3)
          {
             return;
          }
-         if(_loc3_ && playerVO.playerInfo && _loc3_.senderID == playerVO.playerInfo.ID)
+         if(data && playerVO.playerInfo && data.senderID == playerVO.playerInfo.ID)
          {
             if(!_chatBallView)
             {
                _chatBallView = new ChatBallPlayer();
             }
-            _loc2_ = LayerManager.Instance.getLayerByType(5);
-            _loc2_.addChild(_chatBallView);
-            _chatBallView.setText(_loc3_.msg,playerVO.playerInfo.paopaoType);
+            senceLayer = LayerManager.Instance.getLayerByType(5);
+            senceLayer.addChild(_chatBallView);
+            _chatBallView.setText(data.msg,playerVO.playerInfo.paopaoType);
          }
          onPlayerViewPosUpdate();
       }
       
       public function checkAndFightWithMonster() : void
       {
-         var _loc1_:MonsterBone = _walkTarget as MonsterBone;
-         if(_loc1_.moveEntityState == 1 || _loc1_.moveEntityState == 3 || _loc1_.moveEntityState == 4)
+         var target:MonsterBone = _walkTarget as MonsterBone;
+         if(target.moveEntityState == 1 || target.moveEntityState == 3 || target.moveEntityState == 4)
          {
-            if(_loc1_.eachMonsterInfo.FightID <= 0)
+            if(target.eachMonsterInfo.FightID <= 0)
             {
-               SocketManager.Instance.out.sendConsortiaDomainFight(_loc1_.eachMonsterInfo.LivingID);
+               SocketManager.Instance.out.sendConsortiaDomainFight(target.eachMonsterInfo.LivingID);
             }
          }
       }
       
       public function checkAndRepairBuild() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:BuildView = _walkTarget as BuildView;
-         var _loc3_:int = ConsortiaDomainManager.instance.activeState;
-         if(this.consortiaDomainPlayerVo.repairBuildId <= 0 && (_loc3_ == 0 || _loc3_ == 100) && (_loc2_.state == 4 || _loc2_.state == 3))
+         var eachBuildInfo:* = null;
+         var target:BuildView = _walkTarget as BuildView;
+         var activeState:int = ConsortiaDomainManager.instance.activeState;
+         if(this.consortiaDomainPlayerVo.repairBuildId <= 0 && (activeState == 0 || activeState == 100) && (target.state == 4 || target.state == 3))
          {
-            _loc1_ = ConsortiaDomainManager.instance.model.allBuildInfo[_loc2_.buildId];
-            if(_loc1_ && _loc1_.Repair > 0)
+            eachBuildInfo = ConsortiaDomainManager.instance.model.allBuildInfo[target.buildId];
+            if(eachBuildInfo && eachBuildInfo.Repair > 0)
             {
-               if(_loc1_.repairPlayerNum >= ConsortiaDomainManager.instance.consortiaLandRepairCount)
+               if(eachBuildInfo.repairPlayerNum >= ConsortiaDomainManager.instance.consortiaLandRepairCount)
                {
-                  MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("consortiadomain.buildRepair.fullPlayer",ConsortiaDomainManager.instance.buildNameArr[_loc2_.buildId],ConsortiaDomainManager.instance.consortiaLandRepairCount,ConsortiaDomainManager.instance.consortiaLandRepairCount));
+                  MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("consortiadomain.buildRepair.fullPlayer",ConsortiaDomainManager.instance.buildNameArr[target.buildId],ConsortiaDomainManager.instance.consortiaLandRepairCount,ConsortiaDomainManager.instance.consortiaLandRepairCount));
                }
                else
                {
-                  SocketManager.Instance.out.sendConsortiaDomainRepair(_loc2_.buildId);
+                  SocketManager.Instance.out.sendConsortiaDomainRepair(target.buildId);
                }
             }
          }
@@ -204,18 +204,18 @@ package starling.scene.consortiaDomain
       
       public function alertUnRepairBuild() : void
       {
-         var _loc3_:Array = ConsortiaDomainManager.instance.buildNameArr;
-         var _loc1_:String = _loc3_[consortiaDomainPlayerVo.repairBuildId];
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("consortiadomain.leaveRepairBuildAlert",_loc1_),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
-         _loc2_.addEventListener("response",onUnRepairAlert);
+         var buildNameArr:Array = ConsortiaDomainManager.instance.buildNameArr;
+         var buildName:String = buildNameArr[consortiaDomainPlayerVo.repairBuildId];
+         var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("consortiadomain.leaveRepairBuildAlert",buildName),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
+         alert.addEventListener("response",onUnRepairAlert);
       }
       
-      private function onUnRepairAlert(param1:FrameEvent) : void
+      private function onUnRepairAlert(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",onUnRepairAlert);
-         switch(int(param1.responseCode))
+         var alert:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",onUnRepairAlert);
+         switch(int(e.responseCode))
          {
             default:
             default:
@@ -233,7 +233,7 @@ package starling.scene.consortiaDomain
                   _walkTarget = null;
                }
          }
-         _loc2_.dispose();
+         alert.dispose();
       }
       
       public function get consortiaDomainPlayerVo() : ConsortiaDomainPlayerVo
@@ -246,19 +246,19 @@ package starling.scene.consortiaDomain
          return _walkTarget;
       }
       
-      public function set walkTarget(param1:DisplayObject) : void
+      public function set walkTarget(value:DisplayObject) : void
       {
-         _walkTarget = param1;
+         _walkTarget = value;
       }
       
-      private function onGetConsortiaInfoRes(param1:Event) : void
+      private function onGetConsortiaInfoRes(evt:Event) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:int = consortiaDomainPlayerVo.repairBuildId;
-         if(_loc3_ > 0)
+         var eachBuildInfo:* = null;
+         var buildId:int = consortiaDomainPlayerVo.repairBuildId;
+         if(buildId > 0)
          {
-            _loc2_ = ConsortiaDomainManager.instance.model.allBuildInfo[_loc3_];
-            if(_loc2_.Repair == 0)
+            eachBuildInfo = ConsortiaDomainManager.instance.model.allBuildInfo[buildId];
+            if(eachBuildInfo.Repair == 0)
             {
                consortiaDomainPlayerVo.repairBuildId = 0;
                checkShowRepair();

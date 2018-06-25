@@ -10,44 +10,43 @@ package ddt.data.analyze
       
       public var pyramidSystemDataList:Array;
       
-      public function PyramidAnalyze(param1:Function)
+      public function PyramidAnalyze(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc5_:* = null;
-         var _loc6_:int = 0;
-         var _loc2_:* = null;
-         var _loc4_:* = null;
+         var xmllist:* = null;
+         var i:int = 0;
+         var itemInfo1:* = null;
+         var arr1:* = null;
          pyramidSystemDataList = [];
-         var _loc3_:XML = new XML(param1);
-         if(_loc3_.@value == "true")
+         var xml:XML = new XML(data);
+         if(xml.@value == "true")
          {
-            _loc5_ = _loc3_..Item;
-            _loc6_ = 0;
-            while(_loc6_ < _loc5_.length())
+            xmllist = xml..Item;
+            for(i = 0; i < xmllist.length(); )
             {
-               if(_loc5_[_loc6_].@ActivityType == "8")
+               if(xmllist[i].@ActivityType == "8")
                {
-                  _loc2_ = new PyramidSystemItemsInfo();
-                  ObjectUtils.copyPorpertiesByXML(_loc2_,_loc5_[_loc6_]);
-                  _loc4_ = pyramidSystemDataList[_loc2_.Quality - 1];
-                  if(!_loc4_)
+                  itemInfo1 = new PyramidSystemItemsInfo();
+                  ObjectUtils.copyPorpertiesByXML(itemInfo1,xmllist[i]);
+                  arr1 = pyramidSystemDataList[itemInfo1.Quality - 1];
+                  if(!arr1)
                   {
-                     _loc4_ = [];
+                     arr1 = [];
                   }
-                  _loc4_.push(_loc2_);
-                  pyramidSystemDataList[_loc2_.Quality - 1] = _loc4_;
+                  arr1.push(itemInfo1);
+                  pyramidSystemDataList[itemInfo1.Quality - 1] = arr1;
                }
-               _loc6_++;
+               i++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc3_.@message;
+            message = xml.@message;
             onAnalyzeError();
          }
       }

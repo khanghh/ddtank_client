@@ -59,11 +59,11 @@ package explorerManual.view.page
       
       private var _confirmFrame:BaseAlerFrame;
       
-      public function ExplorerPageView(param1:ExplorerManualInfo, param2:ExplorerManualController)
+      public function ExplorerPageView(model:ExplorerManualInfo, ctrl:ExplorerManualController)
       {
          super();
-         _model = param1;
-         _ctrl = param2;
+         _model = model;
+         _ctrl = ctrl;
          initEvent();
       }
       
@@ -72,9 +72,9 @@ package explorerManual.view.page
          return _curPageIndex;
       }
       
-      public function set curPageIndex(param1:int) : void
+      public function set curPageIndex(value:int) : void
       {
-         _curPageIndex = param1;
+         _curPageIndex = value;
       }
       
       private function initEvent() : void
@@ -102,7 +102,7 @@ package explorerManual.view.page
          }
       }
       
-      private function __updatePageViewHandler(param1:Event) : void
+      private function __updatePageViewHandler(evt:Event) : void
       {
          initView();
          initPage();
@@ -113,16 +113,16 @@ package explorerManual.view.page
          return _curPage;
       }
       
-      public function set curPage(param1:ManualPageItemInfo) : void
+      public function set curPage(value:ManualPageItemInfo) : void
       {
-         _curPage = param1;
+         _curPage = value;
          updateView();
          updateBtn();
       }
       
       private function updateBtn() : void
       {
-         var _loc1_:int = _curAllPage.length;
+         var totalPage:int = _curAllPage.length;
          _downPageBtn.enable = true;
          _upPageBtn.enable = true;
          if(_curPage.Sort == 0)
@@ -130,7 +130,7 @@ package explorerManual.view.page
             _downPageBtn.enable = true;
             _upPageBtn.enable = false;
          }
-         else if(_curPage.Sort == _loc1_ - 1)
+         else if(_curPage.Sort == totalPage - 1)
          {
             _downPageBtn.enable = false;
             _upPageBtn.enable = true;
@@ -166,9 +166,9 @@ package explorerManual.view.page
          }
       }
       
-      public function set chapter(param1:int) : void
+      public function set chapter(value:int) : void
       {
-         _curChapter = param1;
+         _curChapter = value;
       }
       
       private function initView() : void
@@ -202,21 +202,21 @@ package explorerManual.view.page
          _downPageBtn.addEventListener("click",__downPageBtnHandler);
       }
       
-      private function directionryClick_Handler(param1:CEvent) : void
+      private function directionryClick_Handler(evt:CEvent) : void
       {
-         var _loc2_:int = param1.data;
-         curPageIndex = _loc2_ - 1;
+         var temSortId:int = evt.data;
+         curPageIndex = temSortId - 1;
          turnPage(2);
       }
       
-      private function __upPageBtnHandler(param1:MouseEvent) : void
+      private function __upPageBtnHandler(evt:MouseEvent) : void
       {
          turnPage(1);
       }
       
-      private function turnPage(param1:int) : void
+      private function turnPage(type:int) : void
       {
-         type = param1;
+         type = type;
          if(_curAllPage.length <= 0)
          {
             return;
@@ -286,36 +286,36 @@ package explorerManual.view.page
          }(),800);
       }
       
-      private function __downPageBtnHandler(param1:MouseEvent) : void
+      private function __downPageBtnHandler(evt:MouseEvent) : void
       {
          turnPage(2);
       }
       
       private function checkCanClick() : Boolean
       {
-         var _loc1_:Number = new Date().time;
-         if(_loc1_ - _clickNum < 2000)
+         var nowTime:Number = new Date().time;
+         if(nowTime - _clickNum < 2000)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.storeIIStrength.startStrengthClickTimerMsg"),0,true);
             return false;
          }
-         _clickNum = _loc1_;
+         _clickNum = nowTime;
          return true;
       }
       
-      private function showPuzzleAffim(param1:Function) : void
+      private function showPuzzleAffim(callfun:Function) : void
       {
-         callfun = param1;
+         callfun = callfun;
          _confirmFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("explorerManual.checkPuzzleState.prompt"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
          _confirmFrame.moveEnable = false;
          _confirmFrame.addEventListener("response",function():*
          {
-            var /*UnknownSlot*/:* = function(param1:FrameEvent):void
+            var /*UnknownSlot*/:* = function(evt:FrameEvent):void
             {
                SoundManager.instance.play("008");
                _confirmFrame.removeEventListener("response",__confirmBuy);
                _confirmFrame = null;
-               if(param1.responseCode == 3 || param1.responseCode == 2)
+               if(evt.responseCode == 3 || evt.responseCode == 2)
                {
                   _ctrl.puzzleState = false;
                   if(callfun)
@@ -324,12 +324,12 @@ package explorerManual.view.page
                   }
                }
             };
-            return function(param1:FrameEvent):void
+            return function(evt:FrameEvent):void
             {
                SoundManager.instance.play("008");
                _confirmFrame.removeEventListener("response",__confirmBuy);
                _confirmFrame = null;
-               if(param1.responseCode == 3 || param1.responseCode == 2)
+               if(evt.responseCode == 3 || evt.responseCode == 2)
                {
                   _ctrl.puzzleState = false;
                   if(callfun)

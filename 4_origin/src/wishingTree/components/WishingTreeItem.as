@@ -33,12 +33,12 @@ package wishingTree.components
       
       private var _rewardId:int;
       
-      public function WishingTreeItem(param1:int, param2:int, param3:int)
+      public function WishingTreeItem(index:int, num:int, rewardId:int)
       {
          super();
-         _index = param1;
-         _num = param2;
-         _rewardId = param3;
+         _index = index;
+         _num = num;
+         _rewardId = rewardId;
          initView();
          addEvents();
       }
@@ -53,11 +53,11 @@ package wishingTree.components
          _alreadyGet = ComponentFactory.Instance.creat("wishingTree.alreadyGet");
          addChild(_alreadyGet);
          _alreadyGet.visible = false;
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(0,0);
-         _loc1_.graphics.drawRect(0,0,30,30);
-         _loc1_.graphics.endFill();
-         _cell = new BaseCell(_loc1_,ItemManager.Instance.getTemplateById(_rewardId));
+         var cellBg:Sprite = new Sprite();
+         cellBg.graphics.beginFill(0,0);
+         cellBg.graphics.drawRect(0,0,30,30);
+         cellBg.graphics.endFill();
+         _cell = new BaseCell(cellBg,ItemManager.Instance.getTemplateById(_rewardId));
          PositionUtils.setPos(_cell,"wishingTree.cellPos");
          addChild(_cell);
       }
@@ -67,18 +67,18 @@ package wishingTree.components
          _btn.addEventListener("click",__btnClick);
       }
       
-      protected function __btnClick(param1:MouseEvent) : void
+      protected function __btnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          SocketManager.Instance.out.wishingTreeGetReward(_index);
       }
       
-      public function setState(param1:int, param2:int) : void
+      public function setState(times:int, state:int) : void
       {
-         var _loc3_:* = param2 >> _index & 1;
-         if(param1 >= _num)
+         var isGain:* = state >> _index & 1;
+         if(times >= _num)
          {
-            if(_loc3_)
+            if(isGain)
             {
                _alreadyGet.visible = true;
                _btn.visible = false;

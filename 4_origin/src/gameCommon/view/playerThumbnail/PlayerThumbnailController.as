@@ -25,9 +25,9 @@ package gameCommon.view.playerThumbnail
       
       private var _bossThumbnailContainer:BossThumbnail;
       
-      public function PlayerThumbnailController(param1:GameInfo)
+      public function PlayerThumbnailController(info:GameInfo)
       {
-         _info = param1;
+         _info = info;
          _team1 = new DictionaryData();
          _team2 = new DictionaryData();
          super();
@@ -52,45 +52,45 @@ package gameCommon.view.playerThumbnail
       
       private function initInfo() : void
       {
-         var _loc2_:DictionaryData = _info.livings;
+         var players:DictionaryData = _info.livings;
          var _loc4_:int = 0;
-         var _loc3_:* = _loc2_;
-         for each(var _loc1_ in _loc2_)
+         var _loc3_:* = players;
+         for each(var player in players)
          {
-            if(_loc1_ is Player)
+            if(player is Player)
             {
-               if(RoomManager.Instance.current.type == 121 || _loc1_.team == 1)
+               if(RoomManager.Instance.current.type == 121 || player.team == 1)
                {
-                  _team1.add((_loc1_ as Player).playerInfo.ID,_loc1_);
+                  _team1.add((player as Player).playerInfo.ID,player);
                }
                else if(_info.gameMode != 5)
                {
-                  _team2.add((_loc1_ as Player).playerInfo.ID,_loc1_);
+                  _team2.add((player as Player).playerInfo.ID,player);
                }
             }
          }
       }
       
-      public function addNewLiving(param1:Living) : void
+      public function addNewLiving(player:Living) : void
       {
-         if(param1.team == 1)
+         if(player.team == 1)
          {
-            _team1.add((param1 as Player).playerInfo.ID,param1);
+            _team1.add((player as Player).playerInfo.ID,player);
          }
          else if(_info.gameMode != 5)
          {
-            _team2.add((param1 as Player).playerInfo.ID,param1);
+            _team2.add((player as Player).playerInfo.ID,player);
          }
       }
       
-      public function set currentBoss(param1:Living) : void
+      public function set currentBoss(living:Living) : void
       {
          removeThumbnailContainer();
-         if(param1 == null)
+         if(living == null)
          {
             return;
          }
-         _bossThumbnailContainer = new BossThumbnail(param1);
+         _bossThumbnailContainer = new BossThumbnail(living);
          _bossThumbnailContainer.x = _list1.x + 110;
          _bossThumbnailContainer.y = -10;
          addChild(_bossThumbnailContainer);
@@ -105,37 +105,37 @@ package gameCommon.view.playerThumbnail
          _bossThumbnailContainer = null;
       }
       
-      public function addLiving(param1:Living) : void
+      public function addLiving(living:Living) : void
       {
-         if(param1.typeLiving == 4 || param1.typeLiving == 5 || param1.typeLiving == 6 || param1.typeLiving == 12)
+         if(living.typeLiving == 4 || living.typeLiving == 5 || living.typeLiving == 6 || living.typeLiving == 12)
          {
             if(_info.gameMode != 5)
             {
-               currentBoss = param1;
+               currentBoss = living;
             }
          }
-         else if(param1.typeLiving == 1 || param1.typeLiving == 2)
+         else if(living.typeLiving == 1 || living.typeLiving == 2)
          {
-            _team2.add(param1.LivingID,param1);
+            _team2.add(living.LivingID,living);
          }
       }
       
-      public function updateHeadFigure(param1:*, param2:Boolean) : void
+      public function updateHeadFigure(living:*, flag:Boolean) : void
       {
-         if(param2)
+         if(flag)
          {
-            if(param1.info)
+            if(living.info)
             {
-               currentBoss = param1.info;
+               currentBoss = living.info;
             }
          }
-         else if(param1.info)
+         else if(living.info)
          {
-            if(param1.info.typeLiving == 4 || param1.info.typeLiving == 5 || param1.info.typeLiving == 6 || param1.info.typeLiving == 12)
+            if(living.info.typeLiving == 4 || living.info.typeLiving == 5 || living.info.typeLiving == 6 || living.info.typeLiving == 12)
             {
                if(_info.gameMode != 5)
                {
-                  currentBoss = param1.info;
+                  currentBoss = living.info;
                }
             }
          }
@@ -155,34 +155,34 @@ package gameCommon.view.playerThumbnail
          _list2.removeEventListener("wishSelect",__thumbnailListHandle);
       }
       
-      private function __thumbnailListHandle(param1:GameEvent) : void
+      private function __thumbnailListHandle(e:GameEvent) : void
       {
-         dispatchEvent(new GameEvent("wishSelect",param1.data));
+         dispatchEvent(new GameEvent("wishSelect",e.data));
       }
       
-      private function __removePlayer(param1:DictionaryEvent) : void
+      private function __removePlayer(evt:DictionaryEvent) : void
       {
-         var _loc2_:Player = param1.data as Player;
-         if(_loc2_ == null)
+         var player:Player = evt.data as Player;
+         if(player == null)
          {
             return;
          }
-         if(_loc2_.character)
+         if(player.character)
          {
-            _loc2_.character.resetShowBitmapBig();
+            player.character.resetShowBitmapBig();
          }
-         if(_bossThumbnailContainer && _bossThumbnailContainer.Id == _loc2_.LivingID)
+         if(_bossThumbnailContainer && _bossThumbnailContainer.Id == player.LivingID)
          {
             _bossThumbnailContainer.dispose();
             _bossThumbnailContainer = null;
          }
-         else if(_loc2_.team == 1 || RoomManager.Instance.current.type == 121)
+         else if(player.team == 1 || RoomManager.Instance.current.type == 121)
          {
-            _team1.remove((param1.data as Player).playerInfo.ID);
+            _team1.remove((evt.data as Player).playerInfo.ID);
          }
          else
          {
-            _team2.remove((param1.data as Player).playerInfo.ID);
+            _team2.remove((evt.data as Player).playerInfo.ID);
          }
       }
       

@@ -54,28 +54,28 @@ package catchInsect
          CatchInsectManager.instance.addEventListener("catchInsectDisposeEnterIcon",__onDisposeEnterIcon);
       }
       
-      protected function __onMovePlayer(param1:CatchInsectRoomEvent) : void
+      protected function __onMovePlayer(event:CatchInsectRoomEvent) : void
       {
-         _view.movePlayer(param1.data["id"],param1.data["path"]);
+         _view.movePlayer(event.data["id"],event.data["path"]);
       }
       
-      protected function __onUpdateSelfState(param1:CatchInsectRoomEvent) : void
+      protected function __onUpdateSelfState(event:CatchInsectRoomEvent) : void
       {
-         _view.updateSelfStatus(int(param1.data));
+         _view.updateSelfStatus(int(event.data));
       }
       
-      protected function __onUpdatePlayerState(param1:CatchInsectRoomEvent) : void
+      protected function __onUpdatePlayerState(event:CatchInsectRoomEvent) : void
       {
-         _view.updatePlayerStauts(param1.data["id"],param1.data["stauts"],param1.data["point"]);
+         _view.updatePlayerStauts(event.data["id"],event.data["stauts"],event.data["point"]);
       }
       
-      protected function __onCreatRoomView(param1:CatchInsectRoomEvent) : void
+      protected function __onCreatRoomView(event:CatchInsectRoomEvent) : void
       {
-         _view = new CatchInsectRoomView(param1.data["view"],param1.data["model"]);
+         _view = new CatchInsectRoomView(event.data["view"],event.data["model"]);
          _view.show();
       }
       
-      protected function __onSetViewAgain(param1:CatchInsectRoomEvent) : void
+      protected function __onSetViewAgain(event:CatchInsectRoomEvent) : void
       {
          if(_view)
          {
@@ -90,10 +90,10 @@ package catchInsect
          _checkGeinFrame.addEventListener("response",__response);
       }
       
-      private function __response(param1:FrameEvent) : void
+      private function __response(evt:FrameEvent) : void
       {
          _checkGeinFrame.removeEventListener("response",__response);
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
             _checkGeinFrame.dispose();
@@ -111,7 +111,7 @@ package catchInsect
          }
       }
       
-      protected function __onDisposeEnterIcon(param1:InsectEvent) : void
+      protected function __onDisposeEnterIcon(event:InsectEvent) : void
       {
          if(_checkGeinFrame)
          {

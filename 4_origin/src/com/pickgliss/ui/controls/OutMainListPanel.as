@@ -79,86 +79,83 @@ package com.pickgliss.ui.controls
          return _model;
       }
       
-      public function contentsChanged(param1:ListDataEvent) : void
+      public function contentsChanged(event:ListDataEvent) : void
       {
          changeDate();
       }
       
-      public function intervalAdded(param1:ListDataEvent) : void
+      public function intervalAdded(event:ListDataEvent) : void
       {
          syncScrollBar();
       }
       
-      public function intervalRemoved(param1:ListDataEvent) : void
+      public function intervalRemoved(event:ListDataEvent) : void
       {
          syncScrollBar();
       }
       
       private function syncScrollBar() : void
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         var _loc1_:int = 0;
-         var _loc2_:int = _factory.getCellHeight();
-         _needNum = Math.floor(_height / _loc2_);
+         var extent:int = 0;
+         var value:int = 0;
+         var max:int = 0;
+         var ih:int = _factory.getCellHeight();
+         _needNum = Math.floor(_height / ih);
          if(_vScrollbar != null)
          {
-            _loc3_ = _needNum * _factory.getCellHeight();
-            _loc4_ = _presentPos * _factory.getCellHeight();
-            _loc1_ = _factory.getCellHeight() * _model.elements.length;
+            extent = _needNum * _factory.getCellHeight();
+            value = _presentPos * _factory.getCellHeight();
+            max = _factory.getCellHeight() * _model.elements.length;
             _vScrollbar.unitIncrement = _factory.getCellHeight();
             _vScrollbar.blockIncrement = _factory.getCellHeight();
-            _vScrollbar.getModel().setRangeProperties(_loc4_,_loc3_,0,_loc1_,false);
+            _vScrollbar.getModel().setRangeProperties(value,extent,0,max,false);
          }
          changeDate();
       }
       
       private function changeDate() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _needNum)
+         var i:int = 0;
+         for(i = 0; i < _needNum; )
          {
-            _cells[_loc1_].setCellValue(_model.elements[_presentPos + _loc1_]);
-            _loc1_++;
+            _cells[i].setCellValue(_model.elements[_presentPos + i]);
+            i++;
          }
       }
       
       private function createCells() : void
       {
-         var _loc1_:int = 0;
-         var _loc7_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:int = 0;
-         var _loc5_:* = undefined;
-         var _loc6_:int = 0;
-         var _loc2_:int = _factory.getCellHeight();
-         _needNum = Math.floor(_height / _loc2_);
+         var addNum:int = 0;
+         var i:int = 0;
+         var cell:* = null;
+         var removeIndex:int = 0;
+         var removed:* = undefined;
+         var j:int = 0;
+         var ih:int = _factory.getCellHeight();
+         _needNum = Math.floor(_height / ih);
          if(_cells.length == _needNum)
          {
             return;
          }
          if(_cells.length < _needNum)
          {
-            _loc1_ = _needNum - _cells.length;
-            _loc7_ = 0;
-            while(_loc7_ < _loc1_)
+            addNum = _needNum - _cells.length;
+            for(i = 0; i < addNum; )
             {
-               _loc4_ = createNewCell();
-               _loc4_.y = _factory.getCellHeight() * _loc7_;
-               addCellToContainer(_loc4_);
-               _loc7_++;
+               cell = createNewCell();
+               cell.y = _factory.getCellHeight() * i;
+               addCellToContainer(cell);
+               i++;
             }
          }
          else
          {
-            _loc3_ = _needNum;
-            _loc5_ = _cells.splice(_loc3_,_cells.length - _loc3_);
-            _loc6_ = 0;
-            while(_loc7_ < _loc5_.length)
+            removeIndex = _needNum;
+            removed = _cells.splice(removeIndex,_cells.length - removeIndex);
+            for(j = 0; i < removed.length; )
             {
-               removeCellFromContainer(_loc5_[_loc6_]);
-               _loc6_++;
+               removeCellFromContainer(removed[j]);
+               j++;
             }
          }
       }
@@ -172,23 +169,23 @@ package com.pickgliss.ui.controls
          return _factory.createNewCell();
       }
       
-      protected function addCellToContainer(param1:IListCell) : void
+      protected function addCellToContainer(cell:IListCell) : void
       {
-         param1.addEventListener("click",__onItemInteractive);
-         param1.addEventListener("mouseDown",__onItemInteractive);
-         param1.addEventListener("mouseUp",__onItemInteractive);
-         param1.addEventListener("rollOver",__onItemInteractive);
-         param1.addEventListener("rollOut",__onItemInteractive);
-         param1.addEventListener("doubleClick",__onItemInteractive);
-         _cells.push(_cellsContainer.addChild(param1.asDisplayObject()));
+         cell.addEventListener("click",__onItemInteractive);
+         cell.addEventListener("mouseDown",__onItemInteractive);
+         cell.addEventListener("mouseUp",__onItemInteractive);
+         cell.addEventListener("rollOver",__onItemInteractive);
+         cell.addEventListener("rollOut",__onItemInteractive);
+         cell.addEventListener("doubleClick",__onItemInteractive);
+         _cells.push(_cellsContainer.addChild(cell.asDisplayObject()));
       }
       
-      protected function __onItemInteractive(param1:MouseEvent) : void
+      protected function __onItemInteractive(event:MouseEvent) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:IListCell = param1.currentTarget as IListCell;
-         var _loc2_:int = _model.indexOf(_loc3_.getCellValue());
-         var _loc5_:* = param1.type;
+         var type:* = null;
+         var target:IListCell = event.currentTarget as IListCell;
+         var index:int = _model.indexOf(target.getCellValue());
+         var _loc5_:* = event.type;
          if("click" !== _loc5_)
          {
             if("doubleClick" !== _loc5_)
@@ -201,57 +198,56 @@ package com.pickgliss.ui.controls
                      {
                         if("rollOut" === _loc5_)
                         {
-                           _loc4_ = "listItemRollOut";
+                           type = "listItemRollOut";
                         }
                      }
                      else
                      {
-                        _loc4_ = "listItemRollOver";
+                        type = "listItemRollOver";
                      }
                   }
                   else
                   {
-                     _loc4_ = "listItemMouseUp";
+                     type = "listItemMouseUp";
                   }
                }
                else
                {
-                  _loc4_ = "listItemMouseDown";
+                  type = "listItemMouseDown";
                }
             }
             else
             {
-               _loc4_ = "listItemDoubleclick";
+               type = "listItemDoubleclick";
             }
          }
          else
          {
-            _loc4_ = "listItemClick";
+            type = "listItemClick";
          }
-         dispatchEvent(new ListItemEvent(_loc3_,_loc3_.getCellValue(),_loc4_,_loc2_));
+         dispatchEvent(new ListItemEvent(target,target.getCellValue(),type,index));
       }
       
       protected function removeAllCell() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _cells.length)
+         var i:int = 0;
+         for(i = 0; i < _cells.length; )
          {
-            removeCellFromContainer(_cells[_loc1_]);
-            _loc1_++;
+            removeCellFromContainer(_cells[i]);
+            i++;
          }
          _cells = new Vector.<IListCell>();
       }
       
-      protected function removeCellFromContainer(param1:IListCell) : void
+      protected function removeCellFromContainer(cell:IListCell) : void
       {
-         param1.removeEventListener("click",__onItemInteractive);
-         param1.removeEventListener("mouseDown",__onItemInteractive);
-         param1.removeEventListener("mouseUp",__onItemInteractive);
-         param1.removeEventListener("rollOver",__onItemInteractive);
-         param1.removeEventListener("rollOut",__onItemInteractive);
-         param1.removeEventListener("doubleClick",__onItemInteractive);
-         ObjectUtils.disposeObject(param1);
+         cell.removeEventListener("click",__onItemInteractive);
+         cell.removeEventListener("mouseDown",__onItemInteractive);
+         cell.removeEventListener("mouseUp",__onItemInteractive);
+         cell.removeEventListener("rollOver",__onItemInteractive);
+         cell.removeEventListener("rollOut",__onItemInteractive);
+         cell.removeEventListener("doubleClick",__onItemInteractive);
+         ObjectUtils.disposeObject(cell);
       }
       
       protected function initEvent() : void
@@ -259,49 +255,49 @@ package com.pickgliss.ui.controls
          addEventListener("mouseWheel",onMouseWheel);
       }
       
-      public function onMouseWheel(param1:MouseEvent) : void
+      public function onMouseWheel(event:MouseEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
+         var incre:int = 0;
+         var resulte:int = 0;
          if(_needNum > 0)
          {
-            _loc2_ = Math.floor(param1.delta / _needNum);
-            _loc3_ = _presentPos - _loc2_;
-            if(_loc3_ > _model.elements.length - _needNum)
+            incre = Math.floor(event.delta / _needNum);
+            resulte = _presentPos - incre;
+            if(resulte > _model.elements.length - _needNum)
             {
-               _loc3_ = _model.elements.length - _needNum;
+               resulte = _model.elements.length - _needNum;
             }
-            else if(_loc3_ < 0)
+            else if(resulte < 0)
             {
-               _loc3_ = 0;
+               resulte = 0;
             }
-            if(_presentPos == _loc3_)
+            if(_presentPos == resulte)
             {
                return;
             }
-            _presentPos = _loc3_;
+            _presentPos = resulte;
             syncScrollBar();
          }
       }
       
-      public function set vScrollbarInnerRectString(param1:String) : void
+      public function set vScrollbarInnerRectString(value:String) : void
       {
-         if(_vScrollbarInnerRectString == param1)
+         if(_vScrollbarInnerRectString == value)
          {
             return;
          }
-         _vScrollbarInnerRectString = param1;
+         _vScrollbarInnerRectString = value;
          _vScrollbarInnerRect = ClassUtils.CreatInstance("com.pickgliss.geom.InnerRectangle",ComponentFactory.parasArgs(_vScrollbarInnerRectString));
          onPropertiesChanged(P_vScrollbarInnerRect);
       }
       
-      public function set vScrollbarStyle(param1:String) : void
+      public function set vScrollbarStyle(stylename:String) : void
       {
-         if(_vScrollbarStyle == param1)
+         if(_vScrollbarStyle == stylename)
          {
             return;
          }
-         _vScrollbarStyle = param1;
+         _vScrollbarStyle = stylename;
          vScrollbar = ComponentFactory.Instance.creat(_vScrollbarStyle);
       }
       
@@ -310,9 +306,9 @@ package com.pickgliss.ui.controls
          return _vScrollbar;
       }
       
-      public function set vScrollbar(param1:Scrollbar) : void
+      public function set vScrollbar(bar:Scrollbar) : void
       {
-         if(_vScrollbar == param1)
+         if(_vScrollbar == bar)
          {
             return;
          }
@@ -321,33 +317,33 @@ package com.pickgliss.ui.controls
             _vScrollbar.removeStateListener(__onScrollValueChange);
             ObjectUtils.disposeObject(_vScrollbar);
          }
-         _vScrollbar = param1;
+         _vScrollbar = bar;
          _vScrollbar.addStateListener(__onScrollValueChange);
          onPropertiesChanged(P_vScrollbar);
       }
       
-      protected function __onScrollValueChange(param1:InteractiveEvent) : void
+      protected function __onScrollValueChange(event:InteractiveEvent) : void
       {
-         var _loc2_:int = Math.floor(_vScrollbar.getModel().getValue() / _factory.getCellHeight());
-         if(_loc2_ == _presentPos)
+         var newPos:int = Math.floor(_vScrollbar.getModel().getValue() / _factory.getCellHeight());
+         if(newPos == _presentPos)
          {
             return;
          }
-         _presentPos = _loc2_;
+         _presentPos = newPos;
          syncScrollBar();
       }
       
-      public function set factoryStyle(param1:String) : void
+      public function set factoryStyle(value:String) : void
       {
-         if(_factoryStyle == param1)
+         if(_factoryStyle == value)
          {
             return;
          }
-         _factoryStyle = param1;
-         var _loc4_:Array = param1.split("|");
-         var _loc3_:String = _loc4_[0];
-         var _loc2_:Array = ComponentFactory.parasArgs(_loc4_[1]);
-         _factory = ClassUtils.CreatInstance(_loc3_,_loc2_);
+         _factoryStyle = value;
+         var factoryAndArgs:Array = value.split("|");
+         var classname:String = factoryAndArgs[0];
+         var args:Array = ComponentFactory.parasArgs(factoryAndArgs[1]);
+         _factory = ClassUtils.CreatInstance(classname,args);
          onPropertiesChanged(P_cellFactory);
       }
       

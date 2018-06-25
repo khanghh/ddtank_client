@@ -31,9 +31,9 @@ package catchInsect
          return _players;
       }
       
-      public function addPlayer(param1:PlayerVO) : void
+      public function addPlayer(player:PlayerVO) : void
       {
-         _playersBuffer.push(param1);
+         _playersBuffer.push(player);
       }
       
       public function getObjects() : DictionaryData
@@ -51,30 +51,29 @@ package catchInsect
          _playersBuffer.shift();
       }
       
-      public function updatePlayerStauts(param1:int, param2:int, param3:Point) : void
+      public function updatePlayerStauts(id:int, status:int, point:Point) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
+         var i:int = 0;
+         var playerVO:* = null;
          if(_playersBuffer && _playersBuffer.length > 0)
          {
-            _loc5_ = 0;
-            while(_loc5_ < _playersBuffer.length)
+            for(i = 0; i < _playersBuffer.length; )
             {
-               if(param1 == _playersBuffer[_loc5_].playerInfo.ID)
+               if(id == _playersBuffer[i].playerInfo.ID)
                {
-                  _loc4_ = _playersBuffer[_loc5_] as PlayerVO;
-                  _loc4_.playerStauts = param2;
-                  _loc4_.playerPos = param3;
+                  playerVO = _playersBuffer[i] as PlayerVO;
+                  playerVO.playerStauts = status;
+                  playerVO.playerPos = point;
                   return;
                }
-               _loc5_++;
+               i++;
             }
          }
       }
       
-      public function removePlayer(param1:int) : void
+      public function removePlayer(id:int) : void
       {
-         _players.remove(param1);
+         _players.remove(id);
       }
       
       public function getPlayers() : DictionaryData
@@ -82,9 +81,9 @@ package catchInsect
          return _players;
       }
       
-      public function getPlayerFromID(param1:int) : PlayerVO
+      public function getPlayerFromID(id:int) : PlayerVO
       {
-         return _players[param1];
+         return _players[id];
       }
       
       public function reset() : void
@@ -98,9 +97,9 @@ package catchInsect
          return _playerNameVisible;
       }
       
-      public function set playerNameVisible(param1:Boolean) : void
+      public function set playerNameVisible(value:Boolean) : void
       {
-         _playerNameVisible = param1;
+         _playerNameVisible = value;
          dispatchEvent(new CatchInsectRoomEvent("playerNameVisible"));
       }
       

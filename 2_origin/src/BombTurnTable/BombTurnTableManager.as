@@ -36,9 +36,9 @@ package BombTurnTable
       
       private var _clickNum:Number = 0;
       
-      public function BombTurnTableManager(param1:IEventDispatcher = null)
+      public function BombTurnTableManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : BombTurnTableManager
@@ -55,11 +55,11 @@ package BombTurnTable
          SocketManager.Instance.addEventListener(PkgEvent.format(329,52),_isOpen);
       }
       
-      protected function _isOpen(param1:PkgEvent) : void
+      protected function _isOpen(evt:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _showFlag = _loc2_.readBoolean();
-         _endDate = _loc2_.readDate();
+         var pkg:PackageIn = evt.pkg;
+         _showFlag = pkg.readBoolean();
+         _endDate = pkg.readDate();
          checkIcon();
       }
       
@@ -75,21 +75,21 @@ package BombTurnTable
       public function openView_Handler() : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc1_:Number = new Date().time;
-         if(_loc1_ - _clickNum < 1000)
+         var nowTime:Number = new Date().time;
+         if(nowTime - _clickNum < 1000)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.storeIIStrength.startStrengthClickTimerMsg"));
             return;
          }
-         _clickNum = _loc1_;
+         _clickNum = nowTime;
          show();
       }
       
       public function get isValid() : Boolean
       {
-         var _loc1_:Number = _endDate.getTime() - 2000;
-         var _loc2_:Number = TimeManager.Instance.Now().getTime();
-         if(_loc1_ < _loc2_)
+         var validTime:Number = _endDate.getTime() - 2000;
+         var curTime:Number = TimeManager.Instance.Now().getTime();
+         if(validTime < curTime)
          {
             return true;
          }

@@ -17,11 +17,11 @@ package magicStone.components
          super();
       }
       
-      override public function dragStop(param1:DragEffect) : void
+      override public function dragStop(effect:DragEffect) : void
       {
-         if(param1.target is MgStoneCell && (param1.target as MgStoneCell).info && (param1.target as MgStoneCell).place > 31)
+         if(effect.target is MgStoneCell && (effect.target as MgStoneCell).info && (effect.target as MgStoneCell).place > 31)
          {
-            MagicStoneControl.instance.singleFeedCell = param1.target as MgStoneCell;
+            MagicStoneControl.instance.singleFeedCell = effect.target as MgStoneCell;
             MagicStoneControl.instance.singleFeedFunc(null);
          }
          else
@@ -30,10 +30,10 @@ package magicStone.components
          }
       }
       
-      override public function dragStart(param1:Number, param2:Number) : void
+      override public function dragStart(stageX:Number, stageY:Number) : void
       {
-         var _loc3_:Bitmap = ComponentFactory.Instance.creatBitmap("beadSystem.feedIcon");
-         DragManager.startDrag(this,this,_loc3_,param1,param2,"move",false);
+         var dragAsset:Bitmap = ComponentFactory.Instance.creatBitmap("beadSystem.feedIcon");
+         DragManager.startDrag(this,this,dragAsset,stageX,stageY,"move",false);
       }
    }
 }

@@ -14,38 +14,37 @@ package morn.core.ex
       
       override protected function changeSelectStatus() : void
       {
-         var _loc1_:int = 0;
-         var _loc2_:int = _cells.length;
-         while(_loc1_ < _loc2_)
+         var i:int = 0;
+         var n:int = 0;
+         for(i = 0,n = _cells.length; i < n; )
          {
-            this.changeSelectItemState(_cells[_loc1_] as ISelect,Boolean(_selectedIndex == _startIndex + _loc1_));
-            _loc1_++;
+            changeSelectItemState(_cells[i] as ISelect,_selectedIndex == _startIndex + i);
+            i++;
          }
       }
       
-      protected function changeSelectItemState(param1:ISelect, param2:Boolean) : void
+      protected function changeSelectItemState(item:ISelect, value:Boolean) : void
       {
-         param1.selected = param2;
+         item.selected = value;
       }
       
-      public function disabledOf(param1:Boolean, param2:int, param3:* = 0) : void
+      public function disabledOf($disabled:Boolean, head:int, last:* = 0) : void
       {
-         var _loc4_:int = 0;
-         if(param3 < 0 || param3 > 0 && param3 < param2)
+         var i:* = 0;
+         if(last < 0 || last > 0 && last < head)
          {
             return;
          }
-         if(param3 == 0 || param3 == param2)
+         if(last == 0 || last == head)
          {
-            (getChildByName("item" + param2) as TabButtonEx).disabled = param1;
+            (getChildByName("item" + head) as TabButtonEx).disabled = $disabled;
          }
          else
          {
-            _loc4_ = param2;
-            while(_loc4_ <= param3)
+            for(i = head; i <= last; )
             {
-               (getChildByName("item" + _loc4_) as TabButtonEx).disabled = param1;
-               _loc4_++;
+               (getChildByName("item" + i) as TabButtonEx).disabled = $disabled;
+               i++;
             }
          }
       }

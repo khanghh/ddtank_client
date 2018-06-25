@@ -31,26 +31,25 @@ package ddt.dailyRecord
          addChild(_content);
       }
       
-      public function setData(param1:int, param2:DailiyRecordInfo) : void
+      public function setData(index:int, info:DailiyRecordInfo) : void
       {
-         var _loc3_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < param2.valueList.length)
+         var i:int = 0;
+         for(i = 0; i < info.valueList.length; )
          {
-            this["str" + _loc3_] = param2.valueList[_loc3_];
-            _loc3_++;
+            this["str" + i] = info.valueList[i];
+            i++;
          }
-         if(param2.type == 31)
+         if(info.type == 31)
          {
             str1 = (int(str1) - 12).toString();
          }
-         if(param1 < 9)
+         if(index < 9)
          {
-            _content.htmlText = " " + LanguageMgr.GetTranslation("ddt.dailyRecord.content" + param2.type,param1 + 1,str0,str1);
+            _content.htmlText = " " + LanguageMgr.GetTranslation("ddt.dailyRecord.content" + info.type,index + 1,str0,str1);
          }
          else
          {
-            _content.htmlText = LanguageMgr.GetTranslation("ddt.dailyRecord.content" + param2.type,param1 + 1,str0,str1);
+            _content.htmlText = LanguageMgr.GetTranslation("ddt.dailyRecord.content" + info.type,index + 1,str0,str1);
          }
       }
       

@@ -12,9 +12,9 @@ package ddt.view.sceneCharacter
          _dataSet = new Vector.<SceneCharacterActionItem>();
       }
       
-      public function push(param1:SceneCharacterActionItem) : void
+      public function push(sceneCharacterActionItem:SceneCharacterActionItem) : void
       {
-         _dataSet.push(param1);
+         _dataSet.push(sceneCharacterActionItem);
       }
       
       public function get length() : uint
@@ -27,19 +27,18 @@ package ddt.view.sceneCharacter
          return _dataSet;
       }
       
-      public function getItem(param1:String) : SceneCharacterActionItem
+      public function getItem(type:String) : SceneCharacterActionItem
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          if(_dataSet && _dataSet.length > 0)
          {
-            _loc2_ = 0;
-            while(_loc2_ < _dataSet.length)
+            for(i = 0; i < _dataSet.length; )
             {
-               if(_dataSet[_loc2_].type == param1)
+               if(_dataSet[i].type == type)
                {
-                  return _dataSet[_loc2_];
+                  return _dataSet[i];
                }
-               _loc2_++;
+               i++;
             }
          }
          return null;

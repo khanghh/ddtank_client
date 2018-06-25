@@ -8,11 +8,11 @@ package sanXiao.model
       
       public var column:int;
       
-      public function Pos(param1:int = 0, param2:int = 0)
+      public function Pos($row:int = 0, $column:int = 0)
       {
          super();
-         row = param1;
-         column = param2;
+         row = $row;
+         column = $column;
       }
    }
 }

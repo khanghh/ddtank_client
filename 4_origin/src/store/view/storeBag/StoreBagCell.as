@@ -29,9 +29,9 @@ package store.view.storeBag
       
       public var showLock:Boolean = false;
       
-      public function StoreBagCell(param1:int, param2:ItemTemplateInfo = null, param3:Boolean = true, param4:Sprite = null)
+      public function StoreBagCell(index:int, info:ItemTemplateInfo = null, showLoading:Boolean = true, bg:Sprite = null)
       {
-         super(param1,param2,param3,param4);
+         super(index,info,showLoading,bg);
          _isShowIsUsedBitmap = true;
       }
       
@@ -40,9 +40,9 @@ package store.view.storeBag
          return _lockDisplayObject;
       }
       
-      public function set lockDisplayObject(param1:DisplayObject) : void
+      public function set lockDisplayObject(value:DisplayObject) : void
       {
-         _lockDisplayObject = param1;
+         _lockDisplayObject = value;
       }
       
       public function get cellLocked() : Boolean
@@ -50,14 +50,14 @@ package store.view.storeBag
          return _cellLocked;
       }
       
-      public function set cellLocked(param1:Boolean) : void
+      public function set cellLocked(value:Boolean) : void
       {
-         _cellLocked = param1;
+         _cellLocked = value;
          if(_lockDisplayObject == null)
          {
             return;
          }
-         if(param1 == true)
+         if(value == true)
          {
             addChild(_lockDisplayObject);
          }
@@ -67,32 +67,32 @@ package store.view.storeBag
          }
       }
       
-      override public function dragDrop(param1:DragEffect) : void
+      override public function dragDrop(effect:DragEffect) : void
       {
          if(PlayerManager.Instance.Self.bagLocked)
          {
             return;
          }
-         var _loc2_:InventoryItemInfo = param1.data as InventoryItemInfo;
-         if(!checkBagType(_loc2_))
+         var dragItemInfo:InventoryItemInfo = effect.data as InventoryItemInfo;
+         if(!checkBagType(dragItemInfo))
          {
             return;
          }
          if(StrengthDataManager.instance.autoFusion)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.fusion.donMoveGoods"));
-            param1.action = "none";
+            effect.action = "none";
             DragManager.acceptDrag(this);
             return;
          }
-         var _loc3_:int = getPlace(_loc2_);
-         if(EquipGhostManager.getInstance().isGhostEquip(_loc2_.ItemID))
+         var place:int = getPlace(dragItemInfo);
+         if(EquipGhostManager.getInstance().isGhostEquip(dragItemInfo.ItemID))
          {
-            _loc3_ = EquipGhostManager.getInstance().getGhostEquipPlace();
+            place = EquipGhostManager.getInstance().getGhostEquipPlace();
             EquipGhostManager.getInstance().clearEquip();
          }
-         SocketManager.Instance.out.sendMoveGoods(_loc2_.BagType,_loc2_.Place,bagType,_loc3_,1);
-         param1.action = "none";
+         SocketManager.Instance.out.sendMoveGoods(dragItemInfo.BagType,dragItemInfo.Place,bagType,place,1);
+         effect.action = "none";
          DragManager.acceptDrag(this);
       }
       
@@ -108,50 +108,50 @@ package store.view.storeBag
          }
       }
       
-      override public function dragStop(param1:DragEffect) : void
+      override public function dragStop(effect:DragEffect) : void
       {
-         var _loc2_:* = null;
+         var $info:* = null;
          if(PlayerManager.Instance.Self.bagLocked)
          {
-            param1.action = "none";
-            super.dragStop(param1);
+            effect.action = "none";
+            super.dragStop(effect);
             BaglockedManager.Instance.show();
             dispatchEvent(new StoreDargEvent(this.info,"stopDarg",true));
             return;
          }
-         if(param1.action == "move" && param1.target == null)
+         if(effect.action == "move" && effect.target == null)
          {
             locked = false;
-            _loc2_ = param1.data as InventoryItemInfo;
-            sellItem(_loc2_);
+            $info = effect.data as InventoryItemInfo;
+            sellItem($info);
          }
-         else if(param1.action == "split" && param1.target == null)
+         else if(effect.action == "split" && effect.target == null)
          {
             locked = false;
          }
          else
          {
-            super.dragStop(param1);
+            super.dragStop(effect);
          }
          dispatchEvent(new StoreDargEvent(this.info,"stopDarg",true));
       }
       
-      private function getPlace(param1:InventoryItemInfo) : int
+      private function getPlace(dragItemInfo:InventoryItemInfo) : int
       {
          return -1;
       }
       
-      private function checkBagType(param1:InventoryItemInfo) : Boolean
+      private function checkBagType(info:InventoryItemInfo) : Boolean
       {
-         if(param1 == null)
+         if(info == null)
          {
             return false;
          }
-         if(param1.BagType == bagType)
+         if(info.BagType == bagType)
          {
             return false;
          }
-         if(param1.CategoryID == 10 || param1.CategoryID == 11 || param1.CategoryID == 12)
+         if(info.CategoryID == 10 || info.CategoryID == 11 || info.CategoryID == 12)
          {
             if(bagType == 0)
             {
@@ -166,15 +166,15 @@ package store.view.storeBag
          return false;
       }
       
-      public function set light(param1:Boolean) : void
+      public function set light(value:Boolean) : void
       {
-         if(_light == param1)
+         if(_light == value)
          {
             return;
          }
-         _light = param1;
+         _light = value;
          return;
-         §§push(!!param1?showEffect():hideEffect());
+         §§push(!!value?showEffect():hideEffect());
       }
       
       private function showEffect() : void
@@ -206,16 +206,16 @@ package store.view.storeBag
          super.dispose();
       }
       
-      override public function set info(param1:ItemTemplateInfo) : void
+      override public function set info(value:ItemTemplateInfo) : void
       {
-         .super.info = param1;
-         if(param1 == null)
+         .super.info = value;
+         if(value == null)
          {
             cellLocked = false;
          }
          else if(showLock)
          {
-            cellLocked = (param1 as InventoryItemInfo).cellLocked;
+            cellLocked = (value as InventoryItemInfo).cellLocked;
          }
       }
    }

@@ -44,25 +44,24 @@ package welfareCenter.callBackLotteryDraw.view
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var card:* = null;
          _bg = UICreatShortcut.creatAndAdd("callbacklotterydraw.pic1",this);
          _manager = CallBackLotteryDrawManager.instance;
          _model = _manager.callBackLotteryDrawModel;
          _nextCDTimeTf = UICreatShortcut.creatAndAdd("callbacklotterydraw.nextCDTimeTf",this);
-         _loc2_ = 1;
-         while(_loc2_ <= 5)
+         for(i = 1; i <= 5; )
          {
-            _loc1_ = UICreatShortcut.creatAndAdd("callbacklotterydraw.pic5",this);
-            PositionUtils.setPos(_loc1_,"callbacklotterydraw.cardBackSidePos" + _loc2_);
-            _loc2_++;
+            card = UICreatShortcut.creatAndAdd("callbacklotterydraw.pic5",this);
+            PositionUtils.setPos(card,"callbacklotterydraw.cardBackSidePos" + i);
+            i++;
          }
          _startDrawBtn = UICreatShortcut.creatAndAdd("callbacklotterydraw.startDrawBtn",this);
          _startDrawBtn.enable = false;
          onInfoChange(null);
       }
       
-      private function onInfoChange(param1:Event) : void
+      private function onInfoChange(evt:Event) : void
       {
          _leftSec = _manager.getCallBackLeftSec();
          _offsetLeftSec = _leftSec + 2;
@@ -86,7 +85,7 @@ package welfareCenter.callBackLotteryDraw.view
          updateNextCDTimeTf();
       }
       
-      private function onTimerTick(param1:TimerEvent) : void
+      private function onTimerTick(evt:TimerEvent) : void
       {
          _leftSec = Number(_leftSec) - 1;
          if(_leftSec <= 0)
@@ -109,10 +108,10 @@ package welfareCenter.callBackLotteryDraw.view
       
       private function updateNextCDTimeTf() : void
       {
-         var _loc1_:Array = TimeManager.getHHMMSSArr(_leftSec);
-         if(_loc1_)
+         var timeArr:Array = TimeManager.getHHMMSSArr(_leftSec);
+         if(timeArr)
          {
-            _nextCDTimeTf.text = LanguageMgr.GetTranslation("callbacklotterdraw.nextCDTimeTxt") + _loc1_.join(":");
+            _nextCDTimeTf.text = LanguageMgr.GetTranslation("callbacklotterdraw.nextCDTimeTxt") + timeArr.join(":");
          }
          else
          {

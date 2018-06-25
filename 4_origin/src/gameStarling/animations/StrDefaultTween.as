@@ -9,9 +9,9 @@ package gameStarling.animations
       
       protected var speed:int = 4;
       
-      public function StrDefaultTween(param1:TweenObject = null)
+      public function StrDefaultTween(data:TweenObject = null)
       {
-         super(param1);
+         super(data);
       }
       
       override public function get type() : String
@@ -19,39 +19,39 @@ package gameStarling.animations
          return "StrDefaultTween";
       }
       
-      override public function copyPropertyFromData(param1:TweenObject) : void
+      override public function copyPropertyFromData(data:TweenObject) : void
       {
-         if(param1.target)
+         if(data.target)
          {
-            target = param1.target;
+            target = data.target;
          }
-         if(param1.speed)
+         if(data.speed)
          {
-            speed = param1.speed;
+            speed = data.speed;
          }
       }
       
-      override public function update(param1:DisplayObject) : Point
+      override public function update(movie:DisplayObject) : Point
       {
          if(!_prepared)
          {
             return null;
          }
-         var _loc2_:Point = new Point(param1.x,param1.y);
-         var _loc3_:Point = new Point(target.x - param1.x,target.y - param1.y);
-         if(_loc3_.length >= speed)
+         var result:Point = new Point(movie.x,movie.y);
+         var p:Point = new Point(target.x - movie.x,target.y - movie.y);
+         if(p.length >= speed)
          {
-            _loc3_.normalize(_loc3_.length / 16 * speed);
-            _loc2_.x = _loc2_.x + _loc3_.x;
-            _loc2_.y = _loc2_.y + _loc3_.y;
+            p.normalize(p.length / 16 * speed);
+            result.x = result.x + p.x;
+            result.y = result.y + p.y;
          }
          else
          {
-            _loc2_.x = _loc2_.x + _loc3_.x;
-            _loc2_.y = _loc2_.y + _loc3_.y;
+            result.x = result.x + p.x;
+            result.y = result.y + p.y;
             _isFinished = true;
          }
-         return _loc2_;
+         return result;
       }
       
       override protected function get propertysNeed() : Array

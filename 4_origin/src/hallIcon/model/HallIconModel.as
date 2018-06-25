@@ -31,16 +31,16 @@ package hallIcon.model
       
       public var cacheRightIconLevelLimit:Dictionary;
       
-      public function HallIconModel(param1:IEventDispatcher = null)
+      public function HallIconModel(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
          cacheRightIconDic = new Dictionary();
          cacheRightIconLevelLimit = new Dictionary();
       }
       
-      public function dataChange(param1:String, param2:Object = null) : void
+      public function dataChange(_eventType:String, _resultData:Object = null) : void
       {
-         dispatchEvent(new HallIconEvent(param1,param2));
+         dispatchEvent(new HallIconEvent(_eventType,_resultData));
       }
    }
 }

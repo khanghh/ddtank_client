@@ -24,7 +24,7 @@ package sanXiao
       
       private var _eventsLists:Array;
       
-      public function SanXiaoController(param1:inner)
+      public function SanXiaoController(single:inner)
       {
          _eventsLists = [["sanxiao_map_status",onMapStatus],["sanxiao_update_data",onViewUpdate],["sanxiao_drop_out_item_gained",onDropOutItemUpdate]];
          super();
@@ -45,16 +45,16 @@ package sanXiao
          addEvents(["sanxiao_show_view"],_manager);
       }
       
-      override protected function eventsHandler(param1:CEvent) : void
+      override protected function eventsHandler(e:CEvent) : void
       {
-         var _loc2_:* = param1.type;
+         var _loc2_:* = e.type;
          if("sanxiao_show_view" === _loc2_)
          {
-            onShowView(param1);
+            onShowView(e);
          }
       }
       
-      private function onShowView(param1:CEvent) : void
+      private function onShowView(e:CEvent) : void
       {
          if(_sanxiaoMainView)
          {
@@ -77,7 +77,7 @@ package sanXiao
          GameInSocketOut.sendSXRequireViewData();
       }
       
-      protected function onRFS(param1:Event) : void
+      protected function onRFS(e:Event) : void
       {
          mainViewDisposed();
       }
@@ -96,15 +96,15 @@ package sanXiao
          _sanxiaoMainView = null;
       }
       
-      private function onDropOutItemUpdate(param1:CEvent) : void
+      private function onDropOutItemUpdate(e:CEvent) : void
       {
       }
       
-      private function onViewUpdate(param1:CEvent) : void
+      private function onViewUpdate(e:CEvent) : void
       {
       }
       
-      private function onMapStatus(param1:CEvent) : void
+      private function onMapStatus(e:CEvent) : void
       {
          SanXiaoGameMediator.getInstance().startGame();
       }

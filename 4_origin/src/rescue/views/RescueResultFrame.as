@@ -65,32 +65,31 @@ package rescue.views
          _submitBtn.addEventListener("click",__submitBtnClick);
       }
       
-      protected function __submitBtnClick(param1:MouseEvent) : void
+      protected function __submitBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          dispose();
       }
       
-      public function setData(param1:RescueResultInfo) : void
+      public function setData(info:RescueResultInfo) : void
       {
-         var _loc2_:int = 0;
-         _sceneImg = ComponentFactory.Instance.creat("rescue.scene" + param1.sceneId);
+         var i:int = 0;
+         _sceneImg = ComponentFactory.Instance.creat("rescue.scene" + info.sceneId);
          PositionUtils.setPos(_sceneImg,"rescue.result.scenePos");
          addToContent(_sceneImg);
-         _scoreTxt = ImgNumConverter.instance.convertToImg(param1.score,"rescue.result.num",17);
+         _scoreTxt = ImgNumConverter.instance.convertToImg(info.score,"rescue.result.num",17);
          _scoreContainer.addChild(_scoreTxt);
          _scoreTxt.x = (_scoreContainer.width - _scoreTxt.width) / 2;
          _hbox = ComponentFactory.Instance.creatComponentByStylename("rescue.result.starHBox");
          addToContent(_hbox);
-         _loc2_ = 1;
-         while(_loc2_ <= param1.star)
+         for(i = 1; i <= info.star; )
          {
             _star = ComponentFactory.Instance.creat("rescue.star");
             _hbox.addChild(_star);
-            _loc2_++;
+            i++;
          }
          _hbox.refreshChildPos();
-         if(param1.isWin)
+         if(info.isWin)
          {
             _winOrClose = ComponentFactory.Instance.creat("asset.experience.rightViewWin");
          }
@@ -105,10 +104,10 @@ package rescue.views
          _winOrClose.smoothing = true;
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:

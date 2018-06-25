@@ -10,10 +10,10 @@ package com.pickgliss.effect
       
       private var _id:int;
       
-      public function BaseEffect(param1:int)
+      public function BaseEffect($id:int)
       {
          super();
-         _id = param1;
+         _id = $id;
       }
       
       public function dispose() : void
@@ -26,14 +26,14 @@ package com.pickgliss.effect
          return _id;
       }
       
-      public function set id(param1:int) : void
+      public function set id($id:int) : void
       {
-         _id = param1;
+         _id = $id;
       }
       
-      public function initEffect(param1:DisplayObject, param2:Array) : void
+      public function initEffect(target:DisplayObject, data:Array) : void
       {
-         _target = param1;
+         _target = target;
       }
       
       public function play() : void

@@ -49,22 +49,22 @@ package starling.animation
          throw new AbstractClassError();
       }
       
-      public static function getTransition(param1:String) : Function
+      public static function getTransition(name:String) : Function
       {
          if(sTransitions == null)
          {
             registerDefaults();
          }
-         return sTransitions[param1];
+         return sTransitions[name];
       }
       
-      public static function register(param1:String, param2:Function) : void
+      public static function register(name:String, func:Function) : void
       {
          if(sTransitions == null)
          {
             registerDefaults();
          }
-         sTransitions[param1] = param2;
+         sTransitions[name] = func;
       }
       
       private static function registerDefaults() : void
@@ -89,142 +89,142 @@ package starling.animation
          register("easeOutInBounce",easeOutInBounce);
       }
       
-      protected static function linear(param1:Number) : Number
+      protected static function linear(ratio:Number) : Number
       {
-         return param1;
+         return ratio;
       }
       
-      protected static function easeIn(param1:Number) : Number
+      protected static function easeIn(ratio:Number) : Number
       {
-         return param1 * param1 * param1;
+         return ratio * ratio * ratio;
       }
       
-      protected static function easeOut(param1:Number) : Number
+      protected static function easeOut(ratio:Number) : Number
       {
-         var _loc2_:Number = param1 - 1;
-         return _loc2_ * _loc2_ * _loc2_ + 1;
+         var invRatio:Number = ratio - 1;
+         return invRatio * invRatio * invRatio + 1;
       }
       
-      protected static function easeInOut(param1:Number) : Number
+      protected static function easeInOut(ratio:Number) : Number
       {
-         return easeCombined(easeIn,easeOut,param1);
+         return easeCombined(easeIn,easeOut,ratio);
       }
       
-      protected static function easeOutIn(param1:Number) : Number
+      protected static function easeOutIn(ratio:Number) : Number
       {
-         return easeCombined(easeOut,easeIn,param1);
+         return easeCombined(easeOut,easeIn,ratio);
       }
       
-      protected static function easeInBack(param1:Number) : Number
+      protected static function easeInBack(ratio:Number) : Number
       {
-         var _loc2_:* = 1.70158;
-         return Math.pow(param1,2) * ((_loc2_ + 1) * param1 - _loc2_);
+         var s:* = 1.70158;
+         return Math.pow(ratio,2) * ((s + 1) * ratio - s);
       }
       
-      protected static function easeOutBack(param1:Number) : Number
+      protected static function easeOutBack(ratio:Number) : Number
       {
-         var _loc3_:Number = param1 - 1;
-         var _loc2_:* = 1.70158;
-         return Math.pow(_loc3_,2) * ((_loc2_ + 1) * _loc3_ + _loc2_) + 1;
+         var invRatio:Number = ratio - 1;
+         var s:* = 1.70158;
+         return Math.pow(invRatio,2) * ((s + 1) * invRatio + s) + 1;
       }
       
-      protected static function easeInOutBack(param1:Number) : Number
+      protected static function easeInOutBack(ratio:Number) : Number
       {
-         return easeCombined(easeInBack,easeOutBack,param1);
+         return easeCombined(easeInBack,easeOutBack,ratio);
       }
       
-      protected static function easeOutInBack(param1:Number) : Number
+      protected static function easeOutInBack(ratio:Number) : Number
       {
-         return easeCombined(easeOutBack,easeInBack,param1);
+         return easeCombined(easeOutBack,easeInBack,ratio);
       }
       
-      protected static function easeInElastic(param1:Number) : Number
+      protected static function easeInElastic(ratio:Number) : Number
       {
-         var _loc4_:* = NaN;
-         var _loc2_:Number = NaN;
-         var _loc3_:Number = NaN;
-         if(param1 == 0 || param1 == 1)
+         var p:* = NaN;
+         var s:Number = NaN;
+         var invRatio:Number = NaN;
+         if(ratio == 0 || ratio == 1)
          {
-            return param1;
+            return ratio;
          }
-         _loc4_ = 0.3;
-         _loc2_ = _loc4_ / 4;
-         _loc3_ = param1 - 1;
-         return -1 * Math.pow(2,10 * _loc3_) * Math.sin((_loc3_ - _loc2_) * (2 * 3.14159265358979) / _loc4_);
+         p = 0.3;
+         s = p / 4;
+         invRatio = ratio - 1;
+         return -1 * Math.pow(2,10 * invRatio) * Math.sin((invRatio - s) * (2 * 3.14159265358979) / p);
       }
       
-      protected static function easeOutElastic(param1:Number) : Number
+      protected static function easeOutElastic(ratio:Number) : Number
       {
-         var _loc3_:* = NaN;
-         var _loc2_:Number = NaN;
-         if(param1 == 0 || param1 == 1)
+         var p:* = NaN;
+         var s:Number = NaN;
+         if(ratio == 0 || ratio == 1)
          {
-            return param1;
+            return ratio;
          }
-         _loc3_ = 0.3;
-         _loc2_ = _loc3_ / 4;
-         return Math.pow(2,-10 * param1) * Math.sin((param1 - _loc2_) * (2 * 3.14159265358979) / _loc3_) + 1;
+         p = 0.3;
+         s = p / 4;
+         return Math.pow(2,-10 * ratio) * Math.sin((ratio - s) * (2 * 3.14159265358979) / p) + 1;
       }
       
-      protected static function easeInOutElastic(param1:Number) : Number
+      protected static function easeInOutElastic(ratio:Number) : Number
       {
-         return easeCombined(easeInElastic,easeOutElastic,param1);
+         return easeCombined(easeInElastic,easeOutElastic,ratio);
       }
       
-      protected static function easeOutInElastic(param1:Number) : Number
+      protected static function easeOutInElastic(ratio:Number) : Number
       {
-         return easeCombined(easeOutElastic,easeInElastic,param1);
+         return easeCombined(easeOutElastic,easeInElastic,ratio);
       }
       
-      protected static function easeInBounce(param1:Number) : Number
+      protected static function easeInBounce(ratio:Number) : Number
       {
-         return 1 - easeOutBounce(1 - param1);
+         return 1 - easeOutBounce(1 - ratio);
       }
       
-      protected static function easeOutBounce(param1:Number) : Number
+      protected static function easeOutBounce(ratio:Number) : Number
       {
-         var _loc4_:Number = NaN;
-         var _loc2_:* = 7.5625;
-         var _loc3_:* = 2.75;
-         if(param1 < 1 / _loc3_)
+         var l:Number = NaN;
+         var s:* = 7.5625;
+         var p:* = 2.75;
+         if(ratio < 1 / p)
          {
-            _loc4_ = _loc2_ * Math.pow(param1,2);
+            l = s * Math.pow(ratio,2);
          }
-         else if(param1 < 2 / _loc3_)
+         else if(ratio < 2 / p)
          {
-            param1 = param1 - 1.5 / _loc3_;
-            _loc4_ = _loc2_ * Math.pow(param1,2) + 0.75;
+            ratio = ratio - 1.5 / p;
+            l = s * Math.pow(ratio,2) + 0.75;
          }
-         else if(param1 < 2.5 / _loc3_)
+         else if(ratio < 2.5 / p)
          {
-            param1 = param1 - 2.25 / _loc3_;
-            _loc4_ = _loc2_ * Math.pow(param1,2) + 0.9375;
+            ratio = ratio - 2.25 / p;
+            l = s * Math.pow(ratio,2) + 0.9375;
          }
          else
          {
-            param1 = param1 - 2.625 / _loc3_;
-            _loc4_ = _loc2_ * Math.pow(param1,2) + 0.984375;
+            ratio = ratio - 2.625 / p;
+            l = s * Math.pow(ratio,2) + 0.984375;
          }
-         return _loc4_;
+         return l;
       }
       
-      protected static function easeInOutBounce(param1:Number) : Number
+      protected static function easeInOutBounce(ratio:Number) : Number
       {
-         return easeCombined(easeInBounce,easeOutBounce,param1);
+         return easeCombined(easeInBounce,easeOutBounce,ratio);
       }
       
-      protected static function easeOutInBounce(param1:Number) : Number
+      protected static function easeOutInBounce(ratio:Number) : Number
       {
-         return easeCombined(easeOutBounce,easeInBounce,param1);
+         return easeCombined(easeOutBounce,easeInBounce,ratio);
       }
       
-      protected static function easeCombined(param1:Function, param2:Function, param3:Number) : Number
+      protected static function easeCombined(startFunc:Function, endFunc:Function, ratio:Number) : Number
       {
-         if(param3 < 0.5)
+         if(ratio < 0.5)
          {
-            return 0.5 * param1(param3 * 2);
+            return 0.5 * startFunc(ratio * 2);
          }
-         return 0.5 * param2((param3 - 0.5) * 2) + 0.5;
+         return 0.5 * endFunc((ratio - 0.5) * 2) + 0.5;
       }
    }
 }

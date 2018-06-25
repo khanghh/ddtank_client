@@ -23,9 +23,9 @@ package beadSystem.views
       
       private var _typeDesc:FilterFrameText;
       
-      public function BeadAdvanceInfoCell(param1:int, param2:ItemTemplateInfo = null, param3:Boolean = true, param4:DisplayObject = null, param5:Boolean = true)
+      public function BeadAdvanceInfoCell(index:int, info:ItemTemplateInfo = null, showLoading:Boolean = true, bg:DisplayObject = null, mouseOverEffBoolean:Boolean = true)
       {
-         super(param1,param2,param3,param5,!!param4?param4:ComponentFactory.Instance.creatBitmap("asset.beadSystem.advanceBead.beadCellImg"));
+         super(index,info,showLoading,mouseOverEffBoolean,!!bg?bg:ComponentFactory.Instance.creatBitmap("asset.beadSystem.advanceBead.beadCellImg"));
          setContentSize(68,68);
          _typeDesc = ComponentFactory.Instance.creatComponentByStylename("beadSystem.advanceBeadCell.descTxt");
          _typeDesc.text = LanguageMgr.GetTranslation("beadSystem.beadAdvance.fullLevBead");
@@ -43,9 +43,9 @@ package beadSystem.views
          }
       }
       
-      public function set actionState(param1:Boolean) : void
+      public function set actionState(value:Boolean) : void
       {
-         _actionState = param1;
+         _actionState = value;
       }
       
       public function get actionState() : Boolean
@@ -53,47 +53,47 @@ package beadSystem.views
          return _actionState;
       }
       
-      override public function dragStop(param1:DragEffect) : void
+      override public function dragStop(effect:DragEffect) : void
       {
-         if(param1.action == "none")
+         if(effect.action == "none")
          {
             locked = false;
          }
-         if(param1.action == "none" && param1.target != null && param1.target is BeadAdvanceCell)
+         if(effect.action == "none" && effect.target != null && effect.target is BeadAdvanceCell)
          {
             this.itemInfo = null;
             this.info = null;
          }
       }
       
-      override public function dragDrop(param1:DragEffect) : void
+      override public function dragDrop(effect:DragEffect) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         if(param1.source is BeadAdvanceInfoCell)
+         var sourceInfo:* = null;
+         var paramInfo:* = null;
+         if(effect.source is BeadAdvanceInfoCell)
          {
             return;
          }
-         _loc3_ = param1.data as InventoryItemInfo;
-         if(_loc3_ && _loc3_.IsUsed)
+         sourceInfo = effect.data as InventoryItemInfo;
+         if(sourceInfo && sourceInfo.IsUsed)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("beadSystem.beadAdvance.exchangeFail.lockMsg"));
             return;
          }
-         if(_loc3_ && param1.action != "split")
+         if(sourceInfo && effect.action != "split")
          {
-            _loc2_ = (this.parent as BeadAdvancedRightView).info;
-            if(_loc2_ && _loc3_)
+            paramInfo = (this.parent as BeadAdvancedRightView).info;
+            if(paramInfo && sourceInfo)
             {
-               if(!_loc2_.verificationMaterials(_loc3_.TemplateID,_place))
+               if(!paramInfo.verificationMaterials(sourceInfo.TemplateID,_place))
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("beadSystem.beadAdvance.exchangeFailMsg"));
                   return;
                }
                _actionState = true;
-               param1.action = "none";
-               this.itemInfo = _loc3_;
-               this.info = _loc3_;
+               effect.action = "none";
+               this.itemInfo = sourceInfo;
+               this.info = sourceInfo;
                DragManager.acceptDrag(this);
             }
          }

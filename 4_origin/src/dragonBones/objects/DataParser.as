@@ -9,22 +9,22 @@ package dragonBones.objects
          super();
       }
       
-      public static function parseData(param1:Object) : DragonBonesData
+      public static function parseData(rawData:Object) : DragonBonesData
       {
-         if(param1 is XML)
+         if(rawData is XML)
          {
-            return XMLDataParser.parseDragonBonesData(param1 as XML);
+            return XMLDataParser.parseDragonBonesData(rawData as XML);
          }
-         return ObjectDataParser.parseDragonBonesData(param1);
+         return ObjectDataParser.parseDragonBonesData(rawData);
       }
       
-      public static function parseTextureAtlasData(param1:Object, param2:Number = 1) : Object
+      public static function parseTextureAtlasData(textureAtlasData:Object, scale:Number = 1) : Object
       {
-         if(param1 is XML)
+         if(textureAtlasData is XML)
          {
-            return XMLDataParser.parseTextureAtlasData(param1 as XML,param2);
+            return XMLDataParser.parseTextureAtlasData(textureAtlasData as XML,scale);
          }
-         return ObjectDataParser.parseTextureAtlasData(param1,param2);
+         return ObjectDataParser.parseTextureAtlasData(textureAtlasData,scale);
       }
    }
 }

@@ -24,44 +24,44 @@ package carnivalActivity.view
       
       private var _reallyHorseGrade:int;
       
-      public function HorseDarenItem(param1:int, param2:GiftBagInfo, param3:int)
+      public function HorseDarenItem(type:int, info:GiftBagInfo, index:int)
       {
-         super(param1,param2,param3);
+         super(type,info,index);
       }
       
       override protected function initItem() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var skillName:* = null;
          if(HorseManager.instance.horseTemplateList == null || HorseManager.instance.horseSkillGetIdList == null)
          {
             new HelperDataModuleLoad().loadDataModule([LoaderCreate.Instance.createHorseTemplateDataLoader(),LoaderCreate.Instance.createHorseSkillGetDataLoader()],initItem);
             return;
          }
-         _loc2_ = 0;
-         while(_loc2_ < _info.giftConditionArr.length)
+         i = 0;
+         while(i < _info.giftConditionArr.length)
          {
             if(CarnivalActivityControl.instance.currentChildType == 0)
             {
-               if(_info.giftConditionArr[_loc2_].conditionIndex == 0)
+               if(_info.giftConditionArr[i].conditionIndex == 0)
                {
-                  _horseGrade = _info.giftConditionArr[_loc2_].conditionValue;
-                  _reallyHorseGrade = _info.giftConditionArr[_loc2_].remain1;
+                  _horseGrade = _info.giftConditionArr[i].conditionValue;
+                  _reallyHorseGrade = _info.giftConditionArr[i].remain1;
                }
                else
                {
-                  _horseStar = _info.giftConditionArr[_loc2_].conditionValue;
+                  _horseStar = _info.giftConditionArr[i].conditionValue;
                }
             }
-            else if(_info.giftConditionArr[_loc2_].conditionIndex == 0)
+            else if(_info.giftConditionArr[i].conditionIndex == 0)
             {
-               _horseSkillType = _info.giftConditionArr[_loc2_].conditionValue;
+               _horseSkillType = _info.giftConditionArr[i].conditionValue;
             }
             else
             {
-               _horseSkillGrade = _info.giftConditionArr[_loc2_].conditionValue;
+               _horseSkillGrade = _info.giftConditionArr[i].conditionValue;
             }
-            _loc2_++;
+            i++;
          }
          if(_sumCount != 0)
          {
@@ -78,52 +78,52 @@ package carnivalActivity.view
          }
          else
          {
-            _loc1_ = HorseManager.instance.getHorseSkillName(_horseSkillType,_horseSkillGrade);
-            _descTxt.text = LanguageMgr.GetTranslation("horseDaren.skill.descTxt",_loc1_);
+            skillName = HorseManager.instance.getHorseSkillName(_horseSkillType,_horseSkillGrade);
+            _descTxt.text = LanguageMgr.GetTranslation("horseDaren.skill.descTxt",skillName);
          }
       }
       
       override public function updateView() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:int = 0;
+         var grade:int = 0;
+         var currentGrade:int = 0;
+         var skillGrade:int = 0;
+         var currentSkillGrade:int = 0;
          _giftCurInfo = WonderfulActivityManager.Instance.activityInitData[_info.activityId].giftInfoDic[_info.giftbagId];
          _statusArr = WonderfulActivityManager.Instance.activityInitData[_info.activityId].statusArr;
          var _loc7_:int = 0;
          var _loc6_:* = _statusArr;
-         for each(var _loc5_ in _statusArr)
+         for each(var info in _statusArr)
          {
             if(CarnivalActivityControl.instance.currentChildType == 0)
             {
-               if(_loc5_.statusID == 0)
+               if(info.statusID == 0)
                {
-                  _loc3_ = _loc5_.statusValue;
+                  grade = info.statusValue;
                }
-               else if(_loc5_.statusID == 1)
+               else if(info.statusID == 1)
                {
-                  _loc1_ = _loc5_.statusValue;
+                  currentGrade = info.statusValue;
                }
             }
-            else if(_loc5_.statusID == _horseSkillType)
+            else if(info.statusID == _horseSkillType)
             {
-               _loc4_ = _loc5_.statusValue;
+               skillGrade = info.statusValue;
             }
-            else if(_loc5_.statusID == _horseSkillType + 100)
+            else if(info.statusID == _horseSkillType + 100)
             {
-               _loc2_ = _loc5_.statusValue;
+               currentSkillGrade = info.statusValue;
             }
          }
          if(CarnivalActivityControl.instance.currentChildType == 0)
          {
-            _getBtn.enable = CarnivalActivityControl.instance.canGetAward() && _giftCurInfo.times == 0 && _reallyHorseGrade > _loc3_ && _reallyHorseGrade <= _loc1_;
+            _getBtn.enable = CarnivalActivityControl.instance.canGetAward() && _giftCurInfo.times == 0 && _reallyHorseGrade > grade && _reallyHorseGrade <= currentGrade;
             _alreadyGetBtn.visible = _giftCurInfo.times > 0;
             _getBtn.visible = !_alreadyGetBtn.visible;
          }
          else
          {
-            _getBtn.enable = CarnivalActivityControl.instance.canGetAward() && _giftCurInfo.times == 0 && _horseSkillGrade > _loc4_ && _horseSkillGrade <= _loc2_;
+            _getBtn.enable = CarnivalActivityControl.instance.canGetAward() && _giftCurInfo.times == 0 && _horseSkillGrade > skillGrade && _horseSkillGrade <= currentSkillGrade;
             _alreadyGetBtn.visible = _giftCurInfo.times > 0;
             _getBtn.visible = !_alreadyGetBtn.visible;
          }

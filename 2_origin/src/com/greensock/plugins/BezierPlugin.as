@@ -28,259 +28,256 @@ package com.greensock.plugins
          this.overwriteProps = [];
       }
       
-      public static function parseBeziers(param1:Object, param2:Boolean = false) : Object
+      public static function parseBeziers(props:Object, through:Boolean = false) : Object
       {
-         var _loc5_:* = null;
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         var _loc7_:int = 0;
-         var _loc6_:Object = {};
-         if(param2)
+         var a:* = null;
+         var b:* = null;
+         var p:* = null;
+         var i:int = 0;
+         var all:Object = {};
+         if(through)
          {
             var _loc9_:int = 0;
-            var _loc8_:* = param1;
-            for(_loc4_ in param1)
+            var _loc8_:* = props;
+            for(p in props)
             {
-               _loc5_ = param1[_loc4_];
-               _loc3_ = [];
-               _loc6_[_loc4_] = [];
-               if(_loc5_.length > 2)
+               a = props[p];
+               b = [];
+               all[p] = [];
+               if(a.length > 2)
                {
-                  _loc3_[_loc3_.length] = [_loc5_[0],_loc5_[1] - (_loc5_[2] - _loc5_[0]) / 4,_loc5_[1]];
-                  _loc7_ = 1;
-                  while(_loc7_ < _loc5_.length - 1)
+                  b[b.length] = [a[0],a[1] - (a[2] - a[0]) / 4,a[1]];
+                  for(i = 1; i < a.length - 1; )
                   {
-                     _loc3_[_loc3_.length] = [_loc5_[_loc7_],_loc5_[_loc7_] + (_loc5_[_loc7_] - _loc3_[_loc7_ - 1][1]),_loc5_[_loc7_ + 1]];
-                     _loc7_ = _loc7_ + 1;
+                     b[b.length] = [a[i],a[i] + (a[i] - b[i - 1][1]),a[i + 1]];
+                     i = i + 1;
                   }
                }
                else
                {
-                  _loc3_[_loc3_.length] = [_loc5_[0],(_loc5_[0] + _loc5_[1]) / 2,_loc5_[1]];
+                  b[b.length] = [a[0],(a[0] + a[1]) / 2,a[1]];
                }
             }
          }
          else
          {
             var _loc11_:int = 0;
-            var _loc10_:* = param1;
-            for(_loc4_ in param1)
+            var _loc10_:* = props;
+            for(p in props)
             {
-               _loc5_ = param1[_loc4_];
-               _loc3_ = [];
-               _loc6_[_loc4_] = [];
-               if(_loc5_.length > 3)
+               a = props[p];
+               b = [];
+               all[p] = [];
+               if(a.length > 3)
                {
-                  _loc3_[_loc3_.length] = [_loc5_[0],_loc5_[1],(_loc5_[1] + _loc5_[2]) / 2];
-                  _loc7_ = 2;
-                  while(_loc7_ < _loc5_.length - 2)
+                  b[b.length] = [a[0],a[1],(a[1] + a[2]) / 2];
+                  for(i = 2; i < a.length - 2; )
                   {
-                     _loc3_[_loc3_.length] = [_loc3_[_loc7_ - 2][2],_loc5_[_loc7_],(_loc5_[_loc7_] + _loc5_[_loc7_ + 1]) / 2];
-                     _loc7_ = _loc7_ + 1;
+                     b[b.length] = [b[i - 2][2],a[i],(a[i] + a[i + 1]) / 2];
+                     i = i + 1;
                   }
-                  _loc3_[_loc3_.length] = [_loc3_[_loc3_.length - 1][2],_loc5_[_loc5_.length - 2],_loc5_[_loc5_.length - 1]];
+                  b[b.length] = [b[b.length - 1][2],a[a.length - 2],a[a.length - 1]];
                }
-               else if(_loc5_.length == 3)
+               else if(a.length == 3)
                {
-                  _loc3_[_loc3_.length] = [_loc5_[0],_loc5_[1],_loc5_[2]];
+                  b[b.length] = [a[0],a[1],a[2]];
                }
-               else if(_loc5_.length == 2)
+               else if(a.length == 2)
                {
-                  _loc3_[_loc3_.length] = [_loc5_[0],(_loc5_[0] + _loc5_[1]) / 2,_loc5_[1]];
+                  b[b.length] = [a[0],(a[0] + a[1]) / 2,a[1]];
                }
             }
          }
-         return _loc6_;
+         return all;
       }
       
-      override public function onInitTween(param1:Object, param2:*, param3:TweenLite) : Boolean
+      override public function onInitTween(target:Object, value:*, tween:TweenLite) : Boolean
       {
-         if(!(param2 is Array))
+         if(!(value is Array))
          {
             return false;
          }
-         init(param3,param2 as Array,false);
+         init(tween,value as Array,false);
          return true;
       }
       
-      protected function init(param1:TweenLite, param2:Array, param3:Boolean) : void
+      protected function init(tween:TweenLite, beziers:Array, through:Boolean) : void
       {
-         var _loc8_:int = 0;
-         var _loc5_:* = null;
-         var _loc6_:* = null;
-         _target = param1.target;
-         var _loc4_:Object = param1.vars.isTV == true?param1.vars.exposedVars:param1.vars;
-         if(_loc4_.orientToBezier == true)
+         var i:int = 0;
+         var p:* = null;
+         var killVarsLookup:* = null;
+         _target = tween.target;
+         var enumerables:Object = tween.vars.isTV == true?tween.vars.exposedVars:tween.vars;
+         if(enumerables.orientToBezier == true)
          {
             _orientData = [["x","y","rotation",0,0.01]];
             _orient = true;
          }
-         else if(_loc4_.orientToBezier is Array)
+         else if(enumerables.orientToBezier is Array)
          {
-            _orientData = _loc4_.orientToBezier;
+            _orientData = enumerables.orientToBezier;
             _orient = true;
          }
-         var _loc7_:Object = {};
-         _loc8_ = 0;
-         while(_loc8_ < param2.length)
+         var props:Object = {};
+         for(i = 0; i < beziers.length; )
          {
             var _loc10_:int = 0;
-            var _loc9_:* = param2[_loc8_];
-            for(_loc5_ in param2[_loc8_])
+            var _loc9_:* = beziers[i];
+            for(p in beziers[i])
             {
-               if(_loc7_[_loc5_] == undefined)
+               if(props[p] == undefined)
                {
-                  _loc7_[_loc5_] = [param1.target[_loc5_]];
+                  props[p] = [tween.target[p]];
                }
-               if(typeof param2[_loc8_][_loc5_] == "number")
+               if(typeof beziers[i][p] == "number")
                {
-                  _loc7_[_loc5_].push(param2[_loc8_][_loc5_]);
+                  props[p].push(beziers[i][p]);
                }
                else
                {
-                  _loc7_[_loc5_].push(param1.target[_loc5_] + Number(param2[_loc8_][_loc5_]));
+                  props[p].push(tween.target[p] + Number(beziers[i][p]));
                }
             }
-            _loc8_ = _loc8_ + 1;
+            i = i + 1;
          }
          var _loc12_:int = 0;
-         var _loc11_:* = _loc7_;
-         for(this.overwriteProps[this.overwriteProps.length] in _loc7_)
+         var _loc11_:* = props;
+         for(this.overwriteProps[this.overwriteProps.length] in props)
          {
-            if(_loc4_[_loc5_] != undefined)
+            if(enumerables[p] != undefined)
             {
-               if(typeof _loc4_[_loc5_] == "number")
+               if(typeof enumerables[p] == "number")
                {
-                  _loc7_[_loc5_].push(_loc4_[_loc5_]);
+                  props[p].push(enumerables[p]);
                }
                else
                {
-                  _loc7_[_loc5_].push(param1.target[_loc5_] + Number(_loc4_[_loc5_]));
+                  props[p].push(tween.target[p] + Number(enumerables[p]));
                }
-               _loc6_ = {};
-               _loc6_[_loc5_] = true;
-               param1.killVars(_loc6_,false);
-               delete _loc4_[_loc5_];
+               killVarsLookup = {};
+               killVarsLookup[p] = true;
+               tween.killVars(killVarsLookup,false);
+               delete enumerables[p];
             }
          }
-         _beziers = parseBeziers(_loc7_,param3);
+         _beziers = parseBeziers(props,through);
       }
       
-      override public function killProps(param1:Object) : void
+      override public function killProps(lookup:Object) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = _beziers;
-         for(var _loc2_ in _beziers)
+         for(var p in _beziers)
          {
-            if(_loc2_ in param1)
+            if(p in lookup)
             {
-               delete _beziers[_loc2_];
+               delete _beziers[p];
             }
          }
-         super.killProps(param1);
+         super.killProps(lookup);
       }
       
-      override public function set changeFactor(param1:Number) : void
+      override public function set changeFactor(n:Number) : void
       {
-         var _loc12_:* = null;
-         var _loc5_:* = null;
-         var _loc10_:Number = NaN;
-         var _loc6_:int = 0;
-         var _loc2_:Number = NaN;
-         var _loc9_:* = 0;
-         var _loc7_:Number = NaN;
-         var _loc8_:Number = NaN;
-         var _loc14_:* = null;
-         var _loc11_:Number = NaN;
-         var _loc3_:* = null;
-         var _loc13_:* = null;
-         _changeFactor = param1;
-         if(param1 == 1)
+         var p:* = null;
+         var b:* = null;
+         var t:Number = NaN;
+         var segments:int = 0;
+         var val:Number = NaN;
+         var i:* = 0;
+         var dx:Number = NaN;
+         var dy:Number = NaN;
+         var cotb:* = null;
+         var toAdd:Number = NaN;
+         var curVals:* = null;
+         var oldTarget:* = null;
+         _changeFactor = n;
+         if(n == 1)
          {
             var _loc16_:int = 0;
             var _loc15_:* = _beziers;
-            for(_loc12_ in _beziers)
+            for(p in _beziers)
             {
-               _loc9_ = int(_beziers[_loc12_].length - 1);
-               _target[_loc12_] = _beziers[_loc12_][_loc9_][2];
+               i = int(_beziers[p].length - 1);
+               _target[p] = _beziers[p][i][2];
             }
          }
          else
          {
             var _loc18_:int = 0;
             var _loc17_:* = _beziers;
-            for(_loc12_ in _beziers)
+            for(p in _beziers)
             {
-               _loc6_ = _beziers[_loc12_].length;
-               if(param1 < 0)
+               segments = _beziers[p].length;
+               if(n < 0)
                {
-                  _loc9_ = 0;
+                  i = 0;
                }
-               else if(param1 >= 1)
+               else if(n >= 1)
                {
-                  _loc9_ = int(_loc6_ - 1);
+                  i = int(segments - 1);
                }
                else
                {
-                  _loc9_ = _loc6_ * param1 >> 0;
+                  i = segments * n >> 0;
                }
-               _loc10_ = (param1 - _loc9_ * (1 / _loc6_)) * _loc6_;
-               _loc5_ = _beziers[_loc12_][_loc9_];
+               t = (n - i * (1 / segments)) * segments;
+               b = _beziers[p][i];
                if(this.round)
                {
-                  _loc2_ = _loc5_[0] + _loc10_ * (2 * (1 - _loc10_) * (_loc5_[1] - _loc5_[0]) + _loc10_ * (_loc5_[2] - _loc5_[0]));
-                  if(_loc2_ > 0)
+                  val = b[0] + t * (2 * (1 - t) * (b[1] - b[0]) + t * (b[2] - b[0]));
+                  if(val > 0)
                   {
-                     _target[_loc12_] = _loc2_ + 0.5 >> 0;
+                     _target[p] = val + 0.5 >> 0;
                   }
                   else
                   {
-                     _target[_loc12_] = _loc2_ - 0.5 >> 0;
+                     _target[p] = val - 0.5 >> 0;
                   }
                }
                else
                {
-                  _target[_loc12_] = _loc5_[0] + _loc10_ * (2 * (1 - _loc10_) * (_loc5_[1] - _loc5_[0]) + _loc10_ * (_loc5_[2] - _loc5_[0]));
+                  _target[p] = b[0] + t * (2 * (1 - t) * (b[1] - b[0]) + t * (b[2] - b[0]));
                }
             }
          }
          if(_orient)
          {
-            _loc9_ = int(_orientData.length);
-            _loc3_ = {};
+            i = int(_orientData.length);
+            curVals = {};
             while(true)
             {
-               _loc9_--;
-               if(!_loc9_)
+               i--;
+               if(!i)
                {
                   break;
                }
-               _loc14_ = _orientData[_loc9_];
-               _loc3_[_loc14_[0]] = _target[_loc14_[0]];
-               _loc3_[_loc14_[1]] = _target[_loc14_[1]];
+               cotb = _orientData[i];
+               curVals[cotb[0]] = _target[cotb[0]];
+               curVals[cotb[1]] = _target[cotb[1]];
             }
-            _loc13_ = _target;
-            var _loc4_:Boolean = this.round;
+            oldTarget = _target;
+            var oldRound:Boolean = this.round;
             _target = _future;
             this.round = false;
             _orient = false;
-            _loc9_ = int(_orientData.length);
+            i = int(_orientData.length);
             while(true)
             {
-               _loc9_--;
-               if(!_loc9_)
+               i--;
+               if(!i)
                {
                   break;
                }
-               _loc14_ = _orientData[_loc9_];
-               this.changeFactor = param1 + (_loc14_[4] || 0.01);
-               _loc11_ = _loc14_[3] || 0;
-               _loc7_ = _future[_loc14_[0]] - _loc3_[_loc14_[0]];
-               _loc8_ = _future[_loc14_[1]] - _loc3_[_loc14_[1]];
-               _loc13_[_loc14_[2]] = Math.atan2(_loc8_,_loc7_) * 57.2957795130823 + _loc11_;
+               cotb = _orientData[i];
+               this.changeFactor = n + (cotb[4] || 0.01);
+               toAdd = cotb[3] || 0;
+               dx = _future[cotb[0]] - curVals[cotb[0]];
+               dy = _future[cotb[1]] - curVals[cotb[1]];
+               oldTarget[cotb[2]] = Math.atan2(dy,dx) * 57.2957795130823 + toAdd;
             }
-            _target = _loc13_;
-            this.round = _loc4_;
+            _target = oldTarget;
+            this.round = oldRound;
             _orient = true;
          }
       }

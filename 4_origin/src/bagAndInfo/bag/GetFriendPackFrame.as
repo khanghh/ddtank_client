@@ -120,19 +120,19 @@ package bagAndInfo.bag
          addToContent(_tipTxt);
       }
       
-      public function updateView(param1:ItemTemplateInfo, param2:int, param3:int) : void
+      public function updateView(info:ItemTemplateInfo, bagType:int, place:int) : void
       {
-         _info = param1;
-         _bagType = param2;
-         _place = param3;
-         var _loc4_:InventoryItemInfo = new InventoryItemInfo();
-         _loc4_.TemplateID = _info.TemplateID;
-         ItemManager.fill(_loc4_);
-         _loc4_.IsBinds = true;
-         _loc4_.MaxCount = 1;
-         _loc4_.Count = 1;
-         _awardCell.info = _loc4_;
-         _cellNameLabel.text = _loc4_.Name;
+         _info = info;
+         _bagType = bagType;
+         _place = place;
+         var tempInfo:InventoryItemInfo = new InventoryItemInfo();
+         tempInfo.TemplateID = _info.TemplateID;
+         ItemManager.fill(tempInfo);
+         tempInfo.IsBinds = true;
+         tempInfo.MaxCount = 1;
+         tempInfo.Count = 1;
+         _awardCell.info = tempInfo;
+         _cellNameLabel.text = tempInfo.Name;
       }
       
       private function addEvent() : void
@@ -145,41 +145,41 @@ package bagAndInfo.bag
          StageReferance.stage.addEventListener("click",__hideDropList);
       }
       
-      protected function selectName(param1:String, param2:int = 0) : void
+      protected function selectName(nick:String, id:int = 0) : void
       {
-         setName(param1);
+         setName(nick);
          _friendList.setVisible = false;
       }
       
-      public function setName(param1:String) : void
+      public function setName(value:String) : void
       {
-         _nameInput.text = param1;
+         _nameInput.text = value;
       }
       
-      private function __certainBtnClick(param1:MouseEvent) : void
+      private function __certainBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:String = _nameInput.text;
-         if(_loc2_ == "")
+         var name:String = _nameInput.text;
+         if(name == "")
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("shop.ShopIIPresentView.give"));
             return;
          }
-         if(FilterWordManager.IsNullorEmpty(_loc2_))
+         if(FilterWordManager.IsNullorEmpty(name))
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("shop.ShopIIPresentView.space"));
             return;
          }
-         if(_loc2_ == PlayerManager.Instance.Self.NickName)
+         if(name == PlayerManager.Instance.Self.NickName)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("bag.getFriendPackFrame.getSelfMsg"));
             return;
          }
-         GameInSocketOut.sendGetFriendPack(_loc2_,_textArea.text,_bagType,_place);
+         GameInSocketOut.sendGetFriendPack(name,_textArea.text,_bagType,_place);
          dispose();
       }
       
-      private function __deselectBtnClick(param1:MouseEvent) : void
+      private function __deselectBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          dispose();
@@ -190,9 +190,9 @@ package bagAndInfo.bag
          LayerManager.Instance.addToLayer(this,3,true,1);
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -201,9 +201,9 @@ package bagAndInfo.bag
          }
       }
       
-      protected function __hideDropList(param1:Event) : void
+      protected function __hideDropList(event:Event) : void
       {
-         if(param1.target is FilterFrameText)
+         if(event.target is FilterFrameText)
          {
             return;
          }
@@ -213,72 +213,70 @@ package bagAndInfo.bag
          }
       }
       
-      private function __showFramePanel(param1:MouseEvent) : void
+      private function __showFramePanel(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:Point = _chooseFriendBtn.localToGlobal(new Point(0,0));
-         _friendList.x = _loc2_.x - 95;
-         _friendList.y = _loc2_.y + _chooseFriendBtn.height;
+         var pos:Point = _chooseFriendBtn.localToGlobal(new Point(0,0));
+         _friendList.x = pos.x - 95;
+         _friendList.y = pos.y + _chooseFriendBtn.height;
          _friendList.setVisible = true;
          LayerManager.Instance.addToLayer(_friendList,3);
       }
       
-      protected function __onReceiverChange(param1:Event) : void
+      protected function __onReceiverChange(event:Event) : void
       {
          if(_nameInput.text == "")
          {
             _dropList.dataList = null;
             return;
          }
-         var _loc2_:Array = PlayerManager.Instance.onlineFriendList.concat(PlayerManager.Instance.offlineFriendList).concat(ConsortionModelManager.Instance.model.onlineConsortiaMemberList).concat(ConsortionModelManager.Instance.model.offlineConsortiaMemberList);
-         _dropList.dataList = filterSearch(filterRepeatInArray(_loc2_),_nameInput.text);
+         var list:Array = PlayerManager.Instance.onlineFriendList.concat(PlayerManager.Instance.offlineFriendList).concat(ConsortionModelManager.Instance.model.onlineConsortiaMemberList).concat(ConsortionModelManager.Instance.model.offlineConsortiaMemberList);
+         _dropList.dataList = filterSearch(filterRepeatInArray(list),_nameInput.text);
       }
       
-      private function filterRepeatInArray(param1:Array) : Array
+      private function filterRepeatInArray(filterArr:Array) : Array
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         var _loc2_:Array = [];
-         _loc4_ = 0;
-         while(_loc4_ < param1.length)
+         var i:int = 0;
+         var j:int = 0;
+         var arr:Array = [];
+         for(i = 0; i < filterArr.length; )
          {
-            if(_loc4_ == 0)
+            if(i == 0)
             {
-               _loc2_.push(param1[_loc4_]);
+               arr.push(filterArr[i]);
             }
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_.length)
+            j = 0;
+            while(j < arr.length)
             {
-               if(_loc2_[_loc3_].NickName != param1[_loc4_].NickName)
+               if(arr[j].NickName != filterArr[i].NickName)
                {
-                  if(_loc3_ == _loc2_.length - 1)
+                  if(j == arr.length - 1)
                   {
-                     _loc2_.push(param1[_loc4_]);
+                     arr.push(filterArr[i]);
                   }
-                  _loc3_++;
+                  j++;
                   continue;
                }
                break;
             }
-            _loc4_++;
+            i++;
          }
-         return _loc2_;
+         return arr;
       }
       
-      private function filterSearch(param1:Array, param2:String) : Array
+      private function filterSearch(list:Array, targetStr:String) : Array
       {
-         var _loc4_:int = 0;
-         var _loc3_:Array = [];
-         _loc4_ = 0;
-         while(_loc4_ < param1.length)
+         var i:int = 0;
+         var result:Array = [];
+         for(i = 0; i < list.length; )
          {
-            if(param1[_loc4_].NickName.indexOf(param2) != -1)
+            if(list[i].NickName.indexOf(targetStr) != -1)
             {
-               _loc3_.push(param1[_loc4_]);
+               result.push(list[i]);
             }
-            _loc4_++;
+            i++;
          }
-         return _loc3_;
+         return result;
       }
       
       private function removeEvent() : void

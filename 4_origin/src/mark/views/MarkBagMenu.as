@@ -3,6 +3,7 @@ package mark.views
    import baglocked.BaglockedManager;
    import com.pickgliss.utils.ObjectUtils;
    import ddt.manager.PlayerManager;
+   import ddt.manager.SoundManager;
    import flash.events.MouseEvent;
    import mark.MarkMgr;
    import mark.mornUI.views.MarkBagMenuUI;
@@ -14,9 +15,9 @@ package mark.views
       
       private var _id:int = -1;
       
-      public function MarkBagMenu(param1:int)
+      public function MarkBagMenu(id:int)
       {
-         _id = param1;
+         _id = id;
          super();
       }
       
@@ -30,6 +31,7 @@ package mark.views
       
       private function hammer() : void
       {
+         SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
@@ -43,6 +45,7 @@ package mark.views
       
       private function sell() : void
       {
+         SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
@@ -56,6 +59,7 @@ package mark.views
       
       private function wear() : void
       {
+         SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
@@ -74,7 +78,7 @@ package mark.views
          addEventListener("click",clickHandler);
       }
       
-      private function clickHandler(param1:MouseEvent) : void
+      private function clickHandler(evt:MouseEvent) : void
       {
          dispose();
       }

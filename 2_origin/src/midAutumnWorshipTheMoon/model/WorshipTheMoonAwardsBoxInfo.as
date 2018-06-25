@@ -8,16 +8,16 @@ package midAutumnWorshipTheMoon.model
       
       public var moonType:int;
       
-      public function WorshipTheMoonAwardsBoxInfo(param1:int, param2:int)
+      public function WorshipTheMoonAwardsBoxInfo($moonType:int, $id:int)
       {
          super();
-         moonType = param1;
-         id = param2;
+         moonType = $moonType;
+         id = $id;
       }
       
-      public static function getMoonName(param1:int) : String
+      public static function getMoonName(id:int) : String
       {
-         switch(int(param1) - 1)
+         switch(int(id) - 1)
          {
             case 0:
                return "Trăng Non";
@@ -34,9 +34,9 @@ package midAutumnWorshipTheMoon.model
          }
       }
       
-      public static function getCakeName(param1:int) : String
+      public static function getCakeName(id:int) : String
       {
-         switch(int(param1) - 1)
+         switch(int(id) - 1)
          {
             case 0:
                return "Túi quà trăng non";

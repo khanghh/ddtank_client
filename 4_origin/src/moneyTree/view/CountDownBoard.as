@@ -28,13 +28,13 @@ package moneyTree.view
       
       private var _countDownTextField:FilterFrameText;
       
-      public function CountDownBoard(param1:int, param2:Bitmap)
+      public function CountDownBoard(index:int, titleBmp:Bitmap)
       {
-         _index = param1;
+         _index = index;
          super();
          _bg = ComponentFactory.Instance.creatBitmap("moneyTree.cd.bg");
          addChild(_bg);
-         _title = param2;
+         _title = titleBmp;
          _title.x = -1;
          _title.y = 2;
          addChild(_title);
@@ -45,7 +45,7 @@ package moneyTree.view
          addChild(_countDownTextField);
       }
       
-      protected function onSpeedUpClick(param1:MouseEvent) : void
+      protected function onSpeedUpClick(e:MouseEvent) : void
       {
          _speedUpBtn.enable = false;
          SoundManager.instance.play("008");
@@ -60,10 +60,10 @@ package moneyTree.view
          }
       }
       
-      public function updateTime(param1:String) : void
+      public function updateTime(timeString:String) : void
       {
-         _countDownTextField.text = param1;
-         if(param1 == LanguageMgr.GetTranslation("moneyTree.MoneyTreeModel.TreeOK"))
+         _countDownTextField.text = timeString;
+         if(timeString == LanguageMgr.GetTranslation("moneyTree.MoneyTreeModel.TreeOK"))
          {
             _speedUpBtn.visible = false;
             MoneyTreeController.getInstance().BecomeMature();

@@ -1,14 +1,13 @@
 package starling.utils
 {
-   public function formatString(param1:String, ... rest) : String
+   public function formatString(format:String, ... args) : String
    {
-      var _loc3_:int = 0;
-      _loc3_ = 0;
-      while(_loc3_ < rest.length)
+      var i:int = 0;
+      for(i = 0; i < args.length; )
       {
-         param1 = param1.replace(new RegExp("\\{" + _loc3_ + "\\}","g"),rest[_loc3_]);
-         _loc3_++;
+         format = format.replace(new RegExp("\\{" + i + "\\}","g"),args[i]);
+         i++;
       }
-      return param1;
+      return format;
    }
 }

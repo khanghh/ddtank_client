@@ -52,10 +52,10 @@ package petsBag.view.item
       
       private var _amountTxt:FilterFrameText;
       
-      public function AdoptItem(param1:PetInfo)
+      public function AdoptItem(info:PetInfo)
       {
          super();
-         _info = param1;
+         _info = info;
          initView();
          initEvent();
          if(_info)
@@ -70,18 +70,18 @@ package petsBag.view.item
          return _info;
       }
       
-      public function set info(param1:PetInfo) : void
+      public function set info(value:PetInfo) : void
       {
-         _info = param1;
+         _info = value;
          if(_info)
          {
             this.tipData = _info;
          }
       }
       
-      public function set place(param1:int) : void
+      public function set place(val:int) : void
       {
-         _itemPlace = param1;
+         _itemPlace = val;
       }
       
       public function get place() : int
@@ -89,18 +89,18 @@ package petsBag.view.item
          return _itemPlace;
       }
       
-      public function set itemAmount(param1:int) : void
+      public function set itemAmount(val:int) : void
       {
-         _itemAmount = param1;
+         _itemAmount = val;
       }
       
-      public function set itemTemplateId(param1:int) : void
+      public function set itemTemplateId(val:int) : void
       {
-         if(param1 == _goodTemplateId)
+         if(val == _goodTemplateId)
          {
             return;
          }
-         _goodTemplateId = param1;
+         _goodTemplateId = val;
          _goodItem = ItemManager.Instance.getTemplateById(_goodTemplateId);
          _isGoodItem = true;
          refreshView();
@@ -127,17 +127,17 @@ package petsBag.view.item
          _shiner = ComponentFactory.Instance.creat("assets.farm.petPnlBg2");
          addChild(_shiner);
          _shiner.visible = _isSelect;
-         var _loc2_:String = PathManager.solveGoodsPath(_goodItem.CategoryID,_goodItem.Pic,PlayerManager.Instance.Self.Sex,"icon");
-         var _loc3_:Rectangle = ComponentFactory.Instance.creatCustomObject("farm.adoptItem.goodBitmapSize");
-         _goodBitmap = new BitmapLoaderProxy(_loc2_,_loc3_);
+         var url:String = PathManager.solveGoodsPath(_goodItem.CategoryID,_goodItem.Pic,PlayerManager.Instance.Self.Sex,"icon");
+         var size:Rectangle = ComponentFactory.Instance.creatCustomObject("farm.adoptItem.goodBitmapSize");
+         _goodBitmap = new BitmapLoaderProxy(url,size);
          PositionUtils.setPos(_goodBitmap,"assets.farm.itemPos");
          addChild(_goodBitmap);
          _amountTxt = ComponentFactory.Instance.creatComponentByStylename("farm.adoptItemTxt");
          _amountTxt.text = _itemAmount.toString();
          addChild(_amountTxt);
-         var _loc1_:GoodTipInfo = new GoodTipInfo();
-         _loc1_.itemInfo = _goodItem;
-         this.tipData = _loc1_;
+         var tipInfo:GoodTipInfo = new GoodTipInfo();
+         tipInfo.itemInfo = _goodItem;
+         this.tipData = tipInfo;
       }
       
       protected function initView() : void
@@ -174,7 +174,7 @@ package petsBag.view.item
          addEventListener("click",__selectPet);
       }
       
-      protected function __selectPet(param1:MouseEvent) : void
+      protected function __selectPet(e:MouseEvent) : void
       {
          dispatchEvent(new PetItemEvent("itemclick",this,true));
          isSelect = true;
@@ -194,9 +194,9 @@ package petsBag.view.item
          return "petsBag.view.item.PetTip";
       }
       
-      public function set isSelect(param1:Boolean) : void
+      public function set isSelect(value:Boolean) : void
       {
-         _isSelect = param1;
+         _isSelect = value;
          _shiner.visible = _isSelect;
       }
       

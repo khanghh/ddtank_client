@@ -106,12 +106,12 @@ package wonderfulActivity.items
       
       private function initView() : void
       {
-         var _loc6_:int = 0;
-         var _loc2_:* = null;
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
+         var k:int = 0;
+         var progressLine:* = null;
+         var j:int = 0;
+         var prizeItem:* = null;
          _content = new Sprite();
          PositionUtils.setPos(_content,"wonderful.Accumulative.ContentPos");
          _bg = ComponentFactory.Instance.creat("wonderful.accumulative.BG");
@@ -127,17 +127,16 @@ package wonderfulActivity.items
          PositionUtils.setPos(_progressBack2,"wonderful.Accumulative.ProgressBackPos2");
          _content.addChild(_progressBack2);
          _itemList = ComponentFactory.Instance.creatCustomObject("wonderful.Accumulative.SimpleTileList",[5]);
-         _loc6_ = 1;
-         while(_loc6_ <= 10)
+         for(i = 1; i <= 10; )
          {
-            _loc2_ = new AccumulativeItem();
-            _loc2_.buttonMode = true;
-            _loc2_.initView(_loc6_);
-            _loc2_.turnGray(true);
-            _loc2_.box.addEventListener("click",__itemBoxClick);
-            _itemList.addChild(_loc2_);
-            _itemArr.push(_loc2_);
-            _loc6_++;
+            item = new AccumulativeItem();
+            item.buttonMode = true;
+            item.initView(i);
+            item.turnGray(true);
+            item.box.addEventListener("click",__itemBoxClick);
+            _itemList.addChild(item);
+            _itemArr.push(item);
+            i++;
          }
          _content.addChild(_itemList);
          _prizeBG = ComponentFactory.Instance.creat("wonderful.accumulative.prizeBG");
@@ -158,28 +157,26 @@ package wonderfulActivity.items
          _getPrizeBtn.enable = false;
          _content.addChild(_getPrizeBtn);
          _progressList = ComponentFactory.Instance.creatCustomObject("wonderful.Accumulative.progressList",[4]);
-         _loc5_ = 1;
-         while(_loc5_ <= 8)
+         for(k = 1; k <= 8; )
          {
-            _loc3_ = ComponentFactory.Instance.creatComponentByStylename("wonderful.accumulative.progress2");
-            _loc3_.visible = false;
-            _loc3_.addEventListener("rollOver",progressBackOver);
-            _loc3_.addEventListener("mouseMove",progressBackOver);
-            _loc3_.addEventListener("rollOut",progressBackOut);
-            _progressList.addChild(_loc3_);
-            _progressArr.push(_loc3_);
-            _loc5_++;
+            progressLine = ComponentFactory.Instance.creatComponentByStylename("wonderful.accumulative.progress2");
+            progressLine.visible = false;
+            progressLine.addEventListener("rollOver",progressBackOver);
+            progressLine.addEventListener("mouseMove",progressBackOver);
+            progressLine.addEventListener("rollOut",progressBackOut);
+            _progressList.addChild(progressLine);
+            _progressArr.push(progressLine);
+            k++;
          }
          _content.addChild(_progressList);
          _prizeList = ComponentFactory.Instance.creatComponentByStylename("wonderful.accumulative.Hbox");
-         _loc4_ = 1;
-         while(_loc4_ <= 7)
+         for(j = 1; j <= 7; )
          {
-            _loc1_ = new PrizeListItem();
-            _loc1_.initView(_loc4_);
-            _prizeList.addChild(_loc1_);
-            _prizeArr.push(_loc1_);
-            _loc4_++;
+            prizeItem = new PrizeListItem();
+            prizeItem.initView(j);
+            _prizeList.addChild(prizeItem);
+            _prizeArr.push(prizeItem);
+            j++;
          }
          _content.addChild(_prizeList);
          _prizeList.refreshChildPos();
@@ -191,59 +188,57 @@ package wonderfulActivity.items
       
       private function initData() : void
       {
-         var _loc6_:int = 0;
-         var _loc3_:int = 0;
-         var _loc4_:* = null;
-         var _loc2_:int = 0;
+         var i:int = 0;
+         var j:int = 0;
+         var key:* = null;
+         var selectableIndex:int = 0;
          if(!checkData())
          {
             return;
          }
-         var _loc1_:Array = activityData[actId].giftbagArray;
-         _loc6_ = 0;
-         while(_loc6_ <= _loc1_.length - 1)
+         var giftArr:Array = activityData[actId].giftbagArray;
+         for(i = 0; i <= giftArr.length - 1; )
          {
-            if(accPayValue >= _loc1_[_loc6_].giftConditionArr[0].conditionValue)
+            if(accPayValue >= giftArr[i].giftConditionArr[0].conditionValue)
             {
-               (_itemArr[_loc6_] as AccumulativeItem).turnGray(false);
-               (_itemArr[_loc6_] as AccumulativeItem).glint(true);
-               (_itemArr[_loc6_] as AccumulativeItem).setNumber(_loc1_[_loc6_].giftConditionArr[0].conditionValue);
-               (_itemArr[_loc6_] as AccumulativeItem).lightProgressPoint();
-               index = _loc6_;
+               (_itemArr[i] as AccumulativeItem).turnGray(false);
+               (_itemArr[i] as AccumulativeItem).glint(true);
+               (_itemArr[i] as AccumulativeItem).setNumber(giftArr[i].giftConditionArr[0].conditionValue);
+               (_itemArr[i] as AccumulativeItem).lightProgressPoint();
+               index = i;
             }
-            _loc6_++;
+            i++;
          }
-         var _loc5_:* = -1;
-         _loc3_ = 0;
-         while(_loc3_ <= index)
+         var lastGetIndex:* = -1;
+         for(j = 0; j <= index; )
          {
-            _loc4_ = _loc1_[_loc3_].giftbagId;
-            if(giftCurInfoDic[_loc4_].times > 0)
+            key = giftArr[j].giftbagId;
+            if(giftCurInfoDic[key].times > 0)
             {
-               (_itemArr[_loc3_] as AccumulativeItem).glint(false);
+               (_itemArr[j] as AccumulativeItem).glint(false);
             }
             else
             {
-               _loc5_ = _loc3_;
+               lastGetIndex = j;
                _getPrizeBtn.enable = true;
             }
-            _loc3_++;
+            j++;
          }
-         if(_loc5_ >= 0)
+         if(lastGetIndex >= 0)
          {
-            (_itemArr[_loc5_] as AccumulativeItem).turnLight(true);
-            showGift(_loc5_);
+            (_itemArr[lastGetIndex] as AccumulativeItem).turnLight(true);
+            showGift(lastGetIndex);
          }
          else
          {
-            _loc2_ = index + 1 <= _itemArr.length - 1?index + 1:index;
-            (_itemArr[_loc2_] as AccumulativeItem).turnLight(true);
-            showGift(_loc2_);
+            selectableIndex = index + 1 <= _itemArr.length - 1?index + 1:index;
+            (_itemArr[selectableIndex] as AccumulativeItem).turnLight(true);
+            showGift(selectableIndex);
          }
-         if(index + 1 <= _loc1_.length - 1)
+         if(index + 1 <= giftArr.length - 1)
          {
-            (_itemArr[index + 1] as AccumulativeItem).setNumber(_loc1_[index + 1].giftConditionArr[0].conditionValue);
-            _nextPrizeNeedValue.text = (_loc1_[index + 1].giftConditionArr[0].conditionValue - accPayValue).toString();
+            (_itemArr[index + 1] as AccumulativeItem).setNumber(giftArr[index + 1].giftConditionArr[0].conditionValue);
+            _nextPrizeNeedValue.text = (giftArr[index + 1].giftConditionArr[0].conditionValue - accPayValue).toString();
          }
          else
          {
@@ -260,11 +255,11 @@ package wonderfulActivity.items
          activityInitData = WonderfulActivityManager.Instance.activityInitData;
          var _loc3_:int = 0;
          var _loc2_:* = activityData;
-         for each(var _loc1_ in activityData)
+         for each(var data in activityData)
          {
-            if(_loc1_.activityType == 0 && _loc1_.activityChildType == 3)
+            if(data.activityType == 0 && data.activityChildType == 3)
             {
-               actId = _loc1_.activityId;
+               actId = data.activityId;
                break;
             }
          }
@@ -285,67 +280,65 @@ package wonderfulActivity.items
          _getPrizeBtn.addEventListener("click",__GetPrizeBtnClick);
       }
       
-      private function progressBackOver(param1:MouseEvent) : void
+      private function progressBackOver(event:MouseEvent) : void
       {
          _tip.visible = true;
          _tip.x = _content.mouseX;
          _tip.y = _content.mouseY;
       }
       
-      private function progressBackOut(param1:MouseEvent) : void
+      private function progressBackOut(event:MouseEvent) : void
       {
          _tip.visible = false;
       }
       
-      private function showProgress(param1:int) : void
+      private function showProgress(num:int) : void
       {
-         var _loc7_:int = 0;
-         var _loc3_:int = 0;
-         var _loc5_:int = 0;
-         var _loc6_:Number = NaN;
-         if(param1 < 0)
+         var i:int = 0;
+         var value:int = 0;
+         var nextValue:int = 0;
+         var pencent:Number = NaN;
+         if(num < 0)
          {
             return;
          }
-         var _loc4_:int = -1;
-         _loc7_ = 0;
-         while(_loc7_ <= param1)
+         var tmp:int = -1;
+         for(i = 0; i <= num; )
          {
-            _loc4_++;
-            if(_loc7_ == 4 || _loc7_ == 9)
+            tmp++;
+            if(i == 4 || i == 9)
             {
-               _loc4_--;
+               tmp--;
             }
-            _progressArr[_loc4_].visible = true;
-            _loc7_++;
+            _progressArr[tmp].visible = true;
+            i++;
          }
-         var _loc2_:Array = activityData[actId].giftbagArray;
-         if(param1 == 4 || param1 == 9 || param1 + 1 >= _loc2_.length || _loc4_ <= 0)
+         var arr:Array = activityData[actId].giftbagArray;
+         if(num == 4 || num == 9 || num + 1 >= arr.length || tmp <= 0)
          {
             return;
          }
-         _loc3_ = _loc2_[param1].giftConditionArr[0].conditionValue;
-         _loc5_ = _loc2_[param1 + 1].giftConditionArr[0].conditionValue;
-         _loc6_ = (accPayValue - _loc3_) / (_loc5_ - _loc3_);
-         (_progressArr[_loc4_] as ScaleBitmapImage).scaleX = _loc6_;
+         value = arr[num].giftConditionArr[0].conditionValue;
+         nextValue = arr[num + 1].giftConditionArr[0].conditionValue;
+         pencent = (accPayValue - value) / (nextValue - value);
+         (_progressArr[tmp] as ScaleBitmapImage).scaleX = pencent;
       }
       
-      private function showGift(param1:int) : void
+      private function showGift(num:int) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         if(param1 < 0 || param1 > activityData[actId].giftbagArray.length - 1)
+         var i:int = 0;
+         var gift:* = null;
+         if(num < 0 || num > activityData[actId].giftbagArray.length - 1)
          {
             return;
          }
-         var _loc4_:Vector.<GiftRewardInfo> = activityData[actId].giftbagArray[param1].giftRewardArr;
+         var vec:Vector.<GiftRewardInfo> = activityData[actId].giftbagArray[num].giftRewardArr;
          clearPrizeArr();
-         _loc3_ = 0;
-         while(_loc3_ <= _loc4_.length - 1)
+         for(i = 0; i <= vec.length - 1; )
          {
-            _loc2_ = _loc4_[_loc3_] as GiftRewardInfo;
-            _prizeArr[_loc3_].setCellData(_loc2_);
-            _loc3_++;
+            gift = vec[i] as GiftRewardInfo;
+            _prizeArr[i].setCellData(gift);
+            i++;
          }
       }
       
@@ -353,83 +346,78 @@ package wonderfulActivity.items
       {
          var _loc3_:int = 0;
          var _loc2_:* = _prizeArr;
-         for each(var _loc1_ in _prizeArr)
+         for each(var item in _prizeArr)
          {
-            _loc1_.setCellData(null);
+            item.setCellData(null);
          }
       }
       
-      private function __GetPrizeBtnClick(param1:MouseEvent) : void
+      private function __GetPrizeBtnClick(event:MouseEvent) : void
       {
-         var _loc6_:int = 0;
-         var _loc4_:int = 0;
-         var _loc7_:SendGiftInfo = new SendGiftInfo();
-         _loc7_.activityId = actId;
-         var _loc5_:Array = activityData[actId].giftbagArray;
-         var _loc3_:Array = [];
-         _loc6_ = 0;
-         while(_loc6_ <= _loc5_.length - 1)
+         var i:int = 0;
+         var j:int = 0;
+         var getAwardInfo:SendGiftInfo = new SendGiftInfo();
+         getAwardInfo.activityId = actId;
+         var bagArr:Array = activityData[actId].giftbagArray;
+         var tmpArr:Array = [];
+         for(i = 0; i <= bagArr.length - 1; )
          {
-            _loc3_.push(_loc5_[_loc6_].giftbagId);
-            _loc6_++;
+            tmpArr.push(bagArr[i].giftbagId);
+            i++;
          }
-         _loc7_.giftIdArr = _loc3_;
-         var _loc2_:Vector.<SendGiftInfo> = new Vector.<SendGiftInfo>();
-         _loc2_.push(_loc7_);
-         SocketManager.Instance.out.sendWonderfulActivityGetReward(_loc2_);
-         _loc4_ = 0;
-         while(_loc4_ <= index)
+         getAwardInfo.giftIdArr = tmpArr;
+         var data:Vector.<SendGiftInfo> = new Vector.<SendGiftInfo>();
+         data.push(getAwardInfo);
+         SocketManager.Instance.out.sendWonderfulActivityGetReward(data);
+         for(j = 0; j <= index; )
          {
-            _itemArr[_loc4_].glint(false);
-            _loc4_++;
+            _itemArr[j].glint(false);
+            j++;
          }
          _getPrizeBtn.enable = false;
       }
       
-      private function __itemBoxClick(param1:MouseEvent) : void
+      private function __itemBoxClick(event:MouseEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:AccumulativeItem = param1.target.parent as AccumulativeItem;
-         var _loc3_:int = index + 1 < _itemArr.length?index + 1:index;
-         if(_loc2_.index - 1 <= _loc3_)
+         var i:int = 0;
+         var item:AccumulativeItem = event.target.parent as AccumulativeItem;
+         var selectableIndex:int = index + 1 < _itemArr.length?index + 1:index;
+         if(item.index - 1 <= selectableIndex)
          {
-            _loc4_ = 0;
-            while(_loc4_ <= _loc3_)
+            for(i = 0; i <= selectableIndex; )
             {
-               (_itemArr[_loc4_] as AccumulativeItem).turnLight(false);
-               _loc4_++;
+               (_itemArr[i] as AccumulativeItem).turnLight(false);
+               i++;
             }
-            _loc2_.turnLight(true);
-            showGift(_loc2_.index - 1);
+            item.turnLight(true);
+            showGift(item.index - 1);
          }
       }
       
       private function removeEvents() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
+         var i:int = 0;
+         var j:int = 0;
          _getPrizeBtn.removeEventListener("click",__GetPrizeBtnClick);
-         _loc2_ = 0;
-         while(_loc2_ <= _itemArr.length - 1)
+         for(i = 0; i <= _itemArr.length - 1; )
          {
-            _itemArr[_loc2_].box.removeEventListener("click",__itemBoxClick);
-            _loc2_++;
+            _itemArr[i].box.removeEventListener("click",__itemBoxClick);
+            i++;
          }
-         _loc1_ = 0;
-         while(_loc1_ <= _progressArr.length - 1)
+         for(j = 0; j <= _progressArr.length - 1; )
          {
-            _progressArr[_loc1_].removeEventListener("rollOver",progressBackOver);
-            _progressArr[_loc1_].removeEventListener("mouseMove",progressBackOver);
-            _progressArr[_loc1_].removeEventListener("rollOut",progressBackOut);
-            _loc1_++;
+            _progressArr[j].removeEventListener("rollOver",progressBackOver);
+            _progressArr[j].removeEventListener("mouseMove",progressBackOver);
+            _progressArr[j].removeEventListener("rollOut",progressBackOut);
+            j++;
          }
       }
       
       public function dispose() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:int = 0;
-         var _loc2_:int = 0;
+         var i:int = 0;
+         var j:int = 0;
+         var k:int = 0;
          removeEvents();
          if(_bg)
          {
@@ -496,40 +484,37 @@ package wonderfulActivity.items
             ObjectUtils.disposeObject(_prizeList);
          }
          _prizeList = null;
-         _loc3_ = 0;
-         while(_loc3_ <= _itemArr.length - 1)
+         for(i = 0; i <= _itemArr.length - 1; )
          {
-            if(_itemArr[_loc3_])
+            if(_itemArr[i])
             {
-               ObjectUtils.disposeObject(_itemArr[_loc3_]);
+               ObjectUtils.disposeObject(_itemArr[i]);
             }
-            _itemArr[_loc3_] = null;
-            _loc3_++;
+            _itemArr[i] = null;
+            i++;
          }
          if(_progressList)
          {
             ObjectUtils.disposeObject(_progressList);
          }
          _progressList = null;
-         _loc1_ = 0;
-         while(_loc1_ <= _progressArr.length - 1)
+         for(j = 0; j <= _progressArr.length - 1; )
          {
-            if(_progressArr[_loc1_])
+            if(_progressArr[j])
             {
-               ObjectUtils.disposeObject(_progressArr[_loc1_]);
+               ObjectUtils.disposeObject(_progressArr[j]);
             }
-            _progressArr[_loc1_] = null;
-            _loc1_++;
+            _progressArr[j] = null;
+            j++;
          }
-         _loc2_ = 0;
-         while(_loc2_ <= _prizeArr.length - 1)
+         for(k = 0; k <= _prizeArr.length - 1; )
          {
-            if(_prizeArr[_loc2_])
+            if(_prizeArr[k])
             {
-               ObjectUtils.disposeObject(_prizeArr[_loc2_]);
+               ObjectUtils.disposeObject(_prizeArr[k]);
             }
-            _prizeArr[_loc2_] = null;
-            _loc2_++;
+            _prizeArr[k] = null;
+            k++;
          }
          if(_tip)
          {
@@ -548,7 +533,7 @@ package wonderfulActivity.items
          return this;
       }
       
-      public function setState(param1:int, param2:int) : void
+      public function setState(type:int, id:int) : void
       {
       }
    }

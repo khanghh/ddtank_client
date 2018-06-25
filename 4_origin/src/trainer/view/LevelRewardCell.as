@@ -11,9 +11,9 @@ package trainer.view
    {
        
       
-      public function LevelRewardCell(param1:ItemTemplateInfo = null)
+      public function LevelRewardCell($info:ItemTemplateInfo = null)
       {
-         super(null,param1,false,true);
+         super(null,$info,false,true);
       }
       
       override protected function createChildren() : void
@@ -22,9 +22,9 @@ package trainer.view
          _pic.mouseEnabled = false;
       }
       
-      override protected function updateSize(param1:Sprite) : void
+      override protected function updateSize(sp:Sprite) : void
       {
-         if(param1)
+         if(sp)
          {
             _pic.width = getSize();
             _pic.height = getSize();
@@ -48,14 +48,14 @@ package trainer.view
          return 48;
       }
       
-      override protected function onMouseOver(param1:MouseEvent) : void
+      override protected function onMouseOver(evt:MouseEvent) : void
       {
          scaleY = 1.3;
          scaleX = 1.3;
          showEffect();
       }
       
-      override protected function onMouseOut(param1:MouseEvent) : void
+      override protected function onMouseOut(evt:MouseEvent) : void
       {
          scaleY = 1;
          scaleX = 1;

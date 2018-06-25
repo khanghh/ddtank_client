@@ -34,28 +34,27 @@ package gameCommon.view
          }
       }
       
-      public function drawNum(param1:int) : void
+      public function drawNum(num:int) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:BitmapShape = _numShapes.shift();
-         while(_loc4_ != null)
+         var i:int = 0;
+         var shape:BitmapShape = _numShapes.shift();
+         while(shape != null)
          {
-            ObjectUtils.disposeObject(_loc4_);
-            _loc4_ = _numShapes.shift();
+            ObjectUtils.disposeObject(shape);
+            shape = _numShapes.shift();
          }
-         var _loc2_:String = param1.toString();
-         var _loc3_:int = _loc2_.length;
-         _loc5_ = 0;
-         while(_loc5_ < _loc3_)
+         var numStr:String = num.toString();
+         var len:int = numStr.length;
+         for(i = 0; i < len; )
          {
-            _loc4_ = _bitmapMgr.creatBitmapShape("asset.game.achiev.num" + _loc2_.substr(_loc5_,1));
-            if(_loc5_ > 0)
+            shape = _bitmapMgr.creatBitmapShape("asset.game.achiev.num" + numStr.substr(i,1));
+            if(i > 0)
             {
-               _loc4_.x = _numShapes[_loc5_ - 1].x + _numShapes[_loc5_ - 1].width;
+               shape.x = _numShapes[i - 1].x + _numShapes[i - 1].width;
             }
-            addChild(_loc4_);
-            _numShapes.push(_loc4_);
-            _loc5_++;
+            addChild(shape);
+            _numShapes.push(shape);
+            i++;
          }
          visible = true;
       }

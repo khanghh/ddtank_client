@@ -50,8 +50,8 @@ package happyLittleGame.rank
       
       private function initView() : void
       {
-         var _loc2_:* = 0;
-         var _loc1_:* = null;
+         var i:* = 0;
+         var item:* = null;
          this.titleText = LanguageMgr.GetTranslation("ddt.simpleGameRank.frame.title");
          this._bg = ComponentFactory.Instance.creatBitmap("assets.simpleGame.rankBg");
          this.addToContent(this._bg);
@@ -62,13 +62,12 @@ package happyLittleGame.rank
          this.addToContent(this._list);
          this._selectPageUI = ComponentFactory.Instance.creatComponentByStylename("simpleGameRank.selectPageUI");
          this.addToContent(this._selectPageUI);
-         _loc2_ = uint(0);
-         while(_loc2_ < 10)
+         for(i = uint(0); i < 10; )
          {
-            _loc1_ = new SimpleGameRankItem(_loc2_);
-            this._itemList.push(_loc1_);
-            this._list.addChild(_loc1_);
-            _loc2_++;
+            item = new SimpleGameRankItem(i);
+            this._itemList.push(item);
+            this._list.addChild(item);
+            i++;
          }
          this._list.arrange();
          this._noRankTxt = ComponentFactory.Instance.creatComponentByStylename("simpleGameRank.noRankTxt");
@@ -91,52 +90,51 @@ package happyLittleGame.rank
          FunnyGamesManager.getInstance().removeEventListener("rankRewardUpdate",__updateView);
       }
       
-      private function onHelpClick(param1:MouseEvent) : void
+      private function onHelpClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          HelpFrameUtils.Instance.simpleHelpFrame(LanguageMgr.GetTranslation("store.view.HelpButtonText"),"ddt.littlegame.rankHelp",410,490,false);
       }
       
-      private function onPageChange(param1:Event) : void
+      private function onPageChange(evt:Event) : void
       {
          _pageIdx = this._selectPageUI.currentPage;
          this.updateView();
       }
       
-      private function __updateView(param1:FunnyGamesEvent) : void
+      private function __updateView(evt:FunnyGamesEvent) : void
       {
          updateView();
       }
       
       private function updateView() : void
       {
-         var _loc8_:int = 0;
-         var _loc4_:* = null;
-         var _loc1_:int = HappyLittleGameManager.instance.getSelfRank();
-         this._noRankTxt.text = _loc1_ == -1?LanguageMgr.GetTranslation("ddt.simpleGameRank.frame.noRank"):(_loc1_ + 1).toString();
-         var _loc2_:Vector.<HappyMiniGameRankData> = HappyLittleGameManager.instance.getRankDataList();
-         var _loc7_:uint = _loc2_.length / 10;
-         if(_loc7_ * 10 < _loc2_.length)
+         var i:int = 0;
+         var item:* = null;
+         var selfRank:int = HappyLittleGameManager.instance.getSelfRank();
+         this._noRankTxt.text = selfRank == -1?LanguageMgr.GetTranslation("ddt.simpleGameRank.frame.noRank"):(selfRank + 1).toString();
+         var totalRankDataList:Vector.<HappyMiniGameRankData> = HappyLittleGameManager.instance.getRankDataList();
+         var pageCnt:uint = totalRankDataList.length / 10;
+         if(pageCnt * 10 < totalRankDataList.length)
          {
-            _loc7_ = _loc7_ + 1;
+            pageCnt = pageCnt + 1;
          }
-         this._selectPageUI.maxPage = _loc7_;
-         var _loc3_:uint = (this._pageIdx - 1) * 10;
-         var _loc6_:uint = this._pageIdx * 10;
-         var _loc5_:Vector.<HappyMiniGameRankData> = HappyLittleGameManager.instance.getRankDataList(_loc3_,_loc6_);
+         this._selectPageUI.maxPage = pageCnt;
+         var startIndex:uint = (this._pageIdx - 1) * 10;
+         var endIndex:uint = this._pageIdx * 10;
+         var rankDataList:Vector.<HappyMiniGameRankData> = HappyLittleGameManager.instance.getRankDataList(startIndex,endIndex);
          this.clearItemList();
-         _loc8_ = 0;
-         while(_loc8_ < _loc5_.length)
+         for(i = 0; i < rankDataList.length; )
          {
-            if(_loc8_ < this._itemList.length)
+            if(i < this._itemList.length)
             {
-               _loc4_ = this._itemList[_loc8_];
-               if(_loc4_)
+               item = this._itemList[i];
+               if(item)
                {
-                  _loc4_.data = _loc5_[_loc8_];
+                  item.data = rankDataList[i];
                }
             }
-            _loc8_++;
+            i++;
          }
       }
       
@@ -144,11 +142,11 @@ package happyLittleGame.rank
       {
          var _loc3_:int = 0;
          var _loc2_:* = this._itemList;
-         for each(var _loc1_ in this._itemList)
+         for each(var item in this._itemList)
          {
-            if(_loc1_)
+            if(item)
             {
-               _loc1_.clear();
+               item.clear();
             }
          }
       }
@@ -173,7 +171,7 @@ package happyLittleGame.rank
          this._selectPageUI = null;
       }
       
-      override protected function onResponse(param1:int) : void
+      override protected function onResponse(type:int) : void
       {
          SoundManager.instance.play("008");
          this.dispose();

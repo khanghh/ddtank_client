@@ -32,34 +32,34 @@ package ddt.manager
          return _instance;
       }
       
-      public function createsPreviewFrame(param1:String, param2:String, param3:String = "", param4:String = "", param5:Function = null, param6:Boolean = true) : void
+      public function createsPreviewFrame(titleTxt:String, previewBitmapStyle:String, frameStyle:String = "", scrollStyle:String = "", submitFunction:Function = null, submitEnable:Boolean = true) : void
       {
-         var _loc7_:* = null;
-         if(param3 == "")
+         var previewFrame:* = null;
+         if(frameStyle == "")
          {
-            _loc7_ = ComponentFactory.Instance.creatComponentByStylename("view.common.PreviewFrame");
+            previewFrame = ComponentFactory.Instance.creatComponentByStylename("view.common.PreviewFrame");
          }
          else
          {
-            _loc7_ = ComponentFactory.Instance.creatComponentByStylename(param3);
+            previewFrame = ComponentFactory.Instance.creatComponentByStylename(frameStyle);
          }
-         if(param4 == "")
+         if(scrollStyle == "")
          {
-            _loc7_.setStyle(param1,param2,"view.common.PreviewFrame.PreviewScroll",param5,param6);
+            previewFrame.setStyle(titleTxt,previewBitmapStyle,"view.common.PreviewFrame.PreviewScroll",submitFunction,submitEnable);
          }
          else
          {
-            _loc7_.setStyle(param1,param2,param4,param5,param6);
+            previewFrame.setStyle(titleTxt,previewBitmapStyle,scrollStyle,submitFunction,submitEnable);
          }
-         _loc7_.show();
+         previewFrame.show();
       }
       
-      public function createBuildPreviewFrame(param1:String, param2:Bitmap) : void
+      public function createBuildPreviewFrame(title:String, previewBitmap:Bitmap) : void
       {
-         var _loc3_:* = null;
-         _loc3_ = ComponentFactory.Instance.creatComponentByStylename("trainer.hall.buildPreviewFrame");
-         _loc3_.setStyle(param1,"","view.common.masterAcademyPreviewFrame.PreviewScroll",null,true,param2);
-         _loc3_.show();
+         var previewFrame:* = null;
+         previewFrame = ComponentFactory.Instance.creatComponentByStylename("trainer.hall.buildPreviewFrame");
+         previewFrame.setStyle(title,"","view.common.masterAcademyPreviewFrame.PreviewScroll",null,true,previewBitmap);
+         previewFrame.show();
       }
    }
 }

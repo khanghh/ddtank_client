@@ -48,20 +48,20 @@ package rescue
          RescueManager.instance.addEventListener("rescueOpenView",__onOpenView);
       }
       
-      protected function __fightResultHandler(param1:PkgEvent) : void
+      protected function __fightResultHandler(event:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         var _loc3_:RescueResultInfo = new RescueResultInfo();
-         _loc3_.score = _loc2_.readInt();
-         _loc3_.star = _loc2_.readInt();
-         _loc3_.sceneId = _loc2_.readInt();
-         _loc3_.isWin = _loc2_.readBoolean();
+         var pkg:PackageIn = event.pkg;
+         var info:RescueResultInfo = new RescueResultInfo();
+         info.score = pkg.readInt();
+         info.star = pkg.readInt();
+         info.sceneId = pkg.readInt();
+         info.isWin = pkg.readBoolean();
          _resultFrame = ComponentFactory.Instance.creatComponentByStylename("rescue.resultFrame");
-         _resultFrame.setData(_loc3_);
+         _resultFrame.setData(info);
          LayerManager.Instance.addToLayer(_resultFrame,2,true,1);
       }
       
-      protected function __onOpenView(param1:Event) : void
+      protected function __onOpenView(event:Event) : void
       {
          if(!_frame)
          {

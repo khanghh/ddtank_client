@@ -53,11 +53,11 @@ package church.view.weddingRoom.frame
       
       private var _sexText:FilterFrameText;
       
-      public function WeddingRoomGuestListView(param1:ChurchRoomController, param2:ChurchRoomModel)
+      public function WeddingRoomGuestListView(controller:ChurchRoomController, model:ChurchRoomModel)
       {
          super();
-         _controller = param1;
-         _model = param2;
+         _controller = controller;
+         _model = model;
          initialize();
       }
       
@@ -99,43 +99,42 @@ package church.view.weddingRoom.frame
       
       private function getGuestList() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var playerInfo:* = null;
+         var obj:* = null;
          _data.list.sort(compareFunction);
-         _loc3_ = 0;
-         while(_loc3_ < _data.length)
+         for(i = 0; i < _data.length; )
          {
-            _loc2_ = (_data.list[_loc3_] as PlayerVO).playerInfo;
-            _loc1_ = changeData(_loc2_,_loc3_ + 1);
-            _listPanel.vectorListModel.insertElementAt(_loc1_,getInsertIndex(_loc2_));
-            _loc3_++;
+            playerInfo = (_data.list[i] as PlayerVO).playerInfo;
+            obj = changeData(playerInfo,i + 1);
+            _listPanel.vectorListModel.insertElementAt(obj,getInsertIndex(playerInfo));
+            i++;
          }
          addSelfItem();
          upSelfItem();
       }
       
-      private function compareFunction(param1:PlayerVO, param2:PlayerVO) : int
+      private function compareFunction(info1:PlayerVO, info2:PlayerVO) : int
       {
-         if(param1.playerInfo.Grade >= param2.playerInfo.Grade)
+         if(info1.playerInfo.Grade >= info2.playerInfo.Grade)
          {
             return -1;
          }
          return 1;
       }
       
-      private function itemClick(param1:ListItemEvent) : void
+      private function itemClick(evt:ListItemEvent) : void
       {
          if(!_currentItem)
          {
-            _currentItem = param1.cell as WeddingRoomGuestListItemView;
-            _currentItem.setListCellStatus(_listPanel.list,true,param1.index);
+            _currentItem = evt.cell as WeddingRoomGuestListItemView;
+            _currentItem.setListCellStatus(_listPanel.list,true,evt.index);
          }
-         if(_currentItem != param1.cell as WeddingRoomGuestListItemView)
+         if(_currentItem != evt.cell as WeddingRoomGuestListItemView)
          {
-            _currentItem.setListCellStatus(_listPanel.list,false,param1.index);
-            _currentItem = param1.cell as WeddingRoomGuestListItemView;
-            _currentItem.setListCellStatus(_listPanel.list,true,param1.index);
+            _currentItem.setListCellStatus(_listPanel.list,false,evt.index);
+            _currentItem = evt.cell as WeddingRoomGuestListItemView;
+            _currentItem.setListCellStatus(_listPanel.list,true,evt.index);
          }
       }
       
@@ -146,38 +145,38 @@ package church.view.weddingRoom.frame
          _data.addEventListener("remove",removeGuest);
       }
       
-      private function addGuest(param1:DictionaryEvent) : void
+      private function addGuest(evt:DictionaryEvent) : void
       {
          _listPanel.vectorListModel.clear();
          getGuestList();
       }
       
-      private function getInsertIndex(param1:PlayerInfo) : int
+      private function getInsertIndex(info:PlayerInfo) : int
       {
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:Array = _listPanel.vectorListModel.elements;
-         if(_loc3_.length == 0)
+         var tempIndex:int = 0;
+         var i:int = 0;
+         var tempArray:Array = _listPanel.vectorListModel.elements;
+         if(tempArray.length == 0)
          {
             return 0;
          }
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_.length)
+         i = 0;
+         while(i < tempArray.length)
          {
-            if(param1.Grade > (_loc3_[_loc4_].playerInfo as PlayerInfo).Grade)
+            if(info.Grade > (tempArray[i].playerInfo as PlayerInfo).Grade)
             {
-               return _loc2_;
+               return tempIndex;
             }
-            if(param1.Grade <= (_loc3_[_loc4_].playerInfo as PlayerInfo).Grade)
+            if(info.Grade <= (tempArray[i].playerInfo as PlayerInfo).Grade)
             {
-               _loc2_ = _loc4_ + 1;
+               tempIndex = i + 1;
             }
-            _loc4_++;
+            i++;
          }
-         return _loc2_;
+         return tempIndex;
       }
       
-      private function removeGuest(param1:DictionaryEvent) : void
+      private function removeGuest(evt:DictionaryEvent) : void
       {
          _listPanel.vectorListModel.clear();
          getGuestList();
@@ -190,25 +189,25 @@ package church.view.weddingRoom.frame
       
       private function upSelfItem() : void
       {
-         var _loc2_:PlayerInfo = _data[PlayerManager.Instance.Self.ID];
-         var _loc1_:int = _listPanel.vectorListModel.indexOf(changeData(_loc2_,0));
-         if(_loc1_ == -1 || _loc1_ == 0)
+         var selfInfo:PlayerInfo = _data[PlayerManager.Instance.Self.ID];
+         var index:int = _listPanel.vectorListModel.indexOf(changeData(selfInfo,0));
+         if(index == -1 || index == 0)
          {
             return;
          }
-         _listPanel.vectorListModel.removeAt(_loc1_);
-         _listPanel.vectorListModel.insertElementAt(changeData(_loc2_,0),0);
+         _listPanel.vectorListModel.removeAt(index);
+         _listPanel.vectorListModel.insertElementAt(changeData(selfInfo,0),0);
       }
       
-      private function changeData(param1:PlayerInfo, param2:int) : Object
+      private function changeData(info:PlayerInfo, index:int) : Object
       {
-         var _loc3_:Object = {};
-         _loc3_["playerInfo"] = param1;
-         _loc3_["index"] = param2;
-         return _loc3_;
+         var obj:Object = {};
+         obj["playerInfo"] = info;
+         obj["index"] = index;
+         return obj;
       }
       
-      private function closeView(param1:MouseEvent) : void
+      private function closeView(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          dispose();

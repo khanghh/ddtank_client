@@ -17,10 +17,10 @@ package littleGame
          super();
       }
       
-      public static function CreatAction(param1:String, param2:PackageIn = null, ... rest) : LittleAction
+      public static function CreatAction(type:String, pkg:PackageIn = null, ... arg) : LittleAction
       {
-         var _loc4_:* = null;
-         var _loc5_:* = param1;
+         var action:* = null;
+         var _loc5_:* = type;
          if("livingInhale" !== _loc5_)
          {
             if("addObject" !== _loc5_)
@@ -31,29 +31,29 @@ package littleGame
                   {
                      if("livingDie" === _loc5_)
                      {
-                        _loc4_ = new LittleLivingDieAction();
+                        action = new LittleLivingDieAction();
                      }
                   }
                   else
                   {
-                     _loc4_ = new UnInhaleAction();
+                     action = new UnInhaleAction();
                   }
                }
                else
                {
-                  _loc4_ = new RemoveObjectAction();
+                  action = new RemoveObjectAction();
                }
             }
             else
             {
-               _loc4_ = new AddObjectAction();
+               action = new AddObjectAction();
             }
          }
          else
          {
-            _loc4_ = new InhaleAction();
+            action = new InhaleAction();
          }
-         return _loc4_;
+         return action;
       }
    }
 }

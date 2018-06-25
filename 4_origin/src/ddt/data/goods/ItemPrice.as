@@ -11,74 +11,73 @@ package ddt.data.goods
       
       private var _pricesArr:Array;
       
-      public function ItemPrice(param1:Price, param2:Price, param3:Price)
+      public function ItemPrice(price1:Price, price2:Price, price3:Price)
       {
          super();
          _pricesArr = [];
          _prices = new Dictionary();
-         addPrice(param1);
-         addPrice(param2);
-         addPrice(param3);
+         addPrice(price1);
+         addPrice(price2);
+         addPrice(price3);
       }
       
-      public function addPrice(param1:Price, param2:Boolean = false, param3:int = 0) : void
+      public function addPrice(price:Price, bool:Boolean = false, type:int = 0) : void
       {
-         if(param1 == null)
+         if(price == null)
          {
             return;
          }
-         _pricesArr.push(param1);
-         if(param2)
+         _pricesArr.push(price);
+         if(bool)
          {
-            param1.Unit = -11;
+            price.Unit = -11;
          }
-         if(param3 == 1)
+         if(type == 1)
          {
-            param1.Unit = -1;
+            price.Unit = -1;
          }
-         else if(param3 == 2)
+         else if(type == 2)
          {
-            param1.Unit = -11;
+            price.Unit = -11;
          }
-         else if(param3 == 3)
+         else if(type == 3)
          {
-            param1.Unit = -2;
+            price.Unit = -2;
          }
-         if(_prices[param1.UnitToString] == null)
+         if(_prices[price.UnitToString] == null)
          {
-            _prices[param1.UnitToString] = param1.Value;
+            _prices[price.UnitToString] = price.Value;
          }
          else
          {
-            _prices[param1.UnitToString] = _prices[param1.UnitToString] + param1.Value;
+            _prices[price.UnitToString] = _prices[price.UnitToString] + price.Value;
          }
       }
       
-      public function addItemPrice(param1:ItemPrice, param2:Boolean = false, param3:int = 0) : void
+      public function addItemPrice(itemPrice:ItemPrice, bool:Boolean = false, type:int = 0) : void
       {
          var _loc6_:int = 0;
-         var _loc5_:* = param1.pricesArr;
-         for each(var _loc4_ in param1.pricesArr)
+         var _loc5_:* = itemPrice.pricesArr;
+         for each(var price in itemPrice.pricesArr)
          {
-            addPrice(_loc4_,param2,param3);
+            addPrice(price,bool,type);
          }
       }
       
-      public function multiply(param1:int) : ItemPrice
+      public function multiply(value:int) : ItemPrice
       {
-         var _loc3_:int = 0;
-         if(param1 <= 0)
+         var i:int = 0;
+         if(value <= 0)
          {
             throw new Error("Multiply Invalide value!");
          }
-         var _loc2_:ItemPrice = this.clone();
-         _loc3_ = 0;
-         while(_loc3_ < param1 - 1)
+         var result:ItemPrice = this.clone();
+         for(i = 0; i < value - 1; )
          {
-            _loc2_.addItemPrice(_loc2_.clone());
-            _loc3_++;
+            result.addItemPrice(result.clone());
+            i++;
          }
-         return _loc2_;
+         return result;
       }
       
       public function clone() : ItemPrice
@@ -208,14 +207,14 @@ package ddt.data.goods
          return _prices[Price.ARM_SHELLCLIP_STRING];
       }
       
-      public function getOtherValue(param1:int) : int
+      public function getOtherValue(unit:int) : int
       {
-         var _loc2_:String = ItemManager.Instance.getTemplateById(param1).Name;
-         if(_prices[_loc2_] == null)
+         var name:String = ItemManager.Instance.getTemplateById(unit).Name;
+         if(_prices[name] == null)
          {
             return 0;
          }
-         return _prices[_loc2_];
+         return _prices[name];
       }
       
       public function get badgeValue() : int
@@ -234,17 +233,17 @@ package ddt.data.goods
       
       public function get IsMixed() : Boolean
       {
-         var _loc1_:int = 0;
+         var result:int = 0;
          var _loc4_:int = 0;
          var _loc3_:* = _prices;
-         for(var _loc2_ in _prices)
+         for(var i in _prices)
          {
-            if(_prices[_loc2_] > 0)
+            if(_prices[i] > 0)
             {
-               _loc1_++;
+               result++;
             }
          }
-         return _loc1_ > 1;
+         return result > 1;
       }
       
       public function get petStoneValue() : int
@@ -359,89 +358,117 @@ package ddt.data.goods
          return !IsMixed && badgeValue > 0;
       }
       
-      public function toString(param1:Boolean = false) : String
+      public function get goodsPrice() : int
       {
-         var _loc2_:String = "";
+         var _loc3_:int = 0;
+         var _loc2_:* = _prices;
+         for(var key in _prices)
+         {
+            if(_prices[key] > 0)
+            {
+               return _prices[key];
+            }
+         }
+         return 0;
+      }
+      
+      public function get goodsPriceToString() : String
+      {
+         var _loc3_:int = 0;
+         var _loc2_:* = _prices;
+         for(var key in _prices)
+         {
+            if(_prices[key] > 0)
+            {
+               return key;
+            }
+         }
+         return "";
+      }
+      
+      public function toString(bool:Boolean = false) : String
+      {
+         var result:String = "";
          if(bothMoneyValue > 0)
          {
-            if(param1)
+            if(bool)
             {
-               _loc2_ = _loc2_ + (bothMoneyValue.toString() + " " + Price.DDTMONEYTOSTRING);
+               result = result + (bothMoneyValue.toString() + " " + Price.DDTMONEYTOSTRING);
             }
             else
             {
-               _loc2_ = _loc2_ + (bothMoneyValue.toString() + " " + Price.MONEYTOSTRING);
+               result = result + (bothMoneyValue.toString() + " " + Price.MONEYTOSTRING);
             }
          }
          if(moneyValue > 0)
          {
-            _loc2_ = _loc2_ + (moneyValue.toString() + " " + Price.MONEYTOSTRING);
+            result = result + (moneyValue.toString() + " " + Price.MONEYTOSTRING);
          }
          if(goldValue > 0)
          {
-            _loc2_ = _loc2_ + (goldValue.toString() + " " + Price.GOLDTOSTRING);
+            result = result + (goldValue.toString() + " " + Price.GOLDTOSTRING);
          }
          if(gesteValue > 0)
          {
-            _loc2_ = _loc2_ + (gesteValue.toString() + " " + Price.GESTETOSTRING);
+            result = result + (gesteValue.toString() + " " + Price.GESTETOSTRING);
          }
          if(ddtMoneyValue > 0)
          {
-            _loc2_ = _loc2_ + (ddtMoneyValue.toString() + " " + Price.MEDALMONEYTOSTRING);
+            result = result + (ddtMoneyValue.toString() + " " + Price.MEDALMONEYTOSTRING);
          }
          if(bandDdtMoneyValue > 0)
          {
-            _loc2_ = _loc2_ + (bandDdtMoneyValue.toString() + " " + Price.DDTMONEYTOSTRING);
+            result = result + (bandDdtMoneyValue.toString() + " " + Price.DDTMONEYTOSTRING);
          }
          if(ddtPetScoreValue > 0)
          {
-            _loc2_ = _loc2_ + (ddtPetScoreValue.toString() + " " + Price.PETSCORETOSTRING);
+            result = result + (ddtPetScoreValue.toString() + " " + Price.PETSCORETOSTRING);
          }
          var _loc5_:int = 0;
          var _loc4_:* = _prices;
-         for(var _loc3_ in _prices)
+         for(var i in _prices)
          {
-            if(_loc3_ != Price.MONEYTOSTRING && _loc3_ != Price.GOLDTOSTRING && _loc3_ != Price.GESTETOSTRING && _loc3_ != Price.DDTMONEYTOSTRING && _loc3_ != Price.PETSCORETOSTRING && _loc3_ != Price.MEDALMONEYTOSTRING && _loc3_ != Price.BOTHMONEYTOSTRING)
+            if(i != Price.MONEYTOSTRING && i != Price.GOLDTOSTRING && i != Price.GESTETOSTRING && i != Price.DDTMONEYTOSTRING && i != Price.PETSCORETOSTRING && i != Price.MEDALMONEYTOSTRING && i != Price.BOTHMONEYTOSTRING)
             {
-               _loc2_ = _loc2_ + (_prices[_loc3_].toString() + " " + _loc3_);
+               result = result + (_prices[i].toString() + " " + i);
             }
          }
-         return _loc2_;
+         return result;
       }
       
       public function toStringI() : String
       {
-         var _loc1_:String = "";
+         var result:String = "";
          if(moneyValue > 0)
          {
-            _loc1_ = _loc1_ + (moneyValue.toString() + " " + Price.MONEYTOSTRING);
+            result = result + (moneyValue.toString() + " " + Price.MONEYTOSTRING);
          }
          if(goldValue > 0)
          {
-            _loc1_ = _loc1_ + (goldValue.toString() + " " + Price.GOLDTOSTRING);
+            result = result + (goldValue.toString() + " " + Price.GOLDTOSTRING);
          }
          if(gesteValue > 0)
          {
-            _loc1_ = _loc1_ + (gesteValue.toString() + " " + Price.GESTETOSTRING);
+            result = result + (gesteValue.toString() + " " + Price.GESTETOSTRING);
          }
          if(bandDdtMoneyValue > 0)
          {
-            _loc1_ = _loc1_ + (bandDdtMoneyValue.toString() + " " + Price.DDTMONEYTOSTRING);
+            result = result + (bandDdtMoneyValue.toString() + " " + Price.DDTMONEYTOSTRING);
          }
          if(badgeValue > 0)
          {
-            _loc1_ = _loc1_ + (badgeValue.toString() + " " + 12567);
+            result = result + (badgeValue.toString() + " " + 12567);
          }
          var _loc4_:int = 0;
          var _loc3_:* = _prices;
-         for(var _loc2_ in _prices)
+         for(var i in _prices)
          {
-            if(_loc2_ != Price.MONEYTOSTRING && _loc2_ != Price.GOLDTOSTRING && _loc2_ != Price.GESTETOSTRING && _loc2_ != Price.DDTMONEYTOSTRING)
+            if(i != Price.MONEYTOSTRING && i != Price.GOLDTOSTRING && i != Price.GESTETOSTRING && i != Price.DDTMONEYTOSTRING)
             {
-               _loc1_ = _loc1_ + (_prices[_loc2_].toString() + " " + _loc2_);
+               result = result + (_prices[i].toString() + " " + i);
             }
          }
-         return _loc1_;
+         return result;
       }
    }
 }

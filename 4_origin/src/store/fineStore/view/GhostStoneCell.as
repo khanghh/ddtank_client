@@ -16,47 +16,47 @@ package store.fineStore.view
    {
        
       
-      public function GhostStoneCell(param1:Array, param2:int)
+      public function GhostStoneCell(stoneType:Array, $index:int)
       {
-         super(param1,param2);
+         super(stoneType,$index);
       }
       
-      override public function dragDrop(param1:DragEffect) : void
+      override public function dragDrop(effect:DragEffect) : void
       {
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:InventoryItemInfo = param1.data as InventoryItemInfo;
-         if(_loc2_.BagType == 12 && info != null)
+         var sourceInfo:InventoryItemInfo = effect.data as InventoryItemInfo;
+         if(sourceInfo.BagType == 12 && info != null)
          {
             return;
          }
-         if(_loc2_ && param1.action != "split")
+         if(sourceInfo && effect.action != "split")
          {
-            param1.action = "none";
-            if(_types.indexOf(_loc2_.Property1) == -1)
+            effect.action = "none";
+            if(_types.indexOf(sourceInfo.Property1) == -1)
             {
                return;
             }
-            if(_loc2_.CategoryID == 11)
+            if(sourceInfo.CategoryID == 11)
             {
-               if(_loc2_.Property1 == "117")
+               if(sourceInfo.Property1 == "117")
                {
-                  EquipGhostManager.getInstance().chooseLuckyMaterial(_loc2_);
+                  EquipGhostManager.getInstance().chooseLuckyMaterial(sourceInfo);
                }
-               else if(_loc2_.Property1 == "118")
+               else if(sourceInfo.Property1 == "118")
                {
-                  EquipGhostManager.getInstance().chooseStoneMaterial(_loc2_);
+                  EquipGhostManager.getInstance().chooseStoneMaterial(sourceInfo);
                }
-               SocketManager.Instance.out.sendMoveGoods(_loc2_.BagType,_loc2_.Place,12,index,_loc2_.Count,true);
+               SocketManager.Instance.out.sendMoveGoods(sourceInfo.BagType,sourceInfo.Place,12,index,sourceInfo.Count,true);
                DragManager.acceptDrag(this);
             }
          }
       }
       
-      override protected function __doubleClickHandler(param1:InteractiveEvent) : void
+      override protected function __doubleClickHandler(evt:InteractiveEvent) : void
       {
          if(!DoubleClickEnabled)
          {
@@ -66,7 +66,7 @@ package store.fineStore.view
          {
             return;
          }
-         if((param1.currentTarget as BagCell).info != null)
+         if((evt.currentTarget as BagCell).info != null)
          {
             SocketManager.Instance.out.sendMoveGoods(12,index,itemBagType,-1);
             if(info.Property1 == "117")

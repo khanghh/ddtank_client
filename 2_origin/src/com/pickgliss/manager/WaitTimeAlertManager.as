@@ -42,14 +42,14 @@ package com.pickgliss.manager
          return _instance;
       }
       
-      public function createWaitFrame(param1:String, param2:String, param3:int, param4:int, param5:Function = null) : BaseAlerFrame
+      public function createWaitFrame(title:String, msg:String, waitPalyerCount:int, waitTime:int, callBack:Function = null) : BaseAlerFrame
       {
-         _msg = param2;
-         _waitPalyerCount = param3;
-         _waitTime = param4;
-         _callBack = param5;
+         _msg = msg;
+         _waitPalyerCount = waitPalyerCount;
+         _waitTime = waitTime;
+         _callBack = callBack;
          clearWaitFrame();
-         _waitFrame = AlertManager.Instance.simpleAlert(param1,"","","",false,false,false,2,null,"waitTimeFrameAlert");
+         _waitFrame = AlertManager.Instance.simpleAlert(title,"","","",false,false,false,2,null,"waitTimeFrameAlert");
          showWaitFrameMsg();
          createWaitTimer();
          return _waitFrame;
@@ -57,30 +57,30 @@ package com.pickgliss.manager
       
       private function showWaitFrameMsg() : void
       {
-         var _loc1_:String = _msg.replace(/r/g,_waitPalyerCount);
-         var _loc2_:String = _msg.replace(/r/g,_waitTime);
+         var msg1:String = _msg.replace(/r/g,_waitPalyerCount);
+         var msg2:String = _msg.replace(/r/g,_waitTime);
          if(_waitFrame)
          {
-            _waitFrame.info.data = _loc2_ + getProgressStr();
+            _waitFrame.info.data = msg2 + getProgressStr();
          }
       }
       
       private function getProgressStr() : String
       {
-         var _loc1_:String = _progressArr[_currentProgress];
+         var str:String = _progressArr[_currentProgress];
          _currentProgress = Number(_currentProgress) + 1;
          if(_currentProgress > _progressArr.length - 1)
          {
             _currentProgress = 0;
          }
-         return "\n" + _loc1_;
+         return "\n" + str;
       }
       
-      public function updateWaitFrameMsg(param1:String) : void
+      public function updateWaitFrameMsg(str:String) : void
       {
          if(_waitFrame)
          {
-            _waitFrame.info.data = param1;
+            _waitFrame.info.data = str;
          }
       }
       
@@ -97,7 +97,7 @@ package com.pickgliss.manager
          _waitTimer.start();
       }
       
-      private function __waitTimerHandler(param1:TimerEvent) : void
+      private function __waitTimerHandler(evt:TimerEvent) : void
       {
          if(_waitTime > 0)
          {

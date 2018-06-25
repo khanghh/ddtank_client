@@ -19,33 +19,33 @@ package ddt.view.character
          super();
       }
       
-      public function createLoader(param1:PlayerInfo, param2:String = "show") : ICharacterLoader
+      public function createLoader(info:PlayerInfo, type:String = "show") : ICharacterLoader
       {
-         var _loc3_:* = null;
-         var _loc4_:* = param2;
+         var _loader:* = null;
+         var _loc4_:* = type;
          if("show" !== _loc4_)
          {
             if("game" !== _loc4_)
             {
                if("room" === _loc4_)
                {
-                  _loc3_ = new RoomCharaterLoader(param1);
+                  _loader = new RoomCharaterLoader(info);
                }
             }
             else
             {
-               _loc3_ = new GameCharacterLoader(param1);
+               _loader = new GameCharacterLoader(info);
             }
          }
          else
          {
-            _loc3_ = new ShowCharacterLoader(param1);
+            _loader = new ShowCharacterLoader(info);
          }
-         if(_loc3_ != null)
+         if(_loader != null)
          {
-            _loc3_.setFactory(LayerFactory.instance);
+            _loader.setFactory(LayerFactory.instance);
          }
-         return _loc3_;
+         return _loader;
       }
    }
 }

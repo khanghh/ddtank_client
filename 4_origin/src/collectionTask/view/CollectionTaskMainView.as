@@ -35,16 +35,16 @@ package collectionTask.view
          super();
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
          if(CollectionTaskManager.Instance.collectionTaskInfoList == null)
          {
-            new HelperDataModuleLoad().loadDataModule([LoaderCreate.Instance.createCollectionRebortDataLoader()],enter,[param1,param2]);
+            new HelperDataModuleLoad().loadDataModule([LoaderCreate.Instance.createCollectionRebortDataLoader()],enter,[prev,data]);
             return;
          }
          InviteManager.Instance.enabled = false;
          CacheSysManager.lock("alertInCollectionTask");
-         super.enter(param1,param2);
+         super.enter(prev,data);
          SoundManager.instance.playMusic("12025");
          LayerManager.Instance.clearnGameDynamic();
          LayerManager.Instance.clearnStageDynamic();
@@ -68,38 +68,38 @@ package collectionTask.view
          TaskManager.instance.addEventListener("refreshProgress",__refreshProgress);
       }
       
-      protected function __refreshProgress(param1:Event) : void
+      protected function __refreshProgress(event:Event) : void
       {
          _mapView.refreshProgress();
       }
       
-      protected function __pkgHandler(param1:PkgEvent) : void
+      protected function __pkgHandler(event:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readByte();
-         switch(int(_loc2_) - 1)
+         var pkg:PackageIn = event.pkg;
+         var cmd:int = pkg.readByte();
+         switch(int(cmd) - 1)
          {
             case 0:
-               addOnePlayer(_loc3_);
+               addOnePlayer(pkg);
                break;
             case 1:
-               movePlayer(_loc3_);
+               movePlayer(pkg);
                break;
             case 2:
                break;
             case 3:
-               removePlayer(_loc3_);
+               removePlayer(pkg);
                break;
             case 4:
-               initPlayers(_loc3_);
+               initPlayers(pkg);
          }
       }
       
-      public function initPlayers(param1:PackageIn) : void
+      public function initPlayers(pkg:PackageIn) : void
       {
-         var _loc3_:int = param1.readInt();
-         var _loc2_:int = _loc3_ > 20?20:_loc3_;
-         addPlayer(param1,_loc2_);
+         var len:int = pkg.readInt();
+         var count:int = len > 20?20:len;
+         addPlayer(pkg,count);
          if(_mapView == null)
          {
             if(_sceneModel == null)
@@ -109,73 +109,71 @@ package collectionTask.view
             _mapView = new CollectionTaskRoomView(_sceneModel);
             addChild(_mapView);
          }
-         _mapView.addRobertPlayer(_loc3_ + 1);
+         _mapView.addRobertPlayer(len + 1);
       }
       
-      public function addOnePlayer(param1:PackageIn) : void
+      public function addOnePlayer(pkg:PackageIn) : void
       {
          if(_mapView.getAllPlayersLength() > 20)
          {
             return;
          }
-         addPlayer(param1,1);
+         addPlayer(pkg,1);
       }
       
-      private function addPlayer(param1:PackageIn, param2:int) : void
+      private function addPlayer(pkg:PackageIn, len:int) : void
       {
-         var _loc7_:int = 0;
-         var _loc6_:* = null;
-         var _loc5_:int = 0;
-         var _loc3_:int = 0;
-         var _loc4_:* = null;
-         _loc7_ = 0;
-         while(_loc7_ < param2)
+         var i:int = 0;
+         var playerInfo:* = null;
+         var posx:int = 0;
+         var posy:int = 0;
+         var playerVO:* = null;
+         for(i = 0; i < len; )
          {
-            _loc6_ = new PlayerInfo();
-            _loc6_.beginChanges();
-            _loc6_.ID = param1.readInt();
-            _loc6_.NickName = param1.readUTF();
-            _loc6_.isOld = param1.readBoolean();
-            _loc6_.typeVIP = param1.readByte();
-            _loc6_.VIPLevel = param1.readInt();
-            _loc6_.Sex = param1.readBoolean();
-            _loc6_.Style = param1.readUTF();
-            _loc6_.Colors = param1.readUTF();
-            _loc6_.Skin = param1.readUTF();
-            _loc6_.commitChanges();
-            _loc5_ = param1.readInt();
-            _loc3_ = param1.readInt();
-            _loc4_ = new PlayerVO();
-            _loc4_.playerInfo = _loc6_;
-            _loc4_.playerPos = new Point(_loc5_,_loc3_);
-            if(_loc6_.ID != PlayerManager.Instance.Self.ID)
+            playerInfo = new PlayerInfo();
+            playerInfo.beginChanges();
+            playerInfo.ID = pkg.readInt();
+            playerInfo.NickName = pkg.readUTF();
+            playerInfo.isOld = pkg.readBoolean();
+            playerInfo.typeVIP = pkg.readByte();
+            playerInfo.VIPLevel = pkg.readInt();
+            playerInfo.Sex = pkg.readBoolean();
+            playerInfo.Style = pkg.readUTF();
+            playerInfo.Colors = pkg.readUTF();
+            playerInfo.Skin = pkg.readUTF();
+            playerInfo.commitChanges();
+            posx = pkg.readInt();
+            posy = pkg.readInt();
+            playerVO = new PlayerVO();
+            playerVO.playerInfo = playerInfo;
+            playerVO.playerPos = new Point(posx,posy);
+            if(playerInfo.ID != PlayerManager.Instance.Self.ID)
             {
-               _sceneModel.addPlayer(_loc4_);
+               _sceneModel.addPlayer(playerVO);
             }
-            _loc7_++;
+            i++;
          }
       }
       
-      public function movePlayer(param1:PackageIn) : void
+      public function movePlayer(pkg:PackageIn) : void
       {
-         var _loc9_:* = 0;
-         var _loc6_:* = null;
-         var _loc2_:int = param1.readInt();
-         var _loc5_:int = param1.readInt();
-         var _loc3_:int = param1.readInt();
-         var _loc8_:String = param1.readUTF();
-         if(_loc2_ == PlayerManager.Instance.Self.ID)
+         var i:* = 0;
+         var p:* = null;
+         var id:int = pkg.readInt();
+         var posX:int = pkg.readInt();
+         var posY:int = pkg.readInt();
+         var pathStr:String = pkg.readUTF();
+         if(id == PlayerManager.Instance.Self.ID)
          {
             return;
          }
-         var _loc4_:Array = _loc8_.split(",");
-         var _loc7_:Array = [];
-         _loc9_ = uint(0);
-         while(_loc9_ < _loc4_.length)
+         var arr:Array = pathStr.split(",");
+         var path:Array = [];
+         for(i = uint(0); i < arr.length; )
          {
-            _loc6_ = new Point(_loc4_[_loc9_],_loc4_[_loc9_ + 1]);
-            _loc7_.push(_loc6_);
-            _loc9_ = uint(_loc9_ + 2);
+            p = new Point(arr[i],arr[i + 1]);
+            path.push(p);
+            i = uint(i + 2);
          }
          if(_mapView == null)
          {
@@ -186,14 +184,14 @@ package collectionTask.view
             _mapView = new CollectionTaskRoomView(_sceneModel);
             addChild(_mapView);
          }
-         _mapView.movePlayer(_loc2_,_loc7_);
+         _mapView.movePlayer(id,path);
       }
       
-      public function removePlayer(param1:PackageIn) : void
+      public function removePlayer(pkg:PackageIn) : void
       {
-         var _loc2_:int = param1.readInt();
-         _sceneModel.removePlayer(_loc2_);
-         if(_loc2_ == PlayerManager.Instance.Self.ID)
+         var id:int = pkg.readInt();
+         _sceneModel.removePlayer(id);
+         if(id == PlayerManager.Instance.Self.ID)
          {
             StateManager.setState("main");
          }
@@ -209,13 +207,13 @@ package collectionTask.view
          return "collectionTaskScene";
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
          InviteManager.Instance.enabled = true;
          CacheSysManager.unlock("alertInCollectionTask");
          CacheSysManager.getInstance().release("alertInCollectionTask");
          removeEvent();
-         super.leaving(param1);
+         super.leaving(next);
          ObjectUtils.disposeObject(_mapView);
          _mapView = null;
       }

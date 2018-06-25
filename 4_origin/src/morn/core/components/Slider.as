@@ -1,7 +1,6 @@
 package morn.core.components
 {
    import flash.display.Shape;
-   import flash.events.Event;
    import flash.events.MouseEvent;
    import flash.geom.Rectangle;
    import morn.core.handlers.Handler;
@@ -48,12 +47,12 @@ package morn.core.components
       
       protected var _isBarZero:Boolean;
       
-      public function Slider(param1:String = null)
+      public function Slider(skin:String = null)
       {
-         this._progressMargin = [0,0,0,0];
-         this._barMargin = [0,0,0,0];
+         _progressMargin = [0,0,0,0];
+         _barMargin = [0,0,0,0];
          super();
-         this.skin = param1;
+         this.skin = skin;
       }
       
       override protected function preinitialize() : void
@@ -63,86 +62,91 @@ package morn.core.components
       
       override protected function createChildren() : void
       {
-         addChild(this._back = new Image());
-         addChild(this._bar = new Button());
-         this._bar.stateNum = 1;
-         this._bar.enableClickMoveDownEffect = false;
-         addChild(this._label = new Label());
-         this.initMask();
+         _back = new Image();
+         addChild(new Image());
+         _bar = new Button();
+         addChild(new Button());
+         _bar.stateNum = 1;
+         _bar.enableClickMoveDownEffect = false;
+         _label = new Label();
+         addChild(new Label());
+         initMask();
       }
       
       override protected function initialize() : void
       {
-         this._bar.addEventListener(MouseEvent.MOUSE_DOWN,this.onButtonMouseDown);
-         this._back.sizeGrid = this._bar.sizeGrid = "4,10,4,10";
-         this.allowBackClick = true;
+         _bar.addEventListener("mouseDown",onButtonMouseDown);
+         var _loc1_:String = "4,10,4,10";
+         _bar.sizeGrid = _loc1_;
+         _back.sizeGrid = _loc1_;
+         allowBackClick = true;
       }
       
-      protected function onButtonMouseDown(param1:MouseEvent) : void
+      protected function onButtonMouseDown(e:MouseEvent) : void
       {
-         App.stage.addEventListener(MouseEvent.MOUSE_UP,this.onStageMouseUp);
-         App.stage.addEventListener(MouseEvent.MOUSE_MOVE,this.onStageMouseMove);
-         if(this._direction == VERTICAL)
+         App.stage.addEventListener("mouseUp",onStageMouseUp);
+         App.stage.addEventListener("mouseMove",onStageMouseMove);
+         if(_direction == "vertical")
          {
-            this._bar.startDrag(false,new Rectangle(this._bar.x,0,0,height - this._bar.height));
+            _bar.startDrag(false,new Rectangle(_bar.x,0,0,height - _bar.height));
          }
          else
          {
-            this._bar.startDrag(false,new Rectangle(0,this._bar.y,width - this.barWidth,0));
+            _bar.startDrag(false,new Rectangle(0,_bar.y,width - barWidth,0));
          }
-         this.showValueText();
+         showValueText();
       }
       
       protected function showValueText() : void
       {
-         if(this._showLabel)
+         if(_showLabel)
          {
-            this._label.text = this._value + "";
-            if(this._direction == VERTICAL)
+            _label.text = _value + "";
+            if(_direction == "vertical")
             {
-               this._label.x = this._bar.x + 20;
-               this._label.y = (this._bar.height - this._label.height) * 0.5 + this._bar.y;
+               _label.x = _bar.x + 20;
+               _label.y = (_bar.height - _label.height) * 0.5 + _bar.y;
             }
             else
             {
-               this._label.y = this._bar.y - 20;
-               this._label.x = (this.barWidth - this._label.width) * 0.5 + this._bar.x;
+               _label.y = _bar.y - 20;
+               _label.x = (barWidth - _label.width) * 0.5 + _bar.x;
             }
          }
       }
       
       protected function hideValueText() : void
       {
-         this._label.text = "";
+         _label.text = "";
       }
       
-      protected function onStageMouseUp(param1:MouseEvent) : void
+      protected function onStageMouseUp(e:MouseEvent) : void
       {
-         App.stage.removeEventListener(MouseEvent.MOUSE_UP,this.onStageMouseUp);
-         App.stage.removeEventListener(MouseEvent.MOUSE_MOVE,this.onStageMouseMove);
-         this._bar.stopDrag();
-         this.hideValueText();
+         App.stage.removeEventListener("mouseUp",onStageMouseUp);
+         App.stage.removeEventListener("mouseMove",onStageMouseMove);
+         _bar.stopDrag();
+         hideValueText();
       }
       
-      protected function onStageMouseMove(param1:MouseEvent) : void
+      protected function onStageMouseMove(e:MouseEvent) : void
       {
-         var _loc2_:Number = this._value;
-         if(this._direction == VERTICAL)
+         var oldValue:Number = _value;
+         if(_direction == "vertical")
          {
-            this._value = this._bar.y / (height - this._bar.height) * (this._max - this._min) + this._min;
+            _value = _bar.y / (height - _bar.height) * (_max - _min) + _min;
          }
          else
          {
-            this._value = this._bar.x / (width - this.barWidth) * (this._max - this._min) + this._min;
+            _value = _bar.x / (width - barWidth) * (_max - _min) + _min;
          }
-         this._value = Math.round(this._value / this._tick) * this._tick;
-         if(this._value != _loc2_)
+         _value = Math.round(_value / _tick) * _tick;
+         if(_value != oldValue)
          {
-            this.showValueText();
-            this.sendChangeEvent();
+            showValueText();
+            sendChangeEvent();
          }
-         this.updateTexture();
-         this.updateMask();
+         updateTexture();
+         updateMask();
       }
       
       private function updateTexture() : void
@@ -151,60 +155,60 @@ package morn.core.components
       
       protected function sendChangeEvent() : void
       {
-         this.updateTexture();
-         this.updateMask();
-         sendEvent(Event.CHANGE);
-         if(this._changeHandler != null)
+         updateTexture();
+         updateMask();
+         sendEvent("change");
+         if(_changeHandler != null)
          {
-            this._changeHandler.executeWith([this._value]);
+            _changeHandler.executeWith([_value]);
          }
       }
       
       public function get skin() : String
       {
-         return this._skin;
+         return _skin;
       }
       
-      public function set skin(param1:String) : void
+      public function set skin(value:String) : void
       {
-         if(this._skin != param1)
+         if(_skin != value)
          {
-            this._skin = param1;
-            this._back.url = this._skin;
-            this._bar.skin = this._skin + "$bar";
-            this.progressMargin = String(this._progressMargin);
-            this.barMargin = String(this._barMargin);
-            _contentWidth = this._back.width;
-            _contentHeight = this._back.height;
-            this.setBarPoint();
-            this.updateTexture();
-            this.updateMask();
+            _skin = value;
+            _back.url = _skin;
+            _bar.skin = _skin + "$bar";
+            progressMargin = String(_progressMargin);
+            barMargin = String(_barMargin);
+            _contentWidth = _back.width;
+            _contentHeight = _back.height;
+            setBarPoint();
+            updateTexture();
+            updateMask();
          }
       }
       
-      public function set barMargin(param1:String) : void
+      public function set barMargin(value:String) : void
       {
-         this._barMargin = StringUtils.fillArray(this._barMargin,param1,int);
-         if(this._bar.bitmap)
+         _barMargin = StringUtils.fillArray(_barMargin,value,int);
+         if(_bar.bitmap)
          {
-            this._bar.bitmap.x = this._barMargin[0] + this._barMargin[2];
-            this._bar.bitmap.y = this._barMargin[1] + this._barMargin[3];
+            _bar.bitmap.x = _barMargin[0] + _barMargin[2];
+            _bar.bitmap.y = _barMargin[1] + _barMargin[3];
          }
       }
       
       public function get barMargin() : String
       {
-         return String(this._barMargin);
+         return String(_barMargin);
       }
       
-      public function set progressMargin(param1:String) : void
+      public function set progressMargin(value:String) : void
       {
-         this._progressMargin = StringUtils.fillArray(this._progressMargin,param1,int);
+         _progressMargin = StringUtils.fillArray(_progressMargin,value,int);
       }
       
       public function get progressMargin() : String
       {
-         return String(this._progressMargin);
+         return String(_progressMargin);
       }
       
       protected function initMask() : void
@@ -218,217 +222,217 @@ package morn.core.components
       override protected function changeSize() : void
       {
          super.changeSize();
-         this._back.width = width;
-         this._back.height = height;
-         this.setBarPoint();
+         _back.width = width;
+         _back.height = height;
+         setBarPoint();
       }
       
       protected function setBarPoint() : void
       {
-         if(this._direction == VERTICAL)
+         if(_direction == "vertical")
          {
-            this._bar.x = (this._back.width - this.barWidth) * 0.5;
+            _bar.x = (_back.width - barWidth) * 0.5;
          }
          else
          {
-            this._bar.y = (this._back.height - this._bar.height) * 0.5;
+            _bar.y = (_back.height - _bar.height) * 0.5;
          }
       }
       
       public function get sizeGrid() : String
       {
-         return this._back.sizeGrid;
+         return _back.sizeGrid;
       }
       
-      public function set sizeGrid(param1:String) : void
+      public function set sizeGrid(value:String) : void
       {
-         this._back.sizeGrid = param1;
-         this._bar.sizeGrid = param1;
+         _back.sizeGrid = value;
+         _bar.sizeGrid = value;
       }
       
       protected function changeValue() : void
       {
-         this._value = Math.round(this._value / this._tick) * this._tick;
-         this._value = this._value > this._max?Number(this._max):this._value < this._min?Number(this._min):Number(this._value);
-         if(this._direction == VERTICAL)
+         _value = Math.round(_value / _tick) * _tick;
+         _value = _value > _max?_max:Number(_value < _min?_min:Number(_value));
+         if(_direction == "vertical")
          {
-            this._bar.y = (this._value - this._min) / (this._max - this._min) * (height - this._bar.height);
+            _bar.y = (_value - _min) / (_max - _min) * (height - _bar.height);
          }
          else
          {
-            this._bar.x = (this._value - this._min) / (this._max - this._min) * (width - this.barWidth);
+            _bar.x = (_value - _min) / (_max - _min) * (width - barWidth);
          }
       }
       
-      public function setSlider(param1:Number, param2:Number, param3:Number) : void
+      public function setSlider(min:Number, max:Number, value:Number) : void
       {
-         this._value = -1;
-         this._min = param1;
-         this._max = param2 > param1?Number(param2):Number(param1);
-         this.value = param3 < param1?Number(param1):param3 > param2?Number(param2):Number(param3);
+         _value = -1;
+         _min = min;
+         _max = max > min?max:Number(min);
+         this.value = value < min?min:Number(value > max?max:Number(value));
       }
       
       public function get tick() : Number
       {
-         return this._tick;
+         return _tick;
       }
       
-      public function set tick(param1:Number) : void
+      public function set tick(value:Number) : void
       {
-         this._tick = param1;
-         callLater(this.changeValue);
+         _tick = value;
+         callLater(changeValue);
       }
       
       public function get max() : Number
       {
-         return this._max;
+         return _max;
       }
       
-      public function set max(param1:Number) : void
+      public function set max(value:Number) : void
       {
-         if(this._max != param1)
+         if(_max != value)
          {
-            this._max = param1;
-            callLater(this.changeValue);
+            _max = value;
+            callLater(changeValue);
          }
       }
       
       public function get min() : Number
       {
-         return this._min;
+         return _min;
       }
       
-      public function set min(param1:Number) : void
+      public function set min(value:Number) : void
       {
-         if(this._min != param1)
+         if(_min != value)
          {
-            this._min = param1;
-            callLater(this.changeValue);
+            _min = value;
+            callLater(changeValue);
          }
       }
       
       public function get value() : Number
       {
-         return this._value;
+         return _value;
       }
       
-      public function set value(param1:Number) : void
+      public function set value(num:Number) : void
       {
-         if(this._value != param1)
+         if(_value != num)
          {
-            this._value = param1;
-            this.changeValue();
-            this.sendChangeEvent();
+            _value = num;
+            changeValue();
+            sendChangeEvent();
          }
       }
       
       public function get direction() : String
       {
-         return this._direction;
+         return _direction;
       }
       
-      public function set direction(param1:String) : void
+      public function set direction(value:String) : void
       {
-         this._direction = param1;
+         _direction = value;
       }
       
       public function get showLabel() : Boolean
       {
-         return this._showLabel;
+         return _showLabel;
       }
       
-      public function set showLabel(param1:Boolean) : void
+      public function set showLabel(value:Boolean) : void
       {
-         this._showLabel = param1;
+         _showLabel = value;
       }
       
       public function get allowBackClick() : Boolean
       {
-         return this._allowBackClick;
+         return _allowBackClick;
       }
       
-      public function set allowBackClick(param1:Boolean) : void
+      public function set allowBackClick(value:Boolean) : void
       {
-         if(this._allowBackClick != param1)
+         if(_allowBackClick != value)
          {
-            this._allowBackClick = param1;
-            if(this._allowBackClick)
+            _allowBackClick = value;
+            if(_allowBackClick)
             {
-               this._back.addEventListener(MouseEvent.MOUSE_DOWN,this.onBackBoxMouseDown);
+               _back.addEventListener("mouseDown",onBackBoxMouseDown);
             }
             else
             {
-               this._back.removeEventListener(MouseEvent.MOUSE_DOWN,this.onBackBoxMouseDown);
+               _back.removeEventListener("mouseDown",onBackBoxMouseDown);
             }
          }
       }
       
-      protected function onBackBoxMouseDown(param1:MouseEvent) : void
+      protected function onBackBoxMouseDown(e:MouseEvent) : void
       {
-         if(this._direction == VERTICAL)
+         if(_direction == "vertical")
          {
-            this.value = this._back.mouseY / (height - this._bar.height) * (this._max - this._min) + this._min;
+            value = _back.mouseY / (height - _bar.height) * (_max - _min) + _min;
          }
          else
          {
-            this.value = this._back.mouseX / (width - this.barWidth) * (this._max - this._min) + this._min;
+            value = _back.mouseX / (width - barWidth) * (_max - _min) + _min;
          }
       }
       
-      override public function set dataSource(param1:Object) : void
+      override public function set dataSource(value:Object) : void
       {
-         _dataSource = param1;
-         if(param1 is Number || param1 is String)
+         _dataSource = value;
+         if(value is Number || value is String)
          {
-            this.value = Number(param1);
+            this.value = Number(value);
          }
          else
          {
-            super.dataSource = param1;
+            .super.dataSource = value;
          }
       }
       
       public function get bar() : Button
       {
-         return this._bar;
+         return _bar;
       }
       
       protected function get barWidth() : Number
       {
-         if(this._isBarZero)
+         if(_isBarZero)
          {
             return 0;
          }
-         return this._bar.width;
+         return _bar.width;
       }
       
-      public function set isBarZero(param1:Boolean) : void
+      public function set isBarZero(value:Boolean) : void
       {
-         this._isBarZero = param1;
+         _isBarZero = value;
       }
       
       public function get changeHandler() : Handler
       {
-         return this._changeHandler;
+         return _changeHandler;
       }
       
-      public function set changeHandler(param1:Handler) : void
+      public function set changeHandler(value:Handler) : void
       {
-         this._changeHandler = param1;
+         _changeHandler = value;
       }
       
       override public function dispose() : void
       {
          super.dispose();
-         this._back && this._back.dispose();
-         this._bar && this._bar.dispose();
-         this._label && this._label.dispose();
-         this._back = null;
-         this._bar = null;
-         this._label = null;
-         this._changeHandler = null;
-         this._progressMargin = null;
-         this._barMargin = null;
+         _back && _back.dispose();
+         _bar && _bar.dispose();
+         _label && _label.dispose();
+         _back = null;
+         _bar = null;
+         _label = null;
+         _changeHandler = null;
+         _progressMargin = null;
+         _barMargin = null;
       }
    }
 }

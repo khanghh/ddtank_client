@@ -1,4 +1,2 @@
-package road7th.math
-{
-   public function randRange(param1:Number, param2:Number) : Number{return 0;}
-}
+package road7th.math{   public function randRange(min:Number, max:Number) : Number { return 0; }
+}

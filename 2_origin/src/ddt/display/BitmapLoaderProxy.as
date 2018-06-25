@@ -34,17 +34,17 @@ package ddt.display
       
       private var _frame:int = 0;
       
-      public function BitmapLoaderProxy(param1:String, param2:Rectangle = null, param3:Boolean = false)
+      public function BitmapLoaderProxy(url:String, size:Rectangle = null, isSmoothing:Boolean = false)
       {
          super();
-         _size = param2;
-         _isSmoothing = param3;
-         _loader = LoadResourceManager.Instance.createLoader(param1,0);
+         _size = size;
+         _isSmoothing = isSmoothing;
+         _loader = LoadResourceManager.Instance.createLoader(url,0);
          _loader.addEventListener("complete",onComplete);
          LoadResourceManager.Instance.startLoad(_loader);
       }
       
-      private function onComplete(param1:LoaderEvent) : void
+      private function onComplete(event:LoaderEvent) : void
       {
          if(_loader.isSuccess)
          {
@@ -80,10 +80,10 @@ package ddt.display
          }
       }
       
-      private function __onEnterFrame(param1:Event) : void
+      private function __onEnterFrame(e:Event) : void
       {
-         var _loc2_:int = _bitmap.width / 250 - 1;
-         if(_frame >= _loc2_ * 3)
+         var armMaxFrame:int = _bitmap.width / 250 - 1;
+         if(_frame >= armMaxFrame * 3)
          {
             _frame = 0;
          }
@@ -95,23 +95,21 @@ package ddt.display
          _showBitmap.bitmapData.copyPixels(_bitmap.bitmapData,_rectList[int(_frame / 3)],new Point(0,0),null,null,true);
       }
       
-      private function createRectList(param1:int, param2:int = 1) : void
+      private function createRectList(row:int, line:int = 1) : void
       {
-         var _loc4_:int = 0;
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
+         var j:int = 0;
+         var i:int = 0;
+         var m:* = null;
          _rectList = [];
-         _loc4_ = 0;
-         while(_loc4_ < param2)
+         for(j = 0; j < line; )
          {
-            _loc5_ = 0;
-            while(_loc5_ < param1)
+            for(i = 0; i < row; )
             {
-               _loc3_ = new Rectangle(_loc5_ * 250,_loc4_ * 342,250,342);
-               _rectList.push(_loc3_);
-               _loc5_++;
+               m = new Rectangle(i * 250,j * 342,250,342);
+               _rectList.push(m);
+               i++;
             }
-            _loc4_++;
+            j++;
          }
       }
       

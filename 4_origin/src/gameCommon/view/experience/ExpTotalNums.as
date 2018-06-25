@@ -31,40 +31,39 @@ package gameCommon.view.experience
       
       private var _bitmapDatas:Vector.<BitmapData>;
       
-      public function ExpTotalNums(param1:int)
+      public function ExpTotalNums(type:int)
       {
          super();
-         _type = param1;
+         _type = type;
          init();
       }
       
       private function init() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:int = 0;
+         var str:* = null;
+         var i:int = 0;
          _operator = new Bitmap();
          _bitmaps = new Vector.<Bitmap>(5);
          _bitmapDatas = new Vector.<BitmapData>();
          if(_type == 0)
          {
-            _loc1_ = "asset.experience.TotalExpNum_";
+            str = "asset.experience.TotalExpNum_";
             _bg = ComponentFactory.Instance.creat("asset.experience.TotalExpTxtLight");
          }
          else
          {
-            _loc1_ = "asset.experience.TotalExploitNum_";
+            str = "asset.experience.TotalExploitNum_";
             _bg = ComponentFactory.Instance.creat("asset.experience.TotalExploitTxtLight");
          }
          PositionUtils.setPos(_bg,"experience.TotalTextLightPos");
          addChildAt(_bg,0);
-         _loc2_ = 0;
-         while(_loc2_ < 10)
+         for(i = 0; i < 10; )
          {
-            _bitmapDatas.push(ComponentFactory.Instance.creatBitmapData(_loc1_ + String(_loc2_)));
-            _loc2_++;
+            _bitmapDatas.push(ComponentFactory.Instance.creatBitmapData(str + String(i)));
+            i++;
          }
-         _bitmapDatas.push(ComponentFactory.Instance.creatBitmapData(_loc1_ + "+"));
-         _bitmapDatas.push(ComponentFactory.Instance.creatBitmapData(_loc1_ + "-"));
+         _bitmapDatas.push(ComponentFactory.Instance.creatBitmapData(str + "+"));
+         _bitmapDatas.push(ComponentFactory.Instance.creatBitmapData(str + "-"));
       }
       
       public function playLight() : void
@@ -72,20 +71,20 @@ package gameCommon.view.experience
          _bg.gotoAndPlay(2);
       }
       
-      public function setValue(param1:int) : void
+      public function setValue(value:int) : void
       {
-         var _loc5_:* = null;
-         var _loc4_:int = 0;
-         if(param1 > maxValue)
+         var strArr:* = null;
+         var i:int = 0;
+         if(value > maxValue)
          {
             _value = maxValue;
          }
          else
          {
-            _value = param1;
+            _value = value;
          }
-         var _loc2_:int = 0;
-         var _loc3_:int = 20;
+         var posX:int = 0;
+         var offset:int = 20;
          if(_value >= 0)
          {
             _operator.bitmapData = _bitmapDatas[10];
@@ -95,21 +94,20 @@ package gameCommon.view.experience
             _operator.bitmapData = _bitmapDatas[11];
          }
          addChild(_operator);
-         _loc2_ = _loc2_ + _loc3_;
+         posX = posX + offset;
          _value = Math.abs(_value);
-         _loc5_ = _value.toString().split("");
-         _loc4_ = 0;
-         while(_loc4_ < _loc5_.length)
+         strArr = _value.toString().split("");
+         for(i = 0; i < strArr.length; )
          {
-            if(_bitmaps[_loc4_] == null)
+            if(_bitmaps[i] == null)
             {
-               _bitmaps[_loc4_] = new Bitmap();
+               _bitmaps[i] = new Bitmap();
             }
-            _bitmaps[_loc4_].bitmapData = _bitmapDatas[int(_loc5_[_loc4_])];
-            _bitmaps[_loc4_].x = _loc2_;
-            _loc2_ = _loc2_ + _loc3_;
-            addChild(_bitmaps[_loc4_]);
-            _loc4_++;
+            _bitmaps[i].bitmapData = _bitmapDatas[int(strArr[i])];
+            _bitmaps[i].x = posX;
+            posX = posX + offset;
+            addChild(_bitmaps[i]);
+            i++;
          }
          dispatchEvent(new Event("complete"));
       }

@@ -11,10 +11,10 @@ package game.actions
       
       private var _player:GamePlayer;
       
-      public function WeaponShootAction(param1:GamePlayer)
+      public function WeaponShootAction(player:GamePlayer)
       {
          super();
-         _player = param1;
+         _player = player;
       }
       
       override public function prepare() : void
@@ -28,7 +28,7 @@ package game.actions
          _player.body.dynamicWeapon.gotoAndPlay("end");
       }
       
-      private function __onPlayComplete(param1:Event) : void
+      private function __onPlayComplete(e:Event) : void
       {
          _player.body.dynamicWeapon.removeEventListener("complete",__onPlayComplete);
          _player.body.dynamicWeapon.stop();

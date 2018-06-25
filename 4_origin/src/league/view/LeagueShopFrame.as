@@ -42,16 +42,16 @@ package league.view
       
       public function LeagueShopFrame()
       {
-         var _loc1_:* = null;
+         var tmpData:* = null;
          super();
          _goodsInfoList = ShopManager.Instance.getValidGoodByType(93);
-         var _loc2_:int = _goodsInfoList.length;
-         _totlePage = Math.ceil(_loc2_ / 4);
+         var tmpLen:int = _goodsInfoList.length;
+         _totlePage = Math.ceil(tmpLen / 4);
          _currentPage = 1;
          if(BattleGroudControl.Instance.orderdata)
          {
-            _loc1_ = BattleGroudControl.Instance.getBattleDataByPrestige(BattleGroudControl.Instance.orderdata.totalPrestige);
-            LeagueControl.instance.militaryRank = _loc1_.Level;
+            tmpData = BattleGroudControl.Instance.getBattleDataByPrestige(BattleGroudControl.Instance.orderdata.totalPrestige);
+            LeagueControl.instance.militaryRank = tmpData.Level;
          }
          initView();
          initEvent();
@@ -59,8 +59,8 @@ package league.view
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var tmpCell:* = null;
          titleText = LanguageMgr.GetTranslation("tank.menu.MatchesTxt");
          _bg = ComponentFactory.Instance.creatBitmap("asset.leagueShopFrame.bg");
          _moneyCountTxt = ComponentFactory.Instance.creatComponentByStylename("leagueShopFrame.moneyCountTxt");
@@ -73,15 +73,14 @@ package league.view
          addToContent(_foreBtn);
          addToContent(_nextBtn);
          _shopCellList = new Vector.<LeagueShopCell>(4);
-         _loc2_ = 0;
-         while(_loc2_ < 4)
+         for(i = 0; i < 4; )
          {
-            _loc1_ = new LeagueShopCell();
-            _loc1_.x = 14 + _loc2_ % 2 * (_loc1_.width + 3);
-            _loc1_.y = 263 + int(_loc2_ / 2) * (_loc1_.height + 2);
-            addToContent(_loc1_);
-            _shopCellList[_loc2_] = _loc1_;
-            _loc2_++;
+            tmpCell = new LeagueShopCell();
+            tmpCell.x = 14 + i % 2 * (tmpCell.width + 3);
+            tmpCell.y = 263 + int(i / 2) * (tmpCell.height + 2);
+            addToContent(tmpCell);
+            _shopCellList[i] = tmpCell;
+            i++;
          }
          refreshView();
          refreshMoneyTxt();
@@ -89,25 +88,24 @@ package league.view
       
       private function refreshView() : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:int = 0;
+         var i:int = 0;
+         var tmpTag:int = 0;
          _pageTxt.text = _currentPage + "/" + _totlePage;
-         var _loc1_:int = (_currentPage - 1) * 4;
-         var _loc3_:int = _goodsInfoList.length;
-         _loc4_ = 0;
-         while(_loc4_ < 4)
+         var startIndex:int = (_currentPage - 1) * 4;
+         var tmpCount:int = _goodsInfoList.length;
+         for(i = 0; i < 4; )
          {
-            _loc2_ = _loc1_ + _loc4_;
-            if(_loc2_ >= _loc3_)
+            tmpTag = startIndex + i;
+            if(tmpTag >= tmpCount)
             {
-               _shopCellList[_loc4_].visible = false;
+               _shopCellList[i].visible = false;
             }
             else
             {
-               _shopCellList[_loc4_].visible = true;
-               _shopCellList[_loc4_].refreshShow(_goodsInfoList[_loc2_]);
+               _shopCellList[i].visible = true;
+               _shopCellList[i].refreshShow(_goodsInfoList[tmpTag]);
             }
-            _loc4_++;
+            i++;
          }
       }
       
@@ -125,27 +123,27 @@ package league.view
          ShopManager.Instance.addEventListener("updatePersonalLimitShop",__onUpdatePersonLimitShop);
       }
       
-      private function __onUpdatePersonLimitShop(param1:CEvent) : void
+      private function __onUpdatePersonLimitShop(event:CEvent) : void
       {
-         if(param1 && int(param1.data) == 93)
+         if(event && int(event.data) == 93)
          {
             refreshView();
          }
       }
       
-      private function propertyChangeHandler(param1:PlayerPropertyEvent) : void
+      private function propertyChangeHandler(event:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["leagueMoney"])
+         if(event.changedProperties["leagueMoney"])
          {
             refreshMoneyTxt();
          }
       }
       
-      private function changePageHandler(param1:MouseEvent) : void
+      private function changePageHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:SimpleBitmapButton = param1.currentTarget as SimpleBitmapButton;
-         var _loc3_:* = _loc2_;
+         var tmp:SimpleBitmapButton = event.currentTarget as SimpleBitmapButton;
+         var _loc3_:* = tmp;
          if(_foreBtn !== _loc3_)
          {
             if(_nextBtn === _loc3_)
@@ -171,9 +169,9 @@ package league.view
          refreshView();
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();

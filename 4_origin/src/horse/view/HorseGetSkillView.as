@@ -40,23 +40,23 @@ package horse.view
          addChild(_getBtn);
       }
       
-      public function show(param1:int) : void
+      public function show(skillId:int) : void
       {
-         var _loc3_:MovieClip = ComponentFactory.Instance.creat("asset.horse.getSkillView.mc1");
-         _loc3_.mouseChildren = false;
-         _loc3_.mouseEnabled = false;
-         _loc3_.x = 53;
-         _loc3_.y = -104;
-         addChild(_loc3_);
-         var _loc2_:MovieClipWrapper = new MovieClipWrapper(_loc3_,true,true);
-         _loc2_.addEventListener("complete",completeMc1);
-         _skillCell = new HorseSkillCell(param1,false);
-         if(param1 == 10601)
+         var mc1:MovieClip = ComponentFactory.Instance.creat("asset.horse.getSkillView.mc1");
+         mc1.mouseChildren = false;
+         mc1.mouseEnabled = false;
+         mc1.x = 53;
+         mc1.y = -104;
+         addChild(mc1);
+         var mcw:MovieClipWrapper = new MovieClipWrapper(mc1,true,true);
+         mcw.addEventListener("complete",completeMc1);
+         _skillCell = new HorseSkillCell(skillId,false);
+         if(skillId == 10601)
          {
             _skillCell.x = 217;
             _skillCell.y = 63;
          }
-         else if(param1 == 11101 || param1 == 11301)
+         else if(skillId == 11101 || skillId == 11301)
          {
             _skillCell.x = 219;
             _skillCell.y = 65;
@@ -82,29 +82,29 @@ package horse.view
          LayerManager.Instance.addToLayer(this,3,false,1);
       }
       
-      private function completeMc1(param1:Event) : void
+      private function completeMc1(event:Event) : void
       {
-         var _loc2_:MovieClipWrapper = param1.currentTarget as MovieClipWrapper;
-         _loc2_.removeEventListener("complete",completeMc1);
+         var mcw:MovieClipWrapper = event.currentTarget as MovieClipWrapper;
+         mcw.removeEventListener("complete",completeMc1);
          _getBtn.addEventListener("click",getClickHandler,false,0,true);
       }
       
-      private function getClickHandler(param1:MouseEvent) : void
+      private function getClickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _getBtn.removeEventListener("click",getClickHandler);
-         var _loc2_:MovieClip = ComponentFactory.Instance.creat("asset.horse.getSkillView.mc2");
-         _loc2_.mouseChildren = false;
-         _loc2_.mouseEnabled = false;
-         _loc2_.x = 84;
-         _loc2_.y = -72;
-         addChild(_loc2_);
-         var _loc3_:MovieClipWrapper = new MovieClipWrapper(_loc2_,true,true);
-         _loc3_.addEventListener("complete",completeMc2);
-         var _loc4_:Point = this.localToGlobal(new Point(_skillCell.x,_skillCell.y));
+         var mc2:MovieClip = ComponentFactory.Instance.creat("asset.horse.getSkillView.mc2");
+         mc2.mouseChildren = false;
+         mc2.mouseEnabled = false;
+         mc2.x = 84;
+         mc2.y = -72;
+         addChild(mc2);
+         var mcw:MovieClipWrapper = new MovieClipWrapper(mc2,true,true);
+         mcw.addEventListener("complete",completeMc2);
+         var tmpPos:Point = this.localToGlobal(new Point(_skillCell.x,_skillCell.y));
          LayerManager.Instance.addToLayer(_skillCell,0);
-         _skillCell.x = _loc4_.x;
-         _skillCell.y = _loc4_.y;
+         _skillCell.x = tmpPos.x;
+         _skillCell.y = tmpPos.y;
          TweenLite.to(this,1,{"alpha":0});
          TweenLite.to(_skillCell,1,{
             "x":_skillCell.x,
@@ -149,29 +149,29 @@ package horse.view
          _skillCell = null;
       }
       
-      private function completeMc2(param1:Event) : void
+      private function completeMc2(event:Event) : void
       {
-         var _loc4_:MovieClipWrapper = param1.currentTarget as MovieClipWrapper;
-         _loc4_.removeEventListener("complete",completeMc2);
+         var mcw:MovieClipWrapper = event.currentTarget as MovieClipWrapper;
+         mcw.removeEventListener("complete",completeMc2);
          if(parent)
          {
             parent.removeChild(this);
          }
-         var _loc3_:MovieClip = ComponentFactory.Instance.creat("asset.horse.getSkillView.mc3");
-         _loc3_.mouseChildren = false;
-         _loc3_.mouseEnabled = false;
-         _loc3_.x = 548;
-         _loc3_.y = 113;
-         addChild(_loc3_);
-         LayerManager.Instance.addToLayer(_loc3_,1);
-         var _loc2_:MovieClipWrapper = new MovieClipWrapper(_loc3_,true,true);
-         _loc2_.addEventListener("complete",completeMc3);
+         var mc3:MovieClip = ComponentFactory.Instance.creat("asset.horse.getSkillView.mc3");
+         mc3.mouseChildren = false;
+         mc3.mouseEnabled = false;
+         mc3.x = 548;
+         mc3.y = 113;
+         addChild(mc3);
+         LayerManager.Instance.addToLayer(mc3,1);
+         var mcw2:MovieClipWrapper = new MovieClipWrapper(mc3,true,true);
+         mcw2.addEventListener("complete",completeMc3);
       }
       
-      private function completeMc3(param1:Event) : void
+      private function completeMc3(event:Event) : void
       {
-         var _loc2_:MovieClipWrapper = param1.currentTarget as MovieClipWrapper;
-         _loc2_.removeEventListener("complete",completeMc3);
+         var mcw:MovieClipWrapper = event.currentTarget as MovieClipWrapper;
+         mcw.removeEventListener("complete",completeMc3);
          dispose();
       }
       

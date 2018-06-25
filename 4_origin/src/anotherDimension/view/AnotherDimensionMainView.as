@@ -121,12 +121,12 @@ package anotherDimension.view
          _canLueduoCountTxt = ComponentFactory.Instance.creatComponentByStylename("anotherDimension.canLueduoCountTxt");
          _canZhanlingTxt.text = LanguageMgr.GetTranslation("anotherDimension.anotherDimensioncanZhanlingTxt");
          _canLueduoTxt.text = LanguageMgr.GetTranslation("anotherDimension.anotherDimensioncanLueduoTxt");
-         var _loc1_:int = AnotherDimensionManager.Instance.anotherDimensionInfo.totalOccupyCount;
-         var _loc3_:int = AnotherDimensionManager.Instance.anotherDimensionInfo.occupyCount;
-         var _loc2_:int = AnotherDimensionManager.Instance.anotherDimensionInfo.totalLootCount;
-         var _loc4_:int = AnotherDimensionManager.Instance.anotherDimensionInfo.lootCount;
-         _canZhanlingCountTxt.text = _loc1_ - _loc3_ + "";
-         _canLueduoCountTxt.text = _loc2_ - _loc4_ + "";
+         var totaloccupyTime:int = AnotherDimensionManager.Instance.anotherDimensionInfo.totalOccupyCount;
+         var occupyTime:int = AnotherDimensionManager.Instance.anotherDimensionInfo.occupyCount;
+         var totalLootCount:int = AnotherDimensionManager.Instance.anotherDimensionInfo.totalLootCount;
+         var lootCount:int = AnotherDimensionManager.Instance.anotherDimensionInfo.lootCount;
+         _canZhanlingCountTxt.text = totaloccupyTime - occupyTime + "";
+         _canLueduoCountTxt.text = totalLootCount - lootCount + "";
          addToContent(_bg);
          addToContent(_searchBnt);
          addToContent(_helpBnt2);
@@ -145,61 +145,57 @@ package anotherDimension.view
       
       public function setResourceData() : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:* = null;
-         var _loc10_:int = 0;
-         var _loc4_:* = null;
-         var _loc12_:int = 0;
-         var _loc11_:* = null;
-         var _loc1_:* = null;
-         var _loc9_:int = 0;
-         var _loc7_:* = null;
-         var _loc8_:* = null;
-         var _loc5_:Array = AnotherDimensionManager.Instance.resourceList;
-         var _loc6_:Array = AnotherDimensionManager.Instance.haveResourceList;
+         var otherIndex:int = 0;
+         var other:* = null;
+         var selfIndex:int = 0;
+         var selfone:* = null;
+         var i:int = 0;
+         var info:* = null;
+         var another:* = null;
+         var j:int = 0;
+         var info1:* = null;
+         var self:* = null;
+         var resourceList:Array = AnotherDimensionManager.Instance.resourceList;
+         var haveResourceList:Array = AnotherDimensionManager.Instance.haveResourceList;
          if(otherItemArr && otherItemArr.length > 0)
          {
-            _loc2_ = 0;
-            while(_loc2_ < otherItemArr.length)
+            for(otherIndex = 0; otherIndex < otherItemArr.length; )
             {
-               _loc3_ = otherItemArr[_loc2_] as AnotherDimensionOtherItemView;
-               _loc3_.dispose();
-               _loc3_ = null;
-               _loc2_++;
+               other = otherItemArr[otherIndex] as AnotherDimensionOtherItemView;
+               other.dispose();
+               other = null;
+               otherIndex++;
             }
          }
          if(selfItemArr && selfItemArr.length > 0)
          {
-            _loc10_ = 0;
-            while(_loc10_ < selfItemArr.length)
+            for(selfIndex = 0; selfIndex < selfItemArr.length; )
             {
-               _loc4_ = selfItemArr[_loc10_] as AnotherDimensionSelfItemView;
-               _loc4_.dispose();
-               _loc4_ = null;
-               _loc10_++;
+               selfone = selfItemArr[selfIndex] as AnotherDimensionSelfItemView;
+               selfone.dispose();
+               selfone = null;
+               selfIndex++;
             }
          }
          otherItemArr = [];
          selfItemArr = [];
-         _loc12_ = 0;
-         while(_loc12_ < _loc5_.length)
+         for(i = 0; i < resourceList.length; )
          {
-            _loc11_ = _loc5_[_loc12_] as AnotherDimensionResourceInfo;
-            _loc1_ = new AnotherDimensionOtherItemView(_loc11_);
-            PositionUtils.setPos(_loc1_,"anotherDimension.anotherDimension.anotherPos" + _loc11_.resourcePos);
-            addToContent(_loc1_);
-            otherItemArr.push(_loc1_);
-            _loc12_++;
+            info = resourceList[i] as AnotherDimensionResourceInfo;
+            another = new AnotherDimensionOtherItemView(info);
+            PositionUtils.setPos(another,"anotherDimension.anotherDimension.anotherPos" + info.resourcePos);
+            addToContent(another);
+            otherItemArr.push(another);
+            i++;
          }
-         _loc9_ = 0;
-         while(_loc9_ < _loc6_.length)
+         for(j = 0; j < haveResourceList.length; )
          {
-            _loc7_ = _loc6_[_loc9_] as AnotherDimensionResourceInfo;
-            _loc8_ = new AnotherDimensionSelfItemView(_loc7_);
-            PositionUtils.setPos(_loc8_,"anotherDimension.anotherDimension.selfPos" + (_loc9_ + 1));
-            addToContent(_loc8_);
-            selfItemArr.push(_loc8_);
-            _loc9_++;
+            info1 = haveResourceList[j] as AnotherDimensionResourceInfo;
+            self = new AnotherDimensionSelfItemView(info1);
+            PositionUtils.setPos(self,"anotherDimension.anotherDimension.selfPos" + (j + 1));
+            addToContent(self);
+            selfItemArr.push(self);
+            j++;
          }
       }
       
@@ -218,23 +214,23 @@ package anotherDimension.view
          _helpBnt2.addEventListener("click",openHelpViewHander);
       }
       
-      private function openHelpViewHander(param1:MouseEvent) : void
+      private function openHelpViewHander(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:AnotherDimensionHelpFrame = ComponentFactory.Instance.creatComponentByStylename("anotherDimension.view.helpFrame");
-         _loc2_.addEventListener("response",frameEvent);
-         LayerManager.Instance.addToLayer(_loc2_,2,true,1);
+         var helpframe:AnotherDimensionHelpFrame = ComponentFactory.Instance.creatComponentByStylename("anotherDimension.view.helpFrame");
+         helpframe.addEventListener("response",frameEvent);
+         LayerManager.Instance.addToLayer(helpframe,2,true,1);
       }
       
-      private function frameEvent(param1:FrameEvent) : void
+      private function frameEvent(e:FrameEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         param1.currentTarget.dispose();
+         e.currentTarget.dispose();
       }
       
-      protected function __onStartLoad(param1:Event) : void
+      protected function __onStartLoad(event:Event) : void
       {
-         var _loc2_:RoomInfo = RoomManager.Instance.current;
+         var roomInfo:RoomInfo = RoomManager.Instance.current;
          if(GameControl.Instance.Current == null)
          {
             return;
@@ -243,38 +239,37 @@ package anotherDimension.view
          dispose();
       }
       
-      private function __addMsg(param1:Event) : void
+      private function __addMsg(e:Event) : void
       {
-         var _loc3_:* = null;
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
+         var msg:* = null;
+         var i:int = 0;
+         var info:* = null;
          if(_vbox && _vbox.numChildren > 0)
          {
             _vbox.removeAllChild();
          }
-         var _loc2_:Array = AnotherDimensionManager.Instance.msgArr;
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_.length)
+         var infoArr:Array = AnotherDimensionManager.Instance.msgArr;
+         for(i = 0; i < infoArr.length; )
          {
-            _loc4_ = _loc2_[_loc5_] as AnotherDimensionMsgInfo;
-            if(_loc4_.userID != _loc4_.ownUserID && _loc4_.restatus == 2)
+            info = infoArr[i] as AnotherDimensionMsgInfo;
+            if(info.userID != info.ownUserID && info.restatus == 2)
             {
-               _loc3_ = LanguageMgr.GetTranslation("anotherDimension.anotherDimensionTxt.msgTxt2",_loc4_.ownName);
+               msg = LanguageMgr.GetTranslation("anotherDimension.anotherDimensionTxt.msgTxt2",info.ownName);
             }
-            else if(_loc4_.userID == _loc4_.ownUserID && _loc4_.restatus == 2)
+            else if(info.userID == info.ownUserID && info.restatus == 2)
             {
-               _loc3_ = LanguageMgr.GetTranslation("anotherDimension.anotherDimensionTxt.msgTxt3",_loc4_.ownName);
+               msg = LanguageMgr.GetTranslation("anotherDimension.anotherDimensionTxt.msgTxt3",info.ownName);
             }
-            else if(_loc4_.userID == _loc4_.ownUserID && _loc4_.restatus == 3)
+            else if(info.userID == info.ownUserID && info.restatus == 3)
             {
-               _loc3_ = LanguageMgr.GetTranslation("anotherDimension.anotherDimensionTxt.msgTxt4");
+               msg = LanguageMgr.GetTranslation("anotherDimension.anotherDimensionTxt.msgTxt4");
             }
-            addMsg(_loc3_);
-            _loc5_++;
+            addMsg(msg);
+            i++;
          }
       }
       
-      private function _showMCOver(param1:Event) : void
+      private function _showMCOver(e:Event) : void
       {
          this.mouseEnabled = true;
          this.mouseChildren = true;
@@ -292,132 +287,132 @@ package anotherDimension.view
          }
       }
       
-      private function __updateInfoView(param1:Event) : void
+      private function __updateInfoView(e:Event) : void
       {
-         var _loc9_:int = 0;
-         var _loc11_:int = 0;
-         var _loc2_:int = 0;
-         var _loc5_:int = getTimeControlExpBylv(AnotherDimensionManager.Instance.anotherDimensionInfo.timeControlLv)[2];
+         var currentExp:int = 0;
+         var totalCurrentExp:int = 0;
+         var progress:int = 0;
+         var shijiankongzhiCount:int = getTimeControlExpBylv(AnotherDimensionManager.Instance.anotherDimensionInfo.timeControlLv)[2];
          if(AnotherDimensionManager.Instance.anotherDimensionInfo.timeControlLv == 0)
          {
-            _loc5_ = 0;
+            shijiankongzhiCount = 0;
          }
-         var _loc7_:int = getSpaceControlExpBylv(AnotherDimensionManager.Instance.anotherDimensionInfo.spaceControlLv)[2];
+         var kongjianzhangwoCount:int = getSpaceControlExpBylv(AnotherDimensionManager.Instance.anotherDimensionInfo.spaceControlLv)[2];
          if(AnotherDimensionManager.Instance.anotherDimensionInfo.spaceControlLv == 0)
          {
-            _loc7_ = 0;
+            kongjianzhangwoCount = 0;
          }
-         var _loc10_:int = getLooterControlExpBylv(AnotherDimensionManager.Instance.anotherDimensionInfo.looterControlLv)[2];
+         var lueduodashiCount:int = getLooterControlExpBylv(AnotherDimensionManager.Instance.anotherDimensionInfo.looterControlLv)[2];
          if(AnotherDimensionManager.Instance.anotherDimensionInfo.looterControlLv == 0)
          {
-            _loc10_ = 0;
+            lueduodashiCount = 0;
          }
-         _shijiankongzhiTxt.text = LanguageMgr.GetTranslation("anotherDimension.shijiankongzhiTxt.txt",_loc5_);
-         _kongjianzhangwoTxt.text = LanguageMgr.GetTranslation("anotherDimension.kongjianzhangwoTxt.txt",_loc7_);
-         _lueduodashiTxt.text = LanguageMgr.GetTranslation("anotherDimension.lueduodashiTxt.txt",_loc10_);
-         var _loc3_:int = AnotherDimensionManager.Instance.anotherDimensionInfo.totalOccupyCount;
-         var _loc6_:int = AnotherDimensionManager.Instance.anotherDimensionInfo.occupyCount;
-         var _loc4_:int = AnotherDimensionManager.Instance.anotherDimensionInfo.totalLootCount;
-         var _loc8_:int = AnotherDimensionManager.Instance.anotherDimensionInfo.lootCount;
-         _canZhanlingCountTxt.text = _loc3_ - _loc6_ + "";
-         _canLueduoCountTxt.text = _loc4_ - _loc8_ + "";
+         _shijiankongzhiTxt.text = LanguageMgr.GetTranslation("anotherDimension.shijiankongzhiTxt.txt",shijiankongzhiCount);
+         _kongjianzhangwoTxt.text = LanguageMgr.GetTranslation("anotherDimension.kongjianzhangwoTxt.txt",kongjianzhangwoCount);
+         _lueduodashiTxt.text = LanguageMgr.GetTranslation("anotherDimension.lueduodashiTxt.txt",lueduodashiCount);
+         var totaloccupyTime:int = AnotherDimensionManager.Instance.anotherDimensionInfo.totalOccupyCount;
+         var occupyTime:int = AnotherDimensionManager.Instance.anotherDimensionInfo.occupyCount;
+         var totalLootCount:int = AnotherDimensionManager.Instance.anotherDimensionInfo.totalLootCount;
+         var lootCount:int = AnotherDimensionManager.Instance.anotherDimensionInfo.lootCount;
+         _canZhanlingCountTxt.text = totaloccupyTime - occupyTime + "";
+         _canLueduoCountTxt.text = totalLootCount - lootCount + "";
          if(_type == 1)
          {
-            _loc9_ = AnotherDimensionManager.Instance.anotherDimensionInfo.timeControlExp;
-            _loc11_ = getTimeControlExpBylv_1(AnotherDimensionManager.Instance.anotherDimensionInfo.timeControlLv)[1];
+            currentExp = AnotherDimensionManager.Instance.anotherDimensionInfo.timeControlExp;
+            totalCurrentExp = getTimeControlExpBylv_1(AnotherDimensionManager.Instance.anotherDimensionInfo.timeControlLv)[1];
             if(timeLvMax)
             {
                _progress.setProgressTxt("MAX");
             }
             else
             {
-               _progress.setProgressTxt(_loc9_ + "/" + _loc11_);
+               _progress.setProgressTxt(currentExp + "/" + totalCurrentExp);
             }
          }
          else if(_type == 2)
          {
-            _loc9_ = AnotherDimensionManager.Instance.anotherDimensionInfo.spaceControlExp;
-            _loc11_ = getSpaceControlExpBylv_1(AnotherDimensionManager.Instance.anotherDimensionInfo.spaceControlLv)[1];
+            currentExp = AnotherDimensionManager.Instance.anotherDimensionInfo.spaceControlExp;
+            totalCurrentExp = getSpaceControlExpBylv_1(AnotherDimensionManager.Instance.anotherDimensionInfo.spaceControlLv)[1];
             if(spaceLvMax)
             {
                _progress.setProgressTxt("MAX");
             }
             else
             {
-               _progress.setProgressTxt(_loc9_ + "/" + _loc11_);
+               _progress.setProgressTxt(currentExp + "/" + totalCurrentExp);
             }
          }
          else if(_type == 3)
          {
-            _loc9_ = AnotherDimensionManager.Instance.anotherDimensionInfo.looterControlExp;
-            _loc11_ = getLooterControlExpBylv_1(AnotherDimensionManager.Instance.anotherDimensionInfo.looterControlLv)[1];
+            currentExp = AnotherDimensionManager.Instance.anotherDimensionInfo.looterControlExp;
+            totalCurrentExp = getLooterControlExpBylv_1(AnotherDimensionManager.Instance.anotherDimensionInfo.looterControlLv)[1];
             if(lootLvMax)
             {
                _progress.setProgressTxt("MAX");
             }
             else
             {
-               _progress.setProgressTxt(_loc9_ + "/" + _loc11_);
+               _progress.setProgressTxt(currentExp + "/" + totalCurrentExp);
             }
          }
-         if(_loc9_ == 0 && _loc11_ == 0)
+         if(currentExp == 0 && totalCurrentExp == 0)
          {
             this.mouseEnabled = true;
             this.mouseChildren = true;
-            _loc2_ = 1;
+            progress = 1;
             _progress.setProgress(1);
          }
-         else if(_loc9_ == 0 && _loc11_ != 0)
+         else if(currentExp == 0 && totalCurrentExp != 0)
          {
-            _loc2_ = 1;
+            progress = 1;
             this.mouseChildren = false;
             this.mouseEnabled = false;
-            _progress.playProgress(_loc2_,1);
+            _progress.playProgress(progress,1);
          }
          else
          {
-            _loc2_ = _loc9_ / _loc11_ * 100;
+            progress = currentExp / totalCurrentExp * 100;
             this.mouseChildren = false;
             this.mouseEnabled = false;
-            _progress.playProgress(_loc2_);
+            _progress.playProgress(progress);
          }
       }
       
-      private function __upGradeClick(param1:MouseEvent) : void
+      private function __upGradeClick(e:MouseEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         var _loc6_:int = 0;
-         var _loc2_:int = 0;
+         var _itemId:int = 0;
+         var haveItemCount:int = 0;
+         var currentExp:int = 0;
+         var totalCurrentExp:int = 0;
+         var anotherItemNum:int = 0;
          SoundManager.instance.play("008");
          if(_allInSelect.selected)
          {
-            _loc5_ = ServerConfigManager.instance.getLevelUpItemID();
-            _loc3_ = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(_loc5_);
+            _itemId = ServerConfigManager.instance.getLevelUpItemID();
+            haveItemCount = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(_itemId);
             if(_type == 1)
             {
-               _loc4_ = AnotherDimensionManager.Instance.anotherDimensionInfo.timeControlExp;
-               _loc6_ = getTimeControlExpBylv_1(AnotherDimensionManager.Instance.anotherDimensionInfo.timeControlLv)[1];
+               currentExp = AnotherDimensionManager.Instance.anotherDimensionInfo.timeControlExp;
+               totalCurrentExp = getTimeControlExpBylv_1(AnotherDimensionManager.Instance.anotherDimensionInfo.timeControlLv)[1];
             }
             else if(_type == 2)
             {
-               _loc4_ = AnotherDimensionManager.Instance.anotherDimensionInfo.spaceControlExp;
-               _loc6_ = getSpaceControlExpBylv_1(AnotherDimensionManager.Instance.anotherDimensionInfo.spaceControlLv)[1];
+               currentExp = AnotherDimensionManager.Instance.anotherDimensionInfo.spaceControlExp;
+               totalCurrentExp = getSpaceControlExpBylv_1(AnotherDimensionManager.Instance.anotherDimensionInfo.spaceControlLv)[1];
             }
             else if(_type == 3)
             {
-               _loc4_ = AnotherDimensionManager.Instance.anotherDimensionInfo.looterControlExp;
-               _loc6_ = getLooterControlExpBylv_1(AnotherDimensionManager.Instance.anotherDimensionInfo.looterControlLv)[1];
+               currentExp = AnotherDimensionManager.Instance.anotherDimensionInfo.looterControlExp;
+               totalCurrentExp = getLooterControlExpBylv_1(AnotherDimensionManager.Instance.anotherDimensionInfo.looterControlLv)[1];
             }
-            _loc2_ = (_loc6_ - _loc4_) / oneItemExp;
-            if(_loc2_ < _loc3_)
+            anotherItemNum = (totalCurrentExp - currentExp) / oneItemExp;
+            if(anotherItemNum < haveItemCount)
             {
-               SocketManager.Instance.out.clickAnotherDimenUpgrade(_type,_loc2_);
+               SocketManager.Instance.out.clickAnotherDimenUpgrade(_type,anotherItemNum);
             }
             else
             {
-               SocketManager.Instance.out.clickAnotherDimenUpgrade(_type,_loc3_);
+               SocketManager.Instance.out.clickAnotherDimenUpgrade(_type,haveItemCount);
             }
          }
          else
@@ -440,17 +435,17 @@ package anotherDimension.view
          GameControl.Instance.addEventListener("StartLoading",__onStartLoad);
       }
       
-      private function __searchClick(param1:MouseEvent) : void
+      private function __searchClick(e:MouseEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
+         var price:int = 0;
+         var content:* = null;
          SoundManager.instance.play("008");
-         var _loc4_:AnotherDimensionInfo = AnotherDimensionManager.Instance.anotherDimensionInfo;
-         if(AnotherDimensionManager.Instance.showBuyCountFram && _loc4_ && _loc4_.refreshCount >= 1)
+         var info:AnotherDimensionInfo = AnotherDimensionManager.Instance.anotherDimensionInfo;
+         if(AnotherDimensionManager.Instance.showBuyCountFram && info && info.refreshCount >= 1)
          {
-            _loc3_ = ServerConfigManager.instance.getSearchPrice() * _loc4_.refreshCount;
-            _loc2_ = LanguageMgr.GetTranslation("anotherDimension.buyCountDescription",_loc3_);
-            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc2_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
+            price = ServerConfigManager.instance.getSearchPrice() * info.refreshCount;
+            content = LanguageMgr.GetTranslation("anotherDimension.buyCountDescription",price);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),content,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
             _selectBtn = ComponentFactory.Instance.creatComponentByStylename("ddtGame.buyConfirmNo.scb");
             _selectBtn.text = LanguageMgr.GetTranslation("horseRace.match.notTip");
             _selectBtn.addEventListener("click",__onClickSelectedBtn);
@@ -467,212 +462,212 @@ package anotherDimension.view
          }
       }
       
-      private function __onClickSelectedBtn(param1:MouseEvent) : void
+      private function __onClickSelectedBtn(e:MouseEvent) : void
       {
          AnotherDimensionManager.Instance.showBuyCountFram = !_selectBtn.selected;
       }
       
-      private function __onRecoverResponse(param1:FrameEvent) : void
+      private function __onRecoverResponse(e:FrameEvent) : void
       {
-         var _loc2_:int = 0;
+         var price:int = 0;
          SoundManager.instance.playButtonSound();
-         var _loc3_:AnotherDimensionInfo = AnotherDimensionManager.Instance.anotherDimensionInfo;
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var info:AnotherDimensionInfo = AnotherDimensionManager.Instance.anotherDimensionInfo;
+         if(e.responseCode == 3 || e.responseCode == 2)
          {
             if(PlayerManager.Instance.Self.bagLocked)
             {
                BaglockedManager.Instance.show();
                return;
             }
-            _loc2_ = ServerConfigManager.instance.getSearchPrice() * _loc3_.refreshCount;
-            if(PlayerManager.Instance.Self.Money < _loc2_)
+            price = ServerConfigManager.instance.getSearchPrice() * info.refreshCount;
+            if(PlayerManager.Instance.Self.Money < price)
             {
                LeavePageManager.showFillFrame();
                return;
             }
             SocketManager.Instance.out.clickAnotherDimenSearch();
          }
-         else if(param1.responseCode == 4 || param1.responseCode == 0 || param1.responseCode == 1)
+         else if(e.responseCode == 4 || e.responseCode == 0 || e.responseCode == 1)
          {
             AnotherDimensionManager.Instance.showBuyCountFram = true;
          }
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",__onRecoverResponse);
+         (e.currentTarget as BaseAlerFrame).removeEventListener("response",__onRecoverResponse);
          if(_selectBtn)
          {
             _selectBtn.removeEventListener("click",__onClickSelectedBtn);
          }
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(e.currentTarget);
       }
       
-      private function _closeClick(param1:MouseEvent) : void
+      private function _closeClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          AnotherDimensionControl.instance.disposeMainView();
       }
       
-      private function _shijiankongzhiSelectClick(param1:MouseEvent) : void
+      private function _shijiankongzhiSelectClick(e:MouseEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:int = 0;
+         var currentExp:int = 0;
+         var totalCurrentExp:int = 0;
+         var progress:int = 0;
          if(_shijiankongzhiSelect.selected)
          {
             _kongjianzhangwoSelect.selected = false;
             _lueduodashiSelect.selected = false;
             _levelTxt.text = "LV." + AnotherDimensionManager.Instance.anotherDimensionInfo.timeControlLv;
-            _loc3_ = AnotherDimensionManager.Instance.anotherDimensionInfo.timeControlExp;
-            _loc4_ = getTimeControlExpBylv_1(AnotherDimensionManager.Instance.anotherDimensionInfo.timeControlLv)[1];
-            _loc2_ = _loc3_ / _loc4_ * 100;
-            _progress.setProgress(_loc2_);
+            currentExp = AnotherDimensionManager.Instance.anotherDimensionInfo.timeControlExp;
+            totalCurrentExp = getTimeControlExpBylv_1(AnotherDimensionManager.Instance.anotherDimensionInfo.timeControlLv)[1];
+            progress = currentExp / totalCurrentExp * 100;
+            _progress.setProgress(progress);
             if(timeLvMax)
             {
                _progress.setProgressTxt("MAX");
             }
             else
             {
-               _progress.setProgressTxt(_loc3_ + "/" + _loc4_);
+               _progress.setProgressTxt(currentExp + "/" + totalCurrentExp);
             }
             _type = 1;
          }
       }
       
-      private function _kongjianzhangwoSelectClick(param1:MouseEvent) : void
+      private function _kongjianzhangwoSelectClick(e:MouseEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:int = 0;
+         var currentExp:int = 0;
+         var totalCurrentExp:int = 0;
+         var progress:int = 0;
          if(_kongjianzhangwoSelect.selected)
          {
             _shijiankongzhiSelect.selected = false;
             _lueduodashiSelect.selected = false;
             _levelTxt.text = "LV." + AnotherDimensionManager.Instance.anotherDimensionInfo.spaceControlLv;
-            _loc3_ = AnotherDimensionManager.Instance.anotherDimensionInfo.spaceControlExp;
-            _loc4_ = getSpaceControlExpBylv_1(AnotherDimensionManager.Instance.anotherDimensionInfo.spaceControlLv)[1];
-            _loc2_ = _loc3_ / _loc4_ * 100;
-            _progress.setProgress(_loc2_);
+            currentExp = AnotherDimensionManager.Instance.anotherDimensionInfo.spaceControlExp;
+            totalCurrentExp = getSpaceControlExpBylv_1(AnotherDimensionManager.Instance.anotherDimensionInfo.spaceControlLv)[1];
+            progress = currentExp / totalCurrentExp * 100;
+            _progress.setProgress(progress);
             if(spaceLvMax)
             {
                _progress.setProgressTxt("MAX");
             }
             else
             {
-               _progress.setProgressTxt(_loc3_ + "/" + _loc4_);
+               _progress.setProgressTxt(currentExp + "/" + totalCurrentExp);
             }
             _type = 2;
          }
       }
       
-      private function _lueduodashiSelectClick(param1:MouseEvent) : void
+      private function _lueduodashiSelectClick(e:MouseEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:int = 0;
+         var currentExp:int = 0;
+         var totalCurrentExp:int = 0;
+         var progress:int = 0;
          if(_lueduodashiSelect.selected)
          {
             _shijiankongzhiSelect.selected = false;
             _kongjianzhangwoSelect.selected = false;
             _levelTxt.text = "LV." + AnotherDimensionManager.Instance.anotherDimensionInfo.looterControlLv;
-            _loc3_ = AnotherDimensionManager.Instance.anotherDimensionInfo.looterControlExp;
-            _loc4_ = getLooterControlExpBylv_1(AnotherDimensionManager.Instance.anotherDimensionInfo.looterControlLv)[1];
-            _loc2_ = _loc3_ / _loc4_ * 100;
-            _progress.setProgress(_loc2_);
+            currentExp = AnotherDimensionManager.Instance.anotherDimensionInfo.looterControlExp;
+            totalCurrentExp = getLooterControlExpBylv_1(AnotherDimensionManager.Instance.anotherDimensionInfo.looterControlLv)[1];
+            progress = currentExp / totalCurrentExp * 100;
+            _progress.setProgress(progress);
             if(lootLvMax)
             {
                _progress.setProgressTxt("MAX");
             }
             else
             {
-               _progress.setProgressTxt(_loc3_ + "/" + _loc4_);
+               _progress.setProgressTxt(currentExp + "/" + totalCurrentExp);
             }
             _type = 3;
          }
       }
       
-      private function getTimeControlExpBylv(param1:int) : Array
+      private function getTimeControlExpBylv(lv:int) : Array
       {
-         var _loc2_:Array = ServerConfigManager.instance.getTimeControl();
-         if(param1 == _loc2_.length)
+         var arr:Array = ServerConfigManager.instance.getTimeControl();
+         if(lv == arr.length)
          {
             timeLvMax = true;
          }
-         if(param1 == 0)
+         if(lv == 0)
          {
-            param1 = 1;
+            lv = 1;
          }
-         var _loc4_:String = _loc2_[param1 - 1];
-         var _loc3_:Array = _loc4_.split(",");
-         return _loc3_;
+         var info:String = arr[lv - 1];
+         var infoArr:Array = info.split(",");
+         return infoArr;
       }
       
-      private function getTimeControlExpBylv_1(param1:int) : Array
+      private function getTimeControlExpBylv_1(lv:int) : Array
       {
-         var _loc2_:Array = ServerConfigManager.instance.getTimeControl();
-         if(param1 == _loc2_.length)
+         var arr:Array = ServerConfigManager.instance.getTimeControl();
+         if(lv == arr.length)
          {
-            param1 = param1 - 1;
+            lv = lv - 1;
             timeLvMax = true;
          }
-         var _loc4_:String = _loc2_[param1];
-         var _loc3_:Array = _loc4_.split(",");
-         return _loc3_;
+         var info:String = arr[lv];
+         var infoArr:Array = info.split(",");
+         return infoArr;
       }
       
-      private function getSpaceControlExpBylv(param1:int) : Array
+      private function getSpaceControlExpBylv(lv:int) : Array
       {
-         var _loc2_:Array = ServerConfigManager.instance.getSpaceControl();
-         if(param1 == _loc2_.length)
+         var arr:Array = ServerConfigManager.instance.getSpaceControl();
+         if(lv == arr.length)
          {
             spaceLvMax = true;
          }
-         if(param1 == 0)
+         if(lv == 0)
          {
-            param1 = 1;
+            lv = 1;
          }
-         var _loc4_:String = _loc2_[param1 - 1];
-         var _loc3_:Array = _loc4_.split(",");
-         return _loc3_;
+         var info:String = arr[lv - 1];
+         var infoArr:Array = info.split(",");
+         return infoArr;
       }
       
-      private function getSpaceControlExpBylv_1(param1:int) : Array
+      private function getSpaceControlExpBylv_1(lv:int) : Array
       {
-         var _loc2_:Array = ServerConfigManager.instance.getSpaceControl();
-         if(param1 == _loc2_.length)
+         var arr:Array = ServerConfigManager.instance.getSpaceControl();
+         if(lv == arr.length)
          {
-            param1 = param1 - 1;
+            lv = lv - 1;
             spaceLvMax = true;
          }
-         var _loc4_:String = _loc2_[param1];
-         var _loc3_:Array = _loc4_.split(",");
-         return _loc3_;
+         var info:String = arr[lv];
+         var infoArr:Array = info.split(",");
+         return infoArr;
       }
       
-      private function getLooterControlExpBylv(param1:int) : Array
+      private function getLooterControlExpBylv(lv:int) : Array
       {
-         var _loc2_:Array = ServerConfigManager.instance.getLootControl();
-         if(param1 == _loc2_.length)
+         var arr:Array = ServerConfigManager.instance.getLootControl();
+         if(lv == arr.length)
          {
             lootLvMax = true;
          }
-         if(param1 == 0)
+         if(lv == 0)
          {
-            param1 = 1;
+            lv = 1;
          }
-         var _loc4_:String = _loc2_[param1 - 1];
-         var _loc3_:Array = _loc4_.split(",");
-         return _loc3_;
+         var info:String = arr[lv - 1];
+         var infoArr:Array = info.split(",");
+         return infoArr;
       }
       
-      private function getLooterControlExpBylv_1(param1:int) : Array
+      private function getLooterControlExpBylv_1(lv:int) : Array
       {
-         var _loc2_:Array = ServerConfigManager.instance.getLootControl();
-         if(param1 == _loc2_.length)
+         var arr:Array = ServerConfigManager.instance.getLootControl();
+         if(lv == arr.length)
          {
-            param1 = param1 - 1;
+            lv = lv - 1;
             lootLvMax = true;
          }
-         var _loc4_:String = _loc2_[param1];
-         var _loc3_:Array = _loc4_.split(",");
-         return _loc3_;
+         var info:String = arr[lv];
+         var infoArr:Array = info.split(",");
+         return infoArr;
       }
       
       private function addSelectionBnt() : void
@@ -683,27 +678,27 @@ package anotherDimension.view
          addToContent(_shijiankongzhiSelect);
          addToContent(_kongjianzhangwoSelect);
          addToContent(_lueduodashiSelect);
-         var _loc1_:int = getTimeControlExpBylv(AnotherDimensionManager.Instance.anotherDimensionInfo.timeControlLv)[2];
+         var shijiankongzhiCount:int = getTimeControlExpBylv(AnotherDimensionManager.Instance.anotherDimensionInfo.timeControlLv)[2];
          if(AnotherDimensionManager.Instance.anotherDimensionInfo.timeControlLv == 0)
          {
-            _loc1_ = 0;
+            shijiankongzhiCount = 0;
          }
-         var _loc2_:int = getSpaceControlExpBylv(AnotherDimensionManager.Instance.anotherDimensionInfo.spaceControlLv)[2];
+         var kongjianzhangwoCount:int = getSpaceControlExpBylv(AnotherDimensionManager.Instance.anotherDimensionInfo.spaceControlLv)[2];
          if(AnotherDimensionManager.Instance.anotherDimensionInfo.spaceControlLv == 0)
          {
-            _loc2_ = 0;
+            kongjianzhangwoCount = 0;
          }
-         var _loc4_:int = getLooterControlExpBylv(AnotherDimensionManager.Instance.anotherDimensionInfo.looterControlLv)[2];
+         var lueduodashiCount:int = getLooterControlExpBylv(AnotherDimensionManager.Instance.anotherDimensionInfo.looterControlLv)[2];
          if(AnotherDimensionManager.Instance.anotherDimensionInfo.looterControlLv == 0)
          {
-            _loc4_ = 0;
+            lueduodashiCount = 0;
          }
          _shijiankongzhiTxt = ComponentFactory.Instance.creatComponentByStylename("anotherDimension.shijiankongzhiTxt");
-         _shijiankongzhiTxt.text = LanguageMgr.GetTranslation("anotherDimension.shijiankongzhiTxt.txt",_loc1_);
+         _shijiankongzhiTxt.text = LanguageMgr.GetTranslation("anotherDimension.shijiankongzhiTxt.txt",shijiankongzhiCount);
          _kongjianzhangwoTxt = ComponentFactory.Instance.creatComponentByStylename("anotherDimension.kongjianzhangwoTxt");
-         _kongjianzhangwoTxt.text = LanguageMgr.GetTranslation("anotherDimension.kongjianzhangwoTxt.txt",_loc2_);
+         _kongjianzhangwoTxt.text = LanguageMgr.GetTranslation("anotherDimension.kongjianzhangwoTxt.txt",kongjianzhangwoCount);
          _lueduodashiTxt = ComponentFactory.Instance.creatComponentByStylename("anotherDimension.lueduodashiTxt");
-         _lueduodashiTxt.text = LanguageMgr.GetTranslation("anotherDimension.lueduodashiTxt.txt",_loc4_);
+         _lueduodashiTxt.text = LanguageMgr.GetTranslation("anotherDimension.lueduodashiTxt.txt",lueduodashiCount);
          addToContent(_shijiankongzhiTxt);
          addToContent(_kongjianzhangwoTxt);
          addToContent(_lueduodashiTxt);
@@ -717,8 +712,8 @@ package anotherDimension.view
          _progress = new AnotherDimensionProgress();
          PositionUtils.setPos(_progress,"anotherDimension.progressPos");
          addToContent(_progress);
-         var _loc3_:int = AnotherDimensionManager.Instance.anotherDimensionInfo.timeControlExp;
-         var _loc5_:int = getTimeControlExpBylv_1(AnotherDimensionManager.Instance.anotherDimensionInfo.timeControlLv)[1];
+         var currentExp:int = AnotherDimensionManager.Instance.anotherDimensionInfo.timeControlExp;
+         var totalCurrentExp:int = getTimeControlExpBylv_1(AnotherDimensionManager.Instance.anotherDimensionInfo.timeControlLv)[1];
          _shijiankongzhiSelectClick(null);
          _itemCell = new AnotherDimensionItemCell();
          PositionUtils.setPos(_itemCell,"anotherDimension.itemCellPos");
@@ -738,16 +733,16 @@ package anotherDimension.view
          __addMsg(null);
       }
       
-      public function addMsg(param1:String) : void
+      public function addMsg(msg:String) : void
       {
-         var _loc2_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("anotherDimension.msgTxt");
-         _loc2_.mouseEnabled = false;
-         _loc2_.htmlText = param1;
-         _vbox.addChild(_loc2_);
+         var _lblName:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("anotherDimension.msgTxt");
+         _lblName.mouseEnabled = false;
+         _lblName.htmlText = msg;
+         _vbox.addChild(_lblName);
          _scrollPanel.invalidateViewport_toTop(true);
       }
       
-      private function __helpBntClick(param1:MouseEvent) : void
+      private function __helpBntClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }

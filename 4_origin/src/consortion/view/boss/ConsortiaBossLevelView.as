@@ -43,10 +43,10 @@ package consortion.view.boss
          initEvent();
       }
       
-      public function set selectedLevel(param1:int) : void
+      public function set selectedLevel(value:int) : void
       {
-         param1 = currentFrame == 0?param1:Math.min(param1,12);
-         _selectedLevel = param1;
+         value = currentFrame == 0?value:Math.min(value,12);
+         _selectedLevel = value;
          _txt.text = getcurrentFrameText();
       }
       
@@ -57,8 +57,8 @@ package consortion.view.boss
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var tmp:* = null;
          _bg = ComponentFactory.Instance.creatBitmap("asset.consortionBossFrame.levelBg");
          _levelShowBtn = ComponentFactory.Instance.creatComponentByStylename("consortion.bossFrame.levelShowBtn");
          _txt = ComponentFactory.Instance.creatComponentByStylename("consortion.bossFrame.levelShowTxt");
@@ -75,17 +75,16 @@ package consortion.view.boss
          PositionUtils.setPos(_selectedSprite,"consortiaBoss.levelView.selectedSpritePos");
          _selectedSprite.addChild(_selectedBg);
          _cellList = new Vector.<ConsortiaBossLevelCell>();
-         _loc2_ = 0;
-         while(_loc2_ < ConsortionModelManager.Instance.bossMaxLv)
+         for(i = 0; i < ConsortionModelManager.Instance.bossMaxLv; )
          {
-            _loc1_ = new ConsortiaBossLevelCell(_loc2_ + 1);
-            _loc1_.x = 3 + _loc2_ % 2 * 136;
-            _loc1_.y = 3 + int(_loc2_ / 2) * 34.5;
-            _loc1_.judgeMaxLevel(_selectedLevel);
-            _loc1_.addEventListener("click",selecteLevelHandler,false,0,true);
-            _selectedSprite.addChild(_loc1_);
-            _cellList.push(_loc1_);
-            _loc2_++;
+            tmp = new ConsortiaBossLevelCell(i + 1);
+            tmp.x = 3 + i % 2 * 136;
+            tmp.y = 3 + int(i / 2) * 34.5;
+            tmp.judgeMaxLevel(_selectedLevel);
+            tmp.addEventListener("click",selecteLevelHandler,false,0,true);
+            _selectedSprite.addChild(tmp);
+            _cellList.push(tmp);
+            i++;
          }
          addChild(_selectedSprite);
          _selectedSprite.visible = false;
@@ -96,39 +95,38 @@ package consortion.view.boss
          _showSprite.addEventListener("click",showOrHideSelectedSprite,false,0,true);
       }
       
-      private function selecteLevelHandler(param1:MouseEvent) : void
+      private function selecteLevelHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         _selectedLevel = (param1.target as ConsortiaBossLevelCell).level;
+         _selectedLevel = (event.target as ConsortiaBossLevelCell).level;
          _txt.text = getcurrentFrameText();
          _selectedSprite.visible = false;
       }
       
       public function reset() : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          selectedLevel = ConsortionModelManager.Instance.getCanCallBossMaxLevel();
          _selectedSprite.visible = false;
-         var _loc1_:int = currentFrame == 0?_cellList.length:12;
-         _loc2_ = 0;
-         while(_loc2_ < _cellList.length)
+         var len:int = currentFrame == 0?_cellList.length:12;
+         for(i = 0; i < _cellList.length; )
          {
-            _selectedSprite.removeChild(_cellList[_loc2_]);
-            _cellList[_loc2_].update("consortiaBossFrame.levelSelected.levelTxt" + currentFrame);
-            if(currentFrame == 1 && _loc2_ >= 12)
+            _selectedSprite.removeChild(_cellList[i]);
+            _cellList[i].update("consortiaBossFrame.levelSelected.levelTxt" + currentFrame);
+            if(currentFrame == 1 && i >= 12)
             {
-               _cellList[_loc2_].visible = false;
+               _cellList[i].visible = false;
             }
             else
             {
-               _cellList[_loc2_].visible = true;
+               _cellList[i].visible = true;
             }
-            _selectedSprite.addChild(_cellList[_loc2_]);
-            _loc2_++;
+            _selectedSprite.addChild(_cellList[i]);
+            i++;
          }
       }
       
-      private function showOrHideSelectedSprite(param1:MouseEvent) : void
+      private function showOrHideSelectedSprite(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _selectedSprite.visible = !_selectedSprite.visible;
@@ -144,9 +142,9 @@ package consortion.view.boss
          _showSprite.removeEventListener("click",showOrHideSelectedSprite);
          var _loc3_:int = 0;
          var _loc2_:* = _cellList;
-         for each(var _loc1_ in _cellList)
+         for each(var tmp in _cellList)
          {
-            _loc1_.removeEventListener("click",selecteLevelHandler);
+            tmp.removeEventListener("click",selecteLevelHandler);
          }
          ObjectUtils.disposeAllChildren(_showSprite);
          ObjectUtils.disposeAllChildren(_selectedSprite);

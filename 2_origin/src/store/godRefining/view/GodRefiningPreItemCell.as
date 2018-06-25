@@ -15,21 +15,21 @@ package store.godRefining.view
       
       public function GodRefiningPreItemCell()
       {
-         var _loc1_:Sprite = new Sprite();
-         var _loc2_:Bitmap = new Bitmap(new BitmapData(60,60));
-         _loc2_.visible = false;
-         _loc1_.addChild(_loc2_);
-         super(0,null,false,_loc1_);
+         var bg:Sprite = new Sprite();
+         var bgBit:Bitmap = new Bitmap(new BitmapData(60,60));
+         bgBit.visible = false;
+         bg.addChild(bgBit);
+         super(0,null,false,bg);
          tipDirctions = "7,5,2,6,4,1";
          setContentSize(68,68);
          PicPos = new Point(-3,0);
       }
       
-      override public function dragDrop(param1:DragEffect) : void
+      override public function dragDrop(effect:DragEffect) : void
       {
       }
       
-      override public function dragStop(param1:DragEffect) : void
+      override public function dragStop(effect:DragEffect) : void
       {
       }
    }

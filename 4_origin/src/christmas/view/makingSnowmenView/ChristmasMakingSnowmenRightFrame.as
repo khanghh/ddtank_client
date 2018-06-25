@@ -47,9 +47,9 @@ package christmas.view.makingSnowmenView
          return _shopItemArr;
       }
       
-      public function set itemList(param1:Array) : void
+      public function set itemList(value:Array) : void
       {
-         this._itemList = param1;
+         this._itemList = value;
       }
       
       public function get itemList() : Array
@@ -59,9 +59,9 @@ package christmas.view.makingSnowmenView
       
       private function initView() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:int = 0;
+         var i:int = 0;
+         var item:* = null;
+         var poorNum:int = 0;
          _list = ComponentFactory.Instance.creatComponentByStylename("christmas.goodsListBox");
          _list.spacing = 5;
          _panel = ComponentFactory.Instance.creatComponentByStylename("christmas.right.scrollpanel");
@@ -72,41 +72,40 @@ package christmas.view.makingSnowmenView
          _shopItemArr = [];
          SHOP_ITEM_NUM = ChristmasCoreController.instance.model.packsLen;
          itemList = [];
-         _loc3_ = 0;
-         while(_loc3_ < SHOP_ITEM_NUM)
+         for(i = 0; i < SHOP_ITEM_NUM; )
          {
-            _loc1_ = ComponentFactory.Instance.creatCustomObject("christmas.view.christmasShopItem");
-            itemList.push(_loc1_);
-            itemList[_loc3_].initView(_loc3_);
-            if(_loc3_ <= SHOP_ITEM_NUM - 2)
+            item = ComponentFactory.Instance.creatCustomObject("christmas.view.christmasShopItem");
+            itemList.push(item);
+            itemList[i].initView(i);
+            if(i <= SHOP_ITEM_NUM - 2)
             {
-               if(ChristmasCoreManager.instance.CanGetGift(_loc3_) && ChristmasCoreManager.instance.model.count >= ChristmasCoreManager.instance.model.snowPackNum[_loc3_])
+               if(ChristmasCoreManager.instance.CanGetGift(i) && ChristmasCoreManager.instance.model.count >= ChristmasCoreManager.instance.model.snowPackNum[i])
                {
-                  itemList[_loc3_].specialButton();
+                  itemList[i].specialButton();
                }
             }
             else if(ChristmasCoreManager.instance.model.lastPacks > ChristmasCoreManager.instance.model.count)
             {
-               itemList[_loc3_].grayButton();
+               itemList[i].grayButton();
             }
             else
             {
-               itemList[_loc3_].specialButton();
+               itemList[i].specialButton();
                if(ChristmasCoreManager.instance.model.count - ChristmasCoreManager.instance.model.snowPackNum[SHOP_ITEM_NUM - 2] >= ChristmasCoreManager.instance.model.snowPackNum[SHOP_ITEM_NUM - 1] * (ChristmasCoreManager.instance.model.packsNumber + 1))
                {
-                  itemList[_loc3_]._poorTxt.text = LanguageMgr.GetTranslation("christmas.poortTxt.OK.LG");
+                  itemList[i]._poorTxt.text = LanguageMgr.GetTranslation("christmas.poortTxt.OK.LG");
                }
                else
                {
-                  _loc2_ = ChristmasCoreManager.instance.model.snowPackNum[SHOP_ITEM_NUM - 1] - (ChristmasCoreManager.instance.model.count - (ChristmasCoreManager.instance.model.snowPackNum[ChristmasCoreManager.instance.model.packsLen - 2] + ChristmasCoreManager.instance.model.snowPackNum[SHOP_ITEM_NUM - 1] * ChristmasCoreManager.instance.model.packsNumber));
-                  itemList[_loc3_]._poorTxt.text = LanguageMgr.GetTranslation("christmas.list.poorTxt.LG",_loc2_);
+                  poorNum = ChristmasCoreManager.instance.model.snowPackNum[SHOP_ITEM_NUM - 1] - (ChristmasCoreManager.instance.model.count - (ChristmasCoreManager.instance.model.snowPackNum[ChristmasCoreManager.instance.model.packsLen - 2] + ChristmasCoreManager.instance.model.snowPackNum[SHOP_ITEM_NUM - 1] * ChristmasCoreManager.instance.model.packsNumber));
+                  itemList[i]._poorTxt.text = LanguageMgr.GetTranslation("christmas.list.poorTxt.LG",poorNum);
                }
             }
-            itemList[_loc3_].initText(ChristmasCoreController.instance.model.snowPackNum[_loc3_],_loc3_);
-            itemList[_loc3_].y = (itemList[_loc3_].height + 1) * _loc3_;
-            _shopItemArr.push(itemList[_loc3_]);
-            _list.addChild(itemList[_loc3_]);
-            _loc3_++;
+            itemList[i].initText(ChristmasCoreController.instance.model.snowPackNum[i],i);
+            itemList[i].y = (itemList[i].height + 1) * i;
+            _shopItemArr.push(itemList[i]);
+            _list.addChild(itemList[i]);
+            i++;
          }
          _panel.setView(_list);
          addChild(_panel);
@@ -118,21 +117,20 @@ package christmas.view.makingSnowmenView
          setList(ChristmasCoreController.instance.model.myGiftData);
       }
       
-      public function setList(param1:Vector.<ChristmasSystemItemsInfo>) : void
+      public function setList(list:Vector.<ChristmasSystemItemsInfo>) : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          clearitems();
-         _loc2_ = 0;
-         while(_loc2_ < SHOP_ITEM_NUM)
+         for(i = 0; i < SHOP_ITEM_NUM; )
          {
-            if(param1)
+            if(list)
             {
-               if(_loc2_ < param1.length && param1[_loc2_])
+               if(i < list.length && list[i])
                {
-                  itemList[_loc2_].shopItemInfo = param1[_loc2_];
-                  itemList[_loc2_].itemID = param1[_loc2_].TemplateID;
+                  itemList[i].shopItemInfo = list[i];
+                  itemList[i].itemID = list[i].TemplateID;
                }
-               _loc2_++;
+               i++;
                continue;
             }
             break;
@@ -144,48 +142,46 @@ package christmas.view.makingSnowmenView
          ChristmasCoreManager.instance.addEventListener("christmas_packs",playerIsReceivePacks);
       }
       
-      private function playerIsReceivePacks(param1:CrazyTankSocketEvent) : void
+      private function playerIsReceivePacks(event:CrazyTankSocketEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:PackageIn = param1.pkg;
-         ChristmasCoreController.instance.model.awardState = _loc3_.readInt();
-         ChristmasCoreController.instance.model.packsNumber = _loc3_.readInt();
-         var _loc2_:int = _loc3_.readInt();
-         _loc5_ = 0;
-         while(_loc5_ < SHOP_ITEM_NUM)
+         var i:int = 0;
+         var poorNum:int = 0;
+         var pkg:PackageIn = event.pkg;
+         ChristmasCoreController.instance.model.awardState = pkg.readInt();
+         ChristmasCoreController.instance.model.packsNumber = pkg.readInt();
+         var listItemId:int = pkg.readInt();
+         for(i = 0; i < SHOP_ITEM_NUM; )
          {
-            if(itemList[_loc5_].itemID == _loc2_ && _loc5_ < SHOP_ITEM_NUM - 1)
+            if(itemList[i].itemID == listItemId && i < SHOP_ITEM_NUM - 1)
             {
-               itemList[_loc5_].receiveOK();
+               itemList[i].receiveOK();
                packsReceiveOK = true;
                break;
             }
-            if(itemList[_loc5_].itemID == specialItemId && ChristmasCoreManager.instance.model.lastPacks <= ChristmasCoreManager.instance.model.count)
+            if(itemList[i].itemID == specialItemId && ChristmasCoreManager.instance.model.lastPacks <= ChristmasCoreManager.instance.model.count)
             {
-               itemList[_loc5_].specialButton();
+               itemList[i].specialButton();
                if(ChristmasCoreManager.instance.model.count - ChristmasCoreManager.instance.model.snowPackNum[SHOP_ITEM_NUM - 2] >= ChristmasCoreManager.instance.model.snowPackNum[SHOP_ITEM_NUM - 1] * (ChristmasCoreManager.instance.model.packsNumber + 1))
                {
-                  itemList[_loc5_]._poorTxt.text = LanguageMgr.GetTranslation("christmas.poortTxt.OK.LG");
+                  itemList[i]._poorTxt.text = LanguageMgr.GetTranslation("christmas.poortTxt.OK.LG");
                }
                else
                {
-                  _loc4_ = ChristmasCoreManager.instance.model.snowPackNum[SHOP_ITEM_NUM - 1] - (ChristmasCoreManager.instance.model.count - (ChristmasCoreManager.instance.model.snowPackNum[ChristmasCoreManager.instance.model.packsLen - 2] + ChristmasCoreManager.instance.model.snowPackNum[SHOP_ITEM_NUM - 1] * ChristmasCoreManager.instance.model.packsNumber));
-                  itemList[_loc5_]._poorTxt.text = LanguageMgr.GetTranslation("christmas.list.poorTxt.LG",_loc4_);
+                  poorNum = ChristmasCoreManager.instance.model.snowPackNum[SHOP_ITEM_NUM - 1] - (ChristmasCoreManager.instance.model.count - (ChristmasCoreManager.instance.model.snowPackNum[ChristmasCoreManager.instance.model.packsLen - 2] + ChristmasCoreManager.instance.model.snowPackNum[SHOP_ITEM_NUM - 1] * ChristmasCoreManager.instance.model.packsNumber));
+                  itemList[i]._poorTxt.text = LanguageMgr.GetTranslation("christmas.list.poorTxt.LG",poorNum);
                }
             }
-            _loc5_++;
+            i++;
          }
       }
       
       private function clearitems() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < SHOP_ITEM_NUM)
+         var i:int = 0;
+         for(i = 0; i < SHOP_ITEM_NUM; )
          {
-            itemList[_loc1_].shopItemInfo = null;
-            _loc1_++;
+            itemList[i].shopItemInfo = null;
+            i++;
          }
       }
       
@@ -196,15 +192,14 @@ package christmas.view.makingSnowmenView
       
       private function disposeItems() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(itemList)
          {
-            _loc1_ = 0;
-            while(_loc1_ < itemList.length)
+            for(i = 0; i < itemList.length; )
             {
-               ObjectUtils.disposeObject(itemList[_loc1_]);
-               itemList[_loc1_] = null;
-               _loc1_++;
+               ObjectUtils.disposeObject(itemList[i]);
+               itemList[i] = null;
+               i++;
             }
             itemList = null;
          }

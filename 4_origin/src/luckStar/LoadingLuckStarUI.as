@@ -49,9 +49,9 @@ package luckStar
          UIModuleLoader.Instance.addUIModuleImp("luckstar");
       }
       
-      private function __onLoadComplete(param1:UIModuleEvent) : void
+      private function __onLoadComplete(e:UIModuleEvent) : void
       {
-         if(param1.module == "luckstar")
+         if(e.module == "luckstar")
          {
             UIModuleSmallLoading.Instance.hide();
             UIModuleSmallLoading.Instance.removeEventListener("close",_onLoadingCloseHandle);
@@ -62,11 +62,11 @@ package luckStar
          }
       }
       
-      private function __onProgress(param1:UIModuleEvent) : void
+      private function __onProgress(e:UIModuleEvent) : void
       {
-         if(param1.module == "luckstar")
+         if(e.module == "luckstar")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = e.loader.progress * 100;
          }
       }
       
@@ -78,7 +78,7 @@ package luckStar
          }
       }
       
-      private function _onLoadingCloseHandle(param1:Event) : void
+      private function _onLoadingCloseHandle(e:Event) : void
       {
          UIModuleSmallLoading.Instance.removeEventListener("close",_onLoadingCloseHandle);
          UIModuleLoader.Instance.removeEventListener("uiModuleComplete",__onLoadComplete);
@@ -93,32 +93,32 @@ package luckStar
       
       private function createRequestLuckyStarActivityRank() : BaseLoader
       {
-         var _loc2_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         var _loc1_:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.solveRequestPath("LuckStarActivityRank.ashx"),6,_loc2_);
-         _loc1_.loadErrorMessage = "请求幸运星模版失败!";
-         _loc1_.analyzer = new LuckStarRankAnalyzer(LuckStarController.Instance.updateLuckyStarRank);
-         _loc1_.addEventListener("loadError",__onLoadError);
-         return _loc1_;
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         var loader:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.solveRequestPath("LuckStarActivityRank.ashx"),6,args);
+         loader.loadErrorMessage = "请求幸运星模版失败!";
+         loader.analyzer = new LuckStarRankAnalyzer(LuckStarController.Instance.updateLuckyStarRank);
+         loader.addEventListener("loadError",__onLoadError);
+         return loader;
       }
       
-      private function __onLoadError(param1:LoaderEvent) : void
+      private function __onLoadError(e:LoaderEvent) : void
       {
-         var _loc3_:String = param1.loader.loadErrorMessage;
-         if(param1.loader.analyzer)
+         var msg:String = e.loader.loadErrorMessage;
+         if(e.loader.analyzer)
          {
-            if(param1.loader.analyzer.message != null)
+            if(e.loader.analyzer.message != null)
             {
-               _loc3_ = param1.loader.loadErrorMessage + "\n" + param1.loader.analyzer.message;
+               msg = e.loader.loadErrorMessage + "\n" + e.loader.analyzer.message;
             }
          }
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("alert"),_loc3_,"确定");
-         _loc2_.addEventListener("response",__onAlertResponse);
+         var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("alert"),msg,"确定");
+         alert.addEventListener("response",__onAlertResponse);
       }
       
-      private function __onAlertResponse(param1:FrameEvent) : void
+      private function __onAlertResponse(e:FrameEvent) : void
       {
-         param1.currentTarget.removeEventListener("response",__onAlertResponse);
-         ObjectUtils.disposeObject(param1.currentTarget);
+         e.currentTarget.removeEventListener("response",__onAlertResponse);
+         ObjectUtils.disposeObject(e.currentTarget);
       }
    }
 }

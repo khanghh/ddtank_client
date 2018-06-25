@@ -30,9 +30,9 @@ package dragonBoat.data
          return !!_beginTimeDate?_beginTimeDate:new Date();
       }
       
-      public function set BeginTime(param1:String) : void
+      public function set BeginTime(value:String) : void
       {
-         _beginTimeDate = DateUtils.decodeDated(param1);
+         _beginTimeDate = DateUtils.decodeDated(value);
       }
       
       public function get endTimeDate() : Date
@@ -40,9 +40,9 @@ package dragonBoat.data
          return !!_endTimeDate?_endTimeDate:new Date();
       }
       
-      public function set EndTime(param1:String) : void
+      public function set EndTime(value:String) : void
       {
-         _endTimeDate = DateUtils.decodeDated(param1);
+         _endTimeDate = DateUtils.decodeDated(value);
       }
       
       public function get normalScore() : int
@@ -50,10 +50,10 @@ package dragonBoat.data
          return _normalScore;
       }
       
-      public function set AddPropertyByMoney(param1:String) : void
+      public function set AddPropertyByMoney(value:String) : void
       {
-         var _loc2_:String = param1.split(":")[1];
-         _normalScore = _loc2_.split(",")[1];
+         var tmp:String = value.split(":")[1];
+         _normalScore = tmp.split(",")[1];
       }
       
       public function get highScore() : int
@@ -61,10 +61,10 @@ package dragonBoat.data
          return _highScore;
       }
       
-      public function set AddPropertyByProp(param1:String) : void
+      public function set AddPropertyByProp(value:String) : void
       {
-         var _loc2_:String = param1.split(":")[1];
-         _highScore = _loc2_.split(",")[1];
+         var tmp:String = value.split(":")[1];
+         _highScore = tmp.split(",")[1];
       }
    }
 }

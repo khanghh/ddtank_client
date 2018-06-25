@@ -14,10 +14,10 @@ package email
       
       private var _info:Object;
       
-      public function MailEvent(param1:String, param2:Object = null, param3:Boolean = false, param4:Boolean = false)
+      public function MailEvent(type:String, info:Object = null, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         super(param1,param3,param4);
-         _info = param2;
+         super(type,bubbles,cancelable);
+         _info = info;
       }
       
       public function get info() : Object

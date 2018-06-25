@@ -1,4 +1,2 @@
-package road7th.math
-{
-   public function interpolateNumber(param1:Number, param2:Number, param3:Number, param4:Number, param5:Number) : Number{return 0;}
-}
+package road7th.math{   public function interpolateNumber(x1:Number, y1:Number, x2:Number, y2:Number, x:Number) : Number { return 0; }
+}

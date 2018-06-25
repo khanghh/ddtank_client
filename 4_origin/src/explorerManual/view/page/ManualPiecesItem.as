@@ -24,9 +24,9 @@ package explorerManual.view.page
       
       private var _yOffset:int;
       
-      public function ManualPiecesItem(param1:int, param2:int, param3:int)
+      public function ManualPiecesItem(pIndex:int, $width:int, $height:int)
       {
-         index = param1;
+         index = pIndex;
          super();
       }
       
@@ -35,9 +35,9 @@ package explorerManual.view.page
          return _yOffset;
       }
       
-      public function set yOffset(param1:int) : void
+      public function set yOffset(value:int) : void
       {
-         _yOffset = param1;
+         _yOffset = value;
       }
       
       public function get xOffset() : int
@@ -45,9 +45,9 @@ package explorerManual.view.page
          return _xOffset;
       }
       
-      public function set xOffset(param1:int) : void
+      public function set xOffset(value:int) : void
       {
-         _xOffset = param1;
+         _xOffset = value;
       }
       
       public function get index() : int
@@ -55,14 +55,14 @@ package explorerManual.view.page
          return _index;
       }
       
-      public function set index(param1:int) : void
+      public function set index(value:int) : void
       {
-         _index = param1;
+         _index = value;
       }
       
-      public function set info(param1:ManualDebrisInfo) : void
+      public function set info(value:ManualDebrisInfo) : void
       {
-         _info = param1;
+         _info = value;
          clearLoader();
          initView();
       }
@@ -87,12 +87,12 @@ package explorerManual.view.page
          }
       }
       
-      private function __picComplete(param1:LoaderEvent) : void
+      private function __picComplete(evt:LoaderEvent) : void
       {
          ObjectUtils.disposeAllChildren(this);
-         if(param1.loader.isSuccess)
+         if(evt.loader.isSuccess)
          {
-            addChild(param1.loader.content as Bitmap);
+            addChild(evt.loader.content as Bitmap);
          }
          clearLoader();
       }

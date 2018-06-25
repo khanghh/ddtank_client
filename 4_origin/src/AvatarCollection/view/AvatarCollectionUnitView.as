@@ -40,20 +40,20 @@ package AvatarCollection.view
       
       private var _isBuyFilter:Boolean = false;
       
-      public function AvatarCollectionUnitView(param1:int, param2:AvatarCollectionRightView)
+      public function AvatarCollectionUnitView(index:int, rightView:AvatarCollectionRightView)
       {
          super();
-         _index = param1;
-         _rightView = param2;
+         _index = index;
+         _rightView = rightView;
          initView();
          initEvent();
          initData();
          initStatus();
       }
       
-      public function set isBuyFilter(param1:Boolean) : void
+      public function set isBuyFilter(value:Boolean) : void
       {
-         _isBuyFilter = param1;
+         _isBuyFilter = value;
          if(_isBuyFilter)
          {
             _isFilter = false;
@@ -61,9 +61,9 @@ package AvatarCollection.view
          refreshList();
       }
       
-      public function set isFilter(param1:Boolean) : void
+      public function set isFilter(value:Boolean) : void
       {
-         _isFilter = param1;
+         _isFilter = value;
          if(_isFilter)
          {
             _isBuyFilter = false;
@@ -73,18 +73,17 @@ package AvatarCollection.view
       
       private function initStatus() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(AvatarCollectionManager.instance.isSkipFromHall)
          {
-            _loc1_ = 0;
-            while(_loc1_ < _dataList.length)
+            for(i = 0; i < _dataList.length; )
             {
-               if((_dataList[_loc1_] as AvatarCollectionUnitVo).id == AvatarCollectionManager.instance.skipId)
+               if((_dataList[i] as AvatarCollectionUnitVo).id == AvatarCollectionManager.instance.skipId)
                {
                   extendSelecteTheFirst();
                   break;
                }
-               _loc1_++;
+               i++;
             }
          }
          else if(_index == 1)
@@ -126,22 +125,22 @@ package AvatarCollection.view
          _list.list.updateListView();
       }
       
-      private function toDoRefresh(param1:Event) : void
+      private function toDoRefresh(event:Event) : void
       {
          refreshList();
       }
       
-      private function __itemClick(param1:ListItemEvent) : void
+      private function __itemClick(event:ListItemEvent) : void
       {
          SoundManager.instance.play("008");
-         _selectedValue = param1.cellValue as AvatarCollectionUnitVo;
+         _selectedValue = event.cellValue as AvatarCollectionUnitVo;
          if(_rightView)
          {
             _rightView.refreshView(_selectedValue);
          }
       }
       
-      private function clickHandler(param1:MouseEvent) : void
+      private function clickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          extendSelecteTheFirst();
@@ -170,38 +169,37 @@ package AvatarCollection.view
       
       private function autoSelect() : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:IListModel = _list.list.model;
-         var _loc3_:int = _loc1_.getSize();
-         if(_loc3_ > 0)
+         var i:int = 0;
+         var tmpSelectedIndex:int = 0;
+         var intPoint:* = null;
+         var _model:IListModel = _list.list.model;
+         var len:int = _model.getSize();
+         if(len > 0)
          {
             if(!_selectedValue)
             {
                if(AvatarCollectionManager.instance.isSkipFromHall)
                {
-                  _loc5_ = 0;
-                  while(_loc5_ < _loc3_)
+                  for(i = 0; i < len; )
                   {
-                     if((_loc1_.getElementAt(_loc5_) as AvatarCollectionUnitVo).id == AvatarCollectionManager.instance.skipId)
+                     if((_model.getElementAt(i) as AvatarCollectionUnitVo).id == AvatarCollectionManager.instance.skipId)
                      {
-                        _selectedValue = _loc1_.getElementAt(_loc5_);
+                        _selectedValue = _model.getElementAt(i);
                         AvatarCollectionManager.instance.isSkipFromHall = false;
                         break;
                      }
-                     _loc5_++;
+                     i++;
                   }
                }
                else
                {
-                  _selectedValue = _loc1_.getElementAt(0) as AvatarCollectionUnitVo;
+                  _selectedValue = _model.getElementAt(0) as AvatarCollectionUnitVo;
                }
             }
-            _loc4_ = _loc1_.indexOf(_selectedValue);
-            _loc2_ = new IntPoint(0,_loc1_.getCellPosFromIndex(_loc4_));
-            _list.list.viewPosition = _loc2_;
-            _list.list.currentSelectedIndex = _loc4_;
+            tmpSelectedIndex = _model.indexOf(_selectedValue);
+            intPoint = new IntPoint(0,_model.getCellPosFromIndex(tmpSelectedIndex));
+            _list.list.viewPosition = intPoint;
+            _list.list.currentSelectedIndex = tmpSelectedIndex;
          }
          else
          {
@@ -223,45 +221,43 @@ package AvatarCollection.view
       
       private function refreshList() : void
       {
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
-         var _loc1_:int = 0;
-         var _loc3_:int = 0;
-         var _loc5_:Array = [];
+         var len:int = 0;
+         var i:int = 0;
+         var len2:int = 0;
+         var k:int = 0;
+         var tmpArray:Array = [];
          if(_isFilter)
          {
-            _loc2_ = _dataList.length;
-            _loc4_ = 0;
-            while(_loc4_ < _loc2_)
+            len = _dataList.length;
+            for(i = 0; i < len; )
             {
-               if((_dataList[_loc4_] as AvatarCollectionUnitVo).canActivityCount > 0)
+               if((_dataList[i] as AvatarCollectionUnitVo).canActivityCount > 0)
                {
-                  _loc5_.push(_dataList[_loc4_]);
+                  tmpArray.push(_dataList[i]);
                }
-               _loc4_++;
+               i++;
             }
          }
          else if(_isBuyFilter)
          {
-            _loc1_ = _dataList.length;
-            _loc3_ = 0;
-            while(_loc3_ < _loc1_)
+            len2 = _dataList.length;
+            for(k = 0; k < len2; )
             {
-               if((_dataList[_loc3_] as AvatarCollectionUnitVo).canBuyCount > 0)
+               if((_dataList[k] as AvatarCollectionUnitVo).canBuyCount > 0)
                {
-                  _loc5_.push(_dataList[_loc3_]);
+                  tmpArray.push(_dataList[k]);
                }
-               _loc3_++;
+               k++;
             }
          }
          else
          {
-            _loc5_ = _dataList;
+            tmpArray = _dataList;
          }
          _list.vectorListModel.clear();
-         _list.vectorListModel.appendAll(_loc5_);
+         _list.vectorListModel.appendAll(tmpArray);
          _list.list.updateListView();
-         if(_selectedValue && _loc5_.indexOf(_selectedValue) == -1)
+         if(_selectedValue && tmpArray.indexOf(_selectedValue) == -1)
          {
             _selectedValue = null;
          }
@@ -273,33 +269,33 @@ package AvatarCollection.view
       
       private function getDataList() : Array
       {
-         var _loc1_:* = null;
+         var tmp:* = null;
          switch(int(_index) - 1)
          {
             case 0:
-               _loc1_ = AvatarCollectionManager.instance.maleUnitList;
+               tmp = AvatarCollectionManager.instance.maleUnitList;
                break;
             case 1:
-               _loc1_ = AvatarCollectionManager.instance.femaleUnitList;
+               tmp = AvatarCollectionManager.instance.femaleUnitList;
                break;
             case 2:
-               _loc1_ = AvatarCollectionManager.instance.weaponUnitList;
+               tmp = AvatarCollectionManager.instance.weaponUnitList;
          }
-         return !!_loc1_?_loc1_:[];
+         return !!tmp?tmp:[];
       }
       
       private function getSelectedBtn() : SelectedButton
       {
-         var _loc1_:* = null;
+         var tmp:* = null;
          switch(int(_index) - 1)
          {
             case 0:
-               _loc1_ = ComponentFactory.Instance.creatComponentByStylename("avatarColl.maleBtn");
+               tmp = ComponentFactory.Instance.creatComponentByStylename("avatarColl.maleBtn");
                break;
             case 1:
-               _loc1_ = ComponentFactory.Instance.creatComponentByStylename("avatarColl.femaleBtn");
+               tmp = ComponentFactory.Instance.creatComponentByStylename("avatarColl.femaleBtn");
          }
-         return _loc1_;
+         return tmp;
       }
       
       override public function get height() : Number

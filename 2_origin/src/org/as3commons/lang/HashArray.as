@@ -30,10 +30,10 @@ package org.as3commons.lang
       
       private var _lookup:Object;
       
-      public function HashArray(param1:String, param2:Boolean = false, param3:Array = null)
+      public function HashArray(lookUpPropertyName:String, allowDuplicates:Boolean = false, items:Array = null)
       {
          super();
-         this.init(param1,param2,param3);
+         this.init(lookUpPropertyName,allowDuplicates,items);
       }
       
       public function get allowDuplicates() : Boolean
@@ -41,9 +41,9 @@ package org.as3commons.lang
          return this._allowDuplicates;
       }
       
-      public function set allowDuplicates(param1:Boolean) : void
+      public function set allowDuplicates(value:Boolean) : void
       {
-         this._allowDuplicates = param1;
+         this._allowDuplicates = value;
       }
       
       public function get length() : uint
@@ -51,10 +51,10 @@ package org.as3commons.lang
          return this._list.length;
       }
       
-      public function get(param1:String) : *
+      public function get(lookupPropertyValue:String) : *
       {
-         param1 = this.makeValidKey(param1);
-         return this._lookup[param1];
+         lookupPropertyValue = this.makeValidKey(lookupPropertyValue);
+         return this._lookup[lookupPropertyValue];
       }
       
       public function getArray() : Array
@@ -64,161 +64,156 @@ package org.as3commons.lang
       
       public function pop() : *
       {
-         var _loc1_:* = this._list.pop();
-         this.removeFromLookup(_loc1_);
-         return _loc1_;
+         var value:* = this._list.pop();
+         this.removeFromLookup(value);
+         return value;
       }
       
-      public function push(... rest) : uint
+      public function push(... parameters) : uint
       {
-         var _loc3_:Array = null;
-         var _loc2_:uint = rest.length;
-         if(_loc2_ == 1 && rest[0] is Array)
+         var args:Array = null;
+         var len:uint = parameters.length;
+         if(len == 1 && parameters[0] is Array)
          {
-            _loc3_ = rest[0] as Array;
-            _loc2_ = _loc3_.length;
+            args = parameters[0] as Array;
+            len = args.length;
          }
          else
          {
-            _loc3_ = rest;
+            args = parameters;
          }
-         var _loc4_:uint = 0;
-         while(_loc4_ < _loc2_)
+         for(var i:uint = 0; i < len; i++)
          {
-            this.pushOne(_loc3_[_loc4_]);
-            _loc4_++;
+            this.pushOne(args[i]);
          }
          return this._list.length;
       }
       
       public function rehash() : void
       {
-         var _loc2_:* = undefined;
-         var _loc3_:uint = 0;
+         var val:* = undefined;
+         var i:uint = 0;
          this._lookup = new Dictionary();
-         var _loc1_:uint = this._list.length;
-         while(_loc3_ < _loc1_)
+         for(var len:uint = this._list.length; i < len; )
          {
-            _loc2_ = this._list[_loc3_];
-            if(_loc2_ != null)
+            val = this._list[i];
+            if(val != null)
             {
-               this.addToLookup(_loc2_);
+               this.addToLookup(val);
             }
-            _loc3_++;
+            i++;
          }
       }
       
       public function shift() : *
       {
-         var _loc1_:* = this._list.shift();
-         this.removeFromLookup(_loc1_);
-         return _loc1_;
+         var item:* = this._list.shift();
+         this.removeFromLookup(item);
+         return item;
       }
       
-      public function splice(... rest) : *
+      public function splice(... parameters) : *
       {
-         var _loc2_:* = this._list.splice.apply(this._list,rest);
+         var result:* = this._list.splice.apply(this._list,parameters);
          this.rehash();
-         return _loc2_;
+         return result;
       }
       
-      protected function add(param1:Array) : void
+      protected function add(items:Array) : void
       {
-         var _loc2_:uint = 0;
-         var _loc3_:uint = 0;
-         if(param1 != null)
+         var len:uint = 0;
+         var i:uint = 0;
+         if(items != null)
          {
-            _loc2_ = param1.length;
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_)
+            len = items.length;
+            for(i = 0; i < len; i++)
             {
-               this.pushOne(param1[_loc3_]);
-               _loc3_++;
+               this.pushOne(items[i]);
             }
          }
       }
       
-      protected function addToLookup(param1:*) : void
+      protected function addToLookup(newItem:*) : void
       {
-         var _loc3_:* = undefined;
-         var _loc4_:Array = null;
-         var _loc5_:* = undefined;
-         var _loc2_:* = this.makeValidKey(param1[this._lookUpPropertyName]);
+         var items:* = undefined;
+         var arr:Array = null;
+         var oldItem:* = undefined;
+         var validKey:* = this.makeValidKey(newItem[this._lookUpPropertyName]);
          if(this._allowDuplicates)
          {
-            _loc3_ = this._lookup[_loc2_];
-            if(_loc3_ == null)
+            items = this._lookup[validKey];
+            if(items == null)
             {
-               this._lookup[_loc2_] = [param1];
+               this._lookup[validKey] = [newItem];
             }
-            else if(_loc3_ is Array)
+            else if(items is Array)
             {
-               _loc4_ = _loc3_ as Array;
-               _loc4_[_loc4_.length] = param1;
+               arr = items as Array;
+               arr[arr.length] = newItem;
             }
             else
             {
-               _loc4_ = [];
-               _loc4_[_loc4_.length] = _loc3_;
-               _loc4_[_loc4_.length] = param1;
-               this._lookup[_loc2_] = _loc4_;
+               arr = [];
+               arr[arr.length] = items;
+               arr[arr.length] = newItem;
+               this._lookup[validKey] = arr;
             }
          }
          else
          {
-            _loc5_ = this._lookup[_loc2_];
-            if(_loc5_ != null)
+            oldItem = this._lookup[validKey];
+            if(oldItem != null)
             {
-               ArrayUtils.removeFirstOccurance(this._list,_loc5_);
+               ArrayUtils.removeFirstOccurance(this._list,oldItem);
             }
-            this._lookup[_loc2_] = param1;
+            this._lookup[validKey] = newItem;
          }
       }
       
-      protected function init(param1:String, param2:Boolean, param3:Array) : void
+      protected function init(lookUpPropertyName:String, allowDuplicates:Boolean, items:Array) : void
       {
          this._lookup = {};
-         this._lookUpPropertyName = this.makeValidKey(param1);
-         this._allowDuplicates = param2;
+         this._lookUpPropertyName = this.makeValidKey(lookUpPropertyName);
+         this._allowDuplicates = allowDuplicates;
          this._list = [];
-         this.add(param3);
+         this.add(items);
       }
       
-      protected function makeValidKey(param1:*) : *
+      protected function makeValidKey(propertyValue:*) : *
       {
-         if(!(param1 is String))
+         if(!(propertyValue is String))
          {
-            return param1;
+            return propertyValue;
          }
-         if(illegalKeys.hasOwnProperty(String(param1) + UNDERSCORE_CHAR))
+         if(illegalKeys.hasOwnProperty(String(propertyValue) + UNDERSCORE_CHAR))
          {
-            return String(param1) + _SUFFIX;
+            return String(propertyValue) + _SUFFIX;
          }
-         return param1;
+         return propertyValue;
       }
       
-      protected function pushOne(param1:*) : void
+      protected function pushOne(item:*) : void
       {
-         this.addToLookup(param1);
-         this._list[this._list.length] = param1;
+         this.addToLookup(item);
+         this._list[this._list.length] = item;
       }
       
-      protected function removeFromLookup(param1:*) : void
+      protected function removeFromLookup(item:*) : void
       {
-         var _loc3_:Array = null;
-         var _loc2_:* = this._lookup[param1[this._lookUpPropertyName]];
-         if(_loc2_ is Array && this._allowDuplicates)
+         var arr:Array = null;
+         var value:* = this._lookup[item[this._lookUpPropertyName]];
+         if(value is Array && this._allowDuplicates)
          {
-            _loc3_ = _loc2_ as Array;
-            _loc3_.splice(_loc3_.length - 1,1);
-            if(_loc3_.length < 1)
+            arr = value as Array;
+            arr.splice(arr.length - 1,1);
+            if(arr.length < 1)
             {
-               delete this._lookup[param1[this._lookUpPropertyName]];
+               delete this._lookup[item[this._lookUpPropertyName]];
             }
          }
          else
          {
-            delete this._lookup[param1[this._lookUpPropertyName]];
+            delete this._lookup[item[this._lookUpPropertyName]];
          }
       }
    }

@@ -20,132 +20,130 @@ package store.fineStore.view.pageBringUp
    {
        
       
-      public function FineBringUpBagListView(param1:int, param2:int = 7, param3:int = 49)
+      public function FineBringUpBagListView(bagType:int, columnNum:int = 7, cellNun:int = 49)
       {
-         super(param1,param2,param3);
+         super(bagType,columnNum,cellNun);
          FineBringUpController.getInstance().addEventListener("latentEnergy_equip_move",equipMoveHandler);
          FineBringUpController.getInstance().addEventListener("latentEnergy_equip_move2",equipMoveHandler2);
          FineBringUpController.getInstance().addEventListener("bringup_item_lock_status",onItemLockStatusUpdate);
       }
       
-      protected function onItemLockStatusUpdate(param1:CEvent) : void
+      protected function onItemLockStatusUpdate(e:CEvent) : void
       {
       }
       
       override protected function createCells() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var cell:* = null;
          _cells = new Dictionary();
          _cellMouseOverBg = ComponentFactory.Instance.creatBitmap("bagAndInfo.cell.bagCellOverBgAsset");
-         _loc2_ = 0;
-         while(_loc2_ < _cellNum)
+         for(i = 0; i < _cellNum; )
          {
-            _loc1_ = LockableBagCell(CellFactory.instance.creteLockableBagCell(_loc2_));
-            _loc1_.lockDisplayObject = ComponentFactory.Instance.creatBitmap("asset.store.bringup.lock");
-            PositionUtils.setPos(_loc1_.lockDisplayObject,"storeBringUp.cellLockPos");
-            _loc1_.mouseOverEffBoolean = false;
-            addChild(_loc1_);
-            _loc1_.bagType = _bagType;
-            _loc1_.addEventListener("interactive_click",__clickHandler);
-            _loc1_.addEventListener("mouseOver",_cellOverEff);
-            _loc1_.addEventListener("mouseOut",_cellOutEff);
-            _loc1_.addEventListener("interactive_double_click",__doubleClickHandler);
-            DoubleClickManager.Instance.enableDoubleClick(_loc1_);
-            _loc1_.addEventListener("lockChanged",__cellChanged);
-            _cells[_loc1_.place] = _loc1_;
-            _cellVec.push(_loc1_);
-            _loc2_++;
+            cell = LockableBagCell(CellFactory.instance.creteLockableBagCell(i));
+            cell.lockDisplayObject = ComponentFactory.Instance.creatBitmap("asset.store.bringup.lock");
+            PositionUtils.setPos(cell.lockDisplayObject,"storeBringUp.cellLockPos");
+            cell.mouseOverEffBoolean = false;
+            addChild(cell);
+            cell.bagType = _bagType;
+            cell.addEventListener("interactive_click",__clickHandler);
+            cell.addEventListener("mouseOver",_cellOverEff);
+            cell.addEventListener("mouseOut",_cellOutEff);
+            cell.addEventListener("interactive_double_click",__doubleClickHandler);
+            DoubleClickManager.Instance.enableDoubleClick(cell);
+            cell.addEventListener("lockChanged",__cellChanged);
+            _cells[cell.place] = cell;
+            _cellVec.push(cell);
+            i++;
          }
       }
       
-      override protected function __doubleClickHandler(param1:InteractiveEvent) : void
+      override protected function __doubleClickHandler(evt:InteractiveEvent) : void
       {
          if(FineBringUpController.getInstance().usingLock == true)
          {
             return;
          }
-         var _loc2_:LockableBagCell = param1.target as LockableBagCell;
-         if(_loc2_.info)
+         var cell:LockableBagCell = evt.target as LockableBagCell;
+         if(cell.info)
          {
-            if(_loc2_.info.FusionType == 0)
+            if(cell.info.FusionType == 0)
             {
                FineBringUpController.getInstance().isTopLevel();
                return;
             }
-            if(_loc2_.info.Property5 == "1")
+            if(cell.info.Property5 == "1")
             {
                FineBringUpController.getInstance().isExpJewelry();
                return;
             }
          }
-         super.__doubleClickHandler(param1);
+         super.__doubleClickHandler(evt);
       }
       
-      override protected function __clickHandler(param1:InteractiveEvent) : void
+      override protected function __clickHandler(evt:InteractiveEvent) : void
       {
          if(FineBringUpController.getInstance().usingLock == true)
          {
             return;
          }
-         var _loc2_:LockableBagCell = param1.target as LockableBagCell;
-         if(_loc2_.info && _loc2_.info.FusionType == 0)
+         var cell:LockableBagCell = evt.target as LockableBagCell;
+         if(cell.info && cell.info.FusionType == 0)
          {
             FineBringUpController.getInstance().isTopLevel();
             return;
          }
-         super.__clickHandler(param1);
+         super.__clickHandler(evt);
       }
       
-      private function equipMoveHandler(param1:LatentEnergyEvent) : void
+      private function equipMoveHandler(event:LatentEnergyEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:InventoryItemInfo = param1.info;
-         _loc3_ = 0;
-         while(_loc3_ < _cellNum)
+         var i:int = 0;
+         var itemInfo:InventoryItemInfo = event.info;
+         for(i = 0; i < _cellNum; )
          {
-            if(_cells[_loc3_].info == _loc2_)
+            if(_cells[i].info == itemInfo)
             {
-               _cells[_loc3_].info = null;
+               _cells[i].info = null;
                break;
             }
-            _loc3_++;
+            i++;
          }
-         SocketManager.Instance.out.sendMoveGoods(param1.info.BagType,param1.info.Place,12,0);
+         SocketManager.Instance.out.sendMoveGoods(event.info.BagType,event.info.Place,12,0);
       }
       
-      private function equipMoveHandler2(param1:LatentEnergyEvent) : void
+      private function equipMoveHandler2(event:LatentEnergyEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:InventoryItemInfo = param1.info;
-         if(param1.moveType == 2)
+         var k:int = 0;
+         var itemInfo:InventoryItemInfo = event.info;
+         if(event.moveType == 2)
          {
             var _loc6_:int = 0;
             var _loc5_:* = _cells;
-            for each(var _loc2_ in _cells)
+            for each(var cell in _cells)
             {
-               if(_loc2_.info == _loc3_)
+               if(cell.info == itemInfo)
                {
                   return;
                }
             }
          }
-         _loc4_ = 0;
-         while(_loc4_ < _cellNum)
+         k = 0;
+         while(k < _cellNum)
          {
-            if(!_cells[_loc4_].info)
+            if(!_cells[k].info)
             {
-               _cells[_loc4_].info = _loc3_;
+               _cells[k].info = itemInfo;
                break;
             }
-            _loc4_++;
+            k++;
          }
       }
       
-      override public function setData(param1:BagInfo) : void
+      override public function setData(bag:BagInfo) : void
       {
-         var _loc4_:* = null;
-         if(_bagdata == param1)
+         var info:* = null;
+         if(_bagdata == bag)
          {
             return;
          }
@@ -154,18 +152,18 @@ package store.fineStore.view.pageBringUp
             _bagdata.removeEventListener("update",__updateGoods);
          }
          clearDataCells();
-         _bagdata = param1;
-         var _loc2_:Dictionary = FineBringUpController.getInstance().getPlaceMap();
+         _bagdata = bag;
+         var placeMap:Dictionary = FineBringUpController.getInstance().getPlaceMap();
          var _loc6_:int = 0;
-         var _loc5_:* = _loc2_;
-         for(var _loc3_ in _loc2_)
+         var _loc5_:* = placeMap;
+         for(var key in placeMap)
          {
-            _loc4_ = FineBringUpController.getInstance().getItem(_loc2_[_loc3_]);
-            if(_loc4_)
+            info = FineBringUpController.getInstance().getItem(placeMap[key]);
+            if(info)
             {
-               _loc4_.isMoveSpace = true;
+               info.isMoveSpace = true;
             }
-            _cells[_loc3_].info = _loc4_;
+            _cells[key].info = info;
          }
          _bagdata.addEventListener("update",__updateGoods);
       }

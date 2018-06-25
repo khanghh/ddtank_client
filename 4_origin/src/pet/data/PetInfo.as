@@ -1,6 +1,7 @@
 package pet.data
 {
    import com.pickgliss.loader.ModuleLoader;
+   import ddt.events.CEvent;
    import flash.events.Event;
    import road7th.data.DictionaryData;
    
@@ -10,6 +11,8 @@ package pet.data
       public static const HUNGER_CHANGED:String = "hunger";
       
       public static const GP_CHANGED:String = "gp";
+      
+      public static const PET_GROW_CHANGE:String = "petGrowChange";
       
       public static const FULL_MAX_VALUE:int = 10000;
        
@@ -38,15 +41,15 @@ package pet.data
       
       public var Guard:int;
       
-      public var AttackGrow:int;
+      private var _attackGrow:int;
       
-      public var DefenceGrow:int;
+      private var _defenceGrow:int;
       
-      public var LuckGrow:int;
+      private var _luckGrow:int;
       
-      public var AgilityGrow:int;
+      private var _agilityGrow:int;
       
-      public var BloodGrow:int;
+      private var _bloodGrow:int;
       
       public var DamageGrow:int;
       
@@ -103,13 +106,88 @@ package pet.data
          return _equipedSkills;
       }
       
-      public function set GP(param1:int) : void
+      public function get AttackGrow() : int
       {
-         if(_gp == param1)
+         return _attackGrow;
+      }
+      
+      public function set AttackGrow(value:int) : void
+      {
+         if(_attackGrow == value)
          {
             return;
          }
-         _gp = param1;
+         _attackGrow = value;
+         this.dispatchEvent(new CEvent("petGrowChange","AttackGrow"));
+      }
+      
+      public function get DefenceGrow() : int
+      {
+         return _defenceGrow;
+      }
+      
+      public function set DefenceGrow(value:int) : void
+      {
+         if(_defenceGrow == value)
+         {
+            return;
+         }
+         _defenceGrow = value;
+         this.dispatchEvent(new CEvent("petGrowChange","DefenceGrow"));
+      }
+      
+      public function get LuckGrow() : int
+      {
+         return _luckGrow;
+      }
+      
+      public function set LuckGrow(value:int) : void
+      {
+         if(_luckGrow == value)
+         {
+            return;
+         }
+         _luckGrow = value;
+         this.dispatchEvent(new CEvent("petGrowChange","LuckGrow"));
+      }
+      
+      public function get AgilityGrow() : int
+      {
+         return _agilityGrow;
+      }
+      
+      public function set AgilityGrow(value:int) : void
+      {
+         if(_agilityGrow == value)
+         {
+            return;
+         }
+         _agilityGrow = value;
+         this.dispatchEvent(new CEvent("petGrowChange","AgilityGrow"));
+      }
+      
+      public function get BloodGrow() : int
+      {
+         return _bloodGrow;
+      }
+      
+      public function set BloodGrow(value:int) : void
+      {
+         if(_bloodGrow == value)
+         {
+            return;
+         }
+         _bloodGrow = value;
+         this.dispatchEvent(new CEvent("petGrowChange","BloodGrow"));
+      }
+      
+      public function set GP(val:int) : void
+      {
+         if(_gp == val)
+         {
+            return;
+         }
+         _gp = val;
          dispatchEvent(new Event("gp"));
       }
       
@@ -118,13 +196,13 @@ package pet.data
          return _gp;
       }
       
-      public function set Hunger(param1:int) : void
+      public function set Hunger(val:int) : void
       {
-         if(param1 == _hunger)
+         if(val == _hunger)
          {
             return;
          }
-         _hunger = param1;
+         _hunger = val;
          dispatchEvent(new Event("hunger"));
       }
       
@@ -138,9 +216,9 @@ package pet.data
          return _breakBlood;
       }
       
-      public function set breakBlood(param1:uint) : void
+      public function set breakBlood(value:uint) : void
       {
-         _breakBlood = param1;
+         _breakBlood = value;
       }
       
       public function get breakAttack() : uint
@@ -148,9 +226,9 @@ package pet.data
          return _breakAttack;
       }
       
-      public function set breakAttack(param1:uint) : void
+      public function set breakAttack(value:uint) : void
       {
-         _breakAttack = param1;
+         _breakAttack = value;
       }
       
       public function get breakDefence() : uint
@@ -158,9 +236,9 @@ package pet.data
          return _breakDefence;
       }
       
-      public function set breakDefence(param1:uint) : void
+      public function set breakDefence(value:uint) : void
       {
-         _breakDefence = param1;
+         _breakDefence = value;
       }
       
       public function get breakAgility() : uint
@@ -168,9 +246,9 @@ package pet.data
          return _breakAgility;
       }
       
-      public function set breakAgility(param1:uint) : void
+      public function set breakAgility(value:uint) : void
       {
-         _breakAgility = param1;
+         _breakAgility = value;
       }
       
       public function get breakLuck() : uint
@@ -178,9 +256,9 @@ package pet.data
          return _breakLuck;
       }
       
-      public function set breakLuck(param1:uint) : void
+      public function set breakLuck(value:uint) : void
       {
-         _breakLuck = param1;
+         _breakLuck = value;
       }
       
       public function get skills() : Array
@@ -188,9 +266,9 @@ package pet.data
          return _skills.list.concat();
       }
       
-      public function addSkill(param1:PetSkill) : void
+      public function addSkill(skill:PetSkill) : void
       {
-         _skills.add(param1.ID,param1);
+         _skills.add(skill.ID,skill);
       }
       
       public function clearSkills() : void
@@ -203,14 +281,14 @@ package pet.data
          _equipedSkills.clear();
       }
       
-      public function removeSkillByID(param1:int) : void
+      public function removeSkillByID(skillID:int) : void
       {
-         _skills.remove(param1);
+         _skills.remove(skillID);
       }
       
-      public function hasSkill(param1:int) : Boolean
+      public function hasSkill(skillID:int) : Boolean
       {
-         return Boolean(_skills[param1]);
+         return Boolean(_skills[skillID]);
       }
       
       public function get actionMovieName() : String
@@ -221,6 +299,46 @@ package pet.data
       public function get assetReady() : Boolean
       {
          return ModuleLoader.hasDefinition(actionMovieName);
+      }
+      
+      public function get BloodGrowDatum() : int
+      {
+         var hpdatum:int = Number((BloodGrow - LowBloodGrow) * 100) / (Number(HighBloodGrow - LowBloodGrow));
+         return hpdatum;
+      }
+      
+      public function get AttackGrowDatum() : int
+      {
+         var attack:int = Number((AttackGrow - LowAttackGrow) * 100) / (Number(HighAttackGrow - LowAttackGrow));
+         return attack;
+      }
+      
+      public function get DefenceGrowDatum() : int
+      {
+         var defence:int = Number((DefenceGrow - LowDefenceGrow) * 100) / (Number(HighDefenceGrow - LowDefenceGrow));
+         return defence;
+      }
+      
+      public function get AgilityGrowDatum() : int
+      {
+         var agility:int = Number((AgilityGrow - LowAgilityGrow) * 100) / (Number(HighAgilityGrow - LowAgilityGrow));
+         return agility;
+      }
+      
+      public function get LuckGrowDatum() : int
+      {
+         var luck:int = Number((LuckGrow - LowLuckGrow) * 100) / (Number(HighLuckGrow - LowLuckGrow));
+         return luck;
+      }
+      
+      public function get petGraded() : Number
+      {
+         var hpdatum:Number = Number((BloodGrow - LowBloodGrow) * 100) / (Number(HighBloodGrow - LowBloodGrow));
+         var attack:Number = Number((AttackGrow - LowAttackGrow) * 100) / (Number(HighAttackGrow - LowAttackGrow));
+         var defence:Number = Number((DefenceGrow - LowDefenceGrow) * 100) / (Number(HighDefenceGrow - LowDefenceGrow));
+         var agility:Number = Number((AgilityGrow - LowAgilityGrow) * 100) / (Number(HighAgilityGrow - LowAgilityGrow));
+         var luck:Number = Number((LuckGrow - LowLuckGrow) * 100) / (Number(HighLuckGrow - LowLuckGrow));
+         return (hpdatum + attack + defence + agility + luck) / 5;
       }
    }
 }

@@ -100,25 +100,25 @@ package collectionTask.view
       
       protected var reference:CollectionTaskPlayer;
       
-      public function CollectionTaskSceneMap(param1:CollectionTaskModel, param2:SceneScene, param3:DictionaryData, param4:Sprite, param5:Sprite, param6:Sprite = null, param7:Sprite = null, param8:Sprite = null)
+      public function CollectionTaskSceneMap(model:CollectionTaskModel, scene:SceneScene, data:DictionaryData, bg:Sprite, mesh:Sprite, animal:Sprite = null, sky:Sprite = null, article:Sprite = null)
       {
          super();
-         _model = param1;
-         sceneScene = param2;
-         _players = param3;
-         if(param4 == null)
+         _model = model;
+         sceneScene = scene;
+         _players = data;
+         if(bg == null)
          {
             bgLayer = new Sprite();
          }
          else
          {
-            bgLayer = param4;
+            bgLayer = bg;
          }
-         meshLayer = param5 == null?new Sprite():param5;
+         meshLayer = mesh == null?new Sprite():mesh;
          meshLayer.alpha = 0;
-         animalLayer = param6 == null?new Sprite():param6;
-         articleLayer = param8 == null?new Sprite():param8;
-         skyLayer = param7 == null?new Sprite():param7;
+         animalLayer = animal == null?new Sprite():animal;
+         articleLayer = article == null?new Sprite():article;
+         skyLayer = sky == null?new Sprite():sky;
          addChild(bgLayer);
          addChild(animalLayer);
          addChild(meshLayer);
@@ -178,9 +178,9 @@ package collectionTask.view
          _model.addEventListener("playerVisible",_menuChangeHandler);
       }
       
-      protected function _menuChangeHandler(param1:CollectionTaskEvent) : void
+      protected function _menuChangeHandler(event:CollectionTaskEvent) : void
       {
-         var _loc2_:* = param1.type;
+         var _loc2_:* = event.type;
          if("playerNameVisible" !== _loc2_)
          {
             if("playerChatBallVisible" !== _loc2_)
@@ -205,11 +205,11 @@ package collectionTask.view
       {
          var _loc3_:int = 0;
          var _loc2_:* = _characters;
-         for each(var _loc1_ in _characters)
+         for each(var player in _characters)
          {
-            if(_loc1_.ID != _selfPlayer.ID)
+            if(player.ID != _selfPlayer.ID)
             {
-               _loc1_.isShowName = _model.playerNameVisible;
+               player.isShowName = _model.playerNameVisible;
             }
          }
       }
@@ -218,11 +218,11 @@ package collectionTask.view
       {
          var _loc3_:int = 0;
          var _loc2_:* = _characters;
-         for each(var _loc1_ in _characters)
+         for each(var player in _characters)
          {
-            if(_loc1_.ID != _selfPlayer.ID)
+            if(player.ID != _selfPlayer.ID)
             {
-               _loc1_.isChatBall = _model.playerChatBallVisible;
+               player.isChatBall = _model.playerChatBallVisible;
             }
          }
       }
@@ -231,24 +231,24 @@ package collectionTask.view
       {
          var _loc3_:int = 0;
          var _loc2_:* = _characters;
-         for each(var _loc1_ in _characters)
+         for each(var player in _characters)
          {
-            if(_loc1_.ID != _selfPlayer.ID)
+            if(player.ID != _selfPlayer.ID)
             {
-               _loc1_.isShowPlayer = _model.playerVisible;
+               player.isShowPlayer = _model.playerVisible;
             }
          }
       }
       
-      protected function __collectHandler(param1:MouseEvent) : void
+      protected function __collectHandler(event:MouseEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         if(CollectionTaskManager.Instance.isTaskComplete || param1.currentTarget == _collectMovie && CollectionTaskManager.Instance.isCollecting)
+         var x:int = 0;
+         var y:int = 0;
+         if(CollectionTaskManager.Instance.isTaskComplete || event.currentTarget == _collectMovie && CollectionTaskManager.Instance.isCollecting)
          {
             return;
          }
-         var _loc5_:* = param1.currentTarget;
+         var _loc5_:* = event.currentTarget;
          if(_red_tree !== _loc5_)
          {
             if(_green_tree !== _loc5_)
@@ -286,20 +286,20 @@ package collectionTask.view
             _movieClipId = 3;
             CollectionTaskManager.Instance.collectedId = 11499;
          }
-         _collectMovie = param1.currentTarget as MovieClip;
-         var _loc2_:Point = _movieClipPosVector[_movieClipId - 1];
-         checkPonitDistance(_loc2_);
+         _collectMovie = event.currentTarget as MovieClip;
+         var targetPoint:Point = _movieClipPosVector[_movieClipId - 1];
+         checkPonitDistance(targetPoint);
       }
       
-      public function checkPonitDistance(param1:Point) : void
+      public function checkPonitDistance(p:Point) : void
       {
          if(!_selfPlayer)
          {
             return;
          }
-         var _loc3_:Point = _selfPlayer.playerPoint;
-         var _loc2_:int = Math.abs(Point.distance(_loc3_,param1));
-         if(_loc2_ > 50)
+         var fp:Point = _selfPlayer.playerPoint;
+         var dis:int = Math.abs(Point.distance(fp,p));
+         if(dis > 50)
          {
             if(CollectionTaskManager.Instance.isCollecting)
             {
@@ -307,7 +307,7 @@ package collectionTask.view
             }
             _mouseMovie.gotoAndStop(1);
             CollectionTaskManager.Instance.isClickCollection = true;
-            _selfPlayer.walk(param1,_playCollectMovieFunc);
+            _selfPlayer.walk(p,_playCollectMovieFunc);
             sendMyPosition(_selfPlayer.playerVO.walkPath.concat());
          }
          else if(!CollectionTaskManager.Instance.isCollecting)
@@ -316,115 +316,115 @@ package collectionTask.view
          }
       }
       
-      public function setPlayProgressFunc(param1:Function = null) : void
+      public function setPlayProgressFunc(fun:Function = null) : void
       {
-         _playCollectMovieFunc = param1;
+         _playCollectMovieFunc = fun;
       }
       
-      public function setStopProgressFunc(param1:Function = null) : void
+      public function setStopProgressFunc(fun:Function = null) : void
       {
-         _stopCollectFunc = param1;
+         _stopCollectFunc = fun;
       }
       
-      protected function __removeRebortPlayer(param1:CollectionTaskEvent) : void
+      protected function __removeRebortPlayer(event:CollectionTaskEvent) : void
       {
-         var _loc3_:String = param1.robertNickName;
-         var _loc2_:CollectionTaskPlayer = _characters[_loc3_] as CollectionTaskPlayer;
-         _characters.remove(_loc3_);
-         if(_loc2_)
+         var key:String = event.robertNickName;
+         var player:CollectionTaskPlayer = _characters[key] as CollectionTaskPlayer;
+         _characters.remove(key);
+         if(player)
          {
-            if(_loc2_.parent)
+            if(player.parent)
             {
-               _loc2_.parent.removeChild(_loc2_);
+               player.parent.removeChild(player);
             }
-            _loc2_.removeEventListener("characterMovement",setCenter);
-            _loc2_.removeEventListener("characterActionChange",playerActionChange);
-            _loc2_.dispose();
+            player.removeEventListener("characterMovement",setCenter);
+            player.removeEventListener("characterActionChange",playerActionChange);
+            player.dispose();
          }
-         _loc2_ = null;
+         player = null;
       }
       
-      protected function __removePlayer(param1:DictionaryEvent) : void
+      protected function __removePlayer(event:DictionaryEvent) : void
       {
-         var _loc4_:PlayerInfo = (param1.data as PlayerVO).playerInfo;
-         var _loc2_:int = _loc4_.ID;
-         var _loc3_:CollectionTaskPlayer = _characters[_loc2_] as CollectionTaskPlayer;
-         _characters.remove(_loc2_);
-         if(_loc3_)
+         var info:PlayerInfo = (event.data as PlayerVO).playerInfo;
+         var id:int = info.ID;
+         var player:CollectionTaskPlayer = _characters[id] as CollectionTaskPlayer;
+         _characters.remove(id);
+         if(player)
          {
-            if(_loc3_.parent)
+            if(player.parent)
             {
-               _loc3_.parent.removeChild(_loc3_);
+               player.parent.removeChild(player);
             }
-            _loc3_.removeEventListener("characterMovement",setCenter);
-            _loc3_.removeEventListener("characterActionChange",playerActionChange);
-            _loc3_.dispose();
+            player.removeEventListener("characterMovement",setCenter);
+            player.removeEventListener("characterActionChange",playerActionChange);
+            player.dispose();
          }
-         _loc3_ = null;
+         player = null;
       }
       
-      protected function __addPlayer(param1:DictionaryEvent) : void
+      protected function __addPlayer(event:DictionaryEvent) : void
       {
-         var _loc2_:PlayerVO = param1.data as PlayerVO;
-         _currentLoadingPlayer = new CollectionTaskPlayer(_loc2_,addPlayerCallBack);
+         var playerVO:PlayerVO = event.data as PlayerVO;
+         _currentLoadingPlayer = new CollectionTaskPlayer(playerVO,addPlayerCallBack);
       }
       
-      protected function __click(param1:MouseEvent) : void
+      protected function __click(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var playerTargetPoint:* = null;
          if(!_selfPlayer)
          {
             return;
          }
-         var _loc3_:Point = this.globalToLocal(new Point(param1.stageX,param1.stageY));
+         var targetPoint:Point = this.globalToLocal(new Point(event.stageX,event.stageY));
          if(getTimer() - _lastClick > _clickInterval)
          {
             _lastClick = getTimer();
-            if(!sceneScene.hit(_loc3_))
+            if(!sceneScene.hit(targetPoint))
             {
                if(CollectionTaskManager.Instance.isCollecting)
                {
                   _stopCollectFunc();
                }
                CollectionTaskManager.Instance.isClickCollection = false;
-               _loc2_ = new Point(_loc3_.x,_loc3_.y + 15);
-               _selfPlayer.playerVO.walkPath = sceneScene.searchPath(_selfPlayer.playerPoint,_loc2_);
+               playerTargetPoint = new Point(targetPoint.x,targetPoint.y + 15);
+               _selfPlayer.playerVO.walkPath = sceneScene.searchPath(_selfPlayer.playerPoint,playerTargetPoint);
                _selfPlayer.playerVO.walkPath.shift();
                _selfPlayer.playerVO.scenePlayerDirection = SceneCharacterDirection.getDirection(_selfPlayer.playerPoint,_selfPlayer.playerVO.walkPath[0]);
                _selfPlayer.playerVO.currentWalkStartPoint = _selfPlayer.currentWalkStartPoint;
                sendMyPosition(_selfPlayer.playerVO.walkPath.concat());
-               _mouseMovie.x = _loc3_.x;
-               _mouseMovie.y = _loc3_.y;
+               _mouseMovie.x = targetPoint.x;
+               _mouseMovie.y = targetPoint.y;
                _mouseMovie.play();
             }
          }
       }
       
-      public function sendMyPosition(param1:Array) : void
+      public function sendMyPosition(p:Array) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:Array = [];
-         while(_loc4_ < param1.length)
+         var i:int = 0;
+         var arr:Array = [];
+         while(i < p.length)
          {
-            _loc2_.push(int(param1[_loc4_].x),int(param1[_loc4_].y));
-            _loc4_++;
+            arr.push(int(p[i].x),int(p[i].y));
+            i++;
          }
-         var _loc3_:String = _loc2_.toString();
-         SocketManager.Instance.out.sendCollectionSceneMove(param1[param1.length - 1].x,param1[param1.length - 1].y,_loc3_);
+         var pathStr:String = arr.toString();
+         SocketManager.Instance.out.sendCollectionSceneMove(p[p.length - 1].x,p[p.length - 1].y,pathStr);
       }
       
-      public function movePlayer(param1:int, param2:Array) : void
+      public function movePlayer(id:int, p:Array) : void
       {
-         var _loc3_:* = null;
-         if(_characters[param1])
+         var player:* = null;
+         if(_characters[id])
          {
-            _loc3_ = _characters[param1] as CollectionTaskPlayer;
-            _loc3_.playerVO.walkPath = param2;
-            _loc3_.playerWalk(param2);
+            player = _characters[id] as CollectionTaskPlayer;
+            player.playerVO.walkPath = p;
+            player.playerWalk(p);
          }
       }
       
-      protected function updateMap(param1:Event) : void
+      protected function updateMap(event:Event) : void
       {
          if(!_characters || _characters.length <= 0)
          {
@@ -432,14 +432,14 @@ package collectionTask.view
          }
          var _loc4_:int = 0;
          var _loc3_:* = _characters;
-         for each(var _loc2_ in _characters)
+         for each(var player in _characters)
          {
-            _loc2_.updatePlayer();
-            if(_loc2_.playerVO.playerInfo.ID != _selfPlayer.ID)
+            player.updatePlayer();
+            if(player.playerVO.playerInfo.ID != _selfPlayer.ID)
             {
-               _loc2_.isChatBall = _model.playerChatBallVisible;
-               _loc2_.isShowName = _model.playerNameVisible;
-               _loc2_.isShowPlayer = _model.playerVisible;
+               player.isChatBall = _model.playerChatBallVisible;
+               player.isShowName = _model.playerNameVisible;
+               player.isShowPlayer = _model.playerVisible;
             }
          }
          BuildEntityDepth();
@@ -447,50 +447,48 @@ package collectionTask.view
       
       protected function BuildEntityDepth() : void
       {
-         var _loc9_:int = 0;
-         var _loc4_:* = null;
-         var _loc8_:Number = NaN;
-         var _loc7_:* = 0;
-         var _loc5_:* = NaN;
-         var _loc6_:int = 0;
-         var _loc3_:* = null;
-         var _loc1_:Number = NaN;
-         var _loc2_:int = articleLayer.numChildren;
-         _loc9_ = 0;
-         while(_loc9_ < _loc2_ - 1)
+         var i:int = 0;
+         var obj:* = null;
+         var depth:Number = NaN;
+         var minIndex:* = 0;
+         var minDepth:* = NaN;
+         var j:int = 0;
+         var temp:* = null;
+         var tempDepth:Number = NaN;
+         var count:int = articleLayer.numChildren;
+         for(i = 0; i < count - 1; )
          {
-            _loc4_ = articleLayer.getChildAt(_loc9_);
-            _loc8_ = this.getPointDepth(_loc4_.x,_loc4_.y);
-            _loc5_ = 1.79769313486232e308;
-            _loc6_ = _loc9_ + 1;
-            while(_loc6_ < _loc2_)
+            obj = articleLayer.getChildAt(i);
+            depth = this.getPointDepth(obj.x,obj.y);
+            minDepth = 1.79769313486232e308;
+            for(j = i + 1; j < count; )
             {
-               _loc3_ = articleLayer.getChildAt(_loc6_);
-               _loc1_ = this.getPointDepth(_loc3_.x,_loc3_.y);
-               if(_loc1_ < _loc5_)
+               temp = articleLayer.getChildAt(j);
+               tempDepth = this.getPointDepth(temp.x,temp.y);
+               if(tempDepth < minDepth)
                {
-                  _loc7_ = _loc6_;
-                  _loc5_ = _loc1_;
+                  minIndex = j;
+                  minDepth = tempDepth;
                }
-               _loc6_++;
+               j++;
             }
-            if(_loc8_ > _loc5_)
+            if(depth > minDepth)
             {
-               articleLayer.swapChildrenAt(_loc9_,_loc7_);
+               articleLayer.swapChildrenAt(i,minIndex);
             }
-            _loc9_++;
+            i++;
          }
       }
       
-      protected function getPointDepth(param1:Number, param2:Number) : Number
+      protected function getPointDepth(x:Number, y:Number) : Number
       {
-         return sceneMapVO.mapW * param2 + param1;
+         return sceneMapVO.mapW * y + x;
       }
       
-      public function addRobertPlayer(param1:int) : void
+      public function addRobertPlayer(len:int) : void
       {
-         _addRobertCount = 10 - param1;
-         if(param1 < 10)
+         _addRobertCount = 10 - len;
+         if(len < 10)
          {
             _addRobertTimer = TimerManager.getInstance().addTimerJuggler(5000,_addRobertCount);
             _addRobertTimer.addEventListener("timer",__addRebortPlayerHandler);
@@ -498,7 +496,7 @@ package collectionTask.view
          }
       }
       
-      private function __addRebortPlayerHandler(param1:Event) : void
+      private function __addRebortPlayerHandler(event:Event) : void
       {
          if(_characters.length >= 10 || _addRobertCount == 0)
          {
@@ -508,47 +506,47 @@ package collectionTask.view
             _addRobertTimer = null;
             return;
          }
-         var _loc2_:CollectionRobertVo = CollectionTaskManager.Instance.collectionTaskInfoList[_addRobertCount];
-         var _loc3_:PlayerVO = new PlayerVO();
-         var _loc4_:PlayerInfo = new PlayerInfo();
-         _loc4_.NickName = _loc2_.NickName;
-         _loc4_.Sex = _loc2_.Sex == 0;
-         _loc4_.Style = _loc2_.Style;
-         _loc3_.playerInfo = _loc4_;
-         _loc3_.playerPos = sceneMapVO.defaultPos;
-         _loc3_.isRobert = true;
+         var robertInfo:CollectionRobertVo = CollectionTaskManager.Instance.collectionTaskInfoList[_addRobertCount];
+         var playerVO:PlayerVO = new PlayerVO();
+         var info:PlayerInfo = new PlayerInfo();
+         info.NickName = robertInfo.NickName;
+         info.Sex = robertInfo.Sex == 0;
+         info.Style = robertInfo.Style;
+         playerVO.playerInfo = info;
+         playerVO.playerPos = sceneMapVO.defaultPos;
+         playerVO.isRobert = true;
          _addRobertCount = Number(_addRobertCount) - 1;
-         _currentLoadingPlayer = new CollectionTaskPlayer(_loc3_,addPlayerCallBack);
+         _currentLoadingPlayer = new CollectionTaskPlayer(playerVO,addPlayerCallBack);
       }
       
       public function addSelfPlayer() : void
       {
-         var _loc1_:* = null;
+         var selfPlayerVO:* = null;
          if(!_selfPlayer)
          {
-            _loc1_ = new PlayerVO();
-            _loc1_.playerInfo = PlayerManager.Instance.Self;
-            _currentLoadingPlayer = new CollectionTaskPlayer(_loc1_,addPlayerCallBack);
+            selfPlayerVO = new PlayerVO();
+            selfPlayerVO.playerInfo = PlayerManager.Instance.Self;
+            _currentLoadingPlayer = new CollectionTaskPlayer(selfPlayerVO,addPlayerCallBack);
          }
       }
       
-      private function addPlayerCallBack(param1:CollectionTaskPlayer, param2:Boolean, param3:int) : void
+      private function addPlayerCallBack(player:CollectionTaskPlayer, isLoadSucceed:Boolean, vFlag:int) : void
       {
-         if(param3 == 0)
+         if(vFlag == 0)
          {
-            if(!articleLayer || !param1)
+            if(!articleLayer || !player)
             {
                return;
             }
             _currentLoadingPlayer = null;
-            param1.sceneScene = sceneScene;
-            var _loc4_:* = param1.playerVO.scenePlayerDirection;
-            param1.sceneCharacterDirection = _loc4_;
-            param1.setSceneCharacterDirectionDefault = _loc4_;
-            if(!_selfPlayer && param1.playerVO.playerInfo.ID == PlayerManager.Instance.Self.ID)
+            player.sceneScene = sceneScene;
+            var _loc4_:* = player.playerVO.scenePlayerDirection;
+            player.sceneCharacterDirection = _loc4_;
+            player.setSceneCharacterDirectionDefault = _loc4_;
+            if(!_selfPlayer && player.playerVO.playerInfo.ID == PlayerManager.Instance.Self.ID)
             {
-               param1.playerVO.playerPos = _sceneMapVO.defaultPos;
-               _selfPlayer = param1;
+               player.playerVO.playerPos = _sceneMapVO.defaultPos;
+               _selfPlayer = player;
                articleLayer.addChild(_selfPlayer);
                ajustScreen(_selfPlayer);
                setCenter();
@@ -556,22 +554,22 @@ package collectionTask.view
             }
             else
             {
-               articleLayer.addChild(param1);
+               articleLayer.addChild(player);
             }
-            param1.playerPoint = param1.playerVO.playerPos;
-            param1.sceneCharacterStateType = "natural";
-            if(!param1.playerVO.isRobert)
+            player.playerPoint = player.playerVO.playerPos;
+            player.sceneCharacterStateType = "natural";
+            if(!player.playerVO.isRobert)
             {
-               _characters.add(param1.playerVO.playerInfo.ID,param1);
+               _characters.add(player.playerVO.playerInfo.ID,player);
             }
             else
             {
-               _characters.add(param1.playerVO.playerInfo.NickName,param1);
-               param1.robertWalk(_movieClipPosVector);
+               _characters.add(player.playerVO.playerInfo.NickName,player);
+               player.robertWalk(_movieClipPosVector);
             }
-            param1.isShowName = _model.playerNameVisible;
-            param1.isChatBall = _model.playerChatBallVisible;
-            param1.isShowPlayer = _model.playerVisible;
+            player.isShowName = _model.playerNameVisible;
+            player.isChatBall = _model.playerChatBallVisible;
+            player.isShowPlayer = _model.playerVisible;
          }
       }
       
@@ -580,9 +578,9 @@ package collectionTask.view
          return _characters;
       }
       
-      public function set sceneMapVO(param1:SceneMapVO) : void
+      public function set sceneMapVO(value:SceneMapVO) : void
       {
-         _sceneMapVO = param1;
+         _sceneMapVO = value;
       }
       
       public function get sceneMapVO() : SceneMapVO
@@ -590,52 +588,52 @@ package collectionTask.view
          return _sceneMapVO;
       }
       
-      private function playerActionChange(param1:SceneCharacterEvent) : void
+      private function playerActionChange(evt:SceneCharacterEvent) : void
       {
-         var _loc2_:String = param1.data.toString();
-         if(_loc2_ == "naturalStandFront" || _loc2_ == "naturalStandBack")
+         var type:String = evt.data.toString();
+         if(type == "naturalStandFront" || type == "naturalStandBack")
          {
             _mouseMovie.gotoAndStop(1);
          }
       }
       
-      public function setCenter(param1:SceneCharacterEvent = null) : void
+      public function setCenter(event:SceneCharacterEvent = null) : void
       {
-         var _loc3_:* = NaN;
-         var _loc2_:* = NaN;
+         var xf:* = NaN;
+         var yf:* = NaN;
          if(reference)
          {
-            _loc3_ = Number(-(reference.x - 1000 / 2));
-            _loc2_ = Number(-(reference.y - 600 / 2) + 50);
+            xf = Number(-(reference.x - 1000 / 2));
+            yf = Number(-(reference.y - 600 / 2) + 50);
          }
          else
          {
-            _loc3_ = Number(-(_sceneMapVO.defaultPos.x - 1000 / 2));
-            _loc2_ = Number(-(_sceneMapVO.defaultPos.y - 600 / 2) + 50);
+            xf = Number(-(_sceneMapVO.defaultPos.x - 1000 / 2));
+            yf = Number(-(_sceneMapVO.defaultPos.y - 600 / 2) + 50);
          }
-         if(_loc3_ > 0)
+         if(xf > 0)
          {
-            _loc3_ = 0;
+            xf = 0;
          }
-         if(_loc3_ < 1000 - _sceneMapVO.mapW)
+         if(xf < 1000 - _sceneMapVO.mapW)
          {
-            _loc3_ = Number(1000 - _sceneMapVO.mapW);
+            xf = Number(1000 - _sceneMapVO.mapW);
          }
-         if(_loc2_ > 0)
+         if(yf > 0)
          {
-            _loc2_ = 0;
+            yf = 0;
          }
-         if(_loc2_ < 600 - _sceneMapVO.mapH)
+         if(yf < 600 - _sceneMapVO.mapH)
          {
-            _loc2_ = Number(600 - _sceneMapVO.mapH);
+            yf = Number(600 - _sceneMapVO.mapH);
          }
-         x = _loc3_;
-         y = _loc2_;
+         x = xf;
+         y = yf;
       }
       
-      protected function ajustScreen(param1:CollectionTaskPlayer) : void
+      protected function ajustScreen(churchPlayer:CollectionTaskPlayer) : void
       {
-         if(param1 == null)
+         if(churchPlayer == null)
          {
             if(reference)
             {
@@ -648,7 +646,7 @@ package collectionTask.view
          {
             reference.removeEventListener("characterMovement",setCenter);
          }
-         reference = param1;
+         reference = churchPlayer;
          reference.addEventListener("characterMovement",setCenter);
       }
       
@@ -671,36 +669,35 @@ package collectionTask.view
       
       public function dispose() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var player:* = null;
          removeEvent();
          _sceneMapVO = null;
          if(articleLayer)
          {
-            _loc2_ = articleLayer.numChildren;
-            while(_loc2_ > 0)
+            for(i = articleLayer.numChildren; i > 0; )
             {
-               _loc1_ = articleLayer.getChildAt(_loc2_ - 1) as CollectionTaskPlayer;
-               if(_loc1_)
+               player = articleLayer.getChildAt(i - 1) as CollectionTaskPlayer;
+               if(player)
                {
-                  _loc1_.removeEventListener("characterMovement",setCenter);
-                  _loc1_.removeEventListener("characterActionChange",playerActionChange);
-                  if(_loc1_.parent)
+                  player.removeEventListener("characterMovement",setCenter);
+                  player.removeEventListener("characterActionChange",playerActionChange);
+                  if(player.parent)
                   {
-                     _loc1_.parent.removeChild(_loc1_);
+                     player.parent.removeChild(player);
                   }
-                  _loc1_.dispose();
+                  player.dispose();
                }
-               _loc1_ = null;
+               player = null;
                try
                {
-                  articleLayer.removeChildAt(_loc2_ - 1);
+                  articleLayer.removeChildAt(i - 1);
                }
                catch(e:RangeError)
                {
                   trace(e);
                }
-               _loc2_--;
+               i--;
             }
             if(articleLayer && articleLayer.parent)
             {

@@ -71,33 +71,33 @@ package petsBag.view.item
          addChild(_activate);
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         if(param1)
+         if(data)
          {
-            _info = param1 as PetAtlasInfo;
+            _info = data as PetAtlasInfo;
             update();
          }
       }
       
       private function update() : void
       {
-         var _loc2_:String = PetInfoManager.getPetByCollectID(_info.ID).Name;
+         var name:String = PetInfoManager.getPetByCollectID(_info.ID).Name;
          _atkText.text = LanguageMgr.GetTranslation("attack") + "+" + _info.Attack;
          _defText.text = LanguageMgr.GetTranslation("defence") + "+" + _info.Defence;
          _spdText.text = LanguageMgr.GetTranslation("agility") + "+" + _info.Agility;
          _lukText.text = LanguageMgr.GetTranslation("luck") + "+" + _info.Lucky;
-         var _loc1_:Array = LanguageMgr.GetTranslation("avatarCollection.itemTip.activityTxt").split(",");
+         var text:Array = LanguageMgr.GetTranslation("avatarCollection.itemTip.activityTxt").split(",");
          if(_info.isActivate)
          {
-            _nameText.text = _loc2_ + " Lv." + _info.level;
-            _activate.text = _loc1_[0];
+            _nameText.text = name + " Lv." + _info.level;
+            _activate.text = text[0];
             _activate.textColor = 3273482;
          }
          else
          {
-            _nameText.text = _loc2_;
-            _activate.text = _loc1_[1];
+            _nameText.text = name;
+            _activate.text = text[1];
             _activate.textColor = 16711680;
          }
       }

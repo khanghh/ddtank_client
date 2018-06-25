@@ -12,10 +12,10 @@ package hotSpring.event
       
       public var playerid:int;
       
-      public function HotSpringRoomPlayerEvent(param1:String, param2:int)
+      public function HotSpringRoomPlayerEvent(type:String, playerid:int)
       {
-         this.playerid = param2;
-         super(param1);
+         this.playerid = playerid;
+         super(type);
       }
    }
 }

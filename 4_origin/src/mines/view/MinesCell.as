@@ -17,10 +17,10 @@ package mines.view
       
       public var mouseSilenced:Boolean = false;
       
-      public function MinesCell(param1:Sprite, param2:int)
+      public function MinesCell(bg:Sprite, $index:int)
       {
-         super(0,null,false,param1);
-         _index = param2;
+         super(0,null,false,bg);
+         _index = $index;
          if(_cellMouseOverBg)
          {
             ObjectUtils.disposeObject(_cellMouseOverBg);
@@ -44,7 +44,7 @@ package mines.view
          DoubleClickManager.Instance.disableDoubleClick(this);
       }
       
-      protected function __doubleClickHandler(param1:InteractiveEvent) : void
+      protected function __doubleClickHandler(evt:InteractiveEvent) : void
       {
          if(!DoubleClickEnabled)
          {
@@ -54,7 +54,7 @@ package mines.view
          {
             return;
          }
-         (param1.currentTarget as BagCell).info = null;
+         (evt.currentTarget as BagCell).info = null;
       }
       
       public function get itemBagType() : int

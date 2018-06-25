@@ -31,7 +31,7 @@ package trainer.view
       
       private var _isEscDisabled:Boolean = false;
       
-      public function NewHandContainer(param1:NewHandContainerEnforcer)
+      public function NewHandContainer(enforcer:NewHandContainerEnforcer)
       {
          super();
          _arrows = new Dictionary();
@@ -49,49 +49,48 @@ package trainer.view
          return _instance;
       }
       
-      protected function onGuideRemoved(param1:Event) : void
+      protected function onGuideRemoved(e:Event) : void
       {
          unLockKeyBoard();
       }
       
-      public function showGuideCover(param1:String, param2:Array, param3:int = 4, param4:Boolean = true) : void
+      public function showGuideCover(guideCoverType:String, args:Array, layer:int = 4, isDisableESC:Boolean = true) : void
       {
-         if(param4)
+         if(isDisableESC)
          {
             lockKeyBoard();
          }
          _guideCover.parent && _guideCover.parent.removeChild(_guideCover);
-         LayerManager.Instance.addToLayer(_guideCover,param3,false,0);
-         _guideCover.dig(param1,param2);
+         LayerManager.Instance.addToLayer(_guideCover,layer,false,0);
+         _guideCover.dig(guideCoverType,args);
       }
       
-      public function showGuideCoverMultiHoles(param1:int, param2:Boolean, ... rest) : void
+      public function showGuideCoverMultiHoles(layer:int, isDisableESC:Boolean, ... args) : void
       {
-         var _loc5_:int = 0;
-         if(param2)
+         var i:int = 0;
+         if(isDisableESC)
          {
             lockKeyBoard();
          }
          _guideCover.parent && _guideCover.parent.removeChild(_guideCover);
-         LayerManager.Instance.addToLayer(_guideCover,param1,false,0);
-         var _loc4_:int = rest.length;
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         LayerManager.Instance.addToLayer(_guideCover,layer,false,0);
+         var len:int = args.length;
+         for(i = 0; i < len; )
          {
-            _guideCover.dig(rest[_loc5_],rest[_loc5_ + 1]);
-            _loc5_ = _loc5_ + 2;
+            _guideCover.dig(args[i],args[i + 1]);
+            i = i + 2;
          }
       }
       
-      public function showCover(param1:uint, param2:Number, param3:int = 4, param4:Boolean = true) : void
+      public function showCover($color:uint, $alpha:Number, layer:int = 4, isDisableESC:Boolean = true) : void
       {
-         if(param4)
+         if(isDisableESC)
          {
             lockKeyBoard();
          }
          _guideCover.parent && _guideCover.parent.removeChild(_guideCover);
-         LayerManager.Instance.addToLayer(_guideCover,param3,false,0);
-         _guideCover.drawCover(param1,param2);
+         LayerManager.Instance.addToLayer(_guideCover,layer,false,0);
+         _guideCover.drawCover($color,$alpha);
       }
       
       public function hideGuideCover() : void
@@ -121,28 +120,28 @@ package trainer.view
          KeyboardShortcutsManager.Instance.cancelForbidden();
       }
       
-      protected function onKey(param1:KeyboardEvent) : void
+      protected function onKey(e:KeyboardEvent) : void
       {
          if(_guideCover.parent == null)
          {
             unLockKeyBoard();
             return;
          }
-         param1.stopImmediatePropagation();
+         e.stopImmediatePropagation();
       }
       
-      public function showArrow(param1:int, param2:int, param3:*, param4:String = "", param5:String = "", param6:DisplayObjectContainer = null, param7:int = 0, param8:Boolean = false) : void
+      public function showArrow(id:int, rotation:int, arrowPos:*, tip:String = "", tipPos:String = "", con:DisplayObjectContainer = null, delay:int = 0, isFarmGuild:Boolean = false) : void
       {
-         var _loc12_:* = null;
-         var _loc10_:* = null;
-         var _loc11_:* = null;
-         if(hasArrow(param1))
+         var arPos:* = null;
+         var mcTip:* = null;
+         var tPos:* = null;
+         if(hasArrow(id))
          {
-            clearArrow(param1);
+            clearArrow(id);
          }
-         if(param1 != 128 && param1 != 129 && param1 != 142)
+         if(id != 128 && id != 129 && id != 142 && id != 153)
          {
-            if(!param8)
+            if(!isFarmGuild)
             {
                if(!WeakGuildManager.Instance.switchUserGuide || PlayerManager.Instance.Self.IsWeakGuildFinish(950))
                {
@@ -150,131 +149,131 @@ package trainer.view
                }
             }
          }
-         var _loc13_:Object = {};
-         if(param3 is Point)
+         var obj:Object = {};
+         if(arrowPos is Point)
          {
-            _loc12_ = param3;
+            arPos = arrowPos;
          }
          else
          {
-            _loc12_ = ComponentFactory.Instance.creatCustomObject(param3);
+            arPos = ComponentFactory.Instance.creatCustomObject(arrowPos);
          }
-         var _loc9_:MovieClip = ClassUtils.CreatInstance("asset.trainer.TrainerArrowAsset");
-         _loc9_.mouseChildren = false;
-         _loc9_.mouseEnabled = false;
-         _loc9_.rotation = param2;
-         _loc9_.x = _loc12_.x;
-         _loc9_.y = _loc12_.y;
-         if(param6)
+         var arrow:MovieClip = ClassUtils.CreatInstance("asset.trainer.TrainerArrowAsset");
+         arrow.mouseChildren = false;
+         arrow.mouseEnabled = false;
+         arrow.rotation = rotation;
+         arrow.x = arPos.x;
+         arrow.y = arPos.y;
+         if(con)
          {
-            param6.addChild(_loc9_);
+            con.addChild(arrow);
          }
          else
          {
-            LayerManager.Instance.addToLayer(_loc9_,4,false,0);
+            LayerManager.Instance.addToLayer(arrow,4,false,0);
          }
-         _loc13_["arrow"] = _loc9_;
-         if(param4 != "")
+         obj["arrow"] = arrow;
+         if(tip != "")
          {
-            _loc10_ = ClassUtils.CreatInstance(param4);
-            _loc10_.mouseChildren = false;
-            _loc10_.mouseEnabled = false;
-            if(param5 != "")
+            mcTip = ClassUtils.CreatInstance(tip);
+            mcTip.mouseChildren = false;
+            mcTip.mouseEnabled = false;
+            if(tipPos != "")
             {
-               _loc11_ = ComponentFactory.Instance.creatCustomObject(param5);
-               _loc10_.x = _loc11_.x;
-               _loc10_.y = _loc11_.y;
+               tPos = ComponentFactory.Instance.creatCustomObject(tipPos);
+               mcTip.x = tPos.x;
+               mcTip.y = tPos.y;
             }
-            if(param6)
+            if(con)
             {
-               param6.addChild(_loc10_);
+               con.addChild(mcTip);
             }
             else
             {
-               LayerManager.Instance.addToLayer(_loc10_,4,false,0);
+               LayerManager.Instance.addToLayer(mcTip,4,false,0);
             }
-            _loc13_["tip"] = _loc10_;
+            obj["tip"] = mcTip;
          }
-         _arrows[param1] = _loc13_;
-         if(param7 > 0)
+         _arrows[id] = obj;
+         if(delay > 0)
          {
-            setTimeout(clearArrow,param7,param1);
+            setTimeout(clearArrow,delay,id);
          }
       }
       
-      public function clearArrowByID(param1:int) : void
+      public function clearArrowByID(id:int) : void
       {
-         if(param1 == -1)
+         if(id == -1)
          {
             var _loc4_:int = 0;
             var _loc3_:* = _arrows;
-            for(var _loc2_ in _arrows)
+            for(var i in _arrows)
             {
-               clearArrow(int(_loc2_));
+               clearArrow(int(i));
             }
          }
          else
          {
-            clearArrow(param1);
+            clearArrow(id);
          }
       }
       
-      public function hasArrow(param1:int) : Boolean
+      public function hasArrow(id:int) : Boolean
       {
-         return _arrows[param1] != null;
+         return _arrows[id] != null;
       }
       
-      public function showMovie(param1:String, param2:String = "") : void
+      public function showMovie(styleName:String, pos:String = "") : void
       {
-         var _loc4_:* = null;
-         if(_movies[param1])
+         var p:* = null;
+         if(_movies[styleName])
          {
             throw new Error("Already has a arrow with this id!");
          }
-         var _loc3_:MovieClip = ClassUtils.CreatInstance(param1);
+         var mc:MovieClip = ClassUtils.CreatInstance(styleName);
          var _loc5_:Boolean = false;
-         _loc3_.mouseChildren = _loc5_;
-         _loc3_.mouseEnabled = _loc5_;
-         if(param2 != "")
+         mc.mouseChildren = _loc5_;
+         mc.mouseEnabled = _loc5_;
+         if(pos != "")
          {
-            _loc4_ = ComponentFactory.Instance.creatCustomObject(param2);
-            _loc3_.x = _loc4_.x;
-            _loc3_.y = _loc4_.y;
+            p = ComponentFactory.Instance.creatCustomObject(pos);
+            mc.x = p.x;
+            mc.y = p.y;
          }
-         LayerManager.Instance.addToLayer(_loc3_,3,false,0);
-         _movies[param1] = _loc3_;
+         LayerManager.Instance.addToLayer(mc,3,false,0);
+         _movies[styleName] = mc;
       }
       
-      public function hideMovie(param1:String) : void
+      public function hideMovie(styleName:String) : void
       {
-         if(param1 == "-1")
+         if(styleName == "-1")
          {
             var _loc4_:int = 0;
             var _loc3_:* = _movies;
-            for(var _loc2_ in _movies)
+            for(var s in _movies)
             {
-               clearMovie(_loc2_);
+               clearMovie(s);
             }
          }
          else
          {
-            clearMovie(param1);
+            clearMovie(styleName);
          }
       }
       
-      private function clearArrow(param1:int) : void
+      private function clearArrow(id:int) : void
       {
-         var _loc2_:Object = _arrows[param1];
-         if(_loc2_)
+         var obj:Object = _arrows[id];
+         if(obj)
          {
-            ObjectUtils.disposeObject(_loc2_["arrow"]);
-            ObjectUtils.disposeObject(_loc2_["tip"]);
+            ObjectUtils.disposeObject(obj["arrow"]);
+            ObjectUtils.disposeObject(obj["tip"]);
          }
       }
       
-      private function clearMovie(param1:String) : void
+      private function clearMovie(styleName:String) : void
       {
-         ObjectUtils.disposeObject(_movies[param1]);
+         ObjectUtils.disposeObject(_movies[styleName]);
       }
       
       public function dispose() : void

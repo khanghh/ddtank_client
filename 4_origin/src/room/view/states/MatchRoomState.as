@@ -17,17 +17,17 @@ package room.view.states
          super();
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
          _roomView = new MatchRoomView(RoomManager.Instance.current);
          PositionUtils.setPos(_roomView,"asset.ddtroom.matchroomstate.pos");
          addChild(_roomView);
-         super.enter(param1,param2);
+         super.enter(prev,data);
       }
       
-      override protected function __startLoading(param1:Event) : void
+      override protected function __startLoading(e:Event) : void
       {
-         super.__startLoading(param1);
+         super.__startLoading(e);
          SocketManager.Instance.out.syncWeakStep(46);
       }
       
@@ -45,10 +45,10 @@ package room.view.states
          return "roomlist";
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
          MainToolBar.Instance.hide();
-         super.leaving(param1);
+         super.leaving(next);
       }
    }
 }

@@ -19,7 +19,7 @@ package gemstone.items
          super();
       }
       
-      public function setInfo(param1:Object) : void
+      public function setInfo(obj:Object) : void
       {
          if(bitMap)
          {
@@ -29,7 +29,7 @@ package gemstone.items
          {
             ObjectUtils.disposeObject(txt);
          }
-         var _loc2_:* = param1.id;
+         var _loc2_:* = obj.id;
          if(100001 !== _loc2_)
          {
             if(100002 !== _loc2_)
@@ -71,7 +71,7 @@ package gemstone.items
          addChild(bitMap);
          txt.x = bitMap.width + 10;
          txt.y = txt.y + 4;
-         txt.text = param1.str;
+         txt.text = obj.str;
       }
       
       public function dispose() : void

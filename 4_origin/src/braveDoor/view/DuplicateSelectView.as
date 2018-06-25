@@ -33,9 +33,9 @@ package braveDoor.view
       
       private var _control:BraveDoorControl;
       
-      public function DuplicateSelectView(param1:BraveDoorControl)
+      public function DuplicateSelectView($ctr:BraveDoorControl)
       {
-         _control = param1;
+         _control = $ctr;
          super();
       }
       
@@ -73,7 +73,7 @@ package braveDoor.view
          _selectDupBtn.removeEventListener("click",__selectDupHandler);
       }
       
-      private function __selectDupHandler(param1:MouseEvent) : void
+      private function __selectDupHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(_control)
@@ -83,36 +83,36 @@ package braveDoor.view
          this.dispose();
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.playButtonSound();
             this.dispose();
          }
       }
       
-      public function set duplicateID(param1:int) : void
+      public function set duplicateID(id:int) : void
       {
-         _info = MapManager.getBraveDoorDuplicateInfo(param1);
-         updateMap(param1);
-         if(_info && param1 != 0 && param1 != 10000 && _info.SimpleTemplateIds != "")
+         _info = MapManager.getBraveDoorDuplicateInfo(id);
+         updateMap(id);
+         if(_info && id != 0 && id != 10000 && _info.SimpleTemplateIds != "")
          {
             _dropList.info = _info.SimpleTemplateIds.split(",");
          }
          _selectDupBtn.enable = true;
       }
       
-      private function updateMap(param1:int) : void
+      private function updateMap($duplicateId:int) : void
       {
          if(_duplicateMap)
          {
             ObjectUtils.disposeObject(_duplicateMap);
             _duplicateMap = null;
          }
-         if(param1 != 0)
+         if($duplicateId != 0)
          {
-            _duplicateMap = ComponentFactory.Instance.creatBitmap("asset.braveDoor.duplicateIcon" + param1);
+            _duplicateMap = ComponentFactory.Instance.creatBitmap("asset.braveDoor.duplicateIcon" + $duplicateId);
             _duplicateMap.x = 20;
             _duplicateMap.y = 44;
             addChild(_duplicateMap);

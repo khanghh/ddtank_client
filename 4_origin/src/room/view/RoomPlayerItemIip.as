@@ -36,26 +36,26 @@ package room.view
          _bg = ComponentFactory.Instance.creatComponentByStylename("ddtroom.roomPlayerItemTipsBG");
          addChild(_bg);
          _textFrameArray = new Vector.<FilterFrameText>();
-         var _loc1_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("ddtroom.roomPlayerItemTips.contentTxt");
-         _loc1_.visible = false;
-         addChild(_loc1_);
-         _textFrameArray.push(_loc1_);
-         var _loc5_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("ddtroom.roomPlayerItemTips.contentTxt2");
-         _loc5_.visible = false;
-         addChild(_loc5_);
-         _textFrameArray.push(_loc5_);
-         var _loc4_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("ddtroom.roomPlayerItemTips.contentTxt3");
-         _loc4_.visible = false;
-         addChild(_loc4_);
-         _textFrameArray.push(_loc4_);
-         var _loc3_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("ddtroom.roomPlayerItemTips.contentTxt4");
-         _loc3_.visible = false;
-         addChild(_loc3_);
-         _textFrameArray.push(_loc3_);
-         var _loc2_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("ddtroom.roomPlayerItemTips.contentTxt5");
-         _loc2_.visible = false;
-         addChild(_loc2_);
-         _textFrameArray.push(_loc2_);
+         var _content:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("ddtroom.roomPlayerItemTips.contentTxt");
+         _content.visible = false;
+         addChild(_content);
+         _textFrameArray.push(_content);
+         var _content2:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("ddtroom.roomPlayerItemTips.contentTxt2");
+         _content2.visible = false;
+         addChild(_content2);
+         _textFrameArray.push(_content2);
+         var _content3:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("ddtroom.roomPlayerItemTips.contentTxt3");
+         _content3.visible = false;
+         addChild(_content3);
+         _textFrameArray.push(_content3);
+         var _content4:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("ddtroom.roomPlayerItemTips.contentTxt4");
+         _content4.visible = false;
+         addChild(_content4);
+         _textFrameArray.push(_content4);
+         var _content5:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("ddtroom.roomPlayerItemTips.contentTxt5");
+         _content5.visible = false;
+         addChild(_content5);
+         _textFrameArray.push(_content5);
          _contentLabel = ComponentFactory.Instance.model.getSet("ddtroom.roomPlayerItemTips.contentLabelTF");
       }
       
@@ -64,9 +64,9 @@ package room.view
          return _tipData;
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         _tipData = param1;
+         _tipData = data;
          if(_tipData)
          {
             this.visible = true;
@@ -79,43 +79,42 @@ package room.view
          }
       }
       
-      private function returnFilterFrameText(param1:String) : FilterFrameText
+      private function returnFilterFrameText(str:String) : FilterFrameText
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         _loc4_ = 0;
-         while(_loc4_ < _textFrameArray.length)
+         var i:int = 0;
+         var obj:* = null;
+         var txt:* = null;
+         for(i = 0; i < _textFrameArray.length; )
          {
-            _loc2_ = _textFrameArray[_loc4_];
-            if(_loc2_.text == "" || _loc2_.text == param1)
+            obj = _textFrameArray[i];
+            if(obj.text == "" || obj.text == str)
             {
-               _loc3_ = _loc2_;
+               txt = obj;
                break;
             }
-            _loc4_++;
+            i++;
          }
-         return _loc2_;
+         return obj;
       }
       
       private function isVisibleFunction() : void
       {
-         var _loc2_:int = 0;
+         var trueCount:int = 0;
          var _loc4_:int = 0;
          var _loc3_:* = _textFrameArray;
-         for each(var _loc1_ in _textFrameArray)
+         for each(var obj in _textFrameArray)
          {
-            if(_loc1_.text == "")
+            if(obj.text == "")
             {
-               _loc1_.visible = false;
+               obj.visible = false;
             }
             else
             {
-               _loc2_++;
-               _loc1_.visible = true;
+               trueCount++;
+               obj.visible = true;
             }
          }
-         if(_loc2_ == 0)
+         if(trueCount == 0)
          {
             this.visible = false;
          }
@@ -125,103 +124,101 @@ package room.view
       {
          var _loc3_:int = 0;
          var _loc2_:* = _textFrameArray;
-         for each(var _loc1_ in _textFrameArray)
+         for each(var txt in _textFrameArray)
          {
-            _loc1_.text = "";
+            txt.text = "";
          }
       }
       
       private function update() : void
       {
-         var _loc9_:* = null;
-         var _loc11_:int = 0;
-         var _loc1_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc5_:* = null;
-         var _loc10_:int = 0;
-         var _loc4_:* = null;
-         var _loc7_:* = null;
-         var _loc6_:* = null;
-         var _loc8_:* = null;
+         var playerInfo:* = null;
+         var i:int = 0;
+         var txt2:* = null;
+         var contentTxt2:* = null;
+         var txt3:* = null;
+         var contentTxt3:* = null;
+         var k:int = 0;
+         var txt4:* = null;
+         var contentTxt4:* = null;
+         var txt5:* = null;
+         var contentTxt5:* = null;
          if(_tipData is PlayerInfo)
          {
-            _loc9_ = _tipData as PlayerInfo;
-            if(_loc9_.ID == _loc9_.ID)
+            playerInfo = _tipData as PlayerInfo;
+            if(playerInfo.ID == playerInfo.ID)
             {
-               if(_loc9_.apprenticeshipState == 2 || _loc9_.apprenticeshipState == 3)
+               if(playerInfo.apprenticeshipState == 2 || playerInfo.apprenticeshipState == 3)
                {
-                  _loc11_ = 0;
-                  while(_loc11_ <= (_loc9_.getMasterOrApprentices().length >= 3?2:_loc9_.getMasterOrApprentices().length))
+                  for(i = 0; i <= (playerInfo.getMasterOrApprentices().length >= 3?2:playerInfo.getMasterOrApprentices().length); )
                   {
-                     if(_loc9_.getMasterOrApprentices().list[_loc11_] && _loc9_.getMasterOrApprentices().list[_loc11_] != "")
+                     if(playerInfo.getMasterOrApprentices().list[i] && playerInfo.getMasterOrApprentices().list[i] != "")
                      {
-                        _textFrameArray[_loc11_].text = LanguageMgr.GetTranslation("ddt.view.academyCommon.academyIcon.AcademyIconTip.master",_loc9_.getMasterOrApprentices().list[_loc11_]);
-                        _textFrameArray[_loc11_].setTextFormat(_contentLabel,0,_loc9_.getMasterOrApprentices().list[_loc11_].length);
+                        _textFrameArray[i].text = LanguageMgr.GetTranslation("ddt.view.academyCommon.academyIcon.AcademyIconTip.master",playerInfo.getMasterOrApprentices().list[i]);
+                        _textFrameArray[i].setTextFormat(_contentLabel,0,playerInfo.getMasterOrApprentices().list[i].length);
                      }
-                     _loc11_++;
+                     i++;
                   }
                }
-               else if(_loc9_.apprenticeshipState == 1)
+               else if(playerInfo.apprenticeshipState == 1)
                {
-                  if(_loc9_.getMasterOrApprentices().list[0] && _loc9_.getMasterOrApprentices().list[0] != "")
+                  if(playerInfo.getMasterOrApprentices().list[0] && playerInfo.getMasterOrApprentices().list[0] != "")
                   {
-                     _loc1_ = LanguageMgr.GetTranslation("ddt.view.academyCommon.academyIcon.AcademyIconTip.Apprentice",_loc9_.getMasterOrApprentices().list[0]);
-                     _loc3_ = returnFilterFrameText(_loc1_);
-                     if(_loc3_)
+                     txt2 = LanguageMgr.GetTranslation("ddt.view.academyCommon.academyIcon.AcademyIconTip.Apprentice",playerInfo.getMasterOrApprentices().list[0]);
+                     contentTxt2 = returnFilterFrameText(txt2);
+                     if(contentTxt2)
                      {
-                        _loc3_.text = _loc1_;
-                        _loc3_.setTextFormat(_contentLabel,0,_loc9_.getMasterOrApprentices().list[0].length);
+                        contentTxt2.text = txt2;
+                        contentTxt2.setTextFormat(_contentLabel,0,playerInfo.getMasterOrApprentices().list[0].length);
                      }
                   }
                }
-               if(_loc9_.IsMarried)
+               if(playerInfo.IsMarried)
                {
-                  _loc2_ = LanguageMgr.GetTranslation("ddt.room.roomPlayerItemTip.SpouseNameTxt",_loc9_.SpouseName);
-                  _loc5_ = returnFilterFrameText(_loc2_);
-                  if(_loc5_)
+                  txt3 = LanguageMgr.GetTranslation("ddt.room.roomPlayerItemTip.SpouseNameTxt",playerInfo.SpouseName);
+                  contentTxt3 = returnFilterFrameText(txt3);
+                  if(contentTxt3)
                   {
-                     _loc5_.text = _loc2_;
-                     _loc5_.setTextFormat(_contentLabel,14,_loc2_.length);
+                     contentTxt3.text = txt3;
+                     contentTxt3.setTextFormat(_contentLabel,14,txt3.length);
                   }
                }
             }
             else
             {
-               if(_loc9_.apprenticeshipState == 2 || _loc9_.apprenticeshipState == 3)
+               if(playerInfo.apprenticeshipState == 2 || playerInfo.apprenticeshipState == 3)
                {
-                  _loc10_ = 0;
-                  while(_loc10_ <= (_loc9_.getMasterOrApprentices().length >= 3?2:_loc9_.getMasterOrApprentices().length))
+                  for(k = 0; k <= (playerInfo.getMasterOrApprentices().length >= 3?2:playerInfo.getMasterOrApprentices().length); )
                   {
-                     if(_loc9_.getMasterOrApprentices().list[_loc10_] && _loc9_.getMasterOrApprentices().list[_loc10_] != "")
+                     if(playerInfo.getMasterOrApprentices().list[k] && playerInfo.getMasterOrApprentices().list[k] != "")
                      {
-                        _textFrameArray[_loc10_].text = LanguageMgr.GetTranslation("ddt.view.academyCommon.academyIcon.AcademyIconTip.master",_loc9_.getMasterOrApprentices().list[_loc10_]);
-                        _textFrameArray[_loc10_].setTextFormat(_contentLabel,0,_loc9_.getMasterOrApprentices().list[_loc10_].length);
+                        _textFrameArray[k].text = LanguageMgr.GetTranslation("ddt.view.academyCommon.academyIcon.AcademyIconTip.master",playerInfo.getMasterOrApprentices().list[k]);
+                        _textFrameArray[k].setTextFormat(_contentLabel,0,playerInfo.getMasterOrApprentices().list[k].length);
                      }
-                     _loc10_++;
+                     k++;
                   }
                }
-               else if(_loc9_.apprenticeshipState == 1)
+               else if(playerInfo.apprenticeshipState == 1)
                {
-                  if(_loc9_.getMasterOrApprentices().list[0] && _loc9_.getMasterOrApprentices().list[0] != "")
+                  if(playerInfo.getMasterOrApprentices().list[0] && playerInfo.getMasterOrApprentices().list[0] != "")
                   {
-                     _loc4_ = LanguageMgr.GetTranslation("ddt.view.academyCommon.academyIcon.AcademyIconTip.Apprentice",_loc9_.getMasterOrApprentices().list[0]);
-                     _loc7_ = returnFilterFrameText(_loc4_);
-                     if(_loc7_)
+                     txt4 = LanguageMgr.GetTranslation("ddt.view.academyCommon.academyIcon.AcademyIconTip.Apprentice",playerInfo.getMasterOrApprentices().list[0]);
+                     contentTxt4 = returnFilterFrameText(txt4);
+                     if(contentTxt4)
                      {
-                        _loc7_.text = _loc4_;
-                        _loc7_.setTextFormat(_contentLabel,0,_loc9_.getMasterOrApprentices().list[0].length);
+                        contentTxt4.text = txt4;
+                        contentTxt4.setTextFormat(_contentLabel,0,playerInfo.getMasterOrApprentices().list[0].length);
                      }
                   }
                }
-               if(_loc9_.IsMarried)
+               if(playerInfo.IsMarried)
                {
-                  _loc6_ = LanguageMgr.GetTranslation("ddt.room.roomPlayerItemTip.SpouseNameTxt",_loc9_.SpouseName);
-                  _loc8_ = returnFilterFrameText(_loc6_);
-                  if(_loc8_)
+                  txt5 = LanguageMgr.GetTranslation("ddt.room.roomPlayerItemTip.SpouseNameTxt",playerInfo.SpouseName);
+                  contentTxt5 = returnFilterFrameText(txt5);
+                  if(contentTxt5)
                   {
-                     _loc8_.text = _loc6_;
-                     _loc8_.setTextFormat(_contentLabel,0,_loc9_.SpouseName.length);
+                     contentTxt5.text = txt5;
+                     contentTxt5.setTextFormat(_contentLabel,0,playerInfo.SpouseName.length);
                   }
                }
             }
@@ -232,35 +229,33 @@ package room.view
       
       private function updateBgSize() : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          _bg.width = getMaxWidth();
-         var _loc1_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _textFrameArray.length)
+         var length:int = 0;
+         for(i = 0; i < _textFrameArray.length; )
          {
-            if(_textFrameArray[_loc2_].visible)
+            if(_textFrameArray[i].visible)
             {
-               _loc1_++;
+               length++;
             }
-            _loc2_++;
+            i++;
          }
-         _bg.height = _loc1_ * 22;
+         _bg.height = length * 22;
       }
       
       private function getMaxWidth() : int
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _textFrameArray.length)
+         var i:int = 0;
+         var maxWidth:int = 0;
+         for(i = 0; i < _textFrameArray.length; )
          {
-            if(_textFrameArray[_loc2_].visible && _textFrameArray[_loc2_].width > _loc1_)
+            if(_textFrameArray[i].visible && _textFrameArray[i].width > maxWidth)
             {
-               _loc1_ = _textFrameArray[_loc2_].width;
+               maxWidth = _textFrameArray[i].width;
             }
-            _loc2_++;
+            i++;
          }
-         return _loc1_ + 10;
+         return maxWidth + 10;
       }
       
       override public function dispose() : void

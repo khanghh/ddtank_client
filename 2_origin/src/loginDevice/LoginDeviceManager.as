@@ -40,7 +40,7 @@ package loginDevice
       
       public var dailyRewardInfoList:Array;
       
-      public function LoginDeviceManager(param1:LoginDeviceInstance)
+      public function LoginDeviceManager(instance:LoginDeviceInstance)
       {
          super();
       }
@@ -65,21 +65,21 @@ package loginDevice
          SocketManager.Instance.addEventListener("login_device",__loginDeviceHandler);
       }
       
-      private function __checkLoginUa(param1:LoginDeviceEvent) : void
+      private function __checkLoginUa(e:LoginDeviceEvent) : void
       {
          loginTypeUnCheck = DDT.REQUEST_BY_DEVICE;
          SocketManager.Instance.out.loginDeviceSendUaToCheck(loginTypeUnCheck == "3");
       }
       
-      private function __loginDeviceHandler(param1:CrazyTankSocketEvent) : void
+      private function __loginDeviceHandler(e:CrazyTankSocketEvent) : void
       {
-         var _loc5_:PackageIn = param1.pkg;
-         var _loc2_:Boolean = _loc5_.readBoolean();
-         loginType = !!_loc2_?"3":"0";
-         var _loc4_:int = _loc5_.readInt();
-         isGetDownReward = _loc4_ > 0;
-         var _loc3_:int = _loc5_.readInt();
-         if(_loc3_ > 0 != isGetDailyReward)
+         var pkg:PackageIn = e.pkg;
+         var b:Boolean = pkg.readBoolean();
+         loginType = !!b?"3":"0";
+         var getDownCount:int = pkg.readInt();
+         isGetDownReward = getDownCount > 0;
+         var getDailyCount:int = pkg.readInt();
+         if(getDailyCount > 0 != isGetDailyReward)
          {
             isGetDailyReward = !isGetDailyReward;
             dispatchEvent(new LoginDeviceEvent("reward_view_update"));
@@ -106,60 +106,59 @@ package loginDevice
          dispatchEvent(new Event("hideMainView"));
       }
       
-      public function templateDataSetup(param1:Array) : void
+      public function templateDataSetup(dataList:Array) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         if(param1)
+         var i:int = 0;
+         var info:* = null;
+         if(dataList)
          {
             downRewardInfoList = [];
             dailyRewardInfoList = [];
-            _loc3_ = 0;
-            while(_loc3_ < param1.length)
+            for(i = 0; i < dataList.length; )
             {
-               _loc2_ = param1[_loc3_];
-               if(_loc2_.Quality == 1)
+               info = dataList[i];
+               if(info.Quality == 1)
                {
-                  downRewardInfoList.push(_loc2_);
+                  downRewardInfoList.push(info);
                }
                else
                {
-                  dailyRewardInfoList.push(_loc2_);
+                  dailyRewardInfoList.push(info);
                }
-               _loc3_++;
+               i++;
             }
          }
       }
       
-      public function getInventoryItemInfo(param1:LoginDeviceRewardInfo) : InventoryItemInfo
+      public function getInventoryItemInfo(info:LoginDeviceRewardInfo) : InventoryItemInfo
       {
-         var _loc3_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(param1.TemplateID);
-         var _loc2_:InventoryItemInfo = new InventoryItemInfo();
-         ObjectUtils.copyProperties(_loc2_,_loc3_);
-         _loc2_.LuckCompose = param1.TemplateID;
-         _loc2_.ValidDate = param1.ValidDate;
-         _loc2_.Count = param1.Count;
-         _loc2_.IsBinds = param1.IsBind;
-         _loc2_.StrengthenLevel = param1.StrengthLevel;
-         _loc2_.AttackCompose = param1.AttackCompose;
-         _loc2_.DefendCompose = param1.DefendCompose;
-         _loc2_.AgilityCompose = param1.AgilityCompose;
-         _loc2_.LuckCompose = param1.LuckCompose;
-         return _loc2_;
+         var tempInfo:ItemTemplateInfo = ItemManager.Instance.getTemplateById(info.TemplateID);
+         var tInfo:InventoryItemInfo = new InventoryItemInfo();
+         ObjectUtils.copyProperties(tInfo,tempInfo);
+         tInfo.LuckCompose = info.TemplateID;
+         tInfo.ValidDate = info.ValidDate;
+         tInfo.Count = info.Count;
+         tInfo.IsBinds = info.IsBind;
+         tInfo.StrengthenLevel = info.StrengthLevel;
+         tInfo.AttackCompose = info.AttackCompose;
+         tInfo.DefendCompose = info.DefendCompose;
+         tInfo.AgilityCompose = info.AgilityCompose;
+         tInfo.LuckCompose = info.LuckCompose;
+         return tInfo;
       }
       
-      public function createCell(param1:LoginDeviceRewardInfo) : BagCell
+      public function createCell(info:LoginDeviceRewardInfo) : BagCell
       {
-         var _loc3_:InventoryItemInfo = LoginDeviceManager.instance().getInventoryItemInfo(param1);
-         if(_loc3_ == null)
+         var itemInfo:InventoryItemInfo = LoginDeviceManager.instance().getInventoryItemInfo(info);
+         if(itemInfo == null)
          {
             return null;
          }
-         var _loc2_:BagCell = new BagCell(0,_loc3_,true,ComponentFactory.Instance.creatBitmap("loginDevice.rewards.itemBg"));
-         _loc2_.width = 64;
-         _loc2_.height = 64;
-         _loc2_.setCount(_loc3_.Count);
-         return _loc2_;
+         var _cell:BagCell = new BagCell(0,itemInfo,true,ComponentFactory.Instance.creatBitmap("loginDevice.rewards.itemBg"));
+         _cell.width = 64;
+         _cell.height = 64;
+         _cell.setCount(itemInfo.Count);
+         return _cell;
       }
    }
 }

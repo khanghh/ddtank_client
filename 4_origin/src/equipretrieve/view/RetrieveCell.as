@@ -34,7 +34,7 @@ package equipretrieve.view
       
       private var _text:FilterFrameText;
       
-      public function RetrieveCell(param1:int)
+      public function RetrieveCell($index:int)
       {
          bg = new Sprite();
          bgBit = ComponentFactory.Instance.creatBitmap("equipretrieve.trieveCell0");
@@ -43,7 +43,7 @@ package equipretrieve.view
          _text.text = LanguageMgr.GetTranslation("tank.view.equipretrieve.text");
          bg.addChild(bgBit);
          bg.addChild(_text);
-         super(bg,param1);
+         super(bg,$index);
          setContentSize(68,68);
          PicPos = new Point(10,9);
       }
@@ -77,29 +77,29 @@ package equipretrieve.view
          super.addEnchantMc();
       }
       
-      override public function dragDrop(param1:DragEffect) : void
+      override public function dragDrop(effect:DragEffect) : void
       {
          RetrieveController.Instance.shine = false;
          if(PlayerManager.Instance.Self.bagLocked)
          {
             return;
          }
-         var _loc2_:InventoryItemInfo = param1.data as InventoryItemInfo;
-         if(_loc2_.BagType == 12 && this.info != null)
+         var sourceInfo:InventoryItemInfo = effect.data as InventoryItemInfo;
+         if(sourceInfo.BagType == 12 && this.info != null)
          {
             return;
          }
-         if(_loc2_ && param1.action != "split")
+         if(sourceInfo && effect.action != "split")
          {
-            param1.action = "none";
-            SocketManager.Instance.out.sendMoveGoods(_loc2_.BagType,_loc2_.Place,12,index,1);
-            RetrieveModel.Instance.setSavePlaceType(_loc2_,index);
-            param1.action = "none";
+            effect.action = "none";
+            SocketManager.Instance.out.sendMoveGoods(sourceInfo.BagType,sourceInfo.Place,12,index,1);
+            RetrieveModel.Instance.setSavePlaceType(sourceInfo,index);
+            effect.action = "none";
             DragManager.acceptDrag(this);
          }
       }
       
-      override protected function __doubleClickHandler(param1:InteractiveEvent) : void
+      override protected function __doubleClickHandler(evt:InteractiveEvent) : void
       {
          if(!DoubleClickEnabled)
          {
@@ -109,9 +109,9 @@ package equipretrieve.view
          {
             return;
          }
-         if((param1.currentTarget as BagCell).info != null)
+         if((evt.currentTarget as BagCell).info != null)
          {
-            if((param1.currentTarget as BagCell).info != null)
+            if((evt.currentTarget as BagCell).info != null)
             {
                SocketManager.Instance.out.sendMoveGoods(12,index,RetrieveModel.Instance.getSaveCells(index).BagType,RetrieveModel.Instance.getSaveCells(index).Place);
                if(!mouseSilenced)

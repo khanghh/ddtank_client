@@ -70,17 +70,17 @@ package changeColor.view
          }
       }
       
-      public function set model(param1:ChangeColorModel) : void
+      public function set model(value:ChangeColorModel) : void
       {
-         _model = param1;
+         _model = value;
          dataUpdate();
       }
       
-      private function __alertChangeColor(param1:FrameEvent) : void
+      private function __alertChangeColor(event:FrameEvent) : void
       {
-         param1.currentTarget.removeEventListener("response",__alertChangeColor);
+         event.currentTarget.removeEventListener("response",__alertChangeColor);
          SoundManager.instance.play("008");
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         if(event.responseCode == 3 || event.responseCode == 2)
          {
             if(PlayerManager.Instance.Self.DDTMoney < ShopManager.Instance.getGiftShopItemByTemplateID(11999).getItemPrice(1).ddtMoneyValue)
             {
@@ -91,9 +91,9 @@ package changeColor.view
          }
       }
       
-      private function __changeColor(param1:MouseEvent) : void
+      private function __changeColor(evt:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var alert:* = null;
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -113,13 +113,13 @@ package changeColor.view
          }
          else
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaTax.info"),LanguageMgr.GetTranslation("tank.view.changeColor.lackCard",ShopManager.Instance.getGiftShopItemByTemplateID(11999).getItemPrice(1).ddtMoneyValue),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,false,false,2);
-            _loc2_.addEventListener("response",__alertChangeColor);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaTax.info"),LanguageMgr.GetTranslation("tank.view.changeColor.lackCard",ShopManager.Instance.getGiftShopItemByTemplateID(11999).getItemPrice(1).ddtMoneyValue),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,false,false,2);
+            alert.addEventListener("response",__alertChangeColor);
          }
          _changeColorBtn.enable = false;
       }
       
-      private function __updateBtn(param1:Event) : void
+      private function __updateBtn(evt:Event) : void
       {
          if(!_model.changed)
          {
@@ -148,61 +148,61 @@ package changeColor.view
       
       private function init() : void
       {
-         var _loc1_:* = null;
+         var rec:* = null;
          _bg = ComponentFactory.Instance.creatComponentByStylename("changeColor.rightViewBg");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("changeColor.rightViewBgRec");
-         ObjectUtils.copyPropertyByRectangle(_bg,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("changeColor.rightViewBgRec");
+         ObjectUtils.copyPropertyByRectangle(_bg,rec);
          addChild(_bg);
          _bg1 = ComponentFactory.Instance.creatComponentByStylename("ColorBGAsset4");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("changeColor.rightViewBgRec1");
-         ObjectUtils.copyPropertyByRectangle(_bg1,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("changeColor.rightViewBgRec1");
+         ObjectUtils.copyPropertyByRectangle(_bg1,rec);
          addChild(_bg1);
          _text1Img = ComponentFactory.Instance.creatComponentByStylename("asset.changeColor.text1");
          _text1Img.text = LanguageMgr.GetTranslation("tank.view.changeColor.text4");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("changeColor.text1ImgRec");
-         ObjectUtils.copyPropertyByRectangle(_text1Img,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("changeColor.text1ImgRec");
+         ObjectUtils.copyPropertyByRectangle(_text1Img,rec);
          addChild(_text1Img);
          _textImg = ComponentFactory.Instance.creatComponentByStylename("asset.changeColor.text2");
          _textImg.text = LanguageMgr.GetTranslation("tank.view.changeColor.text5");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("changeColor.textImgRec");
-         ObjectUtils.copyPropertyByRectangle(_textImg,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("changeColor.textImgRec");
+         ObjectUtils.copyPropertyByRectangle(_textImg,rec);
          addChild(_textImg);
          _bag = new ColorChangeBagListView();
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("changeColor.bagListViewRec");
-         ObjectUtils.copyPropertyByRectangle(_bag,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("changeColor.bagListViewRec");
+         ObjectUtils.copyPropertyByRectangle(_bag,rec);
          addChild(_bag);
          _btnBg = ComponentFactory.Instance.creatComponentByStylename("changeColor.changeColorBtn.bg");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("changeColor.buttonBgRec");
-         ObjectUtils.copyPropertyByRectangle(_btnBg,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("changeColor.buttonBgRec");
+         ObjectUtils.copyPropertyByRectangle(_btnBg,rec);
          addChild(_btnBg);
          _changeColorBtn = ComponentFactory.Instance.creatComponentByStylename("changeColor.changeColorBtn");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("changeColor.changeColorBtnRec");
-         ObjectUtils.copyPropertyByRectangle(_changeColorBtn,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("changeColor.changeColorBtnRec");
+         ObjectUtils.copyPropertyByRectangle(_changeColorBtn,rec);
          _changeColorBtn.enable = false;
          addChild(_changeColorBtn);
          _changeColorBtn.addEventListener("click",__changeColor);
       }
       
-      private function __addToStage(param1:Event) : void
+      private function __addToStage(event:Event) : void
       {
          removeEventListener("addedToStage",__addToStage);
-         var _loc2_:Rectangle = ComponentFactory.Instance.creatCustomObject("changeColor.textImgGlowRec");
-         _shineEffect = EffectManager.Instance.creatEffect(1,this,"asset.changeColor.shine",_loc2_);
+         var rec:Rectangle = ComponentFactory.Instance.creatCustomObject("changeColor.textImgGlowRec");
+         _shineEffect = EffectManager.Instance.creatEffect(1,this,"asset.changeColor.shine",rec);
          _shineEffect.stop();
       }
       
       private function sendChangeColor() : void
       {
-         var _loc7_:int = 1;
-         var _loc2_:int = _model.place;
-         var _loc5_:int = _model.currentItem.BagType;
-         var _loc4_:int = _model.currentItem.Place;
-         var _loc3_:String = _model.currentItem.Color;
-         var _loc6_:String = _model.currentItem.Skin;
-         var _loc1_:int = 11999;
-         _model.initColor = _loc3_;
-         _model.initSkinColor = _loc6_;
-         SocketManager.Instance.out.sendChangeColor(_loc7_,_loc2_,_loc5_,_loc4_,_loc3_,_loc6_,_loc1_);
+         var cardBagType:int = 1;
+         var cardPlace:int = _model.place;
+         var itemBagType:int = _model.currentItem.BagType;
+         var itemPlace:int = _model.currentItem.Place;
+         var color:String = _model.currentItem.Color;
+         var skin:String = _model.currentItem.Skin;
+         var templateID:int = 11999;
+         _model.initColor = color;
+         _model.initSkinColor = skin;
+         SocketManager.Instance.out.sendChangeColor(cardBagType,cardPlace,itemBagType,itemPlace,color,skin,templateID);
          _model.savaItemInfo();
       }
       

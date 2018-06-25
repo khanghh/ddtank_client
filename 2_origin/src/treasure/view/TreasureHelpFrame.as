@@ -73,7 +73,7 @@ package treasure.view
          _btn.addEventListener("click",_btnClickHandler);
       }
       
-      private function _btnClickHandler(param1:MouseEvent) : void
+      private function _btnClickHandler(e:MouseEvent) : void
       {
          frameHead.visible = true;
          TweenLite.killTweensOf(_box);

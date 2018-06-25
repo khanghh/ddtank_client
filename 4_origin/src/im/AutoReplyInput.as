@@ -62,11 +62,11 @@ package im
          PlayerManager.Instance.Self.removeEventListener("propertychange",__onChange);
       }
       
-      private function __onKeyDown(param1:KeyboardEvent) : void
+      private function __onKeyDown(event:KeyboardEvent) : void
       {
-         param1.stopImmediatePropagation();
-         param1.stopPropagation();
-         if(param1.keyCode == 13)
+         event.stopImmediatePropagation();
+         event.stopPropagation();
+         if(event.keyCode == 13)
          {
             PlayerManager.Instance.Self.playerState.AutoReply = _input.text;
             _input.text = getShortStr(PlayerManager.Instance.Self.playerState.AutoReply);
@@ -74,49 +74,49 @@ package im
          }
       }
       
-      private function __focusOut(param1:FocusEvent) : void
+      private function __focusOut(event:FocusEvent) : void
       {
          _input.background = false;
          _input.text = getShortStr(PlayerManager.Instance.Self.playerState.AutoReply);
          _input.scrollH = 0;
       }
       
-      private function __onChange(param1:PlayerPropertyEvent) : void
+      private function __onChange(event:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["State"])
+         if(event.changedProperties["State"])
          {
             _input.text = getShortStr(PlayerManager.Instance.Self.playerState.AutoReply);
          }
       }
       
-      private function __focusIn(param1:FocusEvent) : void
+      private function __focusIn(event:FocusEvent) : void
       {
          _overBg.visible = false;
          _input.background = true;
          _input.text = PlayerManager.Instance.Self.playerState.AutoReply;
       }
       
-      private function __outHandler(param1:MouseEvent) : void
+      private function __outHandler(event:MouseEvent) : void
       {
          _overBg.visible = false;
       }
       
-      private function getShortStr(param1:String) : String
+      private function getShortStr(str:String) : String
       {
-         var _loc2_:TextField = new TextField();
-         _loc2_.wordWrap = true;
-         _loc2_.autoSize = "left";
-         _loc2_.width = _input.width;
-         _loc2_.text = param1;
-         if(_loc2_.textWidth > _input.width - 15)
+         var tf:TextField = new TextField();
+         tf.wordWrap = true;
+         tf.autoSize = "left";
+         tf.width = _input.width;
+         tf.text = str;
+         if(tf.textWidth > _input.width - 15)
          {
-            param1 = _loc2_.getLineText(0);
-            param1 = param1.substr(0,param1.length - 3) + "...";
+            str = tf.getLineText(0);
+            str = str.substr(0,str.length - 3) + "...";
          }
-         return param1;
+         return str;
       }
       
-      private function __overHandler(param1:MouseEvent) : void
+      private function __overHandler(event:MouseEvent) : void
       {
          if(_input.background == false)
          {

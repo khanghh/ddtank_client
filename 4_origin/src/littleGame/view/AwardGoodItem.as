@@ -66,18 +66,18 @@ package littleGame.view
          _exchangeTxt = ComponentFactory.Instance.creatComponentByStylename("littleGame.exchangeText");
          _exchangeTxt.text = LanguageMgr.GetTranslation("tank.littlegame.exchange");
          _exchangeBtn.addChild(_exchangeTxt);
-         var _loc1_:Rectangle = ComponentFactory.Instance.creatCustomObject("littleGame.GoodItemBG.size");
-         _itemBg.width = _loc1_.width;
-         _itemBg.height = _loc1_.height;
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("littleGame.GoodItemName.size");
+         var rect:Rectangle = ComponentFactory.Instance.creatCustomObject("littleGame.GoodItemBG.size");
+         _itemBg.width = rect.width;
+         _itemBg.height = rect.height;
+         rect = ComponentFactory.Instance.creatCustomObject("littleGame.GoodItemName.size");
          ObjectUtils.disposeObject(_itemNameTxt);
          _itemNameTxt = ComponentFactory.Instance.creatComponentByStylename("ddtshop.GoodItemNameII");
          _itemNameTxt.isAutoFitLength = true;
-         _itemNameTxt.x = _loc1_.x;
-         _itemNameTxt.width = _loc1_.width;
+         _itemNameTxt.x = rect.x;
+         _itemNameTxt.width = rect.width;
          addChild(_itemNameTxt);
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("littleGame.GoodItemDotLine.size");
-         _dotLine.width = _loc1_.width;
+         rect = ComponentFactory.Instance.creatCustomObject("littleGame.GoodItemDotLine.size");
+         _dotLine.width = rect.width;
          PositionUtils.setPos(_payType,"littleGame.GoodPayTypeLabel.pos");
          PositionUtils.setPos(_payPaneBuyBtn,"littleGame.PayPaneBuyBtn.pos");
          PositionUtils.setPos(_itemNameTxt,"littleGame.GoodItemName.pos");
@@ -101,11 +101,11 @@ package littleGame.view
       
       override protected function creatItemCell() : ShopItemCell
       {
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,61,61);
-         _loc1_.graphics.endFill();
-         return CellFactory.instance.createShopItemCell(_loc1_,null,true,true) as ShopItemCell;
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(16777215,0);
+         sp.graphics.drawRect(0,0,61,61);
+         sp.graphics.endFill();
+         return CellFactory.instance.createShopItemCell(sp,null,true,true) as ShopItemCell;
       }
       
       override protected function addEvent() : void
@@ -118,7 +118,7 @@ package littleGame.view
          _itemBg.addEventListener("mouseOut",__itemMouseOut);
       }
       
-      override protected function __itemMouseOver(param1:MouseEvent) : void
+      override protected function __itemMouseOver(event:MouseEvent) : void
       {
          if(!_itemCell.info)
          {
@@ -133,7 +133,7 @@ package littleGame.view
          __timelineComplete();
       }
       
-      override protected function __itemMouseOut(param1:MouseEvent) : void
+      override protected function __itemMouseOut(event:MouseEvent) : void
       {
          ObjectUtils.disposeObject(_lightMc);
          if(!_shopItemInfo)
@@ -150,7 +150,7 @@ package littleGame.view
          _exchangeBtn.removeEventListener("click",__payPanelClick);
       }
       
-      override protected function __payPanelClick(param1:MouseEvent) : void
+      override protected function __payPanelClick(event:MouseEvent) : void
       {
          if(_shopItemInfo == null)
          {
@@ -167,26 +167,26 @@ package littleGame.view
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.littlegame.scorelack"));
             return;
          }
-         var _loc2_:ScoreExchangeFrame = ComponentFactory.Instance.creatComponentByStylename("ddtcore.exchangeFrame");
-         _loc2_.type = 0;
-         _loc2_.shopItem = _shopItemInfo;
-         LayerManager.Instance.addToLayer(_loc2_,2,true,1);
+         var _quickFrame:ScoreExchangeFrame = ComponentFactory.Instance.creatComponentByStylename("ddtcore.exchangeFrame");
+         _quickFrame.type = 0;
+         _quickFrame.shopItem = _shopItemInfo;
+         LayerManager.Instance.addToLayer(_quickFrame,2,true,1);
       }
       
-      override public function set shopItemInfo(param1:ShopItemInfo) : void
+      override public function set shopItemInfo(value:ShopItemInfo) : void
       {
-         .super.shopItemInfo = param1;
+         .super.shopItemInfo = value;
          _payPaneGivingBtn.visible = false;
          _payPaneBuyBtn.visible = false;
          _payType.visible = false;
-         _exchangeBtn.visible = param1 != null;
+         _exchangeBtn.visible = value != null;
          _itemPriceTxt.visible = false;
          _shopItemCellTypeBg.visible = false;
-         if(param1)
+         if(value)
          {
             _scoreField.visible = true;
             _scoreTitleField.visible = true;
-            _scoreField.text = String(param1.AValue1);
+            _scoreField.text = String(value.AValue1);
          }
          else
          {

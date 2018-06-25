@@ -72,10 +72,10 @@ package gameCommon.view.control
       
       private var _gameInfo:GameInfo;
       
-      public function LiveState(param1:LocalPlayer)
+      public function LiveState(self:LocalPlayer)
       {
          _gameInfo = GameControl.Instance.Current;
-         super(param1);
+         super(self);
          GameManager.instance.isStopFocus = false;
       }
       
@@ -83,14 +83,14 @@ package gameCommon.view.control
       {
          GameDecorateManager.Instance.createBitmapUI(this,"asset.gameDecorate.viewBg");
          _arrow = new ArrowView(_self);
-         var _loc1_:Point = ComponentFactory.Instance.creatCustomObject("asset.game.ArrowViewPos");
-         _arrow.x = _loc1_.x;
-         _arrow.y = _loc1_.y;
+         var arrowPos:Point = ComponentFactory.Instance.creatCustomObject("asset.game.ArrowViewPos");
+         _arrow.x = arrowPos.x;
+         _arrow.y = arrowPos.y;
          addChild(_arrow);
          _energy = new EnergyView(_self);
-         var _loc3_:Point = ComponentFactory.Instance.creatCustomObject("asset.game.energyPos");
-         _energy.x = _loc3_.x;
-         _energy.y = _loc3_.y;
+         var energyPos:Point = ComponentFactory.Instance.creatCustomObject("asset.game.energyPos");
+         _energy.x = energyPos.x;
+         _energy.y = energyPos.y;
          addChild(_energy);
          if(RoomManager.Instance.current.type == 41 || RoomManager.Instance.current.type == 42)
          {
@@ -168,32 +168,32 @@ package gameCommon.view.control
             }
          }
          _tool = new ToolStripView();
-         var _loc2_:Point = ComponentFactory.Instance.creatCustomObject("asset.game.toolPos");
-         _tool.x = _loc2_.x;
-         _tool.y = _loc2_.y;
+         var toolPos:Point = ComponentFactory.Instance.creatCustomObject("asset.game.toolPos");
+         _tool.x = toolPos.x;
+         _tool.y = toolPos.y;
          addChild(_tool);
          _rightPropBar = ComponentFactory.Instance.creatCustomObject("RightPropBar",[_self,this]);
          setPropBarVisible();
          super.configUI();
       }
       
-      public function updateSkillLockStatus(param1:int, param2:Boolean) : void
+      public function updateSkillLockStatus(type:int, status:Boolean) : void
       {
-         switch(int(param1))
+         switch(int(type))
          {
             case 0:
-               _horseSkillBar.lockState = param2;
+               _horseSkillBar.lockState = status;
                break;
             case 1:
                if(_petSkill)
                {
-                  _petSkill.lockState = param2;
+                  _petSkill.lockState = status;
                   break;
                }
          }
       }
       
-      protected function __useInsectProp(param1:InsectEvent) : void
+      protected function __useInsectProp(event:InsectEvent) : void
       {
          if(_rightPropBar)
          {
@@ -201,21 +201,21 @@ package gameCommon.view.control
          }
       }
       
-      private function __onPetSillIsShowBtnOver(param1:MouseEvent) : void
+      private function __onPetSillIsShowBtnOver(e:MouseEvent) : void
       {
          MovieClip(_petSkillIsShowBtn.backgound).gotoAndStop(_petSkillBtnCurrentFrame);
       }
       
-      private function __onPetSillIsShowBtnOut(param1:MouseEvent) : void
+      private function __onPetSillIsShowBtnOut(e:MouseEvent) : void
       {
          MovieClip(_petSkillIsShowBtn.backgound).gotoAndStop(_petSkillBtnCurrentFrame);
       }
       
-      private function __onPetSillIsShowBtnMousedown(param1:MouseEvent) : void
+      private function __onPetSillIsShowBtnMousedown(e:MouseEvent) : void
       {
       }
       
-      private function __onPetSillIsShowBtnClick(param1:MouseEvent) : void
+      private function __onPetSillIsShowBtnClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_petSkill == null)
@@ -261,7 +261,7 @@ package gameCommon.view.control
          super.addEvent();
       }
       
-      protected function __transparentChanged(param1:Event) : void
+      protected function __transparentChanged(event:Event) : void
       {
          if(SharedManager.Instance.propTransparent)
          {
@@ -279,7 +279,7 @@ package gameCommon.view.control
          super.removeEvent();
       }
       
-      override public function enter(param1:DisplayObjectContainer) : void
+      override public function enter(container:DisplayObjectContainer) : void
       {
          if(_customPropBar)
          {
@@ -300,7 +300,7 @@ package gameCommon.view.control
          }
          _energy.enter();
          _arrow.enter();
-         _rightPropBar.setup(param1);
+         _rightPropBar.setup(container);
          _rightPropBar.enter();
          _gameInfo = GameControl.Instance.Current;
          if(WeakGuildManager.Instance.switchUserGuide)
@@ -312,10 +312,10 @@ package gameCommon.view.control
             _tool.setDanderEnable(false);
          }
          __transparentChanged(null);
-         super.enter(param1);
+         super.enter(container);
       }
       
-      override public function leaving(param1:Function = null) : void
+      override public function leaving(onComplete:Function = null) : void
       {
          if(_customPropBar)
          {
@@ -336,7 +336,7 @@ package gameCommon.view.control
          _rescuePropBar = null;
          _energy.leaving();
          _arrow.leaving();
-         super.leaving(param1);
+         super.leaving(onComplete);
       }
       
       override protected function tweenIn() : void
@@ -439,7 +439,7 @@ package gameCommon.view.control
          }
       }
       
-      private function __onDander(param1:LivingEvent) : void
+      private function __onDander(event:LivingEvent) : void
       {
          if(_gameInfo.selfGamePlayer.isAttacking)
          {
@@ -454,7 +454,7 @@ package gameCommon.view.control
          }
       }
       
-      private function __showTenPersentArrow(param1:LivingEvent) : void
+      private function __showTenPersentArrow(evt:LivingEvent) : void
       {
          if(_gameInfo.selfGamePlayer.isAttacking)
          {
@@ -467,7 +467,7 @@ package gameCommon.view.control
          }
       }
       
-      private function __showThreeArrow(param1:LivingEvent) : void
+      private function __showThreeArrow(evt:LivingEvent) : void
       {
          if(_gameInfo.selfGamePlayer.isAttacking)
          {
@@ -479,16 +479,16 @@ package gameCommon.view.control
          }
       }
       
-      private function propOpenShow(param1:String) : void
+      private function propOpenShow(mcStr:String) : void
       {
-         var _loc2_:MovieClipWrapper = new MovieClipWrapper(ClassUtils.CreatInstance(param1),true,true);
-         LayerManager.Instance.addToLayer(_loc2_.movie,4,false);
+         var mc:MovieClipWrapper = new MovieClipWrapper(ClassUtils.CreatInstance(mcStr),true,true);
+         LayerManager.Instance.addToLayer(mc.movie,4,false);
       }
       
-      protected function setWeaponPropVisible(param1:Boolean) : void
+      protected function setWeaponPropVisible(val:Boolean) : void
       {
-         _weaponPropBar.setVisible(param1);
-         if(param1)
+         _weaponPropBar.setVisible(val);
+         if(val)
          {
             if(!_weaponPropBar.parent)
             {
@@ -501,22 +501,21 @@ package gameCommon.view.control
          }
       }
       
-      protected function setRightPropVisible(param1:Boolean, ... rest) : void
+      protected function setRightPropVisible(v:Boolean, ... args) : void
       {
-         var _loc3_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < rest.length)
+         var i:int = 0;
+         for(i = 0; i < args.length; )
          {
-            _rightPropBar.setPropVisible(rest[_loc3_],param1);
-            _loc3_++;
+            _rightPropBar.setPropVisible(args[i],v);
+            i++;
          }
       }
       
-      protected function setSelfPropBarVisible(param1:Boolean) : void
+      protected function setSelfPropBarVisible(v:Boolean) : void
       {
          if(_horseSkillBar)
          {
-            if(param1)
+            if(v)
             {
                _horseSkillBar.enter();
             }
@@ -527,8 +526,8 @@ package gameCommon.view.control
          }
          if(_customPropBar)
          {
-            _customPropBar.setVisible(param1);
-            if(param1)
+            _customPropBar.setVisible(v);
+            if(v)
             {
                if(!_customPropBar.parent)
                {
@@ -542,14 +541,14 @@ package gameCommon.view.control
          }
       }
       
-      protected function setArrowVisible(param1:Boolean) : void
+      protected function setArrowVisible(v:Boolean) : void
       {
-         _arrow.visible = param1;
+         _arrow.visible = v;
       }
       
-      public function setEnergyVisible(param1:Boolean) : void
+      public function setEnergyVisible(v:Boolean) : void
       {
-         _energy.visible = param1;
+         _energy.visible = v;
       }
       
       override public function dispose() : void

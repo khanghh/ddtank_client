@@ -33,7 +33,7 @@ package exitPrompt
       override protected function onProppertiesUpdate() : void
       {
          super.onProppertiesUpdate();
-         var _loc1_:Array = coord.split(/,/g);
+         var coordArr:Array = coord.split(/,/g);
          if(!_bt)
          {
             _bt = ComponentFactory.Instance.creat("ExitPromptFrame.MissionBt");
@@ -47,8 +47,8 @@ package exitPrompt
          addChild(_fontBg);
          addChild(_light);
          _light.visible = false;
-         _fontBg.x = _loc1_[0];
-         _fontBg.y = _loc1_[1];
+         _fontBg.x = coordArr[0];
+         _fontBg.y = coordArr[1];
          height = _bt.height;
       }
       
@@ -64,12 +64,12 @@ package exitPrompt
          removeEventListener("mouseOut",__mouseOutHandler);
       }
       
-      private function __mouseOverHandler(param1:MouseEvent) : void
+      private function __mouseOverHandler(evt:MouseEvent) : void
       {
          _light.visible = true;
       }
       
-      private function __mouseOutHandler(param1:MouseEvent) : void
+      private function __mouseOutHandler(evt:MouseEvent) : void
       {
          _light.visible = false;
       }

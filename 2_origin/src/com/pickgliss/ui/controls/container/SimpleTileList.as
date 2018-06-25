@@ -23,12 +23,12 @@ package com.pickgliss.ui.controls.container
       
       private var _selectedIndex:int;
       
-      public function SimpleTileList(param1:int = 1, param2:int = 0)
+      public function SimpleTileList(columnNum:int = 1, arrangeType:int = 0)
       {
          startPos = new Point(0,0);
          super();
-         _column = param1;
-         _arrangeType = param2;
+         _column = columnNum;
+         _arrangeType = arrangeType;
       }
       
       public function get selectedIndex() : int
@@ -36,13 +36,13 @@ package com.pickgliss.ui.controls.container
          return _selectedIndex;
       }
       
-      public function set selectedIndex(param1:int) : void
+      public function set selectedIndex(value:int) : void
       {
-         if(_selectedIndex == param1)
+         if(_selectedIndex == value)
          {
             return;
          }
-         _selectedIndex = param1;
+         _selectedIndex = value;
       }
       
       public function get hSpace() : Number
@@ -50,9 +50,9 @@ package com.pickgliss.ui.controls.container
          return _hSpace;
       }
       
-      public function set hSpace(param1:Number) : void
+      public function set hSpace(value:Number) : void
       {
-         _hSpace = param1;
+         _hSpace = value;
          onProppertiesUpdate();
       }
       
@@ -61,23 +61,23 @@ package com.pickgliss.ui.controls.container
          return _vSpace;
       }
       
-      public function set vSpace(param1:Number) : void
+      public function set vSpace(value:Number) : void
       {
-         _vSpace = param1;
+         _vSpace = value;
          onProppertiesUpdate();
       }
       
-      override public function addChild(param1:DisplayObject) : DisplayObject
+      override public function addChild(child:DisplayObject) : DisplayObject
       {
-         param1.addEventListener("click",__itemClick);
-         super.addChild(param1);
-         return param1;
+         child.addEventListener("click",__itemClick);
+         super.addChild(child);
+         return child;
       }
       
-      private function __itemClick(param1:MouseEvent) : void
+      private function __itemClick(e:MouseEvent) : void
       {
-         var _loc2_:DisplayObject = param1.currentTarget as DisplayObject;
-         _selectedIndex = getChildIndex(_loc2_);
+         var item:DisplayObject = e.currentTarget as DisplayObject;
+         _selectedIndex = getChildIndex(item);
       }
       
       override public function arrange() : void
@@ -95,98 +95,94 @@ package com.pickgliss.ui.controls.container
       
       private function horizontalArrange() : void
       {
-         var _loc9_:int = 0;
-         var _loc4_:int = 0;
-         var _loc8_:int = 0;
-         var _loc7_:* = null;
-         var _loc6_:int = 0;
-         var _loc3_:int = startPos.x;
-         var _loc2_:int = startPos.y;
-         var _loc5_:int = 0;
-         var _loc1_:int = 0;
-         _loc9_ = 0;
-         while(_loc9_ < _rowNum)
+         var i:int = 0;
+         var maxHeight:int = 0;
+         var j:int = 0;
+         var ch:* = null;
+         var n:int = 0;
+         var posX:int = startPos.x;
+         var posY:int = startPos.y;
+         var tempWidth:int = 0;
+         var tempHeight:int = 0;
+         for(i = 0; i < _rowNum; )
          {
-            _loc4_ = 0;
-            _loc8_ = 0;
-            while(_loc8_ < _column)
+            maxHeight = 0;
+            for(j = 0; j < _column; )
             {
-               _loc6_++;
-               _loc7_ = getChildAt(_loc6_);
-               _loc7_.x = _loc3_;
-               _loc7_.y = _loc2_;
-               _loc5_ = Math.max(_loc5_,_loc3_ + _loc7_.width);
-               _loc1_ = Math.max(_loc1_,_loc2_ + _loc7_.height);
-               _loc3_ = _loc3_ + (_loc7_.width + _hSpace);
-               if(_loc4_ < _loc7_.height)
+               n++;
+               ch = getChildAt(n);
+               ch.x = posX;
+               ch.y = posY;
+               tempWidth = Math.max(tempWidth,posX + ch.width);
+               tempHeight = Math.max(tempHeight,posY + ch.height);
+               posX = posX + (ch.width + _hSpace);
+               if(maxHeight < ch.height)
                {
-                  _loc4_ = _loc7_.height;
+                  maxHeight = ch.height;
                }
-               if(_loc6_ >= numChildren)
+               if(n >= numChildren)
                {
-                  changeSize(_loc5_,_loc1_);
+                  changeSize(tempWidth,tempHeight);
                   return;
                }
-               _loc8_++;
+               j++;
             }
-            _loc3_ = startPos.x;
-            _loc2_ = _loc2_ + (_loc4_ + _vSpace);
-            _loc9_++;
+            posX = startPos.x;
+            posY = posY + (maxHeight + _vSpace);
+            i++;
          }
-         changeSize(_loc5_,_loc1_);
+         changeSize(tempWidth,tempHeight);
          dispatchEvent(new Event("resize"));
       }
       
       private function verticalArrange() : void
       {
-         var _loc9_:int = 0;
-         var _loc4_:int = 0;
-         var _loc8_:int = 0;
-         var _loc7_:* = null;
-         var _loc6_:int = 0;
-         var _loc3_:int = startPos.x;
-         var _loc2_:int = startPos.y;
-         var _loc5_:int = 0;
-         var _loc1_:int = 0;
-         _loc9_ = 0;
-         while(_loc9_ < _rowNum)
+         var i:int = 0;
+         var maxWidth:int = 0;
+         var j:int = 0;
+         var ch:* = null;
+         var n:int = 0;
+         var posX:int = startPos.x;
+         var posY:int = startPos.y;
+         var tempWidth:int = 0;
+         var tempHeight:int = 0;
+         for(i = 0; i < _rowNum; )
          {
-            _loc4_ = 0;
-            _loc8_ = 0;
-            while(_loc8_ < _column)
+            maxWidth = 0;
+            for(j = 0; j < _column; )
             {
-               _loc6_++;
-               _loc7_ = getChildAt(_loc6_);
-               _loc7_.x = _loc3_;
-               _loc7_.y = _loc2_;
-               _loc5_ = Math.max(_loc5_,_loc3_ + _loc7_.width);
-               _loc1_ = Math.max(_loc1_,_loc2_ + _loc7_.height);
-               _loc2_ = _loc2_ + (_loc7_.height + _vSpace);
-               if(_loc4_ < _loc7_.width)
+               n++;
+               ch = getChildAt(n);
+               ch.x = posX;
+               ch.y = posY;
+               tempWidth = Math.max(tempWidth,posX + ch.width);
+               tempHeight = Math.max(tempHeight,posY + ch.height);
+               posY = posY + (ch.height + _vSpace);
+               if(maxWidth < ch.width)
                {
-                  _loc4_ = _loc7_.width;
+                  maxWidth = ch.width;
                }
-               if(_loc6_ >= numChildren)
+               if(n >= numChildren)
                {
-                  changeSize(_loc5_,_loc1_);
+                  changeSize(tempWidth,tempHeight);
                   return;
                }
-               _loc8_++;
+               j++;
             }
-            _loc3_ = _loc3_ + (_loc4_ + _hSpace);
-            _loc2_ = startPos.y;
-            _loc9_++;
+            posX = posX + (maxWidth + _hSpace);
+            posY = startPos.y;
+            i++;
          }
-         changeSize(_loc5_,_loc1_);
+         changeSize(tempWidth,tempHeight);
          dispatchEvent(new Event("resize"));
       }
       
-      private function changeSize(param1:int, param2:int) : void
+      private function changeSize(w:int, h:int) : void
       {
-         if(param1 != _width || param2 != _height)
+         if(w != _width || h != _height)
          {
-            width = param1;
-            height = param2;
+            width = w;
+            height = h;
          }
       }
       
@@ -197,14 +193,13 @@ package com.pickgliss.ui.controls.container
       
       override public function dispose() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         _loc2_ = 0;
-         while(_loc2_ < numChildren)
+         var i:int = 0;
+         var item:* = null;
+         for(i = 0; i < numChildren; )
          {
-            _loc1_ = getChildAt(_loc2_) as DisplayObject;
-            _loc1_.removeEventListener("click",__itemClick);
-            _loc2_++;
+            item = getChildAt(i) as DisplayObject;
+            item.removeEventListener("click",__itemClick);
+            i++;
          }
          super.dispose();
       }

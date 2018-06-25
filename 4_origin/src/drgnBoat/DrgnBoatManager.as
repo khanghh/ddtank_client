@@ -153,18 +153,18 @@ package drgnBoat
       
       public function get isInDoubleTime() : Boolean
       {
-         var _loc3_:Date = TimeManager.Instance.Now();
-         var _loc2_:Number = _loc3_.hours;
-         var _loc5_:Number = _loc3_.minutes;
-         var _loc7_:int = _doubleTimeArray[0];
-         var _loc1_:int = _doubleTimeArray[1];
-         var _loc11_:int = _doubleTimeArray[2];
-         var _loc9_:int = _doubleTimeArray[3];
-         var _loc8_:int = _doubleTimeArray[4];
-         var _loc6_:int = _doubleTimeArray[5];
-         var _loc10_:int = _doubleTimeArray[6];
-         var _loc4_:int = _doubleTimeArray[7];
-         if((_loc2_ > _loc7_ || _loc2_ == _loc7_ && _loc5_ >= _loc1_) && (_loc2_ < _loc11_ || _loc2_ == _loc11_ && _loc5_ < _loc9_) || (_loc2_ > _loc8_ || _loc2_ == _loc8_ && _loc5_ >= _loc6_) && (_loc2_ < _loc10_ || _loc2_ == _loc10_ && _loc5_ < _loc4_))
+         var nowDate:Date = TimeManager.Instance.Now();
+         var nowHours:Number = nowDate.hours;
+         var nowMin:Number = nowDate.minutes;
+         var startHour:int = _doubleTimeArray[0];
+         var startMin:int = _doubleTimeArray[1];
+         var endHour:int = _doubleTimeArray[2];
+         var endMin:int = _doubleTimeArray[3];
+         var startHour2:int = _doubleTimeArray[4];
+         var startMin2:int = _doubleTimeArray[5];
+         var endHour2:int = _doubleTimeArray[6];
+         var endMin2:int = _doubleTimeArray[7];
+         if((nowHours > startHour || nowHours == startHour && nowMin >= startMin) && (nowHours < endHour || nowHours == endHour && nowMin < endMin) || (nowHours > startHour2 || nowHours == startHour2 && nowMin >= startMin2) && (nowHours < endHour2 || nowHours == endHour2 && nowMin < endMin2))
          {
             return true;
          }
@@ -176,24 +176,23 @@ package drgnBoat
          return _startGameNeedMoney;
       }
       
-      public function getBuyRecordStatus(param1:int) : Object
+      public function getBuyRecordStatus(index:int) : Object
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var obj:* = null;
          if(!_buyRecordStatus)
          {
             _buyRecordStatus = [];
-            _loc3_ = 0;
-            while(_loc3_ < 6)
+            for(i = 0; i < 6; )
             {
-               _loc2_ = {};
-               _loc2_.isNoPrompt = false;
-               _loc2_.isBand = false;
-               _buyRecordStatus.push(_loc2_);
-               _loc3_++;
+               obj = {};
+               obj.isNoPrompt = false;
+               obj.isBand = false;
+               _buyRecordStatus.push(obj);
+               i++;
             }
          }
-         return _buyRecordStatus[param1];
+         return _buyRecordStatus[index];
       }
       
       public function get rankAddInfo() : Array
@@ -251,11 +250,11 @@ package drgnBoat
          SocketManager.Instance.addEventListener("drgn_baot",pkgHandler);
       }
       
-      private function pkgHandler(param1:CrazyTankSocketEvent) : void
+      private function pkgHandler(event:CrazyTankSocketEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readByte();
-         var _loc4_:* = _loc2_;
+         var pkg:PackageIn = event.pkg;
+         var cmd:int = pkg.readByte();
+         var _loc4_:* = cmd;
          if(1 !== _loc4_)
          {
             if(3 !== _loc4_)
@@ -302,27 +301,27 @@ package drgnBoat
                                                                         {
                                                                            if(43 === _loc4_)
                                                                            {
-                                                                              playLaunchMissileMC(_loc3_);
+                                                                              playLaunchMissileMC(pkg);
                                                                            }
                                                                         }
                                                                         else
                                                                         {
-                                                                           DrgnBoatBuildManager.instance.receiveHelpToBuild(_loc3_);
+                                                                           DrgnBoatBuildManager.instance.receiveHelpToBuild(pkg);
                                                                         }
                                                                      }
                                                                      else
                                                                      {
-                                                                        DrgnBoatBuildManager.instance.receiveCommitResult(_loc3_);
+                                                                        DrgnBoatBuildManager.instance.receiveCommitResult(pkg);
                                                                      }
                                                                   }
                                                                   else
                                                                   {
-                                                                     DrgnBoatBuildManager.instance.updateBuildInfo(_loc3_);
+                                                                     DrgnBoatBuildManager.instance.updateBuildInfo(pkg);
                                                                   }
                                                                }
                                                                else
                                                                {
-                                                                  DrgnBoatBuildManager.instance.initBuildingStatus(_loc3_);
+                                                                  DrgnBoatBuildManager.instance.initBuildingStatus(pkg);
                                                                }
                                                             }
                                                             else
@@ -332,137 +331,137 @@ package drgnBoat
                                                          }
                                                          else
                                                          {
-                                                            refreshItemFreeCountHandler(_loc3_);
+                                                            refreshItemFreeCountHandler(pkg);
                                                          }
                                                       }
                                                       else
                                                       {
-                                                         refreshEnterCountHandler(_loc3_);
+                                                         refreshEnterCountHandler(pkg);
                                                       }
                                                    }
                                                    else
                                                    {
-                                                      refreshFightStateHandler(_loc3_);
+                                                      refreshFightStateHandler(pkg);
                                                    }
                                                 }
                                                 else
                                                 {
-                                                   canEnterHandler(_loc3_);
+                                                   canEnterHandler(pkg);
                                                 }
                                              }
                                              else
                                              {
-                                                reEnterAllInfoHandler(_loc3_);
+                                                reEnterAllInfoHandler(pkg);
                                              }
                                           }
                                           else
                                           {
-                                             destroyHandler(_loc3_);
+                                             destroyHandler(pkg);
                                           }
                                        }
                                        else
                                        {
-                                          arriveHandler(_loc3_);
+                                          arriveHandler(pkg);
                                        }
                                     }
                                     else
                                     {
-                                       rankListHandler(_loc3_);
+                                       rankListHandler(pkg);
                                     }
                                  }
                                  else
                                  {
-                                    useSkillHandler(_loc3_);
+                                    useSkillHandler(pkg);
                                  }
                               }
                               else
                               {
-                                 refreshBuffHandler(_loc3_);
+                                 refreshBuffHandler(pkg);
                               }
                            }
                            else
                            {
-                              refreshItemHandler(_loc3_);
+                              refreshItemHandler(pkg);
                            }
                         }
                         else
                         {
-                           moveHandler(_loc3_);
+                           moveHandler(pkg);
                         }
                      }
                      else
                      {
-                        allReadyHandler(_loc3_);
+                        allReadyHandler(pkg);
                      }
                   }
                   else
                   {
-                     enterGameHandler(_loc3_);
+                     enterGameHandler(pkg);
                   }
                }
                else
                {
-                  startGameHandler(_loc3_);
+                  startGameHandler(pkg);
                }
             }
             else
             {
-               changeCarStatus(_loc3_);
+               changeCarStatus(pkg);
             }
          }
          else
          {
-            openOrCloseHandler(_loc3_);
+            openOrCloseHandler(pkg);
          }
       }
       
-      private function playLaunchMissileMC(param1:PackageIn) : void
+      private function playLaunchMissileMC(pkg:PackageIn) : void
       {
-         var _loc3_:int = param1.readInt();
-         var _loc4_:int = param1.readInt();
-         var _loc2_:DrgnBoatEvent = new DrgnBoatEvent("launchMissile");
-         _loc2_.data = {
-            "id":_loc3_,
-            "zoneId":_loc4_
+         var userId:int = pkg.readInt();
+         var zoneId:int = pkg.readInt();
+         var event:DrgnBoatEvent = new DrgnBoatEvent("launchMissile");
+         event.data = {
+            "id":userId,
+            "zoneId":zoneId
          };
-         dispatchEvent(_loc2_);
+         dispatchEvent(event);
       }
       
-      private function refreshItemFreeCountHandler(param1:PackageIn) : void
+      private function refreshItemFreeCountHandler(pkg:PackageIn) : void
       {
-         _itemFreeCountList[0] = param1.readInt();
-         _itemFreeCountList[1] = param1.readInt();
-         _itemFreeCountList[2] = param1.readInt();
-         _itemFreeCountList[3] = param1.readInt();
+         _itemFreeCountList[0] = pkg.readInt();
+         _itemFreeCountList[1] = pkg.readInt();
+         _itemFreeCountList[2] = pkg.readInt();
+         _itemFreeCountList[3] = pkg.readInt();
          dispatchEvent(new Event("drgnBoatRefreshItemCount"));
       }
       
-      private function refreshEnterCountHandler(param1:PackageIn) : void
+      private function refreshEnterCountHandler(pkg:PackageIn) : void
       {
-         _freeCount = param1.readInt();
-         _usableCount = param1.readInt();
+         _freeCount = pkg.readInt();
+         _usableCount = pkg.readInt();
          dispatchEvent(new Event("drgnBoatRefreshEnterCount"));
       }
       
-      private function refreshFightStateHandler(param1:PackageIn) : void
+      private function refreshFightStateHandler(pkg:PackageIn) : void
       {
-         var _loc2_:int = param1.readInt();
-         var _loc6_:int = param1.readInt();
-         var _loc4_:int = param1.readInt();
-         var _loc3_:int = param1.readInt();
-         var _loc5_:DrgnBoatEvent = new DrgnBoatEvent("drgnBoatFightStateChange");
-         _loc5_.data = {
-            "id":_loc2_,
-            "zoneId":_loc6_,
-            "fightState":_loc4_,
-            "posX":_loc3_
+         var id:int = pkg.readInt();
+         var zoneId:int = pkg.readInt();
+         var fightState:int = pkg.readInt();
+         var posX:int = pkg.readInt();
+         var tmpEvent:DrgnBoatEvent = new DrgnBoatEvent("drgnBoatFightStateChange");
+         tmpEvent.data = {
+            "id":id,
+            "zoneId":zoneId,
+            "fightState":fightState,
+            "posX":posX
          };
-         dispatchEvent(_loc5_);
+         dispatchEvent(tmpEvent);
       }
       
-      private function canEnterHandler(param1:PackageIn) : void
+      private function canEnterHandler(pkg:PackageIn) : void
       {
-         _isInGame = param1.readBoolean();
+         _isInGame = pkg.readBoolean();
          if(_isInGame)
          {
             dispatchEvent(new DrgnBoatEvent("drgnBoatCanEnter"));
@@ -473,350 +472,343 @@ package drgnBoat
          }
       }
       
-      private function reEnterAllInfoHandler(param1:PackageIn) : void
+      private function reEnterAllInfoHandler(pkg:PackageIn) : void
       {
-         var _loc7_:int = 0;
-         var _loc5_:* = null;
-         var _loc6_:Date = param1.readDate();
+         var i:int = 0;
+         var tmp:* = null;
+         var endTime:Date = pkg.readDate();
          _playerList = new Vector.<DrgnBoatPlayerInfo>();
-         var _loc3_:int = param1.readInt();
-         _loc7_ = 0;
-         while(_loc7_ < _loc3_)
+         var count:int = pkg.readInt();
+         for(i = 0; i < count; )
          {
-            _loc5_ = new DrgnBoatPlayerInfo();
-            _loc5_.index = _loc7_;
-            _loc5_.id = param1.readInt();
-            _loc5_.zoneId = param1.readInt();
-            _loc5_.name = param1.readUTF();
-            _loc5_.level = param1.readInt();
-            _loc5_.vipType = param1.readInt();
-            _loc5_.vipLevel = param1.readInt();
-            _loc5_.carType = param1.readInt();
-            _loc5_.posX = param1.readInt();
-            _loc5_.fightState = param1.readInt();
-            _loc5_.acceleEndTime = param1.readDate();
-            _loc5_.deceleEndTime = param1.readDate();
-            _loc5_.invisiEndTime = param1.readDate();
-            _loc5_.missileEndTime = param1.readDate();
-            _loc5_.missileHitEndTime = new Date(TimeManager.Instance.Now().getTime() + 1000);
-            if(_loc5_.zoneId == PlayerManager.Instance.Self.ZoneID && _loc5_.id == PlayerManager.Instance.Self.ID)
+            tmp = new DrgnBoatPlayerInfo();
+            tmp.index = i;
+            tmp.id = pkg.readInt();
+            tmp.zoneId = pkg.readInt();
+            tmp.name = pkg.readUTF();
+            tmp.level = pkg.readInt();
+            tmp.vipType = pkg.readInt();
+            tmp.vipLevel = pkg.readInt();
+            tmp.carType = pkg.readInt();
+            tmp.posX = pkg.readInt();
+            tmp.fightState = pkg.readInt();
+            tmp.acceleEndTime = pkg.readDate();
+            tmp.deceleEndTime = pkg.readDate();
+            tmp.invisiEndTime = pkg.readDate();
+            tmp.missileEndTime = pkg.readDate();
+            tmp.missileHitEndTime = new Date(TimeManager.Instance.Now().getTime() + 1000);
+            if(tmp.zoneId == PlayerManager.Instance.Self.ZoneID && tmp.id == PlayerManager.Instance.Self.ID)
             {
-               _loc5_.isSelf = true;
+               tmp.isSelf = true;
             }
             else
             {
-               _loc5_.isSelf = false;
+               tmp.isSelf = false;
             }
-            _playerList.push(_loc5_);
-            _loc7_++;
+            _playerList.push(tmp);
+            i++;
          }
          dispatchEvent(new Event("drgnBoatReEnterAllInfo"));
-         refreshItemHandler(param1);
-         rankListHandler(param1);
-         var _loc2_:Date = param1.readDate();
-         var _loc4_:DrgnBoatEvent = new DrgnBoatEvent("drgnBoatAllReady");
-         _loc4_.data = {
-            "endTime":_loc6_,
+         refreshItemHandler(pkg);
+         rankListHandler(pkg);
+         var sprintEndTime:Date = pkg.readDate();
+         var tmpEvent:DrgnBoatEvent = new DrgnBoatEvent("drgnBoatAllReady");
+         tmpEvent.data = {
+            "endTime":endTime,
             "isShowStartCountDown":false,
-            "sprintEndTime":_loc2_
+            "sprintEndTime":sprintEndTime
          };
-         dispatchEvent(_loc4_);
+         dispatchEvent(tmpEvent);
       }
       
-      private function destroyHandler(param1:PackageIn) : void
+      private function destroyHandler(pkg:PackageIn) : void
       {
          _isInGame = false;
          _carStatus = 0;
          dispatchEvent(new DrgnBoatEvent("drgnBoatDestroy"));
       }
       
-      private function arriveHandler(param1:PackageIn) : void
+      private function arriveHandler(pkg:PackageIn) : void
       {
-         var _loc2_:int = param1.readInt();
-         var _loc4_:int = param1.readInt();
-         if(_loc4_ == PlayerManager.Instance.Self.ZoneID && _loc2_ == PlayerManager.Instance.Self.ID)
+         var id:int = pkg.readInt();
+         var zoneId:int = pkg.readInt();
+         if(zoneId == PlayerManager.Instance.Self.ZoneID && id == PlayerManager.Instance.Self.ID)
          {
             _isInGame = false;
             _carStatus = 0;
          }
-         var _loc3_:DrgnBoatEvent = new DrgnBoatEvent("drgnBoatArrive");
-         _loc3_.data = {
-            "id":_loc2_,
-            "zoneId":_loc4_
+         var tmpEvent:DrgnBoatEvent = new DrgnBoatEvent("drgnBoatArrive");
+         tmpEvent.data = {
+            "id":id,
+            "zoneId":zoneId
          };
-         dispatchEvent(_loc3_);
+         dispatchEvent(tmpEvent);
       }
       
-      private function rankListHandler(param1:PackageIn) : void
+      private function rankListHandler(pkg:PackageIn) : void
       {
-         var _loc10_:int = 0;
-         var _loc4_:int = 0;
-         var _loc7_:* = null;
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         var _loc9_:int = 0;
-         var _loc6_:int = param1.readInt();
-         var _loc5_:Array = [];
-         _loc10_ = 0;
-         while(_loc10_ < _loc6_)
+         var i:int = 0;
+         var rank:int = 0;
+         var name:* = null;
+         var carType:int = 0;
+         var id:int = 0;
+         var zoneId:int = 0;
+         var count:int = pkg.readInt();
+         var rankList:Array = [];
+         for(i = 0; i < count; )
          {
-            _loc4_ = param1.readInt();
-            _loc7_ = param1.readUTF();
-            _loc3_ = param1.readInt();
-            _loc2_ = param1.readInt();
-            _loc9_ = param1.readInt();
-            param1.readBoolean();
-            _loc5_.push({
-               "rank":_loc4_,
-               "name":_loc7_,
-               "carType":_loc3_,
-               "id":_loc2_,
-               "zoneId":_loc9_
+            rank = pkg.readInt();
+            name = pkg.readUTF();
+            carType = pkg.readInt();
+            id = pkg.readInt();
+            zoneId = pkg.readInt();
+            pkg.readBoolean();
+            rankList.push({
+               "rank":rank,
+               "name":name,
+               "carType":carType,
+               "id":id,
+               "zoneId":zoneId
             });
-            _loc10_++;
+            i++;
          }
-         _loc5_.sortOn("rank",16);
-         var _loc8_:DrgnBoatEvent = new DrgnBoatEvent("");
-         _loc8_.data = _loc5_;
-         dispatchEvent(_loc8_);
+         rankList.sortOn("rank",16);
+         var tmpEvent:DrgnBoatEvent = new DrgnBoatEvent("");
+         tmpEvent.data = rankList;
+         dispatchEvent(tmpEvent);
       }
       
-      private function useSkillHandler(param1:PackageIn) : void
+      private function useSkillHandler(pkg:PackageIn) : void
       {
-         var _loc2_:int = param1.readInt();
-         var _loc5_:int = param1.readInt();
-         var _loc3_:int = param1.readInt();
-         trace("leapX=====" + _loc3_);
-         var _loc4_:DrgnBoatEvent = new DrgnBoatEvent("drgnBoatUseSkill");
-         _loc4_.data = {
-            "id":_loc2_,
-            "zoneId":_loc5_,
-            "leapX":_loc3_,
+         var id:int = pkg.readInt();
+         var zoneId:int = pkg.readInt();
+         var leapX:int = pkg.readInt();
+         trace("leapX=====" + leapX);
+         var tmpEvent:DrgnBoatEvent = new DrgnBoatEvent("drgnBoatUseSkill");
+         tmpEvent.data = {
+            "id":id,
+            "zoneId":zoneId,
+            "leapX":leapX,
             "sound":true
          };
-         dispatchEvent(_loc4_);
+         dispatchEvent(tmpEvent);
       }
       
-      private function refreshBuffHandler(param1:PackageIn) : void
+      private function refreshBuffHandler(pkg:PackageIn) : void
       {
-         var _loc2_:int = param1.readInt();
-         var _loc8_:int = param1.readInt();
-         var _loc6_:Date = param1.readDate();
-         var _loc4_:Date = param1.readDate();
-         var _loc7_:Date = param1.readDate();
-         var _loc3_:Date = param1.readDate();
-         var _loc5_:DrgnBoatEvent = new DrgnBoatEvent("drgnBoatRefreshBuff");
-         _loc5_.data = {
-            "id":_loc2_,
-            "zoneId":_loc8_,
-            "acceleEndTime":_loc6_,
-            "deceleEndTime":_loc4_,
-            "invisiEndTime":_loc7_,
-            "missileEndTime":_loc3_
+         var id:int = pkg.readInt();
+         var zoneId:int = pkg.readInt();
+         var acceleEndTime:Date = pkg.readDate();
+         var deceleEndTime:Date = pkg.readDate();
+         var invisiEndTime:Date = pkg.readDate();
+         var missileEndTime:Date = pkg.readDate();
+         var tmpEvent:DrgnBoatEvent = new DrgnBoatEvent("drgnBoatRefreshBuff");
+         tmpEvent.data = {
+            "id":id,
+            "zoneId":zoneId,
+            "acceleEndTime":acceleEndTime,
+            "deceleEndTime":deceleEndTime,
+            "invisiEndTime":invisiEndTime,
+            "missileEndTime":missileEndTime
          };
-         dispatchEvent(_loc5_);
+         dispatchEvent(tmpEvent);
       }
       
-      private function refreshItemHandler(param1:PackageIn) : void
+      private function refreshItemHandler(pkg:PackageIn) : void
       {
-         var _loc9_:int = 0;
-         var _loc2_:int = 0;
-         var _loc8_:int = 0;
-         var _loc4_:int = 0;
-         var _loc5_:int = 0;
-         var _loc3_:int = param1.readInt();
-         var _loc6_:Array = [];
-         _loc9_ = 0;
-         while(_loc9_ < _loc3_)
+         var i:int = 0;
+         var index:int = 0;
+         var type:int = 0;
+         var posX:int = 0;
+         var tag:int = 0;
+         var count:int = pkg.readInt();
+         var itemList:Array = [];
+         for(i = 0; i < count; )
          {
-            _loc2_ = param1.readInt();
-            _loc8_ = param1.readInt();
-            _loc4_ = param1.readInt();
-            _loc5_ = param1.readInt();
-            _loc6_.push({
-               "index":_loc2_,
-               "type":_loc8_,
-               "posX":_loc4_,
-               "tag":_loc5_
+            index = pkg.readInt();
+            type = pkg.readInt();
+            posX = pkg.readInt();
+            tag = pkg.readInt();
+            itemList.push({
+               "index":index,
+               "type":type,
+               "posX":posX,
+               "tag":tag
             });
-            _loc9_++;
+            i++;
          }
-         var _loc7_:DrgnBoatEvent = new DrgnBoatEvent("drgnBoatAppearItem");
-         _loc7_.data = {"itemList":_loc6_};
-         dispatchEvent(_loc7_);
+         var tmpEvent:DrgnBoatEvent = new DrgnBoatEvent("drgnBoatAppearItem");
+         tmpEvent.data = {"itemList":itemList};
+         dispatchEvent(tmpEvent);
       }
       
-      private function moveHandler(param1:PackageIn) : void
+      private function moveHandler(pkg:PackageIn) : void
       {
-         var _loc2_:int = param1.readInt();
-         var _loc5_:int = param1.readInt();
-         var _loc3_:Number = param1.readInt();
-         var _loc4_:DrgnBoatEvent = new DrgnBoatEvent("drgnBoatMove");
-         _loc4_.data = {
-            "zoneId":_loc5_,
-            "id":_loc2_,
-            "destX":_loc3_
+         var id:int = pkg.readInt();
+         var zoneId:int = pkg.readInt();
+         var destX:Number = pkg.readInt();
+         var tmpEvent:DrgnBoatEvent = new DrgnBoatEvent("drgnBoatMove");
+         tmpEvent.data = {
+            "zoneId":zoneId,
+            "id":id,
+            "destX":destX
          };
-         dispatchEvent(_loc4_);
+         dispatchEvent(tmpEvent);
       }
       
-      private function allReadyHandler(param1:PackageIn) : void
+      private function allReadyHandler(pkg:PackageIn) : void
       {
-         var _loc4_:Date = param1.readDate();
-         var _loc2_:Date = param1.readDate();
-         var _loc3_:DrgnBoatEvent = new DrgnBoatEvent("drgnBoatAllReady");
-         _loc3_.data = {
-            "endTime":_loc4_,
+         var endTime:Date = pkg.readDate();
+         var sprintEndTime:Date = pkg.readDate();
+         var tmpEvent:DrgnBoatEvent = new DrgnBoatEvent("drgnBoatAllReady");
+         tmpEvent.data = {
+            "endTime":endTime,
             "isShowStartCountDown":true,
-            "sprintEndTime":_loc2_
+            "sprintEndTime":sprintEndTime
          };
-         dispatchEvent(_loc3_);
+         dispatchEvent(tmpEvent);
       }
       
-      private function enterGameHandler(param1:PackageIn) : void
+      private function enterGameHandler(pkg:PackageIn) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
+         var i:int = 0;
+         var tmp:* = null;
          _playerList = new Vector.<DrgnBoatPlayerInfo>();
-         var _loc2_:int = param1.readInt();
-         _loc4_ = 0;
-         while(_loc4_ < _loc2_)
+         var count:int = pkg.readInt();
+         for(i = 0; i < count; )
          {
-            _loc3_ = new DrgnBoatPlayerInfo();
-            _loc3_.index = _loc4_;
-            _loc3_.zoneId = param1.readInt();
-            _loc3_.id = param1.readInt();
-            _loc3_.carType = param1.readInt();
-            _loc3_.name = param1.readUTF();
-            _loc3_.level = param1.readInt();
-            _loc3_.vipType = param1.readInt();
-            _loc3_.vipLevel = param1.readInt();
-            if(_loc3_.zoneId == PlayerManager.Instance.Self.ZoneID && _loc3_.id == PlayerManager.Instance.Self.ID)
+            tmp = new DrgnBoatPlayerInfo();
+            tmp.index = i;
+            tmp.zoneId = pkg.readInt();
+            tmp.id = pkg.readInt();
+            tmp.carType = pkg.readInt();
+            tmp.name = pkg.readUTF();
+            tmp.level = pkg.readInt();
+            tmp.vipType = pkg.readInt();
+            tmp.vipLevel = pkg.readInt();
+            if(tmp.zoneId == PlayerManager.Instance.Self.ZoneID && tmp.id == PlayerManager.Instance.Self.ID)
             {
-               _loc3_.isSelf = true;
+               tmp.isSelf = true;
             }
             else
             {
-               _loc3_.isSelf = false;
+               tmp.isSelf = false;
             }
-            _playerList.push(_loc3_);
-            _loc4_++;
+            _playerList.push(tmp);
+            i++;
          }
          _isInGame = true;
          dispatchEvent(new Event("drgnBoatEnterGame"));
       }
       
-      private function startGameHandler(param1:PackageIn) : void
+      private function startGameHandler(pkg:PackageIn) : void
       {
          dispatchEvent(new Event("drgnBoatStartGame"));
       }
       
-      private function changeCarStatus(param1:PackageIn) : void
+      private function changeCarStatus(pkg:PackageIn) : void
       {
-         _carStatus = param1.readInt();
+         _carStatus = pkg.readInt();
          dispatchEvent(new Event("drgnBoatCarStatusChange"));
       }
       
-      private function openOrCloseHandler(param1:PackageIn) : void
+      private function openOrCloseHandler(pkg:PackageIn) : void
       {
-         var _loc3_:int = 0;
-         var _loc10_:int = 0;
-         var _loc17_:* = null;
-         var _loc4_:int = 0;
-         var _loc8_:int = 0;
-         var _loc6_:int = 0;
-         var _loc9_:int = 0;
-         var _loc7_:int = 0;
-         var _loc2_:* = null;
-         var _loc20_:* = null;
-         var _loc22_:* = null;
-         var _loc15_:* = null;
-         var _loc16_:* = null;
-         var _loc18_:* = null;
-         var _loc19_:* = null;
-         var _loc21_:* = null;
-         var _loc14_:* = null;
-         var _loc11_:* = null;
-         var _loc13_:* = null;
-         var _loc12_:* = null;
-         var _loc5_:* = null;
-         param1.readInt();
-         _isStart = param1.readBoolean();
+         var count:int = 0;
+         var i:int = 0;
+         var tmp:* = null;
+         var tmpLen:int = 0;
+         var k:int = 0;
+         var tmpId:int = 0;
+         var tmpCount:int = 0;
+         var j:int = 0;
+         var tmpStr:* = null;
+         var tmpTimeArray:* = null;
+         var tmpArray:* = null;
+         var tmpArray2:* = null;
+         var tmpArray3:* = null;
+         var tmpArray4:* = null;
+         var tmpArray5:* = null;
+         var tmpArray6:* = null;
+         var endTimeInfo:* = null;
+         var endTimeArray:* = null;
+         var endTimeArray2:* = null;
+         var endTimeArray3:* = null;
+         var tmpEndTime:* = null;
+         pkg.readInt();
+         _isStart = pkg.readBoolean();
          if(_isStart)
          {
             dataInfo = new DrgnBoatInfoVo();
-            _isInGame = param1.readBoolean();
-            _freeCount = param1.readInt();
-            param1.readInt();
+            _isInGame = pkg.readBoolean();
+            _freeCount = pkg.readInt();
+            pkg.readInt();
             _usableCount = 0;
-            _carStatus = param1.readInt();
+            _carStatus = pkg.readInt();
             dataInfo.carInfo = {};
-            _loc3_ = param1.readInt();
-            _loc10_ = 0;
-            while(_loc10_ < _loc3_)
+            count = pkg.readInt();
+            for(i = 0; i < count; )
             {
-               _loc17_ = new DrgnBoatCarInfo();
-               _loc17_.type = param1.readInt();
-               _loc17_.needMoney = param1.readInt();
-               _loc17_.speed = param1.readInt();
-               _loc4_ = param1.readInt();
-               _loc8_ = 0;
-               while(_loc8_ < _loc4_)
+               tmp = new DrgnBoatCarInfo();
+               tmp.type = pkg.readInt();
+               tmp.needMoney = pkg.readInt();
+               tmp.speed = pkg.readInt();
+               tmpLen = pkg.readInt();
+               for(k = 0; k < tmpLen; )
                {
-                  _loc6_ = param1.readInt();
-                  _loc9_ = param1.readInt();
-                  _loc17_.awardArr.push({
-                     "templateId":_loc6_,
-                     "count":_loc9_
+                  tmpId = pkg.readInt();
+                  tmpCount = pkg.readInt();
+                  tmp.awardArr.push({
+                     "templateId":tmpId,
+                     "count":tmpCount
                   });
-                  _loc8_++;
+                  k++;
                }
-               dataInfo.carInfo[_loc17_.type] = _loc17_;
-               _loc10_++;
+               dataInfo.carInfo[tmp.type] = tmp;
+               i++;
             }
             dataInfo.useSkillNeedMoney = [];
-            dataInfo.useSkillNeedMoney.push(param1.readInt());
-            dataInfo.useSkillNeedMoney.push(param1.readInt());
-            dataInfo.useSkillNeedMoney.push(param1.readInt());
-            dataInfo.useSkillNeedMoney.push(param1.readInt());
+            dataInfo.useSkillNeedMoney.push(pkg.readInt());
+            dataInfo.useSkillNeedMoney.push(pkg.readInt());
+            dataInfo.useSkillNeedMoney.push(pkg.readInt());
+            dataInfo.useSkillNeedMoney.push(pkg.readInt());
             _rankAddInfo = [];
-            _loc3_ = param1.readInt();
-            _loc7_ = 0;
-            while(_loc7_ < _loc3_)
+            count = pkg.readInt();
+            for(j = 0; j < count; )
             {
-               _rankAddInfo.push(param1.readInt());
-               _loc7_++;
+               _rankAddInfo.push(pkg.readInt());
+               j++;
             }
-            _accelerateRate = param1.readInt();
-            _decelerateRate = param1.readInt();
-            _startGameNeedMoney = param1.readInt();
-            _loc2_ = param1.readUTF();
-            _loc20_ = _loc2_.split("|");
-            _loc22_ = _loc20_[0].split(",");
-            _loc15_ = _loc22_[0].split(":");
-            _loc16_ = _loc22_[1].split(":");
-            _loc18_ = _loc20_[1].split(",");
-            _loc19_ = _loc18_[0].split(":");
-            _loc21_ = _loc18_[1].split(":");
-            _doubleTimeArray = _loc15_.concat(_loc16_).concat(_loc19_).concat(_loc21_);
-            _sprintAwardInfo = param1.readUTF().split(",");
+            _accelerateRate = pkg.readInt();
+            _decelerateRate = pkg.readInt();
+            _startGameNeedMoney = pkg.readInt();
+            tmpStr = pkg.readUTF();
+            tmpTimeArray = tmpStr.split("|");
+            tmpArray = tmpTimeArray[0].split(",");
+            tmpArray2 = tmpArray[0].split(":");
+            tmpArray3 = tmpArray[1].split(":");
+            tmpArray4 = tmpTimeArray[1].split(",");
+            tmpArray5 = tmpArray4[0].split(":");
+            tmpArray6 = tmpArray4[1].split(":");
+            _doubleTimeArray = tmpArray2.concat(tmpArray3).concat(tmpArray5).concat(tmpArray6);
+            _sprintAwardInfo = pkg.readUTF().split(",");
             _timer = new Timer(1000);
             _timer.addEventListener("timer",timerHandler,false,0,true);
             _timer.start();
             open();
-            _loc14_ = ServerConfigManager.instance.findInfoByName("FiveYearCarEndDate");
-            _loc11_ = _loc14_.Value.split(" ");
-            if((_loc11_[0] as String).indexOf("-") > 0)
+            endTimeInfo = ServerConfigManager.instance.findInfoByName("FiveYearCarEndDate");
+            endTimeArray = endTimeInfo.Value.split(" ");
+            if((endTimeArray[0] as String).indexOf("-") > 0)
             {
-               _loc13_ = _loc11_[0].split("-");
+               endTimeArray2 = endTimeArray[0].split("-");
             }
             else
             {
-               _loc13_ = _loc11_[0].split("/");
+               endTimeArray2 = endTimeArray[0].split("/");
             }
-            _loc12_ = _loc11_[1].split(":");
-            _loc5_ = new Date(_loc13_[0],int(_loc13_[1]) - 1,_loc13_[2],_loc12_[0],_loc12_[1],_loc12_[2]);
-            _endTime = _loc5_.getTime() / 1000;
+            endTimeArray3 = endTimeArray[1].split(":");
+            tmpEndTime = new Date(endTimeArray2[0],int(endTimeArray2[1]) - 1,endTimeArray2[2],endTimeArray3[0],endTimeArray3[1],endTimeArray3[2]);
+            _endTime = tmpEndTime.getTime() / 1000;
             _hasPrompted = new DictionaryData();
          }
          else
@@ -838,9 +830,9 @@ package drgnBoat
          UIModuleLoader.Instance.addUIModuleImp("drgnBoaticon");
       }
       
-      private function loadIconCompleteHandler(param1:UIModuleEvent) : void
+      private function loadIconCompleteHandler(event:UIModuleEvent) : void
       {
-         if(param1.module == "drgnBoaticon")
+         if(event.module == "drgnBoaticon")
          {
             UIModuleLoader.Instance.removeEventListener("uiModuleComplete",loadIconCompleteHandler);
             _isLoadIconComplete = true;
@@ -848,7 +840,7 @@ package drgnBoat
          }
       }
       
-      private function timerHandler(param1:TimerEvent) : void
+      private function timerHandler(event:TimerEvent) : void
       {
          if(isInDoubleTime)
          {
@@ -881,25 +873,25 @@ package drgnBoat
       
       public function get npcSpeed() : int
       {
-         var _loc1_:int = ServerConfigManager.instance.dragonBoatFastTime;
-         return int(Math.floor(33600 / _loc1_ / 25));
+         var fastTime:int = ServerConfigManager.instance.dragonBoatFastTime;
+         return int(Math.floor(33600 / fastTime / 25));
       }
       
-      public function getPlayerResUrl(param1:Boolean, param2:int) : String
+      public function getPlayerResUrl(isSelf:Boolean, carType:int) : String
       {
-         return PathManager.SITE_MAIN + "image/drgnBoat/drgnBoat" + param2 + ".swf";
+         return PathManager.SITE_MAIN + "image/drgnBoat/drgnBoat" + carType + ".swf";
       }
       
       public function loadSound() : void
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.SITE_MAIN + "image/escort/escortAudio.swf",4);
-         _loc1_.addEventListener("complete",loadSoundCompleteHandler);
-         LoadResourceManager.Instance.startLoad(_loc1_);
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.SITE_MAIN + "image/escort/escortAudio.swf",4);
+         loader.addEventListener("complete",loadSoundCompleteHandler);
+         LoadResourceManager.Instance.startLoad(loader);
       }
       
-      private function loadSoundCompleteHandler(param1:LoaderEvent) : void
+      private function loadSoundCompleteHandler(event:LoaderEvent) : void
       {
-         param1.loader.removeEventListener("complete",loadSoundCompleteHandler);
+         event.loader.removeEventListener("complete",loadSoundCompleteHandler);
          SoundManager.instance.initEscortSound();
       }
    }

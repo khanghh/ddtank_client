@@ -50,10 +50,10 @@ package worldboss.view
       
       private var _lastCreatTime:int = 0;
       
-      public function WorldBossResurrectView(param1:int)
+      public function WorldBossResurrectView(totalCount:int)
       {
          super();
-         _totalCount = param1;
+         _totalCount = totalCount;
          init();
          addEvent();
       }
@@ -83,7 +83,7 @@ package worldboss.view
          _reFightBtn.addEventListener("click",__reFight);
       }
       
-      private function __resurrect(param1:MouseEvent) : void
+      private function __resurrect(e:MouseEvent) : void
       {
          if(getTimer() - _lastCreatTime > 1000)
          {
@@ -102,7 +102,7 @@ package worldboss.view
          }
       }
       
-      private function __reFight(param1:MouseEvent) : void
+      private function __reFight(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(getTimer() - _lastCreatTime > 1000)
@@ -121,20 +121,20 @@ package worldboss.view
          }
       }
       
-      public function __startCount(param1:TimerEvent) : void
+      public function __startCount(e:TimerEvent) : void
       {
          if(_totalCount < 0)
          {
             __timerComplete();
             return;
          }
-         var _loc2_:String = setFormat(int(_totalCount / 3600)) + ":" + setFormat(int(_totalCount / 60 % 60)) + ":" + setFormat(int(_totalCount % 60));
-         (_timeCD["timeHour2"] as MovieClip).gotoAndStop("num_" + _loc2_.charAt(0));
-         (_timeCD["timeHour"] as MovieClip).gotoAndStop("num_" + _loc2_.charAt(1));
-         (_timeCD["timeMint2"] as MovieClip).gotoAndStop("num_" + _loc2_.charAt(3));
-         (_timeCD["timeMint"] as MovieClip).gotoAndStop("num_" + _loc2_.charAt(4));
-         (_timeCD["timeSecond2"] as MovieClip).gotoAndStop("num_" + _loc2_.charAt(6));
-         (_timeCD["timeSecond"] as MovieClip).gotoAndStop("num_" + _loc2_.charAt(7));
+         var str:String = setFormat(int(_totalCount / 3600)) + ":" + setFormat(int(_totalCount / 60 % 60)) + ":" + setFormat(int(_totalCount % 60));
+         (_timeCD["timeHour2"] as MovieClip).gotoAndStop("num_" + str.charAt(0));
+         (_timeCD["timeHour"] as MovieClip).gotoAndStop("num_" + str.charAt(1));
+         (_timeCD["timeMint2"] as MovieClip).gotoAndStop("num_" + str.charAt(3));
+         (_timeCD["timeMint"] as MovieClip).gotoAndStop("num_" + str.charAt(4));
+         (_timeCD["timeSecond2"] as MovieClip).gotoAndStop("num_" + str.charAt(6));
+         (_timeCD["timeSecond"] as MovieClip).gotoAndStop("num_" + str.charAt(7));
          _totalCount = Number(_totalCount) - 1;
       }
       
@@ -144,10 +144,10 @@ package worldboss.view
          _reFightBtn.removeEventListener("click",__reFight);
       }
       
-      private function __onAlertResponse(param1:FrameEvent) : void
+      private function __onAlertResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             default:
             default:
@@ -163,10 +163,10 @@ package worldboss.view
          }
       }
       
-      private function __onAlertResponse2(param1:FrameEvent) : void
+      private function __onAlertResponse2(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             default:
             default:
@@ -182,15 +182,15 @@ package worldboss.view
          }
       }
       
-      private function seveIsResurrect(param1:Boolean) : void
+      private function seveIsResurrect(bool:Boolean) : void
       {
-         SharedManager.Instance.isResurrect = param1;
+         SharedManager.Instance.isResurrect = bool;
          SharedManager.Instance.save();
       }
       
-      private function seveIsReFight(param1:Boolean) : void
+      private function seveIsReFight(bool:Boolean) : void
       {
-         SharedManager.Instance.isReFight = param1;
+         SharedManager.Instance.isReFight = bool;
          SharedManager.Instance.save();
       }
       
@@ -271,26 +271,26 @@ package worldboss.view
          WorldBossManager.Instance.dispatchEvent(new WorldBossRoomEvent("startFight"));
       }
       
-      private function requestRevive(param1:int, param2:Boolean) : void
+      private function requestRevive(type:int, bool:Boolean) : void
       {
-         var _loc3_:PackageOut = new PackageOut(102);
-         _loc3_.writeByte(37);
-         _loc3_.writeInt(param1);
-         _loc3_.writeBoolean(param2);
-         SocketManager.Instance.socket.send(_loc3_);
+         var pkg:PackageOut = new PackageOut(102);
+         pkg.writeByte(37);
+         pkg.writeInt(type);
+         pkg.writeBoolean(bool);
+         SocketManager.Instance.socket.send(pkg);
       }
       
-      private function setFormat(param1:int) : String
+      private function setFormat(value:int) : String
       {
-         var _loc2_:String = param1.toString();
-         if(param1 < 10)
+         var str:String = value.toString();
+         if(value < 10)
          {
-            _loc2_ = "0" + _loc2_;
+            str = "0" + str;
          }
-         return _loc2_;
+         return str;
       }
       
-      private function __timerComplete(param1:TimerEvent = null) : void
+      private function __timerComplete(e:TimerEvent = null) : void
       {
          dispatchEvent(new Event("complete"));
       }

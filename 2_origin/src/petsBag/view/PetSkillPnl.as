@@ -28,9 +28,9 @@ package petsBag.view
       
       private var _itemViewVec:Vector.<SkillItem>;
       
-      public function PetSkillPnl(param1:Boolean)
+      public function PetSkillPnl(isWatch:Boolean)
       {
-         _isWatch = param1;
+         _isWatch = isWatch;
          super();
          _itemInfoVec = [];
          _itemViewVec = new Vector.<SkillItem>();
@@ -55,9 +55,9 @@ package petsBag.view
          }
       }
       
-      public function set itemInfo(param1:Array) : void
+      public function set itemInfo(petSkillAll:Array) : void
       {
-         _itemInfoVec = param1;
+         _itemInfoVec = petSkillAll;
          _itemInfoVec.sortOn("ID",16);
          update();
       }
@@ -70,37 +70,37 @@ package petsBag.view
       
       protected function creatItems() : void
       {
-         var _loc2_:* = null;
-         var _loc4_:int = 0;
-         var _loc1_:int = 8;
+         var cell:* = null;
+         var i:int = 0;
+         var count:int = 8;
          var _loc6_:int = 0;
          var _loc5_:* = _itemInfoVec;
-         for each(var _loc3_ in _itemInfoVec)
+         for each(var itemInfo in _itemInfoVec)
          {
-            if(_loc3_)
+            if(itemInfo)
             {
-               _loc4_++;
-               _loc2_ = new SkillItem(_loc3_,_loc4_,true,_isWatch);
-               _loc2_.DoubleClickEnabled = true;
-               _loc2_.McType = 1;
-               _loc2_.iconPos = new Point(2.5,2.5);
-               _loc2_.setExclusiveSkillImg();
-               _petSkill.addChild(_loc2_);
-               _itemViewVec.push(_loc2_);
+               i++;
+               cell = new SkillItem(itemInfo,i,true,_isWatch);
+               cell.DoubleClickEnabled = true;
+               cell.McType = 1;
+               cell.iconPos = new Point(2.5,2.5);
+               cell.setExclusiveSkillImg();
+               _petSkill.addChild(cell);
+               _itemViewVec.push(cell);
             }
          }
-         _loc1_ = !!_isWatch?14:8;
-         while(_loc4_ < _loc1_)
+         count = !!_isWatch?14:8;
+         while(i < count)
          {
-            _loc4_++;
-            _loc2_ = new SkillItem(null,_loc4_,true,_isWatch);
-            _loc2_.iconPos = new Point(3,3);
-            _loc2_.mouseChildren = false;
-            _loc2_.mouseEnabled = false;
-            _loc2_.McType = 1;
-            _loc2_.setExclusiveSkillImg();
-            _petSkill.addChild(_loc2_);
-            _itemViewVec.push(_loc2_);
+            i++;
+            cell = new SkillItem(null,i,true,_isWatch);
+            cell.iconPos = new Point(3,3);
+            cell.mouseChildren = false;
+            cell.mouseEnabled = false;
+            cell.McType = 1;
+            cell.setExclusiveSkillImg();
+            _petSkill.addChild(cell);
+            _itemViewVec.push(cell);
          }
          if(!_isWatch)
          {
@@ -108,9 +108,9 @@ package petsBag.view
          }
       }
       
-      public function set scrollVisble(param1:Boolean) : void
+      public function set scrollVisble(value:Boolean) : void
       {
-         _petSkillScroll.vScrollbar.visible = param1;
+         _petSkillScroll.vScrollbar.visible = value;
       }
       
       private function removeItems() : void
@@ -118,12 +118,12 @@ package petsBag.view
          removeEvent();
          var _loc3_:int = 0;
          var _loc2_:* = _itemViewVec;
-         for each(var _loc1_ in _itemViewVec)
+         for each(var item in _itemViewVec)
          {
-            if(_loc1_)
+            if(item)
             {
-               ObjectUtils.disposeObject(_loc1_);
-               _loc1_ = null;
+               ObjectUtils.disposeObject(item);
+               item = null;
             }
          }
          _itemViewVec.splice(0,_itemViewVec.length);
@@ -131,36 +131,34 @@ package petsBag.view
       
       private function initEvent() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _itemViewVec.length)
+         var index:int = 0;
+         for(index = 0; index < _itemViewVec.length; )
          {
-            _itemViewVec[_loc1_].addEventListener("itemclick",__skillItemClick);
-            _loc1_++;
+            _itemViewVec[index].addEventListener("itemclick",__skillItemClick);
+            index++;
          }
       }
       
       private function removeEvent() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _itemViewVec.length)
+         var index:int = 0;
+         for(index = 0; index < _itemViewVec.length; )
          {
-            _itemViewVec[_loc1_].removeEventListener("itemclick",__skillItemClick);
-            _loc1_++;
+            _itemViewVec[index].removeEventListener("itemclick",__skillItemClick);
+            index++;
          }
       }
       
-      private function __skillItemClick(param1:PetItemEvent) : void
+      private function __skillItemClick(e:PetItemEvent) : void
       {
          if(_isWatch)
          {
             return;
          }
-         var _loc2_:PetSkill = (param1.data as SkillItem).info as PetSkill;
-         if(_loc2_ && PetsBagManager.instance().petModel.currentPetInfo)
+         var currentSkillInfo:PetSkill = (e.data as SkillItem).info as PetSkill;
+         if(currentSkillInfo && PetsBagManager.instance().petModel.currentPetInfo)
          {
-            SocketManager.Instance.out.sendEquipPetSkill(PetsBagManager.instance().petModel.currentPetInfo.Place,_loc2_.ID,PetsBagManager.instance().getEquipdSkillIndex());
+            SocketManager.Instance.out.sendEquipPetSkill(PetsBagManager.instance().petModel.currentPetInfo.Place,currentSkillInfo.ID,PetsBagManager.instance().getEquipdSkillIndex());
             if(PetsBagManager.instance().petModel.petGuildeOptionOnOff[117] > 0)
             {
                PetsBagManager.instance().clearCurrentPetFarmGuildeArrow(117);

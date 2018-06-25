@@ -35,30 +35,30 @@ package gameCommon.model
          return _classPath;
       }
       
-      public function set classPath(param1:String) : void
+      public function set classPath(value:String) : void
       {
-         _classPath = param1;
+         _classPath = value;
          if(_type == 4)
          {
             _classPath = _classPath.replace(/\./g,"_");
          }
-         var _loc2_:String = classPath.replace("tank.resource.bombs.Bomb","");
-         bombId = int(_loc2_);
+         var id:String = classPath.replace("tank.resource.bombs.Bomb","");
+         bombId = int(id);
       }
       
       public function get filePath() : String
       {
-         var _loc1_:String = "";
+         var mainPath:String = "";
          if(_type == 2)
          {
-            _loc1_ = PathManager.SITE_MAIN;
+            mainPath = PathManager.SITE_MAIN;
          }
-         return _loc1_ + path;
+         return mainPath + path;
       }
       
       public function startLoad() : void
       {
-         var _loc1_:* = null;
+         var p:* = null;
          if(StringUtils.endsWith(filePath.toLocaleLowerCase(),"jpg") || StringUtils.endsWith(filePath.toLocaleLowerCase(),"png"))
          {
             LoadResourceManager.Instance.creatAndStartLoad(filePath,0);
@@ -83,8 +83,8 @@ package gameCommon.model
             }
             if(_type == 4)
             {
-               _loc1_ = PathManager.getBoneLivingPath();
-               BoneMovieFactory.instance.model.addBoneVoByStyle(_classPath,_loc1_,2,0,"none");
+               p = PathManager.getBoneLivingPath();
+               BoneMovieFactory.instance.model.addBoneVoByStyle(_classPath,p,2,0,"none");
                BonesLoaderManager.instance.removeEventListener("complete",__onLoaderBonesComplete);
                BonesLoaderManager.instance.addEventListener("complete",__onLoaderBonesComplete);
                BonesLoaderManager.instance.startLoader(_classPath,0,"fighting3d");
@@ -92,24 +92,24 @@ package gameCommon.model
          }
       }
       
-      private function __onLoaderBonesComplete(param1:BonesLoaderEvent) : void
+      private function __onLoaderBonesComplete(e:BonesLoaderEvent) : void
       {
          if(_type == 3 && LoadBombManager.Instance.getLivingBombComplete3D(bombId))
          {
             BonesLoaderManager.instance.removeEventListener("complete",__onLoaderBonesComplete);
             dispatchEvent(new LoaderEvent("complete",null));
          }
-         else if(_type == 4 && param1.vo.styleName == classPath)
+         else if(_type == 4 && e.vo.styleName == classPath)
          {
             BonesLoaderManager.instance.removeEventListener("complete",__onLoaderBonesComplete);
             dispatchEvent(new LoaderEvent("complete",null));
          }
       }
       
-      private function __onLoaderNativeComplete(param1:LoaderEvent) : void
+      private function __onLoaderNativeComplete(event:LoaderEvent) : void
       {
-         param1.loader.removeEventListener("complete",__onLoaderNativeComplete);
-         dispatchEvent(new LoaderEvent("complete",param1.loader));
+         event.loader.removeEventListener("complete",__onLoaderNativeComplete);
+         dispatchEvent(new LoaderEvent("complete",event.loader));
       }
       
       public function get loader() : BaseLoader
@@ -122,9 +122,9 @@ package gameCommon.model
          return _type;
       }
       
-      public function set type(param1:int) : void
+      public function set type(value:int) : void
       {
-         _type = param1;
+         _type = value;
       }
    }
 }

@@ -20,33 +20,33 @@ package starling.text
       
       private var mKernings:Dictionary;
       
-      public function BitmapChar(param1:int, param2:Texture, param3:Number, param4:Number, param5:Number)
+      public function BitmapChar(id:int, texture:Texture, xOffset:Number, yOffset:Number, xAdvance:Number)
       {
          super();
-         mCharID = param1;
-         mTexture = param2;
-         mXOffset = param3;
-         mYOffset = param4;
-         mXAdvance = param5;
+         mCharID = id;
+         mTexture = texture;
+         mXOffset = xOffset;
+         mYOffset = yOffset;
+         mXAdvance = xAdvance;
          mKernings = null;
       }
       
-      public function addKerning(param1:int, param2:Number) : void
+      public function addKerning(charID:int, amount:Number) : void
       {
          if(mKernings == null)
          {
             mKernings = new Dictionary();
          }
-         mKernings[param1] = param2;
+         mKernings[charID] = amount;
       }
       
-      public function getKerning(param1:int) : Number
+      public function getKerning(charID:int) : Number
       {
-         if(mKernings == null || mKernings[param1] == undefined)
+         if(mKernings == null || mKernings[charID] == undefined)
          {
             return 0;
          }
-         return mKernings[param1];
+         return mKernings[charID];
       }
       
       public function createImage() : Image

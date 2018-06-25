@@ -23,11 +23,11 @@ package ddt.manager
       
       public static function leaveToLoginPurely() : void
       {
-         var _loc1_:* = null;
+         var redirictURL:* = null;
          if(ExternalInterface.available)
          {
-            _loc1_ = "function redict () {top.location.href=\"" + PathManager.solveLogin() + "\"}";
-            ExternalInterface.call(_loc1_);
+            redirictURL = "function redict () {top.location.href=\"" + PathManager.solveLogin() + "\"}";
+            ExternalInterface.call(redirictURL);
          }
       }
       
@@ -37,15 +37,15 @@ package ddt.manager
       
       public static function leaveToLoginPath() : void
       {
-         var _loc1_:* = null;
+         var redirictURL:* = null;
          if(DesktopManager.Instance.isDesktop)
          {
             DesktopManager.Instance.backToLogin();
          }
          else if(PathInfo.ISTOPDERIICT && ExternalInterface.available)
          {
-            _loc1_ = "function redict () {top.location.href=\"" + PathManager.solveLogin() + "\"}";
-            ExternalInterface.call(_loc1_);
+            redirictURL = "function redict () {top.location.href=\"" + PathManager.solveLogin() + "\"}";
+            ExternalInterface.call(redirictURL);
          }
          else
          {
@@ -57,7 +57,7 @@ package ddt.manager
          }
       }
       
-      public static function forcedToLoginPath(param1:String) : void
+      public static function forcedToLoginPath(msg:String) : void
       {
          if(DesktopManager.Instance.isDesktop && !LoadResourceManager.Instance.isMicroClient)
          {
@@ -69,30 +69,30 @@ package ddt.manager
          {
             if(LoadResourceManager.Instance.isMicroClient)
             {
-               fscommand("reStartGame",param1);
+               fscommand("reStartGame",msg);
             }
             else
             {
-               ExternalInterface.call("toLocation",PathManager.solveLogin(),param1);
+               ExternalInterface.call("toLocation",PathManager.solveLogin(),msg);
             }
          }
       }
       
       public static function showFillFrame() : BaseAlerFrame
       {
-         var _loc1_:* = null;
-         _loc1_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.comon.lack"),"",LanguageMgr.GetTranslation("cancel"),true,false,false,2);
-         _loc1_.addEventListener("response",__onResponse);
-         return _loc1_;
+         var frame:* = null;
+         frame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.comon.lack"),"",LanguageMgr.GetTranslation("cancel"),true,false,false,2);
+         frame.addEventListener("response",__onResponse);
+         return frame;
       }
       
-      private static function __onResponse(param1:FrameEvent) : void
+      private static function __onResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.target as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onResponse);
-         _loc2_.dispose();
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var alert:BaseAlerFrame = evt.target as BaseAlerFrame;
+         alert.removeEventListener("response",__onResponse);
+         alert.dispose();
+         if(evt.responseCode == 2 || evt.responseCode == 3)
          {
             leaveToFillPath();
          }
@@ -117,35 +117,35 @@ package ddt.manager
       
       private static function sinaWeiBoFill() : Boolean
       {
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         var _loc1_:* = null;
-         var _loc2_:Boolean = false;
+         var jsFunStr:* = null;
+         var jsFunName:* = null;
+         var paramArr:* = null;
+         var bool:Boolean = false;
          if(ExternalInterface.available && PathManager.CommnuntyMicroBlog() && PathManager.CommnuntySinaSecondMicroBlog() && PathManager.solveFillJSCommandEnable())
          {
-            _loc2_ = true;
-            _loc3_ = PathManager.solveFillJSCommandValue();
-            _loc4_ = _loc3_.substr(0,_loc3_.indexOf("("));
-            _loc1_ = _loc3_.substring(_loc3_.indexOf("(") + 1,_loc3_.indexOf(")")).split(",");
-            ExternalInterface.call(_loc4_,PlayerManager.Instance.Self.LoginName,_loc1_[1].substring(1,_loc1_[1].length - 1),_loc1_[2].substring(1,_loc1_[2].length - 1),_loc1_[3].substring(1,_loc1_[3].length - 1));
+            bool = true;
+            jsFunStr = PathManager.solveFillJSCommandValue();
+            jsFunName = jsFunStr.substr(0,jsFunStr.indexOf("("));
+            paramArr = jsFunStr.substring(jsFunStr.indexOf("(") + 1,jsFunStr.indexOf(")")).split(",");
+            ExternalInterface.call(jsFunName,PlayerManager.Instance.Self.LoginName,paramArr[1].substring(1,paramArr[1].length - 1),paramArr[2].substring(1,paramArr[2].length - 1),paramArr[3].substring(1,paramArr[3].length - 1));
          }
-         return _loc2_;
+         return bool;
       }
       
       private static function chargeMoney() : void
       {
-         var _loc1_:URLVariables = new URLVariables();
-         _loc1_["userName"] = PlayerManager.Instance.Self.LoginName;
-         _loc1_["money"] = 10000;
-         var _loc2_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ChargeMoneyForTest.ashx"),6,_loc1_);
-         _loc2_.loadErrorMessage = LanguageMgr.GetTranslation("tank.leavaPageManager.chargeMoney.error");
-         _loc2_.analyzer = new ChargeMoneyAnalyzer(chargeResult);
-         LoadResourceManager.Instance.startLoad(_loc2_);
+         var args:URLVariables = new URLVariables();
+         args["userName"] = PlayerManager.Instance.Self.LoginName;
+         args["money"] = 10000;
+         var moneyLoader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ChargeMoneyForTest.ashx"),6,args);
+         moneyLoader.loadErrorMessage = LanguageMgr.GetTranslation("tank.leavaPageManager.chargeMoney.error");
+         moneyLoader.analyzer = new ChargeMoneyAnalyzer(chargeResult);
+         LoadResourceManager.Instance.startLoad(moneyLoader);
       }
       
-      private static function chargeResult(param1:ChargeMoneyAnalyzer) : void
+      private static function chargeResult(analyzer:ChargeMoneyAnalyzer) : void
       {
-         if(param1.result)
+         if(analyzer.result)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.leavaPageManager.chargeMoney.success"));
          }
@@ -155,7 +155,7 @@ package ddt.manager
          }
       }
       
-      public static function setFavorite(param1:Boolean) : void
+      public static function setFavorite(isFirst:Boolean) : void
       {
          if(ExternalInterface.available)
          {
@@ -167,7 +167,7 @@ package ddt.manager
             {
                return;
             }
-            if(param1)
+            if(isFirst)
             {
                ExternalInterface.call("setFavorite",PathManager.solveLogin(),StatisticManager.siteName,"3");
             }

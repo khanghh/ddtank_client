@@ -27,9 +27,9 @@ package littleGame
       
       private var _onProcess:Boolean;
       
-      public function LittleGameLoader(param1:Scenario)
+      public function LittleGameLoader(game:Scenario)
       {
-         _game = param1;
+         _game = game;
          super();
       }
       
@@ -60,14 +60,14 @@ package littleGame
          ProcessManager.Instance.addObject(this);
       }
       
-      private function __monsterComplete(param1:LoaderEvent) : void
+      private function __monsterComplete(event:LoaderEvent) : void
       {
          _monsterLoader.removeEventListener("complete",__monsterComplete);
          _loaded = Number(_loaded) + 1;
          complete();
       }
       
-      private function __scenarioComplete(param1:LoaderEvent) : void
+      private function __scenarioComplete(event:LoaderEvent) : void
       {
          _scenarioLoader.removeEventListener("complete",__scenarioComplete);
          _loaded = Number(_loaded) + 1;
@@ -98,12 +98,12 @@ package littleGame
          return _onProcess;
       }
       
-      public function set onProcess(param1:Boolean) : void
+      public function set onProcess(val:Boolean) : void
       {
-         _onProcess = param1;
+         _onProcess = val;
       }
       
-      public function process(param1:Number) : void
+      public function process(rate:Number) : void
       {
          dispatchEvent(new LoaderEvent("progress",null));
       }

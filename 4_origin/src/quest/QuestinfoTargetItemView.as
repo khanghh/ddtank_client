@@ -45,44 +45,44 @@ package quest
       
       private var _vipDescTxt:FilterFrameText;
       
-      public function QuestinfoTargetItemView(param1:Boolean)
+      public function QuestinfoTargetItemView(isOptional:Boolean)
       {
-         _isOptional = param1;
+         _isOptional = isOptional;
          super();
       }
       
-      public function set sLevel(param1:int) : void
+      public function set sLevel(value:int) : void
       {
-         if(param1 < 1)
+         if(value < 1)
          {
-            param1 = 1;
+            value = 1;
          }
-         _sLevel = param1;
+         _sLevel = value;
          _starLevel.level(_sLevel,isImprove);
       }
       
-      override public function set info(param1:QuestInfo) : void
+      override public function set info(value:QuestInfo) : void
       {
-         var _loc6_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         _info = param1;
-         _loc6_ = 0;
-         while(_info.conditions[_loc6_])
+         var i:int = 0;
+         var cond:* = null;
+         var condView:* = null;
+         var infoCollectView:* = null;
+         _info = value;
+         i = 0;
+         while(_info.conditions[i])
          {
-            _loc4_ = _info.conditions[_loc6_];
-            if(_loc4_.isOpitional == _isOptional)
+            cond = _info.conditions[i];
+            if(cond.isOpitional == _isOptional)
             {
-               _loc3_ = new QuestConditionView(_loc4_);
-               _loc3_.status = _info.conditionStatus[_loc6_];
-               if(_info.progress[_loc6_] <= 0)
+               condView = new QuestConditionView(cond);
+               condView.status = _info.conditionStatus[i];
+               if(_info.progress[i] <= 0)
                {
-                  _loc3_.isComplete = true;
+                  condView.isComplete = true;
                }
-               _targets.addChild(_loc3_);
+               _targets.addChild(condView);
             }
-            _loc6_++;
+            i++;
          }
          if(_info.QuestID == 544)
          {
@@ -90,13 +90,13 @@ package quest
          }
          else if(_info.isPhoneTask)
          {
-            _loc2_ = new InfoCollectView(_info.QuestID);
-            _loc2_.getPhoneData();
-            _targets.addChild(_loc2_);
+            infoCollectView = new InfoCollectView(_info.QuestID);
+            infoCollectView.getPhoneData();
+            _targets.addChild(infoCollectView);
          }
          _spand = _info.OneKeyFinishNeedMoney;
          sLevel = _info.QuestLevel;
-         var _loc5_:int = TaskManager.instance.improve.canOneKeyFinishTime + int(ServerConfigManager.instance.VIPQuestFinishDirect[PlayerManager.Instance.Self.VIPLevel - 1]) - PlayerManager.Instance.Self.uesedFinishTime;
+         var vOnkeyRemainTimes:int = TaskManager.instance.improve.canOneKeyFinishTime + int(ServerConfigManager.instance.VIPQuestFinishDirect[PlayerManager.Instance.Self.VIPLevel - 1]) - PlayerManager.Instance.Self.uesedFinishTime;
          if(_spand > 0)
          {
             _completeButton = ComponentFactory.Instance.creatComponentByStylename("quest.complete.button");
@@ -142,16 +142,16 @@ package quest
       
       private function isInLimitTimes() : int
       {
-         var _loc1_:int = TaskManager.instance.improve.canOneKeyFinishTime;
+         var totalOnKeyCompleteTimes:int = TaskManager.instance.improve.canOneKeyFinishTime;
          if(PlayerManager.Instance.Self.IsVIP)
          {
-            _loc1_ = _loc1_ + int(ServerConfigManager.instance.VIPQuestFinishDirect[PlayerManager.Instance.Self.VIPLevel - 1]);
+            totalOnKeyCompleteTimes = totalOnKeyCompleteTimes + int(ServerConfigManager.instance.VIPQuestFinishDirect[PlayerManager.Instance.Self.VIPLevel - 1]);
          }
-         var _loc2_:int = _loc1_ - PlayerManager.Instance.Self.uesedFinishTime;
-         return _loc2_;
+         var spandTimes:int = totalOnKeyCompleteTimes - PlayerManager.Instance.Self.uesedFinishTime;
+         return spandTimes;
       }
       
-      private function _activeGetBtnClick(param1:MouseEvent) : void
+      private function _activeGetBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -169,22 +169,22 @@ package quest
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.manager.TaskManager.oneKeyCompleteTimesOver"));
             return;
          }
-         var _loc3_:String = LanguageMgr.GetTranslation("tank.manager.TaskManager.completeText",_spand);
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc3_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,1,null,"SimpleAlert",30,true,0);
-         _loc2_.addEventListener("response",__confirmResponse);
+         var mes:String = LanguageMgr.GetTranslation("tank.manager.TaskManager.completeText",_spand);
+         var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),mes,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,1,null,"SimpleAlert",30,true,0);
+         alert.addEventListener("response",__confirmResponse);
       }
       
-      private function __confirmResponse(param1:FrameEvent) : void
+      private function __confirmResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__confirmResponse);
-         if(_loc2_.parent)
+         var frame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("response",__confirmResponse);
+         if(frame.parent)
          {
-            _loc2_.parent.removeChild(_loc2_);
+            frame.parent.removeChild(frame);
          }
-         ObjectUtils.disposeObject(_loc2_);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         ObjectUtils.disposeObject(frame);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             if(_info.Type == 12)
             {

@@ -60,27 +60,26 @@ package ringStation.view
          SocketManager.Instance.addEventListener(PkgEvent.format(404,3),__getArmoryInfo);
       }
       
-      protected function __getArmoryInfo(param1:PkgEvent) : void
+      protected function __getArmoryInfo(event:PkgEvent) : void
       {
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc4_:Array = [];
-         var _loc2_:int = _loc3_.readInt();
-         _loc6_ = 0;
-         while(_loc6_ < _loc2_)
+         var i:int = 0;
+         var info:* = null;
+         var pkg:PackageIn = event.pkg;
+         var list:Array = [];
+         var count:int = pkg.readInt();
+         for(i = 0; i < count; )
          {
-            _loc5_ = new RankingInfo();
-            _loc5_.PlayerRank = _loc3_.readInt();
-            _loc5_.FamLevel = _loc3_.readInt();
-            _loc5_.PlayerName = _loc3_.readUTF();
-            _loc5_.Fighting = _loc3_.readInt();
-            _loc3_.readInt();
-            _loc4_.push(_loc5_);
-            _loc6_++;
+            info = new RankingInfo();
+            info.PlayerRank = pkg.readInt();
+            info.FamLevel = pkg.readInt();
+            info.PlayerName = pkg.readUTF();
+            info.Fighting = pkg.readInt();
+            pkg.readInt();
+            list.push(info);
+            i++;
          }
          _list.vectorListModel.clear();
-         _list.vectorListModel.appendAll(_loc4_);
+         _list.vectorListModel.appendAll(list);
       }
       
       public function show() : void
@@ -95,10 +94,10 @@ package ringStation.view
          SocketManager.Instance.removeEventListener(PkgEvent.format(404,3),__getArmoryInfo);
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:

@@ -68,43 +68,43 @@ package magicHouse.magicCollection
          this.tipbackgound = _bg;
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         .super.tipData = param1;
-         this.setTitleText(param1.title);
-         this.atcAddValueText(param1.magicAttack);
-         this.defAddValueText(param1.magicDefense);
-         this.lukAddValueText(param1.critDamage);
+         .super.tipData = data;
+         this.setTitleText(data.title);
+         this.atcAddValueText(data.magicAttack);
+         this.defAddValueText(data.magicDefense);
+         this.lukAddValueText(data.critDamage);
       }
       
-      private function setTitleText(param1:String) : void
+      private function setTitleText(value:String) : void
       {
-         _tipTitle.text = param1;
+         _tipTitle.text = value;
       }
       
-      private function atcAddValueText(param1:int) : void
+      private function atcAddValueText(value:int) : void
       {
-         _attackValue.text = "+" + String(param1);
+         _attackValue.text = "+" + String(value);
       }
       
-      private function defAddValueText(param1:int) : void
+      private function defAddValueText(value:int) : void
       {
-         _defenseValue.text = "+" + String(param1);
+         _defenseValue.text = "+" + String(value);
       }
       
-      private function lukAddValueText(param1:int) : void
+      private function lukAddValueText(value:int) : void
       {
-         _damageValue.text = "+" + String(param1);
+         _damageValue.text = "+" + String(value);
       }
       
-      public function setBGWidth(param1:int = 0) : void
+      public function setBGWidth(bgWidth:int = 0) : void
       {
-         _bg.width = param1;
+         _bg.width = bgWidth;
       }
       
-      public function setBGHeight(param1:int = 0) : void
+      public function setBGHeight(bgHeight:int = 0) : void
       {
-         _bg.height = param1;
+         _bg.height = bgHeight;
       }
       
       override protected function addChildren() : void

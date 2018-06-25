@@ -22,10 +22,10 @@ package calendar.event
       
       private var _enable:Boolean;
       
-      public function CalendarEvent(param1:String, param2:Boolean = true)
+      public function CalendarEvent(type:String, enable:Boolean = true)
       {
-         super(param1,bubbles,cancelable);
-         _enable = param2;
+         super(type,bubbles,cancelable);
+         _enable = enable;
       }
       
       public function get enable() : Boolean

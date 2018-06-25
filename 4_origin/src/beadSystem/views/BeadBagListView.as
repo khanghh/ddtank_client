@@ -32,22 +32,22 @@ package beadSystem.views
          _beadBagList.addEventListener("itemclick",__cellClick);
       }
       
-      protected function __cellClick(param1:CellEvent) : void
+      protected function __cellClick(evt:CellEvent) : void
       {
-         var _loc3_:* = null;
-         param1.stopImmediatePropagation();
-         var _loc2_:BagCell = param1.data as BagCell;
-         if(_loc2_)
+         var info:* = null;
+         evt.stopImmediatePropagation();
+         var cell:BagCell = evt.data as BagCell;
+         if(cell)
          {
-            _loc3_ = _loc2_.info as InventoryItemInfo;
+            info = cell.info as InventoryItemInfo;
          }
-         if(_loc3_ == null)
+         if(info == null)
          {
             return;
          }
-         if(!_loc2_.locked)
+         if(!cell.locked)
          {
-            _loc2_.dragStart();
+            cell.dragStart();
          }
       }
       
@@ -67,9 +67,9 @@ package beadSystem.views
          _beadBagList = null;
       }
       
-      private function lockBead(param1:MouseEvent) : void
+      private function lockBead(event:MouseEvent) : void
       {
-         _beadLockBtn.dragStart(param1.stageX,param1.stageY);
+         _beadLockBtn.dragStart(event.stageX,event.stageY);
       }
    }
 }

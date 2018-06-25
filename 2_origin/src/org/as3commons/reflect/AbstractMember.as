@@ -27,38 +27,38 @@ package org.as3commons.reflect
       
       private var _namespaceURI:String;
       
-      public function AbstractMember(param1:String, param2:String, param3:String, param4:Boolean, param5:ApplicationDomain, param6:HashArray = null)
+      public function AbstractMember(name:String, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metadata:HashArray = null)
       {
-         super(param6);
-         this.initAbstractType(param1,param4,param2,param3,param5);
+         super(metadata);
+         this.initAbstractType(name,isStatic,type,declaringType,applicationDomain);
       }
       
-      public static function newInstance(param1:Class, param2:String, param3:String, param4:String, param5:Boolean, param6:ApplicationDomain, param7:HashArray = null) : AbstractMember
+      public static function newInstance(clazz:Class, name:String, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metadata:HashArray = null) : AbstractMember
       {
-         var _loc8_:String = getCacheKey(param1,param2,param3,param4,param5,param6,param7);
-         if(!_cache[_loc8_])
+         var cacheKey:String = getCacheKey(clazz,name,type,declaringType,isStatic,applicationDomain,metadata);
+         if(!_cache[cacheKey])
          {
-            _cache[_loc8_] = new param1(param2,param3,param4,param5,param6,param7);
+            _cache[cacheKey] = new clazz(name,type,declaringType,isStatic,applicationDomain,metadata);
          }
-         return _cache[_loc8_];
+         return _cache[cacheKey];
       }
       
-      public static function getCacheKey(param1:Class, param2:String, param3:String, param4:String, param5:Boolean, param6:ApplicationDomain, param7:HashArray = null) : String
+      public static function getCacheKey(clazz:Class, name:String, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metadata:HashArray = null) : String
       {
-         var _loc8_:int = CacheUtil.getApplicationDomainIndex(param6);
-         var _loc9_:String = CacheUtil.getMetadataString(param7);
-         return [param1,param2,param3,param4,param5,_loc8_,_loc9_].join(":");
+         var appDomainIndex:int = CacheUtil.getApplicationDomainIndex(applicationDomain);
+         var metadataString:String = CacheUtil.getMetadataString(metadata);
+         return [clazz,name,type,declaringType,isStatic,appDomainIndex,metadataString].join(":");
       }
       
-      protected function initAbstractType(param1:String, param2:Boolean, param3:String, param4:String, param5:ApplicationDomain) : void
+      protected function initAbstractType(name:String, isStatic:Boolean, type:String, declaringType:String, applicationDomain:ApplicationDomain) : void
       {
-         Assert.hasText(param1,"name argument must have text");
-         Assert.notNull(param5,"applicationDomain argument must not be null");
-         this._name = param1;
-         this._isStatic = param2;
-         this.typeName = param3;
-         this.declaringTypeName = param4;
-         this.applicationDomain = param5;
+         Assert.hasText(name,"name argument must have text");
+         Assert.notNull(applicationDomain,"applicationDomain argument must not be null");
+         this._name = name;
+         this._isStatic = isStatic;
+         this.typeName = type;
+         this.declaringTypeName = declaringType;
+         this.applicationDomain = applicationDomain;
       }
       
       public function get declaringType() : Type
@@ -91,70 +91,69 @@ package org.as3commons.reflect
          return Type.forName(this.typeName,this.applicationDomain);
       }
       
-      public function equals(param1:Object) : Boolean
+      public function equals(other:Object) : Boolean
       {
-         var _loc2_:AbstractMember = param1 as AbstractMember;
-         var _loc3_:Boolean = false;
-         if(_loc2_ != null)
+         var otherField:AbstractMember = other as AbstractMember;
+         var result:Boolean = false;
+         if(otherField != null)
          {
-            _loc3_ = _loc2_.name == this.name && _loc2_.typeName == this.typeName && _loc2_.declaringTypeName == this.declaringTypeName && _loc2_.isStatic == this.isStatic && _loc2_.applicationDomain === this.applicationDomain;
-            if(_loc3_)
+            result = otherField.name == this.name && otherField.typeName == this.typeName && otherField.declaringTypeName == this.declaringTypeName && otherField.isStatic == this.isStatic && otherField.applicationDomain === this.applicationDomain;
+            if(result)
             {
-               _loc3_ = this.compareMetadata(_loc2_.metadata);
+               result = this.compareMetadata(otherField.metadata);
             }
          }
-         return _loc3_;
+         return result;
       }
       
-      protected function compareMetadata(param1:Array) : Boolean
+      protected function compareMetadata(metadataArray:Array) : Boolean
       {
-         var _loc3_:Metadata = null;
-         var _loc4_:Array = null;
-         var _loc5_:Metadata = null;
-         var _loc2_:Boolean = param1.length == 0 && this.metadata.length == 0;
-         for each(_loc3_ in param1)
+         var md:Metadata = null;
+         var mds:Array = null;
+         var md2:Metadata = null;
+         var result:Boolean = metadataArray.length == 0 && this.metadata.length == 0;
+         for each(md in metadataArray)
          {
-            _loc4_ = this.getMetadata(_loc3_.name);
-            for each(_loc5_ in _loc4_)
+            mds = this.getMetadata(md.name);
+            for each(md2 in mds)
             {
-               if(_loc5_ == null || !_loc5_.equals(_loc3_))
+               if(md2 == null || !md2.equals(md))
                {
-                  _loc2_ = false;
+                  result = false;
                   break;
                }
             }
-            if(_loc2_)
+            if(!result)
             {
-               continue;
+               break;
             }
-            break;
          }
-         return _loc2_;
+         return result;
       }
       
-      as3commons_reflect function setDeclaringType(param1:String) : void
+      as3commons_reflect function setDeclaringType(value:String) : void
       {
-         this.declaringTypeName = param1;
+         this.declaringTypeName = value;
       }
       
-      as3commons_reflect function setIsStatic(param1:Boolean) : void
+      as3commons_reflect function setIsStatic(value:Boolean) : void
       {
-         this._isStatic = param1;
+         this._isStatic = value;
       }
       
-      as3commons_reflect function setName(param1:String) : void
+      as3commons_reflect function setName(value:String) : void
       {
-         this._name = param1;
+         this._name = value;
       }
       
-      as3commons_reflect function setNamespaceURI(param1:String) : void
+      as3commons_reflect function setNamespaceURI(value:String) : void
       {
-         this._namespaceURI = param1;
+         this._namespaceURI = value;
       }
       
-      as3commons_reflect function setType(param1:String) : void
+      as3commons_reflect function setType(value:String) : void
       {
-         this.typeName = param1;
+         this.typeName = value;
       }
    }
 }

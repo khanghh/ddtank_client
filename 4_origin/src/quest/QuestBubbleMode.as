@@ -22,216 +22,209 @@ package quest
       
       public function get questsInfo() : Array
       {
-         var _loc1_:Array = [];
+         var arr:Array = [];
          _questInfoCompleteArr = [];
          _questInfoArr = [];
-         _loc1_ = TaskManager.instance.getAvailableQuests().list;
-         return _reseachComplete(_loc1_);
+         arr = TaskManager.instance.getAvailableQuests().list;
+         return _reseachComplete(arr);
       }
       
-      private function _addInfoToArr(param1:QuestInfo) : void
+      private function _addInfoToArr(info:QuestInfo) : void
       {
-         if(param1.canViewWithProgress && _questInfoArr.length < 5 && (!_isShowIn || _isShowIn && param1.isCompleted))
+         if(info.canViewWithProgress && _questInfoArr.length < 5 && (!_isShowIn || _isShowIn && info.isCompleted))
          {
-            _questInfoArr.push(param1);
+            _questInfoArr.push(info);
          }
       }
       
-      private function _reseachComplete(param1:Array) : Array
+      private function _reseachComplete(arr:Array) : Array
       {
-         _reseachInfoForId(param1);
+         _reseachInfoForId(arr);
          return _setTxtInArr();
       }
       
       private function _setTxtInArr() : Array
       {
-         var _loc9_:int = 0;
-         var _loc7_:* = 0;
-         var _loc5_:Number = NaN;
-         var _loc4_:Number = NaN;
-         var _loc2_:int = 0;
-         var _loc6_:int = 0;
-         var _loc8_:int = 0;
-         var _loc3_:* = null;
-         var _loc1_:Array = [];
-         _loc9_ = 0;
-         while(_loc9_ < _questInfoArr.length)
+         var i:int = 0;
+         var dn:* = 0;
+         var numerator:Number = NaN;
+         var denominator:Number = NaN;
+         var n:int = 0;
+         var dnumerator:int = 0;
+         var ddenominator:int = 0;
+         var obj:* = null;
+         var arr:Array = [];
+         for(i = 0; i < _questInfoArr.length; )
          {
-            _loc7_ = 0;
-            _loc5_ = QuestInfo(_questInfoArr[_loc9_]).progress[0];
-            _loc4_ = QuestInfo(_questInfoArr[_loc9_]).conditions[0].target;
-            _loc2_ = 1;
-            while(QuestInfo(_questInfoArr[_loc9_]).conditions[_loc2_])
+            dn = 0;
+            numerator = QuestInfo(_questInfoArr[i]).progress[0];
+            denominator = QuestInfo(_questInfoArr[i]).conditions[0].target;
+            n = 1;
+            while(QuestInfo(_questInfoArr[i]).conditions[n])
             {
-               _loc6_ = QuestInfo(_questInfoArr[_loc9_]).progress[_loc2_];
-               _loc8_ = QuestInfo(_questInfoArr[_loc9_]).conditions[_loc2_].target;
-               if(_loc6_ != 0)
+               dnumerator = QuestInfo(_questInfoArr[i]).progress[n];
+               ddenominator = QuestInfo(_questInfoArr[i]).conditions[n].target;
+               if(dnumerator != 0)
                {
-                  if(_loc6_ / _loc8_ < _loc5_ / _loc4_ || _loc5_ == 0)
+                  if(dnumerator / ddenominator < numerator / denominator || numerator == 0)
                   {
-                     _loc5_ = _loc6_;
-                     _loc4_ = _loc8_;
-                     _loc7_ = _loc2_;
+                     numerator = dnumerator;
+                     denominator = ddenominator;
+                     dn = n;
                   }
                }
-               _loc2_++;
+               n++;
             }
-            _loc3_ = {};
-            switch(int(QuestInfo(_questInfoArr[_loc9_]).Type))
+            obj = {};
+            switch(int(QuestInfo(_questInfoArr[i]).Type))
             {
                case 0:
-                  _loc3_.txtI = LanguageMgr.GetTranslation("tank.view.quest.bubble.TankLink");
+                  obj.txtI = LanguageMgr.GetTranslation("tank.view.quest.bubble.TankLink");
                   break;
                case 1:
-                  _loc3_.txtI = LanguageMgr.GetTranslation("tank.view.quest.bubble.BranchLine");
+                  obj.txtI = LanguageMgr.GetTranslation("tank.view.quest.bubble.BranchLine");
                   break;
                case 2:
-                  _loc3_.txtI = LanguageMgr.GetTranslation("tank.view.quest.bubble.Daily");
+                  obj.txtI = LanguageMgr.GetTranslation("tank.view.quest.bubble.Daily");
                   break;
                case 3:
-                  _loc3_.txtI = LanguageMgr.GetTranslation("tank.view.quest.bubble.Act");
+                  obj.txtI = LanguageMgr.GetTranslation("tank.view.quest.bubble.Act");
                   break;
                case 4:
-                  _loc3_.txtI = LanguageMgr.GetTranslation("tank.view.quest.bubble.VIP");
+                  obj.txtI = LanguageMgr.GetTranslation("tank.view.quest.bubble.VIP");
             }
-            if(QuestInfo(_questInfoArr[_loc9_]).isCompleted)
+            if(QuestInfo(_questInfoArr[i]).isCompleted)
             {
-               _loc3_.txtI = "<font COLOR=\'#8be961\'>" + _loc3_.txtI + "</font>";
-               _loc3_.txtII = "<font COLOR=\'#8be961\'>" + _analysisStrIII(QuestInfo(_questInfoArr[_loc9_])) + "</font>";
-               _loc3_.txtIII = "<font COLOR=\'#8be961\'>" + _analysisStrIV(QuestInfo(_questInfoArr[_loc9_])) + "</font>";
+               obj.txtI = "<font COLOR=\'#8be961\'>" + obj.txtI + "</font>";
+               obj.txtII = "<font COLOR=\'#8be961\'>" + _analysisStrIII(QuestInfo(_questInfoArr[i])) + "</font>";
+               obj.txtIII = "<font COLOR=\'#8be961\'>" + _analysisStrIV(QuestInfo(_questInfoArr[i])) + "</font>";
             }
             else
             {
-               _loc3_.txtII = _analysisStrII(QuestInfo(_questInfoArr[_loc9_]).conditions[_loc7_].description);
-               _loc3_.txtIII = QuestInfo(_questInfoArr[_loc9_]).conditionStatus[_loc7_];
+               obj.txtII = _analysisStrII(QuestInfo(_questInfoArr[i]).conditions[dn].description);
+               obj.txtIII = QuestInfo(_questInfoArr[i]).conditionStatus[dn];
             }
-            _loc1_.push(_loc3_);
-            _loc9_++;
+            arr.push(obj);
+            i++;
          }
-         return _loc1_;
+         return arr;
       }
       
-      private function _analysisStrII(param1:String) : String
+      private function _analysisStrII(strII:String) : String
       {
-         var _loc2_:* = null;
-         if(param1.length <= 6)
+         var str:* = null;
+         if(strII.length <= 6)
          {
-            _loc2_ = param1;
+            str = strII;
          }
          else
          {
-            _loc2_ = param1.substr(0,6);
-            _loc2_ = _loc2_ + "...";
+            str = strII.substr(0,6);
+            str = str + "...";
          }
-         return _loc2_;
+         return str;
       }
       
-      private function _analysisStrIII(param1:QuestInfo) : String
+      private function _analysisStrIII(questInfo:QuestInfo) : String
       {
-         var _loc3_:int = 0;
-         var _loc2_:String = "";
-         _loc3_ = 0;
-         while(_loc3_ < param1.conditions.length)
+         var i:int = 0;
+         var str:String = "";
+         for(i = 0; i < questInfo.conditions.length; )
          {
-            trace(param1.conditions[_loc3_].description);
-            if(param1.progress[_loc3_] <= 0 || param1.isCompleted)
+            trace(questInfo.conditions[i].description);
+            if(questInfo.progress[i] <= 0 || questInfo.isCompleted)
             {
-               _loc2_ = param1.conditions[_loc3_].description;
-               return _loc2_;
+               str = questInfo.conditions[i].description;
+               return str;
             }
-            _loc3_++;
+            i++;
          }
-         return _loc2_;
+         return str;
       }
       
-      private function _analysisStrIV(param1:QuestInfo) : String
+      private function _analysisStrIV(questInfo:QuestInfo) : String
       {
-         var _loc3_:int = 0;
-         var _loc2_:String = "";
-         _loc3_ = 0;
-         while(_loc3_ < param1.conditions.length)
+         var i:int = 0;
+         var str:String = "";
+         for(i = 0; i < questInfo.conditions.length; )
          {
-            if(param1.progress[_loc3_] <= 0 || param1.isCompleted)
+            if(questInfo.progress[i] <= 0 || questInfo.isCompleted)
             {
-               _loc2_ = param1.conditionStatus[_loc3_];
-               return _loc2_;
+               str = questInfo.conditionStatus[i];
+               return str;
             }
-            _loc3_++;
+            i++;
          }
-         return _loc2_;
+         return str;
       }
       
-      private function _reseachInfoForId(param1:Array) : void
+      private function _reseachInfoForId(arr:Array) : void
       {
-         var _loc7_:int = 0;
-         var _loc2_:Number = NaN;
-         var _loc6_:* = null;
-         var _loc8_:Array = [];
-         var _loc5_:Array = [];
-         var _loc4_:Array = [];
-         _loc7_ = 0;
-         while(_loc7_ < param1.length)
+         var i:int = 0;
+         var num:Number = NaN;
+         var obj:* = null;
+         var numArr:Array = [];
+         var completeArray:Array = [];
+         var noCompleteArray:Array = [];
+         for(i = 0; i < arr.length; )
          {
-            _loc2_ = QuestInfo(param1[_loc7_]).questProgressNum;
-            _loc6_ = new IndexObj(_loc7_,_loc2_);
-            if(QuestInfo(param1[_loc7_]).isCompleted)
+            num = QuestInfo(arr[i]).questProgressNum;
+            obj = new IndexObj(i,num);
+            if(QuestInfo(arr[i]).isCompleted)
             {
-               _loc5_.push(_loc6_);
+               completeArray.push(obj);
             }
             else
             {
-               _loc4_.push(_loc6_);
+               noCompleteArray.push(obj);
             }
-            _loc7_++;
+            i++;
          }
-         _loc5_.sortOn("progressNum",16);
-         _loc4_.sortOn("progressNum",16);
-         _loc8_ = _loc5_.concat(_loc4_);
-         _loc7_ = 0;
-         while(_loc7_ < _loc8_.length)
+         completeArray.sortOn("progressNum",16);
+         noCompleteArray.sortOn("progressNum",16);
+         numArr = completeArray.concat(noCompleteArray);
+         for(i = 0; i < numArr.length; )
          {
-            _questInfoCompleteArr.push(QuestInfo(param1[_loc8_[_loc7_].id]));
-            _loc7_++;
+            _questInfoCompleteArr.push(QuestInfo(arr[numArr[i].id]));
+            i++;
          }
-         var _loc3_:* = 0;
-         _loc7_ = 0;
-         while(_loc7_ < _questInfoCompleteArr.length)
+         var n:* = 0;
+         for(i = 0; i < _questInfoCompleteArr.length; )
          {
-            if(_questInfoCompleteArr[_loc7_].questProgressNum != _questInfoCompleteArr[_loc3_].questProgressNum)
+            if(_questInfoCompleteArr[i].questProgressNum != _questInfoCompleteArr[n].questProgressNum)
             {
-               _checkInfoArr(4,_loc3_,_loc7_);
-               _checkInfoArr(3,_loc3_,_loc7_);
-               _checkInfoArr(2,_loc3_,_loc7_);
-               _checkInfoArr(0,_loc3_,_loc7_);
-               _checkInfoArr(1,_loc3_,_loc7_);
-               _loc3_ = _loc7_;
+               _checkInfoArr(4,n,i);
+               _checkInfoArr(3,n,i);
+               _checkInfoArr(2,n,i);
+               _checkInfoArr(0,n,i);
+               _checkInfoArr(1,n,i);
+               n = i;
             }
-            _loc7_++;
+            i++;
          }
-         _checkInfoArr(4,_loc3_,_questInfoCompleteArr.length);
-         _checkInfoArr(3,_loc3_,_questInfoCompleteArr.length);
-         _checkInfoArr(2,_loc3_,_questInfoCompleteArr.length);
-         _checkInfoArr(0,_loc3_,_questInfoCompleteArr.length);
-         _checkInfoArr(1,_loc3_,_questInfoCompleteArr.length);
+         _checkInfoArr(4,n,_questInfoCompleteArr.length);
+         _checkInfoArr(3,n,_questInfoCompleteArr.length);
+         _checkInfoArr(2,n,_questInfoCompleteArr.length);
+         _checkInfoArr(0,n,_questInfoCompleteArr.length);
+         _checkInfoArr(1,n,_questInfoCompleteArr.length);
       }
       
-      private function _checkInfoArr(param1:int, param2:int, param3:int) : void
+      private function _checkInfoArr(id:int, idI:int, idII:int) : void
       {
-         var _loc4_:* = 0;
-         _loc4_ = param2;
-         while(_loc4_ < param3)
+         var i:* = 0;
+         for(i = idI; i < idII; )
          {
-            if(QuestInfo(_questInfoCompleteArr[_loc4_]).Type == param1)
+            if(QuestInfo(_questInfoCompleteArr[i]).Type == id)
             {
-               _addInfoToArr(_questInfoCompleteArr[_loc4_]);
+               _addInfoToArr(_questInfoCompleteArr[i]);
             }
-            _loc4_++;
+            i++;
          }
       }
       
-      public function getQuestInfoById(param1:int) : QuestInfo
+      public function getQuestInfoById(id:int) : QuestInfo
       {
-         return _questInfoArr[param1];
+         return _questInfoArr[id];
       }
    }
 }
@@ -244,10 +237,10 @@ class IndexObj
    
    public var progressNum:Number;
    
-   function IndexObj(param1:int, param2:Number)
+   function IndexObj(numI:int, numII:Number)
    {
       super();
-      this.id = param1;
-      this.progressNum = param2;
+      this.id = numI;
+      this.progressNum = numII;
    }
 }

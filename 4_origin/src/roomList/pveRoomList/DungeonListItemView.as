@@ -53,10 +53,10 @@ package roomList.pveRoomList
       
       private var _hardLevel:Array;
       
-      public function DungeonListItemView(param1:RoomInfo = null)
+      public function DungeonListItemView(info:RoomInfo = null)
       {
          _hardLevel = ["tank.room.difficulty.simple","tank.room.difficulty.normal","tank.room.difficulty.hard","tank.room.difficulty.hero","tank.room.difficulty.nightmare","tank.room.difficulty.none"];
-         _info = param1;
+         _info = info;
          super();
          init();
       }
@@ -79,11 +79,11 @@ package roomList.pveRoomList
          PositionUtils.setPos(_lock,"asset.ddtdungeonList.lockPos");
          _lock.visible = false;
          addChild(_lock);
-         var _loc1_:Rectangle = ComponentFactory.Instance.creatCustomObject("asset.ddtdungeonList.maskRectangle");
+         var rect:Rectangle = ComponentFactory.Instance.creatCustomObject("asset.ddtdungeonList.maskRectangle");
          _mask = new Sprite();
          _mask.visible = false;
          _mask.graphics.beginFill(0,0);
-         _mask.graphics.drawRoundRect(0,0,_loc1_.width,_loc1_.height,_loc1_.y);
+         _mask.graphics.drawRoundRect(0,0,rect.width,rect.height,rect.y);
          _mask.graphics.endFill();
          PositionUtils.setPos(_mask,"asset.ddtroomListItem.maskPos");
          addChild(_mask);
@@ -95,9 +95,9 @@ package roomList.pveRoomList
          return _info;
       }
       
-      public function set info(param1:RoomInfo) : void
+      public function set info(value:RoomInfo) : void
       {
-         _info = param1;
+         _info = value;
          update();
       }
       
@@ -120,8 +120,8 @@ package roomList.pveRoomList
             _hard.visible = true;
             _hard.text = "(" + LanguageMgr.GetTranslation(_hardLevel[_info.hardLevel]) + ")";
          }
-         var _loc1_:String = _info.maxViewerCnt == 0?"-":String(_info.viewerCnt);
-         _placeCountText.text = String(_info.totalPlayer) + "/" + String(_info.placeCount) + " (" + _loc1_ + ")";
+         var str:String = _info.maxViewerCnt == 0?"-":String(_info.viewerCnt);
+         _placeCountText.text = String(_info.totalPlayer) + "/" + String(_info.placeCount) + " (" + str + ")";
          if(_info.isPlaying || _info.isOpenBoss)
          {
             filters = ComponentFactory.Instance.creatFilters("grayFilter");
@@ -142,35 +142,35 @@ package roomList.pveRoomList
       
       private function loadIcon() : void
       {
-         var _loc1_:int = _info.mapId == 0?10000:int(_info.mapId);
+         var mapId:int = _info.mapId == 0?10000:int(_info.mapId);
          if(_loader)
          {
             _loader.removeEventListener("complete",__showMap);
          }
-         _loader = LoadResourceManager.Instance.createLoader(PathManager.solveMapIconPath(_loc1_,1),0);
+         _loader = LoadResourceManager.Instance.createLoader(PathManager.solveMapIconPath(mapId,1),0);
          _loader.addEventListener("complete",__showMap);
          LoadResourceManager.Instance.startLoad(_loader);
          if(_simpMapLoader)
          {
             _simpMapLoader.removeEventListener("complete",__showSimpMap);
          }
-         _simpMapLoader = LoadResourceManager.Instance.createLoader(PathManager.solveMapIconPath(_loc1_,0),0);
+         _simpMapLoader = LoadResourceManager.Instance.createLoader(PathManager.solveMapIconPath(mapId,0),0);
          _simpMapLoader.addEventListener("complete",__showSimpMap);
          LoadResourceManager.Instance.startLoad(_simpMapLoader);
       }
       
-      private function __showMap(param1:LoaderEvent) : void
+      private function __showMap(evt:LoaderEvent) : void
       {
-         if(param1.loader.isSuccess)
+         if(evt.loader.isSuccess)
          {
             ObjectUtils.disposeAllChildren(_mapShowContainer);
-            param1.loader.removeEventListener("complete",__showMap);
+            evt.loader.removeEventListener("complete",__showMap);
             if(_mapShow)
             {
                ObjectUtils.disposeObject(_mapShow);
             }
             _mapShow = null;
-            _mapShow = param1.loader.content as Bitmap;
+            _mapShow = evt.loader.content as Bitmap;
             _mapShow.scaleX = 69 / _mapShow.height;
             _mapShow.scaleY = 69 / _mapShow.height;
             _mapShow.smoothing = true;
@@ -184,17 +184,17 @@ package roomList.pveRoomList
          }
       }
       
-      private function __showSimpMap(param1:LoaderEvent) : void
+      private function __showSimpMap(evt:LoaderEvent) : void
       {
-         if(param1.loader.isSuccess)
+         if(evt.loader.isSuccess)
          {
-            param1.loader.removeEventListener("complete",__showSimpMap);
+            evt.loader.removeEventListener("complete",__showSimpMap);
             if(_simpMapShow)
             {
                ObjectUtils.disposeObject(_simpMapShow);
                _simpMapShow = null;
             }
-            _simpMapShow = param1.loader.content as Bitmap;
+            _simpMapShow = evt.loader.content as Bitmap;
             PositionUtils.setPos(_simpMapShow,"asset.ddtdungeonList.simpMapPos");
             addChild(_simpMapShow);
          }

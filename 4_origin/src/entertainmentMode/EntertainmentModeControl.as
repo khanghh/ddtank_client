@@ -34,14 +34,14 @@ package entertainmentMode
          EntertainmentModeManager.instance.addEventListener("hideMainView",__hideHandler);
       }
       
-      private function __showHandler(param1:Event) : void
+      private function __showHandler(e:Event) : void
       {
          _frameView = ComponentFactory.Instance.creatComponentByStylename("entertainment.EntertainmentModeView");
          SocketManager.Instance.out.sendSceneLogin(8);
          _frameView.show();
       }
       
-      public function __hideHandler(param1:Event) : void
+      public function __hideHandler(e:Event) : void
       {
          if(_frameView != null)
          {

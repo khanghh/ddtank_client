@@ -50,7 +50,7 @@ package road.game.resource
       
       public function ActionMovie()
       {
-         var _loc1_:* = undefined;
+         var sClass:* = undefined;
          _labelLastFrames = [];
          _labelLastFrame = new Dictionary();
          _argsDic = new Dictionary();
@@ -58,10 +58,10 @@ package road.game.resource
          super();
          try
          {
-            _loc1_ = getDefinitionByName("ddt.manager.SoundEffectManager");
-            if(_loc1_)
+            sClass = getDefinitionByName("ddt.manager.SoundEffectManager");
+            if(sClass)
             {
-               _soundEffectInstance = _loc1_.Instance;
+               _soundEffectInstance = sClass.Instance;
             }
          }
          catch(e:Error)
@@ -82,27 +82,26 @@ package road.game.resource
          return _shouldReplace;
       }
       
-      public function set shouldReplace(param1:Boolean) : void
+      public function set shouldReplace(value:Boolean) : void
       {
-         _shouldReplace = param1;
+         _shouldReplace = value;
       }
       
       private function initMovie() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:Array = currentLabels;
-         if(_loc1_.length > 0)
+         var i:int = 0;
+         var labels:Array = currentLabels;
+         if(labels.length > 0)
          {
-            _loc2_ = 0;
-            while(_loc2_ < _loc1_.length)
+            for(i = 0; i < labels.length; )
             {
-               if(_loc2_ != 0)
+               if(i != 0)
                {
-                  _labelLastFrame[_loc1_[_loc2_ - 1].name] = int(_loc1_[_loc2_].frame - 1);
+                  _labelLastFrame[labels[i - 1].name] = int(labels[i].frame - 1);
                }
-               _loc2_++;
+               i++;
             }
-            _labelLastFrame[_loc1_[_loc1_.length - 1].name] = int(totalFrames);
+            _labelLastFrame[labels[labels.length - 1].name] = int(totalFrames);
          }
       }
       
@@ -111,22 +110,22 @@ package road.game.resource
          addEventListener("actionEnd",__onActionEnd);
       }
       
-      public function doAction(param1:String, param2:Function = null, param3:Array = null) : void
+      public function doAction(type:String, callBack:Function = null, args:Array = null) : void
       {
-         var _loc4_:* = null;
-         if(labelMapping[param1])
+         var actionLabel:* = null;
+         if(labelMapping[type])
          {
-            _loc4_ = labelMapping[param1];
+            actionLabel = labelMapping[type];
          }
          else
          {
-            _loc4_ = param1;
+            actionLabel = type;
          }
-         if(!hasThisAction(_loc4_))
+         if(!hasThisAction(actionLabel))
          {
-            if(param2 != null)
+            if(callBack != null)
             {
-               callFun(param2,param3);
+               callFun(callBack,args);
             }
             return;
          }
@@ -140,13 +139,13 @@ package road.game.resource
             dispatchEvent(new ActionMovieEvent("actionEnd"));
          }
          _actionEnded = false;
-         if(param2 != null && _callBacks != null && _callBacks[_loc4_] != param2)
+         if(callBack != null && _callBacks != null && _callBacks[actionLabel] != callBack)
          {
-            _callBacks[_loc4_] = param2;
-            _argsDic[_loc4_] = param3;
+            _callBacks[actionLabel] = callBack;
+            _argsDic[actionLabel] = args;
          }
          lastAction = currentAction;
-         _currentAction = _loc4_;
+         _currentAction = actionLabel;
          if(_soundControl)
          {
             _soundControl.volume = !!_isMute?0:1;
@@ -160,23 +159,23 @@ package road.game.resource
          dispatchEvent(new ActionMovieEvent("actionStart"));
       }
       
-      private function hasThisAction(param1:String) : Boolean
+      private function hasThisAction(type:String) : Boolean
       {
-         var _loc2_:Boolean = false;
+         var result:Boolean = false;
          var _loc5_:int = 0;
          var _loc4_:* = currentLabels;
-         for each(var _loc3_ in currentLabels)
+         for each(var i in currentLabels)
          {
-            if(_loc3_.name == param1)
+            if(i.name == type)
             {
-               _loc2_ = true;
+               result = true;
                break;
             }
          }
-         return _loc2_;
+         return result;
       }
       
-      private function loop(param1:Event) : void
+      private function loop(e:Event) : void
       {
          if(currentFrame == _labelLastFrame[currentAction] || currentLabel != currentAction)
          {
@@ -190,52 +189,52 @@ package road.game.resource
          }
       }
       
-      private function callCallBack(param1:String) : void
+      private function callCallBack(key:String) : void
       {
-         var _loc2_:Array = _argsDic[param1];
-         if(_callBacks[param1] == null)
+         var args:Array = _argsDic[key];
+         if(_callBacks[key] == null)
          {
             return;
          }
-         callFun(_callBacks[param1],_loc2_);
-         deleteFun(param1);
+         callFun(_callBacks[key],args);
+         deleteFun(key);
       }
       
-      private function deleteFun(param1:String) : void
+      private function deleteFun(key:String) : void
       {
          if(_callBacks)
          {
-            _callBacks[param1] = null;
-            delete _callBacks[param1];
+            _callBacks[key] = null;
+            delete _callBacks[key];
          }
          if(_argsDic)
          {
-            _argsDic[param1] = null;
-            delete _argsDic[param1];
+            _argsDic[key] = null;
+            delete _argsDic[key];
          }
       }
       
-      private function callFun(param1:Function, param2:Array) : void
+      private function callFun(fun:Function, args:Array) : void
       {
-         if(param2 == null || param2.length == 0)
+         if(args == null || args.length == 0)
          {
-            param1();
+            fun();
          }
-         else if(param2.length == 1)
+         else if(args.length == 1)
          {
-            param1(param2[0]);
+            fun(args[0]);
          }
-         else if(param2.length == 2)
+         else if(args.length == 2)
          {
-            param1(param2[0],param2[1]);
+            fun(args[0],args[1]);
          }
-         else if(param2.length == 3)
+         else if(args.length == 3)
          {
-            param1(param2[0],param2[1],param2[2]);
+            fun(args[0],args[1],args[2]);
          }
-         else if(param2.length == 4)
+         else if(args.length == 4)
          {
-            param1(param2[0],param2[1],param2[2],param2[3]);
+            fun(args[0],args[1],args[2],args[3]);
          }
       }
       
@@ -244,9 +243,9 @@ package road.game.resource
          return _currentAction;
       }
       
-      public function setActionRelative(param1:Object) : void
+      public function setActionRelative(value:Object) : void
       {
-         _actionRelative = param1;
+         _actionRelative = value;
       }
       
       public function get popupPos() : Point
@@ -267,13 +266,13 @@ package road.game.resource
          return null;
       }
       
-      public function set direction(param1:String) : void
+      public function set direction(value:String) : void
       {
-         if(ActionMovie.LEFT == param1)
+         if(ActionMovie.LEFT == value)
          {
             scaleX = 1;
          }
-         else if(ActionMovie.RIGHT == param1)
+         else if(ActionMovie.RIGHT == value)
          {
             scaleX = -1;
          }
@@ -288,51 +287,50 @@ package road.game.resource
          return ActionMovie.RIGHT;
       }
       
-      public function setActionMapping(param1:String, param2:String) : void
+      public function setActionMapping(source:String, target:String) : void
       {
-         if(param1.length <= 0)
+         if(source.length <= 0)
          {
             return;
          }
-         labelMapping[param1] = param2;
+         labelMapping[source] = target;
       }
       
-      private function stopMovieClip(param1:MovieClip) : void
+      private function stopMovieClip(mc:MovieClip) : void
       {
-         var _loc2_:int = 0;
-         if(param1)
+         var i:int = 0;
+         if(mc)
          {
-            param1.gotoAndStop(1);
-            if(param1.numChildren > 0)
+            mc.gotoAndStop(1);
+            if(mc.numChildren > 0)
             {
-               _loc2_ = 0;
-               while(_loc2_ < param1.numChildren)
+               for(i = 0; i < mc.numChildren; )
                {
-                  stopMovieClip(param1.getChildAt(_loc2_) as MovieClip);
-                  _loc2_++;
+                  stopMovieClip(mc.getChildAt(i) as MovieClip);
+                  i++;
                }
             }
          }
       }
       
-      override public function gotoAndStop(param1:Object, param2:String = null) : void
+      override public function gotoAndStop(frame:Object, scene:String = null) : void
       {
-         if(param1 is String)
+         if(frame is String)
          {
             var _loc5_:int = 0;
             var _loc4_:* = currentLabels;
-            for each(var _loc3_ in currentLabels)
+            for each(var s in currentLabels)
             {
-               if(_loc3_.name == param1)
+               if(s.name == frame)
                {
-                  super.gotoAndStop(param1);
+                  super.gotoAndStop(frame);
                   return;
                }
             }
          }
          else
          {
-            super.gotoAndStop(param1);
+            super.gotoAndStop(frame);
          }
       }
       
@@ -346,27 +344,27 @@ package road.game.resource
          dispatchEvent(new ActionMovieEvent("start"));
       }
       
-      protected function send(param1:String) : void
+      protected function send(type:String) : void
       {
-         dispatchEvent(new ActionMovieEvent(param1));
+         dispatchEvent(new ActionMovieEvent(type));
       }
       
-      protected function sendCommand(param1:String, param2:Object = null) : void
+      protected function sendCommand(type:String, data:Object = null) : void
       {
-         dispatchEvent(new ActionMovieEvent(param1,param2));
+         dispatchEvent(new ActionMovieEvent(type,data));
       }
       
-      override public function gotoAndPlay(param1:Object, param2:String = null) : void
+      override public function gotoAndPlay(frame:Object, scene:String = null) : void
       {
-         doAction(String(param1));
+         doAction(String(frame));
       }
       
-      public function MCGotoAndPlay(param1:Object) : void
+      public function MCGotoAndPlay(frame:Object) : void
       {
-         super.gotoAndPlay(param1);
+         super.gotoAndPlay(frame);
       }
       
-      private function __onActionEnd(param1:ActionMovieEvent) : void
+      private function __onActionEnd(evt:ActionMovieEvent) : void
       {
          if(!_actionRelative)
          {

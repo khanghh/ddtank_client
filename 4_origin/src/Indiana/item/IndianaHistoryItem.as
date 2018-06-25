@@ -73,10 +73,10 @@ package Indiana.item
          addChild(_getTime);
       }
       
-      public function setInfo(param1:HistoryIndianaData) : void
+      public function setInfo(value:HistoryIndianaData) : void
       {
-         var _loc2_:Number = NaN;
-         _info = param1;
+         var nx:Number = NaN;
+         _info = value;
          if(_info)
          {
             _num_txt.setText(LanguageMgr.GetTranslation("Indiana.history.perNum",_info.per_name));
@@ -85,8 +85,8 @@ package Indiana.item
             _luckNum.text = _info.winningCode.toString();
             _hasTimes.text = LanguageMgr.GetTranslation("Indiana.history.times",_info.joinCount);
             _getTime.text = LanguageMgr.GetTranslation("Indiana.resoult.joinTime",DateUtils.dateFormat5(_info.AnnTime));
-            _loc2_ = _num_txt.x + _num_txt.textWidth + 10;
-            var _loc3_:* = _loc2_;
+            nx = _num_txt.x + _num_txt.textWidth + 10;
+            var _loc3_:* = nx;
             _playName.x = _loc3_;
             _goodName.x = _loc3_;
          }

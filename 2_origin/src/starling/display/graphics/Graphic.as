@@ -79,20 +79,20 @@ package starling.display.graphics
          super();
          indices = new Vector.<uint>();
          vertices = new Vector.<Number>();
-         var _loc2_:Starling = Starling.current;
-         var _loc1_:StandardVertexShader = defaultVertexShaderDictionary[_loc2_];
-         if(_loc1_ == null)
+         var currentStarling:Starling = Starling.current;
+         var vertexShader:StandardVertexShader = defaultVertexShaderDictionary[currentStarling];
+         if(vertexShader == null)
          {
-            _loc1_ = new StandardVertexShader();
-            defaultVertexShaderDictionary[_loc2_] = _loc1_;
+            vertexShader = new StandardVertexShader();
+            defaultVertexShaderDictionary[currentStarling] = vertexShader;
          }
-         var _loc3_:VertexColorFragmentShader = defaultFragmentShaderDictionary[_loc2_];
-         if(_loc3_ == null)
+         var fragmentShader:VertexColorFragmentShader = defaultFragmentShaderDictionary[currentStarling];
+         if(fragmentShader == null)
          {
-            _loc3_ = new VertexColorFragmentShader();
-            defaultFragmentShaderDictionary[_loc2_] = _loc3_;
+            fragmentShader = new VertexColorFragmentShader();
+            defaultFragmentShaderDictionary[currentStarling] = fragmentShader;
          }
-         _material = new StandardMaterial(_loc1_,_loc3_);
+         _material = new StandardMaterial(vertexShader,fragmentShader);
          minBounds = new Point();
          maxBounds = new Point();
          if(Starling.current)
@@ -101,7 +101,7 @@ package starling.display.graphics
          }
       }
       
-      private function onContextCreated(param1:Event) : void
+      private function onContextCreated(event:Event) : void
       {
          geometryInvalid = true;
          buffersInvalid = true;
@@ -143,9 +143,9 @@ package starling.display.graphics
          geometryInvalid = true;
       }
       
-      public function set material(param1:IMaterial) : void
+      public function set material(value:IMaterial) : void
       {
-         _material = param1;
+         _material = value;
       }
       
       public function get material() : IMaterial
@@ -158,22 +158,22 @@ package starling.display.graphics
          return _uvMatrix;
       }
       
-      public function set uvMatrix(param1:Matrix) : void
+      public function set uvMatrix(value:Matrix) : void
       {
-         _uvMatrix = param1;
+         _uvMatrix = value;
          uvsInvalid = true;
          geometryInvalid = true;
       }
       
-      public function shapeHitTest(param1:Number, param2:Number) : Boolean
+      public function shapeHitTest(stageX:Number, stageY:Number) : Boolean
       {
-         var _loc3_:Point = globalToLocal(new Point(param1,param2));
-         return _loc3_.x >= minBounds.x && _loc3_.x <= maxBounds.x && _loc3_.y >= minBounds.y && _loc3_.y <= maxBounds.y;
+         var pt:Point = globalToLocal(new Point(stageX,stageY));
+         return pt.x >= minBounds.x && pt.x <= maxBounds.x && pt.y >= minBounds.y && pt.y <= maxBounds.y;
       }
       
-      public function set precisionHitTest(param1:Boolean) : void
+      public function set precisionHitTest(value:Boolean) : void
       {
-         _precisionHitTest = param1;
+         _precisionHitTest = value;
       }
       
       public function get precisionHitTest() : Boolean
@@ -181,9 +181,9 @@ package starling.display.graphics
          return _precisionHitTest;
       }
       
-      public function set precisionHitTestDistance(param1:Number) : void
+      public function set precisionHitTestDistance(value:Number) : void
       {
-         _precisionHitTestDistance = param1;
+         _precisionHitTestDistance = value;
       }
       
       public function get precisionHitTestDistance() : Number
@@ -191,14 +191,14 @@ package starling.display.graphics
          return _precisionHitTestDistance;
       }
       
-      protected function shapeHitTestLocalInternal(param1:Number, param2:Number) : Boolean
+      protected function shapeHitTestLocalInternal(localX:Number, localY:Number) : Boolean
       {
-         return param1 >= minBounds.x - _precisionHitTestDistance && param1 <= maxBounds.x + _precisionHitTestDistance && param2 >= minBounds.y - _precisionHitTestDistance && param2 <= maxBounds.y + _precisionHitTestDistance;
+         return localX >= minBounds.x - _precisionHitTestDistance && localX <= maxBounds.x + _precisionHitTestDistance && localY >= minBounds.y - _precisionHitTestDistance && localY <= maxBounds.y + _precisionHitTestDistance;
       }
       
-      override public function hitTest(param1:Point, param2:Boolean = false) : DisplayObject
+      override public function hitTest(localPoint:Point, forTouch:Boolean = false) : DisplayObject
       {
-         if(param2 && (visible == false || touchable == false))
+         if(forTouch && (visible == false || touchable == false))
          {
             return null;
          }
@@ -206,11 +206,11 @@ package starling.display.graphics
          {
             return null;
          }
-         if(getBounds(this,sGraphicHelperRect).containsPoint(param1))
+         if(getBounds(this,sGraphicHelperRect).containsPoint(localPoint))
          {
             if(_precisionHitTest)
             {
-               if(shapeHitTestLocalInternal(param1.x,param1.y))
+               if(shapeHitTestLocalInternal(localPoint.x,localPoint.y))
                {
                   return this;
                }
@@ -223,49 +223,49 @@ package starling.display.graphics
          return null;
       }
       
-      override public function getBounds(param1:DisplayObject, param2:Rectangle = null) : Rectangle
+      override public function getBounds(targetSpace:DisplayObject, resultRect:Rectangle = null) : Rectangle
       {
-         if(param2 == null)
+         if(resultRect == null)
          {
-            param2 = new Rectangle();
+            resultRect = new Rectangle();
          }
-         if(param1 == this)
+         if(targetSpace == this)
          {
-            param2.x = minBounds.x;
-            param2.y = minBounds.y;
-            param2.right = maxBounds.x;
-            param2.bottom = maxBounds.y;
+            resultRect.x = minBounds.x;
+            resultRect.y = minBounds.y;
+            resultRect.right = maxBounds.x;
+            resultRect.bottom = maxBounds.y;
             if(_precisionHitTest)
             {
-               param2.x = param2.x - _precisionHitTestDistance;
-               param2.y = param2.y - _precisionHitTestDistance;
-               param2.width = param2.width + _precisionHitTestDistance * 2;
-               param2.height = param2.height + _precisionHitTestDistance * 2;
+               resultRect.x = resultRect.x - _precisionHitTestDistance;
+               resultRect.y = resultRect.y - _precisionHitTestDistance;
+               resultRect.width = resultRect.width + _precisionHitTestDistance * 2;
+               resultRect.height = resultRect.height + _precisionHitTestDistance * 2;
             }
-            return param2;
+            return resultRect;
          }
-         getTransformationMatrix(param1,sHelperMatrix);
-         var _loc5_:Matrix = sHelperMatrix;
+         getTransformationMatrix(targetSpace,sHelperMatrix);
+         var m:Matrix = sHelperMatrix;
          sGraphicHelperPointTR.x = minBounds.x + (maxBounds.x - minBounds.x);
          sGraphicHelperPointTR.y = minBounds.y;
          sGraphicHelperPointBL.x = minBounds.x;
          sGraphicHelperPointBL.y = minBounds.y + (maxBounds.y - minBounds.y);
-         var _loc4_:Point = sHelperMatrix.transformPoint(minBounds);
+         var TL:Point = sHelperMatrix.transformPoint(minBounds);
          sGraphicHelperPointTR = sHelperMatrix.transformPoint(sGraphicHelperPointTR);
-         var _loc3_:Point = sHelperMatrix.transformPoint(maxBounds);
+         var BR:Point = sHelperMatrix.transformPoint(maxBounds);
          sGraphicHelperPointBL = sHelperMatrix.transformPoint(sGraphicHelperPointBL);
-         param2.x = Math.min(_loc4_.x,_loc3_.x,sGraphicHelperPointTR.x,sGraphicHelperPointBL.x);
-         param2.y = Math.min(_loc4_.y,_loc3_.y,sGraphicHelperPointTR.y,sGraphicHelperPointBL.y);
-         param2.right = Math.max(_loc4_.x,_loc3_.x,sGraphicHelperPointTR.x,sGraphicHelperPointBL.x);
-         param2.bottom = Math.max(_loc4_.y,_loc3_.y,sGraphicHelperPointTR.y,sGraphicHelperPointBL.y);
+         resultRect.x = Math.min(TL.x,BR.x,sGraphicHelperPointTR.x,sGraphicHelperPointBL.x);
+         resultRect.y = Math.min(TL.y,BR.y,sGraphicHelperPointTR.y,sGraphicHelperPointBL.y);
+         resultRect.right = Math.max(TL.x,BR.x,sGraphicHelperPointTR.x,sGraphicHelperPointBL.x);
+         resultRect.bottom = Math.max(TL.y,BR.y,sGraphicHelperPointTR.y,sGraphicHelperPointBL.y);
          if(_precisionHitTest)
          {
-            param2.x = param2.x - _precisionHitTestDistance;
-            param2.y = param2.y - _precisionHitTestDistance;
-            param2.width = param2.width + _precisionHitTestDistance * 2;
-            param2.height = param2.height + _precisionHitTestDistance * 2;
+            resultRect.x = resultRect.x - _precisionHitTestDistance;
+            resultRect.y = resultRect.y - _precisionHitTestDistance;
+            resultRect.width = resultRect.width + _precisionHitTestDistance * 2;
+            resultRect.height = resultRect.height + _precisionHitTestDistance * 2;
          }
-         return param2;
+         return resultRect;
       }
       
       protected function buildGeometry() : void
@@ -275,7 +275,7 @@ package starling.display.graphics
       
       protected function applyUVMatrix() : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          if(!vertices)
          {
             return;
@@ -284,45 +284,43 @@ package starling.display.graphics
          {
             return;
          }
-         var _loc1_:Point = new Point();
-         _loc2_ = 0;
-         while(_loc2_ < vertices.length)
+         var uv:Point = new Point();
+         for(i = 0; i < vertices.length; )
          {
-            _loc1_.x = vertices[_loc2_ + 7];
-            _loc1_.y = vertices[_loc2_ + 8];
-            _loc1_ = _uvMatrix.transformPoint(_loc1_);
-            vertices[_loc2_ + 7] = _loc1_.x;
-            vertices[_loc2_ + 8] = _loc1_.y;
-            _loc2_ = _loc2_ + 9;
+            uv.x = vertices[i + 7];
+            uv.y = vertices[i + 8];
+            uv = _uvMatrix.transformPoint(uv);
+            vertices[i + 7] = uv.x;
+            vertices[i + 8] = uv.y;
+            i = i + 9;
          }
       }
       
-      public function adjustUVMappings(param1:Number, param2:Number, param3:Texture) : void
+      public function adjustUVMappings(x:Number, y:Number, texture:Texture) : void
       {
-         var _loc9_:Number = NaN;
-         var _loc13_:Number = NaN;
-         var _loc11_:Number = NaN;
-         var _loc10_:Number = NaN;
-         var _loc7_:int = 0;
-         var _loc8_:Number = getNextPowerOfTwo(param3.nativeWidth);
-         var _loc6_:Number = getNextPowerOfTwo(param3.nativeHeight);
-         var _loc5_:Number = 1 / _loc8_;
-         var _loc12_:Number = 1 / _loc6_;
+         var vertX:Number = NaN;
+         var vertY:Number = NaN;
+         var u:Number = NaN;
+         var v:Number = NaN;
+         var i:int = 0;
+         var w:Number = getNextPowerOfTwo(texture.nativeWidth);
+         var h:Number = getNextPowerOfTwo(texture.nativeHeight);
+         var invW:Number = 1 / w;
+         var invH:Number = 1 / h;
          if(vertices == null || vertices.length == 0)
          {
             return;
          }
-         var _loc4_:int = vertices.length;
-         _loc7_ = 0;
-         while(_loc7_ < _loc4_)
+         var numVerts:int = vertices.length;
+         for(i = 0; i < numVerts; )
          {
-            _loc9_ = vertices[_loc7_];
-            _loc13_ = vertices[_loc7_ + 1];
-            _loc11_ = (param1 + _loc9_) * _loc5_;
-            _loc10_ = (param2 + _loc13_) * _loc12_;
-            vertices[_loc7_ + 7] = _loc11_;
-            vertices[_loc7_ + 8] = _loc10_;
-            _loc7_ = _loc7_ + 9;
+            vertX = vertices[i];
+            vertY = vertices[i + 1];
+            u = (x + vertX) * invW;
+            v = (y + vertY) * invH;
+            vertices[i + 7] = u;
+            vertices[i + 8] = v;
+            i = i + 9;
          }
          uvMappingsChanged = true;
          _uvMatrix = null;
@@ -350,18 +348,18 @@ package starling.display.graphics
          }
       }
       
-      protected function setGeometryInvalid(param1:Boolean = true) : void
+      protected function setGeometryInvalid(invalidateBuffers:Boolean = true) : void
       {
-         if(param1)
+         if(invalidateBuffers)
          {
             buffersInvalid = true;
          }
          geometryInvalid = true;
       }
       
-      override public function render(param1:RenderSupport, param2:Number) : void
+      override public function render(renderSupport:RenderSupport, parentAlpha:Number) : void
       {
-         var _loc4_:int = 0;
+         var numVertices:int = 0;
          validateNow();
          if(indices == null || indices.length < 3)
          {
@@ -369,9 +367,9 @@ package starling.display.graphics
          }
          if(buffersInvalid || uvsInvalid || isGeometryScaled)
          {
-            _loc4_ = vertices.length / 9;
-            vertexBuffer = Starling.context.createVertexBuffer(_loc4_,9);
-            vertexBuffer.uploadFromVector(vertices,0,_loc4_);
+            numVertices = vertices.length / 9;
+            vertexBuffer = Starling.context.createVertexBuffer(numVertices,9);
+            vertexBuffer.uploadFromVector(vertices,0,numVertices);
             indexBuffer = Starling.context.createIndexBuffer(indices.length);
             indexBuffer.uploadFromVector(indices,0,indices.length);
             geometryInvalid = false;
@@ -386,63 +384,62 @@ package starling.display.graphics
             geometryInvalid = false;
             uvMappingsChanged = false;
          }
-         var _loc3_:Context3D = Starling.context;
-         if(_loc3_ == null)
+         var context:Context3D = Starling.context;
+         if(context == null)
          {
             throw new MissingContextError();
          }
-         param1.finishQuadBatch();
+         renderSupport.finishQuadBatch();
          if(_graphicDrawHelper)
          {
-            _graphicDrawHelper.onDrawTriangles(_material,param1,vertexBuffer,indexBuffer,param2 * this.alpha);
+            _graphicDrawHelper.onDrawTriangles(_material,renderSupport,vertexBuffer,indexBuffer,parentAlpha * this.alpha);
          }
          else
          {
-            RenderSupport.setBlendFactors(_material.premultipliedAlpha,this.blendMode == "auto"?param1.blendMode:this.blendMode);
-            _material.drawTriangles(Starling.context,param1.mvpMatrix3D,vertexBuffer,indexBuffer,param2 * this.alpha);
-            param1.raiseDrawCount();
+            RenderSupport.setBlendFactors(_material.premultipliedAlpha,this.blendMode == "auto"?renderSupport.blendMode:this.blendMode);
+            _material.drawTriangles(Starling.context,renderSupport.mvpMatrix3D,vertexBuffer,indexBuffer,parentAlpha * this.alpha);
+            renderSupport.raiseDrawCount();
          }
-         _loc3_.setTextureAt(0,null);
-         _loc3_.setTextureAt(1,null);
-         _loc3_.setVertexBufferAt(0,null);
-         _loc3_.setVertexBufferAt(1,null);
-         _loc3_.setVertexBufferAt(2,null);
+         context.setTextureAt(0,null);
+         context.setTextureAt(1,null);
+         context.setVertexBufferAt(0,null);
+         context.setVertexBufferAt(1,null);
+         context.setVertexBufferAt(2,null);
       }
       
-      public function exportToPolygon(param1:GraphicsPolygon = null) : GraphicsPolygon
+      public function exportToPolygon(prevPolygon:GraphicsPolygon = null) : GraphicsPolygon
       {
-         var _loc7_:* = 0;
-         var _loc3_:* = null;
+         var i:* = 0;
+         var retval:* = null;
          validateNow();
-         var _loc4_:int = 0;
-         var _loc5_:int = 0;
-         if(param1)
+         var startIndex:int = 0;
+         var startIndices:int = 0;
+         if(prevPolygon)
          {
-            _loc4_ = param1.lastVertexIndex <= 0?0:Number(param1.lastVertexIndex * 9);
-            _loc5_ = param1.lastIndexIndex <= 0?0:Number(param1.lastIndexIndex * 9);
+            startIndex = prevPolygon.lastVertexIndex <= 0?0:Number(prevPolygon.lastVertexIndex * 9);
+            startIndices = prevPolygon.lastIndexIndex <= 0?0:Number(prevPolygon.lastIndexIndex * 9);
          }
-         var _loc6_:Array = [];
-         var _loc2_:int = vertices.length;
-         _loc7_ = _loc4_;
-         while(_loc7_ < _loc2_)
+         var newVertArray:Array = [];
+         var vertLen:int = vertices.length;
+         for(i = startIndex; i < vertLen; )
          {
-            _loc6_.push(vertices[_loc7_ + 0]);
-            _loc6_.push(vertices[_loc7_ + 1]);
-            _loc7_ = int(_loc7_ + 9);
+            newVertArray.push(vertices[i + 0]);
+            newVertArray.push(vertices[i + 1]);
+            i = int(i + 9);
          }
-         if(param1 == null)
+         if(prevPolygon == null)
          {
-            _loc3_ = new GraphicsPolygon(_loc6_,indices);
-            return _loc3_;
+            retval = new GraphicsPolygon(newVertArray,indices);
+            return retval;
          }
-         param1.append(_loc6_,indices);
-         return param1;
+         prevPolygon.append(newVertArray,indices);
+         return prevPolygon;
       }
       
-      public function set graphicDrawHelper(param1:IGraphicDrawHelper) : void
+      public function set graphicDrawHelper(gdh:IGraphicDrawHelper) : void
       {
          validateNow();
-         _graphicDrawHelper = param1;
+         _graphicDrawHelper = gdh;
          _graphicDrawHelper.initialize(vertices.length / 9);
       }
       

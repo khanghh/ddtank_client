@@ -12,9 +12,9 @@ package gameCommon.model
       
       private var _fightBuffs:Dictionary;
       
-      public function TurnedLiving(param1:int, param2:int, param3:int, param4:int = 0)
+      public function TurnedLiving(id:int, team:int, maxBlood:int, templeId:int = 0)
       {
-         super(param1,param2,param3,param4);
+         super(id,team,maxBlood,templeId);
       }
       
       public function get isAttacking() : Boolean
@@ -22,13 +22,13 @@ package gameCommon.model
          return _isAttacking;
       }
       
-      public function set isAttacking(param1:Boolean) : void
+      public function set isAttacking(value:Boolean) : void
       {
-         if(_isAttacking == param1)
+         if(_isAttacking == value)
          {
             return;
          }
-         _isAttacking = param1;
+         _isAttacking = value;
          dispatchEvent(new LivingEvent("attackingChanged"));
       }
       
@@ -39,7 +39,7 @@ package gameCommon.model
          _fightBuffs = new Dictionary();
       }
       
-      override public function die(param1:Boolean = true) : void
+      override public function die(widthAction:Boolean = true) : void
       {
          if(isLiving)
          {
@@ -47,22 +47,22 @@ package gameCommon.model
             {
                stopAttacking();
             }
-            super.die(param1);
+            super.die(widthAction);
          }
       }
       
-      public function hasState(param1:int) : Boolean
+      public function hasState(stateId:int) : Boolean
       {
-         return _fightBuffs[param1] != null;
+         return _fightBuffs[stateId] != null;
       }
       
-      public function addState(param1:int, param2:String = "") : void
+      public function addState(stateId:int, pic:String = "") : void
       {
-         if(param1 != 0 && _fightBuffs)
+         if(stateId != 0 && _fightBuffs)
          {
-            _fightBuffs[param1] = true;
+            _fightBuffs[stateId] = true;
          }
-         dispatchEvent(new LivingEvent("addState",param1,0,param2));
+         dispatchEvent(new LivingEvent("addState",stateId,0,pic));
       }
       
       public function startAttacking() : void

@@ -22,14 +22,14 @@ package store.view.strength
       
       private var _aler:StrengthSelectNumAlertFrame;
       
-      public function StrengthStone(param1:Array, param2:int)
+      public function StrengthStone(stoneType:Array, i:int)
       {
-         super(param1,param2);
+         super(stoneType,i);
       }
       
-      public function set itemType(param1:int) : void
+      public function set itemType(value:int) : void
       {
-         _itemType = param1;
+         _itemType = value;
       }
       
       public function get itemType() : int
@@ -42,34 +42,34 @@ package store.view.strength
          return _stoneType;
       }
       
-      public function set stoneType(param1:String) : void
+      public function set stoneType(value:String) : void
       {
-         _stoneType = param1;
+         _stoneType = value;
       }
       
-      override public function dragDrop(param1:DragEffect) : void
+      override public function dragDrop(effect:DragEffect) : void
       {
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:InventoryItemInfo = param1.data as InventoryItemInfo;
-         if(_loc2_.BagType == 12 && info != null)
+         var sourceInfo:InventoryItemInfo = effect.data as InventoryItemInfo;
+         if(sourceInfo.BagType == 12 && info != null)
          {
             return;
          }
-         if(_types.indexOf(_loc2_.Property1) == -1)
+         if(_types.indexOf(sourceInfo.Property1) == -1)
          {
             return;
          }
-         if(_loc2_ && param1.action != "split")
+         if(sourceInfo && effect.action != "split")
          {
-            param1.action = "none";
-            if(_stoneType == "" || _stoneType == _loc2_.Property1)
+            effect.action = "none";
+            if(_stoneType == "" || _stoneType == sourceInfo.Property1)
             {
-               _stoneType = _loc2_.Property1;
-               SocketManager.Instance.out.sendMoveGoods(_loc2_.BagType,_loc2_.Place,12,index,_loc2_.Count,true);
+               _stoneType = sourceInfo.Property1;
+               SocketManager.Instance.out.sendMoveGoods(sourceInfo.BagType,sourceInfo.Place,12,index,sourceInfo.Count,true);
                DragManager.acceptDrag(this,"none");
                reset();
             }
@@ -80,29 +80,29 @@ package store.view.strength
          }
       }
       
-      private function showNumAlert(param1:InventoryItemInfo, param2:int) : void
+      private function showNumAlert(info:InventoryItemInfo, index:int) : void
       {
          if(_stoneType == "35" || _stoneType == "2")
          {
             _aler = ComponentFactory.Instance.creat("ddtstore.StrengthSelectNumAlertFrame");
             _aler.addExeFunction(sellFunction,notSellFunction);
-            _aler.goodsinfo = param1;
-            _aler.index = param2;
-            _aler.show(param1.Count);
+            _aler.goodsinfo = info;
+            _aler.index = index;
+            _aler.show(info.Count);
          }
          else if(_stoneType == "45")
          {
             _aler = ComponentFactory.Instance.creat("store.view.exalt.exaltSelectNumAlertFrame");
             _aler.addExeFunction(sellFunction,notSellFunction);
-            _aler.goodsinfo = param1;
-            _aler.index = param2;
-            _aler.show(param1.Count);
+            _aler.goodsinfo = info;
+            _aler.index = index;
+            _aler.show(info.Count);
          }
       }
       
-      private function sellFunction(param1:int, param2:InventoryItemInfo, param3:int) : void
+      private function sellFunction(_nowNum:int, goodsinfo:InventoryItemInfo, index:int) : void
       {
-         SocketManager.Instance.out.sendMoveGoods(param2.BagType,param2.Place,12,param3,param1,true);
+         SocketManager.Instance.out.sendMoveGoods(goodsinfo.BagType,goodsinfo.Place,12,index,_nowNum,true);
          if(_aler)
          {
             _aler.dispose();

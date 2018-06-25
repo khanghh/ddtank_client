@@ -86,9 +86,9 @@ package petsBag
          return _petsAtlas;
       }
       
-      public function set petsAtlas(param1:DictionaryData) : void
+      public function set petsAtlas(value:DictionaryData) : void
       {
-         _petsAtlas = param1;
+         _petsAtlas = value;
       }
       
       public function get eatPetsInfo() : DictionaryData
@@ -100,60 +100,59 @@ package petsBag
          return _eatPetsInfo;
       }
       
-      public function set eatPetsInfo(param1:DictionaryData) : void
+      public function set eatPetsInfo(value:DictionaryData) : void
       {
-         _eatPetsInfo = param1;
+         _eatPetsInfo = value;
          dispatchEvent(new PetItemEvent("eat_pets_complete"));
       }
       
-      public function getPetAtlasSorted(param1:int, param2:int = 15) : Vector.<PetAtlasInfo>
+      public function getPetAtlasSorted(page:int, count:int = 15) : Vector.<PetAtlasInfo>
       {
-         var _loc4_:int = 0;
-         var _loc5_:int = 0;
-         var _loc7_:int = 0;
-         var _loc3_:Vector.<PetAtlasInfo> = new Vector.<PetAtlasInfo>(param2);
-         var _loc6_:int = Math.ceil(_petsAtlas.length / param2);
-         if(param1 > 0 && param1 <= _loc6_)
+         var startIndex:int = 0;
+         var len:int = 0;
+         var i:int = 0;
+         var result:Vector.<PetAtlasInfo> = new Vector.<PetAtlasInfo>(count);
+         var totlaPage:int = Math.ceil(_petsAtlas.length / count);
+         if(page > 0 && page <= totlaPage)
          {
-            _loc4_ = 0 + param2 * (param1 - 1);
-            _loc5_ = Math.min(_petsAtlas.length - _loc4_,param2);
-            _loc7_ = 0;
-            while(_loc7_ < _loc5_)
+            startIndex = 0 + count * (page - 1);
+            len = Math.min(_petsAtlas.length - startIndex,count);
+            for(i = 0; i < len; )
             {
-               _loc3_[_loc7_] = _petsAtlas.list[_loc4_ + _loc7_];
-               _loc7_++;
+               result[i] = _petsAtlas.list[startIndex + i];
+               i++;
             }
          }
-         return _loc3_;
+         return result;
       }
       
       public function getActivatePetAtlas() : DictionaryData
       {
-         var _loc2_:DictionaryData = PlayerManager.Instance.Self.pets;
-         var _loc1_:DictionaryData = new DictionaryData();
+         var petList:DictionaryData = PlayerManager.Instance.Self.pets;
+         var petAtlas:DictionaryData = new DictionaryData();
          var _loc5_:int = 0;
-         var _loc4_:* = _loc2_;
-         for each(var _loc3_ in _loc2_)
+         var _loc4_:* = petList;
+         for each(var petInfo in petList)
          {
-            if(!_loc1_.hasKey(_loc3_.CollectID) || _loc3_.Level > _loc1_[_loc3_.CollectID].Level || _loc3_.Level == _loc1_[_loc3_.CollectID].Level && _loc3_.StarLevel > _loc1_[_loc3_.CollectID].StarLevel)
+            if(!petAtlas.hasKey(petInfo.CollectID) || petInfo.Level > petAtlas[petInfo.CollectID].Level || petInfo.Level == petAtlas[petInfo.CollectID].Level && petInfo.StarLevel > petAtlas[petInfo.CollectID].StarLevel)
             {
-               _loc1_.add(_loc3_.CollectID,_loc3_);
+               petAtlas.add(petInfo.CollectID,petInfo);
             }
          }
-         return _loc1_;
+         return petAtlas;
       }
       
       public function get petsListSelected() : Array
       {
          _petsListSelected = [];
-         var _loc1_:DictionaryData = PlayerManager.Instance.Self.pets;
+         var petList:DictionaryData = PlayerManager.Instance.Self.pets;
          var _loc4_:int = 0;
-         var _loc3_:* = _loc1_;
-         for each(var _loc2_ in _loc1_)
+         var _loc3_:* = petList;
+         for each(var petInfo in petList)
          {
-            if(_loc2_.Place < 3)
+            if(petInfo.Place < 3)
             {
-               _petsListSelected.push(_loc2_);
+               _petsListSelected.push(petInfo);
                if(_petsListSelected.length != 3)
                {
                   continue;
@@ -167,14 +166,14 @@ package petsBag
       public function get petsListInBenchBag() : Array
       {
          _benchBagList = [];
-         var _loc1_:DictionaryData = PlayerManager.Instance.Self.pets;
+         var petList:DictionaryData = PlayerManager.Instance.Self.pets;
          var _loc4_:int = 0;
-         var _loc3_:* = _loc1_;
-         for each(var _loc2_ in _loc1_)
+         var _loc3_:* = petList;
+         for each(var petInfo in petList)
          {
-            if(_loc2_.Place >= 3)
+            if(petInfo.Place >= 3)
             {
-               _benchBagList.push(_loc2_);
+               _benchBagList.push(petInfo);
             }
          }
          return _benchBagList;
@@ -182,22 +181,22 @@ package petsBag
       
       public function petBagIsFull() : Boolean
       {
-         var _loc1_:DictionaryData = PlayerManager.Instance.Self.pets;
-         return _loc1_[0] && _loc1_[1] && _loc1_[2];
+         var pets:DictionaryData = PlayerManager.Instance.Self.pets;
+         return pets[0] && pets[1] && pets[2];
       }
       
       public function petBenchIsFull() : Boolean
       {
-         var _loc1_:DictionaryData = PlayerManager.Instance.Self.pets;
-         var _loc2_:int = cellMaxUnlockedPlace;
-         var _loc3_:int = 3;
-         while(_loc3_ < _loc2_)
+         var pets:DictionaryData = PlayerManager.Instance.Self.pets;
+         var len:int = cellMaxUnlockedPlace;
+         var i:int = 3;
+         while(i < len)
          {
-            if(_loc1_[_loc3_] == null)
+            if(pets[i] == null)
             {
                return false;
             }
-            _loc3_++;
+            i++;
          }
          return true;
       }
@@ -207,9 +206,9 @@ package petsBag
          return _openCellConfirmData;
       }
       
-      public function set unlockedCellNum(param1:int) : void
+      public function set unlockedCellNum(value:int) : void
       {
-         _unlockedCellNum = param1;
+         _unlockedCellNum = value;
       }
       
       public function get unlockedCellNum() : int
@@ -222,24 +221,23 @@ package petsBag
          return _unlockedCellNum + 8;
       }
       
-      public function getMoneyNeeded(param1:int) : int
+      public function getMoneyNeeded(times:int) : int
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = _unlockedCellNum;
-         var _loc2_:int = 0;
-         _loc4_ = 0;
-         while(_loc4_ < param1)
+         var i:int = 0;
+         var tempUnlockPlace:int = _unlockedCellNum;
+         var moneyNeed:int = 0;
+         for(i = 0; i < times; )
          {
-            _loc2_ = _loc2_ + _priceList[_loc3_];
-            _loc3_++;
-            _loc4_++;
+            moneyNeed = moneyNeed + _priceList[tempUnlockPlace];
+            tempUnlockPlace++;
+            i++;
          }
-         return _loc2_;
+         return moneyNeed;
       }
       
-      public function set cellUnlockPrice(param1:Vector.<int>) : void
+      public function set cellUnlockPrice(value:Vector.<int>) : void
       {
-         _priceList = param1;
+         _priceList = value;
       }
       
       public function get cellUnlockPrice() : Vector.<int>
@@ -257,9 +255,9 @@ package petsBag
          return _currentPlayerInfo;
       }
       
-      public function set currentPlayerInfo(param1:PlayerInfo) : void
+      public function set currentPlayerInfo(value:PlayerInfo) : void
       {
-         _currentPlayerInfo = param1;
+         _currentPlayerInfo = value;
       }
       
       public function get currentPetInfo() : PetInfo
@@ -267,13 +265,13 @@ package petsBag
          return _currentPetInfo;
       }
       
-      public function set currentPetInfo(param1:PetInfo) : void
+      public function set currentPetInfo(value:PetInfo) : void
       {
-         if(param1 == _currentPetInfo)
+         if(value == _currentPetInfo)
          {
             return;
          }
-         _currentPetInfo = param1;
+         _currentPetInfo = value;
          dispatchEvent(new Event("change"));
       }
       
@@ -298,97 +296,97 @@ package petsBag
          return _petGuilde;
       }
       
-      private function initPetGuilde(param1:DictionaryData) : void
+      private function initPetGuilde(petTask:DictionaryData) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = undefined;
-         _loc2_ = new Vector.<PetFarmGuildeInfo>();
-         _loc3_ = new PetFarmGuildeInfo();
-         _loc3_.arrowID = 90;
-         _loc3_.PreArrowID = 0;
-         _loc3_.NextArrowID = 91;
-         _loc2_.push(_loc3_);
-         _loc3_ = new PetFarmGuildeInfo();
-         _loc3_.arrowID = 91;
-         _loc3_.PreArrowID = 90;
-         _loc3_.NextArrowID = 92;
-         _loc2_.push(_loc3_);
-         _loc3_ = new PetFarmGuildeInfo();
-         _loc3_.arrowID = 92;
-         _loc3_.PreArrowID = 91;
-         _loc3_.NextArrowID = 93;
-         _loc2_.push(_loc3_);
-         _loc3_ = new PetFarmGuildeInfo();
-         _loc3_.arrowID = 93;
-         _loc3_.PreArrowID = 92;
-         _loc3_.NextArrowID = 0;
-         _loc2_.push(_loc3_);
-         _petGuilde.add(367,_loc2_);
-         _loc3_ = new PetFarmGuildeInfo();
-         _loc3_.arrowID = 94;
-         _loc3_.PreArrowID = 0;
-         _loc3_.NextArrowID = 95;
-         _loc2_.push(_loc3_);
-         _loc3_ = new PetFarmGuildeInfo();
-         _loc3_.arrowID = 95;
-         _loc3_.PreArrowID = 94;
-         _loc3_.NextArrowID = 97;
-         _loc2_.push(_loc3_);
-         _loc3_ = new PetFarmGuildeInfo();
-         _loc3_.arrowID = 97;
-         _loc3_.PreArrowID = 95;
-         _loc3_.NextArrowID = 0;
-         _loc2_.push(_loc3_);
-         _petGuilde.add(368,_loc2_);
-         _loc3_ = new PetFarmGuildeInfo();
-         _loc3_.arrowID = 99;
-         _loc3_.PreArrowID = 0;
-         _loc3_.NextArrowID = 0;
-         _loc2_.push(_loc3_);
-         _petGuilde.add(363,_loc2_);
-         _loc3_ = new PetFarmGuildeInfo();
-         _loc3_.arrowID = 120;
-         _loc3_.PreArrowID = 0;
-         _loc3_.NextArrowID = 100;
-         _loc2_.push(_loc3_);
-         _loc3_ = new PetFarmGuildeInfo();
-         _loc3_.arrowID = 100;
-         _loc3_.PreArrowID = 120;
-         _loc3_.NextArrowID = 101;
-         _loc2_.push(_loc3_);
-         _loc3_ = new PetFarmGuildeInfo();
-         _loc3_.arrowID = 101;
-         _loc3_.PreArrowID = 100;
-         _loc3_.NextArrowID = 102;
-         _loc2_.push(_loc3_);
-         _loc3_ = new PetFarmGuildeInfo();
-         _loc3_.arrowID = 102;
-         _loc3_.PreArrowID = 101;
-         _loc3_.NextArrowID = 103;
-         _loc2_.push(_loc3_);
-         _loc3_ = new PetFarmGuildeInfo();
-         _loc3_.arrowID = 103;
-         _loc3_.PreArrowID = 102;
-         _loc3_.NextArrowID = 0;
-         _loc2_.push(_loc3_);
-         _petGuilde.add(369,_loc2_);
-         _loc3_ = new PetFarmGuildeInfo();
-         _loc3_.arrowID = 119;
-         _loc3_.PreArrowID = 0;
-         _loc3_.NextArrowID = 107;
-         _loc2_.push(_loc3_);
-         _loc3_ = new PetFarmGuildeInfo();
-         _loc3_.arrowID = 107;
-         _loc3_.PreArrowID = 119;
-         _loc3_.NextArrowID = 0;
-         _loc2_.push(_loc3_);
-         _petGuilde.add(370,_loc2_);
-         _loc3_ = new PetFarmGuildeInfo();
-         _loc3_.arrowID = 114;
-         _loc3_.PreArrowID = 0;
-         _loc3_.NextArrowID = 0;
-         _loc2_.push(_loc3_);
-         _petGuilde.add(366,_loc2_);
+         var petGuildeTaskInfo:* = null;
+         var petGuildeTaskList:* = undefined;
+         petGuildeTaskList = new Vector.<PetFarmGuildeInfo>();
+         petGuildeTaskInfo = new PetFarmGuildeInfo();
+         petGuildeTaskInfo.arrowID = 90;
+         petGuildeTaskInfo.PreArrowID = 0;
+         petGuildeTaskInfo.NextArrowID = 91;
+         petGuildeTaskList.push(petGuildeTaskInfo);
+         petGuildeTaskInfo = new PetFarmGuildeInfo();
+         petGuildeTaskInfo.arrowID = 91;
+         petGuildeTaskInfo.PreArrowID = 90;
+         petGuildeTaskInfo.NextArrowID = 92;
+         petGuildeTaskList.push(petGuildeTaskInfo);
+         petGuildeTaskInfo = new PetFarmGuildeInfo();
+         petGuildeTaskInfo.arrowID = 92;
+         petGuildeTaskInfo.PreArrowID = 91;
+         petGuildeTaskInfo.NextArrowID = 93;
+         petGuildeTaskList.push(petGuildeTaskInfo);
+         petGuildeTaskInfo = new PetFarmGuildeInfo();
+         petGuildeTaskInfo.arrowID = 93;
+         petGuildeTaskInfo.PreArrowID = 92;
+         petGuildeTaskInfo.NextArrowID = 0;
+         petGuildeTaskList.push(petGuildeTaskInfo);
+         _petGuilde.add(367,petGuildeTaskList);
+         petGuildeTaskInfo = new PetFarmGuildeInfo();
+         petGuildeTaskInfo.arrowID = 94;
+         petGuildeTaskInfo.PreArrowID = 0;
+         petGuildeTaskInfo.NextArrowID = 95;
+         petGuildeTaskList.push(petGuildeTaskInfo);
+         petGuildeTaskInfo = new PetFarmGuildeInfo();
+         petGuildeTaskInfo.arrowID = 95;
+         petGuildeTaskInfo.PreArrowID = 94;
+         petGuildeTaskInfo.NextArrowID = 97;
+         petGuildeTaskList.push(petGuildeTaskInfo);
+         petGuildeTaskInfo = new PetFarmGuildeInfo();
+         petGuildeTaskInfo.arrowID = 97;
+         petGuildeTaskInfo.PreArrowID = 95;
+         petGuildeTaskInfo.NextArrowID = 0;
+         petGuildeTaskList.push(petGuildeTaskInfo);
+         _petGuilde.add(368,petGuildeTaskList);
+         petGuildeTaskInfo = new PetFarmGuildeInfo();
+         petGuildeTaskInfo.arrowID = 99;
+         petGuildeTaskInfo.PreArrowID = 0;
+         petGuildeTaskInfo.NextArrowID = 0;
+         petGuildeTaskList.push(petGuildeTaskInfo);
+         _petGuilde.add(363,petGuildeTaskList);
+         petGuildeTaskInfo = new PetFarmGuildeInfo();
+         petGuildeTaskInfo.arrowID = 120;
+         petGuildeTaskInfo.PreArrowID = 0;
+         petGuildeTaskInfo.NextArrowID = 100;
+         petGuildeTaskList.push(petGuildeTaskInfo);
+         petGuildeTaskInfo = new PetFarmGuildeInfo();
+         petGuildeTaskInfo.arrowID = 100;
+         petGuildeTaskInfo.PreArrowID = 120;
+         petGuildeTaskInfo.NextArrowID = 101;
+         petGuildeTaskList.push(petGuildeTaskInfo);
+         petGuildeTaskInfo = new PetFarmGuildeInfo();
+         petGuildeTaskInfo.arrowID = 101;
+         petGuildeTaskInfo.PreArrowID = 100;
+         petGuildeTaskInfo.NextArrowID = 102;
+         petGuildeTaskList.push(petGuildeTaskInfo);
+         petGuildeTaskInfo = new PetFarmGuildeInfo();
+         petGuildeTaskInfo.arrowID = 102;
+         petGuildeTaskInfo.PreArrowID = 101;
+         petGuildeTaskInfo.NextArrowID = 103;
+         petGuildeTaskList.push(petGuildeTaskInfo);
+         petGuildeTaskInfo = new PetFarmGuildeInfo();
+         petGuildeTaskInfo.arrowID = 103;
+         petGuildeTaskInfo.PreArrowID = 102;
+         petGuildeTaskInfo.NextArrowID = 0;
+         petGuildeTaskList.push(petGuildeTaskInfo);
+         _petGuilde.add(369,petGuildeTaskList);
+         petGuildeTaskInfo = new PetFarmGuildeInfo();
+         petGuildeTaskInfo.arrowID = 119;
+         petGuildeTaskInfo.PreArrowID = 0;
+         petGuildeTaskInfo.NextArrowID = 107;
+         petGuildeTaskList.push(petGuildeTaskInfo);
+         petGuildeTaskInfo = new PetFarmGuildeInfo();
+         petGuildeTaskInfo.arrowID = 107;
+         petGuildeTaskInfo.PreArrowID = 119;
+         petGuildeTaskInfo.NextArrowID = 0;
+         petGuildeTaskList.push(petGuildeTaskInfo);
+         _petGuilde.add(370,petGuildeTaskList);
+         petGuildeTaskInfo = new PetFarmGuildeInfo();
+         petGuildeTaskInfo.arrowID = 114;
+         petGuildeTaskInfo.PreArrowID = 0;
+         petGuildeTaskInfo.NextArrowID = 0;
+         petGuildeTaskList.push(petGuildeTaskInfo);
+         _petGuilde.add(366,petGuildeTaskList);
       }
       
       public function get currentPetBreakInfo() : BreakInfo
@@ -396,9 +394,9 @@ package petsBag
          return _currentPetBreakInfo;
       }
       
-      public function set currentPetBreakInfo(param1:BreakInfo) : void
+      public function set currentPetBreakInfo(value:BreakInfo) : void
       {
-         _currentPetBreakInfo = param1;
+         _currentPetBreakInfo = value;
       }
    }
 }

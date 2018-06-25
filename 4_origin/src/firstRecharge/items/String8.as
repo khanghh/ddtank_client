@@ -18,48 +18,46 @@ package firstRecharge.items
       
       public function String8()
       {
-         var _loc6_:int = 0;
-         var _loc1_:* = null;
-         var _loc4_:* = null;
-         var _loc5_:* = null;
+         var i:int = 0;
+         var rec:* = null;
+         var p:* = null;
+         var data:* = null;
          super();
          _list = new Vector.<BitmapData>();
          x = 40;
          y = 239;
          rotation = -20;
          _bitMapData = ComponentFactory.Instance.creatBitmapData("fristRecharge.str8");
-         var _loc3_:int = _bitMapData.width / 10;
-         var _loc2_:int = _bitMapData.height;
-         _loc6_ = 0;
-         while(_loc6_ < 10)
+         var t_width:int = _bitMapData.width / 10;
+         var t_height:int = _bitMapData.height;
+         for(i = 0; i < 10; )
          {
-            _loc1_ = new Rectangle(_loc3_ * _loc6_,0,_loc3_,_loc2_);
-            _loc4_ = new Point(0,0);
-            _loc5_ = new BitmapData(_loc3_,_loc2_);
-            _loc5_.copyPixels(_bitMapData,_loc1_,_loc4_);
-            _list.push(_loc5_);
-            _loc6_++;
+            rec = new Rectangle(t_width * i,0,t_width,t_height);
+            p = new Point(0,0);
+            data = new BitmapData(t_width,t_height);
+            data.copyPixels(_bitMapData,rec,p);
+            _list.push(data);
+            i++;
          }
       }
       
-      public function setNum(param1:String) : void
+      public function setNum(str:String) : void
       {
-         var _loc6_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:* = null;
-         var _loc5_:* = null;
+         var i:int = 0;
+         var t:int = 0;
+         var data:* = null;
+         var bitMap:* = null;
          clear();
-         var _loc4_:int = param1.length;
-         _loc6_ = 0;
-         while(_loc6_ < _loc4_)
+         var len:int = str.length;
+         for(i = 0; i < len; )
          {
-            _loc2_ = param1.charAt(_loc6_);
-            _loc3_ = _list[_loc2_].clone();
-            _loc5_ = new Bitmap(_loc3_);
-            _loc5_.x = _loc6_ * (_loc5_.width - 8);
-            _loc5_.smoothing = true;
-            addChild(_loc5_);
-            _loc6_++;
+            t = str.charAt(i);
+            data = _list[t].clone();
+            bitMap = new Bitmap(data);
+            bitMap.x = i * (bitMap.width - 8);
+            bitMap.smoothing = true;
+            addChild(bitMap);
+            i++;
          }
       }
       

@@ -32,45 +32,45 @@ package calendar.view
       
       private var _nameField:FilterFrameText;
       
-      public function SignedAwardHolder(param1:CalendarModel)
+      public function SignedAwardHolder(model:CalendarModel)
       {
          _awardCells = new Vector.<SignAwardCell>();
          super();
-         _model = param1;
+         _model = model;
          configUI();
       }
       
-      public function setAwardsByCount(param1:int) : void
+      public function setAwardsByCount(signCount:int) : void
       {
-         var _loc4_:* = null;
+         var cell:* = null;
          clean();
-         var _loc3_:Point = ComponentFactory.Instance.creatCustomObject("ddtcalendar.Award.cell.TopLeft");
-         var _loc2_:int = 0;
+         var topleft:Point = ComponentFactory.Instance.creatCustomObject("ddtcalendar.Award.cell.TopLeft");
+         var count:int = 0;
          var _loc7_:int = 0;
          var _loc6_:* = _model.awards;
-         for each(var _loc5_ in _model.awards)
+         for each(var award in _model.awards)
          {
-            if(_loc5_.AwardDays == param1)
+            if(award.AwardDays == signCount)
             {
-               _loc4_ = ComponentFactory.Instance.creatCustomObject("ddtcalendar.SignAwardCell");
-               _awardCells.push(_loc4_);
-               if(_loc5_.TemplateID == 1)
+               cell = ComponentFactory.Instance.creatCustomObject("ddtcalendar.SignAwardCell");
+               _awardCells.push(cell);
+               if(award.TemplateID == 1)
                {
-                  _loc4_.info = ItemManager.Instance.getTemplateById(ServerConfigManager.instance.dailyRewardIDForMonth[TimeManager.Instance.Now().getMonth()]);
-                  _loc4_.setCount(_loc5_.Count);
+                  cell.info = ItemManager.Instance.getTemplateById(ServerConfigManager.instance.dailyRewardIDForMonth[TimeManager.Instance.Now().getMonth()]);
+                  cell.setCount(award.Count);
                }
                else
                {
-                  _loc4_.info = ItemManager.Instance.getTemplateById(_loc5_.TemplateID);
-                  _loc4_.setCount(_loc5_.Count);
+                  cell.info = ItemManager.Instance.getTemplateById(award.TemplateID);
+                  cell.setCount(award.Count);
                }
-               _loc4_.x = _loc3_.x + _loc2_ * 132;
-               _loc4_.y = _loc3_.y;
-               addChild(_loc4_);
-               _loc2_++;
+               cell.x = topleft.x + count * 132;
+               cell.y = topleft.y;
+               addChild(cell);
+               count++;
             }
          }
-         if(param1 == 28)
+         if(signCount == 28)
          {
             _bigBack = ComponentFactory.Instance.creatComponentByStylename("ddtcalendar.SignedAward.SignAwardCellBg2");
             addChild(_bigBack);
@@ -88,15 +88,14 @@ package calendar.view
       
       public function clean() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _awardCells.length)
+         var cell:* = null;
+         var i:int = 0;
+         for(i = 0; i < _awardCells.length; )
          {
-            _loc1_ = _awardCells[_loc2_] as SignAwardCell;
-            ObjectUtils.disposeObject(_loc1_);
-            _loc1_ = null;
-            _loc2_++;
+            cell = _awardCells[i] as SignAwardCell;
+            ObjectUtils.disposeObject(cell);
+            cell = null;
+            i++;
          }
          _awardCells.splice(0,_awardCells.length);
          if(_beeReward)

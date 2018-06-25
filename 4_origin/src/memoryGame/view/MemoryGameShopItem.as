@@ -35,10 +35,10 @@ package memoryGame.view
       
       private var _get:Bitmap;
       
-      public function MemoryGameShopItem(param1:MemoryGameGoodsInfo)
+      public function MemoryGameShopItem(info:MemoryGameGoodsInfo)
       {
          super();
-         _info = param1;
+         _info = info;
          init();
       }
       
@@ -51,12 +51,12 @@ package memoryGame.view
          _gainGoodsBtn = ComponentFactory.Instance.creatComponentByStylename("memoryGame.gainGoodsBtn");
          _gainGoodsBtn.addEventListener("click",__onClick);
          addChild(_gainGoodsBtn);
-         var _loc1_:InventoryItemInfo = ItemManager.fillByID(_info.ItemID);
-         _loc1_.ValidDate = _info.Valid;
-         _loc1_.Count = _info.Count;
-         _loc1_.IsBinds = _info.IsBind;
+         var item:InventoryItemInfo = ItemManager.fillByID(_info.ItemID);
+         item.ValidDate = _info.Valid;
+         item.Count = _info.Count;
+         item.IsBinds = _info.IsBind;
          _cell = new BagCell(0);
-         _cell.info = _loc1_;
+         _cell.info = item;
          PositionUtils.setPos(_cell,"memoryGame.shopItemCellPos");
          addChild(_cell);
          _get = ComponentFactory.Instance.creatBitmap("asset.memoryGame.get");
@@ -85,7 +85,7 @@ package memoryGame.view
          }
       }
       
-      private function __onClick(param1:MouseEvent) : void
+      private function __onClick(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.bagLocked)

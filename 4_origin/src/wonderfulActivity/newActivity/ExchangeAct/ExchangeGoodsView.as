@@ -176,7 +176,7 @@ package wonderfulActivity.newActivity.ExchangeAct
          _exchangGoodsCount.addEventListener("change",__countChangeHandler);
       }
       
-      private function __clickBtn(param1:MouseEvent) : void
+      private function __clickBtn(event:MouseEvent) : void
       {
          _exchangGoodsCount.text = "1";
          this.count = 0;
@@ -184,35 +184,35 @@ package wonderfulActivity.newActivity.ExchangeAct
          _awardIndex = _awardBtnGroup.selectIndex;
       }
       
-      private function __changeHandler(param1:Event) : void
+      private function __changeHandler(event:Event) : void
       {
-         var _loc2_:int = _awardBtnGroup.selectIndex;
+         var index:int = _awardBtnGroup.selectIndex;
          _haveGoodsCount = 0;
-         updateGoodsBox(_loc2_);
+         updateGoodsBox(index);
       }
       
-      private function __countClickHandler(param1:MouseEvent) : void
+      private function __countClickHandler(event:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
+         event.stopImmediatePropagation();
       }
       
-      private function __countOnKeyDown(param1:KeyboardEvent) : void
+      private function __countOnKeyDown(event:KeyboardEvent) : void
       {
          SoundManager.instance.play("008");
-         param1.stopImmediatePropagation();
+         event.stopImmediatePropagation();
       }
       
-      private function __countChangeHandler(param1:Event) : void
+      private function __countChangeHandler(event:Event) : void
       {
-         var _loc2_:* = null;
+         var temp:* = null;
          if(_exchangGoodsCount.text == "")
          {
             _exchangGoodsCount.text = "1";
          }
          else if(_exchangGoodsCount.text != "0")
          {
-            _loc2_ = _exchangGoodsCount.text.substr(0,1);
-            if(_loc2_ == "0")
+            temp = _exchangGoodsCount.text.substr(0,1);
+            if(temp == "0")
             {
                _exchangGoodsCount.text = _exchangGoodsCount.text.substring(1);
             }
@@ -231,25 +231,23 @@ package wonderfulActivity.newActivity.ExchangeAct
          this.count = int(_exchangGoodsCount.text);
       }
       
-      public function setData(param1:GmActivityInfo) : void
+      public function setData(activityInfo:GmActivityInfo) : void
       {
-         var _loc5_:int = 0;
-         var _loc3_:* = undefined;
-         var _loc4_:int = 0;
-         _activityInfo = param1;
-         var _loc2_:int = param1.giftbagArray.length;
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_)
+         var i:int = 0;
+         var goodsExchangeInfoVector:* = undefined;
+         var j:int = 0;
+         _activityInfo = activityInfo;
+         var count:int = activityInfo.giftbagArray.length;
+         for(i = 0; i < count; )
          {
-            _loc3_ = new Vector.<GiftRewardInfo>();
-            _loc4_ = 0;
-            while(_loc4_ < param1.giftbagArray[_loc5_].giftRewardArr.length)
+            goodsExchangeInfoVector = new Vector.<GiftRewardInfo>();
+            for(j = 0; j < activityInfo.giftbagArray[i].giftRewardArr.length; )
             {
-               _loc3_.push(param1.giftbagArray[_loc5_].giftRewardArr[_loc4_]);
-               _loc4_++;
+               goodsExchangeInfoVector.push(activityInfo.giftbagArray[i].giftRewardArr[j]);
+               j++;
             }
-            _goodsExchangeDic[_loc5_] = _loc3_;
-            _loc5_++;
+            _goodsExchangeDic[i] = goodsExchangeInfoVector;
+            i++;
          }
          updateTimeShow();
          updateGoodsBox(0);
@@ -257,71 +255,69 @@ package wonderfulActivity.newActivity.ExchangeAct
       
       private function updateTimeShow() : void
       {
-         var _loc1_:Array = [_activityInfo.beginTime.split(" ")[0],_activityInfo.endTime.split(" ")[0]];
-         _actTime.text = _loc1_[0] + "-" + _loc1_[1];
+         var timeArr:Array = [_activityInfo.beginTime.split(" ")[0],_activityInfo.endTime.split(" ")[0]];
+         _actTime.text = timeArr[0] + "-" + timeArr[1];
       }
       
-      private function updateGoodsBox(param1:int) : void
+      private function updateGoodsBox(index:int) : void
       {
-         var _loc3_:* = null;
-         var _loc5_:* = 0;
-         var _loc6_:* = 0;
+         var cell:* = null;
+         var j:* = 0;
+         var k:* = 0;
          if(!_goodsExchangeDic)
          {
             return;
          }
-         _selectedIndex = param1;
+         _selectedIndex = index;
          _ifNoneGoods = false;
          cleanCell();
          _haveGoodsBox.disposeAllChildren();
          ObjectUtils.removeChildAllChildren(_haveGoodsBox);
          _exchangGoodsBox.disposeAllChildren();
          ObjectUtils.removeChildAllChildren(_exchangGoodsBox);
-         var _loc4_:int = 0;
-         var _loc2_:int = 0;
-         if(_goodsExchangeDic[param1])
+         var haveGoodsCount:int = 0;
+         var exchangeGoodsCount:int = 0;
+         if(_goodsExchangeDic[index])
          {
             var _loc9_:int = 0;
-            var _loc8_:* = _goodsExchangeDic[param1];
-            for each(var _loc7_ in _goodsExchangeDic[param1])
+            var _loc8_:* = _goodsExchangeDic[index];
+            for each(var info in _goodsExchangeDic[index])
             {
-               if(_loc7_.rewardType == 0)
+               if(info.rewardType == 0)
                {
-                  _loc3_ = new ExchangeGoodsCell(_loc7_,-1,true,-1,this.count);
-                  getLeastCount(_loc3_);
-                  _haveGoodsBox.addChild(_loc3_);
-                  _loc4_ = _loc4_ + 1;
-                  _cellVector.push(_loc3_);
+                  cell = new ExchangeGoodsCell(info,-1,true,-1,this.count);
+                  getLeastCount(cell);
+                  _haveGoodsBox.addChild(cell);
+                  haveGoodsCount = haveGoodsCount + 1;
+                  _cellVector.push(cell);
                }
-               else if(_loc7_.rewardType == 1)
+               else if(info.rewardType == 1)
                {
-                  _exchangGoodsBox.addChild(new ExchangeGoodsCell(_loc7_,-1,false,-1,this.count));
-                  _loc2_ = _loc2_ + 1;
+                  _exchangGoodsBox.addChild(new ExchangeGoodsCell(info,-1,false,-1,this.count));
+                  exchangeGoodsCount = exchangeGoodsCount + 1;
                }
             }
          }
-         if(_loc4_ < HAVE_GOODS_CELL_COUNT)
+         if(haveGoodsCount < HAVE_GOODS_CELL_COUNT)
          {
-            _loc5_ = _loc4_;
-            while(_loc5_ < HAVE_GOODS_CELL_COUNT)
+            for(j = haveGoodsCount; j < HAVE_GOODS_CELL_COUNT; )
             {
                _haveGoodsBox.addChild(new ExchangeGoodsCell(null));
-               _loc5_++;
+               j++;
             }
          }
-         if(_loc4_ == 0)
+         if(haveGoodsCount == 0)
          {
             getLeastCount(null);
             _exchangGoodsCount.text = "0";
          }
          checkBtn();
-         if(!_goodsExchangeDic[param1] || _goodsExchangeDic[param1].length < EXCHANGE_GOODS_CELL_COUNT)
+         if(!_goodsExchangeDic[index] || _goodsExchangeDic[index].length < EXCHANGE_GOODS_CELL_COUNT)
          {
-            _loc6_ = _loc2_;
-            while(_loc6_ < EXCHANGE_GOODS_CELL_COUNT)
+            for(k = exchangeGoodsCount; k < EXCHANGE_GOODS_CELL_COUNT; )
             {
                _exchangGoodsBox.addChild(new ExchangeGoodsCell(null));
-               _loc6_++;
+               k++;
             }
          }
       }
@@ -330,17 +326,17 @@ package wonderfulActivity.newActivity.ExchangeAct
       {
          var _loc3_:int = 0;
          var _loc2_:* = _cellVector;
-         for each(var _loc1_ in _cellVector)
+         for each(var cell in _cellVector)
          {
-            ObjectUtils.disposeObject(_loc1_);
-            _loc1_ = null;
+            ObjectUtils.disposeObject(cell);
+            cell = null;
          }
          _cellVector = new Vector.<ExchangeGoodsCell>();
       }
       
-      private function getLeastCount(param1:ExchangeGoodsCell) : void
+      private function getLeastCount(cell:ExchangeGoodsCell) : void
       {
-         if(param1 == null)
+         if(cell == null)
          {
             _haveGoodsCount = 0;
             if(_count != 0)
@@ -349,23 +345,23 @@ package wonderfulActivity.newActivity.ExchangeAct
             }
             return;
          }
-         var _loc2_:int = param1.needCount;
+         var itemCount:int = cell.needCount;
          if(_ifNoneGoods == true)
          {
             return;
          }
-         if(_loc2_ == 0)
+         if(itemCount == 0)
          {
             _ifNoneGoods = true;
             _haveGoodsCount = 0;
          }
          else if(_haveGoodsCount == 0)
          {
-            _haveGoodsCount = _loc2_;
+            _haveGoodsCount = itemCount;
          }
          else
          {
-            _haveGoodsCount = _haveGoodsCount > _loc2_?_loc2_:int(_haveGoodsCount);
+            _haveGoodsCount = _haveGoodsCount > itemCount?itemCount:int(_haveGoodsCount);
          }
       }
       
@@ -374,9 +370,9 @@ package wonderfulActivity.newActivity.ExchangeAct
          return _count;
       }
       
-      public function set count(param1:int) : void
+      public function set count(value:int) : void
       {
-         _count = param1 == 0?1:param1;
+         _count = value == 0?1:value;
          __changeHandler(null);
       }
       
@@ -521,9 +517,9 @@ package wonderfulActivity.newActivity.ExchangeAct
          return _selectedIndex;
       }
       
-      public function set selectedIndex(param1:int) : void
+      public function set selectedIndex(value:int) : void
       {
-         _selectedIndex = param1;
+         _selectedIndex = value;
       }
    }
 }

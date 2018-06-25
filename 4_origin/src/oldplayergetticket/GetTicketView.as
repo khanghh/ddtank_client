@@ -78,13 +78,13 @@ package oldplayergetticket
          _recvBtn.enable = !_getSuccess;
       }
       
-      public function setViewData(param1:Array) : void
+      public function setViewData(info:Array) : void
       {
-         _captionTxt2.text = LanguageMgr.GetTranslation("ddt.regress.getticketView.caption2",param1[0],param1[1]);
-         _captionTxt3.text = LanguageMgr.GetTranslation("ddt.regress.getticketView.caption3",param1[2]);
-         _rechargeTicketNum.text = param1[3].toString();
-         _tiepointNum.text = param1[4].toString();
-         _recvBtn.enable = param1[4] != 0;
+         _captionTxt2.text = LanguageMgr.GetTranslation("ddt.regress.getticketView.caption2",info[0],info[1]);
+         _captionTxt3.text = LanguageMgr.GetTranslation("ddt.regress.getticketView.caption3",info[2]);
+         _rechargeTicketNum.text = info[3].toString();
+         _tiepointNum.text = info[4].toString();
+         _recvBtn.enable = info[4] != 0;
       }
       
       private function initEvent() : void
@@ -94,37 +94,37 @@ package oldplayergetticket
          SocketManager.Instance.addEventListener(PkgEvent.format(149,7),__onGetTicket);
       }
       
-      protected function __onRecvBtnClick(param1:MouseEvent) : void
+      protected function __onRecvBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          SocketManager.Instance.out.sendRegressTicket();
       }
       
-      protected function __onGetTicket(param1:PkgEvent) : void
+      protected function __onGetTicket(event:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readInt();
-         if(_loc2_ == 0)
+         var pkg:PackageIn = event.pkg;
+         var flag:int = pkg.readInt();
+         if(flag == 0)
          {
             SocketManager.Instance.out.sendRegressTicketInfo();
             _recvBtn.enable = false;
             _getSuccess = true;
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.regress.getticketView.getTicket"));
          }
-         else if(_loc2_ != 1)
+         else if(flag != 1)
          {
-            if(_loc2_ != 2)
+            if(flag != 2)
             {
             }
          }
       }
       
-      protected function __onAlertResponse(param1:FrameEvent) : void
+      protected function __onAlertResponse(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onAlertResponse);
-         switch(int(param1.responseCode))
+         var alert:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",__onAlertResponse);
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -132,7 +132,7 @@ package oldplayergetticket
             case 3:
             case 4:
                SoundManager.instance.playButtonSound();
-               _loc2_.dispose();
+               alert.dispose();
          }
       }
       
@@ -148,10 +148,10 @@ package oldplayergetticket
          SocketManager.Instance.removeEventListener(PkgEvent.format(149,7),__onGetTicket);
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:

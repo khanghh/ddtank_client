@@ -41,8 +41,8 @@ package petsBag.petsAdvanced
       
       protected function init() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          _bg = ComponentFactory.Instance.creatComponentByStylename("petsBag.form.petsTip.bg");
          addChild(_bg);
          _title = ComponentFactory.Instance.creatComponentByStylename("petsBag.form.petsTip.titleTxt");
@@ -61,13 +61,12 @@ package petsBag.petsAdvanced
          _valid.y = 135;
          addChild(_valid);
          _itemVec = new Vector.<PetsFormItemsTipItem>();
-         _loc2_ = 1;
-         while(_loc2_ < 5)
+         for(i = 1; i < 5; )
          {
-            _loc1_ = new PetsFormItemsTipItem(_loc2_);
-            addChild(_loc1_);
-            _itemVec.push(_loc1_);
-            _loc2_++;
+            item = new PetsFormItemsTipItem(i);
+            addChild(item);
+            _itemVec.push(item);
+            i++;
          }
       }
       
@@ -76,15 +75,15 @@ package petsBag.petsAdvanced
          return _data;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(data:Object) : void
       {
-         var _loc3_:Number = NaN;
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:int = 0;
-         if(param1 != null)
+         var valid:Number = NaN;
+         var hour:int = 0;
+         var day:int = 0;
+         var minute:int = 0;
+         if(data != null)
          {
-            _data = param1;
+            _data = data;
             _title.text = _data["title"];
             _itemVec[0].isActive = _data["isActive"];
             _itemVec[0].value = _data["state"];
@@ -95,25 +94,25 @@ package petsBag.petsAdvanced
             {
                if(_data.hasOwnProperty("valid"))
                {
-                  _loc3_ = (_data["valid"] as Date).getTime() - TimeManager.Instance.Now().getTime();
-                  _loc5_ = _loc3_ / 3600000;
-                  _loc4_ = _loc3_ / 86400000;
-                  _loc2_ = _loc3_ / 60000;
-                  if(_loc2_ < 1)
+                  valid = (_data["valid"] as Date).getTime() - TimeManager.Instance.Now().getTime();
+                  hour = valid / 3600000;
+                  day = valid / 86400000;
+                  minute = valid / 60000;
+                  if(minute < 1)
                   {
                      _valid.text = LanguageMgr.GetTranslation("horse.tips.valid");
                   }
-                  else if(_loc2_ < 60)
+                  else if(minute < 60)
                   {
                      _valid.text = LanguageMgr.GetTranslation("game.view.propertyWaterBuff.timerII");
                   }
-                  else if(_loc5_ < 24)
+                  else if(hour < 24)
                   {
-                     _valid.text = LanguageMgr.GetTranslation("game.view.propertyWaterBuff.timerI",_loc5_);
+                     _valid.text = LanguageMgr.GetTranslation("game.view.propertyWaterBuff.timerI",hour);
                   }
                   else
                   {
-                     _valid.text = LanguageMgr.GetTranslation("game.view.propertyWaterBuff.timer",_loc4_);
+                     _valid.text = LanguageMgr.GetTranslation("game.view.propertyWaterBuff.timer",day);
                   }
                   _valid.textColor = 16777215;
                }
@@ -155,9 +154,9 @@ package petsBag.petsAdvanced
          return _tipWidth;
       }
       
-      public function set tipWidth(param1:int) : void
+      public function set tipWidth(w:int) : void
       {
-         _tipWidth = param1;
+         _tipWidth = w;
       }
       
       public function get tipHeight() : int
@@ -165,7 +164,7 @@ package petsBag.petsAdvanced
          return _bg.height;
       }
       
-      public function set tipHeight(param1:int) : void
+      public function set tipHeight(h:int) : void
       {
       }
       
@@ -188,10 +187,10 @@ package petsBag.petsAdvanced
          _valid = null;
          var _loc3_:int = 0;
          var _loc2_:* = _itemVec;
-         for each(var _loc1_ in _itemVec)
+         for each(var item in _itemVec)
          {
-            ObjectUtils.disposeObject(_loc1_);
-            _loc1_ = null;
+            ObjectUtils.disposeObject(item);
+            item = null;
          }
          _itemVec = null;
          _data = null;

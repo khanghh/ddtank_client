@@ -33,14 +33,13 @@ package yzhkof.loader
          return this.getURLLoader().dataFormat;
       }
       
-      public function set dataFormat(param1:String) : void
+      public function set dataFormat(value:String) : void
       {
-         this.getURLLoader().dataFormat = param1;
+         this.getURLLoader().dataFormat = value;
       }
       
-      public function load(param1:Object) : void
+      public function load(request:Object) : void
       {
-         var request:Object = param1;
          if(request is String)
          {
             this.reInit();
@@ -69,9 +68,8 @@ package yzhkof.loader
          this.load(String(request));
       }
       
-      public function loadURL(param1:Object) : void
+      public function loadURL(url:Object) : void
       {
-         var url:Object = param1;
          if(url is String)
          {
             this.getURLLoader().load(new URLRequest(String(url)));
@@ -95,16 +93,16 @@ package yzhkof.loader
       
       public function get data() : Object
       {
-         var _loc1_:Object = null;
+         var re_data:Object = null;
          if(this.url_loader != null)
          {
-            _loc1_ = this.url_loader.data;
+            re_data = this.url_loader.data;
          }
          else
          {
-            _loc1_ = this.text_data;
+            re_data = this.text_data;
          }
-         return _loc1_;
+         return re_data;
       }
       
       public function getURLLoader() : URLLoader
@@ -125,14 +123,14 @@ package yzhkof.loader
          });
       }
       
-      private function set url_loader(param1:URLLoader) : void
+      private function set url_loader(value:URLLoader) : void
       {
          if(this._url_loader != null)
          {
             EventProxy.unProxy(this._url_loader,this,[Event.COMPLETE,Event.OPEN,HTTPStatusEvent.HTTP_STATUS,ProgressEvent.PROGRESS,SecurityErrorEvent.SECURITY_ERROR,IOErrorEvent.IO_ERROR]);
          }
-         EventProxy.proxy(param1,this,[Event.COMPLETE,Event.OPEN,HTTPStatusEvent.HTTP_STATUS,ProgressEvent.PROGRESS,SecurityErrorEvent.SECURITY_ERROR,IOErrorEvent.IO_ERROR]);
-         this._url_loader = param1;
+         EventProxy.proxy(value,this,[Event.COMPLETE,Event.OPEN,HTTPStatusEvent.HTTP_STATUS,ProgressEvent.PROGRESS,SecurityErrorEvent.SECURITY_ERROR,IOErrorEvent.IO_ERROR]);
+         this._url_loader = value;
       }
       
       private function get url_loader() : URLLoader

@@ -133,17 +133,17 @@ package dragonBoat.view
          super();
       }
       
-      public function init2(param1:int) : void
+      public function init2(activeID:int) : void
       {
-         type = param1;
+         type = activeID;
          initView();
          initEvent();
          refreshView();
          refreshItemCount();
          _btnGroup.selectIndex = 0;
-         var _loc3_:Date = DragonBoatManager.instance.activeInfo.beginTimeDate;
-         var _loc2_:Date = DragonBoatManager.instance.activeInfo.endTimeDate;
-         _timeTxt.text = LanguageMgr.GetTranslation("ddt.dragonBoat.timeTxt",_loc3_.fullYear,_loc3_.month + 1,_loc3_.date,_loc2_.fullYear,_loc2_.month + 1,_loc2_.date);
+         var tmpStartTime:Date = DragonBoatManager.instance.tmpStartTime;
+         var tmpEndTime:Date = DragonBoatManager.instance.tmpEndTime;
+         _timeTxt.text = LanguageMgr.GetTranslation("ddt.dragonBoat.timeTxt",tmpStartTime.fullYear,tmpStartTime.month + 1,tmpStartTime.date,tmpEndTime.fullYear,tmpEndTime.month + 1,tmpEndTime.date);
          initTimer();
          SocketManager.Instance.out.sendDragonBoatRefreshBoatStatus();
          SocketManager.Instance.out.sendDragonBoatRefreshRank();
@@ -207,13 +207,13 @@ package dragonBoat.view
          _leftBottomTxt = ComponentFactory.Instance.creatComponentByStylename("dragonBoat.mainFrame.bottomTxt");
          _leftBottomTxt.text = LanguageMgr.GetTranslation("ddt.dragonBoat.leftBottomTxt");
          _rightBottomTxt = ComponentFactory.Instance.creatComponentByStylename("dragonBoat.mainFrame.bottomTxt2");
-         var _loc1_:String = "";
-         var _loc2_:ServerConfigInfo = ServerConfigManager.instance.findInfoByName("DragonBoatAreaMinScore");
-         if(_loc2_)
+         var dragonBoatAreaMinScore:String = "";
+         var sConfigInfo:ServerConfigInfo = ServerConfigManager.instance.findInfoByName("DragonBoatAreaMinScore");
+         if(sConfigInfo)
          {
-            _loc1_ = _loc2_.Value;
+            dragonBoatAreaMinScore = sConfigInfo.Value;
          }
-         _rightBottomTxt.text = LanguageMgr.GetTranslation("ddt.dragonBoat.rightBottomTxt",DragonBoatManager.instance.activeInfo.MinScore,_loc1_);
+         _rightBottomTxt.text = LanguageMgr.GetTranslation("ddt.dragonBoat.rightBottomTxt",DragonBoatManager.instance.activeInfo.MinScore,dragonBoatAreaMinScore);
          _selfRankList = ComponentFactory.Instance.creatComponentByStylename("dragonBoat.mainFrame.selfRankList");
          _selfRankSprite.addChild(_selfRankList);
          _otherRankList = ComponentFactory.Instance.creatComponentByStylename("dragonBoat.mainFrame.otherRankList");
@@ -225,7 +225,7 @@ package dragonBoat.view
                _bg = ComponentFactory.Instance.creatBitmap("asset.dragonBoat.mainFrame.bg");
                PositionUtils.setPos(_itemCountTxt,"dragonBoat.mainFrame.itemCountTxtPos");
                _leftBottomTxt.text = LanguageMgr.GetTranslation("ddt.dragonBoat.leftBottomTxt");
-               _rightBottomTxt.text = LanguageMgr.GetTranslation("ddt.dragonBoat.rightBottomTxt",DragonBoatManager.instance.activeInfo.MinScore,_loc1_);
+               _rightBottomTxt.text = LanguageMgr.GetTranslation("ddt.dragonBoat.rightBottomTxt",DragonBoatManager.instance.activeInfo.MinScore,dragonBoatAreaMinScore);
                _displayMc = ComponentFactory.Instance.creat("asset.dragonBoat.boatMc");
                _displayMc.scaleX = 1.2;
                _displayMc.scaleY = 1.2;
@@ -237,7 +237,7 @@ package dragonBoat.view
                _bg = ComponentFactory.Instance.creatBitmap("asset.dragonBoat.mainFrame.bg");
                PositionUtils.setPos(_itemCountTxt,"dragonBoat.mainFrame.itemCountTxtPos");
                _leftBottomTxt.text = LanguageMgr.GetTranslation("ddt.dragonBoat.leftBottomTxt");
-               _rightBottomTxt.text = LanguageMgr.GetTranslation("ddt.dragonBoat.rightBottomTxt",DragonBoatManager.instance.activeInfo.MinScore,_loc1_);
+               _rightBottomTxt.text = LanguageMgr.GetTranslation("ddt.dragonBoat.rightBottomTxt",DragonBoatManager.instance.activeInfo.MinScore,dragonBoatAreaMinScore);
                _displayMc = ComponentFactory.Instance.creat("asset.dragonBoat.boatMc");
                _displayMc.scaleX = 1.2;
                _displayMc.scaleY = 1.2;
@@ -249,7 +249,7 @@ package dragonBoat.view
                _bg = ComponentFactory.Instance.creatBitmap("asset.dragonBoat.mainFrame.bg");
                PositionUtils.setPos(_itemCountTxt,"dragonBoat.mainFrame.itemCountTxtPos");
                _leftBottomTxt.text = LanguageMgr.GetTranslation("ddt.dragonBoat.leftBottomTxt");
-               _rightBottomTxt.text = LanguageMgr.GetTranslation("ddt.dragonBoat.rightBottomTxt",DragonBoatManager.instance.activeInfo.MinScore,_loc1_);
+               _rightBottomTxt.text = LanguageMgr.GetTranslation("ddt.dragonBoat.rightBottomTxt",DragonBoatManager.instance.activeInfo.MinScore,dragonBoatAreaMinScore);
                _displayMc = ComponentFactory.Instance.creat("asset.dragonBoat.boatMc");
                _displayMc.scaleX = 1.2;
                _displayMc.scaleY = 1.2;
@@ -261,7 +261,7 @@ package dragonBoat.view
                _bg = ComponentFactory.Instance.creatBitmap("asset.kingStatue.mainFrame.bg");
                PositionUtils.setPos(_itemCountTxt,"dragonBoat.mainFrame.itemCountTxtPos");
                _leftBottomTxt.text = LanguageMgr.GetTranslation("kingStatue.leftBottomTxt");
-               _rightBottomTxt.text = LanguageMgr.GetTranslation("ddt.dragonBoat.rightBottomTxt2",DragonBoatManager.instance.activeInfo.MinScore,_loc1_);
+               _rightBottomTxt.text = LanguageMgr.GetTranslation("ddt.dragonBoat.rightBottomTxt2",DragonBoatManager.instance.activeInfo.MinScore,dragonBoatAreaMinScore);
                _displayMc = ComponentFactory.Instance.creat("asset.kingStatue.statueFrameMc");
                _displayMc.gotoAndStop(6);
                PositionUtils.setPos(_displayMc,"kingStatue.mainFrame.statuePos");
@@ -315,7 +315,7 @@ package dragonBoat.view
          }
       }
       
-      private function timerHander(param1:TimerEvent) : void
+      private function timerHander(event:TimerEvent) : void
       {
          SocketManager.Instance.out.sendDragonBoatRefreshBoatStatus();
          SocketManager.Instance.out.sendDragonBoatRefreshRank();
@@ -323,67 +323,67 @@ package dragonBoat.view
       
       private function refreshView() : void
       {
-         var _loc1_:Boolean = false;
-         var _loc2_:Boolean = false;
+         var isShowBuild:Boolean = false;
+         var isEnable:Boolean = false;
          _displayMc.gotoAndStop(6);
-         var _loc3_:int = DragonBoatManager.instance.boatCompleteStatus;
-         _progressMask.scaleX = _loc3_ / 100;
-         _progressTxt.text = LanguageMgr.GetTranslation("ddt.dragonBoat.progressTxt",_loc3_);
+         var completeStatus:int = DragonBoatManager.instance.boatCompleteStatus;
+         _progressMask.scaleX = completeStatus / 100;
+         _progressTxt.text = LanguageMgr.GetTranslation("ddt.dragonBoat.progressTxt",completeStatus);
          _scoreTxt.text = DragonBoatManager.instance.useableScore + "";
          _scoreTxt2.text = DragonBoatManager.instance.totalScore + "";
          _leftDragonBoatSprite.addChild(_normalDecorateBtn);
          _leftDragonBoatSprite.addChild(_highDecorateBtn);
          _leftDragonBoatSprite.addChild(_normalBuildBtn);
          _leftDragonBoatSprite.addChild(_highBuildBtn);
-         if(_loc3_ >= 100)
+         if(completeStatus >= 100)
          {
-            _loc1_ = false;
+            isShowBuild = false;
          }
          else
          {
-            _loc1_ = true;
+            isShowBuild = true;
          }
          if(DragonBoatManager.instance.isCanBuildOrDecorate)
          {
-            _loc2_ = true;
+            isEnable = true;
          }
          else
          {
-            _loc2_ = false;
+            isEnable = false;
          }
-         refreshBtnStatus(_loc1_,_loc2_);
+         refreshBtnStatus(isShowBuild,isEnable);
       }
       
-      private function refreshBtnStatus(param1:Boolean, param2:Boolean) : void
+      private function refreshBtnStatus(isShowBuild:Boolean, isEnable:Boolean) : void
       {
-         _normalDecorateBtn.visible = !param1;
-         _highDecorateBtn.visible = !param1;
-         _normalBuildBtn.visible = param1;
-         _highBuildBtn.visible = param1;
-         _normalDecorateBtn.enable = param2;
-         _highDecorateBtn.enable = param2;
-         _normalBuildBtn.enable = param2;
-         _highBuildBtn.enable = param2;
+         _normalDecorateBtn.visible = !isShowBuild;
+         _highDecorateBtn.visible = !isShowBuild;
+         _normalBuildBtn.visible = isShowBuild;
+         _highBuildBtn.visible = isShowBuild;
+         _normalDecorateBtn.enable = isEnable;
+         _highDecorateBtn.enable = isEnable;
+         _normalBuildBtn.enable = isEnable;
+         _highBuildBtn.enable = isEnable;
       }
       
       private function refreshItemCount() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:int = 0;
+         var useChipId:int = 0;
+         var num:int = 0;
          if(type == 1)
          {
-            _loc3_ = 11690;
+            useChipId = 11690;
          }
          else
          {
-            _loc3_ = 11771;
+            useChipId = 11771;
          }
-         _itemCountTxt.text = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(_loc3_,false).toString();
-         var _loc2_:int = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(201309,false);
-         if(_loc2_ > 0)
+         _itemCountTxt.text = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(useChipId,false).toString();
+         var _item2:int = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(201309,false);
+         if(_item2 > 0)
          {
-            _loc1_ = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(_loc3_,true) + _loc2_;
-            _itemCountTxt.text = _loc1_.toString();
+            num = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(useChipId,true) + _item2;
+            _itemCountTxt.text = num.toString();
          }
       }
       
@@ -405,24 +405,24 @@ package dragonBoat.view
          DragonBoatManager.instance.addEventListener("DragBoatUpdateRankInfo",updateRankInfo);
       }
       
-      private function updateRankInfo(param1:DragonBoatEvent) : void
+      private function updateRankInfo(event:DragonBoatEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         var _loc4_:int = param1.tag;
-         if(_loc4_ == 1)
+         var rank:int = 0;
+         var rank2:int = 0;
+         var tag:int = event.tag;
+         if(tag == 1)
          {
-            _selfDataList = param1.data.dataList;
-            _loc2_ = param1.data.myRank;
-            if(_loc2_ < 0)
+            _selfDataList = event.data.dataList;
+            rank = event.data.myRank;
+            if(rank < 0)
             {
                _selfRank = LanguageMgr.GetTranslation("ddt.dragonBoat.rankNoPlace");
             }
             else
             {
-               _selfRank = _loc2_.toString();
+               _selfRank = rank.toString();
             }
-            _selfLessScore = param1.data.lessScore.toString();
+            _selfLessScore = event.data.lessScore.toString();
             if(_btnGroup.selectIndex == 0)
             {
                refreshRankView(1);
@@ -438,17 +438,17 @@ package dragonBoat.view
          }
          else
          {
-            _otherDataList = param1.data.dataList;
-            _loc3_ = param1.data.myRank;
-            if(_loc3_ < 0)
+            _otherDataList = event.data.dataList;
+            rank2 = event.data.myRank;
+            if(rank2 < 0)
             {
                _otherRank = LanguageMgr.GetTranslation("ddt.dragonBoat.rankNoPlace");
             }
             else
             {
-               _otherRank = _loc3_.toString();
+               _otherRank = rank2.toString();
             }
-            _otherLessScore = param1.data.lessScore.toString();
+            _otherLessScore = event.data.lessScore.toString();
             if(_btnGroup.selectIndex == 1)
             {
                refreshRankView(2);
@@ -456,9 +456,9 @@ package dragonBoat.view
          }
       }
       
-      private function refreshRankView(param1:int) : void
+      private function refreshRankView(tag:int) : void
       {
-         if(param1 == 1)
+         if(tag == 1)
          {
             _selfRankList.vectorListModel.clear();
             _selfRankList.vectorListModel.appendAll(_selfDataList);
@@ -474,80 +474,80 @@ package dragonBoat.view
             _rankTxt.text = _otherRank;
             _needTxt.text = _otherLessScore;
          }
-         var _loc3_:int = 30;
+         var _rankTextFormatSize:int = 30;
          if(_rankTxt.textWidth > _rankTxt.width)
          {
-            _loc3_ = 14;
+            _rankTextFormatSize = 14;
             _rankTxt.y = 420;
          }
          else
          {
             _rankTxt.y = 413;
          }
-         var _loc2_:TextFormat = _rankTxt.getTextFormat();
-         _loc2_.size = _loc3_;
-         _rankTxt.setTextFormat(_loc2_);
-         _rankTxt.defaultTextFormat = _loc2_;
+         var _txtFormat:TextFormat = _rankTxt.getTextFormat();
+         _txtFormat.size = _rankTextFormatSize;
+         _rankTxt.setTextFormat(_txtFormat);
+         _rankTxt.defaultTextFormat = _txtFormat;
       }
       
-      private function openShopFrame(param1:MouseEvent) : void
+      private function openShopFrame(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:DragonBoatShopFrame = ComponentFactory.Instance.creatComponentByStylename("DragonBoatShopFrame");
-         LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+         var shopFrame:DragonBoatShopFrame = ComponentFactory.Instance.creatComponentByStylename("DragonBoatShopFrame");
+         LayerManager.Instance.addToLayer(shopFrame,3,true,1);
       }
       
-      private function openHelpFrame(param1:MouseEvent) : void
+      private function openHelpFrame(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var helpBd:* = null;
          SoundManager.instance.play("008");
          switch(int(type) - 1)
          {
             case 0:
-               _loc2_ = ComponentFactory.Instance.creat("dragonBoat.HelpPrompt");
+               helpBd = ComponentFactory.Instance.creat("dragonBoat.HelpPrompt");
                break;
             default:
-               _loc2_ = ComponentFactory.Instance.creat("dragonBoat.HelpPrompt");
+               helpBd = ComponentFactory.Instance.creat("dragonBoat.HelpPrompt");
                break;
             default:
-               _loc2_ = ComponentFactory.Instance.creat("dragonBoat.HelpPrompt");
+               helpBd = ComponentFactory.Instance.creat("dragonBoat.HelpPrompt");
                break;
             case 3:
-               _loc2_ = ComponentFactory.Instance.creat("dragonBoat.statueHelpPrompt");
+               helpBd = ComponentFactory.Instance.creat("dragonBoat.statueHelpPrompt");
          }
-         var _loc3_:HelpFrame = ComponentFactory.Instance.creat("dragonBoat.HelpFrame");
-         _loc3_.setView(_loc2_);
-         _loc3_.titleText = LanguageMgr.GetTranslation("store.view.HelpButtonText");
-         LayerManager.Instance.addToLayer(_loc3_,3,true,1);
+         var helpPage:HelpFrame = ComponentFactory.Instance.creat("dragonBoat.HelpFrame");
+         helpPage.setView(helpBd);
+         helpPage.titleText = LanguageMgr.GetTranslation("store.view.HelpButtonText");
+         LayerManager.Instance.addToLayer(helpPage,3,true,1);
       }
       
-      private function refreshBoatStatusHandler(param1:Event) : void
+      private function refreshBoatStatusHandler(event:Event) : void
       {
          refreshView();
       }
       
-      private function itemUpdateHandler(param1:BagEvent) : void
+      private function itemUpdateHandler(event:BagEvent) : void
       {
          refreshItemCount();
       }
       
-      private function buildOrDecorateHandler(param1:Event) : void
+      private function buildOrDecorateHandler(event:Event) : void
       {
          SocketManager.Instance.out.sendDragonBoatRefreshRank();
          refreshView();
       }
       
-      private function consumeHandler(param1:Event) : void
+      private function consumeHandler(event:Event) : void
       {
-         var _loc2_:* = null;
+         var normalView:* = null;
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc3_:int = 1;
-         var _loc4_:* = param1.currentTarget;
+         var tmp:int = 1;
+         var _loc4_:* = event.currentTarget;
          if(_normalBuildBtn !== _loc4_)
          {
             if(_normalDecorateBtn !== _loc4_)
@@ -556,30 +556,30 @@ package dragonBoat.view
                {
                   if(_highDecorateBtn === _loc4_)
                   {
-                     _loc3_ = 4;
+                     tmp = 4;
                   }
                }
                else
                {
-                  _loc3_ = 3;
+                  tmp = 3;
                }
             }
             else
             {
-               _loc3_ = 2;
+               tmp = 2;
             }
          }
          else
          {
-            _loc3_ = 1;
+            tmp = 1;
          }
-         switch(int(_loc3_) - 1)
+         switch(int(tmp) - 1)
          {
             case 0:
             case 1:
             case 2:
             case 3:
-               if((_loc3_ == 1 || _loc3_ == 2) && int(_itemCountTxt.text) <= 0)
+               if((tmp == 1 || tmp == 2) && int(_itemCountTxt.text) <= 0)
                {
                   if(type == 1)
                   {
@@ -591,19 +591,19 @@ package dragonBoat.view
                   }
                   return;
                }
-               if((_loc3_ == 3 || _loc3_ == 4) && PlayerManager.Instance.Self.Money < 100)
+               if((tmp == 3 || tmp == 4) && PlayerManager.Instance.Self.Money < 100)
                {
                   LeavePageManager.showFillFrame();
                   return;
                }
-               _loc2_ = ComponentFactory.Instance.creatComponentByStylename("DragonBoatNormalView");
-               _loc2_.setView(_loc3_);
-               LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+               normalView = ComponentFactory.Instance.creatComponentByStylename("DragonBoatNormalView");
+               normalView.setView(tmp);
+               LayerManager.Instance.addToLayer(normalView,3,true,1);
                break;
          }
       }
       
-      private function __changeHandler(param1:Event) : void
+      private function __changeHandler(event:Event) : void
       {
          switch(int(_btnGroup.selectIndex))
          {
@@ -627,28 +627,28 @@ package dragonBoat.view
          }
       }
       
-      private function __soundPlay(param1:MouseEvent) : void
+      private function __soundPlay(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();
          }
       }
       
-      private function isShowDragonboat(param1:Boolean) : void
+      private function isShowDragonboat(bool:Boolean) : void
       {
-         _leftDragonBoatSprite.visible = param1;
+         _leftDragonBoatSprite.visible = bool;
          if(_dragonBoatLeftCurrentCharcter)
          {
-            _dragonBoatLeftCurrentCharcter.visible = !param1;
+            _dragonBoatLeftCurrentCharcter.visible = !bool;
          }
-         if(!param1)
+         if(!bool)
          {
             showPlayerNo1();
          }
@@ -656,29 +656,29 @@ package dragonBoat.view
       
       private function showPlayerNo1() : void
       {
-         var _loc2_:* = null;
+         var tempPlayerObj:* = null;
          if(_selfDataList.length <= 0)
          {
             return;
          }
          var _loc4_:int = 0;
          var _loc3_:* = _selfDataList;
-         for each(var _loc1_ in _selfDataList)
+         for each(var obj in _selfDataList)
          {
-            if(_loc1_.rank == 1)
+            if(obj.rank == 1)
             {
-               _loc2_ = _loc1_;
+               tempPlayerObj = obj;
                break;
             }
          }
          _playerInfo = new PlayerInfo();
-         if(_loc2_.name == PlayerManager.Instance.Self.NickName)
+         if(tempPlayerObj.name == PlayerManager.Instance.Self.NickName)
          {
             _playerInfo = PlayerManager.Instance.Self;
          }
          else
          {
-            _playerInfo = PlayerManager.Instance.findPlayerByNickName(_playerInfo,_loc2_.name);
+            _playerInfo = PlayerManager.Instance.findPlayerByNickName(_playerInfo,tempPlayerObj.name);
          }
          if(_playerInfo.ID && _playerInfo.Style)
          {
@@ -686,12 +686,12 @@ package dragonBoat.view
          }
          else
          {
-            SocketManager.Instance.out.sendItemEquip(_loc2_.name,true);
+            SocketManager.Instance.out.sendItemEquip(tempPlayerObj.name,true);
             _playerInfo.addEventListener("propertychange",__playerInfoChange);
          }
       }
       
-      private function __playerInfoChange(param1:PlayerPropertyEvent) : void
+      private function __playerInfoChange(event:PlayerPropertyEvent) : void
       {
          _playerInfo.removeEventListener("propertychange",__playerInfoChange);
          initPlayerNo1();

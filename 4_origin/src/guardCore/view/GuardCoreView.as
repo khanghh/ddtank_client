@@ -97,34 +97,33 @@ package guardCore.view
       
       private function initItem() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          _itemList = new Vector.<GuardCoreItem>(8);
          _itemContainer = new Sprite();
          PositionUtils.setPos(_itemContainer,"guardCore.containerPos");
-         _loc2_ = 0;
-         while(_loc2_ < 8)
+         for(i = 0; i < 8; )
          {
-            _loc1_ = new GuardCoreItem(_loc2_ + 1);
-            _itemList[_loc2_] = _loc1_;
-            _loc1_.x = int(_loc2_ % 4) * 106;
-            _loc1_.y = int(_loc2_ / 4) * 112;
-            _itemContainer.addChild(_loc1_);
-            _loc2_++;
+            item = new GuardCoreItem(i + 1);
+            _itemList[i] = item;
+            item.x = int(i % 4) * 106;
+            item.y = int(i / 4) * 112;
+            _itemContainer.addChild(item);
+            i++;
          }
       }
       
       private function updateView() : void
       {
-         var _loc3_:int = PlayerManager.Instance.Self.guardCoreGrade + 1;
-         var _loc5_:GuardCoreLevelInfo = GuardCoreManager.instance.getGuardLevelInfo(_loc3_);
-         var _loc4_:int = PlayerManager.Instance.Self.Gold;
-         var _loc1_:int = PlayerManager.Instance.Self.GP - Experience.expericence[PlayerManager.Instance.Self.Grade - 1];
-         var _loc2_:int = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(12540);
-         _gold.text = countToString(_loc4_);
-         _exp.text = countToString(_loc1_);
-         _guard.text = _loc2_.toString();
-         if(_loc5_ == null)
+         var guardGrade:int = PlayerManager.Instance.Self.guardCoreGrade + 1;
+         var info:GuardCoreLevelInfo = GuardCoreManager.instance.getGuardLevelInfo(guardGrade);
+         var gold:int = PlayerManager.Instance.Self.Gold;
+         var exp:int = PlayerManager.Instance.Self.GP - Experience.expericence[PlayerManager.Instance.Self.Grade - 1];
+         var guard:int = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(12540);
+         _gold.text = countToString(gold);
+         _exp.text = countToString(exp);
+         _guard.text = guard.toString();
+         if(info == null)
          {
             _needGold.text = "0";
             _needExp.text = "0";
@@ -133,31 +132,31 @@ package guardCore.view
          }
          else
          {
-            _needGold.text = countToString(_loc5_.Gold);
-            _needExp.text = countToString(_loc5_.Exp);
-            _needGuard.text = _loc5_.Guard.toString();
-            _needGold.setFrame(_loc4_ >= _loc5_.Gold?1:2);
-            _needExp.setFrame(_loc1_ >= _loc5_.Exp?1:2);
-            _needGuard.setFrame(_loc2_ >= _loc5_.Guard?1:2);
+            _needGold.text = countToString(info.Gold);
+            _needExp.text = countToString(info.Exp);
+            _needGuard.text = info.Guard.toString();
+            _needGold.setFrame(gold >= info.Gold?1:2);
+            _needExp.setFrame(exp >= info.Exp?1:2);
+            _needGuard.setFrame(guard >= info.Guard?1:2);
          }
          _level.text = PlayerManager.Instance.Self.guardCoreGrade.toString();
       }
       
-      private function countToString(param1:int) : String
+      private function countToString(value:int) : String
       {
-         var _loc2_:int = param1 / 10000;
-         if(_loc2_ == 0)
+         var num:int = value / 10000;
+         if(num == 0)
          {
-            return param1.toString();
+            return value.toString();
          }
-         return _loc2_.toString() + LanguageMgr.GetTranslation("tenThousand");
+         return num.toString() + LanguageMgr.GetTranslation("tenThousand");
       }
       
       private function updateGuardIcon() : void
       {
          ObjectUtils.disposeObject(_guardImg);
-         var _loc1_:GuardCoreInfo = GuardCoreManager.instance.getSelfGuardCoreInfo();
-         _guardImg = ComponentFactory.Instance.creatBitmap("asset.guardCore.icon" + _loc1_.Type);
+         var info:GuardCoreInfo = GuardCoreManager.instance.getSelfGuardCoreInfo();
+         _guardImg = ComponentFactory.Instance.creatBitmap("asset.guardCore.icon" + info.Type);
          var _loc2_:* = 0.8;
          _guardImg.scaleY = _loc2_;
          _guardImg.scaleX = _loc2_;
@@ -166,22 +165,21 @@ package guardCore.view
       
       private function checkEquipGuardCore() : void
       {
-         var _loc2_:GuardCoreInfo = GuardCoreManager.instance.getSelfGuardCoreInfo();
-         var _loc1_:GuardCoreInfo = GuardCoreManager.instance.getGuardCoreInfoBySkillGrade(_loc2_.SkillGrade + 1,_loc2_.Type);
-         if(_loc1_ && PlayerManager.Instance.Self.guardCoreGrade >= _loc1_.GuardGrade)
+         var info:GuardCoreInfo = GuardCoreManager.instance.getSelfGuardCoreInfo();
+         var nextInfo:GuardCoreInfo = GuardCoreManager.instance.getGuardCoreInfoBySkillGrade(info.SkillGrade + 1,info.Type);
+         if(nextInfo && PlayerManager.Instance.Self.guardCoreGrade >= nextInfo.GuardGrade)
          {
-            SocketManager.Instance.out.sendGuardCoreEquip(_loc1_.ID);
+            SocketManager.Instance.out.sendGuardCoreEquip(nextInfo.ID);
          }
       }
       
       private function updateItemTipsData() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _itemList.length)
+         var i:int = 0;
+         for(i = 0; i < _itemList.length; )
          {
-            _itemList[_loc1_].updateTipsData();
-            _loc1_++;
+            _itemList[i].updateTipsData();
+            i++;
          }
       }
       
@@ -201,7 +199,7 @@ package guardCore.view
          addToContent(_guardContainer);
       }
       
-      private function __onClickUpgrade(param1:MouseEvent) : void
+      private function __onClickUpgrade(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.bagLocked)
@@ -222,26 +220,26 @@ package guardCore.view
       
       private function isUpgrade() : Boolean
       {
-         var _loc3_:int = PlayerManager.Instance.Self.guardCoreGrade + 1;
-         var _loc4_:GuardCoreLevelInfo = GuardCoreManager.instance.getGuardLevelInfo(_loc3_);
-         if(_loc4_ == null)
+         var guardGrade:int = PlayerManager.Instance.Self.guardCoreGrade + 1;
+         var info:GuardCoreLevelInfo = GuardCoreManager.instance.getGuardLevelInfo(guardGrade);
+         if(info == null)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("guardCore.maxTips"));
             return false;
          }
-         if(PlayerManager.Instance.Self.Gold < _loc4_.Gold)
+         if(PlayerManager.Instance.Self.Gold < info.Gold)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("guardCore.notGold"));
             return false;
          }
-         var _loc1_:int = PlayerManager.Instance.Self.GP - Experience.expericence[PlayerManager.Instance.Self.Grade - 1];
-         if(_loc1_ < _loc4_.Exp)
+         var exp:int = PlayerManager.Instance.Self.GP - Experience.expericence[PlayerManager.Instance.Self.Grade - 1];
+         if(exp < info.Exp)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("guardCore.notExp"));
             return false;
          }
-         var _loc2_:int = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(12540);
-         if(_loc2_ < _loc4_.Guard)
+         var count:int = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(12540);
+         if(count < info.Guard)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("guardCore.notGuard"));
             return false;
@@ -249,21 +247,21 @@ package guardCore.view
          return true;
       }
       
-      private function __onGuardChange(param1:PlayerPropertyEvent) : void
+      private function __onGuardChange(e:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["GuardCoreGrade"])
+         if(e.changedProperties["GuardCoreGrade"])
          {
             updateView();
             updateItemTipsData();
             checkEquipGuardCore();
          }
-         if(param1.changedProperties["GuardCoreID"])
+         if(e.changedProperties["GuardCoreID"])
          {
             updateGuardIcon();
          }
       }
       
-      override protected function onResponse(param1:int) : void
+      override protected function onResponse(type:int) : void
       {
          dispose();
       }

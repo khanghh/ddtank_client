@@ -28,10 +28,10 @@ package kingDivision.view
       
       private var _ring:FilterFrameText;
       
-      public function KingDivisionConsortionListItem(param1:int)
+      public function KingDivisionConsortionListItem(index:int)
       {
          super();
-         _index = param1;
+         _index = index;
          init();
       }
       
@@ -60,12 +60,12 @@ package kingDivision.view
          setRink();
       }
       
-      public function set info(param1:KingDivisionConsortionItemInfo) : void
+      public function set info(info:KingDivisionConsortionItemInfo) : void
       {
-         _consortionName.text = String(param1.consortionName);
-         _count.text = String(param1.num);
-         _level.text = String(param1.consortionLevel);
-         _points.text = String(param1.points);
+         _consortionName.text = String(info.consortionName);
+         _count.text = String(info.num);
+         _level.text = String(info.consortionLevel);
+         _points.text = String(info.points);
       }
       
       private function setRink() : void

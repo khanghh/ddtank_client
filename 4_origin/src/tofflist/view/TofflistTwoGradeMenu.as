@@ -104,9 +104,9 @@ package tofflist.view
          _selectedButtonGroup.selectIndex = 0;
          var _loc3_:int = 0;
          var _loc2_:* = _btns;
-         for each(var _loc1_ in _btns)
+         for each(var btn in _btns)
          {
-            _loc1_.addEventListener("click",__selectToolBarHandler);
+            btn.addEventListener("click",__selectToolBarHandler);
          }
       }
       
@@ -114,10 +114,10 @@ package tofflist.view
       {
          var _loc3_:int = 0;
          var _loc2_:* = _btns;
-         for each(var _loc1_ in _btns)
+         for each(var btn in _btns)
          {
-            _loc1_.dispose();
-            _loc1_.removeEventListener("click",__selectToolBarHandler);
+            btn.dispose();
+            btn.removeEventListener("click",__selectToolBarHandler);
          }
          if(_battleBtn)
          {
@@ -158,9 +158,9 @@ package tofflist.view
          super.dispose();
       }
       
-      public function setParentType(param1:String) : void
+      public function setParentType(parentType:String) : void
       {
-         if(param1 == "teams" || param1 == "crossServerTeams")
+         if(parentType == "teams" || parentType == "crossServerTeams")
          {
             type = "integral";
          }
@@ -170,14 +170,14 @@ package tofflist.view
          }
          var _loc4_:int = 0;
          var _loc3_:* = _btns;
-         for each(var _loc2_ in _btns)
+         for each(var btn in _btns)
          {
-            if(_loc2_.parent)
+            if(btn.parent)
             {
-               _loc2_.parent.removeChild(_loc2_);
+               btn.parent.removeChild(btn);
             }
          }
-         if(param1 == "personal")
+         if(parentType == "personal")
          {
             addChild(_battleBtn);
             addChild(_levelBtn);
@@ -185,32 +185,32 @@ package tofflist.view
             addChild(_matcheBtn);
             addChild(_mountsBtn);
          }
-         else if(param1 == "crossServerPersonal")
+         else if(parentType == "crossServerPersonal")
          {
             addChild(_battleBtn);
             addChild(_levelBtn);
             addChild(_charmBtn);
             addChild(_mountsBtn);
          }
-         else if(param1 == "consortia" || param1 == "crossServerConsortia")
+         else if(parentType == "consortia" || parentType == "crossServerConsortia")
          {
             addChild(_battleBtn);
             addChild(_levelBtn);
             addChild(_assetsBtn);
             addChild(_charmBtn);
          }
-         else if(param1 == "teams" || param1 == "crossServerTeams")
+         else if(parentType == "teams" || parentType == "crossServerTeams")
          {
             type = "integral";
             addChild(_integralBtn);
          }
          var _loc6_:int = 0;
          var _loc5_:* = _btns;
-         for each(_loc2_ in _btns)
+         for each(btn in _btns)
          {
-            _loc2_.selected = false;
+            btn.selected = false;
          }
-         if(param1 == "teams" || param1 == "crossServerTeams")
+         if(parentType == "teams" || parentType == "crossServerTeams")
          {
             _selectedButtonGroup.selectIndex = 6;
          }
@@ -225,20 +225,20 @@ package tofflist.view
          return TofflistModel.secondMenuType;
       }
       
-      public function set type(param1:String) : void
+      public function set type(value:String) : void
       {
-         TofflistModel.secondMenuType = param1;
+         TofflistModel.secondMenuType = value;
          dispatchEvent(new TofflistEvent("tofflisttoolbarselect",type));
       }
       
-      private function __selectToolBarHandler(param1:MouseEvent) : void
+      private function __selectToolBarHandler(event:MouseEvent) : void
       {
-         if(type == param1.currentTarget.name)
+         if(type == event.currentTarget.name)
          {
             return;
          }
          SoundManager.instance.play("008");
-         type = BTN_CONST[_btns.indexOf(param1.currentTarget)];
+         type = BTN_CONST[_btns.indexOf(event.currentTarget)];
       }
    }
 }

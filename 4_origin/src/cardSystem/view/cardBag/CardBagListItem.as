@@ -49,94 +49,92 @@ package cardSystem.view.cardBag
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var cell:* = null;
          _dataVec = [];
          _cellVec = new Vector.<CardCell>(4);
          _container = ComponentFactory.Instance.creatComponentByStylename("cardBagListItem.container");
-         _loc2_ = 0;
-         while(_loc2_ < 4)
+         for(i = 0; i < 4; )
          {
-            _loc1_ = new CardBagCell(ComponentFactory.Instance.creatBitmap("asset.cardBag.cardBG"));
-            _loc1_.setContentSize(71,96);
-            _loc1_.canShine = true;
-            _loc1_.addEventListener("interactive_click",__clickHandler);
-            _loc1_.addEventListener("interactive_double_click",__doubleClickHandler);
-            _loc1_.addEventListener("mouseOver",__overHandler);
-            DoubleClickManager.Instance.enableDoubleClick(_loc1_);
-            _container.addChild(_loc1_);
-            _cellVec[_loc2_] = _loc1_;
-            _loc2_++;
+            cell = new CardBagCell(ComponentFactory.Instance.creatBitmap("asset.cardBag.cardBG"));
+            cell.setContentSize(71,96);
+            cell.canShine = true;
+            cell.addEventListener("interactive_click",__clickHandler);
+            cell.addEventListener("interactive_double_click",__doubleClickHandler);
+            cell.addEventListener("mouseOver",__overHandler);
+            DoubleClickManager.Instance.enableDoubleClick(cell);
+            _container.addChild(cell);
+            _cellVec[i] = cell;
+            i++;
          }
          addChild(_container);
       }
       
-      private function __overHandler(param1:MouseEvent) : void
+      private function __overHandler(event:MouseEvent) : void
       {
-         var _loc2_:CardBagCell = param1.currentTarget as CardBagCell;
-         if(_loc2_.cardInfo)
+         var cell:CardBagCell = event.currentTarget as CardBagCell;
+         if(cell.cardInfo)
          {
             this.parent.setChildIndex(this,this.parent.numChildren - 1);
          }
       }
       
-      protected function __clickHandler(param1:InteractiveEvent) : void
+      protected function __clickHandler(event:InteractiveEvent) : void
       {
-         var _loc3_:* = null;
-         param1.stopImmediatePropagation();
-         var _loc2_:CardBagCell = param1.currentTarget as CardBagCell;
-         if(_loc2_)
+         var info:* = null;
+         event.stopImmediatePropagation();
+         var cell:CardBagCell = event.currentTarget as CardBagCell;
+         if(cell)
          {
-            _loc3_ = _loc2_.info as ItemTemplateInfo;
+            info = cell.info as ItemTemplateInfo;
          }
-         if(_loc3_ == null)
+         if(info == null)
          {
             return;
          }
-         if(!_loc2_.locked)
+         if(!cell.locked)
          {
             SoundManager.instance.play("008");
-            _loc2_.dragStart();
+            cell.dragStart();
          }
       }
       
-      protected function __doubleClickHandler(param1:InteractiveEvent) : void
+      protected function __doubleClickHandler(event:InteractiveEvent) : void
       {
-         var _loc2_:Boolean = false;
-         var _loc4_:int = 0;
+         var ref:Boolean = false;
+         var i:int = 0;
          SoundManager.instance.play("008");
-         param1.stopImmediatePropagation();
-         var _loc3_:CardBagCell = param1.currentTarget as CardBagCell;
-         if(_loc3_.cardInfo)
+         event.stopImmediatePropagation();
+         var cell:CardBagCell = event.currentTarget as CardBagCell;
+         if(cell.cardInfo)
          {
-            if(_loc3_ && !_loc3_.locked)
+            if(cell && !cell.locked)
             {
-               if(_loc3_.cardInfo.templateInfo.Property8 == "1")
+               if(cell.cardInfo.templateInfo.Property8 == "1")
                {
-                  SocketManager.Instance.out.sendMoveCards(_loc3_.cardInfo.Place,0);
+                  SocketManager.Instance.out.sendMoveCards(cell.cardInfo.Place,0);
                   return;
                }
-               _loc2_ = true;
-               _loc4_ = 1;
-               while(_loc4_ < 5)
+               ref = true;
+               for(i = 1; i < 5; )
                {
-                  if(PlayerManager.Instance.Self.cardEquipDic[_loc4_] == null || PlayerManager.Instance.Self.cardEquipDic[_loc4_].Count < 0)
+                  if(PlayerManager.Instance.Self.cardEquipDic[i] == null || PlayerManager.Instance.Self.cardEquipDic[i].Count < 0)
                   {
-                     SocketManager.Instance.out.sendMoveCards(_loc3_.cardInfo.Place,_loc4_);
-                     _loc2_ = false;
+                     SocketManager.Instance.out.sendMoveCards(cell.cardInfo.Place,i);
+                     ref = false;
                      break;
                   }
-                  _loc4_++;
+                  i++;
                }
-               if(_loc2_)
+               if(ref)
                {
-                  SocketManager.Instance.out.sendMoveCards(_loc3_.cardInfo.Place,1);
+                  SocketManager.Instance.out.sendMoveCards(cell.cardInfo.Place,1);
                }
             }
          }
       }
       
-      public function setListCellStatus(param1:List, param2:Boolean, param3:int) : void
+      public function setListCellStatus(list:List, isSelected:Boolean, index:int) : void
       {
       }
       
@@ -145,9 +143,9 @@ package cardSystem.view.cardBag
          return _dataVec;
       }
       
-      public function setCellValue(param1:*) : void
+      public function setCellValue(value:*) : void
       {
-         _dataVec = param1;
+         _dataVec = value;
          upView();
       }
       
@@ -158,20 +156,19 @@ package cardSystem.view.cardBag
       
       private function upView() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < 4)
+         var i:int = 0;
+         for(i = 0; i < 4; )
          {
-            _cellVec[_loc1_].place = _dataVec[0] * 4 + _loc1_ + 1;
-            if(_dataVec[_loc1_ + 1])
+            _cellVec[i].place = _dataVec[0] * 4 + i + 1;
+            if(_dataVec[i + 1])
             {
-               _cellVec[_loc1_].cardInfo = _dataVec[_loc1_ + 1] as CardInfo;
+               _cellVec[i].cardInfo = _dataVec[i + 1] as CardInfo;
             }
             else
             {
-               _cellVec[_loc1_].cardInfo = null;
+               _cellVec[i].cardInfo = null;
             }
-            _loc1_++;
+            i++;
          }
       }
       
@@ -186,18 +183,17 @@ package cardSystem.view.cardBag
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _dataVec = null;
-         _loc1_ = 0;
-         while(_loc1_ < _cellVec.length)
+         for(i = 0; i < _cellVec.length; )
          {
-            _cellVec[_loc1_].removeEventListener("interactive_click",__clickHandler);
-            _cellVec[_loc1_].removeEventListener("interactive_double_click",__doubleClickHandler);
-            _cellVec[_loc1_].removeEventListener("mouseOver",__overHandler);
-            DoubleClickManager.Instance.disableDoubleClick(_cellVec[_loc1_]);
-            _cellVec[_loc1_].dispose();
-            _cellVec[_loc1_] = null;
-            _loc1_++;
+            _cellVec[i].removeEventListener("interactive_click",__clickHandler);
+            _cellVec[i].removeEventListener("interactive_double_click",__doubleClickHandler);
+            _cellVec[i].removeEventListener("mouseOver",__overHandler);
+            DoubleClickManager.Instance.disableDoubleClick(_cellVec[i]);
+            _cellVec[i].dispose();
+            _cellVec[i] = null;
+            i++;
          }
          _cellVec = null;
          DoubleClickManager.Instance.clearTarget();

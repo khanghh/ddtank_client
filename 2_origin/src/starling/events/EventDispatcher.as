@@ -16,60 +16,59 @@ package starling.events
          super();
       }
       
-      public function addEventListener(param1:String, param2:Function) : void
+      public function addEventListener(type:String, listener:Function) : void
       {
          if(mEventListeners == null)
          {
             mEventListeners = new Dictionary();
          }
-         var _loc3_:Vector.<Function> = mEventListeners[param1] as Vector.<Function>;
-         if(_loc3_ == null)
+         var listeners:Vector.<Function> = mEventListeners[type] as Vector.<Function>;
+         if(listeners == null)
          {
-            mEventListeners[param1] = new <Function>[param2];
+            mEventListeners[type] = new <Function>[listener];
          }
-         else if(_loc3_.indexOf(param2) == -1)
+         else if(listeners.indexOf(listener) == -1)
          {
-            _loc3_[_loc3_.length] = param2;
+            listeners[listeners.length] = listener;
          }
       }
       
-      public function removeEventListener(param1:String, param2:Function) : void
+      public function removeEventListener(type:String, listener:Function) : void
       {
-         var _loc3_:* = undefined;
-         var _loc6_:int = 0;
-         var _loc4_:int = 0;
-         var _loc7_:* = undefined;
-         var _loc8_:int = 0;
-         var _loc5_:* = null;
+         var listeners:* = undefined;
+         var numListeners:int = 0;
+         var index:int = 0;
+         var restListeners:* = undefined;
+         var i:int = 0;
+         var otherListener:* = null;
          if(mEventListeners)
          {
-            _loc3_ = mEventListeners[param1] as Vector.<Function>;
-            _loc6_ = !!_loc3_?_loc3_.length:0;
-            if(_loc6_ > 0)
+            listeners = mEventListeners[type] as Vector.<Function>;
+            numListeners = !!listeners?listeners.length:0;
+            if(numListeners > 0)
             {
-               _loc4_ = 0;
-               _loc7_ = new Vector.<Function>(_loc6_ - 1);
-               _loc8_ = 0;
-               while(_loc8_ < _loc6_)
+               index = 0;
+               restListeners = new Vector.<Function>(numListeners - 1);
+               for(i = 0; i < numListeners; )
                {
-                  _loc5_ = _loc3_[_loc8_];
-                  if(_loc5_ != param2)
+                  otherListener = listeners[i];
+                  if(otherListener != listener)
                   {
-                     _loc4_++;
-                     _loc7_[int(_loc4_)] = _loc5_;
+                     index++;
+                     restListeners[int(index)] = otherListener;
                   }
-                  _loc8_++;
+                  i++;
                }
-               mEventListeners[param1] = _loc7_;
+               mEventListeners[type] = restListeners;
             }
          }
       }
       
-      public function removeEventListeners(param1:String = null) : void
+      public function removeEventListeners(type:String = null) : void
       {
-         if(param1 && mEventListeners)
+         if(type && mEventListeners)
          {
-            delete mEventListeners[param1];
+            delete mEventListeners[type];
          }
          else
          {
@@ -77,123 +76,121 @@ package starling.events
          }
       }
       
-      public function dispatchEvent(param1:Event) : void
+      public function dispatchEvent(event:Event) : void
       {
-         var _loc3_:Boolean = param1.bubbles;
-         if(!_loc3_ && (mEventListeners == null || !(param1.type in mEventListeners)))
+         var bubbles:Boolean = event.bubbles;
+         if(!bubbles && (mEventListeners == null || !(event.type in mEventListeners)))
          {
             return;
          }
-         var _loc2_:EventDispatcher = param1.target;
-         param1.setTarget(this);
-         if(_loc3_ && this is DisplayObject)
+         var previousTarget:EventDispatcher = event.target;
+         event.setTarget(this);
+         if(bubbles && this is DisplayObject)
          {
-            bubbleEvent(param1);
+            bubbleEvent(event);
          }
          else
          {
-            invokeEvent(param1);
+            invokeEvent(event);
          }
-         if(_loc2_)
+         if(previousTarget)
          {
-            param1.setTarget(_loc2_);
+            event.setTarget(previousTarget);
          }
       }
       
-      function invokeEvent(param1:Event) : Boolean
+      function invokeEvent(event:Event) : Boolean
       {
-         var _loc6_:int = 0;
-         var _loc3_:* = null;
-         var _loc5_:int = 0;
-         var _loc2_:Vector.<Function> = !!mEventListeners?mEventListeners[param1.type] as Vector.<Function>:null;
-         var _loc4_:int = _loc2_ == null?0:_loc2_.length;
-         if(_loc4_)
+         var i:int = 0;
+         var listener:* = null;
+         var numArgs:int = 0;
+         var listeners:Vector.<Function> = !!mEventListeners?mEventListeners[event.type] as Vector.<Function>:null;
+         var numListeners:int = listeners == null?0:listeners.length;
+         if(numListeners)
          {
-            param1.setCurrentTarget(this);
-            _loc6_ = 0;
-            while(_loc6_ < _loc4_)
+            event.setCurrentTarget(this);
+            for(i = 0; i < numListeners; )
             {
-               _loc3_ = _loc2_[_loc6_] as Function;
-               _loc5_ = _loc3_.length;
-               if(_loc5_ == 0)
+               listener = listeners[i] as Function;
+               numArgs = listener.length;
+               if(numArgs == 0)
                {
-                  _loc3_();
+                  listener();
                }
-               else if(_loc5_ == 1)
+               else if(numArgs == 1)
                {
-                  _loc3_(param1);
+                  listener(event);
                }
                else
                {
-                  _loc3_(param1,param1.data);
+                  listener(event,event.data);
                }
-               if(param1.stopsImmediatePropagation)
+               if(event.stopsImmediatePropagation)
                {
                   return true;
                }
-               _loc6_++;
+               i++;
             }
-            return param1.stopsPropagation;
+            return event.stopsPropagation;
          }
          return false;
       }
       
-      function bubbleEvent(param1:Event) : void
+      function bubbleEvent(event:Event) : void
       {
-         var _loc3_:* = undefined;
-         var _loc6_:int = 0;
-         var _loc4_:Boolean = false;
-         var _loc2_:DisplayObject = this as DisplayObject;
-         var _loc5_:int = 1;
+         var chain:* = undefined;
+         var i:int = 0;
+         var stopPropagation:Boolean = false;
+         var element:DisplayObject = this as DisplayObject;
+         var length:int = 1;
          if(sBubbleChains.length > 0)
          {
-            _loc3_ = sBubbleChains.pop();
-            _loc3_[0] = _loc2_;
+            chain = sBubbleChains.pop();
+            chain[0] = element;
          }
          else
          {
-            _loc3_ = new <EventDispatcher>[_loc2_];
+            chain = new <EventDispatcher>[element];
          }
          while(true)
          {
-            _loc2_ = _loc2_.parent;
-            if(_loc2_.parent == null)
+            element = element.parent;
+            if(element.parent == null)
             {
                break;
             }
-            _loc5_++;
-            _loc3_[int(_loc5_)] = _loc2_;
+            length++;
+            chain[int(length)] = element;
          }
-         _loc6_ = 0;
-         while(_loc6_ < _loc5_)
+         for(i = 0; i < length; )
          {
-            _loc4_ = _loc3_[_loc6_].invokeEvent(param1);
-            if(!_loc4_)
+            stopPropagation = chain[i].invokeEvent(event);
+            if(!stopPropagation)
             {
-               _loc6_++;
+               i++;
                continue;
             }
             break;
          }
-         _loc3_.length = 0;
-         sBubbleChains[sBubbleChains.length] = _loc3_;
+         chain.length = 0;
+         sBubbleChains[sBubbleChains.length] = chain;
       }
       
-      public function dispatchEventWith(param1:String, param2:Boolean = false, param3:Object = null) : void
+      public function dispatchEventWith(type:String, bubbles:Boolean = false, data:Object = null) : void
       {
-         var _loc4_:* = null;
-         if(param2 || hasEventListener(param1))
+         var event:* = null;
+         if(bubbles || hasEventListener(type))
          {
-            _loc4_ = Event.fromPool(param1,param2,param3);
-            dispatchEvent(_loc4_);
-            Event.toPool(_loc4_);
+            event = Event.fromPool(type,bubbles,data);
+            dispatchEvent(event);
+            Event.toPool(event);
          }
       }
       
-      public function hasEventListener(param1:String) : Boolean
+      public function hasEventListener(type:String) : Boolean
       {
-         var _loc2_:Vector.<Function> = !!mEventListeners?mEventListeners[param1]:null;
-         return !!_loc2_?_loc2_.length != 0:false;
+         var listeners:Vector.<Function> = !!mEventListeners?mEventListeners[type]:null;
+         return !!listeners?listeners.length != 0:false;
       }
    }
 }

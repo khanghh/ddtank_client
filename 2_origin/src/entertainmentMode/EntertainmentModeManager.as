@@ -47,30 +47,30 @@ package entertainmentMode
          SocketManager.Instance.addEventListener("entertainment",__handler);
       }
       
-      private function __handler(param1:CrazyTankSocketEvent) : void
+      private function __handler(e:CrazyTankSocketEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc5_:* = null;
-         var _loc4_:* = null;
-         var _loc3_:PackageIn = param1.pkg;
-         switch(int(param1._cmd) - 71)
+         var beginTime:* = null;
+         var endTime:* = null;
+         var day:* = null;
+         var pkg:PackageIn = e.pkg;
+         switch(int(e._cmd) - 71)
          {
             case 0:
-               isopen = _loc3_.readBoolean();
-               _loc2_ = _loc3_.readDate();
-               _loc5_ = _loc3_.readDate();
-               _loc4_ = String(_loc2_.fullYear) + "-" + (String(_loc2_.month + 1)) + "-" + String(_loc2_.date);
-               openTime = _loc4_ + " " + _loc2_.hours + ":" + (_loc2_.minutes < 10?"0" + String(_loc2_.minutes):_loc2_.minutes) + "-" + _loc5_.hours + ":" + (_loc5_.minutes < 10?"0" + String(_loc5_.minutes):_loc5_.minutes);
+               isopen = pkg.readBoolean();
+               beginTime = pkg.readDate();
+               endTime = pkg.readDate();
+               day = String(beginTime.fullYear) + "-" + (String(beginTime.month + 1)) + "-" + String(beginTime.date);
+               openTime = day + " " + beginTime.hours + ":" + (beginTime.minutes < 10?"0" + String(beginTime.minutes):beginTime.minutes) + "-" + endTime.hours + ":" + (endTime.minutes < 10?"0" + String(endTime.minutes):endTime.minutes);
                showHideIcon(isopen);
                break;
             case 1:
-               EntertainmentModel.instance.score = _loc3_.readInt();
+               EntertainmentModel.instance.score = pkg.readInt();
          }
       }
       
-      public function showHideIcon(param1:Boolean) : void
+      public function showHideIcon(bol:Boolean) : void
       {
-         HallIconManager.instance.updateSwitchHandler("entertainment",param1);
+         HallIconManager.instance.updateSwitchHandler("entertainment",bol);
       }
       
       public function hide() : void

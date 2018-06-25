@@ -97,7 +97,7 @@ package ddt.bagStore
       
       private var cevent:CEvent;
       
-      public function BagStore(param1:IEventDispatcher = null)
+      public function BagStore(target:IEventDispatcher = null)
       {
          super();
       }
@@ -111,15 +111,15 @@ package ddt.bagStore
          return _instance;
       }
       
-      public function openStore(param1:String = "bag_store", param2:int = 0) : void
+      public function openStore(type:String = "bag_store", index:int = 0) : void
       {
          if(!PlayerManager.Instance.Self.IsWeakGuildFinish(17))
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.trainer.store.open"));
             return;
          }
-         _type = param1;
-         setupSelectIndex(param2);
+         _type = type;
+         setupSelectIndex(index);
          controllerInstance.Model.loadBagData();
          cevent = new CEvent("openview",{
             "control":controllerInstance,
@@ -135,13 +135,13 @@ package ddt.bagStore
          AssetModuleLoader.startCodeLoader(loadComplete);
       }
       
-      private function setupSelectIndex(param1:int) : void
+      private function setupSelectIndex(index:int) : void
       {
          controllerInstance.selectedIndex.add("bag_store",0);
          controllerInstance.selectedIndex.add("forge_store",0);
          controllerInstance.selectedIndex.add("fine_store",0);
          controllerInstance.selectedIndex.add("godRefining_store",0);
-         controllerInstance.selectedIndex.add(_type,param1);
+         controllerInstance.selectedIndex.add(_type,index);
       }
       
       private function loadComplete() : void
@@ -150,9 +150,9 @@ package ddt.bagStore
          storeOpenAble = true;
       }
       
-      public function set isInBagStoreFrame(param1:Boolean) : void
+      public function set isInBagStoreFrame(value:Boolean) : void
       {
-         _isInBagStoreFrame = param1;
+         _isInBagStoreFrame = value;
       }
       
       public function get isInBagStoreFrame() : Boolean
@@ -180,9 +180,9 @@ package ddt.bagStore
          return _tipPanelNumber;
       }
       
-      public function set tipPanelNumber(param1:int) : void
+      public function set tipPanelNumber(value:int) : void
       {
-         _tipPanelNumber = param1;
+         _tipPanelNumber = value;
       }
       
       public function reduceTipPanelNumber() : void
@@ -195,14 +195,14 @@ package ddt.bagStore
          return _passwordOpen;
       }
       
-      public function set passwordOpen(param1:Boolean) : void
+      public function set passwordOpen(value:Boolean) : void
       {
-         _passwordOpen = param1;
+         _passwordOpen = value;
       }
       
-      public function set storeOpenAble(param1:Boolean) : void
+      public function set storeOpenAble(value:Boolean) : void
       {
-         _storeOpenAble = param1;
+         _storeOpenAble = value;
       }
       
       public function get storeOpenAble() : Boolean
@@ -210,9 +210,9 @@ package ddt.bagStore
          return _storeOpenAble;
       }
       
-      public function set isFromBagFrame(param1:Boolean) : void
+      public function set isFromBagFrame(value:Boolean) : void
       {
-         _isFromBagFrame = param1;
+         _isFromBagFrame = value;
          if(_isFromBagFrame)
          {
             BagAndInfoManager.Instance.hideBagAndInfo();
@@ -224,23 +224,23 @@ package ddt.bagStore
          return _isFromBagFrame;
       }
       
-      public function set isFromConsortionBankFrame(param1:Boolean) : void
+      public function set isFromConsortionBankFrame(value:Boolean) : void
       {
-         _isFromConsortionBankFrame = param1;
+         _isFromConsortionBankFrame = value;
          if(_isFromConsortionBankFrame)
          {
             ConsortionModelManager.Instance.hideBankFrame();
          }
       }
       
-      public function set isFromHomeBankFrame(param1:Boolean) : void
+      public function set isFromHomeBankFrame(value:Boolean) : void
       {
-         _isFromHomeBankFrame = param1;
+         _isFromHomeBankFrame = value;
       }
       
-      public function set isFromShop(param1:Boolean) : void
+      public function set isFromShop(value:Boolean) : void
       {
-         _isFromShop = param1;
+         _isFromShop = value;
       }
       
       public function get isFromShop() : Boolean
@@ -257,17 +257,17 @@ package ddt.bagStore
          return _controllerInstance;
       }
       
-      public function showShortcutBuyFrame(param1:Array, param2:Boolean, param3:String, param4:int, param5:int = -1, param6:Number = 30, param7:Number = 40) : void
+      public function showShortcutBuyFrame(templateIDList:Array, showRadioBtn:Boolean, title:String, panelIndex:int, selectedIndex:int = -1, hSpace:Number = 30, vSpace:Number = 40) : void
       {
-         var _loc8_:Object = {};
-         _loc8_.templateIDList = param1;
-         _loc8_.showRadioBtn = param2;
-         _loc8_.title = param3;
-         _loc8_.panelIndex = param4;
-         _loc8_.selectedIndex = param5;
-         _loc8_.hSpace = param6;
-         _loc8_.vSpace = param7;
-         cevent = new CEvent("showbuyframe",_loc8_);
+         var data:Object = {};
+         data.templateIDList = templateIDList;
+         data.showRadioBtn = showRadioBtn;
+         data.title = title;
+         data.panelIndex = panelIndex;
+         data.selectedIndex = selectedIndex;
+         data.hSpace = hSpace;
+         data.vSpace = vSpace;
+         cevent = new CEvent("showbuyframe",data);
          loadUIModule();
       }
       

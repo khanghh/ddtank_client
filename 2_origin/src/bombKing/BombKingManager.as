@@ -67,70 +67,70 @@ package bombKing
          return _instance;
       }
       
-      public function addToHallStateView(param1:IHallStateView) : void
+      public function addToHallStateView($hall:IHallStateView) : void
       {
          if(_btnEnter == null)
          {
             _btnEnter = ComponentFactory.Instance.creat("hall.bombKingButton");
          }
-         param1.leftTopGbox.addChild(_btnEnter);
-         param1.arrangeLeftGrid();
+         $hall.leftTopGbox.addChild(_btnEnter);
+         $hall.arrangeLeftGrid();
          _btnEnter.addEventListener("click",onEnterClick);
       }
       
-      public function removeFromeHallStateView(param1:IHallStateView) : void
+      public function removeFromeHallStateView($hall:IHallStateView) : void
       {
          if(_btnEnter && _btnEnter.parent)
          {
-            param1.leftTopGbox.removeChild(_btnEnter);
+            $hall.leftTopGbox.removeChild(_btnEnter);
          }
          _btnEnter.removeEventListener("click",onEnterClick);
          ObjectUtils.disposeObject(_btnEnter);
          _btnEnter = null;
       }
       
-      protected function onEnterClick(param1:MouseEvent) : void
+      protected function onEnterClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          show();
       }
       
-      private function loadTop3Data(param1:Function) : void
+      private function loadTop3Data(callBack:Function) : void
       {
-         var _loc2_:* = null;
-         _loc2_ = new TofflistListTwoAnalyzer(param1);
-         _loadXml("CelebByDayFightPowerList.xml",_loc2_,5);
+         var tofflistListTwoAnalyzer:* = null;
+         tofflistListTwoAnalyzer = new TofflistListTwoAnalyzer(callBack);
+         _loadXml("CelebByDayFightPowerList.xml",tofflistListTwoAnalyzer,5);
       }
       
-      private function __personalResult(param1:TofflistListTwoAnalyzer) : void
+      private function __personalResult(analyzer:TofflistListTwoAnalyzer) : void
       {
-         _data = param1.data;
-         var _loc2_:int = (_data.list[_type] as PlayerInfo).ID;
-         PlayerInfoViewControl.viewByID(_loc2_,-1,true,false);
+         _data = analyzer.data;
+         var id:int = (_data.list[_type] as PlayerInfo).ID;
+         PlayerInfoViewControl.viewByID(id,-1,true,false);
          PlayerInfoViewControl.isOpenFromBag = false;
       }
       
-      private function _loadXml(param1:String, param2:DataAnalyzer, param3:int, param4:String = "") : void
+      private function _loadXml($url:String, $dataAnalyzer:DataAnalyzer, $requestType:int, $loadErrorMessage:String = "") : void
       {
-         var _loc5_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         var _loc6_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath(param1),param3,_loc5_);
-         _loc6_.loadErrorMessage = param4;
-         _loc6_.analyzer = param2;
-         LoadResourceManager.Instance.startLoad(_loc6_);
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         var loadSelfConsortiaMemberList:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath($url),$requestType,args);
+         loadSelfConsortiaMemberList.loadErrorMessage = $loadErrorMessage;
+         loadSelfConsortiaMemberList.analyzer = $dataAnalyzer;
+         LoadResourceManager.Instance.startLoad(loadSelfConsortiaMemberList);
       }
       
-      public function onPlayerClicked(param1:int) : void
+      public function onPlayerClicked(type:int) : void
       {
-         _type = param1;
+         _type = type;
          loadTop3Data(__personalResult);
       }
       
-      public function setup(param1:HallPlayerView) : void
+      public function setup(view:HallPlayerView) : void
       {
-         view = param1;
-         initSetup = function(param1:TofflistListTwoAnalyzer):void
+         view = view;
+         initSetup = function(analyzer:TofflistListTwoAnalyzer):void
          {
-            _data = param1.data;
+            _data = analyzer.data;
             _playerView = view;
             initDefaultStatue();
             updateStatus();
@@ -142,41 +142,40 @@ package bombKing
       
       private function updateStatus() : void
       {
-         var _loc6_:int = 0;
-         var _loc2_:* = false;
-         var _loc5_:* = null;
-         var _loc4_:* = null;
-         var _loc1_:* = null;
-         var _loc3_:* = null;
+         var i:int = 0;
+         var isExist:* = false;
+         var info:* = null;
+         var _playerInfo:* = null;
+         var style:* = null;
+         var item:* = null;
          if(!_playerView)
          {
             return;
          }
          clearStatue();
          _defaultFlag = true;
-         _loc6_ = 0;
-         while(_loc6_ < 3)
+         for(i = 0; i < 3; )
          {
-            _loc2_ = _data.list.length > _loc6_;
-            if(_loc2_)
+            isExist = _data.list.length > i;
+            if(isExist)
             {
                _defaultFlag = false;
-               _loc5_ = new BKingStatueInfo();
-               _loc4_ = _data.list[_loc6_];
-               _loc5_.name = _loc4_.NickName;
-               _loc5_.vipType = _loc4_.typeVIP;
-               _loc5_.vipLevel = _loc4_.VIPLevel;
-               _loc1_ = _loc4_.Style;
-               _loc5_.style = _loc1_;
-               _loc5_.color = _loc4_.Colors;
-               _loc5_.sex = _loc4_.Sex;
-               _loc5_.isAttest = _loc4_.isAttest;
-               _loc5_.rank = _loc6_;
-               _loc3_ = new SceneKingStatue(_loc6_);
-               _loc3_.info = _loc5_;
-               addToHall(_loc3_,_loc6_);
+               info = new BKingStatueInfo();
+               _playerInfo = _data.list[i];
+               info.name = _playerInfo.NickName;
+               info.vipType = _playerInfo.typeVIP;
+               info.vipLevel = _playerInfo.VIPLevel;
+               style = _playerInfo.Style;
+               info.style = style;
+               info.color = _playerInfo.Colors;
+               info.sex = _playerInfo.Sex;
+               info.isAttest = _playerInfo.isAttest;
+               info.rank = i;
+               item = new SceneKingStatue(i);
+               item.info = info;
+               addToHall(item,i);
             }
-            _loc6_++;
+            i++;
          }
          if(_defaultFlag)
          {
@@ -186,21 +185,20 @@ package bombKing
       
       private function initDefaultStatue() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
-         _loc3_ = 0;
-         while(_loc3_ < 3)
+         var i:int = 0;
+         var info:* = null;
+         var item:* = null;
+         for(i = 0; i < 3; )
          {
-            _loc2_ = new BKingStatueInfo();
-            _loc2_.style = defaultStyleArr[_loc3_];
-            _loc2_.color = ",,,,,,,,,,";
-            _loc2_.sex = false;
-            _loc2_.isAttest = false;
-            _loc1_ = new SceneKingStatue(_loc3_);
-            _loc1_.info = _loc2_;
-            addToHall(_loc1_,_loc3_);
-            _loc3_++;
+            info = new BKingStatueInfo();
+            info.style = defaultStyleArr[i];
+            info.color = ",,,,,,,,,,";
+            info.sex = false;
+            info.isAttest = false;
+            item = new SceneKingStatue(i);
+            item.info = info;
+            addToHall(item,i);
+            i++;
          }
       }
       
@@ -209,49 +207,48 @@ package bombKing
          SocketManager.Instance.addEventListener(PkgEvent.format(263,8),__showText);
       }
       
-      protected function __showText(param1:PkgEvent) : void
+      protected function __showText(event:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:String = _loc3_.readUTF();
-         ChatManager.Instance.sysChatAmaranth(_loc2_);
+         var pkg:PackageIn = event.pkg;
+         var str:String = pkg.readUTF();
+         ChatManager.Instance.sysChatAmaranth(str);
       }
       
-      protected function __updateStatue(param1:PkgEvent) : void
+      protected function __updateStatue(event:PkgEvent) : void
       {
-         var _loc7_:int = 0;
-         var _loc3_:Boolean = false;
-         var _loc6_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:* = null;
+         var i:int = 0;
+         var isExist:Boolean = false;
+         var info:* = null;
+         var style:* = null;
+         var item:* = null;
          if(!_playerView)
          {
             return;
          }
-         var _loc5_:PackageIn = param1.pkg;
+         var pkg:PackageIn = event.pkg;
          clearStatue();
          _defaultFlag = true;
-         _loc7_ = 0;
-         while(_loc7_ < 3)
+         for(i = 0; i < 3; )
          {
-            _loc3_ = _loc5_.readBoolean();
-            if(_loc3_)
+            isExist = pkg.readBoolean();
+            if(isExist)
             {
                _defaultFlag = false;
-               _loc6_ = new BKingStatueInfo();
-               _loc6_.name = _loc5_.readUTF();
-               _loc6_.vipType = _loc5_.readInt();
-               _loc6_.vipLevel = _loc5_.readInt();
-               _loc2_ = _loc5_.readUTF();
-               _loc6_.style = _loc2_;
-               _loc6_.color = _loc5_.readUTF();
-               _loc6_.sex = _loc5_.readBoolean();
-               _loc6_.isAttest = _loc5_.readBoolean();
-               _loc6_.rank = _loc7_;
-               _loc4_ = new SceneKingStatue(_loc7_);
-               _loc4_.info = _loc6_;
-               addToHall(_loc4_,_loc7_);
+               info = new BKingStatueInfo();
+               info.name = pkg.readUTF();
+               info.vipType = pkg.readInt();
+               info.vipLevel = pkg.readInt();
+               style = pkg.readUTF();
+               info.style = style;
+               info.color = pkg.readUTF();
+               info.sex = pkg.readBoolean();
+               info.isAttest = pkg.readBoolean();
+               info.rank = i;
+               item = new SceneKingStatue(i);
+               item.info = info;
+               addToHall(item,i);
             }
-            _loc7_++;
+            i++;
          }
          if(_defaultFlag)
          {
@@ -259,56 +256,55 @@ package bombKing
          }
       }
       
-      public function cutSuitStr(param1:String) : String
+      public function cutSuitStr(style:String) : String
       {
-         var _loc2_:Array = param1.split(",");
-         _loc2_[7] = "";
-         return _loc2_.join(",");
+         var arr:Array = style.split(",");
+         arr[7] = "";
+         return arr.join(",");
       }
       
       private function clearStatue() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var mc:* = null;
          if(_playerView == null || _playerView.staticLayer == null)
          {
             return;
          }
-         var _loc1_:Array = [];
-         _loc1_.push(_playerView.staticLayer.getBuildNpcBtnByName("bluePlatform"));
-         _loc1_.push(_playerView.staticLayer.getBuildNpcBtnByName("goldPlatform"));
-         _loc1_.push(_playerView.staticLayer.getBuildNpcBtnByName("redPlatform"));
-         _loc3_ = 0;
-         while(_loc3_ <= _loc1_.length - 1)
+         var mcArr:Array = [];
+         mcArr.push(_playerView.staticLayer.getBuildNpcBtnByName("bluePlatform"));
+         mcArr.push(_playerView.staticLayer.getBuildNpcBtnByName("goldPlatform"));
+         mcArr.push(_playerView.staticLayer.getBuildNpcBtnByName("redPlatform"));
+         for(i = 0; i <= mcArr.length - 1; )
          {
-            _loc2_ = _loc1_[_loc3_];
-            _loc2_.removeChildAt(_loc2_.numChildren - 1,true);
-            _loc3_++;
+            mc = mcArr[i];
+            mc.removeChildAt(mc.numChildren - 1,true);
+            i++;
          }
       }
       
-      private function addToHall(param1:SceneKingStatue, param2:int) : void
+      private function addToHall(item:SceneKingStatue, type:int) : void
       {
          if(_playerView == null || _playerView.staticLayer == null)
          {
             return;
          }
-         switch(int(param2))
+         switch(int(type))
          {
             case 0:
-               param1.x = -65;
-               param1.y = -302;
-               _playerView.staticLayer.getBuildNpcBtnByName("bluePlatform").addChild(param1);
+               item.x = -65;
+               item.y = -302;
+               _playerView.staticLayer.getBuildNpcBtnByName("bluePlatform").addChild(item);
                break;
             case 1:
-               param1.x = -60;
-               param1.y = -298;
-               _playerView.staticLayer.getBuildNpcBtnByName("goldPlatform").addChild(param1);
+               item.x = -60;
+               item.y = -298;
+               _playerView.staticLayer.getBuildNpcBtnByName("goldPlatform").addChild(item);
                break;
             case 2:
-               param1.x = -58;
-               param1.y = -283;
-               _playerView.staticLayer.getBuildNpcBtnByName("redPlatform").addChild(param1);
+               item.x = -58;
+               item.y = -283;
+               _playerView.staticLayer.getBuildNpcBtnByName("redPlatform").addChild(item);
          }
       }
       

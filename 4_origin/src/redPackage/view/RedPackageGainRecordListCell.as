@@ -41,7 +41,7 @@ package redPackage.view
          }
       }
       
-      public function setListCellStatus(param1:List, param2:Boolean, param3:int) : void
+      public function setListCellStatus(list:List, isSelected:Boolean, index:int) : void
       {
       }
       
@@ -50,12 +50,12 @@ package redPackage.view
          return _cellValue;
       }
       
-      public function setCellValue(param1:*) : void
+      public function setCellValue(value:*) : void
       {
-         _cellValue = param1;
-         var _loc2_:Date = param1["date"];
-         var _loc3_:String = _loc2_.fullYear.toString() + "-" + Helpers.fixZero((_loc2_.month + 1).toString()) + "-" + Helpers.fixZero(_loc2_.date.toString()) + " " + Helpers.fixZero(_loc2_.hours.toString()) + ":" + Helpers.fixZero((_loc2_.minutes + 1).toString());
-         _detailText.text = LanguageMgr.GetTranslation("redpkg.consortion.gainRecordListCell",param1["sendNick"],param1["gainedNick"],param1["money"],_loc3_);
+         _cellValue = value;
+         var $date:Date = value["date"];
+         var dateString:String = $date.fullYear.toString() + "-" + Helpers.fixZero(($date.month + 1).toString()) + "-" + Helpers.fixZero($date.date.toString()) + " " + Helpers.fixZero($date.hours.toString()) + ":" + Helpers.fixZero(($date.minutes + 1).toString());
+         _detailText.text = LanguageMgr.GetTranslation("redpkg.consortion.gainRecordListCell",value["sendNick"],value["gainedNick"],value["money"],dateString);
       }
       
       override public function get tipData() : Object

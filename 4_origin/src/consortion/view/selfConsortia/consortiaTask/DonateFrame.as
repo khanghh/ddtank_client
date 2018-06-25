@@ -85,25 +85,25 @@ package consortion.view.selfConsortia.consortiaTask
          _taxMedal.removeEventListener("keyDown",__enterHanlder);
       }
       
-      private function __response(param1:FrameEvent) : void
+      private function __response(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.responseCode == 1 || param1.responseCode == 0)
+         if(e.responseCode == 1 || e.responseCode == 0)
          {
             dispose();
          }
       }
       
-      private function __addToStageHandler(param1:Event) : void
+      private function __addToStageHandler(e:Event) : void
       {
          _taxMedal.setFocus();
          _ownMoney.text = PlayerManager.Instance.Self.DDTMoney.toString();
          _taxMedal.text = "";
       }
       
-      private function __confirmHanlder(param1:MouseEvent) : void
+      private function __confirmHanlder(e:MouseEvent) : void
       {
-         var _loc2_:int = 0;
+         var Medal:int = 0;
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -112,20 +112,20 @@ package consortion.view.selfConsortia.consortiaTask
          }
          if(_taxMedal != null)
          {
-            _loc2_ = _taxMedal.text;
-            SocketManager.Instance.out.sendDonate(-300,_loc2_);
+            Medal = _taxMedal.text;
+            SocketManager.Instance.out.sendDonate(-300,Medal);
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("consortia.task.donateOK"));
             dispose();
          }
       }
       
-      private function __cancelHandler(param1:MouseEvent) : void
+      private function __cancelHandler(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          dispose();
       }
       
-      private function __taxChangeHandler(param1:Event) : void
+      private function __taxChangeHandler(e:Event) : void
       {
          if(_taxMedal.text == "")
          {
@@ -138,17 +138,17 @@ package consortion.view.selfConsortia.consortiaTask
             return;
          }
          _confirm.enable = true;
-         var _loc2_:int = _taxMedal.text;
-         if(_loc2_ >= PlayerManager.Instance.Self.DDTMoney || _loc2_ >= _targetValue)
+         var Medal:int = _taxMedal.text;
+         if(Medal >= PlayerManager.Instance.Self.DDTMoney || Medal >= _targetValue)
          {
             _taxMedal.text = PlayerManager.Instance.Self.DDTMoney <= _targetValue?PlayerManager.Instance.Self.DDTMoney.toString():_targetValue.toString();
          }
       }
       
-      private function __enterHanlder(param1:KeyboardEvent) : void
+      private function __enterHanlder(event:KeyboardEvent) : void
       {
-         param1.stopImmediatePropagation();
-         if(param1.keyCode == 13)
+         event.stopImmediatePropagation();
+         if(event.keyCode == 13)
          {
             if(_taxMedal.text == "")
             {
@@ -159,7 +159,7 @@ package consortion.view.selfConsortia.consortiaTask
                __confirmHanlder(null);
             }
          }
-         if(param1.keyCode == 27)
+         if(event.keyCode == 27)
          {
             SoundManager.instance.play("008");
             dispose();
@@ -171,9 +171,9 @@ package consortion.view.selfConsortia.consortiaTask
          LayerManager.Instance.addToLayer(this,3,true,1);
       }
       
-      public function set targetValue(param1:int) : void
+      public function set targetValue(value:int) : void
       {
-         _targetValue = param1;
+         _targetValue = value;
       }
       
       override public function dispose() : void

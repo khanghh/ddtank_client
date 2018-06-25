@@ -43,7 +43,7 @@ package trainer.view
          addEventListener("response",_frameEventHandler);
       }
       
-      private function __onClickOK(param1:MouseEvent) : void
+      private function __onClickOK(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          dispose();
@@ -57,9 +57,9 @@ package trainer.view
          super.dispose();
       }
       
-      private function _frameEventHandler(param1:FrameEvent) : void
+      private function _frameEventHandler(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:

@@ -345,13 +345,13 @@ package fightLib.view
          FightLibManager.Instance.addEventListener("gainAward",__gainAward);
       }
       
-      private function __gainAward(param1:Event) : void
+      private function __gainAward(evt:Event) : void
       {
       }
       
-      private function __update(param1:PlayerPropertyEvent) : void
+      private function __update(evt:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["fightLibMission"])
+         if(evt.changedProperties["fightLibMission"])
          {
             updateLessonButtonState();
             updateLevelButtonState();
@@ -375,7 +375,7 @@ package fightLib.view
          FightLibManager.Instance.removeEventListener("gainAward",__gainAward);
       }
       
-      private function __levelClick(param1:MouseEvent) : void
+      private function __levelClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(FightLibManager.Instance.currentInfo == null)
@@ -383,28 +383,28 @@ package fightLib.view
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.fightLib.ChooseFightLibTypeView.selectFightLibInfo"));
             var _loc5_:int = 0;
             var _loc4_:* = _lessonButtons;
-            for each(var _loc2_ in _lessonButtons)
+            for each(var element in _lessonButtons)
             {
-               _loc2_.shine = _loc2_.enabled == true;
+               element.shine = element.enabled == true;
             }
             return;
          }
          var _loc7_:int = 0;
          var _loc6_:* = _levelButtons;
-         for each(var _loc3_ in _levelButtons)
+         for each(var button in _levelButtons)
          {
-            if(_loc3_.enable)
+            if(button.enable)
             {
-               _loc3_.shine = false;
+               button.shine = false;
             }
          }
          unselectedAllLevel();
-         this.selectedLevel = param1.currentTarget as LevelButton;
+         this.selectedLevel = evt.currentTarget as LevelButton;
          updateModelII();
          updateAward();
          updateSencondType();
          GameInSocketOut.sendGameRoomSetUp(FightLibManager.Instance.currentInfo.id,5,false,"","",_sencondType,FightLibManager.Instance.currentInfo.difficulty,0,false,0);
-         if(param1.currentTarget == _lowButton && FightLibControl.Instance.script && FightLibControl.Instance.script is FightLibGuideScripit)
+         if(evt.currentTarget == _lowButton && FightLibControl.Instance.script && FightLibControl.Instance.script is FightLibGuideScripit)
          {
             FightLibControl.Instance.script.continueScript();
             FightLibControl.Instance.script.dispose();
@@ -428,39 +428,39 @@ package fightLib.view
          }
       }
       
-      private function __selectLesson(param1:Event) : void
+      private function __selectLesson(evt:Event) : void
       {
-         var _loc4_:LessonButton = param1.currentTarget as LessonButton;
-         var _loc5_:int = _loc4_.type;
+         var button:LessonButton = evt.currentTarget as LessonButton;
+         var newType:int = button.type;
          SoundManager.instance.play("008");
-         if(_selectedLesson && _selectedLesson.type == _loc5_)
+         if(_selectedLesson && _selectedLesson.type == newType)
          {
             return;
          }
          var _loc7_:int = 0;
          var _loc6_:* = _lessonButtons;
-         for each(var _loc2_ in _lessonButtons)
+         for each(var lesson in _lessonButtons)
          {
-            if(_loc2_.enabled)
+            if(lesson.enabled)
             {
-               _loc2_.shine = false;
+               lesson.shine = false;
             }
          }
          var _loc9_:int = 0;
          var _loc8_:* = _levelButtons;
-         for each(var _loc3_ in _levelButtons)
+         for each(var level in _levelButtons)
          {
-            if(_loc3_.enable)
+            if(level.enable)
             {
-               _loc3_.shine = false;
+               level.shine = false;
             }
          }
          unSelectedAllLesson();
          unselectedAllLevel();
-         this.selectedLesson = _loc4_;
+         this.selectedLesson = button;
          updateModel();
          updateLevelButtonState();
-         if(_loc5_ == 1000 && FightLibControl.Instance.script && FightLibControl.Instance.script is FightLibGuideScripit)
+         if(newType == 1000 && FightLibControl.Instance.script && FightLibControl.Instance.script is FightLibGuideScripit)
          {
             FightLibControl.Instance.script.continueScript();
          }
@@ -470,9 +470,9 @@ package fightLib.view
       {
          var _loc3_:int = 0;
          var _loc2_:* = _lessonButtons;
-         for each(var _loc1_ in _lessonButtons)
+         for each(var element in _lessonButtons)
          {
-            _loc1_.selected = false;
+            element.selected = false;
          }
       }
       
@@ -492,7 +492,7 @@ package fightLib.view
          updateAward();
       }
       
-      private function __start(param1:MouseEvent) : void
+      private function __start(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(FightLibManager.Instance.currentInfo == null)
@@ -500,9 +500,9 @@ package fightLib.view
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.fightLib.ChooseFightLibTypeView.selectFightLibInfo"));
             var _loc5_:int = 0;
             var _loc4_:* = _lessonButtons;
-            for each(var _loc2_ in _lessonButtons)
+            for each(var element in _lessonButtons)
             {
-               _loc2_.shine = _loc2_.enabled == true;
+               element.shine = element.enabled == true;
             }
             return;
          }
@@ -511,13 +511,13 @@ package fightLib.view
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.fightLib.ChooseFightLibTypeView.selectDifficulty"));
             var _loc7_:int = 0;
             var _loc6_:* = _levelButtons;
-            for each(var _loc3_ in _levelButtons)
+            for each(var button in _levelButtons)
             {
-               _loc3_.shine = _loc3_.enable == true;
+               button.shine = button.enable == true;
             }
             return;
          }
-         CheckWeaponManager.instance.setFunction(this,__start,[param1]);
+         CheckWeaponManager.instance.setFunction(this,__start,[evt]);
          if(CheckWeaponManager.instance.isNoWeapon())
          {
             CheckWeaponManager.instance.showAlert();
@@ -528,7 +528,7 @@ package fightLib.view
          GameInSocketOut.sendGameStart();
       }
       
-      private function __cancel(param1:MouseEvent) : void
+      private function __cancel(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          GameInSocketOut.sendCancelWait();
@@ -540,47 +540,47 @@ package fightLib.view
       {
          var _loc4_:int = 0;
          var _loc3_:* = _lessonButtons;
-         for each(var _loc1_ in _lessonButtons)
+         for each(var lesson in _lessonButtons)
          {
-            if(_loc1_.enabled)
+            if(lesson.enabled)
             {
-               _loc1_.shine = false;
+               lesson.shine = false;
             }
          }
          var _loc6_:int = 0;
          var _loc5_:* = _levelButtons;
-         for each(var _loc2_ in _levelButtons)
+         for each(var level in _levelButtons)
          {
-            if(_loc2_.enable)
+            if(level.enable)
             {
-               _loc2_.shine = false;
+               level.shine = false;
             }
          }
       }
       
-      public function showShine(param1:int) : void
+      public function showShine(type:int) : void
       {
-         if(param1 == 1)
+         if(type == 1)
          {
             var _loc5_:int = 0;
             var _loc4_:* = _lessonButtons;
-            for each(var _loc2_ in _lessonButtons)
+            for each(var lesson in _lessonButtons)
             {
-               if(_loc2_.enabled)
+               if(lesson.enabled)
                {
-                  _loc2_.shine = true;
+                  lesson.shine = true;
                }
             }
          }
-         else if(param1 == 2)
+         else if(type == 2)
          {
             var _loc7_:int = 0;
             var _loc6_:* = _levelButtons;
-            for each(var _loc3_ in _levelButtons)
+            for each(var level in _levelButtons)
             {
-               if(_loc3_.enable)
+               if(level.enable)
                {
-                  _loc3_.shine = true;
+                  level.shine = true;
                }
             }
          }
@@ -684,14 +684,14 @@ package fightLib.view
          _selectedLevel = null;
       }
       
-      public function set selectedLesson(param1:LessonButton) : void
+      public function set selectedLesson(val:LessonButton) : void
       {
-         var _loc2_:LessonButton = _selectedLesson;
-         _selectedLesson = param1;
+         var lastLesson:LessonButton = _selectedLesson;
+         _selectedLesson = val;
          _selectedLesson.selected = true;
-         if(_loc2_ && _loc2_ != _selectedLesson)
+         if(lastLesson && lastLesson != _selectedLesson)
          {
-            _loc2_.selected = false;
+            lastLesson.selected = false;
          }
       }
       
@@ -700,14 +700,14 @@ package fightLib.view
          return _selectedLesson;
       }
       
-      public function set selectedLevel(param1:LevelButton) : void
+      public function set selectedLevel(val:LevelButton) : void
       {
-         var _loc2_:LevelButton = _selectedLevel;
-         _selectedLevel = param1;
+         var lastLevel:LevelButton = _selectedLevel;
+         _selectedLevel = val;
          _selectedLevel.selected = true;
-         if(_loc2_ && _loc2_ != _selectedLevel)
+         if(lastLevel && lastLevel != _selectedLevel)
          {
-            _loc2_.selected = false;
+            lastLevel.selected = false;
          }
       }
       

@@ -74,11 +74,11 @@ package catchInsect.componets
          _payType.mouseEnabled = false;
          _itemNameTxt = ComponentFactory.Instance.creatComponentByStylename("ddtshop.GoodItemName");
          _itemPriceTxt = ComponentFactory.Instance.creatComponentByStylename("ddtshop.GoodItemPrice");
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,60,60);
-         _loc1_.graphics.endFill();
-         _itemCell = CellFactory.instance.createShopItemCell(_loc1_,null,true,true) as ShopItemCell;
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(16777215,0);
+         sp.graphics.drawRect(0,0,60,60);
+         sp.graphics.endFill();
+         _itemCell = CellFactory.instance.createShopItemCell(sp,null,true,true) as ShopItemCell;
          PositionUtils.setPos(_itemCell,"catchInsect.shopFrame.itemCell.pos");
          _needScore = ComponentFactory.Instance.creatComponentByStylename("catchInsect.shopFrame.needScoreTxt");
          _needScore.text = LanguageMgr.GetTranslation("magicStone.score");
@@ -108,12 +108,12 @@ package catchInsect.componets
          _itemPriceTxt.visible = false;
       }
       
-      public function set shopItemInfo(param1:ShopItemInfo) : void
+      public function set shopItemInfo(value:ShopItemInfo) : void
       {
-         if(param1)
+         if(value)
          {
-            _shopItemInfo = param1;
-            _itemCell.info = param1.TemplateInfo;
+            _shopItemInfo = value;
+            _itemCell.info = value.TemplateInfo;
             _itemCell.visible = true;
             _itemNameTxt.visible = true;
             if(_itemCell.info.Name.length > 6)
@@ -125,7 +125,7 @@ package catchInsect.componets
                _itemNameTxt.text = _itemCell.info.Name;
             }
             _needScore.visible = true;
-            _needScore.text = LanguageMgr.GetTranslation("magicStone.score",String(param1.AValue1));
+            _needScore.text = LanguageMgr.GetTranslation("magicStone.score",String(value.AValue1));
             _covertBtn.visible = true;
             _buyBtn.visible = false;
             _canNotBuyTips.visible = false;
@@ -173,7 +173,7 @@ package catchInsect.componets
          _itemCellBtn.removeEventListener("mouseOut",__itemMouseOut);
       }
       
-      protected function __itemClick(param1:MouseEvent) : void
+      protected function __itemClick(evt:MouseEvent) : void
       {
          if(!_shopItemInfo)
          {
@@ -183,7 +183,7 @@ package catchInsect.componets
          dispatchEvent(new ItemEvent("itemClick",_shopItemInfo,1));
       }
       
-      protected function __covertBtnClick(param1:MouseEvent) : void
+      protected function __covertBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -191,12 +191,12 @@ package catchInsect.componets
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:InsectQuickBuyAlert = ComponentFactory.Instance.creatComponentByStylename("catchInsect.quickBuyAlert");
-         _loc2_.setData(_shopItemInfo.TemplateID,_shopItemInfo.GoodsID,_shopItemInfo.AValue1);
-         LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+         var quickBuyFrame:InsectQuickBuyAlert = ComponentFactory.Instance.creatComponentByStylename("catchInsect.quickBuyAlert");
+         quickBuyFrame.setData(_shopItemInfo.TemplateID,_shopItemInfo.GoodsID,_shopItemInfo.AValue1);
+         LayerManager.Instance.addToLayer(quickBuyFrame,3,true,1);
       }
       
-      protected function __buyBtnClick(param1:MouseEvent) : void
+      protected function __buyBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -206,7 +206,7 @@ package catchInsect.componets
          }
       }
       
-      protected function __itemMouseOver(param1:MouseEvent) : void
+      protected function __itemMouseOver(event:MouseEvent) : void
       {
          if(!_itemCell.info)
          {
@@ -220,7 +220,7 @@ package catchInsect.componets
          _isMouseOver = true;
       }
       
-      protected function __itemMouseOut(param1:MouseEvent) : void
+      protected function __itemMouseOut(event:MouseEvent) : void
       {
          ObjectUtils.disposeObject(_lightMc);
          if(!_shopItemInfo)
@@ -230,13 +230,13 @@ package catchInsect.componets
          _isMouseOver = false;
       }
       
-      public function setItemLight(param1:MovieClip) : void
+      public function setItemLight($lightMc:MovieClip) : void
       {
-         if(_lightMc == param1)
+         if(_lightMc == $lightMc)
          {
             return;
          }
-         _lightMc = param1;
+         _lightMc = $lightMc;
          _lightMc.mouseChildren = false;
          _lightMc.mouseEnabled = false;
          _lightMc.gotoAndPlay(1);
@@ -247,15 +247,15 @@ package catchInsect.componets
          return _selected;
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         if(_selected == param1)
+         if(_selected == value)
          {
             return;
          }
-         _selected = param1;
-         _itemNameTxt.setFrame(!!param1?2:1);
-         _itemPriceTxt.setFrame(!!param1?2:1);
+         _selected = value;
+         _itemNameTxt.setFrame(!!value?2:1);
+         _itemPriceTxt.setFrame(!!value?2:1);
       }
       
       public function dispose() : void

@@ -27,7 +27,7 @@ package org.as3commons.reflect
          this.typeCache.clear();
       }
       
-      public function getType(param1:Class, param2:ApplicationDomain) : Type
+      public function getType(cls:Class, applicationDomain:ApplicationDomain) : Type
       {
          throw new Error("Not implemented in abstract base class");
       }

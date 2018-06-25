@@ -10,37 +10,36 @@ package ddtKingWay.analyzer
       
       private var _data:DictionaryData;
       
-      public function DDTKingWayDataAnalyzer(param1:Function)
+      public function DDTKingWayDataAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc3_:* = null;
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc2_:XML = new XML(param1);
+         var xmllist:* = null;
+         var i:int = 0;
+         var info:* = null;
+         var xml:XML = new XML(data);
          _data = new DictionaryData();
-         if(_loc2_.@value == "true")
+         if(xml.@value == "true")
          {
-            _loc3_ = _loc2_..Item;
-            _loc5_ = 0;
-            while(_loc5_ < _loc3_.length())
+            xmllist = xml..Item;
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc4_ = new DDTKingWayData();
-               ObjectUtils.copyPorpertiesByXML(_loc4_,_loc3_[_loc5_]);
-               if(_loc4_.QuestGroup == 2)
+               info = new DDTKingWayData();
+               ObjectUtils.copyPorpertiesByXML(info,xmllist[i]);
+               if(info.QuestGroup == 2)
                {
-                  _data.add(_loc4_.QuestID,_loc4_);
+                  _data.add(info.QuestID,info);
                }
-               _loc5_++;
+               i++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc2_.@message;
+            message = xml.@message;
             onAnalyzeError();
             onAnalyzeComplete();
          }

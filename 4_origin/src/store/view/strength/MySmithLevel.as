@@ -55,10 +55,10 @@ package store.view.strength
          ConsortiaDomainManager.instance.removeEventListener("event_get_consortia_info_res",_change);
       }
       
-      private function _change(param1:Event) : void
+      private function _change(e:Event) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var allBuildInfo:* = null;
+         var eachBuildInfo:* = null;
          _smithTxt.text = "LV." + ConsortiaRateManager.instance.smithLevel;
          if(ConsortiaDomainManager.instance.activeState == 1)
          {
@@ -66,12 +66,12 @@ package store.view.strength
          }
          else if(ConsortiaDomainManager.instance.activeState == 0 || ConsortiaDomainManager.instance.activeState == 100)
          {
-            _loc3_ = ConsortiaDomainManager.instance.model.allBuildInfo;
-            if(_loc3_)
+            allBuildInfo = ConsortiaDomainManager.instance.model.allBuildInfo;
+            if(allBuildInfo)
             {
-               _loc2_ = _loc3_[4];
+               eachBuildInfo = allBuildInfo[4];
             }
-            if(_loc2_ && _loc2_.Repair > 0)
+            if(eachBuildInfo && eachBuildInfo.Repair > 0)
             {
                _smithTxt.htmlText = LanguageMgr.GetTranslation("consortiadomain.buildState.waitRepair");
             }

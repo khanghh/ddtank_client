@@ -35,19 +35,19 @@ package game.actions
       
       private var _ay:Number;
       
-      public function LivingJumpAction(param1:GameLiving, param2:Point, param3:int, param4:int = 0)
+      public function LivingJumpAction(living:GameLiving, target:Point, speed:int, jumpType:int = 0)
       {
-         _living = param1;
-         _target = param2;
-         _speed = param3;
-         _jumpType = param4;
+         _living = living;
+         _target = target;
+         _speed = speed;
+         _jumpType = jumpType;
          super();
       }
       
-      override public function connect(param1:BaseAction) : Boolean
+      override public function connect(action:BaseAction) : Boolean
       {
-         var _loc2_:LivingJumpAction = param1 as LivingJumpAction;
-         if(_loc2_ && _loc2_._target.y > _target.y)
+         var ac:LivingJumpAction = action as LivingJumpAction;
+         if(ac && ac._target.y > _target.y)
          {
             return true;
          }
@@ -79,7 +79,7 @@ package game.actions
          }
       }
       
-      private function __checkMoveMovie(param1:Event) : void
+      private function __checkMoveMovie(event:Event) : void
       {
          if(_living.actionMovie.numChildren > 0 && _living.actionMovie.getChildAt(0) && _living.actionMovie.getChildAt(0) is MovieClip)
          {
@@ -223,15 +223,15 @@ package game.actions
          }
       }
       
-      private function setPoint(param1:Number) : void
+      private function setPoint($speed:Number) : void
       {
-         _living.info.pos = new Point(_target.x,_living.info.pos.y - param1);
+         _living.info.pos = new Point(_target.x,_living.info.pos.y - $speed);
          _living.map.animateSet.addAnimation(new PhysicalObjFocusAnimation(_living,25,-150));
       }
       
-      private function setPoint2(param1:Number) : void
+      private function setPoint2($speed:Number) : void
       {
-         _living.info.pos = new Point(_living.info.pos.x - param1,_living.info.pos.y);
+         _living.info.pos = new Point(_living.info.pos.x - $speed,_living.info.pos.y);
          _living.map.animateSet.addAnimation(new PhysicalObjFocusAnimation(_living,25,-150));
       }
       
@@ -283,14 +283,14 @@ package game.actions
       
       private function prepareJump() : void
       {
-         var _loc3_:Point = _living.info.pos;
-         var _loc2_:Point = _target;
-         var _loc6_:int = Point.distance(_loc3_,_loc2_);
-         var _loc1_:Number = _loc6_ / _speed;
-         var _loc5_:Number = _loc2_.x - _loc3_.x;
-         var _loc4_:Number = _loc2_.y - _loc3_.y;
-         _ax = _loc5_ / _loc1_;
-         _ay = _loc4_ / _loc1_;
+         var p1:Point = _living.info.pos;
+         var p2:Point = _target;
+         var juli:int = Point.distance(p1,p2);
+         var time:Number = juli / _speed;
+         var hx:Number = p2.x - p1.x;
+         var hy:Number = p2.y - p1.y;
+         _ax = hx / time;
+         _ay = hy / time;
       }
       
       override public function executeAtOnce() : void

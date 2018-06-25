@@ -16,15 +16,15 @@ package tryonSystem
       public function TryonPanelFrame()
       {
          super();
-         var _loc1_:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("ddt.tryonSystem.title"),"","",true,false);
-         _loc1_.submitLabel = LanguageMgr.GetTranslation("ok");
-         _loc1_.moveEnable = false;
-         info = _loc1_;
+         var alertInfo:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("ddt.tryonSystem.title"),"","",true,false);
+         alertInfo.submitLabel = LanguageMgr.GetTranslation("ok");
+         alertInfo.moveEnable = false;
+         info = alertInfo;
       }
       
-      public function set controller(param1:TryonSystemController) : void
+      public function set controller(control:TryonSystemController) : void
       {
-         _control = param1;
+         _control = control;
          initView();
       }
       

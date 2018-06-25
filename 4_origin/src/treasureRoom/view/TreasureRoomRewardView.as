@@ -18,10 +18,10 @@ package treasureRoom.view
       
       private var _cellSprite:Sprite;
       
-      public function TreasureRoomRewardView(param1:int, param2:Array)
+      public function TreasureRoomRewardView(type:int, rewardInfoArr:Array)
       {
-         _type = param1;
-         _rewardInfoArr = param2;
+         _type = type;
+         _rewardInfoArr = rewardInfoArr;
          super();
          initView();
          addEvent();
@@ -29,20 +29,20 @@ package treasureRoom.view
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          _cellSprite = new Sprite();
-         while(_loc2_ < _rewardInfoArr.length)
+         while(i < _rewardInfoArr.length)
          {
-            _loc1_ = new TreasureRoomRewardItem(_rewardInfoArr[_loc2_],MarkMgr.inst.treasureRoomLogoIdArr[_loc2_]);
-            _loc1_.x = _loc2_ * (_loc1_.width + 4) + 15;
-            if(_loc2_ > 4)
+            item = new TreasureRoomRewardItem(_rewardInfoArr[i],MarkMgr.inst.treasureRoomLogoIdArr[i]);
+            item.x = i * (item.width + 4) + 15;
+            if(i > 4)
             {
-               _loc1_.x = (_loc2_ - 5) * (_loc1_.width + 4) + 15;
-               _loc1_.y = _loc1_.height + 3;
+               item.x = (i - 5) * (item.width + 4) + 15;
+               item.y = item.height + 3;
             }
-            _cellSprite.addChild(_loc1_);
-            _loc2_++;
+            _cellSprite.addChild(item);
+            i++;
          }
          addChild(_cellSprite);
          if(_type == 0)
@@ -62,7 +62,7 @@ package treasureRoom.view
          closeBtn.addEventListener("click",__onClickHandler);
       }
       
-      private function __onClickHandler(param1:MouseEvent) : void
+      private function __onClickHandler(event:MouseEvent) : void
       {
          dispatchEvent(new Event("CLOSE"));
       }

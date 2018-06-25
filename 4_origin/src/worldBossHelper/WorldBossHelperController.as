@@ -60,7 +60,7 @@ package worldBossHelper
          _manager.addEventListener("worldBossHelperOpenView",__onOpenView);
       }
       
-      protected function __onOpenView(param1:CEvent) : void
+      protected function __onOpenView(event:CEvent) : void
       {
          show();
       }
@@ -76,7 +76,7 @@ package worldBossHelper
          UIModuleLoader.Instance.addUIModuleImp("worldBossHelper");
       }
       
-      protected function __onBossOpen(param1:WorldBossHelperEvent) : void
+      protected function __onBossOpen(event:WorldBossHelperEvent) : void
       {
          if(_frame)
          {
@@ -84,38 +84,37 @@ package worldBossHelper
          }
       }
       
-      protected function __playerInfoHandler(param1:PkgEvent) : void
+      protected function __playerInfoHandler(event:PkgEvent) : void
       {
-         var _loc4_:int = 0;
-         _manager.isFighting = param1.pkg.readBoolean();
-         var _loc3_:int = param1.pkg.readInt();
-         var _loc2_:Array = [];
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var i:int = 0;
+         _manager.isFighting = event.pkg.readBoolean();
+         var count:int = event.pkg.readInt();
+         var hurtArr:Array = [];
+         for(i = 0; i < count; )
          {
-            _loc2_.push(param1.pkg.readInt());
-            _loc4_++;
+            hurtArr.push(event.pkg.readInt());
+            i++;
          }
-         _honor = param1.pkg.readInt();
+         _honor = event.pkg.readInt();
          _manager.allHonor = _manager.allHonor + _honor;
-         _money = param1.pkg.readInt();
+         _money = event.pkg.readInt();
          _manager.allMoney = _manager.allMoney + _money;
-         _medal = param1.pkg.readInt();
+         _medal = event.pkg.readInt();
          _manager.allMedal = _manager.allMedal + _medal;
          if(_frame)
          {
-            _frame.addPlayerInfo(true,_manager.num,_loc2_,_honor);
+            _frame.addPlayerInfo(true,_manager.num,hurtArr,_honor);
          }
          _manager.num++;
       }
       
-      protected function __assistantHandler(param1:PkgEvent) : void
+      protected function __assistantHandler(event:PkgEvent) : void
       {
-         data.isOpen = param1.pkg.readBoolean();
+         data.isOpen = event.pkg.readBoolean();
          _manager.helperOpen = data.isOpen;
-         data.buffNum = param1.pkg.readInt();
-         data.type = param1.pkg.readInt();
-         data.openType = param1.pkg.readInt();
+         data.buffNum = event.pkg.readInt();
+         data.type = event.pkg.readInt();
+         data.openType = event.pkg.readInt();
          if(data.openType == 0)
          {
             data.openType = 1;
@@ -130,7 +129,7 @@ package worldBossHelper
          LayerManager.Instance.addToLayer(_frame,3,true,1);
       }
       
-      protected function _loadingCloseHandler(param1:Event) : void
+      protected function _loadingCloseHandler(event:Event) : void
       {
          closeLoading();
          UIModuleSmallLoading.Instance.removeEventListener("close",_loadingCloseHandler);
@@ -143,9 +142,9 @@ package worldBossHelper
          UIModuleSmallLoading.Instance.hide();
       }
       
-      protected function _loaderCompleteHandler(param1:UIModuleEvent) : void
+      protected function _loaderCompleteHandler(event:UIModuleEvent) : void
       {
-         if(param1.module == "worldBossHelper")
+         if(event.module == "worldBossHelper")
          {
             closeLoading();
             data = new WorldBossHelperTypeData();
@@ -173,9 +172,9 @@ package worldBossHelper
          InviteManager.Instance.enabled = true;
       }
       
-      protected function _loaderProgressHandler(param1:UIModuleEvent) : void
+      protected function _loaderProgressHandler(event:UIModuleEvent) : void
       {
-         UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+         UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
       }
    }
 }

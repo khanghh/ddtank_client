@@ -49,10 +49,10 @@ package ddt.command
       
       private function initView() : void
       {
-         var _loc1_:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("task.taskView.quickUse.titleText"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"));
-         _loc1_.moveEnable = false;
-         _loc1_.autoDispose = false;
-         info = _loc1_;
+         var alertInfo:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("task.taskView.quickUse.titleText"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"));
+         alertInfo.moveEnable = false;
+         alertInfo.autoDispose = false;
+         info = alertInfo;
          _textInfo = ComponentFactory.Instance.creatComponentByStylename("quickUseFrame.tipsInfo");
          _textInfo.text = LanguageMgr.GetTranslation("quickUseFrame.tipsInfoText");
          addToContent(_textInfo);
@@ -64,37 +64,37 @@ package ddt.command
          addToContent(_maxBtn);
       }
       
-      public function setItemInfo(param1:int, param2:int, param3:int, param4:int) : void
+      public function setItemInfo(itemId:int, cost:int, bagType:int, needNum:int) : void
       {
-         var _loc6_:* = null;
-         var _loc5_:* = null;
-         if(_itemId != param1)
+         var bg:* = null;
+         var itemInfo:* = null;
+         if(_itemId != itemId)
          {
-            _itemId = param1;
-            _loc6_ = ComponentFactory.Instance.creatComponentByStylename("ddtcore.CellBg");
-            _loc5_ = PlayerManager.Instance.Self.PropBag.getItemByTemplateId(_itemId);
-            if(_loc5_)
+            _itemId = itemId;
+            bg = ComponentFactory.Instance.creatComponentByStylename("ddtcore.CellBg");
+            itemInfo = PlayerManager.Instance.Self.PropBag.getItemByTemplateId(_itemId);
+            if(itemInfo)
             {
-               _cell = new BagCell(_loc5_.Place,_loc5_,true,_loc6_.display,false);
+               _cell = new BagCell(itemInfo.Place,itemInfo,true,bg.display,false);
                _cell.setContentSize(49,49);
                _cell.PicPos = new Point(10,9);
                PositionUtils.setPos(_cell,"quickUserFrame.itemcell.cellPos");
-               updateItemCellCount(param4);
-               _cell.bagType = param3;
+               updateItemCellCount(needNum);
+               _cell.bagType = bagType;
                addToContent(_cell);
                LayerManager.Instance.addToLayer(this,2,true,2);
             }
             else
             {
                dispose();
-               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.trusteeship.startNotEnough",param2));
+               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.trusteeship.startNotEnough",cost));
             }
          }
       }
       
-      private function updateItemCellCount(param1:int) : void
+      private function updateItemCellCount(needNum:int) : void
       {
-         _cellNum = Math.min(param1,PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(_itemId));
+         _cellNum = Math.min(needNum,PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(_itemId));
          _num.text = "1";
          _cell.setCount(_cellNum);
          _cell.refreshTbxPos();
@@ -107,12 +107,12 @@ package ddt.command
          _maxBtn.addEventListener("click",__onMouseClick);
       }
       
-      protected function __onMouseClick(param1:MouseEvent) : void
+      protected function __onMouseClick(event:MouseEvent) : void
       {
          _num.text = _cellNum.toString();
       }
       
-      protected function __onTextInput(param1:Event) : void
+      protected function __onTextInput(event:Event) : void
       {
          if(int(_num.text) > _cellNum)
          {
@@ -120,10 +120,10 @@ package ddt.command
          }
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         if(e.responseCode == 3 || e.responseCode == 2)
          {
             SocketManager.Instance.out.sendTrusteeshipUseSpiritItem(_cell.place,_cell.bagType,int(_num.text));
          }

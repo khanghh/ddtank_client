@@ -86,7 +86,7 @@ package giftSystem.view.giftAndRecord
          }
       }
       
-      private function __upMyGiftView(param1:Event) : void
+      private function __upMyGiftView(event:Event) : void
       {
          if(_myGiftView && _info)
          {
@@ -94,7 +94,7 @@ package giftSystem.view.giftAndRecord
          }
       }
       
-      private function __changeHandler(param1:Event) : void
+      private function __changeHandler(event:Event) : void
       {
          switch(int(_btnGroup.selectIndex))
          {
@@ -143,13 +143,13 @@ package giftSystem.view.giftAndRecord
          GiftManager.Instance.loadRecord("GiftRecieveLog.ashx",_info.ID);
       }
       
-      public function set info(param1:PlayerInfo) : void
+      public function set info(value:PlayerInfo) : void
       {
-         if(_info == param1)
+         if(_info == value)
          {
             return;
          }
-         _info = param1;
+         _info = value;
          if(_myGiftView)
          {
             _myGiftView.setList(_info.myGiftData);
@@ -164,25 +164,25 @@ package giftSystem.view.giftAndRecord
          __changeHandler(null);
       }
       
-      private function __upItem(param1:DictionaryEvent) : void
+      private function __upItem(event:DictionaryEvent) : void
       {
-         _myGiftView.upItem(param1.data as MyGiftCellInfo);
+         _myGiftView.upItem(event.data as MyGiftCellInfo);
       }
       
-      private function __addItem(param1:DictionaryEvent) : void
+      private function __addItem(event:DictionaryEvent) : void
       {
-         _myGiftView.addItem(param1.data as MyGiftCellInfo);
+         _myGiftView.addItem(event.data as MyGiftCellInfo);
       }
       
-      private function __upData(param1:PlayerPropertyEvent) : void
+      private function __upData(event:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["myGiftData"])
+         if(event.changedProperties["myGiftData"])
          {
             _myGiftView.setList(_info.myGiftData);
          }
       }
       
-      private function __soundPlay(param1:MouseEvent) : void
+      private function __soundPlay(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }

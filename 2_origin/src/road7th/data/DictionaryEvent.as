@@ -16,10 +16,10 @@ package road7th.data
       
       public var data:Object;
       
-      public function DictionaryEvent(param1:String, param2:Object = null, param3:Boolean = false, param4:Boolean = false)
+      public function DictionaryEvent(type:String, obj:Object = null, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         data = param2;
-         super(param1,param3,param4);
+         data = obj;
+         super(type,bubbles,cancelable);
       }
    }
 }

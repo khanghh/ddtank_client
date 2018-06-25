@@ -1,7 +1,6 @@
 package bagAndInfo
 {
    import AvatarCollection.AvatarCollectionManager;
-   import bagAndInfo.info.PlayerInfoViewControl;
    import beadSystem.beadSystemManager;
    import beadSystem.data.BeadEvent;
    import cardSystem.CardSocketEvent;
@@ -229,6 +228,8 @@ package bagAndInfo
       
       private var _fightPower:int;
       
+      private var _markOpen:Boolean = false;
+      
       public function BagAndGiftFrame()
       {
          BagAndInfoManager.Instance.isInBagAndInfoView = true;
@@ -390,16 +391,16 @@ package bagAndInfo
          }
       }
       
-      private function __markOverHandler(param1:MouseEvent) : void
+      private function __markOverHandler(e:MouseEvent) : void
       {
          _markBtnTip.visible = true;
          LayerManager.Instance.addToLayer(_markBtnTip,2);
-         var _loc2_:Point = _markBtn.localToGlobal(new Point(0,0));
-         _markBtnTip.x = _loc2_.x - _markBtnTip.width * 0.5;
-         _markBtnTip.y = _loc2_.y + _markBtn.height;
+         var pos:Point = _markBtn.localToGlobal(new Point(0,0));
+         _markBtnTip.x = pos.x - _markBtnTip.width * 0.5;
+         _markBtnTip.y = pos.y + _markBtn.height;
       }
       
-      private function __markOutHandler(param1:MouseEvent) : void
+      private function __markOutHandler(e:MouseEvent) : void
       {
          if(_markBtnTip)
          {
@@ -436,16 +437,16 @@ package bagAndInfo
          }
       }
       
-      private function __pvePowerBuffOverHandler(param1:MouseEvent) : void
+      private function __pvePowerBuffOverHandler(e:MouseEvent) : void
       {
          _pvePowerBuffBtnTip.visible = true;
          LayerManager.Instance.addToLayer(_pvePowerBuffBtnTip,2);
-         var _loc2_:Point = _pvePowerBuffBtn.localToGlobal(new Point(0,0));
-         _pvePowerBuffBtnTip.x = _loc2_.x;
-         _pvePowerBuffBtnTip.y = _loc2_.y + 45;
+         var pos:Point = _pvePowerBuffBtn.localToGlobal(new Point(0,0));
+         _pvePowerBuffBtnTip.x = pos.x;
+         _pvePowerBuffBtnTip.y = pos.y + 45;
       }
       
-      private function __pvePowerBuffOutHandler(param1:MouseEvent) : void
+      private function __pvePowerBuffOutHandler(e:MouseEvent) : void
       {
          if(_pvePowerBuffBtnTip)
          {
@@ -482,16 +483,16 @@ package bagAndInfo
          }
       }
       
-      private function __godTempleOverHandler(param1:MouseEvent) : void
+      private function __godTempleOverHandler(e:MouseEvent) : void
       {
          _godTempleBtnTip.visible = true;
          LayerManager.Instance.addToLayer(_godTempleBtnTip,2);
-         var _loc2_:Point = _godTempleBtn.localToGlobal(new Point(0,0));
-         _godTempleBtnTip.x = _loc2_.x;
-         _godTempleBtnTip.y = _loc2_.y + _godTempleBtn.height;
+         var pos:Point = _godTempleBtn.localToGlobal(new Point(0,0));
+         _godTempleBtnTip.x = pos.x;
+         _godTempleBtnTip.y = pos.y + _godTempleBtn.height;
       }
       
-      private function __godTempleOutHandler(param1:MouseEvent) : void
+      private function __godTempleOutHandler(e:MouseEvent) : void
       {
          if(_godTempleBtnTip)
          {
@@ -501,7 +502,7 @@ package bagAndInfo
       
       private function magicStoneBtnEnable() : void
       {
-         var _loc1_:* = null;
+         var shineData:* = null;
          if(PlayerManager.Instance.Self.Grade >= 40)
          {
             _magicStoneBtn.enable = true;
@@ -509,9 +510,9 @@ package bagAndInfo
             _magicStoneBtnSprite = null;
             if(!PlayerManager.Instance.Self.isNewOnceFinish(108) && !GiftManager.Instance.inChurch)
             {
-               _loc1_ = {};
-               _loc1_["color"] = "gold";
-               _magicStoneBtnShine = EffectManager.Instance.creatEffect(3,_magicStoneBtn,_loc1_);
+               shineData = {};
+               shineData["color"] = "gold";
+               _magicStoneBtnShine = EffectManager.Instance.creatEffect(3,_magicStoneBtn,shineData);
                _magicStoneBtnShine.play();
                MagicStoneManager.instance.weakGuide(3);
             }
@@ -523,9 +524,9 @@ package bagAndInfo
             {
                _magicStoneBtnSprite = new Sprite();
                _magicStoneBtnSprite.graphics.beginFill(0,0);
-               _magicStoneBtnSprite.graphics.drawRect(0,0,_magicStoneBtn.displayWidth - 12,_magicStoneBtn.displayHeight);
+               _magicStoneBtnSprite.graphics.drawRect(0,0,_magicStoneBtn.displayWidth - 8,_magicStoneBtn.displayHeight);
                _magicStoneBtnSprite.graphics.endFill();
-               _magicStoneBtnSprite.x = _magicStoneBtn.x + 17;
+               _magicStoneBtnSprite.x = _magicStoneBtn.x + 42;
                _magicStoneBtnSprite.y = _magicStoneBtn.y + 3;
                addToContent(_magicStoneBtnSprite);
                _magicStoneBtnTip = new OneLineTip();
@@ -537,16 +538,16 @@ package bagAndInfo
          }
       }
       
-      private function __magicStoneOverHandler(param1:MouseEvent) : void
+      private function __magicStoneOverHandler(event:MouseEvent) : void
       {
          _magicStoneBtnTip.visible = true;
          LayerManager.Instance.addToLayer(_magicStoneBtnTip,2);
-         var _loc2_:Point = _magicStoneBtn.localToGlobal(new Point(0,0));
-         _magicStoneBtnTip.x = _loc2_.x;
-         _magicStoneBtnTip.y = _loc2_.y + _magicStoneBtn.height;
+         var pos:Point = _magicStoneBtn.localToGlobal(new Point(0,0));
+         _magicStoneBtnTip.x = pos.x;
+         _magicStoneBtnTip.y = pos.y + _magicStoneBtn.height;
       }
       
-      private function __magicStoneOutHandler(param1:MouseEvent) : void
+      private function __magicStoneOutHandler(event:MouseEvent) : void
       {
          if(_magicStoneBtnTip)
          {
@@ -556,7 +557,7 @@ package bagAndInfo
       
       private function avatarCollBtnEnable() : void
       {
-         var _loc1_:* = null;
+         var shineData:* = null;
          if(PlayerManager.Instance.Self.Grade >= 10)
          {
             _avatarCollBtn.enable = true;
@@ -567,9 +568,9 @@ package bagAndInfo
             }
             if(!PlayerManager.Instance.Self.isNewOnceFinish(106) && !GiftManager.Instance.inChurch)
             {
-               _loc1_ = {};
-               _loc1_["color"] = "gold";
-               _avatarCollBtnShine = EffectManager.Instance.creatEffect(3,_avatarCollBtn,_loc1_);
+               shineData = {};
+               shineData["color"] = "gold";
+               _avatarCollBtnShine = EffectManager.Instance.creatEffect(3,_avatarCollBtn,shineData);
                _avatarCollBtnShine.play();
             }
          }
@@ -594,23 +595,23 @@ package bagAndInfo
          }
       }
       
-      private function __avatarCollBtnOverHandler(param1:MouseEvent) : void
+      private function __avatarCollBtnOverHandler(event:MouseEvent) : void
       {
          _avatarCollBtnTip.visible = true;
          LayerManager.Instance.addToLayer(_avatarCollBtnTip,2);
-         var _loc2_:Point = _avatarCollBtn.localToGlobal(new Point(0,0));
-         _avatarCollBtnTip.x = _loc2_.x - 12;
-         _avatarCollBtnTip.y = _loc2_.y + _avatarCollBtn.height;
+         var pos:Point = _avatarCollBtn.localToGlobal(new Point(0,0));
+         _avatarCollBtnTip.x = pos.x - 12;
+         _avatarCollBtnTip.y = pos.y + _avatarCollBtn.height;
       }
       
-      private function __avatarCollBtnOutHandler(param1:MouseEvent) : void
+      private function __avatarCollBtnOutHandler(event:MouseEvent) : void
       {
          _avatarCollBtnTip.visible = false;
       }
       
       private function GiftbtnEnable() : void
       {
-         var _loc1_:* = null;
+         var shineData:* = null;
          if(PlayerManager.Instance.Self.Grade >= 16 || GiftManager.Instance.inChurch == true)
          {
             _giftBtn.enable = true;
@@ -621,9 +622,9 @@ package bagAndInfo
             _giftBtnSprite = null;
             if(SharedManager.Instance.giftFirstShow)
             {
-               _loc1_ = {};
-               _loc1_["color"] = "gold";
-               _giftBtnShine = EffectManager.Instance.creatEffect(3,_giftBtn,_loc1_);
+               shineData = {};
+               shineData["color"] = "gold";
+               _giftBtnShine = EffectManager.Instance.creatEffect(3,_giftBtn,shineData);
                _giftBtnShine.play();
             }
          }
@@ -650,7 +651,7 @@ package bagAndInfo
       
       private function texpBtnEnable() : void
       {
-         var _loc1_:* = null;
+         var shineData:* = null;
          if(PlayerManager.Instance.Self.Grade >= 13)
          {
             _texpBtn.enable = true;
@@ -661,9 +662,9 @@ package bagAndInfo
             }
             if(SharedManager.Instance.texpSystemShow && !GiftManager.Instance.inChurch)
             {
-               _loc1_ = {};
-               _loc1_["color"] = "gold";
-               _texpBtnShine = EffectManager.Instance.creatEffect(3,_texpBtn,_loc1_);
+               shineData = {};
+               shineData["color"] = "gold";
+               _texpBtnShine = EffectManager.Instance.creatEffect(3,_texpBtn,shineData);
                _texpBtnShine.play();
             }
          }
@@ -720,23 +721,23 @@ package bagAndInfo
          }
       }
       
-      private function __cardBtnOverHandler(param1:MouseEvent) : void
+      private function __cardBtnOverHandler(event:MouseEvent) : void
       {
          _cardBtnTip.visible = true;
          LayerManager.Instance.addToLayer(_cardBtnTip,2);
-         var _loc2_:Point = _cardBtn.localToGlobal(new Point(0,0));
-         _cardBtnTip.x = _loc2_.x;
-         _cardBtnTip.y = _loc2_.y + _cardBtn.height;
+         var pos:Point = _cardBtn.localToGlobal(new Point(0,0));
+         _cardBtnTip.x = pos.x;
+         _cardBtnTip.y = pos.y + _cardBtn.height;
       }
       
-      private function __cardBtnOutHandler(param1:MouseEvent) : void
+      private function __cardBtnOutHandler(event:MouseEvent) : void
       {
          _cardBtnTip.visible = false;
       }
       
       private function totemBtnEnable() : void
       {
-         var _loc1_:* = null;
+         var shineData:* = null;
          if(PlayerManager.Instance.Self.Grade >= 22)
          {
             _totemBtn.enable = true;
@@ -747,9 +748,9 @@ package bagAndInfo
             }
             if(!PlayerManager.Instance.Self.isNewOnceFinish(102) && !GiftManager.Instance.inChurch)
             {
-               _loc1_ = {};
-               _loc1_["color"] = "gold";
-               _totemBtnShine = EffectManager.Instance.creatEffect(3,_totemBtn,_loc1_);
+               shineData = {};
+               shineData["color"] = "gold";
+               _totemBtnShine = EffectManager.Instance.creatEffect(3,_totemBtn,shineData);
                _totemBtnShine.play();
             }
          }
@@ -776,7 +777,7 @@ package bagAndInfo
       
       private function beadBtnEnable() : void
       {
-         var _loc1_:* = null;
+         var shineData:* = null;
          if(PlayerManager.Instance.Self.Grade >= 16)
          {
             _beadBtn.enable = true;
@@ -787,9 +788,9 @@ package bagAndInfo
             }
             if(!PlayerManager.Instance.Self.isNewOnceFinish(105) && !GiftManager.Instance.inChurch)
             {
-               _loc1_ = {};
-               _loc1_["color"] = "gold";
-               _beadBtnShine = EffectManager.Instance.creatEffect(3,_beadBtn,_loc1_);
+               shineData = {};
+               shineData["color"] = "gold";
+               _beadBtnShine = EffectManager.Instance.creatEffect(3,_beadBtn,shineData);
                _beadBtnShine.play();
             }
          }
@@ -835,48 +836,48 @@ package bagAndInfo
          PlayerManager.Instance.addEventListener("quickBugCards",__quickBuyCards);
       }
       
-      private function __frameClose(param1:FrameEvent) : void
+      private function __frameClose(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode) - 2)
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
                _frame.removeEventListener("response",__frameClose);
                SoundManager.instance.play("008");
-               (param1.currentTarget as BaseAlerFrame).removeEventListener("response",__frameClose);
-               (param1.currentTarget as BaseAlerFrame).dispose();
+               (event.currentTarget as BaseAlerFrame).removeEventListener("response",__frameClose);
+               (event.currentTarget as BaseAlerFrame).dispose();
                SocketManager.Instance.out.sendClearStoreBag();
          }
       }
       
-      private function __quickBuyCards(param1:BagEvent) : void
+      private function __quickBuyCards(evet:BagEvent) : void
       {
          _btnGroup.selectIndex = 0;
       }
       
-      public function __addPet(param1:PkgEvent) : void
+      public function __addPet(e:PkgEvent) : void
       {
-         var _loc7_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc6_:PackageIn = param1.pkg;
-         var _loc4_:int = _loc6_.readInt();
-         var _loc5_:Boolean = _loc6_.readBoolean();
-         var _loc8_:PetInfo = new PetInfo();
-         _loc8_.TemplateID = _loc4_;
-         PetInfoManager.fillPetInfo(_loc8_);
-         if(_loc8_)
+         var petIcon:* = null;
+         var title:* = null;
+         var ai:* = null;
+         var pkg:PackageIn = e.pkg;
+         var petTemlateID:int = pkg.readInt();
+         var resultBool:Boolean = pkg.readBoolean();
+         var petInfo:PetInfo = new PetInfo();
+         petInfo.TemplateID = petTemlateID;
+         PetInfoManager.fillPetInfo(petInfo);
+         if(petInfo)
          {
-            _loc3_ = ComponentFactory.Instance.creatComponentByStylename("bagandinfo.bagAndInfo.itemOpenUpTxt");
-            _loc3_.text = LanguageMgr.GetTranslation("ddt.bagandinfo.bagAndInfo.itemOpenUpTxt");
+            title = ComponentFactory.Instance.creatComponentByStylename("bagandinfo.bagAndInfo.itemOpenUpTxt");
+            title.text = LanguageMgr.GetTranslation("ddt.bagandinfo.bagAndInfo.itemOpenUpTxt");
             _frame = ComponentFactory.Instance.creatComponentByStylename("bagAndInfo.ItemPreviewListFrame2");
-            _loc7_ = ComponentFactory.Instance.creat("bagAndInfo.petAddItem",[_loc8_]);
-            _loc2_ = new AlertInfo(_loc8_.Name);
-            _loc2_.showCancel = false;
-            _loc2_.moveEnable = false;
-            _frame.info = _loc2_;
-            _frame.addToContent(_loc3_);
-            _frame.addToContent(_loc7_);
+            petIcon = ComponentFactory.Instance.creat("bagAndInfo.petAddItem",[petInfo]);
+            ai = new AlertInfo(petInfo.Name);
+            ai.showCancel = false;
+            ai.moveEnable = false;
+            _frame.info = ai;
+            _frame.addToContent(title);
+            _frame.addToContent(petIcon);
             _frame.addEventListener("response",__frameClose);
             LayerManager.Instance.addToLayer(_frame,3,true,1);
          }
@@ -930,9 +931,9 @@ package bagAndInfo
          MagicStoneManager.instance.removeEventListener("magicStoneLoadComplete",doShowMagicStone);
       }
       
-      protected function __propertyChange(param1:PlayerPropertyEvent) : void
+      protected function __propertyChange(event:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["Grade"])
+         if(event.changedProperties["Grade"])
          {
             if(PlayerManager.Instance.Self.Grade == 13)
             {
@@ -953,93 +954,129 @@ package bagAndInfo
          }
       }
       
-      private function __soundPlay(param1:MouseEvent) : void
+      private function __soundPlay(event:MouseEvent) : void
       {
-         PlayerInfoViewControl.isOpenFromBag = true;
          SoundManager.instance.play("008");
-         if((param1.target as SelectedButton).selectedStyle == "asset.infoBtn2")
-         {
-            showInfoFrame(0);
-         }
       }
       
-      private function __overHandler(param1:MouseEvent) : void
+      private function __overHandler(event:MouseEvent) : void
       {
          _giftBtnTip.visible = true;
          LayerManager.Instance.addToLayer(_giftBtnTip,2);
-         var _loc2_:Point = _giftBtn.localToGlobal(new Point(0,0));
-         _giftBtnTip.x = _loc2_.x;
-         _giftBtnTip.y = _loc2_.y + _giftBtn.height;
+         var pos:Point = _giftBtn.localToGlobal(new Point(0,0));
+         _giftBtnTip.x = pos.x;
+         _giftBtnTip.y = pos.y + _giftBtn.height;
       }
       
-      private function __outHandler(param1:MouseEvent) : void
+      private function __outHandler(event:MouseEvent) : void
       {
          _giftBtnTip.visible = false;
       }
       
-      private function __texpBtnOverHandler(param1:MouseEvent) : void
+      private function __texpBtnOverHandler(event:MouseEvent) : void
       {
          _texpBtnTip.visible = true;
          LayerManager.Instance.addToLayer(_texpBtnTip,2);
-         var _loc2_:Point = _texpBtn.localToGlobal(new Point(0,0));
-         _texpBtnTip.x = _loc2_.x;
-         _texpBtnTip.y = _loc2_.y + _texpBtn.height;
+         var pos:Point = _texpBtn.localToGlobal(new Point(0,0));
+         _texpBtnTip.x = pos.x;
+         _texpBtnTip.y = pos.y + _texpBtn.height;
       }
       
-      private function __texpBtnOutHandler(param1:MouseEvent) : void
+      private function __texpBtnOutHandler(event:MouseEvent) : void
       {
          _texpBtnTip.visible = false;
       }
       
-      private function __petBtnOverHandler(param1:MouseEvent) : void
+      private function __petBtnOverHandler(event:MouseEvent) : void
       {
          _petBtnTip.visible = true;
          LayerManager.Instance.addToLayer(_petBtnTip,2);
-         var _loc2_:Point = _petBtn.localToGlobal(new Point(0,0));
-         _petBtnTip.x = _loc2_.x;
-         _petBtnTip.y = _loc2_.y + _petBtn.height + 5;
+         var pos:Point = _petBtn.localToGlobal(new Point(0,0));
+         _petBtnTip.x = pos.x;
+         _petBtnTip.y = pos.y + _petBtn.height + 5;
       }
       
-      private function __petBtnOutHandler(param1:MouseEvent) : void
+      private function __petBtnOutHandler(event:MouseEvent) : void
       {
          _petBtnTip.visible = false;
       }
       
-      private function __totemBtnOverHandler(param1:MouseEvent) : void
+      private function __totemBtnOverHandler(event:MouseEvent) : void
       {
          _totemBtnTip.visible = true;
          LayerManager.Instance.addToLayer(_totemBtnTip,2);
-         var _loc2_:Point = _totemBtn.localToGlobal(new Point(0,0));
-         _totemBtnTip.x = _loc2_.x - 12;
-         _totemBtnTip.y = _loc2_.y + _totemBtn.height;
+         var pos:Point = _totemBtn.localToGlobal(new Point(0,0));
+         _totemBtnTip.x = pos.x - 12;
+         _totemBtnTip.y = pos.y + _totemBtn.height;
       }
       
-      private function __totemBtnOutHandler(param1:MouseEvent) : void
+      private function __totemBtnOutHandler(event:MouseEvent) : void
       {
          _totemBtnTip.visible = false;
       }
       
-      private function __beadBtnOverHandler(param1:MouseEvent) : void
+      private function __beadBtnOverHandler(event:MouseEvent) : void
       {
          _beadBtnTip.visible = true;
          LayerManager.Instance.addToLayer(_beadBtnTip,2);
-         var _loc2_:Point = _beadBtn.localToGlobal(new Point(0,0));
-         _beadBtnTip.x = _loc2_.x + 10;
-         _beadBtnTip.y = _loc2_.y + _beadBtn.height;
+         var pos:Point = _beadBtn.localToGlobal(new Point(0,0));
+         _beadBtnTip.x = pos.x + 10;
+         _beadBtnTip.y = pos.y + _beadBtn.height;
       }
       
-      private function __beadBtnOutHandler(param1:MouseEvent) : void
+      private function __beadBtnOutHandler(event:MouseEvent) : void
       {
          _beadBtnTip.visible = false;
       }
       
-      public function selectTab(param1:int) : void
+      public function selectTab($index:int) : void
       {
-         _btnGroup.selectIndex = param1;
+         _btnGroup.selectIndex = $index;
          __changeHandler(null);
       }
       
-      private function __changeHandler(param1:Event) : void
+      private function __changeHandler(event:Event) : void
+      {
+         event = event;
+         if(_markOpen && MarkMgr.inst.needSave)
+         {
+            if(_btnGroup.selectIndex == 12 - 1)
+            {
+               return;
+            }
+            MarkMgr.inst.promptSchemeSave(function():*
+            {
+               var /*UnknownSlot*/:* = function(result:Boolean):void
+               {
+                  if(result)
+                  {
+                     switchHandler();
+                  }
+                  else
+                  {
+                     _btnGroup.selectIndex = 12 - 1;
+                  }
+               };
+               return function(result:Boolean):void
+               {
+                  if(result)
+                  {
+                     switchHandler();
+                  }
+                  else
+                  {
+                     _btnGroup.selectIndex = 12 - 1;
+                  }
+               };
+            }());
+         }
+         else
+         {
+            switchHandler();
+         }
+      }
+      
+      private function switchHandler() : void
       {
          if(_infoFrame)
          {
@@ -1047,6 +1084,7 @@ package bagAndInfo
          }
          HomeTempleManager.getInstance().removeView();
          MarkMgr.inst.removeMarkView();
+         _markOpen = false;
          switch(int(_btnGroup.selectIndex))
          {
             case 0:
@@ -1097,6 +1135,7 @@ package bagAndInfo
             case 11:
                setVisible(12);
                MarkMgr.inst.showMarkView(_container);
+               _markOpen = true;
          }
          _markHelpBtn.visible = _btnGroup.selectIndex == 12 - 1;
          beadSystemManager.Instance.dispatchEvent(new BeadEvent("autoOpenBead",3));
@@ -1115,10 +1154,10 @@ package bagAndInfo
          }
       }
       
-      private function __doShowPvePowerBuff(param1:PvePowerBuffEvent) : void
+      private function __doShowPvePowerBuff(e:PvePowerBuffEvent) : void
       {
          PvePowerBuffManager.instance.removeEventListener("pvePowerBuffLoadComplete",__doShowPvePowerBuff);
-         _pvePowerBuffMainView = param1.info;
+         _pvePowerBuffMainView = e.info;
          addToContent(_pvePowerBuffMainView);
          setVisible(11);
       }
@@ -1158,10 +1197,10 @@ package bagAndInfo
          }
       }
       
-      private function doShowMagicStone(param1:MagicStoneEvent) : void
+      private function doShowMagicStone(event:MagicStoneEvent) : void
       {
          MagicStoneManager.instance.removeEventListener("magicStoneLoadComplete",doShowMagicStone);
-         _magicStoneMainView = param1.info;
+         _magicStoneMainView = event.info;
          addToContent(_magicStoneMainView);
          setVisible(9);
          SocketManager.Instance.out.getMagicStoneScore();
@@ -1177,25 +1216,25 @@ package bagAndInfo
          showInfoFrame(21);
       }
       
-      private function setVisible(param1:int) : void
+      private function setVisible(type:int) : void
       {
-         var _loc2_:Boolean = true;
+         var infoFrameVisible:Boolean = true;
          if(_infoFrame)
          {
-            if(param1 == 0 || param1 == 2)
+            if(type == 0 || type == 2)
             {
-               _loc2_ = true;
+               infoFrameVisible = true;
             }
             else
             {
-               _loc2_ = false;
+               infoFrameVisible = false;
             }
-            _infoFrame.visible = _loc2_;
-            if(param1 == 0)
+            _infoFrame.visible = infoFrameVisible;
+            if(type == 0)
             {
                _infoFrame._infoView.switchShow(false);
             }
-            if(param1 == 2)
+            if(type == 2)
             {
                _infoFrame._infoView.x = 12;
                _infoFrame._infoView.y = 2;
@@ -1209,17 +1248,17 @@ package bagAndInfo
                _infoFrame.bagView.x = 442;
                _infoFrame.bagView.y = -16;
             }
-            _infoFrame.bagView.bagLockBtn.visible = param1 == 0;
+            _infoFrame.bagView.bagLockBtn.visible = type == 0;
          }
-         TotemManager.instance.setVisible("totemview",param1 == 6);
-         AvatarCollectionManager.instance.visible(param1 == 7);
+         TotemManager.instance.setVisible("totemview",type == 6);
+         AvatarCollectionManager.instance.visible(type == 7);
          if(_magicStoneMainView)
          {
-            _magicStoneMainView.visible = param1 == 9;
+            _magicStoneMainView.visible = type == 9;
          }
          if(_pvePowerBuffMainView)
          {
-            _pvePowerBuffMainView.visible = param1 == 11;
+            _pvePowerBuffMainView.visible = type == 11;
          }
       }
       
@@ -1237,7 +1276,7 @@ package bagAndInfo
          _infoFrame.bagView.createCard();
       }
       
-      private function __setSelectCardComplete(param1:CardSocketEvent) : void
+      private function __setSelectCardComplete(event:CardSocketEvent) : void
       {
          _infoFrame._infoView.switchShow(true);
       }
@@ -1289,9 +1328,9 @@ package bagAndInfo
          }
       }
       
-      private function __createGift(param1:UIModuleEvent) : void
+      private function __createGift(event:UIModuleEvent) : void
       {
-         if(param1.module == "ddtgiftsystem")
+         if(event.module == "ddtgiftsystem")
          {
             UIModuleSmallLoading.Instance.hide();
             UIModuleSmallLoading.Instance.removeEventListener("close",__onGiftSmallLoadingClose);
@@ -1302,7 +1341,7 @@ package bagAndInfo
          }
       }
       
-      protected function __onGiftSmallLoadingClose(param1:Event) : void
+      protected function __onGiftSmallLoadingClose(event:Event) : void
       {
          UIModuleSmallLoading.Instance.hide();
          UIModuleSmallLoading.Instance.removeEventListener("close",__onGiftSmallLoadingClose);
@@ -1310,17 +1349,17 @@ package bagAndInfo
          UIModuleLoader.Instance.removeEventListener("uiMoudleProgress",__onGiftUIProgress);
       }
       
-      protected function __onGiftUIProgress(param1:UIModuleEvent) : void
+      protected function __onGiftUIProgress(event:UIModuleEvent) : void
       {
-         if(param1.module == "ddtgiftsystem")
+         if(event.module == "ddtgiftsystem")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
       
-      private function showInfoFrame(param1:int, param2:int = 0) : void
+      private function showInfoFrame(type:int, bagtype:int = 0) : void
       {
-         if(param1 == 3 && _texpBtnShine)
+         if(type == 3 && _texpBtnShine)
          {
             _texpBtnShine.stop();
             SharedManager.Instance.texpSystemShow = false;
@@ -1331,7 +1370,7 @@ package bagAndInfo
             _infoFrame = ComponentFactory.Instance.creatCustomObject("bagAndInfoFrame");
             addToContent(_infoFrame);
          }
-         if(param1 == 5)
+         if(type == 5)
          {
             _infoFrame.isScreenFood = true;
          }
@@ -1339,54 +1378,83 @@ package bagAndInfo
          {
             _infoFrame.isScreenFood = false;
          }
-         _infoFrame.switchShow(param1,param2);
+         _infoFrame.switchShow(type,bagtype);
          setVisible(0);
       }
       
-      private function __getFocus(param1:Event) : void
+      private function __getFocus(evt:Event) : void
       {
          removeEventListener("addedToStage",__getFocus);
          StageReferance.stage.focus = this;
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         evt = evt;
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
-            if(PvePowerBuffManager.instance.isInGetBuff == true)
+            if(_btnGroup.selectIndex == 12 - 1 && MarkMgr.inst.needSave)
             {
-               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("feedback.view.SystemBusy"));
-               return;
-            }
-            dispose();
-            if(_btnGroup.selectIndex == 0 || _btnGroup.selectIndex == 6 || _btnGroup.selectIndex == 8)
-            {
-               if(_fightPower < PlayerManager.Instance.Self.FightPower)
+               MarkMgr.inst.promptSchemeSave(function():*
                {
-                  PowerUpMovieManager.powerNum = _fightPower;
-                  PowerUpMovieManager.addedPowerNum = PlayerManager.Instance.Self.FightPower - _fightPower;
-                  PowerUpMovieManager.Instance.dispatchEvent(new Event("powerUp"));
-               }
+                  var /*UnknownSlot*/:* = function(result:Boolean):void
+                  {
+                     if(result)
+                     {
+                        closeBagAndGiftFrame();
+                     }
+                  };
+                  return function(result:Boolean):void
+                  {
+                     if(result)
+                     {
+                        closeBagAndGiftFrame();
+                     }
+                  };
+               }());
             }
-            if(PlayerManager.Instance.Self.Grade == 3)
+            else
             {
-               MainToolBar.Instance.tipTask();
+               closeBagAndGiftFrame();
             }
          }
       }
       
-      public function show(param1:int, param2:String = "", param3:int = 0) : void
+      private function closeBagAndGiftFrame() : void
+      {
+         if(PvePowerBuffManager.instance.isInGetBuff == true)
+         {
+            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("feedback.view.SystemBusy"));
+            return;
+         }
+         dispose();
+         if(_btnGroup.selectIndex == 0 || _btnGroup.selectIndex == 6 || _btnGroup.selectIndex == 8)
+         {
+            if(_fightPower < PlayerManager.Instance.Self.FightPower)
+            {
+               PowerUpMovieManager.powerNum = _fightPower;
+               PowerUpMovieManager.addedPowerNum = PlayerManager.Instance.Self.FightPower - _fightPower;
+               PowerUpMovieManager.Instance.dispatchEvent(new Event("powerUp"));
+            }
+         }
+         if(PlayerManager.Instance.Self.Grade == 3)
+         {
+            MainToolBar.Instance.tipTask();
+         }
+      }
+      
+      public function show(value:int, name:String = "", bagtype:int = 0) : void
       {
          LayerManager.Instance.addToLayer(this,3,true,1);
-         _bagType = param3;
-         if(param1 == 21)
+         _bagType = bagtype;
+         if(value == 21)
          {
             _btnGroup.selectIndex = 6;
          }
          else
          {
-            _btnGroup.selectIndex = param1;
+            _btnGroup.selectIndex = value;
          }
          if(DraftManager.instance.showDraft)
          {
@@ -1440,9 +1508,9 @@ package bagAndInfo
             _godTempleBtn.enable = false;
             _pvePowerBuffBtn.enable = false;
          }
-         if(param1 == 1 && param2 != "")
+         if(value == 1 && name != "")
          {
-            setTimeout(GiftManager.Instance.RebackClick,300,param2);
+            setTimeout(GiftManager.Instance.RebackClick,300,name);
          }
          if(StateManager.isInGame(StateManager.currentStateType))
          {

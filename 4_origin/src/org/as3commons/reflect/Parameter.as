@@ -8,11 +8,11 @@ package org.as3commons.reflect
       
       private var _index:int;
       
-      public function Parameter(param1:BaseParameter, param2:int)
+      public function Parameter(base:BaseParameter, index:int)
       {
          super();
-         this._base = param1;
-         this._index = param2;
+         this._base = base;
+         this._index = index;
       }
       
       public function get isOptional() : Boolean

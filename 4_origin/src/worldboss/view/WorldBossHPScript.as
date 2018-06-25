@@ -76,7 +76,7 @@ package worldboss.view
          }
       }
       
-      private function updateBloodStrip(param1:Event) : void
+      private function updateBloodStrip(event:Event) : void
       {
          refreshBlood();
          playCutHpMC(WorldBossManager.Instance.bossInfo.total_Blood - WorldBossManager.Instance.bossInfo.current_Blood);
@@ -86,9 +86,9 @@ package worldboss.view
          }
       }
       
-      private function playCutHpMC(param1:Number) : void
+      private function playCutHpMC(value:Number) : void
       {
-         _bloodStrip["red_hp"]["red_mask"].x = -1 * _scale * param1 - 1;
+         _bloodStrip["red_hp"]["red_mask"].x = -1 * _scale * value - 1;
          if(!_iscuting)
          {
             _iscuting = true;
@@ -96,7 +96,7 @@ package worldboss.view
          }
       }
       
-      private function cutHpred2(param1:Event) : void
+      private function cutHpred2(e:Event) : void
       {
          if(!_bloodStrip || !_bloodStrip["red_hp"]["red_mask"] || !_bloodStrip["red2_hp"]["red2_mask"])
          {
@@ -116,19 +116,19 @@ package worldboss.view
       
       private function __showCutHp() : void
       {
-         var _loc1_:WorldBossCutHpMC = new WorldBossCutHpMC(WorldBossManager.Instance.bossInfo.cutValue);
-         PositionUtils.setPos(_loc1_,"worldboss.numMC.pos");
-         addChildAt(_loc1_,0);
+         var numMC:WorldBossCutHpMC = new WorldBossCutHpMC(WorldBossManager.Instance.bossInfo.cutValue);
+         PositionUtils.setPos(numMC,"worldboss.numMC.pos");
+         addChildAt(numMC,0);
       }
       
-      private function offset(param1:int = 30) : int
+      private function offset(off:int = 30) : int
       {
-         var _loc2_:int = Math.random() * 10;
-         if(_loc2_ % 2 == 0)
+         var i:int = Math.random() * 10;
+         if(i % 2 == 0)
          {
-            return -(int(Math.random() * param1));
+            return -(int(Math.random() * off));
          }
-         return int(Math.random() * param1);
+         return int(Math.random() * off);
       }
       
       public function dispose() : void

@@ -29,37 +29,35 @@ package ddt.view.tips
          _itemArr = [];
       }
       
-      public function update(param1:String) : void
+      public function update(nickName:String) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var item:* = null;
          clearItem();
-         var _loc4_:Vector.<CustomInfo> = PlayerManager.Instance.customList;
-         _loc3_ = 0;
-         while(_loc3_ < _loc4_.length - 1)
+         var customList:Vector.<CustomInfo> = PlayerManager.Instance.customList;
+         for(i = 0; i < customList.length - 1; )
          {
-            _loc2_ = new FriendGroupTItem();
-            _loc2_.info = _loc4_[_loc3_];
-            _loc2_.NickName = param1;
-            _vbox.addChild(_loc2_);
-            _itemArr.push(_loc2_);
-            _loc3_++;
+            item = new FriendGroupTItem();
+            item.info = customList[i];
+            item.NickName = nickName;
+            _vbox.addChild(item);
+            _itemArr.push(item);
+            i++;
          }
-         _bg.height = _loc4_.length * 21;
+         _bg.height = customList.length * 21;
       }
       
       private function clearItem() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _itemArr.length)
+         var i:int = 0;
+         for(i = 0; i < _itemArr.length; )
          {
-            if(_itemArr[_loc1_])
+            if(_itemArr[i])
             {
-               ObjectUtils.disposeObject(_itemArr[_loc1_]);
+               ObjectUtils.disposeObject(_itemArr[i]);
             }
-            _itemArr[_loc1_] = null;
-            _loc1_++;
+            _itemArr[i] = null;
+            i++;
          }
          _itemArr = [];
       }

@@ -53,10 +53,10 @@ package littleGame.events
       
       private var _pkg:PackageIn;
       
-      public function LittleGameSocketEvent(param1:String, param2:PackageIn = null)
+      public function LittleGameSocketEvent(type:String, pkg:PackageIn = null)
       {
-         super(param1);
-         _pkg = param2;
+         super(type);
+         _pkg = pkg;
       }
       
       public function get pkg() : PackageIn

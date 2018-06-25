@@ -30,27 +30,27 @@ package mark.views
          updateChips();
       }
       
-      private function render(param1:MarkSuitItem, param2:int) : void
+      private function render(item:MarkSuitItem, index:int) : void
       {
-         param1.data = listBags.array[param2];
+         item.data = listBags.array[index];
       }
       
-      private function select(param1:int) : void
+      private function select(index:int) : void
       {
          if(!_bag)
          {
             _bag = new MarkBagView();
          }
-         var _loc2_:MarkBagData = listBags.array[param1];
-         _bag.data = _loc2_;
-         if(listBags.array[param1].chips.length > 0)
+         var bagData:MarkBagData = listBags.array[index];
+         _bag.data = bagData;
+         if(listBags.array[index].chips.length > 0)
          {
             _bag.listBag.scrollTo(0);
          }
-         _bagId = listBags.array[param1].type;
+         _bagId = listBags.array[index].type;
          _bag.visible = true;
          addChild(_bag);
-         MarkMgr.inst.reqOperationStatus(0,_loc2_.type);
+         MarkMgr.inst.reqOperationStatus(0,bagData.type);
       }
       
       private function initEvent() : void
@@ -73,24 +73,24 @@ package mark.views
       
       private function updateStatus() : void
       {
-         var _loc2_:Array = [];
+         var bags:Array = [];
          var _loc4_:int = 0;
          var _loc3_:* = MarkMgr.inst.model.bags;
-         for each(var _loc1_ in MarkMgr.inst.model.bags)
+         for each(var bag in MarkMgr.inst.model.bags)
          {
-            if(_loc1_.type > 1000)
+            if(bag.type > 1000)
             {
-               _loc2_.push(_loc1_);
+               bags.push(bag);
             }
          }
-         listBags.array = _loc2_;
+         listBags.array = bags;
          if(listBags.array != null && listBags.array.length > 0)
          {
-            listBags.repeatY = _loc2_.length;
+            listBags.repeatY = bags.length;
          }
       }
       
-      private function updateChips(param1:MarkEvent = null) : void
+      private function updateChips(evt:MarkEvent = null) : void
       {
          updateStatus();
          if(_bag)
@@ -99,7 +99,7 @@ package mark.views
          }
       }
       
-      private function disposeView(param1:MarkEvent) : void
+      private function disposeView(evt:MarkEvent) : void
       {
          dispose();
       }

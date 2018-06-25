@@ -42,9 +42,9 @@ package ddt.manager
          return instance;
       }
       
-      public function setup(param1:Stage) : void
+      public function setup($state:Stage) : void
       {
-         _stage = param1;
+         _stage = $state;
          _view = new Sprite();
          _view.graphics.beginFill(0,0.75);
          _view.graphics.drawRect(0,0,StageReferance.stageWidth,StageReferance.stageHeight);
@@ -56,16 +56,16 @@ package ddt.manager
       
       private function updateView() : void
       {
-         var _loc1_:* = null;
+         var display:* = null;
          if(StageReferance.isStageResize())
          {
             _view.graphics.clear();
             _view.graphics.beginFill(0,0.75);
             _view.graphics.drawRect(0,0,StageReferance.stageWidth,StageReferance.stageHeight);
             _view.graphics.endFill();
-            _loc1_ = _view.getChildAt(0);
-            _loc1_.x = StageReferance.stageWidth - _loc1_.width >> 1;
-            _loc1_.y = StageReferance.stageHeight - _loc1_.height >> 1;
+            display = _view.getChildAt(0);
+            display.x = StageReferance.stageWidth - display.width >> 1;
+            display.y = StageReferance.stageHeight - display.height >> 1;
          }
       }
       
@@ -81,7 +81,7 @@ package ddt.manager
          _stage.addEventListener("activate",__activateHandler);
       }
       
-      private function __deactivateHandler(param1:Event) : void
+      private function __deactivateHandler(evt:Event) : void
       {
          updateView();
          _stage.addChild(_view);
@@ -89,7 +89,7 @@ package ddt.manager
          ShowTipManager.Instance.removeAllTip();
       }
       
-      private function __activateHandler(param1:Event) : void
+      private function __activateHandler(evt:Event) : void
       {
          stopFade();
          if(_view.stage && _currentActiveObject)
@@ -102,7 +102,7 @@ package ddt.manager
          }
       }
       
-      private function __enterFrameHandler(param1:Event) : void
+      private function __enterFrameHandler(evt:Event) : void
       {
          _count = Number(_count) + 1;
          if(_count >= 2)
@@ -116,15 +116,15 @@ package ddt.manager
          }
       }
       
-      private function __onClickHandler(param1:MouseEvent) : void
+      private function __onClickHandler(evt:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
-         param1.stopPropagation();
+         evt.stopImmediatePropagation();
+         evt.stopPropagation();
       }
       
-      public function setActiveFocus(param1:InteractiveObject) : void
+      public function setActiveFocus(activeObject:InteractiveObject) : void
       {
-         _currentActiveObject = param1;
+         _currentActiveObject = activeObject;
       }
       
       private function fadein() : void
@@ -139,7 +139,7 @@ package ddt.manager
          _view.removeEventListener("enterFrame",__onFadein);
       }
       
-      private function __onFadein(param1:Event) : void
+      private function __onFadein(e:Event) : void
       {
          if(_view.alpha < 0.95)
          {

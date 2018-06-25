@@ -8,9 +8,9 @@ package particleSystem.loader
       
       public var ID:String;
       
-      public function TextureLoader(param1:String)
+      public function TextureLoader(id:String)
       {
-         ID = param1;
+         ID = id;
          super();
       }
    }

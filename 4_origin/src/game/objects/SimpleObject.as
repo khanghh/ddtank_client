@@ -24,20 +24,20 @@ package game.objects
       
       private var _smallMapView:SmallObject;
       
-      private var _isBottom:Boolean;
+      private var _realLayer:int;
       
       private var _shouldReCreate:Boolean = false;
       
-      public function SimpleObject(param1:int, param2:int, param3:String, param4:String, param5:Boolean = false)
+      public function SimpleObject(id:int, type:int, model:String, action:String, layer:int = 5)
       {
-         super(param1,param2);
+         super(id,type);
          actionMapping = new Dictionary();
          mouseChildren = false;
          mouseEnabled = false;
          scrollRect = null;
-         m_model = param3;
-         m_action = param4;
-         _isBottom = param5;
+         m_model = model;
+         m_action = action;
+         _realLayer = layer;
          creatMovie(m_model);
          playAction(m_action);
          initSmallMapView();
@@ -45,9 +45,9 @@ package game.objects
       
       override public function get layer() : int
       {
-         if(_isBottom)
+         if(_realLayer == 6 || _realLayer == 7)
          {
-            return 6;
+            return _realLayer;
          }
          return 5;
       }
@@ -62,21 +62,21 @@ package game.objects
          return _shouldReCreate;
       }
       
-      public function set shouldReCreate(param1:Boolean) : void
+      public function set shouldReCreate(value:Boolean) : void
       {
-         _shouldReCreate = param1;
+         _shouldReCreate = value;
       }
       
-      protected function creatMovie(param1:String) : void
+      protected function creatMovie(model:String) : void
       {
-         var _loc2_:* = null;
+         var moive_class:* = null;
          if(ModuleLoader.hasDefinition(m_model))
          {
             shouldReCreate = false;
-            _loc2_ = ModuleLoader.getDefinition(m_model) as Class;
-            if(_loc2_)
+            moive_class = ModuleLoader.getDefinition(m_model) as Class;
+            if(moive_class)
             {
-               m_movie = new _loc2_();
+               m_movie = new moive_class();
                addChild(m_movie);
             }
          }
@@ -100,71 +100,71 @@ package game.objects
          return _smallMapView;
       }
       
-      public function playAction(param1:String) : void
+      public function playAction(action:String) : void
       {
-         if(actionMapping[param1])
+         if(actionMapping[action])
          {
-            param1 = actionMapping[param1];
+            action = actionMapping[action];
          }
          if(m_movie is ActionMovie)
          {
-            if(param1 != "")
+            if(action != "")
             {
-               m_movie.gotoAndPlay(param1);
+               m_movie.gotoAndPlay(action);
             }
             return;
          }
          if(m_movie)
          {
-            if(param1 is String)
+            if(action is String)
             {
                var _loc4_:int = 0;
                var _loc3_:* = m_movie.currentLabels;
-               for each(var _loc2_ in m_movie.currentLabels)
+               for each(var s in m_movie.currentLabels)
                {
-                  if(_loc2_.name == param1)
+                  if(s.name == action)
                   {
-                     m_movie.gotoAndPlay(param1);
+                     m_movie.gotoAndPlay(action);
                   }
                }
             }
          }
-         if(param1 == "1" || param1 == "2")
+         if(action == "1" || action == "2")
          {
             if(m_movie)
             {
-               m_movie.gotoAndPlay(param1);
+               m_movie.gotoAndPlay(action);
             }
          }
          if(_smallMapView != null)
          {
-            _smallMapView.visible = param1 == "2";
+            _smallMapView.visible = action == "2";
          }
       }
       
-      override public function collidedByObject(param1:PhysicalObj) : void
+      override public function collidedByObject(obj:PhysicalObj) : void
       {
          playAction("pick");
       }
       
-      override public function setActionMapping(param1:String, param2:String) : void
+      override public function setActionMapping(source:String, target:String) : void
       {
          if(m_movie is ActionMovie)
          {
-            (m_movie as ActionMovie).setActionMapping(param1,param2);
+            (m_movie as ActionMovie).setActionMapping(source,target);
             return;
          }
-         actionMapping[param1] = param2;
+         actionMapping[source] = target;
       }
       
       override public function dispose() : void
       {
-         var _loc1_:SoundTransform = new SoundTransform();
-         _loc1_.volume = 0;
+         var soundControl:SoundTransform = new SoundTransform();
+         soundControl.volume = 0;
          if(m_movie)
          {
             m_movie.stop();
-            m_movie.soundTransform = _loc1_;
+            m_movie.soundTransform = soundControl;
          }
          super.dispose();
          if(m_movie && m_movie.parent)

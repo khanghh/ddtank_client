@@ -117,14 +117,14 @@ package treasure.view
       
       private function initData() : void
       {
-         var _loc12_:int = 0;
-         var _loc4_:* = null;
-         var _loc9_:int = 0;
-         var _loc8_:* = null;
-         var _loc7_:int = 0;
-         var _loc2_:* = null;
-         var _loc10_:int = 0;
-         var _loc6_:int = 0;
+         var i:int = 0;
+         var iconForfex:* = null;
+         var j:int = 0;
+         var iconStar:* = null;
+         var n:int = 0;
+         var iconSun:* = null;
+         var jj:int = 0;
+         var nn:int = 0;
          if(TreasureModel.instance.isEndTreasure)
          {
             beginBtn.visible = false;
@@ -138,59 +138,55 @@ package treasure.view
             beginBtn.visible = true;
          }
          _loginDaysTf.text = String(TreasureModel.instance.logoinDays);
-         var _loc1_:int = TreasureModel.instance.logoinDays > 2?3:TreasureModel.instance.logoinDays;
+         var total:int = TreasureModel.instance.logoinDays > 2?3:TreasureModel.instance.logoinDays;
          if(box)
          {
             ObjectUtils.disposeAllChildren(box);
          }
-         _loc12_ = 0;
-         while(_loc12_ < TreasureModel.instance.friendHelpTimes)
+         i = 0;
+         while(i < TreasureModel.instance.friendHelpTimes)
          {
-            _loc4_ = ComponentFactory.Instance.creatBitmap("asset.treasure.forfex");
-            box.addChild(_loc4_);
-            _loc4_.x = 60 + _loc12_ * (_loc4_.width + 10);
-            _loc12_++;
+            iconForfex = ComponentFactory.Instance.creatBitmap("asset.treasure.forfex");
+            box.addChild(iconForfex);
+            iconForfex.x = 60 + i * (iconForfex.width + 10);
+            i++;
          }
-         var _loc11_:Array = [];
-         _loc9_ = 0;
-         while(_loc9_ < _loc1_)
+         var starArr:Array = [];
+         for(j = 0; j < total; )
          {
-            _loc8_ = ComponentFactory.Instance.creatBitmap("asset.treasure.star");
-            box.addChild(_loc8_);
-            _loc8_.x = 60 + _loc9_ * (_loc8_.width + 10);
-            _loc8_.filters = ComponentFactory.Instance.creatFilters("grayFilter");
-            _loc11_.push(_loc8_);
-            _loc9_++;
+            iconStar = ComponentFactory.Instance.creatBitmap("asset.treasure.star");
+            box.addChild(iconStar);
+            iconStar.x = 60 + j * (iconStar.width + 10);
+            iconStar.filters = ComponentFactory.Instance.creatFilters("grayFilter");
+            starArr.push(iconStar);
+            j++;
          }
-         var _loc5_:int = TreasureModel.instance.friendHelpTimes >= PathManager.treasureHelpTimes?1:0;
-         var _loc3_:Array = [];
-         _loc7_ = 0;
-         while(_loc7_ < _loc5_)
+         var sunNum:int = TreasureModel.instance.friendHelpTimes >= PathManager.treasureHelpTimes?1:0;
+         var sunArr:Array = [];
+         for(n = 0; n < sunNum; )
          {
-            _loc2_ = ComponentFactory.Instance.creatBitmap("asset.treasure.sun");
-            box.addChild(_loc2_);
-            _loc2_.x = 60 + _loc1_ * (_loc2_.width + 10);
-            _loc2_.filters = ComponentFactory.Instance.creatFilters("grayFilter");
-            _loc3_.push(_loc2_);
-            _loc7_++;
+            iconSun = ComponentFactory.Instance.creatBitmap("asset.treasure.sun");
+            box.addChild(iconSun);
+            iconSun.x = 60 + total * (iconSun.width + 10);
+            iconSun.filters = ComponentFactory.Instance.creatFilters("grayFilter");
+            sunArr.push(iconSun);
+            n++;
          }
-         _loc10_ = 0;
-         while(_loc10_ < PlayerManager.Instance.Self.treasure)
+         for(jj = 0; jj < PlayerManager.Instance.Self.treasure; )
          {
-            if(_loc11_[_loc10_])
+            if(starArr[jj])
             {
-               _loc11_[_loc10_].filters = null;
+               starArr[jj].filters = null;
             }
-            _loc10_++;
+            jj++;
          }
-         _loc6_ = 0;
-         while(_loc6_ < PlayerManager.Instance.Self.treasureAdd)
+         for(nn = 0; nn < PlayerManager.Instance.Self.treasureAdd; )
          {
-            if(_loc3_[_loc6_])
+            if(sunArr[nn])
             {
-               _loc3_[_loc6_].filters = null;
+               sunArr[nn].filters = null;
             }
-            _loc6_++;
+            nn++;
          }
       }
       
@@ -204,41 +200,41 @@ package treasure.view
          TreasureManager.instance.addEventListener("endGame",__endGameHandler);
       }
       
-      private function __endGameHandler(param1:TreasureEvents) : void
+      private function __endGameHandler(e:TreasureEvents) : void
       {
          fieldView.endGameShow();
       }
       
-      private function __diHandler(param1:TreasureEvents) : void
+      private function __diHandler(e:TreasureEvents) : void
       {
          initData();
-         fieldView.digField(param1.info.pos);
+         fieldView.digField(e.info.pos);
       }
       
-      private function __beginGameHandler(param1:TreasureEvents) : void
+      private function __beginGameHandler(e:TreasureEvents) : void
       {
          beginBtn.visible = false;
          fieldView.playStartCartoon();
       }
       
-      private function __returnHandler(param1:TreasureEvents) : void
+      private function __returnHandler(e:TreasureEvents) : void
       {
          SoundManager.instance.play("008");
          FarmModelController.instance.goFarm(PlayerManager.Instance.Self.ID,PlayerManager.Instance.Self.NickName);
       }
       
-      private function __friendHelpFarmHandler(param1:TreasureEvents) : void
+      private function __friendHelpFarmHandler(e:TreasureEvents) : void
       {
          initData();
       }
       
-      private function __onEndBtnClick(param1:MouseEvent) : void
+      private function __onEndBtnClick(e:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var alert:* = null;
          if(TreasureModel.instance.friendHelpTimes < PathManager.treasureHelpTimes)
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.treasure.giveUp"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
-            _loc2_.addEventListener("response",__onFeedResponse);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.treasure.giveUp"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
+            alert.addEventListener("response",__onFeedResponse);
          }
          else
          {
@@ -246,20 +242,20 @@ package treasure.view
          }
       }
       
-      protected function __onFeedResponse(param1:FrameEvent) : void
+      protected function __onFeedResponse(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode) - 2)
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
                SocketManager.Instance.out.endTreasure();
          }
-         param1.currentTarget.removeEventListener("response",__onFeedResponse);
-         ObjectUtils.disposeObject(param1.currentTarget);
+         event.currentTarget.removeEventListener("response",__onFeedResponse);
+         ObjectUtils.disposeObject(event.currentTarget);
       }
       
-      private function __onbeginBtnClick(param1:MouseEvent) : void
+      private function __onbeginBtnClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          beginBtn.enable = false;

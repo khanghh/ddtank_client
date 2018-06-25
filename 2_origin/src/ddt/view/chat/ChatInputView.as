@@ -137,9 +137,9 @@ package ddt.view.chat
          initEvent();
       }
       
-      public function set enableGameState(param1:Boolean) : void
+      public function set enableGameState(value:Boolean) : void
       {
-         if(param1)
+         if(value)
          {
             _facePanelPos.x = _facePanelPos.x - 23;
             addChild(_fastReplyBtnInGame);
@@ -202,9 +202,9 @@ package ddt.view.chat
          return _fastReplyPanel;
       }
       
-      public function set channel(param1:int) : void
+      public function set channel($channel:int) : void
       {
-         $channel = param1;
+         $channel = $channel;
          ChatManager.Instance.view.addChild(this);
          ChatManager.Instance.setFocus();
          if(_channel == $channel)
@@ -227,20 +227,20 @@ package ddt.view.chat
          }
       }
       
-      private function __onCustomSetPrivateChatTo(param1:ChatEvent) : void
+      private function __onCustomSetPrivateChatTo(e:ChatEvent) : void
       {
-         _channel = int(param1.data.channel);
+         _channel = int(e.data.channel);
          _channelState.setFrame(_channel + 1);
          _inputField.channel = _channel;
          ChatManager.Instance.setFocus();
-         setPrivateChatTo(param1.data.nickName);
+         setPrivateChatTo(e.data.nickName);
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(e:FrameEvent) : void
       {
-         var _loc2_:* = null;
+         var name:* = null;
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(e.responseCode))
          {
             case 0:
             case 1:
@@ -249,13 +249,13 @@ package ddt.view.chat
             case 2:
             case 3:
             case 4:
-               _loc2_ = (param1.currentTarget as ChatPrivateFrame).currentFriend;
-               if(!_loc2_)
+               name = (e.currentTarget as ChatPrivateFrame).currentFriend;
+               if(!name)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.chat.SelectPlayerChatView.name"));
                   return;
                }
-               setPrivateChatTo(_loc2_);
+               setPrivateChatTo(name);
                break;
          }
          _chatPrivateFrame.dispose();
@@ -263,10 +263,10 @@ package ddt.view.chat
          ChatManager.Instance.setFocus();
       }
       
-      public function set faceEnabled(param1:Boolean) : void
+      public function set faceEnabled(value:Boolean) : void
       {
-         _faceBtn.enable = param1;
-         _faceBtnInGame.enable = param1;
+         _faceBtn.enable = value;
+         _faceBtnInGame.enable = value;
       }
       
       public function getCurrentInputChannel() : int
@@ -275,7 +275,7 @@ package ddt.view.chat
          {
             return _channel;
          }
-         var _loc1_:int = _channel;
+         var result:int = _channel;
          var _loc2_:* = ChatManager.Instance.state;
          if(4 !== _loc2_)
          {
@@ -303,60 +303,60 @@ package ddt.view.chat
                                           {
                                              if(35 === _loc2_)
                                              {
-                                                _loc1_ = 35;
+                                                result = 35;
                                              }
                                           }
                                           else
                                           {
-                                             _loc1_ = 35;
+                                             result = 35;
                                           }
                                        }
                                        else
                                        {
-                                          _loc1_ = 26;
+                                          result = 26;
                                        }
                                     }
                                     else
                                     {
-                                       _loc1_ = 27;
+                                       result = 27;
                                     }
                                  }
                                  else
                                  {
-                                    _loc1_ = 27;
+                                    result = 27;
                                  }
                               }
                               else
                               {
-                                 _loc1_ = 99;
+                                 result = 99;
                               }
                            }
                            else
                            {
-                              _loc1_ = 25;
+                              result = 25;
                            }
                         }
                         else
                         {
-                           _loc1_ = 20;
+                           result = 20;
                         }
                      }
                      else
                      {
-                        _loc1_ = 5;
+                        result = 5;
                      }
                   }
                }
-               addr21:
-               _loc1_ = 13;
+               addr32:
+               result = 13;
             }
-            §§goto(addr21);
+            §§goto(addr32);
          }
          else
          {
-            _loc1_ = 9;
+            result = 9;
          }
-         return _loc1_;
+         return result;
       }
       
       public function get inputField() : ChatInputField
@@ -369,12 +369,12 @@ package ddt.view.chat
          _inputField.sendCurrnetText();
       }
       
-      public function setInputText(param1:String) : void
+      public function setInputText(txt:String) : void
       {
-         _inputField.setInputText(param1);
+         _inputField.setInputText(txt);
       }
       
-      public function setPrivateChatTo(param1:String, param2:int = 0, param3:Object = null) : void
+      public function setPrivateChatTo(nickname:String, uid:int = 0, info:Object = null) : void
       {
          if(_friendListPanel.parent)
          {
@@ -383,7 +383,7 @@ package ddt.view.chat
          _channel = 2;
          _channelState.setFrame(_channel + 1);
          _inputField.channel = _channel;
-         _inputField.setPrivateChatName(param1,param2,param3);
+         _inputField.setPrivateChatName(nickname,uid,info);
          if(ChatManager.Instance.visibleSwitchEnable)
          {
             ChatManager.Instance.view.addChild(this);
@@ -415,11 +415,11 @@ package ddt.view.chat
          _fastReplyPanel.setText();
       }
       
-      private function __panelBtnClick(param1:MouseEvent) : void
+      private function __panelBtnClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         param1.stopImmediatePropagation();
-         var _loc2_:* = param1.currentTarget;
+         e.stopImmediatePropagation();
+         var _loc2_:* = e.currentTarget;
          if(_channelBtn !== _loc2_)
          {
             if(_friendListBtn !== _loc2_)
@@ -460,92 +460,92 @@ package ddt.view.chat
          }
       }
       
-      private function showPanel(param1:ChatBasePanel, param2:Point) : void
+      private function showPanel(target:ChatBasePanel, pos:Point) : void
       {
-         param1.x = localToGlobal(new Point(param2.x,param2.y)).x;
-         param1.y = localToGlobal(new Point(param2.x,param2.y)).y;
-         param1.setVisible = true;
+         target.x = localToGlobal(new Point(pos.x,pos.y)).x;
+         target.y = localToGlobal(new Point(pos.x,pos.y)).y;
+         target.setVisible = true;
       }
       
-      private function __onChannelSelected(param1:ChatEvent) : void
+      private function __onChannelSelected(e:ChatEvent) : void
       {
-         var _loc2_:int = param1.data;
-         if((StateManager.currentStateType == "consortia_domain" || StateManager.currentStateType == "consortiaGuard") && _loc2_ == 5)
+         var selectedChannel:int = e.data;
+         if((StateManager.currentStateType == "consortia_domain" || StateManager.currentStateType == "consortiaGuard") && selectedChannel == 5)
          {
             channel = 3;
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("consortiadomain.cannotUseCurrentChannel"));
          }
          else
          {
-            channel = _loc2_;
+            channel = selectedChannel;
          }
       }
       
-      private function __onEnterClick(param1:MouseEvent) : void
+      private function __onEnterClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          sendCurrentText();
       }
       
-      private function __onFaceSelect(param1:Event) : void
+      private function __onFaceSelect(event:Event) : void
       {
          ChatManager.Instance.sendFace(_facePanel.selected);
       }
       
-      private function __onFastSelect(param1:Event) : void
+      private function __onFastSelect(event:Event) : void
       {
          setInputText(_fastReplyPanel.selectedWrod);
          sendCurrentText();
       }
       
-      private function __onInputTextChanged(param1:ChatEvent) : void
+      private function __onInputTextChanged(event:ChatEvent) : void
       {
-         var _loc2_:Boolean = false;
-         var _loc3_:ChatData = new ChatData();
+         var ifCanSend:Boolean = false;
+         var data:ChatData = new ChatData();
          channelII = getCurrentInputChannel();
-         _loc3_.channel = getCurrentInputChannel();
-         _loc3_.msg = String(param1.data);
-         _loc3_.sender = PlayerManager.Instance.Self.NickName;
-         _loc3_.senderID = PlayerManager.Instance.Self.ID;
-         _loc3_.receiver = _inputField.privateChatName;
-         _loc3_.sender = ChatFormats.replaceUnacceptableChar(_loc3_.sender);
-         _loc3_.receiver = ChatFormats.replaceUnacceptableChar(_inputField.privateChatName);
-         _loc3_.zoneID = PlayerManager.Instance.Self.ZoneID;
+         data.channel = getCurrentInputChannel();
+         data.msg = String(event.data);
+         data.sender = PlayerManager.Instance.Self.NickName;
+         data.senderID = PlayerManager.Instance.Self.ID;
+         data.receiver = _inputField.privateChatName;
+         data.sender = ChatFormats.replaceUnacceptableChar(data.sender);
+         data.receiver = ChatFormats.replaceUnacceptableChar(_inputField.privateChatName);
+         data.zoneID = PlayerManager.Instance.Self.ZoneID;
          if(_inputField.privateChatInfo && !(_inputField.privateChatInfo is FriendListPlayer))
          {
-            _loc3_.zoneID = _inputField.privateChatInfo.areaID;
-            _loc3_.zoneName = _inputField.privateChatInfo.areaName;
+            data.zoneID = _inputField.privateChatInfo.areaID;
+            data.zoneName = _inputField.privateChatInfo.areaName;
          }
-         if(checkCanSendChannel(_loc3_))
+         if(checkCanSendChannel(data))
          {
-            _loc2_ = false;
-            _loc2_ = _loc3_.channel == 15 || _loc3_.channel == 0 || _loc3_.channel == 1 || checkCanSendTime();
-            if(_loc2_)
+            ifCanSend = false;
+            ifCanSend = data.channel == 15 || data.channel == 0 || data.channel == 1 || checkCanSendTime();
+            if(ifCanSend)
             {
-               ChatManager.Instance.sendChat(_loc3_);
-               if(_loc3_.channel != 0 && _loc3_.channel != 1 && _loc3_.channel != 15)
+               ChatManager.Instance.sendChat(data);
+               if(data.channel != 0 && data.channel != 1 && data.channel != 15)
                {
-                  _loc3_.msg = Helpers.enCodeString(_loc3_.msg);
-                  ChatManager.Instance.chat(_loc3_);
+                  data.msg = Helpers.enCodeString(data.msg);
+                  ChatManager.Instance.chat(data);
                }
             }
          }
          ChatManager.Instance.output.currentOffset = 0;
       }
       
-      private function checkCanSendChannel(param1:ChatData) : Boolean
+      private function checkCanSendChannel(data:ChatData) : Boolean
       {
-         if(param1.channel == 2 && param1.receiver == PlayerManager.Instance.Self.NickName && param1.zoneID == PlayerManager.Instance.Self.ZoneID)
+         if(data.channel == 2 && data.receiver == PlayerManager.Instance.Self.NickName && data.zoneID == PlayerManager.Instance.Self.ZoneID)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.manager.ChatManagerII.cannot"));
             return false;
          }
-         if(param1.channel == 3 && PlayerManager.Instance.Self.ConsortiaID == 0)
+         if(data.channel == 3 && PlayerManager.Instance.Self.ConsortiaID == 0)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.manager.ChatManagerII.you"));
             return false;
          }
-         if(param1.channel == 4)
+         if(data.channel == 4)
          {
             if(ChatManager.Instance.state != 5 && ChatManager.Instance.state != 1 && ChatManager.Instance.state != 8 && ChatManager.Instance.state != 10 && ChatManager.Instance.state != 9)
             {

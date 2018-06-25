@@ -22,11 +22,11 @@ package gameStarling.chat
       
       private var _direction:Point;
       
-      public function ChatBallBackground3D(param1:String)
+      public function ChatBallBackground3D(styleName:String)
       {
          super();
          _scale = 1;
-         paopaomc = BoneMovieFactory.instance.creatBoneMovie(param1);
+         paopaomc = BoneMovieFactory.instance.creatBoneMovie(styleName);
          direction = new Point(-1,-1);
          initChatBall();
       }
@@ -39,7 +39,7 @@ package gameStarling.chat
          paopaomc.play();
       }
       
-      public function set direction(param1:Point) : void
+      public function set direction(value:Point) : void
       {
          if(x == 0)
          {
@@ -49,11 +49,11 @@ package gameStarling.chat
          {
             y = -1;
          }
-         if(_direction == param1)
+         if(_direction == value)
          {
             return;
          }
-         _direction = param1;
+         _direction = value;
          if(_direction == null)
          {
             return;
@@ -77,17 +77,17 @@ package gameStarling.chat
          update();
       }
       
-      public function fitSize(param1:Point) : void
+      public function fitSize(size:Point) : void
       {
-         var _loc2_:Number = param1.x / _baseTextArea.width;
-         var _loc3_:Number = param1.y / _baseTextArea.height;
-         if(_loc2_ > _loc3_)
+         var tempScaleWidth:Number = size.x / _baseTextArea.width;
+         var tempScaleHeight:Number = size.y / _baseTextArea.height;
+         if(tempScaleWidth > tempScaleHeight)
          {
-            scale = _loc2_;
+            scale = tempScaleWidth;
          }
          else
          {
-            scale = _loc3_;
+            scale = tempScaleHeight;
          }
          update();
       }
@@ -97,28 +97,28 @@ package gameStarling.chat
          return _direction;
       }
       
-      protected function set scale(param1:Number) : void
+      protected function set scale(value:Number) : void
       {
-         if(_scale == param1)
+         if(_scale == value)
          {
             return;
          }
-         _scale = param1;
+         _scale = value;
          if(paopaomc.scaleX > 0)
          {
-            paopaomc.scaleX = param1;
+            paopaomc.scaleX = value;
          }
          else
          {
-            paopaomc.scaleX = -param1;
+            paopaomc.scaleX = -value;
          }
          if(paopaomc.scaleY > 0)
          {
-            paopaomc.scaleY = param1;
+            paopaomc.scaleY = value;
          }
          else
          {
-            paopaomc.scaleY = -param1;
+            paopaomc.scaleY = -value;
          }
          update();
       }
@@ -130,26 +130,26 @@ package gameStarling.chat
       
       public function get textArea() : Rectangle
       {
-         var _loc1_:Rectangle = new Rectangle();
+         var textArea:Rectangle = new Rectangle();
          if(paopaomc.scaleX > 0)
          {
-            _loc1_.x = _baseTextArea.x * scale;
+            textArea.x = _baseTextArea.x * scale;
          }
          else
          {
-            _loc1_.x = -_baseTextArea.right * scale;
+            textArea.x = -_baseTextArea.right * scale;
          }
          if(paopaomc.scaleY > 0)
          {
-            _loc1_.y = _baseTextArea.y * scale;
+            textArea.y = _baseTextArea.y * scale;
          }
          else
          {
-            _loc1_.y = -_baseTextArea.bottom * scale;
+            textArea.y = -_baseTextArea.bottom * scale;
          }
-         _loc1_.width = _baseTextArea.width * Math.abs(scale);
-         _loc1_.height = _baseTextArea.height * Math.abs(scale);
-         return _loc1_;
+         textArea.width = _baseTextArea.width * Math.abs(scale);
+         textArea.height = _baseTextArea.height * Math.abs(scale);
+         return textArea;
       }
       
       public function drawTextArea() : void
@@ -162,12 +162,12 @@ package gameStarling.chat
       
       private function getChatBallArea() : Rectangle
       {
-         var _loc1_:Rectangle = new Rectangle();
-         _loc1_.x = int(paopaomc.getValueByAttribute("x"));
-         _loc1_.y = int(paopaomc.getValueByAttribute("y"));
-         _loc1_.width = int(paopaomc.getValueByAttribute("width"));
-         _loc1_.height = int(paopaomc.getValueByAttribute("height"));
-         return _loc1_;
+         var rect:Rectangle = new Rectangle();
+         rect.x = int(paopaomc.getValueByAttribute("x"));
+         rect.y = int(paopaomc.getValueByAttribute("y"));
+         rect.width = int(paopaomc.getValueByAttribute("width"));
+         rect.height = int(paopaomc.getValueByAttribute("height"));
+         return rect;
       }
       
       public function get loadComplete() : Boolean

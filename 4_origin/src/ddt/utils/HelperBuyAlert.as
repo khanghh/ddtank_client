@@ -6,7 +6,7 @@ package ddt.utils
       private static var instance:HelperBuyAlert;
        
       
-      public function HelperBuyAlert(param1:inner)
+      public function HelperBuyAlert(single:inner)
       {
          super();
       }
@@ -20,23 +20,23 @@ package ddt.utils
          return instance;
       }
       
-      public function alert(param1:String, param2:ConfirmAlertData, param3:String = null, param4:Function = null, param5:Function = null, param6:Function = null, param7:int = 1, param8:int = 0) : ConfirmAlertHelper
+      public function alert($msg:String, $data:ConfirmAlertData, $frameType:String = null, $onCheckOut:Function = null, $onConfirm:Function = null, $onCancel:Function = null, type:int = 1, selectBtnY:int = 0) : ConfirmAlertHelper
       {
-         var _loc10_:* = null;
-         if(param3 == null)
+         var frameType:* = null;
+         if($frameType == null)
          {
-            _loc10_ = "SimpleAlert";
+            frameType = "SimpleAlert";
          }
          else
          {
-            _loc10_ = param3;
+            frameType = $frameType;
          }
-         var _loc9_:ConfirmAlertHelper = new ConfirmAlertHelper(param2);
-         _loc9_.onConfirm = param5;
-         _loc9_.onCheckOut = param4;
-         _loc9_.onCancel = param6;
-         _loc9_.alert("Cảnh cáo：",param1,"O K","Hủy",false,false,false,2,null,_loc10_,30,true,param7,param8);
-         return _loc9_;
+         var a:ConfirmAlertHelper = new ConfirmAlertHelper($data);
+         a.onConfirm = $onConfirm;
+         a.onCheckOut = $onCheckOut;
+         a.onCancel = $onCancel;
+         a.alert("Cảnh cáo：",$msg,"O K","Hủy",false,true,false,2,null,frameType,30,true,type,selectBtnY);
+         return a;
       }
    }
 }

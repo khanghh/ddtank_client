@@ -36,9 +36,9 @@ package quest.cmd
          super();
       }
       
-      public function excute(param1:int) : void
+      public function excute(questID:int) : void
       {
-         if(param1 == 561)
+         if(questID == 561)
          {
             closeTaskView();
             enableThreeAndPower();
@@ -66,17 +66,17 @@ package quest.cmd
          UIModuleLoader.Instance.addUIModuleImp("trainer3");
       }
       
-      private function onUimoduleLoadProgress(param1:UIModuleEvent) : void
+      private function onUimoduleLoadProgress(event:UIModuleEvent) : void
       {
-         if(param1.module == "trainer3")
+         if(event.module == "trainer3")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
       
-      private function loadCompleteHandler(param1:UIModuleEvent) : void
+      private function loadCompleteHandler(event:UIModuleEvent) : void
       {
-         if(param1.module == "trainer3")
+         if(event.module == "trainer3")
          {
             UIModuleSmallLoading.Instance.hide();
             UIModuleLoader.Instance.removeEventListener("uiModuleComplete",loadCompleteHandler);
@@ -85,9 +85,9 @@ package quest.cmd
          }
       }
       
-      private function creatToolForPick(param1:String) : void
+      private function creatToolForPick(style:String) : void
       {
-         toolForPick = ClassUtils.CreatInstance(param1) as MovieClip;
+         toolForPick = ClassUtils.CreatInstance(style) as MovieClip;
          toolForPick.buttonMode = true;
          toolForPick.addEventListener("click",__pickTool);
          PositionUtils.setPos(toolForPick,"trainer3.pickup.point");
@@ -97,7 +97,7 @@ package quest.cmd
          SoundManager.instance.play("156");
       }
       
-      private function __pickTool(param1:MouseEvent) : void
+      private function __pickTool(event:MouseEvent) : void
       {
          _picked = true;
          SoundManager.instance.play("008");
@@ -111,7 +111,7 @@ package quest.cmd
          NoviceDataManager.instance.saveNoviceData(560,PathManager.userName(),PathManager.solveRequestPath());
       }
       
-      private function onEF(param1:Event) : void
+      private function onEF(e:Event) : void
       {
          if(flyAwayMC.currentFrame == flyAwayMC.totalFrames)
          {
@@ -137,7 +137,7 @@ package quest.cmd
          flyAwayMC = null;
       }
       
-      protected function __explainEnter(param1:Event) : void
+      protected function __explainEnter(e:Event) : void
       {
          NoviceDataManager.instance.saveNoviceData(570,PathManager.userName(),PathManager.solveRequestPath());
          explainPowerThree.removeEventListener("explainEnter",__explainEnter);
@@ -155,12 +155,12 @@ package quest.cmd
          _picked = false;
       }
       
-      private function __outHandler(param1:MouseEvent) : void
+      private function __outHandler(event:MouseEvent) : void
       {
          toolForPick.filters = null;
       }
       
-      private function __overHandler(param1:MouseEvent) : void
+      private function __overHandler(event:MouseEvent) : void
       {
          toolForPick.filters = [new GlowFilter(16737792,1,30,30,2)];
       }

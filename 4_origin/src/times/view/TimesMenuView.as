@@ -32,40 +32,38 @@ package times.view
       
       protected function init() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
+         var i:int = 0;
+         var j:int = 0;
          _vBox = ComponentFactory.Instance.creatComponentByStylename("times.MenuContainer");
          _menus = new Vector.<SelectedButton>(4);
          _infos = new Vector.<TimesPicInfo>(4);
-         _loc2_ = 0;
-         while(_loc2_ < _menus.length)
+         for(i = 0; i < _menus.length; )
          {
-            _menus[_loc2_] = ComponentFactory.Instance.creatComponentByStylename("times.MenuButton_" + (String(_loc2_ + 1)));
-            _vBox.addChild(_menus[_loc2_]);
-            _infos[_loc2_] = new TimesPicInfo();
-            _infos[_loc2_].type = "category" + String(_loc2_);
-            _infos[_loc2_].targetCategory = _loc2_;
-            _infos[_loc2_].targetPage = 0;
-            _loc2_++;
+            _menus[i] = ComponentFactory.Instance.creatComponentByStylename("times.MenuButton_" + (String(i + 1)));
+            _vBox.addChild(_menus[i]);
+            _infos[i] = new TimesPicInfo();
+            _infos[i].type = "category" + String(i);
+            _infos[i].targetCategory = i;
+            _infos[i].targetPage = 0;
+            i++;
          }
          _btnGroup = new SelectedButtonGroup();
-         _loc1_ = 0;
-         while(_loc1_ < 4)
+         for(j = 0; j < 4; )
          {
-            _btnGroup.addSelectItem(_menus[_loc1_]);
-            _loc1_++;
+            _btnGroup.addSelectItem(_menus[j]);
+            j++;
          }
          _btnGroup.selectIndex = 0;
          _btnGroup.addEventListener("change",__btnChangeHandler);
          addChild(_vBox);
       }
       
-      public function set selected(param1:int) : void
+      public function set selected(index:int) : void
       {
-         _btnGroup.selectIndex = param1;
+         _btnGroup.selectIndex = index;
       }
       
-      private function __btnChangeHandler(param1:Event) : void
+      private function __btnChangeHandler(event:Event) : void
       {
          TimesController.Instance.dispatchEvent(new TimesEvent("playSound"));
          TimesController.Instance.dispatchEvent(new TimesEvent("gotoContent",_infos[_btnGroup.selectIndex]));
@@ -73,13 +71,12 @@ package times.view
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _btnGroup.removeEventListener("change",__btnChangeHandler);
-         _loc1_ = 0;
-         while(_loc1_ < _menus.length)
+         for(i = 0; i < _menus.length; )
          {
-            _infos[_loc1_] = null;
-            _loc1_++;
+            _infos[i] = null;
+            i++;
          }
          ObjectUtils.disposeObject(_vBox);
          _vBox = null;

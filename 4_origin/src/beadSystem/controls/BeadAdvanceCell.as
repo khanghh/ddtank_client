@@ -9,9 +9,9 @@ package beadSystem.controls
    {
        
       
-      public function BeadAdvanceCell(param1:int, param2:ItemTemplateInfo = null, param3:Boolean = true, param4:Boolean = true)
+      public function BeadAdvanceCell(index:int, $info:ItemTemplateInfo = null, showLoading:Boolean = true, showTip:Boolean = true)
       {
-         super(param1,param2,param3,param4);
+         super(index,$info,showLoading,showTip);
       }
       
       override public function dragStart() : void
@@ -22,26 +22,26 @@ package beadSystem.controls
          }
       }
       
-      override public function dragDrop(param1:DragEffect) : void
+      override public function dragDrop(effect:DragEffect) : void
       {
-         var _loc2_:* = null;
-         if(param1.data is InventoryItemInfo && this.info == null)
+         var temInfo:* = null;
+         if(effect.data is InventoryItemInfo && this.info == null)
          {
-            param1.action = "none";
-            _loc2_ = param1.data;
-            this.itemInfo = _loc2_;
-            this.info = _loc2_;
+            effect.action = "none";
+            temInfo = effect.data;
+            this.itemInfo = temInfo;
+            this.info = temInfo;
             DragManager.acceptDrag(this);
          }
       }
       
-      override public function dragStop(param1:DragEffect) : void
+      override public function dragStop(effect:DragEffect) : void
       {
-         if(param1.action == "none")
+         if(effect.action == "none")
          {
             locked = false;
          }
-         if(param1.action == "none" && param1.target != null)
+         if(effect.action == "none" && effect.target != null)
          {
             this.itemInfo = null;
             this.info = null;

@@ -44,10 +44,10 @@ package worldboss.event
       
       public var data:Object;
       
-      public function WorldBossRoomEvent(param1:String, param2:Object = null)
+      public function WorldBossRoomEvent(type:String, data:Object = null)
       {
-         this.data = param2;
-         super(param1,bubbles,cancelable);
+         this.data = data;
+         super(type,bubbles,cancelable);
       }
    }
 }

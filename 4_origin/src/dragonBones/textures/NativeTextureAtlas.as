@@ -21,21 +21,21 @@ package dragonBones.textures
       
       protected var _scale:Number;
       
-      public function NativeTextureAtlas(param1:Object, param2:Object, param3:Number = 1, param4:Boolean = false)
+      public function NativeTextureAtlas(texture:Object, textureAtlasRawData:Object, textureScale:Number = 1, isDifferentConfig:Boolean = false)
       {
          super();
-         _scale = param3;
-         _isDifferentConfig = param4;
-         if(param1 is BitmapData)
+         _scale = textureScale;
+         _isDifferentConfig = isDifferentConfig;
+         if(texture is BitmapData)
          {
-            _bitmapData = param1 as BitmapData;
+            _bitmapData = texture as BitmapData;
          }
-         else if(param1 is MovieClip)
+         else if(texture is MovieClip)
          {
-            _movieClip = param1 as MovieClip;
+            _movieClip = texture as MovieClip;
             _movieClip.stop();
          }
-         parseData(param2);
+         parseData(textureAtlasRawData);
       }
       
       public function get name() : String
@@ -68,29 +68,29 @@ package dragonBones.textures
          _bitmapData = null;
       }
       
-      public function getRegion(param1:String) : Rectangle
+      public function getRegion(name:String) : Rectangle
       {
-         var _loc2_:TextureData = _subTextureDataDic[param1] as TextureData;
-         if(_loc2_)
+         var textureData:TextureData = _subTextureDataDic[name] as TextureData;
+         if(textureData)
          {
-            return _loc2_.region;
+            return textureData.region;
          }
          return null;
       }
       
-      public function getFrame(param1:String) : Rectangle
+      public function getFrame(name:String) : Rectangle
       {
-         var _loc2_:TextureData = _subTextureDataDic[param1] as TextureData;
-         if(_loc2_)
+         var textureData:TextureData = _subTextureDataDic[name] as TextureData;
+         if(textureData)
          {
-            return _loc2_.frame;
+            return textureData.frame;
          }
          return null;
       }
       
-      protected function parseData(param1:Object) : void
+      protected function parseData(textureAtlasRawData:Object) : void
       {
-         _subTextureDataDic = DataParser.parseTextureAtlasData(param1,!!_isDifferentConfig?_scale:1);
+         _subTextureDataDic = DataParser.parseTextureAtlasData(textureAtlasRawData,!!_isDifferentConfig?_scale:1);
          _name = _subTextureDataDic.__name;
       }
       
@@ -105,9 +105,9 @@ package dragonBones.textures
          }
       }
       
-      private function getNearest2N(param1:uint) : uint
+      private function getNearest2N(_n:uint) : uint
       {
-         return !!(param1 & param1 - 1)?1 << param1.toString(2).length:param1;
+         return !!(_n & _n - 1)?1 << _n.toString(2).length:_n;
       }
    }
 }

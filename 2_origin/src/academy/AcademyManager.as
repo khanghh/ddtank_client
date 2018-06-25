@@ -111,71 +111,71 @@ package academy
          SocketManager.Instance.addEventListener(PkgEvent.format(141),__apprenticeSystemAnswer);
       }
       
-      private function __apprenticeSystemAnswer(param1:PkgEvent) : void
+      private function __apprenticeSystemAnswer(event:PkgEvent) : void
       {
-         var _loc7_:int = 0;
-         var _loc14_:* = null;
-         var _loc8_:* = null;
-         var _loc15_:int = 0;
-         var _loc9_:* = null;
-         var _loc3_:* = null;
-         var _loc10_:int = 0;
-         var _loc16_:int = 0;
-         var _loc12_:int = 0;
-         var _loc11_:* = null;
-         var _loc2_:int = 0;
-         var _loc13_:* = null;
-         var _loc5_:* = null;
-         var _loc4_:Boolean = false;
-         var _loc6_:int = param1.pkg.readByte();
-         switch(int(_loc6_) - 4)
+         var id:int = 0;
+         var name:* = null;
+         var message:* = null;
+         var ID:int = 0;
+         var Name:* = null;
+         var Message:* = null;
+         var removeID:int = 0;
+         var graduateType:int = 0;
+         var graduateID:int = 0;
+         var graduateName:* = null;
+         var masetrOrApprentceID:int = 0;
+         var nickName:* = null;
+         var messageI:* = null;
+         var isGotoAcademy:Boolean = false;
+         var type:int = event.pkg.readByte();
+         switch(int(type) - 4)
          {
             case 0:
-               _loc7_ = param1.pkg.readInt();
-               _loc14_ = param1.pkg.readUTF();
-               _loc8_ = param1.pkg.readUTF();
-               if(SharedManager.Instance.unAcceptAnswer.indexOf(_loc7_) < 0)
+               id = event.pkg.readInt();
+               name = event.pkg.readUTF();
+               message = event.pkg.readUTF();
+               if(SharedManager.Instance.unAcceptAnswer.indexOf(id) < 0)
                {
-                  AcademyFrameManager.Instance.showAcademyAnswerMasterFrame(_loc7_,_loc14_,_loc8_);
+                  AcademyFrameManager.Instance.showAcademyAnswerMasterFrame(id,name,message);
                }
                break;
             case 1:
-               _loc15_ = param1.pkg.readInt();
-               _loc9_ = param1.pkg.readUTF();
-               _loc3_ = param1.pkg.readUTF();
+               ID = event.pkg.readInt();
+               Name = event.pkg.readUTF();
+               Message = event.pkg.readUTF();
                if(PlayerManager.Instance.Self.apprenticeshipState == 1)
                {
                   return;
                }
-               if(SharedManager.Instance.unAcceptAnswer.indexOf(_loc15_) < 0)
+               if(SharedManager.Instance.unAcceptAnswer.indexOf(ID) < 0)
                {
-                  AcademyFrameManager.Instance.showAcademyAnswerApprenticeFrame(_loc15_,_loc9_,_loc3_);
+                  AcademyFrameManager.Instance.showAcademyAnswerApprenticeFrame(ID,Name,Message);
                }
                break;
             case 2:
             case 3:
-               _loc2_ = param1.pkg.readInt();
-               _loc13_ = param1.pkg.readUTF();
+               masetrOrApprentceID = event.pkg.readInt();
+               nickName = event.pkg.readUTF();
                break;
             default:
-               _loc2_ = param1.pkg.readInt();
-               _loc13_ = param1.pkg.readUTF();
+               masetrOrApprentceID = event.pkg.readInt();
+               nickName = event.pkg.readUTF();
                break;
             default:
-               _loc2_ = param1.pkg.readInt();
-               _loc13_ = param1.pkg.readUTF();
+               masetrOrApprentceID = event.pkg.readInt();
+               nickName = event.pkg.readUTF();
                break;
             case 6:
-               PlayerManager.Instance.Self.apprenticeshipState = param1.pkg.readInt();
-               PlayerManager.Instance.Self.masterID = param1.pkg.readInt();
-               PlayerManager.Instance.Self.setMasterOrApprentices(param1.pkg.readUTF());
-               _loc10_ = param1.pkg.readInt();
-               PlayerManager.Instance.Self.graduatesCount = param1.pkg.readInt();
-               PlayerManager.Instance.Self.honourOfMaster = param1.pkg.readUTF();
-               PlayerManager.Instance.Self.freezesDate = param1.pkg.readDate();
-               if(_myAcademyPlayers && _loc10_ != -1)
+               PlayerManager.Instance.Self.apprenticeshipState = event.pkg.readInt();
+               PlayerManager.Instance.Self.masterID = event.pkg.readInt();
+               PlayerManager.Instance.Self.setMasterOrApprentices(event.pkg.readUTF());
+               removeID = event.pkg.readInt();
+               PlayerManager.Instance.Self.graduatesCount = event.pkg.readInt();
+               PlayerManager.Instance.Self.honourOfMaster = event.pkg.readUTF();
+               PlayerManager.Instance.Self.freezesDate = event.pkg.readDate();
+               if(_myAcademyPlayers && removeID != -1)
                {
-                  _myAcademyPlayers.remove(_loc10_);
+                  _myAcademyPlayers.remove(removeID);
                }
                if(_myAcademyPlayers && PlayerManager.Instance.Self.apprenticeshipState == 0)
                {
@@ -187,121 +187,121 @@ package academy
                }
                break;
             case 7:
-               _loc16_ = param1.pkg.readInt();
-               _loc12_ = param1.pkg.readInt();
-               _loc11_ = param1.pkg.readUTF();
-               if(_loc16_ == 0)
+               graduateType = event.pkg.readInt();
+               graduateID = event.pkg.readInt();
+               graduateName = event.pkg.readUTF();
+               if(graduateType == 0)
                {
                   AcademyFrameManager.Instance.showApprenticeGraduate();
                }
-               else if(_loc16_ == 1)
+               else if(graduateType == 1)
                {
-                  AcademyFrameManager.Instance.showMasterGraduate(_loc11_);
+                  AcademyFrameManager.Instance.showMasterGraduate(graduateName);
                }
                break;
             default:
-               _loc16_ = param1.pkg.readInt();
-               _loc12_ = param1.pkg.readInt();
-               _loc11_ = param1.pkg.readUTF();
-               if(_loc16_ == 0)
+               graduateType = event.pkg.readInt();
+               graduateID = event.pkg.readInt();
+               graduateName = event.pkg.readUTF();
+               if(graduateType == 0)
                {
                   AcademyFrameManager.Instance.showApprenticeGraduate();
                }
-               else if(_loc16_ == 1)
+               else if(graduateType == 1)
                {
-                  AcademyFrameManager.Instance.showMasterGraduate(_loc11_);
+                  AcademyFrameManager.Instance.showMasterGraduate(graduateName);
                }
                break;
             default:
-               _loc16_ = param1.pkg.readInt();
-               _loc12_ = param1.pkg.readInt();
-               _loc11_ = param1.pkg.readUTF();
-               if(_loc16_ == 0)
+               graduateType = event.pkg.readInt();
+               graduateID = event.pkg.readInt();
+               graduateName = event.pkg.readUTF();
+               if(graduateType == 0)
                {
                   AcademyFrameManager.Instance.showApprenticeGraduate();
                }
-               else if(_loc16_ == 1)
+               else if(graduateType == 1)
                {
-                  AcademyFrameManager.Instance.showMasterGraduate(_loc11_);
+                  AcademyFrameManager.Instance.showMasterGraduate(graduateName);
                }
                break;
             default:
-               _loc16_ = param1.pkg.readInt();
-               _loc12_ = param1.pkg.readInt();
-               _loc11_ = param1.pkg.readUTF();
-               if(_loc16_ == 0)
+               graduateType = event.pkg.readInt();
+               graduateID = event.pkg.readInt();
+               graduateName = event.pkg.readUTF();
+               if(graduateType == 0)
                {
                   AcademyFrameManager.Instance.showApprenticeGraduate();
                }
-               else if(_loc16_ == 1)
+               else if(graduateType == 1)
                {
-                  AcademyFrameManager.Instance.showMasterGraduate(_loc11_);
+                  AcademyFrameManager.Instance.showMasterGraduate(graduateName);
                }
                break;
             default:
-               _loc16_ = param1.pkg.readInt();
-               _loc12_ = param1.pkg.readInt();
-               _loc11_ = param1.pkg.readUTF();
-               if(_loc16_ == 0)
+               graduateType = event.pkg.readInt();
+               graduateID = event.pkg.readInt();
+               graduateName = event.pkg.readUTF();
+               if(graduateType == 0)
                {
                   AcademyFrameManager.Instance.showApprenticeGraduate();
                }
-               else if(_loc16_ == 1)
+               else if(graduateType == 1)
                {
-                  AcademyFrameManager.Instance.showMasterGraduate(_loc11_);
+                  AcademyFrameManager.Instance.showMasterGraduate(graduateName);
                }
                break;
             default:
-               _loc16_ = param1.pkg.readInt();
-               _loc12_ = param1.pkg.readInt();
-               _loc11_ = param1.pkg.readUTF();
-               if(_loc16_ == 0)
+               graduateType = event.pkg.readInt();
+               graduateID = event.pkg.readInt();
+               graduateName = event.pkg.readUTF();
+               if(graduateType == 0)
                {
                   AcademyFrameManager.Instance.showApprenticeGraduate();
                }
-               else if(_loc16_ == 1)
+               else if(graduateType == 1)
                {
-                  AcademyFrameManager.Instance.showMasterGraduate(_loc11_);
+                  AcademyFrameManager.Instance.showMasterGraduate(graduateName);
                }
                break;
             case 13:
-               _loc5_ = param1.pkg.readUTF();
-               _loc4_ = param1.pkg.readBoolean();
-               academyAlert(_loc5_,_loc4_);
+               messageI = event.pkg.readUTF();
+               isGotoAcademy = event.pkg.readBoolean();
+               academyAlert(messageI,isGotoAcademy);
          }
       }
       
-      private function academyAlert(param1:String, param2:Boolean) : void
+      private function academyAlert(message:String, isGotoAcademy:Boolean) : void
       {
-         var _loc3_:* = null;
-         if(param2)
+         var alert:* = null;
+         if(isGotoAcademy)
          {
-            AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),param1,LanguageMgr.GetTranslation("ok"),"",false,false,false,2).addEventListener("response",__onCancel);
+            AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),message,LanguageMgr.GetTranslation("ok"),"",false,false,false,2).addEventListener("response",__onCancel);
          }
          else if(!isFighting())
          {
-            _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),param1,LanguageMgr.GetTranslation("ddt.manager.AcademyManager.alertSubmit"),"",false,false,false,2);
-            _loc3_.addEventListener("response",__frameEvent);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),message,LanguageMgr.GetTranslation("ddt.manager.AcademyManager.alertSubmit"),"",false,false,false,2);
+            alert.addEventListener("response",__frameEvent);
          }
          else if(StateManager.currentStateType == "hotSpringRoom" || StateManager.currentStateType == "churchRoom")
          {
-            AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),param1,LanguageMgr.GetTranslation("ok"),"",false,false,false,2).addEventListener("response",__onCancel);
+            AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),message,LanguageMgr.GetTranslation("ok"),"",false,false,false,2).addEventListener("response",__onCancel);
          }
       }
       
-      private function __onCancel(param1:FrameEvent) : void
+      private function __onCancel(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",__frameEvent);
-         (param1.currentTarget as BaseAlerFrame).dispose();
+         (event.currentTarget as BaseAlerFrame).removeEventListener("response",__frameEvent);
+         (event.currentTarget as BaseAlerFrame).dispose();
       }
       
-      private function __frameEvent(param1:FrameEvent) : void
+      private function __frameEvent(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",__frameEvent);
-         (param1.currentTarget as BaseAlerFrame).dispose();
-         switch(int(param1.responseCode) - 2)
+         (event.currentTarget as BaseAlerFrame).removeEventListener("response",__frameEvent);
+         (event.currentTarget as BaseAlerFrame).dispose();
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
@@ -309,20 +309,20 @@ package academy
          }
       }
       
-      public function loadAcademyMemberList(param1:Function, param2:Boolean = true, param3:Boolean = false, param4:int = 1, param5:String = "", param6:int = 0, param7:Boolean = true, param8:Boolean = false) : void
+      public function loadAcademyMemberList(callback:Function, requestType:Boolean = true, appshipStateType:Boolean = false, page:int = 1, name:String = "", grade:int = 0, sex:Boolean = true, isReturnSelf:Boolean = false) : void
       {
-         var _loc10_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         _loc10_["requestType"] = param2;
-         _loc10_["appshipStateType"] = param3;
-         _loc10_["page"] = param4;
-         _loc10_["name"] = param5;
-         _loc10_["Grade"] = param6;
-         _loc10_["sex"] = param7;
-         _loc10_["isReturnSelf"] = param8;
-         var _loc9_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ApprenticeshipClubList.ashx"),6,_loc10_,"GET",null,true,true);
-         _loc9_.loadErrorMessage = LanguageMgr.GetTranslation("civil.frame.CivilRegisterFrame.infoError");
-         _loc9_.analyzer = new AcademyMemberListAnalyze(param1);
-         LoadResourceManager.Instance.startLoad(_loc9_);
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         args["requestType"] = requestType;
+         args["appshipStateType"] = appshipStateType;
+         args["page"] = page;
+         args["name"] = name;
+         args["Grade"] = grade;
+         args["sex"] = sex;
+         args["isReturnSelf"] = isReturnSelf;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ApprenticeshipClubList.ashx"),6,args,"GET",null,true,true);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("civil.frame.CivilRegisterFrame.infoError");
+         loader.analyzer = new AcademyMemberListAnalyze(callback);
+         LoadResourceManager.Instance.startLoad(loader);
       }
       
       public function recommend() : void
@@ -363,9 +363,9 @@ package academy
          }
       }
       
-      private function __recommendPlayersComplete(param1:AcademyMemberListAnalyze) : void
+      private function __recommendPlayersComplete(action:AcademyMemberListAnalyze) : void
       {
-         _recommendPlayers = param1.academyMemberList;
+         _recommendPlayers = action.academyMemberList;
          if(_recommendPlayers.length >= 3)
          {
             if(PlayerManager.Instance.Self.Grade < 21)
@@ -403,17 +403,17 @@ package academy
       
       public function myAcademy() : void
       {
-         var _loc2_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         _loc2_["RelationshipID"] = PlayerManager.Instance.Self.masterID;
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("UserApprenticeshipInfoList.ashx"),6,_loc2_);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.data.analyze.MyAcademyPlayersAnalyze");
-         _loc1_.analyzer = new MyAcademyPlayersAnalyze(__myAcademyPlayersComplete);
-         LoadResourceManager.Instance.startLoad(_loc1_);
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         args["RelationshipID"] = PlayerManager.Instance.Self.masterID;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("UserApprenticeshipInfoList.ashx"),6,args);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.data.analyze.MyAcademyPlayersAnalyze");
+         loader.analyzer = new MyAcademyPlayersAnalyze(__myAcademyPlayersComplete);
+         LoadResourceManager.Instance.startLoad(loader);
       }
       
-      private function __myAcademyPlayersComplete(param1:MyAcademyPlayersAnalyze) : void
+      private function __myAcademyPlayersComplete(action:MyAcademyPlayersAnalyze) : void
       {
-         _myAcademyPlayers = param1.myAcademyPlayers;
+         _myAcademyPlayers = action.myAcademyPlayers;
          if(_myAcademyPlayers.length == 0)
          {
             return;
@@ -428,40 +428,40 @@ package academy
          }
       }
       
-      public function compareState(param1:BasePlayer, param2:PlayerInfo) : Boolean
+      public function compareState(targetPlayer:BasePlayer, currentPlayer:PlayerInfo) : Boolean
       {
-         if(param2.Grade < 8)
+         if(currentPlayer.Grade < 8)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.manager.AcademyManager.warning6"));
             return false;
          }
-         if(param1.Grade < 8)
+         if(targetPlayer.Grade < 8)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.manager.AcademyManager.warningII"));
             return false;
          }
-         if(param2.apprenticeshipState == 1)
+         if(currentPlayer.apprenticeshipState == 1)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.manager.AcademyManager.WarningApprenticeState"));
             return false;
          }
-         if(param2.apprenticeshipState == 3)
+         if(currentPlayer.apprenticeshipState == 3)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.manager.AcademyManager.WarningMasterFullState"));
             return false;
          }
-         if(param2.Grade >= 21)
+         if(currentPlayer.Grade >= 21)
          {
-            if(param1.Grade >= 21)
+            if(targetPlayer.Grade >= 21)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.manager.AcademyManager.warningIII"));
                return false;
             }
-            if(param2.Grade - param1.Grade >= 5)
+            if(currentPlayer.Grade - targetPlayer.Grade >= 5)
             {
                return true;
             }
-            if(param2.Grade - param1.Grade < 5)
+            if(currentPlayer.Grade - targetPlayer.Grade < 5)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.manager.AcademyManager.warning"));
                return false;
@@ -469,16 +469,16 @@ package academy
          }
          else
          {
-            if(param1.Grade < 21)
+            if(targetPlayer.Grade < 21)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.manager.AcademyManager.warningIIII"));
                return false;
             }
-            if(param1.Grade - param2.Grade >= 5)
+            if(targetPlayer.Grade - currentPlayer.Grade >= 5)
             {
                return true;
             }
-            if(param1.Grade - param2.Grade < 5)
+            if(targetPlayer.Grade - currentPlayer.Grade < 5)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.manager.AcademyManager.warningI"));
                return false;
@@ -489,11 +489,11 @@ package academy
       
       public function gotoAcademyState() : void
       {
-         var _loc1_:* = null;
+         var alert:* = null;
          if(StateManager.currentStateType == "matchRoom" || StateManager.currentStateType == "missionResult" || StateManager.currentStateType == "dungeonRoom" || StateManager.currentStateType == "freshmanRoom1" || StateManager.currentStateType == "freshmanRoom2")
          {
-            _loc1_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.manager.AcademyManager.warning10"),LanguageMgr.GetTranslation("ok"),"",false,false,false,2);
-            _loc1_.addEventListener("response",__onResponse);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.manager.AcademyManager.warning10"),LanguageMgr.GetTranslation("ok"),"",false,false,false,2);
+            alert.addEventListener("response",__onResponse);
          }
          else
          {
@@ -501,12 +501,12 @@ package academy
          }
       }
       
-      private function __onResponse(param1:FrameEvent) : void
+      private function __onResponse(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",__onResponse);
-         (param1.currentTarget as BaseAlerFrame).dispose();
-         switch(int(param1.responseCode) - 2)
+         (event.currentTarget as BaseAlerFrame).removeEventListener("response",__onResponse);
+         (event.currentTarget as BaseAlerFrame).dispose();
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
@@ -514,28 +514,27 @@ package academy
          }
       }
       
-      public function getMasterHonorLevel(param1:int) : int
+      public function getMasterHonorLevel(value:int) : int
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < GRADUATE_NUM.length)
+         var i:int = 0;
+         var level:int = 0;
+         for(i = 0; i < GRADUATE_NUM.length; )
          {
-            if(param1 >= GRADUATE_NUM[_loc3_])
+            if(value >= GRADUATE_NUM[i])
             {
-               _loc2_++;
+               level++;
             }
-            _loc3_++;
+            i++;
          }
-         return _loc2_;
+         return level;
       }
       
-      public function isFreezes(param1:Boolean) : Boolean
+      public function isFreezes(requestType:Boolean) : Boolean
       {
-         var _loc2_:Date = TimeManager.Instance.serverDate;
-         if(PlayerManager.Instance.Self.freezesDate > _loc2_)
+         var serverDate:Date = TimeManager.Instance.serverDate;
+         if(PlayerManager.Instance.Self.freezesDate > serverDate)
          {
-            if(param1)
+            if(requestType)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.manager.academyManager.Freezes"));
             }
@@ -548,9 +547,9 @@ package academy
          return true;
       }
       
-      public function set messgers(param1:Vector.<SimpleMessger>) : void
+      public function set messgers(value:Vector.<SimpleMessger>) : void
       {
-         _messgers = param1;
+         _messgers = value;
       }
       
       public function get messgers() : Vector.<SimpleMessger>
@@ -588,9 +587,9 @@ package academy
          return AcademyManager.Instance.isShowRecommend && !SharedManager.Instance.isRecommend && PlayerManager.Instance.Self.Grade >= 8 && (PlayerManager.Instance.Self.apprenticeshipState == 0 || PlayerManager.Instance.Self.apprenticeshipState == 2);
       }
       
-      public function isOpenSpace(param1:BasePlayer) : Boolean
+      public function isOpenSpace(info:BasePlayer) : Boolean
       {
-         return param1.Grade < 21 && param1.Grade > 8;
+         return info.Grade < 21 && info.Grade > 8;
       }
       
       public function get selfDescribe() : String
@@ -598,9 +597,9 @@ package academy
          return _selfDescribe;
       }
       
-      public function set selfDescribe(param1:String) : void
+      public function set selfDescribe(value:String) : void
       {
-         _selfDescribe = param1;
+         _selfDescribe = value;
          dispatchEvent(new Event("selfDescribe"));
       }
    }

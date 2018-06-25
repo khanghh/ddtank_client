@@ -25,26 +25,26 @@ package explorerManual.view.page
          super.init();
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         var _loc2_:* = null;
+         var imgPath:* = null;
          clearLoader();
          ObjectUtils.disposeAllChildren(this);
-         var _loc3_:ManualPageItemInfo = param1 as ManualPageItemInfo;
-         if(_loc3_)
+         var info:ManualPageItemInfo = data as ManualPageItemInfo;
+         if(info)
          {
-            _loc2_ = "/explorerManual/" + (_loc3_.DebrisCount + 1) + "/" + _loc3_.ID + "/" + 0;
-            _loaderPic = LoadResourceManager.Instance.createLoader(PathManager.ManualDebrisPNGIconPath(_loc2_),0);
+            imgPath = "/explorerManual/" + (info.DebrisCount + 1) + "/" + info.ID + "/" + 0;
+            _loaderPic = LoadResourceManager.Instance.createLoader(PathManager.ManualDebrisPNGIconPath(imgPath),0);
             _loaderPic.addEventListener("complete",__picComplete);
             LoadResourceManager.Instance.startLoad(_loaderPic);
          }
       }
       
-      private function __picComplete(param1:LoaderEvent) : void
+      private function __picComplete(evt:LoaderEvent) : void
       {
-         if(param1.loader.isSuccess)
+         if(evt.loader.isSuccess)
          {
-            addChild(param1.loader.content as Bitmap);
+            addChild(evt.loader.content as Bitmap);
          }
          clearLoader();
       }

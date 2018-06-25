@@ -36,117 +36,117 @@ package bagAndInfo.cell
          return _instance;
       }
       
-      public function createBagCell(param1:int, param2:ItemTemplateInfo = null, param3:Boolean = true, param4:DisplayObject = null) : ICell
+      public function createBagCell(place:int, info:ItemTemplateInfo = null, showLoading:Boolean = true, bg:DisplayObject = null) : ICell
       {
-         var _loc5_:BagCell = new BagCell(param1,param2,param3,param4);
-         fillTipProp(_loc5_);
-         return _loc5_;
+         var cell:BagCell = new BagCell(place,info,showLoading,bg);
+         fillTipProp(cell);
+         return cell;
       }
       
-      public function creteLockableBagCell(param1:int, param2:ItemTemplateInfo = null, param3:Boolean = true, param4:DisplayObject = null) : ICell
+      public function creteLockableBagCell(place:int, info:ItemTemplateInfo = null, showLoading:Boolean = true, bg:DisplayObject = null) : ICell
       {
-         var _loc5_:LockableBagCell = new LockableBagCell(param1,param2,param3,param4);
-         fillTipProp(_loc5_);
-         return _loc5_;
+         var cell:LockableBagCell = new LockableBagCell(place,info,showLoading,bg);
+         fillTipProp(cell);
+         return cell;
       }
       
-      public function createBankCell(param1:int, param2:ItemTemplateInfo = null, param3:Boolean = true) : ICell
+      public function createBankCell(place:int, info:ItemTemplateInfo = null, showLoading:Boolean = true) : ICell
       {
-         var _loc4_:BankCell = new BankCell(param1,param2,param3);
-         fillTipProp(_loc4_);
-         return _loc4_;
+         var cell:BankCell = new BankCell(place,info,showLoading);
+         fillTipProp(cell);
+         return cell;
       }
       
-      public function createPersonalInfoCell(param1:int, param2:ItemTemplateInfo = null, param3:Boolean = true) : ICell
+      public function createPersonalInfoCell(place:int, info:ItemTemplateInfo = null, showLoading:Boolean = true) : ICell
       {
-         var _loc4_:BagCell = new PersonalInfoCell(param1,param2,param3);
-         fillTipProp(_loc4_);
-         return _loc4_;
+         var cell:BagCell = new PersonalInfoCell(place,info,showLoading);
+         fillTipProp(cell);
+         return cell;
       }
       
-      public function createTreasureCell(param1:int, param2:ItemTemplateInfo = null, param3:Boolean = true) : ICell
+      public function createTreasureCell(place:int, info:ItemTemplateInfo = null, showLoading:Boolean = true) : ICell
       {
-         var _loc4_:MagicHouseTreasureCell = new MagicHouseTreasureCell(param1,param2,param3);
-         fillTipProp(_loc4_);
-         return _loc4_;
+         var cell:MagicHouseTreasureCell = new MagicHouseTreasureCell(place,info,showLoading);
+         fillTipProp(cell);
+         return cell;
       }
       
-      public function createBeadCell(param1:int, param2:ItemTemplateInfo = null, param3:Boolean = true) : ICell
+      public function createBeadCell(place:int, info:ItemTemplateInfo = null, showLoading:Boolean = true) : ICell
       {
-         var _loc4_:BeadCell = new BeadCell(param1,param2,param3);
-         fillTipProp(_loc4_);
-         return _loc4_;
+         var cell:BeadCell = new BeadCell(place,info,showLoading);
+         fillTipProp(cell);
+         return cell;
       }
       
       public function createShopPlayerItemCell() : ICell
       {
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,45,45);
-         _loc1_.graphics.endFill();
-         var _loc2_:ShopPlayerCell = new ShopPlayerCell(_loc1_);
-         fillTipProp(_loc2_);
-         return _loc2_;
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(16777215,0);
+         sp.graphics.drawRect(0,0,45,45);
+         sp.graphics.endFill();
+         var cell:ShopPlayerCell = new ShopPlayerCell(sp);
+         fillTipProp(cell);
+         return cell;
       }
       
       public function createShopCartItemCell() : ICell
       {
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,64,64);
-         _loc1_.graphics.endFill();
-         var _loc2_:ShopPlayerCell = new ShopPlayerCell(_loc1_);
-         fillTipProp(_loc2_);
-         return _loc2_;
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(16777215,0);
+         sp.graphics.drawRect(0,0,64,64);
+         sp.graphics.endFill();
+         var cell:ShopPlayerCell = new ShopPlayerCell(sp);
+         fillTipProp(cell);
+         return cell;
       }
       
       public function createShopColorItemCell() : ICell
       {
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,90,90);
-         _loc1_.graphics.endFill();
-         var _loc2_:ShopPlayerCell = new ShopPlayerCell(_loc1_);
-         fillTipProp(_loc2_);
-         return _loc2_;
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(16777215,0);
+         sp.graphics.drawRect(0,0,90,90);
+         sp.graphics.endFill();
+         var cell:ShopPlayerCell = new ShopPlayerCell(sp);
+         fillTipProp(cell);
+         return cell;
       }
       
-      public function createShopItemCell(param1:DisplayObject, param2:ItemTemplateInfo = null, param3:Boolean = true, param4:Boolean = true) : ICell
+      public function createShopItemCell(bg:DisplayObject, info:ItemTemplateInfo = null, showLoading:Boolean = true, showTip:Boolean = true) : ICell
       {
-         var _loc5_:ShopItemCell = new ShopItemCell(param1,param2,param3,param4);
-         fillTipProp(_loc5_);
-         return _loc5_;
+         var cell:ShopItemCell = new ShopItemCell(bg,info,showLoading,showTip);
+         fillTipProp(cell);
+         return cell;
       }
       
-      public function fillTipProp(param1:ICell) : void
+      public function fillTipProp(cell:ICell) : void
       {
-         param1.tipDirctions = "7,6,2,1,5,4,0,3,6";
-         param1.tipGapV = 10;
-         param1.tipGapH = 10;
-         param1.tipStyle = "core.GoodsTip";
+         cell.tipDirctions = "7,6,2,1,5,4,0,3,6";
+         cell.tipGapV = 10;
+         cell.tipGapH = 10;
+         cell.tipStyle = "core.GoodsTip";
       }
       
-      public function createWeeklyItemCell(param1:DisplayObject, param2:int) : ICell
+      public function createWeeklyItemCell(placeHolder:DisplayObject, templateID:int) : ICell
       {
-         var _loc3_:* = null;
-         var _loc5_:* = ShopManager.Instance.getShopItemByGoodsID(param2);
-         if(!_loc5_)
+         var t:* = null;
+         var info:* = ShopManager.Instance.getShopItemByGoodsID(templateID);
+         if(!info)
          {
-            _loc5_ = ItemManager.Instance.getTemplateById(param2);
+            info = ItemManager.Instance.getTemplateById(templateID);
          }
-         var _loc4_:ShopPlayerCell = new ShopPlayerCell(param1);
-         if(_loc5_ is ItemTemplateInfo)
+         var cell:ShopPlayerCell = new ShopPlayerCell(placeHolder);
+         if(info is ItemTemplateInfo)
          {
-            _loc4_.info = _loc5_;
+            cell.info = info;
          }
-         if(_loc5_ is ShopItemInfo)
+         if(info is ShopItemInfo)
          {
-            _loc3_ = new ShopCarItemInfo(_loc5_.GoodsID,_loc5_.TemplateID);
-            ObjectUtils.copyProperties(_loc3_,_loc5_);
-            _loc4_.shopItemInfo = _loc3_;
+            t = new ShopCarItemInfo(info.GoodsID,info.TemplateID);
+            ObjectUtils.copyProperties(t,info);
+            cell.shopItemInfo = t;
          }
-         ShowTipManager.Instance.removeTip(_loc4_);
-         return _loc4_;
+         ShowTipManager.Instance.removeTip(cell);
+         return cell;
       }
    }
 }

@@ -66,9 +66,9 @@ package trainer.view
          ChatManager.Instance.releaseFocus();
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             SoundManager.instance.play("008");
             NewHandGuideManager.Instance.mapID = 111;
@@ -78,9 +78,9 @@ package trainer.view
       
       public function show() : void
       {
-         var _loc1_:Point = ComponentFactory.Instance.creatCustomObject("trainer.posWelcome");
-         x = _loc1_.x;
-         y = _loc1_.y;
+         var pos:Point = ComponentFactory.Instance.creatCustomObject("trainer.posWelcome");
+         x = pos.x;
+         y = pos.y;
          LayerManager.Instance.addToLayer(this,2,false,1);
       }
    }

@@ -12,11 +12,11 @@ package yzhkof.ui
       
       private var _shadow:Boolean = false;
       
-      public function BackGroudContainer(param1:uint = 16777215, param2:Number = 1)
+      public function BackGroudContainer(color:uint = 16777215, alpha:Number = 1)
       {
          super();
-         this._color = param1;
-         this._alpha = param2;
+         this._color = color;
+         this._alpha = alpha;
          this.shadow = true;
       }
       
@@ -25,13 +25,13 @@ package yzhkof.ui
          return this._color;
       }
       
-      public function set color(param1:uint) : void
+      public function set color(value:uint) : void
       {
-         if(this._color == param1)
+         if(this._color == value)
          {
             return;
          }
-         this._color = param1;
+         this._color = value;
          commitChage("color");
       }
       
@@ -53,13 +53,13 @@ package yzhkof.ui
          return this._shadow;
       }
       
-      public function set shadow(param1:Boolean) : void
+      public function set shadow(value:Boolean) : void
       {
-         if(this._shadow == param1)
+         if(this._shadow == value)
          {
             return;
          }
-         this._shadow = param1;
+         this._shadow = value;
          filters = [new DropShadowFilter(0,0,0)];
       }
    }

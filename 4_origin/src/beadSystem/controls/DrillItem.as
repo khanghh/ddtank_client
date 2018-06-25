@@ -68,14 +68,14 @@ package beadSystem.controls
          return _itemInfo;
       }
       
-      public function setCellValue(param1:*) : void
+      public function setCellValue(value:*) : void
       {
-         _isInfoChanged = _date != param1;
-         _itemInfo = param1;
+         _isInfoChanged = _date != value;
+         _itemInfo = value;
          _date = !!_itemInfo?_itemInfo.itemInfo:null;
-         var _loc2_:GoodTipInfo = new GoodTipInfo();
-         _loc2_.itemInfo = !!_date?ItemManager.Instance.getTemplateById(_date.TemplateID):null;
-         tipData = _loc2_;
+         var tipInfo:GoodTipInfo = new GoodTipInfo();
+         tipInfo.itemInfo = !!_date?ItemManager.Instance.getTemplateById(_date.TemplateID):null;
+         tipData = tipInfo;
          update();
       }
       
@@ -96,12 +96,12 @@ package beadSystem.controls
          }
       }
       
-      private function __out(param1:MouseEvent) : void
+      private function __out(event:MouseEvent) : void
       {
          _overBg.visible = false;
       }
       
-      private function __over(param1:MouseEvent) : void
+      private function __over(event:MouseEvent) : void
       {
          _overBg.visible = true;
       }
@@ -111,15 +111,15 @@ package beadSystem.controls
          return _selected;
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         _selected = param1;
+         _selected = value;
       }
       
       private function creatIcon() : DisplayObject
       {
-         var _loc1_:String = PathManager.solveGoodsPath(_date.CategoryID,_date.Pic,_date.NeedSex == 1,"icon","A","1",_date.Level,false,_date.type);
-         return new BitmapLoaderProxy(_loc1_,new Rectangle(0,0,24,24));
+         var url:String = PathManager.solveGoodsPath(_date.CategoryID,_date.Pic,_date.NeedSex == 1,"icon","A","1",_date.Level,false,_date.type);
+         return new BitmapLoaderProxy(url,new Rectangle(0,0,24,24));
       }
       
       override public function get height() : Number

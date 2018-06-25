@@ -44,27 +44,27 @@ package gameCommon.view
       
       private var _effectType:String;
       
-      public function ItemCellView(param1:uint = 0, param2:DisplayObject = null, param3:Boolean = false, param4:String = "")
+      public function ItemCellView(index:uint = 0, item:DisplayObject = null, isCount:Boolean = false, EffectType:String = "")
       {
          super();
-         _effectType = param4;
+         _effectType = EffectType;
          _container = new Sprite();
          addChild(_container);
-         _index = param1;
+         _index = index;
          initItemBg();
          _container.addChild(_asset);
          _asset.x = -_asset.width / 2;
          _asset.y = -_asset.height / 2;
          _container.x = _asset.width / 2;
          _container.y = _asset.height / 2;
-         setItem(param2,false);
-         setEffectType(param4);
+         setItem(item,false);
+         setEffectType(EffectType);
       }
       
-      public function setClick(param1:Boolean, param2:Boolean, param3:Boolean) : void
+      public function setClick(clickAble:Boolean, isGray:Boolean, isExist:Boolean) : void
       {
-         _clickAble = param1;
-         setGrayII(param2,param3);
+         _clickAble = clickAble;
+         setGrayII(isGray,isExist);
       }
       
       protected function initItemBg() : void
@@ -72,9 +72,9 @@ package gameCommon.view
          _asset = ComponentFactory.Instance.creatBitmap("bagAndInfo.bag.propItemBgAssetAsset");
       }
       
-      private function setEffectType(param1:String) : void
+      private function setEffectType(EffectType:String) : void
       {
-         var _loc2_:* = param1;
+         var _loc2_:* = EffectType;
          if("rightPropView" !== _loc2_)
          {
             if("propShortCutView" === _loc2_)
@@ -99,7 +99,7 @@ package gameCommon.view
          return _asset.height;
       }
       
-      private function __click(param1:MouseEvent) : void
+      private function __click(event:MouseEvent) : void
       {
          stage.focus = this;
          if(_clickAble && _item)
@@ -117,7 +117,7 @@ package gameCommon.view
          __click(null);
       }
       
-      private function __over(param1:Event) : void
+      private function __over(event:Event) : void
       {
          if(!_isGray && _item && _effectType != "")
          {
@@ -129,7 +129,7 @@ package gameCommon.view
          }
       }
       
-      private function __out(param1:Event) : void
+      private function __out(event:Event) : void
       {
          hideEffect();
          dispatchEvent(new ItemEvent("itemOut",item,_index));
@@ -166,7 +166,7 @@ package gameCommon.view
       {
       }
       
-      private function __move(param1:MouseEvent) : void
+      private function __move(event:MouseEvent) : void
       {
          dispatchEvent(new ItemEvent("itemMove",item,_index));
       }
@@ -176,36 +176,36 @@ package gameCommon.view
          return _item;
       }
       
-      public function setItem(param1:DisplayObject, param2:Boolean) : void
+      public function setItem(value:DisplayObject, isGray:Boolean) : void
       {
-         var _loc3_:* = null;
+         var ps:* = null;
          if(_item)
          {
             removeEvent();
             ObjectUtils.disposeObject(_item);
          }
-         _item = param1;
+         _item = value;
          if(_item)
          {
             mouseEnabled = true;
             buttonMode = true;
             addEvent();
-            _loc3_ = new Sprite();
-            _container.addChild(_loc3_);
-            _loc3_.addChild(_item);
+            ps = new Sprite();
+            _container.addChild(ps);
+            ps.addChild(_item);
             if(_letterTip)
             {
-               _container.swapChildren(_loc3_,_letterTip);
+               _container.swapChildren(ps,_letterTip);
             }
-            _loc3_.x = -20;
-            _loc3_.y = -20;
+            ps.x = -20;
+            ps.y = -20;
             if(_item is PropItemView)
             {
-               setGrayII(param2,PropItemView(_item).isExist);
+               setGrayII(isGray,PropItemView(_item).isExist);
             }
             else
             {
-               setGrayII(param2,true);
+               setGrayII(isGray,true);
             }
          }
          else
@@ -239,7 +239,7 @@ package gameCommon.view
          removeEventListener("mouseMove",__move);
       }
       
-      public function seleted(param1:Boolean) : void
+      public function seleted(value:Boolean) : void
       {
       }
       
@@ -258,17 +258,17 @@ package gameCommon.view
          return _index;
       }
       
-      public function setBackgroundVisible(param1:Boolean) : void
+      public function setBackgroundVisible(value:Boolean) : void
       {
-         _asset.alpha = !!param1?1:0;
+         _asset.alpha = !!value?1:0;
       }
       
-      public function setGrayII(param1:Boolean, param2:Boolean) : void
+      public function setGrayII(isGray:Boolean, isExist:Boolean) : void
       {
          if(item)
          {
-            _isGray = param1;
-            if(!param1 && param2)
+            _isGray = isGray;
+            if(!isGray && isExist)
             {
                if(_isDisable)
                {

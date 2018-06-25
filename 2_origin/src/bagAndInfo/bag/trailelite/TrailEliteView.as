@@ -106,7 +106,7 @@ package bagAndInfo.bag.trailelite
          confirmBtn.addEventListener("click",_confirmBtnClickHandler);
       }
       
-      private function _confirmBtnClickHandler(param1:MouseEvent) : void
+      private function _confirmBtnClickHandler(e:MouseEvent) : void
       {
          onResponse(0);
       }

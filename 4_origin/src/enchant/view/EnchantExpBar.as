@@ -83,79 +83,79 @@ package enchant.view
          tipData = "0/0";
       }
       
-      public function initProgress(param1:Number, param2:Number) : void
+      public function initProgress(curExp:Number, sumExp:Number) : void
       {
-         var _loc3_:Number = NaN;
-         var _loc4_:int = 0;
+         var rate:Number = NaN;
+         var tempFrame:int = 0;
          _currentFrame = 0;
-         if(param2 > 0 && param1 < param2)
+         if(sumExp > 0 && curExp < sumExp)
          {
-            _loc3_ = param1 / param2;
-            _loc4_ = Math.floor(_loc3_ * _total);
-            if(_loc4_ < 1 && _loc3_ > 0)
+            rate = curExp / sumExp;
+            tempFrame = Math.floor(rate * _total);
+            if(tempFrame < 1 && rate > 0)
             {
-               _loc4_ = 1;
+               tempFrame = 1;
             }
-            _currentFrame = _loc4_;
+            _currentFrame = tempFrame;
          }
          setMask(_currentFrame);
-         setExpPercent(param1,param2);
+         setExpPercent(curExp,sumExp);
          _starMc.visible = false;
       }
       
-      public function setExpPercent(param1:Number, param2:Number) : void
+      public function setExpPercent(curExp:Number, sumExp:Number) : void
       {
-         tipData = param1 + "/" + param2;
-         var _loc3_:Number = param2 == 0?100:Number((param1 / param2 * 10000 / 100).toFixed(2));
-         _progressTxt.text = _loc3_ + "%";
+         tipData = curExp + "/" + sumExp;
+         var percent:Number = sumExp == 0?100:Number((curExp / sumExp * 10000 / 100).toFixed(2));
+         _progressTxt.text = percent + "%";
       }
       
-      public function setMask(param1:Number) : void
+      public function setMask(value:Number) : void
       {
-         var _loc2_:Number = param1 * _scaleValue;
-         if(isNaN(_loc2_) || _loc2_ == 0)
+         var tempWidth:Number = value * _scaleValue;
+         if(isNaN(tempWidth) || tempWidth == 0)
          {
             _progressBarMask.width = 0;
          }
          else
          {
-            if(_loc2_ >= _progressColorBg.width)
+            if(tempWidth >= _progressColorBg.width)
             {
-               _loc2_ = _loc2_ % _progressColorBg.width;
+               tempWidth = tempWidth % _progressColorBg.width;
             }
-            _progressBarMask.width = _loc2_;
+            _progressBarMask.width = tempWidth;
          }
          _starMc.x = _progressBarMask.x + _progressBarMask.width;
       }
       
-      public function updateProgress(param1:int, param2:int, param3:Boolean = false) : void
+      public function updateProgress(curExp:int, sumExp:int, isUpGrade:Boolean = false) : void
       {
-         _isUpGrade = param3;
-         _curExp = param1;
-         _sumExp = param2;
-         var _loc4_:Number = param1 / param2;
-         var _loc5_:int = !!_isUpGrade?_total:Math.floor(_loc4_ * _total);
-         if(_loc5_ < 1 && _loc4_ > 0)
+         _isUpGrade = isUpGrade;
+         _curExp = curExp;
+         _sumExp = sumExp;
+         var rate:Number = curExp / sumExp;
+         var tempFrame:int = !!_isUpGrade?_total:Math.floor(rate * _total);
+         if(tempFrame < 1 && rate > 0)
          {
-            _loc5_ = 1;
+            tempFrame = 1;
          }
          if(_isUpGrade)
          {
-            setExpPercent(param2,param2);
+            setExpPercent(sumExp,sumExp);
          }
          else
          {
-            setExpPercent(param1,param2);
+            setExpPercent(curExp,sumExp);
          }
-         if(_currentFrame != _loc5_)
+         if(_currentFrame != tempFrame)
          {
-            _destFrame = _loc5_;
+            _destFrame = tempFrame;
             _starMc.visible = true;
             addEventListener("enterFrame",__frameHandler);
          }
       }
       
-      protected function __frameHandler(param1:Event) : void
+      protected function __frameHandler(event:Event) : void
       {
          _currentFrame = Number(_currentFrame) + 1;
          setMask(_currentFrame);
@@ -172,7 +172,7 @@ package enchant.view
          }
       }
       
-      protected function __completeFrameHandler(param1:Event) : void
+      protected function __completeFrameHandler(event:Event) : void
       {
          if(_progressCompleteMc && _progressCompleteMc.currentFrame == _progressCompleteMc.totalFrames)
          {

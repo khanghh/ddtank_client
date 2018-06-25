@@ -23,41 +23,41 @@ package com.hurlant.crypto.prng
       
       private var pptr:int;
       
-      public function Random(param1:Class = null)
+      public function Random(prng:Class = null)
       {
-         var _loc2_:uint = 0;
+         var t:uint = 0;
          ready = false;
          seeded = false;
          super();
-         if(param1 == null)
+         if(prng == null)
          {
-            param1 = ARC4;
+            prng = ARC4;
          }
-         state = new param1() as IPRNG;
+         state = new prng() as IPRNG;
          psize = state.getPoolSize();
          pool = new ByteArray();
          pptr = 0;
          while(pptr < psize)
          {
-            _loc2_ = 65536 * Math.random();
-            pool[pptr++] = _loc2_ >>> 8;
-            pool[pptr++] = _loc2_ & 255;
+            t = 65536 * Math.random();
+            pool[pptr++] = t >>> 8;
+            pool[pptr++] = t & 255;
          }
          pptr = 0;
          seed();
       }
       
-      public function seed(param1:int = 0) : void
+      public function seed(x:int = 0) : void
       {
-         if(param1 == 0)
+         if(x == 0)
          {
-            param1 = new Date().getTime();
+            x = new Date().getTime();
          }
          var _loc2_:* = pptr++;
-         pool[_loc2_] = pool[_loc2_] ^ param1 & 255;
-         pool[pptr++] = pool[_loc3_] ^ param1 >> 8 & 255;
-         pool[pptr++] = pool[pptr++] ^ param1 >> 16 & 255;
-         pool[pptr++] = pool[pptr++] ^ param1 >> 24 & 255;
+         pool[_loc2_] = pool[_loc2_] ^ x & 255;
+         pool[pptr++] = pool[_loc3_] ^ x >> 8 & 255;
+         pool[pptr++] = pool[pptr++] ^ x >> 16 & 255;
+         pool[pptr++] = pool[pptr++] ^ x >> 24 & 255;
          pptr = pptr % psize;
          seeded = true;
       }
@@ -69,12 +69,10 @@ package com.hurlant.crypto.prng
       
       public function dispose() : void
       {
-         var _loc1_:uint = 0;
-         _loc1_ = 0;
-         while(_loc1_ < pool.length)
+         var i:uint = 0;
+         for(i = 0; i < pool.length; i++)
          {
-            pool[_loc1_] = Math.random() * 256;
-            _loc1_++;
+            pool[i] = Math.random() * 256;
          }
          pool.length = 0;
          pool = null;
@@ -87,25 +85,25 @@ package com.hurlant.crypto.prng
       
       public function autoSeed() : void
       {
-         var _loc1_:ByteArray = null;
-         var _loc2_:Array = null;
-         var _loc3_:Font = null;
-         _loc1_ = new ByteArray();
-         _loc1_.writeUnsignedInt(System.totalMemory);
-         _loc1_.writeUTF(Capabilities.serverString);
-         _loc1_.writeUnsignedInt(getTimer());
-         _loc1_.writeUnsignedInt(new Date().getTime());
-         _loc2_ = Font.enumerateFonts(true);
-         for each(_loc3_ in _loc2_)
+         var b:ByteArray = null;
+         var a:Array = null;
+         var f:Font = null;
+         b = new ByteArray();
+         b.writeUnsignedInt(System.totalMemory);
+         b.writeUTF(Capabilities.serverString);
+         b.writeUnsignedInt(getTimer());
+         b.writeUnsignedInt(new Date().getTime());
+         a = Font.enumerateFonts(true);
+         for each(f in a)
          {
-            _loc1_.writeUTF(_loc3_.fontName);
-            _loc1_.writeUTF(_loc3_.fontStyle);
-            _loc1_.writeUTF(_loc3_.fontType);
+            b.writeUTF(f.fontName);
+            b.writeUTF(f.fontStyle);
+            b.writeUTF(f.fontType);
          }
-         _loc1_.position = 0;
-         while(_loc1_.bytesAvailable >= 4)
+         b.position = 0;
+         while(b.bytesAvailable >= 4)
          {
-            seed(_loc1_.readUnsignedInt());
+            seed(b.readUnsignedInt());
          }
       }
       
@@ -125,11 +123,11 @@ package com.hurlant.crypto.prng
          return state.next();
       }
       
-      public function nextBytes(param1:ByteArray, param2:int) : void
+      public function nextBytes(buffer:ByteArray, length:int) : void
       {
-         while(param2--)
+         while(length--)
          {
-            param1.writeByte(nextByte());
+            buffer.writeByte(nextByte());
          }
       }
    }

@@ -17,9 +17,9 @@ package worldboss.player
          super();
       }
       
-      public function set id(param1:int) : void
+      public function set id(value:int) : void
       {
-         _id = param1;
+         _id = value;
       }
       
       public function get id() : int
@@ -27,9 +27,9 @@ package worldboss.player
          return _id;
       }
       
-      public function set name(param1:String) : void
+      public function set name(value:String) : void
       {
-         _name = param1;
+         _name = value;
       }
       
       public function get name() : String
@@ -37,9 +37,9 @@ package worldboss.player
          return _name;
       }
       
-      public function set damage(param1:int) : void
+      public function set damage(value:int) : void
       {
-         _damage = param1;
+         _damage = value;
       }
       
       public function get damage() : int
@@ -47,9 +47,9 @@ package worldboss.player
          return _damage;
       }
       
-      public function set percentage(param1:Number) : void
+      public function set percentage(value:Number) : void
       {
-         _percentage = param1;
+         _percentage = value;
       }
       
       public function get percentage() : Number
@@ -57,9 +57,9 @@ package worldboss.player
          return _percentage;
       }
       
-      public function getPercentage(param1:Number) : String
+      public function getPercentage(num:Number) : String
       {
-         return (_damage / param1 * 100).toString().substr(0,5) + "%";
+         return (_damage / num * 100).toString().substr(0,5) + "%";
       }
    }
 }

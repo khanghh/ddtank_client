@@ -58,10 +58,10 @@ package consortion.view.selfConsortia
       
       private var _line:MutipleImage;
       
-      public function ConsortionShopItem(param1:Boolean)
+      public function ConsortionShopItem($enable:Boolean)
       {
          super();
-         _enable = param1;
+         _enable = $enable;
          initView();
       }
       
@@ -80,11 +80,11 @@ package consortion.view.selfConsortia
          _selfRichText.text = LanguageMgr.GetTranslation("consortion.shop.selfRichOfferTxt.text");
          _selfRichTxt = ComponentFactory.Instance.creat("consortion.shop.selfRichOffer");
          _line = ComponentFactory.Instance.creatComponentByStylename("consortion.shopFrame.VerticalLine");
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,48,48);
-         _loc1_.graphics.endFill();
-         _cell = new BaseCell(_loc1_);
+         var sprite:Sprite = new Sprite();
+         sprite.graphics.beginFill(16777215,0);
+         sprite.graphics.drawRect(0,0,48,48);
+         sprite.graphics.endFill();
+         _cell = new BaseCell(sprite);
          PositionUtils.setPos(_cell,"consortion.shopItem.CellPos");
          _limitCount = ComponentFactory.Instance.creatComponentByStylename("consortion.shopItem.limitCount");
          addChild(_bg);
@@ -106,15 +106,14 @@ package consortion.view.selfConsortia
       
       private function removeEvent() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < 3)
+         var i:int = 0;
+         for(i = 0; i < 3; )
          {
-            if(_btnArr[_loc1_])
+            if(_btnArr[i])
             {
-               _btnArr[_loc1_].removeEventListener("click",__clickHandler);
+               _btnArr[i].removeEventListener("click",__clickHandler);
             }
-            _loc1_++;
+            i++;
          }
          if(_info)
          {
@@ -122,14 +121,14 @@ package consortion.view.selfConsortia
          }
       }
       
-      private function __limitChange(param1:Event) : void
+      private function __limitChange(event:Event) : void
       {
          _limitCount.text = String(_info.LimitCount);
       }
       
-      public function set setFilters(param1:Boolean) : void
+      public function set setFilters(b:Boolean) : void
       {
-         if(param1)
+         if(b)
          {
             var _loc2_:* = null;
             _bg.filters = _loc2_;
@@ -143,9 +142,9 @@ package consortion.view.selfConsortia
          }
       }
       
-      public function set info(param1:ShopItemInfo) : void
+      public function set info($info:ShopItemInfo) : void
       {
-         if(_info == param1 || !param1)
+         if(_info == $info || !$info)
          {
             return;
          }
@@ -153,19 +152,19 @@ package consortion.view.selfConsortia
          {
             _info.removeEventListener("change",__limitChange);
          }
-         _info = param1;
+         _info = $info;
          _info.addEventListener("change",__limitChange);
          upView();
       }
       
-      public function set neededRich(param1:int) : void
+      public function set neededRich(num:int) : void
       {
-         _selfRichTxt.text = String(param1);
+         _selfRichTxt.text = String(num);
       }
       
       private function upView() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _cell.info = _info.TemplateInfo;
          _nameTxt.text = _info.TemplateInfo.Name;
          _limitCount.text = String(_info.LimitCount);
@@ -174,91 +173,90 @@ package consortion.view.selfConsortia
          _selfRichBg.visible = true;
          _selfRichText.visible = true;
          _selfRichTxt.visible = true;
-         _loc1_ = 0;
-         while(_loc1_ < 3)
+         for(i = 0; i < 3; )
          {
-            if(_info.getItemPrice(_loc1_ + 1).IsValid)
+            if(_info.getItemPrice(i + 1).IsValid)
             {
-               _btnArr[_loc1_] = new ConsortionShopItemBtn();
-               addChild(_btnArr[_loc1_]);
-               PositionUtils.setPos(_btnArr[_loc1_],"consortion.shopItem.btnPos" + _loc1_);
-               _btnArr[_loc1_].setValue(_info.getItemPrice(_loc1_ + 1).toString(),_info.getTimeToString(_loc1_ + 1));
-               _btnArr[_loc1_].addEventListener("click",__clickHandler);
+               _btnArr[i] = new ConsortionShopItemBtn();
+               addChild(_btnArr[i]);
+               PositionUtils.setPos(_btnArr[i],"consortion.shopItem.btnPos" + i);
+               _btnArr[i].setValue(_info.getItemPrice(i + 1).toString(),_info.getTimeToString(i + 1));
+               _btnArr[i].addEventListener("click",__clickHandler);
             }
-            _loc1_++;
+            i++;
          }
       }
       
-      private function __clickHandler(param1:MouseEvent) : void
+      private function __clickHandler(event:MouseEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
-         var _loc4_:* = null;
+         var type:int = 0;
+         var alert:* = null;
+         var _quickFrame:* = null;
          SoundManager.instance.play("008");
-         var _loc3_:ConsortionShopItemBtn = param1.currentTarget as ConsortionShopItemBtn;
-         _time = _btnArr.indexOf(_loc3_) + 1;
-         var _loc6_:ItemPrice = _info.getItemPrice(_time);
-         if(_loc6_.bothMoneyValue > 0)
+         var target:ConsortionShopItemBtn = event.currentTarget as ConsortionShopItemBtn;
+         _time = _btnArr.indexOf(target) + 1;
+         var itemPrice:ItemPrice = _info.getItemPrice(_time);
+         if(itemPrice.bothMoneyValue > 0)
          {
-            _loc5_ = 3;
+            type = 3;
          }
          else if(_info.getItemPrice(_time).bandDdtMoneyValue > 0)
          {
-            _loc5_ = 4;
+            type = 4;
          }
-         else if(_loc6_.badgeValue > 0)
+         else if(itemPrice.badgeValue > 0)
          {
-            _loc5_ = 6;
+            type = 6;
          }
-         else if(_loc6_.gesteValue > 0)
+         else if(itemPrice.gesteValue > 0)
          {
-            _loc5_ = 2;
+            type = 2;
          }
-         if(checkMoney(_loc5_))
+         if(checkMoney(type))
          {
-            if(_loc6_.goldValue > 0)
+            if(itemPrice.goldValue > 0)
             {
-               _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.common.AddPricePanel.pay"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
-               _loc2_.addEventListener("response",__onResponse);
+               alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.common.AddPricePanel.pay"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
+               alert.addEventListener("response",__onResponse);
                return;
             }
-            _loc4_ = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
-            _loc4_.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
-            _loc4_.setItemID(_info.TemplateID,_loc5_,_time);
-            _loc4_.buyFrom = 0;
-            _loc4_.addEventListener("shortcutBuy",__shortCutBuyHandler);
-            _loc4_.addEventListener("removedFromStage",removeFromStageHandler);
-            LayerManager.Instance.addToLayer(_loc4_,2,true,1);
+            _quickFrame = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
+            _quickFrame.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
+            _quickFrame.setItemID(_info.TemplateID,type,_time);
+            _quickFrame.buyFrom = 0;
+            _quickFrame.addEventListener("shortcutBuy",__shortCutBuyHandler);
+            _quickFrame.addEventListener("removedFromStage",removeFromStageHandler);
+            LayerManager.Instance.addToLayer(_quickFrame,2,true,1);
             if(_info && _info.TemplateID == 11179)
             {
-               _loc4_.hideSelectedBand();
+               _quickFrame.hideSelectedBand();
             }
          }
       }
       
-      private function removeFromStageHandler(param1:Event) : void
+      private function removeFromStageHandler(event:Event) : void
       {
          BagStore.instance.reduceTipPanelNumber();
       }
       
-      private function __shortCutBuyHandler(param1:ShortcutBuyEvent) : void
+      private function __shortCutBuyHandler(evt:ShortcutBuyEvent) : void
       {
-         param1.stopImmediatePropagation();
-         dispatchEvent(new ShortcutBuyEvent(param1.ItemID,param1.ItemNum));
+         evt.stopImmediatePropagation();
+         dispatchEvent(new ShortcutBuyEvent(evt.ItemID,evt.ItemNum));
       }
       
-      private function __onResponse(param1:FrameEvent) : void
+      private function __onResponse(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onResponse);
-         if(_loc2_.parent)
+         var alert:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",__onResponse);
+         if(alert.parent)
          {
-            _loc2_.parent.removeChild(_loc2_);
+            alert.parent.removeChild(alert);
          }
-         ObjectUtils.disposeObject(_loc2_);
-         _loc2_ = null;
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         ObjectUtils.disposeObject(alert);
+         alert = null;
+         if(e.responseCode == 3 || e.responseCode == 2)
          {
             if(_info)
             {
@@ -269,18 +267,18 @@ package consortion.view.selfConsortia
       
       private function sendConsortiaShop() : void
       {
-         var _loc1_:Array = [_info.GoodsID];
-         var _loc5_:Array = [_time];
-         var _loc2_:Array = [""];
-         var _loc3_:Array = [false];
-         var _loc6_:Array = [""];
-         var _loc4_:Array = [-1];
-         SocketManager.Instance.out.sendBuyGoods(_loc1_,_loc5_,_loc2_,_loc4_,_loc3_,_loc6_);
+         var items:Array = [_info.GoodsID];
+         var types:Array = [_time];
+         var colors:Array = [""];
+         var dresses:Array = [false];
+         var skins:Array = [""];
+         var places:Array = [-1];
+         SocketManager.Instance.out.sendBuyGoods(items,types,colors,places,dresses,skins);
       }
       
-      private function checkMoney(param1:int) : Boolean
+      private function checkMoney(type:int) : Boolean
       {
-         var _loc2_:* = null;
+         var goldAlert:* = null;
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
@@ -296,26 +294,26 @@ package consortion.view.selfConsortia
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.consortia.consortiashop.ConsortiaShopItem.checkMoney"));
             return false;
          }
-         var _loc3_:ItemPrice = _info.getItemPrice(_time);
-         if(param1 == 3)
+         var price:ItemPrice = _info.getItemPrice(_time);
+         if(type == 3)
          {
-            if(PlayerManager.Instance.Self.Money < _loc3_.bothMoneyValue)
+            if(PlayerManager.Instance.Self.Money < price.bothMoneyValue)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("treasureHunting.tip1"));
                return false;
             }
          }
-         else if(param1 == 6)
+         else if(type == 6)
          {
-            if(PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(12567) < _loc3_.badgeValue)
+            if(PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(12567) < price.badgeValue)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ConsortiaShopItem.badgebuzu"));
                return false;
             }
          }
-         else if(param1 == 2)
+         else if(type == 2)
          {
-            if(PlayerManager.Instance.Self.Offer < _loc3_.gesteValue)
+            if(PlayerManager.Instance.Self.Offer < price.gesteValue)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ConsortiaShopItem.gongXunbuzu"));
                return false;
@@ -323,49 +321,48 @@ package consortion.view.selfConsortia
          }
          else if(PlayerManager.Instance.Self.Gold < _info.getItemPrice(_time).goldValue)
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.GoldInadequate"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
-            _loc2_.moveEnable = false;
-            _loc2_.addEventListener("response",__quickBuyResponse);
+            goldAlert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.GoldInadequate"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
+            goldAlert.moveEnable = false;
+            goldAlert.addEventListener("response",__quickBuyResponse);
             return false;
          }
          return true;
       }
       
-      private function __quickBuyResponse(param1:FrameEvent) : void
+      private function __quickBuyResponse(evt:FrameEvent) : void
       {
-         var _loc3_:* = null;
+         var quickBuy:* = null;
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__quickBuyResponse);
-         _loc2_.dispose();
-         if(_loc2_.parent)
+         var frame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("response",__quickBuyResponse);
+         frame.dispose();
+         if(frame.parent)
          {
-            _loc2_.parent.removeChild(_loc2_);
+            frame.parent.removeChild(frame);
          }
-         _loc2_ = null;
-         if(param1.responseCode == 3)
+         frame = null;
+         if(evt.responseCode == 3)
          {
-            _loc3_ = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
-            _loc3_.itemID = 11233;
-            _loc3_.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
-            LayerManager.Instance.addToLayer(_loc3_,3,true,1);
+            quickBuy = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
+            quickBuy.itemID = 11233;
+            quickBuy.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
+            LayerManager.Instance.addToLayer(quickBuy,3,true,1);
          }
       }
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          removeEvent();
          _info = null;
-         _loc1_ = 0;
-         while(_loc1_ < 3)
+         for(i = 0; i < 3; )
          {
-            if(_btnArr[_loc1_])
+            if(_btnArr[i])
             {
-               ObjectUtils.disposeObject(_btnArr[_loc1_]);
+               ObjectUtils.disposeObject(_btnArr[i]);
             }
-            _btnArr[_loc1_] = null;
-            _loc1_++;
+            _btnArr[i] = null;
+            i++;
          }
          ObjectUtils.disposeAllChildren(this);
          _bg = null;

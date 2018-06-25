@@ -17,44 +17,42 @@ package shop
          super();
       }
       
-      public function initialize(param1:Array) : void
+      public function initialize(list:Array) : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          _controller = new ShopController();
          _model = new ShopModel();
-         _tempList = param1;
+         _tempList = list;
          _type = 1;
          init();
          initEvent();
-         _loc2_ = 0;
-         while(_loc2_ < param1.length)
+         for(i = 0; i < list.length; )
          {
-            _model.addToShoppingCar(param1[_loc2_] as ShopCarItemInfo);
-            _loc2_++;
+            _model.addToShoppingCar(list[i] as ShopCarItemInfo);
+            i++;
          }
-         setList(param1);
+         setList(list);
          ChangeCloseButtonState(false);
       }
       
-      private function ChangeCloseButtonState(param1:Boolean = true) : void
+      private function ChangeCloseButtonState(value:Boolean = true) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < _cartList.numChildren)
+         var item:* = null;
+         var i:int = 0;
+         for(i = 0; i < _cartList.numChildren; )
          {
-            _loc2_ = _cartList.getChildAt(_loc3_) as ShopCartItem;
-            if(_loc2_)
+            item = _cartList.getChildAt(i) as ShopCartItem;
+            if(item)
             {
-               _loc2_.showCloseButton = param1;
+               item.showCloseButton = value;
             }
-            _loc3_++;
+            i++;
          }
       }
       
-      public function setType(param1:Boolean = false) : void
+      public function setType(value:Boolean = false) : void
       {
-         if(param1)
+         if(value)
          {
             _type = 1;
             _purchaseConfirmationBtn.visible = true;
@@ -70,26 +68,25 @@ package shop
       
       override protected function updateTxt() : void
       {
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
-         var _loc1_:* = null;
-         var _loc3_:int = 0;
+         var itemCount:int = 0;
+         var i:int = 0;
+         var item:* = null;
+         var _totalPrice1:int = 0;
          _totalPrice = 0;
-         _loc4_ = 0;
-         while(_loc4_ < _cartList.numChildren)
+         for(i = 0; i < _cartList.numChildren; )
          {
-            _loc1_ = (_cartList.getChildAt(_loc4_) as ShopCartItem).shopItemInfo;
-            if(_loc1_)
+            item = (_cartList.getChildAt(i) as ShopCartItem).shopItemInfo;
+            if(item)
             {
-               _loc2_++;
-               _totalPrice = _totalPrice + _loc1_.AValue1;
-               _loc3_ = _loc3_ + _loc1_.AValue2;
+               itemCount++;
+               _totalPrice = _totalPrice + item.AValue1;
+               _totalPrice1 = _totalPrice1 + item.AValue2;
             }
-            _loc4_++;
+            i++;
          }
-         _commodityNumberText.text = _loc2_.toString();
+         _commodityNumberText.text = itemCount.toString();
          _commodityPricesText1.text = _totalPrice.toString();
-         _commodityPricesText2.text = _loc3_.toString();
+         _commodityPricesText2.text = _totalPrice1.toString();
       }
       
       override public function dispose() : void

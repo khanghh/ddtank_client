@@ -55,7 +55,7 @@ package drgnBoat.views
          super();
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
          if(!DrgnBoatManager.instance.isInGame)
          {
@@ -66,7 +66,7 @@ package drgnBoat.views
          InviteManager.Instance.enabled = false;
          CacheSysManager.lock("sevenDoubleInRoom");
          KeyboardShortcutsManager.Instance.forbiddenFull();
-         super.enter(param1,param2);
+         super.enter(prev,data);
          LayerManager.Instance.clearnGameDynamic();
          LayerManager.Instance.clearnStageDynamic();
          MainToolBar.Instance.hide();
@@ -117,75 +117,75 @@ package drgnBoat.views
          DrgnBoatManager.instance.addEventListener("drgnBoatArrive",arriveHandler);
       }
       
-      private function destroyHandler(param1:Event) : void
+      private function destroyHandler(e:Event) : void
       {
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("drgnBoat.timeEnd.tipTxt"),LanguageMgr.GetTranslation("ok"),"",true,false,false,1);
-         _loc2_.moveEnable = false;
-         _loc2_.addEventListener("response",returnMainState,false,0,true);
+         var confirmFrame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("drgnBoat.timeEnd.tipTxt"),LanguageMgr.GetTranslation("ok"),"",true,false,false,1);
+         confirmFrame.moveEnable = false;
+         confirmFrame.addEventListener("response",returnMainState,false,0,true);
          _mapView.endGame();
       }
       
-      private function arriveHandler(param1:DrgnBoatEvent) : void
+      private function arriveHandler(event:DrgnBoatEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:Object = param1.data;
-         if(_loc2_.zoneId == PlayerManager.Instance.Self.ZoneID && _loc2_.id == PlayerManager.Instance.Self.ID)
+         var confirmFrame:* = null;
+         var tmpData:Object = event.data;
+         if(tmpData.zoneId == PlayerManager.Instance.Self.ZoneID && tmpData.id == PlayerManager.Instance.Self.ID)
          {
-            _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("drgnBoat.arrive.tipTxt"),LanguageMgr.GetTranslation("ok"),"",true,false,false,1);
-            _loc3_.moveEnable = false;
-            _loc3_.addEventListener("response",returnMainState,false,0,true);
+            confirmFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("drgnBoat.arrive.tipTxt"),LanguageMgr.GetTranslation("ok"),"",true,false,false,1);
+            confirmFrame.moveEnable = false;
+            confirmFrame.addEventListener("response",returnMainState,false,0,true);
             _mapView.endGame();
          }
       }
       
-      private function returnMainState(param1:FrameEvent) : void
+      private function returnMainState(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",returnMainState);
+         var confirmFrame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",returnMainState);
          StateManager.setState("main");
       }
       
-      private function __startLoading(param1:Event) : void
+      private function __startLoading(e:Event) : void
       {
          StateManager.getInGame_Step_6 = true;
          ChatManager.Instance.input.faceEnabled = false;
          LayerManager.Instance.clearnGameDynamic();
-         var _loc2_:* = getDefinitionByName("gameCommon.GameControl");
-         if(_loc2_)
+         var gameControl:* = getDefinitionByName("gameCommon.GameControl");
+         if(gameControl)
          {
-            StateManager.setState("roomLoading",_loc2_.instance.Current);
+            StateManager.setState("roomLoading",gameControl.instance.Current);
             StateManager.getInGame_Step_7 = true;
          }
       }
       
-      private function allReadyHandler(param1:DrgnBoatEvent) : void
+      private function allReadyHandler(event:DrgnBoatEvent) : void
       {
          if(_waitMc)
          {
             _waitMc.gotoAndStop(2);
          }
-         if(param1.data.isShowStartCountDown)
+         if(event.data.isShowStartCountDown)
          {
-            _gameStartCountDownView = new DrgnBoatStartCountDown(doStartGame,[param1.data.endTime,param1.data.sprintEndTime]);
+            _gameStartCountDownView = new DrgnBoatStartCountDown(doStartGame,[event.data.endTime,event.data.sprintEndTime]);
             addChild(_gameStartCountDownView);
             _mapView.npcChat(LanguageMgr.GetTranslation("drgnBoat.npc.start"));
          }
          else
          {
-            doStartGame(param1.data.endTime,param1.data.sprintEndTime);
+            doStartGame(event.data.endTime,event.data.sprintEndTime);
          }
       }
       
-      private function doStartGame(param1:Date, param2:Date) : void
+      private function doStartGame(endTime:Date, sprintEndTime:Date) : void
       {
          if(!_mapView)
          {
             return;
          }
          _mapView.startGame();
-         _countDownView.setCountDown(param1);
-         _mapView.npcArriveTime = param2;
+         _countDownView.setCountDown(endTime);
+         _mapView.npcArriveTime = sprintEndTime;
          _threeBtnView.mouseChildren = true;
          _threeBtnView.mouseEnabled = true;
       }
@@ -199,7 +199,7 @@ package drgnBoat.views
          DrgnBoatManager.instance.removeEventListener("drgnBoatArrive",arriveHandler);
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
          InviteManager.Instance.enabled = true;
          CacheSysManager.unlock("sevenDoubleInRoom");
@@ -208,7 +208,7 @@ package drgnBoat.views
          LayerManager.Instance.clearnGameDynamic();
          LayerManager.Instance.clearnStageDynamic();
          removeEvent();
-         super.leaving(param1);
+         super.leaving(next);
          _mapView.arriveCountDown = null;
          ObjectUtils.disposeObject(_mapView);
          _mapView = null;

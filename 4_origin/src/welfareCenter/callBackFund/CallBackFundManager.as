@@ -63,7 +63,7 @@ package welfareCenter.callBackFund
       
       public var dailyRewardInfoList:Array;
       
-      public function CallBackFundManager(param1:IEventDispatcher = null)
+      public function CallBackFundManager(target:IEventDispatcher = null)
       {
          super();
          _instance = this;
@@ -85,75 +85,74 @@ package welfareCenter.callBackFund
          SocketManager.Instance.addEventListener(PkgEvent.format(343,7),onPackTypeFundInfo);
       }
       
-      public function templateDataSetup(param1:Array) : void
+      public function templateDataSetup(dataList:Array) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         if(param1)
+         var i:int = 0;
+         var info:* = null;
+         if(dataList)
          {
             downRewardInfoList = [];
             dailyRewardInfoList = [];
-            _loc3_ = 0;
-            while(_loc3_ < param1.length)
+            for(i = 0; i < dataList.length; )
             {
-               _loc2_ = param1[_loc3_];
-               if(_loc2_.Quality == 1)
+               info = dataList[i];
+               if(info.Quality == 1)
                {
-                  downRewardInfoList.push(_loc2_);
+                  downRewardInfoList.push(info);
                }
                else
                {
-                  dailyRewardInfoList.push(_loc2_);
+                  dailyRewardInfoList.push(info);
                }
-               _loc3_++;
+               i++;
             }
          }
       }
       
-      public function createCell(param1:CallBackFundRewardInfo) : BagCell
+      public function createCell(info:CallBackFundRewardInfo) : BagCell
       {
-         var _loc3_:InventoryItemInfo = CallBackFundManager.instance.getInventoryItemInfo(param1);
-         if(_loc3_ == null)
+         var itemInfo:InventoryItemInfo = CallBackFundManager.instance.getInventoryItemInfo(info);
+         if(itemInfo == null)
          {
             return null;
          }
-         var _loc2_:BagCell = new BagCell(0,_loc3_,true);
-         _loc2_.width = 64;
-         _loc2_.height = 64;
-         _loc2_.setCount(_loc3_.Count);
-         return _loc2_;
+         var _cell:BagCell = new BagCell(0,itemInfo,true);
+         _cell.width = 64;
+         _cell.height = 64;
+         _cell.setCount(itemInfo.Count);
+         return _cell;
       }
       
-      public function getInventoryItemInfo(param1:CallBackFundRewardInfo) : InventoryItemInfo
+      public function getInventoryItemInfo(info:CallBackFundRewardInfo) : InventoryItemInfo
       {
-         var _loc3_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(param1.TemplateID);
-         var _loc2_:InventoryItemInfo = new InventoryItemInfo();
-         ObjectUtils.copyProperties(_loc2_,_loc3_);
-         _loc2_.LuckCompose = param1.TemplateID;
-         _loc2_.ValidDate = param1.ValidDate;
-         _loc2_.Count = param1.Count;
-         _loc2_.IsBinds = param1.IsBind;
-         _loc2_.StrengthenLevel = param1.StrengthLevel;
-         _loc2_.AttackCompose = param1.AttackCompose;
-         _loc2_.DefendCompose = param1.DefendCompose;
-         _loc2_.AgilityCompose = param1.AgilityCompose;
-         _loc2_.LuckCompose = param1.LuckCompose;
-         return _loc2_;
+         var tempInfo:ItemTemplateInfo = ItemManager.Instance.getTemplateById(info.TemplateID);
+         var tInfo:InventoryItemInfo = new InventoryItemInfo();
+         ObjectUtils.copyProperties(tInfo,tempInfo);
+         tInfo.LuckCompose = info.TemplateID;
+         tInfo.ValidDate = info.ValidDate;
+         tInfo.Count = info.Count;
+         tInfo.IsBinds = info.IsBind;
+         tInfo.StrengthenLevel = info.StrengthLevel;
+         tInfo.AttackCompose = info.AttackCompose;
+         tInfo.DefendCompose = info.DefendCompose;
+         tInfo.AgilityCompose = info.AgilityCompose;
+         tInfo.LuckCompose = info.LuckCompose;
+         return tInfo;
       }
       
-      private function onPackTypeBuyFund(param1:PkgEvent) : void
+      private function onPackTypeBuyFund(evt:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         isBuyFund = _loc2_.readBoolean();
-         buyFundTime = _loc2_.readDate();
+         var pkg:PackageIn = evt.pkg;
+         isBuyFund = pkg.readBoolean();
+         buyFundTime = pkg.readDate();
          updateLastGetRewardTime();
          dispatchEvent(new Event("event_state_change"));
       }
       
-      private function onPackTypeGetFund(param1:PkgEvent) : void
+      private function onPackTypeGetFund(evt:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         lastGetRewardTime = _loc2_.readDate();
+         var pkg:PackageIn = evt.pkg;
+         lastGetRewardTime = pkg.readDate();
          updateLastGetRewardTime();
          if(_state == 3)
          {
@@ -164,22 +163,22 @@ package welfareCenter.callBackFund
          dispatchEvent(new Event("event_state_change"));
       }
       
-      private function onPackTypeFundInfo(param1:PkgEvent) : void
+      private function onPackTypeFundInfo(evt:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         startTime = _loc2_.readDate();
-         endTime = _loc2_.readDate();
-         buyFundTime = _loc2_.readDate();
-         lastGetRewardTime = _loc2_.readDate();
-         isBuyFund = _loc2_.readBoolean();
-         firstReturnCount = _loc2_.readInt();
-         dailyReturnCount = _loc2_.readInt();
-         buyFundCount = _loc2_.readInt();
+         var pkg:PackageIn = evt.pkg;
+         startTime = pkg.readDate();
+         endTime = pkg.readDate();
+         buyFundTime = pkg.readDate();
+         lastGetRewardTime = pkg.readDate();
+         isBuyFund = pkg.readBoolean();
+         firstReturnCount = pkg.readInt();
+         dailyReturnCount = pkg.readInt();
+         buyFundCount = pkg.readInt();
          totalReturnCount = firstReturnCount + 6 * dailyReturnCount;
          updateLastGetRewardTime();
-         var _loc3_:Number = TimeManager.Instance.NowTime();
-         _isOpen = PlayerManager.Instance.Self.isOld2 && (!isBuyFund && _loc3_ >= startTime.time && _loc3_ <= endTime.time || isBuyFund && _state != 3);
-         if(PlayerManager.Instance.Self.isOld2 && (!isBuyFund && _loc3_ >= startTime.time && _loc3_ <= endTime.time))
+         var nowDateTime:Number = TimeManager.Instance.NowTime();
+         _isOpen = PlayerManager.Instance.Self.isOld2 && (!isBuyFund && nowDateTime >= startTime.time && nowDateTime <= endTime.time || isBuyFund && _state != 3);
+         if(PlayerManager.Instance.Self.isOld2 && (!isBuyFund && nowDateTime >= startTime.time && nowDateTime <= endTime.time))
          {
             if(_timer)
             {
@@ -195,10 +194,10 @@ package welfareCenter.callBackFund
          WelfareCenterManager.instance.showMainIcon();
       }
       
-      private function onCheckOpenTimer(param1:TimerEvent) : void
+      private function onCheckOpenTimer(evt:TimerEvent) : void
       {
-         var _loc2_:Number = TimeManager.Instance.NowTime();
-         _isOpen = PlayerManager.Instance.Self.isOld2 && (!isBuyFund && _loc2_ >= startTime.time && _loc2_ <= endTime.time || isBuyFund && _state != 3);
+         var nowDateTime:Number = TimeManager.Instance.NowTime();
+         _isOpen = PlayerManager.Instance.Self.isOld2 && (!isBuyFund && nowDateTime >= startTime.time && nowDateTime <= endTime.time || isBuyFund && _state != 3);
          if(!_isOpen)
          {
             _timer.stop();
@@ -209,32 +208,32 @@ package welfareCenter.callBackFund
       
       public function getLeftReceiveTime() : int
       {
-         var _loc1_:Date = getBuyFundTimeAfter6Day();
-         return int((_loc1_.time - lastGetRewardTime.time) / 86400000);
+         var buyFundTimeAfter6Day:Date = getBuyFundTimeAfter6Day();
+         return int((buyFundTimeAfter6Day.time - lastGetRewardTime.time) / 86400000);
       }
       
       public function getBuyFundTimeAfter6Day() : Date
       {
-         var _loc1_:Date = new Date(buyFundTime.time + 518400000);
-         _loc1_.hours = 23;
-         _loc1_.minutes = 59;
-         _loc1_.seconds = 59;
-         return _loc1_;
+         var buyFundTimeAfter6Day:Date = new Date(buyFundTime.time + 518400000);
+         buyFundTimeAfter6Day.hours = 23;
+         buyFundTimeAfter6Day.minutes = 59;
+         buyFundTimeAfter6Day.seconds = 59;
+         return buyFundTimeAfter6Day;
       }
       
       private function updateLastGetRewardTime() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:Date = TimeManager.Instance.Now();
+         var buyFundTimeAfter6Day:* = null;
+         var nowDate:Date = TimeManager.Instance.Now();
          _state = 0;
          if(isBuyFund)
          {
-            _loc2_ = getBuyFundTimeAfter6Day();
-            if(_loc2_.time > _loc1_.time)
+            buyFundTimeAfter6Day = getBuyFundTimeAfter6Day();
+            if(buyFundTimeAfter6Day.time > nowDate.time)
             {
-               if(_loc1_.fullYear == lastGetRewardTime.fullYear && _loc1_.month == lastGetRewardTime.month && _loc1_.date == lastGetRewardTime.date)
+               if(nowDate.fullYear == lastGetRewardTime.fullYear && nowDate.month == lastGetRewardTime.month && nowDate.date == lastGetRewardTime.date)
                {
-                  if(_loc2_.date == lastGetRewardTime.date)
+                  if(buyFundTimeAfter6Day.date == lastGetRewardTime.date)
                   {
                      _state = 3;
                   }
@@ -258,8 +257,8 @@ package welfareCenter.callBackFund
       
       public function getTodayBindQuanNum() : int
       {
-         var _loc1_:Date = TimeManager.Instance.Now();
-         if(_loc1_.fullYear == buyFundTime.fullYear && _loc1_.month == buyFundTime.month && _loc1_.date == buyFundTime.date)
+         var nowDate:Date = TimeManager.Instance.Now();
+         if(nowDate.fullYear == buyFundTime.fullYear && nowDate.month == buyFundTime.month && nowDate.date == buyFundTime.date)
          {
             return firstReturnCount;
          }
@@ -276,9 +275,9 @@ package welfareCenter.callBackFund
          return _state;
       }
       
-      public function set state(param1:int) : void
+      public function set state(value:int) : void
       {
-         _state = param1;
+         _state = value;
       }
    }
 }

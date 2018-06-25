@@ -14,16 +14,16 @@ package ddt.view.caddyII
       
       private var _isSellGoods:Boolean;
       
-      public function CaddyCell(param1:int, param2:ItemTemplateInfo = null, param3:Boolean = true, param4:Sprite = null)
+      public function CaddyCell(index:int, info:ItemTemplateInfo = null, showLoading:Boolean = true, bg:Sprite = null)
       {
-         super(param1,param2,param3,param4);
+         super(index,info,showLoading,bg);
          tipDirctions = "7,5,2,6,4,1";
          addEventListener("click",__click);
       }
       
-      override public function dragDrop(param1:DragEffect) : void
+      override public function dragDrop(effect:DragEffect) : void
       {
-         if(param1.data is SellGoodsBtn)
+         if(effect.data is SellGoodsBtn)
          {
             _isSellGoods = true;
          }
@@ -33,10 +33,10 @@ package ddt.view.caddyII
          }
       }
       
-      override public function set info(param1:ItemTemplateInfo) : void
+      override public function set info(value:ItemTemplateInfo) : void
       {
-         .super.info = param1;
-         if(param1 != null)
+         .super.info = value;
+         if(value != null)
          {
             buttonMode = true;
          }
@@ -46,7 +46,7 @@ package ddt.view.caddyII
          }
       }
       
-      private function __click(param1:MouseEvent) : void
+      private function __click(event:MouseEvent) : void
       {
          if(info && !_isSellGoods)
          {

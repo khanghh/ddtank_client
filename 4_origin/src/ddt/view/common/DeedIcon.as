@@ -51,7 +51,7 @@ package ddt.view.common
          ShowTipManager.Instance.addTip(this);
       }
       
-      protected function __openDeedFrameHandlder(param1:MouseEvent) : void
+      protected function __openDeedFrameHandlder(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(!judgeOpen())
@@ -74,34 +74,34 @@ package ddt.view.common
       
       private function openConfirmFrame() : void
       {
-         var _loc2_:String = LanguageMgr.GetTranslation("ddt.deedFrame.openPromptTxt",payMoney);
+         var msg:String = LanguageMgr.GetTranslation("ddt.deedFrame.openPromptTxt",payMoney);
          if(_isOpen)
          {
-            _loc2_ = LanguageMgr.GetTranslation("ddt.deedFrame.openPromptTxt2",DeedManager.instance.deedTimeStr.toLowerCase(),payMoney);
+            msg = LanguageMgr.GetTranslation("ddt.deedFrame.openPromptTxt2",DeedManager.instance.deedTimeStr.toLowerCase(),payMoney);
          }
-         var _loc1_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc2_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"SimpleAlert",30,true,1);
-         _loc1_.moveEnable = false;
-         _loc1_.addEventListener("response",__confirm);
+         var confirmFrame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),msg,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"SimpleAlert",30,true,1);
+         confirmFrame.moveEnable = false;
+         confirmFrame.addEventListener("response",__confirm);
       }
       
-      private function __confirm(param1:FrameEvent) : void
+      private function __confirm(evt:FrameEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc4_:* = null;
+         var id:int = 0;
+         var msg:* = null;
          SoundManager.instance.play("008");
-         var _loc3_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
-            _loc2_ = PlayerManager.Instance.Self.ID;
-            _loc4_ = "";
-            if(BuriedManager.Instance.checkMoney(_loc3_.isBand,payMoney))
+            id = PlayerManager.Instance.Self.ID;
+            msg = "";
+            if(BuriedManager.Instance.checkMoney(confirmFrame.isBand,payMoney))
             {
                return;
             }
-            SocketManager.Instance.out.sendOpenDeed(10,_loc2_,_loc4_,_loc3_.isBand);
-            _loc3_.dispose();
+            SocketManager.Instance.out.sendOpenDeed(10,id,msg,confirmFrame.isBand);
+            confirmFrame.dispose();
          }
-         _loc3_.removeEventListener("response",__confirm);
+         confirmFrame.removeEventListener("response",__confirm);
       }
       
       private function updateIcon() : void
@@ -146,15 +146,15 @@ package ddt.view.common
          DeedManager.instance.removeEventListener("update_main_event",__refreshBtnState);
       }
       
-      private function __refreshBtnState(param1:Event) : void
+      private function __refreshBtnState(event:Event) : void
       {
          _isOpen = DeedManager.instance.isOpen;
          updateIcon();
       }
       
-      public function setInfo(param1:Boolean, param2:Boolean) : void
+      public function setInfo(isOpen:Boolean, isSelf:Boolean) : void
       {
-         _isOpen = param1;
+         _isOpen = isOpen;
          updateIcon();
          addEvent();
       }
@@ -179,29 +179,29 @@ package ddt.view.common
          return _tipGapH;
       }
       
-      public function set tipStyle(param1:String) : void
+      public function set tipStyle(value:String) : void
       {
-         _tipStyle = param1;
+         _tipStyle = value;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(value:Object) : void
       {
-         _tipData = param1;
+         _tipData = value;
       }
       
-      public function set tipDirctions(param1:String) : void
+      public function set tipDirctions(value:String) : void
       {
-         _tipDirctions = param1;
+         _tipDirctions = value;
       }
       
-      public function set tipGapV(param1:int) : void
+      public function set tipGapV(value:int) : void
       {
-         _tipGapV = param1;
+         _tipGapV = value;
       }
       
-      public function set tipGapH(param1:int) : void
+      public function set tipGapH(value:int) : void
       {
-         _tipGapH = param1;
+         _tipGapH = value;
       }
       
       public function asDisplayObject() : DisplayObject

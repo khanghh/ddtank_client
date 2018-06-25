@@ -41,23 +41,23 @@ package christmas.view.makingSnowmenView
          _upGradeMc.visible = false;
       }
       
-      public function upGradeAction(param1:ChristmasSystemItemsInfo) : void
+      public function upGradeAction(info:ChristmasSystemItemsInfo) : void
       {
-         _info = param1;
+         _info = info;
          if(!_info.isUp)
          {
-            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("christmas.curInfo.upgradeExp",param1.num));
+            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("christmas.curInfo.upgradeExp",info.num));
             ChristmasCoreController.instance.expBar.initBar(ChristmasCoreController.instance.model.exp,ChristmasCoreController.instance.model.totalExp);
             return;
          }
-         MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("christmas.curInfo.succe",param1.snowNum));
+         MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("christmas.curInfo.succe",info.snowNum));
          _upGradeMc.visible = true;
          _upGradeMc.gotoAndPlay(1);
          ChristmasCoreController.instance.expBar.initBar(ChristmasCoreController.instance.model.totalExp,ChristmasCoreController.instance.model.totalExp);
          addEventListener("enterFrame",enterframeHander);
       }
       
-      private function enterframeHander(param1:Event) : void
+      private function enterframeHander(e:Event) : void
       {
          if(_upGradeMc.currentFrame == _upGradeMc.totalFrames - 1)
          {

@@ -211,7 +211,7 @@ package consortion.view.club
          ConsortionModelManager.Instance.model.removeEventListener("myApplyListIsChange",__recordListChange);
       }
       
-      private function __createConsortionHandler(param1:MouseEvent) : void
+      private function __createConsortionHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -219,32 +219,32 @@ package consortion.view.club
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:CreateConsortionFrame = ComponentFactory.Instance.creatComponentByStylename("createConsortionFrame");
-         LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+         var createConsortia:CreateConsortionFrame = ComponentFactory.Instance.creatComponentByStylename("createConsortionFrame");
+         LayerManager.Instance.addToLayer(createConsortia,3,true,1);
       }
       
-      private function __addToStageHandler(param1:Event) : void
+      private function __addToStageHandler(event:Event) : void
       {
          _searchInput.addEventListener("click",__focusInHandler);
          _searchInput.addEventListener("focusOut",__focusOutHandler);
          _searchInput.addEventListener("keyDown",__keyDownHandler);
       }
       
-      private function __keyDownHandler(param1:KeyboardEvent) : void
+      private function __keyDownHandler(event:KeyboardEvent) : void
       {
-         if(param1.keyCode == 13)
+         if(event.keyCode == 13)
          {
             __sarchWithInputHandler(null);
          }
       }
       
-      private function __recordBtnClickHandler(param1:MouseEvent) : void
+      private function __recordBtnClickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          __recordListChange(null);
       }
       
-      private function __recordListChange(param1:ConsortionEvent) : void
+      private function __recordListChange(event:ConsortionEvent) : void
       {
          switch(int(_recordGroup.selectIndex))
          {
@@ -256,7 +256,7 @@ package consortion.view.club
          }
       }
       
-      private function __applyHandler(param1:MouseEvent) : void
+      private function __applyHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.Grade < 17)
@@ -281,14 +281,14 @@ package consortion.view.club
          SocketManager.Instance.out.sendConsortiaTryIn(_consortionList.currentItem.info.ConsortiaID);
       }
       
-      private function __randomSearchHandler(param1:MouseEvent) : void
+      private function __randomSearchHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _consortiaClubPage = Number(_consortiaClubPage) + 1;
-         var _loc2_:int = ConsortionModelManager.Instance.model.consortionsListTotalCount;
-         if(_loc2_ != 0)
+         var totalCount:int = ConsortionModelManager.Instance.model.consortionsListTotalCount;
+         if(totalCount != 0)
          {
-            if(_consortiaClubPage > _loc2_)
+            if(_consortiaClubPage > totalCount)
             {
                _consortiaClubPage = 1;
             }
@@ -300,7 +300,7 @@ package consortion.view.club
          ConsortionModelManager.Instance.getConsortionList(ConsortionModelManager.Instance.clubSearchConsortions,_consortiaClubPage,6);
       }
       
-      private function __selectedOneConsortion(param1:ConsortionEvent) : void
+      private function __selectedOneConsortion(event:ConsortionEvent) : void
       {
          if(PlayerManager.Instance.Self.IsWeakGuildFinish(15) && !PlayerManager.Instance.Self.IsWeakGuildFinish(65))
          {
@@ -318,14 +318,14 @@ package consortion.view.club
          _applyBtn.enable = true;
       }
       
-      private function __consortionListComplete(param1:ConsortionEvent) : void
+      private function __consortionListComplete(event:ConsortionEvent) : void
       {
          _consortionList.setListData(ConsortionModelManager.Instance.model.consortionList);
          _declaration.text = "";
          _applyBtn.enable = false;
       }
       
-      private function __focusInHandler(param1:MouseEvent) : void
+      private function __focusInHandler(event:MouseEvent) : void
       {
          if(_searchInput.text == LanguageMgr.GetTranslation("tank.consortia.club.searchTxt"))
          {
@@ -333,7 +333,7 @@ package consortion.view.club
          }
       }
       
-      private function __focusOutHandler(param1:FocusEvent) : void
+      private function __focusOutHandler(event:FocusEvent) : void
       {
          if(_searchInput.text == "")
          {
@@ -341,14 +341,14 @@ package consortion.view.club
          }
       }
       
-      private function __sarchWithInputHandler(param1:MouseEvent) : void
+      private function __sarchWithInputHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _consortiaClubPage = Number(_consortiaClubPage) + 1;
-         var _loc2_:int = ConsortionModelManager.Instance.model.consortionsListTotalCount;
-         if(_loc2_ != 0)
+         var totalCount:int = ConsortionModelManager.Instance.model.consortionsListTotalCount;
+         if(totalCount != 0)
          {
-            if(_consortiaClubPage > _loc2_)
+            if(_consortiaClubPage > totalCount)
             {
                _consortiaClubPage = 1;
             }

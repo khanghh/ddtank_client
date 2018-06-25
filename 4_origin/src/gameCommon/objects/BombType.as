@@ -56,6 +56,8 @@ package gameCommon.objects
       public static const POISON:int = 30;
       
       public static const BUFF_BALL1:int = 31;
+      
+      public static const REDUCEDANDER:int = 33;
        
       
       public function BombType()

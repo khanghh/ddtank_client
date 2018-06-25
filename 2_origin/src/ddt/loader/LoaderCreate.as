@@ -152,8 +152,15 @@ package ddt.loader
    import ddtKingWay.DDTKingWayManager;
    import ddtKingWay.analyzer.DDTKingWayDataAnalyzer;
    import defendisland.DefendislandManager;
+   import devilTurn.DevilTurnManager;
+   import devilTurn.analyze.DevilTurnBoxConvertAnalyzer;
+   import devilTurn.analyze.DevilTurnGoodsItemAnalyzer;
+   import devilTurn.analyze.DevilTurnPointShopAnalyzer;
+   import devilTurn.analyze.DevilTurnRankRewardAnalyzer;
    import dragonBoat.DragonBoatManager;
    import dragonBoat.analyzer.DragonBoatActiveDataAnalyzer;
+   import dreamlandChallenge.DreamlandChallengeManager;
+   import dreamlandChallenge.analyzer.UnrealRankRewardAnalyzer;
    import enchant.EnchantInfoAnalyzer;
    import enchant.EnchantManager;
    import explorerManual.ExplorerManualManager;
@@ -267,6 +274,7 @@ package ddt.loader
    import totem.TotemManager;
    import totem.data.HonorUpDataAnalyz;
    import totem.data.TotemDataAnalyz;
+   import totem.data.TotemUpGradeAnalyz;
    import uiModeManager.bombUI.BombGameFixedMapAnalyzer;
    import uiModeManager.bombUI.HappyLittleGameManager;
    import uiModeManager.bombUI.model.bomb.BombGameRandomMapAnalyzer;
@@ -304,295 +312,302 @@ package ddt.loader
       
       public function createAudioILoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveSoundSwf(),4);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingAudioIFail");
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveSoundSwf(),4);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingAudioIFail");
+         return loader;
       }
       
       public function createAudioIILoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveSoundSwf2(),4);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingAudioIIFail");
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveSoundSwf2(),4);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingAudioIIFail");
+         return loader;
       }
       
       public function createAudioLiteLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveSoundSwf3(),4);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingAudioIIFail");
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveSoundSwf3(),4);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingAudioIIFail");
+         return loader;
       }
       
-      public function loadExppression(param1:Function) : void
+      public function createAudioBattleLoader() : BaseLoader
       {
-         var _loc2_:ModuleLoader = LoadResourceManager.Instance.createLoader(PathManager.getExpressionPath(),4);
-         _loc2_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingExpressionResourcesFailure");
-         LoadResourceManager.Instance.startLoad(_loc2_);
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveSoundSwfBattle(),4);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingAudioBattleFail");
+         return loader;
+      }
+      
+      public function loadExppression(fun:Function) : void
+      {
+         var loader:ModuleLoader = LoadResourceManager.Instance.createLoader(PathManager.getExpressionPath(),4);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingExpressionResourcesFailure");
+         LoadResourceManager.Instance.startLoad(loader);
       }
       
       public function creatBallInfoLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("BallList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingBombMetadataFailure");
-         _loc1_.analyzer = new BallInfoAnalyzer(BallManager.instance.setup);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("BallList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingBombMetadataFailure");
+         loader.analyzer = new BallInfoAnalyzer(BallManager.instance.setup);
+         return loader;
       }
       
       public function creatBoxTempInfoLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("LoadBoxTemp.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingChestsListFailure");
-         _loc1_.analyzer = new BoxTempInfoAnalyzer(BossBoxManager.instance.setupBoxTempInfo);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("LoadBoxTemp.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingChestsListFailure");
+         loader.analyzer = new BoxTempInfoAnalyzer(BossBoxManager.instance.setupBoxTempInfo);
+         return loader;
       }
       
       public function creatDungeonInfoLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("LoadPVEItems.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingCopyMapsInformationFailure");
-         _loc1_.analyzer = new DungeonAnalyzer(MapManager.setupDungeonInfo);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("LoadPVEItems.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingCopyMapsInformationFailure");
+         loader.analyzer = new DungeonAnalyzer(MapManager.setupDungeonInfo);
+         return loader;
       }
       
       public function creatFriendListLoader() : BaseLoader
       {
-         var _loc2_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         _loc2_["id"] = PlayerManager.Instance.Self.ID;
-         _loc2_["uname"] = PlayerManager.Instance.Account.Account;
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("IMListLoad.ashx"),7,_loc2_);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingBuddyListFailure");
-         _loc1_.analyzer = new FriendListAnalyzer(PlayerManager.Instance.setupFriendList);
-         return _loc1_;
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         args["id"] = PlayerManager.Instance.Self.ID;
+         args["uname"] = PlayerManager.Instance.Account.Account;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("IMListLoad.ashx"),7,args);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingBuddyListFailure");
+         loader.analyzer = new FriendListAnalyzer(PlayerManager.Instance.setupFriendList);
+         return loader;
       }
       
       public function creatMyacademyPlayerListLoader() : BaseLoader
       {
-         var _loc2_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         _loc2_["RelationshipID"] = PlayerManager.Instance.Self.masterID;
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("UserApprenticeshipInfoList.ashx"),6,_loc2_);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.data.analyze.MyAcademyPlayersAnalyze");
-         _loc1_.analyzer = new MyAcademyPlayersAnalyze(PlayerManager.Instance.setupMyacademyPlayers);
-         return _loc1_;
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         args["RelationshipID"] = PlayerManager.Instance.Self.masterID;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("UserApprenticeshipInfoList.ashx"),6,args);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.data.analyze.MyAcademyPlayersAnalyze");
+         loader.analyzer = new MyAcademyPlayersAnalyze(PlayerManager.Instance.setupMyacademyPlayers);
+         return loader;
       }
       
       public function creatGoodCategoryLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("LoadItemsCategory.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingItemTypeFailure");
-         _loc1_.analyzer = new GoodCategoryAnalyzer(ItemManager.Instance.setupGoodsCategory);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("LoadItemsCategory.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingItemTypeFailure");
+         loader.analyzer = new GoodCategoryAnalyzer(ItemManager.Instance.setupGoodsCategory);
+         return loader;
       }
       
       public function creatItemTempleteLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("TemplateAllList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingGoodsTemplateFailure");
-         _loc1_.analyzer = new ItemTempleteAnalyzer(ItemManager.Instance.setupGoodsTemplates);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("TemplateAllList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingGoodsTemplateFailure");
+         loader.analyzer = new ItemTempleteAnalyzer(ItemManager.Instance.setupGoodsTemplates);
+         return loader;
       }
       
       public function creatItemTempleteReload() : BaseLoader
       {
          _reloadCount = _reloadCount + 1;
-         var _loc2_:URLVariables = new URLVariables();
-         _loc2_["lv"] = LoaderSavingManager.Version + _reloadCount;
-         _loc2_["rnd"] = TextLoader.TextLoaderKey + _reloadCount.toString();
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ShopBox.xml"),2,_loc2_);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingNewGoodsTemplateFailure");
-         _loc1_.analyzer = new ItemTempleteAnalyzer(ItemManager.Instance.addGoodsTemplates);
-         return _loc1_;
+         var variables:URLVariables = new URLVariables();
+         variables["lv"] = LoaderSavingManager.Version + _reloadCount;
+         variables["rnd"] = TextLoader.TextLoaderKey + _reloadCount.toString();
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ShopBox.xml"),2,variables);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingNewGoodsTemplateFailure");
+         loader.analyzer = new ItemTempleteAnalyzer(ItemManager.Instance.addGoodsTemplates);
+         return loader;
       }
       
       public function creatSuitTempleteLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.solveRequestPath("SuitTemplateInfoList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingGoodsTemplateFailure");
-         _loc1_.analyzer = new SuitTempleteAnalyzer(ItemManager.Instance.setupSuitTemplates);
-         return _loc1_;
+         var loader:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.solveRequestPath("SuitTemplateInfoList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingGoodsTemplateFailure");
+         loader.analyzer = new SuitTempleteAnalyzer(ItemManager.Instance.setupSuitTemplates);
+         return loader;
       }
       
       public function creatEquipSuitTempleteLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.solveRequestPath("SuitPartEquipInfoList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingGoodsTemplateFailure");
-         _loc1_.analyzer = new EquipSuitTempleteAnalyzer(ItemManager.Instance.setupEquipSuitTemplates);
-         return _loc1_;
+         var loader:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.solveRequestPath("SuitPartEquipInfoList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingGoodsTemplateFailure");
+         loader.analyzer = new EquipSuitTempleteAnalyzer(ItemManager.Instance.setupEquipSuitTemplates);
+         return loader;
       }
       
       public function creatBadgeInfoLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ConsortiaBadgeConfig.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingBadgeInfoFailure");
-         _loc1_.analyzer = new BadgeInfoAnalyzer(BadgeInfoManager.instance.setup);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ConsortiaBadgeConfig.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingBadgeInfoFailure");
+         loader.analyzer = new BadgeInfoAnalyzer(BadgeInfoManager.instance.setup);
+         return loader;
       }
       
       public function creatMovingNotificationLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.getMovingNotificationPath(),2);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingAnnouncementFailure");
-         _loc1_.analyzer = new MovingNotificationAnalyzer(MovingNotificationManager.Instance.setup);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.getMovingNotificationPath(),2);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingAnnouncementFailure");
+         loader.analyzer = new MovingNotificationAnalyzer(MovingNotificationManager.Instance.setup);
+         return loader;
       }
       
       public function creatDailyInfoLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("DailyAwardList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingLoginFailedRewardInformation");
-         _loc1_.analyzer = new DaylyGiveAnalyzer(CalendarManager.getInstance().setDailyInfo);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("DailyAwardList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingLoginFailedRewardInformation");
+         loader.analyzer = new DaylyGiveAnalyzer(CalendarManager.getInstance().setDailyInfo);
+         return loader;
       }
       
       public function creatMapInfoLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("LoadMapsItems.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadMapInformationFailure");
-         _loc1_.analyzer = new MapAnalyzer(MapManager.setupMapInfo);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("LoadMapsItems.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadMapInformationFailure");
+         loader.analyzer = new MapAnalyzer(MapManager.setupMapInfo);
+         return loader;
       }
       
       public function creatOpenMapInfoLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("MapServerList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingOpenMapListFailure");
-         _loc1_.analyzer = new WeekOpenMapAnalyze(MapManager.setupOpenMapInfo);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("MapServerList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingOpenMapListFailure");
+         loader.analyzer = new WeekOpenMapAnalyze(MapManager.setupOpenMapInfo);
+         return loader;
       }
       
       public function creatQuestTempleteLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("QuestList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingTaskListFailure");
-         _loc1_.analyzer = new QuestListAnalyzer(TaskManager.instance.setup);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("QuestList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingTaskListFailure");
+         loader.analyzer = new QuestListAnalyzer(TaskManager.instance.setup);
+         return loader;
       }
       
       public function creatQuestTempleteReload() : BaseLoader
       {
          _reloadQuestCount = _reloadQuestCount + 1;
-         var _loc2_:URLVariables = new URLVariables();
-         _loc2_["lv"] = LoaderSavingManager.Version + _reloadQuestCount;
-         _loc2_["rnd"] = TextLoader.TextLoaderKey + _reloadQuestCount.toString();
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("QuestList.xml"),5,_loc2_);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingTaskListFailure");
-         _loc1_.analyzer = new QuestListAnalyzer(TaskManager.instance.reloadNewQuest);
-         return _loc1_;
+         var variables:URLVariables = new URLVariables();
+         variables["lv"] = LoaderSavingManager.Version + _reloadQuestCount;
+         variables["rnd"] = TextLoader.TextLoaderKey + _reloadQuestCount.toString();
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("QuestList.xml"),5,variables);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingTaskListFailure");
+         loader.analyzer = new QuestListAnalyzer(TaskManager.instance.reloadNewQuest);
+         return loader;
       }
       
       public function creatRegisterLoader() : BaseLoader
       {
-         var _loc1_:* = getDefinitionByName("register.RegisterState");
-         var _loc3_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         _loc3_["Sex"] = _loc1_.SelectedSex;
-         _loc3_["NickName"] = _loc1_.Nickname;
-         _loc3_["Name"] = PlayerManager.Instance.Account.Account;
-         _loc3_["Pass"] = PlayerManager.Instance.Account.Password;
-         _loc3_["site"] = "";
-         var _loc2_:RequestLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("VisualizeRegister.ashx"),6,_loc3_);
-         _loc2_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.FailedToRegister");
-         _loc2_.analyzer = new RegisterAnalyzer(null);
-         return _loc2_;
+         var RegisterState:* = getDefinitionByName("register.RegisterState");
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         args["Sex"] = RegisterState.SelectedSex;
+         args["NickName"] = RegisterState.Nickname;
+         args["Name"] = PlayerManager.Instance.Account.Account;
+         args["Pass"] = PlayerManager.Instance.Account.Password;
+         args["site"] = "";
+         var loader:RequestLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("VisualizeRegister.ashx"),6,args);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.FailedToRegister");
+         loader.analyzer = new RegisterAnalyzer(null);
+         return loader;
       }
       
       public function creatSelectListLoader() : BaseLoader
       {
-         var _loc2_:URLVariables = new URLVariables();
-         _loc2_["rnd"] = Math.random();
-         _loc2_["username"] = PlayerManager.Instance.Account.Account;
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("LoginSelectList.ashx"),6,_loc2_);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingRoleListFailure");
-         _loc1_.analyzer = new LoginSelectListAnalyzer(SelectListManager.Instance.setup);
-         return _loc1_;
+         var args:URLVariables = new URLVariables();
+         args["rnd"] = Math.random();
+         args["username"] = PlayerManager.Instance.Account.Account;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("LoginSelectList.ashx"),6,args);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingRoleListFailure");
+         loader.analyzer = new LoginSelectListAnalyzer(SelectListManager.Instance.setup);
+         return loader;
       }
       
       public function creatServerListLoader() : BaseLoader
       {
-         var _loc2_:URLVariables = new URLVariables();
-         _loc2_["rnd"] = Math.random();
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ServerList.ashx"),6,_loc2_);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingServerListFailure");
-         _loc1_.analyzer = new ServerListAnalyzer(ServerManager.Instance.setup);
-         return _loc1_;
+         var args:URLVariables = new URLVariables();
+         args["rnd"] = Math.random();
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ServerList.ashx"),6,args);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingServerListFailure");
+         loader.analyzer = new ServerListAnalyzer(ServerManager.Instance.setup);
+         return loader;
       }
       
       public function createCardSetsSortRule() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("CardInfoList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.cardSystem.loadfail.setsSortRule");
-         _loc1_.analyzer = new SetsSortRuleAnalyzer(CardManager.Instance.initSetsSortRule);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("CardInfoList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.cardSystem.loadfail.setsSortRule");
+         loader.analyzer = new SetsSortRuleAnalyzer(CardManager.Instance.initSetsSortRule);
+         return loader;
       }
       
       public function createCardSetsProperties() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("CardBuffList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.cardSystem.loadfail.setsProperties");
-         _loc1_.analyzer = new SetsPropertiesAnalyzer(CardManager.Instance.initSetsProperties);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("CardBuffList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.cardSystem.loadfail.setsProperties");
+         loader.analyzer = new SetsPropertiesAnalyzer(CardManager.Instance.initSetsProperties);
+         return loader;
       }
       
       public function creatShopTempleteLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ShopItemList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingStoreItemsFail");
-         _loc1_.analyzer = new ShopItemAnalyzer(ShopManager.Instance.setup);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ShopItemList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingStoreItemsFail");
+         loader.analyzer = new ShopItemAnalyzer(ShopManager.Instance.setup);
+         return loader;
       }
       
       public function creatGoodsAdditionLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ItemStrengthenPlusData.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingGoodsAdditionFail");
-         _loc1_.analyzer = new GoodsAdditionAnalyer(GoodsAdditioner.Instance.addGoodsAddition);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ItemStrengthenPlusData.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingGoodsAdditionFail");
+         loader.analyzer = new GoodsAdditionAnalyer(GoodsAdditioner.Instance.addGoodsAddition);
+         return loader;
       }
       
       public function creatShopSortLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ShopGoodsShowList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.TheClassificationOfGoodsLoadingShopFailure");
-         _loc1_.analyzer = new ShopItemSortAnalyzer(ShopManager.Instance.sortShopItems);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ShopGoodsShowList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.TheClassificationOfGoodsLoadingShopFailure");
+         loader.analyzer = new ShopItemSortAnalyzer(ShopManager.Instance.sortShopItems);
+         return loader;
       }
       
       public function creatAllQuestionInfoLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("LoadAllQuestions.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingTestFailure");
-         _loc1_.analyzer = new QuestionInfoAnalyze(QuestionInfoMannager.Instance.analyzer);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("LoadAllQuestions.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingTestFailure");
+         loader.analyzer = new QuestionInfoAnalyze(QuestionInfoMannager.Instance.analyzer);
+         return loader;
       }
       
       public function creatUserBoxInfoLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("LoadUserBox.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingChestsInformationFailure");
-         _loc1_.analyzer = new UserBoxInfoAnalyzer(BossBoxManager.instance.setupBoxInfo);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("LoadUserBox.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingChestsInformationFailure");
+         loader.analyzer = new UserBoxInfoAnalyzer(BossBoxManager.instance.setupBoxInfo);
+         return loader;
       }
       
       public function creatZhanLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.getZhanPath(),2);
-         _loc1_.loadErrorMessage = "LoadingDirtyCharacterSheetsFailure";
-         _loc1_.analyzer = new FilterWordAnalyzer(FilterWordManager.setup);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.getZhanPath(),2);
+         loader.loadErrorMessage = "LoadingDirtyCharacterSheetsFailure";
+         loader.analyzer = new FilterWordAnalyzer(FilterWordManager.setup);
+         return loader;
       }
       
       public function createConsortiaLoader() : BaseLoader
       {
-         var _loc2_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         _loc2_["id"] = PlayerManager.Instance.Self.ID;
-         _loc2_["page"] = 1;
-         _loc2_["size"] = 10000;
-         _loc2_["order"] = -1;
-         _loc2_["consortiaID"] = PlayerManager.Instance.Self.ConsortiaID;
-         _loc2_["userID"] = -1;
-         _loc2_["state"] = -1;
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ConsortiaUsersList.ashx"),7,_loc2_);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingGuildMembersListFailure");
-         _loc1_.analyzer = new ConsortionMemberAnalyer(ConsortionModelManager.Instance.memberListComplete);
-         return _loc1_;
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         args["id"] = PlayerManager.Instance.Self.ID;
+         args["page"] = 1;
+         args["size"] = 10000;
+         args["order"] = -1;
+         args["consortiaID"] = PlayerManager.Instance.Self.ConsortiaID;
+         args["userID"] = -1;
+         args["state"] = -1;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ConsortiaUsersList.ashx"),7,args);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingGuildMembersListFailure");
+         loader.analyzer = new ConsortionMemberAnalyer(ConsortionModelManager.Instance.memberListComplete);
+         return loader;
       }
       
       public function createCalendarRequest() : BaseLoader
@@ -602,148 +617,148 @@ package ddt.loader
       
       public function getMyConsortiaData() : BaseLoader
       {
-         var _loc1_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         _loc1_["page"] = 1;
-         _loc1_["size"] = 1;
-         _loc1_["name"] = "";
-         _loc1_["level"] = -1;
-         _loc1_["ConsortiaID"] = PlayerManager.Instance.Self.ConsortiaID;
-         _loc1_["order"] = -1;
-         _loc1_["openApply"] = -1;
-         var _loc2_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ConsortiaList.ashx"),7,_loc1_);
-         _loc2_.loadErrorMessage = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.LoadMyconsortiaInfoError");
-         _loc2_.analyzer = new ConsortionListAnalyzer(ConsortionModelManager.Instance.selfConsortionComplete);
-         return _loc2_;
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         args["page"] = 1;
+         args["size"] = 1;
+         args["name"] = "";
+         args["level"] = -1;
+         args["ConsortiaID"] = PlayerManager.Instance.Self.ConsortiaID;
+         args["order"] = -1;
+         args["openApply"] = -1;
+         var loadConsortias:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ConsortiaList.ashx"),7,args);
+         loadConsortias.loadErrorMessage = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.LoadMyconsortiaInfoError");
+         loadConsortias.analyzer = new ConsortionListAnalyzer(ConsortionModelManager.Instance.selfConsortionComplete);
+         return loadConsortias;
       }
       
       public function creatFeedbackInfoLoader() : BaseLoader
       {
-         var _loc2_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         _loc2_["userid"] = PlayerManager.Instance.Self.ID;
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("AdvanceQuestionRead.ashx"),6,_loc2_);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingComplainInformationFailure");
-         _loc1_.analyzer = new LoadFeedbackReplyAnalyzer(FeedbackManager.instance.setupFeedbackData);
-         return _loc1_;
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         args["userid"] = PlayerManager.Instance.Self.ID;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("AdvanceQuestionRead.ashx"),6,args);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingComplainInformationFailure");
+         loader.analyzer = new LoadFeedbackReplyAnalyzer(FeedbackManager.instance.setupFeedbackData);
+         return loader;
       }
       
       public function creatExpericenceAnalyzeLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("LevelList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingAchievementTemplateFormFailure");
-         _loc1_.analyzer = new ExpericenceAnalyze(Experience.setup);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("LevelList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingAchievementTemplateFormFailure");
+         loader.analyzer = new ExpericenceAnalyze(Experience.setup);
+         return loader;
       }
       
       public function creatPetExpericenceAnalyzeLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("PetLevelInfo.xml"),2);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingPetExpirenceTemplateFormFailure");
-         _loc1_.analyzer = new PetExpericenceAnalyze(PetExperience.setup);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("PetLevelInfo.xml"),2);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingPetExpirenceTemplateFormFailure");
+         loader.analyzer = new PetExpericenceAnalyze(PetExperience.setup);
+         return loader;
       }
       
       public function creatTexpExpLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ExerciseInfoList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingTexpExpFailure");
-         _loc1_.analyzer = new TexpExpAnalyze(TexpManager.Instance.setup);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ExerciseInfoList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingTexpExpFailure");
+         loader.analyzer = new TexpExpAnalyze(TexpManager.Instance.setup);
+         return loader;
       }
       
       public function creatRingSystemLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("LoveLeveList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingRingSystemFailure");
-         _loc1_.analyzer = new RingDataAnalyzer(BagAndInfoManager.Instance.loadRingSystemInfo);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("LoveLeveList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingRingSystemFailure");
+         loader.analyzer = new RingDataAnalyzer(BagAndInfoManager.Instance.loadRingSystemInfo);
+         return loader;
       }
       
       public function creatWeaponBallAnalyzeLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("BombConfig.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingWeaponBallListFormFailure");
-         _loc1_.analyzer = new WeaponBallInfoAnalyze(WeaponBallManager.setup);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("BombConfig.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingWeaponBallListFormFailure");
+         loader.analyzer = new WeaponBallInfoAnalyze(WeaponBallManager.setup);
+         return loader;
       }
       
       public function creatDailyLeagueAwardLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("DailyLeagueAward.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingDailyLeagueAwardFailure");
-         _loc1_.analyzer = new DailyLeagueAwardAnalyzer(DailyLeagueManager.Instance.setup);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("DailyLeagueAward.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingDailyLeagueAwardFailure");
+         loader.analyzer = new DailyLeagueAwardAnalyzer(DailyLeagueManager.Instance.setup);
+         return loader;
       }
       
       public function creatDailyLeagueLevelLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("DailyLeagueLevel.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingDailyLeagueLevelFailure");
-         _loc1_.analyzer = new DailyLeagueLevelAnalyzer(DailyLeagueManager.Instance.setup);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("DailyLeagueLevel.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingDailyLeagueLevelFailure");
+         loader.analyzer = new DailyLeagueLevelAnalyzer(DailyLeagueManager.Instance.setup);
+         return loader;
       }
       
       public function createWishInfoLader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("GoldEquipTemplateLoad.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingDailyLeagueLevelFailure");
-         _loc1_.analyzer = new WishInfoAnalyzer(WishBeadManager.instance.getwishInfo);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("GoldEquipTemplateLoad.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingDailyLeagueLevelFailure");
+         loader.analyzer = new WishInfoAnalyzer(WishBeadManager.instance.getwishInfo);
+         return loader;
       }
       
       public function creatServerConfigLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ServerConfig.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingDailyLeagueLevelFailure");
-         _loc1_.analyzer = new ServerConfigAnalyz(ServerConfigManager.instance.getserverConfigInfo);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ServerConfig.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingDailyLeagueLevelFailure");
+         loader.analyzer = new ServerConfigAnalyz(ServerConfigManager.instance.getserverConfigInfo);
+         return loader;
       }
       
       public function creatPetInfoLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("PetTemplateInfo.xml"),2);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.loadPetInfoFail");
-         _loc1_.analyzer = new PetInfoAnalyzer(PetInfoManager.setup);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("PetTemplateInfo.xml"),2);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.loadPetInfoFail");
+         loader.analyzer = new PetInfoAnalyzer(PetInfoManager.setup);
+         return loader;
       }
       
       public function creatPetSkillLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("Petskillinfo.xml"),2);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.loadPetSkillFail");
-         _loc1_.analyzer = new PetSkillAnalyzer(PetSkillManager.setup);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("Petskillinfo.xml"),2);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.loadPetSkillFail");
+         loader.analyzer = new PetSkillAnalyzer(PetSkillManager.setup);
+         return loader;
       }
       
       public function creatFarmPoultryInfo() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("TreeTemplateList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.getPoultryFail");
-         _loc1_.analyzer = new FarmTreePoultryListAnalyzer(FarmModelController.instance.getTreePoultryListData);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("TreeTemplateList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.getPoultryFail");
+         loader.analyzer = new FarmTreePoultryListAnalyzer(FarmModelController.instance.getTreePoultryListData);
+         return loader;
       }
       
       public function creatFoodComposeLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("FoodComposeList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.loadFoodComposeListFail");
-         _loc1_.analyzer = new FoodComposeListAnalyzer(FarmComposeHouseController.instance().setupFoodComposeList);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("FoodComposeList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.loadFoodComposeListFail");
+         loader.analyzer = new FoodComposeListAnalyzer(FarmComposeHouseController.instance().setupFoodComposeList);
+         return loader;
       }
       
       public function creatPetConfigLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("PetConfigInfo.xml"),2);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.loadPetConfigFail");
-         _loc1_.analyzer = new PetconfigAnalyzer(null);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("PetConfigInfo.xml"),2);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.loadPetConfigFail");
+         loader.analyzer = new PetconfigAnalyzer(null);
+         return loader;
       }
       
       public function creatPetSkillTemplateInfoLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("PetSkillTemplateInfo.xml"),2);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.loadPetAllSkillFail");
-         _loc1_.analyzer = new PetAllSkillAnalyzer(PetAllSkillManager.setup);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("PetSkillTemplateInfo.xml"),2);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.loadPetAllSkillFail");
+         loader.analyzer = new PetAllSkillAnalyzer(PetAllSkillManager.setup);
+         return loader;
       }
       
       public function creatActiveInfoLoader() : BaseLoader
@@ -758,978 +773,1026 @@ package ddt.loader
       
       public function creatShopDisCountRealTimesLoader() : BaseLoader
       {
-         var _loc2_:URLVariables = new URLVariables();
-         _loc2_["rnd"] = Math.random();
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ShopCheapItemList.ashx"),6,_loc2_);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.ShopDisCountRealTimesFailure");
-         _loc1_.analyzer = new ShopItemDisCountAnalyzer(ShopManager.Instance.updateRealTimesItemsByDisCount);
-         return _loc1_;
+         var args:URLVariables = new URLVariables();
+         args["rnd"] = Math.random();
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ShopCheapItemList.ashx"),6,args);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.ShopDisCountRealTimesFailure");
+         loader.analyzer = new ShopItemDisCountAnalyzer(ShopManager.Instance.updateRealTimesItemsByDisCount);
+         return loader;
       }
       
       public function creatVoteSubmit() : BaseLoader
       {
-         var _loc2_:URLVariables = new URLVariables();
-         _loc2_["userId"] = PlayerManager.Instance.Self.ID;
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("VoteSubmit.ashx"),6,_loc2_);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.vip.loadVip.error");
-         _loc1_.analyzer = new VoteSubmitAnalyzer(loadVoteXml);
-         return _loc1_;
+         var args:URLVariables = new URLVariables();
+         args["userId"] = PlayerManager.Instance.Self.ID;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("VoteSubmit.ashx"),6,args);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.vip.loadVip.error");
+         loader.analyzer = new VoteSubmitAnalyzer(loadVoteXml);
+         return loader;
       }
       
       public function createStoreEquipConfigLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("LoadStrengthExp.xml"),2);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.loadStoreEquipExperienceAllFail");
-         _loc1_.analyzer = new StoreEquipExpericenceAnalyze(StoreEquipExperience.setup);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("LoadStrengthExp.xml"),2);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.loadStoreEquipExperienceAllFail");
+         loader.analyzer = new StoreEquipExpericenceAnalyze(StoreEquipExperience.setup);
+         return loader;
       }
       
       public function creatCardGrooveLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("CardGrooveUpdateList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.loadCardGrooveFail");
-         _loc1_.analyzer = new CardGrooveEventAnalyzer(GrooveInfoManager.instance.setup);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("CardGrooveUpdateList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.loadCardGrooveFail");
+         loader.analyzer = new CardGrooveEventAnalyzer(GrooveInfoManager.instance.setup);
+         return loader;
       }
       
       public function creatCardTemplateLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("CardTemplateInfo.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.loadCardTemplateInfoFail");
-         _loc1_.analyzer = new CardTemplateAnalyzer(CardTemplateInfoManager.instance.setup);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("CardTemplateInfo.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.loadCardTemplateInfoFail");
+         loader.analyzer = new CardTemplateAnalyzer(CardTemplateInfoManager.instance.setup);
+         return loader;
       }
       
       public function creatItemStrengthenGoodsInfoLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ItemStrengthenGoodsInfo.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.loadItemStrengthenGoodsInfoListFail");
-         _loc1_.analyzer = new ItemStrengthenGoodsInfoAnalyzer(ItemStrengthenGoodsInfoManager.setup);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ItemStrengthenGoodsInfo.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.loadItemStrengthenGoodsInfoListFail");
+         loader.analyzer = new ItemStrengthenGoodsInfoAnalyzer(ItemStrengthenGoodsInfoManager.setup);
+         return loader;
       }
       
       public function createBeadTemplateLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("RuneTemplateList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.loadBeadInfoFail");
-         _loc1_.analyzer = new BeadAnalyzer(BeadTemplateManager.Instance.setup);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("RuneTemplateList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.loadBeadInfoFail");
+         loader.analyzer = new BeadAnalyzer(BeadTemplateManager.Instance.setup);
+         return loader;
       }
       
       public function createBeadAdvanceTemplateLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("RuneAdvanceTemplateList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.loadBeadAdvanceInfoFail");
-         _loc1_.analyzer = new AdvanceBeadAnalyzer(BeadTemplateManager.Instance.setupAdvanceBead);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("RuneAdvanceTemplateList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.loadBeadAdvanceInfoFail");
+         loader.analyzer = new AdvanceBeadAnalyzer(BeadTemplateManager.Instance.setupAdvanceBead);
+         return loader;
       }
       
       public function creatHallIcon() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ButtonConfig.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.loadHallIconFail");
-         _loc1_.analyzer = new HallIconDataAnalyz(MainButtonManager.instance.gethallIconInfo);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ButtonConfig.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.loadHallIconFail");
+         loader.analyzer = new HallIconDataAnalyz(MainButtonManager.instance.gethallIconInfo);
+         return loader;
       }
       
       public function createTotemTemplateLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("TotemInfo.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.loadTotemInfoFail");
-         _loc1_.analyzer = new TotemDataAnalyz(TotemManager.instance.setup);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("TotemInfo.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.loadTotemInfoFail");
+         loader.analyzer = new TotemDataAnalyz(TotemManager.instance.inittotmeData);
+         return loader;
       }
       
       public function createHonorUpTemplateLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("TotemHonorTemplate.xml"),2);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.loadHonorUpInfoFail");
-         _loc1_.analyzer = new HonorUpDataAnalyz(HonorUpManager.instance.setup);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("TotemHonorTemplate.xml"),2);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.loadHonorUpInfoFail");
+         loader.analyzer = new HonorUpDataAnalyz(HonorUpManager.instance.setup);
+         return loader;
       }
       
       public function createRankingListAwardLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("RankingListAwardList.xml"),5);
-         _loc1_.loadErrorMessage = "RankingListAwardList";
-         _loc1_.analyzer = new RankingListAwardAnalyzer(RankManager.instance.activityAwardComp);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("RankingListAwardList.xml"),5);
+         loader.loadErrorMessage = "RankingListAwardList";
+         loader.analyzer = new RankingListAwardAnalyzer(RankManager.instance.activityAwardComp);
+         return loader;
       }
       
       public function createConsortiaBossTemplateLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ConsortiaBossConfigLoad.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.loadConsortiaBossInfoFail");
-         _loc1_.analyzer = new ConsortiaBossDataAnalyzer(ConsortionModelManager.Instance.bossConfigDataSetup);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ConsortiaBossConfigLoad.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.loadConsortiaBossInfoFail");
+         loader.analyzer = new ConsortiaBossDataAnalyzer(ConsortionModelManager.Instance.bossConfigDataSetup);
+         return loader;
       }
       
       public function creatActiveLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("EveryDayActivePointTemplateInfoList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.loadEveryDayActFail");
-         _loc1_.analyzer = new ActivityAnalyzer(DayActivityManager.Instance.everyDayActive);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("EveryDayActivePointTemplateInfoList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.loadEveryDayActFail");
+         loader.analyzer = new ActivityAnalyzer(DayActivityManager.Instance.everyDayActive);
+         return loader;
       }
       
       public function creatActivePointLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("EveryDayActiveProgressInfoList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.actInfoFail");
-         _loc1_.analyzer = new ActivePointAnalzer(DayActivityManager.Instance.everyDayActivePoint);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("EveryDayActiveProgressInfoList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.actInfoFail");
+         loader.analyzer = new ActivePointAnalzer(DayActivityManager.Instance.everyDayActivePoint);
+         return loader;
       }
       
       public function creatRewardLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("EveryDayActiveRewardTemplateInfoList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("Indiana.loader.error");
-         _loc1_.analyzer = new ActivityRewardAnalyzer(DayActivityManager.Instance.activityRewardComp);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("EveryDayActiveRewardTemplateInfoList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("Indiana.loader.error");
+         loader.analyzer = new ActivityRewardAnalyzer(DayActivityManager.Instance.activityRewardComp);
+         return loader;
       }
       
       public function creatOneYuanBuyGoodsLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("OneYuanBuyAllGoodsTemplate.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("Indiana.loaderAll.error");
-         _loc1_.analyzer = new IndianaGoodsItemAnalyzer(IndianaDataManager.instance.goodsItemAnalyzer);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("OneYuanBuyAllGoodsTemplate.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("Indiana.loaderAll.error");
+         loader.analyzer = new IndianaGoodsItemAnalyzer(IndianaDataManager.instance.goodsItemAnalyzer);
+         return loader;
       }
       
       public function creatOneYuanBuySaleItemLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("OneYuanBuyOnSaleGoodsTemplate.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("Indiana.loaderSale.error");
-         _loc1_.analyzer = new IndianaShopItemsAnalyzer(IndianaDataManager.instance.shopItemAnalyzer);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("OneYuanBuyOnSaleGoodsTemplate.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("Indiana.loaderSale.error");
+         loader.analyzer = new IndianaShopItemsAnalyzer(IndianaDataManager.instance.shopItemAnalyzer);
+         return loader;
       }
       
       public function loaderSearchGoodsTemp() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("SearchGoodsTemp.xml"),2);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.starUpdataInfoFail");
-         _loc1_.analyzer = new UpdateStarAnalyer(BuriedManager.Instance.SearchGoodsTempHander);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("SearchGoodsTemp.xml"),2);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.starUpdataInfoFail");
+         loader.analyzer = new UpdateStarAnalyer(BuriedManager.Instance.SearchGoodsTempHander);
+         return loader;
       }
       
       public function loaderSearchGoodsPayMoney() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("SearchGoodsPayMoney.xml"),2);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.starUpDataCountInfoFail");
-         _loc1_.analyzer = new SearchGoodsPayAnalyer(BuriedManager.Instance.searchGoodsPayHander);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("SearchGoodsPayMoney.xml"),2);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.starUpDataCountInfoFail");
+         loader.analyzer = new SearchGoodsPayAnalyer(BuriedManager.Instance.searchGoodsPayHander);
+         return loader;
       }
       
       public function creatWondActiveLoader() : BaseLoader
       {
-         var _loc2_:URLVariables = new URLVariables();
-         _loc2_["rnd"] = TextLoader.TextLoaderKey + new Date().time;
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("LoadChargeActiveTemplate.xml"),5,_loc2_);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.wondActInfoFail");
-         _loc1_.analyzer = new WonderfulActAnalyer(WonderfulActivityManager.Instance.wonderfulActiveType);
-         return _loc1_;
+         var variables:URLVariables = new URLVariables();
+         variables["rnd"] = TextLoader.TextLoaderKey + new Date().time;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("LoadChargeActiveTemplate.xml"),5,variables);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.wondActInfoFail");
+         loader.analyzer = new WonderfulActAnalyer(WonderfulActivityManager.Instance.wonderfulActiveType);
+         return loader;
       }
       
       public function firstRechargeLoader() : BaseLoader
       {
-         var _loc2_:URLVariables = new URLVariables();
-         _loc2_["rnd"] = TextLoader.TextLoaderKey + new Date().time;
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ChargeSpendRewardTemplateInfoList.xml"),5,_loc2_);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.firstRechargeInfoFail");
-         _loc1_.analyzer = new RechargeAnalyer(FirstRechargeManger.Instance.completeHander);
-         return _loc1_;
+         var variables:URLVariables = new URLVariables();
+         variables["rnd"] = TextLoader.TextLoaderKey + new Date().time;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ChargeSpendRewardTemplateInfoList.xml"),5,variables);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.firstRechargeInfoFail");
+         loader.analyzer = new RechargeAnalyer(FirstRechargeManger.Instance.completeHander);
+         return loader;
       }
       
       public function accumulativeLoginLoader() : BaseLoader
       {
-         var _loc2_:URLVariables = new URLVariables();
-         _loc2_["rnd"] = TextLoader.TextLoaderKey + new Date().time;
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("LoginAwardItemTemplate.xml"),5,_loc2_);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.accumulativeLoginInfoFail");
-         _loc1_.analyzer = new AccumulativeLoginAnalyer(AccumulativeManager.instance.loadTempleteDataComplete);
-         return _loc1_;
+         var variables:URLVariables = new URLVariables();
+         variables["rnd"] = TextLoader.TextLoaderKey + new Date().time;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("LoginAwardItemTemplate.xml"),5,variables);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.accumulativeLoginInfoFail");
+         loader.analyzer = new AccumulativeLoginAnalyer(AccumulativeManager.instance.loadTempleteDataComplete);
+         return loader;
       }
       
       public function createCommunalActiveLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("CommunalActive.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.dragonBoatActiveInfoFail");
-         _loc1_.analyzer = new DragonBoatActiveDataAnalyzer(DragonBoatManager.instance.templateDataSetup);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("CommunalActive.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.dragonBoatActiveInfoFail");
+         loader.analyzer = new DragonBoatActiveDataAnalyzer(DragonBoatManager.instance.templateDataSetup);
+         return loader;
       }
       
       public function createCaddyAwardsLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("LotteryShowTemplate.xml"),5);
-         _loc1_.analyzer = new CaddyAwardDataAnalyzer(CaddyAwardModel.getInstance().setUp);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("LotteryShowTemplate.xml"),5);
+         loader.analyzer = new CaddyAwardDataAnalyzer(CaddyAwardModel.getInstance().setUp);
+         return loader;
       }
       
       public function createNewFusionDataLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("FusionInfoLoad.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.newFusionDataInfoFail");
-         _loc1_.analyzer = new FusionNewDataAnalyzer(FusionNewManager.instance.setup);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("FusionInfoLoad.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.newFusionDataInfoFail");
+         loader.analyzer = new FusionNewDataAnalyzer(FusionNewManager.instance.setup);
+         return loader;
       }
       
       public function createEnergyDataLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("MissionEnergyPrice.xml"),2);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.energyInfoFail");
-         _loc1_.analyzer = new EnergyDataAnalyzer(PlayerManager.Instance.setupEnergyData);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("MissionEnergyPrice.xml"),2);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.energyInfoFail");
+         loader.analyzer = new EnergyDataAnalyzer(PlayerManager.Instance.setupEnergyData);
+         return loader;
       }
       
       public function createGroupPurchaseAwardInfoLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("TeamBuyActiveAwardInfo.ashx"),6);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.groupPurchaseDataInfoFail");
-         _loc1_.analyzer = new GroupPurchaseAwardAnalyzer(GroupPurchaseManager.instance.awardAnalyComplete);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("TeamBuyActiveAwardInfo.ashx"),6);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.groupPurchaseDataInfoFail");
+         loader.analyzer = new GroupPurchaseAwardAnalyzer(GroupPurchaseManager.instance.awardAnalyComplete);
+         return loader;
       }
       
-      private function loadVoteXml(param1:VoteSubmitAnalyzer) : void
+      private function loadVoteXml(anlyzer:VoteSubmitAnalyzer) : void
       {
-         var _loc2_:* = null;
-         if(param1.result == "vote.xml")
+         var loadVoteInfo:* = null;
+         if(anlyzer.result == "vote.xml")
          {
-            _loc2_ = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("vote.xml"),2);
-            _loc2_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.view.vote.loadXMLError");
-            _loc2_.analyzer = new VoteInfoAnalyzer(VoteManager.Instance.loadCompleted);
-            LoadResourceManager.Instance.startLoad(_loc2_);
+            loadVoteInfo = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("vote.xml"),2);
+            loadVoteInfo.loadErrorMessage = LanguageMgr.GetTranslation("ddt.view.vote.loadXMLError");
+            loadVoteInfo.analyzer = new VoteInfoAnalyzer(VoteManager.Instance.loadCompleted);
+            LoadResourceManager.Instance.startLoad(loadVoteInfo);
          }
       }
       
       public function loadWonderfulActivityXml() : BaseLoader
       {
-         var _loc2_:URLVariables = new URLVariables();
-         _loc2_["rnd"] = TextLoader.TextLoaderKey + new Date().time;
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("GmActivityInfo.xml"),5,_loc2_);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.wonderfulActiveInfoFail");
-         _loc1_.analyzer = new WonderfulGMActAnalyer(WonderfulActivityManager.Instance.wonderfulGMActiveInfo);
-         return _loc1_;
+         var variables:URLVariables = new URLVariables();
+         variables["rnd"] = TextLoader.TextLoaderKey + new Date().time;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("GmActivityInfo.xml"),5,variables);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.wonderfulActiveInfoFail");
+         loader.analyzer = new WonderfulGMActAnalyer(WonderfulActivityManager.Instance.wonderfulGMActiveInfo);
+         return loader;
       }
       
       public function loadLanternRiddlesXml() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("LightRiddleQuest.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.lanternRiddlesInfoFail");
-         _loc1_.analyzer = new LanternDataAnalyzer(LanternRiddlesManager.instance.questionInfo);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("LightRiddleQuest.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.lanternRiddlesInfoFail");
+         loader.analyzer = new LanternDataAnalyzer(LanternRiddlesManager.instance.questionInfo);
+         return loader;
       }
       
       public function createAvatarCollectionUnitDataLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ClothPropertyTemplateInfo.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.AvatarCollectionUnitDataFail");
-         _loc1_.analyzer = new AvatarCollectionUnitDataAnalyzer(AvatarCollectionManager.instance.unitListDataSetup);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ClothPropertyTemplateInfo.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.AvatarCollectionUnitDataFail");
+         loader.analyzer = new AvatarCollectionUnitDataAnalyzer(AvatarCollectionManager.instance.unitListDataSetup);
+         return loader;
       }
       
       public function createAvatarCollectionItemDataLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ClothGroupTemplateInfo.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.AvatarCollectionItemDataFail");
-         _loc1_.analyzer = new AvatarCollectionItemDataAnalyzer(AvatarCollectionManager.instance.itemListDataSetup);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ClothGroupTemplateInfo.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.AvatarCollectionItemDataFail");
+         loader.analyzer = new AvatarCollectionItemDataAnalyzer(AvatarCollectionManager.instance.itemListDataSetup);
+         return loader;
       }
       
       public function createSanXiaoStoreDataLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("MiniGameShopTemplate.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.SXStoreDataFail");
-         _loc1_.analyzer = new SanXiaoStoreItemAnalyzer(SanXiaoManager.getInstance().onSXStoreItemData);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("MiniGameShopTemplate.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.SXStoreDataFail");
+         loader.analyzer = new SanXiaoStoreItemAnalyzer(SanXiaoManager.getInstance().onSXStoreItemData);
+         return loader;
       }
       
       public function createSanXiaoScoreRewardDataLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ThreeCleanPointAward.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.SXScoreRewardDataFail");
-         _loc1_.analyzer = new SanXiaoScoreRewardAnalyzer(SanXiaoManager.getInstance().onSXScoreRewardData);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ThreeCleanPointAward.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.SXScoreRewardDataFail");
+         loader.analyzer = new SanXiaoScoreRewardAnalyzer(SanXiaoManager.getInstance().onSXScoreRewardData);
+         return loader;
       }
       
       public function createPetCellUnlockPriceLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("PetCellUnlockPrice.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.PetsCellUnlockFail");
-         _loc1_.analyzer = new PetsCellUnlocakPriceAnalyzer(PetsBagManager.instance().onPetCellUnlockPrice);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("PetCellUnlockPrice.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.PetsCellUnlockFail");
+         loader.analyzer = new PetsCellUnlocakPriceAnalyzer(PetsBagManager.instance().onPetCellUnlockPrice);
+         return loader;
       }
       
       public function createPetsRisingStarDataLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("LoadPetStarExp.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.PetsAdvancedDataFail");
-         _loc1_.analyzer = new PetsRisingStarDataAnalyzer(PetsAdvancedManager.Instance.risingStarDataComplete);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("LoadPetStarExp.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.PetsAdvancedDataFail");
+         loader.analyzer = new PetsRisingStarDataAnalyzer(PetsAdvancedManager.Instance.risingStarDataComplete);
+         return loader;
       }
       
       public function createPetsEvolutionDataLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("LoadPetFightProperty.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.PetsAdvancedDataFail");
-         _loc1_.analyzer = new PetsEvolutionDataAnalyzer(PetsAdvancedManager.Instance.evolutionDataComplete);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("LoadPetFightProperty.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.PetsAdvancedDataFail");
+         loader.analyzer = new PetsEvolutionDataAnalyzer(PetsAdvancedManager.Instance.evolutionDataComplete);
+         return loader;
       }
       
       public function getPetsFormDataLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("LoadPetFormData.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.PetsFormDataFail");
-         _loc1_.analyzer = new PetsFormDataAnalyzer(PetsAdvancedManager.Instance.formDataComplete);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("LoadPetFormData.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.PetsFormDataFail");
+         loader.analyzer = new PetsFormDataAnalyzer(PetsAdvancedManager.Instance.formDataComplete);
+         return loader;
       }
       
       public function loadMagicStoneTemplate() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("MagicStoneTemplate.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.magicStoneTempFail");
-         _loc1_.analyzer = new MagicStoneTempAnalyer(MagicStoneManager.instance.loadMgStoneTempComplete);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("MagicStoneTemplate.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.magicStoneTempFail");
+         loader.analyzer = new MagicStoneTempAnalyer(MagicStoneManager.instance.loadMgStoneTempComplete);
+         return loader;
       }
       
       public function createHorseTemplateDataLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("MountTemplate.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.horseTemplateDataFail");
-         _loc1_.analyzer = new HorseTemplateDataAnalyzer(HorseManager.instance.horseTemplateDataSetup);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("MountTemplate.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.horseTemplateDataFail");
+         loader.analyzer = new HorseTemplateDataAnalyzer(HorseManager.instance.horseTemplateDataSetup);
+         return loader;
       }
       
       public function createHorseSkillGetDataLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("MountSkillGetTemplate.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.horseSkillGetDataFail");
-         _loc1_.analyzer = new HorseSkillGetDataAnalyzer(HorseManager.instance.horseSkillGetDataSetup);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("MountSkillGetTemplate.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.horseSkillGetDataFail");
+         loader.analyzer = new HorseSkillGetDataAnalyzer(HorseManager.instance.horseSkillGetDataSetup);
+         return loader;
       }
       
       public function createHorseSkillDataLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("MountSkillTemplate.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.horseSkillDataFail");
-         _loc1_.analyzer = new HorseSkillDataAnalyzer(HorseManager.instance.horseSkillDataSetup);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("MountSkillTemplate.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.horseSkillDataFail");
+         loader.analyzer = new HorseSkillDataAnalyzer(HorseManager.instance.horseSkillDataSetup);
+         return loader;
       }
       
       public function createHorseSkillElementDataLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("MountSkillElementTemplate.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.horseSkillElementDataFail");
-         _loc1_.analyzer = new HorseSkillElementDataAnalyzer(HorseManager.instance.horseSkillElementDataSetup);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("MountSkillElementTemplate.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.horseSkillElementDataFail");
+         loader.analyzer = new HorseSkillElementDataAnalyzer(HorseManager.instance.horseSkillElementDataSetup);
+         return loader;
       }
       
       public function createCollectionRebortDataLoader() : BaseLoader
       {
-         var _loc2_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         _loc2_["id"] = PlayerManager.Instance.Self.ID;
-         _loc2_["uname"] = PlayerManager.Instance.Account.Account;
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("SceneCollecRandomNpc.ashx"),7,_loc2_);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.collectionRobertDataFail");
-         _loc1_.analyzer = new CollectionTaskAnalyzer(CollectionTaskManager.Instance.robertDataSetup);
-         return _loc1_;
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         args["id"] = PlayerManager.Instance.Self.ID;
+         args["uname"] = PlayerManager.Instance.Account.Account;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("SceneCollecRandomNpc.ashx"),7,args);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.collectionRobertDataFail");
+         loader.analyzer = new CollectionTaskAnalyzer(CollectionTaskManager.Instance.robertDataSetup);
+         return loader;
       }
       
       public function createHorsePicCherishDataLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("MountDrawTemplate.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.horsePicCherishDataFail");
-         _loc1_.analyzer = new HorsePicCherishAnalyzer(HorseManager.instance.horsePicCherishDataSetup);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("MountDrawTemplate.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.horsePicCherishDataFail");
+         loader.analyzer = new HorsePicCherishAnalyzer(HorseManager.instance.horsePicCherishDataSetup);
+         return loader;
       }
       
       public function createNewTitleDataLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("NewTitleInfo.xml"),2);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.newTitleDataFail");
-         _loc1_.analyzer = new NewTitleDataAnalyz(NewTitleManager.instance.newTitleDataSetup);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("NewTitleInfo.xml"),2);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.newTitleDataFail");
+         loader.analyzer = new NewTitleDataAnalyz(NewTitleManager.instance.newTitleDataSetup);
+         return loader;
       }
       
       public function createRescueRewardLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("HelpGameReward.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.rescueRewardFail");
-         _loc1_.analyzer = new RescueRewardAnalyzer(RescueManager.instance.setupRewardList);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("HelpGameReward.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.rescueRewardFail");
+         loader.analyzer = new RescueRewardAnalyzer(RescueManager.instance.setupRewardList);
+         return loader;
       }
       
       public function createEnchantMagicInfoLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("MagicItemTemp.xml"),2);
-         _loc1_.analyzer = new EnchantInfoAnalyzer(EnchantManager.instance.setupInfoList);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("MagicItemTemp.xml"),2);
+         loader.analyzer = new EnchantInfoAnalyzer(EnchantManager.instance.setupInfoList);
+         return loader;
       }
       
       public function createFineSuitInfoLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("SetsBuildTemp.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.loadSuitInfoFail");
-         _loc1_.analyzer = new FineSuitAnalyze(FineSuitManager.Instance.setup);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("SetsBuildTemp.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.loadSuitInfoFail");
+         loader.analyzer = new FineSuitAnalyze(FineSuitManager.Instance.setup);
+         return loader;
       }
       
-      public function creatRouletteTempleteLoader(param1:Function) : BaseLoader
+      public function creatRouletteTempleteLoader(call:Function) : BaseLoader
       {
-         var _loc2_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("User_LotteryRank.xml"),5);
-         _loc2_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingGoodsTemplateFailure");
-         _loc2_.analyzer = new InventoryItemAnalyzer(param1);
-         return _loc2_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("User_LotteryRank.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingGoodsTemplateFailure");
+         loader.analyzer = new InventoryItemAnalyzer(call);
+         return loader;
       }
       
       public function creatPyramidLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("PyramidActivityItem.xml"),5);
-         _loc1_.analyzer = new PyramidAnalyze(PyramidManager.instance.templateDataSetup);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("PyramidActivityItem.xml"),5);
+         loader.analyzer = new PyramidAnalyze(PyramidManager.instance.templateDataSetup);
+         return loader;
       }
       
       public function creatConsortiaWeekRewardLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ConsortiaWeekReward.xml"),5);
-         _loc1_.analyzer = new ConsortiaWeekRewardAnalyze(ConsortionModelManager.Instance.analyzeWeekReward);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ConsortiaWeekReward.xml"),5);
+         loader.analyzer = new ConsortiaWeekRewardAnalyze(ConsortionModelManager.Instance.analyzeWeekReward);
+         return loader;
       }
       
       public function creatConsortiaRichRankLoader() : BaseLoader
       {
-         var _loc2_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         _loc2_["consortiaID"] = PlayerManager.Instance.Self.ConsortiaID;
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ConsortiaRichRankList.ashx"),6,_loc2_);
-         _loc1_.analyzer = new ConsortiaRichRankAnalyze(ConsortionModelManager.Instance.analyzeRichRank);
-         return _loc1_;
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         args["consortiaID"] = PlayerManager.Instance.Self.ConsortiaID;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ConsortiaRichRankList.ashx"),6,args);
+         loader.analyzer = new ConsortiaRichRankAnalyze(ConsortionModelManager.Instance.analyzeRichRank);
+         return loader;
       }
       
       public function creatMemoryGameAwardLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("PairUpPointAward.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("memoryGame.loaderError");
-         _loc1_.analyzer = new MemoryGameAnalyzer(MemoryGameManager.instance.analyzer);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("PairUpPointAward.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("memoryGame.loaderError");
+         loader.analyzer = new MemoryGameAnalyzer(MemoryGameManager.instance.analyzer);
+         return loader;
       }
       
       public function lodaPetAtlasTemplate() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("PetCollectPropertyTemplate.xml"),5);
-         _loc1_.analyzer = new PetAtlasAnalyzer(PetsBagManager.instance().petAtlasAnalyzer);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("PetCollectPropertyTemplate.xml"),5);
+         loader.analyzer = new PetAtlasAnalyzer(PetsBagManager.instance().petAtlasAnalyzer);
+         return loader;
       }
       
       public function creatGuardCoreLevelTemplate() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("GuardCoreLevelTemplate.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("guardCore.GuardCoreLevelTemplate.error");
-         _loc1_.analyzer = new GuardCoreLevelAnayzer(GuardCoreManager.instance.analyzerLevel);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("GuardCoreLevelTemplate.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("guardCore.GuardCoreLevelTemplate.error");
+         loader.analyzer = new GuardCoreLevelAnayzer(GuardCoreManager.instance.analyzerLevel);
+         return loader;
       }
       
       public function creatGuardCoreTemplate() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("GuardCoreTemplate.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("guardCore.GuardCoreTemplate.error");
-         _loc1_.analyzer = new GuardCoreAnalyzer(GuardCoreManager.instance.analyzer);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("GuardCoreTemplate.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("guardCore.GuardCoreTemplate.error");
+         loader.analyzer = new GuardCoreAnalyzer(GuardCoreManager.instance.analyzer);
+         return loader;
       }
       
       public function creatGodCardListTemplate() : BaseLoader
       {
-         var _loc2_:URLVariables = new URLVariables();
-         _loc2_["rnd"] = Math.random();
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("GodCardList.xml"),5,_loc2_);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.godCardListTemplate.error");
-         _loc1_.analyzer = new GodCardListAnalyzer(GodCardRaiseManager.Instance.loadGodCardListTemplate);
-         return _loc1_;
+         var args:URLVariables = new URLVariables();
+         args["rnd"] = Math.random();
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("GodCardList.xml"),5,args);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.godCardListTemplate.error");
+         loader.analyzer = new GodCardListAnalyzer(GodCardRaiseManager.Instance.loadGodCardListTemplate);
+         return loader;
       }
       
       public function creatGodCardListGroup() : BaseLoader
       {
-         var _loc2_:URLVariables = new URLVariables();
-         _loc2_["rnd"] = Math.random();
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("GodCardListGroup.ashx"),7,_loc2_);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.godCardListGroup.error");
-         _loc1_.analyzer = new GodCardListGroupAnalyzer(GodCardRaiseManager.Instance.loadGodCardListGroup);
-         return _loc1_;
+         var args:URLVariables = new URLVariables();
+         args["rnd"] = Math.random();
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("GodCardListGroup.ashx"),7,args);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.godCardListGroup.error");
+         loader.analyzer = new GodCardListGroupAnalyzer(GodCardRaiseManager.Instance.loadGodCardListGroup);
+         return loader;
       }
       
       public function creatGodCardPointRewardList() : BaseLoader
       {
-         var _loc2_:URLVariables = new URLVariables();
-         _loc2_["rnd"] = Math.random();
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("GodCardPointRewardList.ashx"),7,_loc2_);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.godCardPointRewardList.error");
-         _loc1_.analyzer = new GodCardPointRewardListAnalyzer(GodCardRaiseManager.Instance.loadGodCardPointRewardList);
-         return _loc1_;
+         var args:URLVariables = new URLVariables();
+         args["rnd"] = Math.random();
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("GodCardPointRewardList.ashx"),7,args);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.godCardPointRewardList.error");
+         loader.analyzer = new GodCardPointRewardListAnalyzer(GodCardRaiseManager.Instance.loadGodCardPointRewardList);
+         return loader;
       }
       
       public function createBattleSkillTemplate() : BaseLoader
       {
-         var _loc2_:URLVariables = new URLVariables();
-         _loc2_["rnd"] = Math.random();
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("FairBattleSkillGetTemplate.xml"),5,_loc2_);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.battleSkillSkillTemplate.error");
-         _loc1_.analyzer = new BattleSkillSkillTemplateAnalyzer(BattleSkillManager.instance.loadSkillTemplateList);
-         return _loc1_;
+         var args:URLVariables = new URLVariables();
+         args["rnd"] = Math.random();
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("FairBattleSkillGetTemplate.xml"),5,args);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.battleSkillSkillTemplate.error");
+         loader.analyzer = new BattleSkillSkillTemplateAnalyzer(BattleSkillManager.instance.loadSkillTemplateList);
+         return loader;
       }
       
       public function createBattleSkillUpdateTemplate() : BaseLoader
       {
-         var _loc2_:URLVariables = new URLVariables();
-         _loc2_["rnd"] = Math.random();
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("FairBattleSkillMaterialTemplate.xml"),5,_loc2_);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.battleSkillSkillUpdateTemplate.error");
-         _loc1_.analyzer = new BattleSKillUpdateTemplateAnalyzer(BattleSkillManager.instance.loadSkillUpdateTemplateList);
-         return _loc1_;
+         var args:URLVariables = new URLVariables();
+         args["rnd"] = Math.random();
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("FairBattleSkillMaterialTemplate.xml"),5,args);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.battleSkillSkillUpdateTemplate.error");
+         loader.analyzer = new BattleSKillUpdateTemplateAnalyzer(BattleSkillManager.instance.loadSkillUpdateTemplateList);
+         return loader;
       }
       
       public function createBraveDoorDuplicateTemplate() : BaseLoader
       {
-         var _loc2_:URLVariables = new URLVariables();
-         _loc2_["rnd"] = Math.random();
-         var _loc1_:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.getBraveDoorDuplicateTemplete("braveDoorDuplicate"),2);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("game.braveDoor.duplicateTempLoadError");
-         _loc1_.analyzer = new BraveDoorDuplicateAnalyzer(BraveDoorManager.instance.setupDuplicateTemplate);
-         LoadResourceManager.Instance.startLoad(_loc1_);
-         return _loc1_;
+         var args:URLVariables = new URLVariables();
+         args["rnd"] = Math.random();
+         var loader:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.getBraveDoorDuplicateTemplete("braveDoorDuplicate"),2);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("game.braveDoor.duplicateTempLoadError");
+         loader.analyzer = new BraveDoorDuplicateAnalyzer(BraveDoorManager.instance.setupDuplicateTemplate);
+         LoadResourceManager.Instance.startLoad(loader);
+         return loader;
       }
       
       public function createCardAchievementTemplate() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("CardAchievement.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("tank.card.achievementLoaderError");
-         _loc1_.analyzer = new CardAchievementAnalyze(CardManager.Instance.initCardAchievement);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("CardAchievement.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("tank.card.achievementLoaderError");
+         loader.analyzer = new CardAchievementAnalyze(CardManager.Instance.initCardAchievement);
+         return loader;
       }
       
       public function createDDTKingGradeTemplate() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("MaxLevelTemplate.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddtKingGrade.breakFailLoaderError");
-         _loc1_.analyzer = new DDTKingGradeAnalyzer(DDTKingGradeManager.Instance.analyzer);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("MaxLevelTemplate.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddtKingGrade.breakFailLoaderError");
+         loader.analyzer = new DDTKingGradeAnalyzer(DDTKingGradeManager.Instance.analyzer);
+         return loader;
       }
       
       public function createBombFixedMapData() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("SpaRoomFixedBomb.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.bombgame.mapdata.FailLoaderError");
-         _loc1_.analyzer = new BombGameFixedMapAnalyzer(HappyLittleGameManager.instance.bombManager.FixedAnalyzer);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("SpaRoomFixedBomb.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.bombgame.mapdata.FailLoaderError");
+         loader.analyzer = new BombGameFixedMapAnalyzer(HappyLittleGameManager.instance.bombManager.FixedAnalyzer);
+         return loader;
       }
       
       public function createEvolutionData() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("SubWeaponEvolutionTemplate.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("store.view.evolution.FailLoaderError");
-         _loc1_.analyzer = new EvolutionDataAnalyzer(FineEvolutionManager.Instance.EvolutionAnalyzer);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("SubWeaponEvolutionTemplate.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("store.view.evolution.FailLoaderError");
+         loader.analyzer = new EvolutionDataAnalyzer(FineEvolutionManager.Instance.EvolutionAnalyzer);
+         return loader;
       }
       
       public function createHorseAmuletTemplate() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("MountTalismansInfoList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("tank.horseAmulet.loaderTemplateFiale");
-         _loc1_.analyzer = new HorseAmuletDataAnalyzer(HorseAmuletManager.instance.analyzer);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("MountTalismansInfoList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("tank.horseAmulet.loaderTemplateFiale");
+         loader.analyzer = new HorseAmuletDataAnalyzer(HorseAmuletManager.instance.analyzer);
+         return loader;
       }
       
       public function createBombRandomMapData() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("SpaRoomRandomBomb.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.bombgame.mapdata.FailLoaderError");
-         _loc1_.analyzer = new BombGameRandomMapAnalyzer(HappyLittleGameManager.instance.bombManager.RandomAnalyzer);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("SpaRoomRandomBomb.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.bombgame.mapdata.FailLoaderError");
+         loader.analyzer = new BombGameRandomMapAnalyzer(HappyLittleGameManager.instance.bombManager.RandomAnalyzer);
+         return loader;
       }
       
       public function createEquipAmuletGradeTemplate() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("AmuletGradeItemList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("tank.equipAmulet.loadGradeTemplateError");
-         _loc1_.analyzer = new EquipAmuletActivateGradeDataAnalyzer(EquipAmuletManager.Instance.analyzerActivateGrade);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("AmuletGradeItemList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("tank.equipAmulet.loadGradeTemplateError");
+         loader.analyzer = new EquipAmuletActivateGradeDataAnalyzer(EquipAmuletManager.Instance.analyzerActivateGrade);
+         return loader;
       }
       
       public function createEquipAmuletPhaseTemplate() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("AmuletPhaseItemList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("tank.equipAmulet.loadPhaseTemplateError");
-         _loc1_.analyzer = new EquipAmuletPhaseDataAnalyzer(EquipAmuletManager.Instance.analyzerPhase);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("AmuletPhaseItemList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("tank.equipAmulet.loadPhaseTemplateError");
+         loader.analyzer = new EquipAmuletPhaseDataAnalyzer(EquipAmuletManager.Instance.analyzerPhase);
+         return loader;
       }
       
       public function createEquipAmuletTemplate() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("AmuletInfoItemList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("tank.equipAmulet.loadTemplateError");
-         _loc1_.analyzer = new EquipAmuletDataAnalyzer(EquipAmuletManager.Instance.analyzer);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("AmuletInfoItemList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("tank.equipAmulet.loadTemplateError");
+         loader.analyzer = new EquipAmuletDataAnalyzer(EquipAmuletManager.Instance.analyzer);
+         return loader;
       }
       
       public function createDDTKingWayTemplate() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("KingOfRoadQuestInfoList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.DDTKingWayDataFail");
-         _loc1_.analyzer = new DDTKingWayDataAnalyzer(DDTKingWayManager.instance.analyzer);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("KingOfRoadQuestInfoList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.DDTKingWayDataFail");
+         loader.analyzer = new DDTKingWayDataAnalyzer(DDTKingWayManager.instance.analyzer);
+         return loader;
       }
       
       public function createManaualDebrisData() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("JampsDebrisItemList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("explorerManual.manualTempleteData.loadFail") + "_碎片";
-         _loc1_.analyzer = new ManualDebrisAnalyzer(ExplorerManualManager.instance.initDebrisData);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("JampsDebrisItemList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("explorerManual.manualTempleteData.loadFail") + "_碎片";
+         loader.analyzer = new ManualDebrisAnalyzer(ExplorerManualManager.instance.initDebrisData);
+         return loader;
       }
       
       public function createChapterItemData() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("JampsChapterItemList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("explorerManual.manualTempleteData.loadFail") + "_章节";
-         _loc1_.analyzer = new ChapterItemAnalyzer(ExplorerManualManager.instance.initChapterData);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("JampsChapterItemList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("explorerManual.manualTempleteData.loadFail") + "_章节";
+         loader.analyzer = new ChapterItemAnalyzer(ExplorerManualManager.instance.initChapterData);
+         return loader;
       }
       
       public function createManualItemData() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("JampsManualItemList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("explorerManual.manualTempleteData.loadFail") + "_手册项";
-         _loc1_.analyzer = new ManualItemAnalyzer(ExplorerManualManager.instance.initManualItemData);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("JampsManualItemList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("explorerManual.manualTempleteData.loadFail") + "_手册项";
+         loader.analyzer = new ManualItemAnalyzer(ExplorerManualManager.instance.initManualItemData);
+         return loader;
       }
       
       public function createManualUpgradeData() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("JampsUpgradeItemList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("explorerManual.manualTempleteData.loadFail") + "_升级";
-         _loc1_.analyzer = new ManualUpgradeAnalyzer(ExplorerManualManager.instance.initManualUpgradeData);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("JampsUpgradeItemList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("explorerManual.manualTempleteData.loadFail") + "_升级";
+         loader.analyzer = new ManualUpgradeAnalyzer(ExplorerManualManager.instance.initManualUpgradeData);
+         return loader;
       }
       
       public function createPageItemData() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("JampsPageItemList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("explorerManual.manualTempleteData.loadFail") + "_页";
-         _loc1_.analyzer = new ManualPageItemAnalyzer(ExplorerManualManager.instance.initPageItemData);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("JampsPageItemList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("explorerManual.manualTempleteData.loadFail") + "_页";
+         loader.analyzer = new ManualPageItemAnalyzer(ExplorerManualManager.instance.initPageItemData);
+         return loader;
       }
       
       public function CreateMiniGameRankRewardCfgLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("SpaGameWeekAwardInfoList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.miniGameRankFail");
-         _loc1_.analyzer = new HappyLittleGameRankAnalyzer(HappyLittleGameManager.instance.onAnalyzeRankRewardCfg);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("SpaGameWeekAwardInfoList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.miniGameRankFail");
+         loader.analyzer = new HappyLittleGameRankAnalyzer(HappyLittleGameManager.instance.onAnalyzeRankRewardCfg);
+         return loader;
       }
       
       public function createCityOccupationSystemsLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.solveRequestPath("CityOccupationSystems.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.activitySystemItemsInfoFail");
-         _loc1_.analyzer = new CityBattleAnalyze(CityBattleManager.instance.CityBattleSystemsHandler);
-         return _loc1_;
+         var loader:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.solveRequestPath("CityOccupationSystems.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.activitySystemItemsInfoFail");
+         loader.analyzer = new CityBattleAnalyze(CityBattleManager.instance.CityBattleSystemsHandler);
+         return loader;
       }
       
-      public function __onLoadError(param1:LoaderResourceEvent) : void
+      public function __onLoadError(event:LoaderResourceEvent) : void
       {
-         var _loc3_:BaseLoader = param1.data as BaseLoader;
-         if(_loc3_.type != 2 && _loc3_.type != 5 && _loc3_.type != 6 && _loc3_.type != 7)
+         var loader:BaseLoader = event.data as BaseLoader;
+         if(loader.type != 2 && loader.type != 5 && loader.type != 6 && loader.type != 7)
          {
             return;
          }
-         var _loc4_:String = _loc3_.loadErrorMessage;
-         if(_loc3_.analyzer)
+         var msg:String = loader.loadErrorMessage;
+         if(loader.analyzer)
          {
-            if(_loc3_.analyzer.message != null)
+            if(loader.analyzer.message != null)
             {
-               _loc4_ = _loc3_.loadErrorMessage + "\n" + _loc3_.analyzer.message;
+               msg = loader.loadErrorMessage + "\n" + loader.analyzer.message;
             }
          }
-         if(_loc4_ == null || _loc4_ == "" || _loc4_ == "null")
+         if(msg == null || msg == "" || msg == "null")
          {
-            _loc4_ = PathManager.getLoaderFileName(_loc3_.url);
+            msg = PathManager.getLoaderFileName(loader.url);
          }
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("alert"),_loc4_,LanguageMgr.GetTranslation("tank.room.RoomIIView2.affirm"));
-         _loc2_.addEventListener("response",__onAlertResponse);
+         var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("alert"),msg,LanguageMgr.GetTranslation("tank.room.RoomIIView2.affirm"));
+         alert.addEventListener("response",__onAlertResponse);
       }
       
       public function createLoadPetMoePropertyLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("LoadPetMoeProperty.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.rescueRewardFail");
-         _loc1_.analyzer = new PetMoePropertyAnalyzer(PetsAdvancedManager.Instance.moePropertyComplete);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("LoadPetMoeProperty.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.rescueRewardFail");
+         loader.analyzer = new PetMoePropertyAnalyzer(PetsAdvancedManager.Instance.moePropertyComplete);
+         return loader;
       }
       
-      private function __onAlertResponse(param1:FrameEvent) : void
+      private function __onAlertResponse(event:FrameEvent) : void
       {
-         param1.currentTarget.removeEventListener("response",__onAlertResponse);
-         ObjectUtils.disposeObject(param1.currentTarget);
+         event.currentTarget.removeEventListener("response",__onAlertResponse);
+         ObjectUtils.disposeObject(event.currentTarget);
          LeavePageManager.leaveToLoginPath();
       }
       
       public function createActivitySystemItemsLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.solveRequestPath("ActivitySystemItems.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.activitySystemItemsInfoFail");
-         _loc1_.analyzer = new ActivitySystemItemsDataAnalyzer(activitySystemItemsDataHandler);
-         return _loc1_;
+         var loader:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.solveRequestPath("ActivitySystemItems.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.activitySystemItemsInfoFail");
+         loader.analyzer = new ActivitySystemItemsDataAnalyzer(activitySystemItemsDataHandler);
+         return loader;
       }
       
-      private function activitySystemItemsDataHandler(param1:DataAnalyzer) : void
+      private function activitySystemItemsDataHandler(analyzer:DataAnalyzer) : void
       {
-         var _loc2_:* = null;
-         if(param1 is ActivitySystemItemsDataAnalyzer)
+         var tempDataAnalyzer:* = null;
+         if(analyzer is ActivitySystemItemsDataAnalyzer)
          {
-            _loc2_ = param1 as ActivitySystemItemsDataAnalyzer;
-            PyramidManager.instance.templateDataSetup(_loc2_.pyramidSystemDataList);
-            GuildMemberWeekManager.instance.templateDataSetup(_loc2_.guildMemberWeekDataList);
-            GrowthPackageManager.instance.templateDataSetup(_loc2_.growthPackageDataList);
-            ChickActivationManager.instance.templateDataSetup(_loc2_.chickActivationDataList);
-            WitchBlessingManager.Instance.templateDataSetup(_loc2_.witchBlessingDataList);
-            NewYearRiceManager.instance.templateDataSetup(_loc2_.newYearRiceDataList);
-            HorseRaceManager.Instance.templateDataSetup(_loc2_.horseRaceDataList);
-            CloudBuyLotteryManager.Instance.templateDataSetup(_loc2_.happyBuyBbyBuyDataList);
-            RedEnvelopeManager.instance.templateDataSetup(_loc2_.redEnvelopeDataList);
-            LoginDeviceManager.instance().templateDataSetup(_loc2_.loginDeviceDataList);
-            SignBuffManager.instance.templateDataSetup(_loc2_.signBuffDataList);
-            CallBackFundManager.instance.templateDataSetup(_loc2_.callbackDataList);
-            LotteryManager.instance.templateDataSetup(_loc2_.lotteryDataList);
-            DefendislandManager.instance.templateDataSetup(_loc2_.defendislandDataList);
+            tempDataAnalyzer = analyzer as ActivitySystemItemsDataAnalyzer;
+            PyramidManager.instance.templateDataSetup(tempDataAnalyzer.pyramidSystemDataList);
+            GuildMemberWeekManager.instance.templateDataSetup(tempDataAnalyzer.guildMemberWeekDataList);
+            GrowthPackageManager.instance.templateDataSetup(tempDataAnalyzer.growthPackageDataList);
+            ChickActivationManager.instance.templateDataSetup(tempDataAnalyzer.chickActivationDataList);
+            WitchBlessingManager.Instance.templateDataSetup(tempDataAnalyzer.witchBlessingDataList);
+            NewYearRiceManager.instance.templateDataSetup(tempDataAnalyzer.newYearRiceDataList);
+            HorseRaceManager.Instance.templateDataSetup(tempDataAnalyzer.horseRaceDataList);
+            CloudBuyLotteryManager.Instance.templateDataSetup(tempDataAnalyzer.happyBuyBbyBuyDataList);
+            RedEnvelopeManager.instance.templateDataSetup(tempDataAnalyzer.redEnvelopeDataList);
+            LoginDeviceManager.instance().templateDataSetup(tempDataAnalyzer.loginDeviceDataList);
+            SignBuffManager.instance.templateDataSetup(tempDataAnalyzer.signBuffDataList);
+            CallBackFundManager.instance.templateDataSetup(tempDataAnalyzer.callbackDataList);
+            LotteryManager.instance.templateDataSetup(tempDataAnalyzer.lotteryDataList);
+            DefendislandManager.instance.templateDataSetup(tempDataAnalyzer.defendislandDataList);
          }
       }
       
       public function createMagicBoxDataLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("MagicFusionData.xml"),5);
-         _loc1_.analyzer = new MagicBoxDataAnalyzer(MagicHouseManager.instance.setupMagicBoxData);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("MagicFusionData.xml"),5);
+         loader.analyzer = new MagicBoxDataAnalyzer(MagicHouseManager.instance.setupMagicBoxData);
+         return loader;
       }
       
-      public function creatGodSyahLoader(param1:int = 7) : BaseLoader
+      public function creatGodSyahLoader(type:int = 7) : BaseLoader
       {
-         if(param1 != 7)
+         if(type != 7)
          {
             return null;
          }
-         var _loc3_:URLVariables = new URLVariables();
-         _loc3_["rnd"] = TextLoader.TextLoaderKey + Math.random().toString();
-         var _loc2_:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.solveRequestPath("SubActiveList.ashx"),6,_loc3_);
-         _loc2_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingGodSyahFailure");
-         _loc2_.analyzer = new SyahAnalyzer(SyahManager.Instance.godSyahLoaderCompleted);
-         return _loc2_;
+         var variables:URLVariables = new URLVariables();
+         variables["rnd"] = TextLoader.TextLoaderKey + Math.random().toString();
+         var loader:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.solveRequestPath("SubActiveList.ashx"),6,variables);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingGodSyahFailure");
+         loader.analyzer = new SyahAnalyzer(SyahManager.Instance.godSyahLoaderCompleted);
+         return loader;
       }
       
       public function createGodsRoadsLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.solveRequestPath("ActivityQuestList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.godsRoads.cuowu");
-         _loc1_.analyzer = new GodsRoadsDataAnalyzer(GodsRoadsManager.instance.templateDataSetup);
-         return _loc1_;
+         var loader:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.solveRequestPath("ActivityQuestList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.godsRoads.cuowu");
+         loader.analyzer = new GodsRoadsDataAnalyzer(GodsRoadsManager.instance.templateDataSetup);
+         return loader;
       }
       
       public function creatSuperWinnerLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.solveRequestPath("DiceGameAwardItem.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.superWinner.loadAwardsError");
-         _loc1_.analyzer = new SuperWinnerAnalyze(SuperWinnerManager.instance.awardsLoadCompleted);
-         return _loc1_;
+         var loader:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.solveRequestPath("DiceGameAwardItem.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.superWinner.loadAwardsError");
+         loader.analyzer = new SuperWinnerAnalyze(SuperWinnerManager.instance.awardsLoadCompleted);
+         return loader;
       }
       
       public function createSevenDayTargetLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.solveRequestPath("ActivityQuestList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.sevenDayTargetInfoFail");
-         _loc1_.analyzer = new SevenDayTargetDataAnalyzer(SevenDayTargetManager.Instance.templateDataSetup);
-         return _loc1_;
+         var loader:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.solveRequestPath("ActivityQuestList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.sevenDayTargetInfoFail");
+         loader.analyzer = new SevenDayTargetDataAnalyzer(SevenDayTargetManager.Instance.templateDataSetup);
+         return loader;
       }
       
       public function createCampBattleAwardGoodsLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.solveRequestPath("CampWarItems.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.activitySystemItemsInfoFail");
-         _loc1_.analyzer = new CampBattleAwardsDataAnalyzer(CampBattleManager.instance.templateDataSetup);
-         return _loc1_;
+         var loader:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.solveRequestPath("CampWarItems.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.activitySystemItemsInfoFail");
+         loader.analyzer = new CampBattleAwardsDataAnalyzer(CampBattleManager.instance.templateDataSetup);
+         return loader;
       }
       
       public function creatParticlesLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.getParticlesPath(),2);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingParticlesError");
-         _loc1_.analyzer = new EmitterInfoAnalyzer(ParticleManager.Instance.loadConfig);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.getParticlesPath(),2);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingParticlesError");
+         loader.analyzer = new EmitterInfoAnalyzer(ParticleManager.Instance.loadConfig);
+         return loader;
       }
       
       public function createBankLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("BankTemplateInfo.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.BankInvestmentDataFail");
-         _loc1_.analyzer = new BankInvestmentDataAnalyzer(BankManager.instance.onDataComplete);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("BankTemplateInfo.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.BankInvestmentDataFail");
+         loader.analyzer = new BankInvestmentDataAnalyzer(BankManager.instance.onDataComplete);
+         return loader;
       }
       
       public function createEquipGhostLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.solveRequestPath("SpiritInfoList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.activitySystemItemsInfoFail");
-         _loc1_.analyzer = new GhostDataAnalyzer(EquipGhostManager.getInstance().analyzerCompleteHandler);
-         return _loc1_;
+         var loader:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.solveRequestPath("SpiritInfoList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.activitySystemItemsInfoFail");
+         loader.analyzer = new GhostDataAnalyzer(EquipGhostManager.getInstance().analyzerCompleteHandler);
+         return loader;
       }
       
       public function createStockLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("StockTemplateInfo.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("stockTemplateLoadError");
-         _loc1_.analyzer = new StockAnalyzer();
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("StockTemplateInfo.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("stockTemplateLoadError");
+         loader.analyzer = new StockAnalyzer();
+         return loader;
       }
       
       public function createStockNewsLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("StockNoticeList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("stockNoticesTemplateLoadError");
-         _loc1_.analyzer = new StockNewsAnalyzer();
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("StockNoticeList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("stockNoticesTemplateLoadError");
+         loader.analyzer = new StockNewsAnalyzer();
+         return loader;
       }
       
       public function createMinesDropLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("OnlineArmDropItem.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.OnlineArmDropItemError");
-         _loc1_.analyzer = new MinesDropAnalyzer(MinesManager.instance.templateDropDataSetup);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("OnlineArmDropItem.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.OnlineArmDropItemError");
+         loader.analyzer = new MinesDropAnalyzer(MinesManager.instance.templateDropDataSetup);
+         return loader;
       }
       
       public function createMinesLevelLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("OnlineArmLevelInfo.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.OnlineArmLevelInfoError");
-         _loc1_.analyzer = new MinesLevelAnalyzer(MinesManager.instance.templateLevelDataSetup);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("OnlineArmLevelInfo.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.OnlineArmLevelInfoError");
+         loader.analyzer = new MinesLevelAnalyzer(MinesManager.instance.templateLevelDataSetup);
+         return loader;
       }
       
       public function createTeamMemeberLoader() : BaseLoader
       {
-         var _loc2_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         _loc2_["teamid"] = PlayerManager.Instance.Self.teamID;
-         var _loc1_:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.solveRequestPath("BattleTeamIMLoadServlet.ashx"),6,_loc2_);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("team.load.memeberError");
-         _loc1_.analyzer = new TeamMemberAnalyze(TeamManager.instance.analyzeMemberList);
-         return _loc1_;
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         args["teamid"] = PlayerManager.Instance.Self.teamID;
+         var loader:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.solveRequestPath("BattleTeamIMLoadServlet.ashx"),6,args);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("team.load.memeberError");
+         loader.analyzer = new TeamMemberAnalyze(TeamManager.instance.analyzeMemberList);
+         return loader;
       }
       
       public function createTeamShopLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.solveRequestPath("BattleTeamShopItemList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("team.load.shopError");
-         _loc1_.analyzer = new TeamShopAnalyze(TeamManager.instance.analyzeShopList);
-         return _loc1_;
+         var loader:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.solveRequestPath("BattleTeamShopItemList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("team.load.shopError");
+         loader.analyzer = new TeamShopAnalyze(TeamManager.instance.analyzeShopList);
+         return loader;
       }
       
       public function createTeamAcviteListLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.solveRequestPath("BattleTeamActiveTemplateList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("team.load.activeError");
-         _loc1_.analyzer = new TeamActiveAnalyze(TeamManager.instance.analzeActiveList);
-         return _loc1_;
+         var loader:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.solveRequestPath("BattleTeamActiveTemplateList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("team.load.activeError");
+         loader.analyzer = new TeamActiveAnalyze(TeamManager.instance.analzeActiveList);
+         return loader;
       }
       
       public function createTeamBattleSeasonLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.solveRequestPath("BattleTeamSeasonList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("teamBattle.load.sessionError");
-         _loc1_.analyzer = new TeamBattleSeasonAnalyzer(TeamManager.instance.analyzeSeasonList);
-         return _loc1_;
+         var loader:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.solveRequestPath("BattleTeamSeasonList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("teamBattle.load.sessionError");
+         loader.analyzer = new TeamBattleSeasonAnalyzer(TeamManager.instance.analyzeSeasonList);
+         return loader;
       }
       
       public function createTeamBattleSegmentLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.solveRequestPath("BattleTeamSegmentList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("teamBattle.load.segmentError");
-         _loc1_.analyzer = new TeamBattleSegmentAnalyzer(TeamManager.instance.analyzeSegmentList);
-         return _loc1_;
+         var loader:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.solveRequestPath("BattleTeamSegmentList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("teamBattle.load.segmentError");
+         loader.analyzer = new TeamBattleSegmentAnalyzer(TeamManager.instance.analyzeSegmentList);
+         return loader;
       }
       
       public function createTheServerTeamRankLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.solveRequestPath("CelebByBattleTeamSegmentRank.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("team.load.rankError");
-         _loc1_.analyzer = new TeamRankAnalyze(TeamManager.instance.analyzeRankList);
-         return _loc1_;
+         var loader:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.solveRequestPath("CelebByBattleTeamSegmentRank.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("team.load.rankError");
+         loader.analyzer = new TeamRankAnalyze(TeamManager.instance.analyzeRankList);
+         return loader;
       }
       
       public function createCrossServerTeamRankLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.solveRequestPath("AreaCelebByBattleTeamSegmentRank.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("team.load.rankError");
-         _loc1_.analyzer = new TeamRankAnalyze(TeamManager.instance.analyzeRankList);
-         return _loc1_;
+         var loader:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.solveRequestPath("AreaCelebByBattleTeamSegmentRank.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("team.load.rankError");
+         loader.analyzer = new TeamRankAnalyze(TeamManager.instance.analyzeRankList);
+         return loader;
       }
       
       public function createTeamLevelListLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.solveRequestPath("BattleTeamLevelList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("team.load.rankError");
-         _loc1_.analyzer = new TeamLevelAnalyze(TeamManager.instance.analyzeLevelList);
-         return _loc1_;
+         var loader:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.solveRequestPath("BattleTeamLevelList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("team.load.rankError");
+         loader.analyzer = new TeamLevelAnalyze(TeamManager.instance.analyzeLevelList);
+         return loader;
       }
       
       public function createAngelInvestmentLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("MonthCardGoodInfo.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.AngelInvestmentDataFail");
-         _loc1_.analyzer = new AngelInvestmentDataAnalyzer(AngelInvestmentManager.instance.onDataComplete);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("MonthCardGoodInfo.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.AngelInvestmentDataFail");
+         loader.analyzer = new AngelInvestmentDataAnalyzer(AngelInvestmentManager.instance.onDataComplete);
+         return loader;
       }
       
       public function createMarkChipLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("EngraveDebrisInfo.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("mark.chipTemplateLoadError");
-         _loc1_.analyzer = new MarkChipAnalyzer(MarkMgr.inst.setMarkChipTempalte);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("EngraveDebrisInfo.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("mark.chipTemplateLoadError");
+         loader.analyzer = new MarkChipAnalyzer(MarkMgr.inst.setMarkChipTempalte);
+         return loader;
       }
       
       public function createMarkSuitLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("EngraveSetElementInfo.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("mark.suitTemplateLoadError");
-         _loc1_.analyzer = new MarkSuitAnalyzer(MarkMgr.inst.setMarkSuitTempalte);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("EngraveSetElementInfo.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("mark.suitTemplateLoadError");
+         loader.analyzer = new MarkSuitAnalyzer(MarkMgr.inst.setMarkSuitTempalte);
+         return loader;
       }
       
       public function createMarkSetLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("EngraveSetInfo.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("mark.suitTemplateLoadError");
-         _loc1_.analyzer = new MarkSetAnalyzer(MarkMgr.inst.setMarkSetTempalte);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("EngraveSetInfo.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("mark.suitTemplateLoadError");
+         loader.analyzer = new MarkSetAnalyzer(MarkMgr.inst.setMarkSetTempalte);
+         return loader;
       }
       
       public function createMarkHammerLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("EngraveTemperConfigInfo.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("mark.hammerTemplateLoadError");
-         _loc1_.analyzer = new MarkHammerAnalyzer(MarkMgr.inst.setMarkHammerTempalte);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("EngraveTemperConfigInfo.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("mark.hammerTemplateLoadError");
+         loader.analyzer = new MarkHammerAnalyzer(MarkMgr.inst.setMarkHammerTempalte);
+         return loader;
       }
       
       public function createMarkProInfoLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("DebrisPropertyConfig.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("mark.chipTemplateLoadError");
-         _loc1_.analyzer = new MarkProAnalyzer(MarkMgr.inst.setMarkProInfo);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("DebrisPropertyConfig.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("mark.chipTemplateLoadError");
+         loader.analyzer = new MarkProAnalyzer(MarkMgr.inst.setMarkProInfo);
+         return loader;
       }
       
       public function createMarkTransferLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("EngraveRefineryConfigInfo.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("mark.transferTemplateLoadError");
-         _loc1_.analyzer = new MarkTransferAnalyzer(MarkMgr.inst.setMarkTransferTempalte);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("EngraveRefineryConfigInfo.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("mark.transferTemplateLoadError");
+         loader.analyzer = new MarkTransferAnalyzer(MarkMgr.inst.setMarkTransferTempalte);
+         return loader;
+      }
+      
+      public function createDevilTurnGoodsItemLoader() : BaseLoader
+      {
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("DevilTreasItemList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("tank.devilTurn.loadGoodsItemError");
+         loader.analyzer = new DevilTurnGoodsItemAnalyzer(DevilTurnManager.instance.loadGoodsItemComplete);
+         return loader;
+      }
+      
+      public function createDevilTurnBoxConvertLoader() : BaseLoader
+      {
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("DevilTreasSarahToBoxList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("tank.devilTurn.loadBoxConvertError");
+         loader.analyzer = new DevilTurnBoxConvertAnalyzer(DevilTurnManager.instance.loadBoxConvertItemComplete);
+         return loader;
+      }
+      
+      public function createDevilTurnPointShopLoader() : BaseLoader
+      {
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("DevilTreasPointsList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("tank.devilTurn.loadPointShopError");
+         loader.analyzer = new DevilTurnPointShopAnalyzer(DevilTurnManager.instance.loadPointsShopItemComplete);
+         return loader;
+      }
+      
+      public function createDevilTurnRankAewardLoader() : BaseLoader
+      {
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("DevilTreasRankRewardList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("tank.devilTurn.loadRankAewardError");
+         loader.analyzer = new DevilTurnRankRewardAnalyzer(DevilTurnManager.instance.loadRankAwardItemComplete);
+         return loader;
+      }
+      
+      public function createUnrealRankRewardLoader() : BaseLoader
+      {
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("UnrealRankRewardList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("tank.dreamLand.loadUnrealRankAewardError");
+         loader.analyzer = new UnrealRankRewardAnalyzer(DreamlandChallengeManager.instance.loadUnrealRankAwardComplete);
+         return loader;
+      }
+      
+      public function createTotemUpGradeTemplateLoader() : BaseLoader
+      {
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("TS_UpgradeTemplate.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.loadTotem.upGradeFail");
+         loader.analyzer = new TotemUpGradeAnalyz(TotemManager.instance.upGradeData);
+         return loader;
       }
    }
 }

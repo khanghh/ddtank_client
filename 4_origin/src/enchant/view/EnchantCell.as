@@ -17,9 +17,9 @@ package enchant.view
       
       private var _itemBagType:int;
       
-      public function EnchantCell(param1:int, param2:int, param3:ItemTemplateInfo = null, param4:Boolean = true, param5:DisplayObject = null, param6:Boolean = true)
+      public function EnchantCell(type:int, index:int, info:ItemTemplateInfo = null, showLoading:Boolean = true, bg:DisplayObject = null, mouseOverEffBoolean:Boolean = true)
       {
-         _type = param1;
+         _type = type;
          if(_type == 0)
          {
             _itemBagType = 1;
@@ -28,7 +28,7 @@ package enchant.view
          {
             _itemBagType = 0;
          }
-         super(param2,param3,param4,param5,param6);
+         super(index,info,showLoading,bg,mouseOverEffBoolean);
       }
       
       override protected function initEvent() : void
@@ -39,17 +39,17 @@ package enchant.view
          DoubleClickManager.Instance.enableDoubleClick(this);
       }
       
-      protected function __doubleClickHandler(param1:InteractiveEvent) : void
+      protected function __doubleClickHandler(evt:InteractiveEvent) : void
       {
          if(!info)
          {
             return;
          }
          SoundManager.instance.play("008");
-         SocketManager.Instance.out.sendMoveGoods(12,_type,_itemBagType,-1);
+         SocketManager.Instance.out.sendMoveGoods(12,_type,_itemBagType,0);
       }
       
-      protected function __clickHandler(param1:Event) : void
+      protected function __clickHandler(event:Event) : void
       {
          SoundManager.instance.play("008");
          dragStart();

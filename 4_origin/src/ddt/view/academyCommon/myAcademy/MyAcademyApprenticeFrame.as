@@ -143,15 +143,15 @@ package ddt.view.academyCommon.myAcademy
       {
          var _loc3_:int = 0;
          var _loc2_:* = _myApprentice;
-         for each(var _loc1_ in _myApprentice)
+         for each(var i in _myApprentice)
          {
-            if(_loc1_.apprenticeshipState == 1)
+            if(i.apprenticeshipState == 1)
             {
-               _ApprenticeInfos.push(_loc1_);
+               _ApprenticeInfos.push(i);
             }
             else
             {
-               _masterInfo = _loc1_;
+               _masterInfo = i;
             }
          }
       }

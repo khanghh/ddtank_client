@@ -22,139 +22,136 @@ package org.aswing.util
          _elements = [];
       }
       
-      public function each(param1:Function) : void
+      public function each(operation:Function) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _elements.length)
+         var i:int = 0;
+         for(i = 0; i < _elements.length; )
          {
-            param1(_elements[_loc2_]);
-            _loc2_++;
+            operation(_elements[i]);
+            i++;
          }
       }
       
-      public function eachWithout(param1:Object, param2:Function) : void
+      public function eachWithout(obj:Object, operation:Function) : void
       {
-         var _loc3_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < _elements.length)
+         var i:int = 0;
+         for(i = 0; i < _elements.length; )
          {
-            if(_elements[_loc3_] != param1)
+            if(_elements[i] != obj)
             {
-               param2(_elements[_loc3_]);
+               operation(_elements[i]);
             }
-            _loc3_++;
+            i++;
          }
       }
       
-      public function get(param1:int) : *
+      public function get(i:int) : *
       {
-         return _elements[param1];
+         return _elements[i];
       }
       
-      public function elementAt(param1:int) : *
+      public function elementAt(i:int) : *
       {
-         return get(param1);
+         return get(i);
       }
       
-      public function append(param1:*, param2:int = -1) : void
+      public function append(obj:*, index:int = -1) : void
       {
-         if(param2 == -1)
+         if(index == -1)
          {
-            _elements.push(param1);
+            _elements.push(obj);
          }
          else
          {
-            _elements.splice(param2,0,param1);
+            _elements.splice(index,0,obj);
          }
       }
       
-      public function appendAll(param1:Array, param2:int = -1) : void
+      public function appendAll(arr:Array, index:int = -1) : void
       {
-         var _loc3_:* = null;
-         if(param1 == null || param1.length <= 0)
+         var right:* = null;
+         if(arr == null || arr.length <= 0)
          {
             return;
          }
-         if(param2 == -1 || param2 == _elements.length)
+         if(index == -1 || index == _elements.length)
          {
-            _elements = _elements.concat(param1);
+            _elements = _elements.concat(arr);
          }
-         else if(param2 == 0)
+         else if(index == 0)
          {
-            _elements = param1.concat(_elements);
+            _elements = arr.concat(_elements);
          }
          else
          {
-            _loc3_ = _elements.splice(param2);
-            _elements = _elements.concat(param1);
-            _elements = _elements.concat(_loc3_);
+            right = _elements.splice(index);
+            _elements = _elements.concat(arr);
+            _elements = _elements.concat(right);
          }
       }
       
-      public function replaceAt(param1:int, param2:*) : *
+      public function replaceAt(index:int, obj:*) : *
       {
-         var _loc3_:* = null;
-         if(param1 < 0 || param1 >= size())
+         var oldObj:* = null;
+         if(index < 0 || index >= size())
          {
             return null;
          }
-         _loc3_ = _elements[param1];
-         _elements[param1] = param2;
-         return _loc3_;
+         oldObj = _elements[index];
+         _elements[index] = obj;
+         return oldObj;
       }
       
-      public function removeAt(param1:int) : *
+      public function removeAt(index:int) : *
       {
-         var _loc2_:* = null;
-         if(param1 < 0 || param1 >= size())
+         var obj:* = null;
+         if(index < 0 || index >= size())
          {
             return null;
          }
-         _loc2_ = _elements[param1];
-         _elements.splice(param1,1);
-         return _loc2_;
+         obj = _elements[index];
+         _elements.splice(index,1);
+         return obj;
       }
       
-      public function remove(param1:*) : *
+      public function remove(obj:*) : *
       {
-         var _loc2_:int = indexOf(param1);
-         if(_loc2_ >= 0)
+         var i:int = indexOf(obj);
+         if(i >= 0)
          {
-            return removeAt(_loc2_);
+            return removeAt(i);
          }
          return null;
       }
       
-      public function removeRange(param1:int, param2:int) : Array
+      public function removeRange(fromIndex:int, toIndex:int) : Array
       {
-         param1 = Math.max(0,param1);
-         param2 = Math.min(param2,_elements.length - 1);
-         if(param1 > param2)
+         fromIndex = Math.max(0,fromIndex);
+         toIndex = Math.min(toIndex,_elements.length - 1);
+         if(fromIndex > toIndex)
          {
             return [];
          }
-         return _elements.splice(param1,param2 - param1 + 1);
+         return _elements.splice(fromIndex,toIndex - fromIndex + 1);
       }
       
-      public function indexOf(param1:*) : int
+      public function indexOf(obj:*) : int
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _elements.length)
+         var i:int = 0;
+         for(i = 0; i < _elements.length; )
          {
-            if(_elements[_loc2_] === param1)
+            if(_elements[i] === obj)
             {
-               return _loc2_;
+               return i;
             }
-            _loc2_++;
+            i++;
          }
          return -1;
       }
       
-      public function appendList(param1:List, param2:int = -1) : void
+      public function appendList(list:List, index:int = -1) : void
       {
-         appendAll(param1.toArray(),param2);
+         appendAll(list.toArray(),index);
       }
       
       public function pop() : *
@@ -175,24 +172,23 @@ package org.aswing.util
          return undefined;
       }
       
-      public function lastIndexOf(param1:*) : int
+      public function lastIndexOf(obj:*) : int
       {
-         var _loc2_:int = 0;
-         _loc2_ = _elements.length - 1;
-         while(_loc2_ >= 0)
+         var i:int = 0;
+         for(i = _elements.length - 1; i >= 0; )
          {
-            if(_elements[_loc2_] === param1)
+            if(_elements[i] === obj)
             {
-               return _loc2_;
+               return i;
             }
-            _loc2_--;
+            i--;
          }
          return -1;
       }
       
-      public function contains(param1:*) : Boolean
+      public function contains(obj:*) : Boolean
       {
-         return indexOf(param1) >= 0;
+         return indexOf(obj) >= 0;
       }
       
       public function first() : *
@@ -210,9 +206,9 @@ package org.aswing.util
          return _elements.length;
       }
       
-      public function setElementAt(param1:int, param2:*) : void
+      public function setElementAt(index:int, element:*) : void
       {
-         replaceAt(param1,param2);
+         replaceAt(index,element);
       }
       
       public function getSize() : int
@@ -231,15 +227,14 @@ package org.aswing.util
       
       public function clone() : ASWingVector
       {
-         var _loc2_:int = 0;
-         var _loc1_:ASWingVector = new ASWingVector();
-         _loc2_ = 0;
-         while(_loc2_ < _elements.length)
+         var i:int = 0;
+         var cloned:ASWingVector = new ASWingVector();
+         for(i = 0; i < _elements.length; )
          {
-            _loc1_.append(_elements[_loc2_]);
-            _loc2_++;
+            cloned.append(_elements[i]);
+            i++;
          }
-         return _loc1_;
+         return cloned;
       }
       
       public function isEmpty() : Boolean
@@ -256,19 +251,19 @@ package org.aswing.util
          return _elements.concat();
       }
       
-      public function subArray(param1:int, param2:int) : Array
+      public function subArray(startIndex:int, length:int) : Array
       {
-         return _elements.slice(param1,Math.min(param1 + param2,size()));
+         return _elements.slice(startIndex,Math.min(startIndex + length,size()));
       }
       
-      public function sort(param1:Object, param2:int) : Array
+      public function sort(compare:Object, options:int) : Array
       {
-         return _elements.sort(param1,param2);
+         return _elements.sort(compare,options);
       }
       
-      public function sortOn(param1:Object, param2:int) : Array
+      public function sortOn(key:Object, options:int) : Array
       {
-         return _elements.sortOn(param1,param2);
+         return _elements.sortOn(key,options);
       }
       
       public function toString() : String

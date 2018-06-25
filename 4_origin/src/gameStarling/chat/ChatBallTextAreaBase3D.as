@@ -27,16 +27,16 @@ package gameStarling.chat
          addChild(tf);
       }
       
-      public function set text(param1:String) : void
+      public function set text(value:String) : void
       {
          clear();
-         _text = param1;
+         _text = value;
          tf.text = _text;
       }
       
-      public function set format(param1:TextFormat) : void
+      public function set format(value:TextFormat) : void
       {
-         tf.fText.defaultTextFormat = param1;
+         tf.fText.defaultTextFormat = value;
       }
       
       protected function clear() : void

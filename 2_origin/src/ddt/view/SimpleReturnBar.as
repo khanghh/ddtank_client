@@ -49,13 +49,13 @@ package ddt.view
          _returnBtn.addEventListener("click",__onReturnClick);
       }
       
-      private function __onStretchBtnClick(param1:MouseEvent) : void
+      private function __onStretchBtnClick(event:MouseEvent) : void
       {
          TweenLite.killTweensOf(this);
          TweenLite.to(this,0.5,{"x":(!!_stretchBtn.selected?moveTo:Number(stopTo))});
       }
       
-      private function __onReturnClick(param1:MouseEvent) : void
+      private function __onReturnClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(_returnCall != null)
@@ -70,9 +70,9 @@ package ddt.view
          _returnBtn.removeEventListener("click",__onReturnClick);
       }
       
-      public function set returnCall(param1:Function) : void
+      public function set returnCall(call:Function) : void
       {
-         _returnCall = param1;
+         _returnCall = call;
       }
       
       public function dispose() : void

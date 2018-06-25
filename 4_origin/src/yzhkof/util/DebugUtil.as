@@ -12,49 +12,47 @@ package yzhkof.util
          super();
       }
       
-      public static function analyseInstance(param1:Object) : String
+      public static function analyseInstance(obj:Object) : String
       {
-         var _loc2_:String = "*********************************\n";
-         if(param1 == null)
+         var re_text:String = "*********************************\n";
+         if(obj == null)
          {
-            _loc2_ = _loc2_ + "null\n";
+            re_text = re_text + "null\n";
          }
          else
          {
-            _loc2_ = _loc2_ + analyseMenbers(param1);
+            re_text = re_text + analyseMenbers(obj);
          }
-         _loc2_ = _loc2_ + "**********************************\n";
-         return _loc2_;
+         re_text = re_text + "**********************************\n";
+         return re_text;
       }
       
-      private static function analyseMenbers(param1:Object) : String
+      private static function analyseMenbers(obj:Object) : String
       {
-         var _loc3_:Array = null;
-         var _loc4_:int = 0;
-         var _loc5_:int = 0;
-         var _loc6_:Object = null;
-         var _loc2_:String = "";
-         if(param1 is EventDispatcher)
+         var listener_arr:Array = null;
+         var length:int = 0;
+         var i:int = 0;
+         var fun:Object = null;
+         var re_text:String = "";
+         if(obj is EventDispatcher)
          {
-            _loc3_ = param1[QNameUtil.getObjectQname(param1,QNameUtil.LISTENERS)];
-            _loc4_ = !!_loc3_?int(_loc3_.length):0;
-            _loc2_ = _loc2_ + ("监听器数 ： " + _loc4_ + "\n");
-            _loc5_ = 0;
-            while(_loc5_ < _loc4_)
+            listener_arr = obj[QNameUtil.getObjectQname(obj,QNameUtil.LISTENERS)];
+            length = !!listener_arr?int(listener_arr.length):0;
+            re_text = re_text + ("监听器数 ： " + length + "\n");
+            for(i = 0; i < length; i++)
             {
-               _loc6_ = _loc3_[_loc5_];
-               if(_loc6_ is Function)
+               fun = listener_arr[i];
+               if(fun is Function)
                {
-                  _loc2_ = _loc2_ + ("\t" + _loc5_ + " ： 监听器this指向[" + _loc6_[QNameUtil.getObjectQname(_loc6_,QNameUtil.SAVEDTHIS)] + "]\n");
+                  re_text = re_text + ("\t" + i + " ： 监听器this指向[" + fun[QNameUtil.getObjectQname(fun,QNameUtil.SAVEDTHIS)] + "]\n");
                }
                else
                {
-                  _loc2_ = _loc2_ + ("\t" + _loc5_ + " ： 监听器为 " + getQualifiedClassName(_loc6_) + "\n");
+                  re_text = re_text + ("\t" + i + " ： 监听器为 " + getQualifiedClassName(fun) + "\n");
                }
-               _loc5_++;
             }
          }
-         return _loc2_;
+         return re_text;
       }
    }
 }

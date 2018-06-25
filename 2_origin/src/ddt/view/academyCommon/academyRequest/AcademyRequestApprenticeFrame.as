@@ -45,7 +45,7 @@ package ddt.view.academyCommon.academyRequest
          addToContent(_explainText);
       }
       
-      override protected function __onInpotClick(param1:MouseEvent) : void
+      override protected function __onInpotClick(event:MouseEvent) : void
       {
          if(!_isSelection)
          {

@@ -15,12 +15,12 @@ package room.view.states
          super();
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
          _roomView = new TeamRoomView(RoomManager.Instance.current);
          PositionUtils.setPos(_roomView,"asset.ddtroom.matchroomstate.pos");
          addChild(_roomView);
-         super.enter(param1,param2);
+         super.enter(prev,data);
       }
       
       override public function getType() : String
@@ -33,10 +33,10 @@ package room.view.states
          return "main";
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
          MainToolBar.Instance.hide();
-         super.leaving(param1);
+         super.leaving(next);
       }
    }
 }

@@ -7,6 +7,7 @@ package hall
    import LimitAward.LimitAwardButton;
    import academy.AcademyManager;
    import accumulativeLogin.AccumulativeManager;
+   import angelInvestment.AngelInvestmentManager;
    import anotherDimension.controller.AnotherDimensionManager;
    import bagAndInfo.BagAndInfoManager;
    import baglocked.BaglockedManager;
@@ -373,6 +374,8 @@ package hall
       
       private var _LevelIcon:Bitmap;
       
+      private var _bitmap12:Bitmap;
+      
       public var starlingHallScene:HallScene;
       
       private var _isShowActTipDic:Dictionary;
@@ -431,16 +434,16 @@ package hall
          initEvent();
       }
       
-      private static function onSampleDataHandler(param1:SampleDataEvent) : void
+      private static function onSampleDataHandler(e:SampleDataEvent) : void
       {
          var _loc2_:int = 16384;
-         param1.data.length = _loc2_;
-         param1.data.position = _loc2_;
+         e.data.length = _loc2_;
+         e.data.position = _loc2_;
       }
       
-      override public function set x(param1:Number) : void
+      override public function set x(value:Number) : void
       {
-         .super.x = param1;
+         .super.x = value;
       }
       
       private function initEvent() : void
@@ -450,34 +453,34 @@ package hall
          LabyrinthManager.Instance.addEventListener("LabyrinthChat",__labyrinthChat);
       }
       
-      private function onKeyUp(param1:KeyboardEvent) : void
+      private function onKeyUp(evt:KeyboardEvent) : void
       {
-         var _loc2_:uint = param1.keyCode;
-         if(_loc2_ == 65)
+         var keyCode:uint = evt.keyCode;
+         if(keyCode == 65)
          {
             IndianaDataManager.instance.show();
          }
       }
       
-      protected function __labyrinthChat(param1:Event) : void
+      protected function __labyrinthChat(event:Event) : void
       {
          LayerManager.Instance.addToLayer(ChatManager.Instance.view,3);
       }
       
-      private function __getLuckStoneEnable(param1:PkgEvent) : void
+      private function __getLuckStoneEnable(e:PkgEvent) : void
       {
-         var _loc2_:Boolean = false;
-         var _loc4_:PackageIn = param1.pkg;
-         startDate = _loc4_.readDate();
-         endDate = _loc4_.readDate();
-         isActiv = _loc4_.readBoolean();
-         var _loc3_:Date = TimeManager.Instance.Now();
-         if(_loc3_.getTime() >= startDate.getTime() && _loc3_.getTime() <= endDate.getTime())
+         var open:Boolean = false;
+         var p:PackageIn = e.pkg;
+         startDate = p.readDate();
+         endDate = p.readDate();
+         isActiv = p.readBoolean();
+         var nowDate:Date = TimeManager.Instance.Now();
+         if(nowDate.getTime() >= startDate.getTime() && nowDate.getTime() <= endDate.getTime())
          {
-            _loc2_ = true;
+            open = true;
          }
          WonderfulActivityManager.Instance.rouleEndTime = endDate;
-         if(isActiv && _loc2_)
+         if(isActiv && open)
          {
             WonderfulActivityManager.Instance.addElement(1);
             WonderfulActivityManager.Instance.hasActivity = true;
@@ -488,7 +491,7 @@ package hall
          }
       }
       
-      private function _checkActivityPer(param1:TimerEvent) : void
+      private function _checkActivityPer(event:TimerEvent) : void
       {
          _checkLimit();
          if(!isInLuckStone && checkLuckStone())
@@ -526,9 +529,9 @@ package hall
          return "main";
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
-         var _loc3_:int = 0;
+         var i:int = 0;
          starlingHallScene = HallScene(StarlingMain.instance.currentScene);
          _btnList = [];
          _btnTipList = [];
@@ -538,10 +541,10 @@ package hall
             NoviceDataManager.instance.saveNoviceData(320,PathManager.userName(),PathManager.solveRequestPath());
          }
          KeyboardShortcutsManager.Instance.cancelForbidden();
-         super.enter(param1,param2);
-         if(param2 is Function)
+         super.enter(prev,data);
+         if(data is Function)
          {
-            param2();
+            data();
          }
          KeyboardShortcutsManager.Instance.setup();
          SocketManager.Instance.out.sendSceneLogin(0);
@@ -557,14 +560,14 @@ package hall
          {
             _isShowActTipDic = new Dictionary();
          }
-         _loc3_ = 0;
-         while(_loc3_ < _needShowOpenTipActArr.length)
+         i = 0;
+         while(i < _needShowOpenTipActArr.length)
          {
-            if(!_isShowActTipDic[_needShowOpenTipActArr[_loc3_]])
+            if(!_isShowActTipDic[_needShowOpenTipActArr[i]])
             {
-               _isShowActTipDic[_needShowOpenTipActArr[_loc3_]] = false;
+               _isShowActTipDic[_needShowOpenTipActArr[i]] = false;
             }
-            _loc3_++;
+            i++;
          }
          WonderfulActivityManager.Instance.addEventListener("check_activity_state",__checkShowWonderfulActivityTip);
          if(StartupResourceLoader.firstEnterHall)
@@ -586,19 +589,19 @@ package hall
          }
       }
       
-      protected function __consortiaResponse(param1:PkgEvent) : void
+      protected function __consortiaResponse(e:PkgEvent) : void
       {
          checkConsortionTask();
       }
       
-      protected function __renegadeUser(param1:PkgEvent) : void
+      protected function __renegadeUser(e:PkgEvent) : void
       {
          checkConsortionTask();
       }
       
-      protected function __getTaskInfo(param1:ConsortiaTaskEvent) : void
+      protected function __getTaskInfo(e:ConsortiaTaskEvent) : void
       {
-         if(param1.value == 3 || param1.value == 2 || param1.value == 4 || param1.value == 5)
+         if(e.value == 3 || e.value == 2 || e.value == 4 || e.value == 5)
          {
             checkConsortionTask();
          }
@@ -616,9 +619,9 @@ package hall
          }
       }
       
-      private function __onHallLoadComplete(param1:UIModuleEvent) : void
+      private function __onHallLoadComplete(pEvent:UIModuleEvent) : void
       {
-         if(param1.module == "ddtcorei")
+         if(pEvent.module == "ddtcorei")
          {
             UIModuleLoader.Instance.removeEventListener("uiModuleComplete",__onHallLoadComplete);
             initHall();
@@ -627,9 +630,10 @@ package hall
       
       private function initHall() : void
       {
-         var _loc5_:* = null;
-         var _loc1_:* = null;
-         var _loc2_:* = null;
+         var levelIconS:* = null;
+         var bm12S:* = null;
+         var loaderQueue:* = null;
+         var novicePlatinumCard:* = null;
          SoundManager.instance.playMusic("062",true,false);
          if(!_bgSprite)
          {
@@ -658,20 +662,27 @@ package hall
          }
          if(!_LevelIcon)
          {
-            _loc5_ = new Component();
+            levelIconS = new Component();
             _LevelIcon = ComponentFactory.Instance.creatBitmap("asset.hall.LevelIcon");
-            PositionUtils.setPos(_loc5_,"ddt.hall.LevelIconPostPos");
-            _loc5_.addChild(_LevelIcon);
-            _loc5_.tipStyle = "ddt.view.tips.MultipleLineTip";
-            _loc5_.tipGapV = 25;
-            _loc5_.tipGapH = 40;
-            _loc5_.tipDirctions = "7,6,5";
-            _loc5_.tipData = LanguageMgr.GetTranslation("ddt.hall.LevelIconLanguage");
-            addChild(_loc5_);
+            PositionUtils.setPos(levelIconS,"ddt.hall.LevelIconPostPos");
+            levelIconS.addChild(_LevelIcon);
+            levelIconS.tipStyle = "ddt.view.tips.MultipleLineTip";
+            levelIconS.tipGapV = 25;
+            levelIconS.tipGapH = 40;
+            levelIconS.tipDirctions = "7,6,5";
+            levelIconS.tipData = LanguageMgr.GetTranslation("ddt.hall.LevelIconLanguage");
          }
-         var _loc3_:GypsyNPCBhvr = new GypsyNPCBhvr(null);
-         _loc3_.hallView = this;
-         GypsyShopManager.getInstance().npcBehavior = _loc3_;
+         if(!_bitmap12)
+         {
+            bm12S = new Component();
+            _bitmap12 = ComponentFactory.Instance.creatBitmap("asset.hall.12+bitmap");
+            PositionUtils.setPos(bm12S,"ddt.hall.LevelIconPostPos");
+            bm12S.addChild(_bitmap12);
+            addChild(bm12S);
+         }
+         var behavior:GypsyNPCBhvr = new GypsyNPCBhvr(null);
+         behavior.hallView = this;
+         GypsyShopManager.getInstance().npcBehavior = behavior;
          GypsyShopManager.getInstance().init(this);
          DailyButtunBar.Insance.show();
          createBuildBtn();
@@ -729,21 +740,21 @@ package hall
          }
          if(!SoundManager.instance.audioAllComplete)
          {
-            _loc1_ = new QueueLoader();
+            loaderQueue = new QueueLoader();
             if(!SoundManager.instance.audioComplete)
             {
-               _loc1_.addLoader(LoaderCreate.Instance.createAudioILoader());
+               loaderQueue.addLoader(LoaderCreate.Instance.createAudioILoader());
             }
             if(!SoundManager.instance.audioiiComplete)
             {
-               _loc1_.addLoader(LoaderCreate.Instance.createAudioIILoader());
+               loaderQueue.addLoader(LoaderCreate.Instance.createAudioIILoader());
             }
             if(!SoundManager.instance.audioLiteComplete)
             {
-               _loc1_.addLoader(LoaderCreate.Instance.createAudioLiteLoader());
+               loaderQueue.addLoader(LoaderCreate.Instance.createAudioLiteLoader());
             }
-            _loc1_.addEventListener("complete",__onAudioLoadComplete);
-            _loc1_.start();
+            loaderQueue.addEventListener("complete",__onAudioLoadComplete);
+            loaderQueue.start();
          }
          loadUserGuide();
          CacheSysManager.unlock("alertInMarry");
@@ -760,8 +771,8 @@ package hall
          }
          if(PlayerManager.Instance.Self.baiduEnterCode == "true")
          {
-            _loc2_ = ComponentFactory.Instance.creatComponentByStylename("core.NovicePlatinumCard");
-            _loc2_.setup();
+            novicePlatinumCard = ComponentFactory.Instance.creatComponentByStylename("core.NovicePlatinumCard");
+            novicePlatinumCard.setup();
          }
          TaskManager.instance.addEventListener("taskFrameHide",__taskFrameHide);
          loadWeakGuild();
@@ -816,11 +827,11 @@ package hall
          {
             AvatarCollectionManager.instance.addEventListener("avatar_collection_data_complete",__checkAvatarCollectionTime);
          }
-         var _loc7_:int = 0;
-         var _loc6_:* = _btnList;
-         for each(var _loc4_ in _btnList)
+         var _loc8_:int = 0;
+         var _loc7_:* = _btnList;
+         for each(var obj in _btnList)
          {
-            _loc4_.alpha = 0;
+            obj.alpha = 0;
          }
          PlayerManager.Instance.requireBagLockPSWDNeededList();
          if(ServerConfigManager.instance.wealthTreeIsOpen)
@@ -957,18 +968,17 @@ package hall
          ConRechargeManager.instance.showIcon();
       }
       
-      private function showDiceBtn(param1:Boolean = false) : void
+      private function showDiceBtn(value:Boolean = false) : void
       {
-         if(param1)
+         if(value)
          {
             DemonChiYouManager.instance.initHall(this);
          }
          ConsortiaDomainManager.instance.initHall(this);
          checkIsMaster();
-         checkGuide();
          var _loc4_:int = 0;
          var _loc3_:* = _btnList;
-         for each(var _loc2_ in _btnList)
+         for each(var obj in _btnList)
          {
             if(PlayerManager.Instance.Self.Grade >= 10)
             {
@@ -1013,14 +1023,14 @@ package hall
          }
       }
       
-      private function __checkAvatarCollectionTime(param1:Event) : void
+      private function __checkAvatarCollectionTime(event:Event) : void
       {
-         var _loc7_:int = 0;
-         var _loc3_:* = null;
-         var _loc6_:Number = NaN;
-         var _loc5_:Number = NaN;
-         var _loc4_:* = null;
-         if(param1)
+         var i:int = 0;
+         var data:* = null;
+         var endTimestamp:Number = NaN;
+         var nowTimestamp:Number = NaN;
+         var chatData:* = null;
+         if(event)
          {
             AvatarCollectionManager.instance.removeEventListener("avatar_collection_data_complete",__checkAvatarCollectionTime);
          }
@@ -1028,31 +1038,30 @@ package hall
          {
             return;
          }
-         var _loc2_:Array = AvatarCollectionManager.instance.maleUnitList;
-         _loc2_ = _loc2_.concat(AvatarCollectionManager.instance.femaleUnitList);
-         _loc2_ = _loc2_.concat(AvatarCollectionManager.instance.weaponUnitList);
-         _loc7_ = 0;
-         while(_loc7_ < _loc2_.length)
+         var dataArr:Array = AvatarCollectionManager.instance.maleUnitList;
+         dataArr = dataArr.concat(AvatarCollectionManager.instance.femaleUnitList);
+         dataArr = dataArr.concat(AvatarCollectionManager.instance.weaponUnitList);
+         for(i = 0; i < dataArr.length; )
          {
-            _loc3_ = _loc2_[_loc7_];
-            if(!(!_loc3_.endTime || _loc3_.totalActivityItemCount < _loc3_.totalItemList.length / 2))
+            data = dataArr[i];
+            if(!(!data.endTime || data.totalActivityItemCount < data.totalItemList.length / 2))
             {
-               _loc6_ = _loc3_.endTime.getTime();
-               _loc5_ = TimeManager.Instance.Now().getTime();
-               if(_loc6_ - _loc5_ <= 0)
+               endTimestamp = data.endTime.getTime();
+               nowTimestamp = TimeManager.Instance.Now().getTime();
+               if(endTimestamp - nowTimestamp <= 0)
                {
-                  _loc4_ = new ChatData();
-                  _loc4_.channel = 21;
-                  _loc4_.childChannelArr = [7,14];
-                  _loc4_.type = 108;
-                  _loc4_.msg = LanguageMgr.GetTranslation("avatarCollection.noTime.tipTxt");
+                  chatData = new ChatData();
+                  chatData.channel = 21;
+                  chatData.childChannelArr = [7,14];
+                  chatData.type = 108;
+                  chatData.msg = LanguageMgr.GetTranslation("avatarCollection.noTime.tipTxt");
                   AvatarCollectionManager.instance.isCheckedAvatarTime = true;
-                  ChatManager.Instance.chat(_loc4_);
-                  AvatarCollectionManager.instance.skipId = _loc3_.id;
+                  ChatManager.Instance.chat(chatData);
+                  AvatarCollectionManager.instance.skipId = data.id;
                   break;
                }
             }
-            _loc7_++;
+            i++;
          }
       }
       
@@ -1078,66 +1087,62 @@ package hall
          ConsortiaDomainManager.instance.askActiveSate();
       }
       
-      private function __propertyChange(param1:PlayerPropertyEvent) : void
+      private function __propertyChange(event:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["Grade"])
+         if(event.changedProperties["Grade"])
          {
             initBuild();
             addButtonList();
-            checkGuide();
          }
-         SevendayManager.instance.checkAutoShow();
       }
       
       private function createBuildBtn() : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc1_:* = null;
-         var _loc2_:* = null;
-         _loc4_ = 0;
-         while(_loc4_ < 6)
+         var i:int = 0;
+         var buildBtn:* = null;
+         var buildTip:* = null;
+         var buildObj:* = null;
+         for(i = 0; i < 6; )
          {
-            _loc3_ = ComponentFactory.Instance.creatComponentByStylename("HallMain." + _btnArray[_loc4_] + "Btn");
-            _loc1_ = new HallBuildTip();
-            _loc2_ = {};
-            _loc2_["title"] = LanguageMgr.GetTranslation("ddt.hall.build." + _btnArray[_loc4_] + "title");
-            _loc2_["content"] = LanguageMgr.GetTranslation("ddt.HallStateView." + _btnArray[_loc4_]);
-            _loc1_.tipData = _loc2_;
-            PositionUtils.setPos(_loc1_,"hall.build." + _btnArray[_loc4_] + "TipPos");
-            _btnTipList.push(_loc1_);
-            _btnList.push(_loc3_);
-            HallTaskTrackManager.instance.btnIndexMap[_btnArray[_loc4_]] = _loc4_;
-            _playerView.touchArea.addChild(_loc1_);
-            _playerView.touchArea.addChild(_loc3_);
-            _loc4_++;
+            buildBtn = ComponentFactory.Instance.creatComponentByStylename("HallMain." + _btnArray[i] + "Btn");
+            buildTip = new HallBuildTip();
+            buildObj = {};
+            buildObj["title"] = LanguageMgr.GetTranslation("ddt.hall.build." + _btnArray[i] + "title");
+            buildObj["content"] = LanguageMgr.GetTranslation("ddt.HallStateView." + _btnArray[i]);
+            buildTip.tipData = buildObj;
+            PositionUtils.setPos(buildTip,"hall.build." + _btnArray[i] + "TipPos");
+            _btnTipList.push(buildTip);
+            _btnList.push(buildBtn);
+            HallTaskTrackManager.instance.btnIndexMap[_btnArray[i]] = i;
+            _playerView.touchArea.addChild(buildTip);
+            _playerView.touchArea.addChild(buildBtn);
+            i++;
          }
       }
       
       private function createNpcBtn() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         _loc2_ = 6;
-         while(_loc2_ < _btnArray.length)
+         var i:int = 0;
+         var npcBtn:* = null;
+         for(i = 6; i < _btnArray.length; )
          {
-            _loc1_ = ComponentFactory.Instance.creatComponentByStylename("HallMain." + _btnArray[_loc2_] + "Btn");
-            _btnList.push(_loc1_);
-            _playerView.touchArea.addChild(_loc1_);
-            HallTaskTrackManager.instance.btnIndexMap[_btnArray[_loc2_]] = _loc2_;
-            _loc2_++;
+            npcBtn = ComponentFactory.Instance.creatComponentByStylename("HallMain." + _btnArray[i] + "Btn");
+            _btnList.push(npcBtn);
+            _playerView.touchArea.addChild(npcBtn);
+            HallTaskTrackManager.instance.btnIndexMap[_btnArray[i]] = i;
+            i++;
          }
       }
       
       private function initBuild() : void
       {
-         var _loc1_:int = PlayerManager.Instance.Self.Grade;
-         setBuildState(0,_loc1_ >= 10?true:false);
-         setBuildState(1,_loc1_ >= 3?true:false);
-         setBuildState(2,_loc1_ >= 30?true:false);
-         setBuildState(3,_loc1_ >= 19?true:false);
+         var lv:int = PlayerManager.Instance.Self.Grade;
+         setBuildState(0,lv >= 10?true:false);
+         setBuildState(1,lv >= 3?true:false);
+         setBuildState(2,lv >= 30?true:false);
+         setBuildState(3,lv >= 19?true:false);
          setBuildState(4,false);
-         setBuildState(5,_loc1_ >= 45?true:false);
+         setBuildState(5,lv >= 45?true:false);
          setBuildState(6,true);
          setBuildState(7,GypsyNPCModel.getInstance().isStart());
          setBuildState(8,false);
@@ -1154,92 +1159,92 @@ package hall
          setBuildState(19,true);
       }
       
-      public function setNPCBtnEnable(param1:Component, param2:Boolean) : void
+      public function setNPCBtnEnable($baseBtn:Component, enable:Boolean) : void
       {
-         if(param2)
+         if(enable)
          {
-            param1.addEventListener("mouseMove",__btnOver);
-            param1.addEventListener("mouseOut",__btnOut);
-            param1.addEventListener("click",__btnClick);
+            $baseBtn.addEventListener("mouseMove",__btnOver);
+            $baseBtn.addEventListener("mouseOut",__btnOut);
+            $baseBtn.addEventListener("click",__btnClick);
          }
          else
          {
-            param1.removeEventListener("mouseMove",__btnOver);
-            param1.removeEventListener("mouseOut",__btnOut);
-            param1.removeEventListener("click",__btnClick);
-            onOutEffect(_btnList.indexOf(param1));
+            $baseBtn.removeEventListener("mouseMove",__btnOver);
+            $baseBtn.removeEventListener("mouseOut",__btnOut);
+            $baseBtn.removeEventListener("click",__btnClick);
+            onOutEffect(_btnList.indexOf($baseBtn));
          }
       }
       
-      private function setBuildState(param1:int, param2:Boolean, param3:Boolean = false) : void
+      private function setBuildState(idx:int, enable:Boolean, flag:Boolean = false) : void
       {
-         var _loc4_:Component = _btnList[param1];
-         var _loc5_:* = param2;
-         _loc4_.mouseEnabled = _loc5_;
+         var baseBtn:Component = _btnList[idx];
+         var _loc5_:* = enable;
+         baseBtn.mouseEnabled = _loc5_;
          _loc5_ = _loc5_;
-         _loc4_.mouseChildren = _loc5_;
-         _loc4_.buttonMode = _loc5_;
-         if(param2)
+         baseBtn.mouseChildren = _loc5_;
+         baseBtn.buttonMode = _loc5_;
+         if(enable)
          {
-            _loc4_.addEventListener("click",__btnClick);
-            _loc4_.addEventListener("mouseMove",__btnOver);
-            _loc4_.addEventListener("mouseOut",__btnOut);
+            baseBtn.addEventListener("click",__btnClick);
+            baseBtn.addEventListener("mouseMove",__btnOver);
+            baseBtn.addEventListener("mouseOut",__btnOut);
          }
-         if(param1 == 7)
+         if(idx == 7)
          {
-            GypsyShopManager.getInstance().npcBehavior.hotArea = _loc4_;
+            GypsyShopManager.getInstance().npcBehavior.hotArea = baseBtn;
          }
       }
       
-      private function __btnOver(param1:MouseEvent) : void
+      private function __btnOver(evt:MouseEvent) : void
       {
-         var _loc2_:int = _btnList.indexOf(param1.currentTarget as BaseButton);
-         if(_loc2_ < 6)
+         var btnId:int = _btnList.indexOf(evt.currentTarget as BaseButton);
+         if(btnId < 6)
          {
-            _btnTipList[_loc2_].visible = true;
+            _btnTipList[btnId].visible = true;
          }
          else
          {
-            setCharacterFilter(_loc2_,true);
+            setCharacterFilter(btnId,true);
          }
       }
       
-      protected function setCharacterFilter(param1:int, param2:Boolean) : void
+      protected function setCharacterFilter(btnId:int, value:Boolean) : void
       {
-         var _loc3_:* = null;
-         if(_notFilter.indexOf(param1) == -1)
+         var staticLayer:* = null;
+         if(_notFilter.indexOf(btnId) == -1)
          {
-            _loc3_ = starlingHallScene.playerView.staticLayer;
-            _loc3_.setCharacterFilter(_btnArray[param1],param2);
+            staticLayer = starlingHallScene.playerView.staticLayer;
+            staticLayer.setCharacterFilter(_btnArray[btnId],value);
          }
       }
       
-      private function __btnOut(param1:MouseEvent) : void
+      private function __btnOut(evt:MouseEvent) : void
       {
-         var _loc2_:int = _btnList.indexOf(param1.currentTarget as BaseButton);
-         onOutEffect(_loc2_);
+         var btnId:int = _btnList.indexOf(evt.currentTarget as BaseButton);
+         onOutEffect(btnId);
       }
       
-      private function onOutEffect(param1:int) : void
+      private function onOutEffect(btnId:int) : void
       {
-         if(param1 < 6)
+         if(btnId < 6)
          {
-            _btnTipList[param1].visible = false;
+            _btnTipList[btnId].visible = false;
          }
          else
          {
-            setCharacterFilter(param1,false);
+            setCharacterFilter(btnId,false);
          }
       }
       
-      private function __onFightFlag(param1:PkgEvent) : void
+      private function __onFightFlag(event:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readInt();
-         var _loc4_:Date = _loc3_.readDate();
+         var pkg:PackageIn = event.pkg;
+         var count:int = pkg.readInt();
+         var date:Date = pkg.readDate();
          if(StateManager.currentStateType == "main")
          {
-            if(_loc4_.time - TimeManager.Instance.Now().time > 0)
+            if(date.time - TimeManager.Instance.Now().time > 0)
             {
             }
          }
@@ -1260,7 +1265,7 @@ package hall
          CryptBossManager.instance.show();
       }
       
-      private function __checkShowWonderfulActivityTip(param1:WonderfulActivityEvent) : void
+      private function __checkShowWonderfulActivityTip(evnet:WonderfulActivityEvent) : void
       {
          checkShowActTip();
          createActAwardChat();
@@ -1268,46 +1273,44 @@ package hall
       
       private function checkShowActTip() : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          var _loc4_:int = 0;
          var _loc3_:* = WonderfulActivityManager.Instance.stateDic;
-         for(var _loc1_ in WonderfulActivityManager.Instance.stateDic)
+         for(var key in WonderfulActivityManager.Instance.stateDic)
          {
-            _loc2_ = 0;
-            while(_loc2_ < _needShowOpenTipActArr.length)
+            for(i = 0; i < _needShowOpenTipActArr.length; )
             {
-               if(_loc1_ == String(_needShowOpenTipActArr[_loc2_]) && !_isShowActTipDic[_needShowOpenTipActArr[_loc2_]])
+               if(key == String(_needShowOpenTipActArr[i]) && !_isShowActTipDic[_needShowOpenTipActArr[i]])
                {
-                  ChatManager.Instance.sysChatAmaranth(LanguageMgr.GetTranslation("wonderfulActivity.startTip" + _needShowOpenTipActArr[_loc2_]));
-                  _isShowActTipDic[_needShowOpenTipActArr[_loc2_]] = true;
+                  ChatManager.Instance.sysChatAmaranth(LanguageMgr.GetTranslation("wonderfulActivity.startTip" + _needShowOpenTipActArr[i]));
+                  _isShowActTipDic[_needShowOpenTipActArr[i]] = true;
                }
-               _loc2_++;
+               i++;
             }
          }
       }
       
       private function createActAwardChat() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var chatData:* = null;
          var _loc5_:int = 0;
          var _loc4_:* = WonderfulActivityManager.Instance.stateDic;
-         for(var _loc2_ in WonderfulActivityManager.Instance.stateDic)
+         for(var key in WonderfulActivityManager.Instance.stateDic)
          {
-            _loc3_ = 0;
-            while(_loc3_ < _needShowAwardTipActArr.length)
+            for(i = 0; i < _needShowAwardTipActArr.length; )
             {
-               if(_loc2_ == String(_needShowAwardTipActArr[_loc3_]) && WonderfulActivityManager.Instance.stateDic[_loc2_])
+               if(key == String(_needShowAwardTipActArr[i]) && WonderfulActivityManager.Instance.stateDic[key])
                {
-                  _loc1_ = new ChatData();
-                  _loc1_.channel = 21;
-                  _loc1_.childChannelArr = [7,14];
-                  _loc1_.type = ChatFormats.CLICK_ACT_TIP + _needShowAwardTipActArr[_loc3_];
-                  _loc1_.actId = WonderfulActivityManager.Instance.getActIdWithViewId(_needShowAwardTipActArr[_loc3_]);
-                  _loc1_.msg = LanguageMgr.GetTranslation("wonderfulActivity.awardTip" + _needShowAwardTipActArr[_loc3_]);
-                  ChatManager.Instance.chat(_loc1_);
+                  chatData = new ChatData();
+                  chatData.channel = 21;
+                  chatData.childChannelArr = [7,14];
+                  chatData.type = ChatFormats.CLICK_ACT_TIP + _needShowAwardTipActArr[i];
+                  chatData.actId = WonderfulActivityManager.Instance.getActIdWithViewId(_needShowAwardTipActArr[i]);
+                  chatData.msg = LanguageMgr.GetTranslation("wonderfulActivity.awardTip" + _needShowAwardTipActArr[i]);
+                  ChatManager.Instance.chat(chatData);
                }
-               _loc3_++;
+               i++;
             }
          }
       }
@@ -1324,94 +1327,94 @@ package hall
          DdtActivityIconManager.Instance.removeEventListener("start",startHander);
       }
       
-      private function readyHander(param1:ActivitStateEvent) : void
+      private function readyHander(e:ActivitStateEvent) : void
       {
-         changeIconState(param1.data,false);
+         changeIconState(e.data,false);
       }
       
-      private function startHander(param1:ActivitStateEvent) : void
+      private function startHander(e:ActivitStateEvent) : void
       {
-         changeIconState(param1.data,true);
+         changeIconState(e.data,true);
       }
       
-      private function changeIconState(param1:Array, param2:Boolean = false) : void
+      private function changeIconState(arr:Array, isOpen:Boolean = false) : void
       {
-         var _loc4_:int = param1[0];
-         var _loc3_:int = param1[1] == 4?1:4;
-         var _loc5_:String = param1[2];
-         if(param2)
+         var JumpType:int = arr[0];
+         var worldBossId:int = arr[1] == 4?1:4;
+         var tString:String = arr[2];
+         if(isOpen)
          {
-            _loc5_ = "";
+            tString = "";
          }
-         switch(int(_loc4_) - 1)
+         switch(int(JumpType) - 1)
          {
             case 0:
-               addBattleIcon(param2,_loc5_);
+               addBattleIcon(isOpen,tString);
                break;
             default:
-               addBattleIcon(param2,_loc5_);
+               addBattleIcon(isOpen,tString);
                break;
             default:
-               addBattleIcon(param2,_loc5_);
+               addBattleIcon(isOpen,tString);
                break;
             case 3:
-               if(param2 && !WorldBossManager.Instance.isOpen)
+               if(isOpen && !WorldBossManager.Instance.isOpen)
                {
                   DdtActivityIconManager.Instance.isOneOpen = false;
                   return;
                }
-               WorldBossManager.Instance.creatEnterIcon(param2,_loc3_,_loc5_);
+               WorldBossManager.Instance.creatEnterIcon(isOpen,worldBossId,tString);
                checkShowWorldBossHelper();
                break;
             default:
-               if(param2 && !WorldBossManager.Instance.isOpen)
+               if(isOpen && !WorldBossManager.Instance.isOpen)
                {
                   DdtActivityIconManager.Instance.isOneOpen = false;
                   return;
                }
-               WorldBossManager.Instance.creatEnterIcon(param2,_loc3_,_loc5_);
+               WorldBossManager.Instance.creatEnterIcon(isOpen,worldBossId,tString);
                checkShowWorldBossHelper();
                break;
             default:
-               if(param2 && !WorldBossManager.Instance.isOpen)
+               if(isOpen && !WorldBossManager.Instance.isOpen)
                {
                   DdtActivityIconManager.Instance.isOneOpen = false;
                   return;
                }
-               WorldBossManager.Instance.creatEnterIcon(param2,_loc3_,_loc5_);
+               WorldBossManager.Instance.creatEnterIcon(isOpen,worldBossId,tString);
                checkShowWorldBossHelper();
                break;
             default:
-               if(param2 && !WorldBossManager.Instance.isOpen)
+               if(isOpen && !WorldBossManager.Instance.isOpen)
                {
                   DdtActivityIconManager.Instance.isOneOpen = false;
                   return;
                }
-               WorldBossManager.Instance.creatEnterIcon(param2,_loc3_,_loc5_);
+               WorldBossManager.Instance.creatEnterIcon(isOpen,worldBossId,tString);
                checkShowWorldBossHelper();
                break;
             default:
-               if(param2 && !WorldBossManager.Instance.isOpen)
+               if(isOpen && !WorldBossManager.Instance.isOpen)
                {
                   DdtActivityIconManager.Instance.isOneOpen = false;
                   return;
                }
-               WorldBossManager.Instance.creatEnterIcon(param2,_loc3_,_loc5_);
+               WorldBossManager.Instance.creatEnterIcon(isOpen,worldBossId,tString);
                checkShowWorldBossHelper();
                break;
             case 8:
-               CampBattleManager.instance.addCampBtn(param2,_loc5_);
+               CampBattleManager.instance.addCampBtn(isOpen,tString);
                break;
             case 9:
             case 10:
-               addLeagueIcon(param2,_loc5_);
+               addLeagueIcon(isOpen,tString);
                break;
             case 11:
-               ConsortiaBattleManager.instance.addEntryBtn(param2,_loc5_);
+               ConsortiaBattleManager.instance.addEntryBtn(isOpen,tString);
          }
       }
       
-      private function campBtnHander(param1:MouseEvent) : void
+      private function campBtnHander(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.Grade < 30)
@@ -1431,377 +1434,391 @@ package hall
          }
       }
       
-      private function stopAllMc(param1:MovieClip) : void
+      private function stopAllMc($mc:MovieClip) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
-         while(param1.numChildren - _loc3_)
+         var cMc:* = null;
+         var index:int = 0;
+         while($mc.numChildren - index)
          {
-            if(param1.getChildAt(_loc3_) is MovieClip)
+            if($mc.getChildAt(index) is MovieClip)
             {
-               _loc2_ = param1.getChildAt(_loc3_) as MovieClip;
-               _loc2_.stop();
-               stopAllMc(_loc2_);
+               cMc = $mc.getChildAt(index) as MovieClip;
+               cMc.stop();
+               stopAllMc(cMc);
             }
-            _loc3_++;
+            index++;
          }
       }
       
-      private function playAllMc(param1:MovieClip) : void
+      private function playAllMc($mc:MovieClip) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
-         while(param1.numChildren - _loc3_)
+         var cMc:* = null;
+         var index:int = 0;
+         while($mc.numChildren - index)
          {
-            if(param1.getChildAt(_loc3_) is MovieClip)
+            if($mc.getChildAt(index) is MovieClip)
             {
-               _loc2_ = param1.getChildAt(_loc3_) as MovieClip;
-               _loc2_.play();
-               playAllMc(_loc2_);
+               cMc = $mc.getChildAt(index) as MovieClip;
+               cMc.play();
+               playAllMc(cMc);
             }
-            _loc3_++;
+            index++;
          }
       }
       
       private function updateWantStrong() : void
       {
-         var _loc2_:* = undefined;
-         var _loc1_:* = null;
-         var _loc9_:* = null;
-         var _loc8_:* = null;
-         var _loc5_:* = null;
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         var _loc7_:Boolean = false;
-         var _loc10_:int = 0;
-         var _loc6_:* = null;
+         var acitiveDataList:* = undefined;
+         var bossDataDic:* = null;
+         var findBackDic:* = null;
+         var speedActArr:* = null;
+         var nowDate:* = null;
+         var hours:int = 0;
+         var minutes:int = 0;
+         var findBackExist:Boolean = false;
+         var i:int = 0;
+         var activeTime:* = null;
          if(PlayerManager.Instance.Self.Grade >= 8 && PlayerManager.Instance.Self.Grade <= 80)
          {
-            _loc2_ = DayActivityManager.Instance.acitiveDataList;
-            _loc1_ = DayActivityManager.Instance.bossDataDic;
-            _loc9_ = WantStrongManager.Instance.findBackDic;
-            _loc8_ = DayActivityManager.Instance.speedActArr;
-            _loc5_ = TimeManager.Instance.serverDate;
-            _loc7_ = false;
-            _loc10_ = 0;
-            while(_loc10_ < _loc2_.length)
+            acitiveDataList = DayActivityManager.Instance.acitiveDataList;
+            bossDataDic = DayActivityManager.Instance.bossDataDic;
+            findBackDic = WantStrongManager.Instance.findBackDic;
+            speedActArr = DayActivityManager.Instance.speedActArr;
+            nowDate = TimeManager.Instance.serverDate;
+            findBackExist = false;
+            for(i = 0; i < acitiveDataList.length; )
             {
-               _loc4_ = _loc2_[_loc10_].ActiveTime.substr(_loc2_[_loc10_].ActiveTime.length - 5,2);
-               _loc3_ = int(_loc2_[_loc10_].ActiveTime.substr(_loc2_[_loc10_].ActiveTime.length - 2,2)) + 10;
-               switch(int(_loc2_[_loc10_].JumpType) - 1)
+               hours = acitiveDataList[i].ActiveTime.substr(acitiveDataList[i].ActiveTime.length - 5,2);
+               minutes = int(acitiveDataList[i].ActiveTime.substr(acitiveDataList[i].ActiveTime.length - 2,2)) + 10;
+               switch(int(int(acitiveDataList[i].JumpType)) - 1)
                {
                   case 0:
-                     if(compareDay(_loc5_.day,_loc2_[_loc10_].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(_loc2_[_loc10_].LevelLimit) && compareDate(_loc5_,_loc4_,_loc3_) && !isPassBoss(_loc1_,_loc8_,5) && !isFindBack(_loc9_,5))
+                     if(compareDay(nowDate.day,acitiveDataList[i].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(acitiveDataList[i].LevelLimit) && compareDate(nowDate,hours,minutes) && !isPassBoss(bossDataDic,speedActArr,5) && !isFindBack(findBackDic,5))
                      {
                         WantStrongManager.Instance.findBackExist = true;
-                        _loc7_ = true;
+                        findBackExist = true;
                         WantStrongManager.Instance.setFindBackData(3);
                         break;
                      }
                      break;
                   default:
-                     if(compareDay(_loc5_.day,_loc2_[_loc10_].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(_loc2_[_loc10_].LevelLimit) && compareDate(_loc5_,_loc4_,_loc3_) && !isPassBoss(_loc1_,_loc8_,5) && !isFindBack(_loc9_,5))
+                     if(compareDay(nowDate.day,acitiveDataList[i].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(acitiveDataList[i].LevelLimit) && compareDate(nowDate,hours,minutes) && !isPassBoss(bossDataDic,speedActArr,5) && !isFindBack(findBackDic,5))
                      {
                         WantStrongManager.Instance.findBackExist = true;
-                        _loc7_ = true;
+                        findBackExist = true;
                         WantStrongManager.Instance.setFindBackData(3);
                         break;
                      }
                      break;
                   default:
-                     if(compareDay(_loc5_.day,_loc2_[_loc10_].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(_loc2_[_loc10_].LevelLimit) && compareDate(_loc5_,_loc4_,_loc3_) && !isPassBoss(_loc1_,_loc8_,5) && !isFindBack(_loc9_,5))
+                     if(compareDay(nowDate.day,acitiveDataList[i].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(acitiveDataList[i].LevelLimit) && compareDate(nowDate,hours,minutes) && !isPassBoss(bossDataDic,speedActArr,5) && !isFindBack(findBackDic,5))
                      {
                         WantStrongManager.Instance.findBackExist = true;
-                        _loc7_ = true;
+                        findBackExist = true;
                         WantStrongManager.Instance.setFindBackData(3);
                         break;
                      }
                      break;
                   case 3:
-                     if(compareDay(_loc5_.day,_loc2_[_loc10_].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(_loc2_[_loc10_].LevelLimit) && compareDate(_loc5_,_loc4_,_loc3_) && !isPassBoss(_loc1_,_loc8_,6) && !isFindBack(_loc9_,6))
+                     if(compareDay(nowDate.day,acitiveDataList[i].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(acitiveDataList[i].LevelLimit) && compareDate(nowDate,hours,minutes) && !isPassBoss(bossDataDic,speedActArr,6) && !isFindBack(findBackDic,6))
                      {
                         WantStrongManager.Instance.findBackExist = true;
-                        _loc7_ = true;
+                        findBackExist = true;
                         WantStrongManager.Instance.setFindBackData(0);
                      }
                      break;
                   default:
-                     if(compareDay(_loc5_.day,_loc2_[_loc10_].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(_loc2_[_loc10_].LevelLimit) && compareDate(_loc5_,_loc4_,_loc3_) && !isPassBoss(_loc1_,_loc8_,6) && !isFindBack(_loc9_,6))
+                     if(compareDay(nowDate.day,acitiveDataList[i].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(acitiveDataList[i].LevelLimit) && compareDate(nowDate,hours,minutes) && !isPassBoss(bossDataDic,speedActArr,6) && !isFindBack(findBackDic,6))
                      {
                         WantStrongManager.Instance.findBackExist = true;
-                        _loc7_ = true;
+                        findBackExist = true;
                         WantStrongManager.Instance.setFindBackData(0);
                      }
                      break;
                   default:
-                     if(compareDay(_loc5_.day,_loc2_[_loc10_].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(_loc2_[_loc10_].LevelLimit) && compareDate(_loc5_,_loc4_,_loc3_) && !isPassBoss(_loc1_,_loc8_,6) && !isFindBack(_loc9_,6))
+                     if(compareDay(nowDate.day,acitiveDataList[i].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(acitiveDataList[i].LevelLimit) && compareDate(nowDate,hours,minutes) && !isPassBoss(bossDataDic,speedActArr,6) && !isFindBack(findBackDic,6))
                      {
                         WantStrongManager.Instance.findBackExist = true;
-                        _loc7_ = true;
+                        findBackExist = true;
                         WantStrongManager.Instance.setFindBackData(0);
                      }
                      break;
                   default:
-                     if(compareDay(_loc5_.day,_loc2_[_loc10_].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(_loc2_[_loc10_].LevelLimit) && compareDate(_loc5_,_loc4_,_loc3_) && !isPassBoss(_loc1_,_loc8_,6) && !isFindBack(_loc9_,6))
+                     if(compareDay(nowDate.day,acitiveDataList[i].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(acitiveDataList[i].LevelLimit) && compareDate(nowDate,hours,minutes) && !isPassBoss(bossDataDic,speedActArr,6) && !isFindBack(findBackDic,6))
                      {
                         WantStrongManager.Instance.findBackExist = true;
-                        _loc7_ = true;
+                        findBackExist = true;
                         WantStrongManager.Instance.setFindBackData(0);
                      }
                      break;
                   default:
-                     if(compareDay(_loc5_.day,_loc2_[_loc10_].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(_loc2_[_loc10_].LevelLimit) && compareDate(_loc5_,_loc4_,_loc3_) && !isPassBoss(_loc1_,_loc8_,6) && !isFindBack(_loc9_,6))
+                     if(compareDay(nowDate.day,acitiveDataList[i].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(acitiveDataList[i].LevelLimit) && compareDate(nowDate,hours,minutes) && !isPassBoss(bossDataDic,speedActArr,6) && !isFindBack(findBackDic,6))
                      {
                         WantStrongManager.Instance.findBackExist = true;
-                        _loc7_ = true;
+                        findBackExist = true;
                         WantStrongManager.Instance.setFindBackData(0);
                      }
                      break;
                   default:
-                     if(compareDay(_loc5_.day,_loc2_[_loc10_].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(_loc2_[_loc10_].LevelLimit) && compareDate(_loc5_,_loc4_,_loc3_) && !isPassBoss(_loc1_,_loc8_,6) && !isFindBack(_loc9_,6))
+                     if(compareDay(nowDate.day,acitiveDataList[i].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(acitiveDataList[i].LevelLimit) && compareDate(nowDate,hours,minutes) && !isPassBoss(bossDataDic,speedActArr,6) && !isFindBack(findBackDic,6))
                      {
                         WantStrongManager.Instance.findBackExist = true;
-                        _loc7_ = true;
+                        findBackExist = true;
                         WantStrongManager.Instance.setFindBackData(0);
                      }
                      break;
                   case 9:
-                     if(compareDay(_loc5_.day,_loc2_[_loc10_].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(_loc2_[_loc10_].LevelLimit) && compareDate(_loc5_,_loc4_,_loc3_) && !isPassBoss(_loc1_,_loc8_,4) && !isFindBack(_loc9_,4))
+                     if(compareDay(nowDate.day,acitiveDataList[i].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(acitiveDataList[i].LevelLimit) && compareDate(nowDate,hours,minutes) && !isPassBoss(bossDataDic,speedActArr,4) && !isFindBack(findBackDic,4))
                      {
                         WantStrongManager.Instance.findBackExist = true;
-                        _loc7_ = true;
+                        findBackExist = true;
                         WantStrongManager.Instance.setFindBackData(4);
                      }
                      break;
                   case 10:
-                     _loc6_ = _loc2_[_loc10_].ActiveTime.split("（")[0];
-                     _loc4_ = _loc6_.substr(_loc6_.length - 5,2);
-                     _loc3_ = int(_loc6_.substr(_loc6_.length - 2,2)) + 10;
-                     if(compareDay(_loc5_.day,_loc2_[_loc10_].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(_loc2_[_loc10_].LevelLimit) && compareDate(_loc5_,_loc4_,_loc3_) && !isPassBoss(_loc1_,_loc8_,19) && !isFindBack(_loc9_,19))
+                     activeTime = acitiveDataList[i].ActiveTime.split("（")[0];
+                     hours = activeTime.substr(activeTime.length - 5,2);
+                     minutes = int(activeTime.substr(activeTime.length - 2,2)) + 10;
+                     if(compareDay(nowDate.day,acitiveDataList[i].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(acitiveDataList[i].LevelLimit) && compareDate(nowDate,hours,minutes) && !isPassBoss(bossDataDic,speedActArr,19) && !isFindBack(findBackDic,19))
                      {
                         WantStrongManager.Instance.findBackExist = true;
-                        _loc7_ = true;
+                        findBackExist = true;
                         WantStrongManager.Instance.setFindBackData(2);
                      }
                }
-               _loc10_++;
+               i++;
             }
-            if(!_loc7_)
+            if(!findBackExist)
             {
                WantStrongManager.Instance.findBackExist = false;
             }
          }
       }
       
-      private function isPassBoss(param1:Dictionary, param2:Array, param3:int) : Boolean
+      private function isPassBoss(bossDataDic:Dictionary, speedActArr:Array, type:int) : Boolean
       {
-         if(param2.indexOf("" + param3) != -1)
+         if(speedActArr.indexOf("" + type) != -1)
          {
             return false;
          }
-         if(!param1[param3] || param1[param3] == 0)
+         if(!bossDataDic[type] || bossDataDic[type] == 0)
          {
             return false;
          }
          return true;
       }
       
-      protected function __alreadyUpdateTimeHandler(param1:Event) : void
+      protected function __alreadyUpdateTimeHandler(event:Event) : void
       {
          checkWantStrongFindBack();
       }
       
       private function checkWantStrongFindBack() : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         var _loc10_:int = 0;
-         var _loc6_:* = null;
-         var _loc2_:Vector.<DayActiveData> = DayActivityManager.Instance.acitiveDataList;
-         var _loc1_:Dictionary = DayActivityManager.Instance.bossDataDic;
-         var _loc9_:Dictionary = WantStrongManager.Instance.findBackDic;
-         var _loc8_:Array = DayActivityManager.Instance.speedActArr;
-         var _loc5_:Date = TimeManager.Instance.Now();
-         var _loc7_:Boolean = false;
-         _loc10_ = 0;
-         while(_loc10_ < _loc2_.length)
+         var hours:int = 0;
+         var minutes:int = 0;
+         var i:int = 0;
+         var activeTime:* = null;
+         var j:int = 0;
+         var acitiveDataList:Vector.<DayActiveData> = DayActivityManager.Instance.acitiveDataList;
+         var bossDataDic:Dictionary = DayActivityManager.Instance.bossDataDic;
+         var findBackDic:Dictionary = WantStrongManager.Instance.findBackDic;
+         if(findBackDic == null)
          {
-            _loc4_ = _loc2_[_loc10_].ActiveTime.substr(_loc2_[_loc10_].ActiveTime.length - 5,2);
-            _loc3_ = int(_loc2_[_loc10_].ActiveTime.substr(_loc2_[_loc10_].ActiveTime.length - 2,2)) + 10;
-            switch(int(_loc2_[_loc10_].ID) - 1)
+            return;
+         }
+         var speedActArr:Array = DayActivityManager.Instance.speedActArr;
+         var nowDate:Date = TimeManager.Instance.Now();
+         var findBackExist:Boolean = false;
+         for(i = 0; i < acitiveDataList.length; )
+         {
+            hours = acitiveDataList[i].ActiveTime.substr(acitiveDataList[i].ActiveTime.length - 5,2);
+            minutes = int(acitiveDataList[i].ActiveTime.substr(acitiveDataList[i].ActiveTime.length - 2,2)) + 10;
+            switch(int(acitiveDataList[i].ID) - 1)
             {
                case 0:
-                  if(compareDay(_loc5_.day,_loc2_[_loc10_].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(_loc2_[_loc10_].LevelLimit) && compareDate(_loc5_,_loc4_,_loc3_) && isBeatBoss(1) && !isFindBack(_loc9_,18))
+                  if(compareDay(nowDate.day,acitiveDataList[i].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(acitiveDataList[i].LevelLimit) && compareDate(nowDate,hours,minutes) && isBeatBoss(1) && !isFindBack(findBackDic,18))
                   {
                      WantStrongManager.Instance.findBackExist = true;
-                     _loc7_ = true;
+                     findBackExist = true;
                      WantStrongManager.Instance.setFindBackData(1);
                   }
                   break;
                case 1:
-                  if(compareDay(_loc5_.day,_loc2_[_loc10_].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(_loc2_[_loc10_].LevelLimit) && compareDate(_loc5_,_loc4_,_loc3_) && isBeatBoss(0) && !isFindBack(_loc9_,6))
+                  if(compareDay(nowDate.day,acitiveDataList[i].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(acitiveDataList[i].LevelLimit) && compareDate(nowDate,hours,minutes) && isBeatBoss(0) && !isFindBack(findBackDic,6))
                   {
                      WantStrongManager.Instance.findBackExist = true;
-                     _loc7_ = true;
+                     findBackExist = true;
                      WantStrongManager.Instance.setFindBackData(0);
                   }
                   break;
                default:
-                  if(compareDay(_loc5_.day,_loc2_[_loc10_].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(_loc2_[_loc10_].LevelLimit) && compareDate(_loc5_,_loc4_,_loc3_) && isBeatBoss(0) && !isFindBack(_loc9_,6))
+                  if(compareDay(nowDate.day,acitiveDataList[i].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(acitiveDataList[i].LevelLimit) && compareDate(nowDate,hours,minutes) && isBeatBoss(0) && !isFindBack(findBackDic,6))
                   {
                      WantStrongManager.Instance.findBackExist = true;
-                     _loc7_ = true;
+                     findBackExist = true;
                      WantStrongManager.Instance.setFindBackData(0);
                   }
                   break;
                case 3:
-                  if(compareDay(_loc5_.day,_loc2_[_loc10_].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(_loc2_[_loc10_].LevelLimit) && compareDate(_loc5_,_loc4_,_loc3_) && !isPass(_loc1_,_loc8_,4) && !isFindBack(_loc9_,4))
+                  if(compareDay(nowDate.day,acitiveDataList[i].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(acitiveDataList[i].LevelLimit) && compareDate(nowDate,hours,minutes) && !isPass(bossDataDic,speedActArr,4) && !isFindBack(findBackDic,4))
                   {
                      WantStrongManager.Instance.findBackExist = true;
-                     _loc7_ = true;
+                     findBackExist = true;
                      WantStrongManager.Instance.setFindBackData(4);
                   }
                   break;
                case 4:
-                  if(compareDay(_loc5_.day,_loc2_[_loc10_].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(_loc2_[_loc10_].LevelLimit) && compareDate(_loc5_,_loc4_,_loc3_) && isBeatBoss(5) && !isFindBack(_loc9_,5))
+                  if(compareDay(nowDate.day,acitiveDataList[i].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(acitiveDataList[i].LevelLimit) && compareDate(nowDate,hours,minutes) && isBeatBoss(3) && !isFindBack(findBackDic,5))
                   {
                      WantStrongManager.Instance.findBackExist = true;
-                     _loc7_ = true;
+                     findBackExist = true;
                      WantStrongManager.Instance.setFindBackData(3);
                      break;
                   }
                   break;
                default:
-                  if(compareDay(_loc5_.day,_loc2_[_loc10_].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(_loc2_[_loc10_].LevelLimit) && compareDate(_loc5_,_loc4_,_loc3_) && isBeatBoss(5) && !isFindBack(_loc9_,5))
+                  if(compareDay(nowDate.day,acitiveDataList[i].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(acitiveDataList[i].LevelLimit) && compareDate(nowDate,hours,minutes) && isBeatBoss(3) && !isFindBack(findBackDic,5))
                   {
                      WantStrongManager.Instance.findBackExist = true;
-                     _loc7_ = true;
+                     findBackExist = true;
                      WantStrongManager.Instance.setFindBackData(3);
                      break;
                   }
                   break;
                default:
-                  if(compareDay(_loc5_.day,_loc2_[_loc10_].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(_loc2_[_loc10_].LevelLimit) && compareDate(_loc5_,_loc4_,_loc3_) && isBeatBoss(5) && !isFindBack(_loc9_,5))
+                  if(compareDay(nowDate.day,acitiveDataList[i].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(acitiveDataList[i].LevelLimit) && compareDate(nowDate,hours,minutes) && isBeatBoss(3) && !isFindBack(findBackDic,5))
                   {
                      WantStrongManager.Instance.findBackExist = true;
-                     _loc7_ = true;
+                     findBackExist = true;
                      WantStrongManager.Instance.setFindBackData(3);
                      break;
                   }
                   break;
                default:
-                  if(compareDay(_loc5_.day,_loc2_[_loc10_].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(_loc2_[_loc10_].LevelLimit) && compareDate(_loc5_,_loc4_,_loc3_) && isBeatBoss(5) && !isFindBack(_loc9_,5))
+                  if(compareDay(nowDate.day,acitiveDataList[i].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(acitiveDataList[i].LevelLimit) && compareDate(nowDate,hours,minutes) && isBeatBoss(3) && !isFindBack(findBackDic,5))
                   {
                      WantStrongManager.Instance.findBackExist = true;
-                     _loc7_ = true;
+                     findBackExist = true;
                      WantStrongManager.Instance.setFindBackData(3);
                      break;
                   }
                   break;
                default:
-                  if(compareDay(_loc5_.day,_loc2_[_loc10_].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(_loc2_[_loc10_].LevelLimit) && compareDate(_loc5_,_loc4_,_loc3_) && isBeatBoss(5) && !isFindBack(_loc9_,5))
+                  if(compareDay(nowDate.day,acitiveDataList[i].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(acitiveDataList[i].LevelLimit) && compareDate(nowDate,hours,minutes) && isBeatBoss(3) && !isFindBack(findBackDic,5))
                   {
                      WantStrongManager.Instance.findBackExist = true;
-                     _loc7_ = true;
+                     findBackExist = true;
                      WantStrongManager.Instance.setFindBackData(3);
                      break;
                   }
                   break;
                default:
-                  if(compareDay(_loc5_.day,_loc2_[_loc10_].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(_loc2_[_loc10_].LevelLimit) && compareDate(_loc5_,_loc4_,_loc3_) && isBeatBoss(5) && !isFindBack(_loc9_,5))
+                  if(compareDay(nowDate.day,acitiveDataList[i].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(acitiveDataList[i].LevelLimit) && compareDate(nowDate,hours,minutes) && isBeatBoss(3) && !isFindBack(findBackDic,5))
                   {
                      WantStrongManager.Instance.findBackExist = true;
-                     _loc7_ = true;
+                     findBackExist = true;
                      WantStrongManager.Instance.setFindBackData(3);
                      break;
                   }
                   break;
                default:
-                  if(compareDay(_loc5_.day,_loc2_[_loc10_].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(_loc2_[_loc10_].LevelLimit) && compareDate(_loc5_,_loc4_,_loc3_) && isBeatBoss(5) && !isFindBack(_loc9_,5))
+                  if(compareDay(nowDate.day,acitiveDataList[i].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(acitiveDataList[i].LevelLimit) && compareDate(nowDate,hours,minutes) && isBeatBoss(3) && !isFindBack(findBackDic,5))
                   {
                      WantStrongManager.Instance.findBackExist = true;
-                     _loc7_ = true;
+                     findBackExist = true;
                      WantStrongManager.Instance.setFindBackData(3);
                      break;
                   }
                   break;
                default:
-                  if(compareDay(_loc5_.day,_loc2_[_loc10_].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(_loc2_[_loc10_].LevelLimit) && compareDate(_loc5_,_loc4_,_loc3_) && isBeatBoss(5) && !isFindBack(_loc9_,5))
+                  if(compareDay(nowDate.day,acitiveDataList[i].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(acitiveDataList[i].LevelLimit) && compareDate(nowDate,hours,minutes) && isBeatBoss(3) && !isFindBack(findBackDic,5))
                   {
                      WantStrongManager.Instance.findBackExist = true;
-                     _loc7_ = true;
+                     findBackExist = true;
                      WantStrongManager.Instance.setFindBackData(3);
                      break;
                   }
                   break;
                default:
-                  if(compareDay(_loc5_.day,_loc2_[_loc10_].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(_loc2_[_loc10_].LevelLimit) && compareDate(_loc5_,_loc4_,_loc3_) && isBeatBoss(5) && !isFindBack(_loc9_,5))
+                  if(compareDay(nowDate.day,acitiveDataList[i].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(acitiveDataList[i].LevelLimit) && compareDate(nowDate,hours,minutes) && isBeatBoss(3) && !isFindBack(findBackDic,5))
                   {
                      WantStrongManager.Instance.findBackExist = true;
-                     _loc7_ = true;
+                     findBackExist = true;
                      WantStrongManager.Instance.setFindBackData(3);
                      break;
                   }
                   break;
                default:
-                  if(compareDay(_loc5_.day,_loc2_[_loc10_].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(_loc2_[_loc10_].LevelLimit) && compareDate(_loc5_,_loc4_,_loc3_) && isBeatBoss(5) && !isFindBack(_loc9_,5))
+                  if(compareDay(nowDate.day,acitiveDataList[i].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(acitiveDataList[i].LevelLimit) && compareDate(nowDate,hours,minutes) && isBeatBoss(3) && !isFindBack(findBackDic,5))
                   {
                      WantStrongManager.Instance.findBackExist = true;
-                     _loc7_ = true;
+                     findBackExist = true;
                      WantStrongManager.Instance.setFindBackData(3);
                      break;
                   }
                   break;
                default:
-                  if(compareDay(_loc5_.day,_loc2_[_loc10_].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(_loc2_[_loc10_].LevelLimit) && compareDate(_loc5_,_loc4_,_loc3_) && isBeatBoss(5) && !isFindBack(_loc9_,5))
+                  if(compareDay(nowDate.day,acitiveDataList[i].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(acitiveDataList[i].LevelLimit) && compareDate(nowDate,hours,minutes) && isBeatBoss(3) && !isFindBack(findBackDic,5))
                   {
                      WantStrongManager.Instance.findBackExist = true;
-                     _loc7_ = true;
+                     findBackExist = true;
                      WantStrongManager.Instance.setFindBackData(3);
                      break;
                   }
                   break;
                default:
-                  if(compareDay(_loc5_.day,_loc2_[_loc10_].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(_loc2_[_loc10_].LevelLimit) && compareDate(_loc5_,_loc4_,_loc3_) && isBeatBoss(5) && !isFindBack(_loc9_,5))
+                  if(compareDay(nowDate.day,acitiveDataList[i].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(acitiveDataList[i].LevelLimit) && compareDate(nowDate,hours,minutes) && isBeatBoss(3) && !isFindBack(findBackDic,5))
                   {
                      WantStrongManager.Instance.findBackExist = true;
-                     _loc7_ = true;
+                     findBackExist = true;
                      WantStrongManager.Instance.setFindBackData(3);
                      break;
                   }
                   break;
                default:
-                  if(compareDay(_loc5_.day,_loc2_[_loc10_].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(_loc2_[_loc10_].LevelLimit) && compareDate(_loc5_,_loc4_,_loc3_) && isBeatBoss(5) && !isFindBack(_loc9_,5))
+                  if(compareDay(nowDate.day,acitiveDataList[i].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(acitiveDataList[i].LevelLimit) && compareDate(nowDate,hours,minutes) && isBeatBoss(3) && !isFindBack(findBackDic,5))
                   {
                      WantStrongManager.Instance.findBackExist = true;
-                     _loc7_ = true;
+                     findBackExist = true;
                      WantStrongManager.Instance.setFindBackData(3);
                      break;
                   }
                   break;
                default:
-                  if(compareDay(_loc5_.day,_loc2_[_loc10_].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(_loc2_[_loc10_].LevelLimit) && compareDate(_loc5_,_loc4_,_loc3_) && isBeatBoss(5) && !isFindBack(_loc9_,5))
+                  if(compareDay(nowDate.day,acitiveDataList[i].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(acitiveDataList[i].LevelLimit) && compareDate(nowDate,hours,minutes) && isBeatBoss(3) && !isFindBack(findBackDic,5))
                   {
                      WantStrongManager.Instance.findBackExist = true;
-                     _loc7_ = true;
+                     findBackExist = true;
                      WantStrongManager.Instance.setFindBackData(3);
                      break;
                   }
                   break;
                case 18:
-                  _loc6_ = _loc2_[_loc10_].ActiveTime.split("（")[0];
-                  _loc4_ = _loc6_.substr(_loc6_.length - 5,2);
-                  _loc3_ = int(_loc6_.substr(_loc6_.length - 2,2)) + 10;
-                  if(compareDay(_loc5_.day,_loc2_[_loc10_].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(_loc2_[_loc10_].LevelLimit) && compareDate(_loc5_,_loc4_,_loc3_) && isBeatBoss(2) && !isFindBack(_loc9_,19))
+                  activeTime = acitiveDataList[i].ActiveTime.split("（")[0];
+                  hours = activeTime.substr(activeTime.length - 5,2);
+                  minutes = int(activeTime.substr(activeTime.length - 2,2)) + 10;
+                  if(compareDay(nowDate.day,acitiveDataList[i].DayOfWeek) && PlayerManager.Instance.Self.Grade >= int(acitiveDataList[i].LevelLimit) && compareDate(nowDate,hours,minutes) && isBeatBoss(2) && !isFindBack(findBackDic,19))
                   {
                      WantStrongManager.Instance.findBackExist = true;
-                     _loc7_ = true;
+                     findBackExist = true;
                      WantStrongManager.Instance.setFindBackData(2);
                   }
             }
-            _loc10_++;
+            i++;
          }
-         if(!_loc7_)
+         var typeList:Array = [25,30,31];
+         for(j = 0; j < typeList.length; )
+         {
+            if(!isFindBack(findBackDic,typeList[j]))
+            {
+               WantStrongManager.Instance.findBackExist = true;
+               findBackExist = true;
+               WantStrongManager.Instance.setFindBackData(j + 5);
+            }
+            j++;
+         }
+         if(!findBackExist)
          {
             WantStrongManager.Instance.findBackExist = false;
          }
@@ -1809,7 +1826,7 @@ package hall
          {
             _wantStrongBtn.movie.gotoAndStop(2);
          }
-         else if(isOnceFindBack(_loc9_))
+         else if(isOnceFindBack(findBackDic))
          {
             WantStrongManager.Instance.isPlayMovie = false;
             _wantStrongBtn.movie.gotoAndStop(2);
@@ -1820,18 +1837,18 @@ package hall
          }
       }
       
-      private function __alreadyFindBackHandler(param1:Event) : void
+      private function __alreadyFindBackHandler(event:Event) : void
       {
          _wantStrongBtn.movie.gotoAndStop(2);
       }
       
-      private function isOnceFindBack(param1:Dictionary) : Boolean
+      private function isOnceFindBack(findBackDic:Dictionary) : Boolean
       {
          var _loc4_:int = 0;
-         var _loc3_:* = param1;
-         for each(var _loc2_ in param1)
+         var _loc3_:* = findBackDic;
+         for each(var itemArr in findBackDic)
          {
-            if(_loc2_[0] || _loc2_[1])
+            if(itemArr && (itemArr[0] || itemArr[1]))
             {
                return true;
             }
@@ -1839,11 +1856,11 @@ package hall
          return false;
       }
       
-      private function isFindBack(param1:Dictionary, param2:int) : Boolean
+      private function isFindBack(findBackDic:Dictionary, type:int) : Boolean
       {
-         if(param1[param2])
+         if(findBackDic[type])
          {
-            if(param1[param2][0] && param1[param2][1])
+            if(findBackDic[type][0] && findBackDic[type][1])
             {
                return true;
             }
@@ -1851,44 +1868,44 @@ package hall
          return false;
       }
       
-      private function isBeatBoss(param1:int) : Boolean
+      private function isBeatBoss(dig:int) : Boolean
       {
-         var _loc2_:int = WantStrongManager.Instance.bossFlag;
-         return (_loc2_ & 1 << param1) == 0;
+         var bossFlag:int = WantStrongManager.Instance.bossFlag;
+         return (bossFlag & 1 << dig) == 0;
       }
       
-      private function isPass(param1:Dictionary, param2:Array, param3:int) : Boolean
+      private function isPass(bossDataDic:Dictionary, speedActArr:Array, type:int) : Boolean
       {
-         if(param2.indexOf("" + param3) != -1)
+         if(speedActArr.indexOf("" + type) != -1)
          {
             return false;
          }
-         if(!param1[param3] || param1[param3] == 0)
+         if(!bossDataDic[type] || bossDataDic[type] == 0)
          {
             return false;
          }
          return true;
       }
       
-      private function compareDay(param1:int, param2:String) : Boolean
+      private function compareDay(day:int, activeDays:String) : Boolean
       {
-         var _loc3_:Array = param2.split(",");
-         if(_loc3_.indexOf("" + param1) == -1)
+         var dayArr:Array = activeDays.split(",");
+         if(dayArr.indexOf("" + day) == -1)
          {
             return false;
          }
          return true;
       }
       
-      private function compareDate(param1:Date, param2:int, param3:int) : Boolean
+      private function compareDate(date1:Date, hours:int, minutes:int) : Boolean
       {
-         if(param1.hours < param2)
+         if(date1.hours < hours)
          {
             return false;
          }
-         if(param1.hours == param2)
+         if(date1.hours == hours)
          {
-            if(param1.minutes < param3)
+            if(date1.minutes < minutes)
             {
                return false;
             }
@@ -1896,15 +1913,15 @@ package hall
          return true;
       }
       
-      private function wantStrongtnHandler(param1:MouseEvent) : void
+      private function wantStrongtnHandler(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          WantStrongManager.Instance.showFrame();
       }
       
-      private function addLeagueIcon(param1:Boolean = false, param2:String = null) : void
+      private function addLeagueIcon(isUse:Boolean = false, timeStr:String = null) : void
       {
-         HallIconManager.instance.updateSwitchHandler("league",true,param2);
+         HallIconManager.instance.updateSwitchHandler("league",true,timeStr);
       }
       
       private function deleLeagueBtn() : void
@@ -1912,9 +1929,9 @@ package hall
          HallIconManager.instance.updateSwitchHandler("league",false);
       }
       
-      private function addBattleIcon(param1:Boolean = false, param2:String = "") : void
+      private function addBattleIcon(isUse:Boolean = false, timeStr:String = "") : void
       {
-         HallIconManager.instance.updateSwitchHandler("trial",true,param2);
+         HallIconManager.instance.updateSwitchHandler("trial",true,timeStr);
       }
       
       private function delBattleIcon() : void
@@ -1932,7 +1949,7 @@ package hall
          HallIconManager.instance.updateSwitchHandler("limitActivity",false);
       }
       
-      private function leagueBtnHander(param1:MouseEvent) : void
+      private function leagueBtnHander(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(!WeakGuildManager.Instance.checkOpen(1,20))
@@ -1981,7 +1998,7 @@ package hall
          _taskTrackMainView.moveInClickHandler(null);
       }
       
-      private function openWonderfulActivityView(param1:MouseEvent) : void
+      private function openWonderfulActivityView(e:MouseEvent) : void
       {
          if(getTimer() - _lastClickTime < 2000)
          {
@@ -1997,12 +2014,12 @@ package hall
       
       private function checkLuckStone() : Boolean
       {
-         var _loc1_:Date = TimeManager.Instance.Now();
+         var nowDate:Date = TimeManager.Instance.Now();
          if(!startDate)
          {
             return false;
          }
-         if(_loc1_.getTime() > startDate.getTime() && _loc1_.getTime() < endDate.getTime() && isActiv)
+         if(nowDate.getTime() > startDate.getTime() && nowDate.getTime() < endDate.getTime() && isActiv)
          {
             isInLuckStone = true;
             return true;
@@ -2022,13 +2039,13 @@ package hall
          _angelblessIcon.addEventListener("click",__OpenBlessView);
       }
       
-      protected function openFristrechargeView(param1:MouseEvent) : void
+      protected function openFristrechargeView(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          FirstRechargeManger.Instance.show();
       }
       
-      private function __onSignClick(param1:MouseEvent) : void
+      private function __onSignClick(evnet:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          CalendarManager.getInstance().open(1);
@@ -2045,42 +2062,42 @@ package hall
          _awardBtn.addEventListener("click",__OpenView);
       }
       
-      private function __OpenView(param1:MouseEvent) : void
+      private function __OpenView(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          MainButtnController.instance.show(MainButtnController.DDT_AWARD);
          MainButtnController.instance.addEventListener(MainButtnController.ICONCLOSE,__iconClose);
       }
       
-      private function __openActivityView(param1:Event) : void
+      private function __openActivityView(event:Event) : void
       {
          SoundManager.instance.play("008");
          DayActivityManager.Instance.show();
       }
       
-      private function __iconClose(param1:Event) : void
+      private function __iconClose(e:Event) : void
       {
       }
       
-      private function __updatePetFarmGuilde(param1:UpdatePetFarmGuildeEvent) : void
+      private function __updatePetFarmGuilde(e:UpdatePetFarmGuildeEvent) : void
       {
          PetsBagManager.instance().finishTask();
-         var _loc2_:QuestInfo = param1.data as QuestInfo;
-         if(_loc2_.QuestID == 370)
+         var currentGuildeInfo:QuestInfo = e.data as QuestInfo;
+         if(currentGuildeInfo.QuestID == 370)
          {
          }
-         if(_loc2_.QuestID == 369)
+         if(currentGuildeInfo.QuestID == 369)
          {
          }
       }
       
-      private function __OpenVipView(param1:MouseEvent) : void
+      private function __OpenVipView(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          VipController.instance.show();
       }
       
-      private function __OpenBlessView(param1:Event) : void
+      private function __OpenBlessView(event:Event) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -2107,14 +2124,14 @@ package hall
          }
       }
       
-      private function __leftGunShow(param1:RouletteFrameEvent) : void
+      private function __leftGunShow(event:RouletteFrameEvent) : void
       {
          addButtonList();
       }
       
-      private function __onAudioLoadComplete(param1:Event) : void
+      private function __onAudioLoadComplete(event:Event) : void
       {
-         param1.currentTarget.removeEventListener("complete",__onAudioLoadComplete);
+         event.currentTarget.removeEventListener("complete",__onAudioLoadComplete);
          SoundManager.instance.setupAudioResource();
          SoundILoaded = true;
          try
@@ -2132,12 +2149,19 @@ package hall
          }
       }
       
-      private function __littlegameActived(param1:Event = null, param2:Boolean = false, param3:String = null) : void
+      private function __littlegameActived(evt:Event = null, isUse:Boolean = false, timeStr:String = null) : void
       {
-         HallIconManager.instance.updateSwitchHandler("littlegamenote",false,param3);
+         if(false)
+         {
+            HallIconManager.instance.updateSwitchHandler("littlegamenote",true,timeStr);
+         }
+         else
+         {
+            HallIconManager.instance.updateSwitchHandler("littlegamenote",false,timeStr);
+         }
       }
       
-      private function __OpenlittleGame(param1:MouseEvent) : void
+      private function __OpenlittleGame(evnet:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(LittleControl.Instance.hasActive())
@@ -2252,7 +2276,7 @@ package hall
          }
       }
       
-      private function __taskFrameHide(param1:Event) : void
+      private function __taskFrameHide(evt:Event) : void
       {
          loadWeakGuild();
       }
@@ -2270,12 +2294,12 @@ package hall
          }
       }
       
-      private function sevendoubleEndHandler(param1:Event) : void
+      private function sevendoubleEndHandler(event:Event) : void
       {
          HallIconManager.instance.updateSwitchHandler("sevendouble",false);
       }
       
-      private function sevenDoubleIconResLoadComplete(param1:Event) : void
+      private function sevenDoubleIconResLoadComplete(event:Event) : void
       {
          SevenDoubleManager.instance.removeEventListener("sevenDoubleIconResLoadComplete",sevenDoubleIconResLoadComplete);
          if(SevenDoubleManager.instance.isStart && SevenDoubleManager.instance.isLoadIconComplete)
@@ -2289,12 +2313,12 @@ package hall
          }
       }
       
-      private function escortEndHandler(param1:Event) : void
+      private function escortEndHandler(event:Event) : void
       {
          HallIconManager.instance.updateSwitchHandler("escort",false);
       }
       
-      private function escortIconResLoadComplete(param1:Event) : void
+      private function escortIconResLoadComplete(event:Event) : void
       {
          EscortManager.instance.removeEventListener("escortIconResLoadComplete",escortIconResLoadComplete);
          if(EscortManager.instance.isStart && EscortManager.instance.isLoadIconComplete)
@@ -2310,43 +2334,43 @@ package hall
       
       private function checkShowVipAlert() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:SelfInfo = PlayerManager.Instance.Self;
-         if(!_loc1_.isSameDay && !VipController.instance.isRechargePoped)
+         var msg:* = null;
+         var selfInfo:SelfInfo = PlayerManager.Instance.Self;
+         if(!selfInfo.isSameDay && !VipController.instance.isRechargePoped)
          {
             VipController.instance.isRechargePoped = true;
-            if(_loc1_.IsVIP)
+            if(selfInfo.IsVIP)
             {
-               if(_loc1_.VIPLeftDays <= 3 && _loc1_.VIPLeftDays >= 0 || _loc1_.VIPLeftDays == 7)
+               if(selfInfo.VIPLeftDays <= 3 && selfInfo.VIPLeftDays >= 0 || selfInfo.VIPLeftDays == 7)
                {
-                  _loc2_ = "";
-                  if(_loc1_.VIPLeftDays == 0)
+                  msg = "";
+                  if(selfInfo.VIPLeftDays == 0)
                   {
-                     if(_loc1_.VipLeftHours > 0)
+                     if(selfInfo.VipLeftHours > 0)
                      {
-                        _loc2_ = LanguageMgr.GetTranslation("ddt.vip.vipView.expiredToday",_loc1_.VipLeftHours);
+                        msg = LanguageMgr.GetTranslation("ddt.vip.vipView.expiredToday",selfInfo.VipLeftHours);
                      }
-                     else if(_loc1_.VipLeftHours == 0)
+                     else if(selfInfo.VipLeftHours == 0)
                      {
-                        _loc2_ = LanguageMgr.GetTranslation("ddt.vip.vipView.expiredHour");
+                        msg = LanguageMgr.GetTranslation("ddt.vip.vipView.expiredHour");
                      }
                      else
                      {
-                        _loc2_ = LanguageMgr.GetTranslation("ddt.vip.vipView.expiredTrue");
+                        msg = LanguageMgr.GetTranslation("ddt.vip.vipView.expiredTrue");
                      }
                   }
                   else
                   {
-                     _loc2_ = LanguageMgr.GetTranslation("ddt.vip.vipView.expired",_loc1_.VIPLeftDays);
+                     msg = LanguageMgr.GetTranslation("ddt.vip.vipView.expired",selfInfo.VIPLeftDays);
                   }
-                  _renewal = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc2_,LanguageMgr.GetTranslation("ddt.vip.vipView.RenewalNow"),"",false,false,false,2);
+                  _renewal = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),msg,LanguageMgr.GetTranslation("ddt.vip.vipView.RenewalNow"),"",false,false,false,2);
                   _renewal.moveEnable = false;
                   _renewal.addEventListener("response",__goRenewal);
                }
             }
-            else if(_loc1_.VIPExp > 0)
+            else if(selfInfo.VIPExp > 0)
             {
-               if(_loc1_.LastDate.valueOf() < _loc1_.VIPExpireDay.valueOf() && _loc1_.VIPExpireDay.valueOf() <= _loc1_.systemDate.valueOf())
+               if(selfInfo.LastDate.valueOf() < selfInfo.VIPExpireDay.valueOf() && selfInfo.VIPExpireDay.valueOf() <= selfInfo.systemDate.valueOf())
                {
                   _renewal = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.vip.vipView.expiredTrue"),LanguageMgr.GetTranslation("ddt.vip.vipView.RenewalNow"),"",false,false,false,2);
                   _renewal.moveEnable = false;
@@ -2358,28 +2382,28 @@ package hall
       
       private function checkShowVipAlert_New() : void
       {
-         var _loc1_:SelfInfo = PlayerManager.Instance.Self;
-         if(!_loc1_.isSameDay && !VipController.instance.isRechargePoped)
+         var selfInfo:SelfInfo = PlayerManager.Instance.Self;
+         if(!selfInfo.isSameDay && !VipController.instance.isRechargePoped)
          {
             VipController.instance.isRechargePoped = true;
-            if(_loc1_.IsVIP)
+            if(selfInfo.IsVIP)
             {
-               if(_loc1_.VIPLeftDays <= 3 && _loc1_.VIPLeftDays >= 0 || _loc1_.VIPLeftDays == 7)
+               if(selfInfo.VIPLeftDays <= 3 && selfInfo.VIPLeftDays >= 0 || selfInfo.VIPLeftDays == 7)
                {
                   VipController.instance.showRechargeAlert();
                }
             }
-            else if(_loc1_.VIPExp > 0)
+            else if(selfInfo.VIPExp > 0)
             {
                VipController.instance.showRechargeAlert();
             }
          }
       }
       
-      private function __goRenewal(param1:FrameEvent) : void
+      private function __goRenewal(evt:FrameEvent) : void
       {
          _renewal.removeEventListener("response",__goRenewal);
-         switch(int(param1.responseCode) - 2)
+         switch(int(evt.responseCode) - 2)
          {
             case 0:
             case 1:
@@ -2393,7 +2417,7 @@ package hall
          _renewal = null;
       }
       
-      private function __vote(param1:Event) : void
+      private function __vote(e:Event) : void
       {
          VoteManager.Instance.removeEventListener(VoteManager.LOAD_COMPLETED,__vote);
          VoteManager.Instance.openVote();
@@ -2456,14 +2480,14 @@ package hall
          }
       }
       
-      private function __btnClick(param1:MouseEvent) : void
+      private function __btnClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("047");
-         param1.stopPropagation();
-         _btnID = _btnList.indexOf(param1.currentTarget);
-         var _loc2_:starling.scene.hall.HallPlayerView = starlingHallScene.playerView;
-         _loc2_.MapClickFlag = false;
-         _loc2_.setSelfPlayerPos(_selfPosArray[_btnID],true,true);
+         evt.stopPropagation();
+         _btnID = _btnList.indexOf(evt.currentTarget);
+         var playerView:starling.scene.hall.HallPlayerView = starlingHallScene.playerView;
+         playerView.MapClickFlag = false;
+         playerView.setSelfPlayerPos(_selfPosArray[_btnID],true,true);
          dispatchEvent(new CEvent("hall_area_clicked"));
       }
       
@@ -2684,28 +2708,28 @@ package hall
       
       public function showWonderfulView() : void
       {
-         var _loc1_:* = null;
+         var infoView:* = null;
          if(WonderfulActivityManager.Instance.hasActivity)
          {
             openWonderfulActivityView(null);
          }
          else
          {
-            _loc1_ = new WonderfulInfoView();
-            _loc1_.show(1,LanguageMgr.GetTranslation("wonderfulActivityManager.tittle") + ":",LanguageMgr.GetTranslation("wonderful.activity.infoViewText"));
-            LayerManager.Instance.addToLayer(_loc1_,3,true,1);
+            infoView = new WonderfulInfoView();
+            infoView.show(1,LanguageMgr.GetTranslation("wonderfulActivityManager.tittle") + ":",LanguageMgr.GetTranslation("wonderful.activity.infoViewText"));
+            LayerManager.Instance.addToLayer(infoView,3,true,1);
          }
       }
       
       private function loadUserGuide() : void
       {
-         var _loc1_:Boolean = false;
+         var result:Boolean = false;
          if(NewHandGuideManager.Instance.progress < 11 && WeakGuildManager.Instance.switchUserGuide)
          {
             if(PathManager.TRAINER_STANDALONE && !PlayerManager.Instance.Self.IsWeakGuildFinish(2))
             {
                SocketManager.Instance.out.syncStep(11,true);
-               _loc1_ = PlayerManager.Instance.Self.IsWeakGuildFinish(144);
+               result = PlayerManager.Instance.Self.IsWeakGuildFinish(144);
                if(!PlayerManager.Instance.Self.IsWeakGuildFinish(144))
                {
                   prePopWelcome();
@@ -2719,18 +2743,18 @@ package hall
       
       private function sendToLoginInterface() : void
       {
-         var _loc2_:* = null;
-         var _loc4_:URLVariables = new URLVariables();
-         var _loc1_:String = PlayerManager.Instance.Self.ID.toString();
-         _loc1_ = encodeURI(_loc1_);
-         var _loc5_:String = "sdkxccjlqaoehtdwjkdycdrw";
-         _loc4_["username"] = _loc1_;
-         _loc4_["sign"] = MD5.hash(_loc1_ + _loc5_);
-         var _loc3_:String = PathManager.callLoginInterface();
-         if(_loc3_)
+         var loader:* = null;
+         var args:URLVariables = new URLVariables();
+         var username:String = PlayerManager.Instance.Self.ID.toString();
+         username = encodeURI(username);
+         var key:String = "sdkxccjlqaoehtdwjkdycdrw";
+         args["username"] = username;
+         args["sign"] = MD5.hash(username + key);
+         var requestURL:String = PathManager.callLoginInterface();
+         if(requestURL)
          {
-            _loc2_ = LoadResourceManager.Instance.createLoader(_loc3_,6,_loc4_);
-            LoadResourceManager.Instance.startLoad(_loc2_);
+            loader = LoadResourceManager.Instance.createLoader(requestURL,6,args);
+            LoadResourceManager.Instance.startLoad(loader);
          }
       }
       
@@ -2746,16 +2770,16 @@ package hall
          _trainerWelcomeView.show();
       }
       
-      private function __trainerResponse(param1:FrameEvent) : void
+      private function __trainerResponse(event:FrameEvent) : void
       {
-         var _loc3_:* = undefined;
-         var _loc2_:* = undefined;
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var o1:* = undefined;
+         var o2:* = undefined;
+         if(event.responseCode == 3 || event.responseCode == 2)
          {
-            param1.currentTarget.removeEventListener("response",__trainerResponse);
+            event.currentTarget.removeEventListener("response",__trainerResponse);
             SoundManager.instance.play("008");
-            _loc3_ = PathManager.TRAINER_STANDALONE;
-            _loc2_ = PlayerManager.Instance.Self.IsWeakGuildFinish(2);
+            o1 = PathManager.TRAINER_STANDALONE;
+            o2 = PlayerManager.Instance.Self.IsWeakGuildFinish(2);
             if(!PathManager.TRAINER_STANDALONE && !PlayerManager.Instance.Self.IsWeakGuildFinish(2))
             {
                NewHandGuideManager.Instance.mapID = 111;
@@ -2773,7 +2797,7 @@ package hall
       
       private function finPopWelcome() : void
       {
-         var _loc1_:* = null;
+         var img:* = null;
          if(_trainerWelcomeView)
          {
             _trainerWelcomeView.dispose();
@@ -2781,26 +2805,26 @@ package hall
          }
          if(PlayerManager.Instance.Self.Sex)
          {
-            _loc1_ = ComponentFactory.Instance.creatBitmap("asset.hall.maleImg");
+            img = ComponentFactory.Instance.creatBitmap("asset.hall.maleImg");
          }
          else
          {
-            _loc1_ = ComponentFactory.Instance.creatBitmap("asset.hall.femaleImg");
+            img = ComponentFactory.Instance.creatBitmap("asset.hall.femaleImg");
          }
          _dialog = new NewOpenGuideDialogView();
-         _dialog.show(LanguageMgr.GetTranslation("newOpenGuide.firstEnterPrompt1"),PlayerManager.Instance.Self.NickName,_loc1_,new Point(163,339));
+         _dialog.show(LanguageMgr.GetTranslation("newOpenGuide.firstEnterPrompt1"),PlayerManager.Instance.Self.NickName,img,new Point(163,339));
          _dialog.addEventListener("click",dialogNextHandler);
          LayerManager.Instance.addToLayer(_dialog,0);
       }
       
-      private function dialogNextHandler(param1:MouseEvent) : void
+      private function dialogNextHandler(event:MouseEvent) : void
       {
          _dialog.removeEventListener("click",dialogNextHandler);
          _dialog.show(LanguageMgr.GetTranslation("newOpenGuide.firstEnterPrompt2",PlayerManager.Instance.Self.NickName));
          _dialog.addEventListener("click",dialogNextHandler2);
       }
       
-      private function dialogNextHandler2(param1:MouseEvent) : void
+      private function dialogNextHandler2(event:MouseEvent) : void
       {
          _dialog.removeEventListener("click",dialogNextHandler2);
          ObjectUtils.disposeObject(_dialog);
@@ -2825,19 +2849,19 @@ package hall
       
       private function showSPAAlert() : void
       {
-         var _loc1_:Frame = ComponentFactory.Instance.creatComponentByStylename("hall.hotSpringAlertFrame");
-         _loc1_.addEventListener("response",__onRespose);
-         LayerManager.Instance.addToLayer(_loc1_,3,true,1);
+         var alert:Frame = ComponentFactory.Instance.creatComponentByStylename("hall.hotSpringAlertFrame");
+         alert.addEventListener("response",__onRespose);
+         LayerManager.Instance.addToLayer(alert,3,true,1);
       }
       
-      private function __onRespose(param1:FrameEvent) : void
+      private function __onRespose(event:FrameEvent) : void
       {
-         var _loc2_:Frame = param1.currentTarget as Frame;
-         _loc2_.removeEventListener("response",__onRespose);
-         _loc2_.dispose();
+         var alert:Frame = event.currentTarget as Frame;
+         alert.removeEventListener("response",__onRespose);
+         alert.dispose();
       }
       
-      private function __battleBtnClick(param1:MouseEvent) : void
+      private function __battleBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          battleFrameClose();
@@ -2852,9 +2876,9 @@ package hall
          _battleFrame.dispose();
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -2863,10 +2887,10 @@ package hall
          }
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
+         var i:int = 0;
+         var j:int = 0;
          BackgoundView.Instance.show();
          if(_playerInfoView)
          {
@@ -2884,6 +2908,7 @@ package hall
             _systemPost = null;
          }
          BombKingManager.instance.removeFromeHallStateView(this);
+         AngelInvestmentManager.instance.initHall(false);
          GypsyShopManager.getInstance().hideNPC();
          GypsyShopManager.getInstance().dispose();
          LanternFestivalManager.getInstance().dispose();
@@ -2953,25 +2978,23 @@ package hall
          }
          if(_btnList)
          {
-            _loc3_ = 0;
-            while(_loc3_ < _btnList.length)
+            for(i = 0; i < _btnList.length; )
             {
-               _btnList[_loc3_].removeEventListener("click",__btnClick);
-               _btnList[_loc3_].dispose();
-               _btnList[_loc3_] = null;
-               _loc3_++;
+               _btnList[i].removeEventListener("click",__btnClick);
+               _btnList[i].dispose();
+               _btnList[i] = null;
+               i++;
             }
             _btnList.length = 0;
          }
          _btnList = null;
          if(_btnTipList)
          {
-            _loc2_ = 0;
-            while(_loc2_ < _btnTipList.length)
+            for(j = 0; j < _btnTipList.length; )
             {
-               _btnTipList[_loc2_].dispose();
-               _btnTipList[_loc2_] = null;
-               _loc2_++;
+               _btnTipList[j].dispose();
+               _btnTipList[j] = null;
+               j++;
             }
             _btnTipList.length = 0;
          }
@@ -2980,6 +3003,11 @@ package hall
          {
             _LevelIcon.bitmapData.dispose();
             _LevelIcon = null;
+         }
+         if(_bitmap12)
+         {
+            _bitmap12.bitmapData.dispose();
+            _bitmap12 = null;
          }
          if(_leagueBtn)
          {
@@ -3036,7 +3064,7 @@ package hall
          {
             TimesManager.Instance.hideButton();
          }
-         if(param1.getType() != "dungeon" && param1.getType() != "roomlist")
+         if(next.getType() != "dungeon" && next.getType() != "roomlist")
          {
             GameInSocketOut.sendExitScene();
          }
@@ -3081,7 +3109,7 @@ package hall
          starlingHallScene = null;
          _callBackFundIcon = null;
          _callBackLotteryDrawIcon = null;
-         super.leaving(param1);
+         super.leaving(next);
       }
       
       override public function prepare() : void
@@ -3092,78 +3120,78 @@ package hall
       
       override public function fadingComplete() : void
       {
-         var _loc1_:* = null;
+         var frame:* = null;
          super.fadingComplete();
          if(_isFirst)
          {
             _isFirst = false;
             if(LoaderSavingManager.cacheAble == false && PlayerManager.Instance.Self.IsFirst > 1 && PlayerManager.Instance.Self.LastServerId == -1)
             {
-               _loc1_ = ComponentFactory.Instance.creatComponentByStylename("hall.SaveFileWidow");
-               _loc1_.show();
+               frame = ComponentFactory.Instance.creatComponentByStylename("hall.SaveFileWidow");
+               frame.show();
             }
             LeavePageManager.setFavorite(PlayerManager.Instance.Self.IsFirst <= 1);
          }
       }
       
-      private function showBuildOpen(param1:int, param2:String) : void
+      private function showBuildOpen(step:int, style:String) : void
       {
-         var _loc4_:* = null;
+         var name:* = null;
          if(StateManager.currentStateType != "main")
          {
             return;
          }
-         SocketManager.Instance.out.syncWeakStep(param1);
+         SocketManager.Instance.out.syncWeakStep(step);
       }
       
-      private function __completeGameRoom(param1:Event) : void
+      private function __completeGameRoom(evt:Event) : void
       {
-         MovieClipWrapper(param1.currentTarget).removeEventListener("complete",__completeGameRoom);
+         MovieClipWrapper(evt.currentTarget).removeEventListener("complete",__completeGameRoom);
          buildShine(4,"asset.trainer.RoomShineAsset","trainer.posBuildGameRoom");
       }
       
-      private function __completeConsortia(param1:Event) : void
+      private function __completeConsortia(evt:Event) : void
       {
-         MovieClipWrapper(param1.currentTarget).removeEventListener("complete",__completeConsortia);
+         MovieClipWrapper(evt.currentTarget).removeEventListener("complete",__completeConsortia);
          buildShine(65,"asset.trainer.shineConsortia","trainer.posBuildConsortia");
       }
       
-      private function __completeDungeon(param1:Event) : void
+      private function __completeDungeon(evt:Event) : void
       {
-         MovieClipWrapper(param1.currentTarget).removeEventListener("complete",__completeDungeon);
+         MovieClipWrapper(evt.currentTarget).removeEventListener("complete",__completeDungeon);
          buildShine(67,"asset.trainer.shineDungeon","trainer.posBuildDungeon");
       }
       
-      private function __completeChurch(param1:Event) : void
+      private function __completeChurch(evt:Event) : void
       {
-         MovieClipWrapper(param1.currentTarget).removeEventListener("complete",__completeChurch);
+         MovieClipWrapper(evt.currentTarget).removeEventListener("complete",__completeChurch);
          buildShine(37,"asset.trainer.shineChurch","trainer.posBuildChurch");
       }
       
-      private function __completeToffList(param1:Event) : void
+      private function __completeToffList(evt:Event) : void
       {
-         MovieClipWrapper(param1.currentTarget).removeEventListener("complete",__completeToffList);
+         MovieClipWrapper(evt.currentTarget).removeEventListener("complete",__completeToffList);
          buildShine(78,"asset.trainer.shineToffList","trainer.posBuildToffList");
       }
       
-      private function __completeAuction(param1:Event) : void
+      private function __completeAuction(evt:Event) : void
       {
-         MovieClipWrapper(param1.currentTarget).removeEventListener("complete",__completeAuction);
+         MovieClipWrapper(evt.currentTarget).removeEventListener("complete",__completeAuction);
          buildShine(84,"asset.trainer.shineAuction","trainer.posBuildAuction");
       }
       
-      private function __onClickServerName(param1:MouseEvent) : void
+      private function __onClickServerName(e:MouseEvent) : void
       {
       }
       
-      private function buildShine(param1:int, param2:String, param3:String) : void
+      private function buildShine(step:int, style:String, pos:String) : void
       {
       }
       
       override public function refresh() : void
       {
-         var _loc1_:StageCurtain = new StageCurtain();
-         _loc1_.play(25);
+         var curtain:StageCurtain = new StageCurtain();
+         curtain.play(25);
          LayerManager.Instance.clearnGameDynamic();
          StateManager.currentStateType = "main";
          ShowTipManager.Instance.removeAllTip();
@@ -3187,13 +3215,6 @@ package hall
       
       private function checkHorseAmuletGuide() : void
       {
-         if(!PlayerManager.Instance.Self.IsWeakGuildFinish(141))
-         {
-            if(PlayerManager.Instance.Self.Grade >= 31)
-            {
-               NewHandContainer.Instance.showArrow(100000,0,new Point(747,478),"","",LayerManager.Instance.getLayerByType(2),0,true);
-            }
-         }
       }
       
       private function checkShowWorldBossHelper() : void
@@ -3215,12 +3236,12 @@ package hall
          }
       }
       
-      public function setBgSpriteCenter(param1:int, param2:int) : void
+      public function setBgSpriteCenter(posX:int, posY:int) : void
       {
          if(_bgSprite)
          {
-            _bgSprite.x = param1;
-            _bgSprite.y = param2;
+            _bgSprite.x = posX;
+            _bgSprite.y = posY;
          }
       }
       

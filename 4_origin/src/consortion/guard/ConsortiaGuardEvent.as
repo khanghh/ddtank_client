@@ -32,10 +32,10 @@ package consortion.guard
       
       private var _data:Object;
       
-      public function ConsortiaGuardEvent(param1:String, param2:Object = null)
+      public function ConsortiaGuardEvent(type:String, data:Object = null)
       {
-         _data = param2;
-         super(param1,false,false);
+         _data = data;
+         super(type,false,false);
       }
       
       public function get data() : Object

@@ -67,9 +67,9 @@ package mainbutton
          return _instance;
       }
       
-      public function show(param1:String) : void
+      public function show(type:String) : void
       {
-         _currntType = param1;
+         _currntType = type;
          if(loadComplete)
          {
             showFrame(_currntType);
@@ -86,9 +86,9 @@ package mainbutton
          }
       }
       
-      private function showFrame(param1:String) : void
+      private function showFrame(pType:String) : void
       {
-         var _loc2_:* = param1;
+         var _loc2_:* = pType;
          if(MainButtnController.DDT_AWARD === _loc2_)
          {
             _awardFrame = ComponentFactory.Instance.creatCustomObject("ddtmainbutton.AwardFrame");
@@ -96,7 +96,7 @@ package mainbutton
          }
       }
       
-      private function __onClose(param1:Event) : void
+      private function __onClose(event:Event) : void
       {
          UIModuleSmallLoading.Instance.hide();
          UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);
@@ -104,17 +104,17 @@ package mainbutton
          UIModuleLoader.Instance.removeEventListener("uiModuleComplete",__complainShow);
       }
       
-      private function __progressShow(param1:UIModuleEvent) : void
+      private function __progressShow(event:UIModuleEvent) : void
       {
-         if(param1.module == "ddtmainbtn")
+         if(event.module == "ddtmainbtn")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
       
-      private function __complainShow(param1:UIModuleEvent) : void
+      private function __complainShow(event:UIModuleEvent) : void
       {
-         if(param1.module == "ddtmainbtn")
+         if(event.module == "ddtmainbtn")
          {
             UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);
             UIModuleLoader.Instance.removeEventListener("uiMoudleProgress",__progressShow);
@@ -125,9 +125,9 @@ package mainbutton
          }
       }
       
-      public function set DailyAwardState(param1:Boolean) : void
+      public function set DailyAwardState(state:Boolean) : void
       {
-         _dailAwardState = param1;
+         _dailAwardState = state;
       }
       
       public function get DailyAwardState() : Boolean
@@ -135,9 +135,9 @@ package mainbutton
          return _dailAwardState;
       }
       
-      public function set VipAwardState(param1:Boolean) : void
+      public function set VipAwardState(state:Boolean) : void
       {
-         _vipAwardState = param1;
+         _vipAwardState = state;
       }
       
       public function get VipAwardState() : Boolean
@@ -148,61 +148,61 @@ package mainbutton
       public function test() : Vector.<MainButton>
       {
          btnList = new Vector.<MainButton>();
-         var _loc1_:MainButton = MainButtonManager.instance.getInfoByID(ACTIVITIES);
-         var _loc3_:MainButton = MainButtonManager.instance.getInfoByID(ROULETTE);
-         var _loc2_:MainButton = MainButtonManager.instance.getInfoByID(VIP);
-         var _loc4_:MainButton = MainButtonManager.instance.getInfoByID(ANGELBLESS);
-         if(_loc1_.IsShow)
+         var btn:MainButton = MainButtonManager.instance.getInfoByID(ACTIVITIES);
+         var btn1:MainButton = MainButtonManager.instance.getInfoByID(ROULETTE);
+         var btn2:MainButton = MainButtonManager.instance.getInfoByID(VIP);
+         var btn5:MainButton = MainButtonManager.instance.getInfoByID(ANGELBLESS);
+         if(btn.IsShow)
          {
-            _loc1_.btnMark = 1;
-            _loc1_.btnServerVisable = 1;
-            _loc1_.btnCompleteVisable = 1;
-            btnList.push(_loc1_);
+            btn.btnMark = 1;
+            btn.btnServerVisable = 1;
+            btn.btnCompleteVisable = 1;
+            btnList.push(btn);
          }
          else
          {
-            _loc1_.btnMark = 1;
-            _loc1_.btnServerVisable = 2;
-            _loc1_.btnCompleteVisable = 2;
+            btn.btnMark = 1;
+            btn.btnServerVisable = 2;
+            btn.btnCompleteVisable = 2;
          }
-         if(_loc3_.IsShow)
+         if(btn1.IsShow)
          {
-            _loc3_.btnMark = 2;
-            _loc3_.btnServerVisable = 1;
-            _loc3_.btnCompleteVisable = 1;
-            btnList.push(_loc3_);
-         }
-         else
-         {
-            _loc3_.btnMark = 2;
-            _loc3_.btnServerVisable = 2;
-            _loc3_.btnCompleteVisable = 2;
-         }
-         if(_loc2_.IsShow)
-         {
-            _loc2_.btnMark = 3;
-            _loc2_.btnServerVisable = 1;
-            _loc2_.btnCompleteVisable = 1;
-            btnList.push(_loc2_);
+            btn1.btnMark = 2;
+            btn1.btnServerVisable = 1;
+            btn1.btnCompleteVisable = 1;
+            btnList.push(btn1);
          }
          else
          {
-            _loc2_.btnMark = 3;
-            _loc2_.btnServerVisable = 2;
-            _loc2_.btnCompleteVisable = 2;
+            btn1.btnMark = 2;
+            btn1.btnServerVisable = 2;
+            btn1.btnCompleteVisable = 2;
          }
-         if(_loc4_.IsShow)
+         if(btn2.IsShow)
          {
-            _loc4_.btnMark = 7;
-            _loc4_.btnServerVisable = 1;
-            _loc4_.btnCompleteVisable = 1;
-            btnList.push(_loc4_);
+            btn2.btnMark = 3;
+            btn2.btnServerVisable = 1;
+            btn2.btnCompleteVisable = 1;
+            btnList.push(btn2);
          }
          else
          {
-            _loc4_.btnMark = 7;
-            _loc4_.btnServerVisable = 2;
-            _loc4_.btnCompleteVisable = 2;
+            btn2.btnMark = 3;
+            btn2.btnServerVisable = 2;
+            btn2.btnCompleteVisable = 2;
+         }
+         if(btn5.IsShow)
+         {
+            btn5.btnMark = 7;
+            btn5.btnServerVisable = 1;
+            btn5.btnCompleteVisable = 1;
+            btnList.push(btn5);
+         }
+         else
+         {
+            btn5.btnMark = 7;
+            btn5.btnServerVisable = 2;
+            btn5.btnCompleteVisable = 2;
          }
          return btnList;
       }

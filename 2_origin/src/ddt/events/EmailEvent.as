@@ -52,11 +52,11 @@ package ddt.events
       
       private var _item:ItemTemplateInfo;
       
-      public function EmailEvent(param1:String, param2:Object = null, param3:Boolean = false, param4:Boolean = false)
+      public function EmailEvent(type:String, info:Object = null, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         super(param1,param3,param4);
-         _info = param2 as EmailInfo;
-         _item = param2 as ItemTemplateInfo;
+         super(type,bubbles,cancelable);
+         _info = info as EmailInfo;
+         _item = info as ItemTemplateInfo;
       }
       
       public function get info() : EmailInfo

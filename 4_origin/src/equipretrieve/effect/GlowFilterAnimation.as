@@ -20,29 +20,29 @@ package equipretrieve.effect
       
       private var _overHasFilter:Boolean;
       
-      public function GlowFilterAnimation(param1:IEventDispatcher = null)
+      public function GlowFilterAnimation(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
-      public function start(param1:DisplayObject, param2:Boolean = false, param3:uint = 16711680, param4:Number = 1.0, param5:Number = 6.0, param6:Number = 6.0, param7:Number = 2, param8:int = 1, param9:Boolean = false, param10:Boolean = false) : void
+      public function start(view:DisplayObject, overHasFilter:Boolean = false, color:uint = 16711680, alpha:Number = 1.0, blurX:Number = 6.0, blurY:Number = 6.0, strength:Number = 2, quality:int = 1, inner:Boolean = false, knockout:Boolean = false) : void
       {
          _movieArr = [];
-         _blurFilter = new GlowFilter(param3,param4,param5,param6,param7,param8,param9,param10);
-         _view = param1;
-         _overHasFilter = param2;
+         _blurFilter = new GlowFilter(color,alpha,blurX,blurY,strength,quality,inner,knockout);
+         _view = view;
+         _overHasFilter = overHasFilter;
       }
       
-      public function addMovie(param1:Number, param2:Number, param3:int, param4:int = 2) : void
+      public function addMovie(blurX:Number, blurY:Number, timeFrame:int, strength:int = 2) : void
       {
-         var _loc5_:Object = {};
-         _loc5_.blurX = param1;
-         _loc5_.blurY = param2;
-         _loc5_.strength = param4;
-         _loc5_.time = param3;
-         _loc5_.blurSpeedX = 0;
-         _loc5_.blurSpeedY = 0;
-         _movieArr.push(_loc5_);
+         var obj:Object = {};
+         obj.blurX = blurX;
+         obj.blurY = blurY;
+         obj.strength = strength;
+         obj.time = timeFrame;
+         obj.blurSpeedX = 0;
+         obj.blurSpeedY = 0;
+         _movieArr.push(obj);
       }
       
       public function movieStart() : void
@@ -56,7 +56,7 @@ package equipretrieve.effect
          _view.addEventListener("enterFrame",_inframe);
       }
       
-      private function _inframe(param1:Event) : void
+      private function _inframe(e:Event) : void
       {
          _blurFilter.blurX = _blurFilter.blurX + _movieArr[_nowMovieID].blurSpeedX;
          _blurFilter.blurY = _blurFilter.blurY + _movieArr[_nowMovieID].blurSpeedY;

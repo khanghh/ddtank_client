@@ -16,14 +16,14 @@ package ddt.manager
       
       private var _setuped:Boolean;
       
-      public function InGameCursor(param1:IEventDispatcher = null)
+      public function InGameCursor(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
-      public static function set disabled(param1:Boolean) : void
+      public static function set disabled(value:Boolean) : void
       {
-         _disabled = param1;
+         _disabled = value;
       }
       
       public static function get Instance() : InGameCursor
@@ -53,7 +53,7 @@ package ddt.manager
          }
       }
       
-      public function set cursorType(param1:String) : void
+      public function set cursorType(value:String) : void
       {
       }
    }

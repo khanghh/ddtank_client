@@ -31,9 +31,9 @@ package ddt.view.academyCommon.graduate
          addToContent(_explainText);
       }
       
-      public function setName(param1:String) : void
+      public function setName(value:String) : void
       {
-         _name = param1;
+         _name = value;
          update();
       }
       

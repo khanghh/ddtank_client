@@ -40,9 +40,9 @@ package GodSyah
          return _attack;
       }
       
-      public function set attack(param1:int) : void
+      public function set attack(value:int) : void
       {
-         _attack = param1;
+         _attack = value;
       }
       
       public function get defense() : int
@@ -50,9 +50,9 @@ package GodSyah
          return _defense;
       }
       
-      public function set defense(param1:int) : void
+      public function set defense(value:int) : void
       {
-         _defense = param1;
+         _defense = value;
       }
       
       public function get agility() : int
@@ -60,9 +60,9 @@ package GodSyah
          return _agility;
       }
       
-      public function set agility(param1:int) : void
+      public function set agility(value:int) : void
       {
-         _agility = param1;
+         _agility = value;
       }
       
       public function get lucky() : int
@@ -70,9 +70,9 @@ package GodSyah
          return _lucky;
       }
       
-      public function set lucky(param1:int) : void
+      public function set lucky(value:int) : void
       {
-         _lucky = param1;
+         _lucky = value;
       }
       
       public function get hp() : int
@@ -80,9 +80,9 @@ package GodSyah
          return _hp;
       }
       
-      public function set hp(param1:int) : void
+      public function set hp(value:int) : void
       {
-         _hp = param1;
+         _hp = value;
       }
       
       public function get armor() : int
@@ -90,9 +90,9 @@ package GodSyah
          return _armor;
       }
       
-      public function set armor(param1:int) : void
+      public function set armor(value:int) : void
       {
-         _armor = param1;
+         _armor = value;
       }
       
       public function get damage() : int
@@ -100,9 +100,9 @@ package GodSyah
          return _damage;
       }
       
-      public function set damage(param1:int) : void
+      public function set damage(value:int) : void
       {
-         _damage = param1;
+         _damage = value;
       }
       
       public function get isHold() : Boolean
@@ -110,9 +110,9 @@ package GodSyah
          return _isHold;
       }
       
-      public function set isHold(param1:Boolean) : void
+      public function set isHold(value:Boolean) : void
       {
-         _isHold = param1;
+         _isHold = value;
       }
       
       public function get syahID() : int
@@ -120,9 +120,9 @@ package GodSyah
          return _syahID;
       }
       
-      public function set syahID(param1:int) : void
+      public function set syahID(value:int) : void
       {
-         _syahID = param1;
+         _syahID = value;
       }
       
       public function get isValid() : Boolean
@@ -130,9 +130,9 @@ package GodSyah
          return _isValid;
       }
       
-      public function set isValid(param1:Boolean) : void
+      public function set isValid(value:Boolean) : void
       {
-         _isValid = param1;
+         _isValid = value;
       }
       
       public function get level() : int
@@ -140,9 +140,9 @@ package GodSyah
          return _level;
       }
       
-      public function set level(param1:int) : void
+      public function set level(value:int) : void
       {
-         _level = param1;
+         _level = value;
       }
       
       public function get isGold() : Boolean
@@ -150,9 +150,9 @@ package GodSyah
          return _isGold;
       }
       
-      public function set isGold(param1:Boolean) : void
+      public function set isGold(value:Boolean) : void
       {
-         _isGold = param1;
+         _isGold = value;
       }
       
       public function get valid() : String
@@ -160,9 +160,9 @@ package GodSyah
          return _valid;
       }
       
-      public function set valid(param1:String) : void
+      public function set valid(value:String) : void
       {
-         _valid = param1;
+         _valid = value;
       }
    }
 }

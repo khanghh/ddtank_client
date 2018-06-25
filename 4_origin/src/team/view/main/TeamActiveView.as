@@ -43,10 +43,10 @@ package team.view.main
          TeamManager.instance.addEventListener("updateteaminfo",__onUpdateTeamInfo);
          TeamManager.instance.addEventListener("updateteammember",__onUpdateMmeber);
          TeamManager.instance.addEventListener("updateactivelist",__onUpdateActive);
-         var _loc1_:Number = TimeManager.Instance.NowTime() - PlayerManager.Instance.Self.teamLoginDate.time;
-         if(86400000 > _loc1_)
+         var time:Number = TimeManager.Instance.NowTime() - PlayerManager.Instance.Self.teamLoginDate.time;
+         if(86400000 > time)
          {
-            updateLoginTime(86400000 - _loc1_);
+            updateLoginTime(86400000 - time);
             label_date.tipData = LanguageMgr.GetTranslation("team.active.dateTips");
             label_date.visible = true;
             _timer = new Timer(1000);
@@ -60,17 +60,17 @@ package team.view.main
       private function __onClickDonate() : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc1_:TeamDonateView = new TeamDonateView();
-         PositionUtils.setPos(_loc1_,"team.active.donatePos");
-         LayerManager.Instance.addToLayer(_loc1_,3,false,1);
+         var view:TeamDonateView = new TeamDonateView();
+         PositionUtils.setPos(view,"team.active.donatePos");
+         LayerManager.Instance.addToLayer(view,3,false,1);
       }
       
-      protected function __onTimer(param1:TimerEvent) : void
+      protected function __onTimer(event:TimerEvent) : void
       {
-         var _loc2_:Number = TimeManager.Instance.NowTime() - PlayerManager.Instance.Self.teamLoginDate.time;
-         if(86400000 > _loc2_)
+         var time:Number = TimeManager.Instance.NowTime() - PlayerManager.Instance.Self.teamLoginDate.time;
+         if(86400000 > time)
          {
-            updateLoginTime(86400000 - _loc2_);
+            updateLoginTime(86400000 - time);
          }
          else
          {
@@ -82,88 +82,88 @@ package team.view.main
          }
       }
       
-      private function updateLoginTime(param1:Number) : void
+      private function updateLoginTime(time:Number) : void
       {
-         var _loc5_:int = param1 / 3600000;
-         var _loc2_:int = (param1 - _loc5_ * 3600000) / 60 / 1000;
-         var _loc4_:int = (param1 - _loc5_ * 3600000 - _loc2_ * 60000) / 1000;
-         var _loc6_:String = _loc5_ < 10?"0" + _loc5_:_loc5_.toString();
-         var _loc7_:String = _loc2_ < 10?"0" + _loc2_:_loc2_.toString();
-         var _loc3_:String = _loc4_ < 10?"0" + _loc4_:_loc4_.toString();
-         label_date.text = _loc6_ + ":" + _loc7_ + ":" + _loc3_;
+         var hours:int = time / 3600000;
+         var min:int = (time - hours * 3600000) / 60 / 1000;
+         var sec:int = (time - hours * 3600000 - min * 60000) / 1000;
+         var hourss:String = hours < 10?"0" + hours:hours.toString();
+         var mins:String = min < 10?"0" + min:min.toString();
+         var secs:String = sec < 10?"0" + sec:sec.toString();
+         label_date.text = hourss + ":" + mins + ":" + secs;
       }
       
       private function __onClickActiveAlert() : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc1_:TeamActiveAlertView = new TeamActiveAlertView();
-         PositionUtils.setPos(_loc1_,"team.active.alertPos");
-         LayerManager.Instance.addToLayer(_loc1_,3,false,1);
+         var frame:TeamActiveAlertView = new TeamActiveAlertView();
+         PositionUtils.setPos(frame,"team.active.alertPos");
+         LayerManager.Instance.addToLayer(frame,3,false,1);
       }
       
-      private function __onRenderMemeber(param1:Box, param2:int) : void
+      private function __onRenderMemeber(item:Box, index:int) : void
       {
-         var _loc6_:* = null;
-         var _loc3_:NameTextEx = param1.getChildByName("name") as NameTextEx;
-         var _loc5_:Label = param1.getChildByName("active") as Label;
-         var _loc4_:Image = param1.getChildByName("img_captain") as Image;
-         if(param2 < list_member.array.length)
+         var info:* = null;
+         var name:NameTextEx = item.getChildByName("name") as NameTextEx;
+         var active:Label = item.getChildByName("active") as Label;
+         var img:Image = item.getChildByName("img_captain") as Image;
+         if(index < list_member.array.length)
          {
-            _loc6_ = list_member.array[param2] as TeamMemberInfo;
-            _loc3_.textType = _loc6_ && _loc6_.IsVIP?2:1;
-            _loc3_.text = _loc6_.NickName;
-            _loc5_.text = _loc6_.weekActiveScore.toString();
-            if(_loc6_.teamDuty == 1)
+            info = list_member.array[index] as TeamMemberInfo;
+            name.textType = info && info.IsVIP?2:1;
+            name.text = info.NickName;
+            active.text = info.weekActiveScore.toString();
+            if(info.teamDuty == 1)
             {
-               _loc4_.visible = true;
+               img.visible = true;
             }
             else
             {
-               _loc4_.visible = false;
+               img.visible = false;
             }
          }
          else
          {
-            _loc3_.text = "";
-            _loc5_.text = "";
-            _loc4_.visible = false;
+            name.text = "";
+            active.text = "";
+            img.visible = false;
          }
       }
       
-      private function __onRenderActive(param1:Box, param2:int) : void
+      private function __onRenderActive(item:Box, index:int) : void
       {
-         var _loc3_:Label = param1.getChildByName("label") as Label;
-         if(param2 < list_active.array.length)
+         var label:Label = item.getChildByName("label") as Label;
+         if(index < list_active.array.length)
          {
-            _loc3_.htmlText = convertString(list_active.array[param2]);
+            label.htmlText = convertString(list_active.array[index]);
          }
          else
          {
-            _loc3_.text = "";
+            label.text = "";
          }
       }
       
-      private function convertString(param1:String) : String
+      private function convertString(value:String) : String
       {
-         var _loc2_:* = param1;
-         _loc2_ = _loc2_.replace("<tc1>","<font color=\'#FFFFFF\'/>");
-         _loc2_ = _loc2_.replace("</tc1>","</font>");
-         _loc2_ = _loc2_.replace("<tc2>","<font color=\'#FFD701\'/>");
-         _loc2_ = _loc2_.replace("</tc2>","</font>");
-         return _loc2_;
+         var str:* = value;
+         str = str.replace("<tc1>","<font color=\'#FFFFFF\'/>");
+         str = str.replace("</tc1>","</font>");
+         str = str.replace("<tc2>","<font color=\'#FFD701\'/>");
+         str = str.replace("</tc2>","</font>");
+         return str;
       }
       
-      protected function __onUpdateTeamInfo(param1:TeamEvent) : void
+      protected function __onUpdateTeamInfo(event:TeamEvent) : void
       {
          updateView();
       }
       
-      protected function __onUpdateMmeber(param1:TeamEvent) : void
+      protected function __onUpdateMmeber(event:TeamEvent) : void
       {
          updateMemeberList();
       }
       
-      protected function __onUpdateActive(param1:TeamEvent) : void
+      protected function __onUpdateActive(e:TeamEvent) : void
       {
          list_active.array = TeamManager.instance.model.selfTeamActiveList.reverse();
       }
@@ -177,19 +177,19 @@ package team.view.main
       
       public function updateView() : void
       {
-         var _loc1_:TeamInfo = TeamManager.instance.model.selfTeamInfo;
-         if(_loc1_)
+         var info:TeamInfo = TeamManager.instance.model.selfTeamInfo;
+         if(info)
          {
-            clip_division.index = _loc1_.division;
-            label_name.text = _loc1_.name;
-            label_tag.text = "(" + _loc1_.tag + ")";
-            label_grade.text = "lv." + _loc1_.grade;
-            label_createDate.text = LanguageMgr.GetTranslation("team.main.createDate",DateUtils.dateFormat6(_loc1_.createDate));
-            label_count.text = LanguageMgr.GetTranslation("team.active.member",_loc1_.member,_loc1_.totalMember);
-            ex_active.count = _loc1_.totalActive;
-            progress_grade.tipData = _loc1_.active + "/" + _loc1_.maxActive;
-            progress_grade.value = _loc1_.exp;
-            progress_grade.label = int(_loc1_.exp * 10000) / 100 + "%";
+            clip_division.index = info.division;
+            label_name.text = info.name;
+            label_tag.text = "(" + info.tag + ")";
+            label_grade.text = "lv." + info.grade;
+            label_createDate.text = LanguageMgr.GetTranslation("team.main.createDate",DateUtils.dateFormat6(info.createDate));
+            label_count.text = LanguageMgr.GetTranslation("team.active.member",info.member,info.totalMember);
+            ex_active.count = info.totalActive;
+            progress_grade.tipData = info.active + "/" + info.maxActive;
+            progress_grade.value = info.exp;
+            progress_grade.label = int(info.exp * 10000) / 100 + "%";
             label_tag.x = label_name.x + label_name.width + 5;
             label_grade.x = label_tag.x + label_tag.width + 5;
             progress_grade.x = label_grade.x + label_grade.width + 5;
@@ -198,9 +198,9 @@ package team.view.main
       
       private function updateMemeberList() : void
       {
-         var _loc1_:Array = TeamManager.instance.model.selfTeamMember.concat();
-         _loc1_.sortOn("weekActiveScore",16 | 2);
-         list_member.array = _loc1_;
+         var list:Array = TeamManager.instance.model.selfTeamMember.concat();
+         list.sortOn("weekActiveScore",16 | 2);
+         list_member.array = list;
       }
       
       override public function dispose() : void

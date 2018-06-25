@@ -81,25 +81,25 @@ package consortion.view.selfConsortia
          _input.removeEventListener("keyDown",__keyDownHandler);
       }
       
-      private function __addToStageHandler(param1:Event) : void
+      private function __addToStageHandler(event:Event) : void
       {
          _input.setFocus();
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(event.responseCode == 0 || event.responseCode == 1)
          {
             dispose();
          }
-         if(param1.responseCode == 2)
+         if(event.responseCode == 2)
          {
             __okHandler(null);
          }
       }
       
-      private function __okHandler(param1:MouseEvent) : void
+      private function __okHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -110,9 +110,9 @@ package consortion.view.selfConsortia
          _ok.enable = false;
          var _loc4_:int = 0;
          var _loc3_:* = ConsortionModelManager.Instance.model.memberList;
-         for each(var _loc2_ in ConsortionModelManager.Instance.model.memberList)
+         for each(var info in ConsortionModelManager.Instance.model.memberList)
          {
-            if(_loc2_.NickName == _input.text)
+            if(info.NickName == _input.text)
             {
                if(_input.text == PlayerManager.Instance.Self.NickName)
                {
@@ -121,7 +121,7 @@ package consortion.view.selfConsortia
                   _input.text = "";
                   return;
                }
-               if(_loc2_.Grade < 17)
+               if(info.Grade < 17)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.AlienationConsortiaFrame.Grade"));
                   _ok.enable = false;
@@ -136,21 +136,21 @@ package consortion.view.selfConsortia
          }
       }
       
-      private function __cancelHandler(param1:MouseEvent) : void
+      private function __cancelHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          dispose();
       }
       
-      private function __changeHandler(param1:Event) : void
+      private function __changeHandler(evt:Event) : void
       {
          if(_input.text != "")
          {
             var _loc4_:int = 0;
             var _loc3_:* = ConsortionModelManager.Instance.model.memberList;
-            for each(var _loc2_ in ConsortionModelManager.Instance.model.memberList)
+            for each(var info in ConsortionModelManager.Instance.model.memberList)
             {
-               if(_loc2_.NickName == _input.text)
+               if(info.NickName == _input.text)
                {
                   _ok.enable = true;
                   return;
@@ -160,9 +160,9 @@ package consortion.view.selfConsortia
          _ok.enable = false;
       }
       
-      private function __keyDownHandler(param1:KeyboardEvent) : void
+      private function __keyDownHandler(evt:KeyboardEvent) : void
       {
-         if(param1.keyCode == 13)
+         if(evt.keyCode == 13)
          {
             if(_ok.enable)
             {

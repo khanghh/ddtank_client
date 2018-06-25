@@ -27,10 +27,10 @@ package roomList
       
       private var _value:int;
       
-      public function RoomListTipPanel(param1:int, param2:int)
+      public function RoomListTipPanel(cellWidth:int, cellheight:int)
       {
-         _cellWidth = param1;
-         _cellheight = param2;
+         _cellWidth = cellWidth;
+         _cellheight = cellheight;
          super();
          init();
       }
@@ -56,31 +56,30 @@ package roomList
          _itemArray = [];
       }
       
-      public function addItem(param1:Bitmap, param2:int) : void
+      public function addItem(itemBg:Bitmap, value:int) : void
       {
-         var _loc3_:TipItemView = new TipItemView(param1,param2,_cellWidth,_cellheight);
-         _loc3_.addEventListener("click",__itemClick);
-         _list.addChild(_loc3_);
-         _itemArray.push(_loc3_);
+         var item:TipItemView = new TipItemView(itemBg,value,_cellWidth,_cellheight);
+         item.addEventListener("click",__itemClick);
+         _list.addChild(item);
+         _itemArray.push(item);
          _bg.height = _bg.height + (_cellheight + 1);
       }
       
-      private function __itemClick(param1:MouseEvent) : void
+      private function __itemClick(event:MouseEvent) : void
       {
-         _value = (param1.target as TipItemView).value;
+         _value = (event.target as TipItemView).value;
          dispatchEvent(new Event("hardLvChange"));
          this.visible = false;
       }
       
       private function cleanItem() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _itemArray.length)
+         var i:int = 0;
+         for(i = 0; i < _itemArray.length; )
          {
-            (_itemArray[_loc1_] as TipItemView).removeEventListener("click",__itemClick);
-            (_itemArray[_loc1_] as TipItemView).dispose();
-            _loc1_++;
+            (_itemArray[i] as TipItemView).removeEventListener("click",__itemClick);
+            (_itemArray[i] as TipItemView).dispose();
+            i++;
          }
          _itemArray = [];
       }

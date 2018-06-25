@@ -69,9 +69,9 @@ package ddt.data
          return _ID;
       }
       
-      public function set ID(param1:int) : void
+      public function set ID(value:int) : void
       {
-         _ID = param1;
+         _ID = value;
       }
       
       public function getCarrayBall() : Point
@@ -93,36 +93,36 @@ package ddt.data
       
       public function loadCraterBitmap() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var craterILoader:* = null;
+         var craterBrinkLoader:* = null;
          if(!BallManager.instance.hasBombAsset(craterID))
          {
             if(craterID != 0)
             {
-               _loc2_ = LoadResourceManager.Instance.createLoader(PathManager.solveCrater(craterID),0);
-               _loc2_.addEventListener("complete",__craterComplete);
-               LoadResourceManager.Instance.startLoad(_loc2_);
-               _loc1_ = LoadResourceManager.Instance.createLoader(PathManager.solveCraterBrink(craterID),0);
-               _loc1_.addEventListener("complete",__craterBrinkComplete);
-               LoadResourceManager.Instance.startLoad(_loc1_);
+               craterILoader = LoadResourceManager.Instance.createLoader(PathManager.solveCrater(craterID),0);
+               craterILoader.addEventListener("complete",__craterComplete);
+               LoadResourceManager.Instance.startLoad(craterILoader);
+               craterBrinkLoader = LoadResourceManager.Instance.createLoader(PathManager.solveCraterBrink(craterID),0);
+               craterBrinkLoader.addEventListener("complete",__craterBrinkComplete);
+               LoadResourceManager.Instance.startLoad(craterBrinkLoader);
             }
          }
       }
       
-      private function __craterComplete(param1:LoaderEvent) : void
+      private function __craterComplete(event:LoaderEvent) : void
       {
-         (param1.currentTarget as BaseLoader).removeEventListener("complete",__craterComplete);
-         BallManager.instance.addBombAsset(craterID,param1.loader.content as Bitmap,0);
+         (event.currentTarget as BaseLoader).removeEventListener("complete",__craterComplete);
+         BallManager.instance.addBombAsset(craterID,event.loader.content as Bitmap,0);
       }
       
-      private function __craterBrinkComplete(param1:LoaderEvent) : void
+      private function __craterBrinkComplete(event:LoaderEvent) : void
       {
-         (param1.currentTarget as BaseLoader).removeEventListener("complete",__craterBrinkComplete);
-         var _loc2_:Object = {};
-         _loc2_["id"] = craterID;
-         _loc2_["asset"] = param1.loader.content;
-         _loc2_["type"] = 1;
-         BallManager.instance.addBombAsset(craterID,param1.loader.content,1);
+         (event.currentTarget as BaseLoader).removeEventListener("complete",__craterBrinkComplete);
+         var data:Object = {};
+         data["id"] = craterID;
+         data["asset"] = event.loader.content;
+         data["type"] = 1;
+         BallManager.instance.addBombAsset(craterID,event.loader.content,1);
       }
       
       public function isComplete() : Boolean
@@ -142,21 +142,21 @@ package ddt.data
          return false;
       }
       
-      public function getHasDefinition(param1:BallInfo) : Boolean
+      public function getHasDefinition(info:BallInfo) : Boolean
       {
-         if(!ModuleLoader.hasDefinition(BallManager.instance.solveBlastOutMovieName(param1.blastOutID)))
+         if(!ModuleLoader.hasDefinition(BallManager.instance.solveBlastOutMovieName(info.blastOutID)))
          {
-            trace("炮弹ID" + ID + "找不到\t" + BallManager.instance.solveBlastOutMovieName(param1.blastOutID));
+            trace("炮弹ID" + ID + "找不到\t" + BallManager.instance.solveBlastOutMovieName(info.blastOutID));
          }
-         if(!ModuleLoader.hasDefinition(BallManager.solveBulletMovieName(param1.ID)))
+         if(!ModuleLoader.hasDefinition(BallManager.solveBulletMovieName(info.ID)))
          {
-            trace("炮弹ID" + ID + "找不到\t" + BallManager.solveBulletMovieName(param1.ID));
+            trace("炮弹ID" + ID + "找不到\t" + BallManager.solveBulletMovieName(info.ID));
          }
-         if(!ModuleLoader.hasDefinition(BallManager.instance.solveShootMovieMovieName(param1.ID)))
+         if(!ModuleLoader.hasDefinition(BallManager.instance.solveShootMovieMovieName(info.ID)))
          {
-            trace("炮弹ID" + ID + "找不到\t" + BallManager.instance.solveShootMovieMovieName(param1.ID));
+            trace("炮弹ID" + ID + "找不到\t" + BallManager.instance.solveShootMovieMovieName(info.ID));
          }
-         return ModuleLoader.hasDefinition(BallManager.instance.solveBlastOutMovieName(param1.blastOutID)) && ModuleLoader.hasDefinition(BallManager.solveBulletMovieName(param1.ID));
+         return ModuleLoader.hasDefinition(BallManager.instance.solveBlastOutMovieName(info.blastOutID)) && ModuleLoader.hasDefinition(BallManager.solveBulletMovieName(info.ID));
       }
       
       public function loadBombAsset3D() : void
@@ -188,23 +188,23 @@ package ddt.data
          return false;
       }
       
-      public function getHasDefinition3D(param1:BallInfo) : Boolean
+      public function getHasDefinition3D(info:BallInfo) : Boolean
       {
-         var _loc2_:Boolean = true;
-         if(!BoneMovieFactory.instance.hasBoneMovie(param1.bulletName))
+         var complete:Boolean = true;
+         if(!BoneMovieFactory.instance.hasBoneMovie(info.bulletName))
          {
-            _loc2_ = false;
-            trace("炮弹动画 : ( " + param1.bulletName + " ) 未加载完成");
+            complete = false;
+            trace("炮弹动画 : ( " + info.bulletName + " ) 未加载完成");
          }
          if(ID != 147 && ID != 130)
          {
-            if(blastOutID != 0 && !BoneMovieFactory.instance.hasBoneMovie(param1.blastOutName))
+            if(blastOutID != 0 && !BoneMovieFactory.instance.hasBoneMovie(info.blastOutName))
             {
-               _loc2_ = false;
-               trace("爆炸动画 : ( " + param1.blastOutName + " ) 未加载完成");
+               complete = false;
+               trace("爆炸动画 : ( " + info.blastOutName + " ) 未加载完成");
             }
          }
-         return _loc2_;
+         return complete;
       }
       
       public function get bulletName() : String

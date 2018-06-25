@@ -51,177 +51,167 @@ package consortiaRoseFlower
       
       public function ConsortiaRoseView()
       {
-         var _loc3_:int = 0;
+         var i:int = 0;
          super();
          this.mouseChildren = false;
          this.mouseEnabled = false;
-         var _loc2_:ConsortiaRoseConfig = ComponentFactory.Instance.creatCustomObject("consortia.rose.config");
-         _frameRate = _loc2_.frameRate;
-         _totalFrames = _loc2_.totalFrames;
-         _row1Number = _loc2_.row1Number;
-         _row2Number = _loc2_.row2Number;
-         _row3Number = _loc2_.row3Number;
-         _speed1 = _loc2_.speed1;
-         _speed2 = _loc2_.speed2;
-         _speed3 = _loc2_.speed3;
-         _scale1 = _loc2_.scale1;
-         _scale2 = _loc2_.scale2;
-         _scale3 = _loc2_.scale3;
-         var _loc1_:* = 0;
+         var config:ConsortiaRoseConfig = ComponentFactory.Instance.creatCustomObject("consortia.rose.config");
+         _frameRate = config.frameRate;
+         _totalFrames = config.totalFrames;
+         _row1Number = config.row1Number;
+         _row2Number = config.row2Number;
+         _row3Number = config.row3Number;
+         _speed1 = config.speed1;
+         _speed2 = config.speed2;
+         _speed3 = config.speed3;
+         _scale1 = config.scale1;
+         _scale2 = config.scale2;
+         _scale3 = config.scale3;
+         var curFrame:* = 0;
          _resVec = new Vector.<BitmapData>();
-         _loc3_ = 0;
-         while(_loc3_ < _totalFrames)
+         for(i = 0; i < _totalFrames; )
          {
-            _resVec[_loc3_] = ComponentFactory.Instance.creatBitmapData("ast.rose.f" + _loc3_.toString());
-            _loc3_++;
+            _resVec[i] = ComponentFactory.Instance.creatBitmapData("ast.rose.f" + i.toString());
+            i++;
          }
          _roseRow3Vec = new Vector.<ConsortiaRose>();
-         _loc3_ = 0;
-         while(_loc3_ < _row3Number)
+         for(i = 0; i < _row3Number; )
          {
-            _loc1_ = Number(int(Math.random() * _totalFrames));
-            _roseRow3Vec[_loc3_] = new ConsortiaRose(_resVec[_loc1_]);
-            _roseRow3Vec[_loc3_].rotation = Math.random() * 360;
-            _roseRow3Vec[_loc3_].curFrame = _loc1_;
+            curFrame = Number(int(Math.random() * _totalFrames));
+            _roseRow3Vec[i] = new ConsortiaRose(_resVec[curFrame]);
+            _roseRow3Vec[i].rotation = Math.random() * 360;
+            _roseRow3Vec[i].curFrame = curFrame;
             var _loc4_:* = _scale3;
-            _roseRow3Vec[_loc3_].scaleY = _loc4_;
-            _roseRow3Vec[_loc3_].scaleX = _loc4_;
-            _roseRow3Vec[_loc3_].alpha = 1;
-            _roseRow3Vec[_loc3_].x = Math.random() * 860 + 70;
-            _roseRow3Vec[_loc3_].y = -730 * Math.random();
-            addChild(_roseRow3Vec[_loc3_]);
-            _loc3_++;
+            _roseRow3Vec[i].scaleY = _loc4_;
+            _roseRow3Vec[i].scaleX = _loc4_;
+            _roseRow3Vec[i].alpha = 1;
+            _roseRow3Vec[i].x = Math.random() * 860 + 70;
+            _roseRow3Vec[i].y = -730 * Math.random();
+            addChild(_roseRow3Vec[i]);
+            i++;
          }
          _row3StepPt = new Vector.<Point>();
-         _loc3_ = 0;
-         while(_loc3_ < _row3Number)
+         for(i = 0; i < _row3Number; )
          {
-            _row3StepPt[_loc3_] = new Point(0,_speed3);
-            _loc3_++;
+            _row3StepPt[i] = new Point(0,_speed3);
+            i++;
          }
          _roseRow2Vec = new Vector.<ConsortiaRose>();
-         _loc3_ = 0;
-         while(_loc3_ < _row2Number)
+         for(i = 0; i < _row2Number; )
          {
-            _loc1_ = Number(int(Math.random() * _totalFrames));
-            _roseRow2Vec[_loc3_] = new ConsortiaRose(_resVec[_loc1_]);
-            _roseRow2Vec[_loc3_].rotation = Math.random() * 360;
-            _roseRow2Vec[_loc3_].curFrame = _loc1_;
+            curFrame = Number(int(Math.random() * _totalFrames));
+            _roseRow2Vec[i] = new ConsortiaRose(_resVec[curFrame]);
+            _roseRow2Vec[i].rotation = Math.random() * 360;
+            _roseRow2Vec[i].curFrame = curFrame;
             _loc4_ = _scale2;
-            _roseRow2Vec[_loc3_].scaleY = _loc4_;
-            _roseRow2Vec[_loc3_].scaleX = _loc4_;
-            _roseRow2Vec[_loc3_].alpha = 1;
-            _roseRow2Vec[_loc3_].x = Math.random() * 860 + 70;
-            _roseRow2Vec[_loc3_].y = -730 * Math.random();
-            addChild(_roseRow2Vec[_loc3_]);
-            _loc3_++;
+            _roseRow2Vec[i].scaleY = _loc4_;
+            _roseRow2Vec[i].scaleX = _loc4_;
+            _roseRow2Vec[i].alpha = 1;
+            _roseRow2Vec[i].x = Math.random() * 860 + 70;
+            _roseRow2Vec[i].y = -730 * Math.random();
+            addChild(_roseRow2Vec[i]);
+            i++;
          }
          _row2StepPt = new Vector.<Point>();
-         _loc3_ = 0;
-         while(_loc3_ < _row2Number)
+         for(i = 0; i < _row2Number; )
          {
-            _row2StepPt[_loc3_] = new Point(int(Math.random() * 3 - 1.5),_speed2);
-            _loc3_++;
+            _row2StepPt[i] = new Point(int(Math.random() * 3 - 1.5),_speed2);
+            i++;
          }
          _roseRow1Vec = new Vector.<ConsortiaRose>();
-         _loc3_ = 0;
-         while(_loc3_ < _row1Number)
+         for(i = 0; i < _row1Number; )
          {
-            _loc1_ = Number(int(Math.random() * _totalFrames));
-            _roseRow1Vec[_loc3_] = new ConsortiaRose(_resVec[_loc1_]);
-            _roseRow1Vec[_loc3_].rotation = Math.random() * 360;
-            _roseRow1Vec[_loc3_].curFrame = _loc1_;
+            curFrame = Number(int(Math.random() * _totalFrames));
+            _roseRow1Vec[i] = new ConsortiaRose(_resVec[curFrame]);
+            _roseRow1Vec[i].rotation = Math.random() * 360;
+            _roseRow1Vec[i].curFrame = curFrame;
             _loc4_ = _scale1;
-            _roseRow1Vec[_loc3_].scaleY = _loc4_;
-            _roseRow1Vec[_loc3_].scaleX = _loc4_;
-            _roseRow1Vec[_loc3_].alpha = 1;
-            _roseRow1Vec[_loc3_].x = Math.random() * 860 + 70;
-            _roseRow1Vec[_loc3_].y = -730 * Math.random();
-            addChild(_roseRow1Vec[_loc3_]);
-            _loc3_++;
+            _roseRow1Vec[i].scaleY = _loc4_;
+            _roseRow1Vec[i].scaleX = _loc4_;
+            _roseRow1Vec[i].alpha = 1;
+            _roseRow1Vec[i].x = Math.random() * 860 + 70;
+            _roseRow1Vec[i].y = -730 * Math.random();
+            addChild(_roseRow1Vec[i]);
+            i++;
          }
          _row1StepPt = new Vector.<Point>();
-         _loc3_ = 0;
-         while(_loc3_ < _row1Number)
+         for(i = 0; i < _row1Number; )
          {
-            _row1StepPt[_loc3_] = new Point(int(Math.random() * 4 - 2),_speed1);
-            _loc3_++;
+            _row1StepPt[i] = new Point(int(Math.random() * 4 - 2),_speed1);
+            i++;
          }
       }
       
-      protected function onEF(param1:Event) : void
+      protected function onEF(e:Event) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
+         var rose:* = null;
+         var len:int = 0;
+         var i:int = 0;
          _count = Number(_count) + 1;
          _count = _count % 2;
          if(_count == 0)
          {
             return;
          }
-         _loc3_ = _roseRow1Vec.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         len = _roseRow1Vec.length;
+         for(i = 0; i < len; )
          {
-            _loc2_ = _roseRow1Vec[_loc4_];
-            _loc2_.curFrame = Number(_loc2_.curFrame) + 1;
-            _loc2_.curFrame = _loc2_.curFrame % _totalFrames;
-            _loc2_.bitmapData = _resVec[_loc2_.curFrame];
-            _loc2_.x = _loc2_.x + _row1StepPt[_loc4_].x;
-            _loc2_.y = _loc2_.y + _row1StepPt[_loc4_].y;
-            if(_loc2_.y > 600)
+            rose = _roseRow1Vec[i];
+            rose.curFrame = Number(rose.curFrame) + 1;
+            rose.curFrame = rose.curFrame % _totalFrames;
+            rose.bitmapData = _resVec[rose.curFrame];
+            rose.x = rose.x + _row1StepPt[i].x;
+            rose.y = rose.y + _row1StepPt[i].y;
+            if(rose.y > 600)
             {
-               _loc2_.y = -150;
-               _loc2_.rotation = Math.random() * 180;
+               rose.y = -150;
+               rose.rotation = Math.random() * 180;
             }
-            if(_loc2_.x < -150 || _loc2_.y > 1150)
+            if(rose.x < -150 || rose.y > 1150)
             {
-               _loc2_.x = Math.random() * 860 + 70;
+               rose.x = Math.random() * 860 + 70;
             }
-            _loc4_++;
+            i++;
          }
-         _loc3_ = _roseRow2Vec.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         len = _roseRow2Vec.length;
+         for(i = 0; i < len; )
          {
-            _loc2_ = _roseRow2Vec[_loc4_];
-            _loc2_.curFrame = Number(_loc2_.curFrame) + 1;
-            _loc2_.curFrame = _loc2_.curFrame % _totalFrames;
-            _loc2_.bitmapData = _resVec[_loc2_.curFrame];
-            _loc2_.x = _loc2_.x + _row2StepPt[_loc4_].x;
-            _loc2_.y = _loc2_.y + _row2StepPt[_loc4_].y;
-            if(_loc2_.y > 600)
+            rose = _roseRow2Vec[i];
+            rose.curFrame = Number(rose.curFrame) + 1;
+            rose.curFrame = rose.curFrame % _totalFrames;
+            rose.bitmapData = _resVec[rose.curFrame];
+            rose.x = rose.x + _row2StepPt[i].x;
+            rose.y = rose.y + _row2StepPt[i].y;
+            if(rose.y > 600)
             {
-               _loc2_.y = -150;
-               _loc2_.rotation = Math.random() * 180;
+               rose.y = -150;
+               rose.rotation = Math.random() * 180;
             }
-            if(_loc2_.x < -150 || _loc2_.y > 1150)
+            if(rose.x < -150 || rose.y > 1150)
             {
-               _loc2_.x = Math.random() * 860 + 70;
+               rose.x = Math.random() * 860 + 70;
             }
-            _loc4_++;
+            i++;
          }
-         _loc3_ = _roseRow3Vec.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         len = _roseRow3Vec.length;
+         for(i = 0; i < len; )
          {
-            _loc2_ = _roseRow3Vec[_loc4_];
-            _loc2_.curFrame = Number(_loc2_.curFrame) + 1;
-            _loc2_.curFrame = _loc2_.curFrame % _totalFrames;
-            _loc2_.bitmapData = _resVec[_loc2_.curFrame];
-            _loc2_.x = _loc2_.x + _row3StepPt[_loc4_].x;
-            _loc2_.y = _loc2_.y + _row3StepPt[_loc4_].y;
-            if(_loc2_.y > 600)
+            rose = _roseRow3Vec[i];
+            rose.curFrame = Number(rose.curFrame) + 1;
+            rose.curFrame = rose.curFrame % _totalFrames;
+            rose.bitmapData = _resVec[rose.curFrame];
+            rose.x = rose.x + _row3StepPt[i].x;
+            rose.y = rose.y + _row3StepPt[i].y;
+            if(rose.y > 600)
             {
-               _loc2_.y = -150;
-               _loc2_.rotation = Math.random() * 180;
+               rose.y = -150;
+               rose.rotation = Math.random() * 180;
             }
-            if(_loc2_.x < -150 || _loc2_.y > 1150)
+            if(rose.x < -150 || rose.y > 1150)
             {
-               _loc2_.x = Math.random() * 860 + 70;
+               rose.x = Math.random() * 860 + 70;
             }
-            _loc4_++;
+            i++;
          }
       }
       

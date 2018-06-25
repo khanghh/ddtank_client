@@ -84,47 +84,47 @@ package welfareCenter.view
       
       private function initItem() : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         var _loc1_:* = null;
+         var backFund:* = null;
+         var backLottery:* = null;
+         var gradeGift:* = null;
          _btnGroup = new SelectedButtonGroup();
          if(WelfareCenterManager.instance.getitemIsOpen(0))
          {
-            _loc2_ = new WelfareCenterItem(0);
-            _vBox.addChild(_loc2_);
-            _loc2_.addEventListener("click",__onClickItem);
-            _itemList.push(_loc2_);
-            _btnGroup.addSelectItem(_loc2_);
+            backFund = new WelfareCenterItem(0);
+            _vBox.addChild(backFund);
+            backFund.addEventListener("click",__onClickItem);
+            _itemList.push(backFund);
+            _btnGroup.addSelectItem(backFund);
          }
          if(WelfareCenterManager.instance.getitemIsOpen(1))
          {
-            _loc3_ = new WelfareCenterItemTime(1);
-            _vBox.addChild(_loc3_);
-            _loc3_.addEventListener("click",__onClickItem);
-            _itemList.push(_loc3_);
-            _btnGroup.addSelectItem(_loc3_);
+            backLottery = new WelfareCenterItemTime(1);
+            _vBox.addChild(backLottery);
+            backLottery.addEventListener("click",__onClickItem);
+            _itemList.push(backLottery);
+            _btnGroup.addSelectItem(backLottery);
             CallBackLotteryDrawManager.instance.addEventListener("event_open_frame",onOpenView);
             CallBackLotteryDrawManager.instance.addEventListener("event_zero_fresh",onZeroFresh);
          }
          if(WelfareCenterManager.instance.getitemIsOpen(2))
          {
-            _loc1_ = new WelfareCenterItem(2);
-            _vBox.addChild(_loc1_);
-            _loc1_.addEventListener("click",__onClickItem);
-            _itemList.push(_loc1_);
-            _btnGroup.addSelectItem(_loc1_);
+            gradeGift = new WelfareCenterItem(2);
+            _vBox.addChild(gradeGift);
+            gradeGift.addEventListener("click",__onClickItem);
+            _itemList.push(gradeGift);
+            _btnGroup.addSelectItem(gradeGift);
          }
          _btnGroup.selectIndex = 0;
       }
       
-      public function updateView(param1:int) : void
+      public function updateView($type:int) : void
       {
-         if(_currentType == param1)
+         if(_currentType == $type)
          {
             return;
          }
-         _currentType = param1;
-         if(param1 == 0)
+         _currentType = $type;
+         if($type == 0)
          {
             if(_backFundView == null)
             {
@@ -147,11 +147,11 @@ package welfareCenter.view
             ObjectUtils.disposeObject(_backLotteryView);
             _backLotteryView = null;
          }
-         else if(param1 == 1)
+         else if($type == 1)
          {
             CallBackLotteryDrawManager.instance.queryLotteryGoods(0);
          }
-         else if(param1 == 2)
+         else if($type == 2)
          {
             if(_gradeGiftView == null)
             {
@@ -176,7 +176,7 @@ package welfareCenter.view
          }
       }
       
-      protected function onOpenView(param1:Event) : void
+      protected function onOpenView(event:Event) : void
       {
          if(CallBackLotteryDrawManager.instance.type == 0 && _currentType == 1)
          {
@@ -195,7 +195,7 @@ package welfareCenter.view
          }
       }
       
-      private function onZeroFresh(param1:Event) : void
+      private function onZeroFresh(evt:Event) : void
       {
          if(_backLotteryView)
          {
@@ -209,16 +209,16 @@ package welfareCenter.view
          _backLotteryView = null;
       }
       
-      private function __onClickItem(param1:MouseEvent) : void
+      private function __onClickItem(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:WelfareCenterItem = param1.currentTarget as WelfareCenterItem;
-         _loc2_.isShine = false;
-         if(WelfareCenterManager.instance.getitemIsOpen(_loc2_.type))
+         var item:WelfareCenterItem = e.currentTarget as WelfareCenterItem;
+         item.isShine = false;
+         if(WelfareCenterManager.instance.getitemIsOpen(item.type))
          {
-            if(_loc2_.canClick)
+            if(item.canClick)
             {
-               updateView(_loc2_.type);
+               updateView(item.type);
             }
             else
             {
@@ -228,28 +228,28 @@ package welfareCenter.view
          else
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.welfareCenter.gift.activityEnd"));
-            _loc2_.removeEventListener("click",__onClickItem);
-            _itemList.splice(_itemList.indexOf(_loc2_),1);
-            _vBox.removeChild(_loc2_);
-            ObjectUtils.disposeObject(_loc2_);
+            item.removeEventListener("click",__onClickItem);
+            _itemList.splice(_itemList.indexOf(item),1);
+            _vBox.removeChild(item);
+            ObjectUtils.disposeObject(item);
          }
       }
       
-      private function __onCheckItemShine(param1:Event = null) : void
+      private function __onCheckItemShine(e:Event = null) : void
       {
       }
       
       override public function dispose() : void
       {
-         var _loc1_:* = null;
+         var item:* = null;
          InviteManager.Instance.enabled = true;
          WelfareCenterManager.instance.removeEventListener("change",__onCheckItemShine);
          CallBackLotteryDrawManager.instance.removeEventListener("event_open_frame",onOpenView);
          CallBackLotteryDrawManager.instance.removeEventListener("event_zero_fresh",onZeroFresh);
          while(_itemList.length)
          {
-            _loc1_ = _itemList.pop() as WelfareCenterItem;
-            _loc1_.removeEventListener("click",__onClickItem);
+            item = _itemList.pop() as WelfareCenterItem;
+            item.removeEventListener("click",__onClickItem);
          }
          _btnGroup.dispose();
          _vBox.dispose();

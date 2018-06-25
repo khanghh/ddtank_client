@@ -36,18 +36,18 @@ package gameCommon.view.experience
       
       private var _movie:MovieClip;
       
-      public function ExpTypeTxt(param1:String, param2:int, param3:Number = 0)
+      public function ExpTypeTxt(type:String, idx:int, $value:Number = 0)
       {
          super();
-         _idx = param2;
-         _type = param1;
-         _value = param3;
+         _idx = idx;
+         _type = type;
+         _value = $value;
          init();
       }
       
       protected function init() : void
       {
-         var _loc1_:* = null;
+         var pos:* = null;
          var _loc2_:* = _type;
          if("fightingExp" !== _loc2_)
          {
@@ -65,9 +65,9 @@ package gameCommon.view.experience
                if(_idx == 7)
                {
                   _movie = ComponentFactory.Instance.creat("asset.expView.goForPowerMovieAsset");
-                  _loc1_ = ComponentFactory.Instance.creatCustomObject("gameOver.goForPowerPosition");
-                  _movie.x = _loc1_.x;
-                  _movie.y = _loc1_.y;
+                  pos = ComponentFactory.Instance.creatCustomObject("gameOver.goForPowerPosition");
+                  _movie.x = pos.x;
+                  _movie.y = pos.y;
                }
                else if(_idx == 8)
                {

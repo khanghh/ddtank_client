@@ -12,7 +12,7 @@ package BombTurnTable.data
       private static var _instance:BombTurnTableFactory;
        
       
-      public function BombTurnTableFactory(param1:TurnTableFactoryEnforcer)
+      public function BombTurnTableFactory(instance:TurnTableFactoryEnforcer)
       {
          super();
       }
@@ -26,25 +26,25 @@ package BombTurnTable.data
          return _instance;
       }
       
-      public function createTurnTable(param1:int, param2:int) : BaseTurnTable
+      public function createTurnTable(level:int, status:int) : BaseTurnTable
       {
-         var _loc3_:* = null;
-         var _loc4_:int = (param1 - 1) / 4;
-         switch(int(_loc4_))
+         var view:* = null;
+         var type:int = (level - 1) / 4;
+         switch(int(type))
          {
             case 0:
-               _loc3_ = new WhiteTurnTable(param2);
+               view = new WhiteTurnTable(status);
                break;
             case 1:
-               _loc3_ = new GreenTurnTable(param2);
+               view = new GreenTurnTable(status);
                break;
             case 2:
-               _loc3_ = new BlueTurnTable(param2);
+               view = new BlueTurnTable(status);
                break;
             case 3:
-               _loc3_ = new PurpleTurnTable(param2);
+               view = new PurpleTurnTable(status);
          }
-         return _loc3_;
+         return view;
       }
    }
 }

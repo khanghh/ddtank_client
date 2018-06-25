@@ -61,8 +61,8 @@ package store.view.embed
       
       public function EmbedUpLevelCell()
       {
-         var _loc1_:Bitmap = ComponentFactory.Instance.creatBitmap("beadSystem.upgradeBG");
-         super(_loc1_);
+         var bg:Bitmap = ComponentFactory.Instance.creatBitmap("beadSystem.upgradeBG");
+         super(bg);
          _shiner = new ShineObject(ComponentFactory.Instance.creat("asset.ddtstore.EmbedStoneCellShine"));
          var _loc2_:* = false;
          _shiner.visible = _loc2_;
@@ -74,7 +74,7 @@ package store.view.embed
          beadSystemManager.Instance.addEventListener("playUpgradeMC",__startPlay);
       }
       
-      private function __startPlay(param1:Event) : void
+      private function __startPlay(pEvent:Event) : void
       {
          if(!_upgradeMC)
          {
@@ -87,7 +87,7 @@ package store.view.embed
          }
       }
       
-      private function __onUpgradeComplete(param1:Event) : void
+      private function __onUpgradeComplete(pEvent:Event) : void
       {
          _upgradeMC.removeEventListener("upgradeBeadComplete",__onUpgradeComplete);
          _upgradeMC.stop();
@@ -95,16 +95,16 @@ package store.view.embed
          _upgradeMC = null;
       }
       
-      override public function set info(param1:ItemTemplateInfo) : void
+      override public function set info(value:ItemTemplateInfo) : void
       {
-         .super.info = param1;
+         .super.info = value;
          if(_info)
          {
             _tipData = null;
             locked = false;
             disposeBeadPic();
          }
-         _info = param1;
+         _info = value;
          if(_info)
          {
             if(!_nameTxt)
@@ -120,13 +120,13 @@ package store.view.embed
             {
                GoodTipInfo(_tipData).exp = itemInfo.Hole2;
                GoodTipInfo(_tipData).upExp = ServerConfigManager.instance.getBeadUpgradeExp()[itemInfo.Hole1 + 1];
-               GoodTipInfo(_tipData).beadName = info.Name + "-" + BeadTemplateManager.Instance.GetBeadInfobyID(param1.TemplateID).Name + "Lv" + itemInfo.Hole1;
+               GoodTipInfo(_tipData).beadName = info.Name + "-" + BeadTemplateManager.Instance.GetBeadInfobyID(value.TemplateID).Name + "Lv" + itemInfo.Hole1;
             }
             else
             {
                GoodTipInfo(_tipData).exp = ServerConfigManager.instance.getBeadUpgradeExp()[BeadTemplateManager.Instance.GetBeadInfobyID(itemInfo.TemplateID).BaseLevel];
                GoodTipInfo(_tipData).upExp = ServerConfigManager.instance.getBeadUpgradeExp()[BeadTemplateManager.Instance.GetBeadInfobyID(itemInfo.TemplateID).BaseLevel + 1];
-               GoodTipInfo(_tipData).beadName = info.Name + "-" + BeadTemplateManager.Instance.GetBeadInfobyID(param1.TemplateID).Name + "Lv" + BeadTemplateManager.Instance.GetBeadInfobyID(itemInfo.TemplateID).BaseLevel;
+               GoodTipInfo(_tipData).beadName = info.Name + "-" + BeadTemplateManager.Instance.GetBeadInfobyID(value.TemplateID).Name + "Lv" + BeadTemplateManager.Instance.GetBeadInfobyID(itemInfo.TemplateID).BaseLevel;
             }
             if(this.invenItemInfo.IsUsed)
             {
@@ -158,14 +158,14 @@ package store.view.embed
             }
             disposeDragBeadPic();
          }
-         BeadModel.beadCanUpgrade = param1 == null?false:true;
-         dispatchEvent(new BeadEvent("beadCellChanged",-1,param1));
+         BeadModel.beadCanUpgrade = value == null?false:true;
+         dispatchEvent(new BeadEvent("beadCellChanged",-1,value));
       }
       
-      public function set itemInfo(param1:InventoryItemInfo) : void
+      public function set itemInfo(value:InventoryItemInfo) : void
       {
-         BeadModel.upgradeCellInfo = param1;
-         _itemInfo = param1;
+         BeadModel.upgradeCellInfo = value;
+         _itemInfo = value;
       }
       
       public function get itemInfo() : InventoryItemInfo
@@ -173,7 +173,7 @@ package store.view.embed
          return _itemInfo;
       }
       
-      private function createBeadPic(param1:ItemTemplateInfo) : void
+      private function createBeadPic(value:ItemTemplateInfo) : void
       {
          if(_invenItemInfo.Hole1 > 0)
          {
@@ -214,11 +214,11 @@ package store.view.embed
          }
       }
       
-      override public function dragDrop(param1:DragEffect) : void
+      override public function dragDrop(effect:DragEffect) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:String = getQualifiedClassName(param1.source);
-         if(param1.source is BeadAdvanceCell || _loc2_ == "beadSystem.views::BeadAdvanceInfoCell")
+         var sourceInfo:* = null;
+         var str:String = getQualifiedClassName(effect.source);
+         if(effect.source is BeadAdvanceCell || str == "beadSystem.views::BeadAdvanceInfoCell")
          {
             return;
          }
@@ -228,22 +228,22 @@ package store.view.embed
             BaglockedManager.Instance.show();
             return;
          }
-         _loc3_ = param1.data as InventoryItemInfo;
-         if(_loc3_.Hole1 == _max)
+         sourceInfo = effect.data as InventoryItemInfo;
+         if(sourceInfo.Hole1 == _max)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.beadSystem.mostHightLevel"));
             return;
          }
-         if(_loc3_.Hole1 == 1)
+         if(sourceInfo.Hole1 == 1)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.beadSystem.lvOneCanntUpgrade"));
          }
-         if(_loc3_ && param1.action != "split")
+         if(sourceInfo && effect.action != "split")
          {
-            this._invenItemInfo = _loc3_;
-            this._itemInfo = _loc3_;
-            this.info = _loc3_;
-            SocketManager.Instance.out.sendBeadEquip(_loc3_.Place,31);
+            this._invenItemInfo = sourceInfo;
+            this._itemInfo = sourceInfo;
+            this.info = sourceInfo;
+            SocketManager.Instance.out.sendBeadEquip(sourceInfo.Place,31);
          }
          DragManager.acceptDrag(this);
       }
@@ -260,58 +260,58 @@ package store.view.embed
          }
       }
       
-      override protected function onMouseOut(param1:MouseEvent) : void
+      override protected function onMouseOut(evt:MouseEvent) : void
       {
-         super.onMouseOut(param1);
+         super.onMouseOut(evt);
       }
       
-      override protected function onMouseOver(param1:MouseEvent) : void
+      override protected function onMouseOver(evt:MouseEvent) : void
       {
          if(_upTip)
          {
             _upTip.showTip(info);
          }
-         super.onMouseOver(param1);
+         super.onMouseOver(evt);
       }
       
-      override public function dragStop(param1:DragEffect) : void
+      override public function dragStop(effect:DragEffect) : void
       {
          SoundManager.instance.play("008");
-         if(param1.action == "move" && !param1.target)
+         if(effect.action == "move" && !effect.target)
          {
-            param1.action = "none";
+            effect.action = "none";
          }
          disposeDragBeadPic();
          dragShowPicTxt();
-         super.dragStop(param1);
+         super.dragStop(effect);
       }
       
-      override protected function onMouseClick(param1:MouseEvent) : void
+      override protected function onMouseClick(evt:MouseEvent) : void
       {
          dispatchEvent(new CellEvent("itemclick",this));
       }
       
-      override protected function updateSize(param1:Sprite) : void
+      override protected function updateSize(sp:Sprite) : void
       {
-         if(param1)
+         if(sp)
          {
-            param1.scaleX = 0.8;
-            param1.scaleY = 0.8;
+            sp.scaleX = 0.8;
+            sp.scaleY = 0.8;
             if(_picPos != null)
             {
-               param1.x = _picPos.x;
+               sp.x = _picPos.x;
             }
             else
             {
-               param1.x = param1.x - param1.width / 2 + _contentWidth / 2;
+               sp.x = sp.x - sp.width / 2 + _contentWidth / 2;
             }
             if(_picPos != null)
             {
-               param1.y = _picPos.y;
+               sp.y = _picPos.y;
             }
             else
             {
-               param1.y = param1.y - param1.height / 2 + _contentHeight / 2;
+               sp.y = sp.y - sp.height / 2 + _contentHeight / 2;
             }
          }
       }
@@ -321,9 +321,9 @@ package store.view.embed
          return _invenItemInfo;
       }
       
-      public function set invenItemInfo(param1:InventoryItemInfo) : void
+      public function set invenItemInfo(value:InventoryItemInfo) : void
       {
-         _invenItemInfo = param1;
+         _invenItemInfo = value;
       }
       
       private function dragHidePicTxt() : void

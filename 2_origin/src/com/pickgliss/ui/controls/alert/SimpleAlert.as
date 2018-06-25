@@ -82,9 +82,9 @@ package com.pickgliss.ui.controls.alert
          super.dispose();
       }
       
-      override public function set info(param1:AlertInfo) : void
+      override public function set info(value:AlertInfo) : void
       {
-         .super.info = param1;
+         .super.info = value;
          onPropertiesChanged("info");
          _seleContent = new Sprite();
          if(info.type == 0)
@@ -145,7 +145,7 @@ package com.pickgliss.ui.controls.alert
          }
       }
       
-      protected function selectedBandHander(param1:MouseEvent) : void
+      protected function selectedBandHander(event:MouseEvent) : void
       {
          if(_selectedBandBtn.selected)
          {
@@ -160,7 +160,7 @@ package com.pickgliss.ui.controls.alert
          }
       }
       
-      protected function selectedHander(param1:MouseEvent) : void
+      protected function selectedHander(event:MouseEvent) : void
       {
          if(_selectedBtn.selected)
          {
@@ -175,40 +175,40 @@ package com.pickgliss.ui.controls.alert
          }
       }
       
-      public function set frameInnerRectString(param1:String) : void
+      public function set frameInnerRectString(value:String) : void
       {
-         if(_frameInnerRectString == param1)
+         if(_frameInnerRectString == value)
          {
             return;
          }
-         _frameInnerRectString = param1;
+         _frameInnerRectString = value;
          _frameInnerRect = ClassUtils.CreatInstance("com.pickgliss.geom.InnerRectangle",ComponentFactory.parasArgs(_frameInnerRectString));
          onPropertiesChanged("frameInnerRect");
       }
       
-      public function set frameMiniH(param1:int) : void
+      public function set frameMiniH(value:int) : void
       {
-         if(_frameMiniH == param1)
+         if(_frameMiniH == value)
          {
             return;
          }
-         _frameMiniH = param1;
+         _frameMiniH = value;
          onPropertiesChanged("frameMiniH");
       }
       
-      public function set frameMiniW(param1:int) : void
+      public function set frameMiniW(value:int) : void
       {
-         if(_frameMiniW == param1)
+         if(_frameMiniW == value)
          {
             return;
          }
-         _frameMiniW = param1;
+         _frameMiniW = value;
          onPropertiesChanged("frameMiniW");
       }
       
-      public function set textStyle(param1:String) : void
+      public function set textStyle(value:String) : void
       {
-         if(_textFieldStyle == param1)
+         if(_textFieldStyle == value)
          {
             return;
          }
@@ -216,7 +216,7 @@ package com.pickgliss.ui.controls.alert
          {
             ObjectUtils.disposeObject(_textField);
          }
-         _textFieldStyle = param1;
+         _textFieldStyle = value;
          _textField = ComponentFactory.Instance.creat(_textFieldStyle);
          onPropertiesChanged("textFieldStyle");
       }
@@ -232,26 +232,26 @@ package com.pickgliss.ui.controls.alert
       
       protected function layoutFrameRect() : void
       {
-         var _loc2_:int = !!_seleContent?_textField.height + _seleContent.height:Number(_textField.height);
-         var _loc1_:Rectangle = _frameInnerRect.getInnerRect(_textField.width,_loc2_);
-         if(_loc1_.width > _frameMiniW)
+         var height:int = !!_seleContent?_textField.height + _seleContent.height:Number(_textField.height);
+         var rectangle:Rectangle = _frameInnerRect.getInnerRect(_textField.width,height);
+         if(rectangle.width > _frameMiniW)
          {
             _textField.x = _frameInnerRect.para1;
-            _width = _loc1_.width;
+            _width = rectangle.width;
          }
          else
          {
-            _textField.x = _frameInnerRect.para1 + (_frameMiniW - _loc1_.width) / 2;
+            _textField.x = _frameInnerRect.para1 + (_frameMiniW - rectangle.width) / 2;
             _width = _frameMiniW;
          }
-         if(_loc1_.height > _frameMiniH)
+         if(rectangle.height > _frameMiniH)
          {
             _textField.y = _frameInnerRect.para3;
-            _height = _loc1_.height;
+            _height = rectangle.height;
          }
          else
          {
-            _textField.y = _frameInnerRect.para3 + (_frameMiniH - _loc1_.height) / 2;
+            _textField.y = _frameInnerRect.para3 + (_frameMiniH - rectangle.height) / 2;
             _height = _frameMiniH;
          }
       }

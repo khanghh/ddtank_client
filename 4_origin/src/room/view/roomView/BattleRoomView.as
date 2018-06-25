@@ -40,10 +40,10 @@ package room.view.roomView
       
       protected var _battleRoomProView:BattleRoomRightPropView;
       
-      public function BattleRoomView(param1:RoomInfo)
+      public function BattleRoomView(info:RoomInfo)
       {
          _timerII = new Timer(1000);
-         super(param1);
+         super(info);
       }
       
       override protected function initView() : void
@@ -88,9 +88,9 @@ package room.view.roomView
          updateButtons();
       }
       
-      override protected function __startHandler(param1:RoomEvent) : void
+      override protected function __startHandler(evt:RoomEvent) : void
       {
-         super.__startHandler(param1);
+         super.__startHandler(evt);
          if(_info.started)
          {
             _timerII.start();
@@ -104,17 +104,17 @@ package room.view.roomView
       
       override protected function updateButtons() : void
       {
-         var _loc1_:Boolean = false;
+         var temBol:Boolean = false;
          super.updateButtons();
          if(_battleRoomProView)
          {
             if(_info.selfRoomPlayer.isHost)
             {
-               _loc1_ = _info.started;
+               temBol = _info.started;
             }
             else
             {
-               _loc1_ = _info.selfRoomPlayer.isReady;
+               temBol = _info.selfRoomPlayer.isReady;
             }
          }
          _smallMapInfoPanel._actionStatus = _info.selfRoomPlayer.isHost && !_info.started && _info.type != 13 && _info.type != 12;
@@ -122,23 +122,22 @@ package room.view.roomView
       
       override protected function initTileList() : void
       {
-         var _loc4_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          super.initTileList();
          _playerItemContainer = new SimpleTileList(2);
-         var _loc3_:Point = ComponentFactory.Instance.creatCustomObject("asset.ddtroom.matchRoom.listSpace");
-         _playerItemContainer.hSpace = _loc3_.x;
-         _playerItemContainer.vSpace = _loc3_.y;
-         var _loc2_:Point = ComponentFactory.Instance.creatCustomObject("asset.ddtroom.playerListPos");
-         _playerItemContainer.x = _bg.x + _loc2_.x;
-         _playerItemContainer.y = _bg.y + _loc2_.y;
-         _loc4_ = 0;
-         while(_loc4_ < 4)
+         var space:Point = ComponentFactory.Instance.creatCustomObject("asset.ddtroom.matchRoom.listSpace");
+         _playerItemContainer.hSpace = space.x;
+         _playerItemContainer.vSpace = space.y;
+         var p:Point = ComponentFactory.Instance.creatCustomObject("asset.ddtroom.playerListPos");
+         _playerItemContainer.x = _bg.x + p.x;
+         _playerItemContainer.y = _bg.y + p.y;
+         for(i = 0; i < 4; )
          {
-            _loc1_ = new RoomPlayerItem(_loc4_);
-            _playerItemContainer.addChild(_loc1_);
-            _playerItems.push(_loc1_);
-            _loc4_++;
+            item = new RoomPlayerItem(i);
+            _playerItemContainer.addChild(item);
+            _playerItems.push(item);
+            i++;
          }
          addChild(_playerItemContainer);
          if(isViewerRoom)
@@ -148,40 +147,40 @@ package room.view.roomView
          }
       }
       
-      override protected function __addPlayer(param1:RoomEvent) : void
+      override protected function __addPlayer(evt:RoomEvent) : void
       {
-         var _loc2_:RoomPlayer = param1.params[0] as RoomPlayer;
-         if(_loc2_.isFirstIn)
+         var player:RoomPlayer = evt.params[0] as RoomPlayer;
+         if(player.isFirstIn)
          {
             SoundManager.instance.play("158");
          }
-         if(_loc2_.isViewer)
+         if(player.isViewer)
          {
-            _viewerItems[_loc2_.place - 8].info = _loc2_;
+            _viewerItems[player.place - 8].info = player;
          }
          else
          {
-            _playerItems[_loc2_.place].info = _loc2_;
+            _playerItems[player.place].info = player;
          }
          updateButtons();
       }
       
-      override protected function __removePlayer(param1:RoomEvent) : void
+      override protected function __removePlayer(evt:RoomEvent) : void
       {
-         var _loc2_:RoomPlayer = param1.params[0] as RoomPlayer;
-         if(_loc2_.place >= 8)
+         var player:RoomPlayer = evt.params[0] as RoomPlayer;
+         if(player.place >= 8)
          {
-            _viewerItems[_loc2_.place - 8].info = null;
+            _viewerItems[player.place - 8].info = null;
          }
          else
          {
-            _playerItems[_loc2_.place].info = null;
+            _playerItems[player.place].info = null;
          }
-         _loc2_.dispose();
+         player.dispose();
          updateButtons();
       }
       
-      override protected function __startClick(param1:MouseEvent) : void
+      override protected function __startClick(evt:MouseEvent) : void
       {
          if(!_info.isAllReady())
          {
@@ -193,15 +192,15 @@ package room.view.roomView
             _info.started = true;
             startGame();
          }
-         CheckWeaponManager.instance.setFunction(this,__startClick,[param1]);
+         CheckWeaponManager.instance.setFunction(this,__startClick,[evt]);
          _info.started = true;
          startGame();
       }
       
-      protected function startCheckWeaponComplete(... rest) : void
+      protected function startCheckWeaponComplete(... args) : void
       {
-         var _loc2_:int = rest[0];
-         switch(int(_loc2_))
+         var result:int = args[0];
+         switch(int(result))
          {
             case 0:
                _info.started = true;
@@ -212,10 +211,10 @@ package room.view.roomView
          }
       }
       
-      override protected function __prepareClick(param1:MouseEvent) : void
+      override protected function __prepareClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         CheckWeaponManager.instance.setFunction(this,__prepareClick,[param1]);
+         CheckWeaponManager.instance.setFunction(this,__prepareClick,[evt]);
          if(!super.checkCanStartGame())
          {
             return;
@@ -223,22 +222,22 @@ package room.view.roomView
          prepareGame();
       }
       
-      protected function checkWeaponFragment(param1:Function) : Boolean
+      protected function checkWeaponFragment(callFun:Function) : Boolean
       {
-         var _loc2_:Boolean = true;
-         CheckWeaponManager.instance.setFunction(this,param1,[]);
+         var result:Boolean = true;
+         CheckWeaponManager.instance.setFunction(this,callFun,[]);
          if(CheckWeaponManager.instance.isNoWeaponFragment())
          {
-            _loc2_ = false;
+            result = false;
             CheckWeaponManager.instance.showFragmentAlert();
          }
-         return _loc2_;
+         return result;
       }
       
-      protected function proCheckWeaponComplete(... rest) : void
+      protected function proCheckWeaponComplete(... args) : void
       {
-         var _loc2_:int = rest[0];
-         switch(int(_loc2_))
+         var result:int = args[0];
+         switch(int(result))
          {
             case 0:
                prepareGame();

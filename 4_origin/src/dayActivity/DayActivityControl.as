@@ -32,9 +32,9 @@ package dayActivity
       
       private var _activityFrame:ActivityFrame;
       
-      public function DayActivityControl(param1:IEventDispatcher = null)
+      public function DayActivityControl(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get Instance() : DayActivityControl
@@ -53,90 +53,89 @@ package dayActivity
       
       private function initEvent() : void
       {
-         var _loc1_:int = 155;
-         SocketManager.Instance.addEventListener(PkgEvent.format(_loc1_,3),addSpeedResp);
-         SocketManager.Instance.addEventListener(PkgEvent.format(_loc1_,4),changGoodsBtn);
-         SocketManager.Instance.addEventListener(PkgEvent.format(_loc1_,2),initSingleActivity);
-         SocketManager.Instance.addEventListener(PkgEvent.format(_loc1_,7),addActivityChange);
+         var eType:int = 155;
+         SocketManager.Instance.addEventListener(PkgEvent.format(eType,3),addSpeedResp);
+         SocketManager.Instance.addEventListener(PkgEvent.format(eType,4),changGoodsBtn);
+         SocketManager.Instance.addEventListener(PkgEvent.format(eType,2),initSingleActivity);
+         SocketManager.Instance.addEventListener(PkgEvent.format(eType,7),addActivityChange);
          DayActivityManager.Instance.addEventListener("activityOpenView",createActivityFrame);
       }
       
-      public function changGoodsBtn(param1:PkgEvent) : void
+      public function changGoodsBtn(e:PkgEvent) : void
       {
-         var _loc2_:int = param1.pkg.readInt();
-         var _loc3_:Boolean = param1.pkg.readBoolean();
-         if(_loc3_)
+         var id:int = e.pkg.readInt();
+         var bool:Boolean = e.pkg.readBoolean();
+         if(bool)
          {
-            DayActivityManager.Instance.btnArr[_loc2_ - 1][1] = 1;
+            DayActivityManager.Instance.btnArr[id - 1][1] = 1;
             if(_activityFrame)
             {
-               _activityFrame.updataBtn(_loc2_);
+               _activityFrame.updataBtn(id);
             }
             DayActivityManager.Instance.dispatchEvent(new Event("daily_activity_get_status_change"));
          }
       }
       
-      public function addActivityChange(param1:PkgEvent) : void
+      public function addActivityChange(e:PkgEvent) : void
       {
-         var _loc2_:int = param1.pkg.readInt();
-         var _loc3_:int = param1.pkg.readInt();
-         updataNum(_loc2_,_loc3_);
+         var id:int = e.pkg.readInt();
+         var count:int = e.pkg.readInt();
+         updataNum(id,count);
       }
       
-      public function send(param1:int, param2:int) : void
+      public function send(i:int, id:int) : void
       {
-         SocketManager.Instance.out.addSpeed(param1,param2);
+         SocketManager.Instance.out.addSpeed(i,id);
       }
       
-      private function updataNum(param1:int, param2:int) : void
+      private function updataNum(id:int, count:int) : void
       {
-         var _loc3_:* = null;
-         var _loc5_:int = 0;
+         var arr:* = null;
+         var i:int = 0;
          if(DayActivityManager.Instance.sessionArr == null)
          {
             DayActivityManager.Instance.sessionArr = [];
          }
-         var _loc4_:int = DayActivityManager.Instance.sessionArr.length;
-         if(_loc4_ == 0)
+         var len:int = DayActivityManager.Instance.sessionArr.length;
+         if(len == 0)
          {
-            _loc3_ = [];
-            _loc3_[0] = param1;
-            _loc3_[1] = param2;
-            DayActivityManager.Instance.sessionArr.push(_loc3_);
+            arr = [];
+            arr[0] = id;
+            arr[1] = count;
+            DayActivityManager.Instance.sessionArr.push(arr);
          }
          else
          {
-            _loc5_ = 0;
-            while(_loc5_ < _loc4_)
+            for(i = 0; i < len; )
             {
-               if(DayActivityManager.Instance.sessionArr[_loc5_][0] == param1)
+               if(DayActivityManager.Instance.sessionArr[i][0] == id)
                {
-                  DayActivityManager.Instance.sessionArr[_loc5_][1] = param2;
+                  DayActivityManager.Instance.sessionArr[i][1] = count;
                   break;
                }
-               if(_loc5_ >= _loc4_ - 1)
+               if(i >= len - 1)
                {
-                  _loc3_ = [];
-                  _loc3_[0] = param1;
-                  _loc3_[1] = param2;
-                  DayActivityManager.Instance.sessionArr.push(_loc3_);
+                  arr = [];
+                  arr[0] = id;
+                  arr[1] = count;
+                  DayActivityManager.Instance.sessionArr.push(arr);
                }
-               _loc5_++;
+               i++;
             }
          }
       }
       
-      public function addSpeedResp(param1:PkgEvent) : void
+      public function addSpeedResp(e:PkgEvent) : void
       {
-         var _loc2_:int = param1.pkg.readInt();
-         var _loc4_:Boolean = param1.pkg.readBoolean();
-         DayActivityManager.Instance.activityValue = param1.pkg.readInt();
-         var _loc3_:int = param1.pkg.readInt();
-         if(DayActivityManager.Instance.speedActArr.indexOf(_loc3_) == -1)
+         var id:int = e.pkg.readInt();
+         var bool:Boolean = e.pkg.readBoolean();
+         DayActivityManager.Instance.activityValue = e.pkg.readInt();
+         var actId:int = e.pkg.readInt();
+         if(DayActivityManager.Instance.speedActArr.indexOf(actId) == -1)
          {
-            DayActivityManager.Instance.speedActArr.push(_loc3_);
+            DayActivityManager.Instance.speedActArr.push(actId);
          }
-         addOverList(_loc4_,_loc2_);
+         addOverList(bool,id);
          if(_activityFrame && _activityFrame.parent)
          {
             _activityFrame.setLeftView(DayActivityManager.Instance.overList,DayActivityManager.Instance.noOverList);
@@ -144,65 +143,63 @@ package dayActivity
          }
       }
       
-      private function addOverList(param1:Boolean, param2:int, param3:int = 0) : void
+      private function addOverList(bool:Boolean, type:int, count:int = 0) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:int = DayActivityManager.Instance.acitivityDataList.length;
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         var j:int = 0;
+         var len:int = DayActivityManager.Instance.acitivityDataList.length;
+         for(j = 0; j < len; )
          {
-            if(DayActivityManager.Instance.acitivityDataList[_loc5_].ActivityType == param2)
+            if(DayActivityManager.Instance.acitivityDataList[j].ActivityType == type)
             {
-               if(param1)
+               if(bool)
                {
-                  DayActivityManager.Instance.acitivityDataList[_loc5_].OverCount = DayActivityManager.Instance.acitivityDataList[_loc5_].Count;
-                  DayActivityManager.Instance.overList.push(DayActivityManager.Instance.acitivityDataList[_loc5_]);
-                  DayActivityManager.Instance.deleNoOverListItem(param2);
+                  DayActivityManager.Instance.acitivityDataList[j].OverCount = DayActivityManager.Instance.acitivityDataList[j].Count;
+                  DayActivityManager.Instance.overList.push(DayActivityManager.Instance.acitivityDataList[j]);
+                  DayActivityManager.Instance.deleNoOverListItem(type);
                }
                else
                {
-                  DayActivityManager.Instance.acitivityDataList[_loc5_].OverCount = param3;
-                  if(DayActivityManager.Instance.acitivityDataList[_loc5_].Count <= param3)
+                  DayActivityManager.Instance.acitivityDataList[j].OverCount = count;
+                  if(DayActivityManager.Instance.acitivityDataList[j].Count <= count)
                   {
-                     if(!checkOverList(DayActivityManager.Instance.acitivityDataList[_loc5_].ActivityType))
+                     if(!checkOverList(DayActivityManager.Instance.acitivityDataList[j].ActivityType))
                      {
-                        DayActivityManager.Instance.overList.push(DayActivityManager.Instance.acitivityDataList[_loc5_]);
+                        DayActivityManager.Instance.overList.push(DayActivityManager.Instance.acitivityDataList[j]);
                      }
-                     DayActivityManager.Instance.deleNoOverListItem(param2);
+                     DayActivityManager.Instance.deleNoOverListItem(type);
                   }
                }
                break;
             }
-            _loc5_++;
+            j++;
          }
       }
       
-      private function checkOverList(param1:int) : Boolean
+      private function checkOverList(type:int) : Boolean
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = DayActivityManager.Instance.overList.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var i:int = 0;
+         var len:int = DayActivityManager.Instance.overList.length;
+         for(i = 0; i < len; )
          {
-            if(DayActivityManager.Instance.overList[_loc3_].ActivityType == param1)
+            if(DayActivityManager.Instance.overList[i].ActivityType == type)
             {
                return true;
             }
-            _loc3_++;
+            i++;
          }
          return false;
       }
       
-      public function initSingleActivity(param1:PkgEvent) : void
+      public function initSingleActivity(e:PkgEvent) : void
       {
-         var _loc2_:int = param1.pkg.readInt();
-         var _loc3_:int = param1.pkg.readInt();
-         if(_loc2_ == 4 || _loc2_ == 5 || _loc2_ == 6 || _loc2_ == 18 || _loc2_ == 19)
+         var id1:int = e.pkg.readInt();
+         var count1:int = e.pkg.readInt();
+         if(id1 == 4 || id1 == 5 || id1 == 6 || id1 == 18 || id1 == 19)
          {
-            DayActivityManager.Instance.bossDataDic[_loc2_] = _loc3_;
+            DayActivityManager.Instance.bossDataDic[id1] = count1;
          }
-         DayActivityManager.Instance.activityValue = param1.pkg.readInt();
-         addOverList(false,_loc2_,_loc3_);
+         DayActivityManager.Instance.activityValue = e.pkg.readInt();
+         addOverList(false,id1,count1);
          if(_activityFrame && _activityFrame.parent)
          {
             _activityFrame.setLeftView(DayActivityManager.Instance.overList,DayActivityManager.Instance.noOverList);
@@ -210,148 +207,147 @@ package dayActivity
          }
       }
       
-      protected function createActivityFrame(param1:Event) : void
+      protected function createActivityFrame(event:Event) : void
       {
          _activityFrame = ComponentFactory.Instance.creatComponentByStylename("dayActivity.ActivityFrame");
          LayerManager.Instance.addToLayer(_activityFrame,3,true,1);
       }
       
-      public function initActivityStata(param1:Vector.<DayActivieListItem>) : void
+      public function initActivityStata(_list:Vector.<DayActivieListItem>) : void
       {
          if(WorldBossManager.Instance.isOpen)
          {
             if(WorldBossManager.Instance.currentPVE_ID == 30002)
             {
-               updateActivityData(DayActivityManager.Instance.ANYEBOJUE,param1,false);
+               updateActivityData(DayActivityManager.Instance.ANYEBOJUE,_list,false);
             }
             else if(WorldBossManager.Instance.currentPVE_ID == 1243)
             {
-               updateActivityData(DayActivityManager.Instance.YUANGUJULONG,param1,false);
+               updateActivityData(DayActivityManager.Instance.YUANGUJULONG,_list,false);
             }
             else
             {
-               updateActivityData(DayActivityManager.Instance.ZUQIUBOSS,param1,false);
+               updateActivityData(DayActivityManager.Instance.ZUQIUBOSS,_list,false);
             }
          }
          else if(WorldBossManager.Instance.currentPVE_ID == 30002)
          {
-            updateActivityData(DayActivityManager.Instance.ANYEBOJUE,param1,true);
+            updateActivityData(DayActivityManager.Instance.ANYEBOJUE,_list,true);
          }
          else if(WorldBossManager.Instance.currentPVE_ID == 1243)
          {
-            updateActivityData(DayActivityManager.Instance.YUANGUJULONG,param1,true);
+            updateActivityData(DayActivityManager.Instance.YUANGUJULONG,_list,true);
          }
          else
          {
-            updateActivityData(DayActivityManager.Instance.ZUQIUBOSS,param1,true);
+            updateActivityData(DayActivityManager.Instance.ZUQIUBOSS,_list,true);
          }
          if(LeagueManager.instance.isOpen)
          {
-            updateActivityData(DayActivityManager.Instance.LIANSAI,param1,false);
+            updateActivityData(DayActivityManager.Instance.LIANSAI,_list,false);
          }
          else
          {
-            updateActivityData(DayActivityManager.Instance.LIANSAI,param1,true);
+            updateActivityData(DayActivityManager.Instance.LIANSAI,_list,true);
          }
          if(ConsortionModelManager.Instance.isBossOpen)
          {
-            updateActivityData(DayActivityManager.Instance.GONGHUIBOSS,param1,false);
+            updateActivityData(DayActivityManager.Instance.GONGHUIBOSS,_list,false);
          }
          else
          {
-            updateActivityData(DayActivityManager.Instance.GONGHUIBOSS,param1,true);
+            updateActivityData(DayActivityManager.Instance.GONGHUIBOSS,_list,true);
          }
          if(BattleGroudManager.Instance.isShow)
          {
-            updateActivityData(DayActivityManager.Instance.ZHANCHANG,param1,false);
+            updateActivityData(DayActivityManager.Instance.ZHANCHANG,_list,false);
          }
          else
          {
-            updateActivityData(DayActivityManager.Instance.ZHANCHANG,param1,true);
+            updateActivityData(DayActivityManager.Instance.ZHANCHANG,_list,true);
          }
          if(CampBattleManager.instance.openFlag)
          {
-            updateActivityData(DayActivityManager.Instance.ZHENYINGZHAN,param1,false);
+            updateActivityData(DayActivityManager.Instance.ZHENYINGZHAN,_list,false);
          }
          else
          {
-            updateActivityData(DayActivityManager.Instance.ZHENYINGZHAN,param1,true);
+            updateActivityData(DayActivityManager.Instance.ZHENYINGZHAN,_list,true);
          }
          if(ConsortiaBattleManager.instance.isOpen)
          {
-            updateActivityData(DayActivityManager.Instance.GONGHUIZHAN,param1,false);
+            updateActivityData(DayActivityManager.Instance.GONGHUIZHAN,_list,false);
          }
          else
          {
-            updateActivityData(DayActivityManager.Instance.GONGHUIZHAN,param1,true);
+            updateActivityData(DayActivityManager.Instance.GONGHUIZHAN,_list,true);
          }
          if(EntertainmentModeManager.instance.isopen)
          {
-            updateActivityData(DayActivityManager.Instance.Entertainment,param1,false);
+            updateActivityData(DayActivityManager.Instance.Entertainment,_list,false);
          }
          else
          {
-            updateActivityData(DayActivityManager.Instance.Entertainment,param1,true);
+            updateActivityData(DayActivityManager.Instance.Entertainment,_list,true);
          }
          if(LanternRiddlesManager.instance.isBegin)
          {
-            updateActivityData(DayActivityManager.Instance.LanternRiddles,param1,false);
+            updateActivityData(DayActivityManager.Instance.LanternRiddles,_list,false);
          }
          else
          {
-            updateActivityData(DayActivityManager.Instance.LanternRiddles,param1,true);
+            updateActivityData(DayActivityManager.Instance.LanternRiddles,_list,true);
          }
          if(RescueManager.instance.isBegin)
          {
-            updateActivityData(DayActivityManager.Instance.Rescue,param1,false);
+            updateActivityData(DayActivityManager.Instance.Rescue,_list,false);
          }
          else
          {
-            updateActivityData(DayActivityManager.Instance.Rescue,param1,true);
+            updateActivityData(DayActivityManager.Instance.Rescue,_list,true);
          }
          if(HorseRaceManager.Instance.isShowIcon)
          {
-            updateActivityData(DayActivityManager.Instance.HorseRace,param1,false);
+            updateActivityData(DayActivityManager.Instance.HorseRace,_list,false);
          }
          else
          {
-            updateActivityData(DayActivityManager.Instance.HorseRace,param1,true);
+            updateActivityData(DayActivityManager.Instance.HorseRace,_list,true);
          }
          if(SevenDoubleManager.instance.isStart)
          {
-            updateActivityData(DayActivityManager.Instance.SevenDouble,param1,false);
+            updateActivityData(DayActivityManager.Instance.SevenDouble,_list,false);
          }
          else
          {
-            updateActivityData(DayActivityManager.Instance.SevenDouble,param1,true);
+            updateActivityData(DayActivityManager.Instance.SevenDouble,_list,true);
          }
          if(CatchBeastManager.instance.isBegin)
          {
-            updateActivityData(DayActivityManager.Instance.CatchBeast,param1,false);
+            updateActivityData(DayActivityManager.Instance.CatchBeast,_list,false);
          }
          else
          {
-            updateActivityData(DayActivityManager.Instance.CatchBeast,param1,true);
+            updateActivityData(DayActivityManager.Instance.CatchBeast,_list,true);
          }
       }
       
-      private function updateActivityData(param1:String, param2:Vector.<DayActivieListItem>, param3:Boolean) : void
+      private function updateActivityData(str:String, _list:Vector.<DayActivieListItem>, bool:Boolean) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:int = param2.length;
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         var i:int = 0;
+         var len:int = _list.length;
+         for(i = 0; i < len; )
          {
-            if(param1 == param2[_loc5_].data.ActiveTime)
+            if(str == _list[i].data.ActiveTime)
             {
-               if(param1 == DayActivityManager.Instance.ZHANCHANG)
+               if(str == DayActivityManager.Instance.ZHANCHANG)
                {
-                  param2[_loc5_].data.TotalCount = PlayerManager.Instance.Self.BattleCount;
+                  _list[i].data.TotalCount = PlayerManager.Instance.Self.BattleCount;
                }
-               param2[_loc5_].initTxt(param3);
+               _list[i].initTxt(bool);
                return;
             }
-            _loc5_++;
+            i++;
          }
       }
       

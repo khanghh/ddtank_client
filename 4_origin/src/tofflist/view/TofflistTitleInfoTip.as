@@ -39,19 +39,19 @@ package tofflist.view
       
       private function initData() : void
       {
-         var _loc1_:Object = {};
-         _loc1_.titleText = LanguageMgr.GetTranslation("toffilist.titleInfo.rightTitleText");
-         _loc1_.content = LanguageMgr.GetTranslation("toffilist.titleInfo.rightContentText");
-         _loc1_.rightRequiredText = LanguageMgr.GetTranslation("toffilist.titleInfo.rightRequireText");
-         _loc1_.title1 = "toffilist.titleInfo_TF8";
-         _loc1_.title2 = "toffilist.titleInfo_TF9";
-         _loc1_.title3 = "toffilist.titleInfo_TF10";
-         _loc1_.title4 = "toffilist.titleInfo_TF11";
-         _loc1_.titleName1 = LanguageMgr.GetTranslation("hall.player.titleText3");
-         _loc1_.titleName2 = LanguageMgr.GetTranslation("hall.player.titleText4");
-         _loc1_.titleName3 = LanguageMgr.GetTranslation("hall.player.titleText5");
-         _loc1_.titleName4 = LanguageMgr.GetTranslation("hall.player.titleText6");
-         _rightView.setData(_loc1_);
+         var data:Object = {};
+         data.titleText = LanguageMgr.GetTranslation("toffilist.titleInfo.rightTitleText");
+         data.content = LanguageMgr.GetTranslation("toffilist.titleInfo.rightContentText");
+         data.rightRequiredText = LanguageMgr.GetTranslation("toffilist.titleInfo.rightRequireText");
+         data.title1 = "toffilist.titleInfo_TF8";
+         data.title2 = "toffilist.titleInfo_TF9";
+         data.title3 = "toffilist.titleInfo_TF10";
+         data.title4 = "toffilist.titleInfo_TF11";
+         data.titleName1 = LanguageMgr.GetTranslation("hall.player.titleText3");
+         data.titleName2 = LanguageMgr.GetTranslation("hall.player.titleText4");
+         data.titleName3 = LanguageMgr.GetTranslation("hall.player.titleText5");
+         data.titleName4 = LanguageMgr.GetTranslation("hall.player.titleText6");
+         _rightView.setData(data);
       }
       
       public function dispose() : void
@@ -68,7 +68,7 @@ package tofflist.view
          return 0;
       }
       
-      public function set tipWidth(param1:int) : void
+      public function set tipWidth(w:int) : void
       {
       }
       
@@ -77,7 +77,7 @@ package tofflist.view
          return 0;
       }
       
-      public function set tipHeight(param1:int) : void
+      public function set tipHeight(h:int) : void
       {
       }
       
@@ -86,7 +86,7 @@ package tofflist.view
          return null;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(data:Object) : void
       {
       }
       

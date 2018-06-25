@@ -41,10 +41,10 @@ package horse.amulet
          info = new AlertInfo(LanguageMgr.GetTranslation("tank.horseAmulet.smashTips"));
       }
       
-      public function show(param1:Array, param2:Boolean) : void
+      public function show(list:Array, isConfirm:Boolean) : void
       {
-         _list = param1;
-         _isConfirm = param2;
+         _list = list;
+         _isConfirm = isConfirm;
          initView();
          LayerManager.Instance.addToLayer(this,1,true,1);
          if(_textInput)
@@ -74,9 +74,9 @@ package horse.amulet
          }
       }
       
-      override protected function onResponse(param1:int) : void
+      override protected function onResponse(type:int) : void
       {
-         if(param1 == 2 || param1 == 3)
+         if(type == 2 || type == 3)
          {
             if(_isConfirm && !checkInputCorrect())
             {
@@ -84,36 +84,35 @@ package horse.amulet
                return;
             }
          }
-         super.onResponse(param1);
+         super.onResponse(type);
       }
       
       private function calculateSmashNum() : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:BagInfo = PlayerManager.Instance.Self.horseAmuletBag;
-         var _loc1_:int = 0;
-         _loc5_ = 0;
-         while(_loc5_ < _list.length)
+         var i:int = 0;
+         var info:* = null;
+         var vo:* = null;
+         var bag:BagInfo = PlayerManager.Instance.Self.horseAmuletBag;
+         var count:int = 0;
+         for(i = 0; i < _list.length; )
          {
-            _loc4_ = _loc2_.getItemAt(_list[_loc5_]);
-            if(_loc4_)
+            info = bag.getItemAt(_list[i]);
+            if(info)
             {
-               _loc3_ = HorseAmuletManager.instance.data[_loc4_.TemplateID] as HorseAmuletVo;
-               _loc1_ = _loc1_ + _loc3_.ShatterNum;
+               vo = HorseAmuletManager.instance.data[info.TemplateID] as HorseAmuletVo;
+               count = count + vo.ShatterNum;
             }
-            _loc5_++;
+            i++;
          }
-         _countTips.htmlText = LanguageMgr.GetTranslation("tank.horseAmulet.smashCountTips",_loc1_);
+         _countTips.htmlText = LanguageMgr.GetTranslation("tank.horseAmulet.smashCountTips",count);
       }
       
-      private function __onTextInputKeyDown(param1:KeyboardEvent) : void
+      private function __onTextInputKeyDown(event:KeyboardEvent) : void
       {
-         if(param1.keyCode == 13)
+         if(event.keyCode == 13)
          {
             onResponse(3);
-            param1.stopPropagation();
+            event.stopPropagation();
          }
       }
       

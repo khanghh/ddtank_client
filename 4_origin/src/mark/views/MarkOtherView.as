@@ -26,9 +26,9 @@ package mark.views
       
       private var _info:PlayerInfo = null;
       
-      public function MarkOtherView(param1:PlayerInfo)
+      public function MarkOtherView(info:PlayerInfo)
       {
-         _info = param1;
+         _info = info;
          super();
          MarkMgr.inst.isOther = true;
       }
@@ -51,82 +51,81 @@ package mark.views
       
       private function get equipList() : Array
       {
-         var _loc2_:int = 0;
-         var _loc1_:Array = [];
-         _loc2_ = 0;
-         while(_loc2_ < MarkModel.EQUIP_LIST.length)
+         var i:int = 0;
+         var list:Array = [];
+         for(i = 0; i < MarkModel.EQUIP_LIST.length; )
          {
-            _loc1_.push(_info.Bag.items[MarkModel.EQUIP_LIST[_loc2_]]);
-            _loc2_++;
+            list.push(_info.Bag.items[MarkModel.EQUIP_LIST[i]]);
+            i++;
          }
-         return _loc1_;
+         return list;
       }
       
-      private function render(param1:MarkEquipItem, param2:int) : void
+      private function render(item:MarkEquipItem, index:int) : void
       {
-         param1.data = listEquip.array[param2];
+         item.data = listEquip.array[index];
       }
       
-      private function select(param1:int) : void
+      private function select(index:int) : void
       {
          clearItems();
          _items = new Vector.<MarkChipItem>();
-         var _loc4_:MarkChipItem = null;
-         var _loc5_:MarkChipTemplateData = null;
-         var _loc3_:Vector.<MarkChipData> = new Vector.<MarkChipData>();
+         var item:MarkChipItem = null;
+         var chipTemplate:MarkChipTemplateData = null;
+         var chips:Vector.<MarkChipData> = new Vector.<MarkChipData>();
          var _loc9_:int = 0;
          var _loc8_:* = _info.Markbag.chips;
-         for each(var _loc7_ in _info.Markbag.chips)
+         for each(var chip1 in _info.Markbag.chips)
          {
-            if(_loc7_.equipType == MarkModel.EQUIP_LIST[param1])
+            if(chip1.equipType == MarkModel.EQUIP_LIST[index])
             {
-               _loc3_.push(_loc7_);
+               chips.push(chip1);
             }
          }
          var _loc11_:int = 0;
-         var _loc10_:* = _loc3_;
-         for each(var _loc2_ in _loc3_)
+         var _loc10_:* = chips;
+         for each(var chip in chips)
          {
-            _loc5_ = MarkMgr.inst.model.cfgChip[_loc2_.templateId];
-            if(_loc5_)
+            chipTemplate = MarkMgr.inst.model.cfgChip[chip.templateId];
+            if(chipTemplate)
             {
-               _loc4_ = new MarkChipItem(_loc2_);
-               _loc4_.tipData = _loc2_;
-               _loc4_.interactive = false;
-               addChild(_loc4_);
-               PositionUtils.setPos(_loc4_,"mark.itemOtherPos" + _loc5_.Place);
-               _items.push(_loc4_);
+               item = new MarkChipItem(chip);
+               item.tipData = chip;
+               item.interactive = false;
+               addChild(item);
+               PositionUtils.setPos(item,"mark.itemOtherPos" + chipTemplate.Place);
+               _items.push(item);
             }
          }
-         var _loc6_:Shape = new Shape();
-         _loc6_.graphics.beginFill(16777215,0);
-         _loc6_.graphics.drawRect(0,0,56,56);
-         _loc6_.graphics.endFill();
-         _item = new BaseCell(_loc6_,null,true,false);
+         var cellBG:Shape = new Shape();
+         cellBG.graphics.beginFill(16777215,0);
+         cellBG.graphics.drawRect(0,0,56,56);
+         cellBG.graphics.endFill();
+         _item = new BaseCell(cellBG,null,true,false);
          _item.setContentSize(56,56);
          PositionUtils.setPos(_item,"mark.equipOtherPos");
          addChild(_item);
-         _item.info = _info.Bag.items[MarkModel.EQUIP_LIST[param1]];
+         _item.info = _info.Bag.items[MarkModel.EQUIP_LIST[index]];
       }
       
-      private function getSelfChips(param1:int) : Array
+      private function getSelfChips(index:int) : Array
       {
-         var _loc3_:Array = [];
+         var arr:Array = [];
          var _loc5_:int = 0;
-         var _loc4_:* = MarkMgr.inst.model.getChipsByEquipType(param1);
-         for each(var _loc2_ in MarkMgr.inst.model.getChipsByEquipType(param1))
+         var _loc4_:* = MarkMgr.inst.model.getChipsByEquipType(index);
+         for each(var chip in MarkMgr.inst.model.getChipsByEquipType(index))
          {
-            if(_loc2_.position == param1)
+            if(chip.position == index)
             {
-               _loc3_.push(_loc2_);
+               arr.push(chip);
             }
          }
-         return _loc3_;
+         return arr;
       }
       
       private function clearItems() : void
       {
-         var _loc1_:* = null;
+         var item:* = null;
          if(_item)
          {
             ObjectUtils.disposeObject(_item);
@@ -134,17 +133,17 @@ package mark.views
          _item = null;
          if(_items)
          {
-            _loc1_ = null;
+            item = null;
             while(_items.length > 0)
             {
-               _loc1_ = _items.pop();
-               ObjectUtils.disposeObject(_loc1_);
+               item = _items.pop();
+               ObjectUtils.disposeObject(item);
             }
             _items = null;
          }
       }
       
-      private function disposeView(param1:MarkEvent) : void
+      private function disposeView(evt:MarkEvent) : void
       {
          dispose();
       }

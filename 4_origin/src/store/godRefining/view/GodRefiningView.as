@@ -93,7 +93,7 @@ package store.godRefining.view
          GodRefiningManager.instance.addEventListener("godRefining_prop_move",__propDoubleClickMove);
       }
       
-      private function __tabChangeHandler(param1:Event) : void
+      private function __tabChangeHandler(event:Event) : void
       {
          SoundManager.instance.playButtonSound();
          if(_tabVbox)
@@ -146,59 +146,59 @@ package store.godRefining.view
          updateView();
       }
       
-      private function __updateStoreBag(param1:BagEvent) : void
+      private function __updateStoreBag(evt:BagEvent) : void
       {
          if(this.visible)
          {
             if(currentPanel)
             {
-               currentPanel.refreshData(param1.changedSlots);
+               currentPanel.refreshData(evt.changedSlots);
             }
          }
       }
       
-      private function updateBag(param1:BagEvent) : void
+      private function updateBag(evt:BagEvent) : void
       {
-         var _loc2_:* = null;
+         var bag:* = null;
          if(this.visible)
          {
-            _loc2_ = param1.target as BagInfo;
+            bag = evt.target as BagInfo;
             if(_rightView)
             {
-               _rightView.refreshData(param1.changedSlots,_loc2_);
+               _rightView.refreshData(evt.changedSlots,bag);
             }
          }
       }
       
-      private function __quitStartDrag(param1:CEvent) : void
+      private function __quitStartDrag(event:CEvent) : void
       {
          if(currentPanel)
          {
-            currentPanel.quitStartDrag(param1);
+            currentPanel.quitStartDrag(event);
          }
       }
       
-      private function __quitStopDrag(param1:CEvent) : void
+      private function __quitStopDrag(event:CEvent) : void
       {
          if(currentPanel)
          {
-            currentPanel.quitStopDrag(param1);
+            currentPanel.quitStopDrag(event);
          }
       }
       
-      private function __equipDoubleClickMove(param1:CEvent) : void
+      private function __equipDoubleClickMove(event:CEvent) : void
       {
          if(currentPanel)
          {
-            currentPanel.equipDoubleClickMove(param1);
+            currentPanel.equipDoubleClickMove(event);
          }
       }
       
-      private function __propDoubleClickMove(param1:CEvent) : void
+      private function __propDoubleClickMove(event:CEvent) : void
       {
          if(currentPanel)
          {
-            currentPanel.propDoubleClickMove(param1);
+            currentPanel.propDoubleClickMove(event);
          }
       }
       

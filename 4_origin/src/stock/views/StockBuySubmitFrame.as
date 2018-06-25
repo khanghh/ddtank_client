@@ -23,10 +23,10 @@ package stock.views
       
       private var _bagCell:ShopItemCell = null;
       
-      public function StockBuySubmitFrame(param1:int)
+      public function StockBuySubmitFrame(id:int)
       {
          super();
-         goodID = param1;
+         goodID = id;
       }
       
       override protected function initialize() : void
@@ -41,11 +41,11 @@ package stock.views
       
       private function initView() : void
       {
-         var _loc1_:Shape = new Shape();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,80,80);
-         _loc1_.graphics.endFill();
-         _bagCell = new ShopItemCell(_loc1_);
+         var cellBG:Shape = new Shape();
+         cellBG.graphics.beginFill(16777215,0);
+         cellBG.graphics.drawRect(0,0,80,80);
+         cellBG.graphics.endFill();
+         _bagCell = new ShopItemCell(cellBG);
          _bagCell.cellSize = 80;
          PositionUtils.setPos(_bagCell,{
             "x":23,
@@ -62,10 +62,10 @@ package stock.views
       private function buy() : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc1_:ShopItemInfo = ShopManager.Instance.getShopItemByGoodsID(_goodID);
-         if(_loc1_)
+         var shopItem:ShopItemInfo = ShopManager.Instance.getShopItemByGoodsID(_goodID);
+         if(shopItem)
          {
-            if(StockMgr.inst.model.stockAccoutData.fund < _loc1_.AValue1 * numStep.numValue)
+            if(StockMgr.inst.model.stockAccoutData.fund < shopItem.AValue1 * numStep.numValue)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("stock.noEnoughFund"));
                return;
@@ -75,26 +75,26 @@ package stock.views
          dispose();
       }
       
-      public function set goodID(param1:int) : void
+      public function set goodID(value:int) : void
       {
-         _goodID = param1;
+         _goodID = value;
          numStep.numValue = 1;
          updateView();
       }
       
-      private function updateView(param1:int = 0) : void
+      private function updateView(value:int = 0) : void
       {
-         var _loc2_:ShopItemInfo = ShopManager.Instance.getShopItemByGoodsID(_goodID);
-         if(_loc2_)
+         var shopItem:ShopItemInfo = ShopManager.Instance.getShopItemByGoodsID(_goodID);
+         if(shopItem)
          {
-            _bagCell.info = ItemManager.Instance.getTemplateById(_loc2_.TemplateID);
+            _bagCell.info = ItemManager.Instance.getTemplateById(shopItem.TemplateID);
             numStep.minValue = 1;
-            numStep.maxValue = _loc2_.personalBuyCnt;
+            numStep.maxValue = shopItem.personalBuyCnt;
             if(_bagCell.info)
             {
-               lablFund.text = (_loc2_.AValue1 * numStep.numValue).toString();
-               lablBuyNum.text = _loc2_.personalBuyCnt.toString();
-               btnBuy.disabled = _loc2_.personalBuyCnt <= 0;
+               lablFund.text = (shopItem.AValue1 * numStep.numValue).toString();
+               lablBuyNum.text = shopItem.personalBuyCnt.toString();
+               btnBuy.disabled = shopItem.personalBuyCnt <= 0;
             }
          }
       }

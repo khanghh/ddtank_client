@@ -50,11 +50,11 @@ package church.view.weddingRoom
       
       private var _weddingRoomMask:WeddingRoomMask;
       
-      public function WeddingRoomView(param1:ChurchRoomController, param2:ChurchRoomModel)
+      public function WeddingRoomView(controller:ChurchRoomController, model:ChurchRoomModel)
       {
          super();
-         _controller = param1;
-         _model = param2;
+         _controller = controller;
+         _model = model;
          initialize();
       }
       
@@ -74,28 +74,28 @@ package church.view.weddingRoom
          setMap();
       }
       
-      public function setMap(param1:Point = null) : void
+      public function setMap(localPos:Point = null) : void
       {
          clearMap();
-         var _loc5_:MovieClip = new (ClassUtils.uiSourceDomain.getDefinition(getMapRes()) as Class)() as MovieClip;
-         var _loc3_:Sprite = _loc5_.getChildByName("entity") as Sprite;
-         var _loc2_:Sprite = _loc5_.getChildByName("sky") as Sprite;
-         var _loc6_:Sprite = _loc5_.getChildByName("mesh") as Sprite;
-         var _loc4_:Sprite = _loc5_.getChildByName("bg") as Sprite;
-         _sceneScene.setHitTester(new PathMapHitTester(_loc6_));
+         var mapRes:MovieClip = new (ClassUtils.uiSourceDomain.getDefinition(getMapRes()) as Class)() as MovieClip;
+         var entity:Sprite = mapRes.getChildByName("entity") as Sprite;
+         var sky:Sprite = mapRes.getChildByName("sky") as Sprite;
+         var mesh:Sprite = mapRes.getChildByName("mesh") as Sprite;
+         var bg:Sprite = mapRes.getChildByName("bg") as Sprite;
+         _sceneScene.setHitTester(new PathMapHitTester(mesh));
          if(!_sceneMap)
          {
             switch(int(ChurchManager.instance.currentScene))
             {
                case 0:
-                  _sceneMap = new MoonSceneMap(_model,_sceneScene,_model.getPlayers(),_loc4_,_loc6_,_loc3_,_loc2_);
+                  _sceneMap = new MoonSceneMap(_model,_sceneScene,_model.getPlayers(),bg,mesh,entity,sky);
                   break;
                case 1:
                case 2:
-                  _sceneMap = new WeddingSceneMap(_model,_sceneScene,_model.getPlayers(),_loc4_,_loc6_,_loc3_,_loc2_);
+                  _sceneMap = new WeddingSceneMap(_model,_sceneScene,_model.getPlayers(),bg,mesh,entity,sky);
                   break;
                case 3:
-                  _sceneMap = new WeddingLuxurySceneMap(_model,_sceneScene,_model.getPlayers(),_loc4_,_loc6_,_loc3_,_loc2_);
+                  _sceneMap = new WeddingLuxurySceneMap(_model,_sceneScene,_model.getPlayers(),bg,mesh,entity,sky);
             }
             _sceneMap && addChildAt(_sceneMap,0);
          }
@@ -109,45 +109,45 @@ package church.view.weddingRoom
             }
          }
          _sceneMap.sceneMapVO = getSceneMapVO();
-         if(param1)
+         if(localPos)
          {
-            _sceneMap.sceneMapVO.defaultPos = param1;
+            _sceneMap.sceneMapVO.defaultPos = localPos;
          }
          _sceneMap.addSelfPlayer();
          _sceneMap.setCenter();
       }
       
-      public function movePlayer(param1:int, param2:Array) : void
+      public function movePlayer(id:int, p:Array) : void
       {
          if(_sceneMap)
          {
-            _sceneMap.movePlayer(param1,param2);
+            _sceneMap.movePlayer(id,p);
          }
       }
       
       public function getSceneMapVO() : SceneMapVO
       {
-         var _loc1_:SceneMapVO = new SceneMapVO();
+         var sceneMapVO:SceneMapVO = new SceneMapVO();
          if(ChurchManager.instance.currentScene == 0)
          {
-            _loc1_.mapName = LanguageMgr.GetTranslation("church.churchScene.MoonLightScene");
-            _loc1_.mapW = MAP_SIZE[0];
-            _loc1_.mapH = MAP_SIZE[1];
-            _loc1_.defaultPos = ComponentFactory.Instance.creatCustomObject("church.WeddingRoomView.sceneMapVOPos");
+            sceneMapVO.mapName = LanguageMgr.GetTranslation("church.churchScene.MoonLightScene");
+            sceneMapVO.mapW = MAP_SIZE[0];
+            sceneMapVO.mapH = MAP_SIZE[1];
+            sceneMapVO.defaultPos = ComponentFactory.Instance.creatCustomObject("church.WeddingRoomView.sceneMapVOPos");
          }
          else
          {
-            _loc1_.mapName = LanguageMgr.GetTranslation("church.churchScene.WeddingMainScene");
-            _loc1_.mapW = MAP_SIZEII[0];
-            _loc1_.mapH = MAP_SIZEII[1];
-            _loc1_.defaultPos = ComponentFactory.Instance.creatCustomObject("church.WeddingRoomView.sceneMapVOPosII");
+            sceneMapVO.mapName = LanguageMgr.GetTranslation("church.churchScene.WeddingMainScene");
+            sceneMapVO.mapW = MAP_SIZEII[0];
+            sceneMapVO.mapH = MAP_SIZEII[1];
+            sceneMapVO.defaultPos = ComponentFactory.Instance.creatCustomObject("church.WeddingRoomView.sceneMapVOPosII");
          }
-         return _loc1_;
+         return sceneMapVO;
       }
       
-      public function useFire(param1:int, param2:int) : void
+      public function useFire(playerID:int, fireTemplateID:int) : void
       {
-         _sceneMap.useFire(param1,param2);
+         _sceneMap.useFire(playerID,fireTemplateID);
       }
       
       private function clearMap() : void
@@ -200,7 +200,7 @@ package church.view.weddingRoom
          _weddingRoomMenuView.resetView();
       }
       
-      private function __stopWeddingMovie(param1:Event) : void
+      private function __stopWeddingMovie(event:Event) : void
       {
          SoundManager.instance.playMusic("3002");
          MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("church.churchScene.SceneView.stopWeddingMovie"));
@@ -234,16 +234,16 @@ package church.view.weddingRoom
          }
       }
       
-      private function __playWeddingMovie(param1:Event) : void
+      private function __playWeddingMovie(event:Event) : void
       {
          playerWeddingMovie();
          _weddingRoomMenuView.backupConfig();
          _weddingRoomMask.removeEventListener("switch complete",__playWeddingMovie);
       }
       
-      public function setSaulte(param1:int) : void
+      public function setSaulte(id:int) : void
       {
-         _sceneMap.setSalute(param1);
+         _sceneMap.setSalute(id);
       }
       
       public function show() : void

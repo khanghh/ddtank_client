@@ -20,10 +20,10 @@ package petsBag.view.item
       
       protected var _petPic:String;
       
-      public function PetSmallIcon(param1:String = "")
+      public function PetSmallIcon(petPic:String = "")
       {
          super();
-         _petPic = !param1 || param1.length == 0?"1":param1;
+         _petPic = !petPic || petPic.length == 0?"1":petPic;
       }
       
       public function startLoad() : void
@@ -42,12 +42,12 @@ package petsBag.view.item
          LoadResourceManager.Instance.startLoad(_loader);
       }
       
-      private function __complete(param1:LoaderEvent) : void
+      private function __complete(event:LoaderEvent) : void
       {
-         param1.loader.removeEventListener("complete",__complete);
-         if(param1.loader.isSuccess)
+         event.loader.removeEventListener("complete",__complete);
+         if(event.loader.isSuccess)
          {
-            _icon = param1.loader.content;
+            _icon = event.loader.content;
             if(_icon)
             {
                addChild(_icon);

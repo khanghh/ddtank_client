@@ -24,10 +24,10 @@ package braveDoor.view
       
       private var _data:BraveDoorListModel;
       
-      public function BraveDoorView(param1:BraveDoorControl, param2:BraveDoorListModel)
+      public function BraveDoorView(control:BraveDoorControl, model:BraveDoorListModel)
       {
-         _control = param1;
-         _data = param2;
+         _control = control;
+         _data = model;
          super();
          initView();
       }
@@ -46,10 +46,10 @@ package braveDoor.view
          }
          _bg = ComponentFactory.Instance.creatBitmap("asset.braveDoor.bgIcon");
          addChild(_bg);
-         var _loc2_:Vector.<BraveDoorDuplicateInfo> = BraveDoorManager.instance.getDuplicateTemInfo();
-         var _loc1_:int = BraveDoorManager.instance.currentPage;
+         var info:Vector.<BraveDoorDuplicateInfo> = BraveDoorManager.instance.getDuplicateTemInfo();
+         var page:int = BraveDoorManager.instance.currentPage;
          _dmapView = ComponentFactory.Instance.creatCustomObject("ddt.braveDoor.duplicateMapView");
-         _dmapView.initView(_control,_loc2_[_loc1_]);
+         _dmapView.initView(_control,info[page]);
          _dlistView = ComponentFactory.Instance.creatCustomObject("ddt.braveDoor.DuplicateListView");
          _dlistView.initView(_control,_data);
          addChild(_dmapView);

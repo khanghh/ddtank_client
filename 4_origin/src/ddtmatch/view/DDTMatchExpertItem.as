@@ -54,9 +54,9 @@ package ddtmatch.view
          addChild(_award);
       }
       
-      public function set info(param1:DDTMatchQuestionInfo) : void
+      public function set info(info:DDTMatchQuestionInfo) : void
       {
-         _info = param1;
+         _info = info;
          setRankNum(_info.Rank);
          addNickName();
          _scoreTxt.text = _info.Integer.toString();
@@ -66,25 +66,25 @@ package ddtmatch.view
          }
       }
       
-      private function setRankNum(param1:int) : void
+      private function setRankNum(num:int) : void
       {
-         _index = param1;
-         if(param1 <= 3)
+         _index = num;
+         if(num <= 3)
          {
             _topThreeRank.visible = true;
-            _topThreeRank.setFrame(param1);
+            _topThreeRank.setFrame(num);
             _rankTxt.visible = false;
          }
          else
          {
-            _rankTxt.text = param1.toString() + "th";
+            _rankTxt.text = num.toString() + "th";
             _topThreeRank.visible = false;
          }
       }
       
       private function addNickName() : void
       {
-         var _loc1_:* = null;
+         var textFormat:* = null;
          if(_vipName)
          {
             _vipName.dispose();
@@ -94,10 +94,10 @@ package ddtmatch.view
          if(_info.IsVIP)
          {
             _vipName = VipController.instance.getVipNameTxt(1,1);
-            _loc1_ = new TextFormat();
-            _loc1_.align = "center";
-            _loc1_.bold = true;
-            _vipName.textField.defaultTextFormat = _loc1_;
+            textFormat = new TextFormat();
+            textFormat.align = "center";
+            textFormat.bold = true;
+            _vipName.textField.defaultTextFormat = textFormat;
             _vipName.textSize = 16;
             _vipName.textField.width = _nameTxt.width;
             _vipName.x = _nameTxt.x;
@@ -154,51 +154,48 @@ class ItemAward extends Sprite
    
    private function initView() : void
    {
-      var _loc1_:* = null;
-      var _loc2_:int = 0;
+      var award:* = null;
+      var i:int = 0;
       _awardVec = new Vector.<BagCell>();
-      _loc2_ = 0;
-      while(_loc2_ < AWARD_NUM)
+      for(i = 0; i < AWARD_NUM; )
       {
-         _loc1_ = new BagCell(_loc2_,null,true,null,false);
-         _loc1_.BGVisible = false;
-         _loc1_.setContentSize(28,28);
-         _loc1_.x = _loc2_ * 35;
-         _loc1_.y = 3;
-         addChild(_loc1_);
-         _awardVec.push(_loc1_);
-         _loc2_++;
+         award = new BagCell(i,null,true,null,false);
+         award.BGVisible = false;
+         award.setContentSize(28,28);
+         award.x = i * 35;
+         award.y = 3;
+         addChild(award);
+         _awardVec.push(award);
+         i++;
       }
    }
    
-   public function set info(param1:Vector.<AwardInfo>) : void
+   public function set info(infoVec:Vector.<AwardInfo>) : void
    {
-      var _loc3_:int = 0;
-      var _loc2_:* = null;
-      _loc3_ = 0;
-      while(_loc3_ < param1.length)
+      var i:int = 0;
+      var item:* = null;
+      for(i = 0; i < infoVec.length; )
       {
-         _loc2_ = new InventoryItemInfo();
-         _loc2_.TemplateID = param1[_loc3_].TempId;
-         _loc2_.IsBinds = param1[_loc3_].IsBind;
-         _loc2_.ValidDate = param1[_loc3_].ValidDate;
-         _awardVec[_loc3_].info = ItemManager.fill(_loc2_);
-         _awardVec[_loc3_].setCount(param1[_loc3_].AwardNum);
-         _loc3_++;
+         item = new InventoryItemInfo();
+         item.TemplateID = infoVec[i].TempId;
+         item.IsBinds = infoVec[i].IsBind;
+         item.ValidDate = infoVec[i].ValidDate;
+         _awardVec[i].info = ItemManager.fill(item);
+         _awardVec[i].setCount(infoVec[i].AwardNum);
+         i++;
       }
    }
    
    public function dispose() : void
    {
-      var _loc1_:int = 0;
+      var i:int = 0;
       if(_awardVec)
       {
-         _loc1_ = 0;
-         while(_loc1_ < AWARD_NUM)
+         for(i = 0; i < AWARD_NUM; )
          {
-            _awardVec[_loc1_].dispose();
-            _awardVec[_loc1_] = null;
-            _loc1_++;
+            _awardVec[i].dispose();
+            _awardVec[i] = null;
+            i++;
          }
          _awardVec.length = 0;
          _awardVec = null;

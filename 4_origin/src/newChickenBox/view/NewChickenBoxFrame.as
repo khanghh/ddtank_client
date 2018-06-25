@@ -83,9 +83,7 @@ package newChickenBox.view
       
       private var _refreshTimerTxt:FilterFrameText;
       
-      private var _panel:ScrollPanel;
-      
-      public var frame:BaseAlerFrame;
+      private var _helpFrame:BaseAlerFrame;
       
       private var _freeOpenCountTxt:FilterFrameText;
       
@@ -112,20 +110,20 @@ package newChickenBox.view
          super();
          _model = NewChickenBoxModel.instance;
          _openCardBtnColorMatrixFilter = new ColorMatrixFilter();
-         var _loc2_:ColorMatrix = new ColorMatrix();
-         _loc2_.adjustBrightness(25);
-         _loc2_.adjustContrast(8);
-         _loc2_.adjustSaturation(13);
-         _loc2_.adjustHue(14);
-         _openCardBtnColorMatrixFilter.matrix = _loc2_;
+         var ld_Matrix:ColorMatrix = new ColorMatrix();
+         ld_Matrix.adjustBrightness(25);
+         ld_Matrix.adjustContrast(8);
+         ld_Matrix.adjustSaturation(13);
+         ld_Matrix.adjustHue(14);
+         _openCardBtnColorMatrixFilter.matrix = ld_Matrix;
          _openCardBtnGlowFilter = new GlowFilter(16724787,1,10,10);
          _eyeBtnColorMatrixFilter = new ColorMatrixFilter();
-         var _loc1_:ColorMatrix = new ColorMatrix();
-         _loc1_.adjustBrightness(38);
-         _loc1_.adjustContrast(11);
-         _loc1_.adjustSaturation(13);
-         _loc1_.adjustHue(14);
-         _eyeBtnColorMatrixFilter.matrix = _loc1_;
+         var ld_Matrix2:ColorMatrix = new ColorMatrix();
+         ld_Matrix2.adjustBrightness(38);
+         ld_Matrix2.adjustContrast(11);
+         ld_Matrix2.adjustSaturation(13);
+         ld_Matrix2.adjustHue(14);
+         _eyeBtnColorMatrixFilter.matrix = ld_Matrix2;
          _eyeBtnGlowFilter = new GlowFilter(16724787,1,10,10);
          initView();
          initEvent();
@@ -138,8 +136,8 @@ package newChickenBox.view
          _newBoxBG = ComponentFactory.Instance.creatComponentByStylename("newChickenBox.newChickenBoxFrame.BG");
          addToContent(_newBoxBG);
          countNum = ComponentFactory.Instance.creatComponentByStylename("newChickenBox.countNum");
-         var _loc2_:int = _model.canOpenCounts + 1 - _model.countTime;
-         countNum.setFrame(_loc2_);
+         var times:int = _model.canOpenCounts + 1 - _model.countTime;
+         countNum.setFrame(times);
          addToContent(countNum);
          openCardTimes = ComponentFactory.Instance.creatComponentByStylename("newChickenBox.openCardTimes");
          addToContent(openCardTimes);
@@ -168,12 +166,12 @@ package newChickenBox.view
          _freeEyeCountTxt = ComponentFactory.Instance.creatComponentByStylename("newChickenBox.eyeFreeTxt");
          addToContent(_freeEyeCountTxt);
          refreshEagleEyeBtnTxt();
-         var _loc1_:Sprite = new Sprite();
-         _panel = ComponentFactory.Instance.creatComponentByStylename("newChickenBox.ReaderScrollpanel");
-         _panel.setView(ComponentFactory.Instance.creat("asset.newChickenBox.helpPageWord"));
-         _panel.invalidateViewport(false);
-         _loc1_.addChild(_panel);
-         _help_btn = HelpFrameUtils.Instance.simpleHelpButton(this,"newChickenBox.helpPageBtn",null,LanguageMgr.GetTranslation("tank.view.emailII.ReadingView.useHelp"),_loc1_,412,485,true,true,{"submitLabel":LanguageMgr.GetTranslation("close")});
+         var tempSprite:Sprite = new Sprite();
+         var panel:ScrollPanel = ComponentFactory.Instance.creatComponentByStylename("newChickenBox.ReaderScrollpanel");
+         panel.setView(ComponentFactory.Instance.creat("asset.newChickenBox.helpPageWord"));
+         panel.invalidateViewport(false);
+         tempSprite.addChild(panel);
+         _help_btn = HelpFrameUtils.Instance.simpleHelpButton(this,"newChickenBox.helpPageBtn",null,LanguageMgr.GetTranslation("tank.view.emailII.ReadingView.useHelp"),tempSprite,412,485,true,true,{"submitLabel":LanguageMgr.GetTranslation("close")},3);
          startBnt = ComponentFactory.Instance.creatComponentByStylename("newChickenBox.startBtn");
          if(_model.isShowAll)
          {
@@ -221,40 +219,40 @@ package newChickenBox.view
       
       private function refreshTimePlayTxt() : void
       {
-         var _loc5_:* = null;
-         var _loc4_:Number = _model.endTime.getTime();
-         var _loc3_:Number = TimeManager.Instance.Now().getTime();
-         var _loc1_:Number = _loc4_ - _loc3_;
-         _loc1_ = _loc1_ < 0?0:Number(_loc1_);
-         var _loc2_:int = 0;
-         if(_loc1_ / 86400000 > 1)
+         var timeTxtStr:* = null;
+         var endTimestamp:Number = _model.endTime.getTime();
+         var nowTimestamp:Number = TimeManager.Instance.Now().getTime();
+         var differ:Number = endTimestamp - nowTimestamp;
+         differ = differ < 0?0:Number(differ);
+         var count:int = 0;
+         if(differ / 86400000 > 1)
          {
-            _loc2_ = _loc1_ / 86400000;
-            _loc5_ = _loc2_ + LanguageMgr.GetTranslation("day");
+            count = differ / 86400000;
+            timeTxtStr = count + LanguageMgr.GetTranslation("day");
          }
-         else if(_loc1_ / 3600000 > 1)
+         else if(differ / 3600000 > 1)
          {
-            _loc2_ = _loc1_ / 3600000;
-            _loc5_ = _loc2_ + LanguageMgr.GetTranslation("hour");
+            count = differ / 3600000;
+            timeTxtStr = count + LanguageMgr.GetTranslation("hour");
          }
-         else if(_loc1_ / 60000 > 1)
+         else if(differ / 60000 > 1)
          {
-            _loc2_ = _loc1_ / 60000;
-            _loc5_ = _loc2_ + LanguageMgr.GetTranslation("minute");
+            count = differ / 60000;
+            timeTxtStr = count + LanguageMgr.GetTranslation("minute");
          }
          else
          {
-            _loc2_ = _loc1_ / 1000;
-            _loc5_ = _loc2_ + LanguageMgr.GetTranslation("second");
+            count = differ / 1000;
+            timeTxtStr = count + LanguageMgr.GetTranslation("second");
          }
-         _timePlayTxt.text = LanguageMgr.GetTranslation("newChickenBox.timePlayTxt") + _loc5_;
-         if(_loc2_ <= 0)
+         _timePlayTxt.text = LanguageMgr.GetTranslation("newChickenBox.timePlayTxt") + timeTxtStr;
+         if(count <= 0)
          {
             _isEnd = true;
          }
       }
       
-      private function countChangeHandler(param1:TimerEvent) : void
+      private function countChangeHandler(event:TimerEvent) : void
       {
          if(!_isEnd)
          {
@@ -273,9 +271,9 @@ package newChickenBox.view
          }
       }
       
-      public function setEyeLight(param1:Boolean) : void
+      public function setEyeLight(isLigth:Boolean) : void
       {
-         if(param1)
+         if(isLigth)
          {
             _eyeBtnSprite.filters = [_eyeBtnColorMatrixFilter,_eyeBtnGlowFilter];
          }
@@ -285,9 +283,9 @@ package newChickenBox.view
          }
       }
       
-      public function setOpenCardLight(param1:Boolean) : void
+      public function setOpenCardLight(isLigth:Boolean) : void
       {
-         if(param1)
+         if(isLigth)
          {
             _openCardBtnSprite.filters = [_openCardBtnColorMatrixFilter,_openCardBtnGlowFilter];
          }
@@ -335,7 +333,7 @@ package newChickenBox.view
          }
       }
       
-      private function useEyePic(param1:Event) : void
+      private function useEyePic(e:Event) : void
       {
          if(_model.clickEagleEye)
          {
@@ -353,15 +351,15 @@ package newChickenBox.view
       
       public function firestGetTime() : Boolean
       {
-         var _loc2_:Boolean = false;
-         var _loc7_:Number = NaN;
-         var _loc4_:int = 0;
-         var _loc6_:int = 0;
-         var _loc3_:Date = TimeManager.Instance.Now();
-         var _loc5_:Number = _loc3_.getTime();
-         var _loc8_:Number = _model.lastFlushTime.getTime();
-         var _loc1_:Number = _model.freeFlushTime * 60 * 1000;
-         if(_model.freeRefreshBoxCount > 0 || _loc5_ - _loc8_ > _loc1_)
+         var flag:Boolean = false;
+         var timeCut:Number = NaN;
+         var hours:int = 0;
+         var minitues:int = 0;
+         var now:Date = TimeManager.Instance.Now();
+         var nowNum:Number = now.getTime();
+         var lastNum:Number = _model.lastFlushTime.getTime();
+         var bettwen:Number = _model.freeFlushTime * 60 * 1000;
+         if(_model.freeRefreshBoxCount > 0 || nowNum - lastNum > bettwen)
          {
             _refreshTimerTxt.visible = false;
             _refreshTimerTxt.text = LanguageMgr.GetTranslation("newChickenBox.flushTimecut",0,0);
@@ -371,18 +369,18 @@ package newChickenBox.view
             }
             if(_freeRefreshCountTxt)
             {
-               _freeRefreshCountTxt.text = "(" + (_model.freeRefreshBoxCount + (_loc5_ - _loc8_ > _loc1_?1:0)) + ")";
+               _freeRefreshCountTxt.text = "(" + (_model.freeRefreshBoxCount + (nowNum - lastNum > bettwen?1:0)) + ")";
                _freeRefreshCountTxt.visible = true;
             }
-            _loc2_ = true;
+            flag = true;
          }
          else
          {
-            _loc7_ = _loc1_ - (_loc5_ - _loc8_);
-            _loc4_ = _loc7_ / 3600000;
-            _loc6_ = (_loc7_ - _loc4_ * 1000 * 60 * 60) / 60000 + 1;
-            _loc6_ = _loc6_ > _model.freeFlushTime?_model.freeFlushTime:int(_loc6_);
-            _refreshTimerTxt.text = LanguageMgr.GetTranslation("newChickenBox.flushTimecut",_loc4_,_loc6_);
+            timeCut = bettwen - (nowNum - lastNum);
+            hours = timeCut / 3600000;
+            minitues = (timeCut - hours * 1000 * 60 * 60) / 60000 + 1;
+            minitues = minitues > _model.freeFlushTime?_model.freeFlushTime:int(minitues);
+            _refreshTimerTxt.text = LanguageMgr.GetTranslation("newChickenBox.flushTimecut",hours,minitues);
             _refreshTimerTxt.visible = true;
             if(flushBnt)
             {
@@ -392,9 +390,9 @@ package newChickenBox.view
             {
                _freeRefreshCountTxt.visible = false;
             }
-            _loc2_ = false;
+            flag = false;
          }
-         return _loc2_;
+         return flag;
       }
       
       private function removeEvent() : void
@@ -421,7 +419,7 @@ package newChickenBox.view
          _model.removeEventListener("mouseShapoff",mouseoff);
       }
       
-      private function mouseoff(param1:Event) : void
+      private function mouseoff(e:Event) : void
       {
          eyepic.visible = false;
          Mouse.show();
@@ -438,7 +436,7 @@ package newChickenBox.view
          _model.addEventListener("mouseShapoff",mouseoff);
       }
       
-      private function clickOpenCard(param1:MouseEvent) : void
+      private function clickOpenCard(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          setOpenCardLight(true);
@@ -460,24 +458,24 @@ package newChickenBox.view
          }
       }
       
-      private function playMovie(param1:NewChickenBoxEvents) : void
+      private function playMovie(e:NewChickenBoxEvents) : void
       {
          eyeBtn.enable = true;
          openCardBtn.enable = true;
          __start();
       }
       
-      private function clickStart(param1:MouseEvent) : void
+      private function clickStart(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          startBnt.enable = false;
          SocketManager.Instance.out.sendClickStartBntNewChickenBox();
       }
       
-      private function flushItem(param1:MouseEvent) : void
+      private function flushItem(e:MouseEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
+         var times1:int = 0;
+         var times:int = 0;
          SoundManager.instance.play("008");
          _model.clickEagleEye = false;
          setOpenCardLight(true);
@@ -488,24 +486,24 @@ package newChickenBox.view
             return;
          }
          Mouse.show();
-         var _loc5_:int = _model.flushPrice;
-         var _loc4_:Boolean = firestGetTime();
-         if(!_loc4_ && PlayerManager.Instance.Self.Money < _loc5_)
+         var moneyValue:int = _model.flushPrice;
+         var isFree:Boolean = firestGetTime();
+         if(!isFree && PlayerManager.Instance.Self.Money < moneyValue)
          {
             LeavePageManager.showFillFrame();
             return;
          }
-         if(_model.AlertFlush && !_loc4_)
+         if(_model.AlertFlush && !isFree && _helpFrame == null)
          {
             openAlertFrame();
          }
-         else if(_loc4_)
+         else if(isFree)
          {
             startBnt.enable = true;
             eyeBtn.enable = false;
             openCardBtn.enable = false;
-            _loc2_ = _model.canOpenCounts + 1;
-            countNum.setFrame(_loc2_);
+            times1 = _model.canOpenCounts + 1;
+            countNum.setFrame(times1);
             _model.countTime = 0;
             _model.countEye = 0;
             _model.canclickEnable = false;
@@ -514,8 +512,8 @@ package newChickenBox.view
          else
          {
             startBnt.enable = true;
-            _loc3_ = _model.canOpenCounts + 1;
-            countNum.setFrame(_loc3_);
+            times = _model.canOpenCounts + 1;
+            countNum.setFrame(times);
             _model.countTime = 0;
             _model.countEye = 0;
             eyeBtn.enable = false;
@@ -525,27 +523,28 @@ package newChickenBox.view
          }
       }
       
-      private function openAlertFrame() : BaseAlerFrame
+      private function openAlertFrame() : void
       {
-         var _loc3_:String = LanguageMgr.GetTranslation("newChickenBox.useMoneyAlert",_model.flushPrice);
-         var _loc2_:TextField = new TextField();
-         var _loc1_:SelectedCheckButton = ComponentFactory.Instance.creatComponentByStylename("newChickenBox.selectBnt");
-         _loc1_.text = LanguageMgr.GetTranslation("newChickenBox.noAlert");
-         _loc1_.addEventListener("click",noAlertEable);
-         if(frame)
+         var msg:String = LanguageMgr.GetTranslation("newChickenBox.useMoneyAlert",_model.flushPrice);
+         var textField:TextField = new TextField();
+         var select:SelectedCheckButton = ComponentFactory.Instance.creatComponentByStylename("newChickenBox.selectBnt");
+         select.text = LanguageMgr.GetTranslation("newChickenBox.noAlert");
+         select.addEventListener("click",noAlertEable);
+         if(_helpFrame)
          {
-            ObjectUtils.disposeObject(frame);
+            _helpFrame.removeEventListener("response",__onResponse);
+            ObjectUtils.disposeObject(_helpFrame);
+            _helpFrame = null;
          }
-         frame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("newChickenBox.newChickenTitle"),_loc3_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,false,2);
-         frame.addChild(_loc1_);
-         frame.addEventListener("response",__onResponse);
-         return frame;
+         _helpFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("newChickenBox.newChickenTitle"),msg,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,false,2);
+         _helpFrame.addChild(select);
+         _helpFrame.addEventListener("response",__onResponse);
       }
       
-      private function noAlertEable(param1:MouseEvent) : void
+      private function noAlertEable(e:MouseEvent) : void
       {
-         var _loc2_:SelectedCheckButton = param1.currentTarget as SelectedCheckButton;
-         if(_loc2_.selected)
+         var select:SelectedCheckButton = e.currentTarget as SelectedCheckButton;
+         if(select.selected)
          {
             _model.AlertFlush = false;
          }
@@ -555,19 +554,19 @@ package newChickenBox.view
          }
       }
       
-      private function __onResponse(param1:FrameEvent) : void
+      private function __onResponse(evt:FrameEvent) : void
       {
-         var _loc2_:int = 0;
+         var times:int = 0;
          SoundManager.instance.play("008");
-         var _loc3_:BaseAlerFrame = param1.target as BaseAlerFrame;
-         _loc3_.removeEventListener("response",__onResponse);
-         _loc3_.dispose();
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         _helpFrame.removeEventListener("response",__onResponse);
+         ObjectUtils.disposeObject(_helpFrame);
+         _helpFrame = null;
+         if(evt.responseCode == 2 || evt.responseCode == 3)
          {
             startBnt.enable = true;
             eyeBtn.enable = false;
-            _loc2_ = _model.canOpenCounts + 1;
-            countNum.setFrame(_loc2_);
+            times = _model.canOpenCounts + 1;
+            countNum.setFrame(times);
             _model.countTime = 0;
             _model.countEye = 0;
             _model.canclickEnable = false;
@@ -575,7 +574,7 @@ package newChickenBox.view
          }
       }
       
-      private function clickEye(param1:MouseEvent) : void
+      private function clickEye(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          setEyeLight(true);
@@ -590,7 +589,7 @@ package newChickenBox.view
             eyepic.visible = true;
             Mouse.hide();
             _model.clickEagleEye = true;
-            param1.stopImmediatePropagation();
+            e.stopImmediatePropagation();
          }
       }
       
@@ -609,7 +608,7 @@ package newChickenBox.view
          _timer.addEventListener("timerComplete",_timerComplete);
       }
       
-      private function showOutItem(param1:Event) : void
+      private function showOutItem(e:Event) : void
       {
          if(newBoxView)
          {
@@ -622,41 +621,40 @@ package newChickenBox.view
                "ease":Sine.easeInOut
             });
          }
-         var _loc2_:MovieClip = param1.currentTarget as MovieClip;
-         if(_loc2_)
+         var eggs:MovieClip = e.currentTarget as MovieClip;
+         if(eggs)
          {
-            _loc2_.removeEventListener("showItems",showOutItem);
-            _loc2_.gotoAndStop(_loc2_.totalFrames);
-            removeChild(_loc2_);
-            _loc2_ = null;
+            eggs.removeEventListener("showItems",showOutItem);
+            eggs.gotoAndStop(eggs.totalFrames);
+            removeChild(eggs);
+            eggs = null;
          }
       }
       
-      private function _timerComplete(param1:TimerEvent) : void
+      private function _timerComplete(e:TimerEvent) : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          egg = ClassUtils.CreatInstance("asset.newChickenBox.dan") as MovieClip;
          egg.addEventListener("showItems",showOutItem);
          PositionUtils.setPos(egg,"newChickenBox.eggPos");
          addChild(egg);
          egg.mouseEnabled = false;
          egg.mouseChildren = false;
-         _loc2_ = 0;
-         while(_loc2_ < _model.itemList.length)
+         for(i = 0; i < _model.itemList.length; )
          {
-            _model.itemList[_loc2_].setBg(3);
-            _loc2_++;
+            _model.itemList[i].setBg(3);
+            i++;
          }
          _timer.removeEventListener("timerComplete",_timerComplete);
          _timer = null;
          msgText.text = LanguageMgr.GetTranslation("newChickenBox.useMoneyMsg",_model.openCardPrice[_model.countTime]);
       }
       
-      private function __confirmResponse(param1:FrameEvent) : void
+      private function __confirmResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          removeEventListener("response",__confirmResponse);
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
                dispose();
@@ -725,11 +723,6 @@ package newChickenBox.view
             ObjectUtils.disposeObject(_help_btn);
          }
          _help_btn = null;
-         if(_panel)
-         {
-            ObjectUtils.disposeObject(_panel);
-         }
-         _panel = null;
          if(openCardTimes)
          {
             ObjectUtils.disposeObject(openCardTimes);
@@ -755,10 +748,11 @@ package newChickenBox.view
             newBoxView.dispose();
          }
          newBoxView = null;
-         if(frame)
+         if(_helpFrame)
          {
-            frame.removeEventListener("response",__onResponse);
-            frame.dispose();
+            _helpFrame.removeEventListener("response",__onResponse);
+            ObjectUtils.disposeObject(_helpFrame);
+            _helpFrame = null;
          }
          if(eyepic)
          {

@@ -8,9 +8,9 @@ package consortion.analyze
       
       private var _dataList:Array;
       
-      public function ConsortiaTaskRankAnalyzer(param1:Function)
+      public function ConsortiaTaskRankAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
       public function get dataList() : Array
@@ -18,35 +18,34 @@ package consortion.analyze
          return _dataList;
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:int = 0;
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
-         var _loc2_:XML = new XML(param1);
+         var xmllist:* = null;
+         var len:int = 0;
+         var i:int = 0;
+         var info:* = null;
+         var xml:XML = new XML(data);
          _dataList = [];
-         if(_loc2_.@value == "true")
+         if(xml.@value == "true")
          {
-            _loc4_ = _loc2_.children();
-            _loc3_ = _loc4_.length();
-            _loc6_ = 0;
-            while(_loc6_ < _loc3_)
+            xmllist = xml.children();
+            len = xmllist.length();
+            for(i = 0; i < len; )
             {
-               _loc5_ = {};
-               _loc5_.id = int(_loc4_[_loc6_].@ID);
-               _loc5_.name = String(_loc4_[_loc6_].@NicName);
-               _loc5_.rank = _loc6_ + 1;
-               _loc5_.percent = Number(_loc4_[_loc6_].@Percentage);
-               _loc5_.contribute = Number(_loc4_[_loc6_].@AwardRichesoffer);
-               _dataList.push(_loc5_);
-               _loc6_++;
+               info = {};
+               info.id = int(xmllist[i].@ID);
+               info.name = String(xmllist[i].@NicName);
+               info.rank = i + 1;
+               info.percent = Number(xmllist[i].@Percentage);
+               info.contribute = Number(xmllist[i].@AwardRichesoffer);
+               _dataList.push(info);
+               i++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc2_.@message;
+            message = xml.@message;
             onAnalyzeError();
             onAnalyzeError();
          }

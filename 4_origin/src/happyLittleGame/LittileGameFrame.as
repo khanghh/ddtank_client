@@ -47,16 +47,16 @@ package happyLittleGame
       
       private function LoadMapData() : void
       {
-         var _loc1_:* = null;
+         var _loaderQueue:* = null;
          if(HappyLittleGameManager.instance.bombManager.Fixeddata == null)
          {
-            _loc1_ = new QueueLoader();
-            _loc1_.addLoader(LoaderCreate.Instance.createBombFixedMapData());
-            _loc1_.addLoader(LoaderCreate.Instance.createBombRandomMapData());
+            _loaderQueue = new QueueLoader();
+            _loaderQueue.addLoader(LoaderCreate.Instance.createBombFixedMapData());
+            _loaderQueue.addLoader(LoaderCreate.Instance.createBombRandomMapData());
          }
-         if(_loc1_)
+         if(_loaderQueue)
          {
-            _loc1_.start();
+            _loaderQueue.start();
          }
       }
       
@@ -67,13 +67,13 @@ package happyLittleGame
          _helpBtn.addEventListener("click",__helpBtnClickHandler);
       }
       
-      private function __helpBtnClickHandler(param1:MouseEvent) : void
+      private function __helpBtnClickHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          HelpFrameUtils.Instance.simpleHelpFrame(LanguageMgr.GetTranslation("store.view.HelpButtonText"),"ddt.littlegame.help",410,490,false);
       }
       
-      private function __enterGameHandler(param1:Event) : void
+      private function __enterGameHandler(evt:Event) : void
       {
          if(HappyLittleGameManager.instance.currentGameType == 2 || HappyLittleGameManager.instance.currentGameType == 1)
          {
@@ -91,7 +91,7 @@ package happyLittleGame
          }
       }
       
-      private function __backGameHandler(param1:Event) : void
+      private function __backGameHandler(evt:Event) : void
       {
          if(HappyLittleGameManager.instance.currentGameType == 2 || HappyLittleGameManager.instance.currentGameType == 1)
          {
@@ -121,7 +121,7 @@ package happyLittleGame
          LayerManager.Instance.addToLayer(this,3,true,1);
       }
       
-      override protected function onResponse(param1:int) : void
+      override protected function onResponse(type:int) : void
       {
          SoundManager.instance.play("008");
          dispose();

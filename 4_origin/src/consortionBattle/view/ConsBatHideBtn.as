@@ -59,7 +59,7 @@ package consortionBattle.view
          }
       }
       
-      private function selectedChangeHandler(param1:Event) : void
+      private function selectedChangeHandler(event:Event) : void
       {
          refreshBtnStatus();
       }
@@ -74,7 +74,7 @@ package consortionBattle.view
          _tip.addEventListener("consBatHideTip_selected_change",selectedChangeHandler,false,0,true);
       }
       
-      private function clickHandler(param1:MouseEvent) : void
+      private function clickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(ConsortiaBattleManager.instance.isHide(1) && ConsortiaBattleManager.instance.isHide(2) && ConsortiaBattleManager.instance.isHide(3))
@@ -88,13 +88,13 @@ package consortionBattle.view
          refreshBtnStatus();
       }
       
-      private function overHandler(param1:MouseEvent) : void
+      private function overHandler(event:MouseEvent) : void
       {
-         if(param1.currentTarget == _tip)
+         if(event.currentTarget == _tip)
          {
             _isOverTip = true;
          }
-         if(param1.currentTarget == _btn)
+         if(event.currentTarget == _btn)
          {
             _isOverBtn = true;
          }
@@ -104,13 +104,13 @@ package consortionBattle.view
          }
       }
       
-      private function outHandler(param1:MouseEvent) : void
+      private function outHandler(event:MouseEvent) : void
       {
-         if(param1.currentTarget == _tip)
+         if(event.currentTarget == _tip)
          {
             _isOverTip = false;
          }
-         if(param1.currentTarget == _btn)
+         if(event.currentTarget == _btn)
          {
             _isOverBtn = false;
          }

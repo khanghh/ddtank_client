@@ -19,29 +19,29 @@ package equipretrieve.view
    {
        
       
-      public function RetrieveBagcell(param1:int, param2:ItemTemplateInfo = null, param3:Boolean = true, param4:Sprite = null)
+      public function RetrieveBagcell(index:int, info:ItemTemplateInfo = null, showLoading:Boolean = true, bg:Sprite = null)
       {
-         super(param1,param2,param3,param4);
+         super(index,info,showLoading,bg);
          _isShowIsUsedBitmap = true;
       }
       
-      override public function dragDrop(param1:DragEffect) : void
+      override public function dragDrop(effect:DragEffect) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var info:* = null;
+         var obj:* = null;
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
-            param1.action = "none";
-            super.dragStop(param1);
+            effect.action = "none";
+            super.dragStop(effect);
             return;
          }
-         if(param1.data is InventoryItemInfo)
+         if(effect.data is InventoryItemInfo)
          {
-            _loc3_ = param1.data as InventoryItemInfo;
+            info = effect.data as InventoryItemInfo;
             if(locked)
             {
-               if(_loc3_ == this.info)
+               if(info == this.info)
                {
                   this.locked = false;
                   DragManager.acceptDrag(this);
@@ -53,54 +53,54 @@ package equipretrieve.view
             }
             else
             {
-               if(_bagType == 11 || _loc3_.BagType == 11)
+               if(_bagType == 11 || info.BagType == 11)
                {
-                  if(param1.action == "split")
+                  if(effect.action == "split")
                   {
-                     param1.action = "none";
+                     effect.action = "none";
                   }
                   else if(_bagType != 11)
                   {
-                     SocketManager.Instance.out.sendMoveGoods(11,_loc3_.Place,_bagType,place,_loc3_.Count);
-                     param1.action = "none";
+                     SocketManager.Instance.out.sendMoveGoods(11,info.Place,_bagType,place,info.Count);
+                     effect.action = "none";
                   }
-                  else if(_bagType == _loc3_.BagType)
+                  else if(_bagType == info.BagType)
                   {
                      if(place >= PlayerManager.Instance.Self.consortiaInfo.StoreLevel * 10)
                      {
-                        param1.action = "none";
+                        effect.action = "none";
                      }
                      else
                      {
-                        SocketManager.Instance.out.sendMoveGoods(_loc3_.BagType,_loc3_.Place,_loc3_.BagType,place,_loc3_.Count);
+                        SocketManager.Instance.out.sendMoveGoods(info.BagType,info.Place,info.BagType,place,info.Count);
                      }
                   }
                   else if(PlayerManager.Instance.Self.consortiaInfo.StoreLevel < 1)
                   {
                      MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.consortia.club.ConsortiaClubView.cellDoubleClick"));
-                     param1.action = "none";
+                     effect.action = "none";
                   }
                   else
                   {
-                     SocketManager.Instance.out.sendMoveGoods(_loc3_.BagType,_loc3_.Place,_bagType,place,_loc3_.Count);
-                     param1.action = "none";
+                     SocketManager.Instance.out.sendMoveGoods(info.BagType,info.Place,_bagType,place,info.Count);
+                     effect.action = "none";
                   }
                }
-               else if(_loc3_.BagType == _bagType)
+               else if(info.BagType == _bagType)
                {
-                  SocketManager.Instance.out.sendMoveGoods(_loc3_.BagType,_loc3_.Place,_loc3_.BagType,place,-1);
-                  param1.action = "none";
+                  SocketManager.Instance.out.sendMoveGoods(info.BagType,info.Place,info.BagType,place,-1);
+                  effect.action = "none";
                }
-               else if(_loc3_.BagType != _bagType)
+               else if(info.BagType != _bagType)
                {
-                  _loc2_ = RetrieveModel.Instance.getSaveCells(_loc3_.Place);
-                  SocketManager.Instance.out.sendMoveGoods(_loc3_.BagType,_loc3_.Place,_loc2_.BagType,_loc2_.Place,_loc3_.Count);
-                  param1.action = "none";
+                  obj = RetrieveModel.Instance.getSaveCells(info.Place);
+                  SocketManager.Instance.out.sendMoveGoods(info.BagType,info.Place,obj.BagType,obj.Place,info.Count);
+                  effect.action = "none";
                }
                DragManager.acceptDrag(this);
             }
          }
-         else if(param1.data is SellGoodsBtn)
+         else if(effect.data is SellGoodsBtn)
          {
             if(!locked && _info && this._bagType != 11)
             {
@@ -108,14 +108,14 @@ package equipretrieve.view
                DragManager.acceptDrag(this);
             }
          }
-         else if(param1.data is BreakGoodsBtn)
+         else if(effect.data is BreakGoodsBtn)
          {
             if(!locked && _info)
             {
                DragManager.acceptDrag(this);
             }
          }
-         _loc3_ = null;
+         info = null;
       }
       
       private function get itemBagType() : int

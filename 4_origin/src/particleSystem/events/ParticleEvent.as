@@ -10,10 +10,10 @@ package particleSystem.events
       
       private var _id:String;
       
-      public function ParticleEvent(param1:String, param2:String)
+      public function ParticleEvent(type:String, id:String)
       {
-         _id = param2;
-         super(param1,false,false);
+         _id = id;
+         super(type,false,false);
       }
       
       public function get ID() : String

@@ -35,57 +35,57 @@ package dragonBones.objects
          return skewX;
       }
       
-      public function set rotation(param1:Number) : void
+      public function set rotation(value:Number) : void
       {
-         skewY = param1;
-         skewX = param1;
+         skewY = value;
+         skewX = value;
       }
       
-      public function copy(param1:DBTransform) : void
+      public function copy(transform:DBTransform) : void
       {
-         x = param1.x;
-         y = param1.y;
-         skewX = param1.skewX;
-         skewY = param1.skewY;
-         scaleX = param1.scaleX;
-         scaleY = param1.scaleY;
+         x = transform.x;
+         y = transform.y;
+         skewX = transform.skewX;
+         skewY = transform.skewY;
+         scaleX = transform.scaleX;
+         scaleY = transform.scaleY;
       }
       
-      public function add(param1:DBTransform) : void
+      public function add(transform:DBTransform) : void
       {
-         x = x + param1.x;
-         y = y + param1.y;
-         skewX = skewX + param1.skewX;
-         skewY = skewY + param1.skewY;
-         scaleX = scaleX * param1.scaleX;
-         scaleY = scaleY * param1.scaleY;
+         x = x + transform.x;
+         y = y + transform.y;
+         skewX = skewX + transform.skewX;
+         skewY = skewY + transform.skewY;
+         scaleX = scaleX * transform.scaleX;
+         scaleY = scaleY * transform.scaleY;
       }
       
-      public function minus(param1:DBTransform) : void
+      public function minus(transform:DBTransform) : void
       {
-         x = x - param1.x;
-         y = y - param1.y;
-         skewX = skewX - param1.skewX;
-         skewY = skewY - param1.skewY;
-         scaleX = scaleX / param1.scaleX;
-         scaleY = scaleY / param1.scaleY;
+         x = x - transform.x;
+         y = y - transform.y;
+         skewX = skewX - transform.skewX;
+         skewY = skewY - transform.skewY;
+         scaleX = scaleX / transform.scaleX;
+         scaleY = scaleY / transform.scaleY;
       }
       
-      public function divParent(param1:DBTransform, param2:Boolean = false) : DBTransform
+      public function divParent(transform:DBTransform, createNew:Boolean = false) : DBTransform
       {
-         var _loc6_:DBTransform = !!param2?new DBTransform():this;
-         var _loc4_:Matrix = new Matrix();
-         TransformUtil.transformToMatrix(param1,_loc4_);
-         var _loc7_:Number = x - _loc4_.tx;
-         var _loc3_:Number = y - _loc4_.ty;
-         var _loc5_:Number = _loc4_.a * _loc4_.d - _loc4_.c * _loc4_.b;
-         _loc6_.x = (_loc7_ * _loc4_.d - _loc3_ * _loc4_.c) / _loc5_;
-         _loc6_.y = (_loc3_ * _loc4_.a - _loc7_ * _loc4_.b) / _loc5_;
-         _loc6_.scaleX = scaleX / param1.scaleX;
-         _loc6_.scaleY = scaleY / param1.scaleY;
-         _loc6_.skewX = skewX - param1.skewX;
-         _loc6_.skewY = skewY - param1.skewY;
-         return _loc6_;
+         var output:DBTransform = !!createNew?new DBTransform():this;
+         var parentMatrix:Matrix = new Matrix();
+         TransformUtil.transformToMatrix(transform,parentMatrix);
+         var xtx:Number = x - parentMatrix.tx;
+         var yty:Number = y - parentMatrix.ty;
+         var adcb:Number = parentMatrix.a * parentMatrix.d - parentMatrix.c * parentMatrix.b;
+         output.x = (xtx * parentMatrix.d - yty * parentMatrix.c) / adcb;
+         output.y = (yty * parentMatrix.a - xtx * parentMatrix.b) / adcb;
+         output.scaleX = scaleX / transform.scaleX;
+         output.scaleY = scaleY / transform.scaleY;
+         output.skewX = skewX - transform.skewX;
+         output.skewY = skewY - transform.skewY;
+         return output;
       }
       
       public function normalizeRotation() : void
@@ -96,8 +96,8 @@ package dragonBones.objects
       
       public function toString() : String
       {
-         var _loc1_:String = "x:" + x + " y:" + y + " skewX:" + skewX + " skewY:" + skewY + " scaleX:" + scaleX + " scaleY:" + scaleY;
-         return _loc1_;
+         var string:String = "x:" + x + " y:" + y + " skewX:" + skewX + " skewY:" + skewY + " scaleX:" + scaleX + " scaleY:" + scaleY;
+         return string;
       }
    }
 }

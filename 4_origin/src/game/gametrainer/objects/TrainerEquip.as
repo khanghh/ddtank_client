@@ -11,16 +11,16 @@ package game.gametrainer.objects
       
       private var _equip:MovieClip;
       
-      public function TrainerEquip(param1:int, param2:int = 1, param3:Number = 1, param4:Number = 1, param5:Number = 1, param6:Number = 1)
+      public function TrainerEquip(id:int, layerType:int = 1, mass:Number = 1, gravityFactor:Number = 1, windFactor:Number = 1, airResitFactor:Number = 1)
       {
-         super(param1,param2,param3,param4,param5,param6);
+         super(id,layerType,mass,gravityFactor,windFactor,airResitFactor);
          init();
       }
       
       private function init() : void
       {
-         var _loc1_:String = !!PlayerManager.Instance.Self.Sex?"asset.trainer.TrainerManEquipAsset":"asset.trainer.TrainerWomanEquipAsset";
-         _equip = ComponentFactory.Instance.creat(_loc1_);
+         var str:String = !!PlayerManager.Instance.Self.Sex?"asset.trainer.TrainerManEquipAsset":"asset.trainer.TrainerWomanEquipAsset";
+         _equip = ComponentFactory.Instance.creat(str);
          addChild(_equip);
       }
       

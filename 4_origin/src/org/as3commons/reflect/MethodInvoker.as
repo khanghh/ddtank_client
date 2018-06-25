@@ -29,9 +29,9 @@ package org.as3commons.reflect
          return this._target;
       }
       
-      public function set target(param1:*) : void
+      public function set target(value:*) : void
       {
-         this._target = param1;
+         this._target = value;
       }
       
       public function get method() : String
@@ -39,9 +39,9 @@ package org.as3commons.reflect
          return this._method;
       }
       
-      public function set method(param1:String) : void
+      public function set method(value:String) : void
       {
-         this._method = param1;
+         this._method = value;
       }
       
       public function get arguments() : Array
@@ -49,9 +49,9 @@ package org.as3commons.reflect
          return this._arguments;
       }
       
-      public function set arguments(param1:Array) : void
+      public function set arguments(value:Array) : void
       {
-         this._arguments = param1;
+         this._arguments = value;
       }
       
       public function get namespaceURI() : String
@@ -59,73 +59,73 @@ package org.as3commons.reflect
          return this._namespaceURI;
       }
       
-      public function set namespaceURI(param1:String) : void
+      public function set namespaceURI(value:String) : void
       {
-         this._namespaceURI = param1;
+         this._namespaceURI = value;
       }
       
       public function invoke() : *
       {
-         var _loc2_:* = undefined;
-         var _loc3_:Function = null;
-         var _loc4_:QName = null;
-         var _loc5_:Array = null;
-         var _loc6_:Class = null;
+         var result:* = undefined;
+         var f:Function = null;
+         var qn:QName = null;
+         var args:Array = null;
+         var cls:Class = null;
          if(this._namespaceURI != null && this._namespaceURI.length > 0)
          {
-            _loc4_ = new QName(this._namespaceURI,this.method);
-            _loc3_ = this.target[_loc4_];
+            qn = new QName(this._namespaceURI,this.method);
+            f = this.target[qn];
          }
          else
          {
-            _loc3_ = this.target[this.method];
+            f = this.target[this.method];
          }
-         if(_loc3_ != null)
+         if(f != null)
          {
-            _loc2_ = _loc3_.apply(this.target,this.arguments);
+            result = f.apply(this.target,this.arguments);
          }
          else if(this.target is Proxy)
          {
-            _loc5_ = [this.method].concat(this.arguments);
-            _loc2_ = Proxy(this.target).flash_proxy::callProperty.apply(this.target,_loc5_);
+            args = [this.method].concat(this.arguments);
+            result = Proxy(this.target).flash_proxy::callProperty.apply(this.target,args);
          }
          else if(Object(this.target).hasOwnProperty(CONSTRUCTOR_FIELD_NAME))
          {
-            _loc6_ = Object(this.target).constructor as Class;
-            if(_loc6_ != null)
+            cls = Object(this.target).constructor as Class;
+            if(cls != null)
             {
                if(this._namespaceURI != null && this._namespaceURI.length > 0)
                {
-                  _loc4_ = new QName(this._namespaceURI,this.method);
-                  _loc3_ = _loc6_[_loc4_];
+                  qn = new QName(this._namespaceURI,this.method);
+                  f = cls[qn];
                }
                else
                {
-                  _loc3_ = _loc6_[this.method];
+                  f = cls[this.method];
                }
-               _loc2_ = _loc3_.apply(_loc6_,this.arguments);
+               result = f.apply(cls,this.arguments);
             }
          }
-         return _loc2_;
+         return result;
       }
       
-      public function equals(param1:Object) : Boolean
+      public function equals(other:Object) : Boolean
       {
-         var _loc5_:int = 0;
-         var _loc6_:* = undefined;
-         var _loc3_:MethodInvoker = param1 as MethodInvoker;
-         var _loc4_:Boolean = false;
-         if(_loc3_ != null)
+         var i:int = 0;
+         var arg:* = undefined;
+         var otherInvoker:MethodInvoker = other as MethodInvoker;
+         var result:Boolean = false;
+         if(otherInvoker != null)
          {
-            _loc4_ = this._target === _loc3_.target && this._method == _loc3_.method && this._namespaceURI == _loc3_.namespaceURI;
-            if(_loc4_)
+            result = this._target === otherInvoker.target && this._method == otherInvoker.method && this._namespaceURI == otherInvoker.namespaceURI;
+            if(result)
             {
-               if(this._arguments.length == _loc3_.arguments.length)
+               if(this._arguments.length == otherInvoker.arguments.length)
                {
-                  _loc5_ = 0;
-                  for each(_loc6_ in this._arguments)
+                  i = 0;
+                  for each(arg in this._arguments)
                   {
-                     if(_loc6_ !== _loc3_[_loc5_++])
+                     if(arg !== otherInvoker[i++])
                      {
                         return false;
                      }
@@ -133,7 +133,7 @@ package org.as3commons.reflect
                }
             }
          }
-         return _loc4_;
+         return result;
       }
    }
 }

@@ -24,37 +24,37 @@ package ddt.view.scenePathSearcher
       
       private var record_start_point:PathAstarPoint;
       
-      public function PathAstarSearcher(param1:int)
+      public function PathAstarSearcher(n:int)
       {
          super();
-         step_len = param1;
+         step_len = n;
       }
       
-      public function search(param1:Point, param2:Point, param3:PathIHitTester) : Array
+      public function search(from:Point, end:Point, hittest:PathIHitTester) : Array
       {
-         aim_point = new PathAstarPoint(param2.x,param2.y);
-         record_start_point = new PathAstarPoint(param1.x,param1.y);
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         if(param2.x > param1.x)
+         aim_point = new PathAstarPoint(end.x,end.y);
+         record_start_point = new PathAstarPoint(from.x,from.y);
+         var xModify:int = 0;
+         var yModify:int = 0;
+         if(end.x > from.x)
          {
-            _loc5_ = param1.x - (step_len - Math.abs(param2.x - param1.x) % step_len);
+            xModify = from.x - (step_len - Math.abs(end.x - from.x) % step_len);
          }
          else
          {
-            _loc5_ = param1.x + (step_len - Math.abs(param2.x - param1.x) % step_len);
+            xModify = from.x + (step_len - Math.abs(end.x - from.x) % step_len);
          }
-         if(param2.y > param1.y)
+         if(end.y > from.y)
          {
-            _loc4_ = param1.y - (step_len - Math.abs(param2.y - param1.y) % step_len);
+            yModify = from.y - (step_len - Math.abs(end.y - from.y) % step_len);
          }
          else
          {
-            _loc4_ = param1.y + (step_len - Math.abs(param2.y - param1.y) % step_len);
+            yModify = from.y + (step_len - Math.abs(end.y - from.y) % step_len);
          }
-         setOut_point = new PathAstarPoint(_loc5_,_loc4_);
+         setOut_point = new PathAstarPoint(xModify,yModify);
          current_point = setOut_point;
-         this.hittest = param3;
+         this.hittest = hittest;
          init();
          findPath();
          return path_arr;
@@ -69,74 +69,73 @@ package ddt.view.scenePathSearcher
       
       private function findPath() : void
       {
-         var _loc3_:* = null;
-         var _loc5_:* = NaN;
-         var _loc1_:* = NaN;
-         var _loc2_:* = NaN;
-         var _loc6_:int = 0;
+         var nodes:* = null;
+         var g_tmp:* = NaN;
+         var f_tmp:* = NaN;
+         var h_tmp:* = NaN;
+         var i:int = 0;
          open_list.push(setOut_point);
-         var _loc4_:Boolean = true;
-         while(open_list.length > 0 && _loc4_)
+         var goon:Boolean = true;
+         while(open_list.length > 0 && goon)
          {
             current_point = open_list.shift();
             if(current_point.x == aim_point.x && current_point.y == aim_point.y)
             {
-               _loc4_ = false;
-               aim_point = _loc3_[_loc6_];
+               goon = false;
+               aim_point = nodes[i];
                aim_point.source_point = current_point;
                break;
             }
-            _loc3_ = [];
-            _loc3_ = createNode(current_point);
-            _loc5_ = 0;
-            _loc1_ = 0;
-            _loc2_ = 0;
-            _loc6_ = 0;
-            while(_loc6_ < _loc3_.length)
+            nodes = [];
+            nodes = createNode(current_point);
+            g_tmp = 0;
+            f_tmp = 0;
+            h_tmp = 0;
+            for(i = 0; i < nodes.length; )
             {
-               if(_loc3_[_loc6_].x == aim_point.x && _loc3_[_loc6_].y == aim_point.y)
+               if(nodes[i].x == aim_point.x && nodes[i].y == aim_point.y)
                {
-                  _loc4_ = false;
-                  aim_point = _loc3_[_loc6_];
+                  goon = false;
+                  aim_point = nodes[i];
                   aim_point.source_point = current_point;
                   break;
                }
-               if(existInArray(open_list,_loc3_[_loc6_]) == -1 && existInArray(close_list,_loc3_[_loc6_]) == -1)
+               if(existInArray(open_list,nodes[i]) == -1 && existInArray(close_list,nodes[i]) == -1)
                {
-                  if(!hittest.isHit(_loc3_[_loc6_]))
+                  if(!hittest.isHit(nodes[i]))
                   {
-                     _loc3_[_loc6_].source_point = current_point;
-                     _loc5_ = Number(getEvaluateG(_loc3_[_loc6_]));
-                     _loc2_ = Number(getEvaluateH(_loc3_[_loc6_]));
-                     setEvaluate(_loc3_[_loc6_],_loc5_,_loc2_);
-                     open_list.push(_loc3_[_loc6_]);
+                     nodes[i].source_point = current_point;
+                     g_tmp = Number(getEvaluateG(nodes[i]));
+                     h_tmp = Number(getEvaluateH(nodes[i]));
+                     setEvaluate(nodes[i],g_tmp,h_tmp);
+                     open_list.push(nodes[i]);
                   }
                }
-               else if(existInArray(open_list,_loc3_[_loc6_]) != -1)
+               else if(existInArray(open_list,nodes[i]) != -1)
                {
-                  _loc5_ = Number(getEvaluateG(_loc3_[_loc6_]));
-                  _loc2_ = Number(getEvaluateH(_loc3_[_loc6_]));
-                  _loc1_ = Number(_loc5_ + _loc2_);
-                  if(_loc1_ < _loc3_[_loc6_].f)
+                  g_tmp = Number(getEvaluateG(nodes[i]));
+                  h_tmp = Number(getEvaluateH(nodes[i]));
+                  f_tmp = Number(g_tmp + h_tmp);
+                  if(f_tmp < nodes[i].f)
                   {
-                     _loc3_[_loc6_].source_point = current_point;
-                     setEvaluate(_loc3_[_loc6_],_loc5_,_loc2_);
+                     nodes[i].source_point = current_point;
+                     setEvaluate(nodes[i],g_tmp,h_tmp);
                   }
                }
                else
                {
-                  _loc5_ = Number(getEvaluateG(_loc3_[_loc6_]));
-                  _loc2_ = Number(getEvaluateH(_loc3_[_loc6_]));
-                  _loc1_ = Number(_loc5_ + _loc2_);
-                  if(_loc1_ < _loc3_[_loc6_].f)
+                  g_tmp = Number(getEvaluateG(nodes[i]));
+                  h_tmp = Number(getEvaluateH(nodes[i]));
+                  f_tmp = Number(g_tmp + h_tmp);
+                  if(f_tmp < nodes[i].f)
                   {
-                     _loc3_[_loc6_].source_point = current_point;
-                     setEvaluate(_loc3_[_loc6_],_loc5_,_loc2_);
-                     open_list.push(_loc3_[_loc6_]);
-                     close_list.splice(existInArray(close_list,_loc3_[_loc6_]),1);
+                     nodes[i].source_point = current_point;
+                     setEvaluate(nodes[i],g_tmp,h_tmp);
+                     open_list.push(nodes[i]);
+                     close_list.splice(existInArray(close_list,nodes[i]),1);
                   }
                }
-               _loc6_++;
+               i++;
             }
             close_list.push(current_point);
             open_list.sortOn("f",16);
@@ -150,14 +149,14 @@ package ddt.view.scenePathSearcher
       
       private function createPath() : void
       {
-         var _loc1_:PathAstarPoint = new PathAstarPoint();
-         _loc1_ = aim_point;
-         while(_loc1_ != setOut_point)
+         var this_point:PathAstarPoint = new PathAstarPoint();
+         this_point = aim_point;
+         while(this_point != setOut_point)
          {
-            path_arr.unshift(_loc1_);
-            if(_loc1_.source_point != null)
+            path_arr.unshift(this_point);
+            if(this_point.source_point != null)
             {
-               _loc1_ = _loc1_.source_point;
+               this_point = this_point.source_point;
                continue;
             }
             path_arr = [];
@@ -167,62 +166,61 @@ package ddt.view.scenePathSearcher
          path_arr.splice(0,0,record_start_point);
       }
       
-      private function setEvaluate(param1:PathAstarPoint, param2:Number, param3:Number) : void
+      private function setEvaluate(point:PathAstarPoint, g:Number, h:Number) : void
       {
-         param1.g = param2;
-         param1.h = param3;
-         param1.f = param1.g + param1.h;
+         point.g = g;
+         point.h = h;
+         point.f = point.g + point.h;
       }
       
-      private function getEvaluateG(param1:PathAstarPoint) : int
+      private function getEvaluateG(point:PathAstarPoint) : int
       {
-         var _loc2_:int = 0;
-         if(current_point.x == param1.x || current_point.y == param1.y)
+         var g_tmp:int = 0;
+         if(current_point.x == point.x || current_point.y == point.y)
          {
-            _loc2_ = 10;
+            g_tmp = 10;
          }
          else
          {
-            _loc2_ = 14;
+            g_tmp = 14;
          }
-         _loc2_ = _loc2_ + current_point.g;
-         return _loc2_;
+         g_tmp = g_tmp + current_point.g;
+         return g_tmp;
       }
       
-      private function getEvaluateH(param1:PathAstarPoint) : int
+      private function getEvaluateH(point:PathAstarPoint) : int
       {
-         return Math.abs(aim_point.x - param1.x) * 10 + Math.abs(aim_point.y - param1.y) * 10;
+         return Math.abs(aim_point.x - point.x) * 10 + Math.abs(aim_point.y - point.y) * 10;
       }
       
-      private function createNode(param1:PathAstarPoint) : Array
+      private function createNode(point:PathAstarPoint) : Array
       {
-         var _loc2_:Array = [];
-         _loc2_.push(new PathAstarPoint(param1.x,param1.y - step_len));
-         _loc2_.push(new PathAstarPoint(param1.x - step_len,param1.y));
-         _loc2_.push(new PathAstarPoint(param1.x + step_len,param1.y));
-         _loc2_.push(new PathAstarPoint(param1.x,param1.y + step_len));
-         _loc2_.push(new PathAstarPoint(param1.x - step_len,param1.y - step_len));
-         _loc2_.push(new PathAstarPoint(param1.x + step_len,param1.y - step_len));
-         _loc2_.push(new PathAstarPoint(param1.x - step_len,param1.y + step_len));
-         _loc2_.push(new PathAstarPoint(param1.x + step_len,param1.y + step_len));
-         return _loc2_;
+         var arr:Array = [];
+         arr.push(new PathAstarPoint(point.x,point.y - step_len));
+         arr.push(new PathAstarPoint(point.x - step_len,point.y));
+         arr.push(new PathAstarPoint(point.x + step_len,point.y));
+         arr.push(new PathAstarPoint(point.x,point.y + step_len));
+         arr.push(new PathAstarPoint(point.x - step_len,point.y - step_len));
+         arr.push(new PathAstarPoint(point.x + step_len,point.y - step_len));
+         arr.push(new PathAstarPoint(point.x - step_len,point.y + step_len));
+         arr.push(new PathAstarPoint(point.x + step_len,point.y + step_len));
+         return arr;
       }
       
-      private function existInArray(param1:Array, param2:PathAstarPoint) : int
+      private function existInArray(arr:Array, point:PathAstarPoint) : int
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = -1;
-         _loc4_ = 0;
-         while(_loc4_ < param1.length)
+         var i:int = 0;
+         var n:* = -1;
+         for(i = 0; i < arr.length; )
          {
-            if(param1[_loc4_].x == param2.x && param1[_loc4_].y == param2.y)
+            if(arr[i].x == point.x && arr[i].y == point.y)
             {
-               _loc3_ = _loc4_;
+               n = i;
                break;
             }
-            _loc4_++;
+            i++;
          }
-         return _loc3_;
+         return n;
       }
    }
 }

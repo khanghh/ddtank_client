@@ -6,12 +6,12 @@ package gameCommon.motions
       
       private var speed:int;
       
-      public function VerticalMoveMotionFunc(param1:Object)
+      public function VerticalMoveMotionFunc(paramsObject:Object)
       {
-         super(param1);
+         super(paramsObject);
       }
       
-      override public function getVectorByTime(param1:int) : Object
+      override public function getVectorByTime(t:int) : Object
       {
          _result = {};
          _result.x = speed;

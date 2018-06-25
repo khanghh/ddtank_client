@@ -39,7 +39,7 @@ package yzhkof.debug
          return container;
       }
       
-      public static function init(param1:DisplayObjectContainer) : DisplayObjectContainer
+      public static function init(dobj:DisplayObjectContainer) : DisplayObjectContainer
       {
          back.filters = [new DropShadowFilter(0,0,0)];
          drag_btn.buttonMode = true;
@@ -57,14 +57,14 @@ package yzhkof.debug
          container.addChild(scaleX_btn);
          container.addChild(drag_btn);
          container.addChild(clean_btn);
-         param1.addChild(container);
+         dobj.addChild(container);
          drag_btn.addEventListener(MouseEvent.MOUSE_DOWN,containerMouseDownHandler);
          drag_btn.addEventListener(MouseEvent.MOUSE_UP,containerMouseUpHandler);
          scaleX_btn.addEventListener(MouseEvent.MOUSE_DOWN,scaleXMouseDownHandler);
          scaleX_btn.addEventListener(MouseEvent.MOUSE_UP,scaleXMouseUpHandler);
          clean_btn.addEventListener(MouseEvent.CLICK,__onCleanClick);
          scaleXonEnterFrame(null);
-         return param1;
+         return dobj;
       }
       
       public static function get visible() : Boolean
@@ -72,14 +72,14 @@ package yzhkof.debug
          return container.visible;
       }
       
-      public static function set visible(param1:Boolean) : void
+      public static function set visible(value:Boolean) : void
       {
-         container.visible = param1;
+         container.visible = value;
       }
       
-      public static function textPlus(param1:String) : void
+      public static function textPlus(str:String) : void
       {
-         text_info.appendText(param1);
+         text_info.appendText(str);
          text_info.scrollV = text_info.maxScrollV;
       }
       
@@ -88,26 +88,26 @@ package yzhkof.debug
          text_info.text = "";
       }
       
-      private static function __onCleanClick(param1:Event) : void
+      private static function __onCleanClick(e:Event) : void
       {
          textClean();
       }
       
-      private static function scaleXMouseDownHandler(param1:Event) : void
+      private static function scaleXMouseDownHandler(e:Event) : void
       {
          scaleX_btn.startDrag();
          scaleXonEnterFrame(null);
          scaleX_btn.addEventListener(Event.ENTER_FRAME,scaleXonEnterFrame);
       }
       
-      private static function scaleXMouseUpHandler(param1:Event) : void
+      private static function scaleXMouseUpHandler(e:Event) : void
       {
          scaleX_btn.removeEventListener(Event.ENTER_FRAME,scaleXonEnterFrame);
          scaleXonEnterFrame(null);
          scaleX_btn.stopDrag();
       }
       
-      private static function scaleXonEnterFrame(param1:Event) : void
+      private static function scaleXonEnterFrame(e:Event) : void
       {
          text_info.width = scaleX_btn.x;
          back.width = scaleX_btn.x + 20;
@@ -115,12 +115,12 @@ package yzhkof.debug
          back.height = scaleX_btn.y + 20;
       }
       
-      private static function containerMouseDownHandler(param1:Event) : void
+      private static function containerMouseDownHandler(e:Event) : void
       {
          container.startDrag();
       }
       
-      private static function containerMouseUpHandler(param1:Event) : void
+      private static function containerMouseUpHandler(e:Event) : void
       {
          container.stopDrag();
       }

@@ -12,10 +12,10 @@ package auctionHouse.event
       
       private var _sellCount:int;
       
-      public function AuctionSellEvent(param1:String, param2:int = 0, param3:Boolean = false, param4:Boolean = false)
+      public function AuctionSellEvent(type:String, sellCount:int = 0, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         _sellCount = param2;
-         super(param1,param3,param4);
+         _sellCount = sellCount;
+         super(type,bubbles,cancelable);
       }
       
       public function get sellCount() : int

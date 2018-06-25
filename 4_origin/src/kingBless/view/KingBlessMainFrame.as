@@ -118,25 +118,23 @@ package kingBless.view
       
       private function initData() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:int = 0;
+         var i:int = 0;
+         var tmparray:* = null;
+         var j:int = 0;
          _nameList = LanguageMgr.GetTranslation("ddt.kingBlessFrame.awardNameTxtList").split(",");
          _descList = [];
          _tipList = [];
-         _loc3_ = 1;
-         while(_loc3_ <= 3)
+         for(i = 1; i <= 3; )
          {
-            _tipList.push(LanguageMgr.GetTranslation("ddt.kingBlessFrame.awardTipTxt" + _loc3_));
-            _loc1_ = [];
-            _loc2_ = 1;
-            while(_loc2_ <= 7)
+            _tipList.push(LanguageMgr.GetTranslation("ddt.kingBlessFrame.awardTipTxt" + i));
+            tmparray = [];
+            for(j = 1; j <= 7; )
             {
-               _loc1_.push(LanguageMgr.GetTranslation("ddt.kingBlessFrame.awardDescTxt" + _loc3_.toString() + _loc2_.toString()));
-               _loc2_++;
+               tmparray.push(LanguageMgr.GetTranslation("ddt.kingBlessFrame.awardDescTxt" + i.toString() + j.toString()));
+               j++;
             }
-            _descList.push(_loc1_);
-            _loc3_++;
+            _descList.push(tmparray);
+            i++;
          }
          _tipNoOpenTxt = LanguageMgr.GetTranslation("ddt.kingBlessFrame.noOpenTipTxt");
          _needMoneyList = ServerConfigManager.instance.kingBuffPrice.split(",");
@@ -146,9 +144,9 @@ package kingBless.view
       
       private function initView() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var image:* = null;
+         var txt:* = null;
          titleText = LanguageMgr.GetTranslation("ddt.kingBlessFrame.titleTxt");
          _awardIconBtnBg = ComponentFactory.Instance.creatBitmap("asset.kingbless.awardIconBtnBg");
          _monthBtnBg = ComponentFactory.Instance.creatBitmap("asset.kingbless.monthBtnBg");
@@ -260,31 +258,30 @@ package kingBless.view
          }
          _awardIconList = new Vector.<Image>(6);
          _awardNameTxtList = new Vector.<FilterFrameText>(6);
-         _loc3_ = 0;
-         while(_loc3_ < 7)
+         for(i = 0; i < 7; )
          {
-            if(_loc3_ != 5)
+            if(i != 5)
             {
-               _loc1_ = ComponentFactory.Instance.creatComponentByStylename("kingBlessFrame.awardIcon");
-               _loc1_.resourceLink = "asset.kingbless.awardIcon" + (_loc3_ + 1);
-               _loc2_ = ComponentFactory.Instance.creatComponentByStylename("kingBlessFrame.iconNameTxt");
-               _loc2_.text = _nameList[_loc3_];
-               if(_loc3_ > 5)
+               image = ComponentFactory.Instance.creatComponentByStylename("kingBlessFrame.awardIcon");
+               image.resourceLink = "asset.kingbless.awardIcon" + (i + 1);
+               txt = ComponentFactory.Instance.creatComponentByStylename("kingBlessFrame.iconNameTxt");
+               txt.text = _nameList[i];
+               if(i > 5)
                {
-                  _loc1_.x = _loc1_.x + (_loc3_ - 1) * 79;
-                  _loc2_.x = _loc2_.x + (_loc3_ - 1) * 79;
+                  image.x = image.x + (i - 1) * 79;
+                  txt.x = txt.x + (i - 1) * 79;
                }
                else
                {
-                  _loc1_.x = _loc1_.x + _loc3_ * 79;
-                  _loc2_.x = _loc2_.x + _loc3_ * 79;
+                  image.x = image.x + i * 79;
+                  txt.x = txt.x + i * 79;
                }
-               addToContent(_loc1_);
-               addToContent(_loc2_);
-               _awardIconList[_loc3_] = _loc1_;
-               _awardNameTxtList[_loc3_] = _loc2_;
+               addToContent(image);
+               addToContent(txt);
+               _awardIconList[i] = image;
+               _awardNameTxtList[i] = txt;
             }
-            _loc3_++;
+            i++;
          }
          refreshIconTipData();
          refreshShowTxt();
@@ -300,7 +297,7 @@ package kingBless.view
          _openBtn.addEventListener("click",openHandler,false,0,true);
       }
       
-      private function openHandler(param1:MouseEvent) : void
+      private function openHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(!judgeOpen())
@@ -317,80 +314,80 @@ package kingBless.view
             BaglockedManager.Instance.show();
             return false;
          }
-         var _loc1_:int = _selectedButtonGroup.selectIndex;
-         payMoney = int(PlayerManager.Instance.kingBuffPriceArr[_loc1_]) > 0?PlayerManager.Instance.kingBuffPriceArr[_loc1_]:_needMoneyList[_loc1_];
+         var index:int = _selectedButtonGroup.selectIndex;
+         payMoney = int(PlayerManager.Instance.kingBuffPriceArr[index]) > 0?PlayerManager.Instance.kingBuffPriceArr[index]:_needMoneyList[index];
          return true;
       }
       
       private function openConfirmFrame() : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc1_:int = _selectedButtonGroup.selectIndex;
+         var msg:* = null;
+         var confirmFrame:* = null;
+         var index:int = _selectedButtonGroup.selectIndex;
          if(!_friendInfo)
          {
-            _loc3_ = LanguageMgr.GetTranslation("ddt.kingBlessFrame.openPromptTxt",_openTimeDescList[_loc1_],payMoney);
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc3_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"SimpleAlert",30,true,0);
-            _loc2_.moveEnable = false;
-            _loc2_.addEventListener("response",__confirm);
+            msg = LanguageMgr.GetTranslation("ddt.kingBlessFrame.openPromptTxt",_openTimeDescList[index],payMoney);
+            confirmFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),msg,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"SimpleAlert",30,true,0);
+            confirmFrame.moveEnable = false;
+            confirmFrame.addEventListener("response",__confirm);
             _isGive = false;
          }
          else
          {
             _isGive = true;
-            _loc3_ = LanguageMgr.GetTranslation("ddt.kingBlessFrame.openFriendPromptTxt",_friendInfo["name"],_openTimeDescList[_loc1_],payMoney);
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc3_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
-            _loc2_.moveEnable = false;
-            _loc2_.isBand = false;
-            _loc2_.addEventListener("response",__confirm);
+            msg = LanguageMgr.GetTranslation("ddt.kingBlessFrame.openFriendPromptTxt",_friendInfo["name"],_openTimeDescList[index],payMoney);
+            confirmFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),msg,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
+            confirmFrame.moveEnable = false;
+            confirmFrame.isBand = false;
+            confirmFrame.addEventListener("response",__confirm);
          }
       }
       
-      private function __confirm(param1:FrameEvent) : void
+      private function __confirm(evt:FrameEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc5_:* = null;
-         var _loc4_:int = 0;
+         var id:int = 0;
+         var msg:* = null;
+         var type:int = 0;
          SoundManager.instance.play("008");
-         var _loc3_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             if(!_friendInfo)
             {
-               _loc2_ = PlayerManager.Instance.Self.ID;
-               _loc5_ = "";
+               id = PlayerManager.Instance.Self.ID;
+               msg = "";
             }
             else
             {
-               _loc2_ = _friendInfo["id"];
-               _loc5_ = _friendInfo["msg"];
+               id = _friendInfo["id"];
+               msg = _friendInfo["msg"];
             }
-            _loc4_ = _selectedButtonGroup.selectIndex + 1;
+            type = _selectedButtonGroup.selectIndex + 1;
             if(!_isGive)
             {
-               if(BuriedManager.Instance.checkMoney(_loc3_.isBand,payMoney))
+               if(BuriedManager.Instance.checkMoney(confirmFrame.isBand,payMoney))
                {
                   return;
                }
-               SocketManager.Instance.out.sendOpenKingBless(_loc4_,_loc2_,_loc5_,_loc3_.isBand);
-               _loc3_.dispose();
+               SocketManager.Instance.out.sendOpenKingBless(type,id,msg,confirmFrame.isBand);
+               confirmFrame.dispose();
             }
-            else if(!_loc3_.isBand && PlayerManager.Instance.Self.Money >= payMoney)
+            else if(!confirmFrame.isBand && PlayerManager.Instance.Self.Money >= payMoney)
             {
-               SocketManager.Instance.out.sendOpenKingBless(_loc4_,_loc2_,_loc5_,_loc3_.isBand);
+               SocketManager.Instance.out.sendOpenKingBless(type,id,msg,confirmFrame.isBand);
             }
             else
             {
                LeavePageManager.showFillFrame();
-               _loc3_.dispose();
+               confirmFrame.dispose();
                return;
             }
          }
-         _loc3_.removeEventListener("response",__confirm);
+         confirmFrame.removeEventListener("response",__confirm);
          _friendInfo = null;
       }
       
-      private function openFriendHandler(param1:MouseEvent) : void
+      private function openFriendHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(!judgeOpen())
@@ -406,43 +403,43 @@ package kingBless.view
          _giveFriendOpenFrame.addEventListener("response",__responseHandler2,false,0,true);
       }
       
-      private function __responseHandler2(param1:FrameEvent) : void
+      private function __responseHandler2(event:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1 || param1.responseCode == 4)
+         if(event.responseCode == 0 || event.responseCode == 1 || event.responseCode == 4)
          {
             StageReferance.stage.focus = this;
             _giveFriendOpenFrame = null;
          }
       }
       
-      private function __presentBtnClick(param1:MouseEvent) : void
+      private function __presentBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:String = _giveFriendOpenFrame.nameInput.text;
-         if(_loc2_ == "")
+         var name:String = _giveFriendOpenFrame.nameInput.text;
+         if(name == "")
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("shop.ShopIIPresentView.give"));
             return;
          }
-         if(FilterWordManager.IsNullorEmpty(_loc2_))
+         if(FilterWordManager.IsNullorEmpty(name))
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("shop.ShopIIPresentView.space"));
             return;
          }
          _friendInfo = {};
          _friendInfo["id"] = _giveFriendOpenFrame.selectPlayerId;
-         _friendInfo["name"] = _loc2_;
+         _friendInfo["name"] = name;
          _friendInfo["msg"] = FilterWordManager.filterWrod(_giveFriendOpenFrame.textArea.text);
          openConfirmFrame();
       }
       
-      private function refreshView(param1:Event) : void
+      private function refreshView(event:Event) : void
       {
          refreshIconTipData();
          refreshOpenBtn();
       }
       
-      private function selectedButtonChange(param1:Event) : void
+      private function selectedButtonChange(event:Event) : void
       {
          SoundManager.instance.play("008");
          refreshShowTxt();
@@ -450,8 +447,8 @@ package kingBless.view
       
       private function refreshOpenBtn() : void
       {
-         var _loc1_:int = KingBlessManager.instance.openType;
-         if(_loc1_ > 0)
+         var openType:int = KingBlessManager.instance.openType;
+         if(openType > 0)
          {
             _openBtn.backStyle = "asset.kingbless.renewBtn";
          }
@@ -463,66 +460,64 @@ package kingBless.view
       
       private function refreshIconTipData() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = KingBlessManager.instance.openType;
-         _loc2_ = 0;
-         while(_loc2_ < 7)
+         var i:int = 0;
+         var openType:int = KingBlessManager.instance.openType;
+         for(i = 0; i < 7; )
          {
-            if(_loc2_ != 5)
+            if(i != 5)
             {
-               if(_loc1_ > 0)
+               if(openType > 0)
                {
-                  _awardIconList[_loc2_].tipData = _descList[_loc1_ - 1][_loc2_];
+                  _awardIconList[i].tipData = _descList[openType - 1][i];
                }
                else
                {
-                  _awardIconList[_loc2_].tipData = _tipNoOpenTxt;
+                  _awardIconList[i].tipData = _tipNoOpenTxt;
                }
             }
-            _loc2_++;
+            i++;
          }
       }
       
       private function refreshShowTxt() : void
       {
-         var _loc6_:int = 0;
-         var _loc4_:* = null;
-         var _loc5_:* = null;
-         var _loc2_:int = _selectedButtonGroup.selectIndex;
-         _tipTxt.text = _tipList[_loc2_];
-         var _loc3_:Array = _descList[_loc2_];
-         var _loc1_:String = "";
-         _loc6_ = 0;
-         while(_loc6_ < 7)
+         var i:int = 0;
+         var tmp:* = null;
+         var array:* = null;
+         var index:int = _selectedButtonGroup.selectIndex;
+         _tipTxt.text = _tipList[index];
+         var tmpDescList:Array = _descList[index];
+         var tmpStr:String = "";
+         for(i = 0; i < 7; )
          {
-            if(_loc6_ != 5)
+            if(i != 5)
             {
-               _loc4_ = _loc3_[_loc6_];
-               _loc5_ = _loc4_.match(/\d+/);
-               if(_loc5_ && _loc5_.length > 0)
+               tmp = tmpDescList[i];
+               array = tmp.match(/\d+/);
+               if(array && array.length > 0)
                {
-                  _loc4_ = _loc4_.replace(_loc5_[0],"<FONT COLOR=\'#FF0000\'>" + _loc5_[0] + "</FONT>");
+                  tmp = tmp.replace(array[0],"<FONT COLOR=\'#FF0000\'>" + array[0] + "</FONT>");
                }
-               if(_loc6_ > 5)
+               if(i > 5)
                {
-                  _loc1_ = _loc1_ + (LanguageMgr.GetTranslation("ddt.kingBlessFrame.awardDescTxt",_loc6_.toString(),_nameList[_loc6_],_loc4_) + "\n");
+                  tmpStr = tmpStr + (LanguageMgr.GetTranslation("ddt.kingBlessFrame.awardDescTxt",i.toString(),_nameList[i],tmp) + "\n");
                }
                else
                {
-                  _loc1_ = _loc1_ + (LanguageMgr.GetTranslation("ddt.kingBlessFrame.awardDescTxt",(_loc6_ + 1).toString(),_nameList[_loc6_],_loc4_) + "\n");
+                  tmpStr = tmpStr + (LanguageMgr.GetTranslation("ddt.kingBlessFrame.awardDescTxt",(i + 1).toString(),_nameList[i],tmp) + "\n");
                }
             }
-            _loc6_++;
+            i++;
          }
-         _descTxt.htmlText = _loc1_;
+         _descTxt.htmlText = tmpStr;
          _vbox.addChild(_tipTxt);
          _vbox.addChild(_descTxt);
          _scrollPanel.setView(_vbox);
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();
@@ -591,16 +586,16 @@ package kingBless.view
          _oneMonthTxt = null;
          var _loc4_:int = 0;
          var _loc3_:* = _awardIconList;
-         for each(var _loc1_ in _awardIconList)
+         for each(var image in _awardIconList)
          {
-            ObjectUtils.disposeObject(_loc1_);
+            ObjectUtils.disposeObject(image);
          }
          _awardIconList = null;
          var _loc6_:int = 0;
          var _loc5_:* = _awardNameTxtList;
-         for each(var _loc2_ in _awardNameTxtList)
+         for each(var txt in _awardNameTxtList)
          {
-            ObjectUtils.disposeObject(_loc2_);
+            ObjectUtils.disposeObject(txt);
          }
          _awardNameTxtList = null;
          _nameList = null;

@@ -82,10 +82,10 @@ package campbattle.view
          super();
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
-         super.enter(param1,param2);
-         _mapID = int(param2);
+         super.enter(prev,data);
+         _mapID = int(data);
          CampBattleManager.instance.mapID = _mapID;
          initData();
          initView();
@@ -135,9 +135,9 @@ package campbattle.view
          }
       }
       
-      public function changeMap(param1:int) : void
+      public function changeMap(id:int) : void
       {
-         _mapID = param1;
+         _mapID = id;
          CampBattleManager.instance.mapID = _mapID;
          createBg();
       }
@@ -189,24 +189,24 @@ package campbattle.view
          _awardsBtn.addEventListener("click",__onClickAwardsBtn);
       }
       
-      private function __onClickAwardsBtn(param1:MouseEvent = null) : void
+      private function __onClickAwardsBtn(evt:MouseEvent = null) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:AwardsViewFrame = ComponentFactory.Instance.creatComponentByStylename("ddtCampBattle.RewardView");
-         LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+         var rewView:AwardsViewFrame = ComponentFactory.Instance.creatComponentByStylename("ddtCampBattle.RewardView");
+         LayerManager.Instance.addToLayer(rewView,3,true,1);
       }
       
-      protected function __onAddRole(param1:MapEvent) : void
+      protected function __onAddRole(event:MapEvent) : void
       {
-         _mapView.playerModel.add(param1.data[0],param1.data[1]);
+         _mapView.playerModel.add(event.data[0],event.data[1]);
       }
       
-      protected function __onRemoveRole(param1:MapEvent) : void
+      protected function __onRemoveRole(event:MapEvent) : void
       {
-         _mapView.playerModel.remove(param1.data);
+         _mapView.playerModel.remove(event.data);
       }
       
-      protected function __onUpdateWinCount(param1:MapEvent) : void
+      protected function __onUpdateWinCount(event:MapEvent) : void
       {
          if(_titleView)
          {
@@ -214,36 +214,36 @@ package campbattle.view
          }
       }
       
-      private function __onDoorstatus(param1:PkgEvent) : void
+      private function __onDoorstatus(evt:PkgEvent) : void
       {
          CampBattleControl.instance.model.doorIsOpen = true;
          _clickDoor.doorStatus();
       }
       
-      private function __onUpdateScoreHander(param1:MapEvent) : void
+      private function __onUpdateScoreHander(event:MapEvent) : void
       {
          _headView.updateScore(CampBattleControl.instance.model.myScore);
       }
       
-      private function __onEnterFrameHander(param1:Event) : void
+      private function __onEnterFrameHander(event:Event) : void
       {
-         var _loc4_:* = null;
-         var _loc5_:* = null;
-         var _loc6_:* = null;
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
+         var p:* = null;
+         var mainRole:* = null;
+         var fp:* = null;
+         var disX:int = 0;
+         var disY:int = 0;
          if(CampBattleControl.instance.model.isCapture)
          {
-            _loc4_ = new Point(1459,864);
+            p = new Point(1459,864);
             if(_mapView && _mapView.getMainRole())
             {
-               _loc5_ = _mapView.getMainRole();
-               _loc6_ = new Point(_loc5_.x,_loc5_.y);
-               _loc3_ = Math.abs(_loc6_.x - _loc4_.x);
-               _loc2_ = Math.abs(_loc6_.y - _loc4_.y);
-               if(_loc3_ > 300 || _loc2_ > 200)
+               mainRole = _mapView.getMainRole();
+               fp = new Point(mainRole.x,mainRole.y);
+               disX = Math.abs(fp.x - p.x);
+               disY = Math.abs(fp.y - p.y);
+               if(disX > 300 || disY > 200)
                {
-                  if(_loc5_.playerInfo.isCapture)
+                  if(mainRole.playerInfo.isCapture)
                   {
                      SocketManager.Instance.out.captureMap(false);
                      MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.campBattle.outofCaptrue"));
@@ -285,47 +285,47 @@ package campbattle.view
          ChatManager.Instance.lock = true;
       }
       
-      private function __onStatueGotoFightHander(param1:MapEvent) : void
+      private function __onStatueGotoFightHander(event:MapEvent) : void
       {
-         var _loc3_:Point = new Point(param1.data[0],param1.data[1]);
-         var _loc5_:int = CampBattleControl.instance.model.captureZoneID;
-         var _loc2_:int = CampBattleControl.instance.model.captureUserID;
-         var _loc4_:CampBattlePlayer = _mapView.getMainRole();
-         if(_mapView.getCurrRole(_loc5_,_loc2_).playerInfo.team == _loc4_.playerInfo.team)
+         var p:Point = new Point(event.data[0],event.data[1]);
+         var zoneID:int = CampBattleControl.instance.model.captureZoneID;
+         var userID:int = CampBattleControl.instance.model.captureUserID;
+         var mainRole:CampBattlePlayer = _mapView.getMainRole();
+         if(_mapView.getCurrRole(zoneID,userID).playerInfo.team == mainRole.playerInfo.team)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.campBattle.statuCaptured"));
             return;
          }
-         if(!_loc4_.playerInfo.isDead)
+         if(!mainRole.playerInfo.isDead)
          {
-            _mapView.checkPonitDistance(_loc3_,SocketManager.Instance.out.enterPTPFight,_loc2_,_loc5_);
+            _mapView.checkPonitDistance(p,SocketManager.Instance.out.enterPTPFight,userID,zoneID);
          }
       }
       
-      private function creatMap(param1:String = null, param2:String = null, param3:DictionaryData = null, param4:DictionaryData = null, param5:Array = null, param6:Bitmap = null) : void
+      private function creatMap(clsStr:String = null, resStr:String = null, playerModel:DictionaryData = null, monsterModel:DictionaryData = null, itemList:Array = null, smallMap:Bitmap = null) : void
       {
-         _mapView = new CampBattleMap(param1,param2,param3,param4,param5,param6);
+         _mapView = new CampBattleMap(clsStr,resStr,playerModel,monsterModel,itemList,smallMap);
          _mapLayer.addChild(_mapView);
       }
       
-      private function __onGotoFightHander(param1:MapEvent) : void
+      private function __onGotoFightHander(event:MapEvent) : void
       {
-         var _loc3_:Point = new Point(param1.data[0],param1.data[1]);
-         var _loc4_:int = param1.data[2];
-         var _loc2_:int = param1.data[3];
+         var p:Point = new Point(event.data[0],event.data[1]);
+         var zoneID:int = event.data[2];
+         var userID:int = event.data[3];
          if(_mapView.getMainRole())
          {
             if(!_mapView.getMainRole().playerInfo.isDead)
             {
-               _mapView.checkPonitDistance(_loc3_,SocketManager.Instance.out.enterPTPFight,_loc2_,_loc4_);
+               _mapView.checkPonitDistance(p,SocketManager.Instance.out.enterPTPFight,userID,zoneID);
             }
          }
       }
       
-      private function __onCaptureMapHander(param1:MapEvent) : void
+      private function __onCaptureMapHander(event:MapEvent) : void
       {
-         var _loc2_:Point = new Point(param1.data[0],param1.data[1]);
-         _mapView.checkPonitDistance(_loc2_,captureMap);
+         var p:Point = new Point(event.data[0],event.data[1]);
+         _mapView.checkPonitDistance(p,captureMap);
       }
       
       private function captureMap() : void
@@ -333,80 +333,79 @@ package campbattle.view
          CampBattleControl.instance.dispatchEvent(new MapEvent("capture_start"));
       }
       
-      private function __onCapMapHander(param1:PkgEvent) : void
+      private function __onCapMapHander(evt:PkgEvent) : void
       {
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:CampModel = CampBattleControl.instance.model;
-         _loc2_.isCapture = _loc4_.readBoolean();
-         _loc2_.captureZoneID = _loc4_.readInt();
-         _loc2_.captureUserID = _loc4_.readInt();
-         _loc2_.captureName = _loc4_.readUTF();
-         if(_loc2_.captureName.length > 4)
+         var pkg:PackageIn = evt.pkg;
+         var model:CampModel = CampBattleControl.instance.model;
+         model.isCapture = pkg.readBoolean();
+         model.captureZoneID = pkg.readInt();
+         model.captureUserID = pkg.readInt();
+         model.captureName = pkg.readUTF();
+         if(model.captureName.length > 4)
          {
-            _loc2_.captureName = _loc2_.captureName.replace(4,"......");
+            model.captureName = model.captureName.replace(4,"......");
          }
-         _loc2_.captureTeam = _loc4_.readInt();
-         CampBattleControl.instance.dispatchEvent(new MapEvent("capture_over",[_loc2_.captureZoneID,_loc2_.captureUserID]));
-         var _loc3_:RoleData = getRoleData(_loc2_.captureZoneID,_loc2_.captureUserID);
-         if(_loc3_)
+         model.captureTeam = pkg.readInt();
+         CampBattleControl.instance.dispatchEvent(new MapEvent("capture_over",[model.captureZoneID,model.captureUserID]));
+         var role:RoleData = getRoleData(model.captureZoneID,model.captureUserID);
+         if(role)
          {
-            _loc3_.isCapture = _loc2_.isCapture;
+            role.isCapture = model.isCapture;
          }
       }
       
-      private function __onAddMonstersList(param1:PkgEvent) : void
+      private function __onAddMonstersList(evt:PkgEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc9_:int = 0;
-         var _loc2_:int = 0;
-         var _loc8_:* = null;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc6_:int = 0;
-         var _loc7_:PackageIn = param1.pkg;
+         var count:int = 0;
+         var i:int = 0;
+         var id:int = 0;
+         var living:* = null;
+         var str:* = null;
+         var outPos:* = null;
+         var npcID:int = 0;
+         var pkg:PackageIn = evt.pkg;
          if(!CampBattleControl.instance.model.isFighting)
          {
-            CampBattleControl.instance.model.monsterCount = _loc7_.readInt();
-            _loc5_ = _loc7_.readInt();
-            _loc9_ = 0;
-            while(_loc9_ < _loc5_)
+            CampBattleControl.instance.model.monsterCount = pkg.readInt();
+            count = pkg.readInt();
+            for(i = 0; i < count; )
             {
-               _loc2_ = _loc7_.readInt();
-               _loc8_ = new SmallEnemy(_loc2_,2,1000);
-               _loc8_.typeLiving = 2;
-               _loc8_.actionMovieName = _loc7_.readUTF();
-               _loc4_ = _loc7_.readUTF();
-               _loc8_.direction = 1;
-               _loc3_ = new Point(_loc7_.readInt(),_loc7_.readInt());
-               _loc8_.name = "虫子";
-               _loc8_.stateType = _loc7_.readInt();
-               _loc6_ = _loc7_.readInt();
-               CampBattleControl.instance.model.monsterList.add(_loc8_.LivingID,_loc8_);
-               if(_loc6_ > 0)
+               id = pkg.readInt();
+               living = new SmallEnemy(id,2,1000);
+               living.typeLiving = 2;
+               living.actionMovieName = pkg.readUTF();
+               str = pkg.readUTF();
+               living.direction = 1;
+               outPos = new Point(pkg.readInt(),pkg.readInt());
+               living.name = "虫子";
+               living.stateType = pkg.readInt();
+               npcID = pkg.readInt();
+               CampBattleControl.instance.model.monsterList.add(living.LivingID,living);
+               if(npcID > 0)
                {
                   if(CampBattleControl.instance.model.monsterCount == 10)
                   {
-                     _loc8_.pos = new Point(CampBattleControl.instance.model.monsterPosList[_loc9_][0],CampBattleControl.instance.model.monsterPosList[_loc9_][1]);
+                     living.pos = new Point(CampBattleControl.instance.model.monsterPosList[i][0],CampBattleControl.instance.model.monsterPosList[i][1]);
                   }
                   else
                   {
-                     _loc8_.pos = _loc3_;
+                     living.pos = outPos;
                   }
                }
                else
                {
-                  _loc8_.pos = new Point(CampBattleControl.instance.model.monsterPosList[_loc9_][0],CampBattleControl.instance.model.monsterPosList[_loc9_][1]);
+                  living.pos = new Point(CampBattleControl.instance.model.monsterPosList[i][0],CampBattleControl.instance.model.monsterPosList[i][1]);
                }
-               _loc9_++;
+               i++;
             }
             dispatchEvent(new MapEvent("pve_count"));
          }
       }
       
-      private function __onCaptureOverHander(param1:MapEvent) : void
+      private function __onCaptureOverHander(event:MapEvent) : void
       {
-         var _loc4_:int = param1.data[0];
-         var _loc2_:int = param1.data[1];
+         var zoneID:int = event.data[0];
+         var userID:int = event.data[1];
          if(CampBattleControl.instance.model.isCapture)
          {
             if(_titleView)
@@ -422,119 +421,119 @@ package campbattle.view
             _titleView.setTitleTxt2(LanguageMgr.GetTranslation("ddt.campBattle.NOcapture"));
             _titleView.setTitleTxt4("0");
          }
-         var _loc5_:CampBattlePlayer = _mapView.getCurrRole(_loc4_,_loc2_);
-         if(_loc5_)
+         var otherPlayer:CampBattlePlayer = _mapView.getCurrRole(zoneID,userID);
+         if(otherPlayer)
          {
-            _loc5_.setCaptureVisible(CampBattleControl.instance.model.isCapture);
+            otherPlayer.setCaptureVisible(CampBattleControl.instance.model.isCapture);
          }
-         var _loc3_:CampBattlePlayer = CampBattlePlayer(_mapView.getMainRole());
-         if(_loc3_)
+         var selfPlayer:CampBattlePlayer = CampBattlePlayer(_mapView.getMainRole());
+         if(selfPlayer)
          {
-            if(_loc3_.playerInfo.zoneID == _loc4_ && _loc3_.playerInfo.ID == _loc2_)
+            if(selfPlayer.playerInfo.zoneID == zoneID && selfPlayer.playerInfo.ID == userID)
             {
                _campLight.visible = CampBattleControl.instance.model.isCapture;
             }
          }
       }
       
-      private function __onRoleMoveHander(param1:PkgEvent) : void
+      private function __onRoleMoveHander(event:PkgEvent) : void
       {
-         var _loc8_:int = 0;
-         var _loc7_:int = 0;
-         var _loc6_:int = 0;
-         var _loc2_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc5_:PackageIn = param1.pkg;
+         var x:int = 0;
+         var y:int = 0;
+         var zoneID:int = 0;
+         var userID:int = 0;
+         var role:* = null;
+         var p:* = null;
+         var pkg:PackageIn = event.pkg;
          if(!CampBattleControl.instance.model.isFighting)
          {
-            _loc8_ = _loc5_.readInt();
-            _loc7_ = _loc5_.readInt();
-            _loc6_ = _loc5_.readInt();
-            _loc2_ = _loc5_.readInt();
-            _loc4_ = getRoleData(_loc6_,_loc2_);
-            if(_loc4_)
+            x = pkg.readInt();
+            y = pkg.readInt();
+            zoneID = pkg.readInt();
+            userID = pkg.readInt();
+            role = getRoleData(zoneID,userID);
+            if(role)
             {
-               _loc4_.posX = _loc8_;
-               _loc4_.posY = _loc7_;
-               _loc4_.stateType = 1;
-               if(PlayerManager.Instance.Self.ZoneID == _loc6_ && PlayerManager.Instance.Self.ID == _loc2_)
+               role.posX = x;
+               role.posY = y;
+               role.stateType = 1;
+               if(PlayerManager.Instance.Self.ZoneID == zoneID && PlayerManager.Instance.Self.ID == userID)
                {
                   return;
                }
-               _loc3_ = new Point(_loc8_,_loc7_);
-               _mapView.roleMoves(_loc6_,_loc2_,_loc3_);
+               p = new Point(x,y);
+               _mapView.roleMoves(zoneID,userID,p);
             }
          }
       }
       
-      private function __onToOhterMapHander(param1:MapEvent) : void
+      private function __onToOhterMapHander(event:MapEvent) : void
       {
-         var _loc2_:Point = new Point(param1.data[0],param1.data[1]);
+         var p:Point = new Point(event.data[0],event.data[1]);
          if(!_mapView.getMainRole().playerInfo.isDead)
          {
-            _mapView.checkPonitDistance(_loc2_,SocketManager.Instance.out.changeMap);
+            _mapView.checkPonitDistance(p,SocketManager.Instance.out.changeMap);
          }
       }
       
-      private function __onPlayerStateChange(param1:MapEvent) : void
+      private function __onPlayerStateChange(evt:MapEvent) : void
       {
-         _mapView.setRoleState(param1.data[0],param1.data[1],param1.data[2]);
+         _mapView.setRoleState(evt.data[0],evt.data[1],evt.data[2]);
       }
       
-      private function __onMonsterStateChange(param1:PkgEvent) : void
+      private function __onMonsterStateChange(evt:PkgEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:PackageIn = param1.pkg;
+         var monsterID:int = 0;
+         var type:int = 0;
+         var pkg:PackageIn = evt.pkg;
          if(!CampBattleControl.instance.model.isFighting)
          {
-            _loc2_ = _loc3_.readInt();
-            _loc4_ = _loc3_.readInt();
-            if(_loc4_ == 4)
+            monsterID = pkg.readInt();
+            type = pkg.readInt();
+            if(type == 4)
             {
-               CampBattleControl.instance.model.monsterList.remove(_loc2_);
+               CampBattleControl.instance.model.monsterList.remove(monsterID);
             }
             else
             {
-               _mapView.setMonsterState(_loc2_,_loc4_);
+               _mapView.setMonsterState(monsterID,type);
             }
          }
       }
       
-      private function getRoleData(param1:int, param2:int) : RoleData
+      private function getRoleData(zoneID:int, userID:int) : RoleData
       {
-         var _loc4_:String = param1 + "_" + param2;
-         var _loc3_:RoleData = null;
+         var key:String = zoneID + "_" + userID;
+         var data:RoleData = null;
          if(CampBattleControl.instance.model.playerModel)
          {
-            _loc3_ = CampBattleControl.instance.model.playerModel[_loc4_];
+            data = CampBattleControl.instance.model.playerModel[key];
          }
-         return _loc3_;
+         return data;
       }
       
       private function createRrsurrectView() : void
       {
          CampBattleControl.instance.model.isShowResurrectView = false;
-         var _loc1_:CampBattleResurrectView = new CampBattleResurrectView(CampBattleControl.instance.model.liveTime);
-         _loc1_.addEventListener("complete",__onResurrectHandler,false,0,true);
-         LayerManager.Instance.addToLayer(_loc1_,3,true);
+         var _resurrectView:CampBattleResurrectView = new CampBattleResurrectView(CampBattleControl.instance.model.liveTime);
+         _resurrectView.addEventListener("complete",__onResurrectHandler,false,0,true);
+         LayerManager.Instance.addToLayer(_resurrectView,3,true);
       }
       
-      private function __onResurrectHandler(param1:Event) : void
+      private function __onResurrectHandler(event:Event) : void
       {
-         var _loc2_:CampBattleResurrectView = param1.currentTarget as CampBattleResurrectView;
-         if(_loc2_)
+         var _resurrectView:CampBattleResurrectView = event.currentTarget as CampBattleResurrectView;
+         if(_resurrectView)
          {
-            _loc2_.removeEventListener("complete",__onResurrectHandler);
-            _loc2_.dispose();
-            _loc2_ = null;
+            _resurrectView.removeEventListener("complete",__onResurrectHandler);
+            _resurrectView.dispose();
+            _resurrectView = null;
          }
          SocketManager.Instance.out.resurrect(false,false);
          _mapView.setRoleState(PlayerManager.Instance.Self.ZoneID,PlayerManager.Instance.Self.ID,1);
       }
       
-      private function __startLoading(param1:Event) : void
+      private function __startLoading(e:Event) : void
       {
          StateManager.getInGame_Step_6 = true;
          ChatManager.Instance.input.faceEnabled = false;
@@ -543,56 +542,56 @@ package campbattle.view
          StateManager.getInGame_Step_7 = true;
       }
       
-      protected function __onFighterHander(param1:MapEvent) : void
+      protected function __onFighterHander(event:MapEvent) : void
       {
-         var _loc3_:Point = new Point(param1.data[0],param1.data[1]);
-         var _loc2_:int = param1.data[2];
+         var p:Point = new Point(event.data[0],event.data[1]);
+         var id:int = event.data[2];
          if(!_mapView || !_mapView.getMainRole() || !_mapView.getMainRole().playerInfo || _mapView.getMainRole().playerInfo.isDead)
          {
             return;
          }
-         _mapView.checkPonitDistance(_loc3_,SocketManager.Instance.out.CampbattleEnterFight,_loc2_);
+         _mapView.checkPonitDistance(p,SocketManager.Instance.out.CampbattleEnterFight,id);
       }
       
-      protected function __onHideBtnClick(param1:Event) : void
+      protected function __onHideBtnClick(event:Event) : void
       {
          SoundManager.instance.playButtonSound();
          _mapView.hideRoles(_hideBtn.isHide);
       }
       
-      protected function __onHelpBtnClick(param1:MouseEvent) : void
+      protected function __onHelpBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:CampBattleHelpView = ComponentFactory.Instance.creatComponentByStylename("ddtCampBattle.views.helpView");
-         _loc2_.addEventListener("response",frameEvent);
-         LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+         var helpframe:CampBattleHelpView = ComponentFactory.Instance.creatComponentByStylename("ddtCampBattle.views.helpView");
+         helpframe.addEventListener("response",frameEvent);
+         LayerManager.Instance.addToLayer(helpframe,3,true,1);
       }
       
-      private function frameEvent(param1:FrameEvent) : void
+      private function frameEvent(event:FrameEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         param1.currentTarget.removeEventListener("response",frameEvent);
-         param1.currentTarget.dispose();
+         event.currentTarget.removeEventListener("response",frameEvent);
+         event.currentTarget.dispose();
       }
       
-      protected function __onBackBtnClick(param1:MouseEvent) : void
+      protected function __onBackBtnClick(event:MouseEvent) : void
       {
-         var _loc3_:String = LanguageMgr.GetTranslation("ddt.campBattle.outCampBattle");
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc3_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"SimpleAlert",30,true);
-         _loc2_.moveEnable = false;
-         _loc2_.addEventListener("response",__onConfirm);
+         var msg:String = LanguageMgr.GetTranslation("ddt.campBattle.outCampBattle");
+         var confirmFrame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),msg,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"SimpleAlert",30,true);
+         confirmFrame.moveEnable = false;
+         confirmFrame.addEventListener("response",__onConfirm);
       }
       
-      protected function __onConfirm(param1:FrameEvent) : void
+      protected function __onConfirm(event:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         if(event.responseCode == 3 || event.responseCode == 2)
          {
             SocketManager.Instance.out.outCampBatttle();
             StateManager.setState("main");
          }
-         _loc2_.dispose();
-         _loc2_ = null;
+         confirmFrame.dispose();
+         confirmFrame = null;
       }
       
       override public function getType() : String
@@ -600,7 +599,7 @@ package campbattle.view
          return "campBattleScene";
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
          dispose();
          super.dispose();

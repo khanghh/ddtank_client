@@ -10,12 +10,12 @@ package wonderfulActivity.data
       
       public var unitIndex:int;
       
-      public function LeftViewInfoVo(param1:int, param2:String = "", param3:int = 1)
+      public function LeftViewInfoVo(viewType:int, label:String = "", unitIndex:int = 1)
       {
          super();
-         this.viewType = param1;
-         this.label = param2;
-         this.unitIndex = param3;
+         this.viewType = viewType;
+         this.label = label;
+         this.unitIndex = unitIndex;
       }
    }
 }

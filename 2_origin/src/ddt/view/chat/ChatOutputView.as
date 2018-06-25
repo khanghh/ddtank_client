@@ -108,9 +108,9 @@ package ddt.view.chat
          init();
       }
       
-      public function set enableGameState(param1:Boolean) : void
+      public function set enableGameState(value:Boolean) : void
       {
-         if(param1)
+         if(value)
          {
             if(_more.selected)
             {
@@ -152,7 +152,7 @@ package ddt.view.chat
          }
       }
       
-      public function set functionEnabled(param1:Boolean) : void
+      public function set functionEnabled(value:Boolean) : void
       {
          if(ChatManager.Instance.view.parent)
          {
@@ -162,7 +162,7 @@ package ddt.view.chat
          {
             return;
          }
-         _functionEnabled = param1;
+         _functionEnabled = value;
          _outputField.functionEnabled = _functionEnabled;
          if(_functionEnabled)
          {
@@ -194,9 +194,9 @@ package ddt.view.chat
          }
       }
       
-      public function set ghostState(param1:Boolean) : void
+      public function set ghostState(value:Boolean) : void
       {
-         _ghostState = param1;
+         _ghostState = value;
          if(_ghostState)
          {
             graphics.clear();
@@ -210,7 +210,7 @@ package ddt.view.chat
          }
       }
       
-      private function __onMouseRollOver(param1:MouseEvent) : void
+      private function __onMouseRollOver(event:MouseEvent) : void
       {
          if(ChatManager.Instance.view.parent)
          {
@@ -226,7 +226,7 @@ package ddt.view.chat
          mouseEnabled = true;
       }
       
-      private function __onMouseRollOut(param1:MouseEvent) : void
+      private function __onMouseRollOut(event:MouseEvent) : void
       {
          if(ChatManager.Instance.view.input.parent)
          {
@@ -247,11 +247,11 @@ package ddt.view.chat
          StageReferance.stage.focus = null;
       }
       
-      public function set bg(param1:int) : void
+      public function set bg(value:int) : void
       {
-         if(!isNaN(param1))
+         if(!isNaN(value))
          {
-            _bg.setFrame(param1);
+            _bg.setFrame(value);
          }
          if(isInGame())
          {
@@ -266,17 +266,17 @@ package ddt.view.chat
          }
       }
       
-      public function set channel(param1:int) : void
+      public function set channel($channel:int) : void
       {
-         if(param1 < 0 || param1 > 2)
+         if($channel < 0 || $channel > 2)
          {
             return;
          }
-         if(_channel == param1)
+         if(_channel == $channel)
          {
             return;
          }
-         _channel = param1;
+         _channel = $channel;
          updateCurrnetChannel();
       }
       
@@ -290,9 +290,9 @@ package ddt.view.chat
          return _currentOffset;
       }
       
-      public function set currentOffset(param1:int) : void
+      public function set currentOffset(value:int) : void
       {
-         _currentOffset = param1;
+         _currentOffset = value;
          updateCurrnetChannel();
       }
       
@@ -311,13 +311,13 @@ package ddt.view.chat
          _isLocked = false;
       }
       
-      public function set isLock(param1:Boolean) : void
+      public function set isLock(value:Boolean) : void
       {
-         if(_isLocked == param1)
+         if(_isLocked == value)
          {
             return;
          }
-         _isLocked = param1;
+         _isLocked = value;
          var _loc2_:* = _isLocked;
          _lockBtn.selected = _loc2_;
          _lockBtnInGame.selected = _loc2_;
@@ -326,9 +326,9 @@ package ddt.view.chat
          {
             if(parent)
             {
-               parent.mouseEnabled = !param1;
+               parent.mouseEnabled = !value;
             }
-            mouseEnabled = !param1;
+            mouseEnabled = !value;
          }
          else if(!_ghostState)
          {
@@ -352,14 +352,14 @@ package ddt.view.chat
             _outputField.mouseEnabled = true;
             _outputField.mouseChildren = true;
          }
-         setChannelBtnVisible(!param1);
-         setBgVisible(!param1);
+         setChannelBtnVisible(!value);
+         setBgVisible(!value);
          setLockBtnTipData(_isLocked);
       }
       
-      public function setLockBtnTipData(param1:Boolean) : void
+      public function setLockBtnTipData(value:Boolean) : void
       {
-         if(param1)
+         if(value)
          {
             var _loc2_:* = LanguageMgr.GetTranslation("chat.UnLock");
             _lockBtn.tipData = _loc2_;
@@ -377,18 +377,18 @@ package ddt.view.chat
          ShowTipManager.Instance.hideTip(_lockBtnInGame);
       }
       
-      public function set lockEnable(param1:Boolean) : void
+      public function set lockEnable(value:Boolean) : void
       {
-         var _loc2_:* = param1;
+         var _loc2_:* = value;
          _lockBtn.enable = _loc2_;
          _lockBtnInGame.enable = _loc2_;
       }
       
-      public function setBgVisible(param1:Boolean) : void
+      public function setBgVisible(value:Boolean) : void
       {
          if(!isInGame())
          {
-            if(param1)
+            if(value)
             {
                addChildAt(_bg,0);
             }
@@ -399,10 +399,10 @@ package ddt.view.chat
          }
       }
       
-      public function set bgVisible(param1:Boolean) : void
+      public function set bgVisible(value:Boolean) : void
       {
-         _bgVisible = param1;
-         if(param1)
+         _bgVisible = value;
+         if(value)
          {
             addChildAt(_bg,0);
          }
@@ -412,11 +412,11 @@ package ddt.view.chat
          }
       }
       
-      public function setChannelBtnVisible(param1:Boolean) : void
+      public function setChannelBtnVisible(value:Boolean) : void
       {
          if(!isInGame())
          {
-            if(param1)
+            if(value)
             {
                addChild(_rightBtnContainer);
             }
@@ -427,10 +427,10 @@ package ddt.view.chat
          }
       }
       
-      private function __leftBtnsClick(param1:MouseEvent) : void
+      private function __leftBtnsClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = e.currentTarget;
          if(_lockBtn !== _loc2_)
          {
             if(_lockBtnInGame !== _loc2_)
@@ -453,7 +453,7 @@ package ddt.view.chat
                updateCurrnetChannel();
                _privateBtnEffect.stop();
             }
-            addr115:
+            addr139:
             return;
          }
          isLock = !isLock;
@@ -478,17 +478,17 @@ package ddt.view.chat
          {
             _rightBtnContainer.parent.removeChild(_rightBtnContainer);
          }
-         §§goto(addr115);
+         §§goto(addr139);
       }
       
-      private function __onAddChat(param1:ChatEvent) : void
+      private function __onAddChat(event:ChatEvent) : void
       {
-         var _loc2_:ChatData = param1.data as ChatData;
-         if(_loc2_.channel == 2 && _loc2_.sender != PlayerManager.Instance.Self.NickName && _channel != 2 && _channel != 0)
+         var addedChatData:ChatData = event.data as ChatData;
+         if(addedChatData.channel == 2 && addedChatData.sender != PlayerManager.Instance.Self.NickName && _channel != 2 && _channel != 0)
          {
             _privateBtnEffect.play();
          }
-         if(_model.getInputInOutputChannel(_loc2_.channel,_channel))
+         if(_model.getInputInOutputChannel(addedChatData.channel,_channel))
          {
             if(_currentOffset == 0)
             {
@@ -497,9 +497,9 @@ package ddt.view.chat
          }
       }
       
-      private function __onMouseWheel(param1:MouseEvent) : void
+      private function __onMouseWheel(e:MouseEvent) : void
       {
-         if(param1.delta > 0)
+         if(e.delta > 0)
          {
             _currentOffset = Number(_currentOffset) + 1;
          }
@@ -510,10 +510,10 @@ package ddt.view.chat
          updateCurrnetChannel();
       }
       
-      private function __onScroll(param1:Event = null) : void
+      private function __onScroll(e:Event = null) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = e.currentTarget;
          if(_scrollDownBtn !== _loc2_)
          {
             if(_scrollDownBtnInGame !== _loc2_)
@@ -526,7 +526,7 @@ package ddt.view.chat
                }
                _currentOffset = Number(_currentOffset) + 1;
             }
-            addr43:
+            addr51:
             updateCurrnetChannel();
             return;
          }
@@ -534,23 +534,23 @@ package ddt.view.chat
          {
             _currentOffset = Number(_currentOffset) - 1;
          }
-         §§goto(addr43);
+         §§goto(addr51);
       }
       
-      private function __textFieldBindScroll(param1:int = 0) : void
+      private function __textFieldBindScroll(val:int = 0) : void
       {
-         if(_currentOffset == param1)
+         if(_currentOffset == val)
          {
             return;
          }
-         _currentOffset = param1;
+         _currentOffset = val;
          updateCurrnetChannel();
       }
       
-      private function __rightBtnsSelected(param1:MouseEvent) : void
+      private function __rightBtnsSelected(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = event.currentTarget;
          if(_privateBtn !== _loc2_)
          {
             if(_consortiaBtn !== _loc2_)
@@ -612,10 +612,10 @@ package ddt.view.chat
          _privateBtn.text = StringUtils.trim(LanguageMgr.GetTranslation("tank.view.scenechatII.PrivateChatIIView.privatename"));
          _more = ComponentFactory.Instance.creatComponentByStylename("chat.MoreSwitcher");
          _more.selected = false;
-         var _loc1_:Point = ComponentFactory.Instance.creatCustomObject("chat.OriginPos");
-         var _loc2_:Point = ComponentFactory.Instance.creatCustomObject("chat.PrivateBtnEffectPos");
+         var orginPos:Point = ComponentFactory.Instance.creatCustomObject("chat.OriginPos");
+         var privateEffectPos:Point = ComponentFactory.Instance.creatCustomObject("chat.PrivateBtnEffectPos");
          _goBottomBtnEffect = EffectManager.Instance.creatEffect(1,_goBottomBtn,"asset.chat.GoBottomBtn","chat.ChatGoBottomShineEffect");
-         _privateBtnEffect = EffectManager.Instance.creatEffect(1,_privateBtn,"chat.ChatPrivateShineEffect",_loc1_,_loc2_);
+         _privateBtnEffect = EffectManager.Instance.creatEffect(1,_privateBtn,"chat.ChatPrivateShineEffect",orginPos,privateEffectPos);
          _goBottomEffectInGame = EffectManager.Instance.creatEffect(1,_goBottomBtnInGame,"asset.chat.GoBottomBtnInGame","chat.ChatGoBottomShineEffectInGame");
          _functionEnabled = false;
          var _loc3_:* = true;
@@ -665,30 +665,30 @@ package ddt.view.chat
          addChild(_leftBtnContainer);
       }
       
-      public function setMoreVisible(param1:Boolean) : void
+      public function setMoreVisible(flag:Boolean) : void
       {
-         _more.visible = param1;
+         _more.visible = flag;
       }
       
-      public function moreState(param1:Boolean) : void
+      public function moreState(_val:Boolean) : void
       {
-         if(param1 == _more.selected)
+         if(_val == _more.selected)
          {
             return;
          }
-         _more.selected = param1;
+         _more.selected = _val;
          updateOutputViewState();
       }
       
-      public function openPetSprite(param1:Boolean) : void
+      public function openPetSprite(val:Boolean) : void
       {
       }
       
-      public function enablePetSpriteSwitcher(param1:Boolean) : void
+      public function enablePetSpriteSwitcher(val:Boolean) : void
       {
       }
       
-      public function PetSpriteSwitchVisible(param1:Boolean) : void
+      public function PetSpriteSwitchVisible(v:Boolean) : void
       {
       }
       
@@ -713,7 +713,7 @@ package ddt.view.chat
          _more.addEventListener("click",__moreSwitcherClick);
       }
       
-      private function __moreSwitcherClick(param1:MouseEvent) : void
+      private function __moreSwitcherClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          updateOutputViewState();
@@ -765,24 +765,24 @@ package ddt.view.chat
          updateCurrnetChannel();
       }
       
-      protected function __onMouseClick(param1:MouseEvent) : void
+      protected function __onMouseClick(event:MouseEvent) : void
       {
-         PlayerManager.Instance.dispatchEvent(new NewHallEvent("setselfplayerpos",[param1]));
+         PlayerManager.Instance.dispatchEvent(new NewHallEvent("setselfplayerpos",[event]));
       }
       
-      protected function __switchPetSprite(param1:MouseEvent) : void
-      {
-      }
-      
-      private function petSpriteClose(param1:Event) : void
+      protected function __switchPetSprite(event:MouseEvent) : void
       {
       }
       
-      private function petSpriteOpen(param1:Event) : void
+      private function petSpriteClose(event:Event) : void
       {
       }
       
-      private function __functionSwitch(param1:MouseEvent) : void
+      private function petSpriteOpen(event:Event) : void
+      {
+      }
+      
+      private function __functionSwitch(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          ChatManager.Instance.switchVisible();
@@ -795,19 +795,19 @@ package ddt.view.chat
       
       public function updateCurrnetChannel() : void
       {
-         var _loc1_:* = null;
+         var result:* = null;
          if(isInGame())
          {
-            _loc1_ = _model.getChatsByOutputChannel(_channel,_currentOffset,5);
+            result = _model.getChatsByOutputChannel(_channel,_currentOffset,5);
          }
          else
          {
-            _loc1_ = _model.getChatsByOutputChannel(_channel,_currentOffset,!!_more.selected?16:6);
+            result = _model.getChatsByOutputChannel(_channel,_currentOffset,!!_more.selected?16:6);
             _leftScroll.length = _model.getRowsByOutputChangel(_channel);
             _leftScroll.currentIndex = _currentOffset;
          }
-         _currentOffset = _loc1_["offset"];
-         _outputField.setChats(_loc1_["result"]);
+         _currentOffset = result["offset"];
+         _outputField.setChats(result["result"]);
          goBottom();
          updateShine();
          var _loc2_:* = false;

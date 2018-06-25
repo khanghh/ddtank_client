@@ -26,117 +26,114 @@ package morn.core.utils
          super();
       }
       
-      public static function scale9Bmd(param1:BitmapData, param2:Array, param3:int, param4:int) : BitmapData
+      public static function scale9Bmd(bmd:BitmapData, sizeGrid:Array, width:int, height:int) : BitmapData
       {
-         var _loc10_:Boolean = false;
-         var _loc11_:Array = null;
-         var _loc12_:Array = null;
-         var _loc13_:Array = null;
-         var _loc14_:Array = null;
-         var _loc15_:int = 0;
-         var _loc16_:int = 0;
-         var _loc17_:BitmapData = null;
-         if(param1.width == param3 && param1.height == param4)
+         var repeatFill:Boolean = false;
+         var rows:* = null;
+         var cols:* = null;
+         var newRows:* = null;
+         var newCols:* = null;
+         var i:int = 0;
+         var j:int = 0;
+         var tempBmd:* = null;
+         if(bmd.width == width && bmd.height == height)
          {
-            return param1;
+            return bmd;
          }
-         param3 = param3 > 1?int(param3):1;
-         param4 = param4 > 1?int(param4):1;
-         var _loc5_:int = int(param2[0]) + int(param2[2]);
-         var _loc6_:int = int(param2[1]) + int(param2[3]);
-         var _loc7_:BitmapData = new BitmapData(param3,param4,param1.transparent,0);
-         var _loc8_:Shape = new Shape();
-         var _loc9_:Graphics = _loc8_.graphics;
-         if(param3 > _loc5_ && param4 > _loc6_)
+         width = width > 1?width:1;
+         height = height > 1?height:1;
+         var gw:int = int(sizeGrid[0]) + int(sizeGrid[2]);
+         var gh:int = int(sizeGrid[1]) + int(sizeGrid[3]);
+         var newBmd:BitmapData = new BitmapData(width,height,bmd.transparent,0);
+         var shape:Shape = new Shape();
+         var g:Graphics = shape.graphics;
+         if(width > gw && height > gh)
          {
-            _loc10_ = param2.length > 4 && param2[4] == 1;
-            setRect(grid,param2[0],param2[1],param1.width - param2[0] - param2[2],param1.height - param2[1] - param2[3]);
-            _loc11_ = [0,grid.top,grid.bottom,param1.height];
-            _loc12_ = [0,grid.left,grid.right,param1.width];
-            _loc13_ = [0,grid.top,param4 - (param1.height - grid.bottom),param4];
-            _loc14_ = [0,grid.left,param3 - (param1.width - grid.right),param3];
-            _loc15_ = 0;
-            while(_loc15_ < 3)
+            repeatFill = sizeGrid.length > 4 && sizeGrid[4] == 1;
+            setRect(grid,sizeGrid[0],sizeGrid[1],bmd.width - sizeGrid[0] - sizeGrid[2],bmd.height - sizeGrid[1] - sizeGrid[3]);
+            rows = [0,grid.top,grid.bottom,bmd.height];
+            cols = [0,grid.left,grid.right,bmd.width];
+            newRows = [0,grid.top,height - (bmd.height - grid.bottom),height];
+            newCols = [0,grid.left,width - (bmd.width - grid.right),width];
+            for(i = 0; i < 3; )
             {
-               _loc16_ = 0;
-               while(_loc16_ < 3)
+               for(j = 0; j < 3; )
                {
-                  setRect(newRect,_loc12_[_loc15_],_loc11_[_loc16_],_loc12_[_loc15_ + 1] - _loc12_[_loc15_],_loc11_[_loc16_ + 1] - _loc11_[_loc16_]);
-                  setRect(clipRect,_loc14_[_loc15_],_loc13_[_loc16_],_loc14_[_loc15_ + 1] - _loc14_[_loc15_],_loc13_[_loc16_ + 1] - _loc13_[_loc16_]);
+                  setRect(newRect,cols[i],rows[j],cols[i + 1] - cols[i],rows[j + 1] - rows[j]);
+                  setRect(clipRect,newCols[i],newRows[j],newCols[i + 1] - newCols[i],newRows[j + 1] - newRows[j]);
                   m.identity();
                   m.a = clipRect.width / newRect.width;
                   m.d = clipRect.height / newRect.height;
                   m.tx = clipRect.x - newRect.x * m.a;
                   m.ty = clipRect.y - newRect.y * m.d;
-                  if(!_loc10_ || _loc15_ != 1 && _loc16_ != 1)
+                  if(!repeatFill || i != 1 && j != 1)
                   {
-                     _loc7_.draw(param1,m,null,null,clipRect,true);
+                     newBmd.draw(bmd,m,null,null,clipRect,true);
                   }
                   else if(newRect.width != 0 && newRect.height != 0)
                   {
-                     _loc17_ = new BitmapData(newRect.width,newRect.height,param1.transparent,0);
-                     _loc17_.copyPixels(param1,newRect,destPoint);
-                     _loc9_.clear();
-                     _loc9_.beginBitmapFill(_loc17_);
-                     _loc9_.drawRect(0,0,clipRect.width,clipRect.height);
-                     _loc9_.endFill();
+                     tempBmd = new BitmapData(newRect.width,newRect.height,bmd.transparent,0);
+                     tempBmd.copyPixels(bmd,newRect,destPoint);
+                     g.clear();
+                     g.beginBitmapFill(tempBmd);
+                     g.drawRect(0,0,clipRect.width,clipRect.height);
+                     g.endFill();
                      m.identity();
                      m.tx = clipRect.x;
                      m.ty = clipRect.y;
-                     _loc7_.draw(_loc8_,m,null,null,clipRect,true);
-                     _loc9_.clear();
-                     _loc17_.dispose();
+                     newBmd.draw(shape,m,null,null,clipRect,true);
+                     g.clear();
+                     tempBmd.dispose();
                   }
-                  _loc16_++;
+                  j++;
                }
-               _loc15_++;
+               i++;
             }
          }
          else
          {
             m.identity();
-            m.scale(param3 / param1.width,param4 / param1.height);
-            setRect(grid,0,0,param3,param4);
-            _loc7_.draw(param1,m,null,null,grid,true);
+            m.scale(width / bmd.width,height / bmd.height);
+            setRect(grid,0,0,width,height);
+            newBmd.draw(bmd,m,null,null,grid,true);
          }
-         return _loc7_;
+         return newBmd;
       }
       
-      public static function setRect(param1:Rectangle, param2:Number = 0, param3:Number = 0, param4:Number = 0, param5:Number = 0) : Rectangle
+      public static function setRect(rect:Rectangle, x:Number = 0, y:Number = 0, width:Number = 0, height:Number = 0) : Rectangle
       {
-         param1.x = param2;
-         param1.y = param3;
-         param1.width = param4;
-         param1.height = param5;
-         return param1;
+         rect.x = x;
+         rect.y = y;
+         rect.width = width;
+         rect.height = height;
+         return rect;
       }
       
-      public static function createClips(param1:BitmapData, param2:int, param3:int) : Vector.<BitmapData>
+      public static function createClips(bmd:BitmapData, xNum:int, yNum:int) : Vector.<BitmapData>
       {
-         var _loc9_:int = 0;
-         var _loc10_:BitmapData = null;
-         if(param1 == null)
+         var i:int = 0;
+         var j:int = 0;
+         var item:* = null;
+         if(bmd == null)
          {
             return null;
          }
-         var _loc4_:Vector.<BitmapData> = new Vector.<BitmapData>();
-         var _loc5_:int = Math.max(param1.width / param2,1);
-         var _loc6_:int = Math.max(param1.height / param3,1);
-         var _loc7_:Point = new Point();
-         var _loc8_:int = 0;
-         while(_loc8_ < param3)
+         var clips:Vector.<BitmapData> = new Vector.<BitmapData>();
+         var width:int = Math.max(bmd.width / xNum,1);
+         var height:int = Math.max(bmd.height / yNum,1);
+         var point:Point = new Point();
+         for(i = 0; i < yNum; )
          {
-            _loc9_ = 0;
-            while(_loc9_ < param2)
+            for(j = 0; j < xNum; )
             {
-               _loc10_ = new BitmapData(_loc5_,_loc6_);
-               _loc10_.copyPixels(param1,new Rectangle(_loc9_ * _loc5_,_loc8_ * _loc6_,_loc5_,_loc6_),_loc7_);
-               _loc4_.push(_loc10_);
-               _loc9_++;
+               item = new BitmapData(width,height);
+               item.copyPixels(bmd,new Rectangle(j * width,i * height,width,height),point);
+               clips.push(item);
+               j++;
             }
-            _loc8_++;
+            i++;
          }
-         return _loc4_;
+         return clips;
       }
    }
 }

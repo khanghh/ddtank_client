@@ -6,17 +6,17 @@ package ddt.data.analyze
    {
        
       
-      public function RegisterAnalyzer(param1:Function)
+      public function RegisterAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc3_:XML = new XML(param1);
-         var _loc2_:String = _loc3_.@value;
-         message = _loc3_.@message;
-         if(_loc2_ == "true")
+         var xml:XML = new XML(data);
+         var result:String = xml.@value;
+         message = xml.@message;
+         if(result == "true")
          {
             onAnalyzeComplete();
          }

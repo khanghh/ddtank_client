@@ -41,9 +41,9 @@ package luckStar.view
          resetItem();
       }
       
-      public function set info(param1:LuckStarPlayerInfo) : void
+      public function set info(value:LuckStarPlayerInfo) : void
       {
-         _info = param1;
+         _info = value;
          updateView();
       }
       
@@ -79,22 +79,22 @@ package luckStar.view
       
       private function updateName() : void
       {
-         var _loc2_:int = 133;
-         var _loc1_:int = 60;
+         var width:int = 133;
+         var vipX:int = 60;
          _rankName.visible = false;
          _vipName.visible = false;
          if(_info.isVip)
          {
             _vipName.visible = true;
             _vipName.text = _info.name;
-            if(_vipName.width < _loc2_)
+            if(_vipName.width < width)
             {
-               _vipName.x = _loc1_ + (_loc2_ - _vipName.width) / 2;
+               _vipName.x = vipX + (width - _vipName.width) / 2;
             }
-            else if(_vipName.width > _loc2_)
+            else if(_vipName.width > width)
             {
-               _vipName.width = _loc2_;
-               _vipName.x = _loc1_;
+               _vipName.width = width;
+               _vipName.x = vipX;
             }
             return;
          }

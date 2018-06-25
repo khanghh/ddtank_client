@@ -58,14 +58,14 @@ package bagAndInfo.bag.ring
          addChild(_limitLevel);
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(data:Object) : void
       {
-         if(param1 != null)
+         if(data != null)
          {
-            _name.text = param1.name;
-            _contentTxt.text = param1.content;
-            _nextLevel.text = param1.nextLevel;
-            _limitLevel.text = param1.limitLevel;
+            _name.text = data.name;
+            _contentTxt.text = data.content;
+            _nextLevel.text = data.nextLevel;
+            _limitLevel.text = data.limitLevel;
          }
       }
       
@@ -79,7 +79,7 @@ package bagAndInfo.bag.ring
          return _tipWidth;
       }
       
-      public function set tipWidth(param1:int) : void
+      public function set tipWidth(w:int) : void
       {
       }
       
@@ -88,7 +88,7 @@ package bagAndInfo.bag.ring
          return _bg.height;
       }
       
-      public function set tipHeight(param1:int) : void
+      public function set tipHeight(h:int) : void
       {
       }
       

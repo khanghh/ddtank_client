@@ -16,28 +16,28 @@ package ddt.manager
          super();
       }
       
-      public static function setup(param1:PetAllSkillAnalyzer) : void
+      public static function setup(analyzer:PetAllSkillAnalyzer) : void
       {
-         _skills = param1.list;
+         _skills = analyzer.list;
       }
       
-      public static function getAllSkillByPetTemplateID(param1:PetTemplateInfo) : Array
+      public static function getAllSkillByPetTemplateID(petInfo:PetTemplateInfo) : Array
       {
-         var _loc2_:Array = [];
+         var resultAllSkills:Array = [];
          var _loc5_:int = 0;
          var _loc4_:* = _skills;
-         for each(var _loc3_ in _skills)
+         for each(var petItem in _skills)
          {
-            if(_loc3_.PetTemplateID == param1.TemplateID)
+            if(petItem.PetTemplateID == petInfo.TemplateID)
             {
-               _loc2_.push(PetSkillManager.getSkillByID(_loc3_.SkillID));
+               resultAllSkills.push(PetSkillManager.getSkillByID(petItem.SkillID));
             }
-            else if(_loc3_.PetTemplateID == -1 && _loc3_.KindID == param1.KindID)
+            else if(petItem.PetTemplateID == -1 && petItem.KindID == petInfo.KindID)
             {
-               _loc2_.push(PetSkillManager.getSkillByID(_loc3_.SkillID));
+               resultAllSkills.push(PetSkillManager.getSkillByID(petItem.SkillID));
             }
          }
-         return _loc2_;
+         return resultAllSkills;
       }
    }
 }

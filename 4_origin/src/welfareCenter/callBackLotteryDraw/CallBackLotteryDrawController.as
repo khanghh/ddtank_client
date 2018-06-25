@@ -27,11 +27,11 @@ package welfareCenter.callBackLotteryDraw
       
       private var _frame:Frame;
       
-      public function CallBackLotteryDrawController(param1:IEventDispatcher = null)
+      public function CallBackLotteryDrawController(target:IEventDispatcher = null)
       {
          CallBackLotteryDrawFrame;
          LuckeyLotteryDrawFrame;
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : CallBackLotteryDrawController
@@ -49,7 +49,7 @@ package welfareCenter.callBackLotteryDraw
          CallBackLotteryDrawManager.instance.addEventListener("event_zero_fresh",onZeroFresh);
       }
       
-      protected function onOpenView(param1:Event) : void
+      protected function onOpenView(event:Event) : void
       {
          disposeFrame();
          if(CallBackLotteryDrawManager.instance.type == 1)
@@ -59,7 +59,7 @@ package welfareCenter.callBackLotteryDraw
          }
       }
       
-      private function onZeroFresh(param1:Event) : void
+      private function onZeroFresh(evt:Event) : void
       {
          if(_frame)
          {
@@ -68,50 +68,50 @@ package welfareCenter.callBackLotteryDraw
          disposeFrame();
       }
       
-      public function getCardShowFont(param1:Object, param2:String) : Sprite
+      public function getCardShowFont(award:Object, stypeName:String) : Sprite
       {
-         var _loc11_:InventoryItemInfo = param1["InventoryItemInfo"];
-         var _loc5_:Sprite = new Sprite();
-         UICreatShortcut.creatAndAdd(param2 + ".pic6",_loc5_);
-         var _loc14_:String = _loc11_.Name;
-         if(_loc14_.length > 6)
+         var info:InventoryItemInfo = award["InventoryItemInfo"];
+         var sp:Sprite = new Sprite();
+         UICreatShortcut.creatAndAdd(stypeName + ".pic6",sp);
+         var goodName:String = info.Name;
+         if(goodName.length > 6)
          {
-            _loc14_ = _loc14_.slice(0,4) + "...";
+            goodName = goodName.slice(0,4) + "...";
          }
-         UICreatShortcut.creatTextAndAdd(param2 + ".goodNameTf",_loc14_,_loc5_);
-         var _loc4_:BagCell = new BagCell(1);
-         _loc4_.BGVisible = false;
-         _loc4_.setContentSize(60,60);
-         _loc4_.info = _loc11_;
-         _loc4_.setCount(_loc11_.Count);
-         _loc4_.x = 30;
-         _loc4_.y = 38;
-         _loc5_.addChild(_loc4_);
-         UICreatShortcut.creatAndAdd(param2 + ".pic8",_loc5_);
-         var _loc3_:String = LanguageMgr.GetTranslation("callbacklotterdraw.discoutTxt",param1["LimitCount"] / 10);
-         UICreatShortcut.creatTextAndAdd(param2 + ".discountTf",_loc3_,_loc5_);
-         var _loc10_:FilterFrameText = ComponentFactory.Instance.creat(param2 + ".priceTf");
-         _loc10_.text = LanguageMgr.GetTranslation("callbacklotterdraw.priceTxt",param1["Cost"]);
-         var _loc13_:int = _loc10_.x;
-         var _loc12_:int = _loc10_.y;
-         _loc10_.x = 0;
-         _loc10_.y = 0;
-         var _loc7_:FilterFrameTextMiddleLine = new FilterFrameTextMiddleLine(_loc10_);
-         _loc7_.x = _loc13_;
-         _loc7_.y = _loc12_;
-         _loc7_.drawMiddleLine(1,_loc10_.textColor,1,4,_loc10_.text.length - 1);
-         _loc5_.addChild(_loc7_);
-         var _loc6_:int = param1["Cost"] * param1["LimitCount"] / 100;
-         UICreatShortcut.creatTextAndAdd(param2 + ".newPriceTf",LanguageMgr.GetTranslation("callbacklotterdraw.newPriceTxt",_loc6_),_loc5_);
-         var _loc9_:Bitmap = UICreatShortcut.creatAndAdd("asset.ddtshop.PayTypeLabelTicket",_loc5_);
-         _loc9_.scaleX = 0.6;
-         _loc9_.scaleY = 0.6;
-         PositionUtils.setPos(_loc9_,param2 + ".ticketIcon1");
-         var _loc8_:Bitmap = UICreatShortcut.creatAndAdd("asset.ddtshop.PayTypeLabelTicket",_loc5_);
-         _loc8_.scaleX = 0.6;
-         _loc8_.scaleY = 0.6;
-         PositionUtils.setPos(_loc8_,param2 + ".ticketIcon2");
-         return _loc5_;
+         UICreatShortcut.creatTextAndAdd(stypeName + ".goodNameTf",goodName,sp);
+         var bagCell:BagCell = new BagCell(1);
+         bagCell.BGVisible = false;
+         bagCell.setContentSize(60,60);
+         bagCell.info = info;
+         bagCell.setCount(info.Count);
+         bagCell.x = 30;
+         bagCell.y = 38;
+         sp.addChild(bagCell);
+         UICreatShortcut.creatAndAdd(stypeName + ".pic8",sp);
+         var discountStr:String = LanguageMgr.GetTranslation("callbacklotterdraw.discoutTxt",award["LimitCount"] / 10);
+         UICreatShortcut.creatTextAndAdd(stypeName + ".discountTf",discountStr,sp);
+         var priceTf:FilterFrameText = ComponentFactory.Instance.creat(stypeName + ".priceTf");
+         priceTf.text = LanguageMgr.GetTranslation("callbacklotterdraw.priceTxt",award["Cost"]);
+         var priceTfX:int = priceTf.x;
+         var priceTfY:int = priceTf.y;
+         priceTf.x = 0;
+         priceTf.y = 0;
+         var priceTfLine:FilterFrameTextMiddleLine = new FilterFrameTextMiddleLine(priceTf);
+         priceTfLine.x = priceTfX;
+         priceTfLine.y = priceTfY;
+         priceTfLine.drawMiddleLine(1,priceTf.textColor,1,4,priceTf.text.length - 1);
+         sp.addChild(priceTfLine);
+         var newPrice:int = award["Cost"] * award["LimitCount"] / 100;
+         UICreatShortcut.creatTextAndAdd(stypeName + ".newPriceTf",LanguageMgr.GetTranslation("callbacklotterdraw.newPriceTxt",newPrice),sp);
+         var ticketIcon1:Bitmap = UICreatShortcut.creatAndAdd("asset.ddtshop.PayTypeLabelTicket",sp);
+         ticketIcon1.scaleX = 0.6;
+         ticketIcon1.scaleY = 0.6;
+         PositionUtils.setPos(ticketIcon1,stypeName + ".ticketIcon1");
+         var ticketIcon2:Bitmap = UICreatShortcut.creatAndAdd("asset.ddtshop.PayTypeLabelTicket",sp);
+         ticketIcon2.scaleX = 0.6;
+         ticketIcon2.scaleY = 0.6;
+         PositionUtils.setPos(ticketIcon2,stypeName + ".ticketIcon2");
+         return sp;
       }
       
       public function disposeFrame() : void

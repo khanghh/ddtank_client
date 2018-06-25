@@ -10,9 +10,9 @@ package starling.scene.hall.player
       
       private var _type:int;
       
-      public function HallPlayerMountsLoader(param1:int)
+      public function HallPlayerMountsLoader(type:int)
       {
-         _type = param1;
+         _type = type;
          super();
       }
       
@@ -23,10 +23,10 @@ package starling.scene.hall.player
       
       override protected function drawCharacter() : void
       {
-         var _loc1_:HallSceneMountsLayer = _loaders[0] as HallSceneMountsLayer;
+         var layer:HallSceneMountsLayer = _loaders[0] as HallSceneMountsLayer;
          _content = {};
-         _content.image = _loc1_.image;
-         _content.xml = _loc1_.xml;
+         _content.image = layer.image;
+         _content.xml = layer.xml;
       }
       
       override public function get content() : Object

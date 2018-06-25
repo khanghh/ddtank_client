@@ -84,9 +84,9 @@ package newChickenBox.model
          return _canclickEnable;
       }
       
-      public function set canclickEnable(param1:Boolean) : void
+      public function set canclickEnable(value:Boolean) : void
       {
-         _canclickEnable = param1;
+         _canclickEnable = value;
       }
       
       public function get templateIDList() : Array
@@ -94,9 +94,9 @@ package newChickenBox.model
          return _templateIDList;
       }
       
-      public function set templateIDList(param1:Array) : void
+      public function set templateIDList(value:Array) : void
       {
-         _templateIDList = param1;
+         _templateIDList = value;
       }
    }
 }

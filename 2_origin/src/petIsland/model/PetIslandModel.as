@@ -36,7 +36,7 @@ package petIsland.model
       
       private var _saveLife2Count:int;
       
-      public function PetIslandModel(param1:IEventDispatcher = null)
+      public function PetIslandModel(target:IEventDispatcher = null)
       {
          _pList = [];
          super();
@@ -47,9 +47,9 @@ package petIsland.model
          return _pList;
       }
       
-      public function set pList(param1:Array) : void
+      public function set pList(value:Array) : void
       {
-         _pList = param1;
+         _pList = value;
       }
       
       public function get openType() : int
@@ -57,11 +57,11 @@ package petIsland.model
          return _openType;
       }
       
-      public function set openType(param1:int) : void
+      public function set openType(value:int) : void
       {
-         var _loc2_:int = _openType;
-         _openType = param1;
-         if(_loc2_ != param1)
+         var i:int = _openType;
+         _openType = value;
+         if(i != value)
          {
             dispatchEvent(new PetIslandEvent("openType"));
          }
@@ -72,11 +72,11 @@ package petIsland.model
          return _playerBlood;
       }
       
-      public function set playerBlood(param1:int) : void
+      public function set playerBlood(value:int) : void
       {
-         var _loc2_:int = _playerBlood - param1;
-         _playerBlood = param1;
-         dispatchEvent(new PetIslandEvent("playerBlood",_loc2_));
+         var flag:int = _playerBlood - value;
+         _playerBlood = value;
+         dispatchEvent(new PetIslandEvent("playerBlood",flag));
       }
       
       public function get npcBlood() : int
@@ -84,11 +84,11 @@ package petIsland.model
          return _npcBlood;
       }
       
-      public function set npcBlood(param1:int) : void
+      public function set npcBlood(value:int) : void
       {
-         var _loc2_:int = _npcBlood - param1;
-         _npcBlood = param1;
-         dispatchEvent(new PetIslandEvent("npcBlood",_loc2_));
+         var flag:int = _npcBlood - value;
+         _npcBlood = value;
+         dispatchEvent(new PetIslandEvent("npcBlood",flag));
       }
       
       public function get playerScore() : int
@@ -96,9 +96,9 @@ package petIsland.model
          return _playerScore;
       }
       
-      public function set playerScore(param1:int) : void
+      public function set playerScore(value:int) : void
       {
-         _playerScore = param1;
+         _playerScore = value;
          dispatchEvent(new PetIslandEvent("playerscore"));
       }
       
@@ -107,9 +107,9 @@ package petIsland.model
          return _npcScore;
       }
       
-      public function set npcScore(param1:int) : void
+      public function set npcScore(value:int) : void
       {
-         _npcScore = param1;
+         _npcScore = value;
          dispatchEvent(new PetIslandEvent("npcscore"));
       }
       
@@ -118,9 +118,9 @@ package petIsland.model
          return _round;
       }
       
-      public function set round(param1:int) : void
+      public function set round(value:int) : void
       {
-         _round = param1;
+         _round = value;
          dispatchEvent(new PetIslandEvent("round"));
       }
       
@@ -129,9 +129,9 @@ package petIsland.model
          return _step;
       }
       
-      public function set step(param1:int) : void
+      public function set step(value:int) : void
       {
-         _step = param1;
+         _step = value;
          dispatchEvent(new PetIslandEvent("step"));
       }
       
@@ -140,11 +140,11 @@ package petIsland.model
          return _currentLevel;
       }
       
-      public function set currentLevel(param1:int) : void
+      public function set currentLevel(value:int) : void
       {
-         var _loc2_:int = _currentLevel;
-         _currentLevel = param1;
-         if(_loc2_ != param1)
+         var i:int = _currentLevel;
+         _currentLevel = value;
+         if(i != value)
          {
             dispatchEvent(new PetIslandEvent("currentLevel",_npcBlood));
          }
@@ -155,11 +155,11 @@ package petIsland.model
          return _rewardRecord;
       }
       
-      public function set rewardRecord(param1:String) : void
+      public function set rewardRecord(value:String) : void
       {
-         var _loc2_:String = _rewardRecord;
-         _rewardRecord = param1;
-         if(_loc2_ != param1)
+         var str:String = _rewardRecord;
+         _rewardRecord = value;
+         if(str != value)
          {
             dispatchEvent(new PetIslandEvent("rewardRecord"));
          }
@@ -170,9 +170,9 @@ package petIsland.model
          return _saveLifeCount;
       }
       
-      public function set saveLifeCount(param1:int) : void
+      public function set saveLifeCount(value:int) : void
       {
-         _saveLifeCount = param1;
+         _saveLifeCount = value;
          dispatchEvent(new PetIslandEvent("useSkill"));
       }
       
@@ -181,9 +181,9 @@ package petIsland.model
          return _saveLife2Count;
       }
       
-      public function set saveLife2Count(param1:int) : void
+      public function set saveLife2Count(value:int) : void
       {
-         _saveLife2Count = param1;
+         _saveLife2Count = value;
          dispatchEvent(new PetIslandEvent("useSkillTwo"));
       }
    }

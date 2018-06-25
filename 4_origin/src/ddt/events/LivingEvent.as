@@ -13,6 +13,8 @@ package ddt.events
       
       public static const FORZEN_CHANGED:String = "forzenChanged";
       
+      public static const BACK_EFFECT_CHANGE:String = "backEffectChange";
+      
       public static const SOLIDICE_STATECHANGED:String = "solidiceStateChanged";
       
       public static const TARGET_STEALTH_STATECHANGED:String = "targetStealthStateChanged";
@@ -196,12 +198,12 @@ package ddt.events
       
       private var _paras:Array;
       
-      public function LivingEvent(param1:String, param2:Number = 0, param3:Number = 0, ... rest)
+      public function LivingEvent(type:String, value:Number = 0, old:Number = 0, ... arg)
       {
-         super(param1);
-         _value = param2;
-         _old = param3;
-         _paras = rest;
+         super(type);
+         _value = value;
+         _old = old;
+         _paras = arg;
       }
       
       public function get value() : Number

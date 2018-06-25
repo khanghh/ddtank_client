@@ -49,7 +49,7 @@ package room.view
          PlayerManager.Instance.Self.getBag(43).addEventListener("update",__updateBordenBag);
       }
       
-      private function __updateBordenBag(param1:BagEvent) : void
+      private function __updateBordenBag(e:BagEvent) : void
       {
          refreshBagList();
       }

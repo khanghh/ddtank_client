@@ -44,11 +44,11 @@ package happyLittleGame.cubesGame
       
       private var _bg:Bitmap;
       
-      public function Cube(param1:int, param2:uint)
+      public function Cube(id:int, type:uint)
       {
          super();
-         _id = param1;
-         _type = param2;
+         _id = id;
+         _type = type;
          initView();
          initListener();
       }
@@ -69,7 +69,7 @@ package happyLittleGame.cubesGame
          CubeGameManager.getInstance().removeEventListener("destroy",__onCollide);
       }
       
-      private function __onClick(param1:MouseEvent) : void
+      private function __onClick(event:MouseEvent) : void
       {
          if(!CubeGameManager.getInstance().status)
          {
@@ -81,9 +81,9 @@ package happyLittleGame.cubesGame
          }));
       }
       
-      private function __onCollide(param1:CubeGameEvent) : void
+      private function __onCollide(evt:CubeGameEvent) : void
       {
-         if(!param1 || param1.data != this._id)
+         if(!evt || evt.data != this._id)
          {
             return;
          }
@@ -114,9 +114,9 @@ package happyLittleGame.cubesGame
          return new Point(this.parent.x + this.x + (41 >> 1),this.y + (42 >> 1));
       }
       
-      public function set score(param1:uint) : void
+      public function set score(value:uint) : void
       {
-         _score = param1;
+         _score = value;
       }
       
       public function die() : void
@@ -138,9 +138,9 @@ package happyLittleGame.cubesGame
          SoundManager.instance.play("089");
       }
       
-      private function __onExplore(param1:Event) : void
+      private function __onExplore(evt:Event) : void
       {
-         evt = param1;
+         evt = evt;
          if(!evt || _exploreEffect.currentFrame != _exploreEffect.totalFrames)
          {
             return;

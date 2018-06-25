@@ -9,15 +9,15 @@ package ddt.view.character
       
       private var _state:String = "";
       
-      public function GameLayer(param1:ItemTemplateInfo, param2:String, param3:Boolean = false, param4:int = 1, param5:String = null, param6:String = "")
+      public function GameLayer(info:ItemTemplateInfo, color:String, gunback:Boolean = false, hairType:int = 1, pic:String = null, StateType:String = "")
       {
-         _state = param6;
-         super(param1,param2,param3,param4,param5);
+         _state = StateType;
+         super(info,color,gunback,hairType,pic);
       }
       
-      override protected function getUrl(param1:int) : String
+      override protected function getUrl(layer:int) : String
       {
-         return PathManager.solveGoodsPath(_info.CategoryID,_pic,_info.NeedSex == 1,"game",_hairType,String(param1),info.Level,_gunBack,int(_info.Property1),_state);
+         return PathManager.solveGoodsPath(_info.CategoryID,_pic,_info.NeedSex == 1,"game",_hairType,String(layer),info.Level,_gunBack,int(_info.Property1),_state);
       }
    }
 }

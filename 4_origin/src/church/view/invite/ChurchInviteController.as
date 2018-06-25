@@ -33,26 +33,26 @@ package church.view.invite
          return _view;
       }
       
-      public function refleshList(param1:int, param2:int = 0) : void
+      public function refleshList(type:int, count:int = 0) : void
       {
-         if(param1 == 0)
+         if(type == 0)
          {
             setList(0,PlayerManager.Instance.onlineFriendList);
          }
-         else if(param1 == 1)
+         else if(type == 1)
          {
             setList(1,ConsortionModelManager.Instance.model.onlineConsortiaMemberList);
          }
       }
       
-      private function isOnline(param1:*) : Boolean
+      private function isOnline(item:*) : Boolean
       {
-         return param1.State == 1;
+         return item.State == 1;
       }
       
-      private function setList(param1:int, param2:Array) : void
+      private function setList(type:int, data:Array) : void
       {
-         _model.setList(param1,param2);
+         _model.setList(type,data);
       }
       
       public function hide() : void

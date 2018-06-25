@@ -27,16 +27,16 @@ package ddt.view.chat.chatBall
          addChild(tf);
       }
       
-      public function set text(param1:String) : void
+      public function set text(value:String) : void
       {
          clear();
-         _text = param1;
+         _text = value;
          tf.text = _text;
       }
       
-      public function set format(param1:TextFormat) : void
+      public function set format(value:TextFormat) : void
       {
-         tf.defaultTextFormat = param1;
+         tf.defaultTextFormat = value;
       }
       
       protected function clear() : void

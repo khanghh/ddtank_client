@@ -63,10 +63,10 @@ package dragonBones
       
       var _skinLists:Object;
       
-      public function Armature(param1:Object)
+      public function Armature(display:Object)
       {
          super(this);
-         _display = param1;
+         _display = display;
          _animation = new Animation(this);
          _slotsZOrderChanged = false;
          _slotList = new Vector.<Slot>();
@@ -104,25 +104,25 @@ package dragonBones
          }
          userData = null;
          _animation.dispose();
-         var _loc1_:int = _slotList.length;
+         var i:int = _slotList.length;
          while(true)
          {
-            _loc1_--;
-            if(!_loc1_)
+            i--;
+            if(!i)
             {
                break;
             }
-            _slotList[_loc1_].dispose();
+            _slotList[i].dispose();
          }
-         _loc1_ = _boneList.length;
+         i = _boneList.length;
          while(true)
          {
-            _loc1_--;
-            if(!_loc1_)
+            i--;
+            if(!i)
             {
                break;
             }
-            _boneList[_loc1_].dispose();
+            _boneList[i].dispose();
          }
          _slotList.fixed = false;
          _slotList.length = 0;
@@ -136,69 +136,69 @@ package dragonBones
          _eventList = null;
       }
       
-      public function invalidUpdate(param1:String = null) : void
+      public function invalidUpdate(boneName:String = null) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
-         if(param1)
+         var bone:* = null;
+         var i:int = 0;
+         if(boneName)
          {
-            _loc2_ = getBone(param1);
-            if(_loc2_)
+            bone = getBone(boneName);
+            if(bone)
             {
-               _loc2_.invalidUpdate();
+               bone.invalidUpdate();
             }
          }
          else
          {
-            _loc3_ = _boneList.length;
+            i = _boneList.length;
             while(true)
             {
-               _loc3_--;
-               if(!_loc3_)
+               i--;
+               if(!i)
                {
                   break;
                }
-               _boneList[_loc3_].invalidUpdate();
+               _boneList[i].invalidUpdate();
             }
          }
       }
       
-      public function advanceTime(param1:Number) : void
+      public function advanceTime(passedTime:Number) : void
       {
-         var _loc3_:* = null;
-         var _loc6_:* = null;
-         var _loc5_:* = null;
+         var bone:* = null;
+         var slot:* = null;
+         var childArmature:* = null;
          _lockDispose = true;
-         _animation.advanceTime(param1);
-         param1 = param1 * _animation.timeScale;
-         var _loc4_:Boolean = _animation._isFading;
-         var _loc7_:int = _boneList.length;
+         _animation.advanceTime(passedTime);
+         passedTime = passedTime * _animation.timeScale;
+         var isFading:Boolean = _animation._isFading;
+         var i:int = _boneList.length;
          while(true)
          {
-            _loc7_--;
-            if(!_loc7_)
+            i--;
+            if(!i)
             {
                break;
             }
-            _loc3_ = _boneList[_loc7_];
-            _loc3_.update(_loc4_);
+            bone = _boneList[i];
+            bone.update(isFading);
          }
-         _loc7_ = _slotList.length;
+         i = _slotList.length;
          while(true)
          {
-            _loc7_--;
-            if(!_loc7_)
+            i--;
+            if(!i)
             {
                break;
             }
-            _loc6_ = _slotList[_loc7_];
-            _loc6_.update();
-            if(_loc6_._isShowDisplay)
+            slot = _slotList[i];
+            slot.update();
+            if(slot._isShowDisplay)
             {
-               _loc5_ = _loc6_.childArmature;
-               if(_loc5_)
+               childArmature = slot.childArmature;
+               if(childArmature)
                {
-                  _loc5_.advanceTime(param1);
+                  childArmature.advanceTime(passedTime);
                }
             }
          }
@@ -214,9 +214,9 @@ package dragonBones
          {
             var _loc9_:int = 0;
             var _loc8_:* = _eventList;
-            for each(var _loc2_ in _eventList)
+            for each(var event in _eventList)
             {
-               this.dispatchEvent(_loc2_);
+               this.dispatchEvent(event);
             }
             _eventList.length = 0;
          }
@@ -233,230 +233,230 @@ package dragonBones
          animation.resetAnimationStateList();
          var _loc3_:int = 0;
          var _loc2_:* = _boneList;
-         for each(var _loc1_ in _boneList)
+         for each(var boneItem in _boneList)
          {
-            _loc1_.removeAllStates();
+            boneItem.removeAllStates();
          }
       }
       
-      public function getSlots(param1:Boolean = true) : Vector.<Slot>
+      public function getSlots(returnCopy:Boolean = true) : Vector.<Slot>
       {
-         return !!param1?_slotList.concat():_slotList;
+         return !!returnCopy?_slotList.concat():_slotList;
       }
       
-      public function getSlot(param1:String) : Slot
+      public function getSlot(slotName:String) : Slot
       {
          var _loc4_:int = 0;
          var _loc3_:* = _slotList;
-         for each(var _loc2_ in _slotList)
+         for each(var slot in _slotList)
          {
-            if(_loc2_.name == param1)
+            if(slot.name == slotName)
             {
-               return _loc2_;
+               return slot;
             }
          }
          return null;
       }
       
-      public function getSlotByDisplay(param1:Object) : Slot
+      public function getSlotByDisplay(displayObj:Object) : Slot
       {
-         if(param1)
+         if(displayObj)
          {
             var _loc4_:int = 0;
             var _loc3_:* = _slotList;
-            for each(var _loc2_ in _slotList)
+            for each(var slot in _slotList)
             {
-               if(_loc2_.display == param1)
+               if(slot.display == displayObj)
                {
-                  return _loc2_;
+                  return slot;
                }
             }
          }
          return null;
       }
       
-      public function addSlot(param1:Slot, param2:String) : void
+      public function addSlot(slot:Slot, boneName:String) : void
       {
-         var _loc3_:Bone = getBone(param2);
-         if(_loc3_)
+         var bone:Bone = getBone(boneName);
+         if(bone)
          {
-            _loc3_.addSlot(param1);
+            bone.addSlot(slot);
             return;
          }
          throw new ArgumentError();
       }
       
-      public function removeSlot(param1:Slot) : void
+      public function removeSlot(slot:Slot) : void
       {
-         if(!param1 || param1.armature != this)
+         if(!slot || slot.armature != this)
          {
             throw new ArgumentError();
          }
-         param1.parent.removeSlot(param1);
+         slot.parent.removeSlot(slot);
       }
       
-      public function removeSlotByName(param1:String) : Slot
+      public function removeSlotByName(slotName:String) : Slot
       {
-         var _loc2_:Slot = getSlot(param1);
-         if(_loc2_)
+         var slot:Slot = getSlot(slotName);
+         if(slot)
          {
-            removeSlot(_loc2_);
+            removeSlot(slot);
          }
-         return _loc2_;
+         return slot;
       }
       
-      public function getBones(param1:Boolean = true) : Vector.<Bone>
+      public function getBones(returnCopy:Boolean = true) : Vector.<Bone>
       {
-         return !!param1?_boneList.concat():_boneList;
+         return !!returnCopy?_boneList.concat():_boneList;
       }
       
-      public function getBone(param1:String) : Bone
+      public function getBone(boneName:String) : Bone
       {
          var _loc4_:int = 0;
          var _loc3_:* = _boneList;
-         for each(var _loc2_ in _boneList)
+         for each(var bone in _boneList)
          {
-            if(_loc2_.name == param1)
+            if(bone.name == boneName)
             {
-               return _loc2_;
+               return bone;
             }
          }
          return null;
       }
       
-      public function getBoneByDisplay(param1:Object) : Bone
+      public function getBoneByDisplay(display:Object) : Bone
       {
-         var _loc2_:Slot = getSlotByDisplay(param1);
-         return !!_loc2_?_loc2_.parent:null;
+         var slot:Slot = getSlotByDisplay(display);
+         return !!slot?slot.parent:null;
       }
       
-      public function addBone(param1:Bone, param2:String = null, param3:Boolean = false) : void
+      public function addBone(bone:Bone, parentName:String = null, updateLater:Boolean = false) : void
       {
-         var _loc4_:* = null;
-         if(param2)
+         var parentBone:* = null;
+         if(parentName)
          {
-            _loc4_ = getBone(param2);
-            if(!_loc4_)
+            parentBone = getBone(parentName);
+            if(!parentBone)
             {
                throw new ArgumentError();
             }
          }
-         if(_loc4_)
+         if(parentBone)
          {
-            _loc4_.addChildBone(param1,param3);
+            parentBone.addChildBone(bone,updateLater);
          }
          else
          {
-            if(param1.parent)
+            if(bone.parent)
             {
-               param1.parent.removeChildBone(param1,param3);
+               bone.parent.removeChildBone(bone,updateLater);
             }
-            param1.setArmature(this);
-            if(!param3)
+            bone.setArmature(this);
+            if(!updateLater)
             {
                updateAnimationAfterBoneListChanged();
             }
          }
       }
       
-      public function removeBone(param1:Bone, param2:Boolean = false) : void
+      public function removeBone(bone:Bone, updateLater:Boolean = false) : void
       {
-         if(!param1 || param1.armature != this)
+         if(!bone || bone.armature != this)
          {
             throw new ArgumentError();
          }
-         if(param1.parent)
+         if(bone.parent)
          {
-            param1.parent.removeChildBone(param1,param2);
+            bone.parent.removeChildBone(bone,updateLater);
          }
          else
          {
-            param1.setArmature(null);
-            if(!param2)
+            bone.setArmature(null);
+            if(!updateLater)
             {
                updateAnimationAfterBoneListChanged(false);
             }
          }
       }
       
-      public function removeBoneByName(param1:String) : Bone
+      public function removeBoneByName(boneName:String) : Bone
       {
-         var _loc2_:Bone = getBone(param1);
-         if(_loc2_)
+         var bone:Bone = getBone(boneName);
+         if(bone)
          {
-            removeBone(_loc2_);
+            removeBone(bone);
          }
-         return _loc2_;
+         return bone;
       }
       
-      function addBoneToBoneList(param1:Bone) : void
+      function addBoneToBoneList(bone:Bone) : void
       {
-         if(_boneList.indexOf(param1) < 0)
+         if(_boneList.indexOf(bone) < 0)
          {
             _boneList.fixed = false;
-            _boneList[_boneList.length] = param1;
+            _boneList[_boneList.length] = bone;
             _boneList.fixed = true;
          }
       }
       
-      function removeBoneFromBoneList(param1:Bone) : void
+      function removeBoneFromBoneList(bone:Bone) : void
       {
-         var _loc2_:int = _boneList.indexOf(param1);
-         if(_loc2_ >= 0)
+         var index:int = _boneList.indexOf(bone);
+         if(index >= 0)
          {
             _boneList.fixed = false;
-            _boneList.splice(_loc2_,1);
+            _boneList.splice(index,1);
             _boneList.fixed = true;
          }
       }
       
-      function addSlotToSlotList(param1:Slot) : void
+      function addSlotToSlotList(slot:Slot) : void
       {
-         if(_slotList.indexOf(param1) < 0)
+         if(_slotList.indexOf(slot) < 0)
          {
             _slotList.fixed = false;
-            _slotList[_slotList.length] = param1;
+            _slotList[_slotList.length] = slot;
             _slotList.fixed = true;
          }
       }
       
-      function removeSlotFromSlotList(param1:Slot) : void
+      function removeSlotFromSlotList(slot:Slot) : void
       {
-         var _loc2_:int = _slotList.indexOf(param1);
-         if(_loc2_ >= 0)
+         var index:int = _slotList.indexOf(slot);
+         if(index >= 0)
          {
             _slotList.fixed = false;
-            _slotList.splice(_loc2_,1);
+            _slotList.splice(index,1);
             _slotList.fixed = true;
          }
       }
       
       public function updateSlotsZOrder() : void
       {
-         var _loc1_:* = null;
+         var slot:* = null;
          _slotList.fixed = false;
          _slotList.sort(sortSlot);
          _slotList.fixed = true;
-         var _loc2_:int = _slotList.length;
+         var i:int = _slotList.length;
          while(true)
          {
-            _loc2_--;
-            if(!_loc2_)
+            i--;
+            if(!i)
             {
                break;
             }
-            _loc1_ = _slotList[_loc2_];
-            if(_loc1_._isShowDisplay)
+            slot = _slotList[i];
+            if(slot._isShowDisplay)
             {
-               _loc1_.addDisplayToContainer(_display);
+               slot.addDisplayToContainer(_display);
             }
          }
          _slotsZOrderChanged = false;
       }
       
-      function updateAnimationAfterBoneListChanged(param1:Boolean = true) : void
+      function updateAnimationAfterBoneListChanged(ifNeedSortBoneList:Boolean = true) : void
       {
-         if(param1)
+         if(ifNeedSortBoneList)
          {
             sortBoneList();
          }
@@ -465,121 +465,120 @@ package dragonBones
       
       private function sortBoneList() : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:* = null;
-         var _loc1_:* = null;
-         var _loc5_:int = _boneList.length;
-         if(_loc5_ == 0)
+         var level:int = 0;
+         var bone:* = null;
+         var boneParent:* = null;
+         var i:int = _boneList.length;
+         if(i == 0)
          {
             return;
          }
-         var _loc4_:Array = [];
+         var helpArray:Array = [];
          while(true)
          {
-            _loc5_--;
-            if(!_loc5_)
+            i--;
+            if(!i)
             {
                break;
             }
-            _loc2_ = 0;
-            _loc3_ = _boneList[_loc5_];
-            _loc1_ = _loc3_;
-            while(_loc1_)
+            level = 0;
+            bone = _boneList[i];
+            boneParent = bone;
+            while(boneParent)
             {
-               _loc2_++;
-               _loc1_ = _loc1_.parent;
+               level++;
+               boneParent = boneParent.parent;
             }
-            _loc4_[_loc5_] = [_loc2_,_loc3_];
+            helpArray[i] = [level,bone];
          }
-         _loc4_.sortOn("0",16 | 2);
-         _loc5_ = _loc4_.length;
+         helpArray.sortOn("0",16 | 2);
+         i = helpArray.length;
          _boneList.fixed = false;
          while(true)
          {
-            _loc5_--;
-            if(!_loc5_)
+            i--;
+            if(!i)
             {
                break;
             }
-            _boneList[_loc5_] = _loc4_[_loc5_][1];
+            _boneList[i] = helpArray[i][1];
          }
          _boneList.fixed = true;
-         _loc4_.length = 0;
+         helpArray.length = 0;
       }
       
-      function arriveAtFrame(param1:Frame, param2:TimelineState, param3:AnimationState, param4:Boolean) : void
+      function arriveAtFrame(frame:Frame, timelineState:TimelineState, animationState:AnimationState, isCross:Boolean) : void
       {
-         var _loc5_:* = null;
-         var _loc6_:* = null;
-         if(param1.event && this.hasEventListener("animationFrameEvent"))
+         var frameEvent:* = null;
+         var soundEvent:* = null;
+         if(frame.event && this.hasEventListener("animationFrameEvent"))
          {
-            _loc5_ = new FrameEvent("animationFrameEvent");
-            _loc5_.animationState = param3;
-            _loc5_.frameLabel = param1.event;
-            _eventList.push(_loc5_);
+            frameEvent = new FrameEvent("animationFrameEvent");
+            frameEvent.animationState = animationState;
+            frameEvent.frameLabel = frame.event;
+            _eventList.push(frameEvent);
          }
-         if(param1.sound && _soundManager.hasEventListener("sound"))
+         if(frame.sound && _soundManager.hasEventListener("sound"))
          {
-            _loc6_ = new SoundEvent("sound");
-            _loc6_.armature = this;
-            _loc6_.animationState = param3;
-            _loc6_.sound = param1.sound;
-            _soundManager.dispatchEvent(_loc6_);
+            soundEvent = new SoundEvent("sound");
+            soundEvent.armature = this;
+            soundEvent.animationState = animationState;
+            soundEvent.sound = frame.sound;
+            _soundManager.dispatchEvent(soundEvent);
          }
-         if(param1.action)
+         if(frame.action)
          {
-            if(param3.displayControl)
+            if(animationState.displayControl)
             {
-               animation.gotoAndPlay(param1.action);
+               animation.gotoAndPlay(frame.action);
             }
          }
       }
       
-      private function sortSlot(param1:Slot, param2:Slot) : int
+      private function sortSlot(slot1:Slot, slot2:Slot) : int
       {
-         return param1.zOrder < param2.zOrder?1:-1;
+         return slot1.zOrder < slot2.zOrder?1:-1;
       }
       
-      public function addSkinList(param1:String, param2:Object) : void
+      public function addSkinList(skinName:String, list:Object) : void
       {
-         if(!param1)
+         if(!skinName)
          {
-            param1 = "default";
+            skinName = "default";
          }
-         if(!_skinLists[param1])
+         if(!_skinLists[skinName])
          {
-            _skinLists[param1] = param2;
+            _skinLists[skinName] = list;
          }
       }
       
-      public function changeSkin(param1:String) : void
+      public function changeSkin(skinName:String) : void
       {
-         var _loc2_:* = null;
-         var _loc7_:* = null;
-         var _loc3_:* = null;
-         var _loc8_:int = 0;
-         var _loc6_:SkinData = armatureData.getSkinData(param1);
-         if(!_loc6_ || !_skinLists[param1])
+         var slotData:* = null;
+         var slot:* = null;
+         var bone:* = null;
+         var i:int = 0;
+         var skinData:SkinData = armatureData.getSkinData(skinName);
+         if(!skinData || !_skinLists[skinName])
          {
             return;
          }
-         armatureData.setSkinData(param1);
-         var _loc4_:Array = [];
-         var _loc5_:Vector.<SlotData> = armatureData.slotDataList;
-         _loc8_ = 0;
-         while(_loc8_ < _loc5_.length)
+         armatureData.setSkinData(skinName);
+         var displayList:Array = [];
+         var slotDataList:Vector.<SlotData> = armatureData.slotDataList;
+         for(i = 0; i < slotDataList.length; )
          {
-            _loc2_ = _loc5_[_loc8_];
-            _loc4_ = _skinLists[param1][_loc2_.name];
-            _loc3_ = getBone(_loc2_.parent);
-            if(!(!_loc3_ || !_loc4_))
+            slotData = slotDataList[i];
+            displayList = _skinLists[skinName][slotData.name];
+            bone = getBone(slotData.parent);
+            if(!(!bone || !displayList))
             {
-               _loc7_ = getSlot(_loc2_.name);
-               _loc7_.initWithSlotData(_loc2_);
-               _loc7_.displayList = _loc4_;
-               _loc7_.changeDisplay(0);
+               slot = getSlot(slotData.name);
+               slot.initWithSlotData(slotData);
+               slot.displayList = displayList;
+               slot.changeDisplay(0);
             }
-            _loc8_++;
+            i++;
          }
       }
       

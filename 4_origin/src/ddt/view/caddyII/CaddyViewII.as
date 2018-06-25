@@ -93,11 +93,11 @@ package ddt.view.caddyII
          initEvents();
       }
       
-      override public function set item(param1:ItemTemplateInfo) : void
+      override public function set item(val:ItemTemplateInfo) : void
       {
-         if(_item != param1)
+         if(_item != val)
          {
-            _item = param1;
+            _item = val;
             if(_item.TemplateID == 112101)
             {
                if(_turn)
@@ -128,14 +128,14 @@ package ddt.view.caddyII
       
       private function initView() : void
       {
-         var _loc1_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("asset.caddy.NodeAsset");
-         _loc1_.text = LanguageMgr.GetTranslation("tank.view.caddy.rightTitleTip");
+         var node:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("asset.caddy.NodeAsset");
+         node.text = LanguageMgr.GetTranslation("tank.view.caddy.rightTitleTip");
          _vipDescTxt = ComponentFactory.Instance.creatComponentByStylename("asset.caddy.VipDescTxt");
          _vipDescTxt.text = LanguageMgr.GetTranslation("tank.view.caddy.VipDescTxt");
          _vipIcon = ComponentFactory.Instance.creatComponentByStylename("caddy.VipIcon");
-         var _loc5_:Image = ComponentFactory.Instance.creatComponentByStylename("caddy.GoodsNameBG");
-         var _loc4_:ScaleBitmapImage = ComponentFactory.Instance.creatComponentByStylename("caddy.rightGrid.goldBorder");
-         var _loc3_:MutipleImage = ComponentFactory.Instance.creatComponentByStylename("caddy.numberBG");
+         var goodsNameBG:Image = ComponentFactory.Instance.creatComponentByStylename("caddy.GoodsNameBG");
+         var goldBorder:ScaleBitmapImage = ComponentFactory.Instance.creatComponentByStylename("caddy.rightGrid.goldBorder");
+         var numberBG:MutipleImage = ComponentFactory.Instance.creatComponentByStylename("caddy.numberBG");
          _bg = ComponentFactory.Instance.creatComponentByStylename("caddy.rightBG");
          _gridBGI = ComponentFactory.Instance.creatComponentByStylename("caddy.rightGridBGI");
          _lookBtn = ComponentFactory.Instance.creatComponentByStylename("caddy.LookBtn");
@@ -155,13 +155,13 @@ package ddt.view.caddyII
          _autoCheck = ComponentFactory.Instance.creatComponentByStylename("AutoOpenButton");
          _autoCheck.text = LanguageMgr.GetTranslation("tank.view.award.auto");
          _autoCheck.selected = SharedManager.Instance.autoCaddy;
-         var _loc2_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("caddy.bagHavingTip");
-         _loc2_.text = LanguageMgr.GetTranslation("tank.view.award.bagHaving");
+         var font:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("caddy.bagHavingTip");
+         font.text = LanguageMgr.GetTranslation("tank.view.award.bagHaving");
          addChild(_bg);
          addChild(_gridBGI);
-         addChild(_loc1_);
-         addChild(_loc5_);
-         addChild(_loc3_);
+         addChild(node);
+         addChild(goodsNameBG);
+         addChild(numberBG);
          addChild(_lookBtn);
          addChild(_openBtn);
          addChild(_keyBtn);
@@ -170,9 +170,9 @@ package ddt.view.caddyII
          addChild(_keyNumberTxt);
          addChild(_boxNumberTxt);
          addChild(_turn);
-         addChild(_loc4_);
+         addChild(goldBorder);
          addChild(_autoCheck);
-         addChild(_loc2_);
+         addChild(font);
          _keyBtn.tipData = LanguageMgr.GetTranslation("tank.view.caddy.quickBuyKey");
          _boxBtn.tipData = LanguageMgr.GetTranslation("tank.view.caddy.quickBoxKey");
          keyNumber = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(11456);
@@ -193,27 +193,27 @@ package ddt.view.caddyII
          _autoCheck.addEventListener("select",__selectedChanged);
       }
       
-      private function __selectedChanged(param1:Event) : void
+      private function __selectedChanged(event:Event) : void
       {
          SoundManager.instance.play("008");
          SharedManager.Instance.autoCaddy = _autoCheck.selected;
       }
       
-      private function __quickBuyMouseOut(param1:MouseEvent) : void
+      private function __quickBuyMouseOut(evt:MouseEvent) : void
       {
-         if(param1.currentTarget != _keyBtn)
+         if(evt.currentTarget != _keyBtn)
          {
-            if(param1.currentTarget == _boxBtn)
+            if(evt.currentTarget == _boxBtn)
             {
             }
          }
       }
       
-      private function __quickBuyMouseOver(param1:MouseEvent) : void
+      private function __quickBuyMouseOver(evt:MouseEvent) : void
       {
-         if(param1.currentTarget != _keyBtn)
+         if(evt.currentTarget != _keyBtn)
          {
-            if(param1.currentTarget == _boxBtn)
+            if(evt.currentTarget == _boxBtn)
             {
             }
          }
@@ -233,62 +233,62 @@ package ddt.view.caddyII
          _autoCheck.removeEventListener("select",__selectedChanged);
       }
       
-      private function __buyBuff(param1:MouseEvent) : void
+      private function __buyBuff(evt:MouseEvent) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:* = null;
+         var item:* = null;
+         var carItem:* = null;
          SoundManager.instance.play("008");
-         var _loc5_:Array = [];
-         _loc4_ = ShopManager.Instance.getGoodsByTemplateID(11907);
-         _loc3_ = new ShopCarItemInfo(_loc4_.ShopID,_loc4_.TemplateID);
-         ObjectUtils.copyProperties(_loc3_,_loc4_);
-         _loc5_.push(_loc3_);
-         _loc4_ = ShopManager.Instance.getGoodsByTemplateID(11908);
-         _loc3_ = new ShopCarItemInfo(_loc4_.ShopID,_loc4_.TemplateID);
-         ObjectUtils.copyProperties(_loc3_,_loc4_);
-         _loc5_.push(_loc3_);
-         _loc4_ = ShopManager.Instance.getGoodsByTemplateID(11909);
-         _loc3_ = new ShopCarItemInfo(_loc4_.ShopID,_loc4_.TemplateID);
-         ObjectUtils.copyProperties(_loc3_,_loc4_);
-         _loc5_.push(_loc3_);
-         _loc4_ = ShopManager.Instance.getGoodsByTemplateID(11910);
-         _loc3_ = new ShopCarItemInfo(_loc4_.ShopID,_loc4_.TemplateID);
-         ObjectUtils.copyProperties(_loc3_,_loc4_);
-         _loc5_.push(_loc3_);
-         _loc4_ = ShopManager.Instance.getGoodsByTemplateID(11911);
-         _loc3_ = new ShopCarItemInfo(_loc4_.ShopID,_loc4_.TemplateID);
-         ObjectUtils.copyProperties(_loc3_,_loc4_);
-         _loc5_.push(_loc3_);
-         _loc4_ = ShopManager.Instance.getGoodsByTemplateID(11912);
-         _loc3_ = new ShopCarItemInfo(_loc4_.ShopID,_loc4_.TemplateID);
-         ObjectUtils.copyProperties(_loc3_,_loc4_);
-         _loc5_.push(_loc3_);
-         _loc4_ = ShopManager.Instance.getGoodsByTemplateID(11913);
-         _loc3_ = new ShopCarItemInfo(_loc4_.ShopID,_loc4_.TemplateID);
-         ObjectUtils.copyProperties(_loc3_,_loc4_);
-         _loc5_.push(_loc3_);
-         var _loc2_:SetsShopView = new SetsShopView();
-         _loc2_.initialize(_loc5_);
-         LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+         var list:Array = [];
+         item = ShopManager.Instance.getGoodsByTemplateID(11907);
+         carItem = new ShopCarItemInfo(item.ShopID,item.TemplateID);
+         ObjectUtils.copyProperties(carItem,item);
+         list.push(carItem);
+         item = ShopManager.Instance.getGoodsByTemplateID(11908);
+         carItem = new ShopCarItemInfo(item.ShopID,item.TemplateID);
+         ObjectUtils.copyProperties(carItem,item);
+         list.push(carItem);
+         item = ShopManager.Instance.getGoodsByTemplateID(11909);
+         carItem = new ShopCarItemInfo(item.ShopID,item.TemplateID);
+         ObjectUtils.copyProperties(carItem,item);
+         list.push(carItem);
+         item = ShopManager.Instance.getGoodsByTemplateID(11910);
+         carItem = new ShopCarItemInfo(item.ShopID,item.TemplateID);
+         ObjectUtils.copyProperties(carItem,item);
+         list.push(carItem);
+         item = ShopManager.Instance.getGoodsByTemplateID(11911);
+         carItem = new ShopCarItemInfo(item.ShopID,item.TemplateID);
+         ObjectUtils.copyProperties(carItem,item);
+         list.push(carItem);
+         item = ShopManager.Instance.getGoodsByTemplateID(11912);
+         carItem = new ShopCarItemInfo(item.ShopID,item.TemplateID);
+         ObjectUtils.copyProperties(carItem,item);
+         list.push(carItem);
+         item = ShopManager.Instance.getGoodsByTemplateID(11913);
+         carItem = new ShopCarItemInfo(item.ShopID,item.TemplateID);
+         ObjectUtils.copyProperties(carItem,item);
+         list.push(carItem);
+         var setspayFrame:SetsShopView = new SetsShopView();
+         setspayFrame.initialize(list);
+         LayerManager.Instance.addToLayer(setspayFrame,3,true,1);
       }
       
-      private function creatShape(param1:Number = 100, param2:Number = 25) : Shape
+      private function creatShape(w:Number = 100, h:Number = 25) : Shape
       {
-         var _loc4_:Point = ComponentFactory.Instance.creatCustomObject("caddy.QuickBuyBtn.ButtonSize");
-         var _loc3_:Shape = new Shape();
-         _loc3_.graphics.beginFill(16777215,0);
-         _loc3_.graphics.drawRect(0,0,_loc4_.x,_loc4_.y);
-         _loc3_.graphics.endFill();
-         return _loc3_;
+         var size:Point = ComponentFactory.Instance.creatCustomObject("caddy.QuickBuyBtn.ButtonSize");
+         var shape:Shape = new Shape();
+         shape.graphics.beginFill(16777215,0);
+         shape.graphics.drawRect(0,0,size.x,size.y);
+         shape.graphics.endFill();
+         return shape;
       }
       
-      private function _bagUpdate(param1:BagEvent) : void
+      private function _bagUpdate(e:BagEvent) : void
       {
          keyNumber = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(11456);
          boxNumber = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(_item.TemplateID);
       }
       
-      private function _look(param1:MouseEvent) : void
+      private function _look(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(EquipType.isCaddy(_item))
@@ -303,7 +303,7 @@ package ddt.view.caddyII
          }
       }
       
-      private function __openClick(param1:MouseEvent) : void
+      private function __openClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          openBoxImp();
@@ -311,8 +311,8 @@ package ddt.view.caddyII
       
       private function hasKeys() : void
       {
-         var _loc1_:BuffInfo = PlayerManager.Instance.Self.getBuff(70);
-         if(_loc1_ != null && _loc1_.ValidCount > 0)
+         var caddyPayBuff:BuffInfo = PlayerManager.Instance.Self.getBuff(70);
+         if(caddyPayBuff != null && caddyPayBuff.ValidCount > 0)
          {
             if(keyNumber + 1 >= 4)
             {
@@ -365,23 +365,23 @@ package ddt.view.caddyII
          _buyKey(null);
       }
       
-      private function _buyKey(param1:MouseEvent) : void
+      private function _buyKey(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _showQuickBuy(0);
       }
       
-      private function _buyBox(param1:MouseEvent) : void
+      private function _buyBox(e:MouseEvent) : void
       {
       }
       
-      private function _showQuickBuy(param1:int) : void
+      private function _showQuickBuy(id:int) : void
       {
-         var _loc2_:QuickBuyCaddy = ComponentFactory.Instance.creatCustomObject("caddy.QuickBuyCaddy");
-         _loc2_.show(param1);
+         var quick:QuickBuyCaddy = ComponentFactory.Instance.creatCustomObject("caddy.QuickBuyCaddy");
+         quick.show(id);
       }
       
-      private function _turnComplete(param1:Event) : void
+      private function _turnComplete(e:Event) : void
       {
          dispatchEvent(new Event("start_move_after_turn"));
       }
@@ -417,9 +417,9 @@ package ddt.view.caddyII
          }
       }
       
-      public function set keyNumber(param1:int) : void
+      public function set keyNumber(value:int) : void
       {
-         _keyNumber = param1;
+         _keyNumber = value;
          _keyNumberTxt.text = String(_keyNumber);
       }
       
@@ -428,9 +428,9 @@ package ddt.view.caddyII
          return _keyNumber;
       }
       
-      public function set boxNumber(param1:int) : void
+      public function set boxNumber(value:int) : void
       {
-         _boxNumber = param1;
+         _boxNumber = value;
          _boxNumberTxt.text = String(_boxNumber);
       }
       
@@ -439,10 +439,10 @@ package ddt.view.caddyII
          return _boxNumber;
       }
       
-      override public function setSelectGoodsInfo(param1:InventoryItemInfo) : void
+      override public function setSelectGoodsInfo(info:InventoryItemInfo) : void
       {
          _openBtn.enable = false;
-         _selectedGoodsInfo = param1;
+         _selectedGoodsInfo = info;
          _startTurn();
          _turn.setTurnInfo(_selectedGoodsInfo,_templateIDList);
          _turn.start(_item);
@@ -450,40 +450,38 @@ package ddt.view.caddyII
       
       private function _startTurn() : void
       {
-         var _loc1_:CaddyEvent = new CaddyEvent("caddy_start_turn");
-         _loc1_.info = _selectedGoodsInfo;
-         dispatchEvent(_loc1_);
+         var evt:CaddyEvent = new CaddyEvent("caddy_start_turn");
+         evt.info = _selectedGoodsInfo;
+         dispatchEvent(evt);
       }
       
       private function getRandomTempId() : void
       {
-         var _loc8_:int = 0;
-         var _loc6_:int = 0;
-         var _loc7_:int = 0;
-         var _loc5_:Vector.<BoxGoodsTempInfo> = BossBoxManager.instance.caddyBoxGoodsInfo;
+         var i:int = 0;
+         var j:int = 0;
+         var ran1:int = 0;
+         var templateList:Vector.<BoxGoodsTempInfo> = BossBoxManager.instance.caddyBoxGoodsInfo;
          _templateIDList = new Vector.<int>();
-         var _loc4_:int = 0;
-         var _loc3_:int = Math.floor(_loc5_.length / 25);
-         var _loc2_:int = Math.floor(Math.random() * _loc3_);
-         _loc2_ = _loc2_ == 0?1:_loc2_;
-         _loc8_ = 1;
-         while(_loc8_ <= 25)
+         var number:int = 0;
+         var basic:int = Math.floor(templateList.length / 25);
+         var ran:int = Math.floor(Math.random() * basic);
+         ran = ran == 0?1:ran;
+         for(i = 1; i <= 25; )
          {
-            if(_loc2_ * _loc8_ < _loc5_.length)
+            if(ran * i < templateList.length)
             {
-               _templateIDList.push(_loc5_[_loc2_ * _loc8_].TemplateId);
+               _templateIDList.push(templateList[ran * i].TemplateId);
             }
-            _loc8_++;
+            i++;
          }
-         var _loc1_:int = 0;
-         _loc6_ = 0;
-         while(_loc6_ < _templateIDList.length)
+         var itemID:int = 0;
+         for(j = 0; j < _templateIDList.length; )
          {
-            _loc7_ = Math.floor(Math.random() * _templateIDList.length);
-            _loc1_ = _templateIDList[_loc6_];
-            _templateIDList[_loc6_] = _templateIDList[_loc7_];
-            _templateIDList[_loc7_] = _loc1_;
-            _loc6_++;
+            ran1 = Math.floor(Math.random() * _templateIDList.length);
+            itemID = _templateIDList[j];
+            _templateIDList[j] = _templateIDList[ran1];
+            _templateIDList[ran1] = itemID;
+            j++;
          }
       }
       

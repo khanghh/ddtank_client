@@ -33,22 +33,21 @@ package AvatarCollection.view
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var tmp:* = null;
          _propertyCellList = new Vector.<AvatarCollectionPropertyCell>();
          _allPropertyView = new AvatarCollectionAllPropertyView();
          _allPropertyView.x = 274;
          _allPropertyView.y = 0;
          addChild(_allPropertyView);
-         _loc2_ = 0;
-         while(_loc2_ < 7)
+         for(i = 0; i < 7; )
          {
-            _loc1_ = new AvatarCollectionPropertyCell(_loc2_);
-            _loc1_.x = int(_loc2_ / 4) * 110;
-            _loc1_.y = _loc2_ % 4 * 25;
-            addChild(_loc1_);
-            _propertyCellList.push(_loc1_);
-            _loc2_++;
+            tmp = new AvatarCollectionPropertyCell(i);
+            tmp.x = int(i / 4) * 110;
+            tmp.y = i % 4 * 25;
+            addChild(tmp);
+            _propertyCellList.push(tmp);
+            i++;
          }
          _tip = new AvatarCollectionPropertyTip();
          _tip.visible = false;
@@ -67,7 +66,7 @@ package AvatarCollection.view
          _tipSprite.addEventListener("mouseOut",outHandler,false,0,true);
       }
       
-      private function overHandler(param1:MouseEvent) : void
+      private function overHandler(event:MouseEvent) : void
       {
          if(_completeStatus == 0 || _completeStatus == 1)
          {
@@ -75,32 +74,32 @@ package AvatarCollection.view
          }
       }
       
-      private function outHandler(param1:MouseEvent) : void
+      private function outHandler(event:MouseEvent) : void
       {
          _tip.visible = false;
       }
       
-      public function refreshView(param1:AvatarCollectionUnitVo) : void
+      public function refreshView(data:AvatarCollectionUnitVo) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         if(param1)
+         var totalCount:int = 0;
+         var activityCount:int = 0;
+         if(data)
          {
-            _loc3_ = param1.totalItemList.length;
-            _loc2_ = param1.totalActivityItemCount;
-            if(_loc2_ < _loc3_ / 2)
+            totalCount = data.totalItemList.length;
+            activityCount = data.totalActivityItemCount;
+            if(activityCount < totalCount / 2)
             {
                _completeStatus = 0;
-               _tip.refreshView(param1,1);
+               _tip.refreshView(data,1);
             }
-            else if(_loc2_ == _loc3_)
+            else if(activityCount == totalCount)
             {
                _completeStatus = 2;
             }
             else
             {
                _completeStatus = 1;
-               _tip.refreshView(param1,2);
+               _tip.refreshView(data,2);
             }
          }
          else
@@ -109,9 +108,9 @@ package AvatarCollection.view
          }
          var _loc6_:int = 0;
          var _loc5_:* = _propertyCellList;
-         for each(var _loc4_ in _propertyCellList)
+         for each(var tmp in _propertyCellList)
          {
-            _loc4_.refreshView(param1,_completeStatus);
+            tmp.refreshView(data,_completeStatus);
          }
          _allPropertyView.refreshView();
       }

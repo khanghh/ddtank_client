@@ -91,40 +91,39 @@ package ddt.data.map
          super();
       }
       
-      public function findMissionOverInfo(param1:int) : BaseSettleInfo
+      public function findMissionOverInfo(playerid:int) : BaseSettleInfo
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          if(missionOverPlayer == null)
          {
             return null;
          }
-         _loc2_ = 0;
-         while(_loc2_ < missionOverPlayer.length)
+         i = 0;
+         while(i < missionOverPlayer.length)
          {
-            if(missionOverPlayer[_loc2_].playerid == param1)
+            if(missionOverPlayer[i].playerid == playerid)
             {
-               return missionOverPlayer[_loc2_];
+               return missionOverPlayer[i];
             }
-            _loc2_++;
+            i++;
          }
          return null;
       }
       
-      public function parseString(param1:String) : void
+      public function parseString(value:String) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:Array = param1.split(",");
+         var i:int = 0;
+         var array:Array = value.split(",");
          title1 = "";
          title2 = "";
          title3 = "";
          title4 = "";
-         _loc2_ = 0;
-         while(_loc2_ < _loc3_.length)
+         for(i = 0; i < array.length; )
          {
-            if(_loc3_[_loc2_] != null)
+            if(array[i] != null)
             {
-               this["title" + (_loc2_ + 1)] = _loc3_[_loc2_].toString();
-               _loc2_++;
+               this["title" + (i + 1)] = array[i].toString();
+               i++;
                continue;
             }
             return;
@@ -136,9 +135,9 @@ package ddt.data.map
          return _maxTurnCount;
       }
       
-      public function set maxTurnCount(param1:int) : void
+      public function set maxTurnCount(val:int) : void
       {
-         _maxTurnCount = param1;
+         _maxTurnCount = val;
       }
       
       public function get turnCount() : int
@@ -146,11 +145,11 @@ package ddt.data.map
          return _turnCount;
       }
       
-      public function set turnCount(param1:int) : void
+      public function set turnCount(val:int) : void
       {
-         if(_turnCount != param1)
+         if(_turnCount != val)
          {
-            _turnCount = param1;
+            _turnCount = val;
             dispatchEvent(new RoomEvent("turncountChanged"));
          }
       }

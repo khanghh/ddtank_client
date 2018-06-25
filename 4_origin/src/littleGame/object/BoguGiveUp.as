@@ -49,24 +49,24 @@ package littleGame.object
          return "bogugiveup";
       }
       
-      public function initialize(param1:Scenario, param2:PackageIn) : void
+      public function initialize(scene:Scenario, pkg:PackageIn) : void
       {
-         _scene = param1;
-         _id = param2.readInt();
-         _target = _scene.findLiving(param2.readInt());
-         _maxInhaleCount = param2.readInt();
+         _scene = scene;
+         _id = pkg.readInt();
+         _target = _scene.findLiving(pkg.readInt());
+         _maxInhaleCount = pkg.readInt();
          execute();
       }
       
-      private function drawNote(param1:int, param2:int) : void
+      private function drawNote(count:int, max:int) : void
       {
          if(_noteShape)
          {
-            _noteShape.setNote(param1,param2);
+            _noteShape.setNote(count,max);
          }
          else
          {
-            _noteShape = new InhaleNoteShape(param1,param2);
+            _noteShape = new InhaleNoteShape(count,max);
             addChild(_noteShape);
             _noteShape.x = StageReferance.stageWidth - _noteShape.width >> 1;
             _noteShape.y = 20;
@@ -80,18 +80,18 @@ package littleGame.object
       
       public function execute() : void
       {
-         var _loc2_:int = 0;
+         var idx:int = 0;
          _scene.selfInhaled = true;
          drawNote(_inhaleCount,_maxInhaleCount);
          StageReferance.stage.focus = null;
-         var _loc1_:Graphics = graphics;
-         _loc1_.beginFill(0,0);
-         _loc1_.drawRect(0,0,StageReferance.stageWidth,StageReferance.stageHeight);
-         _loc1_.endFill();
+         var g:Graphics = graphics;
+         g.beginFill(0,0);
+         g.drawRect(0,0,StageReferance.stageWidth,StageReferance.stageHeight);
+         g.endFill();
          if(LittleGameManager.Instance.mainStage.contains(ChatManager.Instance.view))
          {
-            _loc2_ = LittleGameManager.Instance.mainStage.getChildIndex(ChatManager.Instance.view);
-            LittleGameManager.Instance.mainStage.addChildAt(this,_loc2_);
+            idx = LittleGameManager.Instance.mainStage.getChildIndex(ChatManager.Instance.view);
+            LittleGameManager.Instance.mainStage.addChildAt(this,idx);
          }
          else
          {
@@ -107,13 +107,13 @@ package littleGame.object
          addEvent();
       }
       
-      public function invoke(param1:PackageIn) : void
+      public function invoke(pkg:PackageIn) : void
       {
-         var _loc2_:int = param1.readInt();
-         if(_loc2_ == 1 && NoteCount < MaxNoteCount)
+         var command:int = pkg.readInt();
+         if(command == 1 && NoteCount < MaxNoteCount)
          {
-            _maxInhaleCount = param1.readInt();
-            _inhaleCount = param1.readInt();
+            _maxInhaleCount = pkg.readInt();
+            _inhaleCount = pkg.readInt();
             drawNote(_inhaleCount,_maxInhaleCount);
          }
       }
@@ -125,7 +125,7 @@ package littleGame.object
          _giveup.addEventListener("mouseOut",__giveupOut);
       }
       
-      private function __giveupOut(param1:MouseEvent) : void
+      private function __giveupOut(event:MouseEvent) : void
       {
          if(_giveup)
          {
@@ -133,7 +133,7 @@ package littleGame.object
          }
       }
       
-      private function __giveupOver(param1:MouseEvent) : void
+      private function __giveupOver(event:MouseEvent) : void
       {
          if(_giveup)
          {
@@ -141,9 +141,9 @@ package littleGame.object
          }
       }
       
-      private function __giveup(param1:MouseEvent) : void
+      private function __giveup(event:MouseEvent) : void
       {
-         param1.stopPropagation();
+         event.stopPropagation();
          _giveup.removeEventListener("click",__giveup);
          _giveup.removeEventListener("mouseOver",__giveupOver);
          _giveup.removeEventListener("mouseOut",__giveupOut);
@@ -155,13 +155,13 @@ package littleGame.object
          _scene.selfPlayer.doAction("stand");
       }
       
-      private function __giveupFrame(param1:Event) : void
+      private function __giveupFrame(event:Event) : void
       {
-         var _loc2_:MovieClip = param1.currentTarget as MovieClip;
-         if(_loc2_.currentFrame >= _loc2_.totalFrames)
+         var movie:MovieClip = event.currentTarget as MovieClip;
+         if(movie.currentFrame >= movie.totalFrames)
          {
-            _loc2_.removeEventListener("enterFrame",__giveupFrame);
-            _loc2_.stop();
+            movie.removeEventListener("enterFrame",__giveupFrame);
+            movie.stop();
             complete();
          }
       }

@@ -133,24 +133,23 @@ package vip.view
       
       protected var time:String = "";
       
-      public function GiveYourselfOpenView(param1:int = 0)
+      public function GiveYourselfOpenView($discountCode:int = 0)
       {
          super();
-         discountCode = param1;
+         discountCode = $discountCode;
          _init();
       }
       
       public static function getVipinfo() : Array
       {
-         var _loc2_:* = null;
-         var _loc1_:int = 0;
+         var info:* = null;
+         var i:int = 0;
          vip_reward_arr = [];
-         _loc1_ = 0;
-         while(_loc1_ < _vipChestsArr[_loc1_])
+         for(i = 0; i < _vipChestsArr[i]; )
          {
-            _loc2_ = ItemManager.Instance.getTemplateById(_vipChestsArr[_loc1_]);
-            vip_reward_arr.push(_loc2_);
-            _loc1_++;
+            info = ItemManager.Instance.getTemplateById(_vipChestsArr[i]);
+            vip_reward_arr.push(info);
+            i++;
          }
          return vip_reward_arr;
       }
@@ -270,13 +269,13 @@ package vip.view
          PlayerManager.Instance.Self.removeEventListener("propertychange",__propertyChange);
       }
       
-      private function __reward(param1:MouseEvent) : void
+      private function __reward(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          VipIntegralShopManager.Instance.show();
       }
       
-      private function __alertHandler(param1:FrameEvent) : void
+      private function __alertHandler(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          alertFrame.removeEventListener("response",__alertHandler);
@@ -291,11 +290,11 @@ package vip.view
          alertFrame = null;
       }
       
-      private function __responseVipInfoTipHandler(param1:FrameEvent) : void
+      private function __responseVipInfoTipHandler(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          _vipInfoTipBox.removeEventListener("response",__responseHandler);
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
@@ -309,11 +308,11 @@ package vip.view
          }
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          awards.removeEventListener("response",__responseHandler);
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
@@ -322,7 +321,7 @@ package vip.view
          }
       }
       
-      private function showAwards(param1:ItemTemplateInfo) : void
+      private function showAwards(para:ItemTemplateInfo) : void
       {
          awards = ComponentFactory.Instance.creat("vip.awardFrame");
          awards.escEnable = true;
@@ -333,7 +332,7 @@ package vip.view
          LayerManager.Instance.addToLayer(awards,3,true,1);
       }
       
-      private function __sendReward(param1:Event) : void
+      private function __sendReward(evt:Event) : void
       {
          SoundManager.instance.play("008");
          SocketManager.Instance.out.sendDailyAward(3);
@@ -343,28 +342,28 @@ package vip.view
          rewardBtnCanUse();
       }
       
-      private function __propertyChange(param1:PlayerPropertyEvent) : void
+      private function __propertyChange(evt:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["Money"])
+         if(evt.changedProperties["Money"])
          {
             _money.text = PlayerManager.Instance.Self.Money + LanguageMgr.GetTranslation("money");
          }
-         if(param1.changedProperties["isVip"] || param1.changedProperties["canTakeVipReward"])
+         if(evt.changedProperties["isVip"] || evt.changedProperties["canTakeVipReward"])
          {
             showOpenOrRenewal();
             rewardBtnCanUse();
          }
       }
       
-      private function __upPayNum(param1:Event) : void
+      private function __upPayNum(e:Event) : void
       {
          SoundManager.instance.play("008");
          upPayMoneyText();
       }
       
-      protected function __openVip(param1:MouseEvent) : void
+      protected function __openVip(evt:MouseEvent) : void
       {
-         var _loc5_:Number = NaN;
+         var curTime:Number = NaN;
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -373,39 +372,39 @@ package vip.view
          }
          upPayMoneyText();
          upPayMoneyText();
-         var _loc4_:* = false;
-         var _loc6_:int = PlayerManager.Instance.Self.vipDiscount;
-         var _loc8_:Date = PlayerManager.Instance.Self.vipDiscountValidity;
-         var _loc7_:Date = new Date(_loc8_.time);
+         var isCanUse:* = false;
+         var temCoupons:int = PlayerManager.Instance.Self.vipDiscount;
+         var useDate:Date = PlayerManager.Instance.Self.vipDiscountValidity;
+         var endDate:Date = new Date(useDate.time);
          var _loc10_:String = "hours";
-         var _loc11_:* = _loc7_[_loc10_] + 24;
-         _loc7_[_loc10_] = _loc11_;
-         if(_loc8_ != null)
+         var _loc11_:* = endDate[_loc10_] + 24;
+         endDate[_loc10_] = _loc11_;
+         if(useDate != null)
          {
-            _loc5_ = TimeManager.Instance.Now().getTime();
-            _loc4_ = _loc7_.getTime() >= _loc5_;
+            curTime = TimeManager.Instance.Now().getTime();
+            isCanUse = endDate.getTime() >= curTime;
          }
-         var _loc2_:int = payNum;
-         var _loc3_:int = 0;
-         if(_loc6_ > 0 && _loc4_)
+         var totalPoint:int = payNum;
+         var couponsPoint:int = 0;
+         if(temCoupons > 0 && isCanUse)
          {
-            payNum = _loc2_ * _loc6_ / 10;
-            _loc3_ = _loc2_ - payNum;
+            payNum = totalPoint * temCoupons / 10;
+            couponsPoint = totalPoint - payNum;
          }
-         var _loc9_:String = LanguageMgr.GetTranslation("ddt.vip.vipView.confirmforSelf",time,payNum);
-         if(_loc6_ > 0 && _loc4_)
+         var msg:String = LanguageMgr.GetTranslation("ddt.vip.vipView.confirmforSelf",time,payNum);
+         if(temCoupons > 0 && isCanUse)
          {
-            _loc9_ = _loc9_ + ("\n" + LanguageMgr.GetTranslation("ddt.vip.vipView.useVipCoupons.tipMsg",_loc3_));
+            msg = msg + ("\n" + LanguageMgr.GetTranslation("ddt.vip.vipView.useVipCoupons.tipMsg",couponsPoint));
          }
-         _confirmFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("ddt.vip.vipFrame.ConfirmTitle"),_loc9_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,1,null,"SimpleAlert",30,true);
+         _confirmFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("ddt.vip.vipFrame.ConfirmTitle"),msg,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,1,null,"SimpleAlert",30,true);
          _confirmFrame.moveEnable = false;
          _confirmFrame.addEventListener("response",__confirm);
       }
       
-      private function __moneyConfirmHandler(param1:FrameEvent) : void
+      private function __moneyConfirmHandler(evt:FrameEvent) : void
       {
          _moneyConfirm.removeEventListener("response",__moneyConfirmHandler);
-         switch(int(param1.responseCode) - 2)
+         switch(int(evt.responseCode) - 2)
          {
             case 0:
             case 1:
@@ -419,10 +418,10 @@ package vip.view
          _moneyConfirm = null;
       }
       
-      private function __confirm(param1:FrameEvent) : void
+      private function __confirm(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode) - 2)
+         switch(int(evt.responseCode) - 2)
          {
             case 0:
             case 1:
@@ -491,17 +490,17 @@ package vip.view
          }
       }
       
-      private function _getStrArr(param1:DictionaryData) : Array
+      private function _getStrArr(dic:DictionaryData) : Array
       {
-         var _loc2_:Array = param1[_vipChestsArr[PlayerManager.Instance.Self.VIPLevel - 1]];
-         return _loc2_;
+         var goodsArr:Array = dic[_vipChestsArr[PlayerManager.Instance.Self.VIPLevel - 1]];
+         return goodsArr;
       }
       
-      private function getVIPInfoTip(param1:DictionaryData) : Array
+      private function getVIPInfoTip(dic:DictionaryData) : Array
       {
-         var _loc2_:* = null;
-         _loc2_ = PlayerManager.Instance.Self.VIPLevel == 12?[ItemManager.Instance.getTemplateById(int(_vipChestsArr[PlayerManager.Instance.Self.VIPLevel - 2])),ItemManager.Instance.getTemplateById(int(_vipChestsArr[PlayerManager.Instance.Self.VIPLevel - 1]))]:[ItemManager.Instance.getTemplateById(int(_vipChestsArr[PlayerManager.Instance.Self.VIPLevel - 1])),ItemManager.Instance.getTemplateById(int(_vipChestsArr[PlayerManager.Instance.Self.VIPLevel]))];
-         return _loc2_;
+         var resultGoodsArray:* = null;
+         resultGoodsArray = PlayerManager.Instance.Self.VIPLevel == 12?[ItemManager.Instance.getTemplateById(int(_vipChestsArr[PlayerManager.Instance.Self.VIPLevel - 2])),ItemManager.Instance.getTemplateById(int(_vipChestsArr[PlayerManager.Instance.Self.VIPLevel - 1]))]:[ItemManager.Instance.getTemplateById(int(_vipChestsArr[PlayerManager.Instance.Self.VIPLevel - 1])),ItemManager.Instance.getTemplateById(int(_vipChestsArr[PlayerManager.Instance.Self.VIPLevel]))];
+         return resultGoodsArray;
       }
       
       public function dispose() : void

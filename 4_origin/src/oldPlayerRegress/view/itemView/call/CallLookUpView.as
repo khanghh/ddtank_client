@@ -70,7 +70,7 @@ package oldPlayerRegress.view.itemView.call
          inputText.addEventListener("change",__textInput);
       }
       
-      private function __textInput(param1:Event) : void
+      private function __textInput(event:Event) : void
       {
       }
       
@@ -135,9 +135,9 @@ package oldPlayerRegress.view.itemView.call
          return _inputText;
       }
       
-      public function set inputText(param1:TextInput) : void
+      public function set inputText(value:TextInput) : void
       {
-         _inputText = param1;
+         _inputText = value;
       }
    }
 }

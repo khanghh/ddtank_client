@@ -21,63 +21,61 @@ package gameCommon
       
       public static function setup() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          redData = new Vector.<BitmapData>();
          greenData = new Vector.<BitmapData>();
-         _loc1_ = 0;
-         while(_loc1_ < 10)
+         for(i = 0; i < 10; )
          {
-            redData.push(ComponentFactory.Instance.creatBitmapData("asset.game.bloodNUm" + _loc1_ + "Asset"));
-            greenData.push(ComponentFactory.Instance.creatBitmapData("asset.game.bloodNUma" + _loc1_ + "Asset"));
-            _loc1_++;
+            redData.push(ComponentFactory.Instance.creatBitmapData("asset.game.bloodNUm" + i + "Asset"));
+            greenData.push(ComponentFactory.Instance.creatBitmapData("asset.game.bloodNUma" + i + "Asset"));
+            i++;
          }
       }
       
-      public static function createGreenNum(param1:int) : Bitmap
+      public static function createGreenNum(value:int) : Bitmap
       {
-         var _loc2_:Bitmap = new Bitmap(greenData[param1]);
-         return _loc2_;
+         var bitmap:Bitmap = new Bitmap(greenData[value]);
+         return bitmap;
       }
       
-      public static function createRedNum(param1:int) : Bitmap
+      public static function createRedNum(value:int) : Bitmap
       {
-         var _loc2_:Bitmap = new Bitmap(redData[param1]);
-         return _loc2_;
+         var bitmap:Bitmap = new Bitmap(redData[value]);
+         return bitmap;
       }
       
-      public static function createGreenImageNum(param1:int) : Image
+      public static function createGreenImageNum(value:int) : Image
       {
-         var _loc2_:Image = StarlingMain.instance.createImage("game_blood_gNum" + param1);
-         return _loc2_;
+         var image:Image = StarlingMain.instance.createImage("game_blood_gNum" + value);
+         return image;
       }
       
-      public static function createRedImageNum(param1:int) : Image
+      public static function createRedImageNum(value:int) : Image
       {
-         var _loc2_:Image = StarlingMain.instance.createImage("game_blood_rNum" + param1);
-         return _loc2_;
+         var image:Image = StarlingMain.instance.createImage("game_blood_rNum" + value);
+         return image;
       }
       
-      public static function createHPStrip(param1:int) : Image
+      public static function createHPStrip(team:int) : Image
       {
-         if(param1 >= 5)
+         if(team >= 5)
          {
-            param1 = 9 - param1;
+            team = 9 - team;
          }
-         var _loc2_:Image = StarlingMain.instance.createImage("game_HPStrip" + param1);
-         return _loc2_;
+         var image:Image = StarlingMain.instance.createImage("game_HPStrip" + team);
+         return image;
       }
       
       public static function dispose() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < 10)
+         var i:int = 0;
+         for(i = 0; i < 10; )
          {
-            redData[_loc1_].dispose();
-            redData[_loc1_] = null;
-            greenData[_loc1_].dispose();
-            greenData[_loc1_] = null;
-            _loc1_++;
+            redData[i].dispose();
+            redData[i] = null;
+            greenData[i].dispose();
+            greenData[i] = null;
+            i++;
          }
       }
    }

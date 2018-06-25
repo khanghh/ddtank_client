@@ -12,144 +12,144 @@ package org.as3commons.lang
          super();
       }
       
-      public static function isTrue(param1:Boolean, param2:String = "") : void
+      public static function isTrue(expression:Boolean, message:String = "") : void
       {
-         if(!param1)
+         if(!expression)
          {
-            if(param2 == null || param2.length == 0)
+            if(message == null || message.length == 0)
             {
-               param2 = "[Assertion failed] - this expression must be true";
+               message = "[Assertion failed] - this expression must be true";
             }
-            throw new IllegalArgumentError(param2);
+            throw new IllegalArgumentError(message);
          }
       }
       
-      public static function notAbstract(param1:Object, param2:Class, param3:String = "") : void
+      public static function notAbstract(instance:Object, abstractClass:Class, message:String = "") : void
       {
-         var _loc4_:String = getQualifiedClassName(param1);
-         var _loc5_:String = getQualifiedClassName(param2);
-         if(_loc4_ == _loc5_)
+         var instanceName:String = getQualifiedClassName(instance);
+         var abstractName:String = getQualifiedClassName(abstractClass);
+         if(instanceName == abstractName)
          {
-            if(param3 == null || param3.length == 0)
+            if(message == null || message.length == 0)
             {
-               param3 = "[Assertion failed] - instance is an instance of an abstract class";
+               message = "[Assertion failed] - instance is an instance of an abstract class";
             }
-            throw new IllegalArgumentError(param3);
+            throw new IllegalArgumentError(message);
          }
       }
       
-      public static function notNull(param1:Object, param2:String = "") : void
+      public static function notNull(object:Object, message:String = "") : void
       {
-         if(param1 == null)
+         if(object == null)
          {
-            if(param2 == null || param2.length == 0)
+            if(message == null || message.length == 0)
             {
-               param2 = "[Assertion failed] - this argument is required; it must not null";
+               message = "[Assertion failed] - this argument is required; it must not null";
             }
-            throw new IllegalArgumentError(param2);
+            throw new IllegalArgumentError(message);
          }
       }
       
-      public static function instanceOf(param1:*, param2:Class, param3:String = "") : void
+      public static function instanceOf(object:*, type:Class, message:String = "") : void
       {
-         if(!(param1 is param2))
+         if(!(object is type))
          {
-            if(param3 == null || param3.length == 0)
+            if(message == null || message.length == 0)
             {
-               param3 = "[Assertion failed] - this argument is not of type \'" + param2 + "\'";
+               message = "[Assertion failed] - this argument is not of type \'" + type + "\'";
             }
-            throw new IllegalArgumentError(param3);
+            throw new IllegalArgumentError(message);
          }
       }
       
-      public static function subclassOf(param1:Class, param2:Class, param3:String = "") : void
+      public static function subclassOf(clazz:Class, parentClass:Class, message:String = "") : void
       {
-         if(!ClassUtils.isSubclassOf(param1,param2))
+         if(!ClassUtils.isSubclassOf(clazz,parentClass))
          {
-            if(param3 == null || param3.length == 0)
+            if(message == null || message.length == 0)
             {
-               param3 = "[Assertion failed] - this argument is not a subclass of \'" + param2 + "\'";
+               message = "[Assertion failed] - this argument is not a subclass of \'" + parentClass + "\'";
             }
-            throw new IllegalArgumentError(param3);
+            throw new IllegalArgumentError(message);
          }
       }
       
-      public static function implementationOf(param1:*, param2:Class, param3:String = "") : void
+      public static function implementationOf(object:*, interfaze:Class, message:String = "") : void
       {
-         if(!ClassUtils.isImplementationOf(ClassUtils.forInstance(param1),param2))
+         if(!ClassUtils.isImplementationOf(ClassUtils.forInstance(object),interfaze))
          {
-            if(param3 == null || param3.length == 0)
+            if(message == null || message.length == 0)
             {
-               param3 = "[Assertion failed] - this argument does not implement the interface \'" + param2 + "\'";
+               message = "[Assertion failed] - this argument does not implement the interface \'" + interfaze + "\'";
             }
-            throw new IllegalArgumentError(param3);
+            throw new IllegalArgumentError(message);
          }
       }
       
-      public static function state(param1:Boolean, param2:String = "") : void
+      public static function state(expression:Boolean, message:String = "") : void
       {
-         if(!param1)
+         if(!expression)
          {
-            if(param2 == null || param2.length == 0)
+            if(message == null || message.length == 0)
             {
-               param2 = "[Assertion failed] - this state invariant must be true";
+               message = "[Assertion failed] - this state invariant must be true";
             }
-            throw new IllegalStateError(param2);
+            throw new IllegalStateError(message);
          }
       }
       
-      public static function hasText(param1:String, param2:String = "") : void
+      public static function hasText(string:String, message:String = "") : void
       {
-         if(StringUtils.isBlank(param1))
+         if(StringUtils.isBlank(string))
          {
-            if(param2 == null || param2.length == 0)
+            if(message == null || message.length == 0)
             {
-               param2 = "[Assertion failed] - this String argument must have text; it must not be <code>null</code>, empty, or blank";
+               message = "[Assertion failed] - this String argument must have text; it must not be <code>null</code>, empty, or blank";
             }
-            throw new IllegalArgumentError(param2);
+            throw new IllegalArgumentError(message);
          }
       }
       
-      public static function dictionaryKeysOfType(param1:Dictionary, param2:Class, param3:String = "") : void
+      public static function dictionaryKeysOfType(dictionary:Dictionary, type:Class, message:String = "") : void
       {
-         var _loc4_:* = null;
-         for(_loc4_ in param1)
+         var key:* = null;
+         for(key in dictionary)
          {
-            if(!(_loc4_ is param2))
+            if(!(key is type))
             {
-               if(param3 == null || param3.length == 0)
+               if(message == null || message.length == 0)
                {
-                  param3 = "[Assertion failed] - this Dictionary argument must have keys of type \'" + param2 + "\'";
+                  message = "[Assertion failed] - this Dictionary argument must have keys of type \'" + type + "\'";
                }
-               throw new IllegalArgumentError(param3);
+               throw new IllegalArgumentError(message);
             }
          }
       }
       
-      public static function arrayContains(param1:Array, param2:*, param3:String = "") : void
+      public static function arrayContains(array:Array, item:*, message:String = "") : void
       {
-         if(param1.indexOf(param2) == -1)
+         if(array.indexOf(item) == -1)
          {
-            if(param3 == null || param3.length == 0)
+            if(message == null || message.length == 0)
             {
-               param3 = "[Assertion failed] - this Array argument does not contain the item \'" + param2 + "\'";
+               message = "[Assertion failed] - this Array argument does not contain the item \'" + item + "\'";
             }
-            throw new IllegalArgumentError(param3);
+            throw new IllegalArgumentError(message);
          }
       }
       
-      public static function arrayItemsOfType(param1:Array, param2:Class, param3:String = "") : void
+      public static function arrayItemsOfType(array:Array, type:Class, message:String = "") : void
       {
-         var _loc4_:* = undefined;
-         for each(_loc4_ in param1)
+         var item:* = undefined;
+         for each(item in array)
          {
-            if(!(_loc4_ is param2))
+            if(!(item is type))
             {
-               if(param3 == null || param3.length == 0)
+               if(message == null || message.length == 0)
                {
-                  param3 = "[Assertion failed] - this Array must have items of type \'" + param2 + "\'";
+                  message = "[Assertion failed] - this Array must have items of type \'" + type + "\'";
                }
-               throw new IllegalArgumentError(param3);
+               throw new IllegalArgumentError(message);
             }
          }
       }

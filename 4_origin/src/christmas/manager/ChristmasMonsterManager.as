@@ -22,10 +22,10 @@ package christmas.manager
       
       public var curMonster:ChristmasMonster;
       
-      public function ChristmasMonsterManager(param1:ThisIsSingleTon)
+      public function ChristmasMonsterManager(pSingleton:ThisIsSingleTon)
       {
          super();
-         if(param1 == null)
+         if(pSingleton == null)
          {
             throw new Error("this is singleton,can\'t be new like this!");
          }
@@ -40,13 +40,13 @@ package christmas.manager
          return _instance;
       }
       
-      public function set ActiveState(param1:Boolean) : void
+      public function set ActiveState(value:Boolean) : void
       {
-         _activeState = param1;
-         ChristmasMonsterManager.Instance.dispatchEvent(new ChristmasMonsterEvent("monster_active_start",param1));
+         _activeState = value;
+         ChristmasMonsterManager.Instance.dispatchEvent(new ChristmasMonsterEvent("monster_active_start",value));
       }
       
-      public function __gameStart(param1:CrazyTankSocketEvent) : void
+      public function __gameStart(pEvent:CrazyTankSocketEvent) : void
       {
          if(_monsterInfo)
          {
@@ -66,9 +66,9 @@ package christmas.manager
          return _activeState;
       }
       
-      public function set CurrentMonster(param1:MonsterInfo) : void
+      public function set CurrentMonster(value:MonsterInfo) : void
       {
-         _monsterInfo = param1;
+         _monsterInfo = value;
       }
    }
 }

@@ -91,7 +91,7 @@ package godCardRaise.view
          this.addEventListener("mouseOut",onMouseOut);
       }
       
-      private function onMouseOver(param1:MouseEvent) : void
+      private function onMouseOver(evt:MouseEvent) : void
       {
          _info.Composition;
          if(_cardCount > 0 && _info.Decompose != 0)
@@ -130,7 +130,7 @@ package godCardRaise.view
          }
       }
       
-      private function onMouseOut(param1:MouseEvent) : void
+      private function onMouseOut(evt:MouseEvent) : void
       {
          var _loc2_:* = false;
          _smashBtn.visible = _loc2_;
@@ -153,37 +153,37 @@ package godCardRaise.view
          }
       }
       
-      public function set info(param1:GodCardListInfo) : void
+      public function set info($info:GodCardListInfo) : void
       {
-         _info = param1;
+         _info = $info;
          updateView();
          _loaderPic = LoadResourceManager.Instance.createLoader(PathManager.solveGodCardRaisePath(_info.Pic),0);
          _loaderPic.addEventListener("complete",__picComplete);
          LoadResourceManager.Instance.startLoad(_loaderPic);
       }
       
-      private function __picComplete(param1:LoaderEvent) : void
+      private function __picComplete(evt:LoaderEvent) : void
       {
-         param1.loader.removeEventListener("complete",__picComplete);
-         if(param1.loader.isSuccess)
+         evt.loader.removeEventListener("complete",__picComplete);
+         if(evt.loader.isSuccess)
          {
-            _picBmp = param1.loader.content as Bitmap;
+            _picBmp = evt.loader.content as Bitmap;
             _picSp.addChild(_picBmp);
          }
       }
       
-      private function __compositeBtnHandler(param1:MouseEvent) : void
+      private function __compositeBtnHandler(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc3_:Number = new Date().time;
-         if(_loc3_ - _clickNum < 1000)
+         var nowTime:Number = new Date().time;
+         if(nowTime - _clickNum < 1000)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.storeIIStrength.startStrengthClickTimerMsg"));
             return;
          }
-         _clickNum = _loc3_;
-         var _loc2_:int = GodCardRaiseManager.Instance.model.chipCount;
-         if(_loc2_ < _info.Composition)
+         _clickNum = nowTime;
+         var chipCount:int = GodCardRaiseManager.Instance.model.chipCount;
+         if(chipCount < _info.Composition)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("godCardRaiseAtlasCard.compositeMsg2",_info.Composition));
             return;
@@ -191,38 +191,38 @@ package godCardRaise.view
          showAlert(2);
       }
       
-      private function showAlert(param1:int) : void
+      private function showAlert(type:int) : void
       {
-         var _loc2_:int = 0;
+         var maxCount:int = 0;
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         _btnType = param1;
+         _btnType = type;
          if(_btnType == 2)
          {
-            _loc2_ = GodCardRaiseManager.Instance.model.chipCount / _info.Composition;
+            maxCount = GodCardRaiseManager.Instance.model.chipCount / _info.Composition;
          }
          else
          {
-            _loc2_ = _cardCount;
+            maxCount = _cardCount;
          }
          _alert = ComponentFactory.Instance.creatComponentByStylename("GodCardRaiseAtlasCardAlert");
          _alert.addEventListener("response",__alertResponse);
          _alert.setInfo = _info;
          _alert.setType = _btnType;
-         _alert.valueLimit = "1," + _loc2_;
+         _alert.valueLimit = "1," + maxCount;
          _alert.show();
       }
       
-      private function __alertResponse(param1:FrameEvent) : void
+      private function __alertResponse(event:FrameEvent) : void
       {
          if(_alert)
          {
             _alert.removeEventListener("response",__alertResponse);
          }
-         switch(int(param1.responseCode) - 2)
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
@@ -238,16 +238,16 @@ package godCardRaise.view
          _alert = null;
       }
       
-      private function __smashBtnHandler(param1:MouseEvent) : void
+      private function __smashBtnHandler(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:Number = new Date().time;
-         if(_loc2_ - _clickNum < 1000)
+         var nowTime:Number = new Date().time;
+         if(nowTime - _clickNum < 1000)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.storeIIStrength.startStrengthClickTimerMsg"));
             return;
          }
-         _clickNum = _loc2_;
+         _clickNum = nowTime;
          if(_cardCount <= 0)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("godCardRaiseAtlasCard.smashMsg2"));

@@ -35,11 +35,11 @@ package ddt.manager
          return _instance;
       }
       
-      public function setFunction(param1:Object, param2:Function = null, param3:Array = null) : void
+      public function setFunction(funcObject:Object, func:Function = null, funcArgs:Array = null) : void
       {
-         _funcObject = param1;
-         _func = param2;
-         _funcArgs = param3;
+         _funcObject = funcObject;
+         _func = func;
+         _funcArgs = funcArgs;
       }
       
       public function isNoWeapon() : Boolean
@@ -68,13 +68,13 @@ package ddt.manager
          _alert.addEventListener("response",onWeaponFragmentResponse);
       }
       
-      private function onWeaponFragmentResponse(param1:FrameEvent) : void
+      private function onWeaponFragmentResponse(evt:FrameEvent) : void
       {
          _alert.removeEventListener("response",onWeaponFragmentResponse);
          ObjectUtils.disposeObject(_alert);
          _alert = null;
          SoundManager.instance.play("008");
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         if(evt.responseCode == 2 || evt.responseCode == 3)
          {
             _funcArgs.push(true);
          }
@@ -93,13 +93,13 @@ package ddt.manager
          _alert.addEventListener("response",__confirmToShopResponse);
       }
       
-      private function __confirmToShopResponse(param1:FrameEvent) : void
+      private function __confirmToShopResponse(event:FrameEvent) : void
       {
          _alert.removeEventListener("response",__confirmToShopResponse);
          ObjectUtils.disposeObject(_alert);
          _alert = null;
          SoundManager.instance.play("008");
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         if(event.responseCode == 2 || event.responseCode == 3)
          {
             StateManager.setState("shop");
          }
@@ -113,9 +113,9 @@ package ddt.manager
          _alert.addEventListener("response",onFrameResponse);
       }
       
-      private function onFrameResponse(param1:FrameEvent) : void
+      private function onFrameResponse(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             _skipCheck = true;
             callBack();

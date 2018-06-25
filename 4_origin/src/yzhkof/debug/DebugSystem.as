@@ -39,27 +39,27 @@ package yzhkof.debug
          super();
       }
       
-      public static function init(param1:DisplayObject, param2:Boolean = false) : void
+      public static function init(dobj:DisplayObject, useSample:Boolean = false) : void
       {
-         if(param2)
+         if(useSample)
          {
             startSampling();
          }
-         if(param1.stage)
+         if(dobj.stage)
          {
-            _stage = param1.stage;
+            _stage = dobj.stage;
             setup();
          }
          else
          {
-            param1.addEventListener(Event.ADDED_TO_STAGE,__addToStage);
+            dobj.addEventListener(Event.ADDED_TO_STAGE,__addToStage);
          }
       }
       
-      protected static function __addToStage(param1:Event) : void
+      protected static function __addToStage(event:Event) : void
       {
-         DisplayObject(param1.currentTarget).removeEventListener(Event.ADDED_TO_STAGE,__addToStage);
-         _stage = DisplayObject(param1.currentTarget).stage;
+         DisplayObject(event.currentTarget).removeEventListener(Event.ADDED_TO_STAGE,__addToStage);
+         _stage = DisplayObject(event.currentTarget).stage;
          setup();
       }
       
@@ -103,11 +103,11 @@ package yzhkof.debug
          TextTrace.view.y = 200;
          FocusViewer.view.x = 500;
          FocusViewer.view.y = 300;
-         _stage.addEventListener(KeyboardEvent.KEY_DOWN,function(param1:KeyboardEvent):void
+         _stage.addEventListener(KeyboardEvent.KEY_DOWN,function(e:KeyboardEvent):void
          {
-            if(param1.ctrlKey && param1.altKey)
+            if(e.ctrlKey && e.altKey)
             {
-               switch(param1.keyCode)
+               switch(e.keyCode)
                {
                   case 13:
                      ScriptRuner.reFreshScript();
@@ -122,21 +122,21 @@ package yzhkof.debug
                      scriptViewer.visible = !scriptViewer.visible;
                }
             }
-            switch(param1.keyCode)
+            switch(e.keyCode)
             {
                case 192:
                   _mainContainer.visible = !_mainContainer.visible;
             }
          });
-         extend_btn.addEventListener(MouseEvent.CLICK,function(param1:Event):void
+         extend_btn.addEventListener(MouseEvent.CLICK,function(e:Event):void
          {
             displayObjectViewer.visible = true;
          });
       }
       
-      static function getDebugTextButton(param1:*, param2:String) : TextPanel
+      static function getDebugTextButton(obj:*, text:String) : TextPanel
       {
-         return displayObjectViewer.getDebugTextButton(param1,param2);
+         return displayObjectViewer.getDebugTextButton(obj,text);
       }
       
       private static function initDisplayObjectViewer() : void
@@ -144,14 +144,14 @@ package yzhkof.debug
          displayObjectViewer = new DebugDisplayObjectViewer(_stage);
          displayObjectViewer.goto(_stage);
          _mainContainer.addChild(displayObjectViewer);
-         displayObjectViewer.addEventListener(FocusEvent.FOCUS_IN,function(param1:FocusEvent):void
+         displayObjectViewer.addEventListener(FocusEvent.FOCUS_IN,function(e:FocusEvent):void
          {
-            _stage.focus = param1.relatedObject;
-            param1.preventDefault();
+            _stage.focus = e.relatedObject;
+            e.preventDefault();
          });
       }
       
-      private static function onStageAdd(param1:Event) : void
+      private static function onStageAdd(e:Event) : void
       {
          _stage.setChildIndex(_mainContainer,_stage.numChildren - 1);
       }

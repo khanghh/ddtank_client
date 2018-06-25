@@ -12,9 +12,9 @@ package room.events
       public static const PROGRESS_CHANGE:String = "progressChange";
        
       
-      public function RoomPlayerEvent(param1:String, param2:Boolean = false, param3:Boolean = false)
+      public function RoomPlayerEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         super(param1,param2,param3);
+         super(type,bubbles,cancelable);
       }
    }
 }

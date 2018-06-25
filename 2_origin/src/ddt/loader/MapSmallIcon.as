@@ -20,9 +20,9 @@ package ddt.loader
       
       protected var _mapID:int = 0;
       
-      public function MapSmallIcon(param1:int = 9999999)
+      public function MapSmallIcon(mapID:int = 9999999)
       {
-         _mapID = param1;
+         _mapID = mapID;
          super();
       }
       
@@ -42,12 +42,12 @@ package ddt.loader
          LoadResourceManager.Instance.startLoad(_loader);
       }
       
-      private function __complete(param1:LoaderEvent) : void
+      private function __complete(event:LoaderEvent) : void
       {
-         param1.loader.removeEventListener("complete",__complete);
-         if(param1.loader.isSuccess)
+         event.loader.removeEventListener("complete",__complete);
+         if(event.loader.isSuccess)
          {
-            _icon = param1.loader.content;
+            _icon = event.loader.content;
             if(_icon)
             {
                addChild(_icon);
@@ -56,9 +56,9 @@ package ddt.loader
          dispatchEvent(new Event("complete"));
       }
       
-      public function set id(param1:int) : void
+      public function set id(i:int) : void
       {
-         _mapID = param1;
+         _mapID = i;
          loadIcon();
       }
       

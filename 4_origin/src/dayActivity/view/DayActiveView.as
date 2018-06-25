@@ -43,23 +43,23 @@ package dayActivity.view
       
       private var _backGround:Bitmap;
       
-      public function DayActiveView(param1:Vector.<DayActiveData>)
+      public function DayActiveView(dataList:Vector.<DayActiveData>)
       {
          super();
-         _dataList = param1;
+         _dataList = dataList;
          initView();
       }
       
       private function initView() : void
       {
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
-         var _loc4_:int = 0;
+         var i:int = 0;
+         var item:* = null;
+         var str:* = null;
+         var j:int = 0;
          _timer = TimerManager.getInstance().addTimerJuggler(10000);
          _timer.start();
          _timer.addEventListener("timer",timerHander);
-         var _loc3_:int = _dataList.length;
+         var len:int = _dataList.length;
          _itemList = new Vector.<DayActivieListItem>();
          _backGround = ComponentFactory.Instance.creat("day.actiity.groundBack");
          _backGround.x = 22;
@@ -74,37 +74,35 @@ package dayActivity.view
          _panel.height = 330;
          _panel.setView(_list);
          addChild(_panel);
-         _loc5_ = 0;
-         while(_loc5_ < _loc3_)
+         for(i = 0; i < len; )
          {
-            _loc2_ = new DayActivieListItem(_loc5_);
-            _loc2_.setData(_dataList[_loc5_]);
-            _loc2_.seleLigthFun = seletLight;
-            _loc1_ = _dataList[_loc5_].ActiveTime.slice(0,7);
-            if(_loc1_ == "Cả ngày")
+            item = new DayActivieListItem(i);
+            item.setData(_dataList[i]);
+            item.seleLigthFun = seletLight;
+            str = _dataList[i].ActiveTime.slice(0,7);
+            if(str == "Cả ngày")
             {
-               _loc2_.initTxt(false);
+               item.initTxt(false);
             }
             else
             {
-               _loc2_.initTxt(true);
+               item.initTxt(true);
             }
-            _loc2_.y = (_loc2_.height + 1) * _loc5_;
-            _list.addChild(_loc2_);
-            _itemList.push(_loc2_);
-            _loc5_++;
+            item.y = (item.height + 1) * i;
+            _list.addChild(item);
+            _itemList.push(item);
+            i++;
          }
          _txt = ComponentFactory.Instance.creatComponentByStylename("day.activieView.txt");
          addChild(_txt);
          DayActivityControl.Instance.initActivityStata(_itemList);
          _itemList = updataList(_itemList);
-         _loc4_ = 0;
-         while(_loc4_ < _itemList.length)
+         for(j = 0; j < _itemList.length; )
          {
-            _itemList[_loc4_].y = (_itemList[_loc4_].height + 1) * _loc4_;
-            _itemList[_loc4_].setBg(_loc4_);
-            _list.addChild(_itemList[_loc4_]);
-            _loc4_++;
+            _itemList[j].y = (_itemList[j].height + 1) * j;
+            _itemList[j].setBg(j);
+            _list.addChild(_itemList[j]);
+            j++;
          }
          _txt.text = LanguageMgr.GetTranslation("ddt.dayActivity.leavlOver20") + _itemList[0].data.LevelLimit;
          updata(DayActivityManager.Instance.sessionArr);
@@ -112,95 +110,90 @@ package dayActivity.view
          _panel.invalidateViewport();
       }
       
-      private function seletLight(param1:DayActivieListItem, param2:int) : void
+      private function seletLight(dailyItem:DayActivieListItem, lv:int) : void
       {
          var _loc5_:int = 0;
          var _loc4_:* = _itemList;
-         for each(var _loc3_ in _itemList)
+         for each(var tmpItem in _itemList)
          {
-            if(_loc3_ == param1)
+            if(tmpItem == dailyItem)
             {
-               _loc3_.setLigthVisible(true);
+               tmpItem.setLigthVisible(true);
             }
             else
             {
-               _loc3_.setLigthVisible(false);
+               tmpItem.setLigthVisible(false);
             }
          }
-         _txt.text = LanguageMgr.GetTranslation("ddt.dayActivity.leavlOver20") + param2;
+         _txt.text = LanguageMgr.GetTranslation("ddt.dayActivity.leavlOver20") + lv;
       }
       
-      private function updataList(param1:Vector.<DayActivieListItem>) : Vector.<DayActivieListItem>
+      private function updataList(_lists:Vector.<DayActivieListItem>) : Vector.<DayActivieListItem>
       {
-         var _loc6_:int = 0;
-         var _loc5_:int = 0;
-         var _loc4_:int = param1.length;
-         var _loc2_:Vector.<DayActivieListItem> = new Vector.<DayActivieListItem>();
-         var _loc3_:Vector.<DayActivieListItem> = new Vector.<DayActivieListItem>();
-         _loc6_ = 0;
-         while(_loc6_ < _loc4_)
+         var i:int = 0;
+         var j:int = 0;
+         var len:int = _lists.length;
+         var openList:Vector.<DayActivieListItem> = new Vector.<DayActivieListItem>();
+         var closeList:Vector.<DayActivieListItem> = new Vector.<DayActivieListItem>();
+         for(i = 0; i < len; )
          {
-            if(param1[_loc6_].getTxt5str() == LanguageMgr.GetTranslation("ddt.dayActivity.close"))
+            if(_lists[i].getTxt5str() == LanguageMgr.GetTranslation("ddt.dayActivity.close"))
             {
-               _loc3_.push(param1[_loc6_]);
+               closeList.push(_lists[i]);
             }
             else
             {
-               _loc2_.push(param1[_loc6_]);
+               openList.push(_lists[i]);
             }
-            _loc6_++;
+            i++;
          }
-         _loc5_ = 0;
-         while(_loc5_ < _loc3_.length)
+         for(j = 0; j < closeList.length; )
          {
-            _loc2_.push(_loc3_[_loc5_]);
-            _loc5_++;
+            openList.push(closeList[j]);
+            j++;
          }
-         return _loc2_;
+         return openList;
       }
       
-      public function updata(param1:Array) : void
+      public function updata(arr:Array) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         if(param1 == null)
+         var i:int = 0;
+         var j:int = 0;
+         if(arr == null)
          {
             return;
          }
-         var _loc2_:int = param1.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc2_)
+         var len:int = arr.length;
+         for(i = 0; i < len; )
          {
-            _loc3_ = 0;
-            while(_loc3_ < _itemList.length)
+            for(j = 0; j < _itemList.length; )
             {
-               if(param1[_loc4_])
+               if(arr[i])
                {
-                  if(param1[_loc4_][0] == _itemList[_loc3_].id)
+                  if(arr[i][0] == _itemList[j].id)
                   {
-                     _itemList[_loc3_].updataCount(param1[_loc4_][1]);
+                     _itemList[j].updataCount(arr[i][1]);
                      break;
                   }
                }
-               _loc3_++;
+               j++;
             }
-            _loc4_++;
+            i++;
          }
       }
       
-      protected function timerHander(param1:Event) : void
+      protected function timerHander(event:Event) : void
       {
-         var _loc2_:int = 0;
+         var j:int = 0;
          DayActivityControl.Instance.initActivityStata(_itemList);
          updata(DayActivityManager.Instance.sessionArr);
          _itemList = updataList(_itemList);
-         _loc2_ = 0;
-         while(_loc2_ < _itemList.length)
+         for(j = 0; j < _itemList.length; )
          {
-            _itemList[_loc2_].y = (_itemList[_loc2_].height + 1) * _loc2_;
-            _itemList[_loc2_].setBg(_loc2_);
-            _list.addChild(_itemList[_loc2_]);
-            _loc2_++;
+            _itemList[j].y = (_itemList[j].height + 1) * j;
+            _itemList[j].setBg(j);
+            _list.addChild(_itemList[j]);
+            j++;
          }
       }
       

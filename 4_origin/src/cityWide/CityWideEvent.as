@@ -11,10 +11,10 @@ package cityWide
       
       private var _playerInfo:PlayerInfo;
       
-      public function CityWideEvent(param1:String, param2:PlayerInfo = null, param3:Boolean = false, param4:Boolean = false)
+      public function CityWideEvent(type:String, info:PlayerInfo = null, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         super(param1,param3,param4);
-         _playerInfo = param2;
+         super(type,bubbles,cancelable);
+         _playerInfo = info;
       }
       
       public function get playerInfo() : PlayerInfo

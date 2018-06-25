@@ -13,11 +13,11 @@ package roulette
       
       private var _glintSp:MovieClip;
       
-      public function LeftRouletteGlintView(param1:Array)
+      public function LeftRouletteGlintView(pointArray:Array)
       {
          super();
          init();
-         _pointArray = param1;
+         _pointArray = pointArray;
       }
       
       private function init() : void
@@ -26,10 +26,10 @@ package roulette
          this.mouseChildren = false;
       }
       
-      public function showThreeCell(param1:int) : void
+      public function showThreeCell(value:int) : void
       {
-         var _loc2_:Array = new Array(0,60,120,180,240,300);
-         if(param1 >= 0 && param1 <= 5)
+         var rotations:Array = new Array(0,60,120,180,240,300);
+         if(value >= 0 && value <= 5)
          {
             if(_glintSp == null)
             {
@@ -37,9 +37,9 @@ package roulette
                addChild(_glintSp);
             }
             _glintSp.gotoAndPlay(1);
-            _glintSp.x = _pointArray[param1].x;
-            _glintSp.y = _pointArray[param1].y;
-            _glintSp.rotation = _loc2_[param1];
+            _glintSp.x = _pointArray[value].x;
+            _glintSp.y = _pointArray[value].y;
+            _glintSp.rotation = rotations[value];
             _glintSp.visible = true;
          }
       }

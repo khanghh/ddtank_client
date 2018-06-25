@@ -44,11 +44,11 @@ package quest
       
       private var _expandBg:DisplayObject;
       
-      public function QuestCateTitleView(param1:int = 0)
+      public function QuestCateTitleView(cateID:int = 0)
       {
          bwMatrix = [rLum,gLum,bLum,0,0,rLum,gLum,bLum,0,0,rLum,gLum,bLum,0,0,0,0,0,1,0];
          super();
-         _type = param1;
+         _type = cateID;
          cmf = new ColorMatrixFilter(bwMatrix);
          initView();
          initEvent();
@@ -99,14 +99,14 @@ package quest
       {
       }
       
-      public function set taskStyle(param1:int) : void
+      public function set taskStyle(style:int) : void
       {
-         bg.setFrame(param1);
+         bg.setFrame(style);
       }
       
-      public function set enable(param1:Boolean) : void
+      public function set enable(value:Boolean) : void
       {
-         if(!param1)
+         if(!value)
          {
             filters = [cmf];
             buttonMode = false;
@@ -127,10 +127,10 @@ package quest
          return _isExpanded;
       }
       
-      public function set isExpanded(param1:Boolean) : void
+      public function set isExpanded(value:Boolean) : void
       {
-         _isExpanded = param1;
-         if(param1 == true)
+         _isExpanded = value;
+         if(value == true)
          {
             bg.setFrame(2);
             titleImg.setFrame(_type + 10);

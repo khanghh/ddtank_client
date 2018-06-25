@@ -22,15 +22,15 @@ package starling.events
       
       private var mIsDefaultPrevented:Boolean;
       
-      public function KeyboardEvent(param1:String, param2:uint = 0, param3:uint = 0, param4:uint = 0, param5:Boolean = false, param6:Boolean = false, param7:Boolean = false)
+      public function KeyboardEvent(type:String, charCode:uint = 0, keyCode:uint = 0, keyLocation:uint = 0, ctrlKey:Boolean = false, altKey:Boolean = false, shiftKey:Boolean = false)
       {
-         super(param1,false,param3);
-         mCharCode = param2;
-         mKeyCode = param3;
-         mKeyLocation = param4;
-         mCtrlKey = param5;
-         mAltKey = param6;
-         mShiftKey = param7;
+         super(type,false,keyCode);
+         mCharCode = charCode;
+         mKeyCode = keyCode;
+         mKeyLocation = keyLocation;
+         mCtrlKey = ctrlKey;
+         mAltKey = altKey;
+         mShiftKey = shiftKey;
       }
       
       public function preventDefault() : void

@@ -57,8 +57,8 @@ package cardSystem
       
       override protected function init() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
+         var j:int = 0;
+         var n:int = 0;
          _bg = ComponentFactory.Instance.creatComponentByStylename("core.GoodsTipBg");
          _rule1 = ComponentFactory.Instance.creatComponentByStylename("HRuleAsset");
          _rule2 = ComponentFactory.Instance.creatComponentByStylename("HRuleAsset");
@@ -75,19 +75,17 @@ package cardSystem
          PositionUtils.setPos(_EpDetail,"core.cardTipEp.pos1");
          _Explain = ComponentFactory.Instance.creatComponentByStylename("CardsTipPanel.ExplainTitle");
          _propVec = new Vector.<FilterFrameText>(4);
-         _loc2_ = 0;
-         while(_loc2_ < 4)
+         for(j = 0; j < 4; )
          {
-            _propVec[_loc2_] = ComponentFactory.Instance.creatComponentByStylename("CardsTipPanel.basePropTitle");
-            _loc2_++;
+            _propVec[j] = ComponentFactory.Instance.creatComponentByStylename("CardsTipPanel.basePropTitle");
+            j++;
          }
          _setsName = ComponentFactory.Instance.creatComponentByStylename("CardsTipPanel.basePropTitle");
          _setsPropVec = new Vector.<FilterFrameText>(4);
-         _loc1_ = 0;
-         while(_loc1_ < 4)
+         for(n = 0; n < 4; )
          {
-            _setsPropVec[_loc1_] = ComponentFactory.Instance.creatComponentByStylename("CardsTipPanel.setsPropText");
-            _loc1_++;
+            _setsPropVec[n] = ComponentFactory.Instance.creatComponentByStylename("CardsTipPanel.setsPropText");
+            n++;
          }
          _validity = ComponentFactory.Instance.creatComponentByStylename("CardsTipPanel.basePropTitle");
       }
@@ -97,9 +95,9 @@ package cardSystem
          return _place;
       }
       
-      public function set place(param1:int) : void
+      public function set place(value:int) : void
       {
-         _place = param1;
+         _place = value;
       }
       
       override public function get tipData() : Object
@@ -107,11 +105,11 @@ package cardSystem
          return _tipData;
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         if(param1)
+         if(data)
          {
-            _cardInfo = param1 as CardInfo;
+            _cardInfo = data as CardInfo;
             this.visible = true;
             _tipData = _cardInfo;
             _place = _cardInfo.Place;
@@ -154,8 +152,8 @@ package cardSystem
       
       override protected function addChildren() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
+         var j:int = 0;
+         var n:int = 0;
          super.addChildren();
          addChild(_bg);
          addChild(_topName);
@@ -164,19 +162,17 @@ package cardSystem
          addChild(_rule1);
          addChild(_EpDetail);
          addChild(_Explain);
-         _loc2_ = 0;
-         while(_loc2_ < 4)
+         for(j = 0; j < 4; )
          {
-            addChild(_propVec[_loc2_]);
-            _loc2_++;
+            addChild(_propVec[j]);
+            j++;
          }
          addChild(_rule2);
          addChild(_setsName);
-         _loc1_ = 0;
-         while(_loc1_ < 4)
+         for(n = 0; n < 4; )
          {
-            addChild(_setsPropVec[_loc1_]);
-            _loc1_++;
+            addChild(_setsPropVec[n]);
+            n++;
          }
          addChild(_validity);
          mouseChildren = false;
@@ -185,11 +181,11 @@ package cardSystem
       
       private function showHeadPart() : void
       {
-         var _loc2_:* = null;
-         var _loc4_:* = null;
-         var _loc3_:int = 0;
-         var _loc1_:int = 0;
-         var _loc5_:CardGrooveInfo = GrooveInfoManager.instance.getInfoByLevel(String(_cardGrooveInfo.Level),String(_cardGrooveInfo.Type));
+         var cardInfo:* = null;
+         var _grooveInfo1:* = null;
+         var current:int = 0;
+         var difference:int = 0;
+         var _grooveInfo:CardGrooveInfo = GrooveInfoManager.instance.getInfoByLevel(String(_cardGrooveInfo.Level),String(_cardGrooveInfo.Type));
          _GrooveLevelDetail.text = _cardGrooveInfo.Level < 10?"0" + String(_cardGrooveInfo.Level):String(_cardGrooveInfo.Level);
          if(_cardGrooveInfo.Level >= 40)
          {
@@ -197,11 +193,11 @@ package cardSystem
          }
          else
          {
-            _loc2_ = GrooveInfoManager.instance.getInfoByLevel(String(_cardGrooveInfo.Level),String(_cardGrooveInfo.Type));
-            _loc4_ = GrooveInfoManager.instance.getInfoByLevel(String(_cardGrooveInfo.Level + 1),String(_cardGrooveInfo.Type));
-            _loc3_ = _cardGrooveInfo.GP - int(_loc2_.Exp);
-            _loc1_ = int(_loc4_.Exp) - int(_loc2_.Exp);
-            _EpDetail.text = LanguageMgr.GetTranslation("ddt.cardSystem.cardsTipPanel.EP",_loc3_ + "/" + _loc1_);
+            cardInfo = GrooveInfoManager.instance.getInfoByLevel(String(_cardGrooveInfo.Level),String(_cardGrooveInfo.Type));
+            _grooveInfo1 = GrooveInfoManager.instance.getInfoByLevel(String(_cardGrooveInfo.Level + 1),String(_cardGrooveInfo.Type));
+            current = _cardGrooveInfo.GP - int(cardInfo.Exp);
+            difference = int(_grooveInfo1.Exp) - int(cardInfo.Exp);
+            _EpDetail.text = LanguageMgr.GetTranslation("ddt.cardSystem.cardsTipPanel.EP",current + "/" + difference);
          }
          _rule1.x = _EpDetail.x;
          _rule1.y = _EpDetail.y + _EpDetail.textHeight + 10;
@@ -210,57 +206,57 @@ package cardSystem
       
       private function showMiddlePart() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:Array = [];
-         var _loc3_:CardGrooveInfo = GrooveInfoManager.instance.getInfoByLevel(String(_cardGrooveInfo.Level),String(_cardGrooveInfo.Type));
-         if(int(_loc3_.Attack) >= 0)
+         var i:int = 0;
+         var propArr:Array = [];
+         var _grooveInfo:CardGrooveInfo = GrooveInfoManager.instance.getInfoByLevel(String(_cardGrooveInfo.Level),String(_cardGrooveInfo.Type));
+         if(int(_grooveInfo.Attack) >= 0)
          {
-            _loc1_.push(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Attack",_cardGrooveInfo.realAttack));
+            propArr.push(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Attack",_cardGrooveInfo.realAttack));
          }
-         if(int(_loc3_.Defend) >= 0)
+         if(int(_grooveInfo.Defend) >= 0)
          {
-            _loc1_.push(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Defence",_cardGrooveInfo.realDefence));
+            propArr.push(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Defence",_cardGrooveInfo.realDefence));
          }
-         if(int(_loc3_.Agility) >= 0)
+         if(int(_grooveInfo.Agility) >= 0)
          {
-            _loc1_.push(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Agility",_cardGrooveInfo.realAgility));
+            propArr.push(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Agility",_cardGrooveInfo.realAgility));
          }
-         if(int(_loc3_.Lucky) >= 0)
+         if(int(_grooveInfo.Lucky) >= 0)
          {
-            _loc1_.push(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Luck",_cardGrooveInfo.realLucky));
+            propArr.push(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Luck",_cardGrooveInfo.realLucky));
          }
-         if(int(_loc3_.Damage) >= 0)
+         if(int(_grooveInfo.Damage) >= 0)
          {
-            _loc1_.push(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Gamage",_cardGrooveInfo.realDamage));
+            propArr.push(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Gamage",_cardGrooveInfo.realDamage));
          }
-         if(int(_loc3_.Guard) >= 0)
+         if(int(_grooveInfo.Guard) >= 0)
          {
-            _loc1_.push(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Guard",_cardGrooveInfo.realGuard));
+            propArr.push(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Guard",_cardGrooveInfo.realGuard));
          }
-         _loc2_ = 0;
-         while(_loc2_ < 4)
+         i = 0;
+         while(i < 4)
          {
-            if(_loc2_ < _loc1_.length)
+            if(i < propArr.length)
             {
-               _propVec[_loc2_].visible = true;
-               _propVec[_loc2_].text = _loc1_[_loc2_];
-               _propVec[_loc2_].textColor = QualityType.QUALITY_COLOR[5];
-               _propVec[_loc2_].y = _rule1.y + _rule1.height + 8 + 24 * _loc2_;
-               if(_loc2_ == _loc1_.length - 1)
+               _propVec[i].visible = true;
+               _propVec[i].text = propArr[i];
+               _propVec[i].textColor = QualityType.QUALITY_COLOR[5];
+               _propVec[i].y = _rule1.y + _rule1.height + 8 + 24 * i;
+               if(i == propArr.length - 1)
                {
-                  _rule2.x = _propVec[_loc2_].x;
-                  _rule2.y = _propVec[_loc2_].y + _propVec[_loc2_].textHeight + 12;
+                  _rule2.x = _propVec[i].x;
+                  _rule2.y = _propVec[i].y + _propVec[i].textHeight + 12;
                }
             }
             else
             {
-               _propVec[_loc2_].visible = false;
+               _propVec[i].visible = false;
             }
             _rule2.visible = false;
-            _rule2.x = _propVec[_loc2_].x;
-            _rule2.y = _propVec[_loc2_].y + _propVec[_loc2_].textHeight + 12;
+            _rule2.x = _propVec[i].x;
+            _rule2.y = _propVec[i].y + _propVec[i].textHeight + 12;
             _thisHeight = _rule2.y + _rule2.height;
-            _loc2_++;
+            i++;
          }
       }
       
@@ -279,26 +275,24 @@ package cardSystem
       
       override public function dispose() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
+         var j:int = 0;
+         var n:int = 0;
          super.dispose();
          ObjectUtils.disposeAllChildren(this);
          _GrooveLevel = null;
          _rule1 = null;
-         _loc2_ = 0;
-         while(_loc2_ < _propVec.length)
+         for(j = 0; j < _propVec.length; )
          {
-            _propVec[_loc2_] = null;
-            _loc2_++;
+            _propVec[j] = null;
+            j++;
          }
          _propVec = null;
          _rule2 = null;
          _setsName = null;
-         _loc1_ = 0;
-         while(_loc1_ < _setsPropVec.length)
+         for(n = 0; n < _setsPropVec.length; )
          {
-            _setsPropVec[_loc1_] = null;
-            _loc1_++;
+            _setsPropVec[n] = null;
+            n++;
          }
          _validity = null;
          _cardInfo = null;

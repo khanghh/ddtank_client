@@ -53,26 +53,26 @@ package serverlist.view
          _cb.addEventListener("click",__onClicked);
       }
       
-      private function __onClicked(param1:MouseEvent) : void
+      private function __onClicked(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          _isClick = true;
          updateList();
       }
       
-      protected function __onStageClicked(param1:MouseEvent) : void
+      protected function __onStageClicked(e:MouseEvent) : void
       {
          hideList();
          _expanded = false;
       }
       
-      private function __onListClicked(param1:ListItemEvent) : void
+      private function __onListClicked(e:ListItemEvent) : void
       {
          SoundManager.instance.playButtonSound();
          ServerManager.Instance.refreshFlag = true;
          SystemOpenPromptManager.instance.isShowNewEuipTip = false;
-         var _loc2_:ServerInfo = getServerByName(param1.cellValue);
-         if(ServerManager.Instance.connentServer(_loc2_) == false)
+         var _info:ServerInfo = getServerByName(e.cellValue);
+         if(ServerManager.Instance.connentServer(_info) == false)
          {
             refresh();
          }
@@ -85,13 +85,13 @@ package serverlist.view
       private function updateServerList() : void
       {
          _cb.beginChanges();
-         var _loc1_:VectorListModel = _cb.listPanel.vectorListModel;
-         _loc1_.clear();
+         var comboxModel:VectorListModel = _cb.listPanel.vectorListModel;
+         comboxModel.clear();
          var _loc4_:int = 0;
          var _loc3_:* = getServerList();
-         for each(var _loc2_ in getServerList())
+         for each(var info in getServerList())
          {
-            _loc1_.append(_loc2_.Name);
+            comboxModel.append(info.Name);
          }
          _cb.commitChanges();
          if(_isClick)
@@ -103,37 +103,37 @@ package serverlist.view
       
       protected function getServerList() : Vector.<ServerInfo>
       {
-         var _loc2_:Vector.<ServerInfo> = ServerManager.Instance.list;
-         var _loc1_:Vector.<ServerInfo> = new Vector.<ServerInfo>();
+         var list:Vector.<ServerInfo> = ServerManager.Instance.list;
+         var result:Vector.<ServerInfo> = new Vector.<ServerInfo>();
          var _loc5_:int = 0;
-         var _loc4_:* = _loc2_;
-         for each(var _loc3_ in _loc2_)
+         var _loc4_:* = list;
+         for each(var info in list)
          {
-            if(_loc3_.Name != ServerManager.Instance.current.Name)
+            if(info.Name != ServerManager.Instance.current.Name)
             {
-               if(_loc3_.State != 1)
+               if(info.State != 1)
                {
-                  _loc1_.push(_loc3_);
+                  result.push(info);
                }
             }
          }
-         return _loc1_;
+         return result;
       }
       
       public function hideList() : void
       {
       }
       
-      private function getServerByName(param1:String) : ServerInfo
+      private function getServerByName(serverName:String) : ServerInfo
       {
-         var _loc2_:Vector.<ServerInfo> = ServerManager.Instance.list;
+         var list:Vector.<ServerInfo> = ServerManager.Instance.list;
          var _loc5_:int = 0;
-         var _loc4_:* = _loc2_;
-         for each(var _loc3_ in _loc2_)
+         var _loc4_:* = list;
+         for each(var info in list)
          {
-            if(_loc3_.Name == param1)
+            if(info.Name == serverName)
             {
-               return _loc3_;
+               return info;
             }
          }
          return null;
@@ -153,7 +153,7 @@ package serverlist.view
          LoadResourceManager.Instance.startLoad(_loader);
       }
       
-      public function __onListLoadComplete(param1:LoaderEvent) : void
+      public function __onListLoadComplete(e:LoaderEvent) : void
       {
          _loader.removeEventListener("complete",__onListLoadComplete);
          updateServerList();

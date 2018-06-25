@@ -70,10 +70,10 @@ package boguAdventure.view
       
       private var _resetNumText:FilterFrameText;
       
-      public function BoguAdventureGameView(param1:BoguAdventureControl)
+      public function BoguAdventureGameView(control:BoguAdventureControl)
       {
          super();
-         _control = param1;
+         _control = control;
          init();
          initEvent();
       }
@@ -119,9 +119,9 @@ package boguAdventure.view
          _changeView.update();
       }
       
-      private function __onAllEvent(param1:BoguAdventureEvent) : void
+      private function __onAllEvent(e:BoguAdventureEvent) : void
       {
-         var _loc2_:* = param1.eventType;
+         var _loc2_:* = e.eventType;
          if("boguadventureeventwalk" !== _loc2_)
          {
             if("boguadventureeventstop" !== _loc2_)
@@ -151,12 +151,12 @@ package boguAdventure.view
                   }
                   else
                   {
-                     playActionComplete(param1.data);
+                     playActionComplete(e.data);
                   }
                }
                else
                {
-                  updateCell(param1.data["index"],param1.data["type"],param1.data["result"],true);
+                  updateCell(e.data["index"],e.data["type"],e.data["result"],true);
                }
             }
             else
@@ -166,54 +166,54 @@ package boguAdventure.view
          }
          else
          {
-            _changeView.boguWalk(param1.data as Array);
+            _changeView.boguWalk(e.data as Array);
          }
       }
       
-      private function updateCell(param1:int, param2:int, param3:int, param4:Boolean = false) : void
+      private function updateCell(index:int, type:int, result:int, playAction:Boolean = false) : void
       {
-         var _loc5_:BoguAdventureCell = _map.getCellByIndex(param1);
-         _loc5_.info.result = param3;
-         switch(int(param2) - 1)
+         var cell:BoguAdventureCell = _map.getCellByIndex(index);
+         cell.info.result = result;
+         switch(int(type) - 1)
          {
             case 0:
-               _loc5_.info.state = 1;
-               _changeView.placeGoods("sign",_loc5_.info.index,_map.getCellPosIndex(_loc5_.info.index,_control.signFocus));
+               cell.info.state = 1;
+               _changeView.placeGoods("sign",cell.info.index,_map.getCellPosIndex(cell.info.index,_control.signFocus));
                break;
             case 1:
-               _loc5_.info.state = 3;
-               _changeView.celarGoods(_loc5_.info.index);
+               cell.info.state = 3;
+               _changeView.celarGoods(cell.info.index);
                break;
             case 2:
-               if(_loc5_.info.state != 2)
+               if(cell.info.state != 2)
                {
-                  _loc5_.info.state = 2;
-                  _changeView.celarGoods(param1);
-                  _map.playFineMineAction(param1);
+                  cell.info.state = 2;
+                  _changeView.celarGoods(index);
+                  _map.playFineMineAction(index);
                }
                break;
             case 3:
-               openCell(_loc5_,param4);
+               openCell(cell,playAction);
          }
       }
       
-      private function openCell(param1:BoguAdventureCell, param2:Boolean) : void
+      private function openCell(cell:BoguAdventureCell, playAction:Boolean) : void
       {
-         if(param1.info.result == -1)
+         if(cell.info.result == -1)
          {
-            _changeView.placeGoods("mine",param1.info.index,_map.getCellPosIndex(param1.info.index,_control.mineFocus));
-            if(param2)
+            _changeView.placeGoods("mine",cell.info.index,_map.getCellPosIndex(cell.info.index,_control.mineFocus));
+            if(playAction)
             {
                _changeView.playExplodAciton();
             }
          }
-         else if(param2)
+         else if(playAction)
          {
-            _changeView.playWarnAction(param1.info.aroundMineCount,_map.getCellPosIndex(param1.info.index,_control.mineNumFocus));
-            if(param1.info.state != 2 && param1.info.result != -2)
+            _changeView.playWarnAction(cell.info.aroundMineCount,_map.getCellPosIndex(cell.info.index,_control.mineNumFocus));
+            if(cell.info.state != 2 && cell.info.result != -2)
             {
-               _changeView.playAwardAction(param1.info.result);
-               param1.changeCellBg();
+               _changeView.playAwardAction(cell.info.result);
+               cell.changeCellBg();
             }
             else
             {
@@ -223,37 +223,37 @@ package boguAdventure.view
          }
          else
          {
-            param1.changeCellBg();
+            cell.changeCellBg();
          }
-         param1.info.state = 2;
-         param1.open();
+         cell.info.state = 2;
+         cell.open();
          updateOpenCount();
       }
       
       private function updateMap() : void
       {
-         var _loc1_:int = 0;
+         var type:int = 0;
          _changeView.clearChangeView();
          _changeView.clearWarnAction();
          if(_control.model.mapInfoList != null)
          {
             var _loc4_:int = 0;
             var _loc3_:* = _control.model.mapInfoList;
-            for each(var _loc2_ in _control.model.mapInfoList)
+            for each(var info in _control.model.mapInfoList)
             {
-               _map.getCellByIndex(_loc2_.index).info = _loc2_;
-               _loc1_ = 0;
-               if(_loc2_.state == 2)
+               _map.getCellByIndex(info.index).info = info;
+               type = 0;
+               if(info.state == 2)
                {
-                  _loc1_ = 4;
+                  type = 4;
                }
-               else if(_loc2_.state == 1)
+               else if(info.state == 1)
                {
-                  _loc1_ = 1;
+                  type = 1;
                }
-               if(_loc1_ != 0)
+               if(type != 0)
                {
-                  updateCell(_loc2_.index,_loc1_,_loc2_.result);
+                  updateCell(info.index,type,info.result);
                }
             }
          }
@@ -279,18 +279,18 @@ package boguAdventure.view
          _resetNumText.text = _control.model.resetCount.toString();
       }
       
-      private function __onReviveClick(param1:MouseEvent) : void
+      private function __onReviveClick(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("boguAdventure.view.reviveText",_control.model.revivePrice),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",30,true,1);
-         _loc2_.addEventListener("response",__onReviveAffirmRevive);
+         var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("boguAdventure.view.reviveText",_control.model.revivePrice),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",30,true,1);
+         alert.addEventListener("response",__onReviveAffirmRevive);
       }
       
-      private function __onReviveAffirmRevive(param1:FrameEvent) : void
+      private function __onReviveAffirmRevive(e:FrameEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var alert:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         if(e.responseCode == 3 || e.responseCode == 2)
          {
             if(PlayerManager.Instance.Self.bagLocked)
             {
@@ -302,11 +302,11 @@ package boguAdventure.view
             }
             else
             {
-               CheckMoneyUtils.instance.checkMoney(_loc2_.isBand,_control.model.revivePrice,onCheckReviveComplete);
+               CheckMoneyUtils.instance.checkMoney(alert.isBand,_control.model.revivePrice,onCheckReviveComplete);
             }
          }
-         _loc2_.removeEventListener("response",__onReviveAffirmRevive);
-         _loc2_.dispose();
+         alert.removeEventListener("response",__onReviveAffirmRevive);
+         alert.dispose();
       }
       
       protected function onCheckReviveComplete() : void
@@ -314,18 +314,18 @@ package boguAdventure.view
          SocketManager.Instance.out.sendBoguAdventureUpdateGame(1,CheckMoneyUtils.instance.isBind);
       }
       
-      private function __onAwardClick(param1:MouseEvent) : void
+      private function __onAwardClick(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          clearEffect();
-         var _loc2_:BoguAdventureAwardFrame = ComponentFactory.Instance.creatCustomObject("boguAdventure.awardFrame");
-         _loc2_.control = _control;
-         _loc2_.show();
+         var frame:BoguAdventureAwardFrame = ComponentFactory.Instance.creatCustomObject("boguAdventure.awardFrame");
+         frame.control = _control;
+         frame.show();
       }
       
-      private function __onResetClick(param1:MouseEvent) : void
+      private function __onResetClick(e:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var alert:* = null;
          SoundManager.instance.playButtonSound();
          if(_control.currentIndex == 0)
          {
@@ -344,8 +344,8 @@ package boguAdventure.view
          }
          if(_control.checkGetAward())
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("boguAdventure.view.resetText"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
-            _loc2_.addEventListener("response",__onResetTip);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("boguAdventure.view.resetText"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
+            alert.addEventListener("response",__onResetTip);
          }
          else if(_control.model.isFreeReset)
          {
@@ -353,18 +353,18 @@ package boguAdventure.view
          }
          else
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("boguAdventure.view.resetAffirmText",_control.model.resetPrice),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",30,true,1);
-            _loc2_.addEventListener("response",__onResetAffirmRevive);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("boguAdventure.view.resetAffirmText",_control.model.resetPrice),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",30,true,1);
+            alert.addEventListener("response",__onResetAffirmRevive);
          }
       }
       
-      private function __onResetTip(param1:FrameEvent) : void
+      private function __onResetTip(e:FrameEvent) : void
       {
-         var _loc2_:* = null;
+         var alert:* = null;
          SoundManager.instance.playButtonSound();
-         param1.currentTarget.removeEventListener("response",__onResetTip);
-         ObjectUtils.disposeObject(param1.currentTarget);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         e.currentTarget.removeEventListener("response",__onResetTip);
+         ObjectUtils.disposeObject(e.currentTarget);
+         if(e.responseCode == 3 || e.responseCode == 2)
          {
             if(_control.model.isFreeReset)
             {
@@ -372,17 +372,17 @@ package boguAdventure.view
             }
             else
             {
-               _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("boguAdventure.view.resetAffirmText",_control.model.resetPrice),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",30,true,1);
-               _loc2_.addEventListener("response",__onResetAffirmRevive);
+               alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("boguAdventure.view.resetAffirmText",_control.model.resetPrice),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",30,true,1);
+               alert.addEventListener("response",__onResetAffirmRevive);
             }
          }
       }
       
-      private function __onResetAffirmRevive(param1:FrameEvent) : void
+      private function __onResetAffirmRevive(e:FrameEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var alert:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         if(e.responseCode == 3 || e.responseCode == 2)
          {
             if(PlayerManager.Instance.Self.bagLocked)
             {
@@ -394,11 +394,11 @@ package boguAdventure.view
             }
             else
             {
-               CheckMoneyUtils.instance.checkMoney(_loc2_.isBand,_control.model.resetPrice,onCheckResetComplete);
+               CheckMoneyUtils.instance.checkMoney(alert.isBand,_control.model.resetPrice,onCheckResetComplete);
             }
          }
-         _loc2_.removeEventListener("response",__onResetAffirmRevive);
-         _loc2_.dispose();
+         alert.removeEventListener("response",__onResetAffirmRevive);
+         alert.dispose();
       }
       
       protected function onCheckResetComplete() : void
@@ -406,9 +406,9 @@ package boguAdventure.view
          SocketManager.Instance.out.sendBoguAdventureUpdateGame(2,CheckMoneyUtils.instance.isBind);
       }
       
-      private function __onFindMineClick(param1:MouseEvent) : void
+      private function __onFindMineClick(e:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var alert:* = null;
          SoundManager.instance.playButtonSound();
          if(!_control.checkGameOver())
          {
@@ -422,28 +422,28 @@ package boguAdventure.view
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("boguAdventure.view.notFineMine"));
                return;
             }
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("boguAdventure.view.findMineText",_control.model.findMinePrice),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",30,true,1);
-            _loc2_.addEventListener("response",__onFindAffirmRevive);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("boguAdventure.view.findMineText",_control.model.findMinePrice),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",30,true,1);
+            alert.addEventListener("response",__onFindAffirmRevive);
          }
       }
       
-      private function __onFindAffirmRevive(param1:FrameEvent) : void
+      private function __onFindAffirmRevive(e:FrameEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var alert:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         if(e.responseCode == 3 || e.responseCode == 2)
          {
             if(PlayerManager.Instance.Self.bagLocked)
             {
                BaglockedManager.Instance.show();
-               _loc2_.removeEventListener("response",__onFindAffirmRevive);
-               _loc2_.dispose();
+               alert.removeEventListener("response",__onFindAffirmRevive);
+               alert.dispose();
                return;
             }
-            CheckMoneyUtils.instance.checkMoney(_loc2_.isBand,_control.model.findMinePrice,onCheckComplete);
+            CheckMoneyUtils.instance.checkMoney(alert.isBand,_control.model.findMinePrice,onCheckComplete);
          }
-         _loc2_.removeEventListener("response",__onFindAffirmRevive);
-         _loc2_.dispose();
+         alert.removeEventListener("response",__onFindAffirmRevive);
+         alert.dispose();
       }
       
       protected function onCheckComplete() : void
@@ -451,7 +451,7 @@ package boguAdventure.view
          SocketManager.Instance.out.sendBoguAdventureWalkInfo(3,0,CheckMoneyUtils.instance.isBind);
       }
       
-      private function __onSignClick(param1:MouseEvent) : void
+      private function __onSignClick(e:MouseEvent) : void
       {
          if(!_control.checkGameOver())
          {
@@ -459,15 +459,15 @@ package boguAdventure.view
             if(!_control.changeMouse)
             {
                changeMouseStyle(true);
-               param1.stopImmediatePropagation();
+               e.stopImmediatePropagation();
                StageReferance.stage.addEventListener("click",__onStageClick,true);
             }
          }
       }
       
-      private function __onKeyDown(param1:KeyboardEvent) : void
+      private function __onKeyDown(e:KeyboardEvent) : void
       {
-         if(param1.keyCode == KeyStroke.VK_F.getCode())
+         if(e.keyCode == KeyStroke.VK_F.getCode())
          {
             if(!_control.checkGameOver())
             {
@@ -475,7 +475,7 @@ package boguAdventure.view
                if(!_control.changeMouse)
                {
                   changeMouseStyle(true);
-                  param1.stopImmediatePropagation();
+                  e.stopImmediatePropagation();
                   StageReferance.stage.addEventListener("click",__onStageClick,true);
                }
                else
@@ -487,65 +487,64 @@ package boguAdventure.view
          }
       }
       
-      private function __onStageClick(param1:MouseEvent) : void
+      private function __onStageClick(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          StageReferance.stage.removeEventListener("click",__onStageClick,true);
          if(_control.changeMouse)
          {
-            if(param1.target is BoguAdventureCell)
+            if(e.target is BoguAdventureCell)
             {
-               signCell(param1.target as BoguAdventureCell);
+               signCell(e.target as BoguAdventureCell);
             }
             changeMouseStyle(false);
-            param1.stopImmediatePropagation();
+            e.stopImmediatePropagation();
          }
       }
       
-      private function changeMouseStyle(param1:Boolean) : void
+      private function changeMouseStyle(value:Boolean) : void
       {
-         if(_control.changeMouse == param1)
+         if(_control.changeMouse == value)
          {
             return;
          }
-         _control.changeMouse = param1;
+         _control.changeMouse = value;
          !!_control.changeMouse?Mouse.hide():Mouse.show();
          _mouseStyle.visible = _control.changeMouse;
       }
       
-      private function signCell(param1:BoguAdventureCell) : void
+      private function signCell(value:BoguAdventureCell) : void
       {
-         var _loc2_:* = param1;
+         var cell:* = value;
          if(_control.currentIndex == 0)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("boguAdventure.view.notStart"));
             return;
          }
-         if(_loc2_.info.state == 1)
+         if(cell.info.state == 1)
          {
-            SocketManager.Instance.out.sendBoguAdventureWalkInfo(2,_loc2_.info.index);
+            SocketManager.Instance.out.sendBoguAdventureWalkInfo(2,cell.info.index);
             return;
          }
-         if(_loc2_.info.state == 2)
+         if(cell.info.state == 2)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("boguAdventure.view.notSignOpenCell"));
             return;
          }
-         SocketManager.Instance.out.sendBoguAdventureWalkInfo(1,_loc2_.info.index);
+         SocketManager.Instance.out.sendBoguAdventureWalkInfo(1,cell.info.index);
       }
       
       private function updateHp() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var alert:* = null;
          ObjectUtils.disposeAllChildren(_hpBox);
          if(_control.hp > 0)
          {
-            _loc2_ = 0;
-            while(_loc2_ < _control.hp)
+            for(i = 0; i < _control.hp; )
             {
                _hpBox.addChild(ComponentFactory.Instance.creat("boguAdventure.stateView.hp"));
-               _loc2_++;
+               i++;
             }
          }
          if(_reviveBtn.enable && _control.hp > 0)
@@ -555,24 +554,24 @@ package boguAdventure.view
          _reviveBtn.enable = _control.hp <= 0;
          if(_control.hp <= 0)
          {
-            _loc1_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("boguAdventure.view.reviveText",_control.model.revivePrice),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",30,true,1);
-            _loc1_.addEventListener("response",__onReviveAffirmRevive);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("boguAdventure.view.reviveText",_control.model.revivePrice),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",30,true,1);
+            alert.addEventListener("response",__onReviveAffirmRevive);
          }
       }
       
-      private function playActionComplete(param1:Object) : void
+      private function playActionComplete(data:Object) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:String = String(param1["type"]);
-         if(_loc3_ == "actionexplode")
+         var index:int = 0;
+         var type:String = String(data["type"]);
+         if(type == "actionexplode")
          {
             _changeView.boguState(_control.hp > 0);
          }
-         else if(_loc3_ == "actionfintmine")
+         else if(type == "actionfintmine")
          {
-            _loc2_ = param1["index"];
-            _map.getCellByIndex(_loc2_).open();
-            _changeView.placeGoods("mine",_loc2_,_map.getCellPosIndex(_loc2_,_control.mineFocus));
+            index = data["index"];
+            _map.getCellByIndex(index).open();
+            _changeView.placeGoods("mine",index,_map.getCellPosIndex(index,_control.mineFocus));
          }
          _map.mouseClickOpen();
          _control.isMove = false;
@@ -597,9 +596,9 @@ package boguAdventure.view
          {
             return;
          }
-         var _loc1_:Object = {};
-         _loc1_["color"] = "gold";
-         _arardBtnEffect = EffectManager.Instance.creatEffect(3,_awardBtn,_loc1_);
+         var shineData:Object = {};
+         shineData["color"] = "gold";
+         _arardBtnEffect = EffectManager.Instance.creatEffect(3,_awardBtn,shineData);
          _arardBtnEffect.play();
       }
       

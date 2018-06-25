@@ -71,9 +71,9 @@ package happyLittleGame.bombshellGame.item
          addChild(_days);
       }
       
-      public function set Info(param1:HappyMiniGameActiveInfo) : void
+      public function set Info(info:HappyMiniGameActiveInfo) : void
       {
-         _info = param1;
+         _info = info;
          if(_info == null)
          {
             return;
@@ -87,50 +87,50 @@ package happyLittleGame.bombshellGame.item
          {
             _titleRank.text = LanguageMgr.GetTranslation("happyLittleGame.TotalRank");
          }
-         var _loc3_:String = _info.serverName;
-         var _loc4_:int = _loc3_.lastIndexOf(" ");
-         if(_loc4_ > 0)
+         var region:String = _info.serverName;
+         var index:int = region.lastIndexOf(" ");
+         if(index > 0)
          {
-            _loc3_ = _loc3_.substr(_loc4_ + 1,_loc3_.length);
+            region = region.substr(index + 1,region.length);
          }
-         _regionTxt.text = _loc3_;
+         _regionTxt.text = region;
          _nameTxt.text = _info.nickName;
          _score.text = _info.score + "";
          _rank.text = _info.rank + "";
-         var _loc5_:String = "";
-         var _loc2_:String = "";
+         var hour:String = "";
+         var min:String = "";
          if(_info.endtime.hours < 10)
          {
-            _loc5_ = "0" + _info.endtime.hours;
+            hour = "0" + _info.endtime.hours;
          }
          else
          {
-            _loc5_ = _info.endtime.hours + "";
+            hour = _info.endtime.hours + "";
          }
          if(_info.endtime.minutes < 10)
          {
-            _loc2_ = "0" + _info.endtime.minutes;
+            min = "0" + _info.endtime.minutes;
          }
          else
          {
-            _loc2_ = _info.endtime.minutes + "";
+            min = _info.endtime.minutes + "";
          }
-         _days.text = LanguageMgr.GetTranslation("ddt.game.today.dis") + _loc5_ + ":" + _loc2_;
+         _days.text = LanguageMgr.GetTranslation("ddt.game.today.dis") + hour + ":" + min;
          setIcon(_info.gameType);
       }
       
-      private function setIcon(param1:int) : void
+      private function setIcon(gameType:int) : void
       {
          _icon.visible = true;
-         if(param1 == 2)
+         if(gameType == 2)
          {
             _icon.bitmapData = ComponentFactory.Instance.creatBitmapData("asset.bombgame.outpos.icon");
          }
-         if(param1 == 1)
+         if(gameType == 1)
          {
             _icon.bitmapData = ComponentFactory.Instance.creatBitmapData("asset.bombgame.points.icon");
          }
-         if(param1 == 3)
+         if(gameType == 3)
          {
             _icon.bitmapData = ComponentFactory.Instance.creatBitmapData("asset.cubeGame.princessIcon");
          }
@@ -179,14 +179,14 @@ package happyLittleGame.bombshellGame.item
       
       public function dispose() : void
       {
-         var _loc1_:* = null;
+         var obj:* = null;
          while(this.numChildren > 0)
          {
-            _loc1_ = removeChildAt(0);
-            if(_loc1_)
+            obj = removeChildAt(0);
+            if(obj)
             {
-               ObjectUtils.disposeObject(_loc1_);
-               _loc1_ = null;
+               ObjectUtils.disposeObject(obj);
+               obj = null;
             }
          }
       }

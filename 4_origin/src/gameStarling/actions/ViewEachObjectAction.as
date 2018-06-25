@@ -19,31 +19,30 @@ package gameStarling.actions
       
       private var _type:int;
       
-      public function ViewEachObjectAction(param1:MapView3D, param2:Array, param3:int = 0, param4:Number = 1500)
+      public function ViewEachObjectAction(map:MapView3D, objects:Array, type:int = 0, interval:Number = 1500)
       {
          super();
-         _objects = param2;
-         _map = param1;
-         _interval = param4 / 40;
+         _objects = objects;
+         _map = map;
+         _interval = interval / 40;
          _index = 0;
          _count = 0;
-         _type = param3;
+         _type = type;
       }
       
-      override public function canReplace(param1:BaseAction) : Boolean
+      override public function canReplace(action:BaseAction) : Boolean
       {
-         var _loc3_:int = 0;
-         var _loc2_:ViewEachObjectAction = param1 as ViewEachObjectAction;
-         if(_loc2_ && _loc2_.objects.length == _objects.length)
+         var i:int = 0;
+         var viewAction:ViewEachObjectAction = action as ViewEachObjectAction;
+         if(viewAction && viewAction.objects.length == _objects.length)
          {
-            _loc3_ = 0;
-            while(_loc3_ < _objects.length)
+            for(i = 0; i < _objects.length; )
             {
-               if(_objects[_loc3_].x != _loc2_.objects[_loc3_].x || _objects[_loc3_].y != _loc2_.objects[_loc3_].y)
+               if(_objects[i].x != viewAction.objects[i].x || _objects[i].y != viewAction.objects[i].y)
                {
                   return false;
                }
-               _loc3_++;
+               i++;
             }
             return true;
          }

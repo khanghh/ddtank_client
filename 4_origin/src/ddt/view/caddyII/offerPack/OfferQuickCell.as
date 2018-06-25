@@ -22,12 +22,12 @@ package ddt.view.caddyII.offerPack
       
       public function OfferQuickCell()
       {
-         var _loc2_:Point = ComponentFactory.Instance.creatCustomObject("offer.quickCellSize");
-         var _loc1_:Shape = new Shape();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,_loc2_.x,_loc2_.y);
-         _loc1_.graphics.endFill();
-         super(_loc1_);
+         var size:Point = ComponentFactory.Instance.creatCustomObject("offer.quickCellSize");
+         var shape:Shape = new Shape();
+         shape.graphics.beginFill(16777215,0);
+         shape.graphics.drawRect(0,0,size.x,size.y);
+         shape.graphics.endFill();
+         super(shape);
          tipDirctions = "7,0";
          initView();
       }
@@ -46,13 +46,13 @@ package ddt.view.caddyII.offerPack
          buttonMode = true;
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         if(_selected == param1)
+         if(_selected == value)
          {
             return;
          }
-         _selected = param1;
+         _selected = value;
          if(_selected)
          {
             _selecetedShin.visible = true;
@@ -69,7 +69,7 @@ package ddt.view.caddyII.offerPack
          return _selected;
       }
       
-      public function set autoSelect(param1:Boolean) : void
+      public function set autoSelect(value:Boolean) : void
       {
       }
       

@@ -213,9 +213,9 @@ package im
          _listContent = new Sprite();
          addToContent(_listContent);
          _imLookupView = new IMLookupView();
-         var _loc2_:Point = ComponentFactory.Instance.creatCustomObject("IM.IMView.IMLookupViewPos");
-         _imLookupView.x = _loc2_.x;
-         _imLookupView.y = _loc2_.y;
+         var pos:Point = ComponentFactory.Instance.creatCustomObject("IM.IMView.IMLookupViewPos");
+         _imLookupView.x = pos.x;
+         _imLookupView.y = pos.y;
          addToContent(_imLookupView);
          _myAcademyBtn = ComponentFactory.Instance.creatComponentByStylename("IMView.myAcademyBtn");
          _myAcademyBtn.text = LanguageMgr.GetTranslation("tank.view.im.addAcadeBtn");
@@ -231,8 +231,8 @@ package im
          addToContent(_state);
          _replyInput = ComponentFactory.Instance.creatCustomObject("im.autoReplyInput");
          addToContent(_replyInput);
-         var _loc1_:SelfInfo = PlayerManager.Instance.Self;
-         _levelIcon.setInfo(_loc1_.Grade,_loc1_.ddtKingGrade,_loc1_.Repute,_loc1_.WinCount,_loc1_.TotalCount,_loc1_.FightPower,_loc1_.Offer,true,false);
+         var selfInfo:SelfInfo = PlayerManager.Instance.Self;
+         _levelIcon.setInfo(selfInfo.Grade,selfInfo.ddtKingGrade,selfInfo.Repute,selfInfo.WinCount,selfInfo.TotalCount,selfInfo.FightPower,selfInfo.Offer,true,false);
          showFigure();
          _currentListType = 0;
          setListType();
@@ -284,7 +284,7 @@ package im
          SocketManager.Instance.addEventListener(PkgEvent.format(339),onUseGirlNewPhoto);
       }
       
-      private function __teamListBtnClick(param1:MouseEvent) : void
+      private function __teamListBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.teamID <= 0)
@@ -297,29 +297,29 @@ package im
          TeamManager.instance.addEventListener("updateteammember",showTeamIM);
       }
       
-      private function showTeamIM(param1:TeamEvent) : void
+      private function showTeamIM(e:TeamEvent) : void
       {
          TeamManager.instance.removeEventListener("updateteammember",showTeamIM);
          _currentListType = 2;
          setListType();
       }
       
-      protected function onHeadSelectChange(param1:CEvent) : void
+      protected function onHeadSelectChange(e:CEvent) : void
       {
          _playerPortrait.onHeadSelectChange(PlayerManager.Instance.Self.IsShow);
       }
       
-      protected function onChangeBtnClick(param1:MouseEvent) : void
+      protected function onChangeBtnClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          escEnable = false;
-         var _loc2_:GirlHeadSelectView = new GirlHeadSelectView();
-         _loc2_.x = 345;
-         _loc2_.y = 17;
-         _loc2_.onUseNewPic = onUseNewPic;
-         _loc2_.onCurHeadSelected = onGirlHeadSelected;
-         _loc2_.onClose = onGirlHeadClose;
-         LayerManager.Instance.addToLayer(_loc2_,3,false,1);
+         var girlHeadSelectView:GirlHeadSelectView = new GirlHeadSelectView();
+         girlHeadSelectView.x = 345;
+         girlHeadSelectView.y = 17;
+         girlHeadSelectView.onUseNewPic = onUseNewPic;
+         girlHeadSelectView.onCurHeadSelected = onGirlHeadSelected;
+         girlHeadSelectView.onClose = onGirlHeadClose;
+         LayerManager.Instance.addToLayer(girlHeadSelectView,3,false,1);
       }
       
       private function onUseNewPic() : void
@@ -334,12 +334,12 @@ package im
          HelperBuyAlert.getInstance().alert(__msg,__data,null,__onCheckOut);
       }
       
-      private function onUseGirlNewPhoto(param1:PkgEvent) : void
+      private function onUseGirlNewPhoto(e:PkgEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:Boolean = _loc4_.readBoolean();
-         if(_loc2_)
+         var errMsg:* = null;
+         var pkg:PackageIn = e.pkg;
+         var suc:Boolean = pkg.readBoolean();
+         if(suc)
          {
             _uploadGirlHeadPhotoBtn.enable = canUploadGirlHeadPhoto();
             _selectGirlHeadPhotoBtn.enable = false;
@@ -351,14 +351,14 @@ package im
          {
             _uploadGirlHeadPhotoBtn.enable = canUploadGirlHeadPhoto();
             _selectGirlHeadPhotoBtn.enable = true;
-            _loc3_ = LanguageMgr.GetTranslation("im.changeGirlPic.useMoneyFailed");
-            MessageTipManager.getInstance().show(_loc3_,0,false,1);
+            errMsg = LanguageMgr.GetTranslation("im.changeGirlPic.useMoneyFailed");
+            MessageTipManager.getInstance().show(errMsg,0,false,1);
          }
       }
       
-      private function onGirlHeadSelected(param1:Boolean) : void
+      private function onGirlHeadSelected(useGirlHeadPhoto:Boolean) : void
       {
-         IMManager.Instance.girlHeadSelectedBtnClicked(param1);
+         IMManager.Instance.girlHeadSelectedBtnClicked(useGirlHeadPhoto);
       }
       
       private function onGirlHeadClose() : void
@@ -366,7 +366,7 @@ package im
          escEnable = true;
       }
       
-      protected function onUploadBtnClick(param1:MouseEvent) : void
+      protected function onUploadBtnClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          openUploadSite();
@@ -379,72 +379,72 @@ package im
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("imview.uploadBtn.notAccord"));
             return;
          }
-         var _loc5_:String = "http://ddthead.7road.com";
-         var _loc4_:String = PlayerManager.Instance.Self.NickName;
-         var _loc2_:String = PlayerManager.Instance.Self.SubName;
-         var _loc12_:String = "7road_ddthead";
-         var _loc3_:String = TimeManager.Instance.Now().time.toString();
-         var _loc8_:String = encodeURI(Base64.encode(_loc4_)).replace("+","%2B").replace("=","%3D").replace("/","%2F");
-         var _loc10_:String = encodeURI(Base64.encode(_loc2_)).replace("+","%2B").replace("=","%3D").replace("/","%2F");
-         var _loc7_:String = PlayerManager.Instance.Self.SubID.toString();
-         var _loc1_:String = PlayerManager.Instance.Self.ID.toString();
-         var _loc9_:String = MD5.hash(_loc3_ + _loc7_ + _loc1_ + _loc12_);
-         var _loc11_:String = _loc5_ + "/?SubID=" + _loc7_ + "&UserID=" + _loc1_ + "&timestamp=" + _loc3_ + "&nick=" + _loc8_ + "&subname=" + _loc10_ + "&key=" + _loc9_;
-         var _loc6_:URLRequest = new URLRequest(_loc11_);
+         var root:String = "http://ddthead.7road.com";
+         var nickName:String = PlayerManager.Instance.Self.NickName;
+         var subName:String = PlayerManager.Instance.Self.SubName;
+         var key:String = "7road_ddthead";
+         var timeStamp:String = TimeManager.Instance.Now().time.toString();
+         var nickNameEncode:String = encodeURI(Base64.encode(nickName)).replace("+","%2B").replace("=","%3D").replace("/","%2F");
+         var subNameEncode:String = encodeURI(Base64.encode(subName)).replace("+","%2B").replace("=","%3D").replace("/","%2F");
+         var subID:String = PlayerManager.Instance.Self.SubID.toString();
+         var userID:String = PlayerManager.Instance.Self.ID.toString();
+         var md5:String = MD5.hash(timeStamp + subID + userID + key);
+         var url:String = root + "/?SubID=" + subID + "&UserID=" + userID + "&timestamp=" + timeStamp + "&nick=" + nickNameEncode + "&subname=" + subNameEncode + "&key=" + md5;
+         var rqst:URLRequest = new URLRequest(url);
          return;
-         §§push(navigateToURL(_loc6_,"_blank"));
+         §§push(navigateToURL(rqst,"_blank"));
       }
       
-      protected function __onIntegralShop(param1:MouseEvent) : void
+      protected function __onIntegralShop(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          IntegralShopController.instance.show();
       }
       
-      private function __CMBtnClick(param1:MouseEvent) : void
+      private function __CMBtnClick(evt:MouseEvent) : void
       {
          IMManager.Instance.createConsortiaLoader();
          IMManager.Instance.addEventListener("CMFriendComplete",__CMFriendLoadComplete);
          SoundManager.instance.play("008");
       }
       
-      private function __CMFriendLoadComplete(param1:Event) : void
+      private function __CMFriendLoadComplete(event:Event) : void
       {
          IMControl.Instance.removeEventListener("CMFriendComplete",__CMFriendLoadComplete);
          _currentListType = 2;
          setListType();
       }
       
-      private function __IMBtnClick(param1:MouseEvent) : void
+      private function __IMBtnClick(evt:MouseEvent) : void
       {
          _currentListType = 0;
          setListType();
          SoundManager.instance.play("008");
       }
       
-      private function __inviteBtnClick(param1:MouseEvent) : void
+      private function __inviteBtnClick(event:MouseEvent) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var req:* = null;
+         var data:* = null;
+         var loader:* = null;
          MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("im.IMView.inviteInfo"));
          SoundManager.instance.play("008");
          if(!StringHelper.isNullOrEmpty(PathManager.CommunityInvite()))
          {
-            _loc4_ = new URLRequest(PathManager.CommunityInvite());
-            _loc3_ = new URLVariables();
-            _loc3_["fuid"] = String(PlayerManager.Instance.Self.LoginName);
-            _loc3_["fnick"] = PlayerManager.Instance.Self.NickName;
-            _loc3_["tuid"] = _CMfriendList.currentCMFInfo.UserName;
-            _loc3_["serverid"] = String(ServerManager.Instance.AgentID);
-            _loc3_["rnd"] = Math.random();
-            _loc4_.data = _loc3_;
-            _loc2_ = new URLLoader(_loc4_);
-            _loc2_.load(_loc4_);
+            req = new URLRequest(PathManager.CommunityInvite());
+            data = new URLVariables();
+            data["fuid"] = String(PlayerManager.Instance.Self.LoginName);
+            data["fnick"] = PlayerManager.Instance.Self.NickName;
+            data["tuid"] = _CMfriendList.currentCMFInfo.UserName;
+            data["serverid"] = String(ServerManager.Instance.AgentID);
+            data["rnd"] = Math.random();
+            req.data = data;
+            loader = new URLLoader(req);
+            loader.load(req);
          }
       }
       
-      private function __consortiaListBtnClick(param1:MouseEvent) : void
+      private function __consortiaListBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.ConsortiaID <= 0)
@@ -457,14 +457,14 @@ package im
          setListType();
       }
       
-      private function __likeBtnClick(param1:MouseEvent) : void
+      private function __likeBtnClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _currentListType = 3;
          setListType();
       }
       
-      private function __addBleakBtnClick(param1:MouseEvent) : void
+      private function __addBleakBtnClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_addFriendFrame && _addFriendFrame.parent)
@@ -490,12 +490,12 @@ package im
          }
       }
       
-      private function __buttonGroupChange(param1:Event) : void
+      private function __buttonGroupChange(e:Event) : void
       {
          _hBox.arrange();
       }
       
-      private function __myAcademyClick(param1:MouseEvent) : void
+      private function __myAcademyClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.Grade >= 8)
@@ -515,7 +515,7 @@ package im
          }
       }
       
-      private function __addFriendBtnClick(param1:MouseEvent) : void
+      private function __addFriendBtnClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_currentListType == 0 || _currentListType == 1 || _currentListType == 3)
@@ -550,9 +550,9 @@ package im
       
       private function showFigure() : void
       {
-         var _loc1_:PlayerInfo = PlayerManager.Instance.Self;
+         var info:PlayerInfo = PlayerManager.Instance.Self;
          _playerPortrait = ComponentFactory.Instance.creatCustomObject("im.PlayerPortrait",["right",PlayerManager.Instance.Self.IsShow]);
-         _playerPortrait.info = _loc1_;
+         _playerPortrait.info = info;
          addToContent(_playerPortrait);
       }
       
@@ -588,13 +588,13 @@ package im
             _teamList.dispose();
             _teamList = null;
          }
-         var _loc1_:Point = ComponentFactory.Instance.creatCustomObject("IM.IMList.listPos");
+         var listPos:Point = ComponentFactory.Instance.creatCustomObject("IM.IMList.listPos");
          switch(int(_currentListType))
          {
             case 0:
                _friendList = new IMListView();
                _friendList.x = 8;
-               _friendList.y = _loc1_.x;
+               _friendList.y = listPos.x;
                _listContent.addChild(_friendList);
                _addBleak.visible = true;
                _addFriend.visible = true;
@@ -604,7 +604,7 @@ package im
             case 1:
                _consortiaList = new ConsortiaListView();
                _consortiaList.x = 8;
-               _consortiaList.y = _loc1_.x;
+               _consortiaList.y = listPos.x;
                _listContent.addChild(_consortiaList);
                _addBleak.visible = true;
                _addFriend.visible = true;
@@ -614,7 +614,7 @@ package im
             case 2:
                _teamList = new TeamListView();
                _teamList.x = 8;
-               _teamList.y = _loc1_.x;
+               _teamList.y = listPos.x;
                if(_listContent)
                {
                   _listContent.addChild(_teamList);
@@ -624,7 +624,7 @@ package im
             case 3:
                _likeFriendList = new LikeFriendListView();
                _likeFriendList.x = 8;
-               _likeFriendList.y = _loc1_.x;
+               _likeFriendList.y = listPos.x;
                if(_listContent)
                {
                   _listContent.addChild(_likeFriendList);
@@ -643,32 +643,32 @@ package im
          }
       }
       
-      private function copyGirlHeadDataByList(param1:Array, param2:Array) : void
+      private function copyGirlHeadDataByList($fromList:Array, $toList:Array) : void
       {
          var _loc8_:int = 0;
-         var _loc7_:* = param2;
-         for each(var _loc4_ in param2)
+         var _loc7_:* = $toList;
+         for each(var toInfo in $toList)
          {
             var _loc6_:int = 0;
-            var _loc5_:* = param1;
-            for each(var _loc3_ in param1)
+            var _loc5_:* = $fromList;
+            for each(var fmInfo in $fromList)
             {
-               if(_loc4_.ID == _loc3_.ID)
+               if(toInfo.ID == fmInfo.ID)
                {
-                  _loc4_.IsShow = _loc3_.IsShow;
-                  _loc4_.ImagePath = _loc3_.ImagePath;
+                  toInfo.IsShow = fmInfo.IsShow;
+                  toInfo.ImagePath = fmInfo.ImagePath;
                }
             }
          }
       }
       
-      private function __giftClick(param1:MouseEvent) : void
+      private function __giftClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          BagAndInfoManager.Instance.showBagAndInfo(1);
       }
       
-      private function __onStateChange(param1:PlayerPropertyEvent) : void
+      private function __onStateChange(event:PlayerPropertyEvent) : void
       {
          if(PlayerManager.Instance.Self.playerState.StateID == 1)
          {
@@ -678,14 +678,14 @@ package im
          {
             _replyInput.visible = true;
          }
-         if(param1.changedProperties["State"])
+         if(event.changedProperties["State"])
          {
             _state.text = "[" + PlayerManager.Instance.Self.playerState.convertToString() + "]";
             _stateSelectBtn.setFrame(PlayerManager.Instance.Self.playerState.StateID);
          }
       }
       
-      private function __hideStateList(param1:MouseEvent) : void
+      private function __hideStateList(event:MouseEvent) : void
       {
          if(_stateList.parent)
          {
@@ -693,10 +693,10 @@ package im
          }
       }
       
-      private function __stateSelectClick(param1:MouseEvent) : void
+      private function __stateSelectClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         param1.stopImmediatePropagation();
+         event.stopImmediatePropagation();
          if(_stateList.parent == null)
          {
             addToContent(_stateList);

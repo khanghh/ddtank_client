@@ -16,10 +16,10 @@ package game.animations
       
       private var _dir:String;
       
-      public function DirectionMovingAnimation(param1:String)
+      public function DirectionMovingAnimation(dir:String)
       {
          super();
-         _dir = param1;
+         _dir = dir;
          _level = 1;
       }
       
@@ -28,7 +28,7 @@ package game.animations
          _finished = true;
       }
       
-      override public function update(param1:MapView) : Boolean
+      override public function update(movie:MapView) : Boolean
       {
          var _loc2_:* = _dir;
          if("right" !== _loc2_)
@@ -41,21 +41,21 @@ package game.animations
                   {
                      return false;
                   }
-                  param1.y = param1.y - 18;
+                  movie.y = movie.y - 18;
                }
                else
                {
-                  param1.y = param1.y + 18;
+                  movie.y = movie.y + 18;
                }
             }
             else
             {
-               param1.x = param1.x + 18;
+               movie.x = movie.x + 18;
             }
          }
          else
          {
-            param1.x = param1.x - 18;
+            movie.x = movie.x - 18;
          }
          return true;
       }

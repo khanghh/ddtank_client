@@ -80,7 +80,7 @@ package wonderfulActivity.items
          _info = PlayerManager.Instance.Self;
       }
       
-      public function setState(param1:int, param2:int) : void
+      public function setState(type:int, id:int) : void
       {
       }
       
@@ -93,61 +93,61 @@ package wonderfulActivity.items
       
       private function initViewWithData() : void
       {
-         var _loc6_:* = null;
-         var _loc7_:* = null;
-         var _loc9_:int = 0;
-         var _loc8_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
-         var _loc5_:* = null;
-         var _loc4_:* = null;
+         var timeArr:* = null;
+         var timeArr2:* = null;
+         var i:int = 0;
+         var itemIcon:* = null;
+         var itemFilter:* = null;
+         var bagCell:* = null;
+         var itemIcon2:* = null;
+         var itemFilter2:* = null;
+         var bagCell2:* = null;
          if(!checkData())
          {
             return;
          }
          if(_activityInfo1)
          {
-            _loc6_ = [_activityInfo1.beginTime.split(" ")[0],_activityInfo1.endTime.split(" ")[0]];
-            _activetimeFilter.text = _loc6_[0] + "-" + _loc6_[1];
+            timeArr = [_activityInfo1.beginTime.split(" ")[0],_activityInfo1.endTime.split(" ")[0]];
+            _activetimeFilter.text = timeArr[0] + "-" + timeArr[1];
          }
          else if(_activityInfo2)
          {
-            _loc7_ = [_activityInfo2.beginTime.split(" ")[0],_activityInfo2.endTime.split(" ")[0]];
-            _activetimeFilter.text = _loc7_[0] + "-" + _loc7_[1];
+            timeArr2 = [_activityInfo2.beginTime.split(" ")[0],_activityInfo2.endTime.split(" ")[0]];
+            _activetimeFilter.text = timeArr2[0] + "-" + timeArr2[1];
          }
-         _loc9_ = 0;
-         while(_loc9_ < 4 && _loc9_ < _numPower + _numGrade)
+         i = 0;
+         while(i < 4 && i < _numPower + _numGrade)
          {
-            if(_loc9_ < _numPower)
+            if(i < _numPower)
             {
-               _loc8_ = ComponentFactory.Instance.creat("wonderfulactivity.powerBitmap");
-               _loc8_.x = _loc8_.x + 120 * _loc9_;
-               addChild(_loc8_);
-               _loc3_ = ComponentFactory.Instance.creatComponentByStylename("wonderfulactivity.right.heroTxt");
-               _loc3_.x = _loc3_.x + 120 * _loc9_;
-               _loc3_.text = _fightPowerArr[_loc9_];
-               addChild(_loc3_);
-               _loc2_ = createBagCell(_loc9_,_activityInfo1.giftbagArray[_loc9_]);
-               _loc2_.x = _loc3_.x + 22;
-               _loc2_.y = _loc3_.y + 45;
-               addChild(_loc2_);
+               itemIcon = ComponentFactory.Instance.creat("wonderfulactivity.powerBitmap");
+               itemIcon.x = itemIcon.x + 120 * i;
+               addChild(itemIcon);
+               itemFilter = ComponentFactory.Instance.creatComponentByStylename("wonderfulactivity.right.heroTxt");
+               itemFilter.x = itemFilter.x + 120 * i;
+               itemFilter.text = _fightPowerArr[i];
+               addChild(itemFilter);
+               bagCell = createBagCell(i,_activityInfo1.giftbagArray[i]);
+               bagCell.x = itemFilter.x + 22;
+               bagCell.y = itemFilter.y + 45;
+               addChild(bagCell);
             }
             else
             {
-               _loc1_ = ComponentFactory.Instance.creat("wonderfulactivity.levelBitmap");
-               _loc1_.x = _loc1_.x + 120 * _loc9_;
-               addChild(_loc1_);
-               _loc5_ = ComponentFactory.Instance.creatComponentByStylename("wonderfulactivity.right.heroTxt");
-               _loc5_.x = _loc5_.x + 120 * _loc9_;
-               _loc5_.text = _gradeArr[_loc9_ - _numPower];
-               addChild(_loc5_);
-               _loc4_ = createBagCell(_loc9_,_activityInfo2.giftbagArray[_loc9_ - _numPower]);
-               _loc4_.x = _loc1_.x + 32;
-               _loc4_.y = _loc5_.y + 45;
-               addChild(_loc4_);
+               itemIcon2 = ComponentFactory.Instance.creat("wonderfulactivity.levelBitmap");
+               itemIcon2.x = itemIcon2.x + 120 * i;
+               addChild(itemIcon2);
+               itemFilter2 = ComponentFactory.Instance.creatComponentByStylename("wonderfulactivity.right.heroTxt");
+               itemFilter2.x = itemFilter2.x + 120 * i;
+               itemFilter2.text = _gradeArr[i - _numPower];
+               addChild(itemFilter2);
+               bagCell2 = createBagCell(i,_activityInfo2.giftbagArray[i - _numPower]);
+               bagCell2.x = itemIcon2.x + 32;
+               bagCell2.y = itemFilter2.y + 45;
+               addChild(bagCell2);
             }
-            _loc9_++;
+            i++;
          }
          initItem();
       }
@@ -174,206 +174,202 @@ package wonderfulActivity.items
          _getButton.enable = false;
       }
       
-      private function createBagCell(param1:int, param2:GiftBagInfo) : BagCell
+      private function createBagCell(order:int, giftBagInfo:GiftBagInfo) : BagCell
       {
-         var _loc4_:GiftRewardInfo = param2.giftRewardArr[0];
-         var _loc6_:InventoryItemInfo = new InventoryItemInfo();
-         _loc6_.TemplateID = _loc4_.templateId;
-         _loc6_ = ItemManager.fill(_loc6_);
-         _loc6_.IsBinds = _loc4_.isBind;
-         _loc6_.ValidDate = _loc4_.validDate;
-         var _loc5_:Array = _loc4_.property.split(",");
-         _loc6_.StrengthenLevel = parseInt(_loc5_[0]);
-         _loc6_.AttackCompose = parseInt(_loc5_[1]);
-         _loc6_.DefendCompose = parseInt(_loc5_[2]);
-         _loc6_.AgilityCompose = parseInt(_loc5_[3]);
-         _loc6_.LuckCompose = parseInt(_loc5_[4]);
-         if(EquipType.isMagicStone(_loc6_.CategoryID))
+         var gift:GiftRewardInfo = giftBagInfo.giftRewardArr[0];
+         var info:InventoryItemInfo = new InventoryItemInfo();
+         info.TemplateID = gift.templateId;
+         info = ItemManager.fill(info);
+         info.IsBinds = gift.isBind;
+         info.ValidDate = gift.validDate;
+         var attrArr:Array = gift.property.split(",");
+         info.StrengthenLevel = parseInt(attrArr[0]);
+         info.AttackCompose = parseInt(attrArr[1]);
+         info.DefendCompose = parseInt(attrArr[2]);
+         info.AgilityCompose = parseInt(attrArr[3]);
+         info.LuckCompose = parseInt(attrArr[4]);
+         if(EquipType.isMagicStone(info.CategoryID))
          {
-            _loc6_.Level = _loc6_.StrengthenLevel;
-            _loc6_.Attack = _loc6_.AttackCompose;
-            _loc6_.Defence = _loc6_.DefendCompose;
-            _loc6_.Agility = _loc6_.AgilityCompose;
-            _loc6_.Luck = _loc6_.LuckCompose;
-            _loc6_.MagicAttack = parseInt(_loc5_[6]);
-            _loc6_.MagicDefence = parseInt(_loc5_[7]);
-            _loc6_.StrengthenExp = parseInt(_loc5_[8]);
+            info.Level = info.StrengthenLevel;
+            info.Attack = info.AttackCompose;
+            info.Defence = info.DefendCompose;
+            info.Agility = info.AgilityCompose;
+            info.Luck = info.LuckCompose;
+            info.MagicAttack = parseInt(attrArr[6]);
+            info.MagicDefence = parseInt(attrArr[7]);
+            info.StrengthenExp = parseInt(attrArr[8]);
          }
-         var _loc3_:BagCell = new BagCell(param1);
-         _loc3_.info = _loc6_;
-         _loc3_.setCount(_loc4_.count);
-         _loc3_.setBgVisible(false);
+         var bagCell:BagCell = new BagCell(order);
+         bagCell.info = info;
+         bagCell.setCount(gift.count);
+         bagCell.setBgVisible(false);
          if(_giftInfoDic)
          {
-            if(_giftInfoDic[param2.giftbagId] && _giftInfoDic[param2.giftbagId].times > 0)
+            if(_giftInfoDic[giftBagInfo.giftbagId] && _giftInfoDic[giftBagInfo.giftbagId].times > 0)
             {
                var _loc7_:Boolean = true;
-               _loc3_.grayFilters = _loc7_;
-               _bagCellGrayArr[param1] = _loc7_;
+               bagCell.grayFilters = _loc7_;
+               _bagCellGrayArr[order] = _loc7_;
             }
          }
          else
          {
             _loc7_ = false;
-            _loc3_.grayFilters = _loc7_;
-            _bagCellGrayArr[param1] = _loc7_;
+            bagCell.grayFilters = _loc7_;
+            _bagCellGrayArr[order] = _loc7_;
          }
-         _bagCellArr.push(_loc3_);
-         return _loc3_;
+         _bagCellArr.push(bagCell);
+         return bagCell;
       }
       
       private function initData() : void
       {
-         var _loc5_:* = null;
-         var _loc9_:int = 0;
-         var _loc2_:int = 0;
-         var _loc7_:* = null;
-         var _loc6_:int = 0;
-         var _loc1_:int = 0;
+         var dic:* = null;
+         var i:int = 0;
+         var ig:int = 0;
+         var dic2:* = null;
+         var j:int = 0;
+         var jg:int = 0;
          var _loc15_:int = 0;
          var _loc14_:* = WonderfulActivityManager.Instance.activityData;
-         for each(var _loc4_ in WonderfulActivityManager.Instance.activityData)
+         for each(var item in WonderfulActivityManager.Instance.activityData)
          {
-            if(_loc4_.activityType == 7)
+            if(item.activityType == 7)
             {
-               if(_loc4_.activityChildType == 0)
+               if(item.activityChildType == 0)
                {
-                  if(WonderfulActivityManager.Instance.activityInitData[_loc4_.activityId])
+                  if(WonderfulActivityManager.Instance.activityInitData[item.activityId])
                   {
                      if(!_giftInfoDic)
                      {
-                        _giftInfoDic = WonderfulActivityManager.Instance.activityInitData[_loc4_.activityId]["giftInfoDic"];
+                        _giftInfoDic = WonderfulActivityManager.Instance.activityInitData[item.activityId]["giftInfoDic"];
                      }
                      else
                      {
-                        _loc5_ = WonderfulActivityManager.Instance.activityInitData[_loc4_.activityId]["giftInfoDic"];
-                        if(_loc5_)
+                        dic = WonderfulActivityManager.Instance.activityInitData[item.activityId]["giftInfoDic"];
+                        if(dic)
                         {
                            var _loc11_:int = 0;
-                           var _loc10_:* = _loc5_;
-                           for(var _loc8_ in _loc5_)
+                           var _loc10_:* = dic;
+                           for(var key in dic)
                            {
-                              _giftInfoDic[_loc8_] = _loc5_[_loc8_];
+                              _giftInfoDic[key] = dic[key];
                            }
                         }
                      }
-                     _statusPowerArr = WonderfulActivityManager.Instance.activityInitData[_loc4_.activityId]["statusArr"];
+                     _statusPowerArr = WonderfulActivityManager.Instance.activityInitData[item.activityId]["statusArr"];
                   }
-                  _numPower = _loc4_.giftbagArray.length;
-                  _loc9_ = 0;
-                  while(_loc9_ < _numPower && _loc9_ < 4)
+                  _numPower = item.giftbagArray.length;
+                  i = 0;
+                  while(i < _numPower && i < 4)
                   {
-                     _loc2_ = 0;
-                     while(_loc2_ < _loc4_.giftbagArray[_loc9_].giftConditionArr.length)
+                     for(ig = 0; ig < item.giftbagArray[i].giftConditionArr.length; )
                      {
-                        if(_loc4_.giftbagArray[_loc9_].giftConditionArr[_loc2_].conditionIndex == 0)
+                        if(item.giftbagArray[i].giftConditionArr[ig].conditionIndex == 0)
                         {
-                           _fightPowerArr.push(_loc4_.giftbagArray[_loc9_].giftConditionArr[_loc2_].conditionValue);
+                           _fightPowerArr.push(item.giftbagArray[i].giftConditionArr[ig].conditionValue);
                         }
-                        _loc2_++;
+                        ig++;
                      }
-                     _loc9_++;
+                     i++;
                   }
-                  _activityInfo1 = _loc4_;
+                  _activityInfo1 = item;
                   _activityInfoArr.push(_activityInfo1);
                }
-               else if(_loc4_.activityChildType == 1)
+               else if(item.activityChildType == 1)
                {
-                  if(WonderfulActivityManager.Instance.activityInitData[_loc4_.activityId])
+                  if(WonderfulActivityManager.Instance.activityInitData[item.activityId])
                   {
                      if(!_giftInfoDic)
                      {
-                        _giftInfoDic = WonderfulActivityManager.Instance.activityInitData[_loc4_.activityId]["giftInfoDic"];
+                        _giftInfoDic = WonderfulActivityManager.Instance.activityInitData[item.activityId]["giftInfoDic"];
                      }
                      else
                      {
-                        _loc7_ = WonderfulActivityManager.Instance.activityInitData[_loc4_.activityId]["giftInfoDic"];
-                        if(_loc7_)
+                        dic2 = WonderfulActivityManager.Instance.activityInitData[item.activityId]["giftInfoDic"];
+                        if(dic2)
                         {
                            var _loc13_:int = 0;
-                           var _loc12_:* = _loc7_;
-                           for(var _loc3_ in _loc7_)
+                           var _loc12_:* = dic2;
+                           for(var key2 in dic2)
                            {
-                              _giftInfoDic[_loc3_] = _loc7_[_loc3_];
+                              _giftInfoDic[key2] = dic2[key2];
                            }
                         }
                      }
-                     _statusGradeArr = WonderfulActivityManager.Instance.activityInitData[_loc4_.activityId]["statusArr"];
+                     _statusGradeArr = WonderfulActivityManager.Instance.activityInitData[item.activityId]["statusArr"];
                   }
-                  _numGrade = _loc4_.giftbagArray.length;
-                  _loc6_ = 0;
-                  while(_loc6_ < _numGrade && _loc6_ < 4)
+                  _numGrade = item.giftbagArray.length;
+                  j = 0;
+                  while(j < _numGrade && j < 4)
                   {
-                     _loc1_ = 0;
-                     while(_loc1_ < _loc4_.giftbagArray[_loc6_].giftConditionArr.length)
+                     for(jg = 0; jg < item.giftbagArray[j].giftConditionArr.length; )
                      {
-                        if(_loc4_.giftbagArray[_loc6_].giftConditionArr[_loc1_].conditionIndex == 0)
+                        if(item.giftbagArray[j].giftConditionArr[jg].conditionIndex == 0)
                         {
-                           _gradeArr.push(_loc4_.giftbagArray[_loc6_].giftConditionArr[_loc1_].conditionValue);
+                           _gradeArr.push(item.giftbagArray[j].giftConditionArr[jg].conditionValue);
                         }
-                        _loc1_++;
+                        jg++;
                      }
-                     _loc6_++;
+                     j++;
                   }
-                  _activityInfo2 = _loc4_;
+                  _activityInfo2 = item;
                   _activityInfoArr.push(_activityInfo2);
                }
             }
          }
       }
       
-      private function initCartoonPlayArr(param1:Array, param2:Array) : void
+      private function initCartoonPlayArr(fightPowerArr:Array, gradeArr:Array) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         _loc4_ = 0;
-         while(_loc4_ < param1.length && _loc4_ < 4)
+         var i:int = 0;
+         var j:int = 0;
+         i = 0;
+         while(i < fightPowerArr.length && i < 4)
          {
-            if(_statusPowerArr && _statusPowerArr[0].statusValue >= param1[_loc4_] && !_bagCellGrayArr[_loc4_])
+            if(_statusPowerArr && _statusPowerArr[0].statusValue >= fightPowerArr[i] && !_bagCellGrayArr[i])
             {
-               _cartoonVisibleArr[_loc4_] = true;
+               _cartoonVisibleArr[i] = true;
             }
             else
             {
-               _cartoonVisibleArr[_loc4_] = false;
+               _cartoonVisibleArr[i] = false;
             }
-            _loc4_++;
+            i++;
          }
-         _loc3_ = 0;
-         while(_loc3_ < 4 - param1.length)
+         for(j = 0; j < 4 - fightPowerArr.length; )
          {
-            if(_statusGradeArr && _statusGradeArr[0].statusValue >= param2[_loc3_] && !_bagCellGrayArr[_loc4_])
+            if(_statusGradeArr && _statusGradeArr[0].statusValue >= gradeArr[j] && !_bagCellGrayArr[i])
             {
-               _cartoonVisibleArr[param1.length + _loc3_] = true;
+               _cartoonVisibleArr[fightPowerArr.length + j] = true;
             }
             else
             {
-               _cartoonVisibleArr[param1.length + _loc3_] = false;
+               _cartoonVisibleArr[fightPowerArr.length + j] = false;
             }
-            _loc3_++;
+            j++;
          }
       }
       
       private function initItem() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var mc:* = null;
          _cartoonList = new Vector.<MovieClip>();
          initCartoonPlayArr(_fightPowerArr,_gradeArr);
-         _loc2_ = 0;
-         while(_loc2_ < 4)
+         for(i = 0; i < 4; )
          {
-            if(_cartoonVisibleArr[_loc2_])
+            if(_cartoonVisibleArr[i])
             {
-               _loc1_ = ComponentFactory.Instance.creat("wonderfulactivity.cartoon");
-               _loc1_.mouseChildren = false;
-               _loc1_.mouseEnabled = false;
-               _loc1_.x = 268 + 120 * _loc2_;
-               _loc1_.y = 311;
-               addChild(_loc1_);
-               _cartoonList.push(_loc1_);
+               mc = ComponentFactory.Instance.creat("wonderfulactivity.cartoon");
+               mc.mouseChildren = false;
+               mc.mouseEnabled = false;
+               mc.x = 268 + 120 * i;
+               mc.y = 311;
+               addChild(mc);
+               _cartoonList.push(mc);
             }
-            _loc2_++;
+            i++;
          }
          if(_cartoonList.length > 0)
          {
@@ -382,49 +378,45 @@ package wonderfulActivity.items
          }
       }
       
-      private function __getAward(param1:MouseEvent) : void
+      private function __getAward(event:MouseEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         var _loc8_:int = 0;
-         var _loc4_:* = null;
-         var _loc6_:* = null;
-         var _loc5_:int = 0;
+         var ig:int = 0;
+         var jg:int = 0;
+         var i:int = 0;
+         var sendInfo:* = null;
+         var giftIdArr:* = null;
+         var j:int = 0;
          SoundManager.instance.playButtonSound();
-         _loc3_ = 0;
-         while(_loc3_ < _bagCellArr.length)
+         for(ig = 0; ig < _bagCellArr.length; )
          {
-            if(_cartoonVisibleArr[_loc3_])
+            if(_cartoonVisibleArr[ig])
             {
-               (_bagCellArr[_loc3_] as BagCell).grayFilters = true;
+               (_bagCellArr[ig] as BagCell).grayFilters = true;
             }
-            _loc3_++;
+            ig++;
          }
-         _loc2_ = 0;
-         while(_loc2_ < _cartoonList.length)
+         for(jg = 0; jg < _cartoonList.length; )
          {
-            _cartoonList[_loc2_].parent.removeChild(_cartoonList[_loc2_]);
-            _loc2_++;
+            _cartoonList[jg].parent.removeChild(_cartoonList[jg]);
+            jg++;
          }
          _getButton.enable = false;
-         var _loc7_:Vector.<SendGiftInfo> = new Vector.<SendGiftInfo>();
-         _loc8_ = 0;
-         while(_loc8_ < _activityInfoArr.length)
+         var sendInfoVec:Vector.<SendGiftInfo> = new Vector.<SendGiftInfo>();
+         for(i = 0; i < _activityInfoArr.length; )
          {
-            _loc4_ = new SendGiftInfo();
-            _loc4_.activityId = _activityInfoArr[_loc8_].activityId;
-            _loc6_ = [];
-            _loc5_ = 0;
-            while(_loc5_ < _activityInfoArr[_loc8_].giftbagArray.length)
+            sendInfo = new SendGiftInfo();
+            sendInfo.activityId = _activityInfoArr[i].activityId;
+            giftIdArr = [];
+            for(j = 0; j < _activityInfoArr[i].giftbagArray.length; )
             {
-               _loc6_.push(_activityInfoArr[_loc8_].giftbagArray[_loc5_].giftbagId);
-               _loc5_++;
+               giftIdArr.push(_activityInfoArr[i].giftbagArray[j].giftbagId);
+               j++;
             }
-            _loc4_.giftIdArr = _loc6_;
-            _loc7_.push(_loc4_);
-            _loc8_++;
+            sendInfo.giftIdArr = giftIdArr;
+            sendInfoVec.push(sendInfo);
+            i++;
          }
-         SocketManager.Instance.out.sendWonderfulActivityGetReward(_loc7_);
+         SocketManager.Instance.out.sendWonderfulActivityGetReward(sendInfoVec);
       }
       
       public function content() : Sprite
@@ -438,13 +430,13 @@ package wonderfulActivity.items
          _bagCellArr = null;
          var _loc3_:int = 0;
          var _loc2_:* = _cartoonList;
-         for each(var _loc1_ in _cartoonList)
+         for each(var mc in _cartoonList)
          {
-            if(_loc1_.parent)
+            if(mc.parent)
             {
-               _loc1_.parent.removeChild(_loc1_);
+               mc.parent.removeChild(mc);
             }
-            _loc1_ = null;
+            mc = null;
          }
          _cartoonList = null;
          while(this.numChildren)

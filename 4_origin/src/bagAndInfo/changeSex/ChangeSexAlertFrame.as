@@ -20,9 +20,9 @@ package bagAndInfo.changeSex
          return _bagType;
       }
       
-      public function set bagType(param1:int) : void
+      public function set bagType(value:int) : void
       {
-         _bagType = param1;
+         _bagType = value;
       }
       
       public function get place() : int
@@ -30,9 +30,9 @@ package bagAndInfo.changeSex
          return _place;
       }
       
-      public function set place(param1:int) : void
+      public function set place(value:int) : void
       {
-         _place = param1;
+         _place = value;
       }
    }
 }

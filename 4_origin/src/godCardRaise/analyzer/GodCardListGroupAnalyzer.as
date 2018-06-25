@@ -10,54 +10,52 @@ package godCardRaise.analyzer
       
       private var _list:Array;
       
-      public function GodCardListGroupAnalyzer(param1:Function)
+      public function GodCardListGroupAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc6_:* = null;
-         var _loc4_:* = null;
-         var _loc11_:int = 0;
-         var _loc10_:* = null;
-         var _loc9_:* = null;
-         var _loc8_:* = null;
-         var _loc7_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         var _loc5_:XML = new XML(param1);
+         var xmllist:* = null;
+         var list:* = null;
+         var i:int = 0;
+         var info:* = null;
+         var cards:* = null;
+         var detailList:* = null;
+         var j:int = 0;
+         var cardId:int = 0;
+         var cardCount:int = 0;
+         var xml:XML = new XML(data);
          _list = [];
-         if(_loc5_.@value == "true")
+         if(xml.@value == "true")
          {
-            _loc6_ = _loc5_..Item;
-            _loc11_ = 0;
-            while(_loc11_ < _loc6_.length())
+            xmllist = xml..Item;
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc10_ = new GodCardListGroupInfo();
-               _loc9_ = [];
-               _loc8_ = _loc6_[_loc11_]..ItemDetail;
-               _loc7_ = 0;
-               while(_loc7_ < _loc8_.length())
+               info = new GodCardListGroupInfo();
+               cards = [];
+               detailList = xmllist[i]..ItemDetail;
+               for(j = 0; j < detailList.length(); )
                {
-                  _loc2_ = _loc8_[_loc7_].@CardID;
-                  _loc3_ = _loc8_[_loc7_].@Number;
-                  _loc9_.push({
-                     "cardId":_loc2_,
-                     "cardCount":_loc3_
+                  cardId = detailList[j].@CardID;
+                  cardCount = detailList[j].@Number;
+                  cards.push({
+                     "cardId":cardId,
+                     "cardCount":cardCount
                   });
-                  _loc7_++;
+                  j++;
                }
-               ObjectUtils.copyPorpertiesByXML(_loc10_,_loc6_[_loc11_]);
-               _loc10_.Cards = _loc9_;
-               _list.push(_loc10_);
-               _loc11_++;
+               ObjectUtils.copyPorpertiesByXML(info,xmllist[i]);
+               info.Cards = cards;
+               _list.push(info);
+               i++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc5_.@message;
+            message = xml.@message;
             onAnalyzeError();
          }
       }

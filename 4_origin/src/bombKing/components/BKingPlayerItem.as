@@ -26,10 +26,10 @@ package bombKing.components
       
       private var _pos:Point;
       
-      public function BKingPlayerItem(param1:int)
+      public function BKingPlayerItem(place:int)
       {
          super();
-         _place = param1;
+         _place = place;
          initView();
       }
       
@@ -67,9 +67,9 @@ package bombKing.components
          addChild(_playerName);
       }
       
-      public function set info(param1:BKingPlayerInfo) : void
+      public function set info(info:BKingPlayerInfo) : void
       {
-         _info = param1;
+         _info = info;
          if(_info)
          {
             if(_info.status != _curStatus)

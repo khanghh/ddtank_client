@@ -62,8 +62,8 @@ package welfareCenter.view
       
       private function init() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var btn:* = null;
          _gainProgress = WelfareCenterManager.instance.gradeGiftProgress;
          _bg = ComponentFactory.Instance.creatBitmap("asset.welfareCeneter.gift.bg");
          _awardArrow = ComponentFactory.Instance.creatBitmap("asset.welfareCeneter.gift.awardArrow");
@@ -81,14 +81,13 @@ package welfareCenter.view
          addChild(_progress);
          addChild(_hBox);
          addChild(_timeText);
-         _loc2_ = 0;
-         while(_loc2_ < 4)
+         for(i = 0; i < 4; )
          {
-            _loc1_ = ComponentFactory.Instance.creatComponentByStylename("welfareCenter.gift.btn" + _loc2_);
-            _loc1_.addEventListener("click",__onClickGiftBtn);
-            addChild(_loc1_);
-            _giftBtnList.push(_loc1_);
-            _loc2_++;
+            btn = ComponentFactory.Instance.creatComponentByStylename("welfareCenter.gift.btn" + i);
+            btn.addEventListener("click",__onClickGiftBtn);
+            addChild(btn);
+            _giftBtnList.push(btn);
+            i++;
          }
          WelfareCenterManager.instance.addEventListener("change",__onGainComplete);
          updateAwardView(_gainProgress + 1);
@@ -99,65 +98,62 @@ package welfareCenter.view
          _timer.start();
       }
       
-      private function __onGainComplete(param1:Event) : void
+      private function __onGainComplete(e:Event) : void
       {
          _giftBtnList[_gainProgress].isShine = false;
          _gainProgress = WelfareCenterManager.instance.gradeGiftProgress;
          updateGiftView();
       }
       
-      public function updateAwardView(param1:int) : void
+      public function updateAwardView($type:int) : void
       {
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
-         var _loc2_:* = null;
-         PositionUtils.setPos(_awardArrow,"welfareCenter.gradeGiftView.arrowPos" + param1);
+         var i:int = 0;
+         var info:* = null;
+         var cell:* = null;
+         PositionUtils.setPos(_awardArrow,"welfareCenter.gradeGiftView.arrowPos" + $type);
          _hBox.clearAllChild();
-         var _loc3_:Array = goodsIDList[param1 - 1];
-         var _loc4_:Array = goodsCountList[param1 - 1];
-         _loc6_ = 0;
-         while(_loc6_ < _loc3_.length)
+         var idList:Array = goodsIDList[$type - 1];
+         var countList:Array = goodsCountList[$type - 1];
+         for(i = 0; i < idList.length; )
          {
-            _loc5_ = ItemManager.fillByID(_loc3_[_loc6_]);
-            _loc5_.IsBinds = true;
-            _loc5_.Count = _loc4_[_loc6_];
-            _loc2_ = new BagCell(0,_loc5_);
-            _loc2_.width = 70;
-            _loc2_.height = 70;
-            _hBox.addChild(_loc2_);
-            _loc6_++;
+            info = ItemManager.fillByID(idList[i]);
+            info.IsBinds = true;
+            info.Count = countList[i];
+            cell = new BagCell(0,info);
+            cell.width = 70;
+            cell.height = 70;
+            _hBox.addChild(cell);
+            i++;
          }
       }
       
-      private function __onClickGiftBtn(param1:MouseEvent) : void
+      private function __onClickGiftBtn(e:MouseEvent) : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          SoundManager.instance.playButtonSound();
-         _loc2_ = 0;
-         while(_loc2_ < _giftBtnList.length)
+         for(i = 0; i < _giftBtnList.length; )
          {
-            if(_giftBtnList[_loc2_] == param1.currentTarget)
+            if(_giftBtnList[i] == e.currentTarget)
             {
-               if(_loc2_ == _gainProgress && isGainAward())
+               if(i == _gainProgress && isGainAward())
                {
                   SocketManager.Instance.out.sendGainOldPlayerGift();
                }
-               updateAwardView(_loc2_ + 1);
+               updateAwardView(i + 1);
                return;
             }
-            _loc2_++;
+            i++;
          }
       }
       
       private function updateGiftView() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _progress.gotoAndStop(_gainProgress + 1);
-         _loc1_ = 0;
-         while(_loc1_ < _gainProgress)
+         for(i = 0; i < _gainProgress; )
          {
-            _giftBtnList[_loc1_].isGain = true;
-            _loc1_++;
+            _giftBtnList[i].isGain = true;
+            i++;
          }
          if(PlayerManager.Instance.Self.Grade >= gradeList[_gainProgress])
          {
@@ -165,20 +161,20 @@ package welfareCenter.view
          }
       }
       
-      private function __onUpdateTimer(param1:Event) : void
+      private function __onUpdateTimer(e:Event) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = (WelfareCenterManager.instance.gradeGiftEndTime - TimeManager.Instance.Now().time) / 1000;
-         if(_loc2_ > 0)
+         var day:int = 0;
+         var time:int = (WelfareCenterManager.instance.gradeGiftEndTime - TimeManager.Instance.Now().time) / 1000;
+         if(time > 0)
          {
-            _loc3_ = DateUtils.dateTimeRemainArr(_loc2_)[0];
-            if(_loc3_ >= 1)
+            day = DateUtils.dateTimeRemainArr(time)[0];
+            if(day >= 1)
             {
-               _timeText.text = LanguageMgr.GetTranslation("newChickenBox.timePlayTxt") + _loc3_ + LanguageMgr.GetTranslation("day");
+               _timeText.text = LanguageMgr.GetTranslation("newChickenBox.timePlayTxt") + day + LanguageMgr.GetTranslation("day");
             }
             else
             {
-               _timeText.text = LanguageMgr.GetTranslation("newChickenBox.timePlayTxt") + TimeManager.getHHMMSSArr(_loc2_).join(":");
+               _timeText.text = LanguageMgr.GetTranslation("newChickenBox.timePlayTxt") + TimeManager.getHHMMSSArr(time).join(":");
             }
          }
          else
@@ -190,8 +186,8 @@ package welfareCenter.view
       
       private function isGainAward() : Boolean
       {
-         var _loc1_:int = gradeList[_gainProgress];
-         if(PlayerManager.Instance.Self.Grade >= _loc1_)
+         var needGrade:int = gradeList[_gainProgress];
+         if(PlayerManager.Instance.Self.Grade >= needGrade)
          {
             return true;
          }
@@ -200,11 +196,11 @@ package welfareCenter.view
       
       private function cellBg() : Sprite
       {
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(0,0);
-         _loc1_.graphics.drawRect(0,0,60,60);
-         _loc1_.graphics.endFill();
-         return _loc1_;
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(0,0);
+         sp.graphics.drawRect(0,0,60,60);
+         sp.graphics.endFill();
+         return sp;
       }
       
       private function disposeTimer() : void
@@ -220,13 +216,13 @@ package welfareCenter.view
       
       public function dispose() : void
       {
-         var _loc1_:* = null;
+         var btn:* = null;
          disposeTimer();
          WelfareCenterManager.instance.removeEventListener("change",__onGainComplete);
          while(_giftBtnList.length)
          {
-            _loc1_ = _giftBtnList.pop() as BaseButton;
-            _loc1_.removeEventListener("click",__onClickGiftBtn);
+            btn = _giftBtnList.pop() as BaseButton;
+            btn.removeEventListener("click",__onClickGiftBtn);
          }
          ObjectUtils.disposeAllChildren(this);
          _bg = null;

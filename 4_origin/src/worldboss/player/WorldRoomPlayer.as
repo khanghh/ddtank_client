@@ -62,11 +62,11 @@ package worldboss.player
       
       private var _currentWalkStartPoint:Point;
       
-      public function WorldRoomPlayer(param1:PlayerVO, param2:Function = null)
+      public function WorldRoomPlayer(playerVO:PlayerVO, callBack:Function = null)
       {
-         _playerVO = param1;
+         _playerVO = playerVO;
          _currentWalkStartPoint = _playerVO.playerPos;
-         super(param1.playerInfo,param2);
+         super(playerVO.playerInfo,callBack);
          initialize();
          setPlayerWalkSpeed();
       }
@@ -88,14 +88,14 @@ package worldboss.player
          return _isInitialized;
       }
       
-      public function set isInitialized(param1:Boolean) : void
+      public function set isInitialized(value:Boolean) : void
       {
-         _isInitialized = param1;
+         _isInitialized = value;
       }
       
       private function initialize() : void
       {
-         var _loc1_:int = 0;
+         var spWidth:int = 0;
          moveSpeed = _playerVO.playerMoveSpeed;
          if(_isChatBall)
          {
@@ -169,13 +169,13 @@ package worldboss.player
             _spName.x = (playerWidth - _spName.width) / 2 - playerWidth / 2;
             _spName.y = -playerHeight;
             _spName.graphics.beginFill(0,0.5);
-            _loc1_ = !!_vipIcon?_lblName.textWidth + _vipIcon.width:Number(_lblName.textWidth + 8);
+            spWidth = !!_vipIcon?_lblName.textWidth + _vipIcon.width:Number(_lblName.textWidth + 8);
             if(playerVO.playerInfo.IsVIP)
             {
-               _loc1_ = !!_vipIcon?_vipName.width + _vipIcon.width + 8:Number(_vipName.width + 8);
+               spWidth = !!_vipIcon?_vipName.width + _vipIcon.width + 8:Number(_vipName.width + 8);
                _spName.x = (playerWidth - (_vipIcon.width + _vipName.width)) / 2 - playerWidth / 2;
             }
-            _spName.graphics.drawRoundRect(-4,0,_loc1_,22,5,5);
+            _spName.graphics.drawRoundRect(-4,0,spWidth,22,5,5);
             _spName.graphics.endFill();
             addChildAt(_spName,0);
             _spName.visible = _isShowName;
@@ -242,16 +242,16 @@ package worldboss.player
          _tombstone.visible = false;
          _spName.y = -playerHeight;
          _tombstone.gotoAndStop(1);
-         var _loc1_:MovieClip = ComponentFactory.Instance.creat("asset.worldboss.resurrect");
-         _loc1_.addEventListener("complete",__reviveComplete);
-         addChildAt(_loc1_,0);
+         var effot:MovieClip = ComponentFactory.Instance.creat("asset.worldboss.resurrect");
+         effot.addEventListener("complete",__reviveComplete);
+         addChildAt(effot,0);
       }
       
-      private function __reviveComplete(param1:Event) : void
+      private function __reviveComplete(e:Event) : void
       {
-         var _loc2_:MovieClip = param1.currentTarget as MovieClip;
-         _loc2_.parent.removeChild(_loc2_);
-         _loc2_ = null;
+         var effot:MovieClip = e.currentTarget as MovieClip;
+         effot.parent.removeChild(effot);
+         effot = null;
       }
       
       private function setEvent() : void
@@ -262,15 +262,15 @@ package worldboss.player
          ChatManager.Instance.addEventListener("addFace",__getFace);
       }
       
-      private function __onplayerPosChangeImp(param1:WorldBossScenePlayerEvent) : void
+      private function __onplayerPosChangeImp(event:WorldBossScenePlayerEvent) : void
       {
          playerPoint = _playerVO.playerPos;
       }
       
-      private function characterDirectionChange(param1:SceneCharacterEvent) : void
+      private function characterDirectionChange(evt:SceneCharacterEvent) : void
       {
          _playerVO.scenePlayerDirection = sceneCharacterDirection;
-         if(param1.data)
+         if(evt.data)
          {
             if(sceneCharacterDirection == SceneCharacterDirection.LT || sceneCharacterDirection == SceneCharacterDirection.RT)
             {
@@ -310,16 +310,16 @@ package worldboss.player
          }
       }
       
-      public function set setSceneCharacterDirectionDefault(param1:SceneCharacterDirection) : void
+      public function set setSceneCharacterDirectionDefault(value:SceneCharacterDirection) : void
       {
-         if(param1 == SceneCharacterDirection.LT || param1 == SceneCharacterDirection.RT)
+         if(value == SceneCharacterDirection.LT || value == SceneCharacterDirection.RT)
          {
             if(sceneCharacterStateType == "natural")
             {
                sceneCharacterActionType = "naturalStandBack";
             }
          }
-         else if(param1 == SceneCharacterDirection.LB || param1 == SceneCharacterDirection.RB)
+         else if(value == SceneCharacterDirection.LB || value == SceneCharacterDirection.RB)
          {
             if(sceneCharacterStateType == "natural")
             {
@@ -364,9 +364,9 @@ package worldboss.player
          playerWalk(_playerVO.walkPath);
       }
       
-      override public function playerWalk(param1:Array) : void
+      override public function playerWalk(walkPath:Array) : void
       {
-         var _loc2_:Number = NaN;
+         var dis:Number = NaN;
          if(_walkPath != null && _tween.isPlaying && _walkPath == _playerVO.walkPath)
          {
             return;
@@ -377,8 +377,8 @@ package worldboss.player
             _currentWalkStartPoint = _walkPath[0];
             sceneCharacterDirection = setPlayerDirection();
             dispatchEvent(new SceneCharacterEvent("characterDirectionChange",true));
-            _loc2_ = Point.distance(_currentWalkStartPoint,playerPoint);
-            _tween.start(_loc2_ / _walkSpeed,"x",_currentWalkStartPoint.x,"y",_currentWalkStartPoint.y);
+            dis = Point.distance(_currentWalkStartPoint,playerPoint);
+            _tween.start(dis / _walkSpeed,"x",_currentWalkStartPoint.x,"y",_currentWalkStartPoint.y);
             _walkPath.shift();
          }
          else
@@ -389,45 +389,44 @@ package worldboss.player
       
       private function setPlayerDirection() : SceneCharacterDirection
       {
-         var _loc1_:* = null;
-         _loc1_ = SceneCharacterDirection.getDirection(playerPoint,_currentWalkStartPoint);
+         var direction:* = null;
+         direction = SceneCharacterDirection.getDirection(playerPoint,_currentWalkStartPoint);
          if(_playerVO.playerInfo.IsMounts)
          {
-            if(_loc1_ == SceneCharacterDirection.LT)
+            if(direction == SceneCharacterDirection.LT)
             {
-               _loc1_ = SceneCharacterDirection.LB;
+               direction = SceneCharacterDirection.LB;
             }
-            else if(_loc1_ == SceneCharacterDirection.RT)
+            else if(direction == SceneCharacterDirection.RT)
             {
-               _loc1_ = SceneCharacterDirection.RB;
+               direction = SceneCharacterDirection.RB;
             }
          }
-         return _loc1_;
+         return direction;
       }
       
       private function fixPlayerPath() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var lastPath:* = null;
          if(_playerVO.currentWalkStartPoint == null)
          {
             return;
          }
-         var _loc2_:* = -1;
-         _loc3_ = 0;
-         while(_loc3_ < _walkPath.length)
+         var startPointIndex:* = -1;
+         for(i = 0; i < _walkPath.length; )
          {
-            if(_walkPath[_loc3_].x == _playerVO.currentWalkStartPoint.x && _walkPath[_loc3_].y == _playerVO.currentWalkStartPoint.y)
+            if(_walkPath[i].x == _playerVO.currentWalkStartPoint.x && _walkPath[i].y == _playerVO.currentWalkStartPoint.y)
             {
-               _loc2_ = _loc3_;
+               startPointIndex = i;
                break;
             }
-            _loc3_++;
+            i++;
          }
-         if(_loc2_ > 0)
+         if(startPointIndex > 0)
          {
-            _loc1_ = _walkPath.slice(0,_loc2_);
-            _playerVO.walkPath = _loc1_.concat(_playerVO.walkPath);
+            lastPath = _walkPath.slice(0,startPointIndex);
+            _playerVO.walkPath = lastPath.concat(_playerVO.walkPath);
          }
       }
       
@@ -460,25 +459,25 @@ package worldboss.player
          moveSpeed = _playerVO.playerMoveSpeed;
       }
       
-      private function __getChat(param1:ChatEvent) : void
+      private function __getChat(evt:ChatEvent) : void
       {
-         if(!_isChatBall || !param1.data)
+         if(!_isChatBall || !evt.data)
          {
             return;
          }
-         var _loc2_:ChatData = ChatData(param1.data).clone();
-         if(!_loc2_)
+         var data:ChatData = ChatData(evt.data).clone();
+         if(!data)
          {
             return;
          }
-         _loc2_.msg = Helpers.deCodeString(_loc2_.msg);
-         if(_loc2_.channel == 2 || _loc2_.channel == 3)
+         data.msg = Helpers.deCodeString(data.msg);
+         if(data.channel == 2 || data.channel == 3)
          {
             return;
          }
-         if(_loc2_ && _playerVO.playerInfo && _loc2_.senderID == _playerVO.playerInfo.ID)
+         if(data && _playerVO.playerInfo && data.senderID == _playerVO.playerInfo.ID)
          {
-            _chatBallView.setText(_loc2_.msg,_playerVO.playerInfo.paopaoType);
+            _chatBallView.setText(data.msg,_playerVO.playerInfo.paopaoType);
             if(!_chatBallView.parent)
             {
                addChildAt(_chatBallView,this.getChildIndex(character) + 1);
@@ -486,12 +485,12 @@ package worldboss.player
          }
       }
       
-      private function __getFace(param1:ChatEvent) : void
+      private function __getFace(evt:ChatEvent) : void
       {
-         var _loc2_:Object = param1.data;
-         if(_loc2_["playerid"] == _playerVO.playerInfo.ID)
+         var data:Object = evt.data;
+         if(data["playerid"] == _playerVO.playerInfo.ID)
          {
-            _face.setFace(_loc2_["faceid"]);
+            _face.setFace(data["faceid"]);
          }
       }
       
@@ -500,9 +499,9 @@ package worldboss.player
          return _playerVO;
       }
       
-      public function set playerVO(param1:PlayerVO) : void
+      public function set playerVO(value:PlayerVO) : void
       {
-         _playerVO = param1;
+         _playerVO = value;
       }
       
       public function get isShowName() : Boolean
@@ -510,9 +509,9 @@ package worldboss.player
          return _isShowName;
       }
       
-      public function set isShowName(param1:Boolean) : void
+      public function set isShowName(value:Boolean) : void
       {
-         _isShowName = param1;
+         _isShowName = value;
          if(!_spName)
          {
             return;
@@ -525,13 +524,13 @@ package worldboss.player
          return _isChatBall;
       }
       
-      public function set isChatBall(param1:Boolean) : void
+      public function set isChatBall(value:Boolean) : void
       {
-         if(_isChatBall == param1 || !_chatBallView)
+         if(_isChatBall == value || !_chatBallView)
          {
             return;
          }
-         _isChatBall = param1;
+         _isChatBall = value;
          if(_isChatBall)
          {
             addChildAt(_chatBallView,this.getChildIndex(character) + 1);
@@ -547,13 +546,13 @@ package worldboss.player
          return _isShowPlayer;
       }
       
-      public function set isShowPlayer(param1:Boolean) : void
+      public function set isShowPlayer(value:Boolean) : void
       {
-         if(_isShowPlayer == param1 || !_isShowPlayer)
+         if(_isShowPlayer == value || !_isShowPlayer)
          {
             return;
          }
-         _isShowPlayer = param1;
+         _isShowPlayer = value;
          this.visible = _isShowPlayer;
       }
       
@@ -562,9 +561,9 @@ package worldboss.player
          return _sceneScene;
       }
       
-      public function set sceneScene(param1:SceneScene) : void
+      public function set sceneScene(value:SceneScene) : void
       {
-         _sceneScene = param1;
+         _sceneScene = value;
       }
       
       public function get ID() : int
@@ -577,9 +576,9 @@ package worldboss.player
          return _isReadyFight;
       }
       
-      public function set isReadyFight(param1:Boolean) : void
+      public function set isReadyFight(value:Boolean) : void
       {
-         _isReadyFight = param1;
+         _isReadyFight = value;
       }
       
       public function getCanAction() : Boolean

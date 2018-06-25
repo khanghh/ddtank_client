@@ -36,44 +36,42 @@ package ddtBuried.items
       
       private function intCardShow() : void
       {
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
-         var _loc4_:* = null;
-         var _loc1_:* = null;
-         var _loc3_:int = BuriedManager.Instance.cardInitList.length;
-         _loc5_ = 0;
-         while(_loc5_ < _loc3_)
+         var i:int = 0;
+         var obj:* = null;
+         var info:* = null;
+         var cell:* = null;
+         var len:int = BuriedManager.Instance.cardInitList.length;
+         for(i = 0; i < len; )
          {
-            _loc2_ = {};
-            _loc2_.tempID = BuriedManager.Instance.cardInitList[_loc5_].tempID;
-            _loc2_.count = BuriedManager.Instance.cardInitList[_loc5_].count;
-            _loc4_ = ItemManager.Instance.getTemplateById(_loc2_.tempID);
-            _loc1_ = new BagCell(0,_loc4_);
-            _loc1_.x = 39;
-            _loc1_.y = 107;
-            _loc1_.setBgVisible(false);
-            _loc1_.setCount(_loc2_.count);
-            _mc["card" + (_loc5_ + 1)].addChild(_loc1_);
-            _list.push(_loc1_);
-            _mc["card" + (_loc5_ + 1)].goodsName.text = _loc4_.Name;
-            _loc5_++;
+            obj = {};
+            obj.tempID = BuriedManager.Instance.cardInitList[i].tempID;
+            obj.count = BuriedManager.Instance.cardInitList[i].count;
+            info = ItemManager.Instance.getTemplateById(obj.tempID);
+            cell = new BagCell(0,info);
+            cell.x = 39;
+            cell.y = 107;
+            cell.setBgVisible(false);
+            cell.setCount(obj.count);
+            _mc["card" + (i + 1)].addChild(cell);
+            _list.push(cell);
+            _mc["card" + (i + 1)].goodsName.text = info.Name;
+            i++;
          }
       }
       
       private function clearCell() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _list.length)
+         var i:int = 0;
+         for(i = 0; i < _list.length; )
          {
-            _list[_loc1_].dispose();
-            ObjectUtils.disposeObject(_list[_loc1_]);
-            _list[_loc1_] = null;
-            while(_mc["card" + (_loc1_ + 1)].numChildren)
+            _list[i].dispose();
+            ObjectUtils.disposeObject(_list[i]);
+            _list[i] = null;
+            while(_mc["card" + (i + 1)].numChildren)
             {
-               ObjectUtils.disposeObject(_mc["card" + (_loc1_ + 1)].getChildAt(0));
+               ObjectUtils.disposeObject(_mc["card" + (i + 1)].getChildAt(0));
             }
-            _loc1_++;
+            i++;
          }
       }
       

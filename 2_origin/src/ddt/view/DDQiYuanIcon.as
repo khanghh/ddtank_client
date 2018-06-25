@@ -39,14 +39,14 @@ package ddt.view
          _activityIcon.addEventListener("click",showDDQiYuanFrame);
       }
       
-      protected function showDDQiYuanFrame(param1:MouseEvent) : void
+      protected function showDDQiYuanFrame(event:MouseEvent) : void
       {
-         var _loc2_:int = getTimer();
-         if(_loc2_ - _lastClickTime > 1000)
+         var currTime:int = getTimer();
+         if(currTime - _lastClickTime > 1000)
          {
             SoundManager.instance.playButtonSound();
             DDQiYuanManager.instance.show();
-            _lastClickTime = _loc2_;
+            _lastClickTime = currTime;
          }
       }
       

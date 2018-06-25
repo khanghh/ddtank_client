@@ -56,35 +56,34 @@ package wishingTree.views
          SocketManager.Instance.addEventListener(PkgEvent.format(299,5),__getRecord);
       }
       
-      protected function __getRecord(param1:PkgEvent) : void
+      protected function __getRecord(event:PkgEvent) : void
       {
-         var _loc8_:int = 0;
-         var _loc6_:* = null;
-         var _loc7_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         var _loc5_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc5_.readInt();
+         var i:int = 0;
+         var date:* = null;
+         var rewardId:int = 0;
+         var rewardName:* = null;
+         var recordTxt:* = null;
+         var pkg:PackageIn = event.pkg;
+         var count:int = pkg.readInt();
          _txtArr = [];
-         _loc8_ = 0;
-         while(_loc8_ <= _loc2_ - 1)
+         for(i = 0; i <= count - 1; )
          {
-            _loc6_ = _loc5_.readDate();
-            _loc7_ = _loc5_.readInt();
-            _loc3_ = ItemManager.Instance.getTemplateById(_loc7_).Name;
-            _loc4_ = ComponentFactory.Instance.creatComponentByStylename("wishingTree.recordTxt");
-            _loc4_.text = LanguageMgr.GetTranslation("wishingTree.record",_loc6_.fullYear,_loc6_.month + 1,_loc6_.date,_loc6_.hours,_loc6_.minutes,_loc3_);
-            _vBox.addChild(_loc4_);
-            _txtArr.push(_loc4_);
-            _loc8_++;
+            date = pkg.readDate();
+            rewardId = pkg.readInt();
+            rewardName = ItemManager.Instance.getTemplateById(rewardId).Name;
+            recordTxt = ComponentFactory.Instance.creatComponentByStylename("wishingTree.recordTxt");
+            recordTxt.text = LanguageMgr.GetTranslation("wishingTree.record",date.fullYear,date.month + 1,date.date,date.hours,date.minutes,rewardName);
+            _vBox.addChild(recordTxt);
+            _txtArr.push(recordTxt);
+            i++;
          }
          _scrollPanel.invalidateViewport();
       }
       
-      protected function __responseHandler(param1:FrameEvent) : void
+      protected function __responseHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(event.responseCode == 0 || event.responseCode == 1)
          {
             dispose();
          }
@@ -98,14 +97,13 @@ package wishingTree.views
       
       override public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          removeEvents();
-         _loc1_ = 0;
-         while(_loc1_ <= _txtArr.length - 1)
+         for(i = 0; i <= _txtArr.length - 1; )
          {
-            ObjectUtils.disposeObject(_txtArr[_loc1_]);
-            _txtArr[_loc1_] = null;
-            _loc1_++;
+            ObjectUtils.disposeObject(_txtArr[i]);
+            _txtArr[i] = null;
+            i++;
          }
          ObjectUtils.disposeObject(_bg);
          _bg = null;

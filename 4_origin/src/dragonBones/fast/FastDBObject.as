@@ -81,9 +81,9 @@ package dragonBones.fast
          _globalTransformMatrix = _globalTransformMatrixBackup;
       }
       
-      function setParent(param1:FastBone) : void
+      function setParent(value:FastBone) : void
       {
-         _parent = param1;
+         _parent = value;
       }
       
       public function dispose() : void
@@ -98,36 +98,36 @@ package dragonBones.fast
       
       protected function calculateParentTransform() : Object
       {
-         var _loc1_:* = null;
-         var _loc2_:* = null;
+         var parentGlobalTransform:* = null;
+         var parentGlobalTransformMatrix:* = null;
          if(this.parent && (this.inheritTranslation || this.inheritRotation || this.inheritScale))
          {
-            _loc1_ = this._parent._global;
-            _loc2_ = this._parent._globalTransformMatrix;
-            if(!this.inheritTranslation && (_loc1_.x != 0 || _loc1_.y != 0) || !this.inheritRotation && (_loc1_.skewX != 0 || _loc1_.skewY != 0) || !this.inheritScale && (_loc1_.scaleX != 1 || _loc1_.scaleY != 1))
+            parentGlobalTransform = this._parent._global;
+            parentGlobalTransformMatrix = this._parent._globalTransformMatrix;
+            if(!this.inheritTranslation && (parentGlobalTransform.x != 0 || parentGlobalTransform.y != 0) || !this.inheritRotation && (parentGlobalTransform.skewX != 0 || parentGlobalTransform.skewY != 0) || !this.inheritScale && (parentGlobalTransform.scaleX != 1 || parentGlobalTransform.scaleY != 1))
             {
-               _loc1_ = FastDBObject._tempParentGlobalTransform;
-               _loc1_.copy(this._parent._global);
+               parentGlobalTransform = FastDBObject._tempParentGlobalTransform;
+               parentGlobalTransform.copy(this._parent._global);
                if(!this.inheritTranslation)
                {
-                  _loc1_.x = 0;
-                  _loc1_.y = 0;
+                  parentGlobalTransform.x = 0;
+                  parentGlobalTransform.y = 0;
                }
                if(!this.inheritScale)
                {
-                  _loc1_.scaleX = 1;
-                  _loc1_.scaleY = 1;
+                  parentGlobalTransform.scaleX = 1;
+                  parentGlobalTransform.scaleY = 1;
                }
                if(!this.inheritRotation)
                {
-                  _loc1_.skewX = 0;
-                  _loc1_.skewY = 0;
+                  parentGlobalTransform.skewX = 0;
+                  parentGlobalTransform.skewY = 0;
                }
-               _loc2_ = DBObject._tempParentGlobalTransformMatrix;
-               TransformUtil.transformToMatrix(_loc1_,_loc2_);
+               parentGlobalTransformMatrix = DBObject._tempParentGlobalTransformMatrix;
+               TransformUtil.transformToMatrix(parentGlobalTransform,parentGlobalTransformMatrix);
             }
-            tempOutputObj.parentGlobalTransform = _loc1_;
-            tempOutputObj.parentGlobalTransformMatrix = _loc2_;
+            tempOutputObj.parentGlobalTransform = parentGlobalTransform;
+            tempOutputObj.parentGlobalTransformMatrix = parentGlobalTransformMatrix;
             return tempOutputObj;
          }
          return null;
@@ -135,33 +135,33 @@ package dragonBones.fast
       
       protected function updateGlobal() : Object
       {
-         var _loc1_:* = null;
-         var _loc2_:* = null;
-         var _loc5_:Number = NaN;
-         var _loc4_:Number = NaN;
+         var parentMatrix:* = null;
+         var parentGlobalTransform:* = null;
+         var x:Number = NaN;
+         var y:Number = NaN;
          calculateRelativeParentTransform();
-         var _loc3_:Object = calculateParentTransform();
-         if(_loc3_ != null)
+         var output:Object = calculateParentTransform();
+         if(output != null)
          {
-            _loc1_ = _loc3_.parentGlobalTransformMatrix;
-            _loc2_ = _loc3_.parentGlobalTransform;
-            _loc5_ = _global.x;
-            _loc4_ = _global.y;
-            _global.x = _loc1_.a * _loc5_ + _loc1_.c * _loc4_ + _loc1_.tx;
-            _global.y = _loc1_.d * _loc4_ + _loc1_.b * _loc5_ + _loc1_.ty;
+            parentMatrix = output.parentGlobalTransformMatrix;
+            parentGlobalTransform = output.parentGlobalTransform;
+            x = _global.x;
+            y = _global.y;
+            _global.x = parentMatrix.a * x + parentMatrix.c * y + parentMatrix.tx;
+            _global.y = parentMatrix.d * y + parentMatrix.b * x + parentMatrix.ty;
             if(this.inheritRotation)
             {
-               _global.skewX = _global.skewX + _loc2_.skewX;
-               _global.skewY = _global.skewY + _loc2_.skewY;
+               _global.skewX = _global.skewX + parentGlobalTransform.skewX;
+               _global.skewY = _global.skewY + parentGlobalTransform.skewY;
             }
             if(this.inheritScale)
             {
-               _global.scaleX = _global.scaleX * _loc2_.scaleX;
-               _global.scaleY = _global.scaleY * _loc2_.scaleY;
+               _global.scaleX = _global.scaleX * parentGlobalTransform.scaleX;
+               _global.scaleY = _global.scaleY * parentGlobalTransform.scaleY;
             }
          }
          TransformUtil.transformToMatrix(_global,_globalTransformMatrix);
-         return _loc3_;
+         return output;
       }
       
       protected function calculateRelativeParentTransform() : void
@@ -173,9 +173,9 @@ package dragonBones.fast
          return _name;
       }
       
-      public function set name(param1:String) : void
+      public function set name(value:String) : void
       {
-         _name = param1;
+         _name = value;
       }
       
       public function get global() : DBTransform
@@ -203,14 +203,14 @@ package dragonBones.fast
          return _visible;
       }
       
-      public function set visible(param1:Boolean) : void
+      public function set visible(value:Boolean) : void
       {
-         _visible = param1;
+         _visible = value;
       }
       
-      public function set frameCache(param1:FrameCache) : void
+      public function set frameCache(cache:FrameCache) : void
       {
-         _frameCache = param1;
+         _frameCache = cache;
       }
    }
 }

@@ -197,10 +197,10 @@ package moneyTree.ui
          _inviteButton && _loc1_;
       }
       
-      private function __onInviteClick(param1:MouseEvent) : void
+      private function __onInviteClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:RoomInfo = RoomManager.Instance.current;
+         var roominfo:RoomInfo = RoomManager.Instance.current;
          if(_data.invited == true)
          {
             _data.invited = false;
@@ -221,7 +221,7 @@ package moneyTree.ui
          }
       }
       
-      public function setListCellStatus(param1:List, param2:Boolean, param3:int) : void
+      public function setListCellStatus(list:List, isSelected:Boolean, index:int) : void
       {
       }
       
@@ -230,9 +230,9 @@ package moneyTree.ui
          return _data;
       }
       
-      public function setCellValue(param1:*) : void
+      public function setCellValue(value:*) : void
       {
-         _data = param1;
+         _data = value;
          if(_data.invited == true)
          {
             _inviteButton.visible = false;
@@ -278,12 +278,12 @@ package moneyTree.ui
          }
       }
       
-      private function __itemOver(param1:MouseEvent) : void
+      private function __itemOver(evt:MouseEvent) : void
       {
          _titleBG.alpha = 1;
       }
       
-      private function __itemOut(param1:MouseEvent) : void
+      private function __itemOut(evt:MouseEvent) : void
       {
          if(_titleBG.visible && !_data.titleIsSelected)
          {
@@ -291,23 +291,23 @@ package moneyTree.ui
          }
       }
       
-      private function showTitle(param1:Boolean) : void
+      private function showTitle(isShowTitle:Boolean) : void
       {
-         _name.visible = !param1;
-         _levelIcon.visible = !param1;
-         _sexIcon.visible = !param1;
-         _masterIcon.visible = !param1;
-         _inviteButton.visible = !param1;
+         _name.visible = !isShowTitle;
+         _levelIcon.visible = !isShowTitle;
+         _sexIcon.visible = !isShowTitle;
+         _masterIcon.visible = !isShowTitle;
+         _inviteButton.visible = !isShowTitle;
          if(_vipName)
          {
-            _vipName.visible = !param1;
+            _vipName.visible = !isShowTitle;
          }
-         this.buttonMode = param1;
-         _titleBG.visible = param1;
+         this.buttonMode = isShowTitle;
+         _titleBG.visible = isShowTitle;
          _titleBG.alpha = 0;
-         _triangle.visible = param1;
-         _titleText.visible = param1;
-         _numText.visible = param1;
+         _triangle.visible = isShowTitle;
+         _titleText.visible = isShowTitle;
+         _numText.visible = isShowTitle;
       }
       
       private function updateTitle() : void

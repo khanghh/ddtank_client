@@ -5,9 +5,7 @@ package totem.view
    import com.pickgliss.ui.text.FilterFrameText;
    import com.pickgliss.utils.ObjectUtils;
    import ddt.manager.LanguageMgr;
-   import ddt.manager.PlayerManager;
    import flash.display.Sprite;
-   import totem.TotemManager;
    import totem.data.TotemAddInfo;
    
    public class TotemRightViewTxtTxtCell extends Sprite implements Disposeable
@@ -27,44 +25,43 @@ package totem.view
          super();
          _leftTxt = ComponentFactory.Instance.creatComponentByStylename("totem.rightView.txtCell.leftTxt");
          _rightTxt = ComponentFactory.Instance.creatComponentByStylename("totem.rightView.txtCell.rightTxt");
-         var _loc1_:String = LanguageMgr.GetTranslation("ddt.totem.sevenProperty");
-         _txtArray = _loc1_.split(",");
+         var tmp:String = LanguageMgr.GetTranslation("ddt.totem.sevenProperty");
+         _txtArray = tmp.split(",");
          addChild(_leftTxt);
          addChild(_rightTxt);
       }
       
-      public function show(param1:int) : void
+      public function show(type:int) : void
       {
-         _leftTxt.text = _txtArray[param1 - 1] + "：";
-         _type = param1;
-         refresh();
+         _leftTxt.text = _txtArray[type - 1] + "：";
+         _type = type;
       }
       
-      public function refresh() : void
+      public function refresh(info:TotemAddInfo) : void
       {
-         var _loc1_:TotemAddInfo = TotemManager.instance.getAddInfo(TotemManager.instance.getTotemPointLevel(PlayerManager.Instance.Self.totemId));
+         var addInfo:* = info;
          switch(int(_type) - 1)
          {
             case 0:
-               _rightTxt.text = _loc1_.Attack.toString();
+               _rightTxt.text = addInfo.Attack.toString();
                break;
             case 1:
-               _rightTxt.text = _loc1_.Defence.toString();
+               _rightTxt.text = addInfo.Defence.toString();
                break;
             case 2:
-               _rightTxt.text = _loc1_.Agility.toString();
+               _rightTxt.text = addInfo.Agility.toString();
                break;
             case 3:
-               _rightTxt.text = _loc1_.Luck.toString();
+               _rightTxt.text = addInfo.Luck.toString();
                break;
             case 4:
-               _rightTxt.text = _loc1_.Blood.toString();
+               _rightTxt.text = addInfo.Blood.toString();
                break;
             case 5:
-               _rightTxt.text = _loc1_.Damage.toString();
+               _rightTxt.text = addInfo.Damage.toString();
                break;
             case 6:
-               _rightTxt.text = _loc1_.Guard.toString();
+               _rightTxt.text = addInfo.Guard.toString();
          }
       }
       

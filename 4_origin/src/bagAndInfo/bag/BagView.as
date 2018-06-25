@@ -70,6 +70,8 @@ package bagAndInfo.bag
    import ddt.manager.SocketManager;
    import ddt.manager.SoundManager;
    import ddt.manager.TimeManager;
+   import ddt.utils.ConfirmAlertData;
+   import ddt.utils.HelperBuyAlert;
    import ddt.utils.PositionUtils;
    import ddt.view.chat.ChatBugleInputFrame;
    import ddt.view.goods.AddPricePanel;
@@ -135,6 +137,10 @@ package bagAndInfo.bag
       public static const MARK:int = 100;
       
       public static var isShowCardBag:Boolean = false;
+      
+      private static var _sortEquipBagData:ConfirmAlertData = new ConfirmAlertData();
+      
+      private static var _sortPetEquipBagData:ConfirmAlertData = new ConfirmAlertData();
       
       private static const UseColorShellLevel:int = 10;
        
@@ -477,10 +483,10 @@ package bagAndInfo.bag
          _orderBtn = ComponentFactory.Instance.creatCustomObject("bagAndInfo.bag.OrderBtn");
          _buttonContainer.addChild(_goldButton);
          _buttonContainer.addChild(_orderBtn);
-         var _loc2_:int = ServerConfigManager.instance.getBindBidLimit(PlayerManager.Instance.Self.Grade,PlayerManager.Instance.Self.VIPLevel);
-         var _loc1_:int = ServerConfigManager.instance.VIPExtraBindMoneyUpper[PlayerManager.Instance.Self.VIPLevel - 1];
+         var levelNum:int = ServerConfigManager.instance.getBindBidLimit(PlayerManager.Instance.Self.Grade,PlayerManager.Instance.Self.VIPLevel);
+         var vipNum:int = ServerConfigManager.instance.VIPExtraBindMoneyUpper[PlayerManager.Instance.Self.VIPLevel - 1];
          _giftButton = ComponentFactory.Instance.creatCustomObject("bagAndInfo.bag.GiftButton");
-         _giftButton.tipData = LanguageMgr.GetTranslation("tank.view.bagII.GiftDirections",_loc2_.toString());
+         _giftButton.tipData = LanguageMgr.GetTranslation("tank.view.bagII.GiftDirections",levelNum.toString());
          if(PlayerManager.Instance.Self.IsVIP)
          {
             _orderBtn.tipData = LanguageMgr.GetTranslation("tank.view.bagII.MedalDirections",ServerConfigManager.instance.getBindBidLimit(PlayerManager.Instance.Self.Grade,PlayerManager.Instance.Self.VIPLevel));
@@ -522,127 +528,127 @@ package bagAndInfo.bag
          _buttonContainer.addChild(_orderTxtBitmap);
       }
       
-      public function set sortBagEnable(param1:Boolean) : void
+      public function set sortBagEnable(value:Boolean) : void
       {
-         _keySortBtn.enable = param1;
+         _keySortBtn.enable = value;
       }
       
-      public function set breakBtnEnable(param1:Boolean) : void
+      public function set breakBtnEnable(value:Boolean) : void
       {
-         _breakBtn.enable = param1;
+         _breakBtn.enable = value;
       }
       
-      public function set cardbtnVible(param1:Boolean) : void
+      public function set cardbtnVible(value:Boolean) : void
       {
-         _cardEnbleFlase.visible = param1;
+         _cardEnbleFlase.visible = value;
       }
       
-      public function set cardbtnFilter(param1:Array) : void
+      public function set cardbtnFilter(filter:Array) : void
       {
-         _cardEnbleFlase.filters = param1;
+         _cardEnbleFlase.filters = filter;
       }
       
-      public function set sortBagFilter(param1:Array) : void
+      public function set sortBagFilter(filter:Array) : void
       {
-         _keySortBtn.filters = param1;
+         _keySortBtn.filters = filter;
       }
       
-      public function set breakBtnFilter(param1:Array) : void
+      public function set breakBtnFilter(filter:Array) : void
       {
-         _breakBtn.filters = param1;
+         _breakBtn.filters = filter;
       }
       
-      public function set tableEnable(param1:Boolean) : void
+      public function set tableEnable(value:Boolean) : void
       {
-         _tabBtn3.mouseEnabled = param1;
+         _tabBtn3.mouseEnabled = value;
       }
       
-      public function switchButtomVisible(param1:Boolean) : void
+      public function switchButtomVisible(value:Boolean) : void
       {
-         _bg1.visible = param1;
-         _sellBtn.visible = param1;
-         _breakBtn.visible = param1;
-         _continueBtn.visible = param1;
-         _keySortBtn.visible = param1;
-         _goldText.visible = param1;
-         _giftButton.visible = param1;
-         _giftText.visible = param1;
-         _moneyButton.visible = param1;
-         _orderTxt.visible = param1;
-         _orderBtn.visible = param1;
-         _moneyBg3.visible = param1;
+         _bg1.visible = value;
+         _sellBtn.visible = value;
+         _breakBtn.visible = value;
+         _continueBtn.visible = value;
+         _keySortBtn.visible = value;
+         _goldText.visible = value;
+         _giftButton.visible = value;
+         _giftText.visible = value;
+         _moneyButton.visible = value;
+         _orderTxt.visible = value;
+         _orderBtn.visible = value;
+         _moneyBg3.visible = value;
          if(_pgup)
          {
-            _pgup.visible = !param1;
+            _pgup.visible = !value;
          }
          if(_pgdn)
          {
-            _pgdn.visible = !param1;
+            _pgdn.visible = !value;
          }
          if(_pageTxt)
          {
-            _pageTxt.visible = !param1;
+            _pageTxt.visible = !value;
          }
          if(_pageTxtBg)
          {
-            _pageTxtBg.visible = !param1;
+            _pageTxtBg.visible = !value;
          }
          if(_beadFeedBtn)
          {
-            _beadFeedBtn.visible = !param1;
+            _beadFeedBtn.visible = !value;
          }
          if(_beadLockBtn)
          {
-            _beadLockBtn.visible = !param1;
+            _beadLockBtn.visible = !value;
          }
          if(_beadOneKeyBtn)
          {
-            _beadOneKeyBtn.visible = !param1;
+            _beadOneKeyBtn.visible = !value;
          }
          if(_beadSortBtn)
          {
-            _beadSortBtn.visible = !param1;
+            _beadSortBtn.visible = !value;
          }
-         enableBeadFunctionBtns(!param1);
+         enableBeadFunctionBtns(!value);
          if(_moneyBg1)
          {
-            _moneyBg1.visible = param1;
+            _moneyBg1.visible = value;
          }
          if(_moneyBg2)
          {
-            _moneyBg2.visible = param1;
+            _moneyBg2.visible = value;
          }
          if(_LiJinBitmap)
          {
-            _LiJinBitmap.visible = param1;
+            _LiJinBitmap.visible = value;
          }
          if(_MoneyBitmap)
          {
-            _MoneyBitmap.visible = param1;
+            _MoneyBitmap.visible = value;
          }
          if(_orderTxtBitmap)
          {
-            _orderTxtBitmap.visible = param1;
+            _orderTxtBitmap.visible = value;
          }
       }
       
-      public function enableBeadFunctionBtns(param1:Boolean) : void
+      public function enableBeadFunctionBtns(value:Boolean) : void
       {
          if(_beadFeedBtn)
          {
-            _beadFeedBtn.enable = param1;
+            _beadFeedBtn.enable = value;
          }
          if(_beadLockBtn)
          {
-            _beadLockBtn.enable = param1;
+            _beadLockBtn.enable = value;
          }
          if(_beadOneKeyBtn)
          {
-            _beadOneKeyBtn.enable = param1;
+            _beadOneKeyBtn.enable = value;
          }
          if(_beadSortBtn)
          {
-            _beadSortBtn.enable = param1;
+            _beadSortBtn.enable = value;
          }
       }
       
@@ -679,40 +685,40 @@ package bagAndInfo.bag
          _beadOneKeyBtn.addEventListener("click",__oneKeyFeedClick);
       }
       
-      public function adjustBeadBagPage(param1:Boolean) : void
+      public function adjustBeadBagPage(onlyNotBind:Boolean) : void
       {
-         var _loc4_:int = 2147483647;
+         var leastPlace:int = 2147483647;
          var _loc6_:int = 0;
          var _loc5_:* = _info.BeadBag.items;
-         for each(var _loc3_ in _info.BeadBag.items)
+         for each(var bead in _info.BeadBag.items)
          {
-            if(_loc3_.Place < _loc4_ && _loc3_.Place > 31 && (!param1 || !_loc3_.IsBinds))
+            if(bead.Place < leastPlace && bead.Place > 31 && (!onlyNotBind || !bead.IsBinds))
             {
-               _loc4_ = _loc3_.Place;
+               leastPlace = bead.Place;
             }
          }
-         var _loc2_:int = (_loc4_ - 32) / 49 + 1;
-         if(_loc2_ <= 0 || _loc2_ > 3)
+         var index:int = (leastPlace - 32) / 49 + 1;
+         if(index <= 0 || index > 3)
          {
-            _loc2_ = 1;
+            index = 1;
          }
          if(_pageTxt)
          {
-            _pageTxt.text = _loc2_ + "/3";
+            _pageTxt.text = index + "/3";
          }
-         _beadList.visible = _loc2_ == 1;
-         _beadList2.visible = _loc2_ == 2;
-         _beadList3.visible = _loc2_ == 3;
-         _currentBeadList = [_beadList,_beadList2,_beadList3][_loc2_ - 1];
+         _beadList.visible = index == 1;
+         _beadList2.visible = index == 2;
+         _beadList3.visible = index == 3;
+         _currentBeadList = [_beadList,_beadList2,_beadList3][index - 1];
       }
       
-      public function __oneKeyFeedClick(param1:MouseEvent) : void
+      public function __oneKeyFeedClick(pEvent:MouseEvent) : void
       {
-         var _loc7_:int = 0;
-         var _loc6_:Boolean = false;
-         var _loc5_:int = 0;
-         var _loc2_:Boolean = false;
-         var _loc4_:int = 0;
+         var allExp:int = 0;
+         var isBind:Boolean = false;
+         var i:int = 0;
+         var desFlag:Boolean = false;
+         var j:int = 0;
          SoundManager.instance.play("008");
          if(BeadModel.beadCanUpgrade)
          {
@@ -721,107 +727,106 @@ package bagAndInfo.bag
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.beadSystem.mostHightLevel"));
                return;
             }
-            _loc7_ = 0;
-            _loc6_ = false;
+            allExp = 0;
+            isBind = false;
             _feedID = 0;
             if(!_feedVec)
             {
                _feedVec = new Vector.<Vector.<BeadCell>>(8);
                _bindVec = new Vector.<Boolean>(8);
             }
-            _loc5_ = 0;
-            while(_loc5_ < 8)
+            i = 0;
+            while(i < 8)
             {
-               if(!_feedVec[_loc5_])
+               if(!_feedVec[i])
                {
-                  _feedVec[_loc5_] = new Vector.<BeadCell>();
-                  _bindVec[_loc5_] = false;
+                  _feedVec[i] = new Vector.<BeadCell>();
+                  _bindVec[i] = false;
                }
                else
                {
-                  _feedVec[_loc5_].length = 0;
+                  _feedVec[i].length = 0;
                }
-               _loc5_++;
+               i++;
             }
             var _loc9_:int = 0;
             var _loc8_:* = _currentBeadList.BeadCells;
-            for each(var _loc3_ in _currentBeadList.BeadCells)
+            for each(var cell in _currentBeadList.BeadCells)
             {
-               if(_loc3_.info && !_loc3_.itemInfo.IsUsed)
+               if(cell.info && !cell.itemInfo.IsUsed)
                {
-                  if(_loc3_.itemInfo.Hole1 < 13 && BeadTemplateManager.Instance.GetBeadInfobyID(_loc3_.itemInfo.TemplateID).Type3 <= 0)
+                  if(cell.itemInfo.Hole1 < 13 && BeadTemplateManager.Instance.GetBeadInfobyID(cell.itemInfo.TemplateID).Type3 <= 0)
                   {
-                     _feedVec[0].push(_loc3_);
-                     _loc7_ = _loc7_ + _loc3_.itemInfo.Hole2;
-                     _loc3_.locked = true;
-                     if(!_bindVec[0] && _loc3_.itemInfo.IsBinds)
+                     _feedVec[0].push(cell);
+                     allExp = allExp + cell.itemInfo.Hole2;
+                     cell.locked = true;
+                     if(!_bindVec[0] && cell.itemInfo.IsBinds)
                      {
                         _bindVec[0] = true;
                      }
                   }
-                  else if(_loc3_.itemInfo.Hole1 == 13)
+                  else if(cell.itemInfo.Hole1 == 13)
                   {
-                     _feedVec[1].push(_loc3_);
+                     _feedVec[1].push(cell);
                   }
-                  else if(_loc3_.itemInfo.Hole1 == 14)
+                  else if(cell.itemInfo.Hole1 == 14)
                   {
-                     _feedVec[2].push(_loc3_);
+                     _feedVec[2].push(cell);
                   }
-                  else if(_loc3_.itemInfo.Hole1 == 15)
+                  else if(cell.itemInfo.Hole1 == 15)
                   {
-                     _feedVec[3].push(_loc3_);
+                     _feedVec[3].push(cell);
                   }
-                  else if(_loc3_.itemInfo.Hole1 == 16 || BeadTemplateManager.Instance.GetBeadInfobyID(_loc3_.itemInfo.TemplateID).Type3 > 0)
+                  else if(cell.itemInfo.Hole1 == 16 || BeadTemplateManager.Instance.GetBeadInfobyID(cell.itemInfo.TemplateID).Type3 > 0)
                   {
-                     _feedVec[4].push(_loc3_);
+                     _feedVec[4].push(cell);
                   }
-                  else if(_loc3_.itemInfo.Hole1 == 17)
+                  else if(cell.itemInfo.Hole1 == 17)
                   {
-                     _feedVec[5].push(_loc3_);
+                     _feedVec[5].push(cell);
                   }
-                  else if(_loc3_.itemInfo.Hole1 == 18)
+                  else if(cell.itemInfo.Hole1 == 18)
                   {
-                     _feedVec[6].push(_loc3_);
+                     _feedVec[6].push(cell);
                   }
-                  else if(_loc3_.itemInfo.Hole1 == 19)
+                  else if(cell.itemInfo.Hole1 == 19)
                   {
-                     _feedVec[7].push(_loc3_);
+                     _feedVec[7].push(cell);
                   }
-                  else if(_loc3_.itemInfo.Hole1 == 20)
+                  else if(cell.itemInfo.Hole1 == 20)
                   {
-                     _feedVec[7].push(_loc3_);
+                     _feedVec[7].push(cell);
                   }
-                  else if(_loc3_.itemInfo.Hole1 == 21)
+                  else if(cell.itemInfo.Hole1 == 21)
                   {
-                     _feedVec[7].push(_loc3_);
+                     _feedVec[7].push(cell);
                   }
                }
             }
-            if(_loc7_ == 0)
+            if(allExp == 0)
             {
-               _loc2_ = true;
-               _loc4_ = 1;
-               while(_loc4_ < 8)
+               desFlag = true;
+               for(j = 1; j < 8; )
                {
-                  if(_feedVec[_loc4_].length > 0)
+                  if(_feedVec[j].length > 0)
                   {
-                     _loc2_ = false;
+                     desFlag = false;
                      break;
                   }
-                  _loc4_++;
+                  j++;
                }
-               if(_loc2_)
+               if(desFlag)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.beadSystem.noBeadToFeed"));
                }
                else
                {
-                  _feedID = _loc4_;
+                  _feedID = j;
                   checkBoxPrompts(_feedID);
                }
                return;
             }
-            _allExp = _loc7_;
+            _allExp = allExp;
             boxPrompts(_bindVec[0]);
          }
          else
@@ -839,24 +844,23 @@ package bagAndInfo.bag
          }
       }
       
-      private function checkBoxPrompts(param1:int) : void
+      private function checkBoxPrompts(id:int) : void
       {
-         var _loc3_:int = 0;
+         var i:int = 0;
          _allExp = 0;
-         _id = param1;
-         var _loc2_:int = _feedVec[param1].length;
-         if(_loc2_ > 0)
+         _id = id;
+         var length:int = _feedVec[id].length;
+         if(length > 0)
          {
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_)
+            for(i = 0; i < length; )
             {
-               _allExp = _allExp + _feedVec[param1][_loc3_].itemInfo.Hole2;
-               _feedVec[param1][_loc3_].locked = true;
-               if(!_bindVec[param1] && _feedVec[param1][_loc3_].itemInfo.IsBinds)
+               _allExp = _allExp + _feedVec[id][i].itemInfo.Hole2;
+               _feedVec[id][i].locked = true;
+               if(!_bindVec[id] && _feedVec[id][i].itemInfo.IsBinds)
                {
-                  _bindVec[param1] = true;
+                  _bindVec[id] = true;
                }
-               _loc3_++;
+               i++;
             }
             beadSystemManager.Instance.addEventListener("createComplete",__onCreateComplete);
             beadSystemManager.Instance.showFrame("infoframe");
@@ -875,56 +879,56 @@ package bagAndInfo.bag
          }
       }
       
-      private function __onCreateComplete(param1:CEvent) : void
+      private function __onCreateComplete(e:CEvent) : void
       {
-         var _loc2_:* = null;
+         var promptAlert:* = null;
          beadSystemManager.Instance.removeEventListener("createComplete",__onCreateComplete);
-         if(param1.data.type == "infoframe")
+         if(e.data.type == "infoframe")
          {
-            _loc2_ = param1.data.spr;
-            _loc2_["setBeadName"](_feedVec[_id][0].tipData["beadName"]);
-            LayerManager.Instance.addToLayer(_loc2_,1,true,1);
-            _loc2_["textInput"].setFocus();
-            _loc2_["isBind"] = _bindVec[_id];
-            _loc2_.addEventListener("response",__onConfigResponse);
+            promptAlert = e.data.spr;
+            promptAlert["setBeadName"](_feedVec[_id][0].tipData["beadName"]);
+            LayerManager.Instance.addToLayer(promptAlert,1,true,1);
+            promptAlert["textInput"].setFocus();
+            promptAlert["isBind"] = _bindVec[_id];
+            promptAlert.addEventListener("response",__onConfigResponse);
          }
       }
       
-      private function boxPrompts(param1:Boolean) : void
+      private function boxPrompts(isBind:Boolean) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         if(param1 && !BeadModel.isBeadCellIsBind)
+         var bindAlert:* = null;
+         var alert:* = null;
+         var showExp:* = null;
+         if(isBind && !BeadModel.isBeadCellIsBind)
          {
-            _loc4_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.beadSystem.useBindBead"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
-            _loc4_.addEventListener("response",__onBindRespones);
+            bindAlert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.beadSystem.useBindBead"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
+            bindAlert.addEventListener("response",__onBindRespones);
          }
          else
          {
-            _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.beadSystem.FeedBeadConfirm"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
-            _loc2_ = ComponentFactory.Instance.creatComponentByStylename("beadSystem.feedBeadShowExpTextOneFeed");
-            _loc2_.htmlText = LanguageMgr.GetTranslation("ddt.beadSystem.feedBeadGetExp",_allExp);
-            _loc3_.addChild(_loc2_);
-            _loc3_.addEventListener("response",__onFeedResponse);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.beadSystem.FeedBeadConfirm"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
+            showExp = ComponentFactory.Instance.creatComponentByStylename("beadSystem.feedBeadShowExpTextOneFeed");
+            showExp.htmlText = LanguageMgr.GetTranslation("ddt.beadSystem.feedBeadGetExp",_allExp);
+            alert.addChild(showExp);
+            alert.addEventListener("response",__onFeedResponse);
          }
       }
       
-      protected function __onConfigResponse(param1:FrameEvent) : void
+      protected function __onConfigResponse(event:FrameEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         var _loc4_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
+         var length:int = 0;
+         var i:int = 0;
+         var alertInfo:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
          SoundManager.instance.playButtonSound();
-         switch(int(param1.responseCode) - 2)
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
-               if(_loc4_["textInput"].text == "YES" || _loc4_["textInput"].text == "yes")
+               if(alertInfo["textInput"].text == "YES" || alertInfo["textInput"].text == "yes")
                {
-                  boxPrompts(_loc4_["isBind"]);
-                  _loc4_.removeEventListener("response",__onConfigResponse);
-                  ObjectUtils.disposeObject(_loc4_);
+                  boxPrompts(alertInfo["isBind"]);
+                  alertInfo.removeEventListener("response",__onConfigResponse);
+                  ObjectUtils.disposeObject(alertInfo);
                }
                else
                {
@@ -933,53 +937,51 @@ package bagAndInfo.bag
          }
       }
       
-      protected function __onBindRespones(param1:FrameEvent) : void
+      protected function __onBindRespones(pEvent:FrameEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var length:int = 0;
+         var i:int = 0;
+         var alert:* = null;
+         var showExp:* = null;
          SoundManager.instance.playButtonSound();
-         switch(int(param1.responseCode))
+         switch(int(pEvent.responseCode))
          {
             case 0:
             case 1:
-               _loc4_ = _feedVec[_feedID].length;
-               _loc5_ = 0;
-               while(_loc5_ < _loc4_)
+               length = _feedVec[_feedID].length;
+               for(i = 0; i < length; )
                {
-                  _feedVec[_feedID][_loc5_].locked = false;
-                  _loc5_++;
+                  _feedVec[_feedID][i].locked = false;
+                  i++;
                }
                break;
             case 2:
             case 3:
             case 4:
-               _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.beadSystem.FeedBeadConfirm"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
-               _loc2_ = ComponentFactory.Instance.creatComponentByStylename("beadSystem.feedBeadShowExpTextOneFeed");
-               _loc2_.htmlText = LanguageMgr.GetTranslation("ddt.beadSystem.feedBeadGetExp",_allExp);
-               _loc3_.addChild(_loc2_);
-               _loc3_.addEventListener("response",__onFeedResponse);
+               alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.beadSystem.FeedBeadConfirm"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
+               showExp = ComponentFactory.Instance.creatComponentByStylename("beadSystem.feedBeadShowExpTextOneFeed");
+               showExp.htmlText = LanguageMgr.GetTranslation("ddt.beadSystem.feedBeadGetExp",_allExp);
+               alert.addChild(showExp);
+               alert.addEventListener("response",__onFeedResponse);
          }
-         param1.currentTarget.removeEventListener("response",__onBindRespones);
-         ObjectUtils.disposeObject(param1.currentTarget);
+         pEvent.currentTarget.removeEventListener("response",__onBindRespones);
+         ObjectUtils.disposeObject(pEvent.currentTarget);
       }
       
-      protected function __onFeedResponse(param1:FrameEvent) : void
+      protected function __onFeedResponse(event:FrameEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
+         var length:int = 0;
+         var i:int = 0;
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
-               _loc2_ = _feedVec[_feedID].length;
-               _loc3_ = 0;
-               while(_loc3_ < _loc2_)
+               length = _feedVec[_feedID].length;
+               for(i = 0; i < length; )
                {
-                  _feedVec[_feedID][_loc3_].locked = false;
-                  _loc3_++;
+                  _feedVec[_feedID][i].locked = false;
+                  i++;
                }
                break;
             case 2:
@@ -1004,30 +1006,29 @@ package bagAndInfo.bag
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.beadSystem.tipNoBead"));
                break;
          }
-         param1.currentTarget.removeEventListener("response",__onFeedResponse);
-         ObjectUtils.disposeObject(param1.currentTarget);
+         event.currentTarget.removeEventListener("response",__onFeedResponse);
+         ObjectUtils.disposeObject(event.currentTarget);
       }
       
-      private function __disposeOneKeyMC(param1:Event) : void
+      private function __disposeOneKeyMC(pEvent:Event) : void
       {
-         var _loc5_:int = 0;
-         var _loc3_:Array = [];
+         var i:int = 0;
+         var arr:Array = [];
          var _loc7_:int = 0;
          var _loc6_:* = _feedVec[_feedID];
-         for each(var _loc2_ in _feedVec[_feedID])
+         for each(var c in _feedVec[_feedID])
          {
-            if(_loc2_.info && !_loc2_.itemInfo.IsUsed)
+            if(c.info && !c.itemInfo.IsUsed)
             {
-               _loc3_.push(_loc2_.beadPlace);
+               arr.push(c.beadPlace);
             }
          }
-         SocketManager.Instance.out.sendBeadUpgrade(_loc3_);
-         var _loc4_:int = _feedVec[_feedID].length;
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         SocketManager.Instance.out.sendBeadUpgrade(arr);
+         var length:int = _feedVec[_feedID].length;
+         for(i = 0; i < length; )
          {
-            _feedVec[_feedID][_loc5_].locked = false;
-            _loc5_++;
+            _feedVec[_feedID][i].locked = false;
+            i++;
          }
          _oneKeyFeedMC.removeEventListener("oneKeyComplete",__disposeOneKeyMC);
          _oneKeyFeedMC.stop();
@@ -1127,7 +1128,7 @@ package bagAndInfo.bag
          }
       }
       
-      private function __showBead(param1:BagEvent) : void
+      private function __showBead(event:BagEvent) : void
       {
          MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.beadSystem.beadToBeadBag"));
       }
@@ -1138,11 +1139,11 @@ package bagAndInfo.bag
          CardManager.Instance.showView(1);
       }
       
-      protected function __cardBagViewComplete(param1:CardSystemEvent) : void
+      protected function __cardBagViewComplete(event:CardSystemEvent) : void
       {
          if(_bagList == null)
          {
-            _bagList = param1.info;
+            _bagList = event.info;
             addChild(_bagList);
             _bagList.vectorListModel.appendAll(CardManager.Instance.model.getBagListData());
             DragManager.ListenWheelEvent(_bagList.onMouseWheel);
@@ -1155,36 +1156,36 @@ package bagAndInfo.bag
          dispatchEvent(new CardSocketEvent("setSelectCardComplete"));
       }
       
-      private function __upData(param1:DictionaryEvent) : void
+      private function __upData(event:DictionaryEvent) : void
       {
-         var _loc4_:* = null;
-         var _loc5_:* = null;
-         var _loc6_:CardInfo = param1.data as CardInfo;
-         var _loc3_:int = _loc6_.Place % 4 == 0?_loc6_.Place / 4 - 2:Number(_loc6_.Place / 4 - 1);
-         var _loc2_:int = _loc6_.Place % 4 == 0?4:Number(_loc6_.Place % 4);
-         if(_bagList.vectorListModel.elements[_loc3_] == null)
+         var itemDate:* = null;
+         var newArr:* = null;
+         var info:CardInfo = event.data as CardInfo;
+         var m:int = info.Place % 4 == 0?info.Place / 4 - 2:Number(info.Place / 4 - 1);
+         var n:int = info.Place % 4 == 0?4:Number(info.Place % 4);
+         if(_bagList.vectorListModel.elements[m] == null)
          {
-            _loc4_ = [];
-            _loc4_[0] = _loc3_ + 1;
-            _loc4_[_loc2_] = _loc6_;
-            _bagList.vectorListModel.append(_loc4_);
+            itemDate = [];
+            itemDate[0] = m + 1;
+            itemDate[n] = info;
+            _bagList.vectorListModel.append(itemDate);
          }
          else
          {
-            _loc5_ = _bagList.vectorListModel.elements[_loc3_] as Array;
-            _loc5_[_loc2_] = _loc6_;
-            _bagList.vectorListModel.replaceAt(_loc3_,_loc5_);
+            newArr = _bagList.vectorListModel.elements[m] as Array;
+            newArr[n] = info;
+            _bagList.vectorListModel.replaceAt(m,newArr);
          }
       }
       
-      private function __remove(param1:DictionaryEvent) : void
+      private function __remove(event:DictionaryEvent) : void
       {
-         var _loc5_:CardInfo = param1.data as CardInfo;
-         var _loc3_:int = _loc5_.Place % 4 == 0?_loc5_.Place / 4 - 2:Number(_loc5_.Place / 4 - 1);
-         var _loc2_:int = _loc5_.Place % 4 == 0?4:Number(_loc5_.Place % 4);
-         var _loc4_:Array = _bagList.vectorListModel.elements[_loc3_] as Array;
-         _loc4_[_loc2_] = null;
-         _bagList.vectorListModel.replaceAt(_loc3_,_loc4_);
+         var info:CardInfo = event.data as CardInfo;
+         var m:int = info.Place % 4 == 0?info.Place / 4 - 2:Number(info.Place / 4 - 1);
+         var n:int = info.Place % 4 == 0?4:Number(info.Place % 4);
+         var newArr:Array = _bagList.vectorListModel.elements[m] as Array;
+         newArr[n] = null;
+         _bagList.vectorListModel.replaceAt(m,newArr);
       }
       
       protected function initEvent() : void
@@ -1276,45 +1277,45 @@ package bagAndInfo.bag
          adjustEvent();
       }
       
-      protected function bagLockHandler(param1:MouseEvent) : void
+      protected function bagLockHandler(event:MouseEvent) : void
       {
          __openSettingLock(null);
       }
       
-      protected function __bagArrangeOut(param1:MouseEvent) : void
+      protected function __bagArrangeOut(event:MouseEvent) : void
       {
          if(_bagType == 21)
          {
             return;
          }
-         if(_bagArrangeSprite && _bagArrangeSprite.parent && !containPoint(param1.localX,param1.localY))
+         if(_bagArrangeSprite && _bagArrangeSprite.parent && !containPoint(event.localX,event.localY))
          {
             removeChild(_bagArrangeSprite);
          }
       }
       
-      private function containPoint(param1:int, param2:int) : Boolean
+      private function containPoint(x:int, y:int) : Boolean
       {
-         if(param1 > 0 && param1 < _bagArrangeSprite.width && param2 <= 3 && param2 > -_bagArrangeSprite.height)
+         if(x > 0 && x < _bagArrangeSprite.width && y <= 3 && y > -_bagArrangeSprite.height)
          {
             return true;
          }
          return false;
       }
       
-      private function __onAutoOpenBeadChanged(param1:BeadEvent) : void
+      private function __onAutoOpenBeadChanged(pEvent:BeadEvent) : void
       {
          if(!_beadOneKeyBtn || !_beadLockBtn || !_beadFeedBtn)
          {
             return;
          }
-         if(param1.CellId == 0)
+         if(pEvent.CellId == 0)
          {
             _beadOneKeyBtn.enable = true;
             _beadLockBtn.enable = true;
             _beadFeedBtn.enable = true;
          }
-         else if(param1.CellId == 1)
+         else if(pEvent.CellId == 1)
          {
             _beadOneKeyBtn.enable = false;
             _beadLockBtn.enable = false;
@@ -1322,62 +1323,61 @@ package bagAndInfo.bag
          }
       }
       
-      private function isInBag(param1:InventoryItemInfo, param2:BeadBagList) : Boolean
+      private function isInBag(item:InventoryItemInfo, bagList:BeadBagList) : Boolean
       {
-         if(param1.Place >= param2._startIndex && param1.Place <= param2._stopIndex)
+         if(item.Place >= bagList._startIndex && item.Place <= bagList._stopIndex)
          {
             return true;
          }
          return false;
       }
       
-      protected function __onBeadBagChanged(param1:DictionaryEvent) : void
+      protected function __onBeadBagChanged(event:DictionaryEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc6_:int = 0;
+         var tmp:int = 0;
+         var i:int = 0;
          if(_bagType != 21)
          {
             return;
          }
-         var _loc2_:Array = [_beadList,_beadList2,_beadList3];
-         var _loc5_:int = 1;
-         var _loc3_:InventoryItemInfo = InventoryItemInfo(param1.data);
-         if(_loc3_.Place < 32)
+         var arr:Array = [_beadList,_beadList2,_beadList3];
+         var toPage:int = 1;
+         var item:InventoryItemInfo = InventoryItemInfo(event.data);
+         if(item.Place < 32)
          {
             return;
          }
-         if(_info.BeadBag.getItemAt(_loc3_.Place))
+         if(_info.BeadBag.getItemAt(item.Place))
          {
-            _loc4_ = 1;
-            _loc6_ = 0;
-            while(_loc6_ < _loc2_.length)
+            tmp = 1;
+            for(i = 0; i < arr.length; )
             {
-               if(isInBag(_loc3_,_loc2_[_loc6_]))
+               if(isInBag(item,arr[i]))
                {
-                  _loc4_ = _loc6_ + 1;
+                  tmp = i + 1;
                   break;
                }
-               _loc6_++;
+               i++;
             }
-            _loc5_ = _loc4_ > _loc5_?_loc4_:int(_loc5_);
+            toPage = tmp > toPage?tmp:int(toPage);
          }
-         if(_loc5_ > 3 || _loc5_ < 1)
+         if(toPage > 3 || toPage < 1)
          {
-            _loc5_ = 1;
+            toPage = 1;
          }
-         if(_currIndex == _loc5_)
+         if(_currIndex == toPage)
          {
             return;
          }
-         _currIndex = _loc5_;
-         _beadList.visible = _loc5_ == 1;
-         _beadList2.visible = _loc5_ == 2;
-         _beadList3.visible = _loc5_ == 3;
-         _pageTxt.text = _loc5_ + "/3";
-         _currentBeadList = _loc2_[_loc5_ - 1];
+         _currIndex = toPage;
+         _beadList.visible = toPage == 1;
+         _beadList2.visible = toPage == 2;
+         _beadList3.visible = toPage == 3;
+         _pageTxt.text = toPage + "/3";
+         _currentBeadList = arr[toPage - 1];
       }
       
-      private function __pgupHandler(param1:MouseEvent) : void
+      private function __pgupHandler(pEvent:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_currIndex == 1)
@@ -1409,11 +1409,11 @@ package bagAndInfo.bag
          }
       }
       
-      private function setCurrPage(param1:int) : void
+      private function setCurrPage(pIndex:int) : void
       {
       }
       
-      public function __pgdnHandler(param1:MouseEvent) : void
+      public function __pgdnHandler(pEvent:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_currIndex == 1)
@@ -1449,11 +1449,11 @@ package bagAndInfo.bag
       {
       }
       
-      protected function __useColorShell(param1:PkgEvent) : void
+      protected function __useColorShell(evt:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:Boolean = _loc3_.readBoolean();
-         if(_loc2_)
+         var pkg:PackageIn = evt.pkg;
+         var result:Boolean = pkg.readBoolean();
+         if(result)
          {
             SoundManager.instance.play("063");
          }
@@ -1587,10 +1587,10 @@ package bagAndInfo.bag
          CardManager.Instance.removeEventListener("bagBagViewComplete",__cardBagViewComplete);
       }
       
-      protected function __itemtabBtnClick(param1:MouseEvent) : void
+      protected function __itemtabBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = event.currentTarget;
          if(_tabBtn1 !== _loc2_)
          {
             if(_tabBtn2 !== _loc2_)
@@ -1639,114 +1639,114 @@ package bagAndInfo.bag
          }
       }
       
-      public function enableOrdisableSB(param1:Boolean) : void
+      public function enableOrdisableSB(enable:Boolean) : void
       {
          if(_equipSelectedBtn)
          {
-            _equipSelectedBtn.enable = param1;
+            _equipSelectedBtn.enable = enable;
          }
          if(_propSelectedBtn)
          {
-            _propSelectedBtn.enable = param1;
+            _propSelectedBtn.enable = enable;
          }
          if(_dressSelectedBtn)
          {
-            _dressSelectedBtn.enable = param1;
+            _dressSelectedBtn.enable = enable;
          }
          if(_tabBtn1)
          {
-            _tabBtn1.visible = param1;
+            _tabBtn1.visible = enable;
          }
          if(_tabBtn2)
          {
-            _tabBtn2.visible = param1;
+            _tabBtn2.visible = enable;
          }
          if(_tabBtn4)
          {
-            _tabBtn4.visible = param1;
+            _tabBtn4.visible = enable;
          }
       }
       
-      public function showDressSelectedBtnOnly(param1:Boolean) : void
+      public function showDressSelectedBtnOnly(enable:Boolean) : void
       {
          if(_equipSelectedBtn)
          {
-            _equipSelectedBtn.enable = !param1;
+            _equipSelectedBtn.enable = !enable;
          }
          if(_propSelectedBtn)
          {
-            _propSelectedBtn.enable = !param1;
+            _propSelectedBtn.enable = !enable;
          }
          if(_dressSelectedBtn)
          {
-            _dressSelectedBtn.enable = param1;
+            _dressSelectedBtn.enable = enable;
          }
          if(_tabBtn1)
          {
-            _tabBtn1.visible = !param1;
+            _tabBtn1.visible = !enable;
          }
          if(_tabBtn2)
          {
-            _tabBtn2.visible = !param1;
+            _tabBtn2.visible = !enable;
          }
          if(_tabBtn4)
          {
-            _tabBtn4.visible = param1;
+            _tabBtn4.visible = enable;
          }
       }
       
-      public function enableDressSelectedBtn(param1:Boolean) : void
+      public function enableDressSelectedBtn(enable:Boolean) : void
       {
          if(_dressSelectedBtn)
          {
-            _dressSelectedBtn.enable = param1;
+            _dressSelectedBtn.enable = enable;
          }
          if(_tabBtn4)
          {
-            _tabBtn4.visible = param1;
+            _tabBtn4.visible = enable;
          }
       }
       
-      public function showOrHideSB(param1:Boolean) : void
+      public function showOrHideSB(isShow:Boolean) : void
       {
          if(_equipSelectedBtn)
          {
-            _equipSelectedBtn.visible = param1;
+            _equipSelectedBtn.visible = isShow;
          }
          if(_propSelectedBtn)
          {
-            _propSelectedBtn.visible = param1;
+            _propSelectedBtn.visible = isShow;
          }
          if(_dressSelectedBtn)
          {
-            _dressSelectedBtn.visible = param1;
+            _dressSelectedBtn.visible = isShow;
          }
       }
       
-      protected function refreshSelectedButton(param1:int) : void
+      protected function refreshSelectedButton(tag:int) : void
       {
          if(_equipSelectedBtn)
          {
-            _equipSelectedBtn.selected = param1 == 1;
+            _equipSelectedBtn.selected = tag == 1;
          }
          if(_propSelectedBtn)
          {
-            _propSelectedBtn.selected = param1 == 2;
+            _propSelectedBtn.selected = tag == 2;
          }
          if(_beadSelectedBtn)
          {
-            _beadSelectedBtn.selected = param1 == 3;
+            _beadSelectedBtn.selected = tag == 3;
          }
          if(_dressSelectedBtn)
          {
-            _dressSelectedBtn.selected = param1 == 4;
+            _dressSelectedBtn.selected = tag == 4;
          }
       }
       
-      public function setBagType(param1:int) : void
+      public function setBagType(type:int) : void
       {
-         var _loc2_:* = null;
-         if(param1 != 21)
+         var thisClass:* = null;
+         if(type != 21)
          {
             _currIndex = 1;
             if(_beadList)
@@ -1762,30 +1762,30 @@ package bagAndInfo.bag
          {
             btnReable();
          }
-         _bagType = param1;
-         if(param1 == 5)
+         _bagType = type;
+         if(type == 5)
          {
             refreshSelectedButton(2);
          }
-         if(param1 == 0)
+         if(type == 0)
          {
             refreshSelectedButton(1);
          }
-         else if(param1 == 1)
+         else if(type == 1)
          {
             refreshSelectedButton(2);
          }
-         else if(param1 == 2)
+         else if(type == 2)
          {
-            param1 = 0;
+            type = 0;
             refreshSelectedButton(1);
          }
-         else if(param1 == 21)
+         else if(type == 21)
          {
             refreshSelectedButton(3);
             switchButtomVisible(false);
          }
-         else if(param1 == 8)
+         else if(type == 8)
          {
             PlayerDressManager.instance.addEventListener("bagViewComplete",showDressBagView);
             PlayerDressManager.instance.showView(1);
@@ -1831,7 +1831,7 @@ package bagAndInfo.bag
             _bgShapeII.visible = _bagType == 2;
          }
          set_breakBtn_enable();
-         var _loc3_:* = _bagType != 2;
+         var _loc3_:* = _bagType != 2 && _bagType != 100;
          _continueBtn.enable = _loc3_;
          _sellBtn.enable = _loc3_;
          if(_bagType == 0 || _bagType == 1 || _bagType == 5)
@@ -1854,8 +1854,8 @@ package bagAndInfo.bag
          else
          {
             showOrHideSB(true);
-            _loc2_ = getQualifiedClassName(this);
-            if(bagLockBtn && _loc2_ != "email.view::EmailBagView")
+            thisClass = getQualifiedClassName(this);
+            if(bagLockBtn && thisClass != "email.view::EmailBagView")
             {
                bagLockBtn.x = 298;
                bagLockBtn.y = -64;
@@ -1927,11 +1927,11 @@ package bagAndInfo.bag
          }
       }
       
-      protected function showDressBagView(param1:PlayerDressEvent) : void
+      protected function showDressBagView(event:PlayerDressEvent) : void
       {
          if(!_dressbagView)
          {
-            _dressbagView = param1.info;
+            _dressbagView = event.info;
             addChild(_dressbagView);
             _dressbagView.addEventListener("itemclick",__cellClick);
             _dressbagView.addEventListener("doubleclick",__cellDoubleClick);
@@ -2038,7 +2038,7 @@ package bagAndInfo.bag
          _beadEnbleFlase = null;
       }
       
-      public function isNeedCard(param1:Boolean) : void
+      public function isNeedCard(value:Boolean) : void
       {
       }
       
@@ -2054,7 +2054,7 @@ package bagAndInfo.bag
       {
       }
       
-      private function __onBagUpdateEQUIPBAG(param1:BagEvent) : void
+      private function __onBagUpdateEQUIPBAG(evt:BagEvent) : void
       {
          if(!(_dressbagView && _dressbagView.visible == true))
          {
@@ -2062,7 +2062,7 @@ package bagAndInfo.bag
          }
       }
       
-      protected function __onBagUpdatePROPBAG(param1:BagEvent) : void
+      protected function __onBagUpdatePROPBAG(evt:BagEvent) : void
       {
          if(this.bagType != 21 && !_isScreenFood && this.bagType != 2)
          {
@@ -2070,7 +2070,7 @@ package bagAndInfo.bag
          }
       }
       
-      private function __openSettingLock(param1:MouseEvent) : void
+      private function __openSettingLock(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          BaglockedManager.Instance.onShow();
@@ -2078,7 +2078,7 @@ package bagAndInfo.bag
          SharedManager.Instance.save();
       }
       
-      protected function __bagArrangeOver(param1:MouseEvent) : void
+      protected function __bagArrangeOver(evt:MouseEvent) : void
       {
          if(_bagType == 21 || _bagType == 0 && _isScreenFood)
          {
@@ -2092,24 +2092,52 @@ package bagAndInfo.bag
          addChild(_bagArrangeSprite);
       }
       
-      protected function __sortBagClick(param1:MouseEvent) : void
+      protected function __sortBagClick(evt:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         evt = evt;
          SoundManager.instance.play("008");
          if(_bagType != 21)
          {
             if(_isScreenFood && _bagType == 0)
             {
+               onClickSortPetEquipBag = function():void
+               {
+                  PlayerManager.Instance.Self.getBag(_bagType).foldPetEquips(_bagType,PlayerManager.Instance.Self.getBag(_bagType),0,48);
+               };
                if(PlayerManager.Instance.Self.bagLocked)
                {
                   BaglockedManager.Instance.show();
                   return;
                }
-               _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("petBag.sortTips"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2);
-               _loc2_.addEventListener("response",__onSortBagResponse);
+               if(_sortPetEquipBagData.notShowAlertAgain)
+               {
+                  PlayerManager.Instance.Self.getBag(_bagType).foldPetEquips(_bagType,PlayerManager.Instance.Self.getBag(_bagType),0,48);
+                  return;
+               }
+               var msg:String = LanguageMgr.GetTranslation("petBag.sortTips");
+               HelperBuyAlert.getInstance().alert(msg,_sortPetEquipBagData,"SimpleAlertWithNotShowAgain",null,onClickSortPetEquipBag,null,0);
                return;
             }
-            if(_bagArrangeSprite)
+            if(_bagArrangeSprite && _bagType == 1)
+            {
+               PlayerManager.Instance.Self.PropBag.sortBag(_bagType,PlayerManager.Instance.Self.getBag(_bagType),0,95,_bagArrangeSprite.arrangeAdd);
+               return;
+            }
+            if(_bagArrangeSprite && _bagArrangeSprite.arrangeAdd && bagType == 0 && !_sortEquipBagData.notShowAlertAgain)
+            {
+               onClickSortEquipBag = function():void
+               {
+                  PlayerManager.Instance.Self.PropBag.sortBag(_bagType,PlayerManager.Instance.Self.getBag(_bagType),0,48,_bagArrangeSprite.arrangeAdd);
+               };
+               if(PlayerManager.Instance.Self.bagLocked)
+               {
+                  BaglockedManager.Instance.show();
+                  return;
+               }
+               msg = LanguageMgr.GetTranslation("bag.bagView.equipSortTips");
+               HelperBuyAlert.getInstance().alert(msg,_sortEquipBagData,"SimpleAlertWithNotShowAgain",null,onClickSortEquipBag,null,0);
+            }
+            else if(_bagArrangeSprite)
             {
                PlayerManager.Instance.Self.PropBag.sortBag(_bagType,PlayerManager.Instance.Self.getBag(_bagType),0,48,_bagArrangeSprite.arrangeAdd);
             }
@@ -2120,23 +2148,12 @@ package bagAndInfo.bag
          }
       }
       
-      protected function __onSortBagResponse(param1:FrameEvent) : void
+      private function __frameEvent(event:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.target as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onSortBagResponse);
-         _loc2_.dispose();
-         if(param1.responseCode == 2 || param1.responseCode == 3)
-         {
-            PlayerManager.Instance.Self.getBag(_bagType).foldPetEquips(_bagType,PlayerManager.Instance.Self.getBag(_bagType),0,48);
-         }
-      }
-      
-      private function __frameEvent(param1:FrameEvent) : void
-      {
-         var _loc2_:BaseAlerFrame = param1.target as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__frameEvent);
-         _loc2_.dispose();
-         switch(int(param1.responseCode))
+         var alert:BaseAlerFrame = event.target as BaseAlerFrame;
+         alert.removeEventListener("response",__frameEvent);
+         alert.dispose();
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -2160,9 +2177,9 @@ package bagAndInfo.bag
          }
       }
       
-      private function __propertyChange(param1:PlayerPropertyEvent) : void
+      private function __propertyChange(evt:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["BandMoney"] || param1.changedProperties["Money"] || param1.changedProperties["Gold"] || param1.changedProperties["Money"])
+         if(evt.changedProperties["BandMoney"] || evt.changedProperties["Money"] || evt.changedProperties["Gold"] || evt.changedProperties["Money"])
          {
             updateMoney();
          }
@@ -2187,7 +2204,7 @@ package bagAndInfo.bag
          }
       }
       
-      protected function __listChange(param1:Event) : void
+      protected function __listChange(evt:Event) : void
       {
          if(!(_dressbagView && _dressbagView.visible == true))
          {
@@ -2195,17 +2212,17 @@ package bagAndInfo.bag
          }
       }
       
-      private function __feedClick(param1:MouseEvent) : void
+      private function __feedClick(pEvent:MouseEvent) : void
       {
          if(!(bead_state & 1))
          {
             bead_state = bead_state | 1;
             SoundManager.instance.play("008");
-            _beadFeedBtn.dragStart(param1.stageX,param1.stageY);
+            _beadFeedBtn.dragStart(pEvent.stageX,pEvent.stageY);
             _beadFeedBtn.addEventListener("stopfeed",__stopFeed);
             dispatchEvent(new Event("sellstart"));
             stage.addEventListener("click",__onStageClick_FeedBtn);
-            param1.stopImmediatePropagation();
+            pEvent.stopImmediatePropagation();
          }
          else
          {
@@ -2214,7 +2231,7 @@ package bagAndInfo.bag
          }
       }
       
-      private function __stopFeed(param1:Event) : void
+      private function __stopFeed(pEvent:Event) : void
       {
          bead_state = ~1 & bead_state;
          _beadFeedBtn.removeEventListener("stopsell",__stopSell);
@@ -2225,7 +2242,7 @@ package bagAndInfo.bag
          }
       }
       
-      private function __onStageClick_FeedBtn(param1:Event) : void
+      private function __onStageClick_FeedBtn(pEvent:Event) : void
       {
          bead_state = ~1 & bead_state;
          dispatchEvent(new Event("stopfeed"));
@@ -2235,17 +2252,17 @@ package bagAndInfo.bag
          }
       }
       
-      private function __sellClick(param1:MouseEvent) : void
+      private function __sellClick(evt:MouseEvent) : void
       {
          if(!(state & 1))
          {
             state = state | 1;
             SoundManager.instance.play("008");
-            _sellBtn.dragStart(param1.stageX,param1.stageY);
+            _sellBtn.dragStart(evt.stageX,evt.stageY);
             _sellBtn.addEventListener("stopsell",__stopSell);
             dispatchEvent(new Event("sellstart"));
             stage.addEventListener("click",__onStageClick_SellBtn);
-            param1.stopImmediatePropagation();
+            evt.stopImmediatePropagation();
          }
          else
          {
@@ -2254,7 +2271,7 @@ package bagAndInfo.bag
          }
       }
       
-      private function __stopSell(param1:Event) : void
+      private function __stopSell(evt:Event) : void
       {
          state = ~1 & state;
          _sellBtn.removeEventListener("stopsell",__stopSell);
@@ -2265,7 +2282,7 @@ package bagAndInfo.bag
          }
       }
       
-      private function __onStageClick_SellBtn(param1:Event) : void
+      private function __onStageClick_SellBtn(e:Event) : void
       {
          state = ~1 & state;
          dispatchEvent(new Event("sellstop"));
@@ -2275,7 +2292,7 @@ package bagAndInfo.bag
          }
       }
       
-      private function __breakClick(param1:MouseEvent) : void
+      private function __breakClick(evt:MouseEvent) : void
       {
          if(_breakBtn.enable)
          {
@@ -2286,7 +2303,7 @@ package bagAndInfo.bag
             }
             else
             {
-               _breakBtn.dragStart(param1.stageX,param1.stageY);
+               _breakBtn.dragStart(evt.stageX,evt.stageY);
             }
          }
       }
@@ -2302,54 +2319,54 @@ package bagAndInfo.bag
          }
       }
       
-      private function isOnlyGivingGoods(param1:InventoryItemInfo) : Boolean
+      private function isOnlyGivingGoods(info:InventoryItemInfo) : Boolean
       {
-         return param1.IsBinds == false && EquipType.isPackage(param1) && param1.Property2 == "10";
+         return info.IsBinds == false && EquipType.isPackage(info) && info.Property2 == "10";
       }
       
-      protected function __cellClick(param1:CellEvent) : void
+      protected function __cellClick(evt:CellEvent) : void
       {
-         var _loc2_:* = undefined;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
+         var cell:* = undefined;
+         var info:* = null;
+         var pos:* = null;
          if(_sellBtn && !_sellBtn.isActive)
          {
-            param1.stopImmediatePropagation();
-            if(param1.data is BagCell)
+            evt.stopImmediatePropagation();
+            if(evt.data is BagCell)
             {
-               _loc2_ = param1.data as BagCell;
+               cell = evt.data as BagCell;
             }
             else
             {
-               _loc2_ = param1.data as BeadCell;
+               cell = evt.data as BeadCell;
             }
-            if(_loc2_)
+            if(cell)
             {
-               _loc4_ = _loc2_.itemInfo as InventoryItemInfo;
+               info = cell.itemInfo as InventoryItemInfo;
             }
-            if(_loc4_ == null)
+            if(info == null)
             {
                return;
             }
-            if(!_loc2_.locked)
+            if(!cell.locked)
             {
                SoundManager.instance.play("008");
-               if(!isOnlyGivingGoods(_loc4_) && (_loc4_.getRemainDate() <= 0 && !EquipType.isProp(_loc4_) || EquipType.isPackage(_loc4_) || _loc4_.getRemainDate() <= 0 && _loc4_.TemplateID == 10200 || _loc4_.TemplateID == 11955 || _loc4_.TemplateID == 11963 || EquipType.canBeUsed(_loc4_) || DressUtils.isDress(_loc4_) || EquipType.isGetPackage(_loc4_) || EquipType.isFireworks(_loc4_) || _loc4_.CategoryID == 68 || _loc4_.CategoryID == 43 || _loc4_.CategoryID == 73))
+               if(!isOnlyGivingGoods(info) && (info.getRemainDate() <= 0 && !EquipType.isProp(info) || EquipType.isPackage(info) || info.getRemainDate() <= 0 && info.TemplateID == 10200 || info.TemplateID == 11955 || info.TemplateID == 11963 || EquipType.canBeUsed(info) || DressUtils.isDress(info) || EquipType.isGetPackage(info) || EquipType.isFireworks(info) || info.CategoryID == 68 || info.CategoryID == 43 || info.CategoryID == 73))
                {
-                  _loc3_ = _loc2_.parent.localToGlobal(new Point(_loc2_.x,_loc2_.y));
-                  CellMenu.instance.show(_loc2_,_loc3_.x + 20,_loc3_.y + 20);
+                  pos = cell.parent.localToGlobal(new Point(cell.x,cell.y));
+                  CellMenu.instance.show(cell,pos.x + 20,pos.y + 20);
                }
                else
                {
-                  _loc2_.dragStart();
+                  cell.dragStart();
                }
             }
          }
       }
       
-      public function set cellDoubleClickEnable(param1:Boolean) : void
+      public function set cellDoubleClickEnable(b:Boolean) : void
       {
-         if(param1)
+         if(b)
          {
             _equiplist.addEventListener("doubleclick",__cellDoubleClick);
             _proplist.addEventListener("doubleclick",__cellDoubleClick);
@@ -2361,74 +2378,79 @@ package bagAndInfo.bag
          }
       }
       
-      protected function __cellDoubleClick(param1:CellEvent) : void
+      protected function __cellDoubleClick(evt:CellEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc5_:int = 0;
+         var alert:* = null;
+         var toPlace:int = 0;
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         param1.stopImmediatePropagation();
-         var _loc4_:BagCell = param1.data as BagCell;
-         var _loc7_:InventoryItemInfo = _loc4_.info as InventoryItemInfo;
+         evt.stopImmediatePropagation();
+         var cell:BagCell = evt.data as BagCell;
+         var info:InventoryItemInfo = cell.info as InventoryItemInfo;
          if(BagAndInfoManager.Instance.getBagAndGiftFrame() && BagAndInfoManager.Instance.getBagAndGiftFrame().infoFrame.currentType == 3)
          {
-            if(_loc7_.CategoryID == TexpManager.Instance.texpType)
+            if(info.CategoryID == TexpManager.Instance.texpType)
             {
                SocketManager.Instance.out.sendClearStoreBag();
-               SocketManager.Instance.out.sendMoveGoods(_loc7_.BagType,_loc7_.Place,12,0,_loc7_.Count,true);
+               SocketManager.Instance.out.sendMoveGoods(info.BagType,info.Place,12,0,info.Count,true);
                return;
             }
-            if(_loc7_.CategoryID == 53)
+            if(TexpManager.Instance.texpType == 53)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("texpSystem.view.TextCell.texpTips"));
                return;
             }
-            if(_loc7_.CategoryID == 20)
+            if(TexpManager.Instance.texpType == 20)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("texpSystem.view.TextCell.magicTexpTips"));
                return;
             }
+            if(TexpManager.Instance.texpType == 78)
+            {
+               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("texpSystem.view.TextCell.nsTexpTips"));
+               return;
+            }
          }
-         var _loc6_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(_loc7_.TemplateID);
-         var _loc2_:int = !!PlayerManager.Instance.Self.Sex?1:2;
-         if(_loc7_.getRemainDate() <= 0)
+         var templeteInfo:ItemTemplateInfo = ItemManager.Instance.getTemplateById(info.TemplateID);
+         var playerSex:int = !!PlayerManager.Instance.Self.Sex?1:2;
+         if(info.getRemainDate() <= 0)
          {
             return;
          }
-         if(_loc6_.NeedSex != _loc2_ && _loc6_.NeedSex != 0)
+         if(templeteInfo.NeedSex != playerSex && templeteInfo.NeedSex != 0)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.data.player.SelfInfo.object"));
             return;
          }
-         if(!_loc4_.locked)
+         if(!cell.locked)
          {
-            if(int(_loc4_.info.Property1) != 1100 && (_loc4_.info.BindType == 1 || _loc4_.info.BindType == 2 || _loc4_.info.BindType == 3) && _loc4_.itemInfo.IsBinds == false)
+            if(int(cell.info.Property1) != 1100 && (cell.info.BindType == 1 || cell.info.BindType == 2 || cell.info.BindType == 3) && cell.itemInfo.IsBinds == false)
             {
-               _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.bagII.BagIIView.BindsInfo"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2);
-               _loc3_.addEventListener("response",__onResponse);
-               temInfo = _loc7_;
+               alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.bagII.BagIIView.BindsInfo"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2);
+               alert.addEventListener("response",__onResponse);
+               temInfo = info;
             }
             else
             {
                SoundManager.instance.play("008");
-               if(_loc7_.BagType == 1)
+               if(info.BagType == 1)
                {
-                  if(param1.target is PetBagListView && _loc7_.CategoryID == 34)
+                  if(evt.target is PetBagListView && info.CategoryID == 34)
                   {
-                     PetsBagManager.instance().dispatchEvent(new UpdatePetInfoEvent("showPetFood",_loc7_));
+                     PetsBagManager.instance().dispatchEvent(new UpdatePetInfoEvent("showPetFood",info));
                   }
                   else
                   {
-                     CellMenu.instance.cell = _loc4_;
-                     __cellUse(param1);
+                     CellMenu.instance.cell = cell;
+                     __cellUse(evt);
                   }
                }
-               else if(PlayerManager.Instance.Self.canEquip(_loc7_))
+               else if(PlayerManager.Instance.Self.canEquip(info))
                {
-                  if(_loc7_.CategoryID == 50 || _loc7_.CategoryID == 51 || _loc7_.CategoryID == 52)
+                  if(info.CategoryID == 50 || info.CategoryID == 51 || info.CategoryID == 52)
                   {
                      if(PetsBagManager.instance().view && PetsBagManager.instance().view.parent)
                      {
@@ -2437,28 +2459,28 @@ package bagAndInfo.bag
                            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.petEquipNo"));
                            return;
                         }
-                        SocketManager.Instance.out.addPetEquip(_loc4_.place,PetsBagManager.instance().petModel.currentPetInfo.Place,0);
+                        SocketManager.Instance.out.addPetEquip(cell.place,PetsBagManager.instance().petModel.currentPetInfo.Place,0);
                      }
                      return;
                   }
-                  if(EquipType.isArmShell(_loc7_))
+                  if(EquipType.isArmShell(info))
                   {
                      return;
                   }
-                  _loc5_ = PlayerManager.Instance.getDressEquipPlace(_loc7_);
-                  SocketManager.Instance.out.sendMoveGoods(0,_loc7_.Place,0,_loc5_,_loc7_.Count);
+                  toPlace = PlayerManager.Instance.getDressEquipPlace(info);
+                  SocketManager.Instance.out.sendMoveGoods(0,info.Place,0,toPlace,info.Count);
                }
             }
          }
       }
       
-      private function __onResponse(param1:FrameEvent) : void
+      private function __onResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.target as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onResponse);
-         _loc2_.dispose();
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var alert:BaseAlerFrame = evt.target as BaseAlerFrame;
+         alert.removeEventListener("response",__onResponse);
+         alert.dispose();
+         if(evt.responseCode == 2 || evt.responseCode == 3)
          {
             sendDefy();
          }
@@ -2466,7 +2488,7 @@ package bagAndInfo.bag
       
       private function sendDefy() : void
       {
-         var _loc1_:int = 0;
+         var toPlace:int = 0;
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.canEquip(temInfo))
          {
@@ -2482,24 +2504,24 @@ package bagAndInfo.bag
                }
                return;
             }
-            _loc1_ = PlayerManager.Instance.getDressEquipPlace(temInfo);
-            SocketManager.Instance.out.sendMoveGoods(0,temInfo.Place,0,_loc1_,temInfo.Count);
+            toPlace = PlayerManager.Instance.getDressEquipPlace(temInfo);
+            SocketManager.Instance.out.sendMoveGoods(0,temInfo.Place,0,toPlace,temInfo.Count);
          }
       }
       
-      private function __cellAddPrice(param1:Event) : void
+      private function __cellAddPrice(evt:Event) : void
       {
-         var _loc2_:BagCell = CellMenu.instance.cell;
-         if(_loc2_)
+         var cell:BagCell = CellMenu.instance.cell;
+         if(cell)
          {
-            if(ShopManager.Instance.canAddPrice(_loc2_.itemInfo.TemplateID))
+            if(ShopManager.Instance.canAddPrice(cell.itemInfo.TemplateID))
             {
                if(PlayerManager.Instance.Self.bagLocked)
                {
                   BaglockedManager.Instance.show();
                   return;
                }
-               AddPricePanel.Instance.setInfo(_loc2_.itemInfo,false);
+               AddPricePanel.Instance.setInfo(cell.itemInfo,false);
                AddPricePanel.Instance.show();
             }
             else
@@ -2509,194 +2531,200 @@ package bagAndInfo.bag
          }
       }
       
-      protected function __cellMove(param1:Event) : void
+      protected function __cellMove(evt:Event) : void
       {
-         var _loc2_:BagCell = CellMenu.instance.cell;
-         if(_loc2_)
+         var cell:BagCell = CellMenu.instance.cell;
+         if(cell)
          {
-            _loc2_.dragStart();
+            cell.dragStart();
          }
       }
       
-      protected function __cellOpenBatch(param1:Event) : void
+      protected function __cellOpenBatch(evt:Event) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:BagCell = CellMenu.instance.cell as BagCell;
-         if(_loc3_ != null && _loc3_.itemInfo != null)
+         var openBatchView:* = null;
+         var cell:BagCell = CellMenu.instance.cell as BagCell;
+         if(cell != null && cell.itemInfo != null)
          {
             if(PlayerManager.Instance.Self.bagLocked)
             {
                BaglockedManager.Instance.show();
                return;
             }
-            _loc2_ = ComponentFactory.Instance.creatComponentByStylename("bag.OpenBatchView");
-            _loc2_.item = _loc3_.itemInfo;
-            LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+            openBatchView = ComponentFactory.Instance.creatComponentByStylename("bag.OpenBatchView");
+            openBatchView.item = cell.itemInfo;
+            LayerManager.Instance.addToLayer(openBatchView,3,true,1);
          }
       }
       
-      protected function __cellOpen(param1:Event) : void
+      protected function __cellOpen(evt:Event) : void
       {
-         var _loc9_:Number = NaN;
-         var _loc6_:* = null;
-         var _loc5_:int = 0;
-         var _loc8_:int = 0;
-         var _loc7_:int = 0;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:BagCell = CellMenu.instance.cell as BagCell;
-         _currentCell = _loc4_;
-         if(_loc4_ != null && _loc4_.itemInfo != null)
+         var sexN:Number = NaN;
+         var bg:* = null;
+         var leftTime:int = 0;
+         var h:int = 0;
+         var m:int = 0;
+         var alertAskGiftBag:* = null;
+         var frame:* = null;
+         var frame2:* = null;
+         var cell:BagCell = CellMenu.instance.cell as BagCell;
+         _currentCell = cell;
+         if(cell != null && cell.itemInfo != null)
          {
             if(PlayerManager.Instance.Self.bagLocked)
             {
                BaglockedManager.Instance.show();
                return;
             }
-            BagAndInfoManager.Instance.isUpgradePack = _loc4_.itemInfo.Property1 == "6" && _loc4_.itemInfo.Property2 == "9" && _loc4_.itemInfo.Property3 == "0";
-            _loc9_ = !!PlayerManager.Instance.Self.Sex?1:2;
-            if(_loc4_.info.NeedSex != 0 && _loc9_ != _loc4_.info.NeedSex)
+            BagAndInfoManager.Instance.isUpgradePack = cell.itemInfo.Property1 == "6" && cell.itemInfo.Property2 == "9" && cell.itemInfo.Property3 == "0";
+            sexN = !!PlayerManager.Instance.Self.Sex?1:2;
+            if(cell.info.NeedSex != 0 && sexN != cell.info.NeedSex)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.bagII.sexErr"));
                return;
             }
-            if(PlayerManager.Instance.Self.Grade >= _loc4_.info.NeedLevel)
+            if(PlayerManager.Instance.Self.Grade >= cell.info.NeedLevel)
             {
-               if(_loc4_.info.TemplateID == 112109)
+               if(cell.info.TemplateID == 112109)
                {
                   if(PlayerManager.Instance.Self.IsVIP)
                   {
-                     RouletteManager.instance.useVipBox(_loc4_);
+                     RouletteManager.instance.useVipBox(cell);
                   }
                   else
                   {
-                     param1.stopImmediatePropagation();
+                     evt.stopImmediatePropagation();
                      MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.vip.vipIcon.notVip"));
                   }
                }
-               else if(_loc4_.info.TemplateID == 112019)
+               else if(cell.info.TemplateID == 112019)
                {
-                  RouletteManager.instance.useRouletteBox(_loc4_);
+                  RouletteManager.instance.useRouletteBox(cell);
                }
-               else if(EquipType.isCaddy(_loc4_.info))
+               else if(EquipType.isCaddy(cell.info))
                {
-                  param1.stopImmediatePropagation();
-                  RouletteManager.instance.useCaddy(_loc4_);
+                  evt.stopImmediatePropagation();
+                  RouletteManager.instance.useCaddy(cell);
                }
-               else if(_loc4_.info.TemplateID == 112222 || _loc4_.info.TemplateID == 112223 || _loc4_.info.TemplateID == 112224)
+               else if(cell.info.TemplateID == 112222 || cell.info.TemplateID == 112223 || cell.info.TemplateID == 112224)
                {
-                  param1.stopImmediatePropagation();
-                  RouletteManager.instance.useBless(_loc4_);
+                  evt.stopImmediatePropagation();
+                  RouletteManager.instance.useBless(cell);
                }
-               else if(EquipType.isBeadNeedOpen(_loc4_.info))
+               else if(EquipType.isBeadNeedOpen(cell.info))
                {
-                  param1.stopImmediatePropagation();
-                  RouletteManager.instance.useBead(_loc4_.info.TemplateID);
+                  evt.stopImmediatePropagation();
+                  RouletteManager.instance.useBead(cell.info.TemplateID);
                }
-               else if(_loc4_.info.TemplateID == 112255)
+               else if(cell.info.TemplateID == 112255)
                {
-                  param1.stopImmediatePropagation();
+                  evt.stopImmediatePropagation();
                   RouletteManager.instance.useCelebrationBox();
                }
-               else if(_loc4_.info.TemplateID == 112262 && !_loc4_.itemInfo.IsBinds)
+               else if(cell.info.TemplateID == 112262 && !cell.itemInfo.IsBinds)
                {
-                  param1.stopImmediatePropagation();
-                  WonderfulActivityManager.Instance.useBattleCompanion(_loc4_.itemInfo);
+                  evt.stopImmediatePropagation();
+                  WonderfulActivityManager.Instance.useBattleCompanion(cell.itemInfo);
                }
-               else if(EquipType.isOfferPackage(_loc4_.info))
+               else if(EquipType.isOfferPackage(cell.info))
                {
-                  param1.stopImmediatePropagation();
-                  RouletteManager.instance.useOfferPack(_loc4_);
+                  evt.stopImmediatePropagation();
+                  RouletteManager.instance.useOfferPack(cell);
                }
-               else if(EquipType.isTimeBox(_loc4_.info))
+               else if(EquipType.isTimeBox(cell.info))
                {
-                  _loc6_ = DateUtils.getDateByStr(InventoryItemInfo(_loc4_.info).BeginDate);
-                  _loc5_ = int(_loc4_.info.Property3) * 60 - (TimeManager.Instance.Now().getTime() - _loc6_.getTime()) / 1000;
-                  if(_loc5_ <= 0)
+                  bg = DateUtils.getDateByStr(InventoryItemInfo(cell.info).BeginDate);
+                  leftTime = int(cell.info.Property3) * 60 - (TimeManager.Instance.Now().getTime() - bg.getTime()) / 1000;
+                  if(leftTime <= 0)
                   {
-                     SocketManager.Instance.out.sendItemOpenUp(_loc4_.itemInfo.BagType,_loc4_["place"]);
+                     SocketManager.Instance.out.sendItemOpenUp(cell.itemInfo.BagType,cell["place"]);
                   }
                   else
                   {
-                     _loc8_ = _loc5_ / 3600;
-                     _loc7_ = _loc5_ % 3600 / 60;
-                     _loc7_ = _loc7_ > 0?_loc7_:1;
-                     MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.userGuild.boxTip",_loc8_,_loc7_));
+                     h = leftTime / 3600;
+                     m = leftTime % 3600 / 60;
+                     m = m > 0?m:1;
+                     MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.userGuild.boxTip",h,m));
                   }
                }
-               else if(_loc4_.info.CategoryID == 18)
+               else if(cell.info.CategoryID == 18)
                {
-                  param1.stopImmediatePropagation();
-                  SocketManager.Instance.out.sendOpenCardBox(_loc4_["place"],1,_loc4_.bagType);
+                  evt.stopImmediatePropagation();
+                  SocketManager.Instance.out.sendOpenCardBox(cell["place"],1,cell.bagType);
                }
-               else if(_loc4_.info.CategoryID == 66)
+               else if(cell.info.CategoryID == 66)
                {
-                  param1.stopImmediatePropagation();
-                  SocketManager.Instance.out.sendOpenSpecialCardBox(_loc4_["place"],1,_loc4_.bagType);
+                  evt.stopImmediatePropagation();
+                  SocketManager.Instance.out.sendOpenSpecialCardBox(cell["place"],1,cell.bagType);
                }
-               else if(_loc4_.info.TemplateID == 112108 || _loc4_.info.TemplateID == 112150 || _loc4_.info.TemplateID == 1120538 || _loc4_.info.TemplateID == 1120539)
+               else if(cell.info.TemplateID == 112108 || cell.info.TemplateID == 112150 || cell.info.TemplateID == 1120538 || cell.info.TemplateID == 1120539)
                {
-                  SocketManager.Instance.out.sendOpenRandomBox(_loc4_["place"],1);
+                  SocketManager.Instance.out.sendOpenRandomBox(cell["place"],1);
                }
-               else if(_loc4_.info.TemplateID == 11961 || _loc4_.info.TemplateID == 11965 || _loc4_.info.TemplateID == 11967)
+               else if(cell.info.TemplateID == 11961 || cell.info.TemplateID == 11965 || cell.info.TemplateID == 11967)
                {
-                  SocketManager.Instance.out.sendOpenNationWord(_loc4_.bagType,_loc4_.place,1);
+                  SocketManager.Instance.out.sendOpenNationWord(cell.bagType,cell.place,1);
                }
-               else if(EquipType.isSpecilPackage(_loc4_.info))
+               else if(EquipType.isSpecilPackage(cell.info))
                {
-                  if(PlayerManager.Instance.Self.DDTMoney >= Number(_loc4_.info.Property3))
+                  if(PlayerManager.Instance.Self.DDTMoney >= Number(cell.info.Property3))
                   {
-                     _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("tank.view.bagII.BagIIView.AskGiftBag",_loc4_.info.Property3,_loc4_.info.Name),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
-                     _loc3_.addEventListener("response",__GiftBagframeClose);
+                     alertAskGiftBag = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("tank.view.bagII.BagIIView.AskGiftBag",cell.info.Property3,cell.info.Name),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
+                     alertAskGiftBag.addEventListener("response",__GiftBagframeClose);
                   }
                   else
                   {
-                     MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.bagII.BagIIView.AskGiftBagII",_loc4_.info.Property3));
+                     MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.bagII.BagIIView.AskGiftBagII",cell.info.Property3));
                   }
                }
-               else if(35 == _loc4_.info.CategoryID)
+               else if(35 == cell.info.CategoryID)
                {
-                  SocketManager.Instance.out.sendAddPet(_loc4_.itemInfo.Place,_loc4_.itemInfo.BagType);
+                  SocketManager.Instance.out.sendAddPet(cell.itemInfo.Place,cell.itemInfo.BagType);
                }
-               else if(_loc4_.info.Property2 == "8")
+               else if(cell.info.Property2 == "8")
                {
-                  _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("bagView.consumePack.openTxt",_loc4_.info.Property3),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2,null,"SimpleAlert",60,false);
-                  _loc2_.addEventListener("response",onConsumePackResponse);
+                  frame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("bagView.consumePack.openTxt",cell.info.Property3),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2,null,"SimpleAlert",60,false);
+                  frame.addEventListener("response",onConsumePackResponse);
                }
-               else if(_loc4_.itemInfo.CategoryID == 222222222)
+               else if(cell.info.Property2 == "11")
                {
-                  ItemActivityGiftManager.instance.showFrame(1,_loc4_.itemInfo);
+                  frame2 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("bagView.consumePack.openTxt",cell.info.Property3),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2,null,"SimpleAlert",60,false,0);
+                  frame2.addEventListener("response",onConsumePackResponse);
                }
-               else if(_loc4_.info.TemplateID == 1120412 || _loc4_.info.TemplateID == 1120413 || _loc4_.info.TemplateID == 1120414 || _loc4_.info.TemplateID == 1120433 || _loc4_.info.TemplateID == 1120434 || _loc4_.info.TemplateID == 12545)
+               else if(cell.itemInfo.CategoryID == 222222222)
                {
-                  SocketManager.Instance.out.sendChangeSex(_loc4_.bagType,_loc4_.place);
+                  ItemActivityGiftManager.instance.showFrame(1,cell.itemInfo);
                }
-               else if(_loc4_.info.CategoryID == 72)
+               else if(cell.info.TemplateID == 1120412 || cell.info.TemplateID == 1120413 || cell.info.TemplateID == 1120414 || cell.info.TemplateID == 1120433 || cell.info.TemplateID == 1120434 || cell.info.TemplateID == 12545)
                {
-                  SocketManager.Instance.out.sendItemOpenUp(_loc4_.itemInfo.BagType,_loc4_.itemInfo.Place);
+                  SocketManager.Instance.out.sendChangeSex(cell.bagType,cell.place);
                }
-               else if(EquipType.isGetPackage(_loc4_.info))
+               else if(cell.info.CategoryID == 72)
                {
-                  showGetFriendPackFrame(_loc4_.info,_loc4_.itemInfo.BagType,_loc4_.itemInfo.Place);
+                  SocketManager.Instance.out.sendItemOpenUp(cell.itemInfo.BagType,cell.itemInfo.Place);
                }
-               else if(EquipType.isFireworks(_loc4_.info))
+               else if(EquipType.isGetPackage(cell.info))
                {
-                  SocketManager.Instance.out.sendUseCard(_loc4_.itemInfo.BagType,_loc4_.itemInfo.Place,[_loc4_.info.TemplateID],_loc4_.info.PayType);
+                  showGetFriendPackFrame(cell.info,cell.itemInfo.BagType,cell.itemInfo.Place);
                }
-               else if(_loc4_.info.CategoryID == 68)
+               else if(EquipType.isFireworks(cell.info))
                {
-                  SocketManager.Instance.out.sendOpenAmuletBox(_loc4_.itemInfo.BagType,_loc4_.itemInfo.Place);
+                  SocketManager.Instance.out.sendUseCard(cell.itemInfo.BagType,cell.itemInfo.Place,[cell.info.TemplateID],cell.info.PayType);
                }
-               else if(_loc4_.info.CategoryID == 43)
+               else if(cell.info.CategoryID == 68)
                {
-                  SocketManager.Instance.out.sendRoomBordenItemUp(_loc4_.place);
+                  SocketManager.Instance.out.sendOpenAmuletBox(cell.itemInfo.BagType,cell.itemInfo.Place);
+               }
+               else if(cell.info.CategoryID == 43)
+               {
+                  SocketManager.Instance.out.sendRoomBordenItemUp(cell.place);
                }
                else
                {
-                  SocketManager.Instance.out.sendItemOpenUp(_loc4_.itemInfo.BagType,_loc4_.itemInfo.Place);
+                  SocketManager.Instance.out.sendItemOpenUp(cell.itemInfo.BagType,cell.itemInfo.Place);
                }
             }
-            else if(_loc4_.info.CategoryID == 18)
+            else if(cell.info.CategoryID == 18)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.cardSystem.bagView.openCardBox.level"));
             }
@@ -2707,31 +2735,31 @@ package bagAndInfo.bag
          }
       }
       
-      private function showGetFriendPackFrame(param1:ItemTemplateInfo, param2:int, param3:int) : void
+      private function showGetFriendPackFrame(info:ItemTemplateInfo, bagType:int, place:int) : void
       {
-         var _loc4_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(int(param1.Property8));
+         var packFrameInfo:ItemTemplateInfo = ItemManager.Instance.getTemplateById(int(info.Property8));
          if(_getFriendPackFrame)
          {
             _getFriendPackFrame.dispose();
             _getFriendPackFrame = null;
          }
          _getFriendPackFrame = ComponentFactory.Instance.creatComponentByStylename("bag.getFriendPackFrame");
-         _getFriendPackFrame.updateView(_loc4_,param2,param3);
+         _getFriendPackFrame.updateView(packFrameInfo,bagType,place);
          _getFriendPackFrame.show();
       }
       
-      protected function onConsumePackResponse(param1:FrameEvent) : void
+      protected function onConsumePackResponse(e:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",onConsumePackResponse);
-         if(param1.responseCode == 0 || param1.responseCode == 4 || param1.responseCode == 1)
+         var frame:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("response",onConsumePackResponse);
+         if(e.responseCode == 0 || e.responseCode == 4 || e.responseCode == 1)
          {
-            _loc2_.dispose();
+            frame.dispose();
             return;
          }
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         if(e.responseCode == 2 || e.responseCode == 3)
          {
-            if(_loc2_.isBand)
+            if(frame.isBand)
             {
                if(PlayerManager.Instance.Self.BandMoney < int(_currentCell.info.Property3))
                {
@@ -2739,7 +2767,7 @@ package bagAndInfo.bag
                }
                else
                {
-                  SocketManager.Instance.out.sendItemOpenUp(_currentCell.itemInfo.BagType,_currentCell.itemInfo.Place,1,_loc2_.isBand);
+                  SocketManager.Instance.out.sendItemOpenUp(_currentCell.itemInfo.BagType,_currentCell.itemInfo.Place,1,frame.isBand);
                }
             }
             else if(PlayerManager.Instance.Self.Money < int(_currentCell.info.Property3))
@@ -2748,22 +2776,22 @@ package bagAndInfo.bag
             }
             else
             {
-               SocketManager.Instance.out.sendItemOpenUp(_currentCell.itemInfo.BagType,_currentCell.itemInfo.Place,1,_loc2_.isBand);
+               SocketManager.Instance.out.sendItemOpenUp(_currentCell.itemInfo.BagType,_currentCell.itemInfo.Place,1,frame.isBand);
             }
          }
-         _loc2_.dispose();
+         frame.dispose();
       }
       
       private function initAlertFarme() : void
       {
-         var _loc1_:* = null;
-         _loc1_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("buried.alertInfo.noBindMoney"),"",LanguageMgr.GetTranslation("cancel"),true,false,false,2);
-         _loc1_.addEventListener("response",onResponseHander);
+         var frame:* = null;
+         frame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("buried.alertInfo.noBindMoney"),"",LanguageMgr.GetTranslation("cancel"),true,false,false,2);
+         frame.addEventListener("response",onResponseHander);
       }
       
-      protected function onResponseHander(param1:FrameEvent) : void
+      protected function onResponseHander(e:FrameEvent) : void
       {
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         if(e.responseCode == 2 || e.responseCode == 3)
          {
             if(PlayerManager.Instance.Self.Money < int(_currentCell.info.Property3))
             {
@@ -2774,12 +2802,12 @@ package bagAndInfo.bag
                SocketManager.Instance.out.sendItemOpenUp(_currentCell.itemInfo.BagType,_currentCell.itemInfo.Place,1,false);
             }
          }
-         param1.currentTarget.dispose();
+         e.currentTarget.dispose();
       }
       
-      private function __GiftBagframeClose(param1:FrameEvent) : void
+      private function __GiftBagframeClose(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode) - 2)
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
@@ -2789,17 +2817,17 @@ package bagAndInfo.bag
                   break;
                }
          }
-         param1.currentTarget.removeEventListener("response",__GiftBagframeClose);
-         ObjectUtils.disposeObject(param1.currentTarget);
+         event.currentTarget.removeEventListener("response",__GiftBagframeClose);
+         ObjectUtils.disposeObject(event.currentTarget);
       }
       
-      private function __cellUse(param1:Event) : void
+      private function __cellUse(evt:Event) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         param1.stopImmediatePropagation();
-         var _loc4_:BagCell = CellMenu.instance.cell as BagCell;
-         if(_loc4_.info.CategoryID == 73)
+         var alert:* = null;
+         var thisQualifiedClassName:* = null;
+         evt.stopImmediatePropagation();
+         var cell:BagCell = CellMenu.instance.cell as BagCell;
+         if(cell.info.CategoryID == 73)
          {
             return;
          }
@@ -2808,11 +2836,11 @@ package bagAndInfo.bag
             BaglockedManager.Instance.show();
             return;
          }
-         if(!_loc4_ || _loc4_.info == null)
+         if(!cell || cell.info == null)
          {
             return;
          }
-         if(_loc4_.info.TemplateID == 11560 || _loc4_.info.TemplateID == 11561 || _loc4_.info.TemplateID == 11562)
+         if(cell.info.TemplateID == 11560 || cell.info.TemplateID == 11561 || cell.info.TemplateID == 11562)
          {
             if(this is ConsortionBankBagView)
             {
@@ -2829,44 +2857,44 @@ package bagAndInfo.bag
             BagStore.instance.openStore("forge_store",1);
             return;
          }
-         if(_loc4_.info.TemplateID == 11961 || _loc4_.info.TemplateID == 11965 || _loc4_.info.TemplateID == 11967)
+         if(cell.info.TemplateID == 11961 || cell.info.TemplateID == 11965 || cell.info.TemplateID == 11967)
          {
-            SocketManager.Instance.out.sendOpenNationWord(_loc4_.bagType,_loc4_.place,1);
+            SocketManager.Instance.out.sendOpenNationWord(cell.bagType,cell.place,1);
             return;
          }
-         if(_loc4_.info.TemplateID == 11994)
+         if(cell.info.TemplateID == 11994)
          {
-            startReworkName(_loc4_.bagType,_loc4_.place);
+            startReworkName(cell.bagType,cell.place);
             return;
          }
-         if(_loc4_.info.CategoryID == 11 && _loc4_.info.Property1 == "5" && _loc4_.info.Property2 != "0")
+         if(cell.info.CategoryID == 11 && cell.info.Property1 == "5" && cell.info.Property2 != "0")
          {
-            showChatBugleInputFrame(_loc4_.info.TemplateID);
+            showChatBugleInputFrame(cell.info.TemplateID);
             return;
          }
-         if(_loc4_.info.CategoryID == 23)
+         if(cell.info.CategoryID == 23)
          {
             if(PlayerManager.Instance.Self.Grade < 13)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("texpSystem.view.TexpCell.noGrade",13));
                return;
             }
-            if(TexpManager.Instance.getLv(TexpManager.Instance.getExp(int(_loc4_.info.Property1))) >= PlayerManager.Instance.Self.Grade + 5)
+            if(TexpManager.Instance.getLv(TexpManager.Instance.getExp(int(cell.info.Property1))) >= PlayerManager.Instance.Self.Grade + 5)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("texpSystem.view.TexpCell.lvToplimit"));
                return;
             }
             if(TaskManager.instance.texpQuests.length > 0)
             {
-               _tmpCell = _loc4_;
-               _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("texpSystem.view.TexpView.refreshTaskTip"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2);
-               _loc3_.addEventListener("response",__texpResponse);
+               _tmpCell = cell;
+               alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("texpSystem.view.TexpView.refreshTaskTip"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2);
+               alert.addEventListener("response",__texpResponse);
                return;
             }
-            SocketManager.Instance.out.sendTexp(-1,_loc4_.info.TemplateID,1,_loc4_.place);
+            SocketManager.Instance.out.sendTexp(-1,cell.info.TemplateID,1,cell.place);
             return;
          }
-         if(_loc4_.info.TemplateID == 11993)
+         if(cell.info.TemplateID == 11993)
          {
             if(PlayerManager.Instance.Self.ConsortiaID == 0)
             {
@@ -2878,10 +2906,10 @@ package bagAndInfo.bag
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.ConsortiaReworkNameView.consortiaNameAlert2"));
                return;
             }
-            startupConsortiaReworkName(_loc4_.bagType,_loc4_.place);
+            startupConsortiaReworkName(cell.bagType,cell.place);
             return;
          }
-         if(_loc4_.info.TemplateID == 12604)
+         if(cell.info.TemplateID == 12604)
          {
             if(PlayerManager.Instance.Self.teamID == 0)
             {
@@ -2893,21 +2921,21 @@ package bagAndInfo.bag
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.battleTeamRenameAlert1"));
                return;
             }
-            startupBattleTeamReworkName(_loc4_.bagType,_loc4_.place);
+            startupBattleTeamReworkName(cell.bagType,cell.place);
             return;
          }
-         if(_loc4_.info.TemplateID == 11569)
+         if(cell.info.TemplateID == 11569)
          {
-            startupChangeSex(_loc4_.bagType,_loc4_.place);
+            startupChangeSex(cell.bagType,cell.place);
             return;
          }
-         if(_loc4_.info.CategoryID == 11 && int(_loc4_.info.Property1) == 37)
+         if(cell.info.CategoryID == 11 && int(cell.info.Property1) == 37)
          {
             if(PlayerManager.Instance.Self.Bag.getItemAt(6))
             {
                if(PlayerManager.Instance.Self.Bag.getItemAt(6).StrengthenLevel >= 10)
                {
-                  SocketManager.Instance.out.sendUseChangeColorShell(_loc4_.bagType,_loc4_.place);
+                  SocketManager.Instance.out.sendUseChangeColorShell(cell.bagType,cell.place);
                   return;
                }
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("bagAndInfo.bag.UnableUseColorShell"));
@@ -2918,44 +2946,44 @@ package bagAndInfo.bag
                return;
             }
          }
-         else if(_loc4_.info.CategoryID == 18)
+         else if(cell.info.CategoryID == 18)
          {
-            SocketManager.Instance.out.sendOpenCardBox(_loc4_.place,1,_loc4_.bagType);
+            SocketManager.Instance.out.sendOpenCardBox(cell.place,1,cell.bagType);
          }
-         else if(_loc4_.info.CategoryID == 66)
+         else if(cell.info.CategoryID == 66)
          {
-            SocketManager.Instance.out.sendOpenSpecialCardBox(_loc4_.place,1,_loc4_.bagType);
+            SocketManager.Instance.out.sendOpenSpecialCardBox(cell.place,1,cell.bagType);
          }
-         if(_loc4_.info.TemplateID == 12511)
+         if(cell.info.TemplateID == 12511)
          {
             CalendarManager.getInstance().open(1);
          }
-         else if(_loc4_.info.TemplateID == 11999)
+         else if(cell.info.TemplateID == 11999)
          {
-            ChangeColorManager.instance.changeColorModel.place = _loc4_.place;
+            ChangeColorManager.instance.changeColorModel.place = cell.place;
             ChangeColorManager.instance.changeColorModel.getColorEditableThings();
             ChangeColorManager.instance.show();
          }
-         else if(_loc4_.info.TemplateID != 34101)
+         else if(cell.info.TemplateID != 34101)
          {
-            if(_loc4_.info.CategoryID == 11 && int(_loc4_.info.Property1) == 24)
+            if(cell.info.CategoryID == 11 && int(cell.info.Property1) == 24)
             {
                if(TrusteeshipManager.instance.spiritValue >= TrusteeshipManager.instance.maxSpiritValue)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.trusteeship.maxSpiritCannotUseTxt"));
                   return;
                }
-               SocketManager.Instance.out.sendTrusteeshipUseSpiritItem(_loc4_.place,_loc4_.bagType);
+               SocketManager.Instance.out.sendTrusteeshipUseSpiritItem(cell.place,cell.bagType);
             }
-            else if(_loc4_.info.CategoryID == 11 && int(_loc4_.info.Property1) == 39)
+            else if(cell.info.CategoryID == 11 && int(cell.info.Property1) == 39)
             {
-               SocketManager.Instance.out.sendUseItemKingBless(_loc4_.place,_loc4_.bagType);
+               SocketManager.Instance.out.sendUseItemKingBless(cell.place,cell.bagType);
             }
-            else if(_loc4_.info.CategoryID == 11 && int(_loc4_.info.Property1) == 39 && int(_loc4_.info.Property2) == 10)
+            else if(cell.info.CategoryID == 11 && int(cell.info.Property1) == 39 && int(cell.info.Property2) == 10)
             {
-               SocketManager.Instance.out.sendUseItemDeed(_loc4_.place,_loc4_.bagType);
+               SocketManager.Instance.out.sendUseItemDeed(cell.place,cell.bagType);
             }
-            else if(_loc4_.info.CategoryID == 11 && int(_loc4_.info.Property1) == 101)
+            else if(cell.info.CategoryID == 11 && int(cell.info.Property1) == 101)
             {
                if(this is ConsortionBankBagView)
                {
@@ -2969,9 +2997,14 @@ package bagAndInfo.bag
                {
                   BagStore.instance.isFromBagFrame = true;
                }
+               if(PlayerManager.Instance.Self.Grade < 5)
+               {
+                  MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.functionLimitTip",5));
+                  return;
+               }
                BagStore.instance.openStore("forge_store",0);
             }
-            else if(EquipType.isStrengthStone(_loc4_.info))
+            else if(EquipType.isStrengthStone(cell.info))
             {
                if(this is ConsortionBankBagView)
                {
@@ -2987,14 +3020,14 @@ package bagAndInfo.bag
                }
                BagStore.instance.openStore("bag_store");
             }
-            else if(_loc4_.info.CategoryID == 11 && int(_loc4_.info.Property1) == 45)
+            else if(cell.info.CategoryID == 11 && int(cell.info.Property1) == 45)
             {
                if(PlayerManager.Instance.Self.Grade < 25)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.godTemple.openGodTempleBtn.text",25.toString()));
                   return;
                }
-               _loc2_ = getQualifiedClassName(this);
+               thisQualifiedClassName = getQualifiedClassName(this);
                if(this is ConsortionBankBagView)
                {
                   BagStore.instance.isFromConsortionBankFrame = true;
@@ -3009,36 +3042,36 @@ package bagAndInfo.bag
                }
                BagStore.instance.openStore("bag_store",1);
             }
-            else if(_loc4_.info.CategoryID == 11 && int(_loc4_.info.Property1) == 82)
+            else if(cell.info.CategoryID == 11 && int(cell.info.Property1) == 82)
             {
-               if((_loc4_.info as InventoryItemInfo).ValidDate == 0)
+               if((cell.info as InventoryItemInfo).ValidDate == 0)
                {
-                  if(_self.horsePicCherishDic.hasKey(_loc4_.info.Property2) && _self.horsePicCherishDic[_loc4_.info.Property2].isUsed)
+                  if(_self.horsePicCherishDic.hasKey(cell.info.Property2) && _self.horsePicCherishDic[cell.info.Property2].isUsed)
                   {
                      MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("horse.pic.alreadyActive"));
                      return;
                   }
-                  HorseManager.instance.skipHorsePicCherishId = int(_loc4_.info.Property2);
+                  HorseManager.instance.skipHorsePicCherishId = int(cell.info.Property2);
                   HorseManager.instance.isSkipFromBagView = true;
                   HorseManager.instance.show();
                }
                else
                {
-                  SocketManager.Instance.out.sendActiveHorsePicCherish((_loc4_.info as InventoryItemInfo).Place);
+                  SocketManager.Instance.out.sendActiveHorsePicCherish((cell.info as InventoryItemInfo).Place);
                }
             }
-            else if(_loc4_.info.CategoryID == 62 && _loc4_.info.Property1 == "1")
+            else if(cell.info.CategoryID == 62 && cell.info.Property1 == "1")
             {
-               if((_loc4_.info as InventoryItemInfo).ValidDate == 0)
+               if((cell.info as InventoryItemInfo).ValidDate == 0)
                {
                   PetsAdvancedManager.Instance.showFrame(2,true);
                }
                else
                {
-                  SocketManager.Instance.out.sendUsePetTemporaryCard((_loc4_.info as InventoryItemInfo).BagType,(_loc4_.info as InventoryItemInfo).Place);
+                  SocketManager.Instance.out.sendUsePetTemporaryCard((cell.info as InventoryItemInfo).BagType,(cell.info as InventoryItemInfo).Place);
                }
             }
-            else if(_loc4_.info.CategoryID == 11 && _loc4_.info.Property1 == "47")
+            else if(cell.info.CategoryID == 11 && cell.info.Property1 == "47")
             {
                if(PlayerManager.Instance.Self.Bag.items[12])
                {
@@ -3051,7 +3084,7 @@ package bagAndInfo.bag
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("necklacePtetrochemicalView.messagetip"));
                }
             }
-            else if(_loc4_.info.CategoryID == 11 && (int(_loc4_.info.Property1) == 27 || int(_loc4_.info.Property1) == 29 || int(_loc4_.info.Property1) == 107))
+            else if(cell.info.CategoryID == 11 && (int(cell.info.Property1) == 27 || int(cell.info.Property1) == 29 || int(cell.info.Property1) == 107))
             {
                if(_self.Grade < 19)
                {
@@ -3060,9 +3093,9 @@ package bagAndInfo.bag
                }
                PetsBagManager.instance().show();
             }
-            else if(!(_loc4_.info.CategoryID == 11 && int(_loc4_.info.Property1) == 47))
+            else if(!(cell.info.CategoryID == 11 && int(cell.info.Property1) == 47))
             {
-               if(_loc4_.info.CategoryID == 62 && int(_loc4_.info.Property1) == 0)
+               if(cell.info.CategoryID == 62 && int(cell.info.Property1) == 0)
                {
                   if(_self.Grade < 25)
                   {
@@ -3071,11 +3104,11 @@ package bagAndInfo.bag
                   }
                   PetsBagManager.instance().show();
                }
-               else if(24 == _loc4_.info.CategoryID)
+               else if(24 == cell.info.CategoryID)
                {
-                  SocketManager.Instance.out.sendNewTitleCard(_loc4_.itemInfo.Place,_loc4_.itemInfo.BagType);
+                  SocketManager.Instance.out.sendNewTitleCard(cell.itemInfo.Place,cell.itemInfo.BagType);
                }
-               else if(EquipType.isComposeStone(_loc4_.info))
+               else if(EquipType.isComposeStone(cell.info))
                {
                   if(this is ConsortionBankBagView)
                   {
@@ -3091,7 +3124,7 @@ package bagAndInfo.bag
                   }
                   BagStore.instance.openStore("bag_store",2);
                }
-               else if(_loc4_.info.TemplateID == 100100)
+               else if(cell.info.TemplateID == 100100)
                {
                   if(PlayerManager.Instance.Self.Grade < 30)
                   {
@@ -3112,19 +3145,19 @@ package bagAndInfo.bag
                   }
                   BagStore.instance.openStore("forge_store",3);
                }
-               else if(_loc4_.info.TemplateID == 11164 || _loc4_.info.TemplateID == 11165)
+               else if(cell.info.TemplateID == 11164 || cell.info.TemplateID == 11165)
                {
                   HorseManager.instance.show();
                }
-               else if(_loc4_.info.TemplateID == 12568)
+               else if(cell.info.TemplateID == 12568)
                {
-                  VIPCouponsManager.instance.openShow(_loc4_.bagType,_loc4_.place);
+                  VIPCouponsManager.instance.openShow(cell.bagType,cell.place);
                }
-               else if(_loc4_.info.TemplateID == 12569)
+               else if(cell.info.TemplateID == 12569)
                {
-                  VIPCouponsManager.instance.useVipCoupons(_loc4_.bagType,_loc4_.place);
+                  VIPCouponsManager.instance.useVipCoupons(cell.bagType,cell.place);
                }
-               else if(_loc4_.info.CategoryID == 11 && int(_loc4_.info.Property1) == 104)
+               else if(cell.info.CategoryID == 11 && int(cell.info.Property1) == 104)
                {
                   if(PlayerManager.Instance.Self.Grade < 40)
                   {
@@ -3133,64 +3166,68 @@ package bagAndInfo.bag
                   }
                   BagStore.instance.openStore("forge_store",4);
                }
-               else if(_loc4_.info.TemplateID == 11179)
+               else if(cell.info.TemplateID == 11179)
                {
-                  SocketManager.Instance.out.sendItemOpenUp(_loc4_.itemInfo.BagType,_loc4_["place"]);
+                  SocketManager.Instance.out.sendItemOpenUp(cell.itemInfo.BagType,cell["place"]);
                }
-               else if(_loc4_.info.TemplateID == 12536 || _loc4_.info.TemplateID == 12537)
+               else if(cell.info.TemplateID == 12536 || cell.info.TemplateID == 12537)
                {
                   if(PlayerManager.Instance.Self.IsMarried)
                   {
-                     SocketManager.Instance.out.sendUseLoveFeelingly(_loc4_.itemInfo.BagType,_loc4_["place"]);
+                     SocketManager.Instance.out.sendUseLoveFeelingly(cell.itemInfo.BagType,cell["place"]);
                   }
                   else
                   {
                      MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddtBagAndInfo.hasNoMerry.info"));
                   }
                }
-               else if(_loc4_.info.TemplateID == 11966)
+               else if(cell.info.TemplateID == 11966)
                {
-                  RandomSuitCardManager.getInstance().useCard(_loc4_.itemInfo.Place);
+                  RandomSuitCardManager.getInstance().useCard(cell.itemInfo.Place);
                }
-               else if(_loc4_.info.TemplateID == 12545)
+               else if(cell.info.TemplateID == 12545)
                {
-                  SocketManager.Instance.out.sendChangeSex(_loc4_.bagType,_loc4_.place);
+                  SocketManager.Instance.out.sendChangeSex(cell.bagType,cell.place);
                }
-               else if(_loc4_.info.CategoryID == 68)
+               else if(cell.info.CategoryID == 68)
                {
-                  SocketManager.Instance.out.sendOpenAmuletBox(_loc4_.itemInfo.BagType,_loc4_.itemInfo.Place);
+                  SocketManager.Instance.out.sendOpenAmuletBox(cell.itemInfo.BagType,cell.itemInfo.Place);
                }
-               else if((_loc4_.info.CategoryID == 20 || _loc4_.info.CategoryID == 53) && int(_loc4_.info.Property1) == 0)
+               else if((cell.info.CategoryID == 20 || cell.info.CategoryID == 53) && int(cell.info.Property1) == 0)
                {
                   BagAndInfoManager.Instance.showBagAndInfo(2);
                }
-               else if(_loc4_.info.CategoryID == 11 && int(_loc4_.info.Property1) == 108)
+               else if(cell.info.CategoryID == 11 && int(cell.info.Property1) == 108)
                {
                   BagAndInfoManager.Instance.showBagAndInfo(5);
                }
-               else if(_loc4_.info.CategoryID == 11 && int(_loc4_.info.Property1) == 106)
+               else if(cell.info.CategoryID == 11 && int(cell.info.Property1) == 106)
                {
                   BagAndInfoManager.Instance.showBagAndInfo(9);
                }
-               else if(_loc4_.info.CategoryID == 11 && (int(_loc4_.info.Property1) == 100 || int(_loc4_.info.Property1) == 1100 || int(_loc4_.info.Property1) == 115 || int(_loc4_.info.Property1) == 1200))
+               else if(cell.info.CategoryID == 11 && (int(cell.info.Property1) == 120 || int(cell.info.Property1) == 21))
                {
-                  useProp(_loc4_.itemInfo);
+                  SocketManager.Instance.out.sendUseCard(cell.itemInfo.BagType,cell.itemInfo.Place,[cell.info.TemplateID],cell.info.PayType);
                }
-               else if((_loc4_.info.CategoryID == 11 || _loc4_.info.CategoryID == 72) && int(_loc4_.info.Property1) == 6)
+               else if(cell.info.CategoryID == 11 && (int(cell.info.Property1) == 100 || int(cell.info.Property1) == 1100 || int(cell.info.Property1) == 115 || int(cell.info.Property1) == 1200))
                {
-                  __cellOpen(param1);
+                  useProp(cell.itemInfo);
+               }
+               else if((cell.info.CategoryID == 11 || cell.info.CategoryID == 72) && int(cell.info.Property1) == 6)
+               {
+                  __cellOpen(evt);
                }
                else
                {
-                  useCard(_loc4_.itemInfo);
+                  useCard(cell.itemInfo);
                }
             }
          }
       }
       
-      protected function __onNecklacePtetrochemicalClose(param1:FrameEvent) : void
+      protected function __onNecklacePtetrochemicalClose(event:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1 || param1.responseCode == 4)
+         if(event.responseCode == 0 || event.responseCode == 1 || event.responseCode == 4)
          {
             SoundManager.instance.playButtonSound();
             _necklacePtetrochemicalView.removeEventListener("response",__onNecklacePtetrochemicalClose);
@@ -3201,45 +3238,45 @@ package bagAndInfo.bag
       
       private function isHomeBankBagView() : Boolean
       {
-         var _loc1_:String = getQualifiedClassName(this);
-         if(_loc1_ == "homeBank.view::HomeBankBagView")
+         var thisQualifiedClassName:String = getQualifiedClassName(this);
+         if(thisQualifiedClassName == "homeBank.view::HomeBankBagView")
          {
             return true;
          }
          return false;
       }
       
-      protected function __cellColorChange(param1:Event) : void
+      protected function __cellColorChange(evt:Event) : void
       {
-         var _loc2_:BagCell = CellMenu.instance.cell;
-         if(_loc2_)
+         var cell:BagCell = CellMenu.instance.cell;
+         if(cell)
          {
             if(PlayerManager.Instance.Self.bagLocked)
             {
                BaglockedManager.Instance.show();
                return;
             }
-            if(_loc2_.itemInfo.CategoryID == 13 || _loc2_.itemInfo.CategoryID == 15)
+            if(cell.itemInfo.CategoryID == 13 || cell.itemInfo.CategoryID == 15)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.changeColor.suitAndWingCannotChange"));
                return;
             }
-            if(checkDress(_loc2_))
+            if(checkDress(cell))
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("playerDress.canNotChangeColor"));
                return;
             }
             ChangeColorManager.instance.changeColorModel.place = -1;
-            ChangeColorManager.instance.addOneThing(_loc2_);
+            ChangeColorManager.instance.addOneThing(cell);
             ChangeColorManager.instance.show();
          }
       }
       
-      private function __alertChangeColor(param1:FrameEvent) : void
+      private function __alertChangeColor(event:FrameEvent) : void
       {
-         param1.currentTarget.removeEventListener("response",__alertChangeColor);
+         event.currentTarget.removeEventListener("response",__alertChangeColor);
          SoundManager.instance.play("008");
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         if(event.responseCode == 3 || event.responseCode == 2)
          {
             if(PlayerManager.Instance.Self.Money < ShopManager.Instance.getGiftShopItemByTemplateID(11999).getItemPrice(1).bothMoneyValue)
             {
@@ -3249,56 +3286,55 @@ package bagAndInfo.bag
          }
       }
       
-      protected function __cellSell(param1:Event) : void
+      protected function __cellSell(evt:Event) : void
       {
-         var _loc2_:BagCell = CellMenu.instance.cell;
-         if(_loc2_.info.CategoryID == 73)
+         var cell:BagCell = CellMenu.instance.cell;
+         if(cell.info.CategoryID == 73)
          {
             return;
          }
-         if(checkDress(_loc2_))
+         if(checkDress(cell))
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("playerDress.canNotSell"));
             return;
          }
-         if(_loc2_)
+         if(cell)
          {
-            _loc2_.sellItem(_loc2_.itemInfo);
+            cell.sellItem(cell.itemInfo);
          }
       }
       
-      private function checkDress(param1:BagCell) : Boolean
+      private function checkDress(cell:BagCell) : Boolean
       {
-         var _loc7_:int = 0;
-         var _loc6_:* = null;
-         if(!DressUtils.isDress(param1.itemInfo))
+         var i:int = 0;
+         var vo:* = null;
+         if(!DressUtils.isDress(cell.itemInfo))
          {
             return false;
          }
-         var _loc5_:Array = PlayerDressManager.instance.modelArr;
+         var modelArr:Array = PlayerDressManager.instance.modelArr;
          var _loc9_:int = 0;
-         var _loc8_:* = _loc5_;
-         for each(var _loc3_ in _loc5_)
+         var _loc8_:* = modelArr;
+         for each(var arr in modelArr)
          {
-            _loc7_ = 0;
-            while(_loc7_ <= _loc3_.length - 1)
+            for(i = 0; i <= arr.length - 1; )
             {
-               _loc6_ = _loc3_[_loc7_];
-               if(_loc6_.itemId == param1.itemInfo.ItemID)
+               vo = arr[i];
+               if(vo.itemId == cell.itemInfo.ItemID)
                {
                   return true;
                }
-               _loc7_++;
+               i++;
             }
          }
-         var _loc2_:DressModel = PlayerDressManager.instance.currentModel;
-         if(_loc2_)
+         var currentModel:DressModel = PlayerDressManager.instance.currentModel;
+         if(currentModel)
          {
             var _loc11_:int = 0;
-            var _loc10_:* = _loc2_.model.Bag.items;
-            for each(var _loc4_ in _loc2_.model.Bag.items)
+            var _loc10_:* = currentModel.model.Bag.items;
+            for each(var item in currentModel.model.Bag.items)
             {
-               if(_loc4_ && _loc4_.ItemID == param1.itemInfo.ItemID)
+               if(item && item.ItemID == cell.itemInfo.ItemID)
                {
                   return true;
                }
@@ -3307,13 +3343,13 @@ package bagAndInfo.bag
          return false;
       }
       
-      private function __texpResponse(param1:FrameEvent) : void
+      private function __texpResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:BaseAlerFrame = param1.target as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__texpResponse);
-         _loc2_.dispose();
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var alert:BaseAlerFrame = evt.target as BaseAlerFrame;
+         alert.removeEventListener("response",__texpResponse);
+         alert.dispose();
+         if(evt.responseCode == 2 || evt.responseCode == 3)
          {
             if(PlayerManager.Instance.Self.Money < 10)
             {
@@ -3326,40 +3362,40 @@ package bagAndInfo.bag
          }
       }
       
-      private function useCard(param1:InventoryItemInfo) : void
+      private function useCard(info:InventoryItemInfo) : void
       {
-         if(param1.TemplateID == 11995 || param1.TemplateID == 11998 || param1.TemplateID == 11997 || param1.TemplateID == 11996 || param1.TemplateID.toString().substring(0,3) == "119" || param1.TemplateID == 11992 || param1.TemplateID == 20150 || param1.TemplateID == 201145 || (param1.TemplateID == 12535 || param1.TemplateID == 1120435))
+         if(info.TemplateID == 11995 || info.TemplateID == 11998 || info.TemplateID == 11997 || info.TemplateID == 11996 || info.TemplateID.toString().substring(0,3) == "119" || info.TemplateID == 11992 || info.TemplateID == 20150 || info.TemplateID == 201145 || (info.TemplateID == 12535 || info.TemplateID == 1120435))
          {
-            if(_self.Grade < 3 && (param1.TemplateID == 11992 || param1.CategoryID == 11 && param1.Property1 == "25"))
+            if(_self.Grade < 3 && (info.TemplateID == 11992 || info.CategoryID == 11 && info.Property1 == "25"))
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.functionLimitTip",3));
                return;
             }
-            if(param1.TemplateID != 11916 && param1.TemplateID != 11957 && param1.TemplateID != 11968)
+            if(info.TemplateID != 11916 && info.TemplateID != 11957 && info.TemplateID != 11968)
             {
-               SocketManager.Instance.out.sendUseCard(param1.BagType,param1.Place,[param1.TemplateID],param1.PayType);
+               SocketManager.Instance.out.sendUseCard(info.BagType,info.Place,[info.TemplateID],info.PayType);
             }
          }
       }
       
-      private function useProp(param1:InventoryItemInfo) : void
+      private function useProp(info:InventoryItemInfo) : void
       {
-         if(!param1)
+         if(!info)
          {
             return;
          }
-         SocketManager.Instance.out.sendUseProp(param1.BagType,param1.Place,[param1.TemplateID],param1.PayType);
+         SocketManager.Instance.out.sendUseProp(info.BagType,info.Place,[info.TemplateID],info.PayType);
       }
       
-      private function createBreakWin(param1:BagCell) : void
+      private function createBreakWin(cell:BagCell) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BreakGoodsView = ComponentFactory.Instance.creatComponentByStylename("breakGoodsView");
+         var win:BreakGoodsView = ComponentFactory.Instance.creatComponentByStylename("breakGoodsView");
       }
       
-      public function setCellInfo(param1:int, param2:InventoryItemInfo) : void
+      public function setCellInfo(index:int, info:InventoryItemInfo) : void
       {
-         _currentList.setCellInfo(param1,param2);
+         _currentList.setCellInfo(index,info);
       }
       
       public function dispose() : void
@@ -3576,41 +3612,41 @@ package bagAndInfo.bag
          }
       }
       
-      public function setBagCountShow(param1:int) : void
+      public function setBagCountShow(bagType:int) : void
       {
-         var _loc3_:int = 0;
-         var _loc4_:* = null;
-         var _loc2_:* = 0;
-         switch(int(param1))
+         var goodsNum:int = 0;
+         var glowFilter:* = null;
+         var textColor:* = 0;
+         switch(int(bagType))
          {
             case 0:
-               _loc3_ = PlayerManager.Instance.Self.getBag(param1).itemBgNumber(_equiplist._startIndex,_equiplist._stopIndex);
-               if(_loc3_ >= 49)
+               goodsNum = PlayerManager.Instance.Self.getBag(bagType).itemBgNumber(_equiplist._startIndex,_equiplist._stopIndex);
+               if(goodsNum >= 49)
                {
-                  _loc2_ = uint(16711680);
-                  _loc4_ = new GlowFilter(16777215,0.5,3,3,10);
+                  textColor = uint(16711680);
+                  glowFilter = new GlowFilter(16777215,0.5,3,3,10);
                }
                else
                {
-                  _loc2_ = uint(1310468);
-                  _loc4_ = new GlowFilter(876032,0.5,3,3,10);
+                  textColor = uint(1310468);
+                  glowFilter = new GlowFilter(876032,0.5,3,3,10);
                }
                break;
             case 1:
-               _loc3_ = PlayerManager.Instance.Self.getBag(param1).itemBgNumber(0,48);
-               if(_loc3_ >= 48 + 1)
+               goodsNum = PlayerManager.Instance.Self.getBag(bagType).itemBgNumber(0,48);
+               if(goodsNum >= 48 + 1)
                {
-                  _loc2_ = uint(16711680);
-                  _loc4_ = new GlowFilter(16777215,0.5,3,3,10);
+                  textColor = uint(16711680);
+                  glowFilter = new GlowFilter(16777215,0.5,3,3,10);
                   break;
                }
-               _loc2_ = uint(1310468);
-               _loc4_ = new GlowFilter(876032,0.5,3,3,10);
+               textColor = uint(1310468);
+               glowFilter = new GlowFilter(876032,0.5,3,3,10);
                break;
          }
-         _goodsNumInfoText.textColor = _loc2_;
-         _goodsNumInfoText.text = _loc3_.toString();
-         setBagType(param1);
+         _goodsNumInfoText.textColor = textColor;
+         _goodsNumInfoText.text = goodsNum.toString();
+         setBagType(bagType);
       }
       
       public function get info() : SelfInfo
@@ -3618,7 +3654,7 @@ package bagAndInfo.bag
          return _info;
       }
       
-      public function set info(param1:SelfInfo) : void
+      public function set info(value:SelfInfo) : void
       {
          if(_info)
          {
@@ -3628,7 +3664,7 @@ package bagAndInfo.bag
             _info.BeadBag.items.removeEventListener("add",__onBeadBagChanged);
             PlayerManager.Instance.Self.removeEventListener("showBead",__showBead);
          }
-         _info = param1;
+         _info = value;
          if(_info)
          {
             _info.addEventListener("propertychange",__propertyChange);
@@ -3640,11 +3676,11 @@ package bagAndInfo.bag
          updateView();
       }
       
-      private function startReworkName(param1:int, param2:int) : void
+      private function startReworkName(bagType:int, place:int) : void
       {
          _reworknameView = ComponentFactory.Instance.creatComponentByStylename("bagAndInfo.ReworkName.ReworkNameFrame");
          LayerManager.Instance.addToLayer(_reworknameView,3,true,1);
-         _reworknameView.initialize(param1,param2);
+         _reworknameView.initialize(bagType,place);
          _reworknameView.addEventListener("complete",__onRenameComplete);
       }
       
@@ -3655,24 +3691,24 @@ package bagAndInfo.bag
          _reworknameView = null;
       }
       
-      private function __onRenameComplete(param1:Event) : void
+      private function __onRenameComplete(evt:Event) : void
       {
          shutdownReworkName();
       }
       
-      private function startupConsortiaReworkName(param1:int, param2:int) : void
+      private function startupConsortiaReworkName(bagType:int, place:int) : void
       {
          _consortaiReworkName = ComponentFactory.Instance.creatComponentByStylename("bagAndInfo.ReworkName.ReworkNameConsortia");
          LayerManager.Instance.addToLayer(_consortaiReworkName,3,true,1);
-         _consortaiReworkName.initialize(param1,param2);
+         _consortaiReworkName.initialize(bagType,place);
          _consortaiReworkName.addEventListener("complete",__onConsortiaRenameComplete);
       }
       
-      private function startupBattleTeamReworkName(param1:int, param2:int) : void
+      private function startupBattleTeamReworkName(bagType:int, place:int) : void
       {
          _battleTeamReworkName = ComponentFactory.Instance.creatComponentByStylename("bagAndInfo.ReworkName.ReworkNameBattleTeam");
          LayerManager.Instance.addToLayer(_battleTeamReworkName,3,true,1);
-         _battleTeamReworkName.initialize(param1,param2);
+         _battleTeamReworkName.initialize(bagType,place);
       }
       
       private function shutdownConsortiaReworkName() : void
@@ -3682,13 +3718,13 @@ package bagAndInfo.bag
          _consortaiReworkName = null;
       }
       
-      private function showChatBugleInputFrame(param1:int) : void
+      private function showChatBugleInputFrame(templateID:int) : void
       {
          if(_chatBugleInputFrame == null)
          {
             _chatBugleInputFrame = ComponentFactory.Instance.creat("chat.BugleInputFrame");
          }
-         _chatBugleInputFrame.templateID = param1;
+         _chatBugleInputFrame.templateID = templateID;
          LayerManager.Instance.addToLayer(_chatBugleInputFrame,3,true,2);
       }
       
@@ -3699,12 +3735,12 @@ package bagAndInfo.bag
          _battleTeamReworkName = null;
       }
       
-      private function __onBattleTeamRenameComplete(param1:Event) : void
+      private function __onBattleTeamRenameComplete(evt:Event) : void
       {
          shutdownBattleTeamReworkName();
       }
       
-      private function __onConsortiaRenameComplete(param1:Event) : void
+      private function __onConsortiaRenameComplete(evt:Event) : void
       {
          shutdownConsortiaReworkName();
       }
@@ -3727,13 +3763,13 @@ package bagAndInfo.bag
       
       private function judgeAndPlayCardMovie() : void
       {
-         var _loc5_:ItemTemplateInfo = _currentCell.info;
-         var _loc6_:DictionaryData = PlayerManager.Instance.Self.cardBagDic;
+         var templateInfo:ItemTemplateInfo = _currentCell.info;
+         var bagCardDic:DictionaryData = PlayerManager.Instance.Self.cardBagDic;
          var _loc9_:int = 0;
-         var _loc8_:* = _loc6_;
-         for each(var _loc3_ in _loc6_)
+         var _loc8_:* = bagCardDic;
+         for each(var cardInfo in bagCardDic)
          {
-            if(_loc3_.TemplateID == int(_loc5_.Property5))
+            if(cardInfo.TemplateID == int(templateInfo.Property5))
             {
                return;
             }
@@ -3742,17 +3778,17 @@ package bagAndInfo.bag
          dispatchEvent(new Event("firstGetCard",true));
          getNewCardMovie = ClassUtils.CreatInstance("asset.getNecCard.movie") as MovieClip;
          PositionUtils.setPos(getNewCardMovie,"BagView.NewCardMovie.Pos");
-         var _loc2_:Sprite = new Sprite();
-         _loc2_.graphics.beginFill(16777215,0);
-         _loc2_.graphics.drawRect(0,0,113,156);
-         _loc2_.graphics.endFill();
-         var _loc7_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(int(_loc5_.Property5));
-         var _loc4_:BaseCell = new BaseCell(_loc2_,_loc7_);
-         getNewCardMovie["card"].addChild(_loc4_);
-         var _loc1_:GradientText = ComponentFactory.Instance.creatComponentByStylename("getNewCardMovie.text");
-         _loc1_.text = LanguageMgr.GetTranslation("ddt.cardSystem.getNewCard.name",_loc7_.Name);
-         _loc1_.x = _loc1_.x - (_loc1_.textWidth - _loc4_.width) / 6;
-         getNewCardMovie["word"].addChild(_loc1_);
+         var s:Sprite = new Sprite();
+         s.graphics.beginFill(16777215,0);
+         s.graphics.drawRect(0,0,113,156);
+         s.graphics.endFill();
+         var cardTempInfo:ItemTemplateInfo = ItemManager.Instance.getTemplateById(int(templateInfo.Property5));
+         var cell:BaseCell = new BaseCell(s,cardTempInfo);
+         getNewCardMovie["card"].addChild(cell);
+         var text:GradientText = ComponentFactory.Instance.creatComponentByStylename("getNewCardMovie.text");
+         text.text = LanguageMgr.GetTranslation("ddt.cardSystem.getNewCard.name",cardTempInfo.Name);
+         text.x = text.x - (text.textWidth - cell.width) / 6;
+         getNewCardMovie["word"].addChild(text);
          LayerManager.Instance.addToLayer(getNewCardMovie,0,false,2);
          getNewCardMovie.gotoAndPlay(1);
          getNewCardMovie.addEventListener("complete",__showOver);
@@ -3768,7 +3804,7 @@ package bagAndInfo.bag
          getNewCardMovie.soundTransform = _soundControl;
       }
       
-      private function __showOver(param1:Event) : void
+      private function __showOver(event:Event) : void
       {
          getNewCardMovie.removeEventListener("complete",__showOver);
          _soundControl.volume = 0;
@@ -3780,79 +3816,79 @@ package bagAndInfo.bag
       
       protected function _isSkillCanUse() : Boolean
       {
-         var _loc1_:Boolean = false;
+         var boo:Boolean = false;
          if(PlayerManager.Instance.Self.IsWeakGuildFinish(5) && PlayerManager.Instance.Self.IsWeakGuildFinish(2) && PlayerManager.Instance.Self.IsWeakGuildFinish(12) && PlayerManager.Instance.Self.IsWeakGuildFinish(51) && PlayerManager.Instance.Self.IsWeakGuildFinish(55))
          {
-            _loc1_ = true;
+            boo = true;
          }
-         return _loc1_;
+         return boo;
       }
       
-      private function startupChangeSex(param1:int, param2:int) : void
+      private function startupChangeSex(bagType:int, place:int) : void
       {
-         var _loc3_:ChangeSexAlertFrame = ComponentFactory.Instance.creat("bagAndInfo.bag.changeSexAlert");
-         _loc3_.bagType = param1;
-         _loc3_.place = param2;
-         _loc3_.info = getAlertInfo("tank.view.bagII.changeSexAlert",true);
-         _loc3_.addEventListener("propertiesChanged",__onAlertSizeChanged);
-         _loc3_.addEventListener("response",__onAlertResponse);
-         LayerManager.Instance.addToLayer(_loc3_,3,_loc3_.info.frameCenter,1);
-         StageReferance.stage.focus = _loc3_;
+         var alert:ChangeSexAlertFrame = ComponentFactory.Instance.creat("bagAndInfo.bag.changeSexAlert");
+         alert.bagType = bagType;
+         alert.place = place;
+         alert.info = getAlertInfo("tank.view.bagII.changeSexAlert",true);
+         alert.addEventListener("propertiesChanged",__onAlertSizeChanged);
+         alert.addEventListener("response",__onAlertResponse);
+         LayerManager.Instance.addToLayer(alert,3,alert.info.frameCenter,1);
+         StageReferance.stage.focus = alert;
       }
       
-      private function getAlertInfo(param1:String, param2:Boolean = false) : AlertInfo
+      private function getAlertInfo(tip:String, showCancel:Boolean = false) : AlertInfo
       {
-         var _loc3_:AlertInfo = new AlertInfo();
-         _loc3_.autoDispose = true;
-         _loc3_.showSubmit = true;
-         _loc3_.showCancel = param2;
-         _loc3_.enterEnable = true;
-         _loc3_.escEnable = true;
-         _loc3_.moveEnable = false;
-         _loc3_.title = LanguageMgr.GetTranslation("AlertDialog.Info");
-         _loc3_.data = LanguageMgr.GetTranslation(param1);
-         return _loc3_;
+         var result:AlertInfo = new AlertInfo();
+         result.autoDispose = true;
+         result.showSubmit = true;
+         result.showCancel = showCancel;
+         result.enterEnable = true;
+         result.escEnable = true;
+         result.moveEnable = false;
+         result.title = LanguageMgr.GetTranslation("AlertDialog.Info");
+         result.data = LanguageMgr.GetTranslation(tip);
+         return result;
       }
       
-      private function __onAlertSizeChanged(param1:ComponentEvent) : void
+      private function __onAlertSizeChanged(event:ComponentEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         if(_loc2_.info.frameCenter)
+         var alert:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         if(alert.info.frameCenter)
          {
-            _loc2_.x = (StageReferance.stageWidth - _loc2_.width) / 2;
-            _loc2_.y = (StageReferance.stageHeight - _loc2_.height) / 2;
+            alert.x = (StageReferance.stageWidth - alert.width) / 2;
+            alert.y = (StageReferance.stageHeight - alert.height) / 2;
          }
       }
       
-      private function __onAlertResponse(param1:FrameEvent) : void
+      private function __onAlertResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:ChangeSexAlertFrame = ChangeSexAlertFrame(param1.currentTarget);
-         _loc2_.removeEventListener("propertiesChanged",__onAlertSizeChanged);
-         _loc2_.removeEventListener("response",__onAlertResponse);
-         switch(int(param1.responseCode) - 2)
+         var alert:ChangeSexAlertFrame = ChangeSexAlertFrame(evt.currentTarget);
+         alert.removeEventListener("propertiesChanged",__onAlertSizeChanged);
+         alert.removeEventListener("response",__onAlertResponse);
+         switch(int(evt.responseCode) - 2)
          {
             case 0:
             case 1:
-               SocketManager.Instance.out.sendChangeSex(_loc2_.bagType,_loc2_.place);
+               SocketManager.Instance.out.sendChangeSex(alert.bagType,alert.place);
          }
-         _loc2_.dispose();
-         _loc2_ = null;
+         alert.dispose();
+         alert = null;
       }
       
-      private function __changeSexHandler(param1:CrazyTankSocketEvent) : void
+      private function __changeSexHandler(evt:CrazyTankSocketEvent) : void
       {
-         var _loc2_:* = null;
+         var alert:* = null;
          SocketManager.Instance.socket.close();
-         var _loc3_:Boolean = param1.pkg.readBoolean();
-         if(_loc3_)
+         var state:Boolean = evt.pkg.readBoolean();
+         if(state)
          {
-            _loc2_ = ComponentFactory.Instance.creat("sellGoodsAlert");
-            _loc2_.info = getAlertInfo("tank.view.bagII.changeSexAlert.success",false);
-            _loc2_.addEventListener("propertiesChanged",__onAlertSizeChanged);
-            _loc2_.addEventListener("response",__onSuccessAlertResponse);
-            LayerManager.Instance.addToLayer(_loc2_,3,_loc2_.info.frameCenter,1);
-            StageReferance.stage.focus = _loc2_;
+            alert = ComponentFactory.Instance.creat("sellGoodsAlert");
+            alert.info = getAlertInfo("tank.view.bagII.changeSexAlert.success",false);
+            alert.addEventListener("propertiesChanged",__onAlertSizeChanged);
+            alert.addEventListener("response",__onSuccessAlertResponse);
+            LayerManager.Instance.addToLayer(alert,3,alert.info.frameCenter,1);
+            StageReferance.stage.focus = alert;
          }
          else
          {
@@ -3860,15 +3896,15 @@ package bagAndInfo.bag
          }
       }
       
-      private function __onSuccessAlertResponse(param1:FrameEvent) : void
+      private function __onSuccessAlertResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          ExternalInterface.call("WindowReturn");
       }
       
-      public function set isScreenFood(param1:Boolean) : void
+      public function set isScreenFood(value:Boolean) : void
       {
-         this._isScreenFood = param1;
+         this._isScreenFood = value;
       }
       
       public function get beadFeedBtn() : BeadFeedButton

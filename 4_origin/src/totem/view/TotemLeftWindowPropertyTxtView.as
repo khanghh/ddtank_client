@@ -17,60 +17,56 @@ package totem.view
       
       public function TotemLeftWindowPropertyTxtView()
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          super();
          this.mouseChildren = false;
          this.mouseEnabled = false;
          _levelTxtList = new Vector.<FilterFrameText>();
-         _loc2_ = 1;
-         while(_loc2_ <= 7)
+         for(i = 1; i <= 7; )
          {
-            _levelTxtList.push(ComponentFactory.Instance.creatComponentByStylename("totem.totemWindow.propertyName" + _loc2_));
-            _loc2_++;
+            _levelTxtList.push(ComponentFactory.Instance.creatComponentByStylename("totem.totemWindow.propertyName" + i));
+            i++;
          }
-         var _loc1_:String = LanguageMgr.GetTranslation("ddt.totem.sevenProperty");
-         _txtArray = _loc1_.split(",");
+         var tmp:String = LanguageMgr.GetTranslation("ddt.totem.sevenProperty");
+         _txtArray = tmp.split(",");
       }
       
-      public function show(param1:Array) : void
+      public function show(location:Array) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < 7)
+         var i:int = 0;
+         for(i = 0; i < 7; )
          {
-            _levelTxtList[_loc2_].x = param1[_loc2_].x - 48;
-            _levelTxtList[_loc2_].y = param1[_loc2_].y + 22;
-            addChild(_levelTxtList[_loc2_]);
-            _loc2_++;
+            _levelTxtList[i].x = location[i].x - 48;
+            _levelTxtList[i].y = location[i].y + 22;
+            addChild(_levelTxtList[i]);
+            i++;
          }
       }
       
-      public function refreshLayer(param1:int) : void
+      public function refreshLayer(level:int) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < 7)
+         var i:int = 0;
+         for(i = 0; i < 7; )
          {
-            _levelTxtList[_loc2_].text = LanguageMgr.GetTranslation("ddt.totem.totemWindow.propertyLvTxt",param1,_txtArray[_loc2_]);
-            _loc2_++;
+            _levelTxtList[i].text = LanguageMgr.GetTranslation("ddt.totem.totemWindow.propertyLvTxt",level,_txtArray[i]);
+            i++;
          }
       }
       
-      public function scaleTxt(param1:Number) : void
+      public function scaleTxt(scale:Number) : void
       {
-         var _loc3_:int = 0;
+         var i:int = 0;
          if(!_levelTxtList)
          {
             return;
          }
-         var _loc2_:int = _levelTxtList.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var len:int = _levelTxtList.length;
+         for(i = 0; i < len; )
          {
-            _levelTxtList[_loc3_].scaleX = param1;
-            _levelTxtList[_loc3_].scaleY = param1;
-            _levelTxtList[_loc3_].x = _levelTxtList[_loc3_].x - 5;
-            _loc3_++;
+            _levelTxtList[i].scaleX = scale;
+            _levelTxtList[i].scaleY = scale;
+            _levelTxtList[i].x = _levelTxtList[i].x - 5;
+            i++;
          }
       }
       

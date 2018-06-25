@@ -71,14 +71,14 @@ package flowerGiving
          }
       }
       
-      protected function __flowerMcComplete(param1:Event) : void
+      protected function __flowerMcComplete(event:Event) : void
       {
          flowerMc.removeEventListener("complete",__flowerMcComplete);
          flowerMc.dispose();
          flowerMc = null;
       }
       
-      protected function onDelayTimer(param1:TimerEvent) : void
+      protected function onDelayTimer(event:TimerEvent) : void
       {
          delayTimer.stop();
          delayTimer.removeEventListener("timer",onDelayTimer);
@@ -89,23 +89,23 @@ package flowerGiving
          }
       }
       
-      public function getDataByRewardMark(param1:int) : Array
+      public function getDataByRewardMark(mark:int) : Array
       {
-         var _loc2_:Array = [];
+         var dataArr:Array = [];
          var _loc5_:int = 0;
          var _loc4_:* = _manager.xmlData.giftbagArray;
-         for each(var _loc3_ in _manager.xmlData.giftbagArray)
+         for each(var item in _manager.xmlData.giftbagArray)
          {
-            if(_loc3_.rewardMark == param1)
+            if(item.rewardMark == mark)
             {
-               _loc2_.push(_loc3_);
+               dataArr.push(item);
             }
          }
-         _loc2_.sortOn("giftbagOrder",16);
-         return _loc2_;
+         dataArr.sortOn("giftbagOrder",16);
+         return dataArr;
       }
       
-      protected function onSmallLoadingClose(param1:Event) : void
+      protected function onSmallLoadingClose(event:Event) : void
       {
          UIModuleSmallLoading.Instance.hide();
          UIModuleSmallLoading.Instance.removeEventListener("close",onSmallLoadingClose);
@@ -113,28 +113,28 @@ package flowerGiving
          UIModuleLoader.Instance.removeEventListener("uiMoudleProgress",onUIProgress);
       }
       
-      protected function onUIProgress(param1:UIModuleEvent) : void
+      protected function onUIProgress(event:UIModuleEvent) : void
       {
-         if(param1.module == "flowerGiving")
+         if(event.module == "flowerGiving")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
       
       public function setup() : void
       {
-         var _loc1_:FlowerGivingManager = FlowerGivingManager.instance;
-         if(!_loc1_.hasEventListener("fg_show"))
+         var mngr:FlowerGivingManager = FlowerGivingManager.instance;
+         if(!mngr.hasEventListener("fg_show"))
          {
-            _loc1_.addEventListener("fg_show",onSetup);
+            mngr.addEventListener("fg_show",onSetup);
          }
-         _loc1_.addEventListener("fg_checkopen",onFlowerEventHandler);
-         _loc1_.addEventListener("fg_flower_fall",onFlowerEventHandler);
+         mngr.addEventListener("fg_checkopen",onFlowerEventHandler);
+         mngr.addEventListener("fg_flower_fall",onFlowerEventHandler);
       }
       
-      protected function onFlowerEventHandler(param1:FlowerGiveEvent) : void
+      protected function onFlowerEventHandler(e:FlowerGiveEvent) : void
       {
-         var _loc2_:* = param1.type;
+         var _loc2_:* = e.type;
          if("fg_checkopen" !== _loc2_)
          {
             if("fg_flower_fall" === _loc2_)
@@ -163,14 +163,14 @@ package flowerGiving
          delayTimer.start();
       }
       
-      private function onSetup(param1:FlowerGiveEvent) : void
+      private function onSetup(e:FlowerGiveEvent) : void
       {
          onShow();
       }
       
-      protected function createFlowerGivingFrame(param1:UIModuleEvent) : void
+      protected function createFlowerGivingFrame(event:UIModuleEvent) : void
       {
-         if(param1.module != "flowerGiving")
+         if(event.module != "flowerGiving")
          {
             return;
          }

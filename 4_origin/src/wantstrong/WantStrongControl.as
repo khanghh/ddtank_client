@@ -23,9 +23,9 @@ package wantstrong
       
       private var _isTimeUpdated:Boolean;
       
-      public function WantStrongControl(param1:IEventDispatcher = null)
+      public function WantStrongControl(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get Instance() : WantStrongControl
@@ -57,25 +57,25 @@ package wantstrong
          _initState = WantStrongManager.Instance.model.data[WantStrongManager.Instance.model.activeId];
       }
       
-      public function setFindBackData(param1:int) : void
+      public function setFindBackData(index:int) : void
       {
-         WantStrongManager.Instance.findBackDataExist[param1] = true;
+         WantStrongManager.Instance.findBackDataExist[index] = true;
       }
       
-      protected function __onSetCurrentInfo(param1:WantStrongEvent) : void
+      protected function __onSetCurrentInfo(event:WantStrongEvent) : void
       {
-         setCurrentInfo(param1.data.data,param1.data.stateChange);
+         setCurrentInfo(event.data.data,event.data.stateChange);
       }
       
-      public function setCurrentInfo(param1:* = null, param2:Boolean = false) : void
+      public function setCurrentInfo(data:* = null, stateChange:Boolean = false) : void
       {
          if(_frame)
          {
-            (_frame as WantStrongFrame).setInfo(param1,param2);
+            (_frame as WantStrongFrame).setInfo(data,stateChange);
          }
       }
       
-      protected function __onOpenView(param1:WantStrongEvent) : void
+      protected function __onOpenView(event:WantStrongEvent) : void
       {
          if(!WantStrongManager.Instance.model)
          {
@@ -88,9 +88,9 @@ package wantstrong
          setCurrentInfo(_initState);
       }
       
-      public function setinitState(param1:*) : void
+      public function setinitState(value:*) : void
       {
-         _initState = param1;
+         _initState = value;
       }
       
       public function get isTimeUpdated() : Boolean
@@ -98,9 +98,9 @@ package wantstrong
          return _isTimeUpdated;
       }
       
-      public function set isTimeUpdated(param1:Boolean) : void
+      public function set isTimeUpdated(value:Boolean) : void
       {
-         _isTimeUpdated = param1;
+         _isTimeUpdated = value;
       }
       
       public function close() : void

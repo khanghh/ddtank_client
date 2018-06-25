@@ -22,28 +22,28 @@ package explorerManual.view.page
          super();
       }
       
-      public function set pageInfo(param1:ManualPageItemInfo) : void
+      public function set pageInfo(info:ManualPageItemInfo) : void
       {
-         _info = param1;
-         tipData = param1;
+         _info = info;
+         tipData = info;
          clearLoader();
          loadIcon();
       }
       
       private function loadIcon() : void
       {
-         var _loc1_:String = "/explorerManual/preview/" + _info.ID;
-         _loaderPic = LoadResourceManager.Instance.createLoader(PathManager.ManualDebrisIconPath(_loc1_),0);
+         var imgPath:String = "/explorerManual/preview/" + _info.ID;
+         _loaderPic = LoadResourceManager.Instance.createLoader(PathManager.ManualDebrisIconPath(imgPath),0);
          _loaderPic.addEventListener("complete",__picComplete);
          LoadResourceManager.Instance.startLoad(_loaderPic);
       }
       
-      private function __picComplete(param1:LoaderEvent) : void
+      private function __picComplete(evt:LoaderEvent) : void
       {
          ObjectUtils.disposeAllChildren(this);
-         if(param1.loader.isSuccess)
+         if(evt.loader.isSuccess)
          {
-            addChild(param1.loader.content as Bitmap);
+            addChild(evt.loader.content as Bitmap);
          }
          clearLoader();
       }

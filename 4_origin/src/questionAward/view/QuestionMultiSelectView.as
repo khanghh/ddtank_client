@@ -8,41 +8,40 @@ package questionAward.view
    {
        
       
-      public function QuestionMultiSelectView(param1:QuestionDataBaseInfo)
+      public function QuestionMultiSelectView(value:QuestionDataBaseInfo)
       {
-         super(param1);
+         super(value);
       }
       
-      override protected function createCheckBox(param1:String) : SelectedCheckButton
+      override protected function createCheckBox(name:String) : SelectedCheckButton
       {
          _checkBtn = ComponentFactory.Instance.creatComponentByStylename("questionAward.multiSelectBtn");
-         _checkBtn.text = param1;
+         _checkBtn.text = name;
          return _checkBtn;
       }
       
       override public function getAnswer() : String
       {
-         var _loc1_:* = null;
-         var _loc3_:int = 0;
-         var _loc2_:String = "";
+         var temBtn:* = null;
+         var i:int = 0;
+         var result:String = "";
          if(_list && _list.numChildren > 0)
          {
-            _loc3_ = 0;
-            while(_loc3_ < _list.numChildren)
+            for(i = 0; i < _list.numChildren; )
             {
-               _loc1_ = _list.getChildAt(_loc3_) as SelectedCheckButton;
-               if(_loc1_.selected)
+               temBtn = _list.getChildAt(i) as SelectedCheckButton;
+               if(temBtn.selected)
                {
-                  _loc2_ = _loc2_ + ((_loc3_ + 1).toString() + "$");
+                  result = result + ((i + 1).toString() + "$");
                }
-               _loc3_++;
+               i++;
             }
-            if(_loc2_ != "")
+            if(result != "")
             {
-               _loc2_ = _loc2_.slice(0,_loc2_.length - 1);
+               result = result.slice(0,result.length - 1);
             }
          }
-         return _loc2_;
+         return result;
       }
    }
 }

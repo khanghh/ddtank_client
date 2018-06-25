@@ -7,14 +7,14 @@ package gameCommon.model
    {
        
       
-      public function SpecialLiving(param1:int, param2:int, param3:int, param4:int = 0)
+      public function SpecialLiving(id:int, team:int, maxBlood:int, templeId:int = 0)
       {
-         super(param1,param2,param3,param4);
+         super(id,team,maxBlood,templeId);
       }
       
-      public function playSpecialMovie(param1:String, param2:Function = null, param3:Array = null) : void
+      public function playSpecialMovie(type:String, fun:Function = null, args:Array = null) : void
       {
-         dispatchEvent(new LivingEvent("special_do_action",0,0,param1,param2,param3));
+         dispatchEvent(new LivingEvent("special_do_action",0,0,type,fun,args));
       }
    }
 }

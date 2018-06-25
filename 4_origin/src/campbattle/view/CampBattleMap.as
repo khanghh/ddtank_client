@@ -95,42 +95,42 @@ package campbattle.view
       
       private var _flagPlayer:Boolean;
       
-      public function CampBattleMap(param1:String, param2:String, param3:DictionaryData = null, param4:DictionaryData = null, param5:Array = null, param6:Bitmap = null)
+      public function CampBattleMap(mapClassDefinition:String, mapResUrl:String, playerModel:DictionaryData = null, monsterModel:DictionaryData = null, actItemList:Array = null, smallMap:Bitmap = null)
       {
          super();
-         _actItemList = param5;
-         _mapClassDefinition = param1;
+         _actItemList = actItemList;
+         _mapClassDefinition = mapClassDefinition;
          _playerModel = new DictionaryData();
-         _playerModel.setData(param3);
-         _monsterModel = param4;
+         _playerModel.setData(playerModel);
+         _monsterModel = monsterModel;
          _roleList = [];
          _monsterList = [];
          _antoObjList = [];
-         _mapResUrl = param2;
-         _smallMap = param6;
+         _mapResUrl = mapResUrl;
+         _smallMap = smallMap;
          if(_smallMap)
          {
             addChild(_smallMap);
          }
-         loaderMap(param2);
+         loaderMap(mapResUrl);
       }
       
-      private function loaderMap(param1:String) : void
+      private function loaderMap(str:String) : void
       {
-         var _loc2_:BaseLoader = LoadResourceManager.Instance.createLoader(param1,4);
-         _loc2_.addEventListener("complete",onMapLoadComplete);
-         _loc2_.addEventListener("loadError",onMapLoadError);
-         LoadResourceManager.Instance.startLoad(_loc2_);
+         var mapLoader:BaseLoader = LoadResourceManager.Instance.createLoader(str,4);
+         mapLoader.addEventListener("complete",onMapLoadComplete);
+         mapLoader.addEventListener("loadError",onMapLoadError);
+         LoadResourceManager.Instance.startLoad(mapLoader);
       }
       
-      protected function onMapLoadError(param1:LoaderEvent) : void
+      protected function onMapLoadError(event:LoaderEvent) : void
       {
          ChatManager.Instance.sysChatRed("地图资源加载出错Url=" + _mapResUrl);
       }
       
-      private function onMapLoadComplete(param1:LoaderEvent) : void
+      private function onMapLoadComplete(event:LoaderEvent) : void
       {
-         param1.loader.removeEventListener("complete",onMapLoadComplete);
+         event.loader.removeEventListener("complete",onMapLoadComplete);
          _isLoadMapComplete = true;
          initMap();
          initEvent();
@@ -141,12 +141,11 @@ package campbattle.view
       
       private function initPlayerList() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _playerModel.length)
+         var i:int = 0;
+         for(i = 0; i < _playerModel.length; )
          {
-            addRoleToMap(_playerModel.list[_loc1_]);
-            _loc1_++;
+            addRoleToMap(_playerModel.list[i]);
+            i++;
          }
       }
       
@@ -162,22 +161,22 @@ package campbattle.view
          }
       }
       
-      private function __onMonsterTimerHander(param1:Event) : void
+      private function __onMonsterTimerHander(e:Event) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:SmallEnemy = _monsterModel.list[_mIndex] as SmallEnemy;
-         if(_loc2_ != null)
+         var sEnemy:* = null;
+         var eData:SmallEnemy = _monsterModel.list[_mIndex] as SmallEnemy;
+         if(eData != null)
          {
-            _loc3_ = new CampGameSmallEnemy(_loc2_);
-            PositionUtils.setPos(_loc3_,_loc2_.pos);
-            _monsterList.push(_loc3_);
-            _antoObjList.push(_loc3_);
-            _articleLayer.addChild(_loc3_);
+            sEnemy = new CampGameSmallEnemy(eData);
+            PositionUtils.setPos(sEnemy,eData.pos);
+            _monsterList.push(sEnemy);
+            _antoObjList.push(sEnemy);
+            _articleLayer.addChild(sEnemy);
             _mIndex = Number(_mIndex) + 1;
          }
       }
       
-      private function __onMonsterTimerCompleteHander(param1:Event) : void
+      private function __onMonsterTimerCompleteHander(event:Event) : void
       {
          _addMonsterTimer.stop();
          _addMonsterTimer.removeEventListener("timer",__onMonsterTimerHander);
@@ -189,26 +188,25 @@ package campbattle.view
       
       private function checkRoleList() : void
       {
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
+         var i:int = 0;
+         var role:* = null;
+         var disX:int = 0;
+         var disY:int = 0;
          if(_roleList.length != _playerModel.length)
          {
             return;
          }
-         var _loc4_:int = _roleList.length;
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         var len:int = _roleList.length;
+         for(i = 0; i < len; )
          {
-            _loc3_ = _roleList[_loc5_] as CampBattlePlayer;
-            if(!(_loc3_.playerInfo.zoneID == PlayerManager.Instance.Self.ZoneID && _loc3_.playerInfo.ID == PlayerManager.Instance.Self.ID))
+            role = _roleList[i] as CampBattlePlayer;
+            if(!(role.playerInfo.zoneID == PlayerManager.Instance.Self.ZoneID && role.playerInfo.ID == PlayerManager.Instance.Self.ID))
             {
-               _loc2_ = Math.abs(_mainRole.x - _loc3_.x);
-               _loc1_ = Math.abs(_mainRole.y - _loc3_.y);
-               _loc3_.visible = _loc2_ > 500 || _loc1_ > 300?false:true;
+               disX = Math.abs(_mainRole.x - role.x);
+               disY = Math.abs(_mainRole.y - role.y);
+               role.visible = disX > 500 || disY > 300?false:true;
             }
-            _loc5_++;
+            i++;
          }
       }
       
@@ -227,78 +225,77 @@ package campbattle.view
          PlayerManager.Instance.addEventListener("setselfplayerpos",__onSetSelfPlayerPos);
       }
       
-      protected function __onSetSelfPlayerPos(param1:NewHallEvent) : void
+      protected function __onSetSelfPlayerPos(event:NewHallEvent) : void
       {
-         __onPlayerClickHander(param1.data[0]);
+         __onPlayerClickHander(event.data[0]);
       }
       
-      protected function __onAddMonsters(param1:DictionaryEvent) : void
+      protected function __onAddMonsters(event:DictionaryEvent) : void
       {
-         var _loc2_:CampGameSmallEnemy = new CampGameSmallEnemy(param1.data as SmallEnemy);
-         _loc2_.setStateType((param1.data as SmallEnemy).stateType);
-         _monsterList.push(_loc2_);
-         _articleLayer.addChild(_loc2_);
-         _antoObjList.push(_loc2_);
+         var enemy:CampGameSmallEnemy = new CampGameSmallEnemy(event.data as SmallEnemy);
+         enemy.setStateType((event.data as SmallEnemy).stateType);
+         _monsterList.push(enemy);
+         _articleLayer.addChild(enemy);
+         _antoObjList.push(enemy);
       }
       
-      private function __onRemoveMonsters(param1:DictionaryEvent) : void
+      private function __onRemoveMonsters(event:DictionaryEvent) : void
       {
-         var _loc3_:int = (param1.data as SmallEnemy).LivingID;
-         var _loc4_:int = getMonsterIndex(_loc3_);
-         if(!_monsterList[_loc4_])
+         var id:int = (event.data as SmallEnemy).LivingID;
+         var index:int = getMonsterIndex(id);
+         if(!_monsterList[index])
          {
             return;
          }
-         var _loc2_:CampGameSmallEnemy = _monsterList[_loc4_] as CampGameSmallEnemy;
-         _monsterList.splice(_loc4_,1);
-         deleAntoObjList(_loc2_);
-         _loc2_.dispose();
-         _loc2_.dispose();
-         _loc2_ = null;
+         var enemy:CampGameSmallEnemy = _monsterList[index] as CampGameSmallEnemy;
+         _monsterList.splice(index,1);
+         deleAntoObjList(enemy);
+         enemy.dispose();
+         enemy.dispose();
+         enemy = null;
       }
       
-      public function getMonsterIndex(param1:int) : int
+      public function getMonsterIndex(id:int) : int
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = _monsterList.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var i:int = 0;
+         var len:int = _monsterList.length;
+         for(i = 0; i < len; )
          {
-            if(param1 == CampGameSmallEnemy(_monsterList[_loc3_]).info.LivingID)
+            if(id == CampGameSmallEnemy(_monsterList[i]).info.LivingID)
             {
-               return _loc3_;
+               return i;
             }
-            _loc3_++;
+            i++;
          }
          return 0;
       }
       
-      private function __onPlayerClickHander(param1:MouseEvent) : void
+      private function __onPlayerClickHander(e:MouseEvent) : void
       {
          if(!_mainRole || _mainRole.playerInfo.stateType == 4)
          {
             return;
          }
          _targetRole = null;
-         var _loc2_:Point = new Point(mouseX,mouseY);
+         var targetPoint:Point = new Point(mouseX,mouseY);
          if(getTimer() - _lastClick > _clickInterval)
          {
             _lastClick = getTimer();
-            if(!_sceneScene.hit(_loc2_))
+            if(!_sceneScene.hit(targetPoint))
             {
-               _mainRole.walk(_loc2_);
-               _mouseMovie.x = _loc2_.x;
-               _mouseMovie.y = _loc2_.y;
+               _mainRole.walk(targetPoint);
+               _mouseMovie.x = targetPoint.x;
+               _mouseMovie.y = targetPoint.y;
                _mouseMovie.play();
-               SocketManager.Instance.out.CampbattleRoleMove(_mainRole.playerInfo.zoneID,_mainRole.playerInfo.ID,_loc2_);
+               SocketManager.Instance.out.CampbattleRoleMove(_mainRole.playerInfo.zoneID,_mainRole.playerInfo.ID,targetPoint);
             }
          }
       }
       
       protected function initMouseMovie() : void
       {
-         var _loc1_:Class = ClassUtils.uiSourceDomain.getDefinition("asset.campBattle.MouseClickMovie") as Class;
-         _mouseMovie = new _loc1_() as MovieClip;
+         var mvClass:Class = ClassUtils.uiSourceDomain.getDefinition("asset.campBattle.MouseClickMovie") as Class;
+         _mouseMovie = new mvClass() as MovieClip;
          _mouseMovie.mouseChildren = false;
          _mouseMovie.mouseEnabled = false;
          _mouseMovie.stop();
@@ -324,42 +321,42 @@ package campbattle.view
          PlayerManager.Instance.removeEventListener("setselfplayerpos",__onSetSelfPlayerPos);
       }
       
-      public function setCenter(param1:SceneCharacterEvent = null, param2:Boolean = true, param3:Point = null) : void
+      public function setCenter(event:SceneCharacterEvent = null, isReturn:Boolean = true, pos:Point = null) : void
       {
-         var _loc6_:* = NaN;
-         var _loc4_:* = NaN;
-         var _loc5_:* = null;
+         var xf:* = NaN;
+         var yf:* = NaN;
+         var tmpPos:* = null;
          if(_mainRole)
          {
-            _loc5_ = _mainRole.playerPoint;
+            tmpPos = _mainRole.playerPoint;
          }
          else
          {
-            _loc5_ = param3;
+            tmpPos = pos;
          }
-         _loc6_ = Number(-(_loc5_.x - 1000 / 2));
-         _loc4_ = Number(-(_loc5_.y - 600 / 2) + 50);
-         if(_loc6_ > 0)
+         xf = Number(-(tmpPos.x - 1000 / 2));
+         yf = Number(-(tmpPos.y - 600 / 2) + 50);
+         if(xf > 0)
          {
-            _loc6_ = 0;
+            xf = 0;
          }
-         if(_loc6_ < 1000 - MAP_SIZE[0])
+         if(xf < 1000 - MAP_SIZE[0])
          {
-            _loc6_ = Number(1000 - MAP_SIZE[0]);
+            xf = Number(1000 - MAP_SIZE[0]);
          }
-         if(_loc4_ > 0)
+         if(yf > 0)
          {
-            _loc4_ = 0;
+            yf = 0;
          }
-         if(_loc4_ < 600 - MAP_SIZE[1])
+         if(yf < 600 - MAP_SIZE[1])
          {
-            _loc4_ = Number(600 - MAP_SIZE[1]);
+            yf = Number(600 - MAP_SIZE[1]);
          }
-         x = _loc6_;
-         y = _loc4_;
+         x = xf;
+         y = yf;
       }
       
-      private function enterFrameHander(param1:Event) : void
+      private function enterFrameHander(e:Event) : void
       {
          roleDeepthSort();
          if(_mainRole)
@@ -369,87 +366,86 @@ package campbattle.view
          }
       }
       
-      public function checkPonitDistance(param1:Point, param2:Function, param3:int = 0, param4:int = 0) : void
+      public function checkPonitDistance(p:Point, fun:Function, id:int = 0, zoneID:int = 0) : void
       {
-         var _loc7_:* = null;
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
+         var fp:* = null;
+         var dis:int = 0;
+         var desPoint:* = null;
          if(_mainRole)
          {
-            _loc7_ = new Point(_mainRole.x,_mainRole.y);
-            _loc6_ = Math.abs(Point.distance(_loc7_,param1));
-            if(_loc6_ > 100)
+            fp = new Point(_mainRole.x,_mainRole.y);
+            dis = Math.abs(Point.distance(fp,p));
+            if(dis > 100)
             {
-               _loc5_ = getDesPoint(_loc7_,param1,_loc6_);
-               _mouseMovie.x = _loc5_.x;
-               _mouseMovie.y = _loc5_.y;
+               desPoint = getDesPoint(fp,p,dis);
+               _mouseMovie.x = desPoint.x;
+               _mouseMovie.y = desPoint.y;
                _mouseMovie.play();
-               SocketManager.Instance.out.CampbattleRoleMove(_mainRole.playerInfo.zoneID,_mainRole.playerInfo.ID,_loc5_);
-               _mainRole.walk(_loc5_,param2,param3,param4);
+               SocketManager.Instance.out.CampbattleRoleMove(_mainRole.playerInfo.zoneID,_mainRole.playerInfo.ID,desPoint);
+               _mainRole.walk(desPoint,fun,id,zoneID);
             }
-            else if(param3 != 0 && param4 != 0)
+            else if(id != 0 && zoneID != 0)
             {
-               param2(param4,param3);
+               fun(zoneID,id);
             }
-            else if(param3 != 0)
+            else if(id != 0)
             {
-               param2(param3);
+               fun(id);
             }
             else
             {
-               param2();
+               fun();
             }
          }
       }
       
-      private function getDesPoint(param1:Point, param2:Point, param3:int) : Point
+      private function getDesPoint(fp:Point, p:Point, dis:int) : Point
       {
-         var _loc6_:int = param1.x - param2.x < 0?-1:1;
-         var _loc5_:int = param1.y - param2.y < 0?-1:1;
-         var _loc4_:Point = new Point(Math.abs(100 * (param1.x - param2.x) / param3) * _loc6_ + param2.x,Math.abs(100 * (param1.y - param2.y) / param3) * _loc5_ + param2.y);
-         return _loc4_;
+         var xOff:int = fp.x - p.x < 0?-1:1;
+         var yOff:int = fp.y - p.y < 0?-1:1;
+         var desPoint:Point = new Point(Math.abs(100 * (fp.x - p.x) / dis) * xOff + p.x,Math.abs(100 * (fp.y - p.y) / dis) * yOff + p.y);
+         return desPoint;
       }
       
       private function roleDeepthSort() : void
       {
-         var _loc1_:int = 0;
-         var _loc2_:int = 0;
+         var len:int = 0;
+         var i:int = 0;
          if(_antoObjList.length > 1)
          {
-            _loc1_ = _antoObjList.length;
+            len = _antoObjList.length;
             _antoObjList.sortOn("y",16);
-            _loc2_ = 0;
-            while(_loc2_ < _loc1_)
+            for(i = 0; i < len; )
             {
-               _articleLayer.addChild(_antoObjList[_loc2_]);
-               _loc2_++;
+               _articleLayer.addChild(_antoObjList[i]);
+               i++;
             }
          }
       }
       
-      protected function __onAddPlayer(param1:DictionaryEvent) : void
+      protected function __onAddPlayer(event:DictionaryEvent) : void
       {
-         addRoleToMap(param1.data as RoleData);
+         addRoleToMap(event.data as RoleData);
       }
       
-      private function addRoleToMap(param1:RoleData) : void
+      private function addRoleToMap(data:RoleData) : void
       {
-         var _loc2_:* = null;
-         if(!param1)
+         var role:* = null;
+         if(!data)
          {
             return;
          }
-         if(param1.zoneID == PlayerManager.Instance.Self.ZoneID && param1.ID == PlayerManager.Instance.Self.ID)
+         if(data.zoneID == PlayerManager.Instance.Self.ZoneID && data.ID == PlayerManager.Instance.Self.ID)
          {
-            _loc2_ = creatRole(param1,roleCallback);
+            role = creatRole(data,roleCallback);
             var _loc3_:Boolean = false;
-            _loc2_.mouseEnabled = _loc3_;
-            _loc2_.mouseChildren = _loc3_;
+            role.mouseEnabled = _loc3_;
+            role.mouseChildren = _loc3_;
          }
          else
          {
-            _loc2_ = creatRole(param1,otherRoleCallback);
-            _loc2_.mouseEnabled = false;
+            role = creatRole(data,otherRoleCallback);
+            role.mouseEnabled = false;
          }
          if(CampBattleManager.instance.mapID == 0)
          {
@@ -457,27 +453,27 @@ package campbattle.view
          }
       }
       
-      private function creatRole(param1:RoleData, param2:Function) : CampBattlePlayer
+      private function creatRole(roleData:RoleData, fun:Function) : CampBattlePlayer
       {
-         var _loc3_:* = null;
-         switch(int(param1.type) - 1)
+         var role:* = null;
+         switch(int(roleData.type) - 1)
          {
             case 0:
-               _loc3_ = new CampBattlePlayer(param1,param2);
+               role = new CampBattlePlayer(roleData,fun);
                break;
             case 1:
-               _loc3_ = new CampBattleOtherRole(param1,param2);
+               role = new CampBattleOtherRole(roleData,fun);
                break;
             case 2:
-               _loc3_ = new CampBattleMonsterRole(param1,param2);
+               role = new CampBattleMonsterRole(roleData,fun);
          }
-         return _loc3_;
+         return role;
       }
       
-      private function playerActionChange(param1:SceneCharacterEvent) : void
+      private function playerActionChange(evt:SceneCharacterEvent) : void
       {
-         var _loc2_:String = param1.data.toString();
-         if(_loc2_ == "naturalStandFront" || _loc2_ == "naturalStandBack")
+         var type:String = evt.data.toString();
+         if(type == "naturalStandFront" || type == "naturalStandBack")
          {
             if(_mouseMovie)
             {
@@ -486,21 +482,20 @@ package campbattle.view
          }
       }
       
-      public function setRoleState(param1:int, param2:int, param3:int) : void
+      public function setRoleState(zoneID:int, userID:int, stateType:int) : void
       {
-         var _loc6_:int = 0;
-         var _loc4_:* = null;
-         var _loc5_:int = _roleList.length;
-         _loc6_ = 0;
-         while(_loc6_ < _loc5_)
+         var i:int = 0;
+         var role:* = null;
+         var len:int = _roleList.length;
+         for(i = 0; i < len; )
          {
-            _loc4_ = _roleList[_loc6_] as CampBattlePlayer;
-            if(_loc4_.playerInfo.zoneID == param1 && _loc4_.playerInfo.ID == param2)
+            role = _roleList[i] as CampBattlePlayer;
+            if(role.playerInfo.zoneID == zoneID && role.playerInfo.ID == userID)
             {
-               _loc4_.setStateType(param3);
+               role.setStateType(stateType);
                break;
             }
-            _loc6_++;
+            i++;
          }
          if(CampBattleManager.instance.mapID == 0)
          {
@@ -508,64 +503,62 @@ package campbattle.view
          }
       }
       
-      public function setMonsterState(param1:int, param2:int) : void
+      public function setMonsterState(ID:int, stateType:int) : void
       {
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:int = _monsterList.length;
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         var i:int = 0;
+         var enemy:* = null;
+         var len:int = _monsterList.length;
+         for(i = 0; i < len; )
          {
-            _loc3_ = _monsterList[_loc5_] as CampGameSmallEnemy;
-            if(_loc3_.info.LivingID == param1)
+            enemy = _monsterList[i] as CampGameSmallEnemy;
+            if(enemy.info.LivingID == ID)
             {
-               _loc3_.setStateType(param2);
+               enemy.setStateType(stateType);
                break;
             }
-            _loc5_++;
+            i++;
          }
       }
       
-      private function deleAntoObjList(param1:Object) : void
+      private function deleAntoObjList(obj:Object) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = _antoObjList.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var i:int = 0;
+         var len:int = _antoObjList.length;
+         for(i = 0; i < len; )
          {
-            if(param1 is CampBattlePlayer)
+            if(obj is CampBattlePlayer)
             {
-               if(_antoObjList[_loc3_] is CampBattlePlayer)
+               if(_antoObjList[i] is CampBattlePlayer)
                {
-                  if(CampBattlePlayer(param1).playerInfo.zoneID == CampBattlePlayer(_antoObjList[_loc3_]).playerInfo.zoneID && CampBattlePlayer(param1).playerInfo.ID == CampBattlePlayer(_antoObjList[_loc3_]).playerInfo.ID)
+                  if(CampBattlePlayer(obj).playerInfo.zoneID == CampBattlePlayer(_antoObjList[i]).playerInfo.zoneID && CampBattlePlayer(obj).playerInfo.ID == CampBattlePlayer(_antoObjList[i]).playerInfo.ID)
                   {
-                     _antoObjList.splice(_loc3_,1);
+                     _antoObjList.splice(i,1);
                      return;
                   }
                }
             }
-            else if(param1 is CampGameSmallEnemy)
+            else if(obj is CampGameSmallEnemy)
             {
-               if(_antoObjList[_loc3_] is CampGameSmallEnemy)
+               if(_antoObjList[i] is CampGameSmallEnemy)
                {
-                  if(CampGameSmallEnemy(param1).LivingID == CampGameSmallEnemy(_antoObjList[_loc3_]).LivingID && CampGameSmallEnemy(param1).LivingID == CampGameSmallEnemy(_antoObjList[_loc3_]).LivingID)
+                  if(CampGameSmallEnemy(obj).LivingID == CampGameSmallEnemy(_antoObjList[i]).LivingID && CampGameSmallEnemy(obj).LivingID == CampGameSmallEnemy(_antoObjList[i]).LivingID)
                   {
-                     _antoObjList.splice(_loc3_,1);
+                     _antoObjList.splice(i,1);
                      return;
                   }
                }
             }
-            _loc3_++;
+            i++;
          }
       }
       
-      private function roleCallback(param1:CampBattlePlayer, param2:Boolean, param3:int = 1) : void
+      private function roleCallback(role:CampBattlePlayer, isLoadSucceed:Boolean, vFlag:int = 1) : void
       {
-         if(param3 == 0)
+         if(vFlag == 0)
          {
-            if(param1)
+            if(role)
             {
-               _mainRole = param1;
+               _mainRole = role;
                _mainRole.sceneCharacterStateType = "natural";
                _mainRole.update();
                _mainRole.scene = _sceneScene;
@@ -574,7 +567,7 @@ package campbattle.view
                {
                   _articleLayer.addChild(_mainRole);
                   _roleList.push(_mainRole);
-                  _antoObjList.push(param1);
+                  _antoObjList.push(role);
                   setCenter(null,false,_mainRole.playerPoint);
                   return;
                }
@@ -587,56 +580,55 @@ package campbattle.view
          }
       }
       
-      private function otherRoleCallback(param1:CampBattlePlayer, param2:Boolean, param3:int = 1) : void
+      private function otherRoleCallback(role:CampBattlePlayer, isLoadSucceed:Boolean, vFlag:int = 1) : void
       {
-         if(!param1)
+         if(!role)
          {
             return;
          }
-         if(param3 != 0)
+         if(vFlag != 0)
          {
             return;
          }
-         param1.sceneCharacterStateType = "natural";
-         param1.update();
-         param1.scene = _sceneScene;
+         role.sceneCharacterStateType = "natural";
+         role.update();
+         role.scene = _sceneScene;
          var _loc4_:Boolean = false;
-         param1.mouseChildren = _loc4_;
-         param1.mouseEnabled = _loc4_;
-         if(param1.playerInfo.team != CampBattleControl.instance.model.myTeam)
+         role.mouseChildren = _loc4_;
+         role.mouseEnabled = _loc4_;
+         if(role.playerInfo.team != CampBattleControl.instance.model.myTeam)
          {
-            param1.mouseChildren = true;
+            role.mouseChildren = true;
          }
-         _articleLayer.addChild(param1);
-         _roleList.push(param1);
-         _antoObjList.push(param1);
+         _articleLayer.addChild(role);
+         _roleList.push(role);
+         _antoObjList.push(role);
       }
       
-      public function hideRoles(param1:Boolean) : void
+      public function hideRoles(bool:Boolean) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         _flagPlayer = param1;
-         var _loc3_:int = _roleList.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var i:int = 0;
+         var role:* = null;
+         _flagPlayer = bool;
+         var len:int = _roleList.length;
+         for(i = 0; i < len; )
          {
-            _loc2_ = _roleList[_loc4_] as CampBattlePlayer;
-            if(_loc2_.playerInfo.ID != PlayerManager.Instance.Self.ID)
+            role = _roleList[i] as CampBattlePlayer;
+            if(role.playerInfo.ID != PlayerManager.Instance.Self.ID)
             {
-               _loc2_.IsShowPlayer(_flagPlayer);
+               role.IsShowPlayer(_flagPlayer);
             }
-            _loc4_++;
+            i++;
          }
       }
       
-      protected function __onUpdatePlayerStatus(param1:DictionaryEvent) : void
+      protected function __onUpdatePlayerStatus(event:DictionaryEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:String = (param1.data as RoleData).zoneID + "_" + (param1.data as RoleData).ID;
-         if(_playerModel[_loc3_])
+         var player:* = null;
+         var key:String = (event.data as RoleData).zoneID + "_" + (event.data as RoleData).ID;
+         if(_playerModel[key])
          {
-            _loc2_ = _playerModel[_loc3_] as RoleData;
+            player = _playerModel[key] as RoleData;
          }
          if(CampBattleManager.instance.mapID == 0)
          {
@@ -644,11 +636,11 @@ package campbattle.view
          }
       }
       
-      public function getCurrRole(param1:int, param2:int) : CampBattlePlayer
+      public function getCurrRole(zoneID:int, userID:int) : CampBattlePlayer
       {
-         var _loc4_:String = param1 + "_" + param2;
-         var _loc3_:int = getRoleIndex(_loc4_);
-         return CampBattlePlayer(_roleList[_loc3_]);
+         var key:String = zoneID + "_" + userID;
+         var index:int = getRoleIndex(key);
+         return CampBattlePlayer(_roleList[index]);
       }
       
       public function getMainRole() : CampBattlePlayer
@@ -656,81 +648,80 @@ package campbattle.view
          return _mainRole;
       }
       
-      protected function __onRemovePlayer(param1:DictionaryEvent) : void
+      protected function __onRemovePlayer(event:DictionaryEvent) : void
       {
-         var _loc4_:String = (param1.data as RoleData).zoneID + "_" + (param1.data as RoleData).ID;
-         var _loc2_:int = getRoleIndex(_loc4_);
-         var _loc3_:CampBattlePlayer = _roleList[_loc2_] as CampBattlePlayer;
-         _roleList.splice(_loc2_,1);
-         deleAntoObjList(_loc3_);
-         if(_loc3_ == _targetRole)
+         var key:String = (event.data as RoleData).zoneID + "_" + (event.data as RoleData).ID;
+         var index:int = getRoleIndex(key);
+         var player:CampBattlePlayer = _roleList[index] as CampBattlePlayer;
+         _roleList.splice(index,1);
+         deleAntoObjList(player);
+         if(player == _targetRole)
          {
             _targetRole = null;
          }
-         if(_loc3_)
+         if(player)
          {
-            if(_loc3_.parent)
+            if(player.parent)
             {
-               _loc3_.parent.removeChild(_loc3_);
+               player.parent.removeChild(player);
             }
-            _loc3_.dispose();
+            player.dispose();
          }
-         _loc3_ = null;
+         player = null;
       }
       
-      public function roleMoves(param1:int, param2:int, param3:Point) : void
+      public function roleMoves(zoneID:int, userID:int, p:Point) : void
       {
-         var _loc5_:* = null;
+         var role:* = null;
          if(!_roleList)
          {
             return;
          }
-         var _loc6_:String = param1 + "_" + param2;
-         var _loc4_:int = getRoleIndex(_loc6_);
-         if(_roleList[_loc4_])
+         var key:String = zoneID + "_" + userID;
+         var index:int = getRoleIndex(key);
+         if(_roleList[index])
          {
-            _loc5_ = _roleList[_loc4_] as CampBattlePlayer;
-            _loc5_.walk(param3);
+            role = _roleList[index] as CampBattlePlayer;
+            role.walk(p);
          }
       }
       
-      private function getRoleIndex(param1:String) : int
+      private function getRoleIndex(id:String) : int
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:int = _roleList.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var i:int = 0;
+         var role:* = null;
+         var len:int = _roleList.length;
+         for(i = 0; i < len; )
          {
-            _loc2_ = _roleList[_loc4_] as CampBattlePlayer;
-            if(param1 == _loc2_.playerInfo.zoneID + "_" + _loc2_.playerInfo.ID)
+            role = _roleList[i] as CampBattlePlayer;
+            if(id == role.playerInfo.zoneID + "_" + role.playerInfo.ID)
             {
-               return _loc4_;
+               return i;
             }
-            _loc4_++;
+            i++;
          }
          return 0;
       }
       
       private function initMap() : void
       {
-         var _loc4_:MovieClip = new (ClassUtils.uiSourceDomain.getDefinition(_mapClassDefinition) as Class)() as MovieClip;
-         var _loc1_:Sprite = _loc4_.getChildByName("articleLayer") as Sprite;
-         var _loc6_:Sprite = _loc4_.getChildByName("mesh") as Sprite;
-         var _loc3_:Sprite = _loc4_.getChildByName("bg") as Sprite;
-         var _loc5_:Sprite = _loc4_.getChildByName("bgSize") as Sprite;
-         var _loc2_:Sprite = _loc4_.getChildByName("decoration") as Sprite;
-         _bgLayer = _loc3_ == null?new Sprite():_loc3_;
-         _articleLayer = _loc1_ == null?new Sprite():_loc1_;
-         _decorationLayer = _loc2_ == null?new Sprite():_loc2_;
+         var mapRes:MovieClip = new (ClassUtils.uiSourceDomain.getDefinition(_mapClassDefinition) as Class)() as MovieClip;
+         var acticle:Sprite = mapRes.getChildByName("articleLayer") as Sprite;
+         var mesh:Sprite = mapRes.getChildByName("mesh") as Sprite;
+         var bg:Sprite = mapRes.getChildByName("bg") as Sprite;
+         var bgSize:Sprite = mapRes.getChildByName("bgSize") as Sprite;
+         var decoration:Sprite = mapRes.getChildByName("decoration") as Sprite;
+         _bgLayer = bg == null?new Sprite():bg;
+         _articleLayer = acticle == null?new Sprite():acticle;
+         _decorationLayer = decoration == null?new Sprite():decoration;
          var _loc7_:Boolean = false;
          this._decorationLayer.mouseEnabled = _loc7_;
          _decorationLayer.mouseChildren = _loc7_;
-         _meshLayer = _loc6_ == null?new Sprite():_loc6_;
+         _meshLayer = mesh == null?new Sprite():mesh;
          _meshLayer.alpha = 0;
          _meshLayer.mouseChildren = false;
          _meshLayer.mouseEnabled = false;
-         MAP_SIZE = [_loc3_.width,_loc3_.height];
+         MAP_SIZE = [bg.width,bg.height];
          addChild(_bgLayer);
          addChild(_articleLayer);
          addChild(_decorationLayer);
@@ -747,26 +738,24 @@ package campbattle.view
       
       private function initBtnList() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = _actItemList.length;
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_)
+         var i:int = 0;
+         var len:int = _actItemList.length;
+         for(i = 0; i < len; )
          {
-            _articleLayer.addChild(_actItemList[_loc2_]);
-            _loc2_++;
+            _articleLayer.addChild(_actItemList[i]);
+            i++;
          }
       }
       
       private function clearBtnList() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = _actItemList.length;
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_)
+         var i:int = 0;
+         var len:int = _actItemList.length;
+         for(i = 0; i < len; )
          {
-            ObjectUtils.disposeObject(_actItemList[_loc2_]);
-            _actItemList[_loc2_] = null;
-            _loc2_++;
+            ObjectUtils.disposeObject(_actItemList[i]);
+            _actItemList[i] = null;
+            i++;
          }
       }
       
@@ -778,66 +767,63 @@ package campbattle.view
       
       private function clearRoleList() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:int = _roleList.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var i:int = 0;
+         var role:* = null;
+         var len:int = _roleList.length;
+         for(i = 0; i < len; )
          {
-            _loc1_ = _roleList[_loc3_];
-            _loc1_.dispose();
-            _loc1_ = null;
-            _loc3_++;
+            role = _roleList[i];
+            role.dispose();
+            role = null;
+            i++;
          }
          _roleList = [];
       }
       
       private function clearMonstList() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:int = _monsterList.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var i:int = 0;
+         var em:* = null;
+         var len:int = _monsterList.length;
+         for(i = 0; i < len; )
          {
-            _loc1_ = _monsterList[_loc3_];
-            _loc1_.dispose();
-            _loc1_ = null;
-            _loc3_++;
+            em = _monsterList[i];
+            em.dispose();
+            em = null;
+            i++;
          }
          _monsterList.length = 0;
       }
       
       private function clearAntoObjList() : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
-         var _loc3_:int = _antoObjList.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var i:int = 0;
+         var em:* = null;
+         var role:* = null;
+         var len:int = _antoObjList.length;
+         for(i = 0; i < len; )
          {
-            if(_antoObjList[_loc4_] is CampGameSmallEnemy)
+            if(_antoObjList[i] is CampGameSmallEnemy)
             {
-               _loc2_ = _antoObjList[_loc4_] as CampGameSmallEnemy;
-               _loc2_.dispose();
-               _loc2_ = null;
+               em = _antoObjList[i] as CampGameSmallEnemy;
+               em.dispose();
+               em = null;
             }
-            else if(_antoObjList[_loc4_] is CampBattlePlayer)
+            else if(_antoObjList[i] is CampBattlePlayer)
             {
-               _loc1_ = _antoObjList[_loc4_] as CampBattlePlayer;
-               _loc1_.dispose();
-               _loc1_ = null;
+               role = _antoObjList[i] as CampBattlePlayer;
+               role.dispose();
+               role = null;
             }
-            _loc4_++;
+            i++;
          }
          _antoObjList.length = 0;
       }
       
       public function dispose() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var disp:* = null;
+         var mc:* = null;
          if(_smallMap)
          {
             removeChild(_smallMap);
@@ -865,9 +851,9 @@ package campbattle.view
          {
             if(_bgLayer.getChildAt(0) is DisplayObject)
             {
-               _loc2_ = _bgLayer.getChildAt(0) as DisplayObject;
-               _bgLayer.removeChild(_loc2_);
-               _loc2_ = null;
+               disp = _bgLayer.getChildAt(0) as DisplayObject;
+               _bgLayer.removeChild(disp);
+               disp = null;
             }
             else
             {
@@ -882,14 +868,14 @@ package campbattle.view
          {
             if(_decorationLayer.getChildAt(0) is MovieClip)
             {
-               _loc1_ = _decorationLayer.getChildAt(0) as MovieClip;
-               _loc1_.stop();
-               while(_loc1_.numChildren)
+               mc = _decorationLayer.getChildAt(0) as MovieClip;
+               mc.stop();
+               while(mc.numChildren)
                {
-                  ObjectUtils.disposeObject(_loc1_.getChildAt(0));
+                  ObjectUtils.disposeObject(mc.getChildAt(0));
                }
-               ObjectUtils.disposeObject(_loc1_);
-               _loc1_ = null;
+               ObjectUtils.disposeObject(mc);
+               mc = null;
             }
             else
             {

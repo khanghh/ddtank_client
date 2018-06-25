@@ -46,12 +46,12 @@ package gemstone.items
       
       private var _onChangeBG:Function;
       
-      public function GemstoneContent(param1:int, param2:Point)
+      public function GemstoneContent($i:int, $p:Point)
       {
          super();
-         x = Math.round(param2.x + Math.cos((_setupAngle * param1 + _initAngle) / 180 * 3.14159265358979) * _radius);
-         y = Math.round(param2.y - Math.sin((_setupAngle * param1 + _initAngle) / 180 * 3.14159265358979) * _radius);
-         angle = _setupAngle * param1 + _initAngle;
+         x = Math.round($p.x + Math.cos((_setupAngle * $i + _initAngle) / 180 * 3.14159265358979) * _radius);
+         y = Math.round($p.y - Math.sin((_setupAngle * $i + _initAngle) / 180 * 3.14159265358979) * _radius);
+         angle = _setupAngle * $i + _initAngle;
          _bgBlue = ComponentFactory.Instance.creat("gemstone.stoneContent.Blue");
          _bgBlue.x = -_bgBlue.width / 2;
          _bgBlue.y = -_bgBlue.height / 2;
@@ -70,9 +70,9 @@ package gemstone.items
          tipDirctions = "2,7";
       }
       
-      public function changeBG(param1:Function) : void
+      public function changeBG(callBack:Function) : void
       {
-         callBack = param1;
+         callBack = callBack;
          changeColor = function():void
          {
             _bgBlue.parent && removeChild(_bgBlue);
@@ -120,14 +120,14 @@ package gemstone.items
          }
       }
       
-      public function loadSikn(param1:String) : void
+      public function loadSikn(str:String) : void
       {
          if(_content)
          {
             ObjectUtils.disposeObject(_content);
             _content = null;
          }
-         _content = ComponentFactory.Instance.creatBitmap(param1);
+         _content = ComponentFactory.Instance.creatBitmap(str);
          _content.smoothing = true;
          _content.x = -78;
          _content.y = -79;
@@ -146,42 +146,42 @@ package gemstone.items
       
       public function updataTip() : void
       {
-         var _loc2_:GemstoneTipVO = new GemstoneTipVO();
-         _loc2_.level = info.level;
-         var _loc1_:int = info.level < 6?info.level + 1:0;
+         var tempData:GemstoneTipVO = new GemstoneTipVO();
+         tempData.level = info.level;
+         var nextLevel:int = info.level < 6?info.level + 1:0;
          switch(int(info.fightSpiritId) - 100001)
          {
             case 0:
-               _loc2_.gemstoneType = 1;
-               _loc2_.increase = GemstoneManager.Instance.redInfoList[info.level].attack;
-               _loc2_.nextIncrease = GemstoneManager.Instance.redInfoList[_loc1_].attack;
+               tempData.gemstoneType = 1;
+               tempData.increase = GemstoneManager.Instance.redInfoList[info.level].attack;
+               tempData.nextIncrease = GemstoneManager.Instance.redInfoList[nextLevel].attack;
                break;
             case 1:
-               _loc2_.gemstoneType = 2;
-               _loc2_.increase = GemstoneManager.Instance.bluInfoList[info.level].defence;
-               _loc2_.nextIncrease = GemstoneManager.Instance.bluInfoList[_loc1_].defence;
+               tempData.gemstoneType = 2;
+               tempData.increase = GemstoneManager.Instance.bluInfoList[info.level].defence;
+               tempData.nextIncrease = GemstoneManager.Instance.bluInfoList[nextLevel].defence;
                break;
             case 2:
-               _loc2_.gemstoneType = 3;
-               _loc2_.increase = GemstoneManager.Instance.greInfoList[info.level].agility;
-               _loc2_.nextIncrease = GemstoneManager.Instance.greInfoList[_loc1_].agility;
+               tempData.gemstoneType = 3;
+               tempData.increase = GemstoneManager.Instance.greInfoList[info.level].agility;
+               tempData.nextIncrease = GemstoneManager.Instance.greInfoList[nextLevel].agility;
                break;
             case 3:
-               _loc2_.gemstoneType = 4;
-               _loc2_.increase = GemstoneManager.Instance.yelInfoList[info.level].luck;
-               _loc2_.nextIncrease = GemstoneManager.Instance.yelInfoList[_loc1_].luck;
+               tempData.gemstoneType = 4;
+               tempData.increase = GemstoneManager.Instance.yelInfoList[info.level].luck;
+               tempData.nextIncrease = GemstoneManager.Instance.yelInfoList[nextLevel].luck;
                break;
             case 4:
-               _loc2_.gemstoneType = 5;
-               _loc2_.increase = GemstoneManager.Instance.purpleInfoList[info.level].blood;
-               _loc2_.nextIncrease = GemstoneManager.Instance.purpleInfoList[_loc1_].blood;
+               tempData.gemstoneType = 5;
+               tempData.increase = GemstoneManager.Instance.purpleInfoList[info.level].blood;
+               tempData.nextIncrease = GemstoneManager.Instance.purpleInfoList[nextLevel].blood;
          }
-         tipData = _loc2_;
+         tipData = tempData;
       }
       
-      public function selAlphe(param1:Number) : void
+      public function selAlphe(i:Number) : void
       {
-         _content.alpha = param1;
+         _content.alpha = i;
       }
       
       override public function dispose() : void

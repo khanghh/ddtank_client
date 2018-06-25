@@ -22,101 +22,97 @@ package store.data
          super();
       }
       
-      public static function setup(param1:StoreEquipExpericenceAnalyze) : void
+      public static function setup(analyzer:StoreEquipExpericenceAnalyze) : void
       {
-         expericence = param1.expericence;
-         MAX_LEVEL = param1.expericence.length;
-         necklaceStrengthExpList = param1.necklaceStrengthExpList;
-         necklaceStrengthPlusList = param1.necklaceStrengthPlusList;
+         expericence = analyzer.expericence;
+         MAX_LEVEL = analyzer.expericence.length;
+         necklaceStrengthExpList = analyzer.necklaceStrengthExpList;
+         necklaceStrengthPlusList = analyzer.necklaceStrengthPlusList;
       }
       
-      public static function getNecklaceStrengthPlus(param1:int) : int
+      public static function getNecklaceStrengthPlus(level:int) : int
       {
-         return necklaceStrengthPlusList[param1];
+         return necklaceStrengthPlusList[level];
       }
       
-      public static function getExpPercent(param1:int, param2:int) : Number
+      public static function getExpPercent(level:int, gp:int) : Number
       {
-         if(expericence.hasOwnProperty(param1))
+         if(expericence.hasOwnProperty(level))
          {
-            return Math.floor(param2 / expericence[param1 + 1] * 10000) / 100;
+            return Math.floor(gp / expericence[level + 1] * 10000) / 100;
          }
          return 0;
       }
       
-      public static function getExpMax(param1:int) : int
+      public static function getExpMax(maxExp:int) : int
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < expericence.length)
+         var i:int = 0;
+         for(i = 0; i < expericence.length; )
          {
-            if(expericence[_loc2_] > param1)
+            if(expericence[i] > maxExp)
             {
-               return expericence[_loc2_];
+               return expericence[i];
             }
-            _loc2_++;
+            i++;
          }
-         return expericence[_loc2_];
+         return expericence[i];
       }
       
-      public static function getLevelByGP(param1:int) : int
+      public static function getLevelByGP(gp:int) : int
       {
-         var _loc2_:int = 0;
-         _loc2_ = MAX_LEVEL - 1;
-         while(_loc2_ > -1)
+         var i:int = 0;
+         for(i = MAX_LEVEL - 1; i > -1; )
          {
-            if(expericence[_loc2_] <= param1)
+            if(expericence[i] <= gp)
             {
-               return _loc2_ + 1;
+               return i + 1;
             }
-            _loc2_--;
+            i--;
          }
          return 1;
       }
       
-      public static function getNecklaceLevelByGP(param1:int) : int
+      public static function getNecklaceLevelByGP(gp:int) : int
       {
-         var _loc2_:int = 0;
-         _loc2_ = NECKLACE_MAX_LEVEL;
-         while(_loc2_ > -1)
+         var i:int = 0;
+         for(i = NECKLACE_MAX_LEVEL; i > -1; )
          {
-            if(necklaceStrengthExpList.list[_loc2_] <= param1)
+            if(necklaceStrengthExpList.list[i] <= gp)
             {
-               return _loc2_;
+               return i;
             }
-            _loc2_--;
+            i--;
          }
          return 1;
       }
       
-      public static function getNecklaceExpMax(param1:int) : int
+      public static function getNecklaceExpMax(maxExp:int) : int
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < expericence.length)
+         var i:int = 0;
+         for(i = 0; i < expericence.length; )
          {
-            if(necklaceStrengthExpList.list[_loc2_] > param1)
+            if(necklaceStrengthExpList.list[i] > maxExp)
             {
-               return necklaceStrengthExpList.list[_loc2_];
+               return necklaceStrengthExpList.list[i];
             }
-            _loc2_++;
+            i++;
          }
-         return necklaceStrengthExpList.list[_loc2_];
+         return necklaceStrengthExpList.list[i];
       }
       
-      public static function getNecklaceCurrentlevelExp(param1:int) : int
+      public static function getNecklaceCurrentlevelExp(maxExp:int) : int
       {
-         var _loc2_:int = getNecklaceLevelByGP(param1);
-         return param1 - necklaceStrengthExpList[_loc2_];
+         var currentlevel:int = getNecklaceLevelByGP(maxExp);
+         return maxExp - necklaceStrengthExpList[currentlevel];
       }
       
-      public static function getNecklaceCurrentlevelMaxExp(param1:int) : int
+      public static function getNecklaceCurrentlevelMaxExp(level:int) : int
       {
-         if(param1 < NECKLACE_MAX_LEVEL)
+         if(level < NECKLACE_MAX_LEVEL)
          {
-            return necklaceStrengthExpList[param1 + 1] - necklaceStrengthExpList[param1];
+            return necklaceStrengthExpList[level + 1] - necklaceStrengthExpList[level];
          }
-         return necklaceStrengthExpList[param1] - necklaceStrengthExpList[param1 - 1];
+         return necklaceStrengthExpList[level] - necklaceStrengthExpList[level - 1];
       }
    }
 }

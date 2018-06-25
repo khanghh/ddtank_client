@@ -37,13 +37,13 @@ package moneyTree
       public function setup() : void
       {
          _manager = MoneyTreeManager.getInstance();
-         var _loc1_:Array = ["mt_show_main_frame","mt_hide_main_frame","mt_update_info","mt_update_remain","mt_reset_friends_list","mt_pick_movie","mt_speedup_suc","mt_set_focus"];
-         addEvents(_loc1_,_manager);
+         var list:Array = ["mt_show_main_frame","mt_hide_main_frame","mt_update_info","mt_update_remain","mt_reset_friends_list","mt_pick_movie","mt_speedup_suc","mt_set_focus"];
+         addEvents(list,_manager);
       }
       
-      override protected function eventsHandler(param1:CEvent) : void
+      override protected function eventsHandler(e:CEvent) : void
       {
-         var _loc2_:* = param1.type;
+         var _loc2_:* = e.type;
          if("mt_show_main_frame" !== _loc2_)
          {
             if("mt_hide_main_frame" !== _loc2_)
@@ -70,7 +70,7 @@ package moneyTree
                         }
                         else
                         {
-                           onPick(int(param1.data));
+                           onPick(int(e.data));
                         }
                      }
                      else
@@ -104,9 +104,9 @@ package moneyTree
          _frame.playFly();
       }
       
-      private function onPick(param1:int) : void
+      private function onPick(index:int) : void
       {
-         _frame.pick(param1);
+         _frame.pick(index);
       }
       
       private function resetFriendList() : void

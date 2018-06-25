@@ -31,9 +31,9 @@ package magicStone.components
       
       protected var _nameTxt:FilterFrameText;
       
-      public function MgStoneCell(param1:int = 0, param2:ItemTemplateInfo = null, param3:Boolean = true, param4:DisplayObject = null)
+      public function MgStoneCell(index:int = 0, info:ItemTemplateInfo = null, showLoading:Boolean = true, bg:DisplayObject = null)
       {
-         super(param1,param2,param3,param4);
+         super(index,info,showLoading,bg);
          _picPos = new Point(2,0);
          initEvents();
       }
@@ -52,20 +52,20 @@ package magicStone.components
          DoubleClickManager.Instance.disableDoubleClick(this);
       }
       
-      override protected function onMouseOver(param1:MouseEvent) : void
+      override protected function onMouseOver(evt:MouseEvent) : void
       {
       }
       
-      override protected function onMouseClick(param1:MouseEvent) : void
+      override protected function onMouseClick(evt:MouseEvent) : void
       {
       }
       
-      protected function onClick(param1:InteractiveEvent) : void
+      protected function onClick(evt:InteractiveEvent) : void
       {
          dispatchEvent(new CellEvent("itemclick",this));
       }
       
-      protected function onDoubleClick(param1:InteractiveEvent) : void
+      protected function onDoubleClick(evt:InteractiveEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(info)
@@ -95,41 +95,41 @@ package magicStone.components
          }
       }
       
-      override public function dragDrop(param1:DragEffect) : void
+      override public function dragDrop(effect:DragEffect) : void
       {
-         var _loc2_:* = null;
-         if(param1.data is InventoryItemInfo)
+         var info:* = null;
+         if(effect.data is InventoryItemInfo)
          {
-            _loc2_ = param1.data as InventoryItemInfo;
-            if(param1.source is MgStoneCell)
+            info = effect.data as InventoryItemInfo;
+            if(effect.source is MgStoneCell)
             {
-               SocketManager.Instance.out.moveMagicStone(_loc2_.Place,_place);
+               SocketManager.Instance.out.moveMagicStone(info.Place,_place);
                DragManager.acceptDrag(this);
                return;
             }
          }
-         else if(param1.source is MgStoneLockBtn)
+         else if(effect.source is MgStoneLockBtn)
          {
             DragManager.acceptDrag(this);
          }
-         else if(param1.source is MgStoneFeedBtn)
+         else if(effect.source is MgStoneFeedBtn)
          {
             DragManager.acceptDrag(this);
          }
       }
       
-      override public function dragStop(param1:DragEffect) : void
+      override public function dragStop(effect:DragEffect) : void
       {
          SoundManager.instance.play("008");
          dispatchEvent(new CellEvent("dragStop",null,true));
-         if(param1.action == "move")
+         if(effect.action == "move")
          {
-            if(!param1.target)
+            if(!effect.target)
             {
-               param1.action = "none";
-               if(!(param1.target is MgStoneCell))
+               effect.action = "none";
+               if(!(effect.target is MgStoneCell))
                {
-                  if(!param1.target)
+                  if(!effect.target)
                   {
                      MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("magicStone.CanntDestory"));
                   }
@@ -141,7 +141,7 @@ package magicStone.components
             }
          }
          dragShowPicTxt();
-         super.dragStop(param1);
+         super.dragStop(effect);
       }
       
       private function dragHidePicTxt() : void
@@ -189,7 +189,7 @@ package magicStone.components
          }
       }
       
-      override public function set info(param1:ItemTemplateInfo) : void
+      override public function set info(value:ItemTemplateInfo) : void
       {
          if(_info)
          {
@@ -201,8 +201,8 @@ package magicStone.components
                _nameTxt.visible = false;
             }
          }
-         .super.info = param1;
-         if(param1)
+         .super.info = value;
+         if(value)
          {
             if(!_nameTxt)
             {
@@ -210,7 +210,7 @@ package magicStone.components
                _nameTxt.mouseEnabled = false;
                addChild(_nameTxt);
             }
-            _nameTxt.text = param1.Name.substr(0,2);
+            _nameTxt.text = value.Name.substr(0,2);
             _nameTxt.visible = true;
             setChildIndex(_nameTxt,numChildren - 1);
             if(itemInfo && itemInfo.goodsLock)

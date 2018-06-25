@@ -15,38 +15,38 @@ package email.view
       
       override protected function update() : void
       {
-         var _loc1_:* = _info.getAnnexByIndex(index);
-         if(_loc1_ && _loc1_ is String)
+         var annex:* = _info.getAnnexByIndex(index);
+         if(annex && annex is String)
          {
             _cell.visible = false;
             centerMC.visible = true;
             mouseEnabled = true;
-            if(_loc1_ == "gold")
+            if(annex == "gold")
             {
                centerMC.setFrame(3);
                countTxt.text = String(_info.Gold);
             }
-            else if(_loc1_ == "money")
+            else if(annex == "money")
             {
                centerMC.setFrame(2);
                countTxt.text = String(_info.Money);
             }
-            else if(_loc1_ == "bindMoney")
+            else if(annex == "bindMoney")
             {
                centerMC.setFrame(7);
                countTxt.text = String(_info.BindMoney);
             }
-            else if(_loc1_ == "medal")
+            else if(annex == "medal")
             {
                centerMC.setFrame(6);
                countTxt.text = String(_info.Medal);
             }
          }
-         else if(_loc1_)
+         else if(annex)
          {
             _cell.visible = true;
             centerMC.visible = false;
-            _cell.info = _loc1_ as InventoryItemInfo;
+            _cell.info = annex as InventoryItemInfo;
             mouseEnabled = true;
          }
          else

@@ -70,7 +70,7 @@ package happyLittleGame.bombshellGame.item
          addEventListener("mouseOut",__outHandler);
       }
       
-      private function __overHandler(param1:MouseEvent) : void
+      private function __overHandler(e:MouseEvent) : void
       {
          if(_info)
          {
@@ -79,7 +79,7 @@ package happyLittleGame.bombshellGame.item
          }
       }
       
-      private function __outHandler(param1:MouseEvent) : void
+      private function __outHandler(e:MouseEvent) : void
       {
          if(_info)
          {
@@ -94,9 +94,9 @@ package happyLittleGame.bombshellGame.item
          removeEventListener("mouseOut",__outHandler);
       }
       
-      public function setRank(param1:int) : void
+      public function setRank(value:int) : void
       {
-         _rank = param1;
+         _rank = value;
          _ranking.text = "" + _rank;
          switch(int(_rank) - 1)
          {
@@ -138,9 +138,9 @@ package happyLittleGame.bombshellGame.item
          }
       }
       
-      public function set Info(param1:BombRankInfo) : void
+      public function set Info(info:BombRankInfo) : void
       {
-         _info = param1;
+         _info = info;
          setRank(_info.rank);
          _nameDis = _info.nameDis;
          _tipDis.text = _info.regDis + "-" + _info.nameDis;

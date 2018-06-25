@@ -12,9 +12,9 @@ package ddt.view.sceneCharacter
          _dataSet = new Vector.<SceneCharacterItem>();
       }
       
-      public function push(param1:SceneCharacterItem) : void
+      public function push(sceneCharacterItem:SceneCharacterItem) : void
       {
-         _dataSet.push(param1);
+         _dataSet.push(sceneCharacterItem);
       }
       
       public function get length() : uint
@@ -27,13 +27,13 @@ package ddt.view.sceneCharacter
          return _dataSet.sort(sortOn);
       }
       
-      private function sortOn(param1:SceneCharacterItem, param2:SceneCharacterItem) : Number
+      private function sortOn(a:SceneCharacterItem, b:SceneCharacterItem) : Number
       {
-         if(param1.sortOrder < param2.sortOrder)
+         if(a.sortOrder < b.sortOrder)
          {
             return -1;
          }
-         if(param1.sortOrder > param2.sortOrder)
+         if(a.sortOrder > b.sortOrder)
          {
             return 1;
          }

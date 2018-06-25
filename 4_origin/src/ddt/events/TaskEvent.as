@@ -22,11 +22,11 @@ package ddt.events
       
       private var _data:QuestDataInfo;
       
-      public function TaskEvent(param1:String, param2:QuestInfo, param3:QuestDataInfo)
+      public function TaskEvent(type:String, info:QuestInfo, data:QuestDataInfo)
       {
-         _info = param2;
-         _data = param3;
-         super(param1,false,false);
+         _info = info;
+         _data = data;
+         super(type,false,false);
       }
       
       public function get info() : QuestInfo

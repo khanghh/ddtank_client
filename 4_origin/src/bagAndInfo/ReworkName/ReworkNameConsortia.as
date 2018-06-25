@@ -38,45 +38,45 @@ package bagAndInfo.ReworkName
          addToContent(_nicknameInput);
       }
       
-      override protected function __onInputChange(param1:Event) : void
+      override protected function __onInputChange(evt:Event) : void
       {
-         super.__onInputChange(param1);
+         super.__onInputChange(evt);
          StringHelper.checkTextFieldLength(_nicknameInput,12);
       }
       
       override protected function nameInputCheck() : Boolean
       {
-         var _loc1_:* = null;
+         var alert:* = null;
          if(_nicknameInput.text != "")
          {
             if(FilterWordManager.isGotForbiddenWords(_nicknameInput.text,"name"))
             {
-               _loc1_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.RenameFrame.Consortia.FailWord"),LanguageMgr.GetTranslation("ok"),"",false,false,false,2);
-               _loc1_.addEventListener("response",__onAlertResponse);
+               alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.RenameFrame.Consortia.FailWord"),LanguageMgr.GetTranslation("ok"),"",false,false,false,2);
+               alert.addEventListener("response",__onAlertResponse);
                return false;
             }
             if(FilterWordManager.IsNullorEmpty(_nicknameInput.text))
             {
-               _loc1_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.RenameFrame.Consortia.space"),LanguageMgr.GetTranslation("ok"),"",false,false,false,2);
-               _loc1_.addEventListener("response",__onAlertResponse);
+               alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.RenameFrame.Consortia.space"),LanguageMgr.GetTranslation("ok"),"",false,false,false,2);
+               alert.addEventListener("response",__onAlertResponse);
                return false;
             }
             if(FilterWordManager.containUnableChar(_nicknameInput.text))
             {
-               _loc1_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.RenameFrame.Consortia.string"),LanguageMgr.GetTranslation("ok"),"",false,false,false,2);
-               _loc1_.addEventListener("response",__onAlertResponse);
+               alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.RenameFrame.Consortia.string"),LanguageMgr.GetTranslation("ok"),"",false,false,false,2);
+               alert.addEventListener("response",__onAlertResponse);
                return false;
             }
             return true;
          }
-         _loc1_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.RenameFrame.Consortia.input"),LanguageMgr.GetTranslation("ok"),"",false,false,false,2);
-         _loc1_.addEventListener("response",__onAlertResponse);
+         alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.RenameFrame.Consortia.input"),LanguageMgr.GetTranslation("ok"),"",false,false,false,2);
+         alert.addEventListener("response",__onAlertResponse);
          return false;
       }
       
-      override protected function setCheckTxt(param1:String) : void
+      override protected function setCheckTxt(m:String) : void
       {
-         if(param1 == LanguageMgr.GetTranslation("tank.view.ConsortiaReworkNameView.consortiaNameAlert4"))
+         if(m == LanguageMgr.GetTranslation("tank.view.ConsortiaReworkNameView.consortiaNameAlert4"))
          {
             state = "aviable";
             _isCanRework = true;
@@ -85,19 +85,19 @@ package bagAndInfo.ReworkName
          {
             state = "unaviable";
          }
-         _resultField.text = param1;
+         _resultField.text = m;
       }
       
-      override protected function submitCheckCallBack(param1:ReworkNameAnalyzer) : void
+      override protected function submitCheckCallBack(analyzer:ReworkNameAnalyzer) : void
       {
-         var _loc3_:* = null;
+         var newName:* = null;
          complete = true;
-         var _loc2_:XML = param1.result;
-         setCheckTxt(_loc2_.@message);
+         var result:XML = analyzer.result;
+         setCheckTxt(result.@message);
          if(nameInputCheck() && _isCanRework)
          {
-            _loc3_ = _nicknameInput.text;
-            SocketManager.Instance.out.sendUseConsortiaReworkName(PlayerManager.Instance.Self.ConsortiaID,_bagType,_place,_loc3_);
+            newName = _nicknameInput.text;
+            SocketManager.Instance.out.sendUseConsortiaReworkName(PlayerManager.Instance.Self.ConsortiaID,_bagType,_place,newName);
             reworkNameComplete();
          }
       }

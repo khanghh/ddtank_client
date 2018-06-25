@@ -51,9 +51,9 @@ package ddt.view.common.church
          return _useBugle;
       }
       
-      public function set useBugle(param1:Boolean) : void
+      public function set useBugle(value:Boolean) : void
       {
-         _useBugle = param1;
+         _useBugle = value;
       }
       
       public function get proposeStr() : String
@@ -61,9 +61,9 @@ package ddt.view.common.church
          return _proposeStr;
       }
       
-      public function set proposeStr(param1:String) : void
+      public function set proposeStr(value:String) : void
       {
-         _proposeStr = param1;
+         _proposeStr = value;
       }
       
       public function get spouseID() : int
@@ -71,9 +71,9 @@ package ddt.view.common.church
          return _spouseID;
       }
       
-      public function set spouseID(param1:int) : void
+      public function set spouseID(value:int) : void
       {
-         _spouseID = param1;
+         _spouseID = value;
       }
       
       private function initialize() : void
@@ -116,9 +116,9 @@ package ddt.view.common.church
          dispose();
       }
       
-      private function onFrameResponse(param1:FrameEvent) : void
+      private function onFrameResponse(evt:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:

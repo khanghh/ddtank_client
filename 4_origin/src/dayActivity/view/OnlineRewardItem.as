@@ -26,10 +26,10 @@ package dayActivity.view
       
       private var _model:OnlineRewardModel;
       
-      public function OnlineRewardItem(param1:int)
+      public function OnlineRewardItem(index:int)
       {
          super();
-         _index = param1;
+         _index = index;
          _model = DayActivityManager.Instance.onlineRewardModel;
          initView();
       }
@@ -45,14 +45,14 @@ package dayActivity.view
       
       public function update() : void
       {
-         var _loc1_:Object = _model.boxConfigArr[_index];
-         if(_loc1_["boxId"] <= _model.hasGetBoxId)
+         var boxConfig:Object = _model.boxConfigArr[_index];
+         if(boxConfig["boxId"] <= _model.hasGetBoxId)
          {
-            _nameTf.text = _loc1_["boxName"];
+            _nameTf.text = boxConfig["boxName"];
             _nameTf.textFormatStyle = "day.activity.onlineReward.nameTf.format1";
             _getFlag.visible = true;
          }
-         else if(_loc1_["sec"] < _model.onlineSec)
+         else if(boxConfig["sec"] < _model.onlineSec)
          {
             _nameTf.text = LanguageMgr.GetTranslation("ddt.Dayactivity.onlineReward.canGet");
             _nameTf.textFormatStyle = "day.activity.onlineReward.nameTf.format2";
@@ -60,7 +60,7 @@ package dayActivity.view
          }
          else
          {
-            _nameTf.text = LanguageMgr.GetTranslation("ddt.Dayactivity.onlineReward.getCon",int(_loc1_["sec"] / 60));
+            _nameTf.text = LanguageMgr.GetTranslation("ddt.Dayactivity.onlineReward.getCon",int(boxConfig["sec"] / 60));
             _nameTf.textFormatStyle = "day.activity.onlineReward.nameTf.format3";
             _getFlag.visible = false;
          }

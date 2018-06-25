@@ -1,11 +1,2 @@
-package gameStarling.animations
-{
-   import starlingPhy.object.PhysicalObj3D;
-   
-   public class LaserFocusAnimation extends PhysicalObjFocusAnimation
-   {
-       
-      
-      public function LaserFocusAnimation(param1:PhysicalObj3D, param2:int = 100, param3:int = 0){super(null,null,null);}
-   }
-}
+package gameStarling.animations{   import starlingPhy.object.PhysicalObj3D;      public class LaserFocusAnimation extends PhysicalObjFocusAnimation   {                   public function LaserFocusAnimation(phy:PhysicalObj3D, life:int = 100, offsetY:int = 0) { super(null,null,null); }
+   }}

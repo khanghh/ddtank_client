@@ -34,10 +34,10 @@ package farm.viewx
          addEventListener("click",__clickHandler);
       }
       
-      public function setBtnVis(param1:Boolean) : void
+      public function setBtnVis(value:Boolean) : void
       {
-         _bgbmp.enable = param1;
-         if(param1 == false)
+         _bgbmp.enable = value;
+         if(value == false)
          {
             removeEventListener("mouseOver",__overFilter);
             removeEventListener("mouseOut",__outFilter);
@@ -51,19 +51,19 @@ package farm.viewx
          }
       }
       
-      private function __clickHandler(param1:MouseEvent) : void
+      private function __clickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          dragStart();
       }
       
-      protected function __outFilter(param1:MouseEvent) : void
+      protected function __outFilter(event:MouseEvent) : void
       {
          filters = null;
          _bgbmp.x = _bgbmp.x + 15;
       }
       
-      protected function __overFilter(param1:MouseEvent) : void
+      protected function __overFilter(event:MouseEvent) : void
       {
          filters = ComponentFactory.Instance.creatFilters("lightFilter");
          _bgbmp.x = _bgbmp.x - 15;
@@ -79,10 +79,10 @@ package farm.viewx
          return _invInfo;
       }
       
-      public function set itemInfo(param1:InventoryItemInfo) : void
+      public function set itemInfo(value:InventoryItemInfo) : void
       {
-         .super.info = param1;
-         _invInfo = param1;
+         .super.info = value;
+         _invInfo = value;
       }
       
       private function get killCropIcon() : DisplayObject
@@ -101,43 +101,43 @@ package farm.viewx
          }
       }
       
-      override public function dragStop(param1:DragEffect) : void
+      override public function dragStop(effect:DragEffect) : void
       {
-         if(param1.target is FarmFieldBlock)
+         if(effect.target is FarmFieldBlock)
          {
             dragStart();
          }
       }
       
-      override protected function updateSize(param1:Sprite) : void
+      override protected function updateSize(sp:Sprite) : void
       {
-         if(param1)
+         if(sp)
          {
-            param1.width = _contentWidth - 20;
-            param1.height = _contentHeight - 20;
+            sp.width = _contentWidth - 20;
+            sp.height = _contentHeight - 20;
             if(_picPos != null)
             {
-               param1.x = _picPos.x;
+               sp.x = _picPos.x;
             }
             else
             {
-               param1.x = Math.abs(param1.width - _contentWidth) / 2;
+               sp.x = Math.abs(sp.width - _contentWidth) / 2;
             }
             if(_picPos != null)
             {
-               param1.y = _picPos.y;
+               sp.y = _picPos.y;
             }
             else
             {
-               param1.y = Math.abs(param1.height - _contentHeight) / 2;
+               sp.y = Math.abs(sp.height - _contentHeight) / 2;
             }
          }
       }
       
-      override protected function updateSizeII(param1:Sprite) : void
+      override protected function updateSizeII(sp:Sprite) : void
       {
-         param1.x = 13;
-         param1.y = 10;
+         sp.x = 13;
+         sp.y = 10;
       }
       
       override public function dispose() : void

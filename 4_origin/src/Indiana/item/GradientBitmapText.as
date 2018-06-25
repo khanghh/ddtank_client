@@ -28,9 +28,9 @@ package Indiana.item
          addChild(_graidenBmp);
       }
       
-      public function set FilterTxtStyle(param1:String) : void
+      public function set FilterTxtStyle(style:String) : void
       {
-         if(param1 == "")
+         if(style == "")
          {
             return;
          }
@@ -40,26 +40,26 @@ package Indiana.item
             ObjectUtils.disposeObject(_field);
             _field = null;
          }
-         _field = ComponentFactory.Instance.creatComponentByStylename(param1);
+         _field = ComponentFactory.Instance.creatComponentByStylename(style);
          _field.x = 0;
          _field.y = 0;
          addChild(_field);
       }
       
-      public function set FontSize(param1:int) : void
+      public function set FontSize(size:int) : void
       {
-         var _loc2_:* = null;
+         var fromat:* = null;
          if(_field)
          {
-            _loc2_ = _field.defaultTextFormat;
-            _loc2_.size = param1;
-            _field.defaultTextFormat = _loc2_;
+            fromat = _field.defaultTextFormat;
+            fromat.size = size;
+            _field.defaultTextFormat = fromat;
          }
       }
       
-      public function set BitMapStyle(param1:String) : void
+      public function set BitMapStyle(str:String) : void
       {
-         if(param1 == "")
+         if(str == "")
          {
             return;
          }
@@ -68,12 +68,12 @@ package Indiana.item
             _bmp.bitmapData.dispose();
             _bmp = null;
          }
-         _bmp = ComponentFactory.Instance.creatBitmap(param1);
+         _bmp = ComponentFactory.Instance.creatBitmap(str);
       }
       
-      public function setText(param1:String) : void
+      public function setText(s:String) : void
       {
-         _field.text = param1;
+         _field.text = s;
          render();
       }
       

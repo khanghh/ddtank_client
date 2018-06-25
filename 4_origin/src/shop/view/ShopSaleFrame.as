@@ -77,7 +77,7 @@ package shop.view
       
       override protected function init() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          super.init();
          titleText = LanguageMgr.GetTranslation("asset.ddtshop.saleShopTitle");
          _bg = UICreatShortcut.creatAndAdd("asset.ddtshop.SaleBg",_container);
@@ -100,24 +100,23 @@ package shop.view
          PositionUtils.setPos(_cellContainer,"ddtshop.cellContainerPos");
          addToContent(_cellContainer);
          _cellGroup = new SelectedButtonGroup();
-         _loc1_ = 0;
-         while(_loc1_ < 9)
+         for(i = 0; i < 9; )
          {
-            _cellList[_loc1_] = new ShopSaleItemCell();
-            _cellList[_loc1_].x = (_cellList[_loc1_].width + 11) * (int(_loc1_ % 3));
-            _cellList[_loc1_].y = (_cellList[_loc1_].height + 11) * (int(_loc1_ / 3));
-            _cellGroup.addSelectItem(_cellList[_loc1_]);
-            _cellContainer.addChild(_cellList[_loc1_]);
-            _loc1_++;
+            _cellList[i] = new ShopSaleItemCell();
+            _cellList[i].x = (_cellList[i].width + 11) * (int(i % 3));
+            _cellList[i].y = (_cellList[i].height + 11) * (int(i / 3));
+            _cellGroup.addSelectItem(_cellList[i]);
+            _cellContainer.addChild(_cellList[i]);
+            i++;
          }
          initEvent();
          updateSaleGoods();
          setTimeView();
       }
       
-      private function __pageBtnClick(param1:MouseEvent) : void
+      private function __pageBtnClick(e:MouseEvent) : void
       {
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = e.currentTarget;
          if(_firstPage !== _loc2_)
          {
             if(_prePageBtn !== _loc2_)
@@ -162,7 +161,7 @@ package shop.view
       
       public function updateSaleGoods() : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          if(!ShopSaleManager.Instance.isOpen)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("asset.ddtshop.saleActivityFinish"));
@@ -171,19 +170,18 @@ package shop.view
          }
          _maxPage = int(Math.ceil(ShopSaleManager.Instance.shopSaleList.length / 9));
          _currentPageTxt.text = _currentPage + "/" + _maxPage;
-         var _loc1_:Vector.<ShopItemInfo> = ShopManager.Instance.getValidSortedGoodsByList(ShopSaleManager.Instance.shopSaleList,_currentPage,9);
-         _loc2_ = 0;
-         while(_loc2_ < 9)
+         var list:Vector.<ShopItemInfo> = ShopManager.Instance.getValidSortedGoodsByList(ShopSaleManager.Instance.shopSaleList,_currentPage,9);
+         for(i = 0; i < 9; )
          {
-            if(_loc1_.length > _loc2_)
+            if(list.length > i)
             {
-               _cellList[_loc2_].info = _loc1_[_loc2_];
+               _cellList[i].info = list[i];
             }
             else
             {
-               _cellList[_loc2_].info = null;
+               _cellList[i].info = null;
             }
-            _loc2_++;
+            i++;
          }
          SocketManager.Instance.out.sendUpdateGoodsCount();
       }
@@ -204,7 +202,7 @@ package shop.view
          }
       }
       
-      private function __onUpdateTime(param1:TimerEvent) : void
+      private function __onUpdateTime(e:TimerEvent) : void
       {
          _surplusTime = Number(_surplusTime) - 1;
          if(_surplusTime > 0)
@@ -225,62 +223,60 @@ package shop.view
          ShopSaleManager.Instance.removeEnterIcon();
          var _loc3_:int = 0;
          var _loc2_:* = _cellList;
-         for each(var _loc1_ in _cellList)
+         for each(var list in _cellList)
          {
-            _loc1_.limitNum = 0;
+            list.limitNum = 0;
          }
       }
       
-      private function transSecond(param1:Number) : String
+      private function transSecond(num:Number) : String
       {
-         var _loc3_:int = Math.floor(param1 / 3600);
-         if(_loc3_ > 24)
+         var hour:int = Math.floor(num / 3600);
+         if(hour > 24)
          {
-            return String(Math.ceil(_loc3_ / 24)) + LanguageMgr.GetTranslation("day");
+            return String(Math.ceil(hour / 24)) + LanguageMgr.GetTranslation("day");
          }
-         var _loc4_:int = Math.floor((param1 - _loc3_ * 3600) / 60);
-         var _loc2_:int = param1 - _loc3_ * 3600 - _loc4_ * 60;
-         return (String("0" + _loc3_)).substr(-2) + ":" + (String("0" + _loc4_)).substr(-2) + ":" + (String("0" + _loc2_)).substr(-2);
+         var minite:int = Math.floor((num - hour * 3600) / 60);
+         var second:int = num - hour * 3600 - minite * 60;
+         return (String("0" + hour)).substr(-2) + ":" + (String("0" + minite)).substr(-2) + ":" + (String("0" + second)).substr(-2);
       }
       
-      private function __onUpdateMoney(param1:PlayerPropertyEvent) : void
+      private function __onUpdateMoney(e:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["Money"])
+         if(e.changedProperties["Money"])
          {
             _moneyText.text = PlayerManager.Instance.Self.Money.toString();
          }
       }
       
-      private function __updataLimitAreaCountHandler(param1:ShopEvent) : void
+      private function __updataLimitAreaCountHandler(evt:ShopEvent) : void
       {
          updateSaleGoods();
       }
       
-      private function __onUpdateLimitCount(param1:CrazyTankSocketEvent) : void
+      private function __onUpdateLimitCount(e:CrazyTankSocketEvent) : void
       {
-         var _loc6_:int = 0;
-         var _loc5_:int = 0;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc3_:int = _loc4_.readInt();
-         var _loc7_:int = 0;
-         var _loc2_:int = 0;
-         if(_loc3_ > 0)
+         var i:int = 0;
+         var j:int = 0;
+         var pkg:PackageIn = e.pkg;
+         var length:int = pkg.readInt();
+         var tempID:int = 0;
+         var count:int = 0;
+         if(length > 0)
          {
-            _loc6_ = 0;
-            while(_loc6_ < _loc3_)
+            for(i = 0; i < length; )
             {
-               _loc7_ = _loc4_.readInt();
-               _loc2_ = _loc4_.readInt();
-               _loc5_ = 0;
-               while(_loc5_ < 9)
+               tempID = pkg.readInt();
+               count = pkg.readInt();
+               for(j = 0; j < 9; )
                {
-                  if(_cellList[_loc5_].info && _loc7_ == _cellList[_loc5_].info.TemplateID)
+                  if(_cellList[j].info && tempID == _cellList[j].info.TemplateID)
                   {
-                     _cellList[_loc5_].limitNum = _cellList[_loc5_].info.LimitPersonalCount - _loc2_;
+                     _cellList[j].limitNum = _cellList[j].info.LimitPersonalCount - count;
                   }
-                  _loc5_++;
+                  j++;
                }
-               _loc6_++;
+               i++;
             }
          }
       }

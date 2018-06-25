@@ -11,11 +11,11 @@ package ddt.view
          super();
       }
       
-      override public function setValue(param1:*) : void
+      override public function setValue(value:*) : void
       {
-         if(param1)
+         if(value)
          {
-            text = param1.NickName;
+            text = value.NickName;
          }
       }
    }

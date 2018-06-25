@@ -23,6 +23,8 @@ package gameCommon
       
       function livingShowBlood(param1:CrazyTankSocketEvent) : void;
       
+      function boxPhysicalPos(param1:CrazyTankSocketEvent) : void;
+      
       function deleteAnimation(param1:int) : void;
       
       function get messageBtn() : BaseButton;

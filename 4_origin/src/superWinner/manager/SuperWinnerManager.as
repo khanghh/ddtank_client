@@ -36,7 +36,7 @@ package superWinner.manager
       
       private var _awardsVector:Vector.<Object>;
       
-      public function SuperWinnerManager(param1:PrivateClass)
+      public function SuperWinnerManager(privateClass:PrivateClass)
       {
          super();
       }
@@ -60,14 +60,14 @@ package superWinner.manager
          SocketManager.Instance.addEventListener("super_winner",pkgHandler);
       }
       
-      private function pkgHandler(param1:CrazyTankSocketEvent) : void
+      private function pkgHandler(e:CrazyTankSocketEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = param1._cmd;
-         switch(int(_loc2_) - 48)
+         var pkg:PackageIn = e.pkg;
+         var cmd:int = e._cmd;
+         switch(int(cmd) - 48)
          {
             case 0:
-               _isOpen = _loc3_.readBoolean();
+               _isOpen = pkg.readBoolean();
                if(_isOpen)
                {
                   showSuperWinner();
@@ -84,24 +84,24 @@ package superWinner.manager
                break;
             case 1:
                StateManager.setState("superWinner");
-               SuperWinnerController.instance.enterSuperWinnerRoom(_loc3_);
+               SuperWinnerController.instance.enterSuperWinnerRoom(pkg);
                break;
             default:
                StateManager.setState("superWinner");
-               SuperWinnerController.instance.enterSuperWinnerRoom(_loc3_);
+               SuperWinnerController.instance.enterSuperWinnerRoom(pkg);
                break;
             default:
                StateManager.setState("superWinner");
-               SuperWinnerController.instance.enterSuperWinnerRoom(_loc3_);
+               SuperWinnerController.instance.enterSuperWinnerRoom(pkg);
                break;
             case 4:
-               SuperWinnerController.instance.returnDices(_loc3_);
+               SuperWinnerController.instance.returnDices(pkg);
                break;
             case 5:
                SuperWinnerController.instance.endGame();
                break;
             case 6:
-               SuperWinnerController.instance.timesUp(_loc3_);
+               SuperWinnerController.instance.timesUp(pkg);
                break;
             case 7:
                SuperWinnerController.instance.startRollDices();
@@ -110,7 +110,7 @@ package superWinner.manager
                SuperWinnerController.instance.startRollDices();
                break;
             case 9:
-               SuperWinnerController.instance.joinRoom(_loc3_);
+               SuperWinnerController.instance.joinRoom(pkg);
          }
       }
       
@@ -126,7 +126,7 @@ package superWinner.manager
          }
       }
       
-      public function openSuperWinner(param1:MouseEvent) : void
+      public function openSuperWinner(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          SocketManager.Instance.out.enterSuperWinner();
@@ -138,9 +138,9 @@ package superWinner.manager
          HallIconManager.instance.executeCacheRightIconLevelLimit("superWinner",false);
       }
       
-      public function awardsLoadCompleted(param1:SuperWinnerAnalyze) : void
+      public function awardsLoadCompleted(analyzer:SuperWinnerAnalyze) : void
       {
-         _awardsVector = param1.awards;
+         _awardsVector = analyzer.awards;
       }
       
       public function get awardsVector() : Vector.<Object>

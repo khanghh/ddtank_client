@@ -151,12 +151,12 @@ package bagAndInfo.info
          _markBtn.addEventListener("click",__soundPlayer);
       }
       
-      private function __soundPlayer(param1:MouseEvent) : void
+      private function __soundPlayer(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }
       
-      private function __changeHandler(param1:Event) : void
+      private function __changeHandler(event:Event) : void
       {
          _attestBtn.visible = false;
          MarkMgr.inst.removeMarkView();
@@ -188,8 +188,8 @@ package bagAndInfo.info
       
       private function loadPetData() : void
       {
-         var _loc1_:Array = [LoaderCreate.Instance.creatPetExpericenceAnalyzeLoader];
-         new HelperDataModuleLoad().loadDataModule(_loc1_,loadPetModule);
+         var list:Array = [LoaderCreate.Instance.creatPetExpericenceAnalyzeLoader];
+         new HelperDataModuleLoad().loadDataModule(list,loadPetModule);
       }
       
       private function loadPetModule() : void
@@ -243,12 +243,12 @@ package bagAndInfo.info
          setVisible(2);
       }
       
-      private function __onCreateComplete(param1:CEvent) : void
+      private function __onCreateComplete(e:CEvent) : void
       {
          beadSystemManager.Instance.removeEventListener("createComplete",__onCreateComplete);
-         if(param1.data.type == "infoview")
+         if(e.data.type == "infoview")
          {
-            _beadInfoView = param1.data.spr;
+            _beadInfoView = e.data.spr;
             _beadInfoView["playerInfo"] = _info;
             addChild(_beadInfoView);
          }
@@ -307,29 +307,29 @@ package bagAndInfo.info
          setVisible(6);
       }
       
-      private function setVisible(param1:int) : void
+      private function setVisible(type:int) : void
       {
          if(_view)
          {
-            _view.visible = param1 == 0 || param1 == 3;
+            _view.visible = type == 0 || type == 3;
             if(_view.visible)
             {
-               _view.switchShowII(param1 == 3);
+               _view.switchShowII(type == 3);
             }
          }
          if(_petsView)
          {
-            _petsView.visible = param1 == 1;
+            _petsView.visible = type == 1;
          }
          if(_beadInfoView)
          {
-            _beadInfoView.visible = param1 == 2;
+            _beadInfoView.visible = type == 2;
          }
          if(_horseView)
          {
-            _horseView.visible = param1 == 4;
+            _horseView.visible = type == 4;
          }
-         TotemManager.instance.setVisible("infoview",param1 == 5);
+         TotemManager.instance.setVisible("infoview",type == 5);
       }
       
       private function removeEvent() : void
@@ -351,9 +351,9 @@ package bagAndInfo.info
          __changeHandler(null);
       }
       
-      public function set info(param1:*) : void
+      public function set info($info:*) : void
       {
-         _info = param1;
+         _info = $info;
          if(_view)
          {
             _view.info = _info;
@@ -413,9 +413,9 @@ package bagAndInfo.info
          _markBtn.enable = MarkMgr.inst.checkMarkOpen(_info);
       }
       
-      public function setAchivEnable(param1:Boolean) : void
+      public function setAchivEnable(val:Boolean) : void
       {
-         _view.setAchvEnable(param1);
+         _view.setAchvEnable(val);
       }
       
       override public function dispose() : void

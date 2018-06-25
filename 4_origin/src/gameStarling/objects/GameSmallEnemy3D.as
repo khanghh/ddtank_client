@@ -17,10 +17,10 @@ package gameStarling.objects
       
       private var _disposedOverTurns:Boolean = true;
       
-      public function GameSmallEnemy3D(param1:SmallEnemy)
+      public function GameSmallEnemy3D(info:SmallEnemy)
       {
-         super(param1);
-         param1.defaultAction = "stand";
+         super(info);
+         info.defaultAction = "stand";
       }
       
       override protected function initView() : void
@@ -29,10 +29,10 @@ package gameStarling.objects
          initMovie();
       }
       
-      override public function setMap(param1:Map3D) : void
+      override public function setMap(map:Map3D) : void
       {
-         super.setMap(param1);
-         if(param1)
+         super.setMap(map);
+         if(map)
          {
             __posChanged(null);
          }
@@ -43,23 +43,23 @@ package gameStarling.objects
          return info as SmallEnemy;
       }
       
-      override protected function __bloodChanged(param1:LivingEvent) : void
+      override protected function __bloodChanged(event:LivingEvent) : void
       {
-         super.__bloodChanged(param1);
-         if(param1.value - param1.old < 0)
+         super.__bloodChanged(event);
+         if(event.value - event.old < 0)
          {
             doAction("cry");
          }
       }
       
-      override protected function __die(param1:LivingEvent) : void
+      override protected function __die(event:LivingEvent) : void
       {
          if(isMoving())
          {
             stopMoving();
          }
-         super.__die(param1);
-         if(param1.paras[0])
+         super.__die(event);
+         if(event.paras[0])
          {
             if(_info.typeLiving == 2)
             {
@@ -85,9 +85,9 @@ package gameStarling.objects
          _isDie = true;
       }
       
-      override public function collidedByObject(param1:PhysicalObj3D) : void
+      override public function collidedByObject(obj:PhysicalObj3D) : void
       {
-         if(param1 is SimpleBomb3D)
+         if(obj is SimpleBomb3D)
          {
             info.isHidden = false;
          }
@@ -99,21 +99,21 @@ package gameStarling.objects
          deleteSmallView();
       }
       
-      private function removeEvents(param1:Boolean = false) : void
+      private function removeEvents(flag:Boolean = false) : void
       {
          super.removeListener();
-         if(param1)
+         if(flag)
          {
             _info.addEventListener("beginNewTurn",__beginNewTurn);
          }
       }
       
-      override protected function __shoot(param1:LivingEvent) : void
+      override protected function __shoot(event:LivingEvent) : void
       {
-         map.act(new MonsterShootBombAction(this,param1.paras[0],param1.paras[1],24));
+         map.act(new MonsterShootBombAction(this,event.paras[0],event.paras[1],24));
       }
       
-      override protected function __beginNewTurn(param1:LivingEvent) : void
+      override protected function __beginNewTurn(event:LivingEvent) : void
       {
          if(!_disposedOverTurns)
          {
@@ -138,21 +138,21 @@ package gameStarling.objects
          super.dispose();
       }
       
-      override public function setProperty(param1:String, param2:String) : void
+      override public function setProperty(property:String, value:String) : void
       {
-         var _loc3_:StringObject = new StringObject(param2);
-         super.setProperty(param1,param2);
-         var _loc4_:* = param1;
+         var vo:StringObject = new StringObject(value);
+         super.setProperty(property,value);
+         var _loc4_:* = property;
          if("disposedOverTurns" !== _loc4_)
          {
             if("noDispose" === _loc4_)
             {
-               _noDispose = _loc3_.getBoolean();
+               _noDispose = vo.getBoolean();
             }
          }
          else
          {
-            _disposedOverTurns = _loc3_.getBoolean();
+            _disposedOverTurns = vo.getBoolean();
          }
       }
    }

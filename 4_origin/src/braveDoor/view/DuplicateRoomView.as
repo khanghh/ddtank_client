@@ -42,21 +42,21 @@ package braveDoor.view
       
       private var _tempRoomData:Array;
       
-      public function DuplicateRoomView(param1:BraveDoorListModel)
+      public function DuplicateRoomView(model:BraveDoorListModel)
       {
-         _data = param1;
+         _data = model;
          super();
          initView();
          initEvent();
       }
       
-      public function set control(param1:BraveDoorControl) : void
+      public function set control($ctr:BraveDoorControl) : void
       {
          if(_control)
          {
             _control.removeEventListener("updateSelectDuplicate",_updateDuplidateHandler);
          }
-         _control = param1;
+         _control = $ctr;
          if(_control)
          {
             _control.addEventListener("updateSelectDuplicate",_updateDuplidateHandler);
@@ -102,24 +102,24 @@ package braveDoor.view
          }
       }
       
-      private function __pageDownHandler(param1:MouseEvent) : void
+      private function __pageDownHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          SocketManager.Instance.out.sendUpdateRoomList(7,-2);
       }
       
-      private function _updateDuplidateHandler(param1:BraveDoorEvent) : void
+      private function _updateDuplidateHandler(evt:BraveDoorEvent) : void
       {
          __createRoom_Handler(null);
       }
       
-      private function __fastAddHandler(param1:MouseEvent) : void
+      private function __fastAddHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          SocketManager.Instance.out.sendGameLogin(7,49);
       }
       
-      private function __createRoom_Handler(param1:MouseEvent) : void
+      private function __createRoom_Handler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(getTimer() - _last_creat >= 2000)
@@ -129,7 +129,7 @@ package braveDoor.view
          }
       }
       
-      private function __updateRoom(param1:Event) : void
+      private function __updateRoom(event:Event) : void
       {
          upadteRoomItem();
          if(_itemList != null && _itemList.numChildren > 0)
@@ -138,9 +138,9 @@ package braveDoor.view
          }
       }
       
-      private function updateBtnState(param1:Boolean) : void
+      private function updateBtnState($enable:Boolean) : void
       {
-         var _loc2_:* = param1;
+         var _loc2_:* = $enable;
          _fastAdd.enable = _loc2_;
          _loc2_ = _loc2_;
          _preBtn.enable = _loc2_;
@@ -149,7 +149,7 @@ package braveDoor.view
       
       private function upadteRoomItem() : void
       {
-         var _loc1_:* = null;
+         var item:* = null;
          _tempRoomData = currentDataList;
          if(_tempRoomData == null)
          {
@@ -161,21 +161,21 @@ package braveDoor.view
          }
          var _loc4_:int = 0;
          var _loc3_:* = _tempRoomData;
-         for each(var _loc2_ in _tempRoomData)
+         for each(var info in _tempRoomData)
          {
-            if(_loc2_)
+            if(info)
             {
-               _loc1_ = new DuplicateRoomItemView(_loc2_);
-               if(_loc2_.isPlaying)
+               item = new DuplicateRoomItemView(info);
+               if(info.isPlaying)
                {
-                  _loc1_.filters = ComponentFactory.Instance.creatFilters("grayFilter");
+                  item.filters = ComponentFactory.Instance.creatFilters("grayFilter");
                }
                else
                {
-                  _loc1_.filters = null;
+                  item.filters = null;
                }
-               _loc1_.addEventListener("click",__itemClick,false,0,true);
-               _itemList.addChild(_loc1_);
+               item.addEventListener("click",__itemClick,false,0,true);
+               _itemList.addChild(item);
             }
          }
       }
@@ -185,13 +185,13 @@ package braveDoor.view
          __updateRoom(null);
       }
       
-      private function __itemClick(param1:MouseEvent) : void
+      private function __itemClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:DuplicateRoomItemView = param1.currentTarget as DuplicateRoomItemView;
-         if(!_loc2_.info.isPlaying)
+         var itemView:DuplicateRoomItemView = event.currentTarget as DuplicateRoomItemView;
+         if(!itemView.info.isPlaying)
          {
-            gotoIntoRoom(_loc2_.info);
+            gotoIntoRoom(itemView.info);
          }
          else
          {
@@ -199,9 +199,9 @@ package braveDoor.view
          }
       }
       
-      public function gotoIntoRoom(param1:RoomInfo) : void
+      public function gotoIntoRoom(info:RoomInfo) : void
       {
-         SocketManager.Instance.out.sendGameLogin(7,-1,param1.ID,"");
+         SocketManager.Instance.out.sendGameLogin(7,-1,info.ID,"");
       }
       
       public function get currentDataList() : Array

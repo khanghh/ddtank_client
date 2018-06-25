@@ -47,11 +47,11 @@ package ddtKingFloat.views
       
       private var _info:DDTKingFloatCarInfo;
       
-      public function DDTKingFloatFrameItemCell(param1:int, param2:DDTKingFloatCarInfo)
+      public function DDTKingFloatFrameItemCell(index:int, info:DDTKingFloatCarInfo)
       {
          super();
-         _index = param1;
-         _info = param2;
+         _index = index;
+         _info = info;
          initView();
          initEvent();
          refreshView(null);
@@ -71,17 +71,17 @@ package ddtKingFloat.views
          addChild(_currentBoat);
          _currentBoat.visible = false;
          _awardInfoTxt1 = ComponentFactory.Instance.creatComponentByStylename("ddtKing.race.awardTxt");
-         var _loc1_:InventoryItemInfo = new InventoryItemInfo();
-         _loc1_.TemplateID = _info.awardArr[0].templateId;
-         ItemManager.fill(_loc1_);
-         _awardInfoTxt1.text = LanguageMgr.GetTranslation("floatParade.race.awardInfo1",_loc1_.Name,_info.awardArr[0].count);
+         var item:InventoryItemInfo = new InventoryItemInfo();
+         item.TemplateID = _info.awardArr[0].templateId;
+         ItemManager.fill(item);
+         _awardInfoTxt1.text = LanguageMgr.GetTranslation("floatParade.race.awardInfo1",item.Name,_info.awardArr[0].count);
          addChild(_awardInfoTxt1);
          _awardInfoTxt2 = ComponentFactory.Instance.creatComponentByStylename("ddtKing.race.awardTxt");
          PositionUtils.setPos(_awardInfoTxt2,"ddtKing.race.awardTxtPos");
-         _loc1_ = new InventoryItemInfo();
-         _loc1_.TemplateID = _info.awardArr[1].templateId;
-         ItemManager.fill(_loc1_);
-         _awardInfoTxt2.text = LanguageMgr.GetTranslation("floatParade.race.awardInfo1",_loc1_.Name,_info.awardArr[1].count);
+         item = new InventoryItemInfo();
+         item.TemplateID = _info.awardArr[1].templateId;
+         ItemManager.fill(item);
+         _awardInfoTxt2.text = LanguageMgr.GetTranslation("floatParade.race.awardInfo1",item.Name,_info.awardArr[1].count);
          addChild(_awardInfoTxt2);
          switch(int(_index))
          {
@@ -102,7 +102,7 @@ package ddtKingFloat.views
          }
       }
       
-      private function refreshView(param1:Event) : void
+      private function refreshView(event:Event) : void
       {
          if(DDTKingFloatManager.instance.carStatus == _index)
          {
@@ -131,7 +131,7 @@ package ddtKingFloat.views
          DDTKingFloatManager.instance.addEventListener("floatParadeCarStatusChange",refreshView);
       }
       
-      private function clickHandler(param1:MouseEvent) : void
+      private function clickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -139,67 +139,67 @@ package ddtKingFloat.views
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:Object = DDTKingFloatManager.instance.getBuyRecordStatus(0);
-         if(_loc2_.isNoPrompt)
+         var tmpObj:Object = DDTKingFloatManager.instance.getBuyRecordStatus(0);
+         if(tmpObj.isNoPrompt)
          {
-            if(_loc2_.isBand && PlayerManager.Instance.Self.BandMoney < _info.needMoney)
+            if(tmpObj.isBand && PlayerManager.Instance.Self.BandMoney < _info.needMoney)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("bindMoneyPoorNote"));
-               _loc2_.isNoPrompt = false;
+               tmpObj.isNoPrompt = false;
             }
-            else if(!_loc2_.isBand && PlayerManager.Instance.Self.Money < _info.needMoney)
+            else if(!tmpObj.isBand && PlayerManager.Instance.Self.Money < _info.needMoney)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("moneyPoorNote"));
-               _loc2_.isNoPrompt = false;
+               tmpObj.isNoPrompt = false;
             }
             else
             {
-               SocketManager.Instance.out.sendEscortCallCar(_index,_loc2_.isBand);
+               SocketManager.Instance.out.sendEscortCallCar(_index,tmpObj.isBand);
                return;
             }
          }
-         var _loc3_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("floatParade.frame.callCarConfirmTxt",_info.needMoney),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"ddtKingBuyConfirmView1",30,true,0);
-         _loc3_.moveEnable = false;
-         _loc3_.addEventListener("response",callConfirm,false,0,true);
+         var confirmFrame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("floatParade.frame.callCarConfirmTxt",_info.needMoney),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"ddtKingBuyConfirmView1",30,true,0);
+         confirmFrame.moveEnable = false;
+         confirmFrame.addEventListener("response",callConfirm,false,0,true);
       }
       
-      private function callConfirm(param1:FrameEvent) : void
+      private function callConfirm(evt:FrameEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
+         var confirmFrame2:* = null;
+         var tmpObj:* = null;
          SoundManager.instance.play("008");
-         var _loc4_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc4_.removeEventListener("response",callConfirm);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",callConfirm);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
-            if(_loc4_.isBand && PlayerManager.Instance.Self.BandMoney < _info.needMoney)
+            if(confirmFrame.isBand && PlayerManager.Instance.Self.BandMoney < _info.needMoney)
             {
-               _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("escort.game.useSkillNoEnoughReConfirm"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
-               _loc2_.moveEnable = false;
-               _loc2_.addEventListener("response",callCarReConfirm,false,0,true);
+               confirmFrame2 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("escort.game.useSkillNoEnoughReConfirm"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
+               confirmFrame2.moveEnable = false;
+               confirmFrame2.addEventListener("response",callCarReConfirm,false,0,true);
                return;
             }
-            if(!_loc4_.isBand && PlayerManager.Instance.Self.Money < _info.needMoney)
+            if(!confirmFrame.isBand && PlayerManager.Instance.Self.Money < _info.needMoney)
             {
                LeavePageManager.showFillFrame();
                return;
             }
-            if((_loc4_ as DDTKingFloatBuyConfirmView).isNoPrompt)
+            if((confirmFrame as DDTKingFloatBuyConfirmView).isNoPrompt)
             {
-               _loc3_ = DDTKingFloatManager.instance.getBuyRecordStatus(0);
-               _loc3_.isNoPrompt = true;
-               _loc3_.isBand = _loc4_.isBand;
+               tmpObj = DDTKingFloatManager.instance.getBuyRecordStatus(0);
+               tmpObj.isNoPrompt = true;
+               tmpObj.isBand = confirmFrame.isBand;
             }
-            SocketManager.Instance.out.sendEscortCallCar(_index,_loc4_.isBand);
+            SocketManager.Instance.out.sendEscortCallCar(_index,confirmFrame.isBand);
          }
       }
       
-      private function callCarReConfirm(param1:FrameEvent) : void
+      private function callCarReConfirm(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",callCarReConfirm);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",callCarReConfirm);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             if(PlayerManager.Instance.Self.Money < _info.needMoney)
             {

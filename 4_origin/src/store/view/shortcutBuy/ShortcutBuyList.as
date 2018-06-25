@@ -25,11 +25,11 @@ package store.view.shortcutBuy
          super();
       }
       
-      public function setup(param1:Array) : void
+      public function setup(itemIDs:Array) : void
       {
-         _cow = Math.ceil(param1.length / 4);
+         _cow = Math.ceil(itemIDs.length / 4);
          init();
-         createCells(param1);
+         createCells(itemIDs);
       }
       
       private function init() : void
@@ -46,24 +46,23 @@ package store.view.shortcutBuy
          return _list.height;
       }
       
-      private function createCells(param1:Array) : void
+      private function createCells(itemIDs:Array) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var info:* = null;
+         var cell:* = null;
          _list.beginChanges();
-         _loc4_ = 0;
-         while(_loc4_ < param1.length)
+         for(i = 0; i < itemIDs.length; )
          {
-            _loc3_ = ItemManager.Instance.getTemplateById(param1[_loc4_]);
-            _loc2_ = new ShortcutBuyCell(_loc3_);
-            _loc2_.info = _loc3_;
-            _loc2_.addEventListener("click",cellClickHandler);
-            _loc2_.buttonMode = true;
-            _loc2_.showBg();
-            _list.addChild(_loc2_);
-            _cells.push(_loc2_);
-            _loc4_++;
+            info = ItemManager.Instance.getTemplateById(itemIDs[i]);
+            cell = new ShortcutBuyCell(info);
+            cell.info = info;
+            cell.addEventListener("click",cellClickHandler);
+            cell.buttonMode = true;
+            cell.showBg();
+            _list.addChild(cell);
+            _cells.push(cell);
+            i++;
          }
          _list.commitChanges();
       }
@@ -72,10 +71,10 @@ package store.view.shortcutBuy
       {
          var _loc3_:int = 0;
          var _loc2_:* = _cells;
-         for each(var _loc1_ in _cells)
+         for each(var cell in _cells)
          {
-            _loc1_.hideBg();
-            _loc1_.startShine();
+            cell.hideBg();
+            cell.startShine();
          }
       }
       
@@ -83,24 +82,24 @@ package store.view.shortcutBuy
       {
          var _loc3_:int = 0;
          var _loc2_:* = _cells;
-         for each(var _loc1_ in _cells)
+         for each(var cell in _cells)
          {
-            _loc1_.stopShine();
-            _loc1_.showBg();
+            cell.stopShine();
+            cell.showBg();
          }
       }
       
-      private function cellClickHandler(param1:MouseEvent) : void
+      private function cellClickHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          var _loc4_:int = 0;
          var _loc3_:* = _cells;
-         for each(var _loc2_ in _cells)
+         for each(var cell in _cells)
          {
-            _loc2_.selected = false;
+            cell.selected = false;
             noShine();
          }
-         ShortcutBuyCell(param1.currentTarget).selected = true;
+         ShortcutBuyCell(evt.currentTarget).selected = true;
          dispatchEvent(new Event("select"));
       }
       
@@ -108,48 +107,47 @@ package store.view.shortcutBuy
       {
          var _loc3_:int = 0;
          var _loc2_:* = _cells;
-         for each(var _loc1_ in _cells)
+         for each(var cell in _cells)
          {
-            if(_loc1_.selected)
+            if(cell.selected)
             {
-               return _loc1_.info.TemplateID;
+               return cell.info.TemplateID;
             }
          }
          return -1;
       }
       
-      public function set selectedItemID(param1:int) : void
+      public function set selectedItemID(value:int) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = _cells;
-         for each(var _loc2_ in _cells)
+         for each(var cell in _cells)
          {
-            if(_loc2_.info.TemplateID == param1)
+            if(cell.info.TemplateID == value)
             {
-               _loc2_.selected = true;
+               cell.selected = true;
                return;
             }
          }
       }
       
-      public function set selectedIndex(param1:int) : void
+      public function set selectedIndex(value:int) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = _cells.length;
-         if(param1 >= 0 && param1 < _loc2_)
+         var i:int = 0;
+         var tmpLength:int = _cells.length;
+         if(value >= 0 && value < tmpLength)
          {
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_)
+            for(i = 0; i < tmpLength; )
             {
-               if(_loc3_ == param1)
+               if(i == value)
                {
-                  _cells[_loc3_].selected = true;
+                  _cells[i].selected = true;
                }
                else
                {
-                  _cells[_loc3_].selected = false;
+                  _cells[i].selected = false;
                }
-               _loc3_++;
+               i++;
             }
          }
       }
@@ -163,10 +161,10 @@ package store.view.shortcutBuy
       {
          var _loc3_:int = 0;
          var _loc2_:* = _cells;
-         for each(var _loc1_ in _cells)
+         for each(var cell in _cells)
          {
-            _loc1_.removeEventListener("click",cellClickHandler);
-            ObjectUtils.disposeObject(_loc1_);
+            cell.removeEventListener("click",cellClickHandler);
+            ObjectUtils.disposeObject(cell);
          }
          _cells = null;
          _list.disposeAllChildren();

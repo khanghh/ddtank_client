@@ -63,32 +63,32 @@ package starlingPhy.maps
       
       private var _drawPointContainer:Sprite;
       
-      public function Map3D(param1:DisplayObject, param2:Ground3D = null, param3:Ground3D = null, param4:Ground3D = null)
+      public function Map3D(sky:DisplayObject, ground:Ground3D = null, stone:Ground3D = null, real:Ground3D = null)
       {
          super();
          _phyicals = new DictionaryData();
          _objects = new DictionaryData();
-         _sky = param1;
+         _sky = sky;
          addChild(_sky);
          _bg = new Sprite();
          _bg.visible = false;
          _bg.graphics.beginFill(0,1);
-         _bg.graphics.drawRect(0,0,param1.width * 2,param1.height * 2);
+         _bg.graphics.drawRect(0,0,sky.width * 2,sky.height * 2);
          _bg.graphics.endFill();
          addChild(_bg);
          _sceneEffectLayer = new Sprite();
          addChild(_sceneEffectLayer);
-         _stone = param3;
+         _stone = stone;
          if(_stone)
          {
             addChild(_stone);
          }
-         _ground = param2;
+         _ground = ground;
          if(_ground)
          {
             addChild(_ground);
          }
-         _real = param4;
+         _real = real;
          _livingLayer = new Sprite();
          addChild(_livingLayer);
          _phyLayer = new Sprite();
@@ -149,16 +149,16 @@ package starlingPhy.maps
          return _bg;
       }
       
-      public function Dig(param1:Point, param2:Bitmap, param3:Bitmap = null) : void
+      public function Dig(center:Point, surface:Bitmap, border:Bitmap = null) : void
       {
          _mapChanged = true;
          if(_ground)
          {
-            _ground.Dig(param1,param2,param3);
+            _ground.Dig(center,surface,border);
          }
          if(_stone)
          {
-            _stone.Dig(param1,param2,param3);
+            _stone.Dig(center,surface,border);
          }
       }
       
@@ -172,162 +172,160 @@ package starlingPhy.maps
          _mapChanged = false;
       }
       
-      public function IsEmpty(param1:int, param2:int) : Boolean
+      public function IsEmpty(x:int, y:int) : Boolean
       {
-         return (_ground == null || _ground.IsEmpty(param1,param2)) && (_stone == null || _stone.IsEmpty(param1,param2)) && (_real == null || _real.IsEmpty(param1,param2));
+         return (_ground == null || _ground.IsEmpty(x,y)) && (_stone == null || _stone.IsEmpty(x,y)) && (_real == null || _real.IsEmpty(x,y));
       }
       
-      public function IsRectangleEmpty(param1:Rectangle) : Boolean
+      public function IsRectangleEmpty(rect:Rectangle) : Boolean
       {
-         return (_ground == null || _ground.IsRectangeEmptyQuick(param1)) && (_stone == null || _stone.IsRectangeEmptyQuick(param1)) && (_real == null || _real.IsRectangeEmptyQuick(param1));
+         return (_ground == null || _ground.IsRectangeEmptyQuick(rect)) && (_stone == null || _stone.IsRectangeEmptyQuick(rect)) && (_real == null || _real.IsRectangeEmptyQuick(rect));
       }
       
-      public function IsCircleEmpty(param1:Rectangle, param2:Number = 30) : Boolean
+      public function IsCircleEmpty(rect:Rectangle, rAngle:Number = 30) : Boolean
       {
-         return (_ground == null || _ground.IsCircleEmptyQuick(param1,param2)) && (_stone == null || _stone.IsCircleEmptyQuick(param1,param2)) && (_real == null || _real.IsCircleEmptyQuick(param1,param2));
+         return (_ground == null || _ground.IsCircleEmptyQuick(rect,rAngle)) && (_stone == null || _stone.IsCircleEmptyQuick(rect,rAngle)) && (_real == null || _real.IsCircleEmptyQuick(rect,rAngle));
       }
       
-      public function IsBitmapDataEmpty(param1:BitmapData, param2:Point = null) : Boolean
+      public function IsBitmapDataEmpty(bitmapData:BitmapData, bitmapPoint:Point = null) : Boolean
       {
-         return (_ground == null || _ground.IsBitmapDataEmpty(param1,param2)) && (_stone == null || _stone.IsBitmapDataEmpty(param1,param2)) && (_real == null || _real.IsBitmapDataEmpty(param1,param2));
+         return (_ground == null || _ground.IsBitmapDataEmpty(bitmapData,bitmapPoint)) && (_stone == null || _stone.IsBitmapDataEmpty(bitmapData,bitmapPoint)) && (_real == null || _real.IsBitmapDataEmpty(bitmapData,bitmapPoint));
       }
       
-      public function findYLineNotEmptyPointDown(param1:int, param2:int, param3:int) : Point
+      public function findYLineNotEmptyPointDown(x:int, y:int, h:int) : Point
       {
-         var _loc4_:int = 0;
-         param1 = param1 < 0?0:param1 >= _bound.width?_bound.width - 1:param1;
-         param2 = param2 < 0?0:param2;
-         param3 = param2 + param3 >= _bound.height?_bound.height - param2 - 1:param3;
-         _loc4_ = 0;
-         while(_loc4_ < param3)
+         var i:int = 0;
+         x = x < 0?0:x >= _bound.width?_bound.width - 1:x;
+         y = y < 0?0:y;
+         h = y + h >= _bound.height?_bound.height - y - 1:h;
+         for(i = 0; i < h; )
          {
-            if(!IsEmpty(param1 - 1,param2) || !IsEmpty(param1 + 1,param2))
+            if(!IsEmpty(x - 1,y) || !IsEmpty(x + 1,y))
             {
-               return new Point(param1,param2);
+               return new Point(x,y);
             }
-            param2++;
-            _loc4_++;
+            y++;
+            i++;
          }
          return null;
       }
       
-      public function findYLineNotEmptyPointUp(param1:int, param2:int, param3:int) : Point
+      public function findYLineNotEmptyPointUp(x:int, y:int, h:int) : Point
       {
-         var _loc4_:int = 0;
-         param1 = param1 < 0?0:param1 > _bound.width?_bound.width:param1;
-         param2 = param2 < 0?0:param2;
-         param3 = param2 + param3 > _bound.height?_bound.height - param2:param3;
-         _loc4_ = 0;
-         while(_loc4_ < param3)
+         var i:int = 0;
+         x = x < 0?0:x > _bound.width?_bound.width:x;
+         y = y < 0?0:y;
+         h = y + h > _bound.height?_bound.height - y:h;
+         for(i = 0; i < h; )
          {
-            if(!IsEmpty(param1 - 1,param2) || !IsEmpty(param1 + 1,param2))
+            if(!IsEmpty(x - 1,y) || !IsEmpty(x + 1,y))
             {
-               return new Point(param1,param2);
+               return new Point(x,y);
             }
-            param2--;
-            _loc4_++;
+            y--;
+            i++;
          }
          return null;
       }
       
-      public function findNextWalkPoint(param1:int, param2:int, param3:int, param4:int, param5:int) : Point
+      public function findNextWalkPoint(posX:int, posY:int, direction:int, stepX:int, stepY:int) : Point
       {
-         if(param3 != 1 && param3 != -1)
+         if(direction != 1 && direction != -1)
          {
             return null;
          }
-         var _loc6_:int = param1 + param3 * param4;
-         if(_loc6_ < 0 || _loc6_ > _bound.width)
+         var tx:int = posX + direction * stepX;
+         if(tx < 0 || tx > _bound.width)
          {
             return null;
          }
-         var _loc7_:Point = findYLineNotEmptyPointDown(_loc6_,param2 - param5 - 1,_bound.height);
-         if(_loc7_)
+         var p:Point = findYLineNotEmptyPointDown(tx,posY - stepY - 1,_bound.height);
+         if(p)
          {
-            if(Math.abs(_loc7_.y - param2) > param5)
+            if(Math.abs(p.y - posY) > stepY)
             {
-               trace(" null point offset:" + Math.abs(_loc7_.y - param2));
-               _loc7_ = null;
+               trace(" null point offset:" + Math.abs(p.y - posY));
+               p = null;
             }
          }
-         return _loc7_;
+         return p;
       }
       
-      public function findNextWalkBombPoint(param1:int, param2:int, param3:int, param4:int, param5:int) : Point
+      public function findNextWalkBombPoint(posX:int, posY:int, direction:int, stepX:int, stepY:int) : Point
       {
-         if(param3 != 1 && param3 != -1)
+         if(direction != 1 && direction != -1)
          {
             return null;
          }
-         var _loc6_:int = param1 + param3 * param4;
-         if(_loc6_ < 0 || _loc6_ > _bound.width)
+         var tx:int = posX + direction * stepX;
+         if(tx < 0 || tx > _bound.width)
          {
             return null;
          }
-         var _loc7_:Point = findYLineNotEmptyPointDown(_loc6_,param2 - param5 - 1,_bound.height);
-         return _loc7_;
+         var p:Point = findYLineNotEmptyPointDown(tx,posY - stepY - 1,_bound.height);
+         return p;
       }
       
-      public function canMove(param1:int, param2:int) : Boolean
+      public function canMove(x:int, y:int) : Boolean
       {
-         return IsEmpty(param1,param2) && !IsOutMap(param1,param2);
+         return IsEmpty(x,y) && !IsOutMap(x,y);
       }
       
-      public function IsOutMap(param1:int, param2:int) : Boolean
+      public function IsOutMap(x:int, y:int) : Boolean
       {
-         if(param1 < _bound.x || param1 > _bound.width || param2 > _bound.height)
+         if(x < _bound.x || x > _bound.width || y > _bound.height)
          {
             return true;
          }
          return false;
       }
       
-      public function addPhysical(param1:Physics3D) : void
+      public function addPhysical(phyobj:Physics3D) : void
       {
-         if(_phyicals && param1 is PhysicalObj3D)
+         if(_phyicals && phyobj is PhysicalObj3D)
          {
-            _phyicals[param1] = param1;
-            if(param1.layer == 3)
+            _phyicals[phyobj] = phyobj;
+            if(phyobj.layer == 3)
             {
-               _phyLayer.addChild(param1);
+               _phyLayer.addChild(phyobj);
             }
-            else if(param1.layer == 5)
+            else if(phyobj.layer == 5)
             {
-               _livingLayer.addChild(param1);
+               _livingLayer.addChild(phyobj);
             }
-            else if(param1.layer == 1)
+            else if(phyobj.layer == 1)
             {
-               _livingLayer.addChild(param1);
+               _livingLayer.addChild(phyobj);
             }
-            else if(param1.layer == 4 || param1.layer == 6)
+            else if(phyobj.layer == 4 || phyobj.layer == 6)
             {
-               _livingLayer.addChildAt(param1,0);
+               _livingLayer.addChildAt(phyobj,0);
             }
-            else if(param1.layer == 7)
+            else if(phyobj.layer == 7)
             {
-               _sceneEffectLayer.addChild(param1);
+               _sceneEffectLayer.addChild(phyobj);
             }
             else
             {
-               _phyLayer.addChild(param1);
+               _phyLayer.addChild(phyobj);
             }
          }
          else if(_objects)
          {
-            _objects[param1] = param1;
-            addChild(param1);
+            _objects[phyobj] = phyobj;
+            addChild(phyobj);
          }
          else
          {
-            StarlingObjectUtils.disposeObject(param1);
+            StarlingObjectUtils.disposeObject(phyobj);
             return;
          }
-         param1.setMap(this);
+         phyobj.setMap(this);
       }
       
-      public function addToPhyLayer(param1:DisplayObject) : void
+      public function addToPhyLayer(b:DisplayObject) : void
       {
-         _phyLayer.addChild(param1);
+         _phyLayer.addChild(b);
       }
       
       public function get livngLayer() : Sprite
@@ -335,46 +333,46 @@ package starlingPhy.maps
          return _livingLayer;
       }
       
-      public function addMapThing(param1:Physics3D) : void
+      public function addMapThing(phyS:Physics3D) : void
       {
-         _mapThing.addChild(param1);
-         param1.setMap(this);
-         if(param1 is PhysicalObj3D)
+         _mapThing.addChild(phyS);
+         phyS.setMap(this);
+         if(phyS is PhysicalObj3D)
          {
-            _phyicals[param1] = param1;
+            _phyicals[phyS] = phyS;
          }
          else
          {
-            _objects[param1] = param1;
+            _objects[phyS] = phyS;
          }
       }
       
-      public function removeMapThing(param1:Physics3D) : void
+      public function removeMapThing(phyS:Physics3D) : void
       {
-         if(param1 is PhysicalObj3D)
+         if(phyS is PhysicalObj3D)
          {
-            delete _phyicals[param1];
+            delete _phyicals[phyS];
          }
          else
          {
-            delete _objects[param1];
+            delete _objects[phyS];
          }
-         param1.setMap(null);
-         StarlingObjectUtils.removeObject(param1);
+         phyS.setMap(null);
+         StarlingObjectUtils.removeObject(phyS);
       }
       
-      public function setTopPhysical(param1:Physics3D) : void
+      public function setTopPhysical($phy:Physics3D) : void
       {
-         param1.parent.setChildIndex(param1,param1.parent.numChildren - 1);
+         $phy.parent.setChildIndex($phy,$phy.parent.numChildren - 1);
       }
       
       public function hasSomethingMoving() : Boolean
       {
          var _loc3_:int = 0;
          var _loc2_:* = _phyicals;
-         for each(var _loc1_ in _phyicals)
+         for each(var p in _phyicals)
          {
-            if(_loc1_.isMoving())
+            if(p.isMoving())
             {
                return true;
             }
@@ -382,37 +380,37 @@ package starlingPhy.maps
          return false;
       }
       
-      public function removePhysical(param1:Physics3D) : void
+      public function removePhysical(phyO:Physics3D) : void
       {
-         StarlingObjectUtils.removeObject(param1);
-         if(param1 is PhysicalObj3D)
+         StarlingObjectUtils.removeObject(phyO);
+         if(phyO is PhysicalObj3D)
          {
-            if(_phyicals == null || !_phyicals[param1])
+            if(_phyicals == null || !_phyicals[phyO])
             {
                return;
             }
-            delete _phyicals[param1];
+            delete _phyicals[phyO];
          }
          else
          {
-            if(_objects && !_objects[param1])
+            if(_objects && !_objects[phyO])
             {
                return;
             }
-            delete _objects[param1];
+            delete _objects[phyO];
          }
-         param1.setMap(null);
+         phyO.setMap(null);
       }
       
-      public function hidePhysical(param1:PhysicalObj3D) : void
+      public function hidePhysical(except:PhysicalObj3D) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = _phyicals;
-         for each(var _loc2_ in _phyicals)
+         for each(var p in _phyicals)
          {
-            if(_loc2_ != param1)
+            if(p != except)
             {
-               _loc2_.visible = false;
+               p.visible = false;
             }
          }
       }
@@ -421,80 +419,80 @@ package starlingPhy.maps
       {
          var _loc3_:int = 0;
          var _loc2_:* = _phyicals;
-         for each(var _loc1_ in _phyicals)
+         for each(var p in _phyicals)
          {
-            _loc1_.visible = true;
+            p.visible = true;
          }
       }
       
-      public function getPhysicalById(param1:int) : PhysicalObj3D
+      public function getPhysicalById(id:int) : PhysicalObj3D
       {
          var _loc4_:int = 0;
          var _loc3_:* = _phyicals;
-         for each(var _loc2_ in _phyicals)
+         for each(var p in _phyicals)
          {
-            if(_loc2_.Id == param1)
+            if(p.Id == id)
             {
-               return _loc2_;
+               return p;
             }
          }
          return null;
       }
       
-      public function getPhysicalObjects(param1:Rectangle, param2:PhysicalObj3D) : Array
+      public function getPhysicalObjects(rect:Rectangle, except:PhysicalObj3D) : Array
       {
-         var _loc3_:* = null;
-         var _loc4_:Array = [];
+         var t:* = null;
+         var temp:Array = [];
          var _loc7_:int = 0;
          var _loc6_:* = _phyicals;
-         for each(var _loc5_ in _phyicals)
+         for each(var phyO in _phyicals)
          {
-            if(_loc5_ != param2 && _loc5_.isLiving && _loc5_.canCollided && _loc5_.layer != 7)
+            if(phyO != except && phyO.isLiving && phyO.canCollided && phyO.layer != 7)
             {
-               _loc3_ = _loc5_.getCollideRect();
-               _loc3_.offset(_loc5_.x,_loc5_.y);
-               if(_loc3_.intersects(param1))
+               t = phyO.getCollideRect();
+               t.offset(phyO.x,phyO.y);
+               if(t.intersects(rect))
                {
-                  _loc4_.push(_loc5_);
+                  temp.push(phyO);
                }
             }
          }
-         return _loc4_;
+         return temp;
       }
       
-      public function getSceneEffectPhysicalObject(param1:Rectangle, param2:PhysicalObj3D, param3:Point = null) : PhysicalObj3D
+      public function getSceneEffectPhysicalObject(rect:Rectangle, except:PhysicalObj3D, prePos:Point = null) : PhysicalObj3D
       {
-         var _loc4_:* = null;
+         var t:* = null;
          var _loc7_:int = 0;
          var _loc6_:* = _phyicals;
-         for each(var _loc5_ in _phyicals)
+         for each(var phy0 in _phyicals)
          {
-            if(_loc5_ != param2 && _loc5_.canCollided && _loc5_.layerType == 7)
+            if(phy0 != except && phy0.canCollided && phy0.layerType == 7)
             {
-               if(_loc5_.Id < -100 && _loc5_.Id >= -103)
+               if(phy0.Id < -100 && phy0.Id >= -103)
                {
-                  if(param3)
+                  if(prePos)
                   {
-                     if(param3.x < param2.x)
+                     if(prePos.x < except.x)
                      {
-                        if(param2.y >= _loc5_.y && (_loc5_.x >= param3.x && _loc5_.x <= param2.x))
+                        if(except.y >= phy0.y && (phy0.x >= prePos.x && phy0.x <= except.x))
                         {
-                           return _loc5_;
+                           return phy0;
                         }
                      }
-                     else if(param2.y >= _loc5_.y && (_loc5_.x >= param2.x && _loc5_.x <= param3.x))
+                     else if(except.y >= phy0.y && (phy0.x >= except.x && phy0.x <= prePos.x))
                      {
-                        return _loc5_;
+                        return phy0;
                      }
                   }
                }
                else
                {
-                  _loc4_ = _loc5_.getCollideRect();
-                  _loc4_.offset(_loc5_.x,_loc5_.y);
-                  if(_loc4_.intersects(param1))
+                  t = phy0.getCollideRect();
+                  t.offset(phy0.x,phy0.y);
+                  if(t.intersects(rect))
                   {
-                     return _loc5_;
+                     return phy0;
                   }
                }
             }
@@ -502,124 +500,122 @@ package starlingPhy.maps
          return null;
       }
       
-      public function getSceneEffectPhysicalObjectCircle(param1:Rectangle, param2:PhysicalObj3D) : PhysicalObj3D
+      public function getSceneEffectPhysicalObjectCircle(rect:Rectangle, except:PhysicalObj3D) : PhysicalObj3D
       {
-         var _loc6_:Number = NaN;
-         var _loc3_:* = null;
-         var _loc4_:Number = NaN;
+         var dist:Number = NaN;
+         var t2:* = null;
+         var r:Number = NaN;
          var _loc8_:int = 0;
          var _loc7_:* = _phyicals;
-         for each(var _loc5_ in _phyicals)
+         for each(var phy1 in _phyicals)
          {
-            if(_loc5_ != param2 && _loc5_.canCollided && _loc5_.layerType == 7)
+            if(phy1 != except && phy1.canCollided && phy1.layerType == 7)
             {
-               _loc6_ = Point.distance(param2.pos,_loc5_.pos);
-               _loc3_ = _loc5_.getCollideRect();
-               _loc4_ = _loc3_.width / 2;
-               if(_loc6_ < _loc4_)
+               dist = Point.distance(except.pos,phy1.pos);
+               t2 = phy1.getCollideRect();
+               r = t2.width / 2;
+               if(dist < r)
                {
-                  return _loc5_;
+                  return phy1;
                }
             }
          }
          return null;
       }
       
-      public function getSceneEffectPhysicalById(param1:int) : PhysicalObj3D
+      public function getSceneEffectPhysicalById(id:int) : PhysicalObj3D
       {
          var _loc4_:int = 0;
          var _loc3_:* = _phyicals;
-         for each(var _loc2_ in _phyicals)
+         for each(var phy0 in _phyicals)
          {
-            if(_loc2_.Id == param1 && _loc2_.layerType == 7)
+            if(phy0.Id == id && phy0.layerType == 7)
             {
-               return _loc2_;
+               return phy0;
             }
          }
          return null;
       }
       
-      public function getPhysicalObjectByPoint(param1:Point, param2:Number, param3:PhysicalObj3D = null) : Array
+      public function getPhysicalObjectByPoint(point:Point, radius:Number, except:PhysicalObj3D = null) : Array
       {
-         var _loc5_:Array = [];
+         var temp:Array = [];
          var _loc7_:int = 0;
          var _loc6_:* = _phyicals;
-         for each(var _loc4_ in _phyicals)
+         for each(var t in _phyicals)
          {
-            if(_loc4_ != param3 && _loc4_.isLiving && Point.distance(param1,_loc4_.pos) <= param2)
+            if(t != except && t.isLiving && Point.distance(point,t.pos) <= radius)
             {
-               _loc5_.push(_loc4_);
+               temp.push(t);
             }
          }
-         return _loc5_;
+         return temp;
       }
       
       public function dieSceneEffectLayer() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var phyO:* = null;
          if(_sceneEffectLayer.numChildren > 0)
          {
-            _loc2_ = 0;
-            while(_loc2_ < _sceneEffectLayer.numChildren)
+            for(i = 0; i < _sceneEffectLayer.numChildren; )
             {
-               _loc1_ = _sceneEffectLayer.getChildAt(_loc2_) as PhysicalObj3D;
-               _loc1_.die();
-               _loc2_++;
+               phyO = _sceneEffectLayer.getChildAt(i) as PhysicalObj3D;
+               phyO.die();
+               i++;
             }
          }
       }
       
       public function clearSceneEffectLayer() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var phyO:* = null;
          if(_sceneEffectLayer.numChildren > 0)
          {
-            _loc2_ = 0;
-            while(_loc2_ < _sceneEffectLayer.numChildren)
+            for(i = 0; i < _sceneEffectLayer.numChildren; )
             {
-               _loc1_ = _sceneEffectLayer.getChildAt(_loc2_) as PhysicalObj3D;
-               _loc1_.dispose();
-               _loc2_++;
+               phyO = _sceneEffectLayer.getChildAt(i) as PhysicalObj3D;
+               phyO.dispose();
+               i++;
             }
          }
       }
       
-      public function getBoxesByRect(param1:Rectangle) : Array
+      public function getBoxesByRect(rect:Rectangle) : Array
       {
-         var _loc2_:* = null;
-         var _loc3_:Array = [];
+         var t:* = null;
+         var temp:Array = [];
          var _loc6_:int = 0;
          var _loc5_:* = _phyicals;
-         for each(var _loc4_ in _phyicals)
+         for each(var obj in _phyicals)
          {
-            if(_loc4_.isBox() && _loc4_.isLiving)
+            if(obj.isBox() && obj.isLiving)
             {
-               _loc2_ = _loc4_.getTestRect();
-               _loc2_.offset(_loc4_.x,_loc4_.y);
-               if(_loc2_.intersects(param1))
+               t = obj.getTestRect();
+               t.offset(obj.x,obj.y);
+               if(t.intersects(rect))
                {
-                  _loc3_.push(_loc4_);
+                  temp.push(obj);
                }
             }
          }
-         return _loc3_;
+         return temp;
       }
       
-      private function __enterFrame(param1:Event) : void
+      private function __enterFrame(event:Event) : void
       {
          update();
       }
       
       protected function update() : void
       {
-         var _loc1_:Number = numChildren;
+         var num:Number = numChildren;
          var _loc4_:int = 0;
          var _loc3_:* = _phyicals;
-         for each(var _loc2_ in _phyicals)
+         for each(var p in _phyicals)
          {
-            _loc2_.update(0.04);
+            p.update(0.04);
          }
       }
       
@@ -629,14 +625,14 @@ package starlingPhy.maps
          {
             return;
          }
-         var _loc1_:int = getTimer();
+         var currentTime:int = getTimer();
          if(_lastCheckTime == 0)
          {
-            _lastCheckTime = _loc1_ - 40;
+            _lastCheckTime = currentTime - 40;
          }
-         if(_loc1_ - _lastCheckTime > FRAME_TIME_OVER_TAG)
+         if(currentTime - _lastCheckTime > FRAME_TIME_OVER_TAG)
          {
-            trace(String(_loc1_ - _lastCheckTime));
+            trace(String(currentTime - _lastCheckTime));
             _frameTimeOverCount = Number(_frameTimeOverCount) + 1;
          }
          else
@@ -647,32 +643,32 @@ package starlingPhy.maps
             }
             _frameTimeOverCount = 0;
          }
-         _lastCheckTime = _loc1_;
+         _lastCheckTime = currentTime;
          if(_frameTimeOverCount > FRAME_OVER_COUNT_TAG)
          {
             _isLackOfFPS = true;
          }
       }
       
-      public function getCollidedPhysicalObjects(param1:Rectangle, param2:PhysicalObj3D) : Array
+      public function getCollidedPhysicalObjects(rect:Rectangle, except:PhysicalObj3D) : Array
       {
-         var _loc3_:* = null;
-         var _loc4_:Array = [];
+         var t:* = null;
+         var temp:Array = [];
          var _loc7_:int = 0;
          var _loc6_:* = _phyicals;
-         for each(var _loc5_ in _phyicals)
+         for each(var phyO in _phyicals)
          {
-            if(_loc5_ != param2 && _loc5_.canCollided)
+            if(phyO != except && phyO.canCollided)
             {
-               _loc3_ = _loc5_.getCollideRect();
-               _loc3_.offset(_loc5_.x,_loc5_.y);
-               if(_loc3_.intersects(param1))
+               t = phyO.getCollideRect();
+               t.offset(phyO.x,phyO.y);
+               if(t.intersects(rect))
                {
-                  _loc4_.push(_loc5_);
+                  temp.push(phyO);
                }
             }
          }
-         return _loc4_;
+         return temp;
       }
       
       public function get isLackOfFPS() : Boolean
@@ -685,24 +681,24 @@ package starlingPhy.maps
          return Math.max(!!ground?ground.height:0,!!stone?stone.height:0);
       }
       
-      public function drawPoint(param1:Array, param2:Boolean, param3:Number = 2, param4:uint = 16711680) : void
+      public function drawPoint(data:Array, clear:Boolean, radius:Number = 2, color:uint = 16711680) : void
       {
-         var _loc5_:int = 0;
+         var i:int = 0;
          if(_drawPointContainer == null)
          {
             _drawPointContainer = new Sprite();
          }
-         if(param2)
+         if(clear)
          {
             _drawPointContainer.graphics.clear();
          }
-         _loc5_ = 0;
-         while(_loc5_ < param1.length)
+         i = 0;
+         while(i < data.length)
          {
-            _drawPointContainer.graphics.beginFill(param4);
-            _drawPointContainer.graphics.drawCircle(param1[_loc5_].x,param1[_loc5_].y,param3);
+            _drawPointContainer.graphics.beginFill(color);
+            _drawPointContainer.graphics.drawCircle(data[i].x,data[i].y,radius);
             _drawPointContainer.graphics.endFill();
-            _loc5_++;
+            i++;
          }
          this.addChild(_drawPointContainer);
       }

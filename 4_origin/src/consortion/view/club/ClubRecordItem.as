@@ -31,10 +31,10 @@ package consortion.view.club
       
       private var _copyName:TextButton;
       
-      public function ClubRecordItem(param1:int)
+      public function ClubRecordItem(type:int)
       {
          super();
-         _type = param1;
+         _type = type;
          init();
       }
       
@@ -69,19 +69,19 @@ package consortion.view.club
          _button.addEventListener("click",__clickHandler);
       }
       
-      private function __copyHandler(param1:MouseEvent) : void
+      private function __copyHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          System.setClipboard(_info.ChairmanName);
       }
       
-      private function __contactChairman(param1:MouseEvent) : void
+      private function __contactChairman(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          IMManager.Instance.alertPrivateFrame(_info.ChairmanID);
       }
       
-      private function __clickHandler(param1:MouseEvent) : void
+      private function __clickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_type == 1)
@@ -94,10 +94,10 @@ package consortion.view.club
          }
       }
       
-      public function set info(param1:*) : void
+      public function set info(info:*) : void
       {
-         _info = param1;
-         _name.text = param1.ConsortiaName;
+         _info = info;
+         _name.text = info.ConsortiaName;
       }
       
       public function dispose() : void

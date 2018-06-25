@@ -18,68 +18,68 @@ package ddt.view.tips
          super();
       }
       
-      public static function creatLelvePic(param1:int) : Sprite
+      public static function creatLelvePic(level:int) : Sprite
       {
-         var _loc6_:int = 0;
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:Sprite = new Sprite();
-         if(param1 < 10)
+         var units:int = 0;
+         var tens:int = 0;
+         var ub:* = null;
+         var tb:* = null;
+         var result:Sprite = new Sprite();
+         if(level < 10)
          {
-            _loc2_.addChild(ComponentFactory.Instance.creatBitmap("asset.core.leveltip." + LEVELTIPCLASSES[param1]));
+            result.addChild(ComponentFactory.Instance.creatBitmap("asset.core.leveltip." + LEVELTIPCLASSES[level]));
          }
-         else if(param1 > 9)
+         else if(level > 9)
          {
-            _loc6_ = param1 / 10;
-            _loc5_ = param1 % 10;
-            _loc4_ = ComponentFactory.Instance.creatBitmap("asset.core.leveltip." + LEVELTIPCLASSES[_loc6_]);
-            _loc3_ = ComponentFactory.Instance.creatBitmap("asset.core.leveltip." + LEVELTIPCLASSES[_loc5_]);
-            _loc3_.x = _loc4_.width;
-            _loc2_.addChild(_loc4_);
-            _loc2_.addChild(_loc3_);
+            units = level / 10;
+            tens = level % 10;
+            ub = ComponentFactory.Instance.creatBitmap("asset.core.leveltip." + LEVELTIPCLASSES[units]);
+            tb = ComponentFactory.Instance.creatBitmap("asset.core.leveltip." + LEVELTIPCLASSES[tens]);
+            tb.x = ub.width;
+            result.addChild(ub);
+            result.addChild(tb);
          }
-         return _loc2_;
+         return result;
       }
       
-      public static function creatLevelPicInContainer(param1:DisplayObjectContainer, param2:int, param3:int, param4:int, param5:Boolean = true) : void
+      public static function creatLevelPicInContainer(parentObj:DisplayObjectContainer, _level:int, dx:int, dy:int, zeroPro:Boolean = true) : void
       {
-         var _loc8_:* = 0;
-         var _loc7_:* = null;
-         var _loc6_:* = null;
-         if(param2 > 9)
+         var _tmp:* = 0;
+         var _lt1:* = null;
+         var _lt2:* = null;
+         if(_level > 9)
          {
-            _loc8_ = uint(Math.floor(param2 / 10));
-            _loc7_ = ComponentFactory.Instance.creat("asset.core.leveltip." + LEVELTIPCLASSES[_loc8_]);
-            _loc7_.x = param3 - 4;
-            _loc7_.y = param4;
-            param1.addChild(_loc7_);
-            _loc8_ = uint(param2 % 10);
-            _loc6_ = ComponentFactory.Instance.creat("asset.core.leveltip." + LEVELTIPCLASSES[_loc8_]);
-            _loc6_.x = _loc7_.x + _loc7_.width - 3;
-            _loc6_.y = _loc7_.y;
-            param1.addChild(_loc6_);
+            _tmp = uint(Math.floor(_level / 10));
+            _lt1 = ComponentFactory.Instance.creat("asset.core.leveltip." + LEVELTIPCLASSES[_tmp]);
+            _lt1.x = dx - 4;
+            _lt1.y = dy;
+            parentObj.addChild(_lt1);
+            _tmp = uint(_level % 10);
+            _lt2 = ComponentFactory.Instance.creat("asset.core.leveltip." + LEVELTIPCLASSES[_tmp]);
+            _lt2.x = _lt1.x + _lt1.width - 3;
+            _lt2.y = _lt1.y;
+            parentObj.addChild(_lt2);
          }
-         else if(param5)
+         else if(zeroPro)
          {
-            _loc8_ = uint(0);
-            _loc7_ = ComponentFactory.Instance.creat("asset.core.leveltip." + LEVELTIPCLASSES[_loc8_]);
-            _loc7_.x = param3 - 4;
-            _loc7_.y = param4;
-            param1.addChild(_loc7_);
-            _loc8_ = uint(param2);
-            _loc6_ = ComponentFactory.Instance.creat("asset.core.leveltip." + LEVELTIPCLASSES[_loc8_]);
-            _loc6_.x = _loc7_.x + _loc7_.width - 3;
-            _loc6_.y = _loc7_.y;
-            param1.addChild(_loc6_);
+            _tmp = uint(0);
+            _lt1 = ComponentFactory.Instance.creat("asset.core.leveltip." + LEVELTIPCLASSES[_tmp]);
+            _lt1.x = dx - 4;
+            _lt1.y = dy;
+            parentObj.addChild(_lt1);
+            _tmp = uint(_level);
+            _lt2 = ComponentFactory.Instance.creat("asset.core.leveltip." + LEVELTIPCLASSES[_tmp]);
+            _lt2.x = _lt1.x + _lt1.width - 3;
+            _lt2.y = _lt1.y;
+            parentObj.addChild(_lt2);
          }
          else
          {
-            _loc8_ = uint(param2);
-            _loc6_ = ComponentFactory.Instance.creat("asset.core.leveltip." + LEVELTIPCLASSES[_loc8_]);
-            _loc6_.x = param3;
-            _loc6_.y = param4;
-            param1.addChild(_loc6_);
+            _tmp = uint(_level);
+            _lt2 = ComponentFactory.Instance.creat("asset.core.leveltip." + LEVELTIPCLASSES[_tmp]);
+            _lt2.x = dx;
+            _lt2.y = dy;
+            parentObj.addChild(_lt2);
          }
       }
    }

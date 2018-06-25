@@ -38,9 +38,9 @@ package petsBag.petsAdvanced
       
       private var _isLock:Boolean;
       
-      public function PetsAdvancedManager(param1:IEventDispatcher = null)
+      public function PetsAdvancedManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get Instance() : PetsAdvancedManager
@@ -52,91 +52,89 @@ package petsBag.petsAdvanced
          return _instance;
       }
       
-      public function isActivated(param1:int) : Boolean
+      public function isActivated(templeteID:int) : Boolean
       {
          var _loc4_:int = 0;
          var _loc3_:* = formDataList;
-         for each(var _loc2_ in formDataList)
+         for each(var data in formDataList)
          {
-            if(_loc2_.TemplateID == param1)
+            if(data.TemplateID == templeteID)
             {
-               return _loc2_.ShowBtn == 1 || _loc2_.ShowBtn == 2;
+               return data.ShowBtn == 1 || data.ShowBtn == 2;
             }
          }
          return false;
       }
       
-      public function risingStarDataComplete(param1:PetsRisingStarDataAnalyzer) : void
+      public function risingStarDataComplete(analyzer:PetsRisingStarDataAnalyzer) : void
       {
-         risingStarDataList = param1.list;
+         risingStarDataList = analyzer.list;
       }
       
-      public function evolutionDataComplete(param1:PetsEvolutionDataAnalyzer) : void
+      public function evolutionDataComplete(analyzer:PetsEvolutionDataAnalyzer) : void
       {
-         evolutionDataList = param1.list;
+         evolutionDataList = analyzer.list;
       }
       
-      public function formDataComplete(param1:PetsFormDataAnalyzer) : void
+      public function formDataComplete(analyzer:PetsFormDataAnalyzer) : void
       {
-         formDataList = param1.list;
+         formDataList = analyzer.list;
       }
       
-      public function moePropertyComplete(param1:PetMoePropertyAnalyzer) : void
+      public function moePropertyComplete(analyzer:PetMoePropertyAnalyzer) : void
       {
-         petMoePropertyList = param1.list;
+         petMoePropertyList = analyzer.list;
       }
       
-      public function getPetDataByTempId(param1:int) : PetsFormData
+      public function getPetDataByTempId(id:int) : PetsFormData
       {
-         var _loc2_:int = 0;
-         var _loc3_:PetsFormData = null;
+         var i:int = 0;
+         var info:PetsFormData = null;
          if(formDataList)
          {
-            _loc2_ = 0;
-            while(_loc2_ < formDataList.length)
+            for(i = 0; i < formDataList.length; )
             {
-               _loc3_ = formDataList[_loc2_];
-               if(_loc3_.TemplateID != param1)
+               info = formDataList[i];
+               if(info.TemplateID != id)
                {
-                  _loc2_++;
+                  i++;
                   continue;
                }
                break;
             }
          }
-         return _loc3_;
+         return info;
       }
       
-      public function getFormDataIndexByTempId(param1:int) : int
+      public function getFormDataIndexByTempId(id:int) : int
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = -1;
+         var i:int = 0;
+         var index:* = -1;
          if(formDataList)
          {
-            _loc3_ = 0;
-            while(_loc3_ < formDataList.length)
+            for(i = 0; i < formDataList.length; )
             {
-               if(param1 == formDataList[_loc3_].TemplateID)
+               if(id == formDataList[i].TemplateID)
                {
-                  _loc2_ = _loc3_;
+                  index = i;
                   break;
                }
-               _loc3_++;
+               i++;
             }
          }
-         return _loc2_;
+         return index;
       }
       
-      public function getPetsResourceByID(param1:int) : String
+      public function getPetsResourceByID(id:int) : String
       {
-         var _loc2_:int = getFormDataIndexByTempId(param1);
-         return formDataList[_loc2_].Resource;
+         var index:int = getFormDataIndexByTempId(id);
+         return formDataList[index].Resource;
       }
       
-      public function showFrame(param1:int = 0, param2:Boolean = false) : void
+      public function showFrame(type:int = 0, isLock:Boolean = false) : void
       {
-         _openType = param1;
-         _isLock = param2;
+         _openType = type;
+         _isLock = isLock;
          show();
       }
       

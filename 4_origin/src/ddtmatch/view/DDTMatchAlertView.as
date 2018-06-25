@@ -46,12 +46,12 @@ package ddtmatch.view
          _checkBtn.addEventListener("select",__noAlertTip);
       }
       
-      protected function __noAlertTip(param1:Event) : void
+      protected function __noAlertTip(event:Event) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:DDTMatchEvent = new DDTMatchEvent("expertSelect");
-         _loc2_.flag = _checkBtn.selected;
-         dispatchEvent(_loc2_);
+         var evt:DDTMatchEvent = new DDTMatchEvent("expertSelect");
+         evt.flag = _checkBtn.selected;
+         dispatchEvent(evt);
       }
       
       override public function get isBand() : Boolean
@@ -59,9 +59,9 @@ package ddtmatch.view
          return _selecedItem.isBind;
       }
       
-      public function set text(param1:String) : void
+      public function set text(text:String) : void
       {
-         _tipInfo.text = param1;
+         _tipInfo.text = text;
       }
       
       private function removeEvent() : void

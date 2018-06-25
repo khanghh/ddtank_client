@@ -52,10 +52,10 @@ package christmas.items
          super();
       }
       
-      public function initView(param1:int = 0) : void
+      public function initView(index:int = 0) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var newBnt:* = null;
+         var newReceiveBnt:* = null;
          _bg = ComponentFactory.Instance.creatBitmap("christmas.list.Back");
          _receiveOK = ComponentFactory.Instance.creatBitmap("asset.makingSnowmen.receiveOK");
          _receiveOK.visible = false;
@@ -67,23 +67,23 @@ package christmas.items
          addChild(_bg);
          addChild(_countTxt);
          addChild(_itemCell);
-         if(param1 >= ChristmasCoreManager.instance.model.packsLen - 1)
+         if(index >= ChristmasCoreManager.instance.model.packsLen - 1)
          {
             _poorTxt = ComponentFactory.Instance.creatComponentByStylename("christmas.list.poorTxt");
             _receiveBtn = ComponentFactory.Instance.creat("christmas.makingSnowmen.lockBtn");
-            _loc3_ = ChristmasCoreManager.instance.returnComponentBnt(_receiveBtn,LanguageMgr.GetTranslation("christmas.receiveBtn.tip"));
-            addChild(_loc3_);
+            newBnt = ChristmasCoreManager.instance.returnComponentBnt(_receiveBtn,LanguageMgr.GetTranslation("christmas.receiveBtn.tip"));
+            addChild(newBnt);
             addChild(_poorTxt);
          }
          else
          {
             _receiveBtn = ComponentFactory.Instance.creat("christmas.makingSnowmen.receiveBtn");
-            if(ChristmasCoreManager.instance.CanGetGift(param1) && ChristmasCoreManager.instance.model.snowPackNum[param1] > ChristmasCoreManager.instance.model.count)
+            if(ChristmasCoreManager.instance.CanGetGift(index) && ChristmasCoreManager.instance.model.snowPackNum[index] > ChristmasCoreManager.instance.model.count)
             {
-               _loc2_ = ChristmasCoreManager.instance.returnComponentBnt(_receiveBtn,LanguageMgr.GetTranslation("christmas.listItem.num"));
-               addChild(_loc2_);
+               newReceiveBnt = ChristmasCoreManager.instance.returnComponentBnt(_receiveBtn,LanguageMgr.GetTranslation("christmas.listItem.num"));
+               addChild(newReceiveBnt);
             }
-            else if(ChristmasCoreManager.instance.CanGetGift(param1) && ChristmasCoreManager.instance.model.snowPackNum[param1] <= ChristmasCoreManager.instance.model.count)
+            else if(ChristmasCoreManager.instance.CanGetGift(index) && ChristmasCoreManager.instance.model.snowPackNum[index] <= ChristmasCoreManager.instance.model.count)
             {
                addChild(_receiveBtn);
             }
@@ -110,22 +110,22 @@ package christmas.items
          }
       }
       
-      public function initText(param1:int, param2:int) : void
+      public function initText(num:int, index:int) : void
       {
-         _snowPackNum = param1;
-         _countTxt.text = LanguageMgr.GetTranslation("christmas.list.countTxt.LG",param1);
+         _snowPackNum = num;
+         _countTxt.text = LanguageMgr.GetTranslation("christmas.list.countTxt.LG",num);
       }
       
       protected function creatItemCell() : ShopItemCell
       {
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,46,46);
-         _loc1_.graphics.endFill();
-         return CellFactory.instance.createShopItemCell(_loc1_,null,true,true) as ShopItemCell;
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(16777215,0);
+         sp.graphics.drawRect(0,0,46,46);
+         sp.graphics.endFill();
+         return CellFactory.instance.createShopItemCell(sp,null,true,true) as ShopItemCell;
       }
       
-      private function __shopViewItemBtnClick(param1:MouseEvent) : void
+      private function __shopViewItemBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(ChristmasCoreController.instance.model.count < snowPackNum)
@@ -136,13 +136,13 @@ package christmas.items
          SocketManager.Instance.out.sendButChristmasGoods(_shopItemInfo.TemplateID);
       }
       
-      public function set shopItemInfo(param1:ChristmasSystemItemsInfo) : void
+      public function set shopItemInfo(value:ChristmasSystemItemsInfo) : void
       {
          if(_shopItemInfo)
          {
             _shopItemInfo.removeEventListener("change",__updateShopItem);
          }
-         _shopItemInfo = param1;
+         _shopItemInfo = value;
          if(_shopItemInfo)
          {
             _itemID = _shopItemInfo.TemplateID;
@@ -157,7 +157,7 @@ package christmas.items
          }
       }
       
-      private function __updateShopItem(param1:Event) : void
+      private function __updateShopItem(event:Event) : void
       {
          _itemCell.info = _shopItemInfo.TemplateInfo;
       }
@@ -224,9 +224,9 @@ package christmas.items
          return _itemID;
       }
       
-      public function set itemID(param1:int) : void
+      public function set itemID(value:int) : void
       {
-         _itemID = param1;
+         _itemID = value;
       }
       
       public function get snowPackNum() : int

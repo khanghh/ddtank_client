@@ -54,9 +54,9 @@ package starling.core
          removeEventListener("enterFrame",onEnterFrame);
       }
       
-      private function onEnterFrame(param1:EnterFrameEvent) : void
+      private function onEnterFrame(event:EnterFrameEvent) : void
       {
-         mTotalTime = mTotalTime + param1.passedTime;
+         mTotalTime = mTotalTime + event.passedTime;
          mFrameCount = Number(mFrameCount) + 1;
          if(mTotalTime > 0.5)
          {
@@ -73,10 +73,10 @@ package starling.core
          mTextField.text = "FPS: " + mFps.toFixed(mFps < 100?1:0) + "\nMEM: " + mMemory.toFixed(mMemory < 100?1:0) + "\nDRW: " + (mTotalTime > 0?mDrawCount - 2:mDrawCount);
       }
       
-      override public function render(param1:RenderSupport, param2:Number) : void
+      override public function render(support:RenderSupport, parentAlpha:Number) : void
       {
-         param1.finishQuadBatch();
-         super.render(param1,param2);
+         support.finishQuadBatch();
+         super.render(support,parentAlpha);
       }
       
       public function get drawCount() : int
@@ -84,9 +84,9 @@ package starling.core
          return mDrawCount;
       }
       
-      public function set drawCount(param1:int) : void
+      public function set drawCount(value:int) : void
       {
-         mDrawCount = param1;
+         mDrawCount = value;
       }
       
       public function get fps() : Number
@@ -94,9 +94,9 @@ package starling.core
          return mFps;
       }
       
-      public function set fps(param1:Number) : void
+      public function set fps(value:Number) : void
       {
-         mFps = param1;
+         mFps = value;
       }
       
       public function get memory() : Number
@@ -104,9 +104,9 @@ package starling.core
          return mMemory;
       }
       
-      public function set memory(param1:Number) : void
+      public function set memory(value:Number) : void
       {
-         mMemory = param1;
+         mMemory = value;
       }
    }
 }

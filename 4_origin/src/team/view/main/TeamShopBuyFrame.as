@@ -25,12 +25,12 @@ package team.view.main
          _submitButton.y = 116;
       }
       
-      override protected function __buy(param1:MouseEvent) : void
+      override protected function __buy(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc3_:int = TeamManager.instance.model.selfActive;
-         var _loc2_:int = _number.number * _perPrice;
-         if(_loc3_ < _loc2_)
+         var selfActive:int = TeamManager.instance.model.selfActive;
+         var price:int = _number.number * _perPrice;
+         if(selfActive < price)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("team.shop.notBuy"));
             return;
@@ -41,8 +41,8 @@ package team.view.main
       
       override protected function refreshNumText() : void
       {
-         var _loc1_:String = String(_number.number * _perPrice);
-         totalText.text = _loc1_ + " " + LanguageMgr.GetTranslation("team.shop.price");
+         var priceStr:String = String(_number.number * _perPrice);
+         totalText.text = priceStr + " " + LanguageMgr.GetTranslation("team.shop.price");
          totalText.x = 192;
       }
    }

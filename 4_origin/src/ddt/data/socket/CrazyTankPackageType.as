@@ -287,6 +287,8 @@ package ddt.data.socket
       
       public static const PET_EQUIP_AWAKENINFO:int = 38;
       
+      public static const PET_WASH_BONE:int = 40;
+      
       public static const RUNE_MOVEPLACE:int = 1;
       
       public static const RUNE_UPGRADE:int = 2;
@@ -358,6 +360,10 @@ package ddt.data.socket
       public static const ROLL_DICE:int = 123;
       
       public static const ADD_PLAYER_SHADOWN:int = 157;
+      
+      public static const SIMPLEOBJECT_POS:int = 124;
+      
+      public static const DREAMLAND_HURTLIST:int = 126;
        
       
       public function CrazyTankPackageType()

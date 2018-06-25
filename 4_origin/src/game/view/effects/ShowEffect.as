@@ -22,10 +22,10 @@ package game.view.effects
       
       private var add:Boolean = true;
       
-      public function ShowEffect(param1:String)
+      public function ShowEffect(type:String)
       {
          super();
-         _type = param1;
+         _type = type;
          init();
       }
       
@@ -36,7 +36,7 @@ package game.view.effects
          addEventListener("enterFrame",enterFrameHandler);
       }
       
-      private function enterFrameHandler(param1:Event) : void
+      private function enterFrameHandler(evt:Event) : void
       {
          if(_pic.alpha > 0.95)
          {

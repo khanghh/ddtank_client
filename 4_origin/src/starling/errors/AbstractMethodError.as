@@ -4,9 +4,9 @@ package starling.errors
    {
        
       
-      public function AbstractMethodError(param1:* = "Method needs to be implemented in subclass", param2:* = 0)
+      public function AbstractMethodError(message:* = "Method needs to be implemented in subclass", id:* = 0)
       {
-         super(param1,param2);
+         super(message,id);
       }
    }
 }

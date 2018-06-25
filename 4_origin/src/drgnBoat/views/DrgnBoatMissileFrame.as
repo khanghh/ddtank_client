@@ -65,25 +65,24 @@ package drgnBoat.views
       
       private function setList() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var info:* = null;
+         var cell:* = null;
          _playerList = DrgnBoatManager.instance.playerList;
          _list = [];
-         _loc3_ = 0;
-         while(_loc3_ <= _playerList.length - 1)
+         for(i = 0; i <= _playerList.length - 1; )
          {
-            _loc2_ = _playerList[_loc3_] as DrgnBoatPlayerInfo;
-            if(!_loc2_.isSelf)
+            info = _playerList[i] as DrgnBoatPlayerInfo;
+            if(!info.isSelf)
             {
-               _loc1_ = new DrgnBoatNameCell(_loc3_);
-               _loc1_.setData(_loc2_.name);
-               _loc1_.addEventListener("click",__cellClick);
-               _loc1_.buttonMode = true;
-               _vbox.addChild(_loc1_);
-               _list.push(_loc1_);
+               cell = new DrgnBoatNameCell(i);
+               cell.setData(info.name);
+               cell.addEventListener("click",__cellClick);
+               cell.buttonMode = true;
+               _vbox.addChild(cell);
+               _list.push(cell);
             }
-            _loc3_++;
+            i++;
          }
       }
       
@@ -93,42 +92,42 @@ package drgnBoat.views
          _submitBtn.addEventListener("click",__submitBtnClick);
       }
       
-      protected function __cellClick(param1:MouseEvent) : void
+      protected function __cellClick(event:MouseEvent) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = _list;
-         for each(var _loc2_ in _list)
+         for each(var cell in _list)
          {
-            _loc2_.selected = false;
+            cell.selected = false;
          }
-         (param1.currentTarget as DrgnBoatNameCell).selected = true;
+         (event.currentTarget as DrgnBoatNameCell).selected = true;
       }
       
-      protected function __submitBtnClick(param1:MouseEvent) : void
+      protected function __submitBtnClick(event:MouseEvent) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = _list;
-         for each(var _loc2_ in _list)
+         for each(var cell in _list)
          {
-            if(_loc2_.selected == true)
+            if(cell.selected == true)
             {
-               _threeBtnView.targetId = _playerList[_loc2_.index].id;
-               _threeBtnView.targetZone = _playerList[_loc2_.index].zoneId;
+               _threeBtnView.targetId = _playerList[cell.index].id;
+               _threeBtnView.targetZone = _playerList[cell.index].zoneId;
                _threeBtnView.useSkill();
             }
          }
          dispose();
       }
       
-      public function setThreeBtnView(param1:DrgnBoatThreeBtnView) : void
+      public function setThreeBtnView(view:DrgnBoatThreeBtnView) : void
       {
-         _threeBtnView = param1;
+         _threeBtnView = view;
       }
       
-      protected function _response(param1:FrameEvent) : void
+      protected function _response(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(event.responseCode == 0 || event.responseCode == 1)
          {
             ObjectUtils.disposeObject(this);
          }

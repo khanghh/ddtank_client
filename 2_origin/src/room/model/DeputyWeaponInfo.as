@@ -22,11 +22,11 @@ package room.model
       
       public var name:String;
       
-      public function DeputyWeaponInfo(param1:ItemTemplateInfo)
+      public function DeputyWeaponInfo(itemInfo:ItemTemplateInfo)
       {
          name = LanguageMgr.GetTranslation("tank.auctionHouse.view.offhand");
          super();
-         _info = param1;
+         _info = itemInfo;
          if(_info)
          {
             energy = Number(_info.Property4);
@@ -42,25 +42,25 @@ package room.model
          _info = null;
       }
       
-      public function getDeputyWeaponIcon(param1:int = 0) : DisplayObject
+      public function getDeputyWeaponIcon(type:int = 0) : DisplayObject
       {
-         var _loc2_:BagCell = new BagCell(0,_info);
-         if(param1 == 0)
+         var cell:BagCell = new BagCell(0,_info);
+         if(type == 0)
          {
-            return _loc2_.getContent();
+            return cell.getContent();
          }
-         if(param1 == 1)
+         if(type == 1)
          {
-            return _loc2_.getSmallContent();
+            return cell.getSmallContent();
          }
          return null;
       }
       
       public function getDeputyWeaponIcon3D() : CellContent3D
       {
-         var _loc1_:CellContent3D = new CellContent3D(_info);
-         _loc1_.loadSync();
-         return _loc1_;
+         var cell:CellContent3D = new CellContent3D(_info);
+         cell.loadSync();
+         return cell;
       }
       
       public function get isShield() : Boolean

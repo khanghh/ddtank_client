@@ -110,8 +110,8 @@ package store.view.exalt
       
       private function init() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          _titleBG = UICreatShortcut.creatAndAdd("asset.ddtstore.exalt.TitleText",this);
          _buyBtn = UICreatShortcut.creatAndAdd("ddt.store.view.exalt.buyBtn",this);
          _exaltBtn = UICreatShortcut.creatAndAdd("ddt.store.view.exalt.exaltBtn",this);
@@ -135,23 +135,22 @@ package store.view.exalt
          _items = [];
          _area = new StoreDragInArea(_items);
          addChildAt(_area,0);
-         _loc2_ = 0;
-         while(_loc2_ < _pointArray.length)
+         for(i = 0; i < _pointArray.length; )
          {
-            switch(int(_loc2_))
+            switch(int(i))
             {
                case 0:
-                  _loc1_ = new StrengthStone(["2","45"],_loc2_);
+                  item = new StrengthStone(["2","45"],i);
                   break;
                case 1:
-                  _loc1_ = new ExaltItemCell(_loc2_);
+                  item = new ExaltItemCell(i);
             }
-            _loc1_.addEventListener("change",__itemInfoChange);
-            _items[_loc2_] = _loc1_;
-            _loc1_.x = _pointArray[_loc2_].x;
-            _loc1_.y = _pointArray[_loc2_].y;
-            addChild(_loc1_);
-            _loc2_++;
+            item.addEventListener("change",__itemInfoChange);
+            _items[i] = item;
+            item.x = _pointArray[i].x;
+            item.y = _pointArray[i].y;
+            addChild(item);
+            i++;
          }
       }
       
@@ -167,13 +166,12 @@ package store.view.exalt
       
       private function removeEvent() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _items.length)
+         var i:int = 0;
+         for(i = 0; i < _items.length; )
          {
-            _items[_loc1_].removeEventListener("change",__itemInfoChange);
-            _items[_loc1_].dispose();
-            _loc1_++;
+            _items[i].removeEventListener("change",__itemInfoChange);
+            _items[i].dispose();
+            i++;
          }
          _exaltBtn.removeEventListener("click",__onExaltClick);
          _buyBtn.removeEventListener("click",__onBuyClick);
@@ -183,21 +181,21 @@ package store.view.exalt
          _restoreBtn.removeEventListener("click",__onRestoreClick);
       }
       
-      protected function __exaltFinish(param1:StoreIIEvent) : void
+      protected function __exaltFinish(event:StoreIIEvent) : void
       {
          showSuccessMovie();
       }
       
-      private function __onRestoreClick(param1:MouseEvent) : void
+      private function __onRestoreClick(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.store.exaltRestoreAlter",_price),"",LanguageMgr.GetTranslation("cancel"),true,true,false,2);
-         _loc2_.addEventListener("response",__onRestoreResponse);
+         var frame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.store.exaltRestoreAlter",_price),"",LanguageMgr.GetTranslation("cancel"),true,true,false,2);
+         frame.addEventListener("response",__onRestoreResponse);
       }
       
-      private function __onRestoreResponse(param1:FrameEvent) : void
+      private function __onRestoreResponse(e:FrameEvent) : void
       {
-         e = param1;
+         e = e;
          var frame:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
          frame.removeEventListener("response",__onRestoreResponse);
          if(e.responseCode == 3 || e.responseCode == 2)
@@ -210,25 +208,25 @@ package store.view.exalt
          frame.dispose();
       }
       
-      protected function __exaltFail(param1:StoreIIEvent) : void
+      protected function __exaltFail(event:StoreIIEvent) : void
       {
          ObjectUtils.disposeObject(_luckyText);
          _luckyText = null;
          _luckyText = ComponentFactory.Instance.creatComponentByStylename("ddt.store.view.exalt.luckyText");
-         _luckyText.text = LanguageMgr.GetTranslation("store.view.exalt.luckyTips",int(param1.data));
-         var _loc2_:int = _luckyText.width;
-         var _loc4_:int = _luckyText.height;
-         var _loc3_:int = _luckyText.y;
+         _luckyText.text = LanguageMgr.GetTranslation("store.view.exalt.luckyTips",int(event.data));
+         var tempW:int = _luckyText.width;
+         var tempH:int = _luckyText.height;
+         var tempY:int = _luckyText.y;
          _luckyText.width = _luckyText.width / 2;
          _luckyText.height = _luckyText.height / 2;
          _luckyText.alpha = 0.5;
          TweenMax.fromTo(_luckyText,2,{
-            "y":_loc3_ - 30,
+            "y":tempY - 30,
             "alpha":1,
-            "width":_loc2_,
-            "height":_loc4_
+            "width":tempW,
+            "height":tempH
          },{
-            "y":_loc3_ - 60,
+            "y":tempY - 60,
             "alpha":0,
             "width":0,
             "height":0,
@@ -248,15 +246,15 @@ package store.view.exalt
          _luckyText = null;
       }
       
-      protected function __frameEvent(param1:FrameEvent) : void
+      protected function __frameEvent(event:FrameEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:Disposeable = param1.target as Disposeable;
-         _loc2_.dispose();
-         _loc2_ = null;
+         var frame:Disposeable = event.target as Disposeable;
+         frame.dispose();
+         frame = null;
       }
       
-      protected function __continuousClick(param1:MouseEvent) : void
+      protected function __continuousClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(!_continuous.selected)
@@ -277,7 +275,7 @@ package store.view.exalt
          }
       }
       
-      protected function __onRepeatCount(param1:TimerEvent) : void
+      protected function __onRepeatCount(event:TimerEvent) : void
       {
          if(isExalt() && equipisAdapt(_items[1].info))
          {
@@ -289,19 +287,19 @@ package store.view.exalt
          }
       }
       
-      protected function __onBuyClick(param1:MouseEvent) : void
+      protected function __onBuyClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          buyRock();
       }
       
-      protected function __onExaltClick(param1:MouseEvent) : void
+      protected function __onExaltClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:int = getTimer();
-         if(_loc2_ - _lastExaltTime > 1400)
+         var time:int = getTimer();
+         if(time - _lastExaltTime > 1400)
          {
-            _lastExaltTime = _loc2_;
+            _lastExaltTime = time;
             sendExalt();
          }
          else
@@ -370,38 +368,38 @@ package store.view.exalt
       private function getCellsPoint() : void
       {
          _pointArray = new Vector.<Point>();
-         var _loc1_:Point = ComponentFactory.Instance.creatCustomObject("store.view.exalt.StoreExaltBG.point0");
-         _pointArray.push(_loc1_);
-         var _loc2_:Point = ComponentFactory.Instance.creatCustomObject("store.view.exalt.StoreExaltBG.point1");
-         _pointArray.push(_loc2_);
+         var point:Point = ComponentFactory.Instance.creatCustomObject("store.view.exalt.StoreExaltBG.point0");
+         _pointArray.push(point);
+         var point2:Point = ComponentFactory.Instance.creatCustomObject("store.view.exalt.StoreExaltBG.point1");
+         _pointArray.push(point2);
       }
       
-      protected function __itemInfoChange(param1:Event) : void
+      protected function __itemInfoChange(event:Event) : void
       {
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         var _loc2_:int = 0;
-         if(param1.currentTarget is ExaltItemCell)
+         var itemCell:* = null;
+         var info:* = null;
+         var max:int = 0;
+         if(event.currentTarget is ExaltItemCell)
          {
-            _loc3_ = param1.currentTarget as ExaltItemCell;
-            _loc4_ = _loc3_.info as InventoryItemInfo;
-            if(_loc4_)
+            itemCell = event.currentTarget as ExaltItemCell;
+            info = itemCell.info as InventoryItemInfo;
+            if(info)
             {
                if(ExaltItemCell(_items[1]).actionState)
                {
                   ExaltItemCell(_items[1]).actionState = false;
                }
-               _loc2_ = StoreEquipExperience.expericence[_loc4_.StrengthenLevel + 1];
-               if(_loc2_ == 0)
+               max = StoreEquipExperience.expericence[info.StrengthenLevel + 1];
+               if(max == 0)
                {
                   _progressBar.progress(0,0);
                }
                else
                {
-                  _progressBar.progress(_loc4_.StrengthenExp,_loc2_);
+                  _progressBar.progress(info.StrengthenExp,max);
                }
-               _restoreBtn.enable = _loc4_.StrengthenExp > 0;
-               _price = ServerConfigManager.instance.storeExaltRestorePrice * _loc4_.StrengthenExp;
+               _restoreBtn.enable = info.StrengthenExp > 0;
+               _price = ServerConfigManager.instance.storeExaltRestorePrice * info.StrengthenExp;
             }
             else
             {
@@ -422,7 +420,7 @@ package store.view.exalt
          _restoreBtn.enable = false;
       }
       
-      private function __onSuccessMovieComplete(param1:Event) : void
+      private function __onSuccessMovieComplete(e:Event) : void
       {
          if(_movieI.totalFrames == _movieI.currentFrame)
          {
@@ -463,7 +461,7 @@ package store.view.exalt
          _restoreBtn.enable = true;
       }
       
-      private function __onExaltMovieIIComplete(param1:Event) : void
+      private function __onExaltMovieIIComplete(e:Event) : void
       {
          if(_movieII.totalFrames == _movieII.currentFrame)
          {
@@ -478,75 +476,75 @@ package store.view.exalt
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc1_:ShopItemInfo = ShopManager.Instance.getGoodsByTemplateID(11150,1);
-         var _loc2_:QuickBuyAlertBase = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickBuyAlert");
-         _loc2_.setData(_loc1_.TemplateID,_loc1_.GoodsID,_loc1_.AValue1);
-         LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+         var shopInfo:ShopItemInfo = ShopManager.Instance.getGoodsByTemplateID(11150,1);
+         var quickBuyFrame:QuickBuyAlertBase = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickBuyAlert");
+         quickBuyFrame.setData(shopInfo.TemplateID,shopInfo.GoodsID,shopInfo.AValue1);
+         LayerManager.Instance.addToLayer(quickBuyFrame,3,true,1);
       }
       
-      public function dragDrop(param1:BagCell) : void
+      public function dragDrop(source:BagCell) : void
       {
-         var _loc2_:* = null;
-         if(param1 == null)
+         var ds:* = null;
+         if(source == null)
          {
             return;
          }
-         var _loc3_:InventoryItemInfo = param1.info as InventoryItemInfo;
+         var info:InventoryItemInfo = source.info as InventoryItemInfo;
          var _loc5_:int = 0;
          var _loc4_:* = _items;
-         for each(_loc2_ in _items)
+         for each(ds in _items)
          {
-            if(_loc2_.info == _loc3_)
+            if(ds.info == info)
             {
-               _loc2_.info = null;
-               param1.locked = false;
+               ds.info = null;
+               source.locked = false;
                return;
             }
          }
          var _loc7_:int = 0;
          var _loc6_:* = _items;
-         for each(_loc2_ in _items)
+         for each(ds in _items)
          {
-            if(_loc2_)
+            if(ds)
             {
-               if(_loc2_ is StoneCell)
+               if(ds is StoneCell)
                {
-                  if((_loc2_ as StoneCell).types.indexOf(_loc3_.Property1) > -1 && _loc3_.CategoryID == 11)
+                  if((ds as StoneCell).types.indexOf(info.Property1) > -1 && info.CategoryID == 11)
                   {
-                     if(isAdaptToStone(_loc3_))
+                     if(isAdaptToStone(info))
                      {
-                        SocketManager.Instance.out.sendMoveGoods(_loc3_.BagType,_loc3_.Place,12,_loc2_.index,_loc3_.Count,true);
+                        SocketManager.Instance.out.sendMoveGoods(info.BagType,info.Place,12,ds.index,info.Count,true);
                         return;
                      }
                      MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.view.strength.typeUnpare"));
                   }
                }
-               else if(_loc2_ is ExaltItemCell)
+               else if(ds is ExaltItemCell)
                {
-                  if(_loc3_.getRemainDate() <= 0)
+                  if(info.getRemainDate() <= 0)
                   {
                      MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.view.fusion.AccessoryDragInArea.overdue"));
                   }
-                  else if(param1.info.CanStrengthen && equipisAdapt(_loc3_))
+                  else if(source.info.CanStrengthen && equipisAdapt(info))
                   {
-                     SocketManager.Instance.out.sendMoveGoods(_loc3_.BagType,_loc3_.Place,12,_loc2_.index,1);
+                     SocketManager.Instance.out.sendMoveGoods(info.BagType,info.Place,12,ds.index,1);
                      ExaltItemCell(_items[1]).actionState = true;
                      return;
                   }
                }
             }
          }
-         if(EquipType.isExaltStone(_loc3_))
+         if(EquipType.isExaltStone(info))
          {
             var _loc9_:int = 0;
             var _loc8_:* = _items;
-            for each(_loc2_ in _items)
+            for each(ds in _items)
             {
-               if(_loc2_ is StoneCell && (_loc2_ as StoneCell).types.indexOf(_loc3_.Property1) > -1 && _loc3_.CategoryID == 11)
+               if(ds is StoneCell && (ds as StoneCell).types.indexOf(info.Property1) > -1 && info.CategoryID == 11)
                {
-                  if(isAdaptToStone(_loc3_))
+                  if(isAdaptToStone(info))
                   {
-                     SocketManager.Instance.out.sendMoveGoods(_loc3_.BagType,_loc3_.Place,12,_loc2_.index,_loc3_.Count,true);
+                     SocketManager.Instance.out.sendMoveGoods(info.BagType,info.Place,12,ds.index,info.Count,true);
                      return;
                   }
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.view.strength.typeUnpare"));
@@ -555,18 +553,18 @@ package store.view.exalt
          }
       }
       
-      private function showNumAlert(param1:InventoryItemInfo, param2:int) : void
+      private function showNumAlert(info:InventoryItemInfo, index:int) : void
       {
          _aler = ComponentFactory.Instance.creat("store.view.exalt.exaltSelectNumAlertFrame");
          _aler.addExeFunction(sellFunction,notSellFunction);
-         _aler.goodsinfo = param1;
-         _aler.index = param2;
-         _aler.show(param1.Count);
+         _aler.goodsinfo = info;
+         _aler.index = index;
+         _aler.show(info.Count);
       }
       
-      private function sellFunction(param1:int, param2:InventoryItemInfo, param3:int) : void
+      private function sellFunction(_nowNum:int, goodsinfo:InventoryItemInfo, index:int) : void
       {
-         SocketManager.Instance.out.sendMoveGoods(param2.BagType,param2.Place,12,param3,param1,true);
+         SocketManager.Instance.out.sendMoveGoods(goodsinfo.BagType,goodsinfo.Place,12,index,_nowNum,true);
          if(_aler)
          {
             _aler.dispose();
@@ -591,18 +589,18 @@ package store.view.exalt
          _aler = null;
       }
       
-      private function isAdaptToStone(param1:InventoryItemInfo) : Boolean
+      private function isAdaptToStone(info:InventoryItemInfo) : Boolean
       {
-         if(_items[0].info != null && _items[0].info.Property1 != param1.Property1)
+         if(_items[0].info != null && _items[0].info.Property1 != info.Property1)
          {
             return false;
          }
          return true;
       }
       
-      private function equipisAdapt(param1:InventoryItemInfo) : Boolean
+      private function equipisAdapt(info:InventoryItemInfo) : Boolean
       {
-         if(param1.StrengthenLevel >= 15)
+         if(info.StrengthenLevel >= 15)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.view.exalt.warningI"));
             return false;
@@ -610,16 +608,16 @@ package store.view.exalt
          return true;
       }
       
-      public function refreshData(param1:Dictionary) : void
+      public function refreshData(items:Dictionary) : void
       {
-         var _loc2_:* = 0;
+         var itemPlace:* = 0;
          var _loc5_:int = 0;
-         var _loc4_:* = param1;
-         for(_loc2_ in param1)
+         var _loc4_:* = items;
+         for(itemPlace in items)
          {
-            if(_items.hasOwnProperty(_loc2_))
+            if(_items.hasOwnProperty(itemPlace))
             {
-               _items[_loc2_].info = PlayerManager.Instance.Self.StoreBag.items[_loc2_];
+               _items[itemPlace].info = PlayerManager.Instance.Self.StoreBag.items[itemPlace];
             }
          }
       }

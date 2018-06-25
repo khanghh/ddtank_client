@@ -66,13 +66,13 @@ package ddt.view.characterStarling
       
       private var _winCrtBmd:BitmapData;
       
-      public function ShowCharacter3D(param1:PlayerInfo, param2:Boolean = true, param3:Boolean = true, param4:Boolean = false)
+      public function ShowCharacter3D(info:PlayerInfo, $showGun:Boolean = true, $showLight:Boolean = true, needMultiFrame:Boolean = false)
       {
-         super(param1,false);
-         _showGun = param2;
-         _showLight = param3;
+         super(info,false);
+         _showGun = $showGun;
+         _showLight = $showLight;
          _lightPos = new Point(0,0);
-         _needMultiFrame = param4;
+         _needMultiFrame = needMultiFrame;
          _currentAction = "stand";
       }
       
@@ -82,35 +82,35 @@ package ddt.view.characterStarling
          _info.addEventListener("propertychange",__propertyChangeII);
       }
       
-      private function __propertyChangeII(param1:PlayerPropertyEvent) : void
+      private function __propertyChangeII(evt:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["Nimbus"])
+         if(evt.changedProperties["Nimbus"])
          {
             updateLight();
          }
       }
       
-      override public function set showGun(param1:Boolean) : void
+      override public function set showGun(value:Boolean) : void
       {
-         if(param1 == _showGun)
+         if(value == _showGun)
          {
             return;
          }
-         _showGun = param1;
+         _showGun = value;
          updateCharacter();
       }
       
-      override public function set showWing(param1:Boolean) : void
+      override public function set showWing(value:Boolean) : void
       {
          if(_wing)
          {
-            _wing.visible = param1;
+            _wing.visible = value;
          }
-         if(param1 == _showWing)
+         if(value == _showWing)
          {
             return;
          }
-         _showWing = param1;
+         _showWing = value;
       }
       
       override protected function initLoader() : void
@@ -119,34 +119,34 @@ package ddt.view.characterStarling
          ShowCharacterLoader(_loader).needMultiFrames = _needMultiFrame;
       }
       
-      override public function set scaleX(param1:Number) : void
+      override public function set scaleX(value:Number) : void
       {
-         if(param1 == -1)
+         if(value == -1)
          {
             _loading.scaleX = 1;
          }
-         _dir = param1;
-         .super.scaleX = param1;
+         _dir = value;
+         .super.scaleX = value;
          if(_loadCompleted)
          {
          }
-         _container.x = param1 < 0?-_characterWidth:0;
+         _container.x = value < 0?-_characterWidth:0;
       }
       
-      override public function setShowLight(param1:Boolean, param2:Point = null) : void
+      override public function setShowLight(b:Boolean, p:Point = null) : void
       {
-         if(_showLight == param1 && _lightPos == param2)
+         if(_showLight == b && _lightPos == p)
          {
             return;
          }
-         _showLight = param1;
-         if(param1)
+         _showLight = b;
+         if(b)
          {
-            if(param2 == null)
+            if(p == null)
             {
-               param2 = new Point(0,0);
+               p = new Point(0,0);
             }
-            _lightPos = param2;
+            _lightPos = p;
          }
          updateLight();
       }
@@ -201,31 +201,31 @@ package ddt.view.characterStarling
             return;
          }
          stopAllMoiveClip();
-         var _loc8_:int = _container.x;
-         var _loc7_:int = _container.y;
-         var _loc6_:DisplayObjectContainer = _container.parent;
-         var _loc3_:int = _loc6_.getChildIndex(_container);
-         var _loc4_:Rectangle = _container.getBounds(_container);
-         var _loc5_:Sprite = new Sprite();
-         _loc6_.removeChild(_container);
-         _container.x = -_loc4_.x * _container.scaleX;
-         _container.y = -_loc4_.y * _container.scaleX;
-         _loc5_.addChild(_container);
-         var _loc1_:BitmapData = new BitmapData(_loc5_.width,_loc5_.height,true,0);
-         var _loc2_:Bitmap = new Bitmap(_loc1_,"auto",true);
-         _loc5_.removeChild(_container);
-         _container.x = _loc8_;
-         _container.y = _loc7_;
-         _loc6_.addChildAt(_container,_loc3_);
-         if(_loc5_.width > 140)
+         var _originalX:int = _container.x;
+         var _originalY:int = _container.y;
+         var pContainer:DisplayObjectContainer = _container.parent;
+         var pIndex:int = pContainer.getChildIndex(_container);
+         var clipRect:Rectangle = _container.getBounds(_container);
+         var tmpContainer:Sprite = new Sprite();
+         pContainer.removeChild(_container);
+         _container.x = -clipRect.x * _container.scaleX;
+         _container.y = -clipRect.y * _container.scaleX;
+         tmpContainer.addChild(_container);
+         var bitmapdata:BitmapData = new BitmapData(tmpContainer.width,tmpContainer.height,true,0);
+         var bitmap:Bitmap = new Bitmap(bitmapdata,"auto",true);
+         tmpContainer.removeChild(_container);
+         _container.x = _originalX;
+         _container.y = _originalY;
+         pContainer.addChildAt(_container,pIndex);
+         if(tmpContainer.width > 140)
          {
-            _loc5_.x = _loc5_.width - 17;
+            tmpContainer.x = tmpContainer.width - 17;
          }
          else
          {
-            _loc5_.x = _loc5_.width;
+            tmpContainer.x = tmpContainer.width;
          }
-         _staticBmp = _loc5_;
+         _staticBmp = tmpContainer;
          restoreAnimationState();
       }
       
@@ -326,13 +326,13 @@ package ddt.view.characterStarling
          }
       }
       
-      private function callBack01(param1:BaseLightLayer3D) : void
+      private function callBack01($load:BaseLightLayer3D) : void
       {
          if(_light1 && _light1.parent)
          {
             _light1.parent.removeChild(_light1);
          }
-         _light1 = param1.getContent3D();
+         _light1 = $load.getContent3D();
          if(_light1 != null)
          {
             _container.addChildAt(_light1,0);
@@ -343,13 +343,13 @@ package ddt.view.characterStarling
          restoreAnimationState();
       }
       
-      private function callBack02(param1:SinpleLightLayer3D) : void
+      private function callBack02($load:SinpleLightLayer3D) : void
       {
          if(_light2 && _light2.parent)
          {
             _light2.parent.removeChild(_light2);
          }
-         _light2 = param1.getContent3D();
+         _light2 = $load.getContent3D();
          if(_light2 != null)
          {
             _container.addChild(_light2);
@@ -379,20 +379,20 @@ package ddt.view.characterStarling
       
       override protected function setContent() : void
       {
-         var _loc1_:* = null;
+         var t:* = null;
          if(_loader != null)
          {
-            _loc1_ = _loader.getContent();
-            if(_characterWithWeapon && _characterWithWeapon != _loc1_[0])
+            t = _loader.getContent();
+            if(_characterWithWeapon && _characterWithWeapon != t[0])
             {
                _characterWithWeapon.dispose();
             }
-            if(_characterWithoutWeapon && _characterWithoutWeapon != _loc1_[1])
+            if(_characterWithoutWeapon && _characterWithoutWeapon != t[1])
             {
                _characterWithoutWeapon.dispose();
             }
-            _characterWithWeapon = _loc1_[0];
-            _characterWithoutWeapon = _loc1_[1];
+            _characterWithWeapon = t[0];
+            _characterWithoutWeapon = t[1];
             if(_wpCrtBmd)
             {
                _wpCrtBmd.dispose();
@@ -407,7 +407,7 @@ package ddt.view.characterStarling
             {
                _wing.parent.removeChild(_wing);
             }
-            _wing = _loc1_[2];
+            _wing = t[2];
          }
          if(_showGun)
          {
@@ -451,11 +451,11 @@ package ddt.view.characterStarling
             }
             return;
          }
-         var _loc2_:int = _container.getChildIndex(_bodyImage);
-         _loc2_ = _loc2_ < 1?0:Number(_loc2_ - 1);
-         var _loc1_:Array = _info.Style.split(",");
-         var _loc3_:* = ItemManager.Instance.getTemplateById(int(_loc1_[8].split("|")[0])).Property1 != "1";
-         if(_info.getSuitsType() == 1 && _loc3_)
+         var bodyIndex:int = _container.getChildIndex(_bodyImage);
+         bodyIndex = bodyIndex < 1?0:Number(bodyIndex - 1);
+         var _recordStyle:Array = _info.Style.split(",");
+         var shouldAdapt:* = ItemManager.Instance.getTemplateById(int(_recordStyle[8].split("|")[0])).Property1 != "1";
+         if(_info.getSuitsType() == 1 && shouldAdapt)
          {
             _wing.y = -40;
          }
@@ -506,7 +506,7 @@ package ddt.view.characterStarling
          }
       }
       
-      override protected function __loadComplete(param1:ICharacterLoader) : void
+      override protected function __loadComplete(loader:ICharacterLoader) : void
       {
          if(_loading != null)
          {
@@ -515,13 +515,13 @@ package ddt.view.characterStarling
                _loading.parent.removeChild(_loading);
             }
          }
-         super.__loadComplete(param1);
+         super.__loadComplete(loader);
          updateLight();
       }
       
-      override public function doAction(param1:*) : void
+      override public function doAction(actionType:*) : void
       {
-         _currentAction = param1;
+         _currentAction = actionType;
          if(_info.getSuitsType() == 1)
          {
             _bodyImage.y = -13;
@@ -560,10 +560,10 @@ package ddt.view.characterStarling
          setPicNum(1,2);
       }
       
-      override public function show(param1:Boolean = true, param2:int = 1, param3:Boolean = true) : void
+      override public function show(clearLoader:Boolean = true, dir:int = 1, small:Boolean = true) : void
       {
-         super.show(param1,param2,param3);
-         if(param3)
+         super.show(clearLoader,dir,small);
+         if(small)
          {
             _bodyImage.width = 120;
             _bodyImage.height = 165;
@@ -575,19 +575,19 @@ package ddt.view.characterStarling
          }
       }
       
-      override public function showWithSize(param1:Boolean = true, param2:int = 1, param3:Number = 120, param4:Number = 165) : void
+      override public function showWithSize(clearLoader:Boolean = true, dir:int = 1, width:Number = 120, height:Number = 165) : void
       {
-         if(param3 > 140)
+         if(width > 140)
          {
-            _container.x = param3 - 17;
+            _container.x = width - 17;
          }
          else
          {
-            _container.x = param3;
+            _container.x = width;
          }
-         super.show(param1,param2);
-         _bodyImage.width = param3;
-         _bodyImage.height = param4;
+         super.show(clearLoader,dir);
+         _bodyImage.width = width;
+         _bodyImage.height = height;
       }
       
       override public function get currentAction() : *

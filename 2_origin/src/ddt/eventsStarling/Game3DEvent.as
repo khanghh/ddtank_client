@@ -44,9 +44,9 @@ package ddt.eventsStarling
       public static const ADD_GURADCORE_EFFECT:String = "addguardcoreeffect";
        
       
-      public function Game3DEvent(param1:String, param2:Object = null, param3:Boolean = false)
+      public function Game3DEvent(type:String, data:Object = null, bubbles:Boolean = false)
       {
-         super(param1,param3,param2);
+         super(type,bubbles,data);
       }
    }
 }

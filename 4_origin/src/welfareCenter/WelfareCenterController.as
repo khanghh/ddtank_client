@@ -29,10 +29,10 @@ package welfareCenter
          WelfareCenterManager.instance.addEventListener("welfareCenterShow",__onShowFrame);
       }
       
-      private function __onShowFrame(param1:CEvent) : void
+      private function __onShowFrame(e:CEvent) : void
       {
-         var _loc2_:WelfareCenterFrame = ComponentFactory.Instance.creatComponentByStylename("welfareCenter.frame");
-         _loc2_.show();
+         var frame:WelfareCenterFrame = ComponentFactory.Instance.creatComponentByStylename("welfareCenter.frame");
+         frame.show();
       }
    }
 }

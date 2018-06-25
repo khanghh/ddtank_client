@@ -10,33 +10,32 @@ package ddt.data.analyze
       
       public var _wishChangeInfo:Vector.<WishChangeInfo>;
       
-      public function WishInfoAnalyzer(param1:Function)
+      public function WishInfoAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:XML = new XML(param1);
-         var _loc2_:XMLList = _loc3_..item;
+         var i:int = 0;
+         var info:* = null;
+         var xml:XML = new XML(data);
+         var items:XMLList = xml..item;
          _wishChangeInfo = new Vector.<WishChangeInfo>();
-         if(_loc3_.@value == "true")
+         if(xml.@value == "true")
          {
-            _loc5_ = 0;
-            while(_loc5_ < _loc2_.length())
+            for(i = 0; i < items.length(); )
             {
-               _loc4_ = new WishChangeInfo();
-               ObjectUtils.copyPorpertiesByXML(_loc4_,_loc2_[_loc5_]);
-               _wishChangeInfo.push(_loc4_);
-               _loc5_++;
+               info = new WishChangeInfo();
+               ObjectUtils.copyPorpertiesByXML(info,items[i]);
+               _wishChangeInfo.push(info);
+               i++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc3_.@message;
+            message = xml.@message;
             onAnalyzeError();
             onAnalyzeComplete();
          }

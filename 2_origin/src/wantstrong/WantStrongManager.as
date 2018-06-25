@@ -31,9 +31,9 @@ package wantstrong
       
       private var _isAutoGotoFindBack:Boolean = true;
       
-      public function WantStrongManager(param1:IEventDispatcher = null)
+      public function WantStrongManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
          _model = new WantStrongModel();
       }
       
@@ -51,9 +51,9 @@ package wantstrong
          return _isAutoGotoFindBack;
       }
       
-      public function set isAutoGotoFindBack(param1:Boolean) : void
+      public function set isAutoGotoFindBack(value:Boolean) : void
       {
-         _isAutoGotoFindBack = param1;
+         _isAutoGotoFindBack = value;
       }
       
       public function get bossFlag() : int
@@ -61,9 +61,9 @@ package wantstrong
          return _bossFlag;
       }
       
-      public function set bossFlag(param1:int) : void
+      public function set bossFlag(value:int) : void
       {
-         _bossFlag = param1;
+         _bossFlag = value;
       }
       
       public function get findBackDataExist() : Array
@@ -85,10 +85,10 @@ package wantstrong
          return _findBackExist;
       }
       
-      public function set findBackExist(param1:Boolean) : void
+      public function set findBackExist(value:Boolean) : void
       {
-         _findBackExist = param1;
-         isPlayMovie = param1;
+         _findBackExist = value;
+         isPlayMovie = value;
       }
       
       public function show() : void
@@ -103,57 +103,56 @@ package wantstrong
          dispatchEvent(new WantStrongEvent("wantStrongOpenView"));
       }
       
-      private function findBackHandler(param1:PkgEvent) : void
+      private function findBackHandler(e:PkgEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = undefined;
-         var _loc2_:int = param1.pkg.readInt();
-         var _loc3_:Array = [];
-         _loc3_[0] = param1.pkg.readBoolean();
-         _loc3_[1] = param1.pkg.readBoolean();
+         var i:int = 0;
+         var data:* = undefined;
+         var bType:int = e.pkg.readInt();
+         var arr:Array = [];
+         arr[0] = e.pkg.readBoolean();
+         arr[1] = e.pkg.readBoolean();
          if(isPlayMovie)
          {
-            if(_loc3_[0] || _loc3_[1])
+            if(arr[0] || arr[1])
             {
                isPlayMovie = false;
                WantStrongManager.Instance.dispatchEvent(new Event("alreadyFindBack"));
             }
          }
-         findBackDic[_loc2_] = _loc3_;
-         _loc5_ = 0;
-         while(_loc5_ < _model.data[5].length)
+         findBackDic[bType] = arr;
+         for(i = 0; i < _model.data[5].length; )
          {
-            if((_model.data[5][_loc5_] as WantStrongMenuData).bossType == _loc2_)
+            if((_model.data[5][i] as WantStrongMenuData).bossType == bType)
             {
-               (_model.data[5][_loc5_] as WantStrongMenuData).freeBackBtnEnable = !_loc3_[0];
-               (_model.data[5][_loc5_] as WantStrongMenuData).allBackBtnEnable = !_loc3_[1];
-               if(_loc3_[0] && _loc3_[1])
+               (_model.data[5][i] as WantStrongMenuData).freeBackBtnEnable = !arr[0];
+               (_model.data[5][i] as WantStrongMenuData).allBackBtnEnable = !arr[1];
+               if(arr[0] && arr[1])
                {
-                  _loc4_ = _model.data[5];
-                  _loc4_.splice(_loc5_,1);
-                  if(_loc2_ == 6)
+                  data = _model.data[5];
+                  data.splice(i,1);
+                  if(bType == 6)
                   {
                      findBackDataExist[0] = false;
                   }
-                  else if(_loc2_ == 18)
+                  else if(bType == 18)
                   {
                      findBackDataExist[1] = false;
                   }
-                  else if(_loc2_ == 19)
+                  else if(bType == 19)
                   {
                      findBackDataExist[2] = false;
                   }
-                  else if(_loc2_ == 4)
+                  else if(bType == 4)
                   {
                      findBackDataExist[4] = false;
                   }
-                  else if(_loc2_ == 5)
+                  else if(bType == 5)
                   {
                      findBackDataExist[3] = false;
                   }
                }
             }
-            _loc5_++;
+            i++;
          }
          updateFindBackView();
       }
@@ -172,17 +171,17 @@ package wantstrong
          setCurrentInfo(_model.data[_model.activeId],true);
       }
       
-      public function setCurrentInfo(param1:* = null, param2:Boolean = false) : void
+      public function setCurrentInfo(data:* = null, stateChange:Boolean = false) : void
       {
-         var _loc3_:Object = {};
-         _loc3_["data"] = param1;
-         _loc3_["stateChange"] = param2;
-         dispatchEvent(new WantStrongEvent("wantStrongSetInfo",_loc3_));
+         var info:Object = {};
+         info["data"] = data;
+         info["stateChange"] = stateChange;
+         dispatchEvent(new WantStrongEvent("wantStrongSetInfo",info));
       }
       
-      public function setFindBackData(param1:int) : void
+      public function setFindBackData(index:int) : void
       {
-         findBackDataExist[param1] = true;
+         findBackDataExist[index] = true;
       }
       
       public function get model() : WantStrongModel
@@ -190,19 +189,19 @@ package wantstrong
          return _model;
       }
       
-      public function set model(param1:WantStrongModel) : void
+      public function set model(value:WantStrongModel) : void
       {
-         _model = param1;
+         _model = value;
       }
       
-      public function showFrame(param1:int = 1, param2:Boolean = true) : void
+      public function showFrame(activeId:int = 1, isAutoGotoFindBack:Boolean = true) : void
       {
          if(_model == null)
          {
             _model = new WantStrongModel();
          }
-         _model.activeId = param1;
-         _isAutoGotoFindBack = param2;
+         _model.activeId = activeId;
+         _isAutoGotoFindBack = isAutoGotoFindBack;
          show();
       }
    }

@@ -37,11 +37,11 @@ package quest
          super.graphics.drawRect(0,_stateText.y,_stateText.x + _stateText.width,_stateText.height);
       }
       
-      public function setTextInfo(param1:String, param2:String, param3:String) : void
+      public function setTextInfo(strI:String, strII:String, strIII:String) : void
       {
-         _typeText.htmlText = param1;
-         _infoText.htmlText = param2;
-         _stateText.htmlText = param3;
+         _typeText.htmlText = strI;
+         _infoText.htmlText = strII;
+         _stateText.htmlText = strIII;
       }
       
       public function dispose() : void

@@ -40,14 +40,14 @@ package ddt.view.chat.chatBall
       
       override protected function setFormat() : void
       {
-         var _loc1_:StyleSheet = new StyleSheet();
-         _loc1_.parseCSS("p{font-size:16px;text-align:left;font-weight:bold;leading:3px;}.red{color:#FF0000;}.blue{color:#0000FF;}.green{color:#00FF00;}");
-         tf.styleSheet = _loc1_;
+         var style:StyleSheet = new StyleSheet();
+         style.parseCSS("p{font-size:16px;text-align:left;font-weight:bold;leading:3px;}.red{color:#FF0000;}.blue{color:#0000FF;}.green{color:#00FF00;}");
+         tf.styleSheet = style;
       }
       
-      override public function set text(param1:String) : void
+      override public function set text(value:String) : void
       {
-         .super.text = param1;
+         .super.text = value;
          ObjectUtils.disposeObject(_maskMC);
          _maskMC = new Sprite();
          addChild(_maskMC);
@@ -71,7 +71,7 @@ package ddt.view.chat.chatBall
          }
       }
       
-      private function __onTypeTimerTick(param1:Event) : void
+      private function __onTypeTimerTick(e:Event) : void
       {
          if(_count < 15)
          {
@@ -92,25 +92,25 @@ package ddt.view.chat.chatBall
          textDisplayCompleted();
       }
       
-      private function redrawMask(param1:int) : void
+      private function redrawMask(location:int) : void
       {
          if(!_text.charAt(_count))
          {
             return;
          }
-         var _loc4_:Boolean = false;
-         var _loc3_:String = _text.charAt(param1);
-         var _loc2_:Rectangle = tf.getCharBoundaries(param1);
-         if(_loc2_ == null)
+         var debug:Boolean = false;
+         var t:String = _text.charAt(location);
+         var rec:Rectangle = tf.getCharBoundaries(location);
+         if(rec == null)
          {
             return;
          }
-         if(_loc4_)
+         if(debug)
          {
             _bmp.mask = null;
             _maskMC.graphics.clear();
             _maskMC.graphics.beginFill(13421772);
-            _maskMC.graphics.drawRect(_loc2_.x,_loc2_.y,_loc2_.width,_loc2_.height);
+            _maskMC.graphics.drawRect(rec.x,rec.y,rec.width,rec.height);
             _maskMC.graphics.endFill();
             addChild(_maskMC);
             return;
@@ -119,10 +119,10 @@ package ddt.view.chat.chatBall
          _maskMC.graphics.lineStyle(0);
          _maskMC.graphics.beginFill(13421772);
          _maskMC.graphics.moveTo(0,-2);
-         _maskMC.graphics.lineTo(0,_loc2_.y + _loc2_.height);
-         _maskMC.graphics.lineTo(_loc2_.x + _loc2_.width,_loc2_.y + _loc2_.height);
-         _maskMC.graphics.lineTo(_loc2_.x + _loc2_.width,_loc2_.y - 2);
-         _maskMC.graphics.lineTo(tf.width,_loc2_.y - 2);
+         _maskMC.graphics.lineTo(0,rec.y + rec.height);
+         _maskMC.graphics.lineTo(rec.x + rec.width,rec.y + rec.height);
+         _maskMC.graphics.lineTo(rec.x + rec.width,rec.y - 2);
+         _maskMC.graphics.lineTo(tf.width,rec.y - 2);
          _maskMC.graphics.lineTo(tf.width,-2);
          _maskMC.graphics.lineTo(0,-2);
          _maskMC.graphics.endFill();

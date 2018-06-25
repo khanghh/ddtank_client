@@ -74,22 +74,22 @@ package store.view.strength
          this.addEventListener("enterFrame",__startFrame);
       }
       
-      private function __startFrame(param1:Event) : void
+      private function __startFrame(e:Event) : void
       {
          _currentFrame = Number(_currentFrame) + 1;
          setMask(_currentFrame);
-         var _loc2_:int = 0;
+         var frameNum:int = 0;
          if(_taskFrames.hasOwnProperty(0))
          {
-            _loc2_ = _taskFrames[0];
+            frameNum = _taskFrames[0];
          }
-         if(_loc2_ == 0 && _taskFrames.hasOwnProperty(1))
+         if(frameNum == 0 && _taskFrames.hasOwnProperty(1))
          {
-            _loc2_ = _taskFrames[1];
+            frameNum = _taskFrames[1];
          }
-         if(_currentFrame >= _loc2_)
+         if(_currentFrame >= frameNum)
          {
-            if(_loc2_ >= _total)
+            if(frameNum >= _total)
             {
                _currentFrame = 0;
                _taskFrames[0] = 0;
@@ -100,7 +100,7 @@ package store.view.strength
                _taskFrames[1] = 0;
                this.removeEventListener("enterFrame",__startFrame);
                setStarVisible(false);
-               param1.stopImmediatePropagation();
+               e.stopImmediatePropagation();
             }
          }
       }
@@ -116,9 +116,9 @@ package store.view.strength
          addChild(_progressBarMask);
       }
       
-      private function setStarVisible(param1:Boolean) : void
+      private function setStarVisible(value:Boolean) : void
       {
-         _star.visible = param1;
+         _star.visible = value;
       }
       
       public function getStarVisible() : Boolean
@@ -126,41 +126,41 @@ package store.view.strength
          return _star.visible;
       }
       
-      public function setMask(param1:Number) : void
+      public function setMask(value:Number) : void
       {
-         var _loc2_:Number = param1 * _scaleValue;
-         if(isNaN(_loc2_) || _loc2_ == 0)
+         var tempWidth:Number = value * _scaleValue;
+         if(isNaN(tempWidth) || tempWidth == 0)
          {
             _progressBarMask.width = 0;
          }
          else
          {
-            if(_loc2_ >= _graphics_thuck.width)
+            if(tempWidth >= _graphics_thuck.width)
             {
-               _loc2_ = _loc2_ % _graphics_thuck.width;
+               tempWidth = tempWidth % _graphics_thuck.width;
             }
-            _progressBarMask.width = _loc2_;
+            _progressBarMask.width = tempWidth;
          }
          _star.x = _progressBarMask.x + _progressBarMask.width;
       }
       
-      public function initProgress(param1:InventoryItemInfo) : void
+      public function initProgress(info:InventoryItemInfo) : void
       {
-         var _loc2_:Number = NaN;
-         var _loc3_:int = 0;
+         var rate:Number = NaN;
+         var tempFrame:int = 0;
          _currentFrame = 0;
-         _strengthenExp = param1.StrengthenExp;
-         _strengthenLevel = param1.StrengthenLevel;
+         _strengthenExp = info.StrengthenExp;
+         _strengthenLevel = info.StrengthenLevel;
          _max = StoreEquipExperience.expericence[_strengthenLevel + 1];
          if(_max > 0 && _strengthenExp < _max)
          {
-            _loc2_ = _strengthenExp / _max;
-            _loc3_ = Math.floor(_loc2_ * _total);
-            if(_loc3_ < 1 && _loc2_ > 0)
+            rate = _strengthenExp / _max;
+            tempFrame = Math.floor(rate * _total);
+            if(tempFrame < 1 && rate > 0)
             {
-               _loc3_ = 1;
+               tempFrame = 1;
             }
-            _currentFrame = _loc3_;
+            _currentFrame = tempFrame;
          }
          setMask(_currentFrame);
          setExpPercent();
@@ -172,34 +172,34 @@ package store.view.strength
          setStarVisible(false);
       }
       
-      public function setProgress(param1:InventoryItemInfo) : void
+      public function setProgress(info:InventoryItemInfo) : void
       {
-         if(_strengthenLevel != param1.StrengthenLevel)
+         if(_strengthenLevel != info.StrengthenLevel)
          {
             _taskFrames[0] = _total;
-            _strengthenLevel = param1.StrengthenLevel;
+            _strengthenLevel = info.StrengthenLevel;
          }
-         _strengthenExp = param1.StrengthenExp;
+         _strengthenExp = info.StrengthenExp;
          _max = StoreEquipExperience.expericence[_strengthenLevel + 1];
-         var _loc2_:Number = _strengthenExp / _max;
-         var _loc3_:int = Math.floor(_loc2_ * _total);
-         if(_loc3_ < 1 && _loc2_ > 0)
+         var rate:Number = _strengthenExp / _max;
+         var tempFrame:int = Math.floor(rate * _total);
+         if(tempFrame < 1 && rate > 0)
          {
-            _loc3_ = 1;
+            tempFrame = 1;
          }
-         if(_currentFrame == _loc3_)
+         if(_currentFrame == tempFrame)
          {
             if(_taskFrames[0] && int(_taskFrames[0]) != 0)
             {
                setStarVisible(true);
-               _taskFrames[1] = _loc3_;
+               _taskFrames[1] = tempFrame;
                startProgress();
             }
          }
          else
          {
             setStarVisible(true);
-            _taskFrames[1] = _loc3_;
+            _taskFrames[1] = tempFrame;
             startProgress();
          }
          setExpPercent();
@@ -207,19 +207,19 @@ package store.view.strength
       
       public function setExpPercent() : void
       {
-         var _loc1_:* = NaN;
+         var expPercent:* = NaN;
          if(_strengthenExp == 0 || _strengthenLevel == 0)
          {
             _progressLabel.text = "0%";
          }
          else
          {
-            _loc1_ = Number(StoreEquipExperience.getExpPercent(_strengthenLevel,_strengthenExp));
-            if(isNaN(_loc1_))
+            expPercent = Number(StoreEquipExperience.getExpPercent(_strengthenLevel,_strengthenExp));
+            if(isNaN(expPercent))
             {
-               _loc1_ = 0;
+               expPercent = 0;
             }
-            _progressLabel.text = _loc1_ + "%";
+            _progressLabel.text = expPercent + "%";
          }
          if(_strengthenLevel >= 12)
          {

@@ -16,9 +16,9 @@ package petsBag.view.item
       
       private var _starNum:int;
       
-      public function PetSmallDetailItem(param1:PetInfo = null)
+      public function PetSmallDetailItem(info:PetInfo = null)
       {
-         super(param1);
+         super(info);
       }
       
       override protected function initView() : void
@@ -47,10 +47,10 @@ package petsBag.view.item
       {
       }
       
-      public function setStarNum(param1:int, param2:String = "assets.petsBag.star") : void
+      public function setStarNum(num:int, assetResource:String = "assets.petsBag.star") : void
       {
-         _starNum = param1;
-         _starBar.starNum(param1,param2);
+         _starNum = num;
+         _starBar.starNum(num,assetResource);
       }
       
       public function getStarNum() : int
@@ -58,25 +58,21 @@ package petsBag.view.item
          return _starNum;
       }
       
-      public function setGradeTxt(param1:String) : void
+      public function setGradeTxt(grade:String) : void
       {
-         if(param1 == "" || param1 == "0")
+         if(grade == "" || grade == "0")
          {
             _gradeTextF.text = "";
-            return;
-            §§push(_gradeTextF.parent && removeChild(_gradeTextF));
-         }
-         else
-         {
-            addChild(_gradeTextF);
-            _gradeTextF.text = "Lv" + param1;
+            _gradeTextF.parent && removeChild(_gradeTextF);
             return;
          }
+         addChild(_gradeTextF);
+         _gradeTextF.text = "Lv" + grade;
       }
       
-      public function setNameTxt(param1:String) : void
+      public function setNameTxt($name:String) : void
       {
-         _nameTextF.text = param1;
+         _nameTextF.text = $name;
       }
    }
 }

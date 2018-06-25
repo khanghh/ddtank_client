@@ -66,7 +66,7 @@ package sanXiao
       
       private var _lengthAddedDropOutItem:int;
       
-      public function SanXiaoManager(param1:inner)
+      public function SanXiaoManager(single:inner)
       {
          super();
       }
@@ -102,25 +102,24 @@ package sanXiao
       
       public function get nextPriseScoreProgress() : Number
       {
-         var _loc5_:int = 0;
-         var _loc2_:Number = NaN;
-         var _loc1_:Number = NaN;
-         var _loc4_:Number = NaN;
-         var _loc3_:int = _scoreRewardList.length;
-         _loc5_ = 0;
-         while(_loc5_ < _loc3_)
+         var i:int = 0;
+         var __min:Number = NaN;
+         var __max:Number = NaN;
+         var __cur:Number = NaN;
+         var len:int = _scoreRewardList.length;
+         for(i = 0; i < len; )
          {
-            if((_scoreRewardList[_loc5_] as SXRewardItemData).point > _score)
+            if((_scoreRewardList[i] as SXRewardItemData).point > _score)
             {
-               _loc2_ = _loc5_ > 0?_scoreRewardList[_loc5_ - 1].point:0;
-               _loc1_ = _scoreRewardList[_loc5_].point - _loc2_;
-               _loc4_ = _score - _loc2_;
-               _progressTips = _score.toString() + "/" + (_scoreRewardList[_loc5_] as SXRewardItemData).point.toString();
-               return Math.floor(_loc4_ / _loc1_ * 10000) / 100;
+               __min = i > 0?_scoreRewardList[i - 1].point:0;
+               __max = _scoreRewardList[i].point - __min;
+               __cur = _score - __min;
+               _progressTips = _score.toString() + "/" + (_scoreRewardList[i] as SXRewardItemData).point.toString();
+               return Math.floor(__cur / __max * 10000) / 100;
             }
-            _loc5_++;
+            i++;
          }
-         _progressTips = _score.toString() + "/" + (_scoreRewardList[_loc3_ - 1] as SXRewardItemData).point.toString();
+         _progressTips = _score.toString() + "/" + (_scoreRewardList[len - 1] as SXRewardItemData).point.toString();
          return 100;
       }
       
@@ -135,34 +134,32 @@ package sanXiao
       
       public function get nextPriseScore() : int
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = _scoreRewardList.length;
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_)
+         var i:int = 0;
+         var len:int = _scoreRewardList.length;
+         for(i = 0; i < len; )
          {
-            if((_scoreRewardList[_loc2_] as SXRewardItemData).point > _score)
+            if((_scoreRewardList[i] as SXRewardItemData).point > _score)
             {
-               return _scoreRewardList[_loc2_].point;
+               return _scoreRewardList[i].point;
             }
-            _loc2_++;
+            i++;
          }
          return -1;
       }
       
       public function get nextRewardSXRewardItemData() : SXRewardItemData
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = _scoreRewardList.length;
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_)
+         var i:int = 0;
+         var len:int = _scoreRewardList.length;
+         for(i = 0; i < len; )
          {
-            if((_scoreRewardList[_loc2_] as SXRewardItemData).point > _score)
+            if((_scoreRewardList[i] as SXRewardItemData).point > _score)
             {
-               return _scoreRewardList[_loc2_];
+               return _scoreRewardList[i];
             }
-            _loc2_++;
+            i++;
          }
-         return _scoreRewardList[_loc1_ - 1];
+         return _scoreRewardList[len - 1];
       }
       
       public function get dataEnd() : Date
@@ -186,101 +183,98 @@ package sanXiao
          SocketManager.Instance.addEventListener(PkgEvent.format(329,19),onGainedDropItem);
       }
       
-      protected function onBuyTimes(param1:PkgEvent) : void
+      protected function onBuyTimes(e:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _stepRemain = _loc2_.readInt();
+         var pkg:PackageIn = e.pkg;
+         _stepRemain = pkg.readInt();
          dispatchEvent(new CEvent("sanxiao_update_data"));
       }
       
-      protected function onGainedDropItem(param1:PkgEvent) : void
+      protected function onGainedDropItem(e:PkgEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:PackageIn = param1.pkg;
+         var i:int = 0;
+         var data:* = null;
+         var pkg:PackageIn = e.pkg;
          if(_rewardItemList == null)
          {
             _rewardItemList = [];
          }
-         _lengthAddedDropOutItem = _loc3_.readInt();
-         _loc4_ = 0;
-         while(_loc4_ < _lengthAddedDropOutItem)
+         _lengthAddedDropOutItem = pkg.readInt();
+         for(i = 0; i < _lengthAddedDropOutItem; )
          {
-            _loc2_ = new SXGainedItemDATA(_loc3_.readInt(),_loc3_.readInt());
-            _rewardItemList.push(_loc2_);
-            _loc4_++;
+            data = new SXGainedItemDATA(pkg.readInt(),pkg.readInt());
+            _rewardItemList.push(data);
+            i++;
          }
          dispatchEvent(new CEvent("sanxiao_drop_out_item_gained"));
       }
       
-      protected function onGetStoreData(param1:PkgEvent) : void
+      protected function onGetStoreData(e:PkgEvent) : void
       {
-         var _loc6_:int = 0;
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
-         var _loc5_:PackageIn = param1.pkg;
-         _crystalNum = _loc5_.readInt();
-         var _loc3_:int = _loc5_.readInt();
+         var i:int = 0;
+         var id:int = 0;
+         var boughtTimes:int = 0;
+         var pkg:PackageIn = e.pkg;
+         _crystalNum = pkg.readInt();
+         var count:int = pkg.readInt();
          _storeRemainList = [];
-         _loc6_ = 0;
-         while(_loc6_ < _loc3_)
+         for(i = 0; i < count; )
          {
-            _loc2_ = _loc5_.readInt();
-            _loc4_ = _loc5_.readInt();
-            _storeRemainList.push(new SXStoreBoughtData(_loc2_,_loc4_));
-            _loc6_++;
+            id = pkg.readInt();
+            boughtTimes = pkg.readInt();
+            _storeRemainList.push(new SXStoreBoughtData(id,boughtTimes));
+            i++;
          }
          dispatchEvent(new CEvent("sanxiao_update_data"));
       }
       
-      protected function onGetRewardsData(param1:PkgEvent) : void
+      protected function onGetRewardsData(e:PkgEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readInt();
+         var i:int = 0;
+         var pkg:PackageIn = e.pkg;
+         var count:int = pkg.readInt();
          _rewardGainedIDList = [];
-         _loc4_ = 0;
-         while(_loc4_ < _loc2_)
+         for(i = 0; i < count; )
          {
-            _rewardGainedIDList.push(_loc3_.readInt());
-            _loc4_++;
+            _rewardGainedIDList.push(pkg.readInt());
+            i++;
          }
          dispatchEvent(new CEvent("sanxiao_update_data"));
       }
       
-      protected function onGetData(param1:PkgEvent) : void
+      protected function onGetData(e:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _score = _loc2_.readInt();
-         _stepRemain = _loc2_.readInt();
-         _crystalNum = _loc2_.readInt();
-         _dateEnd = _loc2_.readDate();
+         var pkg:PackageIn = e.pkg;
+         _score = pkg.readInt();
+         _stepRemain = pkg.readInt();
+         _crystalNum = pkg.readInt();
+         _dateEnd = pkg.readDate();
          dispatchEvent(new CEvent("sanxiao_update_data"));
       }
       
-      protected function onRequireMap(param1:PkgEvent) : void
+      protected function onRequireMap(e:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readInt();
+         var pkg:PackageIn = e.pkg;
+         var count:int = pkg.readInt();
          mapInfo = [];
-         while(_loc2_ > 0)
+         while(count > 0)
          {
-            mapInfo.push(_loc3_.readInt());
-            mapInfo.push(_loc3_.readInt());
-            mapInfo.push(_loc3_.readInt());
-            _loc2_ = _loc2_ - 1;
+            mapInfo.push(pkg.readInt());
+            mapInfo.push(pkg.readInt());
+            mapInfo.push(pkg.readInt());
+            count = count - 1;
          }
          dispatchEvent(new CEvent("sanxiao_map_status"));
       }
       
-      protected function onIsOpen(param1:PkgEvent) : void
+      protected function onIsOpen(e:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         var _loc3_:Boolean = _loc2_.readBoolean();
-         _dateEnd = _loc2_.readDate();
-         _discounts = _loc2_.readInt();
+         var pkg:PackageIn = e.pkg;
+         var isOpen:Boolean = pkg.readBoolean();
+         _dateEnd = pkg.readDate();
+         _discounts = pkg.readInt();
          _discounts = _discounts >= 100?0:_discounts;
-         _isOpen = _loc3_;
+         _isOpen = isOpen;
          HallIconManager.instance.updateSwitchHandler("sanxiao",_isOpen);
       }
       
@@ -291,16 +285,16 @@ package sanXiao
          dispatchEvent(new CEvent("sanxiao_show_view"));
       }
       
-      public function getPropPrice(param1:int) : String
+      public function getPropPrice(index:int) : String
       {
          if(_propPriceList == null)
          {
             return "";
          }
-         return _propPriceList[param1 * 2 - 1];
+         return _propPriceList[index * 2 - 1];
       }
       
-      public function getPropCurPrice(param1:int) : String
+      public function getPropCurPrice(index:int) : String
       {
          if(_propPriceList == null)
          {
@@ -308,80 +302,76 @@ package sanXiao
          }
          if(_discounts == 0)
          {
-            return getPropPrice(param1);
+            return getPropPrice(index);
          }
-         return (int(_propPriceList[param1 * 2 - 1] * _discounts / 100)).toString();
+         return (int(_propPriceList[index * 2 - 1] * _discounts / 100)).toString();
       }
       
-      public function getPropScore(param1:int) : String
+      public function getPropScore(index:int) : String
       {
          if(_propPriceList == null)
          {
             return "";
          }
-         return _propPriceList[param1 * 2 - 2];
+         return _propPriceList[index * 2 - 2];
       }
       
       public function propPriceData() : Array
       {
-         var _loc1_:ServerConfigManager = ServerConfigManager.instance;
+         var ins:ServerConfigManager = ServerConfigManager.instance;
          if(!_propPriceList)
          {
-            _propPriceList = [_loc1_.SanXiaoCrossBombScore(),_loc1_.SanXiaoCrossBombPrice(),_loc1_.SanXiaoSquareBombScore(),_loc1_.SanXiaoSquareBombPrice(),_loc1_.SanXiaoClearColorScore(),_loc1_.SanXiaoClearColorPrice(),_loc1_.SanXiaoChangeColorScore(),_loc1_.SanXiaoChangeColorPrice()];
+            _propPriceList = [ins.SanXiaoCrossBombScore(),ins.SanXiaoCrossBombPrice(),ins.SanXiaoSquareBombScore(),ins.SanXiaoSquareBombPrice(),ins.SanXiaoClearColorScore(),ins.SanXiaoClearColorPrice(),ins.SanXiaoChangeColorScore(),ins.SanXiaoChangeColorPrice()];
          }
          return _propPriceList;
       }
       
       public function get itemDataList() : Array
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var data:* = null;
          if(_itemDataList == null)
          {
             return [];
          }
-         var _loc3_:int = _itemDataList.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var len:int = _itemDataList.length;
+         for(i = 0; i < len; i++)
          {
             var _loc6_:int = 0;
             var _loc5_:* = _storeRemainList;
-            for each(var _loc1_ in _storeRemainList)
+            for each(var v in _storeRemainList)
             {
-               _loc2_ = _itemDataList[_loc4_];
-               if(_loc2_.id == _loc1_.id)
+               data = _itemDataList[i];
+               if(data.id == v.id)
                {
-                  _loc2_.remain = _loc2_.total - _loc1_.boughtTimes;
+                  data.remain = data.total - v.boughtTimes;
                }
             }
-            _loc4_++;
          }
          return _itemDataList;
       }
       
       public function get scoreRewardList() : Array
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var data:* = null;
          if(_scoreRewardList == null)
          {
             return [];
          }
-         var _loc3_:int = _scoreRewardList.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var len:int = _scoreRewardList.length;
+         for(i = 0; i < len; i++)
          {
             var _loc6_:int = 0;
             var _loc5_:* = _rewardGainedIDList;
-            for each(var _loc1_ in _rewardGainedIDList)
+            for each(var v in _rewardGainedIDList)
             {
-               _loc2_ = _scoreRewardList[_loc4_];
-               if(_loc2_.id == _loc1_)
+               data = _scoreRewardList[i];
+               if(data.id == v)
                {
-                  _loc2_.gained = true;
+                  data.gained = true;
                }
             }
-            _loc4_++;
          }
          return _scoreRewardList;
       }
@@ -391,14 +381,14 @@ package sanXiao
          return _dateEnd;
       }
       
-      public function onSXScoreRewardData(param1:SanXiaoScoreRewardAnalyzer) : void
+      public function onSXScoreRewardData(analyzer:SanXiaoScoreRewardAnalyzer) : void
       {
-         _scoreRewardList = param1.list;
+         _scoreRewardList = analyzer.list;
       }
       
-      public function onSXStoreItemData(param1:SanXiaoStoreItemAnalyzer) : void
+      public function onSXStoreItemData(analyzer:SanXiaoStoreItemAnalyzer) : void
       {
-         _itemDataList = param1.list;
+         _itemDataList = analyzer.list;
       }
       
       public function get lengthAddedDropOutItem() : int

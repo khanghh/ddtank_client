@@ -10,9 +10,9 @@ package consortion.analyze
       
       private var _dataList:Array;
       
-      public function ConsortiaAnalyze(param1:Function)
+      public function ConsortiaAnalyze(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
       public function get dataList() : Array
@@ -20,27 +20,26 @@ package consortion.analyze
          return _dataList;
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc6_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var itemData:* = null;
          _dataList = [];
-         var _loc4_:XML = new XML(param1);
-         var _loc5_:XMLList = _loc4_.Item;
-         _loc6_ = 0;
-         while(_loc6_ < _loc5_.length())
+         var xml:XML = new XML(data);
+         var xmllist:XMLList = xml.Item;
+         for(i = 0; i < xmllist.length(); )
          {
-            _loc2_ = new RankData();
-            ObjectUtils.copyPorpertiesByXML(_loc2_,_loc5_[_loc6_]);
-            _dataList.push(_loc2_);
-            _loc6_++;
+            itemData = new RankData();
+            ObjectUtils.copyPorpertiesByXML(itemData,xmllist[i]);
+            _dataList.push(itemData);
+            i++;
          }
          _dataList.sortOn("Rank",16);
          var _loc8_:int = 0;
          var _loc7_:* = _dataList;
-         for each(var _loc3_ in _dataList)
+         for each(var obj in _dataList)
          {
-            trace("======>" + _loc3_.Rank);
+            trace("======>" + obj.Rank);
          }
          onAnalyzeComplete();
       }

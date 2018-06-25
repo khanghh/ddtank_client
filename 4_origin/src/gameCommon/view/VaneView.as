@@ -133,16 +133,16 @@ package gameCommon.view
          mixedBg1.mask = mixedbgAccect;
       }
       
-      public function setUpCenter(param1:Number, param2:Number) : void
+      public function setUpCenter(xPos:Number, yPos:Number) : void
       {
-         this.x = param1;
-         this.y = param2;
+         this.x = xPos;
+         this.y = yPos;
       }
       
       private function getRandomVaneOffset() : Number
       {
-         var _loc1_:Number = Math.random() * 6 - 6 / 2;
-         return _loc1_;
+         var n:Number = Math.random() * 6 - 6 / 2;
+         return n;
       }
       
       private function creatGraidenText() : void
@@ -160,13 +160,13 @@ package gameCommon.view
          _lastWind = 11;
       }
       
-      public function update(param1:Number, param2:Boolean = false, param3:Array = null) : void
+      public function update(value:Number, upDateLast:Boolean = false, arr:Array = null) : void
       {
-         if(param3 == null)
+         if(arr == null)
          {
             _windNumShape.visible = false;
-            param3 = [];
-            param3 = [true,0,0,0,1];
+            arr = [];
+            arr = [true,0,0,0,1];
          }
          else
          {
@@ -176,19 +176,19 @@ package gameCommon.view
          {
             lastTurn(_lastWind);
          }
-         if(param2)
+         if(upDateLast)
          {
-            _lastWind = param1;
+            _lastWind = value;
          }
-         if(param1 != 0)
+         if(value != 0)
          {
-            _bmVaneTitle.x = param1 > 0?_vaneTitlePos2.x:Number(_vaneTitlePos.x);
+            _bmVaneTitle.x = value > 0?_vaneTitlePos2.x:Number(_vaneTitlePos.x);
          }
-         vane1_mc.scaleX = param3[0] == true?1:-1;
-         vane1_mc.x = param3[0] == true?_vanePos2.x:Number(_vanePos.x);
-         _windNumShape.x = param3[0] == true?_vaneValuePos.x:Number(_vaneValuePos2.x);
-         _windNumShape.y = param3[0] == true?_vaneValuePos.y:Number(_vaneValuePos2.y);
-         if(param3[1] == 0 && param3[2] == 0 && param3[3] == 0)
+         vane1_mc.scaleX = arr[0] == true?1:-1;
+         vane1_mc.x = arr[0] == true?_vanePos2.x:Number(_vanePos.x);
+         _windNumShape.x = arr[0] == true?_vaneValuePos.x:Number(_vaneValuePos2.x);
+         _windNumShape.y = arr[0] == true?_vaneValuePos.y:Number(_vaneValuePos2.y);
+         if(arr[1] == 0 && arr[2] == 0 && arr[3] == 0)
          {
             _zeroTxt.x = _windNumShape.x;
             _zeroTxt.y = _windNumShape.y;
@@ -200,64 +200,64 @@ package gameCommon.view
          {
             _windNumShape.visible = true;
             _zeroTxt.visible = false;
-            drawNum([param3[1],param3[2],param3[3]]);
+            drawNum([arr[1],arr[2],arr[3]]);
          }
          if(_weatherMovie)
          {
-            _weatherMovie.setFrame(param3[4]);
+            _weatherMovie.setFrame(arr[4]);
          }
       }
       
-      private function drawNum(param1:Array) : void
+      private function drawNum(nums:Array) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:Graphics = _windNumShape.graphics;
-         _loc3_.clear();
-         var _loc5_:Matrix = new Matrix();
+         var bitmap:* = null;
+         var pen:Graphics = _windNumShape.graphics;
+         pen.clear();
+         var drawMat:Matrix = new Matrix();
          var _loc7_:int = 0;
-         var _loc6_:* = param1;
-         for each(var _loc2_ in param1)
+         var _loc6_:* = nums;
+         for each(var id in nums)
          {
-            _loc4_ = WindPowerManager.Instance.getWindPicById(_loc2_);
-            if(_loc4_)
+            bitmap = WindPowerManager.Instance.getWindPicById(id);
+            if(bitmap)
             {
-               _loc5_.tx = _windNumShape.width;
-               _loc3_.beginBitmapFill(_loc4_,_loc5_);
-               _loc3_.drawRect(_windNumShape.width,0,_loc4_.width,_loc4_.height);
-               _loc3_.endFill();
+               drawMat.tx = _windNumShape.width;
+               pen.beginBitmapFill(bitmap,drawMat);
+               pen.drawRect(_windNumShape.width,0,bitmap.width,bitmap.height);
+               pen.endFill();
             }
          }
       }
       
       private function setRandomPos() : void
       {
-         var _loc1_:Number = getRandomVaneOffset();
-         vane1_mc.x = vane1_mc.x + _loc1_;
-         _windNumShape.x = _windNumShape.x + _loc1_;
+         var sp1:Number = getRandomVaneOffset();
+         vane1_mc.x = vane1_mc.x + sp1;
+         _windNumShape.x = _windNumShape.x + sp1;
       }
       
-      private function addZero(param1:Number) : String
+      private function addZero(value:Number) : String
       {
-         var _loc2_:* = null;
-         if(Math.ceil(param1) == param1 || Math.floor(param1) == param1)
+         var result:* = null;
+         if(Math.ceil(value) == value || Math.floor(value) == value)
          {
-            _loc2_ = Math.abs(param1).toString() + ".0";
+            result = Math.abs(value).toString() + ".0";
          }
          else
          {
-            _loc2_ = Math.abs(param1).toString();
+            result = Math.abs(value).toString();
          }
-         return _loc2_;
+         return result;
       }
       
-      private function lastTurn(param1:Number) : void
+      private function lastTurn(value:Number) : void
       {
          _bmPrevious.visible = true;
          _bmPreviousDirection.visible = true;
          _vanePreviousGradientText.visible = true;
-         _bmPreviousDirection.scaleX = param1 > 0?1:-1;
-         _bmPreviousDirection.x = param1 > 0?_previousDirectionPos.x:Number(_previousDirectionPos.x + _bmPreviousDirection.width);
-         _vanePreviousGradientText.text = Math.abs(param1).toString();
+         _bmPreviousDirection.scaleX = value > 0?1:-1;
+         _bmPreviousDirection.x = value > 0?_previousDirectionPos.x:Number(_previousDirectionPos.x + _bmPreviousDirection.width);
+         _vanePreviousGradientText.text = Math.abs(value).toString();
       }
       
       public function dispose() : void

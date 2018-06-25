@@ -14,40 +14,40 @@ package ddt.data.analyze
       
       public var unableChar:String;
       
-      public function FilterWordAnalyzer(param1:Function)
+      public function FilterWordAnalyzer(onCompleteCall:Function)
       {
          words = [];
          serverWords = [];
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc6_:* = null;
-         var _loc2_:String = Base64.decode(String(param1));
-         _loc2_ = _loc2_.toLocaleLowerCase();
-         var _loc4_:Array = LanguageMgr.GetTranslation("zangNoFilterWords").split(",");
+         var exc:* = null;
+         var str:String = Base64.decode(String(data));
+         str = str.toLocaleLowerCase();
+         var NoFilterWords:Array = LanguageMgr.GetTranslation("zangNoFilterWords").split(",");
          var _loc8_:int = 0;
-         var _loc7_:* = _loc4_;
-         for each(var _loc5_ in _loc4_)
+         var _loc7_:* = NoFilterWords;
+         for each(var tmp in NoFilterWords)
          {
-            _loc6_ = new RegExp(_loc5_,"g");
-            _loc2_ = _loc2_.replace(_loc6_,"");
+            exc = new RegExp(tmp,"g");
+            str = str.replace(exc,"");
          }
-         var _loc3_:Array = _loc2_.toLocaleLowerCase().split("\n");
-         if(_loc3_)
+         var arr:Array = str.toLocaleLowerCase().split("\n");
+         if(arr)
          {
-            if(_loc3_[0])
+            if(arr[0])
             {
-               unableChar = _loc3_[0];
+               unableChar = arr[0];
             }
-            if(_loc3_[1])
+            if(arr[1])
             {
-               words = _loc3_[1].split("|");
+               words = arr[1].split("|");
             }
-            if(_loc3_[2])
+            if(arr[2])
             {
-               serverWords = _loc3_[2].split("|");
+               serverWords = arr[2].split("|");
             }
          }
          onAnalyzeComplete();

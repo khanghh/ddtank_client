@@ -20,34 +20,34 @@ package team.model
          super();
       }
       
-      public function getRankGift(param1:int) : ItemTemplateInfo
+      public function getRankGift(rank:int) : ItemTemplateInfo
       {
-         if(param1 < 0 || RankGift == null || RankGift.length == 0)
+         if(rank < 0 || RankGift == null || RankGift.length == 0)
          {
             return null;
          }
-         var _loc2_:Array = RankGift.split(",");
-         if(param1 >= _loc2_.length)
+         var gifts:Array = RankGift.split(",");
+         if(rank >= gifts.length)
          {
             return null;
          }
-         return ItemManager.Instance.getTemplateById(parseInt(_loc2_[param1]));
+         return ItemManager.Instance.getTemplateById(parseInt(gifts[rank]));
       }
       
       public function getBeginData() : String
       {
-         var _loc2_:Array = [];
-         _loc2_ = (StartDate.split(" ")[0] as String).split("-");
-         var _loc1_:String = _loc2_[0] + "." + _loc2_[1] + "." + _loc2_[2];
-         return _loc1_;
+         var arr:Array = [];
+         arr = (StartDate.split(" ")[0] as String).split("-");
+         var str:String = arr[0] + "." + arr[1] + "." + arr[2];
+         return str;
       }
       
       public function getEndData() : String
       {
-         var _loc2_:Array = [];
-         _loc2_ = (EndDate.split(" ")[0] as String).split("-");
-         var _loc1_:String = _loc2_[0] + "." + _loc2_[1] + "." + _loc2_[2];
-         return _loc1_;
+         var arr:Array = [];
+         arr = (EndDate.split(" ")[0] as String).split("-");
+         var str:String = arr[0] + "." + arr[1] + "." + arr[2];
+         return str;
       }
    }
 }

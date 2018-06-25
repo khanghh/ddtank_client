@@ -39,9 +39,9 @@ package quest
          addChild(panel);
       }
       
-      public function set info(param1:QuestInfo) : void
+      public function set info(value:QuestInfo) : void
       {
-         descText.htmlText = QuestDescTextAnalyz.start(param1.Detail);
+         descText.htmlText = QuestDescTextAnalyz.start(value.Detail);
          panel.invalidateViewport();
       }
       

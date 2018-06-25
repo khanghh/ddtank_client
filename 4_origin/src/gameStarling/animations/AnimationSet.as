@@ -20,16 +20,16 @@ package gameStarling.animations
       
       private var _minY:Number;
       
-      public function AnimationSet(param1:MapView3D, param2:Number, param3:Number)
+      public function AnimationSet(map:MapView3D, stageWidth:Number, stageHeight:Number)
       {
          super();
-         _map = param1;
+         _map = map;
          _running = true;
          _current = null;
-         _stageHeight = param3;
-         _stageWidth = param2;
-         _minX = -_map.width + param2;
-         _minY = -_map.height + param3;
+         _stageHeight = stageHeight;
+         _stageWidth = stageWidth;
+         _minX = -_map.width + stageWidth;
+         _minY = -_map.height + stageHeight;
       }
       
       public function get stageWidth() : Number
@@ -62,20 +62,20 @@ package gameStarling.animations
          return _current;
       }
       
-      public function addAnimation(param1:IAnimate) : void
+      public function addAnimation(anit:IAnimate) : void
       {
          if(_current)
          {
-            if(_current.level <= param1.level && _current.canReplace(param1))
+            if(_current.level <= anit.level && _current.canReplace(anit))
             {
                _current.cancel();
-               _current = param1;
+               _current = anit;
                _current.prepare(this);
             }
          }
          else
          {
-            _current = param1;
+            _current = anit;
             _current.prepare(this);
          }
       }

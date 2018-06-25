@@ -16,9 +16,9 @@ package shop.view
       
       protected var _cellSize:uint = 60;
       
-      public function ShopItemCell(param1:DisplayObject, param2:ItemTemplateInfo = null, param3:Boolean = true, param4:Boolean = true)
+      public function ShopItemCell(bg:DisplayObject, info:ItemTemplateInfo = null, showLoading:Boolean = true, showTip:Boolean = true)
       {
-         super(param1,param2,param3,param4);
+         super(bg,info,showLoading,showTip);
       }
       
       public function get shopItemInfo() : ShopCarItemInfo
@@ -26,41 +26,41 @@ package shop.view
          return _shopItemInfo;
       }
       
-      public function set shopItemInfo(param1:ShopCarItemInfo) : void
+      public function set shopItemInfo(value:ShopCarItemInfo) : void
       {
-         _shopItemInfo = param1;
+         _shopItemInfo = value;
       }
       
-      public function set cellSize(param1:uint) : void
+      public function set cellSize(value:uint) : void
       {
-         _cellSize = param1;
+         _cellSize = value;
          updateSize(_pic);
       }
       
-      override protected function updateSize(param1:Sprite) : void
+      override protected function updateSize(sp:Sprite) : void
       {
-         var _loc2_:Number = NaN;
-         PositionUtils.setPos(param1,"ddtshop.ItemCellStartPos");
-         if(param1.height >= _cellSize && _cellSize >= param1.width || param1.height >= param1.width && param1.width >= _cellSize || _cellSize >= param1.height && param1.height >= param1.width)
+         var scale:Number = NaN;
+         PositionUtils.setPos(sp,"ddtshop.ItemCellStartPos");
+         if(sp.height >= _cellSize && _cellSize >= sp.width || sp.height >= sp.width && sp.width >= _cellSize || _cellSize >= sp.height && sp.height >= sp.width)
          {
-            _loc2_ = param1.height / _cellSize;
+            scale = sp.height / _cellSize;
          }
          else
          {
-            _loc2_ = param1.width / _cellSize;
+            scale = sp.width / _cellSize;
          }
-         param1.height = param1.height / _loc2_;
-         param1.width = param1.width / _loc2_;
-         param1.x = param1.x + (_cellSize - param1.width) / 2;
-         param1.y = param1.y + (_cellSize - param1.height) / 2;
+         sp.height = sp.height / scale;
+         sp.width = sp.width / scale;
+         sp.x = sp.x + (_cellSize - sp.width) / 2;
+         sp.y = sp.y + (_cellSize - sp.height) / 2;
       }
       
-      override protected function updateSizeII(param1:Sprite) : void
+      override protected function updateSizeII(sp:Sprite) : void
       {
          var _loc2_:int = 70;
-         param1.height = _loc2_;
-         param1.width = _loc2_;
-         PositionUtils.setPos(param1,"ddtshop.ItemCellStartPos");
+         sp.height = _loc2_;
+         sp.width = _loc2_;
+         PositionUtils.setPos(sp,"ddtshop.ItemCellStartPos");
       }
       
       override protected function createLoading() : void
@@ -69,13 +69,13 @@ package shop.view
          updateSize(_loadingasset);
       }
       
-      public function set tipInfo(param1:ShopItemInfo) : void
+      public function set tipInfo(value:ShopItemInfo) : void
       {
-         if(!param1)
+         if(!value)
          {
             return;
          }
-         tipData = param1;
+         tipData = value;
       }
       
       override public function dispose() : void

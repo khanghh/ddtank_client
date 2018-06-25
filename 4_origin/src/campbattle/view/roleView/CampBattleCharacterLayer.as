@@ -21,37 +21,36 @@ package campbattle.view.roleView
       
       private var _mountType:int;
       
-      public function CampBattleCharacterLayer(param1:ItemTemplateInfo, param2:int, param3:Boolean, param4:int, param5:int, param6:String, param7:int)
+      public function CampBattleCharacterLayer(info:ItemTemplateInfo, equipType:int, sex:Boolean, index:int, direction:int, baseURl:String, mountType:int)
       {
-         _equipType = param2;
-         _sex = param3;
-         _index = param4;
-         _direction = param5;
-         _baseURL = param6;
-         _mountType = param7;
-         super(param1);
+         _equipType = equipType;
+         _sex = sex;
+         _index = index;
+         _direction = direction;
+         _baseURL = baseURl;
+         _mountType = mountType;
+         super(info);
       }
       
       override public function reSetBitmap() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var tmpBitmap:* = null;
          clearBitmap();
-         _loc2_ = 0;
-         while(_loc2_ < _queueLoader.loaders.length)
+         for(i = 0; i < _queueLoader.loaders.length; )
          {
-            if(_queueLoader.loaders[_loc2_].content)
+            if(_queueLoader.loaders[i].content)
             {
-               _loc1_ = new Bitmap((_queueLoader.loaders[_loc2_].content as Bitmap).bitmapData);
+               tmpBitmap = new Bitmap((_queueLoader.loaders[i].content as Bitmap).bitmapData);
             }
-            _bitmaps.push(_loc1_);
-            if(_bitmaps[_loc2_])
+            _bitmaps.push(tmpBitmap);
+            if(_bitmaps[i])
             {
-               _bitmaps[_loc2_].smoothing = true;
-               _bitmaps[_loc2_].visible = false;
-               addChild(_bitmaps[_loc2_]);
+               _bitmaps[i].smoothing = true;
+               _bitmaps[i].visible = false;
+               addChild(_bitmaps[i]);
             }
-            _loc2_++;
+            i++;
          }
       }
       
@@ -64,58 +63,58 @@ package campbattle.view.roleView
          _bitmaps = new Vector.<Bitmap>();
       }
       
-      override protected function getUrl(param1:int) : String
+      override protected function getUrl(layer:int) : String
       {
-         var _loc2_:* = null;
-         var _loc4_:* = null;
-         var _loc5_:* = null;
-         var _loc3_:String = "";
-         _loc4_ = !!_sex?"m":"f";
+         var equipStr:* = null;
+         var sexStr:* = null;
+         var directionStr:* = null;
+         var path:String = "";
+         sexStr = !!_sex?"m":"f";
          if(_mountType == 0)
          {
-            _loc2_ = _equipType == 0?"face":_equipType == 2?"clothz":"hair";
-            _loc5_ = (_equipType == 2?"cloth":_loc2_) + (_direction == 1?"":"f");
-            _loc3_ = _baseURL + _loc2_ + "/" + _loc4_ + "/" + String(_index) + "/" + _loc5_ + "/" + String(param1) + ".png";
+            equipStr = _equipType == 0?"face":_equipType == 2?"clothz":"hair";
+            directionStr = (_equipType == 2?"cloth":equipStr) + (_direction == 1?"":"f");
+            path = _baseURL + equipStr + "/" + sexStr + "/" + String(_index) + "/" + directionStr + "/" + String(layer) + ".png";
          }
          else
          {
-            _loc2_ = _equipType == 0?"face":_equipType == 2?"cloth":"hair";
-            _loc5_ = (_equipType == 2?"cloth":_loc2_) + (_direction == 1?"":"f");
+            equipStr = _equipType == 0?"face":_equipType == 2?"cloth":"hair";
+            directionStr = (_equipType == 2?"cloth":equipStr) + (_direction == 1?"":"f");
             if(_equipType == 0)
             {
-               _loc3_ = _baseURL + "face/" + _loc4_ + "/" + String(_index) + "/" + _loc5_ + "/" + String(param1) + ".png";
+               path = _baseURL + "face/" + sexStr + "/" + String(_index) + "/" + directionStr + "/" + String(layer) + ".png";
             }
             else if(_equipType == 1)
             {
-               _loc3_ = _baseURL + "hair/" + _loc4_ + "/" + String(_index) + "/" + _loc5_ + "/" + String(param1) + ".png";
+               path = _baseURL + "hair/" + sexStr + "/" + String(_index) + "/" + directionStr + "/" + String(layer) + ".png";
             }
             else if(_equipType == 2)
             {
                if(_mountType == 140)
                {
-                  if(String(param1) == "1")
+                  if(String(layer) == "1")
                   {
-                     _loc3_ = PathManager.SITE_MAIN + "image/mounts/cloth/n/1/" + String(param1) + ".png";
+                     path = PathManager.SITE_MAIN + "image/mounts/cloth/n/1/" + String(layer) + ".png";
                   }
                }
                else
                {
-                  _loc3_ = _baseURL + "cloth/" + _loc4_ + "/" + String(_index) + "/" + String(param1) + ".png";
+                  path = _baseURL + "cloth/" + sexStr + "/" + String(_index) + "/" + String(layer) + ".png";
                }
             }
             else if(_equipType == 3)
             {
-               _loc3_ = PathManager.SITE_MAIN + "image/mounts/saddle/" + _mountType + "/" + String(param1) + ".png";
+               path = PathManager.SITE_MAIN + "image/mounts/saddle/" + _mountType + "/" + String(layer) + ".png";
             }
             else if(_equipType == 4)
             {
-               if(_mountType != 140 || String(param1) == "1")
+               if(_mountType != 140 || String(layer) == "1")
                {
-                  _loc3_ = PathManager.SITE_MAIN + "image/mounts/horse/" + _mountType + "/" + String(param1) + ".png";
+                  path = PathManager.SITE_MAIN + "image/mounts/horse/" + _mountType + "/" + String(layer) + ".png";
                }
             }
          }
-         return _loc3_;
+         return path;
       }
    }
 }

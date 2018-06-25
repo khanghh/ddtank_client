@@ -17,116 +17,111 @@ package consortion.view.selfConsortia
       
       private var _bankLevel:int;
       
-      public function ConsortionBankListView(param1:int, param2:int = 0)
+      public function ConsortionBankListView(bagType:int, level:int = 0)
       {
-         super(param1,MAX_LINE_NUM);
+         super(bagType,MAX_LINE_NUM);
       }
       
-      override public function updateBankBag(param1:int) : void
+      override public function updateBankBag(level:int) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:* = null;
-         if(param1 == _bankLevel)
+         var i:int = 0;
+         var j:int = 0;
+         var index:int = 0;
+         var cell:* = null;
+         if(level == _bankLevel)
          {
             return;
          }
-         _loc5_ = _bankLevel;
-         while(_loc5_ < param1)
+         for(i = _bankLevel; i < level; )
          {
-            _loc4_ = 0;
-            while(_loc4_ < MAX_LINE_NUM)
+            for(j = 0; j < MAX_LINE_NUM; )
             {
-               _loc2_ = _loc5_ * MAX_LINE_NUM + _loc4_;
-               _loc3_ = _cells[_loc2_] as BagCell;
-               _loc3_.grayFilters = false;
-               _loc3_.mouseEnabled = true;
-               _loc4_++;
+               index = i * MAX_LINE_NUM + j;
+               cell = _cells[index] as BagCell;
+               cell.grayFilters = false;
+               cell.mouseEnabled = true;
+               j++;
             }
-            _loc5_++;
+            i++;
          }
-         _bankLevel = param1;
+         _bankLevel = level;
       }
       
-      override protected function __doubleClickHandler(param1:InteractiveEvent) : void
+      override protected function __doubleClickHandler(evt:InteractiveEvent) : void
       {
-         if((param1.currentTarget as BagCell).info != null)
+         if((evt.currentTarget as BagCell).info != null)
          {
-            dispatchEvent(new CellEvent("doubleclick",param1.currentTarget));
+            dispatchEvent(new CellEvent("doubleclick",evt.currentTarget));
          }
       }
       
-      override protected function __clickHandler(param1:InteractiveEvent) : void
+      override protected function __clickHandler(e:InteractiveEvent) : void
       {
-         if(param1.currentTarget)
+         if(e.currentTarget)
          {
-            dispatchEvent(new CellEvent("itemclick",param1.currentTarget,false,false));
+            dispatchEvent(new CellEvent("itemclick",e.currentTarget,false,false));
          }
       }
       
-      private function __resultHandler(param1:MouseEvent) : void
+      private function __resultHandler(evt:MouseEvent) : void
       {
       }
       
       override protected function createCells() : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         var _loc1_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var j:int = 0;
+         var index:int = 0;
+         var cell:* = null;
          _cells = new Dictionary();
-         _loc4_ = 0;
-         while(_loc4_ < MAX_LINE_NUM)
+         for(i = 0; i < MAX_LINE_NUM; )
          {
-            _loc3_ = 0;
-            while(_loc3_ < MAX_LINE_NUM)
+            for(j = 0; j < MAX_LINE_NUM; )
             {
-               _loc1_ = _loc4_ * MAX_LINE_NUM + _loc3_;
-               _loc2_ = CellFactory.instance.createBankCell(_loc1_) as BagCell;
-               addChild(_loc2_);
-               _loc2_.bagType = _bagType;
-               _loc2_.addEventListener("interactive_click",__clickHandler);
-               _loc2_.addEventListener("interactive_double_click",__doubleClickHandler);
-               DoubleClickManager.Instance.enableDoubleClick(_loc2_);
-               _loc2_.addEventListener("lockChanged",__cellChanged);
-               _cells[_loc2_.place] = _loc2_;
-               if(_bankLevel <= _loc4_)
+               index = i * MAX_LINE_NUM + j;
+               cell = CellFactory.instance.createBankCell(index) as BagCell;
+               addChild(cell);
+               cell.bagType = _bagType;
+               cell.addEventListener("interactive_click",__clickHandler);
+               cell.addEventListener("interactive_double_click",__doubleClickHandler);
+               DoubleClickManager.Instance.enableDoubleClick(cell);
+               cell.addEventListener("lockChanged",__cellChanged);
+               _cells[cell.place] = cell;
+               if(_bankLevel <= i)
                {
-                  _loc2_.grayFilters = true;
-                  _loc2_.mouseEnabled = false;
+                  cell.grayFilters = true;
+                  cell.mouseEnabled = false;
                }
-               _loc3_++;
+               j++;
             }
-            _loc4_++;
+            i++;
          }
       }
       
       override public function checkBankCell() : int
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         var _loc1_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var j:int = 0;
+         var index:int = 0;
+         var cell:* = null;
          if(_bankLevel == 0)
          {
             return 1;
          }
-         _loc4_ = 0;
-         while(_loc4_ < _bankLevel)
+         i = 0;
+         while(i < _bankLevel)
          {
-            _loc3_ = 0;
-            while(_loc3_ < MAX_LINE_NUM)
+            for(j = 0; j < MAX_LINE_NUM; )
             {
-               _loc1_ = _loc4_ * MAX_LINE_NUM + _loc3_;
-               _loc2_ = _cells[_loc1_] as BagCell;
-               if(!_loc2_.info)
+               index = i * MAX_LINE_NUM + j;
+               cell = _cells[index] as BagCell;
+               if(!cell.info)
                {
                   return 0;
                }
-               _loc3_++;
+               j++;
             }
-            _loc4_++;
+            i++;
          }
          if(_bankLevel == MAX_LINE_NUM)
          {
@@ -139,11 +134,11 @@ package consortion.view.selfConsortia
       {
          var _loc3_:int = 0;
          var _loc2_:* = _cells;
-         for each(var _loc1_ in _cells)
+         for each(var cell in _cells)
          {
-            _loc1_.removeEventListener("interactive_click",__clickHandler);
-            _loc1_.removeEventListener("interactive_double_click",__doubleClickHandler);
-            _loc1_.removeEventListener("lockChanged",__cellChanged);
+            cell.removeEventListener("interactive_click",__clickHandler);
+            cell.removeEventListener("interactive_double_click",__doubleClickHandler);
+            cell.removeEventListener("lockChanged",__cellChanged);
          }
          super.dispose();
          if(this.parent)

@@ -16,10 +16,10 @@ package welfareCenter.callBackLotteryDraw.view
       
       private var _lineShape:Shape;
       
-      public function FilterFrameTextMiddleLine(param1:FilterFrameText)
+      public function FilterFrameTextMiddleLine(filterFrameText:FilterFrameText)
       {
          super();
-         _filterFrameText = param1;
+         _filterFrameText = filterFrameText;
          addChild(_filterFrameText);
          _lineShape = new Shape();
          addChild(_lineShape);
@@ -30,56 +30,55 @@ package welfareCenter.callBackLotteryDraw.view
          return _filterFrameText;
       }
       
-      public function drawMiddleLines(param1:Number, param2:uint, param3:Number) : void
+      public function drawMiddleLines(thickness:Number, color:uint, alpha:Number) : void
       {
-         var _loc10_:int = 0;
-         var _loc7_:int = 0;
-         var _loc9_:int = 0;
-         var _loc11_:* = null;
-         var _loc13_:int = 0;
-         var _loc12_:int = 0;
-         var _loc8_:int = 0;
-         var _loc5_:int = 0;
-         var _loc4_:Graphics = _lineShape.graphics;
-         _loc4_.clear();
-         var _loc6_:int = _filterFrameText.numLines;
-         if(_loc6_ > 0)
+         var leading:int = 0;
+         var offsetY:int = 0;
+         var i:int = 0;
+         var metrics:* = null;
+         var metricsX:int = 0;
+         var metricsW:int = 0;
+         var metricsH:int = 0;
+         var lineY:int = 0;
+         var g:Graphics = _lineShape.graphics;
+         g.clear();
+         var numLines:int = _filterFrameText.numLines;
+         if(numLines > 0)
          {
-            _loc4_.lineStyle(param1,param2,param3);
-            _loc10_ = _filterFrameText.defaultTextFormat.leading;
-            _loc7_ = 2;
-            _loc9_ = 0;
-            while(_loc9_ < _loc6_)
+            g.lineStyle(thickness,color,alpha);
+            leading = _filterFrameText.defaultTextFormat.leading;
+            offsetY = 2;
+            for(i = 0; i < numLines; )
             {
-               _loc11_ = _filterFrameText.getLineMetrics(_loc9_);
-               _loc13_ = _loc11_.x;
-               _loc12_ = _loc11_.width;
-               _loc8_ = _loc11_.height;
-               _loc5_ = _loc7_ + (_loc8_ - _loc10_) * 0.5;
-               _loc4_.moveTo(_loc13_,_loc5_);
-               _loc4_.lineTo(_loc13_ + _loc12_,_loc5_);
-               _loc7_ = _loc7_ + _loc8_;
-               _loc9_++;
+               metrics = _filterFrameText.getLineMetrics(i);
+               metricsX = metrics.x;
+               metricsW = metrics.width;
+               metricsH = metrics.height;
+               lineY = offsetY + (metricsH - leading) * 0.5;
+               g.moveTo(metricsX,lineY);
+               g.lineTo(metricsX + metricsW,lineY);
+               offsetY = offsetY + metricsH;
+               i++;
             }
          }
       }
       
-      public function drawMiddleLine(param1:Number, param2:uint, param3:Number, param4:int, param5:int) : void
+      public function drawMiddleLine(thickness:Number, color:uint, alpha:Number, startIndex:int, endIndex:int) : void
       {
-         var _loc7_:Graphics = _lineShape.graphics;
-         _loc7_.clear();
-         _loc7_.lineStyle(param1,param2,param3);
-         var _loc11_:Rectangle = _filterFrameText.getCharBoundaries(param4);
-         var _loc10_:Rectangle = _filterFrameText.getCharBoundaries(param5);
-         var _loc12_:int = _filterFrameText.defaultTextFormat.leading;
-         var _loc8_:int = 2;
-         var _loc13_:TextLineMetrics = _filterFrameText.getLineMetrics(0);
-         var _loc15_:int = _loc13_.x;
-         var _loc14_:int = _loc13_.width;
-         var _loc9_:int = _loc13_.height;
-         var _loc6_:int = _loc8_ + (_loc9_ - _loc12_) * 0.5;
-         _loc7_.moveTo(_loc11_.x,_loc6_);
-         _loc7_.lineTo(_loc10_.right,_loc6_);
+         var g:Graphics = _lineShape.graphics;
+         g.clear();
+         g.lineStyle(thickness,color,alpha);
+         var startRect:Rectangle = _filterFrameText.getCharBoundaries(startIndex);
+         var endRect:Rectangle = _filterFrameText.getCharBoundaries(endIndex);
+         var leading:int = _filterFrameText.defaultTextFormat.leading;
+         var offsetY:int = 2;
+         var metrics:TextLineMetrics = _filterFrameText.getLineMetrics(0);
+         var metricsX:int = metrics.x;
+         var metricsW:int = metrics.width;
+         var metricsH:int = metrics.height;
+         var lineY:int = offsetY + (metricsH - leading) * 0.5;
+         g.moveTo(startRect.x,lineY);
+         g.lineTo(endRect.right,lineY);
       }
       
       public function dispose() : void

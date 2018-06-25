@@ -45,7 +45,7 @@ package witchBlessing.data
       
       public var DoubleMoney:Array;
       
-      public function WitchBlessingModel(param1:IEventDispatcher = null)
+      public function WitchBlessingModel(target:IEventDispatcher = null)
       {
          _itemInfoList = [];
          awardslist1 = [];
@@ -54,65 +54,63 @@ package witchBlessing.data
          ExpArr = [0];
          AwardsNums = [];
          DoubleMoney = [];
-         super(param1);
+         super(target);
       }
       
-      public function set itemInfoList(param1:Array) : void
+      public function set itemInfoList(arr:Array) : void
       {
-         var _loc7_:int = 0;
-         var _loc6_:* = null;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         var _loc5_:* = null;
-         _loc7_ = 0;
-         while(_loc7_ < param1.length)
+         var i:int = 0;
+         var info:* = null;
+         var str:* = null;
+         var info1:* = null;
+         var strArr:* = null;
+         for(i = 0; i < arr.length; )
          {
-            _loc6_ = param1[_loc7_];
-            if(_loc6_.Quality == 1)
+            info = arr[i];
+            if(info.Quality == 1)
             {
-               awardslist1.push(_loc6_);
+               awardslist1.push(info);
             }
-            else if(_loc6_.Quality == 2)
+            else if(info.Quality == 2)
             {
-               awardslist2.push(_loc6_);
+               awardslist2.push(info);
             }
-            else if(_loc6_.Quality == 3)
+            else if(info.Quality == 3)
             {
-               awardslist3.push(_loc6_);
+               awardslist3.push(info);
             }
-            _loc7_++;
+            i++;
          }
          _itemInfoList = [awardslist1,awardslist2,awardslist3];
-         var _loc4_:Object = ServerConfigManager.instance.serverConfigInfo["WitchBlessConfig"];
-         if(_loc4_)
+         var obj:Object = ServerConfigManager.instance.serverConfigInfo["WitchBlessConfig"];
+         if(obj)
          {
-            _loc2_ = _loc4_.Value;
-            if(_loc2_ && _loc2_ != "")
+            str = obj.Value;
+            if(str && str != "")
             {
-               _loc3_ = new WitchBlessingInfo();
-               _loc5_ = _loc2_.split("|");
-               _loc3_.ExpArr = (_loc5_[0] as String).split(",");
-               _loc3_.AwardsNums = (_loc5_[1] as String).split(",");
-               _loc3_.DoubleMoney = (_loc5_[2] as String).split(",");
+               info1 = new WitchBlessingInfo();
+               strArr = str.split("|");
+               info1.ExpArr = (strArr[0] as String).split(",");
+               info1.AwardsNums = (strArr[1] as String).split(",");
+               info1.DoubleMoney = (strArr[2] as String).split(",");
             }
-            infoDate = _loc3_;
+            infoDate = info1;
          }
       }
       
-      public function set infoDate(param1:WitchBlessingInfo) : void
+      public function set infoDate(info:WitchBlessingInfo) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:Array = param1.ExpArr;
-         var _loc2_:int = 0;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_.length)
+         var i:int = 0;
+         var exp:Array = info.ExpArr;
+         var tempExp:int = 0;
+         for(i = 0; i < exp.length; )
          {
-            _loc2_ = _loc2_ + int(_loc3_[_loc4_]);
-            ExpArr.push(_loc2_);
-            _loc4_++;
+            tempExp = tempExp + int(exp[i]);
+            ExpArr.push(tempExp);
+            i++;
          }
-         AwardsNums = param1.AwardsNums;
-         DoubleMoney = param1.DoubleMoney;
+         AwardsNums = info.AwardsNums;
+         DoubleMoney = info.DoubleMoney;
       }
       
       public function get itemInfoList() : Array
@@ -122,16 +120,16 @@ package witchBlessing.data
       
       public function get activityTime() : String
       {
-         var _loc2_:* = null;
-         var _loc1_:* = null;
-         var _loc3_:String = "";
+         var minutes1:* = null;
+         var minutes2:* = null;
+         var dateString:String = "";
          if(startDate && endDate)
          {
-            _loc2_ = startDate.minutes > 9?startDate.minutes + "":"0" + startDate.minutes;
-            _loc1_ = endDate.minutes > 9?endDate.minutes + "":"0" + endDate.minutes;
-            _loc3_ = startDate.fullYear + "." + (startDate.month + 1) + "." + startDate.date + " - " + endDate.fullYear + "." + (endDate.month + 1) + "." + endDate.date;
+            minutes1 = startDate.minutes > 9?startDate.minutes + "":"0" + startDate.minutes;
+            minutes2 = endDate.minutes > 9?endDate.minutes + "":"0" + endDate.minutes;
+            dateString = startDate.fullYear + "." + (startDate.month + 1) + "." + startDate.date + " - " + endDate.fullYear + "." + (endDate.month + 1) + "." + endDate.date;
          }
-         return _loc3_;
+         return dateString;
       }
       
       public function dispose() : void

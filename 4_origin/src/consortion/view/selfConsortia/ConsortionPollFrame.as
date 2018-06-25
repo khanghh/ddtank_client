@@ -104,24 +104,23 @@ package consortion.view.selfConsortia
       
       private function removeEvent() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          removeEventListener("response",__responseHandler);
          _vote.removeEventListener("click",__voteHandler);
          _help.removeEventListener("click",__helpHandler);
          ConsortionModelManager.Instance.model.removeEventListener("pollListChange",__pollListChange);
-         _loc1_ = 0;
-         while(_loc1_ < _items.length)
+         for(i = 0; i < _items.length; )
          {
-            _items[_loc1_].removeEventListener("click",__itemClickHandler);
-            _loc1_++;
+            _items[i].removeEventListener("click",__itemClickHandler);
+            i++;
          }
          SocketManager.Instance.removeEventListener(PkgEvent.format(129,25),__consortiaPollHandler);
       }
       
-      private function __consortiaPollHandler(param1:PkgEvent) : void
+      private function __consortiaPollHandler(evt:PkgEvent) : void
       {
-         var _loc2_:Boolean = param1.pkg.readBoolean();
-         if(_loc2_)
+         var isSuccess:Boolean = evt.pkg.readBoolean();
+         if(isSuccess)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.consortion.pollFrame.success"));
             ConsortionModelManager.Instance.model.getConsortiaMemberInfo(PlayerManager.Instance.Self.ID).IsVote = true;
@@ -134,80 +133,78 @@ package consortion.view.selfConsortia
          }
       }
       
-      private function __pollListChange(param1:ConsortionEvent) : void
+      private function __pollListChange(event:ConsortionEvent) : void
       {
          dataList = ConsortionModelManager.Instance.model.pollList;
       }
       
       private function clearList() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(_items)
          {
-            _loc1_ = 0;
-            while(_loc1_ < _items.length)
+            for(i = 0; i < _items.length; )
             {
-               _items[_loc1_].removeEventListener("click",__itemClickHandler);
-               _items[_loc1_].dispose();
-               _items[_loc1_] = null;
-               _loc1_++;
+               _items[i].removeEventListener("click",__itemClickHandler);
+               _items[i].dispose();
+               _items[i] = null;
+               i++;
             }
          }
          _items = new Vector.<ConsortionPollItem>();
       }
       
-      private function set dataList(param1:Vector.<ConsortionPollInfo>) : void
+      private function set dataList(value:Vector.<ConsortionPollInfo>) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var item:* = null;
          clearList();
-         if(param1 == null)
+         if(value == null)
          {
             return;
          }
-         _loc3_ = 0;
-         while(_loc3_ < param1.length)
+         i = 0;
+         while(i < value.length)
          {
-            _loc2_ = new ConsortionPollItem(_loc3_);
-            _loc2_.addEventListener("click",__itemClickHandler);
-            _loc2_.info = param1[_loc3_];
-            _items.push(_loc2_);
-            _vbox.addChild(_loc2_);
-            _loc3_++;
+            item = new ConsortionPollItem(i);
+            item.addEventListener("click",__itemClickHandler);
+            item.info = value[i];
+            _items.push(item);
+            _vbox.addChild(item);
+            i++;
          }
          _panel.invalidateViewport();
       }
       
-      private function __itemClickHandler(param1:MouseEvent) : void
+      private function __itemClickHandler(event:MouseEvent) : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          SoundManager.instance.play("008");
-         _currentItem = param1.currentTarget as ConsortionPollItem;
-         _loc2_ = 0;
-         while(_loc2_ < _items.length)
+         _currentItem = event.currentTarget as ConsortionPollItem;
+         for(i = 0; i < _items.length; )
          {
-            if(_currentItem == _items[_loc2_])
+            if(_currentItem == _items[i])
             {
-               _items[_loc2_].selected = true;
+               _items[i].selected = true;
             }
             else
             {
-               _items[_loc2_].selected = false;
+               _items[i].selected = false;
             }
-            _loc2_++;
+            i++;
          }
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(event:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(event.responseCode == 0 || event.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();
          }
       }
       
-      private function __voteHandler(param1:MouseEvent) : void
+      private function __voteHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_currentItem == null)
@@ -224,7 +221,7 @@ package consortion.view.selfConsortia
          _vote.enable = false;
       }
       
-      private function __helpHandler(param1:MouseEvent) : void
+      private function __helpHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _helpFrame = ComponentFactory.Instance.creatComponentByStylename("consortion.pollFrame.helpFrame");
@@ -243,16 +240,16 @@ package consortion.view.selfConsortia
          LayerManager.Instance.addToLayer(_helpFrame,3,true,1);
       }
       
-      private function __helpResoponseHandler(param1:FrameEvent) : void
+      private function __helpResoponseHandler(event:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(event.responseCode == 0 || event.responseCode == 1)
          {
             SoundManager.instance.play("008");
             helpDispose();
          }
       }
       
-      private function __closeHelpHandler(param1:MouseEvent) : void
+      private function __closeHelpHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          helpDispose();

@@ -95,33 +95,33 @@ package room.view
          _giftBtn.addEventListener("click",__onGiftBtnClick);
       }
       
-      private function __onBuyBtnClick(param1:MouseEvent) : void
+      private function __onBuyBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc3_:int = 0;
+         var goodsID:int = 0;
          if(RoomManager.Instance.current.mapId == 14)
          {
-            _loc3_ = _ticketsFootballID[RoomManager.Instance.current.hardLevel];
+            goodsID = _ticketsFootballID[RoomManager.Instance.current.hardLevel];
          }
          else if(RoomManager.Instance.current.mapId == 15001)
          {
-            _loc3_ = 201628;
+            goodsID = 201628;
          }
          else if(RoomManager.Instance.current.mapId == 16001)
          {
-            _loc3_ = 201629;
+            goodsID = 201629;
          }
          else
          {
-            _loc3_ = _ticketsID[RoomManager.Instance.current.hardLevel];
+            goodsID = _ticketsID[RoomManager.Instance.current.hardLevel];
          }
-         var _loc2_:ShopItemInfo = ShopManager.Instance.getGoodsByTemplateID(_loc3_);
-         _view = new BuySingleGoodsView(_loc2_.APrice1);
-         _view.goodsID = _loc3_;
+         var goods:ShopItemInfo = ShopManager.Instance.getGoodsByTemplateID(goodsID);
+         _view = new BuySingleGoodsView(goods.APrice1);
+         _view.goodsID = goodsID;
          LayerManager.Instance.addToLayer(_view,3,true,1);
       }
       
-      private function __onGiftBtnClick(param1:MouseEvent) : void
+      private function __onGiftBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(RoomManager.Instance.current.mapId == 14)
@@ -150,17 +150,17 @@ package room.view
       
       public function giftBtnEnable() : void
       {
-         var _loc1_:int = 0;
+         var _goodsID:int = 0;
          if(RoomManager.Instance.current.mapId == 14)
          {
-            _loc1_ = _ticketsFootballID[RoomManager.Instance.current.hardLevel];
+            _goodsID = _ticketsFootballID[RoomManager.Instance.current.hardLevel];
          }
          else
          {
-            _loc1_ = _ticketsID[RoomManager.Instance.current.hardLevel];
+            _goodsID = _ticketsID[RoomManager.Instance.current.hardLevel];
          }
-         var _loc2_:ShopItemInfo = ShopManager.Instance.getGoodsByTemplateID(_loc1_);
-         if(_loc2_ && String(_loc2_.GoodsID).slice(-2) == "02")
+         var shopItemInfo:ShopItemInfo = ShopManager.Instance.getGoodsByTemplateID(_goodsID);
+         if(shopItemInfo && String(shopItemInfo.GoodsID).slice(-2) == "02")
          {
             _giftBtn.enable = false;
             _giftLight.visible = false;
@@ -174,33 +174,33 @@ package room.view
          }
       }
       
-      private function popupShopCard(param1:Boolean) : void
+      private function popupShopCard(value:Boolean) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var _shopInfo:* = null;
+         var _cardItem:* = null;
          ObjectUtils.disposeObject(_buyLight);
          _buyLight = null;
-         var _loc4_:Array = [];
-         _loc3_ = ShopManager.Instance.getGoodsByTemplateID(_ticketsID[RoomManager.Instance.current.hardLevel]);
-         _loc2_ = new ShopCarItemInfo(_loc3_.GoodsID,_loc3_.TemplateID);
-         ObjectUtils.copyProperties(_loc2_,_loc3_);
-         _loc4_.push(_loc2_);
-         _shopView.initialize(_loc4_);
-         _shopView.setType(param1);
+         var _list:Array = [];
+         _shopInfo = ShopManager.Instance.getGoodsByTemplateID(_ticketsID[RoomManager.Instance.current.hardLevel]);
+         _cardItem = new ShopCarItemInfo(_shopInfo.GoodsID,_shopInfo.TemplateID);
+         ObjectUtils.copyProperties(_cardItem,_shopInfo);
+         _list.push(_cardItem);
+         _shopView.initialize(_list);
+         _shopView.setType(value);
          LayerManager.Instance.addToLayer(_shopView,3,true,1);
       }
       
-      private function __onGiftButtonClick(param1:MouseEvent) : void
+      private function __onGiftButtonClick(event:MouseEvent) : void
       {
          ObjectUtils.disposeObject(_giftLight);
          _giftLight = null;
       }
       
-      public function setLevel(param1:int = -1) : void
+      public function setLevel(value:int = -1) : void
       {
-         if(param1 > 0 && param1 <= _ticketsID.length)
+         if(value > 0 && value <= _ticketsID.length)
          {
-            _level = param1;
+            _level = value;
          }
       }
       

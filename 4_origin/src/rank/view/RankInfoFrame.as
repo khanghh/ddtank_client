@@ -55,53 +55,51 @@ package rank.view
       
       private function initData() : void
       {
-         var _loc5_:* = null;
-         var _loc9_:int = 0;
-         var _loc8_:* = null;
-         var _loc7_:int = 0;
-         var _loc6_:* = null;
-         var _loc3_:* = null;
+         var line:* = null;
+         var i:int = 0;
+         var txt:* = null;
+         var j:int = 0;
+         var rankAwardInfo:* = null;
+         var item:* = null;
          rankTitleNameList = LanguageMgr.GetTranslation("ddt.rankInfoFrame.rankTitle" + String(type)).split("|");
-         var _loc2_:RankLayouInfo = ComponentFactory.Instance.creatCustomObject("rankInfo.posTitle" + String(type));
-         _loc2_.TitleTextString = rankTitleNameList;
+         var posInfo:RankLayouInfo = ComponentFactory.Instance.creatCustomObject("rankInfo.posTitle" + String(type));
+         posInfo.TitleTextString = rankTitleNameList;
          var _loc11_:int = 0;
-         var _loc10_:* = _loc2_.TitleHLinePoint;
-         for each(var _loc4_ in _loc2_.TitleHLinePoint)
+         var _loc10_:* = posInfo.TitleHLinePoint;
+         for each(var pt in posInfo.TitleHLinePoint)
          {
-            _loc5_ = ComponentFactory.Instance.creatBitmap("asset.rankInfo.titleLine");
-            PositionUtils.setPos(_loc5_,_loc4_);
-            titleBox.addChild(_loc5_);
+            line = ComponentFactory.Instance.creatBitmap("asset.rankInfo.titleLine");
+            PositionUtils.setPos(line,pt);
+            titleBox.addChild(line);
          }
-         _loc9_ = 0;
-         while(_loc9_ < _loc2_.TitleTextPoint.length)
+         for(i = 0; i < posInfo.TitleTextPoint.length; )
          {
-            _loc8_ = ComponentFactory.Instance.creatComponentByStylename("rankInfo.titleText");
-            PositionUtils.setPos(_loc8_,_loc2_.TitleTextPoint[_loc9_]);
-            _loc8_.text = _loc2_.TitleTextString[_loc9_];
-            titleBox.addChild(_loc8_);
-            _loc9_++;
+            txt = ComponentFactory.Instance.creatComponentByStylename("rankInfo.titleText");
+            PositionUtils.setPos(txt,posInfo.TitleTextPoint[i]);
+            txt.text = posInfo.TitleTextString[i];
+            titleBox.addChild(txt);
+            i++;
          }
-         var _loc1_:int = 1;
-         _loc7_ = 0;
-         while(_loc7_ < RankManager.instance.reweadDataList.length)
+         var index:int = 1;
+         for(j = 0; j < RankManager.instance.reweadDataList.length; )
          {
-            _loc6_ = RankManager.instance.reweadDataList[_loc7_] as RankAwardInfo;
-            if(_loc6_.subType == type && _loc6_.rank == _loc1_)
+            rankAwardInfo = RankManager.instance.reweadDataList[j] as RankAwardInfo;
+            if(rankAwardInfo.subType == type && rankAwardInfo.rank == index)
             {
-               _loc3_ = new RankInfoItem(type,_loc6_);
-               _loc3_.x = -18;
-               _loc3_.y = 43 + 35 * (_loc1_ - 1);
-               itemBox.addChild(_loc3_);
-               _loc1_++;
+               item = new RankInfoItem(type,rankAwardInfo);
+               item.x = -18;
+               item.y = 43 + 35 * (index - 1);
+               itemBox.addChild(item);
+               index++;
             }
-            _loc7_++;
+            j++;
          }
       }
       
-      protected function _responseHandle(param1:FrameEvent) : void
+      protected function _responseHandle(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
                dispose();
@@ -146,154 +144,153 @@ class RankInfoItem extends Sprite
 {
     
    
-   function RankInfoItem(param1:int, param2:RankAwardInfo)
+   function RankInfoItem(type:int, info:RankAwardInfo)
    {
-      var _loc7_:* = null;
-      var _loc11_:int = 0;
-      var _loc9_:* = null;
-      var _loc5_:* = null;
-      var _loc3_:* = null;
-      var _loc8_:* = null;
-      var _loc10_:int = 0;
+      var line:* = null;
+      var i:int = 0;
+      var txt:* = null;
+      var _info1:* = null;
+      var _horseNameStrList:* = null;
+      var _info:* = null;
+      var curLv:int = 0;
       super();
-      var _loc4_:RankLayouInfo = ComponentFactory.Instance.creatCustomObject("rankInfo.posInfo" + String(param1));
+      var posInfo:RankLayouInfo = ComponentFactory.Instance.creatCustomObject("rankInfo.posInfo" + String(type));
       var _loc13_:int = 0;
-      var _loc12_:* = _loc4_.TitleHLinePoint;
-      for each(var _loc6_ in _loc4_.TitleHLinePoint)
+      var _loc12_:* = posInfo.TitleHLinePoint;
+      for each(var pt in posInfo.TitleHLinePoint)
       {
-         _loc7_ = ComponentFactory.Instance.creatBitmap("asset.rankInfo.infoLine");
-         PositionUtils.setPos(_loc7_,_loc6_);
-         addChild(_loc7_);
+         line = ComponentFactory.Instance.creatBitmap("asset.rankInfo.infoLine");
+         PositionUtils.setPos(line,pt);
+         addChild(line);
       }
-      _loc11_ = 0;
-      while(_loc11_ < _loc4_.TitleTextPoint.length)
+      for(i = 0; i < posInfo.TitleTextPoint.length; )
       {
-         _loc9_ = ComponentFactory.Instance.creatComponentByStylename("rankInfo.infoText");
-         PositionUtils.setPos(_loc9_,_loc4_.TitleTextPoint[_loc11_]);
-         _loc9_.width = _loc4_.InfoTextWidth[_loc11_];
-         switch(int(param1) - 1)
+         txt = ComponentFactory.Instance.creatComponentByStylename("rankInfo.infoText");
+         PositionUtils.setPos(txt,posInfo.TitleTextPoint[i]);
+         txt.width = posInfo.InfoTextWidth[i];
+         switch(int(type) - 1)
          {
             case 0:
-               switch(int(_loc11_))
+               switch(int(i))
                {
                   case 0:
-                     _loc9_.text = String(param2.rank);
+                     txt.text = String(info.rank);
                      break;
                   case 1:
-                     _loc5_ = new TofflistPlayerInfo();
-                     _loc5_.MountLv = HorseManager.instance.getHorseLevelByExp(parseInt(param2.activeValue));
-                     _loc3_ = LanguageMgr.GetTranslation("horse.horseNameStr").split(",");
-                     _loc9_.text = _loc3_[_loc5_.MountsLevel];
+                     _info1 = new TofflistPlayerInfo();
+                     _info1.MountLv = HorseManager.instance.getHorseLevelByExp(parseInt(info.activeValue));
+                     _horseNameStrList = LanguageMgr.GetTranslation("horse.horseNameStr").split(",");
+                     txt.text = _horseNameStrList[_info1.MountsLevel];
                      break;
                   case 2:
-                     _loc8_ = new TofflistPlayerInfo();
-                     _loc8_.MountLv = HorseManager.instance.getHorseLevelByExp(parseInt(param2.activeValue));
-                     _loc9_.text = _loc8_.MountsLevelInfo;
+                     _info = new TofflistPlayerInfo();
+                     _info.MountLv = HorseManager.instance.getHorseLevelByExp(parseInt(info.activeValue));
+                     txt.text = _info.MountsLevelInfo;
                      break;
                   case 3:
-                     _loc9_.text = param2.nickName;
+                     txt.text = info.nickName;
                }
                break;
             case 1:
-               switch(int(_loc11_))
+               switch(int(i))
                {
                   case 0:
-                     _loc9_.text = String(param2.rank);
+                     txt.text = String(info.rank);
                      break;
                   case 1:
-                     _loc9_.text = param2.nickName;
+                     txt.text = info.nickName;
                      break;
                   case 2:
-                     _loc9_.text = ItemManager.Instance.getTemplateById(parseInt(param2.activeParam1)).Name;
+                     txt.text = ItemManager.Instance.getTemplateById(parseInt(info.activeParam1)).Name;
                      break;
                   case 3:
-                     _loc9_.text = param2.activeValue;
+                     txt.text = info.activeValue;
                }
                break;
             case 2:
-               switch(int(_loc11_))
+               switch(int(i))
                {
                   case 0:
-                     _loc9_.text = String(param2.rank);
+                     txt.text = String(info.rank);
                      break;
                   case 1:
-                     _loc9_.text = param2.nickName;
+                     txt.text = info.nickName;
                      break;
                   case 2:
-                     _loc9_.text = param2.itemName;
+                     txt.text = info.itemName;
                      break;
                   case 3:
-                     _loc9_.text = param2.activeValue;
+                     txt.text = info.activeValue;
                }
                break;
             case 3:
-               switch(int(_loc11_))
+               switch(int(i))
                {
                   case 0:
-                     _loc9_.text = String(param2.rank);
+                     txt.text = String(info.rank);
                      break;
                   case 1:
-                     _loc9_.text = param2.nickName;
+                     txt.text = info.nickName;
                      break;
                   case 2:
-                     _loc9_.text = param2.activeValue;
+                     txt.text = info.activeValue;
                }
                break;
             case 4:
-               switch(int(_loc11_))
+               switch(int(i))
                {
                   case 0:
-                     _loc9_.text = String(param2.rank);
+                     txt.text = String(info.rank);
                      break;
                   case 1:
-                     _loc9_.text = param2.nickName;
+                     txt.text = info.nickName;
                      break;
                   case 2:
-                     _loc9_.text = param2.activeValue;
+                     txt.text = info.activeValue;
                }
                break;
             case 5:
-               switch(int(_loc11_))
+               switch(int(i))
                {
                   case 0:
-                     _loc9_.text = String(param2.rank);
+                     txt.text = String(info.rank);
                      break;
                   case 1:
-                     _loc9_.text = param2.nickName;
+                     txt.text = info.nickName;
                      break;
                   case 2:
-                     _loc10_ = TotemManager.instance.getTotemPointLevel(parseInt(param2.activeValue));
-                     _loc9_.text = String(TotemManager.instance.getCurrentLv(_loc10_));
+                     curLv = TotemManager.instance.getTotemPointLevel(parseInt(info.activeValue));
+                     txt.text = String(TotemManager.instance.getCurrentLv(curLv));
                }
                break;
             case 6:
-               switch(int(_loc11_))
+               switch(int(i))
                {
                   case 0:
-                     _loc9_.text = String(param2.rank);
+                     txt.text = String(info.rank);
                      break;
                   case 1:
-                     _loc9_.text = param2.nickName;
+                     txt.text = info.nickName;
                      break;
                   case 2:
-                     _loc9_.text = param2.activeValue;
+                     txt.text = info.activeValue;
                }
                break;
             case 7:
-               switch(int(_loc11_))
+               switch(int(i))
                {
                   case 0:
-                     _loc9_.text = String(param2.rank);
+                     txt.text = String(info.rank);
                      break;
                   case 1:
-                     _loc9_.text = param2.nickName;
+                     txt.text = info.nickName;
                      break;
                   case 2:
-                     _loc9_.text = param2.activeValue;
+                     txt.text = info.activeValue;
                }
          }
-         addChild(_loc9_);
-         _loc11_++;
+         addChild(txt);
+         i++;
       }
    }
 }

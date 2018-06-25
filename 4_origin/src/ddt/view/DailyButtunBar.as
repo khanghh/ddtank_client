@@ -41,7 +41,7 @@ package ddt.view
       
       private var _eyeBtn:ScaleFrameImage;
       
-      private var _hideFlag:Boolean = false;
+      private var _hideFlag:Boolean = true;
       
       private var _clickDate:Number = 0;
       
@@ -107,7 +107,7 @@ package ddt.view
          _inited = true;
       }
       
-      protected function __onEyeClick(param1:MouseEvent) : void
+      protected function __onEyeClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(new Date().time - _clickDate > 1000)
@@ -118,16 +118,16 @@ package ddt.view
          }
       }
       
-      public function setEyeBtnFrame(param1:int) : void
+      public function setEyeBtnFrame(id:int) : void
       {
          if(_eyeBtn)
          {
-            _eyeBtn.setFrame(param1);
-            _eyeBtn.tipData = LanguageMgr.GetTranslation("hall.view.dailyBtn.eyeTipsText" + param1);
+            _eyeBtn.setFrame(id);
+            _eyeBtn.tipData = LanguageMgr.GetTranslation("hall.view.dailyBtn.eyeTipsText" + id);
          }
       }
       
-      private function __onActionClick(param1:MouseEvent) : void
+      private function __onActionClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }
@@ -140,9 +140,9 @@ package ddt.view
          StageResizeUtils.Instance.addAutoResize(this);
       }
       
-      public function setComplainGlow(param1:Boolean) : void
+      public function setComplainGlow(value:Boolean) : void
       {
-         if(param1)
+         if(value)
          {
             if(_complainBtn)
             {
@@ -155,7 +155,7 @@ package ddt.view
          }
       }
       
-      private function __onComplainClick(param1:MouseEvent) : void
+      private function __onComplainClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("015");
          _complainBtn.setFrame(1);
@@ -174,13 +174,13 @@ package ddt.view
          PathManager.getPathInfo().addEventListener("propertychange",__pathInfoChangeHandler);
       }
       
-      private function __pathInfoChangeHandler(param1:CEvent) : void
+      private function __pathInfoChangeHandler(event:CEvent) : void
       {
-         if(param1.data["FEEDBACK_ENABLE"])
+         if(event.data["FEEDBACK_ENABLE"])
          {
             checkFeedbackBtn();
          }
-         else if(param1.data["CLIENT_DOWNLOAD"])
+         else if(event.data["CLIENT_DOWNLOAD"])
          {
             checkDownLoadClientBtn();
          }
@@ -275,9 +275,9 @@ package ddt.view
          PathManager.getPathInfo().removeEventListener("propertychange",__pathInfoChangeHandler);
       }
       
-      public function set hideFlag(param1:Boolean) : void
+      public function set hideFlag(value:Boolean) : void
       {
-         _hideFlag = param1;
+         _hideFlag = value;
          setEyeBtnFrame(!!_hideFlag?1:2);
       }
       

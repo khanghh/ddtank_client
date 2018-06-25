@@ -48,36 +48,36 @@ package petsBag
          PetsBagManager.instance().addEventListener("petsAdoptOpenView",__onOpenAdoptView);
       }
       
-      protected function __onOpenAdoptView(param1:UpdatePetInfoEvent) : void
+      protected function __onOpenAdoptView(event:UpdatePetInfoEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
+         var _petsAdoptGudie:* = null;
+         var _petsAdopt:* = null;
          if(PetsBagManager.instance().haveTaskOrderByID(367))
          {
-            _loc2_ = ComponentFactory.Instance.creatComponentByStylename("farm.adoptPetsView.adoptGuide");
-            _loc2_.show();
+            _petsAdoptGudie = ComponentFactory.Instance.creatComponentByStylename("farm.adoptPetsView.adoptGuide");
+            _petsAdoptGudie.show();
          }
          else
          {
-            _loc3_ = ComponentFactory.Instance.creatComponentByStylename("farm.adoptPetsView.adopt");
-            _loc3_.show();
-            _loc3_.x = 170;
+            _petsAdopt = ComponentFactory.Instance.creatComponentByStylename("farm.adoptPetsView.adopt");
+            _petsAdopt.show();
+            _petsAdopt.x = 170;
          }
       }
       
-      protected function __onShowPetFood(param1:UpdatePetInfoEvent) : void
+      protected function __onShowPetFood(event:UpdatePetInfoEvent) : void
       {
-         new CmdShowPetFoodNumberSelectFrame().excute(InventoryItemInfo(param1.data));
+         new CmdShowPetFoodNumberSelectFrame().excute(InventoryItemInfo(event.data));
       }
       
-      protected function __onOpenView(param1:UpdatePetInfoEvent) : void
+      protected function __onOpenView(event:UpdatePetInfoEvent) : void
       {
          PlayerInfoViewControl.isOpenFromBag = true;
          _petView = ComponentFactory.Instance.creatComponentByStylename("petsBag.PetsView");
          _petView.show();
       }
       
-      protected function __onHideView(param1:UpdatePetInfoEvent) : void
+      protected function __onHideView(event:UpdatePetInfoEvent) : void
       {
          hide();
       }

@@ -55,34 +55,34 @@ package wishingTree.components
          _scrollPanel.addEventListener("rollOut",__outHandler);
       }
       
-      public function set info(param1:Array) : void
+      public function set info(value:Array) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc5_:* = null;
+         var cell:* = null;
+         var item:* = null;
+         var cell1:* = null;
          while(_cells.length > 0)
          {
-            _loc4_ = _cells.shift();
-            _loc4_.dispose();
+            cell = _cells.shift();
+            cell.dispose();
          }
          var _loc7_:int = 0;
-         var _loc6_:* = param1;
-         for each(var _loc2_ in param1)
+         var _loc6_:* = value;
+         for each(var id in value)
          {
-            _loc3_ = ItemManager.Instance.getTemplateById(_loc2_);
-            _loc5_ = new BaseCell(ComponentFactory.Instance.creatBitmap("wishingTree.itemBg"),_loc3_);
-            _loc5_.overBg = ComponentFactory.Instance.creatBitmap("wishingTree.itemBgOver");
-            _loc5_.setContentSize(43,43);
-            _loc5_.PicPos = new Point(5,5);
-            _list.addChild(_loc5_);
-            _cells.push(_loc5_);
+            item = ItemManager.Instance.getTemplateById(id);
+            cell1 = new BaseCell(ComponentFactory.Instance.creatBitmap("wishingTree.itemBg"),item);
+            cell1.overBg = ComponentFactory.Instance.creatBitmap("wishingTree.itemBgOver");
+            cell1.setContentSize(43,43);
+            cell1.PicPos = new Point(5,5);
+            _list.addChild(cell1);
+            _cells.push(cell1);
          }
          _scrollPanel.setView(_list);
          _scrollPanel.height = 58;
          _scrollPanel.invalidateViewport();
       }
       
-      private function __overHandler(param1:MouseEvent) : void
+      private function __overHandler(event:MouseEvent) : void
       {
          _bg.height = 156;
          _scrollPanel.height = 165;
@@ -92,7 +92,7 @@ package wishingTree.components
          dispatchEvent(new Event("large"));
       }
       
-      private function __outHandler(param1:MouseEvent) : void
+      private function __outHandler(event:MouseEvent) : void
       {
          _bg.height = 97;
          _scrollPanel.height = 58;
@@ -104,7 +104,7 @@ package wishingTree.components
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _scrollPanel.removeEventListener("rollOver",__overHandler);
          _scrollPanel.removeEventListener("rollOut",__outHandler);
          ObjectUtils.disposeObject(_scrollPanel);
@@ -115,12 +115,11 @@ package wishingTree.components
          _bg = null;
          ObjectUtils.disposeObject(_arrow);
          _arrow = null;
-         _loc1_ = 0;
-         while(_loc1_ <= _cells.length - 1)
+         for(i = 0; i <= _cells.length - 1; )
          {
-            ObjectUtils.disposeObject(_cells[_loc1_]);
-            _cells[_loc1_] = null;
-            _loc1_++;
+            ObjectUtils.disposeObject(_cells[i]);
+            _cells[i] = null;
+            i++;
          }
          _cells = null;
          if(parent)

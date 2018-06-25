@@ -27,19 +27,19 @@ package powerUp
       
       private var _greenIconArr:Array;
       
-      public function PowerSprite(param1:int, param2:int)
+      public function PowerSprite(powerNum:int, addPowerNum:int)
       {
          super();
-         if(param1 < 0)
+         if(powerNum < 0)
          {
-            param1 = 0;
+            powerNum = 0;
          }
-         if(param2 < 0)
+         if(addPowerNum < 0)
          {
-            param2 = 0;
+            addPowerNum = 0;
          }
-         _powerNum = param1;
-         _addPowerNum = param2;
+         _powerNum = powerNum;
+         _addPowerNum = addPowerNum;
          _greenIconArr = [];
          initView();
          initEvent();
@@ -47,30 +47,29 @@ package powerUp
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:* = null;
+         var k:int = 0;
+         var powerNumMc:* = null;
          _powerBgMc = ComponentFactory.Instance.creat("powerBg");
          _powerBgMc.x = 30;
          _powerBgMc.y = 200;
          addChild(_powerBgMc);
          _lineMc1 = ComponentFactory.Instance.creat("powerLine");
          _greenAddIcon = ComponentFactory.Instance.creat("greenAddIcon");
-         var _loc1_:String = String(_addPowerNum);
+         var addPowerString:String = String(_addPowerNum);
          _greenIconArr.push(_greenAddIcon);
          _greenIconArr[0].x = 270;
          _greenIconArr[0].y = -23;
          _greenIconArr[0].alpha = 0;
          _powerBgMc.addChild(_greenIconArr[0]);
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_.length)
+         for(k = 0; k < addPowerString.length; )
          {
-            _loc3_ = ComponentFactory.Instance.creat("greenNum" + _loc1_.charAt(_loc2_));
-            _loc3_.x = 290 + _loc3_.width / 1.1 * _loc2_;
-            _loc3_.y = -28;
-            _loc3_.alpha = 0;
-            _powerBgMc.addChild(_loc3_);
-            _greenIconArr.push(_loc3_);
-            _loc2_++;
+            powerNumMc = ComponentFactory.Instance.creat("greenNum" + addPowerString.charAt(k));
+            powerNumMc.x = 290 + powerNumMc.width / 1.1 * k;
+            powerNumMc.y = -28;
+            powerNumMc.alpha = 0;
+            _powerBgMc.addChild(powerNumMc);
+            _greenIconArr.push(powerNumMc);
+            k++;
          }
       }
       
@@ -84,10 +83,10 @@ package powerUp
          removeEventListener("enterFrame",__updatePowerMcHandler);
       }
       
-      protected function __updatePowerMcHandler(param1:Event) : void
+      protected function __updatePowerMcHandler(event:Event) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
+         var i:int = 0;
+         var j:int = 0;
          if(_frameNum < 41)
          {
             _frameNum = Number(_frameNum) + 1;
@@ -98,22 +97,21 @@ package powerUp
                   _numMovieSprite = new NumMovieSprite(_powerNum,_addPowerNum);
                   _powerBgMc.addChild(_numMovieSprite);
                }
-               _loc3_ = 0;
-               while(_loc3_ < _greenIconArr.length)
+               i = 0;
+               while(i < _greenIconArr.length)
                {
-                  (_greenIconArr[_loc3_] as MovieClip).y = (_greenIconArr[_loc3_] as MovieClip).y - 4;
-                  (_greenIconArr[_loc3_] as MovieClip).alpha = (_greenIconArr[_loc3_] as MovieClip).alpha + 0.05;
-                  _loc3_++;
+                  (_greenIconArr[i] as MovieClip).y = (_greenIconArr[i] as MovieClip).y - 4;
+                  (_greenIconArr[i] as MovieClip).alpha = (_greenIconArr[i] as MovieClip).alpha + 0.05;
+                  i++;
                }
             }
             else if(_frameNum > 26 && _frameNum < 37)
             {
-               _loc2_ = 0;
-               while(_loc2_ < _greenIconArr.length)
+               for(j = 0; j < _greenIconArr.length; )
                {
-                  (_greenIconArr[_loc2_] as MovieClip).y = (_greenIconArr[_loc2_] as MovieClip).y - 3;
-                  (_greenIconArr[_loc2_] as MovieClip).alpha = (_greenIconArr[_loc2_] as MovieClip).alpha - 0.1;
-                  _loc2_++;
+                  (_greenIconArr[j] as MovieClip).y = (_greenIconArr[j] as MovieClip).y - 3;
+                  (_greenIconArr[j] as MovieClip).alpha = (_greenIconArr[j] as MovieClip).alpha - 0.1;
+                  j++;
                }
             }
             else if(_frameNum == 40)
@@ -132,20 +130,19 @@ package powerUp
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var k:int = 0;
          ObjectUtils.disposeObject(_powerBgMc);
          _powerBgMc = null;
          ObjectUtils.disposeObject(_lineMc1);
          _lineMc1 = null;
-         _loc1_ = 0;
-         while(_loc1_ < _greenIconArr.length)
+         for(k = 0; k < _greenIconArr.length; )
          {
-            if(_greenIconArr[_loc1_])
+            if(_greenIconArr[k])
             {
-               ObjectUtils.disposeObject(_greenIconArr[_loc1_]);
-               _greenIconArr[_loc1_] = null;
+               ObjectUtils.disposeObject(_greenIconArr[k]);
+               _greenIconArr[k] = null;
             }
-            _loc1_++;
+            k++;
          }
          _greenIconArr = null;
          ObjectUtils.disposeObject(_numMovieSprite);

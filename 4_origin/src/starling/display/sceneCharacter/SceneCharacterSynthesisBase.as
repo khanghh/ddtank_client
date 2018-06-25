@@ -25,11 +25,11 @@ package starling.display.sceneCharacter
       
       private var _characterFrames:DictionaryData;
       
-      public function SceneCharacterSynthesisBase(param1:SceneCharacterTextureSet, param2:Function)
+      public function SceneCharacterSynthesisBase(textureSet:SceneCharacterTextureSet, callBack:Function)
       {
          super();
-         _textureSet = param1;
-         _callBack = param2;
+         _textureSet = textureSet;
+         _callBack = callBack;
          initialize();
       }
       
@@ -45,92 +45,89 @@ package starling.display.sceneCharacter
       
       private function textureSynthesis() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:Vector.<SceneCharacterTextureItem> = _textureSet.dataSet;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_.length)
+         var i:int = 0;
+         var item:* = null;
+         var list:Vector.<SceneCharacterTextureItem> = _textureSet.dataSet;
+         for(i = 0; i < list.length; )
          {
-            _loc1_ = _loc2_[_loc3_];
-            addCharacterFrames(_loc1_);
-            _loc3_++;
+            item = list[i];
+            addCharacterFrames(item);
+            i++;
          }
       }
       
-      public function parseTexture(param1:SceneCharacterTextureItem) : Array
+      public function parseTexture(data:SceneCharacterTextureItem) : Array
       {
-         var _loc8_:int = 0;
-         var _loc6_:int = 0;
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc7_:* = null;
-         var _loc3_:Array = [];
-         var _loc2_:Texture = DDTAssetManager.instance.getTexture(param1.sourceName);
-         _loc8_ = 0;
-         while(_loc8_ < param1.amount)
+         var i:int = 0;
+         var lie:int = 0;
+         var hang:int = 0;
+         var rect:* = null;
+         var subTexture:* = null;
+         var list:Array = [];
+         var texture:Texture = DDTAssetManager.instance.getTexture(data.sourceName);
+         for(i = 0; i < data.amount; )
          {
-            _loc6_ = _loc8_ % param1.rowCellNumber;
-            _loc5_ = _loc8_ / param1.rowCellNumber;
-            _loc4_ = new Rectangle(param1.cellWitdh * _loc6_,param1.cellHeight * _loc5_,param1.cellWitdh,param1.cellHeight);
-            _loc7_ = new SubTexture(_loc2_,_loc4_);
-            _loc3_.push(_loc7_);
-            _loc8_++;
+            lie = i % data.rowCellNumber;
+            hang = i / data.rowCellNumber;
+            rect = new Rectangle(data.cellWitdh * lie,data.cellHeight * hang,data.cellWitdh,data.cellHeight);
+            subTexture = new SubTexture(texture,rect);
+            list.push(subTexture);
+            i++;
          }
-         return _loc3_;
+         return list;
       }
       
-      public function parseTextureAtlas(param1:SceneCharacterTextureItem) : Array
+      public function parseTextureAtlas(data:SceneCharacterTextureItem) : Array
       {
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:Array = [];
-         var _loc2_:TextureAtlas = DDTAssetManager.instance.getTextureAtlas(param1.sourceName);
-         _loc5_ = 0;
-         while(_loc5_ <= param1.amount)
+         var i:int = 0;
+         var texture:* = null;
+         var list:Array = [];
+         var textureAtlas:TextureAtlas = DDTAssetManager.instance.getTextureAtlas(data.sourceName);
+         for(i = 0; i <= data.amount; )
          {
-            _loc3_ = _loc2_.getTexture(param1.sourceName + "_" + _loc5_);
-            if(_loc3_)
+            texture = textureAtlas.getTexture(data.sourceName + "_" + i);
+            if(texture)
             {
-               _loc4_.push(_loc3_);
+               list.push(texture);
             }
-            _loc5_++;
+            i++;
          }
-         return _loc4_;
+         return list;
       }
       
-      public function addCharacterFrames(param1:SceneCharacterTextureItem) : void
+      public function addCharacterFrames(item:SceneCharacterTextureItem) : void
       {
-         var _loc2_:* = null;
-         removeCharacterFrames(param1.type);
-         if(param1.parseType == 0)
+         var frams:* = null;
+         removeCharacterFrames(item.type);
+         if(item.parseType == 0)
          {
-            _loc2_ = parseTexture(param1);
+            frams = parseTexture(item);
          }
-         else if(param1.parseType == 1)
+         else if(item.parseType == 1)
          {
-            _loc2_ = parseTextureAtlas(param1);
+            frams = parseTextureAtlas(item);
          }
-         _characterFrames.add(param1.type,{
-            "frams":_loc2_,
-            "sortOrder":param1.sortOrder,
-            "w":param1.cellWitdh,
-            "h":param1.cellHeight
+         _characterFrames.add(item.type,{
+            "frams":frams,
+            "sortOrder":item.sortOrder,
+            "w":item.cellWitdh,
+            "h":item.cellHeight
          });
       }
       
-      public function removeCharacterFrames(param1:String) : void
+      public function removeCharacterFrames(type:String) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         if(_characterFrames.hasKey(param1))
+         var list:* = null;
+         var texture:* = null;
+         if(_characterFrames.hasKey(type))
          {
-            _loc3_ = _characterFrames[param1].frams;
-            while(_loc3_.length)
+            list = _characterFrames[type].frams;
+            while(list.length)
             {
-               _loc2_ = _loc3_.pop() as Texture;
-               _loc2_.dispose();
+               texture = list.pop() as Texture;
+               texture.dispose();
             }
-            _characterFrames.remove(param1);
+            _characterFrames.remove(type);
          }
       }
       
@@ -139,9 +136,9 @@ package starling.display.sceneCharacter
          return _textureSet;
       }
       
-      public function getFramesObject(param1:String) : Object
+      public function getFramesObject(type:String) : Object
       {
-         return _characterFrames[param1];
+         return _characterFrames[type];
       }
       
       public function get characterFrames() : DictionaryData
@@ -151,15 +148,15 @@ package starling.display.sceneCharacter
       
       public function dispose() : void
       {
-         var _loc2_:* = null;
+         var list:* = null;
          var _loc4_:int = 0;
          var _loc3_:* = _characterFrames;
-         for each(var _loc1_ in _characterFrames)
+         for each(var item in _characterFrames)
          {
-            _loc2_ = _loc1_.frams;
-            while(_loc2_.length)
+            list = item.frams;
+            while(list.length)
             {
-               (_loc2_.pop() as Texture).dispose();
+               (list.pop() as Texture).dispose();
             }
          }
          _characterFrames.clear();

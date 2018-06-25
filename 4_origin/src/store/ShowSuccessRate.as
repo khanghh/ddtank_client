@@ -119,30 +119,30 @@ package store
          addChild(_showStripVIP);
       }
       
-      public function showAllTips(param1:String, param2:String, param3:String, param4:String) : void
+      public function showAllTips(strI:String, strII:String, strIII:String, strIV:String) : void
       {
-         _showStripI.tipData = param1;
-         _showStripII.tipData = param2;
-         _showStripIII.tipData = param3;
-         _showStripIV.tipData = param4;
+         _showStripI.tipData = strI;
+         _showStripII.tipData = strII;
+         _showStripIII.tipData = strIII;
+         _showStripIV.tipData = strIV;
       }
       
-      public function showVIPTip(param1:String) : void
+      public function showVIPTip(tipData:String) : void
       {
-         _showStripVIP.tipData = param1;
+         _showStripVIP.tipData = tipData;
       }
       
-      public function showAllNum(param1:Number, param2:Number, param3:Number, param4:Number) : void
+      public function showAllNum(numI:Number, numII:Number, numIII:Number, numIV:Number) : void
       {
-         _showTxtI.text = String(param1) + "%";
-         _showTxtII.text = String(param2) + "%";
-         _showTxtIII.text = String(param3) + "%";
-         _showTxtIV.text = String(param4) + "%";
+         _showTxtI.text = String(numI) + "%";
+         _showTxtII.text = String(numII) + "%";
+         _showTxtIII.text = String(numIII) + "%";
+         _showTxtIV.text = String(numIV) + "%";
       }
       
-      public function showVIPNum(param1:Number) : void
+      public function showVIPNum(num:Number) : void
       {
-         _showTxtVIP.text = String(param1) + "%";
+         _showTxtVIP.text = String(num) + "%";
       }
       
       public function dispose() : void

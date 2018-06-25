@@ -10,20 +10,20 @@ package ddt.data.analyze
       public static var PetCofnig:PetConfigInfo = new PetConfigInfo();
        
       
-      public function PetconfigAnalyzer(param1:Function)
+      public function PetconfigAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc4_:XML = XML(param1);
-         var _loc2_:XMLList = _loc4_..item;
+         var xml:XML = XML(data);
+         var items:XMLList = xml..item;
          var _loc6_:int = 0;
-         var _loc5_:* = _loc2_;
-         for each(var _loc3_ in _loc2_)
+         var _loc5_:* = items;
+         for each(var item in items)
          {
-            ObjectUtils.copyPorpertiesByXML(PetCofnig,_loc3_);
+            ObjectUtils.copyPorpertiesByXML(PetCofnig,item);
          }
          onAnalyzeComplete();
       }

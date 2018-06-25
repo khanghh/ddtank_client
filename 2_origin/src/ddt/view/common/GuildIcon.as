@@ -50,21 +50,21 @@ package ddt.view.common
          _tipData = new GuildIconTipInfo();
       }
       
-      public function setInfo(param1:int, param2:int, param3:int) : void
+      public function setInfo(level:int, cid:int, repute:int) : void
       {
-         _cid = param2;
-         _level = param1;
-         _repute = param3;
-         var _loc4_:int = PlayerManager.Instance.Self.ConsortiaID > 0?param2 == PlayerManager.Instance.Self.ConsortiaID?1:3:2;
-         _icon.setFrame(_loc4_ == 3?2:1);
-         _tipData.Level = param1;
-         _tipData.State = _loc4_;
-         _tipData.Repute = param3;
+         _cid = cid;
+         _level = level;
+         _repute = repute;
+         var st:int = PlayerManager.Instance.Self.ConsortiaID > 0?cid == PlayerManager.Instance.Self.ConsortiaID?1:3:2;
+         _icon.setFrame(st == 3?2:1);
+         _tipData.Level = level;
+         _tipData.State = st;
+         _tipData.Repute = repute;
       }
       
-      public function set showTip(param1:Boolean) : void
+      public function set showTip(value:Boolean) : void
       {
-         if(param1)
+         if(value)
          {
             ShowTipManager.Instance.addTip(this);
          }
@@ -74,9 +74,9 @@ package ddt.view.common
          }
       }
       
-      public function set size(param1:String) : void
+      public function set size(value:String) : void
       {
-         if(param1 == "big")
+         if(value == "big")
          {
             var _loc2_:* = 1;
             _icon.scaleY = _loc2_;
@@ -97,10 +97,10 @@ package ddt.view.common
       
       public function get tipData() : Object
       {
-         var _loc1_:int = PlayerManager.Instance.Self.ConsortiaID > 0?_cid == PlayerManager.Instance.Self.ConsortiaID?1:3:2;
-         _icon.setFrame(_loc1_ == 3?2:1);
+         var st:int = PlayerManager.Instance.Self.ConsortiaID > 0?_cid == PlayerManager.Instance.Self.ConsortiaID?1:3:2;
+         _icon.setFrame(st == 3?2:1);
          _tipData.Level = _level;
-         _tipData.State = _loc1_;
+         _tipData.State = st;
          _tipData.Repute = _repute;
          return _tipData;
       }
@@ -120,29 +120,29 @@ package ddt.view.common
          return _tipGapH;
       }
       
-      public function set tipStyle(param1:String) : void
+      public function set tipStyle(value:String) : void
       {
-         _tipStyle = param1;
+         _tipStyle = value;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(value:Object) : void
       {
-         _tipData = param1 as GuildIconTipInfo;
+         _tipData = value as GuildIconTipInfo;
       }
       
-      public function set tipDirctions(param1:String) : void
+      public function set tipDirctions(value:String) : void
       {
-         _tipDirctions = param1;
+         _tipDirctions = value;
       }
       
-      public function set tipGapV(param1:int) : void
+      public function set tipGapV(value:int) : void
       {
-         _tipGapV = param1;
+         _tipGapV = value;
       }
       
-      public function set tipGapH(param1:int) : void
+      public function set tipGapH(value:int) : void
       {
-         _tipGapH = param1;
+         _tipGapH = value;
       }
       
       public function asDisplayObject() : DisplayObject

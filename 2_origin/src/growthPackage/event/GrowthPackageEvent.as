@@ -12,10 +12,10 @@ package growthPackage.event
       
       public var resultData:Object;
       
-      public function GrowthPackageEvent(param1:String, param2:Object = null, param3:Boolean = false, param4:Boolean = false)
+      public function GrowthPackageEvent(type:String, _resultData:Object = null, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         resultData = param2;
-         super(param1,param3,param4);
+         resultData = _resultData;
+         super(type,bubbles,cancelable);
       }
    }
 }

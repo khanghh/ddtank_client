@@ -13,9 +13,9 @@ package oldplayergetticket
       
       private var _getTicketView:GetTicketView;
       
-      public function GetTicketControl(param1:IEventDispatcher = null)
+      public function GetTicketControl(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : GetTicketControl
@@ -34,12 +34,12 @@ package oldplayergetticket
          GetTicketManager.instance.addEventListener("updateTicket_data",__updateTeticketDataHandler);
       }
       
-      private function __openViewHandler(param1:CEvent) : void
+      private function __openViewHandler(event:CEvent) : void
       {
          showGetTicketFrame();
       }
       
-      private function __hideViewHandler(param1:CEvent) : void
+      private function __hideViewHandler(event:CEvent) : void
       {
          if(_getTicketView != null)
          {
@@ -55,7 +55,7 @@ package oldplayergetticket
          _getTicketView.show();
       }
       
-      private function __updateTeticketDataHandler(param1:CEvent) : void
+      private function __updateTeticketDataHandler(event:CEvent) : void
       {
          if(_getTicketView)
          {

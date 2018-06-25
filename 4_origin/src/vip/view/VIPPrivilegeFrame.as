@@ -53,10 +53,10 @@ package vip.view
          _openVipBtn.removeEventListener("click",__onOpenVipBtnClick);
       }
       
-      protected function __frameEventHandler(param1:FrameEvent) : void
+      protected function __frameEventHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -90,21 +90,21 @@ package vip.view
          addToContent(_openVipBtn);
       }
       
-      protected function __onOpenVipBtnClick(param1:MouseEvent) : void
+      protected function __onOpenVipBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          this.dispose();
       }
       
-      protected function __onSelectedBtnChanged(param1:Event) : void
+      protected function __onSelectedBtnChanged(event:Event) : void
       {
          SoundManager.instance.play("008");
          updateView(_selectedBtnGroup.selectIndex);
       }
       
-      private function updateView(param1:int) : void
+      private function updateView(index:int) : void
       {
-         if(param1 == _currentViewIndex)
+         if(index == _currentViewIndex)
          {
             return;
          }
@@ -112,8 +112,8 @@ package vip.view
          {
             Disposeable(_view).dispose();
          }
-         _currentViewIndex = param1;
-         switch(int(param1))
+         _currentViewIndex = index;
+         switch(int(index))
          {
             case 0:
                _view = new GrowthRuleView();

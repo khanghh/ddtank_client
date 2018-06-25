@@ -122,7 +122,7 @@ package ddt.command
          _submitButton.addEventListener("click",__buy);
       }
       
-      protected function __buy(param1:MouseEvent) : void
+      protected function __buy(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          CheckMoneyUtils.instance.checkMoney(_isBand,getNeedMoney(),onCheckComplete);
@@ -139,32 +139,31 @@ package ddt.command
          return _perPrice * _number.number;
       }
       
-      protected function submit(param1:Boolean) : void
+      protected function submit(isBand:Boolean) : void
       {
-         var _loc9_:int = 0;
-         var _loc3_:Array = [];
-         var _loc7_:Array = [];
-         var _loc4_:Array = [];
-         var _loc5_:Array = [];
-         var _loc8_:Array = [];
-         var _loc6_:Array = [];
-         var _loc2_:Array = [];
-         _loc9_ = 0;
-         while(_loc9_ <= _number.number - 1)
+         var i:int = 0;
+         var items:Array = [];
+         var types:Array = [];
+         var colors:Array = [];
+         var dresses:Array = [];
+         var skins:Array = [];
+         var places:Array = [];
+         var bands:Array = [];
+         for(i = 0; i <= _number.number - 1; )
          {
-            _loc3_.push(_shopGoodsId);
-            _loc7_.push(1);
-            _loc4_.push("");
-            _loc5_.push(false);
-            _loc8_.push("");
-            _loc6_.push(-1);
-            _loc2_.push(param1);
-            _loc9_++;
+            items.push(_shopGoodsId);
+            types.push(1);
+            colors.push("");
+            dresses.push(false);
+            skins.push("");
+            places.push(-1);
+            bands.push(isBand);
+            i++;
          }
-         SocketManager.Instance.out.sendBuyGoods(_loc3_,_loc7_,_loc4_,_loc6_,_loc5_,_loc8_,0,null,_loc2_);
+         SocketManager.Instance.out.sendBuyGoods(items,types,colors,places,dresses,skins,0,null,bands);
       }
       
-      protected function selectedBandHander(param1:MouseEvent) : void
+      protected function selectedBandHander(event:MouseEvent) : void
       {
          if(_selectedBandBtn.selected)
          {
@@ -180,7 +179,7 @@ package ddt.command
          refreshNumText();
       }
       
-      protected function seletedHander(param1:MouseEvent) : void
+      protected function seletedHander(event:MouseEvent) : void
       {
          if(_selectedBtn.selected)
          {
@@ -196,36 +195,36 @@ package ddt.command
          refreshNumText();
       }
       
-      private function selectHandler(param1:Event) : void
+      private function selectHandler(e:Event) : void
       {
          refreshNumText();
       }
       
       protected function refreshNumText() : void
       {
-         var _loc1_:String = String(_number.number * _perPrice);
-         var _loc2_:String = !!_isBand?LanguageMgr.GetTranslation("ddtMoney"):LanguageMgr.GetTranslation("money");
-         totalText.text = _loc1_ + " " + _loc2_;
+         var priceStr:String = String(_number.number * _perPrice);
+         var tmp:String = !!_isBand?LanguageMgr.GetTranslation("ddtMoney"):LanguageMgr.GetTranslation("money");
+         totalText.text = priceStr + " " + tmp;
       }
       
-      public function setData(param1:int, param2:int, param3:int) : void
+      public function setData(templateId:int, goodsId:int, perPrice:int) : void
       {
-         _perPrice = param3;
-         _shopGoodsId = param2;
-         var _loc4_:InventoryItemInfo = new InventoryItemInfo();
-         _loc4_.TemplateID = param1;
-         ItemManager.fill(_loc4_);
-         _loc4_.BindType = 4;
-         _cell.info = _loc4_;
+         _perPrice = perPrice;
+         _shopGoodsId = goodsId;
+         var info:InventoryItemInfo = new InventoryItemInfo();
+         info.TemplateID = templateId;
+         ItemManager.fill(info);
+         info.BindType = 4;
+         _cell.info = info;
          _cell.setCountNotVisible();
          _cell.setBgVisible(false);
          refreshNumText();
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:

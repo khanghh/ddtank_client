@@ -56,7 +56,7 @@ package AvatarCollection.view
          this.addEventListener("click",onClick);
       }
       
-      private function onClick(param1:MouseEvent) : void
+      private function onClick(e:MouseEvent) : void
       {
          if(_data.totalActivityItemCount < _completeCount)
          {
@@ -67,14 +67,14 @@ package AvatarCollection.view
          AvatarCollectionManager.instance.onListCellClick(_data,_selector.selected);
       }
       
-      public function set select(param1:Boolean) : void
+      public function set select(value:Boolean) : void
       {
          if(_data.totalActivityItemCount < _completeCount)
          {
             _selector.selected = false;
             return;
          }
-         _selector.selected = param1;
+         _selector.selected = value;
          AvatarCollectionManager.instance.onListCellClick(_data,_selector.selected);
       }
       
@@ -96,9 +96,9 @@ package AvatarCollection.view
             _selector.selected = false;
             _selector.enable = false;
          }
-         var _loc2_:int = _data.totalItemList.length;
-         var _loc1_:int = _data.totalActivityItemCount;
-         _nameTxt.text = _data.name + "（" + _loc1_ + "/" + _loc2_ + "）";
+         var totalCount:int = _data.totalItemList.length;
+         var activityCount:int = _data.totalActivityItemCount;
+         _nameTxt.text = _data.name + "（" + activityCount + "/" + totalCount + "）";
          if(_data.canActivityCount > 0)
          {
             _canActivityIcon.visible = true;
@@ -109,10 +109,10 @@ package AvatarCollection.view
          }
       }
       
-      public function setListCellStatus(param1:List, param2:Boolean, param3:int) : void
+      public function setListCellStatus(list:List, isSelected:Boolean, index:int) : void
       {
-         _bg.setFrame(!!param2?2:1);
-         _nameTxt.setFrame(!!param2?2:1);
+         _bg.setFrame(!!isSelected?2:1);
+         _nameTxt.setFrame(!!isSelected?2:1);
       }
       
       public function getCellValue() : *
@@ -120,9 +120,9 @@ package AvatarCollection.view
          return _data;
       }
       
-      public function setCellValue(param1:*) : void
+      public function setCellValue(value:*) : void
       {
-         _data = param1 as AvatarCollectionUnitVo;
+         _data = value as AvatarCollectionUnitVo;
          _completeCount = _data.totalItemList.length / 2;
          updateViewData();
       }

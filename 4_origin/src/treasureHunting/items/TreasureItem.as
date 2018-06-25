@@ -24,9 +24,9 @@ package treasureHunting.items
          super();
       }
       
-      public function initView(param1:int) : void
+      public function initView(index:int) : void
       {
-         _index = param1;
+         _index = index;
          _itemIcon = ComponentFactory.Instance.creat("treasureHunting.treasure.item" + _index);
          addChild(_itemIcon);
          selectedLight = ComponentFactory.Instance.creatComponentByStylename("treasureHunting.Treasure.ItemLight");
@@ -56,9 +56,9 @@ package treasureHunting.items
          return _itemIcon;
       }
       
-      public function set itemIcon(param1:Bitmap) : void
+      public function set itemIcon(value:Bitmap) : void
       {
-         _itemIcon = param1;
+         _itemIcon = value;
       }
    }
 }

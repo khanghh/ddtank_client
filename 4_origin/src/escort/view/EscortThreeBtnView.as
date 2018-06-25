@@ -51,8 +51,8 @@ package escort.view
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var tmp:* = null;
          _bg = ComponentFactory.Instance.creatBitmap("asset.escort.threeBtnBg");
          _leapBtn = ComponentFactory.Instance.creatComponentByStylename("escort.leapBtn");
          _leapBtn.tipData = LanguageMgr.GetTranslation("escort.game.leapBtnTipTxt");
@@ -65,17 +65,16 @@ package escort.view
          addChild(_invisibilityBtn);
          addChild(_cleanBtn);
          _freeTipList = new Vector.<MovieClip>();
-         _loc2_ = 0;
-         while(_loc2_ < 3)
+         for(i = 0; i < 3; )
          {
-            _loc1_ = ComponentFactory.Instance.creat("asset.escort.freeTipMc") as MovieClip;
-            _loc1_.x = -36;
-            _loc1_.y = -14 + 44 * _loc2_;
-            _loc1_.mouseEnabled = false;
-            _loc1_.mouseChildren = false;
-            addChild(_loc1_);
-            _freeTipList.push(_loc1_);
-            _loc2_++;
+            tmp = ComponentFactory.Instance.creat("asset.escort.freeTipMc") as MovieClip;
+            tmp.x = -36;
+            tmp.y = -14 + 44 * i;
+            tmp.mouseEnabled = false;
+            tmp.mouseChildren = false;
+            addChild(tmp);
+            _freeTipList.push(tmp);
+            i++;
          }
          refreshFreeCount(null);
       }
@@ -90,67 +89,66 @@ package escort.view
          EscortManager.instance.addEventListener("escortRefreshItemCount",refreshFreeCount);
       }
       
-      private function refreshFreeCount(param1:Event) : void
+      private function refreshFreeCount(event:Event) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:Array = EscortControl.instance.itemFreeCountList;
-         _loc3_ = 0;
-         while(_loc3_ < 3)
+         var i:int = 0;
+         var tmp:Array = EscortControl.instance.itemFreeCountList;
+         for(i = 0; i < 3; )
          {
-            if(_loc2_[_loc3_] > 0)
+            if(tmp[i] > 0)
             {
-               _freeTipList[_loc3_].tf.text = _loc2_[_loc3_].toString();
-               _freeTipList[_loc3_].visible = true;
+               _freeTipList[i].tf.text = tmp[i].toString();
+               _freeTipList[i].visible = true;
             }
             else
             {
-               _freeTipList[_loc3_].visible = false;
+               _freeTipList[i].visible = false;
             }
-            _loc3_++;
+            i++;
          }
       }
       
-      private function outHandler(param1:MouseEvent) : void
+      private function outHandler(event:MouseEvent) : void
       {
-         var _loc2_:EscortEvent = new EscortEvent("escortLeapPromptShowHide");
-         _loc2_.data = {"isShow":false};
-         EscortManager.instance.dispatchEvent(_loc2_);
+         var tmp:EscortEvent = new EscortEvent("escortLeapPromptShowHide");
+         tmp.data = {"isShow":false};
+         EscortManager.instance.dispatchEvent(tmp);
       }
       
-      private function overHandler(param1:MouseEvent) : void
+      private function overHandler(event:MouseEvent) : void
       {
-         var _loc2_:EscortEvent = new EscortEvent("escortLeapPromptShowHide");
-         _loc2_.data = {"isShow":true};
-         EscortManager.instance.dispatchEvent(_loc2_);
+         var tmp:EscortEvent = new EscortEvent("escortLeapPromptShowHide");
+         tmp.data = {"isShow":true};
+         EscortManager.instance.dispatchEvent(tmp);
       }
       
-      private function enableBtn(param1:SimpleBitmapButton) : void
+      private function enableBtn(btn:SimpleBitmapButton) : void
       {
-         param1.enable = true;
+         btn.enable = true;
       }
       
-      private function unEnableBtn(param1:int) : void
+      private function unEnableBtn(tag:int) : void
       {
-         var _loc2_:* = null;
-         switch(int(param1))
+         var target:* = null;
+         switch(int(tag))
          {
             case 0:
-               _loc2_ = _leapBtn;
+               target = _leapBtn;
                break;
             case 1:
-               _loc2_ = _invisibilityBtn;
+               target = _invisibilityBtn;
                break;
             case 2:
-               _loc2_ = _cleanBtn;
+               target = _cleanBtn;
          }
-         if(_loc2_)
+         if(target)
          {
-            _loc2_.enable = false;
-            setTimeout(enableBtn,5000,_loc2_);
+            target.enable = false;
+            setTimeout(enableBtn,5000,target);
          }
       }
       
-      private function clickHandler(param1:MouseEvent) : void
+      private function clickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -158,8 +156,8 @@ package escort.view
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc4_:SimpleBitmapButton = param1.target as SimpleBitmapButton;
-         var _loc6_:* = _loc4_;
+         var target:SimpleBitmapButton = event.target as SimpleBitmapButton;
+         var _loc6_:* = target;
          if(_leapBtn !== _loc6_)
          {
             if(_invisibilityBtn !== _loc6_)
@@ -184,76 +182,76 @@ package escort.view
             unEnableBtn(_recordClickTag);
             return;
          }
-         var _loc3_:Object = EscortControl.instance.getBuyRecordStatus(_recordClickTag + 2);
-         var _loc2_:int = EscortControl.instance.dataInfo.useSkillNeedMoney[_recordClickTag];
-         if(_loc3_.isNoPrompt)
+         var tmpObj:Object = EscortControl.instance.getBuyRecordStatus(_recordClickTag + 2);
+         var needMoney:int = EscortControl.instance.dataInfo.useSkillNeedMoney[_recordClickTag];
+         if(tmpObj.isNoPrompt)
          {
-            if(_loc3_.isBand && PlayerManager.Instance.Self.BandMoney < _loc2_)
+            if(tmpObj.isBand && PlayerManager.Instance.Self.BandMoney < needMoney)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("bindMoneyPoorNote"));
-               _loc3_.isNoPrompt = false;
+               tmpObj.isNoPrompt = false;
             }
-            else if(!_loc3_.isBand && PlayerManager.Instance.Self.Money < _loc2_)
+            else if(!tmpObj.isBand && PlayerManager.Instance.Self.Money < needMoney)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("moneyPoorNote"));
-               _loc3_.isNoPrompt = false;
+               tmpObj.isNoPrompt = false;
             }
             else
             {
-               SocketManager.Instance.out.sendEscortUseSkill(_recordClickTag,_loc3_.isBand,_freeTipList[_recordClickTag].visible);
+               SocketManager.Instance.out.sendEscortUseSkill(_recordClickTag,tmpObj.isBand,_freeTipList[_recordClickTag].visible);
                unEnableBtn(_recordClickTag);
                return;
             }
          }
-         var _loc5_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("escort.frame.useSkillConfirmTxt" + _recordClickTag,_loc2_),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"EscortBuyConfirmView1",30,true);
-         _loc5_.moveEnable = false;
-         _loc5_.addEventListener("response",useSkillConfirm,false,0,true);
+         var confirmFrame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("escort.frame.useSkillConfirmTxt" + _recordClickTag,needMoney),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"EscortBuyConfirmView1",30,true);
+         confirmFrame.moveEnable = false;
+         confirmFrame.addEventListener("response",useSkillConfirm,false,0,true);
       }
       
-      private function useSkillConfirm(param1:FrameEvent) : void
+      private function useSkillConfirm(evt:FrameEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:* = null;
+         var needMoney:int = 0;
+         var confirmFrame2:* = null;
+         var tmpObj:* = null;
          SoundManager.instance.play("008");
-         var _loc5_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc5_.removeEventListener("response",useSkillConfirm);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",useSkillConfirm);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
-            _loc2_ = EscortControl.instance.dataInfo.useSkillNeedMoney[_recordClickTag];
-            if(_loc5_.isBand && PlayerManager.Instance.Self.BandMoney < _loc2_)
+            needMoney = EscortControl.instance.dataInfo.useSkillNeedMoney[_recordClickTag];
+            if(confirmFrame.isBand && PlayerManager.Instance.Self.BandMoney < needMoney)
             {
-               _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("escort.game.useSkillNoEnoughReConfirm"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
-               _loc3_.moveEnable = false;
-               _loc3_.addEventListener("response",useSkillReConfirm,false,0,true);
+               confirmFrame2 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("escort.game.useSkillNoEnoughReConfirm"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
+               confirmFrame2.moveEnable = false;
+               confirmFrame2.addEventListener("response",useSkillReConfirm,false,0,true);
                return;
             }
-            if(!_loc5_.isBand && PlayerManager.Instance.Self.Money < _loc2_)
+            if(!confirmFrame.isBand && PlayerManager.Instance.Self.Money < needMoney)
             {
                LeavePageManager.showFillFrame();
                return;
             }
-            if((_loc5_ as EscortBuyConfirmView).isNoPrompt)
+            if((confirmFrame as EscortBuyConfirmView).isNoPrompt)
             {
-               _loc4_ = EscortControl.instance.getBuyRecordStatus(_recordClickTag + 2);
-               _loc4_.isNoPrompt = true;
-               _loc4_.isBand = _loc5_.isBand;
+               tmpObj = EscortControl.instance.getBuyRecordStatus(_recordClickTag + 2);
+               tmpObj.isNoPrompt = true;
+               tmpObj.isBand = confirmFrame.isBand;
             }
-            SocketManager.Instance.out.sendEscortUseSkill(_recordClickTag,_loc5_.isBand,_freeTipList[_recordClickTag].visible);
+            SocketManager.Instance.out.sendEscortUseSkill(_recordClickTag,confirmFrame.isBand,_freeTipList[_recordClickTag].visible);
             unEnableBtn(_recordClickTag);
          }
       }
       
-      private function useSkillReConfirm(param1:FrameEvent) : void
+      private function useSkillReConfirm(evt:FrameEvent) : void
       {
-         var _loc2_:int = 0;
+         var needMoney:int = 0;
          SoundManager.instance.play("008");
-         var _loc3_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc3_.removeEventListener("response",useSkillConfirm);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",useSkillConfirm);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
-            _loc2_ = EscortControl.instance.dataInfo.useSkillNeedMoney[_recordClickTag];
-            if(PlayerManager.Instance.Self.Money < _loc2_)
+            needMoney = EscortControl.instance.dataInfo.useSkillNeedMoney[_recordClickTag];
+            if(PlayerManager.Instance.Self.Money < needMoney)
             {
                LeavePageManager.showFillFrame();
                return;

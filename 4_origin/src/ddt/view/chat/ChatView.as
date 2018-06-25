@@ -42,15 +42,15 @@ package ddt.view.chat
          return _state;
       }
       
-      private function updateViewState(param1:int) : void
+      private function updateViewState(value:int) : void
       {
-         if(param1 == 20)
+         if(value == 20)
          {
             ChatManager.Instance.view.parent.removeChild(ChatManager.Instance.view);
          }
-         if(param1 != 8)
+         if(value != 8)
          {
-            if(_stateArr[param1].inputVisible)
+            if(_stateArr[value].inputVisible)
             {
                addChild(_input);
             }
@@ -59,20 +59,20 @@ package ddt.view.chat
                _input.parent.removeChild(_input);
             }
          }
-         _input.faceEnabled = _stateArr[param1].inputFaceEnabled;
-         _input.x = _stateArr[param1].inputX;
-         _input.y = _stateArr[param1].inputY;
-         ChatManager.Instance.visibleSwitchEnable = _stateArr[param1].inputVisibleSwitchEnabled;
-         _output.isLock = _stateArr[param1].outputIsLock;
-         _output.lockEnable = _stateArr[param1].outputLockEnabled;
-         _output.bg = _stateArr[param1].outputBackground;
-         _output.contentField.style = _stateArr[param1].outputContentFieldStyle;
-         if(_stateArr[param1].outputChannel != -1)
+         _input.faceEnabled = _stateArr[value].inputFaceEnabled;
+         _input.x = _stateArr[value].inputX;
+         _input.y = _stateArr[value].inputY;
+         ChatManager.Instance.visibleSwitchEnable = _stateArr[value].inputVisibleSwitchEnabled;
+         _output.isLock = _stateArr[value].outputIsLock;
+         _output.lockEnable = _stateArr[value].outputLockEnabled;
+         _output.bg = _stateArr[value].outputBackground;
+         _output.contentField.style = _stateArr[value].outputContentFieldStyle;
+         if(_stateArr[value].outputChannel != -1)
          {
-            _output.channel = _stateArr[param1].outputChannel;
+            _output.channel = _stateArr[value].outputChannel;
          }
-         _output.x = _stateArr[param1].outputX;
-         _output.y = _stateArr[param1].outputY;
+         _output.x = _stateArr[value].outputX;
+         _output.y = _stateArr[value].outputY;
          if(_state == 1)
          {
             _input.enableGameState = true;
@@ -83,13 +83,13 @@ package ddt.view.chat
          {
             _output.enableGameState = false;
          }
-         _output.bgVisible = _stateArr[param1].outputBackgroundVisible;
+         _output.bgVisible = _stateArr[value].outputBackgroundVisible;
          _output.updateCurrnetChannel();
       }
       
-      public function set state(param1:int) : void
+      public function set state(state:int) : void
       {
-         if(_state == param1)
+         if(_state == state)
          {
             return;
          }
@@ -98,8 +98,8 @@ package ddt.view.chat
             _input.enableGameState = false;
             _output.enableGameState = false;
          }
-         var _loc2_:int = _state;
-         _state = param1;
+         var preState:int = _state;
+         _state = state;
          if(_state == 30 || _state == 99)
          {
             _output.contentField.contentWidth = 288;
@@ -117,27 +117,26 @@ package ddt.view.chat
       
       private function init() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var info:* = null;
+         var xml:* = null;
          _input = ComponentFactory.Instance.creatCustomObject("chat.InputView");
          _output = ComponentFactory.Instance.creatCustomObject("chat.OutputView");
          _stateArr = new Vector.<ChatViewInfo>();
-         _loc3_ = 0;
-         while(_loc3_ <= 37)
+         for(i = 0; i <= 37; )
          {
-            _loc2_ = new ChatViewInfo();
-            _loc1_ = ComponentFactory.Instance.getCustomStyle("chatViewInfo.state_" + String(_loc3_));
-            if(!_loc1_)
+            info = new ChatViewInfo();
+            xml = ComponentFactory.Instance.getCustomStyle("chatViewInfo.state_" + String(i));
+            if(!xml)
             {
-               _stateArr.push(_loc2_);
+               _stateArr.push(info);
             }
             else
             {
-               ObjectUtils.copyPorpertiesByXML(_loc2_,_loc1_);
-               _stateArr.push(_loc2_);
+               ObjectUtils.copyPorpertiesByXML(info,xml);
+               _stateArr.push(info);
             }
-            _loc3_++;
+            i++;
          }
          addChild(_output);
          addChild(_input);

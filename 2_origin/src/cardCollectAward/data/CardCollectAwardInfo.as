@@ -40,9 +40,9 @@ package cardCollectAward.data
          return _phone;
       }
       
-      public function set phone(param1:String) : void
+      public function set phone(value:String) : void
       {
-         _phone = param1;
+         _phone = value;
       }
       
       public function get qq() : String
@@ -50,9 +50,9 @@ package cardCollectAward.data
          return _qq;
       }
       
-      public function set qq(param1:String) : void
+      public function set qq(value:String) : void
       {
-         _qq = param1;
+         _qq = value;
       }
       
       public function get endTime() : Date
@@ -60,9 +60,9 @@ package cardCollectAward.data
          return _endTime;
       }
       
-      public function set endTime(param1:Date) : void
+      public function set endTime(value:Date) : void
       {
-         _endTime = param1;
+         _endTime = value;
       }
       
       public function get beginTime() : Date
@@ -70,9 +70,9 @@ package cardCollectAward.data
          return _beginTime;
       }
       
-      public function set beginTime(param1:Date) : void
+      public function set beginTime(value:Date) : void
       {
-         _beginTime = param1;
+         _beginTime = value;
       }
       
       public function get quertions() : String
@@ -80,49 +80,48 @@ package cardCollectAward.data
          return _quertions;
       }
       
-      public function set quertions(param1:String) : void
+      public function set quertions(value:String) : void
       {
-         var _loc6_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:* = null;
-         var _loc5_:* = null;
-         var _loc7_:int = 0;
-         var _loc3_:* = null;
-         _quertions = param1;
+         var allItem:* = null;
+         var items:* = null;
+         var awardItem:* = null;
+         var itemInfo:* = null;
+         var i:int = 0;
+         var item:* = null;
+         _quertions = value;
          if(_quertions != null)
          {
-            _loc6_ = _quertions.split("|");
-            _loc2_ = [];
-            _loc7_ = 0;
-            while(_loc7_ < _loc6_.length)
+            allItem = _quertions.split("|");
+            items = [];
+            for(i = 0; i < allItem.length; )
             {
-               _loc2_ = (_loc6_[_loc7_] as String).split(",");
-               if(_awardData != null && _loc2_[0] != null)
+               items = (allItem[i] as String).split(",");
+               if(_awardData != null && items[0] != null)
                {
-                  _loc4_ = new AwardItem();
-                  _loc4_.title = _loc2_[0];
-                  if(_loc2_[1] != null)
+                  awardItem = new AwardItem();
+                  awardItem.title = items[0];
+                  if(items[1] != null)
                   {
-                     _loc3_ = (_loc2_[1] as String).split(";");
-                     while(_loc3_ != null && _loc3_.length > 0)
+                     item = (items[1] as String).split(";");
+                     while(item != null && item.length > 0)
                      {
-                        _loc5_ = new ItemInfo();
-                        _loc5_.name = String(_loc3_.shift());
-                        _loc4_.addItem(_loc5_);
+                        itemInfo = new ItemInfo();
+                        itemInfo.name = String(item.shift());
+                        awardItem.addItem(itemInfo);
                      }
                   }
-                  _awardData[_loc7_] = _loc4_;
+                  _awardData[i] = awardItem;
                }
-               _loc7_++;
+               i++;
             }
          }
       }
       
-      public function getQuertionByIndex(param1:int) : AwardItem
+      public function getQuertionByIndex(index:int) : AwardItem
       {
-         if(_awardData != null && _awardData.hasKey(param1))
+         if(_awardData != null && _awardData.hasKey(index))
          {
-            return _awardData[param1];
+            return _awardData[index];
          }
          return null;
       }
@@ -132,9 +131,9 @@ package cardCollectAward.data
          return _minLv;
       }
       
-      public function set minLv(param1:int) : void
+      public function set minLv(value:int) : void
       {
-         _minLv = param1;
+         _minLv = value;
       }
       
       public function get desc() : String
@@ -142,9 +141,9 @@ package cardCollectAward.data
          return _desc;
       }
       
-      public function set desc(param1:String) : void
+      public function set desc(value:String) : void
       {
-         _desc = param1;
+         _desc = value;
       }
       
       public function get title() : String
@@ -152,9 +151,9 @@ package cardCollectAward.data
          return _title;
       }
       
-      public function set title(param1:String) : void
+      public function set title(value:String) : void
       {
-         _title = param1;
+         _title = value;
       }
    }
 }

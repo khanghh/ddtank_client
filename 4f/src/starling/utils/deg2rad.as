@@ -1,4 +1,2 @@
-package starling.utils
-{
-   public function deg2rad(param1:Number) : Number{return 0;}
-}
+package starling.utils{   public function deg2rad(deg:Number) : Number { return 0; }
+}

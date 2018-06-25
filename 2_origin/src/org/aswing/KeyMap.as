@@ -14,80 +14,79 @@ package org.aswing
          map = new Dictionary();
       }
       
-      public static function getCodec(param1:KeyType) : String
+      public static function getCodec(key:KeyType) : String
       {
-         return getCodecWithKeySequence(param1.getCodeSequence());
+         return getCodecWithKeySequence(key.getCodeSequence());
       }
       
-      public static function getCodecWithKeySequence(param1:Array) : String
+      public static function getCodecWithKeySequence(keySequence:Array) : String
       {
-         return param1.join("|");
+         return keySequence.join("|");
       }
       
-      public function registerKeyAction(param1:KeyType, param2:Function) : void
+      public function registerKeyAction(key:KeyType, action:Function) : void
       {
-         var _loc4_:String = getCodec(param1);
-         var _loc3_:Array = map[_loc4_];
-         if(_loc3_ == null)
+         var codec:String = getCodec(key);
+         var list:Array = map[codec];
+         if(list == null)
          {
-            _loc3_ = [];
+            list = [];
          }
-         _loc3_.push(new KeyAction(param1,param2));
-         map[_loc4_] = _loc3_;
+         list.push(new KeyAction(key,action));
+         map[codec] = list;
       }
       
-      public function unregisterKeyAction(param1:KeyType, param2:Function) : void
+      public function unregisterKeyAction(key:KeyType, action:Function) : void
       {
-         var _loc6_:int = 0;
-         var _loc3_:* = null;
-         var _loc5_:String = getCodec(param1);
-         var _loc4_:Array = map[_loc5_];
-         if(_loc4_)
+         var i:int = 0;
+         var ka:* = null;
+         var codec:String = getCodec(key);
+         var list:Array = map[codec];
+         if(list)
          {
-            _loc6_ = 0;
-            while(_loc6_ < _loc4_.length)
+            for(i = 0; i < list.length; )
             {
-               _loc3_ = _loc4_[_loc6_];
-               if(_loc3_.action == param2)
+               ka = list[i];
+               if(ka.action == action)
                {
-                  _loc4_.splice(_loc6_,1);
-                  _loc6_--;
+                  list.splice(i,1);
+                  i--;
                }
-               _loc6_++;
+               i++;
             }
          }
       }
       
-      public function getKeyAction(param1:KeyType) : Function
+      public function getKeyAction(key:KeyType) : Function
       {
-         return getKeyActionWithCodec(getCodec(param1));
+         return getKeyActionWithCodec(getCodec(key));
       }
       
-      private function getKeyActionWithCodec(param1:String) : Function
+      private function getKeyActionWithCodec(codec:String) : Function
       {
-         var _loc2_:Array = map[param1];
-         if(_loc2_ != null && _loc2_.length > 0)
+         var list:Array = map[codec];
+         if(list != null && list.length > 0)
          {
-            return _loc2_[_loc2_.length - 1].action;
+            return list[list.length - 1].action;
          }
          return null;
       }
       
-      public function fireKeyAction(param1:Array) : Boolean
+      public function fireKeyAction(keySequence:Array) : Boolean
       {
-         var _loc3_:String = getCodecWithKeySequence(param1);
-         var _loc2_:Function = getKeyActionWithCodec(_loc3_);
-         if(_loc2_ != null)
+         var codec:String = getCodecWithKeySequence(keySequence);
+         var action:Function = getKeyActionWithCodec(codec);
+         if(action != null)
          {
-            _loc2_();
+            action();
             return true;
          }
          return false;
       }
       
-      public function containsKey(param1:KeyType) : Boolean
+      public function containsKey(key:KeyType) : Boolean
       {
-         return map[getCodec(param1)] != null;
+         return map[getCodec(key)] != null;
       }
    }
 }
@@ -102,10 +101,10 @@ class KeyAction
    
    private var action:Function;
    
-   function KeyAction(param1:KeyType, param2:Function)
+   function KeyAction(key:KeyType, action:Function)
    {
       super();
-      this.key = param1;
-      this.action = param2;
+      this.key = key;
+      this.action = action;
    }
 }

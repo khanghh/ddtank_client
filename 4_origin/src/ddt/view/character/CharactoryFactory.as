@@ -26,10 +26,10 @@ package ddt.view.character
          super();
       }
       
-      public static function createCharacter(param1:PlayerInfo, param2:String = "show", param3:Boolean = false, param4:Boolean = true) : ICharacter
+      public static function createCharacter(info:PlayerInfo, type:String = "show", multiFrame:Boolean = false, showLightn:Boolean = true) : ICharacter
       {
-         var _loc5_:* = null;
-         var _loc6_:* = param2;
+         var _character:* = null;
+         var _loc6_:* = type;
          if("show" !== _loc6_)
          {
             if("game" !== _loc6_)
@@ -38,28 +38,28 @@ package ddt.view.character
                {
                   if("room" === _loc6_)
                   {
-                     _loc5_ = new RoomCharacter(param1);
+                     _character = new RoomCharacter(info);
                   }
                }
                else
                {
-                  _loc5_ = new GameCharacter3D(param1);
+                  _character = new GameCharacter3D(info);
                }
             }
             else
             {
-               _loc5_ = new GameCharacter(param1);
+               _character = new GameCharacter(info);
             }
          }
          else
          {
-            _loc5_ = new ShowCharacter(param1,true,param4,param3);
+            _character = new ShowCharacter(info,true,showLightn,multiFrame);
          }
-         if(_loc5_ != null)
+         if(_character != null)
          {
-            _loc5_.setFactory(_characterloaderfactory);
+            _character.setFactory(_characterloaderfactory);
          }
-         return _loc5_;
+         return _character;
       }
    }
 }

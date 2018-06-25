@@ -42,24 +42,24 @@ package catchInsect.loader
          CatchInsectManager.instance.addEventListener("catchInsectLoadMap",__onLoadMap);
       }
       
-      protected function __onOpenView(param1:InsectEvent) : void
+      protected function __onOpenView(event:InsectEvent) : void
       {
-         var _loc2_:* = null;
-         if(int(param1.data) == 1)
+         var func:* = null;
+         if(int(event.data) == 1)
          {
-            _loc2_ = CatchInsectControl.instance.doOpenCatchInsectFrame;
+            func = CatchInsectControl.instance.doOpenCatchInsectFrame;
          }
          else
          {
-            _loc2_ = CatchInsectManager.instance.reConnectLoadUiComplete;
+            func = CatchInsectManager.instance.reConnectLoadUiComplete;
          }
-         loadUIModule(_loc2_);
+         loadUIModule(func);
       }
       
-      private function loadUIModule(param1:Function = null, param2:Array = null) : void
+      private function loadUIModule(complete:Function = null, completeParams:Array = null) : void
       {
-         _func = param1;
-         _funcParams = param2;
+         _func = complete;
+         _funcParams = completeParams;
          UIModuleSmallLoading.Instance.progress = 0;
          UIModuleSmallLoading.Instance.show();
          UIModuleLoader.Instance.addEventListener("uiModuleComplete",loadCompleteHandler);
@@ -67,9 +67,9 @@ package catchInsect.loader
          UIModuleLoader.Instance.addUIModuleImp("catchInsect");
       }
       
-      private function loadCompleteHandler(param1:UIModuleEvent) : void
+      private function loadCompleteHandler(event:UIModuleEvent) : void
       {
-         if(param1.module == "catchInsect")
+         if(event.module == "catchInsect")
          {
             UIModuleSmallLoading.Instance.hide();
             UIModuleLoader.Instance.removeEventListener("uiModuleComplete",loadCompleteHandler);
@@ -83,22 +83,22 @@ package catchInsect.loader
          }
       }
       
-      private function onUimoduleLoadProgress(param1:UIModuleEvent) : void
+      private function onUimoduleLoadProgress(event:UIModuleEvent) : void
       {
-         if(param1.module == "catchInsect")
+         if(event.module == "catchInsect")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
       
-      protected function __onLoadMap(param1:InsectEvent) : void
+      protected function __onLoadMap(event:InsectEvent) : void
       {
-         var _loc2_:BaseLoader = LoadResourceManager.Instance.createLoader(CatchInsectManager.instance.mapPath,4);
-         _loc2_.addEventListener("complete",onCatchInsectMapSrcLoadedComplete);
-         LoadResourceManager.Instance.startLoad(_loc2_);
+         var mapLoader:BaseLoader = LoadResourceManager.Instance.createLoader(CatchInsectManager.instance.mapPath,4);
+         mapLoader.addEventListener("complete",onCatchInsectMapSrcLoadedComplete);
+         LoadResourceManager.Instance.startLoad(mapLoader);
       }
       
-      private function onCatchInsectMapSrcLoadedComplete(param1:Event) : void
+      private function onCatchInsectMapSrcLoadedComplete(e:Event) : void
       {
          if(StateManager.getState("catchInsect") == null)
          {
@@ -107,7 +107,7 @@ package catchInsect.loader
          StateManager.setState("catchInsect");
       }
       
-      private function __loadingIsCloseRoom(param1:Event) : void
+      private function __loadingIsCloseRoom(e:Event) : void
       {
          UIModuleSmallLoading.Instance.removeEventListener("close",__loadingIsCloseRoom);
       }

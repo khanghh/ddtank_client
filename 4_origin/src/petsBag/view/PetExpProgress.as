@@ -60,22 +60,22 @@ package petsBag.view
          addChild(_progressLabel);
       }
       
-      private function creatMask(param1:DisplayObject) : Shape
+      private function creatMask(source:DisplayObject) : Shape
       {
-         var _loc2_:Shape = new Shape();
-         _loc2_.graphics.beginFill(16711680,1);
-         _loc2_.graphics.drawRect(0,0,param1.width,param1.height);
-         _loc2_.graphics.endFill();
-         _loc2_.x = param1.x;
-         _loc2_.y = param1.y;
-         param1.mask = _loc2_;
-         return _loc2_;
+         var result:Shape = new Shape();
+         result.graphics.beginFill(16711680,1);
+         result.graphics.drawRect(0,0,source.width,source.height);
+         result.graphics.endFill();
+         result.x = source.x;
+         result.y = source.y;
+         source.mask = result;
+         return result;
       }
       
-      public function setProgress(param1:Number, param2:Number) : void
+      public function setProgress(value:Number, max:Number) : void
       {
-         _gp = param1;
-         _maxGp = param2;
+         _gp = value;
+         _maxGp = max;
          drawProgress();
       }
       
@@ -88,16 +88,16 @@ package petsBag.view
       
       private function drawProgress() : void
       {
-         var _loc3_:int = PetExperience.getLevelByGP(_gp);
-         var _loc6_:int = _gp - PetExperience.expericence[_loc3_ - 1];
-         var _loc5_:int = PetExperience.expericence[_loc3_ >= PetExperience.MAX_LEVEL?PetExperience.MAX_LEVEL - 1:_loc3_] - PetExperience.expericence[_loc3_ - 1];
-         var _loc4_:int = _maxGp - _gp;
-         var _loc2_:Number = _loc5_ == 0?0:Number(_loc6_ / _loc5_);
-         var _loc1_:Number = _loc5_ == 0?0:Number((_loc6_ + _loc4_) / _loc5_);
-         _gpMask.width = _gpItem.width * _loc1_;
-         _maxGpMask.width = _maxGpItem.width * _loc2_;
-         _tipData = [_loc6_,_loc5_].join("/") + LanguageMgr.GetTranslation("ddt.petbag.petExpProgressTip",_loc4_);
-         _progressLabel.text = [_loc6_,_loc5_].join("/");
+         var lv:int = PetExperience.getLevelByGP(_gp);
+         var x:int = _gp - PetExperience.expericence[lv - 1];
+         var y:int = PetExperience.expericence[lv >= PetExperience.MAX_LEVEL?PetExperience.MAX_LEVEL - 1:lv] - PetExperience.expericence[lv - 1];
+         var z:int = _maxGp - _gp;
+         var max_width:Number = y == 0?0:Number(x / y);
+         var gp_width:Number = y == 0?0:Number((x + z) / y);
+         _gpMask.width = _gpItem.width * gp_width;
+         _maxGpMask.width = _maxGpItem.width * max_width;
+         _tipData = [x,y].join("/") + LanguageMgr.GetTranslation("ddt.petbag.petExpProgressTip",z);
+         _progressLabel.text = [x,y].join("/");
       }
       
       override public function dispose() : void

@@ -31,9 +31,9 @@ package conRecharge
       
       public var actId:String;
       
-      public function ConRechargeManager(param1:IEventDispatcher = null)
+      public function ConRechargeManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : ConRechargeManager
@@ -65,44 +65,43 @@ package conRecharge
          HallIconManager.instance.updateSwitchHandler("conRecharge",isOpen);
       }
       
-      public function set giftbagArray(param1:Array) : void
+      public function set giftbagArray(value:Array) : void
       {
-         var _loc2_:* = null;
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:int = 0;
-         _giftbagArray = param1;
+         var arr:* = null;
+         var i:int = 0;
+         var info:* = null;
+         var j:int = 0;
+         _giftbagArray = value;
          dayGiftbagArray = [];
          longGiftbagArray = [];
-         _loc5_ = 0;
-         while(_loc5_ < _giftbagArray.length)
+         for(i = 0; i < _giftbagArray.length; )
          {
-            _loc4_ = _giftbagArray[_loc5_];
-            if(_loc4_.giftConditionArr[0].conditionIndex == 1)
+            info = _giftbagArray[i];
+            if(info.giftConditionArr[0].conditionIndex == 1)
             {
-               dayGiftbagArray.push(_loc4_);
+               dayGiftbagArray.push(info);
             }
             else
             {
-               _loc2_ = [];
-               _loc3_ = 0;
+               arr = [];
+               j = 0;
                while(true)
                {
-                  if(_loc3_ >= longGiftbagArray.length)
+                  if(j >= longGiftbagArray.length)
                   {
-                     _loc2_.push(_loc4_);
-                     longGiftbagArray.push(_loc2_);
+                     arr.push(info);
+                     longGiftbagArray.push(arr);
                      break;
                   }
-                  if(_loc4_.giftConditionArr[0].conditionValue == longGiftbagArray[_loc3_][0].giftConditionArr[0].conditionValue)
+                  if(info.giftConditionArr[0].conditionValue == longGiftbagArray[j][0].giftConditionArr[0].conditionValue)
                   {
-                     longGiftbagArray[_loc3_].push(_loc4_);
+                     longGiftbagArray[j].push(info);
                      break;
                   }
-                  _loc3_++;
+                  j++;
                }
             }
-            _loc5_++;
+            i++;
          }
       }
    }

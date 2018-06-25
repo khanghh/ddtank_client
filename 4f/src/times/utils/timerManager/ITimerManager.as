@@ -1,7 +1,1 @@
-package times.utils.timerManager
-{
-   public interface ITimerManager
-   {
-       
-   }
-}
+package times.utils.timerManager{   public interface ITimerManager   {          }}

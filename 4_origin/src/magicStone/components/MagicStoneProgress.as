@@ -41,11 +41,11 @@ package magicStone.components
          tipGapV = 20;
       }
       
-      public function setData(param1:int, param2:int) : void
+      public function setData(completed:int, total:int) : void
       {
-         _progressMask.scaleX = param1 / param2;
-         tipData = param1 + "/" + param2;
-         _progressTxt.text = int(param1 / param2 * 100) + "%";
+         _progressMask.scaleX = completed / total;
+         tipData = completed + "/" + total;
+         _progressTxt.text = int(completed / total * 100) + "%";
       }
       
       override public function dispose() : void

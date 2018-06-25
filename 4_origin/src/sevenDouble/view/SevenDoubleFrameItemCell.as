@@ -48,11 +48,11 @@ package sevenDouble.view
       
       private var _calledIcon:Bitmap;
       
-      public function SevenDoubleFrameItemCell(param1:int, param2:SevenDoubleCarInfo)
+      public function SevenDoubleFrameItemCell(index:int, info:SevenDoubleCarInfo)
       {
          super();
-         _index = param1;
-         _info = param2;
+         _index = index;
+         _info = info;
          initView();
          initEvent();
          refreshView(null);
@@ -98,7 +98,7 @@ package sevenDouble.view
          }
       }
       
-      private function refreshView(param1:Event) : void
+      private function refreshView(event:Event) : void
       {
          if(SevenDoubleControl.instance.carStatus == _index)
          {
@@ -131,7 +131,7 @@ package sevenDouble.view
          SevenDoubleManager.instance.addEventListener("sevenDoubleCarStatusChange",refreshView);
       }
       
-      private function clickHandler(param1:MouseEvent) : void
+      private function clickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -139,67 +139,67 @@ package sevenDouble.view
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:Object = SevenDoubleControl.instance.getBuyRecordStatus(0);
-         if(_loc2_.isNoPrompt)
+         var tmpObj:Object = SevenDoubleControl.instance.getBuyRecordStatus(0);
+         if(tmpObj.isNoPrompt)
          {
-            if(_loc2_.isBand && PlayerManager.Instance.Self.BandMoney < _info.needMoney)
+            if(tmpObj.isBand && PlayerManager.Instance.Self.BandMoney < _info.needMoney)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("bindMoneyPoorNote"));
-               _loc2_.isNoPrompt = false;
+               tmpObj.isNoPrompt = false;
             }
             else if(PlayerManager.Instance.Self.Money < _info.needMoney)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("moneyPoorNote"));
-               _loc2_.isNoPrompt = false;
+               tmpObj.isNoPrompt = false;
             }
             else
             {
-               SocketManager.Instance.out.sendSevenDoubleCallCar(_index,_loc2_.isBand);
+               SocketManager.Instance.out.sendSevenDoubleCallCar(_index,tmpObj.isBand);
                return;
             }
          }
-         var _loc3_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("sevenDouble.frame.callCarConfirmTxt",_info.needMoney),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"SevenDoubleBuyConfirmView",30,true,1);
-         _loc3_.moveEnable = false;
-         _loc3_.addEventListener("response",callConfirm,false,0,true);
+         var confirmFrame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("sevenDouble.frame.callCarConfirmTxt",_info.needMoney),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"SevenDoubleBuyConfirmView",30,true,1);
+         confirmFrame.moveEnable = false;
+         confirmFrame.addEventListener("response",callConfirm,false,0,true);
       }
       
-      private function callConfirm(param1:FrameEvent) : void
+      private function callConfirm(evt:FrameEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
+         var confirmFrame2:* = null;
+         var tmpObj:* = null;
          SoundManager.instance.play("008");
-         var _loc4_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc4_.removeEventListener("response",callConfirm);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",callConfirm);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
-            if(_loc4_.isBand && PlayerManager.Instance.Self.BandMoney < _info.needMoney)
+            if(confirmFrame.isBand && PlayerManager.Instance.Self.BandMoney < _info.needMoney)
             {
-               _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("sevenDouble.game.useSkillNoEnoughReConfirm"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
-               _loc2_.moveEnable = false;
-               _loc2_.addEventListener("response",callCarReConfirm,false,0,true);
+               confirmFrame2 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("sevenDouble.game.useSkillNoEnoughReConfirm"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
+               confirmFrame2.moveEnable = false;
+               confirmFrame2.addEventListener("response",callCarReConfirm,false,0,true);
                return;
             }
-            if(!_loc4_.isBand && PlayerManager.Instance.Self.Money < _info.needMoney)
+            if(!confirmFrame.isBand && PlayerManager.Instance.Self.Money < _info.needMoney)
             {
                LeavePageManager.showFillFrame();
                return;
             }
-            if((_loc4_ as SevenDoubleBuyConfirmView).isNoPrompt)
+            if((confirmFrame as SevenDoubleBuyConfirmView).isNoPrompt)
             {
-               _loc3_ = SevenDoubleControl.instance.getBuyRecordStatus(0);
-               _loc3_.isNoPrompt = true;
-               _loc3_.isBand = _loc4_.isBand;
+               tmpObj = SevenDoubleControl.instance.getBuyRecordStatus(0);
+               tmpObj.isNoPrompt = true;
+               tmpObj.isBand = confirmFrame.isBand;
             }
-            SocketManager.Instance.out.sendSevenDoubleCallCar(_index,_loc4_.isBand);
+            SocketManager.Instance.out.sendSevenDoubleCallCar(_index,confirmFrame.isBand);
          }
       }
       
-      private function callCarReConfirm(param1:FrameEvent) : void
+      private function callCarReConfirm(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",callCarReConfirm);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",callCarReConfirm);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             if(PlayerManager.Instance.Self.Money < _info.needMoney)
             {

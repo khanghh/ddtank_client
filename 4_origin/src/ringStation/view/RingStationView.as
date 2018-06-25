@@ -54,28 +54,27 @@ package ringStation.view
       
       private function initView() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var challengePerson:* = null;
          titleText = LanguageMgr.GetTranslation("ddt.ringstation.titleInfo");
          _titleBitmap = ComponentFactory.Instance.creat("ringstation.view.title");
          addToContent(_titleBitmap);
          _frameBottom = ComponentFactory.Instance.creatComponentByStylename("ringstation.frameBottom");
          addToContent(_frameBottom);
-         var _loc2_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("ringStation.helpView.infoText");
-         _loc2_.text = LanguageMgr.GetTranslation("ddt.ringstation.helpInfo");
-         _helpBtn = HelpFrameUtils.Instance.simpleHelpButton(this,"ringStation.view.helpBtn",null,LanguageMgr.GetTranslation("ddt.ringstation.helpTitle"),_loc2_,404,484);
+         var _helpTxt:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("ringStation.helpView.infoText");
+         _helpTxt.text = LanguageMgr.GetTranslation("ddt.ringstation.helpInfo");
+         _helpBtn = HelpFrameUtils.Instance.simpleHelpButton(this,"ringStation.view.helpBtn",null,LanguageMgr.GetTranslation("ddt.ringstation.helpTitle"),_helpTxt,404,484);
          _userView = new StationUserView();
          PositionUtils.setPos(_userView,"ringStation.view.userViewPos");
          addToContent(_userView);
          _challengeVec = new Vector.<ChallengePerson>();
-         _loc3_ = 0;
-         while(_loc3_ < CHALLENGEPERSON_NUM)
+         for(i = 0; i < CHALLENGEPERSON_NUM; )
          {
-            _loc1_ = new ChallengePerson();
-            PositionUtils.setPos(_loc1_,"ringStation.challenge.personPos" + _loc3_);
-            addToContent(_loc1_);
-            _challengeVec.push(_loc1_);
-            _loc3_++;
+            challengePerson = new ChallengePerson();
+            PositionUtils.setPos(challengePerson,"ringStation.challenge.personPos" + i);
+            addToContent(challengePerson);
+            _challengeVec.push(challengePerson);
+            i++;
          }
       }
       
@@ -87,7 +86,7 @@ package ringStation.view
          StateManager.getInGame_Step_1 = true;
       }
       
-      private function __startLoading(param1:Event) : void
+      private function __startLoading(e:Event) : void
       {
          StateManager.getInGame_Step_6 = true;
          StateManager.setState("roomLoading",GameControl.Instance.Current);
@@ -99,111 +98,106 @@ package ringStation.view
          SocketManager.Instance.out.sendRingStationGetInfo();
       }
       
-      protected function __setViewInfo(param1:PkgEvent) : void
+      protected function __setViewInfo(event:PkgEvent) : void
       {
-         var _loc12_:int = 0;
-         var _loc9_:int = 0;
-         var _loc7_:int = 0;
-         var _loc10_:int = 0;
-         var _loc8_:* = 0;
-         var _loc6_:PackageIn = param1.pkg;
-         var _loc5_:int = _loc6_.readInt();
-         _userView.setRankNum(_loc5_);
-         _userView.setChallengeNum(_loc6_.readInt());
-         _userView.buyCount = _loc6_.readInt();
-         _userView.buyPrice = _loc6_.readInt();
-         _userView.setChallengeTime(_loc6_.readDate());
-         _userView.cdPrice = _loc6_.readInt();
-         _loc6_.readInt();
-         var _loc3_:String = _loc6_.readUTF();
-         _userView.setSignText(_loc3_);
-         _userView.setAwardNum(_loc6_.readInt());
-         _userView.setAwardTime(_loc6_.readDate());
-         _userView.setChampionText(_loc6_.readUTF(),_loc6_.readBoolean());
-         _userView.setReardEnable(_loc6_.readBoolean());
-         if(_loc5_ == 0)
+         var i:int = 0;
+         var j:int = 0;
+         var l:int = 0;
+         var k:int = 0;
+         var m:* = 0;
+         var pkg:PackageIn = event.pkg;
+         var rankNum:int = pkg.readInt();
+         _userView.setRankNum(rankNum);
+         _userView.setChallengeNum(pkg.readInt());
+         _userView.buyCount = pkg.readInt();
+         _userView.buyPrice = pkg.readInt();
+         _userView.setChallengeTime(pkg.readDate());
+         _userView.cdPrice = pkg.readInt();
+         pkg.readInt();
+         var sign:String = pkg.readUTF();
+         _userView.setSignText(sign);
+         _userView.setAwardNum(pkg.readInt());
+         _userView.setAwardTime(pkg.readDate());
+         _userView.setChampionText(pkg.readUTF(),pkg.readBoolean());
+         _userView.setReardEnable(pkg.readBoolean());
+         if(rankNum == 0)
          {
             _arrowSrite = new Sprite();
             addToContent(_arrowSrite);
             NewHandContainer.Instance.showArrow(121,45,"ringStation.view.challenge.arrowPos","","",_arrowSrite,0,true);
          }
-         var _loc4_:int = _loc6_.readInt();
-         var _loc11_:Vector.<PlayerInfo> = new Vector.<PlayerInfo>();
-         var _loc2_:Array = [];
-         _loc12_ = 0;
-         while(_loc12_ < _loc4_)
+         var count:int = pkg.readInt();
+         var playerVec:Vector.<PlayerInfo> = new Vector.<PlayerInfo>();
+         var rankArray:Array = [];
+         for(i = 0; i < count; )
          {
-            _loc11_.push(readPersonInfo(_loc6_));
-            _loc2_.push(_loc11_[_loc12_].Rank);
-            _loc12_++;
+            playerVec.push(readPersonInfo(pkg));
+            rankArray.push(playerVec[i].Rank);
+            i++;
          }
-         if(_loc4_ == 1 && _loc11_[0].Rank == 0)
+         if(count == 1 && playerVec[0].Rank == 0)
          {
-            _challengeVec[0].updatePerson(_loc11_[0]);
-            _loc9_ = 1;
-            while(_loc9_ < CHALLENGEPERSON_NUM)
+            _challengeVec[0].updatePerson(playerVec[0]);
+            for(j = 1; j < CHALLENGEPERSON_NUM; )
             {
-               _loc11_[0].NickName = _nameArray[_loc9_ - 1];
-               _challengeVec[_loc9_].updatePerson(_loc11_[0]);
-               _loc9_++;
+               playerVec[0].NickName = _nameArray[j - 1];
+               _challengeVec[j].updatePerson(playerVec[0]);
+               j++;
             }
          }
          else
          {
-            _loc2_.sort(16);
-            _loc7_ = 0;
-            while(_loc7_ < _loc2_.length)
+            rankArray.sort(16);
+            for(l = 0; l < rankArray.length; )
             {
-               _loc10_ = 0;
-               while(_loc10_ < _loc11_.length)
+               for(k = 0; k < playerVec.length; )
                {
-                  if(_loc11_[_loc10_].Rank == _loc2_[_loc7_])
+                  if(playerVec[k].Rank == rankArray[l])
                   {
-                     _challengeVec[_loc7_].updatePerson(_loc11_[_loc10_]);
+                     _challengeVec[l].updatePerson(playerVec[k]);
                   }
-                  _loc10_++;
+                  k++;
                }
-               _loc7_++;
+               l++;
             }
-            _loc8_ = _loc4_;
-            while(_loc8_ < _challengeVec.length)
+            for(m = count; m < _challengeVec.length; )
             {
-               _challengeVec[_loc8_].setWaiting();
-               _loc8_++;
+               _challengeVec[m].setWaiting();
+               m++;
             }
          }
       }
       
-      private function readPersonInfo(param1:PackageIn) : PlayerInfo
+      private function readPersonInfo(pkg:PackageIn) : PlayerInfo
       {
-         var _loc2_:PlayerInfo = new PlayerInfo();
-         _loc2_.ID = param1.readInt();
-         _loc2_.LoginName = param1.readUTF();
-         _loc2_.NickName = param1.readUTF();
-         _loc2_.typeVIP = param1.readByte();
-         _loc2_.VIPLevel = param1.readInt();
-         _loc2_.Grade = param1.readInt();
-         _loc2_.ddtKingGrade = param1.readInt();
-         _loc2_.Sex = param1.readBoolean();
-         _loc2_.Style = param1.readUTF();
-         _loc2_.Colors = param1.readUTF();
-         _loc2_.Skin = param1.readUTF();
-         _loc2_.ConsortiaName = param1.readUTF();
-         _loc2_.Hide = param1.readInt();
-         _loc2_.Offer = param1.readInt();
-         _loc2_.WinCount = param1.readInt();
-         _loc2_.TotalCount = param1.readInt();
-         _loc2_.EscapeCount = param1.readInt();
-         _loc2_.Repute = param1.readInt();
-         _loc2_.Nimbus = param1.readInt();
-         _loc2_.GP = param1.readInt();
-         _loc2_.FightPower = param1.readInt();
-         _loc2_.AchievementPoint = param1.readInt();
-         _loc2_.Rank = param1.readInt();
-         _loc2_.isAttest = param1.readBoolean();
-         _loc2_.WeaponID = param1.readInt();
-         _loc2_.signMsg = param1.readUTF();
-         return _loc2_;
+         var player:PlayerInfo = new PlayerInfo();
+         player.ID = pkg.readInt();
+         player.LoginName = pkg.readUTF();
+         player.NickName = pkg.readUTF();
+         player.typeVIP = pkg.readByte();
+         player.VIPLevel = pkg.readInt();
+         player.Grade = pkg.readInt();
+         player.ddtKingGrade = pkg.readInt();
+         player.Sex = pkg.readBoolean();
+         player.Style = pkg.readUTF();
+         player.Colors = pkg.readUTF();
+         player.Skin = pkg.readUTF();
+         player.ConsortiaName = pkg.readUTF();
+         player.Hide = pkg.readInt();
+         player.Offer = pkg.readInt();
+         player.WinCount = pkg.readInt();
+         player.TotalCount = pkg.readInt();
+         player.EscapeCount = pkg.readInt();
+         player.Repute = pkg.readInt();
+         player.Nimbus = pkg.readInt();
+         player.GP = pkg.readInt();
+         player.FightPower = pkg.readInt();
+         player.AchievementPoint = pkg.readInt();
+         player.Rank = pkg.readInt();
+         player.isAttest = pkg.readBoolean();
+         player.WeaponID = pkg.readInt();
+         player.signMsg = pkg.readUTF();
+         return player;
       }
       
       public function show() : void
@@ -219,10 +213,10 @@ package ringStation.view
          StateManager.getInGame_Step_8 = true;
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -232,7 +226,7 @@ package ringStation.view
       
       override public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          super.dispose();
          removeEvent();
          if(_titleBitmap)
@@ -256,12 +250,11 @@ package ringStation.view
          }
          if(_challengeVec)
          {
-            _loc1_ = 0;
-            while(_loc1_ < _challengeVec.length)
+            for(i = 0; i < _challengeVec.length; )
             {
-               _challengeVec[_loc1_].dispose();
-               _challengeVec[_loc1_] = null;
-               _loc1_++;
+               _challengeVec[i].dispose();
+               _challengeVec[i] = null;
+               i++;
             }
             _challengeVec.length = 0;
             _challengeVec = null;

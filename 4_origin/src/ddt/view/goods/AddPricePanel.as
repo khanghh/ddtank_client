@@ -299,53 +299,52 @@ package ddt.view.goods
          addToContent(_cartItemSelectVBox);
       }
       
-      public function setInfo(param1:InventoryItemInfo, param2:Boolean) : void
+      public function setInfo(info:InventoryItemInfo, isDress:Boolean) : void
       {
-         var _loc3_:int = 0;
-         _info = param1;
-         _isDress = param2;
+         var i:int = 0;
+         _info = info;
+         _isDress = isDress;
          _shopItems = ShopManager.Instance.getShopRechargeItemByTemplateId(_info.TemplateID);
          _currentPayTypeArr = [];
          _currentShopItem = null;
-         _loc3_ = 0;
-         while(_loc3_ < _shopItems.length)
+         for(i = 0; i < _shopItems.length; )
          {
-            if((_shopItems[_loc3_] as ShopItemInfo).getItemPrice(1).IsBothMoneyType)
+            if((_shopItems[i] as ShopItemInfo).getItemPrice(1).IsBothMoneyType)
             {
-               _currentShopItem = fillToShopCarInfo(_shopItems[_loc3_]);
+               _currentShopItem = fillToShopCarInfo(_shopItems[i]);
                _currentPayTypeArr.push(-1);
             }
-            else if((_shopItems[_loc3_] as ShopItemInfo).getItemPrice(1).IsMoneyType)
+            else if((_shopItems[i] as ShopItemInfo).getItemPrice(1).IsMoneyType)
             {
-               _currentShopItem = fillToShopCarInfo(_shopItems[_loc3_]);
+               _currentShopItem = fillToShopCarInfo(_shopItems[i]);
                _currentPayTypeArr.push(-8);
             }
-            else if((_shopItems[_loc3_] as ShopItemInfo).getItemPrice(1).IsPetStoneType)
+            else if((_shopItems[i] as ShopItemInfo).getItemPrice(1).IsPetStoneType)
             {
-               _currentShopItem = fillToShopCarInfo(_shopItems[_loc3_]);
+               _currentShopItem = fillToShopCarInfo(_shopItems[i]);
                _currentPayTypeArr.push(-12);
             }
-            else if((_shopItems[_loc3_] as ShopItemInfo).getItemPrice(1).isLeagueType)
+            else if((_shopItems[i] as ShopItemInfo).getItemPrice(1).isLeagueType)
             {
-               _currentShopItem = fillToShopCarInfo(_shopItems[_loc3_]);
+               _currentShopItem = fillToShopCarInfo(_shopItems[i]);
                _currentPayTypeArr.push(-1000);
             }
-            else if((_shopItems[_loc3_] as ShopItemInfo).getItemPrice(1).isArmShellClipType)
+            else if((_shopItems[i] as ShopItemInfo).getItemPrice(1).isArmShellClipType)
             {
-               _currentShopItem = fillToShopCarInfo(_shopItems[_loc3_]);
+               _currentShopItem = fillToShopCarInfo(_shopItems[i]);
                _currentPayTypeArr.push(13000);
             }
-            else if((_shopItems[_loc3_] as ShopItemInfo).getItemPrice(1).ddtMoneyValue)
+            else if((_shopItems[i] as ShopItemInfo).getItemPrice(1).ddtMoneyValue)
             {
-               _currentShopItem = fillToShopCarInfo(_shopItems[_loc3_]);
+               _currentShopItem = fillToShopCarInfo(_shopItems[i]);
                _currentPayTypeArr.push(-2);
             }
-            else if((_shopItems[_loc3_] as ShopItemInfo).getItemPrice(1).bandDdtMoneyValue)
+            else if((_shopItems[i] as ShopItemInfo).getItemPrice(1).bandDdtMoneyValue)
             {
-               _currentShopItem = fillToShopCarInfo(_shopItems[_loc3_]);
+               _currentShopItem = fillToShopCarInfo(_shopItems[i]);
                _currentPayTypeArr.push(-9);
             }
-            _loc3_++;
+            i++;
          }
          resetRadioBtn(_currentPayTypeArr);
          if(_currentShopItem == null)
@@ -357,10 +356,10 @@ package ddt.view.goods
       
       protected function cartItemSelectVBoxInit() : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
-         var _loc3_:int = 0;
+         var i:int = 0;
+         var cartItemSelectBtn:* = null;
+         var vTimeString:* = null;
+         var priceValue:int = 0;
          if(_cartItemGroup)
          {
             _cartItemGroup.removeEventListener("change",__cartItemGroupChange);
@@ -369,98 +368,97 @@ package ddt.view.goods
          _cartItemGroup = new SelectedButtonGroup();
          _cartItemGroup.addEventListener("change",__cartItemGroupChange);
          _cartItemSelectVBox.disposeAllChildren();
-         _loc4_ = 1;
-         while(_loc4_ < 4)
+         for(i = 1; i < 4; )
          {
-            if(_currentShopItem.getItemPrice(_loc4_).IsValid)
+            if(_currentShopItem.getItemPrice(i).IsValid)
             {
-               _loc2_ = ComponentFactory.Instance.creatComponentByStylename("reNewSelectBtn");
-               _loc1_ = _currentShopItem.getTimeToString(_loc4_) != LanguageMgr.GetTranslation("ddt.shop.buyTime1")?_currentShopItem.getTimeToString(_loc4_):LanguageMgr.GetTranslation("ddt.shop.buyTime2");
+               cartItemSelectBtn = ComponentFactory.Instance.creatComponentByStylename("reNewSelectBtn");
+               vTimeString = _currentShopItem.getTimeToString(i) != LanguageMgr.GetTranslation("ddt.shop.buyTime1")?_currentShopItem.getTimeToString(i):LanguageMgr.GetTranslation("ddt.shop.buyTime2");
                if(_type == 0)
                {
                   _isBand = false;
-                  _loc3_ = _currentShopItem.getItemPrice(_loc4_).bothMoneyValue;
+                  priceValue = _currentShopItem.getItemPrice(i).bothMoneyValue;
                   if(chooseType == -9)
                   {
-                     _loc2_.text = _loc3_ + " " + LanguageMgr.GetTranslation("ddtMoney") + "/" + _loc1_;
+                     cartItemSelectBtn.text = priceValue + " " + LanguageMgr.GetTranslation("ddtMoney") + "/" + vTimeString;
                   }
                   else
                   {
-                     _loc2_.text = _loc3_ + " " + LanguageMgr.GetTranslation("money") + "/" + _loc1_;
+                     cartItemSelectBtn.text = priceValue + " " + LanguageMgr.GetTranslation("money") + "/" + vTimeString;
                   }
                }
                else if(_type == 1)
                {
                   _isBand = false;
-                  _loc3_ = _currentShopItem.getItemPrice(_loc4_).moneyValue;
-                  _loc2_.text = _loc3_ + " " + LanguageMgr.GetTranslation("money") + "/" + _loc1_;
+                  priceValue = _currentShopItem.getItemPrice(i).moneyValue;
+                  cartItemSelectBtn.text = priceValue + " " + LanguageMgr.GetTranslation("money") + "/" + vTimeString;
                }
                else if(_type == 2)
                {
                   _isBand = true;
-                  _loc3_ = _currentShopItem.getItemPrice(_loc4_).bandDdtMoneyValue;
-                  _loc2_.text = _loc3_ + " " + LanguageMgr.GetTranslation("ddtMoney") + "/" + _loc1_;
+                  priceValue = _currentShopItem.getItemPrice(i).bandDdtMoneyValue;
+                  cartItemSelectBtn.text = priceValue + " " + LanguageMgr.GetTranslation("ddtMoney") + "/" + vTimeString;
                }
                else if(_type == 3)
                {
                   _isBand = true;
-                  _loc3_ = _currentShopItem.getItemPrice(_loc4_).ddtMoneyValue;
-                  _loc2_.text = _loc3_ + " " + LanguageMgr.GetTranslation("medalMoney") + "/" + _loc1_;
+                  priceValue = _currentShopItem.getItemPrice(i).ddtMoneyValue;
+                  cartItemSelectBtn.text = priceValue + " " + LanguageMgr.GetTranslation("medalMoney") + "/" + vTimeString;
                }
                else if(_type == 4)
                {
                   _isBand = false;
-                  _loc3_ = _currentShopItem.getItemPrice(_loc4_).petStoneValue;
-                  _loc2_.text = _loc3_ + " " + LanguageMgr.GetTranslation("buried.alertInfo.ligthStone") + "/" + _loc1_;
+                  priceValue = _currentShopItem.getItemPrice(i).petStoneValue;
+                  cartItemSelectBtn.text = priceValue + " " + LanguageMgr.GetTranslation("buried.alertInfo.ligthStone") + "/" + vTimeString;
                }
                else if(_type == 5)
                {
                   _isBand = false;
-                  _loc3_ = _currentShopItem.getItemPrice(_loc4_).leagueValue;
-                  _loc2_.text = _loc3_ + " " + LanguageMgr.GetTranslation("ddt.league.moneyTypeTxt") + "/" + _loc1_;
+                  priceValue = _currentShopItem.getItemPrice(i).leagueValue;
+                  cartItemSelectBtn.text = priceValue + " " + LanguageMgr.GetTranslation("ddt.league.moneyTypeTxt") + "/" + vTimeString;
                }
                else if(_type == 6)
                {
                   _isBand = false;
-                  _loc3_ = _currentShopItem.getItemPrice(_loc4_).armShellClipValue;
-                  _loc2_.text = _loc3_ + " " + LanguageMgr.GetTranslation("ddt.armShellClip.moneyTypeTxt") + "/" + _loc1_;
+                  priceValue = _currentShopItem.getItemPrice(i).armShellClipValue;
+                  cartItemSelectBtn.text = priceValue + " " + LanguageMgr.GetTranslation("ddt.armShellClip.moneyTypeTxt") + "/" + vTimeString;
                }
                else
                {
-                  _loc3_ = 0;
-                  _loc2_.text = "类型搞事情";
+                  priceValue = 0;
+                  cartItemSelectBtn.text = "类型搞事情";
                }
-               if(_loc3_ > 0)
+               if(priceValue > 0)
                {
-                  _cartItemSelectVBox.addChild(_loc2_);
-                  _cartItemGroup.addSelectItem(_loc2_);
+                  _cartItemSelectVBox.addChild(cartItemSelectBtn);
+                  _cartItemGroup.addSelectItem(cartItemSelectBtn);
                }
             }
-            _loc4_++;
+            i++;
          }
          _cartItemGroup.selectIndex = _cartItemSelectVBox.numChildren - 1;
       }
       
-      protected function __cartItemGroupChange(param1:Event) : void
+      protected function __cartItemGroupChange(event:Event) : void
       {
          SoundManager.instance.play("008");
          _currentShopItem.currentBuyType = _cartItemGroup.selectIndex + 1;
       }
       
-      private function fillToShopCarInfo(param1:ShopItemInfo) : ShopCarItemInfo
+      private function fillToShopCarInfo(item:ShopItemInfo) : ShopCarItemInfo
       {
-         if(!param1)
+         if(!item)
          {
             return null;
          }
-         var _loc2_:ShopCarItemInfo = new ShopCarItemInfo(param1.GoodsID,param1.TemplateID,_info.CategoryID);
-         ObjectUtils.copyProperties(_loc2_,param1);
-         return _loc2_;
+         var t:ShopCarItemInfo = new ShopCarItemInfo(item.GoodsID,item.TemplateID,_info.CategoryID);
+         ObjectUtils.copyProperties(t,item);
+         return t;
       }
       
-      private function resetRadioBtn(param1:Array) : void
+      private function resetRadioBtn(payType:Array) : void
       {
-         var _loc3_:int = 0;
+         var j:int = 0;
          var _loc4_:* = false;
          _moneyButton.visible = _loc4_;
          _loc4_ = _loc4_;
@@ -503,15 +501,14 @@ package ddt.view.goods
          _loc4_ = _loc4_;
          _armShellClipBg.visible = _loc4_;
          _armShellClipButton.visible = _loc4_;
-         var _loc2_:Boolean = false;
-         _loc3_ = 0;
-         while(_loc3_ < param1.length)
+         var bool:Boolean = false;
+         for(j = 0; j < payType.length; )
          {
-            if(param1.length == 1)
+            if(payType.length == 1)
             {
-               _loc2_ = true;
+               bool = true;
             }
-            if(param1[_loc3_] == -12)
+            if(payType[j] == -12)
             {
                _type = 4;
                _loc4_ = true;
@@ -523,7 +520,7 @@ package ddt.view.goods
                _petStoneButton.visible = _loc4_;
                _radioGroup.selectIndex = 3;
             }
-            else if(param1[_loc3_] == -1000)
+            else if(payType[j] == -1000)
             {
                _type = 5;
                _loc4_ = true;
@@ -535,7 +532,7 @@ package ddt.view.goods
                _leagueButton.visible = _loc4_;
                _radioGroup.selectIndex = 4;
             }
-            else if(param1[_loc3_] == 13000)
+            else if(payType[j] == 13000)
             {
                _type = 6;
                _loc4_ = true;
@@ -554,7 +551,7 @@ package ddt.view.goods
                _armShellClipButton.visible = _loc4_;
                _radioGroup.selectIndex = 0;
             }
-            else if(param1[_loc3_] == -9)
+            else if(payType[j] == -9)
             {
                _type = 2;
                _loc4_ = true;
@@ -566,7 +563,7 @@ package ddt.view.goods
                _ddtmoneyButton.visible = _loc4_;
                _radioGroup.selectIndex = 1;
             }
-            else if(param1[_loc3_] == -8)
+            else if(payType[j] == -8)
             {
                _type = 1;
                _loc4_ = true;
@@ -578,7 +575,7 @@ package ddt.view.goods
                _moneyFFT.visible = _loc4_;
                _radioGroup.selectIndex = 0;
             }
-            else if(param1[_loc3_] == -1)
+            else if(payType[j] == -1)
             {
                _type = 0;
                _loc4_ = true;
@@ -597,7 +594,7 @@ package ddt.view.goods
                _ddtmoneyButton.visible = _loc4_;
                _radioGroup.selectIndex = 0;
             }
-            else if(param1[_loc3_] == -2)
+            else if(payType[j] == -2)
             {
                _type = 3;
                _loc4_ = true;
@@ -607,7 +604,7 @@ package ddt.view.goods
                _loc4_ = _loc4_;
                _medalBitmapLogo.visible = _loc4_;
                _medalFFT.visible = _loc4_;
-               if(_loc2_)
+               if(bool)
                {
                   _medalFFT.x = _ddtmoneyFFT.x;
                   _medalFFT.y = _ddtmoneyFFT.y;
@@ -631,9 +628,9 @@ package ddt.view.goods
                }
                _radioGroup.selectIndex = 2;
             }
-            _loc3_++;
+            j++;
          }
-         chooseType = param1[param1.length - 1];
+         chooseType = payType[payType.length - 1];
       }
       
       public function show() : void
@@ -642,35 +639,35 @@ package ddt.view.goods
          LayerManager.Instance.addToLayer(this,3,true,2);
       }
       
-      private function __onSelectRadioBtn(param1:MouseEvent) : void
+      private function __onSelectRadioBtn(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.currentTarget == _moneyButton)
+         if(evt.currentTarget == _moneyButton)
          {
             _type = 1;
             chooseType = -8;
          }
-         else if(param1.currentTarget == _ddtmoneyButton)
+         else if(evt.currentTarget == _ddtmoneyButton)
          {
             _type = 2;
             chooseType = -9;
          }
-         else if(param1.currentTarget == _medalButton)
+         else if(evt.currentTarget == _medalButton)
          {
             _type = 3;
             chooseType = -2;
          }
-         else if(param1.currentTarget == _petStoneButton)
+         else if(evt.currentTarget == _petStoneButton)
          {
             _type = 4;
             chooseType = -12;
          }
-         else if(param1.currentTarget == _leagueButton)
+         else if(evt.currentTarget == _leagueButton)
          {
             _type = 5;
             chooseType = -1000;
          }
-         else if(param1.currentTarget == _armShellClipButton)
+         else if(evt.currentTarget == _armShellClipButton)
          {
             _type = 6;
             chooseType = 13000;
@@ -681,26 +678,25 @@ package ddt.view.goods
       
       private function updateCurrentShopItem() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _currentShopItem = null;
-         _loc1_ = 0;
-         while(_loc1_ < _shopItems.length)
+         for(i = 0; i < _shopItems.length; )
          {
-            if(_shopItems[_loc1_].getItemPrice(1).PriceType == chooseType)
+            if(_shopItems[i].getItemPrice(1).PriceType == chooseType)
             {
-               _currentShopItem = fillToShopCarInfo(_shopItems[_loc1_]);
+               _currentShopItem = fillToShopCarInfo(_shopItems[i]);
                return;
             }
             if(chooseType == -8 || chooseType == -9)
             {
-               if(_shopItems[_loc1_].getItemPrice(1).PriceType == -1)
+               if(_shopItems[i].getItemPrice(1).PriceType == -1)
                {
                   _type = 0;
-                  _currentShopItem = fillToShopCarInfo(_shopItems[_loc1_]);
+                  _currentShopItem = fillToShopCarInfo(_shopItems[i]);
                   return;
                }
             }
-            _loc1_++;
+            i++;
          }
       }
       
@@ -717,10 +713,10 @@ package ddt.view.goods
          addEventListener("response",__response);
       }
       
-      private function __response(param1:FrameEvent) : void
+      private function __response(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
@@ -746,55 +742,55 @@ package ddt.view.goods
          removeEventListener("response",__response);
       }
       
-      private function __onPay(param1:MouseEvent) : void
+      private function __onPay(evt:MouseEvent) : void
       {
-         var _loc6_:* = null;
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc9_:int = 0;
-         var _loc7_:int = 0;
-         var _loc3_:* = null;
-         var _loc8_:int = 0;
-         var _loc10_:int = 0;
-         var _loc2_:* = null;
+         var alert:* = null;
+         var checkMoney:int = 0;
+         var confirmFrame2:* = null;
+         var needLeague:int = 0;
+         var ownLeague:int = 0;
+         var baseAlert:* = null;
+         var needArmShellClip:int = 0;
+         var ownArmShellClip:int = 0;
+         var baseAlert2:* = null;
          SoundManager.instance.play("008");
          if(_radioGroup.selectIndex == 0)
          {
-            _loc5_ = _currentShopItem.getItemPrice(_cartItemGroup.selectIndex + 1).moneyValue == 0?_currentShopItem.getItemPrice(_cartItemGroup.selectIndex + 1).bothMoneyValue:int(_currentShopItem.getItemPrice(_cartItemGroup.selectIndex + 1).moneyValue);
-            CheckMoneyUtils.instance.checkMoney(false,_loc5_,onCheckComplete);
+            checkMoney = _currentShopItem.getItemPrice(_cartItemGroup.selectIndex + 1).moneyValue == 0?_currentShopItem.getItemPrice(_cartItemGroup.selectIndex + 1).bothMoneyValue:int(_currentShopItem.getItemPrice(_cartItemGroup.selectIndex + 1).moneyValue);
+            CheckMoneyUtils.instance.checkMoney(false,checkMoney,onCheckComplete);
          }
          else if(_radioGroup.selectIndex == 3)
          {
-            _loc4_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.common.AddPricePanel.pay"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
-            _loc4_.moveEnable = false;
-            _loc4_.addEventListener("response",petStoneConfirmed,false,0,true);
+            confirmFrame2 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.common.AddPricePanel.pay"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
+            confirmFrame2.moveEnable = false;
+            confirmFrame2.addEventListener("response",petStoneConfirmed,false,0,true);
          }
          else if(_radioGroup.selectIndex == 4)
          {
-            _loc9_ = _currentShopItem.getItemPrice(_cartItemGroup.selectIndex + 1).leagueValue;
-            _loc7_ = PlayerManager.Instance.Self.leagueMoney;
-            if(_loc9_ > _loc7_)
+            needLeague = _currentShopItem.getItemPrice(_cartItemGroup.selectIndex + 1).leagueValue;
+            ownLeague = PlayerManager.Instance.Self.leagueMoney;
+            if(needLeague > ownLeague)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.league.unenoughMoneyTxpTxt"),0,false,1);
             }
             else
             {
-               _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.league.confirmToPayLeague",_loc9_),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"));
-               _loc3_.addEventListener("response",leagueConfirmHandler);
+               baseAlert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.league.confirmToPayLeague",needLeague),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"));
+               baseAlert.addEventListener("response",leagueConfirmHandler);
             }
          }
          else if(_radioGroup.selectIndex == 5)
          {
-            _loc8_ = _currentShopItem.getItemPrice(_cartItemGroup.selectIndex + 1).armShellClipValue;
-            _loc10_ = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(13000);
-            if(_loc8_ > _loc10_)
+            needArmShellClip = _currentShopItem.getItemPrice(_cartItemGroup.selectIndex + 1).armShellClipValue;
+            ownArmShellClip = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(13000);
+            if(needArmShellClip > ownArmShellClip)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.armShellClip.unenoughMoneyTxpTxt"),0,false,1);
             }
             else
             {
-               _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.armShellClip.confirmToPayArmShellClip",_loc8_),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"));
-               _loc2_.addEventListener("response",armShellClipConfirmHandler);
+               baseAlert2 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.armShellClip.confirmToPayArmShellClip",needArmShellClip),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"));
+               baseAlert2.addEventListener("response",armShellClipConfirmHandler);
             }
          }
          else if(_radioGroup.selectIndex == 2)
@@ -805,15 +801,15 @@ package ddt.view.goods
             }
             else
             {
-               _loc6_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.common.AddPricePanel.pay"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,false,2);
-               _loc6_.addEventListener("response",__onPayResponse);
+               alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.common.AddPricePanel.pay"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,false,2);
+               alert.addEventListener("response",__onPayResponse);
             }
             close();
          }
          else if(_radioGroup.selectIndex == 1)
          {
-            _loc5_ = _currentShopItem.getItemPrice(_cartItemGroup.selectIndex + 1).bandDdtMoneyValue == 0?_currentShopItem.getItemPrice(_cartItemGroup.selectIndex + 1).bothMoneyValue:int(_currentShopItem.getItemPrice(_cartItemGroup.selectIndex + 1).moneyValue);
-            if(PlayerManager.Instance.Self.BandMoney < _loc5_)
+            checkMoney = _currentShopItem.getItemPrice(_cartItemGroup.selectIndex + 1).bandDdtMoneyValue == 0?_currentShopItem.getItemPrice(_cartItemGroup.selectIndex + 1).bothMoneyValue:int(_currentShopItem.getItemPrice(_cartItemGroup.selectIndex + 1).moneyValue);
+            if(PlayerManager.Instance.Self.BandMoney < checkMoney)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("bindMoneyPoorNote"));
             }
@@ -824,102 +820,102 @@ package ddt.view.goods
          }
       }
       
-      private function leagueConfirmHandler(param1:FrameEvent) : void
+      private function leagueConfirmHandler(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",leagueConfirmHandler);
-         ObjectUtils.disposeObject(_loc2_);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",leagueConfirmHandler);
+         ObjectUtils.disposeObject(confirmFrame);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             doPay();
          }
       }
       
-      private function armShellClipConfirmHandler(param1:FrameEvent) : void
+      private function armShellClipConfirmHandler(evt:FrameEvent) : void
       {
-         var _loc2_:* = null;
+         var arr:* = null;
          SoundManager.instance.play("008");
-         var _loc3_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc3_.removeEventListener("response",armShellClipConfirmHandler);
-         ObjectUtils.disposeObject(_loc3_);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",armShellClipConfirmHandler);
+         ObjectUtils.disposeObject(confirmFrame);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
-            _loc2_ = [];
-            _loc2_.push([_info.BagType,_info.Place,_currentShopItem.GoodsID,_cartItemGroup.selectIndex + 1,_isDress,13000]);
-            SocketManager.Instance.out.sendGoodsContinue(_loc2_);
+            arr = [];
+            arr.push([_info.BagType,_info.Place,_currentShopItem.GoodsID,_cartItemGroup.selectIndex + 1,_isDress,13000]);
+            SocketManager.Instance.out.sendGoodsContinue(arr);
          }
          close();
       }
       
-      protected function petStoneConfirmed(param1:FrameEvent) : void
+      protected function petStoneConfirmed(evt:FrameEvent) : void
       {
-         var _loc5_:Number = NaN;
-         var _loc4_:Number = NaN;
-         var _loc2_:* = null;
+         var needStoneNum:Number = NaN;
+         var remainStoneNum:Number = NaN;
+         var arr:* = null;
          SoundManager.instance.play("008");
-         var _loc3_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc3_.removeEventListener("response",petStoneConfirmed);
-         ObjectUtils.disposeObject(_loc3_);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",petStoneConfirmed);
+         ObjectUtils.disposeObject(confirmFrame);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
-            _loc5_ = _currentShopItem.getItemPrice(_cartItemGroup.selectIndex + 1).petStoneValue;
-            _loc4_ = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(11680);
-            if(_loc5_ > _loc4_)
+            needStoneNum = _currentShopItem.getItemPrice(_cartItemGroup.selectIndex + 1).petStoneValue;
+            remainStoneNum = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(11680);
+            if(needStoneNum > remainStoneNum)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("shop.view.petStoneLack"));
             }
             else
             {
                this.parent && this.parent.removeChild(this);
-               _loc2_ = [];
-               _loc2_.push([_info.BagType,_info.Place,_currentShopItem.GoodsID,1,_isDress,4]);
-               SocketManager.Instance.out.sendGoodsContinue(_loc2_);
+               arr = [];
+               arr.push([_info.BagType,_info.Place,_currentShopItem.GoodsID,1,_isDress,4]);
+               SocketManager.Instance.out.sendGoodsContinue(arr);
             }
          }
       }
       
       protected function onCheckComplete() : void
       {
-         var _loc1_:* = null;
+         var alert:* = null;
          close();
-         _loc1_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.common.AddPricePanel.pay"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,false,2);
-         _loc1_.addEventListener("response",__onPayResponse);
+         alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.common.AddPricePanel.pay"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,false,2);
+         alert.addEventListener("response",__onPayResponse);
       }
       
-      private function __onPayResponse(param1:FrameEvent) : void
+      private function __onPayResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onPayResponse);
-         _loc2_.dispose();
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var alert:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",__onPayResponse);
+         alert.dispose();
+         if(evt.responseCode == 2 || evt.responseCode == 3)
          {
             doPay();
          }
       }
       
-      private function __onCancelClick(param1:MouseEvent) : void
+      private function __onCancelClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          close();
       }
       
-      override protected function __onCloseClick(param1:MouseEvent) : void
+      override protected function __onCloseClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          close();
-         super.__onCloseClick(param1);
+         super.__onCloseClick(event);
       }
       
       private function doPay() : void
       {
-         var _loc1_:* = null;
+         var arr:* = null;
          if(_info)
          {
-            _loc1_ = [];
-            _loc1_.push([_info.BagType,_info.Place,_currentShopItem.GoodsID,_cartItemGroup.selectIndex + 1,_isDress,_radioGroup.selectIndex + 1]);
-            SocketManager.Instance.out.sendGoodsContinue(_loc1_);
+            arr = [];
+            arr.push([_info.BagType,_info.Place,_currentShopItem.GoodsID,_cartItemGroup.selectIndex + 1,_isDress,_radioGroup.selectIndex + 1]);
+            SocketManager.Instance.out.sendGoodsContinue(arr);
             close();
          }
       }

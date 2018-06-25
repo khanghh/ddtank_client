@@ -40,11 +40,11 @@ package stock.items
       
       private function initView() : void
       {
-         var _loc1_:Shape = new Shape();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,80,80);
-         _loc1_.graphics.endFill();
-         _bagCell = new ShopItemCell(_loc1_);
+         var cellBG:Shape = new Shape();
+         cellBG.graphics.beginFill(16777215,0);
+         cellBG.graphics.drawRect(0,0,80,80);
+         cellBG.graphics.endFill();
+         _bagCell = new ShopItemCell(cellBG);
          _bagCell.cellSize = 80;
          PositionUtils.setPos(_bagCell,{
             "x":1,
@@ -67,23 +67,23 @@ package stock.items
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc1_:StockBuySubmitFrame = ComponentFactory.Instance.creatCustomObject("stock.submitFrame",[_id]);
-         LayerManager.Instance.addToLayer(_loc1_,3,false,1);
+         var submitView:StockBuySubmitFrame = ComponentFactory.Instance.creatCustomObject("stock.submitFrame",[_id]);
+         LayerManager.Instance.addToLayer(submitView,3,false,1);
       }
       
-      public function set data(param1:int) : void
+      public function set data(id:int) : void
       {
-         _id = param1;
-         var _loc2_:ShopItemInfo = ShopManager.Instance.getShopItemByGoodsID(param1);
-         if(_loc2_)
+         _id = id;
+         var shopItem:ShopItemInfo = ShopManager.Instance.getShopItemByGoodsID(id);
+         if(shopItem)
          {
-            _bagCell.info = ItemManager.Instance.getTemplateById(_loc2_.TemplateID);
+            _bagCell.info = ItemManager.Instance.getTemplateById(shopItem.TemplateID);
             if(_bagCell.info)
             {
                lablName.text = _bagCell.info.Name;
-               lablPrice.text = _loc2_.AValue1.toString();
-               lablCnt.text = _loc2_.personalBuyCnt.toString();
-               btnLoadIn.disabled = _loc2_.personalBuyCnt <= 0;
+               lablPrice.text = shopItem.AValue1.toString();
+               lablCnt.text = shopItem.personalBuyCnt.toString();
+               btnLoadIn.disabled = shopItem.personalBuyCnt <= 0;
             }
          }
       }

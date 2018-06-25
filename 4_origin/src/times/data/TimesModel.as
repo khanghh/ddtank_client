@@ -51,34 +51,30 @@ package times.data
       
       public function dispose() : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         var _loc1_:int = 0;
-         _loc4_ = 0;
-         while(_loc4_ < smallPicInfos.length)
+         var i:int = 0;
+         var j:int = 0;
+         var k:int = 0;
+         var l:int = 0;
+         for(i = 0; i < smallPicInfos.length; )
          {
-            smallPicInfos[_loc4_] = null;
-            _loc4_++;
+            smallPicInfos[i] = null;
+            i++;
          }
          smallPicInfos = null;
-         _loc2_ = 0;
-         while(_loc2_ < bigPicInfos.length)
+         for(j = 0; j < bigPicInfos.length; )
          {
-            bigPicInfos[_loc2_] = null;
-            _loc2_++;
+            bigPicInfos[j] = null;
+            j++;
          }
          bigPicInfos = null;
-         _loc3_ = 0;
-         while(_loc3_ < contentInfos.length)
+         for(k = 0; k < contentInfos.length; )
          {
-            _loc1_ = 0;
-            while(_loc1_ < contentInfos[_loc3_].length)
+            for(l = 0; l < contentInfos[k].length; )
             {
-               contentInfos[_loc3_][_loc1_] = null;
-               _loc1_++;
+               contentInfos[k][l] = null;
+               l++;
             }
-            _loc3_++;
+            k++;
          }
          contentInfos = null;
          ObjectUtils.disposeObject(_thumbnailQueue);

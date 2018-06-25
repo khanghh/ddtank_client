@@ -45,28 +45,28 @@ package petsBag.view.item
          _tipInfo = new PropTxtTipInfo();
       }
       
-      public function set propName(param1:String) : void
+      public function set propName(name:String) : void
       {
-         _propName.text = param1;
+         _propName.text = name;
          fixPos();
       }
       
-      public function set propValue(param1:int) : void
+      public function set propValue(value:int) : void
       {
-         _propValue.text = param1.toString();
+         _propValue.text = value.toString();
          fixPos();
       }
       
-      public function set propColor(param1:int) : void
+      public function set propColor(value:int) : void
       {
-         var _loc2_:TextFormat = _propValue.getTextFormat();
-         _loc2_.color = param1;
-         _propValue.setTextFormat(_loc2_);
+         var format:TextFormat = _propValue.getTextFormat();
+         format.color = value;
+         _propValue.setTextFormat(format);
       }
       
-      public function set valueFilterString(param1:int) : void
+      public function set valueFilterString(index:int) : void
       {
-         _propValue.setFrame(param1);
+         _propValue.setFrame(index);
       }
       
       private function fixPos() : void
@@ -89,9 +89,9 @@ package petsBag.view.item
          return _tipInfo.color;
       }
       
-      public function set color(param1:int) : void
+      public function set color(val:int) : void
       {
-         _tipInfo.color = param1;
+         _tipInfo.color = val;
       }
       
       public function get property() : String
@@ -99,9 +99,9 @@ package petsBag.view.item
          return _tipInfo.property;
       }
       
-      public function set property(param1:String) : void
+      public function set property(val:String) : void
       {
-         _tipInfo.property = LanguageMgr.GetTranslation("ddt.petBag.propTips",param1,_currentPropValue,_addedPropValue,_petsWeaponPropValue,_petsEatPropValue);
+         _tipInfo.property = LanguageMgr.GetTranslation("ddt.petBag.propTips",val,_currentPropValue,_addedPropValue,_petsWeaponPropValue,_petsEatPropValue);
       }
       
       public function get currentPropValue() : int
@@ -109,9 +109,9 @@ package petsBag.view.item
          return _currentPropValue;
       }
       
-      public function set currentPropValue(param1:int) : void
+      public function set currentPropValue(value:int) : void
       {
-         _currentPropValue = param1;
+         _currentPropValue = value;
       }
       
       public function get addedPropValue() : int
@@ -119,9 +119,9 @@ package petsBag.view.item
          return _addedPropValue;
       }
       
-      public function set addedPropValue(param1:int) : void
+      public function set addedPropValue(value:int) : void
       {
-         _addedPropValue = param1;
+         _addedPropValue = value;
       }
       
       public function get detail() : String
@@ -129,9 +129,9 @@ package petsBag.view.item
          return _tipInfo.detail;
       }
       
-      public function set detail(param1:String) : void
+      public function set detail(val:String) : void
       {
-         _tipInfo.detail = param1;
+         _tipInfo.detail = val;
       }
       
       override public function dispose() : void
@@ -150,9 +150,9 @@ package petsBag.view.item
          return _petsWeaponPropValue;
       }
       
-      public function set petsWeaponPropValue(param1:int) : void
+      public function set petsWeaponPropValue(value:int) : void
       {
-         _petsWeaponPropValue = param1;
+         _petsWeaponPropValue = value;
       }
       
       public function get petsEatPropValue() : int
@@ -160,9 +160,9 @@ package petsBag.view.item
          return _petsEatPropValue;
       }
       
-      public function set petsEatPropValue(param1:int) : void
+      public function set petsEatPropValue(value:int) : void
       {
-         _petsEatPropValue = param1;
+         _petsEatPropValue = value;
       }
       
       public function get breakAddedValue() : int
@@ -170,9 +170,9 @@ package petsBag.view.item
          return _afterBreakAddedValue;
       }
       
-      public function set breakAddedValue(param1:int) : void
+      public function set breakAddedValue(value:int) : void
       {
-         _afterBreakAddedValue = param1;
+         _afterBreakAddedValue = value;
       }
    }
 }

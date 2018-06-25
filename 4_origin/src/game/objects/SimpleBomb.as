@@ -82,19 +82,19 @@ package game.objects
       
       private var _playBlastOutEffectCount:int;
       
-      public function SimpleBomb(param1:Bomb, param2:Living, param3:int = 0, param4:Boolean = false)
+      public function SimpleBomb(info:Bomb, owner:Living, refineryLevel:int = 0, isPhantom:Boolean = false)
       {
          _bulletEffects = [];
          _blastOutEffects = [];
-         _info = param1;
+         _info = info;
          _lifeTime = 0;
-         _owner = param2;
+         _owner = owner;
          _bitmapNum = 0;
-         _refineryLevel = param3;
-         _isPhantom = param4;
+         _refineryLevel = refineryLevel;
+         _isPhantom = isPhantom;
          _emitters = [];
          _smallBall = new SmallBomb();
-         super(_info.Id,param1.Template.Mass,param1.Template.Weight,param1.Template.Wind,param1.Template.DragIndex);
+         super(_info.Id,info.Template.Mass,info.Template.Weight,info.Template.Wind,info.Template.DragIndex);
          createBallAsset();
       }
       
@@ -115,14 +115,14 @@ package game.objects
       
       private function createBallAsset() : void
       {
-         var _loc1_:* = null;
+         var bombAsset:* = null;
          _bullet = BallManager.instance.createBulletMovie(info.Template.ID);
          _blastOut = BallManager.instance.createBlastOutMovie(info.Template.blastOutID);
          if(BallManager.instance.hasBombAsset(info.Template.craterID))
          {
-            _loc1_ = BallManager.instance.gameInBombAssets[info.Template.craterID];
-            _crater = _loc1_.crater;
-            _craterBrink = _loc1_.craterBrink;
+            bombAsset = BallManager.instance.gameInBombAssets[info.Template.craterID];
+            _crater = bombAsset.crater;
+            _craterBrink = bombAsset.craterBrink;
          }
       }
       
@@ -163,10 +163,10 @@ package game.objects
          startMoving();
       }
       
-      override public function setMap(param1:Map) : void
+      override public function setMap(map:Map) : void
       {
-         super.setMap(param1);
-         if(param1)
+         super.setMap(map);
+         if(map)
          {
             _game = this.map.gameInfo;
             initMovie();
@@ -175,9 +175,9 @@ package game.objects
       
       override public function startMoving() : void
       {
-         var _loc1_:int = 0;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var index:int = 0;
+         var emitter:* = null;
+         var player:* = null;
          super.startMoving();
          if(GameControl.Instance.Current == null)
          {
@@ -185,20 +185,20 @@ package game.objects
          }
          if(SharedManager.Instance.showParticle && visible)
          {
-            _loc1_ = 0;
+            index = 0;
             if(_info.changedPartical != "")
             {
-               if(owner.isPlayer())
+               if(owner && owner.isPlayer())
                {
-                  _loc2_ = owner as Player;
-                  _loc1_ = _loc2_.currentWeapInfo.refineryLevel;
+                  player = owner as Player;
+                  index = player.currentWeapInfo.refineryLevel;
                }
-               _loc3_ = ParticleManager.creatEmitter(int(_info.changedPartical));
+               emitter = ParticleManager.creatEmitter(int(_info.changedPartical));
             }
-            if(_loc3_)
+            if(emitter)
             {
-               _map.particleEnginee.addEmitter(_loc3_);
-               _emitters.push(_loc3_);
+               _map.particleEnginee.addEmitter(emitter);
+               _emitters.push(emitter);
             }
          }
          _spinV = _info.Template.SpinV * _dir;
@@ -209,19 +209,19 @@ package game.objects
          return _smallBall;
       }
       
-      override public function moveTo(param1:Point) : void
+      override public function moveTo(p:Point) : void
       {
-         var _loc2_:* = null;
-         var _loc6_:* = null;
-         var _loc5_:* = null;
-         var _loc4_:* = null;
+         var currentAction:* = null;
+         var prePos:* = null;
+         var rect:* = null;
+         var phyObj:* = null;
          while(_info.Actions.length > 0)
          {
             if(_info.Actions[0].time <= _lifeTime)
             {
-               _loc2_ = _info.Actions.shift();
-               _info.UsedActions.push(_loc2_);
-               _loc2_.execute(this,_game);
+               currentAction = _info.Actions.shift();
+               _info.UsedActions.push(currentAction);
+               currentAction.execute(this,_game);
                if(!_isLiving)
                {
                   return;
@@ -232,31 +232,32 @@ package game.objects
          }
          if(_isLiving)
          {
-            if(_map.IsOutMap(param1.x,param1.y))
+            if(_map.IsOutMap(p.x,p.y))
             {
                die();
             }
             else
             {
                map.smallMap.updatePos(_smallBall,pos);
+               map.updateObjectPos(this,pos);
                var _loc8_:int = 0;
                var _loc7_:* = _emitters;
-               for each(var _loc3_ in _emitters)
+               for each(var e in _emitters)
                {
-                  _loc3_.x = x;
-                  _loc3_.y = y;
-                  _loc3_.angle = motionAngle;
+                  e.x = x;
+                  e.y = y;
+                  e.angle = motionAngle;
                }
-               _loc6_ = new Point(pos.x,pos.y);
-               pos = param1;
-               _loc5_ = getCollideRect();
-               _loc5_.offset(pos.x,pos.y);
+               prePos = new Point(pos.x,pos.y);
+               pos = p;
+               rect = getCollideRect();
+               rect.offset(pos.x,pos.y);
                if(isPillarCollide())
                {
-                  _loc4_ = _map.getSceneEffectPhysicalObject(_loc5_,this,_loc6_);
-                  if(_loc4_ && _loc4_ is GameSceneEffect)
+                  phyObj = _map.getSceneEffectPhysicalObject(rect,this,prePos);
+                  if(phyObj && phyObj is GameSceneEffect)
                   {
-                     sceneEffectCollideId = _loc4_.Id;
+                     sceneEffectCollideId = phyObj.Id;
                   }
                   checkCreateBombSceneEffect();
                }
@@ -296,10 +297,10 @@ package game.objects
          return false;
       }
       
-      override protected function computeFallNextXY(param1:Number) : Point
+      override protected function computeFallNextXY(dt:Number) : Point
       {
-         _vx.ComputeOneEulerStep(_mass,_arf,_wf + _ef.x,param1);
-         _vy.ComputeOneEulerStep(_mass,_arf,_gf + _ef.y,param1);
+         _vx.ComputeOneEulerStep(_mass,_arf,_wf + _ef.x,dt);
+         _vy.ComputeOneEulerStep(_mass,_arf,_gf + _ef.y,dt);
          return new Point(_vx.x0,_vy.x0);
       }
       
@@ -317,21 +318,21 @@ package game.objects
       
       override public function bomb() : void
       {
-         var _loc2_:* = 0;
+         var radius:* = 0;
          if(_info.IsHole && !_isPhantom)
          {
             super.DigMap();
             map.smallMap.draw();
             map.resetMapChanged();
          }
-         var _loc3_:Array = map.getPhysicalObjectByPoint(pos,100,this);
+         var list:Array = map.getPhysicalObjectByPoint(pos,100,this);
          var _loc5_:int = 0;
-         var _loc4_:* = _loc3_;
-         for each(var _loc1_ in _loc3_)
+         var _loc4_:* = list;
+         for each(var p in list)
          {
-            if(_loc1_ is TombView)
+            if(p is TombView)
             {
-               _loc1_.startMoving();
+               p.startMoving();
             }
          }
          stopMoving();
@@ -339,16 +340,16 @@ package game.objects
          {
             if(_info.Template.Shake)
             {
-               _loc2_ = uint(7);
+               radius = uint(7);
                if(info.damageMod < 1)
                {
-                  _loc2_ = uint(4);
+                  radius = uint(4);
                }
                if(info.damageMod > 2)
                {
-                  _loc2_ = uint(14);
+                  radius = uint(14);
                }
-               map.animateSet.addAnimation(new ShockMapAnimation(this,_loc2_));
+               map.animateSet.addAnimation(new ShockMapAnimation(this,radius));
             }
             else if((!GameControl.Instance.Current.togetherShoot || GameControl.Instance.Current.roomType == 21 && _owner && _owner is Player && _owner.LivingID == GameControl.Instance.Current.selfGamePlayer.LivingID) && !GameManager.instance.isStopFocus)
             {
@@ -394,31 +395,30 @@ package game.objects
       
       override public function bombAtOnce() : void
       {
-         var _loc1_:* = null;
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
+         var boomAction:* = null;
+         var i:int = 0;
+         var action:* = null;
          fastModel = true;
-         _loc5_ = 0;
-         while(_loc5_ < _info.Actions.length)
+         for(i = 0; i < _info.Actions.length; )
          {
-            if(_info.Actions[_loc5_].type == 2)
+            if(_info.Actions[i].type == 2)
             {
-               _loc1_ = _info.Actions[_loc5_];
+               boomAction = _info.Actions[i];
                break;
             }
-            _loc5_++;
+            i++;
          }
-         var _loc4_:int = _info.Actions.indexOf(_loc1_);
-         var _loc3_:Array = _info.Actions.splice(_loc4_,1);
-         if(_loc1_)
+         var boomIndex:int = _info.Actions.indexOf(boomAction);
+         var newActions:Array = _info.Actions.splice(boomIndex,1);
+         if(boomAction)
          {
-            _info.Actions.push(_loc1_);
+            _info.Actions.push(boomAction);
          }
          while(_info.Actions.length > 0)
          {
-            _loc2_ = _info.Actions.shift();
-            _info.UsedActions.push(_loc2_);
-            _loc2_.execute(this,_game);
+            action = _info.Actions.shift();
+            _info.UsedActions.push(action);
+            action.execute(this,_game);
             if(!_isLiving)
             {
                return;
@@ -432,11 +432,11 @@ package game.objects
       
       protected function checkCreateBombSceneEffect() : void
       {
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
-         var _loc1_:* = null;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
+         var be:int = 0;
+         var bulletEffectObj:* = null;
+         var bulletEffect:* = null;
+         var sceneEffectBlastOut:* = null;
+         var blastOutEffect:* = null;
          if(_sceneEffectCollideId == 0)
          {
             return;
@@ -449,68 +449,67 @@ package game.objects
          {
             return;
          }
-         var _loc2_:Boolean = true;
+         var isAddBulletEffect:Boolean = true;
          if(_bulletEffects)
          {
-            _loc6_ = 0;
-            while(_loc6_ < _bulletEffects.length)
+            for(be = 0; be < _bulletEffects.length; )
             {
-               _loc5_ = _bulletEffects[_loc6_];
-               if(_loc5_.id == _sceneEffectCollideId)
+               bulletEffectObj = _bulletEffects[be];
+               if(bulletEffectObj.id == _sceneEffectCollideId)
                {
-                  _loc2_ = false;
+                  isAddBulletEffect = false;
                   break;
                }
-               _loc6_++;
+               be++;
             }
          }
-         if(_loc2_)
+         if(isAddBulletEffect)
          {
-            _loc1_ = BallManager.instance.createSceneEffectBullet(_sceneEffectCollideId);
-            if(_loc1_)
+            bulletEffect = BallManager.instance.createSceneEffectBullet(_sceneEffectCollideId);
+            if(bulletEffect)
             {
                if(_isReplaceBullet)
                {
                   _bullet.visible = false;
                }
-               addChild(_loc1_);
+               addChild(bulletEffect);
             }
             _bulletEffects.push({
                "id":_sceneEffectCollideId,
-               "movie":_loc1_
+               "movie":bulletEffect
             });
-            _loc4_ = BallManager.instance.createSceneEffectBlastOut(_sceneEffectCollideId);
-            if(_loc4_)
+            sceneEffectBlastOut = BallManager.instance.createSceneEffectBlastOut(_sceneEffectCollideId);
+            if(sceneEffectBlastOut)
             {
-               _loc3_ = new MovieClipWrapper(_loc4_,false,true);
-               _loc3_.movie.visible = false;
-               addChild(_loc3_.movie);
-               _blastOutEffects.push(_loc3_);
+               blastOutEffect = new MovieClipWrapper(sceneEffectBlastOut,false,true);
+               blastOutEffect.movie.visible = false;
+               addChild(blastOutEffect.movie);
+               _blastOutEffects.push(blastOutEffect);
             }
          }
       }
       
       protected function removeBulletSceneEffect() : void
       {
-         var _loc1_:* = null;
+         var bulletEffect:* = null;
          if(_bulletEffects)
          {
             var _loc4_:int = 0;
             var _loc3_:* = _bulletEffects;
-            for each(var _loc2_ in _bulletEffects)
+            for each(var bulletEffectObject in _bulletEffects)
             {
-               _loc1_ = _loc2_.movie;
-               if(_loc1_)
+               bulletEffect = bulletEffectObject.movie;
+               if(bulletEffect)
                {
-                  _loc1_.stop();
-                  ObjectUtils.disposeObject(_loc1_);
+                  bulletEffect.stop();
+                  ObjectUtils.disposeObject(bulletEffect);
                }
             }
             _bulletEffects = [];
          }
       }
       
-      private function playBlastOutEffects(param1:Number) : void
+      private function playBlastOutEffects(delay:Number) : void
       {
          if(_blastOutEffects.length == 1)
          {
@@ -519,16 +518,16 @@ package game.objects
          else
          {
             _playBlastOutEffectCount = _blastOutEffects.length;
-            _playBlastOutEffectTimer = new Timer(param1,_blastOutEffects.length - 1);
+            _playBlastOutEffectTimer = new Timer(delay,_blastOutEffects.length - 1);
             _playBlastOutEffectTimer.addEventListener("timer",_playBlastOutEffectTimerHandler);
             _playBlastOutEffectTimer.start();
             _playBlastOutEffectTimerHandler(null);
          }
       }
       
-      private function _playBlastOutEffectTimerHandler(param1:TimerEvent) : void
+      private function _playBlastOutEffectTimerHandler(evt:TimerEvent) : void
       {
-         evt = param1;
+         evt = evt;
          playBlastOutEffect(function():void
          {
             _playBlastOutEffectCount = Number(_playBlastOutEffectCount) - 1;
@@ -539,9 +538,9 @@ package game.objects
          });
       }
       
-      private function playBlastOutEffect(param1:Function) : void
+      private function playBlastOutEffect(backFun:Function) : void
       {
-         backFun = param1;
+         backFun = backFun;
          if(_isLiving)
          {
             SoundManager.instance.play(_info.Template.BombSound);
@@ -551,9 +550,9 @@ package game.objects
          blastOutEffect.movie.y = y;
          _map.addToPhyLayer(blastOutEffect.movie);
          blastOutEffect.movie.visible = true;
-         blastOutEffect.addEventListener("complete",function(param1:Event):void
+         blastOutEffect.addEventListener("complete",function(evt:Event):void
          {
-            param1.currentTarget.removeEventListener("complete",arguments.callee);
+            evt.currentTarget.removeEventListener("complete",arguments.callee);
             ObjectUtils.disposeObject(blastOutEffect);
          });
          blastOutEffect.play();
@@ -565,9 +564,9 @@ package game.objects
          {
             var _loc3_:int = 0;
             var _loc2_:* = _blastOutEffects;
-            for each(var _loc1_ in _blastOutEffects)
+            for each(var blastOutEffect in _blastOutEffects)
             {
-               ObjectUtils.disposeObject(_loc1_);
+               ObjectUtils.disposeObject(blastOutEffect);
             }
             _blastOutEffects = null;
          }
@@ -589,18 +588,18 @@ package game.objects
       {
          var _loc3_:int = 0;
          var _loc2_:* = _emitters;
-         for each(var _loc1_ in _emitters)
+         for each(var e in _emitters)
          {
-            _map.particleEnginee.removeEmitter(_loc1_);
+            _map.particleEnginee.removeEmitter(e);
          }
          _emitters = [];
          super.stopMoving();
       }
       
-      override protected function updatePosition(param1:Number) : void
+      override protected function updatePosition(dt:Number) : void
       {
          _lifeTime = _lifeTime + 40;
-         super.updatePosition(param1);
+         super.updatePosition(dt);
          if(!_isLiving)
          {
             return;
@@ -618,9 +617,9 @@ package game.objects
          return _sceneEffectCollideId;
       }
       
-      public function set sceneEffectCollideId(param1:int) : void
+      public function set sceneEffectCollideId(value:int) : void
       {
-         _sceneEffectCollideId = param1;
+         _sceneEffectCollideId = value;
       }
       
       public function get target() : Point

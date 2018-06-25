@@ -56,60 +56,59 @@ package giftSystem.view.giftAndRecord
          GiftManager.Instance.removeEventListener("loadRecordComplete",__setRecordList);
       }
       
-      public function set playerInfo(param1:PlayerInfo) : void
+      public function set playerInfo(value:PlayerInfo) : void
       {
-         if(_playerInfo == param1)
+         if(_playerInfo == value)
          {
             return;
          }
-         _playerInfo = param1;
+         _playerInfo = value;
          if(_playerInfo.ID == PlayerManager.Instance.Self.ID)
          {
             _canClick = true;
          }
       }
       
-      private function __setRecordList(param1:GiftEvent) : void
+      private function __setRecordList(event:GiftEvent) : void
       {
-         if(param1.str == "GiftRecieveLog.ashx")
+         if(event.str == "GiftRecieveLog.ashx")
          {
             setList(GiftManager.Instance.recordInfo);
          }
       }
       
-      private function setList(param1:RecordInfo) : void
+      private function setList(info:RecordInfo) : void
       {
          clear();
          _itemArr = new Vector.<RecordItem>();
-         setReceived(param1);
+         setReceived(info);
       }
       
-      private function setReceived(param1:RecordInfo) : void
+      private function setReceived(info:RecordInfo) : void
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         if(param1)
+         var len:int = 0;
+         var i:int = 0;
+         var item:* = null;
+         if(info)
          {
-            _loc3_ = param1.recordList.length;
-            if(_loc3_ != 0)
+            len = info.recordList.length;
+            if(len != 0)
             {
-               _loc4_ = 0;
-               while(_loc4_ < _loc3_)
+               for(i = 0; i < len; )
                {
-                  _loc2_ = new RecordItem();
-                  _loc2_.setup(_playerInfo);
-                  if(param1.recordList[_loc4_].Receive == 1)
+                  item = new RecordItem();
+                  item.setup(_playerInfo);
+                  if(info.recordList[i].Receive == 1)
                   {
-                     _loc2_.setItemInfoType(param1.recordList[_loc4_],1);
+                     item.setItemInfoType(info.recordList[i],1);
                   }
-                  if(param1.recordList[_loc4_].Receive == 0)
+                  if(info.recordList[i].Receive == 0)
                   {
-                     _loc2_.setItemInfoType(param1.recordList[_loc4_],0);
+                     item.setItemInfoType(info.recordList[i],0);
                   }
-                  _container.addChild(_loc2_);
-                  _itemArr.push(_loc2_);
-                  _loc4_++;
+                  _container.addChild(item);
+                  _itemArr.push(item);
+                  i++;
                }
             }
          }
@@ -118,21 +117,20 @@ package giftSystem.view.giftAndRecord
       
       private function clear() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(_noGift)
          {
             ObjectUtils.disposeObject(_noGift);
          }
          _noGift = null;
-         _loc1_ = 0;
-         while(_loc1_ < _itemArr.length)
+         for(i = 0; i < _itemArr.length; )
          {
-            if(_itemArr[_loc1_])
+            if(_itemArr[i])
             {
-               _itemArr[_loc1_].dispose();
+               _itemArr[i].dispose();
             }
-            _itemArr[_loc1_] = null;
-            _loc1_++;
+            _itemArr[i] = null;
+            i++;
          }
          _itemArr = null;
       }

@@ -47,51 +47,49 @@ package petsBag.view
       
       override protected function init() : void
       {
-         var _loc10_:int = 0;
-         var _loc7_:* = null;
-         var _loc6_:* = null;
-         var _loc8_:int = 0;
-         var _loc5_:* = null;
-         var _loc2_:* = null;
-         var _loc9_:* = null;
-         var _loc1_:int = 0;
-         var _loc4_:* = null;
+         var i:int = 0;
+         var bg1:* = null;
+         var bg2:* = null;
+         var j:int = 0;
+         var cellBg:* = null;
+         var text:* = null;
+         var propertyText:* = null;
+         var v:int = 0;
+         var cell:* = null;
          super.init();
          _propertyTextList = [];
          _maxPage = int(PetsBagManager.instance().petModel.petsAtlas.length / 15) || 1;
          titleText = LanguageMgr.GetTranslation("ddt.pets.atlasTitle");
-         _loc10_ = 0;
-         while(_loc10_ < 3)
+         for(i = 0; i < 3; )
          {
-            _loc7_ = ComponentFactory.Instance.creat("petsBag.benchBG.bottomBg0");
-            addToContent(_loc7_);
-            _loc6_ = ComponentFactory.Instance.creat("petsBag.benchBG.bottomBg");
-            addToContent(_loc6_);
-            _loc7_.x = 22;
-            _loc7_.y = 47 + _loc10_ * 98;
-            _loc6_.x = _loc7_.x + 2;
-            _loc6_.y = _loc7_.y + 2;
-            _loc10_++;
+            bg1 = ComponentFactory.Instance.creat("petsBag.benchBG.bottomBg0");
+            addToContent(bg1);
+            bg2 = ComponentFactory.Instance.creat("petsBag.benchBG.bottomBg");
+            addToContent(bg2);
+            bg1.x = 22;
+            bg1.y = 47 + i * 98;
+            bg2.x = bg1.x + 2;
+            bg2.y = bg1.y + 2;
+            i++;
          }
          addToContent(ComponentFactory.Instance.creatComponentByStylename("petsBag.atlas.propertyBg"));
-         var _loc3_:Array = LanguageMgr.GetTranslation("ddt.pets.propertyStr").split(",");
-         _loc8_ = 0;
-         while(_loc8_ < 4)
+         var propertyStr:Array = LanguageMgr.GetTranslation("ddt.pets.propertyStr").split(",");
+         for(j = 0; j < 4; )
          {
-            _loc5_ = ComponentFactory.Instance.creat("petsBag.atlas.propertyCellBg");
-            _loc2_ = ComponentFactory.Instance.creat("petsBag.text.propName");
-            _loc2_.text = _loc3_[_loc8_];
-            _loc9_ = ComponentFactory.Instance.creat("petsBag.text.propValue");
-            _propertyTextList.push(_loc9_);
-            addToContent(_loc5_);
-            addToContent(_loc2_);
-            addToContent(_loc9_);
-            PositionUtils.setPos(_loc2_,"petsBag.atlasPropertyPos" + _loc8_);
-            _loc5_.x = _loc2_.x + 42;
-            _loc5_.y = _loc2_.y - 2;
-            _loc9_.x = _loc5_.x - 22;
-            _loc9_.y = _loc5_.y + 3;
-            _loc8_++;
+            cellBg = ComponentFactory.Instance.creat("petsBag.atlas.propertyCellBg");
+            text = ComponentFactory.Instance.creat("petsBag.text.propName");
+            text.text = propertyStr[j];
+            propertyText = ComponentFactory.Instance.creat("petsBag.text.propValue");
+            _propertyTextList.push(propertyText);
+            addToContent(cellBg);
+            addToContent(text);
+            addToContent(propertyText);
+            PositionUtils.setPos(text,"petsBag.atlasPropertyPos" + j);
+            cellBg.x = text.x + 42;
+            cellBg.y = text.y - 2;
+            propertyText.x = cellBg.x - 22;
+            propertyText.y = cellBg.y + 3;
+            j++;
          }
          _prevBtn = ComponentFactory.Instance.creatComponentByStylename("petsBag.benchBag.prevBtn");
          PositionUtils.setPos(_prevBtn,"petsBag.atlas.prevBtnPos");
@@ -106,16 +104,15 @@ package petsBag.view
          PositionUtils.setPos(_pageTxt,"petsBag.atlas.pageBgPos");
          addToContent(_pageTxt);
          _cellList = new Vector.<PetAtlasItemButton>();
-         _loc1_ = 0;
-         while(_loc1_ < 15)
+         for(v = 0; v < 15; )
          {
-            _loc4_ = new PetAtlasItemButton();
-            _loc4_.setButtonStyleName("assets.petsBagCellLock");
-            _loc4_.x = 34 + _loc1_ % 5 * 79;
-            _loc4_.y = 55 + int(_loc1_ / 5) * 98;
-            _cellList.push(_loc4_);
-            addToContent(_loc4_);
-            _loc1_++;
+            cell = new PetAtlasItemButton();
+            cell.setButtonStyleName("assets.petsBagCellLock");
+            cell.x = 34 + v % 5 * 79;
+            cell.y = 55 + int(v / 5) * 98;
+            _cellList.push(cell);
+            addToContent(cell);
+            v++;
          }
          updateView();
          updateProperty();
@@ -124,33 +121,33 @@ package petsBag.view
       
       private function updateProperty() : void
       {
-         var _loc3_:Array = [0,0,0,0];
-         var _loc2_:DictionaryData = PetsBagManager.instance().petModel.getActivatePetAtlas();
-         var _loc4_:DictionaryData = PetsBagManager.instance().petModel.petsAtlas;
+         var addProperty:Array = [0,0,0,0];
+         var data:DictionaryData = PetsBagManager.instance().petModel.getActivatePetAtlas();
+         var list:DictionaryData = PetsBagManager.instance().petModel.petsAtlas;
          var _loc8_:int = 0;
-         var _loc7_:* = _loc4_;
-         for each(var _loc1_ in _loc4_)
+         var _loc7_:* = list;
+         for each(var item in list)
          {
-            if(_loc2_.hasKey(_loc1_.ID))
+            if(data.hasKey(item.ID))
             {
                var _loc5_:* = 0;
-               var _loc6_:* = _loc3_[_loc5_] + _loc1_.Attack;
-               _loc3_[_loc5_] = _loc6_;
+               var _loc6_:* = addProperty[_loc5_] + item.Attack;
+               addProperty[_loc5_] = _loc6_;
                _loc6_ = 1;
-               _loc5_ = _loc3_[_loc6_] + _loc1_.Defence;
-               _loc3_[_loc6_] = _loc5_;
+               _loc5_ = addProperty[_loc6_] + item.Defence;
+               addProperty[_loc6_] = _loc5_;
                _loc5_ = 2;
-               _loc6_ = _loc3_[_loc5_] + _loc1_.Agility;
-               _loc3_[_loc5_] = _loc6_;
+               _loc6_ = addProperty[_loc5_] + item.Agility;
+               addProperty[_loc5_] = _loc6_;
                _loc6_ = 3;
-               _loc5_ = _loc3_[_loc6_] + _loc1_.Lucky;
-               _loc3_[_loc6_] = _loc5_;
+               _loc5_ = addProperty[_loc6_] + item.Lucky;
+               addProperty[_loc6_] = _loc5_;
             }
          }
-         _propertyTextList[0].text = _loc3_[0];
-         _propertyTextList[1].text = _loc3_[1];
-         _propertyTextList[2].text = _loc3_[2];
-         _propertyTextList[3].text = _loc3_[3];
+         _propertyTextList[0].text = addProperty[0];
+         _propertyTextList[1].text = addProperty[1];
+         _propertyTextList[2].text = addProperty[2];
+         _propertyTextList[3].text = addProperty[3];
       }
       
       private function addEvent() : void
@@ -165,14 +162,14 @@ package petsBag.view
          _nextBtn.removeEventListener("click",__pageBtnClick);
       }
       
-      private function __pageBtnClick(param1:MouseEvent) : void
+      private function __pageBtnClick(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(_maxPage <= 1)
          {
             return;
          }
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = e.currentTarget;
          if(_prevBtn !== _loc2_)
          {
             if(_nextBtn === _loc2_)
@@ -198,29 +195,28 @@ package petsBag.view
       
       private function updateView() : void
       {
-         var _loc1_:int = 0;
+         var v:int = 0;
          _pageTxt.text = _currentPage + "/" + _maxPage;
-         var _loc2_:DictionaryData = PetsBagManager.instance().petModel.getActivatePetAtlas();
-         var _loc3_:Vector.<PetAtlasInfo> = PetsBagManager.instance().petModel.getPetAtlasSorted(_currentPage);
-         _loc1_ = 0;
-         while(_loc1_ < 15)
+         var data:DictionaryData = PetsBagManager.instance().petModel.getActivatePetAtlas();
+         var list:Vector.<PetAtlasInfo> = PetsBagManager.instance().petModel.getPetAtlasSorted(_currentPage);
+         for(v = 0; v < 15; )
          {
-            if(_loc3_[_loc1_])
+            if(list[v])
             {
-               _cellList[_loc1_].setAtlasInfo(_loc3_[_loc1_],_loc2_[_loc3_[_loc1_].ID]);
+               _cellList[v].setAtlasInfo(list[v],data[list[v].ID]);
             }
             else
             {
-               _cellList[_loc1_].setAtlasInfo(null,null);
+               _cellList[v].setAtlasInfo(null,null);
             }
-            _loc1_++;
+            v++;
          }
       }
       
-      override protected function onResponse(param1:int) : void
+      override protected function onResponse(type:int) : void
       {
-         super.onResponse(param1);
-         if(param1 == 1 || param1 == 0)
+         super.onResponse(type);
+         if(type == 1 || type == 0)
          {
             SoundManager.instance.playButtonSound();
             ObjectUtils.disposeObject(this);

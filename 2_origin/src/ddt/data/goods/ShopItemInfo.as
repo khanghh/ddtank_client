@@ -107,11 +107,11 @@ package ddt.data.goods
       
       public var personalBuyCnt:int = -1;
       
-      public function ShopItemInfo(param1:int, param2:int)
+      public function ShopItemInfo($GoodsID:int, $TemplateID:int)
       {
          super();
-         GoodsID = param1;
-         TemplateID = param2;
+         GoodsID = $GoodsID;
+         TemplateID = $TemplateID;
       }
       
       public function get LimitGrade() : int
@@ -119,9 +119,9 @@ package ddt.data.goods
          return _limitGrade;
       }
       
-      public function set LimitGrade(param1:int) : void
+      public function set LimitGrade(value:int) : void
       {
-         _limitGrade = param1;
+         _limitGrade = value;
       }
       
       public function get isValid() : Boolean
@@ -134,9 +134,9 @@ package ddt.data.goods
          return false;
       }
       
-      public function set TemplateInfo(param1:ItemTemplateInfo) : void
+      public function set TemplateInfo(value:ItemTemplateInfo) : void
       {
-         _templateInfo = param1;
+         _templateInfo = value;
       }
       
       public function get TemplateInfo() : ItemTemplateInfo
@@ -148,9 +148,9 @@ package ddt.data.goods
          return _templateInfo;
       }
       
-      public function getItemPrice(param1:int) : ItemPrice
+      public function getItemPrice(index:int) : ItemPrice
       {
-         switch(int(param1) - 1)
+         switch(int(index) - 1)
          {
             case 0:
                return new ItemPrice(AUnit == -1?null:new Price(AValue1 * Beat,APrice1),AUnit == -1?null:new Price(AValue2 * Beat,APrice2),AUnit == -1?null:new Price(AValue3 * Beat,APrice3));
@@ -161,9 +161,9 @@ package ddt.data.goods
          }
       }
       
-      public function getTimeToString(param1:int) : String
+      public function getTimeToString(type:int) : String
       {
-         switch(int(param1) - 1)
+         switch(int(type) - 1)
          {
             case 0:
                return AUnit == 0?FOREVER:AUnit.toString() + " " + buyTypeToString;
@@ -188,13 +188,13 @@ package ddt.data.goods
          return _count;
       }
       
-      public function set LimitCount(param1:int) : void
+      public function set LimitCount(value:int) : void
       {
-         if(_count == param1)
+         if(_count == value)
          {
             return;
          }
-         _count = param1;
+         _count = value;
          dispatchEvent(new Event("change"));
       }
       
@@ -203,23 +203,23 @@ package ddt.data.goods
          return _limitPersonalCount;
       }
       
-      public function set LimitPersonalCount(param1:int) : void
+      public function set LimitPersonalCount(value:int) : void
       {
-         if(_limitPersonalCount == param1)
+         if(_limitPersonalCount == value)
          {
             return;
          }
-         _limitPersonalCount = param1;
-         personalBuyCnt = param1;
+         _limitPersonalCount = value;
+         personalBuyCnt = value;
       }
       
-      public function set LimitAreaCount(param1:int) : void
+      public function set LimitAreaCount(value:int) : void
       {
-         if(_limitAreaCount == param1)
+         if(_limitAreaCount == value)
          {
             return;
          }
-         _limitAreaCount = param1;
+         _limitAreaCount = value;
       }
       
       public function get LimitAreaCount() : int
@@ -232,9 +232,9 @@ package ddt.data.goods
          return startDate;
       }
       
-      public function set StartDate(param1:String) : void
+      public function set StartDate(value:String) : void
       {
-         startDate = param1;
+         startDate = value;
          _isChangeDate = true;
       }
       
@@ -243,9 +243,9 @@ package ddt.data.goods
          return endDate;
       }
       
-      public function set EndDate(param1:String) : void
+      public function set EndDate(value:String) : void
       {
-         endDate = param1;
+         endDate = value;
          _isChangeDate = true;
       }
       

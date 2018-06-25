@@ -101,105 +101,105 @@ package starling.core
          setProjectionMatrix(0,0,400,300);
       }
       
-      public static function transformMatrixForObject(param1:Matrix, param2:DisplayObject) : void
+      public static function transformMatrixForObject(matrix:Matrix, object:DisplayObject) : void
       {
-         MatrixUtil.prependMatrix(param1,param2.transformationMatrix);
+         MatrixUtil.prependMatrix(matrix,object.transformationMatrix);
       }
       
-      public static function setDefaultBlendFactors(param1:Boolean) : void
+      public static function setDefaultBlendFactors(premultipliedAlpha:Boolean) : void
       {
-         setBlendFactors(param1);
+         setBlendFactors(premultipliedAlpha);
       }
       
-      public static function setBlendFactors(param1:Boolean, param2:String = "normal") : void
+      public static function setBlendFactors(premultipliedAlpha:Boolean, blendMode:String = "normal") : void
       {
-         var _loc3_:Array = BlendMode.getBlendFactors(param2,param1);
-         Starling.context.setBlendFactors(_loc3_[0],_loc3_[1]);
+         var blendFactors:Array = BlendMode.getBlendFactors(blendMode,premultipliedAlpha);
+         Starling.context.setBlendFactors(blendFactors[0],blendFactors[1]);
       }
       
-      public static function clear(param1:uint = 0, param2:Number = 0.0) : void
+      public static function clear(rgb:uint = 0, alpha:Number = 0.0) : void
       {
-         Starling.context.clear(Color.getRed(param1) / 255,Color.getGreen(param1) / 255,Color.getBlue(param1) / 255,param2);
+         Starling.context.clear(Color.getRed(rgb) / 255,Color.getGreen(rgb) / 255,Color.getBlue(rgb) / 255,alpha);
       }
       
-      public static function assembleAgal(param1:String, param2:String, param3:Program3D = null) : Program3D
+      public static function assembleAgal(vertexShader:String, fragmentShader:String, resultProgram:Program3D = null) : Program3D
       {
-         var _loc4_:* = null;
-         if(param3 == null)
+         var context:* = null;
+         if(resultProgram == null)
          {
-            _loc4_ = Starling.context;
-            if(_loc4_ == null)
+            context = Starling.context;
+            if(context == null)
             {
                throw new MissingContextError();
             }
-            param3 = _loc4_.createProgram();
+            resultProgram = context.createProgram();
          }
-         param3.upload(sAssembler.assemble("vertex",param1),sAssembler.assemble("fragment",param2));
-         return param3;
+         resultProgram.upload(sAssembler.assemble("vertex",vertexShader),sAssembler.assemble("fragment",fragmentShader));
+         return resultProgram;
       }
       
-      public static function getTextureLookupFlags(param1:String, param2:Boolean, param3:Boolean = false, param4:String = "bilinear") : String
+      public static function getTextureLookupFlags(format:String, mipMapping:Boolean, repeat:Boolean = false, smoothing:String = "bilinear") : String
       {
-         var _loc5_:Array = ["2d",!!param3?"repeat":"clamp"];
-         if(param1 == "compressed")
+         var options:Array = ["2d",!!repeat?"repeat":"clamp"];
+         if(format == "compressed")
          {
-            _loc5_.push("dxt1");
+            options.push("dxt1");
          }
-         else if(param1 == "compressedAlpha")
+         else if(format == "compressedAlpha")
          {
-            _loc5_.push("dxt5");
+            options.push("dxt5");
          }
-         if(param4 == "none")
+         if(smoothing == "none")
          {
-            _loc5_.push("nearest",!!param2?"mipnearest":"mipnone");
+            options.push("nearest",!!mipMapping?"mipnearest":"mipnone");
          }
-         else if(param4 == "bilinear")
+         else if(smoothing == "bilinear")
          {
-            _loc5_.push("linear",!!param2?"mipnearest":"mipnone");
+            options.push("linear",!!mipMapping?"mipnearest":"mipnone");
          }
          else
          {
-            _loc5_.push("linear",!!param2?"miplinear":"mipnone");
+            options.push("linear",!!mipMapping?"miplinear":"mipnone");
          }
-         return "<" + _loc5_.join() + ">";
+         return "<" + options.join() + ">";
       }
       
       public function dispose() : void
       {
          var _loc3_:int = 0;
          var _loc2_:* = mQuadBatches;
-         for each(var _loc1_ in mQuadBatches)
+         for each(var quadBatch in mQuadBatches)
          {
-            _loc1_.dispose();
+            quadBatch.dispose();
          }
       }
       
-      public function setProjectionMatrix(param1:Number, param2:Number, param3:Number, param4:Number, param5:Number = 0, param6:Number = 0, param7:Vector3D = null) : void
+      public function setProjectionMatrix(x:Number, y:Number, width:Number, height:Number, stageWidth:Number = 0, stageHeight:Number = 0, cameraPos:Vector3D = null) : void
       {
          var _loc14_:* = NaN;
          _loc14_ = 1;
-         if(param5 <= 0)
+         if(stageWidth <= 0)
          {
-            param5 = param3;
+            stageWidth = width;
          }
-         if(param6 <= 0)
+         if(stageHeight <= 0)
          {
-            param6 = param4;
+            stageHeight = height;
          }
-         if(param7 == null)
+         if(cameraPos == null)
          {
-            param7 = sPoint3D;
-            param7.setTo(param5 / 2,param6 / 2,param5 / Math.tan(0.5) * 0.5);
+            cameraPos = sPoint3D;
+            cameraPos.setTo(stageWidth / 2,stageHeight / 2,stageWidth / Math.tan(0.5) * 0.5);
          }
-         mProjectionMatrix.setTo(2 / param3,0,0,-2 / param4,-(2 * param1 + param3) / param3,(2 * param2 + param4) / param4);
-         var _loc13_:Number = Math.abs(param7.z);
-         var _loc11_:Number = param7.x - param5 / 2;
-         var _loc10_:Number = param7.y - param6 / 2;
+         mProjectionMatrix.setTo(2 / width,0,0,-2 / height,-(2 * x + width) / width,(2 * y + height) / height);
+         var _loc13_:Number = Math.abs(cameraPos.z);
+         var _loc11_:Number = cameraPos.x - stageWidth / 2;
+         var _loc10_:Number = cameraPos.y - stageHeight / 2;
          var _loc12_:Number = _loc13_ * 20;
-         var _loc8_:Number = param5 / param3;
-         var _loc9_:Number = param6 / param4;
-         sMatrixData[0] = 2 * _loc13_ / param5;
-         sMatrixData[5] = -2 * _loc13_ / param6;
+         var _loc8_:Number = stageWidth / width;
+         var _loc9_:Number = stageHeight / height;
+         sMatrixData[0] = 2 * _loc13_ / stageWidth;
+         sMatrixData[5] = -2 * _loc13_ / stageHeight;
          sMatrixData[10] = _loc12_ / (_loc12_ - 1);
          sMatrixData[14] = -_loc12_ * 1 / (_loc12_ - 1);
          sMatrixData[11] = 1;
@@ -209,19 +209,19 @@ package starling.core
          _loc16_ = 5;
          _loc15_ = sMatrixData[_loc16_] * _loc9_;
          sMatrixData[_loc16_] = _loc15_;
-         sMatrixData[8] = _loc8_ - 1 - 2 * _loc8_ * (param1 - _loc11_) / param5;
-         sMatrixData[9] = -_loc9_ + 1 + 2 * _loc9_ * (param2 - _loc10_) / param6;
+         sMatrixData[8] = _loc8_ - 1 - 2 * _loc8_ * (x - _loc11_) / stageWidth;
+         sMatrixData[9] = -_loc9_ + 1 + 2 * _loc9_ * (y - _loc10_) / stageHeight;
          mProjectionMatrix3D.copyRawDataFrom(sMatrixData);
-         mProjectionMatrix3D.prependTranslation(-param5 / 2 - _loc11_,-param6 / 2 - _loc10_,_loc13_);
+         mProjectionMatrix3D.prependTranslation(-stageWidth / 2 - _loc11_,-stageHeight / 2 - _loc10_,_loc13_);
          applyClipRect();
       }
       
       [Deprecated(replacement="setProjectionMatrix")]
-      public function setOrthographicProjection(param1:Number, param2:Number, param3:Number, param4:Number) : void
+      public function setOrthographicProjection(x:Number, y:Number, width:Number, height:Number) : void
       {
-         var _loc5_:Stage = Starling.current.stage;
-         sClipRect.setTo(param1,param2,param3,param4);
-         setProjectionMatrix(param1,param2,param3,param4,_loc5_.stageWidth,_loc5_.stageHeight,_loc5_.cameraPosition);
+         var stage:Stage = Starling.current.stage;
+         sClipRect.setTo(x,y,width,height);
+         setProjectionMatrix(x,y,width,height,stage.stageWidth,stage.stageHeight,stage.cameraPosition);
       }
       
       public function loadIdentity() : void
@@ -230,29 +230,29 @@ package starling.core
          mModelViewMatrix3D.identity();
       }
       
-      public function translateMatrix(param1:Number, param2:Number) : void
+      public function translateMatrix(dx:Number, dy:Number) : void
       {
-         MatrixUtil.prependTranslation(mModelViewMatrix,param1,param2);
+         MatrixUtil.prependTranslation(mModelViewMatrix,dx,dy);
       }
       
-      public function rotateMatrix(param1:Number) : void
+      public function rotateMatrix(angle:Number) : void
       {
-         MatrixUtil.prependRotation(mModelViewMatrix,param1);
+         MatrixUtil.prependRotation(mModelViewMatrix,angle);
       }
       
-      public function scaleMatrix(param1:Number, param2:Number) : void
+      public function scaleMatrix(sx:Number, sy:Number) : void
       {
-         MatrixUtil.prependScale(mModelViewMatrix,param1,param2);
+         MatrixUtil.prependScale(mModelViewMatrix,sx,sy);
       }
       
-      public function prependMatrix(param1:Matrix) : void
+      public function prependMatrix(matrix:Matrix) : void
       {
-         MatrixUtil.prependMatrix(mModelViewMatrix,param1);
+         MatrixUtil.prependMatrix(mModelViewMatrix,matrix);
       }
       
-      public function transformMatrix(param1:DisplayObject) : void
+      public function transformMatrix(object:DisplayObject) : void
       {
-         MatrixUtil.prependMatrix(mModelViewMatrix,param1.transformationMatrix);
+         MatrixUtil.prependMatrix(mModelViewMatrix,object.transformationMatrix);
       }
       
       public function pushMatrix() : void
@@ -295,16 +295,16 @@ package starling.core
          return mProjectionMatrix;
       }
       
-      public function set projectionMatrix(param1:Matrix) : void
+      public function set projectionMatrix(value:Matrix) : void
       {
-         mProjectionMatrix.copyFrom(param1);
+         mProjectionMatrix.copyFrom(value);
          applyClipRect();
       }
       
-      public function transformMatrix3D(param1:DisplayObject) : void
+      public function transformMatrix3D(object:DisplayObject) : void
       {
          mModelViewMatrix3D.prepend(MatrixUtil.convertTo3D(mModelViewMatrix,sMatrix3D));
-         mModelViewMatrix3D.prepend(param1.transformationMatrix3D);
+         mModelViewMatrix3D.prepend(object.transformationMatrix3D);
          mModelViewMatrix.identity();
       }
       
@@ -344,14 +344,14 @@ package starling.core
          return mProjectionMatrix3D;
       }
       
-      public function set projectionMatrix3D(param1:Matrix3D) : void
+      public function set projectionMatrix3D(value:Matrix3D) : void
       {
-         mProjectionMatrix3D.copyFrom(param1);
+         mProjectionMatrix3D.copyFrom(value);
       }
       
-      public function applyBlendMode(param1:Boolean) : void
+      public function applyBlendMode(premultipliedAlpha:Boolean) : void
       {
-         setBlendFactors(param1,mBlendMode);
+         setBlendFactors(premultipliedAlpha,mBlendMode);
       }
       
       public function get blendMode() : String
@@ -359,11 +359,11 @@ package starling.core
          return mBlendMode;
       }
       
-      public function set blendMode(param1:String) : void
+      public function set blendMode(value:String) : void
       {
-         if(param1 != "auto")
+         if(value != "auto")
          {
-            mBlendMode = param1;
+            mBlendMode = value;
          }
       }
       
@@ -372,18 +372,18 @@ package starling.core
          return Starling.current.contextData["Starling.renderTarget"];
       }
       
-      public function set renderTarget(param1:Texture) : void
+      public function set renderTarget(target:Texture) : void
       {
-         setRenderTarget(param1);
+         setRenderTarget(target);
       }
       
-      public function setRenderTarget(param1:Texture, param2:int = 0) : void
+      public function setRenderTarget(target:Texture, antiAliasing:int = 0) : void
       {
-         Starling.current.contextData["Starling.renderTarget"] = param1;
+         Starling.current.contextData["Starling.renderTarget"] = target;
          applyClipRect();
-         if(param1)
+         if(target)
          {
-            Starling.context.setRenderToTexture(param1.base,SystemUtil.supportsDepthAndStencil,param2);
+            Starling.context.setRenderToTexture(target.base,SystemUtil.supportsDepthAndStencil,antiAliasing);
          }
          else
          {
@@ -391,21 +391,21 @@ package starling.core
          }
       }
       
-      public function pushClipRect(param1:Rectangle, param2:Boolean = true) : Rectangle
+      public function pushClipRect(rectangle:Rectangle, intersectWithCurrent:Boolean = true) : Rectangle
       {
          if(mClipRectStack.length < mClipRectStackSize + 1)
          {
             mClipRectStack.push(new Rectangle());
          }
-         mClipRectStack[mClipRectStackSize].copyFrom(param1);
-         param1 = mClipRectStack[mClipRectStackSize];
-         if(param2 && mClipRectStackSize > 0)
+         mClipRectStack[mClipRectStackSize].copyFrom(rectangle);
+         rectangle = mClipRectStack[mClipRectStackSize];
+         if(intersectWithCurrent && mClipRectStackSize > 0)
          {
-            RectangleUtil.intersect(param1,mClipRectStack[mClipRectStackSize - 1],param1);
+            RectangleUtil.intersect(rectangle,mClipRectStack[mClipRectStackSize - 1],rectangle);
          }
          mClipRectStackSize = mClipRectStackSize + 1;
          applyClipRect();
-         return param1;
+         return rectangle;
       }
       
       public function popClipRect() : void
@@ -419,95 +419,95 @@ package starling.core
       
       public function applyClipRect() : void
       {
-         var _loc1_:int = 0;
-         var _loc3_:int = 0;
-         var _loc5_:* = null;
-         var _loc2_:* = null;
+         var height:int = 0;
+         var width:int = 0;
+         var rect:* = null;
+         var renderTarget:* = null;
          finishQuadBatch();
-         var _loc4_:Context3D = Starling.context;
-         if(_loc4_ == null)
+         var context:Context3D = Starling.context;
+         if(context == null)
          {
             return;
          }
          if(mClipRectStackSize > 0)
          {
-            _loc5_ = mClipRectStack[mClipRectStackSize - 1];
-            _loc2_ = this.renderTarget;
-            if(_loc2_)
+            rect = mClipRectStack[mClipRectStackSize - 1];
+            renderTarget = this.renderTarget;
+            if(renderTarget)
             {
-               _loc3_ = _loc2_.root.nativeWidth;
-               _loc1_ = _loc2_.root.nativeHeight;
+               width = renderTarget.root.nativeWidth;
+               height = renderTarget.root.nativeHeight;
             }
             else
             {
-               _loc3_ = Starling.current.backBufferWidth;
-               _loc1_ = Starling.current.backBufferHeight;
+               width = Starling.current.backBufferWidth;
+               height = Starling.current.backBufferHeight;
             }
-            MatrixUtil.transformCoords(mProjectionMatrix,_loc5_.x,_loc5_.y,sPoint);
-            sClipRect.x = (sPoint.x * 0.5 + 0.5) * _loc3_;
-            sClipRect.y = (0.5 - sPoint.y * 0.5) * _loc1_;
-            MatrixUtil.transformCoords(mProjectionMatrix,_loc5_.right,_loc5_.bottom,sPoint);
-            sClipRect.right = (sPoint.x * 0.5 + 0.5) * _loc3_;
-            sClipRect.bottom = (0.5 - sPoint.y * 0.5) * _loc1_;
-            sBufferRect.setTo(0,0,_loc3_,_loc1_);
+            MatrixUtil.transformCoords(mProjectionMatrix,rect.x,rect.y,sPoint);
+            sClipRect.x = (sPoint.x * 0.5 + 0.5) * width;
+            sClipRect.y = (0.5 - sPoint.y * 0.5) * height;
+            MatrixUtil.transformCoords(mProjectionMatrix,rect.right,rect.bottom,sPoint);
+            sClipRect.right = (sPoint.x * 0.5 + 0.5) * width;
+            sClipRect.bottom = (0.5 - sPoint.y * 0.5) * height;
+            sBufferRect.setTo(0,0,width,height);
             RectangleUtil.intersect(sClipRect,sBufferRect,sScissorRect);
             if(sScissorRect.width < 1 || sScissorRect.height < 1)
             {
                sScissorRect.setTo(0,0,1,1);
             }
-            _loc4_.setScissorRectangle(sScissorRect);
+            context.setScissorRectangle(sScissorRect);
          }
          else
          {
-            _loc4_.setScissorRectangle(null);
+            context.setScissorRectangle(null);
          }
       }
       
-      public function pushMask(param1:DisplayObject) : void
+      public function pushMask(mask:DisplayObject) : void
       {
-         mMasks[mMasks.length] = param1;
+         mMasks[mMasks.length] = mask;
          mStencilReferenceValue = Number(mStencilReferenceValue) + 1;
-         var _loc2_:Context3D = Starling.context;
-         if(_loc2_ == null)
+         var context:Context3D = Starling.context;
+         if(context == null)
          {
             return;
          }
          finishQuadBatch();
-         _loc2_.setStencilActions("frontAndBack","equal","incrementSaturate");
-         drawMask(param1);
-         _loc2_.setStencilReferenceValue(mStencilReferenceValue);
-         _loc2_.setStencilActions("frontAndBack","equal","keep");
+         context.setStencilActions("frontAndBack","equal","incrementSaturate");
+         drawMask(mask);
+         context.setStencilReferenceValue(mStencilReferenceValue);
+         context.setStencilActions("frontAndBack","equal","keep");
       }
       
       public function popMask() : void
       {
-         var _loc2_:DisplayObject = mMasks.pop();
+         var mask:DisplayObject = mMasks.pop();
          mStencilReferenceValue = Number(mStencilReferenceValue) - 1;
-         var _loc1_:Context3D = Starling.context;
-         if(_loc1_ == null)
+         var context:Context3D = Starling.context;
+         if(context == null)
          {
             return;
          }
          finishQuadBatch();
-         _loc1_.setStencilActions("frontAndBack","equal","decrementSaturate");
-         drawMask(_loc2_);
-         _loc1_.setStencilReferenceValue(mStencilReferenceValue);
-         _loc1_.setStencilActions("frontAndBack","equal","keep");
+         context.setStencilActions("frontAndBack","equal","decrementSaturate");
+         drawMask(mask);
+         context.setStencilReferenceValue(mStencilReferenceValue);
+         context.setStencilActions("frontAndBack","equal","keep");
       }
       
-      private function drawMask(param1:DisplayObject) : void
+      private function drawMask(mask:DisplayObject) : void
       {
          pushMatrix();
-         var _loc2_:Stage = param1.stage;
-         if(_loc2_)
+         var stage:Stage = mask.stage;
+         if(stage)
          {
-            param1.getTransformationMatrix(_loc2_,mModelViewMatrix);
+            mask.getTransformationMatrix(stage,mModelViewMatrix);
          }
          else
          {
-            transformMatrix(param1);
+            transformMatrix(mask);
          }
-         param1.render(this,0);
+         mask.render(this,0);
          finishQuadBatch();
          popMatrix();
       }
@@ -517,49 +517,49 @@ package starling.core
          return mStencilReferenceValue;
       }
       
-      public function set stencilReferenceValue(param1:uint) : void
+      public function set stencilReferenceValue(value:uint) : void
       {
-         mStencilReferenceValue = param1;
+         mStencilReferenceValue = value;
          if(Starling.current.contextValid)
          {
-            Starling.context.setStencilReferenceValue(param1);
+            Starling.context.setStencilReferenceValue(value);
          }
       }
       
-      public function batchQuad(param1:Quad, param2:Number, param3:Texture = null, param4:String = null) : void
+      public function batchQuad(quad:Quad, parentAlpha:Number, texture:Texture = null, smoothing:String = null) : void
       {
-         if(mQuadBatches[mCurrentQuadBatchID].isStateChange(param1.tinted,param2,param3,param4,mBlendMode))
+         if(mQuadBatches[mCurrentQuadBatchID].isStateChange(quad.tinted,parentAlpha,texture,smoothing,mBlendMode))
          {
             finishQuadBatch();
          }
-         mQuadBatches[mCurrentQuadBatchID].addQuad(param1,param2,param3,param4,mModelViewMatrix,mBlendMode);
+         mQuadBatches[mCurrentQuadBatchID].addQuad(quad,parentAlpha,texture,smoothing,mModelViewMatrix,mBlendMode);
       }
       
-      public function batchQuadBatch(param1:QuadBatch, param2:Number) : void
+      public function batchQuadBatch(quadBatch:QuadBatch, parentAlpha:Number) : void
       {
-         if(mQuadBatches[mCurrentQuadBatchID].isStateChange(param1.tinted,param2,param1.texture,param1.smoothing,mBlendMode))
+         if(mQuadBatches[mCurrentQuadBatchID].isStateChange(quadBatch.tinted,parentAlpha,quadBatch.texture,quadBatch.smoothing,mBlendMode))
          {
             finishQuadBatch();
          }
-         mQuadBatches[mCurrentQuadBatchID].addQuadBatch(param1,param2,mModelViewMatrix,mBlendMode);
+         mQuadBatches[mCurrentQuadBatchID].addQuadBatch(quadBatch,parentAlpha,mModelViewMatrix,mBlendMode);
       }
       
       public function finishQuadBatch() : void
       {
-         var _loc1_:QuadBatch = mQuadBatches[mCurrentQuadBatchID];
-         if(_loc1_.numQuads != 0)
+         var currentBatch:QuadBatch = mQuadBatches[mCurrentQuadBatchID];
+         if(currentBatch.numQuads != 0)
          {
             if(mMatrixStack3DSize == 0)
             {
-               _loc1_.renderCustom(mProjectionMatrix3D);
+               currentBatch.renderCustom(mProjectionMatrix3D);
             }
             else
             {
                mMvpMatrix3D.copyFrom(mProjectionMatrix3D);
                mMvpMatrix3D.prepend(mModelViewMatrix3D);
-               _loc1_.renderCustom(mMvpMatrix3D);
+               currentBatch.renderCustom(mMvpMatrix3D);
             }
-            _loc1_.reset();
+            currentBatch.reset();
             mCurrentQuadBatchID = mCurrentQuadBatchID + 1;
             mDrawCount = mDrawCount + 1;
             if(mQuadBatches.length <= mCurrentQuadBatchID)
@@ -581,39 +581,38 @@ package starling.core
       
       private function trimQuadBatches() : void
       {
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:int = mCurrentQuadBatchID + 1;
-         var _loc1_:int = mQuadBatches.length;
-         if(_loc1_ >= 16 && _loc1_ > 2 * _loc3_)
+         var numToRemove:int = 0;
+         var i:int = 0;
+         var numUsedBatches:int = mCurrentQuadBatchID + 1;
+         var numTotalBatches:int = mQuadBatches.length;
+         if(numTotalBatches >= 16 && numTotalBatches > 2 * numUsedBatches)
          {
-            _loc2_ = _loc1_ - _loc3_;
-            _loc4_ = 0;
-            while(_loc4_ < _loc2_)
+            numToRemove = numTotalBatches - numUsedBatches;
+            for(i = 0; i < numToRemove; )
             {
                mQuadBatches.pop().dispose();
-               _loc4_++;
+               i++;
             }
          }
       }
       
       private function createQuadBatch() : QuadBatch
       {
-         var _loc3_:String = Starling.current.profile;
-         var _loc1_:Boolean = _loc3_ != "baselineConstrained" && _loc3_ != "baseline";
-         var _loc2_:QuadBatch = new QuadBatch();
-         _loc2_.forceTinted = _loc1_;
-         return _loc2_;
+         var profile:String = Starling.current.profile;
+         var forceTinted:Boolean = profile != "baselineConstrained" && profile != "baseline";
+         var quadBatch:QuadBatch = new QuadBatch();
+         quadBatch.forceTinted = forceTinted;
+         return quadBatch;
       }
       
-      public function clear(param1:uint = 0, param2:Number = 0.0) : void
+      public function clear(rgb:uint = 0, alpha:Number = 0.0) : void
       {
-         RenderSupport.clear(param1,param2);
+         RenderSupport.clear(rgb,alpha);
       }
       
-      public function raiseDrawCount(param1:uint = 1) : void
+      public function raiseDrawCount(value:uint = 1) : void
       {
-         mDrawCount = mDrawCount + param1;
+         mDrawCount = mDrawCount + value;
       }
       
       public function get drawCount() : int

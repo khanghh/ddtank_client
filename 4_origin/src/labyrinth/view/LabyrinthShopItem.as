@@ -59,9 +59,9 @@ package labyrinth.view
          _payPaneGivingBtn.visible = false;
       }
       
-      override public function set shopItemInfo(param1:ShopItemInfo) : void
+      override public function set shopItemInfo(value:ShopItemInfo) : void
       {
-         .super.shopItemInfo = param1;
+         .super.shopItemInfo = value;
          updateCircumscribe();
       }
       
@@ -111,9 +111,9 @@ package labyrinth.view
          }
       }
       
-      override protected function __payPanelClick(param1:MouseEvent) : void
+      override protected function __payPanelClick(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var _quickFrame:* = null;
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -131,13 +131,13 @@ package labyrinth.view
             }
             else
             {
-               _loc2_ = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
-               _loc2_.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
-               _loc2_.setItemID(shopItemInfo.TemplateID,1);
-               _loc2_.buyFrom = 0;
-               _loc2_.addEventListener("shortcutBuy",__shortCutBuyHandler);
-               _loc2_.addEventListener("removedFromStage",removeFromStageHandler);
-               LayerManager.Instance.addToLayer(_loc2_,2,true,1);
+               _quickFrame = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
+               _quickFrame.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
+               _quickFrame.setItemID(shopItemInfo.TemplateID,1);
+               _quickFrame.buyFrom = 0;
+               _quickFrame.addEventListener("shortcutBuy",__shortCutBuyHandler);
+               _quickFrame.addEventListener("removedFromStage",removeFromStageHandler);
+               LayerManager.Instance.addToLayer(_quickFrame,2,true,1);
             }
          }
          else
@@ -146,21 +146,21 @@ package labyrinth.view
          }
       }
       
-      private function removeFromStageHandler(param1:Event) : void
+      private function removeFromStageHandler(event:Event) : void
       {
          BagStore.instance.reduceTipPanelNumber();
       }
       
-      private function __shortCutBuyHandler(param1:ShortcutBuyEvent) : void
+      private function __shortCutBuyHandler(evt:ShortcutBuyEvent) : void
       {
-         param1.stopImmediatePropagation();
-         dispatchEvent(new ShortcutBuyEvent(param1.ItemID,param1.ItemNum));
+         evt.stopImmediatePropagation();
+         dispatchEvent(new ShortcutBuyEvent(evt.ItemID,evt.ItemNum));
       }
       
-      protected function __onframeEvent(param1:FrameEvent) : void
+      protected function __onframeEvent(event:FrameEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         switch(int(param1.responseCode) - 2)
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
@@ -173,21 +173,21 @@ package labyrinth.view
       
       private function buy() : void
       {
-         var _loc2_:Array = [];
-         var _loc7_:Array = [];
-         var _loc4_:Array = [];
-         var _loc5_:Array = [];
-         var _loc6_:Array = [];
-         var _loc3_:Array = [];
-         var _loc1_:Array = [];
-         _loc2_.push(shopItemInfo.GoodsID);
-         _loc7_.push(1);
-         _loc4_.push("");
-         _loc5_.push("");
-         _loc6_.push("");
-         _loc3_.push(1);
-         _loc1_.push("");
-         SocketManager.Instance.out.sendBuyGoods(_loc2_,_loc7_,_loc4_,_loc6_,_loc5_,null,0,_loc3_,_loc1_);
+         var items:Array = [];
+         var types:Array = [];
+         var colors:Array = [];
+         var dresses:Array = [];
+         var places:Array = [];
+         var goodsTypes:Array = [];
+         var bands:Array = [];
+         items.push(shopItemInfo.GoodsID);
+         types.push(1);
+         colors.push("");
+         dresses.push("");
+         places.push("");
+         goodsTypes.push(1);
+         bands.push("");
+         SocketManager.Instance.out.sendBuyGoods(items,types,colors,places,dresses,null,0,goodsTypes,bands);
       }
    }
 }

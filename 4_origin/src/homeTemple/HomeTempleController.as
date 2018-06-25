@@ -44,9 +44,9 @@ package homeTemple
       
       private var _manager:HomeTempleManager;
       
-      public function HomeTempleController(param1:IEventDispatcher = null)
+      public function HomeTempleController(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
          _currentInfo = new HomeTempleData();
       }
       
@@ -73,100 +73,100 @@ package homeTemple
          SocketManager.Instance.addEventListener(PkgEvent.format(297,1),__onImmolationResponse);
       }
       
-      protected function onHideEventHandler(param1:CEvent) : void
+      protected function onHideEventHandler(e:CEvent) : void
       {
          hide();
       }
       
-      protected function onShowEventHandler(param1:CEvent) : void
+      protected function onShowEventHandler(e:CEvent) : void
       {
          onShow();
       }
       
-      protected function __onGetTempleLevel(param1:PkgEvent) : void
+      protected function __onGetTempleLevel(event:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         _currentInfo.CurrentSelectIndex = _loc3_.readInt();
-         _currentInfo.CurrentLevel = _loc3_.readInt();
-         var _loc2_:int = _loc3_.readInt();
-         _currentInfo.CurrentExp = _loc2_ - (_currentInfo.CurrentLevel > 0?_practiceList[_currentInfo.CurrentLevel].Exp:0);
+         var pkg:PackageIn = event.pkg;
+         _currentInfo.CurrentSelectIndex = pkg.readInt();
+         _currentInfo.CurrentLevel = pkg.readInt();
+         var exp:int = pkg.readInt();
+         _currentInfo.CurrentExp = exp - (_currentInfo.CurrentLevel > 0?_practiceList[_currentInfo.CurrentLevel].Exp:0);
          _templeFrame = ComponentFactory.Instance.creatComponentByStylename("home.HomeTempleFrame");
          _manager.setView(_templeFrame);
       }
       
-      protected function __onImmolationResponse(param1:PkgEvent) : void
+      protected function __onImmolationResponse(event:PkgEvent) : void
       {
-         var _loc4_:PackageIn = param1.pkg;
-         _currentInfo.CurrentLevel = _loc4_.readInt();
-         var _loc3_:int = _loc4_.readInt();
-         _currentInfo.CurrentExp = _loc3_ - (_currentInfo.CurrentLevel > 0?_practiceList[_currentInfo.CurrentLevel].Exp:0);
-         var _loc5_:int = _loc4_.readInt();
-         var _loc2_:int = _loc4_.readInt();
-         dispatchEvent(new HomeTempleEvent("homeTempleUpdateProperty",[_loc2_,_loc5_]));
+         var pkg:PackageIn = event.pkg;
+         _currentInfo.CurrentLevel = pkg.readInt();
+         var exp:int = pkg.readInt();
+         _currentInfo.CurrentExp = exp - (_currentInfo.CurrentLevel > 0?_practiceList[_currentInfo.CurrentLevel].Exp:0);
+         var maxBombNum:int = pkg.readInt();
+         var minBombNum:int = pkg.readInt();
+         dispatchEvent(new HomeTempleEvent("homeTempleUpdateProperty",[minBombNum,maxBombNum]));
          _templeFrame.resetBlessingPos();
       }
       
       private function showTempleFrame() : void
       {
-         var _loc1_:* = null;
+         var loader:* = null;
          if(_practiceList)
          {
             SocketManager.Instance.out.getHomeTempleLevel();
          }
          else
          {
-            _loc1_ = getHomeTempleList();
-            LoadResourceManager.Instance.startLoad(_loc1_);
+            loader = getHomeTempleList();
+            LoadResourceManager.Instance.startLoad(loader);
          }
       }
       
       public function getExpPercent() : String
       {
-         var _loc2_:int = _currentInfo.CurrentLevel + 1;
-         _loc2_ = _loc2_ > MAXLEVEL?MAXLEVEL:int(_loc2_);
-         var _loc1_:Number = _currentInfo.CurrentExp / (_practiceList[_loc2_].Exp - _practiceList[_loc2_ - 1].Exp) * 100;
-         return _loc1_.toFixed(2);
+         var level:int = _currentInfo.CurrentLevel + 1;
+         level = level > MAXLEVEL?MAXLEVEL:int(level);
+         var num:Number = _currentInfo.CurrentExp / (_practiceList[level].Exp - _practiceList[level - 1].Exp) * 100;
+         return num.toFixed(2);
       }
       
-      public function getPracticeByLevel(param1:int) : HomeTempleModel
+      public function getPracticeByLevel(level:int) : HomeTempleModel
       {
-         param1 = param1 > MAXLEVEL?MAXLEVEL:int(param1);
-         return _practiceList[param1];
+         level = level > MAXLEVEL?MAXLEVEL:int(level);
+         return _practiceList[level];
       }
       
       public function getStarNum() : int
       {
-         var _loc2_:int = HomeTempleController.Instance.currentInfo.CurrentLevel;
-         var _loc1_:int = 1;
-         if(_loc2_ % 10 == 0)
+         var level:int = HomeTempleController.Instance.currentInfo.CurrentLevel;
+         var movieId:int = 1;
+         if(level % 10 == 0)
          {
-            if(_loc2_ > 0)
+            if(level > 0)
             {
-               _loc1_ = _loc2_ / 10;
+               movieId = level / 10;
             }
          }
          else
          {
-            _loc1_ = _loc2_ / 10 + 1;
+            movieId = level / 10 + 1;
          }
-         return _loc1_;
+         return movieId;
       }
       
       public function getStarLevelNum() : int
       {
-         var _loc1_:int = HomeTempleController.Instance.currentInfo.CurrentLevel;
-         if(_loc1_ > 0)
+         var level:int = HomeTempleController.Instance.currentInfo.CurrentLevel;
+         if(level > 0)
          {
-            _loc1_ = _loc1_ % 10;
-            _loc1_ = _loc1_ == 0?10:_loc1_;
+            level = level % 10;
+            level = level == 0?10:level;
          }
-         return _loc1_;
+         return level;
       }
       
-      public function getPropertyInfoByIndex(param1:int) : HomeTempleModel
+      public function getPropertyInfoByIndex(level:int) : HomeTempleModel
       {
-         param1 = param1 == 0?1:param1;
-         return _practiceList[param1 * 10];
+         level = level == 0?1:level;
+         return _practiceList[level * 10];
       }
       
       public function onShow() : void
@@ -176,51 +176,51 @@ package homeTemple
       
       public function getHomeTempleList2() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("HomeTempPracticeList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingHomeTempleListFailure");
-         _loc1_.analyzer = new HomeTempleDataAnalyzer(getPracticeList2);
-         _loc1_.addEventListener("loadError",__onLoadError);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("HomeTempPracticeList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingHomeTempleListFailure");
+         loader.analyzer = new HomeTempleDataAnalyzer(getPracticeList2);
+         loader.addEventListener("loadError",__onLoadError);
+         return loader;
       }
       
-      private function getPracticeList2(param1:HomeTempleDataAnalyzer) : void
+      private function getPracticeList2(analyzer:HomeTempleDataAnalyzer) : void
       {
-         _practiceList = param1.list;
+         _practiceList = analyzer.list;
       }
       
       private function getHomeTempleList() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("HomeTempPracticeList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingHomeTempleListFailure");
-         _loc1_.analyzer = new HomeTempleDataAnalyzer(getPracticeList);
-         _loc1_.addEventListener("loadError",__onLoadError);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("HomeTempPracticeList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingHomeTempleListFailure");
+         loader.analyzer = new HomeTempleDataAnalyzer(getPracticeList);
+         loader.addEventListener("loadError",__onLoadError);
+         return loader;
       }
       
-      private function getPracticeList(param1:HomeTempleDataAnalyzer) : void
+      private function getPracticeList(analyzer:HomeTempleDataAnalyzer) : void
       {
-         _practiceList = param1.list;
+         _practiceList = analyzer.list;
          showTempleFrame();
       }
       
-      public function __onLoadError(param1:LoaderEvent) : void
+      public function __onLoadError(event:LoaderEvent) : void
       {
-         var _loc3_:String = param1.loader.loadErrorMessage;
-         if(param1.loader.analyzer)
+         var msg:String = event.loader.loadErrorMessage;
+         if(event.loader.analyzer)
          {
-            if(param1.loader.analyzer.message != null)
+            if(event.loader.analyzer.message != null)
             {
-               _loc3_ = param1.loader.loadErrorMessage + "\n" + param1.loader.analyzer.message;
+               msg = event.loader.loadErrorMessage + "\n" + event.loader.analyzer.message;
             }
          }
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("alert"),_loc3_,LanguageMgr.GetTranslation("tank.room.RoomIIView2.affirm"));
-         _loc2_.addEventListener("response",__onAlertResponse);
+         var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("alert"),msg,LanguageMgr.GetTranslation("tank.room.RoomIIView2.affirm"));
+         alert.addEventListener("response",__onAlertResponse);
       }
       
-      private function __onAlertResponse(param1:FrameEvent) : void
+      private function __onAlertResponse(event:FrameEvent) : void
       {
-         param1.currentTarget.removeEventListener("response",__onAlertResponse);
-         ObjectUtils.disposeObject(param1.currentTarget);
+         event.currentTarget.removeEventListener("response",__onAlertResponse);
+         ObjectUtils.disposeObject(event.currentTarget);
          LeavePageManager.leaveToLoginPath();
       }
       

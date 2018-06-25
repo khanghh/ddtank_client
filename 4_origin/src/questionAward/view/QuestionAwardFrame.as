@@ -47,9 +47,9 @@ package questionAward.view
          super();
       }
       
-      public function set initControl(param1:QuestionAwardControl) : void
+      public function set initControl(value:QuestionAwardControl) : void
       {
-         _control = param1;
+         _control = value;
       }
       
       override protected function init() : void
@@ -84,7 +84,7 @@ package questionAward.view
          }
       }
       
-      private function __answerBtmClickHandler(param1:MouseEvent) : void
+      private function __answerBtmClickHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(_answerBtn)
@@ -132,14 +132,14 @@ package questionAward.view
       
       private function createItem() : QuestionViewBase
       {
-         var _loc1_:QuestionDataBaseInfo = null;
-         var _loc2_:QuestionViewBase = null;
+         var temInfo:QuestionDataBaseInfo = null;
+         var temSprite:QuestionViewBase = null;
          if(_questionIterator && _questionIterator.hasNext())
          {
-            _loc1_ = _questionIterator.Next() as QuestionDataBaseInfo;
-            _loc2_ = QuestionAwardFactory.instance.createQuestionView(_loc1_);
+            temInfo = _questionIterator.Next() as QuestionDataBaseInfo;
+            temSprite = QuestionAwardFactory.instance.createQuestionView(temInfo);
          }
-         return _loc2_;
+         return temSprite;
       }
       
       override protected function addChildren() : void

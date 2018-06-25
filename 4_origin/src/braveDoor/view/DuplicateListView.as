@@ -37,12 +37,12 @@ package braveDoor.view
          super();
       }
       
-      public function initView(param1:BraveDoorControl, param2:BraveDoorListModel) : void
+      public function initView(control:BraveDoorControl, model:BraveDoorListModel) : void
       {
          _chatBtn = ComponentFactory.Instance.creatComponentByStylename("braveDoor.chatButton");
          _chatBtn.tipData = LanguageMgr.GetTranslation("tank.game.ToolStripView.chat");
-         _control = param1;
-         _data = param2;
+         _control = control;
+         _data = model;
          switchRoomView();
          addChildAt(_chatBtn,1);
          initEvent();
@@ -66,16 +66,16 @@ package braveDoor.view
          _chatBtn.removeEventListener("click",__chatClick);
       }
       
-      private function __chatClick(param1:MouseEvent) : void
+      private function __chatClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          LayerManager.Instance.addToLayer(ChatManager.Instance.view,3);
       }
       
-      private function __switchRoom_Handler(param1:BraveDoorEvent) : void
+      private function __switchRoom_Handler(evt:BraveDoorEvent) : void
       {
-         var _loc2_:int = param1.data;
-         switch(int(_loc2_) - 1)
+         var type:int = evt.data;
+         switch(int(type) - 1)
          {
             case 0:
                switchRoomView();

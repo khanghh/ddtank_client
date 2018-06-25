@@ -28,9 +28,9 @@ package fightLib.command
          _undoFunArr = [];
       }
       
-      public function set completeFunArr(param1:Array) : void
+      public function set completeFunArr(value:Array) : void
       {
-         _completeFunArr = param1;
+         _completeFunArr = value;
       }
       
       public function get completeFunArr() : Array
@@ -43,18 +43,18 @@ package fightLib.command
          return _prepareFun;
       }
       
-      public function set prepareFun(param1:Function) : void
+      public function set prepareFun(value:Function) : void
       {
-         _prepareFun = param1;
+         _prepareFun = value;
       }
       
       public function excute() : void
       {
          var _loc3_:int = 0;
          var _loc2_:* = _excuteFunArr;
-         for each(var _loc1_ in _excuteFunArr)
+         for each(var fun in _excuteFunArr)
          {
-            _loc1_();
+            fun();
          }
       }
       
@@ -66,9 +66,9 @@ package fightLib.command
          }
          var _loc3_:int = 0;
          var _loc2_:* = _completeFunArr;
-         for each(var _loc1_ in _completeFunArr)
+         for each(var fun in _completeFunArr)
          {
-            _loc1_();
+            fun();
          }
          dispatchEvent(new FightLibCommandEvent("finish"));
       }
@@ -77,35 +77,35 @@ package fightLib.command
       {
          var _loc3_:int = 0;
          var _loc2_:* = _undoFunArr;
-         for each(var _loc1_ in _undoFunArr)
+         for each(var fun in _undoFunArr)
          {
-            _loc1_();
+            fun();
          }
       }
       
-      public function addEventListener(param1:String, param2:Function, param3:Boolean = false, param4:int = 0, param5:Boolean = false) : void
+      public function addEventListener(type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false) : void
       {
-         _dispather.addEventListener(param1,param2,param3,param4,param5);
+         _dispather.addEventListener(type,listener,useCapture,priority,useWeakReference);
       }
       
-      public function removeEventListener(param1:String, param2:Function, param3:Boolean = false) : void
+      public function removeEventListener(type:String, listener:Function, useCapture:Boolean = false) : void
       {
-         _dispather.removeEventListener(param1,param2,param3);
+         _dispather.removeEventListener(type,listener,useCapture);
       }
       
-      public function dispatchEvent(param1:Event) : Boolean
+      public function dispatchEvent(event:Event) : Boolean
       {
-         return _dispather.dispatchEvent(param1);
+         return _dispather.dispatchEvent(event);
       }
       
-      public function hasEventListener(param1:String) : Boolean
+      public function hasEventListener(type:String) : Boolean
       {
-         return _dispather.hasEventListener(param1);
+         return _dispather.hasEventListener(type);
       }
       
-      public function willTrigger(param1:String) : Boolean
+      public function willTrigger(type:String) : Boolean
       {
-         return _dispather.willTrigger(param1);
+         return _dispather.willTrigger(type);
       }
       
       public function get undoFunArr() : Array
@@ -113,9 +113,9 @@ package fightLib.command
          return _undoFunArr;
       }
       
-      public function set undoFunArr(param1:Array) : void
+      public function set undoFunArr(value:Array) : void
       {
-         _undoFunArr = param1;
+         _undoFunArr = value;
       }
       
       public function dispose() : void
@@ -132,9 +132,9 @@ package fightLib.command
          return _excuteFunArr;
       }
       
-      public function set excuteFunArr(param1:Array) : void
+      public function set excuteFunArr(value:Array) : void
       {
-         _excuteFunArr = param1;
+         _excuteFunArr = value;
       }
    }
 }

@@ -73,7 +73,7 @@ package sevenDayTarget.view
          }
       }
       
-      private function __changeHandler(param1:Event) : void
+      private function __changeHandler(event:Event) : void
       {
          switch(int(_btnGroup.selectIndex))
          {
@@ -115,10 +115,10 @@ package sevenDayTarget.view
          removeEventListener("response",__frameEventHandler);
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:

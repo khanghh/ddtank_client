@@ -16,7 +16,7 @@ package pvePowerBuff
       
       public var mainView:PvePowerBuffMainView;
       
-      public function PvePowerBuffControl(param1:pvppowerbuffinstance)
+      public function PvePowerBuffControl(ppb:pvppowerbuffinstance)
       {
          super();
       }
@@ -36,7 +36,7 @@ package pvePowerBuff
          PvePowerBuffManager.instance.addEventListener("pvePowerBuffDispose",__disposeView);
       }
       
-      private function __openView(param1:PvePowerBuffEvent) : void
+      private function __openView(e:PvePowerBuffEvent) : void
       {
          _uiLoader = new HelperUIModuleLoad();
          _uiLoader.loadUIModule(["pvePowerBuff"],__openPvePowerBuffView);
@@ -46,12 +46,12 @@ package pvePowerBuff
       {
          _uiLoader = null;
          mainView = ComponentFactory.Instance.creatCustomObject("pvePowerBuffMainView");
-         var _loc1_:PvePowerBuffEvent = new PvePowerBuffEvent("pvePowerBuffLoadComplete");
-         _loc1_.info = mainView;
-         PvePowerBuffManager.instance.dispatchEvent(_loc1_);
+         var event:PvePowerBuffEvent = new PvePowerBuffEvent("pvePowerBuffLoadComplete");
+         event.info = mainView;
+         PvePowerBuffManager.instance.dispatchEvent(event);
       }
       
-      private function __disposeView(param1:PvePowerBuffEvent) : void
+      private function __disposeView(e:PvePowerBuffEvent) : void
       {
          mainView = null;
       }

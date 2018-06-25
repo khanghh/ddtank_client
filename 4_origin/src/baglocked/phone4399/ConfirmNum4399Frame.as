@@ -75,13 +75,13 @@ package baglocked.phone4399
          addEvent();
       }
       
-      private function onTimer(param1:TimerEvent) : void
+      private function onTimer(event:TimerEvent) : void
       {
          remain = Number(remain) - 1;
          _remainTxt.text = remain + " " + LanguageMgr.GetTranslation("tank.timebox.second");
       }
       
-      protected function onTimerComplete(param1:TimerEvent) : void
+      protected function onTimerComplete(event:TimerEvent) : void
       {
          _timer.removeEventListener("timer",onTimer);
          _timer.removeEventListener("timerComplete",onTimerComplete);
@@ -90,7 +90,7 @@ package baglocked.phone4399
          _confirmBtn.enable = false;
       }
       
-      protected function __confirmBtnClick(param1:MouseEvent) : void
+      protected function __confirmBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_numInput.text.length != 4)
@@ -101,9 +101,9 @@ package baglocked.phone4399
          BagLockedController.Instance.requestConfirm(2,_numInput.text);
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -112,9 +112,9 @@ package baglocked.phone4399
          }
       }
       
-      public function set bagLockedController(param1:BagLockedController) : void
+      public function set bagLockedController(value:BagLockedController) : void
       {
-         _bagLockedController = param1;
+         _bagLockedController = value;
       }
       
       public function show() : void

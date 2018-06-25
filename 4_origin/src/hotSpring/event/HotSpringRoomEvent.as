@@ -16,10 +16,10 @@ package hotSpring.event
       
       public var data:Object;
       
-      public function HotSpringRoomEvent(param1:String, param2:Object = null)
+      public function HotSpringRoomEvent(type:String, data:Object = null)
       {
-         super(param1);
-         this.data = param2;
+         super(type);
+         this.data = data;
       }
    }
 }

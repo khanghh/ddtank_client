@@ -89,9 +89,9 @@ package firstRecharge.view
          _btn.removeEventListener("click",clickHander);
       }
       
-      protected function _response(param1:FrameEvent) : void
+      protected function _response(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             ObjectUtils.disposeObject(this);
          }
@@ -99,10 +99,10 @@ package firstRecharge.view
       
       private function initView() : void
       {
-         var _loc4_:int = 0;
-         var _loc1_:* = null;
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var item:* = null;
+         var j:int = 0;
+         var gItem:* = null;
          _itemList = new Vector.<PicItem>();
          _goodsContentList = new Vector.<BagCell>();
          _treeImage = ComponentFactory.Instance.creatComponentByStylename("accumulationView.scale9cornerImageTree");
@@ -135,35 +135,33 @@ package firstRecharge.view
          str8.setNum("1234");
          addToContent(str8);
          titleText = "充值奖励";
-         _loc4_ = 0;
-         while(_loc4_ < 6)
+         for(i = 0; i < 6; )
          {
-            _loc1_ = new PicItem();
-            if(_loc4_ == 0)
+            item = new PicItem();
+            if(i == 0)
             {
-               _loc1_.x = 25;
+               item.x = 25;
             }
             else
             {
-               _loc1_.x = _loc4_ * (_loc1_.width + 1) + 40;
+               item.x = i * (item.width + 1) + 40;
             }
-            _loc1_.y = 57;
-            _loc1_.id = _loc4_;
-            _loc1_.setTxtStr(_iconTxtStrList[_loc4_]);
-            _loc1_.addIcon(_iconStrList[_loc4_]);
-            addToContent(_loc1_);
-            _itemList.push(_loc1_);
-            _loc4_++;
+            item.y = 57;
+            item.id = i;
+            item.setTxtStr(_iconTxtStrList[i]);
+            item.addIcon(_iconStrList[i]);
+            addToContent(item);
+            _itemList.push(item);
+            i++;
          }
-         _loc3_ = 0;
-         while(_loc3_ < 8)
+         for(j = 0; j < 8; )
          {
-            _loc2_ = new BagCell(_loc3_);
-            _loc2_.x = _loc3_ * (_loc2_.width + 8) + 160;
-            _loc2_.y = 233;
-            addToContent(_loc2_);
-            _goodsContentList.push(_loc2_);
-            _loc3_++;
+            gItem = new BagCell(j);
+            gItem.x = j * (gItem.width + 8) + 160;
+            gItem.y = 233;
+            addToContent(gItem);
+            _goodsContentList.push(gItem);
+            j++;
          }
          _selcetedBitMap = ComponentFactory.Instance.creatBitmap("fristRecharge.selected");
          addToContent(_selcetedBitMap);
@@ -179,17 +177,17 @@ package firstRecharge.view
          addToContent(_goldLine);
       }
       
-      protected function clickHander(param1:MouseEvent) : void
+      protected function clickHander(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          LeavePageManager.leaveToFillPath();
       }
       
-      protected function mouseClickHander(param1:MouseEvent) : void
+      protected function mouseClickHander(event:MouseEvent) : void
       {
-         if(param1.target is PicItem)
+         if(event.target is PicItem)
          {
-            var _loc2_:* = param1.target.id;
+            var _loc2_:* = event.target.id;
             if(0 !== _loc2_)
             {
                if(1 !== _loc2_)
@@ -229,8 +227,8 @@ package firstRecharge.view
             {
                str8.setNum("288");
             }
-            _selcetedBitMap.x = param1.target.x - 2;
-            _selcetedBitMap.y = param1.target.y - 4;
+            _selcetedBitMap.x = event.target.x - 2;
+            _selcetedBitMap.y = event.target.y - 4;
          }
       }
       

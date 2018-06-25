@@ -60,15 +60,15 @@ package ddt.manager
          return _instance;
       }
       
-      public function showRegisterFrame(param1:Boolean) : void
+      public function showRegisterFrame(isAmend:Boolean) : void
       {
          if(!_isLoaded)
          {
-            loadAcademyCommon(showRegisterFrame,[param1]);
+            loadAcademyCommon(showRegisterFrame,[isAmend]);
             return;
          }
          _academyRegisterFrame = ComponentFactory.Instance.creatComponentByStylename("academy.AcademyRegisterFrame");
-         _academyRegisterFrame.isAmend(param1);
+         _academyRegisterFrame.isAmend(isAmend);
          _academyRegisterFrame.show();
       }
       
@@ -89,7 +89,7 @@ package ddt.manager
          _myAcademyMasterFrame.addEventListener("response",__clearMyAcademyMasterFrame);
       }
       
-      private function __clearMyAcademyMasterFrame(param1:FrameEvent) : void
+      private function __clearMyAcademyMasterFrame(event:FrameEvent) : void
       {
          _myAcademyMasterFrame.removeEventListener("response",__clearMyAcademyMasterFrame);
          _myAcademyMasterFrame.dispose();
@@ -113,7 +113,7 @@ package ddt.manager
          _myAcademyApprenticeFrame.addEventListener("response",__clearMyAcademyApprenticeFrame);
       }
       
-      private function __clearMyAcademyApprenticeFrame(param1:FrameEvent) : void
+      private function __clearMyAcademyApprenticeFrame(event:FrameEvent) : void
       {
          _myAcademyApprenticeFrame.removeEventListener("response",__clearMyAcademyApprenticeFrame);
          _myAcademyApprenticeFrame.dispose();
@@ -132,7 +132,7 @@ package ddt.manager
          _academyMasterMainFrame.addEventListener("response",__clearAcademyMasterMainFrame);
       }
       
-      private function __clearAcademyMasterMainFrame(param1:FrameEvent) : void
+      private function __clearAcademyMasterMainFrame(event:FrameEvent) : void
       {
          _academyMasterMainFrame.removeEventListener("response",__clearAcademyMasterMainFrame);
          _academyMasterMainFrame.dispose();
@@ -151,76 +151,76 @@ package ddt.manager
          _academyApprenticeMainFrame.addEventListener("response",__clearAcademyApprenticeMainFrame);
       }
       
-      private function __clearAcademyApprenticeMainFrame(param1:FrameEvent) : void
+      private function __clearAcademyApprenticeMainFrame(event:FrameEvent) : void
       {
          _academyApprenticeMainFrame.removeEventListener("response",__clearAcademyApprenticeMainFrame);
          _academyApprenticeMainFrame.dispose();
          _academyApprenticeMainFrame = null;
       }
       
-      public function showAcademyRequestMasterFrame(param1:BasePlayer) : void
+      public function showAcademyRequestMasterFrame(info:BasePlayer) : void
       {
          if(!_isLoaded)
          {
-            loadAcademyCommon(showAcademyRequestMasterFrame,[param1]);
+            loadAcademyCommon(showAcademyRequestMasterFrame,[info]);
             return;
          }
          _academyRequestMasterFrame = ComponentFactory.Instance.creatComponentByStylename("academyCommon.academyRequest.AcademyRequestMasterFrame");
          _academyRequestMasterFrame.show();
-         _academyRequestMasterFrame.setInfo(param1);
+         _academyRequestMasterFrame.setInfo(info);
       }
       
-      public function showAcademyRequestApprenticeFrame(param1:BasePlayer) : void
+      public function showAcademyRequestApprenticeFrame(info:BasePlayer) : void
       {
          if(!_isLoaded)
          {
-            loadAcademyCommon(showAcademyRequestApprenticeFrame,[param1]);
+            loadAcademyCommon(showAcademyRequestApprenticeFrame,[info]);
             return;
          }
-         var _loc2_:AcademyRequestApprenticeFrame = ComponentFactory.Instance.creatComponentByStylename("academyCommon.academyRequest.AcademyRequestApprenticeFrame");
-         _loc2_.show();
-         _loc2_.setInfo(param1);
+         var academyRequestApprenticeFrame:AcademyRequestApprenticeFrame = ComponentFactory.Instance.creatComponentByStylename("academyCommon.academyRequest.AcademyRequestApprenticeFrame");
+         academyRequestApprenticeFrame.show();
+         academyRequestApprenticeFrame.setInfo(info);
       }
       
-      public function showAcademyAnswerMasterFrame(param1:int, param2:String, param3:String) : void
+      public function showAcademyAnswerMasterFrame(id:int, name:String, messger:String) : void
       {
-         var _loc4_:* = null;
+         var messgerInfo:* = null;
          if(!_isLoaded)
          {
-            loadAcademyCommon(showAcademyAnswerMasterFrame,[param1,param2,param3]);
+            loadAcademyCommon(showAcademyAnswerMasterFrame,[id,name,messger]);
             return;
          }
          if(StateManager.currentStateType != "fightLabGameView" && StateManager.currentStateType != "fighting" && StateManager.currentStateType != "littleGame")
          {
             _academyAnswerMasterFrame = ComponentFactory.Instance.creatComponentByStylename("academyCommon.academyRequest.AcademyAnswerMasterFrame");
             _academyAnswerMasterFrame.show();
-            _academyAnswerMasterFrame.setMessage(param1,param2,param3);
+            _academyAnswerMasterFrame.setMessage(id,name,messger);
          }
          else
          {
-            _loc4_ = new SimpleMessger(param1,param2,param3,0);
-            AcademyManager.Instance.messgers.push(_loc4_);
+            messgerInfo = new SimpleMessger(id,name,messger,0);
+            AcademyManager.Instance.messgers.push(messgerInfo);
          }
       }
       
-      public function showAcademyAnswerApprenticeFrame(param1:int, param2:String, param3:String) : void
+      public function showAcademyAnswerApprenticeFrame(id:int, name:String, messger:String) : void
       {
-         var _loc4_:* = null;
+         var messgerInfo:* = null;
          if(!_isLoaded)
          {
-            loadAcademyCommon(showAcademyAnswerApprenticeFrame,[param1,param2,param3]);
+            loadAcademyCommon(showAcademyAnswerApprenticeFrame,[id,name,messger]);
             return;
          }
          if(StateManager.currentStateType != "fightLabGameView" && StateManager.currentStateType != "fighting" && StateManager.currentStateType != "littleGame")
          {
             _academyAnswerApprenticeFrame = ComponentFactory.Instance.creatComponentByStylename("academyCommon.academyRequest.AcademyAnswerApprenticeFrame");
             _academyAnswerApprenticeFrame.show();
-            _academyAnswerApprenticeFrame.setMessage(param1,param2,param3);
+            _academyAnswerApprenticeFrame.setMessage(id,name,messger);
          }
          else
          {
-            _loc4_ = new SimpleMessger(param1,param2,param3,1);
-            AcademyManager.Instance.messgers.push(_loc4_);
+            messgerInfo = new SimpleMessger(id,name,messger,1);
+            AcademyManager.Instance.messgers.push(messgerInfo);
          }
       }
       
@@ -239,7 +239,7 @@ package ddt.manager
          _apprenticeGraduate.show();
       }
       
-      public function showMasterGraduate(param1:String) : void
+      public function showMasterGraduate(value:String) : void
       {
          if(!_isLoaded)
          {
@@ -251,7 +251,7 @@ package ddt.manager
             return;
          }
          _masterGraduate = ComponentFactory.Instance.creatComponentByStylename("academyCommon.graduate.masterGraduate");
-         _masterGraduate.setName(param1);
+         _masterGraduate.setName(value);
          _masterGraduate.show();
       }
       
@@ -262,14 +262,14 @@ package ddt.manager
             loadAcademyCommon(showAcademyPreviewFrame);
             return;
          }
-         var _loc1_:Boolean = PlayerManager.Instance.Self.apprenticeshipState != 3 && PlayerManager.Instance.Self.apprenticeshipState != 1;
+         var submitEnable:Boolean = PlayerManager.Instance.Self.apprenticeshipState != 3 && PlayerManager.Instance.Self.apprenticeshipState != 1;
          if(PlayerManager.Instance.Self.Grade >= 20)
          {
-            PreviewFrameManager.Instance.createsPreviewFrame(LanguageMgr.GetTranslation("ddt.manager.showAcademyPreviewFrame.masterFree"),"asset.PreviewFrame.PreviewContent","view.common.apprenticeAcademyPreviewFrame","view.common.masterAcademyPreviewFrame.PreviewScroll",AcademyManager.Instance.recommends,_loc1_);
+            PreviewFrameManager.Instance.createsPreviewFrame(LanguageMgr.GetTranslation("ddt.manager.showAcademyPreviewFrame.masterFree"),"asset.PreviewFrame.PreviewContent","view.common.apprenticeAcademyPreviewFrame","view.common.masterAcademyPreviewFrame.PreviewScroll",AcademyManager.Instance.recommends,submitEnable);
          }
          else
          {
-            PreviewFrameManager.Instance.createsPreviewFrame(LanguageMgr.GetTranslation("ddt.manager.showAcademyPreviewFrame.masterFree"),"asset.PreviewFrame.PreviewContent","view.common.masterAcademyPreviewFrame","view.common.masterAcademyPreviewFrame.PreviewScroll",AcademyManager.Instance.recommends,_loc1_);
+            PreviewFrameManager.Instance.createsPreviewFrame(LanguageMgr.GetTranslation("ddt.manager.showAcademyPreviewFrame.masterFree"),"asset.PreviewFrame.PreviewContent","view.common.masterAcademyPreviewFrame","view.common.masterAcademyPreviewFrame.PreviewScroll",AcademyManager.Instance.recommends,submitEnable);
          }
       }
       
@@ -290,16 +290,16 @@ package ddt.manager
          }
       }
       
-      private function loadAcademyCommon(param1:Function, param2:Array = null) : void
+      private function loadAcademyCommon(func:Function, params:Array = null) : void
       {
-         var _loc3_:HelperUIModuleLoad = new HelperUIModuleLoad();
-         _loc3_.loadUIModule(["academycommon"],callBack,[param1,param2]);
+         var _uiLoader:HelperUIModuleLoad = new HelperUIModuleLoad();
+         _uiLoader.loadUIModule(["academycommon"],callBack,[func,params]);
       }
       
-      private function callBack(param1:Function, param2:Array) : void
+      private function callBack(func:Function, params:Array) : void
       {
          _isLoaded = true;
-         param1.apply(null,param2);
+         func.apply(null,params);
       }
    }
 }

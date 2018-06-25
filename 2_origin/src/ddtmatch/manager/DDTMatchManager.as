@@ -84,9 +84,9 @@ package ddtmatch.manager
          dispatchEvent(new Event("showMainView"));
       }
       
-      public function questionInfo(param1:LanternDataAnalyzer) : void
+      public function questionInfo(analyer:LanternDataAnalyzer) : void
       {
-         _questionInfo = param1.ddtMatchData;
+         _questionInfo = analyer.ddtMatchData;
       }
       
       public function get info() : Object
@@ -94,19 +94,19 @@ package ddtmatch.manager
          return _questionInfo;
       }
       
-      private function __onExpertHandler(param1:CrazyTankSocketEvent) : void
+      private function __onExpertHandler(e:CrazyTankSocketEvent) : void
       {
          if(!ServerConfigManager.instance.getLightRiddleIsNew)
          {
             return;
          }
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:int = param1._cmd;
-         var _loc3_:CrazyTankSocketEvent = null;
-         switch(int(_loc2_) - 37)
+         var pkg:PackageIn = e.pkg;
+         var cmd:int = e._cmd;
+         var event:CrazyTankSocketEvent = null;
+         switch(int(cmd) - 37)
          {
             case 0:
-               expertIsBegin = _loc4_.readBoolean();
+               expertIsBegin = pkg.readBoolean();
                if(expertIsBegin)
                {
                   DDTMatchManager.instance.showEnterIcon();
@@ -117,39 +117,39 @@ package ddtmatch.manager
                }
                break;
             case 1:
-               _loc3_ = new CrazyTankSocketEvent("lanternRiddles_question",_loc4_);
+               event = new CrazyTankSocketEvent("lanternRiddles_question",pkg);
                break;
             case 2:
-               _loc3_ = new CrazyTankSocketEvent("lanternRiddles_answer",_loc4_);
+               event = new CrazyTankSocketEvent("lanternRiddles_answer",pkg);
                break;
             default:
-               _loc3_ = new CrazyTankSocketEvent("lanternRiddles_answer",_loc4_);
+               event = new CrazyTankSocketEvent("lanternRiddles_answer",pkg);
                break;
             case 4:
-               _loc3_ = new CrazyTankSocketEvent("lanternRiddles_skill",_loc4_);
+               event = new CrazyTankSocketEvent("lanternRiddles_skill",pkg);
                break;
             case 5:
-               _loc3_ = new CrazyTankSocketEvent("lanternRiddles_rankinfo",_loc4_);
+               event = new CrazyTankSocketEvent("lanternRiddles_rankinfo",pkg);
                break;
             case 6:
-               onBeginTips(_loc4_);
+               onBeginTips(pkg);
          }
-         if(_loc3_)
+         if(event)
          {
-            dispatchEvent(_loc3_);
+            dispatchEvent(event);
          }
       }
       
-      private function __onRedpackettHandler(param1:CrazyTankSocketEvent) : void
+      private function __onRedpackettHandler(e:CrazyTankSocketEvent) : void
       {
-         var _loc4_:Boolean = false;
-         var _loc5_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc5_.readInt();
-         var _loc3_:CrazyTankSocketEvent = null;
-         switch(int(_loc2_) - 1)
+         var bol:Boolean = false;
+         var pkg:PackageIn = e.pkg;
+         var cmd:int = pkg.readInt();
+         var event:CrazyTankSocketEvent = null;
+         switch(int(cmd) - 1)
          {
             case 0:
-               redPacketIsBegin = _loc5_.readBoolean();
+               redPacketIsBegin = pkg.readBoolean();
                if(redPacketIsBegin)
                {
                   DDTMatchManager.instance.showEnterIcon();
@@ -160,47 +160,47 @@ package ddtmatch.manager
                }
                break;
             case 1:
-               _loc3_ = new CrazyTankSocketEvent("updataRedPacketList",_loc5_);
+               event = new CrazyTankSocketEvent("updataRedPacketList",pkg);
                break;
             case 2:
                break;
             case 3:
-               _loc3_ = new CrazyTankSocketEvent("redpacketRecord",_loc5_);
+               event = new CrazyTankSocketEvent("redpacketRecord",pkg);
                break;
             case 4:
-               _loc4_ = _loc5_.readBoolean();
-               if(!_loc4_)
+               bol = pkg.readBoolean();
+               if(!bol)
                {
                   SocketManager.Instance.out.getRedPacketInfo();
                }
                break;
             default:
-               _loc4_ = _loc5_.readBoolean();
-               if(!_loc4_)
+               bol = pkg.readBoolean();
+               if(!bol)
                {
                   SocketManager.Instance.out.getRedPacketInfo();
                }
                break;
             case 6:
-               model.myRedPacketCount = _loc5_.readInt();
-               model.myRedPacketMoney = _loc5_.readInt();
+               model.myRedPacketCount = pkg.readInt();
+               model.myRedPacketMoney = pkg.readInt();
          }
-         if(_loc3_)
+         if(event)
          {
-            dispatchEvent(_loc3_);
+            dispatchEvent(event);
          }
       }
       
-      private function __onMatchMessageHandler(param1:CrazyTankSocketEvent) : void
+      private function __onMatchMessageHandler(e:CrazyTankSocketEvent) : void
       {
-         var _loc4_:Boolean = false;
-         var _loc5_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc5_.readInt();
-         var _loc3_:CrazyTankSocketEvent = null;
-         switch(int(_loc2_) - 1)
+         var bol:Boolean = false;
+         var pkg:PackageIn = e.pkg;
+         var cmd:int = pkg.readInt();
+         var event:CrazyTankSocketEvent = null;
+         switch(int(cmd) - 1)
          {
             case 0:
-               matchIsBegin = _loc5_.readBoolean();
+               matchIsBegin = pkg.readBoolean();
                if(matchIsBegin)
                {
                   DDTMatchManager.instance.showEnterIcon();
@@ -211,31 +211,31 @@ package ddtmatch.manager
                }
                break;
             case 1:
-               _loc3_ = new CrazyTankSocketEvent("matchInfo",_loc5_);
+               event = new CrazyTankSocketEvent("matchInfo",pkg);
                break;
             case 2:
-               _loc4_ = _loc5_.readBoolean();
-               if(_loc4_)
+               bol = pkg.readBoolean();
+               if(bol)
                {
                   SocketManager.Instance.out.getBuyinfo();
                   break;
                }
          }
-         if(_loc3_)
+         if(event)
          {
-            dispatchEvent(_loc3_);
+            dispatchEvent(event);
          }
       }
       
-      private function __onfightKingHandler(param1:CrazyTankSocketEvent) : void
+      private function __onfightKingHandler(e:CrazyTankSocketEvent) : void
       {
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc4_.readInt();
-         var _loc3_:CrazyTankSocketEvent = null;
-         switch(int(_loc2_) - 1)
+         var pkg:PackageIn = e.pkg;
+         var cmd:int = pkg.readInt();
+         var event:CrazyTankSocketEvent = null;
+         switch(int(cmd) - 1)
          {
             case 0:
-               fightKingIsBegin = _loc4_.readBoolean();
+               fightKingIsBegin = pkg.readBoolean();
                if(fightKingIsBegin)
                {
                   DDTMatchManager.instance.showEnterIcon();
@@ -246,57 +246,55 @@ package ddtmatch.manager
                }
                break;
             case 1:
-               _loc3_ = new CrazyTankSocketEvent("fightKing",_loc4_);
+               event = new CrazyTankSocketEvent("fightKing",pkg);
          }
-         if(_loc3_)
+         if(event)
          {
-            dispatchEvent(_loc3_);
+            dispatchEvent(event);
          }
       }
       
-      public function templateDataSetup(param1:Array) : void
+      public function templateDataSetup(dataList:Array) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc2_:Boolean = false;
-         var _loc3_:int = 0;
-         itemInfoList = param1;
+         var i:int = 0;
+         var info:* = null;
+         var bol:Boolean = false;
+         var j:int = 0;
+         itemInfoList = dataList;
          list = [];
-         _loc5_ = 0;
-         while(_loc5_ < itemInfoList.length)
+         for(i = 0; i < itemInfoList.length; )
          {
-            _loc4_ = itemInfoList[_loc5_];
-            _loc2_ = false;
-            _loc3_ = 0;
-            while(_loc3_ < list.length)
+            info = itemInfoList[i];
+            bol = false;
+            for(j = 0; j < list.length; )
             {
-               if(list[_loc3_].split(":")[0] == _loc4_.Quality.toString())
+               if(list[j].split(":")[0] == info.Quality.toString())
                {
-                  _loc2_ = true;
-                  list[_loc3_] = list[_loc3_] + "|" + _loc4_.TemplateID.toString() + "," + _loc4_.Count.toString();
+                  bol = true;
+                  list[j] = list[j] + "|" + info.TemplateID.toString() + "," + info.Count.toString();
                   break;
                }
-               _loc3_++;
+               j++;
             }
-            if(!_loc2_)
+            if(!bol)
             {
-               list.push(_loc4_.Quality.toString() + ":" + _loc4_.TemplateID.toString() + "," + _loc4_.Count.toString());
+               list.push(info.Quality.toString() + ":" + info.TemplateID.toString() + "," + info.Count.toString());
             }
-            _loc5_++;
+            i++;
          }
       }
       
-      private function onBeginTips(param1:PackageIn) : void
+      private function onBeginTips(pkg:PackageIn) : void
       {
-         var _loc3_:int = param1.readInt();
+         var minite:int = pkg.readInt();
          if(StateManager.currentStateType != "fighting")
          {
-            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.DDTMatch.expertView.beginTipsText",_loc3_));
+            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.DDTMatch.expertView.beginTipsText",minite));
          }
-         var _loc2_:ChatData = new ChatData();
-         _loc2_.channel = 14;
-         _loc2_.msg = LanguageMgr.GetTranslation("ddt.DDTMatch.expertView.beginTipsText",_loc3_);
-         ChatManager.Instance.chat(_loc2_);
+         var data:ChatData = new ChatData();
+         data.channel = 14;
+         data.msg = LanguageMgr.GetTranslation("ddt.DDTMatch.expertView.beginTipsText",minite);
+         ChatManager.Instance.chat(data);
       }
       
       public function showEnterIcon() : void

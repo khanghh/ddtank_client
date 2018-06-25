@@ -80,22 +80,22 @@ package
          return this._allowSound;
       }
       
-      public function set allowSound(param1:Boolean) : void
+      public function set allowSound(value:Boolean) : void
       {
-         if(this._allowSound == param1)
+         if(this._allowSound == value)
          {
             return;
          }
-         this._allowSound = param1;
+         this._allowSound = value;
          if(!this._allowSound)
          {
             this.stopAllSound();
          }
       }
       
-      public function addSound(param1:String, param2:Class) : void
+      public function addSound(id:String, key:Class) : void
       {
-         this._dic[param1] = param2;
+         this._dic[id] = key;
       }
       
       public function get allowMusic() : Boolean
@@ -103,13 +103,13 @@ package
          return this._allowMusic;
       }
       
-      public function set allowMusic(param1:Boolean) : void
+      public function set allowMusic(value:Boolean) : void
       {
-         if(this._allowMusic == param1)
+         if(this._allowMusic == value)
          {
             return;
          }
-         this._allowMusic = param1;
+         this._allowMusic = value;
          if(this._allowMusic)
          {
             this.resumeMusic();
@@ -120,29 +120,29 @@ package
          }
       }
       
-      public function onPlayStatus(param1:*) : void
+      public function onPlayStatus(e:*) : void
       {
          trace("-------------------------------");
          trace("------------Fuck---------------");
          trace("-------------------------------");
       }
       
-      public function setup(param1:Array, param2:String) : void
+      public function setup(music:Array, siteMain:String) : void
       {
-         this._music = !!param1?param1:[];
-         SITE_MAIN = param2;
+         this._music = !!music?music:[];
+         SITE_MAIN = siteMain;
       }
       
-      public function setConfig(param1:Boolean, param2:Boolean, param3:Number, param4:Number) : void
+      public function setConfig(allowMusic:Boolean, allowSound:Boolean, musicVolumn:Number, soundVolumn:Number) : void
       {
-         this.allowMusic = param1;
-         this.allowSound = param2;
-         this._musicVolume = param3;
+         this.allowMusic = allowMusic;
+         this.allowSound = allowSound;
+         this._musicVolume = musicVolumn;
          if(this.allowMusic)
          {
-            this._ns.soundTransform = new SoundTransform(param3 / 100);
+            this._ns.soundTransform = new SoundTransform(musicVolumn / 100);
          }
-         this.soundVolumn = param4;
+         this.soundVolumn = soundVolumn;
       }
       
       public function setupAudioResource() : void
@@ -154,22 +154,18 @@ package
       {
       }
       
-      public function checkHasSound(param1:String) : Boolean
+      public function checkHasSound(sound:String) : Boolean
       {
-         if(this._dic[param1] != null)
+         if(this._dic[sound] != null)
          {
             return true;
          }
          return false;
       }
       
-      public function play(param1:String, param2:Boolean = false, param3:Boolean = true, param4:Number = 0) : void
+      public function play(id:String, allowMulti:Boolean = false, replaceSame:Boolean = true, loop:Number = 0) : void
       {
          var cls:Class = null;
-         var id:String = param1;
-         var allowMulti:Boolean = param2;
-         var replaceSame:Boolean = param3;
-         var loop:Number = param4;
          if(this._dic[id] == null)
          {
             try
@@ -191,11 +187,9 @@ package
                {
                   this.playSoundImp(id,loop);
                }
-               return;
             }
             catch(e:Error)
             {
-               return;
             }
          }
       }
@@ -205,77 +199,77 @@ package
          this.play("008");
       }
       
-      private function playSoundImp(param1:String, param2:Number) : void
+      private function playSoundImp(id:String, loop:Number) : void
       {
-         var _loc3_:Sound = new this._dic[param1]();
-         var _loc4_:SoundChannel = _loc3_.play(0,param2,new SoundTransform(this.soundVolumn / 100));
-         _loc4_.addEventListener(Event.SOUND_COMPLETE,this.__soundComplete);
-         this._currentSound[param1] = _loc4_;
+         var ss:Sound = new this._dic[id]();
+         var sc:SoundChannel = ss.play(0,loop,new SoundTransform(this.soundVolumn / 100));
+         sc.addEventListener(Event.SOUND_COMPLETE,this.__soundComplete);
+         this._currentSound[id] = sc;
       }
       
-      private function __soundComplete(param1:Event) : void
+      private function __soundComplete(evt:Event) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:SoundChannel = param1.currentTarget as SoundChannel;
-         _loc2_.removeEventListener(Event.SOUND_COMPLETE,this.__soundComplete);
-         _loc2_.stop();
-         for(_loc3_ in this._currentSound)
+         var i:* = null;
+         var c:SoundChannel = evt.currentTarget as SoundChannel;
+         c.removeEventListener(Event.SOUND_COMPLETE,this.__soundComplete);
+         c.stop();
+         for(i in this._currentSound)
          {
-            if(this._currentSound[_loc3_] == _loc2_)
+            if(this._currentSound[i] == c)
             {
-               this._currentSound[_loc3_] = null;
+               this._currentSound[i] = null;
                return;
             }
          }
       }
       
-      public function stop(param1:String) : void
+      public function stop(s:String) : void
       {
-         if(this._currentSound[param1])
+         if(this._currentSound[s])
          {
-            this._currentSound[param1].stop();
-            this._currentSound[param1] = null;
+            this._currentSound[s].stop();
+            this._currentSound[s] = null;
          }
       }
       
       public function stopAllSound() : void
       {
-         var _loc1_:SoundChannel = null;
-         for each(_loc1_ in this._currentSound)
+         var sound:SoundChannel = null;
+         for each(sound in this._currentSound)
          {
-            if(_loc1_)
+            if(sound)
             {
-               _loc1_.stop();
+               sound.stop();
             }
          }
          this._currentSound = new Dictionary();
       }
       
-      public function isPlaying(param1:String) : Boolean
+      public function isPlaying(s:String) : Boolean
       {
-         return this._currentSound[param1] == null?false:true;
+         return this._currentSound[s] == null?false:true;
       }
       
-      public function playMusic(param1:String, param2:Boolean = true, param3:Boolean = false) : void
+      public function playMusic(id:String, loops:Boolean = true, replaceSame:Boolean = false) : void
       {
          this.currentMusicTry = 0;
-         if(param3 || this._currentMusic != param1)
+         if(replaceSame || this._currentMusic != id)
          {
             if(this._isMusicPlaying)
             {
                this.stopMusic();
             }
-            this.playMusicImp([param1],param2);
+            this.playMusicImp([id],loops);
          }
       }
       
-      private function playMusicImp(param1:Array, param2:Boolean) : void
+      private function playMusicImp(list:Array, loops:Boolean) : void
       {
-         this._musicLoop = param2;
-         this._musicPlayList = param1;
-         if(param1.length > 0)
+         this._musicLoop = loops;
+         this._musicPlayList = list;
+         if(list.length > 0)
          {
-            this._currentMusic = param1[0];
+            this._currentMusic = list[0];
             this._isMusicPlaying = true;
             this._ns.play(SITE_MAIN + "sound/" + this._currentMusic + ".flv");
             this._ns.soundTransform = new SoundTransform(this._musicVolume / 100);
@@ -291,9 +285,9 @@ package
          }
       }
       
-      private function __onMusicStaus(param1:NetStatusEvent) : void
+      private function __onMusicStaus(e:NetStatusEvent) : void
       {
-         if(param1.info.code == "NetConnection.Connect.Failed" || param1.info.code == "NetStream.Play.StreamNotFound")
+         if(e.info.code == "NetConnection.Connect.Failed" || e.info.code == "NetStream.Play.StreamNotFound")
          {
             if(this.currentMusicTry < MusicFailedTryTime)
             {
@@ -305,17 +299,17 @@ package
                this._ns.removeEventListener(NetStatusEvent.NET_STATUS,this.__onMusicStaus);
             }
          }
-         else if(param1.info.code == "NetStream.Play.Start")
+         else if(e.info.code == "NetStream.Play.Start")
          {
             this._ns.removeEventListener(NetStatusEvent.NET_STATUS,this.__onMusicStaus);
          }
       }
       
-      public function setMusicVolumeByRatio(param1:Number) : void
+      public function setMusicVolumeByRatio(ratio:Number) : void
       {
          if(this.allowMusic)
          {
-            this._musicVolume = this._musicVolume * param1;
+            this._musicVolume = this._musicVolume * ratio;
             this._ns.soundTransform = new SoundTransform(this._musicVolume / 100);
          }
       }
@@ -348,15 +342,15 @@ package
          }
       }
       
-      public function playGameBackMusic(param1:String) : void
+      public function playGameBackMusic(id:String) : void
       {
-         this.playMusicImp([param1,param1],false);
+         this.playMusicImp([id,id],false);
       }
       
-      private function __netStatus(param1:NetStatusEvent) : void
+      private function __netStatus(event:NetStatusEvent) : void
       {
-         var _loc2_:int = 0;
-         if(param1.info.code == "NetStream.Play.Stop")
+         var index:int = 0;
+         if(event.info.code == "NetStream.Play.Stop")
          {
             if(this._musicLoop)
             {
@@ -368,21 +362,21 @@ package
             }
             else
             {
-               _loc2_ = 0;
-               this.playMusicImp([this._music[_loc2_]],false);
+               index = 0;
+               this.playMusicImp([this._music[index]],false);
             }
          }
       }
       
-      public function onMetaData(param1:Object) : void
+      public function onMetaData(info:Object) : void
       {
       }
       
-      public function onXMPData(param1:Object) : void
+      public function onXMPData(info:Object) : void
       {
       }
       
-      public function onCuePoint(param1:Object) : void
+      public function onCuePoint(info:Object) : void
       {
       }
    }

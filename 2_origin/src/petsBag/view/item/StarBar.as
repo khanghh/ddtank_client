@@ -11,7 +11,7 @@ package petsBag.view.item
       
       public static var SPACE:Number = 0.2;
       
-      public static var TOTAL_STAR:int = 6;
+      public static var TOTAL_STAR:int = 5;
        
       
       private var _starImgVec:Vector.<Bitmap>;
@@ -22,25 +22,25 @@ package petsBag.view.item
          _starImgVec = new Vector.<Bitmap>();
       }
       
-      public function starNum(param1:int, param2:String = "assets.petsBag.star") : void
+      public function starNum(num:int, assetResource:String = "assets.petsBag.star") : void
       {
-         var _loc3_:* = null;
-         if(param1 > 0)
+         var img:* = null;
+         if(num > 0)
          {
-            if(param1 > TOTAL_STAR)
+            if(num > TOTAL_STAR)
             {
-               param1 = TOTAL_STAR;
+               num = TOTAL_STAR;
             }
             remove();
             while(true)
             {
-               param1--;
-               if(!param1)
+               num--;
+               if(!num)
                {
                   break;
                }
-               _loc3_ = ComponentFactory.Instance.creatBitmap(param2);
-               _starImgVec.push(_loc3_);
+               img = ComponentFactory.Instance.creatBitmap(assetResource);
+               _starImgVec.push(img);
             }
             update();
          }
@@ -52,26 +52,24 @@ package petsBag.view.item
       
       private function update() : void
       {
-         var _loc1_:int = 0;
-         var _loc2_:int = _starImgVec.length;
-         _loc1_ = 0;
-         while(_loc1_ < _loc2_)
+         var index:int = 0;
+         var count:int = _starImgVec.length;
+         for(index = 0; index < count; )
          {
-            addChild(_starImgVec[_loc1_]);
-            _starImgVec[_loc1_].x = _loc1_ * (_starImgVec[_loc1_].width - 3) + SPACE;
-            _loc1_++;
+            addChild(_starImgVec[index]);
+            _starImgVec[index].x = index * (_starImgVec[index].width - 3) + SPACE;
+            index++;
          }
       }
       
       private function remove() : void
       {
-         var _loc1_:int = 0;
-         var _loc2_:int = _starImgVec.length;
-         _loc1_ = 0;
-         while(_loc1_ < _loc2_)
+         var index:int = 0;
+         var count:int = _starImgVec.length;
+         for(index = 0; index < count; )
          {
-            ObjectUtils.disposeObject(_starImgVec[_loc1_]);
-            _loc1_++;
+            ObjectUtils.disposeObject(_starImgVec[index]);
+            index++;
          }
          _starImgVec.splice(0,_starImgVec.length);
       }

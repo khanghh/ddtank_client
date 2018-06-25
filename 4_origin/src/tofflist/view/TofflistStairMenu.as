@@ -93,7 +93,7 @@ package tofflist.view
          _selectedBtnGroupII.addEventListener("change",__typeChange);
       }
       
-      private function __typeChange(param1:Event) : void
+      private function __typeChange(evt:Event) : void
       {
          SoundManager.instance.play("008");
          if(_selectedBtnGroupI.selectIndex == 0 && _selectedBtnGroupII.selectIndex == 0)
@@ -172,9 +172,9 @@ package tofflist.view
          return TofflistModel.firstMenuType;
       }
       
-      public function set type(param1:String) : void
+      public function set type(value:String) : void
       {
-         TofflistModel.firstMenuType = param1;
+         TofflistModel.firstMenuType = value;
          dispatchEvent(new TofflistEvent("tofflisttoolbarselect",type));
       }
    }

@@ -19,10 +19,10 @@ package explorerManual.view.chapter
       
       private var _chapterID:int;
       
-      public function ExplorerChapterItemView(param1:int)
+      public function ExplorerChapterItemView(type:int)
       {
          super();
-         _chapterID = param1;
+         _chapterID = type;
          initView();
          buttonMode = true;
       }
@@ -37,9 +37,9 @@ package explorerManual.view.chapter
          addChild(_progressTxt);
       }
       
-      public function updateProgress(param1:String) : void
+      public function updateProgress(str:String) : void
       {
-         _progressTxt.htmlText = param1;
+         _progressTxt.htmlText = str;
       }
       
       public function get chapterID() : int

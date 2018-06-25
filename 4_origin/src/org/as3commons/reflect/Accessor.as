@@ -13,26 +13,26 @@ package org.as3commons.reflect
       
       private var _access:AccessorAccess;
       
-      public function Accessor(param1:String, param2:AccessorAccess, param3:String, param4:String, param5:Boolean, param6:ApplicationDomain, param7:HashArray = null)
+      public function Accessor(name:String, access:AccessorAccess, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metadata:HashArray = null)
       {
-         super(param1,param3,param4,param5,param6,param7);
-         this._access = param2;
+         super(name,type,declaringType,isStatic,applicationDomain,metadata);
+         this._access = access;
       }
       
-      public static function newInstance(param1:String, param2:AccessorAccess, param3:String, param4:String, param5:Boolean, param6:ApplicationDomain, param7:HashArray = null) : Accessor
+      public static function newInstance(name:String, access:AccessorAccess, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metadata:HashArray = null) : Accessor
       {
-         var _loc8_:String = getCacheKey(param1,param2,param3,param4,param5,param6,param7);
-         if(!_cache[_loc8_])
+         var cacheKey:String = getCacheKey(name,access,type,declaringType,isStatic,applicationDomain,metadata);
+         if(!_cache[cacheKey])
          {
-            _cache[_loc8_] = new Accessor(param1,param2,param3,param4,param5,param6,param7);
+            _cache[cacheKey] = new Accessor(name,access,type,declaringType,isStatic,applicationDomain,metadata);
          }
-         return _cache[_loc8_];
+         return _cache[cacheKey];
       }
       
-      private static function getCacheKey(param1:String, param2:AccessorAccess, param3:String, param4:String, param5:Boolean, param6:ApplicationDomain, param7:HashArray) : String
+      private static function getCacheKey(name:String, access:AccessorAccess, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metadata:HashArray) : String
       {
-         var _loc8_:String = AbstractMember.getCacheKey(Accessor,param1,param3,param4,param5,param6,param7);
-         return [_loc8_,param2.name].join(":");
+         var cacheKey:String = AbstractMember.getCacheKey(Accessor,name,type,declaringType,isStatic,applicationDomain,metadata);
+         return [cacheKey,access.name].join(":");
       }
       
       public function get access() : AccessorAccess
@@ -60,28 +60,28 @@ package org.as3commons.reflect
          return this._access == AccessorAccess.WRITE_ONLY || this._access == AccessorAccess.READ_WRITE;
       }
       
-      override public function equals(param1:Object) : Boolean
+      override public function equals(other:Object) : Boolean
       {
-         var _loc2_:Accessor = param1 as Accessor;
-         var _loc3_:* = false;
-         if(_loc2_ != null)
+         var otherAccessor:Accessor = other as Accessor;
+         var result:* = false;
+         if(otherAccessor != null)
          {
-            _loc3_ = Boolean(super.equals(param1));
-            if(_loc3_)
+            result = Boolean(super.equals(other));
+            if(result)
             {
-               _loc3_ = _loc2_.access === this.access;
+               result = otherAccessor.access === this.access;
             }
-            if(_loc3_)
+            if(result)
             {
-               _loc3_ = Boolean(compareMetadata(_loc2_.metadata));
+               result = Boolean(compareMetadata(otherAccessor.metadata));
             }
          }
-         return _loc3_;
+         return result;
       }
       
-      as3commons_reflect function setAccess(param1:AccessorAccess) : void
+      as3commons_reflect function setAccess(value:AccessorAccess) : void
       {
-         this._access = param1;
+         this._access = value;
       }
    }
 }

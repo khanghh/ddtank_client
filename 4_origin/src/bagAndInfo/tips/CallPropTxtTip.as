@@ -102,62 +102,62 @@ package bagAndInfo.tips
          this.tipbackgound = _bg;
       }
       
-      public function setBGWidth(param1:int = 0) : void
+      public function setBGWidth(bgWidth:int = 0) : void
       {
-         _bg.width = param1;
+         _bg.width = bgWidth;
       }
       
-      public function setBGHeight(param1:int = 0) : void
+      public function setBGHeight(bgHeight:int = 0) : void
       {
-         _bg.height = param1;
+         _bg.height = bgHeight;
       }
       
-      private function _buildTipInfo(param1:String) : void
+      private function _buildTipInfo(type:String) : void
       {
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
          visible = false;
-         .super.tipData = param1;
-         this.atcAddValueText(param1.Attack);
-         this.defAddValueText(param1.Defend);
-         this.agiAddValueText(param1.Agility);
-         this.lukAddValueText(param1.Lucky);
+         .super.tipData = data;
+         this.atcAddValueText(data.Attack);
+         this.defAddValueText(data.Defend);
+         this.agiAddValueText(data.Agility);
+         this.lukAddValueText(data.Lucky);
          setBGWidth(150);
          setBGHeight(130);
          _validDate.visible = false;
          _validDateValue.visible = false;
-         var _loc2_:int = param1.Attack + param1.Defend + param1.Agility + param1.Lucky;
-         if(_loc2_ > 0)
+         var allAdd:int = data.Attack + data.Defend + data.Agility + data.Lucky;
+         if(allAdd > 0)
          {
             visible = true;
          }
       }
       
-      private function atcAddValueText(param1:int) : void
+      private function atcAddValueText(value:int) : void
       {
-         _attackValue.text = "+" + String(param1);
+         _attackValue.text = "+" + String(value);
       }
       
-      private function defAddValueText(param1:int) : void
+      private function defAddValueText(value:int) : void
       {
-         _defenseValue.text = "+" + String(param1);
+         _defenseValue.text = "+" + String(value);
       }
       
-      private function agiAddValueText(param1:int) : void
+      private function agiAddValueText(value:int) : void
       {
-         _agilityValue.text = "+" + String(param1);
+         _agilityValue.text = "+" + String(value);
       }
       
-      private function lukAddValueText(param1:int) : void
+      private function lukAddValueText(value:int) : void
       {
-         _luckyValue.text = "+" + String(param1);
+         _luckyValue.text = "+" + String(value);
       }
       
-      private function validDateValueText(param1:String) : void
+      private function validDateValueText(value:String) : void
       {
-         _validDateValue.text = param1;
+         _validDateValue.text = value;
       }
       
       override protected function addChildren() : void

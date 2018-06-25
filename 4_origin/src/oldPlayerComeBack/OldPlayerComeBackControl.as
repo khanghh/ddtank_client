@@ -46,9 +46,9 @@ package oldPlayerComeBack
          OldPlayerComeBackManager.instance.addEventListener("oldPlayerOpenView",__loadModuleResHandler);
       }
       
-      private function __loadModuleResHandler(param1:Event) : void
+      private function __loadModuleResHandler(evt:Event) : void
       {
-         evt = param1;
+         evt = evt;
          new HelperUIModuleLoad().loadUIModule(["oldPlayerComeBack"],function():void
          {
             __openViewHandler();
@@ -104,14 +104,14 @@ package oldPlayerComeBack
          OldPlayerComeBackManager.instance.removeEventListener("rollDiceResult",__rollDiceResultHandler);
       }
       
-      private function diceOverHandler(param1:BuriedEvent) : void
+      private function diceOverHandler(e:BuriedEvent) : void
       {
          _frame.comeBackView.moveToTargetPos(_moveStep,__rollOverHandler);
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             if(_frame)
             {
@@ -122,51 +122,51 @@ package oldPlayerComeBack
          }
       }
       
-      private function __updateViewHandler(param1:Event) : void
+      private function __updateViewHandler(evt:Event) : void
       {
-         var _loc2_:ComeBackAwardItemsInfo = OldPlayerComeBackManager.instance.curAwardInfo;
-         if(_loc2_ == null || _frame == null || _frame.comeBackView == null)
+         var awardInfo:ComeBackAwardItemsInfo = OldPlayerComeBackManager.instance.curAwardInfo;
+         if(awardInfo == null || _frame == null || _frame.comeBackView == null)
          {
             return;
          }
-         _frame.comeBackView.updateView(_loc2_);
+         _frame.comeBackView.updateView(awardInfo);
          if(_frame)
          {
             _frame.rollDiceComplete = true;
          }
       }
       
-      private function __rollDiceResultHandler(param1:CEvent) : void
+      private function __rollDiceResultHandler(evt:CEvent) : void
       {
-         var _loc2_:* = null;
-         _moveStep = int(param1.data);
+         var temFrame:* = null;
+         _moveStep = int(evt.data);
          switch(int(_moveStep) - 1)
          {
             case 0:
-               _loc2_ = "one";
+               temFrame = "one";
                break;
             case 1:
-               _loc2_ = "two";
+               temFrame = "two";
                break;
             case 2:
-               _loc2_ = "three";
+               temFrame = "three";
                break;
             case 3:
-               _loc2_ = "four";
+               temFrame = "four";
                break;
             case 4:
-               _loc2_ = "five";
+               temFrame = "five";
                break;
             case 5:
-               _loc2_ = "six";
+               temFrame = "six";
          }
-         _frame.diceRollMc.setCrFrame(_loc2_);
+         _frame.diceRollMc.setCrFrame(temFrame);
          _frame.diceRollMc.play();
       }
       
-      private function __rollOverHandler(param1:int) : void
+      private function __rollOverHandler(value:int) : void
       {
-         if(param1 >= 35)
+         if(value >= 35)
          {
             if(timeStep)
             {

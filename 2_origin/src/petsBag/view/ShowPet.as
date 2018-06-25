@@ -13,6 +13,7 @@ package petsBag.view
    import ddt.manager.LanguageMgr;
    import ddt.manager.MessageTipManager;
    import ddt.manager.SocketManager;
+   import ddt.utils.PositionUtils;
    import flash.display.BitmapData;
    import flash.display.Sprite;
    import flash.events.Event;
@@ -21,6 +22,7 @@ package petsBag.view
    import petsBag.PetsBagManager;
    import petsBag.view.item.PetBigItem;
    import petsBag.view.item.PetEquipItem;
+   import petsBag.view.item.PetWashBoneGrade;
    import petsBag.view.item.StarBar;
    
    public class ShowPet extends Sprite implements Disposeable
@@ -30,6 +32,8 @@ package petsBag.view
        
       
       private var _starBar:StarBar;
+      
+      private var _petGrade:PetWashBoneGrade;
       
       private var _petBigItem:PetBigItem;
       
@@ -51,27 +55,29 @@ package petsBag.view
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          _dragDropArea = new PersonalInfoDragInArea();
          _equipList = [];
          _vbox = ComponentFactory.Instance.creatCustomObject("petsBag.showPet.vbox");
-         _loc2_ = 0;
-         while(_loc2_ < 3)
+         for(i = 0; i < 3; )
          {
-            _loc1_ = new PetEquipItem(_loc2_);
-            _loc1_.id = _loc2_;
-            _loc1_.addEventListener("doubleclick",doubleClickHander);
-            _loc1_.addEventListener("itemclick",onClickHander);
-            _vbox.addChild(_loc1_);
-            _equipList.push(_loc1_);
-            _loc2_++;
+            item = new PetEquipItem(i);
+            item.id = i;
+            item.addEventListener("doubleclick",doubleClickHander);
+            item.addEventListener("itemclick",onClickHander);
+            _vbox.addChild(item);
+            _equipList.push(item);
+            i++;
          }
          _starBar = new StarBar();
          _starBar.x = _vbox.x + _vbox.width;
          addChild(_starBar);
          _petBigItem = ComponentFactory.Instance.creat("petsBag.petBigItem");
          _petBigItem.initTips();
+         _petGrade = new PetWashBoneGrade();
+         addChild(_petGrade);
+         PositionUtils.setPos(_petGrade,"petsBag.petGradePos");
          addChild(_dragDropArea);
          addChild(_petBigItem);
          addChild(_vbox);
@@ -82,7 +88,7 @@ package petsBag.view
          PetSpriteManager.Instance.addEventListener("showPetTip",__showPetTip);
       }
       
-      private function __showPetTip(param1:Event) : void
+      private function __showPetTip(e:Event) : void
       {
          if(isPetEquip == true)
          {
@@ -100,120 +106,120 @@ package petsBag.view
          _dragDropArea.visible = false;
       }
       
-      private function onClickHander(param1:CellEvent) : void
+      private function onClickHander(e:CellEvent) : void
       {
-         var _loc2_:* = null;
+         var cell:* = null;
          if(PlayerInfoViewControl.isOpenFromBag)
          {
-            _loc2_ = param1.data as BagCell;
+            cell = e.data as BagCell;
             PetsBagManager.instance().isEquip = true;
-            _loc2_.dragStart();
+            cell.dragStart();
          }
       }
       
-      private function doubleClickHander(param1:CellEvent) : void
+      private function doubleClickHander(e:CellEvent) : void
       {
          if(PlayerInfoViewControl.isOpenFromBag)
          {
-            SocketManager.Instance.out.delPetEquip(PetsBagManager.instance().petModel.currentPetInfo.Place,param1.currentTarget.id);
+            SocketManager.Instance.out.delPetEquip(PetsBagManager.instance().petModel.currentPetInfo.Place,e.currentTarget.id);
          }
       }
       
-      public function addPetEquip(param1:InventoryItemInfo) : void
+      public function addPetEquip(date:InventoryItemInfo) : void
       {
-         getBagCell(param1.Place).initBagCell(param1);
+         getBagCell(date.Place).initBagCell(date);
       }
       
-      public function getBagCell(param1:int) : PetEquipItem
+      public function getBagCell(type:int) : PetEquipItem
       {
-         return _equipList[param1] as PetEquipItem;
+         return _equipList[type] as PetEquipItem;
       }
       
-      public function delPetEquip(param1:int) : void
+      public function delPetEquip(id:int) : void
       {
-         if(getBagCell(param1))
+         if(getBagCell(id))
          {
-            getBagCell(param1).clearBagCell();
+            getBagCell(id).clearBagCell();
          }
       }
       
       public function update() : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var data:* = null;
+         var newInfo:* = null;
          clearCell();
-         var _loc3_:PetInfo = PetsBagManager.instance().petModel.currentPetInfo;
-         if(!_loc3_)
+         var currentPet:PetInfo = PetsBagManager.instance().petModel.currentPetInfo;
+         _petGrade.visible = currentPet != null;
+         if(!currentPet)
          {
-            _starBar.starNum(!!_loc3_?_loc3_.StarLevel:0);
-            _petBigItem.info = _loc3_;
+            _starBar.starNum(!!currentPet?currentPet.StarLevel:0);
+            _petBigItem.info = currentPet;
             return;
          }
-         _starBar.starNum(!!_loc3_?_loc3_.StarLevel:0);
-         _petBigItem.info = _loc3_;
-         _loc4_ = 0;
-         while(_loc4_ < 3)
+         _starBar.starNum(!!currentPet?currentPet.StarLevel:0);
+         _petBigItem.info = currentPet;
+         for(i = 0; i < 3; )
          {
-            _loc2_ = _loc3_.equipList[_loc4_];
-            if(_loc2_)
+            data = currentPet.equipList[i];
+            if(data)
             {
-               _loc1_ = ItemManager.fill(_loc2_) as InventoryItemInfo;
-               addPetEquip(_loc2_);
+               newInfo = ItemManager.fill(data) as InventoryItemInfo;
+               addPetEquip(data);
             }
-            _loc4_++;
+            i++;
          }
+         _petGrade.info = currentPet;
       }
       
-      public function update2(param1:PetInfo) : void
+      public function update2(currentPet2:PetInfo) : void
       {
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var data:* = null;
+         var newInfo:* = null;
          clearCell();
-         var _loc4_:* = param1;
-         if(!_loc4_)
+         var currentPet:* = currentPet2;
+         _petGrade.visible = currentPet != null;
+         if(!currentPet)
          {
-            _starBar.starNum(!!_loc4_?_loc4_.StarLevel:0);
-            _petBigItem.info = _loc4_;
+            _starBar.starNum(!!currentPet?currentPet.StarLevel:0);
+            _petBigItem.info = currentPet;
             return;
          }
-         _starBar.starNum(!!_loc4_?_loc4_.StarLevel:0);
-         _petBigItem.info = _loc4_;
-         _loc5_ = 0;
-         while(_loc5_ < 3)
+         _starBar.starNum(!!currentPet?currentPet.StarLevel:0);
+         _petBigItem.info = currentPet;
+         for(i = 0; i < 3; )
          {
-            _loc3_ = _loc4_.equipList[_loc5_];
-            if(_loc3_)
+            data = currentPet.equipList[i];
+            if(data)
             {
-               _loc2_ = ItemManager.fill(_loc3_) as InventoryItemInfo;
-               addPetEquip(_loc3_);
+               newInfo = ItemManager.fill(data) as InventoryItemInfo;
+               addPetEquip(data);
             }
-            _loc5_++;
+            i++;
          }
+         _petGrade.info = currentPet;
       }
       
       private function removeEvent() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = _equipList.length;
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_)
+         var i:int = 0;
+         var len:int = _equipList.length;
+         for(i = 0; i < len; )
          {
-            getBagCell(_equipList[_loc2_]).removeEventListener("doubleclick",doubleClickHander);
-            _loc2_++;
+            getBagCell(_equipList[i]).removeEventListener("doubleclick",doubleClickHander);
+            i++;
          }
          PetSpriteManager.Instance.removeEventListener("showPetTip",__showPetTip);
       }
       
       private function clearCell() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < 3)
+         var i:int = 0;
+         for(i = 0; i < 3; )
          {
-            delPetEquip(_loc1_);
-            _loc1_++;
+            delPetEquip(i);
+            i++;
          }
       }
       
@@ -241,6 +247,8 @@ package petsBag.view
             ObjectUtils.disposeObject(_starBar);
             _starBar = null;
          }
+         ObjectUtils.disposeObject(_petGrade);
+         _petGrade = null;
          ObjectUtils.disposeAllChildren(this);
       }
    }

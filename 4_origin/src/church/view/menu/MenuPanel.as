@@ -41,17 +41,17 @@ package church.view.menu
          super();
          _bg = ComponentFactory.Instance.creat("church.weddingRoom.guestListMenuBg");
          addChildAt(_bg,0);
-         var _loc1_:* = 10;
+         var startPos:* = 10;
          _kickGuest = new MenuItem(LanguageMgr.GetTranslation("tank.room.RoomIIPlayerItem.exitRoom"));
          _kickGuest.x = 9;
-         _kickGuest.y = _loc1_;
-         _loc1_ = Number(_loc1_ + 18);
+         _kickGuest.y = startPos;
+         startPos = Number(startPos + 18);
          _kickGuest.addEventListener("menuClick",__menuClick);
          addChild(_kickGuest);
          _blackGuest = new MenuItem(LanguageMgr.GetTranslation("tank.view.im.AddBlackListFrame.btnText"));
          _blackGuest.x = 9;
-         _blackGuest.y = _loc1_;
-         _loc1_ = Number(_loc1_ + 18);
+         _blackGuest.y = startPos;
+         startPos = Number(startPos + 18);
          _blackGuest.addEventListener("menuClick",__menuClick);
          addChild(_blackGuest);
          graphics.beginFill(0,0);
@@ -60,18 +60,18 @@ package church.view.menu
          addEventListener("click",__mouseClick);
       }
       
-      public function set playerInfo(param1:PlayerInfo) : void
+      public function set playerInfo(value:PlayerInfo) : void
       {
-         _info = param1;
+         _info = value;
       }
       
-      private function __mouseClick(param1:MouseEvent) : void
+      private function __mouseClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          hide();
       }
       
-      private function __menuClick(param1:Event) : void
+      private function __menuClick(event:Event) : void
       {
          if(ChurchManager.instance.currentRoom.status == "wedding_ing")
          {
@@ -80,7 +80,7 @@ package church.view.menu
          }
          if(_info)
          {
-            var _loc2_:* = param1.currentTarget;
+            var _loc2_:* = event.currentTarget;
             if(_kickGuest !== _loc2_)
             {
                if(_blackGuest === _loc2_)
@@ -97,13 +97,13 @@ package church.view.menu
       
       public function show() : void
       {
-         var _loc1_:* = null;
+         var pos:* = null;
          LayerManager.Instance.addToLayer(this,2);
          if(stage && parent)
          {
-            _loc1_ = parent.globalToLocal(new Point(stage.mouseX,stage.mouseY));
-            this.x = _loc1_.x;
-            this.y = _loc1_.y;
+            pos = parent.globalToLocal(new Point(stage.mouseX,stage.mouseY));
+            this.x = pos.x;
+            this.y = pos.y;
             if(x + 95 > stage.stageWidth)
             {
                this.x = x - 95;

@@ -50,11 +50,11 @@ package magicStone.stoneExploreView
       
       private var _posStr:String = "333,-302|307,-302|277,-302|243,-302|210,-302|165,-302|127,-302";
       
-      public function StoneExploreNextView(param1:int, param2:Boolean = false)
+      public function StoneExploreNextView(id:int, isNext:Boolean = false)
       {
          super();
-         _id = param1;
-         _isNext = param2;
+         _id = id;
+         _isNext = isNext;
          initView();
          initEvent();
       }
@@ -95,7 +95,7 @@ package magicStone.stoneExploreView
          _quitBtn.addEventListener("click",__quitBtnHandler);
       }
       
-      private function __startLoading(param1:Event) : void
+      private function __startLoading(e:Event) : void
       {
          StateManager.getInGame_Step_6 = true;
          ChatManager.Instance.input.faceEnabled = false;
@@ -104,61 +104,60 @@ package magicStone.stoneExploreView
          StateManager.getInGame_Step_7 = true;
       }
       
-      private function __nextBtnHandler(param1:MouseEvent) : void
+      private function __nextBtnHandler(evt:MouseEvent) : void
       {
          GameInSocketOut.sendGameMissionStart(_isNext);
          dispose();
       }
       
-      private function __quitBtnHandler(param1:MouseEvent) : void
+      private function __quitBtnHandler(evt:MouseEvent) : void
       {
          GameManager.exploreOver = true;
          StateManager.setState("main");
       }
       
-      public function setData(param1:Array) : void
+      public function setData(info:Array) : void
       {
-         var _loc2_:* = null;
-         var _loc6_:* = null;
-         var _loc10_:int = 0;
-         var _loc3_:* = null;
-         var _loc5_:* = null;
-         var _loc7_:* = null;
-         var _loc4_:* = null;
-         var _loc8_:* = null;
-         var _loc9_:Object = {};
-         if(param1.length <= _posStr.length)
+         var posArr:* = null;
+         var infoArr:* = null;
+         var i:int = 0;
+         var arr:* = null;
+         var sprite:* = null;
+         var itemInfo:* = null;
+         var cell:* = null;
+         var cellBg:* = null;
+         var obj:Object = {};
+         if(info.length <= _posStr.length)
          {
-            _loc2_ = _posStr.split("|");
-            _loc6_ = _loc2_[param1.length - 1].toString().split(",");
-            _loc9_.x = int(_loc6_[0]);
-            _loc9_.y = int(_loc6_[1]);
+            posArr = _posStr.split("|");
+            infoArr = posArr[info.length - 1].toString().split(",");
+            obj.x = int(infoArr[0]);
+            obj.y = int(infoArr[1]);
          }
          else
          {
-            _loc9_.x = 130;
-            _loc9_.y = -302;
+            obj.x = 130;
+            obj.y = -302;
          }
          _hBox = new HBox();
          _hBox.spacing = 8;
-         PositionUtils.setPos(_hBox,_loc9_);
-         _loc10_ = 0;
-         while(_loc10_ < param1.length)
+         PositionUtils.setPos(_hBox,obj);
+         for(i = 0; i < info.length; )
          {
-            _loc3_ = param1[_loc10_].toString().split(",");
-            _loc5_ = new Sprite();
-            _loc7_ = ItemManager.Instance.getTemplateById(_loc3_[0]) as ItemTemplateInfo;
-            _loc7_.Level = 1;
-            _loc4_ = new BagCell(0,_loc7_,false);
-            _loc4_.setCount(_loc3_[1]);
-            _loc4_.x = 5;
-            _loc4_.y = 5;
-            _loc4_.setBgVisible(false);
-            _loc8_ = ComponentFactory.Instance.creatBitmap("magicStone.stoneExplore.GoodsFrame");
-            _loc5_.addChild(_loc8_);
-            _loc5_.addChild(_loc4_);
-            _hBox.addChild(_loc5_);
-            _loc10_++;
+            arr = info[i].toString().split(",");
+            sprite = new Sprite();
+            itemInfo = ItemManager.Instance.getTemplateById(arr[0]) as ItemTemplateInfo;
+            itemInfo.Level = 1;
+            cell = new BagCell(0,itemInfo,false);
+            cell.setCount(arr[1]);
+            cell.x = 5;
+            cell.y = 5;
+            cell.setBgVisible(false);
+            cellBg = ComponentFactory.Instance.creatBitmap("magicStone.stoneExplore.GoodsFrame");
+            sprite.addChild(cellBg);
+            sprite.addChild(cell);
+            _hBox.addChild(sprite);
+            i++;
          }
          addChild(_hBox);
       }

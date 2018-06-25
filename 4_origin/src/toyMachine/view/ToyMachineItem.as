@@ -107,10 +107,10 @@ package toyMachine.view
       
       private var _jinX10Text:FilterFrameText;
       
-      public function ToyMachineItem(param1:int)
+      public function ToyMachineItem(index:int)
       {
          super();
-         _index = param1;
+         _index = index;
          initView();
          initEvent();
       }
@@ -153,8 +153,8 @@ package toyMachine.view
          }
          _timeSprite = new Sprite();
          addChild(_timeSprite);
-         var _loc1_:Bitmap = ComponentFactory.Instance.creat("asset.toyMachine.countdownBg");
-         _timeSprite.addChild(_loc1_);
+         var countDownBg:Bitmap = ComponentFactory.Instance.creat("asset.toyMachine.countdownBg");
+         _timeSprite.addChild(countDownBg);
          _countDown = ComponentFactory.Instance.creatComponentByStylename("toyMachine.countDown");
          _timeSprite.addChild(_countDown);
          PositionUtils.setPos(_timeSprite,"toyMachine.countDownPos");
@@ -167,10 +167,10 @@ package toyMachine.view
          _grappleTenBtn.addEventListener("click",__onGrappleTenClick);
       }
       
-      public function setItemInfo(param1:Date, param2:int = 0) : void
+      public function setItemInfo(freeTime:Date, count:int = 0) : void
       {
-         _freeCount = param2;
-         _freeTime = param1;
+         _freeCount = count;
+         _freeTime = freeTime;
          updateInfo();
       }
       
@@ -209,10 +209,10 @@ package toyMachine.view
          _freeCountText.text = _freeCount.toString();
       }
       
-      private function beginCountDown(param1:Boolean) : void
+      private function beginCountDown(flag:Boolean) : void
       {
-         _timeSprite.visible = param1;
-         if(param1)
+         _timeSprite.visible = flag;
+         if(flag)
          {
             _freeCountBg.setFrame(4);
             _countDown.text = transSecond(_freeTimeNum);
@@ -234,7 +234,7 @@ package toyMachine.view
          }
       }
       
-      protected function __onUpdateCountDown(param1:TimerEvent) : void
+      protected function __onUpdateCountDown(event:TimerEvent) : void
       {
          _freeTimeNum = Number(_freeTimeNum) - 1;
          if(_freeTimeNum >= 0)
@@ -249,16 +249,16 @@ package toyMachine.view
          }
       }
       
-      private function transSecond(param1:Number) : String
+      private function transSecond(num:Number) : String
       {
-         var _loc2_:int = param1 / 3600;
-         param1 = param1 - _loc2_ * 3600;
-         return (String("0" + Math.floor(_loc2_))).substr(-2) + ":" + (String("0" + Math.floor(param1 / 60))).substr(-2) + ":" + (String("0" + Math.floor(param1 % 60))).substr(-2);
+         var hour:int = num / 3600;
+         num = num - hour * 3600;
+         return (String("0" + Math.floor(hour))).substr(-2) + ":" + (String("0" + Math.floor(num / 60))).substr(-2) + ":" + (String("0" + Math.floor(num % 60))).substr(-2);
       }
       
-      protected function __onGrappleOneClick(param1:MouseEvent) : void
+      protected function __onGrappleOneClick(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var alertAsk:* = null;
          SoundManager.instance.playButtonSound();
          _randIndex = Math.random() * 5;
          _tenFlag = false;
@@ -281,8 +281,8 @@ package toyMachine.view
             else
             {
                _money = _index == 1?GrappleSilvelOne:int(GrappleGoldOne);
-               _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("tank.game.GameView.gypsyRMBTicketConfirm",_money),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false,1);
-               _loc2_.addEventListener("response",__alertAllBack);
+               alertAsk = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("tank.game.GameView.gypsyRMBTicketConfirm",_money),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false,1);
+               alertAsk.addEventListener("response",__alertAllBack);
             }
          }
          if(!PlayerManager.Instance.Self.IsWeakGuildFinish(135))
@@ -295,7 +295,7 @@ package toyMachine.view
          }
       }
       
-      protected function __onGrappleTenClick(param1:MouseEvent) : void
+      protected function __onGrappleTenClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          _randIndex = 4;
@@ -306,22 +306,22 @@ package toyMachine.view
          }
          _tenFlag = true;
          _money = _index == 1?GrappleSilvelTen:int(GrappleGoldTen);
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("tank.game.GameView.gypsyRMBTicketConfirm",_money),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false,1);
-         _loc2_.addEventListener("response",__alertAllBack);
+         var alertAsk:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("tank.game.GameView.gypsyRMBTicketConfirm",_money),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false,1);
+         alertAsk.addEventListener("response",__alertAllBack);
       }
       
-      private function __alertAllBack(param1:FrameEvent) : void
+      private function __alertAllBack(event:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__alertAllBack);
+         var frame:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("response",__alertAllBack);
          SoundManager.instance.playButtonSound();
-         switch(int(param1.responseCode) - 2)
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
-               CheckMoneyUtils.instance.checkMoney(_loc2_.isBand,_money,sendGetReward);
+               CheckMoneyUtils.instance.checkMoney(frame.isBand,_money,sendGetReward);
          }
-         _loc2_.dispose();
+         frame.dispose();
       }
       
       private function sendGetReward() : void
@@ -329,41 +329,41 @@ package toyMachine.view
          SocketManager.Instance.out.sendToyMachineReward(_index,!!_tenFlag?10:1,true,CheckMoneyUtils.instance.isBind);
       }
       
-      public function getReward(param1:PackageIn) : void
+      public function getReward(pkg:PackageIn) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:int = param1.readByte();
+         var info:* = null;
+         var cnt:int = pkg.readByte();
          _rewardInfo = [];
-         while(param1.bytesAvailable)
+         while(pkg.bytesAvailable)
          {
-            _loc3_ = new InventoryItemInfo();
-            _loc3_.TemplateID = param1.readInt();
-            _loc3_ = ItemManager.fill(_loc3_);
-            _loc3_.Count = param1.readInt();
-            _loc3_.IsBinds = param1.readBoolean();
-            _loc3_.ValidDate = param1.readInt();
-            _loc3_.StrengthenLevel = param1.readInt();
-            _loc3_.AttackCompose = param1.readInt();
-            _loc3_.DefendCompose = param1.readInt();
-            _loc3_.AgilityCompose = param1.readInt();
-            _loc3_.LuckCompose = param1.readInt();
-            if(EquipType.isMagicStone(_loc3_.CategoryID))
+            info = new InventoryItemInfo();
+            info.TemplateID = pkg.readInt();
+            info = ItemManager.fill(info);
+            info.Count = pkg.readInt();
+            info.IsBinds = pkg.readBoolean();
+            info.ValidDate = pkg.readInt();
+            info.StrengthenLevel = pkg.readInt();
+            info.AttackCompose = pkg.readInt();
+            info.DefendCompose = pkg.readInt();
+            info.AgilityCompose = pkg.readInt();
+            info.LuckCompose = pkg.readInt();
+            if(EquipType.isMagicStone(info.CategoryID))
             {
-               _loc3_.Level = _loc3_.StrengthenLevel;
-               _loc3_.Attack = _loc3_.AttackCompose;
-               _loc3_.Defence = _loc3_.DefendCompose;
-               _loc3_.Agility = _loc3_.AgilityCompose;
-               _loc3_.Luck = _loc3_.LuckCompose;
-               _loc3_.Level = _loc3_.StrengthenLevel;
-               _loc3_.MagicAttack = param1.readInt();
-               _loc3_.MagicDefence = param1.readInt();
+               info.Level = info.StrengthenLevel;
+               info.Attack = info.AttackCompose;
+               info.Defence = info.DefendCompose;
+               info.Agility = info.AgilityCompose;
+               info.Luck = info.LuckCompose;
+               info.Level = info.StrengthenLevel;
+               info.MagicAttack = pkg.readInt();
+               info.MagicDefence = pkg.readInt();
             }
             else
             {
-               param1.readInt();
-               param1.readInt();
+               pkg.readInt();
+               pkg.readInt();
             }
-            _rewardInfo.push(_loc3_);
+            _rewardInfo.push(info);
          }
          grappleMovie();
       }
@@ -391,7 +391,7 @@ package toyMachine.view
          _grappleMovie.addEventListener("enterFrame",__onMovieFrame);
       }
       
-      protected function __onMovieFrame(param1:Event) : void
+      protected function __onMovieFrame(event:Event) : void
       {
          if(_grappleMovie.currentFrame == 41)
          {
@@ -424,48 +424,46 @@ package toyMachine.view
       
       private function addRewardToMovie() : void
       {
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
-         var _loc1_:int = 0;
-         var _loc2_:* = null;
-         var _loc4_:int = _rewardInfo.length;
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         var i:int = 0;
+         var tempInfo:* = null;
+         var tempIndex:int = 0;
+         var cell:* = null;
+         var len:int = _rewardInfo.length;
+         for(i = 0; i < len; )
          {
-            _loc1_ = Math.random() * _loc4_;
-            _loc3_ = _rewardInfo[_loc1_];
-            _rewardInfo[_loc1_] = _rewardInfo[_loc5_];
-            _rewardInfo[_loc5_] = _loc3_;
-            _loc5_++;
+            tempIndex = Math.random() * len;
+            tempInfo = _rewardInfo[tempIndex];
+            _rewardInfo[tempIndex] = _rewardInfo[i];
+            _rewardInfo[i] = tempInfo;
+            i++;
          }
-         _loc5_ = 0;
-         while(_loc5_ < _rewardInfo.length)
+         for(i = 0; i < _rewardInfo.length; )
          {
-            _loc2_ = new BagCell(0,_rewardInfo[_loc5_]);
-            _loc2_.x = _loc5_ * _loc2_.width + 15;
-            if(_loc5_ > 4)
+            cell = new BagCell(0,_rewardInfo[i]);
+            cell.x = i * cell.width + 15;
+            if(i > 4)
             {
-               _loc2_.x = (_loc5_ - 5) * _loc2_.width + 15;
-               _loc2_.y = _loc2_.height + 5;
+               cell.x = (i - 5) * cell.width + 15;
+               cell.y = cell.height + 5;
             }
-            _bigEgg["rewardSprite"].addChild(_loc2_);
-            _loc5_++;
+            _bigEgg["rewardSprite"].addChild(cell);
+            i++;
          }
          SocketManager.Instance.out.getToyMachineInfo();
       }
       
-      private function setGrappleMovieSoundVolume(param1:int) : void
+      private function setGrappleMovieSoundVolume(num:int) : void
       {
-         var _loc2_:* = null;
+         var currentSoundTransForm:* = null;
          if(_grappleMovie)
          {
-            _loc2_ = _grappleMovie.soundTransform;
-            _loc2_.volume = param1;
-            _grappleMovie.soundTransform = _loc2_;
+            currentSoundTransForm = _grappleMovie.soundTransform;
+            currentSoundTransForm.volume = num;
+            _grappleMovie.soundTransform = currentSoundTransForm;
          }
       }
       
-      private function __onCloseGrappleMovie(param1:MouseEvent) : void
+      private function __onCloseGrappleMovie(event:MouseEvent) : void
       {
          if(_bigEgg && _bigEgg["closeBtn"])
          {
@@ -481,7 +479,7 @@ package toyMachine.view
          }
       }
       
-      protected function __onRewardClick(param1:MouseEvent) : void
+      protected function __onRewardClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          new HelperDataModuleLoad().loadDataModule([LoaderCreate.Instance.createCaddyAwardsLoader],lookTrophy);
@@ -494,7 +492,7 @@ package toyMachine.view
          _showPrize.addEventListener("dispose",onshowPrizeDispose);
       }
       
-      private function onshowPrizeDispose(param1:ComponentEvent) : void
+      private function onshowPrizeDispose(event:ComponentEvent) : void
       {
          _showPrize.removeEventListener("dispose",onshowPrizeDispose);
          ObjectUtils.disposeObject(_showPrize);

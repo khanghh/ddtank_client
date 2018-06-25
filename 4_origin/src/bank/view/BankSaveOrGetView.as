@@ -63,16 +63,16 @@ package bank.view
          haveBindMoney.text = String(PlayerManager.Instance.Self.BandMoney) + " " + LanguageMgr.GetTranslation("consortion.skillFrame.richesText3");
       }
       
-      private function __onChangeTypeView(param1:GameBankEvent) : void
+      private function __onChangeTypeView(e:GameBankEvent) : void
       {
-         viewType = param1.data.type;
+         viewType = e.data.type;
       }
       
-      private function __onViewBack(param1:GameBankEvent) : void
+      private function __onViewBack(e:GameBankEvent) : void
       {
          dispose();
-         var _loc2_:BankMainFrameView = new BankMainFrameView();
-         LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+         var frame:BankMainFrameView = new BankMainFrameView();
+         LayerManager.Instance.addToLayer(frame,3,true,1);
       }
       
       private function changeView() : void
@@ -116,14 +116,14 @@ package bank.view
          BankManager.instance.removeEventListener("bank_left_item_click",__onLeftItemClick);
       }
       
-      private function __onGetSuccess(param1:GameBankEvent) : void
+      private function __onGetSuccess(e:GameBankEvent) : void
       {
          initData();
-         var _loc2_:String = LanguageMgr.GetTranslation("tank.bank.getSuccess");
-         MessageTipManager.getInstance().show(_loc2_,0,true,1);
+         var msg:String = LanguageMgr.GetTranslation("tank.bank.getSuccess");
+         MessageTipManager.getInstance().show(msg,0,true,1);
          if(BankManager.instance.model.list.length)
          {
-            if(param1.data.isDelete)
+            if(e.data.isDelete)
             {
                if(_leftView.currentPage > 1 && _leftView.index == 0)
                {
@@ -144,18 +144,18 @@ package bank.view
          _leftView.leftViewChange();
       }
       
-      private function __onSaveSuccess(param1:GameBankEvent) : void
+      private function __onSaveSuccess(e:GameBankEvent) : void
       {
          _leftView.leftViewChange();
          initData();
-         var _loc2_:String = LanguageMgr.GetTranslation("tank.bank.saveSuccess");
-         MessageTipManager.getInstance().show(_loc2_,0,true,1);
+         var msg:String = LanguageMgr.GetTranslation("tank.bank.saveSuccess");
+         MessageTipManager.getInstance().show(msg,0,true,1);
          _leftView.index = 0;
       }
       
-      private function __onLeftItemClick(param1:GameBankEvent) : void
+      private function __onLeftItemClick(e:GameBankEvent) : void
       {
-         if(viewType == 1 && param1.data.isPageBtn)
+         if(viewType == 1 && e.data.isPageBtn)
          {
             return;
          }
@@ -169,7 +169,7 @@ package bank.view
          }
       }
       
-      private function __closeView(param1:MouseEvent) : void
+      private function __closeView(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          dispose();
@@ -180,13 +180,13 @@ package bank.view
          return _viewType;
       }
       
-      public function set viewType(param1:int) : void
+      public function set viewType(value:int) : void
       {
-         if(_viewType == param1 && _viewType == 1)
+         if(_viewType == value && _viewType == 1)
          {
             return;
          }
-         _viewType = param1;
+         _viewType = value;
          changeView();
       }
       

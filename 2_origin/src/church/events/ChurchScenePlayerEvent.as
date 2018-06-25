@@ -12,10 +12,10 @@ package church.events
       
       public var playerid:int;
       
-      public function ChurchScenePlayerEvent(param1:String, param2:int)
+      public function ChurchScenePlayerEvent(type:String, playerid:int)
       {
-         this.playerid = param2;
-         super(param1);
+         this.playerid = playerid;
+         super(type);
       }
    }
 }

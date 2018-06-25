@@ -62,43 +62,42 @@ package wonderfulActivity.items
       
       private var _isTimerOver:Boolean = false;
       
-      public function RechargeReturnView(param1:int = 0, param2:ActivityTypeData = null)
+      public function RechargeReturnView(type:int = 0, data:ActivityTypeData = null)
       {
          super();
-         _type = param1;
-         _data = param2;
+         _type = type;
+         _data = data;
          _stateList = WonderfulActivityManager.Instance._stateList;
       }
       
-      public function setState(param1:int, param2:int) : void
+      public function setState(type:int, id:int) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = _listRightItem.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var i:int = 0;
+         var len:int = _listRightItem.length;
+         for(i = 0; i < len; )
          {
-            if(_listRightItem[_loc4_].getItemID() == param2)
+            if(_listRightItem[i].getItemID() == id)
             {
-               if(param1 > 0)
+               if(type > 0)
                {
-                  _listRightItem[_loc4_].initBtnState(1,param1);
-                  _listRightItem[_loc4_].setBtnTxt(param1);
+                  _listRightItem[i].initBtnState(1,type);
+                  _listRightItem[i].setBtnTxt(type);
                }
-               else if(param1 == -1)
+               else if(type == -1)
                {
-                  _listRightItem[_loc4_].initBtnState();
-                  applyGray(_listRightItem[_loc4_].getBtn());
+                  _listRightItem[i].initBtnState();
+                  applyGray(_listRightItem[i].getBtn());
                }
                else
                {
-                  _listRightItem[_loc4_].initBtnState(0);
-                  applyGray(_listRightItem[_loc4_].getBtn());
-                  _listRightItem[_loc4_].getBtn().mouseEnabled = false;
-                  _listRightItem[_loc4_].getBtn().mouseChildren = false;
+                  _listRightItem[i].initBtnState(0);
+                  applyGray(_listRightItem[i].getBtn());
+                  _listRightItem[i].getBtn().mouseEnabled = false;
+                  _listRightItem[i].getBtn().mouseChildren = false;
                }
                break;
             }
-            _loc4_++;
+            i++;
          }
       }
       
@@ -144,22 +143,22 @@ package wonderfulActivity.items
          initTimer();
       }
       
-      private function applyGray(param1:DisplayObject) : void
+      private function applyGray(child:DisplayObject) : void
       {
-         var _loc2_:Array = [];
-         _loc2_ = _loc2_.concat([0.3086,0.6094,0.082,0,0]);
-         _loc2_ = _loc2_.concat([0.3086,0.6094,0.082,0,0]);
-         _loc2_ = _loc2_.concat([0.3086,0.6094,0.082,0,0]);
-         _loc2_ = _loc2_.concat([0,0,0,1,0]);
-         applyFilter(param1,_loc2_);
+         var matrix:Array = [];
+         matrix = matrix.concat([0.3086,0.6094,0.082,0,0]);
+         matrix = matrix.concat([0.3086,0.6094,0.082,0,0]);
+         matrix = matrix.concat([0.3086,0.6094,0.082,0,0]);
+         matrix = matrix.concat([0,0,0,1,0]);
+         applyFilter(child,matrix);
       }
       
-      private function applyFilter(param1:DisplayObject, param2:Array) : void
+      private function applyFilter(child:DisplayObject, matrix:Array) : void
       {
-         var _loc4_:ColorMatrixFilter = new ColorMatrixFilter(param2);
-         var _loc3_:Array = [];
-         _loc3_.push(_loc4_);
-         param1.filters = _loc3_;
+         var filter:ColorMatrixFilter = new ColorMatrixFilter(matrix);
+         var filters:Array = [];
+         filters.push(filter);
+         child.filters = filters;
       }
       
       private function initTimer() : void
@@ -173,9 +172,9 @@ package wonderfulActivity.items
       private function rechargeTimerHander() : void
       {
          nowdate = TimeManager.Instance.Now();
-         var _loc1_:String = WonderfulActivityManager.Instance.getTimeDiff(endData,nowdate);
-         _timerTxt.text = _loc1_;
-         if(_loc1_ == "0")
+         var str:String = WonderfulActivityManager.Instance.getTimeDiff(endData,nowdate);
+         _timerTxt.text = str;
+         if(str == "0")
          {
             dispose();
             WonderfulActivityManager.Instance.delTimerFun("recharge");
@@ -186,45 +185,43 @@ package wonderfulActivity.items
       
       private function initItem() : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:int = _list.length;
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_)
+         var i:int = 0;
+         var j:int = 0;
+         var type:int = 0;
+         var item:* = null;
+         var len:int = _list.length;
+         for(i = 0; i < len; )
          {
-            _loc4_ = 0;
-            while(_loc4_ < _stateList.length)
+            for(j = 0; j < _stateList.length; )
             {
-               if(_list[_loc5_].ID == _stateList[_loc4_].id)
+               if(_list[i].ID == _stateList[j].id)
                {
-                  _loc3_ = _loc5_ % 2;
-                  _loc1_ = new RightListItem(_loc3_,_list[_loc5_]);
-                  if(_stateList[_loc4_].num == 0)
+                  type = i % 2;
+                  item = new RightListItem(type,_list[i]);
+                  if(_stateList[j].num == 0)
                   {
-                     _loc1_.initBtnState(0);
-                     applyGray(_loc1_.getBtn());
-                     _loc1_.getBtn().mouseEnabled = false;
+                     item.initBtnState(0);
+                     applyGray(item.getBtn());
+                     item.getBtn().mouseEnabled = false;
                   }
-                  else if(_stateList[_loc4_].num == -1)
+                  else if(_stateList[j].num == -1)
                   {
-                     _loc1_.initBtnState();
-                     applyGray(_loc1_.getBtn());
-                     _loc1_.getBtn().mouseEnabled = false;
+                     item.initBtnState();
+                     applyGray(item.getBtn());
+                     item.getBtn().mouseEnabled = false;
                   }
-                  else if(_stateList[_loc4_].num >= 1)
+                  else if(_stateList[j].num >= 1)
                   {
-                     _loc1_.initBtnState(1,_stateList[_loc4_].num);
-                     _loc1_.setBtnTxt(_stateList[_loc4_].num);
+                     item.initBtnState(1,_stateList[j].num);
+                     item.setBtnTxt(_stateList[j].num);
                   }
-                  _listRightItem.push(_loc1_);
-                  _vbox.addChild(_loc1_);
+                  _listRightItem.push(item);
+                  _vbox.addChild(item);
                   break;
                }
-               _loc4_++;
+               j++;
             }
-            _loc5_++;
+            i++;
          }
          _scrollPanel.invalidateViewport();
       }

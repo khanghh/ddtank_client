@@ -61,9 +61,9 @@ package cityWide
          super();
       }
       
-      public function set playerInfo(param1:PlayerInfo) : void
+      public function set playerInfo(info:PlayerInfo) : void
       {
-         _playerInfo = param1;
+         _playerInfo = info;
       }
       
       private function setView() : void
@@ -126,15 +126,15 @@ package cityWide
          LayerManager.Instance.addToLayer(this,3,true,2);
       }
       
-      public function setList(param1:Array) : void
+      public function setList(arr:Array) : void
       {
       }
       
-      private function _thisInFrame(param1:Event) : void
+      private function _thisInFrame(e:Event) : void
       {
       }
       
-      private function _clickaddFriend(param1:MouseEvent) : void
+      private function _clickaddFriend(e:MouseEvent) : void
       {
          dispose();
          SoundManager.instance.play("008");
@@ -206,10 +206,10 @@ package cityWide
          removeEventListener("enterFrame",_thisInFrame);
       }
       
-      private function onFrameResponse(param1:FrameEvent) : void
+      private function onFrameResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:

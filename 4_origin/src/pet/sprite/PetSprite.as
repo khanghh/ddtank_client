@@ -47,11 +47,11 @@ package pet.sprite
       
       private var _petX:int = 0;
       
-      public function PetSprite(param1:PetSpriteModel, param2:PetSpriteControl)
+      public function PetSprite(model:PetSpriteModel, controller:PetSpriteControl)
       {
          super();
-         _petModel = param1;
-         _petController = param2;
+         _petModel = model;
+         _petController = controller;
          initView();
          initLand();
       }
@@ -71,15 +71,15 @@ package pet.sprite
          mouseChildren = false;
       }
       
-      public function playAnimation(param1:String, param2:Function = null) : void
+      public function playAnimation(action:String, callback:Function = null) : void
       {
          if(_petMovie)
          {
-            _petMovie.doAction(param1,param2);
+            _petMovie.doAction(action,callback);
          }
-         else if(param2 != null)
+         else if(callback != null)
          {
-            param2();
+            callback();
          }
       }
       
@@ -100,7 +100,7 @@ package pet.sprite
          }
       }
       
-      private function petToMove(param1:Event) : void
+      private function petToMove(e:Event) : void
       {
          if(!_petMovie)
          {
@@ -127,9 +127,9 @@ package pet.sprite
          }
       }
       
-      public function say(param1:String) : void
+      public function say(msg:String) : void
       {
-         _msgTxt.text = param1;
+         _msgTxt.text = msg;
          _msgTxt.visible = true;
          _msgBg.visible = true;
          updateSize();
@@ -180,7 +180,7 @@ package pet.sprite
       
       private function initMovie() : void
       {
-         var _loc1_:* = null;
+         var movieClass:* = null;
          if(_petMovie)
          {
             removeEventListener("enterFrame",petToMove);
@@ -193,8 +193,8 @@ package pet.sprite
          }
          if(_petModel.currentPet.assetReady)
          {
-            _loc1_ = ModuleLoader.getDefinition(_petModel.currentPet.actionMovieName) as Class;
-            _petMovie = new _loc1_();
+            movieClass = ModuleLoader.getDefinition(_petModel.currentPet.actionMovieName) as Class;
+            _petMovie = new movieClass();
             PositionUtils.setPos(_petMovie,"petSprite.PetMoviePos");
             addChild(_petMovie);
             _petHeight = _petMovie.height;
@@ -208,7 +208,7 @@ package pet.sprite
          }
       }
       
-      protected function __onComplete(param1:LoaderEvent) : void
+      protected function __onComplete(event:LoaderEvent) : void
       {
          if(_petMovie)
          {
@@ -216,8 +216,8 @@ package pet.sprite
             _petMovie = null;
          }
          _loader.removeEventListener("complete",__onComplete);
-         var _loc2_:Class = ModuleLoader.getDefinition(_petModel.currentPet.actionMovieName) as Class;
-         _petMovie = new _loc2_();
+         var movieClass:Class = ModuleLoader.getDefinition(_petModel.currentPet.actionMovieName) as Class;
+         _petMovie = new movieClass();
          PositionUtils.setPos(_petMovie,"petSprite.PetMoviePos");
          addChild(_petMovie);
          _petHeight = _petMovie.height;
@@ -229,9 +229,9 @@ package pet.sprite
          return _petSpriteLand;
       }
       
-      public function set petSpriteLand(param1:MovieClip) : void
+      public function set petSpriteLand(value:MovieClip) : void
       {
-         _petSpriteLand = param1;
+         _petSpriteLand = value;
       }
    }
 }

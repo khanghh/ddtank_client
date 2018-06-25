@@ -6,22 +6,21 @@ package ddt.events
    {
        
       
-      public function PkgEvent(param1:String, param2:PackageIn)
+      public function PkgEvent(type:String, pkg:PackageIn)
       {
-         super(param1,param2);
+         super(type,pkg);
       }
       
-      public static function format(... rest) : String
+      public static function format(... args) : String
       {
-         var _loc2_:int = 0;
-         var _loc3_:Array = [];
-         _loc2_ = 0;
-         while(_loc2_ < rest.length)
+         var i:int = 0;
+         var strArr:Array = [];
+         for(i = 0; i < args.length; )
          {
-            _loc3_.push(rest[_loc2_].toString(16));
-            _loc2_++;
+            strArr.push(args[i].toString(16));
+            i++;
          }
-         return _loc3_.join("+");
+         return strArr.join("+");
       }
    }
 }

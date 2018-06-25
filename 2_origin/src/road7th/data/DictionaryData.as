@@ -21,9 +21,9 @@ package road7th.data
       
       private var _value:Object;
       
-      public function DictionaryData(param1:Boolean = false)
+      public function DictionaryData(weakKeys:Boolean = false)
       {
-         super(param1);
+         super(weakKeys);
          _dispatcher = new EventDispatcher(this);
          _array = [];
       }
@@ -38,73 +38,73 @@ package road7th.data
          return _array;
       }
       
-      public function filter(param1:String, param2:Object) : Array
+      public function filter(field:String, value:Object) : Array
       {
-         _fName = param1;
-         _value = param2;
+         _fName = field;
+         _value = value;
          return _array.filter(filterCallBack);
       }
       
-      private function filterCallBack(param1:*, param2:int, param3:Array) : Boolean
+      private function filterCallBack(item:*, index:int, array:Array) : Boolean
       {
-         return param1[_fName] == _value;
+         return item[_fName] == _value;
       }
       
-      public function add(param1:*, param2:Object) : void
+      public function add(key:*, value:Object) : void
       {
-         var _loc3_:* = null;
-         var _loc4_:int = 0;
-         if(this[param1] == null)
+         var old:* = null;
+         var t:int = 0;
+         if(this[key] == null)
          {
-            this[param1] = param2;
-            _array.push(param2);
-            dispatchEvent(new DictionaryEvent("add",param2));
+            this[key] = value;
+            _array.push(value);
+            dispatchEvent(new DictionaryEvent("add",value));
          }
          else
          {
-            _loc3_ = this[param1];
-            this[param1] = param2;
-            _loc4_ = _array.indexOf(_loc3_);
-            if(_loc4_ > -1)
+            old = this[key];
+            this[key] = value;
+            t = _array.indexOf(old);
+            if(t > -1)
             {
-               _array.splice(_loc4_,1);
+               _array.splice(t,1);
             }
-            _array.push(param2);
-            dispatchEvent(new DictionaryEvent("update",param2));
+            _array.push(value);
+            dispatchEvent(new DictionaryEvent("update",value));
          }
       }
       
-      public function hasKey(param1:*) : Boolean
+      public function hasKey(key:*) : Boolean
       {
-         return this[param1] != null;
+         return this[key] != null;
       }
       
-      public function remove(param1:*) : void
+      public function remove(key:*) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:Object = this[param1];
-         if(_loc3_ != null)
+         var t:int = 0;
+         var obj:Object = this[key];
+         if(obj != null)
          {
-            this[param1] = null;
-            delete this[param1];
-            _loc2_ = _array.indexOf(_loc3_);
-            if(_loc2_ > -1)
+            this[key] = null;
+            delete this[key];
+            t = _array.indexOf(obj);
+            if(t > -1)
             {
-               _array.splice(_loc2_,1);
+               _array.splice(t,1);
             }
-            dispatchEvent(new DictionaryEvent("remove",_loc3_));
+            dispatchEvent(new DictionaryEvent("remove",obj));
          }
       }
       
-      public function setData(param1:DictionaryData) : void
+      public function setData(dic:DictionaryData) : void
       {
          cleardata();
          var _loc4_:int = 0;
-         var _loc3_:* = param1;
-         for(var _loc2_ in param1)
+         var _loc3_:* = dic;
+         for(var i in dic)
          {
-            this[_loc2_] = param1[_loc2_];
-            _array.push(param1[_loc2_]);
+            this[i] = dic[i];
+            _array.push(dic[i]);
          }
       }
       
@@ -114,58 +114,58 @@ package road7th.data
          dispatchEvent(new DictionaryEvent("clear"));
       }
       
-      public function slice(param1:int = 0, param2:int = 166777215) : Array
+      public function slice(startIndex:int = 0, endIndex:int = 166777215) : Array
       {
-         return _array.slice(param1,param2);
+         return _array.slice(startIndex,endIndex);
       }
       
-      public function concat(param1:Array) : Array
+      public function concat(arr:Array) : Array
       {
-         return _array.concat(param1);
+         return _array.concat(arr);
       }
       
       private function cleardata() : void
       {
-         var _loc2_:Array = [];
+         var temp:Array = [];
          var _loc5_:int = 0;
          var _loc4_:* = this;
-         for(var _loc3_ in this)
+         for(var i in this)
          {
-            _loc2_.push(_loc3_);
+            temp.push(i);
          }
          var _loc7_:int = 0;
-         var _loc6_:* = _loc2_;
-         for each(var _loc1_ in _loc2_)
+         var _loc6_:* = temp;
+         for each(var s in temp)
          {
-            this[_loc1_] = null;
-            delete this[_loc1_];
+            this[s] = null;
+            delete this[s];
          }
          _array = [];
       }
       
-      public function addEventListener(param1:String, param2:Function, param3:Boolean = false, param4:int = 0, param5:Boolean = false) : void
+      public function addEventListener(type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false) : void
       {
-         _dispatcher.addEventListener(param1,param2,param3,param4,param5);
+         _dispatcher.addEventListener(type,listener,useCapture,priority,useWeakReference);
       }
       
-      public function removeEventListener(param1:String, param2:Function, param3:Boolean = false) : void
+      public function removeEventListener(type:String, listener:Function, useCapture:Boolean = false) : void
       {
-         _dispatcher.removeEventListener(param1,param2,param3);
+         _dispatcher.removeEventListener(type,listener,useCapture);
       }
       
-      public function dispatchEvent(param1:Event) : Boolean
+      public function dispatchEvent(event:Event) : Boolean
       {
-         return _dispatcher.dispatchEvent(param1);
+         return _dispatcher.dispatchEvent(event);
       }
       
-      public function hasEventListener(param1:String) : Boolean
+      public function hasEventListener(type:String) : Boolean
       {
-         return _dispatcher.hasEventListener(param1);
+         return _dispatcher.hasEventListener(type);
       }
       
-      public function willTrigger(param1:String) : Boolean
+      public function willTrigger(type:String) : Boolean
       {
-         return _dispatcher.willTrigger(param1);
+         return _dispatcher.willTrigger(type);
       }
    }
 }

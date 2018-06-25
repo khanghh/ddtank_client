@@ -23,8 +23,8 @@ package kingBless.view
       
       public function KingBlessBuffTipView()
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var valueTxt:* = null;
          super();
          _valueNameList = LanguageMgr.GetTranslation("ddt.kingBless.game.buffTipView.valueNameTxtList").split(",");
          _bg = ComponentFactory.Instance.creatBitmap("asset.game.kingbless.buffTipViewBg");
@@ -36,36 +36,34 @@ package kingBless.view
          addChild(_titleTxt);
          addChild(_tipTxt);
          _valueTxtList = new Vector.<FilterFrameText>(4);
-         _loc2_ = 0;
-         while(_loc2_ < 4)
+         for(i = 0; i < 4; )
          {
-            _loc1_ = ComponentFactory.Instance.creatComponentByStylename("game.kingbless.tipView.valueTxt");
-            _loc1_.y = _loc1_.y + _loc2_ * 20;
-            addChild(_loc1_);
-            _valueTxtList[_loc2_] = _loc1_;
-            _loc2_++;
+            valueTxt = ComponentFactory.Instance.creatComponentByStylename("game.kingbless.tipView.valueTxt");
+            valueTxt.y = valueTxt.y + i * 20;
+            addChild(valueTxt);
+            _valueTxtList[i] = valueTxt;
+            i++;
          }
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = param1;
-         _loc3_ = 0;
-         while(_loc3_ < 4)
+         var i:int = 0;
+         var value:int = data;
+         for(i = 0; i < 4; )
          {
-            _valueTxtList[_loc3_].text = LanguageMgr.GetTranslation("ddt.kingBless.game.buffTipView.valueTxt",_valueNameList[_loc3_],_loc2_);
-            _loc3_++;
+            _valueTxtList[i].text = LanguageMgr.GetTranslation("ddt.kingBless.game.buffTipView.valueTxt",_valueNameList[i],value);
+            i++;
          }
          updateSize();
       }
       
       private function updateSize() : void
       {
-         var _loc1_:Number = Math.max(_titleTxt.width,_tipTxt.width);
-         if(_loc1_ > _bg.width)
+         var maxWidth:Number = Math.max(_titleTxt.width,_tipTxt.width);
+         if(maxWidth > _bg.width)
          {
-            _bg.width = _loc1_ + 20;
+            _bg.width = maxWidth + 20;
          }
       }
       
@@ -97,9 +95,9 @@ package kingBless.view
          _tipTxt = null;
          var _loc3_:int = 0;
          var _loc2_:* = _valueTxtList;
-         for each(var _loc1_ in _valueTxtList)
+         for each(var tmp in _valueTxtList)
          {
-            ObjectUtils.disposeObject(_loc1_);
+            ObjectUtils.disposeObject(tmp);
          }
          _valueTxtList = null;
          _valueNameList = null;

@@ -218,32 +218,32 @@ package Indiana
          _times.addEventListener("change",__txtChangeHandler);
       }
       
-      private function __overTimeHandler(param1:MouseEvent) : void
+      private function __overTimeHandler(e:MouseEvent) : void
       {
       }
       
-      private function __outTimeHandler(param1:MouseEvent) : void
+      private function __outTimeHandler(e:MouseEvent) : void
       {
       }
       
-      private function __txtChangeHandler(param1:Event) : void
+      private function __txtChangeHandler(e:Event) : void
       {
          setTimesTips();
       }
       
       private function setTimesTips() : void
       {
-         var _loc3_:int = _times.text;
-         var _loc2_:int = _itemInfo.Cost / 100;
-         var _loc1_:* = Number(int(_loc3_ / _loc2_ * 1000) / 10);
-         if(_loc1_ < 0.1)
+         var temp:int = _times.text;
+         var totleTimes:int = _itemInfo.Cost / 100;
+         var num:* = Number(int(temp / totleTimes * 1000) / 10);
+         if(num < 0.1)
          {
-            _loc1_ = 0.1;
+            num = 0.1;
          }
-         _times.tipData = LanguageMgr.GetTranslation("Indiana.resoult.getPro",_loc1_.toString() + "%");
+         _times.tipData = LanguageMgr.GetTranslation("Indiana.resoult.getPro",num.toString() + "%");
       }
       
-      private function __outFocusHandler(param1:FocusEvent) : void
+      private function __outFocusHandler(e:FocusEvent) : void
       {
          if(_times.text == "")
          {
@@ -251,106 +251,106 @@ package Indiana
          }
       }
       
-      private function __inputHandler(param1:TextEvent) : void
+      private function __inputHandler(e:TextEvent) : void
       {
-         var _loc4_:* = null;
-         var _loc5_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:* = 0;
-         param1.preventDefault();
-         if(isNaN(Number(param1.text)))
+         var str:* = null;
+         var temp:int = 0;
+         var distance:int = 0;
+         var totle:* = 0;
+         e.preventDefault();
+         if(isNaN(Number(e.text)))
          {
-            param1.text = "";
+            e.text = "";
             setTimesTips();
          }
          else
          {
-            _loc4_ = _times.text + param1.text;
-            _loc5_ = _loc4_;
-            _loc2_ = _itemInfo.Cost / 100 - showdata.buyNumber;
-            _loc3_ = _loc2_;
-            if(_loc5_ < _loc3_)
+            str = _times.text + e.text;
+            temp = str;
+            distance = _itemInfo.Cost / 100 - showdata.buyNumber;
+            totle = distance;
+            if(temp < totle)
             {
-               if(_loc5_ / _info.MinBuyTimes == 0)
+               if(temp / _info.MinBuyTimes == 0)
                {
-                  _times.appendText(param1.text);
+                  _times.appendText(e.text);
                }
-               else if(_loc5_ < _info.MinBuyTimes)
+               else if(temp < _info.MinBuyTimes)
                {
                   _times.text = _info.MinBuyTimes.toString();
                }
                else
                {
-                  _times.text = int(Math.floor(_loc5_ / _info.MinBuyTimes)).toString();
+                  _times.text = int(Math.floor(temp / _info.MinBuyTimes)).toString();
                }
                setTimesTips();
             }
             else
             {
-               _times.text = _loc3_.toString();
+               _times.text = totle.toString();
                setTimesTips();
             }
          }
       }
       
-      private function __linkHandler(param1:TextEvent) : void
+      private function __linkHandler(e:TextEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:Array = param1.text.split("|");
-         var _loc4_:String = _loc3_[0];
-         if(_loc4_ == "clickother")
+         var id:int = 0;
+         var cmdArray:Array = e.text.split("|");
+         var cmd:String = cmdArray[0];
+         if(cmd == "clickother")
          {
-            _loc2_ = _loc3_[1];
+            id = cmdArray[1];
          }
-         if(_loc4_ == "clickself")
+         if(cmd == "clickself")
          {
-            _loc2_ = PlayerManager.Instance.Self.ID;
+            id = PlayerManager.Instance.Self.ID;
          }
-         SocketManager.Instance.out.sendIndianaCode(showdata.per_id,_loc2_);
+         SocketManager.Instance.out.sendIndianaCode(showdata.per_id,id);
       }
       
-      private function __TimerHander(param1:Event) : void
+      private function __TimerHander(evt:Event) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
+         var second:int = 0;
+         var minute:int = 0;
+         var hour:int = 0;
          if(_countDownDate > 0)
          {
             _countDownDate = _countDownDate - 1000;
             if(_countDownDate / 3600000 > 0)
             {
-               _loc4_ = _countDownDate / 3600000;
+               hour = _countDownDate / 3600000;
             }
             if(_countDownDate / 60000 > 0)
             {
-               _loc2_ = _countDownDate / 60000 - _loc4_ * 60;
+               minute = _countDownDate / 60000 - hour * 60;
             }
             if(_countDownDate % 60000 / 1000 > 0)
             {
-               _loc3_ = _countDownDate % 60000 / 1000;
+               second = _countDownDate % 60000 / 1000;
             }
-            if(_loc4_ == 0 && _loc2_ == 0 && _loc3_ == 0)
+            if(hour == 0 && minute == 0 && second == 0)
             {
                countDownComplete = true;
                SocketManager.Instance.out.sendUpdateSysDate();
                SocketManager.Instance.out.sendIndianaEnterGame(0);
             }
-            setDownValue(_loc3_,_loc2_,_loc4_);
+            setDownValue(second,minute,hour);
          }
       }
       
-      private function setDownValue(param1:int, param2:int, param3:int) : void
+      private function setDownValue(secon:int, minute:int, hour:int) : void
       {
-         if(param1 > 0)
+         if(secon > 0)
          {
-            if(param1 > 9)
+            if(secon > 9)
             {
-               _secondNum01.count = int(param1.toString().charAt(1));
-               _secondNum02.count = int(param1.toString().charAt(0));
+               _secondNum01.count = int(secon.toString().charAt(1));
+               _secondNum02.count = int(secon.toString().charAt(0));
             }
             else
             {
-               _secondNum01.count = param1;
+               _secondNum01.count = secon;
                _secondNum02.count = 0;
             }
          }
@@ -359,16 +359,16 @@ package Indiana
             _secondNum01.count = 0;
             _secondNum02.count = 0;
          }
-         if(param2 > 0)
+         if(minute > 0)
          {
-            if(param2 > 9)
+            if(minute > 9)
             {
-               _minuteNum01.count = int(param2.toString().charAt(1));
-               _minuteNum02.count = int(param2.toString().charAt(0));
+               _minuteNum01.count = int(minute.toString().charAt(1));
+               _minuteNum02.count = int(minute.toString().charAt(0));
             }
             else
             {
-               _minuteNum01.count = param2;
+               _minuteNum01.count = minute;
                _minuteNum02.count = 0;
             }
          }
@@ -377,23 +377,23 @@ package Indiana
             _minuteNum01.count = 0;
             _minuteNum02.count = 0;
          }
-         if(param3 > 0)
+         if(hour > 0)
          {
-            if(param3 > 9 && param3 < 99)
+            if(hour > 9 && hour < 99)
             {
-               _hourNum01.count = int(param3.toString().charAt(1));
-               _hourNum02.count = int(param3.toString().charAt(0));
+               _hourNum01.count = int(hour.toString().charAt(1));
+               _hourNum02.count = int(hour.toString().charAt(0));
                _hourNum03.count = 0;
             }
-            else if(param3 > 99)
+            else if(hour > 99)
             {
-               _hourNum01.count = int(param3.toString().charAt(2));
-               _hourNum02.count = int(param3.toString().charAt(1));
-               _hourNum03.count = int(param3.toString().charAt(0));
+               _hourNum01.count = int(hour.toString().charAt(2));
+               _hourNum02.count = int(hour.toString().charAt(1));
+               _hourNum03.count = int(hour.toString().charAt(0));
             }
             else
             {
-               _hourNum01.count = param3;
+               _hourNum01.count = hour;
                _hourNum02.count = 0;
                _hourNum03.count = 0;
             }
@@ -406,7 +406,7 @@ package Indiana
          }
       }
       
-      private function __TimerCompleteHander(param1:Event) : void
+      private function __TimerCompleteHander(evt:Event) : void
       {
          if(countDownComplete)
          {
@@ -420,19 +420,19 @@ package Indiana
          }
       }
       
-      public function setInfo(param1:IndianaShopItemInfo) : void
+      public function setInfo($_info:IndianaShopItemInfo) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         var _loc4_:Number = NaN;
-         _info = param1;
+         var totleTimes:int = 0;
+         var buyNum:int = 0;
+         var preNum:Number = NaN;
+         _info = $_info;
          if(_info)
          {
             _itemInfo = IndianaDataManager.instance.getIndianaGoodsItemInfoByshopId(_info.ShopId);
             showdata = IndianaDataManager.instance.currentShowData;
-            _loc2_ = _itemInfo.Cost / 100;
-            _loc3_ = showdata.buyNumber;
-            _loc4_ = _loc3_ / _loc2_;
+            totleTimes = _itemInfo.Cost / 100;
+            buyNum = showdata.buyNumber;
+            preNum = buyNum / totleTimes;
             _times.maxChars = _info.MinBuyTimes * 10;
             if(_info.MinBuyTimes > 1)
             {
@@ -456,29 +456,29 @@ package Indiana
                _indianaDis.htmlText = LanguageMgr.GetTranslation("Indiana.infopanel.disII");
                _lookNumSelf.visible = false;
             }
-            _hasJoin.text = LanguageMgr.GetTranslation("Indiana.has.join.count",_loc3_);
-            _totleJoin.text = LanguageMgr.GetTranslation("Indiana.totle.count",_loc2_);
-            _progressBar.setProgress(_loc4_);
+            _hasJoin.text = LanguageMgr.GetTranslation("Indiana.has.join.count",buyNum);
+            _totleJoin.text = LanguageMgr.GetTranslation("Indiana.totle.count",totleTimes);
+            _progressBar.setProgress(preNum);
             _times.text = _info.MinBuyTimes.toString();
             setTimesTips();
             if(!_timer.running)
             {
                _timer.start();
             }
-            if(_loc4_ == 1)
+            if(preNum == 1)
             {
                SocketManager.Instance.out.sendIndianaEnterGame(0);
             }
          }
       }
       
-      private function __indianaBtnClickHandler(param1:MouseEvent) : void
+      private function __indianaBtnClickHandler(event:MouseEvent) : void
       {
-         var _loc6_:* = null;
-         var _loc4_:* = null;
-         var _loc5_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var alertInfo:* = null;
+         var iteminfo:* = null;
+         var msg:* = null;
+         var temp:* = null;
+         var alertFrame:* = null;
          if(_info)
          {
             if(PlayerManager.Instance.Self.bagLocked)
@@ -487,31 +487,31 @@ package Indiana
                return;
             }
             time = int(_times.text);
-            _loc6_ = new AlertInfo(LanguageMgr.GetTranslation("AlertDialog.Info"));
-            _loc4_ = IndianaDataManager.instance.getIndianaGoodsItemInfoByshopId(_info.ShopId);
-            if(_loc4_)
+            alertInfo = new AlertInfo(LanguageMgr.GetTranslation("AlertDialog.Info"));
+            iteminfo = IndianaDataManager.instance.getIndianaGoodsItemInfoByshopId(_info.ShopId);
+            if(iteminfo)
             {
-               if(_loc4_.IsBindMoney == 0)
+               if(iteminfo.IsBindMoney == 0)
                {
-                  _loc5_ = LanguageMgr.GetTranslation("Indiana.propt.money",time * 100,LanguageMgr.GetTranslation("createConsortionFrame.ticketText.Text2"));
-                  _loc6_.data = _loc5_;
-                  baseAlerFrame = AlertManager.Instance.alert("SimpleAlert",_loc6_,2);
+                  msg = LanguageMgr.GetTranslation("Indiana.propt.money",time * 100,LanguageMgr.GetTranslation("createConsortionFrame.ticketText.Text2"));
+                  alertInfo.data = msg;
+                  baseAlerFrame = AlertManager.Instance.alert("SimpleAlert",alertInfo,2);
                   baseAlerFrame.addEventListener("response",__frameEvent);
                }
                else
                {
-                  _loc3_ = LanguageMgr.GetTranslation("createConsortionFrame.ticketText.Text2") + "(" + LanguageMgr.GetTranslation("consortion.skillFrame.richesText3") + ")";
-                  _loc5_ = LanguageMgr.GetTranslation("Indiana.propt.money",time * 100,_loc3_);
-                  _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),_loc5_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false);
-                  _loc2_.addEventListener("response",__onAlertBuyStiveFrame);
+                  temp = LanguageMgr.GetTranslation("createConsortionFrame.ticketText.Text2") + "(" + LanguageMgr.GetTranslation("consortion.skillFrame.richesText3") + ")";
+                  msg = LanguageMgr.GetTranslation("Indiana.propt.money",time * 100,temp);
+                  alertFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),msg,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false);
+                  alertFrame.addEventListener("response",__onAlertBuyStiveFrame);
                }
             }
          }
       }
       
-      private function __onAlertBuyStiveFrame(param1:FrameEvent) : void
+      private function __onAlertBuyStiveFrame(e:FrameEvent) : void
       {
-         e = param1;
+         e = e;
          var alertFrame:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
          alertFrame.removeEventListener("response",__onAlertBuyStiveFrame);
          if(e.responseCode == 2 || e.responseCode == 3)
@@ -528,9 +528,9 @@ package Indiana
          alertFrame.dispose();
       }
       
-      private function __frameEvent(param1:FrameEvent) : void
+      private function __frameEvent(evt:FrameEvent) : void
       {
-         evt = param1;
+         evt = evt;
          baseAlerFrame.removeEventListener("response",__frameEvent);
          ObjectUtils.disposeObject(baseAlerFrame);
          baseAlerFrame = null;
@@ -550,35 +550,35 @@ package Indiana
          }
       }
       
-      private function __subClickHandler(param1:MouseEvent) : void
+      private function __subClickHandler(event:MouseEvent) : void
       {
-         var _loc2_:int = _times.text;
-         if(_loc2_ > _info.MinBuyTimes)
+         var time:int = _times.text;
+         if(time > _info.MinBuyTimes)
          {
-            _loc2_ = _loc2_ - _info.MinBuyTimes;
+            time = time - _info.MinBuyTimes;
          }
          else
          {
-            _loc2_ = _info.MinBuyTimes;
+            time = _info.MinBuyTimes;
          }
-         _times.text = _loc2_.toString();
+         _times.text = time.toString();
          setTimesTips();
       }
       
-      private function __addClickHandler(param1:MouseEvent) : void
+      private function __addClickHandler(event:MouseEvent) : void
       {
-         var _loc3_:* = int(_times.text);
-         var _loc2_:int = _itemInfo.Cost / 100 - showdata.buyNumber;
-         var _loc4_:* = _loc2_;
-         if(_loc3_ < _loc4_)
+         var time:* = int(_times.text);
+         var distance:int = _itemInfo.Cost / 100 - showdata.buyNumber;
+         var totle:* = distance;
+         if(time < totle)
          {
-            _loc3_ = int(_loc3_ + _info.MinBuyTimes);
+            time = int(time + _info.MinBuyTimes);
          }
          else
          {
-            _loc3_ = _loc4_;
+            time = totle;
          }
-         _times.text = _loc3_.toString();
+         _times.text = time.toString();
          setTimesTips();
       }
       

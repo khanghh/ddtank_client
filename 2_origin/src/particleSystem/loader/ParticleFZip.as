@@ -8,9 +8,9 @@ package particleSystem.loader
       
       public var ID:String;
       
-      public function ParticleFZip(param1:String = "utf-8")
+      public function ParticleFZip(filenameEncoding:String = "utf-8")
       {
-         super(param1);
+         super(filenameEncoding);
       }
    }
 }

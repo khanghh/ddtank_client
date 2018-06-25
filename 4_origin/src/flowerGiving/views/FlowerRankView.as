@@ -85,10 +85,10 @@ package flowerGiving.views
       
       private var accRwardGet:Boolean = false;
       
-      public function FlowerRankView(param1:int)
+      public function FlowerRankView(type:int)
       {
          super();
-         this.type = param1;
+         this.type = type;
          initData();
          initView();
          addEvents();
@@ -194,18 +194,18 @@ package flowerGiving.views
       
       private function setRequestTxt() : void
       {
-         var _loc1_:String = FlowerGivingManager.instance.xmlData.remain2;
-         var _loc2_:Array = _loc1_.split(",");
+         var str:String = FlowerGivingManager.instance.xmlData.remain2;
+         var arr:Array = str.split(",");
          switch(int(type))
          {
             case 0:
             case 1:
-               _baseRequestTxt.text = LanguageMgr.GetTranslation("flowerGiving.rankView.baseRequest",_loc2_[0]);
-               _superRequestTxt.text = LanguageMgr.GetTranslation("flowerGiving.rankView.superRequest",_loc2_[1]);
+               _baseRequestTxt.text = LanguageMgr.GetTranslation("flowerGiving.rankView.baseRequest",arr[0]);
+               _superRequestTxt.text = LanguageMgr.GetTranslation("flowerGiving.rankView.superRequest",arr[1]);
                break;
             case 2:
-               _baseRequestTxt.text = LanguageMgr.GetTranslation("flowerGiving.rankView.baseRequest",_loc2_[2]);
-               _superRequestTxt.text = LanguageMgr.GetTranslation("flowerGiving.rankView.superRequest",_loc2_[3]);
+               _baseRequestTxt.text = LanguageMgr.GetTranslation("flowerGiving.rankView.baseRequest",arr[2]);
+               _superRequestTxt.text = LanguageMgr.GetTranslation("flowerGiving.rankView.superRequest",arr[3]);
          }
       }
       
@@ -222,7 +222,7 @@ package flowerGiving.views
          _nextBtn.addEventListener("click",__nextBtnClick);
       }
       
-      protected function __prevBtnClick(param1:MouseEvent) : void
+      protected function __prevBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(curPage <= 0)
@@ -232,7 +232,7 @@ package flowerGiving.views
          SocketManager.Instance.out.getFlowerRankInfo(type,curPage - 1);
       }
       
-      protected function __nextBtnClick(param1:MouseEvent) : void
+      protected function __nextBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(curPage >= pageCount - 1)
@@ -242,7 +242,7 @@ package flowerGiving.views
          SocketManager.Instance.out.getFlowerRankInfo(type,curPage + 1);
       }
       
-      protected function __getRewardBtnClick(param1:MouseEvent) : void
+      protected function __getRewardBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          switch(int(type) - 1)
@@ -255,70 +255,68 @@ package flowerGiving.views
          }
       }
       
-      private function __updateView(param1:PkgEvent) : void
+      private function __updateView(event:PkgEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc7_:int = 0;
-         var _loc8_:* = null;
-         var _loc11_:int = 0;
-         var _loc12_:int = 0;
-         var _loc13_:int = 0;
-         var _loc5_:int = 0;
-         var _loc10_:* = null;
-         var _loc6_:int = 0;
+         var count:int = 0;
+         var i:int = 0;
+         var info:* = null;
+         var baseValue:int = 0;
+         var superValue:int = 0;
+         var maxValue:int = 0;
+         var j:int = 0;
+         var item:* = null;
+         var k:int = 0;
          clearItems();
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc4_:int = _loc3_.readInt();
-         if(type == _loc4_)
+         var pkg:PackageIn = event.pkg;
+         var viewType:int = pkg.readInt();
+         if(type == viewType)
          {
-            myFlowerCount = _loc3_.readInt();
-            myPlace = _loc3_.readInt();
-            pageCount = _loc3_.readInt();
-            curPage = _loc3_.readInt();
-            _loc2_ = _loc3_.readInt();
-            _loc2_ = _loc2_ < 8?_loc2_:8;
-            _loc7_ = 0;
-            while(_loc7_ <= _loc2_ - 1)
+            myFlowerCount = pkg.readInt();
+            myPlace = pkg.readInt();
+            pageCount = pkg.readInt();
+            curPage = pkg.readInt();
+            count = pkg.readInt();
+            count = count < 8?count:8;
+            for(i = 0; i <= count - 1; )
             {
-               _loc8_ = new FlowerRankInfo();
-               _loc8_.place = _loc3_.readInt();
-               _loc8_.num = _loc3_.readInt();
-               _loc8_.name = _loc3_.readUTF();
-               _loc8_.vipLvl = _loc3_.readByte();
-               _loc5_ = 0;
-               while(_loc5_ <= dataArr.length - 1)
+               info = new FlowerRankInfo();
+               info.place = pkg.readInt();
+               info.num = pkg.readInt();
+               info.name = pkg.readUTF();
+               info.vipLvl = pkg.readByte();
+               for(j = 0; j <= dataArr.length - 1; )
                {
-                  _loc11_ = (dataArr[_loc5_] as GiftBagInfo).giftConditionArr[0].conditionValue;
-                  _loc12_ = (dataArr[_loc5_] as GiftBagInfo).giftConditionArr[1].conditionValue;
-                  if(_loc8_.place >= _loc11_ && _loc8_.place <= _loc12_)
+                  baseValue = (dataArr[j] as GiftBagInfo).giftConditionArr[0].conditionValue;
+                  superValue = (dataArr[j] as GiftBagInfo).giftConditionArr[1].conditionValue;
+                  if(info.place >= baseValue && info.place <= superValue)
                   {
-                     _loc8_.rewardVec = (dataArr[_loc5_] as GiftBagInfo).giftRewardArr;
+                     info.rewardVec = (dataArr[j] as GiftBagInfo).giftRewardArr;
                      break;
                   }
-                  _loc5_++;
+                  j++;
                }
-               if(_loc8_.rewardVec)
+               if(info.rewardVec)
                {
-                  _loc10_ = new FlowerRankItem();
-                  _loc10_.info = _loc8_;
-                  _vbox.addChild(_loc10_);
-                  _itemList.push(_loc10_);
+                  item = new FlowerRankItem();
+                  item.info = info;
+                  _vbox.addChild(item);
+                  _itemList.push(item);
                }
-               _loc7_++;
+               i++;
             }
          }
-         _loc6_ = 0;
-         while(_loc6_ <= dataArr.length - 1)
+         k = 0;
+         while(k <= dataArr.length - 1)
          {
-            _loc12_ = (dataArr[_loc6_] as GiftBagInfo).giftConditionArr[1].conditionValue;
-            _loc13_ = _loc13_ > _loc12_?_loc13_:int(_loc12_);
-            _loc6_++;
+            superValue = (dataArr[k] as GiftBagInfo).giftConditionArr[1].conditionValue;
+            maxValue = maxValue > superValue?maxValue:int(superValue);
+            k++;
          }
-         var _loc9_:int = _loc13_ % 8 == 0?_loc13_ / 8:Number(_loc13_ / 8 + 1);
-         pageCount = pageCount > _loc9_?_loc9_:int(pageCount);
+         var maxPage:int = maxValue % 8 == 0?maxValue / 8:Number(maxValue / 8 + 1);
+         pageCount = pageCount > maxPage?maxPage:int(pageCount);
          pageCount = pageCount == 0?1:pageCount;
          _myFlowerNum.text = myFlowerCount + "";
-         if(myPlace <= 0 || myPlace > _loc13_)
+         if(myPlace <= 0 || myPlace > maxValue)
          {
             _myPlace.visible = false;
             _outOfRank.visible = true;
@@ -338,33 +336,32 @@ package flowerGiving.views
       
       private function clearItems() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ <= _itemList.length - 1)
+         var i:int = 0;
+         for(i = 0; i <= _itemList.length - 1; )
          {
-            ObjectUtils.disposeObject(_itemList[_loc1_]);
-            _itemList[_loc1_] = null;
-            _loc1_++;
+            ObjectUtils.disposeObject(_itemList[i]);
+            _itemList[i] = null;
+            i++;
          }
       }
       
-      protected function __getRewardSuccess(param1:PkgEvent) : void
+      protected function __getRewardSuccess(event:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         var _loc3_:Boolean = _loc2_.readBoolean();
-         if(_loc3_)
+         var pkg:PackageIn = event.pkg;
+         var isSuccess:Boolean = pkg.readBoolean();
+         if(isSuccess)
          {
             SocketManager.Instance.out.getFlowerRewardStatus();
          }
       }
       
-      protected function __updateRewardStatus(param1:PkgEvent) : void
+      protected function __updateRewardStatus(event:PkgEvent) : void
       {
-         var _loc4_:PackageIn = param1.pkg;
-         ysdRwardGet = _loc4_.readBoolean();
-         accRwardGet = _loc4_.readBoolean();
-         var _loc2_:int = _loc4_.readInt();
-         var _loc3_:int = _loc4_.readInt();
+         var pkg:PackageIn = event.pkg;
+         ysdRwardGet = pkg.readBoolean();
+         accRwardGet = pkg.readBoolean();
+         var giveFlowerStatus:int = pkg.readInt();
+         var myGivingFlower:int = pkg.readInt();
          if(_getRewardBtn)
          {
             _getRewardBtn.enable = canBtnClick();
@@ -397,7 +394,7 @@ package flowerGiving.views
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          removeEvents();
          ObjectUtils.disposeObject(_bg);
          _bg = null;
@@ -435,12 +432,11 @@ package flowerGiving.views
          _getRewardBtn = null;
          ObjectUtils.disposeObject(_vbox);
          _vbox = null;
-         _loc1_ = 0;
-         while(_loc1_ <= _itemList.length - 1)
+         for(i = 0; i <= _itemList.length - 1; )
          {
-            ObjectUtils.disposeObject(_itemList[_loc1_]);
-            _itemList[_loc1_] = null;
-            _loc1_++;
+            ObjectUtils.disposeObject(_itemList[i]);
+            _itemList[i] = null;
+            i++;
          }
       }
    }

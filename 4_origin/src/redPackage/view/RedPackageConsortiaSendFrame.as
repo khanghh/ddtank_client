@@ -65,9 +65,9 @@ package redPackage.view
          super();
       }
       
-      override public function set backgound(param1:DisplayObject) : void
+      override public function set backgound(image:DisplayObject) : void
       {
-         .super.backgound = param1;
+         .super.backgound = image;
          (_backgound as MutipleImage).getChildAt(0)["getChildAt"](1)["alpha"] = 0;
       }
       
@@ -75,8 +75,8 @@ package redPackage.view
       {
          super.init();
          titleText = LanguageMgr.GetTranslation("redpkg.frameTitle.send");
-         var _loc1_:ComponentFactory = ComponentFactory.Instance;
-         _bg = _loc1_.creat("redpkg.consortionSend.Back");
+         var factory:ComponentFactory = ComponentFactory.Instance;
+         _bg = factory.creat("redpkg.consortionSend.Back");
          addToContent(_bg);
          img = ComponentFactory.Instance.creat("asset.core.btmBimap");
          img.height = 61;
@@ -84,25 +84,25 @@ package redPackage.view
          img.x = 20;
          img.y = 290;
          addToContent(img);
-         _titleBmp = _loc1_.creatBitmap("asset.redpkg.consortionSend.title");
+         _titleBmp = factory.creatBitmap("asset.redpkg.consortionSend.title");
          _titleBmp.x = 34;
          _titleBmp.y = 59;
          addToContent(_titleBmp);
-         _moneyBG = _loc1_.creat("core.ddtshop.NumberSelecterTextBg");
+         _moneyBG = factory.creat("core.ddtshop.NumberSelecterTextBg");
          _moneyBG.x = 116;
          _moneyBG.y = 111;
          _moneyBG.width = 188;
          _moneyBG.height = 26;
          addToContent(_moneyBG);
-         _moneyLabel = _loc1_.creat("redpkg.consortion.sendMoney.label");
+         _moneyLabel = factory.creat("redpkg.consortion.sendMoney.label");
          _moneyLabel.text = LanguageMgr.GetTranslation("redpkg.consortion.sendMoney.label");
          addToContent(_moneyLabel);
-         _moneyTextField = _loc1_.creat("redpkg.consortion.sendMoney.txt");
+         _moneyTextField = factory.creat("redpkg.consortion.sendMoney.txt");
          _moneyTextField.restrict = "0-9";
          _moneyTextField.maxChars = 5;
          _moneyTextField.text = "10";
          addToContent(_moneyTextField);
-         _pkgNumberLabel = _loc1_.creat("redpkg.consortion.sendNumber.label");
+         _pkgNumberLabel = factory.creat("redpkg.consortion.sendNumber.label");
          _pkgNumberLabel.text = LanguageMgr.GetTranslation("redpkg.consortion.sendNumber.label");
          addToContent(_pkgNumberLabel);
          _pkgNumberSelecter = ComponentFactory.Instance.creatCustomObject("ddtcore.numberSelecter");
@@ -114,18 +114,18 @@ package redPackage.view
          _pkgNumberSelecter.y = 144;
          _pkgNumberSelecter.maximum = 200;
          addToContent(_pkgNumberSelecter);
-         _wishWordsBG = _loc1_.creat("asset.consortionSend.detail.bottom");
+         _wishWordsBG = factory.creat("asset.consortionSend.detail.bottom");
          _wishWordsBG.x = 32;
          _wishWordsBG.y = 173;
          addToContent(_wishWordsBG);
-         _wishWordsTextField = _loc1_.creat("redpkg.consortion.detail.txt");
+         _wishWordsTextField = factory.creat("redpkg.consortion.detail.txt");
          _wishWordsTextField.text = LanguageMgr.GetTranslation("redpkg.consortion.send.detail");
          _wishWordsTextField.type = "input";
          _wishWordsTextField.multiline = true;
          _wishWordsTextField.maxChars = 23;
          _wishWordsTextField.selectable = true;
          addToContent(_wishWordsTextField);
-         _sendBtn = _loc1_.creat("redpkg.consortionSend.sendBtn");
+         _sendBtn = factory.creat("redpkg.consortionSend.sendBtn");
          addToContent(_sendBtn);
          _isAverage = ComponentFactory.Instance.creatComponentByStylename("redpkg.consortionSend.CheckButton");
          _isAverage.text = LanguageMgr.GetTranslation("ddt.consortion.AverageText");
@@ -147,16 +147,16 @@ package redPackage.view
          this.addEventListener("addedToStage",onATS);
       }
       
-      protected function onATS(param1:Event) : void
+      protected function onATS(e:Event) : void
       {
          this.removeEventListener("addedToStage",onATS);
          StageReferance.stage.focus = _sendBtn;
          escEnable = true;
       }
       
-      protected function onSendBtnClick(param1:MouseEvent) : void
+      protected function onSendBtnClick(e:MouseEvent) : void
       {
-         e = param1;
+         e = e;
          _sendBtn.enable = false;
          SoundManager.instance.play("008");
          TweenLite.delayedCall(1.5,function():void
@@ -191,9 +191,9 @@ package redPackage.view
          removeEventListener("response",_response);
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             close();
          }

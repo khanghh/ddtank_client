@@ -62,19 +62,19 @@ package flowerGiving.components
       private function initData() : void
       {
          _baseTip = new GoodTipInfo();
-         var _loc2_:ItemTemplateInfo = new ItemTemplateInfo();
-         _loc2_.Quality = 4;
-         _loc2_.CategoryID = 11;
-         _loc2_.Name = "Quà Cơ Bản";
-         _loc2_.Description = "一些描述";
-         _baseTip.itemInfo = _loc2_;
+         var info:ItemTemplateInfo = new ItemTemplateInfo();
+         info.Quality = 4;
+         info.CategoryID = 11;
+         info.Name = "Quà Cơ Bản";
+         info.Description = "一些描述";
+         _baseTip.itemInfo = info;
          _superTip = new GoodTipInfo();
-         var _loc1_:ItemTemplateInfo = new ItemTemplateInfo();
-         _loc1_.Quality = 4;
-         _loc1_.CategoryID = 11;
-         _loc1_.Name = "Túi Quà Siêu Cấp";
-         _loc1_.Description = "一些描述";
-         _superTip.itemInfo = _loc1_;
+         var info2:ItemTemplateInfo = new ItemTemplateInfo();
+         info2.Quality = 4;
+         info2.CategoryID = 11;
+         info2.Name = "Túi Quà Siêu Cấp";
+         info2.Description = "一些描述";
+         _superTip.itemInfo = info2;
       }
       
       private function initView() : void
@@ -121,19 +121,19 @@ package flowerGiving.components
          addEventListener("rollOut",__onOutHandler);
       }
       
-      protected function __onOutHandler(param1:MouseEvent) : void
+      protected function __onOutHandler(event:MouseEvent) : void
       {
          _backOverBit.visible = false;
       }
       
-      protected function __onOverHanlder(param1:MouseEvent) : void
+      protected function __onOverHanlder(event:MouseEvent) : void
       {
          _backOverBit.visible = true;
       }
       
-      public function set info(param1:FlowerRankInfo) : void
+      public function set info(info:FlowerRankInfo) : void
       {
-         _info = param1;
+         _info = info;
          setRankNum(_info.place);
          addNickName();
          _numTxt.text = _info.num + "";
@@ -142,7 +142,7 @@ package flowerGiving.components
       
       private function addNickName() : void
       {
-         var _loc1_:* = null;
+         var textFormat:* = null;
          if(_vipName)
          {
             _vipName.dispose();
@@ -152,10 +152,10 @@ package flowerGiving.components
          if(_info.isVIP)
          {
             _vipName = VipController.instance.getVipNameTxt(1,1);
-            _loc1_ = new TextFormat();
-            _loc1_.align = "center";
-            _loc1_.bold = true;
-            _vipName.textField.defaultTextFormat = _loc1_;
+            textFormat = new TextFormat();
+            textFormat.align = "center";
+            textFormat.bold = true;
+            _vipName.textField.defaultTextFormat = textFormat;
             _vipName.textSize = 16;
             _vipName.textField.width = _nameTxt.width;
             _vipName.x = _nameTxt.x;
@@ -174,12 +174,12 @@ package flowerGiving.components
          }
       }
       
-      private function __textClickHandler(param1:TextEvent) : void
+      private function __textClickHandler(evt:TextEvent) : void
       {
          openPlayerInfoFrame();
       }
       
-      private function __vipNameClick_Handler(param1:MouseEvent) : void
+      private function __vipNameClick_Handler(evt:MouseEvent) : void
       {
          openPlayerInfoFrame();
       }
@@ -190,43 +190,42 @@ package flowerGiving.components
          PlayerInfoViewControl.isOpenFromBag = false;
       }
       
-      private function setRankNum(param1:int) : void
+      private function setRankNum(num:int) : void
       {
-         if(param1 <= 3)
+         if(num <= 3)
          {
             _placeTxt.visible = false;
             _topThreeIcon.visible = true;
-            _topThreeIcon.setFrame(param1);
+            _topThreeIcon.setFrame(num);
          }
          else
          {
             _placeTxt.visible = true;
             _topThreeIcon.visible = false;
-            _placeTxt.text = param1 + "th";
+            _placeTxt.text = num + "th";
          }
       }
       
       private function addTips() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var rewardInfo:* = null;
+         var item:* = null;
          _baseTip.itemInfo.Description = "";
          _superTip.itemInfo.Description = "";
-         _loc3_ = 0;
-         while(_loc3_ <= _info.rewardVec.length - 1)
+         for(i = 0; i <= _info.rewardVec.length - 1; )
          {
-            _loc1_ = _info.rewardVec[_loc3_];
-            _loc2_ = new InventoryItemInfo();
-            _loc2_.TemplateID = _loc1_.templateId;
-            ItemManager.fill(_loc2_);
-            if(_loc1_.rewardType == 0)
+            rewardInfo = _info.rewardVec[i];
+            item = new InventoryItemInfo();
+            item.TemplateID = rewardInfo.templateId;
+            ItemManager.fill(item);
+            if(rewardInfo.rewardType == 0)
             {
                if(_baseTip.itemInfo.Description != "")
                {
                   _baseTip.itemInfo.Description = _baseTip.itemInfo.Description + "、";
                }
-               _baseTip.itemInfo.Description = _baseTip.itemInfo.Description + (_loc2_.Name + "x" + _loc1_.count);
+               _baseTip.itemInfo.Description = _baseTip.itemInfo.Description + (item.Name + "x" + rewardInfo.count);
                _baseIcon.tipData = _baseTip;
             }
             else
@@ -235,10 +234,10 @@ package flowerGiving.components
                {
                   _superTip.itemInfo.Description = _superTip.itemInfo.Description + "、";
                }
-               _superTip.itemInfo.Description = _superTip.itemInfo.Description + (_loc2_.Name + "x" + _loc1_.count);
+               _superTip.itemInfo.Description = _superTip.itemInfo.Description + (item.Name + "x" + rewardInfo.count);
                _superIcon.tipData = _superTip;
             }
-            _loc3_++;
+            i++;
          }
       }
       

@@ -37,44 +37,43 @@ package happyLittleGame.cubesGame
          this.addChild(_sp);
       }
       
-      private function freshMap(param1:CubeGameEvent) : void
+      private function freshMap(evt:CubeGameEvent) : void
       {
-         var _loc6_:* = 0;
-         var _loc4_:* = null;
-         var _loc2_:* = null;
+         var i:* = 0;
+         var data:* = null;
+         var bmd:* = null;
          if(this.numChildren > 1)
          {
             this.removeChildren(1,this.numChildren - 1);
          }
-         var _loc3_:Array = new Array(CubeGameManager.getInstance().gameInfo.column);
-         var _loc5_:Array = param1.data as Array;
+         var columnNums:Array = new Array(CubeGameManager.getInstance().gameInfo.column);
+         var cubes:Array = evt.data as Array;
          lastMap();
-         _lastArr = _loc5_.concat();
+         _lastArr = cubes.concat();
          _height = 0;
-         _loc6_ = uint(0);
-         while(_loc6_ < _loc5_.length)
+         for(i = uint(0); i < cubes.length; )
          {
-            _loc4_ = _loc5_[_loc6_];
-            if(!(!_loc4_ || _loc4_.type == 0))
+            data = cubes[i];
+            if(!(!data || data.type == 0))
             {
-               _loc2_ = ComponentFactory.Instance.creatBitmap("asset.CubeGame." + _loc4_.type);
-               _loc2_.width = 20.5;
-               _loc2_.height = 21;
-               _loc2_.x = (CubeGameManager.getInstance().gameInfo.column - _loc4_.x) * 41 * 0.5;
-               _loc2_.y = _loc4_.y * 42 * 0.5;
-               _height = _loc2_.y;
-               this.addChild(_loc2_);
-               _loc3_[_loc4_.x] = _loc4_;
+               bmd = ComponentFactory.Instance.creatBitmap("asset.CubeGame." + data.type);
+               bmd.width = 20.5;
+               bmd.height = 21;
+               bmd.x = (CubeGameManager.getInstance().gameInfo.column - data.x) * 41 * 0.5;
+               bmd.y = data.y * 42 * 0.5;
+               _height = bmd.y;
+               this.addChild(bmd);
+               columnNums[data.x] = data;
             }
-            _loc6_++;
+            i++;
          }
       }
       
       private function lastMap() : void
       {
-         var _loc3_:* = 0;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var i:* = 0;
+         var data:* = null;
+         var bmd:* = null;
          if(_sp.numChildren > 0)
          {
             _sp.removeChildren(0,_sp.numChildren - 1);
@@ -85,20 +84,19 @@ package happyLittleGame.cubesGame
          }
          _height = 20;
          _sp.y = 20;
-         _loc3_ = uint(0);
-         while(_loc3_ < _lastArr.length)
+         for(i = uint(0); i < _lastArr.length; )
          {
-            _loc2_ = _lastArr[_loc3_];
-            if(!(!_loc2_ || _loc2_.type == 0))
+            data = _lastArr[i];
+            if(!(!data || data.type == 0))
             {
-               _loc1_ = ComponentFactory.Instance.creatBitmap("asset.CubeGame." + _loc2_.type);
-               _loc1_.width = 20.5;
-               _loc1_.height = 21;
-               _loc1_.x = (CubeGameManager.getInstance().gameInfo.column - _loc2_.x) * 41 * 0.5;
-               _loc1_.y = 250 + _loc2_.y * 42 * 0.5;
-               _sp.addChild(_loc1_);
+               bmd = ComponentFactory.Instance.creatBitmap("asset.CubeGame." + data.type);
+               bmd.width = 20.5;
+               bmd.height = 21;
+               bmd.x = (CubeGameManager.getInstance().gameInfo.column - data.x) * 41 * 0.5;
+               bmd.y = 250 + data.y * 42 * 0.5;
+               _sp.addChild(bmd);
             }
-            _loc3_++;
+            i++;
          }
       }
       

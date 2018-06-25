@@ -9,27 +9,27 @@ package com.greensock.easing
          super();
       }
       
-      public static function easeIn(param1:Number, param2:Number, param3:Number, param4:Number) : Number
+      public static function easeIn(t:Number, b:Number, c:Number, d:Number) : Number
       {
-         param1 = param1 / param4;
-         return -param3 * (Math.sqrt(1 - param1 / param4 * param1) - 1) + param2;
+         t = t / d;
+         return -c * (Math.sqrt(1 - t / d * t) - 1) + b;
       }
       
-      public static function easeOut(param1:Number, param2:Number, param3:Number, param4:Number) : Number
+      public static function easeOut(t:Number, b:Number, c:Number, d:Number) : Number
       {
-         param1 = param1 / param4 - 1;
-         return param3 * Math.sqrt(1 - (param1 / param4 - 1) * param1) + param2;
+         t = t / d - 1;
+         return c * Math.sqrt(1 - (t / d - 1) * t) + b;
       }
       
-      public static function easeInOut(param1:Number, param2:Number, param3:Number, param4:Number) : Number
+      public static function easeInOut(t:Number, b:Number, c:Number, d:Number) : Number
       {
-         param1 = param1 / (param4 * 0.5);
-         if(param1 / (param4 * 0.5) < 1)
+         t = t / (d * 0.5);
+         if(t / (d * 0.5) < 1)
          {
-            return -param3 * 0.5 * (Math.sqrt(1 - param1 * param1) - 1) + param2;
+            return -c * 0.5 * (Math.sqrt(1 - t * t) - 1) + b;
          }
-         param1 = param1 - 2;
-         return param3 * 0.5 * (Math.sqrt(1 - (param1 - 2) * param1) + 1) + param2;
+         t = t - 2;
+         return c * 0.5 * (Math.sqrt(1 - (t - 2) * t) + 1) + b;
       }
    }
 }

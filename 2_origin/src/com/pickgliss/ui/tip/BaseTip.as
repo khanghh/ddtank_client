@@ -32,24 +32,24 @@ package com.pickgliss.ui.tip
          super.dispose();
       }
       
-      public function set tipbackgound(param1:Image) : void
+      public function set tipbackgound(back:Image) : void
       {
-         if(_tipbackgound == param1)
+         if(_tipbackgound == back)
          {
             return;
          }
          ObjectUtils.disposeObject(_tipbackgound);
-         _tipbackgound = param1;
+         _tipbackgound = back;
          onPropertiesChanged("tipbackgound");
       }
       
-      public function set tipbackgoundstyle(param1:String) : void
+      public function set tipbackgoundstyle(stylename:String) : void
       {
-         if(_tipbackgoundstyle == param1)
+         if(_tipbackgoundstyle == stylename)
          {
             return;
          }
-         _tipbackgoundstyle = param1;
+         _tipbackgoundstyle = stylename;
          tipbackgound = ComponentFactory.Instance.creat(_tipbackgoundstyle);
       }
       

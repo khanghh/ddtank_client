@@ -14,10 +14,10 @@ package hotSpring.event
       
       public var _object:Object;
       
-      public function CharacterEvent(param1:String, param2:Object)
+      public function CharacterEvent(type:String, object:Object)
       {
-         super(param1);
-         this._object = param2;
+         super(type);
+         this._object = object;
       }
    }
 }

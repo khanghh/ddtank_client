@@ -38,7 +38,7 @@ package midAutumnWorshipTheMoon.model
       
       private var _state200AwardsBoxIcon:int;
       
-      public function WorshipTheMoonModel(param1:inner)
+      public function WorshipTheMoonModel(single:inner)
       {
          super();
       }
@@ -52,9 +52,9 @@ package midAutumnWorshipTheMoon.model
          return instance;
       }
       
-      public function init(param1:IWorshipTheMoonMainFrame) : void
+      public function init($view:IWorshipTheMoonMainFrame) : void
       {
-         _view = param1;
+         _view = $view;
       }
       
       public function dispose() : void
@@ -77,16 +77,16 @@ package midAutumnWorshipTheMoon.model
          _isTensBtnShowBuyTipThisLogin = true;
       }
       
-      public function onceBtnNotShowBuyTipsAgainThisLogin(param1:Boolean) : void
+      public function onceBtnNotShowBuyTipsAgainThisLogin(isUseBindMoney:Boolean) : void
       {
          _isOnceBtnShowBuyTipThisLogin = false;
-         _isOnceBtnUseBindMoney = param1;
+         _isOnceBtnUseBindMoney = isUseBindMoney;
       }
       
-      public function tensBtnNotShowBuyTipsAgainThisLogin(param1:Boolean) : void
+      public function tensBtnNotShowBuyTipsAgainThisLogin(isUseBindMoney:Boolean) : void
       {
          _isTensBtnShowBuyTipThisLogin = false;
-         _isTensBtnUseBindMoney = param1;
+         _isTensBtnUseBindMoney = isUseBindMoney;
       }
       
       public function getPricePerWorship() : int
@@ -104,14 +104,14 @@ package midAutumnWorshipTheMoon.model
          return _isTensBtnShowBuyTipThisLogin;
       }
       
-      public function updateIsOnceBtnUseBindMoney(param1:Boolean) : void
+      public function updateIsOnceBtnUseBindMoney(value:Boolean) : void
       {
-         _isOnceBtnUseBindMoney = param1;
+         _isOnceBtnUseBindMoney = value;
       }
       
-      public function updateIsTensBtnUseBindMoney(param1:Boolean) : void
+      public function updateIsTensBtnUseBindMoney(value:Boolean) : void
       {
-         _isTensBtnUseBindMoney = param1;
+         _isTensBtnUseBindMoney = value;
       }
       
       public function getIsOnceBtnUseBindMoney() : Boolean
@@ -124,14 +124,14 @@ package midAutumnWorshipTheMoon.model
          return _isTensBtnUseBindMoney;
       }
       
-      public function getNeedMoneyTimes(param1:int) : int
+      public function getNeedMoneyTimes(timesGoingToRequire:int) : int
       {
-         return Math.max(0,param1 - _timesRemain);
+         return Math.max(0,timesGoingToRequire - _timesRemain);
       }
       
-      public function getNeedMoney(param1:int) : int
+      public function getNeedMoney(times:int) : int
       {
-         return _pricePerWorship * getNeedMoneyTimes(param1);
+         return _pricePerWorship * getNeedMoneyTimes(times);
       }
       
       public function getTimesRemain() : int
@@ -164,34 +164,34 @@ package midAutumnWorshipTheMoon.model
          return _on200timesGainID;
       }
       
-      public function updateIsOpen(param1:Boolean) : void
+      public function updateIsOpen(value:Boolean) : void
       {
-         _isopen = param1;
+         _isopen = value;
       }
       
-      public function updatePrice(param1:int) : void
+      public function updatePrice(value:int) : void
       {
-         _pricePerWorship = param1;
+         _pricePerWorship = value;
       }
       
-      public function update200TimesGain(param1:int) : void
+      public function update200TimesGain(id:int) : void
       {
-         _on200timesGainID = param1;
+         _on200timesGainID = id;
       }
       
-      public function updateFreeCounts(param1:int) : void
+      public function updateFreeCounts(value:int) : void
       {
-         _timesRemain = param1;
+         _timesRemain = value;
       }
       
-      public function updateWorshipedCounts(param1:int) : void
+      public function updateWorshipedCounts(value:int) : void
       {
-         _usedTimes = param1;
+         _usedTimes = value;
       }
       
-      public function update200State(param1:int) : void
+      public function update200State(gained:int) : void
       {
-         if((param1 + 1) * 300 - _usedTimes > 0)
+         if((gained + 1) * 300 - _usedTimes > 0)
          {
             _state200AwardsBoxIcon = 1;
          }
@@ -206,9 +206,9 @@ package midAutumnWorshipTheMoon.model
          return _state200AwardsBoxIcon;
       }
       
-      public function updateAwardsBoxInfoList(param1:Vector.<WorshipTheMoonAwardsBoxInfo>) : void
+      public function updateAwardsBoxInfoList(value:Vector.<WorshipTheMoonAwardsBoxInfo>) : void
       {
-         _awardsBoxInfoList = param1;
+         _awardsBoxInfoList = value;
          if(_awardsBoxInfoList.length == 1)
          {
             _currentMoonType = _awardsBoxInfoList[0].moonType;
@@ -220,9 +220,9 @@ package midAutumnWorshipTheMoon.model
          }
       }
       
-      public function updateItemsCanGainsIDList(param1:Vector.<int>) : void
+      public function updateItemsCanGainsIDList(value:Vector.<int>) : void
       {
-         _itemsCanGainsIDList = param1;
+         _itemsCanGainsIDList = value;
       }
    }
 }

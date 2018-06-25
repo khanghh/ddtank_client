@@ -12,7 +12,7 @@ package ddt.view.tips
       
       private var colorBoard:Bitmap;
       
-      public function TipColorBlock(param1:uint)
+      public function TipColorBlock(color:uint)
       {
          super();
          addChild(ComponentFactory.Instance.creat("asset.core.tip.color"));
@@ -20,7 +20,7 @@ package ddt.view.tips
          addChild(colorBoard);
          sp = new Sprite();
          sp.graphics.clear();
-         sp.graphics.beginFill(param1,1);
+         sp.graphics.beginFill(color,1);
          sp.graphics.drawRect(0,0,14,14);
          sp.graphics.endFill();
          sp.x = colorBoard.x + 1;
@@ -28,10 +28,10 @@ package ddt.view.tips
          addChild(sp);
       }
       
-      public function move(param1:Number, param2:Number) : void
+      public function move(x:Number, y:Number) : void
       {
-         this.x = param1;
-         this.y = param2;
+         this.x = x;
+         this.y = y;
       }
       
       public function dispose() : void

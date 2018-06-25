@@ -16,10 +16,10 @@ package giftSystem
       
       public var str:String;
       
-      public function GiftEvent(param1:String, param2:String = "")
+      public function GiftEvent(type:String, name:String = "")
       {
-         super(param1);
-         str = param2;
+         super(type);
+         str = name;
       }
    }
 }

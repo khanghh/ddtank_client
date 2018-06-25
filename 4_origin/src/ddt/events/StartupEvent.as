@@ -12,9 +12,9 @@ package ddt.events
       public static const ROLE_DATE_COMPLETE:String = "roleDataComplete";
        
       
-      public function StartupEvent(param1:String)
+      public function StartupEvent(type:String)
       {
-         super(param1);
+         super(type);
       }
    }
 }

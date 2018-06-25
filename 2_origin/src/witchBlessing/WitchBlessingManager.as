@@ -26,9 +26,9 @@ package witchBlessing
       
       private var _model:WitchBlessingModel;
       
-      public function WitchBlessingManager(param1:IEventDispatcher = null)
+      public function WitchBlessingManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get Instance() : WitchBlessingManager
@@ -56,37 +56,37 @@ package witchBlessing
          return _model.isOpen;
       }
       
-      public function templateDataSetup(param1:Array) : void
+      public function templateDataSetup(dataList:Array) : void
       {
-         _model.itemInfoList = param1;
+         _model.itemInfoList = dataList;
       }
       
-      private function __witchBlessingHandle(param1:CrazyTankSocketEvent) : void
+      private function __witchBlessingHandle(e:CrazyTankSocketEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = param1._cmd;
-         switch(int(_loc2_) - 112)
+         var pkg:PackageIn = e.pkg;
+         var cmd:int = e._cmd;
+         switch(int(cmd) - 112)
          {
             case 0:
-               isOpenIcon(_loc3_);
+               isOpenIcon(pkg);
                break;
             case 1:
-               enterView(_loc3_);
+               enterView(pkg);
             default:
-               enterView(_loc3_);
+               enterView(pkg);
          }
       }
       
-      private function enterView(param1:PackageIn) : void
+      private function enterView(pkg:PackageIn) : void
       {
-         _model.isDouble = param1.readBoolean();
-         _model.totalExp = param1.readInt();
-         _model.lv1GetAwardsTimes = param1.readInt();
-         _model.lv1CD = param1.readInt();
-         _model.lv2GetAwardsTimes = param1.readInt();
-         _model.lv2CD = param1.readInt();
-         _model.lv3GetAwardsTimes = param1.readInt();
-         _model.lv3CD = param1.readInt();
+         _model.isDouble = pkg.readBoolean();
+         _model.totalExp = pkg.readInt();
+         _model.lv1GetAwardsTimes = pkg.readInt();
+         _model.lv1CD = pkg.readInt();
+         _model.lv2GetAwardsTimes = pkg.readInt();
+         _model.lv2CD = pkg.readInt();
+         _model.lv3GetAwardsTimes = pkg.readInt();
+         _model.lv3CD = pkg.readInt();
          if(loadComplete)
          {
             showMainView();
@@ -119,11 +119,11 @@ package witchBlessing
          }
       }
       
-      public function isOpenIcon(param1:PackageIn) : void
+      public function isOpenIcon(pkg:PackageIn) : void
       {
-         _model.isOpen = param1.readBoolean();
-         _model.startDate = param1.readDate();
-         _model.endDate = param1.readDate();
+         _model.isOpen = pkg.readBoolean();
+         _model.startDate = pkg.readDate();
+         _model.endDate = pkg.readDate();
          HallIconManager.instance.updateSwitchHandler("witchblessing",_model.isOpen);
       }
       
@@ -137,7 +137,7 @@ package witchBlessing
          dispatchEvent(new Event("witchblessingshowframe"));
       }
       
-      protected function __onClose(param1:Event) : void
+      protected function __onClose(event:Event) : void
       {
          UIModuleSmallLoading.Instance.hide();
          UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);
@@ -145,17 +145,17 @@ package witchBlessing
          UIModuleLoader.Instance.removeEventListener("uiModuleComplete",__completeShow);
       }
       
-      private function __progressShow(param1:UIModuleEvent) : void
+      private function __progressShow(event:UIModuleEvent) : void
       {
-         if(param1.module == "witchblessing")
+         if(event.module == "witchblessing")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
       
-      private function __completeShow(param1:UIModuleEvent) : void
+      private function __completeShow(event:UIModuleEvent) : void
       {
-         if(param1.module == "witchblessing")
+         if(event.module == "witchblessing")
          {
             UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);
             UIModuleLoader.Instance.removeEventListener("uiMoudleProgress",__progressShow);

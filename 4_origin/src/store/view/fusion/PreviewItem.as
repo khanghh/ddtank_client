@@ -27,8 +27,8 @@ package store.view.fusion
       
       private function initView() : void
       {
-         var _loc1_:MutipleImage = ComponentFactory.Instance.creatComponentByStylename("store.PreviewBG");
-         addChild(_loc1_);
+         var bg:MutipleImage = ComponentFactory.Instance.creatComponentByStylename("store.PreviewBG");
+         addChild(bg);
          rate_txt = ComponentFactory.Instance.creatComponentByStylename("store.PreviewSuccessRateTxt");
          addChild(rate_txt);
          title_txt = ComponentFactory.Instance.creatComponentByStylename("store.PreviewNameTxt");
@@ -38,11 +38,11 @@ package store.view.fusion
          addChild(_cell);
       }
       
-      public function set info(param1:PreviewInfoII) : void
+      public function set info($info:PreviewInfoII) : void
       {
-         _cell.info = param1.info;
-         rate_txt.text = param1.rate <= 5?LanguageMgr.GetTranslation("store.fusion.preview.LowRate"):String(param1.rate) + "%";
-         title_txt.text = String(param1.info.Name);
+         _cell.info = $info.info;
+         rate_txt.text = $info.rate <= 5?LanguageMgr.GetTranslation("store.fusion.preview.LowRate"):String($info.rate) + "%";
+         title_txt.text = String($info.info.Name);
       }
       
       public function dispose() : void

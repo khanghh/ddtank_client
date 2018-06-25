@@ -55,7 +55,7 @@ package store.godRefining.view
       
       private function initView() : void
       {
-         var _loc1_:int = 0;
+         var a:int = 0;
          _bg = ComponentFactory.Instance.creatComponentByStylename("ddtstore.godRefining.resetViewBg");
          addChild(_bg);
          _cellBg = ComponentFactory.Instance.creatBitmap("asset.godRefining.resetViewCellBg");
@@ -77,24 +77,23 @@ package store.godRefining.view
          _damageTitleTextArr = new Vector.<FilterFrameText>();
          _damageContentTextArr = new Vector.<FilterFrameText>();
          _startResetBtnArr = new Vector.<BaseButton>();
-         _loc1_ = 0;
-         while(_loc1_ < 2)
+         for(a = 0; a < 2; )
          {
-            _damageTitleTextArr[_loc1_] = ComponentFactory.Instance.creatComponentByStylename("ddtstore.godRefiningResetView.damageTitleText");
-            _damageTitleTextArr[_loc1_].text = LanguageMgr.GetTranslation("store.godRefiningResetView.damageTitleTextMsg","普通武器");
-            addChild(_damageTitleTextArr[_loc1_]);
-            _damageContentTextArr[_loc1_] = ComponentFactory.Instance.creatComponentByStylename("ddtstore.godRefiningResetView.damageContentText");
-            _damageContentTextArr[_loc1_].text = "+20%";
-            addChild(_damageContentTextArr[_loc1_]);
-            _startResetBtnArr[_loc1_] = ComponentFactory.Instance.creatComponentByStylename("ddtstore.godRefining.startResetBtn");
-            addChild(_startResetBtnArr[_loc1_]);
-            if(_loc1_ == 1)
+            _damageTitleTextArr[a] = ComponentFactory.Instance.creatComponentByStylename("ddtstore.godRefiningResetView.damageTitleText");
+            _damageTitleTextArr[a].text = LanguageMgr.GetTranslation("store.godRefiningResetView.damageTitleTextMsg","普通武器");
+            addChild(_damageTitleTextArr[a]);
+            _damageContentTextArr[a] = ComponentFactory.Instance.creatComponentByStylename("ddtstore.godRefiningResetView.damageContentText");
+            _damageContentTextArr[a].text = "+20%";
+            addChild(_damageContentTextArr[a]);
+            _startResetBtnArr[a] = ComponentFactory.Instance.creatComponentByStylename("ddtstore.godRefining.startResetBtn");
+            addChild(_startResetBtnArr[a]);
+            if(a == 1)
             {
-               _damageTitleTextArr[_loc1_].y = _damageTitleTextArr[_loc1_].y + 30;
-               _damageContentTextArr[_loc1_].y = _damageContentTextArr[_loc1_].y + 30;
-               _startResetBtnArr[_loc1_].y = _startResetBtnArr[_loc1_].y + 30;
+               _damageTitleTextArr[a].y = _damageTitleTextArr[a].y + 30;
+               _damageContentTextArr[a].y = _damageContentTextArr[a].y + 30;
+               _startResetBtnArr[a].y = _startResetBtnArr[a].y + 30;
             }
-            _loc1_++;
+            a++;
          }
          _items = new Vector.<StoreCell>();
          _items[0] = new GodRefiningItemCell(0);
@@ -107,109 +106,105 @@ package store.godRefining.view
       
       private function initEvent() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _startResetBtnArr.length)
+         var i:int = 0;
+         for(i = 0; i < _startResetBtnArr.length; )
          {
-            _startResetBtnArr[_loc1_].addEventListener("click",__resetBtnHandler);
-            _loc1_++;
+            _startResetBtnArr[i].addEventListener("click",__resetBtnHandler);
+            i++;
          }
       }
       
       public function updateView() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _items.length)
+         var i:int = 0;
+         for(i = 0; i < _items.length; )
          {
-            _items[_loc1_].info = null;
-            _loc1_++;
+            _items[i].info = null;
+            i++;
          }
       }
       
-      private function getCurCellIndex(param1:ItemTemplateInfo) : int
+      private function getCurCellIndex(itemInfo:ItemTemplateInfo) : int
       {
-         if(EquipType.isArmShell(param1))
+         if(EquipType.isArmShell(itemInfo))
          {
             return 0;
          }
-         if(EquipType.isArmShellResetStone(param1))
+         if(EquipType.isArmShellResetStone(itemInfo))
          {
             return 1;
          }
          return -1;
       }
       
-      public function refreshData(param1:Dictionary) : void
+      public function refreshData(items:Dictionary) : void
       {
-         var _loc2_:* = 0;
+         var itemPlace:* = 0;
          var _loc5_:int = 0;
-         var _loc4_:* = param1;
-         for(_loc2_ in param1)
+         var _loc4_:* = items;
+         for(itemPlace in items)
          {
-            if(_loc2_ < _items.length)
+            if(itemPlace < _items.length)
             {
-               _items[_loc2_].info = PlayerManager.Instance.Self.StoreBag.items[_loc2_];
+               _items[itemPlace].info = PlayerManager.Instance.Self.StoreBag.items[itemPlace];
             }
          }
       }
       
-      public function quitStartDrag(param1:CEvent) : void
+      public function quitStartDrag(evt:CEvent) : void
       {
-         var _loc3_:BagCell = param1.data as BagCell;
-         var _loc2_:int = getCurCellIndex(_loc3_.info);
-         if(_loc2_ != -1)
+         var cell:BagCell = evt.data as BagCell;
+         var index:int = getCurCellIndex(cell.info);
+         if(index != -1)
          {
-            startShine(_loc2_);
+            startShine(index);
          }
       }
       
-      public function quitStopDrag(param1:CEvent) : void
+      public function quitStopDrag(evt:CEvent) : void
       {
          stopShine();
       }
       
-      public function startShine(param1:int) : void
+      public function startShine(cellId:int) : void
       {
-         _items[param1].startShine();
+         _items[cellId].startShine();
       }
       
       public function stopShine() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _items.length)
+         var i:int = 0;
+         for(i = 0; i < _items.length; )
          {
-            _items[_loc1_].stopShine();
-            _loc1_++;
+            _items[i].stopShine();
+            i++;
          }
       }
       
-      public function equipDoubleClickMove(param1:CEvent) : void
+      public function equipDoubleClickMove(event:CEvent) : void
       {
-         var _loc2_:InventoryItemInfo = param1.data as InventoryItemInfo;
-         SocketManager.Instance.out.sendMoveGoods(_loc2_.BagType,_loc2_.Place,12,0,1);
+         var info:InventoryItemInfo = event.data as InventoryItemInfo;
+         SocketManager.Instance.out.sendMoveGoods(info.BagType,info.Place,12,0,1);
       }
       
-      public function propDoubleClickMove(param1:CEvent) : void
+      public function propDoubleClickMove(event:CEvent) : void
       {
-         var _loc2_:InventoryItemInfo = param1.data as InventoryItemInfo;
-         SocketManager.Instance.out.sendMoveGoods(_loc2_.BagType,_loc2_.Place,12,getCurCellIndex(_loc2_),1);
+         var info:InventoryItemInfo = event.data as InventoryItemInfo;
+         SocketManager.Instance.out.sendMoveGoods(info.BagType,info.Place,12,getCurCellIndex(info),1);
       }
       
-      private function __resetBtnHandler(param1:MouseEvent) : void
+      private function __resetBtnHandler(event:MouseEvent) : void
       {
-         var _loc2_:int = _startResetBtnArr.indexOf(param1.currentTarget as BaseButton);
+         var index:int = _startResetBtnArr.indexOf(event.currentTarget as BaseButton);
       }
       
       private function removeEvent() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _startResetBtnArr.length)
+         var i:int = 0;
+         for(i = 0; i < _startResetBtnArr.length; )
          {
-            _startResetBtnArr[_loc1_].removeEventListener("click",__resetBtnHandler);
-            _loc1_++;
+            _startResetBtnArr[i].removeEventListener("click",__resetBtnHandler);
+            i++;
          }
       }
       

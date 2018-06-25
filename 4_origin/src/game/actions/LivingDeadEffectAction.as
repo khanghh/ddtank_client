@@ -11,34 +11,33 @@ package game.actions
       
       private var _completeCount:int;
       
-      public function LivingDeadEffectAction(param1:Array)
+      public function LivingDeadEffectAction($args:Array)
       {
          super();
-         _args = param1;
+         _args = $args;
       }
       
       override public function prepare() : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         var _loc1_:* = null;
-         _loc4_ = 0;
-         while(_loc4_ < _args.length)
+         var i:int = 0;
+         var argObj:* = null;
+         var living:* = null;
+         var deadEffect:* = null;
+         for(i = 0; i < _args.length; )
          {
-            _loc2_ = _args[_loc4_];
-            _loc3_ = _loc2_.target;
-            _loc1_ = _loc2_.deadEffect;
-            _loc3_.showDeadEffect(_loc1_,showDeadEffectHandler,[_loc2_]);
-            _loc4_++;
+            argObj = _args[i];
+            living = argObj.target;
+            deadEffect = argObj.deadEffect;
+            living.showDeadEffect(deadEffect,showDeadEffectHandler,[argObj]);
+            i++;
          }
       }
       
-      private function showDeadEffectHandler(param1:Array) : void
+      private function showDeadEffectHandler(arr:Array) : void
       {
-         var _loc2_:Object = param1[0];
-         var _loc3_:Living = _loc2_.target;
-         _loc3_.updateBlood(_loc2_.targetBlood,_loc2_.type,_loc2_.damage);
+         var argObj:Object = arr[0];
+         var living:Living = argObj.target;
+         living.updateBlood(argObj.targetBlood,argObj.type,argObj.damage);
          _completeCount = Number(_completeCount) + 1;
       }
       

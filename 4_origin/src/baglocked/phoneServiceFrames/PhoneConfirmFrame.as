@@ -41,9 +41,9 @@ package baglocked.phoneServiceFrames
          super();
       }
       
-      public function init2(param1:int) : void
+      public function init2(value:int) : void
       {
-         type = param1;
+         type = value;
          this.titleText = LanguageMgr.GetTranslation("tank.view.bagII.baglocked.changePhoneTxt");
          _description1 = ComponentFactory.Instance.creatComponentByStylename("baglocked.whiteTxt");
          PositionUtils.setPos(_description1,"bagLocked.phoneInputTxtPos");
@@ -70,7 +70,7 @@ package baglocked.phoneServiceFrames
          addEvent();
       }
       
-      protected function __nextBtnClick(param1:MouseEvent) : void
+      protected function __nextBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_phoneInput.text.length != 11)
@@ -94,9 +94,9 @@ package baglocked.phoneServiceFrames
          BagLockedController.Instance.phoneNum = _phoneInput.text;
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -105,9 +105,9 @@ package baglocked.phoneServiceFrames
          }
       }
       
-      public function set bagLockedController(param1:BagLockedController) : void
+      public function set bagLockedController(value:BagLockedController) : void
       {
-         _bagLockedController = param1;
+         _bagLockedController = value;
       }
       
       public function show() : void

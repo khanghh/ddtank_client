@@ -109,20 +109,20 @@ package petsBag.view
          updateAdoptBtnStatus();
       }
       
-      private function update(param1:Array) : void
+      private function update(pets:Array) : void
       {
-         var _loc2_:* = null;
-         if(!param1 || param1.length < 1)
+         var petIcon:* = null;
+         if(!pets || pets.length < 1)
          {
             return;
          }
          removeItem();
          var _loc5_:int = 0;
-         var _loc4_:* = param1;
-         for each(var _loc3_ in param1)
+         var _loc4_:* = pets;
+         for each(var petInfo in pets)
          {
-            _loc2_ = ComponentFactory.Instance.creat("farm.petAdoptItem",[_loc3_]);
-            _petsImgVec.push(_loc2_);
+            petIcon = ComponentFactory.Instance.creat("farm.petAdoptItem",[petInfo]);
+            _petsImgVec.push(petIcon);
          }
          currentPet = null;
          addItem();
@@ -134,23 +134,22 @@ package petsBag.view
          _refreshVolumeTxt.text = FarmComposeHouseController.instance().refreshVolume();
       }
       
-      public function updateTimer(param1:String) : void
+      public function updateTimer(timeStr:String) : void
       {
       }
       
       private function addItem() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _petsImgVec.length)
+         var index:int = 0;
+         for(index = 0; index < _petsImgVec.length; )
          {
-            if(_loc1_ > 3)
+            if(index > 3)
             {
                return;
             }
-            _petsImgVec[_loc1_].addEventListener("itemclick",__petItemClick);
-            _listView.addChild(_petsImgVec[_loc1_]);
-            _loc1_++;
+            _petsImgVec[index].addEventListener("itemclick",__petItemClick);
+            _listView.addChild(_petsImgVec[index]);
+            index++;
          }
       }
       
@@ -161,52 +160,50 @@ package petsBag.view
       
       private function removeItem() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _petsImgVec.length)
+         var index:int = 0;
+         for(index = 0; index < _petsImgVec.length; )
          {
-            _petsImgVec[_loc1_].removeEventListener("itemclick",__petItemClick);
-            _petsImgVec[_loc1_].dispose();
-            _petsImgVec[_loc1_] = null;
-            _loc1_++;
+            _petsImgVec[index].removeEventListener("itemclick",__petItemClick);
+            _petsImgVec[index].dispose();
+            _petsImgVec[index] = null;
+            index++;
          }
          _petsImgVec.splice(0,_petsImgVec.length);
       }
       
-      private function removeItemByPetInfo(param1:PetInfo) : void
+      private function removeItemByPetInfo(petInfo:PetInfo) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _petsImgVec.length)
+         var index:int = 0;
+         for(index = 0; index < _petsImgVec.length; )
          {
-            if(_petsImgVec[_loc2_].info)
+            if(_petsImgVec[index].info)
             {
-               if(_petsImgVec[_loc2_].info.TemplateID == param1.TemplateID && _petsImgVec[_loc2_].info.Place == param1.Place)
+               if(_petsImgVec[index].info.TemplateID == petInfo.TemplateID && _petsImgVec[index].info.Place == petInfo.Place)
                {
-                  _petsImgVec[_loc2_].removeEventListener("itemclick",__petItemClick);
-                  _petsImgVec[_loc2_].dispose();
-                  _petsImgVec[_loc2_] = null;
-                  _petsImgVec.splice(_loc2_,1);
-                  PetsBagManager.instance().petModel.adoptPets.remove(param1.Place);
+                  _petsImgVec[index].removeEventListener("itemclick",__petItemClick);
+                  _petsImgVec[index].dispose();
+                  _petsImgVec[index] = null;
+                  _petsImgVec.splice(index,1);
+                  PetsBagManager.instance().petModel.adoptPets.remove(petInfo.Place);
                   break;
                }
             }
-            _loc2_++;
+            index++;
          }
       }
       
-      private function __petItemClick(param1:PetItemEvent) : void
+      private function __petItemClick(e:PetItemEvent) : void
       {
-         var _loc2_:int = 0;
+         var index:int = 0;
          SoundManager.instance.play("008");
-         currentPet = param1.data as AdoptItem;
+         currentPet = e.data as AdoptItem;
          if(currentPet)
          {
             setSelectUnSelect(currentPet);
-            _loc2_ = _petsImgVec.indexOf(currentPet);
-            if(_loc2_ > 0 && _loc2_ < 4)
+            index = _petsImgVec.indexOf(currentPet);
+            if(index > 0 && index < 4)
             {
-               _refreshVolumeTxt.text = "   " + _descList[_loc2_];
+               _refreshVolumeTxt.text = "   " + _descList[index];
             }
             else
             {
@@ -221,17 +218,16 @@ package petsBag.view
          }
       }
       
-      private function setSelectUnSelect(param1:AdoptItem, param2:Boolean = false) : void
+      private function setSelectUnSelect(currentPetItem:AdoptItem, select:Boolean = false) : void
       {
-         var _loc3_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < _petsImgVec.length)
+         var index:int = 0;
+         for(index = 0; index < _petsImgVec.length; )
          {
-            if(_petsImgVec[_loc3_] && _petsImgVec[_loc3_] != param1)
+            if(_petsImgVec[index] && _petsImgVec[index] != currentPetItem)
             {
-               _petsImgVec[_loc3_].isSelect = param2;
+               _petsImgVec[index].isSelect = select;
             }
-            _loc3_++;
+            index++;
          }
       }
       
@@ -242,15 +238,15 @@ package petsBag.view
          addEventListener("response",__responseHandler);
       }
       
-      private function __bagUpdate(param1:Event) : void
+      private function __bagUpdate(event:Event) : void
       {
          updateRefreshVolume();
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -258,115 +254,112 @@ package petsBag.view
          }
       }
       
-      private function __updateRefreshPet(param1:PkgEvent) : void
+      private function __updateRefreshPet(e:PkgEvent) : void
       {
-         var _loc9_:int = 0;
-         var _loc2_:int = 0;
-         var _loc7_:* = null;
-         var _loc3_:int = 0;
-         var _loc10_:int = 0;
-         var _loc6_:* = null;
-         var _loc5_:int = 0;
-         var _loc11_:int = 0;
-         var _loc8_:PackageIn = param1.pkg;
-         var _loc12_:Boolean = _loc8_.readBoolean();
-         var _loc4_:int = _loc8_.readInt();
-         _loc11_ = 0;
-         while(_loc11_ < _loc4_)
+         var place:int = 0;
+         var ptid:int = 0;
+         var p:* = null;
+         var skillCount:int = 0;
+         var k:int = 0;
+         var petskill:* = null;
+         var skillid:int = 0;
+         var i:int = 0;
+         var pkg:PackageIn = e.pkg;
+         var isUpdate:Boolean = pkg.readBoolean();
+         var count:int = pkg.readInt();
+         for(i = 0; i < count; )
          {
-            if(_loc12_)
+            if(isUpdate)
             {
-               _loc9_ = _loc8_.readInt();
-               _loc2_ = _loc8_.readInt();
-               _loc7_ = new PetInfo();
-               _loc7_.TemplateID = _loc2_;
-               PetInfoManager.fillPetInfo(_loc7_);
-               _loc7_.Name = _loc8_.readUTF();
-               _loc7_.Attack = _loc8_.readInt();
-               _loc7_.Defence = _loc8_.readInt();
-               _loc7_.Luck = _loc8_.readInt();
-               _loc7_.Agility = _loc8_.readInt();
-               _loc7_.Blood = _loc8_.readInt();
-               _loc7_.Damage = _loc8_.readInt();
-               _loc7_.Guard = _loc8_.readInt();
-               _loc7_.AttackGrow = _loc8_.readInt();
-               _loc7_.DefenceGrow = _loc8_.readInt();
-               _loc7_.LuckGrow = _loc8_.readInt();
-               _loc7_.AgilityGrow = _loc8_.readInt();
-               _loc7_.BloodGrow = _loc8_.readInt();
-               _loc7_.DamageGrow = _loc8_.readInt();
-               _loc7_.GuardGrow = _loc8_.readInt();
-               _loc7_.Level = _loc8_.readInt();
-               _loc7_.GP = _loc8_.readInt();
-               _loc7_.MaxGP = _loc8_.readInt();
-               _loc7_.Hunger = _loc8_.readInt();
-               _loc7_.MP = _loc8_.readInt();
-               _loc3_ = _loc8_.readInt();
-               _loc10_ = 0;
-               while(_loc10_ < _loc3_)
+               place = pkg.readInt();
+               ptid = pkg.readInt();
+               p = new PetInfo();
+               p.TemplateID = ptid;
+               PetInfoManager.fillPetInfo(p);
+               p.Name = pkg.readUTF();
+               p.Attack = pkg.readInt();
+               p.Defence = pkg.readInt();
+               p.Luck = pkg.readInt();
+               p.Agility = pkg.readInt();
+               p.Blood = pkg.readInt();
+               p.Damage = pkg.readInt();
+               p.Guard = pkg.readInt();
+               p.AttackGrow = pkg.readInt();
+               p.DefenceGrow = pkg.readInt();
+               p.LuckGrow = pkg.readInt();
+               p.AgilityGrow = pkg.readInt();
+               p.BloodGrow = pkg.readInt();
+               p.DamageGrow = pkg.readInt();
+               p.GuardGrow = pkg.readInt();
+               p.Level = pkg.readInt();
+               p.GP = pkg.readInt();
+               p.MaxGP = pkg.readInt();
+               p.Hunger = pkg.readInt();
+               p.MP = pkg.readInt();
+               skillCount = pkg.readInt();
+               for(k = 0; k < skillCount; )
                {
-                  _loc5_ = _loc8_.readInt();
-                  _loc6_ = new PetSkill(_loc5_);
-                  _loc7_.addSkill(_loc6_);
-                  _loc8_.readInt();
-                  _loc10_++;
+                  skillid = pkg.readInt();
+                  petskill = new PetSkill(skillid);
+                  p.addSkill(petskill);
+                  pkg.readInt();
+                  k++;
                }
-               _loc7_.MaxActiveSkillCount = _loc8_.readInt();
-               _loc7_.MaxStaticSkillCount = _loc8_.readInt();
-               _loc7_.MaxSkillCount = _loc8_.readInt();
-               _loc7_.Place = _loc9_;
-               if(_loc7_.Place != -1)
+               p.MaxActiveSkillCount = pkg.readInt();
+               p.MaxStaticSkillCount = pkg.readInt();
+               p.MaxSkillCount = pkg.readInt();
+               p.Place = place;
+               if(p.Place != -1)
                {
-                  PetsBagManager.instance().petModel.adoptPets.add(_loc7_.Place,_loc7_);
+                  PetsBagManager.instance().petModel.adoptPets.add(p.Place,p);
                }
             }
             else
             {
-               _loc9_ = _loc8_.readInt();
-               _loc2_ = _loc8_.readInt();
-               _loc7_ = new PetInfo();
-               _loc7_.TemplateID = _loc2_;
-               PetInfoManager.fillPetInfo(_loc7_);
-               _loc7_.Name = _loc8_.readUTF();
-               _loc7_.Attack = _loc8_.readInt();
-               _loc7_.Defence = _loc8_.readInt();
-               _loc7_.Luck = _loc8_.readInt();
-               _loc7_.Agility = _loc8_.readInt();
-               _loc7_.Blood = _loc8_.readInt();
-               _loc7_.Damage = _loc8_.readInt();
-               _loc7_.Guard = _loc8_.readInt();
-               _loc7_.AttackGrow = _loc8_.readInt();
-               _loc7_.DefenceGrow = _loc8_.readInt();
-               _loc7_.LuckGrow = _loc8_.readInt();
-               _loc7_.AgilityGrow = _loc8_.readInt();
-               _loc7_.BloodGrow = _loc8_.readInt();
-               _loc7_.DamageGrow = _loc8_.readInt();
-               _loc7_.GuardGrow = _loc8_.readInt();
-               _loc7_.Level = _loc8_.readInt();
-               _loc7_.GP = _loc8_.readInt();
-               _loc7_.MaxGP = _loc8_.readInt();
-               _loc7_.Hunger = _loc8_.readInt();
-               _loc7_.MP = _loc8_.readInt();
-               _loc3_ = _loc8_.readInt();
-               _loc10_ = 0;
-               while(_loc10_ < _loc3_)
+               place = pkg.readInt();
+               ptid = pkg.readInt();
+               p = new PetInfo();
+               p.TemplateID = ptid;
+               PetInfoManager.fillPetInfo(p);
+               p.Name = pkg.readUTF();
+               p.Attack = pkg.readInt();
+               p.Defence = pkg.readInt();
+               p.Luck = pkg.readInt();
+               p.Agility = pkg.readInt();
+               p.Blood = pkg.readInt();
+               p.Damage = pkg.readInt();
+               p.Guard = pkg.readInt();
+               p.AttackGrow = pkg.readInt();
+               p.DefenceGrow = pkg.readInt();
+               p.LuckGrow = pkg.readInt();
+               p.AgilityGrow = pkg.readInt();
+               p.BloodGrow = pkg.readInt();
+               p.DamageGrow = pkg.readInt();
+               p.GuardGrow = pkg.readInt();
+               p.Level = pkg.readInt();
+               p.GP = pkg.readInt();
+               p.MaxGP = pkg.readInt();
+               p.Hunger = pkg.readInt();
+               p.MP = pkg.readInt();
+               skillCount = pkg.readInt();
+               for(k = 0; k < skillCount; )
                {
-                  _loc5_ = _loc8_.readInt();
-                  _loc6_ = new PetSkill(_loc5_);
-                  _loc7_.addSkill(_loc6_);
-                  _loc8_.readInt();
-                  _loc10_++;
+                  skillid = pkg.readInt();
+                  petskill = new PetSkill(skillid);
+                  p.addSkill(petskill);
+                  pkg.readInt();
+                  k++;
                }
-               _loc7_.MaxActiveSkillCount = _loc8_.readInt();
-               _loc7_.MaxStaticSkillCount = _loc8_.readInt();
-               _loc7_.MaxSkillCount = _loc8_.readInt();
-               _loc7_.Place = _loc9_;
-               if(_loc7_.Place != -1)
+               p.MaxActiveSkillCount = pkg.readInt();
+               p.MaxStaticSkillCount = pkg.readInt();
+               p.MaxSkillCount = pkg.readInt();
+               p.Place = place;
+               if(p.Place != -1)
                {
-                  PetsBagManager.instance().petModel.adoptPets.add(_loc7_.Place,_loc7_);
+                  PetsBagManager.instance().petModel.adoptPets.add(p.Place,p);
                }
             }
-            _loc11_++;
+            i++;
          }
          update(PetsBagManager.instance().petModel.adoptPets.list);
       }
@@ -378,7 +371,7 @@ package petsBag.view
          SocketManager.Instance.removeEventListener(PkgEvent.format(68,5),__updateRefreshPet);
       }
       
-      private function __adoptPet(param1:MouseEvent) : void
+      private function __adoptPet(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -386,37 +379,37 @@ package petsBag.view
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("ddt.farms.adoptPetsAlertTitle")," ",LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2,null,"farmSimpleAlertTwo",60,false);
-         _loc2_.info.customPos = PositionUtils.creatPoint("farmSimpleAlertButtonPos");
-         _loc2_.titleOuterRectPosString = "133,15,5";
-         _loc2_.info.dispatchEvent(new InteractiveEvent("stateChange"));
-         var _loc3_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("farmSimpleAlert.textStyle");
-         _loc3_.text = LanguageMgr.GetTranslation("ddt.farms.adoptPetsAlertContonet");
-         _loc2_.addToContent(_loc3_);
-         _loc2_.addEventListener("response",__onAdoptResponse);
+         var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("ddt.farms.adoptPetsAlertTitle")," ",LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2,null,"farmSimpleAlertTwo",60,false);
+         alert.info.customPos = PositionUtils.creatPoint("farmSimpleAlertButtonPos");
+         alert.titleOuterRectPosString = "133,15,5";
+         alert.info.dispatchEvent(new InteractiveEvent("stateChange"));
+         var msgText:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("farmSimpleAlert.textStyle");
+         msgText.text = LanguageMgr.GetTranslation("ddt.farms.adoptPetsAlertContonet");
+         alert.addToContent(msgText);
+         alert.addEventListener("response",__onAdoptResponse);
       }
       
-      private function __refreshPet(param1:MouseEvent) : void
+      private function __refreshPet(e:MouseEvent) : void
       {
-         var _loc3_:* = null;
+         var alert:* = null;
          SoundManager.instance.play("008");
-         var _loc4_:int = LanguageMgr.GetTranslation("ddt.pet.refreshNeed");
-         var _loc2_:Number = PlayerManager.Instance.Self.Money;
-         if(PlayerManager.Instance.Self.Money < _loc4_ && int(_refreshVolumeTxt.text) <= 0)
+         var refreshNeed:int = LanguageMgr.GetTranslation("ddt.pet.refreshNeed");
+         var ff:Number = PlayerManager.Instance.Self.Money;
+         if(PlayerManager.Instance.Self.Money < refreshNeed && int(_refreshVolumeTxt.text) <= 0)
          {
-            _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("poorNote"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
-            _loc3_.moveEnable = false;
-            _loc3_.addEventListener("response",__poorManResponse);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("poorNote"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
+            alert.moveEnable = false;
+            alert.addEventListener("response",__poorManResponse);
             return;
          }
          refeshPet();
       }
       
-      private function __poorManResponse(param1:FrameEvent) : void
+      private function __poorManResponse(event:FrameEvent) : void
       {
-         param1.currentTarget.removeEventListener("response",__poorManResponse);
-         ObjectUtils.disposeObject(param1.currentTarget);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         event.currentTarget.removeEventListener("response",__poorManResponse);
+         ObjectUtils.disposeObject(event.currentTarget);
+         if(event.responseCode == 3 || event.responseCode == 2)
          {
             LeavePageManager.leaveToFillPath();
          }
@@ -424,12 +417,12 @@ package petsBag.view
       
       private function refeshPet() : void
       {
-         var _loc1_:* = null;
+         var alert:* = null;
          if(FarmComposeHouseController.instance().isFourStarPet(PetsBagManager.instance().petModel.adoptPets.list))
          {
-            _loc1_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("ddt.farms.refreshPetsAlertTitle"),LanguageMgr.GetTranslation("ddt.farms.refreshPetsAlertContonetI"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2,null,"farmSimpleAlert",60,false);
-            _loc1_.addEventListener("response",__RefreshResponseI);
-            _loc1_.titleOuterRectPosString = "206,10,5";
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("ddt.farms.refreshPetsAlertTitle"),LanguageMgr.GetTranslation("ddt.farms.refreshPetsAlertContonetI"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2,null,"farmSimpleAlert",60,false);
+            alert.addEventListener("response",__RefreshResponseI);
+            alert.titleOuterRectPosString = "206,10,5";
             return;
          }
          refreshPetAlert();
@@ -447,25 +440,25 @@ package petsBag.view
          _refreshPetPnl.addEventListener("response",__onRefreshResponse);
       }
       
-      private function __RefreshResponseI(param1:FrameEvent) : void
+      private function __RefreshResponseI(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.target as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__RefreshResponseI);
-         _loc2_.dispose();
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var alert:BaseAlerFrame = e.target as BaseAlerFrame;
+         alert.removeEventListener("response",__RefreshResponseI);
+         alert.dispose();
+         if(e.responseCode == 2 || e.responseCode == 3)
          {
             refreshPetAlert();
          }
       }
       
-      private function __onAdoptResponse(param1:FrameEvent) : void
+      private function __onAdoptResponse(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.target as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onAdoptResponse);
-         _loc2_.dispose();
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var alert:BaseAlerFrame = e.target as BaseAlerFrame;
+         alert.removeEventListener("response",__onAdoptResponse);
+         alert.dispose();
+         if(e.responseCode == 2 || e.responseCode == 3)
          {
             if(currentPet && currentPet.info as PetInfo)
             {
@@ -486,10 +479,10 @@ package petsBag.view
          }
       }
       
-      private function __onRefreshResponse(param1:FrameEvent) : void
+      private function __onRefreshResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         if(evt.responseCode == 2 || evt.responseCode == 3)
          {
             if(PlayerManager.Instance.Self.bagLocked)
             {

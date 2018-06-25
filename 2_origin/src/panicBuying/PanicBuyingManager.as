@@ -52,16 +52,16 @@ package panicBuying
          return _vipId;
       }
       
-      public function set vipId(param1:String) : void
+      public function set vipId(value:String) : void
       {
-         _vipId = param1;
+         _vipId = value;
       }
       
       public function setup() : void
       {
       }
       
-      protected function __discountChange(param1:ShopEvent) : void
+      protected function __discountChange(event:ShopEvent) : void
       {
          if(ShopManager.Instance.isHasDisCountGoods(1))
          {
@@ -83,8 +83,8 @@ package panicBuying
       
       public function checkOpen() : void
       {
-         var _loc2_:Date = TimeManager.Instance.Now();
-         var _loc1_:Dictionary = WonderfulActivityManager.Instance.activityData;
+         var now:Date = TimeManager.Instance.Now();
+         var activityData:Dictionary = WonderfulActivityManager.Instance.activityData;
          showIconFlag = 0;
          levelId = "";
          vipId = "";
@@ -92,48 +92,48 @@ package panicBuying
          entireId = "";
          newEntireId = "";
          var _loc5_:int = 0;
-         var _loc4_:* = _loc1_;
-         for each(var _loc3_ in _loc1_)
+         var _loc4_:* = activityData;
+         for each(var item in activityData)
          {
-            if(_loc3_.activityType == 19 && (_loc3_.activityChildType == 1 || _loc3_.activityChildType == 2 || _loc3_.activityChildType == 3 || _loc3_.activityChildType == 4 || _loc3_.activityChildType == 5))
+            if(item.activityType == 19 && (item.activityChildType == 1 || item.activityChildType == 2 || item.activityChildType == 3 || item.activityChildType == 4 || item.activityChildType == 5))
             {
-               if(_loc2_.time < Date.parse(_loc3_.beginTime))
+               if(now.time < Date.parse(item.beginTime))
                {
-                  if(requestArr.indexOf(_loc3_.beginTime) < 0)
+                  if(requestArr.indexOf(item.beginTime) < 0)
                   {
-                     requestArr.push(_loc3_.beginTime);
+                     requestArr.push(item.beginTime);
                   }
                }
-               if(_loc2_.time < Date.parse(_loc3_.endShowTime))
+               if(now.time < Date.parse(item.endShowTime))
                {
-                  if(requestArr.indexOf(_loc3_.endShowTime) < 0)
+                  if(requestArr.indexOf(item.endShowTime) < 0)
                   {
-                     requestArr.push(_loc3_.endShowTime);
+                     requestArr.push(item.endShowTime);
                   }
                }
-               if(_loc2_.time >= Date.parse(_loc3_.beginTime) && _loc2_.time <= Date.parse(_loc3_.endTime))
+               if(now.time >= Date.parse(item.beginTime) && now.time <= Date.parse(item.endTime))
                {
-                  switch(int(_loc3_.activityChildType) - 1)
+                  switch(int(item.activityChildType) - 1)
                   {
                      case 0:
                         showIconFlag = showIconFlag | 2;
-                        levelId = _loc3_.activityId;
+                        levelId = item.activityId;
                         continue;
                      case 1:
                         showIconFlag = showIconFlag | 4;
-                        vipId = _loc3_.activityId;
+                        vipId = item.activityId;
                         continue;
                      case 2:
                         showIconFlag = showIconFlag | 8;
-                        indivId = _loc3_.activityId;
+                        indivId = item.activityId;
                         continue;
                      case 3:
                         showIconFlag = showIconFlag | 1;
-                        entireId = _loc3_.activityId;
+                        entireId = item.activityId;
                         continue;
                      case 4:
                         showIconFlag = showIconFlag | 16;
-                        newEntireId = _loc3_.activityId;
+                        newEntireId = item.activityId;
                         continue;
                   }
                }
@@ -167,22 +167,21 @@ package panicBuying
       
       public function reCheck() : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc1_:Number = NaN;
-         var _loc2_:Date = TimeManager.Instance.Now();
-         _loc4_ = 0;
-         while(_loc4_ <= requestArr.length - 1)
+         var i:int = 0;
+         var endDate:* = null;
+         var diff:Number = NaN;
+         var nowDate:Date = TimeManager.Instance.Now();
+         for(i = 0; i <= requestArr.length - 1; )
          {
-            _loc3_ = DateUtils.getDateByStr(requestArr[_loc4_]);
-            _loc1_ = Math.round((_loc3_.getTime() - _loc2_.getTime()) / 1000);
-            if(_loc1_ <= 0)
+            endDate = DateUtils.getDateByStr(requestArr[i]);
+            diff = Math.round((endDate.getTime() - nowDate.getTime()) / 1000);
+            if(diff <= 0)
             {
-               requestArr.splice(_loc4_,1);
+               requestArr.splice(i,1);
                checkOpen();
                SocketManager.Instance.out.requestWonderfulActInit(2);
             }
-            _loc4_++;
+            i++;
          }
       }
       

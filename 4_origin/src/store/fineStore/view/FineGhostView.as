@@ -78,10 +78,10 @@ package store.fineStore.view
       
       private var _failBit:Bitmap;
       
-      public function FineGhostView(param1:StoreController)
+      public function FineGhostView(controller:StoreController)
       {
          super();
-         _controller = new StoreBagController(param1.Model);
+         _controller = new StoreBagController(controller.Model);
          _controller.model.currentPanel = 7;
          initView();
          initEvent();
@@ -100,7 +100,7 @@ package store.fineStore.view
          _view.addEventListener("doubleclick",__cellDoubleClick,false,0,true);
       }
       
-      protected function __cellDoubleClick(param1:CellEvent) : void
+      protected function __cellDoubleClick(evt:CellEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -112,17 +112,16 @@ package store.fineStore.view
       
       private function removeEvent() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          PlayerManager.Instance.Self.StoreBag.removeEventListener("update",refreshData);
          PlayerManager.Instance.Self.StoreBag.removeEventListener("clearStoreBag",updateData);
          if(_items)
          {
-            _loc1_ = 0;
-            while(_loc1_ < _items.length)
+            for(i = 0; i < _items.length; )
             {
-               _items[_loc1_].dispose();
-               _items[_loc1_] = null;
-               _loc1_++;
+               _items[i].dispose();
+               _items[i] = null;
+               i++;
             }
          }
          _ghostBtn.removeEventListener("click",equipGhost);
@@ -134,58 +133,58 @@ package store.fineStore.view
          _view.removeEventListener("doubleclick",__cellDoubleClick);
       }
       
-      private function startShine(param1:StoreDargEvent) : void
+      private function startShine(evt:StoreDargEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:ItemTemplateInfo = param1.sourceInfo;
-         if(_loc3_ == null)
+         var cell:* = null;
+         var item:ItemTemplateInfo = evt.sourceInfo;
+         if(item == null)
          {
             return;
          }
-         var _loc4_:int = 1;
-         if(_loc3_.CategoryID == 11)
+         var dsIndex:int = 1;
+         if(item.CategoryID == 11)
          {
-            if(_loc3_.Property1 == "117")
+            if(item.Property1 == "117")
             {
-               _loc4_ = 0;
+               dsIndex = 0;
             }
-            else if(_loc3_.Property1 == "118")
+            else if(item.Property1 == "118")
             {
-               _loc4_ = 2;
+               dsIndex = 2;
             }
             else
             {
                return;
             }
          }
-         if(_items != null && _items.length > _loc4_)
+         if(_items != null && _items.length > dsIndex)
          {
-            _loc2_ = _items[_loc4_];
-            if(_loc2_)
+            cell = _items[dsIndex];
+            if(cell)
             {
-               _loc2_.startShine();
+               cell.startShine();
             }
          }
       }
       
-      private function stopShine(param1:StoreDargEvent) : void
+      private function stopShine(evt:StoreDargEvent) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_items && _loc2_ < _items.length)
+         var i:int = 0;
+         i = 0;
+         while(_items && i < _items.length)
          {
-            _items[_loc2_].stopShine();
-            _loc2_++;
+            _items[i].stopShine();
+            i++;
          }
       }
       
       private function initView() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:Bitmap = ComponentFactory.Instance.creatBitmap("equipGhost.leftBg");
-         PositionUtils.setPos(_loc2_,"equipGhost.leftBgPos");
-         addChild(_loc2_);
+         var i:int = 0;
+         var item:* = null;
+         var bg:Bitmap = ComponentFactory.Instance.creatBitmap("equipGhost.leftBg");
+         PositionUtils.setPos(bg,"equipGhost.leftBgPos");
+         addChild(bg);
          _luckyStoneCell = ComponentFactory.Instance.creatCustomObject("equipGhost.LuckySymbolCell");
          _luckyStoneCell.label = LanguageMgr.GetTranslation("equipGhost.luck");
          addChild(_luckyStoneCell);
@@ -207,29 +206,28 @@ package store.fineStore.view
          _buyStoneBtn.text = LanguageMgr.GetTranslation("store.Strength.BuyButtonText");
          _buyStoneBtn.setup(11186,2,true);
          addChild(_buyStoneBtn);
-         var _loc4_:Point = null;
+         var pos:Point = null;
          _items = [];
-         _loc3_ = 0;
-         while(_loc3_ < 3)
+         for(i = 0; i < 3; )
          {
-            if(_loc3_ == 0)
+            if(i == 0)
             {
-               _loc1_ = new GhostStoneCell(["117"],_loc3_);
+               item = new GhostStoneCell(["117"],i);
             }
-            else if(_loc3_ == 1)
+            else if(i == 1)
             {
-               _loc1_ = new GhostItemCell(_loc3_);
+               item = new GhostItemCell(i);
             }
-            else if(_loc3_ == 2)
+            else if(i == 2)
             {
-               _loc1_ = new GhostStoneCell(["118"],_loc3_);
+               item = new GhostStoneCell(["118"],i);
             }
-            _loc4_ = ComponentFactory.Instance.creatCustomObject("equipGhost.ghostPos" + _loc3_);
-            _loc1_.x = _loc4_.x;
-            _loc1_.y = _loc4_.y;
-            addChild(_loc1_);
-            _items.push(_loc1_);
-            _loc3_++;
+            pos = ComponentFactory.Instance.creatCustomObject("equipGhost.ghostPos" + i);
+            item.x = pos.x;
+            item.y = pos.y;
+            addChild(item);
+            _items.push(item);
+            i++;
          }
          _ratioTxt = ComponentFactory.Instance.creatComponentByStylename("equipGhost.successRatioTxt");
          _ratioTxt.htmlText = LanguageMgr.GetTranslation("equipGhost.ratioLowTxt");
@@ -245,115 +243,114 @@ package store.fineStore.view
          addChild(_view);
       }
       
-      public function dragDrop(param1:CellEvent) : void
+      public function dragDrop(evt:CellEvent) : void
       {
-         var _loc6_:* = null;
-         var _loc5_:* = null;
-         var _loc4_:* = false;
-         var _loc2_:BagCell = param1.data as StoreBagCell;
-         if(_loc2_ == null)
+         var ds:* = null;
+         var ghost:* = null;
+         var isUp:* = false;
+         var source:BagCell = evt.data as StoreBagCell;
+         if(source == null)
          {
             return;
          }
-         var _loc7_:InventoryItemInfo = _loc2_.info as InventoryItemInfo;
-         if(_loc7_ == null)
+         var info:InventoryItemInfo = source.info as InventoryItemInfo;
+         if(info == null)
          {
             return;
          }
          var _loc9_:int = 0;
          var _loc8_:* = _items;
-         for each(_loc6_ in _items)
+         for each(ds in _items)
          {
-            if(_loc6_.info == _loc7_)
+            if(ds.info == info)
             {
-               _loc6_.info = null;
-               _loc2_.locked = false;
+               ds.info = null;
+               source.locked = false;
                return;
             }
          }
-         var _loc3_:int = 1;
-         if(_loc7_.CategoryID == 11)
+         var dsIndex:int = 1;
+         if(info.CategoryID == 11)
          {
-            if(_loc7_.Property1 == "117")
+            if(info.Property1 == "117")
             {
-               _loc3_ = 0;
+               dsIndex = 0;
             }
-            else if(_loc7_.Property1 == "118")
+            else if(info.Property1 == "118")
             {
-               _loc3_ = 2;
+               dsIndex = 2;
             }
             else
             {
                return;
             }
          }
-         if(_loc3_ == 1)
+         if(dsIndex == 1)
          {
-            _loc5_ = PlayerManager.Instance.Self.getGhostDataByCategoryID(_loc7_.CategoryID);
-            if(_loc5_)
+            ghost = PlayerManager.Instance.Self.getGhostDataByCategoryID(info.CategoryID);
+            if(ghost)
             {
-               _loc4_ = _loc5_.level >= EquipGhostManager.getInstance().model.topLvDic[_loc7_.CategoryID];
-               if(_loc4_)
+               isUp = ghost.level >= EquipGhostManager.getInstance().model.topLvDic[info.CategoryID];
+               if(isUp)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("equipGhost.upLevel"));
                   return;
                }
             }
-            SocketManager.Instance.out.sendMoveGoods(_loc7_.BagType,_loc7_.Place,12,_loc3_,_loc7_.Count,true);
-            EquipGhostManager.getInstance().chooseEquip(_loc7_);
+            SocketManager.Instance.out.sendMoveGoods(info.BagType,info.Place,12,dsIndex,info.Count,true);
+            EquipGhostManager.getInstance().chooseEquip(info);
          }
          else
          {
-            SocketManager.Instance.out.sendMoveGoods(_loc7_.BagType,_loc7_.Place,12,_loc3_,_loc7_.Count,true);
-            if(_loc3_ == 0)
+            SocketManager.Instance.out.sendMoveGoods(info.BagType,info.Place,12,dsIndex,info.Count,true);
+            if(dsIndex == 0)
             {
-               EquipGhostManager.getInstance().chooseLuckyMaterial(_loc7_);
+               EquipGhostManager.getInstance().chooseLuckyMaterial(info);
             }
             else
             {
-               EquipGhostManager.getInstance().chooseStoneMaterial(_loc7_);
+               EquipGhostManager.getInstance().chooseStoneMaterial(info);
             }
          }
       }
       
-      public function refreshData(param1:BagEvent) : void
+      public function refreshData(evt:BagEvent) : void
       {
-         var _loc3_:* = 0;
-         var _loc2_:Dictionary = param1.changedSlots;
+         var itemPlace:* = 0;
+         var items:Dictionary = evt.changedSlots;
          var _loc6_:int = 0;
-         var _loc5_:* = _loc2_;
-         for(_loc3_ in _loc2_)
+         var _loc5_:* = items;
+         for(itemPlace in items)
          {
-            if(_loc3_ < _items.length)
+            if(itemPlace < _items.length)
             {
-               _items[_loc3_].info = PlayerManager.Instance.Self.StoreBag.items[_loc3_];
-               if(_loc3_ == 0)
+               _items[itemPlace].info = PlayerManager.Instance.Self.StoreBag.items[itemPlace];
+               if(itemPlace == 0)
                {
-                  EquipGhostManager.getInstance().chooseLuckyMaterial(_items[_loc3_].info);
+                  EquipGhostManager.getInstance().chooseLuckyMaterial(_items[itemPlace].info);
                }
-               else if(_loc3_ == 2)
+               else if(itemPlace == 2)
                {
-                  EquipGhostManager.getInstance().chooseStoneMaterial(_items[_loc3_].info);
+                  EquipGhostManager.getInstance().chooseStoneMaterial(_items[itemPlace].info);
                }
             }
          }
       }
       
-      public function updateData(param1:CEvent = null) : void
+      public function updateData(evt:CEvent = null) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < 3)
+         var i:int = 0;
+         for(i = 0; i < 3; )
          {
-            _items[_loc2_].info = PlayerManager.Instance.Self.StoreBag.items[_loc2_];
-            _loc2_++;
+            _items[i].info = PlayerManager.Instance.Self.StoreBag.items[i];
+            i++;
          }
          _ratioTxt.htmlText = LanguageMgr.GetTranslation("equipGhost.ratioLowTxt");
       }
       
-      private function equipGhost(param1:MouseEvent) : void
+      private function equipGhost(evt:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
+         evt.stopImmediatePropagation();
          SoundManager.instance.play("008");
          if(checkMaterial())
          {
@@ -363,18 +360,18 @@ package store.fineStore.view
       
       private function checkMaterial() : Boolean
       {
-         var _loc1_:Boolean = true;
+         var enough:Boolean = true;
          if(_items[1].info == null)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("equipGhost.material1"));
-            _loc1_ = false;
+            enough = false;
          }
          else if(_items[2].info == null)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("equipGhost.material2"));
-            _loc1_ = false;
+            enough = false;
          }
-         return _loc1_;
+         return enough;
       }
       
       public function show() : void
@@ -451,10 +448,10 @@ package store.fineStore.view
          }
       }
       
-      private function onEquipGhostResult(param1:CEvent) : void
+      private function onEquipGhostResult(evt:CEvent) : void
       {
-         var _loc2_:Boolean = param1.data;
-         if(!_loc2_)
+         var result:Boolean = evt.data;
+         if(!result)
          {
             showResultEffect(false);
          }
@@ -464,7 +461,7 @@ package store.fineStore.view
          }
       }
       
-      private function showResultEffect(param1:Boolean = true) : void
+      private function showResultEffect(success:Boolean = true) : void
       {
          _ghostBtn.enable = true;
          if(!_moveSprite)
@@ -475,7 +472,7 @@ package store.fineStore.view
             _moveSprite.mouseChildren = _loc2_;
             addChild(_moveSprite);
          }
-         if(param1)
+         if(success)
          {
             _successBit = _successBit || ComponentFactory.Instance.creatBitmap("asset.ddtstore.StoreIISuccessBitAsset");
             _successBit.visible = true;
@@ -507,41 +504,41 @@ package store.fineStore.view
             "y":54,
             "alpha":0,
             "onComplete":continueGhost,
-            "onCompleteParams":[param1]
+            "onCompleteParams":[success]
          });
       }
       
-      private function continueGhost(param1:Boolean) : void
+      private function continueGhost(success:Boolean) : void
       {
          SoundManager.instance.resumeMusic();
          SoundManager.instance.stop("063");
          SoundManager.instance.stop("064");
-         var _loc2_:Boolean = _items && _items.length > 2 && _items[2].info != null;
-         if(!param1 && _continuesBtn.selected && _loc2_)
+         var materialEnough:Boolean = _items && _items.length > 2 && _items[2].info != null;
+         if(!success && _continuesBtn.selected && materialEnough)
          {
             EquipGhostManager.getInstance().requestEquipGhost();
          }
       }
       
-      private function onEquipGhostRatio(param1:CEvent) : void
+      private function onEquipGhostRatio(evt:CEvent) : void
       {
-         var _loc2_:Number = MathUtils.getValueInRange(Number(param1.data),1,99);
-         if(_loc2_ < 5)
+         var ratio:Number = MathUtils.getValueInRange(Number(evt.data),1,99);
+         if(ratio < 5)
          {
             _ratioTxt.htmlText = LanguageMgr.GetTranslation("equipGhost.ratioLowTxt");
          }
          else
          {
-            _ratioTxt.htmlText = LanguageMgr.GetTranslation("equipGhost.ratioTxt",_loc2_);
+            _ratioTxt.htmlText = LanguageMgr.GetTranslation("equipGhost.ratioTxt",ratio);
          }
       }
       
-      private function onEquipGhostState(param1:CEvent) : void
+      private function onEquipGhostState(evt:CEvent) : void
       {
-         var _loc2_:Boolean = param1.data as Boolean;
+         var state:Boolean = evt.data as Boolean;
          if(_ghostBtn)
          {
-            _ghostBtn.enable = _loc2_;
+            _ghostBtn.enable = state;
          }
       }
    }

@@ -60,14 +60,14 @@ package cardSystem.view.cardCollect
          _collectBag.removeEventListener("selected",__selectedHandler);
       }
       
-      protected function __selectedHandler(param1:Event) : void
+      protected function __selectedHandler(event:Event) : void
       {
          _preview.info = _collectBag.currentItemSetsInfo;
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(event:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(event.responseCode == 0 || event.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();

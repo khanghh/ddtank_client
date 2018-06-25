@@ -22,12 +22,12 @@ package ddt.view.sceneCharacter
       
       private var _sceneCharacterDirection:SceneCharacterDirection;
       
-      public function SceneCharacterStateItem(param1:String, param2:SceneCharacterSet, param3:SceneCharacterActionSet)
+      public function SceneCharacterStateItem(type:String, sceneCharacterSet:SceneCharacterSet, sceneCharacterActionSet:SceneCharacterActionSet)
       {
          super();
-         _type = param1;
-         _sceneCharacterSet = param2;
-         _sceneCharacterActionSet = param3;
+         _type = type;
+         _sceneCharacterSet = sceneCharacterSet;
+         _sceneCharacterActionSet = sceneCharacterActionSet;
       }
       
       public function update() : void
@@ -44,9 +44,9 @@ package ddt.view.sceneCharacter
          _sceneCharacterSynthesis = new SceneCharacterSynthesis(_sceneCharacterSet,sceneCharacterSynthesisCallBack);
       }
       
-      private function sceneCharacterSynthesisCallBack(param1:Vector.<Bitmap>) : void
+      private function sceneCharacterSynthesisCallBack(frameBitmap:Vector.<Bitmap>) : void
       {
-         _frameBitmap = param1;
+         _frameBitmap = frameBitmap;
          if(_sceneCharacterBase)
          {
             _sceneCharacterBase.dispose();
@@ -57,12 +57,12 @@ package ddt.view.sceneCharacter
          _sceneCharacterBase.sceneCharacterActionItem = _sceneCharacterActionSet.dataSet[0];
       }
       
-      public function set setSceneCharacterActionType(param1:String) : void
+      public function set setSceneCharacterActionType(type:String) : void
       {
-         var _loc2_:SceneCharacterActionItem = _sceneCharacterActionSet.getItem(param1);
-         if(_loc2_)
+         var item:SceneCharacterActionItem = _sceneCharacterActionSet.getItem(type);
+         if(item)
          {
-            _sceneCharacterActionItem = _loc2_;
+            _sceneCharacterActionItem = item;
          }
          _sceneCharacterBase.sceneCharacterActionItem = _sceneCharacterActionItem;
       }
@@ -72,13 +72,13 @@ package ddt.view.sceneCharacter
          return _sceneCharacterActionItem.type;
       }
       
-      public function set sceneCharacterDirection(param1:SceneCharacterDirection) : void
+      public function set sceneCharacterDirection(value:SceneCharacterDirection) : void
       {
-         if(_sceneCharacterDirection == param1)
+         if(_sceneCharacterDirection == value)
          {
             return;
          }
-         _sceneCharacterDirection = param1;
+         _sceneCharacterDirection = value;
       }
       
       public function get type() : String
@@ -86,9 +86,9 @@ package ddt.view.sceneCharacter
          return _type;
       }
       
-      public function set type(param1:String) : void
+      public function set type(value:String) : void
       {
-         _type = param1;
+         _type = value;
       }
       
       public function get sceneCharacterSet() : SceneCharacterSet
@@ -96,9 +96,9 @@ package ddt.view.sceneCharacter
          return _sceneCharacterSet;
       }
       
-      public function set sceneCharacterSet(param1:SceneCharacterSet) : void
+      public function set sceneCharacterSet(value:SceneCharacterSet) : void
       {
-         _sceneCharacterSet = param1;
+         _sceneCharacterSet = value;
       }
       
       public function get sceneCharacterBase() : SceneCharacterBase

@@ -84,7 +84,7 @@ package bagAndInfo.amulet
          }
       }
       
-      private function __onChangeHandler(param1:Event) : void
+      private function __onChangeHandler(e:Event) : void
       {
          SoundManager.instance.playButtonSound();
          switch(int(_btnGroup.selectIndex))
@@ -101,12 +101,12 @@ package bagAndInfo.amulet
          }
       }
       
-      private function __onUpdateBuyStiveNum(param1:PkgEvent) : void
+      private function __onUpdateBuyStiveNum(e:PkgEvent) : void
       {
-         EquipAmuletManager.Instance.buyStiveNum = param1.pkg.readInt();
+         EquipAmuletManager.Instance.buyStiveNum = e.pkg.readInt();
       }
       
-      private function __onUpdateBag(param1:BagEvent) : void
+      private function __onUpdateBag(e:BagEvent) : void
       {
          if(PlayerManager.Instance.Self.Bag.items[18] == null)
          {
@@ -115,14 +115,14 @@ package bagAndInfo.amulet
          }
       }
       
-      override protected function onResponse(param1:int) : void
+      override protected function onResponse(type:int) : void
       {
-         var _loc2_:* = null;
+         var alertFrame:* = null;
          SoundManager.instance.playButtonSound();
          if(_activateView.isActivate)
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("tank.equipAmulet.closeFrameTip"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false);
-            _loc2_.addEventListener("response",__onCloseFrameTips);
+            alertFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("tank.equipAmulet.closeFrameTip"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false);
+            alertFrame.addEventListener("response",__onCloseFrameTips);
          }
          else
          {
@@ -130,15 +130,15 @@ package bagAndInfo.amulet
          }
       }
       
-      private function __onCloseFrameTips(param1:FrameEvent) : void
+      private function __onCloseFrameTips(e:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onCloseFrameTips);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var alertFrame:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         alertFrame.removeEventListener("response",__onCloseFrameTips);
+         if(e.responseCode == 2 || e.responseCode == 3)
          {
             EquipAmuletManager.Instance.closeFrame();
          }
-         _loc2_.dispose();
+         alertFrame.dispose();
       }
       
       private function addEvent() : void

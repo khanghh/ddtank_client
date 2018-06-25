@@ -58,11 +58,11 @@ package dragonBoat.view
       {
          cancelButtonStyle = "core.simplebt";
          submitButtonStyle = "core.simplebt";
-         var _loc1_:AlertInfo = new AlertInfo("",LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"));
-         _loc1_.moveEnable = false;
-         _loc1_.autoDispose = false;
-         _loc1_.sound = "008";
-         info = _loc1_;
+         var _alertInfo:AlertInfo = new AlertInfo("",LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"));
+         _alertInfo.moveEnable = false;
+         _alertInfo.autoDispose = false;
+         _alertInfo.sound = "008";
+         info = _alertInfo;
          _textWord1 = ComponentFactory.Instance.creat("consortion.taskFrame.textWordI");
          PositionUtils.setPos(_textWord1,"dragonBoat.mainFrame.consumeView.textWord1Pos");
          _textWord1.text = LanguageMgr.GetTranslation("ddt.dragonBoat.highPromptTxt1");
@@ -89,20 +89,20 @@ package dragonBoat.view
          addToContent(_bottomPromptTxt);
       }
       
-      public function setView(param1:int) : void
+      public function setView(tag:int) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         _tag = param1;
+         var useChipId:int = 0;
+         var _item2:int = 0;
+         _tag = tag;
          if(_tag == 1 || _tag == 2)
          {
-            _loc3_ = ServerConfigManager.instance.getDragonboatProp;
-            _item = PlayerManager.Instance.Self.PropBag.getItemByTemplateId(_loc3_);
-            _itemMax = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(_loc3_,false);
-            _loc2_ = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(201309,true);
-            if(_loc2_ > 0)
+            useChipId = ServerConfigManager.instance.getDragonboatProp;
+            _item = PlayerManager.Instance.Self.PropBag.getItemByTemplateId(useChipId);
+            _itemMax = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(useChipId,false);
+            _item2 = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(201309,true);
+            if(_item2 > 0)
             {
-               _itemMax = _itemMax + _loc2_;
+               _itemMax = _itemMax + _item2;
             }
             _textWord1.visible = false;
             _ownMoney.visible = false;
@@ -177,7 +177,7 @@ package dragonBoat.view
          _inputText.addEventListener("keyDown",inputKeyDownHandler,false,0,true);
       }
       
-      private function changeMaxHandler(param1:MouseEvent) : void
+      private function changeMaxHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_item)
@@ -186,16 +186,16 @@ package dragonBoat.view
          }
       }
       
-      private function inputTextChangeHandler(param1:Event) : void
+      private function inputTextChangeHandler(event:Event) : void
       {
-         var _loc2_:int = _inputText.text;
-         if(_loc2_ < 1)
+         var num:int = _inputText.text;
+         if(num < 1)
          {
             _inputText.text = "1";
          }
          if(_item)
          {
-            if(_loc2_ > _itemMax)
+            if(num > _itemMax)
             {
                _inputText.text = _itemMax.toString();
             }
@@ -206,9 +206,9 @@ package dragonBoat.view
          }
       }
       
-      private function responseHandler(param1:FrameEvent) : void
+      private function responseHandler(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -223,26 +223,26 @@ package dragonBoat.view
       
       private function enterKeyHandler() : void
       {
-         var _loc1_:int = 0;
+         var tmpType:int = 0;
          if(_tag == 1 || _tag == 2)
          {
-            _loc1_ = 1;
+            tmpType = 1;
          }
          else
          {
-            _loc1_ = 2;
+            tmpType = 2;
          }
-         SocketManager.Instance.out.sendDragonBoatBuildOrDecorate(_loc1_,int(_inputText.text));
+         SocketManager.Instance.out.sendDragonBoatBuildOrDecorate(tmpType,int(_inputText.text));
          dispose();
       }
       
-      private function inputKeyDownHandler(param1:KeyboardEvent) : void
+      private function inputKeyDownHandler(event:KeyboardEvent) : void
       {
-         if(param1.keyCode == 13)
+         if(event.keyCode == 13)
          {
             enterKeyHandler();
          }
-         else if(param1.keyCode == 27)
+         else if(event.keyCode == 27)
          {
             dispose();
          }

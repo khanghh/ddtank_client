@@ -84,9 +84,9 @@ package store.fineStore.view.pageBringUp.evolution
          super();
       }
       
-      public function setup(param1:StoreBagController) : void
+      public function setup(controller:StoreBagController) : void
       {
-         _controller = param1;
+         _controller = controller;
          _model = _controller.model;
          init();
          initEvents();
@@ -102,40 +102,40 @@ package store.fineStore.view.pageBringUp.evolution
          _model.info.addEventListener("propertychange",__propertyChange);
       }
       
-      private function __cellDoubleClick(param1:CellEvent) : void
+      private function __cellDoubleClick(evt:CellEvent) : void
       {
-         var _loc3_:* = null;
+         var tmp:* = null;
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:StoreBagCell = param1.data as StoreBagCell;
-         if(_loc2_.info && _loc2_.info is InventoryItemInfo)
+         var cell:StoreBagCell = evt.data as StoreBagCell;
+         if(cell.info && cell.info is InventoryItemInfo)
          {
-            _loc3_ = _loc2_.info as InventoryItemInfo;
-            SocketManager.Instance.out.sendMoveGoods(_loc3_.BagType,_loc3_.Place,12,0);
+            tmp = cell.info as InventoryItemInfo;
+            SocketManager.Instance.out.sendMoveGoods(tmp.BagType,tmp.Place,12,0);
          }
       }
       
-      private function __cellClick(param1:CellEvent) : void
+      private function __cellClick(evt:CellEvent) : void
       {
-         var _loc3_:* = null;
-         param1.stopImmediatePropagation();
-         var _loc2_:BagCell = param1.data as BagCell;
-         if(_loc2_)
+         var info:* = null;
+         evt.stopImmediatePropagation();
+         var cell:BagCell = evt.data as BagCell;
+         if(cell)
          {
-            _loc3_ = _loc2_.info as InventoryItemInfo;
+            info = cell.info as InventoryItemInfo;
          }
-         if(_loc3_ == null || _loc3_ && _loc3_.TemplateID == 12572)
+         if(info == null || info && info.TemplateID == 12572)
          {
             return;
          }
-         if(!_loc2_.locked)
+         if(!cell.locked)
          {
             SoundManager.instance.play("008");
-            _loc2_.dragStart();
+            cell.dragStart();
          }
       }
       
@@ -180,8 +180,8 @@ package store.fineStore.view.pageBringUp.evolution
          addChild(_itemTitleText);
          addChild(_equipmentTipText);
          addChild(_itemTipText);
-         var _loc1_:MutipleImage = ComponentFactory.Instance.creatComponentByStylename("ddtstore.StoreBagView.MoneyPanelBg");
-         addChild(_loc1_);
+         var showMoneyBG:MutipleImage = ComponentFactory.Instance.creatComponentByStylename("ddtstore.StoreBagView.MoneyPanelBg");
+         addChild(showMoneyBG);
          moneyTxt = ComponentFactory.Instance.creatComponentByStylename("ddtstore.StoreBagView.TicketText");
          addChild(moneyTxt);
          _goldButton = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreBagView.GoldButton");
@@ -191,15 +191,15 @@ package store.fineStore.view.pageBringUp.evolution
          addChild(giftTxt);
          _giftButton = ComponentFactory.Instance.creatCustomObject("bagAndInfo.bag.GiftButton");
          _giftButton = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreBagView.GiftButton");
-         var _loc3_:int = 6000;
-         var _loc2_:int = ServerConfigManager.instance.VIPExtraBindMoneyUpper[PlayerManager.Instance.Self.VIPLevel - 1];
+         var levelNum:int = 6000;
+         var vipNum:int = ServerConfigManager.instance.VIPExtraBindMoneyUpper[PlayerManager.Instance.Self.VIPLevel - 1];
          if(PlayerManager.Instance.Self.IsVIP)
          {
-            _giftButton.tipData = LanguageMgr.GetTranslation("tank.view.bagII.GiftDirections",(_loc3_ + _loc2_).toString());
+            _giftButton.tipData = LanguageMgr.GetTranslation("tank.view.bagII.GiftDirections",(levelNum + vipNum).toString());
          }
          else
          {
-            _giftButton.tipData = LanguageMgr.GetTranslation("tank.view.bagII.GiftDirections",_loc3_.toString());
+            _giftButton.tipData = LanguageMgr.GetTranslation("tank.view.bagII.GiftDirections",levelNum.toString());
          }
          addChild(_giftButton);
          _moneyButton = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreBagView.MoneyButton");
@@ -232,15 +232,15 @@ package store.fineStore.view.pageBringUp.evolution
          giftTxt.text = String(PlayerManager.Instance.Self.BandMoney);
       }
       
-      public function __propertyChange(param1:PlayerPropertyEvent) : void
+      public function __propertyChange(evt:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["Money"] || param1.changedProperties["Gold"] || param1.changedProperties["Money"] || param1.changedProperties["BandMoney"])
+         if(evt.changedProperties["Money"] || evt.changedProperties["Gold"] || evt.changedProperties["Money"] || evt.changedProperties["BandMoney"])
          {
             updateMoney();
          }
       }
       
-      public function setData(param1:StoreModel) : void
+      public function setData(storeModel:StoreModel) : void
       {
          this.visible = true;
          _equipmentView.setData(_model.canExaltAssistEqpmtList);
@@ -269,14 +269,14 @@ package store.fineStore.view.pageBringUp.evolution
          _transerViewUp.visible = _loc1_;
       }
       
-      private function showStoreBagViewText(param1:String, param2:String, param3:Boolean = true) : void
+      private function showStoreBagViewText(equipmentTip:String, itemTip:String, isShowItemTip:Boolean = true) : void
       {
-         _equipmentTipText.text = LanguageMgr.GetTranslation(param1);
-         if(param3)
+         _equipmentTipText.text = LanguageMgr.GetTranslation(equipmentTip);
+         if(isShowItemTip)
          {
-            _itemTipText.visible = param3;
+            _itemTipText.visible = isShowItemTip;
          }
-         _itemTitleText.visible = param3;
+         _itemTitleText.visible = isShowItemTip;
       }
       
       public function dispose() : void

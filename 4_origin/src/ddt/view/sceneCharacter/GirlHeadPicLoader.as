@@ -25,10 +25,10 @@ package ddt.view.sceneCharacter
          super();
       }
       
-      public function load(param1:String, param2:Function) : void
+      public function load(url:String, callBack:Function) : void
       {
-         _originalURL = param1;
-         _callBack = param2;
+         _originalURL = url;
+         _callBack = callBack;
          _loader = new Loader();
          _request = new URLRequest(_originalURL);
          _loader.contentLoaderInfo.addEventListener("complete",onGirlPicLoaded);
@@ -36,18 +36,28 @@ package ddt.view.sceneCharacter
          _loader.load(_request);
       }
       
-      protected function onGirlPicLoaded(param1:Event) : void
+      protected function onGirlPicLoaded(e:Event) : void
       {
          _loader.contentLoaderInfo.removeEventListener("complete",onGirlPicLoaded);
          _loader.contentLoaderInfo.removeEventListener("ioError",onGirlPicError);
-         trace("e.target.url:\n",param1.target.url);
-         trace("_originalURL:\n",_originalURL);
-         policyFileNeeded(param1);
+         if(true)
+         {
+            trace("e.target.url:\n",e.target.url);
+            trace("_originalURL:\n",_originalURL);
+            policyFileNeeded(e);
+         }
+         else
+         {
+            _callBack && _callBack(_loader.content);
+            _loader = null;
+            _request = null;
+            _callBack = null;
+         }
       }
       
-      private function policyFileNeeded(param1:Event) : void
+      private function policyFileNeeded(e:Event) : void
       {
-         e = param1;
+         e = e;
          Security.loadPolicyFile((e.target.url as String).split("/").slice(0,3).join("/") + "/crossdomain.xml");
          var _waitPolicyFileTimer:uint = setInterval(function():void
          {
@@ -63,10 +73,10 @@ package ddt.view.sceneCharacter
          },50);
       }
       
-      protected function onGirlPicError(param1:IOErrorEvent) : void
+      protected function onGirlPicError(e:IOErrorEvent) : void
       {
          trace("\n" + _request.url);
-         trace(param1.text);
+         trace(e.text);
          _loader.contentLoaderInfo.removeEventListener("complete",onGirlPicLoaded);
          _loader.contentLoaderInfo.removeEventListener("ioError",onGirlPicError);
          _callBack && _callBack(null);

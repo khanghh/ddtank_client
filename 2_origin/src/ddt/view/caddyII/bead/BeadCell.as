@@ -12,35 +12,35 @@ package ddt.view.caddyII.bead
       
       public function BeadCell()
       {
-         var _loc2_:Point = ComponentFactory.Instance.creatCustomObject("bead.beadCellSize");
-         var _loc1_:Shape = new Shape();
-         _loc1_.graphics.beginFill(0,1);
-         _loc1_.graphics.drawRoundRect(0,0,_loc2_.x,_loc2_.y,12);
-         _loc1_.graphics.endFill();
-         super(_loc1_,null,false,false);
+         var size:Point = ComponentFactory.Instance.creatCustomObject("bead.beadCellSize");
+         var shape:Shape = new Shape();
+         shape.graphics.beginFill(0,1);
+         shape.graphics.drawRoundRect(0,0,size.x,size.y,12);
+         shape.graphics.endFill();
+         super(shape,null,false,false);
       }
       
-      override protected function updateSize(param1:Sprite) : void
+      override protected function updateSize(sp:Sprite) : void
       {
-         if(param1)
+         if(sp)
          {
-            param1.width = _contentWidth;
-            param1.height = _contentHeight;
+            sp.width = _contentWidth;
+            sp.height = _contentHeight;
             if(_picPos != null)
             {
-               param1.x = _picPos.x;
+               sp.x = _picPos.x;
             }
             else
             {
-               param1.x = Math.abs(param1.width - _contentWidth) / 2;
+               sp.x = Math.abs(sp.width - _contentWidth) / 2;
             }
             if(_picPos != null)
             {
-               param1.y = _picPos.y;
+               sp.y = _picPos.y;
             }
             else
             {
-               param1.y = Math.abs(param1.height - _contentHeight) / 2;
+               sp.y = Math.abs(sp.height - _contentHeight) / 2;
             }
          }
       }

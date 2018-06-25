@@ -102,7 +102,7 @@ package yzhkof.debug
       
       private var _locateGraph:GraphicArea;
       
-      public function DebugDisplayObjectViewer(param1:Stage)
+      public function DebugDisplayObjectViewer(_stage:Stage)
       {
          this.container = new TileContainer();
          this.btn_container = new TileContainer();
@@ -110,16 +110,16 @@ package yzhkof.debug
          this.reference_arr = [];
          this._locateGraph = new GraphicArea();
          super();
-         this._stage = param1;
-         this.currentLeaf = param1;
+         this._stage = _stage;
+         this.currentLeaf = _stage;
          this.init();
          this.initEvent();
       }
       
-      private function set currentLeaf(param1:*) : void
+      private function set currentLeaf(value:*) : void
       {
          this._currentLeaf = new WeakMap();
-         this._currentLeaf.add(0,param1);
+         this._currentLeaf.add(0,value);
       }
       
       private function get currentLeaf() : *
@@ -127,10 +127,10 @@ package yzhkof.debug
          return this._currentLeaf.getValue(0);
       }
       
-      private function set latestLeaf(param1:*) : void
+      private function set latestLeaf(value:*) : void
       {
          this._latestLeaf = new WeakMap();
-         this._latestLeaf.add(0,param1);
+         this._latestLeaf.add(0,value);
       }
       
       private function get latestLeaf() : *
@@ -205,9 +205,8 @@ package yzhkof.debug
          this.mask_background.visible = false;
       }
       
-      private function setMaskBackGround(param1:Sprite) : void
+      private function setMaskBackGround(dobj:Sprite) : void
       {
-         var dobj:Sprite = param1;
          if(this.mask_background)
          {
             removeChild(this.mask_background);
@@ -216,7 +215,7 @@ package yzhkof.debug
          this.mask_background.alpha = 0.5;
          this.mask_background.visible = false;
          addChildAt(this.mask_background,this.viewer.parent == this?int(getChildIndex(this.viewer)):int(numChildren));
-         this.mask_background.addEventListener(MouseEvent.CLICK,function(param1:Event):void
+         this.mask_background.addEventListener(MouseEvent.CLICK,function(e:Event):void
          {
             viewer.clearView();
             mask_background.visible = false;
@@ -226,61 +225,61 @@ package yzhkof.debug
       private function initEvent() : void
       {
          this._stage.addEventListener(MouseEvent.MOUSE_DOWN,this.__onStageClick,true,int.MAX_VALUE,true);
-         this._stage.addEventListener(Event.RESIZE,function(param1:Event):void
+         this._stage.addEventListener(Event.RESIZE,function(e:Event):void
          {
             commitChage();
          });
-         this.fold_btn.addEventListener(MouseEvent.CLICK,function(param1:Event):void
+         this.fold_btn.addEventListener(MouseEvent.CLICK,function(e:Event):void
          {
             visible = false;
          });
-         this.mode_btn_a.addEventListener(MouseEvent.CLICK,function(param1:Event):void
+         this.mode_btn_a.addEventListener(MouseEvent.CLICK,function(e:Event):void
          {
             mode_btn_b.visible = true;
             mode_btn_a.visible = false;
             currentRefreshType = DETAIL;
             refresh(currentRefreshType);
          });
-         this.mode_btn_b.addEventListener(MouseEvent.CLICK,function(param1:Event):void
+         this.mode_btn_b.addEventListener(MouseEvent.CLICK,function(e:Event):void
          {
             mode_btn_b.visible = false;
             mode_btn_a.visible = true;
             currentRefreshType = SIMPLE;
             refresh(currentRefreshType);
          });
-         this.back_btn.addEventListener(MouseEvent.CLICK,function(param1:Event):void
+         this.back_btn.addEventListener(MouseEvent.CLICK,function(e:Event):void
          {
             if(latestLeaf)
             {
                goto(latestLeaf);
             }
          });
-         this.stage_btn.addEventListener(MouseEvent.CLICK,function(param1:Event):void
+         this.stage_btn.addEventListener(MouseEvent.CLICK,function(e:Event):void
          {
             goto(_stage);
          });
-         this.text_btn.addEventListener(MouseEvent.CLICK,function(param1:Event):void
+         this.text_btn.addEventListener(MouseEvent.CLICK,function(e:Event):void
          {
             TextTrace.visible = !TextTrace.visible;
          });
-         this.focus_btn.addEventListener(MouseEvent.CLICK,function(param1:Event):void
+         this.focus_btn.addEventListener(MouseEvent.CLICK,function(e:Event):void
          {
             FocusViewer.visible = !FocusViewer.visible;
          });
-         this.script_btn.addEventListener(MouseEvent.CLICK,function(param1:Event):void
+         this.script_btn.addEventListener(MouseEvent.CLICK,function(e:Event):void
          {
             DebugSystem.scriptViewer.visible = !DebugSystem.scriptViewer.visible;
          });
-         this.viewer.addEventListener(MouseEvent.CLICK,function(param1:Event):void
+         this.viewer.addEventListener(MouseEvent.CLICK,function(e:Event):void
          {
             viewer.clearView();
             mask_background.visible = false;
          });
-         this.refresh_btn.addEventListener(MouseEvent.CLICK,function(param1:Event):void
+         this.refresh_btn.addEventListener(MouseEvent.CLICK,function(e:Event):void
          {
             refresh();
          });
-         this.gc_btn.addEventListener(MouseEvent.CLICK,function(param1:Event):void
+         this.gc_btn.addEventListener(MouseEvent.CLICK,function(e:Event):void
          {
             System.gc();
             MyGC.gc();
@@ -288,7 +287,7 @@ package yzhkof.debug
             dictionary_viewer.checkGC();
             DebugSystem.weakLogViewer.checkGC();
          });
-         this.log_btn.addEventListener(MouseEvent.CLICK,function(param1:Event):void
+         this.log_btn.addEventListener(MouseEvent.CLICK,function(e:Event):void
          {
             DebugSystem.logViewer.visible = !DebugSystem.logViewer.visible;
          });
@@ -296,20 +295,20 @@ package yzhkof.debug
          {
             DebugSystem.weakLogViewer.visible = !DebugSystem.weakLogViewer.visible;
          });
-         this.watcher_btn.addEventListener(MouseEvent.CLICK,function(param1:Event):void
+         this.watcher_btn.addEventListener(MouseEvent.CLICK,function(e:Event):void
          {
             DebugSystem.watchViewer.visible = !DebugSystem.watchViewer.visible;
          });
-         this.focus_txt.addEventListener(MouseEvent.CLICK,function(param1:MouseEvent):void
+         this.focus_txt.addEventListener(MouseEvent.CLICK,function(e:MouseEvent):void
          {
-            var _loc2_:DisplayObjectContainer = null;
+            var t:DisplayObjectContainer = null;
             if(_stage.focus)
             {
-               if(param1.shiftKey)
+               if(e.shiftKey)
                {
                   debugObjectTrace(_stage.focus);
                }
-               else if(param1.ctrlKey)
+               else if(e.ctrlKey)
                {
                   view(_stage.focus);
                }
@@ -317,21 +316,21 @@ package yzhkof.debug
                {
                   if(_stage.focus is DisplayObjectContainer)
                   {
-                     _loc2_ = _stage.focus as DisplayObjectContainer;
+                     t = _stage.focus as DisplayObjectContainer;
                   }
                   else
                   {
-                     _loc2_ = _stage.focus.parent;
+                     t = _stage.focus.parent;
                   }
-                  goto(_loc2_);
+                  goto(t);
                }
             }
          });
-         this.x_btn.addEventListener(MouseEvent.CLICK,function(param1:Event):void
+         this.x_btn.addEventListener(MouseEvent.CLICK,function(e:Event):void
          {
             DebugSystem._mainContainer.visible = !DebugSystem._mainContainer.visible;
          });
-         addEventListener(Event.ENTER_FRAME,function(param1:Event):void
+         addEventListener(Event.ENTER_FRAME,function(e:Event):void
          {
             focus_txt.text = "stage.focus = \"" + getQualifiedClassName(_stage.focus) + "\"";
          });
@@ -344,24 +343,24 @@ package yzhkof.debug
          this.container.y = this.dictionary_viewer.y + this.dictionary_viewer.contentHeight + 25;
       }
       
-      private function __onStageClick(param1:MouseEvent) : void
+      private function __onStageClick(e:MouseEvent) : void
       {
-         var _loc2_:DisplayObject = null;
-         var _loc3_:Array = null;
-         var _loc4_:String = null;
-         var _loc5_:DisplayObjectContainer = null;
-         var _loc6_:Array = null;
-         var _loc7_:String = null;
-         var _loc8_:DisplayObject = null;
-         if(param1.altKey)
+         var dobj:DisplayObject = null;
+         var dobj_arr:Array = null;
+         var str:String = null;
+         var go_dobj:DisplayObjectContainer = null;
+         var parent_arr:Array = null;
+         var t:String = null;
+         var i:DisplayObject = null;
+         if(e.altKey)
          {
-            _loc2_ = DisplayObject(param1.target);
-            _loc3_ = this._stage.getObjectsUnderPoint(new Point(param1.stageX,param1.stageY));
-            _loc4_ = "";
+            dobj = DisplayObject(e.target);
+            dobj_arr = this._stage.getObjectsUnderPoint(new Point(e.stageX,e.stageY));
+            str = "";
             do
             {
-               _loc7_ = getQualifiedClassName(_loc2_);
-               switch(_loc7_)
+               t = getQualifiedClassName(dobj);
+               switch(t)
                {
                   case "flash.display::Stage":
                   case "flash.display::MovieClip":
@@ -369,45 +368,45 @@ package yzhkof.debug
                   case "flash.display::Sprite":
                      break;
                   default:
-                     _loc4_ = _loc4_ + (_loc7_ + " || ");
-                     if(_loc2_ is DisplayObjectContainer && _loc5_ == null)
+                     str = str + (t + " || ");
+                     if(dobj is DisplayObjectContainer && go_dobj == null)
                      {
-                        _loc5_ = DisplayObjectContainer(_loc2_);
+                        go_dobj = DisplayObjectContainer(dobj);
                         break;
                      }
                }
             }
-            while(_loc2_ = _loc2_.parent);
+            while(dobj = dobj.parent);
             
-            _loc6_ = [];
-            if(_loc3_)
+            parent_arr = [];
+            if(dobj_arr)
             {
-               for each(_loc8_ in _loc3_)
+               for each(i in dobj_arr)
                {
-                  if(!(_loc8_ is DisplayObjectContainer))
+                  if(!(i is DisplayObjectContainer))
                   {
-                     _loc6_.push(_loc8_.parent);
+                     parent_arr.push(i.parent);
                   }
                }
-               this.goto(_loc6_.concat(_loc3_),true);
+               this.goto(parent_arr.concat(dobj_arr),true);
             }
-            trace(_loc4_);
+            trace(str);
          }
       }
       
-      public function goto(param1:*, param2:Boolean = false) : void
+      public function goto(obj:*, select:Boolean = false) : void
       {
-         if(param1 != null)
+         if(obj != null)
          {
             this.latestLeaf = this.currentLeaf;
-            this.currentLeaf = param1;
-            if(param2)
+            this.currentLeaf = obj;
+            if(select)
             {
-               this.dictionary_viewer.select(param1);
+               this.dictionary_viewer.select(obj);
             }
             else
             {
-               this.dictionary_viewer.goto(param1);
+               this.dictionary_viewer.goto(obj);
             }
             this.refresh(this.currentRefreshType);
             commitChage();
@@ -418,58 +417,58 @@ package yzhkof.debug
          }
       }
       
-      public function view(param1:DisplayObject) : void
+      public function view(dobj:DisplayObject) : void
       {
-         this.viewer.view(param1);
+         this.viewer.view(dobj);
          this.viewer.visible = true;
          this.mask_background.visible = true;
       }
       
-      public function savePNG(param1:DisplayObject) : void
+      public function savePNG(dobj:DisplayObject) : void
       {
-         var _loc2_:BitmapData = ToolBitmapData.getInstance().drawDisplayObject(param1);
-         var _loc3_:ByteArray = new PNGEncoder().encode(_loc2_);
-         this._fileReference.save(_loc3_,param1.name + ".png");
+         var bitmapdata:BitmapData = ToolBitmapData.getInstance().drawDisplayObject(dobj);
+         var pngBytes:ByteArray = new PNGEncoder().encode(bitmapdata);
+         this._fileReference.save(pngBytes,dobj.name + ".png");
       }
       
-      private function getTextPanel(param1:*) : TextPanel
+      private function getTextPanel(obj:*) : TextPanel
       {
-         var _loc2_:TextPanel = null;
-         if(param1 is DisplayObject)
+         var t_text:TextPanel = null;
+         if(obj is DisplayObject)
          {
-            if(param1.visible == false)
+            if(obj.visible == false)
             {
-               _loc2_ = new TextPanel(16711680);
+               t_text = new TextPanel(16711680);
             }
-            else if(param1.getBounds(param1).width == 0 || param1.getBounds(param1).height == 0)
+            else if(obj.getBounds(obj).width == 0 || obj.getBounds(obj).height == 0)
             {
-               _loc2_ = new TextPanel(255);
+               t_text = new TextPanel(255);
             }
-            else if(param1 is DisplayObjectContainer)
+            else if(obj is DisplayObjectContainer)
             {
-               _loc2_ = new TextPanel(16776960);
+               t_text = new TextPanel(16776960);
             }
             else
             {
-               _loc2_ = new TextPanel();
+               t_text = new TextPanel();
             }
          }
-         else if(param1 is Function)
+         else if(obj is Function)
          {
-            _loc2_ = new TextPanel(8947967);
+            t_text = new TextPanel(8947967);
          }
-         else if(param1 == null)
+         else if(obj == null)
          {
-            _loc2_ = new TextPanel(8947848);
+            t_text = new TextPanel(8947848);
          }
          else
          {
-            _loc2_ = new TextPanel(16746632);
+            t_text = new TextPanel(16746632);
          }
-         return _loc2_;
+         return t_text;
       }
       
-      private function refresh(param1:String = "") : void
+      private function refresh(type:String = "") : void
       {
          var t_text:TextPanel = null;
          var i:int = 0;
@@ -480,7 +479,6 @@ package yzhkof.debug
          var q:QName = null;
          var element:TextPanel = null;
          var t_v:* = undefined;
-         var type:String = param1;
          var t_currentLeaf:* = this.currentLeaf;
          var t_type:String = type == ""?this.currentRefreshType:type;
          if(t_currentLeaf == null)
@@ -493,14 +491,12 @@ package yzhkof.debug
          if(t_currentLeaf is DisplayObjectContainer)
          {
             length = t_currentLeaf.numChildren;
-            i = 0;
-            while(i < length)
+            for(i = 0; i < length; i++)
             {
                t_dobj = t_currentLeaf.getChildAt(i);
                t_text = this.getDebugTextButton(t_dobj,!!/instance/.test(t_dobj.name)?getQualifiedClassName(t_dobj):t_dobj.name);
                this.container.appendItem(t_text);
                this.child_map.add(t_text,t_dobj);
-               i++;
             }
          }
          if(t_type == DETAIL)
@@ -533,116 +529,114 @@ package yzhkof.debug
       
       public function checkGC() : void
       {
-         var _loc2_:TextPanel = null;
-         var _loc1_:Array = this._child_map.keySet;
-         for each(_loc2_ in _loc1_)
+         var i:TextPanel = null;
+         var text_arr:Array = this._child_map.keySet;
+         for each(i in text_arr)
          {
-            if(!this._child_map.getValue(_loc2_))
+            if(!this._child_map.getValue(i))
             {
-               _loc2_.color = 65280;
+               i.color = 65280;
             }
          }
       }
       
-      public function getDebugTextButton(param1:*, param2:String) : TextPanel
+      public function getDebugTextButton(obj:*, text:String) : TextPanel
       {
-         var _loc3_:TextPanel = this.getTextPanel(param1);
-         _loc3_.text = param2 || "";
-         _loc3_.addEventListener(MouseEvent.CLICK,this.__onItemClick);
-         if(param1 is DisplayObject)
+         var text_panel:TextPanel = this.getTextPanel(obj);
+         text_panel.text = text || "";
+         text_panel.addEventListener(MouseEvent.CLICK,this.__onItemClick);
+         if(obj is DisplayObject)
          {
-            _loc3_.addEventListener(MouseEvent.ROLL_OVER,this.__onItemOver);
-            _loc3_.addEventListener(MouseEvent.ROLL_OUT,this.__onItemOut);
+            text_panel.addEventListener(MouseEvent.ROLL_OVER,this.__onItemOver);
+            text_panel.addEventListener(MouseEvent.ROLL_OUT,this.__onItemOut);
          }
-         this.addTextButtonRightMenu(_loc3_,param1);
-         return _loc3_;
+         this.addTextButtonRightMenu(text_panel,obj);
+         return text_panel;
       }
       
-      private function addTextButtonRightMenu(param1:TextPanel, param2:*) : void
+      private function addTextButtonRightMenu(text_panel:TextPanel, obj:*) : void
       {
-         var _loc3_:ContextMenuItem = null;
-         RightMenuUtil.hideDefaultMenus(param1);
-         _loc3_ = RightMenuUtil.addRightMenu(param1,"定位至脚本");
-         _loc3_.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,this.__rightMenuClick);
-         if(param2 is DisplayObject)
+         var item:ContextMenuItem = null;
+         RightMenuUtil.hideDefaultMenus(text_panel);
+         item = RightMenuUtil.addRightMenu(text_panel,"定位至脚本");
+         item.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,this.__rightMenuClick);
+         if(obj is DisplayObject)
          {
-            _loc3_ = RightMenuUtil.addRightMenu(param1,"快照");
-            _loc3_.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,this.__rightMenuClick);
-            _loc3_ = RightMenuUtil.addRightMenu(param1,"快照另存为...");
-            _loc3_.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,this.__rightMenuClick);
-            _loc3_ = RightMenuUtil.addRightMenu(param1,"移动");
-            _loc3_.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,this.__rightMenuClick);
+            item = RightMenuUtil.addRightMenu(text_panel,"快照");
+            item.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,this.__rightMenuClick);
+            item = RightMenuUtil.addRightMenu(text_panel,"快照另存为...");
+            item.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,this.__rightMenuClick);
+            item = RightMenuUtil.addRightMenu(text_panel,"移动");
+            item.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,this.__rightMenuClick);
          }
-         _loc3_ = RightMenuUtil.addRightMenu(param1,"察看属性值");
-         _loc3_.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,this.__rightMenuClick);
-         if(param2 is EventDispatcher)
+         item = RightMenuUtil.addRightMenu(text_panel,"察看属性值");
+         item.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,this.__rightMenuClick);
+         if(obj is EventDispatcher)
          {
-            _loc3_ = RightMenuUtil.addRightMenu(param1,"察看监听器");
-            _loc3_.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,this.__rightMenuClick);
+            item = RightMenuUtil.addRightMenu(text_panel,"察看监听器");
+            item.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,this.__rightMenuClick);
          }
-         _loc3_ = RightMenuUtil.addRightMenu(param1,"log");
-         _loc3_.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,this.__rightMenuClick);
-         _loc3_ = RightMenuUtil.addRightMenu(param1,"放入回收查看器");
-         _loc3_.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,this.__rightMenuClick);
-         _loc3_ = RightMenuUtil.addRightMenu(param1,"放入回收查看器(所有子显示节点)");
-         _loc3_.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,this.__rightMenuClick);
-         _loc3_ = RightMenuUtil.addRightMenu(param1,"复制名字");
-         _loc3_.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,this.__rightMenuClick);
-         _loc3_ = RightMenuUtil.addRightMenu(param1,"复制样式名");
-         _loc3_.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,this.__rightMenuClick);
-         _loc3_ = RightMenuUtil.addRightMenu(param1,"继承结构");
-         _loc3_.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,this.__rightMenuClick);
-         _loc3_ = RightMenuUtil.addRightMenu(param1,"click");
-         _loc3_.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,this.__rightMenuClick);
-         _loc3_ = RightMenuUtil.addRightMenu(param1,"remove");
-         _loc3_.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,this.__rightMenuClick);
+         item = RightMenuUtil.addRightMenu(text_panel,"log");
+         item.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,this.__rightMenuClick);
+         item = RightMenuUtil.addRightMenu(text_panel,"放入回收查看器");
+         item.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,this.__rightMenuClick);
+         item = RightMenuUtil.addRightMenu(text_panel,"放入回收查看器(所有子显示节点)");
+         item.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,this.__rightMenuClick);
+         item = RightMenuUtil.addRightMenu(text_panel,"复制名字");
+         item.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,this.__rightMenuClick);
+         item = RightMenuUtil.addRightMenu(text_panel,"复制样式名");
+         item.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,this.__rightMenuClick);
+         item = RightMenuUtil.addRightMenu(text_panel,"继承结构");
+         item.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,this.__rightMenuClick);
+         item = RightMenuUtil.addRightMenu(text_panel,"click");
+         item.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,this.__rightMenuClick);
+         item = RightMenuUtil.addRightMenu(text_panel,"remove");
+         item.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,this.__rightMenuClick);
       }
       
-      private function __rightMenuClick(param1:ContextMenuEvent) : void
+      private function __rightMenuClick(event:ContextMenuEvent) : void
       {
-         this.doTextButtonAction(TextPanel(param1.contextMenuOwner),ContextMenuItem(param1.currentTarget).caption);
+         this.doTextButtonAction(TextPanel(event.contextMenuOwner),ContextMenuItem(event.currentTarget).caption);
       }
       
-      private function __onItemOver(param1:MouseEvent) : void
+      private function __onItemOver(e:MouseEvent) : void
       {
-         var _loc2_:DisplayObject = this._child_map.getValue(param1.currentTarget);
-         if(_loc2_ == null)
+         var gotoObj:DisplayObject = this._child_map.getValue(e.currentTarget);
+         if(gotoObj == null)
          {
-            _loc2_ = this.dictionary_viewer._dobj_map.getValue(param1.currentTarget);
+            gotoObj = this.dictionary_viewer._dobj_map.getValue(e.currentTarget);
          }
-         if(_loc2_ == null)
+         if(gotoObj == null)
          {
-            _loc2_ = DebugSystem.logViewer.logMap[param1.currentTarget];
+            gotoObj = DebugSystem.logViewer.logMap[e.currentTarget];
          }
-         if(_loc2_ == null)
+         if(gotoObj == null)
          {
-            _loc2_ = DebugSystem.weakLogViewer.weakMap.getValue(param1.currentTarget);
+            gotoObj = DebugSystem.weakLogViewer.weakMap.getValue(e.currentTarget);
          }
-         if(_loc2_ && _loc2_.stage)
+         if(gotoObj && gotoObj.stage)
          {
             addChild(this._locateGraph);
-            this._locateGraph.draw(_loc2_);
+            this._locateGraph.draw(gotoObj);
          }
       }
       
-      private function __onItemOut(param1:MouseEvent) : void
+      private function __onItemOut(event:MouseEvent) : void
       {
          this._locateGraph.clear();
       }
       
-      private function __onItemClick(param1:MouseEvent) : void
+      private function __onItemClick(e:MouseEvent) : void
       {
-         this.doTextButtonAction(TextPanel(param1.currentTarget));
+         this.doTextButtonAction(TextPanel(e.currentTarget));
       }
       
-      private function doTextButtonAction(param1:TextPanel, param2:String = "") : void
+      private function doTextButtonAction(target:TextPanel, rightMenuName:String = "") : void
       {
          var name_arr:Array = null;
          var str:String = null;
          var current:* = undefined;
          var classDef:Object = null;
-         var target:TextPanel = param1;
-         var rightMenuName:String = param2;
          var gotoObj:* = this._child_map.getValue(target);
          if(gotoObj == null)
          {

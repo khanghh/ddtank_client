@@ -81,7 +81,7 @@ package pyramid.view
          addChild(_selectedAutoOpenCard);
       }
       
-      private function __movieLockHandler(param1:PyramidEvent) : void
+      private function __movieLockHandler(event:PyramidEvent) : void
       {
          if(PyramidControl.instance.movieLock)
          {
@@ -119,25 +119,25 @@ package pyramid.view
          _scoreAdd.text = PyramidManager.instance.model.pointRatio + "%";
          _currentGetScore.text = PyramidManager.instance.model.turnPoint + "";
          _countMsgTxt.text = LanguageMgr.GetTranslation("ddt.pyramid.countMsgTxt");
-         var _loc1_:int = PyramidManager.instance.model.freeCount - PyramidManager.instance.model.currentFreeCount;
-         if(_loc1_ < 0)
+         var freeCount:int = PyramidManager.instance.model.freeCount - PyramidManager.instance.model.currentFreeCount;
+         if(freeCount < 0)
          {
-            _loc1_ = 0;
+            freeCount = 0;
          }
-         _countTxt.text = _loc1_ + "";
+         _countTxt.text = freeCount + "";
          isStart(PyramidManager.instance.model.isPyramidStart);
       }
       
-      private function __startOrStopHandler(param1:PyramidEvent) : void
+      private function __startOrStopHandler(event:PyramidEvent) : void
       {
          updateData();
          _pyramidCards.updateSelectItems();
          _pyramidCards.playShuffleFullMovie();
       }
       
-      private function __cardResultHandler(param1:PyramidEvent) : void
+      private function __cardResultHandler(event:PyramidEvent) : void
       {
-         var _loc2_:int = 0;
+         var revieMoney:int = 0;
          PyramidControl.instance.movieLock = false;
          updateData();
          _pyramidCards.playTurnCardMovie();
@@ -148,13 +148,13 @@ package pyramid.view
          _pyramidCards.upClear();
          if(PyramidManager.instance.model.isPyramidDie)
          {
-            _loc2_ = PyramidManager.instance.model.revivePrice[PyramidManager.instance.model.currentReviveCount];
+            revieMoney = PyramidManager.instance.model.revivePrice[PyramidManager.instance.model.currentReviveCount];
             if(PyramidManager.instance.model.currentReviveCount == PyramidManager.instance.model.revivePrice.length)
             {
                PyramidControl.instance.showFrame(2);
                PyramidControl.instance.isAutoOpenCard = false;
             }
-            else if(PlayerManager.Instance.Self.Money < _loc2_)
+            else if(PlayerManager.Instance.Self.Money < revieMoney)
             {
                PyramidControl.instance.showFrame(7);
             }
@@ -169,25 +169,25 @@ package pyramid.view
          }
       }
       
-      private function __DieEventHandler(param1:PyramidEvent) : void
+      private function __DieEventHandler(event:PyramidEvent) : void
       {
          updateData();
          _pyramidCards.updateSelectItems();
          PyramidControl.instance.dispatchEvent(new PyramidEvent("auto_openCard"));
       }
       
-      private function __scoreConvertEventHandler(param1:PyramidEvent) : void
+      private function __scoreConvertEventHandler(event:PyramidEvent) : void
       {
          _myScoreTxt.text = PyramidManager.instance.model.totalPoint + "";
       }
       
-      private function isStart(param1:Boolean) : void
+      private function isStart(bool:Boolean) : void
       {
-         _endBtn.visible = param1;
-         _startBtn.visible = !param1;
+         _endBtn.visible = bool;
+         _startBtn.visible = !bool;
       }
       
-      public function __startBtnHanlder(param1:MouseEvent) : void
+      public function __startBtnHanlder(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PyramidControl.instance.clickRateGo)
@@ -202,7 +202,7 @@ package pyramid.view
          {
             PyramidControl.instance.showFrame(6);
          }
-         else if(param1.currentTarget == _startBtn)
+         else if(event.currentTarget == _startBtn)
          {
             GameInSocketOut.sendPyramidStartOrstop(true);
          }
@@ -212,7 +212,7 @@ package pyramid.view
          }
       }
       
-      private function _selectedAutoOpenCardClickHandler(param1:MouseEvent) : void
+      private function _selectedAutoOpenCardClickHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -229,7 +229,7 @@ package pyramid.view
          PyramidControl.instance.isAutoOpenCard = _selectedAutoOpenCard.selected;
       }
       
-      private function __autoOpenCardChangeHandler(param1:PyramidEvent) : void
+      private function __autoOpenCardChangeHandler(evt:PyramidEvent) : void
       {
          if(_selectedAutoOpenCard)
          {

@@ -9,28 +9,27 @@ package dayActivity
       
       public var itemList:Vector.<DayActiveData>;
       
-      public function ActivePointAnalzer(param1:Function)
+      public function ActivePointAnalzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc6_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var itemData:* = null;
          itemList = new Vector.<DayActiveData>();
          XML.ignoreWhitespace = true;
-         var _loc3_:XML = new XML(param1);
-         var _loc5_:int = _loc3_.item.length();
-         var _loc4_:XMLList = _loc3_..item;
-         _loc6_ = 0;
-         while(_loc6_ < _loc4_.length())
+         var xml:XML = new XML(data);
+         var len:int = xml.item.length();
+         var xmllist:XMLList = xml..item;
+         for(i = 0; i < xmllist.length(); )
          {
-            _loc2_ = new DayActiveData();
-            ObjectUtils.copyPorpertiesByXML(_loc2_,_loc4_[_loc6_]);
-            _loc2_.setLong();
-            itemList.push(_loc2_);
-            _loc6_++;
+            itemData = new DayActiveData();
+            ObjectUtils.copyPorpertiesByXML(itemData,xmllist[i]);
+            itemData.setLong();
+            itemList.push(itemData);
+            i++;
          }
          onAnalyzeComplete();
       }

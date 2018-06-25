@@ -40,16 +40,16 @@ package horse.amulet
       
       private function init() : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          _bag = PlayerManager.Instance.Self.getBag(42);
          _bg = ComponentFactory.Instance.creatBitmap("asset.horseAmulet.equipViewBg");
          addChild(_bg);
          _horseMc = ComponentFactory.Instance.creat("asset.horse.frame.horseMc");
          PositionUtils.setPos(_horseMc,"horseAmulet.equip.horseMcPos");
-         var _loc1_:int = int(HorseManager.instance.curLevel / 10) + 1;
+         var index:int = int(HorseManager.instance.curLevel / 10) + 1;
          _horseMc.mouseChildren = false;
          _horseMc.mouseEnabled = false;
-         _horseMc.gotoAndStop(_loc1_ > 9?9:_loc1_);
+         _horseMc.gotoAndStop(index > 9?9:index);
          addChild(_horseMc);
          _tipsCon = ComponentFactory.Instance.creatComponentByStylename("ddtcorei.horseAmulet.tips");
          _tipsCon.tipData = PlayerManager.Instance.Self;
@@ -59,59 +59,58 @@ package horse.amulet
          _tipsCon.graphics.endFill();
          addChild(_tipsCon);
          _cellList = new Vector.<HorseAmuletEquipCell>(9);
-         _loc2_ = 0;
-         while(_loc2_ < 9)
+         for(i = 0; i < 9; )
          {
-            _cellList[_loc2_] = new HorseAmuletEquipCell(_loc2_,null);
-            _cellList[_loc2_].openLevel = HorseAmuletManager.LIMIT_LEVEL[_loc2_];
-            _cellList[_loc2_].info = _bag.getItemAt(_loc2_);
-            PositionUtils.setPos(_cellList[_loc2_],"horseAmulet.equipCellPos" + _loc2_);
-            addChild(_cellList[_loc2_]);
-            _loc2_++;
+            _cellList[i] = new HorseAmuletEquipCell(i,null);
+            _cellList[i].openLevel = HorseAmuletManager.LIMIT_LEVEL[i];
+            _cellList[i].info = _bag.getItemAt(i);
+            PositionUtils.setPos(_cellList[i],"horseAmulet.equipCellPos" + i);
+            addChild(_cellList[i]);
+            i++;
          }
          _bag.addEventListener("update",__updateGoods);
       }
       
-      private function __updateGoods(param1:BagEvent) : void
+      private function __updateGoods(evt:BagEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc4_:Dictionary = param1.changedSlots;
+         var c:* = null;
+         var changes:Dictionary = evt.changedSlots;
          var _loc6_:int = 0;
-         var _loc5_:* = _loc4_;
-         for each(var _loc3_ in _loc4_)
+         var _loc5_:* = changes;
+         for each(var i in changes)
          {
-            _loc2_ = _bag.getItemAt(_loc3_.Place);
-            if(_loc2_)
+            c = _bag.getItemAt(i.Place);
+            if(c)
             {
-               setCellInfo(_loc3_.Place,_loc2_);
+               setCellInfo(i.Place,c);
             }
             else
             {
-               setCellInfo(_loc3_.Place,null);
+               setCellInfo(i.Place,null);
             }
          }
       }
       
-      private function setCellInfo(param1:int, param2:InventoryItemInfo) : void
+      private function setCellInfo(index:int, info:InventoryItemInfo) : void
       {
-         if(param1 > EQUIP_MAX_PALCE)
+         if(index > EQUIP_MAX_PALCE)
          {
             return;
          }
-         if(param2 == null)
+         if(info == null)
          {
-            if(_cellList[param1])
+            if(_cellList[index])
             {
-               _cellList[param1].info = null;
+               _cellList[index].info = null;
             }
          }
-         else if(param2.Count == 0)
+         else if(info.Count == 0)
          {
-            _cellList[param1].info = null;
+            _cellList[index].info = null;
          }
          else
          {
-            _cellList[param1].info = param2;
+            _cellList[index].info = info;
          }
       }
       

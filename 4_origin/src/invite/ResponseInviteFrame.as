@@ -119,40 +119,40 @@ package invite
          _timer = new Timer(1000,_markTime);
       }
       
-      private static function removeInvite(param1:ResponseInviteFrame) : void
+      private static function removeInvite(inviteFrame:ResponseInviteFrame) : void
       {
-         InvitePool.remove(String(param1.inviteInfo.playerid));
+         InvitePool.remove(String(inviteFrame.inviteInfo.playerid));
       }
       
       public static function clearInviteFrame() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:Array = InvitePool.list;
-         while(_loc1_.length > 0)
+         var resp:* = null;
+         var responseArr:Array = InvitePool.list;
+         while(responseArr.length > 0)
          {
-            _loc2_ = _loc1_[0];
-            if(_loc2_)
+            resp = responseArr[0];
+            if(resp)
             {
-               ObjectUtils.disposeObject(_loc2_);
+               ObjectUtils.disposeObject(resp);
             }
          }
       }
       
-      public static function newInvite(param1:InviteInfo) : ResponseInviteFrame
+      public static function newInvite(info:InviteInfo) : ResponseInviteFrame
       {
-         var _loc2_:* = null;
-         if(InvitePool[param1.playerid] != null)
+         var response:* = null;
+         if(InvitePool[info.playerid] != null)
          {
-            _loc2_ = InvitePool[param1.playerid];
-            _loc2_.inviteInfo = param1;
+            response = InvitePool[info.playerid];
+            response.inviteInfo = info;
          }
          else
          {
-            _loc2_ = ComponentFactory.Instance.creatComponentByStylename("ResponseInviteFrame");
-            InvitePool.add(String(param1.playerid),_loc2_);
-            _loc2_.inviteInfo = param1;
+            response = ComponentFactory.Instance.creatComponentByStylename("ResponseInviteFrame");
+            InvitePool.add(String(info.playerid),response);
+            response.inviteInfo = info;
          }
-         return _loc2_;
+         return response;
       }
       
       private function configUi() : void
@@ -264,50 +264,50 @@ package invite
          }
       }
       
-      private function __focusOut(param1:FocusEvent) : void
+      private function __focusOut(evt:FocusEvent) : void
       {
          addEventListener("click",__bodyClick,true);
       }
       
-      private function __bodyClick(param1:MouseEvent) : void
+      private function __bodyClick(evt:MouseEvent) : void
       {
          StageReferance.stage.focus = this;
       }
       
-      private function __toStage(param1:Event) : void
+      private function __toStage(evt:Event) : void
       {
-         var _loc3_:* = null;
-         var _loc5_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:* = null;
-         var _loc7_:* = null;
-         var _loc6_:* = null;
+         var lastFrame:* = null;
+         var displayRect:* = null;
+         var bounds:* = null;
+         var leftTop:* = null;
+         var offset:* = null;
+         var rightBottom:* = null;
          if(InvitePool.length > 1)
          {
-            _loc3_ = InvitePool.list[InvitePool.length - 2];
-            _loc2_ = _loc3_.getBounds(stage);
-            _loc5_ = ComponentFactory.Instance.creatCustomObject("invite.response.DispalyRect");
-            _loc7_ = ComponentFactory.Instance.creatCustomObject("invite.response.FrameOffset");
-            if(_loc2_.right + _loc7_.x >= _loc5_.right || _loc2_.bottom + _loc7_.y >= _loc5_.bottom)
+            lastFrame = InvitePool.list[InvitePool.length - 2];
+            bounds = lastFrame.getBounds(stage);
+            displayRect = ComponentFactory.Instance.creatCustomObject("invite.response.DispalyRect");
+            offset = ComponentFactory.Instance.creatCustomObject("invite.response.FrameOffset");
+            if(bounds.right + offset.x >= displayRect.right || bounds.bottom + offset.y >= displayRect.bottom)
             {
-               x = _loc5_.x;
-               y = _loc5_.y;
+               x = displayRect.x;
+               y = displayRect.y;
             }
             else
             {
-               x = _loc2_.x + _loc7_.x;
-               y = _loc2_.y + _loc7_.y;
+               x = bounds.x + offset.x;
+               y = bounds.y + offset.y;
             }
          }
          else
          {
-            _loc2_ = getBounds(this);
-            x = StageReferance.stageWidth - _loc2_.width >> 1;
-            y = StageReferance.stageHeight - _loc2_.height >> 1;
+            bounds = getBounds(this);
+            x = StageReferance.stageWidth - bounds.width >> 1;
+            y = StageReferance.stageHeight - bounds.height >> 1;
          }
       }
       
-      private function __focusIn(param1:FocusEvent) : void
+      private function __focusIn(evt:FocusEvent) : void
       {
          removeEventListener("click",__bodyClick,true);
          bringToTop();
@@ -355,20 +355,20 @@ package invite
          clearInviteFrame();
       }
       
-      private function __onInviteAccept(param1:MouseEvent) : void
+      private function __onInviteAccept(evt:MouseEvent) : void
       {
          AssetModuleLoader.startCodeLoader(enterRoom);
       }
       
       private function onUpdateData() : void
       {
-         var _loc2_:InviteInfo = _inviteInfo;
-         _levelIcon.setInfo(_loc2_.level,0,0,0,0,0,0,true,false);
-         _name.text = _loc2_.nickname;
-         if(_loc2_.IsVip)
+         var data:InviteInfo = _inviteInfo;
+         _levelIcon.setInfo(data.level,0,0,0,0,0,0,true,false);
+         _name.text = data.nickname;
+         if(data.IsVip)
          {
             ObjectUtils.disposeObject(_vipName);
-            _vipName = VipController.instance.getVipNameTxt(121,_loc2_.typeVIP);
+            _vipName = VipController.instance.getVipNameTxt(121,data.typeVIP);
             _vipName.x = _name.x;
             _vipName.y = _name.y;
             _vipName.text = _name.text;
@@ -376,96 +376,96 @@ package invite
             DisplayUtils.removeDisplay(_name);
          }
          addToContent(_name);
-         PositionUtils.adaptNameStyleByType(_loc2_.playerType,_name,_vipName);
-         _powerValue.text = _loc2_.power.toString();
-         var _loc1_:int = 1;
-         if(_loc2_.secondType == 1)
+         PositionUtils.adaptNameStyleByType(data.playerType,_name,_vipName);
+         _powerValue.text = data.power.toString();
+         var time:int = 1;
+         if(data.secondType == 1)
          {
-            _loc1_ = 5;
+            time = 5;
          }
-         if(_loc2_.secondType == 2)
+         if(data.secondType == 2)
          {
-            _loc1_ = 7;
+            time = 7;
          }
-         if(_loc2_.secondType == 3)
+         if(data.secondType == 3)
          {
-            _loc1_ = 10;
+            time = 10;
          }
-         if(_loc2_.secondType == 4)
+         if(data.secondType == 4)
          {
-            _loc1_ = 15;
+            time = 15;
          }
-         titleText = LanguageMgr.GetTranslation("tank.invite.response.title",_loc2_.nickname);
-         if(_loc2_.isOpenBoss)
+         titleText = LanguageMgr.GetTranslation("tank.invite.response.title",data.nickname);
+         if(data.isOpenBoss)
          {
             _titleString = LanguageMgr.GetTranslation("FPSView.as.InviteAlertPanel.yaoqingniboss");
          }
          _modeLabel.visible = true;
-         if(_loc2_.gameMode < 2 || _loc2_.gameMode == 45 || _loc2_.gameMode == 120)
+         if(data.gameMode < 2 || data.gameMode == 45 || data.gameMode == 120)
          {
-            DisplayUtils.setFrame(_mode,_loc2_.gameMode + 1);
-            if(_loc2_.gameMode == 45)
+            DisplayUtils.setFrame(_mode,data.gameMode + 1);
+            if(data.gameMode == 45)
             {
                DisplayUtils.setFrame(_mode,1);
             }
-            if(_loc2_.gameMode == 120)
+            if(data.gameMode == 120)
             {
                DisplayUtils.setFrame(_mode,7);
             }
             _rightLabel.text = LanguageMgr.GetTranslation("FPSView.as.InviteAlertPanel.huihetime");
-            _rightField.text = _loc1_ + LanguageMgr.GetTranslation("FPSView.as.InviteAlertPanel.second");
+            _rightField.text = time + LanguageMgr.GetTranslation("FPSView.as.InviteAlertPanel.second");
             _leftLabel.text = LanguageMgr.GetTranslation("FPSView.as.InviteAlertPanel.map");
-            _leftField.text = String(MapManager.getMapName(_loc2_.mapid));
+            _leftField.text = String(MapManager.getMapName(data.mapid));
          }
-         else if(_loc2_.gameMode == 58)
+         else if(data.gameMode == 58)
          {
             DisplayUtils.setFrame(_mode,9);
             _rightLabel.text = LanguageMgr.GetTranslation("FPSView.as.InviteAlertPanel.huihetime");
-            _rightField.text = _loc1_ + LanguageMgr.GetTranslation("FPSView.as.InviteAlertPanel.second");
+            _rightField.text = time + LanguageMgr.GetTranslation("FPSView.as.InviteAlertPanel.second");
             _leftLabel.text = LanguageMgr.GetTranslation("FPSView.as.InviteAlertPanel.map");
-            _leftField.text = String(MapManager.getMapName(_loc2_.mapid));
+            _leftField.text = String(MapManager.getMapName(data.mapid));
          }
-         else if(_loc2_.gameMode == 2)
+         else if(data.gameMode == 2)
          {
-            DisplayUtils.setFrame(_mode,_loc2_.gameMode + 1);
+            DisplayUtils.setFrame(_mode,data.gameMode + 1);
             _rightLabel.text = LanguageMgr.GetTranslation("tank.view.common.levelRange");
-            _rightField.text = getLevelLimits(_loc2_.levelLimits);
+            _rightField.text = getLevelLimits(data.levelLimits);
             _leftLabel.text = LanguageMgr.GetTranslation("tank.view.common.roomLevel");
-            _leftField.text = getRoomHardLevel(_loc2_.hardLevel);
+            _leftField.text = getRoomHardLevel(data.hardLevel);
          }
-         else if(_loc2_.gameMode > 2 && _loc2_.gameMode != 45 && _loc2_.gameMode != 120 && _loc2_.gameMode != 58)
+         else if(data.gameMode > 2 && data.gameMode != 45 && data.gameMode != 120 && data.gameMode != 58)
          {
-            DisplayUtils.setFrame(_mode,_loc2_.gameMode + 1);
-            if(_loc2_.gameMode == 11 || _loc2_.gameMode == 21 || _loc2_.gameMode == 23 || _loc2_.gameMode == 47 || _loc2_.gameMode == 48 || _loc2_.gameMode == 55 || _loc2_.gameMode == 123)
+            DisplayUtils.setFrame(_mode,data.gameMode + 1);
+            if(data.gameMode == 11 || data.gameMode == 21 || data.gameMode == 23 || data.gameMode == 47 || data.gameMode == 48 || data.gameMode == 55 || data.gameMode == 123)
             {
                DisplayUtils.setFrame(_mode,5);
             }
-            if(_loc2_.gameMode == 41)
+            if(data.gameMode == 41)
             {
                DisplayUtils.setFrame(_mode,1);
             }
-            if(_loc2_.gameMode == 68)
+            if(data.gameMode == 68)
             {
                DisplayUtils.setFrame(_mode,6);
             }
-            if(_loc2_.gameMode == 49)
-            {
-               DisplayUtils.setFrame(_mode,5);
-            }
-            else if(_loc2_.gameMode == 49)
+            if(data.gameMode == 49)
             {
                _mode.y = _mode.y + 3;
                DisplayUtils.setFrame(_mode,8);
             }
+            else if(data.gameMode == 70)
+            {
+               DisplayUtils.setFrame(_mode,10);
+            }
             _leftLabel.text = LanguageMgr.GetTranslation("tank.view.common.duplicateName");
             PositionUtils.setPos(_leftLabel,"duplicatePos");
-            _leftField.text = String(MapManager.getMapName(_loc2_.mapid));
+            _leftField.text = String(MapManager.getMapName(data.mapid));
             _leftField.x = PositionUtils.creatPoint("duplicateNamePos").x;
             _leftField.y = PositionUtils.creatPoint("duplicateNamePos").y;
             _rightLabel.text = LanguageMgr.GetTranslation("tank.view.common.gameLevel");
             _rightLabel.x = PositionUtils.creatPoint("TimeLabelPos").x;
             _rightLabel.y = PositionUtils.creatPoint("TimeLabelPos").y;
-            _rightField.text = getRoomHardLevel(_loc2_.hardLevel);
+            _rightField.text = getRoomHardLevel(data.hardLevel);
             _rightField.x = PositionUtils.creatPoint("TimeFieldPos").x;
             _rightField.y = PositionUtils.creatPoint("TimeFieldPos").y;
             if(_leftField.text.length > 15)
@@ -473,7 +473,7 @@ package invite
                _leftField.text = _leftField.text.substring(0,12) + "...";
             }
          }
-         if(_loc2_.barrierNum == -1 || _loc2_.gameMode < 2)
+         if(data.barrierNum == -1 || data.gameMode < 2)
          {
             var _loc3_:* = false;
             _levelField.visible = _loc3_;
@@ -485,18 +485,18 @@ package invite
             _levelField.visible = _loc3_;
             _levelLabel.visible = _loc3_;
             _levelLabel.text = LanguageMgr.GetTranslation("tank.view.common.InviteAlertPanel.pass");
-            _levelField.text = String(_loc2_.barrierNum <= 0?1:_loc2_.barrierNum);
+            _levelField.text = String(data.barrierNum <= 0?1:data.barrierNum);
          }
-         if(_loc2_.gameMode > 2 && _loc2_.gameMode != 45 && _loc2_.gameMode != 47 && (_loc2_.mapid <= 0 || _loc2_.mapid >= 10000))
+         if(data.gameMode > 2 && data.gameMode != 45 && data.gameMode != 47 && (data.mapid <= 0 || data.mapid >= 10000))
          {
-            if(_loc2_.mapid != 70001 && _loc2_.mapid != 12016 && _loc2_.mapid != 70020)
+            if(data.mapid != 70001 && data.mapid != 12016 && data.mapid != 70020)
             {
                _leftField.text = LanguageMgr.GetTranslation("FPSView.as.InviteAlertPanel.nochoice");
                _rightField.text = LanguageMgr.GetTranslation("FPSView.as.InviteAlertPanel.nochoice");
                _levelField.text = LanguageMgr.GetTranslation("FPSView.as.InviteAlertPanel.nochoice");
             }
          }
-         if(_loc2_.gameMode == 28 && _loc2_.mapid == 70002)
+         if(data.gameMode == 28 && data.mapid == 70002)
          {
             _modeLabel.visible = false;
             _loc3_ = "";
@@ -506,7 +506,7 @@ package invite
             _loc3_ = _loc3_;
             _rightField.text = _loc3_;
             _rightLabel.text = _loc3_;
-            _leftField.text = String(MapManager.getMapName(_loc2_.mapid));
+            _leftField.text = String(MapManager.getMapName(data.mapid));
             PositionUtils.setPos(_leftLabel,"duplicatePos1");
             PositionUtils.setPos(_leftField,"duplicateNamePos1");
          }
@@ -514,45 +514,45 @@ package invite
          setAttestBtnInfo();
       }
       
-      private function __onMark(param1:TimerEvent) : void
+      private function __onMark(evt:TimerEvent) : void
       {
          _tipField.text = LanguageMgr.GetTranslation("FPSView.as.InviteAlertPanel.ruguo",_markTime - _timer.currentCount);
       }
       
-      private function __onMarkComplete(param1:TimerEvent) : void
+      private function __onMarkComplete(evt:TimerEvent) : void
       {
          markComplete();
       }
       
-      override protected function __onCloseClick(param1:MouseEvent) : void
+      override protected function __onCloseClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          close();
       }
       
-      private function getLevelLimits(param1:int) : String
+      private function getLevelLimits(levelLimits:int) : String
       {
-         var _loc2_:String = "";
-         switch(int(param1) - 1)
+         var result:String = "";
+         switch(int(levelLimits) - 1)
          {
             case 0:
-               _loc2_ = "1-10";
+               result = "1-10";
                break;
             case 1:
-               _loc2_ = "11-20";
+               result = "11-20";
                break;
             case 2:
-               _loc2_ = "20-30";
+               result = "20-30";
                break;
             case 3:
-               _loc2_ = "30-40";
+               result = "30-40";
          }
-         return _loc2_ + LanguageMgr.GetTranslation("grade");
+         return result + LanguageMgr.GetTranslation("grade");
       }
       
-      private function getRoomHardLevel(param1:int) : String
+      private function getRoomHardLevel(HardLevel:int) : String
       {
-         switch(int(param1))
+         switch(int(HardLevel))
          {
             case 0:
                return LanguageMgr.GetTranslation("tank.room.difficulty.simple");
@@ -592,7 +592,7 @@ package invite
          close();
       }
       
-      private function __onClickSelectedBtn(param1:MouseEvent) : void
+      private function __onClickSelectedBtn(e:MouseEvent) : void
       {
          if(_prohibitSelectBtn.selected)
          {
@@ -614,9 +614,9 @@ package invite
          return _inviteInfo;
       }
       
-      public function set inviteInfo(param1:InviteInfo) : void
+      public function set inviteInfo(val:InviteInfo) : void
       {
-         _inviteInfo = param1;
+         _inviteInfo = val;
          if(_uiReady)
          {
             onUpdateData();

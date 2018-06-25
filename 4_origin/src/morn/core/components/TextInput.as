@@ -3,7 +3,6 @@ package morn.core.components
    import com.pickgliss.toplevel.StageReferance;
    import flash.events.Event;
    import flash.events.TextEvent;
-   import flash.text.TextFieldType;
    import morn.core.handlers.Handler;
    
    [Event(name="textInput",type="flash.events.TextEvent")]
@@ -13,9 +12,9 @@ package morn.core.components
       
       private var _changeHandler:Handler;
       
-      public function TextInput(param1:String = "", param2:String = null)
+      public function TextInput(text:String = "", skin:String = null)
       {
-         super(param1,param2);
+         super(text,skin);
       }
       
       override protected function initialize() : void
@@ -25,35 +24,35 @@ package morn.core.components
          width = 128;
          height = 22;
          selectable = true;
-         _textField.type = TextFieldType.INPUT;
+         _textField.type = "input";
          _textField.autoSize = "none";
-         _textField.addEventListener(Event.CHANGE,this.onTextFieldChange);
-         _textField.addEventListener(TextEvent.TEXT_INPUT,this.onTextFieldTextInput);
+         _textField.addEventListener("change",onTextFieldChange);
+         _textField.addEventListener("textInput",onTextFieldTextInput);
       }
       
-      private function onTextFieldTextInput(param1:TextEvent) : void
+      private function onTextFieldTextInput(e:TextEvent) : void
       {
-         dispatchEvent(param1);
+         dispatchEvent(e);
       }
       
-      protected function onTextFieldChange(param1:Event) : void
+      protected function onTextFieldChange(e:Event) : void
       {
          text = !!_isHtml?_textField.htmlText:_textField.text;
-         param1.stopPropagation();
-         if(this._changeHandler)
+         e.stopPropagation();
+         if(_changeHandler)
          {
-            this._changeHandler.execute();
+            _changeHandler.execute();
          }
       }
       
       public function get changeHandler() : Handler
       {
-         return this._changeHandler;
+         return _changeHandler;
       }
       
-      public function set changeHandler(param1:Handler) : void
+      public function set changeHandler(value:Handler) : void
       {
-         this._changeHandler = param1;
+         _changeHandler = value;
       }
       
       public function get restrict() : String
@@ -61,19 +60,19 @@ package morn.core.components
          return _textField.restrict;
       }
       
-      public function set restrict(param1:String) : void
+      public function set restrict(value:String) : void
       {
-         _textField.restrict = param1;
+         _textField.restrict = value;
       }
       
       public function get editable() : Boolean
       {
-         return _textField.type == TextFieldType.INPUT;
+         return _textField.type == "input";
       }
       
-      public function set editable(param1:Boolean) : void
+      public function set editable(value:Boolean) : void
       {
-         _textField.type = !!param1?TextFieldType.INPUT:TextFieldType.DYNAMIC;
+         _textField.type = !!value?"input":"dynamic";
       }
       
       public function get maxChars() : int
@@ -81,9 +80,9 @@ package morn.core.components
          return _textField.maxChars;
       }
       
-      public function set maxChars(param1:int) : void
+      public function set maxChars(value:int) : void
       {
-         _textField.maxChars = param1;
+         _textField.maxChars = value;
       }
       
       public function setFocus() : void
@@ -93,7 +92,7 @@ package morn.core.components
       
       override public function dispose() : void
       {
-         this._changeHandler = null;
+         _changeHandler = null;
          super.dispose();
       }
    }

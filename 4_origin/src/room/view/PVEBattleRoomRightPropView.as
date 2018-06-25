@@ -47,32 +47,32 @@ package room.view
          _energySprite.addChild(_energyNum);
       }
       
-      override protected function updateProView(param1:BattleSkillEvent) : void
+      override protected function updateProView(evt:BattleSkillEvent) : void
       {
-         var _loc6_:* = null;
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:Dictionary = BattleSkillManager.instance.getBringSkillList();
+         var _skillInfo:* = null;
+         var skillID:int = 0;
+         var cellPlace:int = 0;
+         var skillDic:Dictionary = BattleSkillManager.instance.getBringSkillList();
          var _loc8_:int = 0;
          var _loc7_:* = _allSkillCells;
-         for(var _loc5_ in _allSkillCells)
+         for(var key in _allSkillCells)
          {
-            _loc4_ = _allSkillCells[_loc5_].place;
-            if(_loc2_[_loc4_] == 0)
+            cellPlace = _allSkillCells[key].place;
+            if(skillDic[cellPlace] == 0)
             {
-               _allSkillCells[_loc5_].removeInfo();
+               _allSkillCells[key].removeInfo();
             }
             else
             {
                if(RoomManager.Instance.current.type == 123)
                {
-                  _loc6_ = HorseManager.instance.getHorseSkillInfoById(_loc2_[_loc4_]);
-                  if(_loc6_ && _loc6_.GameType != 0)
+                  _skillInfo = HorseManager.instance.getHorseSkillInfoById(skillDic[cellPlace]);
+                  if(_skillInfo && _skillInfo.GameType != 0)
                   {
                      continue;
                   }
                }
-               _allSkillCells[_loc5_].skillId = _loc2_[_loc4_];
+               _allSkillCells[key].skillId = skillDic[cellPlace];
             }
          }
       }

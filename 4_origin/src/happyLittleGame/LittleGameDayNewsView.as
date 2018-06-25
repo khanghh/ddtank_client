@@ -125,7 +125,7 @@ package happyLittleGame
          HappyLittleGameManager.instance.removeEventListener("refreshdaynew",__dayactiveHandler);
       }
       
-      private function __dayactiveHandler(param1:Event) : void
+      private function __dayactiveHandler(evt:Event) : void
       {
          _infos = HappyLittleGameManager.instance.gameActiveInfos;
          if(_infos.length > 0)
@@ -134,11 +134,11 @@ package happyLittleGame
          }
       }
       
-      private function __rightClickHandler(param1:MouseEvent) : void
+      private function __rightClickHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:int = Math.ceil(_infos.length / 5);
-         if(_dayPageIndex < _loc2_)
+         var len:int = Math.ceil(_infos.length / 5);
+         if(_dayPageIndex < len)
          {
             _dayPageIndex = Number(_dayPageIndex) + 1;
          }
@@ -149,9 +149,9 @@ package happyLittleGame
          showDayRankByPage(_dayPageIndex);
       }
       
-      private function __leftBtnClickhandler(param1:MouseEvent) : void
+      private function __leftBtnClickhandler(evt:MouseEvent) : void
       {
-         var _loc2_:int = 0;
+         var len:int = 0;
          SoundManager.instance.play("008");
          if(_dayPageIndex > 1)
          {
@@ -159,49 +159,44 @@ package happyLittleGame
          }
          else
          {
-            _loc2_ = Math.ceil(_infos.length / 5);
-            _dayPageIndex = _loc2_;
+            len = Math.ceil(_infos.length / 5);
+            _dayPageIndex = len;
          }
          showDayRankByPage(_dayPageIndex);
       }
       
-      public function showDayRankByPage(param1:int) : void
+      public function showDayRankByPage(page:int) : void
       {
-         var _loc2_:* = 0;
+         var index:* = 0;
          clearAll();
-         _dayPageIndex = param1;
+         _dayPageIndex = page;
          if(_infos.length == 0)
          {
             _pageTxt.text = "0/0";
             return;
          }
-         var _loc6_:int = Math.ceil(_infos.length / 5);
-         var _loc3_:int = (param1 - 1) * 5;
-         var _loc5_:int = _loc3_ + 5;
-         var _loc4_:int = 0;
-         _pageTxt.text = param1 + "/" + _loc6_;
-         if(param1 > _loc6_)
+         var len:int = Math.ceil(_infos.length / 5);
+         var startIndex:int = (page - 1) * 5;
+         var endIndex:int = startIndex + 5;
+         var infoIndex:int = 0;
+         _pageTxt.text = page + "/" + len;
+         if(page > len)
          {
+            trace("翻页超出");
             return;
-            §§push(trace("翻页超出"));
          }
-         else
+         if(page == len)
          {
-            if(param1 == _loc6_)
+            endIndex = _infos.length;
+         }
+         for(index = startIndex; index < endIndex; )
+         {
+            if(index < _infos.length)
             {
-               _loc5_ = _infos.length;
+               _items[infoIndex].Info = _infos[index];
+               infoIndex++;
             }
-            _loc2_ = _loc3_;
-            while(_loc2_ < _loc5_)
-            {
-               if(_loc2_ < _infos.length)
-               {
-                  _items[_loc4_].Info = _infos[_loc2_];
-                  _loc4_++;
-               }
-               _loc2_++;
-            }
-            return;
+            index++;
          }
       }
       
@@ -261,13 +256,13 @@ package happyLittleGame
       
       public function dispose() : void
       {
-         var _loc1_:* = null;
+         var obj:* = null;
          removeEvent();
          while(this.numChildren > 0)
          {
-            _loc1_ = removeChildAt(0);
-            ObjectUtils.disposeObject(_loc1_);
-            _loc1_ = null;
+            obj = removeChildAt(0);
+            ObjectUtils.disposeObject(obj);
+            obj = null;
          }
       }
    }

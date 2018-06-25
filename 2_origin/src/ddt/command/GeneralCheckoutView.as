@@ -129,38 +129,36 @@ package ddt.command
          _purchaseConfirmationBtn.addEventListener("click",__purchaseConfirmationBtnClick);
       }
       
-      public function initList(param1:Array) : void
+      public function initList(arr:Array) : void
       {
-         var _loc2_:int = 0;
-         _infoArr = param1;
-         _loc2_ = 0;
-         while(_loc2_ <= _infoArr.length - 1)
+         var i:int = 0;
+         _infoArr = arr;
+         for(i = 0; i <= _infoArr.length - 1; )
          {
             _isBandList.push(false);
-            _loc2_++;
+            i++;
          }
          update();
       }
       
       private function update() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var cItem:* = null;
          clearList();
          _cartItemList = new Vector.<ShopCartItem>();
-         _loc2_ = 0;
-         while(_loc2_ <= _infoArr.length - 1)
+         for(i = 0; i <= _infoArr.length - 1; )
          {
-            _loc1_ = new ShopCartItem();
-            _loc1_.id = _loc2_;
-            _loc1_.setShopItemInfo(_infoArr[_loc2_],ShopBuyManager.crrItemId,_isBandList[_loc2_]);
-            _loc1_.seleBand = seleBand;
-            _loc1_.upDataBtnState = upDataBtnState;
-            _loc1_.setColor(_infoArr[_loc2_].Color);
-            _castList2.addChild(_loc1_);
-            _cartItemList.push(_loc1_);
-            addItemEvent(_loc1_);
-            _loc2_++;
+            cItem = new ShopCartItem();
+            cItem.id = i;
+            cItem.setShopItemInfo(_infoArr[i],ShopBuyManager.crrItemId,_isBandList[i]);
+            cItem.seleBand = seleBand;
+            cItem.upDataBtnState = upDataBtnState;
+            cItem.setColor(_infoArr[i].Color);
+            _castList2.addChild(cItem);
+            _cartItemList.push(cItem);
+            addItemEvent(cItem);
+            i++;
          }
          updateList();
          _cartScroll.invalidateViewport();
@@ -171,103 +169,101 @@ package ddt.command
       {
       }
       
-      private function seleBand(param1:int, param2:int, param3:Boolean) : void
+      private function seleBand(id:int, num:int, bool:Boolean) : void
       {
-         _isBandList[param1] = param3;
+         _isBandList[id] = bool;
          update();
       }
       
       private function updateList() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = _cartItemList.length;
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_)
+         var i:int = 0;
+         var len:int = _cartItemList.length;
+         for(i = 0; i < len; )
          {
-            _cartItemList[_loc2_].id = _loc2_;
-            if(_loc2_ > 0)
+            _cartItemList[i].id = i;
+            if(i > 0)
             {
-               _cartItemList[_loc2_].y = _cartItemList[_loc2_ - 1].y + _cartItemList[_loc2_ - 1].height;
+               _cartItemList[i].y = _cartItemList[i - 1].y + _cartItemList[i - 1].height;
             }
             else
             {
-               _cartItemList[_loc2_].y = 0;
+               _cartItemList[i].y = 0;
             }
-            _loc2_++;
+            i++;
          }
       }
       
       protected function updateTxt() : void
       {
-         var _loc4_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          _commodityNumberText.text = String(_infoArr.length);
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         _loc4_ = 0;
-         while(_loc4_ <= _cartItemList.length - 1)
+         var money:int = 0;
+         var bindMoney:int = 0;
+         for(i = 0; i <= _cartItemList.length - 1; )
          {
-            _loc1_ = _cartItemList[_loc4_] as ShopCartItem;
-            if(_isBandList[_loc4_])
+            item = _cartItemList[i] as ShopCartItem;
+            if(_isBandList[i])
             {
-               _loc3_ = _loc3_ + _loc1_.shopItemInfo.getCurrentPrice().bothMoneyValue;
+               bindMoney = bindMoney + item.shopItemInfo.getCurrentPrice().bothMoneyValue;
             }
             else
             {
-               _loc2_ = _loc2_ + _loc1_.shopItemInfo.getCurrentPrice().bothMoneyValue;
+               money = money + item.shopItemInfo.getCurrentPrice().bothMoneyValue;
             }
-            _loc4_++;
+            i++;
          }
-         _commodityPricesText1.text = String(_loc2_);
-         _commodityPricesText2.text = String(_loc3_);
+         _commodityPricesText1.text = String(money);
+         _commodityPricesText2.text = String(bindMoney);
          _commodityPricesText3.text = "0";
       }
       
-      protected function addItemEvent(param1:ShopCartItem) : void
+      protected function addItemEvent(item:ShopCartItem) : void
       {
-         param1.addEventListener("deleteitem",__deleteItem);
-         param1.addEventListener("add_length",addLength);
-         param1.addEventListener("conditionchange",__conditionChange);
+         item.addEventListener("deleteitem",__deleteItem);
+         item.addEventListener("add_length",addLength);
+         item.addEventListener("conditionchange",__conditionChange);
       }
       
       private function clearList() : void
       {
-         var _loc1_:* = null;
+         var item:* = null;
          while(_castList2.numChildren > 0)
          {
-            _loc1_ = _castList2.getChildAt(_castList2.numChildren - 1) as ShopCartItem;
-            removeItemEvent(_loc1_);
-            _castList2.removeChild(_loc1_);
-            _loc1_.dispose();
-            _loc1_ = null;
+            item = _castList2.getChildAt(_castList2.numChildren - 1) as ShopCartItem;
+            removeItemEvent(item);
+            _castList2.removeChild(item);
+            item.dispose();
+            item = null;
          }
       }
       
-      protected function addLength(param1:Event) : void
+      protected function addLength(event:Event) : void
       {
-         var _loc2_:ShopCartItem = param1.currentTarget as ShopCartItem;
-         ShopBuyManager.crrItemId = _loc2_.id;
+         var items:ShopCartItem = event.currentTarget as ShopCartItem;
+         ShopBuyManager.crrItemId = items.id;
          update();
       }
       
-      private function __conditionChange(param1:Event) : void
+      private function __conditionChange(evt:Event) : void
       {
          updateTxt();
       }
       
-      private function __deleteItem(param1:Event) : void
+      private function __deleteItem(evt:Event) : void
       {
-         var _loc2_:ShopCartItem = param1.currentTarget as ShopCartItem;
-         var _loc3_:ShopItemInfo = _loc2_.shopItemInfo;
-         _loc2_.removeEventListener("deleteitem",__deleteItem);
-         _loc2_.removeEventListener("conditionchange",__conditionChange);
-         _castList2.removeChild(_loc2_);
-         if(ShopBuyManager.crrItemId > _loc2_.id)
+         var item:ShopCartItem = evt.currentTarget as ShopCartItem;
+         var info:ShopItemInfo = item.shopItemInfo;
+         item.removeEventListener("deleteitem",__deleteItem);
+         item.removeEventListener("conditionchange",__conditionChange);
+         _castList2.removeChild(item);
+         if(ShopBuyManager.crrItemId > item.id)
          {
             ShopBuyManager.crrItemId--;
          }
-         _loc2_.dispose();
-         deleteInfo(_loc2_.id);
+         item.dispose();
+         deleteInfo(item.id);
          updateTxt();
          updateList();
          _cartScroll.invalidateViewport();
@@ -277,19 +273,18 @@ package ddt.command
          }
       }
       
-      private function deleteInfo(param1:int) : void
+      private function deleteInfo(id:int) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = _cartItemList.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var i:int = 0;
+         var len:int = _cartItemList.length;
+         for(i = 0; i < len; )
          {
-            if(param1 == _cartItemList[_loc3_].id)
+            if(id == _cartItemList[i].id)
             {
-               _cartItemList.splice(_loc3_,1);
-               _infoArr.splice(_loc3_,1);
-               _isBandList.splice(_loc3_,1);
-               if(param1 == ShopBuyManager.crrItemId)
+               _cartItemList.splice(i,1);
+               _infoArr.splice(i,1);
+               _isBandList.splice(i,1);
+               if(id == ShopBuyManager.crrItemId)
                {
                   ShopBuyManager.crrItemId = 0;
                   if(_cartItemList.length > 0)
@@ -299,20 +294,20 @@ package ddt.command
                }
                break;
             }
-            _loc3_++;
+            i++;
          }
       }
       
-      protected function removeItemEvent(param1:ShopCartItem) : void
+      protected function removeItemEvent(item:ShopCartItem) : void
       {
-         param1.removeEventListener("deleteitem",__deleteItem);
-         param1.removeEventListener("add_length",addLength);
-         param1.removeEventListener("conditionchange",__conditionChange);
+         item.removeEventListener("deleteitem",__deleteItem);
+         item.removeEventListener("add_length",addLength);
+         item.removeEventListener("conditionchange",__conditionChange);
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(evt:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
@@ -321,7 +316,7 @@ package ddt.command
          }
       }
       
-      protected function __purchaseConfirmationBtnClick(param1:MouseEvent = null) : void
+      protected function __purchaseConfirmationBtnClick(event:MouseEvent = null) : void
       {
          SoundManager.instance.play("008");
       }

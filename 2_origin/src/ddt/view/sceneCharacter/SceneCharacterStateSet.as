@@ -12,14 +12,14 @@ package ddt.view.sceneCharacter
          _dataSet = new Vector.<SceneCharacterStateItem>();
       }
       
-      public function push(param1:SceneCharacterStateItem) : void
+      public function push(sceneCharacterStateItem:SceneCharacterStateItem) : void
       {
-         if(!param1)
+         if(!sceneCharacterStateItem)
          {
             return;
          }
-         param1.update();
-         _dataSet.push(param1);
+         sceneCharacterStateItem.update();
+         _dataSet.push(sceneCharacterStateItem);
       }
       
       public function get length() : uint
@@ -32,19 +32,18 @@ package ddt.view.sceneCharacter
          return _dataSet;
       }
       
-      public function getItem(param1:String) : SceneCharacterStateItem
+      public function getItem(type:String) : SceneCharacterStateItem
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          if(_dataSet && _dataSet.length > 0)
          {
-            _loc2_ = 0;
-            while(_loc2_ < _dataSet.length)
+            for(i = 0; i < _dataSet.length; )
             {
-               if(_dataSet[_loc2_].type == param1)
+               if(_dataSet[i].type == type)
                {
-                  return _dataSet[_loc2_];
+                  return _dataSet[i];
                }
-               _loc2_++;
+               i++;
             }
          }
          return null;

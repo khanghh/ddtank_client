@@ -28,18 +28,18 @@ package gameStarling.view
       
       private var _allowDrag:Boolean;
       
-      public function SpringArrowView3D(param1:String, param2:MapView3D = null)
+      public function SpringArrowView3D(direction:String, map:MapView3D = null)
       {
          super();
-         _direction = param1;
+         _direction = direction;
          initView();
          initEvent();
-         _map = param2;
+         _map = map;
       }
       
-      public function set allowDrag(param1:Boolean) : void
+      public function set allowDrag(value:Boolean) : void
       {
-         _allowDrag = param1;
+         _allowDrag = value;
       }
       
       private function initView() : void
@@ -110,13 +110,13 @@ package gameStarling.view
          addEventListener("mouseUp",__up,false,0,true);
       }
       
-      private function __over(param1:MouseEvent) : void
+      private function __over(event:MouseEvent) : void
       {
          addChild(_arrow);
          addChild(_hand);
       }
       
-      private function __out(param1:MouseEvent) : void
+      private function __out(event:MouseEvent) : void
       {
          if(_arrow.parent)
          {
@@ -133,7 +133,7 @@ package gameStarling.view
          }
       }
       
-      private function __up(param1:MouseEvent) : void
+      private function __up(event:MouseEvent) : void
       {
          if(_anit)
          {
@@ -143,7 +143,7 @@ package gameStarling.view
          addChild(_hand);
       }
       
-      private function __down(param1:MouseEvent) : void
+      private function __down(event:MouseEvent) : void
       {
          if(_allowDrag)
          {

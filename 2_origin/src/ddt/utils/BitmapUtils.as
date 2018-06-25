@@ -42,177 +42,176 @@ package ddt.utils
          super();
       }
       
-      public static function updateColor(param1:BitmapData, param2:Number) : BitmapData
+      public static function updateColor(source:BitmapData, color:Number) : BitmapData
       {
-         if(!param1 || isNaN(param2))
+         if(!source || isNaN(color))
          {
-            return param1;
+            return source;
          }
-         var _loc5_:BitmapData = new BitmapData(param1.width,param1.height,true,0);
-         var _loc3_:BitmapData = param1.clone();
-         var _loc4_:ColorTransform = getHightlightColorTransfrom(param2);
-         if(_loc4_)
+         var _bitmapData:BitmapData = new BitmapData(source.width,source.height,true,0);
+         var t:BitmapData = source.clone();
+         var ct1:ColorTransform = getHightlightColorTransfrom(color);
+         if(ct1)
          {
-            _loc3_.draw(param1,null,_loc4_,null,null,true);
+            t.draw(source,null,ct1,null,null,true);
          }
-         _loc5_.draw(param1,null,getColorTransfromByColor(param2));
-         _loc5_.draw(_loc3_,null,null,"hardlight");
-         _loc3_.dispose();
-         _loc3_ = null;
-         return _loc5_;
+         _bitmapData.draw(source,null,getColorTransfromByColor(color));
+         _bitmapData.draw(t,null,null,"hardlight");
+         t.dispose();
+         t = null;
+         return _bitmapData;
       }
       
-      public static function getHightlightColorTransfrom(param1:uint) : ColorTransform
+      public static function getHightlightColorTransfrom(color:uint) : ColorTransform
       {
-         var _loc5_:uint = param1 >> 16 & 255;
-         var _loc2_:uint = param1 >> 8 & 255;
-         var _loc4_:uint = param1 & 255;
-         var _loc7_:uint = param1 >> 24 & 255;
-         var _loc9_:int = _loc5_;
-         var _loc8_:int = _loc2_;
-         var _loc6_:int = _loc4_;
-         var _loc3_:Boolean = false;
-         if(!(_loc9_ == _loc8_ || _loc9_ == _loc6_ || _loc8_ == _loc6_))
+         var r:uint = color >> 16 & 255;
+         var g:uint = color >> 8 & 255;
+         var b:uint = color & 255;
+         var a:uint = color >> 24 & 255;
+         var r1:int = r;
+         var g1:int = g;
+         var b1:int = b;
+         var d:Boolean = false;
+         if(!(r1 == g1 || r1 == b1 || g1 == b1))
          {
-            if(_loc9_ > _loc8_)
+            if(r1 > g1)
             {
-               if(_loc9_ > _loc6_)
+               if(r1 > b1)
                {
-                  _loc9_ = 50;
-                  _loc8_ = 0;
-                  _loc6_ = 0;
-                  _loc3_ = true;
+                  r1 = 50;
+                  g1 = 0;
+                  b1 = 0;
+                  d = true;
                }
                else
                {
-                  _loc9_ = 0;
-                  _loc8_ = 0;
-                  _loc6_ = 50;
-                  _loc3_ = true;
+                  r1 = 0;
+                  g1 = 0;
+                  b1 = 50;
+                  d = true;
                }
             }
-            else if(_loc8_ > _loc6_)
+            else if(g1 > b1)
             {
-               _loc9_ = 10;
-               _loc8_ = 30;
-               _loc6_ = 30;
-               _loc3_ = true;
+               r1 = 10;
+               g1 = 30;
+               b1 = 30;
+               d = true;
             }
             else
             {
-               _loc9_ = 0;
-               _loc8_ = 0;
-               _loc6_ = 50;
-               _loc3_ = true;
+               r1 = 0;
+               g1 = 0;
+               b1 = 50;
+               d = true;
             }
          }
-         if(_loc3_)
+         if(d)
          {
-            return new ColorTransform(1,1,1,1,_loc9_,_loc8_,_loc6_,0);
+            return new ColorTransform(1,1,1,1,r1,g1,b1,0);
          }
          return null;
       }
       
-      public static function setBitmapDataGray(param1:BitmapData) : void
+      public static function setBitmapDataGray(src:BitmapData) : void
       {
-         var _loc5_:* = 0;
-         var _loc2_:* = 0;
-         var _loc3_:Vector.<uint> = param1.getVector(param1.rect);
-         var _loc4_:uint = _loc3_.length;
-         _loc5_ = uint(0);
-         while(_loc5_ < _loc4_)
+         var i:* = 0;
+         var color:* = 0;
+         var p:Vector.<uint> = src.getVector(src.rect);
+         var l:uint = p.length;
+         for(i = uint(0); i < l; )
          {
-            _loc2_ = uint(_loc3_[_loc5_] << 16 >>> 24);
-            _loc3_[_loc5_] = _loc2_ << 16 | _loc2_ << 8 | _loc2_;
-            _loc5_++;
+            color = uint(p[i] << 16 >>> 24);
+            p[i] = color << 16 | color << 8 | color;
+            i++;
          }
-         param1.setVector(param1.rect,_loc3_);
+         src.setVector(src.rect,p);
       }
       
-      public static function getColorTransfromByColor(param1:uint) : ColorTransform
+      public static function getColorTransfromByColor(color:uint) : ColorTransform
       {
-         var _loc4_:uint = param1 >> 16 & 255;
-         var _loc2_:uint = param1 >> 8 & 255;
-         var _loc3_:uint = param1 & 255;
-         var _loc5_:uint = param1 >> 24 & 255;
-         if(!(_loc4_ == _loc2_ || _loc4_ == _loc3_ || _loc2_ == _loc3_))
+         var r:uint = color >> 16 & 255;
+         var g:uint = color >> 8 & 255;
+         var b:uint = color & 255;
+         var a:uint = color >> 24 & 255;
+         if(!(r == g || r == b || g == b))
          {
-            if(_loc4_ < _loc2_ && _loc4_ < _loc3_)
+            if(r < g && r < b)
             {
-               if(_loc2_ < _loc3_)
+               if(g < b)
                {
-                  _loc2_ = _loc2_ + 40;
-                  _loc3_ = _loc3_ + 10;
+                  g = g + 40;
+                  b = b + 10;
                }
                else
                {
-                  _loc2_ = _loc2_ + 40;
-                  _loc3_ = _loc3_ + 10;
+                  g = g + 40;
+                  b = b + 10;
                }
             }
-            else if(_loc2_ < _loc4_ && _loc2_ < _loc3_)
+            else if(g < r && g < b)
             {
-               if(_loc4_ < _loc3_)
+               if(r < b)
                {
-                  _loc4_ = _loc4_ + 40;
-                  _loc3_ = _loc3_ + 10;
+                  r = r + 40;
+                  b = b + 10;
                }
                else
                {
-                  _loc4_ = _loc4_ + 40;
-                  _loc3_ = _loc3_ + 10;
+                  r = r + 40;
+                  b = b + 10;
                }
             }
-            else if(_loc3_ < _loc2_ && _loc3_ < _loc4_)
+            else if(b < g && b < r)
             {
-               if(_loc2_ < _loc4_)
+               if(g < r)
                {
-                  _loc2_ = _loc2_ + 40;
-                  _loc4_ = _loc4_ + 10;
+                  g = g + 40;
+                  r = r + 10;
                }
                else
                {
-                  _loc2_ = _loc2_ + 40;
-                  _loc4_ = _loc4_ + 10;
+                  g = g + 40;
+                  r = r + 10;
                }
             }
          }
-         return new ColorTransform(0,0,0,1,_loc4_,_loc2_,_loc3_,0);
+         return new ColorTransform(0,0,0,1,r,g,b,0);
       }
       
-      public static function maskMovie(param1:DisplayObject, param2:Shape, param3:String, param4:Number, param5:Number, param6:Number, param7:Number, param8:int, param9:Function) : void
+      public static function maskMovie(source:DisplayObject, maskShape:Shape, isMask:String, rowNumber:Number, rowWitdh:Number, rowHeight:Number, frameStep:Number, sleepSecond:int, callBack:Function) : void
       {
-         if(!param1 && !param1.parent)
+         if(!source && !source.parent)
          {
             return;
          }
-         _callBack = param9;
-         _maskShape = param2;
-         _isMask = param3;
+         _callBack = callBack;
+         _maskShape = maskShape;
+         _isMask = isMask;
          _curX = 0;
          _curY = 0;
-         _rowNumber = param4;
-         _rowWitdh = param5;
-         _rowHeight = param6;
-         _sleepSecond = param8;
-         _frameStep = param7;
+         _rowNumber = rowNumber;
+         _rowWitdh = rowWitdh;
+         _rowHeight = rowHeight;
+         _sleepSecond = sleepSecond;
+         _frameStep = frameStep;
          _curRow = 0;
          if(_isMask == "true")
          {
-            param1.parent.addChild(_maskShape);
-            param1.mask = _maskShape;
+            source.parent.addChild(_maskShape);
+            source.mask = _maskShape;
             _maskShape.addEventListener("enterFrame",onMaskMovieEnerFrame);
          }
          else
          {
-            param1.mask = null;
+            source.mask = null;
             _timer = TimerManager.getInstance().addTimerJuggler(_sleepSecond * 1000);
             _timer.addEventListener("timer",onMaskMovieTimer);
             _timer.start();
          }
       }
       
-      private static function onMaskMovieEnerFrame(param1:Event) : void
+      private static function onMaskMovieEnerFrame(evt:Event) : void
       {
          _maskShape.graphics.beginFill(0);
          _maskShape.graphics.drawRect(_curX,_curY,_frameStep,_rowHeight);
@@ -249,7 +248,7 @@ package ddt.utils
          }
       }
       
-      private static function onMaskMovieTimer(param1:Event) : void
+      private static function onMaskMovieTimer(evt:Event) : void
       {
          _timer.stop();
          _timer.removeEventListener("timer",onMaskMovieTimer);
@@ -266,17 +265,16 @@ package ddt.utils
          }
       }
       
-      public static function reverseBtimapData(param1:BitmapData) : void
+      public static function reverseBtimapData(src:BitmapData) : void
       {
-         var _loc5_:int = 0;
-         var _loc2_:int = param1.width;
-         var _loc4_:int = param1.height;
-         var _loc3_:Vector.<uint> = param1.getVector(new Rectangle(0,0,_loc2_,_loc4_));
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         var i:int = 0;
+         var w:int = src.width;
+         var h:int = src.height;
+         var pixels:Vector.<uint> = src.getVector(new Rectangle(0,0,w,h));
+         for(i = 0; i < h; )
          {
-            param1.setVector(new Rectangle(0,_loc5_,_loc2_,1),_loc3_.splice(0,_loc2_).reverse());
-            _loc5_++;
+            src.setVector(new Rectangle(0,i,w,1),pixels.splice(0,w).reverse());
+            i++;
          }
       }
    }

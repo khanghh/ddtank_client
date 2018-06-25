@@ -46,22 +46,22 @@ package gameCommon.model
       
       public var isSelf:Boolean;
       
-      public function FightBuffInfo(param1:int)
+      public function FightBuffInfo(id:int)
       {
          super();
-         this.id = param1;
-         var _loc2_:GameBuffInfo = BuffManager.buffTemplateData[param1];
-         if(_loc2_)
+         this.id = id;
+         var info:GameBuffInfo = BuffManager.buffTemplateData[id];
+         if(info)
          {
-            type = _loc2_.Type;
-            buffPic = _loc2_.Pic;
-            buffName = _loc2_.Name;
-            description = _loc2_.Description;
-            showType = _loc2_.ShowType;
+            type = info.Type;
+            buffPic = info.Pic;
+            buffName = info.Name;
+            description = info.Description;
+            showType = info.ShowType;
          }
          else
          {
-            if(BuffType.isLuckyBuff(param1))
+            if(BuffType.isLuckyBuff(id))
             {
                this.buffName = LanguageMgr.GetTranslation("tank.game.BuffNameLucky",CalendarManager.getInstance().luckyNum >= 0?CalendarManager.getInstance().luckyNum:"");
             }
@@ -69,7 +69,7 @@ package gameCommon.model
             {
                this.buffName = LanguageMgr.GetTranslation("tank.game.BuffName" + this.id);
             }
-            if(param1 == 1435 || param1 == 1514)
+            if(id == 1435 || id == 1514)
             {
                Count = 3;
             }
@@ -81,22 +81,22 @@ package gameCommon.model
          return _data;
       }
       
-      public function set data(param1:int) : void
+      public function set data(val:int) : void
       {
-         var _loc2_:* = null;
-         _data = param1;
+         var gameInfo:* = null;
+         _data = val;
          description = LanguageMgr.GetTranslation("tank.game.BuffTip" + id,_data);
          if(id == 243 || id == 244 || id == 245 || id == 246)
          {
-            _loc2_ = GameControl.Instance.Current;
-            if(_loc2_.mapIndex == 1214 || _loc2_.mapIndex == 1215 || _loc2_.mapIndex == 1216 || _loc2_.mapIndex == 1217)
+            gameInfo = GameControl.Instance.Current;
+            if(gameInfo.mapIndex == 1214 || gameInfo.mapIndex == 1215 || gameInfo.mapIndex == 1216 || gameInfo.mapIndex == 1217)
             {
                description = LanguageMgr.GetTranslation("tank.game.BuffTip" + id + "1",_data);
             }
          }
       }
       
-      public function execute(param1:Living) : void
+      public function execute(living:Living) : void
       {
          if(type == 5)
          {
@@ -104,40 +104,40 @@ package gameCommon.model
             {
                if(ModuleLoader.hasDefinition("asset.game.skill.effect." + buffEffect))
                {
-                  param1.showBuffEffect("asset.game.skill.effect." + buffEffect,id);
+                  living.showBuffEffect("asset.game.skill.effect." + buffEffect,id);
                }
                else
                {
-                  param1.showBuffEffect("asset.game.AttackEffect2",id);
+                  living.showBuffEffect("asset.game.AttackEffect2",id);
                }
             }
          }
          else if(!(int(id) - 3))
          {
-            param1.isLockAngle = true;
+            living.isLockAngle = true;
          }
       }
       
-      public function unExecute(param1:Living) : void
+      public function unExecute(living:Living) : void
       {
          if(type == 5)
          {
             if(buffEffect)
             {
-               param1.removeBuffEffect(id);
+               living.removeBuffEffect(id);
             }
          }
          else if(!(int(id) - 3))
          {
-            param1.isLockAngle = false;
+            living.isLockAngle = false;
          }
       }
       
       public function clone() : FightBuffInfo
       {
-         var _loc1_:FightBuffInfo = new FightBuffInfo(id);
-         ObjectUtils.copyProperties(_loc1_,this);
-         return _loc1_;
+         var temInfo:FightBuffInfo = new FightBuffInfo(id);
+         ObjectUtils.copyProperties(temInfo,this);
+         return temInfo;
       }
    }
 }

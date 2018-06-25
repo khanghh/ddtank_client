@@ -51,29 +51,29 @@ package campbattle.view
          returnBtn.addEventListener("click",exitHandler,false,0,true);
       }
       
-      private function outHandler(param1:MouseEvent) : void
+      private function outHandler(event:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
+         event.stopImmediatePropagation();
          SoundManager.instance.play("008");
          setInOutVisible(false);
          TweenLite.to(this,0.5,{"x":966});
       }
       
-      private function setInOutVisible(param1:Boolean) : void
+      private function setInOutVisible(isOut:Boolean) : void
       {
-         _moveOutBtn.visible = param1;
-         _moveInBtn.visible = !param1;
+         _moveOutBtn.visible = isOut;
+         _moveInBtn.visible = !isOut;
       }
       
-      private function inHandler(param1:MouseEvent) : void
+      private function inHandler(event:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
+         event.stopImmediatePropagation();
          SoundManager.instance.play("008");
          setInOutVisible(true);
          TweenLite.to(this,0.5,{"x":909});
       }
       
-      private function exitHandler(param1:MouseEvent) : void
+      private function exitHandler(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
       }

@@ -28,13 +28,13 @@ package com.pickgliss.ui.image
          super();
       }
       
-      public function set direction(param1:int) : void
+      public function set direction(value:int) : void
       {
-         if(_direction == param1)
+         if(_direction == value)
          {
             return;
          }
-         _direction = param1;
+         _direction = value;
          onPropertiesChanged("direction");
       }
       
@@ -46,13 +46,13 @@ package com.pickgliss.ui.image
          super.dispose();
       }
       
-      public function set gape(param1:int) : void
+      public function set gape(value:int) : void
       {
-         if(_gape == param1)
+         if(_gape == value)
          {
             return;
          }
-         _gape = param1;
+         _gape = value;
          onPropertiesChanged("gape");
       }
       
@@ -66,42 +66,41 @@ package com.pickgliss.ui.image
       
       override protected function updateSize() : void
       {
-         var _loc1_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
+         var len:int = 0;
+         var startMatrix:* = null;
+         var i:int = 0;
          if(_changedPropeties["width"] || _changedPropeties["height"] || _changedPropeties["direction"] || _changedPropeties["gape"])
          {
-            _loc1_ = 0;
+            len = 0;
             if(_direction != -1)
             {
                if(_direction == 1)
                {
-                  _loc1_ = _height / _brush.height;
+                  len = _height / _brush.height;
                }
                else
                {
-                  _loc1_ = _width / _brush.width;
+                  len = _width / _brush.width;
                }
             }
             graphics.clear();
             graphics.beginBitmapFill(_brush);
-            _loc2_ = new Matrix();
-            _loc3_ = 0;
-            while(_loc3_ < _loc1_)
+            startMatrix = new Matrix();
+            for(i = 0; i < len; )
             {
                if(_direction == 1)
                {
-                  graphics.drawRect(0,_loc3_ * _brush.height + _gape,_brush.width,_brush.height);
+                  graphics.drawRect(0,i * _brush.height + _gape,_brush.width,_brush.height);
                }
                else if(_direction > 1)
                {
-                  graphics.drawRect(_loc3_ * _brush.width + _gape,0,_brush.width,_brush.height);
+                  graphics.drawRect(i * _brush.width + _gape,0,_brush.width,_brush.height);
                }
                else
                {
                   graphics.drawRect(0,0,_brush.width,_brush.height);
                }
-               _loc3_++;
+               i++;
             }
             graphics.endFill();
          }

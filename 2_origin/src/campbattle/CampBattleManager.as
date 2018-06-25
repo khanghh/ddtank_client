@@ -54,9 +54,9 @@ package campbattle
       
       public var goods:Array;
       
-      public function CampBattleManager(param1:IEventDispatcher = null)
+      public function CampBattleManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : CampBattleManager
@@ -73,9 +73,9 @@ package campbattle
          return _isFighting;
       }
       
-      public function set isFighting(param1:Boolean) : void
+      public function set isFighting(value:Boolean) : void
       {
-         _isFighting = param1;
+         _isFighting = value;
       }
       
       public function setup() : void
@@ -84,9 +84,9 @@ package campbattle
          SocketManager.Instance.addEventListener(PkgEvent.format(146,10),__onActionIsOpenHander);
       }
       
-      protected function __onInitSecenHander(param1:PkgEvent) : void
+      protected function __onInitSecenHander(event:PkgEvent) : void
       {
-         _initPkg = param1.pkg;
+         _initPkg = event.pkg;
          show();
          campViewFlag = true;
       }
@@ -96,9 +96,9 @@ package campbattle
          dispatchEvent(new CEvent("campbattle_initscene",_initPkg));
       }
       
-      public function addCampBtn(param1:Boolean = true, param2:String = null) : void
+      public function addCampBtn($isOpen:Boolean = true, timeStr:String = null) : void
       {
-         HallIconManager.instance.updateSwitchHandler("camp",param1,param2);
+         HallIconManager.instance.updateSwitchHandler("camp",$isOpen,timeStr);
       }
       
       public function deleCanpBtn() : void
@@ -106,12 +106,12 @@ package campbattle
          HallIconManager.instance.updateSwitchHandler("camp",false);
       }
       
-      private function __onActionIsOpenHander(param1:PkgEvent) : void
+      private function __onActionIsOpenHander(event:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         openFlag = _loc3_.readBoolean();
-         var _loc2_:Date = _loc3_.readDate();
-         _endTime = _loc3_.readDate();
+         var pkg:PackageIn = event.pkg;
+         openFlag = pkg.readBoolean();
+         var startTime:Date = pkg.readDate();
+         _endTime = pkg.readDate();
          if(!openFlag)
          {
             deleCanpBtn();
@@ -126,7 +126,7 @@ package campbattle
          }
       }
       
-      public function __onCampBtnHander(param1:MouseEvent) : void
+      public function __onCampBtnHander(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.Grade < 30)
@@ -134,7 +134,7 @@ package campbattle
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.functionLimitTip",30));
             return;
          }
-         CheckWeaponManager.instance.setFunction(this,__onCampBtnHander,[param1]);
+         CheckWeaponManager.instance.setFunction(this,__onCampBtnHander,[event]);
          if(CheckWeaponManager.instance.isNoWeapon())
          {
             CheckWeaponManager.instance.showAlert();
@@ -156,82 +156,81 @@ package campbattle
          return getDateHourTime(_endTime) - getDateHourTime(TimeManager.Instance.Now());
       }
       
-      private function getDateHourTime(param1:Date) : int
+      private function getDateHourTime(date:Date) : int
       {
-         return int(param1.hours * 3600 + param1.minutes * 60 + param1.seconds);
+         return int(date.hours * 3600 + date.minutes * 60 + date.seconds);
       }
       
-      public function templateDataSetup(param1:CampBattleAwardsDataAnalyzer) : void
+      public function templateDataSetup(data:CampBattleAwardsDataAnalyzer) : void
       {
-         goods = returnGoodsArray(param1._dataList);
+         goods = returnGoodsArray(data._dataList);
       }
       
-      private function returnGoodsArray(param1:Array) : Array
+      private function returnGoodsArray(data:Array) : Array
       {
-         var _loc3_:int = 0;
-         var _loc2_:Array = [];
-         var _loc9_:Array = [];
-         var _loc7_:Array = [];
-         var _loc6_:Array = [];
-         var _loc5_:Array = [];
-         var _loc13_:Array = [];
-         var _loc12_:Array = [];
-         var _loc11_:Array = [];
-         var _loc10_:Array = [];
-         var _loc4_:Array = [];
-         var _loc8_:Array = [];
-         _loc3_ = 0;
-         while(_loc3_ < param1.length)
+         var i:int = 0;
+         var arrData:Array = [];
+         var arr1:Array = [];
+         var arr2:Array = [];
+         var arr3:Array = [];
+         var arr4:Array = [];
+         var arr5:Array = [];
+         var arr6:Array = [];
+         var arr7:Array = [];
+         var arr8:Array = [];
+         var arr9:Array = [];
+         var arr10:Array = [];
+         for(i = 0; i < data.length; )
          {
-            if(param1[_loc3_][0].MinRank == 1 && param1[_loc3_][0].MaxRank == 1)
+            if(data[i][0].MinRank == 1 && data[i][0].MaxRank == 1)
             {
-               _loc9_.push(param1[_loc3_][0]);
+               arr1.push(data[i][0]);
             }
-            else if(param1[_loc3_][0].MinRank == 2 && param1[_loc3_][0].MaxRank == 2)
+            else if(data[i][0].MinRank == 2 && data[i][0].MaxRank == 2)
             {
-               _loc7_.push(param1[_loc3_][0]);
+               arr2.push(data[i][0]);
             }
-            else if(param1[_loc3_][0].MinRank == 3 && param1[_loc3_][0].MaxRank == 3)
+            else if(data[i][0].MinRank == 3 && data[i][0].MaxRank == 3)
             {
-               _loc6_.push(param1[_loc3_][0]);
+               arr3.push(data[i][0]);
             }
-            else if(param1[_loc3_][0].MinRank == 4 && param1[_loc3_][0].MaxRank == 4)
+            else if(data[i][0].MinRank == 4 && data[i][0].MaxRank == 4)
             {
-               _loc5_.push(param1[_loc3_][0]);
+               arr4.push(data[i][0]);
             }
-            else if(param1[_loc3_][0].MinRank == 1 && param1[_loc3_][0].MaxRank == 10)
+            else if(data[i][0].MinRank == 1 && data[i][0].MaxRank == 10)
             {
-               _loc13_.push(param1[_loc3_][0]);
+               arr5.push(data[i][0]);
             }
-            else if(param1[_loc3_][0].MinRank == 11 && param1[_loc3_][0].MaxRank == 20)
+            else if(data[i][0].MinRank == 11 && data[i][0].MaxRank == 20)
             {
-               _loc12_.push(param1[_loc3_][0]);
+               arr6.push(data[i][0]);
             }
-            else if(param1[_loc3_][0].MinRank == 21 && param1[_loc3_][0].MaxRank == 30)
+            else if(data[i][0].MinRank == 21 && data[i][0].MaxRank == 30)
             {
-               _loc11_.push(param1[_loc3_][0]);
+               arr7.push(data[i][0]);
             }
-            else if(param1[_loc3_][0].MinRank == 31 && param1[_loc3_][0].MaxRank == 40)
+            else if(data[i][0].MinRank == 31 && data[i][0].MaxRank == 40)
             {
-               _loc10_.push(param1[_loc3_][0]);
+               arr8.push(data[i][0]);
             }
-            else if(param1[_loc3_][0].MinRank == 41 && param1[_loc3_][0].MaxRank == 50)
+            else if(data[i][0].MinRank == 41 && data[i][0].MaxRank == 50)
             {
-               _loc4_.push(param1[_loc3_][0]);
+               arr9.push(data[i][0]);
             }
-            else if(param1[_loc3_][0].MinRank == 51 && param1[_loc3_][0].MaxRank == 60)
+            else if(data[i][0].MinRank == 51 && data[i][0].MaxRank == 60)
             {
-               _loc8_.push(param1[_loc3_][0]);
+               arr10.push(data[i][0]);
             }
-            _loc3_++;
+            i++;
          }
-         _loc2_.push(_loc9_,_loc7_,_loc6_,_loc5_,_loc13_,_loc12_,_loc11_,_loc10_,_loc4_,_loc8_);
-         return _loc2_;
+         arrData.push(arr1,arr2,arr3,arr4,arr5,arr6,arr7,arr8,arr9,arr10);
+         return arrData;
       }
       
-      public function getLevelGoodsItems(param1:int) : Array
+      public function getLevelGoodsItems(level:int) : Array
       {
-         return goods[param1];
+         return goods[level];
       }
       
       public function get initPkg() : PackageIn

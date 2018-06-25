@@ -33,7 +33,7 @@ package worldboss.view
          _rightView.addEventListener("close",__gotoBack);
       }
       
-      private function __gotoBack(param1:Event) : void
+      private function __gotoBack(e:Event) : void
       {
          dispose();
       }

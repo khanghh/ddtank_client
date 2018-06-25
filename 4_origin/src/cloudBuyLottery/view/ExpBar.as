@@ -65,38 +65,38 @@ package cloudBuyLottery.view
          _maskMC.alpha = 0.2;
          _curPic.mask = _maskMC;
          _oldX = _curPic.x;
-         var _loc1_:int = CloudBuyLotteryManager.Instance.model.maxNum - CloudBuyLotteryManager.Instance.model.currentNum;
-         initBar(_loc1_,CloudBuyLotteryManager.Instance.model.maxNum);
+         var num:int = CloudBuyLotteryManager.Instance.model.maxNum - CloudBuyLotteryManager.Instance.model.currentNum;
+         initBar(num,CloudBuyLotteryManager.Instance.model.maxNum);
       }
       
-      public function initBar(param1:int, param2:int, param3:Boolean = false) : void
+      public function initBar(i:int, total:int, isFull:Boolean = false) : void
       {
-         if(param3)
+         if(isFull)
          {
             _curPic.x = _oldX;
             _expBarTxt.text = "0/0";
             return;
          }
-         if(param1 == 0)
+         if(i == 0)
          {
             _curPic.x = _oldX;
-            _expBarTxt.text = String(param1) + "/" + param2;
+            _expBarTxt.text = String(i) + "/" + total;
             return;
          }
          if(_curPic.x != _oldX)
          {
             _curPic.x = _oldX;
          }
-         _expBarTxt.text = String(param1) + "/" + param2;
-         curNum = param1;
-         totalNum = param2;
+         _expBarTxt.text = String(i) + "/" + total;
+         curNum = i;
+         totalNum = total;
          _per = curNum / totalNum;
          _curPic.x = _curPic.x + _per * (_groudPic.width - 30);
       }
       
-      public function upData(param1:int) : void
+      public function upData(cur:int) : void
       {
-         curNum = curNum + param1;
+         curNum = curNum + cur;
          _per = Number(curNum / totalNum);
          _expBarTxt.text = String(curNum);
          _curPic.x = _curPic.x + _per * (_curPic.width - 80);

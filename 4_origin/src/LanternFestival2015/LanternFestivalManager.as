@@ -49,7 +49,7 @@ package LanternFestival2015
       
       private var _firstRequestIsOpen:Boolean = true;
       
-      public function LanternFestivalManager(param1:inner)
+      public function LanternFestivalManager(single:inner)
       {
          super();
          _model = new LanternFestivalModel();
@@ -71,16 +71,16 @@ package LanternFestival2015
       
       private function addHomeEvents() : void
       {
-         var _loc1_:int = 300;
-         var _loc2_:int = 4;
-         SocketManager.Instance.addEventListener(PkgEvent.format(_loc1_,_loc2_),onGetData);
+         var lv1:int = 300;
+         var lv2:int = 4;
+         SocketManager.Instance.addEventListener(PkgEvent.format(lv1,lv2),onGetData);
       }
       
       private function removeHomeEvents() : void
       {
-         var _loc1_:int = 300;
-         var _loc2_:int = 4;
-         SocketManager.Instance.removeEventListener(PkgEvent.format(_loc1_,_loc2_),onGetData);
+         var lv1:int = 300;
+         var lv2:int = 4;
+         SocketManager.Instance.removeEventListener(PkgEvent.format(lv1,lv2),onGetData);
       }
       
       private function addCookEvents() : void
@@ -93,25 +93,25 @@ package LanternFestival2015
          PlayerManager.Instance.removeEventListener("propbag_update",onBagUpdate);
       }
       
-      protected function onGetData(param1:PkgEvent) : void
+      protected function onGetData(e:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _model.numSendRemain = _loc2_.readInt();
-         _model.numReceiveRemain = _loc2_.readInt();
+         var pkg:PackageIn = e.pkg;
+         _model.numSendRemain = pkg.readInt();
+         _model.numReceiveRemain = pkg.readInt();
          dispatchEvent(new CEvent("lt15_update"));
       }
       
-      protected function onIsOpen(param1:PkgEvent) : void
+      protected function onIsOpen(e:PkgEvent) : void
       {
          _firstRequestIsOpen = false;
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:Boolean = _loc3_.readBoolean();
-         isOpen(_loc2_);
+         var pkg:PackageIn = e.pkg;
+         var __isOpen:Boolean = pkg.readBoolean();
+         isOpen(__isOpen);
       }
       
-      public function isOpen(param1:Boolean) : void
+      public function isOpen(isOpen:Boolean) : void
       {
-         if(param1)
+         if(isOpen)
          {
             ChatManager.Instance.sysChatAmaranth(LanguageMgr.GetTranslation("lantern2015.activity.open"));
          }
@@ -119,11 +119,11 @@ package LanternFestival2015
          {
             ChatManager.Instance.sysChatAmaranth(LanguageMgr.GetTranslation("lantern2015.activity.close"));
          }
-         _model.isActivityOpen = param1;
+         _model.isActivityOpen = isOpen;
          showHallIcon(_hall);
       }
       
-      protected function onBagUpdate(param1:Event) : void
+      protected function onBagUpdate(e:Event) : void
       {
          dispatchEvent(new CEvent("lt15_update_make_board"));
       }
@@ -138,9 +138,9 @@ package LanternFestival2015
       
       public function setup() : void
       {
-         var _loc2_:int = 300;
-         var _loc1_:int = 1;
-         SocketManager.Instance.addEventListener(PkgEvent.format(_loc2_,_loc1_),onIsOpen);
+         var lv1:int = 300;
+         var lv21:int = 1;
+         SocketManager.Instance.addEventListener(PkgEvent.format(lv1,lv21),onIsOpen);
       }
       
       override protected function start() : void
@@ -161,11 +161,11 @@ package LanternFestival2015
          return _showTarget;
       }
       
-      public function showHomeBoard(param1:Object, param2:Sprite) : void
+      public function showHomeBoard(target:Object, playerBG:Sprite) : void
       {
          _showType = "lt15_show_home_board";
-         _showTarget = param1 as DisplayObject;
-         _playerBG = param2;
+         _showTarget = target as DisplayObject;
+         _playerBG = playerBG;
          show();
          requireData();
       }
@@ -182,9 +182,9 @@ package LanternFestival2015
          show();
       }
       
-      public function showHallIcon(param1:HallStateView) : void
+      public function showHallIcon($hall:HallStateView) : void
       {
-         _hall = param1;
+         _hall = $hall;
          if(_hall == null)
          {
             return;
@@ -214,14 +214,14 @@ package LanternFestival2015
          GameInSocketOut.sendLanternRequireData();
       }
       
-      private function requireMakeLantern(param1:int) : void
+      private function requireMakeLantern(num:int) : void
       {
-         GameInSocketOut.sendLanternMakeLantern(param1);
+         GameInSocketOut.sendLanternMakeLantern(num);
       }
       
-      private function requireCookLantern(param1:int) : void
+      private function requireCookLantern(num:int) : void
       {
-         GameInSocketOut.sendLanternCookLantern(param1);
+         GameInSocketOut.sendLanternCookLantern(num);
       }
       
       private function requireGainWishGift() : void
@@ -229,31 +229,31 @@ package LanternFestival2015
          GameInSocketOut.sendLanternGainWishGift();
       }
       
-      public function onBtnCookClicked(param1:int) : void
+      public function onBtnCookClicked(count:int) : void
       {
-         var _loc2_:* = null;
-         if(param1 > 0)
+         var msgString:* = null;
+         if(count > 0)
          {
-            requireCookLantern(param1);
+            requireCookLantern(count);
          }
          else
          {
-            _loc2_ = LanguageMgr.GetTranslation("lantern2015.cookFailed");
-            MessageTipManager.getInstance().show(_loc2_,0,false,1);
+            msgString = LanguageMgr.GetTranslation("lantern2015.cookFailed");
+            MessageTipManager.getInstance().show(msgString,0,false,1);
          }
       }
       
-      public function onBtnMakeClicked(param1:int) : void
+      public function onBtnMakeClicked(count:int) : void
       {
-         var _loc2_:* = null;
-         if(param1 > 0)
+         var msgString:* = null;
+         if(count > 0)
          {
-            requireMakeLantern(param1);
+            requireMakeLantern(count);
          }
          else
          {
-            _loc2_ = LanguageMgr.GetTranslation("lantern2015.makeFailed");
-            MessageTipManager.getInstance().show(_loc2_,0,false,1);
+            msgString = LanguageMgr.GetTranslation("lantern2015.makeFailed");
+            MessageTipManager.getInstance().show(msgString,0,false,1);
          }
       }
       
@@ -274,9 +274,9 @@ package LanternFestival2015
          addHomeEvents();
       }
       
-      public function initHall(param1:HallStateView) : void
+      public function initHall($hall:HallStateView) : void
       {
-         _hall = param1;
+         _hall = $hall;
          if(_firstRequestIsOpen)
          {
             requireActivityIsOpen();

@@ -50,22 +50,22 @@ package christmas.view.makingSnowmenView
          initEvents();
       }
       
-      public function set target(param1:Sprite) : void
+      public function set target($target:Sprite) : void
       {
-         _target = param1;
+         _target = $target;
       }
       
       private function initView() : void
       {
-         var _loc1_:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("tank.view.task.TaskCatalogContentView.tip"),LanguageMgr.GetTranslation("shop.PresentFrame.OkBtnText"),LanguageMgr.GetTranslation("shop.PresentFrame.CancelBtnText"));
-         info = _loc1_;
+         var alerInfo:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("tank.view.task.TaskCatalogContentView.tip"),LanguageMgr.GetTranslation("shop.PresentFrame.OkBtnText"),LanguageMgr.GetTranslation("shop.PresentFrame.CancelBtnText"));
+         info = alerInfo;
          _txt = ComponentFactory.Instance.creatComponentByStylename("christmas.alert.txt");
          addToContent(_txt);
       }
       
-      public function initAddView(param1:Boolean = false) : void
+      public function initAddView(isOpen:Boolean = false) : void
       {
-         _isOpen = param1;
+         _isOpen = isOpen;
          if(_isOpen)
          {
             _addNumTxt = ComponentFactory.Instance.creatComponentByStylename("christmas.addNum.txt");
@@ -90,11 +90,11 @@ package christmas.view.makingSnowmenView
          }
       }
       
-      public function setIsShow(param1:Boolean = true, param2:int = 0) : void
+      public function setIsShow(isShow:Boolean = true, select:int = 0) : void
       {
-         if(param2 == 0)
+         if(select == 0)
          {
-            info.showCancel = param1;
+            info.showCancel = isShow;
          }
       }
       
@@ -103,12 +103,12 @@ package christmas.view.makingSnowmenView
          addEventListener("response",responseHander);
       }
       
-      private function __addMax(param1:MouseEvent) : void
+      private function __addMax(e:MouseEvent) : void
       {
          _inputTxt.text = String(ChristmasCoreManager.instance.getCount());
       }
       
-      private function mouseClickHander(param1:MouseEvent) : void
+      private function mouseClickHander(e:MouseEvent) : void
       {
          ChristmasCoreManager.instance.model.isSelect = _selectedDoubleCheckButton.selected;
       }
@@ -126,10 +126,10 @@ package christmas.view.makingSnowmenView
          }
       }
       
-      private function responseHander(param1:FrameEvent) : void
+      private function responseHander(e:FrameEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         if(e.responseCode == 3 || e.responseCode == 2)
          {
             if(buyFunction != null && _isOpen)
             {
@@ -145,7 +145,7 @@ package christmas.view.makingSnowmenView
                return;
             }
          }
-         else if(param1.responseCode == 0 || param1.responseCode == 1 || param1.responseCode == 4)
+         else if(e.responseCode == 0 || e.responseCode == 1 || e.responseCode == 4)
          {
             if(_target)
             {
@@ -157,9 +157,9 @@ package christmas.view.makingSnowmenView
          dispose();
       }
       
-      public function setTxt(param1:String) : void
+      public function setTxt(str:String) : void
       {
-         _txt.htmlText = param1;
+         _txt.htmlText = str;
       }
       
       override public function dispose() : void

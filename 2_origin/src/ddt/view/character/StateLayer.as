@@ -14,37 +14,36 @@ package ddt.view.character
       
       private var _sex:Boolean;
       
-      public function StateLayer(param1:ItemTemplateInfo, param2:Boolean, param3:String, param4:int = 1)
+      public function StateLayer(info:ItemTemplateInfo, sex:Boolean, color:String, type:int = 1)
       {
-         _stateType = param4;
-         _sex = param2;
-         super(param1,param3);
+         _stateType = type;
+         _sex = sex;
+         super(info,color);
       }
       
-      override protected function getUrl(param1:int) : String
+      override protected function getUrl(layer:int) : String
       {
-         return PathManager.SITE_MAIN + "image/equip/effects/state/" + (!!_sex?"m/":"f/") + _stateType + "/show" + param1 + ".png";
+         return PathManager.SITE_MAIN + "image/equip/effects/state/" + (!!_sex?"m/":"f/") + _stateType + "/show" + layer + ".png";
       }
       
       override protected function initLoaders() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
-         _loc3_ = 0;
-         while(_loc3_ < 3)
+         var i:int = 0;
+         var url:* = null;
+         var l:* = null;
+         for(i = 0; i < 3; )
          {
-            _loc2_ = getUrl(_loc3_ + 1);
-            _loc2_ = _loc2_.toLocaleLowerCase();
-            _loc1_ = LoadResourceManager.Instance.createLoader(_loc2_,0);
-            _queueLoader.addLoader(_loc1_);
-            _loc3_++;
+            url = getUrl(i + 1);
+            url = url.toLocaleLowerCase();
+            l = LoadResourceManager.Instance.createLoader(url,0);
+            _queueLoader.addLoader(l);
+            i++;
          }
          _defaultLayer = 0;
          _currentEdit = _queueLoader.length;
       }
       
-      override protected function __loadComplete(param1:Event) : void
+      override protected function __loadComplete(event:Event) : void
       {
          reSetBitmap();
          _queueLoader.removeEventListener("complete",__loadComplete);

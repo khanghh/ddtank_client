@@ -10,9 +10,9 @@ package littleGame.actions
       
       private var _lifeTime:int;
       
-      public function LittleLivingBornAction(param1:LittleLiving, param2:int = 10)
+      public function LittleLivingBornAction(living:LittleLiving, life:int = 10)
       {
-         _living = param1;
+         _living = living;
          super();
       }
       

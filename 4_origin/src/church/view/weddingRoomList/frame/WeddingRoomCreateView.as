@@ -103,10 +103,10 @@ package church.view.weddingRoomList.frame
          initialize();
       }
       
-      public function setController(param1:ChurchRoomListController, param2:ChurchRoomListModel) : void
+      public function setController(controller:ChurchRoomListController, model:ChurchRoomListModel) : void
       {
-         _controller = param1;
-         _model = param2;
+         _controller = controller;
+         _model = model;
       }
       
       protected function initialize() : void
@@ -117,10 +117,10 @@ package church.view.weddingRoomList.frame
       
       private function setView() : void
       {
-         var _loc7_:Number = NaN;
-         var _loc5_:* = null;
-         var _loc3_:Number = NaN;
-         var _loc1_:* = null;
+         var disc:Number = NaN;
+         var temp:* = null;
+         var disc2:Number = NaN;
+         var temp2:* = null;
          cancelButtonStyle = "core.simplebt";
          submitButtonStyle = "core.simplebt";
          _alertInfo = new AlertInfo();
@@ -178,16 +178,16 @@ package church.view.weddingRoomList.frame
             _discountTxt.x = _discountIcon.x + 1;
             _discountTxt.y = _discountIcon.y + 2;
             _discountTxt.width = _discountIcon.width;
-            _loc7_ = PlayerManager.Instance.merryDiscountArr[0] / ServerConfigManager.instance.weddingMoney[0] * 10;
-            if(_loc7_.toString().length == 1)
+            disc = PlayerManager.Instance.merryDiscountArr[0] / ServerConfigManager.instance.weddingMoney[0] * 10;
+            if(disc.toString().length == 1)
             {
-               _loc5_ = _loc7_.toString();
+               temp = disc.toString();
             }
             else
             {
-               _loc5_ = _loc7_.toFixed(1);
+               temp = disc.toFixed(1);
             }
-            _discountTxt.text = LanguageMgr.GetTranslation("ddt.vipView.discountIconTxt",_loc5_);
+            _discountTxt.text = LanguageMgr.GetTranslation("ddt.vipView.discountIconTxt",temp);
          }
          _roomCreateTimeLuxurySelectedBtn = ComponentFactory.Instance.creat("church.luxury.WeddingBtn");
          addToContent(_roomCreateTimeLuxurySelectedBtn);
@@ -205,16 +205,16 @@ package church.view.weddingRoomList.frame
             _discountTxtII.x = _discountIconII.x + 1;
             _discountTxtII.y = _discountIconII.y + 2;
             _discountTxtII.width = _discountIconII.width;
-            _loc3_ = PlayerManager.Instance.merryDiscountArr[1] / ServerConfigManager.instance.weddingMoney[1] * 10;
-            if(_loc3_.toString().length == 1)
+            disc2 = PlayerManager.Instance.merryDiscountArr[1] / ServerConfigManager.instance.weddingMoney[1] * 10;
+            if(disc2.toString().length == 1)
             {
-               _loc1_ = _loc3_.toString();
+               temp2 = disc2.toString();
             }
             else
             {
-               _loc1_ = _loc3_.toFixed(1);
+               temp2 = disc2.toFixed(1);
             }
-            _discountTxtII.text = LanguageMgr.GetTranslation("ddt.vipView.discountIconTxt",_loc1_);
+            _discountTxtII.text = LanguageMgr.GetTranslation("ddt.vipView.discountIconTxt",temp2);
          }
          _roomCreateTimeGroup = new SelectedButtonGroup(false);
          _roomCreateTimeGroup.addSelectItem(_roomCreateNormalSelectedBtn);
@@ -228,24 +228,24 @@ package church.view.weddingRoomList.frame
          addToContent(_bgRight);
          _help = ComponentFactory.Instance.creat("asset.church.help.btn");
          addToContent(_help);
-         var _loc2_:String = "";
-         var _loc4_:String = "";
+         var groomName:String = "";
+         var brideName:String = "";
          if(PlayerManager.Instance.Self.Sex)
          {
-            _loc2_ = PlayerManager.Instance.Self.NickName;
-            _loc4_ = PlayerManager.Instance.Self.SpouseName;
+            groomName = PlayerManager.Instance.Self.NickName;
+            brideName = PlayerManager.Instance.Self.SpouseName;
          }
          else
          {
-            _loc2_ = PlayerManager.Instance.Self.SpouseName;
-            _loc4_ = PlayerManager.Instance.Self.NickName;
+            groomName = PlayerManager.Instance.Self.SpouseName;
+            brideName = PlayerManager.Instance.Self.NickName;
          }
          _txtRoomCreateIntro = ComponentFactory.Instance.creat("church.view.weddingRoomList.frame.WeddingRoomCreateViewField");
-         _txtRoomCreateIntro.text = LanguageMgr.GetTranslation("church.weddingRoom.frame.CreateRoomFrame._remark_txt",_loc2_,_loc4_);
+         _txtRoomCreateIntro.text = LanguageMgr.GetTranslation("church.weddingRoom.frame.CreateRoomFrame._remark_txt",groomName,brideName);
          _txtRoomCreateIntro.maxChars = 400;
          addToContent(_txtRoomCreateIntro);
-         var _loc6_:int = _txtRoomCreateIntro.maxChars - _txtRoomCreateIntro.text.length;
-         _roomCreateIntroMaxChLabel.text = LanguageMgr.GetTranslation("church.churchScene.frame.ModifyDiscriptionFrame.spare") + " " + (String(_loc6_ <= 0?0:_loc6_)) + LanguageMgr.GetTranslation("church.churchScene.frame.ModifyDiscriptionFrame.word");
+         var charCut:int = _txtRoomCreateIntro.maxChars - _txtRoomCreateIntro.text.length;
+         _roomCreateIntroMaxChLabel.text = LanguageMgr.GetTranslation("church.churchScene.frame.ModifyDiscriptionFrame.spare") + " " + (String(charCut <= 0?0:charCut)) + LanguageMgr.GetTranslation("church.churchScene.frame.ModifyDiscriptionFrame.word");
       }
       
       private function removeView() : void
@@ -485,22 +485,22 @@ package church.view.weddingRoomList.frame
          }
       }
       
-      private function __onClickHelpHandler(param1:MouseEvent) : void
+      private function __onClickHelpHandler(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:DisplayObject = ComponentFactory.Instance.creat("church.HelpPrompt");
-         var _loc3_:HelpFrame = ComponentFactory.Instance.creat("church.HelpFrame");
-         _loc3_.setView(_loc2_);
-         _loc3_.titleText = LanguageMgr.GetTranslation("ddt.church.readme");
-         LayerManager.Instance.addToLayer(_loc3_,1,true,1);
+         var helpBd:DisplayObject = ComponentFactory.Instance.creat("church.HelpPrompt");
+         var helpPage:HelpFrame = ComponentFactory.Instance.creat("church.HelpFrame");
+         helpPage.setView(helpBd);
+         helpPage.titleText = LanguageMgr.GetTranslation("ddt.church.readme");
+         LayerManager.Instance.addToLayer(helpPage,1,true,1);
       }
       
-      private function onIsGuest(param1:MouseEvent) : void
+      private function onIsGuest(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }
       
-      private function onIsGuest1(param1:MouseEvent) : void
+      private function onIsGuest1(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _roomCreateNormalSelectedBtn.filters = ComponentFactory.Instance.creatFilters("lightFilter");
@@ -509,7 +509,7 @@ package church.view.weddingRoomList.frame
          _roomTimeLuxuryMoneyTxt.filters = ComponentFactory.Instance.creatFilters("grayFilter");
       }
       
-      private function onIsGuest2(param1:MouseEvent) : void
+      private function onIsGuest2(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _roomCreateNormalSelectedBtn.filters = ComponentFactory.Instance.creatFilters("grayFilter");
@@ -518,7 +518,7 @@ package church.view.weddingRoomList.frame
          _roomTimeLuxuryMoneyTxt.filters = ComponentFactory.Instance.creatFilters("lightFilter");
       }
       
-      private function onRoomPasswordCheck(param1:MouseEvent) : void
+      private function onRoomPasswordCheck(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _txtCreateRoomPassword.enable = _chkCreateRoomPassword.selected;
@@ -532,10 +532,10 @@ package church.view.weddingRoomList.frame
          }
       }
       
-      private function onFrameResponse(param1:FrameEvent) : void
+      private function onFrameResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
@@ -559,21 +559,21 @@ package church.view.weddingRoomList.frame
          {
             return;
          }
-         var _loc1_:ChurchRoomInfo = new ChurchRoomInfo();
-         _loc1_.roomName = _txtCreateRoomName.text;
-         _loc1_.password = _txtCreateRoomPassword.text;
-         _loc1_.valideTimes = _roomCreateTimeGroup.selectIndex + 2;
-         _loc1_.canInvite = _chkCreateRoomIsGuest.selected;
-         _loc1_.discription = FilterWordManager.filterWrod(_txtRoomCreateIntro.text);
+         var roomInfo:ChurchRoomInfo = new ChurchRoomInfo();
+         roomInfo.roomName = _txtCreateRoomName.text;
+         roomInfo.password = _txtCreateRoomPassword.text;
+         roomInfo.valideTimes = _roomCreateTimeGroup.selectIndex + 2;
+         roomInfo.canInvite = _chkCreateRoomIsGuest.selected;
+         roomInfo.discription = FilterWordManager.filterWrod(_txtRoomCreateIntro.text);
          if(_roomCreateTimeGroup.selectIndex == 0)
          {
-            _loc1_.seniorType = 0;
+            roomInfo.seniorType = 0;
          }
          else if(_roomCreateTimeGroup.selectIndex == 1)
          {
-            _loc1_.seniorType = 4;
+            roomInfo.seniorType = 4;
          }
-         _controller.createRoom(_loc1_);
+         _controller.createRoom(roomInfo);
          dispose();
       }
       
@@ -597,7 +597,7 @@ package church.view.weddingRoomList.frame
          return true;
       }
       
-      private function onIntroChange(param1:Event) : void
+      private function onIntroChange(e:Event) : void
       {
          _roomCreateIntroMaxChLabel.text = LanguageMgr.GetTranslation("church.churchScene.frame.ModifyDiscriptionFrame.spare") + (String(_txtRoomCreateIntro.maxChars - _txtRoomCreateIntro.text.length <= 0?0:Number(_txtRoomCreateIntro.maxChars - _txtRoomCreateIntro.text.length))) + LanguageMgr.GetTranslation("church.churchScene.frame.ModifyDiscriptionFrame.word");
       }

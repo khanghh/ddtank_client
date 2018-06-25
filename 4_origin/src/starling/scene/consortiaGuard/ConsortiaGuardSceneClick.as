@@ -17,14 +17,13 @@ package starling.scene.consortiaGuard
       
       private function init() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         _loc2_ = 0;
-         while(_loc2_ < 4)
+         var i:int = 0;
+         var bossClick:* = null;
+         for(i = 0; i < 4; )
          {
-            _loc1_ = new ConsortiaGuardBoss(_loc2_);
-            addChild(_loc1_);
-            _loc2_++;
+            bossClick = new ConsortiaGuardBoss(i);
+            addChild(bossClick);
+            i++;
          }
       }
       

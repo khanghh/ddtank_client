@@ -60,9 +60,9 @@ package petsBag.view
          initEvent();
       }
       
-      public function set infoPlayer(param1:PlayerInfo) : void
+      public function set infoPlayer(value:PlayerInfo) : void
       {
-         _infoPlayer = param1;
+         _infoPlayer = value;
          if(!_infoPlayer)
          {
             return;
@@ -71,14 +71,14 @@ package petsBag.view
          updateSelect();
       }
       
-      public function refreshPetInfo(param1:PetInfo, param2:int = 0) : void
+      public function refreshPetInfo(updateInfo:PetInfo, opType:int = 0) : void
       {
-         if(param2 == 0 || param2 == 1)
+         if(opType == 0 || opType == 1)
          {
-            _infoPlayer.pets[param1.Place] = param1;
+            _infoPlayer.pets[updateInfo.Place] = updateInfo;
          }
          upCells(_currentPage);
-         if(param2 == 2)
+         if(opType == 2)
          {
             removePetPageUpdate();
          }
@@ -87,17 +87,17 @@ package petsBag.view
       
       private function removePetPageUpdate() : void
       {
-         var _loc1_:int = 0;
+         var count:int = 0;
          var _loc4_:int = 0;
          var _loc3_:* = _petsImgVec;
-         for each(var _loc2_ in _petsImgVec)
+         for each(var petSmallItem in _petsImgVec)
          {
-            if(_loc2_.info)
+            if(petSmallItem.info)
             {
-               _loc1_++;
+               count++;
             }
          }
-         if(_loc1_ == 0)
+         if(count == 0)
          {
             _currentPage = _currentPage - 1 < 0?0:Number(_currentPage - 1);
             _totlePage = _infoPlayer.pets.length % 5 == 0?_infoPlayer.pets.length / 5 - 1:Number(_infoPlayer.pets.length / 5);
@@ -107,8 +107,8 @@ package petsBag.view
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var cell:* = null;
          _petBg0 = ComponentFactory.Instance.creat("petsBag.petMoveScroll.bottomBg0");
          addChild(_petBg0);
          _petBg2 = ComponentFactory.Instance.creat("petsBag.petMoveScroll.bottomBg");
@@ -123,12 +123,11 @@ package petsBag.view
          itemContainer = ComponentFactory.Instance.creatComponentByStylename("petsBag.petItemContainer");
          addChild(itemContainer);
          itemContainer.strictSize = 74;
-         _loc2_ = 0;
-         while(_loc2_ < 5)
+         for(i = 0; i < 5; )
          {
-            _loc1_ = new PetSmallItem();
-            _petsImgVec.push(itemContainer.addChild(_loc1_));
-            _loc2_++;
+            cell = new PetSmallItem();
+            _petsImgVec.push(itemContainer.addChild(cell));
+            i++;
          }
       }
       
@@ -138,36 +137,36 @@ package petsBag.view
          _rightBtn.addEventListener("click",__right);
          var _loc3_:int = 0;
          var _loc2_:* = _petsImgVec;
-         for each(var _loc1_ in _petsImgVec)
+         for each(var petItem in _petsImgVec)
          {
-            _loc1_.addEventListener("click",__onClick);
+            petItem.addEventListener("click",__onClick);
          }
       }
       
-      private function __onClick(param1:MouseEvent) : void
+      private function __onClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:PetSmallItem = param1.currentTarget as PetSmallItem;
-         if(_loc2_.info)
+         var item:PetSmallItem = event.currentTarget as PetSmallItem;
+         if(item.info)
          {
-            PetsBagManager.instance().petModel.currentPetInfo = _loc2_.info;
-            _selectedIndex = _petsImgVec.indexOf(_loc2_);
+            PetsBagManager.instance().petModel.currentPetInfo = item.info;
+            _selectedIndex = _petsImgVec.indexOf(item);
          }
       }
       
       public function updateSelect() : void
       {
-         var _loc1_:PetInfo = PetsBagManager.instance().petModel.currentPetInfo;
+         var _info:PetInfo = PetsBagManager.instance().petModel.currentPetInfo;
          var _loc4_:int = 0;
          var _loc3_:* = _petsImgVec;
-         for each(var _loc2_ in _petsImgVec)
+         for each(var petItem in _petsImgVec)
          {
-            if(_loc2_.info)
+            if(petItem.info)
             {
-               _loc2_.selected = _loc1_ && _loc1_.ID == _loc2_.info.ID;
-               if(_loc2_.selected)
+               petItem.selected = _info && _info.ID == petItem.info.ID;
+               if(petItem.selected)
                {
-                  _selectedIndex = _petsImgVec.indexOf(_loc2_);
+                  _selectedIndex = _petsImgVec.indexOf(petItem);
                }
             }
          }
@@ -189,7 +188,7 @@ package petsBag.view
          _rightBtn.removeEventListener("click",__right);
       }
       
-      private function __left(param1:MouseEvent) : void
+      private function __left(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _totlePage = _infoPlayer.pets.length % 5 == 0?_infoPlayer.pets.length / 5 - 1:Number(_infoPlayer.pets.length / 5);
@@ -197,7 +196,7 @@ package petsBag.view
          upCells(_currentPage);
       }
       
-      private function __right(param1:MouseEvent) : void
+      private function __right(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _totlePage = _infoPlayer.pets.length % 5 == 0?_infoPlayer.pets.length / 5 - 1:Number(_infoPlayer.pets.length / 5);
@@ -205,23 +204,22 @@ package petsBag.view
          upCells(_currentPage);
       }
       
-      private function upCells(param1:int = 0) : void
+      private function upCells(page:int = 0) : void
       {
-         var _loc3_:int = 0;
-         _currentPage = param1;
-         var _loc2_:int = param1 * 5;
-         _loc3_ = 0;
-         while(_loc3_ < 5)
+         var i:int = 0;
+         _currentPage = page;
+         var start:int = page * 5;
+         for(i = 0; i < 5; )
          {
-            if(_infoPlayer.pets[_loc3_ + _loc2_])
+            if(_infoPlayer.pets[i + start])
             {
-               _petsImgVec[_loc3_].info = _infoPlayer.pets[_loc3_ + _loc2_];
+               _petsImgVec[i].info = _infoPlayer.pets[i + start];
             }
             else
             {
-               _petsImgVec[_loc3_].info = null;
+               _petsImgVec[i].info = null;
             }
-            _loc3_++;
+            i++;
          }
       }
       

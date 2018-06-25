@@ -28,6 +28,8 @@ package mark.data
       
       public var isbind:Boolean = true;
       
+      public var isShowBind:Boolean = true;
+      
       public function MarkChipData()
       {
          props = new Vector.<MarkProData>();

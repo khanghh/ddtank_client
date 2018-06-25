@@ -41,10 +41,10 @@ package consortion.view.club
       
       private var _badge:Badge;
       
-      public function ConsortionListItem(param1:int)
+      public function ConsortionListItem(index:int)
       {
          super();
-         _index = param1;
+         _index = index;
          init();
       }
       
@@ -73,20 +73,20 @@ package consortion.view.club
          PositionUtils.setPos(_badge,"consortionClubItem.badge.pos");
       }
       
-      public function set info(param1:ConsortiaInfo) : void
+      public function set info(info:ConsortiaInfo) : void
       {
-         if(_info == param1)
+         if(_info == info)
          {
             return;
          }
-         _info = param1;
+         _info = info;
          _badge.badgeID = _info.BadgeID;
          _badge.visible = _info.BadgeID > 0;
-         _consortionName.text = String(param1.ConsortiaName);
-         _chairMan.text = String(param1.ChairmanName);
-         _count.text = String(param1.Count);
-         _level.text = String(param1.Level);
-         _exploit.text = String(param1.Honor);
+         _consortionName.text = String(info.ConsortiaName);
+         _chairMan.text = String(info.ChairmanName);
+         _count.text = String(info.Count);
+         _level.text = String(info.Level);
+         _exploit.text = String(info.Honor);
       }
       
       public function get info() : ConsortiaInfo
@@ -94,13 +94,13 @@ package consortion.view.club
          return _info;
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         if(_selected == param1)
+         if(_selected == value)
          {
             return;
          }
-         _selected = param1;
+         _selected = value;
          _light.visible = _selected;
       }
       
@@ -109,13 +109,13 @@ package consortion.view.club
          return _selected;
       }
       
-      public function set light(param1:Boolean) : void
+      public function set light(value:Boolean) : void
       {
          if(_selected)
          {
             return;
          }
-         _light.visible = param1;
+         _light.visible = value;
       }
       
       override public function get height() : Number
@@ -132,7 +132,7 @@ package consortion.view.club
          return _info;
       }
       
-      public function setCellValue(param1:*) : void
+      public function setCellValue(value:*) : void
       {
       }
       
@@ -141,9 +141,9 @@ package consortion.view.club
          return this;
       }
       
-      public function set isApply(param1:Boolean) : void
+      public function set isApply(value:Boolean) : void
       {
-         if(param1)
+         if(value)
          {
             alpha = 0.5;
             mouseChildren = false;

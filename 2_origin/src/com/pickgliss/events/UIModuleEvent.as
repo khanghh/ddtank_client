@@ -19,12 +19,12 @@ package com.pickgliss.events
       
       public var state:String;
       
-      public function UIModuleEvent(param1:String, param2:BaseLoader = null)
+      public function UIModuleEvent(type:String, loader:BaseLoader = null)
       {
-         this.loader = param2;
-         this.module = param2.loadProgressMessage;
-         this.state = param2.loadCompleteMessage;
-         super(param1);
+         this.loader = loader;
+         this.module = loader.loadProgressMessage;
+         this.state = loader.loadCompleteMessage;
+         super(type);
       }
    }
 }

@@ -47,38 +47,36 @@ package newChickenBox
          SocketManager.Instance.addEventListener(PkgEvent.format(87,2),__closeActivity);
       }
       
-      private function __init(param1:PkgEvent) : void
+      private function __init(event:PkgEvent) : void
       {
-         var _loc8_:int = 0;
-         var _loc5_:int = 0;
+         var i:int = 0;
+         var j:int = 0;
          _isOpen = true;
          showNewBoxBtn();
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc7_:uint = _loc3_.position;
-         var _loc2_:int = _loc3_.readInt();
-         _loc8_ = 0;
-         while(_loc8_ < _loc2_)
+         var pkg:PackageIn = event.pkg;
+         var currentPosition:uint = pkg.position;
+         var length:int = pkg.readInt();
+         for(i = 0; i < length; )
          {
-            _loc3_.readInt();
-            _loc8_++;
+            pkg.readInt();
+            i++;
          }
-         var _loc6_:int = _loc3_.readInt();
-         _loc5_ = 0;
-         while(_loc5_ < _loc6_)
+         var length2:int = pkg.readInt();
+         for(j = 0; j < length2; )
          {
-            _loc3_.readInt();
-            _loc5_++;
+            pkg.readInt();
+            j++;
          }
-         _loc3_.readInt();
-         var _loc4_:Date = _loc3_.readDate();
-         _loc3_.position = _loc7_;
-         pkgs["init"] = _loc3_;
-         WonderfulActivityManager.Instance.chickenEndTime = _loc4_;
+         pkg.readInt();
+         var endTime:Date = pkg.readDate();
+         pkg.position = currentPosition;
+         pkgs["init"] = pkg;
+         WonderfulActivityManager.Instance.chickenEndTime = endTime;
          WonderfulActivityManager.Instance.addElement(4);
          SocketManager.Instance.addEventListener(PkgEvent.format(87,3),__getItem);
       }
       
-      public function enterNewBoxView(param1:MouseEvent) : void
+      public function enterNewBoxView(e:MouseEvent) : void
       {
          SocketManager.Instance.out.sendNewChickenBox();
       }
@@ -95,10 +93,10 @@ package newChickenBox
          }
       }
       
-      private function __getItem(param1:PkgEvent) : void
+      private function __getItem(e:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         pkgs["getItem"] = _loc2_;
+         var pkg:PackageIn = e.pkg;
+         pkgs["getItem"] = pkg;
          show();
       }
       
@@ -112,7 +110,7 @@ package newChickenBox
          dispatchEvent(new Event("showBoxFrame"));
       }
       
-      private function __closeActivity(param1:PkgEvent) : void
+      private function __closeActivity(e:PkgEvent) : void
       {
          _isOpen = false;
          Mouse.show();

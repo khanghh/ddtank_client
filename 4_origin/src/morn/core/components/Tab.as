@@ -10,68 +10,66 @@ package morn.core.components
       public static const VERTICAL:String = "vertical";
        
       
-      public function Tab(param1:String = null, param2:String = null)
+      public function Tab(labels:String = null, skin:String = null)
       {
-         super(param1,param2);
-         _direction = HORIZENTAL;
+         super(labels,skin);
+         _direction = "horizontal";
       }
       
-      override protected function createItem(param1:String, param2:String) : DisplayObject
+      override protected function createItem(skin:String, label:String) : DisplayObject
       {
-         return new Button(param1,param2);
+         return new Button(skin,label);
       }
       
       override protected function changeLabels() : void
       {
-         var _loc1_:* = NaN;
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         var _loc4_:Button = null;
+         var left:* = NaN;
+         var i:int = 0;
+         var n:int = 0;
+         var btn:* = null;
          if(_items)
          {
-            _loc1_ = 0;
-            _loc2_ = 0;
-            _loc3_ = _items.length;
-            while(_loc2_ < _loc3_)
+            left = 0;
+            for(i = 0,n = _items.length; i < n; )
             {
-               _loc4_ = _items[_loc2_] as Button;
+               btn = _items[i] as Button;
                if(_skin)
                {
-                  _loc4_.skin = _skin;
+                  btn.skin = _skin;
                }
                if(_labelColors)
                {
-                  _loc4_.labelColors = _labelColors;
+                  btn.labelColors = _labelColors;
                }
                if(_labelStroke)
                {
-                  _loc4_.labelStroke = _labelStroke;
+                  btn.labelStroke = _labelStroke;
                }
                if(_labelSize)
                {
-                  _loc4_.labelSize = _labelSize;
+                  btn.labelSize = _labelSize;
                }
                if(_labelBold)
                {
-                  _loc4_.labelBold = _labelBold;
+                  btn.labelBold = _labelBold;
                }
                if(_labelMargin)
                {
-                  _loc4_.labelMargin = _labelMargin;
+                  btn.labelMargin = _labelMargin;
                }
-               if(_direction == HORIZENTAL)
+               if(_direction == "horizontal")
                {
-                  _loc4_.y = 0;
-                  _loc4_.x = _loc1_;
-                  _loc1_ = Number(_loc1_ + (_loc4_.width + _space));
+                  btn.y = 0;
+                  btn.x = left;
+                  left = Number(left + (btn.width + _space));
                }
                else
                {
-                  _loc4_.x = 0;
-                  _loc4_.y = _loc1_;
-                  _loc1_ = Number(_loc1_ + (_loc4_.height + _space));
+                  btn.x = 0;
+                  btn.y = left;
+                  left = Number(left + (btn.height + _space));
                }
-               _loc2_++;
+               i++;
             }
          }
       }

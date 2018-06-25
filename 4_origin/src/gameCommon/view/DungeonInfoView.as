@@ -66,7 +66,7 @@ package gameCommon.view
       
       private var arrowCount:int;
       
-      public function DungeonInfoView(param1:GameTurnButton, param2:DisplayObjectContainer)
+      public function DungeonInfoView(button:GameTurnButton, container:DisplayObjectContainer)
       {
          super();
          _bg = ComponentFactory.Instance.creatBitmap("asset.game.missionInfoBgAsset");
@@ -125,11 +125,11 @@ package gameCommon.view
             _title4.visible = _loc4_;
          }
          _sourceRect = getBounds(this);
-         var _loc3_:Point = ComponentFactory.Instance.creatCustomObject("asset.game.barrierPos");
-         _sourceRect.x = _loc3_.x;
-         _sourceRect.y = _loc3_.y;
-         _container = param2;
-         _button = param1;
+         var barrierPos:Point = ComponentFactory.Instance.creatCustomObject("asset.game.barrierPos");
+         _sourceRect.x = barrierPos.x;
+         _sourceRect.y = barrierPos.y;
+         _container = container;
+         _button = button;
          _textFormat = ComponentFactory.Instance.model.getSet("game.missionInfoTitle_Text2");
          addEvent();
       }
@@ -140,7 +140,7 @@ package gameCommon.view
          addEventListener("update_activitydungeon_info",__updateActivityInfo);
       }
       
-      protected function __updateActivityInfo(param1:Event) : void
+      protected function __updateActivityInfo(event:Event) : void
       {
          _title2.text = LanguageMgr.GetTranslation("game.view.DungeonInfoView.title5") + GameControl.Instance.bossName;
          _title3.text = LanguageMgr.GetTranslation("game.view.DungeonInfoView.title4");
@@ -158,34 +158,34 @@ package gameCommon.view
          _helpBtn.removeEventListener("click",__openHelpHandler);
       }
       
-      private function __openHelpHandler(param1:MouseEvent) : void
+      private function __openHelpHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          dispatchEvent(new GameEvent("DungeonHelpVisibleChanged",true));
       }
       
-      public function barrierInfoHandler(param1:CrazyTankSocketEvent) : void
+      public function barrierInfoHandler(evt:CrazyTankSocketEvent) : void
       {
          _info = GameControl.Instance.Current.missionInfo;
-         var _loc2_:PackageIn = param1.pkg;
-         _info.currentValue1 = _loc2_.readInt();
-         _info.currentValue2 = _loc2_.readInt();
-         _info.currentValue3 = _loc2_.readInt();
-         _info.currentValue4 = _loc2_.readInt();
+         var pkg:PackageIn = evt.pkg;
+         _info.currentValue1 = pkg.readInt();
+         _info.currentValue2 = pkg.readInt();
+         _info.currentValue3 = pkg.readInt();
+         _info.currentValue4 = pkg.readInt();
          upView();
          dispatchEvent(new GameEvent("updateSmallMapView",true));
       }
       
-      public function trainerView(param1:int) : void
+      public function trainerView($currentTrun:int) : void
       {
          _title1.text = "TRUN";
-         if(param1 == -1)
+         if($currentTrun == -1)
          {
             _info1.text = "";
             return;
          }
-         _info1.text = param1.toString() + "/" + _totalTrunTrainer.toString();
-         if(_totalTrunTrainer == param1)
+         _info1.text = $currentTrun.toString() + "/" + _totalTrunTrainer.toString();
+         if(_totalTrunTrainer == $currentTrun)
          {
             StateManager.setState("main");
          }
@@ -194,11 +194,11 @@ package gameCommon.view
       public function open() : void
       {
          TweenLite.killTweensOf(this);
-         var _loc1_:Rectangle = _button.getBounds(_container);
-         x = _loc1_.x;
-         y = _loc1_.y;
-         width = _loc1_.width;
-         height = _loc1_.height;
+         var bounds:Rectangle = _button.getBounds(_container);
+         x = bounds.x;
+         y = bounds.y;
+         width = bounds.width;
+         height = bounds.height;
          _container.addChild(this);
          TweenLite.to(this,0.3,{
             "x":_sourceRect.x,
@@ -227,12 +227,12 @@ package gameCommon.view
          y = _sourceRect.y;
          width = _sourceRect.width;
          height = _sourceRect.height;
-         var _loc1_:Rectangle = _button.getBounds(_container);
+         var bounds:Rectangle = _button.getBounds(_container);
          TweenLite.to(this,0.3,{
-            "x":_loc1_.x,
-            "y":_loc1_.y,
-            "width":_loc1_.width,
-            "height":_loc1_.height,
+            "x":bounds.x,
+            "y":bounds.y,
+            "width":bounds.width,
+            "height":bounds.height,
             "onComplete":closeComplete
          });
          dispatchEvent(new GameEvent("DungeonHelpVisibleChanged",false));
@@ -269,15 +269,21 @@ package gameCommon.view
             _title3.setTextFormat(_textFormat);
             _info3.setTextFormat(_textFormat);
          }
+         else if(RoomManager.Instance.current.type == 70)
+         {
+            _info3.text = _info.currentValue3.toString();
+            _title3.setTextFormat(_textFormat);
+            _info3.setTextFormat(_textFormat);
+         }
          if(RoomManager.Instance.current.type == 29)
          {
             _info4.text = arrowCount.toString();
          }
       }
       
-      public function setRescueArrow(param1:int) : void
+      public function setRescueArrow(count:int) : void
       {
-         arrowCount = param1;
+         arrowCount = count;
          _info4.text = arrowCount.toString();
       }
       

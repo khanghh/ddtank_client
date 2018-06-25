@@ -11,24 +11,24 @@ package com.greensock.easing
          super();
       }
       
-      public static function easeNone(param1:Number, param2:Number, param3:Number, param4:Number) : Number
+      public static function easeNone(t:Number, b:Number, c:Number, d:Number) : Number
       {
-         return param3 * param1 / param4 + param2;
+         return c * t / d + b;
       }
       
-      public static function easeIn(param1:Number, param2:Number, param3:Number, param4:Number) : Number
+      public static function easeIn(t:Number, b:Number, c:Number, d:Number) : Number
       {
-         return param3 * param1 / param4 + param2;
+         return c * t / d + b;
       }
       
-      public static function easeOut(param1:Number, param2:Number, param3:Number, param4:Number) : Number
+      public static function easeOut(t:Number, b:Number, c:Number, d:Number) : Number
       {
-         return param3 * param1 / param4 + param2;
+         return c * t / d + b;
       }
       
-      public static function easeInOut(param1:Number, param2:Number, param3:Number, param4:Number) : Number
+      public static function easeInOut(t:Number, b:Number, c:Number, d:Number) : Number
       {
-         return param3 * param1 / param4 + param2;
+         return c * t / d + b;
       }
    }
 }

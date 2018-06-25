@@ -70,24 +70,24 @@ package church.view.churchScene
       
       protected var reference:ChurchPlayer;
       
-      public function SceneMap(param1:ChurchRoomModel, param2:SceneScene, param3:DictionaryData, param4:Sprite, param5:Sprite, param6:Sprite = null, param7:Sprite = null)
+      public function SceneMap(model:ChurchRoomModel, sceneScene:SceneScene, data:DictionaryData, bg:Sprite, mesh:Sprite, acticle:Sprite = null, sky:Sprite = null)
       {
          super();
-         _model = param1;
-         this.sceneScene = param2;
-         this._data = param3;
-         if(param4 == null)
+         _model = model;
+         this.sceneScene = sceneScene;
+         this._data = data;
+         if(bg == null)
          {
             this.bgLayer = new Sprite();
          }
          else
          {
-            this.bgLayer = param4;
+            this.bgLayer = bg;
          }
-         this.meshLayer = param5 == null?new Sprite():param5;
+         this.meshLayer = mesh == null?new Sprite():mesh;
          this.meshLayer.alpha = 0;
-         this.articleLayer = param6 == null?new Sprite():param6;
-         this.skyLayer = param7 == null?new Sprite():param7;
+         this.articleLayer = acticle == null?new Sprite():acticle;
+         this.skyLayer = sky == null?new Sprite():sky;
          this.addChild(meshLayer);
          this.addChild(bgLayer);
          this.addChild(articleLayer);
@@ -101,16 +101,16 @@ package church.view.churchScene
          return _sceneMapVO;
       }
       
-      public function set sceneMapVO(param1:SceneMapVO) : void
+      public function set sceneMapVO(value:SceneMapVO) : void
       {
-         _sceneMapVO = param1;
+         _sceneMapVO = value;
       }
       
       protected function init() : void
       {
          _characters = new DictionaryData(true);
-         var _loc1_:Class = ClassUtils.uiSourceDomain.getDefinition("asset.church.room.MouseClickMovie") as Class;
-         _mouseMovie = new _loc1_() as MovieClip;
+         var mvClass:Class = ClassUtils.uiSourceDomain.getDefinition("asset.church.room.MouseClickMovie") as Class;
+         _mouseMovie = new mvClass() as MovieClip;
          _mouseMovie.mouseChildren = false;
          _mouseMovie.mouseEnabled = false;
          _mouseMovie.stop();
@@ -129,9 +129,9 @@ package church.view.churchScene
          _data.addEventListener("remove",__removePlayer);
       }
       
-      private function menuChange(param1:WeddingRoomEvent) : void
+      private function menuChange(evt:WeddingRoomEvent) : void
       {
-         var _loc2_:* = param1.type;
+         var _loc2_:* = evt.type;
          if("playerNameVisible" !== _loc2_)
          {
             if("playerChatBallVisible" !== _loc2_)
@@ -156,9 +156,9 @@ package church.view.churchScene
       {
          var _loc3_:int = 0;
          var _loc2_:* = _characters;
-         for each(var _loc1_ in _characters)
+         for each(var churchPlayer in _characters)
          {
-            _loc1_.isShowName = _model.playerNameVisible;
+            churchPlayer.isShowName = _model.playerNameVisible;
          }
       }
       
@@ -166,9 +166,9 @@ package church.view.churchScene
       {
          var _loc3_:int = 0;
          var _loc2_:* = _characters;
-         for each(var _loc1_ in _characters)
+         for each(var churchPlayer in _characters)
          {
-            _loc1_.isChatBall = _model.playerChatBallVisible;
+            churchPlayer.isChatBall = _model.playerChatBallVisible;
          }
       }
       
@@ -176,7 +176,7 @@ package church.view.churchScene
       {
       }
       
-      protected function updateMap(param1:Event) : void
+      protected function updateMap(event:Event) : void
       {
          if(!_characters || _characters.length <= 0)
          {
@@ -184,62 +184,62 @@ package church.view.churchScene
          }
          var _loc4_:int = 0;
          var _loc3_:* = _characters;
-         for each(var _loc2_ in _characters)
+         for each(var player in _characters)
          {
-            _loc2_.updatePlayer();
-            _loc2_.isChatBall = _model.playerChatBallVisible;
-            _loc2_.isShowName = _model.playerNameVisible;
+            player.updatePlayer();
+            player.isChatBall = _model.playerChatBallVisible;
+            player.isShowName = _model.playerNameVisible;
          }
          BuildEntityDepth();
       }
       
-      protected function __click(param1:MouseEvent) : void
+      protected function __click(event:MouseEvent) : void
       {
          if(!_selfPlayer)
          {
             return;
          }
-         var _loc2_:Point = this.globalToLocal(new Point(param1.stageX,param1.stageY));
+         var targetPoint:Point = this.globalToLocal(new Point(event.stageX,event.stageY));
          if(getTimer() - _lastClick > _clickInterval)
          {
             _lastClick = getTimer();
-            if(!sceneScene.hit(_loc2_))
+            if(!sceneScene.hit(targetPoint))
             {
-               _selfPlayer.playerVO.walkPath = sceneScene.searchPath(_selfPlayer.playerPoint,_loc2_);
+               _selfPlayer.playerVO.walkPath = sceneScene.searchPath(_selfPlayer.playerPoint,targetPoint);
                _selfPlayer.playerVO.walkPath.shift();
                _selfPlayer.playerVO.scenePlayerDirection = SceneCharacterDirection.getDirection(_selfPlayer.playerPoint,_selfPlayer.playerVO.walkPath[0]);
                _selfPlayer.playerVO.currentWalkStartPoint = _selfPlayer.currentWalkStartPoint;
                sendMyPosition(_selfPlayer.playerVO.walkPath.concat());
-               _mouseMovie.x = _loc2_.x;
-               _mouseMovie.y = _loc2_.y;
+               _mouseMovie.x = targetPoint.x;
+               _mouseMovie.y = targetPoint.y;
                _mouseMovie.play();
             }
          }
       }
       
-      public function sendMyPosition(param1:Array) : void
+      public function sendMyPosition(p:Array) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:Array = [];
-         while(_loc4_ < param1.length)
+         var i:int = 0;
+         var arr:Array = [];
+         while(i < p.length)
          {
-            _loc2_.push(int(param1[_loc4_].x),int(param1[_loc4_].y));
-            _loc4_++;
+            arr.push(int(p[i].x),int(p[i].y));
+            i++;
          }
-         var _loc3_:String = _loc2_.toString();
-         SocketManager.Instance.out.sendChurchMove(param1[param1.length - 1].x,param1[param1.length - 1].y,_loc3_);
+         var pathStr:String = arr.toString();
+         SocketManager.Instance.out.sendChurchMove(p[p.length - 1].x,p[p.length - 1].y,pathStr);
       }
       
-      public function useFire(param1:int, param2:int) : void
+      public function useFire(playerID:int, fireTemplateID:int) : void
       {
-         var _loc3_:* = null;
-         if(_characters[param1] == null)
+         var churchFireEffectPlayer:* = null;
+         if(_characters[playerID] == null)
          {
             return;
          }
-         if(_characters[param1])
+         if(_characters[playerID])
          {
-            if(param1 == PlayerManager.Instance.Self.ID)
+            if(playerID == PlayerManager.Instance.Self.ID)
             {
                _model.fireEnable = false;
                if(!_model.playerFireVisible)
@@ -247,94 +247,94 @@ package church.view.churchScene
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("church.churchScene.scene.SceneMap.lihua"));
                }
             }
-            _loc3_ = new ChurchFireEffectPlayer(param2);
-            _loc3_.addEventListener("complete",fireCompleteHandler);
-            _loc3_.owerID = param1;
+            churchFireEffectPlayer = new ChurchFireEffectPlayer(fireTemplateID);
+            churchFireEffectPlayer.addEventListener("complete",fireCompleteHandler);
+            churchFireEffectPlayer.owerID = playerID;
             if(_model.playerFireVisible)
             {
-               _loc3_.x = (_characters[param1] as ChurchPlayer).x;
-               _loc3_.y = (_characters[param1] as ChurchPlayer).y - 190;
-               addChild(_loc3_);
+               churchFireEffectPlayer.x = (_characters[playerID] as ChurchPlayer).x;
+               churchFireEffectPlayer.y = (_characters[playerID] as ChurchPlayer).y - 190;
+               addChild(churchFireEffectPlayer);
             }
-            _loc3_.firePlayer();
+            churchFireEffectPlayer.firePlayer();
          }
       }
       
-      protected function fireCompleteHandler(param1:Event) : void
+      protected function fireCompleteHandler(e:Event) : void
       {
-         var _loc2_:ChurchFireEffectPlayer = param1.currentTarget as ChurchFireEffectPlayer;
-         _loc2_.removeEventListener("complete",fireCompleteHandler);
-         if(_loc2_.owerID == PlayerManager.Instance.Self.ID)
+         var fire:ChurchFireEffectPlayer = e.currentTarget as ChurchFireEffectPlayer;
+         fire.removeEventListener("complete",fireCompleteHandler);
+         if(fire.owerID == PlayerManager.Instance.Self.ID)
          {
             _model.fireEnable = true;
          }
-         if(_loc2_.parent)
+         if(fire.parent)
          {
-            _loc2_.parent.removeChild(_loc2_);
+            fire.parent.removeChild(fire);
          }
-         _loc2_.dispose();
-         _loc2_ = null;
+         fire.dispose();
+         fire = null;
       }
       
-      public function movePlayer(param1:int, param2:Array) : void
+      public function movePlayer(id:int, p:Array) : void
       {
-         var _loc3_:* = null;
-         if(_characters[param1])
+         var churchPlayer:* = null;
+         if(_characters[id])
          {
-            _loc3_ = _characters[param1] as ChurchPlayer;
-            _loc3_.playerVO.walkPath = param2;
-            _loc3_.playerWalk(param2);
+            churchPlayer = _characters[id] as ChurchPlayer;
+            churchPlayer.playerVO.walkPath = p;
+            churchPlayer.playerWalk(p);
          }
       }
       
-      public function setCenter(param1:SceneCharacterEvent = null) : void
+      public function setCenter(event:SceneCharacterEvent = null) : void
       {
-         var _loc3_:* = NaN;
-         var _loc2_:* = NaN;
+         var xf:* = NaN;
+         var yf:* = NaN;
          if(reference)
          {
-            _loc3_ = Number(-(reference.x - 1000 / 2));
-            _loc2_ = Number(-(reference.y - 600 / 2) + 50);
+            xf = Number(-(reference.x - 1000 / 2));
+            yf = Number(-(reference.y - 600 / 2) + 50);
          }
          else
          {
-            _loc3_ = Number(-(_sceneMapVO.defaultPos.x - 1000 / 2));
-            _loc2_ = Number(-(_sceneMapVO.defaultPos.y - 600 / 2) + 50);
+            xf = Number(-(_sceneMapVO.defaultPos.x - 1000 / 2));
+            yf = Number(-(_sceneMapVO.defaultPos.y - 600 / 2) + 50);
          }
-         if(_loc3_ > 0)
+         if(xf > 0)
          {
-            _loc3_ = 0;
+            xf = 0;
          }
-         if(_loc3_ < 1000 - _sceneMapVO.mapW)
+         if(xf < 1000 - _sceneMapVO.mapW)
          {
-            _loc3_ = Number(1000 - _sceneMapVO.mapW);
+            xf = Number(1000 - _sceneMapVO.mapW);
          }
-         if(_loc2_ > 0)
+         if(yf > 0)
          {
-            _loc2_ = 0;
+            yf = 0;
          }
-         if(_loc2_ < 600 - _sceneMapVO.mapH)
+         if(yf < 600 - _sceneMapVO.mapH)
          {
-            _loc2_ = Number(600 - _sceneMapVO.mapH);
+            yf = Number(600 - _sceneMapVO.mapH);
          }
-         x = _loc3_;
-         y = _loc2_;
+         x = xf;
+         y = yf;
       }
       
       public function addSelfPlayer() : void
       {
-         var _loc1_:* = null;
+         var selfPlayerVO:* = null;
          if(!_selfPlayer)
          {
-            _loc1_ = new PlayerVO();
-            _loc1_.playerInfo = PlayerManager.Instance.Self;
-            _currentLoadingPlayer = new ChurchPlayer(_loc1_,addPlayerCallBack);
+            selfPlayerVO = new PlayerVO();
+            selfPlayerVO.playerInfo = PlayerManager.Instance.Self;
+            _currentLoadingPlayer = new ChurchPlayer(selfPlayerVO,addPlayerCallBack);
          }
       }
       
-      protected function ajustScreen(param1:ChurchPlayer) : void
+      protected function ajustScreen(churchPlayer:ChurchPlayer) : void
       {
-         if(param1 == null)
+         if(churchPlayer == null)
          {
             if(reference)
             {
@@ -347,33 +347,33 @@ package church.view.churchScene
          {
             reference.removeEventListener("characterMovement",setCenter);
          }
-         reference = param1;
+         reference = churchPlayer;
          reference.addEventListener("characterMovement",setCenter);
       }
       
-      protected function __addPlayer(param1:DictionaryEvent) : void
+      protected function __addPlayer(event:DictionaryEvent) : void
       {
-         var _loc2_:PlayerVO = param1.data as PlayerVO;
-         _currentLoadingPlayer = new ChurchPlayer(_loc2_,addPlayerCallBack);
+         var playerVO:PlayerVO = event.data as PlayerVO;
+         _currentLoadingPlayer = new ChurchPlayer(playerVO,addPlayerCallBack);
       }
       
-      private function addPlayerCallBack(param1:ChurchPlayer, param2:Boolean, param3:int) : void
+      private function addPlayerCallBack(churchPlayer:ChurchPlayer, isLoadSucceed:Boolean, vFlag:int) : void
       {
-         if(param3 == 0)
+         if(vFlag == 0)
          {
-            if(!articleLayer || !param1)
+            if(!articleLayer || !churchPlayer)
             {
                return;
             }
             _currentLoadingPlayer = null;
-            param1.sceneScene = sceneScene;
-            var _loc4_:* = param1.playerVO.scenePlayerDirection;
-            param1.sceneCharacterDirection = _loc4_;
-            param1.setSceneCharacterDirectionDefault = _loc4_;
-            if(!_selfPlayer && param1.playerVO.playerInfo.ID == PlayerManager.Instance.Self.ID)
+            churchPlayer.sceneScene = sceneScene;
+            var _loc4_:* = churchPlayer.playerVO.scenePlayerDirection;
+            churchPlayer.sceneCharacterDirection = _loc4_;
+            churchPlayer.setSceneCharacterDirectionDefault = _loc4_;
+            if(!_selfPlayer && churchPlayer.playerVO.playerInfo.ID == PlayerManager.Instance.Self.ID)
             {
-               param1.playerVO.playerPos = _sceneMapVO.defaultPos;
-               _selfPlayer = param1;
+               churchPlayer.playerVO.playerPos = _sceneMapVO.defaultPos;
+               _selfPlayer = churchPlayer;
                articleLayer.addChild(_selfPlayer);
                ajustScreen(_selfPlayer);
                setCenter();
@@ -381,86 +381,84 @@ package church.view.churchScene
             }
             else
             {
-               articleLayer.addChild(param1);
+               articleLayer.addChild(churchPlayer);
             }
-            param1.playerPoint = param1.playerVO.playerPos;
-            param1.sceneCharacterStateType = "natural";
-            _characters.add(param1.playerVO.playerInfo.ID,param1);
-            param1.isShowName = _model.playerNameVisible;
-            param1.isChatBall = _model.playerChatBallVisible;
+            churchPlayer.playerPoint = churchPlayer.playerVO.playerPos;
+            churchPlayer.sceneCharacterStateType = "natural";
+            _characters.add(churchPlayer.playerVO.playerInfo.ID,churchPlayer);
+            churchPlayer.isShowName = _model.playerNameVisible;
+            churchPlayer.isChatBall = _model.playerChatBallVisible;
          }
       }
       
-      private function playerActionChange(param1:SceneCharacterEvent) : void
+      private function playerActionChange(evt:SceneCharacterEvent) : void
       {
-         var _loc2_:String = param1.data.toString();
-         if(_loc2_ == "naturalStandFront" || _loc2_ == "naturalStandBack")
+         var type:String = evt.data.toString();
+         if(type == "naturalStandFront" || type == "naturalStandBack")
          {
             _mouseMovie.gotoAndStop(1);
          }
       }
       
-      protected function __removePlayer(param1:DictionaryEvent) : void
+      protected function __removePlayer(event:DictionaryEvent) : void
       {
-         var _loc2_:int = (param1.data as PlayerVO).playerInfo.ID;
-         var _loc3_:ChurchPlayer = _characters[_loc2_] as ChurchPlayer;
-         _characters.remove(_loc2_);
-         if(_loc3_)
+         var id:int = (event.data as PlayerVO).playerInfo.ID;
+         var player:ChurchPlayer = _characters[id] as ChurchPlayer;
+         _characters.remove(id);
+         if(player)
          {
-            if(_loc3_.parent)
+            if(player.parent)
             {
-               _loc3_.parent.removeChild(_loc3_);
+               player.parent.removeChild(player);
             }
-            _loc3_.removeEventListener("characterMovement",setCenter);
-            _loc3_.removeEventListener("characterActionChange",playerActionChange);
-            _loc3_.dispose();
+            player.removeEventListener("characterMovement",setCenter);
+            player.removeEventListener("characterActionChange",playerActionChange);
+            player.dispose();
          }
-         _loc3_ = null;
+         player = null;
       }
       
       protected function BuildEntityDepth() : void
       {
-         var _loc9_:int = 0;
-         var _loc4_:* = null;
-         var _loc8_:Number = NaN;
-         var _loc7_:* = 0;
-         var _loc5_:* = NaN;
-         var _loc6_:int = 0;
-         var _loc3_:* = null;
-         var _loc1_:Number = NaN;
-         var _loc2_:int = articleLayer.numChildren;
-         _loc9_ = 0;
-         while(_loc9_ < _loc2_ - 1)
+         var i:int = 0;
+         var obj:* = null;
+         var depth:Number = NaN;
+         var minIndex:* = 0;
+         var minDepth:* = NaN;
+         var j:int = 0;
+         var temp:* = null;
+         var tempDepth:Number = NaN;
+         var count:int = articleLayer.numChildren;
+         for(i = 0; i < count - 1; )
          {
-            _loc4_ = articleLayer.getChildAt(_loc9_);
-            _loc8_ = this.getPointDepth(_loc4_.x,_loc4_.y);
-            _loc5_ = 1.79769313486232e308;
-            _loc6_ = _loc9_ + 1;
-            while(_loc6_ < _loc2_)
+            obj = articleLayer.getChildAt(i);
+            depth = this.getPointDepth(obj.x,obj.y);
+            minDepth = 1.79769313486232e308;
+            for(j = i + 1; j < count; )
             {
-               _loc3_ = articleLayer.getChildAt(_loc6_);
-               _loc1_ = this.getPointDepth(_loc3_.x,_loc3_.y);
-               if(_loc1_ < _loc5_)
+               temp = articleLayer.getChildAt(j);
+               tempDepth = this.getPointDepth(temp.x,temp.y);
+               if(tempDepth < minDepth)
                {
-                  _loc7_ = _loc6_;
-                  _loc5_ = _loc1_;
+                  minIndex = j;
+                  minDepth = tempDepth;
                }
-               _loc6_++;
+               j++;
             }
-            if(_loc8_ > _loc5_)
+            if(depth > minDepth)
             {
-               articleLayer.swapChildrenAt(_loc9_,_loc7_);
+               articleLayer.swapChildrenAt(i,minIndex);
             }
-            _loc9_++;
+            i++;
          }
       }
       
-      protected function getPointDepth(param1:Number, param2:Number) : Number
+      protected function getPointDepth(x:Number, y:Number) : Number
       {
-         return sceneMapVO.mapW * param2 + param1;
+         return sceneMapVO.mapW * y + x;
       }
       
-      public function setSalute(param1:int) : void
+      public function setSalute(id:int) : void
       {
       }
       
@@ -485,53 +483,52 @@ package church.view.churchScene
       
       public function dispose() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var player:* = null;
          removeEvent();
          _data.clear();
          _data = null;
          _sceneMapVO = null;
          var _loc5_:int = 0;
          var _loc4_:* = _characters;
-         for each(var _loc2_ in _characters)
+         for each(var p in _characters)
          {
-            if(_loc2_.parent)
+            if(p.parent)
             {
-               _loc2_.parent.removeChild(_loc2_);
+               p.parent.removeChild(p);
             }
-            _loc2_.removeEventListener("characterMovement",setCenter);
-            _loc2_.removeEventListener("characterActionChange",playerActionChange);
-            _loc2_.dispose();
-            _loc2_ = null;
+            p.removeEventListener("characterMovement",setCenter);
+            p.removeEventListener("characterActionChange",playerActionChange);
+            p.dispose();
+            p = null;
          }
          _characters.clear();
          _characters = null;
          if(articleLayer)
          {
-            _loc3_ = articleLayer.numChildren;
-            while(_loc3_ > 0)
+            for(i = articleLayer.numChildren; i > 0; )
             {
-               _loc1_ = articleLayer.getChildAt(_loc3_ - 1) as ChurchPlayer;
-               if(_loc1_)
+               player = articleLayer.getChildAt(i - 1) as ChurchPlayer;
+               if(player)
                {
-                  _loc1_.removeEventListener("characterMovement",setCenter);
-                  _loc1_.removeEventListener("characterActionChange",playerActionChange);
-                  if(_loc1_.parent)
+                  player.removeEventListener("characterMovement",setCenter);
+                  player.removeEventListener("characterActionChange",playerActionChange);
+                  if(player.parent)
                   {
-                     _loc1_.parent.removeChild(_loc1_);
+                     player.parent.removeChild(player);
                   }
-                  _loc1_.dispose();
+                  player.dispose();
                }
-               _loc1_ = null;
+               player = null;
                try
                {
-                  articleLayer.removeChildAt(_loc3_ - 1);
+                  articleLayer.removeChildAt(i - 1);
                }
                catch(e:RangeError)
                {
                   trace(e);
                }
-               _loc3_--;
+               i--;
             }
             if(articleLayer && articleLayer.parent)
             {

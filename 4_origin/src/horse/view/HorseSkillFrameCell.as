@@ -1,14 +1,12 @@
 package horse.view
 {
    import com.pickgliss.ui.ComponentFactory;
-   import com.pickgliss.ui.LayerManager;
    import com.pickgliss.ui.controls.SimpleBitmapButton;
    import com.pickgliss.ui.core.Disposeable;
    import com.pickgliss.ui.text.FilterFrameText;
    import com.pickgliss.utils.ObjectUtils;
    import ddt.manager.LanguageMgr;
    import ddt.manager.MessageTipManager;
-   import ddt.manager.PlayerManager;
    import ddt.manager.SocketManager;
    import ddt.manager.SoundManager;
    import ddt.view.horse.HorseSkillCell;
@@ -16,9 +14,9 @@ package horse.view
    import flash.events.Event;
    import flash.events.MouseEvent;
    import horse.HorseManager;
+   import horse.data.HorseEvent;
    import horse.data.HorseSkillExpVo;
    import horse.data.HorseSkillGetVo;
-   import trainer.view.NewHandContainer;
    
    public class HorseSkillFrameCell extends Sprite implements Disposeable
    {
@@ -40,10 +38,10 @@ package horse.view
       
       private var _index:int = -1;
       
-      public function HorseSkillFrameCell(param1:Vector.<HorseSkillGetVo>)
+      public function HorseSkillFrameCell(data:Vector.<HorseSkillGetVo>)
       {
          super();
-         _dataList = param1;
+         _dataList = data;
          confirmCurShowSkillId();
          initView();
          initEvent();
@@ -52,25 +50,24 @@ package horse.view
       
       private function confirmCurShowSkillId() : void
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         var _loc1_:Vector.<HorseSkillExpVo> = HorseManager.instance.curHasSkillList;
+         var len:int = 0;
+         var i:int = 0;
+         var tmpGetList:Vector.<HorseSkillExpVo> = HorseManager.instance.curHasSkillList;
          var _loc6_:int = 0;
-         var _loc5_:* = _loc1_;
-         for each(var _loc2_ in _loc1_)
+         var _loc5_:* = tmpGetList;
+         for each(var tmp in tmpGetList)
          {
-            _loc3_ = _dataList.length;
-            _loc4_ = 0;
-            while(_loc4_ < _loc3_)
+            len = _dataList.length;
+            for(i = 0; i < len; )
             {
-               if(_loc2_.skillId == _dataList[_loc4_].SkillID)
+               if(tmp.skillId == _dataList[i].SkillID)
                {
                   _isGet = true;
-                  _index = _loc4_;
-                  _curShowSkill = _loc2_;
+                  _index = i;
+                  _curShowSkill = tmp;
                   break;
                }
-               _loc4_++;
+               i++;
             }
          }
          if(!_curShowSkill)
@@ -129,7 +126,7 @@ package horse.view
          }
       }
       
-      private function __mouseClick(param1:MouseEvent) : void
+      private function __mouseClick(evt:MouseEvent) : void
       {
          if(!_isGet)
          {
@@ -141,18 +138,13 @@ package horse.view
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("horse.skillCannotEquipSame"));
             return;
          }
-         var _loc2_:int = HorseManager.instance.takeUpSkillPlace;
-         if(_loc2_ == 0)
+         var tmpPlace:int = HorseManager.instance.takeUpSkillPlace;
+         if(tmpPlace == 0)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("horse.skillEquipMax"));
             return;
          }
-         SocketManager.Instance.out.sendHorseTakeUpDownSkill(_curShowSkill.skillId,_loc2_);
-         if(!PlayerManager.Instance.Self.isNewOnceFinish(114))
-         {
-            SocketManager.Instance.out.syncWeakStep(114);
-            NewHandContainer.Instance.clearArrowByID(128);
-         }
+         SocketManager.Instance.out.sendHorseTakeUpDownSkill(_curShowSkill.skillId,tmpPlace);
       }
       
       private function initEvent() : void
@@ -160,28 +152,31 @@ package horse.view
          _upBtn.addEventListener("click",upClickHandler,false,0,true);
          _getBtn.addEventListener("click",getClickHandler,false,0,true);
          HorseManager.instance.addEventListener("horseUpSkill",upSkillSucHandler);
+         HorseManager.instance.addEventListener("showNewSkillView",upSkillSucHandler);
       }
       
-      private function upSkillSucHandler(param1:Event) : void
+      private function upSkillSucHandler(event:Event) : void
       {
          confirmCurShowSkillId();
          refreshView();
       }
       
-      private function upClickHandler(param1:MouseEvent) : void
+      private function upClickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:HorseSkillUpFrame = ComponentFactory.Instance.creatComponentByStylename("HorseSkillUpFrame");
-         _loc2_.show(_index,_curShowSkill,_dataList);
-         LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+         HorseManager.instance.dispatchEvent(new HorseEvent("upHorseSkill",{
+            "index":_index,
+            "curShowSkill":_curShowSkill,
+            "dataList":_dataList
+         }));
       }
       
-      private function getClickHandler(param1:MouseEvent) : void
+      private function getClickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc3_:int = _curShowSkill.skillId;
-         var _loc2_:int = HorseManager.instance.getLevelBySkillId(_loc3_);
-         MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("horse.skillGetLevelPrompt",int(_loc2_ / 10) + 1,_loc2_ % 10));
+         var skillId:int = _curShowSkill.skillId;
+         var level:int = HorseManager.instance.getLevelBySkillId(skillId);
+         MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("horse.skillGetLevelPrompt",int(level / 10) + 1,level % 10));
       }
       
       private function removeEvent() : void
@@ -189,6 +184,7 @@ package horse.view
          _upBtn.removeEventListener("click",upClickHandler);
          _getBtn.removeEventListener("click",getClickHandler);
          HorseManager.instance.removeEventListener("horseUpSkill",upSkillSucHandler);
+         HorseManager.instance.removeEventListener("showNewSkillView",upSkillSucHandler);
       }
       
       public function dispose() : void

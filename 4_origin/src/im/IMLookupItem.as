@@ -49,9 +49,9 @@ package im
       
       private var _inviteBtn:BaseButton;
       
-      public function IMLookupItem(param1:Object)
+      public function IMLookupItem(info:Object)
       {
-         _info = param1;
+         _info = info;
          super();
          init();
          initEvent();
@@ -63,9 +63,9 @@ package im
          _bg.setFrame(1);
          addChild(_bg);
          _sex_icon = new SexIcon();
-         var _loc1_:Point = ComponentFactory.Instance.creatCustomObject("IM.IMLookup.SexPos");
-         _sex_icon.x = _loc1_.x;
-         _sex_icon.y = _loc1_.y;
+         var pos:Point = ComponentFactory.Instance.creatCustomObject("IM.IMLookup.SexPos");
+         _sex_icon.x = pos.x;
+         _sex_icon.y = pos.y;
          addChild(_sex_icon);
          if(info is CMFriendInfo)
          {
@@ -146,21 +146,21 @@ package im
          }
       }
       
-      private function __addFriend(param1:MouseEvent) : void
+      private function __addFriend(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          IMManager.Instance.addFriend(info.NickName);
       }
       
-      private function __invite(param1:MouseEvent) : void
+      private function __invite(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:InviteDialogFrame = ComponentFactory.Instance.creatComponentByStylename("InviteDialogFrame");
-         _loc2_.setInfo(_info.UserName);
-         _loc2_.show();
+         var frame:InviteDialogFrame = ComponentFactory.Instance.creatComponentByStylename("InviteDialogFrame");
+         frame.setInfo(_info.UserName);
+         frame.show();
       }
       
-      private function __bgClick(param1:InteractiveEvent) : void
+      private function __bgClick(event:InteractiveEvent) : void
       {
          SoundManager.instance.play("008");
          if(info is PlayerInfo)
@@ -173,7 +173,7 @@ package im
          }
       }
       
-      private function _deleteBtnClick(param1:MouseEvent) : void
+      private function _deleteBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(!(info is CMFriendInfo) && IMControl.Instance.testAlikeName(info.NickName))
@@ -206,7 +206,7 @@ package im
          MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("im.IMLookupItem.ConsortiaPlayerInfo"));
       }
       
-      private function __privateChatClick(param1:InteractiveEvent) : void
+      private function __privateChatClick(event:InteractiveEvent) : void
       {
          SoundManager.instance.play("008");
          if(info is PlayerInfo || info is ConsortiaPlayerInfo)
@@ -216,7 +216,7 @@ package im
          }
       }
       
-      private function __privateChatBtnClick(param1:MouseEvent) : void
+      private function __privateChatBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(info is PlayerInfo || info is ConsortiaPlayerInfo)
@@ -231,12 +231,12 @@ package im
          }
       }
       
-      private function __itemOut(param1:MouseEvent) : void
+      private function __itemOut(event:MouseEvent) : void
       {
          _bg.setFrame(1);
       }
       
-      private function __itemOver(param1:MouseEvent) : void
+      private function __itemOver(event:MouseEvent) : void
       {
          _bg.setFrame(2);
       }

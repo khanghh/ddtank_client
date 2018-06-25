@@ -11,31 +11,30 @@ package starling.display.util
          super();
       }
       
-      public static function removeStrokeVertexAt(param1:Vector.<StrokeVertex>, param2:int) : StrokeVertex
+      public static function removeStrokeVertexAt(vector:Vector.<StrokeVertex>, index:int) : StrokeVertex
       {
-         var _loc5_:int = 0;
-         var _loc4_:uint = param1.length;
-         if(param2 < 0)
+         var i:int = 0;
+         var length:uint = vector.length;
+         if(index < 0)
          {
-            param2 = param2 + _loc4_;
+            index = index + length;
          }
-         if(param2 < 0)
+         if(index < 0)
          {
-            param2 = 0;
+            index = 0;
          }
-         else if(param2 >= _loc4_)
+         else if(index >= length)
          {
-            param2 = _loc4_ - 1;
+            index = length - 1;
          }
-         var _loc3_:StrokeVertex = param1[param2];
-         _loc5_ = param2 + 1;
-         while(_loc5_ < _loc4_)
+         var value:StrokeVertex = vector[index];
+         for(i = index + 1; i < length; )
          {
-            param1[_loc5_ - 1] = param1[_loc5_];
-            _loc5_++;
+            vector[i - 1] = vector[i];
+            i++;
          }
-         param1.length = _loc4_ - 1;
-         return _loc3_;
+         vector.length = length - 1;
+         return value;
       }
    }
 }

@@ -26,25 +26,25 @@ package morn.core.events
       
       private var _data;
       
-      public function UIEvent(param1:String, param2:*, param3:Boolean = false, param4:Boolean = false)
+      public function UIEvent(type:String, data:*, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         super(param1,param3,param4);
-         this._data = param2;
+         super(type,bubbles,cancelable);
+         _data = data;
       }
       
       public function get data() : *
       {
-         return this._data;
+         return _data;
       }
       
-      public function set data(param1:*) : void
+      public function set data(value:*) : void
       {
-         this._data = param1;
+         _data = value;
       }
       
       override public function clone() : Event
       {
-         return new UIEvent(type,this._data,bubbles,cancelable);
+         return new UIEvent(type,_data,bubbles,cancelable);
       }
    }
 }

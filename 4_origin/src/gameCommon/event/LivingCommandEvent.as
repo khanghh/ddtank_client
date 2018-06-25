@@ -12,11 +12,11 @@ package gameCommon.event
       
       private var _cmdObj:Object;
       
-      public function LivingCommandEvent(param1:String, param2:Object = null, param3:String = "livingCommand", param4:Boolean = false, param5:Boolean = false)
+      public function LivingCommandEvent(cmdType:String, cmdObj:Object = null, eventType:String = "livingCommand", bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         super(param3,param4,param5);
-         _cmdType = param1;
-         _cmdObj = param2;
+         super(eventType,bubbles,cancelable);
+         _cmdType = cmdType;
+         _cmdObj = cmdObj;
       }
       
       public function get commandType() : String

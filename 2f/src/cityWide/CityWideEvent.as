@@ -1,18 +1,3 @@
-package cityWide
-{
-   import ddt.data.player.PlayerInfo;
-   import flash.events.Event;
-   
-   public class CityWideEvent extends Event
-   {
-      
-      public static const ONS_PLAYERINFO:String = "ons_playerInfo";
-       
-      
-      private var _playerInfo:PlayerInfo;
-      
-      public function CityWideEvent(param1:String, param2:PlayerInfo = null, param3:Boolean = false, param4:Boolean = false){super(null,null,null);}
-      
-      public function get playerInfo() : PlayerInfo{return null;}
-   }
-}
+package cityWide{   import ddt.data.player.PlayerInfo;   import flash.events.Event;      public class CityWideEvent extends Event   {            public static const ONS_PLAYERINFO:String = "ons_playerInfo";                   private var _playerInfo:PlayerInfo;            public function CityWideEvent(type:String, info:PlayerInfo = null, bubbles:Boolean = false, cancelable:Boolean = false) { super(null,null,null); }
+            public function get playerInfo() : PlayerInfo { return null; }
+   }}

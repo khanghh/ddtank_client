@@ -13,43 +13,42 @@ package ddt.data.analyze
       
       public var myAcademyPlayers:DictionaryData;
       
-      public function MyAcademyPlayersAnalyze(param1:Function)
+      public function MyAcademyPlayersAnalyze(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc5_:* = null;
-         var _loc7_:int = 0;
-         var _loc6_:* = null;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         var _loc4_:XML = new XML(param1);
+         var xmllist:* = null;
+         var i:int = 0;
+         var info:* = null;
+         var state:* = null;
+         var lastDateString:* = null;
+         var xml:XML = new XML(data);
          myAcademyPlayers = new DictionaryData();
-         if(_loc4_.@value == "true")
+         if(xml.@value == "true")
          {
-            _loc5_ = _loc4_..Item;
-            _loc7_ = 0;
-            while(_loc7_ < _loc5_.length())
+            xmllist = xml..Item;
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc6_ = new FriendListPlayer();
-               _loc6_.ID = _loc5_[_loc7_].@UserID;
-               _loc2_ = new PlayerState(int(_loc5_[_loc7_].@State));
-               _loc6_.playerState = _loc2_;
-               _loc6_.apprenticeshipState = _loc5_[_loc7_].@ApprenticeshipState;
-               _loc6_.IsMarried = _loc5_[_loc7_].@IsMarried;
-               _loc3_ = _loc5_[_loc7_].@LastDate;
-               _loc6_.lastDate = DateUtils.dealWithStringDate(_loc3_);
-               ObjectUtils.copyPorpertiesByXML(_loc6_,_loc5_[_loc7_]);
-               myAcademyPlayers.add(_loc6_.ID,_loc6_);
-               _loc7_++;
+               info = new FriendListPlayer();
+               info.ID = xmllist[i].@UserID;
+               state = new PlayerState(int(xmllist[i].@State));
+               info.playerState = state;
+               info.apprenticeshipState = xmllist[i].@ApprenticeshipState;
+               info.IsMarried = xmllist[i].@IsMarried;
+               lastDateString = xmllist[i].@LastDate;
+               info.lastDate = DateUtils.dealWithStringDate(lastDateString);
+               ObjectUtils.copyPorpertiesByXML(info,xmllist[i]);
+               myAcademyPlayers.add(info.ID,info);
+               i++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc4_.@message;
+            message = xml.@message;
             onAnalyzeError();
             onAnalyzeComplete();
          }

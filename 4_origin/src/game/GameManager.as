@@ -51,9 +51,9 @@ package game
       
       public var isStopFocus:Boolean = false;
       
-      public function GameManager(param1:IEventDispatcher = null)
+      public function GameManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : GameManager

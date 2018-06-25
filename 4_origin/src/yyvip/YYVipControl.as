@@ -17,9 +17,9 @@ package yyvip
       private static var _instance:YYVipControl;
        
       
-      public function YYVipControl(param1:IEventDispatcher = null)
+      public function YYVipControl(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : YYVipControl
@@ -36,7 +36,7 @@ package yyvip
          YYVipManager.instance.addEventListener("yyvipOpenView",__onOpenView);
       }
       
-      protected function __onOpenView(param1:CEvent) : void
+      protected function __onOpenView(event:CEvent) : void
       {
          AssetModuleLoader.addModelLoader("yyvip",6);
          AssetModuleLoader.startCodeLoader(loadCompleteHandler);
@@ -44,65 +44,62 @@ package yyvip
       
       private function loadCompleteHandler() : void
       {
-         var _loc1_:YYVipMainFrame = ComponentFactory.Instance.creatComponentByStylename("YYVipMainFrame");
-         LayerManager.Instance.addToLayer(_loc1_,3,true,1);
+         var tmp:YYVipMainFrame = ComponentFactory.Instance.creatComponentByStylename("YYVipMainFrame");
+         LayerManager.Instance.addToLayer(tmp,3,true,1);
       }
       
       public function get openViewAwardList() : Vector.<Object>
       {
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:Array = YYVipManager.instance.awardList[YYVipManager.instance.award_id_list[0]] as Array;
-         var _loc3_:int = _loc1_.length;
-         var _loc4_:Vector.<Object> = new Vector.<Object>();
-         _loc5_ = 0;
-         while(_loc5_ < _loc3_)
+         var i:int = 0;
+         var obj:* = null;
+         var tmp:Array = YYVipManager.instance.awardList[YYVipManager.instance.award_id_list[0]] as Array;
+         var len:int = tmp.length;
+         var tmpList:Vector.<Object> = new Vector.<Object>();
+         for(i = 0; i < len; )
          {
-            _loc2_ = {};
-            _loc2_.itemInfo = ItemManager.Instance.getTemplateById(_loc1_[_loc5_].TemplateId);
-            _loc2_.itemCount = _loc1_[_loc5_].ItemCount;
-            _loc4_.push(_loc2_);
-            _loc5_++;
+            obj = {};
+            obj.itemInfo = ItemManager.Instance.getTemplateById(tmp[i].TemplateId);
+            obj.itemCount = tmp[i].ItemCount;
+            tmpList.push(obj);
+            i++;
          }
-         return _loc4_;
+         return tmpList;
       }
       
-      public function getDailyLevelVipAwardList(param1:int) : Vector.<Object>
+      public function getDailyLevelVipAwardList(index:int) : Vector.<Object>
       {
-         var _loc6_:int = 0;
-         var _loc3_:* = null;
-         var _loc2_:Array = YYVipManager.instance.awardList[YYVipManager.instance.award_id_list[param1]] as Array;
-         var _loc4_:int = _loc2_.length;
-         var _loc5_:Vector.<Object> = new Vector.<Object>();
-         _loc6_ = 0;
-         while(_loc6_ < _loc4_)
+         var i:int = 0;
+         var obj:* = null;
+         var tmp:Array = YYVipManager.instance.awardList[YYVipManager.instance.award_id_list[index]] as Array;
+         var len:int = tmp.length;
+         var tmpList:Vector.<Object> = new Vector.<Object>();
+         for(i = 0; i < len; )
          {
-            _loc3_ = {};
-            _loc3_.itemInfo = ItemManager.Instance.getTemplateById(_loc2_[_loc6_].TemplateId);
-            _loc3_.itemCount = _loc2_[_loc6_].ItemCount;
-            _loc5_.push(_loc3_);
-            _loc6_++;
+            obj = {};
+            obj.itemInfo = ItemManager.Instance.getTemplateById(tmp[i].TemplateId);
+            obj.itemCount = tmp[i].ItemCount;
+            tmpList.push(obj);
+            i++;
          }
-         return _loc5_;
+         return tmpList;
       }
       
       public function get dailyViewYearAwardList() : Vector.<Object>
       {
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:Array = YYVipManager.instance.awardList[YYVipManager.instance.award_id_list[8]] as Array;
-         var _loc3_:int = _loc1_.length;
-         var _loc4_:Vector.<Object> = new Vector.<Object>();
-         _loc5_ = 0;
-         while(_loc5_ < _loc3_)
+         var i:int = 0;
+         var obj:* = null;
+         var tmp:Array = YYVipManager.instance.awardList[YYVipManager.instance.award_id_list[8]] as Array;
+         var len:int = tmp.length;
+         var tmpList:Vector.<Object> = new Vector.<Object>();
+         for(i = 0; i < len; )
          {
-            _loc2_ = {};
-            _loc2_.itemInfo = ItemManager.Instance.getTemplateById(_loc1_[_loc5_].TemplateId);
-            _loc2_.itemCount = _loc1_[_loc5_].ItemCount;
-            _loc4_.push(_loc2_);
-            _loc5_++;
+            obj = {};
+            obj.itemInfo = ItemManager.Instance.getTemplateById(tmp[i].TemplateId);
+            obj.itemCount = tmp[i].ItemCount;
+            tmpList.push(obj);
+            i++;
          }
-         return _loc4_;
+         return tmpList;
       }
       
       public function gotoOpenUrl() : void

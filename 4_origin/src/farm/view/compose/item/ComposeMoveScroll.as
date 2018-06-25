@@ -41,8 +41,8 @@ package farm.view.compose.item
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          _leftBtn = ComponentFactory.Instance.creatComponentByStylename("farmHouse.button.left");
          _leftBtn.transparentEnable = true;
          addChild(_leftBtn);
@@ -51,13 +51,12 @@ package farm.view.compose.item
          _petsImgVec = new Vector.<FarmHouseItem>(5);
          _hBox = ComponentFactory.Instance.creatComponentByStylename("farm.componsePnl.hbox");
          addChild(_hBox);
-         _loc2_ = 0;
-         while(_loc2_ < 5)
+         for(i = 0; i < 5; )
          {
-            _loc1_ = new FarmHouseItem();
-            _petsImgVec[_loc2_] = _loc1_;
-            _hBox.addChild(_loc1_);
-            _loc2_++;
+            item = new FarmHouseItem();
+            _petsImgVec[i] = item;
+            _hBox.addChild(item);
+            i++;
          }
          _bag = PlayerManager.Instance.Self.getBag(14);
          _start = 0;
@@ -78,43 +77,41 @@ package farm.view.compose.item
          _bag.removeEventListener("update",__bagUpdate);
       }
       
-      private function __bagUpdate(param1:BagEvent) : void
+      private function __bagUpdate(event:BagEvent) : void
       {
          update();
       }
       
       private function update() : void
       {
-         var _loc1_:int = 0;
-         var _loc2_:int = 0;
+         var end:int = 0;
+         var i:int = 0;
          clearItem();
          if(_bag.items.length > 0)
          {
-            _loc1_ = _bag.items.length > _start + 5?_start + 5:_bag.items.length;
-            _loc2_ = _start;
-            while(_loc2_ < _loc1_)
+            end = _bag.items.length > _start + 5?_start + 5:_bag.items.length;
+            for(i = _start; i < end; )
             {
-               _petsImgVec[_loc2_ - _start].info = _bag.items.list[_loc2_];
-               _loc2_++;
+               _petsImgVec[i - _start].info = _bag.items.list[i];
+               i++;
             }
          }
       }
       
       private function clearItem() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < 5)
+         var i:int = 0;
+         for(i = 0; i < 5; )
          {
-            _petsImgVec[_loc1_].info = null;
-            _loc1_++;
+            _petsImgVec[i].info = null;
+            i++;
          }
       }
       
-      private function __ClickHandler(param1:MouseEvent) : void
+      private function __ClickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = event.currentTarget;
          if(_leftBtn !== _loc2_)
          {
             if(_rightBtn === _loc2_)
@@ -139,12 +136,12 @@ package farm.view.compose.item
          _start = 0;
          var _loc3_:int = 0;
          var _loc2_:* = _petsImgVec;
-         for each(var _loc1_ in _petsImgVec)
+         for each(var item in _petsImgVec)
          {
-            if(_loc1_)
+            if(item)
             {
-               _loc1_.dispose();
-               _loc1_ = null;
+               item.dispose();
+               item = null;
             }
          }
          _petsImgVec.splice(0,_petsImgVec.length);

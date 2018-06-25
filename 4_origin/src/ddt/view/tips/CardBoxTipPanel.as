@@ -95,18 +95,18 @@ package ddt.view.tips
          return _tipData;
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         if(param1 is ShopItemInfo)
+         if(data is ShopItemInfo)
          {
-            _templateInfo = param1.TemplateInfo as ItemTemplateInfo;
+            _templateInfo = data.TemplateInfo as ItemTemplateInfo;
             this.visible = true;
             _tipData = _templateInfo;
             showTip();
          }
-         else if(param1)
+         else if(data)
          {
-            _templateInfo = param1 as ItemTemplateInfo;
+            _templateInfo = data as ItemTemplateInfo;
             this.visible = true;
             _tipData = _templateInfo;
             showTip();
@@ -120,7 +120,7 @@ package ddt.view.tips
       
       private function showTip() : void
       {
-         var _loc1_:int = 0;
+         var n:int = 0;
          if(_templateInfo is InventoryItemInfo)
          {
             _band.visible = true;
@@ -133,20 +133,19 @@ package ddt.view.tips
          _cardName.text = _templateInfo.Name;
          _cardName.textColor = QualityType.QUALITY_COLOR[4];
          _cardType.text = CardsTipPanel.CARDTYPE[int(_templateInfo.Property6)] + "(" + CardsTipPanel.CARDTYPE_VICE_MAIN[int(_templateInfo.Property8)] + ")";
-         var _loc4_:Vector.<SetsInfo> = CardManager.Instance.model.setsSortRuleVector;
-         var _loc3_:int = _loc4_.length;
-         var _loc2_:String = "";
-         _loc1_ = 0;
-         while(_loc1_ < _loc3_)
+         var setsInfoVec:Vector.<SetsInfo> = CardManager.Instance.model.setsSortRuleVector;
+         var len:int = setsInfoVec.length;
+         var setsName:String = "";
+         for(n = 0; n < len; )
          {
-            if(_loc4_[_loc1_].ID == _templateInfo.Property7)
+            if(setsInfoVec[n].ID == _templateInfo.Property7)
             {
-               _loc2_ = _loc4_[_loc1_].name;
+               setsName = setsInfoVec[n].name;
                break;
             }
-            _loc1_++;
+            n++;
          }
-         _cardSets.text = _loc2_;
+         _cardSets.text = setsName;
          if(_templateInfo.TemplateID == 20150 || _templateInfo.TemplateID == 201266)
          {
             _cardType.visible = false;

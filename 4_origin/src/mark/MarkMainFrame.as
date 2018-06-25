@@ -48,14 +48,14 @@ package mark
       
       override protected function initialize() : void
       {
-         var _loc1_:ScaleBitmapImage = ComponentFactory.Instance.creatComponentByStylename("mark.hammerView.bg");
-         addChild(_loc1_);
+         var bg:ScaleBitmapImage = ComponentFactory.Instance.creatComponentByStylename("mark.hammerView.bg");
+         addChild(bg);
          _tab = new SelectedButtonGroup();
          _tabContainer = ComponentFactory.Instance.creatComponentByStylename("mark.tabContainer");
          addChild(_tabContainer);
-         var _loc2_:SelectedButton = ComponentFactory.Instance.creatComponentByStylename("mark.hammer");
-         _tabContainer.addChild(_loc2_);
-         _tab.addSelectItem(_loc2_);
+         var hammer:SelectedButton = ComponentFactory.Instance.creatComponentByStylename("mark.hammer");
+         _tabContainer.addChild(hammer);
+         _tab.addSelectItem(hammer);
          _transfer = ComponentFactory.Instance.creatComponentByStylename("mark.transfer");
          _tabContainer.addChild(_transfer);
          _tab.addSelectItem(_transfer);
@@ -75,12 +75,12 @@ package mark
          checkChipStatus();
       }
       
-      private function checkChipStatus(param1:MarkEvent = null) : void
+      private function checkChipStatus(evt:MarkEvent = null) : void
       {
-         var _loc3_:MarkChipData = MarkMgr.inst.model.getChipById(MarkMgr.inst.model.chipItemID);
-         var _loc2_:* = _loc3_.bornLv + _loc3_.hammerLv > 1;
-         _transfer.enable = _loc2_;
-         if(_loc2_)
+         var chip:MarkChipData = MarkMgr.inst.model.getChipById(MarkMgr.inst.model.chipItemID);
+         var isTransfer:* = chip.bornLv + chip.hammerLv > 1;
+         _transfer.enable = isTransfer;
+         if(isTransfer)
          {
             ObjectUtils.disposeObject(_transferSprite);
             _transferSprite = null;
@@ -104,22 +104,22 @@ package mark
          }
       }
       
-      private function overHander(param1:MouseEvent) : void
+      private function overHander(e:MouseEvent) : void
       {
-         var _loc2_:OneLineTip = _transferTip;
-         _loc2_.visible = true;
-         LayerManager.Instance.addToLayer(_loc2_,2);
-         var _loc3_:Point = param1.currentTarget.localToGlobal(new Point(0,0));
-         _loc2_.x = _loc3_.x - _loc2_.width * 0.5;
-         _loc2_.y = _loc3_.y + param1.currentTarget.height;
+         var tip:OneLineTip = _transferTip;
+         tip.visible = true;
+         LayerManager.Instance.addToLayer(tip,2);
+         var pos:Point = e.currentTarget.localToGlobal(new Point(0,0));
+         tip.x = pos.x - tip.width * 0.5;
+         tip.y = pos.y + e.currentTarget.height;
       }
       
-      private function outHander(param1:MouseEvent) : void
+      private function outHander(e:MouseEvent) : void
       {
-         var _loc2_:OneLineTip = _transferTip;
-         if(_loc2_)
+         var tip:OneLineTip = _transferTip;
+         if(tip)
          {
-            _loc2_.visible = false;
+            tip.visible = false;
          }
       }
       
@@ -142,17 +142,17 @@ package mark
          MarkMgr.inst.addEventListener("submitResult",submitResult);
       }
       
-      private function transferResultHandler(param1:MarkEvent) : void
+      private function transferResultHandler(evt:MarkEvent) : void
       {
          _tabMask.visible = true;
       }
       
-      private function submitResult(param1:MarkEvent) : void
+      private function submitResult(evt:MarkEvent) : void
       {
          _tabMask.visible = false;
       }
       
-      private function onMaskClick(param1:MouseEvent) : void
+      private function onMaskClick(evt:MouseEvent) : void
       {
          if(MarkMgr.inst.model.transferPro)
          {
@@ -174,7 +174,7 @@ package mark
          MarkMgr.inst.removeEventListener("submitResult",submitResult);
       }
       
-      private function select(param1:Event) : void
+      private function select(evt:Event) : void
       {
          _tabContainer.arrange();
          if(!_containers)
@@ -183,35 +183,35 @@ package mark
          }
          var _loc5_:int = 0;
          var _loc4_:* = _containers;
-         for each(var _loc2_ in _containers)
+         for each(var it in _containers)
          {
-            _loc2_.visible = false;
+            it.visible = false;
          }
-         var _loc3_:DisplayObjectContainer = _containers[_tab.selectIndex];
+         var container:DisplayObjectContainer = _containers[_tab.selectIndex];
          switch(int(_tab.selectIndex))
          {
             case 0:
                lblTitle.text = LanguageMgr.GetTranslation("mark.hammer");
-               if(!_loc3_)
+               if(!container)
                {
-                  _loc3_ = new MarkHammerView();
-                  PositionUtils.setPos(_loc3_,"mark.hammerViewPos");
-                  addChild(_loc3_);
-                  _containers[_tab.selectIndex] = _loc3_;
+                  container = new MarkHammerView();
+                  PositionUtils.setPos(container,"mark.hammerViewPos");
+                  addChild(container);
+                  _containers[_tab.selectIndex] = container;
                }
                break;
             case 1:
                lblTitle.text = LanguageMgr.GetTranslation("mark.transfer");
-               if(!_loc3_)
+               if(!container)
                {
-                  _loc3_ = new MarkArtificeView();
-                  PositionUtils.setPos(_loc3_,"mark.transferViewPos");
-                  addChild(_loc3_);
-                  _containers[_tab.selectIndex] = _loc3_;
+                  container = new MarkArtificeView();
+                  PositionUtils.setPos(container,"mark.transferViewPos");
+                  addChild(container);
+                  _containers[_tab.selectIndex] = container;
                   break;
                }
          }
-         _loc3_.visible = true;
+         container.visible = true;
       }
       
       override public function dispose() : void
@@ -230,9 +230,9 @@ package mark
          _transferTip = null;
          var _loc3_:int = 0;
          var _loc2_:* = _containers;
-         for each(var _loc1_ in _containers)
+         for each(var it in _containers)
          {
-            ObjectUtils.disposeObject(_loc1_);
+            ObjectUtils.disposeObject(it);
          }
          _containers = null;
          _transfer = null;

@@ -41,10 +41,10 @@ package ddtmatch.view
       
       private function initView() : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:* = null;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var score:int = 0;
+         var cellList:* = null;
+         var cell:* = null;
          _bg = ComponentFactory.Instance.creatBitmap("ddtmatch.fightKingBg");
          addChild(_bg);
          _activityTimeTxt = ComponentFactory.Instance.creatComponentByStylename("ddtmatch.fightKing.activityTimeTxt");
@@ -56,14 +56,13 @@ package ddtmatch.view
          _myscoreTxt = ComponentFactory.Instance.creatComponentByStylename("ddtmatch.fightKing.myscoreTxt");
          addChild(_myscoreTxt);
          _vbox = ComponentFactory.Instance.creatComponentByStylename("ddtmatch.fightKing.vBox");
-         _loc4_ = 0;
-         while(_loc4_ < DDTMatchManager.instance.list.length)
+         for(i = 0; i < DDTMatchManager.instance.list.length; )
          {
-            _loc2_ = DDTMatchManager.instance.list[_loc4_].split(":")[0];
-            _loc3_ = DDTMatchManager.instance.list[_loc4_].split(":")[1].split("|");
-            _loc1_ = new DDTMatchFightKingItem(_loc2_,_loc3_);
-            _vbox.addChild(_loc1_);
-            _loc4_++;
+            score = DDTMatchManager.instance.list[i].split(":")[0];
+            cellList = DDTMatchManager.instance.list[i].split(":")[1].split("|");
+            cell = new DDTMatchFightKingItem(score,cellList);
+            _vbox.addChild(cell);
+            i++;
          }
          scrollPanel = ComponentFactory.Instance.creatComponentByStylename("ddtmatch.fightKing.scrollPanel");
          scrollPanel.setView(_vbox);
@@ -76,11 +75,11 @@ package ddtmatch.view
          DDTMatchManager.instance.addEventListener("fightKing",__onFightKingSocreInfo);
       }
       
-      private function __onFightKingSocreInfo(param1:CrazyTankSocketEvent) : void
+      private function __onFightKingSocreInfo(e:CrazyTankSocketEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _myscoreTxt.text = String(_loc2_.readInt());
-         _loc2_.readInt();
+         var pkg:PackageIn = e.pkg;
+         _myscoreTxt.text = String(pkg.readInt());
+         pkg.readInt();
       }
       
       private function removeEvent() : void

@@ -107,7 +107,7 @@ package quest
          addChild(_buyBtnStrip);
       }
       
-      private function refreshBuyBtn(param1:Event) : void
+      private function refreshBuyBtn(event:Event) : void
       {
          if(ServerConfigManager.instance.getIsBuyQuestEnereyNeedKingBuff)
          {
@@ -134,12 +134,12 @@ package quest
          KingBlessManager.instance.addEventListener("update_main_event",refreshBuyBtn);
       }
       
-      private function startCancelHandler(param1:MouseEvent) : void
+      private function startCancelHandler(event:MouseEvent) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc5_:int = 0;
+         var msg:* = null;
+         var cost:int = 0;
+         var quick:* = null;
+         var needNum:int = 0;
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -148,7 +148,7 @@ package quest
          }
          if(_speedUpBtn.visible)
          {
-            _loc4_ = LanguageMgr.GetTranslation("ddt.trusteeship.cancelTipTxt");
+            msg = LanguageMgr.GetTranslation("ddt.trusteeship.cancelTipTxt");
          }
          else
          {
@@ -164,27 +164,27 @@ package quest
                }
                return;
             }
-            _loc3_ = _questInfo.TrusteeshipCost;
-            if(TrusteeshipManager.instance.spiritValue < _loc3_)
+            cost = _questInfo.TrusteeshipCost;
+            if(TrusteeshipManager.instance.spiritValue < cost)
             {
-               _loc2_ = ComponentFactory.Instance.creat("ddtcore.QuickUseFrame");
-               _loc5_ = (TrusteeshipManager.instance.maxSpiritValue - TrusteeshipManager.instance.spiritValue) / 20;
-               _loc2_.setItemInfo(11918,_loc3_,1,_loc5_);
+               quick = ComponentFactory.Instance.creat("ddtcore.QuickUseFrame");
+               needNum = (TrusteeshipManager.instance.maxSpiritValue - TrusteeshipManager.instance.spiritValue) / 20;
+               quick.setItemInfo(11918,cost,1,needNum);
                return;
             }
-            _loc4_ = LanguageMgr.GetTranslation("ddt.trusteeship.startTipTxt",_questInfo.TrusteeshipNeedTime,_loc3_);
+            msg = LanguageMgr.GetTranslation("ddt.trusteeship.startTipTxt",_questInfo.TrusteeshipNeedTime,cost);
          }
-         _confirmFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc4_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
+         _confirmFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),msg,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
          _confirmFrame.moveEnable = false;
          _confirmFrame.addEventListener("response",__confirmStartCancel);
       }
       
-      private function __confirmStartCancel(param1:FrameEvent) : void
+      private function __confirmStartCancel(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          _confirmFrame.removeEventListener("response",__confirmStartCancel);
          _confirmFrame = null;
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             if(_speedUpBtn.visible)
             {
@@ -197,7 +197,7 @@ package quest
          }
       }
       
-      private function speedUpHandler(param1:MouseEvent) : void
+      private function speedUpHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -205,31 +205,31 @@ package quest
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:int = _count / (60000 / 1000);
-         var _loc4_:int = _count % (60000 / 1000);
-         var _loc5_:int = _loc2_ + (_loc4_ > 0?1:0);
-         var _loc3_:int = _loc5_ * TrusteeshipManager.instance.speedUpOneMinNeedMoney;
-         var _loc6_:String = LanguageMgr.GetTranslation("ddt.trusteeship.speedUpCostTipTxt",_loc3_);
-         _confirmFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc6_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"SimpleAlert",30,true);
+         var minute:int = _count / (60000 / 1000);
+         var second:int = _count % (60000 / 1000);
+         var needTime:int = minute + (second > 0?1:0);
+         var needMoney:int = needTime * TrusteeshipManager.instance.speedUpOneMinNeedMoney;
+         var msg:String = LanguageMgr.GetTranslation("ddt.trusteeship.speedUpCostTipTxt",needMoney);
+         _confirmFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),msg,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"SimpleAlert",30,true);
          _confirmFrame.moveEnable = false;
          _confirmFrame.addEventListener("response",__confirmSpeedUp);
       }
       
-      private function __confirmSpeedUp(param1:FrameEvent) : void
+      private function __confirmSpeedUp(evt:FrameEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
-         var _loc5_:int = 0;
-         var _loc3_:int = 0;
+         var minute:int = 0;
+         var second:int = 0;
+         var needTime:int = 0;
+         var needMoney:int = 0;
          SoundManager.instance.play("008");
          _confirmFrame.removeEventListener("response",__confirmSpeedUp);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
-            _loc2_ = _count / (60000 / 1000);
-            _loc4_ = _count % (60000 / 1000);
-            _loc5_ = _loc2_ + (_loc4_ > 0?1:0);
-            _loc3_ = _loc5_ * TrusteeshipManager.instance.speedUpOneMinNeedMoney;
-            CheckMoneyUtils.instance.checkMoney(param1.currentTarget.isBand,_loc3_,onCheckComplete);
+            minute = _count / (60000 / 1000);
+            second = _count % (60000 / 1000);
+            needTime = minute + (second > 0?1:0);
+            needMoney = needTime * TrusteeshipManager.instance.speedUpOneMinNeedMoney;
+            CheckMoneyUtils.instance.checkMoney(evt.currentTarget.isBand,needMoney,onCheckComplete);
          }
       }
       
@@ -239,7 +239,7 @@ package quest
          _confirmFrame = null;
       }
       
-      private function buyHandler(param1:MouseEvent) : void
+      private function buyHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -252,16 +252,16 @@ package quest
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.trusteeship.maxSpiritCannotBuyTxt"));
             return;
          }
-         var _loc2_:String = LanguageMgr.GetTranslation("ddt.trusteeship.buySpiritCostTipTxt",TrusteeshipManager.instance.buyOnceNeedMoney,TrusteeshipManager.instance.buyOnceSpiritValue);
-         _confirmFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc2_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"SimpleAlert",30,true);
+         var msg:String = LanguageMgr.GetTranslation("ddt.trusteeship.buySpiritCostTipTxt",TrusteeshipManager.instance.buyOnceNeedMoney,TrusteeshipManager.instance.buyOnceSpiritValue);
+         _confirmFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),msg,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"SimpleAlert",30,true);
          _confirmFrame.moveEnable = false;
          _confirmFrame.addEventListener("response",__confirmBuySpirit);
       }
       
-      private function __confirmBuySpirit(param1:FrameEvent) : void
+      private function __confirmBuySpirit(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             CheckMoneyUtils.instance.checkMoney(_confirmFrame.isBand,TrusteeshipManager.instance.buyOnceNeedMoney,onCheckComplete2);
          }
@@ -275,20 +275,20 @@ package quest
          SocketManager.Instance.out.sendTrusteeshipBuySpirit(_confirmFrame.isBand);
       }
       
-      public function refreshView(param1:QuestInfo, param2:Function, param3:BaseButton) : void
+      public function refreshView(questInfo:QuestInfo, callback:Function, questBtn:BaseButton) : void
       {
-         var _loc5_:Number = NaN;
-         var _loc4_:Number = NaN;
-         _questInfo = param1;
-         _callback = param2;
-         _questBtn = param3;
+         var endTimestamp:Number = NaN;
+         var nowTimestamp:Number = NaN;
+         _questInfo = questInfo;
+         _callback = callback;
+         _questBtn = questBtn;
          if(_questInfo.isCompleted)
          {
             taskCompleteState();
             return;
          }
-         var _loc6_:TrusteeshipDataVo = TrusteeshipManager.instance.getTrusteeshipInfo(_questInfo.id);
-         if(!_loc6_)
+         var vo:TrusteeshipDataVo = TrusteeshipManager.instance.getTrusteeshipInfo(_questInfo.id);
+         if(!vo)
          {
             _questBtn.visible = true;
             _speedUpBg.visible = false;
@@ -308,9 +308,9 @@ package quest
             _speedUpBtn.visible = true;
             _startCancelBtn.visible = true;
             _startCancelBtn.text = LanguageMgr.GetTranslation("ddt.trusteeship.cancelTxt");
-            _loc5_ = _loc6_.endTime.getTime();
-            _loc4_ = TimeManager.Instance.Now().getTime();
-            _count = int((_loc5_ - _loc4_) / 1000);
+            endTimestamp = vo.endTime.getTime();
+            nowTimestamp = TimeManager.Instance.Now().getTime();
+            _count = int((endTimestamp - nowTimestamp) / 1000);
             if(_count > 0)
             {
                _speedUpTimeTxt.text = getTimeStr(_count);
@@ -347,7 +347,7 @@ package quest
          _callback = null;
       }
       
-      private function timerHandler(param1:TimerEvent) : void
+      private function timerHandler(event:TimerEvent) : void
       {
          _count = Number(_count) - 1;
          if(_count <= 0)
@@ -360,26 +360,26 @@ package quest
          }
       }
       
-      private function getTimeStr(param1:int) : String
+      private function getTimeStr(count:int) : String
       {
-         var _loc5_:int = param1 / (3600000 / 1000);
-         var _loc4_:int = param1 % (3600000 / 1000);
-         var _loc2_:int = _loc4_ / (60000 / 1000);
-         var _loc3_:int = _loc4_ % (60000 / 1000);
-         return LanguageMgr.GetTranslation("ddt.trusteeship.speedUpTimeTxt",getTimeStrOO(_loc5_),getTimeStrOO(_loc2_),getTimeStrOO(_loc3_));
+         var hour:int = count / (3600000 / 1000);
+         var hourRest:int = count % (3600000 / 1000);
+         var minute:int = hourRest / (60000 / 1000);
+         var second:int = hourRest % (60000 / 1000);
+         return LanguageMgr.GetTranslation("ddt.trusteeship.speedUpTimeTxt",getTimeStrOO(hour),getTimeStrOO(minute),getTimeStrOO(second));
       }
       
-      private function getTimeStrOO(param1:int) : String
+      private function getTimeStrOO(value:int) : String
       {
-         if(param1 == 0)
+         if(value == 0)
          {
             return "00";
          }
-         if(param1 < 10)
+         if(value < 10)
          {
-            return "0" + param1;
+            return "0" + value;
          }
-         return param1.toString();
+         return value.toString();
       }
       
       private function removeEvent() : void

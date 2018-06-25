@@ -74,14 +74,14 @@ package gameCommon.view
          PlayerManager.Instance.Self.removeEventListener("trusteeshipChange",__trusteeshipChange);
       }
       
-      protected function __die(param1:Event) : void
+      protected function __die(event:Event) : void
       {
          visible = false;
          trusteeshipState = false;
          SocketManager.Instance.out.sendGameTrusteeship(false);
       }
       
-      protected function __transparentChanged(param1:Event) : void
+      protected function __transparentChanged(event:Event) : void
       {
          if(parent)
          {
@@ -96,7 +96,7 @@ package gameCommon.view
          }
       }
       
-      protected function __onTrusteeshipBtnClick(param1:Event) : void
+      protected function __onTrusteeshipBtnClick(event:Event) : void
       {
          SoundManager.instance.playButtonSound();
          trusteeshipState = !trusteeshipState;
@@ -104,9 +104,9 @@ package gameCommon.view
          SocketManager.Instance.out.sendGameTrusteeship(trusteeshipState);
       }
       
-      public function set trusteeshipState(param1:Boolean) : void
+      public function set trusteeshipState(value:Boolean) : void
       {
-         _trusteeshipState = param1;
+         _trusteeshipState = value;
          update();
       }
       
@@ -127,10 +127,10 @@ package gameCommon.view
          }
       }
       
-      private function __trusteeshipChange(param1:GameEvent) : void
+      private function __trusteeshipChange(event:GameEvent) : void
       {
-         var _loc2_:Boolean = param1.data as Boolean;
-         if(_loc2_)
+         var flag:Boolean = event.data as Boolean;
+         if(flag)
          {
             trusteeshipState = true;
             if(_trusteeshipBtn)

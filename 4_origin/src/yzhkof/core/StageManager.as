@@ -20,9 +20,9 @@ package yzhkof.core
          super();
       }
       
-      public static function init(param1:Stage) : void
+      public static function init(stage:Stage) : void
       {
-         _stage = param1;
+         _stage = stage;
       }
       
       public static function get stage() : Stage
@@ -30,19 +30,19 @@ package yzhkof.core
          return _stage;
       }
       
-      public static function addChildToStageUpperDisplayList(param1:DisplayObject) : void
+      public static function addChildToStageUpperDisplayList(child:DisplayObject) : void
       {
-         stage.addChild(param1);
-         weakMap.add(childCount++,param1);
+         stage.addChild(child);
+         weakMap.add(childCount++,child);
          stage.addEventListener(Event.ADDED,__onStageAdd);
       }
       
-      private static function __onStageAdd(param1:Event) : void
+      private static function __onStageAdd(e:Event) : void
       {
-         var _loc2_:DisplayObject = null;
-         for each(_loc2_ in weakMap.valueSet)
+         var i:DisplayObject = null;
+         for each(i in weakMap.valueSet)
          {
-            stage.setChildIndex(_loc2_,stage.numChildren - 1);
+            stage.setChildIndex(i,stage.numChildren - 1);
          }
       }
    }

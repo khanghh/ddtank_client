@@ -35,11 +35,11 @@ package team.view.main
       
       override protected function initialize() : void
       {
-         var _loc1_:Shape = new Shape();
-         _loc1_.graphics.beginFill(0,0);
-         _loc1_.graphics.drawRect(0,0,63,63);
-         _loc1_.graphics.endFill();
-         _cell = new BagCell(0,null,false,_loc1_);
+         var shape:Shape = new Shape();
+         shape.graphics.beginFill(0,0);
+         shape.graphics.drawRect(0,0,63,63);
+         shape.graphics.endFill();
+         _cell = new BagCell(0,null,false,shape);
          PositionUtils.setPos(_cell,"team.shop.itemCellPos");
          _cell.setContentSize(60,60);
          addChild(_cell);
@@ -49,8 +49,8 @@ package team.view.main
       
       private function __onClickBuy() : void
       {
-         var _loc1_:int = 0;
-         var _loc2_:* = null;
+         var condition:int = 0;
+         var _buyView:* = null;
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -66,36 +66,36 @@ package team.view.main
             }
             if(_info.Condition == 1)
             {
-               _loc1_ = TeamManager.instance.model.selfScore;
+               condition = TeamManager.instance.model.selfScore;
             }
             else if(_info.Condition == 2)
             {
-               _loc1_ = TeamManager.instance.model.selfAllActive;
+               condition = TeamManager.instance.model.selfAllActive;
             }
-            if(_loc1_ < _info.Value)
+            if(condition < _info.Value)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("team.shop.conditionTip" + _info.Condition));
                return;
             }
-            _loc2_ = ComponentFactory.Instance.creatComponentByStylename("team.view.alertShopBuyFrame");
-            _loc2_.setData(_cell.info.TemplateID,_info.ID,_info.Price);
-            LayerManager.Instance.addToLayer(_loc2_,2,true,1);
+            _buyView = ComponentFactory.Instance.creatComponentByStylename("team.view.alertShopBuyFrame");
+            _buyView.setData(_cell.info.TemplateID,_info.ID,_info.Price);
+            LayerManager.Instance.addToLayer(_buyView,2,true,1);
          }
       }
       
-      public function set info(param1:TeamShopInfo) : void
+      public function set info(value:TeamShopInfo) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         _info = param1;
+         var shopInfo:* = null;
+         var itemInfo:* = null;
+         _info = value;
          if(_info)
          {
-            _loc2_ = ShopManager.Instance.getShopItemByGoodsID(_info.ID);
-            _loc3_ = ItemManager.fillByID(_loc2_.TemplateID);
-            _loc3_.IsBinds = true;
-            _cell.info = _loc3_;
+            shopInfo = ShopManager.Instance.getShopItemByGoodsID(_info.ID);
+            itemInfo = ItemManager.fillByID(shopInfo.TemplateID);
+            itemInfo.IsBinds = true;
+            _cell.info = itemInfo;
             _cell.refreshTbxPos();
-            label_name.text = _loc3_.Name;
+            label_name.text = itemInfo.Name;
             label_coin.text = LanguageMgr.GetTranslation("team.shop.consume",_info.Price);
             if(_info.Condition)
             {

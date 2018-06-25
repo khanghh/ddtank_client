@@ -29,17 +29,17 @@ package gradeAwardsBoxBtn.ui
          addGradeBitmap(19,ComponentFactory.Instance.creatBitmapData("asset.hall.grade19"));
       }
       
-      public function addGradeBitmap(param1:int, param2:BitmapData) : void
+      public function addGradeBitmap(grade:int, bitmapData:BitmapData) : void
       {
-         _gradeTextDic[param1] = param2;
+         _gradeTextDic[grade] = bitmapData;
       }
       
-      public function setBitmapData(param1:int) : void
+      public function setBitmapData(grade:int) : void
       {
-         var _loc2_:BitmapData = _gradeTextDic[param1];
-         if(_loc2_ != null)
+         var bmd:BitmapData = _gradeTextDic[grade];
+         if(bmd != null)
          {
-            _gradeBitmap.bitmapData = _loc2_;
+            _gradeBitmap.bitmapData = bmd;
          }
       }
       

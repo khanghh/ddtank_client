@@ -39,15 +39,15 @@ package ddt.view.academyCommon.academyIcon
          _bg = ComponentFactory.Instance.creatComponentByStylename("academyCommon.academyIcon.academyIconTipsBG");
          addChild(_bg);
          _textFrameArray = new Vector.<FilterFrameText>();
-         var _loc3_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("academyCommon.academyIcon.contentTxt");
-         addChild(_loc3_);
-         _textFrameArray.push(_loc3_);
-         var _loc1_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("academyCommon.academyIcon.contentTxtII");
-         addChild(_loc1_);
-         _textFrameArray.push(_loc1_);
-         var _loc2_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("academyCommon.academyIcon.contentTxtIII");
-         addChild(_loc2_);
-         _textFrameArray.push(_loc2_);
+         var _content:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("academyCommon.academyIcon.contentTxt");
+         addChild(_content);
+         _textFrameArray.push(_content);
+         var _contentII:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("academyCommon.academyIcon.contentTxtII");
+         addChild(_contentII);
+         _textFrameArray.push(_contentII);
+         var _contentIII:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("academyCommon.academyIcon.contentTxtIII");
+         addChild(_contentIII);
+         _textFrameArray.push(_contentIII);
          _contentLabel = ComponentFactory.Instance.model.getSet("academyCommon.academyIcon.contentLabelTF");
       }
       
@@ -56,9 +56,9 @@ package ddt.view.academyCommon.academyIcon
          return _tipData;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(data:Object) : void
       {
-         _tipData = param1 as PlayerInfo;
+         _tipData = data as PlayerInfo;
          if(_tipData)
          {
             update();
@@ -70,7 +70,7 @@ package ddt.view.academyCommon.academyIcon
          return 0;
       }
       
-      public function set tipWidth(param1:int) : void
+      public function set tipWidth(w:int) : void
       {
       }
       
@@ -81,10 +81,10 @@ package ddt.view.academyCommon.academyIcon
       
       private function update() : void
       {
-         var _loc4_:int = 0;
-         var _loc1_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:* = PlayerManager.Instance.Self.ID == _tipData.ID;
+         var i:int = 0;
+         var num:int = 0;
+         var number:int = 0;
+         var isSelf:* = PlayerManager.Instance.Self.ID == _tipData.ID;
          var _loc5_:* = false;
          _textFrameArray[2].visible = _loc5_;
          _loc5_ = _loc5_;
@@ -92,22 +92,21 @@ package ddt.view.academyCommon.academyIcon
          _textFrameArray[0].visible = _loc5_;
          if(_tipData.apprenticeshipState == 2 || _tipData.apprenticeshipState == 3)
          {
-            _loc4_ = 0;
-            while(_loc4_ <= (_tipData.getMasterOrApprentices().length >= 3?2:_tipData.getMasterOrApprentices().length))
+            for(i = 0; i <= (_tipData.getMasterOrApprentices().length >= 3?2:_tipData.getMasterOrApprentices().length); )
             {
-               if(_tipData.getMasterOrApprentices().list[_loc4_] && _tipData.getMasterOrApprentices().list[_loc4_] != "")
+               if(_tipData.getMasterOrApprentices().list[i] && _tipData.getMasterOrApprentices().list[i] != "")
                {
-                  _textFrameArray[_loc4_].text = LanguageMgr.GetTranslation("ddt.view.academyCommon.academyIcon.AcademyIconTip.master",_tipData.getMasterOrApprentices().list[_loc4_]);
-                  _textFrameArray[_loc4_].setTextFormat(_contentLabel,0,_tipData.getMasterOrApprentices().list[_loc4_].length);
-                  _textFrameArray[_loc4_].visible = true;
+                  _textFrameArray[i].text = LanguageMgr.GetTranslation("ddt.view.academyCommon.academyIcon.AcademyIconTip.master",_tipData.getMasterOrApprentices().list[i]);
+                  _textFrameArray[i].setTextFormat(_contentLabel,0,_tipData.getMasterOrApprentices().list[i].length);
+                  _textFrameArray[i].visible = true;
                }
                else
                {
-                  _loc1_ = 3 - _tipData.getMasterOrApprentices().length;
-                  _textFrameArray[_loc4_].text = LanguageMgr.GetTranslation("ddt.view.academyCommon.academyIcon.AcademyIconTip.masterExplanation",_loc1_);
-                  _textFrameArray[_loc4_].visible = true;
+                  num = 3 - _tipData.getMasterOrApprentices().length;
+                  _textFrameArray[i].text = LanguageMgr.GetTranslation("ddt.view.academyCommon.academyIcon.AcademyIconTip.masterExplanation",num);
+                  _textFrameArray[i].visible = true;
                }
-               _loc4_++;
+               i++;
             }
          }
          else if(_tipData.apprenticeshipState == 1)
@@ -118,7 +117,7 @@ package ddt.view.academyCommon.academyIcon
                _textFrameArray[0].setTextFormat(_contentLabel,0,_tipData.getMasterOrApprentices().list[0].length);
                _textFrameArray[0].visible = true;
             }
-            else if(!_loc3_)
+            else if(!isSelf)
             {
                _textFrameArray[0].text = LanguageMgr.GetTranslation("ddt.view.academyCommon.academyIcon.AcademyIconTip.ApprenticeExplanation");
                _textFrameArray[0].visible = true;
@@ -139,14 +138,14 @@ package ddt.view.academyCommon.academyIcon
          {
             if(_tipData.Grade >= 21)
             {
-               if(!_loc3_)
+               if(!isSelf)
                {
-                  _loc2_ = 3 - _tipData.getMasterOrApprentices().length;
-                  _textFrameArray[0].text = LanguageMgr.GetTranslation("ddt.view.academyCommon.academyIcon.AcademyIconTip.masterExplanation",_loc2_);
+                  number = 3 - _tipData.getMasterOrApprentices().length;
+                  _textFrameArray[0].text = LanguageMgr.GetTranslation("ddt.view.academyCommon.academyIcon.AcademyIconTip.masterExplanation",number);
                   _textFrameArray[0].visible = true;
                }
             }
-            else if(!_loc3_)
+            else if(!isSelf)
             {
                _textFrameArray[0].text = LanguageMgr.GetTranslation("ddt.view.academyCommon.academyIcon.AcademyIconTip.ApprenticeExplanation");
                _textFrameArray[0].visible = true;
@@ -160,26 +159,25 @@ package ddt.view.academyCommon.academyIcon
       
       private function updateBgSize() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = PlayerManager.Instance.Self.ID == _tipData.ID;
+         var i:int = 0;
+         var isSelf:* = PlayerManager.Instance.Self.ID == _tipData.ID;
          _bg.width = getMaxWidth();
-         var _loc1_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < _textFrameArray.length)
+         var length:int = 0;
+         for(i = 0; i < _textFrameArray.length; )
          {
-            if(_textFrameArray[_loc3_].visible)
+            if(_textFrameArray[i].visible)
             {
-               _loc1_++;
+               length++;
             }
-            _loc3_++;
+            i++;
          }
-         _bg.height = _loc1_ * 22;
+         _bg.height = length * 22;
       }
       
       private function getApprenticesNum() : String
       {
-         var _loc1_:int = 3 - _tipData.getMasterOrApprentices().length;
-         switch(int(_loc1_) - 1)
+         var num:int = 3 - _tipData.getMasterOrApprentices().length;
+         switch(int(num) - 1)
          {
             case 0:
                return LanguageMgr.GetTranslation("ddt.view.academyCommon.academyIcon.AcademyIconTip.1");
@@ -192,31 +190,29 @@ package ddt.view.academyCommon.academyIcon
       
       private function getMaxWidth() : int
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _textFrameArray.length)
+         var i:int = 0;
+         var maxWidth:int = 0;
+         for(i = 0; i < _textFrameArray.length; )
          {
-            if(_textFrameArray[_loc2_].visible && _textFrameArray[_loc2_].width > _loc1_)
+            if(_textFrameArray[i].visible && _textFrameArray[i].width > maxWidth)
             {
-               _loc1_ = _textFrameArray[_loc2_].width;
+               maxWidth = _textFrameArray[i].width;
             }
-            _loc2_++;
+            i++;
          }
-         return _loc1_ + 10;
+         return maxWidth + 10;
       }
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(_textFrameArray)
          {
-            _loc1_ = 0;
-            while(_loc1_ < _textFrameArray.length)
+            for(i = 0; i < _textFrameArray.length; )
             {
-               _textFrameArray[_loc1_].dispose();
-               _textFrameArray[_loc1_] = null;
-               _loc1_++;
+               _textFrameArray[i].dispose();
+               _textFrameArray[i] = null;
+               i++;
             }
          }
          if(_bg)

@@ -73,46 +73,46 @@ package magicHouse.treasureHouse
          bagLockBtn.visible = false;
       }
       
-      public function setData(param1:SelfInfo) : void
+      public function setData($info:SelfInfo) : void
       {
-         _equiplist.setData(param1.Bag);
-         _proplist.setData(param1.PropBag);
-         _treasureBagListView.setData(param1.MagicHouseBag);
+         _equiplist.setData($info.Bag);
+         _proplist.setData($info.PropBag);
+         _treasureBagListView.setData($info.MagicHouseBag);
       }
       
-      override protected function __cellClick(param1:CellEvent) : void
+      override protected function __cellClick(evt:CellEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
+         var cell:* = null;
+         var info:* = null;
+         var pos:* = null;
          if(!_sellBtn.isActive)
          {
-            param1.stopImmediatePropagation();
-            _loc2_ = param1.data as BagCell;
-            if(_loc2_)
+            evt.stopImmediatePropagation();
+            cell = evt.data as BagCell;
+            if(cell)
             {
-               _loc4_ = _loc2_.info as InventoryItemInfo;
+               info = cell.info as InventoryItemInfo;
             }
-            if(_loc4_ == null)
+            if(info == null)
             {
                return;
             }
-            if(!_loc2_.locked)
+            if(!cell.locked)
             {
                SoundManager.instance.play("008");
-               if(!DressUtils.isDress(_loc4_) && (_loc4_.getRemainDate() <= 0 && !EquipType.isProp(_loc4_) || EquipType.isPackage(_loc4_) || _loc4_.getRemainDate() <= 0 && _loc4_.TemplateID == 10200 || EquipType.canBeUsed(_loc4_)))
+               if(!DressUtils.isDress(info) && (info.getRemainDate() <= 0 && !EquipType.isProp(info) || EquipType.isPackage(info) || info.getRemainDate() <= 0 && info.TemplateID == 10200 || EquipType.canBeUsed(info)))
                {
-                  _loc3_ = localToGlobal(new Point(_loc2_.x,_loc2_.y));
-                  CellMenu.instance.show(_loc2_,_loc3_.x + 35,_loc3_.y + 77);
+                  pos = localToGlobal(new Point(cell.x,cell.y));
+                  CellMenu.instance.show(cell,pos.x + 35,pos.y + 77);
                }
                else
                {
-                  if(checkDressSaved(_loc4_))
+                  if(checkDressSaved(info))
                   {
                      MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("playerDress.cannotStore"));
                      return;
                   }
-                  _loc2_.dragStart();
+                  cell.dragStart();
                }
             }
          }
@@ -154,13 +154,13 @@ package magicHouse.treasureHouse
          addChild(_treasureBagListView);
       }
       
-      override protected function __listChange(param1:Event) : void
+      override protected function __listChange(evt:Event) : void
       {
          if(_dressbagView && _dressbagView.visible == true)
          {
             return;
          }
-         if(param1.currentTarget == _equiplist)
+         if(evt.currentTarget == _equiplist)
          {
             setBagType(0);
          }
@@ -170,7 +170,7 @@ package magicHouse.treasureHouse
          }
       }
       
-      private function __jumpToConsortion(param1:MouseEvent) : void
+      private function __jumpToConsortion(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.ConsortiaID != 0)
@@ -184,29 +184,29 @@ package magicHouse.treasureHouse
          }
       }
       
-      private function __messageUpdate(param1:Event) : void
+      private function __messageUpdate(e:Event) : void
       {
          _treasureBagListView.addDepot(MagicHouseModel.instance.depotCount);
       }
       
-      private function __upMagicHouseStroeLevel(param1:PlayerPropertyEvent) : void
+      private function __upMagicHouseStroeLevel(evt:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["StoreLevel"])
+         if(evt.changedProperties["StoreLevel"])
          {
             __addToStageHandler(null);
          }
       }
       
-      private function __addToStageHandler(param1:Event) : void
+      private function __addToStageHandler(evt:Event) : void
       {
          _treasureBagListView.addDepot(MagicHouseModel.instance.depotCount);
       }
       
-      override protected function __cellDoubleClick(param1:CellEvent) : void
+      override protected function __cellDoubleClick(evt:CellEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc3_:int = _treasureBagListView.checkMagicHouseStoreCell();
-         if(_loc3_ == 0)
+         var checkNum:int = _treasureBagListView.checkMagicHouseStoreCell();
+         if(checkNum == 0)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("magichouse.treasureView.bagFull"));
             return;
@@ -216,27 +216,27 @@ package magicHouse.treasureHouse
             BaglockedManager.Instance.show();
             return;
          }
-         param1.stopImmediatePropagation();
-         var _loc4_:BagCell = param1.data as BagCell;
-         var _loc6_:InventoryItemInfo = _loc4_.info as InventoryItemInfo;
-         if(checkDressSaved(_loc6_))
+         evt.stopImmediatePropagation();
+         var cell:BagCell = evt.data as BagCell;
+         var info:InventoryItemInfo = cell.info as InventoryItemInfo;
+         if(checkDressSaved(info))
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("playerDress.cannotStore"));
             return;
          }
-         var _loc5_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(_loc6_.TemplateID);
-         var _loc2_:int = !!PlayerManager.Instance.Self.Sex?1:2;
-         if(!_loc4_.locked)
+         var templeteInfo:ItemTemplateInfo = ItemManager.Instance.getTemplateById(info.TemplateID);
+         var playerSex:int = !!PlayerManager.Instance.Self.Sex?1:2;
+         if(!cell.locked)
          {
-            SocketManager.Instance.out.sendMoveGoods(_loc6_.BagType,_loc6_.Place,51,-1);
+            SocketManager.Instance.out.sendMoveGoods(info.BagType,info.Place,51,-1);
          }
       }
       
-      override protected function __sortBagClick(param1:MouseEvent) : void
+      override protected function __sortBagClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BagInfo = PlayerManager.Instance.Self.getBag(51);
-         PlayerManager.Instance.Self.PropBag.sortBag(51,_loc2_,0,100,_bagArrangeSprite.arrangeAdd);
+         var bagInfo:BagInfo = PlayerManager.Instance.Self.getBag(51);
+         PlayerManager.Instance.Self.PropBag.sortBag(51,bagInfo,0,100,_bagArrangeSprite.arrangeAdd);
          if(_bagType != 21)
          {
             PlayerManager.Instance.Self.PropBag.sortBag(_bagType,PlayerManager.Instance.Self.getBag(_bagType),0,48,_bagArrangeSprite.arrangeAdd);
@@ -247,95 +247,92 @@ package magicHouse.treasureHouse
          }
       }
       
-      private function __bankCellClick(param1:CellEvent) : void
+      private function __bankCellClick(evt:CellEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
+         var cell:* = null;
+         var info:* = null;
          if(!_sellBtn.isActive)
          {
-            param1.stopImmediatePropagation();
-            _loc2_ = param1.data as BagCell;
-            if(_loc2_)
+            evt.stopImmediatePropagation();
+            cell = evt.data as BagCell;
+            if(cell)
             {
-               _loc3_ = _loc2_.info as InventoryItemInfo;
+               info = cell.info as InventoryItemInfo;
             }
-            if(_loc3_ == null)
+            if(info == null)
             {
                return;
             }
-            if(!_loc2_.locked)
+            if(!cell.locked)
             {
                SoundManager.instance.play("008");
-               _loc2_.dragStart();
+               cell.dragStart();
             }
          }
       }
       
-      private function __bankCellDoubleClick(param1:CellEvent) : void
+      private function __bankCellDoubleClick(evt:CellEvent) : void
       {
          SoundManager.instance.play("008");
-         param1.stopImmediatePropagation();
+         evt.stopImmediatePropagation();
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:BagCell = param1.data as BagCell;
-         var _loc3_:InventoryItemInfo = _loc2_.itemInfo;
-         SocketManager.Instance.out.sendMoveGoods(_loc3_.BagType,_loc3_.Place,getItemBagType(_loc3_),-1,_loc3_.Count);
+         var cell:BagCell = evt.data as BagCell;
+         var info:InventoryItemInfo = cell.itemInfo;
+         SocketManager.Instance.out.sendMoveGoods(info.BagType,info.Place,getItemBagType(info),-1,info.Count);
       }
       
-      private function getItemBagType(param1:InventoryItemInfo) : int
+      private function getItemBagType(info:InventoryItemInfo) : int
       {
-         if(EquipType.isBelongToPropBag(param1))
+         if(EquipType.isBelongToPropBag(info))
          {
             return 1;
          }
          return 0;
       }
       
-      private function checkDressSaved(param1:InventoryItemInfo) : Boolean
+      private function checkDressSaved(info:InventoryItemInfo) : Boolean
       {
-         var _loc9_:int = 0;
-         var _loc3_:* = null;
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc7_:int = 0;
-         var _loc8_:* = null;
-         if(!DressUtils.isDress(param1))
+         var i:int = 0;
+         var item:* = null;
+         var j:int = 0;
+         var dressArr:* = null;
+         var k:int = 0;
+         var vo:* = null;
+         if(!DressUtils.isDress(info))
          {
             return false;
          }
-         var _loc2_:BagInfo = PlayerManager.Instance.Self.Bag;
-         _loc9_ = 0;
-         while(_loc9_ <= 8 - 1)
+         var bag:BagInfo = PlayerManager.Instance.Self.Bag;
+         for(i = 0; i <= 8 - 1; )
          {
-            _loc3_ = _loc2_.items[DressUtils.getBagItems(_loc9_)];
-            if(_loc3_ && param1.ItemID == _loc3_.ItemID)
+            item = bag.items[DressUtils.getBagItems(i)];
+            if(item && info.ItemID == item.ItemID)
             {
                return true;
             }
-            _loc9_++;
+            i++;
          }
-         var _loc6_:Array = PlayerDressManager.instance.modelArr;
-         _loc5_ = 0;
-         while(_loc5_ <= _loc6_.length - 1)
+         var modelArr:Array = PlayerDressManager.instance.modelArr;
+         for(j = 0; j <= modelArr.length - 1; )
          {
-            _loc4_ = _loc6_[_loc5_];
-            if(_loc4_)
+            dressArr = modelArr[j];
+            if(dressArr)
             {
-               _loc7_ = 0;
-               while(_loc7_ <= _loc4_.length - 1)
+               for(k = 0; k <= dressArr.length - 1; )
                {
-                  _loc8_ = _loc4_[_loc7_];
-                  if(param1.ItemID == _loc8_.itemId)
+                  vo = dressArr[k];
+                  if(info.ItemID == vo.itemId)
                   {
                      return true;
                   }
-                  _loc7_++;
+                  k++;
                }
             }
-            _loc5_++;
+            j++;
          }
          return false;
       }

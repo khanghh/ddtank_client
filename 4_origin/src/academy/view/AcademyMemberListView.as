@@ -93,10 +93,10 @@ package academy.view
       
       private var _timer:TimerJuggler;
       
-      public function AcademyMemberListView(param1:AcademyController)
+      public function AcademyMemberListView(controller:AcademyController)
       {
          super();
-         _controller = param1;
+         _controller = controller;
          init();
          initEvent();
       }
@@ -190,7 +190,7 @@ package academy.view
          _timer.removeEventListener("timerComplete",__register);
       }
       
-      private function __selfDescribe(param1:Event) : void
+      private function __selfDescribe(event:Event) : void
       {
          if(_takeMasterBtn.visible && !AcademyManager.Instance.selfIsRegister)
          {
@@ -199,7 +199,7 @@ package academy.view
          }
       }
       
-      private function __searchTxtClick(param1:MouseEvent) : void
+      private function __searchTxtClick(event:MouseEvent) : void
       {
          if(_searchTxt.text == LanguageMgr.GetTranslation("academy.view.AcademyMemberListView.searchTxt"))
          {
@@ -213,58 +213,55 @@ package academy.view
       
       private function creatItems() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          _items = new Vector.<AcademyMemberItem>();
-         _loc2_ = 0;
-         while(_loc2_ < 12)
+         for(i = 0; i < 12; )
          {
-            _loc1_ = new AcademyMemberItem(_loc2_);
-            _loc1_.visible = false;
-            _loc1_.addEventListener("click",__itemClick);
-            _list.addChild(_loc1_);
-            _items.push(_loc1_);
-            _loc2_++;
+            item = new AcademyMemberItem(i);
+            item.visible = false;
+            item.addEventListener("click",__itemClick);
+            _list.addChild(item);
+            _items.push(item);
+            i++;
          }
       }
       
       private function cleanItem() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _items.length)
+         var i:int = 0;
+         for(i = 0; i < _items.length; )
          {
-            (_items[_loc1_] as AcademyMemberItem).removeEventListener("click",__itemClick);
-            _items[_loc1_].dispose();
-            _loc1_++;
+            (_items[i] as AcademyMemberItem).removeEventListener("click",__itemClick);
+            _items[i].dispose();
+            i++;
          }
          _list.disposeAllChildren();
          _items = null;
       }
       
-      private function __updateList(param1:AcademyEvent) : void
+      private function __updateList(event:AcademyEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         var _loc2_:Vector.<AcademyPlayerInfo> = _controller.model.list;
-         if(_loc2_.length == 0)
+         var i:int = 0;
+         var j:int = 0;
+         var list:Vector.<AcademyPlayerInfo> = _controller.model.list;
+         if(list.length == 0)
          {
             _isShowSearchInfo = false;
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("academy.view.AcademyMemberListView.registerInfoIII"));
             return;
          }
-         _loc4_ = 0;
-         while(_loc4_ < _loc2_.length)
+         i = 0;
+         while(i < list.length)
          {
-            _items[_loc4_].visible = true;
-            _items[_loc4_].info = _loc2_[_loc4_];
-            _loc4_++;
+            _items[i].visible = true;
+            _items[i].info = list[i];
+            i++;
          }
-         _loc3_ = _loc2_.length;
-         while(_loc3_ < 12)
+         for(j = list.length; j < 12; )
          {
-            _items[_loc3_].visible = false;
-            _loc3_++;
+            _items[j].visible = false;
+            j++;
          }
          if(_selectedItem)
          {
@@ -282,7 +279,7 @@ package academy.view
          updateRegisterBtn();
       }
       
-      private function __takeMasterClick(param1:MouseEvent) : void
+      private function __takeMasterClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_selectedItem == null)
@@ -295,7 +292,7 @@ package academy.view
          }
       }
       
-      private function __takeStudentClick(param1:MouseEvent) : void
+      private function __takeStudentClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_selectedItem == null)
@@ -308,18 +305,18 @@ package academy.view
          }
       }
       
-      private function __freeBtnClick(param1:MouseEvent) : void
+      private function __freeBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          AcademyFrameManager.Instance.showAcademyPreviewFrame();
       }
       
-      private function __leafBtnClick(param1:MouseEvent) : void
+      private function __leafBtnClick(event:MouseEvent) : void
       {
          _timer.reset();
          _timer.start();
          SoundManager.instance.play("008");
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = event.currentTarget;
          if(_preBtn !== _loc2_)
          {
             if(_nextBtn === _loc2_)
@@ -338,7 +335,7 @@ package academy.view
          updateLeafBtn();
       }
       
-      private function __register(param1:Event) : void
+      private function __register(event:Event) : void
       {
          if(!_isShowSearchInfo || _searchTxt.text == LanguageMgr.GetTranslation("academy.view.AcademyMemberListView.searchTxt"))
          {
@@ -416,15 +413,15 @@ package academy.view
          }
       }
       
-      private function setButtonState(param1:Boolean, param2:Boolean) : void
+      private function setButtonState($pre:Boolean, $next:Boolean) : void
       {
-         _preBtn.mouseChildren = param1;
-         _preBtn.enable = param1;
-         _nextBtn.mouseChildren = param2;
-         _nextBtn.enable = param2;
+         _preBtn.mouseChildren = $pre;
+         _preBtn.enable = $pre;
+         _nextBtn.mouseChildren = $next;
+         _nextBtn.enable = $next;
       }
       
-      private function __searchBtnClick(param1:MouseEvent) : void
+      private function __searchBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_searchTxt.text == "" || _searchTxt.text == LanguageMgr.GetTranslation("academy.view.AcademyMemberListView.searchTxt"))
@@ -439,18 +436,18 @@ package academy.view
          }
       }
       
-      private function __itemClick(param1:MouseEvent) : void
+      private function __itemClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(!_selectedItem)
          {
-            _selectedItem = param1.currentTarget as AcademyMemberItem;
+            _selectedItem = event.currentTarget as AcademyMemberItem;
          }
-         if(_selectedItem != param1.currentTarget as AcademyMemberItem)
+         if(_selectedItem != event.currentTarget as AcademyMemberItem)
          {
             _selectedItem.isSelect = false;
          }
-         _selectedItem = param1.currentTarget as AcademyMemberItem;
+         _selectedItem = event.currentTarget as AcademyMemberItem;
          _selectedItem.isSelect = true;
          _controller.currentAcademyInfo = _selectedItem.info;
       }

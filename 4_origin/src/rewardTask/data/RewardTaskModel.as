@@ -34,9 +34,9 @@ package rewardTask.data
          return _taskisBind;
       }
       
-      public function set taskisBind(param1:Boolean) : void
+      public function set taskisBind(value:Boolean) : void
       {
-         _taskisBind = param1;
+         _taskisBind = value;
       }
       
       public function get rewardisBind() : Boolean
@@ -44,9 +44,9 @@ package rewardTask.data
          return _rewardisBind;
       }
       
-      public function set rewardisBind(param1:Boolean) : void
+      public function set rewardisBind(value:Boolean) : void
       {
-         _rewardisBind = param1;
+         _rewardisBind = value;
       }
       
       public function get refreshTaskAlertAgain() : Boolean
@@ -54,9 +54,9 @@ package rewardTask.data
          return _refreshTaskAlertAgain;
       }
       
-      public function set refreshTaskAlertAgain(param1:Boolean) : void
+      public function set refreshTaskAlertAgain(value:Boolean) : void
       {
-         _refreshTaskAlertAgain = param1;
+         _refreshTaskAlertAgain = value;
       }
       
       public function get refreshRewardAlertAgain() : Boolean
@@ -64,9 +64,9 @@ package rewardTask.data
          return _refreshRewardAlertAgain;
       }
       
-      public function set refreshRewardAlertAgain(param1:Boolean) : void
+      public function set refreshRewardAlertAgain(value:Boolean) : void
       {
-         _refreshRewardAlertAgain = param1;
+         _refreshRewardAlertAgain = value;
       }
       
       public function get questID() : int
@@ -74,9 +74,9 @@ package rewardTask.data
          return _id;
       }
       
-      public function set questID(param1:int) : void
+      public function set questID(value:int) : void
       {
-         _id = param1;
+         _id = value;
       }
       
       public function get multiple() : int
@@ -84,9 +84,9 @@ package rewardTask.data
          return _multiple;
       }
       
-      public function set multiple(param1:int) : void
+      public function set multiple(value:int) : void
       {
-         _multiple = param1;
+         _multiple = value;
       }
       
       public function get buyTimes() : int
@@ -94,9 +94,9 @@ package rewardTask.data
          return _buyTimes;
       }
       
-      public function set buyTimes(param1:int) : void
+      public function set buyTimes(value:int) : void
       {
-         _buyTimes = param1;
+         _buyTimes = value;
       }
       
       public function get times() : int
@@ -104,9 +104,9 @@ package rewardTask.data
          return _times;
       }
       
-      public function set times(param1:int) : void
+      public function set times(value:int) : void
       {
-         _times = param1;
+         _times = value;
       }
       
       public function get status() : int
@@ -114,9 +114,9 @@ package rewardTask.data
          return _status;
       }
       
-      public function set status(param1:int) : void
+      public function set status(value:int) : void
       {
-         _status = param1;
+         _status = value;
       }
    }
 }

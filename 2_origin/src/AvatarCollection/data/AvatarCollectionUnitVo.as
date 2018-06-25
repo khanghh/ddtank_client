@@ -45,12 +45,12 @@ package AvatarCollection.data
          return _selected;
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         var _loc2_:int = totalItemList.length / 2;
-         if(totalActivityItemCount >= _loc2_)
+         var half:int = totalItemList.length / 2;
+         if(totalActivityItemCount >= half)
          {
-            _selected = param1;
+            _selected = value;
          }
          else
          {
@@ -63,9 +63,9 @@ package AvatarCollection.data
          return _id;
       }
       
-      public function set id(param1:int) : void
+      public function set id(value:int) : void
       {
-         _id = param1;
+         _id = value;
       }
       
       public function get totalItemList() : Array
@@ -75,50 +75,50 @@ package AvatarCollection.data
       
       public function get totalActivityItemCount() : int
       {
-         var _loc2_:Array = totalItemList;
-         var _loc3_:int = 0;
+         var tmpList:Array = totalItemList;
+         var tmpCount:int = 0;
          var _loc5_:int = 0;
-         var _loc4_:* = _loc2_;
-         for each(var _loc1_ in _loc2_)
+         var _loc4_:* = tmpList;
+         for each(var tmp in tmpList)
          {
-            if(_loc1_.isActivity)
+            if(tmp.isActivity)
             {
-               _loc3_++;
+               tmpCount++;
             }
          }
-         return _loc3_;
+         return tmpCount;
       }
       
       public function get canActivityCount() : int
       {
-         var _loc2_:Array = totalItemList;
-         var _loc3_:int = 0;
+         var tmpList:Array = totalItemList;
+         var tmpCount:int = 0;
          var _loc5_:int = 0;
-         var _loc4_:* = _loc2_;
-         for each(var _loc1_ in _loc2_)
+         var _loc4_:* = tmpList;
+         for each(var tmp in tmpList)
          {
-            if(!_loc1_.isActivity && _loc1_.isHas)
+            if(!tmp.isActivity && tmp.isHas)
             {
-               _loc3_++;
+               tmpCount++;
             }
          }
-         return _loc3_;
+         return tmpCount;
       }
       
       public function get canBuyCount() : int
       {
-         var _loc2_:Array = totalItemList;
-         var _loc3_:int = 0;
+         var tmpList:Array = totalItemList;
+         var tmpCount:int = 0;
          var _loc5_:int = 0;
-         var _loc4_:* = _loc2_;
-         for each(var _loc1_ in _loc2_)
+         var _loc4_:* = tmpList;
+         for each(var tmp in tmpList)
          {
-            if(!_loc1_.isActivity && !_loc1_.isHas && _loc1_.canBuyStatus == 1)
+            if(!tmp.isActivity && !tmp.isHas && tmp.canBuyStatus == 1)
             {
-               _loc3_++;
+               tmpCount++;
             }
          }
-         return _loc3_;
+         return tmpCount;
       }
       
       public function getCellHeight() : Number

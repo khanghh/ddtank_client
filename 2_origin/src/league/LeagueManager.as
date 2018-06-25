@@ -26,9 +26,9 @@ package league
       
       public var deleLeaIcon:Function;
       
-      public function LeagueManager(param1:IEventDispatcher = null)
+      public function LeagueManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : LeagueManager
@@ -50,14 +50,14 @@ package league
          SocketManager.Instance.addEventListener(PkgEvent.format(42),onLeagueNotice);
       }
       
-      private function onLeagueNotice(param1:PkgEvent) : void
+      private function onLeagueNotice(e:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         var _loc3_:int = _loc2_.readByte();
-         if(_loc3_ == 1)
+         var pkg:PackageIn = e.pkg;
+         var tmpType:int = pkg.readByte();
+         if(tmpType == 1)
          {
-            restCount = _loc2_.readInt();
-            maxCount = _loc2_.readInt();
+            restCount = pkg.readInt();
+            maxCount = pkg.readInt();
             isOpen = true;
             if(StateManager.currentStateType == "main" || StateManager.currentStateType == "roomlist" || StateManager.currentStateType == "dungeon" || StateManager.currentStateType == "dungeonRoom" || StateManager.currentStateType == "matchRoom" || StateManager.currentStateType == "challengeRoom" || StateManager.currentStateType == "login")
             {
@@ -67,7 +67,7 @@ package league
                }
             }
          }
-         else if(_loc3_ == 2)
+         else if(tmpType == 2)
          {
             restCount = -1;
             maxCount = -1;
@@ -78,9 +78,9 @@ package league
             }
             DdtActivityIconManager.Instance.currObj = null;
          }
-         else if(_loc3_ == 3)
+         else if(tmpType == 3)
          {
-            restCount = _loc2_.readInt();
+            restCount = pkg.readInt();
          }
       }
    }

@@ -21,10 +21,10 @@ package equipretrieve.view
       
       protected var _cells:Vector.<StoreCell>;
       
-      public function RetrieveDragInArea(param1:Vector.<StoreCell>)
+      public function RetrieveDragInArea(cells:Vector.<StoreCell>)
       {
          super();
-         _cells = param1;
+         _cells = cells;
          init();
       }
       
@@ -35,52 +35,51 @@ package equipretrieve.view
          graphics.endFill();
       }
       
-      public function dragDrop(param1:DragEffect) : void
+      public function dragDrop(effect:DragEffect) : void
       {
-         var _loc2_:Boolean = false;
-         var _loc3_:int = 0;
+         var hasCell:Boolean = false;
+         var i:int = 0;
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc4_:InventoryItemInfo = param1.data as InventoryItemInfo;
-         if(_loc4_.BagType == 12)
+         var info:InventoryItemInfo = effect.data as InventoryItemInfo;
+         if(info.BagType == 12)
          {
-            param1.action = "none";
+            effect.action = "none";
             DragManager.acceptDrag(this);
             return;
          }
-         if(_loc4_ && param1.action != "split")
+         if(info && effect.action != "split")
          {
-            param1.action = "none";
-            if(_loc4_.getRemainDate() <= 0)
+            effect.action = "none";
+            if(info.getRemainDate() <= 0)
             {
                DragManager.acceptDrag(this);
             }
             else
             {
-               _loc2_ = false;
-               _loc3_ = 0;
-               while(_loc3_ < _cells.length)
+               hasCell = false;
+               for(i = 0; i < _cells.length; )
                {
-                  if(_cells[_loc3_].info == null)
+                  if(_cells[i].info == null)
                   {
-                     _cells[_loc3_].dragDrop(param1);
-                     if(param1.target)
+                     _cells[i].dragDrop(effect);
+                     if(effect.target)
                      {
                         break;
                      }
                   }
-                  else if(_cells[_loc3_].info == _loc4_)
+                  else if(_cells[i].info == info)
                   {
-                     _loc2_ = true;
+                     hasCell = true;
                   }
-                  _loc3_++;
+                  i++;
                }
-               if(param1.target == null)
+               if(effect.target == null)
                {
-                  if(!_loc2_)
+                  if(!hasCell)
                   {
                      MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.view.fusion.AccessoryDragInArea.type"));
                   }

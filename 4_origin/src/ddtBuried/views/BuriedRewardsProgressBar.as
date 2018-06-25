@@ -48,129 +48,121 @@ package ddtBuried.views
       
       protected function init() : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         var _loc1_:* = null;
-         var _loc3_:ComponentFactory = ComponentFactory.Instance;
-         _bg = _loc3_.creat("buried.progressBG");
+         var i:int = 0;
+         var len:int = 0;
+         var bg:* = null;
+         var factory:ComponentFactory = ComponentFactory.Instance;
+         _bg = factory.creat("buried.progressBG");
          _bg.x = -130;
          addChild(_bg);
          _progressBarList = new Vector.<Bitmap>();
-         _loc4_ = 5;
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         len = 5;
+         for(i = 0; i < len; )
          {
-            _progressBarList[_loc5_] = _loc3_.creatBitmap("buried.progressbar");
-            PositionUtils.setPos(_progressBarList[_loc5_],"ddtburied.progressBar.pos" + _loc5_.toString());
-            addChild(_progressBarList[_loc5_]);
-            _loc5_++;
+            _progressBarList[i] = factory.creatBitmap("buried.progressbar");
+            PositionUtils.setPos(_progressBarList[i],"ddtburied.progressBar.pos" + i.toString());
+            addChild(_progressBarList[i]);
+            i++;
          }
-         _progressTextField = _loc3_.creat("ddtburied.progressBar");
+         _progressTextField = factory.creat("ddtburied.progressBar");
          _progressTextField.y = 25;
          addChild(_progressTextField);
          _boxList = new Vector.<SimpleBitmapButton>();
-         _loc4_ = 5;
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         len = 5;
+         for(i = 0; i < len; )
          {
-            _boxList[_loc5_] = _loc3_.creat("buried.rewardboxBtn" + _loc5_.toString());
-            _boxList[_loc5_].mouseEnabled = false;
-            _boxList[_loc5_].mouseChildren = false;
-            PositionUtils.setPos(_boxList[_loc5_],"ddtburied.box.pos" + _loc5_.toString());
-            _boxList[_loc5_].enable = true;
-            addChild(_boxList[_loc5_]);
-            _loc5_++;
+            _boxList[i] = factory.creat("buried.rewardboxBtn" + i.toString());
+            _boxList[i].mouseEnabled = false;
+            _boxList[i].mouseChildren = false;
+            PositionUtils.setPos(_boxList[i],"ddtburied.box.pos" + i.toString());
+            _boxList[i].enable = true;
+            addChild(_boxList[i]);
+            i++;
          }
          _boxOpenedList = new Vector.<Bitmap>();
-         _loc4_ = 5;
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         len = 5;
+         for(i = 0; i < len; )
          {
-            _boxOpenedList[_loc5_] = _loc3_.creatBitmap("buired.bmp.opened" + _loc5_.toString());
-            PositionUtils.setPos(_boxOpenedList[_loc5_],"ddtburied.boxOpened.pos" + _loc5_.toString());
-            Helpers.grey(_boxOpenedList[_loc5_]);
-            _boxOpenedList[_loc5_].visible = false;
-            addChild(_boxOpenedList[_loc5_]);
-            _loc5_++;
+            _boxOpenedList[i] = factory.creatBitmap("buired.bmp.opened" + i.toString());
+            PositionUtils.setPos(_boxOpenedList[i],"ddtburied.boxOpened.pos" + i.toString());
+            Helpers.grey(_boxOpenedList[i]);
+            _boxOpenedList[i].visible = false;
+            addChild(_boxOpenedList[i]);
+            i++;
          }
          _gainedSignList = new Vector.<Bitmap>();
-         _loc4_ = 5;
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         len = 5;
+         for(i = 0; i < len; )
          {
-            _gainedSignList[_loc5_] = _loc3_.creatBitmap("buried.alreadyGet");
-            PositionUtils.setPos(_gainedSignList[_loc5_],"ddtburied.box.pos" + _loc5_.toString());
-            _gainedSignList[_loc5_].x = _gainedSignList[_loc5_].x + 10;
-            _gainedSignList[_loc5_].y = 12;
-            _gainedSignList[_loc5_].visible = true;
-            addChild(_gainedSignList[_loc5_]);
-            _loc5_++;
+            _gainedSignList[i] = factory.creatBitmap("buried.alreadyGet");
+            PositionUtils.setPos(_gainedSignList[i],"ddtburied.box.pos" + i.toString());
+            _gainedSignList[i].x = _gainedSignList[i].x + 10;
+            _gainedSignList[i].y = 12;
+            _gainedSignList[i].visible = true;
+            addChild(_gainedSignList[i]);
+            i++;
          }
          _boxPlayOpenList = new Vector.<MovieClip>();
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         for(i = 0; i < len; )
          {
-            _boxPlayOpenList[_loc5_] = _loc3_.creat("buried.mc.open" + _loc5_.toString());
-            PositionUtils.setPos(_boxPlayOpenList[_loc5_],"ddtburied.boxOpened.pos" + _loc5_.toString());
-            _boxPlayOpenList[_loc5_].visible = false;
+            _boxPlayOpenList[i] = factory.creat("buried.mc.open" + i.toString());
+            PositionUtils.setPos(_boxPlayOpenList[i],"ddtburied.boxOpened.pos" + i.toString());
+            _boxPlayOpenList[i].visible = false;
             var _loc6_:Boolean = false;
-            _boxPlayOpenList[_loc5_].mouseEnabled = _loc6_;
-            _boxPlayOpenList[_loc5_].mouseChildren = _loc6_;
-            _boxPlayOpenList[_loc5_].stop();
-            addChild(_boxPlayOpenList[_loc5_]);
-            _loc5_++;
+            _boxPlayOpenList[i].mouseEnabled = _loc6_;
+            _boxPlayOpenList[i].mouseChildren = _loc6_;
+            _boxPlayOpenList[i].stop();
+            addChild(_boxPlayOpenList[i]);
+            i++;
          }
          _boxCanGainList = new Vector.<MovieClip>();
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         for(i = 0; i < len; )
          {
-            _boxCanGainList[_loc5_] = _loc3_.creat("buired.mc.canGain" + _loc5_.toString());
-            PositionUtils.setPos(_boxCanGainList[_loc5_],"ddtburied.boxOpened.pos" + _loc5_.toString());
-            _boxCanGainList[_loc5_].visible = false;
-            _boxCanGainList[_loc5_].stop();
-            addChild(_boxCanGainList[_loc5_]);
-            _boxCanGainList[_loc5_].useHandCursor = true;
-            _boxCanGainList[_loc5_].buttonMode = true;
-            _boxCanGainList[_loc5_].name = _loc5_.toString();
-            _boxCanGainList[_loc5_].mouseChildren = false;
-            _loc5_++;
+            _boxCanGainList[i] = factory.creat("buired.mc.canGain" + i.toString());
+            PositionUtils.setPos(_boxCanGainList[i],"ddtburied.boxOpened.pos" + i.toString());
+            _boxCanGainList[i].visible = false;
+            _boxCanGainList[i].stop();
+            addChild(_boxCanGainList[i]);
+            _boxCanGainList[i].useHandCursor = true;
+            _boxCanGainList[i].buttonMode = true;
+            _boxCanGainList[i].name = i.toString();
+            _boxCanGainList[i].mouseChildren = false;
+            i++;
          }
          _tipList = new Vector.<BaseCell>();
-         var _loc2_:Array = BuriedControl.Instance.reachEndRewardsIDs;
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         var rewardsIDs:Array = BuriedControl.Instance.reachEndRewardsIDs;
+         for(i = 0; i < len; )
          {
-            _loc1_ = new Shape();
-            _loc1_.graphics.beginFill(0,0.2);
-            _loc1_.graphics.drawRect(0,0,70,70);
-            _loc1_.graphics.endFill();
-            _tipList[_loc5_] = new BaseCell(_loc1_,ItemManager.Instance.getTemplateById(_loc2_[_loc5_]));
-            _tipList[_loc5_].alpha = 0;
-            _tipList[_loc5_].name = _loc5_.toString();
-            _tipList[_loc5_].mouseChildren = false;
-            _tipList[_loc5_].useHandCursor = true;
-            _tipList[_loc5_].buttonMode = true;
-            _tipList[_loc5_].addEventListener("click",onGainBtnClick);
-            PositionUtils.setPos(_tipList[_loc5_],"ddtburied.boxTips.pos" + _loc5_.toString());
-            addChild(_tipList[_loc5_]);
-            _loc5_++;
+            bg = new Shape();
+            bg.graphics.beginFill(0,0.2);
+            bg.graphics.drawRect(0,0,70,70);
+            bg.graphics.endFill();
+            _tipList[i] = new BaseCell(bg,ItemManager.Instance.getTemplateById(rewardsIDs[i]));
+            _tipList[i].alpha = 0;
+            _tipList[i].name = i.toString();
+            _tipList[i].mouseChildren = false;
+            _tipList[i].useHandCursor = true;
+            _tipList[i].buttonMode = true;
+            _tipList[i].addEventListener("click",onGainBtnClick);
+            PositionUtils.setPos(_tipList[i],"ddtburied.boxTips.pos" + i.toString());
+            addChild(_tipList[i]);
+            i++;
          }
-         _loc3_ = null;
+         factory = null;
       }
       
-      protected function onGainBtnClick(param1:MouseEvent) : void
+      protected function onGainBtnClick(e:MouseEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = _boxCanGainList.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var i:int = 0;
+         var len:int = _boxCanGainList.length;
+         for(i = 0; i < len; )
          {
-            if(param1.target["name"] == _loc3_.toString() && _boxCanGainList[_loc3_].visible == true)
+            if(e.target["name"] == i.toString() && _boxCanGainList[i].visible == true)
             {
-               BuriedControl.Instance.requireGainRewards(_loc3_);
+               BuriedControl.Instance.requireGainRewards(i);
                break;
             }
-            _loc3_++;
+            i++;
          }
       }
       
@@ -185,9 +177,9 @@ package ddtBuried.views
          {
             var _loc9_:int = 0;
             var _loc8_:* = _progressBarList;
-            for each(var _loc3_ in _progressBarList)
+            for each(var v in _progressBarList)
             {
-               ObjectUtils.disposeObject(_loc3_);
+               ObjectUtils.disposeObject(v);
             }
             _progressBarList.length = 0;
             _progressBarList = null;
@@ -196,9 +188,9 @@ package ddtBuried.views
          {
             var _loc11_:int = 0;
             var _loc10_:* = _boxList;
-            for each(var _loc5_ in _boxList)
+            for each(var btn in _boxList)
             {
-               ObjectUtils.disposeObject(_loc5_);
+               ObjectUtils.disposeObject(btn);
             }
             _boxList.length = 0;
             _boxList = null;
@@ -212,9 +204,9 @@ package ddtBuried.views
          {
             var _loc13_:int = 0;
             var _loc12_:* = _gainedSignList;
-            for each(var _loc2_ in _gainedSignList)
+            for each(var g in _gainedSignList)
             {
-               ObjectUtils.disposeObject(_loc2_);
+               ObjectUtils.disposeObject(g);
             }
             _gainedSignList.length = 0;
             _gainedSignList = null;
@@ -223,9 +215,9 @@ package ddtBuried.views
          {
             var _loc15_:int = 0;
             var _loc14_:* = _boxOpenedList;
-            for each(var _loc6_ in _boxOpenedList)
+            for each(var b in _boxOpenedList)
             {
-               ObjectUtils.disposeObject(_loc6_);
+               ObjectUtils.disposeObject(b);
             }
             _boxOpenedList.length = 0;
             _boxOpenedList = null;
@@ -234,10 +226,10 @@ package ddtBuried.views
          {
             var _loc17_:int = 0;
             var _loc16_:* = _boxPlayOpenList;
-            for each(var _loc1_ in _boxPlayOpenList)
+            for each(var bo in _boxPlayOpenList)
             {
-               _loc1_.stop();
-               ObjectUtils.disposeObject(_loc1_);
+               bo.stop();
+               ObjectUtils.disposeObject(bo);
             }
             _boxPlayOpenList.length = 0;
             _boxPlayOpenList = null;
@@ -246,10 +238,10 @@ package ddtBuried.views
          {
             var _loc19_:int = 0;
             var _loc18_:* = _boxCanGainList;
-            for each(var _loc7_ in _boxCanGainList)
+            for each(var bcg in _boxCanGainList)
             {
-               _loc7_.stop();
-               ObjectUtils.disposeObject(_loc7_);
+               bcg.stop();
+               ObjectUtils.disposeObject(bcg);
             }
             _boxCanGainList.length = 0;
             _boxCanGainList = null;
@@ -258,10 +250,10 @@ package ddtBuried.views
          {
             var _loc21_:int = 0;
             var _loc20_:* = _tipList;
-            for each(var _loc4_ in _tipList)
+            for each(var tl in _tipList)
             {
-               _loc4_.removeEventListener("click",onGainBtnClick);
-               ObjectUtils.disposeObject(_loc4_);
+               tl.removeEventListener("click",onGainBtnClick);
+               ObjectUtils.disposeObject(tl);
             }
             _tipList.length = 0;
             _tipList = null;
@@ -270,105 +262,104 @@ package ddtBuried.views
       
       public function updateProgressState() : void
       {
-         var _loc8_:int = 0;
-         var _loc7_:int = BuriedManager.Instance.maxTimesCanGainRewards;
-         var _loc5_:int = Math.min(BuriedManager.Instance.timesReachEnd,_loc7_);
-         var _loc4_:Array = BuriedManager.Instance.boxNeedTimesList;
+         var i:int = 0;
+         var maxTimes:int = BuriedManager.Instance.maxTimesCanGainRewards;
+         var reachEndTimes:int = Math.min(BuriedManager.Instance.timesReachEnd,maxTimes);
+         var timesList:Array = BuriedManager.Instance.boxNeedTimesList;
          var _loc11_:int = 0;
          var _loc10_:* = _progressBarList;
-         for each(var _loc1_ in _progressBarList)
+         for each(var bmp in _progressBarList)
          {
-            _loc1_.visible = false;
+            bmp.visible = false;
          }
-         if(_loc5_ < _loc4_[0])
+         if(reachEndTimes < timesList[0])
          {
-            _loc7_ = _loc4_[0];
+            maxTimes = timesList[0];
             _progressTextField.x = -59;
          }
-         if(_loc5_ >= _loc4_[0])
+         if(reachEndTimes >= timesList[0])
          {
-            _loc7_ = _loc4_[1];
+            maxTimes = timesList[1];
             _progressTextField.x = 69;
             _progressBarList[0].visible = true;
             _progressBarList[0].scaleX = 1;
          }
-         if(_loc5_ >= _loc4_[1])
+         if(reachEndTimes >= timesList[1])
          {
-            _loc7_ = _loc4_[2];
+            maxTimes = timesList[2];
             _progressTextField.x = 199;
             _progressBarList[1].visible = true;
             _progressBarList[1].scaleX = 1;
          }
-         if(_loc5_ >= _loc4_[2])
+         if(reachEndTimes >= timesList[2])
          {
-            _loc7_ = _loc4_[3];
+            maxTimes = timesList[3];
             _progressTextField.x = 327;
             _progressBarList[2].visible = true;
             _progressBarList[2].scaleX = 1;
          }
-         if(_loc5_ >= _loc4_[3])
+         if(reachEndTimes >= timesList[3])
          {
-            _loc7_ = _loc4_[4];
+            maxTimes = timesList[4];
             _progressTextField.x = 459;
             _progressBarList[3].visible = true;
             _progressBarList[3].scaleX = 1;
          }
-         if(_loc5_ >= _loc4_[4])
+         if(reachEndTimes >= timesList[4])
          {
-            _loc7_ = _loc4_[4];
+            maxTimes = timesList[4];
             _progressBarList[4].visible = true;
             _progressBarList[4].scaleX = 1;
          }
-         _progressTextField.text = _loc5_.toString() + "/" + _loc7_;
-         var _loc6_:int = BuriedManager.Instance.stateRewardsGained;
-         var _loc9_:String = _loc6_.toString(2);
-         var _loc2_:Array = _loc9_.split("");
-         while(_loc2_.length < 5)
+         _progressTextField.text = reachEndTimes.toString() + "/" + maxTimes;
+         var tempRewardsStates:int = BuriedManager.Instance.stateRewardsGained;
+         var tempRewardsString:String = tempRewardsStates.toString(2);
+         var tempRewardsStateList:Array = tempRewardsString.split("");
+         while(tempRewardsStateList.length < 5)
          {
-            _loc2_.unshift("0");
+            tempRewardsStateList.unshift("0");
          }
-         _loc2_.reverse();
-         var _loc3_:* = 0;
-         _loc8_ = 0;
-         while(_loc8_ < 5)
+         tempRewardsStateList.reverse();
+         var flag:* = 0;
+         for(i = 0; i < 5; )
          {
-            if(_loc2_[_loc8_] == "0")
+            if(tempRewardsStateList[i] == "0")
             {
-               if(_loc5_ < BuriedManager.Instance.boxNeedTimesList[_loc8_])
+               if(reachEndTimes < BuriedManager.Instance.boxNeedTimesList[i])
                {
-                  _boxList[_loc8_].visible = true;
-                  _boxCanGainList[_loc8_].visible = false;
-                  _boxCanGainList[_loc8_].stop();
-                  _boxOpenedList[_loc8_].visible = false;
-                  _gainedSignList[_loc8_].visible = false;
+                  _boxList[i].visible = true;
+                  _boxCanGainList[i].visible = false;
+                  _boxCanGainList[i].stop();
+                  _boxOpenedList[i].visible = false;
+                  _gainedSignList[i].visible = false;
                }
                else
                {
-                  _loc3_ = _loc8_;
-                  _boxList[_loc8_].visible = false;
-                  _boxCanGainList[_loc8_].visible = true;
-                  _boxCanGainList[_loc8_].play();
-                  _boxOpenedList[_loc8_].visible = false;
-                  _gainedSignList[_loc8_].visible = false;
-                  addChild(_gainedSignList[_loc8_]);
+                  flag = i;
+                  _boxList[i].visible = false;
+                  _boxCanGainList[i].visible = true;
+                  _boxCanGainList[i].play();
+                  _boxOpenedList[i].visible = false;
+                  _gainedSignList[i].visible = false;
+                  addChild(_gainedSignList[i]);
                }
             }
             else
             {
-               _boxList[_loc8_].visible = false;
-               _boxCanGainList[_loc8_].visible = false;
-               _boxCanGainList[_loc8_].stop();
-               _boxOpenedList[_loc8_].visible = true;
-               _gainedSignList[_loc8_].visible = true;
+               _boxList[i].visible = false;
+               _boxCanGainList[i].visible = false;
+               _boxCanGainList[i].stop();
+               _boxOpenedList[i].visible = true;
+               _gainedSignList[i].visible = true;
             }
-            _loc8_++;
+            i++;
          }
       }
       
-      public function playGainBox(param1:int) : void
+      public function playGainBox(index:int) : void
       {
-         index = param1;
-         onEF = function(param1:Event):void
+         index = index;
+         onEF = function(e:Event):void
          {
             if(mc.currentFrame == mc.totalFrames)
             {
@@ -387,9 +378,9 @@ package ddtBuried.views
          mc.gotoAndPlay(1);
       }
       
-      public function playGetRewardBoxAnimation(param1:int) : void
+      public function playGetRewardBoxAnimation(index:int) : void
       {
-         index = param1;
+         index = index;
          showCanGainBox = function():void
          {
             _boxList[index].visible = false;

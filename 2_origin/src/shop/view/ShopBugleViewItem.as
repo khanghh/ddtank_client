@@ -32,14 +32,14 @@ package shop.view
       
       private var _type:int;
       
-      public function ShopBugleViewItem(param1:int = 0, param2:String = "", param3:int = 0, param4:ShopItemCell = null)
+      public function ShopBugleViewItem($type:int = 0, $count:String = "", $money:int = 0, $cell:ShopItemCell = null)
       {
          super();
          buttonMode = true;
-         _type = param1;
-         _count = param2;
-         _money = param3;
-         _cell = param4;
+         _type = $type;
+         _count = $count;
+         _money = $money;
+         _cell = $cell;
          _bg = ComponentFactory.Instance.creatComponentByStylename("ddtshop.BugleViewBg");
          _lightEffect = ComponentFactory.Instance.creatComponentByStylename("asset.ddtshop.BugleSelectEffect");
          _lightEffect.visible = false;
@@ -58,7 +58,7 @@ package shop.view
          addChild(_moneyTxt);
       }
       
-      public function set autoSelect(param1:Boolean) : void
+      public function set autoSelect(value:Boolean) : void
       {
       }
       
@@ -67,13 +67,13 @@ package shop.view
          return _selected;
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         if(_selected == param1)
+         if(_selected == value)
          {
             return;
          }
-         _selected = param1;
+         _selected = value;
          _lightEffect.visible = _selected;
       }
       

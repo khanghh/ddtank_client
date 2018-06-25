@@ -17,10 +17,10 @@ package braveDoor.view
       
       private var _view:BraveDoorView;
       
-      public function BraveDoorFrame(param1:BraveDoorControl, param2:BraveDoorListModel)
+      public function BraveDoorFrame(control:BraveDoorControl, model:BraveDoorListModel)
       {
-         _control = param1;
-         _data = param2;
+         _control = control;
+         _data = model;
          super();
       }
       

@@ -73,11 +73,11 @@ package hotSpring.view
       
       private var _roomVO:HotSpringRoomInfo;
       
-      public function HotSpringMainView(param1:HotSpringRoomListManager, param2:HotSpringRoomListModel)
+      public function HotSpringMainView(controller:HotSpringRoomListManager, model:HotSpringRoomListModel)
       {
          super();
-         _controller = param1;
-         _model = param2;
+         _controller = controller;
+         _model = model;
          initialize();
       }
       
@@ -91,9 +91,9 @@ package hotSpring.view
          _roomCount = ComponentFactory.Instance.creat("asset.HotSpringMainView.roomCount");
          addChild(_roomCount);
          _roomList = new RoomListView(_controller,_model);
-         var _loc1_:Point = ComponentFactory.Instance.creatCustomObject("asset.HotSpringMainView.roomListPos");
-         _roomList.x = _loc1_.x;
-         _roomList.y = _loc1_.y;
+         var pos:Point = ComponentFactory.Instance.creatCustomObject("asset.HotSpringMainView.roomListPos");
+         _roomList.x = pos.x;
+         _roomList.y = pos.y;
          addChild(_roomList);
          if(BossBoxManager.instance.isShowBoxButton())
          {
@@ -162,7 +162,7 @@ package hotSpring.view
          SocketManager.Instance.removeEventListener(PkgEvent.format(212),roomEnterConfirmSucceed);
       }
       
-      private function roomListUpdateView(param1:HotSpringRoomListEvent = null) : void
+      private function roomListUpdateView(evt:HotSpringRoomListEvent = null) : void
       {
          _roomCurCount.text = _roomList.pageCount > 0?_roomList.pageIndex.toString():"0";
          _roomCount.text = "/" + _roomList.pageCount.toString();
@@ -174,10 +174,10 @@ package hotSpring.view
          _nextBtn.enable = _loc2_;
       }
       
-      private function getPageList(param1:MouseEvent) : void
+      private function getPageList(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = evt.currentTarget;
          if(_firstPageBtn !== _loc2_)
          {
             if(_preBtn !== _loc2_)
@@ -205,16 +205,16 @@ package hotSpring.view
          }
       }
       
-      private function createRoom(param1:MouseEvent) : void
+      private function createRoom(evt:MouseEvent) : void
       {
       }
       
-      public function roomEnterConfirmSucceed(param1:CrazyTankSocketEvent) : void
+      public function roomEnterConfirmSucceed(evt:CrazyTankSocketEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc4_:int = _loc3_.readInt();
-         _roomVO = _model.roomList[_loc4_];
+         var alert:* = null;
+         var pkg:PackageIn = evt.pkg;
+         var roomID:int = pkg.readInt();
+         _roomVO = _model.roomList[roomID];
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
@@ -222,22 +222,22 @@ package hotSpring.view
          }
          if(_roomVO.roomType != 3)
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.hotSpring.comfirm"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
-            _loc2_.moveEnable = false;
-            _loc2_.addEventListener("response",__alertResponse);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.hotSpring.comfirm"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
+            alert.moveEnable = false;
+            alert.addEventListener("response",__alertResponse);
          }
       }
       
-      private function __alertResponse(param1:FrameEvent) : void
+      private function __alertResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         ObjectUtils.disposeObject(_loc2_);
-         if(_loc2_.parent)
+         var alert:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         ObjectUtils.disposeObject(alert);
+         if(alert.parent)
          {
-            _loc2_.parent.removeChild(_loc2_);
+            alert.parent.removeChild(alert);
          }
-         if(param1.responseCode == 3)
+         if(evt.responseCode == 3)
          {
             confirmRoomEnter();
          }
@@ -245,12 +245,12 @@ package hotSpring.view
       
       private function confirmRoomEnter() : void
       {
-         var _loc1_:* = null;
+         var alert:* = null;
          if(PlayerManager.Instance.Self.Gold < 10000)
          {
-            _loc1_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.GoldInadequate"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
-            _loc1_.moveEnable = false;
-            _loc1_.addEventListener("response",__quickBuyResponse);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.GoldInadequate"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
+            alert.moveEnable = false;
+            alert.addEventListener("response",__quickBuyResponse);
             return;
          }
          if(_controller)
@@ -259,34 +259,34 @@ package hotSpring.view
          }
       }
       
-      private function __quickBuyResponse(param1:FrameEvent) : void
+      private function __quickBuyResponse(evt:FrameEvent) : void
       {
-         var _loc3_:* = null;
+         var quickBuy:* = null;
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__quickBuyResponse);
-         _loc2_.dispose();
-         if(_loc2_.parent)
+         var frame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("response",__quickBuyResponse);
+         frame.dispose();
+         if(frame.parent)
          {
-            _loc2_.parent.removeChild(_loc2_);
+            frame.parent.removeChild(frame);
          }
-         _loc2_ = null;
-         if(param1.responseCode == 3)
+         frame = null;
+         if(evt.responseCode == 3)
          {
-            _loc3_ = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
-            _loc3_.itemID = 11233;
-            _loc3_.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
-            LayerManager.Instance.addToLayer(_loc3_,3,true,1);
+            quickBuy = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
+            quickBuy.itemID = 11233;
+            quickBuy.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
+            LayerManager.Instance.addToLayer(quickBuy,3,true,1);
          }
       }
       
-      private function quickEnterRoom(param1:MouseEvent) : void
+      private function quickEnterRoom(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _controller.quickEnterRoom();
       }
       
-      private function RoomEnterPassword(param1:String, param2:HotSpringRoomInfo) : void
+      private function RoomEnterPassword(inputPassword:String, roomVO:HotSpringRoomInfo) : void
       {
       }
       

@@ -11,41 +11,39 @@ package com.pickgliss.utils
          super();
       }
       
-      public static function rol(param1:int, param2:int) : int
+      public static function rol(x:int, n:int) : int
       {
-         return param1 << param2 | param1 >>> 32 - param2;
+         return x << n | x >>> 32 - n;
       }
       
-      public static function ror(param1:int, param2:int) : uint
+      public static function ror(x:int, n:int) : uint
       {
-         var _loc3_:int = 32 - param2;
-         return param1 << _loc3_ | param1 >>> 32 - _loc3_;
+         var nn:int = 32 - n;
+         return x << nn | x >>> 32 - nn;
       }
       
-      public static function toHex(param1:int, param2:Boolean = false) : String
+      public static function toHex(n:int, bigEndian:Boolean = false) : String
       {
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:String = "";
-         if(param2)
+         var i:int = 0;
+         var x:int = 0;
+         var s:String = "";
+         if(bigEndian)
          {
-            _loc5_ = 0;
-            while(_loc5_ < 4)
+            for(i = 0; i < 4; )
             {
-               _loc3_ = _loc3_ + (hexChars.charAt(param1 >> (3 - _loc5_) * 8 + 4 & 15) + hexChars.charAt(param1 >> (3 - _loc5_) * 8 & 15));
-               _loc5_++;
+               s = s + (hexChars.charAt(n >> (3 - i) * 8 + 4 & 15) + hexChars.charAt(n >> (3 - i) * 8 & 15));
+               i++;
             }
          }
          else
          {
-            _loc4_ = 0;
-            while(_loc4_ < 4)
+            for(x = 0; x < 4; )
             {
-               _loc3_ = _loc3_ + (hexChars.charAt(param1 >> _loc4_ * 8 + 4 & 15) + hexChars.charAt(param1 >> _loc4_ * 8 & 15));
-               _loc4_++;
+               s = s + (hexChars.charAt(n >> x * 8 + 4 & 15) + hexChars.charAt(n >> x * 8 & 15));
+               x++;
             }
          }
-         return _loc3_;
+         return s;
       }
    }
 }

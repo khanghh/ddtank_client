@@ -45,9 +45,9 @@ package rescue.components
       
       private var _priceArr:Array;
       
-      public function RescueShopItem(param1:int)
+      public function RescueShopItem(index:int)
       {
-         _index = param1;
+         _index = index;
          super();
          initView();
          initEvents();
@@ -116,7 +116,7 @@ package rescue.components
          _buyBtn.addEventListener("click",__buyBtnClick);
       }
       
-      protected function __buyBtnClick(param1:MouseEvent) : void
+      protected function __buyBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -124,9 +124,9 @@ package rescue.components
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:RescueQuickBuyFrame = ComponentFactory.Instance.creatComponentByStylename("rescue.quickBuyFrame");
-         _loc2_.setData(_index,_priceArr[_index]);
-         LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+         var quickBuyFrame:RescueQuickBuyFrame = ComponentFactory.Instance.creatComponentByStylename("rescue.quickBuyFrame");
+         quickBuyFrame.setData(_index,_priceArr[_index]);
+         LayerManager.Instance.addToLayer(quickBuyFrame,3,true,1);
       }
       
       private function removeEvents() : void

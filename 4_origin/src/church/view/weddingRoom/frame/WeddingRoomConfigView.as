@@ -70,9 +70,9 @@ package church.view.weddingRoom.frame
          return _controller;
       }
       
-      public function set controller(param1:ChurchRoomController) : void
+      public function set controller(value:ChurchRoomController) : void
       {
-         _controller = param1;
+         _controller = value;
       }
       
       protected function initialize() : void
@@ -95,14 +95,14 @@ package church.view.weddingRoom.frame
          _configRoomFrameBottomBg = ComponentFactory.Instance.creat("church.weddingRoom.configRoomFrameBottomBg");
          addToContent(_configRoomFrameBottomBg);
          _roomNameTitle = ComponentFactory.Instance.creatBitmap("asset.church.roomCreateRoomNameTitleAsset");
-         var _loc1_:Point = ComponentFactory.Instance.creat("church.room.RoomNameTitlePos");
-         _roomNameTitle.x = _loc1_.x;
-         _roomNameTitle.y = _loc1_.y;
+         var posIII:Point = ComponentFactory.Instance.creat("church.room.RoomNameTitlePos");
+         _roomNameTitle.x = posIII.x;
+         _roomNameTitle.y = posIII.y;
          addToContent(_roomNameTitle);
          _roomIntroTitle = ComponentFactory.Instance.creatBitmap("asset.church.roomCreateIntroAsset");
-         var _loc2_:Point = ComponentFactory.Instance.creatCustomObject("church.room.CreateIntroPos");
-         _roomIntroTitle.x = _loc2_.x;
-         _roomIntroTitle.y = _loc2_.y;
+         var pos:Point = ComponentFactory.Instance.creatCustomObject("church.room.CreateIntroPos");
+         _roomIntroTitle.x = pos.x;
+         _roomIntroTitle.y = pos.y;
          addToContent(_roomIntroTitle);
          _txtConfigRoomName = ComponentFactory.Instance.creat("church.weddingRoom.txtConfigRoomName");
          _bg1 = ComponentFactory.Instance.creat("church.main.txtConfigRoomNameBG");
@@ -140,10 +140,10 @@ package church.view.weddingRoom.frame
          onRemarkChange();
       }
       
-      private function onFrameResponse(param1:FrameEvent) : void
+      private function onFrameResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
@@ -162,10 +162,10 @@ package church.view.weddingRoom.frame
          {
             return;
          }
-         var _loc1_:String = FilterWordManager.filterWrod(_txtConfigRoomIntro.text);
+         var str:String = FilterWordManager.filterWrod(_txtConfigRoomIntro.text);
          ChurchManager.instance.currentRoom.roomName = _txtConfigRoomName.text;
-         ChurchManager.instance.currentRoom.discription = _loc1_;
-         _controller.modifyDiscription(_txtConfigRoomName.text,_chkConfigRoomPassword.selected,_txtConfigRoomPassword.text,_loc1_);
+         ChurchManager.instance.currentRoom.discription = str;
+         _controller.modifyDiscription(_txtConfigRoomName.text,_chkConfigRoomPassword.selected,_txtConfigRoomPassword.text,str);
          dispose();
       }
       
@@ -190,7 +190,7 @@ package church.view.weddingRoom.frame
          return true;
       }
       
-      private function onRoomPasswordCheck(param1:MouseEvent) : void
+      private function onRoomPasswordCheck(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _txtConfigRoomPassword.enable = _chkConfigRoomPassword.selected;
@@ -204,7 +204,7 @@ package church.view.weddingRoom.frame
          }
       }
       
-      private function onRemarkChange(param1:Event = null) : void
+      private function onRemarkChange(e:Event = null) : void
       {
          _roomConfigIntroMaxChLabel.text = LanguageMgr.GetTranslation("church.churchScene.frame.ModifyDiscriptionFrame.spare") + (String(_txtConfigRoomIntro.maxChars - _txtConfigRoomIntro.text.length)) + LanguageMgr.GetTranslation("church.churchScene.frame.ModifyDiscriptionFrame.word");
       }

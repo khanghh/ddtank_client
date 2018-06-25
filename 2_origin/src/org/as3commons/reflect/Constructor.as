@@ -12,31 +12,29 @@ package org.as3commons.reflect
       
       private var _declaringType:String;
       
-      public function Constructor(param1:String, param2:ApplicationDomain, param3:Array = null)
+      public function Constructor(declaringType:String, applicationDomain:ApplicationDomain, parameters:Array = null)
       {
          this._parameters = [];
          super();
-         if(param3 != null)
+         if(parameters != null)
          {
-            this._parameters = param3;
+            this._parameters = parameters;
          }
-         this._declaringType = param1;
-         this._applicationDomain = param2;
+         this._declaringType = declaringType;
+         this._applicationDomain = applicationDomain;
       }
       
       public function get parameters() : Array
       {
-         var _loc4_:BaseParameter = null;
-         var _loc1_:Array = [];
-         var _loc2_:int = this._parameters.length;
-         var _loc3_:int = 0;
-         while(_loc3_ < _loc2_)
+         var param:BaseParameter = null;
+         var result:Array = [];
+         var len:int = this._parameters.length;
+         for(var i:int = 0; i < len; i++)
          {
-            _loc4_ = this._parameters[_loc3_];
-            _loc1_[_loc1_.length] = new Parameter(_loc4_,_loc3_);
-            _loc3_++;
+            param = this._parameters[i];
+            result[result.length] = new Parameter(param,i);
          }
-         return _loc1_;
+         return result;
       }
       
       public function get declaringType() : Type

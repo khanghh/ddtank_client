@@ -22,18 +22,18 @@ package zodiac
       private static var _instance:ZodiacManager;
        
       
-      public function ZodiacManager(param1:InstanceClass)
+      public function ZodiacManager(instanceClass:InstanceClass)
       {
          super();
       }
       
       public static function get instance() : ZodiacManager
       {
-         var _loc1_:* = null;
+         var instanceclass:* = null;
          if(_instance == null)
          {
-            _loc1_ = new InstanceClass();
-            _instance = new ZodiacManager(_loc1_);
+            instanceclass = new InstanceClass();
+            _instance = new ZodiacManager(instanceclass);
          }
          return _instance;
       }
@@ -48,55 +48,55 @@ package zodiac
          SocketManager.Instance.addEventListener("zodiac",__zodiacHandler);
       }
       
-      private function __zodiacHandler(param1:CrazyTankSocketEvent) : void
+      private function __zodiacHandler(e:CrazyTankSocketEvent) : void
       {
-         var _loc6_:int = 0;
-         var _loc5_:int = 0;
-         var _loc3_:int = 0;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc4_.readInt();
-         switch(int(_loc2_) - 1)
+         var i:int = 0;
+         var j:int = 0;
+         var temp:int = 0;
+         var pkg:PackageIn = e.pkg;
+         var cmd:int = pkg.readInt();
+         switch(int(cmd) - 1)
          {
             case 0:
-               ZodiacModel.instance.isOpen = _loc4_.readBoolean();
+               ZodiacModel.instance.isOpen = pkg.readBoolean();
                if(ZodiacModel.instance.questArr == null)
                {
                   ZodiacModel.instance.questArr = [];
                }
-               _loc6_ = 0;
-               while(_loc6_ < 12)
+               i = 0;
+               while(i < 12)
                {
-                  ZodiacModel.instance.questArr[_loc6_] = _loc4_.readInt();
-                  _loc6_++;
+                  ZodiacModel.instance.questArr[i] = pkg.readInt();
+                  i++;
                }
-               ZodiacModel.instance.awardRecord = _loc4_.readInt();
-               ZodiacModel.instance.maxCounts = _loc4_.readInt();
-               ZodiacModel.instance.finshedCounts = _loc4_.readInt();
-               setIndexTypeDic(_loc4_);
+               ZodiacModel.instance.awardRecord = pkg.readInt();
+               ZodiacModel.instance.maxCounts = pkg.readInt();
+               ZodiacModel.instance.finshedCounts = pkg.readInt();
+               setIndexTypeDic(pkg);
                break;
             case 1:
-               ZodiacModel.instance.isOpen = _loc4_.readBoolean();
+               ZodiacModel.instance.isOpen = pkg.readBoolean();
                if(ZodiacModel.instance.questArr == null)
                {
                   ZodiacModel.instance.questArr = [];
                }
-               _loc5_ = 0;
-               while(_loc5_ < 12)
+               j = 0;
+               while(j < 12)
                {
-                  _loc3_ = _loc4_.readInt();
-                  if(ZodiacModel.instance.questArr[_loc5_] != _loc3_ && _loc3_ != 0)
+                  temp = pkg.readInt();
+                  if(ZodiacModel.instance.questArr[j] != temp && temp != 0)
                   {
-                     ZodiacModel.instance.newIndex = _loc5_ + 1;
-                     ZodiacModel.instance.questArr[_loc5_] = _loc3_;
+                     ZodiacModel.instance.newIndex = j + 1;
+                     ZodiacModel.instance.questArr[j] = temp;
                      dispatchEvent(new Event("zodiacUpdataIndex"));
                   }
-                  ZodiacModel.instance.questArr[_loc5_] = _loc3_;
-                  _loc5_++;
+                  ZodiacModel.instance.questArr[j] = temp;
+                  j++;
                }
-               ZodiacModel.instance.awardRecord = _loc4_.readInt();
-               ZodiacModel.instance.maxCounts = _loc4_.readInt();
-               ZodiacModel.instance.finshedCounts = _loc4_.readInt();
-               setIndexTypeDic(_loc4_);
+               ZodiacModel.instance.awardRecord = pkg.readInt();
+               ZodiacModel.instance.maxCounts = pkg.readInt();
+               ZodiacModel.instance.finshedCounts = pkg.readInt();
+               setIndexTypeDic(pkg);
                dispatchEvent(new Event("zodiacUpdataMessage"));
          }
          if(ZodiacModel.instance.isOpen)
@@ -109,19 +109,18 @@ package zodiac
          }
       }
       
-      private function setIndexTypeDic(param1:PackageIn) : void
+      private function setIndexTypeDic(pkg:PackageIn) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         var _loc5_:int = 0;
-         var _loc4_:int = param1.readInt();
-         _loc3_ = 0;
-         while(_loc3_ < _loc4_)
+         var m:int = 0;
+         var qID:int = 0;
+         var type:int = 0;
+         var len:int = pkg.readInt();
+         for(m = 0; m < len; )
          {
-            _loc2_ = param1.readInt();
-            _loc5_ = param1.readInt();
-            ZodiacModel.instance.indexTypeArr[_loc2_] = _loc5_;
-            _loc3_++;
+            qID = pkg.readInt();
+            type = pkg.readInt();
+            ZodiacModel.instance.indexTypeArr[qID] = type;
+            m++;
          }
       }
       

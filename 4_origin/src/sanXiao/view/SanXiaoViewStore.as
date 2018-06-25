@@ -37,18 +37,17 @@ package sanXiao.view
       
       private function init() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _bg = ComponentFactory.Instance.creatBitmap("ast.sanxiao.bg.store");
          addChild(_bg);
          _itemList = new Vector.<SXStoreItem>();
-         _loc1_ = 0;
-         while(_loc1_ < 8)
+         for(i = 0; i < 8; )
          {
-            _itemList[_loc1_] = new SXStoreItem();
-            _itemList[_loc1_].x = 216 + 256 * (_loc1_ % 2);
-            _itemList[_loc1_].y = 60 + int(_loc1_ / 2) * 94;
-            addChild(_itemList[_loc1_]);
-            _loc1_++;
+            _itemList[i] = new SXStoreItem();
+            _itemList[i].x = 216 + 256 * (i % 2);
+            _itemList[i].y = 60 + int(i / 2) * 94;
+            addChild(_itemList[i]);
+            i++;
          }
          _pageSelecter = PageSelectorFactory.getInstance().getPageSelector("normal");
          _pageSelecter.itemDataArr = SanXiaoManager.getInstance().itemDataList;

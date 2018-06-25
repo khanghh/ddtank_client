@@ -7,9 +7,9 @@ package carnivalActivity.view
    {
        
       
-      public function UsePropsView(param1:int, param2:int = 0, param3:String = "")
+      public function UsePropsView(type:int, childType:int = 0, $id:String = "")
       {
-         super(param1,param2,param3);
+         super(type,childType,$id);
       }
       
       override protected function initView() : void

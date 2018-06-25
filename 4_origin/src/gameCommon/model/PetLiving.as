@@ -21,13 +21,13 @@ package gameCommon.model
       
       private var _maxMp:int;
       
-      public function PetLiving(param1:PetInfo, param2:Player, param3:int, param4:int, param5:int)
+      public function PetLiving(petinfo:PetInfo, marster:Player, id:int, team:int, maxBlood:int)
       {
-         super(-1,param4,param5);
-         _petinfo = param1;
-         _master = param2;
+         super(-1,team,maxBlood);
+         _petinfo = petinfo;
+         _master = marster;
          _mp = 0;
-         _maxMp = param1.MP;
+         _maxMp = petinfo.MP;
          _usedSkill = [];
       }
       
@@ -71,19 +71,19 @@ package gameCommon.model
          return _mp;
       }
       
-      public function set MP(param1:int) : void
+      public function set MP(value:int) : void
       {
-         if(_mp == param1)
+         if(_mp == value)
          {
             return;
          }
-         _mp = param1;
+         _mp = value;
          dispatchEvent(new LivingEvent("petEnergyChange"));
       }
       
-      public function set MaxMP(param1:int) : void
+      public function set MaxMP(value:int) : void
       {
-         _maxMp = param1;
+         _maxMp = value;
       }
       
       public function get MaxMP() : int
@@ -96,14 +96,14 @@ package gameCommon.model
          return _petinfo;
       }
       
-      public function useSkill(param1:int, param2:Boolean) : void
+      public function useSkill(skillID:int, isUse:Boolean) : void
       {
-         var _loc3_:PetSkillTemplateInfo = PetSkillManager.getSkillByID(param1);
-         if(_loc3_ && param2)
+         var skill:PetSkillTemplateInfo = PetSkillManager.getSkillByID(skillID);
+         if(skill && isUse)
          {
-            MP = MP - _loc3_.CostMP;
+            MP = MP - skill.CostMP;
          }
-         dispatchEvent(new LivingEvent("usePetSkill",param1,0,param2));
+         dispatchEvent(new LivingEvent("usePetSkill",skillID,0,isUse));
       }
    }
 }

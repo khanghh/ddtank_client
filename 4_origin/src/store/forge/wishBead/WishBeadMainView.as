@@ -93,15 +93,15 @@ package store.forge.wishBead
          _continuousBtn = ComponentFactory.Instance.creatComponentByStylename("wishBeadMainView.continuousBtn");
          _doBtn = ComponentFactory.Instance.creatComponentByStylename("wishBeadMainView.doBtn");
          _doBtn.enable = false;
-         var _loc1_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("wishBeadMainView.tipTxt");
-         _loc1_.text = LanguageMgr.GetTranslation("wishBeadMainView.tipTxt");
+         var tipTxt:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("wishBeadMainView.tipTxt");
+         tipTxt.text = LanguageMgr.GetTranslation("wishBeadMainView.tipTxt");
          _helpBtn = HelpFrameUtils.Instance.simpleHelpButton(this,"wishBead.NodeBtn",null,LanguageMgr.GetTranslation("wishBead.wishBeadHelp.say"),"asset.awardSystem.wishBeadHelp",404,524);
          addChild(_bg);
          addChild(_bagList);
          addChild(_proBagList);
          addChild(_equipCell);
          addChild(_itemCell);
-         addChild(_loc1_);
+         addChild(tipTxt);
          addChild(_continuousBtn);
          addChild(_doBtn);
          _tip = ComponentFactory.Instance.creat("store.forge.wishBead.WishTip");
@@ -128,20 +128,20 @@ package store.forge.wishBead
          PlayerManager.Instance.Self.Bag.addEventListener("update",bagInfoChangeHandler);
       }
       
-      private function bagInfoChangeHandler(param1:BagEvent) : void
+      private function bagInfoChangeHandler(event:BagEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:Dictionary = param1.changedSlots;
+         var changeItemInfo:* = null;
+         var tmp2:* = null;
+         var changedSlots:Dictionary = event.changedSlots;
          var _loc8_:int = 0;
-         var _loc7_:* = _loc4_;
-         for each(var _loc5_ in _loc4_)
+         var _loc7_:* = changedSlots;
+         for each(var tmp in changedSlots)
          {
-            _loc3_ = _loc5_;
+            changeItemInfo = tmp;
          }
-         if(_loc3_ && !PlayerManager.Instance.Self.Bag.items[_loc3_.Place])
+         if(changeItemInfo && !PlayerManager.Instance.Self.Bag.items[changeItemInfo.Place])
          {
-            if(_equipCell.info && (_equipCell.info as InventoryItemInfo).Place == _loc3_.Place)
+            if(_equipCell.info && (_equipCell.info as InventoryItemInfo).Place == changeItemInfo.Place)
             {
                _equipCell.info = null;
             }
@@ -152,35 +152,35 @@ package store.forge.wishBead
          }
          else
          {
-            _loc2_ = WishBeadManager.instance.getCanWishBeadData();
-            if(_loc2_.items.length != _equipBagInfo.items.length)
+            tmp2 = WishBeadManager.instance.getCanWishBeadData();
+            if(tmp2.items.length != _equipBagInfo.items.length)
             {
-               _equipBagInfo = _loc2_;
+               _equipBagInfo = tmp2;
                _bagList.setData(_equipBagInfo);
             }
          }
-         var _loc6_:InventoryItemInfo = _equipCell.itemInfo;
-         if(_loc6_ && _loc6_.isGold)
+         var tmpInfo:InventoryItemInfo = _equipCell.itemInfo;
+         if(tmpInfo && tmpInfo.isGold)
          {
             _equipCell.info = null;
-            _equipCell.info = _loc6_;
+            _equipCell.info = tmpInfo;
          }
       }
       
-      private function propInfoChangeHandler(param1:BagEvent) : void
+      private function propInfoChangeHandler(event:BagEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:Dictionary = param1.changedSlots;
+         var changeItemInfo:* = null;
+         var tmpItemInfo:* = null;
+         var changedSlots:Dictionary = event.changedSlots;
          var _loc7_:int = 0;
-         var _loc6_:* = _loc4_;
-         for each(var _loc5_ in _loc4_)
+         var _loc6_:* = changedSlots;
+         for each(var tmp in changedSlots)
          {
-            _loc3_ = _loc5_;
+            changeItemInfo = tmp;
          }
-         if(_loc3_ && !PlayerManager.Instance.Self.PropBag.items[_loc3_.Place])
+         if(changeItemInfo && !PlayerManager.Instance.Self.PropBag.items[changeItemInfo.Place])
          {
-            if(_itemCell.info && (_itemCell.info as InventoryItemInfo).Place == _loc3_.Place)
+            if(_itemCell.info && (_itemCell.info as InventoryItemInfo).Place == changeItemInfo.Place)
             {
                _itemCell.info = null;
             }
@@ -195,23 +195,23 @@ package store.forge.wishBead
             {
                return;
             }
-            _loc2_ = _itemCell.info as InventoryItemInfo;
-            if(!PlayerManager.Instance.Self.PropBag.items[_loc2_.Place])
+            tmpItemInfo = _itemCell.info as InventoryItemInfo;
+            if(!PlayerManager.Instance.Self.PropBag.items[tmpItemInfo.Place])
             {
                _itemCell.info = null;
             }
             else
             {
-               _itemCell.setCount(_loc2_.Count);
+               _itemCell.setCount(tmpItemInfo.Count);
             }
          }
       }
       
-      private function __showTip(param1:PkgEvent) : void
+      private function __showTip(evt:PkgEvent) : void
       {
          _tip.isDisplayerTip = true;
-         var _loc2_:int = param1.pkg.readInt();
-         switch(int(_loc2_))
+         var result:int = evt.pkg.readInt();
+         switch(int(result))
          {
             case 0:
                _continuousBtn.selected = false;
@@ -261,9 +261,9 @@ package store.forge.wishBead
          }
       }
       
-      private function doHandler(param1:MouseEvent) : void
+      private function doHandler(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var confirmFrame:* = null;
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -285,9 +285,9 @@ package store.forge.wishBead
          }
          if(!(_equipCell.info as InventoryItemInfo).IsBinds)
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.bagII.BagIIView.BindsInfo"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
-            _loc2_.moveEnable = false;
-            _loc2_.addEventListener("response",__confirm,false,0,true);
+            confirmFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.bagII.BagIIView.BindsInfo"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
+            confirmFrame.moveEnable = false;
+            confirmFrame.addEventListener("response",__confirm,false,0,true);
          }
          else
          {
@@ -295,12 +295,12 @@ package store.forge.wishBead
          }
       }
       
-      private function __confirm(param1:FrameEvent) : void
+      private function __confirm(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__confirm);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",__confirm);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             sendMess();
          }
@@ -309,22 +309,22 @@ package store.forge.wishBead
       private function sendMess() : void
       {
          _doBtn.enable = false;
-         var _loc1_:InventoryItemInfo = _equipCell.info as InventoryItemInfo;
-         var _loc2_:InventoryItemInfo = _itemCell.info as InventoryItemInfo;
-         SocketManager.Instance.out.sendWishBeadEquip(_loc1_.Place,_loc1_.BagType,_loc1_.TemplateID,_loc2_.Place,_loc2_.BagType,_loc2_.TemplateID);
+         var equipInfo:InventoryItemInfo = _equipCell.info as InventoryItemInfo;
+         var itemInfo:InventoryItemInfo = _itemCell.info as InventoryItemInfo;
+         SocketManager.Instance.out.sendWishBeadEquip(equipInfo.Place,equipInfo.BagType,equipInfo.TemplateID,itemInfo.Place,itemInfo.BagType,itemInfo.TemplateID);
       }
       
-      private function itemEquipChangeHandler(param1:Event) : void
+      private function itemEquipChangeHandler(event:Event) : void
       {
          _continuousBtn.selected = false;
          judgeDoBtnStatus(true);
       }
       
-      private function judgeDoBtnStatus(param1:Boolean) : void
+      private function judgeDoBtnStatus(isShowTip:Boolean) : void
       {
          if(_equipCell.info && _itemCell.info)
          {
-            if(WishBeadManager.instance.getIsEquipMatchWishBead(_itemCell.info.TemplateID,_equipCell.info.CategoryID,param1))
+            if(WishBeadManager.instance.getIsEquipMatchWishBead(_itemCell.info.TemplateID,_equipCell.info.CategoryID,isShowTip))
             {
                _doBtn.enable = true;
             }
@@ -339,7 +339,7 @@ package store.forge.wishBead
          }
       }
       
-      protected function __cellDoubleClick(param1:CellEvent) : void
+      protected function __cellDoubleClick(evt:CellEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -347,27 +347,27 @@ package store.forge.wishBead
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:String = "";
-         if(param1.target == _proBagList)
+         var tmpStr:String = "";
+         if(evt.target == _proBagList)
          {
-            _loc2_ = "wishBead_item_move";
+            tmpStr = "wishBead_item_move";
          }
          else
          {
-            _loc2_ = "wishBead_equip_move";
+            tmpStr = "wishBead_equip_move";
          }
-         var _loc3_:WishBeadEvent = new WishBeadEvent(_loc2_);
-         var _loc4_:BagCell = param1.data as BagCell;
-         _loc3_.info = _loc4_.info as InventoryItemInfo;
-         _loc3_.moveType = 1;
-         WishBeadManager.instance.dispatchEvent(_loc3_);
+         var event:WishBeadEvent = new WishBeadEvent(tmpStr);
+         var cell:BagCell = evt.data as BagCell;
+         event.info = cell.info as InventoryItemInfo;
+         event.moveType = 1;
+         WishBeadManager.instance.dispatchEvent(event);
       }
       
-      private function cellClickHandler(param1:CellEvent) : void
+      private function cellClickHandler(event:CellEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BagCell = param1.data as BagCell;
-         _loc2_.dragStart();
+         var cell:BagCell = event.data as BagCell;
+         cell.dragStart();
       }
       
       private function createAcceptDragSprite() : void
@@ -390,10 +390,10 @@ package store.forge.wishBead
          addChild(_rightDrapSprite);
       }
       
-      override public function set visible(param1:Boolean) : void
+      override public function set visible(value:Boolean) : void
       {
-         .super.visible = param1;
-         if(param1)
+         .super.visible = value;
+         if(value)
          {
             if(!_isDispose)
             {

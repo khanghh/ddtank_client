@@ -14,9 +14,9 @@ package armShell
       
       private var _armShellFrame:ArmShellFrame;
       
-      public function ArmShellControl(param1:IEventDispatcher = null)
+      public function ArmShellControl(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : ArmShellControl
@@ -33,7 +33,7 @@ package armShell
          ArmShellManager.instance.addEventListener("showArmShellFrame",__showArmShellFrame);
       }
       
-      public function __showArmShellFrame(param1:CEvent) : void
+      public function __showArmShellFrame(event:CEvent) : void
       {
          _armShellFrame = ComponentFactory.Instance.creatComponentByStylename("core.armShellFrame");
          LayerManager.Instance.addToLayer(_armShellFrame,3,true,1);

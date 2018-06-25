@@ -8,9 +8,9 @@ package ddt.events
       public static const TRANSPARENTCHANGED:String = "transparentChanged";
        
       
-      public function SharedEvent(param1:String, param2:Boolean = false, param3:Boolean = false)
+      public function SharedEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         super(param1,param2,param3);
+         super(type,bubbles,cancelable);
       }
    }
 }

@@ -20,283 +20,277 @@ package hall.player.aStar
       
       private var _nodeH:int;
       
-      public function Grid(param1:int, param2:int, param3:int, param4:int)
+      public function Grid(numCols:int, numRows:int, nodeW:int, nodeH:int)
       {
-         var _loc6_:int = 0;
-         var _loc5_:int = 0;
+         var i:int = 0;
+         var j:int = 0;
          super();
-         _numCols = param1;
-         _numRows = param2;
-         _nodeW = param3;
-         _nodeH = param4;
+         _numCols = numCols;
+         _numRows = numRows;
+         _nodeW = nodeW;
+         _nodeH = nodeH;
          _nodes = [];
-         _loc6_ = 0;
-         while(_loc6_ < _numCols)
+         for(i = 0; i < _numCols; )
          {
-            _nodes[_loc6_] = [];
-            _loc5_ = 0;
-            while(_loc5_ < _numRows)
+            _nodes[i] = [];
+            for(j = 0; j < _numRows; )
             {
-               _nodes[_loc6_][_loc5_] = new Node(_loc6_,_loc5_);
-               _loc5_++;
+               _nodes[i][j] = new Node(i,j);
+               j++;
             }
-            _loc6_++;
+            i++;
          }
       }
       
-      public function getNode(param1:int, param2:int) : Node
+      public function getNode(x:int, y:int) : Node
       {
-         return _nodes[param1][param2] as Node;
+         return _nodes[x][y] as Node;
       }
       
-      public function setEndNode(param1:int, param2:int) : void
+      public function setEndNode(x:int, y:int) : void
       {
-         _endNode = _nodes[param1][param2] as Node;
+         _endNode = _nodes[x][y] as Node;
       }
       
-      public function setStartNode(param1:int, param2:int) : void
+      public function setStartNode(x:int, y:int) : void
       {
-         _startNode = _nodes[param1][param2] as Node;
+         _startNode = _nodes[x][y] as Node;
       }
       
-      public function setWalkable(param1:int, param2:int, param3:Boolean) : void
+      public function setWalkable(x:int, y:int, value:Boolean) : void
       {
-         _nodes[param1][param2].walkable = param3;
+         _nodes[x][y].walkable = value;
       }
       
-      public function getNodesUnderPoint(param1:Number, param2:Number, param3:Array = null) : Array
+      public function getNodesUnderPoint(xPos:Number, yPos:Number, exception:Array = null) : Array
       {
-         var _loc7_:int = 0;
-         var _loc4_:Array = [];
-         var _loc6_:* = param1 % 1 == 0;
-         var _loc5_:* = param2 % 1 == 0;
-         if(_loc6_ && _loc5_)
+         var i:int = 0;
+         var result:Array = [];
+         var xIsInt:* = xPos % 1 == 0;
+         var yIsInt:* = yPos % 1 == 0;
+         if(xIsInt && yIsInt)
          {
-            _loc4_[0] = getNode(param1 - 1,param2 - 1);
-            _loc4_[1] = getNode(param1,param2 - 1);
-            _loc4_[2] = getNode(param1 - 1,param2);
-            _loc4_[3] = getNode(param1,param2);
+            result[0] = getNode(xPos - 1,yPos - 1);
+            result[1] = getNode(xPos,yPos - 1);
+            result[2] = getNode(xPos - 1,yPos);
+            result[3] = getNode(xPos,yPos);
          }
-         else if(_loc6_ && !_loc5_)
+         else if(xIsInt && !yIsInt)
          {
-            _loc4_[0] = getNode(param1 - 1,int(param2));
-            _loc4_[1] = getNode(param1,int(param2));
+            result[0] = getNode(xPos - 1,int(yPos));
+            result[1] = getNode(xPos,int(yPos));
          }
-         else if(!_loc6_ && _loc5_)
+         else if(!xIsInt && yIsInt)
          {
-            _loc4_[0] = getNode(int(param1),param2 - 1);
-            _loc4_[1] = getNode(int(param1),param2);
+            result[0] = getNode(int(xPos),yPos - 1);
+            result[1] = getNode(int(xPos),yPos);
          }
          else
          {
-            _loc4_[0] = getNode(int(param1),int(param2));
+            result[0] = getNode(int(xPos),int(yPos));
          }
-         _loc7_ = 0;
-         while(_loc7_ < _loc4_.length)
+         for(i = 0; i < result.length; )
          {
-            if(_loc4_[_loc7_] == null)
+            if(result[i] == null)
             {
-               _loc4_.splice(_loc7_,1);
-               _loc7_--;
+               result.splice(i,1);
+               i--;
             }
-            _loc7_++;
+            i++;
          }
-         if(param3 && param3.length > 0)
+         if(exception && exception.length > 0)
          {
-            _loc7_ = 0;
-            while(_loc7_ < _loc4_.length)
+            for(i = 0; i < result.length; )
             {
-               if(param3.indexOf(_loc4_[_loc7_]) != -1)
+               if(exception.indexOf(result[i]) != -1)
                {
-                  _loc4_.splice(_loc7_,1);
-                  _loc7_--;
+                  result.splice(i,1);
+                  i--;
                }
-               _loc7_++;
+               i++;
             }
          }
-         return _loc4_;
+         return result;
       }
       
-      public function hasBarrier(param1:int, param2:int, param3:int, param4:int) : Boolean
+      public function hasBarrier(startX:int, startY:int, endX:int, endY:int) : Boolean
       {
-         var _loc7_:* = null;
-         var _loc9_:* = NaN;
-         var _loc6_:Number = NaN;
-         var _loc8_:Number = NaN;
-         var _loc12_:* = null;
-         var _loc13_:* = null;
-         var _loc5_:Number = NaN;
-         var _loc11_:Number = NaN;
-         if(param1 == param3 && param2 == param4)
+         var lineFuction:* = null;
+         var i:* = NaN;
+         var loopStart:Number = NaN;
+         var loopEnd:Number = NaN;
+         var passedNodeList:* = null;
+         var passedNode:* = null;
+         var yPos:Number = NaN;
+         var xPos:Number = NaN;
+         if(startX == endX && startY == endY)
          {
             return false;
          }
-         var _loc16_:Point = new Point(param1 + 0.5,param2 + 0.5);
-         var _loc17_:Point = new Point(param3 + 0.5,param4 + 0.5);
-         var _loc15_:Number = Math.abs(param3 - param1);
-         var _loc14_:Number = Math.abs(param4 - param2);
-         var _loc10_:Boolean = _loc15_ > _loc14_?true:false;
-         if(_loc10_)
+         var point1:Point = new Point(startX + 0.5,startY + 0.5);
+         var point2:Point = new Point(endX + 0.5,endY + 0.5);
+         var distX:Number = Math.abs(endX - startX);
+         var distY:Number = Math.abs(endY - startY);
+         var loopDirection:Boolean = distX > distY?true:false;
+         if(loopDirection)
          {
-            _loc7_ = MathUtil.getLineFunc(_loc16_,_loc17_,0);
-            _loc6_ = Math.min(param1,param3);
-            _loc8_ = Math.max(param1,param3);
-            _loc9_ = _loc6_;
-            while(_loc9_ <= _loc8_)
+            lineFuction = MathUtil.getLineFunc(point1,point2,0);
+            loopStart = Math.min(startX,endX);
+            loopEnd = Math.max(startX,endX);
+            for(i = loopStart; i <= loopEnd; )
             {
-               if(_loc9_ == _loc6_)
+               if(i == loopStart)
                {
-                  _loc9_ = Number(_loc9_ + 0.5);
+                  i = Number(i + 0.5);
                }
-               _loc5_ = _loc7_(_loc9_);
-               _loc12_ = getNodesUnderPoint(_loc9_,_loc5_);
+               yPos = lineFuction(i);
+               passedNodeList = getNodesUnderPoint(i,yPos);
                var _loc19_:int = 0;
-               var _loc18_:* = _loc12_;
-               for each(_loc13_ in _loc12_)
+               var _loc18_:* = passedNodeList;
+               for each(passedNode in passedNodeList)
                {
-                  if(_loc13_.walkable == false)
+                  if(passedNode.walkable == false)
                   {
                      return true;
                   }
                }
-               if(_loc9_ == _loc6_ + 0.5)
+               if(i == loopStart + 0.5)
                {
-                  _loc9_ = Number(_loc9_ - 0.5);
+                  i = Number(i - 0.5);
                }
-               _loc9_++;
+               i++;
             }
          }
          else
          {
-            _loc7_ = MathUtil.getLineFunc(_loc16_,_loc17_,1);
-            _loc6_ = Math.min(param2,param4);
-            _loc8_ = Math.max(param2,param4);
-            _loc9_ = _loc6_;
-            while(_loc9_ <= _loc8_)
+            lineFuction = MathUtil.getLineFunc(point1,point2,1);
+            loopStart = Math.min(startY,endY);
+            loopEnd = Math.max(startY,endY);
+            for(i = loopStart; i <= loopEnd; )
             {
-               if(_loc9_ == _loc6_)
+               if(i == loopStart)
                {
-                  _loc9_ = Number(_loc9_ + 0.5);
+                  i = Number(i + 0.5);
                }
-               _loc11_ = _loc7_(_loc9_);
-               _loc12_ = getNodesUnderPoint(_loc11_,_loc9_);
+               xPos = lineFuction(i);
+               passedNodeList = getNodesUnderPoint(xPos,i);
                var _loc21_:int = 0;
-               var _loc20_:* = _loc12_;
-               for each(_loc13_ in _loc12_)
+               var _loc20_:* = passedNodeList;
+               for each(passedNode in passedNodeList)
                {
-                  if(_loc13_.walkable == false)
+                  if(passedNode.walkable == false)
                   {
                      return true;
                   }
                }
-               if(_loc9_ == _loc6_ + 0.5)
+               if(i == loopStart + 0.5)
                {
-                  _loc9_ = Number(_loc9_ - 0.5);
+                  i = Number(i - 0.5);
                }
-               _loc9_++;
+               i++;
             }
          }
          return false;
       }
       
-      public function getEndNearNode(param1:int, param2:int, param3:int, param4:int) : Node
+      public function getEndNearNode(startX:int, startY:int, endX:int, endY:int) : Node
       {
-         var _loc6_:* = null;
-         var _loc5_:* = null;
-         var _loc9_:* = null;
-         var _loc7_:Node = getNode(param3,param4);
-         if(_loc7_ && _loc7_.walkable)
+         var lineFuction:* = null;
+         var nodeH:* = null;
+         var nodeV:* = null;
+         var endNode:Node = getNode(endX,endY);
+         if(endNode && endNode.walkable)
          {
-            return _loc7_;
+            return endNode;
          }
-         if(param1 == param3 && param2 == param4)
+         if(startX == endX && startY == endY)
          {
-            return _loc7_;
+            return endNode;
          }
-         var _loc12_:Point = new Point(param1 + 0.5,param2 + 0.5);
-         var _loc13_:Point = new Point(param3 + 0.5,param4 + 0.5);
-         var _loc11_:Number = Math.abs(param3 - param1);
-         var _loc10_:Number = Math.abs(param4 - param2);
-         var _loc8_:Boolean = _loc11_ > _loc10_?true:false;
-         if(_loc8_)
+         var point1:Point = new Point(startX + 0.5,startY + 0.5);
+         var point2:Point = new Point(endX + 0.5,endY + 0.5);
+         var distX:Number = Math.abs(endX - startX);
+         var distY:Number = Math.abs(endY - startY);
+         var loopDirection:Boolean = distX > distY?true:false;
+         if(loopDirection)
          {
-            _loc6_ = MathUtil.getLineFunc(_loc12_,_loc13_,0);
-            _loc5_ = getDirectionEndNearNode(param1,param3,_loc8_,_loc6_);
-            if(_loc5_)
+            lineFuction = MathUtil.getLineFunc(point1,point2,0);
+            nodeH = getDirectionEndNearNode(startX,endX,loopDirection,lineFuction);
+            if(nodeH)
             {
-               return _loc5_;
+               return nodeH;
             }
          }
          else
          {
-            _loc6_ = MathUtil.getLineFunc(_loc12_,_loc13_,1);
-            _loc9_ = getDirectionEndNearNode(param2,param4,_loc8_,_loc6_);
-            if(_loc9_)
+            lineFuction = MathUtil.getLineFunc(point1,point2,1);
+            nodeV = getDirectionEndNearNode(startY,endY,loopDirection,lineFuction);
+            if(nodeV)
             {
-               return _loc9_;
+               return nodeV;
             }
          }
-         return getNode(param1,param2);
+         return getNode(startX,startY);
       }
       
-      public function getDirectionEndNearNode(param1:int, param2:int, param3:Boolean, param4:Function) : Node
+      public function getDirectionEndNearNode(start:int, end:int, loopDirection:Boolean, lineFuction:Function) : Node
       {
-         var _loc7_:* = null;
-         var _loc8_:* = null;
-         var _loc9_:Number = NaN;
-         var _loc6_:Number = NaN;
-         var _loc5_:Boolean = false;
-         _loc9_ = param2;
-         while(param2 <= param1?_loc9_ <= param1:_loc9_ >= param1)
+         var passedNodeList:* = null;
+         var passedNode:* = null;
+         var i:Number = NaN;
+         var xyPos:Number = NaN;
+         var allWalkable:Boolean = false;
+         i = end;
+         while(end <= start?i <= start:i >= start)
          {
-            if(_loc9_ == param2)
+            if(i == end)
             {
-               _loc9_ = _loc9_ + 0.5;
+               i = i + 0.5;
             }
-            _loc6_ = param4(_loc9_);
-            if(param3)
+            xyPos = lineFuction(i);
+            if(loopDirection)
             {
-               _loc7_ = getNodesUnderPoint(_loc9_,_loc6_);
+               passedNodeList = getNodesUnderPoint(i,xyPos);
             }
             else
             {
-               _loc7_ = getNodesUnderPoint(_loc6_,_loc9_);
+               passedNodeList = getNodesUnderPoint(xyPos,i);
             }
-            _loc5_ = true;
-            if(_loc7_.length == 0)
+            allWalkable = true;
+            if(passedNodeList.length == 0)
             {
-               _loc5_ = false;
+               allWalkable = false;
             }
             else
             {
                var _loc11_:int = 0;
-               var _loc10_:* = _loc7_;
-               for each(_loc8_ in _loc7_)
+               var _loc10_:* = passedNodeList;
+               for each(passedNode in passedNodeList)
                {
-                  if(_loc8_.walkable == false)
+                  if(passedNode.walkable == false)
                   {
-                     _loc5_ = false;
+                     allWalkable = false;
                      break;
                   }
                }
             }
-            if(_loc5_)
+            if(allWalkable)
             {
-               return _loc7_[0];
+               return passedNodeList[0];
             }
-            if(_loc9_ == param2 + 0.5)
+            if(i == end + 0.5)
             {
-               _loc9_ = _loc9_ - 0.5;
+               i = i - 0.5;
             }
-            if(param2 <= param1)
+            if(end <= start)
             {
-               _loc9_++;
-               §§push(_loc9_);
+               i++;
+               §§push(i);
             }
             else
             {
-               _loc9_--;
-               §§push(Number(_loc9_));
+               i--;
+               §§push(Number(i));
             }
             §§pop();
          }
@@ -328,9 +322,9 @@ package hall.player.aStar
          return _nodeW;
       }
       
-      public function set nodeW(param1:int) : void
+      public function set nodeW(value:int) : void
       {
-         _nodeW = param1;
+         _nodeW = value;
       }
       
       public function get nodeH() : int
@@ -338,9 +332,9 @@ package hall.player.aStar
          return _nodeH;
       }
       
-      public function set nodeH(param1:int) : void
+      public function set nodeH(value:int) : void
       {
-         _nodeH = param1;
+         _nodeH = value;
       }
    }
 }

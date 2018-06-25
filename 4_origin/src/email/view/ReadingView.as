@@ -151,7 +151,7 @@ package email.view
       
       private function initView() : void
       {
-         var _loc3_:* = 0;
+         var i:* = 0;
          titleText = LanguageMgr.GetTranslation("tank.view.common.BellowStripViewII.email");
          _readBG = ComponentFactory.Instance.creatComponentByStylename("email.readBG");
          addToContent(_readBG);
@@ -159,8 +159,8 @@ package email.view
          PositionUtils.setPos(_readViewBg,"readingViewBG.pos");
          addToContent(_readViewBg);
          addLeftTopBtnGroup();
-         var _loc1_:Scale9CornerImage = ComponentFactory.Instance.creatComponentByStylename("email.PageCountBg");
-         addToContent(_loc1_);
+         var PageBg:Scale9CornerImage = ComponentFactory.Instance.creatComponentByStylename("email.PageCountBg");
+         addToContent(PageBg);
          _leftPageBtn = ComponentFactory.Instance.creat("email.leftPageBtn");
          addToContent(_leftPageBtn);
          _rightPageBtn = ComponentFactory.Instance.creat("email.rightPageBtn");
@@ -192,8 +192,8 @@ package email.view
          _topicTip = ComponentFactory.Instance.creatComponentByStylename("email.topicTipTxt");
          _topicTip.text = LanguageMgr.GetTranslation("tank.view.emailII.readView.topicTip");
          addToContent(_topicTip);
-         var _loc2_:Image = ComponentFactory.Instance.creatComponentByStylename("email.VerticalLine");
-         addToContent(_loc2_);
+         var xuLine:Image = ComponentFactory.Instance.creatComponentByStylename("email.VerticalLine");
+         addToContent(xuLine);
          _sender = ComponentFactory.Instance.creat("email.senderTxt");
          _sender.maxChars = 36;
          addToContent(_sender);
@@ -205,13 +205,12 @@ package email.view
          _diamondHBox = ComponentFactory.Instance.creat("emial.diamondHbox");
          addToContent(_diamondHBox);
          _diamonds = [];
-         _loc3_ = uint(0);
-         while(_loc3_ < 5)
+         for(i = uint(0); i < 5; )
          {
-            _diamonds[_loc3_] = new DiamondOfReading();
-            _diamonds[_loc3_].index = _loc3_;
-            _diamondHBox.addChild(_diamonds[_loc3_]);
-            _loc3_++;
+            _diamonds[i] = new DiamondOfReading();
+            _diamonds[i].index = i;
+            _diamondHBox.addChild(_diamonds[i]);
+            i++;
          }
          _diamondHBox.refreshChildPos();
          _reply_btn = ComponentFactory.Instance.creat("email.replyBtn");
@@ -303,23 +302,23 @@ package email.view
          }
       }
       
-      private function __contentLinkHandler(param1:TextEvent) : void
+      private function __contentLinkHandler(e:TextEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:Array = param1.text.split(":");
-         if(!_loc2_ || _loc2_.length <= 0)
+         var arr:Array = e.text.split(":");
+         if(!arr || arr.length <= 0)
          {
             return;
          }
-         MailManager.Instance.readingViewLinkHandler(_loc2_);
+         MailManager.Instance.readingViewLinkHandler(arr);
       }
       
-      private function __contentRollOverHandler(param1:MouseEvent) : void
+      private function __contentRollOverHandler(e:MouseEvent) : void
       {
          Mouse.cursor = "auto";
       }
       
-      private function payforfriendHander(param1:MouseEvent) : void
+      private function payforfriendHander(e:MouseEvent) : void
       {
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -372,29 +371,29 @@ package email.view
          }
       }
       
-      private function __complainhandler(param1:MouseEvent) : void
+      private function __complainhandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _complainAlert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("email.complain.confim"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
          _complainAlert.addEventListener("response",__frameResponse);
       }
       
-      protected function __frameResponse(param1:FrameEvent) : void
+      protected function __frameResponse(event:FrameEvent) : void
       {
-         var _loc2_:* = null;
-         switch(int(param1.responseCode) - 2)
+         var feedbackInfo:* = null;
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
                if(FeedbackManager.instance.examineTime())
                {
-                  _loc2_ = new FeedbackInfo();
-                  _loc2_.question_title = LanguageMgr.GetTranslation("email.complain.lan");
-                  _loc2_.question_content = _info.Content;
-                  _loc2_.occurrence_date = DateUtils.dateFormat(new Date());
-                  _loc2_.question_type = 8;
-                  _loc2_.report_user_name = _info.Sender;
-                  FeedbackManager.instance.submitFeedbackInfo(_loc2_);
+                  feedbackInfo = new FeedbackInfo();
+                  feedbackInfo.question_title = LanguageMgr.GetTranslation("email.complain.lan");
+                  feedbackInfo.question_content = _info.Content;
+                  feedbackInfo.occurrence_date = DateUtils.dateFormat(new Date());
+                  feedbackInfo.question_type = 8;
+                  feedbackInfo.report_user_name = _info.Sender;
+                  FeedbackManager.instance.submitFeedbackInfo(feedbackInfo);
                   break;
                }
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("feedback.view.SystemsAnalysis"));
@@ -405,9 +404,9 @@ package email.view
          _complainAlert = null;
       }
       
-      public function set info(param1:EmailInfo) : void
+      public function set info(value:EmailInfo) : void
       {
-         _info = param1;
+         _info = value;
          if(!_info)
          {
             _sendBtn.visible = false;
@@ -441,34 +440,34 @@ package email.view
       private function updateSended() : void
       {
          _prompt.visible = false;
-         var _loc1_:EmailInfoOfSended = _info as EmailInfoOfSended;
-         if(_loc1_.Type == 59)
+         var tempInfo:EmailInfoOfSended = _info as EmailInfoOfSended;
+         if(tempInfo.Type == 59)
          {
             _sender.text = LanguageMgr.GetTranslation("tank.view.common.ConsortiaIcon.self");
          }
          else
          {
-            _sender.text = !!_loc1_?_loc1_.Receiver:"";
+            _sender.text = !!tempInfo?tempInfo.Receiver:"";
          }
-         _topic.text = !!_loc1_?_loc1_.Title:"";
-         setContentText(_loc1_);
-         _content.htmlText = !!_loc1_?_loc1_.Content:"";
-         _content.textField.text = _content.textField.text + ("\n" + _loc1_.AnnexRemark);
+         _topic.text = !!tempInfo?tempInfo.Title:"";
+         setContentText(tempInfo);
+         _content.htmlText = !!tempInfo?tempInfo.Content:"";
+         _content.textField.text = _content.textField.text + ("\n" + tempInfo.AnnexRemark);
          _list.updateInfo(_info);
       }
       
-      private function setContentText(param1:*) : void
+      private function setContentText(info:*) : void
       {
-         if(param1)
+         if(info)
          {
-            if(param1.Content.indexOf("http") != -1)
+            if(info.Content.indexOf("http") != -1)
             {
-               _content.htmlText = param1.Content;
+               _content.htmlText = info.Content;
             }
             else
             {
                _content.textField.mouseEnabled = false;
-               _content.text = param1.Content;
+               _content.text = info.Content;
             }
          }
          else
@@ -524,9 +523,9 @@ package email.view
          }
          var _loc3_:int = 0;
          var _loc2_:* = _diamonds;
-         for each(var _loc1_ in _diamonds)
+         for each(var diamond in _diamonds)
          {
-            _loc1_.info = _info;
+            diamond.info = _info;
          }
          _list.updateInfo(_info);
          upRebackGift();
@@ -615,12 +614,12 @@ package email.view
          }
       }
       
-      private function showPersonal(param1:PlayerPropertyEvent) : void
+      private function showPersonal(e:PlayerPropertyEvent) : void
       {
-         var _loc2_:DictionaryData = new DictionaryData();
+         var tempList:DictionaryData = new DictionaryData();
          _tempInfo.removeEventListener("propertychange",showPersonal);
-         _loc2_[_info.UserID] = _tempInfo;
-         PlayerManager.Instance.mailTempList = _loc2_;
+         tempList[_info.UserID] = _tempInfo;
+         PlayerManager.Instance.mailTempList = tempList;
          showBegain();
       }
       
@@ -638,15 +637,15 @@ package email.view
       private function showComplete() : void
       {
          PositionUtils.setPos(_playerview,"email.playerviewPos");
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(0);
-         _loc1_.graphics.drawRect(0,0,124,140);
-         _loc1_.graphics.endFill();
-         var _loc2_:Point = ComponentFactory.Instance.creatCustomObject("email.playerviewMaskPos");
-         _loc1_.x = _loc2_.x;
-         _loc1_.y = _loc2_.y;
-         _playerview.mask = _loc1_;
-         addToContent(_loc1_);
+         var playerviewMask:Sprite = new Sprite();
+         playerviewMask.graphics.beginFill(0);
+         playerviewMask.graphics.drawRect(0,0,124,140);
+         playerviewMask.graphics.endFill();
+         var playerviewMaskPos:Point = ComponentFactory.Instance.creatCustomObject("email.playerviewMaskPos");
+         playerviewMask.x = playerviewMaskPos.x;
+         playerviewMask.y = playerviewMaskPos.y;
+         _playerview.mask = playerviewMask;
+         addToContent(playerviewMask);
          addToContent(_playerview);
          _levelIcon = ComponentFactory.Instance.creatCustomObject("email.levelIcon");
          _levelIcon.setSize(0);
@@ -657,17 +656,17 @@ package email.view
          addToContent(_levelIcon);
       }
       
-      public function setListView(param1:Array, param2:int, param3:int, param4:Boolean = false) : void
+      public function setListView(array:Array, totalPage:int, currentPage:int, isSendedMail:Boolean = false) : void
       {
-         _list.update(param1,param4);
-         _pageTxt.text = param3.toString() + "/" + param2.toString();
+         _list.update(array,isSendedMail);
+         _pageTxt.text = currentPage.toString() + "/" + totalPage.toString();
       }
       
-      public function switchBtnsVisible(param1:Boolean) : void
+      public function switchBtnsVisible(value:Boolean) : void
       {
-         _selectAllBtn.visible = param1;
-         _deleteBtn.visible = param1;
-         _reciveMailBtn.visible = param1;
+         _selectAllBtn.visible = value;
+         _deleteBtn.visible = value;
+         _reciveMailBtn.visible = value;
       }
       
       private function btnSound() : void
@@ -675,25 +674,24 @@ package email.view
          SoundManager.instance.play("043");
       }
       
-      public function set readOnly(param1:Boolean) : void
+      public function set readOnly(value:Boolean) : void
       {
-         var _loc2_:* = 0;
-         _loc2_ = uint(0);
-         while(_loc2_ < 5)
+         var i:* = 0;
+         for(i = uint(0); i < 5; )
          {
-            (_diamonds[_loc2_] as DiamondOfReading).readOnly = param1;
-            (_diamonds[_loc2_] as DiamondOfReading).visible = !param1;
-            _loc2_++;
+            (_diamonds[i] as DiamondOfReading).readOnly = value;
+            (_diamonds[i] as DiamondOfReading).visible = !value;
+            i++;
          }
       }
       
-      function set isCanReply(param1:Boolean) : void
+      function set isCanReply(value:Boolean) : void
       {
          if(_info is EmailInfoOfSended)
          {
             return;
          }
-         _reply_btn.enable = param1;
+         _reply_btn.enable = value;
       }
       
       private function closeWin() : void
@@ -857,23 +855,23 @@ package email.view
          }
       }
       
-      private function __selectMailTypeListener(param1:MouseEvent) : void
+      private function __selectMailTypeListener(e:MouseEvent) : void
       {
          _personalImgBg.visible = false;
          btnSound();
-         if(param1.currentTarget == _emailListButton)
+         if(e.currentTarget == _emailListButton)
          {
             MailControl.Instance.curShowPage = "mail";
             _senderTip.text = LanguageMgr.GetTranslation("tank.view.emailII.readView.senderTip");
             MailControl.Instance.changeType("all mails");
          }
-         else if(param1.currentTarget == _noReadButton)
+         else if(e.currentTarget == _noReadButton)
          {
             MailControl.Instance.curShowPage = "not_read";
             _senderTip.text = LanguageMgr.GetTranslation("tank.view.emailII.readView.senderTip");
             MailControl.Instance.changeType("no read mails");
          }
-         else if(param1.currentTarget == _sendedButton)
+         else if(e.currentTarget == _sendedButton)
          {
             MailControl.Instance.curShowPage = "sent";
             _senderTip.text = LanguageMgr.GetTranslation("tank.view.emailII.readView.geterTip");
@@ -881,33 +879,33 @@ package email.view
          }
       }
       
-      private function __lastPage(param1:MouseEvent) : void
+      private function __lastPage(event:MouseEvent) : void
       {
          SoundManager.instance.play("045");
          MailControl.Instance.setPage(true,_list.canChangePage());
          MailManager.Instance.changeSelected(null);
       }
       
-      private function __nextPage(param1:MouseEvent) : void
+      private function __nextPage(event:MouseEvent) : void
       {
          SoundManager.instance.play("045");
          MailControl.Instance.setPage(false,_list.canChangePage());
          MailManager.Instance.changeSelected(null);
       }
       
-      private function __selectAllListener(param1:MouseEvent) : void
+      private function __selectAllListener(e:MouseEvent) : void
       {
          btnSound();
          _list.switchSeleted();
       }
       
-      private function __deleteSelectListener(param1:MouseEvent) : void
+      private function __deleteSelectListener(e:MouseEvent) : void
       {
          btnSound();
-         var _loc2_:Array = _list.getSelectedMails();
-         if(_loc2_.length > 0)
+         var arr:Array = _list.getSelectedMails();
+         if(arr.length > 0)
          {
-            if(hightGoods(_loc2_))
+            if(hightGoods(arr))
             {
                ok();
             }
@@ -918,47 +916,47 @@ package email.view
          }
       }
       
-      private function hightGoods(param1:Array) : Boolean
+      private function hightGoods(arr:Array) : Boolean
       {
-         var _loc6_:int = 0;
-         var _loc8_:* = null;
-         var _loc4_:* = null;
-         var _loc5_:Boolean = false;
-         var _loc2_:Boolean = false;
-         var _loc3_:Boolean = false;
+         var j:int = 0;
+         var key:* = null;
+         var item:* = null;
+         var bool:Boolean = false;
+         var hasItem:Boolean = false;
+         var hasValuableE:Boolean = false;
          var _loc10_:int = 0;
-         var _loc9_:* = param1;
-         for each(var _loc7_ in param1)
+         var _loc9_:* = arr;
+         for each(var emailInfo in arr)
          {
-            if(_loc7_.Money > 0 || _loc7_.BindMoney > 0 || _loc7_.Medal > 0)
+            if(emailInfo.Money > 0 || emailInfo.BindMoney > 0 || emailInfo.Medal > 0)
             {
-               _loc2_ = true;
+               hasItem = true;
             }
-            _loc6_ = 1;
-            while(_loc6_ <= 5)
+            j = 1;
+            while(j <= 5)
             {
-               _loc8_ = "Annex" + _loc6_;
-               if(_loc7_.hasOwnProperty(_loc8_))
+               key = "Annex" + j;
+               if(emailInfo.hasOwnProperty(key))
                {
-                  _loc4_ = _loc7_[_loc8_] as InventoryItemInfo;
-                  if(_loc4_ && _loc7_.Type != 81 && _loc7_.Type != 83)
+                  item = emailInfo[key] as InventoryItemInfo;
+                  if(item && emailInfo.Type != 81 && emailInfo.Type != 83)
                   {
-                     if(!_loc2_)
+                     if(!hasItem)
                      {
-                        _loc2_ = true;
+                        hasItem = true;
                      }
                   }
-                  if(EquipType.isValuableEquip(_loc4_))
+                  if(EquipType.isValuableEquip(item))
                   {
-                     _loc5_ = false;
-                     _loc3_ = true;
+                     bool = false;
+                     hasValuableE = true;
                      break;
                   }
                }
-               _loc6_++;
+               j++;
             }
          }
-         if(_loc3_)
+         if(hasValuableE)
          {
             if(PlayerManager.Instance.Self.bagPwdState)
             {
@@ -977,7 +975,7 @@ package email.view
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.emailII.EmailIIStripView.delectEmailInfo"));
             }
          }
-         else if(_loc2_)
+         else if(hasItem)
          {
             if(PlayerManager.Instance.Self.bagPwdState)
             {
@@ -1012,10 +1010,10 @@ package email.view
          {
             ok();
          }
-         return _loc5_;
+         return bool;
       }
       
-      private function __cancelBtn(param1:SetPassEvent) : void
+      private function __cancelBtn(event:SetPassEvent) : void
       {
          BaglockedManager.Instance.removeEventListener("cancelBtn",__cancelBtn);
          disposeAlert();
@@ -1040,7 +1038,7 @@ package email.view
          _alertFrame = null;
       }
       
-      private function __simpleAlertResponse(param1:FrameEvent) : void
+      private function __simpleAlertResponse(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          _alertFrame.removeEventListener("response",__simpleAlertResponse);
@@ -1049,11 +1047,11 @@ package email.view
          {
             _alertFrame.parent.removeChild(_alertFrame);
          }
-         if(param1.responseCode == 4 || param1.responseCode == 0 || param1.responseCode == 1)
+         if(event.responseCode == 4 || event.responseCode == 0 || event.responseCode == 1)
          {
             cancel();
          }
-         else if(param1.responseCode == 3 || param1.responseCode == 2)
+         else if(event.responseCode == 3 || event.responseCode == 2)
          {
             ok();
          }
@@ -1068,57 +1066,55 @@ package email.view
       
       private function ok() : void
       {
-         var _loc2_:* = 0;
+         var i:* = 0;
          btnSound();
          disposeAlert();
          _personalImgBg.visible = false;
-         var _loc1_:Array = _list.getSelectedMails();
-         _loc2_ = uint(0);
-         while(_loc2_ < _loc1_.length)
+         var arr:Array = _list.getSelectedMails();
+         for(i = uint(0); i < arr.length; )
          {
-            MailControl.Instance.deleteEmail(_loc1_[_loc2_]);
-            MailControl.Instance.removeMail(_loc1_[_loc2_]);
+            MailControl.Instance.deleteEmail(arr[i]);
+            MailControl.Instance.removeMail(arr[i]);
             MailManager.Instance.changeSelected(null);
-            _loc2_++;
+            i++;
          }
       }
       
-      private function __receiveExListener(param1:MouseEvent) : void
+      private function __receiveExListener(e:MouseEvent) : void
       {
-         var _loc8_:* = 0;
-         var _loc6_:* = null;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc7_:* = null;
+         var i:* = 0;
+         var emailInfo:* = null;
+         var str:* = null;
+         var startTime:* = null;
+         var str2:* = null;
+         var startTime2:* = null;
          btnSound();
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc5_:Array = _list.getSelectedMails();
-         if(_loc5_.length > 0 || _info)
+         var arr:Array = _list.getSelectedMails();
+         if(arr.length > 0 || _info)
          {
-            if(_loc5_.length > 0)
+            if(arr.length > 0)
             {
-               _loc8_ = uint(0);
-               while(_loc8_ < _loc5_.length)
+               for(i = uint(0); i < arr.length; )
                {
-                  if(!((_loc5_[_loc8_] as EmailInfo).Type > 100 && (_loc5_[_loc8_] as EmailInfo).Money > 0))
+                  if(!((arr[i] as EmailInfo).Type > 100 && (arr[i] as EmailInfo).Money > 0))
                   {
-                     _loc6_ = _loc5_[_loc8_] as EmailInfo;
-                     if(!_loc6_.IsRead)
+                     emailInfo = arr[i] as EmailInfo;
+                     if(!emailInfo.IsRead)
                      {
-                        _loc4_ = _loc6_.SendTime;
-                        _loc3_ = new Date(Number(_loc4_.substr(0,4)),_loc4_.substr(5,2) - 1,Number(_loc4_.substr(8,2)),Number(_loc4_.substr(11,2)),Number(_loc4_.substr(14,2)),Number(_loc4_.substr(17,2)));
-                        _loc6_.ValidDate = 72 + (TimeManager.Instance.Now().time - _loc3_.time) / 3600000;
-                        _loc6_.IsRead = true;
-                        _list.updateInfo(_loc6_);
+                        str = emailInfo.SendTime;
+                        startTime = new Date(Number(str.substr(0,4)),str.substr(5,2) - 1,Number(str.substr(8,2)),Number(str.substr(11,2)),Number(str.substr(14,2)),Number(str.substr(17,2)));
+                        emailInfo.ValidDate = 72 + (TimeManager.Instance.Now().time - startTime.time) / 3600000;
+                        emailInfo.IsRead = true;
+                        _list.updateInfo(emailInfo);
                      }
-                     MailControl.Instance.getAnnexToBag(_loc5_[_loc8_],0);
+                     MailControl.Instance.getAnnexToBag(arr[i],0);
                   }
-                  _loc8_++;
+                  i++;
                }
             }
             if(_info)
@@ -1133,9 +1129,9 @@ package email.view
                }
                if(!_info.IsRead)
                {
-                  _loc2_ = _info.SendTime;
-                  _loc7_ = new Date(Number(_loc2_.substr(0,4)),_loc2_.substr(5,2) - 1,Number(_loc2_.substr(8,2)),Number(_loc2_.substr(11,2)),Number(_loc2_.substr(14,2)),Number(_loc2_.substr(17,2)));
-                  _info.ValidDate = 72 + (TimeManager.Instance.Now().time - _loc7_.time) / 3600000;
+                  str2 = _info.SendTime;
+                  startTime2 = new Date(Number(str2.substr(0,4)),str2.substr(5,2) - 1,Number(str2.substr(8,2)),Number(str2.substr(11,2)),Number(str2.substr(14,2)),Number(str2.substr(17,2)));
+                  _info.ValidDate = 72 + (TimeManager.Instance.Now().time - startTime2.time) / 3600000;
                }
                MailControl.Instance.getAnnexToBag(_info,0);
             }
@@ -1146,25 +1142,25 @@ package email.view
          }
       }
       
-      private function __reply(param1:MouseEvent) : void
+      private function __reply(event:MouseEvent) : void
       {
          btnSound();
          MailControl.Instance.changeState("reply");
       }
       
-      private function __close(param1:MouseEvent) : void
+      private function __close(event:MouseEvent) : void
       {
          btnSound();
          closeWin();
       }
       
-      private function __write(param1:MouseEvent) : void
+      private function __write(event:MouseEvent) : void
       {
          btnSound();
          MailControl.Instance.changeState("write");
       }
       
-      private function __addFriend(param1:MouseEvent) : void
+      private function __addFriend(event:MouseEvent) : void
       {
          if(_info)
          {
@@ -1173,29 +1169,29 @@ package email.view
          SoundManager.instance.play("008");
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0)
+         if(evt.responseCode == 0)
          {
             btnSound();
             closeWin();
          }
       }
       
-      protected function __rebackGift(param1:MouseEvent) : void
+      protected function __rebackGift(event:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
+         event.stopImmediatePropagation();
          SoundManager.instance.play("008");
          GiftManager.Instance.show();
          MailControl.Instance.hide();
       }
       
-      private function _clickPresent(param1:MouseEvent) : void
+      private function _clickPresent(e:MouseEvent) : void
       {
-         var _loc2_:String = _info.Content;
-         _loc2_ = _loc2_.substring(_loc2_.search(/\[/) + 1,_loc2_.search("]"));
-         FriendBirthdayManager.Instance.friendName = _loc2_;
-         param1.stopImmediatePropagation();
+         var str:String = _info.Content;
+         str = str.substring(str.search(/\[/) + 1,str.search("]"));
+         FriendBirthdayManager.Instance.friendName = str;
+         e.stopImmediatePropagation();
          SoundManager.instance.play("008");
          GiftManager.Instance.show();
          MailControl.Instance.hide();

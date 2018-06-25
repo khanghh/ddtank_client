@@ -20,9 +20,9 @@ package bagAndInfo.energyData
          return _energy;
       }
       
-      public function set Energy(param1:int) : void
+      public function set Energy(value:int) : void
       {
-         _energy = param1;
+         _energy = value;
       }
       
       public function get Money() : int
@@ -30,9 +30,9 @@ package bagAndInfo.energyData
          return _money;
       }
       
-      public function set Money(param1:int) : void
+      public function set Money(value:int) : void
       {
-         _money = param1;
+         _money = value;
       }
       
       public function get Count() : int
@@ -40,9 +40,9 @@ package bagAndInfo.energyData
          return _count;
       }
       
-      public function set Count(param1:int) : void
+      public function set Count(value:int) : void
       {
-         _count = param1;
+         _count = value;
       }
    }
 }

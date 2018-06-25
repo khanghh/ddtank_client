@@ -86,7 +86,7 @@ package farm.viewx.poultry
          SocketManager.Instance.addEventListener(PkgEvent.format(81,25),__onCondenser);
       }
       
-      protected function __onCondenser(param1:PkgEvent) : void
+      protected function __onCondenser(event:PkgEvent) : void
       {
          if(_checkBox.selected || _frameIndex == 105)
          {
@@ -100,10 +100,10 @@ package farm.viewx.poultry
          }
       }
       
-      public function setExp(param1:Number, param2:Number, param3:int) : void
+      public function setExp(currentExp:Number, totalExp:Number, levelNum:int) : void
       {
-         _currentExp = param1;
-         _totalExp = param2;
+         _currentExp = currentExp;
+         _totalExp = totalExp;
          _exp.text = _currentExp + "/" + _totalExp;
          _condenserBtn.enable = true;
          frameIndex = _currentExp * 105 / _totalExp;
@@ -119,7 +119,7 @@ package farm.viewx.poultry
          addEventListener("enterFrame",__onEnterFrame);
       }
       
-      protected function __onEnterFrame(param1:Event) : void
+      protected function __onEnterFrame(event:Event) : void
       {
          if(_frameIndex < 105 && _loading.currentFrame >= _frameIndex || _loading.currentFrame == _loading.totalFrames)
          {
@@ -138,26 +138,26 @@ package farm.viewx.poultry
          }
       }
       
-      protected function __onCondenserBtnClick(param1:MouseEvent) : void
+      protected function __onCondenserBtnClick(event:MouseEvent) : void
       {
-         var _loc3_:int = 1;
-         var _loc4_:int = (_totalExp - _currentExp) / 10;
-         var _loc2_:int = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(11957);
-         if(_loc2_ > 0)
+         var num:int = 1;
+         var needNum:int = (_totalExp - _currentExp) / 10;
+         var hasNum:int = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(11957);
+         if(hasNum > 0)
          {
             SoundManager.instance.playButtonSound();
             _condenserBtn.enable = false;
             if(_checkBox.selected)
             {
-               _loc3_ = Math.min(_loc2_,_loc4_);
+               num = Math.min(hasNum,needNum);
             }
-            frameIndex = (_currentExp + _loc3_ * 10) * 105 / _totalExp;
-            if(_checkBox.selected && _loc2_ >= _loc4_)
+            frameIndex = (_currentExp + num * 10) * 105 / _totalExp;
+            if(_checkBox.selected && hasNum >= needNum)
             {
                _isUpgrade = true;
                frameIndex = 105;
             }
-            SocketManager.Instance.out.farmCondenser(_loc3_);
+            SocketManager.Instance.out.farmCondenser(num);
          }
          else
          {
@@ -165,9 +165,9 @@ package farm.viewx.poultry
          }
       }
       
-      private function set frameIndex(param1:int) : void
+      private function set frameIndex(value:int) : void
       {
-         if(param1 == 0)
+         if(value == 0)
          {
             _loading.visible = false;
             _frameIndex = 1;
@@ -175,7 +175,7 @@ package farm.viewx.poultry
          else
          {
             _loading.visible = true;
-            _frameIndex = param1;
+            _frameIndex = value;
          }
       }
       

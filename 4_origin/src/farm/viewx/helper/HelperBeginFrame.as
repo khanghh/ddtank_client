@@ -62,13 +62,13 @@ package farm.viewx.helper
       public function HelperBeginFrame()
       {
          super();
-         var _loc1_:AlertInfo = new AlertInfo();
-         _loc1_.escEnable = true;
-         _loc1_.title = LanguageMgr.GetTranslation("ddt.farm.beginFrame.title");
-         _loc1_.bottomGap = 37;
-         _loc1_.buttonGape = 65;
-         _loc1_.customPos = ComponentFactory.Instance.creat("farm.confirmHelperBeginAlertBtnPos");
-         this.info = _loc1_;
+         var alertInfo:AlertInfo = new AlertInfo();
+         alertInfo.escEnable = true;
+         alertInfo.title = LanguageMgr.GetTranslation("ddt.farm.beginFrame.title");
+         alertInfo.bottomGap = 37;
+         alertInfo.buttonGape = 65;
+         alertInfo.customPos = ComponentFactory.Instance.creat("farm.confirmHelperBeginAlertBtnPos");
+         this.info = alertInfo;
          height = 250;
          _needCount = 0;
          _ifNeed = false;
@@ -148,10 +148,10 @@ package farm.viewx.helper
          addEventListener("response",__framePesponse);
       }
       
-      protected function __framePesponse(param1:FrameEvent) : void
+      protected function __framePesponse(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -239,25 +239,25 @@ package farm.viewx.helper
                   break;
             }
          }
-         var _loc1_:Array = [];
-         _loc1_.push(true);
-         _loc1_.push(_seedID);
-         _loc1_.push(_seedTime);
-         _loc1_.push(_haveCount);
-         _loc1_.push(_getCount);
-         _loc1_.push(_moneyType);
-         _loc1_.push(_needMoney);
-         _loc1_.push(_isBand);
-         SocketManager.Instance.out.sendBeginHelper(_loc1_);
+         var array:Array = [];
+         array.push(true);
+         array.push(_seedID);
+         array.push(_seedTime);
+         array.push(_haveCount);
+         array.push(_getCount);
+         array.push(_moneyType);
+         array.push(_needMoney);
+         array.push(_isBand);
+         SocketManager.Instance.out.sendBeginHelper(array);
          dispose();
       }
       
-      private function __poorManResponse(param1:FrameEvent) : void
+      private function __poorManResponse(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         param1.currentTarget.removeEventListener("response",__poorManResponse);
-         ObjectUtils.disposeObject(param1.currentTarget);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         event.currentTarget.removeEventListener("response",__poorManResponse);
+         ObjectUtils.disposeObject(event.currentTarget);
+         if(event.responseCode == 3 || event.responseCode == 2)
          {
             LeavePageManager.leaveToFillPath();
          }
@@ -282,9 +282,9 @@ package farm.viewx.helper
          return _seedID;
       }
       
-      public function set seedID(param1:int) : void
+      public function set seedID(value:int) : void
       {
-         _seedID = param1;
+         _seedID = value;
       }
       
       public function get seedTime() : int
@@ -292,9 +292,9 @@ package farm.viewx.helper
          return _seedTime;
       }
       
-      public function set seedTime(param1:int) : void
+      public function set seedTime(value:int) : void
       {
-         _seedTime = param1;
+         _seedTime = value;
       }
       
       public function get needCount() : int
@@ -302,32 +302,31 @@ package farm.viewx.helper
          return _needCount;
       }
       
-      public function set needCount(param1:int) : void
+      public function set needCount(value:int) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         _needCount = param1;
-         var _loc2_:Vector.<ShopItemInfo> = ShopManager.Instance.getValidGoodByType(88);
-         _loc4_ = 0;
-         while(_loc4_ < _loc2_.length)
+         var i:int = 0;
+         var ID:int = 0;
+         _needCount = value;
+         var infoList:Vector.<ShopItemInfo> = ShopManager.Instance.getValidGoodByType(88);
+         for(i = 0; i < infoList.length; )
          {
-            _loc3_ = _loc2_[_loc4_].TemplateID;
-            if(_seedID == _loc3_)
+            ID = infoList[i].TemplateID;
+            if(_seedID == ID)
             {
-               _needMoney = _needCount * _loc2_[_loc4_].AValue1;
-               _moneyType = _loc2_[_loc4_].APrice1;
-               if(_needCount * _loc2_[_loc4_].getItemPrice(1).ddtMoneyValue > 0)
+               _needMoney = _needCount * infoList[i].AValue1;
+               _moneyType = infoList[i].APrice1;
+               if(_needCount * infoList[i].getItemPrice(1).ddtMoneyValue > 0)
                {
                   _isDDTMoney = true;
                   _moneyTypeText = " " + LanguageMgr.GetTranslation("medalMoney");
                }
-               if(_needCount * _loc2_[_loc4_].getItemPrice(1).bothMoneyValue > 0)
+               if(_needCount * infoList[i].getItemPrice(1).bothMoneyValue > 0)
                {
                   _isDDTMoney = false;
                   _moneyTypeText = " " + LanguageMgr.GetTranslation("money");
                }
             }
-            _loc4_++;
+            i++;
          }
       }
       
@@ -336,9 +335,9 @@ package farm.viewx.helper
          return _haveCount;
       }
       
-      public function set haveCount(param1:int) : void
+      public function set haveCount(value:int) : void
       {
-         _haveCount = param1;
+         _haveCount = value;
       }
       
       public function get getCount() : int
@@ -346,9 +345,9 @@ package farm.viewx.helper
          return _getCount;
       }
       
-      public function set getCount(param1:int) : void
+      public function set getCount(value:int) : void
       {
-         _getCount = param1;
+         _getCount = value;
       }
       
       override public function dispose() : void

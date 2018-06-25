@@ -62,20 +62,20 @@ package pet.sprite
          checkData();
       }
       
-      private function __dataHandler(param1:CEvent) : void
+      private function __dataHandler(event:CEvent) : void
       {
          checkData();
       }
       
       private function checkData() : void
       {
-         var _loc2_:Array = PetSpriteManager.Instance.pkgs;
-         if(_loc2_.length <= 0)
+         var pkgs:Array = PetSpriteManager.Instance.pkgs;
+         if(pkgs.length <= 0)
          {
             return;
          }
-         var _loc1_:CEvent = _loc2_.shift();
-         var _loc3_:* = _loc1_.type;
+         var event:CEvent = pkgs.shift();
+         var _loc3_:* = event.type;
          if("pet_init" !== _loc3_)
          {
             if("pet_say" !== _loc3_)
@@ -86,22 +86,22 @@ package pet.sprite
                   {
                      if("pet_hidePetSprite" === _loc3_)
                      {
-                        hidePetSprite(_loc1_.data[0],_loc1_.data[1]);
+                        hidePetSprite(event.data[0],event.data[1]);
                      }
                   }
                   else
                   {
-                     showPetSprite(_loc1_.data[0],_loc1_.data[1]);
+                     showPetSprite(event.data[0],event.data[1]);
                   }
                }
                else
                {
-                  switchPetSprite(_loc1_.data[0]);
+                  switchPetSprite(event.data[0]);
                }
             }
             else
             {
-               say(_loc1_.data[0],_loc1_.data[1],_loc1_.data[2],_loc1_.data[3]);
+               say(event.data[0],event.data[1],event.data[2],event.data[3]);
             }
          }
          else
@@ -143,7 +143,7 @@ package pet.sprite
          _petModel.addEventListener("currentPetChanged",__onCurrentPetChanged);
       }
       
-      protected function __onCurrentPetChanged(param1:Event) : void
+      protected function __onCurrentPetChanged(event:Event) : void
       {
          _petSprite.updatePet();
          if(_petModel.currentPet)
@@ -160,9 +160,9 @@ package pet.sprite
          checkHunger();
       }
       
-      private function switchPetSprite(param1:Boolean) : void
+      private function switchPetSprite(val:Boolean) : void
       {
-         if(param1 && _petSprite.petSpriteLand && canShowPetSprite())
+         if(val && _petSprite.petSpriteLand && canShowPetSprite())
          {
             _petSprite.petSpriteLand.gotoAndPlay(1);
          }
@@ -170,12 +170,12 @@ package pet.sprite
          {
             _petSprite.petNotMove();
          }
-         _petModel.petSwitcher = param1;
+         _petModel.petSwitcher = val;
          if(!PetSpriteManager.Instance.canInitPetSprite())
          {
             return;
          }
-         if(param1)
+         if(val)
          {
             say("");
          }
@@ -186,7 +186,7 @@ package pet.sprite
          }
       }
       
-      private function showPetSprite(param1:Boolean = false, param2:Boolean = false) : void
+      private function showPetSprite(immediately:Boolean = false, showAlways:Boolean = false) : void
       {
          if(!canShowPetSprite() || !_petModel.currentPet || !_petSprite || !_petModel.currentPet.assetReady || _isShown)
          {
@@ -196,7 +196,7 @@ package pet.sprite
             }
             return;
          }
-         if(!_petModel.petSwitcher && !param2)
+         if(!_petModel.petSwitcher && !showAlways)
          {
             return;
          }
@@ -218,7 +218,7 @@ package pet.sprite
             PositionUtils.setPos(_petSprite,"petSprite.PetSprite.pet2Pos");
          }
          _isShown = true;
-         if(!param1)
+         if(!immediately)
          {
             enableChatViewPetSwitcher(false);
             _petSprite.playAnimation("bornB",afterAppear);
@@ -231,19 +231,19 @@ package pet.sprite
          }
       }
       
-      private function hidePetSprite(param1:Boolean = false, param2:Boolean = true) : void
+      private function hidePetSprite(immediately:Boolean = false, canShowNext:Boolean = true) : void
       {
          if(!_petSprite)
          {
             return;
          }
-         if(param2 && showNextMessage())
+         if(canShowNext && showNextMessage())
          {
             return;
          }
          _loopTimer.stop();
          _petSprite.hideMessageText();
-         if(param1)
+         if(immediately)
          {
             _petSprite.playAnimation("walkA");
             removePetSprite();
@@ -261,35 +261,35 @@ package pet.sprite
          {
             return;
          }
-         var _loc1_:String = Helpers.randomPick(ACTION);
-         if(_loc1_ == "walkB")
+         var action:String = Helpers.randomPick(ACTION);
+         if(action == "walkB")
          {
-            say(LanguageMgr.GetTranslation("ddt.pets.pose1"),true,1,_loc1_);
+            say(LanguageMgr.GetTranslation("ddt.pets.pose1"),true,1,action);
             _petSprite.petMove();
          }
-         else if(_loc1_ == "walkA")
+         else if(action == "walkA")
          {
-            say(LanguageMgr.GetTranslation("ddt.pets.pose2"),true,1,_loc1_);
+            say(LanguageMgr.GetTranslation("ddt.pets.pose2"),true,1,action);
             _petSprite.petMove();
          }
-         else if(_loc1_ == "bsetC")
+         else if(action == "bsetC")
          {
             _petSprite.petNotMove();
-            say("",false,-1,_loc1_);
+            say("",false,-1,action);
          }
          else
          {
             _petSprite.petNotMove();
-            say(LanguageMgr.GetTranslation("ddt.pets.pose3"),true,1,_loc1_);
+            say(LanguageMgr.GetTranslation("ddt.pets.pose3"),true,1,action);
          }
       }
       
-      private function enableChatViewPetSwitcher(param1:Boolean) : void
+      private function enableChatViewPetSwitcher(val:Boolean) : void
       {
-         ChatManager.Instance.output.enablePetSpriteSwitcher(param1);
+         ChatManager.Instance.output.enablePetSpriteSwitcher(val);
       }
       
-      private function __messageLoop(param1:Event) : void
+      private function __messageLoop(evt:Event) : void
       {
          if(!_petModel.petSwitcher && _isShown)
          {
@@ -303,7 +303,7 @@ package pet.sprite
          showNextMessage();
       }
       
-      protected function __onCheckTimer(param1:Event) : void
+      protected function __onCheckTimer(event:Event) : void
       {
          checkMessageQueue();
          checkHunger();
@@ -350,8 +350,8 @@ package pet.sprite
       
       private function canShowPetSprite() : Boolean
       {
-         var _loc1_:String = StateManager.currentStateType;
-         if(_loc1_ == "main" || _loc1_ == "roomlist" || _loc1_ == "dungeon" || _loc1_ == "matchRoom" || _loc1_ == "dungeonRoom")
+         var currentStateType:String = StateManager.currentStateType;
+         if(currentStateType == "main" || currentStateType == "roomlist" || currentStateType == "dungeon" || currentStateType == "matchRoom" || currentStateType == "dungeonRoom")
          {
             enableChatViewPetSwitcher(_petModel.currentPet != null);
             ChatManager.Instance.output.PetSpriteSwitchVisible(true);
@@ -367,49 +367,49 @@ package pet.sprite
          {
             return false;
          }
-         var _loc1_:PetMessage = _queue.pop();
+         var msg:PetMessage = _queue.pop();
          if(_isShown)
          {
-            _petSprite.playAnimation(_loc1_.action);
+            _petSprite.playAnimation(msg.action);
          }
          else
          {
-            showPetSprite(false,_loc1_.isAlwaysShow);
+            showPetSprite(false,msg.isAlwaysShow);
          }
-         if(_loc1_.type == 1)
+         if(msg.type == 1)
          {
-            _petSprite.say(_loc1_.msg);
+            _petSprite.say(msg.msg);
          }
-         else if(_loc1_.type == -1)
+         else if(msg.type == -1)
          {
             _petSprite.hideMessageText();
          }
          return true;
       }
       
-      public function say(param1:String, param2:Boolean = false, param3:int = -1, param4:String = "born3") : void
+      public function say(message:String, showAlways:Boolean = false, type:int = -1, action:String = "born3") : void
       {
          if(_isShown || !canShowPetSprite())
          {
-            if(_petModel.petSwitcher || param2)
+            if(_petModel.petSwitcher || showAlways)
             {
-               _queue.push(new PetMessage(param3,param4,param1,param2));
+               _queue.push(new PetMessage(type,action,message,showAlways));
             }
          }
          else
          {
-            if(param4 == "hunger")
+            if(action == "hunger")
             {
                showPetSprite(true,true);
                _petSprite.playAnimation("hunger");
             }
             else
             {
-               showPetSprite(param3 == 1,param2);
+               showPetSprite(type == 1,showAlways);
             }
-            if(param3 == 1)
+            if(type == 1)
             {
-               _petSprite.say(param1);
+               _petSprite.say(message);
             }
          }
       }
@@ -421,15 +421,15 @@ package pet.sprite
       
       private function checkMessageQueue() : void
       {
-         var _loc1_:* = null;
+         var msg:* = null;
          if(_isShown || !canShowPetSprite())
          {
             return;
          }
          while(hasMessageInQueue())
          {
-            _loc1_ = _queue[0];
-            if(!_loc1_.isAlwaysShow && !_petModel.petSwitcher)
+            msg = _queue[0];
+            if(!msg.isAlwaysShow && !_petModel.petSwitcher)
             {
                _queue.pop();
                continue;
@@ -458,12 +458,12 @@ class PetMessage
    
    public var isAlwaysShow:Boolean;
    
-   function PetMessage(param1:int, param2:String, param3:String, param4:Boolean)
+   function PetMessage(t:int, ac:String, m:String, always:Boolean)
    {
       super();
-      type = param1;
-      action = param2;
-      msg = param3;
-      isAlwaysShow = param4;
+      type = t;
+      action = ac;
+      msg = m;
+      isAlwaysShow = always;
    }
 }

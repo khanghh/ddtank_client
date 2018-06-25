@@ -79,16 +79,15 @@ package wasteRecycle.view
       
       private function updataView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var info:* = null;
          _infoList = WasteRecycleController.instance.model.data.list;
-         _loc2_ = 0;
-         while(_loc2_ < _infoList.length)
+         for(i = 0; i < _infoList.length; )
          {
-            _loc1_ = ItemManager.fillByID(_infoList[_loc2_].TemplateID);
-            _helptext2.text = _helptext2.text + (_loc1_.Name + "\n");
-            _helptext3.text = _helptext3.text + (_infoList[_loc2_].Integral + "\n");
-            _loc2_++;
+            info = ItemManager.fillByID(_infoList[i].TemplateID);
+            _helptext2.text = _helptext2.text + (info.Name + "\n");
+            _helptext3.text = _helptext3.text + (_infoList[i].Integral + "\n");
+            i++;
          }
          _scrollPanel.invalidateViewport();
       }

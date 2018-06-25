@@ -16,92 +16,88 @@ package com.pickgliss.utils
          throw new Error("Base64 class is static container only");
       }
       
-      public static function encode(param1:String) : String
+      public static function encode(data:String) : String
       {
-         var _loc2_:ByteArray = new ByteArray();
-         _loc2_.writeUTFBytes(param1);
-         return encodeByteArray(_loc2_);
+         var bytes:ByteArray = new ByteArray();
+         bytes.writeUTFBytes(data);
+         return encodeByteArray(bytes);
       }
       
-      public static function encodeByteArray(param1:ByteArray) : String
+      public static function encodeByteArray(data:ByteArray) : String
       {
-         var _loc2_:* = null;
-         var _loc7_:* = 0;
-         var _loc3_:* = 0;
-         var _loc5_:* = 0;
-         var _loc4_:String = "";
-         var _loc6_:Array = new Array(4);
-         param1.position = 0;
-         while(param1.bytesAvailable > 0)
+         var dataBuffer:* = null;
+         var i:* = 0;
+         var j:* = 0;
+         var k:* = 0;
+         var output:String = "";
+         var outputBuffer:Array = new Array(4);
+         data.position = 0;
+         while(data.bytesAvailable > 0)
          {
-            _loc2_ = [];
-            _loc7_ = uint(0);
-            while(_loc7_ < 3 && param1.bytesAvailable > 0)
+            dataBuffer = [];
+            i = uint(0);
+            while(i < 3 && data.bytesAvailable > 0)
             {
-               _loc2_[_loc7_] = param1.readUnsignedByte();
-               _loc7_++;
+               dataBuffer[i] = data.readUnsignedByte();
+               i++;
             }
-            _loc6_[0] = (_loc2_[0] & 252) >> 2;
-            _loc6_[1] = (_loc2_[0] & 3) << 4 | _loc2_[1] >> 4;
-            _loc6_[2] = (_loc2_[1] & 15) << 2 | _loc2_[2] >> 6;
-            _loc6_[3] = _loc2_[2] & 63;
-            _loc3_ = uint(_loc2_.length);
-            while(_loc3_ < 3)
+            outputBuffer[0] = (dataBuffer[0] & 252) >> 2;
+            outputBuffer[1] = (dataBuffer[0] & 3) << 4 | dataBuffer[1] >> 4;
+            outputBuffer[2] = (dataBuffer[1] & 15) << 2 | dataBuffer[2] >> 6;
+            outputBuffer[3] = dataBuffer[2] & 63;
+            for(j = uint(dataBuffer.length); j < 3; )
             {
-               _loc6_[_loc3_ + 1] = 64;
-               _loc3_++;
+               outputBuffer[j + 1] = 64;
+               j++;
             }
-            _loc5_ = uint(0);
-            while(_loc5_ < _loc6_.length)
+            for(k = uint(0); k < outputBuffer.length; )
             {
-               _loc4_ = _loc4_ + "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".charAt(_loc6_[_loc5_]);
-               _loc5_++;
+               output = output + "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".charAt(outputBuffer[k]);
+               k++;
             }
          }
-         return _loc4_;
+         return output;
       }
       
-      public static function decode(param1:String) : String
+      public static function decode(data:String) : String
       {
-         var _loc2_:ByteArray = decodeToByteArray(param1);
-         return _loc2_.readUTFBytes(_loc2_.length);
+         var bytes:ByteArray = decodeToByteArray(data);
+         return bytes.readUTFBytes(bytes.length);
       }
       
-      public static function decodeToByteArray(param1:String) : ByteArray
+      public static function decodeToByteArray(data:String) : ByteArray
       {
-         var _loc7_:* = 0;
-         var _loc3_:* = 0;
-         var _loc5_:* = 0;
-         var _loc4_:ByteArray = new ByteArray();
-         var _loc2_:Array = new Array(4);
-         var _loc6_:Array = new Array(3);
-         _loc7_ = uint(0);
-         while(_loc7_ < param1.length)
+         var i:* = 0;
+         var j:* = 0;
+         var k:* = 0;
+         var output:ByteArray = new ByteArray();
+         var dataBuffer:Array = new Array(4);
+         var outputBuffer:Array = new Array(3);
+         for(i = uint(0); i < data.length; )
          {
-            _loc3_ = uint(0);
-            while(_loc3_ < 4 && _loc7_ + _loc3_ < param1.length)
+            j = uint(0);
+            while(j < 4 && i + j < data.length)
             {
-               _loc2_[_loc3_] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".indexOf(param1.charAt(_loc7_ + _loc3_));
-               _loc3_++;
+               dataBuffer[j] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".indexOf(data.charAt(i + j));
+               j++;
             }
-            _loc6_[0] = (_loc2_[0] << 2) + ((_loc2_[1] & 48) >> 4);
-            _loc6_[1] = ((_loc2_[1] & 15) << 4) + ((_loc2_[2] & 60) >> 2);
-            _loc6_[2] = ((_loc2_[2] & 3) << 6) + _loc2_[3];
-            _loc5_ = uint(0);
-            while(_loc5_ < _loc6_.length)
+            outputBuffer[0] = (dataBuffer[0] << 2) + ((dataBuffer[1] & 48) >> 4);
+            outputBuffer[1] = ((dataBuffer[1] & 15) << 4) + ((dataBuffer[2] & 60) >> 2);
+            outputBuffer[2] = ((dataBuffer[2] & 3) << 6) + dataBuffer[3];
+            for(k = uint(0); k < outputBuffer.length; )
             {
-               if(_loc2_[_loc5_ + 1] != 64)
+               if(dataBuffer[k + 1] != 64)
                {
-                  _loc4_.writeByte(_loc6_[_loc5_]);
-                  _loc5_++;
+                  output.writeByte(outputBuffer[k]);
+                  k++;
                   continue;
                }
                break;
             }
-            _loc7_ = uint(_loc7_ + 4);
+            i = uint(i + 4);
          }
-         _loc4_.position = 0;
-         return _loc4_;
+         output.position = 0;
+         return output;
       }
    }
 }

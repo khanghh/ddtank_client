@@ -28,12 +28,12 @@ package gameCommon.view
          removeEventListener("enterFrame",__onFrame);
       }
       
-      public function addAnimate(param1:AchieveAnimation) : void
+      public function addAnimate(animate:AchieveAnimation) : void
       {
-         _animates.push(param1);
-         if(param1.interval <= 0)
+         _animates.push(animate);
+         if(animate.interval <= 0)
          {
-            playAnimate(param1);
+            playAnimate(animate);
          }
          if(!_started)
          {
@@ -42,57 +42,57 @@ package gameCommon.view
          }
       }
       
-      private function playAnimate(param1:AchieveAnimation) : void
+      private function playAnimate(animate:AchieveAnimation) : void
       {
-         var _loc2_:* = null;
-         param1.play();
-         addChild(param1);
-         param1.addEventListener("complete",__animateComplete);
-         _displays.unshift(param1);
+         var a:* = null;
+         animate.play();
+         addChild(animate);
+         animate.addEventListener("complete",__animateComplete);
+         _displays.unshift(animate);
          if(_displays.length > 4)
          {
-            _loc2_ = _displays.pop();
-            removeAnimate(_loc2_);
-            ObjectUtils.disposeObject(_loc2_);
+            a = _displays.pop();
+            removeAnimate(a);
+            ObjectUtils.disposeObject(a);
          }
          drawLayer();
       }
       
-      private function __animateComplete(param1:Event) : void
+      private function __animateComplete(event:Event) : void
       {
-         var _loc2_:AchieveAnimation = param1.currentTarget as AchieveAnimation;
-         _loc2_.removeEventListener("complete",__animateComplete);
-         removeAnimate(_loc2_);
-         ObjectUtils.disposeObject(_loc2_);
+         var animate:AchieveAnimation = event.currentTarget as AchieveAnimation;
+         animate.removeEventListener("complete",__animateComplete);
+         removeAnimate(animate);
+         ObjectUtils.disposeObject(animate);
       }
       
-      private function __onFrame(param1:Event) : void
+      private function __onFrame(event:Event) : void
       {
-         var _loc3_:int = getTimer();
+         var now:int = getTimer();
          var _loc5_:int = 0;
          var _loc4_:* = _animates;
-         for each(var _loc2_ in _animates)
+         for each(var animate in _animates)
          {
-            if(!_loc2_.show && _loc2_.delay >= _loc3_)
+            if(!animate.show && animate.delay >= now)
             {
-               playAnimate(_loc2_);
+               playAnimate(animate);
             }
          }
       }
       
-      public function removeAnimate(param1:AchieveAnimation) : void
+      public function removeAnimate(animate:AchieveAnimation) : void
       {
-         var _loc2_:int = _animates.indexOf(param1);
-         if(_loc2_ >= 0)
+         var idx:int = _animates.indexOf(animate);
+         if(idx >= 0)
          {
-            _animates.splice(_loc2_,1);
+            _animates.splice(idx,1);
          }
-         if(param1.show)
+         if(animate.show)
          {
-            _loc2_ = _displays.indexOf(param1);
-            if(_loc2_ >= 0)
+            idx = _displays.indexOf(animate);
+            if(idx >= 0)
             {
-               _displays.splice(_loc2_,1);
+               _displays.splice(idx,1);
             }
          }
          if(_animates.length <= 0)
@@ -102,19 +102,19 @@ package gameCommon.view
          }
       }
       
-      public function rePlayAnimate(param1:AchieveAnimation) : void
+      public function rePlayAnimate(animate:AchieveAnimation) : void
       {
       }
       
-      public function getAnimate(param1:int) : AchieveAnimation
+      public function getAnimate(id:int) : AchieveAnimation
       {
          var _loc4_:int = 0;
          var _loc3_:* = _animates;
-         for each(var _loc2_ in _animates)
+         for each(var animate in _animates)
          {
-            if(_loc2_.id == param1)
+            if(animate.id == id)
             {
-               return _loc2_;
+               return animate;
             }
          }
          return null;
@@ -122,20 +122,19 @@ package gameCommon.view
       
       private function drawLayer() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = _displays.length;
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_)
+         var i:int = 0;
+         var len:int = _displays.length;
+         for(i = 0; i < len; )
          {
-            if(_loc2_ == 0)
+            if(i == 0)
             {
-               _displays[_loc2_].y = -_displays[_loc2_].height;
+               _displays[i].y = -_displays[i].height;
             }
             else
             {
-               _displays[_loc2_].y = _displays[_loc2_ - 1].y - _displays[_loc2_].height - 4;
+               _displays[i].y = _displays[i - 1].y - _displays[i].height - 4;
             }
-            _loc2_++;
+            i++;
          }
       }
    }

@@ -86,9 +86,9 @@ package com.pickgliss.ui.controls
          return _autoFrame;
       }
       
-      public function set autoFrame(param1:Boolean) : void
+      public function set autoFrame(value:Boolean) : void
       {
-         _autoFrame = param1;
+         _autoFrame = value;
       }
       
       public function get focusFrameStyle() : String
@@ -96,22 +96,22 @@ package com.pickgliss.ui.controls
          return _focusFrameStyle;
       }
       
-      public function set focusFrameStyle(param1:String) : void
+      public function set focusFrameStyle(stylename:String) : void
       {
-         if(param1 == "")
+         if(stylename == "")
          {
             return;
          }
-         var _loc2_:Array = param1.split("|");
-         if(_loc2_.length > 0)
+         var params:Array = stylename.split("|");
+         if(params.length > 0)
          {
-            _focusFrame = ComponentFactory.Instance.creatBitmap(_loc2_[0]);
+            _focusFrame = ComponentFactory.Instance.creatBitmap(params[0]);
             _focusFrame.visible = false;
          }
-         if(_loc2_.length > 2)
+         if(params.length > 2)
          {
-            _focusFrame.x = _loc2_[1];
-            _focusFrame.y = _loc2_[2];
+            _focusFrame.x = params[1];
+            _focusFrame.y = params[2];
          }
          else
          {
@@ -121,9 +121,9 @@ package com.pickgliss.ui.controls
          addChild(_focusFrame);
       }
       
-      public function set useLogID(param1:int) : void
+      public function set useLogID(value:int) : void
       {
-         _useLogID = param1;
+         _useLogID = value;
       }
       
       public function get useLogID() : int
@@ -136,18 +136,18 @@ package com.pickgliss.ui.controls
          return _frameFilter;
       }
       
-      public function set frameFilter(param1:Array) : void
+      public function set frameFilter(value:Array) : void
       {
-         _frameFilter = param1;
+         _frameFilter = value;
       }
       
-      public function set autoSizeAble(param1:Boolean) : void
+      public function set autoSizeAble(value:Boolean) : void
       {
-         if(_autoSizeAble == param1)
+         if(_autoSizeAble == value)
          {
             return;
          }
-         _autoSizeAble = param1;
+         _autoSizeAble = value;
          onPropertiesChanged("autoSizeAble");
       }
       
@@ -156,25 +156,25 @@ package com.pickgliss.ui.controls
          return _backStyle;
       }
       
-      public function set backStyle(param1:String) : void
+      public function set backStyle(stylename:String) : void
       {
-         if(param1 == _backStyle)
+         if(stylename == _backStyle)
          {
             return;
          }
-         _backStyle = param1;
+         _backStyle = stylename;
          backgound = ComponentFactory.Instance.creat(_backStyle);
          onPropertiesChanged("backStyle");
       }
       
-      public function set backgound(param1:DisplayObject) : void
+      public function set backgound(back:DisplayObject) : void
       {
-         if(_back == param1)
+         if(_back == back)
          {
             return;
          }
          ObjectUtils.disposeObject(_back);
-         _back = param1;
+         _back = back;
          _width = _back.width;
          _height = _back.height;
          onPropertiesChanged("backStyle");
@@ -185,13 +185,13 @@ package com.pickgliss.ui.controls
          return _back;
       }
       
-      public function set backgoundRotation(param1:int) : void
+      public function set backgoundRotation(rota:int) : void
       {
-         if(_backgoundRotation == param1)
+         if(_backgoundRotation == rota)
          {
             return;
          }
-         _backgoundRotation = param1;
+         _backgoundRotation = rota;
          onPropertiesChanged("backgoundRotation");
       }
       
@@ -200,9 +200,9 @@ package com.pickgliss.ui.controls
          return _displacementEnable;
       }
       
-      public function set displacement(param1:Boolean) : void
+      public function set displacement(value:Boolean) : void
       {
-         _displacementEnable = param1;
+         _displacementEnable = value;
       }
       
       override public function dispose() : void
@@ -227,13 +227,13 @@ package com.pickgliss.ui.controls
          return _enable;
       }
       
-      public function set enable(param1:Boolean) : void
+      public function set enable(value:Boolean) : void
       {
-         if(_enable == param1)
+         if(_enable == value)
          {
             return;
          }
-         _enable = param1;
+         _enable = value;
          mouseEnabled = _enable;
          if(_enable)
          {
@@ -253,23 +253,23 @@ package com.pickgliss.ui.controls
          _offsetCount = 0;
       }
       
-      public function set filterString(param1:String) : void
+      public function set filterString(value:String) : void
       {
-         if(_filterString == param1)
+         if(_filterString == value)
          {
             return;
          }
-         _filterString = param1;
+         _filterString = value;
          _frameFilter = ComponentFactory.Instance.creatFrameFilters(_filterString);
       }
       
-      public function set pressEnable(param1:Boolean) : void
+      public function set pressEnable(value:Boolean) : void
       {
-         if(_pressEnable == param1)
+         if(_pressEnable == value)
          {
             return;
          }
-         _pressEnable = param1;
+         _pressEnable = value;
          onPropertiesChanged("pressEnable");
       }
       
@@ -278,21 +278,21 @@ package com.pickgliss.ui.controls
          return _transparentEnable;
       }
       
-      public function set transparentEnable(param1:Boolean) : void
+      public function set transparentEnable(value:Boolean) : void
       {
-         if(_transparentEnable == param1)
+         if(_transparentEnable == value)
          {
             return;
          }
-         _transparentEnable = param1;
+         _transparentEnable = value;
          onPropertiesChanged("transparentEnable");
       }
       
-      protected function __onMouseClick(param1:MouseEvent) : void
+      protected function __onMouseClick(event:MouseEvent) : void
       {
          if(!_enable)
          {
-            param1.stopImmediatePropagation();
+            event.stopImmediatePropagation();
          }
          else if(_useLogID != 0 && ComponentSetting.SEND_USELOG_ID != null)
          {
@@ -322,13 +322,13 @@ package com.pickgliss.ui.controls
          addEventListener("mouseDown",__onMousedown);
       }
       
-      public function set stopMovieAtLastFrame(param1:Boolean) : void
+      public function set stopMovieAtLastFrame(value:Boolean) : void
       {
-         if(_stopMovieAtLastFrame == param1)
+         if(_stopMovieAtLastFrame == value)
          {
             return;
          }
-         _stopMovieAtLastFrame = param1;
+         _stopMovieAtLastFrame = value;
          onPropertiesChanged("stopMovieAtLastFrame");
       }
       
@@ -370,10 +370,10 @@ package com.pickgliss.ui.controls
       
       override protected function onProppertiesUpdate() : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:int = 0;
-         var _loc1_:* = null;
+         var bounce:* = null;
+         var movie:* = null;
+         var i:int = 0;
+         var child:* = null;
          super.onProppertiesUpdate();
          if(_changedPropeties["pressEnable"])
          {
@@ -404,9 +404,9 @@ package com.pickgliss.ui.controls
             if(_back)
             {
                _back.rotation = _backgoundRotation;
-               _loc3_ = _back.getRect(this);
-               _back.x = -_loc3_.x;
-               _back.y = -_loc3_.y;
+               bounce = _back.getRect(this);
+               _back.x = -bounce.x;
+               _back.y = -bounce.y;
             }
          }
          if(_changedPropeties["width"] || _changedPropeties["height"] || _changedPropeties["backStyle"] || _changedPropeties["backgoundRotation"] || _changedPropeties["transparentEnable"])
@@ -416,18 +416,17 @@ package com.pickgliss.ui.controls
          setFrame(_currentFrameIndex);
          if(_changedPropeties["stopMovieAtLastFrame"] && _stopMovieAtLastFrame)
          {
-            _loc2_ = _back as MovieClip;
-            if(_loc2_ != null)
+            movie = _back as MovieClip;
+            if(movie != null)
             {
-               _loc4_ = 0;
-               while(_loc4_ < _loc2_.numChildren)
+               for(i = 0; i < movie.numChildren; )
                {
-                  _loc1_ = _loc2_.getChildAt(_loc4_) as MovieClip;
-                  if(_loc1_)
+                  child = movie.getChildAt(i) as MovieClip;
+                  if(child)
                   {
-                     _loc1_.gotoAndStop(_loc1_.totalFrames);
+                     child.gotoAndStop(child.totalFrames);
                   }
-                  _loc4_++;
+                  i++;
                }
             }
          }
@@ -450,23 +449,23 @@ package com.pickgliss.ui.controls
          }
       }
       
-      public function setFrame(param1:int) : void
+      public function setFrame(frameIndex:int) : void
       {
          if(_autoFrame)
          {
-            _currentFrameIndex = param1;
+            _currentFrameIndex = frameIndex;
             DisplayUtils.setFrame(_back,_currentFrameIndex);
          }
-         if(_frameFilter == null || param1 <= 0 || param1 > _frameFilter.length)
+         if(_frameFilter == null || frameIndex <= 0 || frameIndex > _frameFilter.length)
          {
             return;
          }
-         filters = _frameFilter[param1 - 1];
+         filters = _frameFilter[frameIndex - 1];
       }
       
-      protected function __onMouseRollout(param1:MouseEvent) : void
+      protected function __onMouseRollout(event:MouseEvent) : void
       {
-         if(_enable && !param1.buttonDown)
+         if(_enable && !event.buttonDown)
          {
             setFrame(1);
          }
@@ -476,9 +475,9 @@ package com.pickgliss.ui.controls
          }
       }
       
-      protected function __onMouseRollover(param1:MouseEvent) : void
+      protected function __onMouseRollover(event:MouseEvent) : void
       {
-         if(_enable && !param1.buttonDown)
+         if(_enable && !event.buttonDown)
          {
             setFrame(2);
          }
@@ -488,7 +487,7 @@ package com.pickgliss.ui.controls
          }
       }
       
-      private function __onMousedown(param1:MouseEvent) : void
+      private function __onMousedown(event:MouseEvent) : void
       {
          if(_enable)
          {
@@ -513,7 +512,7 @@ package com.pickgliss.ui.controls
          }
       }
       
-      private function __onMouseup(param1:MouseEvent) : void
+      private function __onMouseup(event:MouseEvent) : void
       {
          StageReferance.stage.removeEventListener("mouseUp",__onMouseup);
          if(!_enable)
@@ -526,11 +525,11 @@ package com.pickgliss.ui.controls
             y = y - ComponentSetting.DISPLACEMENT_OFFSET;
             _offsetCount = Number(_offsetCount) - 1;
          }
-         if(!(param1.target is DisplayObject))
+         if(!(event.target is DisplayObject))
          {
             setFrame(1);
          }
-         if(param1.target == this)
+         if(event.target == this)
          {
             setFrame(2);
          }
@@ -546,12 +545,12 @@ package com.pickgliss.ui.controls
          }
       }
       
-      private function __onPressStepTimer(param1:TimerEvent) : void
+      private function __onPressStepTimer(event:TimerEvent) : void
       {
          dispatchEvent(new Event("change"));
       }
       
-      private function __onPressedStart(param1:TimerEvent) : void
+      private function __onPressedStart(event:TimerEvent) : void
       {
          _pressStartTimer.removeEventListener("timer",__onPressedStart);
          _pressStartTimer.reset();

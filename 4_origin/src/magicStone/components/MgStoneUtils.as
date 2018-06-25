@@ -15,10 +15,10 @@ package magicStone.components
          super();
       }
       
-      public static function getPlace(param1:int) : int
+      public static function getPlace(id:int) : int
       {
-         var _loc2_:Array = [0,4,6,15,7,8,9,10,31];
-         return _loc2_[param1];
+         var numArr:Array = [0,4,6,15,7,8,9,10,31];
+         return numArr[id];
       }
    }
 }

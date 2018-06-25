@@ -20,11 +20,11 @@ package ddt.view.roulette
       
       private var _number:int = 0;
       
-      public function TurnSoundControl(param1:IEventDispatcher = null)
+      public function TurnSoundControl(target:IEventDispatcher = null)
       {
          _oneArray = ["127","128","129","130","131"];
          _threeArray = ["130","131","133","132","135","134","129","128","127","132","135","134","129","128","127"];
-         super(param1);
+         super(target);
          init();
          initEvent();
       }
@@ -41,13 +41,13 @@ package ddt.view.roulette
          _timer.addEventListener("timerComplete",_timerComplete);
       }
       
-      private function _timerOne(param1:TimerEvent) : void
+      private function _timerOne(evt:TimerEvent) : void
       {
          SoundManager.instance.stop("124");
          SoundManager.instance.play("124");
       }
       
-      private function _timerComplete(param1:TimerEvent) : void
+      private function _timerComplete(evt:TimerEvent) : void
       {
       }
       
@@ -65,15 +65,15 @@ package ddt.view.roulette
       
       public function playOneStep() : void
       {
-         var _loc1_:String = _oneArray[_number];
-         SoundManager.instance.play(_loc1_);
+         var id:String = _oneArray[_number];
+         SoundManager.instance.play(id);
          _number = _number >= 4?0:Number(_number + 1);
       }
       
-      public function playThreeStep(param1:int) : void
+      public function playThreeStep(value:int) : void
       {
-         var _loc2_:String = _threeArray[param1];
-         SoundManager.instance.play(_loc2_);
+         var id:String = _threeArray[value];
+         SoundManager.instance.play(id);
       }
       
       public function stop() : void

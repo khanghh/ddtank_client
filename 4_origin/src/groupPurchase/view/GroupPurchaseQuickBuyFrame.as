@@ -73,21 +73,21 @@ package groupPurchase.view
          removeEventListener("number_enter",_numberEnter);
       }
       
-      private function _numberClose(param1:Event) : void
+      private function _numberClose(e:Event) : void
       {
          cancelMoney();
          ObjectUtils.disposeObject(this);
       }
       
-      private function _numberEnter(param1:Event) : void
+      private function _numberEnter(e:Event) : void
       {
-         param1.stopImmediatePropagation();
+         e.stopImmediatePropagation();
          doPay(null);
       }
       
-      public function setTitleText(param1:String) : void
+      public function setTitleText(value:String) : void
       {
-         titleText = param1;
+         titleText = value;
       }
       
       public function hideSelectedBand() : void
@@ -100,21 +100,21 @@ package groupPurchase.view
          _view.hideSelected();
       }
       
-      public function set itemID(param1:int) : void
+      public function set itemID(value:int) : void
       {
-         _view.ItemID = param1;
+         _view.ItemID = value;
          _shopItemInfo = ShopManager.Instance.getMoneyShopItemByTemplateID(_view._itemID);
          perPrice();
       }
       
-      public function set stoneNumber(param1:int) : void
+      public function set stoneNumber(value:int) : void
       {
-         _view.stoneNumber = param1;
+         _view.stoneNumber = value;
       }
       
-      public function set maxLimit(param1:int) : void
+      public function set maxLimit(value:int) : void
       {
-         _view.maxLimit = param1;
+         _view.maxLimit = value;
       }
       
       private function perPrice() : void
@@ -122,7 +122,7 @@ package groupPurchase.view
          _unitPrice = GroupPurchaseManager.instance.price;
       }
       
-      private function doPay(param1:Event) : void
+      private function doPay(e:Event) : void
       {
          SoundManager.instance.play("008");
          if(_view.isBand && PlayerManager.Instance.Self.BandMoney < _view.stoneNumber * _unitPrice)
@@ -139,15 +139,15 @@ package groupPurchase.view
          dispose();
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(e.responseCode == 0 || e.responseCode == 1)
          {
             cancelMoney();
             ObjectUtils.disposeObject(this);
          }
-         else if(param1.responseCode == 2)
+         else if(e.responseCode == 2)
          {
             doPay(null);
          }
@@ -157,9 +157,9 @@ package groupPurchase.view
       {
       }
       
-      public function set buyFrom(param1:int) : void
+      public function set buyFrom(value:int) : void
       {
-         _buyFrom = param1;
+         _buyFrom = value;
       }
       
       public function get buyFrom() : int

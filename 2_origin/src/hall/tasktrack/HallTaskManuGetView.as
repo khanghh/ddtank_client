@@ -32,24 +32,24 @@ package hall.tasktrack
       
       private var _getBtn:SimpleBitmapButton;
       
-      public function HallTaskManuGetView(param1:QuestInfo)
+      public function HallTaskManuGetView(info:QuestInfo)
       {
          super();
-         _info = param1;
+         _info = info;
          initView();
          initEvent();
       }
       
       private function initView() : void
       {
-         var _loc1_:MovieClip = ComponentFactory.Instance.creat("asset.hall.taskTrack.manuGetView.bg");
-         var _loc2_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("hall.taskManuGetView.titleTxt");
-         _loc2_.text = LanguageMgr.GetTranslation("hall.taskManuGetView.titleTxt");
-         var _loc3_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("hall.taskManuGetView.descTxt");
-         _loc3_.htmlText = QuestDescTextAnalyz.start(_info.Detail);
-         addChild(_loc1_);
-         addChild(_loc2_);
-         addChild(_loc3_);
+         var bg:MovieClip = ComponentFactory.Instance.creat("asset.hall.taskTrack.manuGetView.bg");
+         var titleTxt:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("hall.taskManuGetView.titleTxt");
+         titleTxt.text = LanguageMgr.GetTranslation("hall.taskManuGetView.titleTxt");
+         var descTxt:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("hall.taskManuGetView.descTxt");
+         descTxt.htmlText = QuestDescTextAnalyz.start(_info.Detail);
+         addChild(bg);
+         addChild(titleTxt);
+         addChild(descTxt);
          initAwardNum();
          initAwardItem();
          _closeBtn = ComponentFactory.Instance.creatComponentByStylename("hall.taskManuGetView.closeBtn");
@@ -58,21 +58,21 @@ package hall.tasktrack
          addChild(_getBtn);
       }
       
-      private function checkDescTxt(param1:FilterFrameText) : void
+      private function checkDescTxt(txt:FilterFrameText) : void
       {
-         var _loc3_:* = null;
-         var _loc4_:int = 0;
-         var _loc2_:int = 0;
-         if(param1.textHeight > param1.height)
+         var tmp:* = null;
+         var len:int = 0;
+         var count:int = 0;
+         if(txt.textHeight > txt.height)
          {
-            _loc3_ = param1.text;
-            _loc4_ = _loc3_.length;
-            _loc2_ = 1;
-            while(param1.textHeight > param1.height)
+            tmp = txt.text;
+            len = tmp.length;
+            count = 1;
+            while(txt.textHeight > txt.height)
             {
-               param1.text = _loc3_.substr(0,_loc4_ - _loc2_) + "...";
-               _loc2_++;
-               if(_loc2_ <= 500)
+               txt.text = tmp.substr(0,len - count) + "...";
+               count++;
+               if(count <= 500)
                {
                   continue;
                }
@@ -83,101 +83,101 @@ package hall.tasktrack
       
       private function initAwardNum() : void
       {
-         var _loc6_:* = null;
-         var _loc7_:* = null;
-         var _loc1_:* = null;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc5_:Array = [new Point(237,115),new Point(321,115),new Point(405,115)];
-         var _loc9_:Array = [new Point(272,116),new Point(355,116),new Point(438,116)];
-         var _loc8_:int = 0;
+         var expTitleTxt:* = null;
+         var expValueTxt:* = null;
+         var goldTitleTxt:* = null;
+         var goldValueTxt:* = null;
+         var medalTitleTxt:* = null;
+         var medalValueTxt:* = null;
+         var posTitleList:Array = [new Point(237,115),new Point(321,115),new Point(405,115)];
+         var posValueList:Array = [new Point(272,116),new Point(355,116),new Point(438,116)];
+         var posIndex:int = 0;
          if(_info.RewardGP > 0)
          {
-            _loc6_ = ComponentFactory.Instance.creatComponentByStylename("hall.taskManuGetView.awardNumTitleTxt");
-            _loc6_.text = LanguageMgr.GetTranslation("exp");
-            _loc7_ = ComponentFactory.Instance.creatComponentByStylename("hall.taskManuGetView.awardNumValueTxt");
-            _loc7_.text = _info.RewardGP.toString();
-            _loc6_.x = _loc5_[_loc8_].x;
-            _loc6_.y = _loc5_[_loc8_].y;
-            _loc7_.x = _loc9_[_loc8_].x;
-            _loc7_.y = _loc9_[_loc8_].y;
-            addChild(_loc6_);
-            addChild(_loc7_);
-            _loc8_++;
+            expTitleTxt = ComponentFactory.Instance.creatComponentByStylename("hall.taskManuGetView.awardNumTitleTxt");
+            expTitleTxt.text = LanguageMgr.GetTranslation("exp");
+            expValueTxt = ComponentFactory.Instance.creatComponentByStylename("hall.taskManuGetView.awardNumValueTxt");
+            expValueTxt.text = _info.RewardGP.toString();
+            expTitleTxt.x = posTitleList[posIndex].x;
+            expTitleTxt.y = posTitleList[posIndex].y;
+            expValueTxt.x = posValueList[posIndex].x;
+            expValueTxt.y = posValueList[posIndex].y;
+            addChild(expTitleTxt);
+            addChild(expValueTxt);
+            posIndex++;
          }
          if(_info.RewardGold > 0)
          {
-            _loc1_ = ComponentFactory.Instance.creatComponentByStylename("hall.taskManuGetView.awardNumTitleTxt");
-            _loc1_.text = LanguageMgr.GetTranslation("gold");
-            _loc4_ = ComponentFactory.Instance.creatComponentByStylename("hall.taskManuGetView.awardNumValueTxt");
-            _loc4_.text = _info.RewardGold.toString();
-            _loc1_.x = _loc5_[_loc8_].x;
-            _loc1_.y = _loc5_[_loc8_].y;
-            _loc4_.x = _loc9_[_loc8_].x;
-            _loc4_.y = _loc9_[_loc8_].y;
-            addChild(_loc1_);
-            addChild(_loc4_);
-            _loc8_++;
+            goldTitleTxt = ComponentFactory.Instance.creatComponentByStylename("hall.taskManuGetView.awardNumTitleTxt");
+            goldTitleTxt.text = LanguageMgr.GetTranslation("gold");
+            goldValueTxt = ComponentFactory.Instance.creatComponentByStylename("hall.taskManuGetView.awardNumValueTxt");
+            goldValueTxt.text = _info.RewardGold.toString();
+            goldTitleTxt.x = posTitleList[posIndex].x;
+            goldTitleTxt.y = posTitleList[posIndex].y;
+            goldValueTxt.x = posValueList[posIndex].x;
+            goldValueTxt.y = posValueList[posIndex].y;
+            addChild(goldTitleTxt);
+            addChild(goldValueTxt);
+            posIndex++;
          }
          if(_info.RewardBindMoney > 0)
          {
-            _loc3_ = ComponentFactory.Instance.creatComponentByStylename("hall.taskManuGetView.awardNumTitleTxt");
-            _loc3_.text = LanguageMgr.GetTranslation("newDdtMoney");
-            _loc2_ = ComponentFactory.Instance.creatComponentByStylename("hall.taskManuGetView.awardNumValueTxt");
-            _loc2_.text = _info.RewardBindMoney.toString();
-            _loc3_.x = _loc5_[_loc8_].x;
-            _loc3_.y = _loc5_[_loc8_].y;
-            _loc2_.x = _loc9_[_loc8_].x;
-            _loc2_.y = _loc9_[_loc8_].y;
-            addChild(_loc3_);
-            addChild(_loc2_);
-            _loc8_++;
+            medalTitleTxt = ComponentFactory.Instance.creatComponentByStylename("hall.taskManuGetView.awardNumTitleTxt");
+            medalTitleTxt.text = LanguageMgr.GetTranslation("newDdtMoney");
+            medalValueTxt = ComponentFactory.Instance.creatComponentByStylename("hall.taskManuGetView.awardNumValueTxt");
+            medalValueTxt.text = _info.RewardBindMoney.toString();
+            medalTitleTxt.x = posTitleList[posIndex].x;
+            medalTitleTxt.y = posTitleList[posIndex].y;
+            medalValueTxt.x = posValueList[posIndex].x;
+            medalValueTxt.y = posValueList[posIndex].y;
+            addChild(medalTitleTxt);
+            addChild(medalValueTxt);
+            posIndex++;
          }
       }
       
       private function initAwardItem() : void
       {
-         var _loc4_:* = null;
-         var _loc1_:* = null;
-         var _loc3_:int = 0;
+         var tinfo:* = null;
+         var item:* = null;
+         var posIndex:int = 0;
          var _loc6_:int = 0;
          var _loc5_:* = _info.itemRewards;
-         for each(var _loc2_ in _info.itemRewards)
+         for each(var temp in _info.itemRewards)
          {
-            _loc4_ = new InventoryItemInfo();
-            _loc4_.TemplateID = _loc2_.itemID;
-            ItemManager.fill(_loc4_);
-            _loc4_.ValidDate = _loc2_.ValidateTime;
-            _loc4_.IsJudge = true;
-            _loc4_.IsBinds = _loc2_.isBind;
-            _loc4_.AttackCompose = _loc2_.AttackCompose;
-            _loc4_.DefendCompose = _loc2_.DefendCompose;
-            _loc4_.AgilityCompose = _loc2_.AgilityCompose;
-            _loc4_.LuckCompose = _loc2_.LuckCompose;
-            _loc4_.StrengthenLevel = _loc2_.StrengthenLevel;
-            if(EquipType.isMagicStone(_loc4_.CategoryID))
+            tinfo = new InventoryItemInfo();
+            tinfo.TemplateID = temp.itemID;
+            ItemManager.fill(tinfo);
+            tinfo.ValidDate = temp.ValidateTime;
+            tinfo.IsJudge = true;
+            tinfo.IsBinds = temp.isBind;
+            tinfo.AttackCompose = temp.AttackCompose;
+            tinfo.DefendCompose = temp.DefendCompose;
+            tinfo.AgilityCompose = temp.AgilityCompose;
+            tinfo.LuckCompose = temp.LuckCompose;
+            tinfo.StrengthenLevel = temp.StrengthenLevel;
+            if(EquipType.isMagicStone(tinfo.CategoryID))
             {
-               _loc4_.Level = _loc4_.StrengthenLevel;
-               _loc4_.Attack = _loc4_.AttackCompose;
-               _loc4_.Defence = _loc4_.DefendCompose;
-               _loc4_.Agility = _loc4_.AgilityCompose;
-               _loc4_.Luck = _loc4_.LuckCompose;
-               _loc4_.MagicAttack = _loc2_.MagicAttack;
-               _loc4_.MagicDefence = _loc2_.MagicDefence;
+               tinfo.Level = tinfo.StrengthenLevel;
+               tinfo.Attack = tinfo.AttackCompose;
+               tinfo.Defence = tinfo.DefendCompose;
+               tinfo.Agility = tinfo.AgilityCompose;
+               tinfo.Luck = tinfo.LuckCompose;
+               tinfo.MagicAttack = temp.MagicAttack;
+               tinfo.MagicDefence = temp.MagicDefence;
             }
-            _loc4_.Count = _loc2_.count[_info.QuestLevel - 1];
-            if(!(0 != _loc4_.NeedSex && getSexByInt(PlayerManager.Instance.Self.Sex) != _loc4_.NeedSex))
+            tinfo.Count = temp.count[_info.QuestLevel - 1];
+            if(!(0 != tinfo.NeedSex && getSexByInt(PlayerManager.Instance.Self.Sex) != tinfo.NeedSex))
             {
-               if(!_loc2_.isOptional)
+               if(!temp.isOptional)
                {
-                  _loc1_ = new QuestRewardCell(false);
-                  _loc1_.addChildAt(ComponentFactory.Instance.creatBitmap("asset.hall.taskTrack.manuGetView.cellBg"),0);
-                  _loc1_.info = _loc4_;
-                  _loc1_.x = 388 - 56 * _loc3_;
-                  _loc1_.y = 140;
-                  addChild(_loc1_);
-                  _loc3_++;
+                  item = new QuestRewardCell(false);
+                  item.addChildAt(ComponentFactory.Instance.creatBitmap("asset.hall.taskTrack.manuGetView.cellBg"),0);
+                  item.info = tinfo;
+                  item.x = 388 - 56 * posIndex;
+                  item.y = 140;
+                  addChild(item);
+                  posIndex++;
                }
             }
          }
@@ -190,26 +190,26 @@ package hall.tasktrack
          SocketManager.Instance.addEventListener(PkgEvent.format(273),questManuGetHandler);
       }
       
-      private function questManuGetHandler(param1:PkgEvent) : void
+      private function questManuGetHandler(event:PkgEvent) : void
       {
          dispose();
       }
       
-      private function closeClickHandler(param1:MouseEvent) : void
+      private function closeClickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          dispose();
       }
       
-      private function getClickHandler(param1:MouseEvent) : void
+      private function getClickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          SocketManager.Instance.out.sendQuestManuGet(_info.id);
       }
       
-      private function getSexByInt(param1:Boolean) : int
+      private function getSexByInt(Sex:Boolean) : int
       {
-         return !!param1?1:2;
+         return !!Sex?1:2;
       }
       
       private function removeEvent() : void

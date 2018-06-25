@@ -22,14 +22,14 @@ package effortView
          _isSelf = true;
       }
       
-      public function set isSelf(param1:Boolean) : void
+      public function set isSelf(isSelf:Boolean) : void
       {
-         _isSelf = param1;
+         _isSelf = isSelf;
       }
       
-      public function set currentRightViewType(param1:int) : void
+      public function set currentRightViewType(type:int) : void
       {
-         _currentRightViewType = param1;
+         _currentRightViewType = type;
          if(_isSelf)
          {
             updateRightView(_currentRightViewType);
@@ -45,9 +45,9 @@ package effortView
          return _currentRightViewType;
       }
       
-      public function set currentViewType(param1:int) : void
+      public function set currentViewType(type:int) : void
       {
-         _currentViewType = param1;
+         _currentViewType = type;
          if(_isSelf)
          {
             updateView(_currentViewType);
@@ -63,9 +63,9 @@ package effortView
          return _currentViewType;
       }
       
-      private function updateRightView(param1:int) : void
+      private function updateRightView(type:int) : void
       {
-         switch(int(param1))
+         switch(int(type))
          {
             case 0:
                break;
@@ -89,14 +89,14 @@ package effortView
          dispatchEvent(new Event("change"));
       }
       
-      private function updateView(param1:int) : void
+      private function updateView(type:int) : void
       {
-         EffortManager.Instance.setEffortType(param1);
+         EffortManager.Instance.setEffortType(type);
       }
       
-      private function updateTempRightView(param1:int) : void
+      private function updateTempRightView(type:int) : void
       {
-         switch(int(param1))
+         switch(int(type))
          {
             case 0:
                break;
@@ -120,9 +120,9 @@ package effortView
          dispatchEvent(new Event("change"));
       }
       
-      private function updateTempView(param1:int) : void
+      private function updateTempView(type:int) : void
       {
-         EffortManager.Instance.setTempEffortType(param1);
+         EffortManager.Instance.setTempEffortType(type);
       }
    }
 }

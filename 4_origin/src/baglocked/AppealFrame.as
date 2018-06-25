@@ -40,15 +40,15 @@ package baglocked
          addEvent();
       }
       
-      protected function __closeBtnClick(param1:MouseEvent) : void
+      protected function __closeBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _bagLockedController.close();
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -57,9 +57,9 @@ package baglocked
          }
       }
       
-      public function set bagLockedController(param1:BagLockedController) : void
+      public function set bagLockedController(value:BagLockedController) : void
       {
-         _bagLockedController = param1;
+         _bagLockedController = value;
       }
       
       public function show() : void

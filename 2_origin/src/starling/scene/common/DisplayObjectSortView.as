@@ -15,109 +15,105 @@ package starling.scene.common
          _disObjArr = [];
       }
       
-      public function addDisplayObject(param1:DisplayObject) : void
+      public function addDisplayObject(value:DisplayObject) : void
       {
-         var _loc2_:int = indexOfDisplayObject(param1);
-         if(_loc2_ == -1)
+         var index:int = indexOfDisplayObject(value);
+         if(index == -1)
          {
-            _disObjArr.push(param1);
-            addChild(param1);
+            _disObjArr.push(value);
+            addChild(value);
          }
       }
       
-      public function removeDisplayObject(param1:DisplayObject, param2:Boolean) : void
+      public function removeDisplayObject(value:DisplayObject, dispose:Boolean) : void
       {
-         var _loc3_:int = indexOfDisplayObject(param1);
-         if(_loc3_ != -1)
+         var index:int = indexOfDisplayObject(value);
+         if(index != -1)
          {
-            _disObjArr.splice(_loc3_,1);
-            param1.removeFromParent(param2);
+            _disObjArr.splice(index,1);
+            value.removeFromParent(dispose);
          }
       }
       
-      public function removeDisplayObjectByType(param1:Class, param2:Boolean) : void
+      public function removeDisplayObjectByType(typeClazz:Class, dispose:Boolean) : void
       {
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:int = _disObjArr.length;
-         _loc5_ = _loc4_ - 1;
-         while(_loc5_ > -1)
+         var i:int = 0;
+         var disObj:* = null;
+         var length:int = _disObjArr.length;
+         for(i = length - 1; i > -1; )
          {
-            _loc3_ = _disObjArr[_loc5_];
-            if(_loc3_ is param1)
+            disObj = _disObjArr[i];
+            if(disObj is typeClazz)
             {
-               _disObjArr.splice(_loc5_,1);
-               _loc3_.removeFromParent(param2);
+               _disObjArr.splice(i,1);
+               disObj.removeFromParent(dispose);
             }
-            _loc5_--;
+            i--;
          }
       }
       
-      public function removeDisplayObjectByIndex(param1:int, param2:Boolean) : void
+      public function removeDisplayObjectByIndex(index:int, dispose:Boolean) : void
       {
-         var _loc3_:DisplayObject = _disObjArr[param1];
-         if(_loc3_)
+         var disObj:DisplayObject = _disObjArr[index];
+         if(disObj)
          {
-            _disObjArr.splice(param1,1);
-            _loc3_.removeFromParent(param2);
+            _disObjArr.splice(index,1);
+            disObj.removeFromParent(dispose);
          }
       }
       
-      public function indexOfDisplayObject(param1:DisplayObject) : int
+      public function indexOfDisplayObject(value:DisplayObject) : int
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:int = _disObjArr.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var i:int = 0;
+         var entity:* = null;
+         var length:int = _disObjArr.length;
+         for(i = 0; i < length; )
          {
-            _loc2_ = _disObjArr[_loc4_];
-            if(_loc2_ == param1)
+            entity = _disObjArr[i];
+            if(entity == value)
             {
-               return _loc4_;
+               return i;
             }
-            _loc4_++;
+            i++;
          }
          return -1;
       }
       
-      public function indexOfDisplayObjectByFun(param1:Function) : int
+      public function indexOfDisplayObjectByFun(checkFun:Function) : int
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:int = _disObjArr.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var i:int = 0;
+         var entity:* = null;
+         var length:int = _disObjArr.length;
+         for(i = 0; i < length; )
          {
-            _loc2_ = _disObjArr[_loc4_];
-            if(param1(_loc2_))
+            entity = _disObjArr[i];
+            if(checkFun(entity))
             {
-               return _loc4_;
+               return i;
             }
-            _loc4_++;
+            i++;
          }
          return -1;
       }
       
-      public function getDisplayObjectByIndex(param1:int) : *
+      public function getDisplayObjectByIndex(index:int) : *
       {
-         return _disObjArr[param1];
+         return _disObjArr[index];
       }
       
       public function sortDisplayObjectLayer() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var obj:* = null;
          _disObjArr.sortOn("laySortY",16);
-         _loc2_ = 0;
-         while(_loc2_ < _disObjArr.length)
+         for(i = 0; i < _disObjArr.length; )
          {
-            _loc1_ = _disObjArr[_loc2_];
-            if(_loc1_)
+            obj = _disObjArr[i];
+            if(obj)
             {
-               setChildIndex(_loc1_,_loc2_);
+               setChildIndex(obj,i);
             }
-            _loc2_++;
+            i++;
          }
       }
       

@@ -43,9 +43,9 @@ package campbattle.view
          _mc.buttonMode = true;
       }
       
-      private function clickHander(param1:MouseEvent) : void
+      private function clickHander(event:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
+         event.stopImmediatePropagation();
          SoundManager.instance.playButtonSound();
          CampBattleControl.instance.dispatchEvent(new MapEvent("to_other_map",[x + _mc.width / 2,y + _mc.height * 3 / 4]));
       }

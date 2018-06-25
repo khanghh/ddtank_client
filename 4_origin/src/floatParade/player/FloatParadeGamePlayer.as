@@ -52,12 +52,12 @@ package floatParade.player
       
       private var _bufTime:Number;
       
-      public function FloatParadeGamePlayer(param1:FloatParadePlayerInfo)
+      public function FloatParadeGamePlayer(playerInfo:FloatParadePlayerInfo)
       {
-         var _loc2_:int = 0;
+         var t:int = 0;
          _buffCountDownList = new DictionaryData();
          super();
-         _playerInfo = param1;
+         _playerInfo = playerInfo;
          if(_playerInfo.carType == 3)
          {
             _carInfo = new FloatParadeCarInfo();
@@ -68,15 +68,15 @@ package floatParade.player
          else
          {
             _carInfo = FloatParadeManager.instance.dataInfo.carInfo[_playerInfo.carType];
-            _loc2_ = _playerInfo.index >= 2?_playerInfo.index + 1:_playerInfo.index;
-            this.y = 240 + 75 * _loc2_;
+            t = _playerInfo.index >= 2?_playerInfo.index + 1:_playerInfo.index;
+            this.y = 240 + 75 * t;
          }
          this.x = 280 + _playerInfo.posX;
          _playerMc = new MovieClip();
-         var _loc3_:Bitmap = ComponentFactory.Instance.creatBitmap("game.player.defaultPlayerCharacter");
-         _loc3_.x = -50;
-         _loc3_.y = -100;
-         _playerMc.addChild(_loc3_);
+         var tmp:Bitmap = ComponentFactory.Instance.creatBitmap("game.player.defaultPlayerCharacter");
+         tmp.x = -50;
+         tmp.y = -100;
+         _playerMc.addChild(tmp);
          addChild(_playerMc);
          loadRes();
          _nameTxt = ComponentFactory.Instance.creatComponentByStylename("floatParade.game.playerNameTxt");
@@ -115,34 +115,34 @@ package floatParade.player
          return _playerInfo;
       }
       
-      public function set destinationX(param1:Number) : void
+      public function set destinationX(value:Number) : void
       {
-         _destinationX = param1 + 280;
-         var _loc2_:Number = _carInfo.speed;
+         _destinationX = value + 280;
+         var tmpSpeed:Number = _carInfo.speed;
          if(_playerInfo.acceleEndTime.getTime() > TimeManager.Instance.Now().getTime())
          {
-            _loc2_ = _loc2_ * FloatParadeManager.instance.accelerateRate / 100;
+            tmpSpeed = tmpSpeed * FloatParadeManager.instance.accelerateRate / 100;
          }
          if(_playerInfo.deceleEndTime.getTime() > TimeManager.Instance.Now().getTime())
          {
-            _loc2_ = _loc2_ * FloatParadeManager.instance.decelerateRate / 100;
+            tmpSpeed = tmpSpeed * FloatParadeManager.instance.decelerateRate / 100;
          }
-         if(_destinationX - x > _loc2_ * 40)
+         if(_destinationX - x > tmpSpeed * 40)
          {
-            x = x + _loc2_ * 37;
+            x = x + tmpSpeed * 37;
          }
       }
       
       private function loadRes() : void
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(FloatParadeManager.instance.getPlayerResUrl(_playerInfo.isSelf,_playerInfo.carType),4);
-         _loc1_.addEventListener("complete",onLoadComplete);
-         LoadResourceManager.Instance.startLoad(_loc1_);
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(FloatParadeManager.instance.getPlayerResUrl(_playerInfo.isSelf,_playerInfo.carType),4);
+         loader.addEventListener("complete",onLoadComplete);
+         LoadResourceManager.Instance.startLoad(loader);
       }
       
-      private function onLoadComplete(param1:LoaderEvent) : void
+      private function onLoadComplete(event:LoaderEvent) : void
       {
-         param1.loader.removeEventListener("complete",onLoadComplete);
+         event.loader.removeEventListener("complete",onLoadComplete);
          if(_isDispose)
          {
             return;
@@ -157,50 +157,50 @@ package floatParade.player
          refreshBuffCountDown();
       }
       
-      private function moveTimerHandler(param1:TimerEvent) : void
+      private function moveTimerHandler(event:TimerEvent) : void
       {
          SocketManager.Instance.out.sendEscortMove();
       }
       
-      private function showOrHideLeapArrow(param1:FloatParadeEvent) : void
+      private function showOrHideLeapArrow(event:FloatParadeEvent) : void
       {
-         _leapArrow.visible = param1.data.isShow;
+         _leapArrow.visible = event.data.isShow;
       }
       
       public function refreshBuffCountDown() : void
       {
-         var _loc7_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:* = null;
-         var _loc6_:* = null;
-         var _loc3_:* = null;
-         var _loc1_:Boolean = false;
-         var _loc5_:Date = TimeManager.Instance.Now();
+         var tmpBuffCDV:* = null;
+         var tmp2:* = null;
+         var tmp3:* = null;
+         var tmp:* = null;
+         var tmp4:* = null;
+         var isHasBuff:Boolean = false;
+         var now:Date = TimeManager.Instance.Now();
          if(_playerInfo.deceleEndTime.getTime() > TimeManager.Instance.Now().getTime())
          {
             if(_playerMc.currentFrameLabel != "moderate")
             {
                _playerMc.gotoAndPlay("moderate");
             }
-            _loc1_ = true;
+            isHasBuff = true;
             if(_buffCountDownList.hasKey("2"))
             {
                (_buffCountDownList["2"] as FloatParadeBuffCountDown).endTime = _playerInfo.deceleEndTime;
             }
             else
             {
-               _loc7_ = new FloatParadeBuffCountDown(_playerInfo.deceleEndTime,2,_buffCountDownList.length);
-               _loc7_.addEventListener("EscortBuffCountDownEnd",buffCountDownEnd,false,0,true);
-               addChild(_loc7_);
-               _buffCountDownList.add("2",_loc7_);
+               tmpBuffCDV = new FloatParadeBuffCountDown(_playerInfo.deceleEndTime,2,_buffCountDownList.length);
+               tmpBuffCDV.addEventListener("EscortBuffCountDownEnd",buffCountDownEnd,false,0,true);
+               addChild(tmpBuffCDV);
+               _buffCountDownList.add("2",tmpBuffCDV);
             }
          }
          else if(_buffCountDownList.hasKey("2"))
          {
-            _loc2_ = _buffCountDownList["2"] as FloatParadeBuffCountDown;
-            _loc2_.removeEventListener("EscortBuffCountDownEnd",buffCountDownEnd);
-            ObjectUtils.disposeObject(_loc2_);
-            _buffCountDownList.remove(_loc2_.type);
+            tmp2 = _buffCountDownList["2"] as FloatParadeBuffCountDown;
+            tmp2.removeEventListener("EscortBuffCountDownEnd",buffCountDownEnd);
+            ObjectUtils.disposeObject(tmp2);
+            _buffCountDownList.remove(tmp2.type);
          }
          if(_playerInfo.acceleEndTime.getTime() > TimeManager.Instance.Now().getTime())
          {
@@ -208,25 +208,25 @@ package floatParade.player
             {
                _playerMc.gotoAndPlay("accelerate");
             }
-            _loc1_ = true;
+            isHasBuff = true;
             if(_buffCountDownList.hasKey("1"))
             {
                (_buffCountDownList["1"] as FloatParadeBuffCountDown).endTime = _playerInfo.acceleEndTime;
             }
             else
             {
-               _loc7_ = new FloatParadeBuffCountDown(_playerInfo.acceleEndTime,1,_buffCountDownList.length);
-               _loc7_.addEventListener("EscortBuffCountDownEnd",buffCountDownEnd,false,0,true);
-               addChild(_loc7_);
-               _buffCountDownList.add("1",_loc7_);
+               tmpBuffCDV = new FloatParadeBuffCountDown(_playerInfo.acceleEndTime,1,_buffCountDownList.length);
+               tmpBuffCDV.addEventListener("EscortBuffCountDownEnd",buffCountDownEnd,false,0,true);
+               addChild(tmpBuffCDV);
+               _buffCountDownList.add("1",tmpBuffCDV);
             }
          }
          else if(_buffCountDownList.hasKey("1"))
          {
-            _loc4_ = _buffCountDownList["1"] as FloatParadeBuffCountDown;
-            _loc4_.removeEventListener("EscortBuffCountDownEnd",buffCountDownEnd);
-            ObjectUtils.disposeObject(_loc4_);
-            _buffCountDownList.remove(_loc4_.type);
+            tmp3 = _buffCountDownList["1"] as FloatParadeBuffCountDown;
+            tmp3.removeEventListener("EscortBuffCountDownEnd",buffCountDownEnd);
+            ObjectUtils.disposeObject(tmp3);
+            _buffCountDownList.remove(tmp3.type);
          }
          if(_playerInfo.invisiEndTime.getTime() - TimeManager.Instance.Now().getTime() > 0)
          {
@@ -234,25 +234,25 @@ package floatParade.player
             {
                _playerMc.gotoAndPlay("transparent");
             }
-            _loc1_ = true;
+            isHasBuff = true;
             if(_buffCountDownList.hasKey("3"))
             {
                (_buffCountDownList["3"] as FloatParadeBuffCountDown).endTime = _playerInfo.invisiEndTime;
             }
             else
             {
-               _loc7_ = new FloatParadeBuffCountDown(_playerInfo.invisiEndTime,3,_buffCountDownList.length);
-               _loc7_.addEventListener("EscortBuffCountDownEnd",buffCountDownEnd,false,0,true);
-               addChild(_loc7_);
-               _buffCountDownList.add("3",_loc7_);
+               tmpBuffCDV = new FloatParadeBuffCountDown(_playerInfo.invisiEndTime,3,_buffCountDownList.length);
+               tmpBuffCDV.addEventListener("EscortBuffCountDownEnd",buffCountDownEnd,false,0,true);
+               addChild(tmpBuffCDV);
+               _buffCountDownList.add("3",tmpBuffCDV);
             }
          }
          else if(_buffCountDownList.hasKey("3"))
          {
-            _loc6_ = _buffCountDownList["3"] as FloatParadeBuffCountDown;
-            _loc6_.removeEventListener("EscortBuffCountDownEnd",buffCountDownEnd);
-            ObjectUtils.disposeObject(_loc6_);
-            _buffCountDownList.remove(_loc6_.type);
+            tmp = _buffCountDownList["3"] as FloatParadeBuffCountDown;
+            tmp.removeEventListener("EscortBuffCountDownEnd",buffCountDownEnd);
+            ObjectUtils.disposeObject(tmp);
+            _buffCountDownList.remove(tmp.type);
          }
          if(_playerInfo.missileLaunchEndTime.getTime() - TimeManager.Instance.Now().getTime() > 0)
          {
@@ -260,7 +260,7 @@ package floatParade.player
             {
                _playerMc.gotoAndPlay("beat");
             }
-            _loc1_ = true;
+            isHasBuff = true;
             _tmpTimer = new Timer(500);
             _bufTime = _playerInfo.missileLaunchEndTime.getTime();
             _tmpTimer.addEventListener("timer",__bufTimerHandler);
@@ -283,27 +283,27 @@ package floatParade.player
             {
                _playerMc.gotoAndPlay("cryC");
             }
-            _loc1_ = true;
+            isHasBuff = true;
             if(_buffCountDownList.hasKey("4"))
             {
                (_buffCountDownList["4"] as FloatParadeBuffCountDown).endTime = _playerInfo.missileEndTime;
             }
             else
             {
-               _loc7_ = new FloatParadeBuffCountDown(_playerInfo.missileEndTime,4,_buffCountDownList.length);
-               _loc7_.addEventListener("EscortBuffCountDownEnd",buffCountDownEnd,false,0,true);
-               addChild(_loc7_);
-               _buffCountDownList.add("4",_loc7_);
+               tmpBuffCDV = new FloatParadeBuffCountDown(_playerInfo.missileEndTime,4,_buffCountDownList.length);
+               tmpBuffCDV.addEventListener("EscortBuffCountDownEnd",buffCountDownEnd,false,0,true);
+               addChild(tmpBuffCDV);
+               _buffCountDownList.add("4",tmpBuffCDV);
             }
          }
          else if(_buffCountDownList.hasKey("4"))
          {
-            _loc3_ = _buffCountDownList["4"] as FloatParadeBuffCountDown;
-            _loc3_.removeEventListener("EscortBuffCountDownEnd",buffCountDownEnd);
-            ObjectUtils.disposeObject(_loc3_);
-            _buffCountDownList.remove(_loc3_.type);
+            tmp4 = _buffCountDownList["4"] as FloatParadeBuffCountDown;
+            tmp4.removeEventListener("EscortBuffCountDownEnd",buffCountDownEnd);
+            ObjectUtils.disposeObject(tmp4);
+            _buffCountDownList.remove(tmp4.type);
          }
-         if(!_loc1_)
+         if(!isHasBuff)
          {
             if(_playerMc.currentLabel == "cryC")
             {
@@ -319,14 +319,14 @@ package floatParade.player
          {
             var _loc10_:int = 0;
             var _loc9_:* = _buffCountDownList;
-            for each(var _loc8_ in _buffCountDownList)
+            for each(var tmppp in _buffCountDownList)
             {
-               _loc8_.visible = false;
+               tmppp.visible = false;
             }
          }
       }
       
-      protected function __enterFrame(param1:Event) : void
+      protected function __enterFrame(event:Event) : void
       {
          if(_playerMc && _playerMc.currentFrame == _playerMc.totalFrames)
          {
@@ -335,41 +335,41 @@ package floatParade.player
          }
       }
       
-      protected function __bufTimerHandler(param1:TimerEvent) : void
+      protected function __bufTimerHandler(event:TimerEvent) : void
       {
-         var _loc2_:Timer = param1.target as Timer;
+         var timer:Timer = event.target as Timer;
          if(_bufTime - TimeManager.Instance.Now().getTime() <= 0)
          {
-            _loc2_.stop();
-            _loc2_.removeEventListener("timer",__bufTimerHandler);
-            _loc2_ = null;
+            timer.stop();
+            timer.removeEventListener("timer",__bufTimerHandler);
+            timer = null;
             refreshBuffCountDown();
          }
       }
       
-      private function buffCountDownEnd(param1:Event) : void
+      private function buffCountDownEnd(event:Event) : void
       {
-         var _loc2_:FloatParadeBuffCountDown = param1.target as FloatParadeBuffCountDown;
-         _loc2_.removeEventListener("EscortBuffCountDownEnd",buffCountDownEnd);
-         ObjectUtils.disposeObject(_loc2_);
-         _buffCountDownList.remove(_loc2_.type);
+         var tmp:FloatParadeBuffCountDown = event.target as FloatParadeBuffCountDown;
+         tmp.removeEventListener("EscortBuffCountDownEnd",buffCountDownEnd);
+         ObjectUtils.disposeObject(tmp);
+         _buffCountDownList.remove(tmp.type);
          refreshBuffCountDown();
       }
       
       public function updatePlayer() : void
       {
-         var _loc1_:Number = _carInfo.speed;
+         var tmpSpeed:Number = _carInfo.speed;
          if(_playerInfo.acceleEndTime.getTime() > TimeManager.Instance.Now().getTime())
          {
-            _loc1_ = _loc1_ * FloatParadeManager.instance.accelerateRate / 100;
+            tmpSpeed = tmpSpeed * FloatParadeManager.instance.accelerateRate / 100;
          }
          if(_playerInfo.deceleEndTime.getTime() > TimeManager.Instance.Now().getTime())
          {
-            _loc1_ = _loc1_ * FloatParadeManager.instance.decelerateRate / 100;
+            tmpSpeed = tmpSpeed * FloatParadeManager.instance.decelerateRate / 100;
          }
          if(x < _destinationX)
          {
-            x = x + _loc1_;
+            x = x + tmpSpeed;
          }
       }
       

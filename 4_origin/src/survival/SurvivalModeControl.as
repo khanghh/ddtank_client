@@ -24,9 +24,9 @@ package survival
       
       private var _singleRoomView:SingleRoomView;
       
-      public function SurvivalModeControl(param1:IEventDispatcher = null)
+      public function SurvivalModeControl(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get Instance() : SurvivalModeControl
@@ -43,7 +43,7 @@ package survival
          SurvivalModeManager.Instance.addEventListener(SurvivalModeManager.SURVIVAL_OPENVIEW,__onOpenView);
       }
       
-      protected function __onOpenView(param1:Event) : void
+      protected function __onOpenView(event:Event) : void
       {
          if(_moduleComplete)
          {
@@ -60,9 +60,9 @@ package survival
          }
       }
       
-      private function __onUIModuleComplete(param1:UIModuleEvent) : void
+      private function __onUIModuleComplete(evt:UIModuleEvent) : void
       {
-         if(param1.module == "ddtroom")
+         if(evt.module == "ddtroom")
          {
             UIModuleLoader.Instance.removeEventListener("uiModuleComplete",__onUIModuleComplete);
             UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);
@@ -72,15 +72,15 @@ package survival
          }
       }
       
-      private function __onProgress(param1:UIModuleEvent) : void
+      private function __onProgress(event:UIModuleEvent) : void
       {
-         if(param1.module == "ddtroom")
+         if(event.module == "ddtroom")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
       
-      private function __onClose(param1:Event) : void
+      private function __onClose(event:Event) : void
       {
          _moduleComplete = false;
          UIModuleSmallLoading.Instance.hide();
@@ -104,9 +104,9 @@ package survival
          }
       }
       
-      protected function __onSingleRoomEvent(param1:FrameEvent) : void
+      protected function __onSingleRoomEvent(event:FrameEvent) : void
       {
-         if(param1.responseCode == 1 || param1.responseCode == 4 || param1.responseCode == 0)
+         if(event.responseCode == 1 || event.responseCode == 4 || event.responseCode == 0)
          {
             SoundManager.instance.playButtonSound();
             _singleRoomView.isCloseOrEscClick = true;

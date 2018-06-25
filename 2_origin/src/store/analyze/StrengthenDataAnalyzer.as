@@ -11,30 +11,29 @@ package store.analyze
       
       private var _xml:XML;
       
-      public function StrengthenDataAnalyzer(param1:Function)
+      public function StrengthenDataAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc6_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         _xml = new XML(param1);
+         var i:int = 0;
+         var TemplateID:int = 0;
+         var StrengthenLevel:int = 0;
+         var Data:int = 0;
+         _xml = new XML(data);
          initData();
-         var _loc5_:XMLList = _xml.Item;
+         var xmllist:XMLList = _xml.Item;
          if(_xml.@value == "true")
          {
-            _loc6_ = 0;
-            while(_loc6_ < _loc5_.length())
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc4_ = _loc5_[_loc6_].@TemplateID;
-               _loc3_ = _loc5_[_loc6_].@StrengthenLevel;
-               _loc2_ = _loc5_[_loc6_].@Data;
-               _strengthData[_loc3_][_loc4_] = _loc2_;
-               _loc6_++;
+               TemplateID = xmllist[i].@TemplateID;
+               StrengthenLevel = xmllist[i].@StrengthenLevel;
+               Data = xmllist[i].@Data;
+               _strengthData[StrengthenLevel][TemplateID] = Data;
+               i++;
             }
             onAnalyzeComplete();
          }
@@ -48,15 +47,14 @@ package store.analyze
       
       private function initData() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var d:* = null;
          _strengthData = new Vector.<Dictionary>();
-         _loc2_ = 0;
-         while(_loc2_ <= 12)
+         for(i = 0; i <= 12; )
          {
-            _loc1_ = new Dictionary();
-            _strengthData.push(_loc1_);
-            _loc2_++;
+            d = new Dictionary();
+            _strengthData.push(d);
+            i++;
          }
       }
    }

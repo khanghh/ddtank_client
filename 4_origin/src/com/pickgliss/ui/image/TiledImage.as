@@ -40,10 +40,10 @@ package com.pickgliss.ui.image
       private function drawImage() : void
       {
          graphics.clear();
-         var _loc1_:Matrix = new Matrix();
-         _loc1_.tx = 0;
-         _loc1_.ty = 0;
-         graphics.beginBitmapFill(_image,_loc1_);
+         var startMatrix:Matrix = new Matrix();
+         startMatrix.tx = 0;
+         startMatrix.ty = 0;
+         graphics.beginBitmapFill(_image,startMatrix);
          graphics.drawRect(0,0,width,height);
          graphics.endFill();
       }

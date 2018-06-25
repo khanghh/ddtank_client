@@ -100,31 +100,31 @@ package starling.core
       
       private var mNativeStageContentScaleFactor:Number;
       
-      public function Starling(param1:Class, param2:flash.display.Stage, param3:Rectangle = null, param4:Stage3D = null, param5:String = "auto", param6:Object = "baselineConstrained")
+      public function Starling(rootClass:Class, stage:flash.display.Stage, viewPort:Rectangle = null, stage3D:Stage3D = null, renderMode:String = "auto", profile:Object = "baselineConstrained")
       {
          super();
-         if(param2 == null)
+         if(stage == null)
          {
             throw new ArgumentError("Stage must not be null");
          }
-         if(param3 == null)
+         if(viewPort == null)
          {
-            param3 = new Rectangle(0,0,param2.stageWidth,param2.stageHeight);
+            viewPort = new Rectangle(0,0,stage.stageWidth,stage.stageHeight);
          }
-         if(param4 == null)
+         if(stage3D == null)
          {
-            param4 = param2.stage3Ds[0];
+            stage3D = stage.stage3Ds[0];
          }
          SystemUtil.initialize();
          sAll.push(this);
          makeCurrent();
-         mRootClass = param1;
-         mViewPort = param3;
+         mRootClass = rootClass;
+         mViewPort = viewPort;
          mPreviousViewPort = new Rectangle();
-         mStage3D = param4;
-         mStage = new starling.display.Stage(param3.width,param3.height,param2.color);
+         mStage3D = stage3D;
+         mStage = new starling.display.Stage(viewPort.width,viewPort.height,stage.color);
          mNativeOverlay = new Sprite();
-         mNativeStage = param2;
+         mNativeStage = stage;
          mNativeStage.addChild(mNativeOverlay);
          mNativeStageContentScaleFactor = 1;
          mTouchProcessor = new TouchProcessor(mStage);
@@ -135,30 +135,30 @@ package starling.core
          mSupportHighResolutions = false;
          mLastFrameTimestamp = getTimer() / 1000;
          mSupport = new RenderSupport();
-         sContextData[param4] = new Dictionary();
-         sContextData[param4]["Starling.programs"] = new Dictionary();
-         param2.scaleMode = "noScale";
-         param2.align = "TL";
+         sContextData[stage3D] = new Dictionary();
+         sContextData[stage3D]["Starling.programs"] = new Dictionary();
+         stage.scaleMode = "noScale";
+         stage.align = "TL";
          var _loc9_:int = 0;
          var _loc8_:* = touchEventTypes;
-         for each(var _loc7_ in touchEventTypes)
+         for each(var touchEventType in touchEventTypes)
          {
-            param2.addEventListener(_loc7_,onTouch,false,0,true);
+            stage.addEventListener(touchEventType,onTouch,false,0,true);
          }
-         param2.addEventListener("enterFrame",onEnterFrame,false,0,true);
-         param2.addEventListener("keyDown",onKey,false,0,true);
-         param2.addEventListener("keyUp",onKey,false,0,true);
-         param2.addEventListener("resize",onResize,false,0,true);
-         param2.addEventListener("mouseLeave",onMouseLeave,false,0,true);
+         stage.addEventListener("enterFrame",onEnterFrame,false,0,true);
+         stage.addEventListener("keyDown",onKey,false,0,true);
+         stage.addEventListener("keyUp",onKey,false,0,true);
+         stage.addEventListener("resize",onResize,false,0,true);
+         stage.addEventListener("mouseLeave",onMouseLeave,false,0,true);
          mStage3D.addEventListener("context3DCreate",onContextCreated,false,10,true);
          mStage3D.addEventListener("error",onStage3DError,false,10,true);
          if(mStage3D.context3D && mStage3D.context3D.driverInfo != "Disposed")
          {
-            if(param6 == "auto" || param6 is Array)
+            if(profile == "auto" || profile is Array)
             {
                throw new ArgumentError("When sharing the context3D, the actual profile has to be supplied");
             }
-            mProfile = "profile" in mStage3D.context3D?mStage3D.context3D["profile"]:param6 as String;
+            mProfile = "profile" in mStage3D.context3D?mStage3D.context3D["profile"]:profile as String;
             mShareContext = true;
             setTimeout(initialize,1);
          }
@@ -169,7 +169,7 @@ package starling.core
                trace("[Starling] Mask support requires \'depthAndStencil\' to be enabled in the application descriptor.");
             }
             mShareContext = false;
-            requestContext3D(param4,param5,param6);
+            requestContext3D(stage3D,renderMode,profile);
          }
       }
       
@@ -203,13 +203,13 @@ package starling.core
          return Multitouch.inputMode == "touchPoint";
       }
       
-      public static function set multitouchEnabled(param1:Boolean) : void
+      public static function set multitouchEnabled(value:Boolean) : void
       {
          if(sCurrent)
          {
             throw new IllegalOperationError("\'multitouchEnabled\' must be set before Starling instance is created");
          }
-         Multitouch.inputMode = !!param1?"touchPoint":"none";
+         Multitouch.inputMode = !!value?"touchPoint":"none";
       }
       
       public static function get handleLostContext() : Boolean
@@ -217,13 +217,13 @@ package starling.core
          return sHandleLostContext;
       }
       
-      public static function set handleLostContext(param1:Boolean) : void
+      public static function set handleLostContext(value:Boolean) : void
       {
          if(sCurrent)
          {
             throw new IllegalOperationError("\'handleLostContext\' must be set before Starling instance is created");
          }
-         sHandleLostContext = param1;
+         sHandleLostContext = value;
       }
       
       public function dispose() : void
@@ -239,9 +239,9 @@ package starling.core
          mStage3D.removeEventListener("error",onStage3DError,false);
          var _loc4_:int = 0;
          var _loc3_:* = touchEventTypes;
-         for each(var _loc1_ in touchEventTypes)
+         for each(var touchEventType in touchEventTypes)
          {
-            mNativeStage.removeEventListener(_loc1_,onTouch,false);
+            mNativeStage.removeEventListener(touchEventType,onTouch,false);
          }
          if(mStage)
          {
@@ -263,18 +263,18 @@ package starling.core
          {
             execute(mContext.dispose,false);
          }
-         var _loc2_:int = sAll.indexOf(this);
-         if(_loc2_ != -1)
+         var index:int = sAll.indexOf(this);
+         if(index != -1)
          {
-            sAll.splice(_loc2_,1);
+            sAll.splice(index,1);
          }
       }
       
-      private function requestContext3D(param1:Stage3D, param2:String, param3:Object) : void
+      private function requestContext3D(stage3D:Stage3D, renderMode:String, profile:Object) : void
       {
-         stage3D = param1;
-         renderMode = param2;
-         profile = param3;
+         stage3D = stage3D;
+         renderMode = renderMode;
+         profile = profile;
          requestNextProfile = function():void
          {
             currentProfile = profiles.shift();
@@ -296,12 +296,12 @@ package starling.core
                return;
             }
          };
-         onCreated = function(param1:Event):void
+         onCreated = function(event:Event):void
          {
-            var _loc2_:Context3D = stage3D.context3D;
-            if(renderMode == "auto" && profiles.length != 0 && _loc2_.driverInfo.indexOf("Software") != -1)
+            var context:Context3D = stage3D.context3D;
+            if(renderMode == "auto" && profiles.length != 0 && context.driverInfo.indexOf("Software") != -1)
             {
-               onError(param1);
+               onError(event);
             }
             else
             {
@@ -309,11 +309,11 @@ package starling.core
                onFinished();
             }
          };
-         onError = function(param1:Event):void
+         onError = function(event:Event):void
          {
             if(profiles.length != 0)
             {
-               param1.stopImmediatePropagation();
+               event.stopImmediatePropagation();
                setTimeout(requestNextProfile,1);
             }
             else
@@ -382,31 +382,31 @@ package starling.core
       
       public function nextFrame() : void
       {
-         var _loc1_:Number = getTimer() / 1000;
-         var _loc2_:* = Number(_loc1_ - mLastFrameTimestamp);
-         mLastFrameTimestamp = _loc1_;
-         if(_loc2_ > 1)
+         var now:Number = getTimer() / 1000;
+         var passedTime:* = Number(now - mLastFrameTimestamp);
+         mLastFrameTimestamp = now;
+         if(passedTime > 1)
          {
-            _loc2_ = 1;
+            passedTime = 1;
          }
-         if(_loc2_ < 0)
+         if(passedTime < 0)
          {
-            _loc2_ = Number(1 / mNativeStage.frameRate);
+            passedTime = Number(1 / mNativeStage.frameRate);
          }
-         advanceTime(_loc2_);
+         advanceTime(passedTime);
          render();
       }
       
-      public function advanceTime(param1:Number) : void
+      public function advanceTime(passedTime:Number) : void
       {
          if(!contextValid)
          {
             return;
          }
          makeCurrent();
-         mTouchProcessor.advanceTime(param1);
-         mStage.advanceTime(param1);
-         mJuggler.advanceTime(param1);
+         mTouchProcessor.advanceTime(passedTime);
+         mStage.advanceTime(passedTime);
+         mJuggler.advanceTime(passedTime);
       }
       
       public function render() : void
@@ -418,14 +418,14 @@ package starling.core
          makeCurrent();
          updateViewPort();
          dispatchEventWith("render");
-         var _loc1_:Number = mViewPort.width / mStage.stageWidth;
-         var _loc2_:Number = mViewPort.height / mStage.stageHeight;
+         var scaleX:Number = mViewPort.width / mStage.stageWidth;
+         var scaleY:Number = mViewPort.height / mStage.stageHeight;
          mContext.setDepthTest(false,"always");
          mContext.setCulling("none");
          mSupport.nextFrame();
          mSupport.stencilReferenceValue = 0;
          mSupport.renderTarget = null;
-         mSupport.setProjectionMatrix(mViewPort.x < 0?-mViewPort.x / _loc1_:0,mViewPort.y < 0?-mViewPort.y / _loc2_:0,mClippedViewPort.width / _loc1_,mClippedViewPort.height / _loc2_,mStage.stageWidth,mStage.stageHeight,mStage.cameraPosition);
+         mSupport.setProjectionMatrix(mViewPort.x < 0?-mViewPort.x / scaleX:0,mViewPort.y < 0?-mViewPort.y / scaleY:0,mClippedViewPort.width / scaleX,mClippedViewPort.height / scaleY,mStage.stageWidth,mStage.stageHeight,mStage.cameraPosition);
          if(!mShareContext)
          {
             RenderSupport.clear(mStage.color,1);
@@ -442,9 +442,9 @@ package starling.core
          }
       }
       
-      private function updateViewPort(param1:Boolean = false) : void
+      private function updateViewPort(forceUpdate:Boolean = false) : void
       {
-         if(param1 || mPreviousViewPort.width != mViewPort.width || mPreviousViewPort.height != mViewPort.height || mPreviousViewPort.x != mViewPort.x || mPreviousViewPort.y != mViewPort.y)
+         if(forceUpdate || mPreviousViewPort.width != mViewPort.width || mPreviousViewPort.height != mViewPort.height || mPreviousViewPort.x != mViewPort.x || mPreviousViewPort.y != mViewPort.y)
          {
             mPreviousViewPort.setTo(mViewPort.x,mViewPort.y,mViewPort.width,mViewPort.height);
             mClippedViewPort = mViewPort.intersection(new Rectangle(0,0,mNativeStage.stageWidth,mNativeStage.stageHeight));
@@ -469,19 +469,19 @@ package starling.core
          }
       }
       
-      private function configureBackBuffer(param1:int, param2:int, param3:int, param4:Boolean, param5:Boolean = false) : void
+      private function configureBackBuffer(width:int, height:int, antiAlias:int, enableDepthAndStencil:Boolean, wantsBestResolution:Boolean = false) : void
       {
-         if(param4)
+         if(enableDepthAndStencil)
          {
-            param4 = SystemUtil.supportsDepthAndStencil;
+            enableDepthAndStencil = SystemUtil.supportsDepthAndStencil;
          }
-         var _loc6_:Function = mContext.configureBackBuffer;
-         var _loc7_:Array = [param1,param2,param3,param4];
-         if(_loc6_.length > 4)
+         var configureBackBuffer:Function = mContext.configureBackBuffer;
+         var methodArgs:Array = [width,height,antiAlias,enableDepthAndStencil];
+         if(configureBackBuffer.length > 4)
          {
-            _loc7_.push(param5);
+            methodArgs.push(wantsBestResolution);
          }
-         _loc6_.apply(mContext,_loc7_);
+         configureBackBuffer.apply(mContext,methodArgs);
       }
       
       private function updateNativeOverlay() : void
@@ -492,30 +492,30 @@ package starling.core
          mNativeOverlay.scaleY = mViewPort.height / mStage.stageHeight;
       }
       
-      public function stopWithFatalError(param1:String) : void
+      public function stopWithFatalError(message:String) : void
       {
-         var _loc3_:Shape = new Shape();
-         _loc3_.graphics.beginFill(0,0.8);
-         _loc3_.graphics.drawRect(0,0,mStage.stageWidth,mStage.stageHeight);
-         _loc3_.graphics.endFill();
-         var _loc4_:TextField = new TextField();
-         var _loc2_:TextFormat = new TextFormat("Verdana",14,16777215);
-         _loc2_.align = "center";
-         _loc4_.defaultTextFormat = _loc2_;
-         _loc4_.wordWrap = true;
-         _loc4_.width = mStage.stageWidth * 0.75;
-         _loc4_.autoSize = "center";
-         _loc4_.text = param1;
-         _loc4_.x = (mStage.stageWidth - _loc4_.width) / 2;
-         _loc4_.y = (mStage.stageHeight - _loc4_.height) / 2;
-         _loc4_.background = true;
-         _loc4_.backgroundColor = 5570560;
+         var background:Shape = new Shape();
+         background.graphics.beginFill(0,0.8);
+         background.graphics.drawRect(0,0,mStage.stageWidth,mStage.stageHeight);
+         background.graphics.endFill();
+         var textField:TextField = new TextField();
+         var textFormat:TextFormat = new TextFormat("Verdana",14,16777215);
+         textFormat.align = "center";
+         textField.defaultTextFormat = textFormat;
+         textField.wordWrap = true;
+         textField.width = mStage.stageWidth * 0.75;
+         textField.autoSize = "center";
+         textField.text = message;
+         textField.x = (mStage.stageWidth - textField.width) / 2;
+         textField.y = (mStage.stageHeight - textField.height) / 2;
+         textField.background = true;
+         textField.backgroundColor = 5570560;
          updateNativeOverlay();
-         nativeOverlay.addChild(_loc3_);
-         nativeOverlay.addChild(_loc4_);
+         nativeOverlay.addChild(background);
+         nativeOverlay.addChild(textField);
          stop(true);
-         trace("[Starling]",param1);
-         dispatchEventWith("fatalError",false,param1);
+         trace("[Starling]",message);
+         dispatchEventWith("fatalError",false,message);
       }
       
       public function makeCurrent() : void
@@ -530,31 +530,31 @@ package starling.core
          mLastFrameTimestamp = getTimer() / 1000;
       }
       
-      public function stop(param1:Boolean = false) : void
+      public function stop(suspendRendering:Boolean = false) : void
       {
          mStarted = false;
-         mRendering = !param1;
+         mRendering = !suspendRendering;
       }
       
-      private function onStage3DError(param1:ErrorEvent) : void
+      private function onStage3DError(event:ErrorEvent) : void
       {
-         var _loc2_:* = null;
-         if(param1.errorID == 3702)
+         var mode:* = null;
+         if(event.errorID == 3702)
          {
-            _loc2_ = Capabilities.playerType == "Desktop"?"renderMode":"wmode";
-            stopWithFatalError("Context3D not available! Possible reasons: wrong " + _loc2_ + " or missing device support.");
+            mode = Capabilities.playerType == "Desktop"?"renderMode":"wmode";
+            stopWithFatalError("Context3D not available! Possible reasons: wrong " + mode + " or missing device support.");
          }
          else
          {
-            stopWithFatalError("Stage3D error: " + param1.text);
+            stopWithFatalError("Stage3D error: " + event.text);
          }
       }
       
-      private function onContextCreated(param1:Event) : void
+      private function onContextCreated(event:Event) : void
       {
          if(!Starling.handleLostContext && mContext)
          {
-            param1.stopImmediatePropagation();
+            event.stopImmediatePropagation();
             stopWithFatalError("The application lost the device context!");
             trace("[Starling] Enable \'Starling.handleLostContext\' to avoid this error.");
          }
@@ -564,7 +564,7 @@ package starling.core
          }
       }
       
-      private function onEnterFrame(param1:Event) : void
+      private function onEnterFrame(event:Event) : void
       {
          if(!mShareContext)
          {
@@ -580,24 +580,24 @@ package starling.core
          updateNativeOverlay();
       }
       
-      private function onKey(param1:flash.events.KeyboardEvent) : void
+      private function onKey(event:flash.events.KeyboardEvent) : void
       {
          if(!mStarted)
          {
             return;
          }
-         var _loc2_:starling.events.KeyboardEvent = new starling.events.KeyboardEvent(param1.type,param1.charCode,param1.keyCode,param1.keyLocation,param1.ctrlKey,param1.altKey,param1.shiftKey);
+         var keyEvent:starling.events.KeyboardEvent = new starling.events.KeyboardEvent(event.type,event.charCode,event.keyCode,event.keyLocation,event.ctrlKey,event.altKey,event.shiftKey);
          makeCurrent();
-         mStage.broadcastEvent(_loc2_);
-         if(_loc2_.isDefaultPrevented())
+         mStage.broadcastEvent(keyEvent);
+         if(keyEvent.isDefaultPrevented())
          {
-            param1.preventDefault();
+            event.preventDefault();
          }
       }
       
-      private function onResize(param1:Event) : void
+      private function onResize(event:Event) : void
       {
-         event = param1;
+         event = event;
          dispatchResizeEvent = function():void
          {
             makeCurrent();
@@ -616,56 +616,56 @@ package starling.core
          }
       }
       
-      private function onMouseLeave(param1:Event) : void
+      private function onMouseLeave(event:Event) : void
       {
          mTouchProcessor.enqueueMouseLeftStage();
       }
       
-      private function onTouch(param1:Event) : void
+      private function onTouch(event:Event) : void
       {
-         var _loc6_:Number = NaN;
-         var _loc9_:Number = NaN;
-         var _loc3_:int = 0;
-         var _loc10_:* = null;
-         var _loc2_:* = null;
-         var _loc7_:* = null;
+         var globalX:Number = NaN;
+         var globalY:Number = NaN;
+         var touchID:int = 0;
+         var phase:* = null;
+         var mouseEvent:* = null;
+         var touchEvent:* = null;
          if(!mStarted)
          {
             return;
          }
-         var _loc5_:* = 1;
-         var _loc8_:* = 1;
-         var _loc4_:* = 1;
-         if(param1 is MouseEvent)
+         var pressure:* = 1;
+         var width:* = 1;
+         var height:* = 1;
+         if(event is MouseEvent)
          {
-            _loc2_ = param1 as MouseEvent;
-            _loc6_ = _loc2_.stageX;
-            _loc9_ = _loc2_.stageY;
-            _loc3_ = 0;
-            if(param1.type == "mouseDown")
+            mouseEvent = event as MouseEvent;
+            globalX = mouseEvent.stageX;
+            globalY = mouseEvent.stageY;
+            touchID = 0;
+            if(event.type == "mouseDown")
             {
                mLeftMouseDown = true;
             }
-            else if(param1.type == "mouseUp")
+            else if(event.type == "mouseUp")
             {
                mLeftMouseDown = false;
             }
          }
          else
          {
-            _loc7_ = param1 as TouchEvent;
-            if(Mouse.supportsCursor && _loc7_.isPrimaryTouchPoint)
+            touchEvent = event as TouchEvent;
+            if(Mouse.supportsCursor && touchEvent.isPrimaryTouchPoint)
             {
                return;
             }
-            _loc6_ = _loc7_.stageX;
-            _loc9_ = _loc7_.stageY;
-            _loc3_ = _loc7_.touchPointID;
-            _loc5_ = Number(_loc7_.pressure);
-            _loc8_ = Number(_loc7_.sizeX);
-            _loc4_ = Number(_loc7_.sizeY);
+            globalX = touchEvent.stageX;
+            globalY = touchEvent.stageY;
+            touchID = touchEvent.touchPointID;
+            pressure = Number(touchEvent.pressure);
+            width = Number(touchEvent.sizeX);
+            height = Number(touchEvent.sizeY);
          }
-         var _loc11_:* = param1.type;
+         var _loc11_:* = event.type;
          if("touchBegin" !== _loc11_)
          {
             if("touchMove" !== _loc11_)
@@ -678,91 +678,91 @@ package starling.core
                      {
                         if("mouseMove" === _loc11_)
                         {
-                           _loc10_ = !!mLeftMouseDown?"moved":"hover";
+                           phase = !!mLeftMouseDown?"moved":"hover";
                         }
                      }
                      else
                      {
-                        _loc10_ = "ended";
+                        phase = "ended";
                      }
                   }
                   else
                   {
-                     _loc10_ = "began";
+                     phase = "began";
                   }
                }
                else
                {
-                  _loc10_ = "ended";
+                  phase = "ended";
                }
             }
             else
             {
-               _loc10_ = "moved";
+               phase = "moved";
             }
          }
          else
          {
-            _loc10_ = "began";
+            phase = "began";
          }
-         _loc6_ = mStage.stageWidth * (_loc6_ - mViewPort.x) / mViewPort.width;
-         _loc9_ = mStage.stageHeight * (_loc9_ - mViewPort.y) / mViewPort.height;
-         mTouchProcessor.enqueue(_loc3_,_loc10_,_loc6_,_loc9_,_loc5_,_loc8_,_loc4_);
-         if(param1.type == "mouseUp" && Mouse.supportsCursor)
+         globalX = mStage.stageWidth * (globalX - mViewPort.x) / mViewPort.width;
+         globalY = mStage.stageHeight * (globalY - mViewPort.y) / mViewPort.height;
+         mTouchProcessor.enqueue(touchID,phase,globalX,globalY,pressure,width,height);
+         if(event.type == "mouseUp" && Mouse.supportsCursor)
          {
-            mTouchProcessor.enqueue(_loc3_,"hover",_loc6_,_loc9_);
+            mTouchProcessor.enqueue(touchID,"hover",globalX,globalY);
          }
       }
       
       private function get touchEventTypes() : Array
       {
-         var _loc1_:Array = [];
+         var types:Array = [];
          if(multitouchEnabled)
          {
-            _loc1_.push("touchBegin","touchMove","touchEnd");
+            types.push("touchBegin","touchMove","touchEnd");
          }
          if(!multitouchEnabled || Mouse.supportsCursor)
          {
-            _loc1_.push("mouseDown","mouseMove","mouseUp");
+            types.push("mouseDown","mouseMove","mouseUp");
          }
-         return _loc1_;
+         return types;
       }
       
-      public function registerProgram(param1:String, param2:ByteArray, param3:ByteArray) : Program3D
+      public function registerProgram(name:String, vertexShader:ByteArray, fragmentShader:ByteArray) : Program3D
       {
-         deleteProgram(param1);
-         var _loc4_:Program3D = mContext.createProgram();
-         _loc4_.upload(param2,param3);
-         programs[param1] = _loc4_;
-         return _loc4_;
+         deleteProgram(name);
+         var program:Program3D = mContext.createProgram();
+         program.upload(vertexShader,fragmentShader);
+         programs[name] = program;
+         return program;
       }
       
-      public function registerProgramFromSource(param1:String, param2:String, param3:String) : Program3D
+      public function registerProgramFromSource(name:String, vertexShader:String, fragmentShader:String) : Program3D
       {
-         deleteProgram(param1);
-         var _loc4_:Program3D = RenderSupport.assembleAgal(param2,param3);
-         programs[param1] = _loc4_;
-         return _loc4_;
+         deleteProgram(name);
+         var program:Program3D = RenderSupport.assembleAgal(vertexShader,fragmentShader);
+         programs[name] = program;
+         return program;
       }
       
-      public function deleteProgram(param1:String) : void
+      public function deleteProgram(name:String) : void
       {
-         var _loc2_:Program3D = getProgram(param1);
-         if(_loc2_)
+         var program:Program3D = getProgram(name);
+         if(program)
          {
-            _loc2_.dispose();
-            delete programs[param1];
+            program.dispose();
+            delete programs[name];
          }
       }
       
-      public function getProgram(param1:String) : Program3D
+      public function getProgram(name:String) : Program3D
       {
-         return programs[param1] as Program3D;
+         return programs[name] as Program3D;
       }
       
-      public function hasProgram(param1:String) : Boolean
+      public function hasProgram(name:String) : Boolean
       {
-         return param1 in programs;
+         return name in programs;
       }
       
       private function get programs() : Dictionary
@@ -810,12 +810,12 @@ package starling.core
          return mSimulateMultitouch;
       }
       
-      public function set simulateMultitouch(param1:Boolean) : void
+      public function set simulateMultitouch(value:Boolean) : void
       {
-         mSimulateMultitouch = param1;
+         mSimulateMultitouch = value;
          if(mContext)
          {
-            mTouchProcessor.simulateMultitouch = param1;
+            mTouchProcessor.simulateMultitouch = value;
          }
       }
       
@@ -824,12 +824,12 @@ package starling.core
          return mEnableErrorChecking;
       }
       
-      public function set enableErrorChecking(param1:Boolean) : void
+      public function set enableErrorChecking(value:Boolean) : void
       {
-         mEnableErrorChecking = param1;
+         mEnableErrorChecking = value;
          if(mContext)
          {
-            mContext.enableErrorChecking = param1;
+            mContext.enableErrorChecking = value;
          }
       }
       
@@ -838,11 +838,11 @@ package starling.core
          return mAntiAliasing;
       }
       
-      public function set antiAliasing(param1:int) : void
+      public function set antiAliasing(value:int) : void
       {
-         if(mAntiAliasing != param1)
+         if(mAntiAliasing != value)
          {
-            mAntiAliasing = param1;
+            mAntiAliasing = value;
             if(contextValid)
             {
                updateViewPort(true);
@@ -855,9 +855,9 @@ package starling.core
          return mViewPort;
       }
       
-      public function set viewPort(param1:Rectangle) : void
+      public function set viewPort(value:Rectangle) : void
       {
-         mViewPort = param1.clone();
+         mViewPort = value.clone();
       }
       
       public function get contentScaleFactor() : Number
@@ -875,13 +875,13 @@ package starling.core
          return mStatsDisplay && mStatsDisplay.parent;
       }
       
-      public function set showStats(param1:Boolean) : void
+      public function set showStats(value:Boolean) : void
       {
-         if(param1 == showStats)
+         if(value == showStats)
          {
             return;
          }
-         if(param1)
+         if(value)
          {
             if(mStatsDisplay)
             {
@@ -898,11 +898,11 @@ package starling.core
          }
       }
       
-      public function showStatsAt(param1:String = "left", param2:String = "top", param3:Number = 1) : void
+      public function showStatsAt(hAlign:String = "left", vAlign:String = "top", scale:Number = 1) : void
       {
-         hAlign = param1;
-         vAlign = param2;
-         scale = param3;
+         hAlign = hAlign;
+         vAlign = vAlign;
+         scale = scale;
          onRootCreated = function():void
          {
             showStatsAt(hAlign,vAlign,scale);
@@ -977,7 +977,7 @@ package starling.core
          return mRootClass;
       }
       
-      public function set rootClass(param1:Class) : void
+      public function set rootClass(value:Class) : void
       {
          if(mRootClass != null && mRoot != null)
          {
@@ -985,7 +985,7 @@ package starling.core
          }
          if(mRootClass == null)
          {
-            mRootClass = param1;
+            mRootClass = value;
             if(mContext)
             {
                initializeRoot();
@@ -998,9 +998,9 @@ package starling.core
          return mShareContext;
       }
       
-      public function set shareContext(param1:Boolean) : void
+      public function set shareContext(value:Boolean) : void
       {
-         mShareContext = param1;
+         mShareContext = value;
       }
       
       public function get profile() : String
@@ -1013,11 +1013,11 @@ package starling.core
          return mSupportHighResolutions;
       }
       
-      public function set supportHighResolutions(param1:Boolean) : void
+      public function set supportHighResolutions(value:Boolean) : void
       {
-         if(mSupportHighResolutions != param1)
+         if(mSupportHighResolutions != value)
          {
-            mSupportHighResolutions = param1;
+            mSupportHighResolutions = value;
             if(contextValid)
             {
                updateViewPort(true);
@@ -1030,12 +1030,12 @@ package starling.core
          return mTouchProcessor;
       }
       
-      public function set touchProcessor(param1:TouchProcessor) : void
+      public function set touchProcessor(value:TouchProcessor) : void
       {
-         if(param1 != mTouchProcessor)
+         if(value != mTouchProcessor)
          {
             mTouchProcessor.dispose();
-            mTouchProcessor = param1;
+            mTouchProcessor = value;
          }
       }
       

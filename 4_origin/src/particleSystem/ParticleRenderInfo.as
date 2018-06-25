@@ -42,52 +42,49 @@ package particleSystem
          particleList = new Vector.<PDParticleSystemWithID>();
       }
       
-      private function __particleLoaded(param1:ParticleEvent) : void
+      private function __particleLoaded(evt:ParticleEvent) : void
       {
-         var _loc7_:* = 0;
-         var _loc2_:* = null;
-         var _loc4_:* = null;
-         var _loc5_:* = 0;
-         var _loc6_:* = 0;
-         var _loc3_:* = null;
-         param1.currentTarget.removeEventListener("particle_loaded",__particleLoaded);
+         var i:* = 0;
+         var currentEmitter:* = null;
+         var tempIdList:* = null;
+         var j:* = 0;
+         var h:* = 0;
+         var obj:* = null;
+         evt.currentTarget.removeEventListener("particle_loaded",__particleLoaded);
          if(_idList == null)
          {
             return;
          }
          if(_idList.length > 0)
          {
-            _loc7_ = uint(0);
-            while(_loc7_ < _idList.length)
+            for(i = uint(0); i < _idList.length; )
             {
-               if(_idList[_loc7_] == param1.ID)
+               if(_idList[i] == evt.ID)
                {
-                  particleList.push(ParticleManager.Instance.getParticle(param1.ID));
-                  _idList.splice(_loc7_,1);
+                  particleList.push(ParticleManager.Instance.getParticle(evt.ID));
+                  _idList.splice(i,1);
                   break;
                }
-               _loc7_++;
+               i++;
             }
-            _loc2_ = ParticleManager.Instance.emitters[this.id];
-            _loc4_ = _loc2_.particleIds;
-            if(_loc4_.length == particleList.length)
+            currentEmitter = ParticleManager.Instance.emitters[this.id];
+            tempIdList = currentEmitter.particleIds;
+            if(tempIdList.length == particleList.length)
             {
-               _loc5_ = uint(0);
-               while(_loc5_ < _loc4_.length)
+               for(j = uint(0); j < tempIdList.length; )
                {
-                  _loc6_ = uint(0);
-                  while(_loc6_ < particleList.length)
+                  for(h = uint(0); h < particleList.length; )
                   {
-                     if(particleList[_loc6_].ID == _loc4_[_loc5_] && _loc6_ != _loc5_)
+                     if(particleList[h].ID == tempIdList[j] && h != j)
                      {
-                        _loc3_ = particleList[_loc5_];
-                        particleList[_loc5_] = particleList[_loc6_];
-                        particleList[_loc6_] = _loc3_;
+                        obj = particleList[j];
+                        particleList[j] = particleList[h];
+                        particleList[h] = obj;
                         break;
                      }
-                     _loc6_++;
+                     h++;
                   }
-                  _loc5_++;
+                  j++;
                }
             }
          }
@@ -98,51 +95,50 @@ package particleSystem
       {
          var _loc6_:int = 0;
          var _loc5_:* = particleList;
-         for each(var _loc1_ in particleList)
+         for each(var particle in particleList)
          {
             var _loc4_:int = 0;
             var _loc3_:* = _propertiesDic;
-            for(var _loc2_ in _propertiesDic)
+            for(var name in _propertiesDic)
             {
-               if(_loc1_.hasOwnProperty(_loc2_))
+               if(particle.hasOwnProperty(name))
                {
-                  _loc1_[_loc2_] = _propertiesDic[_loc2_];
+                  particle[name] = _propertiesDic[name];
                }
             }
          }
       }
       
-      public function set emitterPoint(param1:Point) : void
+      public function set emitterPoint(p:Point) : void
       {
-         _emitterPoint = param1;
+         _emitterPoint = p;
       }
       
-      public function addParticles(param1:Array) : void
+      public function addParticles(arr:Array) : void
       {
-         var _loc3_:* = 0;
-         var _loc2_:* = null;
-         _idList = _idList.concat(param1);
-         _loc3_ = uint(0);
-         while(_loc3_ < param1.length)
+         var i:* = 0;
+         var zipLoader:* = null;
+         _idList = _idList.concat(arr);
+         for(i = uint(0); i < arr.length; )
          {
-            _loc2_ = ParticleManager.Instance.createParticleLoader(param1[_loc3_]);
-            _loc2_.addEventListener("particle_loaded",__particleLoaded);
-            _loc2_.loadZip();
-            _loc3_++;
+            zipLoader = ParticleManager.Instance.createParticleLoader(arr[i]);
+            zipLoader.addEventListener("particle_loaded",__particleLoaded);
+            zipLoader.loadZip();
+            i++;
          }
       }
       
-      public function removeParticleById(param1:String) : void
+      public function removeParticleById(id:String) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = particleList;
-         for each(var _loc2_ in particleList)
+         for each(var particle in particleList)
          {
-            if(_loc2_.ID == param1)
+            if(particle.ID == id)
             {
-               _loc2_.stop();
-               particleList.splice(particleList.indexOf(_loc2_),1);
-               _loc2_ = null;
+               particle.stop();
+               particleList.splice(particleList.indexOf(particle),1);
+               particle = null;
                break;
             }
          }
@@ -152,23 +148,23 @@ package particleSystem
       {
          var _loc3_:int = 0;
          var _loc2_:* = particleList;
-         for each(var _loc1_ in particleList)
+         for each(var particle in particleList)
          {
-            _loc1_.addEventListener("complete",__particleComplete);
-            _loc1_.stop();
+            particle.addEventListener("complete",__particleComplete);
+            particle.stop();
          }
       }
       
-      private function __particleComplete(param1:Event) : void
+      private function __particleComplete(evt:Event) : void
       {
-         var _loc2_:PDParticleSystemWithID = param1.target as PDParticleSystemWithID;
-         _loc2_.removeEventListener("complete",__particleComplete);
-         Starling.juggler.remove(_loc2_);
+         var particle:PDParticleSystemWithID = evt.target as PDParticleSystemWithID;
+         particle.removeEventListener("complete",__particleComplete);
+         Starling.juggler.remove(particle);
          var _loc5_:int = 0;
          var _loc4_:* = particleList;
-         for each(var _loc3_ in particleList)
+         for each(var i in particleList)
          {
-            if(_loc3_.numParticles > 0)
+            if(i.numParticles > 0)
             {
                return;
             }
@@ -176,46 +172,46 @@ package particleSystem
          dispose();
       }
       
-      public function update(param1:Number = 1.7976931348623157E308) : void
+      public function update(duration:Number = 1.7976931348623157E308) : void
       {
-         var _loc4_:Number = NaN;
-         var _loc6_:Number = NaN;
-         var _loc2_:* = null;
-         var _loc5_:Number = NaN;
-         var _loc7_:Number = NaN;
+         var rotationStart:Number = NaN;
+         var rotationEnd:Number = NaN;
+         var point:* = null;
+         var angleNum:Number = NaN;
+         var angle:Number = NaN;
          if(!isEmitting)
          {
-            start(param1);
+            start(duration);
          }
          var _loc9_:int = 0;
          var _loc8_:* = particleList;
-         for each(var _loc3_ in particleList)
+         for each(var particle in particleList)
          {
-            _loc4_ = _loc3_.mconfig.rotationStart.@value;
-            _loc6_ = _loc3_.mconfig.rotationEnd.@value;
-            if(_loc4_ == 0 && _loc6_ == 0)
+            rotationStart = particle.mconfig.rotationStart.@value;
+            rotationEnd = particle.mconfig.rotationEnd.@value;
+            if(rotationStart == 0 && rotationEnd == 0)
             {
-               _loc2_ = new Point(emitter.x - _loc3_.emitterX,emitter.y - _loc3_.emitterY);
-               if(_loc3_.emitterX != 0 && _loc3_.emitterY != 0 && _loc2_.x != 0 && _loc2_.y != 0)
+               point = new Point(emitter.x - particle.emitterX,emitter.y - particle.emitterY);
+               if(particle.emitterX != 0 && particle.emitterY != 0 && point.x != 0 && point.y != 0)
                {
-                  _loc2_.normalize(1);
-                  _loc5_ = Math.atan2(_loc2_.y,_loc2_.x) + _addAngle;
-                  _loc7_ = _loc5_ / 3.14159265358979 * 180;
-                  _loc3_.startRotation = _loc5_;
-                  _loc3_.endRotation = _loc5_;
+                  point.normalize(1);
+                  angleNum = Math.atan2(point.y,point.x) + _addAngle;
+                  angle = angleNum / 3.14159265358979 * 180;
+                  particle.startRotation = angleNum;
+                  particle.endRotation = angleNum;
                }
             }
-            _loc3_.emitterX = emitter.x + _emitterPoint.x;
-            _loc3_.emitterY = emitter.y + _emitterPoint.y;
+            particle.emitterX = emitter.x + _emitterPoint.x;
+            particle.emitterY = emitter.y + _emitterPoint.y;
          }
       }
       
-      public function set addAngle(param1:Number) : void
+      public function set addAngle(value:Number) : void
       {
-         _addAngle = param1;
+         _addAngle = value;
       }
       
-      public function start(param1:Number = 1.7976931348623157E308) : void
+      public function start(duration:Number = 1.7976931348623157E308) : void
       {
          if(isEmitting || particleList.length == 0 || !emitter.parent)
          {
@@ -223,11 +219,11 @@ package particleSystem
          }
          var _loc4_:int = 0;
          var _loc3_:* = particleList;
-         for each(var _loc2_ in particleList)
+         for each(var particle in particleList)
          {
-            emitter.parent.addChildAt(_loc2_,emitter.parent.getChildIndex(emitter));
-            _loc2_.start(param1);
-            Starling.juggler.add(_loc2_);
+            emitter.parent.addChildAt(particle,emitter.parent.getChildIndex(emitter));
+            particle.start(duration);
+            Starling.juggler.add(particle);
          }
          isEmitting = true;
       }
@@ -240,10 +236,10 @@ package particleSystem
          }
          var _loc3_:int = 0;
          var _loc2_:* = particleList;
-         for each(var _loc1_ in particleList)
+         for each(var particle in particleList)
          {
-            _loc1_.stop();
-            Starling.juggler.remove(_loc1_);
+            particle.stop();
+            Starling.juggler.remove(particle);
          }
          isEmitting = false;
       }
@@ -263,19 +259,19 @@ package particleSystem
          emitter = null;
          var _loc3_:int = 0;
          var _loc2_:* = particleList;
-         for each(var _loc1_ in particleList)
+         for each(var i in particleList)
          {
-            _loc1_.removeEventListener("complete",__particleComplete);
-            if(_loc1_.parent)
+            i.removeEventListener("complete",__particleComplete);
+            if(i.parent)
             {
-               _loc1_.parent.removeChild(_loc1_);
+               i.parent.removeChild(i);
             }
-            if(Starling.juggler.contains(_loc1_))
+            if(Starling.juggler.contains(i))
             {
-               Starling.juggler.remove(_loc1_);
+               Starling.juggler.remove(i);
             }
-            _loc1_.dispose();
-            _loc1_ = null;
+            i.dispose();
+            i = null;
          }
          _idList = null;
          particleList = null;
@@ -283,9 +279,9 @@ package particleSystem
          _emitterPoint = null;
       }
       
-      public function setPropertiesDic(param1:String, param2:int) : void
+      public function setPropertiesDic(name:String, value:int) : void
       {
-         _propertiesDic[param1] = param2;
+         _propertiesDic[name] = value;
          updateProperties();
       }
    }

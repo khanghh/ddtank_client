@@ -52,7 +52,7 @@ package ddt.view
          updateLeftTimeTf();
       }
       
-      private function onTimerTick(param1:TimerEvent) : void
+      private function onTimerTick(evt:TimerEvent) : void
       {
          _firstEnterCdSec = Number(_firstEnterCdSec) - 1;
          if(_firstEnterCdSec <= 0)
@@ -66,10 +66,10 @@ package ddt.view
       
       private function updateLeftTimeTf() : void
       {
-         var _loc1_:Array = TimeManager.getHHMMSSArr(_firstEnterCdSec);
-         if(_loc1_)
+         var timeArr:Array = TimeManager.getHHMMSSArr(_firstEnterCdSec);
+         if(timeArr)
          {
-            _leftTimeTf.text = _loc1_.join(":");
+            _leftTimeTf.text = timeArr.join(":");
          }
          else
          {
@@ -82,10 +82,10 @@ package ddt.view
          this.addEventListener("click",showFrame);
       }
       
-      protected function showFrame(param1:MouseEvent) : void
+      protected function showFrame(event:MouseEvent) : void
       {
-         var _loc2_:int = CallBackLotteryDrawManager.instance.callBackLotteryDrawModel.phase;
-         if(_firstEnterCdSec <= 0 && _loc2_ == 0 || _firstEnterCdSec >= 0 && _loc2_ > 0)
+         var phase:int = CallBackLotteryDrawManager.instance.callBackLotteryDrawModel.phase;
+         if(_firstEnterCdSec <= 0 && phase == 0 || _firstEnterCdSec >= 0 && phase > 0)
          {
             SoundManager.instance.playButtonSound();
             CallBackLotteryDrawManager.instance.type = 0;

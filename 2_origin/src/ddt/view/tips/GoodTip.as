@@ -225,7 +225,7 @@ package ddt.view.tips
       
       private var _autoGhostWidth:int;
       
-      private var _isArmed:Boolean;
+      protected var _isArmed:Boolean;
       
       protected var _displayList:Vector.<DisplayObject>;
       
@@ -283,7 +283,7 @@ package ddt.view.tips
       
       override protected function init() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _lines = new Vector.<Image>();
          _displayList = new Vector.<DisplayObject>();
          _tipbackgound = ComponentFactory.Instance.creat("core.GoodsTipBg");
@@ -330,11 +330,10 @@ package ddt.view.tips
          _gp = ComponentFactory.Instance.creatComponentByStylename("core.GoodsTipItemTxt");
          _maxGP = ComponentFactory.Instance.creatComponentByStylename("core.GoodsTipItemTxt");
          _holes = new Vector.<FilterFrameText>();
-         _loc1_ = 0;
-         while(_loc1_ < 6)
+         for(i = 0; i < 6; )
          {
             _holes.push(ComponentFactory.Instance.creatComponentByStylename("core.GoodsTipItemTxt"));
-            _loc1_++;
+            i++;
          }
          _needLevelTxt = ComponentFactory.Instance.creatComponentByStylename("core.GoodsTipItemTxt");
          _needSexTxt = ComponentFactory.Instance.creatComponentByStylename("core.GoodsTipItemTxt");
@@ -359,14 +358,14 @@ package ddt.view.tips
          return _tipData;
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         var _loc2_:* = null;
-         if(param1)
+         var __info:* = null;
+         if(data)
          {
-            if(param1 is GoodTipInfo)
+            if(data is GoodTipInfo)
             {
-               _tipData = param1 as GoodTipInfo;
+               _tipData = data as GoodTipInfo;
                if(EquipType.isBead(_tipData.itemInfo.Property1) || EquipType.isMagicStone(_tipData.itemInfo.CategoryID))
                {
                   _exp = _tipData.exp;
@@ -374,29 +373,29 @@ package ddt.view.tips
                }
                else if(EquipType.canBringUp(_tipData.itemInfo))
                {
-                  _loc2_ = _tipData.itemInfo as ItemTemplateInfo;
-                  if(_loc2_ is InventoryItemInfo)
+                  __info = _tipData.itemInfo as ItemTemplateInfo;
+                  if(__info is InventoryItemInfo)
                   {
-                     if((_loc2_ as InventoryItemInfo).curExp == 0)
+                     if((__info as InventoryItemInfo).curExp == 0)
                      {
-                        _exp = int(ItemManager.Instance.getTemplateById(_loc2_.TemplateID).Property2);
+                        _exp = int(ItemManager.Instance.getTemplateById(__info.TemplateID).Property2);
                      }
                      else
                      {
-                        _exp = (_loc2_ as InventoryItemInfo).curExp;
+                        _exp = (__info as InventoryItemInfo).curExp;
                      }
                   }
                   else
                   {
-                     _exp = int(_loc2_.Property2);
+                     _exp = int(__info.Property2);
                   }
-                  if(_loc2_.FusionType == 0)
+                  if(__info.FusionType == 0)
                   {
                      _UpExp = 0;
                   }
                   else
                   {
-                     _UpExp = int(ItemManager.Instance.getTemplateById(_loc2_.FusionType).Property2);
+                     _UpExp = int(ItemManager.Instance.getTemplateById(__info.FusionType).Property2);
                   }
                }
                showTip(_tipData.itemInfo,_tipData.typeIsSecond);
@@ -413,9 +412,9 @@ package ddt.view.tips
                   showSyahTip();
                }
             }
-            else if(param1 is ShopItemInfo)
+            else if(data is ShopItemInfo)
             {
-               _tipData = param1 as ShopItemInfo;
+               _tipData = data as ShopItemInfo;
                showTip(_tipData.TemplateInfo);
                _laterEquipmentGoodView.visible = false;
             }
@@ -433,7 +432,7 @@ package ddt.view.tips
          }
       }
       
-      public function showTip(param1:ItemTemplateInfo, param2:Boolean = false) : void
+      public function showTip(info:ItemTemplateInfo, typeIsSecond:Boolean = false) : void
       {
          _displayIdx = 0;
          _displayList = new Vector.<DisplayObject>();
@@ -441,22 +440,22 @@ package ddt.view.tips
          _isReAdd = false;
          _maxWidth = 0;
          _autoGhostWidth = 0;
-         _info = param1;
+         _info = info;
          _ghostPropertyData = getGhostPropertyData();
          updateView();
       }
       
-      public function showSuitTip(param1:ItemTemplateInfo) : void
+      public function showSuitTip(info:ItemTemplateInfo) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:ItemTemplateInfo = _tipData.itemInfo;
-         if(_loc3_ is ItemTemplateInfo)
+         var point:* = null;
+         var _info:ItemTemplateInfo = _tipData.itemInfo;
+         if(_info is ItemTemplateInfo)
          {
-            if(_loc3_.SuitId != 0)
+            if(_info.SuitId != 0)
             {
                _laterEquipmentGoodView.visible = true;
-               _loc2_ = localToGlobal(new Point(_tipbackgound.x,_tipbackgound.y));
-               if(_loc2_.x + _tipbackgound.width + _laterEquipmentGoodView.width < StageReferance.stageWidth)
+               point = localToGlobal(new Point(_tipbackgound.x,_tipbackgound.y));
+               if(point.x + _tipbackgound.width + _laterEquipmentGoodView.width < StageReferance.stageWidth)
                {
                   _laterEquipmentGoodView.x = _width + 5;
                }
@@ -464,7 +463,7 @@ package ddt.view.tips
                {
                   _laterEquipmentGoodView.x = -_laterEquipmentGoodView.width - 5;
                }
-               laterEquipment(_loc3_);
+               laterEquipment(_info);
             }
             else
             {
@@ -480,7 +479,7 @@ package ddt.view.tips
       
       private function showSyahTip() : void
       {
-         var _loc1_:* = null;
+         var point:* = null;
          if(SyahManager.Instance.getSyahModeByInfo(_tipData.itemInfo))
          {
             syahTip = new SyahTip();
@@ -499,8 +498,8 @@ package ddt.view.tips
             else
             {
                syahTip.setBGWidth(228);
-               _loc1_ = localToGlobal(new Point(_tipbackgound.x,_tipbackgound.y));
-               if(_loc1_.x + _tipbackgound.width + syahTip.displayWidth < StageReferance.stageWidth)
+               point = localToGlobal(new Point(_tipbackgound.x,_tipbackgound.y));
+               if(point.x + _tipbackgound.width + syahTip.displayWidth < StageReferance.stageWidth)
                {
                   syahTip.x = _width + 5;
                }
@@ -514,7 +513,7 @@ package ddt.view.tips
          }
       }
       
-      private function updateView() : void
+      protected function updateView() : void
       {
          if(_info == null)
          {
@@ -527,8 +526,6 @@ package ddt.view.tips
          createCategoryItem();
          careteEXP();
          createMainProperty();
-         seperateLine();
-         createArmShellProperty();
          seperateLine();
          createNecklaceItem();
          createProperties();
@@ -563,13 +560,13 @@ package ddt.view.tips
       
       private function createMarkProps() : void
       {
-         var _loc2_:InventoryItemInfo = _info as InventoryItemInfo;
-         if(_loc2_ == null || !MarkMgr.inst.checkTip(_loc2_.CategoryID,_loc2_.Place))
+         var tempInfo:InventoryItemInfo = _info as InventoryItemInfo;
+         if(tempInfo == null || !MarkMgr.inst.checkTip(tempInfo.CategoryID,tempInfo.Place))
          {
             return;
          }
-         var _loc1_:PlayerInfo = PlayerInfoViewControl.currentPlayer || PlayerManager.Instance.Self;
-         if(_loc1_.getMarkChipCntByPlace(_loc2_.Place) == 0)
+         var player:PlayerInfo = PlayerInfoViewControl.currentPlayer || PlayerManager.Instance.Self;
+         if(player.getMarkChipCntByPlace(tempInfo.Place) == 0)
          {
             return;
          }
@@ -582,8 +579,8 @@ package ddt.view.tips
             ObjectUtils.disposeObject(_markContainer);
             _markContainer = null;
          }
-         _markContainer = new MarkPropsTip(_loc2_.Place);
-         _markContainer.data = _loc1_;
+         _markContainer = new MarkPropsTip(tempInfo.Place);
+         _markContainer.data = player;
          _markContainer.x = this.width;
          _height = _markContainer.height > _height?_markContainer.height:Number(_height);
          _width = _width + _markContainer.width;
@@ -592,40 +589,40 @@ package ddt.view.tips
       
       private function createRingAddition() : void
       {
-         var _loc1_:* = null;
+         var data:* = null;
          if(_info is InventoryItemInfo && EquipType.isWeddingRing(_info))
          {
-            _loc1_ = BagAndInfoManager.Instance.getRingData(InventoryItemInfo(_info).RingExp);
+            data = BagAndInfoManager.Instance.getRingData(InventoryItemInfo(_info).RingExp);
             if(PlayerManager.Instance.Self.ID == InventoryItemInfo(_info).UserID)
             {
-               _loc1_ = BagAndInfoManager.Instance.getRingData(PlayerManager.Instance.Self.RingExp);
+               data = BagAndInfoManager.Instance.getRingData(PlayerManager.Instance.Self.RingExp);
             }
             _addition = new RingSystemTip();
-            _addition.setAdditiontext([_info.Attack * _loc1_.Attack,_info.Defence * _loc1_.Defence,_info.Agility * _loc1_.Agility,_info.Luck * _loc1_.Luck]);
+            _addition.setAdditiontext([_info.Attack * data.Attack,_info.Defence * data.Defence,_info.Agility * data.Agility,_info.Luck * data.Luck]);
             _addition.x = _attackTxt.x + 130;
             _addition.y = _attackTxt.y + 3;
             addChild(_addition);
          }
       }
       
-      private function laterEquipment(param1:ItemTemplateInfo) : void
+      private function laterEquipment(Info:ItemTemplateInfo) : void
       {
          if(!_laterEquipmentGoodView)
          {
             _laterEquipmentGoodView = new LaterEquipmentGoodView();
          }
-         _laterEquipmentGoodView.tipData = param1;
+         _laterEquipmentGoodView.tipData = Info;
       }
       
-      private function clear() : void
+      protected function clear() : void
       {
-         var _loc1_:* = null;
+         var display:* = null;
          while(numChildren > 0)
          {
-            _loc1_ = getChildAt(0) as DisplayObject;
-            if(_loc1_.parent)
+            display = getChildAt(0) as DisplayObject;
+            if(display.parent)
             {
-               _loc1_.parent.removeChild(_loc1_);
+               display.parent.removeChild(display);
             }
          }
          if(_markContainer)
@@ -637,29 +634,28 @@ package ddt.view.tips
       
       override protected function addChildren() : void
       {
-         var _loc1_:* = null;
-         var _loc4_:int = 0;
-         var _loc2_:int = _displayList.length;
-         var _loc6_:Point = new Point(4,4);
-         var _loc3_:int = 6;
-         var _loc5_:int = _maxWidth;
-         _loc4_ = 0;
-         while(_loc4_ < _loc2_)
+         var item:* = null;
+         var i:int = 0;
+         var len:int = _displayList.length;
+         var pos:Point = new Point(4,4);
+         var offset:int = 6;
+         var tempMaxWidth:int = _maxWidth;
+         for(i = 0; i < len; )
          {
-            if(_displayList[_loc4_] as DisplayObject)
+            if(_displayList[i] as DisplayObject)
             {
-               _loc1_ = _displayList[_loc4_] as DisplayObject;
-               if(_lines.indexOf(_loc1_ as Image) < 0 && _loc1_ != _descriptionTxt && _loc1_ != _ghostSkillDesc)
+               item = _displayList[i] as DisplayObject;
+               if(_lines.indexOf(item as Image) < 0 && item != _descriptionTxt && item != _ghostSkillDesc)
                {
-                  _loc5_ = Math.max(_loc1_.width,_loc5_);
+                  tempMaxWidth = Math.max(item.width,tempMaxWidth);
                }
-               PositionUtils.setPos(_loc1_,_loc6_);
-               addChild(_loc1_);
-               _loc6_.y = _loc1_.y + _loc1_.height + _loc3_;
+               PositionUtils.setPos(item,pos);
+               addChild(item);
+               pos.y = item.y + item.height + offset;
             }
-            _loc4_++;
+            i++;
          }
-         _maxWidth = Math.max(_minWidth,_loc5_);
+         _maxWidth = Math.max(_minWidth,tempMaxWidth);
          if(_autoGhostWidth > _maxWidth)
          {
             _maxWidth = _autoGhostWidth;
@@ -680,17 +676,16 @@ package ddt.view.tips
          }
          if(!_isReAdd)
          {
-            _loc4_ = 0;
-            while(_loc4_ < _lines.length)
+            for(i = 0; i < _lines.length; )
             {
-               _lines[_loc4_].width = _maxWidth;
-               if(_loc4_ + 1 < _lines.length && _lines[_loc4_ + 1].parent != null && Math.abs(_lines[_loc4_ + 1].y - _lines[_loc4_].y) <= 10)
+               _lines[i].width = _maxWidth;
+               if(i + 1 < _lines.length && _lines[i + 1].parent != null && Math.abs(_lines[i + 1].y - _lines[i].y) <= 10)
                {
-                  _displayList.splice(_displayList.indexOf(_lines[_loc4_ + 1]),1);
-                  _lines[_loc4_ + 1].parent.removeChild(_lines[_loc4_ + 1]);
+                  _displayList.splice(_displayList.indexOf(_lines[i + 1]),1);
+                  _lines[i + 1].parent.removeChild(_lines[i + 1]);
                   _isReAdd = true;
                }
-               _loc4_++;
+               i++;
             }
             if(_isReAdd)
             {
@@ -703,12 +698,12 @@ package ddt.view.tips
             _markContainer.x = this.width;
             addChild(_markContainer);
          }
-         if(_loc2_ > 0)
+         if(len > 0)
          {
             var _loc7_:* = _maxWidth + 8;
             _tipbackgound.width = _loc7_;
             _width = _loc7_;
-            _loc7_ = _loc1_.y + _loc1_.height + 8;
+            _loc7_ = item.y + item.height + 8;
             _tipbackgound.height = _loc7_;
             _height = _loc7_;
             if(_markContainer)
@@ -743,24 +738,23 @@ package ddt.view.tips
       
       private function createLatentEnergy() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:* = null;
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
+         var tmpItemInfo:* = null;
+         var valueArray:* = null;
+         var i:int = 0;
+         var tipItem:* = null;
          if(_info is InventoryItemInfo)
          {
-            _loc2_ = _info as InventoryItemInfo;
-            if(_loc2_.isHasLatentEnergy)
+            tmpItemInfo = _info as InventoryItemInfo;
+            if(tmpItemInfo.isHasLatentEnergy)
             {
-               _loc1_ = _loc2_.latentEnergyCurList;
-               _loc4_ = 0;
-               while(_loc4_ < 4)
+               valueArray = tmpItemInfo.latentEnergyCurList;
+               for(i = 0; i < 4; )
                {
-                  _loc3_ = new LatentEnergyTipItem();
-                  _loc3_.setView(_loc4_,_loc1_[_loc4_]);
+                  tipItem = new LatentEnergyTipItem();
+                  tipItem.setView(i,valueArray[i]);
                   _displayIdx = Number(_displayIdx) + 1;
-                  _displayList[Number(_displayIdx)] = _loc3_;
-                  _loc4_++;
+                  _displayList[Number(_displayIdx)] = tipItem;
+                  i++;
                }
             }
          }
@@ -778,158 +772,157 @@ package ddt.view.tips
       
       private function createPetsSkill() : void
       {
-         var _loc5_:* = null;
-         var _loc4_:* = null;
-         var _loc6_:* = null;
-         var _loc3_:* = null;
-         var _loc1_:* = null;
-         var _loc2_:* = null;
+         var temInfo:* = null;
+         var equipInfo:* = null;
+         var petSkillSpri:* = null;
+         var petTxt:* = null;
+         var skill1Txt:* = null;
+         var skill2Txt:* = null;
          if(_info is InventoryItemInfo)
          {
-            _loc5_ = _info as InventoryItemInfo;
-            _loc4_ = PetsBagManager.instance().getAwakenEquipInfo(_loc5_.ItemID.toString());
-            if(_loc4_ == null)
+            temInfo = _info as InventoryItemInfo;
+            equipInfo = PetsBagManager.instance().getAwakenEquipInfo(temInfo.ItemID.toString());
+            if(equipInfo == null)
             {
                return;
             }
-            _loc6_ = new Sprite();
-            _loc3_ = ComponentFactory.Instance.creatComponentByStylename("core.goodTip.petsSkillTxt");
-            _loc3_.text = _loc4_.belongPetName + LanguageMgr.GetTranslation("petsBag.petsAwaken.awakenEquipTips.petsTxt");
+            petSkillSpri = new Sprite();
+            petTxt = ComponentFactory.Instance.creatComponentByStylename("core.goodTip.petsSkillTxt");
+            petTxt.text = equipInfo.belongPetName + LanguageMgr.GetTranslation("petsBag.petsAwaken.awakenEquipTips.petsTxt");
             _displayIdx = Number(_displayIdx) + 1;
-            _displayList[Number(_displayIdx)] = _loc3_;
-            if(_loc4_.skillId1 > 0)
+            _displayList[Number(_displayIdx)] = petTxt;
+            if(equipInfo.skillId1 > 0)
             {
-               _loc1_ = ComponentFactory.Instance.creatComponentByStylename("core.goodTip.petsSkillNameTxt");
-               _loc1_.text = _loc4_.getSkill1Info().Name;
-               _loc6_.addChild(_loc1_);
+               skill1Txt = ComponentFactory.Instance.creatComponentByStylename("core.goodTip.petsSkillNameTxt");
+               skill1Txt.text = equipInfo.getSkill1Info().Name;
+               petSkillSpri.addChild(skill1Txt);
             }
-            if(_loc4_.skillId2 > 0)
+            if(equipInfo.skillId2 > 0)
             {
-               _loc2_ = ComponentFactory.Instance.creatComponentByStylename("core.goodTip.petsSkillNameTxt");
-               _loc2_.text = _loc4_.getSkill2Info().Name;
-               _loc2_.y = 25;
-               _loc6_.addChild(_loc2_);
+               skill2Txt = ComponentFactory.Instance.creatComponentByStylename("core.goodTip.petsSkillNameTxt");
+               skill2Txt.text = equipInfo.getSkill2Info().Name;
+               skill2Txt.y = 25;
+               petSkillSpri.addChild(skill2Txt);
             }
             _displayIdx = Number(_displayIdx) + 1;
-            _displayList[Number(_displayIdx)] = _loc6_;
+            _displayList[Number(_displayIdx)] = petSkillSpri;
          }
       }
       
       private function creatGemstone() : void
       {
-         var _loc3_:* = null;
-         var _loc8_:* = null;
-         var _loc5_:* = null;
-         var _loc10_:int = 0;
-         var _loc7_:* = null;
-         var _loc9_:* = null;
-         var _loc2_:int = 0;
-         var _loc4_:* = null;
-         var _loc1_:int = 0;
-         var _loc6_:* = null;
+         var t:* = null;
+         var addAttackStr:* = null;
+         var rdcDamageStr:* = null;
+         var i:int = 0;
+         var stoenTxt1:* = null;
+         var tipItem:* = null;
+         var level:int = 0;
+         var stoneName:* = null;
+         var stoneAct1:int = 0;
+         var obj:* = null;
          if(_info is InventoryItemInfo)
          {
-            _loc3_ = _info as InventoryItemInfo;
-            if(_loc3_.gemstoneList)
+            t = _info as InventoryItemInfo;
+            if(t.gemstoneList)
             {
-               if(_loc3_.gemstoneList.length == 0)
+               if(t.gemstoneList.length == 0)
                {
                   return;
                }
-               _loc8_ = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.GoldenAddAttack");
-               _loc5_ = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.GoldenReduceDamage");
-               _loc10_ = 0;
-               while(_loc10_ < 3)
+               addAttackStr = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.GoldenAddAttack");
+               rdcDamageStr = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.GoldenReduceDamage");
+               for(i = 0; i < 3; )
                {
-                  if(_loc3_.gemstoneList[_loc10_].level > 0)
+                  if(t.gemstoneList[i].level > 0)
                   {
-                     _loc7_ = ComponentFactory.Instance.creatComponentByStylename("core.GoodsTipItemNameTxtString");
-                     _loc9_ = new GemstonTipItem();
+                     stoenTxt1 = ComponentFactory.Instance.creatComponentByStylename("core.GoodsTipItemNameTxtString");
+                     tipItem = new GemstonTipItem();
                      _displayIdx = Number(_displayIdx) + 1;
-                     _displayList[Number(_displayIdx)] = _loc9_;
-                     _loc2_ = _loc3_.gemstoneList[_loc10_].level;
-                     if(_loc3_.gemstoneList[_loc10_].fightSpiritId == 100001)
+                     _displayList[Number(_displayIdx)] = tipItem;
+                     level = t.gemstoneList[i].level;
+                     if(t.gemstoneList[i].fightSpiritId == 100001)
                      {
-                        if(_loc3_.gemstoneList[_loc10_].level == 6)
+                        if(t.gemstoneList[i].level == 6)
                         {
-                           _loc4_ = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.goldenGemstoneAtc",GemstoneManager.Instance.redInfoList[_loc2_].attack + _loc8_);
+                           stoneName = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.goldenGemstoneAtc",GemstoneManager.Instance.redInfoList[level].attack + addAttackStr);
                         }
                         else
                         {
-                           _loc4_ = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.redGemstoneAtc",_loc2_,GemstoneManager.Instance.redInfoList[_loc2_].attack);
+                           stoneName = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.redGemstoneAtc",level,GemstoneManager.Instance.redInfoList[level].attack);
                         }
-                        _loc1_ = GemstoneManager.Instance.redInfoList[_loc2_].attack;
+                        stoneAct1 = GemstoneManager.Instance.redInfoList[level].attack;
                      }
-                     else if(_loc3_.gemstoneList[_loc10_].fightSpiritId == 100002)
+                     else if(t.gemstoneList[i].fightSpiritId == 100002)
                      {
-                        if(_loc3_.gemstoneList[_loc10_].level == 6)
+                        if(t.gemstoneList[i].level == 6)
                         {
-                           _loc4_ = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.goldenGemstoneDef",GemstoneManager.Instance.bluInfoList[_loc2_].defence + _loc5_);
+                           stoneName = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.goldenGemstoneDef",GemstoneManager.Instance.bluInfoList[level].defence + rdcDamageStr);
                         }
                         else
                         {
-                           _loc4_ = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.bluGemstoneDef",_loc2_,GemstoneManager.Instance.bluInfoList[_loc2_].defence);
+                           stoneName = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.bluGemstoneDef",level,GemstoneManager.Instance.bluInfoList[level].defence);
                         }
-                        _loc1_ = GemstoneManager.Instance.bluInfoList[_loc2_].defence;
+                        stoneAct1 = GemstoneManager.Instance.bluInfoList[level].defence;
                      }
-                     else if(_loc3_.gemstoneList[_loc10_].fightSpiritId == 100003)
+                     else if(t.gemstoneList[i].fightSpiritId == 100003)
                      {
-                        if(_loc3_.gemstoneList[_loc10_].level == 6)
+                        if(t.gemstoneList[i].level == 6)
                         {
-                           _loc4_ = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.goldenGemstoneAgi",GemstoneManager.Instance.greInfoList[_loc2_].agility + _loc8_);
+                           stoneName = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.goldenGemstoneAgi",GemstoneManager.Instance.greInfoList[level].agility + addAttackStr);
                         }
                         else
                         {
-                           _loc4_ = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.gesGemstoneAgi",_loc2_,GemstoneManager.Instance.greInfoList[_loc2_].agility);
+                           stoneName = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.gesGemstoneAgi",level,GemstoneManager.Instance.greInfoList[level].agility);
                         }
-                        _loc1_ = GemstoneManager.Instance.greInfoList[_loc2_].agility;
+                        stoneAct1 = GemstoneManager.Instance.greInfoList[level].agility;
                      }
-                     else if(_loc3_.gemstoneList[_loc10_].fightSpiritId == 100004)
+                     else if(t.gemstoneList[i].fightSpiritId == 100004)
                      {
-                        if(_loc3_.gemstoneList[_loc10_].level == 6)
+                        if(t.gemstoneList[i].level == 6)
                         {
-                           _loc4_ = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.goldenGemstoneLuk",GemstoneManager.Instance.yelInfoList[_loc2_].luck + _loc5_);
+                           stoneName = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.goldenGemstoneLuk",GemstoneManager.Instance.yelInfoList[level].luck + rdcDamageStr);
                         }
                         else
                         {
-                           _loc4_ = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.yelGemstoneLuk",_loc2_,GemstoneManager.Instance.yelInfoList[_loc2_].luck);
+                           stoneName = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.yelGemstoneLuk",level,GemstoneManager.Instance.yelInfoList[level].luck);
                         }
-                        _loc1_ = GemstoneManager.Instance.yelInfoList[_loc2_].luck;
+                        stoneAct1 = GemstoneManager.Instance.yelInfoList[level].luck;
                      }
-                     else if(_loc3_.gemstoneList[_loc10_].fightSpiritId == 100005)
+                     else if(t.gemstoneList[i].fightSpiritId == 100005)
                      {
-                        if(_loc3_.gemstoneList[_loc10_].level == 6)
+                        if(t.gemstoneList[i].level == 6)
                         {
-                           _loc4_ = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.goldenGemstoneHp",GemstoneManager.Instance.purpleInfoList[_loc2_].blood + _loc5_);
+                           stoneName = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.goldenGemstoneHp",GemstoneManager.Instance.purpleInfoList[level].blood + rdcDamageStr);
                         }
                         else
                         {
-                           _loc4_ = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.purpleGemstoneLuk",_loc2_,GemstoneManager.Instance.purpleInfoList[_loc2_].blood);
+                           stoneName = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.purpleGemstoneLuk",level,GemstoneManager.Instance.purpleInfoList[level].blood);
                         }
-                        _loc1_ = GemstoneManager.Instance.purpleInfoList[_loc2_].blood;
+                        stoneAct1 = GemstoneManager.Instance.purpleInfoList[level].blood;
                      }
-                     _loc6_ = {};
-                     _loc6_.id = _loc3_.gemstoneList[_loc10_].fightSpiritId;
-                     _loc6_.str = _loc4_;
-                     _loc9_.setInfo(_loc6_);
+                     obj = {};
+                     obj.id = t.gemstoneList[i].fightSpiritId;
+                     obj.str = stoneName;
+                     tipItem.setInfo(obj);
                   }
-                  _loc10_++;
+                  i++;
                }
             }
          }
       }
       
-      private function createItemName() : void
+      protected function createItemName() : void
       {
-         var _loc6_:* = null;
-         var _loc11_:* = null;
-         var _loc1_:int = 0;
-         var _loc4_:int = 0;
-         var _loc10_:* = null;
-         var _loc2_:int = 0;
-         var _loc3_:* = null;
-         var _loc9_:int = 0;
-         var _loc8_:int = 0;
+         var format:* = null;
+         var info:* = null;
+         var exp:int = 0;
+         var minExp:int = 0;
+         var vo:* = null;
+         var level:int = 0;
+         var order:* = null;
+         var place:int = 0;
+         var type:int = 0;
          if(EquipType.isBead(int(_info.Property1)) || EquipType.isMagicStone(_info.CategoryID))
          {
             _nameTxt.text = _tipData.beadName;
@@ -938,76 +931,76 @@ package ddt.view.tips
          {
             _nameTxt.text = String(_info.Name);
          }
-         var _loc5_:InventoryItemInfo = _info as InventoryItemInfo;
-         if(_loc5_ && _loc5_.CategoryID == 70 && _loc5_.CategoryID != 74)
+         var tempInfo:InventoryItemInfo = _info as InventoryItemInfo;
+         if(tempInfo && tempInfo.CategoryID == 70 && tempInfo.CategoryID != 74)
          {
-            _nameTxt.text = _nameTxt.text + LanguageMgr.GetTranslation("ddtKingGrade.grade",_loc5_.StrengthenLevel);
+            _nameTxt.text = _nameTxt.text + LanguageMgr.GetTranslation("ddtKingGrade.grade",tempInfo.StrengthenLevel);
          }
-         else if(_loc5_ && _loc5_.StrengthenLevel > 0 && !EquipType.isMagicStone(_loc5_.CategoryID) && _loc5_.CategoryID != 19 && _loc5_.CategoryID != 74)
+         else if(tempInfo && tempInfo.StrengthenLevel > 0 && !EquipType.isMagicStone(tempInfo.CategoryID) && tempInfo.CategoryID != 19 && tempInfo.CategoryID != 74)
          {
-            if(_loc5_.isGold)
+            if(tempInfo.isGold)
             {
-               if(_loc5_.StrengthenLevel > PathManager.solveStrengthMax())
+               if(tempInfo.StrengthenLevel > PathManager.solveStrengthMax())
                {
-                  _nameTxt.text = _nameTxt.text + LanguageMgr.GetTranslation("store.view.exalt.goodTips",_loc5_.StrengthenLevel - 12);
+                  _nameTxt.text = _nameTxt.text + LanguageMgr.GetTranslation("store.view.exalt.goodTips",tempInfo.StrengthenLevel - 12);
                }
                else
                {
                   _nameTxt.text = _nameTxt.text + LanguageMgr.GetTranslation("wishBead.StrengthenLevel");
                }
             }
-            else if(_loc5_.StrengthenLevel <= PathManager.solveStrengthMax())
+            else if(tempInfo.StrengthenLevel <= PathManager.solveStrengthMax())
             {
                _nameTxt.text = _nameTxt.text + ("(+" + (_info as InventoryItemInfo).StrengthenLevel + ")");
             }
-            else if(_loc5_.StrengthenLevel > PathManager.solveStrengthMax())
+            else if(tempInfo.StrengthenLevel > PathManager.solveStrengthMax())
             {
-               _nameTxt.text = _nameTxt.text + LanguageMgr.GetTranslation("store.view.exalt.goodTips",_loc5_.StrengthenLevel - 12);
+               _nameTxt.text = _nameTxt.text + LanguageMgr.GetTranslation("store.view.exalt.goodTips",tempInfo.StrengthenLevel - 12);
             }
          }
-         var _loc7_:int = _nameTxt.text.indexOf("+");
-         if(_loc7_ > 0)
+         var len:int = _nameTxt.text.indexOf("+");
+         if(len > 0)
          {
-            _loc6_ = ComponentFactory.Instance.model.getSet("core.goodTip.ItemNameNumTxtFormat");
-            _nameTxt.setTextFormat(_loc6_,_loc7_,_loc7_ + 1);
+            format = ComponentFactory.Instance.model.getSet("core.goodTip.ItemNameNumTxtFormat");
+            _nameTxt.setTextFormat(format,len,len + 1);
          }
          if(PlayerInfoViewControl.currentPlayer)
          {
-            if(_loc5_ && _loc5_.Place == 12 && _loc5_.UserID == PlayerInfoViewControl.currentPlayer.ID && PlayerInfoViewControl.currentPlayer.necklaceLevel > 0 && _loc5_.CategoryID == 14)
+            if(tempInfo && tempInfo.Place == 12 && tempInfo.UserID == PlayerInfoViewControl.currentPlayer.ID && PlayerInfoViewControl.currentPlayer.necklaceLevel > 0 && tempInfo.CategoryID == 14)
             {
                _nameTxt.text = _nameTxt.text + LanguageMgr.GetTranslation("bagAndInfo.bag.NecklacePtetrochemicalView.goodTip",PlayerInfoViewControl.currentPlayer.necklaceLevel);
             }
          }
          _nameTxt.textColor = QualityType.QUALITY_COLOR[getInfoQuality()];
-         if(_tipData is GoodTipInfo && _loc5_ && _loc5_.UserID)
+         if(_tipData is GoodTipInfo && tempInfo && tempInfo.UserID)
          {
-            _loc11_ = _tipData as GoodTipInfo;
-            if(_loc11_.suitIcon)
+            info = _tipData as GoodTipInfo;
+            if(info.suitIcon)
             {
-               if(_loc5_.CategoryID == 1 || _loc5_.CategoryID == 2 || _loc5_.CategoryID == 3 || _loc5_.CategoryID == 4 || _loc5_.CategoryID == 5 || _loc5_.CategoryID == 6 || _loc5_.CategoryID == 8 || _loc5_.CategoryID == 9 || _loc5_.CategoryID == 13 || _loc5_.CategoryID == 14 || _loc5_.CategoryID == 15)
+               if(tempInfo.CategoryID == 1 || tempInfo.CategoryID == 2 || tempInfo.CategoryID == 3 || tempInfo.CategoryID == 4 || tempInfo.CategoryID == 5 || tempInfo.CategoryID == 6 || tempInfo.CategoryID == 8 || tempInfo.CategoryID == 9 || tempInfo.CategoryID == 13 || tempInfo.CategoryID == 14 || tempInfo.CategoryID == 15)
                {
-                  _loc1_ = PlayerManager.Instance.findPlayer(_loc5_.UserID).fineSuitExp;
-                  _loc4_ = FineSuitManager.Instance.getSuitVoByLevel(1).exp;
-                  _loc10_ = FineSuitManager.Instance.getSuitVoByExp(_loc1_);
-                  _loc2_ = _loc10_.level;
-                  if(_loc2_ > 14)
+                  exp = PlayerManager.Instance.findPlayer(tempInfo.UserID).fineSuitExp;
+                  minExp = FineSuitManager.Instance.getSuitVoByLevel(1).exp;
+                  vo = FineSuitManager.Instance.getSuitVoByExp(exp);
+                  level = vo.level;
+                  if(level > 14)
                   {
-                     _loc2_ = int(_loc2_ % 14) == 0?14:int(_loc2_ % 14);
+                     level = int(level % 14) == 0?14:int(level % 14);
                   }
-                  _loc3_ = [0,1,2,3,4,5,11,13,12,16,9,10,7,8];
-                  _loc9_ = _loc3_.indexOf(_loc5_.Place) + 1;
-                  _loc8_ = _loc10_.type;
-                  if(_loc9_ > _loc2_)
+                  order = [0,1,2,3,4,5,11,13,12,16,9,10,7,8];
+                  place = order.indexOf(tempInfo.Place) + 1;
+                  type = vo.type;
+                  if(place > level)
                   {
-                     _loc8_--;
+                     type--;
                   }
-                  if(_loc1_ < _loc4_ || _loc8_ <= 0)
+                  if(exp < minExp || type <= 0)
                   {
                      _displayIdx = Number(_displayIdx) + 1;
                      _displayList[Number(_displayIdx)] = _nameTxt;
                      return;
                   }
-                  _suitIcon.setFrame(_loc8_);
+                  _suitIcon.setFrame(type);
                   _nameContent.addChild(_suitIcon);
                   _nameContent.addChild(_nameTxt);
                   var _loc12_:int = 0;
@@ -1025,11 +1018,11 @@ package ddt.view.tips
          _displayList[Number(_displayIdx)] = _nameTxt;
       }
       
-      private function createQualityItem() : void
+      protected function createQualityItem() : void
       {
-         var _loc1_:FilterFrameText = _qualityItem.foreItems[0] as FilterFrameText;
-         _loc1_.text = QualityType.QUALITY_STRING[getInfoQuality()];
-         _loc1_.textColor = QualityType.QUALITY_COLOR[getInfoQuality()];
+         var fft:FilterFrameText = _qualityItem.foreItems[0] as FilterFrameText;
+         fft.text = QualityType.QUALITY_STRING[getInfoQuality()];
+         fft.textColor = QualityType.QUALITY_COLOR[getInfoQuality()];
          if(!EquipType.isBead(int(_info.Property1)))
          {
             _displayIdx = Number(_displayIdx) + 1;
@@ -1054,21 +1047,21 @@ package ddt.view.tips
          return _info.Quality;
       }
       
-      private function createCategoryItem() : void
+      protected function createCategoryItem() : void
       {
-         var _loc1_:FilterFrameText = _typeItem.foreItems[0] as FilterFrameText;
-         var _loc2_:Array = EquipType.PARTNAME;
+         var fft:FilterFrameText = _typeItem.foreItems[0] as FilterFrameText;
+         var arr:Array = EquipType.PARTNAME;
          if(_info.CategoryID == 31)
          {
-            _loc1_.text = LanguageMgr.GetTranslation("tank.data.EquipType.tempHelp");
+            fft.text = LanguageMgr.GetTranslation("tank.data.EquipType.tempHelp");
          }
          else if(_info.CategoryID == 222222222)
          {
-            _loc1_.text = LanguageMgr.GetTranslation("tank.data.EquipType.normal");
+            fft.text = LanguageMgr.GetTranslation("tank.data.EquipType.normal");
          }
          else if(_info.CategoryID == 80)
          {
-            _loc1_.text = LanguageMgr.GetTranslation("tank.data.EquipType.fuzhudaoju");
+            fft.text = LanguageMgr.GetTranslation("tank.data.EquipType.fuzhudaoju");
          }
          else if(_info.Property1 == "31")
          {
@@ -1079,30 +1072,30 @@ package ddt.view.tips
                {
                   if("3" === _loc3_)
                   {
-                     _loc1_.text = LanguageMgr.GetTranslation("tank.data.EquipType.attribute");
+                     fft.text = LanguageMgr.GetTranslation("tank.data.EquipType.attribute");
                   }
                }
                else
                {
-                  _loc1_.text = LanguageMgr.GetTranslation("tank.data.EquipType.defent");
+                  fft.text = LanguageMgr.GetTranslation("tank.data.EquipType.defent");
                }
             }
             else
             {
-               _loc1_.text = LanguageMgr.GetTranslation("tank.data.EquipType.atacckt");
+               fft.text = LanguageMgr.GetTranslation("tank.data.EquipType.atacckt");
             }
          }
          else
          {
-            _loc1_.text = EquipType.PARTNAME[_info.CategoryID] + "";
+            fft.text = EquipType.PARTNAME[_info.CategoryID] + "";
          }
          if(EquipType.isBead(int(_info.Property1)))
          {
-            _loc1_.textColor = 65406;
+            fft.textColor = 65406;
          }
          if(_info.TemplateID == 20150 || _info.TemplateID == 201266)
          {
-            _loc1_.text = EquipType.PARTNAME[23];
+            fft.text = EquipType.PARTNAME[23];
          }
          _displayIdx = Number(_displayIdx) + 1;
          _displayList[Number(_displayIdx)] = _typeItem;
@@ -1110,10 +1103,10 @@ package ddt.view.tips
       
       private function careteEXP() : void
       {
-         var _loc1_:FilterFrameText = _expItem.foreItems[0] as FilterFrameText;
+         var fft:FilterFrameText = _expItem.foreItems[0] as FilterFrameText;
          if(EquipType.isBead(int(_info.Property1)) || EquipType.isMagicStone(_info.CategoryID) || EquipType.canBringUp(_info))
          {
-            _loc1_.text = _exp + "/" + _UpExp;
+            fft.text = _exp + "/" + _UpExp;
             _displayIdx = Number(_displayIdx) + 1;
             _displayList[Number(_displayIdx)] = _expItem;
          }
@@ -1121,34 +1114,34 @@ package ddt.view.tips
       
       private function createMainProperty() : void
       {
-         var _loc11_:* = NaN;
-         var _loc8_:* = NaN;
-         var _loc9_:* = null;
-         var _loc5_:* = null;
-         var _loc3_:int = 0;
-         var _loc6_:int = 0;
-         var _loc12_:String = "";
-         var _loc4_:int = 0;
-         var _loc1_:FilterFrameText = _mainPropertyItem.foreItems[0] as FilterFrameText;
-         var _loc7_:ScaleFrameImage = _mainPropertyItem.backItem as ScaleFrameImage;
-         var _loc13_:InventoryItemInfo = _info as InventoryItemInfo;
+         var strenGold:* = NaN;
+         var armValue:* = NaN;
+         var space:* = null;
+         var tf:* = null;
+         var beginIndex:int = 0;
+         var endIndex:int = 0;
+         var attachedMainPropertyStr:String = "";
+         var strengthenLevel:int = 0;
+         var fft:FilterFrameText = _mainPropertyItem.foreItems[0] as FilterFrameText;
+         var type:ScaleFrameImage = _mainPropertyItem.backItem as ScaleFrameImage;
+         var ivenInfo:InventoryItemInfo = _info as InventoryItemInfo;
          GhostStarContainer(_mainPropertyItem.foreItems[1]).visible = false;
          GhostStarContainer(_armAngleItem.foreItems[1]).visible = false;
          _autoGhostWidth = 0;
-         var _loc10_:uint = 0;
-         var _loc2_:PlayerInfo = PlayerInfoViewControl.currentPlayer || PlayerManager.Instance.Self;
+         var attachedMainProperty:uint = 0;
+         var player:PlayerInfo = PlayerInfoViewControl.currentPlayer || PlayerManager.Instance.Self;
          if(EquipType.isArm(_info))
          {
-            _loc11_ = 0;
-            if(_loc13_ && _loc13_.StrengthenLevel > 0)
+            strenGold = 0;
+            if(ivenInfo && ivenInfo.StrengthenLevel > 0)
             {
-               _loc4_ = !!_loc13_.isGold?_loc13_.StrengthenLevel + 1:_loc13_.StrengthenLevel;
-               _loc11_ = Number(StaticFormula.getHertAddition(int(_loc13_.Property7),_loc4_));
+               strengthenLevel = !!ivenInfo.isGold?ivenInfo.StrengthenLevel + 1:ivenInfo.StrengthenLevel;
+               strenGold = Number(StaticFormula.getHertAddition(int(ivenInfo.Property7),strengthenLevel));
             }
-            _loc7_.setFrame(1);
-            _loc10_ = _loc11_ + (!!_ghostPropertyData?_ghostPropertyData.mainProperty:0);
-            _loc12_ = _loc10_ > 0?"(+" + _loc10_ + ")":"";
-            _loc1_.text = " " + _info.Property7.toString() + _loc12_;
+            type.setFrame(1);
+            attachedMainProperty = strenGold + (!!_ghostPropertyData?_ghostPropertyData.mainProperty:0);
+            attachedMainPropertyStr = attachedMainProperty > 0?"(+" + attachedMainProperty + ")":"";
+            fft.text = " " + _info.Property7.toString() + attachedMainPropertyStr;
             FilterFrameText(_armAngleItem.foreItems[0]).text = " " + _info.Property5 + "°~" + _info.Property6 + "°";
             _displayIdx = Number(_displayIdx) + 1;
             _displayList[Number(_displayIdx)] = _mainPropertyItem;
@@ -1160,7 +1153,7 @@ package ddt.view.tips
                _ghostStartsContainer.x = _armAngleItem.foreItems[0].width + _armAngleItem.foreItems[0].x;
                _ghostStartsContainer.y = _armAngleItem.foreItems[0].y + 8;
                _ghostStartsContainer.maxLv = EquipGhostManager.getInstance().model.topLvDic[_info.CategoryID == 27?7:_info.CategoryID];
-               _ghostStartsContainer.level = _loc2_.getGhostDataByCategoryID(_info.CategoryID).level;
+               _ghostStartsContainer.level = player.getGhostDataByCategoryID(_info.CategoryID).level;
                _ghostStartsContainer.visible = true;
                _autoGhostWidth = _ghostStartsContainer.x + _ghostStartsContainer.width;
             }
@@ -1173,21 +1166,21 @@ package ddt.view.tips
          }
          else if(EquipType.isHead(_info) || EquipType.isCloth(_info))
          {
-            _loc8_ = 0;
-            if(_loc13_ && _loc13_.StrengthenLevel > 0)
+            armValue = 0;
+            if(ivenInfo && ivenInfo.StrengthenLevel > 0)
             {
-               _loc4_ = !!_loc13_.isGold?_loc13_.StrengthenLevel + 1:_loc13_.StrengthenLevel;
-               _loc8_ = Number(StaticFormula.getDefenseAddition(int(_loc13_.Property7),_loc4_));
+               strengthenLevel = !!ivenInfo.isGold?ivenInfo.StrengthenLevel + 1:ivenInfo.StrengthenLevel;
+               armValue = Number(StaticFormula.getDefenseAddition(int(ivenInfo.Property7),strengthenLevel));
             }
-            _loc7_.setFrame(2);
-            _loc10_ = _loc8_ + (_ghostPropertyData != null?_ghostPropertyData.mainProperty:0);
-            _loc12_ = _loc10_ > 0?"(+" + _loc10_ + ")":"";
-            _loc1_.text = " " + _info.Property7.toString() + _loc12_;
+            type.setFrame(2);
+            attachedMainProperty = armValue + (_ghostPropertyData != null?_ghostPropertyData.mainProperty:0);
+            attachedMainPropertyStr = attachedMainProperty > 0?"(+" + attachedMainProperty + ")":"";
+            fft.text = " " + _info.Property7.toString() + attachedMainPropertyStr;
             _displayIdx = Number(_displayIdx) + 1;
             _displayList[Number(_displayIdx)] = _mainPropertyItem;
-            if(_loc13_ && _loc13_.isGold)
+            if(ivenInfo && ivenInfo.isGold)
             {
-               FilterFrameText(_otherHp.foreItems[0]).text = _loc13_.Boold.toString();
+               FilterFrameText(_otherHp.foreItems[0]).text = ivenInfo.Boold.toString();
                _displayIdx = Number(_displayIdx) + 1;
                _displayList[Number(_displayIdx)] = _otherHp;
             }
@@ -1197,54 +1190,65 @@ package ddt.view.tips
                _ghostStartsContainer.maxLv = EquipGhostManager.getInstance().model.topLvDic[_info.CategoryID == 27?7:_info.CategoryID];
                _ghostStartsContainer.x = _mainPropertyItem.foreItems[0].width + _mainPropertyItem.foreItems[0].x;
                _ghostStartsContainer.y = _mainPropertyItem.foreItems[0].y + 8;
-               _ghostStartsContainer.level = _loc2_.getGhostDataByCategoryID(_info.CategoryID).level;
+               _ghostStartsContainer.level = player.getGhostDataByCategoryID(_info.CategoryID).level;
                _ghostStartsContainer.visible = true;
                _autoGhostWidth = _ghostStartsContainer.x + _ghostStartsContainer.width;
             }
          }
          else if(StaticFormula.isDeputyWeapon(_info) || _info.CategoryID == 31)
          {
-            _loc9_ = " ";
+            space = " ";
             if(_info.Property3 == "32")
             {
-               if(_loc13_ && _loc13_.StrengthenLevel > 0)
+               if(ivenInfo && ivenInfo.StrengthenLevel > 0)
                {
-                  _loc4_ = !!_loc13_.isGold?_loc13_.StrengthenLevel + 1:_loc13_.StrengthenLevel;
-                  _loc12_ = "(+" + StaticFormula.getRecoverHPAddition(int(_loc13_.Property7),_loc4_) + ")";
+                  strengthenLevel = !!ivenInfo.isGold?ivenInfo.StrengthenLevel + 1:ivenInfo.StrengthenLevel;
+                  attachedMainPropertyStr = "(+" + StaticFormula.getRecoverHPAddition(int(ivenInfo.Property7),strengthenLevel) + ")";
                }
-               _loc7_.setFrame(3);
-               _loc9_ = "   ";
+               type.setFrame(3);
+               space = "   ";
+               fft.text = " " + _info.Property7.toString() + attachedMainPropertyStr;
+            }
+            else if(_info.Property3 == "132")
+            {
+               if(ivenInfo && ivenInfo.StrengthenLevel > 0)
+               {
+                  strengthenLevel = !!ivenInfo.isGold?ivenInfo.StrengthenLevel + 1:ivenInfo.StrengthenLevel;
+                  attachedMainPropertyStr = "(+" + int(StaticFormula.getRecoverHPAddition(int(ivenInfo.Property7),strengthenLevel) / 2) + ")";
+               }
+               type.setFrame(5);
+               fft.text = " " + int(_info.Property7) / 2 + attachedMainPropertyStr;
             }
             else
             {
-               if(_loc13_ && _loc13_.StrengthenLevel > 0)
+               if(ivenInfo && ivenInfo.StrengthenLevel > 0)
                {
-                  _loc4_ = !!_loc13_.isGold?_loc13_.StrengthenLevel + 1:_loc13_.StrengthenLevel;
-                  _loc12_ = "(+" + StaticFormula.getDefenseAddition(int(_loc13_.Property7),_loc4_) + ")";
+                  strengthenLevel = !!ivenInfo.isGold?ivenInfo.StrengthenLevel + 1:ivenInfo.StrengthenLevel;
+                  attachedMainPropertyStr = "(+" + StaticFormula.getDefenseAddition(int(ivenInfo.Property7),strengthenLevel) + ")";
                }
-               _loc7_.setFrame(4);
-               _loc9_ = "            ";
+               type.setFrame(4);
+               fft.text = " " + _info.Property7.toString() + attachedMainPropertyStr;
+               space = "            ";
             }
-            _loc1_.text = " " + _info.Property7.toString() + _loc12_;
             _displayIdx = Number(_displayIdx) + 1;
             _displayList[Number(_displayIdx)] = _mainPropertyItem;
          }
-         if(_loc1_)
+         if(fft)
          {
-            _loc5_ = ComponentFactory.Instance.model.getSet("ddt.store.view.exalt.LaterEquipmentViewTextTF");
-            _loc3_ = _loc1_.text.indexOf("(");
-            _loc6_ = _loc1_.text.indexOf(")") + 1;
-            if(_loc3_ != -1 && _loc6_ != 0)
+            tf = ComponentFactory.Instance.model.getSet("ddt.store.view.exalt.LaterEquipmentViewTextTF");
+            beginIndex = fft.text.indexOf("(");
+            endIndex = fft.text.indexOf(")") + 1;
+            if(beginIndex != -1 && endIndex != 0)
             {
-               _loc1_.setTextFormat(_loc5_,_loc3_,_loc6_);
+               fft.setTextFormat(tf,beginIndex,endIndex);
             }
          }
       }
       
       private function createArmShellProperty() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var itemInfo:* = null;
+         var armInfo:* = null;
          if(EquipType.isArmShell(_info))
          {
             _armShellProtertyTxts[0].text = LanguageMgr.GetTranslation("ddt.armShellClip.damageTips",LanguageMgr.GetTranslation("ddt.armShellClip.normalDamageTips"),Number(ServerConfigManager.instance.weaponShellNormalAdd / 10));
@@ -1253,13 +1257,13 @@ package ddt.view.tips
             _displayList[Number(_displayIdx)] = _armShellProtertyTxts[0];
             if(_info is InventoryItemInfo)
             {
-               _loc2_ = InventoryItemInfo(_info);
-               if(_loc2_.AttackCompose > 0 && _loc2_.DefendCompose > 0)
+               itemInfo = InventoryItemInfo(_info);
+               if(itemInfo.AttackCompose > 0 && itemInfo.DefendCompose > 0)
                {
-                  _loc1_ = ItemManager.Instance.getTemplateById(_loc2_.AttackCompose);
-                  if(_loc1_)
+                  armInfo = ItemManager.Instance.getTemplateById(itemInfo.AttackCompose);
+                  if(armInfo)
                   {
-                     _armShellProtertyTxts[1].text = LanguageMgr.GetTranslation("ddt.armShellClip.damageTips",_loc1_.Name,Number(_loc2_.DefendCompose / 10));
+                     _armShellProtertyTxts[1].text = LanguageMgr.GetTranslation("ddt.armShellClip.damageTips",armInfo.Name,Number(itemInfo.DefendCompose / 10));
                      _armShellProtertyTxts[1].textColor = 16750899;
                      _displayIdx = Number(_displayIdx) + 1;
                      _displayList[Number(_displayIdx)] = _armShellProtertyTxts[1];
@@ -1271,16 +1275,16 @@ package ddt.view.tips
       
       private function createNecklaceItem() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:int = 0;
+         var tempInfo:* = null;
+         var necklaceStrengthPlus:int = 0;
          if(_info.CategoryID == 14)
          {
             _necklaceItem.text = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.life") + ":" + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.advance") + _info.Property1 + "%";
-            _loc1_ = _info as InventoryItemInfo;
-            if(_loc1_ && _loc1_.Place == 12 && PlayerInfoViewControl.currentPlayer && _loc1_.UserID == PlayerInfoViewControl.currentPlayer.ID && PlayerInfoViewControl.currentPlayer.necklaceLevel > 0)
+            tempInfo = _info as InventoryItemInfo;
+            if(tempInfo && tempInfo.Place == 12 && PlayerInfoViewControl.currentPlayer && tempInfo.UserID == PlayerInfoViewControl.currentPlayer.ID && PlayerInfoViewControl.currentPlayer.necklaceLevel > 0)
             {
-               _loc2_ = StoreEquipExperience.getNecklaceStrengthPlus(PlayerInfoViewControl.currentPlayer.necklaceLevel);
-               _necklaceItem.text = _necklaceItem.text + LanguageMgr.GetTranslation("bagAndInfo.bag.NecklacePtetrochemicalView.goodTipII",_loc2_);
+               necklaceStrengthPlus = StoreEquipExperience.getNecklaceStrengthPlus(PlayerInfoViewControl.currentPlayer.necklaceLevel);
+               _necklaceItem.text = _necklaceItem.text + LanguageMgr.GetTranslation("bagAndInfo.bag.NecklacePtetrochemicalView.goodTipII",necklaceStrengthPlus);
             }
             _necklaceItem.textColor = 16750899;
             _displayIdx = Number(_displayIdx) + 1;
@@ -1297,78 +1301,78 @@ package ddt.view.tips
       
       private function createProperties() : void
       {
-         var _loc8_:* = null;
-         var _loc3_:* = null;
-         var _loc11_:* = null;
-         var _loc12_:int = 0;
-         var _loc10_:String = "";
-         var _loc6_:String = "";
-         var _loc2_:String = "";
-         var _loc5_:String = "";
-         var _loc7_:String = "";
-         var _loc13_:String = "";
-         var _loc1_:String = "";
-         var _loc4_:String = "";
+         var t:* = null;
+         var mgStoneTxt:* = null;
+         var hpText:* = null;
+         var amuletHp:int = 0;
+         var tat:String = "";
+         var tde:String = "";
+         var tag:String = "";
+         var tlu:String = "";
+         var gat:String = "";
+         var gde:String = "";
+         var gag:String = "";
+         var glu:String = "";
          if(_info is InventoryItemInfo && !EquipType.isMagicStone(_info.CategoryID))
          {
-            _loc8_ = _info as InventoryItemInfo;
-            if(_loc8_.AttackCompose > 0)
+            t = _info as InventoryItemInfo;
+            if(t.AttackCompose > 0)
             {
-               _loc10_ = "(+" + String(_loc8_.AttackCompose) + ")";
+               tat = "(+" + String(t.AttackCompose) + ")";
             }
-            if(_loc8_.DefendCompose > 0)
+            if(t.DefendCompose > 0)
             {
-               _loc6_ = "(+" + String(_loc8_.DefendCompose) + ")";
+               tde = "(+" + String(t.DefendCompose) + ")";
             }
-            if(_loc8_.AgilityCompose > 0)
+            if(t.AgilityCompose > 0)
             {
-               _loc2_ = "(+" + String(_loc8_.AgilityCompose) + ")";
+               tag = "(+" + String(t.AgilityCompose) + ")";
             }
-            if(_loc8_.LuckCompose > 0)
+            if(t.LuckCompose > 0)
             {
-               _loc5_ = "(+" + String(_loc8_.LuckCompose) + ")";
+               tlu = "(+" + String(t.LuckCompose) + ")";
             }
          }
          if(_ghostPropertyData != null)
          {
             if(_ghostPropertyData.attack > 0)
             {
-               _loc7_ = LanguageMgr.GetTranslation("equipGhost.tip",_ghostPropertyData.attack);
+               gat = LanguageMgr.GetTranslation("equipGhost.tip",_ghostPropertyData.attack);
             }
             if(_ghostPropertyData.defend > 0)
             {
-               _loc13_ = LanguageMgr.GetTranslation("equipGhost.tip",_ghostPropertyData.defend);
+               gde = LanguageMgr.GetTranslation("equipGhost.tip",_ghostPropertyData.defend);
             }
             if(_ghostPropertyData.lucky > 0)
             {
-               _loc4_ = LanguageMgr.GetTranslation("equipGhost.tip",_ghostPropertyData.lucky);
+               glu = LanguageMgr.GetTranslation("equipGhost.tip",_ghostPropertyData.lucky);
             }
             if(_ghostPropertyData.agility > 0)
             {
-               _loc1_ = LanguageMgr.GetTranslation("equipGhost.tip",_ghostPropertyData.agility);
+               gag = LanguageMgr.GetTranslation("equipGhost.tip",_ghostPropertyData.agility);
             }
          }
          if(_info.Attack != 0)
          {
-            _attackTxt.htmlText = LanguageMgr.GetTranslation("goodTip.propertyStr",LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.fire") + ":" + String(_info.Attack) + _loc10_) + _loc7_;
+            _attackTxt.htmlText = LanguageMgr.GetTranslation("goodTip.propertyStr",LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.fire") + ":" + String(_info.Attack) + tat) + gat;
             _displayIdx = Number(_displayIdx) + 1;
             _displayList[Number(_displayIdx)] = _attackTxt;
          }
          if(_info.Defence != 0)
          {
-            _defenseTxt.htmlText = LanguageMgr.GetTranslation("goodTip.propertyStr",LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.recovery") + ":" + String(_info.Defence) + _loc6_) + _loc13_;
+            _defenseTxt.htmlText = LanguageMgr.GetTranslation("goodTip.propertyStr",LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.recovery") + ":" + String(_info.Defence) + tde) + gde;
             _displayIdx = Number(_displayIdx) + 1;
             _displayList[Number(_displayIdx)] = _defenseTxt;
          }
          if(_info.Agility != 0)
          {
-            _agilityTxt.htmlText = LanguageMgr.GetTranslation("goodTip.propertyStr",LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.agility") + ":" + String(_info.Agility) + _loc2_) + _loc1_;
+            _agilityTxt.htmlText = LanguageMgr.GetTranslation("goodTip.propertyStr",LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.agility") + ":" + String(_info.Agility) + tag) + gag;
             _displayIdx = Number(_displayIdx) + 1;
             _displayList[Number(_displayIdx)] = _agilityTxt;
          }
          if(_info.Luck != 0)
          {
-            _luckTxt.htmlText = LanguageMgr.GetTranslation("goodTip.propertyStr",LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.lucky") + ":" + String(_info.Luck) + _loc5_) + _loc4_;
+            _luckTxt.htmlText = LanguageMgr.GetTranslation("goodTip.propertyStr",LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.lucky") + ":" + String(_info.Luck) + tlu) + glu;
             _displayIdx = Number(_displayIdx) + 1;
             _displayList[Number(_displayIdx)] = _luckTxt;
          }
@@ -1386,28 +1390,28 @@ package ddt.view.tips
             _displayIdx = Number(_displayIdx) + 1;
             _displayList[Number(_displayIdx)] = _magicDefenceTxt;
          }
-         var _loc9_:InventoryItemInfo = _info as InventoryItemInfo;
-         if(!_loc9_ && EquipType.isMagicStone(_info.CategoryID))
+         var item:InventoryItemInfo = _info as InventoryItemInfo;
+         if(!item && EquipType.isMagicStone(_info.CategoryID))
          {
-            _loc3_ = ComponentFactory.Instance.creatComponentByStylename("core.GoodsTipItemTxt");
-            switch(int(_info.Property3) - 2)
+            mgStoneTxt = ComponentFactory.Instance.creatComponentByStylename("core.GoodsTipItemTxt");
+            switch(int(int(_info.Property3)) - 2)
             {
                case 0:
-                  _loc3_.text = LanguageMgr.GetTranslation("magicStone.canGetTwoAbove");
+                  mgStoneTxt.text = LanguageMgr.GetTranslation("magicStone.canGetTwoAbove");
                   _displayIdx = Number(_displayIdx) + 1;
-                  _displayList[Number(_displayIdx)] = _loc3_;
+                  _displayList[Number(_displayIdx)] = mgStoneTxt;
                   break;
                case 1:
-                  _loc3_.text = LanguageMgr.GetTranslation("magicStone.canGetThreeAbove");
+                  mgStoneTxt.text = LanguageMgr.GetTranslation("magicStone.canGetThreeAbove");
                   _displayIdx = Number(_displayIdx) + 1;
-                  _displayList[Number(_displayIdx)] = _loc3_;
+                  _displayList[Number(_displayIdx)] = mgStoneTxt;
                   break;
                case 2:
-                  _loc3_.text = LanguageMgr.GetTranslation("magicStone.canGetFourAbove");
+                  mgStoneTxt.text = LanguageMgr.GetTranslation("magicStone.canGetFourAbove");
                   _displayIdx = Number(_displayIdx) + 1;
-                  _displayList[Number(_displayIdx)] = _loc3_;
+                  _displayList[Number(_displayIdx)] = mgStoneTxt;
             }
-            _loc3_.textColor = 16777215;
+            mgStoneTxt.textColor = 16777215;
          }
          if(_info.TemplateID == 334100)
          {
@@ -1422,29 +1426,29 @@ package ddt.view.tips
          }
          if(_info.CategoryID == 70)
          {
-            _loc11_ = ComponentFactory.Instance.creatComponentByStylename("core.GoodsTipItemTxt");
-            if(_loc9_)
+            hpText = ComponentFactory.Instance.creatComponentByStylename("core.GoodsTipItemTxt");
+            if(item)
             {
-               _loc12_ = EquipAmuletManager.Instance.getAmuletHpByGrade(_loc9_.StrengthenLevel);
-               _loc11_.text = LanguageMgr.GetTranslation("MaxHp") + ":" + _loc12_;
-               _loc11_.textColor = 16750899;
+               amuletHp = EquipAmuletManager.Instance.getAmuletHpByGrade(item.StrengthenLevel);
+               hpText.text = LanguageMgr.GetTranslation("MaxHp") + ":" + amuletHp;
+               hpText.textColor = 16750899;
                _displayIdx = Number(_displayIdx) + 1;
-               _displayList[Number(_displayIdx)] = _loc11_;
-               if(_loc9_.Hole1 > 0)
+               _displayList[Number(_displayIdx)] = hpText;
+               if(item.Hole1 > 0)
                {
-                  _attackTxt.text = HorseAmuletManager.instance.getByExtendType(_loc9_.Hole1) + ":" + _loc9_.equipAmuletProperty1;
+                  _attackTxt.text = HorseAmuletManager.instance.getByExtendType(item.Hole1) + ":" + item.equipAmuletProperty1;
                   _attackTxt.textColor = 16750899;
                   _displayIdx = Number(_displayIdx) + 1;
                   _displayList[Number(_displayIdx)] = _attackTxt;
-                  _defenseTxt.text = HorseAmuletManager.instance.getByExtendType(_loc9_.Hole2) + ":" + _loc9_.equipAmuletProperty2;
+                  _defenseTxt.text = HorseAmuletManager.instance.getByExtendType(item.Hole2) + ":" + item.equipAmuletProperty2;
                   _defenseTxt.textColor = 16750899;
                   _displayIdx = Number(_displayIdx) + 1;
                   _displayList[Number(_displayIdx)] = _defenseTxt;
-                  _agilityTxt.text = HorseAmuletManager.instance.getByExtendType(_loc9_.Hole3) + ":" + _loc9_.equipAmuletProperty3;
+                  _agilityTxt.text = HorseAmuletManager.instance.getByExtendType(item.Hole3) + ":" + item.equipAmuletProperty3;
                   _agilityTxt.textColor = 16750899;
                   _displayIdx = Number(_displayIdx) + 1;
                   _displayList[Number(_displayIdx)] = _agilityTxt;
-                  _luckTxt.text = HorseAmuletManager.instance.getByExtendType(_loc9_.Hole4) + ":" + _loc9_.equipAmuletProperty4;
+                  _luckTxt.text = HorseAmuletManager.instance.getByExtendType(item.Hole4) + ":" + item.equipAmuletProperty4;
                   _luckTxt.textColor = 16750899;
                   _displayIdx = Number(_displayIdx) + 1;
                   _displayList[Number(_displayIdx)] = _luckTxt;
@@ -1459,11 +1463,11 @@ package ddt.view.tips
             }
             else
             {
-               _loc12_ = EquipAmuletManager.Instance.getAmuletHpByGrade(1);
-               _loc11_.text = LanguageMgr.GetTranslation("MaxHp") + ":" + _loc12_;
-               _loc11_.textColor = 16750899;
+               amuletHp = EquipAmuletManager.Instance.getAmuletHpByGrade(1);
+               hpText.text = LanguageMgr.GetTranslation("MaxHp") + ":" + amuletHp;
+               hpText.textColor = 16750899;
                _displayIdx = Number(_displayIdx) + 1;
-               _displayList[Number(_displayIdx)] = _loc11_;
+               _displayList[Number(_displayIdx)] = hpText;
                _attackTxt.text = LanguageMgr.GetTranslation("tank.equipAmulet.notActivateAmulet");
                _attackTxt.textColor = 16750899;
                _displayIdx = Number(_displayIdx) + 1;
@@ -1474,19 +1478,19 @@ package ddt.view.tips
       
       private function createGhostSkillitem() : void
       {
-         var _loc3_:* = null;
+         var ghostData:* = null;
          if(!_ghostPropertyData)
          {
             return;
          }
-         var _loc1_:PlayerInfo = !!PlayerInfoViewControl.currentPlayer?PlayerInfoViewControl.currentPlayer:PlayerManager.Instance.Self;
-         var _loc2_:EquipGhostData = _loc1_.getGhostDataByCategoryID(_info.CategoryID);
-         if(_loc2_)
+         var player:PlayerInfo = !!PlayerInfoViewControl.currentPlayer?PlayerInfoViewControl.currentPlayer:PlayerManager.Instance.Self;
+         var equipGhostData:EquipGhostData = player.getGhostDataByCategoryID(_info.CategoryID);
+         if(equipGhostData)
          {
-            _loc3_ = EquipGhostManager.getInstance().model.getGhostData(_info.CategoryID == 27?7:_info.CategoryID,_loc2_.level);
-            if(_loc3_)
+            ghostData = EquipGhostManager.getInstance().model.getGhostData(_info.CategoryID == 27?7:_info.CategoryID,equipGhostData.level);
+            if(ghostData)
             {
-               _ghostSkillDesc.text = StringHelper.format(PetSkillManager.getSkillByID(_loc3_.skillId).Description);
+               _ghostSkillDesc.text = StringHelper.format(PetSkillManager.getSkillByID(ghostData.skillId).Description);
                _displayIdx = Number(_displayIdx) + 1;
                _displayList[Number(_displayIdx)] = _ghostSkillDesc;
             }
@@ -1495,118 +1499,118 @@ package ddt.view.tips
       
       private function createHoleItem() : void
       {
-         var _loc6_:* = null;
-         var _loc7_:* = null;
-         var _loc1_:* = null;
-         var _loc8_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         var _loc5_:* = null;
-         var _loc4_:int = 0;
+         var holeList:* = null;
+         var strHoleList:* = null;
+         var inventoryInfo:* = null;
+         var i:int = 0;
+         var str:* = null;
+         var tmpArr:* = null;
+         var simpleItem:* = null;
+         var requireStrengthenLevel:int = 0;
          if(!StringHelper.isNullOrEmpty(_info.Hole))
          {
-            _loc6_ = [];
-            _loc7_ = _info.Hole.split("|");
-            _loc1_ = _info as InventoryItemInfo;
-            if(_loc7_.length > 0 && String(_loc7_[0]) != "" && _loc1_ != null)
+            holeList = [];
+            strHoleList = _info.Hole.split("|");
+            inventoryInfo = _info as InventoryItemInfo;
+            if(strHoleList.length > 0 && String(strHoleList[0]) != "" && inventoryInfo != null)
             {
-               _loc8_ = 0;
-               while(_loc8_ < _loc7_.length)
+               i = 0;
+               while(i < strHoleList.length)
                {
-                  _loc2_ = String(_loc7_[_loc8_]);
-                  _loc3_ = _loc2_.split(",");
-                  if(_loc8_ < 4)
+                  str = String(strHoleList[i]);
+                  tmpArr = str.split(",");
+                  if(i < 4)
                   {
-                     if(int(_loc3_[0]) > 0 && int(_loc3_[0]) - _loc1_.StrengthenLevel <= 3 || getHole(_loc1_,_loc8_ + 1) >= 0)
+                     if(int(tmpArr[0]) > 0 && int(tmpArr[0]) - inventoryInfo.StrengthenLevel <= 3 || getHole(inventoryInfo,i + 1) >= 0)
                      {
-                        _loc4_ = _loc3_[0];
-                        _loc5_ = createSingleHole(_loc1_,_loc8_,_loc4_,_loc3_[1]);
+                        requireStrengthenLevel = tmpArr[0];
+                        simpleItem = createSingleHole(inventoryInfo,i,requireStrengthenLevel,tmpArr[1]);
                         _displayIdx = Number(_displayIdx) + 1;
-                        _displayList[Number(_displayIdx)] = _loc5_;
+                        _displayList[Number(_displayIdx)] = simpleItem;
                      }
                   }
-                  else if(_loc1_["Hole" + (_loc8_ + 1) + "Level"] >= 1 || _loc1_["Hole" + (_loc8_ + 1)] > 0)
+                  else if(inventoryInfo["Hole" + (i + 1) + "Level"] >= 1 || inventoryInfo["Hole" + (i + 1)] > 0)
                   {
-                     _loc5_ = createSingleHole(_loc1_,_loc8_,2147483647,_loc3_[1]);
+                     simpleItem = createSingleHole(inventoryInfo,i,2147483647,tmpArr[1]);
                      _displayIdx = Number(_displayIdx) + 1;
-                     _displayList[Number(_displayIdx)] = _loc5_;
+                     _displayList[Number(_displayIdx)] = simpleItem;
                   }
-                  _loc8_++;
+                  i++;
                }
             }
          }
       }
       
-      private function createSingleHole(param1:InventoryItemInfo, param2:int, param3:int, param4:int) : FilterFrameText
+      private function createSingleHole(inventoryInfo:InventoryItemInfo, index:int, strengthLevel:int, holeType:int) : FilterFrameText
       {
-         var _loc6_:* = null;
-         var _loc8_:int = 0;
-         var _loc7_:FilterFrameText = _holes[param2];
-         var _loc5_:int = getHole(param1,param2 + 1);
-         if(param1.StrengthenLevel >= param3)
+         var goodsTemplateInfos:* = null;
+         var holeLv:int = 0;
+         var item:FilterFrameText = _holes[index];
+         var holeState:int = getHole(inventoryInfo,index + 1);
+         if(inventoryInfo.StrengthenLevel >= strengthLevel)
          {
-            if(_loc5_ <= 0)
+            if(holeState <= 0)
             {
-               _loc7_.text = getHoleType(param4) + ":" + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.holeenable");
-               _loc7_.textColor = 16777215;
+               item.text = getHoleType(holeType) + ":" + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.holeenable");
+               item.textColor = 16777215;
             }
             else
             {
-               _loc6_ = ItemManager.Instance.getTemplateById(_loc5_);
-               if(_loc6_)
+               goodsTemplateInfos = ItemManager.Instance.getTemplateById(holeState);
+               if(goodsTemplateInfos)
                {
-                  _loc7_.text = _loc6_.Data;
-                  _loc7_.textColor = 16776960;
+                  item.text = goodsTemplateInfos.Data;
+                  item.textColor = 16776960;
                }
             }
          }
-         else if(param2 >= 4)
+         else if(index >= 4)
          {
-            _loc8_ = param1["Hole" + (param2 + 1) + "Level"];
-            if(_loc5_ > 0)
+            holeLv = inventoryInfo["Hole" + (index + 1) + "Level"];
+            if(holeState > 0)
             {
-               _loc6_ = ItemManager.Instance.getTemplateById(_loc5_);
-               _loc7_.text = _loc6_.Data + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.holeLv",param1["Hole" + (param2 + 1) + "Level"]);
-               if(Math.floor(_loc6_.Level + 1 >> 1) <= _loc8_)
+               goodsTemplateInfos = ItemManager.Instance.getTemplateById(holeState);
+               item.text = goodsTemplateInfos.Data + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.holeLv",inventoryInfo["Hole" + (index + 1) + "Level"]);
+               if(Math.floor(goodsTemplateInfos.Level + 1 >> 1) <= holeLv)
                {
-                  _loc7_.textColor = 16776960;
+                  item.textColor = 16776960;
                }
                else
                {
-                  _loc7_.textColor = 6710886;
+                  item.textColor = 6710886;
                }
             }
             else
             {
-               _loc7_.text = getHoleType(param4) + StringHelper.format(LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.holeLv",param1["Hole" + (param2 + 1) + "Level"]));
-               _loc7_.textColor = 16777215;
+               item.text = getHoleType(holeType) + StringHelper.format(LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.holeLv",inventoryInfo["Hole" + (index + 1) + "Level"]));
+               item.textColor = 16777215;
             }
          }
-         else if(_loc5_ <= 0)
+         else if(holeState <= 0)
          {
-            _loc7_.text = getHoleType(param4) + StringHelper.format(LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.holerequire"),param3.toString());
-            _loc7_.textColor = 6710886;
+            item.text = getHoleType(holeType) + StringHelper.format(LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.holerequire"),strengthLevel.toString());
+            item.textColor = 6710886;
          }
          else
          {
-            _loc6_ = ItemManager.Instance.getTemplateById(_loc5_);
-            if(_loc6_)
+            goodsTemplateInfos = ItemManager.Instance.getTemplateById(holeState);
+            if(goodsTemplateInfos)
             {
-               _loc7_.text = _loc6_.Data + StringHelper.format(LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.holerequire"),param3.toString());
-               _loc7_.textColor = 6710886;
+               item.text = goodsTemplateInfos.Data + StringHelper.format(LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.holerequire"),strengthLevel.toString());
+               item.textColor = 6710886;
             }
          }
-         return _loc7_;
+         return item;
       }
       
-      public function getHole(param1:InventoryItemInfo, param2:int) : int
+      public function getHole(inventoryInfo:InventoryItemInfo, index:int) : int
       {
-         return int(param1["Hole" + param2.toString()]);
+         return int(inventoryInfo["Hole" + index.toString()]);
       }
       
-      private function getHoleType(param1:int) : String
+      private function getHoleType(type:int) : String
       {
-         switch(int(param1) - 1)
+         switch(int(type) - 1)
          {
             case 0:
                return LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.trianglehole");
@@ -1619,19 +1623,19 @@ package ddt.view.tips
       
       private function createOperationItem() : void
       {
-         var _loc1_:int = 0;
+         var tc:int = 0;
          if(_info.NeedLevel > 1 && _info.TemplateID != 20150 && _info.TemplateID != 201266)
          {
             if(PlayerManager.Instance.Self.Grade >= _info.NeedLevel)
             {
-               _loc1_ = 13421772;
+               tc = 13421772;
             }
             else
             {
-               _loc1_ = 16711680;
+               tc = 16711680;
             }
             _needLevelTxt.text = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.need") + ":" + String(_info.NeedLevel);
-            _needLevelTxt.textColor = _loc1_;
+            _needLevelTxt.textColor = tc;
             _displayIdx = Number(_displayIdx) + 1;
             _displayList[Number(_displayIdx)] = _needLevelTxt;
          }
@@ -1649,58 +1653,58 @@ package ddt.view.tips
             _displayIdx = Number(_displayIdx) + 1;
             _displayList[Number(_displayIdx)] = _needSexTxt;
          }
-         var _loc2_:String = "";
+         var tipSmith:String = "";
          if(_info.CanStrengthen && _info.CanCompose && _info.CategoryID != 27)
          {
-            _loc2_ = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.may");
+            tipSmith = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.may");
             if(EquipType.isRongLing(_info))
             {
-               _loc2_ = _loc2_ + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.melting");
+               tipSmith = tipSmith + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.melting");
             }
-            _upgradeType.text = _loc2_;
+            _upgradeType.text = tipSmith;
             _upgradeType.textColor = 10092339;
             _displayIdx = Number(_displayIdx) + 1;
             _displayList[Number(_displayIdx)] = _upgradeType;
          }
          else if(_info.CanCompose && !EquipType.isMagicStone(_info.CategoryID) && _info.CategoryID != 27)
          {
-            _loc2_ = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.compose");
+            tipSmith = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.compose");
             if((_info.CategoryID == 8 || _info.CategoryID == 9) && !EquipType.isWeddingRing(_info))
             {
-               _loc2_ = _loc2_ + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.bringUp");
+               tipSmith = tipSmith + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.bringUp");
             }
             else if(EquipType.isRongLing(_info))
             {
-               _loc2_ = _loc2_ + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.melting");
+               tipSmith = tipSmith + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.melting");
             }
-            _upgradeType.text = _loc2_;
+            _upgradeType.text = tipSmith;
             _upgradeType.textColor = 10092339;
             _displayIdx = Number(_displayIdx) + 1;
             _displayList[Number(_displayIdx)] = _upgradeType;
          }
          else if(_info.CanStrengthen && _info.CategoryID != 27)
          {
-            _loc2_ = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.strong");
+            tipSmith = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.strong");
             if(EquipType.isRongLing(_info))
             {
-               _loc2_ = _loc2_ + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.melting");
+               tipSmith = tipSmith + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.melting");
             }
-            _upgradeType.text = _loc2_;
+            _upgradeType.text = tipSmith;
             _upgradeType.textColor = 10092339;
             _displayIdx = Number(_displayIdx) + 1;
             _displayList[Number(_displayIdx)] = _upgradeType;
          }
          else if(EquipType.isRongLing(_info))
          {
-            _loc2_ = _loc2_ + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.canmelting");
-            _upgradeType.text = _loc2_;
+            tipSmith = tipSmith + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.canmelting");
+            _upgradeType.text = tipSmith;
             _upgradeType.textColor = 10092339;
             _displayIdx = Number(_displayIdx) + 1;
             _displayList[Number(_displayIdx)] = _upgradeType;
          }
          else if(_info.CategoryID == 31 || _info.CategoryID == 31)
          {
-            _loc2_ = _loc2_ + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.strong");
+            tipSmith = tipSmith + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.strong");
             _upgradeType.text = "   ";
             _upgradeType.textColor = 10092339;
             _displayIdx = Number(_displayIdx) + 1;
@@ -1710,21 +1714,21 @@ package ddt.view.tips
       
       private function createArmShellName() : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         var _loc1_:* = null;
+         var itemInfo:* = null;
+         var armShellName:* = null;
+         var armShellInfo:* = null;
          if(EquipType.isArm(_info) && _info is InventoryItemInfo && PlayerInfoViewControl.currentPlayer)
          {
-            _loc2_ = InventoryItemInfo(_info);
-            if(_loc2_.Place == 6)
+            itemInfo = InventoryItemInfo(_info);
+            if(itemInfo.Place == 6)
             {
-               _loc3_ = LanguageMgr.GetTranslation("tank.room.difficulty.none");
-               _loc1_ = PlayerInfoViewControl.currentPlayer.Bag.getItemAt(20);
-               if(_loc1_)
+               armShellName = LanguageMgr.GetTranslation("tank.room.difficulty.none");
+               armShellInfo = PlayerInfoViewControl.currentPlayer.Bag.getItemAt(20);
+               if(armShellInfo)
                {
-                  _loc3_ = _loc1_.Name;
+                  armShellName = armShellInfo.Name;
                }
-               _armShellNameTxt.text = LanguageMgr.GetTranslation("tank.data.EquipType.armShell") + ":" + _loc3_;
+               _armShellNameTxt.text = LanguageMgr.GetTranslation("tank.data.EquipType.armShell") + ":" + armShellName;
                _armShellNameTxt.textColor = 16711680;
                _displayIdx = Number(_displayIdx) + 1;
                _displayList[Number(_displayIdx)] = _armShellNameTxt;
@@ -1732,14 +1736,14 @@ package ddt.view.tips
          }
       }
       
-      private function createDescript() : void
+      protected function createDescript() : void
       {
-         var _loc1_:* = null;
-         var _loc5_:* = null;
-         var _loc6_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:* = null;
+         var tempItemInfo:* = null;
+         var itemEveryDayRecordData:* = null;
+         var tempDesArr:* = null;
+         var amuletVo:* = null;
+         var infoItem:* = null;
+         var beadInfo:* = null;
          if(_info.Description == "")
          {
             return;
@@ -1750,25 +1754,25 @@ package ddt.view.tips
          }
          if(_info.CategoryID == 222222222)
          {
-            _loc1_ = _info as InventoryItemInfo;
-            _loc5_ = ItemActivityGiftManager.instance.model.itemEveryDayRecord[_loc1_.TemplateID + "," + _loc1_.ItemID];
-            if(_loc5_)
+            tempItemInfo = _info as InventoryItemInfo;
+            itemEveryDayRecordData = ItemActivityGiftManager.instance.model.itemEveryDayRecord[tempItemInfo.TemplateID + "," + tempItemInfo.ItemID];
+            if(itemEveryDayRecordData)
             {
-               _loc6_ = _info.Description.split("|");
-               if(_loc6_.length > 1)
+               tempDesArr = _info.Description.split("|");
+               if(tempDesArr.length > 1)
                {
-                  _descriptionTxt.text = _loc6_[_loc5_.OpenIndex] + "";
+                  _descriptionTxt.text = tempDesArr[itemEveryDayRecordData.OpenIndex] + "";
                }
                else
                {
-                  _descriptionTxt.text = _loc6_[0] + "";
+                  _descriptionTxt.text = tempDesArr[0] + "";
                }
             }
          }
          else if(_info.CategoryID == 69)
          {
-            _loc3_ = HorseAmuletManager.instance.data[_info.TemplateID];
-            _descriptionTxt.text = StringHelper.format(_loc3_.Desc,_loc3_.BaseType1Value,(_info as InventoryItemInfo).Hole1);
+            amuletVo = HorseAmuletManager.instance.data[_info.TemplateID];
+            _descriptionTxt.text = StringHelper.format(amuletVo.Desc,amuletVo.BaseType1Value,(_info as InventoryItemInfo).Hole1);
          }
          else if(_info.Property1 != "31")
          {
@@ -1776,101 +1780,101 @@ package ddt.view.tips
          }
          else
          {
-            _loc2_ = _info as InventoryItemInfo;
-            _loc4_ = BeadTemplateManager.Instance.GetBeadInfobyID(_info.TemplateID);
-            if(_loc4_.Attribute1 == "0" && _loc4_.Attribute2 == "0")
+            infoItem = _info as InventoryItemInfo;
+            beadInfo = BeadTemplateManager.Instance.GetBeadInfobyID(_info.TemplateID);
+            if(beadInfo.Attribute1 == "0" && beadInfo.Attribute2 == "0")
             {
                _descriptionTxt.text = StringHelper.format(_info.Description);
             }
-            else if(_loc4_.Attribute1 == "0" && _loc4_.Attribute2 != "0")
+            else if(beadInfo.Attribute1 == "0" && beadInfo.Attribute2 != "0")
             {
-               if(_loc4_.Att2.length > 1)
+               if(beadInfo.Att2.length > 1)
                {
-                  if(_loc2_ && _loc2_.Hole1 > _loc4_.BaseLevel)
+                  if(infoItem && infoItem.Hole1 > beadInfo.BaseLevel)
                   {
-                     _descriptionTxt.text = StringHelper.format(_info.Description,_loc4_.Att2[1],_loc4_.Att3[1]);
+                     _descriptionTxt.text = StringHelper.format(_info.Description,beadInfo.Att2[1],beadInfo.Att3[1]);
                   }
                   else
                   {
-                     _descriptionTxt.text = StringHelper.format(_info.Description,_loc4_.Att2[0]);
+                     _descriptionTxt.text = StringHelper.format(_info.Description,beadInfo.Att2[0]);
                   }
                }
                else
                {
-                  _descriptionTxt.text = StringHelper.format(_info.Description,_loc4_.Attribute2);
+                  _descriptionTxt.text = StringHelper.format(_info.Description,beadInfo.Attribute2);
                }
             }
-            else if(_loc4_.Attribute1 != "0" && _loc4_.Attribute2 == "0")
+            else if(beadInfo.Attribute1 != "0" && beadInfo.Attribute2 == "0")
             {
-               if(_loc4_.Att1.length > 1)
+               if(beadInfo.Att1.length > 1)
                {
-                  if(_loc2_ && _loc2_.Hole1 > _loc4_.BaseLevel)
+                  if(infoItem && infoItem.Hole1 > beadInfo.BaseLevel)
                   {
-                     _descriptionTxt.text = StringHelper.format(_info.Description,_loc4_.Att1[1]);
+                     _descriptionTxt.text = StringHelper.format(_info.Description,beadInfo.Att1[1]);
                   }
                   else
                   {
-                     _descriptionTxt.text = StringHelper.format(_info.Description,_loc4_.Att1[0]);
+                     _descriptionTxt.text = StringHelper.format(_info.Description,beadInfo.Att1[0]);
                   }
                }
                else
                {
-                  _descriptionTxt.text = StringHelper.format(_info.Description,_loc4_.Attribute1);
+                  _descriptionTxt.text = StringHelper.format(_info.Description,beadInfo.Attribute1);
                }
             }
-            else if(_loc4_.Attribute1 != "0" && _loc4_.Attribute2 != "0" && _loc4_.Attribute3 == "0")
+            else if(beadInfo.Attribute1 != "0" && beadInfo.Attribute2 != "0" && beadInfo.Attribute3 == "0")
             {
-               if(_loc4_.Att1.length > 1 && _loc4_.Att2.length == 1)
+               if(beadInfo.Att1.length > 1 && beadInfo.Att2.length == 1)
                {
-                  if(_loc2_ && _loc2_.Hole1 > _loc4_.BaseLevel)
+                  if(infoItem && infoItem.Hole1 > beadInfo.BaseLevel)
                   {
-                     _descriptionTxt.text = StringHelper.format(_info.Description,_loc4_.Att1[1],_loc4_.Attribute2);
+                     _descriptionTxt.text = StringHelper.format(_info.Description,beadInfo.Att1[1],beadInfo.Attribute2);
                   }
                   else
                   {
-                     _descriptionTxt.text = StringHelper.format(_info.Description,_loc4_.Att1[0],_loc4_.Attribute2);
+                     _descriptionTxt.text = StringHelper.format(_info.Description,beadInfo.Att1[0],beadInfo.Attribute2);
                   }
                }
-               else if(_loc4_.Att1.length == 1 && _loc4_.Att2.length > 1)
+               else if(beadInfo.Att1.length == 1 && beadInfo.Att2.length > 1)
                {
-                  if(_loc2_ && _loc2_.Hole1 > _loc4_.BaseLevel)
+                  if(infoItem && infoItem.Hole1 > beadInfo.BaseLevel)
                   {
-                     _descriptionTxt.text = StringHelper.format(_info.Description,_loc4_.Attribute1,_loc4_.Att2[1]);
+                     _descriptionTxt.text = StringHelper.format(_info.Description,beadInfo.Attribute1,beadInfo.Att2[1]);
                   }
                   else
                   {
-                     _descriptionTxt.text = StringHelper.format(_info.Description,_loc4_.Attribute1,_loc4_.Att2[0]);
+                     _descriptionTxt.text = StringHelper.format(_info.Description,beadInfo.Attribute1,beadInfo.Att2[0]);
                   }
                }
-               else if(_loc2_ && _loc2_.Hole1 > _loc4_.BaseLevel)
+               else if(infoItem && infoItem.Hole1 > beadInfo.BaseLevel)
                {
-                  _descriptionTxt.text = StringHelper.format(_info.Description,_loc4_.Att1[1],_loc4_.Att2[1],_loc4_.Att3[1]);
+                  _descriptionTxt.text = StringHelper.format(_info.Description,beadInfo.Att1[1],beadInfo.Att2[1],beadInfo.Att3[1]);
                }
-               else if(_loc4_.Type3 > 0)
+               else if(beadInfo.Type3 > 0)
                {
-                  _descriptionTxt.text = StringHelper.format(_info.Description,_loc4_.Att1[0],_loc4_.Att2[0],_loc4_.Att3[0]);
+                  _descriptionTxt.text = StringHelper.format(_info.Description,beadInfo.Att1[0],beadInfo.Att2[0],beadInfo.Att3[0]);
                }
                else
                {
-                  _descriptionTxt.text = StringHelper.format(_info.Description,_loc4_.Att1[0],_loc4_.Att2[0]);
+                  _descriptionTxt.text = StringHelper.format(_info.Description,beadInfo.Att1[0],beadInfo.Att2[0]);
                }
             }
-            else if(_loc4_.Attribute1 != "0" && _loc4_.Attribute2 != "0" && _loc4_.Attribute3 != "0")
+            else if(beadInfo.Attribute1 != "0" && beadInfo.Attribute2 != "0" && beadInfo.Attribute3 != "0")
             {
-               if(_loc4_.Att1.length != 1)
+               if(beadInfo.Att1.length != 1)
                {
-                  if(_loc2_ && _loc2_.Hole1 > _loc4_.BaseLevel)
+                  if(infoItem && infoItem.Hole1 > beadInfo.BaseLevel)
                   {
-                     _descriptionTxt.text = StringHelper.format(_info.Description,_loc4_.Att1[1],_loc4_.Att2[1],_loc4_.Att3[1]);
+                     _descriptionTxt.text = StringHelper.format(_info.Description,beadInfo.Att1[1],beadInfo.Att2[1],beadInfo.Att3[1]);
                   }
                   else
                   {
-                     _descriptionTxt.text = StringHelper.format(_info.Description,_loc4_.Att1[0],_loc4_.Att2[0],_loc4_.Att3[0]);
+                     _descriptionTxt.text = StringHelper.format(_info.Description,beadInfo.Att1[0],beadInfo.Att2[0],beadInfo.Att3[0]);
                   }
                }
                else
                {
-                  _descriptionTxt.text = StringHelper.format(_info.Description,_loc4_.Att1[0],_loc4_.Att2[0],_loc4_.Att3[0]);
+                  _descriptionTxt.text = StringHelper.format(_info.Description,beadInfo.Att1[0],beadInfo.Att2[0],beadInfo.Att3[0]);
                }
             }
          }
@@ -1879,30 +1883,30 @@ package ddt.view.tips
          _displayList[Number(_displayIdx)] = _descriptionTxt;
       }
       
-      private function ShowBound(param1:InventoryItemInfo) : Boolean
+      private function ShowBound(info:InventoryItemInfo) : Boolean
       {
-         return param1.CategoryID != 32 && param1.CategoryID != 33 && param1.CategoryID != 36;
+         return info.CategoryID != 32 && info.CategoryID != 33 && info.CategoryID != 36;
       }
       
       private function createBindType() : void
       {
-         var _loc1_:* = null;
+         var ttf:* = null;
          if(SyahManager.Instance.inView)
          {
             return;
          }
-         var _loc2_:InventoryItemInfo = _info as InventoryItemInfo;
-         if(_loc2_ && ShowBound(_loc2_) && _loc2_.isShowBind)
+         var tempInfo:InventoryItemInfo = _info as InventoryItemInfo;
+         if(tempInfo && ShowBound(tempInfo) && tempInfo.isShowBind)
          {
-            _boundImage.setFrame(!!_loc2_.IsBinds?1:uint(2));
-            _loc1_ = _typeItem.foreItems[0] as FilterFrameText;
-            _bindImageOriginalPos.x = _loc1_.x + _loc1_.width + 50;
+            _boundImage.setFrame(!!tempInfo.IsBinds?1:uint(2));
+            ttf = _typeItem.foreItems[0] as FilterFrameText;
+            _bindImageOriginalPos.x = ttf.x + ttf.width + 50;
             PositionUtils.setPos(_boundImage,_bindImageOriginalPos);
             _minWidth = _boundImage.x + _boundImage.width > _minWidth?_boundImage.x + _boundImage.width:_minWidth;
             addChild(_boundImage);
-            if(!_loc2_.IsBinds)
+            if(!tempInfo.IsBinds)
             {
-               if(_loc2_.BindType == 3)
+               if(tempInfo.BindType == 3)
                {
                   _bindTypeTxt.text = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.bangding");
                   _bindTypeTxt.textColor = 16777215;
@@ -1942,132 +1946,132 @@ package ddt.view.tips
       
       protected function createRemainTime() : void
       {
-         var _loc7_:Number = NaN;
-         var _loc6_:* = null;
-         var _loc4_:Number = NaN;
-         var _loc8_:Number = NaN;
-         var _loc3_:* = null;
-         var _loc9_:* = NaN;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
-         var _loc5_:* = 0;
+         var tempReman:Number = NaN;
+         var tempInfo:* = null;
+         var remain:Number = NaN;
+         var colorDate:Number = NaN;
+         var str:* = null;
+         var hour:* = NaN;
+         var latentEnergyRemainStr:* = null;
+         var tmpStr:* = null;
+         var tmpTxtColor:* = 0;
          if(_remainTimeBg.parent)
          {
             _remainTimeBg.parent.removeChild(_remainTimeBg);
          }
          if(_info is InventoryItemInfo)
          {
-            _loc6_ = _info as InventoryItemInfo;
-            _loc4_ = _loc6_.getRemainDate();
-            _loc8_ = _loc6_.getColorValidDate();
-            _loc3_ = _loc6_.CategoryID == 7?LanguageMgr.GetTranslation("bag.changeColor.tips.armName"):"";
-            if(_loc8_ > 0 && _loc8_ != 2147483647)
+            tempInfo = _info as InventoryItemInfo;
+            remain = tempInfo.getRemainDate();
+            colorDate = tempInfo.getColorValidDate();
+            str = tempInfo.CategoryID == 7?LanguageMgr.GetTranslation("bag.changeColor.tips.armName"):"";
+            if(colorDate > 0 && colorDate != 2147483647)
             {
-               if(_loc8_ >= 1)
+               if(colorDate >= 1)
                {
-                  _remainTimeTxt.text = (!!_loc6_.IsUsed?LanguageMgr.GetTranslation("bag.changeColor.tips.name") + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.less"):LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.time")) + Math.ceil(_loc8_) + LanguageMgr.GetTranslation("shop.ShopIIShoppingCarItem.day");
+                  _remainTimeTxt.text = (!!tempInfo.IsUsed?LanguageMgr.GetTranslation("bag.changeColor.tips.name") + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.less"):LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.time")) + Math.ceil(colorDate) + LanguageMgr.GetTranslation("shop.ShopIIShoppingCarItem.day");
                   _remainTimeTxt.textColor = 16777215;
                   _displayIdx = Number(_displayIdx) + 1;
                   _displayList[Number(_displayIdx)] = _remainTimeTxt;
                }
                else
                {
-                  _loc9_ = Number(Math.floor(_loc8_ * 24));
-                  if(_loc9_ < 1)
+                  hour = Number(Math.floor(colorDate * 24));
+                  if(hour < 1)
                   {
-                     _loc9_ = 1;
+                     hour = 1;
                   }
-                  _remainTimeTxt.text = (!!_loc6_.IsUsed?LanguageMgr.GetTranslation("bag.changeColor.tips.name") + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.less"):LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.time")) + _loc9_ + LanguageMgr.GetTranslation("hours");
+                  _remainTimeTxt.text = (!!tempInfo.IsUsed?LanguageMgr.GetTranslation("bag.changeColor.tips.name") + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.less"):LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.time")) + hour + LanguageMgr.GetTranslation("hours");
                   _remainTimeTxt.textColor = 16777215;
                   _displayIdx = Number(_displayIdx) + 1;
                   _displayList[Number(_displayIdx)] = _remainTimeTxt;
                }
             }
-            if(_loc4_ == 2147483647)
+            if(remain == 2147483647)
             {
                _remainTimeTxt.text = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.use");
                _remainTimeTxt.textColor = 16776960;
                _displayIdx = Number(_displayIdx) + 1;
                _displayList[Number(_displayIdx)] = _remainTimeTxt;
             }
-            else if(_loc4_ > 0)
+            else if(remain > 0)
             {
-               if(_loc4_ >= 1)
+               if(remain >= 1)
                {
-                  _loc7_ = Math.ceil(_loc4_);
-                  _remainTimeTxt.text = (!!_loc6_.IsUsed?_loc3_ + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.less"):LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.time")) + _loc7_ + LanguageMgr.GetTranslation("shop.ShopIIShoppingCarItem.day");
+                  tempReman = Math.ceil(remain);
+                  _remainTimeTxt.text = (!!tempInfo.IsUsed?str + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.less"):LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.time")) + tempReman + LanguageMgr.GetTranslation("shop.ShopIIShoppingCarItem.day");
                   _remainTimeTxt.textColor = 16777215;
                   _displayIdx = Number(_displayIdx) + 1;
                   _displayList[Number(_displayIdx)] = _remainTimeTxt;
                }
-               else if(_loc4_ * 24 >= 1)
+               else if(remain * 24 >= 1)
                {
-                  _loc7_ = Math.floor(_loc4_ * 24);
-                  _loc7_ = _loc7_ < 1?1:Number(_loc7_);
-                  _remainTimeTxt.text = (!!_loc6_.IsUsed?_loc3_ + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.less"):LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.time")) + _loc7_ + LanguageMgr.GetTranslation("hours");
+                  tempReman = Math.floor(remain * 24);
+                  tempReman = tempReman < 1?1:Number(tempReman);
+                  _remainTimeTxt.text = (!!tempInfo.IsUsed?str + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.less"):LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.time")) + tempReman + LanguageMgr.GetTranslation("hours");
                   _remainTimeTxt.textColor = 16777215;
                   _displayIdx = Number(_displayIdx) + 1;
                   _displayList[Number(_displayIdx)] = _remainTimeTxt;
                }
-               else if(_loc4_ * 24 * 60 >= 1)
+               else if(remain * 24 * 60 >= 1)
                {
-                  _loc7_ = Math.floor(_loc4_ * 24 * 60);
-                  _loc7_ = _loc7_ < 1?1:Number(_loc7_);
-                  _remainTimeTxt.text = (!!_loc6_.IsUsed?_loc3_ + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.less"):LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.time")) + _loc7_ + LanguageMgr.GetTranslation("minute");
+                  tempReman = Math.floor(remain * 24 * 60);
+                  tempReman = tempReman < 1?1:Number(tempReman);
+                  _remainTimeTxt.text = (!!tempInfo.IsUsed?str + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.less"):LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.time")) + tempReman + LanguageMgr.GetTranslation("minute");
                   _remainTimeTxt.textColor = 16777215;
                   _displayIdx = Number(_displayIdx) + 1;
                   _displayList[Number(_displayIdx)] = _remainTimeTxt;
                }
                addChild(_remainTimeBg);
             }
-            else if(!isNaN(_loc4_))
+            else if(!isNaN(remain))
             {
                _remainTimeTxt.text = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.over");
                _remainTimeTxt.textColor = 16711680;
                _displayIdx = Number(_displayIdx) + 1;
                _displayList[Number(_displayIdx)] = _remainTimeTxt;
             }
-            if(_loc6_.isHasLatentEnergy)
+            if(tempInfo.isHasLatentEnergy)
             {
-               _loc2_ = TimeManager.Instance.getMaxRemainDateStr(_loc6_.latentEnergyEndTime,2);
-               _loc1_ = _remainTimeTxt.text;
-               _loc1_ = _loc1_ + LanguageMgr.GetTranslation("ddt.latentEnergy.tipRemainDateTxt",_loc2_);
-               _loc5_ = uint(_remainTimeTxt.textColor);
-               _remainTimeTxt.text = _loc1_;
-               _remainTimeTxt.textColor = _loc5_;
+               latentEnergyRemainStr = TimeManager.Instance.getMaxRemainDateStr(tempInfo.latentEnergyEndTime,2);
+               tmpStr = _remainTimeTxt.text;
+               tmpStr = tmpStr + LanguageMgr.GetTranslation("ddt.latentEnergy.tipRemainDateTxt",latentEnergyRemainStr);
+               tmpTxtColor = uint(_remainTimeTxt.textColor);
+               _remainTimeTxt.text = tmpStr;
+               _remainTimeTxt.textColor = tmpTxtColor;
             }
          }
       }
       
       private function createGoldRemainTime() : void
       {
-         var _loc4_:Number = NaN;
-         var _loc3_:* = null;
-         var _loc5_:Number = NaN;
-         var _loc1_:Number = NaN;
-         var _loc2_:* = null;
+         var goldTempReman:Number = NaN;
+         var tempInfo:* = null;
+         var goldRemain:Number = NaN;
+         var goldValidDate:Number = NaN;
+         var goldBeginTime:* = null;
          if(SyahManager.Instance.inView)
          {
             return;
          }
          if(_info is InventoryItemInfo)
          {
-            _loc3_ = _info as InventoryItemInfo;
-            _loc5_ = _loc3_.getGoldRemainDate();
-            _loc1_ = _loc3_.goldValidDate;
-            _loc2_ = _loc3_.goldBeginTime;
+            tempInfo = _info as InventoryItemInfo;
+            goldRemain = tempInfo.getGoldRemainDate();
+            goldValidDate = tempInfo.goldValidDate;
+            goldBeginTime = tempInfo.goldBeginTime;
             if((_info as InventoryItemInfo).isGold)
             {
-               if(_loc5_ >= 1)
+               if(goldRemain >= 1)
                {
-                  _loc4_ = Math.ceil(_loc5_);
-                  _goldRemainTimeTxt.text = LanguageMgr.GetTranslation("wishBead.GoodsTipPanel.txt1") + _loc4_ + LanguageMgr.GetTranslation("wishBead.GoodsTipPanel.txt2");
+                  goldTempReman = Math.ceil(goldRemain);
+                  _goldRemainTimeTxt.text = LanguageMgr.GetTranslation("wishBead.GoodsTipPanel.txt1") + goldTempReman + LanguageMgr.GetTranslation("wishBead.GoodsTipPanel.txt2");
                }
                else
                {
-                  _loc4_ = Math.floor(_loc5_ * 24);
-                  _loc4_ = _loc4_ < 1?1:Number(_loc4_);
-                  _goldRemainTimeTxt.text = LanguageMgr.GetTranslation("wishBead.GoodsTipPanel.txt1") + _loc4_ + LanguageMgr.GetTranslation("wishBead.GoodsTipPanel.txt3");
+                  goldTempReman = Math.floor(goldRemain * 24);
+                  goldTempReman = goldTempReman < 1?1:Number(goldTempReman);
+                  _goldRemainTimeTxt.text = LanguageMgr.GetTranslation("wishBead.GoodsTipPanel.txt1") + goldTempReman + LanguageMgr.GetTranslation("wishBead.GoodsTipPanel.txt3");
                }
                addChild(_remainTimeBg);
                _goldRemainTimeTxt.textColor = 16777215;
@@ -2090,20 +2094,20 @@ package ddt.view.tips
       
       private function createBoxTimeItem() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
+         var bg:* = null;
+         var leftTime:int = 0;
+         var h:int = 0;
+         var m:int = 0;
          if(EquipType.isTimeBox(_info))
          {
-            _loc2_ = DateUtils.getDateByStr((_info as InventoryItemInfo).BeginDate);
-            _loc1_ = int(_info.Property3) * 60 - (TimeManager.Instance.Now().getTime() - _loc2_.getTime()) / 1000;
-            if(_loc1_ > 0)
+            bg = DateUtils.getDateByStr((_info as InventoryItemInfo).BeginDate);
+            leftTime = int(_info.Property3) * 60 - (TimeManager.Instance.Now().getTime() - bg.getTime()) / 1000;
+            if(leftTime > 0)
             {
-               _loc4_ = _loc1_ / 3600;
-               _loc3_ = _loc1_ % 3600 / 60;
-               _loc3_ = _loc3_ > 0?_loc3_:1;
-               _boxTimeTxt.text = LanguageMgr.GetTranslation("ddt.userGuild.boxTip",_loc4_,_loc3_);
+               h = leftTime / 3600;
+               m = leftTime % 3600 / 60;
+               m = m > 0?m:1;
+               _boxTimeTxt.text = LanguageMgr.GetTranslation("ddt.userGuild.boxTip",h,m);
                _boxTimeTxt.textColor = 16777215;
                _displayIdx = Number(_displayIdx) + 1;
                _displayList[Number(_displayIdx)] = _boxTimeTxt;
@@ -2113,16 +2117,16 @@ package ddt.view.tips
       
       private function createStrenthLevel() : void
       {
-         var _loc1_:InventoryItemInfo = _info as InventoryItemInfo;
-         if(_loc1_ && _loc1_.StrengthenLevel > 0 && !EquipType.isMagicStone(_info.CategoryID) && _loc1_.CategoryID != 70 && _loc1_.CategoryID != 19 && _loc1_.CategoryID != 74)
+         var tempInfo:InventoryItemInfo = _info as InventoryItemInfo;
+         if(tempInfo && tempInfo.StrengthenLevel > 0 && !EquipType.isMagicStone(_info.CategoryID) && tempInfo.CategoryID != 70 && tempInfo.CategoryID != 19 && tempInfo.CategoryID != 74)
          {
-            if(_loc1_.isGold)
+            if(tempInfo.isGold)
             {
                _strengthenLevelImage.setFrame(16);
             }
             else
             {
-               _strengthenLevelImage.setFrame(_loc1_.StrengthenLevel);
+               _strengthenLevelImage.setFrame(tempInfo.StrengthenLevel);
             }
             addChild(_strengthenLevelImage);
             if(_boundImage.parent)
@@ -2144,29 +2148,29 @@ package ddt.view.tips
       
       private function createMagicStone() : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         var _loc1_:* = null;
-         var _loc5_:InventoryItemInfo = _info as InventoryItemInfo;
-         if(!_loc5_ || !_loc5_.magicStoneAttr)
+         var container:* = null;
+         var bd:* = null;
+         var bitmap:* = null;
+         var info:InventoryItemInfo = _info as InventoryItemInfo;
+         if(!info || !info.magicStoneAttr)
          {
             return;
          }
-         var _loc4_:InventoryItemInfo = new InventoryItemInfo();
-         _loc4_.TemplateID = _loc5_.magicStoneAttr.templateId;
-         ItemManager.fill(_loc4_);
-         _loc4_.Level = _loc5_.magicStoneAttr.level;
-         _loc4_.Attack = _loc5_.magicStoneAttr.attack;
-         _loc4_.Defence = _loc5_.magicStoneAttr.defence;
-         _loc4_.Agility = _loc5_.magicStoneAttr.agility;
-         _loc4_.Luck = _loc5_.magicStoneAttr.luck;
-         _loc4_.MagicAttack = _loc5_.magicStoneAttr.magicAttack;
-         _loc4_.MagicDefence = _loc5_.magicStoneAttr.magicDefence;
-         _mgStoneName.text = _loc4_.Name + "Lv." + _loc4_.Level;
+         var tempMgStone:InventoryItemInfo = new InventoryItemInfo();
+         tempMgStone.TemplateID = info.magicStoneAttr.templateId;
+         ItemManager.fill(tempMgStone);
+         tempMgStone.Level = info.magicStoneAttr.level;
+         tempMgStone.Attack = info.magicStoneAttr.attack;
+         tempMgStone.Defence = info.magicStoneAttr.defence;
+         tempMgStone.Agility = info.magicStoneAttr.agility;
+         tempMgStone.Luck = info.magicStoneAttr.luck;
+         tempMgStone.MagicAttack = info.magicStoneAttr.magicAttack;
+         tempMgStone.MagicDefence = info.magicStoneAttr.magicDefence;
+         _mgStoneName.text = tempMgStone.Name + "Lv." + tempMgStone.Level;
          _mgStoneName.textColor = 2467327;
          _displayIdx = Number(_displayIdx) + 1;
          _displayList[Number(_displayIdx)] = _mgStoneName;
-         switch(int(_loc4_.Quality) - 1)
+         switch(int(tempMgStone.Quality) - 1)
          {
             case 0:
                _magicStoneIcon = ComponentFactory.Instance.creat("magicStone.smallIcon.white");
@@ -2186,148 +2190,156 @@ package ddt.view.tips
             case 5:
                _magicStoneIcon = ComponentFactory.Instance.creat("magicStone.smallIcon.red");
          }
-         if(_loc4_.Attack != 0)
+         if(tempMgStone.Attack != 0)
          {
-            _loc2_ = new Sprite();
-            _loc3_ = _magicStoneIcon.bitmapData.clone();
-            _loc1_ = new Bitmap(_loc3_);
-            _loc2_.addChild(_loc1_);
-            _attackTxt2.text = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.fire") + "+" + String(_loc4_.Attack);
+            container = new Sprite();
+            bd = _magicStoneIcon.bitmapData.clone();
+            bitmap = new Bitmap(bd);
+            container.addChild(bitmap);
+            _attackTxt2.text = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.fire") + "+" + String(tempMgStone.Attack);
             _attackTxt2.textColor = 2467327;
             _attackTxt2.x = 20;
             _attackTxt2.y = 3;
-            _loc2_.addChild(_attackTxt2);
+            container.addChild(_attackTxt2);
             _displayIdx = Number(_displayIdx) + 1;
-            _displayList[Number(_displayIdx)] = _loc2_;
+            _displayList[Number(_displayIdx)] = container;
          }
-         if(_loc4_.Defence != 0)
+         if(tempMgStone.Defence != 0)
          {
-            _loc2_ = new Sprite();
-            _loc3_ = _magicStoneIcon.bitmapData.clone();
-            _loc1_ = new Bitmap(_loc3_);
-            _loc2_.addChild(_loc1_);
-            _defenseTxt2.text = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.recovery") + "+" + String(_loc4_.Defence);
+            container = new Sprite();
+            bd = _magicStoneIcon.bitmapData.clone();
+            bitmap = new Bitmap(bd);
+            container.addChild(bitmap);
+            _defenseTxt2.text = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.recovery") + "+" + String(tempMgStone.Defence);
             _defenseTxt2.textColor = 2467327;
             _defenseTxt2.x = 20;
             _defenseTxt2.y = 3;
-            _loc2_.addChild(_defenseTxt2);
+            container.addChild(_defenseTxt2);
             _displayIdx = Number(_displayIdx) + 1;
-            _displayList[Number(_displayIdx)] = _loc2_;
+            _displayList[Number(_displayIdx)] = container;
          }
-         if(_loc4_.Agility != 0)
+         if(tempMgStone.Agility != 0)
          {
-            _loc2_ = new Sprite();
-            _loc3_ = _magicStoneIcon.bitmapData.clone();
-            _loc1_ = new Bitmap(_loc3_);
-            _loc2_.addChild(_loc1_);
-            _agilityTxt2.text = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.agility") + "+" + String(_loc4_.Agility);
+            container = new Sprite();
+            bd = _magicStoneIcon.bitmapData.clone();
+            bitmap = new Bitmap(bd);
+            container.addChild(bitmap);
+            _agilityTxt2.text = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.agility") + "+" + String(tempMgStone.Agility);
             _agilityTxt2.textColor = 2467327;
             _agilityTxt2.x = 20;
             _agilityTxt2.y = 3;
-            _loc2_.addChild(_agilityTxt2);
+            container.addChild(_agilityTxt2);
             _displayIdx = Number(_displayIdx) + 1;
-            _displayList[Number(_displayIdx)] = _loc2_;
+            _displayList[Number(_displayIdx)] = container;
          }
-         if(_loc4_.Luck != 0)
+         if(tempMgStone.Luck != 0)
          {
-            _loc2_ = new Sprite();
-            _loc3_ = _magicStoneIcon.bitmapData.clone();
-            _loc1_ = new Bitmap(_loc3_);
-            _loc2_.addChild(_loc1_);
-            _luckTxt2.text = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.lucky") + "+" + String(_loc4_.Luck);
+            container = new Sprite();
+            bd = _magicStoneIcon.bitmapData.clone();
+            bitmap = new Bitmap(bd);
+            container.addChild(bitmap);
+            _luckTxt2.text = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.lucky") + "+" + String(tempMgStone.Luck);
             _luckTxt2.textColor = 2467327;
             _luckTxt2.x = 20;
             _luckTxt2.y = 3;
-            _loc2_.addChild(_luckTxt2);
+            container.addChild(_luckTxt2);
             _displayIdx = Number(_displayIdx) + 1;
-            _displayList[Number(_displayIdx)] = _loc2_;
+            _displayList[Number(_displayIdx)] = container;
          }
-         if(_loc4_.MagicAttack != 0)
+         if(tempMgStone.MagicAttack != 0)
          {
-            _loc2_ = new Sprite();
-            _loc3_ = _magicStoneIcon.bitmapData.clone();
-            _loc1_ = new Bitmap(_loc3_);
-            _loc2_.addChild(_loc1_);
-            _magicAttackTxt2.text = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.magicAttack") + "+" + String(_loc4_.MagicAttack);
+            container = new Sprite();
+            bd = _magicStoneIcon.bitmapData.clone();
+            bitmap = new Bitmap(bd);
+            container.addChild(bitmap);
+            _magicAttackTxt2.text = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.magicAttack") + "+" + String(tempMgStone.MagicAttack);
             _magicAttackTxt2.textColor = 2467327;
             _magicAttackTxt2.x = 20;
             _magicAttackTxt2.y = 3;
-            _loc2_.addChild(_magicAttackTxt2);
+            container.addChild(_magicAttackTxt2);
             _displayIdx = Number(_displayIdx) + 1;
-            _displayList[Number(_displayIdx)] = _loc2_;
+            _displayList[Number(_displayIdx)] = container;
          }
-         if(_loc4_.MagicDefence != 0)
+         if(tempMgStone.MagicDefence != 0)
          {
-            _loc2_ = new Sprite();
-            _loc3_ = _magicStoneIcon.bitmapData.clone();
-            _loc1_ = new Bitmap(_loc3_);
-            _loc2_.addChild(_loc1_);
-            _magicDefenceTxt2.text = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.magicDefence") + "+" + String(_loc4_.MagicDefence);
+            container = new Sprite();
+            bd = _magicStoneIcon.bitmapData.clone();
+            bitmap = new Bitmap(bd);
+            container.addChild(bitmap);
+            _magicDefenceTxt2.text = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.magicDefence") + "+" + String(tempMgStone.MagicDefence);
             _magicDefenceTxt2.textColor = 2467327;
             _magicDefenceTxt2.x = 20;
             _magicDefenceTxt2.y = 3;
-            _loc2_.addChild(_magicDefenceTxt2);
+            container.addChild(_magicDefenceTxt2);
             _displayIdx = Number(_displayIdx) + 1;
-            _displayList[Number(_displayIdx)] = _loc2_;
+            _displayList[Number(_displayIdx)] = container;
          }
       }
       
       private function createEvolutionProperties() : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = 0;
-         var _loc1_:int = 0;
-         var _loc4_:InventoryItemInfo = _info as InventoryItemInfo;
-         if(_loc4_ == null)
+         var data:* = null;
+         var color:* = 0;
+         var mcLevel:int = 0;
+         var info:InventoryItemInfo = _info as InventoryItemInfo;
+         if(info == null)
          {
-            _loc4_ = new InventoryItemInfo();
-            ObjectUtils.copyProperties(_loc4_,_info);
+            info = new InventoryItemInfo();
+            ObjectUtils.copyProperties(info,_info);
          }
-         if(_loc4_ && _loc4_.CategoryID == 17 && (_loc4_.Property3 == "32" || _loc4_.Property3 == "31"))
+         if(info && info.CategoryID == 17 && (info.Property3 == "32" || info.Property3 == "31" || info.Property3 == "132"))
          {
-            _loc3_ = FineEvolutionManager.Instance.GetEvolutionDataByExp(_loc4_.curExp);
-            _loc2_ = 16777215;
-            if(_loc3_)
+            data = FineEvolutionManager.Instance.GetEvolutionDataByExp(info.curExp);
+            color = 16777215;
+            if(data)
             {
-               _enchantLevelTxt.text = LanguageMgr.GetTranslation("evolutionchant.levelTxt",_loc3_.Level);
-               if(_loc4_.Property3 == "32")
+               _enchantLevelTxt.text = LanguageMgr.GetTranslation("evolutionchant.levelTxt",data.Level);
+               if(info.Property3 == "32")
                {
-                  _enchantAttackTxt.text = LanguageMgr.GetTranslation("store.evolution.tips.addblood",_loc3_.AddBlood / 10 + "%");
+                  _enchantAttackTxt.text = LanguageMgr.GetTranslation("store.evolution.tips.addblood",data.AddBlood / 10 + "%");
+               }
+               else if(info.Property3 == "132")
+               {
+                  _enchantAttackTxt.text = LanguageMgr.GetTranslation("store.evolution.reduceRander",data.ReduceDander / 10 + "%");
                }
                else
                {
-                  _enchantAttackTxt.text = LanguageMgr.GetTranslation("store.evolution.tips.reducedamage",_loc3_.ReduceDamage / 10 + "%");
+                  _enchantAttackTxt.text = LanguageMgr.GetTranslation("store.evolution.tips.reducedamage",data.ReduceDamage / 10 + "%");
                }
-               _loc1_ = _loc3_.Level;
-               if(_loc1_ > 0)
+               mcLevel = data.Level;
+               if(mcLevel > 0)
                {
-                  if(_loc1_ <= 4)
+                  if(mcLevel <= 4)
                   {
-                     _loc2_ = uint(164607);
+                     color = uint(164607);
                   }
-                  if(_loc1_ >= 5 && _loc1_ <= 9)
+                  if(mcLevel >= 5 && mcLevel <= 9)
                   {
-                     _loc2_ = uint(10696174);
+                     color = uint(10696174);
                   }
-                  if(_loc1_ >= 10 && _loc1_ <= 15)
+                  if(mcLevel >= 10 && mcLevel <= 15)
                   {
-                     _loc2_ = uint(16744448);
+                     color = uint(16744448);
                   }
-                  if(_loc1_ >= 16 && _loc1_ <= 20)
+                  if(mcLevel >= 16 && mcLevel <= 20)
                   {
-                     _loc2_ = uint(16711833);
+                     color = uint(16711833);
                   }
                }
-               var _loc5_:* = _loc2_;
+               var _loc5_:* = color;
                _enchantAttackTxt.textColor = _loc5_;
                _enchantLevelTxt.textColor = _loc5_;
             }
             else
             {
                _enchantLevelTxt.text = LanguageMgr.GetTranslation("evolutionchant.levelTxt","0");
-               if(_loc4_.Property3 == "32")
+               if(info.Property3 == "32")
                {
                   _enchantAttackTxt.text = LanguageMgr.GetTranslation("store.evolution.tips.addblood","0%");
+               }
+               else if(info.Property3 == "132")
+               {
+                  _enchantAttackTxt.text = LanguageMgr.GetTranslation("store.evolution.reduceRander","0%");
                }
                else
                {
@@ -2347,28 +2359,28 @@ package ddt.view.tips
       
       private function createEnchantProperties() : void
       {
-         var _loc3_:InventoryItemInfo = _info as InventoryItemInfo;
-         if(!_loc3_ || _loc3_.MagicLevel <= 0 || !_loc3_.isCanEnchant())
+         var info:InventoryItemInfo = _info as InventoryItemInfo;
+         if(!info || info.MagicLevel <= 0 || !info.isCanEnchant())
          {
             _enchantAttackPencentTxt.text = "";
             _enchantDefencePencentTxt.text = "";
             return;
          }
-         var _loc1_:EnchantInfo = EnchantManager.instance.getEnchantInfoByLevel(_loc3_.MagicLevel);
-         if(!_loc1_)
+         var enchantInfo:EnchantInfo = EnchantManager.instance.getEnchantInfoByLevel(info.MagicLevel);
+         if(!enchantInfo)
          {
             return;
          }
-         _enchantLevelTxt.text = LanguageMgr.GetTranslation("enchant.levelTxt",int(_loc1_.Lv / 10) + 1,_loc1_.Lv % 10);
-         _enchantAttackTxt.text = LanguageMgr.GetTranslation("enchant.addMagicAttackTxt") + _loc1_.MagicAttack;
-         _enchantDefenceTxt.text = LanguageMgr.GetTranslation("enchant.addMagicDenfenceTxt") + _loc1_.MagicDefence;
-         var _loc4_:* = int(_loc3_.Property1) < 5?11842740:13971455;
+         _enchantLevelTxt.text = LanguageMgr.GetTranslation("enchant.levelTxt",int(enchantInfo.Lv / 10) + 1,enchantInfo.Lv % 10);
+         _enchantAttackTxt.text = LanguageMgr.GetTranslation("enchant.addMagicAttackTxt") + enchantInfo.MagicAttack;
+         _enchantDefenceTxt.text = LanguageMgr.GetTranslation("enchant.addMagicDenfenceTxt") + enchantInfo.MagicDefence;
+         var _loc4_:* = int(info.Property1) < 5?11842740:13971455;
          _enchantDefenceTxt.textColor = _loc4_;
          _loc4_ = _loc4_;
          _enchantAttackTxt.textColor = _loc4_;
          _enchantLevelTxt.textColor = _loc4_;
-         var _loc2_:int = _loc3_.Property1;
-         switch(int(_loc2_))
+         var _level:int = info.Property1;
+         switch(int(_level))
          {
             case 0:
             case 1:
@@ -2403,12 +2415,12 @@ package ddt.view.tips
       
       protected function seperateLine() : void
       {
-         var _loc1_:* = null;
+         var prop:* = null;
          _lineIdx = Number(_lineIdx) + 1;
          if(_lines.length < _lineIdx)
          {
-            _loc1_ = ComponentFactory.Instance.creatComponentByStylename("HRuleAsset");
-            _lines.push(_loc1_);
+            prop = ComponentFactory.Instance.creatComponentByStylename("HRuleAsset");
+            _lines.push(prop);
          }
          _displayIdx = Number(_displayIdx) + 1;
          _displayList[Number(_displayIdx)] = _lines[_lineIdx - 1];
@@ -2416,24 +2428,24 @@ package ddt.view.tips
       
       private function getGhostPropertyData() : GhostPropertyData
       {
-         var _loc4_:GhostPropertyData = null;
-         var _loc2_:InventoryItemInfo = _info as InventoryItemInfo;
-         if(_loc2_ == null)
+         var ghostPropertyData:GhostPropertyData = null;
+         var ivenInfo:InventoryItemInfo = _info as InventoryItemInfo;
+         if(ivenInfo == null)
          {
             return null;
          }
-         var _loc3_:PlayerInfo = PlayerInfoViewControl.currentPlayer || PlayerManager.Instance.Self;
-         var _loc5_:* = _loc3_.ID != PlayerManager.Instance.Self.ID;
-         var _loc1_:Boolean = _loc2_.BagType == 0 && _loc2_.Place <= 30;
-         if(_loc5_)
+         var player:PlayerInfo = PlayerInfoViewControl.currentPlayer || PlayerManager.Instance.Self;
+         var isOther:* = player.ID != PlayerManager.Instance.Self.ID;
+         var isWearedEquip:Boolean = ivenInfo.BagType == 0 && ivenInfo.Place <= 30;
+         if(isOther)
          {
-            _loc4_ = !!_loc1_?EquipGhostManager.getInstance().getPorpertyData(_loc2_,_loc3_):null;
+            ghostPropertyData = !!isWearedEquip?EquipGhostManager.getInstance().getPorpertyData(ivenInfo,player):null;
          }
          else
          {
-            _loc4_ = _loc2_.fromBag && (_loc1_ || EquipGhostManager.getInstance().isEquipGhosting())?EquipGhostManager.getInstance().getPorpertyData(_loc2_,_loc3_):null;
+            ghostPropertyData = ivenInfo.fromBag && (isWearedEquip || EquipGhostManager.getInstance().isEquipGhosting())?EquipGhostManager.getInstance().getPorpertyData(ivenInfo,player):null;
          }
-         return _loc4_;
+         return ghostPropertyData;
       }
    }
 }

@@ -22,47 +22,46 @@ package carnivalActivity.view
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         _loc2_ = 0;
-         while(_loc2_ < 3)
+         var i:int = 0;
+         var txt:* = null;
+         for(i = 0; i < 3; )
          {
-            _loc1_ = ComponentFactory.Instance.creatComponentByStylename("rookieRank.contentTxt");
-            addChild(_loc1_);
-            switch(int(_loc2_))
+            txt = ComponentFactory.Instance.creatComponentByStylename("rookieRank.contentTxt");
+            addChild(txt);
+            switch(int(i))
             {
                case 0:
-                  _loc1_.width = 20;
-                  _loc1_.x = 14;
+                  txt.width = 20;
+                  txt.x = 14;
                   break;
                case 1:
-                  _loc1_.width = 110;
-                  _loc1_.x = 53;
+                  txt.width = 110;
+                  txt.x = 53;
                   break;
                case 2:
-                  _loc1_.width = 100;
-                  _loc1_.x = 174;
+                  txt.width = 100;
+                  txt.x = 174;
             }
-            _txtArr.push(_loc1_);
-            _loc2_++;
+            _txtArr.push(txt);
+            i++;
          }
       }
       
-      public function setData(param1:RookieRankInfo) : void
+      public function setData(info:RookieRankInfo) : void
       {
-         _txtArr[0].text = param1.rank;
-         _txtArr[1].text = param1.playerName;
-         _txtArr[2].text = param1.fightPower;
+         _txtArr[0].text = info.rank;
+         _txtArr[1].text = info.playerName;
+         _txtArr[2].text = info.fightPower;
       }
       
       public function dispose() : void
       {
          var _loc3_:int = 0;
          var _loc2_:* = _txtArr;
-         for each(var _loc1_ in _txtArr)
+         for each(var txt in _txtArr)
          {
-            ObjectUtils.disposeObject(_loc1_);
-            _loc1_ = null;
+            ObjectUtils.disposeObject(txt);
+            txt = null;
          }
          _txtArr = null;
          if(parent)

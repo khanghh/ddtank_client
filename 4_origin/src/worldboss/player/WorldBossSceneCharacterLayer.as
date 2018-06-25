@@ -12,17 +12,17 @@ package worldboss.player
       
       private var _sex:Boolean;
       
-      public function WorldBossSceneCharacterLayer(param1:ItemTemplateInfo, param2:String = "", param3:int = 1, param4:Boolean = true)
+      public function WorldBossSceneCharacterLayer(info:ItemTemplateInfo, color:String = "", direction:int = 1, sex:Boolean = true)
       {
-         _direction = param3;
-         _sex = param4;
-         super(param1,param2);
+         _direction = direction;
+         _sex = sex;
+         super(info,color);
       }
       
-      override protected function getUrl(param1:int) : String
+      override protected function getUrl(layer:int) : String
       {
-         var _loc2_:String = _direction == 1?"clothF":_direction == 2?"cloth":"clothF";
-         return PathManager.SITE_MAIN + "image/mounts/clothZ/" + (!!_sex?"M":"F") + "/" + _loc2_ + "/1/" + String(param1) + ".png";
+         var type:String = _direction == 1?"clothF":_direction == 2?"cloth":"clothF";
+         return PathManager.SITE_MAIN + "image/mounts/clothZ/" + (!!_sex?"M":"F") + "/" + type + "/1/" + String(layer) + ".png";
       }
    }
 }

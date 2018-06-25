@@ -47,22 +47,22 @@ package cityBattle.view
          addEventListener("response",__frameEventHandler);
       }
       
-      private function _click(param1:MouseEvent) : void
+      private function _click(evt:MouseEvent) : void
       {
          dispose();
       }
       
-      public function set goodsList(param1:Array) : void
+      public function set goodsList(templateIds:Array) : void
       {
-         _goodsList = param1;
+         _goodsList = templateIds;
          list = ComponentFactory.Instance.creatCustomObject("welfare.winnerPrize.goodsList");
          list.show(_goodsList);
          addChild(list);
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:

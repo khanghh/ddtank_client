@@ -37,16 +37,16 @@ package AvatarCollection.view
          addChild(_propertyView);
       }
       
-      public function refreshView(param1:AvatarCollectionUnitVo) : void
+      public function refreshView(data:AvatarCollectionUnitVo) : void
       {
-         _itemListView.refreshView(!!param1?param1.totalItemList:null);
-         _propertyView.refreshView(param1);
-         _timeView.refreshView(param1);
+         _itemListView.refreshView(!!data?data.totalItemList:null);
+         _propertyView.refreshView(data);
+         _timeView.refreshView(data);
       }
       
-      public function set selectedAllBtn(param1:Boolean) : void
+      public function set selectedAllBtn(value:Boolean) : void
       {
-         _timeView.selected = param1;
+         _timeView.selected = value;
       }
       
       public function dispose() : void

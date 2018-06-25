@@ -46,8 +46,8 @@ package magicHouse.magicCollection
          this.titleText = LanguageMgr.GetTranslation("magichouse.collectionView.magicpotionsCountTitle");
          _numberSelecter = ComponentFactory.Instance.creatComponentByStylename("magicHouse.collectionItem.upgrade.magicpotion.NumberSelecter");
          addToContent(_numberSelecter);
-         var _loc1_:int = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(201489);
-         _numberSelecter.valueLimit = "1," + _loc1_;
+         var max:int = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(201489);
+         _numberSelecter.valueLimit = "1," + max;
          _countTxt = ComponentFactory.Instance.creatComponentByStylename("magichouse.collectionItem.chargeBoxNeedMoneyText");
          PositionUtils.setPos(_countTxt,"magicHouse.collection.selectedCountTxtPos");
          _countTxt.text = LanguageMgr.GetTranslation("magichouse.collectionView.magicpotionsCount");
@@ -68,28 +68,28 @@ package magicHouse.magicCollection
       
       private function _update() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
-         var _loc3_:int = 0;
+         var number:int = 0;
+         var needExp:int = 0;
+         var currentExp:int = 0;
          if(_type == 1)
          {
-            _loc1_ = MagicHouseModel.instance.levelUpNumber[MagicHouseModel.instance.magicJuniorLv];
-            _loc3_ = MagicHouseModel.instance.magicJuniorExp;
+            needExp = MagicHouseModel.instance.levelUpNumber[MagicHouseModel.instance.magicJuniorLv];
+            currentExp = MagicHouseModel.instance.magicJuniorExp;
          }
          else if(_type == 2)
          {
-            _loc1_ = MagicHouseModel.instance.levelUpNumber[MagicHouseModel.instance.magicMidLv];
-            _loc3_ = MagicHouseModel.instance.magicMidExp;
+            needExp = MagicHouseModel.instance.levelUpNumber[MagicHouseModel.instance.magicMidLv];
+            currentExp = MagicHouseModel.instance.magicMidExp;
          }
          else
          {
-            _loc1_ = MagicHouseModel.instance.levelUpNumber[MagicHouseModel.instance.magicSeniorLv];
-            _loc3_ = MagicHouseModel.instance.magicSeniorExp;
+            needExp = MagicHouseModel.instance.levelUpNumber[MagicHouseModel.instance.magicSeniorLv];
+            currentExp = MagicHouseModel.instance.magicSeniorExp;
          }
-         _loc2_ = Math.ceil((_loc1_ - _loc3_) / 10);
-         _numberSelecter.currentValue = _loc2_;
+         number = Math.ceil((needExp - currentExp) / 10);
+         _numberSelecter.currentValue = number;
          _numberSelecter.validate();
-         _needPotionTipTxt.htmlText = LanguageMgr.GetTranslation("magichouse.collectionView.upgradeLvNeedPotions",_loc2_);
+         _needPotionTipTxt.htmlText = LanguageMgr.GetTranslation("magichouse.collectionView.upgradeLvNeedPotions",number);
       }
       
       private function initEvent() : void
@@ -107,13 +107,13 @@ package magicHouse.magicCollection
          _cancelBtn.removeEventListener("click",__cancelBtnHandler);
       }
       
-      private function selectHandler(param1:Event) : void
+      private function selectHandler(e:Event) : void
       {
          SoundManager.instance.play("008");
          _count = _numberSelecter.currentValue;
       }
       
-      private function __okBtnHandler(param1:MouseEvent) : void
+      private function __okBtnHandler(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(201489) > 0)
@@ -127,20 +127,20 @@ package magicHouse.magicCollection
          }
       }
       
-      private function __cancelBtnHandler(param1:MouseEvent) : void
+      private function __cancelBtnHandler(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          dispose();
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(e.responseCode == 0 || e.responseCode == 1)
          {
             dispose();
          }
-         else if(param1.responseCode == 2)
+         else if(e.responseCode == 2)
          {
             __okBtnHandler(null);
          }
@@ -151,9 +151,9 @@ package magicHouse.magicCollection
          return _type;
       }
       
-      public function set type(param1:int) : void
+      public function set type(value:int) : void
       {
-         _type = param1;
+         _type = value;
          _update();
       }
       

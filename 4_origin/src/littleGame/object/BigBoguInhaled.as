@@ -68,45 +68,45 @@ package littleGame.object
          SoundManager.instance.play("163");
       }
       
-      private function __inhaleOnFrame(param1:Event) : void
+      private function __inhaleOnFrame(event:Event) : void
       {
-         var _loc2_:MovieClip = param1.currentTarget as MovieClip;
-         if(_loc2_.currentFrameLabel == "bornEnd")
+         var movie:MovieClip = event.currentTarget as MovieClip;
+         if(movie.currentFrameLabel == "bornEnd")
          {
             start();
          }
-         else if(_loc2_.currentFrame >= _loc2_.totalFrames)
+         else if(movie.currentFrame >= movie.totalFrames)
          {
-            ObjectUtils.disposeObject(_loc2_);
+            ObjectUtils.disposeObject(movie);
             complete();
          }
       }
       
       override protected function drawBackground() : void
       {
-         var _loc1_:Graphics = graphics;
-         _loc1_.beginFill(0,0.8);
-         _loc1_.drawRect(0,0,StageReferance.stageWidth,StageReferance.stageHeight);
-         _loc1_.endFill();
+         var g:Graphics = graphics;
+         g.beginFill(0,0.8);
+         g.drawRect(0,0,StageReferance.stageWidth,StageReferance.stageHeight);
+         g.endFill();
       }
       
       override public function execute() : void
       {
-         var _loc1_:* = null;
+         var obj:* = null;
          drawBackground();
          drawMark();
          lockLivings();
          _scene.selfInhaled = true;
          ChatManager.Instance.focusFuncEnabled = false;
-         var _loc2_:Dictionary = _scene.littleObjects;
+         var objects:Dictionary = _scene.littleObjects;
          var _loc5_:int = 0;
-         var _loc4_:* = _loc2_;
-         for(var _loc3_ in _loc2_)
+         var _loc4_:* = objects;
+         for(var key in objects)
          {
-            _loc1_ = _loc2_[_loc3_];
-            if(_loc1_.type == "bogugiveup")
+            obj = objects[key];
+            if(obj.type == "bogugiveup")
             {
-               _scene.removeObject(_loc1_);
+               _scene.removeObject(obj);
             }
          }
          LittleGameManager.Instance.mainStage.addChild(this);
@@ -121,22 +121,22 @@ package littleGame.object
          _scoreTween = false;
       }
       
-      private function priceTweenIn(param1:DisplayObject) : void
+      private function priceTweenIn(shape:DisplayObject) : void
       {
-         TweenLite.to(param1,0.2,{
+         TweenLite.to(shape,0.2,{
             "delay":2,
             "alpha":1,
-            "y":param1.y - param1.height * 2,
+            "y":shape.y - shape.height * 2,
             "ease":Bounce.easeOut,
             "onComplete":ObjectUtils.disposeObject,
-            "onCompleteParams":[param1]
+            "onCompleteParams":[shape]
          });
       }
       
-      private function __soundComplete(param1:Event) : void
+      private function __soundComplete(event:Event) : void
       {
          _soundPlaying = false;
-         param1.currentTarget.removeEventListener("soundComplete",__soundComplete);
+         event.currentTarget.removeEventListener("soundComplete",__soundComplete);
          if(_soundPlayVer < _clickCount && _running)
          {
             _clickSoundChannel = SoundManager.instance.play("164");
@@ -149,9 +149,9 @@ package littleGame.object
          }
       }
       
-      override protected function __click(param1:MouseEvent) : void
+      override protected function __click(event:MouseEvent) : void
       {
-         var _loc3_:* = null;
+         var priceShape:* = null;
          _clickCount = Number(_clickCount) + 1;
          if(_inhaleAsset)
          {
@@ -159,7 +159,7 @@ package littleGame.object
             _inhaleAsset["admit"].play();
          }
          _score = _totalScore * _clickCount / _totalClick;
-         var _loc2_:int = 0;
+         var price:int = 0;
          if(_scoreShape)
          {
             _scoreShape.setScore(_score);
@@ -188,22 +188,22 @@ package littleGame.object
          if(_clickCount >= _totalClick)
          {
             removeEventListener("click",__click);
-            _loc2_ = _totalScore * 0.2;
-            _loc3_ = new PriceShape(_loc2_);
-            _loc3_.alpha = 0;
-            _loc3_.x = 300;
-            _loc3_.y = _scoreShape.y;
-            addChild(_loc3_);
-            TweenLite.to(_loc3_,0.2,{
+            price = _totalScore * 0.2;
+            priceShape = new PriceShape(price);
+            priceShape.alpha = 0;
+            priceShape.x = 300;
+            priceShape.y = _scoreShape.y;
+            addChild(priceShape);
+            TweenLite.to(priceShape,0.2,{
                "delay":0.2,
                "alpha":1,
-               "y":_loc3_.y - _loc3_.height - 20,
+               "y":priceShape.y - priceShape.height - 20,
                "onComplete":priceTweenIn,
-               "onCompleteParams":[_loc3_]
+               "onCompleteParams":[priceShape]
             });
             _target.dieing = true;
          }
-         _score = _score + _loc2_;
+         _score = _score + price;
       }
       
       override protected function complete() : void
@@ -227,11 +227,11 @@ package littleGame.object
          addEvent();
       }
       
-      override protected function __markComplete(param1:TimerEvent) : void
+      override protected function __markComplete(event:TimerEvent) : void
       {
-         var _loc2_:Timer = param1.currentTarget as Timer;
-         _loc2_.removeEventListener("timer",__mark);
-         _loc2_.removeEventListener("timerComplete",__markComplete);
+         var timer:Timer = event.currentTarget as Timer;
+         timer.removeEventListener("timer",__mark);
+         timer.removeEventListener("timerComplete",__markComplete);
          removeEventListener("click",__click);
          _inhaleAsset.gotoAndPlay("out");
       }

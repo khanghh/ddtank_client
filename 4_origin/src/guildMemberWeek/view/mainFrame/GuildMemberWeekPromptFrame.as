@@ -54,21 +54,21 @@ package guildMemberWeek.view.mainFrame
          _YesButton.removeEventListener("click",__yesClickHander);
       }
       
-      public function setPromptFrameTxt(param1:String) : void
+      public function setPromptFrameTxt(str:String) : void
       {
-         _txt.htmlText = param1;
+         _txt.htmlText = str;
       }
       
-      private function __response(param1:FrameEvent) : void
+      private function __response(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.responseCode == 0 || param1.responseCode == 1 || param1.responseCode == 2)
+         if(e.responseCode == 0 || e.responseCode == 1 || e.responseCode == 2)
          {
             GuildMemberWeekManager.instance.CloseShowTop10PromptFrame();
          }
       }
       
-      private function __yesClickHander(param1:MouseEvent) : void
+      private function __yesClickHander(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          GuildMemberWeekManager.instance.CloseShowTop10PromptFrame();

@@ -27,17 +27,17 @@ package pyramid.view
          this.tipDirctions = "7,3";
          this.tipGapH = 100;
          this.tipGapV = 50;
-         var _loc1_:Array = ServerConfigManager.instance.pyramidTopMinMaxPoint;
-         this.tipData = LanguageMgr.GetTranslation("ddt.pyramid.topBoxMovieTipsMsg",_loc1_[0],_loc1_[1]);
+         var pyramidTopMinMaxPoint:Array = ServerConfigManager.instance.pyramidTopMinMaxPoint;
+         this.tipData = LanguageMgr.GetTranslation("ddt.pyramid.topBoxMovieTipsMsg",pyramidTopMinMaxPoint[0],pyramidTopMinMaxPoint[1]);
       }
       
-      public function addTopBoxMovie(param1:Sprite) : void
+      public function addTopBoxMovie($parent:Sprite) : void
       {
          _topBoxMovie = ComponentFactory.Instance.creat("assets.pyramid.topBox");
          _topBoxMovie.x = this.x;
          _topBoxMovie.y = this.y;
          _topBoxMovie.gotoAndStop(1);
-         param1.addChild(_topBoxMovie);
+         $parent.addChild(_topBoxMovie);
       }
       
       public function get state() : int
@@ -45,31 +45,31 @@ package pyramid.view
          return this._state;
       }
       
-      public function topBoxMovieMode(param1:int = 0) : void
+      public function topBoxMovieMode(modeType:int = 0) : void
       {
-         if(PyramidControl.instance.movieLock && param1 == 0)
+         if(PyramidControl.instance.movieLock && modeType == 0)
          {
             return;
          }
-         _state = param1;
-         var _loc3_:Boolean = false;
-         var _loc2_:MovieClip = _topBoxMovie["box"];
-         switch(int(param1))
+         _state = modeType;
+         var bool:Boolean = false;
+         var boxMovie:MovieClip = _topBoxMovie["box"];
+         switch(int(modeType))
          {
             case 0:
-               _loc2_.gotoAndStop(1);
+               boxMovie.gotoAndStop(1);
                break;
             case 1:
-               _loc3_ = true;
-               _loc2_.gotoAndStop(2);
+               bool = true;
+               boxMovie.gotoAndStop(2);
                break;
             case 2:
-               _loc3_ = false;
+               bool = false;
                PyramidControl.instance.movieLock = true;
-               _loc2_.addFrameScript(_loc2_.totalFrames - 1,toBoxMoviePlayStop);
-               _loc2_.gotoAndPlay(3);
+               boxMovie.addFrameScript(boxMovie.totalFrames - 1,toBoxMoviePlayStop);
+               boxMovie.gotoAndPlay(3);
          }
-         this.buttonMode = _loc3_;
+         this.buttonMode = bool;
       }
       
       private function toBoxMoviePlayStop() : void

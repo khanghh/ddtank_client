@@ -8,22 +8,21 @@ package ddt.data.analyze
       
       public var list:Array;
       
-      public function MovingNotificationAnalyzer(param1:Function)
+      public function MovingNotificationAnalyzer(onCompleteCall:Function)
       {
          list = [];
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc2_:int = 0;
-         list = String(param1).split("\r\n");
-         _loc2_ = 0;
-         while(_loc2_ < list.length)
+         var i:int = 0;
+         list = String(data).split("\r\n");
+         for(i = 0; i < list.length; )
          {
-            list[_loc2_] = list[_loc2_].replace("\\r","\r");
-            list[_loc2_] = list[_loc2_].replace("\\n","\n");
-            _loc2_++;
+            list[i] = list[i].replace("\\r","\r");
+            list[i] = list[i].replace("\\n","\n");
+            i++;
          }
          onAnalyzeComplete();
       }

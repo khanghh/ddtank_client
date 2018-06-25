@@ -71,21 +71,21 @@ package room.view.smallMapInfoPanel
       
       private function solveLeveRange() : void
       {
-         var _loc2_:* = null;
+         var array:* = null;
          if(_info == null || _info.mapId == 0 || _info.mapId == 10000)
          {
             return;
          }
-         var _loc1_:String = MapManager.getDungeonInfo(_info.mapId).AdviceTips;
-         if(_loc1_)
+         var str:String = MapManager.getDungeonInfo(_info.mapId).AdviceTips;
+         if(str)
          {
-            _loc2_ = _loc1_.split("|");
+            array = str.split("|");
             _levelRange.text = "";
-            if(_info.hardLevel >= _loc2_.length)
+            if(_info.hardLevel >= array.length)
             {
                return;
             }
-            _levelRange.text = _loc2_[_info.hardLevel] + LanguageMgr.GetTranslation("grade");
+            _levelRange.text = array[_info.hardLevel] + LanguageMgr.GetTranslation("grade");
          }
       }
       

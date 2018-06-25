@@ -32,21 +32,21 @@ package times.view
       
       private var _picType:String;
       
-      public function TimesContentView(param1:int)
+      public function TimesContentView(index:int)
       {
          super();
-         _index = param1;
+         _index = index;
       }
       
-      public function init(param1:Vector.<TimesPicInfo>) : void
+      public function init(infos:Vector.<TimesPicInfo>) : void
       {
          _controller = TimesController.Instance;
-         _maxIdx = param1.length;
+         _maxIdx = infos.length;
          _maskShape = new Shape();
          _maskShape.graphics.beginFill(0,0.5);
          _maskShape.graphics.drawRoundRect(0,-1,745,406,15,15);
          _maskShape.graphics.endFill();
-         _bigPics = new TimesPicGroup(param1,_index);
+         _bigPics = new TimesPicGroup(infos,_index);
          _prePageBtn = ComponentFactory.Instance.creatComponentByStylename("times.PreBtn");
          _nextPageBtn = ComponentFactory.Instance.creatComponentByStylename("times.NextBtn");
          _bigPics.mask = _maskShape;
@@ -65,15 +65,15 @@ package times.view
          return _maxIdx;
       }
       
-      public function set maxIdx(param1:int) : void
+      public function set maxIdx(value:int) : void
       {
-         _maxIdx = param1;
+         _maxIdx = value;
       }
       
-      public function set frame(param1:int) : void
+      public function set frame(value:int) : void
       {
-         _bigPics.currentIdx = param1;
-         load(param1);
+         _bigPics.currentIdx = value;
+         load(value);
       }
       
       public function get frame() : int
@@ -81,9 +81,9 @@ package times.view
          return _bigPics.currentIdx;
       }
       
-      private function load(param1:int) : void
+      private function load(startIdx:int) : void
       {
-         _bigPics.load(param1);
+         _bigPics.load(startIdx);
       }
       
       private function initEvent() : void
@@ -92,10 +92,10 @@ package times.view
          _nextPageBtn.addEventListener("click",__onBtnClick);
       }
       
-      private function __onBtnClick(param1:MouseEvent) : void
+      private function __onBtnClick(e:MouseEvent) : void
       {
          _controller.dispatchEvent(new TimesEvent("playSound"));
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = e.currentTarget;
          if(_prePageBtn !== _loc2_)
          {
             if(_nextPageBtn === _loc2_)

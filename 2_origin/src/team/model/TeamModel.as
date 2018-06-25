@@ -55,60 +55,59 @@ package team.model
          _teamActiveList = new DictionaryData();
       }
       
-      public function getTeamInfoByID(param1:int) : TeamInfo
+      public function getTeamInfoByID(id:int) : TeamInfo
       {
-         return _teamInfoList[param1] as TeamInfo;
+         return _teamInfoList[id] as TeamInfo;
       }
       
-      public function addTeamInfo(param1:int, param2:TeamInfo) : void
+      public function addTeamInfo(id:int, info:TeamInfo) : void
       {
-         _teamInfoList.add(param1,param2);
+         _teamInfoList.add(id,info);
       }
       
-      public function addTeamMemberInfo(param1:int, param2:Array) : void
+      public function addTeamMemberInfo(id:int, list:Array) : void
       {
-         _teamMemberList.add(param1,param2);
+         _teamMemberList.add(id,list);
       }
       
-      public function addTeamRecordList(param1:int, param2:Array) : void
+      public function addTeamRecordList(id:int, list:Array) : void
       {
-         _teamRecordList.add(param1,param2);
+         _teamRecordList.add(id,list);
       }
       
-      public function addTeamInviteList(param1:int, param2:Array) : void
+      public function addTeamInviteList(id:int, list:Array) : void
       {
-         _teamInviteList.add(param1,param2);
+         _teamInviteList.add(id,list);
       }
       
-      public function removeTeamInviteList(param1:int, param2:int = -1) : void
+      public function removeTeamInviteList(id:int, userid:int = -1) : void
       {
-         var _loc4_:* = null;
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
-         if(param2 == -1)
+         var list:* = null;
+         var i:int = 0;
+         var item:* = null;
+         if(userid == -1)
          {
-            _teamInviteList.remove(param1);
+            _teamInviteList.remove(id);
          }
          else
          {
-            _loc4_ = _teamInviteList[param1];
-            _loc5_ = 0;
-            while(_loc5_ < _loc4_.length)
+            list = _teamInviteList[id];
+            for(i = 0; i < list.length; )
             {
-               _loc3_ = _loc4_[_loc5_] as TeamInvitedMemberInfo;
-               if(_loc3_.id == param2)
+               item = list[i] as TeamInvitedMemberInfo;
+               if(item.id == userid)
                {
-                  _loc4_.splice(_loc5_,1);
+                  list.splice(i,1);
                   return;
                }
-               _loc5_++;
+               i++;
             }
          }
       }
       
-      public function addTeamActiveList(param1:int, param2:Array) : void
+      public function addTeamActiveList(id:int, list:Array) : void
       {
-         _teamActiveList.add(param1,param2);
+         _teamActiveList.add(id,list);
       }
       
       public function get selfTeamMember() : Array
@@ -123,14 +122,14 @@ package team.model
       
       public function get selfTeamMemberInfo() : TeamMemberInfo
       {
-         var _loc1_:Array = selfTeamMember;
+         var list:Array = selfTeamMember;
          var _loc4_:int = 0;
-         var _loc3_:* = _loc1_;
-         for each(var _loc2_ in _loc1_)
+         var _loc3_:* = list;
+         for each(var info in list)
          {
-            if(_loc2_.ID == PlayerManager.Instance.Self.ID)
+            if(info.ID == PlayerManager.Instance.Self.ID)
             {
-               return _loc2_;
+               return info;
             }
          }
          return null;
@@ -153,116 +152,114 @@ package team.model
       
       public function get teamFriendList() : Array
       {
-         var _loc2_:Array = PlayerManager.Instance.friendList.list;
-         var _loc1_:Array = [];
+         var flist:Array = PlayerManager.Instance.friendList.list;
+         var list:Array = [];
          var _loc5_:int = 0;
-         var _loc4_:* = _loc2_;
-         for each(var _loc3_ in _loc2_)
+         var _loc4_:* = flist;
+         for each(var info in flist)
          {
-            if(!hasTeamInvitePlayer(_loc3_.ID) && !hasTeamMemberPlayer(_loc3_.ID))
+            if(!hasTeamInvitePlayer(info.ID) && !hasTeamMemberPlayer(info.ID))
             {
-               _loc1_.push(_loc3_);
+               list.push(info);
             }
          }
-         _loc1_.sortOn("StateID",16 | 2);
-         return _loc1_;
+         list.sortOn("StateID",16 | 2);
+         return list;
       }
       
       public function get teamFriendListOnline() : Array
       {
-         var _loc2_:Array = PlayerManager.Instance.friendList.list;
-         var _loc1_:Array = [];
+         var flist:Array = PlayerManager.Instance.friendList.list;
+         var list:Array = [];
          var _loc5_:int = 0;
-         var _loc4_:* = _loc2_;
-         for each(var _loc3_ in _loc2_)
+         var _loc4_:* = flist;
+         for each(var info in flist)
          {
-            if(_loc3_.playerState.StateID != 0 && !hasTeamInvitePlayer(_loc3_.ID) && !hasTeamMemberPlayer(_loc3_.ID))
+            if(info.playerState.StateID != 0 && !hasTeamInvitePlayer(info.ID) && !hasTeamMemberPlayer(info.ID))
             {
-               _loc1_.push(_loc3_);
+               list.push(info);
             }
          }
-         return _loc1_;
+         return list;
       }
       
-      private function hasTeamInvitePlayer(param1:int) : Boolean
+      private function hasTeamInvitePlayer(userid:int) : Boolean
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         _loc3_ = 0;
-         while(_loc3_ < selfTeamInviteList.length)
+         var i:int = 0;
+         var item:* = null;
+         for(i = 0; i < selfTeamInviteList.length; )
          {
-            _loc2_ = selfTeamInviteList[_loc3_] as TeamInvitedMemberInfo;
-            if(_loc2_.id == param1)
+            item = selfTeamInviteList[i] as TeamInvitedMemberInfo;
+            if(item.id == userid)
             {
                return true;
             }
-            _loc3_++;
+            i++;
          }
          return false;
       }
       
-      private function hasTeamMemberPlayer(param1:int) : Boolean
+      private function hasTeamMemberPlayer(userid:int) : Boolean
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         _loc3_ = 0;
-         while(_loc3_ < selfTeamMember.length)
+         var i:int = 0;
+         var item:* = null;
+         for(i = 0; i < selfTeamMember.length; )
          {
-            _loc2_ = selfTeamMember[_loc3_] as TeamMemberInfo;
-            if(_loc2_.ID == param1)
+            item = selfTeamMember[i] as TeamMemberInfo;
+            if(item.ID == userid)
             {
                return true;
             }
-            _loc3_++;
+            i++;
          }
          return false;
       }
       
       public function get onlineTeamMemberList() : Array
       {
-         var _loc1_:Array = [];
+         var temp:Array = [];
          var _loc4_:int = 0;
          var _loc3_:* = selfTeamMember;
-         for each(var _loc2_ in selfTeamMember)
+         for each(var i in selfTeamMember)
          {
-            if(_loc2_.playerState.StateID != 0)
+            if(i.playerState.StateID != 0)
             {
-               _loc1_.push(_loc2_);
+               temp.push(i);
             }
          }
-         return _loc1_;
+         return temp;
       }
       
       public function get offlineTeamMemberList() : Array
       {
-         var _loc1_:Array = [];
+         var temp:Array = [];
          var _loc4_:int = 0;
          var _loc3_:* = selfTeamMember;
-         for each(var _loc2_ in selfTeamMember)
+         for each(var i in selfTeamMember)
          {
-            if(_loc2_.playerState.StateID == 0)
+            if(i.playerState.StateID == 0)
             {
-               _loc1_.push(_loc2_);
+               temp.push(i);
             }
          }
-         return _loc1_;
+         return temp;
       }
       
       public function get teamIMInfo() : Array
       {
-         var _loc1_:Array = [];
-         var _loc3_:Array = onlineTeamMemberList;
-         var _loc2_:TeamMemberInfo = new TeamMemberInfo();
-         _loc2_.type = 0;
-         _loc2_.isSelected = true;
-         _loc2_.RatifierName = LanguageMgr.GetTranslation("tank.team.teamNumber",_loc3_.length,this.selfTeamMember.length);
-         _loc1_.push(_loc2_);
-         return _loc1_;
+         var temp:Array = [];
+         var onlineTemp:Array = onlineTeamMemberList;
+         var teamTitleInfo:TeamMemberInfo = new TeamMemberInfo();
+         teamTitleInfo.type = 0;
+         teamTitleInfo.isSelected = true;
+         teamTitleInfo.RatifierName = LanguageMgr.GetTranslation("tank.team.teamNumber",onlineTemp.length,this.selfTeamMember.length);
+         temp.push(teamTitleInfo);
+         return temp;
       }
       
-      public function teamLevelInfoByLevel(param1:int) : TeamLevelInfo
+      public function teamLevelInfoByLevel(level:int) : TeamLevelInfo
       {
-         return teamLevelList[param1];
+         return teamLevelList[level];
       }
       
       public function get teamBattleSeasonInfo() : TeamBattleSeasonInfo
@@ -270,40 +267,39 @@ package team.model
          return _teamBattleSeasonList.list[_teamBattleSeasonList.length - 1];
       }
       
-      public function getTeamBattleSegmentInfo(param1:int) : TeamBattleSegmentInfo
+      public function getTeamBattleSegmentInfo(segmentID:int) : TeamBattleSegmentInfo
       {
-         return _teamBattleSegmentList[param1];
+         return _teamBattleSegmentList[segmentID];
       }
       
-      public function set teamBattleSeasonList(param1:DictionaryData) : void
+      public function set teamBattleSeasonList(value:DictionaryData) : void
       {
-         _teamBattleSeasonList = param1;
+         _teamBattleSeasonList = value;
       }
       
-      public function set teamBattleSegmentList(param1:DictionaryData) : void
+      public function set teamBattleSegmentList(value:DictionaryData) : void
       {
-         _teamBattleSegmentList = param1;
+         _teamBattleSegmentList = value;
       }
       
-      public function getTeamBattleSegment(param1:int) : int
+      public function getTeamBattleSegment(score:int) : int
       {
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         _loc3_ = 1;
-         while(_loc3_ <= 5)
+         var segment:int = 0;
+         var i:int = 0;
+         for(i = 1; i <= 5; )
          {
-            if(_loc3_ != 5)
+            if(i != 5)
             {
-               if(param1 >= _teamBattleSegmentList[_loc3_].NeedScore && param1 < _teamBattleSegmentList[_loc3_ + 1].NeedScore)
+               if(score >= _teamBattleSegmentList[i].NeedScore && score < _teamBattleSegmentList[i + 1].NeedScore)
                {
-                  return _loc3_;
+                  return i;
                }
             }
-            else if(param1 >= _teamBattleSegmentList[_loc3_].NeedScore)
+            else if(score >= _teamBattleSegmentList[i].NeedScore)
             {
-               return _loc3_;
+               return i;
             }
-            _loc3_++;
+            i++;
          }
          return 0;
       }

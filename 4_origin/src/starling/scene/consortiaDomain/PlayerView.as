@@ -131,218 +131,216 @@ package starling.scene.consortiaDomain
          ConsortiaDomainManager.instance.removeEventListener("event_active_state_change",onActiveStateChange);
       }
       
-      private function onActiveStateChange(param1:flash.events.Event) : void
+      private function onActiveStateChange(evt:flash.events.Event) : void
       {
-         var _loc2_:int = ConsortiaDomainManager.instance.activeState;
-         if(_loc2_ == 100)
+         var activeState:int = ConsortiaDomainManager.instance.activeState;
+         if(activeState == 100)
          {
             _disObjSortView.removeDisplayObjectByType(MonsterBone,true);
          }
       }
       
-      private function onOtherEnter(param1:PkgEvent) : void
+      private function onOtherEnter(evt:PkgEvent) : void
       {
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc4_.position;
-         var _loc3_:ConsortiaDomainPlayerVo = readPlayerInfoPkg(_loc4_);
-         if(_loc3_.playerInfo.ID != PlayerManager.Instance.Self.ID && getPlayerNum() < 10)
+         var pkg:PackageIn = evt.pkg;
+         var position:int = pkg.position;
+         var playerVo:ConsortiaDomainPlayerVo = readPlayerInfoPkg(pkg);
+         if(playerVo.playerInfo.ID != PlayerManager.Instance.Self.ID && getPlayerNum() < 10)
          {
-            _unLoadPlayerDic[_loc3_.playerInfo.ID] = _loc3_;
+            _unLoadPlayerDic[playerVo.playerInfo.ID] = playerVo;
          }
       }
       
       private function getPlayerNum() : int
       {
-         var _loc2_:* = null;
-         var _loc1_:int = 0;
+         var playerVo:* = null;
+         var num:int = 0;
          if(_unLoadPlayerDic)
          {
             var _loc4_:int = 0;
             var _loc3_:* = _unLoadPlayerDic;
-            for each(_loc2_ in _unLoadPlayerDic)
+            for each(playerVo in _unLoadPlayerDic)
             {
-               _loc1_++;
+               num++;
             }
          }
          if(_loadPlayerDic)
          {
             var _loc6_:int = 0;
             var _loc5_:* = _loadPlayerDic;
-            for each(_loc2_ in _loadPlayerDic)
+            for each(playerVo in _loadPlayerDic)
             {
-               _loc1_++;
+               num++;
             }
          }
-         return _loc1_;
+         return num;
       }
       
-      private function onOtherLeave(param1:CEvent) : void
+      private function onOtherLeave(evt:CEvent) : void
       {
-         var _loc2_:int = param1.data as int;
-         var _loc3_:ConsortiaDomainHallPlayer = _friendPlayerDic[_loc2_];
-         if(_loc3_)
+         var leavePlayerId:int = evt.data as int;
+         var hallPlayer:ConsortiaDomainHallPlayer = _friendPlayerDic[leavePlayerId];
+         if(hallPlayer)
          {
-            _disObjSortView.removeDisplayObject(_loc3_,true);
-            delete _friendPlayerDic[_loc2_];
+            _disObjSortView.removeDisplayObject(hallPlayer,true);
+            delete _friendPlayerDic[leavePlayerId];
          }
       }
       
-      private function onFightState(param1:PkgEvent) : void
+      private function onFightState(evt:PkgEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc5_:PackageIn = param1.pkg;
-         var _loc3_:int = _loc5_.readInt();
-         var _loc4_:Boolean = _loc5_.readBoolean();
-         if(_loc3_ == PlayerManager.Instance.Self.ID)
+         var player:* = null;
+         var pkg:PackageIn = evt.pkg;
+         var playerId:int = pkg.readInt();
+         var isFight:Boolean = pkg.readBoolean();
+         if(playerId == PlayerManager.Instance.Self.ID)
          {
-            _loc2_ = _selfPlayer;
+            player = _selfPlayer;
          }
          else
          {
-            _loc2_ = _friendPlayerDic[_loc3_];
+            player = _friendPlayerDic[playerId];
          }
-         if(_loc2_)
+         if(player)
          {
-            _loc2_.consortiaDomainPlayerVo.isFight = _loc4_;
-            _loc2_.showFightState();
+            player.consortiaDomainPlayerVo.isFight = isFight;
+            player.showFightState();
          }
       }
       
-      private function onPlayerRepairChange(param1:PkgEvent) : void
+      private function onPlayerRepairChange(evt:PkgEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc5_:PackageIn = param1.pkg;
-         var _loc3_:int = _loc5_.readInt();
-         var _loc4_:int = _loc5_.readInt();
-         if(_loc3_ == PlayerManager.Instance.Self.ID)
+         var player:* = null;
+         var pkg:PackageIn = evt.pkg;
+         var playerId:int = pkg.readInt();
+         var repairBuildId:int = pkg.readInt();
+         if(playerId == PlayerManager.Instance.Self.ID)
          {
-            _loc2_ = _selfPlayer;
+            player = _selfPlayer;
          }
          else
          {
-            _loc2_ = _friendPlayerDic[_loc3_];
+            player = _friendPlayerDic[playerId];
          }
-         if(_loc2_)
+         if(player)
          {
-            _loc2_.consortiaDomainPlayerVo.repairBuildId = _loc4_;
-            _loc2_.checkShowRepair();
+            player.consortiaDomainPlayerVo.repairBuildId = repairBuildId;
+            player.checkShowRepair();
          }
       }
       
-      private function onPlayerRepair(param1:PkgEvent) : void
+      private function onPlayerRepair(evt:PkgEvent) : void
       {
          SocketManager.Instance.out.getConsortiaDomainConsortiaInfo();
       }
       
-      private function onPlayerMove(param1:PkgEvent) : void
+      private function onPlayerMove(evt:PkgEvent) : void
       {
-         var _loc8_:int = 0;
-         var _loc2_:* = null;
-         var _loc7_:PackageIn = param1.pkg;
-         var _loc5_:int = _loc7_.readInt();
-         if(_loc5_ == PlayerManager.Instance.Self.ID)
+         var i:int = 0;
+         var point:* = null;
+         var pkg:PackageIn = evt.pkg;
+         var playerId:int = pkg.readInt();
+         if(playerId == PlayerManager.Instance.Self.ID)
          {
             return;
          }
-         var _loc3_:int = _loc7_.readInt();
-         var _loc6_:Array = [];
-         _loc8_ = 0;
-         while(_loc8_ < _loc3_)
+         var xyCount:int = pkg.readInt();
+         var path:Array = [];
+         for(i = 0; i < xyCount; )
          {
-            _loc2_ = new Point(_loc7_.readInt(),_loc7_.readInt());
-            _loc6_.push(_loc2_);
-            _loc8_++;
+            point = new Point(pkg.readInt(),pkg.readInt());
+            path.push(point);
+            i++;
          }
-         var _loc4_:ConsortiaDomainHallPlayer = _friendPlayerDic[_loc5_];
-         if(_loc4_)
+         var player:ConsortiaDomainHallPlayer = _friendPlayerDic[playerId];
+         if(player)
          {
-            _loc4_.playerVO.walkPath = _loc6_;
-            _loc4_.playerVO.currentWalkStartPoint = _loc4_.currentWalkStartPoint;
+            player.playerVO.walkPath = path;
+            player.playerVO.currentWalkStartPoint = player.currentWalkStartPoint;
          }
       }
       
-      private function onMonsterStateChange(param1:flash.events.Event) : void
+      private function onMonsterStateChange(evt:flash.events.Event) : void
       {
-         var _loc3_:Object = ConsortiaDomainManager.instance.model.monsterInfo;
+         var allMonesterInfo:Object = ConsortiaDomainManager.instance.model.monsterInfo;
          var _loc5_:int = 0;
-         var _loc4_:* = _loc3_;
-         for each(var _loc2_ in _loc3_)
+         var _loc4_:* = allMonesterInfo;
+         for each(var eachInfo in allMonesterInfo)
          {
-            updateMonsterInfoSingle(_loc2_);
+            updateMonsterInfoSingle(eachInfo);
          }
       }
       
-      private function onMonsterInfoSingle(param1:CEvent) : void
+      private function onMonsterInfoSingle(evt:CEvent) : void
       {
-         var _loc2_:EachMonsterInfo = param1.data as EachMonsterInfo;
-         updateMonsterInfoSingle(_loc2_);
+         var eachMonsterInfo:EachMonsterInfo = evt.data as EachMonsterInfo;
+         updateMonsterInfoSingle(eachMonsterInfo);
       }
       
-      private function updateMonsterInfoSingle(param1:EachMonsterInfo) : void
+      private function updateMonsterInfoSingle(eachInfo:EachMonsterInfo) : void
       {
-         var _loc5_:* = null;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:int = indexOfMonsterByLivingID(param1.LivingID);
-         if((param1.state == 1 || param1.state == 3 || param1.state == 4 || param1.state == 5) && _loc2_ == -1)
+         var monsterBone:* = null;
+         var buildCenterPos:* = null;
+         var endPos:* = null;
+         var monsterIndex:int = indexOfMonsterByLivingID(eachInfo.LivingID);
+         if((eachInfo.state == 1 || eachInfo.state == 3 || eachInfo.state == 4 || eachInfo.state == 5) && monsterIndex == -1)
          {
-            _loc5_ = new MonsterBone(param1);
-            _loc5_.x = param1.posX;
-            _loc5_.y = param1.posY;
-            _disObjSortView.addDisplayObject(_loc5_);
+            monsterBone = new MonsterBone(eachInfo);
+            monsterBone.x = eachInfo.posX;
+            monsterBone.y = eachInfo.posY;
+            _disObjSortView.addDisplayObject(monsterBone);
          }
-         else if(_loc2_ > -1)
+         else if(monsterIndex > -1)
          {
-            _loc5_ = _disObjSortView.getDisplayObjectByIndex(_loc2_);
+            monsterBone = _disObjSortView.getDisplayObjectByIndex(monsterIndex);
          }
-         if(_loc5_)
+         if(monsterBone)
          {
-            if(param1.state == 3 && param1.TargetID > 0)
+            if(eachInfo.state == 3 && eachInfo.TargetID > 0)
             {
-               _loc4_ = ConsortiaDomainManager.BUILD_CENTER_POS_ARR[param1.TargetID];
-               _loc3_ = ConsortiaDomainManager.instance.getIntersectionPoint(_loc4_.x,_loc4_.y,ConsortiaDomainManager.BUILD_RADIUS_ARR[param1.TargetID],_loc5_.x,_loc5_.y);
-               if(_loc3_)
+               buildCenterPos = ConsortiaDomainManager.BUILD_CENTER_POS_ARR[eachInfo.TargetID];
+               endPos = ConsortiaDomainManager.instance.getIntersectionPoint(buildCenterPos.x,buildCenterPos.y,ConsortiaDomainManager.BUILD_RADIUS_ARR[eachInfo.TargetID],monsterBone.x,monsterBone.y);
+               if(endPos)
                {
-                  _loc5_.pathArr = [_loc3_];
+                  monsterBone.pathArr = [endPos];
                }
             }
-            _loc5_.moveEntityState = param1.state;
+            monsterBone.moveEntityState = eachInfo.state;
          }
       }
       
-      private function onRemoveChildMonster(param1:CEvent) : void
+      private function onRemoveChildMonster(evt:CEvent) : void
       {
-         var _loc2_:MonsterBone = param1.data as MonsterBone;
-         _disObjSortView.removeDisplayObject(_loc2_,true);
+         var monsterBone:MonsterBone = evt.data as MonsterBone;
+         _disObjSortView.removeDisplayObject(monsterBone,true);
       }
       
-      protected function __onFriendPlayerInfo(param1:PkgEvent) : void
+      protected function __onFriendPlayerInfo(event:PkgEvent) : void
       {
-         var _loc6_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc4_.readInt();
-         var _loc5_:int = 0;
-         _loc6_ = 0;
-         while(_loc6_ < _loc2_)
+         var i:int = 0;
+         var playerVo:* = null;
+         var pkg:PackageIn = event.pkg;
+         var playerNum:int = pkg.readInt();
+         var initPlayerCount:int = 0;
+         for(i = 0; i < playerNum; )
          {
-            _loc3_ = readPlayerInfoPkg(_loc4_);
-            if(_loc3_.playerInfo.ID == PlayerManager.Instance.Self.ID)
+            playerVo = readPlayerInfoPkg(pkg);
+            if(playerVo.playerInfo.ID == PlayerManager.Instance.Self.ID)
             {
-               addSelfPlayer(_loc3_);
+               addSelfPlayer(playerVo);
             }
-            else if(_loc5_ < 10)
+            else if(initPlayerCount < 10)
             {
-               _unLoadPlayerDic[_loc3_.playerInfo.ID] = _loc3_;
+               _unLoadPlayerDic[playerVo.playerInfo.ID] = playerVo;
             }
-            _loc5_++;
-            _loc6_++;
+            initPlayerCount++;
+            i++;
          }
       }
       
-      private function startLoadOtherPlayer(param1:Boolean = true) : void
+      private function startLoadOtherPlayer(flag:Boolean = true) : void
       {
-         if(param1 && !this.hasEventListener("enterFrame"))
+         if(flag && !this.hasEventListener("enterFrame"))
          {
             addEventListener("enterFrame",__updateFrame);
          }
@@ -352,31 +350,31 @@ package starling.scene.consortiaDomain
          }
       }
       
-      protected function __onloadPlayerRes(param1:TimerEvent) : void
+      protected function __onloadPlayerRes(event:TimerEvent) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = _loadPlayerDic;
-         for(var _loc2_ in _loadPlayerDic)
+         for(var id in _loadPlayerDic)
          {
-            if(_loadPlayerDic[_loc2_])
+            if(_loadPlayerDic[id])
             {
-               setPlayerInfo(_loadPlayerDic[_loc2_]);
-               delete _loadPlayerDic[_loc2_];
+               setPlayerInfo(_loadPlayerDic[id]);
+               delete _loadPlayerDic[id];
             }
          }
-         if(_loc2_ == null)
+         if(id == null)
          {
             _loadTimer.stop();
             _loadTimer.reset();
          }
       }
       
-      private function addSelfPlayer(param1:PlayerVO) : void
+      private function addSelfPlayer(playerVo:PlayerVO) : void
       {
-         var _loc2_:int = indexOfConsortiaDomainHallPlayerByID(param1.playerInfo.ID);
-         if(_loc2_ != -1)
+         var index:int = indexOfConsortiaDomainHallPlayerByID(playerVo.playerInfo.ID);
+         if(index != -1)
          {
-            _disObjSortView.removeDisplayObjectByIndex(_loc2_,true);
+            _disObjSortView.removeDisplayObjectByIndex(index,true);
          }
          if(!_mouseMovie)
          {
@@ -386,8 +384,8 @@ package starling.scene.consortiaDomain
             _mouseMovie.touchable = false;
             addChild(_mouseMovie);
          }
-         _selfPlayer = new ConsortiaDomainHallPlayer(param1);
-         _selfPlayer.playerPoint = param1.currentWalkStartPoint;
+         _selfPlayer = new ConsortiaDomainHallPlayer(playerVo);
+         _selfPlayer.playerPoint = playerVo.currentWalkStartPoint;
          if(NewTitleManager.instance.ShowTitle)
          {
             _selfPlayer.isHideTitle = true;
@@ -404,40 +402,40 @@ package starling.scene.consortiaDomain
          _selfPlayer.addEventListener("newhallbtnclick",onFinishWalk);
       }
       
-      private function readPlayerInfoPkg(param1:PackageIn) : ConsortiaDomainPlayerVo
+      private function readPlayerInfoPkg(pkg:PackageIn) : ConsortiaDomainPlayerVo
       {
-         var _loc2_:ConsortiaDomainPlayerVo = new ConsortiaDomainPlayerVo();
-         _loc2_.playerInfo = new PlayerInfo();
-         _loc2_.playerInfo.ID = param1.readInt();
-         _loc2_.playerInfo.NickName = param1.readUTF();
-         _loc2_.playerInfo.VIPLevel = param1.readInt();
-         _loc2_.playerInfo.typeVIP = param1.readInt();
-         _loc2_.playerInfo.Sex = param1.readBoolean();
-         _loc2_.playerInfo.Style = param1.readUTF();
-         _loc2_.playerInfo.Colors = param1.readUTF();
-         _loc2_.playerInfo.Skin = param1.readUTF();
-         _loc2_.playerInfo.MountsType = param1.readInt();
-         _loc2_.playerInfo.PetsID = param1.readInt();
-         _loc2_.currentWalkStartPoint = new Point(param1.readInt(),param1.readInt());
-         _loc2_.playerInfo.ConsortiaID = param1.readInt();
-         _loc2_.playerInfo.badgeID = param1.readInt();
-         _loc2_.playerInfo.ConsortiaName = param1.readUTF();
-         _loc2_.playerInfo.honor = param1.readUTF();
-         _loc2_.playerInfo.honorId = param1.readInt();
-         _loc2_.playerInfo.isAttest = param1.readBoolean();
-         _loc2_.playerInfo.ImagePath = param1.readUTF();
-         _loc2_.playerInfo.IsShow = param1.readBoolean();
-         _loc2_.isFight = param1.readBoolean();
-         _loc2_.repairBuildId = param1.readInt();
-         return _loc2_;
+         var friendVo:ConsortiaDomainPlayerVo = new ConsortiaDomainPlayerVo();
+         friendVo.playerInfo = new PlayerInfo();
+         friendVo.playerInfo.ID = pkg.readInt();
+         friendVo.playerInfo.NickName = pkg.readUTF();
+         friendVo.playerInfo.VIPLevel = pkg.readInt();
+         friendVo.playerInfo.typeVIP = pkg.readInt();
+         friendVo.playerInfo.Sex = pkg.readBoolean();
+         friendVo.playerInfo.Style = pkg.readUTF();
+         friendVo.playerInfo.Colors = pkg.readUTF();
+         friendVo.playerInfo.Skin = pkg.readUTF();
+         friendVo.playerInfo.MountsType = pkg.readInt();
+         friendVo.playerInfo.PetsID = pkg.readInt();
+         friendVo.currentWalkStartPoint = new Point(pkg.readInt(),pkg.readInt());
+         friendVo.playerInfo.ConsortiaID = pkg.readInt();
+         friendVo.playerInfo.badgeID = pkg.readInt();
+         friendVo.playerInfo.ConsortiaName = pkg.readUTF();
+         friendVo.playerInfo.honor = pkg.readUTF();
+         friendVo.playerInfo.honorId = pkg.readInt();
+         friendVo.playerInfo.isAttest = pkg.readBoolean();
+         friendVo.playerInfo.ImagePath = pkg.readUTF();
+         friendVo.playerInfo.IsShow = pkg.readBoolean();
+         friendVo.isFight = pkg.readBoolean();
+         friendVo.repairBuildId = pkg.readInt();
+         return friendVo;
       }
       
-      private function indexOfConsortiaDomainHallPlayerByID(param1:int) : int
+      private function indexOfConsortiaDomainHallPlayerByID(ID:int) : int
       {
-         ID = param1;
-         return _disObjSortView.indexOfDisplayObjectByFun(function(param1:DisplayObject):Boolean
+         ID = ID;
+         return _disObjSortView.indexOfDisplayObjectByFun(function(entity:DisplayObject):Boolean
          {
-            if(param1 is ConsortiaDomainHallPlayer && ConsortiaDomainHallPlayer(param1).playerVO.playerInfo.ID == ID)
+            if(entity is ConsortiaDomainHallPlayer && ConsortiaDomainHallPlayer(entity).playerVO.playerInfo.ID == ID)
             {
                return true;
             }
@@ -445,12 +443,12 @@ package starling.scene.consortiaDomain
          });
       }
       
-      private function indexOfMonsterByLivingID(param1:int) : int
+      private function indexOfMonsterByLivingID(LivingID:int) : int
       {
-         LivingID = param1;
-         return _disObjSortView.indexOfDisplayObjectByFun(function(param1:DisplayObject):Boolean
+         LivingID = LivingID;
+         return _disObjSortView.indexOfDisplayObjectByFun(function(entity:DisplayObject):Boolean
          {
-            if(param1 is MonsterBone && MonsterBone(param1).eachMonsterInfo.LivingID == LivingID)
+            if(entity is MonsterBone && MonsterBone(entity).eachMonsterInfo.LivingID == LivingID)
             {
                return true;
             }
@@ -458,83 +456,82 @@ package starling.scene.consortiaDomain
          });
       }
       
-      private function setPlayerInfo(param1:ConsortiaDomainPlayerVo) : void
+      private function setPlayerInfo(friendVo:ConsortiaDomainPlayerVo) : void
       {
-         var _loc3_:int = indexOfConsortiaDomainHallPlayerByID(param1.playerInfo.ID);
-         if(_loc3_ != -1)
+         var friendPlayerIndex:int = indexOfConsortiaDomainHallPlayerByID(friendVo.playerInfo.ID);
+         if(friendPlayerIndex != -1)
          {
-            _disObjSortView.removeDisplayObjectByIndex(_loc3_,true);
-            delete _friendPlayerDic[param1.playerInfo.ID];
+            _disObjSortView.removeDisplayObjectByIndex(friendPlayerIndex,true);
+            delete _friendPlayerDic[friendVo.playerInfo.ID];
          }
-         var _loc2_:ConsortiaDomainHallPlayer = new ConsortiaDomainHallPlayer(param1);
-         _loc2_.playerPoint = _loc2_.playerVO.currentWalkStartPoint;
+         var friendPlayer:ConsortiaDomainHallPlayer = new ConsortiaDomainHallPlayer(friendVo);
+         friendPlayer.playerPoint = friendPlayer.playerVO.currentWalkStartPoint;
          if(!_hidFlag)
          {
-            _loc2_.showFightState();
+            friendPlayer.showFightState();
          }
-         _loc2_.isHideTitle = true;
-         _disObjSortView.addDisplayObject(_loc2_);
-         _friendPlayerDic[param1.playerInfo.ID] = _loc2_;
+         friendPlayer.isHideTitle = true;
+         _disObjSortView.addDisplayObject(friendPlayer);
+         _friendPlayerDic[friendVo.playerInfo.ID] = friendPlayer;
       }
       
-      public function set type(param1:String) : void
+      public function set type(value:String) : void
       {
-         _selfPlayer.sceneCharacterActionState = param1;
+         _selfPlayer.sceneCharacterActionState = value;
       }
       
-      protected function __updateFrame(param1:starling.events.Event) : void
+      protected function __updateFrame(event:starling.events.Event) : void
       {
-         var _loc6_:int = 0;
-         var _loc5_:* = undefined;
-         var _loc4_:Number = NaN;
+         var i:int = 0;
+         var obj:* = undefined;
+         var dis:Number = NaN;
          _disObjSortView.sortDisplayObjectLayer();
-         var _loc3_:Array = _disObjSortView.disObjArr;
-         var _loc2_:Boolean = ConsortiaDomainManager.instance.isShowFightMonster;
-         _loc6_ = 0;
-         while(_loc6_ < _loc3_.length)
+         var entityArr:Array = _disObjSortView.disObjArr;
+         var isShowFightMonster:Boolean = ConsortiaDomainManager.instance.isShowFightMonster;
+         for(i = 0; i < entityArr.length; )
          {
-            _loc5_ = _loc3_[_loc6_];
-            if(_loc5_)
+            obj = entityArr[i];
+            if(obj)
             {
-               if(_loc5_ is ConsortiaDomainHallPlayer)
+               if(obj is ConsortiaDomainHallPlayer)
                {
-                  _loc5_.updatePlayer();
+                  obj.updatePlayer();
                }
-               else if(_loc5_ is MonsterBone)
+               else if(obj is MonsterBone)
                {
-                  _loc5_.visible = true;
-                  if(!_loc2_ && MonsterBone(_loc5_).moveEntityState == 5)
+                  obj.visible = true;
+                  if(!isShowFightMonster && MonsterBone(obj).moveEntityState == 5)
                   {
-                     _loc5_.visible = false;
+                     obj.visible = false;
                   }
                }
-               if(_loc5_ != _selfPlayer)
+               if(obj != _selfPlayer)
                {
-                  _loc4_ = (_selfPlayer.x - _loc5_.x) * (_selfPlayer.x - _loc5_.x) + (_selfPlayer.y - _loc5_.y) * (_selfPlayer.y - _loc5_.y);
-                  if(_loc5_.y > _selfPlayer.y && _loc4_ < 10000)
+                  dis = (_selfPlayer.x - obj.x) * (_selfPlayer.x - obj.x) + (_selfPlayer.y - obj.y) * (_selfPlayer.y - obj.y);
+                  if(obj.y > _selfPlayer.y && dis < 10000)
                   {
-                     _loc5_.alpha = 0.5;
+                     obj.alpha = 0.5;
                   }
                   else
                   {
-                     _loc5_.alpha = 1;
+                     obj.alpha = 1;
                   }
                }
             }
-            _loc6_++;
+            i++;
          }
       }
       
-      protected function __onPlayerClick(param1:TouchEvent) : void
+      protected function __onPlayerClick(event:TouchEvent) : void
       {
-         var _loc7_:Number = NaN;
-         var _loc6_:* = null;
-         var _loc8_:* = null;
-         var _loc5_:* = null;
-         var _loc2_:* = false;
-         var _loc4_:* = null;
-         var _loc3_:Touch = param1.getTouch(Starling.current.stage,"ended");
-         if(!_loc3_ || !this.touchable || LayerManager.Instance.backGroundInParent || _nativeStageClickFilter.isTypeOf([Bitmap,TextField,Component]) || ObjectUtils.getDisplayObjectSuperParent(_nativeStageClickFilter.nativeStageClickDisplayObj,ChatView,Starling.current.nativeStage) || ObjectUtils.getDisplayObjectSuperParentByName(_nativeStageClickFilter.nativeStageClickDisplayObj,"consortiaDomain.view::BuildsStateView",Starling.current.nativeStage))
+         var clickInterval:Number = NaN;
+         var touchDisplayObject:* = null;
+         var touchDisplayObjectP:* = null;
+         var targetPoint:* = null;
+         var isMonster:* = false;
+         var buildView:* = null;
+         var touch:Touch = event.getTouch(Starling.current.stage,"ended");
+         if(!touch || !this.touchable || LayerManager.Instance.backGroundInParent || _nativeStageClickFilter.isTypeOf([Bitmap,TextField,Component]) || ObjectUtils.getDisplayObjectSuperParent(_nativeStageClickFilter.nativeStageClickDisplayObj,ChatView,Starling.current.nativeStage) || ObjectUtils.getDisplayObjectSuperParentByName(_nativeStageClickFilter.nativeStageClickDisplayObj,"consortiaDomain.view::BuildsStateView",Starling.current.nativeStage))
          {
             return;
          }
@@ -545,27 +542,27 @@ package starling.scene.consortiaDomain
             {
                return;
             }
-            _loc7_ = 200;
-            if(getTimer() - _lastClick > _loc7_)
+            clickInterval = 200;
+            if(getTimer() - _lastClick > clickInterval)
             {
-               _loc6_ = _loc3_.target;
-               _loc8_ = _loc6_.parent;
-               _loc5_ = _loc3_.getLocation(this);
+               touchDisplayObject = touch.target;
+               touchDisplayObjectP = touchDisplayObject.parent;
+               targetPoint = touch.getLocation(this);
                _lastClick = getTimer();
-               _loc2_ = _loc6_ is MonsterBone;
-               _loc4_ = ObjectUtils.getDisplayObjectSuperParent(_loc6_,BuildView,Starling.current.stage);
-               if(_loc2_)
+               isMonster = touchDisplayObject is MonsterBone;
+               buildView = ObjectUtils.getDisplayObjectSuperParent(touchDisplayObject,BuildView,Starling.current.stage);
+               if(isMonster)
                {
-                  _selfPlayer.walkTarget = _loc6_;
+                  _selfPlayer.walkTarget = touchDisplayObject;
                }
-               else if(_loc4_)
+               else if(buildView)
                {
-                  if(_selfPlayer.consortiaDomainPlayerVo.repairBuildId > 0 && _selfPlayer.walkTarget != _loc4_)
+                  if(_selfPlayer.consortiaDomainPlayerVo.repairBuildId > 0 && _selfPlayer.walkTarget != buildView)
                   {
                      _selfPlayer.alertUnRepairBuild();
                      return;
                   }
-                  _selfPlayer.walkTarget = _loc4_;
+                  _selfPlayer.walkTarget = buildView;
                }
                else
                {
@@ -576,13 +573,13 @@ package starling.scene.consortiaDomain
                   }
                   _selfPlayer.walkTarget = null;
                }
-               if(!setSelfPlayerPos(_loc5_))
+               if(!setSelfPlayerPos(targetPoint))
                {
-                  if(_loc2_)
+                  if(isMonster)
                   {
                      _selfPlayer.checkAndFightWithMonster();
                   }
-                  else if(_loc4_)
+                  else if(buildView)
                   {
                      _selfPlayer.checkAndRepairBuild();
                   }
@@ -591,33 +588,33 @@ package starling.scene.consortiaDomain
          }
       }
       
-      protected function __onSetSelfPlayerPos(param1:NewHallEvent) : void
+      protected function __onSetSelfPlayerPos(event:NewHallEvent) : void
       {
          PlayerManager.Instance.dispatchEvent(new NewHallEvent("newhallsetplayertippos",[null]));
-         var _loc2_:Point = this.globalToLocal(new Point(param1.data[0].stageX,param1.data[0].stageY));
-         checkAndWalkToPoint(_loc2_);
+         var targetPoint:Point = this.globalToLocal(new Point(event.data[0].stageX,event.data[0].stageY));
+         checkAndWalkToPoint(targetPoint);
       }
       
-      private function setSelfPlayerPos(param1:Point, param2:Boolean = true) : Boolean
+      private function setSelfPlayerPos(pos:Point, mouseFlag:Boolean = true) : Boolean
       {
-         var _loc4_:* = null;
-         var _loc3_:Array = ConsortiaDomainManager.instance.aStarPathFinder.searchPath(_selfPlayer.playerPoint,param1);
-         if(_loc3_)
+         var endPos:* = null;
+         var path:Array = ConsortiaDomainManager.instance.aStarPathFinder.searchPath(_selfPlayer.playerPoint,pos);
+         if(path)
          {
-            _loc4_ = _loc3_[_loc3_.length - 1];
-            _mouseMovie.visible = param2;
-            _mouseMovie.x = _loc4_.x;
-            _mouseMovie.y = _loc4_.y;
+            endPos = path[path.length - 1];
+            _mouseMovie.visible = mouseFlag;
+            _mouseMovie.x = endPos.x;
+            _mouseMovie.y = endPos.y;
             _mouseMovie.play("stand");
-            _selfPlayer.playerVO.walkPath = _loc3_;
+            _selfPlayer.playerVO.walkPath = path;
             _selfPlayer.playerVO.currentWalkStartPoint = _selfPlayer.currentWalkStartPoint;
-            SocketManager.Instance.out.sendConsortiaDomainMove(_loc3_);
+            SocketManager.Instance.out.sendConsortiaDomainMove(path);
             return true;
          }
          return false;
       }
       
-      public function checkAndWalkToPoint(param1:Point) : void
+      public function checkAndWalkToPoint(endPos:Point) : void
       {
          if(_selfPlayer.consortiaDomainPlayerVo.isFight)
          {
@@ -629,21 +626,21 @@ package starling.scene.consortiaDomain
             return;
          }
          _selfPlayer.walkTarget = null;
-         setSelfPlayerPos(param1);
+         setSelfPlayerPos(endPos);
       }
       
-      protected function onFinishWalk(param1:NewHallEventStarling) : void
+      protected function onFinishWalk(event:NewHallEventStarling) : void
       {
          _mouseMovie.stop();
          _mouseMovie.visible = false;
-         var _loc2_:DisplayObject = _selfPlayer.walkTarget;
-         if(_loc2_)
+         var walkTarget:DisplayObject = _selfPlayer.walkTarget;
+         if(walkTarget)
          {
-            if(_loc2_ is MonsterBone)
+            if(walkTarget is MonsterBone)
             {
                _selfPlayer.checkAndFightWithMonster();
             }
-            else if(_loc2_ is BuildView)
+            else if(walkTarget is BuildView)
             {
                _selfPlayer.checkAndRepairBuild();
             }
@@ -661,13 +658,13 @@ package starling.scene.consortiaDomain
       
       private function checkCanStartGame() : Boolean
       {
-         var _loc1_:Boolean = true;
+         var result:Boolean = true;
          if(CheckWeaponManager.instance.isNoWeapon())
          {
             CheckWeaponManager.instance.showAlert();
-            _loc1_ = false;
+            result = false;
          }
-         return _loc1_;
+         return result;
       }
       
       protected function ajustScreen() : void
@@ -675,56 +672,56 @@ package starling.scene.consortiaDomain
          _selfPlayer.addEventListener("characterMovement",setCenter);
       }
       
-      public function setCenter(param1:SceneCharacterEvent = null) : void
+      public function setCenter(event:SceneCharacterEvent = null) : void
       {
-         var _loc7_:int = 0;
-         var _loc3_:int = 0;
-         var _loc6_:int = StageReferance.stageWidth;
-         var _loc2_:int = StageReferance.stageHeight;
+         var xf:int = 0;
+         var yf:int = 0;
+         var width:int = StageReferance.stageWidth;
+         var height:int = StageReferance.stageHeight;
          if(_selfPlayer)
          {
-            _loc7_ = -(_selfPlayer.x - _loc6_ / 2);
-            _loc3_ = -(_selfPlayer.y - _loc2_ / 2) + 50;
+            xf = -(_selfPlayer.x - width / 2);
+            yf = -(_selfPlayer.y - height / 2) + 50;
          }
-         if(_loc7_ > 0)
+         if(xf > 0)
          {
-            _loc7_ = 0;
+            xf = 0;
          }
-         if(_loc7_ < _loc6_ - ConsortiaDomainManager.instance.sceneMapGridData.bgImageW)
+         if(xf < width - ConsortiaDomainManager.instance.sceneMapGridData.bgImageW)
          {
-            _loc7_ = _loc6_ - ConsortiaDomainManager.instance.sceneMapGridData.bgImageW;
+            xf = width - ConsortiaDomainManager.instance.sceneMapGridData.bgImageW;
          }
-         if(_loc3_ > 0)
+         if(yf > 0)
          {
-            _loc3_ = 0;
+            yf = 0;
          }
-         if(_loc3_ < _loc2_ - ConsortiaDomainManager.instance.sceneMapGridData.bgImageH)
+         if(yf < height - ConsortiaDomainManager.instance.sceneMapGridData.bgImageH)
          {
-            _loc3_ = _loc2_ - ConsortiaDomainManager.instance.sceneMapGridData.bgImageH;
+            yf = height - ConsortiaDomainManager.instance.sceneMapGridData.bgImageH;
          }
-         this.x = _loc7_;
-         this.y = _loc3_;
-         ConsortiaDomainManager.instance.bgLayerViewRect.x = -_loc7_;
-         ConsortiaDomainManager.instance.bgLayerViewRect.y = -_loc3_;
+         this.x = xf;
+         this.y = yf;
+         ConsortiaDomainManager.instance.bgLayerViewRect.x = -xf;
+         ConsortiaDomainManager.instance.bgLayerViewRect.y = -yf;
          _staticLayer.setCenter();
          if(!_hidFlag)
          {
             var _loc9_:int = 0;
             var _loc8_:* = _unLoadPlayerDic;
-            for(var _loc5_ in _unLoadPlayerDic)
+            for(var id1 in _unLoadPlayerDic)
             {
-               if(_unLoadPlayerDic[_loc5_] && _unLoadPlayerDic[_loc5_].currentWalkStartPoint)
+               if(_unLoadPlayerDic[id1] && _unLoadPlayerDic[id1].currentWalkStartPoint)
                {
-                  _loadPlayerDic[_unLoadPlayerDic[_loc5_].playerInfo.ID] = _unLoadPlayerDic[_loc5_];
-                  delete _unLoadPlayerDic[_loc5_];
+                  _loadPlayerDic[_unLoadPlayerDic[id1].playerInfo.ID] = _unLoadPlayerDic[id1];
+                  delete _unLoadPlayerDic[id1];
                }
             }
          }
          var _loc11_:int = 0;
          var _loc10_:* = _loadPlayerDic;
-         for(var _loc4_ in _loadPlayerDic)
+         for(var id2 in _loadPlayerDic)
          {
-            if(_loadPlayerDic[_loc4_])
+            if(_loadPlayerDic[id2])
             {
                startLoadOtherPlayer(false);
                break;
@@ -739,70 +736,68 @@ package starling.scene.consortiaDomain
       
       private function addBuildsAndEffs() : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc1_:* = null;
-         _loc4_ = 0;
-         while(_loc4_ < monsterSecretBornBuildPos.length / 2)
+         var i:int = 0;
+         var monsterSecretBornBuild:* = null;
+         var monsterNormalBornBuild:* = null;
+         for(i = 0; i < monsterSecretBornBuildPos.length / 2; )
          {
-            _loc3_ = new MonsterSecretBornPoint(_loc4_ + 1,"consortiaDomainMonsterSecretBorn",1.06667);
-            if(_loc4_ > 1)
+            monsterSecretBornBuild = new MonsterSecretBornPoint(i + 1,"consortiaDomainMonsterSecretBorn",1.06667);
+            if(i > 1)
             {
-               _loc3_.scaleX = -1;
+               monsterSecretBornBuild.scaleX = -1;
             }
-            _loc3_.touchable = false;
-            _loc3_.setXY(monsterSecretBornBuildPos[_loc4_ * 2],monsterSecretBornBuildPos[_loc4_ * 2 + 1]);
-            _loc3_.monsterBornBuildState = 1;
-            _disObjSortView.addDisplayObject(_loc3_);
-            _loc4_++;
+            monsterSecretBornBuild.touchable = false;
+            monsterSecretBornBuild.setXY(monsterSecretBornBuildPos[i * 2],monsterSecretBornBuildPos[i * 2 + 1]);
+            monsterSecretBornBuild.monsterBornBuildState = 1;
+            _disObjSortView.addDisplayObject(monsterSecretBornBuild);
+            i++;
          }
-         _loc4_ = 0;
-         while(_loc4_ < monsterNormalBornBuildPos.length / 2)
+         for(i = 0; i < monsterNormalBornBuildPos.length / 2; )
          {
-            _loc1_ = new MonsterNormalBornPoint(_loc4_ + 1,"consortiaDomainMonsterNormalBorn",1.06667);
-            if(_loc4_ > 2)
+            monsterNormalBornBuild = new MonsterNormalBornPoint(i + 1,"consortiaDomainMonsterNormalBorn",1.06667);
+            if(i > 2)
             {
-               _loc1_.scaleX = -1;
+               monsterNormalBornBuild.scaleX = -1;
             }
-            _loc1_.laySortY = _loc4_;
-            _loc1_.touchable = false;
-            _loc1_.setXY(monsterNormalBornBuildPos[_loc4_ * 2],monsterNormalBornBuildPos[_loc4_ * 2 + 1]);
-            _loc1_.monsterBornBuildState = 1;
-            _disObjSortView.addDisplayObject(_loc1_);
-            _loc4_++;
+            monsterNormalBornBuild.laySortY = i;
+            monsterNormalBornBuild.touchable = false;
+            monsterNormalBornBuild.setXY(monsterNormalBornBuildPos[i * 2],monsterNormalBornBuildPos[i * 2 + 1]);
+            monsterNormalBornBuild.monsterBornBuildState = 1;
+            _disObjSortView.addDisplayObject(monsterNormalBornBuild);
+            i++;
          }
-         var _loc2_:BuildView = new BuildView(3,1.06667);
-         _loc2_.x = 1181;
-         _loc2_.y = 573;
-         _loc2_.setBuildXY(-215,-246);
-         _loc2_.createEff("consortiaDomainShopEff",-103,-164);
-         _disObjSortView.addDisplayObject(_loc2_);
-         _loc2_ = new BuildView(4,1.06667);
-         _loc2_.x = 1996;
-         _loc2_.y = 477;
-         _loc2_.setBuildXY(-160,-230);
-         _loc2_.createEff("consortiaDomainBagStoreEff",162,-380,-2,2);
-         _disObjSortView.addDisplayObject(_loc2_);
-         _loc2_ = new BuildView(1,1.06667);
-         _loc2_.x = 886;
-         _loc2_.y = 1016;
-         _loc2_.setBuildXY(-93,-121);
-         _loc2_.createEff("consortiaDomainHomeBankEff",-33,2);
-         _disObjSortView.addDisplayObject(_loc2_);
-         _loc2_ = new BuildView(2,1.06667);
-         _loc2_.x = 2250;
-         _loc2_.y = 927;
-         _loc2_.setBuildXY(-141,-284);
-         _loc2_.createEff("consortiaDomainSkillEff",-141,-381);
-         _disObjSortView.addDisplayObject(_loc2_);
-         _loc2_ = new BuildView(5,1.06667);
-         _loc2_.x = 1599;
-         _loc2_.y = 910;
-         _loc2_.setBuildXY(-347,-346);
-         _loc2_.createEff("consortiaDomainCityEff1",423,-53);
-         _loc2_.createEff("consortiaDomainCityEff2",103,55);
-         _loc2_.createEff("consortiaDomainCityEff3",391,216);
-         _disObjSortView.addDisplayObject(_loc2_);
+         var buildView:BuildView = new BuildView(3,1.06667);
+         buildView.x = 1181;
+         buildView.y = 573;
+         buildView.setBuildXY(-215,-246);
+         buildView.createEff("consortiaDomainShopEff",-103,-164);
+         _disObjSortView.addDisplayObject(buildView);
+         buildView = new BuildView(4,1.06667);
+         buildView.x = 1996;
+         buildView.y = 477;
+         buildView.setBuildXY(-160,-230);
+         buildView.createEff("consortiaDomainBagStoreEff",162,-380,-2,2);
+         _disObjSortView.addDisplayObject(buildView);
+         buildView = new BuildView(1,1.06667);
+         buildView.x = 886;
+         buildView.y = 1016;
+         buildView.setBuildXY(-93,-121);
+         buildView.createEff("consortiaDomainHomeBankEff",-33,2);
+         _disObjSortView.addDisplayObject(buildView);
+         buildView = new BuildView(2,1.06667);
+         buildView.x = 2250;
+         buildView.y = 927;
+         buildView.setBuildXY(-141,-284);
+         buildView.createEff("consortiaDomainSkillEff",-141,-381);
+         _disObjSortView.addDisplayObject(buildView);
+         buildView = new BuildView(5,1.06667);
+         buildView.x = 1599;
+         buildView.y = 910;
+         buildView.setBuildXY(-347,-346);
+         buildView.createEff("consortiaDomainCityEff1",423,-53);
+         buildView.createEff("consortiaDomainCityEff2",103,55);
+         buildView.createEff("consortiaDomainCityEff3",391,216);
+         _disObjSortView.addDisplayObject(buildView);
       }
       
       override public function dispose() : void

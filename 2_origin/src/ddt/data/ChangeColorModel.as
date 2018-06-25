@@ -77,35 +77,35 @@ package ddt.data
          _equipBag.removeEventListener("update",__updateItem);
       }
       
-      private function __updateItem(param1:BagEvent) : void
+      private function __updateItem(evt:BagEvent) : void
       {
-         var _loc2_:Dictionary = param1.changedSlots;
-         param1.stopImmediatePropagation();
-         colorEditableBag.dispatchEvent(new BagEvent("update",_loc2_));
+         var changedSlots:Dictionary = evt.changedSlots;
+         evt.stopImmediatePropagation();
+         colorEditableBag.dispatchEvent(new BagEvent("update",changedSlots));
       }
       
       public function getColorEditableThings() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:int = 0;
+         var item:* = null;
+         var i:int = 0;
          var _loc4_:int = 0;
          var _loc3_:* = _equipBag.items;
-         for each(_loc1_ in _equipBag.items)
+         for each(item in _equipBag.items)
          {
-            if(_loc1_.Place > 30)
+            if(item.Place > 30)
             {
-               if(EquipType.isEditable(_loc1_) && _loc1_.getRemainDate() > 0)
+               if(EquipType.isEditable(item) && item.getRemainDate() > 0)
                {
-                  _loc2_++;
-                  _colorEditableThings.add(_loc2_,_loc1_);
+                  i++;
+                  _colorEditableThings.add(i,item);
                }
             }
          }
       }
       
-      public function setOnlyOneEditableThing(param1:InventoryItemInfo) : void
+      public function setOnlyOneEditableThing(item:InventoryItemInfo) : void
       {
-         _colorEditableThings.add(0,param1);
+         _colorEditableThings.add(0,item);
       }
       
       public function savaItemInfo() : void
@@ -128,7 +128,7 @@ package ddt.data
          return _colorEditableThings;
       }
       
-      public function set self(param1:SelfInfo) : void
+      public function set self(value:SelfInfo) : void
       {
       }
       
@@ -137,14 +137,14 @@ package ddt.data
          return _self;
       }
       
-      public function set currentItem(param1:InventoryItemInfo) : void
+      public function set currentItem(value:InventoryItemInfo) : void
       {
-         _currentItem = param1;
+         _currentItem = value;
       }
       
-      public function findBodyThingByCategoryID(param1:int) : InventoryItemInfo
+      public function findBodyThingByCategoryID(id:int) : InventoryItemInfo
       {
-         return _equipBag.findFirstItem(param1);
+         return _equipBag.findFirstItem(id);
       }
       
       public function get currentItem() : InventoryItemInfo
@@ -152,9 +152,9 @@ package ddt.data
          return _currentItem;
       }
       
-      public function set changed(param1:Boolean) : void
+      public function set changed(value:Boolean) : void
       {
-         _changed = param1;
+         _changed = value;
          dispatchEvent(new Event("setColor"));
       }
       

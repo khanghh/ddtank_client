@@ -40,17 +40,17 @@ package civil
          super.prepare();
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
-         super.enter(param1,param2);
+         super.enter(prev,data);
          SocketManager.Instance.out.sendCurrentState(1);
-         init(param2);
+         init(data);
          MainToolBar.Instance.show();
       }
       
-      private function init(param1:Boolean = true) : void
+      private function init(entered:Boolean = true) : void
       {
-         _model = new CivilModel(param1);
+         _model = new CivilModel(entered);
          this.loadCivilMemberList(1,!PlayerManager.Instance.Self.Sex);
          _model.sex = !PlayerManager.Instance.Self.Sex;
          _view = new CivilView(this,_model);
@@ -80,7 +80,7 @@ package civil
          LayerManager.Instance.addToLayer(_register,3,true,1);
       }
       
-      private function __onRegisterComplete(param1:Event) : void
+      private function __onRegisterComplete(evt:Event) : void
       {
          _register.removeEventListener("complete",__onRegisterComplete);
          ObjectUtils.disposeObject(_register);
@@ -96,50 +96,50 @@ package civil
          return null;
       }
       
-      public function set currentcivilInfo(param1:CivilPlayerInfo) : void
+      public function set currentcivilInfo(value:CivilPlayerInfo) : void
       {
          if(_model)
          {
-            _model.currentcivilItemInfo = param1;
+            _model.currentcivilItemInfo = value;
          }
       }
       
-      public function upLeftView(param1:CivilPlayerInfo) : void
+      public function upLeftView(info:CivilPlayerInfo) : void
       {
          if(_model)
          {
-            _model.currentcivilItemInfo = param1;
+            _model.currentcivilItemInfo = info;
          }
       }
       
-      public function loadCivilMemberList(param1:int = 0, param2:Boolean = true, param3:String = "") : void
+      public function loadCivilMemberList(page:int = 0, sex:Boolean = true, name:String = "") : void
       {
-         var _loc5_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         _loc5_["page"] = param1;
-         _loc5_["name"] = param3;
-         _loc5_["sex"] = param2;
-         var _loc4_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("MarryInfoPageList.ashx"),6,_loc5_);
-         _loc4_.loadErrorMessage = LanguageMgr.GetTranslation("civil.frame.CivilRegisterFrame.infoError");
-         _loc4_.analyzer = new CivilMemberListAnalyze(__loadCivilMemberList);
-         LoadResourceManager.Instance.startLoad(_loc4_);
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         args["page"] = page;
+         args["name"] = name;
+         args["sex"] = sex;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("MarryInfoPageList.ashx"),6,args);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("civil.frame.CivilRegisterFrame.infoError");
+         loader.analyzer = new CivilMemberListAnalyze(__loadCivilMemberList);
+         LoadResourceManager.Instance.startLoad(loader);
       }
       
-      private function __loadCivilMemberList(param1:CivilMemberListAnalyze) : void
+      private function __loadCivilMemberList(action:CivilMemberListAnalyze) : void
       {
          if(_model)
          {
-            if(_model.TotalPage != param1._totalPage)
+            if(_model.TotalPage != action._totalPage)
             {
-               _model.TotalPage = param1._totalPage;
+               _model.TotalPage = action._totalPage;
             }
-            _model.civilPlayers = param1.civilMemberList;
+            _model.civilPlayers = action.civilMemberList;
          }
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
          MainToolBar.Instance.hide();
-         super.leaving(param1);
+         super.leaving(next);
          dispose();
       }
       

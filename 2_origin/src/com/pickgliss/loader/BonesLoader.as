@@ -10,22 +10,22 @@ package com.pickgliss.loader
    {
        
       
-      public function BonesLoader(param1:int, param2:String, param3:URLVariables = null, param4:String = "GET")
+      public function BonesLoader(id:int, url:String, args:URLVariables = null, requestMethod:String = "GET")
       {
-         super(param1,param2,param3,param4);
+         super(id,url,args,requestMethod);
       }
       
-      override public function loadFromBytes(param1:ByteArray) : void
+      override public function loadFromBytes(data:ByteArray) : void
       {
          _starTime = getTimer();
-         _loader.data = NewCrypto.decry(param1);
+         _loader.data = NewCrypto.decry(data);
          fireCompleteEvent();
          unload();
       }
       
-      override protected function __onDataLoadComplete(param1:Event) : void
+      override protected function __onDataLoadComplete(event:Event) : void
       {
-         super.__onDataLoadComplete(param1);
+         super.__onDataLoadComplete(event);
          if(_loader.data.length > 0)
          {
             LoaderSavingManager.cacheFile(_url,_loader.data,true);

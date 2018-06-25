@@ -65,23 +65,23 @@ package dice.view
          DiceController.Instance.addEventListener("dice_player_iswalking",__onPlayerStateChanged);
       }
       
-      private function __onAddRewardItem(param1:DiceEvent) : void
+      private function __onAddRewardItem(event:DiceEvent) : void
       {
-         _tempStr = String(param1.resultData.rewardItem);
+         _tempStr = String(event.resultData.rewardItem);
       }
       
-      private function __onPlayerStateChanged(param1:DiceEvent) : void
+      private function __onPlayerStateChanged(event:DiceEvent) : void
       {
-         var _loc2_:* = null;
-         if(param1.resultData && !param1.resultData.isWalking)
+         var item:* = null;
+         if(event.resultData && !event.resultData.isWalking)
          {
-            _loc2_ = ComponentFactory.Instance.creatComponentByStylename("asset.dice.reward.item");
-            _loc2_.text = _tempStr + "";
-            if(_loc2_.numLines == 1)
+            item = ComponentFactory.Instance.creatComponentByStylename("asset.dice.reward.item");
+            item.text = _tempStr + "";
+            if(item.numLines == 1)
             {
-               _loc2_.height = 19;
+               item.height = 19;
             }
-            _list.addChild(_loc2_);
+            _list.addChild(item);
             _listPanel.invalidateViewport(true);
          }
       }

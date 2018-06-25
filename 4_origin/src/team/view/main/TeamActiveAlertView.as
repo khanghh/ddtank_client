@@ -49,59 +49,59 @@ package team.view.main
          label_title.text = LanguageMgr.GetTranslation("ddt.team.allView.text13");
       }
       
-      private function __onUpdateSelfActive(param1:TeamEvent) : void
+      private function __onUpdateSelfActive(e:TeamEvent) : void
       {
          list_active.array = TeamManager.instance.model.activeList.list;
       }
       
-      private function __onRenderActive(param1:Box, param2:int) : void
+      private function __onRenderActive(item:Box, index:int) : void
       {
-         var _loc9_:* = null;
-         var _loc5_:Number = NaN;
-         var _loc7_:Label = param1.getChildByName("label_desc") as Label;
-         var _loc8_:Label = param1.getChildByName("label_score") as Label;
-         var _loc4_:Label = param1.getChildByName("label_limit") as Label;
-         var _loc3_:ProgressBar = param1.getChildByName("progress_active") as ProgressBar;
-         var _loc6_:Button = param1.getChildByName("btn_jump") as Button;
-         if(param2 < list_active.array.length)
+         var info:* = null;
+         var time:Number = NaN;
+         var desc:Label = item.getChildByName("label_desc") as Label;
+         var score:Label = item.getChildByName("label_score") as Label;
+         var limit:Label = item.getChildByName("label_limit") as Label;
+         var progress:ProgressBar = item.getChildByName("progress_active") as ProgressBar;
+         var btn:Button = item.getChildByName("btn_jump") as Button;
+         if(index < list_active.array.length)
          {
-            _loc9_ = list_active.array[param2] as TeamActiveInfo;
-            _loc7_.text = _loc9_.ChannelDesc;
-            _loc8_.text = LanguageMgr.GetTranslation("team.active.score",_loc9_.AddScore);
-            _loc4_.htmlText = LanguageMgr.GetTranslation("team.active.limit",_loc9_.haveScore,_loc9_.MaxLimit);
-            _loc3_.value = _loc9_.scoreProgress;
-            _loc3_.visible = true;
-            if(_loc9_.Type == 1)
+            info = list_active.array[index] as TeamActiveInfo;
+            desc.text = info.ChannelDesc;
+            score.text = LanguageMgr.GetTranslation("team.active.score",info.AddScore);
+            limit.htmlText = LanguageMgr.GetTranslation("team.active.limit",info.haveScore,info.MaxLimit);
+            progress.value = info.scoreProgress;
+            progress.visible = true;
+            if(info.Type == 1)
             {
-               _loc4_.htmlText = "";
-               _loc8_.text = LanguageMgr.GetTranslation("team.active.score",_loc9_.haveScore);
-               _loc3_.visible = false;
+               limit.htmlText = "";
+               score.text = LanguageMgr.GetTranslation("team.active.score",info.haveScore);
+               progress.visible = false;
             }
-            else if(_loc9_.Type == 2)
+            else if(info.Type == 2)
             {
-               _loc8_.text = LanguageMgr.GetTranslation("team.active.scoreRandom");
+               score.text = LanguageMgr.GetTranslation("team.active.scoreRandom");
             }
-            _loc5_ = TimeManager.Instance.NowTime() - PlayerManager.Instance.Self.teamLoginDate.time;
-            if(_loc5_ < 86400000)
+            time = TimeManager.Instance.NowTime() - PlayerManager.Instance.Self.teamLoginDate.time;
+            if(time < 86400000)
             {
-               _loc6_.disabled = true;
+               btn.disabled = true;
             }
             else
             {
-               _loc6_.disabled = false;
+               btn.disabled = false;
             }
          }
          else
          {
-            _loc7_.text = "";
-            _loc8_.text = "";
-            _loc4_.text = "";
-            _loc6_.disabled = true;
-            _loc3_.visible = false;
+            desc.text = "";
+            score.text = "";
+            limit.text = "";
+            btn.disabled = true;
+            progress.visible = false;
          }
       }
       
-      private function __onSelectActive(param1:int) : void
+      private function __onSelectActive(index:int) : void
       {
          SoundManager.instance.playButtonSound();
          if(StateManager.currentStateType != "main")
@@ -109,7 +109,7 @@ package team.view.main
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.team.outofroom"));
             return;
          }
-         switch(int(param1))
+         switch(int(index))
          {
             case 0:
                CalendarManager.getInstance().open(1,true);

@@ -66,9 +66,9 @@ package escort.view
          initEvent();
       }
       
-      public function set runPercent(param1:EscortRunPercentView) : void
+      public function set runPercent(value:EscortRunPercentView) : void
       {
-         _runPercent = param1;
+         _runPercent = value;
       }
       
       private function initView() : void
@@ -79,24 +79,23 @@ package escort.view
       
       private function initMapLayer() : void
       {
-         var _loc4_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var bitmap:* = null;
          _mapLayer = new Sprite();
          addChild(_mapLayer);
          _mapBitmapData = ComponentFactory.Instance.creatBitmapData("asset.escort.mapBg");
-         _loc4_ = 0;
-         while(_loc4_ < 12)
+         for(i = 0; i < 12; )
          {
-            _loc1_ = new Bitmap(_mapBitmapData);
-            _loc1_.x = _loc4_ * 1978;
-            _mapLayer.addChild(_loc1_);
-            _loc4_++;
+            bitmap = new Bitmap(_mapBitmapData);
+            bitmap.x = i * 1978;
+            _mapLayer.addChild(bitmap);
+            i++;
          }
-         var _loc2_:BitmapData = new BitmapData(884,600);
-         _loc2_.copyPixels(_mapBitmapData,new Rectangle(0,0,884,600),new Point(0,0));
-         var _loc3_:Bitmap = new Bitmap(_loc2_);
-         _loc3_.x = 23736;
-         _mapLayer.addChild(_loc3_);
+         var tmp:BitmapData = new BitmapData(884,600);
+         tmp.copyPixels(_mapBitmapData,new Rectangle(0,0,884,600),new Point(0,0));
+         var tmpBitmap:Bitmap = new Bitmap(tmp);
+         tmpBitmap.x = 23736;
+         _mapLayer.addChild(tmpBitmap);
          _startMc = ComponentFactory.Instance.creat("asset.escort.gameStartTagMC");
          _startMc.gotoAndStop(1);
          _startMc.x = 67;
@@ -111,33 +110,32 @@ package escort.view
       
       private function initPlayer() : void
       {
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var tmp:* = null;
+         var tmpP:* = null;
          _playerLayer = new Sprite();
          addChild(_playerLayer);
-         var _loc3_:Vector.<EscortPlayerInfo> = EscortControl.instance.playerList;
-         if(!_loc3_)
+         var playerInfoList:Vector.<EscortPlayerInfo> = EscortControl.instance.playerList;
+         if(!playerInfoList)
          {
             return;
          }
          _playerList = new Vector.<EscortGamePlayer>();
          _needRankList = new DictionaryData();
-         var _loc4_:int = _loc3_.length;
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         var len:int = playerInfoList.length;
+         for(i = 0; i < len; )
          {
-            _loc2_ = _loc3_[_loc5_];
-            _loc1_ = new EscortGamePlayer(_loc2_);
-            _playerLayer.addChild(_loc1_);
-            _playerList.push(_loc1_);
-            _playerItemList.push(_loc1_);
-            _needRankList.add(_loc5_.toString(),_loc5_);
-            if(_loc2_.isSelf)
+            tmp = playerInfoList[i];
+            tmpP = new EscortGamePlayer(tmp);
+            _playerLayer.addChild(tmpP);
+            _playerList.push(tmpP);
+            _playerItemList.push(tmpP);
+            _needRankList.add(i.toString(),i);
+            if(tmp.isSelf)
             {
-               _selfPlayer = _loc1_;
+               _selfPlayer = tmpP;
             }
-            _loc5_++;
+            i++;
          }
          playerItemDepth();
          refreshNeedRankList();
@@ -156,9 +154,9 @@ package escort.view
          EscortManager.instance.addEventListener("",rankArriveListChangeHandler);
       }
       
-      private function rankArriveListChangeHandler(param1:EscortEvent) : void
+      private function rankArriveListChangeHandler(event:EscortEvent) : void
       {
-         _rankArriveList = param1.data as Array;
+         _rankArriveList = event.data as Array;
          refreshNeedRankList();
       }
       
@@ -168,167 +166,166 @@ package escort.view
          {
             return;
          }
-         var _loc4_:Array = [];
+         var needDelete:Array = [];
          var _loc8_:int = 0;
          var _loc7_:* = _needRankList;
-         for each(var _loc2_ in _needRankList)
+         for each(var tmp in _needRankList)
          {
             var _loc6_:int = 0;
             var _loc5_:* = _rankArriveList;
-            for each(var _loc3_ in _rankArriveList)
+            for each(var obj in _rankArriveList)
             {
-               if(_loc3_.id == _playerList[_loc2_].playerInfo.id && _loc3_.zoneId == _playerList[_loc2_].playerInfo.zoneId)
+               if(obj.id == _playerList[tmp].playerInfo.id && obj.zoneId == _playerList[tmp].playerInfo.zoneId)
                {
-                  _loc4_.push(_loc2_);
+                  needDelete.push(tmp);
                   break;
                }
             }
          }
          var _loc10_:int = 0;
-         var _loc9_:* = _loc4_;
-         for each(var _loc1_ in _loc4_)
+         var _loc9_:* = needDelete;
+         for each(var tmp2 in needDelete)
          {
-            _needRankList.remove(_loc1_.toString());
+            _needRankList.remove(tmp2.toString());
          }
       }
       
       private function updateRankList() : void
       {
-         var _loc5_:int = 0;
+         var j:int = 0;
          if(!_playerList)
          {
             return;
          }
-         var _loc2_:Array = [];
+         var tmpPlayerList:Array = [];
          var _loc8_:int = 0;
          var _loc7_:* = _needRankList;
-         for each(var _loc6_ in _needRankList)
+         for each(var i in _needRankList)
          {
-            _loc2_.push(_playerList[_loc6_]);
+            tmpPlayerList.push(_playerList[i]);
          }
-         _loc2_.sortOn("x",16 | 2);
-         var _loc1_:Array = [];
-         var _loc4_:int = _loc2_.length;
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         tmpPlayerList.sortOn("x",16 | 2);
+         var rankList:Array = [];
+         var len:int = tmpPlayerList.length;
+         for(j = 0; j < len; )
          {
-            _loc1_.push({
-               "name":_loc2_[_loc5_].playerInfo.name,
-               "carType":_loc2_[_loc5_].playerInfo.carType
+            rankList.push({
+               "name":tmpPlayerList[j].playerInfo.name,
+               "carType":tmpPlayerList[j].playerInfo.carType
             });
-            _loc5_++;
+            j++;
          }
-         var _loc3_:EscortEvent = new EscortEvent("escortRankList");
-         _loc3_.data = _rankArriveList.concat(_loc1_);
-         EscortManager.instance.dispatchEvent(_loc3_);
+         var tmpEvent:EscortEvent = new EscortEvent("escortRankList");
+         tmpEvent.data = _rankArriveList.concat(rankList);
+         EscortManager.instance.dispatchEvent(tmpEvent);
       }
       
-      private function playerFightStateChangeHandler(param1:EscortEvent) : void
+      private function playerFightStateChangeHandler(event:EscortEvent) : void
       {
-         var _loc2_:Object = param1.data;
+         var dataInfo:Object = event.data;
          var _loc5_:int = 0;
          var _loc4_:* = _playerList;
-         for each(var _loc3_ in _playerList)
+         for each(var tmp in _playerList)
          {
-            if(_loc3_.playerInfo.zoneId == _loc2_.zoneId && _loc3_.playerInfo.id == _loc2_.id)
+            if(tmp.playerInfo.zoneId == dataInfo.zoneId && tmp.playerInfo.id == dataInfo.id)
             {
-               _loc3_.playerInfo.fightState = _loc2_.fightState;
-               _loc3_.refreshFightMc();
-               _loc3_.x = _loc2_.posX + 280;
+               tmp.playerInfo.fightState = dataInfo.fightState;
+               tmp.refreshFightMc();
+               tmp.x = dataInfo.posX + 280;
                break;
             }
          }
       }
       
-      private function createPlayerHandler(param1:Event) : void
+      private function createPlayerHandler(event:Event) : void
       {
          initPlayer();
       }
       
-      private function useSkillHandler(param1:EscortEvent) : void
+      private function useSkillHandler(event:EscortEvent) : void
       {
-         var _loc2_:Object = param1.data;
+         var dataInfo:Object = event.data;
          var _loc5_:int = 0;
          var _loc4_:* = _playerList;
-         for each(var _loc3_ in _playerList)
+         for each(var tmp in _playerList)
          {
-            if(_loc3_.playerInfo.zoneId == _loc2_.zoneId && _loc3_.playerInfo.id == _loc2_.id)
+            if(tmp.playerInfo.zoneId == dataInfo.zoneId && tmp.playerInfo.id == dataInfo.id)
             {
-               if(_loc2_.sound)
+               if(dataInfo.sound)
                {
                   SoundManager.instance.play("escort04");
                }
-               _loc3_.x = _loc2_.leapX + 280;
+               tmp.x = dataInfo.leapX + 280;
                break;
             }
          }
       }
       
-      private function refreshBuffHandler(param1:EscortEvent) : void
+      private function refreshBuffHandler(event:EscortEvent) : void
       {
-         var _loc2_:Object = param1.data;
+         var dataInfo:Object = event.data;
          var _loc5_:int = 0;
          var _loc4_:* = _playerList;
-         for each(var _loc3_ in _playerList)
+         for each(var tmp in _playerList)
          {
-            if(_loc3_.playerInfo.zoneId == _loc2_.zoneId && _loc3_.playerInfo.id == _loc2_.id)
+            if(tmp.playerInfo.zoneId == dataInfo.zoneId && tmp.playerInfo.id == dataInfo.id)
             {
-               if(_loc3_.playerInfo.isSelf)
+               if(tmp.playerInfo.isSelf)
                {
-                  if((_loc2_.acceleEndTime as Date).getTime() - _loc3_.playerInfo.acceleEndTime.getTime() > 1000)
+                  if((dataInfo.acceleEndTime as Date).getTime() - tmp.playerInfo.acceleEndTime.getTime() > 1000)
                   {
                      SoundManager.instance.play("escort01");
                   }
-                  if((_loc2_.deceleEndTime as Date).getTime() - _loc3_.playerInfo.deceleEndTime.getTime() > 1000)
+                  if((dataInfo.deceleEndTime as Date).getTime() - tmp.playerInfo.deceleEndTime.getTime() > 1000)
                   {
                      SoundManager.instance.play("escort02");
                   }
-                  else if((_loc2_.deceleEndTime as Date).getTime() - _loc3_.playerInfo.deceleEndTime.getTime() < -1000)
+                  else if((dataInfo.deceleEndTime as Date).getTime() - tmp.playerInfo.deceleEndTime.getTime() < -1000)
                   {
                      SoundManager.instance.play("escort05");
                   }
-                  if((_loc2_.invisiEndTime as Date).getTime() - _loc3_.playerInfo.invisiEndTime.getTime() > 1000)
+                  if((dataInfo.invisiEndTime as Date).getTime() - tmp.playerInfo.invisiEndTime.getTime() > 1000)
                   {
                      SoundManager.instance.play("escort03");
                   }
                }
-               _loc3_.playerInfo.acceleEndTime = _loc2_.acceleEndTime;
-               _loc3_.playerInfo.deceleEndTime = _loc2_.deceleEndTime;
-               _loc3_.playerInfo.invisiEndTime = _loc2_.invisiEndTime;
-               _loc3_.refreshBuffCountDown();
+               tmp.playerInfo.acceleEndTime = dataInfo.acceleEndTime;
+               tmp.playerInfo.deceleEndTime = dataInfo.deceleEndTime;
+               tmp.playerInfo.invisiEndTime = dataInfo.invisiEndTime;
+               tmp.refreshBuffCountDown();
                break;
             }
          }
       }
       
-      private function refreshItemHandler(param1:Object) : void
+      private function refreshItemHandler(event:Object) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:int = 0;
-         var _loc7_:* = null;
-         var _loc2_:Object = param1.data;
-         var _loc6_:Array = _loc2_.itemList;
+         var tmpItem:* = null;
+         var tag:int = 0;
+         var addItem:* = null;
+         var itemData:Object = event.data;
+         var tmpItemList:Array = itemData.itemList;
          var _loc9_:int = 0;
-         var _loc8_:* = _loc6_;
-         for each(var _loc5_ in _loc6_)
+         var _loc8_:* = tmpItemList;
+         for each(var obj in tmpItemList)
          {
-            _loc4_ = _itemList[_loc5_.index];
-            ObjectUtils.disposeObject(_loc4_);
-            if(_loc4_)
+            tmpItem = _itemList[obj.index];
+            ObjectUtils.disposeObject(tmpItem);
+            if(tmpItem)
             {
-               _playerItemList.splice(_playerItemList.indexOf(_loc4_),1);
+               _playerItemList.splice(_playerItemList.indexOf(tmpItem),1);
             }
-            _loc3_ = _loc5_.tag;
-            if(_loc3_ == 0)
+            tag = obj.tag;
+            if(tag == 0)
             {
-               _itemList.remove(_loc5_.index);
+               _itemList.remove(obj.index);
             }
             else
             {
-               _loc7_ = new EscortGameItem(_loc5_.index,_loc5_.type,_loc5_.posX);
-               _playerLayer.addChild(_loc7_);
-               _itemList.add(_loc5_.index,_loc7_);
-               _playerItemList.push(_loc7_);
+               addItem = new EscortGameItem(obj.index,obj.type,obj.posX);
+               _playerLayer.addChild(addItem);
+               _itemList.add(obj.index,addItem);
+               _playerItemList.push(addItem);
             }
          }
          playerItemDepth();
@@ -336,33 +333,32 @@ package escort.view
       
       private function playerItemDepth() : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          _playerItemList.sortOn("y",16);
-         var _loc1_:int = _playerItemList.length;
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_)
+         var len:int = _playerItemList.length;
+         for(i = 0; i < len; )
          {
-            _playerLayer.addChild(_playerItemList[_loc2_]);
-            _loc2_++;
+            _playerLayer.addChild(_playerItemList[i]);
+            i++;
          }
       }
       
-      private function moveHandler(param1:EscortEvent) : void
+      private function moveHandler(event:EscortEvent) : void
       {
-         var _loc2_:Object = param1.data;
+         var dataInfo:Object = event.data;
          var _loc5_:int = 0;
          var _loc4_:* = _playerList;
-         for each(var _loc3_ in _playerList)
+         for each(var tmp in _playerList)
          {
-            if(_loc3_.playerInfo.zoneId == _loc2_.zoneId && _loc3_.playerInfo.id == _loc2_.id)
+            if(tmp.playerInfo.zoneId == dataInfo.zoneId && tmp.playerInfo.id == dataInfo.id)
             {
-               _loc3_.destinationX = _loc2_.destX;
+               tmp.destinationX = dataInfo.destX;
                break;
             }
          }
       }
       
-      private function updateMap(param1:Event) : void
+      private function updateMap(event:Event) : void
       {
          if(!_isStartGame)
          {
@@ -376,9 +372,9 @@ package escort.view
          }
          var _loc4_:int = 0;
          var _loc3_:* = _playerList;
-         for each(var _loc2_ in _playerList)
+         for each(var tmp in _playerList)
          {
-            _loc2_.updatePlayer();
+            tmp.updatePlayer();
          }
          setCenter();
          if(_selfPlayer && _runPercent)
@@ -387,7 +383,7 @@ package escort.view
          }
       }
       
-      private function setCenter(param1:Boolean = true) : void
+      private function setCenter(isNeedTween:Boolean = true) : void
       {
          if(!_selfPlayer)
          {
@@ -397,27 +393,27 @@ package escort.view
          {
             return;
          }
-         var _loc3_:* = Number(350 - _selfPlayer.x);
-         if(_loc3_ > 0)
+         var xf:* = Number(350 - _selfPlayer.x);
+         if(xf > 0)
          {
-            _loc3_ = 0;
+            xf = 0;
          }
-         if(_loc3_ < 1000 - _mapLayer.width)
+         if(xf < 1000 - _mapLayer.width)
          {
-            _loc3_ = Number(1000 - _mapLayer.width);
+            xf = Number(1000 - _mapLayer.width);
          }
-         var _loc2_:Number = Math.abs(x - _loc3_);
-         if(param1 && _loc2_ > 14)
+         var tmp:Number = Math.abs(x - xf);
+         if(isNeedTween && tmp > 14)
          {
-            TweenLite.to(this,_loc2_ / 400 * 0.5,{
-               "x":_loc3_,
+            TweenLite.to(this,tmp / 400 * 0.5,{
+               "x":xf,
                "onComplete":tweenComplete
             });
             _isTween = true;
          }
          else
          {
-            x = _loc3_;
+            x = xf;
          }
       }
       
@@ -431,9 +427,9 @@ package escort.view
          _isStartGame = true;
          var _loc3_:int = 0;
          var _loc2_:* = _playerList;
-         for each(var _loc1_ in _playerList)
+         for each(var tmp in _playerList)
          {
-            _loc1_.startGame();
+            tmp.startGame();
          }
       }
       
@@ -442,9 +438,9 @@ package escort.view
          _isStartGame = false;
          var _loc3_:int = 0;
          var _loc2_:* = _playerList;
-         for each(var _loc1_ in _playerList)
+         for each(var tmp in _playerList)
          {
-            _loc1_.endGame();
+            tmp.endGame();
          }
       }
       

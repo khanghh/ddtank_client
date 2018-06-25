@@ -37,9 +37,9 @@ package prayIndiana.view
          return _slide;
       }
       
-      public function set slide(param1:MovieClip) : void
+      public function set slide(value:MovieClip) : void
       {
-         _slide = param1;
+         _slide = value;
       }
    }
 }

@@ -95,7 +95,7 @@ package ddt.view.academyCommon.academyIcon
          }
       }
       
-      private function __onClick(param1:MouseEvent) : void
+      private function __onClick(event:MouseEvent) : void
       {
          if(AcademyManager.Instance.isFighting())
          {
@@ -133,9 +133,9 @@ package ddt.view.academyCommon.academyIcon
          return _tipData;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(value:Object) : void
       {
-         _tipData = param1;
+         _tipData = value;
          updateIcon();
       }
       
@@ -144,9 +144,9 @@ package ddt.view.academyCommon.academyIcon
          return _tipDirctions;
       }
       
-      public function set tipDirctions(param1:String) : void
+      public function set tipDirctions(value:String) : void
       {
-         _tipDirctions = param1;
+         _tipDirctions = value;
       }
       
       public function get tipGapH() : int
@@ -154,9 +154,9 @@ package ddt.view.academyCommon.academyIcon
          return _tipGapH;
       }
       
-      public function set tipGapH(param1:int) : void
+      public function set tipGapH(value:int) : void
       {
-         _tipGapH = param1;
+         _tipGapH = value;
       }
       
       public function get tipGapV() : int
@@ -164,9 +164,9 @@ package ddt.view.academyCommon.academyIcon
          return _tipGapV;
       }
       
-      public function set tipGapV(param1:int) : void
+      public function set tipGapV(value:int) : void
       {
-         _tipGapV = param1;
+         _tipGapV = value;
       }
       
       public function get tipStyle() : String
@@ -174,9 +174,9 @@ package ddt.view.academyCommon.academyIcon
          return _tipStyle;
       }
       
-      public function set tipStyle(param1:String) : void
+      public function set tipStyle(value:String) : void
       {
-         _tipStyle = param1;
+         _tipStyle = value;
       }
       
       public function asDisplayObject() : DisplayObject

@@ -58,7 +58,7 @@ package worldboss.view
          }
       }
       
-      private function selectedChangeHandler(param1:Event) : void
+      private function selectedChangeHandler(event:Event) : void
       {
          refreshBtnStatus();
       }
@@ -68,7 +68,7 @@ package worldboss.view
          _btn.addEventListener("click",clickHandler,false,0,true);
       }
       
-      private function clickHandler(param1:MouseEvent) : void
+      private function clickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _isShow = !_isShow;

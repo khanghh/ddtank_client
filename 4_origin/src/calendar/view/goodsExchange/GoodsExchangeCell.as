@@ -30,18 +30,18 @@ package calendar.view.goodsExchange
       
       private var _id:int;
       
-      public function GoodsExchangeCell(param1:GoodsExchangeInfo, param2:int = -1, param3:Boolean = true, param4:int = -1)
+      public function GoodsExchangeCell(exchangeInfo:GoodsExchangeInfo, activeType:int = -1, type:Boolean = true, id:int = -1)
       {
-         var _loc6_:* = null;
-         var _loc5_:* = null;
-         var _loc7_:int = 0;
+         var itemInfo:* = null;
+         var item:* = null;
+         var tempId:int = 0;
          intEvent();
-         _gooodsExchangeInfo = param1;
-         _type = param3;
-         _id = param4;
-         if(param1 && (param2 == 3 || param2 == 4))
+         _gooodsExchangeInfo = exchangeInfo;
+         _type = type;
+         _id = id;
+         if(exchangeInfo && (activeType == 3 || activeType == 4))
          {
-            if(param2 == 4)
+            if(activeType == 4)
             {
                if(_type)
                {
@@ -70,32 +70,32 @@ package calendar.view.goodsExchange
          }
          else
          {
-            _loc6_ = ItemManager.Instance.getTemplateById(_gooodsExchangeInfo.TemplateID);
-            _loc5_ = new InventoryItemInfo();
-            _loc5_.TemplateID = _loc6_.TemplateID;
-            ItemManager.fill(_loc5_);
-            _loc5_.StrengthenLevel = _gooodsExchangeInfo.LimitValue;
-            _loc5_.IsBinds = true;
-            _loc5_.isShowBind = _type != true;
-            _info = _loc5_;
+            itemInfo = ItemManager.Instance.getTemplateById(_gooodsExchangeInfo.TemplateID);
+            item = new InventoryItemInfo();
+            item.TemplateID = itemInfo.TemplateID;
+            ItemManager.fill(item);
+            item.StrengthenLevel = _gooodsExchangeInfo.LimitValue;
+            item.IsBinds = true;
+            item.isShowBind = _type != true;
+            _info = item;
             if(_type)
             {
-               _loc7_ = param1.TemplateID;
-               if(_loc5_.CanStrengthen)
+               tempId = exchangeInfo.TemplateID;
+               if(item.CanStrengthen)
                {
-                  _haveCount = PlayerManager.Instance.Self.findItemCount(_loc7_,_gooodsExchangeInfo.LimitValue);
+                  _haveCount = PlayerManager.Instance.Self.findItemCount(tempId,_gooodsExchangeInfo.LimitValue);
                }
                else
                {
-                  _haveCount = PlayerManager.Instance.Self.findItemCount(_loc7_);
+                  _haveCount = PlayerManager.Instance.Self.findItemCount(tempId);
                }
                if(_haveCount == 0)
                {
-                  _haveCount = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(_loc7_);
+                  _haveCount = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(tempId);
                }
                if(_haveCount == 0)
                {
-                  _haveCount = PlayerManager.Instance.Self.BeadBag.getItemCountByTemplateId(_loc7_);
+                  _haveCount = PlayerManager.Instance.Self.BeadBag.getItemCountByTemplateId(tempId);
                }
                _countText.text = _haveCount.toString() + "/" + (_gooodsExchangeInfo.ItemCount * _gooodsExchangeInfo.Num).toString();
             }
@@ -111,16 +111,16 @@ package calendar.view.goodsExchange
       
       public function get itemInfo() : InventoryItemInfo
       {
-         var _loc1_:Array = PlayerManager.Instance.Self.Bag.findItemsByTempleteID(_gooodsExchangeInfo.TemplateID);
-         if(_loc1_.length == 0)
+         var array:Array = PlayerManager.Instance.Self.Bag.findItemsByTempleteID(_gooodsExchangeInfo.TemplateID);
+         if(array.length == 0)
          {
-            _loc1_ = PlayerManager.Instance.Self.PropBag.findItemsByTempleteID(_gooodsExchangeInfo.TemplateID);
+            array = PlayerManager.Instance.Self.PropBag.findItemsByTempleteID(_gooodsExchangeInfo.TemplateID);
          }
-         if(_loc1_.length == 0)
+         if(array.length == 0)
          {
-            _loc1_ = PlayerManager.Instance.Self.BeadBag.findItemsByTempleteID(_gooodsExchangeInfo.TemplateID);
+            array = PlayerManager.Instance.Self.BeadBag.findItemsByTempleteID(_gooodsExchangeInfo.TemplateID);
          }
-         return _loc1_[0];
+         return array[0];
       }
       
       private function intEvent() : void
@@ -131,36 +131,36 @@ package calendar.view.goodsExchange
          PlayerManager.Instance.Self.PropBag.addEventListener("afterDel",__updateCount);
       }
       
-      protected function __updateCount(param1:BagEvent) : void
+      protected function __updateCount(event:BagEvent) : void
       {
-         var _loc2_:* = null;
+         var evt:* = null;
          if(!_gooodsExchangeInfo)
          {
             return;
          }
-         var _loc5_:int = _gooodsExchangeInfo.TemplateID;
-         var _loc4_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(_gooodsExchangeInfo.TemplateID);
-         var _loc3_:InventoryItemInfo = new InventoryItemInfo();
-         _loc3_.TemplateID = _loc4_.TemplateID;
-         ItemManager.fill(_loc3_);
-         _loc3_.StrengthenLevel = _gooodsExchangeInfo.LimitValue;
-         _loc3_.IsBinds = true;
-         _loc3_.isShowBind = _type != true;
-         if(_loc3_.CanStrengthen)
+         var tempId:int = _gooodsExchangeInfo.TemplateID;
+         var itemInfo:ItemTemplateInfo = ItemManager.Instance.getTemplateById(_gooodsExchangeInfo.TemplateID);
+         var item:InventoryItemInfo = new InventoryItemInfo();
+         item.TemplateID = itemInfo.TemplateID;
+         ItemManager.fill(item);
+         item.StrengthenLevel = _gooodsExchangeInfo.LimitValue;
+         item.IsBinds = true;
+         item.isShowBind = _type != true;
+         if(item.CanStrengthen)
          {
-            _haveCount = PlayerManager.Instance.Self.findItemCount(_loc5_,_gooodsExchangeInfo.LimitValue);
+            _haveCount = PlayerManager.Instance.Self.findItemCount(tempId,_gooodsExchangeInfo.LimitValue);
          }
          else
          {
-            _haveCount = PlayerManager.Instance.Self.findItemCount(_loc5_);
+            _haveCount = PlayerManager.Instance.Self.findItemCount(tempId);
          }
          if(_haveCount == 0)
          {
-            _haveCount = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(_loc5_);
+            _haveCount = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(tempId);
          }
          if(_haveCount == 0)
          {
-            _haveCount = PlayerManager.Instance.Self.BeadBag.getItemCountByTemplateId(_loc5_);
+            _haveCount = PlayerManager.Instance.Self.BeadBag.getItemCountByTemplateId(tempId);
          }
          if(!_countText)
          {
@@ -170,9 +170,9 @@ package calendar.view.goodsExchange
          if(_haveCountTemp != _haveCount)
          {
             _haveCountTemp = _haveCount;
-            _loc2_ = new ActivityEvent(ActivityEvent.UPDATE_COUNT);
-            _loc2_.id = _id;
-            dispatchEvent(_loc2_);
+            evt = new ActivityEvent(ActivityEvent.UPDATE_COUNT);
+            evt.id = _id;
+            dispatchEvent(evt);
          }
          if(_type)
          {

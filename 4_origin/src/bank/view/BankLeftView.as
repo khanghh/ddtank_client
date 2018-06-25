@@ -37,41 +37,40 @@ package bank.view
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var recordView:* = null;
          _recordItemarr = new Vector.<BankSaveRecordView>();
          _fourRecordItemArr = new Vector.<BankSaveRecordView>();
-         _loc2_ = 0;
-         while(_loc2_ < 3)
+         for(i = 0; i < 3; )
          {
-            _loc1_ = new BankSaveRecordView(_loc2_);
-            _fourRecordItemArr.push(_loc1_);
-            _loc1_.y = _loc1_.y + _loc2_ * 100;
-            _loc2_++;
+            recordView = new BankSaveRecordView(i);
+            _fourRecordItemArr.push(recordView);
+            recordView.y = recordView.y + i * 100;
+            i++;
          }
          creatItem();
          pageNum.text = String(_currentPage) + "/" + String(_maxPage);
       }
       
-      private function pageLeft(param1:MouseEvent) : void
+      private function pageLeft(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          currentPage = _currentPage > 1?_currentPage - 1:_maxPage;
       }
       
-      private function pageRight(param1:MouseEvent) : void
+      private function pageRight(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          currentPage = _currentPage < _maxPage?_currentPage + 1:1;
       }
       
-      public function set currentPage(param1:int) : void
+      public function set currentPage(value:int) : void
       {
-         if(_currentPage == param1)
+         if(_currentPage == value)
          {
             return;
          }
-         _currentPage = param1;
+         _currentPage = value;
          leftViewChange();
          _index = 0;
          lineChange();
@@ -94,19 +93,18 @@ package bank.view
       
       private function creatItem() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(BankManager.instance.model.list.length)
          {
             _maxPage = (BankManager.instance.model.list.length - 1) / 3 + 1;
          }
          pageNum.text = String(_currentPage) + "/" + String(_maxPage);
-         _loc1_ = 0;
-         while(_loc1_ < getCurrentItemNum())
+         for(i = 0; i < getCurrentItemNum(); )
          {
-            _recordItemarr.push(_fourRecordItemArr[_loc1_]);
-            _recordItemarr[_loc1_].setInfo(BankManager.instance.model.list[(currentPage - 1) * 3 + _loc1_]);
-            addChild(_recordItemarr[_loc1_]);
-            _loc1_++;
+            _recordItemarr.push(_fourRecordItemArr[i]);
+            _recordItemarr[i].setInfo(BankManager.instance.model.list[(currentPage - 1) * 3 + i]);
+            addChild(_recordItemarr[i]);
+            i++;
          }
       }
       
@@ -115,27 +113,26 @@ package bank.view
          return currentPage == _maxPage?BankManager.instance.model.list.length - 3 * (currentPage - 1):3;
       }
       
-      private function indexChange(param1:GameBankEvent) : void
+      private function indexChange(e:GameBankEvent) : void
       {
-         _index = param1.data.index;
+         _index = e.data.index;
          lineChange();
       }
       
       private function lineChange() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < getCurrentItemNum())
+         var i:int = 0;
+         for(i = 0; i < getCurrentItemNum(); )
          {
-            if(index == _loc1_)
+            if(index == i)
             {
-               _recordItemarr[_loc1_].itemLine.visible = true;
+               _recordItemarr[i].itemLine.visible = true;
             }
             else
             {
-               _recordItemarr[_loc1_].itemLine.visible = false;
+               _recordItemarr[i].itemLine.visible = false;
             }
-            _loc1_++;
+            i++;
          }
       }
       
@@ -144,13 +141,13 @@ package bank.view
          return _index;
       }
       
-      public function set index(param1:int) : void
+      public function set index(value:int) : void
       {
-         if(_index == param1)
+         if(_index == value)
          {
             return;
          }
-         _index = param1;
+         _index = value;
          lineChange();
       }
       

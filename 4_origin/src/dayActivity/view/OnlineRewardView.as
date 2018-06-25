@@ -49,8 +49,8 @@ package dayActivity.view
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          _model = DayActivityManager.Instance.onlineRewardModel;
          UICreatShortcut.creatAndAdd("day.activity.onlineReward.bg",this);
          _onlineTimeHTf = UICreatShortcut.creatAndAdd("day.activity.onlineReward.onlineTimeHTf",this);
@@ -62,15 +62,14 @@ package dayActivity.view
          _timer.addEventListener("timer",onTimer);
          _timer.start();
          _itemArr = [];
-         _loc2_ = 0;
-         while(_loc2_ < _model.boxNum)
+         for(i = 0; i < _model.boxNum; )
          {
-            _loc1_ = new OnlineRewardItem(_loc2_);
-            _loc1_.x = 33 + 135 * _loc2_;
-            _loc1_.y = 172;
-            this.addChild(_loc1_);
-            _itemArr.push(_loc1_);
-            _loc2_++;
+            item = new OnlineRewardItem(i);
+            item.x = 33 + 135 * i;
+            item.y = 172;
+            this.addChild(item);
+            _itemArr.push(item);
+            i++;
          }
          update();
       }
@@ -90,21 +89,21 @@ package dayActivity.view
          DayActivityManager.Instance.removeEventListener("online_reward_status_change",update);
       }
       
-      private function onClick(param1:MouseEvent) : void
+      private function onClick(evt:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          SocketManager.Instance.out.getOnlineReward();
       }
       
-      private function onTimer(param1:TimerEvent) : void
+      private function onTimer(evt:TimerEvent) : void
       {
          update();
       }
       
-      private function update(param1:Event = null) : void
+      private function update(evt:Event = null) : void
       {
-         var _loc2_:Array = TimeManager.getHHMMSSArr(_model.onlineSec);
-         if(_loc2_ == null)
+         var arr:Array = TimeManager.getHHMMSSArr(_model.onlineSec);
+         if(arr == null)
          {
             _onlineTimeHTf.text = "00";
             _onlineTimeMTf.text = "00";
@@ -112,9 +111,9 @@ package dayActivity.view
          }
          else
          {
-            _onlineTimeHTf.text = _loc2_[0];
-            _onlineTimeMTf.text = _loc2_[1];
-            _onlineTimeSTf.text = _loc2_[2];
+            _onlineTimeHTf.text = arr[0];
+            _onlineTimeMTf.text = arr[1];
+            _onlineTimeSTf.text = arr[2];
          }
          if(_model.canGetBox)
          {
@@ -135,34 +134,33 @@ package dayActivity.view
          }
          var _loc5_:int = 0;
          var _loc4_:* = _itemArr;
-         for each(var _loc3_ in _itemArr)
+         for each(var item in _itemArr)
          {
-            _loc3_.update();
+            item.update();
          }
       }
       
-      private function onOpBackGet(param1:Event) : void
+      private function onOpBackGet(evt:Event) : void
       {
-         var _loc7_:int = 0;
-         var _loc6_:* = null;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var info:* = null;
+         var point:* = null;
          update();
-         var _loc4_:Array = _model.receiveGoodsArr;
-         var _loc5_:Array = [];
-         var _loc3_:Array = [];
-         _loc7_ = 0;
-         while(_loc7_ < _loc4_.length)
+         var receiveGoodsArr:Array = _model.receiveGoodsArr;
+         var infoArr:Array = [];
+         var posArr:Array = [];
+         for(i = 0; i < receiveGoodsArr.length; )
          {
-            _loc6_ = _loc4_[_loc7_];
-            if(_loc6_)
+            info = receiveGoodsArr[i];
+            if(info)
             {
-               _loc5_.push(_loc6_);
-               _loc2_ = this.localToGlobal(new Point(53 + 135 * _loc7_,210));
-               _loc3_.push(_loc2_);
+               infoArr.push(info);
+               point = this.localToGlobal(new Point(53 + 135 * i,210));
+               posArr.push(point);
             }
-            _loc7_++;
+            i++;
          }
-         new GradeAwardsFlyIntoBagViewWithPos().onFrameClose(_loc5_,_loc3_);
+         new GradeAwardsFlyIntoBagViewWithPos().onFrameClose(infoArr,posArr);
       }
       
       public function dispose() : void

@@ -12,10 +12,10 @@ package character
       
       private var _data:Object;
       
-      public function CharacterEvent(param1:String, param2:Object = null)
+      public function CharacterEvent(type:String, data:Object = null)
       {
-         this._data = param2;
-         super(param1,bubbles,cancelable);
+         this._data = data;
+         super(type,bubbles,cancelable);
       }
       
       public function get data() : Object

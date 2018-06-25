@@ -27,15 +27,14 @@ package stock.data
       
       public function get totalCost() : int
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < StockMgr.inst.model.mytocks.length)
+         var i:int = 0;
+         var total:int = 0;
+         for(i = 0; i < StockMgr.inst.model.mytocks.length; )
          {
-            _loc1_ = _loc1_ + (StockMgr.inst.model.stocks[StockMgr.inst.model.mytocks[_loc2_]] as StockData).totalCost;
-            _loc2_++;
+            total = total + (StockMgr.inst.model.stocks[StockMgr.inst.model.mytocks[i]] as StockData).totalCost;
+            i++;
          }
-         return _loc1_;
+         return total;
       }
       
       public function get validAsset() : int

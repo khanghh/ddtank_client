@@ -67,41 +67,41 @@ package yzhkof.debug
          this.clear_btn.addEventListener(MouseEvent.CLICK,this.__clearClick);
       }
       
-      private function __clearClick(param1:MouseEvent) : void
+      private function __clearClick(event:MouseEvent) : void
       {
-         var _loc2_:DisplayObject = null;
-         for each(_loc2_ in this.textField_arr)
+         var element:DisplayObject = null;
+         for each(element in this.textField_arr)
          {
-            this.tileContainer.removeItem(_loc2_);
+            this.tileContainer.removeItem(element);
          }
          this.watch_arr = [];
          this.textField_arr = [];
       }
       
-      private function __enterFrame(param1:Event) : void
+      private function __enterFrame(event:Event) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:WatchData = null;
-         var _loc4_:Array = null;
-         var _loc5_:* = undefined;
-         var _loc6_:* = undefined;
-         var _loc7_:String = null;
-         for(_loc2_ in this.watch_arr)
+         var i:* = null;
+         var data:WatchData = null;
+         var params:Array = null;
+         var current_object:* = undefined;
+         var current_value:* = undefined;
+         var element:String = null;
+         for(i in this.watch_arr)
          {
-            _loc3_ = WatchData(this.watch_arr[_loc2_]);
-            _loc4_ = _loc3_.property.split(".");
-            _loc5_ = _loc3_.object;
-            for each(_loc7_ in _loc4_)
+            data = WatchData(this.watch_arr[i]);
+            params = data.property.split(".");
+            current_object = data.object;
+            for each(element in params)
             {
-               if(_loc5_ == null)
+               if(current_object == null)
                {
-                  _loc6_ = null;
+                  current_value = null;
                   break;
                }
-               _loc6_ = !!_loc5_.hasOwnProperty(_loc7_)?_loc5_[_loc7_]:"在 " + name + " 上找不到属性 " + _loc7_;
-               _loc5_ = _loc6_;
+               current_value = !!current_object.hasOwnProperty(element)?current_object[element]:"在 " + name + " 上找不到属性 " + element;
+               current_object = current_value;
             }
-            this.textField_arr[_loc2_].text = (_loc3_.name || getQualifiedClassName(_loc3_.object)) + ":" + _loc6_;
+            this.textField_arr[i].text = (data.name || getQualifiedClassName(data.object)) + ":" + current_value;
          }
          if(visible)
          {
@@ -109,23 +109,23 @@ package yzhkof.debug
          }
       }
       
-      private function __createComplete(param1:Event) : void
+      private function __createComplete(e:Event) : void
       {
          drawBackGround();
          removeEventListener(ComponentEvent.DRAW_COMPLETE,this.__createComplete);
       }
       
-      public function addWatch(param1:Object, param2:String, param3:String = null) : void
+      public function addWatch(obj:Object, property:String, name:String = null) : void
       {
-         var _loc4_:WatchData = new WatchData();
-         _loc4_.object = param1;
-         _loc4_.property = param2;
-         _loc4_.name = param3 || param2;
-         this.watch_arr.push(_loc4_);
-         var _loc5_:TextField = new TextField();
-         _loc5_.autoSize = TextFieldAutoSize.LEFT;
-         this.textField_arr.push(_loc5_);
-         this.tileContainer.appendItem(_loc5_);
+         var data:WatchData = new WatchData();
+         data.object = obj;
+         data.property = property;
+         data.name = name || property;
+         this.watch_arr.push(data);
+         var text:TextField = new TextField();
+         text.autoSize = TextFieldAutoSize.LEFT;
+         this.textField_arr.push(text);
+         this.tileContainer.appendItem(text);
       }
    }
 }

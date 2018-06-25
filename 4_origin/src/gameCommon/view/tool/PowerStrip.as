@@ -72,18 +72,18 @@ package gameCommon.view.tool
          _smallLight.y = 2;
          _smallLight.x = 2;
          _mask = new Shape();
-         var _loc1_:Graphics = _mask.graphics;
-         _loc1_.beginFill(0);
-         _loc1_.drawRect(0,0,_bg.width,_bg.height);
-         _loc1_.endFill();
+         var g:Graphics = _mask.graphics;
+         g.beginFill(0);
+         g.drawRect(0,0,_bg.width,_bg.height);
+         g.endFill();
          _mask.x = _bg.x;
          _mask.y = _bg.y;
          addChild(_mask);
          _bg.mask = _mask;
          _tipSprite = new Sprite();
-         var _loc2_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.game.powerStripAsset");
-         _tipSprite.addChild(_loc2_);
-         _loc2_.alpha = 0;
+         var tipBitm:Bitmap = ComponentFactory.Instance.creatBitmap("asset.game.powerStripAsset");
+         _tipSprite.addChild(tipBitm);
+         tipBitm.alpha = 0;
          addChild(_tipSprite);
          addDanderStripTip();
          _powerField = ComponentFactory.Instance.creatComponentByStylename("game.PowerStrip.PowerTxt");
@@ -116,12 +116,12 @@ package gameCommon.view.tool
          _timer.addEventListener("timerComplete",_timerComplete);
       }
       
-      private function __showTip(param1:MouseEvent) : void
+      private function __showTip(evt:MouseEvent) : void
       {
          LayerManager.Instance.addToLayer(_powerStripTip,0,false);
       }
       
-      private function __hideTip(param1:MouseEvent) : void
+      private function __hideTip(evt:MouseEvent) : void
       {
          if(_powerStripTip.parent)
          {
@@ -129,7 +129,7 @@ package gameCommon.view.tool
          }
       }
       
-      private function __update(param1:LivingEvent) : void
+      private function __update(evt:LivingEvent) : void
       {
          if(_self.maxEnergy == _self.energy && _self.maxEnergy != 0 && _self.selfInfo.Grade <= 15)
          {
@@ -141,11 +141,11 @@ package gameCommon.view.tool
                flashLight = null;
             }
          }
-         var _loc2_:Number = int(_self.energy);
-         _powerStripTipInfo.current = _loc2_;
+         var energy:Number = int(_self.energy);
+         _powerStripTipInfo.current = energy;
          _powerStripTipInfo.total = _self.maxEnergy;
          _powerStripTip.tipData = _powerStripTipInfo;
-         _powerField.text = String(_loc2_);
+         _powerField.text = String(energy);
          _mask.width = _self.energy / _self.maxEnergy * _bg.width;
          _mask.x = _bg.x + _bg.width - _mask.width;
          if(_self.energy == _self.maxEnergy)
@@ -185,7 +185,7 @@ package gameCommon.view.tool
          _timer.removeEventListener("timerComplete",_timerComplete);
       }
       
-      private function _timerComplete(param1:TimerEvent) : void
+      private function _timerComplete(evt:TimerEvent) : void
       {
          if(_glint.parent)
          {

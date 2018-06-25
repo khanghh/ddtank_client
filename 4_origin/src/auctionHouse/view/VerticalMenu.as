@@ -32,70 +32,66 @@ package auctionHouse.view
       
       private var _height:int;
       
-      public function VerticalMenu(param1:Number, param2:Number, param3:Number)
+      public function VerticalMenu($tabWidth:Number, $l1Width:Number, $l2Width:Number)
       {
          super();
-         tabWidth = param1;
-         l1Width = param2;
-         l2Width = param3;
+         tabWidth = $tabWidth;
+         l1Width = $l1Width;
+         l2Width = $l2Width;
          rootMenu = [];
          subMenus = [];
       }
       
-      public function addItemAt(param1:IMenuItem, param2:int = -1) : void
+      public function addItemAt($item:IMenuItem, parentIndex:int = -1) : void
       {
-         var _loc3_:* = 0;
-         if(param2 == -1)
+         var i:* = 0;
+         if(parentIndex == -1)
          {
-            rootMenu.push(param1);
-            param1.addEventListener("click",rootMenuClickHandler);
+            rootMenu.push($item);
+            $item.addEventListener("click",rootMenuClickHandler);
          }
          else
          {
-            if(!subMenus[param2])
+            if(!subMenus[parentIndex])
             {
-               _loc3_ = uint(0);
-               while(_loc3_ <= param2)
+               for(i = uint(0); i <= parentIndex; )
                {
-                  if(!subMenus[_loc3_])
+                  if(!subMenus[i])
                   {
-                     subMenus[_loc3_] = [];
+                     subMenus[i] = [];
                   }
-                  _loc3_++;
+                  i++;
                }
             }
-            param1.x = tabWidth;
-            param1.addEventListener("click",subMenuClickHandler);
-            subMenus[param2].push(param1);
+            $item.x = tabWidth;
+            $item.addEventListener("click",subMenuClickHandler);
+            subMenus[parentIndex].push($item);
          }
-         addChild(param1 as DisplayObject);
+         addChild($item as DisplayObject);
          closeAll();
       }
       
       public function closeAll() : void
       {
-         var _loc3_:* = 0;
-         var _loc2_:* = 0;
-         var _loc1_:* = 0;
-         _loc3_ = uint(0);
-         while(_loc3_ < rootMenu.length)
+         var i:* = 0;
+         var i1:* = 0;
+         var i2:* = 0;
+         for(i = uint(0); i < rootMenu.length; )
          {
-            rootMenu[_loc3_].y = _loc3_ * l1Width;
-            rootMenu[_loc3_].isOpen = false;
-            rootMenu[_loc3_].enable = true;
-            _loc3_++;
+            rootMenu[i].y = i * l1Width;
+            rootMenu[i].isOpen = false;
+            rootMenu[i].enable = true;
+            i++;
          }
-         _loc2_ = uint(0);
-         while(_loc2_ < subMenus.length)
+         for(i1 = uint(0); i1 < subMenus.length; )
          {
-            _loc1_ = uint(0);
-            while(_loc1_ < subMenus[_loc2_].length)
+            for(i2 = uint(0); i2 < subMenus[i1].length; )
             {
-               subMenus[_loc2_][_loc1_].visible = false;
-               subMenus[_loc2_][_loc1_].y = 0;
-               _loc1_++;
+               subMenus[i1][i2].visible = false;
+               subMenus[i1][i2].y = 0;
+               i2++;
             }
-            _loc2_++;
+            i1++;
          }
          _height = rootMenu.length * l1Width;
       }
@@ -105,37 +101,35 @@ package auctionHouse.view
          return _height;
       }
       
-      protected function rootMenuClickHandler(param1:MouseEvent) : void
+      protected function rootMenuClickHandler(e:MouseEvent) : void
       {
-         var _loc4_:* = 0;
-         var _loc3_:* = 0;
+         var i:* = 0;
+         var j:* = 0;
          SoundManager.instance.play("008");
          if(currentItem != null)
          {
             currentItem.enable = true;
          }
-         currentItem = param1.currentTarget as IMenuItem;
-         var _loc2_:int = rootMenu.indexOf(currentItem);
+         currentItem = e.currentTarget as IMenuItem;
+         var _index:int = rootMenu.indexOf(currentItem);
          if(currentItem.isOpen)
          {
             closeAll();
             currentItem.enable = true;
-            _loc4_ = uint(0);
-            while(_loc4_ < subMenus.length)
+            for(i = uint(0); i < subMenus.length; )
             {
-               _loc3_ = uint(0);
-               while(_loc3_ < subMenus[_loc4_].length)
+               for(j = uint(0); j < subMenus[i].length; )
                {
-                  subMenus[_loc4_][_loc3_].enable = true;
-                  _loc3_++;
+                  subMenus[i][j].enable = true;
+                  j++;
                }
-               _loc4_++;
+               i++;
             }
          }
          else
          {
             closeAll();
-            openItemByIndex(_loc2_);
+            openItemByIndex(_index);
             isseach = false;
             currentItem.enable = false;
          }
@@ -146,83 +140,78 @@ package auctionHouse.view
       {
       }
       
-      private function openItemByIndex(param1:uint) : void
+      private function openItemByIndex(index:uint) : void
       {
-         var _loc4_:* = 0;
-         var _loc3_:* = 0;
-         var _loc2_:* = 0;
-         if(!subMenus[param1])
+         var i:* = 0;
+         var i1:* = 0;
+         var i2:* = 0;
+         if(!subMenus[index])
          {
             return;
          }
-         _loc4_ = uint(0);
-         while(_loc4_ < rootMenu.length)
+         i = uint(0);
+         while(i < rootMenu.length)
          {
-            if(_loc4_ <= param1)
+            if(i <= index)
             {
-               rootMenu[_loc4_].y = _loc4_ * l1Width;
+               rootMenu[i].y = i * l1Width;
             }
             else
             {
-               rootMenu[_loc4_].y = _loc4_ * l1Width + subMenus[param1].length * l2Width;
+               rootMenu[i].y = i * l1Width + subMenus[index].length * l2Width;
             }
-            _loc4_++;
+            i++;
          }
-         _loc3_ = uint(0);
-         while(_loc3_ < subMenus.length)
+         for(i1 = uint(0); i1 < subMenus.length; )
          {
-            _loc2_ = uint(0);
-            while(_loc2_ < subMenus[_loc3_].length)
+            for(i2 = uint(0); i2 < subMenus[i1].length; )
             {
-               if(_loc3_ == param1)
+               if(i1 == index)
                {
-                  subMenus[_loc3_][_loc2_].visible = true;
-                  subMenus[_loc3_][_loc2_].enable = true;
-                  subMenus[_loc3_][_loc2_].y = (param1 + 1) * l1Width + _loc2_ * l2Width;
+                  subMenus[i1][i2].visible = true;
+                  subMenus[i1][i2].enable = true;
+                  subMenus[i1][i2].y = (index + 1) * l1Width + i2 * l2Width;
                }
                else
                {
-                  subMenus[_loc3_][_loc2_].visible = false;
+                  subMenus[i1][i2].visible = false;
                }
-               _loc2_++;
+               i2++;
             }
-            _loc3_++;
+            i1++;
          }
-         _height = rootMenu.length * l1Width + subMenus[param1].length * l2Width;
-         rootMenu[param1].isOpen = true;
+         _height = rootMenu.length * l1Width + subMenus[index].length * l2Width;
+         rootMenu[index].isOpen = true;
       }
       
       public function dispose() : void
       {
-         var _loc3_:* = 0;
-         var _loc2_:* = 0;
-         var _loc1_:* = 0;
+         var i:* = 0;
+         var i1:* = 0;
+         var i2:* = 0;
          if(rootMenu)
          {
-            _loc3_ = uint(0);
-            while(_loc3_ < rootMenu.length)
+            for(i = uint(0); i < rootMenu.length; )
             {
-               rootMenu[_loc3_].removeEventListener("click",rootMenuClickHandler);
-               ObjectUtils.disposeObject(rootMenu[_loc3_]);
-               rootMenu[_loc3_] = null;
-               _loc3_++;
+               rootMenu[i].removeEventListener("click",rootMenuClickHandler);
+               ObjectUtils.disposeObject(rootMenu[i]);
+               rootMenu[i] = null;
+               i++;
             }
          }
          rootMenu = null;
          if(subMenus)
          {
-            _loc2_ = uint(0);
-            while(_loc2_ < subMenus.length)
+            for(i1 = uint(0); i1 < subMenus.length; )
             {
-               _loc1_ = uint(0);
-               while(_loc1_ < subMenus[_loc2_].length)
+               for(i2 = uint(0); i2 < subMenus[i1].length; )
                {
-                  subMenus[_loc2_][_loc1_].removeEventListener("click",subMenuClickHandler);
-                  ObjectUtils.disposeObject(subMenus[_loc2_][_loc1_]);
-                  subMenus[_loc2_][_loc1_] = null;
-                  _loc1_++;
+                  subMenus[i1][i2].removeEventListener("click",subMenuClickHandler);
+                  ObjectUtils.disposeObject(subMenus[i1][i2]);
+                  subMenus[i1][i2] = null;
+                  i2++;
                }
-               _loc2_++;
+               i1++;
             }
          }
          subMenus = null;
@@ -234,7 +223,7 @@ package auctionHouse.view
          }
       }
       
-      protected function subMenuClickHandler(param1:MouseEvent) : void
+      protected function subMenuClickHandler(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          isseach = true;
@@ -242,7 +231,7 @@ package auctionHouse.view
          {
             currentItem.enable = true;
          }
-         currentItem = param1.currentTarget as IMenuItem;
+         currentItem = e.currentTarget as IMenuItem;
          currentItem.enable = false;
          dispatchEvent(new Event("menuClicked"));
       }

@@ -16,20 +16,20 @@ package morn.core.ex
       
       private var _textType:int;
       
-      public function NameTextEx(param1:String = "", param2:String = null)
+      public function NameTextEx(text:String = "", skin:String = null)
       {
-         super(param1,param2);
+         super(text,skin);
          size = 20;
       }
       
       public function get textType() : int
       {
-         return this._textType;
+         return _textType;
       }
       
-      public function set textType(param1:int) : void
+      public function set textType(value:int) : void
       {
-         this._textType = param1;
+         _textType = value;
          if(_gradientColor)
          {
             ObjectUtils.clearFilter(_gradientSp,GlowFilter);
@@ -51,18 +51,18 @@ package morn.core.ex
             _format.color = null;
             _stroke = null;
          }
-         switch(this.textType)
+         switch(int(textType) - 1)
          {
-            case NORMAL_TEXT:
+            case 0:
                color = 16777215;
                stroke = "0x000000,1,2,2,10";
                break;
-            case VIP_TEXT:
+            case 1:
                ObjectUtils.clearFilter(_textField,GlowFilter);
                gradientColor = "0xf3ff32,0xff9600";
                gradientStroke = "0x441300,1,2,2,10";
                break;
-            case OLDPLAYER_TEXT:
+            case 2:
                color = 16711680;
                stroke = "0x000000,1,2,2,10";
          }

@@ -30,18 +30,17 @@ package vip.view
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var giftItem:* = null;
          _content = ComponentFactory.Instance.creatComponentByStylename("vip.GiftContentView.Vbox");
          _scrollPanel = ComponentFactory.Instance.creatComponentByStylename("vip.GiftContentView.DetailList");
          _scrollPanel.setView(_content);
-         _loc2_ = 0;
-         while(_loc2_ <= listLen - 1)
+         for(i = 0; i <= listLen - 1; )
          {
-            _loc1_ = new VipGiftDetail();
-            _loc1_.setData(_loc2_ + 1);
-            _content.addChild(_loc1_);
-            _loc2_++;
+            giftItem = new VipGiftDetail();
+            giftItem.setData(i + 1);
+            _content.addChild(giftItem);
+            i++;
          }
          _scrollPanel.invalidateViewport();
          addChild(_scrollPanel);

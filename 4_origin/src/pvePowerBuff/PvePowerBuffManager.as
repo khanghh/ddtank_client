@@ -50,7 +50,7 @@ package pvePowerBuff
       
       public var isInGetBuff:Boolean = false;
       
-      public function PvePowerBuffManager(param1:PvePowerBuffInstance)
+      public function PvePowerBuffManager(ppbi:PvePowerBuffInstance)
       {
          super();
       }
@@ -74,113 +74,111 @@ package pvePowerBuff
          SocketManager.Instance.addEventListener("pvePowerBuff",__pvePowerBuffHandler);
       }
       
-      private function __pvePowerBuffHandler(param1:CrazyTankSocketEvent) : void
+      private function __pvePowerBuffHandler(event:CrazyTankSocketEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc11_:int = 0;
-         var _loc3_:* = null;
-         var _loc6_:int = 0;
-         var _loc10_:int = 0;
-         var _loc9_:* = null;
-         var _loc2_:* = null;
-         var _loc5_:* = null;
-         var _loc7_:PackageIn = param1.pkg;
-         var _loc8_:int = _loc7_.readInt();
-         switch(int(_loc8_) - 1)
+         var count:int = 0;
+         var i:int = 0;
+         var player:* = null;
+         var fcount:int = 0;
+         var j:int = 0;
+         var fplayer:* = null;
+         var refreshEv:* = null;
+         var getBUffEv:* = null;
+         var pkg:PackageIn = event.pkg;
+         var msgType:int = pkg.readInt();
+         switch(int(msgType) - 1)
          {
             case 0:
                playerInfoVc = new Vector.<PlayerInfo>();
-               refreshCount = _loc7_.readInt();
-               refreshDate = _loc7_.readDate();
-               getBuffCount = _loc7_.readInt();
-               getBuffDate = _loc7_.readDate();
-               getBuffIndex = _loc7_.readInt();
-               _loc4_ = _loc7_.readInt();
-               _loc11_ = 0;
-               while(_loc11_ < _loc4_)
+               refreshCount = pkg.readInt();
+               refreshDate = pkg.readDate();
+               getBuffCount = pkg.readInt();
+               getBuffDate = pkg.readDate();
+               getBuffIndex = pkg.readInt();
+               count = pkg.readInt();
+               for(i = 0; i < count; )
                {
-                  _loc3_ = new PlayerInfo();
-                  _loc3_.ID = _loc7_.readInt();
-                  _loc3_.Attack = _loc7_.readInt();
-                  _loc3_.Defence = _loc7_.readInt();
-                  _loc3_.Agility = _loc7_.readInt();
-                  _loc3_.Luck = _loc7_.readInt();
-                  _loc3_.Damage = _loc7_.readInt();
-                  _loc3_.Guard = _loc7_.readInt();
-                  _loc3_.hp = _loc7_.readInt();
-                  _loc3_.MagicAttack = _loc7_.readInt();
-                  _loc3_.MagicDefence = _loc7_.readInt();
-                  _loc3_.Grade = _loc7_.readInt();
-                  _loc3_.FightPower = _loc7_.readInt();
-                  _loc3_.NickName = _loc7_.readUTF();
-                  _loc3_.Sex = _loc7_.readInt();
-                  _loc3_.Style = _loc7_.readUTF();
-                  _loc3_.Colors = _loc7_.readUTF();
-                  _loc3_.Skin = _loc7_.readUTF();
-                  _loc3_.Hide = _loc7_.readInt();
-                  playerInfoVc.push(_loc3_);
-                  _loc11_++;
+                  player = new PlayerInfo();
+                  player.ID = pkg.readInt();
+                  player.Attack = pkg.readInt();
+                  player.Defence = pkg.readInt();
+                  player.Agility = pkg.readInt();
+                  player.Luck = pkg.readInt();
+                  player.Damage = pkg.readInt();
+                  player.Guard = pkg.readInt();
+                  player.hp = pkg.readInt();
+                  player.MagicAttack = pkg.readInt();
+                  player.MagicDefence = pkg.readInt();
+                  player.Grade = pkg.readInt();
+                  player.FightPower = pkg.readInt();
+                  player.NickName = pkg.readUTF();
+                  player.Sex = pkg.readInt();
+                  player.Style = pkg.readUTF();
+                  player.Colors = pkg.readUTF();
+                  player.Skin = pkg.readUTF();
+                  player.Hide = pkg.readInt();
+                  playerInfoVc.push(player);
+                  i++;
                }
-               getBuffAtk = _loc7_.readInt();
-               getBuffDef = _loc7_.readInt();
-               getBuffAgl = _loc7_.readInt();
-               getBuffLuck = _loc7_.readInt();
-               getBuffDmg = _loc7_.readInt();
-               getBuffAr = _loc7_.readInt();
-               getBuffHp = _loc7_.readInt();
-               getBuffMAtk = _loc7_.readInt();
-               getBuffMDef = _loc7_.readInt();
+               getBuffAtk = pkg.readInt();
+               getBuffDef = pkg.readInt();
+               getBuffAgl = pkg.readInt();
+               getBuffLuck = pkg.readInt();
+               getBuffDmg = pkg.readInt();
+               getBuffAr = pkg.readInt();
+               getBuffHp = pkg.readInt();
+               getBuffMAtk = pkg.readInt();
+               getBuffMDef = pkg.readInt();
                break;
             case 1:
                isInRefresh = true;
                playerInfoVc = new Vector.<PlayerInfo>();
-               refreshCount = _loc7_.readInt();
-               refreshDate = _loc7_.readDate();
-               getBuffIndex = _loc7_.readInt();
-               _loc6_ = _loc7_.readInt();
-               _loc10_ = 0;
-               while(_loc10_ < _loc6_)
+               refreshCount = pkg.readInt();
+               refreshDate = pkg.readDate();
+               getBuffIndex = pkg.readInt();
+               fcount = pkg.readInt();
+               for(j = 0; j < fcount; )
                {
-                  _loc9_ = new PlayerInfo();
-                  _loc9_.ID = _loc7_.readInt();
-                  _loc9_.Attack = _loc7_.readInt();
-                  _loc9_.Defence = _loc7_.readInt();
-                  _loc9_.Agility = _loc7_.readInt();
-                  _loc9_.Luck = _loc7_.readInt();
-                  _loc9_.Damage = _loc7_.readInt();
-                  _loc9_.Guard = _loc7_.readInt();
-                  _loc9_.hp = _loc7_.readInt();
-                  _loc9_.MagicAttack = _loc7_.readInt();
-                  _loc9_.MagicDefence = _loc7_.readInt();
-                  _loc9_.Grade = _loc7_.readInt();
-                  _loc9_.FightPower = _loc7_.readInt();
-                  _loc9_.NickName = _loc7_.readUTF();
-                  _loc9_.Sex = _loc7_.readInt();
-                  _loc9_.Style = _loc7_.readUTF();
-                  _loc9_.Colors = _loc7_.readUTF();
-                  _loc9_.Skin = _loc7_.readUTF();
-                  _loc9_.Hide = _loc7_.readInt();
-                  playerInfoVc.push(_loc9_);
-                  _loc10_++;
+                  fplayer = new PlayerInfo();
+                  fplayer.ID = pkg.readInt();
+                  fplayer.Attack = pkg.readInt();
+                  fplayer.Defence = pkg.readInt();
+                  fplayer.Agility = pkg.readInt();
+                  fplayer.Luck = pkg.readInt();
+                  fplayer.Damage = pkg.readInt();
+                  fplayer.Guard = pkg.readInt();
+                  fplayer.hp = pkg.readInt();
+                  fplayer.MagicAttack = pkg.readInt();
+                  fplayer.MagicDefence = pkg.readInt();
+                  fplayer.Grade = pkg.readInt();
+                  fplayer.FightPower = pkg.readInt();
+                  fplayer.NickName = pkg.readUTF();
+                  fplayer.Sex = pkg.readInt();
+                  fplayer.Style = pkg.readUTF();
+                  fplayer.Colors = pkg.readUTF();
+                  fplayer.Skin = pkg.readUTF();
+                  fplayer.Hide = pkg.readInt();
+                  playerInfoVc.push(fplayer);
+                  j++;
                }
-               _loc2_ = new PvePowerBuffEvent("pvepowerbuff_refresh");
-               dispatchEvent(_loc2_);
+               refreshEv = new PvePowerBuffEvent("pvepowerbuff_refresh");
+               dispatchEvent(refreshEv);
                break;
             case 2:
-               getBuffCount = _loc7_.readInt();
-               getBuffDate = _loc7_.readDate();
-               getBuffIndex = _loc7_.readInt();
-               getBuffAtk = _loc7_.readInt();
-               getBuffDef = _loc7_.readInt();
-               getBuffAgl = _loc7_.readInt();
-               getBuffLuck = _loc7_.readInt();
-               getBuffDmg = _loc7_.readInt();
-               getBuffAr = _loc7_.readInt();
-               getBuffHp = _loc7_.readInt();
-               getBuffMAtk = _loc7_.readInt();
-               getBuffMDef = _loc7_.readInt();
-               _loc5_ = new PvePowerBuffEvent("pvepowerbuff_getbuff");
-               dispatchEvent(_loc5_);
+               getBuffCount = pkg.readInt();
+               getBuffDate = pkg.readDate();
+               getBuffIndex = pkg.readInt();
+               getBuffAtk = pkg.readInt();
+               getBuffDef = pkg.readInt();
+               getBuffAgl = pkg.readInt();
+               getBuffLuck = pkg.readInt();
+               getBuffDmg = pkg.readInt();
+               getBuffAr = pkg.readInt();
+               getBuffHp = pkg.readInt();
+               getBuffMAtk = pkg.readInt();
+               getBuffMDef = pkg.readInt();
+               getBUffEv = new PvePowerBuffEvent("pvepowerbuff_getbuff");
+               dispatchEvent(getBUffEv);
          }
       }
       
@@ -191,8 +189,8 @@ package pvePowerBuff
       
       public function disposeView() : void
       {
-         var _loc1_:PvePowerBuffEvent = new PvePowerBuffEvent("pvePowerBuffDispose");
-         dispatchEvent(_loc1_);
+         var event:PvePowerBuffEvent = new PvePowerBuffEvent("pvePowerBuffDispose");
+         dispatchEvent(event);
       }
    }
 }

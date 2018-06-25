@@ -54,13 +54,13 @@ package welfareCenter.view
       private function initView() : void
       {
          UICreatShortcut.creatAndAdd("callBackFund.bg",this);
-         var _loc2_:Date = _callBackFunMgr.startTime;
-         var _loc1_:String = _loc2_.fullYear + "." + (_loc2_.month + 1) + "." + _loc2_.date;
-         var _loc4_:Date = _callBackFunMgr.endTime;
-         var _loc5_:String = _loc4_.fullYear + "." + (_loc4_.month + 1) + "." + _loc4_.date;
-         UICreatShortcut.creatTextAndAdd("callbackfund.openTimeTf",_loc1_ + "-" + _loc5_,this);
-         var _loc3_:String = LanguageMgr.GetTranslation("callBackFund.frame.contentText",_callBackFunMgr.buyFundCount,6);
-         UICreatShortcut.creatTextAndAdd("callbackfund.contentTf",_loc3_,this);
+         var startTime:Date = _callBackFunMgr.startTime;
+         var startTimeStr:String = startTime.fullYear + "." + (startTime.month + 1) + "." + startTime.date;
+         var endTime:Date = _callBackFunMgr.endTime;
+         var endTimeStr:String = endTime.fullYear + "." + (endTime.month + 1) + "." + endTime.date;
+         UICreatShortcut.creatTextAndAdd("callbackfund.openTimeTf",startTimeStr + "-" + endTimeStr,this);
+         var contextTxt:String = LanguageMgr.GetTranslation("callBackFund.frame.contentText",_callBackFunMgr.buyFundCount,6);
+         UICreatShortcut.creatTextAndAdd("callbackfund.contentTf",contextTxt,this);
          _btnSp = new Sprite();
          addChild(_btnSp);
          setGoods();
@@ -68,34 +68,32 @@ package welfareCenter.view
       
       private function setGoods() : void
       {
-         var _loc6_:int = 0;
-         var _loc2_:* = null;
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:Array = CallBackFundManager.instance.dailyRewardInfoList;
-         if(_loc3_)
+         var i:int = 0;
+         var _cell:* = null;
+         var k:int = 0;
+         var _cell1:* = null;
+         var rewards:Array = CallBackFundManager.instance.dailyRewardInfoList;
+         if(rewards)
          {
             _rewardsHBox = ComponentFactory.Instance.creatComponentByStylename("callBackFund.dailyView.rewardsHBox");
             addChild(_rewardsHBox);
-            _loc6_ = 0;
-            while(_loc6_ < _loc3_.length)
+            for(i = 0; i < rewards.length; )
             {
-               _loc2_ = CallBackFundManager.instance.createCell(_loc3_[_loc6_]);
-               _rewardsHBox.addChild(_loc2_);
-               _loc6_++;
+               _cell = CallBackFundManager.instance.createCell(rewards[i]);
+               _rewardsHBox.addChild(_cell);
+               i++;
             }
          }
-         var _loc1_:Array = CallBackFundManager.instance.downRewardInfoList;
-         if(_loc1_)
+         var rewardsdownView:Array = CallBackFundManager.instance.downRewardInfoList;
+         if(rewardsdownView)
          {
             _rewardsHBox1 = ComponentFactory.Instance.creatComponentByStylename("callBackFund.downView.rewardsHBox");
             addChild(_rewardsHBox1);
-            _loc5_ = 0;
-            while(_loc5_ < _loc1_.length)
+            for(k = 0; k < rewardsdownView.length; )
             {
-               _loc4_ = CallBackFundManager.instance.createCell(_loc1_[_loc5_]);
-               _rewardsHBox1.addChild(_loc4_);
-               _loc5_++;
+               _cell1 = CallBackFundManager.instance.createCell(rewardsdownView[k]);
+               _rewardsHBox1.addChild(_cell1);
+               k++;
             }
          }
       }
@@ -114,21 +112,21 @@ package welfareCenter.view
          CallBackFundManager.instance.removeEventListener("event_state_change",update);
       }
       
-      private function update(param1:Event) : void
+      private function update(evt:Event) : void
       {
          ObjectUtils.removeChildAllChildren(_btnSp);
-         var _loc2_:int = CallBackFundManager.instance.state;
-         if(_loc2_ == 0)
+         var state:int = CallBackFundManager.instance.state;
+         if(state == 0)
          {
             _quickBuyBtn = UICreatShortcut.creatAndAdd("callBackFund.quickBuyBtn",_btnSp);
             _quickBuyBtn.mouseChildren = false;
          }
-         else if(_loc2_ == 1)
+         else if(state == 1)
          {
             _quickReceiveBtn = UICreatShortcut.creatAndAdd("callBackFund.quickReceiveBtn",_btnSp);
             _quickReceiveBtn.mouseChildren = false;
          }
-         else if(_loc2_ == 2)
+         else if(state == 2)
          {
             _tomorrowComeBtn = UICreatShortcut.creatAndAdd("callBackFund.tomorrowComeBtn",_btnSp);
             UICreatShortcut.creatTextAndAdd("callbackfund.leftDayTf",LanguageMgr.GetTranslation("callBackFund.frame.leftDayText",_callBackFunMgr.getLeftReceiveTime()),_btnSp);
@@ -139,15 +137,15 @@ package welfareCenter.view
          }
       }
       
-      private function onBtnClick(param1:MouseEvent) : void
+      private function onBtnClick(evt:MouseEvent) : void
       {
-         evt = param1;
+         evt = evt;
          var target:* = evt.target;
          if(target == _quickBuyBtn)
          {
-            onAlertFrameResponse = function(param1:FrameEvent):void
+            onAlertFrameResponse = function(evt:FrameEvent):void
             {
-               if(param1.responseCode == 3 || param1.responseCode == 2)
+               if(evt.responseCode == 3 || evt.responseCode == 2)
                {
                   CheckMoneyUtils.instance.checkMoney(false,_callBackFunMgr.buyFundCount,onCheckComplete);
                }
@@ -186,9 +184,9 @@ package welfareCenter.view
          }
       }
       
-      private function responseHandler(param1:FrameEvent) : void
+      private function responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.playButtonSound();
             dispose();

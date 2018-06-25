@@ -17,7 +17,7 @@ package guildMemberWeek.loader
       
       private var _LoadResourseOK:Boolean = false;
       
-      public function LoaderGuildMemberWeekUIModule(param1:PrivateClass)
+      public function LoaderGuildMemberWeekUIModule(pct:PrivateClass)
       {
          super();
       }
@@ -31,10 +31,10 @@ package guildMemberWeek.loader
          return LoaderGuildMemberWeekUIModule._instance;
       }
       
-      public function loadUIModule(param1:Function = null, param2:Array = null) : void
+      public function loadUIModule(complete:Function = null, completeParams:Array = null) : void
       {
-         _func = param1;
-         _funcParams = param2;
+         _func = complete;
+         _funcParams = completeParams;
          if(!_LoadResourseOK)
          {
             UIModuleSmallLoading.Instance.progress = 0;
@@ -54,10 +54,10 @@ package guildMemberWeek.loader
          }
       }
       
-      private function loadCompleteHandler(param1:UIModuleEvent) : void
+      private function loadCompleteHandler(event:UIModuleEvent) : void
       {
          _LoadResourseOK = true;
-         if(param1.module == "guildMemberWeek")
+         if(event.module == "guildMemberWeek")
          {
             UIModuleSmallLoading.Instance.hide();
             UIModuleLoader.Instance.removeEventListener("uiModuleComplete",loadCompleteHandler);
@@ -71,11 +71,11 @@ package guildMemberWeek.loader
          }
       }
       
-      private function onUimoduleLoadProgress(param1:UIModuleEvent) : void
+      private function onUimoduleLoadProgress(event:UIModuleEvent) : void
       {
-         if(param1.module == "christmas")
+         if(event.module == "christmas")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
    }

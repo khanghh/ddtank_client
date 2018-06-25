@@ -80,21 +80,21 @@ package ddt.view.tips
          return _tempData;
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         if(param1 is ToolPropInfo)
+         if(data is ToolPropInfo)
          {
             this.visible = true;
-            update(param1.showTurn,param1.showCount,param1.showThew,param1.valueType,param1.info,param1.count,param1.shortcutKey);
+            update(data.showTurn,data.showCount,data.showThew,data.valueType,data.info,data.count,data.shortcutKey);
          }
          else
          {
             this.visible = false;
          }
-         _tempData = param1;
+         _tempData = data;
       }
       
-      public function changeStyle(param1:ItemTemplateInfo, param2:int, param3:Boolean = true) : void
+      public function changeStyle(info:ItemTemplateInfo, $width:int, $wordWrap:Boolean = true) : void
       {
          var _loc4_:* = 0;
          name_txt.width = _loc4_;
@@ -120,12 +120,12 @@ package ddt.view.tips
          if(!context)
          {
             context = new TextField();
-            context.width = param2 - 2;
+            context.width = $width - 2;
             context.autoSize = "center";
             _container.addChild(context);
             context = new TextField();
-            context.width = param2 - 2;
-            if(param3)
+            context.width = $width - 2;
+            if($wordWrap)
             {
                context.wordWrap = true;
                context.autoSize = "left";
@@ -140,23 +140,23 @@ package ddt.view.tips
             }
             _container.addChild(context);
          }
-         _info = param1;
+         _info = info;
          if(_info)
          {
             context.text = _info.Description;
          }
          context.setTextFormat(f);
          _bg.height = 0;
-         drawBG(param2);
+         drawBG($width);
       }
       
-      private function update(param1:Boolean, param2:Boolean, param3:Boolean, param4:String, param5:ItemTemplateInfo, param6:int, param7:String) : void
+      private function update(showPrice:Boolean, showCount:Boolean, showThew:Boolean, valueType:String, info:ItemTemplateInfo, count:int, key:String) : void
       {
-         _showCount = param2;
-         _showTurn = param1;
-         _showThew = param3;
-         _info = param5;
-         _count = param6;
+         _showCount = showCount;
+         _showTurn = showPrice;
+         _showThew = showThew;
+         _info = info;
+         _count = count;
          name_txt.autoSize = "left";
          if(_showCount)
          {
@@ -177,25 +177,25 @@ package ddt.view.tips
          {
             name_txt.text = String(_info.Name);
          }
-         if(param7)
+         if(key)
          {
-            name_txt.text = name_txt.text + (" [" + param7.toLocaleUpperCase() + "]");
+            name_txt.text = name_txt.text + (" [" + key.toLocaleUpperCase() + "]");
          }
          if(_showThew)
          {
-            if(param4 == "Psychic")
+            if(valueType == "Psychic")
             {
-               thew_txt.htmlText = LanguageMgr.GetTranslation("tank.view.common.RoomIIPropTip." + param4,String(_info.Property7));
+               thew_txt.htmlText = LanguageMgr.GetTranslation("tank.view.common.RoomIIPropTip." + valueType,String(_info.Property7));
             }
-            else if(param4 == "Energy")
+            else if(valueType == "Energy")
             {
-               thew_txt.htmlText = LanguageMgr.GetTranslation("tank.view.common.RoomIIPropTip." + param4,String(_info.Property4));
+               thew_txt.htmlText = LanguageMgr.GetTranslation("tank.view.common.RoomIIPropTip." + valueType,String(_info.Property4));
             }
-            else if(param4 == "mp")
+            else if(valueType == "mp")
             {
-               thew_txt.htmlText = LanguageMgr.GetTranslation("tank.view.common.RoomIIPropTip." + param4,String(_info.Property4));
+               thew_txt.htmlText = LanguageMgr.GetTranslation("tank.view.common.RoomIIPropTip." + valueType,String(_info.Property4));
             }
-            else if(param4 == "max")
+            else if(valueType == "max")
             {
                thew_txt.htmlText = LanguageMgr.GetTranslation("tank.view.common.RoomIIPropTip.remained");
             }
@@ -236,17 +236,17 @@ package ddt.view.tips
          _bg.width = 0;
       }
       
-      private function drawBG(param1:int = 0) : void
+      private function drawBG($width:int = 0) : void
       {
          reset();
-         if(param1 == 0)
+         if($width == 0)
          {
             _bg.width = _container.width + 10;
             _bg.height = _container.height + 6;
          }
          else
          {
-            _bg.width = param1 + 2;
+            _bg.width = $width + 2;
             _bg.height = _container.height + 5;
          }
          _width = _bg.width;

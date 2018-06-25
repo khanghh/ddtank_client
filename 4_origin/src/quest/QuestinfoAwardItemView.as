@@ -55,65 +55,65 @@ package quest
       
       private var _first:Boolean;
       
-      public function QuestinfoAwardItemView(param1:Boolean)
+      public function QuestinfoAwardItemView(isOptional:Boolean)
       {
-         _isOptional = param1;
+         _isOptional = isOptional;
          _first = true;
          _items = new Vector.<QuestRewardCell>();
          super();
       }
       
-      public function set isReward(param1:Boolean) : void
+      public function set isReward(value:Boolean) : void
       {
-         _isReward = param1;
+         _isReward = value;
       }
       
-      override public function set info(param1:QuestInfo) : void
+      override public function set info(value:QuestInfo) : void
       {
-         var _loc8_:* = null;
-         var _loc4_:* = null;
-         var _loc3_:int = 0;
-         var _loc5_:* = null;
-         _info = param1;
+         var tinfo:* = null;
+         var item:* = null;
+         var buffTime:int = 0;
+         var valueTxt:* = null;
+         _info = value;
          var _loc10_:int = 0;
          var _loc9_:* = _info.itemRewards;
-         for each(var _loc7_ in _info.itemRewards)
+         for each(var temp in _info.itemRewards)
          {
-            _loc8_ = new InventoryItemInfo();
-            _loc8_.TemplateID = _loc7_.itemID;
-            ItemManager.fill(_loc8_);
-            _loc8_.ValidDate = _loc7_.ValidateTime;
-            _loc8_.IsJudge = true;
-            _loc8_.IsBinds = _loc7_.isBind;
-            _loc8_.AttackCompose = _loc7_.AttackCompose;
-            _loc8_.DefendCompose = _loc7_.DefendCompose;
-            _loc8_.AgilityCompose = _loc7_.AgilityCompose;
-            _loc8_.LuckCompose = _loc7_.LuckCompose;
-            _loc8_.StrengthenLevel = _loc7_.StrengthenLevel;
-            _loc8_.Count = _loc7_.count[_info.QuestLevel - 1];
-            if(EquipType.isMagicStone(_loc8_.CategoryID))
+            tinfo = new InventoryItemInfo();
+            tinfo.TemplateID = temp.itemID;
+            ItemManager.fill(tinfo);
+            tinfo.ValidDate = temp.ValidateTime;
+            tinfo.IsJudge = true;
+            tinfo.IsBinds = temp.isBind;
+            tinfo.AttackCompose = temp.AttackCompose;
+            tinfo.DefendCompose = temp.DefendCompose;
+            tinfo.AgilityCompose = temp.AgilityCompose;
+            tinfo.LuckCompose = temp.LuckCompose;
+            tinfo.StrengthenLevel = temp.StrengthenLevel;
+            tinfo.Count = temp.count[_info.QuestLevel - 1];
+            if(EquipType.isMagicStone(tinfo.CategoryID))
             {
-               _loc8_.Level = _loc8_.StrengthenLevel;
-               _loc8_.Attack = _loc8_.AttackCompose;
-               _loc8_.Defence = _loc8_.DefendCompose;
-               _loc8_.Agility = _loc8_.AgilityCompose;
-               _loc8_.Luck = _loc8_.LuckCompose;
-               _loc8_.MagicAttack = _loc7_.MagicAttack;
-               _loc8_.MagicDefence = _loc7_.MagicDefence;
+               tinfo.Level = tinfo.StrengthenLevel;
+               tinfo.Attack = tinfo.AttackCompose;
+               tinfo.Defence = tinfo.DefendCompose;
+               tinfo.Agility = tinfo.AgilityCompose;
+               tinfo.Luck = tinfo.LuckCompose;
+               tinfo.MagicAttack = temp.MagicAttack;
+               tinfo.MagicDefence = temp.MagicDefence;
             }
-            if(!(0 != _loc8_.NeedSex && getSexByInt(PlayerManager.Instance.Self.Sex) != _loc8_.NeedSex))
+            if(!(0 != tinfo.NeedSex && getSexByInt(PlayerManager.Instance.Self.Sex) != tinfo.NeedSex))
             {
-               if(_loc7_.isOptional == _isOptional)
+               if(temp.isOptional == _isOptional)
                {
-                  _loc4_ = new QuestRewardCell();
-                  _loc4_.info = _loc8_;
-                  if(_loc7_.isOptional)
+                  item = new QuestRewardCell();
+                  item.info = tinfo;
+                  if(temp.isOptional)
                   {
-                     _loc4_.canBeSelected();
-                     _loc4_.addEventListener(RewardSelectedEvent.ITEM_SELECTED,__chooseItemReward);
+                     item.canBeSelected();
+                     item.addEventListener(RewardSelectedEvent.ITEM_SELECTED,__chooseItemReward);
                   }
-                  _list.addChild(_loc4_);
-                  _items.push(_loc4_);
+                  _list.addChild(item);
+                  _items.push(item);
                }
             }
          }
@@ -126,54 +126,54 @@ package quest
          {
             _list.y = 5;
          }
-         var _loc2_:int = 0;
-         var _loc6_:QuestInfo = newInfo(_info,_info.QuestLevel - 2,TaskManager.instance.improve);
-         if(_loc6_.RewardGP > 0)
+         var index:int = 0;
+         var realnfo:QuestInfo = newInfo(_info,_info.QuestLevel - 2,TaskManager.instance.improve);
+         if(realnfo.RewardGP > 0)
          {
-            addReward("exp",_loc6_.RewardGP,_loc2_);
-            _loc2_++;
+            addReward("exp",realnfo.RewardGP,index);
+            index++;
          }
-         if(_loc6_.RewardGold > 0)
+         if(realnfo.RewardGold > 0)
          {
-            addReward("gold",_loc6_.RewardGold,_loc2_);
-            _loc2_++;
+            addReward("gold",realnfo.RewardGold,index);
+            index++;
          }
-         if(_loc6_.RewardMoney > 0)
+         if(realnfo.RewardMoney > 0)
          {
-            addReward("coin",_loc6_.RewardMoney,_loc2_);
-            _loc2_++;
+            addReward("coin",realnfo.RewardMoney,index);
+            index++;
          }
-         if(_loc6_.RewardOffer > 0)
+         if(realnfo.RewardOffer > 0)
          {
-            addReward("honor",_loc6_.RewardOffer,_loc2_);
-            _loc2_++;
+            addReward("honor",realnfo.RewardOffer,index);
+            index++;
          }
          if(_info.RewardRiches > 0)
          {
-            addReward("rich",_info.RewardRiches,_loc2_);
-            _loc2_++;
+            addReward("rich",_info.RewardRiches,index);
+            index++;
          }
          if(_info.RewardBindMoney > 0)
          {
-            addReward("gift",_info.RewardBindMoney,_loc2_);
-            _loc2_++;
+            addReward("gift",_info.RewardBindMoney,index);
+            index++;
          }
          if(_info.Rank != "")
          {
-            addReward("rank",0,_loc2_,true,_info.Rank);
-            _loc2_++;
+            addReward("rank",0,index,true,_info.Rank);
+            index++;
          }
          if(_info.RewardBuffID != 0)
          {
             cardAsset = ComponentFactory.Instance.creat("core.quest.MCQuestRewardBuff");
             addChild(cardAsset);
             cardAsset.setFrame(_info.RewardBuffID - 11994);
-            _loc3_ = _info.RewardBuffDate;
-            _loc5_ = ComponentFactory.Instance.creat("core.quest.QuestItemRewardQuantity");
-            addChild(_loc5_);
-            _loc5_.x = cardAsset.x + cardAsset.width + 2;
-            _loc5_.y = cardAsset.y;
-            _loc5_.text = String(_loc3_) + LanguageMgr.GetTranslation("hours");
+            buffTime = _info.RewardBuffDate;
+            valueTxt = ComponentFactory.Instance.creat("core.quest.QuestItemRewardQuantity");
+            addChild(valueTxt);
+            valueTxt.x = cardAsset.x + cardAsset.width + 2;
+            valueTxt.y = cardAsset.y;
+            valueTxt.text = String(buffTime) + LanguageMgr.GetTranslation("hours");
          }
          if(_isReward && getNeedMoney(_info) != -1)
          {
@@ -209,43 +209,43 @@ package quest
          }
       }
       
-      private function getNeedMoney(param1:QuestInfo) : int
+      private function getNeedMoney(pInfo:QuestInfo) : int
       {
-         if(param1.QuestLevel == 1)
+         if(pInfo.QuestLevel == 1)
          {
-            return param1.Level2NeedMoney;
+            return pInfo.Level2NeedMoney;
          }
-         if(param1.QuestLevel == 2)
+         if(pInfo.QuestLevel == 2)
          {
-            return param1.Level3NeedMoney;
+            return pInfo.Level3NeedMoney;
          }
-         if(param1.QuestLevel == 3)
+         if(pInfo.QuestLevel == 3)
          {
-            return param1.Level4NeedMoney;
+            return pInfo.Level4NeedMoney;
          }
-         if(param1.QuestLevel == 4)
+         if(pInfo.QuestLevel == 4)
          {
-            return param1.Level5NeedMoney;
+            return pInfo.Level5NeedMoney;
          }
          return -1;
       }
       
-      private function newInfo(param1:QuestInfo, param2:int, param3:QuestImproveInfo) : QuestInfo
+      private function newInfo(pInfo:QuestInfo, level:int, info:QuestImproveInfo) : QuestInfo
       {
-         var _loc4_:* = null;
-         if(param2 > -1)
+         var vInfo:* = null;
+         if(level > -1)
          {
-            _loc4_ = new QuestInfo();
-            _loc4_.RewardMoney = param3.bindMoneyRate[param2] * param1.RewardMoney;
-            _loc4_.RewardGP = param3.expRate[param2] * param1.RewardGP;
-            _loc4_.RewardGold = param3.goldRate[param2] * param1.RewardGold;
-            _loc4_.RewardOffer = param3.exploitRate[param2] * param1.RewardOffer;
-            return _loc4_;
+            vInfo = new QuestInfo();
+            vInfo.RewardMoney = info.bindMoneyRate[level] * pInfo.RewardMoney;
+            vInfo.RewardGP = info.expRate[level] * pInfo.RewardGP;
+            vInfo.RewardGold = info.goldRate[level] * pInfo.RewardGold;
+            vInfo.RewardOffer = info.exploitRate[level] * pInfo.RewardOffer;
+            return vInfo;
          }
-         return param1;
+         return pInfo;
       }
       
-      private function _activeimproveBtnClick(param1:MouseEvent) : void
+      private function _activeimproveBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -260,54 +260,54 @@ package quest
          LayerManager.Instance.addToLayer(_improveFrame,3,true,1);
       }
       
-      private function getImproveInfo(param1:QuestImproveInfo, param2:int) : QuestInfo
+      private function getImproveInfo(info:QuestImproveInfo, level:int) : QuestInfo
       {
-         var _loc4_:QuestInfo = new QuestInfo();
-         ObjectUtils.copyProperties(_loc4_,_info);
-         _loc4_.data = _info.data;
-         _loc4_.RewardMoney = _loc4_.RewardMoney * param1.bindMoneyRate[param2];
-         _loc4_.RewardGP = _loc4_.RewardGP * param1.expRate[param2];
-         _loc4_.RewardGold = _loc4_.RewardGold * param1.goldRate[param2];
-         _loc4_.RewardOffer = _loc4_.RewardOffer * param1.exploitRate[param2];
+         var questInfo:QuestInfo = new QuestInfo();
+         ObjectUtils.copyProperties(questInfo,_info);
+         questInfo.data = _info.data;
+         questInfo.RewardMoney = questInfo.RewardMoney * info.bindMoneyRate[level];
+         questInfo.RewardGP = questInfo.RewardGP * info.expRate[level];
+         questInfo.RewardGold = questInfo.RewardGold * info.goldRate[level];
+         questInfo.RewardOffer = questInfo.RewardOffer * info.exploitRate[level];
          var _loc6_:int = 0;
          var _loc5_:* = _info.itemRewards;
-         for each(var _loc3_ in _info.itemRewards)
+         for each(var reward in _info.itemRewards)
          {
-            _loc4_.addReward(_loc3_);
+            questInfo.addReward(reward);
          }
-         return _loc4_;
+         return questInfo;
       }
       
-      private function __chooseItemReward(param1:RewardSelectedEvent) : void
+      private function __chooseItemReward(evt:RewardSelectedEvent) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = _items;
-         for each(var _loc2_ in _items)
+         for each(var cell in _items)
          {
-            _loc2_.selected = false;
+            cell.selected = false;
          }
-         param1.itemCell.selected = true;
+         evt.itemCell.selected = true;
       }
       
-      private function getSexByInt(param1:Boolean) : int
+      private function getSexByInt(Sex:Boolean) : int
       {
-         return !!param1?1:2;
+         return !!Sex?1:2;
       }
       
-      private function addReward(param1:String, param2:int, param3:int, param4:Boolean = false, param5:String = "") : void
+      private function addReward(reward:String, count:int, index:int, isRank:Boolean = false, rank:String = "") : void
       {
-         var _loc7_:FilterFrameText = ComponentFactory.Instance.creat("core.quest.MCQuestRewardType");
-         if(param3 > 3)
+         var rewardMC:FilterFrameText = ComponentFactory.Instance.creat("core.quest.MCQuestRewardType");
+         if(index > 3)
          {
-            _loc7_.y = _loc7_.y + 20;
+            rewardMC.y = rewardMC.y + 20;
             if(_first)
             {
                _list.y = _list.y + 20;
                _first = false;
             }
          }
-         var _loc6_:FilterFrameText = ComponentFactory.Instance.creat("core.quest.QuestItemRewardQuantity");
-         var _loc8_:* = param1;
+         var quantityTxt:FilterFrameText = ComponentFactory.Instance.creat("core.quest.QuestItemRewardQuantity");
+         var _loc8_:* = reward;
          if("exp" !== _loc8_)
          {
             if("gold" !== _loc8_)
@@ -326,68 +326,68 @@ package quest
                               {
                                  if("rank" === _loc8_)
                                  {
-                                    _loc7_.text = LanguageMgr.GetTranslation("tank.view.effort.EffortRigthItemView.honorNameII");
+                                    rewardMC.text = LanguageMgr.GetTranslation("tank.view.effort.EffortRigthItemView.honorNameII");
                                  }
                               }
                               else
                               {
-                                 _loc7_.text = LanguageMgr.GetTranslation("gift");
+                                 rewardMC.text = LanguageMgr.GetTranslation("gift");
                               }
                            }
                            else
                            {
-                              _loc7_.text = LanguageMgr.GetTranslation("medalMoney");
+                              rewardMC.text = LanguageMgr.GetTranslation("medalMoney");
                            }
                         }
                         else
                         {
-                           _loc7_.text = LanguageMgr.GetTranslation("ddtMoney");
+                           rewardMC.text = LanguageMgr.GetTranslation("ddtMoney");
                         }
                      }
                      else
                      {
-                        _loc7_.text = StringUtils.trim(LanguageMgr.GetTranslation("gongxun"));
+                        rewardMC.text = StringUtils.trim(LanguageMgr.GetTranslation("gongxun"));
                      }
                   }
                   else
                   {
-                     _loc7_.text = LanguageMgr.GetTranslation("consortia.Money");
+                     rewardMC.text = LanguageMgr.GetTranslation("consortia.Money");
                   }
                }
                else
                {
-                  _loc7_.text = LanguageMgr.GetTranslation("money");
+                  rewardMC.text = LanguageMgr.GetTranslation("money");
                }
             }
             else
             {
-               _loc7_.text = LanguageMgr.GetTranslation("gold");
+               rewardMC.text = LanguageMgr.GetTranslation("gold");
             }
          }
          else
          {
-            _loc7_.text = LanguageMgr.GetTranslation("exp");
+            rewardMC.text = LanguageMgr.GetTranslation("exp");
          }
-         if(param3 < 2)
+         if(index < 2)
          {
-            _loc7_.x = param3 % 4 * 135 + 18;
+            rewardMC.x = index % 4 * 135 + 18;
          }
          else
          {
-            _loc7_.x = param3 % 4 * 110 + 18;
+            rewardMC.x = index % 4 * 110 + 18;
          }
-         _loc6_.x = _loc7_.x + _loc7_.textWidth + 5;
-         _loc6_.y = _loc7_.y;
-         if(param4)
+         quantityTxt.x = rewardMC.x + rewardMC.textWidth + 5;
+         quantityTxt.y = rewardMC.y;
+         if(isRank)
          {
-            _loc6_.text = param5;
+            quantityTxt.text = rank;
          }
          else
          {
-            _loc6_.text = String(param2);
+            quantityTxt.text = String(count);
          }
-         _content.addChildAt(_loc7_,0);
-         _content.addChildAt(_loc6_,0);
+         _content.addChildAt(rewardMC,0);
+         _content.addChildAt(quantityTxt,0);
       }
       
       override protected function initView() : void
@@ -426,10 +426,10 @@ package quest
       {
          var _loc3_:int = 0;
          var _loc2_:* = _items;
-         for each(var _loc1_ in _items)
+         for each(var item in _items)
          {
-            _loc1_.removeEventListener(RewardSelectedEvent.ITEM_SELECTED,__chooseItemReward);
-            _loc1_.dispose();
+            item.removeEventListener(RewardSelectedEvent.ITEM_SELECTED,__chooseItemReward);
+            item.dispose();
          }
          _items = null;
          ObjectUtils.disposeObject(_list);

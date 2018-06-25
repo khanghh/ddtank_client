@@ -21,11 +21,11 @@ package church.view.weddingRoom
       
       private var _speed:Number;
       
-      public function WeddingRoomSwitchMovie(param1:Boolean, param2:Number = 0.02)
+      public function WeddingRoomSwitchMovie(autoClear:Boolean, speed:Number = 0.02)
       {
          super();
-         this._autoClear = param1;
-         this._speed = param2;
+         this._autoClear = autoClear;
+         this._speed = speed;
          init();
       }
       
@@ -45,7 +45,7 @@ package church.view.weddingRoom
          addEventListener("enterFrame",__enterFrame);
       }
       
-      private function __enterFrame(param1:Event) : void
+      private function __enterFrame(event:Event) : void
       {
          if(_currentStatus == "mask show")
          {

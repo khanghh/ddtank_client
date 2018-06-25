@@ -47,26 +47,25 @@ package ddt.dailyRecord
          setData(DailyRecordControl.Instance.recordList);
       }
       
-      private function setData(param1:Vector.<DailiyRecordInfo>) : void
+      private function setData(list:Vector.<DailiyRecordInfo>) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc2_:int = 0;
+         var i:int = 0;
+         var item:* = null;
+         var count:int = 0;
          ObjectUtils.disposeAllChildren(_vbox);
-         _loc4_ = 0;
-         while(_loc4_ < param1.length)
+         for(i = 0; i < list.length; )
          {
-            if((param1[_loc4_] as DailiyRecordInfo).type == 8)
+            if((list[i] as DailiyRecordInfo).type == 8)
             {
-               _loc2_++;
+               count++;
             }
             else
             {
-               _loc3_ = new DailyRecordItem();
-               _vbox.addChild(_loc3_);
-               _loc3_.setData(_loc4_ - _loc2_,param1[_loc4_]);
+               item = new DailyRecordItem();
+               _vbox.addChild(item);
+               item.setData(i - count,list[i]);
             }
-            _loc4_++;
+            i++;
          }
          _list.invalidateViewport();
       }
@@ -83,14 +82,14 @@ package ddt.dailyRecord
          DailyRecordControl.Instance.removeEventListener("recordListIsReady",__dataIsOk);
       }
       
-      private function __dataIsOk(param1:Event) : void
+      private function __dataIsOk(event:Event) : void
       {
          setData(DailyRecordControl.Instance.recordList);
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(event:FrameEvent) : void
       {
-         if(param1.responseCode == 1 || param1.responseCode == 0)
+         if(event.responseCode == 1 || event.responseCode == 0)
          {
             SoundManager.instance.play("008");
             dispose();

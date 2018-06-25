@@ -32,11 +32,11 @@ package ddt.data.player
       
       private var _priority:int;
       
-      public function PlayerState(param1:int, param2:int = 0)
+      public function PlayerState(stateID:int, priority:int = 0)
       {
          super();
-         _stateID = param1;
-         _priority = param2;
+         _stateID = stateID;
+         _priority = priority;
       }
       
       public function get StateID() : int
@@ -86,24 +86,24 @@ package ddt.data.player
          }
       }
       
-      public function set AutoReply(param1:String) : void
+      public function set AutoReply(value:String) : void
       {
          switch(int(_stateID) - 2)
          {
             case 0:
-               SharedManager.Instance.awayAutoReply[PlayerManager.Instance.Self.ID] = param1;
+               SharedManager.Instance.awayAutoReply[PlayerManager.Instance.Self.ID] = value;
                break;
             case 1:
-               SharedManager.Instance.busyAutoReply[PlayerManager.Instance.Self.ID] = param1;
+               SharedManager.Instance.busyAutoReply[PlayerManager.Instance.Self.ID] = value;
                break;
             case 2:
-               SharedManager.Instance.shoppingAutoReply[PlayerManager.Instance.Self.ID] = param1;
+               SharedManager.Instance.shoppingAutoReply[PlayerManager.Instance.Self.ID] = value;
                break;
             case 3:
-               SharedManager.Instance.noDistrubAutoReply[PlayerManager.Instance.Self.ID] = param1;
+               SharedManager.Instance.noDistrubAutoReply[PlayerManager.Instance.Self.ID] = value;
                break;
             case 4:
-               SharedManager.Instance.shoppingAutoReply[PlayerManager.Instance.Self.ID] = param1;
+               SharedManager.Instance.shoppingAutoReply[PlayerManager.Instance.Self.ID] = value;
          }
          SharedManager.Instance.save();
       }

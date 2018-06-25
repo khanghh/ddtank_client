@@ -36,22 +36,22 @@ package stock.data
       
       public var hourPoints:Vector.<StockPointData>;
       
-      public function StockData(param1:int)
+      public function StockData(id:int)
       {
          notices = new Vector.<StockNewsData>();
          dailyPoints = new Vector.<StockPointData>();
          hourPoints = new Vector.<StockPointData>();
          super();
-         StockID = param1;
+         StockID = id;
          parseStock();
       }
       
       private function parseStock() : void
       {
-         var _loc1_:StockTemplateData = StockMgr.inst.model.cfgStocks[StockID];
-         if(_loc1_)
+         var tmp:StockTemplateData = StockMgr.inst.model.cfgStocks[StockID];
+         if(tmp)
          {
-            StockName = _loc1_.StockName;
+            StockName = tmp.StockName;
          }
       }
       

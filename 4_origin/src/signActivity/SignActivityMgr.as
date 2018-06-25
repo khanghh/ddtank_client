@@ -55,29 +55,28 @@ package signActivity
       
       private function onLoaded() : void
       {
-         var _loc2_:GmActivityInfo = WonderfulActivityManager.Instance.getActivityDataById(SignActivityMgr.instance.model.actId);
-         var _loc1_:int = findSignActivityType(_loc2_.giftbagArray);
-         _frame = ComponentFactory.Instance.creatCustomObject("SignActivity.SignActivityFrame",[_loc1_]);
+         var _xmlData:GmActivityInfo = WonderfulActivityManager.Instance.getActivityDataById(SignActivityMgr.instance.model.actId);
+         var index:int = findSignActivityType(_xmlData.giftbagArray);
+         _frame = ComponentFactory.Instance.creatCustomObject("SignActivity.SignActivityFrame",[index]);
          _frame.titleText = LanguageMgr.GetTranslation("ddt.SignActivity.title");
          LayerManager.Instance.addToLayer(_frame,3,true,1);
       }
       
-      private function findSignActivityType(param1:Array) : int
+      private function findSignActivityType(array:Array) : int
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc2_:int = 0;
-         _loc4_ = 0;
-         while(_loc4_ < param1.length)
+         var i:int = 0;
+         var info:* = null;
+         var index:int = 0;
+         for(i = 0; i < array.length; )
          {
-            _loc3_ = param1[_loc4_] as GiftBagInfo;
-            if(_loc3_.giftConditionArr[0].conditionIndex == 2)
+            info = array[i] as GiftBagInfo;
+            if(info.giftConditionArr[0].conditionIndex == 2)
             {
-               _loc2_ = _loc3_.giftConditionArr[0].conditionValue;
+               index = info.giftConditionArr[0].conditionValue;
             }
-            _loc4_++;
+            i++;
          }
-         return _loc2_;
+         return index;
       }
       
       public function showIcon() : void
@@ -90,9 +89,9 @@ package signActivity
          return _isOpen;
       }
       
-      public function set isOpen(param1:Boolean) : void
+      public function set isOpen(value:Boolean) : void
       {
-         _isOpen = param1;
+         _isOpen = value;
       }
    }
 }

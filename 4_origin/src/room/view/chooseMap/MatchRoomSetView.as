@@ -60,14 +60,14 @@ package room.view.chooseMap
       
       private function init() : void
       {
-         var _loc1_:AlertInfo = new AlertInfo();
-         _loc1_.title = LanguageMgr.GetTranslation("tank.room.RoomIIMapSetPanel.room");
+         var ai:AlertInfo = new AlertInfo();
+         ai.title = LanguageMgr.GetTranslation("tank.room.RoomIIMapSetPanel.room");
          var _loc2_:Boolean = false;
-         _loc1_.moveEnable = _loc2_;
-         _loc1_.showCancel = _loc2_;
-         _loc1_.submitLabel = LanguageMgr.GetTranslation("ok");
+         ai.moveEnable = _loc2_;
+         ai.showCancel = _loc2_;
+         ai.submitLabel = LanguageMgr.GetTranslation("ok");
          _frame = ComponentFactory.Instance.creatComponentByStylename("asset.ddtMatchRoom.setView");
-         _frame.info = _loc1_;
+         _frame.info = ai;
          _bg = ComponentFactory.Instance.creatComponentByStylename("asset.ddtMatchRoom.setViewBg");
          _roomMode = ComponentFactory.Instance.creatBitmap("asset.ddtroom.setView.modeWord");
          _modelIcon = ComponentFactory.Instance.creatBitmap("asset.ddtroom.setView.modeIcon");
@@ -131,7 +131,7 @@ package room.view.chooseMap
          upadtePassTextBg();
       }
       
-      private function __checkBoxClick(param1:MouseEvent) : void
+      private function __checkBoxClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          upadtePassTextBg();
@@ -153,10 +153,10 @@ package room.view.chooseMap
          }
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(e.responseCode))
          {
             case 0:
             case 1:

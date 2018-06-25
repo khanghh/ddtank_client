@@ -41,11 +41,11 @@ package consortion.view.selfConsortia.consortiaTask
       
       private function initView() : void
       {
-         var _loc1_:AlertInfo = new AlertInfo();
-         _loc1_.submitLabel = LanguageMgr.GetTranslation("consortia.task.releaseTable");
-         _loc1_.title = LanguageMgr.GetTranslation("consortia.task.releaseTable.title");
-         _loc1_.showCancel = false;
-         info = _loc1_;
+         var alerInfo:AlertInfo = new AlertInfo();
+         alerInfo.submitLabel = LanguageMgr.GetTranslation("consortia.task.releaseTable");
+         alerInfo.title = LanguageMgr.GetTranslation("consortia.task.releaseTable.title");
+         alerInfo.showCancel = false;
+         info = alerInfo;
          _releaseContentTextScale9BG = ComponentFactory.Instance.creatComponentByStylename("consortion.releaseContentTextScale9BG");
          _content = ComponentFactory.Instance.creatComponentByStylename("conortion.releaseContentText");
          addToContent(_releaseContentTextScale9BG);
@@ -65,10 +65,10 @@ package consortion.view.selfConsortia.consortiaTask
          removeEventListener("response",__response);
       }
       
-      private function __response(param1:FrameEvent) : void
+      private function __response(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         if(e.responseCode == 3 || e.responseCode == 2)
          {
             if(ConsortionModelManager.Instance.TaskModel.isHaveTask_noRelease)
             {
@@ -95,15 +95,15 @@ package consortion.view.selfConsortia.consortiaTask
             return;
          }
          _selectedLevelRecord = _levelView.selectedLevel;
-         var _loc1_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("consortia.task.okTable"),LanguageMgr.GetTranslation("consortia.task.OKContent",ServerConfigManager.instance.MissionRiches[_selectedLevelRecord * 2 - 1]),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
-         _loc1_.moveEnable = false;
-         _loc1_.addEventListener("response",_responseII);
+         var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("consortia.task.okTable"),LanguageMgr.GetTranslation("consortia.task.OKContent",ServerConfigManager.instance.MissionRiches[_selectedLevelRecord * 2 - 1]),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
+         alert.moveEnable = false;
+         alert.addEventListener("response",_responseII);
       }
       
-      private function _responseII(param1:FrameEvent) : void
+      private function _responseII(e:FrameEvent) : void
       {
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",_responseII);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         (e.currentTarget as BaseAlerFrame).removeEventListener("response",_responseII);
+         if(e.responseCode == 2 || e.responseCode == 3)
          {
             if(PlayerManager.Instance.Self.consortiaInfo.Riches < ServerConfigManager.instance.MissionRiches[_selectedLevelRecord * 2 - 1])
             {
@@ -116,28 +116,28 @@ package consortion.view.selfConsortia.consortiaTask
                ObjectUtils.disposeObject(this);
             }
          }
-         ObjectUtils.disposeObject(param1.currentTarget as BaseAlerFrame);
+         ObjectUtils.disposeObject(e.currentTarget as BaseAlerFrame);
       }
       
       private function __openRichesTip() : void
       {
-         var _loc1_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.consortion.skillItem.click.enough1"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
-         _loc1_.addEventListener("response",__noEnoughHandler);
+         var enoughFrame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.consortion.skillItem.click.enough1"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
+         enoughFrame.addEventListener("response",__noEnoughHandler);
       }
       
-      private function __noEnoughHandler(param1:FrameEvent) : void
+      private function __noEnoughHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode) - 2)
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
                ConsortionModelManager.Instance.alertTaxFrame();
          }
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__noEnoughHandler);
-         _loc2_.dispose();
-         _loc2_ = null;
+         var frame:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("response",__noEnoughHandler);
+         frame.dispose();
+         frame = null;
       }
       
       override public function dispose() : void

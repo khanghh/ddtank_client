@@ -48,9 +48,9 @@ package tofflist.view
       
       private var _bg:MutipleImage;
       
-      public function TofflistRightView(param1:TofflistController)
+      public function TofflistRightView($contro:TofflistController)
       {
-         _contro = param1;
+         _contro = $contro;
          super();
          init();
          addEvent();
@@ -119,11 +119,11 @@ package tofflist.view
          _leftInfo = null;
       }
       
-      public function updateTime(param1:String) : void
+      public function updateTime(timeStr:String) : void
       {
-         if(param1)
+         if(timeStr)
          {
-            _leftInfo.updateTimeTxt.text = LanguageMgr.GetTranslation("tank.tofflist.view.lastUpdateTime") + param1;
+            _leftInfo.updateTimeTxt.text = LanguageMgr.GetTranslation("tank.tofflist.view.lastUpdateTime") + timeStr;
          }
          else
          {
@@ -136,15 +136,15 @@ package tofflist.view
          return _stairMenu.type;
       }
       
-      public function orderList(param1:Array) : void
+      public function orderList($list:Array) : void
       {
-         if(!param1)
+         if(!$list)
          {
             return;
          }
-         _currentData = param1;
-         _gridBox.updateList(param1);
-         _totalPage = Math.ceil((param1 == null?0:param1.length) / 8);
+         _currentData = $list;
+         _gridBox.updateList($list);
+         _totalPage = Math.ceil(($list == null?0:$list.length) / 8);
          if(_currentData && _currentData.length > 0)
          {
             _currentPage = 1;
@@ -161,13 +161,13 @@ package tofflist.view
          return this._twoGradeMenu.type;
       }
       
-      private function __addToStageHandler(param1:Event) : void
+      private function __addToStageHandler(evt:Event) : void
       {
          _stairMenu.type = "personal";
          _twoGradeMenu.setParentType(_stairMenu.type);
       }
       
-      private function __menuTypeHandler(param1:TofflistEvent) : void
+      private function __menuTypeHandler(evt:TofflistEvent) : void
       {
          var _loc2_:* = TofflistModel.firstMenuType;
          if("personal" !== _loc2_)
@@ -332,7 +332,7 @@ package tofflist.view
          }
       }
       
-      private function __pgdnHandler(param1:MouseEvent) : void
+      private function __pgdnHandler(evt:MouseEvent) : void
       {
          if(!_currentData)
          {
@@ -348,7 +348,7 @@ package tofflist.view
          checkPageBtn();
       }
       
-      private function __pgupHandler(param1:MouseEvent) : void
+      private function __pgupHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _currentPage = Number(_currentPage) - 1;
@@ -360,266 +360,266 @@ package tofflist.view
          checkPageBtn();
       }
       
-      private function __searchOrderHandler(param1:TofflistEvent) : void
+      private function __searchOrderHandler(evt:TofflistEvent) : void
       {
-         var _loc2_:* = null;
+         var _type:* = null;
          _contro.clearDisplayContent();
          if(TofflistModel.firstMenuType == "personal")
          {
-            _loc2_ = "personal";
+            _type = "personal";
             if(TofflistModel.secondMenuType == "battle")
             {
                if(_thirdClassMenu.type == "total")
                {
-                  _contro.loadFormData("personalBattleAccumulate","CelebByDayFightPowerList.xml",_loc2_);
+                  _contro.loadFormData("personalBattleAccumulate","CelebByDayFightPowerList.xml",_type);
                }
             }
             else if(TofflistModel.secondMenuType == "level")
             {
                if(_thirdClassMenu.type == "day")
                {
-                  _contro.loadFormData("individualGradeDay","CelebByDayGPList.xml",_loc2_);
+                  _contro.loadFormData("individualGradeDay","CelebByDayGPList.xml",_type);
                }
                else if(_thirdClassMenu.type == "week")
                {
-                  _contro.loadFormData("individualGradeWeek","CelebByWeekGPList.xml",_loc2_);
+                  _contro.loadFormData("individualGradeWeek","CelebByWeekGPList.xml",_type);
                }
                else if(_thirdClassMenu.type == "total")
                {
-                  _contro.loadFormData("individualGradeAccumulate","CelebByGPList.xml",_loc2_);
+                  _contro.loadFormData("individualGradeAccumulate","CelebByGPList.xml",_type);
                }
             }
             else if(TofflistModel.secondMenuType == "achievementpoint")
             {
                if(_thirdClassMenu.type == "day")
                {
-                  _contro.loadFormData("PersonalAchievementPointDay","CelebByAchievementPointDayList.xml",_loc2_);
+                  _contro.loadFormData("PersonalAchievementPointDay","CelebByAchievementPointDayList.xml",_type);
                }
                else if(_thirdClassMenu.type == "week")
                {
-                  _contro.loadFormData("PersonalAchievementPointWeek","CelebByAchievementPointWeekList.xml",_loc2_);
+                  _contro.loadFormData("PersonalAchievementPointWeek","CelebByAchievementPointWeekList.xml",_type);
                }
                else if(_thirdClassMenu.type == "total")
                {
-                  _contro.loadFormData("PersonalAchievementPoint","CelebByAchievementPointList.xml",_loc2_);
+                  _contro.loadFormData("PersonalAchievementPoint","CelebByAchievementPointList.xml",_type);
                }
             }
             else if(TofflistModel.secondMenuType == "charm")
             {
                if(_thirdClassMenu.type == "day")
                {
-                  _contro.loadFormData("PersonalCharmvalueDay","CelebByDayGiftGp.xml",_loc2_);
+                  _contro.loadFormData("PersonalCharmvalueDay","CelebByDayGiftGp.xml",_type);
                }
                else if(_thirdClassMenu.type == "week")
                {
-                  _contro.loadFormData("PersonalCharmvalueWeek","CelebByWeekGiftGp.xml",_loc2_);
+                  _contro.loadFormData("PersonalCharmvalueWeek","CelebByWeekGiftGp.xml",_type);
                }
                else if(_thirdClassMenu.type == "total")
                {
-                  _contro.loadFormData("PersonalCharmvalue","CelebByGiftGpList.xml",_loc2_);
+                  _contro.loadFormData("PersonalCharmvalue","CelebByGiftGpList.xml",_type);
                }
             }
             else if(TofflistModel.secondMenuType == "matches")
             {
                if(_thirdClassMenu.type == "day")
                {
-                  _contro.loadFormData("personalMatchesDay","CelebByDayPrestige.xml",_loc2_);
+                  _contro.loadFormData("personalMatchesDay","CelebByDayPrestige.xml",_type);
                }
                else if(_thirdClassMenu.type == "week")
                {
-                  _contro.loadFormData("personalMatchesWeek","CelebByWeekPrestige.xml",_loc2_);
+                  _contro.loadFormData("personalMatchesWeek","CelebByWeekPrestige.xml",_type);
                }
                else if(_thirdClassMenu.type == "total")
                {
-                  _contro.loadFormData("personalMatchesTotal","CelebByTotalPrestige.xml",_loc2_);
+                  _contro.loadFormData("personalMatchesTotal","CelebByTotalPrestige.xml",_type);
                }
             }
             else if(TofflistModel.secondMenuType == "mounts")
             {
                if(_thirdClassMenu.type == "total")
                {
-                  _contro.loadFormData("personalMountsAccumulate","CelebByMountExpList.xml",_loc2_);
+                  _contro.loadFormData("personalMountsAccumulate","CelebByMountExpList.xml",_type);
                }
             }
          }
          else if(TofflistModel.firstMenuType == "consortia")
          {
-            _loc2_ = "sociaty";
+            _type = "sociaty";
             if(TofflistModel.secondMenuType == "battle")
             {
                if(_thirdClassMenu.type == "total")
                {
-                  _contro.loadFormData("consortiaBattleAccumulate","CelebByConsortiaFightPower.xml",_loc2_);
+                  _contro.loadFormData("consortiaBattleAccumulate","CelebByConsortiaFightPower.xml",_type);
                }
             }
             else if(TofflistModel.secondMenuType == "level")
             {
                if(_thirdClassMenu.type == "total")
                {
-                  _contro.loadFormData("consortiaGradeAccumulate","CelebByConsortiaLevel.xml",_loc2_);
+                  _contro.loadFormData("consortiaGradeAccumulate","CelebByConsortiaLevel.xml",_type);
                }
             }
             else if(TofflistModel.secondMenuType == "assets")
             {
                if(_thirdClassMenu.type == "day")
                {
-                  _contro.loadFormData("consortiaAssetDay","CelebByConsortiaDayRiches.xml",_loc2_);
+                  _contro.loadFormData("consortiaAssetDay","CelebByConsortiaDayRiches.xml",_type);
                }
                else if(_thirdClassMenu.type == "week")
                {
-                  _contro.loadFormData("consortiaAssetWeek","CelebByConsortiaWeekRiches.xml",_loc2_);
+                  _contro.loadFormData("consortiaAssetWeek","CelebByConsortiaWeekRiches.xml",_type);
                }
                else if(_thirdClassMenu.type == "total")
                {
-                  _contro.loadFormData("consortiaAssetAccumulate","CelebByConsortiaRiches.xml",_loc2_);
+                  _contro.loadFormData("consortiaAssetAccumulate","CelebByConsortiaRiches.xml",_type);
                }
             }
             else if(TofflistModel.secondMenuType == "charm")
             {
                if(_thirdClassMenu.type == "day")
                {
-                  _contro.loadFormData("ConsortiaCharmvalueDay","CelebByConsortiaDayGiftGp.xml",_loc2_);
+                  _contro.loadFormData("ConsortiaCharmvalueDay","CelebByConsortiaDayGiftGp.xml",_type);
                }
                else if(_thirdClassMenu.type == "week")
                {
-                  _contro.loadFormData("ConsortiaCharmvalueWeek","CelebByConsortiaWeekGiftGp.xml",_loc2_);
+                  _contro.loadFormData("ConsortiaCharmvalueWeek","CelebByConsortiaWeekGiftGp.xml",_type);
                }
                else if(_thirdClassMenu.type == "total")
                {
-                  _contro.loadFormData("ConsortiaCharmvalue","CelebByConsortiaGiftGp.xml",_loc2_);
+                  _contro.loadFormData("ConsortiaCharmvalue","CelebByConsortiaGiftGp.xml",_type);
                }
             }
          }
          else if(TofflistModel.firstMenuType == "crossServerPersonal")
          {
-            _loc2_ = "personal";
+            _type = "personal";
             if(TofflistModel.secondMenuType == "battle")
             {
                if(_thirdClassMenu.type == "total")
                {
-                  _contro.loadFormData("crossServerPersonalBattleAccumulate","AreaCelebByDayFightPowerList.xml",_loc2_);
+                  _contro.loadFormData("crossServerPersonalBattleAccumulate","AreaCelebByDayFightPowerList.xml",_type);
                }
             }
             else if(TofflistModel.secondMenuType == "level")
             {
                if(_thirdClassMenu.type == "day")
                {
-                  _contro.loadFormData("crossServerIndividualGradeDay","AreaCelebByDayGPList.xml",_loc2_);
+                  _contro.loadFormData("crossServerIndividualGradeDay","AreaCelebByDayGPList.xml",_type);
                }
                else if(_thirdClassMenu.type == "week")
                {
-                  _contro.loadFormData("crossServerIndividualGradeWeek","AreaCelebByWeekGPList.xml",_loc2_);
+                  _contro.loadFormData("crossServerIndividualGradeWeek","AreaCelebByWeekGPList.xml",_type);
                }
                else if(_thirdClassMenu.type == "total")
                {
-                  _contro.loadFormData("crossServerIndividualGradeAccumulate","AreaCelebByGPList.xml",_loc2_);
+                  _contro.loadFormData("crossServerIndividualGradeAccumulate","AreaCelebByGPList.xml",_type);
                }
             }
             else if(TofflistModel.secondMenuType == "achievementpoint")
             {
                if(_thirdClassMenu.type == "day")
                {
-                  _contro.loadFormData("crossServerPersonalAchievementPointDay","AreaCelebByAchievementPointDayList.xml",_loc2_);
+                  _contro.loadFormData("crossServerPersonalAchievementPointDay","AreaCelebByAchievementPointDayList.xml",_type);
                }
                else if(_thirdClassMenu.type == "week")
                {
-                  _contro.loadFormData("crossServerPersonalAchievementPointWeek","AreaCelebByAchievementPointWeekList.xml",_loc2_);
+                  _contro.loadFormData("crossServerPersonalAchievementPointWeek","AreaCelebByAchievementPointWeekList.xml",_type);
                }
                else if(_thirdClassMenu.type == "total")
                {
-                  _contro.loadFormData("crossServerPersonalAchievementPoint","AreaCelebByAchievementPointList.xml",_loc2_);
+                  _contro.loadFormData("crossServerPersonalAchievementPoint","AreaCelebByAchievementPointList.xml",_type);
                }
             }
             else if(TofflistModel.secondMenuType == "charm")
             {
                if(_thirdClassMenu.type == "day")
                {
-                  _contro.loadFormData("crossServerPersonalCharmvalueDay","AreaCelebByGiftGpDayList.xml",_loc2_);
+                  _contro.loadFormData("crossServerPersonalCharmvalueDay","AreaCelebByGiftGpDayList.xml",_type);
                }
                else if(_thirdClassMenu.type == "week")
                {
-                  _contro.loadFormData("crossServerPersonalCharmvalueWeek","AreaCelebByGiftGpWeekList.xml",_loc2_);
+                  _contro.loadFormData("crossServerPersonalCharmvalueWeek","AreaCelebByGiftGpWeekList.xml",_type);
                }
                else if(_thirdClassMenu.type == "total")
                {
-                  _contro.loadFormData("crossServerPersonalCharmvalue","AreaCelebByGiftGpList.xml",_loc2_);
+                  _contro.loadFormData("crossServerPersonalCharmvalue","AreaCelebByGiftGpList.xml",_type);
                }
             }
             else if(TofflistModel.secondMenuType == "mounts")
             {
                if(_thirdClassMenu.type == "total")
                {
-                  _contro.loadFormData("crossServerIndividualMountsAccumulate","AreaCelebByMountExpList.xml",_loc2_);
+                  _contro.loadFormData("crossServerIndividualMountsAccumulate","AreaCelebByMountExpList.xml",_type);
                }
             }
          }
          else if(TofflistModel.firstMenuType == "crossServerConsortia")
          {
-            _loc2_ = "sociaty";
+            _type = "sociaty";
             if(TofflistModel.secondMenuType == "level")
             {
                if(_thirdClassMenu.type == "total")
                {
-                  _contro.loadFormData("crossServerConsortiaGradeAccumulate","AreaCelebByConsortiaLevel.xml",_loc2_);
+                  _contro.loadFormData("crossServerConsortiaGradeAccumulate","AreaCelebByConsortiaLevel.xml",_type);
                }
             }
             else if(TofflistModel.secondMenuType == "assets")
             {
                if(_thirdClassMenu.type == "day")
                {
-                  _contro.loadFormData("crossServerConsortiaAssetDay","AreaCelebByConsortiaDayRiches.xml",_loc2_);
+                  _contro.loadFormData("crossServerConsortiaAssetDay","AreaCelebByConsortiaDayRiches.xml",_type);
                }
                else if(_thirdClassMenu.type == "week")
                {
-                  _contro.loadFormData("crossServerConsortiaAssetWeek","AreaCelebByConsortiaWeekRiches.xml",_loc2_);
+                  _contro.loadFormData("crossServerConsortiaAssetWeek","AreaCelebByConsortiaWeekRiches.xml",_type);
                }
                else if(_thirdClassMenu.type == "total")
                {
-                  _contro.loadFormData("crossServerConsortiaAssetAccumulate","AreaCelebByConsortiaRiches.xml",_loc2_);
+                  _contro.loadFormData("crossServerConsortiaAssetAccumulate","AreaCelebByConsortiaRiches.xml",_type);
                }
             }
             else if(TofflistModel.secondMenuType == "battle")
             {
                if(_thirdClassMenu.type == "total")
                {
-                  _contro.loadFormData("crossServerConsortiaBattleAccumulate","AreaCelebByConsortiaFightPower.xml",_loc2_);
+                  _contro.loadFormData("crossServerConsortiaBattleAccumulate","AreaCelebByConsortiaFightPower.xml",_type);
                }
             }
             else if(TofflistModel.secondMenuType == "charm")
             {
                if(_thirdClassMenu.type == "day")
                {
-                  _contro.loadFormData("crossServerConsortiaCharmvalueDay","AreaCelebByConsortiaDayGiftGp.xml",_loc2_);
+                  _contro.loadFormData("crossServerConsortiaCharmvalueDay","AreaCelebByConsortiaDayGiftGp.xml",_type);
                }
                else if(_thirdClassMenu.type == "week")
                {
-                  _contro.loadFormData("crossServerConsortiaCharmvalueWeek","AreaCelebByConsortiaWeekGiftGp.xml",_loc2_);
+                  _contro.loadFormData("crossServerConsortiaCharmvalueWeek","AreaCelebByConsortiaWeekGiftGp.xml",_type);
                }
                else if(_thirdClassMenu.type == "total")
                {
-                  _contro.loadFormData("crossServerConsortiaCharmvalue","AreaCelebByConsortiaGiftGp.xml",_loc2_);
+                  _contro.loadFormData("crossServerConsortiaCharmvalue","AreaCelebByConsortiaGiftGp.xml",_type);
                }
             }
          }
          else if(TofflistModel.firstMenuType == "teams")
          {
-            _loc2_ = "team";
-            _contro.loadFormData("theServerTeamIntegral","CelebByBattleTeamDayRank.xml",_loc2_);
+            _type = "team";
+            _contro.loadFormData("theServerTeamIntegral","CelebByBattleTeamDayRank.xml",_type);
          }
          else if(TofflistModel.firstMenuType == "crossServerTeams")
          {
-            _loc2_ = "team";
-            _contro.loadFormData("crossServerTeamIntegral","AreaCelebByBattleTeamDayRank.xml",_loc2_);
+            _type = "team";
+            _contro.loadFormData("crossServerTeamIntegral","AreaCelebByBattleTeamDayRank.xml",_type);
          }
       }
       
-      private function __selectChildBarHandler(param1:TofflistEvent) : void
+      private function __selectChildBarHandler(evt:TofflistEvent) : void
       {
          _contro.clearDisplayContent();
          _thirdClassMenu.selectType(_stairMenu.type,TofflistModel.secondMenuType);
       }
       
-      private function __selectStairMenuHandler(param1:TofflistEvent) : void
+      private function __selectStairMenuHandler(evt:TofflistEvent) : void
       {
          _contro.clearDisplayContent();
          _twoGradeMenu.setParentType(TofflistModel.firstMenuType);

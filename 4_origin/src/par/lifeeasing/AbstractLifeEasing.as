@@ -32,43 +32,43 @@ package par.lifeeasing
          super();
       }
       
-      public function easingVelocity(param1:Number, param2:Number) : Number
+      public function easingVelocity(orient:Number, energy:Number) : Number
       {
-         return param1 * vLine.interpolate(param2);
+         return orient * vLine.interpolate(energy);
       }
       
-      public function easingRandomVelocity(param1:Number, param2:Number) : Number
+      public function easingRandomVelocity(orient:Number, energy:Number) : Number
       {
-         return param1 * rvLine.interpolate(param2);
+         return orient * rvLine.interpolate(energy);
       }
       
-      public function easingSize(param1:Number, param2:Number) : Number
+      public function easingSize(orient:Number, energy:Number) : Number
       {
-         return param1 * sizeLine.interpolate(param2);
+         return orient * sizeLine.interpolate(energy);
       }
       
-      public function easingSpinVelocity(param1:Number, param2:Number) : Number
+      public function easingSpinVelocity(orient:Number, energy:Number) : Number
       {
-         return param1 * spLine.interpolate(param2);
+         return orient * spLine.interpolate(energy);
       }
       
-      public function easingWeight(param1:Number, param2:Number) : Number
+      public function easingWeight(orient:Number, energy:Number) : Number
       {
-         return param1 * weightLine.interpolate(param2);
+         return orient * weightLine.interpolate(energy);
       }
       
-      public function easingColor(param1:uint, param2:Number) : uint
+      public function easingColor(orient:uint, energy:Number) : uint
       {
          if(colorLine)
          {
-            return colorLine.interpolate(param2);
+            return colorLine.interpolate(energy);
          }
-         return param1;
+         return orient;
       }
       
-      public function easingApha(param1:Number, param2:Number) : Number
+      public function easingApha(orient:Number, energy:Number) : Number
       {
-         return param1 * alphaLine.interpolate(param2);
+         return orient * alphaLine.interpolate(energy);
       }
    }
 }

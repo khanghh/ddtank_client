@@ -32,11 +32,11 @@ package ddt.view.character
       
       protected var _weapon:MovieClip;
       
-      public function BaseCharacterLoader(param1:PlayerInfo)
+      public function BaseCharacterLoader(info:PlayerInfo)
       {
          _wing = new MovieClip();
          super();
-         _info = param1;
+         _info = info;
       }
       
       protected function initLayers() : void
@@ -45,9 +45,9 @@ package ddt.view.character
          {
             var _loc3_:int = 0;
             var _loc2_:* = _layers;
-            for each(var _loc1_ in _layers)
+            for each(var layer in _layers)
             {
-               _loc1_.dispose();
+               layer.dispose();
             }
             _layers = null;
          }
@@ -65,14 +65,14 @@ package ddt.view.character
          _layers.push(_layerFactory.createLayer(ItemManager.Instance.getTemplateById(int(_recordStyle[8].split("|")[0])),_info.Sex,_recordColor[8],"show"));
       }
       
-      protected function getIndexByTemplateId(param1:String) : int
+      protected function getIndexByTemplateId(id:String) : int
       {
-         var _loc2_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(int(param1));
-         if(_loc2_ == null)
+         var item:ItemTemplateInfo = ItemManager.Instance.getTemplateById(int(id));
+         if(item == null)
          {
             return -1;
          }
-         var _loc3_:* = _loc2_.CategoryID.toString();
+         var _loc3_:* = item.CategoryID.toString();
          if("1" !== _loc3_)
          {
             if("10" !== _loc3_)
@@ -108,10 +108,10 @@ package ddt.view.character
                                                          return -1;
                                                       }
                                                    }
-                                                   addr54:
+                                                   addr71:
                                                    return 7;
                                                 }
-                                                §§goto(addr54);
+                                                §§goto(addr71);
                                              }
                                              else
                                              {
@@ -159,77 +159,74 @@ package ddt.view.character
                      }
                   }
                }
-               addr22:
+               addr29:
                return 2;
             }
-            addr21:
-            §§goto(addr22);
+            addr28:
+            §§goto(addr29);
          }
-         §§goto(addr21);
+         §§goto(addr28);
       }
       
-      public final function load(param1:Function = null) : void
+      public final function load(callBack:Function = null) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         _callBack = param1;
+         var i:int = 0;
+         var t:* = null;
+         _callBack = callBack;
          if(_layerFactory == null || _info == null || _info.Style == null)
          {
             loadComplete();
             return;
          }
          initLayers();
-         var _loc3_:int = _layers.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var layerCount:int = _layers.length;
+         for(i = 0; i < layerCount; )
          {
-            _loc2_ = _layers[_loc4_];
-            _loc2_ && _loc2_.load(__layerComplete);
-            _loc4_++;
+            t = _layers[i];
+            t && t.load(__layerComplete);
+            i++;
          }
       }
       
       public function getUnCompleteLog() : String
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:String = "";
+         var i:int = 0;
+         var t:* = null;
+         var result:String = "";
          if(_layers == null)
          {
             return "_layers == null\n";
          }
-         var _loc3_:int = _layers.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var layerCount:int = _layers.length;
+         for(i = 0; i < layerCount; )
          {
-            _loc2_ = _layers[_loc4_];
-            if(_loc2_ && !_loc2_.isComplete)
+            t = _layers[i];
+            if(t && !t.isComplete)
             {
-               _loc1_ = _loc1_ + ("unLoaded templete: " + _layers[_loc4_].info.TemplateID.toString() + "\n");
+               result = result + ("unLoaded templete: " + _layers[i].info.TemplateID.toString() + "\n");
             }
-            _loc4_++;
+            i++;
          }
-         return _loc1_;
+         return result;
       }
       
-      private function __layerComplete(param1:ILayer) : void
+      private function __layerComplete(layer:ILayer) : void
       {
-         var _loc3_:int = 0;
+         var i:int = 0;
          if(!_layers)
          {
             return;
          }
-         var _loc2_:Boolean = true;
-         _loc3_ = 0;
-         while(_loc3_ < _layers.length)
+         var isAllLayerComplete:Boolean = true;
+         for(i = 0; i < _layers.length; )
          {
-            if(_layers[_loc3_] && !_layers[_loc3_].isComplete)
+            if(_layers[i] && !_layers[i].isComplete)
             {
-               _loc2_ = false;
+               isAllLayerComplete = false;
             }
-            _loc3_++;
+            i++;
          }
-         if(_loc2_)
+         if(isAllLayerComplete)
          {
             drawCharacter();
             loadComplete();
@@ -246,10 +243,10 @@ package ddt.view.character
       
       protected function drawCharacter() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:Number = _layers[1].width;
-         var _loc3_:Number = _layers[1].height;
-         if(_loc1_ == 0 || _loc3_ == 0)
+         var i:int = 0;
+         var picWidth:Number = _layers[1].width;
+         var picHeight:Number = _layers[1].height;
+         if(picWidth == 0 || picHeight == 0)
          {
             return;
          }
@@ -257,30 +254,29 @@ package ddt.view.character
          {
             _content.dispose();
          }
-         _content = new BitmapData(_loc1_,_loc3_,true,0);
-         _loc2_ = _layers.length - 1;
-         while(_loc2_ >= 0)
+         _content = new BitmapData(picWidth,picHeight,true,0);
+         for(i = _layers.length - 1; i >= 0; )
          {
             if(_info.getShowSuits())
             {
-               if(!(_layers[_loc2_].info.CategoryID != 13 && _layers[_loc2_].info.CategoryID != 15 && _layers[_loc2_].info.CategoryID != 7))
+               if(!(_layers[i].info.CategoryID != 13 && _layers[i].info.CategoryID != 15 && _layers[i].info.CategoryID != 7))
                {
-                  addr90:
-                  if(_layers[_loc2_].info.CategoryID == 15)
+                  addr105:
+                  if(_layers[i].info.CategoryID == 15)
                   {
-                     _wing = _layers[_loc2_].getContent() as MovieClip;
+                     _wing = _layers[i].getContent() as MovieClip;
                   }
                   else
                   {
-                     _content.draw((_layers[_loc2_] as ILayer).getContent(),null,null,"normal");
+                     _content.draw((_layers[i] as ILayer).getContent(),null,null,"normal");
                   }
                }
             }
-            else if(_layers[_loc2_].info.CategoryID != 13)
+            else if(_layers[i].info.CategoryID != 13)
             {
-               §§goto(addr90);
+               §§goto(addr105);
             }
-            _loc2_--;
+            i--;
          }
          MenoryUtil.clearMenory();
       }
@@ -290,111 +286,109 @@ package ddt.view.character
          return [_content,_wing];
       }
       
-      public function setFactory(param1:ILayerFactory) : void
+      public function setFactory(factory:ILayerFactory) : void
       {
-         _layerFactory = param1;
+         _layerFactory = factory;
       }
       
       public function update() : void
       {
-         var _loc7_:* = null;
-         var _loc2_:* = null;
-         var _loc9_:* = false;
-         var _loc10_:* = false;
-         var _loc11_:int = 0;
-         var _loc1_:int = 0;
-         var _loc5_:* = null;
-         var _loc3_:* = null;
-         var _loc8_:* = null;
-         var _loc6_:* = null;
-         var _loc4_:int = 0;
+         var st:* = null;
+         var co:* = null;
+         var shouldchangehair:* = false;
+         var hadchangehair:* = false;
+         var i:int = 0;
+         var index:int = 0;
+         var item:* = null;
+         var t:* = null;
+         var hair:* = null;
+         var l:* = null;
+         var index1:int = 0;
          if(_info && _info.Style && _layers)
          {
-            _loc7_ = _info.Style.split(",");
-            _loc2_ = _info.Colors.split(",");
-            _loc9_ = false;
-            _loc10_ = false;
-            _loc11_ = 0;
-            while(_loc11_ < _loc7_.length)
+            st = _info.Style.split(",");
+            co = _info.Colors.split(",");
+            shouldchangehair = false;
+            hadchangehair = false;
+            for(i = 0; i < st.length; )
             {
                if(_recordStyle != null)
                {
-                  if(_loc11_ < _recordStyle.length)
+                  if(i < _recordStyle.length)
                   {
-                     _loc1_ = getIndexByTemplateId(_loc7_[_loc11_].split("|")[0]);
-                     if(!(_loc1_ == -1 || _loc1_ == 9))
+                     index = getIndexByTemplateId(st[i].split("|")[0]);
+                     if(!(index == -1 || index == 9))
                      {
-                        if(_recordStyle.indexOf(_loc7_[_loc11_]) == -1)
+                        if(_recordStyle.indexOf(st[i]) == -1)
                         {
-                           if(!_loc9_)
+                           if(!shouldchangehair)
                            {
-                              _loc9_ = _loc7_[_loc11_].charAt(0) == 1;
+                              shouldchangehair = st[i].charAt(0) == 1;
                            }
-                           if(!_loc10_)
+                           if(!hadchangehair)
                            {
-                              _loc10_ = _loc7_[_loc11_].charAt(0) == 3;
+                              hadchangehair = st[i].charAt(0) == 3;
                            }
-                           _loc5_ = ItemManager.Instance.getTemplateById(int(_loc7_[_loc11_].split("|")[0]));
-                           _loc3_ = getCharacterLoader(_loc5_,_loc2_[_loc11_],_loc7_[_loc11_].split("|")[1]);
-                           if(_layers[_loc1_])
+                           item = ItemManager.Instance.getTemplateById(int(st[i].split("|")[0]));
+                           t = getCharacterLoader(item,co[i],st[i].split("|")[1]);
+                           if(_layers[index])
                            {
-                              _layers[_loc1_].dispose();
+                              _layers[index].dispose();
                            }
-                           _layers[_loc1_] = _loc3_;
-                           _loc3_.load(__layerComplete);
+                           _layers[index] = t;
+                           t.load(__layerComplete);
                         }
-                        else if(_loc2_[_loc11_] != null)
+                        else if(co[i] != null)
                         {
-                           if(_recordColor[_loc11_] != _loc2_[_loc11_])
+                           if(_recordColor[i] != co[i])
                            {
-                              _layers[_loc1_] && _layers[_loc1_].setColor(_loc2_[_loc11_]);
+                              _layers[index] && _layers[index].setColor(co[i]);
                            }
                         }
                      }
-                     _loc11_++;
+                     i++;
                      continue;
                   }
                   break;
                }
                break;
             }
-            if(_info && _loc9_ && !_loc10_)
+            if(_info && shouldchangehair && !hadchangehair)
             {
-               _loc8_ = ItemManager.Instance.getTemplateById(_info.getPartStyle(3));
-               _loc6_ = getCharacterLoader(_loc8_,_info.getPartColor(3));
-               _loc4_ = getIndexByTemplateId(String(_loc8_.TemplateID));
-               if(_layers[_loc4_])
+               hair = ItemManager.Instance.getTemplateById(_info.getPartStyle(3));
+               l = getCharacterLoader(hair,_info.getPartColor(3));
+               index1 = getIndexByTemplateId(String(hair.TemplateID));
+               if(_layers[index1])
                {
-                  _layers[_loc4_].dispose();
+                  _layers[index1].dispose();
                }
-               _layers[_loc4_] = _loc6_;
-               _loc6_.load(__layerComplete);
+               _layers[index1] = l;
+               l.load(__layerComplete);
             }
             __layerComplete(null);
-            _recordStyle = _loc7_;
-            _recordColor = _loc2_;
+            _recordStyle = st;
+            _recordColor = co;
          }
       }
       
-      protected function getCharacterLoader(param1:ItemTemplateInfo, param2:String = "", param3:String = null) : ILayer
+      protected function getCharacterLoader(value:ItemTemplateInfo, color:String = "", pic:String = null) : ILayer
       {
-         param2 = !!EquipType.isEditable(param1)?param2:"";
-         if(param1.CategoryID == 3)
+         color = !!EquipType.isEditable(value)?color:"";
+         if(value.CategoryID == 3)
          {
-            return _layerFactory.createLayer(param1,_info.Sex,param2,"show",false,_info.getHairType(),param3);
+            return _layerFactory.createLayer(value,_info.Sex,color,"show",false,_info.getHairType(),pic);
          }
-         return _layerFactory.createLayer(param1,_info.Sex,param2,"show",false,1,param3);
+         return _layerFactory.createLayer(value,_info.Sex,color,"show",false,1,pic);
       }
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _content = null;
-         _loc1_ = 0;
-         while(_loc1_ < _layers.length)
+         for(i = 0; i < _layers.length; )
          {
-            _layers[_loc1_] && _layers[_loc1_].dispose();
-            _loc1_++;
+            _layers[i] && _layers[i].dispose();
+            i++;
          }
          _wing = null;
          _weapon = null;

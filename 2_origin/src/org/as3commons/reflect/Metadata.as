@@ -17,46 +17,44 @@ package org.as3commons.reflect
       
       private var _arguments:Array;
       
-      public function Metadata(param1:String, param2:Array = null)
+      public function Metadata(name:String, arguments:Array = null)
       {
          super();
-         this._name = param1 != null?param1.toLowerCase():null;
-         this._arguments = param2 == null?[]:param2;
+         this._name = name != null?name.toLowerCase():null;
+         this._arguments = arguments == null?[]:arguments;
       }
       
-      public static function newInstance(param1:String, param2:Array = null) : Metadata
+      public static function newInstance(name:String, arguments:Array = null) : Metadata
       {
-         param1 = param1.toLowerCase();
-         var _loc3_:String = getCacheKeyByNameAndArgs(param1,param2);
-         if(!_cache[_loc3_])
+         name = name.toLowerCase();
+         var cacheKey:String = getCacheKeyByNameAndArgs(name,arguments);
+         if(!_cache[cacheKey])
          {
-            _cache[_loc3_] = new Metadata(param1,param2);
+            _cache[cacheKey] = new Metadata(name,arguments);
          }
-         return _cache[_loc3_];
+         return _cache[cacheKey];
       }
       
-      public static function getCacheKey(param1:Metadata) : String
+      public static function getCacheKey(metadata:Metadata) : String
       {
-         return getCacheKeyByNameAndArgs(param1.name,param1.arguments);
+         return getCacheKeyByNameAndArgs(metadata.name,metadata.arguments);
       }
       
-      private static function getCacheKeyByNameAndArgs(param1:String, param2:Array) : String
+      private static function getCacheKeyByNameAndArgs(key:String, metadataArgs:Array) : String
       {
-         var _loc4_:int = 0;
-         var _loc5_:int = 0;
-         var _loc3_:String = param1 + CacheUtil.SEMI_COLON;
-         if(param2)
+         var numArgs:int = 0;
+         var i:int = 0;
+         var result:String = key + CacheUtil.SEMI_COLON;
+         if(metadataArgs)
          {
-            _loc4_ = param2.length;
-            _loc5_ = 0;
-            while(_loc5_ < _loc4_)
+            numArgs = metadataArgs.length;
+            for(i = 0; i < numArgs; i++)
             {
-               _loc3_ = _loc3_ + MetadataArgument.getCacheKey(param2[_loc5_]);
-               _loc3_ = _loc3_ + CacheUtil.SEMI_COLON;
-               _loc5_++;
+               result = result + MetadataArgument.getCacheKey(metadataArgs[i]);
+               result = result + CacheUtil.SEMI_COLON;
             }
          }
-         return _loc3_;
+         return result;
       }
       
       public function get name() : String
@@ -69,36 +67,36 @@ package org.as3commons.reflect
          return this._arguments;
       }
       
-      public function hasArgumentWithKey(param1:String) : Boolean
+      public function hasArgumentWithKey(key:String) : Boolean
       {
-         return this.getArgument(param1) != null;
+         return this.getArgument(key) != null;
       }
       
-      public function getArgument(param1:String) : MetadataArgument
+      public function getArgument(key:String) : MetadataArgument
       {
-         var _loc2_:MetadataArgument = null;
-         for each(_loc2_ in this._arguments)
+         var arg:MetadataArgument = null;
+         for each(arg in this._arguments)
          {
-            if(_loc2_.key === param1)
+            if(arg.key === key)
             {
-               return _loc2_;
+               return arg;
             }
          }
          return null;
       }
       
-      public function equals(param1:Object) : Boolean
+      public function equals(other:Object) : Boolean
       {
-         if(this === param1)
+         if(this === other)
          {
             return true;
          }
-         if(!(param1 is Metadata))
+         if(!(other is Metadata))
          {
             return false;
          }
-         var _loc2_:Metadata = Metadata(param1);
-         return _loc2_._name === this._name && this.argumentsAreEqual(_loc2_._arguments);
+         var that:Metadata = Metadata(other);
+         return that._name === this._name && this.argumentsAreEqual(that._arguments);
       }
       
       public function toString() : String
@@ -106,18 +104,18 @@ package org.as3commons.reflect
          return "[Metadata(" + this.name + ", " + this._arguments + ")]";
       }
       
-      private function argumentsAreEqual(param1:Array) : Boolean
+      private function argumentsAreEqual(metadataArgs:Array) : Boolean
       {
-         var _loc2_:MetadataArgument = null;
-         var _loc3_:MetadataArgument = null;
-         if(param1.length !== this._arguments.length)
+         var otherArg:MetadataArgument = null;
+         var arg:MetadataArgument = null;
+         if(metadataArgs.length !== this._arguments.length)
          {
             return false;
          }
-         for each(_loc2_ in param1)
+         for each(otherArg in metadataArgs)
          {
-            _loc3_ = this.getArgument(_loc2_.key);
-            if(!_loc2_.equals(_loc3_))
+            arg = this.getArgument(otherArg.key);
+            if(!otherArg.equals(arg))
             {
                return false;
             }
@@ -125,9 +123,9 @@ package org.as3commons.reflect
          return true;
       }
       
-      as3commons_reflect function setName(param1:String) : void
+      as3commons_reflect function setName(value:String) : void
       {
-         this._name = param1;
+         this._name = value;
       }
    }
 }

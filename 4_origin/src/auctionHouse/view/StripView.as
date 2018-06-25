@@ -38,9 +38,9 @@ package auctionHouse.view
          super.initView();
          _seller = ComponentFactory.Instance.creat("auctionHouse.BaseStripSeller");
          addChild(_seller);
-         var _loc1_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.auctionHouse.StripIocnAsset");
+         var _vie:Bitmap = ComponentFactory.Instance.creatBitmap("asset.auctionHouse.StripIocnAsset");
          _vieTip = ComponentFactory.Instance.creat("auctionHouse.view.StripIocn");
-         _vieTip.setView(_loc1_);
+         _vieTip.setView(_vie);
          _vieTip.tipData = LanguageMgr.GetTranslation("tank.auctionHouse.view.auctioned");
          addChildAt(_vieTip,getChildIndex(_leftTime) + 1);
          _vieTip.visible = false;
@@ -54,18 +54,18 @@ package auctionHouse.view
          buttonMode = true;
       }
       
-      private function drawRect(param1:Number, param2:Number) : Sprite
+      private function drawRect(w:Number, h:Number) : Sprite
       {
-         var _loc3_:Sprite = new Sprite();
-         _loc3_.graphics.beginFill(16777215);
-         _loc3_.graphics.drawRect(0,0,param1,param2);
-         _loc3_.graphics.endFill();
-         return _loc3_;
+         var sprite:Sprite = new Sprite();
+         sprite.graphics.beginFill(16777215);
+         sprite.graphics.drawRect(0,0,w,h);
+         sprite.graphics.endFill();
+         return sprite;
       }
       
-      public function setListCellStatus(param1:List, param2:Boolean, param3:int) : void
+      public function setListCellStatus(list:List, isSelected:Boolean, index:int) : void
       {
-         isSelect = param2;
+         isSelect = isSelected;
       }
       
       public function getCellValue() : *
@@ -73,39 +73,39 @@ package auctionHouse.view
          return _info;
       }
       
-      public function setCellValue(param1:*) : void
+      public function setCellValue(value:*) : void
       {
-         info = param1;
+         info = value;
       }
       
       override protected function updateInfo() : void
       {
-         var _loc3_:* = null;
+         var newStr:* = null;
          super.updateInfo();
-         var _loc1_:String = (_info.Price / _info.BagItemInfo.Count).toString();
-         var _loc2_:Array = _loc1_.split(".");
-         if(_loc2_[1])
+         var str:String = (_info.Price / _info.BagItemInfo.Count).toString();
+         var arr:Array = str.split(".");
+         if(arr[1])
          {
-            _loc3_ = _loc2_[0] + "." + _loc2_[1].charAt(0);
+            newStr = arr[0] + "." + arr[1].charAt(0);
          }
          else
          {
-            _loc3_ = _loc1_;
+            newStr = str;
          }
          if(AuctionState.CURRENTSTATE == "sell")
          {
             if(_info.BuyerName == "")
             {
-               _seller.text = _loc3_;
+               _seller.text = newStr;
             }
             else
             {
-               _seller.text = _loc3_;
+               _seller.text = newStr;
             }
          }
          else
          {
-            _seller.text = _loc3_;
+            _seller.text = newStr;
             _vieTip.visible = _info.BuyerName != "";
          }
          var _loc4_:* = _leftTime.textWidth;

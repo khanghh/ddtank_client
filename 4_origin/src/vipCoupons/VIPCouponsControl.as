@@ -41,9 +41,9 @@ package vipCoupons
       
       private var _place:int;
       
-      public function VIPCouponsControl(param1:IEventDispatcher = null)
+      public function VIPCouponsControl(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : VIPCouponsControl
@@ -62,10 +62,10 @@ package vipCoupons
          SocketManager.Instance.addEventListener(PkgEvent.format(183),__tasteVipCouponsHandler);
       }
       
-      private function __openViewHandler(param1:CEvent) : void
+      private function __openViewHandler(evt:CEvent) : void
       {
-         _bagType = param1.data[0];
-         _place = param1.data[1];
+         _bagType = evt.data[0];
+         _place = evt.data[1];
          AssetModuleLoader.addModelLoader("vipCoupons",6);
          AssetModuleLoader.startCodeLoader(openFrame);
       }
@@ -87,10 +87,10 @@ package vipCoupons
          }
       }
       
-      protected function _responseHandle(param1:FrameEvent) : void
+      protected function _responseHandle(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -98,7 +98,7 @@ package vipCoupons
          }
       }
       
-      protected function __sendHandler(param1:MouseEvent) : void
+      protected function __sendHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -106,33 +106,33 @@ package vipCoupons
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc3_:String = _frame.getnameInput.text;
-         if(_loc3_ == "")
+         var playerName:String = _frame.getnameInput.text;
+         if(playerName == "")
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("flowerGiving.flowerSendFrame.nameInputTxt"));
             return;
          }
-         var _loc4_:int = 0;
-         _loc4_ = getItemCount(12568);
-         if(_loc4_ <= 0)
+         var vipCount:int = 0;
+         vipCount = getItemCount(12568);
+         if(vipCount <= 0)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("game.vipCoupons.sendVip.vipCouponsCount"));
             return;
          }
-         var _loc2_:String = _frame.content.text;
-         _loc2_ = StringHelper.trim(_loc2_);
-         _loc2_ = FilterWordManager.filterWrod(_loc2_);
-         _loc2_ = StringHelper.rePlaceHtmlTextField(_loc2_);
-         SocketManager.Instance.out.sendVipCoupons(_bagType,_place,1,_loc2_,_loc3_);
+         var content:String = _frame.content.text;
+         content = StringHelper.trim(content);
+         content = FilterWordManager.filterWrod(content);
+         content = StringHelper.rePlaceHtmlTextField(content);
+         SocketManager.Instance.out.sendVipCoupons(_bagType,_place,1,content,playerName);
          dispose();
       }
       
-      private function getItemCount(param1:int) : int
+      private function getItemCount(temId:int) : int
       {
-         return PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(param1);
+         return PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(temId);
       }
       
-      private function __useVipCouponsHandler(param1:CEvent) : void
+      private function __useVipCouponsHandler(evt:CEvent) : void
       {
          if(_baseAlerFrame)
          {
@@ -140,15 +140,15 @@ package vipCoupons
             _baseAlerFrame.dispose();
             _baseAlerFrame = null;
          }
-         _bagType = param1.data[0];
-         _place = param1.data[1];
+         _bagType = evt.data[0];
+         _place = evt.data[1];
          _baseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("game.vipCoupons.useVipCouponsMgs"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
          _baseAlerFrame.addEventListener("response",__frameEvent);
       }
       
-      private function __frameEvent(param1:FrameEvent) : void
+      private function __frameEvent(evt:FrameEvent) : void
       {
-         var _loc2_:* = null;
+         var info:* = null;
          SoundManager.instance.play("008");
          if(_baseAlerFrame)
          {
@@ -156,25 +156,25 @@ package vipCoupons
             _baseAlerFrame.dispose();
             _baseAlerFrame = null;
          }
-         if(param1.responseCode == 3)
+         if(evt.responseCode == 3)
          {
-            _loc2_ = ItemManager.fillByID(12569);
-            SocketManager.Instance.out.sendUseCard(_bagType,_place,[_loc2_.TemplateID],_loc2_.PayType);
+            info = ItemManager.fillByID(12569);
+            SocketManager.Instance.out.sendUseCard(_bagType,_place,[info.TemplateID],info.PayType);
          }
       }
       
-      private function __tasteVipCouponsHandler(param1:PkgEvent) : void
+      private function __tasteVipCouponsHandler(evt:PkgEvent) : void
       {
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc3_:int = _loc4_.readInt();
-         PlayerManager.Instance.Self.vipDiscount = _loc3_;
-         var _loc2_:Date = TimeManager.Instance.Now();
-         PlayerManager.Instance.Self.vipDiscountValidity = _loc2_;
-         _baseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("game.vipCoupons.tasteVipCouponsMgs",100 - _loc3_ * 10),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
+         var pkg:PackageIn = evt.pkg;
+         var value:int = pkg.readInt();
+         PlayerManager.Instance.Self.vipDiscount = value;
+         var curDate:Date = TimeManager.Instance.Now();
+         PlayerManager.Instance.Self.vipDiscountValidity = curDate;
+         _baseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("game.vipCoupons.tasteVipCouponsMgs",100 - value * 10),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
          _baseAlerFrame.addEventListener("response",__tasteVipHandler);
       }
       
-      private function __tasteVipHandler(param1:FrameEvent) : void
+      private function __tasteVipHandler(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          if(_baseAlerFrame)
@@ -183,7 +183,7 @@ package vipCoupons
             _baseAlerFrame.dispose();
             _baseAlerFrame = null;
          }
-         if(param1.responseCode == 3)
+         if(evt.responseCode == 3)
          {
             VipController.instance.show();
          }

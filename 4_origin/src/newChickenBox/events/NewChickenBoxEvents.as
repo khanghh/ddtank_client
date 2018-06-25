@@ -14,10 +14,10 @@ package newChickenBox.events
       
       private var _info:Object = null;
       
-      public function NewChickenBoxEvents(param1:String, param2:Object = null, param3:Boolean = false, param4:Boolean = false)
+      public function NewChickenBoxEvents(type:String, info:Object = null, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         _info = param2;
-         super(param1,param3,param4);
+         _info = info;
+         super(type,bubbles,cancelable);
       }
       
       public function get info() : Object
@@ -25,9 +25,9 @@ package newChickenBox.events
          return _info;
       }
       
-      public function set info(param1:Object) : void
+      public function set info(value:Object) : void
       {
-         _info = param1;
+         _info = value;
       }
    }
 }

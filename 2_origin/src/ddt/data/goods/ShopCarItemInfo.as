@@ -20,26 +20,25 @@ package ddt.data.goods
       
       public var skin:String = "";
       
-      public function ShopCarItemInfo(param1:int, param2:int, param3:int = 0)
+      public function ShopCarItemInfo(goodsID:int, templateID:int, CategoryID:int = 0)
       {
-         super(param1,param2);
+         super(goodsID,templateID);
          currentBuyType = 1;
-         if(param3 == 14)
+         if(CategoryID == 14)
          {
             currentBuyType = 2;
          }
          dressing = false;
       }
       
-      public function set Property8(param1:String) : void
+      public function set Property8(value:String) : void
       {
-         var _loc2_:int = 0;
-         super.TemplateInfo.Property8 = param1;
-         _loc2_ = 0;
-         while(_loc2_ < param1.length - 1)
+         var i:int = 0;
+         super.TemplateInfo.Property8 = value;
+         for(i = 0; i < value.length - 1; )
          {
             _color = _color + "|";
-            _loc2_++;
+            i++;
          }
       }
       
@@ -58,18 +57,18 @@ package ddt.data.goods
          return _color;
       }
       
-      public function set Color(param1:String) : void
+      public function set Color(value:String) : void
       {
-         if(_color != param1)
+         if(_color != value)
          {
-            _color = param1;
+            _color = value;
             dispatchEvent(new Event("change"));
          }
       }
       
-      public function set currentBuyType(param1:int) : void
+      public function set currentBuyType(value:int) : void
       {
-         _currentBuyType = param1;
+         _currentBuyType = value;
          dispatchEvent(new Event("change"));
       }
       

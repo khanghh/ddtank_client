@@ -17,36 +17,36 @@ package morn.core.events
       
       protected var _dragInitiator:DisplayObject;
       
-      public function DragEvent(param1:String, param2:DisplayObject = null, param3:* = null, param4:Boolean = true, param5:Boolean = false)
+      public function DragEvent(type:String, dragInitiator:DisplayObject = null, data:* = null, bubbles:Boolean = true, cancelable:Boolean = false)
       {
-         super(param1,param4,param5);
-         this._dragInitiator = param2;
-         this._data = param3;
+         super(type,bubbles,cancelable);
+         _dragInitiator = dragInitiator;
+         _data = data;
       }
       
       public function get dragInitiator() : DisplayObject
       {
-         return this._dragInitiator;
+         return _dragInitiator;
       }
       
-      public function set dragInitiator(param1:DisplayObject) : void
+      public function set dragInitiator(value:DisplayObject) : void
       {
-         this._dragInitiator = param1;
+         _dragInitiator = value;
       }
       
       public function get data() : *
       {
-         return this._data;
+         return _data;
       }
       
-      public function set data(param1:*) : void
+      public function set data(value:*) : void
       {
-         this._data = param1;
+         _data = value;
       }
       
       override public function clone() : Event
       {
-         return new DragEvent(type,this._dragInitiator,this._data,bubbles,cancelable);
+         return new DragEvent(type,_dragInitiator,_data,bubbles,cancelable);
       }
    }
 }

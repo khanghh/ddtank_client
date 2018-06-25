@@ -24,100 +24,92 @@ package dragonBones.cache
          super();
       }
       
-      public static function initWithAnimationData(param1:AnimationData, param2:ArmatureData) : AnimationCache
+      public static function initWithAnimationData(animationData:AnimationData, armatureData:ArmatureData) : AnimationCache
       {
-         var _loc4_:* = null;
-         var _loc6_:* = null;
-         var _loc3_:* = null;
-         var _loc9_:* = null;
-         var _loc13_:* = null;
-         var _loc8_:int = 0;
-         var _loc11_:int = 0;
-         var _loc5_:int = 0;
-         var _loc10_:int = 0;
-         var _loc12_:AnimationCache = new AnimationCache();
-         _loc12_.name = param1.name;
-         var _loc7_:Vector.<TransformTimeline> = param1.timelineList;
-         _loc8_ = 0;
-         _loc11_ = _loc7_.length;
-         while(_loc8_ < _loc11_)
+         var boneName:* = null;
+         var boneData:* = null;
+         var slotData:* = null;
+         var slotTimelineCache:* = null;
+         var slotName:* = null;
+         var i:int = 0;
+         var length:int = 0;
+         var j:int = 0;
+         var jlen:int = 0;
+         var output:AnimationCache = new AnimationCache();
+         output.name = animationData.name;
+         var boneTimelineList:Vector.<TransformTimeline> = animationData.timelineList;
+         for(i = 0,length = boneTimelineList.length; i < length; )
          {
-            _loc4_ = _loc7_[_loc8_].name;
-            _loc5_ = 0;
-            _loc10_ = param2.slotDataList.length;
-            while(_loc5_ < _loc10_)
+            boneName = boneTimelineList[i].name;
+            for(j = 0,jlen = armatureData.slotDataList.length; j < jlen; )
             {
-               _loc3_ = param2.slotDataList[_loc5_];
-               _loc13_ = _loc3_.name;
-               if(_loc3_.parent == _loc4_)
+               slotData = armatureData.slotDataList[j];
+               slotName = slotData.name;
+               if(slotData.parent == boneName)
                {
-                  if(_loc12_.slotTimelineCacheDic[_loc13_] == null)
+                  if(output.slotTimelineCacheDic[slotName] == null)
                   {
-                     _loc9_ = new SlotTimelineCache();
-                     _loc9_.name = _loc13_;
-                     _loc12_.slotTimelineCacheList.push(_loc9_);
-                     _loc12_.slotTimelineCacheDic[_loc13_] = _loc9_;
+                     slotTimelineCache = new SlotTimelineCache();
+                     slotTimelineCache.name = slotName;
+                     output.slotTimelineCacheList.push(slotTimelineCache);
+                     output.slotTimelineCacheDic[slotName] = slotTimelineCache;
                   }
                }
-               _loc5_++;
+               j++;
             }
-            _loc8_++;
+            i++;
          }
-         return _loc12_;
+         return output;
       }
       
-      public function initSlotTimelineCacheDic(param1:Object, param2:Object) : void
+      public function initSlotTimelineCacheDic(slotCacheGeneratorDic:Object, slotFrameCacheDic:Object) : void
       {
-         var _loc4_:* = null;
+         var name:* = null;
          var _loc6_:int = 0;
          var _loc5_:* = slotTimelineCacheDic;
-         for each(var _loc3_ in slotTimelineCacheDic)
+         for each(var slotTimelineCache in slotTimelineCacheDic)
          {
-            _loc4_ = _loc3_.name;
-            _loc3_.cacheGenerator = param1[_loc4_];
-            _loc3_.currentFrameCache = param2[_loc4_];
+            name = slotTimelineCache.name;
+            slotTimelineCache.cacheGenerator = slotCacheGeneratorDic[name];
+            slotTimelineCache.currentFrameCache = slotFrameCacheDic[name];
          }
       }
       
-      public function bindCacheUserSlotDic(param1:Object) : void
+      public function bindCacheUserSlotDic(slotDic:Object) : void
       {
          var _loc4_:int = 0;
-         var _loc3_:* = param1;
-         for(var _loc2_ in param1)
+         var _loc3_:* = slotDic;
+         for(var name in slotDic)
          {
-            (slotTimelineCacheDic[_loc2_] as SlotTimelineCache).bindCacheUser(param1[_loc2_]);
+            (slotTimelineCacheDic[name] as SlotTimelineCache).bindCacheUser(slotDic[name]);
          }
       }
       
       public function addFrame() : void
       {
-         var _loc1_:* = null;
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
+         var slotTimelineCache:* = null;
+         var i:int = 0;
+         var length:int = 0;
          frameNum = Number(frameNum) + 1;
-         _loc3_ = 0;
-         _loc2_ = slotTimelineCacheList.length;
-         while(_loc3_ < _loc2_)
+         for(i = 0,length = slotTimelineCacheList.length; i < length; )
          {
-            _loc1_ = slotTimelineCacheList[_loc3_];
-            _loc1_.addFrame();
-            _loc3_++;
+            slotTimelineCache = slotTimelineCacheList[i];
+            slotTimelineCache.addFrame();
+            i++;
          }
       }
       
-      public function update(param1:Number) : void
+      public function update(progress:Number) : void
       {
-         var _loc2_:* = null;
-         var _loc5_:int = 0;
-         var _loc3_:int = 0;
-         var _loc4_:int = param1 * (frameNum - 1);
-         _loc5_ = 0;
-         _loc3_ = slotTimelineCacheList.length;
-         while(_loc5_ < _loc3_)
+         var slotTimelineCache:* = null;
+         var i:int = 0;
+         var length:int = 0;
+         var frameIndex:int = progress * (frameNum - 1);
+         for(i = 0,length = slotTimelineCacheList.length; i < length; )
          {
-            _loc2_ = slotTimelineCacheList[_loc5_];
-            _loc2_.update(_loc4_);
-            _loc5_++;
+            slotTimelineCache = slotTimelineCacheList[i];
+            slotTimelineCache.update(frameIndex);
+            i++;
          }
       }
    }

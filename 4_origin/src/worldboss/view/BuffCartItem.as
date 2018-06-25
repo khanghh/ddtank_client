@@ -127,27 +127,26 @@ package worldboss.view
       
       private function updateStatus() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < WorldBossManager.Instance.bossInfo.myPlayerVO.buffs.length)
+         var i:int = 0;
+         for(i = 0; i < WorldBossManager.Instance.bossInfo.myPlayerVO.buffs.length; )
          {
-            if(buffID == WorldBossManager.Instance.bossInfo.myPlayerVO.buffs[_loc1_])
+            if(buffID == WorldBossManager.Instance.bossInfo.myPlayerVO.buffs[i])
             {
                changeStatusBuy();
                return;
             }
-            _loc1_++;
+            i++;
          }
       }
       
-      private function _buffIconComplete(param1:LoaderEvent) : void
+      private function _buffIconComplete(evt:LoaderEvent) : void
       {
-         if(param1.loader.isSuccess)
+         if(evt.loader.isSuccess)
          {
-            param1.loader.removeEventListener("complete",_buffIconComplete);
+            evt.loader.removeEventListener("complete",_buffIconComplete);
             ObjectUtils.disposeObject(_buffIcon);
             _buffIcon = null;
-            _buffIcon = param1.loader.content as Bitmap;
+            _buffIcon = evt.loader.content as Bitmap;
             addChild(_buffIcon);
             PositionUtils.setPos(_buffIcon,"worldboss.buffCartItem.Iconpos");
             var _loc2_:int = 60;
@@ -162,10 +161,10 @@ package worldboss.view
          _payPaneBuyBtn.addEventListener("click",__payBuyBuff);
       }
       
-      protected function __autoBuyBuff(param1:Event) : void
+      protected function __autoBuyBuff(event:Event) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
+         var alert:* = null;
+         var alert2:* = null;
          if(_autoBuySelectedBtn.selected)
          {
             if(PlayerManager.Instance.Self.Money >= _buffInfo.price)
@@ -175,14 +174,14 @@ package worldboss.view
                   autoBuy();
                   return;
                }
-               _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("worldboss.buyBuff.autoBuyConfirm"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"));
-               _loc2_.addEventListener("response",__onResponse);
+               alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("worldboss.buyBuff.autoBuyConfirm"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"));
+               alert.addEventListener("response",__onResponse);
             }
             else
             {
-               _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.comon.lack"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
-               _loc3_.moveEnable = false;
-               _loc3_.addEventListener("response",_responseI);
+               alert2 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.comon.lack"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
+               alert2.moveEnable = false;
+               alert2.addEventListener("response",_responseI);
                _autoBuySelectedBtn.selected = false;
                WorldBossManager.Instance.isBuyBuffAlert = false;
                return;
@@ -195,10 +194,10 @@ package worldboss.view
          dispatchEvent(new Event("select"));
       }
       
-      protected function __onResponse(param1:FrameEvent) : void
+      protected function __onResponse(event:FrameEvent) : void
       {
          WorldBossManager.Instance.isBuyBuffAlert = true;
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
                WorldBossManager.Instance.isBuyBuffAlert = false;
@@ -213,7 +212,7 @@ package worldboss.view
             case 4:
                autoBuy();
          }
-         Frame(param1.currentTarget).dispose();
+         Frame(event.currentTarget).dispose();
       }
       
       private function autoBuy() : void
@@ -236,7 +235,7 @@ package worldboss.view
          _payPaneBuyBtn.removeEventListener("click",__payBuyBuff);
       }
       
-      private function __selectedBuff(param1:Event) : void
+      private function __selectedBuff(e:Event) : void
       {
          if(_isAllSelected)
          {
@@ -247,17 +246,17 @@ package worldboss.view
          dispatchEvent(new Event("select"));
       }
       
-      public function selected(param1:Boolean) : void
+      public function selected(type:Boolean) : void
       {
          _isAllSelected = true;
-         _autoBuySelectedBtn.selected = param1;
+         _autoBuySelectedBtn.selected = type;
       }
       
-      private function __payBuyBuff(param1:MouseEvent) : void
+      private function __payBuyBuff(e:MouseEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:int = 0;
-         var _loc4_:* = null;
+         var alert:* = null;
+         var amount:int = 0;
+         var item:* = null;
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -272,46 +271,46 @@ package worldboss.view
             }
             else
             {
-               _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.comon.lack"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
-               _loc3_.moveEnable = false;
-               _loc3_.addEventListener("response",_responseI);
+               alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.comon.lack"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
+               alert.moveEnable = false;
+               alert.addEventListener("response",_responseI);
             }
          }
          else
          {
-            _loc2_ = 0;
+            amount = 0;
             var _loc7_:int = 0;
             var _loc6_:* = PlayerManager.Instance.Self.PropBag.findItemsByTempleteID(_buffInfo.costID);
-            for each(var _loc5_ in PlayerManager.Instance.Self.PropBag.findItemsByTempleteID(_buffInfo.costID))
+            for each(var info in PlayerManager.Instance.Self.PropBag.findItemsByTempleteID(_buffInfo.costID))
             {
-               _loc2_ = _loc2_ + _loc5_.Count;
+               amount = amount + info.Count;
             }
-            if(_loc2_ >= _buffInfo.price)
+            if(amount >= _buffInfo.price)
             {
                SocketManager.Instance.out.sendBuyWorldBossBuff([_buffInfo.ID]);
             }
             else
             {
-               _loc4_ = ItemManager.Instance.getTemplateById(_buffInfo.costID);
-               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("worldboss.buyBuff.lackItem",_loc4_.Name));
+               item = ItemManager.Instance.getTemplateById(_buffInfo.costID);
+               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("worldboss.buyBuff.lackItem",item.Name));
             }
          }
       }
       
-      private function _responseI(param1:FrameEvent) : void
+      private function _responseI(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.responseCode == 3)
+         if(e.responseCode == 3)
          {
             LeavePageManager.leaveToFillPath();
          }
-         ObjectUtils.disposeObject(param1.target);
+         ObjectUtils.disposeObject(e.target);
       }
       
-      public function set buffItemInfo(param1:WorldBossBuffInfo) : void
+      public function set buffItemInfo(value:WorldBossBuffInfo) : void
       {
-         var _loc2_:* = null;
-         _buffInfo = param1;
+         var item:* = null;
+         _buffInfo = value;
          _itemName.text = _buffInfo.name;
          _description.text = _buffInfo.decription;
          if(_buffInfo.costID == -1)
@@ -320,8 +319,8 @@ package worldboss.view
          }
          else
          {
-            _loc2_ = ItemManager.Instance.getTemplateById(_buffInfo.costID);
-            _itemPrice.text = LanguageMgr.GetTranslation("worldboss.buyBuff.eachItem",_buffInfo.price.toString(),_loc2_.Name,"1");
+            item = ItemManager.Instance.getTemplateById(_buffInfo.costID);
+            _itemPrice.text = LanguageMgr.GetTranslation("worldboss.buyBuff.eachItem",_buffInfo.price.toString(),item.Name,"1");
             PositionUtils.setPos(_itemPrice,"worldboss.buffCartItem.costItemMoneyTxt");
             _moneyBitmap.visible = false;
          }

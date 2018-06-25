@@ -57,15 +57,14 @@ package
          return _instance;
       }
       
-      public function addResource(param1:String) : URLLoader
+      public function addResource(url:String) : URLLoader
       {
          var onComplete:Function = null;
-         var url:String = param1;
-         onComplete = function(param1:Event):void
+         onComplete = function(event:Event):void
          {
             _loader.removeEventListener(Event.COMPLETE,onComplete);
-            var _loc2_:ByteArray = _loader.data;
-            readFile(_loc2_);
+            var data:ByteArray = _loader.data;
+            readFile(data);
             _loadedResource.push(url);
          };
          var request:URLRequest = new URLRequest(url);
@@ -74,56 +73,56 @@ package
          return this._loader;
       }
       
-      public function hasResource(param1:String) : Boolean
+      public function hasResource(url:String) : Boolean
       {
-         return this._loadedResource.indexOf(param1) > -1;
+         return this._loadedResource.indexOf(url) > -1;
       }
       
-      public function hasChactater(param1:String) : Boolean
+      public function hasChactater(label:String) : Boolean
       {
-         return this._characterDefines[param1] != null;
+         return this._characterDefines[label] != null;
       }
       
-      public function creatChacrater(param1:String) : ICharacter
+      public function creatChacrater(label:String) : ICharacter
       {
-         var _loc2_:XML = null;
-         var _loc3_:* = null;
-         var _loc4_:ICharacter = null;
-         for(_loc3_ in this._characterDefines)
+         var define:XML = null;
+         var fileName:* = null;
+         var result:ICharacter = null;
+         for(fileName in this._characterDefines)
          {
-            if(this._characterDefines[_loc3_][param1])
+            if(this._characterDefines[fileName][label])
             {
-               _loc2_ = this._characterDefines[_loc3_][param1];
+               define = this._characterDefines[fileName][label];
                break;
             }
          }
-         if(_loc2_)
+         if(define)
          {
-            if(int(_loc2_.@type) == CharacterType.SIMPLE_BITMAP_TYPE)
+            if(int(define.@type) == CharacterType.SIMPLE_BITMAP_TYPE)
             {
-               _loc4_ = new SimpleBitmapCharacter(this._bitmapdatas[_loc3_][String(_loc2_.@resource)],_loc2_);
+               result = new SimpleBitmapCharacter(this._bitmapdatas[fileName][String(define.@resource)],define);
             }
-            else if(int(_loc2_.@type) == CharacterType.COMPLEX_BITMAP_TYPE)
+            else if(int(define.@type) == CharacterType.COMPLEX_BITMAP_TYPE)
             {
-               _loc4_ = new ComplexBitmapCharacter(this._bitmapdatas[_loc3_],_loc2_);
+               result = new ComplexBitmapCharacter(this._bitmapdatas[fileName],define);
             }
-            else if(int(_loc2_.@type) == CharacterType.MOVIECLIP_TYPE)
+            else if(int(define.@type) == CharacterType.MOVIECLIP_TYPE)
             {
-               _loc4_ = new MovieClipCharacter(null,_loc2_,param1);
+               result = new MovieClipCharacter(null,define,label);
             }
          }
-         return _loc4_;
+         return result;
       }
       
       public function releaseResource() : void
       {
-         var _loc1_:Dictionary = null;
-         var _loc2_:BitmapData = null;
-         for each(_loc1_ in this._bitmapdatas)
+         var bms:Dictionary = null;
+         var bm:BitmapData = null;
+         for each(bms in this._bitmapdatas)
          {
-            for each(_loc2_ in _loc1_)
+            for each(bm in bms)
             {
-               _loc2_.dispose();
+               bm.dispose();
             }
          }
          this._bitmapdatas = new Dictionary();
@@ -131,18 +130,18 @@ package
          this._characterDefines = new Dictionary();
       }
       
-      public function hasFile(param1:String) : Boolean
+      public function hasFile(name:String) : Boolean
       {
-         return this._filse[param1] == true;
+         return this._filse[name] == true;
       }
       
-      public function addFile(param1:String, param2:ByteArray) : void
+      public function addFile(name:String, file:ByteArray) : void
       {
-         this._filse[param1] = true;
-         this.readFile(param2);
+         this._filse[name] = true;
+         this.readFile(file);
       }
       
-      public function readFile(param1:ByteArray) : void
+      public function readFile(file:ByteArray) : void
       {
          var bitmapdatas:Dictionary = null;
          var loaderComplete:Function = null;
@@ -156,12 +155,11 @@ package
          var ld:Loader = null;
          var context:LoaderContext = null;
          var description:XML = null;
-         var file:ByteArray = param1;
-         loaderComplete = function(param1:Event):void
+         loaderComplete = function(event:Event):void
          {
-            var _loc2_:Loader = LoaderInfo(param1.target).loader;
-            _loc2_.contentLoaderInfo.removeEventListener(Event.COMPLETE,loaderComplete);
-            bitmapdatas[_loc2_.name] = Bitmap(_loc2_.content).bitmapData;
+            var ld:Loader = LoaderInfo(event.target).loader;
+            ld.contentLoaderInfo.removeEventListener(Event.COMPLETE,loaderComplete);
+            bitmapdatas[ld.name] = Bitmap(ld.content).bitmapData;
          };
          if(file.position == 0)
          {
@@ -177,8 +175,7 @@ package
          var swfInitNum:int = 0;
          var monstNum:int = 0;
          assetNum = file.readByte();
-         var i:int = 0;
-         while(i < assetNum)
+         for(var i:int = 0; i < assetNum; i++)
          {
             label = file.readUTF();
             content = new ByteArray();
@@ -188,11 +185,9 @@ package
             loader.name = label;
             loader.contentLoaderInfo.addEventListener(Event.COMPLETE,loaderComplete);
             loader.loadBytes(content);
-            i++;
          }
          swfNum = file.readByte();
-         var j:int = 0;
-         while(j < swfNum)
+         for(var j:int = 0; j < swfNum; j++)
          {
             swfLabel = file.readUTF();
             swfContent = new ByteArray();
@@ -201,7 +196,6 @@ package
             ld = new Loader();
             context = new LoaderContext(false,ApplicationDomain.currentDomain);
             ld.loadBytes(swfContent,context);
-            j++;
          }
          var fileDescription:XML = new XML(file.readUTF());
          var characters:XMLList = fileDescription..character;
@@ -209,12 +203,10 @@ package
          bitmapdatas = new Dictionary();
          var characterDefines:Dictionary = new Dictionary();
          monstNum = characters.length();
-         var k:int = 0;
-         while(k < monstNum)
+         for(var k:int = 0; k < monstNum; k++)
          {
             description = characters[k];
             characterDefines[String(description.@label)] = description;
-            k++;
          }
          this._characterDefines[fileName] = characterDefines;
          this._bitmapdatas[fileName] = bitmapdatas;

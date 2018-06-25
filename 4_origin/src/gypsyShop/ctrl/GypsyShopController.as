@@ -33,7 +33,7 @@ package gypsyShop.ctrl
       
       private var _manager:GypsyShopManager;
       
-      public function GypsyShopController(param1:inner)
+      public function GypsyShopController(single:inner)
       {
          super();
          _manager = GypsyShopManager.getInstance();
@@ -65,9 +65,9 @@ package gypsyShop.ctrl
          _manager.addEventListener("gyps_show_main",onEventHandler);
       }
       
-      protected function onEventHandler(param1:GypsyShopEvent) : void
+      protected function onEventHandler(e:GypsyShopEvent) : void
       {
-         var _loc2_:* = param1.type;
+         var _loc2_:* = e.type;
          if("gyps_buy_result" !== _loc2_)
          {
             if("gyps_hide_main" !== _loc2_)
@@ -84,7 +84,7 @@ package gypsyShop.ctrl
                            {
                               if("gyps_show_main" === _loc2_)
                               {
-                                 _modelShop = param1.data as GypsyShopModel;
+                                 _modelShop = e.data as GypsyShopModel;
                                  showMainFrame();
                               }
                            }
@@ -100,7 +100,7 @@ package gypsyShop.ctrl
                      }
                      else
                      {
-                        moneyNeeded(int(param1.data));
+                        moneyNeeded(int(e.data));
                      }
                   }
                   else
@@ -164,11 +164,11 @@ package gypsyShop.ctrl
          _mainFrameGypsy.updateBuyResult();
       }
       
-      private function moneyNeeded(param1:int) : void
+      private function moneyNeeded(id:int) : void
       {
-         var _loc2_:ConfirmFrameMoneyNeeded = new ConfirmFrameMoneyNeeded();
-         _loc2_.setID(param1);
-         _loc2_.alert();
+         var confirmFrame:ConfirmFrameMoneyNeeded = new ConfirmFrameMoneyNeeded();
+         confirmFrame.setID(id);
+         confirmFrame.alert();
       }
       
       private function honourNeeded() : void
@@ -178,19 +178,19 @@ package gypsyShop.ctrl
       
       private function rmbNeeded() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var tmpNeedMoney:int = 0;
+         var confirmFrame2:* = null;
          if(GypsyShopManager.getInstance().showRmbRefreshAlertAgain == false)
          {
-            _loc2_ = 300;
-            if(GypsyShopModel.getInstance().isBind && PlayerManager.Instance.Self.BandMoney < _loc2_)
+            tmpNeedMoney = 300;
+            if(GypsyShopModel.getInstance().isBind && PlayerManager.Instance.Self.BandMoney < tmpNeedMoney)
             {
-               _loc1_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("sevenDouble.game.useSkillNoEnoughReConfirm"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
-               _loc1_.moveEnable = false;
-               _loc1_.addEventListener("response",reConfirmHandler,false,0,true);
+               confirmFrame2 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("sevenDouble.game.useSkillNoEnoughReConfirm"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
+               confirmFrame2.moveEnable = false;
+               confirmFrame2.addEventListener("response",reConfirmHandler,false,0,true);
                return;
             }
-            if(!GypsyShopModel.getInstance().isBind && PlayerManager.Instance.Self.Money < _loc2_)
+            if(!GypsyShopModel.getInstance().isBind && PlayerManager.Instance.Self.Money < tmpNeedMoney)
             {
                GypsyShopManager.getInstance().showRmbRefreshAlertAgain = true;
                LeavePageManager.showFillFrame();
@@ -199,53 +199,53 @@ package gypsyShop.ctrl
             GypsyShopManager.getInstance().confirmToRefreshWithRMB();
             return;
          }
-         var _loc3_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.game.GameView.gypsyRmbConfirm",300),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"gypsy.rmb.confirmView",30,true,0);
-         _loc3_.moveEnable = false;
-         _loc3_.addEventListener("response",comfirmHandler,false,0,true);
+         var confirmFrame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.game.GameView.gypsyRmbConfirm",300),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"gypsy.rmb.confirmView",30,true,0);
+         confirmFrame.moveEnable = false;
+         confirmFrame.addEventListener("response",comfirmHandler,false,0,true);
       }
       
-      private function comfirmHandler(param1:FrameEvent) : void
+      private function comfirmHandler(event:FrameEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
+         var tmpNeedMoney:int = 0;
+         var confirmFrame2:* = null;
          SoundManager.instance.play("008");
-         var _loc4_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc4_.removeEventListener("response",comfirmHandler);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",comfirmHandler);
+         if(event.responseCode == 3 || event.responseCode == 2)
          {
-            _loc3_ = 300;
-            if(_loc4_.isBand && PlayerManager.Instance.Self.BandMoney < _loc3_)
+            tmpNeedMoney = 300;
+            if(confirmFrame.isBand && PlayerManager.Instance.Self.BandMoney < tmpNeedMoney)
             {
-               _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("sevenDouble.game.useSkillNoEnoughReConfirm"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
-               _loc2_.moveEnable = false;
-               _loc2_.addEventListener("response",reConfirmHandler,false,0,true);
+               confirmFrame2 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("sevenDouble.game.useSkillNoEnoughReConfirm"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
+               confirmFrame2.moveEnable = false;
+               confirmFrame2.addEventListener("response",reConfirmHandler,false,0,true);
                return;
             }
-            if(!_loc4_.isBand && PlayerManager.Instance.Self.Money < _loc3_)
+            if(!confirmFrame.isBand && PlayerManager.Instance.Self.Money < tmpNeedMoney)
             {
                GypsyShopManager.getInstance().showRmbRefreshAlertAgain = true;
                LeavePageManager.showFillFrame();
                return;
             }
-            if((_loc4_ as MagicStoneConfirmView).isNoPrompt)
+            if((confirmFrame as MagicStoneConfirmView).isNoPrompt)
             {
                GypsyShopManager.getInstance().showRmbRefreshAlertAgain = false;
             }
-            GypsyShopModel.getInstance().isBind = (_loc4_ as MagicStoneConfirmView).isBand;
+            GypsyShopModel.getInstance().isBind = (confirmFrame as MagicStoneConfirmView).isBand;
             GypsyShopManager.getInstance().confirmToRefreshWithRMB();
          }
       }
       
-      private function reConfirmHandler(param1:FrameEvent) : void
+      private function reConfirmHandler(evt:FrameEvent) : void
       {
-         var _loc2_:int = 0;
+         var needMoney:int = 0;
          SoundManager.instance.play("008");
-         var _loc3_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc3_.removeEventListener("response",reConfirmHandler);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",reConfirmHandler);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
-            _loc2_ = 300;
-            if(PlayerManager.Instance.Self.Money < _loc2_)
+            needMoney = 300;
+            if(PlayerManager.Instance.Self.Money < needMoney)
             {
                LeavePageManager.showFillFrame();
                return;

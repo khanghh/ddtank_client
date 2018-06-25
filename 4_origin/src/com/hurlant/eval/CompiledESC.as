@@ -91,11 +91,10 @@ package com.hurlant.eval
          }
       }
       
-      public function eval(param1:String) : ByteArray
+      public function eval(str:String) : ByteArray
       {
          var array:ByteArray = null;
          var compile:Function = null;
-         var str:String = param1;
          try
          {
             compile = getDefinitionByName("ESC::compile") as Function;
@@ -108,9 +107,9 @@ package com.hurlant.eval
          compile(function():String
          {
             return str;
-         },function(param1:*):void
+         },function(abc:*):void
          {
-            array = param1.getBytes();
+            array = abc.getBytes();
          },"test");
          array.position = 0;
          return array;
@@ -118,8 +117,8 @@ package com.hurlant.eval
       
       private function loadESC() : void
       {
-         var _loc1_:Array = [new debug_abc() as ByteArray,new util_abc() as ByteArray,new bytes_tamarin_abc() as ByteArray,new util_tamarin_abc() as ByteArray,new lex_char_abc() as ByteArray,new lex_scan_abc() as ByteArray,new lex_token_abc() as ByteArray,new ast_abc() as ByteArray,new parse_abc() as ByteArray,new asm_abc() as ByteArray,new abc_abc() as ByteArray,new emit_abc() as ByteArray,new cogen_abc() as ByteArray,new cogen_stmt_abc() as ByteArray,new cogen_expr_abc() as ByteArray,new esc_core_abc() as ByteArray,new eval_support_abc() as ByteArray,new esc_env_abc() as ByteArray];
-         ByteLoader.loadBytes(_loc1_,true);
+         var a:Array = [new debug_abc() as ByteArray,new util_abc() as ByteArray,new bytes_tamarin_abc() as ByteArray,new util_tamarin_abc() as ByteArray,new lex_char_abc() as ByteArray,new lex_scan_abc() as ByteArray,new lex_token_abc() as ByteArray,new ast_abc() as ByteArray,new parse_abc() as ByteArray,new asm_abc() as ByteArray,new abc_abc() as ByteArray,new emit_abc() as ByteArray,new cogen_abc() as ByteArray,new cogen_stmt_abc() as ByteArray,new cogen_expr_abc() as ByteArray,new esc_core_abc() as ByteArray,new eval_support_abc() as ByteArray,new esc_env_abc() as ByteArray];
+         ByteLoader.loadBytes(a,true);
       }
    }
 }

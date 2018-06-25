@@ -38,7 +38,7 @@ package goldmine
          _manager.addEventListener("goldmine_closeview",__onCloseView);
       }
       
-      private function __onShowView(param1:CEvent) : void
+      private function __onShowView(e:CEvent) : void
       {
          if(_goldmineMainFrame)
          {
@@ -49,7 +49,7 @@ package goldmine
          LayerManager.Instance.addToLayer(_goldmineMainFrame,3,false,1);
       }
       
-      private function __onCloseView(param1:CEvent) : void
+      private function __onCloseView(e:CEvent) : void
       {
          if(_goldmineMainFrame)
          {

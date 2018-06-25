@@ -15,51 +15,51 @@ package morn.core.components
       
       public function ViewStack()
       {
-         this._setIndexHandler = new Handler(this.setIndex);
+         _setIndexHandler = new Handler(setIndex);
          super();
       }
       
-      public function setItems(param1:Array) : void
+      public function setItems(views:Array) : void
       {
-         var _loc5_:DisplayObject = null;
+         var i:int = 0;
+         var n:int = 0;
+         var item:* = null;
          removeAllChild();
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         var _loc4_:int = param1.length;
-         while(_loc3_ < _loc4_)
+         var index:int = 0;
+         for(i = 0,n = views.length; i < n; )
          {
-            _loc5_ = param1[_loc3_];
-            if(_loc5_)
+            item = views[i];
+            if(item)
             {
-               _loc5_.name = "item" + _loc2_;
-               addChild(_loc5_);
-               _loc2_++;
+               item.name = "item" + index;
+               addChild(item);
+               index++;
             }
-            _loc3_++;
+            i++;
          }
-         this.initItems();
+         initItems();
       }
       
-      public function addItem(param1:DisplayObject) : void
+      public function addItem(view:DisplayObject) : void
       {
-         param1.name = "item" + this._items.length;
-         addChild(param1);
-         this.initItems();
+         view.name = "item" + _items.length;
+         addChild(view);
+         initItems();
       }
       
       public function initItems() : void
       {
-         var _loc2_:DisplayObject = null;
-         this._items = new Vector.<DisplayObject>();
-         var _loc1_:int = 0;
-         while(_loc1_ < int.MAX_VALUE)
+         var i:int = 0;
+         var item:* = null;
+         _items = new Vector.<DisplayObject>();
+         for(i = 0; i < 2147483647; )
          {
-            _loc2_ = getChildByName("item" + _loc1_);
-            if(_loc2_ != null)
+            item = getChildByName("item" + i);
+            if(item != null)
             {
-               this._items.push(_loc2_);
-               _loc2_.visible = _loc1_ == this._selectedIndex;
-               _loc1_++;
+               _items.push(item);
+               item.visible = i == _selectedIndex;
+               i++;
                continue;
             }
             break;
@@ -68,79 +68,79 @@ package morn.core.components
       
       public function get selectedIndex() : int
       {
-         return this._selectedIndex;
+         return _selectedIndex;
       }
       
-      public function set selectedIndex(param1:int) : void
+      public function set selectedIndex(value:int) : void
       {
-         if(this._selectedIndex != param1)
+         if(_selectedIndex != value)
          {
-            this.setSelect(this._selectedIndex,false);
-            this._selectedIndex = param1;
-            this.setSelect(this._selectedIndex,true);
+            setSelect(_selectedIndex,false);
+            _selectedIndex = value;
+            setSelect(_selectedIndex,true);
          }
       }
       
-      protected function setSelect(param1:int, param2:Boolean) : void
+      protected function setSelect(index:int, selected:Boolean) : void
       {
-         if(this._items && param1 > -1 && param1 < this._items.length)
+         if(_items && index > -1 && index < _items.length)
          {
-            this._items[param1].visible = param2;
+            _items[index].visible = selected;
          }
       }
       
       public function get selection() : DisplayObject
       {
-         return this._selectedIndex > -1 && this._selectedIndex < this._items.length?this._items[this._selectedIndex]:null;
+         return _selectedIndex > -1 && _selectedIndex < _items.length?_items[_selectedIndex]:null;
       }
       
-      public function set selection(param1:DisplayObject) : void
+      public function set selection(value:DisplayObject) : void
       {
-         this.selectedIndex = this._items.indexOf(param1);
+         selectedIndex = _items.indexOf(value);
       }
       
       public function get setIndexHandler() : Handler
       {
-         return this._setIndexHandler;
+         return _setIndexHandler;
       }
       
-      public function set setIndexHandler(param1:Handler) : void
+      public function set setIndexHandler(value:Handler) : void
       {
-         this._setIndexHandler = param1;
+         _setIndexHandler = value;
       }
       
-      protected function setIndex(param1:int) : void
+      protected function setIndex(index:int) : void
       {
-         this.selectedIndex = param1;
+         selectedIndex = index;
       }
       
       public function get items() : Vector.<DisplayObject>
       {
-         return this._items;
+         return _items;
       }
       
-      override public function set dataSource(param1:Object) : void
+      override public function set dataSource(value:Object) : void
       {
-         _dataSource = param1;
-         if(param1 is int || param1 is String)
+         _dataSource = value;
+         if(value is int || value is String)
          {
-            this.selectedIndex = int(param1);
+            selectedIndex = int(value);
          }
          else
          {
-            super.dataSource = param1;
+            .super.dataSource = value;
          }
       }
       
       override public function dispose() : void
       {
          super.dispose();
-         if(this._items)
+         if(_items)
          {
-            this._items.length = 0;
+            _items.length = 0;
          }
-         this._items = null;
-         this._setIndexHandler = null;
+         _items = null;
+         _setIndexHandler = null;
       }
    }
 }

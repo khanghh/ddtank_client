@@ -20,9 +20,9 @@ package wantstrong.data
          return _icoID;
       }
       
-      public function set icoID(param1:int) : void
+      public function set icoID(value:int) : void
       {
-         _icoID = param1;
+         _icoID = value;
       }
       
       public function get title() : String
@@ -30,9 +30,9 @@ package wantstrong.data
          return _title;
       }
       
-      public function set title(param1:String) : void
+      public function set title(value:String) : void
       {
-         _title = param1;
+         _title = value;
       }
       
       public function get id() : int
@@ -40,9 +40,9 @@ package wantstrong.data
          return _id;
       }
       
-      public function set id(param1:int) : void
+      public function set id(value:int) : void
       {
-         _id = param1;
+         _id = value;
       }
    }
 }

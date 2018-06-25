@@ -33,11 +33,11 @@ package campbattle.view.awardsView
       
       private var _zoneIndex:int;
       
-      public function AwardsListItem(param1:int, param2:int)
+      public function AwardsListItem(index:int, zoneIndex:int)
       {
          super();
-         _index = param1;
-         _zoneIndex = param2;
+         _index = index;
+         _zoneIndex = zoneIndex;
          initView();
          addEvent();
       }
@@ -98,19 +98,19 @@ package campbattle.view.awardsView
          _topThreeRink.setFrame(_index + 1);
       }
       
-      private function __onClickLeftBtn(param1:MouseEvent) : void
+      private function __onClickLeftBtn(evt:MouseEvent) : void
       {
          _select = 0;
          _panel.hScrollbar.addEventListener("enterFrame",__enterFrame);
       }
       
-      private function __onClickRightBtn(param1:MouseEvent) : void
+      private function __onClickRightBtn(evt:MouseEvent) : void
       {
          _select = 1;
          _panel.hScrollbar.addEventListener("enterFrame",__enterFrame);
       }
       
-      private function __enterFrame(param1:Event) : void
+      private function __enterFrame(evt:Event) : void
       {
          if(_panel != null && _select == 0)
          {
@@ -138,7 +138,7 @@ package campbattle.view.awardsView
          }
       }
       
-      private function __onMouseUpBtn(param1:MouseEvent) : void
+      private function __onMouseUpBtn(evt:MouseEvent) : void
       {
          _panel.hScrollbar.removeEventListener("enterFrame",__enterFrame);
       }

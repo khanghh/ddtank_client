@@ -5,13 +5,13 @@ package morn.core.components
    import flash.events.KeyboardEvent;
    import flash.events.MouseEvent;
    import flash.text.TextField;
-   import flash.ui.Keyboard;
    import morn.core.ex.ButtonEx;
    import morn.core.ex.LevelIconEx;
    import morn.core.ex.NameTextEx;
    import morn.core.ex.NumberImageEx;
    import morn.core.ex.NumericStepper;
    import morn.core.ex.PageNavigaterEx;
+   import morn.core.ex.ScaleLeftRightImageEx;
    import morn.core.ex.TabButtonEx;
    import morn.core.ex.TabEx;
    import morn.core.ex.TabListEx;
@@ -64,7 +64,8 @@ package morn.core.components
          "TabEx":TabEx,
          "NumericStepper":NumericStepper,
          "TabListEx":TabListEx,
-         "TabButtonEx":TabButtonEx
+         "TabButtonEx":TabButtonEx,
+         "ScaleLeftRightImageEx":ScaleLeftRightImageEx
       };
       
       protected static var viewClassMap:Object = {};
@@ -81,249 +82,253 @@ package morn.core.components
          super();
       }
       
-      public static function createComp(param1:Object, param2:Component = null, param3:View = null) : Component
+      public static function createComp(uiView:Object, comp:Component = null, view:View = null) : Component
       {
-         if(param1 is XML)
+         if(uiView is XML)
          {
-            return createCompByXML(param1 as XML,param2,param3);
+            return createCompByXML(uiView as XML,comp,view);
          }
-         return createCompByJSON(param1,param2,param3);
+         return createCompByJSON(uiView,comp,view);
       }
       
-      protected static function createCompByJSON(param1:Object, param2:Component = null, param3:View = null) : Component
+      protected static function createCompByJSON(json:Object, comp:Component = null, view:View = null) : Component
       {
-         var _loc6_:* = null;
-         var _loc7_:Object = null;
-         var _loc8_:String = null;
-         param2 = param2 || getCompInstanceByJSON(param1);
-         param2.comJSON = param1;
-         var _loc4_:Array = param1.child;
-         if(_loc4_)
+         var value:* = null;
+         comp = comp || getCompInstanceByJSON(json);
+         comp.comJSON = json;
+         var child:Array = json.child;
+         if(child)
          {
-            for each(_loc7_ in _loc4_)
+            var _loc10_:int = 0;
+            var _loc9_:* = child;
+            for each(var note in child)
             {
-               if(param2 is IRender && _loc7_.props.name == "render")
+               if(comp is IRender && note.props.name == "render")
                {
-                  IRender(param2).itemRender = _loc7_;
+                  IRender(comp).itemRender = note;
                }
                else
                {
-                  param2.addChild(createCompByJSON(_loc7_,null,param3));
+                  comp.addChild(createCompByJSON(note,null,view));
                }
             }
          }
-         var _loc5_:Object = param1.props;
-         for(_loc6_ in _loc5_)
+         var props:Object = json.props;
+         var _loc12_:int = 0;
+         var _loc11_:* = props;
+         for(var prop in props)
          {
-            _loc8_ = _loc5_[_loc6_];
-            setCompValue(param2,_loc6_,_loc8_,param3);
+            value = props[prop];
+            setCompValue(comp,prop,value,view);
          }
-         if(param2 is IItem)
+         if(comp is IItem)
          {
-            IItem(param2).initItems();
+            IItem(comp).initItems();
          }
-         return param2;
+         return comp;
       }
       
-      protected static function createCompByXML(param1:XML, param2:Component = null, param3:View = null) : Component
+      protected static function createCompByXML(xml:XML, comp:Component = null, view:View = null) : Component
       {
-         var _loc8_:XML = null;
-         var _loc9_:XML = null;
-         var _loc10_:String = null;
-         var _loc11_:String = null;
-         param2 = param2 || getCompInstanceByXML(param1);
-         if(!param2)
+         var i:int = 0;
+         var m:int = 0;
+         var node:* = null;
+         var prop:* = null;
+         var value:* = null;
+         comp = comp || getCompInstanceByXML(xml);
+         if(!comp)
          {
             return null;
          }
-         param2.comXml = param1;
-         var _loc4_:XMLList = param1.children();
-         var _loc5_:int = 0;
-         var _loc6_:int = _loc4_.length();
-         while(_loc5_ < _loc6_)
+         comp.comXml = xml;
+         var list:XMLList = xml.children();
+         for(i = 0,m = list.length(); i < m; )
          {
-            _loc9_ = _loc4_[_loc5_];
-            if(param2 is IRender && _loc9_.@name == "render")
+            node = list[i];
+            if(comp is IRender && node.@name == "render")
             {
-               IRender(param2).itemRender = _loc9_;
+               IRender(comp).itemRender = node;
             }
             else
             {
-               param2.addChild(createComp(_loc9_,null,param3));
+               comp.addChild(createComp(node,null,view));
             }
-            _loc5_++;
+            i++;
          }
-         var _loc7_:XMLList = param1.attributes();
-         for each(_loc8_ in _loc7_)
+         var list2:XMLList = xml.attributes();
+         var _loc13_:int = 0;
+         var _loc12_:* = list2;
+         for each(var attrs in list2)
          {
-            _loc10_ = _loc8_.name().toString();
-            _loc11_ = _loc8_.toString();
-            setCompValue(param2,_loc10_,_loc11_,param3);
+            prop = attrs.name().toString();
+            value = attrs.toString();
+            setCompValue(comp,prop,value,view);
          }
-         if(param2 is IItem)
+         if(comp is IItem)
          {
-            IItem(param2).initItems();
+            IItem(comp).initItems();
          }
-         return param2;
+         return comp;
       }
       
-      private static function setCompValue(param1:Component, param2:String, param3:String, param4:View = null) : void
+      private static function setCompValue(comp:Component, prop:String, value:String, view:View = null) : void
       {
-         if(param1.hasOwnProperty(param2))
+         if(comp.hasOwnProperty(prop))
          {
-            param1[param2] = param3 == "true"?true:param3 == "false"?false:param3;
+            comp[prop] = value == "true"?true:value == "false"?false:value;
          }
-         else if(param2 == "var" && param4 && param4.hasOwnProperty(param3))
+         else if(prop == "var" && view && view.hasOwnProperty(value))
          {
-            param4[param3] = param1;
+            view[value] = comp;
+            comp.stylename = value;
          }
       }
       
-      protected static function getCompInstanceByJSON(param1:Object) : Component
+      protected static function getCompInstanceByJSON(json:Object) : Component
       {
-         var _loc2_:String = !!param1.props?param1.props.runtime:"";
-         var _loc3_:Class = !!Boolean(_loc2_)?viewClassMap[_loc2_]:uiClassMap[param1.type];
-         return !!_loc3_?new _loc3_():null;
+         var runtime:String = !!json.props?json.props.runtime:"";
+         var compClass:Class = !!runtime?viewClassMap[runtime]:uiClassMap[json.type];
+         return !!compClass?new compClass():null;
       }
       
-      protected static function getCompInstanceByXML(param1:XML) : Component
+      protected static function getCompInstanceByXML(xml:XML) : Component
       {
-         var _loc2_:String = param1.@runtime;
-         var _loc3_:Class = !!Boolean(_loc2_)?viewClassMap[_loc2_]:uiClassMap[param1.name()];
-         return !!_loc3_?new _loc3_():null;
+         var runtime:String = xml.@runtime;
+         var compClass:Class = !!runtime?viewClassMap[runtime]:uiClassMap[xml.name()];
+         return !!compClass?new compClass():null;
       }
       
-      public static function registerComponent(param1:String, param2:Class) : void
+      public static function registerComponent(key:String, compClass:Class) : void
       {
-         uiClassMap[param1] = param2;
+         uiClassMap[key] = compClass;
       }
       
-      public static function registerViewRuntime(param1:String, param2:Class) : void
+      public static function registerViewRuntime(key:String, compClass:Class) : void
       {
-         viewClassMap[param1] = param2;
+         viewClassMap[key] = compClass;
       }
       
-      protected function createView(param1:Object) : void
+      protected function createView(uiView:Object) : void
       {
-         createComp(param1,this,this);
+         createComp(uiView,this,this);
       }
       
-      protected function loadUI(param1:String) : void
+      protected function loadUI(path:String) : void
       {
-         var _loc2_:Object = uiMap[param1];
-         if(_loc2_)
+         var uiView:Object = uiMap[path];
+         if(uiView)
          {
-            this.createView(_loc2_);
+            createView(uiView);
          }
       }
       
-      public function reCreate(param1:Component = null) : void
+      public function reCreate(comp:Component = null) : void
       {
-         param1 = param1 || this;
-         var _loc2_:Object = param1.dataSource;
-         if(param1 is Box)
+         comp = comp || this;
+         var dataSource:Object = comp.dataSource;
+         if(comp is Box)
          {
-            Box(param1).removeAllChild();
+            Box(comp).removeAllChild();
          }
-         createComp(param1.comJSON || param1.comXml,param1,this);
-         param1.dataSource = _loc2_;
+         createComp(comp.comJSON || comp.comXml,comp,this);
+         comp.dataSource = dataSource;
       }
       
       public function get enableEscKey() : Boolean
       {
-         return this._enableEscKey;
+         return _enableEscKey;
       }
       
-      public function set enableEscKey(param1:Boolean) : void
+      public function set enableEscKey(value:Boolean) : void
       {
-         this._enableEscKey = param1;
-         if(param1)
+         _enableEscKey = value;
+         if(value)
          {
-            this.addKeyEvent();
+            addKeyEvent();
          }
       }
       
       public function get escKeyHandler() : Handler
       {
-         return this._escKeyHandler;
+         return _escKeyHandler;
       }
       
-      public function set escKeyHandler(param1:Handler) : void
+      public function set escKeyHandler(value:Handler) : void
       {
-         this._escKeyHandler = param1;
-         if(param1)
+         _escKeyHandler = value;
+         if(value)
          {
-            this.addKeyEvent();
+            addKeyEvent();
          }
       }
       
       public function get enterKeyHandler() : Handler
       {
-         return this._enterKeyHandler;
+         return _enterKeyHandler;
       }
       
-      public function set enterKeyHandler(param1:Handler) : void
+      public function set enterKeyHandler(value:Handler) : void
       {
-         this._enterKeyHandler = param1;
-         if(param1)
+         _enterKeyHandler = value;
+         if(value)
          {
-            this.addKeyEvent();
+            addKeyEvent();
          }
       }
       
       override public function dispose() : void
       {
+         var i:int = 0;
          super.dispose();
-         var _loc1_:int = numChildren;
-         var _loc2_:int = 0;
-         while(_loc2_ < _loc1_)
+         var len:int = numChildren;
+         for(i = 0; i < len; )
          {
             ObjectUtils.disposeObject(getChildAt(0));
-            _loc2_++;
+            i++;
          }
-         this.removeEventListener(KeyboardEvent.KEY_UP,this.keyHandler);
-         StageReferance.stage.removeEventListener(KeyboardEvent.KEY_UP,this.keyHandler);
-         this.removeEventListener(MouseEvent.MOUSE_DOWN,this.onClick);
+         this.removeEventListener("keyUp",keyHandler);
+         StageReferance.stage.removeEventListener("keyUp",keyHandler);
+         this.removeEventListener("mouseDown",onClick);
       }
       
       private function addKeyEvent() : void
       {
-         if(this.hasEventListener(KeyboardEvent.KEY_UP))
+         if(this.hasEventListener("keyUp"))
          {
             return;
          }
-         this.addEventListener(KeyboardEvent.KEY_UP,this.keyHandler);
-         StageReferance.stage.addEventListener(KeyboardEvent.KEY_UP,this.keyHandler);
-         this.addEventListener(MouseEvent.MOUSE_DOWN,this.onClick);
+         this.addEventListener("keyUp",keyHandler);
+         StageReferance.stage.addEventListener("keyUp",keyHandler);
+         this.addEventListener("mouseDown",onClick);
       }
       
-      private function onClick(param1:MouseEvent) : void
+      private function onClick(e:MouseEvent) : void
       {
-         if(param1.target is TextField)
+         if(e.target is TextField)
          {
             return;
          }
          StageReferance.stage.focus = this;
       }
       
-      private function keyHandler(param1:KeyboardEvent) : void
+      private function keyHandler(e:KeyboardEvent) : void
       {
-         if(param1.keyCode == Keyboard.ESCAPE && this._enableEscKey)
+         if(e.keyCode == 27 && _enableEscKey)
          {
-            param1.stopImmediatePropagation();
-            if(this._escKeyHandler)
+            e.stopImmediatePropagation();
+            if(_escKeyHandler)
             {
-               this._escKeyHandler.execute();
+               _escKeyHandler.execute();
             }
             else
             {
                ObjectUtils.disposeObject(this);
             }
          }
-         if(param1.keyCode == Keyboard.ENTER && this._enterKeyHandler)
+         if(e.keyCode == 13 && _enterKeyHandler)
          {
-            param1.stopImmediatePropagation();
-            this._enterKeyHandler.execute();
+            e.stopImmediatePropagation();
+            _enterKeyHandler.execute();
          }
       }
    }

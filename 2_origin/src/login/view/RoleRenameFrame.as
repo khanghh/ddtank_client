@@ -115,7 +115,7 @@ package login.view
          }
       }
       
-      private function __onTextChange(param1:Event) : void
+      private function __onTextChange(evt:Event) : void
       {
          state = "input";
          if(_nicknameField.text == "" || !_nicknameField.text)
@@ -133,7 +133,7 @@ package login.view
          }
       }
       
-      protected function __onModifyClick(param1:MouseEvent) : void
+      protected function __onModifyClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_modifyButton.enable)
@@ -142,93 +142,92 @@ package login.view
             _modifyButton.filters = [_disenabelFilter];
          }
          _newName = _nicknameField.text;
-         var _loc2_:BaseLoader = createCheckLoader(_checkPath,checkCallBack);
-         LoadResourceManager.Instance.startLoad(_loc2_);
+         var loader:BaseLoader = createCheckLoader(_checkPath,checkCallBack);
+         LoadResourceManager.Instance.startLoad(loader);
       }
       
-      protected function createCheckLoader(param1:String, param2:Function) : BaseLoader
+      protected function createCheckLoader(path:String, callBack:Function) : BaseLoader
       {
-         var _loc4_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         _loc4_["id"] = PlayerManager.Instance.Self.ID;
-         _loc4_["NickName"] = _newName;
-         var _loc3_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath(param1),6,_loc4_);
-         _loc3_.analyzer = new ReworkNameAnalyzer(param2);
-         LoadResourceManager.Instance.startLoad(_loc3_);
-         return _loc3_;
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         args["id"] = PlayerManager.Instance.Self.ID;
+         args["NickName"] = _newName;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath(path),6,args);
+         loader.analyzer = new ReworkNameAnalyzer(callBack);
+         LoadResourceManager.Instance.startLoad(loader);
+         return loader;
       }
       
-      protected function createModifyLoader(param1:String, param2:URLVariables, param3:String, param4:Function) : RequestLoader
+      protected function createModifyLoader(path:String, variables:URLVariables, tempPassword:String, callBack:Function) : RequestLoader
       {
-         var _loc5_:RequestLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath(param1),6,param2);
-         var _loc6_:LoginRenameAnalyzer = new LoginRenameAnalyzer(param4);
-         _loc6_.tempPassword = param3;
-         _loc5_.analyzer = _loc6_;
-         return _loc5_;
+         var loader:RequestLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath(path),6,variables);
+         var analyzer:LoginRenameAnalyzer = new LoginRenameAnalyzer(callBack);
+         analyzer.tempPassword = tempPassword;
+         loader.analyzer = analyzer;
+         return loader;
       }
       
-      protected function checkCallBack(param1:ReworkNameAnalyzer) : void
+      protected function checkCallBack(analyzer:ReworkNameAnalyzer) : void
       {
-         var _loc2_:XML = param1.result;
-         if(_loc2_.@value == "true")
+         var result:XML = analyzer.result;
+         if(result.@value == "true")
          {
             state = "aviable";
-            _resultField.text = _loc2_.@message;
+            _resultField.text = result.@message;
             doRename();
          }
          else
          {
-            _resultField.text = _loc2_.@message;
+            _resultField.text = result.@message;
             state = "unaviable";
          }
       }
       
-      protected function renameCallBack(param1:LoginRenameAnalyzer) : void
+      protected function renameCallBack(analyzer:LoginRenameAnalyzer) : void
       {
-         var _loc2_:XML = param1.result;
-         if(_loc2_.@value == "true")
+         var result:XML = analyzer.result;
+         if(result.@value == "true")
          {
             state = "aviable";
             renameComplete();
          }
          else
          {
-            _resultField.text = _loc2_.@message;
+            _resultField.text = result.@message;
             state = "unaviable";
          }
       }
       
       protected function doRename() : void
       {
-         var _loc8_:int = 0;
+         var i:int = 0;
          if(_modifyButton.enable)
          {
             _modifyButton.enable = false;
             _modifyButton.filters = [_disenabelFilter];
          }
-         var _loc6_:AccountInfo = PlayerManager.Instance.Account;
-         var _loc5_:Date = new Date();
-         var _loc4_:ByteArray = new ByteArray();
-         _loc4_.writeShort(_loc5_.fullYearUTC);
-         _loc4_.writeByte(_loc5_.monthUTC + 1);
-         _loc4_.writeByte(_loc5_.dateUTC);
-         _loc4_.writeByte(_loc5_.hoursUTC);
-         _loc4_.writeByte(_loc5_.minutesUTC);
-         _loc4_.writeByte(_loc5_.secondsUTC);
-         var _loc3_:String = "";
-         _loc8_ = 0;
-         while(_loc8_ < 6)
+         var acc:AccountInfo = PlayerManager.Instance.Account;
+         var date:Date = new Date();
+         var temp:ByteArray = new ByteArray();
+         temp.writeShort(date.fullYearUTC);
+         temp.writeByte(date.monthUTC + 1);
+         temp.writeByte(date.dateUTC);
+         temp.writeByte(date.hoursUTC);
+         temp.writeByte(date.minutesUTC);
+         temp.writeByte(date.secondsUTC);
+         var tempPassword:String = "";
+         for(i = 0; i < 6; )
          {
-            _loc3_ = _loc3_ + w.charAt(int(Math.random() * 26));
-            _loc8_++;
+            tempPassword = tempPassword + w.charAt(int(Math.random() * 26));
+            i++;
          }
-         _loc4_.writeUTFBytes(_loc6_.Account + "," + _loc6_.Password + "," + _loc3_ + "," + _roleInfo.NickName + "," + _newName);
-         var _loc2_:String = CrytoUtils.rsaEncry4(_loc6_.Key,_loc4_);
-         var _loc7_:URLVariables = RequestVairableCreater.creatWidthKey(false);
-         _loc7_["p"] = _loc2_;
-         _loc7_["v"] = 5498628;
-         _loc7_["site"] = PathManager.solveConfigSite();
-         var _loc1_:RequestLoader = createModifyLoader(_path,_loc7_,_loc3_,renameCallBack);
-         LoadResourceManager.Instance.startLoad(_loc1_);
+         temp.writeUTFBytes(acc.Account + "," + acc.Password + "," + tempPassword + "," + _roleInfo.NickName + "," + _newName);
+         var p:String = CrytoUtils.rsaEncry4(acc.Key,temp);
+         var variables:URLVariables = RequestVairableCreater.creatWidthKey(false);
+         variables["p"] = p;
+         variables["v"] = 5498628;
+         variables["site"] = PathManager.solveConfigSite();
+         var loader:RequestLoader = createModifyLoader(_path,variables,tempPassword,renameCallBack);
+         LoadResourceManager.Instance.startLoad(loader);
       }
       
       protected function renameComplete() : void
@@ -247,9 +246,9 @@ package login.view
          return _roleInfo;
       }
       
-      public function set roleInfo(param1:Role) : void
+      public function set roleInfo(val:Role) : void
       {
-         _roleInfo = param1;
+         _roleInfo = val;
       }
       
       public function get state() : String
@@ -257,19 +256,19 @@ package login.view
          return _state;
       }
       
-      public function set state(param1:String) : void
+      public function set state(val:String) : void
       {
-         var _loc2_:* = null;
-         if(_state != param1)
+         var tf:* = null;
+         if(_state != val)
          {
-            _state = param1;
+            _state = val;
             if(_state == "aviable")
             {
-               _loc2_ = ComponentFactory.Instance.model.getSet("login.Rename.ResultAvailableTF");
-               _resultField.defaultTextFormat = _loc2_;
+               tf = ComponentFactory.Instance.model.getSet("login.Rename.ResultAvailableTF");
+               _resultField.defaultTextFormat = tf;
                if(_resultField.length > 0)
                {
-                  _resultField.setTextFormat(_loc2_,0,_resultField.length);
+                  _resultField.setTextFormat(tf,0,_resultField.length);
                }
             }
             else if(_state == "unaviable")
@@ -279,21 +278,21 @@ package login.view
                   _modifyButton.enable = false;
                   _modifyButton.filters = [_disenabelFilter];
                }
-               _loc2_ = ComponentFactory.Instance.model.getSet("login.Rename.ResultUnAvailableTF");
-               _resultField.defaultTextFormat = _loc2_;
+               tf = ComponentFactory.Instance.model.getSet("login.Rename.ResultUnAvailableTF");
+               _resultField.defaultTextFormat = tf;
                if(_resultField.length > 0)
                {
-                  _resultField.setTextFormat(_loc2_,0,_resultField.length);
+                  _resultField.setTextFormat(tf,0,_resultField.length);
                }
             }
             else
             {
                _resultField.text = _resultString;
-               _loc2_ = ComponentFactory.Instance.model.getSet("login.Rename.ResultDefaultTF");
-               _resultField.defaultTextFormat = _loc2_;
+               tf = ComponentFactory.Instance.model.getSet("login.Rename.ResultDefaultTF");
+               _resultField.defaultTextFormat = tf;
                if(_resultField.length > 0)
                {
-                  _resultField.setTextFormat(_loc2_,0,_resultField.length);
+                  _resultField.setTextFormat(tf,0,_resultField.length);
                }
             }
          }

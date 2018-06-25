@@ -86,7 +86,7 @@ package farm.viewx
          removeEventListener("click",__itemClick);
       }
       
-      private function __itemClick(param1:MouseEvent) : void
+      private function __itemClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(StateManager.currentStateType == "farm" && FarmModelController.instance.model.currentFarmerId == PlayerManager.Instance.Self.ID)
@@ -96,12 +96,12 @@ package farm.viewx
          FarmModelController.instance.goFarm(_info.id,_info.playerinfo.NickName);
       }
       
-      private function __itemOver(param1:MouseEvent) : void
+      private function __itemOver(event:MouseEvent) : void
       {
          _itemBG.visible = true;
       }
       
-      private function __itemOut(param1:MouseEvent) : void
+      private function __itemOut(event:MouseEvent) : void
       {
          if(!isFriendSelected())
          {
@@ -114,9 +114,9 @@ package farm.viewx
          return _info;
       }
       
-      public function setCellValue(param1:*) : void
+      public function setCellValue(value:*) : void
       {
-         _info = param1;
+         _info = value;
          update();
       }
       
@@ -182,7 +182,7 @@ package farm.viewx
          return false;
       }
       
-      public function setListCellStatus(param1:List, param2:Boolean, param3:int) : void
+      public function setListCellStatus(list:List, isSelected:Boolean, index:int) : void
       {
       }
       

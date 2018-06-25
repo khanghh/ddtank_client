@@ -29,15 +29,15 @@ package ddt.view.chat
          super();
       }
       
-      private function __itemClickHandler(param1:MouseEvent) : void
+      private function __itemClickHandler(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         dispatchEvent(new ChatEvent("inputChannelChanged",_currentChannel[(param1.target as BaseButton).backStyle]));
+         dispatchEvent(new ChatEvent("inputChannelChanged",_currentChannel[(e.target as BaseButton).backStyle]));
       }
       
       override protected function init() : void
       {
-         var _loc1_:* = 0;
+         var i:* = 0;
          super.init();
          _bg = ComponentFactory.Instance.creatBitmap("asset.chat.ChannelPannelBg");
          _vbox = ComponentFactory.Instance.creatComponentByStylename("chat.channelPanel.vbox");
@@ -59,13 +59,12 @@ package ddt.view.chat
          _channelBtns.push(ComponentFactory.Instance.creat("chat.ChannelState_CurrentBtn"));
          addChild(_bg);
          addChild(_vbox);
-         _loc1_ = uint(0);
-         while(_loc1_ < _channelBtns.length)
+         for(i = uint(0); i < _channelBtns.length; )
          {
-            _channelBtns[_loc1_].addEventListener("click",__itemClickHandler);
-            _currentChannel[_channelBtns[_loc1_].backStyle] = chanelMap[7 - _channelBtns.length + _loc1_];
-            _vbox.addChild(_channelBtns[_loc1_]);
-            _loc1_++;
+            _channelBtns[i].addEventListener("click",__itemClickHandler);
+            _currentChannel[_channelBtns[i].backStyle] = chanelMap[7 - _channelBtns.length + i];
+            _vbox.addChild(_channelBtns[i]);
+            i++;
          }
          _bg.height = 18 * _channelBtns.length + 10;
       }

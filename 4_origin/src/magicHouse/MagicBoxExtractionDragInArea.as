@@ -19,10 +19,10 @@ package magicHouse
       
       private var _cell:MagicBoxExtractionCell;
       
-      public function MagicBoxExtractionDragInArea(param1:MagicBoxExtractionCell)
+      public function MagicBoxExtractionDragInArea($cell:MagicBoxExtractionCell)
       {
          super();
-         _cell = param1;
+         _cell = $cell;
          init();
       }
       
@@ -33,25 +33,25 @@ package magicHouse
          graphics.endFill();
       }
       
-      public function dragDrop(param1:DragEffect) : void
+      public function dragDrop(effect:DragEffect) : void
       {
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:InventoryItemInfo = param1.data as InventoryItemInfo;
-         if(_loc2_.BagType == 12)
+         var info:InventoryItemInfo = effect.data as InventoryItemInfo;
+         if(info.BagType == 12)
          {
-            param1.action = "none";
+            effect.action = "none";
             DragManager.acceptDrag(this);
             return;
          }
-         if(_loc2_ && param1.action != "split")
+         if(info && effect.action != "split")
          {
-            param1.action = "none";
+            effect.action = "none";
          }
-         _cell.dragDrop(param1);
+         _cell.dragDrop(effect);
       }
    }
 }

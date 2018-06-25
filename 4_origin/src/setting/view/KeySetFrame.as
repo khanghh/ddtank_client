@@ -57,9 +57,9 @@ package setting.view
          _tempSets = new Dictionary();
          var _loc3_:int = 0;
          var _loc2_:* = SharedManager.Instance.GameKeySets;
-         for(var _loc1_ in SharedManager.Instance.GameKeySets)
+         for(var strpop in SharedManager.Instance.GameKeySets)
          {
-            _tempSets[_loc1_] = SharedManager.Instance.GameKeySets[_loc1_];
+            _tempSets[strpop] = SharedManager.Instance.GameKeySets[strpop];
          }
          _submit = ComponentFactory.Instance.creatComponentByStylename("setting.KeySet.SubmitButton");
          _submit.text = LanguageMgr.GetTranslation("tank.room.RoomIIView2.affirm");
@@ -94,20 +94,20 @@ package setting.view
          _cancel.removeEventListener("click",__onCancel);
       }
       
-      private function __onSubmit(param1:MouseEvent) : void
+      private function __onSubmit(evt:MouseEvent) : void
       {
          dispatchEvent(new FrameEvent(2));
       }
       
-      private function __onCancel(param1:MouseEvent) : void
+      private function __onCancel(evt:MouseEvent) : void
       {
          dispatchEvent(new FrameEvent(1));
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
@@ -124,25 +124,25 @@ package setting.view
       {
          var _loc3_:int = 0;
          var _loc2_:* = _tempSets;
-         for(var _loc1_ in _tempSets)
+         for(var strpop in _tempSets)
          {
-            SharedManager.Instance.GameKeySets[_loc1_] = _tempSets[_loc1_];
+            SharedManager.Instance.GameKeySets[strpop] = _tempSets[strpop];
          }
          SharedManager.Instance.save();
       }
       
-      private function onItemClick(param1:ItemEvent) : void
+      private function onItemClick(e:ItemEvent) : void
       {
-         param1.stopImmediatePropagation();
+         e.stopImmediatePropagation();
          SoundManager.instance.play("008");
-         _currentSet = param1.currentTarget as KeySetItem;
+         _currentSet = e.currentTarget as KeySetItem;
          if(_defaultSetPalel.parent)
          {
             removeChild(_defaultSetPalel);
          }
          _defaultSetPalel.visible = true;
          _currentSet.glow = true;
-         _defaultSetPalel.x = param1.currentTarget.x + 2;
+         _defaultSetPalel.x = e.currentTarget.x + 2;
          _defaultSetPalel.y = _list.y - _defaultSetPalel.height;
          addChild(_defaultSetPalel);
       }
@@ -152,14 +152,14 @@ package setting.view
          _tempSets = new Dictionary();
          var _loc3_:int = 0;
          var _loc2_:* = SharedManager.Instance.GameKeySets;
-         for(var _loc1_ in SharedManager.Instance.GameKeySets)
+         for(var strpop in SharedManager.Instance.GameKeySets)
          {
-            _tempSets[_loc1_] = SharedManager.Instance.GameKeySets[_loc1_];
+            _tempSets[strpop] = SharedManager.Instance.GameKeySets[strpop];
          }
          clearItemList();
       }
       
-      private function __ondefaultSetRemove(param1:Event) : void
+      private function __ondefaultSetRemove(e:Event) : void
       {
          if(_currentSet)
          {
@@ -169,24 +169,24 @@ package setting.view
       
       private function creatCell() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var temp:* = null;
+         var icon:* = null;
          clearItemList();
          var _loc5_:int = 0;
          var _loc4_:* = _tempSets;
-         for(var _loc3_ in _tempSets)
+         for(var i in _tempSets)
          {
-            _loc2_ = ItemManager.Instance.getTemplateById(_tempSets[_loc3_]);
-            if(_loc3_ == "9")
+            temp = ItemManager.Instance.getTemplateById(_tempSets[i]);
+            if(i == "9")
             {
                return;
             }
-            if(_loc2_)
+            if(temp)
             {
-               _loc1_ = new KeySetItem(int(_loc3_),int(_loc3_),_tempSets[_loc3_],PropItemView.createView(_loc2_.Pic,40,40));
-               _loc1_.addEventListener("itemClick",onItemClick);
-               _loc1_.setClick(true,false,true);
-               _list.addChild(_loc1_);
+               icon = new KeySetItem(int(i),int(i),_tempSets[i],PropItemView.createView(temp.Pic,40,40));
+               icon.addEventListener("itemClick",onItemClick);
+               icon.setClick(true,false,true);
+               _list.addChild(icon);
             }
          }
       }
@@ -197,23 +197,22 @@ package setting.view
          StageReferance.stage.focus = this;
       }
       
-      private function clearItemList(param1:Boolean = false) : void
+      private function clearItemList(delReference:Boolean = false) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var icon:* = null;
          if(_list)
          {
-            _loc3_ = 0;
-            while(_loc3_ < _list.numChildren)
+            for(i = 0; i < _list.numChildren; )
             {
-               _loc2_ = KeySetItem(_list.getChildAt(_loc3_));
-               _loc2_.removeEventListener("itemClick",onItemClick);
-               _loc2_.dispose();
-               _loc2_ = null;
-               _loc3_++;
+               icon = KeySetItem(_list.getChildAt(i));
+               icon.removeEventListener("itemClick",onItemClick);
+               icon.dispose();
+               icon = null;
+               i++;
             }
             ObjectUtils.disposeAllChildren(_list);
-            if(param1)
+            if(delReference)
             {
                if(_list.parent)
                {
@@ -234,14 +233,14 @@ package setting.view
          }
       }
       
-      private function onItemSelected(param1:Event) : void
+      private function onItemSelected(e:Event) : void
       {
          if(stage)
          {
             stage.focus = this;
          }
-         var _loc2_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(_defaultSetPalel.selectedItemID);
-         _currentSet.setItem(PropItemView.createView(_loc2_.Pic,40,40),false);
+         var temp:ItemTemplateInfo = ItemManager.Instance.getTemplateById(_defaultSetPalel.selectedItemID);
+         _currentSet.setItem(PropItemView.createView(temp.Pic,40,40),false);
          _currentSet.propID = _defaultSetPalel.selectedItemID;
          _tempSets[_currentSet.index] = _defaultSetPalel.selectedItemID;
       }
@@ -275,9 +274,9 @@ package setting.view
          super.dispose();
       }
       
-      public function set imageRectString(param1:String) : void
+      public function set imageRectString(val:String) : void
       {
-         _imageRectString = param1;
+         _imageRectString = val;
          if(_backgound)
          {
             MutipleImage(_backgound).imageRectString = _imageRectString;

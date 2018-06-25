@@ -19,9 +19,9 @@ package defendisland.model
       
       public var endTime:String;
       
-      public function DefendislandModel(param1:IEventDispatcher = null)
+      public function DefendislandModel(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
    }
 }

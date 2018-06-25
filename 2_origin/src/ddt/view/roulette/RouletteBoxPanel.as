@@ -34,19 +34,18 @@ package ddt.view.roulette
       
       private function initII() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var info:* = null;
          _templateIDList = [];
-         _loc2_ = 0;
-         while(_loc2_ < 18)
+         for(i = 0; i < 18; )
          {
-            _loc1_ = new BoxGoodsTempInfo();
-            _loc1_.TemplateId = 11013;
-            _loc1_.IsBind = true;
-            _loc1_.ItemCount = 2;
-            _loc1_.ItemValid = 7;
-            _templateIDList.push(_loc1_);
-            _loc2_++;
+            info = new BoxGoodsTempInfo();
+            info.TemplateId = 11013;
+            info.IsBind = true;
+            info.ItemCount = 2;
+            info.ItemValid = 7;
+            _templateIDList.push(info);
+            i++;
          }
          _keyCount = 10;
          escEnable = true;
@@ -61,11 +60,11 @@ package ddt.view.roulette
          SharedManager.Instance.changed();
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(evt:FrameEvent) : void
       {
-         var _loc2_:* = null;
+         var alert:* = null;
          SoundManager.instance.play("008");
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             if(!_view.isCanClose && _view.selectNumber < 8)
             {
@@ -73,31 +72,31 @@ package ddt.view.roulette
             }
             else
             {
-               _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.rouletteview.close"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
-               _loc2_.addEventListener("response",_responseII);
+               alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.rouletteview.close"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
+               alert.addEventListener("response",_responseII);
             }
          }
       }
       
-      private function _responseII(param1:FrameEvent) : void
+      private function _responseII(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         param1.currentTarget.removeEventListener("response",_responseII);
-         ObjectUtils.disposeObject(param1.target);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         evt.currentTarget.removeEventListener("response",_responseII);
+         ObjectUtils.disposeObject(evt.target);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             dispose();
          }
       }
       
-      public function set templateIDList(param1:Array) : void
+      public function set templateIDList(arr:Array) : void
       {
-         _templateIDList = param1;
+         _templateIDList = arr;
       }
       
-      public function set keyCount(param1:int) : void
+      public function set keyCount(value:int) : void
       {
-         _keyCount = param1;
+         _keyCount = value;
       }
       
       public function show() : void

@@ -16,9 +16,9 @@ package gameCommon.view.smallMap
          _color = 16777215;
       }
       
-      override public function onFrame(param1:int) : void
+      override public function onFrame(frameRate:int) : void
       {
-         _elapsed = _elapsed + param1;
+         _elapsed = _elapsed + frameRate;
          if(_elapsed >= _movieTime * 1000)
          {
             _elapsed = 0;
@@ -28,12 +28,12 @@ package gameCommon.view.smallMap
       
       override protected function draw() : void
       {
-         var _loc1_:Graphics = graphics;
-         _loc1_.clear();
-         var _loc2_:Number = _elapsed / (_movieTime * 1000);
-         _loc1_.beginFill(_color,_loc2_);
-         _loc1_.drawCircle(0,0,_radius);
-         _loc1_.endFill();
+         var pen:Graphics = graphics;
+         pen.clear();
+         var alpha:Number = _elapsed / (_movieTime * 1000);
+         pen.beginFill(_color,alpha);
+         pen.drawCircle(0,0,_radius);
+         pen.endFill();
       }
    }
 }

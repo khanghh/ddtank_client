@@ -43,11 +43,11 @@ package shop
       
       public var model:PlayerInfo;
       
-      public function ShopEvent(param1:String, param2:Object = null, param3:PlayerInfo = null)
+      public function ShopEvent(type:String, obj:Object = null, model:PlayerInfo = null)
       {
-         this.param = param2;
-         this.model = param3;
-         super(param1,bubbles,cancelable);
+         this.param = obj;
+         this.model = model;
+         super(type,bubbles,cancelable);
       }
    }
 }

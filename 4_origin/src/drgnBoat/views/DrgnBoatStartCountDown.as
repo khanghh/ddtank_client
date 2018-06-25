@@ -22,12 +22,12 @@ package drgnBoat.views
       
       private var _funcParams:Array;
       
-      public function DrgnBoatStartCountDown(param1:Function, param2:Array)
+      public function DrgnBoatStartCountDown(callFunction:Function, callParams:Array)
       {
          super();
          PositionUtils.setPos(this,"drgnBoat.gameStart.countDownViewPos");
-         _func = param1;
-         _funcParams = param2;
+         _func = callFunction;
+         _funcParams = callParams;
          _mc = ComponentFactory.Instance.creat("drgnBoat.gameStartCountDown");
          addChild(_mc);
          _timer = new Timer(1000);
@@ -37,7 +37,7 @@ package drgnBoat.views
          refreshMc();
       }
       
-      private function timerHandler(param1:TimerEvent) : void
+      private function timerHandler(event:TimerEvent) : void
       {
          _count = Number(_count) + 1;
          if(_count > 10)

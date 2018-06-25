@@ -1,13 +1,2 @@
-package team.model
-{
-   public class TeamRankListData
-   {
-       
-      
-      public var list:Array;
-      
-      public var lastUpdateTime:String;
-      
-      public function TeamRankListData(){super();}
-   }
-}
+package team.model{   public class TeamRankListData   {                   public var list:Array;            public var lastUpdateTime:String;            public function TeamRankListData() { super(); }
+   }}

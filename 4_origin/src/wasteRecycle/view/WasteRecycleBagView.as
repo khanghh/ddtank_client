@@ -80,48 +80,48 @@ package wasteRecycle.view
          addChild(_proplist);
       }
       
-      override protected function showDressBagView(param1:PlayerDressEvent) : void
+      override protected function showDressBagView(event:PlayerDressEvent) : void
       {
-         super.showDressBagView(param1);
+         super.showDressBagView(event);
       }
       
       override protected function adjustEvent() : void
       {
       }
       
-      override protected function __cellOpen(param1:Event) : void
+      override protected function __cellOpen(evt:Event) : void
       {
       }
       
-      override protected function __onBagUpdatePROPBAG(param1:BagEvent) : void
+      override protected function __onBagUpdatePROPBAG(evt:BagEvent) : void
       {
       }
       
-      override protected function __cellClick(param1:CellEvent) : void
+      override protected function __cellClick(evt:CellEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
+         var cell:* = null;
+         var info:* = null;
          if(!_sellBtn.isActive)
          {
-            param1.stopImmediatePropagation();
-            _loc2_ = param1.data as BaseCell;
-            if(_loc2_)
+            evt.stopImmediatePropagation();
+            cell = evt.data as BaseCell;
+            if(cell)
             {
-               _loc3_ = _loc2_.info as InventoryItemInfo;
+               info = cell.info as InventoryItemInfo;
             }
-            if(_loc3_ == null)
+            if(info == null)
             {
                return;
             }
-            if(!_loc2_.locked)
+            if(!cell.locked)
             {
                SoundManager.instance.play("008");
-               _loc2_.dragStart();
+               cell.dragStart();
             }
          }
       }
       
-      override protected function __cellDoubleClick(param1:CellEvent) : void
+      override protected function __cellDoubleClick(evt:CellEvent) : void
       {
       }
       

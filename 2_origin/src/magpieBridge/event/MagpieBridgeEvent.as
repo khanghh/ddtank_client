@@ -10,9 +10,9 @@ package magpieBridge.event
       public static const SETBTNENABLE:String = "setBtnEnable";
        
       
-      public function MagpieBridgeEvent(param1:String)
+      public function MagpieBridgeEvent(type:String)
       {
-         super(param1,bubbles,cancelable);
+         super(type,bubbles,cancelable);
       }
    }
 }

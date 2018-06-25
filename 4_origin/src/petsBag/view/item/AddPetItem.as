@@ -24,10 +24,10 @@ package petsBag.view.item
       
       protected var _star:StarBar;
       
-      public function AddPetItem(param1:PetInfo)
+      public function AddPetItem(info:PetInfo)
       {
          super();
-         _info = param1;
+         _info = info;
          initView();
       }
       
@@ -46,7 +46,7 @@ package petsBag.view.item
          }
       }
       
-      protected function __petIconLoadComplete(param1:Event) : void
+      protected function __petIconLoadComplete(event:Event) : void
       {
          _petIcon.removeEventListener("complete",__petIconLoadComplete);
          _icon = _petIcon.icon;

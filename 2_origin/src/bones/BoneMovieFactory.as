@@ -32,7 +32,7 @@ package bones
       
       private var _model:BonesModel;
       
-      public function BoneMovieFactory(param1:BoneMovieFactoryEnforcer)
+      public function BoneMovieFactory(enforcer:BoneMovieFactoryEnforcer)
       {
          super();
          _model = new BonesModel();
@@ -70,81 +70,80 @@ package bones
          setup();
       }
       
-      public function creatBoneMovie(param1:String, param2:int = 0, param3:String = "default") : *
+      public function creatBoneMovie(styleName:String, type:int = 0, module:String = "default") : *
       {
-         var _loc6_:* = null;
-         var _loc5_:* = null;
-         var _loc7_:* = null;
-         var _loc4_:* = null;
-         if(param1 == null || param1 == "" || !_model.getBonesStyle(param1))
+         var movie:* = null;
+         var error:* = null;
+         var factory:* = null;
+         var armature:* = null;
+         if(styleName == null || styleName == "" || !_model.getBonesStyle(styleName))
          {
-            _loc5_ = new Error("未找到\'" + param1 + "\'的配置，请检查!");
-            throw _loc5_;
+            error = new Error("未找到\'" + styleName + "\'的配置，请检查!");
+            throw error;
          }
-         if(param2 == 0)
+         if(type == 0)
          {
-            _loc6_ = new BoneMovieStarling(param1);
-            (_loc6_ as BoneMovieStarling).touchable = false;
-            _loc7_ = _starlingFactory;
+            movie = new BoneMovieStarling(styleName);
+            (movie as BoneMovieStarling).touchable = false;
+            factory = _starlingFactory;
          }
-         else if(param2 == 1)
+         else if(type == 1)
          {
-            _loc6_ = new BoneMovieFlash(param1);
-            (_loc6_ as BoneMovieFlash).mouseEnabled = false;
-            (_loc6_ as BoneMovieFlash).mouseChildren = false;
-            _loc7_ = _flashFactory;
+            movie = new BoneMovieFlash(styleName);
+            (movie as BoneMovieFlash).mouseEnabled = false;
+            (movie as BoneMovieFlash).mouseChildren = false;
+            factory = _flashFactory;
          }
          else
          {
             throw new Error("骨骼动画创建失败.指定类型异常");
          }
-         if(_loc7_.getTextureAtlas(param1) == null)
+         if(factory.getTextureAtlas(styleName) == null)
          {
-            _loc6_.loadWait();
-            BonesLoaderManager.instance.startLoader(param1,param2,param3);
+            movie.loadWait();
+            BonesLoaderManager.instance.startLoader(styleName,type,module);
          }
          else
          {
-            _loc4_ = getArmature(param1,_loc7_);
-            _loc6_.setArmature(_loc4_,_loc4_.armatureData);
+            armature = getArmature(styleName,factory);
+            movie.setArmature(armature,armature.armatureData);
          }
-         return _loc6_;
+         return movie;
       }
       
-      public function analysisFrameArgs(param1:IBoneMovie) : DictionaryData
+      public function analysisFrameArgs(movie:IBoneMovie) : DictionaryData
       {
-         var _loc8_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc10_:int = 0;
-         var _loc7_:* = null;
-         var _loc9_:DictionaryData = new DictionaryData();
-         var _loc5_:ArmatureData = param1.armature.armatureData;
-         if(_loc5_.animationDataList && _loc5_.animationDataList.length > 0)
+         var len:int = 0;
+         var event:* = null;
+         var args:* = null;
+         var i:int = 0;
+         var object:* = null;
+         var listData:DictionaryData = new DictionaryData();
+         var data:ArmatureData = movie.armature.armatureData;
+         if(data.animationDataList && data.animationDataList.length > 0)
          {
             var _loc14_:int = 0;
-            var _loc13_:* = _loc5_.animationDataList;
-            for each(var _loc6_ in _loc5_.animationDataList)
+            var _loc13_:* = data.animationDataList;
+            for each(var aData in data.animationDataList)
             {
                var _loc12_:int = 0;
-               var _loc11_:* = _loc6_.frameList;
-               for each(var _loc2_ in _loc6_.frameList)
+               var _loc11_:* = aData.frameList;
+               for each(var frame in aData.frameList)
                {
-                  if(_loc2_.event)
+                  if(frame.event)
                   {
-                     _loc8_ = _loc2_.event.indexOf("_");
-                     if(_loc8_ > 0)
+                     len = frame.event.indexOf("_");
+                     if(len > 0)
                      {
-                        _loc4_ = _loc2_.event.slice(0,_loc8_);
-                        if(_loc4_ == "args")
+                        event = frame.event.slice(0,len);
+                        if(event == "args")
                         {
-                           _loc3_ = _loc2_.event.slice(_loc8_ + 1,_loc2_.event.length).split("|");
-                           _loc10_ = 0;
-                           while(_loc10_ < _loc3_.length)
+                           args = frame.event.slice(len + 1,frame.event.length).split("|");
+                           for(i = 0; i < args.length; )
                            {
-                              _loc7_ = _loc3_[_loc10_].split(":");
-                              _loc9_.add(_loc7_[0],_loc7_[1]);
-                              _loc10_++;
+                              object = args[i].split(":");
+                              listData.add(object[0],object[1]);
+                              i++;
                            }
                            continue;
                         }
@@ -155,59 +154,59 @@ package bones
                }
             }
          }
-         return _loc9_;
+         return listData;
       }
       
-      public function getArmature(param1:String, param2:BaseFactory) : Armature
+      public function getArmature(styleName:String, factory:BaseFactory) : Armature
       {
-         var _loc4_:BoneVo = _model.getBonesStyle(param1);
-         var _loc3_:Armature = param2.buildArmature(param1,param1,_loc4_.atlasName);
-         return _loc3_;
+         var vo:BoneVo = _model.getBonesStyle(styleName);
+         var armature:Armature = factory.buildArmature(styleName,styleName,vo.atlasName);
+         return armature;
       }
       
-      public function creatBoneMovieFast(param1:String, param2:String = "default") : BoneMovieFastStarling
+      public function creatBoneMovieFast(styleName:String, module:String = "default") : BoneMovieFastStarling
       {
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         if(param1 == null || param1 == "" || !_model.getBonesStyle(param1))
+         var error:* = null;
+         var armature:* = null;
+         if(styleName == null || styleName == "" || !_model.getBonesStyle(styleName))
          {
-            _loc4_ = new Error("未找到\'" + param1 + "\'的配置，请检查!");
-            throw _loc4_;
+            error = new Error("未找到\'" + styleName + "\'的配置，请检查!");
+            throw error;
          }
-         var _loc5_:BoneMovieFastStarling = new BoneMovieFastStarling(param1);
-         _loc5_.touchable = false;
-         if(_starlingFactory.getTextureAtlas(param1) == null)
+         var movie:BoneMovieFastStarling = new BoneMovieFastStarling(styleName);
+         movie.touchable = false;
+         if(_starlingFactory.getTextureAtlas(styleName) == null)
          {
-            _loc5_.loadWait();
-            BonesLoaderManager.instance.startLoader(param1,0,param2);
+            movie.loadWait();
+            BonesLoaderManager.instance.startLoader(styleName,0,module);
          }
          else
          {
-            _loc3_ = getFastArmature(param1,_starlingFactory);
-            _loc5_.setArmature(_loc3_,_loc3_.armatureData);
+            armature = getFastArmature(styleName,_starlingFactory);
+            movie.setArmature(armature,armature.armatureData);
          }
-         return _loc5_;
+         return movie;
       }
       
-      public function getFastArmature(param1:String, param2:BaseFactory) : FastArmature
+      public function getFastArmature(styleName:String, factory:BaseFactory) : FastArmature
       {
-         var _loc4_:BoneVo = _model.getBonesStyle(param1);
-         var _loc3_:FastArmature = param2.buildFastArmature(param1,param1,_loc4_.atlasName);
-         _loc3_.enableAnimationCache(25);
-         return _loc3_;
+         var vo:BoneVo = _model.getBonesStyle(styleName);
+         var armature:FastArmature = factory.buildFastArmature(styleName,styleName,vo.atlasName);
+         armature.enableAnimationCache(25);
+         return armature;
       }
       
-      public function checkTextureAtlas(param1:String, param2:int) : Boolean
+      public function checkTextureAtlas(name:String, useType:int) : Boolean
       {
-         if(param2 == 0)
+         if(useType == 0)
          {
-            return DDTAssetManager.instance.getTextureAtlas(param1);
+            return DDTAssetManager.instance.getTextureAtlas(name);
          }
-         if(param2 == 1)
+         if(useType == 1)
          {
-            return DDTAssetManager.instance.getBitmapDataAtlas(param1);
+            return DDTAssetManager.instance.getBitmapDataAtlas(name);
          }
-         return DDTAssetManager.instance.getTextureAtlas(param1) && DDTAssetManager.instance.getBitmapDataAtlas(param1);
+         return DDTAssetManager.instance.getTextureAtlas(name) && DDTAssetManager.instance.getBitmapDataAtlas(name);
       }
       
       public function get flashFactory() : NativeFactory
@@ -220,20 +219,20 @@ package bones
          return _starlingFactory;
       }
       
-      public function hasBoneMovie(param1:String) : Boolean
+      public function hasBoneMovie(styleName:String) : Boolean
       {
-         var _loc2_:* = null;
-         var _loc3_:BoneVo = _model.getBonesStyle(param1);
-         if(param1 == null || param1 == "" || _loc3_ == null)
+         var error:* = null;
+         var vo:BoneVo = _model.getBonesStyle(styleName);
+         if(styleName == null || styleName == "" || vo == null)
          {
-            _loc2_ = new Error("未找到\'" + param1 + "\'的配置，请检查!");
-            throw _loc2_;
+            error = new Error("未找到\'" + styleName + "\'的配置，请检查!");
+            throw error;
          }
-         if(checkTextureAtlas(_loc3_.atlasName,_loc3_.useType) == false)
+         if(checkTextureAtlas(vo.atlasName,vo.useType) == false)
          {
             return false;
          }
-         if(DDTAssetManager.instance.getSkeletonData(_loc3_.styleName) == null)
+         if(DDTAssetManager.instance.getSkeletonData(vo.styleName) == null)
          {
             return false;
          }

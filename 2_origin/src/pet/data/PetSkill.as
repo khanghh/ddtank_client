@@ -8,10 +8,10 @@ package pet.data
       
       private var _equiped:Boolean;
       
-      public function PetSkill(param1:int)
+      public function PetSkill(skillID:int)
       {
          super();
-         ID = param1;
+         ID = skillID;
          PetSkillManager.fillPetSkill(this);
       }
       
@@ -20,9 +20,9 @@ package pet.data
          return _equiped;
       }
       
-      public function set Equiped(param1:Boolean) : void
+      public function set Equiped(value:Boolean) : void
       {
-         _equiped = param1;
+         _equiped = value;
       }
    }
 }

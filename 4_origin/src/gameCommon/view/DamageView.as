@@ -41,9 +41,9 @@ package gameCommon.view
       
       private function initView() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var userName:* = null;
+         var damageNum:* = null;
          _viewDamageBtn = ComponentFactory.Instance.creatComponentByStylename("game.view.damageView.viewDamageBtn");
          addChild(_viewDamageBtn);
          _infoSprite = new Sprite();
@@ -59,18 +59,17 @@ package gameCommon.view
          _infoSprite.addChild(_listTxt);
          _userNameVec = new Vector.<FilterFrameText>();
          _damageNumVec = new Vector.<FilterFrameText>();
-         _loc3_ = 0;
-         while(_loc3_ < 4)
+         for(i = 0; i < 4; )
          {
-            _loc1_ = ComponentFactory.Instance.creatComponentByStylename("game.view.damageView.userInfo");
-            PositionUtils.setPos(_loc1_,"game.view.damageView.userNamePos" + _loc3_);
-            _userNameVec.push(_loc1_);
-            _infoSprite.addChild(_loc1_);
-            _loc2_ = ComponentFactory.Instance.creatComponentByStylename("game.view.damageView.userInfo");
-            PositionUtils.setPos(_loc2_,"game.view.damageView.damageNumPos" + _loc3_);
-            _damageNumVec.push(_loc2_);
-            _infoSprite.addChild(_loc2_);
-            _loc3_++;
+            userName = ComponentFactory.Instance.creatComponentByStylename("game.view.damageView.userInfo");
+            PositionUtils.setPos(userName,"game.view.damageView.userNamePos" + i);
+            _userNameVec.push(userName);
+            _infoSprite.addChild(userName);
+            damageNum = ComponentFactory.Instance.creatComponentByStylename("game.view.damageView.userInfo");
+            PositionUtils.setPos(damageNum,"game.view.damageView.damageNumPos" + i);
+            _damageNumVec.push(damageNum);
+            _infoSprite.addChild(damageNum);
+            i++;
          }
          updateView();
       }
@@ -82,35 +81,34 @@ package gameCommon.view
       
       public function updateView() : void
       {
-         var _loc1_:int = 0;
+         var numID:int = 0;
          clearTextInfo();
          var _loc4_:int = 0;
          var _loc3_:* = GameControl.Instance.Current.livings;
-         for each(var _loc2_ in GameControl.Instance.Current.livings)
+         for each(var living in GameControl.Instance.Current.livings)
          {
-            if(_loc2_.isPlayer())
+            if(living.isPlayer())
             {
-               _userNameVec[_loc1_].text = _loc2_.playerInfo.NickName;
-               _damageNumVec[_loc1_].text = _loc2_.damageNum.toString();
-               _loc2_.damageNum = 0;
-               _loc1_++;
+               _userNameVec[numID].text = living.playerInfo.NickName;
+               _damageNumVec[numID].text = living.damageNum.toString();
+               living.damageNum = 0;
+               numID++;
             }
          }
       }
       
       private function clearTextInfo() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _userNameVec.length)
+         var i:int = 0;
+         for(i = 0; i < _userNameVec.length; )
          {
-            _userNameVec[_loc1_].text = "";
-            _damageNumVec[_loc1_].text = "";
-            _loc1_++;
+            _userNameVec[i].text = "";
+            _damageNumVec[i].text = "";
+            i++;
          }
       }
       
-      protected function __onMouseClick(param1:MouseEvent) : void
+      protected function __onMouseClick(event:MouseEvent) : void
       {
          if(_openFlag)
          {
@@ -140,8 +138,8 @@ package gameCommon.view
       
       public function dispose() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
+         var i:int = 0;
+         var j:int = 0;
          removeEvent();
          if(_viewDamageBtn)
          {
@@ -163,21 +161,20 @@ package gameCommon.view
             _listTxt.dispose();
             _listTxt = null;
          }
-         _loc2_ = 0;
-         while(_loc2_ < 4)
+         i = 0;
+         while(i < 4)
          {
-            _userNameVec[_loc2_].dispose();
-            _userNameVec[_loc2_] = null;
-            _loc2_++;
+            _userNameVec[i].dispose();
+            _userNameVec[i] = null;
+            i++;
          }
          _userNameVec.length = 0;
          _userNameVec = null;
-         _loc1_ = 0;
-         while(_loc1_ < 4)
+         for(j = 0; j < 4; )
          {
-            _damageNumVec[_loc1_].dispose();
-            _damageNumVec[_loc1_] = null;
-            _loc1_++;
+            _damageNumVec[j].dispose();
+            _damageNumVec[j] = null;
+            j++;
          }
          _damageNumVec.length = 0;
          _damageNumVec = null;

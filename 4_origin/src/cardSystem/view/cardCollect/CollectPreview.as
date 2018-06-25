@@ -54,7 +54,7 @@ package cardSystem.view.cardCollect
       
       private function initView() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _bg = ComponentFactory.Instance.creatComponentByStylename("CollectPreview.BG");
          _setsName = ComponentFactory.Instance.creatComponentByStylename("CollectPreview.setsName");
          _stroyBG = ComponentFactory.Instance.creatComponentByStylename("CollectPreview.BG1");
@@ -72,119 +72,114 @@ package cardSystem.view.cardCollect
          addChild(_propDescript);
          addChild(_setsName);
          _previewCardVec = new Vector.<PreviewCard>(5);
-         _loc1_ = 0;
-         while(_loc1_ < 5)
+         for(i = 0; i < 5; )
          {
-            _previewCardVec[_loc1_] = new PreviewCard();
-            addChild(_previewCardVec[_loc1_]);
-            _previewCardVec[_loc1_].y = 148;
-            _loc1_++;
+            _previewCardVec[i] = new PreviewCard();
+            addChild(_previewCardVec[i]);
+            _previewCardVec[i].y = 148;
+            i++;
          }
          _propExplain.text = LanguageMgr.GetTranslation("ddt.cardSystem.preview.propExplain");
       }
       
-      public function set info(param1:SetsInfo) : void
+      public function set info(value:SetsInfo) : void
       {
-         if(_itemInfo == param1)
+         if(_itemInfo == value)
          {
             return;
          }
-         _itemInfo = param1;
+         _itemInfo = value;
          upView();
       }
       
       private function upView() : void
       {
-         var _loc12_:int = 0;
-         var _loc9_:int = 0;
-         var _loc4_:int = 0;
-         var _loc8_:int = 0;
-         var _loc14_:* = null;
-         var _loc17_:* = null;
-         var _loc13_:Vector.<CardInfo> = CardManager.Instance.model.getSetsCardFromCardBag(_itemInfo.ID);
+         var i:int = 0;
+         var j:int = 0;
+         var n:int = 0;
+         var m:int = 0;
+         var valueArr:* = null;
+         var value:* = null;
+         var cardInfoVec:Vector.<CardInfo> = CardManager.Instance.model.getSetsCardFromCardBag(_itemInfo.ID);
          _setsName.text = _itemInfo.name;
          _setsName.x = _bg.x + _bg.width / 2 - _setsName.textWidth / 2;
          _stroy.text = "    " + _itemInfo.storyDescript;
-         var _loc7_:int = _itemInfo.cardIdVec.length;
-         _loc12_ = 0;
-         while(_loc12_ < 5)
+         var len:int = _itemInfo.cardIdVec.length;
+         for(i = 0; i < 5; )
          {
-            if(_loc12_ < _loc7_)
+            if(i < len)
             {
-               _previewCardVec[_loc12_].cardId = _itemInfo.cardIdVec[_loc12_];
-               _previewCardVec[_loc12_].visible = true;
-               if(_loc13_.length > 0)
+               _previewCardVec[i].cardId = _itemInfo.cardIdVec[i];
+               _previewCardVec[i].visible = true;
+               if(cardInfoVec.length > 0)
                {
-                  _loc9_ = 0;
-                  while(_loc9_ < _loc13_.length)
+                  for(j = 0; j < cardInfoVec.length; )
                   {
-                     if(_previewCardVec[_loc12_].cardId == _loc13_[_loc9_].TemplateID)
+                     if(_previewCardVec[i].cardId == cardInfoVec[j].TemplateID)
                      {
-                        _previewCardVec[_loc12_].cardInfo = _loc13_[_loc9_];
+                        _previewCardVec[i].cardInfo = cardInfoVec[j];
                         break;
                      }
-                     if(_loc9_ == _loc13_.length - 1)
+                     if(j == cardInfoVec.length - 1)
                      {
-                        _previewCardVec[_loc12_].cardInfo = null;
+                        _previewCardVec[i].cardInfo = null;
                      }
-                     _loc9_++;
+                     j++;
                   }
                }
                else
                {
-                  _previewCardVec[_loc12_].cardInfo = null;
+                  _previewCardVec[i].cardInfo = null;
                }
             }
             else
             {
-               _previewCardVec[_loc12_].visible = false;
+               _previewCardVec[i].visible = false;
             }
-            _loc12_++;
+            i++;
          }
-         var _loc1_:int = 350 / _loc7_;
-         var _loc10_:int = 18 + _loc1_ / 2 - 66 / 2 + 5;
-         _loc4_ = 0;
-         while(_loc4_ < _loc7_)
+         var singleLen:int = 350 / len;
+         var lastX:int = 18 + singleLen / 2 - 66 / 2 + 5;
+         for(n = 0; n < len; )
          {
-            _previewCardVec[_loc4_].x = _loc10_;
-            _loc10_ = _loc10_ + (_loc1_ + 4);
-            _loc4_++;
+            _previewCardVec[n].x = lastX;
+            lastX = lastX + (singleLen + 4);
+            n++;
          }
-         var _loc18_:Vector.<SetsPropertyInfo> = CardManager.Instance.model.setsList[_itemInfo.ID];
-         var _loc6_:int = _loc18_.length;
-         var _loc15_:String = "";
-         _loc8_ = 0;
-         while(_loc8_ < _loc6_)
+         var setsPropVec:Vector.<SetsPropertyInfo> = CardManager.Instance.model.setsList[_itemInfo.ID];
+         var len2:int = setsPropVec.length;
+         var str:String = "";
+         for(m = 0; m < len2; )
          {
-            _loc14_ = _loc18_[_loc8_].value.split("|");
-            if(_loc14_.length == 4)
+            valueArr = setsPropVec[m].value.split("|");
+            if(valueArr.length == 4)
             {
-               _loc17_ = _loc14_[0] + "/" + _loc14_[1] + "/" + _loc14_[2] + "/" + _loc14_[3] + LanguageMgr.GetTranslation("cardSystem.preview.descript.level");
-               _loc15_ = _loc15_.concat(LanguageMgr.GetTranslation("ddt.cardSystem.preview.setProp1") + _loc18_[_loc8_].condition + LanguageMgr.GetTranslation("ddt.cardSystem.preview.setProp2") + " " + _loc18_[_loc8_].Description.replace("{0}",_loc17_));
+               value = valueArr[0] + "/" + valueArr[1] + "/" + valueArr[2] + "/" + valueArr[3] + LanguageMgr.GetTranslation("cardSystem.preview.descript.level");
+               str = str.concat(LanguageMgr.GetTranslation("ddt.cardSystem.preview.setProp1") + setsPropVec[m].condition + LanguageMgr.GetTranslation("ddt.cardSystem.preview.setProp2") + " " + setsPropVec[m].Description.replace("{0}",value));
             }
             else
             {
-               _loc15_ = _loc15_.concat(LanguageMgr.GetTranslation("ddt.cardSystem.preview.setProp1") + _loc18_[_loc8_].condition + LanguageMgr.GetTranslation("ddt.cardSystem.preview.setProp2") + " " + _loc18_[_loc8_].Description.replace("{0}",_loc14_[0]));
+               str = str.concat(LanguageMgr.GetTranslation("ddt.cardSystem.preview.setProp1") + setsPropVec[m].condition + LanguageMgr.GetTranslation("ddt.cardSystem.preview.setProp2") + " " + setsPropVec[m].Description.replace("{0}",valueArr[0]));
             }
-            _loc15_ = _loc15_.concat("\n\n");
-            _loc8_++;
+            str = str.concat("\n\n");
+            m++;
          }
-         _propDescript.text = _loc15_;
-         var _loc5_:TextFormat = new TextFormat();
-         _loc5_.bold = true;
-         var _loc11_:int = 0;
-         var _loc16_:int = 0;
-         var _loc3_:String = LanguageMgr.GetTranslation("ddt.cardSystem.preview.setProp1");
-         var _loc2_:String = LanguageMgr.GetTranslation("ddt.cardSystem.preview.setProp2");
-         while(_loc15_.indexOf(_loc3_) > -1)
+         _propDescript.text = str;
+         var tf:TextFormat = new TextFormat();
+         tf.bold = true;
+         var h:int = 0;
+         var lastLen:int = 0;
+         var string1:String = LanguageMgr.GetTranslation("ddt.cardSystem.preview.setProp1");
+         var string2:String = LanguageMgr.GetTranslation("ddt.cardSystem.preview.setProp2");
+         while(str.indexOf(string1) > -1)
          {
-            if(_loc11_ != 0)
+            if(h != 0)
             {
-               _loc16_ = _loc16_ + (_loc3_.length + _loc2_.length + 1 + _loc15_.indexOf(_loc3_));
+               lastLen = lastLen + (string1.length + string2.length + 1 + str.indexOf(string1));
             }
-            _propDescript.textField.setTextFormat(_loc5_,_loc16_,_loc16_ + _loc3_.length + _loc2_.length + 2);
-            _loc15_ = _loc15_.substr(_loc15_.indexOf(_loc2_) + _loc2_.length + 1,_loc15_.length);
-            _loc11_++;
+            _propDescript.textField.setTextFormat(tf,lastLen,lastLen + string1.length + string2.length + 2);
+            str = str.substr(str.indexOf(string2) + string2.length + 1,str.length);
+            h++;
          }
       }
       
@@ -198,7 +193,7 @@ package cardSystem.view.cardCollect
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          removeEvent();
          _itemInfo = null;
          ObjectUtils.disposeAllChildren(this);
@@ -206,11 +201,10 @@ package cardSystem.view.cardCollect
          _setsName = null;
          _stroyBG = null;
          _stroy = null;
-         _loc1_ = 0;
-         while(_loc1_ < _previewCardVec.length)
+         for(i = 0; i < _previewCardVec.length; )
          {
-            _previewCardVec[_loc1_] = null;
-            _loc1_++;
+            _previewCardVec[i] = null;
+            i++;
          }
          _previewCardVec = null;
          _setsPropBG = null;

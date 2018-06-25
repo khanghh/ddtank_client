@@ -8,26 +8,26 @@ package drgnBoatBuild
       
       public var list:Array;
       
-      public function DrgnBoatFriendsAnalyzer(param1:Function)
+      public function DrgnBoatFriendsAnalyzer(onCompleteCall:Function)
       {
          list = [];
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc5_:* = null;
-         var _loc4_:XML = XML(param1);
-         var _loc2_:XMLList = _loc4_.Item;
+         var friendStateInfo:* = null;
+         var xml:XML = XML(data);
+         var items:XMLList = xml.Item;
          var _loc7_:int = 0;
-         var _loc6_:* = _loc2_;
-         for each(var _loc3_ in _loc2_)
+         var _loc6_:* = items;
+         for each(var item in items)
          {
-            _loc5_ = new DrgnBoatBuildCellInfo();
-            _loc5_.id = _loc3_.@ID;
-            _loc5_.stage = _loc3_.@Stage;
-            _loc5_.progress = _loc3_.@Process;
-            list.push(_loc5_);
+            friendStateInfo = new DrgnBoatBuildCellInfo();
+            friendStateInfo.id = item.@ID;
+            friendStateInfo.stage = item.@Stage;
+            friendStateInfo.progress = item.@Process;
+            list.push(friendStateInfo);
          }
          onAnalyzeComplete();
       }

@@ -50,10 +50,10 @@ package times.view
       
       protected var _isSuccess:Boolean;
       
-      public function TimesPicBase(param1:TimesPicInfo)
+      public function TimesPicBase($info:TimesPicInfo)
       {
          super();
-         _info = param1;
+         _info = $info;
          init();
          initEvents();
       }
@@ -75,10 +75,10 @@ package times.view
          {
             _loader = new Loader();
          }
-         var _loc1_:Object = getDefinitionByName("ddt.manager.PathManager");
-         if(_loc1_)
+         var pathReference:Object = getDefinitionByName("ddt.manager.PathManager");
+         if(pathReference)
          {
-            _loader.load(new URLRequest(_loc1_.SITE_WEEKLY + "weekly/" + _info.path));
+            _loader.load(new URLRequest(pathReference.SITE_WEEKLY + "weekly/" + _info.path));
          }
          else
          {
@@ -98,7 +98,7 @@ package times.view
          return _loader;
       }
       
-      protected function __onLoadCompleted(param1:Event) : void
+      protected function __onLoadCompleted(event:Event) : void
       {
          if(_loader)
          {
@@ -127,11 +127,11 @@ package times.view
          return _isSuccess;
       }
       
-      protected function __onLoadError(param1:IOErrorEvent) : void
+      protected function __onLoadError(e:IOErrorEvent) : void
       {
       }
       
-      protected function __picClick(param1:MouseEvent) : void
+      protected function __picClick(e:MouseEvent) : void
       {
          TimesController.Instance.dispatchEvent(new TimesEvent("playSound"));
          var _loc2_:* = _info.type;
@@ -140,11 +140,11 @@ package times.view
             if("big" !== _loc2_)
             {
             }
-            addr28:
+            addr36:
             return;
          }
          TimesController.Instance.dispatchEvent(new TimesEvent("gotoContent",_info));
-         §§goto(addr28);
+         §§goto(addr36);
       }
       
       protected function createFilters() : void
@@ -236,9 +236,9 @@ package times.view
          }
       }
       
-      public function set playEffect(param1:Boolean) : void
+      public function set playEffect(value:Boolean) : void
       {
-         value = param1;
+         value = value;
          updateFilter = function():void
          {
             filters = [_glowFilter2,_glowFilter];

@@ -64,17 +64,17 @@ package redEnvelope.view
       
       private function initView() : void
       {
-         var _loc11_:int = 0;
-         var _loc5_:* = null;
-         var _loc7_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc9_:int = 0;
-         var _loc6_:* = null;
-         var _loc1_:* = null;
-         var _loc8_:int = 0;
-         var _loc10_:* = null;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var item:* = null;
+         var l:int = 0;
+         var myRedInfo:* = null;
+         var item3:* = null;
+         var k:int = 0;
+         var redInfo1:* = null;
+         var item2:* = null;
+         var j:int = 0;
+         var redInfo:* = null;
+         var item1:* = null;
          _bg = ComponentFactory.Instance.creatBitmap("asset.redEnvelope.bg");
          addChild(_bg);
          _redOver = ComponentFactory.Instance.creatBitmap("asset.redEnvelope.redOver");
@@ -98,53 +98,49 @@ package redEnvelope.view
          closeBtn = ComponentFactory.Instance.creatComponentByStylename("redEnvelope.closeBtn");
          addChild(closeBtn);
          _redItemVec = new Vector.<RedEnvelopeItem>();
-         _loc11_ = 1;
-         while(_loc11_ <= 4)
+         for(i = 1; i <= 4; )
          {
-            _loc5_ = new RedEnvelopeItem(_loc11_);
-            _loc5_.addEventListener("select",selectHandler);
-            _loc5_.x = 17;
-            _loc5_.y = 99 + 49 * (_loc11_ - 1);
-            addChild(_loc5_);
-            _redItemVec.push(_loc5_);
-            _loc11_++;
+            item = new RedEnvelopeItem(i);
+            item.addEventListener("select",selectHandler);
+            item.x = 17;
+            item.y = 99 + 49 * (i - 1);
+            addChild(item);
+            _redItemVec.push(item);
+            i++;
          }
          _redListVec = new Vector.<RedEnvelopeInfoItem>();
          index = 0;
          _vbox = new VBox();
          _vbox.spacing = -12;
-         _loc7_ = 0;
-         while(_loc7_ < RedEnvelopeManager.instance.model.myRedEnvelopeList.length)
+         for(l = 0; l < RedEnvelopeManager.instance.model.myRedEnvelopeList.length; )
          {
-            _loc4_ = RedEnvelopeManager.instance.model.myRedEnvelopeList[_loc7_];
-            _loc3_ = new RedEnvelopeInfoItem(index,_loc4_.type,_loc4_.sendName,_loc4_.id,true);
-            _loc3_.addEventListener("choose",chooseHandler);
-            _vbox.addChild(_loc3_);
-            _redListVec.push(_loc3_);
+            myRedInfo = RedEnvelopeManager.instance.model.myRedEnvelopeList[l];
+            item3 = new RedEnvelopeInfoItem(index,myRedInfo.type,myRedInfo.sendName,myRedInfo.id,true);
+            item3.addEventListener("choose",chooseHandler);
+            _vbox.addChild(item3);
+            _redListVec.push(item3);
             index = Number(index) + 1;
-            _loc7_++;
+            l++;
          }
-         _loc9_ = 0;
-         while(_loc9_ < RedEnvelopeManager.instance.model.canGetList.length)
+         for(k = 0; k < RedEnvelopeManager.instance.model.canGetList.length; )
          {
-            _loc6_ = RedEnvelopeManager.instance.model.canGetList[_loc9_];
-            _loc1_ = new RedEnvelopeInfoItem(index,_loc6_.type,_loc6_.sendName,_loc6_.id,true);
-            _loc1_.addEventListener("choose",chooseHandler);
-            _vbox.addChild(_loc1_);
-            _redListVec.push(_loc1_);
+            redInfo1 = RedEnvelopeManager.instance.model.canGetList[k];
+            item2 = new RedEnvelopeInfoItem(index,redInfo1.type,redInfo1.sendName,redInfo1.id,true);
+            item2.addEventListener("choose",chooseHandler);
+            _vbox.addChild(item2);
+            _redListVec.push(item2);
             index = Number(index) + 1;
-            _loc9_++;
+            k++;
          }
-         _loc8_ = 0;
-         while(_loc8_ < RedEnvelopeManager.instance.model.hasGotList.length)
+         for(j = 0; j < RedEnvelopeManager.instance.model.hasGotList.length; )
          {
-            _loc10_ = RedEnvelopeManager.instance.model.hasGotList[_loc8_];
-            _loc2_ = new RedEnvelopeInfoItem(index,_loc10_.type,_loc10_.sendName,_loc10_.id,false);
-            _loc2_.addEventListener("choose",chooseHandler);
-            _vbox.addChild(_loc2_);
-            _redListVec.push(_loc2_);
+            redInfo = RedEnvelopeManager.instance.model.hasGotList[j];
+            item1 = new RedEnvelopeInfoItem(index,redInfo.type,redInfo.sendName,redInfo.id,false);
+            item1.addEventListener("choose",chooseHandler);
+            _vbox.addChild(item1);
+            _redListVec.push(item1);
             index = Number(index) + 1;
-            _loc8_++;
+            j++;
          }
          index = 1;
          _listPanel = ComponentFactory.Instance.creatComponentByStylename("redEnvelope.unitScrollPanel");
@@ -164,14 +160,14 @@ package redEnvelope.view
       public function addNewRedEnvelope() : void
       {
          _redOver.visible = false;
-         var _loc2_:RedInfo = RedEnvelopeManager.instance.model.newRedEnvelope;
-         var _loc1_:RedEnvelopeInfoItem = new RedEnvelopeInfoItem(index,_loc2_.type,_loc2_.sendName,_loc2_.id,true);
-         _loc1_.addEventListener("choose",chooseHandler);
+         var redInfo:RedInfo = RedEnvelopeManager.instance.model.newRedEnvelope;
+         var item:RedEnvelopeInfoItem = new RedEnvelopeInfoItem(index,redInfo.type,redInfo.sendName,redInfo.id,true);
+         item.addEventListener("choose",chooseHandler);
          _vbox.isReverAdd = true;
          _vbox.isReverAddList = true;
-         _vbox.addChild(_loc1_);
+         _vbox.addChild(item);
          _vbox.arrange();
-         _redListVec.push(_loc1_);
+         _redListVec.push(item);
          _listPanel.commitChanges();
          index = Number(index) + 1;
          if(_redListVec.length == 1)
@@ -182,77 +178,72 @@ package redEnvelope.view
       
       public function updataRedNum() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _redItemVec.length)
+         var i:int = 0;
+         for(i = 0; i < _redItemVec.length; )
          {
-            _redItemVec[_loc1_].updataRedNum();
-            _loc1_++;
+            _redItemVec[i].updataRedNum();
+            i++;
          }
       }
       
-      private function selectHandler(param1:RedEnvelopeEvent) : void
+      private function selectHandler(e:RedEnvelopeEvent) : void
       {
-         var _loc2_:int = 0;
-         selectType = param1.resultData;
-         _loc2_ = 0;
-         while(_loc2_ < _redItemVec.length)
+         var i:int = 0;
+         selectType = e.resultData;
+         for(i = 0; i < _redItemVec.length; )
          {
-            if(_redItemVec[_loc2_]._type != param1.resultData)
+            if(_redItemVec[i]._type != e.resultData)
             {
-               _redItemVec[_loc2_].select.movie.gotoAndStop(1);
+               _redItemVec[i].select.movie.gotoAndStop(1);
             }
-            _loc2_++;
+            i++;
          }
       }
       
-      private function chooseHandler(param1:RedEnvelopeEvent) : void
+      private function chooseHandler(e:RedEnvelopeEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < _redListVec.length)
+         var i:int = 0;
+         var j:int = 0;
+         for(i = 0; i < _redListVec.length; )
          {
-            if(_redListVec[_loc3_]._id != param1.resultData)
+            if(_redListVec[i]._id != e.resultData)
             {
-               _redListVec[_loc3_].unSelectSet();
+               _redListVec[i].unSelectSet();
             }
-            _loc3_++;
+            i++;
          }
-         _loc2_ = 0;
-         while(_loc2_ < RedEnvelopeManager.instance.model.emptyList.length)
+         for(j = 0; j < RedEnvelopeManager.instance.model.emptyList.length; )
          {
-            if(param1.resultData == RedEnvelopeManager.instance.model.emptyList[_loc2_].id)
+            if(e.resultData == RedEnvelopeManager.instance.model.emptyList[j].id)
             {
-               redRecordInfoUnsocket(RedEnvelopeManager.instance.model.emptyList[_loc2_].info);
+               redRecordInfoUnsocket(RedEnvelopeManager.instance.model.emptyList[j].info);
                RedEnvelopeManager.instance.checkCanClick = true;
                return;
             }
-            _loc2_++;
+            j++;
          }
-         SocketManager.Instance.out.redEnvelopeInfo(param1.resultData);
+         SocketManager.Instance.out.redEnvelopeInfo(e.resultData);
       }
       
-      public function setRedDark(param1:int) : void
+      public function setRedDark(id:int) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _redListVec.length)
+         var i:int = 0;
+         for(i = 0; i < _redListVec.length; )
          {
-            if(_redListVec[_loc2_]._id == param1)
+            if(_redListVec[i]._id == id)
             {
-               _redListVec[_loc2_].btnDarkSet();
+               _redListVec[i].btnDarkSet();
                return;
             }
-            _loc2_++;
+            i++;
          }
       }
       
-      public function redRecordInfoUnsocket(param1:Array) : void
+      public function redRecordInfoUnsocket(list:Array) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var _redRecord:* = null;
+         var arr:* = null;
          if(_infoVbox)
          {
             ObjectUtils.disposeObject(_infoVbox);
@@ -265,14 +256,13 @@ package redEnvelope.view
          _infoListPanel = null;
          _infoVbox = new VBox();
          _infoVbox.spacing = 5;
-         _loc4_ = 0;
-         while(_loc4_ < param1.length)
+         for(i = 0; i < list.length; )
          {
-            _loc3_ = new RedRecord();
-            _loc2_ = param1[_loc4_].split(",");
-            _loc3_.setInfo(_loc2_[0],parseInt(_loc2_[1]),parseInt(_loc2_[2]));
-            _infoVbox.addChild(_loc3_);
-            _loc4_++;
+            _redRecord = new RedRecord();
+            arr = list[i].split(",");
+            _redRecord.setInfo(arr[0],parseInt(arr[1]),parseInt(arr[2]));
+            _infoVbox.addChild(_redRecord);
+            i++;
          }
          _infoListPanel = ComponentFactory.Instance.creatComponentByStylename("redEnvelope.info.unitScrollPanel");
          _infoListPanel.setView(_infoVbox);
@@ -282,9 +272,9 @@ package redEnvelope.view
       
       public function redRecordInfo() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var _redRecord:* = null;
+         var arr:* = null;
          if(_infoVbox)
          {
             ObjectUtils.disposeObject(_infoVbox);
@@ -297,14 +287,13 @@ package redEnvelope.view
          _infoListPanel = null;
          _infoVbox = new VBox();
          _infoVbox.spacing = 5;
-         _loc3_ = 0;
-         while(_loc3_ < RedEnvelopeManager.instance.model.currentRedList.length)
+         for(i = 0; i < RedEnvelopeManager.instance.model.currentRedList.length; )
          {
-            _loc2_ = new RedRecord();
-            _loc1_ = RedEnvelopeManager.instance.model.currentRedList[_loc3_].split(",");
-            _loc2_.setInfo(_loc1_[0],parseInt(_loc1_[1]),parseInt(_loc1_[2]));
-            _infoVbox.addChild(_loc2_);
-            _loc3_++;
+            _redRecord = new RedRecord();
+            arr = RedEnvelopeManager.instance.model.currentRedList[i].split(",");
+            _redRecord.setInfo(arr[0],parseInt(arr[1]),parseInt(arr[2]));
+            _infoVbox.addChild(_redRecord);
+            i++;
          }
          _infoListPanel = ComponentFactory.Instance.creatComponentByStylename("redEnvelope.info.unitScrollPanel");
          _infoListPanel.setView(_infoVbox);
@@ -318,7 +307,7 @@ package redEnvelope.view
          closeBtn.addEventListener("click",closeHandler);
       }
       
-      private function closeHandler(param1:MouseEvent) : void
+      private function closeHandler(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          RedEnvelopeManager.instance.closeFrame();
@@ -330,7 +319,7 @@ package redEnvelope.view
          RedEnvelopeManager.instance.closeFrame();
       }
       
-      private function clickHandler(param1:MouseEvent) : void
+      private function clickHandler(e:MouseEvent) : void
       {
          if(selectType == 0)
          {
@@ -349,7 +338,7 @@ package redEnvelope.view
       
       override public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          super.dispose();
          removeEvent();
          if(_bg)
@@ -412,11 +401,10 @@ package redEnvelope.view
             ObjectUtils.disposeObject(_redOver);
          }
          _redOver = null;
-         _loc1_ = 0;
-         while(_loc1_ < _redItemVec.length)
+         for(i = 0; i < _redItemVec.length; )
          {
-            ObjectUtils.disposeObject(_redItemVec[_loc1_]);
-            _loc1_++;
+            ObjectUtils.disposeObject(_redItemVec[i]);
+            i++;
          }
          if(this.parent)
          {
@@ -451,9 +439,9 @@ class RedRecord extends Sprite implements Disposeable
       addChild(_line);
    }
    
-   public function setInfo(param1:String, param2:int, param3:int) : void
+   public function setInfo(name:String, id:int, num:int) : void
    {
-      _recordInfoTxt.text = "[" + param1 + "]" + ItemManager.Instance.getTemplateById(param2).Name + "x" + String(param3);
+      _recordInfoTxt.text = "[" + name + "]" + ItemManager.Instance.getTemplateById(id).Name + "x" + String(num);
    }
    
    public function dispose() : void

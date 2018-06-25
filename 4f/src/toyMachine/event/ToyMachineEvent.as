@@ -1,11 +1,2 @@
-package toyMachine.event
-{
-   import flash.events.Event;
-   
-   public class ToyMachineEvent extends Event
-   {
-       
-      
-      public function ToyMachineEvent(param1:String, param2:Boolean = false, param3:Boolean = false){super(null,null,null);}
-   }
-}
+package toyMachine.event{   import flash.events.Event;      public class ToyMachineEvent extends Event   {                   public function ToyMachineEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false) { super(null,null,null); }
+   }}

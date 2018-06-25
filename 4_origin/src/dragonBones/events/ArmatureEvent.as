@@ -8,9 +8,9 @@ package dragonBones.events
       public static const Z_ORDER_UPDATED:String = "zOrderUpdated";
        
       
-      public function ArmatureEvent(param1:String)
+      public function ArmatureEvent(type:String)
       {
-         super(param1,false,false);
+         super(type,false,false);
       }
       
       override public function clone() : Event

@@ -109,25 +109,25 @@ package worldboss.view
       
       protected var reference:WorldRoomPlayer;
       
-      public function WorldBossScneneMap(param1:WorldBossRoomModel, param2:SceneScene, param3:DictionaryData, param4:Sprite, param5:Sprite, param6:Sprite = null, param7:Sprite = null, param8:Sprite = null)
+      public function WorldBossScneneMap(model:WorldBossRoomModel, sceneScene:SceneScene, data:DictionaryData, bg:Sprite, mesh:Sprite, acticle:Sprite = null, sky:Sprite = null, decoration:Sprite = null)
       {
          super();
-         _model = param1;
-         this.sceneScene = param2;
-         this._data = param3;
-         if(param4 == null)
+         _model = model;
+         this.sceneScene = sceneScene;
+         this._data = data;
+         if(bg == null)
          {
             this.bgLayer = new Sprite();
          }
          else
          {
-            this.bgLayer = param4;
+            this.bgLayer = bg;
          }
-         this.meshLayer = param5 == null?new Sprite():param5;
+         this.meshLayer = mesh == null?new Sprite():mesh;
          this.meshLayer.alpha = 0;
-         this.articleLayer = param6 == null?new Sprite():param6;
-         this.decorationLayer = param8 == null?new Sprite():param8;
-         this.skyLayer = param7 == null?new Sprite():param7;
+         this.articleLayer = acticle == null?new Sprite():acticle;
+         this.decorationLayer = decoration == null?new Sprite():decoration;
+         this.skyLayer = sky == null?new Sprite():sky;
          var _loc9_:Boolean = false;
          this.decorationLayer.mouseEnabled = _loc9_;
          this.decorationLayer.mouseChildren = _loc9_;
@@ -145,17 +145,17 @@ package worldboss.view
       
       private function initBeforeTimeView() : void
       {
-         var _loc1_:int = WorldBossManager.Instance.beforeStartTime;
-         if(_loc1_ > 0)
+         var tmpTime:int = WorldBossManager.Instance.beforeStartTime;
+         if(tmpTime > 0)
          {
             hideBoss();
-            _beforeTimeView = new WorldBossBeforeTimer(_loc1_);
+            _beforeTimeView = new WorldBossBeforeTimer(tmpTime);
             _beforeTimeView.addEventListener("complete",beforeTimeEndHandler,false,0,true);
             LayerManager.Instance.addToLayer(_beforeTimeView,3,true);
          }
       }
       
-      private function beforeTimeEndHandler(param1:Event) : void
+      private function beforeTimeEndHandler(event:Event) : void
       {
          disposeBeforeTimeView();
          showBoss();
@@ -231,14 +231,14 @@ package worldboss.view
          }
       }
       
-      private function _enterWorldBossGame(param1:MouseEvent) : void
+      private function _enterWorldBossGame(e:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
+         e.stopImmediatePropagation();
          if(autoMove || selfPlayer.playerVO.playerStauts != 1 || !selfPlayer.getCanAction() || _entering)
          {
             return;
          }
-         CheckWeaponManager.instance.setFunction(this,_enterWorldBossGame,[param1]);
+         CheckWeaponManager.instance.setFunction(this,_enterWorldBossGame,[e]);
          if(checkCanStartGame() && getTimer() - _lastClick > _clickInterval)
          {
             SoundManager.instance.play("008");
@@ -263,15 +263,15 @@ package worldboss.view
       
       private function checkDistance() : Boolean
       {
-         var _loc3_:Number = NaN;
-         var _loc2_:Number = selfPlayer.x - armyPos.x;
-         var _loc1_:Number = selfPlayer.y - armyPos.y;
-         if(Math.pow(_loc2_,2) + Math.pow(_loc1_,2) > Math.pow(r,2))
+         var k:Number = NaN;
+         var disX:Number = selfPlayer.x - armyPos.x;
+         var disY:Number = selfPlayer.y - armyPos.y;
+         if(Math.pow(disX,2) + Math.pow(disY,2) > Math.pow(r,2))
          {
-            _loc3_ = Math.atan2(_loc1_,_loc2_);
+            k = Math.atan2(disY,disX);
             auto = new Point(armyPos.x,armyPos.y);
-            auto.x = auto.x + (_loc2_ > 0?1:-1) * Math.abs(Math.cos(_loc3_) * r);
-            auto.y = auto.y + (_loc1_ > 0?1:-1) * Math.abs(Math.sin(_loc3_) * r);
+            auto.x = auto.x + (disX > 0?1:-1) * Math.abs(Math.cos(k) * r);
+            auto.y = auto.y + (disY > 0?1:-1) * Math.abs(Math.sin(k) * r);
             return false;
          }
          return true;
@@ -279,18 +279,18 @@ package worldboss.view
       
       private function checkCanStartGame() : Boolean
       {
-         var _loc1_:Boolean = true;
+         var result:Boolean = true;
          if(CheckWeaponManager.instance.isNoWeapon())
          {
             CheckWeaponManager.instance.showAlert();
-            _loc1_ = false;
+            result = false;
          }
-         return _loc1_;
+         return result;
       }
       
-      public function set enterIng(param1:Boolean) : void
+      public function set enterIng(value:Boolean) : void
       {
-         _entering = param1;
+         _entering = value;
       }
       
       public function removePrompt() : void
@@ -313,27 +313,27 @@ package worldboss.view
             startGame();
             return;
          }
-         var _loc1_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("worldboss.tickets.propInfo",WorldBossManager.Instance.bossInfo.need_ticket_count),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
-         _loc1_.addEventListener("response",__onAlertResponse);
+         var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("worldboss.tickets.propInfo",WorldBossManager.Instance.bossInfo.need_ticket_count),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
+         alert.addEventListener("response",__onAlertResponse);
       }
       
-      private function __onAlertResponse(param1:FrameEvent) : void
+      private function __onAlertResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onAlertResponse);
-         switch(int(param1.responseCode))
+         var alert:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",__onAlertResponse);
+         switch(int(evt.responseCode))
          {
             case 0:
-               _loc2_.dispose();
+               alert.dispose();
                autoMove = false;
                break;
             default:
-               _loc2_.dispose();
+               alert.dispose();
                autoMove = false;
                break;
             default:
-               _loc2_.dispose();
+               alert.dispose();
                autoMove = false;
                break;
             case 3:
@@ -347,7 +347,7 @@ package worldboss.view
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("worldboss.tickets.none"),0,true);
                   autoMove = false;
                }
-               _loc2_.dispose();
+               alert.dispose();
          }
       }
       
@@ -359,18 +359,18 @@ package worldboss.view
          }
       }
       
-      protected function __startFight(param1:Event) : void
+      protected function __startFight(event:Event) : void
       {
          _isFight = true;
          selfPlayer.removeEventListener("characterArrivedNextStep",__arrive);
       }
       
-      private function __stopFight(param1:Event) : void
+      private function __stopFight(e:Event) : void
       {
          enterIng = false;
       }
       
-      private function __arrive(param1:SceneCharacterEvent) : void
+      private function __arrive(e:SceneCharacterEvent) : void
       {
          if(autoMove)
          {
@@ -399,16 +399,16 @@ package worldboss.view
          return _sceneMapVO;
       }
       
-      public function set sceneMapVO(param1:SceneMapVO) : void
+      public function set sceneMapVO(value:SceneMapVO) : void
       {
-         _sceneMapVO = param1;
+         _sceneMapVO = value;
       }
       
       protected function init() : void
       {
          _characters = new DictionaryData(true);
-         var _loc1_:Class = ClassUtils.uiSourceDomain.getDefinition("asset.worldboss.room.MouseClickMovie") as Class;
-         _mouseMovie = new _loc1_() as MovieClip;
+         var mvClass:Class = ClassUtils.uiSourceDomain.getDefinition("asset.worldboss.room.MouseClickMovie") as Class;
+         _mouseMovie = new mvClass() as MovieClip;
          _mouseMovie.mouseChildren = false;
          _mouseMovie.mouseEnabled = false;
          _mouseMovie.stop();
@@ -431,37 +431,37 @@ package worldboss.view
          PlayerManager.Instance.addEventListener("setselfplayerpos",__onSetSelfPlayerPos);
       }
       
-      protected function __onSetSelfPlayerPos(param1:NewHallEvent) : void
+      protected function __onSetSelfPlayerPos(event:NewHallEvent) : void
       {
-         __click(param1.data[0]);
+         __click(event.data[0]);
       }
       
-      private function _hideOtherPlayer(param1:WorldBossRoomEvent) : void
+      private function _hideOtherPlayer(event:WorldBossRoomEvent) : void
       {
-         _isShowOther = param1.data as Boolean;
+         _isShowOther = event.data as Boolean;
          if(_characters)
          {
             var _loc4_:int = 0;
             var _loc3_:* = _characters;
-            for each(var _loc2_ in _characters)
+            for each(var worldRoomPlayer in _characters)
             {
-               if(_loc2_.ID != PlayerManager.Instance.Self.ID)
+               if(worldRoomPlayer.ID != PlayerManager.Instance.Self.ID)
                {
-                  _loc2_.visible = _isShowOther;
+                  worldRoomPlayer.visible = _isShowOther;
                }
             }
          }
       }
       
-      private function __onRoomFull(param1:WorldBossRoomEvent) : void
+      private function __onRoomFull(pEvent:WorldBossRoomEvent) : void
       {
          MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("worldboss.room.roomFull"),0,true);
          _entering = false;
       }
       
-      private function menuChange(param1:WorldBossRoomEvent) : void
+      private function menuChange(evt:WorldBossRoomEvent) : void
       {
-         var _loc2_:* = param1.type;
+         var _loc2_:* = evt.type;
          if("playerNameVisible" === _loc2_)
          {
             nameVisible();
@@ -472,13 +472,13 @@ package worldboss.view
       {
          var _loc3_:int = 0;
          var _loc2_:* = _characters;
-         for each(var _loc1_ in _characters)
+         for each(var worldRoomPlayer in _characters)
          {
-            _loc1_.isShowName = _model.playerNameVisible;
+            worldRoomPlayer.isShowName = _model.playerNameVisible;
          }
       }
       
-      protected function updateMap(param1:Event) : void
+      protected function updateMap(event:Event) : void
       {
          if(!_characters || _characters.length <= 0)
          {
@@ -486,112 +486,112 @@ package worldboss.view
          }
          var _loc4_:int = 0;
          var _loc3_:* = _characters;
-         for each(var _loc2_ in _characters)
+         for each(var player in _characters)
          {
-            _loc2_.updatePlayer();
-            _loc2_.isShowName = _model.playerNameVisible;
+            player.updatePlayer();
+            player.isShowName = _model.playerNameVisible;
          }
          BuildEntityDepth();
       }
       
-      protected function __click(param1:MouseEvent) : void
+      protected function __click(event:MouseEvent) : void
       {
          if(!selfPlayer || selfPlayer.playerVO.playerStauts != 1 || !selfPlayer.getCanAction())
          {
             return;
          }
-         var _loc2_:Point = this.globalToLocal(new Point(param1.stageX,param1.stageY));
+         var targetPoint:Point = this.globalToLocal(new Point(event.stageX,event.stageY));
          autoMove = false;
          if(getTimer() - _lastClick > _clickInterval)
          {
             _lastClick = getTimer();
-            if(!sceneScene.hit(_loc2_))
+            if(!sceneScene.hit(targetPoint))
             {
-               selfPlayer.playerVO.walkPath = sceneScene.searchPath(selfPlayer.playerPoint,_loc2_);
+               selfPlayer.playerVO.walkPath = sceneScene.searchPath(selfPlayer.playerPoint,targetPoint);
                selfPlayer.playerVO.walkPath.shift();
                selfPlayer.playerVO.scenePlayerDirection = SceneCharacterDirection.getDirection(selfPlayer.playerPoint,selfPlayer.playerVO.walkPath[0]);
                selfPlayer.playerVO.currentWalkStartPoint = selfPlayer.currentWalkStartPoint;
                sendMyPosition(selfPlayer.playerVO.walkPath.concat());
-               _mouseMovie.x = _loc2_.x;
-               _mouseMovie.y = _loc2_.y;
+               _mouseMovie.x = targetPoint.x;
+               _mouseMovie.y = targetPoint.y;
                _mouseMovie.play();
             }
          }
       }
       
-      public function sendMyPosition(param1:Array) : void
+      public function sendMyPosition(p:Array) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:Array = [];
-         while(_loc4_ < param1.length)
+         var i:int = 0;
+         var arr:Array = [];
+         while(i < p.length)
          {
-            _loc2_.push(int(param1[_loc4_].x),int(param1[_loc4_].y));
-            _loc4_++;
+            arr.push(int(p[i].x),int(p[i].y));
+            i++;
          }
-         var _loc3_:String = _loc2_.toString();
-         SocketManager.Instance.out.sendWorldBossRoomMove(param1[param1.length - 1].x,param1[param1.length - 1].y,_loc3_);
+         var pathStr:String = arr.toString();
+         SocketManager.Instance.out.sendWorldBossRoomMove(p[p.length - 1].x,p[p.length - 1].y,pathStr);
       }
       
-      public function movePlayer(param1:int, param2:Array) : void
+      public function movePlayer(id:int, p:Array) : void
       {
-         var _loc3_:* = null;
-         if(_characters[param1])
+         var worldRoomPlayer:* = null;
+         if(_characters[id])
          {
-            _loc3_ = _characters[param1] as WorldRoomPlayer;
-            if(!_loc3_.getCanAction())
+            worldRoomPlayer = _characters[id] as WorldRoomPlayer;
+            if(!worldRoomPlayer.getCanAction())
             {
-               _loc3_.playerVO.playerStauts = 1;
-               _loc3_.setStatus();
+               worldRoomPlayer.playerVO.playerStauts = 1;
+               worldRoomPlayer.setStatus();
             }
-            _loc3_.playerVO.walkPath = param2;
-            _loc3_.playerWalk(param2);
+            worldRoomPlayer.playerVO.walkPath = p;
+            worldRoomPlayer.playerWalk(p);
          }
       }
       
-      public function updatePlayersStauts(param1:int, param2:int, param3:Point) : void
+      public function updatePlayersStauts(id:int, stauts:int, point:Point) : void
       {
-         var _loc4_:* = null;
-         if(_characters[param1])
+         var worldRoomPlayer:* = null;
+         if(_characters[id])
          {
-            _loc4_ = _characters[param1] as WorldRoomPlayer;
-            if(param2 == 1 && _loc4_.playerVO.playerStauts == 3)
+            worldRoomPlayer = _characters[id] as WorldRoomPlayer;
+            if(stauts == 1 && worldRoomPlayer.playerVO.playerStauts == 3)
             {
-               _loc4_.playerVO.playerStauts = param2;
-               _loc4_.playerVO.playerPos = WorldBossManager.Instance.bossInfo.playerDefaultPos;
-               _loc4_.setStatus();
+               worldRoomPlayer.playerVO.playerStauts = stauts;
+               worldRoomPlayer.playerVO.playerPos = WorldBossManager.Instance.bossInfo.playerDefaultPos;
+               worldRoomPlayer.setStatus();
             }
-            else if(param2 == 2)
+            else if(stauts == 2)
             {
-               if(!_loc4_.getCanAction())
+               if(!worldRoomPlayer.getCanAction())
                {
-                  _loc4_.playerVO.playerStauts = 1;
-                  _loc4_.setStatus();
+                  worldRoomPlayer.playerVO.playerStauts = 1;
+                  worldRoomPlayer.setStatus();
                }
-               _loc4_.playerVO.playerStauts = param2;
-               _loc4_.isReadyFight = true;
-               _loc4_.addEventListener("readyFight",__otherPlayrStartFight);
-               _loc4_.playerVO.walkPath = [param3];
-               _loc4_.playerWalk([param3]);
+               worldRoomPlayer.playerVO.playerStauts = stauts;
+               worldRoomPlayer.isReadyFight = true;
+               worldRoomPlayer.addEventListener("readyFight",__otherPlayrStartFight);
+               worldRoomPlayer.playerVO.walkPath = [point];
+               worldRoomPlayer.playerWalk([point]);
             }
             else
             {
-               _loc4_.playerVO.playerStauts = param2;
-               _loc4_.setStatus();
+               worldRoomPlayer.playerVO.playerStauts = stauts;
+               worldRoomPlayer.setStatus();
             }
          }
       }
       
-      public function __otherPlayrStartFight(param1:WorldBossRoomEvent) : void
+      public function __otherPlayrStartFight(evt:WorldBossRoomEvent) : void
       {
-         var _loc2_:WorldRoomPlayer = param1.currentTarget as WorldRoomPlayer;
-         _loc2_.removeEventListener("readyFight",__otherPlayrStartFight);
-         _loc2_.sceneCharacterDirection = SceneCharacterDirection.getDirection(_loc2_.playerPoint,armyPos);
-         _loc2_.dispatchEvent(new SceneCharacterEvent("characterDirectionChange",false));
-         _loc2_.isReadyFight = false;
-         _loc2_.setStatus();
+         var worldRoomPlayer:WorldRoomPlayer = evt.currentTarget as WorldRoomPlayer;
+         worldRoomPlayer.removeEventListener("readyFight",__otherPlayrStartFight);
+         worldRoomPlayer.sceneCharacterDirection = SceneCharacterDirection.getDirection(worldRoomPlayer.playerPoint,armyPos);
+         worldRoomPlayer.dispatchEvent(new SceneCharacterEvent("characterDirectionChange",false));
+         worldRoomPlayer.isReadyFight = false;
+         worldRoomPlayer.setStatus();
       }
       
-      public function updateSelfStatus(param1:int) : void
+      public function updateSelfStatus(value:int) : void
       {
          if(selfPlayer.playerVO.playerStauts == 3)
          {
@@ -600,9 +600,9 @@ package worldboss.view
             setCenter();
             _entering = false;
          }
-         selfPlayer.playerVO.playerStauts = param1;
+         selfPlayer.playerVO.playerStauts = value;
          selfPlayer.setStatus();
-         SocketManager.Instance.out.sendWorldBossRoomStauts(param1);
+         SocketManager.Instance.out.sendWorldBossRoomStauts(value);
          checkGameOver();
       }
       
@@ -611,13 +611,13 @@ package worldboss.view
          return selfPlayer.playerVO.playerStauts;
       }
       
-      public function playerRevive(param1:int) : void
+      public function playerRevive(id:int) : void
       {
-         var _loc2_:* = null;
-         if(_characters[param1])
+         var worldRoomPlayer:* = null;
+         if(_characters[id])
          {
-            _loc2_ = _characters[param1] as WorldRoomPlayer;
-            _loc2_.revive();
+            worldRoomPlayer = _characters[id] as WorldRoomPlayer;
+            worldRoomPlayer.revive();
             selfPlayer.playerVO.playerStauts = 1;
             _entering = false;
          }
@@ -653,57 +653,57 @@ package worldboss.view
          return WorldBossManager.Instance.bossInfo.fightOver;
       }
       
-      public function setCenter(param1:SceneCharacterEvent = null) : void
+      public function setCenter(event:SceneCharacterEvent = null) : void
       {
-         var _loc4_:* = NaN;
-         var _loc3_:* = NaN;
+         var xf:* = NaN;
+         var yf:* = NaN;
          if(reference)
          {
-            _loc4_ = Number(-(reference.x - 1000 / 2));
-            _loc3_ = Number(-(reference.y - 600 / 2) + 50);
+            xf = Number(-(reference.x - 1000 / 2));
+            yf = Number(-(reference.y - 600 / 2) + 50);
          }
          else
          {
-            _loc4_ = Number(-(WorldBossManager.Instance.bossInfo.playerDefaultPos.x - 1000 / 2));
-            _loc3_ = Number(-(WorldBossManager.Instance.bossInfo.playerDefaultPos.y - 600 / 2) + 50);
+            xf = Number(-(WorldBossManager.Instance.bossInfo.playerDefaultPos.x - 1000 / 2));
+            yf = Number(-(WorldBossManager.Instance.bossInfo.playerDefaultPos.y - 600 / 2) + 50);
          }
-         if(_loc4_ > 0)
+         if(xf > 0)
          {
-            _loc4_ = 0;
+            xf = 0;
          }
-         if(_loc4_ < 1000 - _sceneMapVO.mapW)
+         if(xf < 1000 - _sceneMapVO.mapW)
          {
-            _loc4_ = Number(1000 - _sceneMapVO.mapW);
+            xf = Number(1000 - _sceneMapVO.mapW);
          }
-         if(_loc3_ > 0)
+         if(yf > 0)
          {
-            _loc3_ = 0;
+            yf = 0;
          }
-         if(_loc3_ < 600 - _sceneMapVO.mapH)
+         if(yf < 600 - _sceneMapVO.mapH)
          {
-            _loc3_ = Number(600 - _sceneMapVO.mapH);
+            yf = Number(600 - _sceneMapVO.mapH);
          }
-         x = _loc4_;
-         y = _loc3_;
-         var _loc2_:Point = this.globalToLocal(new Point(700,300));
-         _worldboss_sky.x = _loc2_.x;
-         _worldboss_sky.y = _loc2_.y;
+         x = xf;
+         y = yf;
+         var point:Point = this.globalToLocal(new Point(700,300));
+         _worldboss_sky.x = point.x;
+         _worldboss_sky.y = point.y;
       }
       
       public function addSelfPlayer() : void
       {
-         var _loc1_:* = null;
+         var selfPlayerVO:* = null;
          if(!selfPlayer)
          {
-            _loc1_ = WorldBossManager.Instance.bossInfo.myPlayerVO;
-            _loc1_.playerInfo = PlayerManager.Instance.Self;
-            _currentLoadingPlayer = new WorldRoomPlayer(_loc1_,addPlayerCallBack);
+            selfPlayerVO = WorldBossManager.Instance.bossInfo.myPlayerVO;
+            selfPlayerVO.playerInfo = PlayerManager.Instance.Self;
+            _currentLoadingPlayer = new WorldRoomPlayer(selfPlayerVO,addPlayerCallBack);
          }
       }
       
-      protected function ajustScreen(param1:WorldRoomPlayer) : void
+      protected function ajustScreen(worldRoomPlayer:WorldRoomPlayer) : void
       {
-         if(param1 == null)
+         if(worldRoomPlayer == null)
          {
             if(reference)
             {
@@ -716,37 +716,37 @@ package worldboss.view
          {
             reference.removeEventListener("characterMovement",setCenter);
          }
-         reference = param1;
+         reference = worldRoomPlayer;
          reference.addEventListener("characterMovement",setCenter);
       }
       
-      protected function __addPlayer(param1:DictionaryEvent) : void
+      protected function __addPlayer(event:DictionaryEvent) : void
       {
-         var _loc2_:PlayerVO = param1.data as PlayerVO;
-         _currentLoadingPlayer = new WorldRoomPlayer(_loc2_,addPlayerCallBack);
-         if(_loc2_.playerInfo.ID != PlayerManager.Instance.Self.ID)
+         var playerVO:PlayerVO = event.data as PlayerVO;
+         _currentLoadingPlayer = new WorldRoomPlayer(playerVO,addPlayerCallBack);
+         if(playerVO.playerInfo.ID != PlayerManager.Instance.Self.ID)
          {
             _currentLoadingPlayer.visible = _isShowOther;
          }
       }
       
-      private function addPlayerCallBack(param1:WorldRoomPlayer, param2:Boolean, param3:int) : void
+      private function addPlayerCallBack(worldRoomPlayer:WorldRoomPlayer, isLoadSucceed:Boolean, vFlag:int) : void
       {
-         if(param3 == 0)
+         if(vFlag == 0)
          {
-            if(!articleLayer || !param1)
+            if(!articleLayer || !worldRoomPlayer)
             {
                return;
             }
             _currentLoadingPlayer = null;
-            param1.sceneScene = sceneScene;
-            var _loc4_:* = param1.playerVO.scenePlayerDirection;
-            param1.sceneCharacterDirection = _loc4_;
-            param1.setSceneCharacterDirectionDefault = _loc4_;
-            if(!selfPlayer && param1.playerVO.playerInfo.ID == PlayerManager.Instance.Self.ID)
+            worldRoomPlayer.sceneScene = sceneScene;
+            var _loc4_:* = worldRoomPlayer.playerVO.scenePlayerDirection;
+            worldRoomPlayer.sceneCharacterDirection = _loc4_;
+            worldRoomPlayer.setSceneCharacterDirectionDefault = _loc4_;
+            if(!selfPlayer && worldRoomPlayer.playerVO.playerInfo.ID == PlayerManager.Instance.Self.ID)
             {
-               param1.playerVO.playerPos = param1.playerVO.playerPos;
-               selfPlayer = param1;
+               worldRoomPlayer.playerVO.playerPos = worldRoomPlayer.playerVO.playerPos;
+               selfPlayer = worldRoomPlayer;
                articleLayer.addChild(selfPlayer);
                ajustScreen(selfPlayer);
                setCenter();
@@ -758,86 +758,84 @@ package worldboss.view
             }
             else
             {
-               articleLayer.addChild(param1);
+               articleLayer.addChild(worldRoomPlayer);
             }
-            param1.playerPoint = param1.playerVO.playerPos;
-            param1.sceneCharacterStateType = "natural";
-            _characters.add(param1.playerVO.playerInfo.ID,param1);
-            param1.isShowName = _model.playerNameVisible;
-            if(param1.playerVO.playerInfo.ID != PlayerManager.Instance.Self.ID)
+            worldRoomPlayer.playerPoint = worldRoomPlayer.playerVO.playerPos;
+            worldRoomPlayer.sceneCharacterStateType = "natural";
+            _characters.add(worldRoomPlayer.playerVO.playerInfo.ID,worldRoomPlayer);
+            worldRoomPlayer.isShowName = _model.playerNameVisible;
+            if(worldRoomPlayer.playerVO.playerInfo.ID != PlayerManager.Instance.Self.ID)
             {
-               param1.visible = _isShowOther;
+               worldRoomPlayer.visible = _isShowOther;
             }
          }
       }
       
-      private function playerActionChange(param1:SceneCharacterEvent) : void
+      private function playerActionChange(evt:SceneCharacterEvent) : void
       {
-         var _loc2_:String = param1.data.toString();
-         if(_loc2_ == "naturalStandFront" || _loc2_ == "naturalStandBack")
+         var type:String = evt.data.toString();
+         if(type == "naturalStandFront" || type == "naturalStandBack")
          {
             _mouseMovie.gotoAndStop(1);
          }
       }
       
-      protected function __removePlayer(param1:DictionaryEvent) : void
+      protected function __removePlayer(event:DictionaryEvent) : void
       {
-         var _loc2_:int = (param1.data as PlayerVO).playerInfo.ID;
-         var _loc3_:WorldRoomPlayer = _characters[_loc2_] as WorldRoomPlayer;
-         _characters.remove(_loc2_);
-         if(_loc3_)
+         var id:int = (event.data as PlayerVO).playerInfo.ID;
+         var player:WorldRoomPlayer = _characters[id] as WorldRoomPlayer;
+         _characters.remove(id);
+         if(player)
          {
-            if(_loc3_.parent)
+            if(player.parent)
             {
-               _loc3_.parent.removeChild(_loc3_);
+               player.parent.removeChild(player);
             }
-            _loc3_.removeEventListener("characterMovement",setCenter);
-            _loc3_.removeEventListener("characterActionChange",playerActionChange);
-            _loc3_.dispose();
+            player.removeEventListener("characterMovement",setCenter);
+            player.removeEventListener("characterActionChange",playerActionChange);
+            player.dispose();
          }
-         _loc3_ = null;
+         player = null;
       }
       
       protected function BuildEntityDepth() : void
       {
-         var _loc9_:int = 0;
-         var _loc4_:* = null;
-         var _loc8_:Number = NaN;
-         var _loc7_:* = 0;
-         var _loc5_:* = NaN;
-         var _loc6_:int = 0;
-         var _loc3_:* = null;
-         var _loc1_:Number = NaN;
-         var _loc2_:int = articleLayer.numChildren;
-         _loc9_ = 0;
-         while(_loc9_ < _loc2_ - 1)
+         var i:int = 0;
+         var obj:* = null;
+         var depth:Number = NaN;
+         var minIndex:* = 0;
+         var minDepth:* = NaN;
+         var j:int = 0;
+         var temp:* = null;
+         var tempDepth:Number = NaN;
+         var count:int = articleLayer.numChildren;
+         for(i = 0; i < count - 1; )
          {
-            _loc4_ = articleLayer.getChildAt(_loc9_);
-            _loc8_ = this.getPointDepth(_loc4_.x,_loc4_.y);
-            _loc5_ = 1.79769313486232e308;
-            _loc6_ = _loc9_ + 1;
-            while(_loc6_ < _loc2_)
+            obj = articleLayer.getChildAt(i);
+            depth = this.getPointDepth(obj.x,obj.y);
+            minDepth = 1.79769313486232e308;
+            for(j = i + 1; j < count; )
             {
-               _loc3_ = articleLayer.getChildAt(_loc6_);
-               _loc1_ = this.getPointDepth(_loc3_.x,_loc3_.y);
-               if(_loc1_ < _loc5_)
+               temp = articleLayer.getChildAt(j);
+               tempDepth = this.getPointDepth(temp.x,temp.y);
+               if(tempDepth < minDepth)
                {
-                  _loc7_ = _loc6_;
-                  _loc5_ = _loc1_;
+                  minIndex = j;
+                  minDepth = tempDepth;
                }
-               _loc6_++;
+               j++;
             }
-            if(_loc8_ > _loc5_)
+            if(depth > minDepth)
             {
-               articleLayer.swapChildrenAt(_loc9_,_loc7_);
+               articleLayer.swapChildrenAt(i,minIndex);
             }
-            _loc9_++;
+            i++;
          }
       }
       
-      protected function getPointDepth(param1:Number, param2:Number) : Number
+      protected function getPointDepth(x:Number, y:Number) : Number
       {
-         return sceneMapVO.mapW * param2 + param1;
+         return sceneMapVO.mapW * y + x;
       }
       
       protected function removeEvent() : void
@@ -865,53 +863,52 @@ package worldboss.view
       
       public function dispose() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var player:* = null;
          removeEvent();
          _data.clear();
          _data = null;
          _sceneMapVO = null;
          var _loc5_:int = 0;
          var _loc4_:* = _characters;
-         for each(var _loc2_ in _characters)
+         for each(var p in _characters)
          {
-            if(_loc2_.parent)
+            if(p.parent)
             {
-               _loc2_.parent.removeChild(_loc2_);
+               p.parent.removeChild(p);
             }
-            _loc2_.removeEventListener("characterMovement",setCenter);
-            _loc2_.removeEventListener("characterActionChange",playerActionChange);
-            _loc2_.dispose();
-            _loc2_ = null;
+            p.removeEventListener("characterMovement",setCenter);
+            p.removeEventListener("characterActionChange",playerActionChange);
+            p.dispose();
+            p = null;
          }
          _characters.clear();
          _characters = null;
          if(articleLayer)
          {
-            _loc3_ = articleLayer.numChildren;
-            while(_loc3_ > 0)
+            for(i = articleLayer.numChildren; i > 0; )
             {
-               _loc1_ = articleLayer.getChildAt(_loc3_ - 1) as WorldRoomPlayer;
-               if(_loc1_)
+               player = articleLayer.getChildAt(i - 1) as WorldRoomPlayer;
+               if(player)
                {
-                  _loc1_.removeEventListener("characterMovement",setCenter);
-                  _loc1_.removeEventListener("characterActionChange",playerActionChange);
-                  if(_loc1_.parent)
+                  player.removeEventListener("characterMovement",setCenter);
+                  player.removeEventListener("characterActionChange",playerActionChange);
+                  if(player.parent)
                   {
-                     _loc1_.parent.removeChild(_loc1_);
+                     player.parent.removeChild(player);
                   }
-                  _loc1_.dispose();
+                  player.dispose();
                }
-               _loc1_ = null;
+               player = null;
                try
                {
-                  articleLayer.removeChildAt(_loc3_ - 1);
+                  articleLayer.removeChildAt(i - 1);
                }
                catch(e:RangeError)
                {
                   trace(e);
                }
-               _loc3_--;
+               i--;
             }
             if(articleLayer && articleLayer.parent)
             {

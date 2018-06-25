@@ -19,23 +19,23 @@ package store.view.storeBag
       
       private var _currentType:int;
       
-      public function StoreBagController(param1:StoreModel)
+      public function StoreBagController(model:StoreModel)
       {
          super();
-         _model = param1;
+         _model = model;
       }
       
-      public function getView(param1:int) : DisplayObject
+      public function getView(index:int) : DisplayObject
       {
-         _currentType = param1;
-         if(param1 == StoreModel.STORE_BAG)
+         _currentType = index;
+         if(index == StoreModel.STORE_BAG)
          {
             _view = ComponentFactory.Instance.creat("ddtstore.StoreBagView");
             _view.setup(this);
             loadList();
             return _view;
          }
-         if(param1 == StoreModel.EVOLUTION_BAG)
+         if(index == StoreModel.EVOLUTION_BAG)
          {
             _viewII = ComponentFactory.Instance.creat("ddtstore.FineEvolutionBagView");
             _viewII.setup(this);
@@ -45,18 +45,18 @@ package store.view.storeBag
          return null;
       }
       
-      public function getPropCell(param1:int) : BagCell
+      public function getPropCell(pos:int) : BagCell
       {
-         if(param1 < 0)
+         if(pos < 0)
          {
             return null;
          }
          return null;
       }
       
-      public function getEquipCell(param1:int) : BagCell
+      public function getEquipCell(pos:int) : BagCell
       {
-         if(param1 < 0)
+         if(pos < 0)
          {
             return null;
          }
@@ -68,25 +68,25 @@ package store.view.storeBag
          setList(_model);
       }
       
-      public function setList(param1:StoreModel) : void
+      public function setList(storeModel:StoreModel) : void
       {
          if(_currentType == StoreModel.STORE_BAG)
          {
             if(_view)
             {
-               _view.setData(param1);
+               _view.setData(storeModel);
             }
          }
          if(_currentType == StoreModel.EVOLUTION_BAG)
          {
             if(_viewII)
             {
-               _viewII.setData(param1);
+               _viewII.setData(storeModel);
             }
          }
       }
       
-      public function changeMsg(param1:int) : void
+      public function changeMsg(msg:int) : void
       {
       }
       
@@ -105,7 +105,7 @@ package store.view.storeBag
          return false;
       }
       
-      public function setEnabled(param1:Boolean) : void
+      public function setEnabled(value:Boolean) : void
       {
       }
       

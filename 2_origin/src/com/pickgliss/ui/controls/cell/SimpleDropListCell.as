@@ -50,9 +50,9 @@ package com.pickgliss.ui.controls.cell
          return _selected;
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         _selected = param1;
+         _selected = value;
          if(_selected)
          {
             _bg.setFrame(2);
@@ -72,11 +72,11 @@ package com.pickgliss.ui.controls.cell
          return "";
       }
       
-      public function setCellValue(param1:*) : void
+      public function setCellValue(value:*) : void
       {
-         if(param1)
+         if(value)
          {
-            _data = String(param1);
+            _data = String(value);
             _textField.text = _data;
          }
       }

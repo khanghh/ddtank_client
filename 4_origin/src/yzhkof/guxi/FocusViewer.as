@@ -47,9 +47,9 @@ package yzhkof.guxi
          return container;
       }
       
-      public static function init(param1:DisplayObjectContainer, param2:Stage) : DisplayObjectContainer
+      public static function init(dobj:DisplayObjectContainer, $stage:Stage) : DisplayObjectContainer
       {
-         _stageRef = param2;
+         _stageRef = $stage;
          _stageRef.addEventListener(Event.ENTER_FRAME,__onEnterFrame);
          back.filters = [new DropShadowFilter(0,0,0)];
          drag_btn.buttonMode = true;
@@ -70,7 +70,7 @@ package yzhkof.guxi
          container.addChild(drag_btn);
          container.addChild(clean_btn);
          container.addChild(enabled_btn);
-         param1.addChild(container);
+         dobj.addChild(container);
          drag_btn.addEventListener(MouseEvent.MOUSE_DOWN,containerMouseDownHandler);
          drag_btn.addEventListener(MouseEvent.MOUSE_UP,containerMouseUpHandler);
          scaleX_btn.addEventListener(MouseEvent.MOUSE_DOWN,scaleXMouseDownHandler);
@@ -78,19 +78,19 @@ package yzhkof.guxi
          clean_btn.addEventListener(MouseEvent.CLICK,__onCleanClick);
          enabled_btn.addEventListener(MouseEvent.CLICK,__onEnabledClick);
          scaleXonEnterFrame(null);
-         return param1;
+         return dobj;
       }
       
-      private static function __onEnterFrame(param1:Event) : void
+      private static function __onEnterFrame(e:Event) : void
       {
-         var _loc2_:String = null;
+         var str:String = null;
          if(_stageRef.focus)
          {
             if(_focusInstance != _stageRef.focus.name)
             {
                _focusInstance = _stageRef.focus.name;
-               _loc2_ = _focusInstance + " " + getQualifiedClassName(_stageRef.focus);
-               textPlus(_loc2_ + "\n");
+               str = _focusInstance + " " + getQualifiedClassName(_stageRef.focus);
+               textPlus(str + "\n");
             }
          }
          else if(_focusInstance != getQualifiedClassName(_stageRef.focus))
@@ -105,14 +105,14 @@ package yzhkof.guxi
          return container.visible;
       }
       
-      public static function set visible(param1:Boolean) : void
+      public static function set visible(value:Boolean) : void
       {
-         container.visible = param1;
+         container.visible = value;
       }
       
-      public static function textPlus(param1:String) : void
+      public static function textPlus(str:String) : void
       {
-         text_info.appendText(param1);
+         text_info.appendText(str);
          text_info.scrollV = text_info.maxScrollV;
       }
       
@@ -121,7 +121,7 @@ package yzhkof.guxi
          text_info.text = "";
       }
       
-      private static function __onEnabledClick(param1:Event) : void
+      private static function __onEnabledClick(e:Event) : void
       {
          if(enabled_btn.text == "停止")
          {
@@ -135,26 +135,26 @@ package yzhkof.guxi
          }
       }
       
-      private static function __onCleanClick(param1:Event) : void
+      private static function __onCleanClick(e:Event) : void
       {
          textClean();
       }
       
-      private static function scaleXMouseDownHandler(param1:Event) : void
+      private static function scaleXMouseDownHandler(e:Event) : void
       {
          scaleX_btn.startDrag();
          scaleXonEnterFrame(null);
          scaleX_btn.addEventListener(Event.ENTER_FRAME,scaleXonEnterFrame);
       }
       
-      private static function scaleXMouseUpHandler(param1:Event) : void
+      private static function scaleXMouseUpHandler(e:Event) : void
       {
          scaleX_btn.removeEventListener(Event.ENTER_FRAME,scaleXonEnterFrame);
          scaleXonEnterFrame(null);
          scaleX_btn.stopDrag();
       }
       
-      private static function scaleXonEnterFrame(param1:Event) : void
+      private static function scaleXonEnterFrame(e:Event) : void
       {
          text_info.width = scaleX_btn.x;
          back.width = scaleX_btn.x + 20;
@@ -162,12 +162,12 @@ package yzhkof.guxi
          back.height = scaleX_btn.y + 20;
       }
       
-      private static function containerMouseDownHandler(param1:Event) : void
+      private static function containerMouseDownHandler(e:Event) : void
       {
          container.startDrag();
       }
       
-      private static function containerMouseUpHandler(param1:Event) : void
+      private static function containerMouseUpHandler(e:Event) : void
       {
          container.stopDrag();
       }

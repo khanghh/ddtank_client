@@ -12,9 +12,9 @@ package starling.display.sceneCharacter
          _dataSet = new Vector.<SceneCharacterActionItem>();
       }
       
-      public function push(param1:SceneCharacterActionItem) : void
+      public function push(sceneCharacterActionItem:SceneCharacterActionItem) : void
       {
-         _dataSet.push(param1);
+         _dataSet.push(sceneCharacterActionItem);
       }
       
       public function get length() : uint
@@ -27,45 +27,43 @@ package starling.display.sceneCharacter
          return _dataSet;
       }
       
-      public function getItems(param1:String) : Vector.<SceneCharacterActionItem>
+      public function getItems(state:String) : Vector.<SceneCharacterActionItem>
       {
-         var _loc3_:int = 0;
-         var _loc2_:Vector.<SceneCharacterActionItem> = new Vector.<SceneCharacterActionItem>();
+         var i:int = 0;
+         var list:Vector.<SceneCharacterActionItem> = new Vector.<SceneCharacterActionItem>();
          if(_dataSet && _dataSet.length > 0)
          {
-            _loc3_ = 0;
-            while(_loc3_ < _dataSet.length)
+            for(i = 0; i < _dataSet.length; )
             {
-               if(_dataSet[_loc3_].state == param1)
+               if(_dataSet[i].state == state)
                {
-                  _loc2_.push(_dataSet[_loc3_]);
+                  list.push(_dataSet[i]);
                }
-               _loc3_++;
+               i++;
             }
          }
-         return _loc2_;
+         return list;
       }
       
-      public function replace(param1:SceneCharacterActionItem) : void
+      public function replace(item:SceneCharacterActionItem) : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          if(_dataSet)
          {
-            _loc2_ = 0;
-            while(_loc2_ < _dataSet.length)
+            for(i = 0; i < _dataSet.length; )
             {
-               if(_dataSet[_loc2_].state == param1.state && _dataSet[_loc2_].type == param1.type)
+               if(_dataSet[i].state == item.state && _dataSet[i].type == item.type)
                {
-                  if(_dataSet[_loc2_] != param1)
+                  if(_dataSet[i] != item)
                   {
-                     _dataSet[_loc2_].dispose();
-                     _dataSet.splice(_loc2_,1,param1);
+                     _dataSet[i].dispose();
+                     _dataSet.splice(i,1,item);
                   }
                   return;
                }
-               _loc2_++;
+               i++;
             }
-            _dataSet.push(param1);
+            _dataSet.push(item);
          }
       }
       

@@ -9,9 +9,9 @@ package gameStarling.objects
    {
        
       
-      public function ThroughWallBomb3D(param1:Bomb, param2:Living, param3:int = 0, param4:Boolean = false)
+      public function ThroughWallBomb3D(info:Bomb, owner:Living, refineryLevel:int = 0, isPhantom:Boolean = false)
       {
-         super(param1,param2,param3,param4);
+         super(info,owner,refineryLevel,isPhantom);
       }
       
       override public function bomb() : void
@@ -22,10 +22,10 @@ package gameStarling.objects
          }
          _blastOut.stop();
          _blastOut.visible = false;
-         var _loc1_:BoneMovieWrapper = new BoneMovieWrapper(_blastOut.styleName,true,true);
-         _loc1_.asDisplay.x = x;
-         _loc1_.asDisplay.y = y;
-         _map.addToPhyLayer(_loc1_.asDisplay);
+         var blastOutEffect:BoneMovieWrapper = new BoneMovieWrapper(_blastOut.styleName,true,true);
+         blastOutEffect.asDisplay.x = x;
+         blastOutEffect.asDisplay.y = y;
+         _map.addToPhyLayer(blastOutEffect.asDisplay);
          if(parent)
          {
             parent.removeChild(this);

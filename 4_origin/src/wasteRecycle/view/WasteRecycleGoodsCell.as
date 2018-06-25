@@ -20,51 +20,51 @@ package wasteRecycle.view
    {
        
       
-      public function WasteRecycleGoodsCell(param1:Sprite)
+      public function WasteRecycleGoodsCell(bg:Sprite)
       {
-         super(0,null,true,param1);
+         super(0,null,true,bg);
          this.addEventListener("interactive_click",__clickHandler);
          this.addEventListener("interactive_double_click",__doubleClickHandler);
          this.addEventListener("lockChanged",__cellChanged);
          DoubleClickManager.Instance.enableDoubleClick(this);
       }
       
-      override public function dragDrop(param1:DragEffect) : void
+      override public function dragDrop(effect:DragEffect) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         if(param1.action == "move" && param1.source is WasteRecycleCell)
+         var info:* = null;
+         var frame:* = null;
+         if(effect.action == "move" && effect.source is WasteRecycleCell)
          {
-            _loc3_ = param1.data as InventoryItemInfo;
-            if(_loc3_)
+            info = effect.data as InventoryItemInfo;
+            if(info)
             {
-               _loc2_ = ComponentFactory.Instance.creatComponentByStylename("wasteRecycel.selectedFrame");
-               _loc2_.show(param1.source as WasteRecycleCell);
+               frame = ComponentFactory.Instance.creatComponentByStylename("wasteRecycel.selectedFrame");
+               frame.show(effect.source as WasteRecycleCell);
             }
             else
             {
-               param1.action = "none";
+               effect.action = "none";
             }
          }
          else
          {
-            param1.action = "none";
+            effect.action = "none";
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.wasteRecycle.notMove"));
          }
          DragManager.acceptDrag(this);
       }
       
-      protected function __clickHandler(param1:InteractiveEvent) : void
+      protected function __clickHandler(evt:InteractiveEvent) : void
       {
          this.dragStart();
       }
       
-      override public function dragStop(param1:DragEffect) : void
+      override public function dragStop(effect:DragEffect) : void
       {
          SoundManager.instance.playButtonSound();
-         if(param1.target == null)
+         if(effect.target == null)
          {
-            if(param1.action == "move")
+            if(effect.action == "move")
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.wasteRecycle.notMove"));
             }
@@ -72,7 +72,7 @@ package wasteRecycle.view
          }
       }
       
-      protected function __doubleClickHandler(param1:InteractiveEvent) : void
+      protected function __doubleClickHandler(evt:InteractiveEvent) : void
       {
          if(_info)
          {
@@ -97,7 +97,7 @@ package wasteRecycle.view
          super.dragStart();
       }
       
-      protected function __cellChanged(param1:Event) : void
+      protected function __cellChanged(event:Event) : void
       {
          dispatchEvent(new Event("change"));
       }

@@ -13,22 +13,22 @@ package ddt.view.common
       
       private var _sex:Boolean;
       
-      public function SexIcon(param1:Boolean = true)
+      public function SexIcon(sex:Boolean = true)
       {
          super();
          _sexIcon = ComponentFactory.Instance.creat("sex_icon");
-         _sexIcon.setFrame(!!param1?1:2);
+         _sexIcon.setFrame(!!sex?1:2);
          addChild(_sexIcon);
       }
       
-      public function setSex(param1:Boolean) : void
+      public function setSex(sex:Boolean) : void
       {
-         _sexIcon.setFrame(!!param1?2:1);
+         _sexIcon.setFrame(!!sex?2:1);
       }
       
-      public function set size(param1:Number) : void
+      public function set size(value:Number) : void
       {
-         var _loc2_:* = param1;
+         var _loc2_:* = value;
          _sexIcon.scaleY = _loc2_;
          _sexIcon.scaleX = _loc2_;
       }

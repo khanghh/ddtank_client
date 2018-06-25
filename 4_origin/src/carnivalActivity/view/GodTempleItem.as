@@ -19,14 +19,14 @@ package carnivalActivity.view
       
       private var _reallyTempleGrade:int;
       
-      public function GodTempleItem(param1:int, param2:GiftBagInfo, param3:int)
+      public function GodTempleItem(type:int, info:GiftBagInfo, index:int)
       {
-         super(param1,param2,param3);
+         super(type,info,index);
       }
       
       override protected function initItem() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(HomeTempleController.Instance.practiceList == null)
          {
             new HelperDataModuleLoad().loadDataModule([HomeTempleController.Instance.getHomeTempleList2],initItem);
@@ -34,19 +34,18 @@ package carnivalActivity.view
          }
          if(CarnivalActivityControl.instance.currentChildType == 0)
          {
-            _loc1_ = 0;
-            while(_loc1_ < _info.giftConditionArr.length)
+            for(i = 0; i < _info.giftConditionArr.length; )
             {
-               if(_info.giftConditionArr[_loc1_].conditionIndex == 0)
+               if(_info.giftConditionArr[i].conditionIndex == 0)
                {
-                  _needTempleStar = _info.giftConditionArr[_loc1_].conditionValue;
-                  _reallyTempleGrade = _info.giftConditionArr[_loc1_].remain1;
+                  _needTempleStar = _info.giftConditionArr[i].conditionValue;
+                  _reallyTempleGrade = _info.giftConditionArr[i].remain1;
                }
-               else if(_info.giftConditionArr[_loc1_].conditionIndex == 1)
+               else if(_info.giftConditionArr[i].conditionIndex == 1)
                {
-                  _needTempleLevel = _info.giftConditionArr[_loc1_].conditionValue;
+                  _needTempleLevel = _info.giftConditionArr[i].conditionValue;
                }
-               _loc1_++;
+               i++;
             }
          }
          if(_sumCount != 0)
@@ -74,29 +73,29 @@ package carnivalActivity.view
       
       override public function updateView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
+         var grade:int = 0;
+         var currentGrade:int = 0;
          _giftCurInfo = WonderfulActivityManager.Instance.activityInitData[_info.activityId].giftInfoDic[_info.giftbagId];
          _statusArr = WonderfulActivityManager.Instance.activityInitData[_info.activityId].statusArr;
          if(CarnivalActivityControl.instance.currentChildType == 0)
          {
             var _loc5_:int = 0;
             var _loc4_:* = _statusArr;
-            for each(var _loc3_ in _statusArr)
+            for each(var info in _statusArr)
             {
-               if(_loc3_.statusID == 0)
+               if(info.statusID == 0)
                {
-                  _loc2_ = _loc3_.statusValue;
+                  grade = info.statusValue;
                }
-               else if(_loc3_.statusID == 1)
+               else if(info.statusID == 1)
                {
-                  _loc1_ = _loc3_.statusValue;
+                  currentGrade = info.statusValue;
                }
             }
          }
          if(CarnivalActivityControl.instance.currentChildType == 0)
          {
-            _getBtn.enable = CarnivalActivityControl.instance.canGetAward() && _giftCurInfo.times == 0 && _reallyTempleGrade > _loc2_ && _reallyTempleGrade <= _loc1_;
+            _getBtn.enable = CarnivalActivityControl.instance.canGetAward() && _giftCurInfo.times == 0 && _reallyTempleGrade > grade && _reallyTempleGrade <= currentGrade;
             _alreadyGetBtn.visible = _giftCurInfo.times > 0;
             _getBtn.visible = !_alreadyGetBtn.visible;
          }

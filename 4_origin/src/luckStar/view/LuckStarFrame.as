@@ -100,8 +100,8 @@ package luckStar.view
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var cell:* = null;
          _bg = ComponentFactory.Instance.creatComponentByStylename("luckyStar.view.scale9ImageBg");
          _superLuckyStarBg = ComponentFactory.Instance.creatBitmap("luckyStar.view.SuperLuckyStarBg");
          _autoCheck = ComponentFactory.Instance.creatComponentByStylename("luckyStar.view.AutoOpenButton");
@@ -139,16 +139,15 @@ package luckStar.view
          addToContent(_coinsAward);
          _rewardList = [];
          _cell = new Vector.<LuckStarCell>();
-         _loc2_ = 0;
-         while(_loc2_ < 14)
+         for(i = 0; i < 14; )
          {
-            _loc1_ = new LuckStarCell();
-            _loc1_.selected = false;
-            PositionUtils.setPos(_loc1_,"luckyStar.view.cellPos" + _loc2_);
-            _loc1_.addEventListener("luckystarevent",__onPlayActionEnd);
-            _cell.push(_loc1_);
-            addToContent(_loc1_);
-            _loc2_++;
+            cell = new LuckStarCell();
+            cell.selected = false;
+            PositionUtils.setPos(cell,"luckyStar.view.cellPos" + i);
+            cell.addEventListener("luckystarevent",__onPlayActionEnd);
+            _cell.push(cell);
+            addToContent(cell);
+            i++;
          }
          _autoCheck.addEventListener("select",__selectedChanged);
          _startBtn.addEventListener("click",__onStartLuckyStar);
@@ -163,13 +162,13 @@ package luckStar.view
          aotuButton = false;
       }
       
-      private function __onHelpClick(param1:MouseEvent) : void
+      private function __onHelpClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:HelpPrompt = ComponentFactory.Instance.creat("luckyStar.view.HelpPrompt");
-         var _loc3_:HelpFrame = ComponentFactory.Instance.creat("luckyStar.view.HelpFrame");
-         _loc3_.setView(_loc2_);
-         _loc3_.titleText = LanguageMgr.GetTranslation("store.view.HelpButtonText");
+         var helpPrompt:HelpPrompt = ComponentFactory.Instance.creat("luckyStar.view.HelpPrompt");
+         var helpPage:HelpFrame = ComponentFactory.Instance.creat("luckyStar.view.HelpFrame");
+         helpPage.setView(helpPrompt);
+         helpPage.titleText = LanguageMgr.GetTranslation("store.view.HelpButtonText");
          if(!_helpNumText)
          {
             _helpNumText = ComponentFactory.Instance.creat("luckyStar.view.HelpNumText");
@@ -181,12 +180,12 @@ package luckStar.view
          PositionUtils.setPos(_helpRewardPrice,"luckyStar.view.helpRewardPricePos");
          _helpNumText.text = LuckStarManager.Instance.model.minUseNum.toString();
          _helpRewardPrice.text = _coins.text;
-         _loc3_.addChild(_helpRewardPrice);
-         _loc3_.addChild(_helpNumText);
-         LayerManager.Instance.addToLayer(_loc3_,1,true,1);
+         helpPage.addChild(_helpRewardPrice);
+         helpPage.addChild(_helpNumText);
+         LayerManager.Instance.addToLayer(helpPage,1,true,1);
       }
       
-      private function __selectedChanged(param1:Event) : void
+      private function __selectedChanged(e:Event) : void
       {
          SoundManager.instance.play("008");
          if(_turnControl.turnContinue == _autoCheck.selected)
@@ -207,25 +206,24 @@ package luckStar.view
          }
       }
       
-      public function getAwardGoods(param1:InventoryItemInfo) : void
+      public function getAwardGoods(goods:InventoryItemInfo) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _cell.length)
+         var i:int = 0;
+         for(i = 0; i < _cell.length; )
          {
-            if(_cell[_loc2_].info.TemplateID == param1.TemplateID)
+            if(_cell[i].info.TemplateID == goods.TemplateID)
             {
-               _select = _loc2_;
+               _select = i;
             }
-            _loc2_++;
+            i++;
          }
-         _rewardList.push(param1);
+         _rewardList.push(goods);
          startTurn();
       }
       
-      private function __onPlayActionEnd(param1:LuckStarEvent) : void
+      private function __onPlayActionEnd(e:LuckStarEvent) : void
       {
-         if(param1.code == 4)
+         if(e.code == 4)
          {
             SocketManager.Instance.out.sendLuckyStarTurnComplete();
             if(_cell[_select].isMaxAward)
@@ -267,31 +265,31 @@ package luckStar.view
             return;
          }
          _frame = ComponentFactory.Instance.creatComponentByStylename("bagAndInfo.ItemPreviewListFrame");
-         var _loc3_:AwardsView = new AwardsView();
-         _loc3_.goodsList = _rewardList;
-         _loc3_.boxType = 4;
-         var _loc1_:FilterFrameText = ComponentFactory.Instance.creat("bagandinfo.awardsFFT");
-         _loc1_.text = LanguageMgr.GetTranslation("roulette.tipTxt4");
-         var _loc2_:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("dice.reward.title"));
-         _loc2_.showCancel = false;
-         _loc2_.moveEnable = false;
-         _frame.info = _loc2_;
-         _frame.addToContent(_loc3_);
-         _frame.addToContent(_loc1_);
+         var aView:AwardsView = new AwardsView();
+         aView.goodsList = _rewardList;
+         aView.boxType = 4;
+         var title:FilterFrameText = ComponentFactory.Instance.creat("bagandinfo.awardsFFT");
+         title.text = LanguageMgr.GetTranslation("roulette.tipTxt4");
+         var alterInfo:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("dice.reward.title"));
+         alterInfo.showCancel = false;
+         alterInfo.moveEnable = false;
+         _frame.info = alterInfo;
+         _frame.addToContent(aView);
+         _frame.addToContent(title);
          _frame.addEventListener("response",__onFrameClose);
          LayerManager.Instance.addToLayer(_frame,3,true,1);
       }
       
-      private function __onFrameClose(param1:FrameEvent) : void
+      private function __onFrameClose(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         BaseAlerFrame(param1.currentTarget).removeEventListener("response",__onFrameClose);
-         ObjectUtils.disposeObject(param1.currentTarget);
+         BaseAlerFrame(e.currentTarget).removeEventListener("response",__onFrameClose);
+         ObjectUtils.disposeObject(e.currentTarget);
          _frame = null;
          _rewardList.splice(0,_rewardList.length);
       }
       
-      private function __onTurnComplete(param1:Event) : void
+      private function __onTurnComplete(e:Event) : void
       {
          _cell[_select].selected = false;
          if(_cell[_select].isMaxAward)
@@ -301,7 +299,7 @@ package luckStar.view
          _cell[_select].playAction();
       }
       
-      private function __onStartLuckyStar(param1:MouseEvent) : void
+      private function __onStartLuckyStar(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(LuckStarManager.Instance.isOpen)
@@ -314,14 +312,14 @@ package luckStar.view
          }
       }
       
-      private function __onStopLuckyStar(param1:MouseEvent) : void
+      private function __onStopLuckyStar(e:MouseEvent) : void
       {
          aotuButton = false;
       }
       
-      private function set aotuButton(param1:Boolean) : void
+      private function set aotuButton(value:Boolean) : void
       {
-         if(param1)
+         if(value)
          {
             _startBtn.enable = false;
             if(_autoCheck.selected)
@@ -362,13 +360,13 @@ package luckStar.view
          _alert.addEventListener("response",__onResponse);
       }
       
-      private function __onResponse(param1:FrameEvent) : void
+      private function __onResponse(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          _alert.removeEventListener("response",__onResponse);
          ObjectUtils.disposeObject(_alert);
          _alert = null;
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         if(e.responseCode == 3 || e.responseCode == 2)
          {
             buyStar();
          }
@@ -400,7 +398,7 @@ package luckStar.view
          _awardAction.addEventListener("enterFrame",disposeAwardAction);
       }
       
-      private function disposeAwardAction(param1:Event) : void
+      private function disposeAwardAction(e:Event) : void
       {
          if(_awardAction.currentFrame == _awardAction.totalFrames - 1)
          {
@@ -414,7 +412,7 @@ package luckStar.view
          }
       }
       
-      public function __onBuyLuckyStar(param1:MouseEvent) : void
+      public function __onBuyLuckyStar(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          buyStar();
@@ -422,40 +420,40 @@ package luckStar.view
       
       private function buyStar() : void
       {
-         var _loc1_:ShopItemInfo = ShopManager.Instance.getShopItemByTemplateID(201192,3);
-         ShopBuyManager.Instance.buy(_loc1_.GoodsID,_loc1_.isDiscount,_loc1_.getItemPrice(1).PriceType);
+         var _shopItemInfo:ShopItemInfo = ShopManager.Instance.getShopItemByTemplateID(201192,3);
+         ShopBuyManager.Instance.buy(_shopItemInfo.GoodsID,_shopItemInfo.isDiscount,_shopItemInfo.getItemPrice(1).PriceType);
       }
       
-      public function __onbagUpdate(param1:BagEvent) : void
+      public function __onbagUpdate(e:BagEvent) : void
       {
          updateLuckyStarCount();
       }
       
       private function updateLuckyStarCount() : void
       {
-         var _loc1_:int = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(201192);
-         if(_luckyStarCount != _loc1_)
+         var count:int = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(201192);
+         if(_luckyStarCount != count)
          {
-            _luckyStarCount = _loc1_;
+            _luckyStarCount = count;
             _numText.text = _luckyStarCount.toString();
          }
       }
       
       public function updateCellInfo() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = LuckStarManager.Instance.model.goods.length;
+         var i:int = 0;
+         var len:int = LuckStarManager.Instance.model.goods.length;
          if(!_cell)
          {
             return;
          }
-         _loc2_ = 0;
-         while(_loc2_ < 14 && _loc2_ < _loc1_)
+         i = 0;
+         while(i < 14 && i < len)
          {
-            _cell[_loc2_].info = LuckStarManager.Instance.model.goods[_loc2_];
-            _cell[_loc2_].info.Quality = ItemManager.Instance.getTemplateById(_cell[_loc2_].info.TemplateID).Quality;
-            _cell[_loc2_].count = LuckStarManager.Instance.model.goods[_loc2_].Count;
-            _loc2_++;
+            _cell[i].info = LuckStarManager.Instance.model.goods[i];
+            _cell[i].info.Quality = ItemManager.Instance.getTemplateById(_cell[i].info.TemplateID).Quality;
+            _cell[i].count = LuckStarManager.Instance.model.goods[i].Count;
+            i++;
          }
       }
       
@@ -490,9 +488,9 @@ package luckStar.view
          _rankView.updateNewAwardList();
       }
       
-      public function updateNewAwardList(param1:String, param2:int, param3:int) : void
+      public function updateNewAwardList(name:String, award:int, count:int) : void
       {
-         _rankView.insertNewAwardItem(param1,param2,param3);
+         _rankView.insertNewAwardItem(name,award,count);
       }
       
       public function get isTurn() : Boolean
@@ -502,7 +500,7 @@ package luckStar.view
       
       override public function dispose() : void
       {
-         var _loc1_:* = null;
+         var cell:* = null;
          PlayerManager.Instance.Self.PropBag.removeEventListener("update",__onbagUpdate);
          _startBtn.removeEventListener("click",__onStartLuckyStar);
          _stopBtn.removeEventListener("click",__onStopLuckyStar);
@@ -526,9 +524,9 @@ package luckStar.view
          _stopBtn = null;
          while(_cell.length)
          {
-            _loc1_ = _cell.pop();
-            _loc1_.removeEventListener("luckystarevent",__onPlayActionEnd);
-            ObjectUtils.disposeObject(_loc1_);
+            cell = _cell.pop();
+            cell.removeEventListener("luckystarevent",__onPlayActionEnd);
+            ObjectUtils.disposeObject(cell);
          }
          _rewardList = null;
          _cell = null;

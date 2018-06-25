@@ -37,10 +37,10 @@ package com.pickgliss.loader
       
       private var _progress:Number;
       
-      public function LoadResourceManager(param1:Singleton)
+      public function LoadResourceManager(single:Singleton)
       {
          super();
-         if(!param1)
+         if(!single)
          {
             throw Error("单例无法实例化");
          }
@@ -51,11 +51,11 @@ package com.pickgliss.loader
          return _instance || new LoadResourceManager(new Singleton());
       }
       
-      public function init(param1:String = "") : void
+      public function init(infoSite:String = "") : void
       {
-         _infoSite = param1;
-         var _loc2_:LoaderContext = new LoaderContext(false,ApplicationDomain.currentDomain);
-         LoaderManager.Instance.setup(_loc2_,String(Math.random()));
+         _infoSite = infoSite;
+         var loaderContext:LoaderContext = new LoaderContext(false,ApplicationDomain.currentDomain);
+         LoaderManager.Instance.setup(loaderContext,String(Math.random()));
          addMicroClientEvent();
          LoadInterfaceManager.initAppInterface();
       }
@@ -67,103 +67,103 @@ package com.pickgliss.loader
          LoadInterfaceManager.eventDispatcher.addEventListener("flashGotoAndPlay",__flashGotoAndPlay);
       }
       
-      public function setLoginType(param1:Number, param2:String = "", param3:String = "-1") : void
+      public function setLoginType(type:Number, loadingUrl:String = "", version:String = "-1") : void
       {
-         _clientType = int(param1);
-         _loadingUrl = param2;
-         LoaderSavingManager.Version = int(param3);
+         _clientType = int(type);
+         _loadingUrl = loadingUrl;
+         LoaderSavingManager.Version = int(version);
       }
       
-      public function setup(param1:LoaderContext, param2:String) : void
+      public function setup(context:LoaderContext, textLoaderKey:String) : void
       {
          _loadDic = new Dictionary();
          _loadUrlDic = new Dictionary();
          _deleteList = new Vector.<String>();
       }
       
-      public function createLoader(param1:String, param2:int, param3:URLVariables = null, param4:String = "GET", param5:ApplicationDomain = null, param6:Boolean = true, param7:Boolean = false) : *
+      public function createLoader(filePath:String, type:int, args:URLVariables = null, requestMethod:String = "GET", domain:ApplicationDomain = null, useClient:Boolean = true, isIgnoreError:Boolean = false) : *
       {
-         return createOriginLoader(param1,_infoSite,param2,param3,param4,param5,param6,param7);
+         return createOriginLoader(filePath,_infoSite,type,args,requestMethod,domain,useClient,isIgnoreError);
       }
       
-      public function createOriginLoader(param1:String, param2:String, param3:int, param4:URLVariables = null, param5:String = "GET", param6:ApplicationDomain = null, param7:Boolean = false, param8:Boolean = false) : *
+      public function createOriginLoader(filePath:String, rootSite:String, type:int, args:URLVariables = null, requestMethod:String = "GET", domain:ApplicationDomain = null, useClient:Boolean = false, isIgnoreError:Boolean = false) : *
       {
-         var _loc10_:* = null;
-         var _loc9_:int = 0;
-         var _loc11_:* = null;
-         if(param7 && _clientType == 1 && [2,5,6,7].indexOf(param3) == -1)
+         var loader:* = null;
+         var index:int = 0;
+         var path:* = null;
+         if(useClient && _clientType == 1 && [2,5,6,7].indexOf(type) == -1)
          {
-            param1 = fixedVariablesURL(param1.toLowerCase(),param3,param4);
-            _loc9_ = param2.length;
-            if(param1.indexOf(param2) == -1)
+            filePath = fixedVariablesURL(filePath.toLowerCase(),type,args);
+            index = rootSite.length;
+            if(filePath.indexOf(rootSite) == -1)
             {
-               LoadInterfaceManager.traceMsg("filePath = " + param1 + "路径有问题");
+               LoadInterfaceManager.traceMsg("filePath = " + filePath + "路径有问题");
             }
-            _loc11_ = param1.substring(_loc9_,param1.length);
-            _loc10_ = LoaderManager.Instance.creatLoaderByType(_loc11_,param3,param4,param5,param6);
-            _loadDic[_loc10_.id] = _loc10_;
-            _loadUrlDic[_loc10_.id] = param1;
+            path = filePath.substring(index,filePath.length);
+            loader = LoaderManager.Instance.creatLoaderByType(path,type,args,requestMethod,domain);
+            _loadDic[loader.id] = loader;
+            _loadUrlDic[loader.id] = filePath;
          }
          else
          {
-            _loc10_ = LoaderManager.Instance.creatLoader(param1,param3,param4,param5,param6);
+            loader = LoaderManager.Instance.creatLoader(filePath,type,args,requestMethod,domain);
          }
-         return _loc10_;
+         return loader;
       }
       
-      private function __onLoadComplete(param1:LoaderEvent) : void
+      private function __onLoadComplete(event:LoaderEvent) : void
       {
-         param1.loader.removeEventListener("complete",__onLoadComplete);
-         param1.loader.removeEventListener("loadError",__onLoadError);
+         event.loader.removeEventListener("complete",__onLoadComplete);
+         event.loader.removeEventListener("loadError",__onLoadError);
       }
       
-      public function __onLoadError(param1:LoaderEvent) : void
+      public function __onLoadError(event:LoaderEvent) : void
       {
-         param1.loader.removeEventListener("complete",__onLoadComplete);
-         param1.loader.removeEventListener("loadError",__onLoadError);
-         var _loc2_:LoaderResourceEvent = new LoaderResourceEvent("loadError");
-         _loc2_.data = param1.loader;
-         dispatchEvent(_loc2_);
+         event.loader.removeEventListener("complete",__onLoadComplete);
+         event.loader.removeEventListener("loadError",__onLoadError);
+         var resEvent:LoaderResourceEvent = new LoaderResourceEvent("loadError");
+         resEvent.data = event.loader;
+         dispatchEvent(resEvent);
       }
       
-      public function creatAndStartLoad(param1:String, param2:int, param3:URLVariables = null) : BaseLoader
+      public function creatAndStartLoad(filePath:String, type:int, args:URLVariables = null) : BaseLoader
       {
-         var _loc4_:BaseLoader = createLoader(param1,param2,param3);
-         startLoad(_loc4_);
-         return _loc4_;
+         var loader:BaseLoader = createLoader(filePath,type,args);
+         startLoad(loader);
+         return loader;
       }
       
-      public function startLoad(param1:BaseLoader, param2:Boolean = false, param3:Boolean = true) : void
+      public function startLoad(loader:BaseLoader, loadImp:Boolean = false, useClient:Boolean = true) : void
       {
-         startLoadFromLoadingUrl(param1,_infoSite,param2,param3);
+         startLoadFromLoadingUrl(loader,_infoSite,loadImp,useClient);
       }
       
-      public function startLoadFromLoadingUrl(param1:BaseLoader, param2:String, param3:Boolean = false, param4:Boolean = true) : void
+      public function startLoadFromLoadingUrl(loader:BaseLoader, rootSite:String, loadImp:Boolean = false, useClient:Boolean = true) : void
       {
-         var _loc5_:String = param1.url;
-         _loc5_ = _loc5_.replace(/\?.*/,"");
-         if(param4 && _clientType == 1 && [2,5,6,7].indexOf(param1.type) == -1)
+         var filePath:String = loader.url;
+         filePath = filePath.replace(/\?.*/,"");
+         if(useClient && _clientType == 1 && [2,5,6,7].indexOf(loader.type) == -1)
          {
-            LoadInterfaceManager.checkResource(param1.id,param2,_loc5_,param3);
+            LoadInterfaceManager.checkResource(loader.id,rootSite,filePath,loadImp);
          }
          else
          {
-            beginLoad(param1,param3);
+            beginLoad(loader,loadImp);
          }
       }
       
-      private function beginLoad(param1:BaseLoader, param2:Boolean = false) : void
+      private function beginLoad(loader:BaseLoader, loadImp:Boolean = false) : void
       {
-         LoaderManager.Instance.startLoad(param1,param2);
+         LoaderManager.Instance.startLoad(loader,loadImp);
       }
       
-      public function addDeleteRequest(param1:String) : void
+      public function addDeleteRequest(filePath:String) : void
       {
          if(!_deleteList)
          {
             _deleteList = new Vector.<String>();
          }
-         _deleteList.push(param1);
+         _deleteList.push(filePath);
       }
       
       public function startDelete() : void
@@ -180,7 +180,7 @@ package com.pickgliss.loader
       
       private function deleteNext() : void
       {
-         var _loc1_:* = null;
+         var evt:* = null;
          if(_deleteList)
          {
             if(_deleteList.length > 0)
@@ -190,61 +190,61 @@ package com.pickgliss.loader
             }
             else
             {
-               _loc1_ = new LoaderResourceEvent("delete");
-               dispatchEvent(_loc1_);
+               evt = new LoaderResourceEvent("delete");
+               dispatchEvent(evt);
             }
          }
       }
       
-      public function deleteResource(param1:String) : void
+      public function deleteResource(filePath:String) : void
       {
-         LoadInterfaceManager.deleteResource(param1);
+         LoadInterfaceManager.deleteResource(filePath);
       }
       
-      protected function __checkComplete(param1:LoadInterfaceEvent) : void
+      protected function __checkComplete(event:LoadInterfaceEvent) : void
       {
-         checkComplete(param1.paras[0],param1.paras[1],param1.paras[2],param1.paras[3]);
+         checkComplete(event.paras[0],event.paras[1],event.paras[2],event.paras[3]);
       }
       
-      protected function __deleteComplete(param1:LoadInterfaceEvent) : void
+      protected function __deleteComplete(event:LoadInterfaceEvent) : void
       {
-         if(_currentDeletePath == param1.paras[1])
+         if(_currentDeletePath == event.paras[1])
          {
-            deleteComlete(param1.paras[0],param1.paras[1]);
+            deleteComlete(event.paras[0],event.paras[1]);
          }
       }
       
-      protected function __flashGotoAndPlay(param1:LoadInterfaceEvent) : void
+      protected function __flashGotoAndPlay(event:LoadInterfaceEvent) : void
       {
-         flashGotoAndPlay(int(param1.paras[0]),param1.paras[1]);
+         flashGotoAndPlay(int(event.paras[0]),event.paras[1]);
       }
       
-      public function checkComplete(param1:String, param2:String, param3:String, param4:String) : void
+      public function checkComplete(loaderID:String, bFlag:String, httpUrl:String, fileName:String) : void
       {
-         var _loc6_:* = null;
+         var evt:* = null;
          if(!_loadDic)
          {
             return;
          }
-         var _loc5_:BaseLoader = _loadDic[int(param1)];
-         if(_loc5_)
+         var loader:BaseLoader = _loadDic[int(loaderID)];
+         if(loader)
          {
             LoaderManager.Instance.setFlashLoadWeb();
-            if(param2 == "true")
+            if(bFlag == "true")
             {
-               beginLoad(_loc5_);
+               beginLoad(loader);
             }
             else
             {
-               _loc5_.url = _loadUrlDic[_loc5_.id];
-               beginLoad(_loc5_);
+               loader.url = _loadUrlDic[loader.id];
+               beginLoad(loader);
             }
             if(_loadDic)
             {
-               delete _loadDic[_loc5_.id];
-               delete _loadUrlDic[_loc5_.id];
+               delete _loadDic[loader.id];
+               delete _loadUrlDic[loader.id];
             }
-            if(_loc5_.url.indexOf("2.png") != -1)
+            if(loader.url.indexOf("2.png") != -1)
             {
                _isLoading = false;
                _progress = 1;
@@ -252,90 +252,90 @@ package com.pickgliss.loader
          }
          else
          {
-            LoadInterfaceManager.traceMsg("loader为空：" + param1 + "* " + param4);
+            LoadInterfaceManager.traceMsg("loader为空：" + loaderID + "* " + fileName);
          }
       }
       
-      public function deleteComlete(param1:String, param2:String) : void
+      public function deleteComlete(bFlag:String, fileName:String) : void
       {
          deleteNext();
       }
       
-      public function flashGotoAndPlay(param1:int, param2:Number) : void
+      public function flashGotoAndPlay(loaderID:int, progress:Number) : void
       {
          if(!_loadDic)
          {
             return;
          }
-         var _loc3_:BaseLoader = _loadDic[int(param1)];
-         if(_loc3_)
+         var loader:BaseLoader = _loadDic[int(loaderID)];
+         if(loader)
          {
-            if(_loc3_.url.indexOf("2.png") != -1)
+            if(loader.url.indexOf("2.png") != -1)
             {
                _isLoading = true;
-               _progress = param2 * 0.01;
+               _progress = progress * 0.01;
             }
             else
             {
-               UIModuleLoader.Instance.dispatchEvent(new UIModuleEvent("uiMoudleProgress",_loc3_));
+               UIModuleLoader.Instance.dispatchEvent(new UIModuleEvent("uiMoudleProgress",loader));
             }
          }
       }
       
-      public function fixedVariablesURL(param1:String, param2:int, param3:URLVariables) : String
+      public function fixedVariablesURL(path:String, type:int, variables:URLVariables) : String
       {
-         var _loc5_:* = null;
-         var _loc6_:int = 0;
-         if(param2 != 6 && param2 != 7)
+         var variableString:* = null;
+         var i:int = 0;
+         if(type != 6 && type != 7)
          {
-            _loc5_ = "";
-            if(param3 == null)
+            variableString = "";
+            if(variables == null)
             {
-               param3 = new URLVariables();
+               variables = new URLVariables();
             }
-            if(param2 == 3 || param2 == 1 || param2 == 0 || param2 == 8 || param2 == 10)
+            if(type == 3 || type == 1 || type == 0 || type == 8 || type == 10)
             {
-               if(!param3["lv"])
+               if(!variables["lv"])
                {
-                  param3["lv"] = LoaderSavingManager.Version;
+                  variables["lv"] = LoaderSavingManager.Version;
                }
             }
-            else if(param2 == 5 || param2 == 2)
+            else if(type == 5 || type == 2)
             {
-               if(!param3["rnd"])
+               if(!variables["rnd"])
                {
-                  param3["rnd"] = TextLoader.TextLoaderKey;
+                  variables["rnd"] = TextLoader.TextLoaderKey;
                }
             }
-            else if(param2 == 4 || param2 == 9)
+            else if(type == 4 || type == 9)
             {
-               if(!param3["lv"])
+               if(!variables["lv"])
                {
-                  param3["lv"] = LoaderSavingManager.Version;
+                  variables["lv"] = LoaderSavingManager.Version;
                }
-               if(!param3["rnd"])
+               if(!variables["rnd"])
                {
-                  param3["rnd"] = TextLoader.TextLoaderKey;
+                  variables["rnd"] = TextLoader.TextLoaderKey;
                }
             }
-            _loc6_ = 0;
+            i = 0;
             var _loc8_:int = 0;
-            var _loc7_:* = param3;
-            for(var _loc4_ in param3)
+            var _loc7_:* = variables;
+            for(var p in variables)
             {
-               if(_loc6_ >= 1)
+               if(i >= 1)
                {
-                  _loc5_ = _loc5_ + ("&" + _loc4_ + "=" + param3[_loc4_]);
+                  variableString = variableString + ("&" + p + "=" + variables[p]);
                }
                else
                {
-                  _loc5_ = _loc5_ + (_loc4_ + "=" + param3[_loc4_]);
+                  variableString = variableString + (p + "=" + variables[p]);
                }
-               _loc6_++;
+               i++;
             }
-            return param1 + "?" + _loc5_;
+            return path + "?" + variableString;
          }
-         return param1;
+         return path;
       }
       
       public function get isMicroClient() : Boolean
@@ -353,9 +353,9 @@ package com.pickgliss.loader
          return _infoSite;
       }
       
-      public function set infoSite(param1:String) : void
+      public function set infoSite(value:String) : void
       {
-         _infoSite = param1;
+         _infoSite = value;
       }
       
       public function get loadingUrl() : String

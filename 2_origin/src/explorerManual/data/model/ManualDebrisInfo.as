@@ -26,9 +26,9 @@ package explorerManual.data.model
          return _jampsCurrency;
       }
       
-      public function set JampsCurrency(param1:int) : void
+      public function set JampsCurrency(value:int) : void
       {
-         _jampsCurrency = param1;
+         _jampsCurrency = value;
       }
       
       public function get Describe() : String
@@ -36,9 +36,9 @@ package explorerManual.data.model
          return _describe;
       }
       
-      public function set Describe(param1:String) : void
+      public function set Describe(value:String) : void
       {
-         _describe = param1;
+         _describe = value;
       }
       
       public function get ImagePath() : String
@@ -46,9 +46,9 @@ package explorerManual.data.model
          return _imagePath;
       }
       
-      public function set ImagePath(param1:String) : void
+      public function set ImagePath(value:String) : void
       {
-         _imagePath = param1;
+         _imagePath = value;
       }
       
       public function get Sort() : int
@@ -56,9 +56,9 @@ package explorerManual.data.model
          return _sort;
       }
       
-      public function set Sort(param1:int) : void
+      public function set Sort(value:int) : void
       {
-         _sort = param1;
+         _sort = value;
       }
       
       public function get PageID() : int
@@ -66,9 +66,9 @@ package explorerManual.data.model
          return _pageID;
       }
       
-      public function set PageID(param1:int) : void
+      public function set PageID(value:int) : void
       {
-         _pageID = param1;
+         _pageID = value;
       }
       
       public function get ID() : int
@@ -76,9 +76,9 @@ package explorerManual.data.model
          return _ID;
       }
       
-      public function set ID(param1:int) : void
+      public function set ID(value:int) : void
       {
-         _ID = param1;
+         _ID = value;
       }
    }
 }

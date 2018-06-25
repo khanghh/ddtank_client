@@ -73,31 +73,31 @@ package starling.events
       
       private var mData:Object;
       
-      public function Event(param1:String, param2:Boolean = false, param3:Object = null)
+      public function Event(type:String, bubbles:Boolean = false, data:Object = null)
       {
          super();
-         mType = param1;
-         mBubbles = param2;
-         mData = param3;
+         mType = type;
+         mBubbles = bubbles;
+         mData = data;
       }
       
-      static function fromPool(param1:String, param2:Boolean = false, param3:Object = null) : Event
+      static function fromPool(type:String, bubbles:Boolean = false, data:Object = null) : Event
       {
          if(sEventPool.length)
          {
-            return sEventPool.pop().reset(param1,param2,param3);
+            return sEventPool.pop().reset(type,bubbles,data);
          }
-         return new Event(param1,param2,param3);
+         return new Event(type,bubbles,data);
       }
       
-      static function toPool(param1:Event) : void
+      static function toPool(event:Event) : void
       {
          var _loc2_:* = null;
-         param1.mCurrentTarget = _loc2_;
+         event.mCurrentTarget = _loc2_;
          _loc2_ = _loc2_;
-         param1.mTarget = _loc2_;
-         param1.mData = _loc2_;
-         sEventPool[sEventPool.length] = param1;
+         event.mTarget = _loc2_;
+         event.mData = _loc2_;
+         sEventPool[sEventPool.length] = event;
       }
       
       public function stopPropagation() : void
@@ -141,19 +141,19 @@ package starling.events
          return mData;
       }
       
-      function setTarget(param1:EventDispatcher) : void
+      function setTarget(value:EventDispatcher) : void
       {
-         mTarget = param1;
+         mTarget = value;
       }
       
-      function setCurrentTarget(param1:EventDispatcher) : void
+      function setCurrentTarget(value:EventDispatcher) : void
       {
-         mCurrentTarget = param1;
+         mCurrentTarget = value;
       }
       
-      function setData(param1:Object) : void
+      function setData(value:Object) : void
       {
-         mData = param1;
+         mData = value;
       }
       
       function get stopsPropagation() : Boolean
@@ -166,11 +166,11 @@ package starling.events
          return mStopsImmediatePropagation;
       }
       
-      function reset(param1:String, param2:Boolean = false, param3:Object = null) : Event
+      function reset(type:String, bubbles:Boolean = false, data:Object = null) : Event
       {
-         mType = param1;
-         mBubbles = param2;
-         mData = param3;
+         mType = type;
+         mBubbles = bubbles;
+         mData = data;
          mCurrentTarget = null;
          mTarget = null;
          mStopsImmediatePropagation = false;

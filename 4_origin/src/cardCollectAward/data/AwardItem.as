@@ -14,11 +14,11 @@ package cardCollectAward.data
          _item = new Vector.<ItemInfo>();
       }
       
-      public function addItem(param1:ItemInfo) : void
+      public function addItem(info:ItemInfo) : void
       {
          if(_item != null)
          {
-            _item.push(param1);
+            _item.push(info);
          }
       }
       
@@ -32,9 +32,9 @@ package cardCollectAward.data
          return _title;
       }
       
-      public function set title(param1:String) : void
+      public function set title(value:String) : void
       {
-         _title = param1;
+         _title = value;
       }
    }
 }

@@ -29,21 +29,21 @@ package ddt.data.goods
          return _itemID;
       }
       
-      public function set itemID(param1:int) : void
+      public function set itemID(value:int) : void
       {
-         _itemID = param1;
+         _itemID = value;
       }
       
       public function get belongPetName() : String
       {
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var petName:* = null;
+         var petData:* = null;
          if(belongPetId > 0)
          {
-            _loc1_ = PetInfoManager.getPetByKindID(belongPetId);
-            _loc2_ = _loc1_.Name;
+            petData = PetInfoManager.getPetByKindID(belongPetId);
+            petName = petData.Name;
          }
-         return _loc2_;
+         return petName;
       }
       
       public function get belongPetId() : int
@@ -51,14 +51,14 @@ package ddt.data.goods
          return _belongPetId;
       }
       
-      public function set belongPetId(param1:int) : void
+      public function set belongPetId(value:int) : void
       {
-         _belongPetId = param1;
+         _belongPetId = value;
       }
       
-      public function set skillId1(param1:int) : void
+      public function set skillId1(id:int) : void
       {
-         _skillId1 = param1;
+         _skillId1 = id;
       }
       
       public function get skillId1() : int
@@ -66,9 +66,9 @@ package ddt.data.goods
          return _skillId1;
       }
       
-      public function set skillId2(param1:int) : void
+      public function set skillId2(id:int) : void
       {
-         _skillId2 = param1;
+         _skillId2 = id;
       }
       
       public function get skillId2() : int
@@ -94,10 +94,10 @@ package ddt.data.goods
          return null;
       }
       
-      private function getSkillInfo(param1:int) : PetSkillTemplateInfo
+      private function getSkillInfo(skillId:int) : PetSkillTemplateInfo
       {
-         var _loc2_:PetSkillTemplateInfo = new PetSkill(param1);
-         return _loc2_;
+         var info:PetSkillTemplateInfo = new PetSkill(skillId);
+         return info;
       }
    }
 }

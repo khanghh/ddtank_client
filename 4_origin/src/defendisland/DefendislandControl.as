@@ -15,9 +15,9 @@ package defendisland
       
       public var _frame:DefendislandFrame;
       
-      public function DefendislandControl(param1:IEventDispatcher = null)
+      public function DefendislandControl(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : DefendislandControl
@@ -35,7 +35,7 @@ package defendisland
          DefendislandManager.instance.addEventListener("hideMainView",__hideHandler);
       }
       
-      private function __showHandler(param1:Event) : void
+      private function __showHandler(e:Event) : void
       {
          if(!_frame)
          {
@@ -48,7 +48,7 @@ package defendisland
          }
       }
       
-      public function __hideHandler(param1:Event) : void
+      public function __hideHandler(e:Event) : void
       {
          if(_frame != null)
          {

@@ -42,11 +42,11 @@ package church.view.weddingRoom
       
       private var _txtRoomNameWedding:FilterFrameText;
       
-      public function WeddingRoomMenuView(param1:ChurchRoomModel)
+      public function WeddingRoomMenuView(model:ChurchRoomModel)
       {
          hideConfigs = [];
          super();
-         _model = param1;
+         _model = model;
          initialize();
       }
       
@@ -215,10 +215,10 @@ package church.view.weddingRoom
          _moonBtn.removeEventListener("click",enterMoonScene);
       }
       
-      private function onMenuClick(param1:MouseEvent) : void
+      private function onMenuClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = evt.currentTarget;
          if(_menuShowName !== _loc2_)
          {
             if(_menuShowPao !== _loc2_)
@@ -330,7 +330,7 @@ package church.view.weddingRoom
          _roomNameBox.y = 10;
       }
       
-      private function enterMoonScene(param1:MouseEvent) : void
+      private function enterMoonScene(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          ChurchManager.instance.lastScene = ChurchManager.instance.currentScene;

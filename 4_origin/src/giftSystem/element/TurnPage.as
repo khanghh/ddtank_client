@@ -40,13 +40,13 @@ package giftSystem.element
          initEvent();
       }
       
-      public function set current(param1:int) : void
+      public function set current(value:int) : void
       {
-         if(_current == param1)
+         if(_current == value)
          {
             return;
          }
-         _current = param1;
+         _current = value;
          _numShow.text = _current + "/" + _total;
          dispatchEvent(new Event("currentPageChange"));
       }
@@ -56,13 +56,13 @@ package giftSystem.element
          return _current;
       }
       
-      public function set total(param1:int) : void
+      public function set total(value:int) : void
       {
-         if(_total == param1)
+         if(_total == value)
          {
             return;
          }
-         _total = param1;
+         _total = value;
          _numShow.text = _current + "/" + _total;
       }
       
@@ -89,12 +89,12 @@ package giftSystem.element
       
       private function drawSprit() : Sprite
       {
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(0,0);
-         _loc1_.graphics.drawRect(0,0,25,25);
-         _loc1_.graphics.endFill();
-         _loc1_.buttonMode = true;
-         return _loc1_;
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(0,0);
+         sp.graphics.drawRect(0,0,25,25);
+         sp.graphics.endFill();
+         sp.buttonMode = true;
+         return sp;
       }
       
       private function initEvent() : void
@@ -105,7 +105,7 @@ package giftSystem.element
          _endBtn.addEventListener("click",__endClick);
       }
       
-      private function __rightClick(param1:MouseEvent) : void
+      private function __rightClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_current >= _total)
@@ -118,13 +118,13 @@ package giftSystem.element
          }
       }
       
-      private function __endClick(param1:MouseEvent) : void
+      private function __endClick(evnet:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          current = _total;
       }
       
-      private function __leftClick(param1:MouseEvent) : void
+      private function __leftClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_current <= 1)
@@ -137,7 +137,7 @@ package giftSystem.element
          }
       }
       
-      private function __firtClick(param1:MouseEvent) : void
+      private function __firtClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          current = 1;

@@ -23,22 +23,21 @@ package signBuff.view
       
       private function init() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          _bg = ComponentFactory.Instance.creatBitmap("asset.hall.signBuff.bg2");
          addChild(_bg);
          _sp = new Sprite();
          addChild(_sp);
          _sp.x = 91;
          _sp.y = 96;
-         _loc2_ = 0;
-         while(_loc2_ < SignBuffManager.instance.itemInfoList.length)
+         for(i = 0; i < SignBuffManager.instance.itemInfoList.length; )
          {
-            _loc1_ = new PowerItem(SignBuffManager.instance.itemInfoList[_loc2_],_loc2_);
-            _loc1_.x = 0;
-            _loc1_.y = 56 * _loc2_;
-            _sp.addChild(_loc1_);
-            _loc2_++;
+            item = new PowerItem(SignBuffManager.instance.itemInfoList[i],i);
+            item.x = 0;
+            item.y = 56 * i;
+            _sp.addChild(item);
+            i++;
          }
       }
       

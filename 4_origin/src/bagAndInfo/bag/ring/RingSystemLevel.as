@@ -64,11 +64,11 @@ package bagAndInfo.bag.ring
          _progress.mask = _mask;
       }
       
-      public function setProgress(param1:int, param2:int, param3:int) : void
+      public function setProgress(currentExp:int, level:int, exp:int) : void
       {
-         _level.text = LanguageMgr.GetTranslation("ddt.bagandinfo.ringSystem.levelText",param2);
-         _mask.x = _mask.x + param1 * _progress.width / param3;
-         _exp.text = param1 + "/" + param3;
+         _level.text = LanguageMgr.GetTranslation("ddt.bagandinfo.ringSystem.levelText",level);
+         _mask.x = _mask.x + currentExp * _progress.width / exp;
+         _exp.text = currentExp + "/" + exp;
       }
       
       private function initEvent() : void

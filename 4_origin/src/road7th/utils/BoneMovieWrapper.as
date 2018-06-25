@@ -34,20 +34,20 @@ package road7th.utils
       
       private var _labelMapping:DictionaryData;
       
-      public function BoneMovieWrapper(param1:*, param2:Boolean = false, param3:Boolean = false, param4:int = 0)
+      public function BoneMovieWrapper(style:*, autoplay:Boolean = false, autodisappear:Boolean = false, type:int = 0)
       {
          super();
-         if(param1 is String)
+         if(style is String)
          {
-            _movie = BoneMovieFactory.instance.creatBoneMovie(param1,param4);
+            _movie = BoneMovieFactory.instance.creatBoneMovie(style,type);
          }
-         else if(param1 is IBoneMovie)
+         else if(style is IBoneMovie)
          {
-            _movie = param1;
+            _movie = style;
          }
          _movie.stop();
-         _autoDisappear = param3;
-         _autoPlay = param2;
+         _autoDisappear = autodisappear;
+         _autoPlay = autoplay;
          _script = new DictionaryData();
          _labelMapping = new DictionaryData();
          addDefaultScript();
@@ -77,62 +77,62 @@ package road7th.utils
       
       protected function addDefaultScript() : void
       {
-         addFrameScript("goto",function(param1:BoneMovieWrapper, param2:Array = null):void
+         addFrameScript("goto",function(boneMovie:BoneMovieWrapper, args:Array = null):void
          {
-            _gotoAction = param2[0] as String;
+            _gotoAction = args[0] as String;
          });
-         addFrameScript("gotoplay",function(param1:BoneMovieWrapper, param2:Array = null):void
+         addFrameScript("gotoplay",function(boneMovie:BoneMovieWrapper, args:Array = null):void
          {
-            param1.playAction(param2[0]);
+            boneMovie.playAction(args[0]);
          });
-         addFrameScript("dispose",function(param1:BoneMovieWrapper, param2:Array = null):void
+         addFrameScript("dispose",function(boneMovie:BoneMovieWrapper, args:Array = null):void
          {
-            param1.dispose();
+            boneMovie.dispose();
          });
-         addFrameScript("sound",function(param1:BoneMovieWrapper, param2:Array = null):void
+         addFrameScript("sound",function(boneMovie:BoneMovieWrapper, args:Array = null):void
          {
-            var _loc3_:* = null;
+            var soundEvent:* = null;
             if(SoundEventManager.getInstance().hasEventListener("sound"))
             {
-               _loc3_ = new SoundEvent("sound");
-               _loc3_.animationState = param1.movie.animationState;
-               _loc3_.sound = param2[0];
-               SoundEventManager.getInstance().dispatchEvent(_loc3_);
+               soundEvent = new SoundEvent("sound");
+               soundEvent.animationState = boneMovie.movie.animationState;
+               soundEvent.sound = args[0];
+               SoundEventManager.getInstance().dispatchEvent(soundEvent);
             }
          });
-         addFrameScript("stop",function(param1:BoneMovieWrapper, param2:Array = null):void
+         addFrameScript("stop",function(boneMovie:BoneMovieWrapper, args:Array = null):void
          {
-            param1.movie.stop();
+            boneMovie.movie.stop();
          });
       }
       
-      private function __onFrameEventHandler(param1:FrameEvent) : void
+      private function __onFrameEventHandler(e:FrameEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc5_:String = param1.frameLabel;
-         var _loc3_:* = _loc5_;
-         if(_loc5_ == "")
+         var len:int = 0;
+         var frameLabel:String = e.frameLabel;
+         var event:* = frameLabel;
+         if(frameLabel == "")
          {
             return;
          }
-         var _loc2_:Array = null;
-         if(!(_loc5_ == "frame" || _loc5_ == "dispose"))
+         var args:Array = null;
+         if(!(frameLabel == "frame" || frameLabel == "dispose"))
          {
-            _loc4_ = _loc5_.indexOf("_");
-            if(_loc4_ < 0)
+            len = frameLabel.indexOf("_");
+            if(len < 0)
             {
-               throw new Error(_movie.armature.name + " boneMovie:: " + _loc5_ + " 帧事件 未指定参数！请尽快解决");
+               throw new Error(_movie.armature.name + " boneMovie:: " + frameLabel + " 帧事件 未指定参数！请尽快解决");
             }
-            _loc3_ = _loc5_.slice(0,_loc4_);
-            _loc2_ = param1.frameLabel.slice(_loc4_ + 1,param1.frameLabel.length).split("|");
+            event = frameLabel.slice(0,len);
+            args = e.frameLabel.slice(len + 1,e.frameLabel.length).split("|");
          }
-         if(_script.hasKey(_loc3_))
+         if(_script.hasKey(event))
          {
-            _script[_loc3_](this,_loc2_);
+            _script[event](this,args);
          }
       }
       
-      private function __onAnimationComplete(param1:AnimationEvent) : void
+      private function __onAnimationComplete(e:AnimationEvent) : void
       {
          if(_playCell && _args)
          {
@@ -155,18 +155,18 @@ package road7th.utils
          }
       }
       
-      public function addFrameScript(param1:String, param2:Function, param3:Boolean = true) : void
+      public function addFrameScript(frameType:String, cell:Function, replace:Boolean = true) : void
       {
-         if(_script.hasKey(param1) && !param3)
+         if(_script.hasKey(frameType) && !replace)
          {
             return;
          }
-         _script.add(param1,param2);
+         _script.add(frameType,cell);
       }
       
-      public function removeFrameScript(param1:String) : void
+      public function removeFrameScript(frameType:String) : void
       {
-         _script.remove(param1);
+         _script.remove(frameType);
       }
       
       public function removeFrameScriptAll() : void
@@ -174,30 +174,30 @@ package road7th.utils
          _script.clear();
       }
       
-      public function playAction(param1:String = "", param2:Function = null, param3:Array = null) : void
+      public function playAction(action:String = "", cell:Function = null, args:Array = null) : void
       {
-         var _loc4_:* = null;
-         if(_labelMapping.hasKey(param1))
+         var actionLabel:* = null;
+         if(_labelMapping.hasKey(action))
          {
-            _loc4_ = _labelMapping[param1];
+            actionLabel = _labelMapping[action];
          }
          else
          {
-            _loc4_ = param1;
+            actionLabel = action;
          }
-         if(_loc4_ == "" || _movie.armature && _movie.armature.animation.hasAnimation(_loc4_))
+         if(actionLabel == "" || _movie.armature && _movie.armature.animation.hasAnimation(actionLabel))
          {
-            _movie.play(_loc4_);
-            _playCell = param2;
-            _args = param3;
+            _movie.play(actionLabel);
+            _playCell = cell;
+            _args = args;
          }
-         else if(param2 && param3)
+         else if(cell && args)
          {
-            param2(param3);
+            cell(args);
          }
-         else if(param2)
+         else if(cell)
          {
-            param2();
+            cell();
          }
       }
       
@@ -206,13 +206,13 @@ package road7th.utils
          _movie.stop();
       }
       
-      public function setActionMapping(param1:String, param2:String) : void
+      public function setActionMapping(source:String, target:String) : void
       {
-         if(param1.length <= 0)
+         if(source.length <= 0)
          {
             return;
          }
-         _labelMapping.add(param1,param2);
+         _labelMapping.add(source,target);
       }
       
       public function get movie() : IBoneMovie

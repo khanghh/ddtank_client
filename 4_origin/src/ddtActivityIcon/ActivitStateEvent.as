@@ -8,10 +8,10 @@ package ddtActivityIcon
       
       public var data;
       
-      public function ActivitStateEvent(param1:String, param2:*)
+      public function ActivitStateEvent(type:String, $data:*)
       {
-         super(param1);
-         data = param2;
+         super(type);
+         data = $data;
       }
    }
 }

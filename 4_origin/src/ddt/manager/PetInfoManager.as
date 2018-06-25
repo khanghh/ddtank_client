@@ -17,48 +17,48 @@ package ddt.manager
          super();
       }
       
-      public static function setup(param1:PetInfoAnalyzer) : void
+      public static function setup(analyzer:PetInfoAnalyzer) : void
       {
-         _list = param1.list;
+         _list = analyzer.list;
       }
       
-      public static function getPetByTemplateID(param1:int) : PetTemplateInfo
+      public static function getPetByTemplateID(id:int) : PetTemplateInfo
       {
-         return _list[param1];
+         return _list[id];
       }
       
-      public static function getPetByCollectID(param1:int) : PetTemplateInfo
+      public static function getPetByCollectID(id:int) : PetTemplateInfo
       {
          var _loc4_:int = 0;
          var _loc3_:* = _list;
-         for each(var _loc2_ in _list)
+         for each(var info in _list)
          {
-            if(_loc2_.CollectID == param1)
+            if(info.CollectID == id)
             {
-               return _loc2_;
+               return info;
             }
          }
          return null;
       }
       
-      public static function getPetByKindID(param1:int) : PetTemplateInfo
+      public static function getPetByKindID(id:int) : PetTemplateInfo
       {
          var _loc4_:int = 0;
          var _loc3_:* = _list;
-         for each(var _loc2_ in _list)
+         for each(var info in _list)
          {
-            if(_loc2_.KindID == param1)
+            if(info.KindID == id)
             {
-               return _loc2_;
+               return info;
             }
          }
          return null;
       }
       
-      public static function fillPetInfo(param1:PetInfo) : void
+      public static function fillPetInfo(p:PetInfo) : void
       {
-         var _loc2_:PetTemplateInfo = _list[param1.TemplateID];
-         ObjectUtils.copyProperties(param1,_loc2_);
+         var petTemp:PetTemplateInfo = _list[p.TemplateID];
+         ObjectUtils.copyProperties(p,petTemp);
       }
    }
 }

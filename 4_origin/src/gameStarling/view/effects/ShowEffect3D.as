@@ -20,10 +20,10 @@ package gameStarling.view.effects
       
       private var add:Boolean = true;
       
-      public function ShowEffect3D(param1:String)
+      public function ShowEffect3D(type:String)
       {
          super();
-         _type = param1;
+         _type = type;
          init();
       }
       
@@ -41,7 +41,7 @@ package gameStarling.view.effects
          }
       }
       
-      private function enterFrameHandler(param1:Event) : void
+      private function enterFrameHandler(evt:Event) : void
       {
          if(_pic.alpha > 0.95)
          {

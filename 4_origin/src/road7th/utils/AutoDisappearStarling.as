@@ -19,36 +19,36 @@ package road7th.utils
       
       private var _last:Number;
       
-      public function AutoDisappearStarling(param1:DisplayObject, param2:Number = -1)
+      public function AutoDisappearStarling(movie:DisplayObject, life:Number = -1)
       {
          super();
-         if(param2 == -1 && param1 is BoneMovieStarling)
+         if(life == -1 && movie is BoneMovieStarling)
          {
-            BoneMovieStarling(param1).armature.addEventListener("complete",__onComplete);
-            BoneMovieStarling(param1).play();
+            BoneMovieStarling(movie).armature.addEventListener("complete",__onComplete);
+            BoneMovieStarling(movie).play();
          }
          else
          {
-            _life = param2 * 1000;
+            _life = life * 1000;
             _age = 0;
             addEventListener("addedToStage",__addToStage);
          }
-         addChild(param1);
+         addChild(movie);
       }
       
-      private function __onComplete(param1:AnimationEvent) : void
+      private function __onComplete(e:AnimationEvent) : void
       {
-         param1.currentTarget.removeEventListener("complete",__onComplete);
+         e.currentTarget.removeEventListener("complete",__onComplete);
          StarlingObjectUtils.disposeObject(this);
       }
       
-      private function __addToStage(param1:Event) : void
+      private function __addToStage(event:Event) : void
       {
          _last = getTimer();
          addEventListener("enterFrame",__enterFrame);
       }
       
-      private function __enterFrame(param1:Event) : void
+      private function __enterFrame(event:Event) : void
       {
          if(parent)
          {

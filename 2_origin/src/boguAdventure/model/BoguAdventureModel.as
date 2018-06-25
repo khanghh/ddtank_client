@@ -33,9 +33,9 @@ package boguAdventure.model
          super();
       }
       
-      public function set mapInfoList(param1:Vector.<BoguAdventureCellInfo>) : void
+      public function set mapInfoList(value:Vector.<BoguAdventureCellInfo>) : void
       {
-         _mapInfoList = param1;
+         _mapInfoList = value;
       }
       
       public function get mapInfoList() : Vector.<BoguAdventureCellInfo>

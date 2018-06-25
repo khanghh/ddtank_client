@@ -33,11 +33,11 @@ package civil.view
       
       private var _titleText:Bitmap;
       
-      public function CivilView(param1:CivilController, param2:CivilModel)
+      public function CivilView(controller:CivilController, model:CivilModel)
       {
          super();
-         _controller = param1;
-         _model = param2;
+         _controller = controller;
+         _model = model;
          init();
       }
       

@@ -67,45 +67,45 @@ package ddt.manager
          }
       }
       
-      private function __progress(param1:ProgressEvent) : void
+      private function __progress(event:ProgressEvent) : void
       {
-         var _loc2_:int = param1.bytesLoaded / param1.bytesTotal * 100;
-         ChatManager.Instance.sysChatYellow("Monster 已载入 " + _loc2_ + "%");
+         var rate:int = event.bytesLoaded / event.bytesTotal * 100;
+         ChatManager.Instance.sysChatYellow("Monster 已载入 " + rate + "%");
       }
       
-      private function __ioError(param1:IOErrorEvent) : void
+      private function __ioError(event:IOErrorEvent) : void
       {
-         var _loc2_:LoaderInfo = param1.currentTarget as LoaderInfo;
-         _loc2_.removeEventListener("complete",__monsterComplete);
-         _loc2_.removeEventListener("progress",__progress);
-         _loc2_.removeEventListener("ioError",__ioError);
-         ChatManager.Instance.sysChatYellow("Monster io error: " + param1.text);
+         var info:LoaderInfo = event.currentTarget as LoaderInfo;
+         info.removeEventListener("complete",__monsterComplete);
+         info.removeEventListener("progress",__progress);
+         info.removeEventListener("ioError",__ioError);
+         ChatManager.Instance.sysChatYellow("Monster io error: " + event.text);
       }
       
-      protected function __monsterComplete(param1:Event) : void
+      protected function __monsterComplete(event:Event) : void
       {
-         var _loc2_:LoaderInfo = param1.currentTarget as LoaderInfo;
-         _loc2_.removeEventListener("complete",__monsterComplete);
-         _loc2_.removeEventListener("progress",__progress);
-         _loc2_.removeEventListener("ioError",__ioError);
+         var info:LoaderInfo = event.currentTarget as LoaderInfo;
+         info.removeEventListener("complete",__monsterComplete);
+         info.removeEventListener("progress",__progress);
+         info.removeEventListener("ioError",__ioError);
          _loadedMonster = true;
          ChatManager.Instance.sysChatYellow("Monster载入完成。");
       }
       
-      public function startup(param1:String) : void
+      public function startup(str:String) : void
       {
-         var _loc5_:* = null;
-         var _loc4_:* = null;
-         var _loc2_:* = null;
+         var arr:* = null;
+         var param:* = null;
+         var monsterRef:* = null;
          if(!_started)
          {
-            _loc5_ = param1.split(" -");
+            arr = str.split(" -");
             var _loc8_:int = 0;
-            var _loc7_:* = _loc5_;
-            for each(var _loc3_ in _loc5_)
+            var _loc7_:* = arr;
+            for each(var s in arr)
             {
-               _loc4_ = _loc3_.split(" ");
-               var _loc6_:* = _loc4_[0];
+               param = s.split(" ");
+               var _loc6_:* = param[0];
                if("u" !== _loc6_)
                {
                   if("p" !== _loc6_)
@@ -114,22 +114,22 @@ package ddt.manager
                      {
                         if("P" === _loc6_)
                         {
-                           _port = _loc4_[1];
+                           _port = param[1];
                         }
                      }
                      else
                      {
-                        _address = _loc4_[1];
+                        _address = param[1];
                      }
                   }
                   else
                   {
-                     _pwd = _loc4_[1];
+                     _pwd = param[1];
                   }
                }
                else
                {
-                  _user = _loc4_[1];
+                  _user = param[1];
                }
             }
             try
@@ -138,12 +138,12 @@ package ddt.manager
                {
                   return;
                }
-               _loc2_ = getDefinitionByName("com.demonsters.debugger::MonsterDebugger") as Class;
-               if(!_loc2_["initialized"])
+               monsterRef = getDefinitionByName("com.demonsters.debugger::MonsterDebugger") as Class;
+               if(!monsterRef["initialized"])
                {
-                  _loc2_["initialize"](StageReferance.stage);
+                  monsterRef["initialize"](StageReferance.stage);
                }
-               _loc2_["startup"](_address,_port,onDebuggerConnect);
+               monsterRef["startup"](_address,_port,onDebuggerConnect);
                return;
             }
             catch(e:Error)
@@ -162,13 +162,13 @@ package ddt.manager
       
       public function shutdown() : void
       {
-         var _loc1_:* = null;
+         var monsterRef:* = null;
          if(_started)
          {
             try
             {
-               _loc1_ = getDefinitionByName("com.demonsters.debugger::MonsterDebugger") as Class;
-               _loc1_["shutdown"]();
+               monsterRef = getDefinitionByName("com.demonsters.debugger::MonsterDebugger") as Class;
+               monsterRef["shutdown"]();
                ChatManager.Instance.sysChatYellow("Monster 已经关闭。");
                _started = false;
                return;
@@ -181,28 +181,28 @@ package ddt.manager
          }
       }
       
-      public function handle(param1:String) : void
+      public function handle(str:String) : void
       {
-         var _loc2_:* = null;
+         var op:* = null;
          if(!_started)
          {
-            if(param1.split(" ")[0] == "#loadmonster")
+            if(str.split(" ")[0] == "#loadmonster")
             {
                loadMonster();
             }
-            else if(param1.split(" ")[0] == "#debug-startup" && _loadedMonster)
+            else if(str.split(" ")[0] == "#debug-startup" && _loadedMonster)
             {
-               startup(param1);
+               startup(str);
             }
-            else if(param1.split(" ")[0] == "#info")
+            else if(str.split(" ")[0] == "#info")
             {
                info();
             }
          }
          else if(_loadedMonster)
          {
-            _loc2_ = String(param1.split(" ")[0]).replace("#","");
-            var _loc3_:* = _loc2_;
+            op = String(str.split(" ")[0]).replace("#","");
+            var _loc3_:* = op;
             if("shutdown" === _loc3_)
             {
                shutdown();
@@ -212,23 +212,23 @@ package ddt.manager
       
       private function info() : void
       {
-         var _loc2_:String = "info:\n";
-         var _loc1_:String = Capabilities.playerType;
-         var _loc4_:String = Capabilities.version;
-         var _loc3_:Boolean = Capabilities.isDebugger;
-         _loc2_ = _loc2_ + ("PlayerType:" + _loc1_);
-         _loc2_ = _loc2_ + ("\nPlayerVersion:" + _loc4_);
-         _loc2_ = _loc2_ + ("\nisDebugger:" + _loc3_);
-         if(_loc1_ == "Desktop")
+         var output:String = "info:\n";
+         var playerType:String = Capabilities.playerType;
+         var playerVersion:String = Capabilities.version;
+         var isDebugger:Boolean = Capabilities.isDebugger;
+         output = output + ("PlayerType:" + playerType);
+         output = output + ("\nPlayerVersion:" + playerVersion);
+         output = output + ("\nisDebugger:" + isDebugger);
+         if(playerType == "Desktop")
          {
-            _loc2_ = _loc2_ + ("\ncpuArchitecture:" + Capabilities.cpuArchitecture);
+            output = output + ("\ncpuArchitecture:" + Capabilities.cpuArchitecture);
          }
-         _loc2_ = _loc2_ + ("\nhasIME:" + Capabilities.hasIME);
-         _loc2_ = _loc2_ + ("\nlanguage:" + Capabilities.language);
-         _loc2_ = _loc2_ + ("\nos:" + Capabilities.os);
-         _loc2_ = _loc2_ + ("\nscreenResolutionX:" + Capabilities.screenResolutionX);
-         _loc2_ = _loc2_ + ("\nscreenResolutionY:" + Capabilities.screenResolutionY);
-         ChatManager.Instance.sysChatYellow(_loc2_);
+         output = output + ("\nhasIME:" + Capabilities.hasIME);
+         output = output + ("\nlanguage:" + Capabilities.language);
+         output = output + ("\nos:" + Capabilities.os);
+         output = output + ("\nscreenResolutionX:" + Capabilities.screenResolutionX);
+         output = output + ("\nscreenResolutionY:" + Capabilities.screenResolutionY);
+         ChatManager.Instance.sysChatYellow(output);
       }
    }
 }

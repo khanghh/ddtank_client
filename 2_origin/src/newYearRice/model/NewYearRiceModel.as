@@ -38,9 +38,9 @@ package newYearRice.model
          return _isOpen;
       }
       
-      public function set isOpen(param1:Boolean) : void
+      public function set isOpen(value:Boolean) : void
       {
-         _isOpen = param1;
+         _isOpen = value;
       }
       
       public function get currentNum() : Array
@@ -48,9 +48,9 @@ package newYearRice.model
          return _currentNum;
       }
       
-      public function set currentNum(param1:Array) : void
+      public function set currentNum(value:Array) : void
       {
-         _currentNum = param1;
+         _currentNum = value;
       }
       
       public function get maxNum() : Array
@@ -58,9 +58,9 @@ package newYearRice.model
          return _maxNum;
       }
       
-      public function set maxNum(param1:Array) : void
+      public function set maxNum(value:Array) : void
       {
-         _maxNum = param1;
+         _maxNum = value;
       }
       
       public function get itemInfoList() : Array
@@ -68,9 +68,9 @@ package newYearRice.model
          return _itemInfoList;
       }
       
-      public function set itemInfoList(param1:Array) : void
+      public function set itemInfoList(value:Array) : void
       {
-         _itemInfoList = param1;
+         _itemInfoList = value;
       }
       
       public function get yearFoodInfo() : int
@@ -78,9 +78,9 @@ package newYearRice.model
          return _yearFoodInfo;
       }
       
-      public function set yearFoodInfo(param1:int) : void
+      public function set yearFoodInfo(value:int) : void
       {
-         _yearFoodInfo = param1;
+         _yearFoodInfo = value;
       }
       
       public function get playerNum() : int
@@ -88,9 +88,9 @@ package newYearRice.model
          return _playerNum;
       }
       
-      public function set playerNum(param1:int) : void
+      public function set playerNum(value:int) : void
       {
-         _playerNum = param1;
+         _playerNum = value;
       }
       
       public function get playersLength() : int
@@ -103,14 +103,14 @@ package newYearRice.model
          return _playersArray;
       }
       
-      public function set playersArray(param1:Array) : void
+      public function set playersArray(value:Array) : void
       {
-         _playersArray = param1;
+         _playersArray = value;
       }
       
-      public function set playersLength(param1:int) : void
+      public function set playersLength(value:int) : void
       {
-         _playersLength = param1;
+         _playersLength = value;
       }
       
       public function get roomType() : int
@@ -118,9 +118,9 @@ package newYearRice.model
          return _roomType;
       }
       
-      public function set roomType(param1:int) : void
+      public function set roomType(value:int) : void
       {
-         _roomType = param1;
+         _roomType = value;
       }
       
       public function get playerID() : int
@@ -128,9 +128,9 @@ package newYearRice.model
          return _playerID;
       }
       
-      public function set playerID(param1:int) : void
+      public function set playerID(value:int) : void
       {
-         _playerID = param1;
+         _playerID = value;
       }
       
       public function get playerName() : String
@@ -138,9 +138,9 @@ package newYearRice.model
          return _playerName;
       }
       
-      public function set playerName(param1:String) : void
+      public function set playerName(value:String) : void
       {
-         _playerName = param1;
+         _playerName = value;
       }
    }
 }

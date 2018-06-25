@@ -188,11 +188,11 @@ package org.aswing
       
       private var code:uint;
       
-      public function KeyStroke(param1:String, param2:uint)
+      public function KeyStroke(description:String, code:uint)
       {
          super();
-         this.codeString = param1;
-         this.code = param2;
+         this.codeString = description;
+         this.code = code;
       }
       
       public function getDescription() : String

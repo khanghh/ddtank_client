@@ -17,7 +17,7 @@ package yzhkof.debug
          super();
       }
       
-      public static function objToTextTrace(param1:*, param2:Boolean = false) : String
+      public static function objToTextTrace(obj:*, showFunctionReturn:Boolean = false) : String
       {
          var final_text:String = null;
          var title_text:String = null;
@@ -30,8 +30,6 @@ package yzhkof.debug
          var ob_p:Object = null;
          var method_xmllist:XMLList = null;
          var xx:XML = null;
-         var obj:* = param1;
-         var showFunctionReturn:Boolean = param2;
          try
          {
             final_text = "";
@@ -129,25 +127,23 @@ package yzhkof.debug
          return final_text;
       }
       
-      public static function getMethod(param1:XML, param2:Boolean = false) : XMLList
+      public static function getMethod(xml:XML, isClass:Boolean = false) : XMLList
       {
-         var _loc3_:XMLList = null;
-         if(!param2)
+         var method_xmllist:XMLList = null;
+         if(!isClass)
          {
-            _loc3_ = param1.factory.method;
+            method_xmllist = xml.factory.method;
          }
          else
          {
-            _loc3_ = param1.method;
+            method_xmllist = xml.method;
          }
-         return _loc3_;
+         return method_xmllist;
       }
       
-      public static function getReturnOnlyMethod(param1:XML, param2:Boolean = false) : XMLList
+      public static function getReturnOnlyMethod(xml:XML, isClass:Boolean = false) : XMLList
       {
          var x:XML = null;
-         var xml:XML = param1;
-         var isClass:Boolean = param2;
          var method_xmllist:XMLList = getMethod(xml,isClass);
          var return_only_method_xmllist:XMLList = new XMLList();
          for each(x in method_xmllist.(@returnType != "void"))
@@ -160,11 +156,9 @@ package yzhkof.debug
          return return_only_method_xmllist;
       }
       
-      public static function getAccessProperty(param1:XML, param2:Boolean = false) : XMLList
+      public static function getAccessProperty(xml:XML, isClass:Boolean = false) : XMLList
       {
          var accessor_xmllist:XMLList = null;
-         var xml:XML = param1;
-         var isClass:Boolean = param2;
          if(!isClass)
          {
             accessor_xmllist = xml.factory.accessor.(@access != "writeonly");
@@ -179,10 +173,10 @@ package yzhkof.debug
          return accessor_xmllist;
       }
       
-      private static function isSimple(param1:Object) : Boolean
+      private static function isSimple(obj:Object) : Boolean
       {
-         var _loc2_:String = typeof param1;
-         switch(_loc2_)
+         var type:String = typeof obj;
+         switch(type)
          {
             case "number":
             case "string":
@@ -193,60 +187,58 @@ package yzhkof.debug
          }
       }
       
-      private static function addSpace(param1:String) : String
+      private static function addSpace(str:String) : String
       {
-         return "\t" + param1;
+         return "\t" + str;
       }
       
-      public static function simpleObjToTextTrace(param1:*) : String
+      public static function simpleObjToTextTrace(obj:*) : String
       {
-         var _loc5_:Object = null;
-         var _loc6_:Array = null;
-         var _loc7_:int = 0;
-         var _loc8_:QName = null;
-         var _loc9_:Object = null;
-         var _loc2_:String = "";
-         var _loc3_:String = "";
-         var _loc4_:String = "";
-         if(isSimple(param1))
+         var objClass:Object = null;
+         var arr:Array = null;
+         var i:int = 0;
+         var qname:QName = null;
+         var tempObj:Object = null;
+         var final_text:String = "";
+         var objname:String = "";
+         var title_text:String = "";
+         if(isSimple(obj))
          {
-            _loc2_ = _loc2_ + (addSpace(param1) + "\n");
-            _loc4_ = "Type : " + typeof param1;
+            final_text = final_text + (addSpace(obj) + "\n");
+            title_text = "Type : " + typeof obj;
          }
-         else if(param1 != null && param1 != undefined)
+         else if(obj != null && obj != undefined)
          {
-            _loc5_ = ObjectUtil.getClassInfo(param1);
-            _loc6_ = _loc5_.properties;
-            _loc7_ = 0;
-            while(_loc7_ < _loc6_.length)
+            objClass = ObjectUtil.getClassInfo(obj);
+            arr = objClass.properties;
+            for(i = 0; i < arr.length; i++)
             {
-               _loc8_ = _loc6_[_loc7_];
-               _loc9_ = param1[_loc8_.localName];
-               if(_loc9_ && String(_loc9_).indexOf("object") != -1)
+               qname = arr[i];
+               tempObj = obj[qname.localName];
+               if(tempObj && String(tempObj).indexOf("object") != -1)
                {
-                  _loc2_ = _loc2_ + (addSpace("{" + _loc8_.localName + "} = " + getQualifiedClassName(_loc9_)) + "\n");
+                  final_text = final_text + (addSpace("{" + qname.localName + "} = " + getQualifiedClassName(tempObj)) + "\n");
                }
                else
                {
-                  _loc2_ = _loc2_ + (addSpace("{" + _loc8_.localName + "} = " + _loc9_) + "\n");
+                  final_text = final_text + (addSpace("{" + qname.localName + "} = " + tempObj) + "\n");
                }
-               if(_loc8_.localName == "name")
+               if(qname.localName == "name")
                {
-                  _loc3_ = param1.name;
+                  objname = obj.name;
                }
-               _loc7_++;
             }
-            _loc2_ = _loc2_ + (addSpace("[toString()] : " + param1.toString()) + "\n");
-            _loc4_ = "Type : " + _loc5_.name;
-            if(_loc3_)
+            final_text = final_text + (addSpace("[toString()] : " + obj.toString()) + "\n");
+            title_text = "Type : " + objClass.name;
+            if(objname)
             {
-               _loc4_ = _loc4_ + ("(name:" + _loc3_ + ")");
+               title_text = title_text + ("(name:" + objname + ")");
             }
          }
-         _loc4_ = _loc4_ + "**************************\n";
-         _loc2_ = _loc2_ + "**********************************************\n";
-         _loc2_ = _loc4_ + _loc2_;
-         return _loc2_;
+         title_text = title_text + "**************************\n";
+         final_text = final_text + "**********************************************\n";
+         final_text = title_text + final_text;
+         return final_text;
       }
    }
 }

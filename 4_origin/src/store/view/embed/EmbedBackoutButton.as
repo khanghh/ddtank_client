@@ -37,27 +37,27 @@ package store.view.embed
          lightingFilter = ComponentFactory.Instance.creatFilters("ddtstore.StoreEmbedBG.LightFilter")[0];
       }
       
-      private function __mouseOver(param1:MouseEvent) : void
+      private function __mouseOver(evt:MouseEvent) : void
       {
          this.filters = [lightingFilter];
       }
       
-      private function __mouseOut(param1:MouseEvent) : void
+      private function __mouseOut(evt:MouseEvent) : void
       {
          this.filters = null;
       }
       
-      public function dragStop(param1:DragEffect) : void
+      public function dragStop(effect:DragEffect) : void
       {
          this.mouseEnabled = true;
          this.isAction = false;
       }
       
-      override public function set enable(param1:Boolean) : void
+      override public function set enable(b:Boolean) : void
       {
-         .super.enable = param1;
-         buttonMode = param1;
-         if(param1)
+         .super.enable = b;
+         buttonMode = b;
+         if(b)
          {
             addBackoutBtnEvent();
             this.filters = null;

@@ -50,9 +50,9 @@ package texpSystem.view
          return _tipWidth;
       }
       
-      public function set tipWidth(param1:int) : void
+      public function set tipWidth(w:int) : void
       {
-         _tipWidth = param1;
+         _tipWidth = w;
       }
       
       public function get tipHeight() : int
@@ -60,9 +60,9 @@ package texpSystem.view
          return _tipHeight;
       }
       
-      public function set tipHeight(param1:int) : void
+      public function set tipHeight(h:int) : void
       {
-         _tipHeight = param1;
+         _tipHeight = h;
       }
       
       public function get tipData() : Object
@@ -70,18 +70,18 @@ package texpSystem.view
          return _tipData;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(data:Object) : void
       {
-         if(!param1)
+         if(!data)
          {
             return;
          }
-         var _loc2_:TexpInfo = param1 as TexpInfo;
-         if(_tipData == _loc2_)
+         var info:TexpInfo = data as TexpInfo;
+         if(_tipData == info)
          {
             return;
          }
-         _tipData = _loc2_;
+         _tipData = info;
          _name.text = "[" + TexpManager.Instance.getName(_tipData.type) + "]";
          _name.textColor = NAME_COLOR[_tipData.type];
          _content.htmlText = LanguageMgr.GetTranslation("texpSystem.view.TexpView.tipContent",_tipData.lv,TexpManager.Instance.getName(_tipData.type),_tipData.currEffect);

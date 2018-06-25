@@ -9,16 +9,16 @@ package fightLib.script.SixtyDegree
    {
        
       
-      public function DifficultSixtyDegreeScript(param1:Object)
+      public function DifficultSixtyDegreeScript(fightView:Object)
       {
-         super(param1);
+         super(fightView);
       }
       
       override protected function initializeScript() : void
       {
-         var _loc1_:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.SixtyDegree.DifficultSixtyDegreeScript.command2"),LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.startTrain"));
-         _loc1_.completeFunArr.push(startTrain);
-         _commonds.push(_loc1_);
+         var command2:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.SixtyDegree.DifficultSixtyDegreeScript.command2"),LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.startTrain"));
+         command2.completeFunArr.push(startTrain);
+         _commonds.push(command2);
          super.initializeScript();
       }
       

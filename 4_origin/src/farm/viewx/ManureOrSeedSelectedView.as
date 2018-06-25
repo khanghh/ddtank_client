@@ -59,17 +59,17 @@ package farm.viewx
       
       private var _isHelping:Boolean;
       
-      public function ManureOrSeedSelectedView(param1:Boolean = false)
+      public function ManureOrSeedSelectedView(isHelping:Boolean = false)
       {
          super();
-         _isHelping = param1;
+         _isHelping = isHelping;
          initView();
          initEvent();
       }
       
-      public function set viewType(param1:int) : void
+      public function set viewType(value:int) : void
       {
-         _type = param1;
+         _type = value;
          cellInfos();
          upCells(0);
          visible = true;
@@ -102,9 +102,9 @@ package farm.viewx
       
       private function initView() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var n:int = 0;
+         var inv:* = null;
          _manureSelectViewBg = ComponentFactory.Instance.creatComponentByStylename("farm.manureselectViewBg");
          _title = ComponentFactory.Instance.creatComponentByStylename("farm.selectedView.title");
          _title.setFrame(_type);
@@ -119,31 +119,29 @@ package farm.viewx
          addChild(_closeBtn);
          addChild(_hBox);
          _cells = new Vector.<FarmCell>(3);
-         _loc3_ = 0;
-         while(_loc3_ < 3)
+         for(i = 0; i < 3; )
          {
-            _cells[_loc3_] = new FarmCell();
-            _cells[_loc3_].addEventListener("click",__clickHandler);
-            _hBox.addChild(_cells[_loc3_]);
-            _loc3_++;
+            _cells[i] = new FarmCell();
+            _cells[i].addEventListener("click",__clickHandler);
+            _hBox.addChild(_cells[i]);
+            i++;
          }
          manureVec = [];
-         _loc1_ = 0;
-         while(_loc1_ < manureIdArr.length)
+         for(n = 0; n < manureIdArr.length; )
          {
-            _loc2_ = new InventoryItemInfo();
-            _loc2_.TemplateID = manureIdArr[_loc1_];
-            ObjectUtils.copyProperties(_loc2_,ItemManager.Instance.getTemplateById(_loc2_.TemplateID));
-            manureVec.push(_loc2_);
-            _loc1_++;
+            inv = new InventoryItemInfo();
+            inv.TemplateID = manureIdArr[n];
+            ObjectUtils.copyProperties(inv,ItemManager.Instance.getTemplateById(inv.TemplateID));
+            manureVec.push(inv);
+            n++;
          }
       }
       
-      private function __clickHandler(param1:MouseEvent) : void
+      private function __clickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          this.visible = false;
-         _currentCell = param1.currentTarget as FarmCell;
+         _currentCell = event.currentTarget as FarmCell;
          if(_currentCell.itemInfo.Count != 0)
          {
             if(!_isHelping)
@@ -173,13 +171,13 @@ package farm.viewx
          }
       }
       
-      private function __bagUpdate(param1:BagEvent) : void
+      private function __bagUpdate(event:BagEvent) : void
       {
          cellInfos();
          upCells(_currentPage);
       }
       
-      private function __onClose(param1:MouseEvent) : void
+      private function __onClose(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          visible = false;
@@ -187,10 +185,10 @@ package farm.viewx
          PetsBagManager.instance().clearCurrentPetFarmGuildeArrow(105);
       }
       
-      private function __onPageBtnClick(param1:MouseEvent) : void
+      private function __onPageBtnClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = e.currentTarget;
          if(_preBtn !== _loc2_)
          {
             if(_nextBtn === _loc2_)
@@ -207,72 +205,69 @@ package farm.viewx
       
       private function cellInfos() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:int = 0;
-         var _loc2_:Array = _type == 1?PlayerManager.Instance.Self.getBag(13).findItems(32):PlayerManager.Instance.Self.getBag(13).findItems(33);
+         var i:int = 0;
+         var n:int = 0;
+         var tempInfos:Array = _type == 1?PlayerManager.Instance.Self.getBag(13).findItems(32):PlayerManager.Instance.Self.getBag(13).findItems(33);
          if(_type == 2)
          {
-            _loc3_ = 0;
-            while(_loc3_ < manureVec.length)
+            for(i = 0; i < manureVec.length; )
             {
-               manureVec[_loc3_].Count = 0;
-               _loc1_ = 0;
-               while(_loc1_ < _loc2_.length)
+               manureVec[i].Count = 0;
+               for(n = 0; n < tempInfos.length; )
                {
-                  if(_loc2_[_loc1_].TemplateID == manureVec[_loc3_].TemplateID)
+                  if(tempInfos[n].TemplateID == manureVec[i].TemplateID)
                   {
-                     ObjectUtils.copyProperties(manureVec[_loc3_],_loc2_[_loc1_]);
+                     ObjectUtils.copyProperties(manureVec[i],tempInfos[n]);
                      break;
                   }
-                  _loc1_++;
+                  n++;
                }
-               _loc3_++;
+               i++;
             }
             _cellInfos = manureVec;
          }
          else
          {
-            _loc2_.sortOn("TemplateID",16);
-            _cellInfos = _loc2_;
+            tempInfos.sortOn("TemplateID",16);
+            _cellInfos = tempInfos;
          }
          _totlePage = _cellInfos.length % 3 == 0?_cellInfos.length / 3 - 1:Number(_cellInfos.length / 3);
       }
       
-      private function upCells(param1:int = 0) : void
+      private function upCells(page:int = 0) : void
       {
-         var _loc3_:int = 0;
-         _currentPage = param1;
-         var _loc2_:int = param1 * 3;
-         _loc3_ = 0;
-         while(_loc3_ < 3)
+         var i:int = 0;
+         _currentPage = page;
+         var start:int = page * 3;
+         for(i = 0; i < 3; )
          {
-            if(_cellInfos[_loc3_ + _loc2_])
+            if(_cellInfos[i + start])
             {
-               _cells[_loc3_].itemInfo = _cellInfos[_loc3_ + _loc2_];
-               if(_cells[_loc3_].itemInfo.Count > 0)
+               _cells[i].itemInfo = _cellInfos[i + start];
+               if(_cells[i].itemInfo.Count > 0)
                {
-                  _cells[_loc3_].visible = true;
+                  _cells[i].visible = true;
                }
                else
                {
-                  _cells[_loc3_].visible = false;
+                  _cells[i].visible = false;
                }
             }
             else
             {
-               _cells[_loc3_].visible = false;
+               _cells[i].visible = false;
             }
-            _loc3_++;
+            i++;
          }
       }
       
-      private function compareFun(param1:int, param2:int) : Number
+      private function compareFun(x:int, y:int) : Number
       {
-         if(param1 < param2)
+         if(x < y)
          {
             return 1;
          }
-         if(param1 > param2)
+         if(x > y)
          {
             return -1;
          }
@@ -281,18 +276,17 @@ package farm.viewx
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          removeEvent();
-         _loc1_ = 0;
-         while(_loc1_ < 3)
+         for(i = 0; i < 3; )
          {
-            if(_cells[_loc1_])
+            if(_cells[i])
             {
-               ObjectUtils.disposeObject(_cells[_loc1_]);
-               _cells[_loc1_].removeEventListener("click",__clickHandler);
+               ObjectUtils.disposeObject(_cells[i]);
+               _cells[i].removeEventListener("click",__clickHandler);
             }
-            _cells[_loc1_] = null;
-            _loc1_++;
+            _cells[i] = null;
+            i++;
          }
          _cells = null;
          if(_manureSelectViewBg)

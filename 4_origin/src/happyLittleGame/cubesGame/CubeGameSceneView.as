@@ -102,7 +102,7 @@ package happyLittleGame.cubesGame
          CubeGameManager.getInstance().removeEventListener("cooldown",__onUpdateNPC);
       }
       
-      private function __onUpdateNPC(param1:CubeGameEvent) : void
+      private function __onUpdateNPC(evt:CubeGameEvent) : void
       {
          _princess.gotoAndPlay("stand");
          _hero.gotoAndPlay("stand");
@@ -110,9 +110,9 @@ package happyLittleGame.cubesGame
          PositionUtils.setPos(this._hero,"cubeGame.heroPos");
       }
       
-      private function __onGameResult(param1:CubeGameEvent) : void
+      private function __onGameResult(evt:CubeGameEvent) : void
       {
-         if(param1 && !param1.data)
+         if(evt && !evt.data)
          {
             _princess.gotoAndPlay("die");
             _hero.gotoAndPlay("die");
@@ -121,20 +121,20 @@ package happyLittleGame.cubesGame
          }
       }
       
-      private function __onFire(param1:CubeGameEvent) : void
+      private function __onFire(evt:CubeGameEvent) : void
       {
-         if(!param1.data)
+         if(!evt.data)
          {
             return;
          }
-         var _loc2_:MovieClip = ClassUtils.CreatInstance("asset.cubeGame.bullet");
-         var _loc3_:BulletData = new BulletData();
-         _loc3_.bullet = _loc2_;
-         _loc3_.id = param1.data.cubeId;
-         _loc3_.destination = param1.data.povit;
-         _bullets.push(_loc3_);
-         addChild(_loc2_);
-         PositionUtils.setPos(_loc2_,"cubeGame.bulletPos");
+         var bullet:MovieClip = ClassUtils.CreatInstance("asset.cubeGame.bullet");
+         var bulletData:BulletData = new BulletData();
+         bulletData.bullet = bullet;
+         bulletData.id = evt.data.cubeId;
+         bulletData.destination = evt.data.povit;
+         _bullets.push(bulletData);
+         addChild(bullet);
+         PositionUtils.setPos(bullet,"cubeGame.bulletPos");
          bulletFly();
       }
       
@@ -147,9 +147,9 @@ package happyLittleGame.cubesGame
          }
       }
       
-      private function onEnterFrame(param1:Event) : void
+      private function onEnterFrame(evt:Event) : void
       {
-         evt = param1;
+         evt = evt;
          if(!_hero && _hero.currentFrame != 46)
          {
             return;

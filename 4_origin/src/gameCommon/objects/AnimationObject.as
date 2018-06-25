@@ -14,11 +14,11 @@ package gameCommon.objects
       
       private var _animation:MovieClip;
       
-      public function AnimationObject(param1:int, param2:String)
+      public function AnimationObject(id:int, linkName:String)
       {
          super();
-         _id = param1;
-         _linkName = param2;
+         _id = id;
+         _linkName = linkName;
          initView();
       }
       

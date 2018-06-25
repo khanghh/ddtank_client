@@ -23,9 +23,9 @@ package ddt.view.character
       
       public var showWeapon:Boolean;
       
-      public function RoomCharaterLoader(param1:PlayerInfo)
+      public function RoomCharaterLoader(info:PlayerInfo)
       {
-         super(param1);
+         super(info);
       }
       
       override protected function initLayers() : void
@@ -34,9 +34,9 @@ package ddt.view.character
          {
             var _loc3_:int = 0;
             var _loc2_:* = _layers;
-            for each(var _loc1_ in _layers)
+            for each(var layer in _layers)
             {
-               _loc1_.dispose();
+               layer.dispose();
             }
             _layers = null;
          }
@@ -54,14 +54,14 @@ package ddt.view.character
          loadPart(8);
       }
       
-      override protected function getIndexByTemplateId(param1:String) : int
+      override protected function getIndexByTemplateId(id:String) : int
       {
-         var _loc2_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(int(param1));
-         if(_loc2_ == null)
+         var item:ItemTemplateInfo = ItemManager.Instance.getTemplateById(int(id));
+         if(item == null)
          {
             return -1;
          }
-         var _loc3_:* = _loc2_.CategoryID.toString();
+         var _loc3_:* = item.CategoryID.toString();
          if("1" !== _loc3_)
          {
             if("10" !== _loc3_)
@@ -97,10 +97,10 @@ package ddt.view.character
                                                          return -1;
                                                       }
                                                    }
-                                                   addr54:
+                                                   addr71:
                                                    return 7;
                                                 }
-                                                §§goto(addr54);
+                                                §§goto(addr71);
                                              }
                                              else
                                              {
@@ -148,24 +148,24 @@ package ddt.view.character
                      }
                   }
                }
-               addr22:
+               addr29:
                return 2;
             }
-            addr21:
-            §§goto(addr22);
+            addr28:
+            §§goto(addr29);
          }
-         §§goto(addr21);
+         §§goto(addr28);
       }
       
-      private function loadPart(param1:int) : void
+      private function loadPart(index:int) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         if(_recordStyle[param1].split("|")[0] > 0)
+         var item:* = null;
+         var color:* = null;
+         if(_recordStyle[index].split("|")[0] > 0)
          {
-            _loc3_ = ItemManager.Instance.getTemplateById(int(_recordStyle[param1].split("|")[0]));
-            _loc2_ = !!EquipType.isEditable(_loc3_)?_recordColor[param1]:"";
-            _layers.push(_layerFactory.createLayer(_loc3_,_info.Sex,_loc2_,"show",param1 == 2,_info.getHairType()));
+            item = ItemManager.Instance.getTemplateById(int(_recordStyle[index].split("|")[0]));
+            color = !!EquipType.isEditable(item)?_recordColor[index]:"";
+            _layers.push(_layerFactory.createLayer(item,_info.Sex,color,"show",index == 2,_info.getHairType()));
          }
       }
       
@@ -179,9 +179,9 @@ package ddt.view.character
       
       override protected function drawCharacter() : void
       {
-         var _loc1_:Number = 250;
-         var _loc2_:Number = 342;
-         if(_loc1_ == 0 || _loc2_ == 0)
+         var picWidth:Number = 250;
+         var picHeight:Number = 342;
+         if(picWidth == 0 || picHeight == 0)
          {
             return;
          }
@@ -189,25 +189,25 @@ package ddt.view.character
          {
             _suit.dispose();
          }
-         _suit = new BitmapData(_loc1_ * 4,_loc2_,true,0);
+         _suit = new BitmapData(picWidth * 4,picHeight,true,0);
          if(_faceUpBmd)
          {
             _faceUpBmd.dispose();
          }
-         _faceUpBmd = new BitmapData(_loc1_,_loc2_,true,0);
+         _faceUpBmd = new BitmapData(picWidth,picHeight,true,0);
          if(_faceBmd)
          {
             _faceBmd.dispose();
          }
-         _faceBmd = new BitmapData(_loc1_ * 4,_loc2_,true,0);
+         _faceBmd = new BitmapData(picWidth * 4,picHeight,true,0);
          if(_hairBmd)
          {
             _hairBmd.dispose();
             _hairBmd = null;
          }
-         if(_layers[5].getContent() && _layers[5].getContent().width > _loc1_)
+         if(_layers[5].getContent() && _layers[5].getContent().width > picWidth)
          {
-            _hairBmd = new BitmapData(_layers[5].getContent().width,_loc2_,true,0);
+            _hairBmd = new BitmapData(_layers[5].getContent().width,picHeight,true,0);
          }
          if(_armBmd)
          {
@@ -218,7 +218,7 @@ package ddt.view.character
          {
             if(_layers[7].getContent())
             {
-               _armBmd = new BitmapData(_layers[7].getContent().width,_loc2_,true,0);
+               _armBmd = new BitmapData(_layers[7].getContent().width,picHeight,true,0);
                _armBmd.draw(_layers[7].getContent(),null,null,"normal");
             }
          }

@@ -75,7 +75,7 @@ package demonChiYou
       
       private var _hasClickIconOpenResultFrame:Boolean = false;
       
-      public function DemonChiYouManager(param1:IEventDispatcher = null)
+      public function DemonChiYouManager(target:IEventDispatcher = null)
       {
          super();
          _instance = this;
@@ -121,26 +121,26 @@ package demonChiYou
          _updateBossStateTimer.stop();
       }
       
-      private function onBossEnd(param1:PkgEvent) : void
+      private function onBossEnd(evt:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         var _loc3_:int = _loc2_.readInt();
-         model.bossState = _loc3_;
-         if(_loc3_ == 4 || _loc3_ == 3)
+         var pkg:PackageIn = evt.pkg;
+         var bossState:int = pkg.readInt();
+         model.bossState = bossState;
+         if(bossState == 4 || bossState == 3)
          {
             model.leftSelectSec = 30;
-            if(_loc3_ == 4)
+            if(bossState == 4)
             {
                ChatManager.Instance.sysChatAmaranth(LanguageMgr.GetTranslation("demonChiYou.activeOverBossDie"));
                _hasReceiveBossDieData = true;
                SocketManager.Instance.out.getDemonChiYouRankInfo();
             }
-            else if(_loc3_ == 3)
+            else if(bossState == 3)
             {
                ChatManager.Instance.sysChatAmaranth(LanguageMgr.GetTranslation("demonChiYou.activeOverBossAlive"));
             }
          }
-         else if(_loc3_ == 5)
+         else if(bossState == 5)
          {
             if(StateManager.currentStateType != "fighting" && !_hasClickIconOpenResultFrame)
             {
@@ -151,27 +151,27 @@ package demonChiYou
          dispatchEvent(new Event("event_boss_end"));
       }
       
-      private function onBuyItemBack(param1:PkgEvent) : void
+      private function onBuyItemBack(evt:PkgEvent) : void
       {
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc4_.readInt();
+         var pkg:PackageIn = evt.pkg;
+         var id:int = pkg.readInt();
          var _loc6_:int = 0;
          var _loc5_:* = model.shopInfoArr;
-         for each(var _loc3_ in model.shopInfoArr)
+         for each(var item in model.shopInfoArr)
          {
-            if(_loc3_["ID"] == _loc2_)
+            if(item["ID"] == id)
             {
-               _loc3_["HasBuy"] = true;
+               item["HasBuy"] = true;
                break;
             }
          }
          dispatchEvent(new Event("event_buy_item_back"));
       }
       
-      private function onUpdateBossStateTimer(param1:TimerEvent) : void
+      private function onUpdateBossStateTimer(evt:TimerEvent) : void
       {
-         var _loc2_:int = model.bossState;
-         if(_loc2_ == 1 || _loc2_ == 3 || _loc2_ == 4 || _loc2_ == 5 || _loc2_ == 6)
+         var bossState:int = model.bossState;
+         if(bossState == 1 || bossState == 3 || bossState == 4 || bossState == 5 || bossState == 6)
          {
             _updateBossStateTimer.removeEventListener("timer",onUpdateBossStateTimer);
             _updateBossStateTimer.stop();
@@ -189,91 +189,89 @@ package demonChiYou
          SocketManager.Instance.out.getDemonChiYouRankInfo();
       }
       
-      private function onShopInfoBack(param1:PkgEvent) : void
+      private function onShopInfoBack(evt:PkgEvent) : void
       {
-         var _loc6_:int = 0;
-         var _loc11_:int = 0;
-         var _loc9_:* = null;
-         var _loc7_:int = 0;
-         var _loc12_:Boolean = false;
-         var _loc3_:* = null;
-         var _loc8_:int = 0;
-         var _loc14_:int = 0;
-         var _loc10_:Boolean = false;
-         var _loc4_:int = 0;
-         var _loc13_:int = 0;
-         var _loc5_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc5_.readInt();
+         var i:int = 0;
+         var ID:int = 0;
+         var inventoryItemInfo:* = null;
+         var Cost:int = 0;
+         var HasRoll:Boolean = false;
+         var NickName:* = null;
+         var TopPoint:int = 0;
+         var PlayerId:int = 0;
+         var HasBuy:Boolean = false;
+         var MyPoint:int = 0;
+         var MyRollCount:int = 0;
+         var pkg:PackageIn = evt.pkg;
+         var shopInfoArrLength:int = pkg.readInt();
          model.shopInfoArr = [];
-         _loc6_ = 0;
-         while(_loc6_ < _loc2_)
+         for(i = 0; i < shopInfoArrLength; )
          {
-            _loc11_ = _loc5_.readInt();
-            _loc9_ = new InventoryItemInfo();
-            _loc9_.TemplateID = _loc5_.readInt();
-            _loc9_ = ItemManager.fill(_loc9_);
-            _loc9_.Count = _loc5_.readInt();
-            _loc9_.IsBinds = true;
-            _loc7_ = _loc5_.readInt();
-            _loc12_ = _loc5_.readBoolean();
-            _loc3_ = null;
-            _loc8_ = -1;
-            _loc14_ = -1;
-            if(_loc12_)
+            ID = pkg.readInt();
+            inventoryItemInfo = new InventoryItemInfo();
+            inventoryItemInfo.TemplateID = pkg.readInt();
+            inventoryItemInfo = ItemManager.fill(inventoryItemInfo);
+            inventoryItemInfo.Count = pkg.readInt();
+            inventoryItemInfo.IsBinds = true;
+            Cost = pkg.readInt();
+            HasRoll = pkg.readBoolean();
+            NickName = null;
+            TopPoint = -1;
+            PlayerId = -1;
+            if(HasRoll)
             {
-               _loc14_ = _loc5_.readInt();
-               _loc3_ = _loc5_.readUTF();
-               _loc8_ = _loc5_.readInt();
+               PlayerId = pkg.readInt();
+               NickName = pkg.readUTF();
+               TopPoint = pkg.readInt();
             }
-            _loc10_ = _loc5_.readBoolean();
-            _loc4_ = _loc5_.readInt();
-            _loc13_ = _loc5_.readInt();
+            HasBuy = pkg.readBoolean();
+            MyPoint = pkg.readInt();
+            MyRollCount = pkg.readInt();
             model.shopInfoArr.push({
-               "ID":_loc11_,
-               "InventoryItemInfo":_loc9_,
-               "Cost":_loc7_,
-               "HasRoll":_loc12_,
-               "PlayerId":_loc14_,
-               "NickName":_loc3_,
-               "TopPoint":_loc8_,
-               "HasBuy":_loc10_,
-               "MyPoint":_loc4_,
-               "MyRollCount":_loc13_
+               "ID":ID,
+               "InventoryItemInfo":inventoryItemInfo,
+               "Cost":Cost,
+               "HasRoll":HasRoll,
+               "PlayerId":PlayerId,
+               "NickName":NickName,
+               "TopPoint":TopPoint,
+               "HasBuy":HasBuy,
+               "MyPoint":MyPoint,
+               "MyRollCount":MyRollCount
             });
-            _loc6_++;
+            i++;
          }
          dispatchEvent(new Event("event_shop_info_back"));
       }
       
-      private function onBossInfoBack(param1:PkgEvent) : void
+      private function onBossInfoBack(evt:PkgEvent) : void
       {
-         var _loc8_:int = 0;
-         var _loc5_:PackageIn = param1.pkg;
-         model.bossMaxBlood = _loc5_.readInt();
-         model.bossBlood = _loc5_.readInt();
-         model.bossState = _loc5_.readInt();
-         model.isOpen = _loc5_.readBoolean();
-         var _loc3_:Date = _loc5_.readDate();
-         var _loc2_:Date = _loc5_.readDate();
-         _loc3_.hours = _loc2_.hours;
-         _loc3_.minutes = _loc2_.minutes;
-         _loc3_.seconds = _loc2_.seconds;
-         model.startDate = _loc3_;
-         var _loc6_:Date = _loc5_.readDate();
-         var _loc7_:Date = _loc5_.readDate();
-         _loc6_.hours = _loc7_.hours;
-         _loc6_.minutes = _loc7_.minutes;
-         _loc6_.seconds = _loc7_.seconds;
-         model.endDate = _loc6_;
-         var _loc4_:Array = [];
-         _loc8_ = 0;
-         while(_loc8_ < 4)
+         var i:int = 0;
+         var pkg:PackageIn = evt.pkg;
+         model.bossMaxBlood = pkg.readInt();
+         model.bossBlood = pkg.readInt();
+         model.bossState = pkg.readInt();
+         model.isOpen = pkg.readBoolean();
+         var startDate:Date = pkg.readDate();
+         var startTime:Date = pkg.readDate();
+         startDate.hours = startTime.hours;
+         startDate.minutes = startTime.minutes;
+         startDate.seconds = startTime.seconds;
+         model.startDate = startDate;
+         var endDate:Date = pkg.readDate();
+         var endTime:Date = pkg.readDate();
+         endDate.hours = endTime.hours;
+         endDate.minutes = endTime.minutes;
+         endDate.seconds = endTime.seconds;
+         model.endDate = endDate;
+         var rewardBoxIDArr:Array = [];
+         for(i = 0; i < 4; )
          {
-            _loc4_.push(_loc5_.readInt());
-            _loc8_++;
+            rewardBoxIDArr.push(pkg.readInt());
+            i++;
          }
-         model.bossDieTime = _loc5_.readDate();
-         model.rewardBoxIDArr = _loc4_;
+         model.bossDieTime = pkg.readDate();
+         model.rewardBoxIDArr = rewardBoxIDArr;
          checkIcon();
          if(!_hasShowOpenMsg && model.bossState == 2)
          {
@@ -283,20 +281,20 @@ package demonChiYou
          dispatchEvent(new Event("event_boss_info_back"));
       }
       
-      private function onEnterScene(param1:PkgEvent) : void
+      private function onEnterScene(evt:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         dispatchEvent(new CEvent("event_other_player_enter",_loc2_));
+         var pkg:PackageIn = evt.pkg;
+         dispatchEvent(new CEvent("event_other_player_enter",pkg));
       }
       
-      private function onLeaveScene(param1:PkgEvent) : void
+      private function onLeaveScene(evt:PkgEvent) : void
       {
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc4_.readInt();
-         var _loc3_:int = _loc4_.readInt();
-         if(PlayerManager.Instance.Self.ID == _loc3_)
+         var pkg:PackageIn = evt.pkg;
+         var bossSate:int = pkg.readInt();
+         var leavePlayerId:int = pkg.readInt();
+         if(PlayerManager.Instance.Self.ID == leavePlayerId)
          {
-            model.bossState = _loc2_;
+            model.bossState = bossSate;
             if(StateManager.currentStateType == "demon_chi_you")
             {
                StateManager.setState("main");
@@ -304,111 +302,110 @@ package demonChiYou
          }
          else
          {
-            dispatchEvent(new CEvent("event_other_player_leave",_loc3_));
+            dispatchEvent(new CEvent("event_other_player_leave",leavePlayerId));
          }
          checkIcon();
       }
       
-      private function onBuyRollBack(param1:PkgEvent) : void
+      private function onBuyRollBack(evt:PkgEvent) : void
       {
-         var _loc5_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc5_.readInt();
-         var _loc3_:int = _loc5_.readInt();
-         var _loc6_:int = 0;
+         var pkg:PackageIn = evt.pkg;
+         var id:int = pkg.readInt();
+         var roll:int = pkg.readInt();
+         var MyRollCount:int = 0;
          var _loc8_:* = 0;
          var _loc7_:* = model.shopInfoArr;
-         for each(var _loc4_ in model.shopInfoArr)
+         for each(var item in model.shopInfoArr)
          {
-            if(_loc4_["MyRollCount"] > _loc6_)
+            if(item["MyRollCount"] > MyRollCount)
             {
-               _loc6_ = _loc4_["MyRollCount"];
+               MyRollCount = item["MyRollCount"];
             }
          }
          var _loc10_:int = 0;
          var _loc9_:* = model.shopInfoArr;
-         for each(_loc4_ in model.shopInfoArr)
+         for each(item in model.shopInfoArr)
          {
-            if(_loc4_["ID"] == _loc2_)
+            if(item["ID"] == id)
             {
-               _loc4_["HasRoll"] = true;
-               _loc4_["PlayerId"] = PlayerManager.Instance.Self.ID;
-               _loc4_["NickName"] = PlayerManager.Instance.Self.NickName;
-               _loc4_["MyPoint"] = _loc3_;
+               item["HasRoll"] = true;
+               item["PlayerId"] = PlayerManager.Instance.Self.ID;
+               item["NickName"] = PlayerManager.Instance.Self.NickName;
+               item["MyPoint"] = roll;
                _loc8_ = "MyRollCount";
-               _loc7_ = _loc4_[_loc8_] + 1;
-               _loc4_[_loc8_] = _loc7_;
+               _loc7_ = item[_loc8_] + 1;
+               item[_loc8_] = _loc7_;
                break;
             }
          }
          dispatchEvent(new CEvent("event_buy_roll_back",{
-            "id":_loc2_,
-            "roll":_loc3_
+            "id":id,
+            "roll":roll
          }));
       }
       
       public function getRollCost() : int
       {
-         var _loc2_:int = 0;
+         var myHasRollNum:int = 0;
          var _loc4_:int = 0;
          var _loc3_:* = model.shopInfoArr;
-         for each(var _loc1_ in model.shopInfoArr)
+         for each(var item in model.shopInfoArr)
          {
-            if(_loc1_["MyPoint"] != -1)
+            if(item["MyPoint"] != -1)
             {
-               _loc2_++;
+               myHasRollNum++;
             }
          }
-         if(_loc2_ == model.shopInfoArr.length)
+         if(myHasRollNum == model.shopInfoArr.length)
          {
             return 0;
          }
-         return DemonChiYouModel.ROLL_COST_ARR[_loc2_];
+         return DemonChiYouModel.ROLL_COST_ARR[myHasRollNum];
       }
       
-      private function onRankInfo(param1:PkgEvent) : void
+      private function onRankInfo(evt:PkgEvent) : void
       {
-         var _loc9_:int = 0;
-         var _loc2_:* = null;
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         var _loc6_:int = 0;
-         var _loc7_:PackageIn = param1.pkg;
-         var _loc8_:RankInfo = model.rankInfo;
-         _loc8_.hasMyConsortiaData = _loc7_.readBoolean();
-         if(_loc8_.hasMyConsortiaData)
+         var i:int = 0;
+         var Name:* = null;
+         var Rank:int = 0;
+         var Damage:int = 0;
+         var state:int = 0;
+         var pkg:PackageIn = evt.pkg;
+         var rankInfo:RankInfo = model.rankInfo;
+         rankInfo.hasMyConsortiaData = pkg.readBoolean();
+         if(rankInfo.hasMyConsortiaData)
          {
-            _loc8_.myConsortiaRank = _loc7_.readInt();
-            _loc8_.myConsortiaDamage = _loc7_.readInt();
+            rankInfo.myConsortiaRank = pkg.readInt();
+            rankInfo.myConsortiaDamage = pkg.readInt();
          }
-         _loc8_.myDamage = _loc7_.readInt();
-         _loc8_.rankArr = [];
-         var _loc5_:int = _loc7_.readByte();
-         _loc9_ = 0;
-         while(_loc9_ < _loc5_)
+         rankInfo.myDamage = pkg.readInt();
+         rankInfo.rankArr = [];
+         var rankInfoArrLength:int = pkg.readByte();
+         for(i = 0; i < rankInfoArrLength; )
          {
-            _loc2_ = _loc7_.readUTF();
-            _loc4_ = _loc7_.readInt();
-            _loc3_ = _loc7_.readInt();
-            _loc8_.rankArr.push({
-               "Name":_loc2_,
-               "Rank":_loc4_,
-               "Damage":_loc3_
+            Name = pkg.readUTF();
+            Rank = pkg.readInt();
+            Damage = pkg.readInt();
+            rankInfo.rankArr.push({
+               "Name":Name,
+               "Rank":Rank,
+               "Damage":Damage
             });
-            _loc9_++;
+            i++;
          }
          if(_isClickIcon)
          {
-            _loc6_ = model.bossState;
-            if(_loc6_ == 2)
+            state = model.bossState;
+            if(state == 2)
             {
                SocketManager.Instance.out.enterDemonChiYouScene();
                StateManager.setState("demon_chi_you");
             }
-            else if(_loc6_ == 4)
+            else if(state == 4)
             {
                clickIconShowSelectFrame();
             }
-            else if(_loc6_ == 5)
+            else if(state == 5)
             {
                _hasClickIconOpenResultFrame = true;
                DemonChiYouManager.instance.showFrame(2);
@@ -425,11 +422,11 @@ package demonChiYou
       
       private function clickIconShowSelectFrame() : void
       {
-         var _loc1_:* = null;
+         var rankInfo:* = null;
          if(StateManager.currentStateType != "fighting")
          {
-            _loc1_ = model.rankInfo;
-            if(_loc1_.myConsortiaRank > 0 && _loc1_.myConsortiaRank < 4 && _loc1_.myDamage > 0 && model.leftSelectSec > 0)
+            rankInfo = model.rankInfo;
+            if(rankInfo.myConsortiaRank > 0 && rankInfo.myConsortiaRank < 4 && rankInfo.myDamage > 0 && model.leftSelectSec > 0)
             {
                _hasClickIconOpenSelectFrame = true;
                DemonChiYouManager.instance.showFrame(1);
@@ -443,8 +440,8 @@ package demonChiYou
       
       private function autoShowSelectFrame() : void
       {
-         var _loc1_:RankInfo = model.rankInfo;
-         if(StateManager.currentStateType != "fighting" && _loc1_.myConsortiaRank > 0 && _loc1_.myConsortiaRank < 4 && _loc1_.myDamage > 0 && model.leftSelectSec > 0 && !_hasClickIconOpenSelectFrame)
+         var rankInfo:RankInfo = model.rankInfo;
+         if(StateManager.currentStateType != "fighting" && rankInfo.myConsortiaRank > 0 && rankInfo.myConsortiaRank < 4 && rankInfo.myDamage > 0 && model.leftSelectSec > 0 && !_hasClickIconOpenSelectFrame)
          {
             DemonChiYouManager.instance.showFrame(1);
          }
@@ -456,9 +453,9 @@ package demonChiYou
          {
             var _loc3_:int = 0;
             var _loc2_:* = model.shopInfoArr;
-            for each(var _loc1_ in model.shopInfoArr)
+            for each(var itemData in model.shopInfoArr)
             {
-               if(_loc1_["PlayerId"] == PlayerManager.Instance.Self.ID && !_loc1_["HasBuy"])
+               if(itemData["PlayerId"] == PlayerManager.Instance.Self.ID && !itemData["HasBuy"])
                {
                   return true;
                }
@@ -467,9 +464,9 @@ package demonChiYou
          return false;
       }
       
-      public function showFrame(param1:int) : void
+      public function showFrame(frameType:int) : void
       {
-         this.frameType = param1;
+         this.frameType = frameType;
          new HelperUIModuleLoad().loadUIModule(["demonchiyou","ddtcorei"],show);
       }
       
@@ -478,9 +475,9 @@ package demonChiYou
          SocketManager.Instance.out.getDemonChiYouBossInfo();
       }
       
-      public function initHall(param1:IHallStateView) : void
+      public function initHall(hall:IHallStateView) : void
       {
-         _hall = param1;
+         _hall = hall;
          checkIcon();
       }
       

@@ -30,9 +30,9 @@ package shop.view
       
       public var onBuy:Function;
       
-      public function BuySingleGoodsNoShop(param1:int = 1)
+      public function BuySingleGoodsNoShop(type:int = 1)
       {
-         super(param1);
+         super(type);
       }
       
       override protected function initView() : void
@@ -41,39 +41,39 @@ package shop.view
          super.initView();
       }
       
-      override public function set goodsID(param1:int) : void
+      override public function set goodsID(value:int) : void
       {
-         var _loc4_:* = null;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
+         var _bg:* = null;
+         var _itemCellBg:* = null;
+         var _verticalLine:* = null;
          if(_shopCartItem)
          {
             _shopCartItem.removeEventListener("conditionchange",__shopCartItemChange);
             _shopCartItem.dispose();
          }
-         var _loc5_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(param1);
-         if(_loc5_)
+         var shopItemInfo:ItemTemplateInfo = ItemManager.Instance.getTemplateById(value);
+         if(shopItemInfo)
          {
-            _loc4_ = ComponentFactory.Instance.creatComponentByStylename("ddtshop.CartItemBg");
-            _loc4_.x = _loc4_.x + 29;
-            _loc4_.y = _loc4_.y + 51;
-            _loc2_ = ComponentFactory.Instance.creat("ddtshop.CartItemCellBg");
-            _loc2_.x = _loc2_.x + 29;
-            _loc2_.y = _loc2_.y + 51;
-            _loc3_ = ComponentFactory.Instance.creatComponentByStylename("ddtshop.VerticalLine");
-            _loc3_.x = _loc3_.x + 29;
-            _loc3_.y = _loc3_.y + 51;
-            _frame.addToContent(_loc4_);
-            _frame.addToContent(_loc3_);
-            _frame.addToContent(_loc2_);
+            _bg = ComponentFactory.Instance.creatComponentByStylename("ddtshop.CartItemBg");
+            _bg.x = _bg.x + 29;
+            _bg.y = _bg.y + 51;
+            _itemCellBg = ComponentFactory.Instance.creat("ddtshop.CartItemCellBg");
+            _itemCellBg.x = _itemCellBg.x + 29;
+            _itemCellBg.y = _itemCellBg.y + 51;
+            _verticalLine = ComponentFactory.Instance.creatComponentByStylename("ddtshop.VerticalLine");
+            _verticalLine.x = _verticalLine.x + 29;
+            _verticalLine.y = _verticalLine.y + 51;
+            _frame.addToContent(_bg);
+            _frame.addToContent(_verticalLine);
+            _frame.addToContent(_itemCellBg);
             _itemCell = new BagCell(0);
             PositionUtils.setPos(_itemCell,"ddtshop.shopCartItemPos");
-            _itemCell.x = _loc2_.x + 2;
-            _itemCell.y = _loc2_.y + 2;
+            _itemCell.x = _itemCellBg.x + 2;
+            _itemCell.y = _itemCellBg.y + 2;
             var _loc6_:int = 74;
             _itemCell.height = _loc6_;
             _itemCell.width = _loc6_;
-            _itemCell.info = _loc5_;
+            _itemCell.info = shopItemInfo;
             _frame.addToContent(_itemCell);
             _itemCell.addEventListener("conditionchange",__shopCartItemChange);
             updateCommodityPrices();
@@ -81,13 +81,13 @@ package shop.view
             _itemName.x = 112;
             _itemName.y = 78;
             _frame.addToContent(_itemName);
-            _itemName.text = _loc5_.Name;
+            _itemName.text = shopItemInfo.Name;
             _priceCheck = ComponentFactory.Instance.creat("ddtshop.CartItemSelectBtn");
             _priceCheck.selected = true;
             _priceCheck.mouseEnabled = false;
             _priceCheck.x = 243;
             _priceCheck.y = 80;
-            _priceCheck.text = _loc5_.Property3 + LanguageMgr.GetTranslation("carnival.buyGiftTypeTxt1");
+            _priceCheck.text = shopItemInfo.Property3 + LanguageMgr.GetTranslation("carnival.buyGiftTypeTxt1");
             _frame.addToContent(_priceCheck);
             _commodityPricesText2.text = "0";
          }
@@ -105,7 +105,7 @@ package shop.view
          }
       }
       
-      override protected function __purchaseConfirmationBtnClick(param1:MouseEvent) : void
+      override protected function __purchaseConfirmationBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -113,8 +113,8 @@ package shop.view
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:int = _itemCell.info.Property3;
-         CheckMoneyUtils.instance.checkMoney(_isBand,_loc2_,onCheckComplete);
+         var moneyValue:int = _itemCell.info.Property3;
+         CheckMoneyUtils.instance.checkMoney(_isBand,moneyValue,onCheckComplete);
       }
       
       override protected function onCheckComplete() : void

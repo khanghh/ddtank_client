@@ -21,10 +21,10 @@ package calendar.view
       
       private var _activityMenu:ActivityMenu;
       
-      public function ActivityList(param1:CalendarModel)
+      public function ActivityList(model:CalendarModel)
       {
          super();
-         _model = param1;
+         _model = model;
          configUI();
          addEvent();
       }
@@ -49,20 +49,20 @@ package calendar.view
          _activityMenu.removeEventListener("activitymenu_refresh",menuItemClick);
       }
       
-      private function menuItemClick(param1:Event) : void
+      private function menuItemClick(event:Event) : void
       {
          _list.invalidateViewport();
       }
       
-      public function setActivityDate(param1:Date) : void
+      public function setActivityDate(date:Date) : void
       {
-         _activityMenu.setActivityDate(param1);
+         _activityMenu.setActivityDate(date);
          _list.invalidateViewport();
       }
       
-      public function showByQQ(param1:int) : void
+      public function showByQQ(activeID:int) : void
       {
-         _activityMenu.showByQQ(param1);
+         _activityMenu.showByQQ(activeID);
       }
       
       public function dispose() : void

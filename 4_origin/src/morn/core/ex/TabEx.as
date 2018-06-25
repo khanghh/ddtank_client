@@ -12,78 +12,76 @@ package morn.core.ex
       
       protected var _offset:String;
       
-      public function TabEx(param1:String = null, param2:String = null)
+      public function TabEx(imageLabels:String = null, skin:String = null)
       {
-         super(param1,param2);
-         _direction = HORIZENTAL;
+         super(imageLabels,skin);
+         _direction = "horizontal";
       }
       
-      override protected function createItem(param1:String, param2:String) : DisplayObject
+      override protected function createItem(skin:String, imageLabel:String) : DisplayObject
       {
-         return new ButtonEx(param1,param2);
+         return new ButtonEx(skin,imageLabel);
       }
       
-      public function set offset(param1:String) : void
+      public function set offset(value:String) : void
       {
-         if(this._offset != param1)
+         if(_offset != value)
          {
-            this._offset = param1;
-            callLater(this.changeImageLabels);
+            _offset = value;
+            callLater(changeImageLabels);
          }
       }
       
       public function get offset() : String
       {
-         return this._offset;
+         return _offset;
       }
       
       override protected function changeImageLabels() : void
       {
-         var _loc1_:* = NaN;
-         var _loc2_:Array = null;
-         var _loc3_:Array = null;
-         var _loc4_:Array = null;
-         var _loc5_:* = NaN;
-         var _loc6_:int = 0;
-         var _loc7_:int = 0;
-         var _loc8_:ButtonEx = null;
+         var left:* = NaN;
+         var imgLabels:* = null;
+         var skinArr:* = null;
+         var offsetArr:* = null;
+         var offsetValue:* = NaN;
+         var i:int = 0;
+         var n:int = 0;
+         var btn:* = null;
          if(_items)
          {
-            _loc1_ = 0;
-            _loc2_ = imageLabels.split(",");
-            _loc3_ = _skin.split(",");
-            _loc4_ = !!this._offset?this._offset.split(","):[];
-            _loc5_ = 0;
-            _loc6_ = 0;
-            _loc7_ = _items.length;
-            while(_loc6_ < _loc7_)
+            left = 0;
+            imgLabels = imageLabels.split(",");
+            skinArr = _skin.split(",");
+            offsetArr = !!_offset?_offset.split(","):[];
+            offsetValue = 0;
+            for(i = 0,n = _items.length; i < n; )
             {
-               _loc8_ = _items[_loc6_] as ButtonEx;
-               if(_loc3_ && _loc3_.length > _loc6_)
+               btn = _items[i] as ButtonEx;
+               if(skinArr && skinArr.length > i)
                {
-                  _loc8_.skin = _loc3_[_loc6_];
+                  btn.skin = skinArr[i];
                }
-               if(_loc2_ && _loc2_.length > _loc6_)
+               if(imgLabels && imgLabels.length > i)
                {
-                  _loc8_.imageLabel = _loc2_[_loc6_];
+                  btn.imageLabel = imgLabels[i];
                }
-               if(_loc4_ && _loc4_.length > _loc6_)
+               if(offsetArr && offsetArr.length > i)
                {
-                  _loc5_ = Number(_loc4_[_loc6_]);
+                  offsetValue = Number(offsetArr[i]);
                }
-               if(_direction == HORIZENTAL)
+               if(_direction == "horizontal")
                {
-                  _loc8_.y = 0;
-                  _loc8_.x = _loc1_;
-                  _loc1_ = Number(_loc1_ + (_loc8_.width + _space + _loc5_));
+                  btn.y = 0;
+                  btn.x = left;
+                  left = Number(left + (btn.width + _space + offsetValue));
                }
                else
                {
-                  _loc8_.x = 0;
-                  _loc8_.y = _loc1_;
-                  _loc1_ = Number(_loc1_ + (_loc8_.height + _space + _loc5_));
+                  btn.x = 0;
+                  btn.y = left;
+                  left = Number(left + (btn.height + _space + offsetValue));
                }
-               _loc6_++;
+               i++;
             }
          }
       }

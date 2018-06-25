@@ -101,10 +101,10 @@ package academy.view
       
       private var _attestBtn:ScaleFrameImage;
       
-      public function AcademyPlayerPanel(param1:AcademyController)
+      public function AcademyPlayerPanel(controller:AcademyController)
       {
          super();
-         _controller = param1;
+         _controller = controller;
          init();
          initEvent();
       }
@@ -189,14 +189,14 @@ package academy.view
          _requestApprenticeBtn.removeEventListener("click",__onBtnClick);
       }
       
-      private function __onBtnClick(param1:MouseEvent) : void
+      private function __onBtnClick(event:MouseEvent) : void
       {
          if(_info == null)
          {
             return;
          }
          SoundManager.instance.play("008");
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = event.currentTarget;
          if(_courtshipBtn !== _loc2_)
          {
             if(_talkBtn !== _loc2_)
@@ -241,7 +241,7 @@ package academy.view
          }
       }
       
-      private function __playerChange(param1:AcademyEvent) : void
+      private function __playerChange(event:AcademyEvent) : void
       {
          _info = _controller.model.info;
          update();
@@ -299,18 +299,18 @@ package academy.view
                _marriedIcon.visible = true;
             }
             _courtshipBtn.enable = getCourtshipBtnEnable();
-            var _loc2_:PlayerInfo = _info.info;
-            _playerNameTxt.text = _loc2_.NickName;
-            _guildNameTxt.text = !!_loc2_.ConsortiaName?_loc2_.ConsortiaName:"";
-            _graduatesCountTxt.text = String(_loc2_.graduatesCount);
-            var _loc1_:Number = _loc2_.TotalCount > 0?_loc2_.WinCount / _loc2_.TotalCount * 100:0;
-            _winProbabilityTxt.text = String(_loc1_.toFixed(2)) + "%";
-            _fightPowerTxt.text = String(_loc2_.FightPower);
-            _honourOfMasterTxt.text = _loc2_.honourOfMaster;
+            var player:PlayerInfo = _info.info;
+            _playerNameTxt.text = player.NickName;
+            _guildNameTxt.text = !!player.ConsortiaName?player.ConsortiaName:"";
+            _graduatesCountTxt.text = String(player.graduatesCount);
+            var rate:Number = player.TotalCount > 0?player.WinCount / player.TotalCount * 100:0;
+            _winProbabilityTxt.text = String(rate.toFixed(2)) + "%";
+            _fightPowerTxt.text = String(player.FightPower);
+            _honourOfMasterTxt.text = player.honourOfMaster;
             _introductionTxt.text = _info.Introduction;
-            _online.visible = _loc2_.playerState.StateID == 1?true:false;
+            _online.visible = player.playerState.StateID == 1?true:false;
             _equipBtn.enable = _info.IsPublishEquip;
-            if(_loc2_.playerState.StateID == 1)
+            if(player.playerState.StateID == 1)
             {
                _talkBtn.enable = true;
             }
@@ -318,10 +318,10 @@ package academy.view
             {
                _talkBtn.enable = false;
             }
-            if(_loc2_.IsVIP)
+            if(player.IsVIP)
             {
                ObjectUtils.disposeObject(_vipName);
-               _vipName = VipController.instance.getVipNameTxt(157,_loc2_.typeVIP);
+               _vipName = VipController.instance.getVipNameTxt(157,player.typeVIP);
                _vipName.textSize = 16;
                _vipName.x = _playerNameTxt.x;
                _vipName.y = _playerNameTxt.y;
@@ -438,8 +438,8 @@ package academy.view
       
       private function getCourtshipBtnEnable() : Boolean
       {
-         var _loc1_:SelfInfo = PlayerManager.Instance.Self;
-         if(_info && _info.info && (_loc1_.SpouseID <= 0 && _info.info.SpouseID <= 0 && _info.info.Sex != _loc1_.Sex) && _info.info.playerState.StateID == 1)
+         var selfInfo:SelfInfo = PlayerManager.Instance.Self;
+         if(_info && _info.info && (selfInfo.SpouseID <= 0 && _info.info.SpouseID <= 0 && _info.info.Sex != selfInfo.Sex) && _info.info.playerState.StateID == 1)
          {
             return true;
          }
@@ -448,29 +448,29 @@ package academy.view
       
       private function updateIcon() : void
       {
-         var _loc1_:PlayerInfo = _info.info;
-         _levelIcon.setInfo(_loc1_.Grade,_loc1_.ddtKingGrade,_loc1_.Repute,_loc1_.WinCount,_loc1_.TotalCount,_loc1_.FightPower,_loc1_.Offer,true,false);
+         var player:PlayerInfo = _info.info;
+         _levelIcon.setInfo(player.Grade,player.ddtKingGrade,player.Repute,player.WinCount,player.TotalCount,player.FightPower,player.Offer,true,false);
          _levelIcon.visible = true;
-         if(_vipIcon == null && _loc1_.IsVIP)
+         if(_vipIcon == null && player.IsVIP)
          {
             _vipIcon = ComponentFactory.Instance.creatCustomObject("academy.playerPanel.VipIcon");
             addChild(_vipIcon);
-            _vipIcon.setInfo(_loc1_);
+            _vipIcon.setInfo(player);
          }
-         else if(_vipIcon && !_loc1_.IsVIP)
+         else if(_vipIcon && !player.IsVIP)
          {
             _vipIcon.dispose();
             _vipIcon = null;
          }
-         if(_loc1_.SpouseID > 0)
+         if(player.SpouseID > 0)
          {
             if(_marriedIcon == null)
             {
                _marriedIcon = ComponentFactory.Instance.creatCustomObject("academy.playerPanel.MarriedIcon");
             }
             _marriedIcon.tipData = {
-               "nickName":_loc1_.SpouseName,
-               "gender":_loc1_.Sex
+               "nickName":player.SpouseName,
+               "gender":player.Sex
             };
             addChild(_marriedIcon);
          }
@@ -492,7 +492,7 @@ package academy.view
          }
       }
       
-      private function __characterComplete(param1:Event) : void
+      private function __characterComplete(event:Event) : void
       {
          _player.removeEventListener("complete",__characterComplete);
          PositionUtils.setPos(_player,"academy.view.AcademyPlayerPanel.playerPos");

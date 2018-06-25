@@ -13,14 +13,14 @@ package auctionHouse.view
    {
        
       
-      public function AuctionBeadListView(param1:int, param2:int = 32, param3:int = 80, param4:int = 7)
+      public function AuctionBeadListView(bagType:int, startIndex:int = 32, stopIndex:int = 80, columnNum:int = 7)
       {
-         super(param1,param2,param3,param4);
+         super(bagType,startIndex,stopIndex,columnNum);
       }
       
-      override public function setData(param1:BagInfo) : void
+      override public function setData(bag:BagInfo) : void
       {
-         if(_bagdata == param1)
+         if(_bagdata == bag)
          {
             return;
          }
@@ -29,74 +29,74 @@ package auctionHouse.view
             _bagdata.removeEventListener("update",__updateGoods);
          }
          clearDataCells();
-         _bagdata = param1;
-         var _loc2_:Array = [];
+         _bagdata = bag;
+         var _infoArr:Array = [];
          var _loc5_:int = 0;
          var _loc4_:* = _bagdata.items;
-         for(var _loc3_ in _bagdata.items)
+         for(var i in _bagdata.items)
          {
-            if(_cells[_loc3_] != null && InventoryItemInfo(_bagdata.items[_loc3_]).IsBinds == false)
+            if(_cells[i] != null && InventoryItemInfo(_bagdata.items[i]).IsBinds == false)
             {
-               _bagdata.items[_loc3_].isMoveSpace = true;
-               _cells[_loc3_].itemInfo = _bagdata.items[_loc3_];
-               _cells[_loc3_].info = _bagdata.items[_loc3_];
-               _loc2_.push(_cells[_loc3_]);
+               _bagdata.items[i].isMoveSpace = true;
+               _cells[i].itemInfo = _bagdata.items[i];
+               _cells[i].info = _bagdata.items[i];
+               _infoArr.push(_cells[i]);
             }
          }
          _bagdata.addEventListener("update",__updateGoods);
-         _cellsSort(_loc2_);
+         _cellsSort(_infoArr);
       }
       
-      override protected function __doubleClickHandler(param1:InteractiveEvent) : void
+      override protected function __doubleClickHandler(evt:InteractiveEvent) : void
       {
       }
       
-      override protected function __updateGoods(param1:BagEvent) : void
+      override protected function __updateGoods(evt:BagEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc4_:Dictionary = param1.changedSlots;
+         var c:* = null;
+         var changes:Dictionary = evt.changedSlots;
          var _loc6_:int = 0;
-         var _loc5_:* = _loc4_;
-         for each(var _loc3_ in _loc4_)
+         var _loc5_:* = changes;
+         for each(var i in changes)
          {
-            _loc2_ = _bagdata.getItemAt(_loc3_.Place);
-            if(_loc2_ && _loc2_.IsBinds == false)
+            c = _bagdata.getItemAt(i.Place);
+            if(c && c.IsBinds == false)
             {
-               setCellInfo(_loc2_.Place,_loc2_);
+               setCellInfo(c.Place,c);
             }
             else
             {
-               setCellInfo(_loc3_.Place,null);
+               setCellInfo(i.Place,null);
             }
             dispatchEvent(new Event("change"));
          }
       }
       
-      private function _cellsSort(param1:Array) : void
+      private function _cellsSort(arr:Array) : void
       {
-         var _loc6_:int = 0;
-         var _loc4_:Number = NaN;
-         var _loc5_:Number = NaN;
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         if(param1.length <= 0)
+         var i:int = 0;
+         var oldx:Number = NaN;
+         var oldy:Number = NaN;
+         var n:int = 0;
+         var oldCell:* = null;
+         if(arr.length <= 0)
          {
             return;
          }
-         _loc6_ = 0;
-         while(_loc6_ < param1.length)
+         i = 0;
+         while(i < arr.length)
          {
-            _loc4_ = param1[_loc6_].x;
-            _loc5_ = param1[_loc6_].y;
-            _loc3_ = _cellVec.indexOf(param1[_loc6_]);
-            _loc2_ = _cellVec[_loc6_];
-            param1[_loc6_].x = _loc2_.x;
-            param1[_loc6_].y = _loc2_.y;
-            _loc2_.x = _loc4_;
-            _loc2_.y = _loc5_;
-            _cellVec[_loc6_] = param1[_loc6_];
-            _cellVec[_loc3_] = _loc2_;
-            _loc6_++;
+            oldx = arr[i].x;
+            oldy = arr[i].y;
+            n = _cellVec.indexOf(arr[i]);
+            oldCell = _cellVec[i];
+            arr[i].x = oldCell.x;
+            arr[i].y = oldCell.y;
+            oldCell.x = oldx;
+            oldCell.y = oldy;
+            _cellVec[i] = arr[i];
+            _cellVec[n] = oldCell;
+            i++;
          }
       }
    }

@@ -11,49 +11,48 @@ package ddt.view.character
       
       private var _clothType:int = 0;
       
-      public function RoomLayer(param1:ItemTemplateInfo, param2:String = "", param3:Boolean = false, param4:int = 1, param5:String = null, param6:int = 0)
+      public function RoomLayer(info:ItemTemplateInfo, color:String = "", gunback:Boolean = false, hairType:int = 1, pic:String = null, clothType:int = 0)
       {
-         _clothType = param6;
-         super(param1,param2,param3,param4,param5);
+         _clothType = clothType;
+         super(info,color,gunback,hairType,pic);
       }
       
-      override protected function getUrl(param1:int) : String
+      override protected function getUrl(layer:int) : String
       {
          if(_clothType == 0)
          {
-            return PathManager.solveGoodsPath(_info.CategoryID,_pic,_info.NeedSex == 1,"show",_hairType,String(param1),_info.Level,_gunBack,int(_info.Property1));
+            return PathManager.solveGoodsPath(_info.CategoryID,_pic,_info.NeedSex == 1,"show",_hairType,String(layer),_info.Level,_gunBack,int(_info.Property1));
          }
          return "normal.png";
       }
       
       override protected function initLoaders() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var url:* = null;
+         var l:* = null;
          if(_info)
          {
-            _loc2_ = getUrl(0);
-            _loc2_ = _loc2_.toLocaleLowerCase();
-            _loc1_ = LoadResourceManager.Instance.createLoader(_loc2_,0);
-            _queueLoader.addLoader(_loc1_);
+            url = getUrl(0);
+            url = url.toLocaleLowerCase();
+            l = LoadResourceManager.Instance.createLoader(url,0);
+            _queueLoader.addLoader(l);
          }
       }
       
       override public function reSetBitmap() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          clearBitmap();
-         _loc1_ = 0;
-         while(_loc1_ < _queueLoader.loaders.length)
+         for(i = 0; i < _queueLoader.loaders.length; )
          {
-            _bitmaps.push(_queueLoader.loaders[_loc1_].content);
-            if(_bitmaps[_loc1_])
+            _bitmaps.push(_queueLoader.loaders[i].content);
+            if(_bitmaps[i])
             {
-               _bitmaps[_loc1_].smoothing = true;
-               _bitmaps[_loc1_].visible = false;
-               addChild(_bitmaps[_loc1_]);
+               _bitmaps[i].smoothing = true;
+               _bitmaps[i].visible = false;
+               addChild(_bitmaps[i]);
             }
-            _loc1_++;
+            i++;
          }
       }
    }

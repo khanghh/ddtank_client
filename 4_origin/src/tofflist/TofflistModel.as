@@ -163,20 +163,20 @@ package tofflist
          super();
       }
       
-      public static function addEventListener(param1:String, param2:Function, param3:Boolean = false) : void
+      public static function addEventListener(type:String, listener:Function, useCapture:Boolean = false) : void
       {
-         _dispatcher.addEventListener(param1,param2,param3);
+         _dispatcher.addEventListener(type,listener,useCapture);
       }
       
-      public static function removeEventListener(param1:String, param2:Function, param3:Boolean = false) : void
+      public static function removeEventListener(type:String, listener:Function, useCapture:Boolean = false) : void
       {
-         _dispatcher.removeEventListener(param1,param2,param3);
+         _dispatcher.removeEventListener(type,listener,useCapture);
       }
       
-      public static function set firstMenuType(param1:String) : void
+      public static function set firstMenuType(type:String) : void
       {
-         _firstMenuType = param1;
-         _dispatcher.dispatchEvent(new TofflistEvent("tofflisttypechange",param1));
+         _firstMenuType = type;
+         _dispatcher.dispatchEvent(new TofflistEvent("tofflisttypechange",type));
       }
       
       public static function get firstMenuType() : String
@@ -184,10 +184,10 @@ package tofflist
          return _firstMenuType;
       }
       
-      public static function set secondMenuType(param1:String) : void
+      public static function set secondMenuType(type:String) : void
       {
-         _secondMenuType = param1;
-         _dispatcher.dispatchEvent(new TofflistEvent("tofflisttypechange",param1));
+         _secondMenuType = type;
+         _dispatcher.dispatchEvent(new TofflistEvent("tofflisttypechange",type));
       }
       
       public static function get secondMenuType() : String
@@ -195,10 +195,10 @@ package tofflist
          return _secondMenuType;
       }
       
-      public static function set thirdMenuType(param1:String) : void
+      public static function set thirdMenuType(type:String) : void
       {
-         _thirdMenuType = param1;
-         _dispatcher.dispatchEvent(new TofflistEvent("tofflisttypechange",param1));
+         _thirdMenuType = type;
+         _dispatcher.dispatchEvent(new TofflistEvent("tofflisttypechange",type));
       }
       
       public static function get thirdMenuType() : String
@@ -206,10 +206,10 @@ package tofflist
          return _thirdMenuType;
       }
       
-      public static function set currentPlayerInfo(param1:PlayerInfo) : void
+      public static function set currentPlayerInfo(info:PlayerInfo) : void
       {
-         _currentPlayerInfo = param1;
-         _dispatcher.dispatchEvent(new TofflistEvent("tofflistcurrentplaye",param1));
+         _currentPlayerInfo = info;
+         _dispatcher.dispatchEvent(new TofflistEvent("tofflistcurrentplaye",info));
       }
       
       public static function get currentPlayerInfo() : PlayerInfo
@@ -217,9 +217,9 @@ package tofflist
          return _currentPlayerInfo;
       }
       
-      public static function set currentConsortiaInfo(param1:ConsortiaInfo) : void
+      public static function set currentConsortiaInfo(value:ConsortiaInfo) : void
       {
-         _currentConsortiaInfo = param1;
+         _currentConsortiaInfo = value;
       }
       
       public static function get currentConsortiaInfo() : ConsortiaInfo
@@ -241,9 +241,9 @@ package tofflist
          return _mountsLevelInfo;
       }
       
-      public static function set mountsLevelInfo(param1:String) : void
+      public static function set mountsLevelInfo(value:String) : void
       {
-         _mountsLevelInfo = param1;
+         _mountsLevelInfo = value;
       }
       
       public static function get currentTeamInfo() : TeamRankInfo
@@ -251,15 +251,15 @@ package tofflist
          return _currentTeamInfo;
       }
       
-      public static function set currentTeamInfo(param1:TeamRankInfo) : void
+      public static function set currentTeamInfo(value:TeamRankInfo) : void
       {
-         _currentTeamInfo = param1;
-         _dispatcher.dispatchEvent(new TofflistEvent("tofflistcurrentplaye",param1));
+         _currentTeamInfo = value;
+         _dispatcher.dispatchEvent(new TofflistEvent("tofflistcurrentplaye",value));
       }
       
-      public function set personalBattleAccumulate(param1:TofflistListData) : void
+      public function set personalBattleAccumulate(arr:TofflistListData) : void
       {
-         _personalBattleAccumulate = param1;
+         _personalBattleAccumulate = arr;
          _dispatcher.dispatchEvent(new TofflistEvent("tofflistdatachange",getTofflistEventParams("personalBattleAccumulate",_personalBattleAccumulate)));
       }
       
@@ -268,9 +268,9 @@ package tofflist
          return _personalBattleAccumulate;
       }
       
-      public function set individualGradeDay(param1:TofflistListData) : void
+      public function set individualGradeDay(arr:TofflistListData) : void
       {
-         this._individualGradeDay = param1;
+         this._individualGradeDay = arr;
          _dispatcher.dispatchEvent(new TofflistEvent("tofflistdatachange",getTofflistEventParams("individualGradeDay",_individualGradeDay)));
       }
       
@@ -279,9 +279,9 @@ package tofflist
          return this._individualGradeDay;
       }
       
-      public function set individualGradeWeek(param1:TofflistListData) : void
+      public function set individualGradeWeek(arr:TofflistListData) : void
       {
-         this._individualGradeWeek = param1;
+         this._individualGradeWeek = arr;
          _dispatcher.dispatchEvent(new TofflistEvent("tofflistdatachange",getTofflistEventParams("individualgradeWeek",_individualGradeWeek)));
       }
       
@@ -290,9 +290,9 @@ package tofflist
          return this._individualGradeWeek;
       }
       
-      public function set individualGradeAccumulate(param1:TofflistListData) : void
+      public function set individualGradeAccumulate(arr:TofflistListData) : void
       {
-         this._individualGradeAccumulate = param1;
+         this._individualGradeAccumulate = arr;
          _dispatcher.dispatchEvent(new TofflistEvent("tofflistdatachange",getTofflistEventParams("individualgradeweek",_individualGradeAccumulate)));
       }
       
@@ -301,9 +301,9 @@ package tofflist
          return this._individualGradeAccumulate;
       }
       
-      public function set individualExploitDay(param1:TofflistListData) : void
+      public function set individualExploitDay(arr:TofflistListData) : void
       {
-         this._individualExploitDay = param1;
+         this._individualExploitDay = arr;
          _dispatcher.dispatchEvent(new TofflistEvent("tofflistdatachange",getTofflistEventParams("individualexploitday",_individualExploitDay)));
       }
       
@@ -312,9 +312,9 @@ package tofflist
          return this._individualExploitDay;
       }
       
-      public function set individualExploitWeek(param1:TofflistListData) : void
+      public function set individualExploitWeek(arr:TofflistListData) : void
       {
-         this._individualExploitWeek = param1;
+         this._individualExploitWeek = arr;
          _dispatcher.dispatchEvent(new TofflistEvent("tofflistdatachange",getTofflistEventParams("individualexploitweek",_individualExploitWeek)));
       }
       
@@ -323,9 +323,9 @@ package tofflist
          return this._individualExploitWeek;
       }
       
-      public function set individualExploitAccumulate(param1:TofflistListData) : void
+      public function set individualExploitAccumulate(arr:TofflistListData) : void
       {
-         this._individualExploitAccumulate = param1;
+         this._individualExploitAccumulate = arr;
          _dispatcher.dispatchEvent(new TofflistEvent("tofflistdatachange",getTofflistEventParams("individualexploitaccumulate",_individualExploitAccumulate)));
       }
       
@@ -334,9 +334,9 @@ package tofflist
          return this._individualExploitAccumulate;
       }
       
-      public function set PersonalAchievementPointDay(param1:TofflistListData) : void
+      public function set PersonalAchievementPointDay(value:TofflistListData) : void
       {
-         _personalAchievementPointDay = param1;
+         _personalAchievementPointDay = value;
          _dispatcher.dispatchEvent(new TofflistEvent("tofflistdatachange",getTofflistEventParams("individualAchievementPointDay",_personalAchievementPointDay)));
       }
       
@@ -345,9 +345,9 @@ package tofflist
          return _personalAchievementPointDay;
       }
       
-      public function set PersonalAchievementPointWeek(param1:TofflistListData) : void
+      public function set PersonalAchievementPointWeek(value:TofflistListData) : void
       {
-         _personalAchievementPointWeek = param1;
+         _personalAchievementPointWeek = value;
          _dispatcher.dispatchEvent(new TofflistEvent("tofflistdatachange",getTofflistEventParams("individualAchievementPointWeek",_personalAchievementPointWeek)));
       }
       
@@ -356,9 +356,9 @@ package tofflist
          return _personalAchievementPointWeek;
       }
       
-      public function set PersonalAchievementPoint(param1:TofflistListData) : void
+      public function set PersonalAchievementPoint(value:TofflistListData) : void
       {
-         _personalAchievementPoint = param1;
+         _personalAchievementPoint = value;
          _dispatcher.dispatchEvent(new TofflistEvent("tofflistdatachange",getTofflistEventParams("individualAchievementPointAccumulate",_personalAchievementPoint)));
       }
       
@@ -367,9 +367,9 @@ package tofflist
          return _personalAchievementPoint;
       }
       
-      public function set PersonalCharmvalueDay(param1:TofflistListData) : void
+      public function set PersonalCharmvalueDay(value:TofflistListData) : void
       {
-         _PersonalCharmvalueDay = param1;
+         _PersonalCharmvalueDay = value;
          _dispatcher.dispatchEvent(new TofflistEvent("tofflistdatachange",getTofflistEventParams("individualcharmvalueday",_PersonalCharmvalueDay)));
       }
       
@@ -378,9 +378,9 @@ package tofflist
          return _PersonalCharmvalueDay;
       }
       
-      public function set PersonalCharmvalueWeek(param1:TofflistListData) : void
+      public function set PersonalCharmvalueWeek(value:TofflistListData) : void
       {
-         _PersonalCharmvalueWeek = param1;
+         _PersonalCharmvalueWeek = value;
          _dispatcher.dispatchEvent(new TofflistEvent("tofflistdatachange",getTofflistEventParams("individualcharmvalueweek",_PersonalCharmvalueWeek)));
       }
       
@@ -389,9 +389,9 @@ package tofflist
          return _PersonalCharmvalueWeek;
       }
       
-      public function set PersonalCharmvalue(param1:TofflistListData) : void
+      public function set PersonalCharmvalue(value:TofflistListData) : void
       {
-         _PersonalCharmvalue = param1;
+         _PersonalCharmvalue = value;
          _dispatcher.dispatchEvent(new TofflistEvent("tofflistdatachange",getTofflistEventParams("individualcharmvalueaccumulate",_PersonalCharmvalue)));
       }
       
@@ -405,9 +405,9 @@ package tofflist
          return _personalMatchesDay;
       }
       
-      public function set personalMatchesDay(param1:TofflistListData) : void
+      public function set personalMatchesDay(value:TofflistListData) : void
       {
-         _personalMatchesDay = param1;
+         _personalMatchesDay = value;
          _dispatcher.dispatchEvent(new TofflistEvent("tofflistdatachange",getTofflistEventParams("individualMatchesDay",_personalMatchesDay)));
       }
       
@@ -416,9 +416,9 @@ package tofflist
          return _personalMatchesWeek;
       }
       
-      public function set personalMatchesWeek(param1:TofflistListData) : void
+      public function set personalMatchesWeek(value:TofflistListData) : void
       {
-         _personalMatchesWeek = param1;
+         _personalMatchesWeek = value;
          _dispatcher.dispatchEvent(new TofflistEvent("tofflistdatachange",getTofflistEventParams("individualMatchesWeek",_personalMatchesWeek)));
       }
       
@@ -427,9 +427,9 @@ package tofflist
          return _personalMatchesTotal;
       }
       
-      public function set personalMatchesTotal(param1:TofflistListData) : void
+      public function set personalMatchesTotal(value:TofflistListData) : void
       {
-         _personalMatchesTotal = param1;
+         _personalMatchesTotal = value;
          _dispatcher.dispatchEvent(new TofflistEvent("tofflistdatachange",getTofflistEventParams("individualMatchesTotal",_personalMatchesTotal)));
       }
       
@@ -438,15 +438,15 @@ package tofflist
          return _personalMountsAccumulate;
       }
       
-      public function set personalMountsAccumulate(param1:TofflistListData) : void
+      public function set personalMountsAccumulate(value:TofflistListData) : void
       {
-         _personalMountsAccumulate = param1;
+         _personalMountsAccumulate = value;
          _dispatcher.dispatchEvent(new TofflistEvent("tofflistdatachange",getTofflistEventParams("individualMountsaccumulate",_personalMountsAccumulate)));
       }
       
-      public function set consortiaBattleAccumulate(param1:TofflistListData) : void
+      public function set consortiaBattleAccumulate(value:TofflistListData) : void
       {
-         _consortiaBattleAccumulate = param1;
+         _consortiaBattleAccumulate = value;
          _dispatcher.dispatchEvent(new TofflistEvent("tofflistdatachange",getTofflistEventParams("consortiaBattleAccumulate",_consortiaBattleAccumulate)));
       }
       
@@ -455,9 +455,9 @@ package tofflist
          return _consortiaBattleAccumulate;
       }
       
-      public function set consortiaGradeAccumulate(param1:TofflistListData) : void
+      public function set consortiaGradeAccumulate(arr:TofflistListData) : void
       {
-         this._consortiaGradeAccumulate = param1;
+         this._consortiaGradeAccumulate = arr;
          _dispatcher.dispatchEvent(new TofflistEvent("tofflistdatachange",getTofflistEventParams("consortiagradeaccumulate",_consortiaGradeAccumulate)));
       }
       
@@ -466,9 +466,9 @@ package tofflist
          return this._consortiaGradeAccumulate;
       }
       
-      public function set consortiaAssetDay(param1:TofflistListData) : void
+      public function set consortiaAssetDay(arr:TofflistListData) : void
       {
-         this._consortiaAssetDay = param1;
+         this._consortiaAssetDay = arr;
          _dispatcher.dispatchEvent(new TofflistEvent("tofflistdatachange",getTofflistEventParams("consortiaassetday",_consortiaAssetDay)));
       }
       
@@ -477,9 +477,9 @@ package tofflist
          return this._consortiaAssetDay;
       }
       
-      public function set consortiaAssetWeek(param1:TofflistListData) : void
+      public function set consortiaAssetWeek($list:TofflistListData) : void
       {
-         this._consortiaAssetWeek = param1;
+         this._consortiaAssetWeek = $list;
          _dispatcher.dispatchEvent(new TofflistEvent("tofflistdatachange",getTofflistEventParams("consortiaassetweek",_consortiaAssetWeek)));
       }
       
@@ -488,9 +488,9 @@ package tofflist
          return this._consortiaAssetWeek;
       }
       
-      public function set consortiaAssetAccumulate(param1:TofflistListData) : void
+      public function set consortiaAssetAccumulate(arr:TofflistListData) : void
       {
-         this._consortiaAssetAccumulate = param1;
+         this._consortiaAssetAccumulate = arr;
          _dispatcher.dispatchEvent(new TofflistEvent("tofflistdatachange",getTofflistEventParams("consortiaassetaccumulate",_consortiaAssetAccumulate)));
       }
       
@@ -499,9 +499,9 @@ package tofflist
          return this._consortiaAssetAccumulate;
       }
       
-      public function set consortiaExploitDay(param1:TofflistListData) : void
+      public function set consortiaExploitDay($list:TofflistListData) : void
       {
-         this._consortiaExploitDay = param1;
+         this._consortiaExploitDay = $list;
          _dispatcher.dispatchEvent(new TofflistEvent("tofflistdatachange",getTofflistEventParams("consortiaexploitday",_consortiaExploitDay)));
       }
       
@@ -510,9 +510,9 @@ package tofflist
          return this._consortiaExploitDay;
       }
       
-      public function set consortiaExploitWeek(param1:TofflistListData) : void
+      public function set consortiaExploitWeek($list:TofflistListData) : void
       {
-         this._consortiaExploitWeek = param1;
+         this._consortiaExploitWeek = $list;
          _dispatcher.dispatchEvent(new TofflistEvent("tofflistdatachange",getTofflistEventParams("consortiaexploitweek",_consortiaExploitWeek)));
       }
       
@@ -521,9 +521,9 @@ package tofflist
          return this._consortiaExploitWeek;
       }
       
-      public function set consortiaExploitAccumulate(param1:TofflistListData) : void
+      public function set consortiaExploitAccumulate(arr:TofflistListData) : void
       {
-         this._consortiaExploitAccumulate = param1;
+         this._consortiaExploitAccumulate = arr;
          _dispatcher.dispatchEvent(new TofflistEvent("tofflistdatachange",getTofflistEventParams("consortiaexploitaccumulate",_consortiaExploitAccumulate)));
       }
       
@@ -532,9 +532,9 @@ package tofflist
          return this._consortiaExploitAccumulate;
       }
       
-      public function set ConsortiaCharmvalueDay(param1:TofflistListData) : void
+      public function set ConsortiaCharmvalueDay(value:TofflistListData) : void
       {
-         _ConsortiaCharmvalueDay = param1;
+         _ConsortiaCharmvalueDay = value;
          _dispatcher.dispatchEvent(new TofflistEvent("tofflistdatachange",getTofflistEventParams("consortiacharmvalueday",_ConsortiaCharmvalueDay)));
       }
       
@@ -543,9 +543,9 @@ package tofflist
          return _ConsortiaCharmvalueDay;
       }
       
-      public function set ConsortiaCharmvalueWeek(param1:TofflistListData) : void
+      public function set ConsortiaCharmvalueWeek(value:TofflistListData) : void
       {
-         _ConsortiaCharmvalueWeek = param1;
+         _ConsortiaCharmvalueWeek = value;
          _dispatcher.dispatchEvent(new TofflistEvent("tofflistdatachange",getTofflistEventParams("consortiacharmvalueweek",_ConsortiaCharmvalueWeek)));
       }
       
@@ -554,9 +554,9 @@ package tofflist
          return _ConsortiaCharmvalueWeek;
       }
       
-      public function set ConsortiaCharmvalue(param1:TofflistListData) : void
+      public function set ConsortiaCharmvalue(value:TofflistListData) : void
       {
-         _ConsortiaCharmvalue = param1;
+         _ConsortiaCharmvalue = value;
          _dispatcher.dispatchEvent(new TofflistEvent("tofflistdatachange",getTofflistEventParams("consortiacharmvalueAccumulate",_ConsortiaCharmvalue)));
       }
       
@@ -565,9 +565,9 @@ package tofflist
          return _ConsortiaCharmvalue;
       }
       
-      public function set crossServerPersonalBattleAccumulate(param1:TofflistListData) : void
+      public function set crossServerPersonalBattleAccumulate(arr:TofflistListData) : void
       {
-         _crossServerPersonalBattleAccumulate = param1;
+         _crossServerPersonalBattleAccumulate = arr;
          _dispatcher.dispatchEvent(new TofflistEvent("crossServerTofflistDataChange",getTofflistEventParams("personalBattleAccumulate",_crossServerPersonalBattleAccumulate)));
       }
       
@@ -576,9 +576,9 @@ package tofflist
          return _crossServerPersonalBattleAccumulate;
       }
       
-      public function set crossServerIndividualGradeDay(param1:TofflistListData) : void
+      public function set crossServerIndividualGradeDay(arr:TofflistListData) : void
       {
-         this._crossServerIndividualGradeDay = param1;
+         this._crossServerIndividualGradeDay = arr;
          _dispatcher.dispatchEvent(new TofflistEvent("crossServerTofflistDataChange",getTofflistEventParams("individualGradeDay",_crossServerIndividualGradeDay)));
       }
       
@@ -587,9 +587,9 @@ package tofflist
          return this._crossServerIndividualGradeDay;
       }
       
-      public function set crossServerIndividualGradeWeek(param1:TofflistListData) : void
+      public function set crossServerIndividualGradeWeek(arr:TofflistListData) : void
       {
-         this._crossServerIndividualGradeWeek = param1;
+         this._crossServerIndividualGradeWeek = arr;
          _dispatcher.dispatchEvent(new TofflistEvent("crossServerTofflistDataChange",getTofflistEventParams("individualgradeWeek",_crossServerIndividualGradeWeek)));
       }
       
@@ -598,9 +598,9 @@ package tofflist
          return this._crossServerIndividualGradeWeek;
       }
       
-      public function set crossServerIndividualGradeAccumulate(param1:TofflistListData) : void
+      public function set crossServerIndividualGradeAccumulate(arr:TofflistListData) : void
       {
-         this._crossServerIndividualGradeAccumulate = param1;
+         this._crossServerIndividualGradeAccumulate = arr;
          _dispatcher.dispatchEvent(new TofflistEvent("crossServerTofflistDataChange",getTofflistEventParams("individualgradeweek",_crossServerIndividualGradeAccumulate)));
       }
       
@@ -609,9 +609,9 @@ package tofflist
          return this._crossServerIndividualGradeAccumulate;
       }
       
-      public function set crossServerIndividualExploitDay(param1:TofflistListData) : void
+      public function set crossServerIndividualExploitDay(arr:TofflistListData) : void
       {
-         this._crossServerIndividualExploitDay = param1;
+         this._crossServerIndividualExploitDay = arr;
          _dispatcher.dispatchEvent(new TofflistEvent("crossServerTofflistDataChange",getTofflistEventParams("individualexploitday",_crossServerIndividualExploitDay)));
       }
       
@@ -620,9 +620,9 @@ package tofflist
          return this._crossServerIndividualExploitDay;
       }
       
-      public function set crossServerIndividualExploitWeek(param1:TofflistListData) : void
+      public function set crossServerIndividualExploitWeek(arr:TofflistListData) : void
       {
-         this._crossServerIndividualExploitWeek = param1;
+         this._crossServerIndividualExploitWeek = arr;
          _dispatcher.dispatchEvent(new TofflistEvent("crossServerTofflistDataChange",getTofflistEventParams("individualexploitweek",_crossServerIndividualExploitWeek)));
       }
       
@@ -631,9 +631,9 @@ package tofflist
          return this._crossServerIndividualExploitWeek;
       }
       
-      public function set crossServerIndividualExploitAccumulate(param1:TofflistListData) : void
+      public function set crossServerIndividualExploitAccumulate(arr:TofflistListData) : void
       {
-         this._crossServerIndividualExploitAccumulate = param1;
+         this._crossServerIndividualExploitAccumulate = arr;
          _dispatcher.dispatchEvent(new TofflistEvent("crossServerTofflistDataChange",getTofflistEventParams("individualexploitaccumulate",_crossServerIndividualExploitAccumulate)));
       }
       
@@ -642,9 +642,9 @@ package tofflist
          return this._crossServerIndividualExploitAccumulate;
       }
       
-      public function set crossServerPersonalAchievementPointDay(param1:TofflistListData) : void
+      public function set crossServerPersonalAchievementPointDay(value:TofflistListData) : void
       {
-         _crossServerPersonalAchievementPointDay = param1;
+         _crossServerPersonalAchievementPointDay = value;
          _dispatcher.dispatchEvent(new TofflistEvent("crossServerTofflistDataChange",getTofflistEventParams("consortiaAchievementPointDay",_crossServerPersonalAchievementPointDay)));
       }
       
@@ -653,9 +653,9 @@ package tofflist
          return _crossServerPersonalAchievementPointDay;
       }
       
-      public function set crossServerPersonalAchievementPointWeek(param1:TofflistListData) : void
+      public function set crossServerPersonalAchievementPointWeek(value:TofflistListData) : void
       {
-         _crossServerPersonalAchievementPointWeek = param1;
+         _crossServerPersonalAchievementPointWeek = value;
          _dispatcher.dispatchEvent(new TofflistEvent("crossServerTofflistDataChange",getTofflistEventParams("consortiaAchievementPointWeek",_crossServerPersonalAchievementPointWeek)));
       }
       
@@ -664,9 +664,9 @@ package tofflist
          return _crossServerPersonalAchievementPointWeek;
       }
       
-      public function set crossServerPersonalAchievementPoint(param1:TofflistListData) : void
+      public function set crossServerPersonalAchievementPoint(value:TofflistListData) : void
       {
-         _crossServerPersonalAchievementPoint = param1;
+         _crossServerPersonalAchievementPoint = value;
          _dispatcher.dispatchEvent(new TofflistEvent("crossServerTofflistDataChange",getTofflistEventParams("consortiaAchievementPointAccumulate",_crossServerPersonalAchievementPoint)));
       }
       
@@ -675,9 +675,9 @@ package tofflist
          return _crossServerPersonalAchievementPoint;
       }
       
-      public function set crossServerPersonalCharmvalueDay(param1:TofflistListData) : void
+      public function set crossServerPersonalCharmvalueDay(value:TofflistListData) : void
       {
-         _crossServerPersonalCharmvalueDay = param1;
+         _crossServerPersonalCharmvalueDay = value;
          _dispatcher.dispatchEvent(new TofflistEvent("crossServerTofflistDataChange",getTofflistEventParams("individualcharmvalueday",_crossServerPersonalCharmvalueDay)));
       }
       
@@ -686,9 +686,9 @@ package tofflist
          return _crossServerPersonalCharmvalueDay;
       }
       
-      public function set crossServerPersonalCharmvalueWeek(param1:TofflistListData) : void
+      public function set crossServerPersonalCharmvalueWeek(value:TofflistListData) : void
       {
-         _crossServerPersonalCharmvalueWeek = param1;
+         _crossServerPersonalCharmvalueWeek = value;
          _dispatcher.dispatchEvent(new TofflistEvent("crossServerTofflistDataChange",getTofflistEventParams("individualcharmvalueweek",_crossServerPersonalCharmvalueWeek)));
       }
       
@@ -697,9 +697,9 @@ package tofflist
          return _crossServerPersonalCharmvalueWeek;
       }
       
-      public function set crossServerPersonalCharmvalue(param1:TofflistListData) : void
+      public function set crossServerPersonalCharmvalue(value:TofflistListData) : void
       {
-         _crossServerPersonalCharmvalue = param1;
+         _crossServerPersonalCharmvalue = value;
          _dispatcher.dispatchEvent(new TofflistEvent("crossServerTofflistDataChange",getTofflistEventParams("individualcharmvalueaccumulate",_crossServerPersonalCharmvalue)));
       }
       
@@ -708,9 +708,9 @@ package tofflist
          return _crossServerPersonalCharmvalue;
       }
       
-      public function set crossServerIndividualMountsAccumulate(param1:TofflistListData) : void
+      public function set crossServerIndividualMountsAccumulate(value:TofflistListData) : void
       {
-         _crossServerIndividualMountsAccumulate = param1;
+         _crossServerIndividualMountsAccumulate = value;
          _dispatcher.dispatchEvent(new TofflistEvent("crossServerTofflistDataChange",getTofflistEventParams("individualMountsaccumulate",_crossServerIndividualMountsAccumulate)));
       }
       
@@ -719,9 +719,9 @@ package tofflist
          return _crossServerIndividualMountsAccumulate;
       }
       
-      public function set crossServerConsortiaBattleAccumulate(param1:TofflistListData) : void
+      public function set crossServerConsortiaBattleAccumulate(value:TofflistListData) : void
       {
-         _crossServerConsortiaBattleAccumulate = param1;
+         _crossServerConsortiaBattleAccumulate = value;
          _dispatcher.dispatchEvent(new TofflistEvent("crossServerTofflistDataChange",getTofflistEventParams("consortiaBattleAccumulate",_crossServerConsortiaBattleAccumulate)));
       }
       
@@ -730,9 +730,9 @@ package tofflist
          return _crossServerConsortiaBattleAccumulate;
       }
       
-      public function set crossServerConsortiaGradeAccumulate(param1:TofflistListData) : void
+      public function set crossServerConsortiaGradeAccumulate(arr:TofflistListData) : void
       {
-         this._crossServerConsortiaGradeAccumulate = param1;
+         this._crossServerConsortiaGradeAccumulate = arr;
          _dispatcher.dispatchEvent(new TofflistEvent("crossServerTofflistDataChange",getTofflistEventParams("consortiagradeaccumulate",_crossServerConsortiaGradeAccumulate)));
       }
       
@@ -741,9 +741,9 @@ package tofflist
          return this._crossServerConsortiaGradeAccumulate;
       }
       
-      public function set crossServerConsortiaAssetDay(param1:TofflistListData) : void
+      public function set crossServerConsortiaAssetDay(arr:TofflistListData) : void
       {
-         this._crossServerConsortiaAssetDay = param1;
+         this._crossServerConsortiaAssetDay = arr;
          _dispatcher.dispatchEvent(new TofflistEvent("crossServerTofflistDataChange",getTofflistEventParams("consortiaassetday",_crossServerConsortiaAssetDay)));
       }
       
@@ -752,9 +752,9 @@ package tofflist
          return this._crossServerConsortiaAssetDay;
       }
       
-      public function set crossServerConsortiaAssetWeek(param1:TofflistListData) : void
+      public function set crossServerConsortiaAssetWeek($list:TofflistListData) : void
       {
-         this._crossServerConsortiaAssetWeek = param1;
+         this._crossServerConsortiaAssetWeek = $list;
          _dispatcher.dispatchEvent(new TofflistEvent("crossServerTofflistDataChange",getTofflistEventParams("consortiaassetweek",_crossServerConsortiaAssetWeek)));
       }
       
@@ -763,9 +763,9 @@ package tofflist
          return this._crossServerConsortiaAssetWeek;
       }
       
-      public function set crossServerConsortiaAssetAccumulate(param1:TofflistListData) : void
+      public function set crossServerConsortiaAssetAccumulate(arr:TofflistListData) : void
       {
-         this._crossServerConsortiaAssetAccumulate = param1;
+         this._crossServerConsortiaAssetAccumulate = arr;
          _dispatcher.dispatchEvent(new TofflistEvent("crossServerTofflistDataChange",getTofflistEventParams("consortiaassetaccumulate",_crossServerConsortiaAssetAccumulate)));
       }
       
@@ -774,9 +774,9 @@ package tofflist
          return this._crossServerConsortiaAssetAccumulate;
       }
       
-      public function set crossServerConsortiaExploitDay(param1:TofflistListData) : void
+      public function set crossServerConsortiaExploitDay($list:TofflistListData) : void
       {
-         this._crossServerConsortiaExploitDay = param1;
+         this._crossServerConsortiaExploitDay = $list;
          _dispatcher.dispatchEvent(new TofflistEvent("crossServerTofflistDataChange",getTofflistEventParams("consortiaexploitday",_crossServerConsortiaExploitDay)));
       }
       
@@ -785,9 +785,9 @@ package tofflist
          return this._crossServerConsortiaExploitDay;
       }
       
-      public function set crossServerConsortiaExploitWeek(param1:TofflistListData) : void
+      public function set crossServerConsortiaExploitWeek($list:TofflistListData) : void
       {
-         this._crossServerConsortiaExploitWeek = param1;
+         this._crossServerConsortiaExploitWeek = $list;
          _dispatcher.dispatchEvent(new TofflistEvent("crossServerTofflistDataChange",getTofflistEventParams("consortiaexploitweek",_crossServerConsortiaExploitWeek)));
       }
       
@@ -796,9 +796,9 @@ package tofflist
          return this._crossServerConsortiaExploitWeek;
       }
       
-      public function set crossServerConsortiaExploitAccumulate(param1:TofflistListData) : void
+      public function set crossServerConsortiaExploitAccumulate(arr:TofflistListData) : void
       {
-         this._crossServerConsortiaExploitAccumulate = param1;
+         this._crossServerConsortiaExploitAccumulate = arr;
          _dispatcher.dispatchEvent(new TofflistEvent("crossServerTofflistDataChange",getTofflistEventParams("consortiaexploitaccumulate",_crossServerConsortiaExploitAccumulate)));
       }
       
@@ -807,9 +807,9 @@ package tofflist
          return this._crossServerConsortiaExploitAccumulate;
       }
       
-      public function set crossServerConsortiaCharmvalueDay(param1:TofflistListData) : void
+      public function set crossServerConsortiaCharmvalueDay(value:TofflistListData) : void
       {
-         _crossServerConsortiaCharmvalueDay = param1;
+         _crossServerConsortiaCharmvalueDay = value;
          _dispatcher.dispatchEvent(new TofflistEvent("crossServerTofflistDataChange",getTofflistEventParams("consortiacharmvalueday",_crossServerConsortiaCharmvalueDay)));
       }
       
@@ -818,9 +818,9 @@ package tofflist
          return _crossServerConsortiaCharmvalueDay;
       }
       
-      public function set crossServerConsortiaCharmvalueWeek(param1:TofflistListData) : void
+      public function set crossServerConsortiaCharmvalueWeek(value:TofflistListData) : void
       {
-         _crossServerConsortiaCharmvalueWeek = param1;
+         _crossServerConsortiaCharmvalueWeek = value;
          _dispatcher.dispatchEvent(new TofflistEvent("crossServerTofflistDataChange",getTofflistEventParams("consortiacharmvalueweek",_crossServerConsortiaCharmvalueWeek)));
       }
       
@@ -829,9 +829,9 @@ package tofflist
          return _crossServerConsortiaCharmvalueWeek;
       }
       
-      public function set crossServerConsortiaCharmvalue(param1:TofflistListData) : void
+      public function set crossServerConsortiaCharmvalue(value:TofflistListData) : void
       {
-         _crossServerConsortiaCharmvalue = param1;
+         _crossServerConsortiaCharmvalue = value;
          _dispatcher.dispatchEvent(new TofflistEvent("crossServerTofflistDataChange",getTofflistEventParams("consortiacharmvalueAccumulate",_crossServerConsortiaCharmvalue)));
       }
       
@@ -840,17 +840,17 @@ package tofflist
          return _crossServerConsortiaCharmvalue;
       }
       
-      private function getTofflistEventParams(param1:String, param2:TofflistListData) : Object
+      private function getTofflistEventParams(flag:String, data:TofflistListData) : Object
       {
-         var _loc3_:Object = {};
-         _loc3_.flag = param1;
-         _loc3_.data = param2;
-         return _loc3_;
+         var obj:Object = {};
+         obj.flag = flag;
+         obj.data = data;
+         return obj;
       }
       
-      public function set myConsortiaAuditingApplyData(param1:Vector.<ConsortiaApplyInfo>) : void
+      public function set myConsortiaAuditingApplyData(value:Vector.<ConsortiaApplyInfo>) : void
       {
-         _myConsortiaAuditingApplyData = param1;
+         _myConsortiaAuditingApplyData = value;
       }
       
       public function get myConsortiaAuditingApplyData() : Vector.<ConsortiaApplyInfo>
@@ -858,9 +858,9 @@ package tofflist
          return _myConsortiaAuditingApplyData;
       }
       
-      public function set theServerTeamIntegral(param1:TofflistListData) : void
+      public function set theServerTeamIntegral(value:TofflistListData) : void
       {
-         _theServerTeamIntegral = param1;
+         _theServerTeamIntegral = value;
          _dispatcher.dispatchEvent(new TofflistEvent("tofflistdatachange",getTofflistEventParams("teamIntegral",_theServerTeamIntegral)));
       }
       
@@ -869,9 +869,9 @@ package tofflist
          return _theServerTeamIntegral;
       }
       
-      public function set crossServerTeamIntegral(param1:TofflistListData) : void
+      public function set crossServerTeamIntegral(value:TofflistListData) : void
       {
-         _crossServerTeamIntegral = param1;
+         _crossServerTeamIntegral = value;
          _dispatcher.dispatchEvent(new TofflistEvent("crossServerTofflistDataChange",getTofflistEventParams("teamIntegral",_crossServerTeamIntegral)));
       }
       
@@ -882,18 +882,18 @@ package tofflist
       
       public function loadRankInfo() : void
       {
-         var _loc1_:URLVariables = new URLVariables();
-         _loc1_["userID"] = PlayerManager.Instance.Self.ID;
-         _loc1_["ConsortiaID"] = PlayerManager.Instance.Self.ConsortiaID;
-         var _loc2_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("UserRankDate.ashx"),6,_loc1_);
-         _loc2_.loadErrorMessage = "";
-         _loc2_.analyzer = new RankInfoAnalyz(_loadRankCom);
-         LoadResourceManager.Instance.startLoad(_loc2_);
+         var args:URLVariables = new URLVariables();
+         args["userID"] = PlayerManager.Instance.Self.ID;
+         args["ConsortiaID"] = PlayerManager.Instance.Self.ConsortiaID;
+         var loadSelfConsortiaMemberList:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("UserRankDate.ashx"),6,args);
+         loadSelfConsortiaMemberList.loadErrorMessage = "";
+         loadSelfConsortiaMemberList.analyzer = new RankInfoAnalyz(_loadRankCom);
+         LoadResourceManager.Instance.startLoad(loadSelfConsortiaMemberList);
       }
       
-      private function _loadRankCom(param1:RankInfoAnalyz) : void
+      private function _loadRankCom(analyzer:RankInfoAnalyz) : void
       {
-         rankInfo = param1.info;
+         rankInfo = analyzer.info;
          _dispatcher.dispatchEvent(new TofflistEvent("rankInfo_ready"));
       }
    }

@@ -14,9 +14,9 @@ package mark.views
       
       private var _id:int = -1;
       
-      public function MarkChipMenu(param1:int)
+      public function MarkChipMenu(id:int)
       {
-         _id = param1;
+         _id = id;
          super();
       }
       
@@ -60,7 +60,7 @@ package mark.views
          addEventListener("click",clickHandler);
       }
       
-      private function clickHandler(param1:MouseEvent) : void
+      private function clickHandler(evt:MouseEvent) : void
       {
          dispose();
       }

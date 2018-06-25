@@ -59,19 +59,19 @@ package im
          addChild(_teamChatBtn);
       }
       
-      private function __itemClick(param1:ListItemEvent) : void
+      private function __itemClick(event:ListItemEvent) : void
       {
-         if((param1.cellValue as TeamMemberInfo).type == 1)
+         if((event.cellValue as TeamMemberInfo).type == 1)
          {
             if(!_currentItem)
             {
-               _currentItem = param1.cellValue as TeamMemberInfo;
+               _currentItem = event.cellValue as TeamMemberInfo;
                _currentItem.isSelected = true;
             }
-            else if(_currentItem != param1.cellValue as TeamMemberInfo)
+            else if(_currentItem != event.cellValue as TeamMemberInfo)
             {
                _currentItem.isSelected = false;
-               _currentItem = param1.cellValue as TeamMemberInfo;
+               _currentItem = event.cellValue as TeamMemberInfo;
                _currentItem.isSelected = true;
             }
          }
@@ -79,13 +79,13 @@ package im
          {
             if(!_currentTitle)
             {
-               _currentTitle = param1.cellValue as TeamMemberInfo;
+               _currentTitle = event.cellValue as TeamMemberInfo;
                _currentTitle.isSelected = true;
             }
-            if(_currentTitle != param1.cellValue as TeamMemberInfo)
+            if(_currentTitle != event.cellValue as TeamMemberInfo)
             {
                _currentTitle.isSelected = false;
-               _currentTitle = param1.cellValue as TeamMemberInfo;
+               _currentTitle = event.cellValue as TeamMemberInfo;
                _currentTitle.isSelected = true;
             }
             else
@@ -100,13 +100,13 @@ package im
       
       private function updateList() : void
       {
-         var _loc1_:* = null;
+         var intPoint:* = null;
          _pos = _list.list.viewPosition.y;
          if(_currentTitle.type == 0 && _currentTitle.isSelected)
          {
             update();
-            _loc1_ = new IntPoint(0,_pos);
-            _list.list.viewPosition = _loc1_;
+            intPoint = new IntPoint(0,_pos);
+            _list.list.viewPosition = intPoint;
          }
          else if(!_currentTitle.isSelected)
          {
@@ -118,36 +118,35 @@ package im
       
       private function update() : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
+         var i:int = 0;
+         var info:* = null;
          _teamPlayerArray = [];
          _teamPlayerArray = TeamManager.instance.model.onlineTeamMemberList;
          if(!_teamIMInfoArray || _teamIMInfoArray.length == 0)
          {
             _teamIMInfoArray = TeamManager.instance.model.teamIMInfo;
          }
-         var _loc3_:Array = [];
-         var _loc1_:Array = [];
-         _loc5_ = 0;
-         while(_loc5_ < _teamPlayerArray.length)
+         var tempArr:Array = [];
+         var tempArr1:Array = [];
+         for(i = 0; i < _teamPlayerArray.length; )
          {
-            _loc4_ = _teamPlayerArray[_loc5_] as TeamMemberInfo;
-            if(_loc4_.IsVIP)
+            info = _teamPlayerArray[i] as TeamMemberInfo;
+            if(info.IsVIP)
             {
-               _loc3_.push(_loc4_);
+               tempArr.push(info);
             }
             else
             {
-               _loc1_.push(_loc4_);
+               tempArr1.push(info);
             }
-            _loc5_++;
+            i++;
          }
-         _loc3_ = _loc3_.sortOn("Grade",16 | 2);
-         _loc1_ = _loc1_.sortOn("Grade",16 | 2);
-         _teamPlayerArray = _loc3_.concat(_loc1_);
-         var _loc2_:Array = TeamManager.instance.model.offlineTeamMemberList;
-         _loc2_ = _loc2_.sortOn("Grade",16 | 2);
-         _teamPlayerArray = _teamPlayerArray.concat(_loc2_);
+         tempArr = tempArr.sortOn("Grade",16 | 2);
+         tempArr1 = tempArr1.sortOn("Grade",16 | 2);
+         _teamPlayerArray = tempArr.concat(tempArr1);
+         var tempArray:Array = TeamManager.instance.model.offlineTeamMemberList;
+         tempArray = tempArray.sortOn("Grade",16 | 2);
+         _teamPlayerArray = _teamPlayerArray.concat(tempArray);
          _teamPlayerArray = _teamIMInfoArray.concat(_teamPlayerArray);
          _list.vectorListModel.clear();
          _list.vectorListModel.appendAll(_teamPlayerArray);
@@ -159,7 +158,7 @@ package im
          IMManager.Instance.alertTeamChatFrame(PlayerManager.Instance.Self.teamID);
       }
       
-      private function __showTeamChat(param1:MouseEvent) : void
+      private function __showTeamChat(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          AssetModuleLoader.addRequestLoader(LoaderCreate.Instance.createTeamMemeberLoader(),true);

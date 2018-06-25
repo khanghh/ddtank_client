@@ -47,25 +47,25 @@ package lotteryTicket.view
       {
          _bg = ComponentFactory.Instance.creatBitmap("asset.lotteryTicket.select.lightBg");
          addChild(_bg);
-         var _loc1_:int = 0;
+         var index:int = 0;
          firstTicket = ClassUtils.CreatInstance("asset.lotteryTicket.small.ticket");
          firstTicket.gotoAndStop(1);
-         firstTicket.x = 5 + 46 * _loc1_;
+         firstTicket.x = 5 + 46 * index;
          addChild(firstTicket);
-         _loc1_++;
+         index++;
          secondTicket = ClassUtils.CreatInstance("asset.lotteryTicket.small.ticket");
          secondTicket.gotoAndStop(1);
-         secondTicket.x = 5 + 46 * _loc1_;
+         secondTicket.x = 5 + 46 * index;
          addChild(secondTicket);
-         _loc1_++;
+         index++;
          thirdTicket = ClassUtils.CreatInstance("asset.lotteryTicket.small.ticket");
          thirdTicket.gotoAndStop(1);
-         thirdTicket.x = 5 + 46 * _loc1_;
+         thirdTicket.x = 5 + 46 * index;
          addChild(thirdTicket);
-         _loc1_++;
+         index++;
          fourthTicket = ClassUtils.CreatInstance("asset.lotteryTicket.small.ticket");
          fourthTicket.gotoAndStop(1);
-         fourthTicket.x = 5 + 46 * _loc1_;
+         fourthTicket.x = 5 + 46 * index;
          addChild(fourthTicket);
          var _loc2_:* = 2;
          fourthTicket.y = _loc2_;
@@ -87,14 +87,14 @@ package lotteryTicket.view
          deleteBtn.addEventListener("click",deleteBtnHandler);
       }
       
-      private function deleteBtnHandler(param1:MouseEvent) : void
+      private function deleteBtnHandler(e:MouseEvent) : void
       {
-         var _loc2_:int = LotteryManager.instance.model.dataList.indexOf(_data);
-         LotteryManager.instance.model.dataList.splice(_loc2_,1);
+         var index:int = LotteryManager.instance.model.dataList.indexOf(_data);
+         LotteryManager.instance.model.dataList.splice(index,1);
          LotteryManager.instance.dispatchEvent(new LotteryTicketEvent("deleteCell"));
       }
       
-      public function setListCellStatus(param1:List, param2:Boolean, param3:int) : void
+      public function setListCellStatus(list:List, isSelected:Boolean, index:int) : void
       {
       }
       
@@ -108,9 +108,9 @@ package lotteryTicket.view
          return _data;
       }
       
-      public function setCellValue(param1:*) : void
+      public function setCellValue(value:*) : void
       {
-         _data = param1 as LotteryTicketInfo;
+         _data = value as LotteryTicketInfo;
          updateViewData();
       }
       

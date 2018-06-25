@@ -44,34 +44,34 @@ package starling.utils
          throw new AbstractClassError();
       }
       
-      public static function getAlpha(param1:uint) : int
+      public static function getAlpha(color:uint) : int
       {
-         return param1 >> 24 & 255;
+         return color >> 24 & 255;
       }
       
-      public static function getRed(param1:uint) : int
+      public static function getRed(color:uint) : int
       {
-         return param1 >> 16 & 255;
+         return color >> 16 & 255;
       }
       
-      public static function getGreen(param1:uint) : int
+      public static function getGreen(color:uint) : int
       {
-         return param1 >> 8 & 255;
+         return color >> 8 & 255;
       }
       
-      public static function getBlue(param1:uint) : int
+      public static function getBlue(color:uint) : int
       {
-         return param1 & 255;
+         return color & 255;
       }
       
-      public static function rgb(param1:int, param2:int, param3:int) : uint
+      public static function rgb(red:int, green:int, blue:int) : uint
       {
-         return param1 << 16 | param2 << 8 | param3;
+         return red << 16 | green << 8 | blue;
       }
       
-      public static function argb(param1:int, param2:int, param3:int, param4:int) : uint
+      public static function argb(alpha:int, red:int, green:int, blue:int) : uint
       {
-         return param1 << 24 | param2 << 16 | param3 << 8 | param4;
+         return alpha << 24 | red << 16 | green << 8 | blue;
       }
    }
 }

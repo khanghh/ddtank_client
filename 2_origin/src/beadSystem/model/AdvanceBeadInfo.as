@@ -28,39 +28,38 @@ package beadSystem.model
       
       public function getAllBead() : Array
       {
-         var _loc3_:int = 0;
-         var _loc1_:Array = [];
+         var i:int = 0;
+         var temArr:Array = [];
          if(mainMaterials != "")
          {
-            _loc1_ = _loc1_.concat(mainMaterials.split("|"));
+            temArr = temArr.concat(mainMaterials.split("|"));
          }
          if(auxiliaryMaterials != "")
          {
-            _loc1_ = _loc1_.concat(auxiliaryMaterials.split("|"));
+            temArr = temArr.concat(auxiliaryMaterials.split("|"));
          }
-         var _loc2_:DictionaryData = new DictionaryData();
-         _loc3_ = 0;
-         while(_loc3_ < _loc1_.length)
+         var dic:DictionaryData = new DictionaryData();
+         for(i = 0; i < temArr.length; )
          {
-            _loc2_.add(_loc1_[_loc3_],_loc1_[_loc3_]);
-            _loc3_++;
+            dic.add(temArr[i],temArr[i]);
+            i++;
          }
-         return _loc2_.list;
+         return dic.list;
       }
       
-      public function verificationMaterials(param1:int, param2:int) : Boolean
+      public function verificationMaterials(temID:int, type:int) : Boolean
       {
-         var _loc3_:Boolean = false;
-         var _loc4_:int = -1;
-         switch(int(param2))
+         var temBol:Boolean = false;
+         var temIndex:int = -1;
+         switch(int(type))
          {
             case 0:
-               _loc4_ = mainMaterials.indexOf(param1.toString());
+               temIndex = mainMaterials.indexOf(temID.toString());
                break;
             case 1:
-               _loc4_ = auxiliaryMaterials.indexOf(param1.toString());
+               temIndex = auxiliaryMaterials.indexOf(temID.toString());
          }
-         return _loc4_ >= 0;
+         return temIndex >= 0;
       }
    }
 }

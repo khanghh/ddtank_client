@@ -17,16 +17,16 @@ package com.pickgliss.loader
       
       protected var _displayLoader:Loader;
       
-      public function DisplayLoader(param1:int, param2:String)
+      public function DisplayLoader(id:int, url:String)
       {
          _displayLoader = new Loader();
-         super(param1,param2,null);
+         super(id,url,null);
       }
       
-      override public function loadFromBytes(param1:ByteArray) : void
+      override public function loadFromBytes(data:ByteArray) : void
       {
-         var _loc2_:ByteArray = NewCrypto.decry(param1);
-         super.loadFromBytes(_loc2_);
+         var temp:ByteArray = NewCrypto.decry(data);
+         super.loadFromBytes(temp);
          if(!_displayLoader)
          {
             return;
@@ -35,21 +35,21 @@ package com.pickgliss.loader
          _displayLoader.contentLoaderInfo.addEventListener("ioError",__onDisplayIoError);
          if(type == 4 || type == 8)
          {
-            _displayLoader.loadBytes(_loc2_,Context);
+            _displayLoader.loadBytes(temp,Context);
          }
          else
          {
-            _displayLoader.loadBytes(_loc2_);
+            _displayLoader.loadBytes(temp);
          }
       }
       
-      protected function __onDisplayIoError(param1:IOErrorEvent) : void
+      protected function __onDisplayIoError(event:IOErrorEvent) : void
       {
          _displayLoader.contentLoaderInfo.removeEventListener("ioError",__onDisplayIoError);
-         throw new Error(param1.text + " url: " + _url);
+         throw new Error(event.text + " url: " + _url);
       }
       
-      protected function __onContentLoadComplete(param1:Event) : void
+      protected function __onContentLoadComplete(event:Event) : void
       {
          _displayLoader.contentLoaderInfo.removeEventListener("complete",__onContentLoadComplete);
          _displayLoader.contentLoaderInfo.removeEventListener("ioError",__onDisplayIoError);
@@ -58,7 +58,7 @@ package com.pickgliss.loader
          _displayLoader = null;
       }
       
-      override protected function __onDataLoadComplete(param1:Event) : void
+      override protected function __onDataLoadComplete(event:Event) : void
       {
          removeEvent();
          unload();
@@ -66,9 +66,9 @@ package com.pickgliss.loader
          {
             return;
          }
-         var _loc2_:ByteArray = _loader.data;
-         LoaderSavingManager.cacheFile(_url,_loc2_,true);
-         loadFromBytes(_loc2_);
+         var temp:ByteArray = _loader.data;
+         LoaderSavingManager.cacheFile(_url,temp,true);
+         loadFromBytes(temp);
       }
       
       override public function get content() : *

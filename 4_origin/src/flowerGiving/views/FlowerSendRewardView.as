@@ -57,8 +57,8 @@ package flowerGiving.views
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          _back = ComponentFactory.Instance.creat("flowerGiving.accumuGivingBack");
          addChild(_back);
          _titleTxt1 = ComponentFactory.Instance.creatComponentByStylename("flowerGiving.titleTxt");
@@ -85,14 +85,13 @@ package flowerGiving.views
          _scrollPanel = ComponentFactory.Instance.creatComponentByStylename("flowerSendView.scrollpanel");
          _scrollPanel.setView(_vbox);
          addChild(_scrollPanel);
-         _loc2_ = 0;
-         while(_loc2_ <= dataArr.length - 1)
+         for(i = 0; i <= dataArr.length - 1; )
          {
-            _loc1_ = new FlowerSendRewardItem(_loc2_);
-            _loc1_.info = dataArr[_loc2_];
-            _listItem.push(_loc1_);
-            _vbox.addChild(_loc1_);
-            _loc2_++;
+            item = new FlowerSendRewardItem(i);
+            item.info = dataArr[i];
+            _listItem.push(item);
+            _vbox.addChild(item);
+            i++;
          }
          _scrollPanel.invalidateViewport();
       }
@@ -103,55 +102,53 @@ package flowerGiving.views
          SocketManager.Instance.addEventListener(PkgEvent.format(257,5),__getRewardSuccess);
       }
       
-      protected function __getRewardSuccess(param1:PkgEvent) : void
+      protected function __getRewardSuccess(event:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         var _loc3_:Boolean = _loc2_.readBoolean();
-         if(_loc3_)
+         var pkg:PackageIn = event.pkg;
+         var isSuccess:Boolean = pkg.readBoolean();
+         if(isSuccess)
          {
             SocketManager.Instance.out.getFlowerRewardStatus();
          }
       }
       
-      protected function __updateRewardStatus(param1:PkgEvent) : void
+      protected function __updateRewardStatus(event:PkgEvent) : void
       {
-         var _loc7_:int = 0;
-         var _loc6_:PackageIn = param1.pkg;
-         var _loc4_:Boolean = _loc6_.readBoolean();
-         var _loc2_:Boolean = _loc6_.readBoolean();
-         var _loc3_:int = _loc6_.readInt();
-         var _loc5_:int = _loc6_.readInt();
-         _loc7_ = 0;
-         while(_loc7_ <= _listItem.length - 1)
+         var i:int = 0;
+         var pkg:PackageIn = event.pkg;
+         var yesBtnStatus:Boolean = pkg.readBoolean();
+         var accBtnStatus:Boolean = pkg.readBoolean();
+         var giveFlowerStatus:int = pkg.readInt();
+         var myGivingFlower:int = pkg.readInt();
+         for(i = 0; i <= _listItem.length - 1; )
          {
-            if(_loc5_ >= (_listItem[_loc7_] as FlowerSendRewardItem).num)
+            if(myGivingFlower >= (_listItem[i] as FlowerSendRewardItem).num)
             {
-               (_listItem[_loc7_] as FlowerSendRewardItem).setBtnEnable(1);
-               if((_loc3_ & 1 << _loc7_) != 0)
+               (_listItem[i] as FlowerSendRewardItem).setBtnEnable(1);
+               if((giveFlowerStatus & 1 << i) != 0)
                {
-                  (_listItem[_loc7_] as FlowerSendRewardItem).setBtnEnable(2);
+                  (_listItem[i] as FlowerSendRewardItem).setBtnEnable(2);
                }
             }
             else
             {
-               (_listItem[_loc7_] as FlowerSendRewardItem).setBtnEnable(0);
+               (_listItem[i] as FlowerSendRewardItem).setBtnEnable(0);
             }
-            _loc7_++;
+            i++;
          }
-         _myFlowerNumTxt.text = _loc5_.toString();
+         _myFlowerNumTxt.text = myGivingFlower.toString();
       }
       
       private function updateView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         _loc2_ = 0;
-         while(_loc2_ <= dataArr.length - 1)
+         var i:int = 0;
+         var item:* = null;
+         for(i = 0; i <= dataArr.length - 1; )
          {
-            _loc1_ = new FlowerSendRewardItem(_loc2_);
-            _listItem.push(_loc1_);
-            _vbox.addChild(_loc1_);
-            _loc2_++;
+            item = new FlowerSendRewardItem(i);
+            _listItem.push(item);
+            _vbox.addChild(item);
+            i++;
          }
       }
       
@@ -196,10 +193,10 @@ package flowerGiving.views
          _myFlowerNumTxt = null;
          var _loc3_:int = 0;
          var _loc2_:* = _listItem;
-         for each(var _loc1_ in _listItem)
+         for each(var item in _listItem)
          {
-            ObjectUtils.disposeObject(_loc1_);
-            _loc1_ = null;
+            ObjectUtils.disposeObject(item);
+            item = null;
          }
          _listItem = null;
          if(_vbox)

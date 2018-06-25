@@ -47,7 +47,7 @@ package com.pickgliss.layout
          stageHeight = StageReferance.stageHeight;
       }
       
-      private function __onResize(param1:Event) : void
+      private function __onResize(event:Event) : void
       {
          stageWidth = StageReferance.stage.stageWidth;
          stageHeight = StageReferance.stage.stageHeight;
@@ -55,204 +55,204 @@ package com.pickgliss.layout
          autoResize();
       }
       
-      public function addAutoResize(param1:DisplayObject, param2:Boolean = true) : void
+      public function addAutoResize($target:DisplayObject, $isPStage:Boolean = true) : void
       {
          if(!isOpen)
          {
             return;
          }
          autoResizeClear();
-         var _loc5_:ResizeObjInfo = new ResizeObjInfo();
-         _loc5_.target = param1;
-         _loc5_.customStyleName = "";
-         _loc5_.isPercent = true;
-         _loc5_.isPStage = param2;
-         _loc5_.targetWidth = param1.width;
-         _loc5_.targetHeight = param1.height;
-         var _loc3_:* = 0;
-         var _loc4_:* = 0;
-         if(param2)
+         var objInfo:ResizeObjInfo = new ResizeObjInfo();
+         objInfo.target = $target;
+         objInfo.customStyleName = "";
+         objInfo.isPercent = true;
+         objInfo.isPStage = $isPStage;
+         objInfo.targetWidth = $target.width;
+         objInfo.targetHeight = $target.height;
+         var parentWidth:* = 0;
+         var parentHeight:* = 0;
+         if($isPStage)
          {
-            _loc3_ = Number(StageReferance.defaultWidth);
-            _loc4_ = Number(StageReferance.defaultHeight);
+            parentWidth = Number(StageReferance.defaultWidth);
+            parentHeight = Number(StageReferance.defaultHeight);
          }
          else
          {
-            _loc3_ = Number(param1.parent.width);
-            _loc4_ = Number(param1.parent.height);
+            parentWidth = Number($target.parent.width);
+            parentHeight = Number($target.parent.height);
          }
-         _loc5_.xPercent = param1.x / ((_loc3_ - _loc5_.targetWidth) / 2);
-         _loc5_.yPercent = param1.y / ((_loc4_ - _loc5_.targetHeight) / 2);
-         addResizeObjInfo(_loc5_);
+         objInfo.xPercent = $target.x / ((parentWidth - objInfo.targetWidth) / 2);
+         objInfo.yPercent = $target.y / ((parentHeight - objInfo.targetHeight) / 2);
+         addResizeObjInfo(objInfo);
       }
       
-      public function addAutoResizeByStyle(param1:DisplayObject, param2:String, param3:Boolean = true) : void
+      public function addAutoResizeByStyle($target:DisplayObject, $customStyleName:String, $isPStage:Boolean = true) : void
       {
          if(!isOpen)
          {
             return;
          }
-         removeResizeObj(param1);
+         removeResizeObj($target);
          autoResizeClear();
-         var _loc4_:ResizeObjInfo = new ResizeObjInfo();
-         _loc4_.target = param1;
-         _loc4_.customStyleName = param2;
-         _loc4_.isPercent = false;
-         _loc4_.isPStage = param3;
-         _loc4_.targetWidth = param1.width;
-         _loc4_.targetHeight = param1.height;
-         addResizeObjInfo(_loc4_);
+         var objInfo:ResizeObjInfo = new ResizeObjInfo();
+         objInfo.target = $target;
+         objInfo.customStyleName = $customStyleName;
+         objInfo.isPercent = false;
+         objInfo.isPStage = $isPStage;
+         objInfo.targetWidth = $target.width;
+         objInfo.targetHeight = $target.height;
+         addResizeObjInfo(objInfo);
       }
       
-      public function autoCenterResizeByStyle(param1:DisplayObject, param2:Boolean = true) : void
+      public function autoCenterResizeByStyle($target:DisplayObject, $isPStage:Boolean = true) : void
       {
          if(!isOpen)
          {
             return;
          }
-         addAutoResizeByStyle(param1,"core.boxlayoutInfo.CMAlign",param2);
+         addAutoResizeByStyle($target,"core.boxlayoutInfo.CMAlign",$isPStage);
       }
       
-      private function removeAutoResize(param1:String) : void
+      private function removeAutoResize($key:String) : void
       {
-         _autoResizeDic.splice(param1,1);
+         _autoResizeDic.splice($key,1);
       }
       
       private function autoResize() : void
       {
-         var _loc1_:* = null;
+         var obj:* = null;
          var _loc4_:int = 0;
          var _loc3_:* = _autoResizeDic;
-         for(var _loc2_ in _autoResizeDic)
+         for(var key in _autoResizeDic)
          {
-            _loc1_ = _autoResizeDic[_loc2_] as ResizeObjInfo;
-            if(_loc1_.target == null || _loc1_.target.parent == null)
+            obj = _autoResizeDic[key] as ResizeObjInfo;
+            if(obj.target == null || obj.target.parent == null)
             {
-               removeAutoResize(_loc2_);
+               removeAutoResize(key);
             }
             else
             {
-               resizeTarget(_loc1_);
+               resizeTarget(obj);
             }
          }
       }
       
-      private function resizeTarget(param1:ResizeObjInfo) : void
+      private function resizeTarget(objInfo:ResizeObjInfo) : void
       {
-         var _loc5_:* = null;
-         var _loc6_:Number = NaN;
-         var _loc7_:Number = NaN;
-         var _loc13_:DisplayObject = param1.target;
-         if(_loc13_.parent == null)
+         var layoutInfo:* = null;
+         var horizontalX:Number = NaN;
+         var verticalY:Number = NaN;
+         var target:DisplayObject = objInfo.target;
+         if(target.parent == null)
          {
             return;
          }
-         var _loc2_:String = param1.customStyleName;
-         var _loc3_:Boolean = param1.isPercent;
-         var _loc9_:Boolean = param1.isPStage;
-         var _loc15_:Number = param1.xPercent;
-         var _loc8_:Number = param1.yPercent;
-         var _loc4_:Number = param1.targetWidth;
-         var _loc10_:Number = param1.targetHeight;
-         var _loc11_:* = 0;
-         var _loc14_:* = 0;
-         if(_loc9_)
+         var customStyleName:String = objInfo.customStyleName;
+         var isPercent:Boolean = objInfo.isPercent;
+         var isPStage:Boolean = objInfo.isPStage;
+         var xPercent:Number = objInfo.xPercent;
+         var yPercent:Number = objInfo.yPercent;
+         var targetWidth:Number = objInfo.targetWidth;
+         var targetHeight:Number = objInfo.targetHeight;
+         var parentWidth:* = 0;
+         var parentHeight:* = 0;
+         if(isPStage)
          {
-            _loc11_ = Number(stageWidth);
-            _loc14_ = Number(stageHeight);
+            parentWidth = Number(stageWidth);
+            parentHeight = Number(stageHeight);
          }
          else
          {
-            _loc11_ = Number(_loc13_.parent.width);
-            _loc14_ = Number(_loc13_.parent.height);
+            parentWidth = Number(target.parent.width);
+            parentHeight = Number(target.parent.height);
          }
-         var _loc12_:Array = [];
-         if(_loc3_)
+         var innerRectArr:Array = [];
+         if(isPercent)
          {
-            _loc12_[0] = (_loc11_ - _loc4_) / 2 * _loc15_;
-            _loc12_[1] = (_loc14_ - _loc10_) / 2 * _loc8_;
+            innerRectArr[0] = (parentWidth - targetWidth) / 2 * xPercent;
+            innerRectArr[1] = (parentHeight - targetHeight) / 2 * yPercent;
          }
          else
          {
-            _loc5_ = ComponentFactory.Instance.creatCustomObject(_loc2_);
-            _loc6_ = convertPercent(_loc5_.horizontalX,_loc4_);
-            _loc7_ = convertPercent(_loc5_.verticalY,_loc10_);
-            if(_loc5_.horizontalAlign == "left")
+            layoutInfo = ComponentFactory.Instance.creatCustomObject(customStyleName);
+            horizontalX = convertPercent(layoutInfo.horizontalX,targetWidth);
+            verticalY = convertPercent(layoutInfo.verticalY,targetHeight);
+            if(layoutInfo.horizontalAlign == "left")
             {
-               _loc12_[0] = _loc6_ + 0;
+               innerRectArr[0] = horizontalX + 0;
             }
-            else if(_loc5_.horizontalAlign == "center")
+            else if(layoutInfo.horizontalAlign == "center")
             {
-               _loc12_[0] = _loc6_ + (_loc11_ - _loc4_) / 2;
+               innerRectArr[0] = horizontalX + (parentWidth - targetWidth) / 2;
             }
-            else if(_loc5_.horizontalAlign == "right")
+            else if(layoutInfo.horizontalAlign == "right")
             {
-               _loc12_[0] = _loc6_ + (_loc11_ - _loc4_);
+               innerRectArr[0] = horizontalX + (parentWidth - targetWidth);
             }
-            if(_loc5_.verticalAlign == "top")
+            if(layoutInfo.verticalAlign == "top")
             {
-               _loc12_[1] = _loc7_ + 0;
+               innerRectArr[1] = verticalY + 0;
             }
-            else if(_loc5_.verticalAlign == "middle")
+            else if(layoutInfo.verticalAlign == "middle")
             {
-               _loc12_[1] = _loc7_ + (_loc14_ - _loc10_) / 2;
+               innerRectArr[1] = verticalY + (parentHeight - targetHeight) / 2;
             }
-            else if(_loc5_.verticalAlign == "bottom")
+            else if(layoutInfo.verticalAlign == "bottom")
             {
-               _loc12_[1] = _loc7_ + (_loc14_ - _loc10_);
+               innerRectArr[1] = verticalY + (parentHeight - targetHeight);
             }
          }
-         _loc13_.x = _loc12_[0];
-         _loc13_.y = _loc12_[1];
+         target.x = innerRectArr[0];
+         target.y = innerRectArr[1];
       }
       
-      private function convertPercent(param1:String, param2:Number) : Number
+      private function convertPercent(numStr:String, parentNum:Number) : Number
       {
-         var _loc5_:Number = NaN;
-         if(param1 == null || param1 == "")
+         var tempNum:Number = NaN;
+         if(numStr == null || numStr == "")
          {
             return 0;
          }
-         var _loc4_:int = param1.indexOf("%");
-         var _loc3_:* = 0;
-         if(_loc4_ == -1)
+         var index:int = numStr.indexOf("%");
+         var num:* = 0;
+         if(index == -1)
          {
-            _loc3_ = Number(param1);
+            num = Number(numStr);
          }
          else
          {
-            _loc5_ = param1.substring(0,_loc4_);
-            _loc3_ = Number(param2 * (_loc5_ / 100));
+            tempNum = numStr.substring(0,index);
+            num = Number(parentNum * (tempNum / 100));
          }
-         return _loc3_;
+         return num;
       }
       
       private function autoResizeClear() : void
       {
-         var _loc1_:* = null;
+         var target:* = null;
          var _loc4_:int = 0;
          var _loc3_:* = _autoResizeDic;
-         for(var _loc2_ in _autoResizeDic)
+         for(var key in _autoResizeDic)
          {
-            _loc1_ = _autoResizeDic[_loc2_]["target"];
-            if(_loc1_ == null || _loc1_.parent == null)
+            target = _autoResizeDic[key]["target"];
+            if(target == null || target.parent == null)
             {
-               removeAutoResize(_loc2_);
+               removeAutoResize(key);
             }
          }
       }
       
-      private function addResizeObjInfo(param1:ResizeObjInfo) : void
+      private function addResizeObjInfo(objInfo:ResizeObjInfo) : void
       {
-         var _loc2_:String = targetKey(param1.target);
-         if(_loc2_ == "")
+         var key:String = targetKey(objInfo.target);
+         if(key == "")
          {
-            _loc2_ = "" + getIndex();
+            key = "" + getIndex();
          }
-         _autoResizeDic[_loc2_] = param1;
+         _autoResizeDic[key] = objInfo;
          if(StageReferance.isStageResize())
          {
-            resizeTarget(param1);
+            resizeTarget(objInfo);
          }
       }
       
@@ -261,32 +261,32 @@ package com.pickgliss.layout
          return _autoResizeDic.length;
       }
       
-      private function targetKey(param1:DisplayObject) : String
+      private function targetKey($target:DisplayObject) : String
       {
-         var _loc2_:* = null;
+         var target:* = null;
          var _loc5_:int = 0;
          var _loc4_:* = _autoResizeDic;
-         for(var _loc3_ in _autoResizeDic)
+         for(var key in _autoResizeDic)
          {
-            _loc2_ = _autoResizeDic[_loc3_]["target"];
-            if(param1 == _loc2_)
+            target = _autoResizeDic[key]["target"];
+            if($target == target)
             {
-               return _loc3_;
+               return key;
             }
          }
          return "";
       }
       
-      public function removeResizeObj(param1:DisplayObject) : void
+      public function removeResizeObj($target:DisplayObject) : void
       {
-         if(param1 == null)
+         if($target == null)
          {
             return;
          }
-         var _loc2_:String = targetKey(param1);
-         if(_loc2_ != "")
+         var key:String = targetKey($target);
+         if(key != "")
          {
-            removeAutoResize(_loc2_);
+            removeAutoResize(key);
          }
       }
    }

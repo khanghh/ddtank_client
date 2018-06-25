@@ -46,10 +46,10 @@ package horseRace.view
       
       private var mytime:int = 0;
       
-      public function HorseRaceWalkPlayer(param1:PlayerVO, param2:Function = null)
+      public function HorseRaceWalkPlayer(playerVO:PlayerVO, callBack:Function = null)
       {
          buffList = [];
-         super(param1,param2);
+         super(playerVO,callBack);
          addRaceTimer();
       }
       
@@ -83,9 +83,9 @@ package horseRace.view
          this.stand();
       }
       
-      public function turnTo(param1:String = "left") : void
+      public function turnTo(direction:String = "left") : void
       {
-         if(param1 == "right")
+         if(direction == "right")
          {
             isDefaultCharacter = false;
          }
@@ -116,15 +116,15 @@ package horseRace.view
          this.addEventListener("enterFrame",onEnterFrame);
       }
       
-      public function _playerChangePos(param1:TimerEvent) : void
+      public function _playerChangePos(e:TimerEvent) : void
       {
-         var _loc2_:int = getTimer();
-         var _loc3_:int = _loc2_ - currentTime;
+         var nowTimer:int = getTimer();
+         var timeCount:int = nowTimer - currentTime;
          if(isStartRace)
          {
-            this.raceLen = this.raceLen + speed * _loc3_ / 1000;
+            this.raceLen = this.raceLen + speed * timeCount / 1000;
          }
-         currentTime = _loc2_;
+         currentTime = nowTimer;
       }
       
       public function stop() : void
@@ -136,7 +136,7 @@ package horseRace.view
          }
       }
       
-      private function onEnterFrame(param1:Event) : void
+      private function onEnterFrame(e:Event) : void
       {
          refreshCharacterState();
          characterMirror();
@@ -153,7 +153,7 @@ package horseRace.view
          {
             return;
          }
-         var _loc1_:int = playerHeight;
+         var height:int = playerHeight;
          if(!isDefaultCharacter)
          {
             this.character.scaleX = !!sceneCharacterDirection.isMirror?-1:1;
@@ -167,9 +167,9 @@ package horseRace.view
             this.character.x = -60;
             this.playerHitArea.scaleX = 1;
             this.playerHitArea.x = this.character.x;
-            _loc1_ = 175;
+            height = 175;
          }
-         this.character.y = -_loc1_ + 12;
+         this.character.y = -height + 12;
          this.playerHitArea.y = this.character.y;
       }
       

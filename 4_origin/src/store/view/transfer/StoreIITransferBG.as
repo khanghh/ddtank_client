@@ -89,8 +89,8 @@ package store.view.transfer
       
       private function init() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          _transferTitleSmall = ComponentFactory.Instance.creatBitmap("asset.ddtstore.TransferTitleSmall");
          _transferTitleLarge = ComponentFactory.Instance.creatBitmap("asset.ddtstore.TransferTitleLarge");
          addChild(_transferTitleSmall);
@@ -119,16 +119,15 @@ package store.view.transfer
          addChild(_goldIcon);
          getCellsPoint();
          _items = new Vector.<TransferItemCell>();
-         _loc2_ = 0;
-         while(_loc2_ < 2)
+         for(i = 0; i < 2; )
          {
-            _loc1_ = new TransferItemCell(_loc2_);
-            _loc1_.addEventListener("change",__itemInfoChange);
-            _loc1_.x = _pointArray[_loc2_].x;
-            _loc1_.y = _pointArray[_loc2_].y;
-            addChild(_loc1_);
-            _items.push(_loc1_);
-            _loc2_++;
+            item = new TransferItemCell(i);
+            item.addEventListener("change",__itemInfoChange);
+            item.x = _pointArray[i].x;
+            item.y = _pointArray[i].y;
+            addChild(item);
+            _items.push(item);
+            i++;
          }
          _area = new TransferDragInArea(_items);
          addChildAt(_area,0);
@@ -138,15 +137,14 @@ package store.view.transfer
       
       private function getCellsPoint() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var point:* = null;
          _pointArray = new Vector.<Point>();
-         _loc2_ = 0;
-         while(_loc2_ < 2)
+         for(i = 0; i < 2; )
          {
-            _loc1_ = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreIITransferBG.Transferpoint" + _loc2_);
-            _pointArray.push(_loc1_);
-            _loc2_++;
+            point = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreIITransferBG.Transferpoint" + i);
+            _pointArray.push(point);
+            i++;
          }
       }
       
@@ -160,19 +158,18 @@ package store.view.transfer
          _transferBtnAsset.removeEventListener("click",__transferHandler);
       }
       
-      public function startShine(param1:int) : void
+      public function startShine(cellId:int) : void
       {
-         _items[param1].startShine();
+         _items[cellId].startShine();
       }
       
       public function stopShine() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < 2)
+         var i:int = 0;
+         for(i = 0; i < 2; )
          {
-            _items[_loc1_].stopShine();
-            _loc1_++;
+            _items[i].stopShine();
+            i++;
          }
       }
       
@@ -193,66 +190,66 @@ package store.view.transfer
          return _items;
       }
       
-      public function dragDrop(param1:BagCell) : void
+      public function dragDrop(source:BagCell) : void
       {
-         if(param1 == null)
+         if(source == null)
          {
             return;
          }
-         var _loc3_:InventoryItemInfo = param1.info as InventoryItemInfo;
+         var info:InventoryItemInfo = source.info as InventoryItemInfo;
          var _loc5_:int = 0;
          var _loc4_:* = _items;
-         for each(var _loc2_ in _items)
+         for each(var item in _items)
          {
-            if(_loc2_.info == null)
+            if(item.info == null)
             {
-               if(_items[0].info && _items[0].info.CategoryID != _loc3_.CategoryID || _items[1].info && _items[1].info.CategoryID != _loc3_.CategoryID)
+               if(_items[0].info && _items[0].info.CategoryID != info.CategoryID || _items[1].info && _items[1].info.CategoryID != info.CategoryID)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.view.fusion.TransferItemCell.put"));
                   return;
                }
-               SocketManager.Instance.out.sendMoveGoods(_loc3_.BagType,_loc3_.Place,12,_loc2_.index,1);
+               SocketManager.Instance.out.sendMoveGoods(info.BagType,info.Place,12,item.index,1);
                return;
             }
          }
       }
       
-      private function __transferHandler(param1:MouseEvent) : void
+      private function __transferHandler(evt:MouseEvent) : void
       {
-         var _loc5_:* = null;
-         var _loc4_:* = null;
-         var _loc6_:* = null;
+         var alert:* = null;
+         var infoText:* = null;
+         var alert2:* = null;
          SoundManager.instance.play("008");
-         param1.stopImmediatePropagation();
-         var _loc3_:TransferItemCell = _items[0] as TransferItemCell;
-         var _loc2_:TransferItemCell = _items[1] as TransferItemCell;
+         evt.stopImmediatePropagation();
+         var item1:TransferItemCell = _items[0] as TransferItemCell;
+         var item2:TransferItemCell = _items[1] as TransferItemCell;
          if(_showDontClickTip())
          {
             return;
          }
-         if(_loc3_.info && _loc2_.info)
+         if(item1.info && item2.info)
          {
             if(PlayerManager.Instance.Self.Gold < Number(gold_txt.text))
             {
-               _loc5_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.title"),LanguageMgr.GetTranslation("tank.view.GoldInadequate"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
-               _loc5_.moveEnable = false;
-               _loc5_.addEventListener("response",_responseV);
+               alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.title"),LanguageMgr.GetTranslation("tank.view.GoldInadequate"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
+               alert.moveEnable = false;
+               alert.addEventListener("response",_responseV);
                return;
             }
             hideArr();
             _transferAfter = false;
             _transferBefore = false;
-            _loc4_ = "";
-            if(EquipType.isArm(_loc3_.info) || EquipType.isCloth(_loc3_.info) || EquipType.isHead(_loc3_.info) || EquipType.isArm(_loc2_.info) || EquipType.isCloth(_loc2_.info) || EquipType.isHead(_loc2_.info))
+            infoText = "";
+            if(EquipType.isArm(item1.info) || EquipType.isCloth(item1.info) || EquipType.isHead(item1.info) || EquipType.isArm(item2.info) || EquipType.isCloth(item2.info) || EquipType.isHead(item2.info))
             {
-               _loc4_ = LanguageMgr.GetTranslation("store.view.transfer.StoreIITransferBG.sure2");
+               infoText = LanguageMgr.GetTranslation("store.view.transfer.StoreIITransferBG.sure2");
             }
             else
             {
-               _loc4_ = LanguageMgr.GetTranslation("store.view.transfer.StoreIITransferBG.sure");
+               infoText = LanguageMgr.GetTranslation("store.view.transfer.StoreIITransferBG.sure");
             }
-            _loc6_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc4_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
-            _loc6_.addEventListener("response",_responseII);
+            alert2 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),infoText,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
+            alert2.addEventListener("response",_responseII);
          }
          else
          {
@@ -260,40 +257,40 @@ package store.view.transfer
          }
       }
       
-      private function _responseV(param1:FrameEvent) : void
+      private function _responseV(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",_responseV);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         (evt.currentTarget as BaseAlerFrame).removeEventListener("response",_responseV);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             okFastPurchaseGold();
          }
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(evt.currentTarget);
       }
       
       private function okFastPurchaseGold() : void
       {
-         var _loc1_:QuickBuyFrame = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
-         _loc1_.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
-         _loc1_.itemID = 11233;
-         LayerManager.Instance.addToLayer(_loc1_,2,true,1);
+         var _quick:QuickBuyFrame = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
+         _quick.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
+         _quick.itemID = 11233;
+         LayerManager.Instance.addToLayer(_quick,2,true,1);
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(e:FrameEvent) : void
       {
-         if(param1.responseCode == 3)
+         if(e.responseCode == 3)
          {
             depositAction();
          }
-         ObjectUtils.disposeObject(param1.target);
+         ObjectUtils.disposeObject(e.target);
       }
       
-      private function _responseII(param1:FrameEvent) : void
+      private function _responseII(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = BaseAlerFrame(param1.currentTarget);
-         _loc2_.removeEventListener("response",_responseII);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var alert:BaseAlerFrame = BaseAlerFrame(e.currentTarget);
+         alert.removeEventListener("response",_responseII);
+         if(e.responseCode == 3 || e.responseCode == 2)
          {
             _transferAfter = true;
             _transferBefore = true;
@@ -303,7 +300,7 @@ package store.view.transfer
          {
             cannel();
          }
-         ObjectUtils.disposeObject(param1.target);
+         ObjectUtils.disposeObject(e.target);
       }
       
       private function cannel() : void
@@ -319,29 +316,29 @@ package store.view.transfer
          }
       }
       
-      private function isComposeStrengthen(param1:BagCell) : Boolean
+      private function isComposeStrengthen(info:BagCell) : Boolean
       {
-         if(param1.itemInfo.StrengthenLevel > 0)
+         if(info.itemInfo.StrengthenLevel > 0)
          {
             return true;
          }
-         if(param1.itemInfo.AttackCompose > 0)
+         if(info.itemInfo.AttackCompose > 0)
          {
             return true;
          }
-         if(param1.itemInfo.DefendCompose > 0)
+         if(info.itemInfo.DefendCompose > 0)
          {
             return true;
          }
-         if(param1.itemInfo.LuckCompose > 0)
+         if(info.itemInfo.LuckCompose > 0)
          {
             return true;
          }
-         if(param1.itemInfo.AgilityCompose > 0)
+         if(info.itemInfo.AgilityCompose > 0)
          {
             return true;
          }
-         if(param1.itemInfo.MagicLevel > 0)
+         if(info.itemInfo.MagicLevel > 0)
          {
             return true;
          }
@@ -353,58 +350,58 @@ package store.view.transfer
          SocketManager.Instance.out.sendItemTransfer(_transferBefore,_transferAfter);
       }
       
-      private function __itemInfoChange(param1:Event) : void
+      private function __itemInfoChange(evt:Event) : void
       {
          gold_txt.text = "0";
-         var _loc3_:TransferItemCell = _items[0];
-         var _loc2_:TransferItemCell = _items[1];
-         if(_loc3_.info)
+         var item1:TransferItemCell = _items[0];
+         var item2:TransferItemCell = _items[1];
+         if(item1.info)
          {
-            _loc3_.categoryId = -1;
-            if(_loc2_.info)
+            item1.categoryId = -1;
+            if(item2.info)
             {
-               _loc3_.categoryId = _loc3_.info.CategoryID;
+               item1.categoryId = item1.info.CategoryID;
             }
-            _loc2_.categoryId = _loc3_.info.CategoryID;
+            item2.categoryId = item1.info.CategoryID;
          }
          else
          {
-            _loc2_.categoryId = -1;
-            if(_loc2_.info)
+            item2.categoryId = -1;
+            if(item2.info)
             {
-               _loc3_.categoryId = _loc2_.info.CategoryID;
+               item1.categoryId = item2.info.CategoryID;
             }
             else
             {
-               _loc3_.categoryId = -1;
+               item1.categoryId = -1;
             }
          }
-         if(_loc3_.info)
+         if(item1.info)
          {
-            var _loc4_:* = _loc3_.info.RefineryLevel;
-            _loc2_.Refinery = _loc4_;
-            _loc3_.Refinery = _loc4_;
+            var _loc4_:* = item1.info.RefineryLevel;
+            item2.Refinery = _loc4_;
+            item1.Refinery = _loc4_;
          }
-         else if(_loc2_.info)
+         else if(item2.info)
          {
-            _loc4_ = _loc2_.info.RefineryLevel;
-            _loc2_.Refinery = _loc4_;
-            _loc3_.Refinery = _loc4_;
+            _loc4_ = item2.info.RefineryLevel;
+            item2.Refinery = _loc4_;
+            item1.Refinery = _loc4_;
          }
          else
          {
             _loc4_ = -1;
-            _loc2_.Refinery = _loc4_;
-            _loc3_.Refinery = _loc4_;
+            item2.Refinery = _loc4_;
+            item1.Refinery = _loc4_;
          }
-         if(_loc3_.info && _loc2_.info)
+         if(item1.info && item2.info)
          {
-            if(_loc3_.info.CategoryID != _loc2_.info.CategoryID)
+            if(item1.info.CategoryID != item2.info.CategoryID)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.view.transfer.StoreIITransferBG.put"));
                return;
             }
-            if(isComposeStrengthen(_loc3_) || isOpenHole(_loc3_) || isHasBead(_loc3_) || isComposeStrengthen(_loc2_) || isOpenHole(_loc2_) || isHasBead(_loc2_) || _loc3_.itemInfo.isHasLatentEnergy || _loc2_.itemInfo.isHasLatentEnergy)
+            if(isComposeStrengthen(item1) || isOpenHole(item1) || isHasBead(item1) || isComposeStrengthen(item2) || isOpenHole(item2) || isHasBead(item2) || item1.itemInfo.isHasLatentEnergy || item2.itemInfo.isHasLatentEnergy)
             {
                showArr();
                goldMoney();
@@ -418,13 +415,13 @@ package store.view.transfer
          {
             hideArr();
          }
-         if(_loc3_.info && !_loc2_.info)
+         if(item1.info && !item2.info)
          {
-            ConsortiaRateManager.instance.sendTransferShowLightEvent(_loc3_.info,true);
+            ConsortiaRateManager.instance.sendTransferShowLightEvent(item1.info,true);
          }
-         else if(_loc2_.info && !_loc3_.info)
+         else if(item2.info && !item1.info)
          {
-            ConsortiaRateManager.instance.sendTransferShowLightEvent(_loc2_.info,true);
+            ConsortiaRateManager.instance.sendTransferShowLightEvent(item2.info,true);
          }
          else
          {
@@ -434,19 +431,19 @@ package store.view.transfer
       
       private function _showDontClickTip() : Boolean
       {
-         var _loc2_:TransferItemCell = _items[0];
-         var _loc1_:TransferItemCell = _items[1];
-         if(_loc2_.info == null && _loc1_.info == null)
+         var item1:TransferItemCell = _items[0];
+         var item2:TransferItemCell = _items[1];
+         if(item1.info == null && item2.info == null)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.view.transfer.NoItem"));
             return true;
          }
-         if(_loc2_.info == null || _loc1_.info == null)
+         if(item1.info == null || item2.info == null)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.view.transfer.EmptyItem"));
             return true;
          }
-         if(!isComposeStrengthen(_loc2_) && !isOpenHole(_loc2_) && !isHasBead(_loc2_) && !isComposeStrengthen(_loc1_) && !isOpenHole(_loc1_) && !isHasBead(_loc1_) && !_loc2_.itemInfo.isHasLatentEnergy && !_loc1_.itemInfo.isHasLatentEnergy)
+         if(!isComposeStrengthen(item1) && !isOpenHole(item1) && !isHasBead(item1) && !isComposeStrengthen(item2) && !isOpenHole(item2) && !isHasBead(item2) && !item1.itemInfo.isHasLatentEnergy && !item2.itemInfo.isHasLatentEnergy)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.showTips.transfer.dontTransferII"));
             return true;
@@ -454,15 +451,15 @@ package store.view.transfer
          return false;
       }
       
-      private function isHasBead(param1:BagCell) : Boolean
+      private function isHasBead(info:BagCell) : Boolean
       {
-         var _loc2_:InventoryItemInfo = param1.itemInfo;
-         return _loc2_.Hole1 + _loc2_.Hole2 + _loc2_.Hole3 + _loc2_.Hole4 + _loc2_.Hole5 + _loc2_.Hole6 > 0;
+         var item:InventoryItemInfo = info.itemInfo;
+         return item.Hole1 + item.Hole2 + item.Hole3 + item.Hole4 + item.Hole5 + item.Hole6 > 0;
       }
       
-      private function isOpenHole(param1:BagCell) : Boolean
+      private function isOpenHole(info:BagCell) : Boolean
       {
-         if(param1.itemInfo.Hole5Level > 0 || param1.itemInfo.Hole6Level > 0 || param1.itemInfo.Hole5Exp > 0 || param1.itemInfo.Hole6Exp > 0)
+         if(info.itemInfo.Hole5Level > 0 || info.itemInfo.Hole6Level > 0 || info.itemInfo.Hole5Exp > 0 || info.itemInfo.Hole6Exp > 0)
          {
             return true;
          }
@@ -481,28 +478,27 @@ package store.view.transfer
          updateData();
       }
       
-      public function refreshData(param1:Dictionary) : void
+      public function refreshData(items:Dictionary) : void
       {
-         var _loc2_:* = 0;
+         var itemPlace:* = 0;
          var _loc5_:int = 0;
-         var _loc4_:* = param1;
-         for(_loc2_ in param1)
+         var _loc4_:* = items;
+         for(itemPlace in items)
          {
-            if(_loc2_ < _items.length)
+            if(itemPlace < _items.length)
             {
-               _items[_loc2_].info = PlayerManager.Instance.Self.StoreBag.items[_loc2_];
+               _items[itemPlace].info = PlayerManager.Instance.Self.StoreBag.items[itemPlace];
             }
          }
       }
       
       public function updateData() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < 2)
+         var i:int = 0;
+         for(i = 0; i < 2; )
          {
-            _items[_loc1_].info = PlayerManager.Instance.Self.StoreBag.items[_loc1_];
-            _loc1_++;
+            _items[i].info = PlayerManager.Instance.Self.StoreBag.items[i];
+            i++;
          }
       }
       
@@ -515,28 +511,27 @@ package store.view.transfer
       
       public function clearTransferItemCell() : void
       {
-         var _loc2_:TransferItemCell = _items[0];
-         var _loc1_:TransferItemCell = _items[1];
-         if(_loc2_.info != null)
+         var item1:TransferItemCell = _items[0];
+         var item2:TransferItemCell = _items[1];
+         if(item1.info != null)
          {
-            SocketManager.Instance.out.sendMoveGoods(12,_loc2_.index,_loc2_.itemBagType,-1);
+            SocketManager.Instance.out.sendMoveGoods(12,item1.index,item1.itemBagType,-1);
          }
-         if(_loc1_.info != null)
+         if(item2.info != null)
          {
-            SocketManager.Instance.out.sendMoveGoods(12,_loc1_.index,_loc1_.itemBagType,-1);
+            SocketManager.Instance.out.sendMoveGoods(12,item2.index,item2.itemBagType,-1);
          }
       }
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          removeEvent();
-         _loc1_ = 0;
-         while(_loc1_ < _items.length)
+         for(i = 0; i < _items.length; )
          {
-            _items[_loc1_].removeEventListener("change",__itemInfoChange);
-            _items[_loc1_].dispose();
-            _loc1_++;
+            _items[i].removeEventListener("change",__itemInfoChange);
+            _items[i].dispose();
+            i++;
          }
          _items = null;
          EffectManager.Instance.removeEffect(_transferBtnAsset_shineEffect);

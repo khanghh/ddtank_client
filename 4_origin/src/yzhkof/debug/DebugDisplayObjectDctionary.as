@@ -22,7 +22,7 @@ package yzhkof.debug
          AddToStageSetter.delayExcuteAfterAddToStage(this,function():void
          {
             width = stage.stageWidth;
-            stage.addEventListener(Event.RESIZE,function(param1:Event):void
+            stage.addEventListener(Event.RESIZE,function(e:Event):void
             {
                width = stage.stageWidth;
             });
@@ -31,63 +31,61 @@ package yzhkof.debug
       
       public function checkGC() : void
       {
-         var _loc2_:TextPanel = null;
-         var _loc1_:Array = this._dobj_map.keySet;
-         for each(_loc2_ in _loc1_)
+         var i:TextPanel = null;
+         var text_arr:Array = this._dobj_map.keySet;
+         for each(i in text_arr)
          {
-            if(!this._dobj_map.getValue(_loc2_))
+            if(!this._dobj_map.getValue(i))
             {
-               _loc2_.color = 65280;
+               i.color = 65280;
             }
          }
       }
       
-      public function setup(param1:DebugDisplayObjectViewer) : void
+      public function setup(viewer:DebugDisplayObjectViewer) : void
       {
-         this.viewer = param1;
+         this.viewer = viewer;
       }
       
-      public function goto(param1:*) : void
+      public function goto(dobj:*) : void
       {
-         var _loc3_:TextPanel = null;
-         var _loc4_:uint = 0;
-         var _loc5_:int = 0;
-         var _loc6_:TextPanel = null;
-         var _loc2_:Array = new Array();
+         var t:TextPanel = null;
+         var length:uint = 0;
+         var i:int = 0;
+         var tdobj:TextPanel = null;
+         var text_arr:Array = new Array();
          this.reset();
-         if(param1 is DisplayObject)
+         if(dobj is DisplayObject)
          {
             do
             {
-               _loc3_ = DebugSystem.getDebugTextButton(param1,(!!/instance/.test(param1.name)?getQualifiedClassName(param1):param1.name) || getQualifiedClassName(param1));
-               _loc2_.push(_loc3_);
-               _loc2_.push(this.arrow);
-               this._dobj_map.add(_loc3_,param1);
+               t = DebugSystem.getDebugTextButton(dobj,(!!/instance/.test(dobj.name)?getQualifiedClassName(dobj):dobj.name) || getQualifiedClassName(dobj));
+               text_arr.push(t);
+               text_arr.push(this.arrow);
+               this._dobj_map.add(t,dobj);
             }
-            while(param1 = param1.parent);
+            while(dobj = dobj.parent);
             
-            _loc2_.pop();
-            _loc4_ = _loc2_.length;
-            _loc5_ = 0;
-            while(_loc5_ < _loc4_)
+            text_arr.pop();
+            length = text_arr.length;
+            for(i = 0; i < length; i++)
             {
-               _loc6_ = TextPanel(_loc2_.pop());
-               appendItem(_loc6_);
-               _loc5_++;
+               tdobj = TextPanel(text_arr.pop());
+               appendItem(tdobj);
             }
          }
       }
       
-      public function select(param1:Array) : void
+      public function select(arr:Array) : void
       {
-         var _loc2_:TextPanel = null;
-         var _loc3_:DisplayObject = null;
+         var t:TextPanel = null;
+         var j:DisplayObject = null;
          this.reset();
-         for each(_loc3_ in param1)
+         for each(j in arr)
          {
-            _loc2_ = DebugSystem.getDebugTextButton(_loc3_,(!!/instance/.test(_loc3_.name)?getQualifiedClassName(_loc3_):_loc3_.name) || getQualifiedClassName(_loc3_));
-            this._dobj_map.add(_loc2_,_loc3_);
-            appendItem(_loc2_);
+            t = DebugSystem.getDebugTextButton(j,(!!/instance/.test(j.name)?getQualifiedClassName(j):j.name) || getQualifiedClassName(j));
+            this._dobj_map.add(t,j);
+            appendItem(t);
          }
       }
       
@@ -99,9 +97,9 @@ package yzhkof.debug
       
       private function get arrow() : TextPanel
       {
-         var _loc1_:TextPanel = new TextPanel();
-         _loc1_.text = ">>";
-         return _loc1_;
+         var re_t:TextPanel = new TextPanel();
+         re_t.text = ">>";
+         return re_t;
       }
       
       public function get dobj_map() : WeakMap

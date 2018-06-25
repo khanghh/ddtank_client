@@ -16,9 +16,9 @@ package cardCollectAward.data
          return _name;
       }
       
-      public function set name(param1:String) : void
+      public function set name(value:String) : void
       {
-         _name = param1;
+         _name = value;
       }
    }
 }

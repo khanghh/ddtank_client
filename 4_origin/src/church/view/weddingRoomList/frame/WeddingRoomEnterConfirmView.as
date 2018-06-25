@@ -89,35 +89,35 @@ package church.view.weddingRoomList.frame
          setEvent();
       }
       
-      public function set controller(param1:ChurchRoomListController) : void
+      public function set controller(value:ChurchRoomListController) : void
       {
-         _controller = param1;
+         _controller = value;
       }
       
-      public function set churchRoomInfo(param1:ChurchRoomInfo) : void
+      public function set churchRoomInfo(value:ChurchRoomInfo) : void
       {
-         _churchRoomInfo = param1;
+         _churchRoomInfo = value;
          _roomNameText.text = _churchRoomInfo.roomName;
          _groomText.text = _churchRoomInfo.groomName;
          _grideText.text = _churchRoomInfo.brideName;
          _countText.text = _churchRoomInfo.currentNum.toString();
-         var _loc3_:int = (_churchRoomInfo.valideTimes * 60 - (TimeManager.Instance.Now().time / 60000 - _churchRoomInfo.creactTime.time / 60000)) / 60;
-         if(_loc3_ >= 0)
+         var hour:int = (_churchRoomInfo.valideTimes * 60 - (TimeManager.Instance.Now().time / 60000 - _churchRoomInfo.creactTime.time / 60000)) / 60;
+         if(hour >= 0)
          {
-            _loc3_ = Math.floor(_loc3_);
+            hour = Math.floor(hour);
          }
          else
          {
-            _loc3_ = Math.ceil(_loc3_);
+            hour = Math.ceil(hour);
          }
-         var _loc2_:int = (int(_churchRoomInfo.valideTimes * 60 - (TimeManager.Instance.Now().time / 60000 - _churchRoomInfo.creactTime.time / 60000))) % 60;
-         if(_loc3_ < 0 || _loc2_ < 0)
+         var min:int = (int(_churchRoomInfo.valideTimes * 60 - (TimeManager.Instance.Now().time / 60000 - _churchRoomInfo.creactTime.time / 60000))) % 60;
+         if(hour < 0 || min < 0)
          {
             _spareTime.text = LanguageMgr.GetTranslation("church.weddingRoom.frame.AddWeddingRoomFrame.time");
          }
          else
          {
-            _spareTime.text = _loc3_.toString() + LanguageMgr.GetTranslation("hours") + _loc2_.toString() + LanguageMgr.GetTranslation("church.weddingRoom.frame.AddWeddingRoomFrame.minute");
+            _spareTime.text = hour.toString() + LanguageMgr.GetTranslation("hours") + min.toString() + LanguageMgr.GetTranslation("church.weddingRoom.frame.AddWeddingRoomFrame.minute");
          }
          _txtDescription.text = _churchRoomInfo.discription;
       }
@@ -183,9 +183,9 @@ package church.view.weddingRoomList.frame
          addEventListener("response",onFrameResponse);
       }
       
-      private function onFrameResponse(param1:FrameEvent) : void
+      private function onFrameResponse(evt:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
@@ -201,7 +201,7 @@ package church.view.weddingRoomList.frame
       
       private function enterRoomConfirm() : void
       {
-         var _loc1_:int = 0;
+         var type:int = 0;
          SoundManager.instance.play("008");
          if(_churchRoomInfo.isLocked)
          {
@@ -214,17 +214,17 @@ package church.view.weddingRoomList.frame
          {
             if(_churchRoomInfo.seniorType == 0)
             {
-               _loc1_ = 1;
+               type = 1;
             }
             else if(_churchRoomInfo.seniorType == 4)
             {
-               _loc1_ = 3;
+               type = 3;
             }
             else
             {
-               _loc1_ = 2;
+               type = 2;
             }
-            SocketManager.Instance.out.sendEnterRoom(_churchRoomInfo.id,"",_loc1_);
+            SocketManager.Instance.out.sendEnterRoom(_churchRoomInfo.id,"",type);
          }
          dispose();
       }

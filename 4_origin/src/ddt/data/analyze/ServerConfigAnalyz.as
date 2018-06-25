@@ -11,34 +11,33 @@ package ddt.data.analyze
       
       public var serverConfigInfoList:DictionaryData;
       
-      public function ServerConfigAnalyz(param1:Function)
+      public function ServerConfigAnalyz(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc3_:* = null;
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
+         var xmllist:* = null;
+         var i:int = 0;
+         var info:* = null;
          serverConfigInfoList = new DictionaryData();
-         var _loc2_:XML = new XML(param1);
-         if(_loc2_.@value == "true")
+         var xml:XML = new XML(data);
+         if(xml.@value == "true")
          {
-            _loc3_ = _loc2_..Item;
-            _loc5_ = 0;
-            while(_loc5_ < _loc3_.length())
+            xmllist = xml..Item;
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc4_ = new ServerConfigInfo();
-               ObjectUtils.copyPorpertiesByXML(_loc4_,_loc3_[_loc5_]);
-               serverConfigInfoList.add(_loc4_.Name,_loc4_);
-               _loc5_++;
+               info = new ServerConfigInfo();
+               ObjectUtils.copyPorpertiesByXML(info,xmllist[i]);
+               serverConfigInfoList.add(info.Name,info);
+               i++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc2_.@message;
+            message = xml.@message;
             onAnalyzeError();
             onAnalyzeComplete();
          }

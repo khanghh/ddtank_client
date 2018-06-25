@@ -97,26 +97,26 @@ package petsBag.petsAdvanced
       
       private function updateData() : void
       {
-         var _loc9_:int = 0;
-         var _loc6_:* = null;
-         var _loc1_:* = null;
-         var _loc5_:* = null;
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         var _loc7_:int = 0;
+         var i:int = 0;
+         var petTempleteInfo:* = null;
+         var propArr:* = null;
+         var growArr:* = null;
+         var p1:int = 0;
+         var p2:int = 0;
+         var p3:int = 0;
+         var k:int = 0;
          if(_petInfo == null)
          {
             return;
          }
-         var _loc8_:Vector.<PetStarExpData> = PetsAdvancedManager.Instance.risingStarDataList;
+         var __list:Vector.<PetStarExpData> = PetsAdvancedManager.Instance.risingStarDataList;
          var _loc12_:* = 0;
-         var _loc11_:* = _loc8_;
-         for each(var _loc10_ in _loc8_)
+         var _loc11_:* = __list;
+         for each(var info in __list)
          {
-            if(_loc10_.OldID == _petInfo.TemplateID)
+            if(info.OldID == _petInfo.TemplateID)
             {
-               _petStarInfo = _loc10_;
+               _petStarInfo = info;
                _progress.max = _petStarInfo.Exp;
                _progress.setProgress(_petInfo.currentStarExp);
                break;
@@ -125,23 +125,22 @@ package petsBag.petsAdvanced
          if(_petInfo.StarLevel >= 5)
          {
             _tip.tipData = "0/0";
-            _loc9_ = 0;
-            while(_loc9_ < 5)
+            for(i = 0; i < 5; )
             {
-               _itemVector[_loc9_].setData(_loc9_,0,0);
-               _loc9_++;
+               _itemVector[i].setData(i,0,0);
+               i++;
             }
             _progress.maxAdvancedGrade();
          }
          else if(_petStarInfo)
          {
-            _loc6_ = PetInfoManager.getPetByTemplateID(_petStarInfo.NewID);
-            if(!_loc6_)
+            petTempleteInfo = PetInfoManager.getPetByTemplateID(_petStarInfo.NewID);
+            if(!petTempleteInfo)
             {
                return;
             }
-            _oldPropArr = [_loc6_.HighBlood,_loc6_.HighAttack,_loc6_.HighDefence,_loc6_.HighAgility,_loc6_.HighLuck];
-            _oldGrowArr = [_loc6_.HighBloodGrow,_loc6_.HighAttackGrow,_loc6_.HighDefenceGrow,_loc6_.HighAgilityGrow,_loc6_.HighLuckGrow];
+            _oldPropArr = [petTempleteInfo.HighBlood,petTempleteInfo.HighAttack,petTempleteInfo.HighDefence,petTempleteInfo.HighAgility,petTempleteInfo.HighLuck];
+            _oldGrowArr = [petTempleteInfo.HighBloodGrow,petTempleteInfo.HighAttackGrow,petTempleteInfo.HighDefenceGrow,petTempleteInfo.HighAgilityGrow,petTempleteInfo.HighLuckGrow];
             _propLevelArr_one = _oldPropArr;
             _growLevelArr_one = getAddedPropArr(1,_oldGrowArr);
             _propLevelArr_two = _oldPropArr;
@@ -150,82 +149,78 @@ package petsBag.petsAdvanced
             _growLevelArr_three = getAddedPropArr(3,_oldGrowArr);
             if(_petInfo.Level < 30)
             {
-               _loc4_ = 0;
-               while(_loc4_ < _propLevelArr_one.length)
+               for(p1 = 0; p1 < _propLevelArr_one.length; )
                {
-                  _loc12_ = _loc4_;
-                  _loc11_ = _propLevelArr_one[_loc12_] + ((_petInfo.Level - 1) * _growLevelArr_one[_loc4_] - _currentPropArr[_loc4_]);
+                  _loc12_ = p1;
+                  _loc11_ = _propLevelArr_one[_loc12_] + ((_petInfo.Level - 1) * _growLevelArr_one[p1] - _currentPropArr[p1]);
                   _propLevelArr_one[_loc12_] = _loc11_;
-                  _loc11_ = _loc4_;
-                  _loc12_ = _growLevelArr_one[_loc11_] - _currentGrowArr[_loc4_];
+                  _loc11_ = p1;
+                  _loc12_ = _growLevelArr_one[_loc11_] - _currentGrowArr[p1];
                   _growLevelArr_one[_loc11_] = _loc12_;
-                  _propLevelArr_one[_loc4_] = Math.ceil(_propLevelArr_one[_loc4_] / 10) / 10;
-                  _growLevelArr_one[_loc4_] = Math.ceil(_growLevelArr_one[_loc4_] / 10) / 10;
-                  _loc4_++;
+                  _propLevelArr_one[p1] = Math.ceil(_propLevelArr_one[p1] / 10) / 10;
+                  _growLevelArr_one[p1] = Math.ceil(_growLevelArr_one[p1] / 10) / 10;
+                  p1++;
                }
-               _loc1_ = _propLevelArr_one;
-               _loc5_ = _growLevelArr_one;
+               propArr = _propLevelArr_one;
+               growArr = _growLevelArr_one;
             }
             else if(_petInfo.Level < 50)
             {
-               _loc3_ = 0;
-               while(_loc3_ < _propLevelArr_two.length)
+               for(p2 = 0; p2 < _propLevelArr_two.length; )
                {
-                  _loc12_ = _loc3_;
-                  _loc11_ = _propLevelArr_two[_loc12_] + ((_petInfo.Level - 30) * _growLevelArr_two[_loc3_] + 29 * _growLevelArr_one[_loc3_] - _currentPropArr[_loc3_]);
+                  _loc12_ = p2;
+                  _loc11_ = _propLevelArr_two[_loc12_] + ((_petInfo.Level - 30) * _growLevelArr_two[p2] + 29 * _growLevelArr_one[p2] - _currentPropArr[p2]);
                   _propLevelArr_two[_loc12_] = _loc11_;
-                  _loc11_ = _loc3_;
-                  _loc12_ = _growLevelArr_two[_loc11_] - _currentGrowArr[_loc3_];
+                  _loc11_ = p2;
+                  _loc12_ = _growLevelArr_two[_loc11_] - _currentGrowArr[p2];
                   _growLevelArr_two[_loc11_] = _loc12_;
-                  _propLevelArr_two[_loc3_] = Math.ceil(_propLevelArr_two[_loc3_] / 10) / 10;
-                  _growLevelArr_two[_loc3_] = Math.ceil(_growLevelArr_two[_loc3_] / 10) / 10;
-                  _loc3_++;
+                  _propLevelArr_two[p2] = Math.ceil(_propLevelArr_two[p2] / 10) / 10;
+                  _growLevelArr_two[p2] = Math.ceil(_growLevelArr_two[p2] / 10) / 10;
+                  p2++;
                }
-               _loc1_ = _propLevelArr_two;
-               _loc5_ = _growLevelArr_two;
+               propArr = _propLevelArr_two;
+               growArr = _growLevelArr_two;
             }
             else
             {
-               _loc2_ = 0;
-               while(_loc2_ < _propLevelArr_three.length)
+               p3 = 0;
+               while(p3 < _propLevelArr_three.length)
                {
-                  _loc12_ = _loc2_;
-                  _loc11_ = _propLevelArr_three[_loc12_] + ((_petInfo.Level - 50) * _growLevelArr_three[_loc2_] + 20 * _growLevelArr_two[_loc2_] + 29 * _growLevelArr_one[_loc2_] - _currentPropArr[_loc2_]);
+                  _loc12_ = p3;
+                  _loc11_ = _propLevelArr_three[_loc12_] + ((_petInfo.Level - 50) * _growLevelArr_three[p3] + 20 * _growLevelArr_two[p3] + 29 * _growLevelArr_one[p3] - _currentPropArr[p3]);
                   _propLevelArr_three[_loc12_] = _loc11_;
-                  _loc11_ = _loc2_;
-                  _loc12_ = _growLevelArr_three[_loc11_] - _currentGrowArr[_loc2_];
+                  _loc11_ = p3;
+                  _loc12_ = _growLevelArr_three[_loc11_] - _currentGrowArr[p3];
                   _growLevelArr_three[_loc11_] = _loc12_;
-                  _propLevelArr_three[_loc2_] = Math.ceil(_propLevelArr_three[_loc2_] / 10) / 10;
-                  _growLevelArr_three[_loc2_] = Math.ceil(_growLevelArr_three[_loc2_] / 10) / 10;
-                  _loc2_++;
+                  _propLevelArr_three[p3] = Math.ceil(_propLevelArr_three[p3] / 10) / 10;
+                  _growLevelArr_three[p3] = Math.ceil(_growLevelArr_three[p3] / 10) / 10;
+                  p3++;
                }
-               _loc1_ = _propLevelArr_three;
-               _loc5_ = _growLevelArr_three;
+               propArr = _propLevelArr_three;
+               growArr = _growLevelArr_three;
             }
-            _loc7_ = 0;
-            while(_loc7_ < 5)
+            for(k = 0; k < 5; )
             {
-               _itemVector[_loc7_].setData(_loc7_,_loc1_[_loc7_],_loc5_[_loc7_]);
-               _loc7_++;
+               _itemVector[k].setData(k,propArr[k],growArr[k]);
+               k++;
             }
          }
       }
       
-      private function getAddedPropArr(param1:int, param2:Array) : Array
+      private function getAddedPropArr(grade:int, propArr:Array) : Array
       {
-         var _loc4_:int = 0;
-         var _loc3_:Array = [];
-         _loc3_.push(param2[0] * Math.pow(2,param1 - 1));
-         _loc4_ = 1;
-         while(_loc4_ < 5)
+         var i:int = 0;
+         var arr:Array = [];
+         arr.push(propArr[0] * Math.pow(2,grade - 1));
+         for(i = 1; i < 5; )
          {
-            _loc3_.push(param2[_loc4_] * Math.pow(1.5,param1 - 1));
-            _loc4_++;
+            arr.push(propArr[i] * Math.pow(1.5,grade - 1));
+            i++;
          }
-         return _loc3_;
+         return arr;
       }
       
-      override protected function __enterFrame(param1:Event) : void
+      override protected function __enterFrame(event:Event) : void
       {
          if(!_starMc)
          {
@@ -269,17 +264,17 @@ package petsBag.petsAdvanced
          SocketManager.Instance.addEventListener(PkgEvent.format(68,22),__risingStarHandler);
       }
       
-      protected function __risingStarHandler(param1:PkgEvent) : void
+      protected function __risingStarHandler(event:PkgEvent) : void
       {
          _petInfo = PetsBagManager.instance().petModel.currentPetInfo;
-         var _loc2_:PackageIn = param1.pkg;
-         var _loc3_:Boolean = _loc2_.readBoolean();
-         if(_loc3_)
+         var pkg:PackageIn = event.pkg;
+         var success:Boolean = pkg.readBoolean();
+         if(success)
          {
             _btn.enable = false;
          }
          _bagCell.updateCount();
-         _progress.setProgress(_petInfo.currentStarExp,_loc3_);
+         _progress.setProgress(_petInfo.currentStarExp,success);
       }
       
       override protected function removeEvent() : void

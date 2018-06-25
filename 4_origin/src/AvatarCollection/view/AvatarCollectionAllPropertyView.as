@@ -24,18 +24,17 @@ package AvatarCollection.view
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var tmp:* = null;
          _allPropertyCellList = new Vector.<AvatarCollectionPropertyCell>();
-         _loc2_ = 0;
-         while(_loc2_ < 7)
+         for(i = 0; i < 7; )
          {
-            _loc1_ = new AvatarCollectionPropertyCell(_loc2_);
-            _loc1_.x = int(_loc2_ / 4) * 110;
-            _loc1_.y = _loc2_ % 4 * 25;
-            addChild(_loc1_);
-            _allPropertyCellList.push(_loc1_);
-            _loc2_++;
+            tmp = new AvatarCollectionPropertyCell(i);
+            tmp.x = int(i / 4) * 110;
+            tmp.y = i % 4 * 25;
+            addChild(tmp);
+            _allPropertyCellList.push(tmp);
+            i++;
          }
       }
       
@@ -44,84 +43,81 @@ package AvatarCollection.view
          PlayerManager.Instance.addEventListener("updatePlayerState",__updatePlayerPropertyHandler);
       }
       
-      private function __updatePlayerPropertyHandler(param1:Event) : void
+      private function __updatePlayerPropertyHandler(event:Event) : void
       {
          refreshView();
       }
       
       public function refreshView() : void
       {
-         var _loc6_:int = 0;
-         var _loc1_:* = null;
-         var _loc11_:* = null;
-         var _loc9_:int = 0;
-         var _loc7_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:Number = NaN;
-         var _loc12_:int = 0;
-         var _loc4_:int = 0;
-         var _loc5_:int = 0;
-         var _loc8_:Array = AvatarCollectionManager.instance.maleUnitList;
-         _loc8_ = _loc8_.concat(AvatarCollectionManager.instance.femaleUnitList);
-         _loc8_ = _loc8_.concat(AvatarCollectionManager.instance.weaponUnitList);
-         var _loc13_:AvatarCollectionUnitVo = new AvatarCollectionUnitVo();
-         var _loc10_:Array = [_loc13_.Attack,_loc13_.Defence,_loc13_.Agility,_loc13_.Luck,_loc13_.Damage,_loc13_.Guard,_loc13_.Blood];
-         _loc6_ = 0;
-         while(_loc6_ < _loc8_.length)
+         var i:int = 0;
+         var data:* = null;
+         var addedPropertyArr:* = null;
+         var totalCount:int = 0;
+         var activityCount:int = 0;
+         var endTime:* = null;
+         var nowTimestamp:Number = NaN;
+         var p:int = 0;
+         var j:int = 0;
+         var k:int = 0;
+         var dataArr:Array = AvatarCollectionManager.instance.maleUnitList;
+         dataArr = dataArr.concat(AvatarCollectionManager.instance.femaleUnitList);
+         dataArr = dataArr.concat(AvatarCollectionManager.instance.weaponUnitList);
+         var value:AvatarCollectionUnitVo = new AvatarCollectionUnitVo();
+         var propertyArr:Array = [value.Attack,value.Defence,value.Agility,value.Luck,value.Damage,value.Guard,value.Blood];
+         for(i = 0; i < dataArr.length; )
          {
-            _loc1_ = _loc8_[_loc6_];
-            _loc11_ = [_loc1_.Attack,_loc1_.Defence,_loc1_.Agility,_loc1_.Luck,_loc1_.Damage,_loc1_.Guard,_loc1_.Blood];
-            _loc9_ = _loc1_.totalItemList.length;
-            _loc7_ = _loc1_.totalActivityItemCount;
-            _loc2_ = _loc1_.endTime;
-            _loc3_ = TimeManager.Instance.Now().getTime();
-            if(_loc7_ < _loc9_ / 2)
+            data = dataArr[i];
+            addedPropertyArr = [data.Attack,data.Defence,data.Agility,data.Luck,data.Damage,data.Guard,data.Blood];
+            totalCount = data.totalItemList.length;
+            activityCount = data.totalActivityItemCount;
+            endTime = data.endTime;
+            nowTimestamp = TimeManager.Instance.Now().getTime();
+            if(activityCount < totalCount / 2)
             {
-               _loc12_ = 0;
-               while(_loc12_ < _loc10_.length)
+               for(p = 0; p < propertyArr.length; )
                {
-                  var _loc15_:* = _loc12_;
-                  var _loc16_:* = _loc10_[_loc15_] + 0;
-                  _loc10_[_loc15_] = _loc16_;
-                  _loc12_++;
+                  var _loc15_:* = p;
+                  var _loc16_:* = propertyArr[_loc15_] + 0;
+                  propertyArr[_loc15_] = _loc16_;
+                  p++;
                }
             }
-            else if(_loc7_ == _loc9_)
+            else if(activityCount == totalCount)
             {
-               _loc4_ = 0;
-               while(_loc4_ < _loc10_.length)
+               for(j = 0; j < propertyArr.length; )
                {
-                  _loc16_ = _loc4_;
-                  _loc15_ = _loc10_[_loc16_] + _loc11_[_loc4_] * 2;
-                  _loc10_[_loc16_] = _loc15_;
-                  _loc4_++;
+                  _loc16_ = j;
+                  _loc15_ = propertyArr[_loc16_] + addedPropertyArr[j] * 2;
+                  propertyArr[_loc16_] = _loc15_;
+                  j++;
                }
             }
             else
             {
-               _loc5_ = 0;
-               while(_loc5_ < _loc10_.length)
+               k = 0;
+               while(k < propertyArr.length)
                {
-                  _loc15_ = _loc5_;
-                  _loc16_ = _loc10_[_loc15_] + _loc11_[_loc5_];
-                  _loc10_[_loc15_] = _loc16_;
-                  _loc5_++;
+                  _loc15_ = k;
+                  _loc16_ = propertyArr[_loc15_] + addedPropertyArr[k];
+                  propertyArr[_loc15_] = _loc16_;
+                  k++;
                }
             }
-            _loc6_++;
+            i++;
          }
-         _loc13_.Attack = _loc10_[0];
-         _loc13_.Defence = _loc10_[1];
-         _loc13_.Agility = _loc10_[2];
-         _loc13_.Luck = _loc10_[3];
-         _loc13_.Damage = _loc10_[4];
-         _loc13_.Guard = _loc10_[5];
-         _loc13_.Blood = _loc10_[6];
+         value.Attack = propertyArr[0];
+         value.Defence = propertyArr[1];
+         value.Agility = propertyArr[2];
+         value.Luck = propertyArr[3];
+         value.Damage = propertyArr[4];
+         value.Guard = propertyArr[5];
+         value.Blood = propertyArr[6];
          var _loc18_:int = 0;
          var _loc17_:* = _allPropertyCellList;
-         for each(var _loc14_ in _allPropertyCellList)
+         for each(var tmp in _allPropertyCellList)
          {
-            _loc14_.refreshAllProperty(_loc13_);
+            tmp.refreshAllProperty(value);
          }
       }
       

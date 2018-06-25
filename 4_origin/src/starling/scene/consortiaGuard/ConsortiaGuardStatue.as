@@ -50,16 +50,16 @@ package starling.scene.consortiaGuard
       
       public function updateState() : void
       {
-         var _loc3_:Number = ConsortiaGuardControl.Instance.model.statueMaxHp;
-         var _loc2_:Number = ConsortiaGuardControl.Instance.model.statueHp;
-         var _loc1_:Number = _loc2_ / _loc3_ * _width;
+         var maxHp:Number = ConsortiaGuardControl.Instance.model.statueMaxHp;
+         var hp:Number = ConsortiaGuardControl.Instance.model.statueHp;
+         var w:Number = hp / maxHp * _width;
          _mask.graphics.clear();
          _mask.graphics.beginFill(0);
-         _mask.graphics.drawRect(0,0,_loc1_,_height);
+         _mask.graphics.drawRect(0,0,w,_height);
          _mask.graphics.endFill();
       }
       
-      private function __onUpdateState(param1:ConsortiaGuardEvent) : void
+      private function __onUpdateState(e:ConsortiaGuardEvent) : void
       {
          updateState();
       }

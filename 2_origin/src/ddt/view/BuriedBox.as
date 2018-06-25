@@ -23,9 +23,9 @@ package ddt.view
          super();
       }
       
-      public function initView(param1:int, param2:String = "buried.shaizi.boxOpen") : void
+      public function initView(type:int, mcName:String = "buried.shaizi.boxOpen") : void
       {
-         _mc = ComponentFactory.Instance.creat(param2 + param1);
+         _mc = ComponentFactory.Instance.creat(mcName + type);
          _mc.x = 508;
          _mc.y = -30;
          _mc.gotoAndStop(1);

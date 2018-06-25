@@ -34,19 +34,19 @@ package ddt.view.caddyII.card
       
       private var _type:int;
       
-      public function CardFrame(param1:int, param2:ItemTemplateInfo = null)
+      public function CardFrame(type:int, itemInfo:ItemTemplateInfo = null)
       {
          super();
-         _type = param1;
-         _itemInfo = param2;
+         _type = type;
+         _itemInfo = itemInfo;
          initView(_type);
          initEvents();
       }
       
-      private function initView(param1:int) : void
+      private function initView(type:int) : void
       {
          escEnable = true;
-         CaddyModel.instance.setup(param1);
+         CaddyModel.instance.setup(type);
          _view = ComponentFactory.Instance.creatCustomObject("caddy.CardViewII");
          _reader = CaddyModel.instance.readView;
          addToContent(_reader as DisplayObject);
@@ -65,7 +65,7 @@ package ddt.view.caddyII.card
          SocketManager.Instance.removeEventListener(PkgEvent.format(38),__updateInfo);
       }
       
-      private function __updateInfo(param1:PkgEvent) : void
+      private function __updateInfo(e:PkgEvent) : void
       {
          if(_reader is BadLuckView)
          {
@@ -73,7 +73,7 @@ package ddt.view.caddyII.card
          }
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          if(!_view.closeEnble)
@@ -81,15 +81,15 @@ package ddt.view.caddyII.card
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.card.dontClose"));
             return;
          }
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(e.responseCode == 0 || e.responseCode == 1)
          {
             ObjectUtils.disposeObject(this);
          }
       }
       
-      public function setCardType(param1:int, param2:int) : void
+      public function setCardType(id:int, place:int) : void
       {
-         _view.setCard(param1,param2);
+         _view.setCard(id,place);
       }
       
       public function show() : void

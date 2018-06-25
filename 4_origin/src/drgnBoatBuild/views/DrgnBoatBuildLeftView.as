@@ -94,18 +94,18 @@ package drgnBoatBuild.views
       
       public function setView() : void
       {
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc1_:int = 0;
-         var _loc5_:* = null;
-         var _loc2_:* = null;
+         var configArr:* = null;
+         var temArr:* = null;
+         var count:int = 0;
+         var item:* = null;
+         var mc:* = null;
          removeEvents();
          clear();
          _staticBuilding.gotoAndStop(_stage + 1);
          if(_stage != 0 && !DrgnBoatBuildManager.instance.isMcPlay)
          {
-            _loc2_ = _staticBuilding["boat" + _stage] as MovieClip;
-            _loc2_.gotoAndStop(_loc2_.totalFrames);
+            mc = _staticBuilding["boat" + _stage] as MovieClip;
+            mc.gotoAndStop(mc.totalFrames);
          }
          DrgnBoatBuildManager.instance.isMcPlay = false;
          if(!_isSelf)
@@ -139,13 +139,13 @@ package drgnBoatBuild.views
                   addChild(_ownedWood);
                   _btn = ComponentFactory.Instance.creatComponentByStylename("drgnBoatBuild.commitBtn");
                   addChild(_btn);
-                  _loc4_ = ServerConfigManager.instance.getDragonBoatBuildStage(0);
-                  _loc3_ = _loc4_[0].split(",");
-                  _loc1_ = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(int(_loc3_[0]));
-                  _ownedWood.text = _loc1_ + "/" + _loc3_[1];
-                  _loc3_ = _loc4_[1].split(",");
-                  _loc1_ = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(int(_loc3_[0]));
-                  _ownedBeard.text = _loc1_ + "/" + _loc3_[1];
+                  configArr = ServerConfigManager.instance.getDragonBoatBuildStage(0);
+                  temArr = configArr[0].split(",");
+                  count = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(int(temArr[0]));
+                  _ownedWood.text = count + "/" + temArr[1];
+                  temArr = configArr[1].split(",");
+                  count = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(int(temArr[0]));
+                  _ownedBeard.text = count + "/" + temArr[1];
                   break;
                case 1:
                   _descriptionTxt = ComponentFactory.Instance.creatComponentByStylename("drgnBoatBuild.descriptionTxt");
@@ -162,16 +162,16 @@ package drgnBoatBuild.views
                   addChild(_countTxt);
                   _btn = ComponentFactory.Instance.creatComponentByStylename("drgnBoatBuild.secondBuildBtn");
                   addChild(_btn);
-                  _loc4_ = ServerConfigManager.instance.getDragonBoatBuildStage(1);
-                  _loc3_ = _loc4_[0].split(",");
-                  _loc1_ = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(int(_loc3_[0]));
-                  _countTxt.text = _loc1_ + "/" + _loc3_[1];
-                  _descriptionTxt.text = LanguageMgr.GetTranslation("drgnBoatBuild.description2",_loc3_[1]);
-                  _loc5_ = new InventoryItemInfo();
-                  _loc5_.TemplateID = _loc3_[0];
-                  _loc5_ = ItemManager.fill(_loc5_);
-                  _loc5_.BindType = 4;
-                  _cell.info = _loc5_;
+                  configArr = ServerConfigManager.instance.getDragonBoatBuildStage(1);
+                  temArr = configArr[0].split(",");
+                  count = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(int(temArr[0]));
+                  _countTxt.text = count + "/" + temArr[1];
+                  _descriptionTxt.text = LanguageMgr.GetTranslation("drgnBoatBuild.description2",temArr[1]);
+                  item = new InventoryItemInfo();
+                  item.TemplateID = temArr[0];
+                  item = ItemManager.fill(item);
+                  item.BindType = 4;
+                  _cell.info = item;
                   _cell.setCountNotVisible();
                   break;
                case 2:
@@ -189,16 +189,16 @@ package drgnBoatBuild.views
                   addChild(_countTxt);
                   _btn = ComponentFactory.Instance.creatComponentByStylename("drgnBoatBuild.thirdBuildBtn");
                   addChild(_btn);
-                  _loc4_ = ServerConfigManager.instance.getDragonBoatBuildStage(2);
-                  _loc3_ = _loc4_[0].split(",");
-                  _loc1_ = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(int(_loc3_[0]));
-                  _countTxt.text = _loc1_ + "/" + _loc3_[1];
-                  _descriptionTxt.text = LanguageMgr.GetTranslation("drgnBoatBuild.description2",_loc3_[1]);
-                  _loc5_ = new InventoryItemInfo();
-                  _loc5_.TemplateID = _loc3_[0];
-                  _loc5_ = ItemManager.fill(_loc5_);
-                  _loc5_.BindType = 4;
-                  _cell.info = _loc5_;
+                  configArr = ServerConfigManager.instance.getDragonBoatBuildStage(2);
+                  temArr = configArr[0].split(",");
+                  count = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(int(temArr[0]));
+                  _countTxt.text = count + "/" + temArr[1];
+                  _descriptionTxt.text = LanguageMgr.GetTranslation("drgnBoatBuild.description2",temArr[1]);
+                  item = new InventoryItemInfo();
+                  item.TemplateID = temArr[0];
+                  item = ItemManager.fill(item);
+                  item.BindType = 4;
+                  _cell.info = item;
                   _cell.setCountNotVisible();
                   break;
                case 3:
@@ -216,16 +216,16 @@ package drgnBoatBuild.views
                   addChild(_countTxt);
                   _btn = ComponentFactory.Instance.creatComponentByStylename("drgnBoatBuild.finalBuildBtn");
                   addChild(_btn);
-                  _loc4_ = ServerConfigManager.instance.getDragonBoatBuildStage(3);
-                  _loc3_ = _loc4_[0].split(",");
-                  _loc1_ = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(int(_loc3_[0]));
-                  _countTxt.text = _loc1_ + "/" + _loc3_[1];
-                  _descriptionTxt.text = LanguageMgr.GetTranslation("drgnBoatBuild.description2",_loc3_[1]);
-                  _loc5_ = new InventoryItemInfo();
-                  _loc5_.TemplateID = _loc3_[0];
-                  _loc5_ = ItemManager.fill(_loc5_);
-                  _loc5_.BindType = 4;
-                  _cell.info = _loc5_;
+                  configArr = ServerConfigManager.instance.getDragonBoatBuildStage(3);
+                  temArr = configArr[0].split(",");
+                  count = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(int(temArr[0]));
+                  _countTxt.text = count + "/" + temArr[1];
+                  _descriptionTxt.text = LanguageMgr.GetTranslation("drgnBoatBuild.description2",temArr[1]);
+                  item = new InventoryItemInfo();
+                  item.TemplateID = temArr[0];
+                  item = ItemManager.fill(item);
+                  item.BindType = 4;
+                  _cell.info = item;
                   _cell.setCountNotVisible();
                   break;
                case 4:
@@ -249,13 +249,13 @@ package drgnBoatBuild.views
          DrgnBoatBuildManager.instance.addEventListener("updateView",__update);
       }
       
-      protected function __backBtnClick(param1:MouseEvent) : void
+      protected function __backBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          SocketManager.Instance.out.updateDrgnBoatBuildInfo();
       }
       
-      protected function __btnClick(param1:MouseEvent) : void
+      protected function __btnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_isSelf)
@@ -275,39 +275,39 @@ package drgnBoatBuild.views
          }
       }
       
-      protected function __update(param1:DrgnBoatBuildEvent) : void
+      protected function __update(event:DrgnBoatBuildEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:DrgnBoatBuildCellInfo = param1.info as DrgnBoatBuildCellInfo;
-         _progress.setData(_loc3_.progress,_loc3_.stage,1000);
-         _userId = _loc3_.id;
+         var complete:int = 0;
+         var info:DrgnBoatBuildCellInfo = event.info as DrgnBoatBuildCellInfo;
+         _progress.setData(info.progress,info.stage,1000);
+         _userId = info.id;
          _isSelf = _userId == PlayerManager.Instance.Self.ID;
-         _stage = _loc3_.stage;
+         _stage = info.stage;
          setView();
          ObjectUtils.disposeObject(_tipTouchArea);
          _tipTouchArea = null;
          if(!_isSelf)
          {
-            if(_loc3_.playerinfo)
+            if(info.playerinfo)
             {
-               _titleTxt.text = _loc3_.playerinfo.NickName;
+               _titleTxt.text = info.playerinfo.NickName;
             }
          }
          else
          {
-            _loc2_ = 0;
-            switch(int(_loc3_.stage) - 1)
+            complete = 0;
+            switch(int(info.stage) - 1)
             {
                case 0:
-                  _loc2_ = 330;
+                  complete = 330;
                   break;
                case 1:
-                  _loc2_ = 660;
+                  complete = 660;
                   break;
                case 2:
-                  _loc2_ = 990;
+                  complete = 990;
             }
-            if(_loc3_.progress < _loc2_)
+            if(info.progress < complete)
             {
                _btn.enable = false;
                createTipArea();

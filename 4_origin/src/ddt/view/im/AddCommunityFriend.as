@@ -13,34 +13,34 @@ package ddt.view.im
    {
        
       
-      public function AddCommunityFriend(param1:String, param2:String)
+      public function AddCommunityFriend($friendId:String, $friendNickName:String)
       {
          super();
          if(StringHelper.isNullOrEmpty(PathManager.solveCommunityFriend))
          {
             return;
          }
-         var _loc3_:URLLoader = new URLLoader();
-         _loc3_.addEventListener("complete",__addFriendComplete);
-         _loc3_.addEventListener("ioError",__addFriendError);
-         var _loc5_:URLRequest = new URLRequest(PathManager.solveCommunityFriend);
-         var _loc4_:URLVariables = new URLVariables();
-         _loc4_["fuid"] = PlayerManager.Instance.Self.LoginName;
-         _loc4_["fnick"] = PlayerManager.Instance.Self.NickName;
-         _loc4_["tuid"] = param1;
-         _loc4_["tnick"] = param2;
-         _loc5_.data = _loc4_;
-         _loc3_.load(_loc5_);
+         var loader:URLLoader = new URLLoader();
+         loader.addEventListener("complete",__addFriendComplete);
+         loader.addEventListener("ioError",__addFriendError);
+         var url:URLRequest = new URLRequest(PathManager.solveCommunityFriend);
+         var obj:URLVariables = new URLVariables();
+         obj["fuid"] = PlayerManager.Instance.Self.LoginName;
+         obj["fnick"] = PlayerManager.Instance.Self.NickName;
+         obj["tuid"] = $friendId;
+         obj["tnick"] = $friendNickName;
+         url.data = obj;
+         loader.load(url);
       }
       
-      private function __addFriendComplete(param1:Event) : void
+      private function __addFriendComplete(evt:Event) : void
       {
-         if((param1.currentTarget as URLLoader).data != "0")
+         if((evt.currentTarget as URLLoader).data != "0")
          {
          }
       }
       
-      private function __addFriendError(param1:IOErrorEvent) : void
+      private function __addFriendError(evt:IOErrorEvent) : void
       {
       }
    }

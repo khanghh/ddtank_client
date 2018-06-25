@@ -30,18 +30,18 @@ package ddt.data.quest
       
       private var _isExist:Boolean;
       
-      public function QuestDataInfo(param1:int)
+      public function QuestDataInfo(id:int)
       {
          super();
-         _questID = param1;
+         _questID = id;
          hadChecked = false;
          _isNew = false;
          _informed = false;
       }
       
-      public function set isExist(param1:Boolean) : void
+      public function set isExist(value:Boolean) : void
       {
-         _isExist = param1;
+         _isExist = value;
       }
       
       public function get isExist() : Boolean
@@ -54,9 +54,9 @@ package ddt.data.quest
          return _questID;
       }
       
-      public function set isNew(param1:Boolean) : void
+      public function set isNew(value:Boolean) : void
       {
-         _isNew = param1;
+         _isNew = value;
       }
       
       public function get isNew() : Boolean
@@ -64,9 +64,9 @@ package ddt.data.quest
          return _isNew;
       }
       
-      public function set informed(param1:Boolean) : void
+      public function set informed(value:Boolean) : void
       {
-         _informed = param1;
+         _informed = value;
       }
       
       public function get needInformed() : Boolean
@@ -83,32 +83,31 @@ package ddt.data.quest
          return _isAchieved;
       }
       
-      public function set isAchieved(param1:Boolean) : void
+      public function set isAchieved(isAchieved:Boolean) : void
       {
-         _isAchieved = param1;
+         _isAchieved = isAchieved;
       }
       
-      public function setProgress(param1:int, param2:int = 0, param3:int = 0, param4:int = 0) : void
+      public function setProgress(con0:int, con1:int = 0, con2:int = 0, con3:int = 0) : void
       {
          if(!_progress)
          {
             _progress = [];
          }
-         _progress[0] = param1;
-         _progress[1] = param2;
-         _progress[2] = param3;
-         _progress[3] = param4;
+         _progress[0] = con0;
+         _progress[1] = con1;
+         _progress[2] = con2;
+         _progress[3] = con3;
       }
       
-      public function setProgressConcoat(param1:Array) : void
+      public function setProgressConcoat(proArray:Array) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = param1.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var i:int = 0;
+         var tmpLen:int = proArray.length;
+         for(i = 0; i < tmpLen; )
          {
-            _progress[_loc3_ + 4] = param1[_loc3_];
-            _loc3_++;
+            _progress[i + 4] = proArray[i];
+            i++;
          }
       }
       
@@ -117,27 +116,26 @@ package ddt.data.quest
          return _progress;
       }
       
-      public function setIsAutoComplete(param1:Boolean, param2:Boolean, param3:Boolean, param4:Boolean) : void
+      public function setIsAutoComplete($AutoCom0:Boolean, $AutoCom1:Boolean, $AutoCom2:Boolean, $AutoCom3:Boolean) : void
       {
          if(_isAutoComplete == null)
          {
             _isAutoComplete = new Vector.<Boolean>();
          }
-         _isAutoComplete[0] = param1;
-         _isAutoComplete[1] = param2;
-         _isAutoComplete[2] = param3;
-         _isAutoComplete[3] = param4;
+         _isAutoComplete[0] = $AutoCom0;
+         _isAutoComplete[1] = $AutoCom1;
+         _isAutoComplete[2] = $AutoCom2;
+         _isAutoComplete[3] = $AutoCom3;
       }
       
-      public function setIsAutoCompleteConcoat(param1:Vector.<Boolean>) : void
+      public function setIsAutoCompleteConcoat($autoComArray:Vector.<Boolean>) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = param1.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var i:int = 0;
+         var tmpLen:int = $autoComArray.length;
+         for(i = 0; i < tmpLen; )
          {
-            _isAutoComplete[_loc3_ + 4] = param1[_loc3_];
-            _loc3_++;
+            _isAutoComplete[i + 4] = $autoComArray[i];
+            i++;
          }
       }
       

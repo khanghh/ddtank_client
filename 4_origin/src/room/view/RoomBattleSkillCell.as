@@ -26,11 +26,11 @@ package room.view
       
       private var _skillCell:BattleSkillCell;
       
-      public function RoomBattleSkillCell(param1:Boolean, param2:int = 0, param3:Boolean = true)
+      public function RoomBattleSkillCell(switchGreen:Boolean, index:int = 0, showBg:Boolean = true)
       {
          super();
-         _switchGreen = param1;
-         _place = param2;
+         _switchGreen = switchGreen;
+         _place = index;
          initView();
       }
       
@@ -66,7 +66,7 @@ package room.view
          return _place;
       }
       
-      public function set skillId(param1:int) : void
+      public function set skillId(skillId:int) : void
       {
          if(_skillCell)
          {
@@ -74,7 +74,7 @@ package room.view
             _skillCell = null;
          }
          buttonMode = false;
-         _skillInfo = BattleSkillManager.instance.getBattleSKillInfoBySkillID(param1);
+         _skillInfo = BattleSkillManager.instance.getBattleSKillInfoBySkillID(skillId);
          if(_skillInfo == null)
          {
             return;

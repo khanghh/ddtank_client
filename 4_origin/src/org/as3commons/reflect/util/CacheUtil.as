@@ -19,29 +19,29 @@ package org.as3commons.reflect.util
          super();
       }
       
-      public static function getApplicationDomainIndex(param1:ApplicationDomain) : int
+      public static function getApplicationDomainIndex(applicationDomain:ApplicationDomain) : int
       {
-         if(_appDomains.indexOf(param1) == -1)
+         if(_appDomains.indexOf(applicationDomain) == -1)
          {
-            _appDomains.push(param1);
+            _appDomains.push(applicationDomain);
          }
-         return _appDomains.indexOf(param1);
+         return _appDomains.indexOf(applicationDomain);
       }
       
-      public static function getMetadataString(param1:HashArray) : String
+      public static function getMetadataString(metadataArray:HashArray) : String
       {
-         var _loc3_:Array = null;
-         var _loc4_:Metadata = null;
-         var _loc2_:String = "";
-         if(param1)
+         var md:Array = null;
+         var metadata:Metadata = null;
+         var result:String = "";
+         if(metadataArray)
          {
-            _loc3_ = param1.getArray();
-            for each(_loc4_ in _loc3_)
+            md = metadataArray.getArray();
+            for each(metadata in md)
             {
-               _loc2_ = _loc2_ + (Metadata.getCacheKey(_loc4_) + COMMA);
+               result = result + (Metadata.getCacheKey(metadata) + COMMA);
             }
          }
-         return _loc2_;
+         return result;
       }
    }
 }

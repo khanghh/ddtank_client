@@ -46,11 +46,11 @@ package par.particals
       
       public var info:ParticleInfo;
       
-      public function Particle(param1:ParticleInfo)
+      public function Particle(info:ParticleInfo)
       {
          super();
-         image = ShapeManager.create(param1.displayCreator);
-         this.info = param1;
+         image = ShapeManager.create(info.displayCreator);
+         this.info = info;
          initialize();
       }
       
@@ -73,29 +73,29 @@ package par.particals
          }
       }
       
-      public function update(param1:Number) : void
+      public function update(time:Number) : void
       {
-         var _loc4_:Number = age / life;
-         var _loc2_:AbstractLifeEasing = info.lifeEasing;
-         v = _loc2_.easingVelocity(v,_loc4_);
-         motionV = _loc2_.easingRandomVelocity(motionV,_loc4_);
-         weight = _loc2_.easingWeight(weight,_loc4_);
+         var ol:Number = age / life;
+         var easing:AbstractLifeEasing = info.lifeEasing;
+         v = easing.easingVelocity(v,ol);
+         motionV = easing.easingRandomVelocity(motionV,ol);
+         weight = easing.easingWeight(weight,ol);
          gv = gv + weight;
-         var _loc3_:Point = Point.polar(v,angle);
-         var _loc5_:Point = Point.polar(motionV,randRange(0,2 * 3.14159265358979));
-         x = x + (_loc3_.x + _loc5_.x) * param1;
-         y = y + (_loc3_.y + _loc5_.y + gv) * param1;
-         scale = _loc2_.easingSize(size,_loc4_);
-         rotation = rotation + _loc2_.easingSpinVelocity(spin,_loc4_) * param1;
-         color = _loc2_.easingColor(color,_loc4_);
-         alpha = _loc2_.easingApha(1,_loc4_);
+         var pv:Point = Point.polar(v,angle);
+         var rv:Point = Point.polar(motionV,randRange(0,2 * 3.14159265358979));
+         x = x + (pv.x + rv.x) * time;
+         y = y + (pv.y + rv.y + gv) * time;
+         scale = easing.easingSize(size,ol);
+         rotation = rotation + easing.easingSpinVelocity(spin,ol) * time;
+         color = easing.easingColor(color,ol);
+         alpha = easing.easingApha(1,ol);
       }
       
       public function get matrixTransform() : Matrix
       {
-         var _loc1_:Number = scale * Math.cos(rotation);
-         var _loc2_:Number = scale * Math.sin(rotation);
-         return new Matrix(_loc1_,_loc2_,-_loc2_,_loc1_,x,y);
+         var cos:Number = scale * Math.cos(rotation);
+         var sin:Number = scale * Math.sin(rotation);
+         return new Matrix(cos,sin,-sin,cos,x,y);
       }
       
       public function get colorTransform() : ColorTransform

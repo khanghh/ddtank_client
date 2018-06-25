@@ -174,13 +174,13 @@ package consortion.view.club
             _okBtn.enable = true;
             return;
          }
-         var _loc2_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         _loc2_["id"] = PlayerManager.Instance.Self.ID;
-         _loc2_["NickName"] = _input.text;
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ConsortiaNameCheck.ashx"),6,_loc2_);
-         _loc1_.analyzer = new ReworkNameAnalyzer(checkCallBack);
-         _loc1_.addEventListener("loadError",__onLoadError);
-         LoadResourceManager.Instance.startLoad(_loc1_);
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         args["id"] = PlayerManager.Instance.Self.ID;
+         args["NickName"] = _input.text;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ConsortiaNameCheck.ashx"),6,args);
+         loader.analyzer = new ReworkNameAnalyzer(checkCallBack);
+         loader.addEventListener("loadError",__onLoadError);
+         LoadResourceManager.Instance.startLoad(loader);
       }
       
       private function sendName() : void
@@ -192,42 +192,42 @@ package consortion.view.club
          dispose();
       }
       
-      public function checkCallBack(param1:ReworkNameAnalyzer) : void
+      public function checkCallBack(analyzer:ReworkNameAnalyzer) : void
       {
-         var _loc2_:XML = param1.result;
-         if(_loc2_.@value == "true")
+         var result:XML = analyzer.result;
+         if(result.@value == "true")
          {
             sendName();
          }
          else
          {
             _okBtn.enable = true;
-            MessageTipManager.getInstance().show(_loc2_.@message);
+            MessageTipManager.getInstance().show(result.@message);
          }
       }
       
-      private function __onLoadError(param1:LoaderEvent) : void
+      private function __onLoadError(evt:LoaderEvent) : void
       {
       }
       
-      private function __poorManResponse(param1:FrameEvent) : void
+      private function __poorManResponse(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         param1.currentTarget.removeEventListener("response",__poorManResponse);
-         ObjectUtils.disposeObject(param1.currentTarget);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         event.currentTarget.removeEventListener("response",__poorManResponse);
+         ObjectUtils.disposeObject(event.currentTarget);
+         if(event.responseCode == 3 || event.responseCode == 2)
          {
             LeavePageManager.leaveToFillPath();
          }
       }
       
-      private function __quickBuyResponse(param1:FrameEvent) : void
+      private function __quickBuyResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          _goldAlertFrame.removeEventListener("response",__quickBuyResponse);
          _goldAlertFrame.dispose();
          _goldAlertFrame = null;
-         if(param1.responseCode == 3)
+         if(evt.responseCode == 3)
          {
             _quickBuyFrame = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
             _quickBuyFrame.itemID = 11233;
@@ -256,15 +256,15 @@ package consortion.view.club
          return true;
       }
       
-      private function __addToStageHandler(param1:Event) : void
+      private function __addToStageHandler(event:Event) : void
       {
          _input.setFocus();
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -275,19 +275,19 @@ package consortion.view.club
          }
       }
       
-      private function __okFun(param1:MouseEvent) : void
+      private function __okFun(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          createAction();
       }
       
-      private function __cancelFun(param1:MouseEvent) : void
+      private function __cancelFun(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          dispose();
       }
       
-      private function __inputHandler(param1:Event) : void
+      private function __inputHandler(event:Event) : void
       {
          if(_input.text != "")
          {
@@ -300,9 +300,9 @@ package consortion.view.club
          StringHelper.checkTextFieldLength(_input.textField,12);
       }
       
-      private function __keyboardHandler(param1:KeyboardEvent) : void
+      private function __keyboardHandler(event:KeyboardEvent) : void
       {
-         if(param1.keyCode == 13)
+         if(event.keyCode == 13)
          {
             createAction();
          }

@@ -12,9 +12,9 @@ package bagAndInfo.cell
       
       private var _cellLocked:Boolean = false;
       
-      public function LockableBagCell(param1:int, param2:ItemTemplateInfo = null, param3:Boolean = true, param4:DisplayObject = null, param5:Boolean = true)
+      public function LockableBagCell(index:int, info:ItemTemplateInfo = null, showLoading:Boolean = true, bg:DisplayObject = null, mouseOverEffBoolean:Boolean = true)
       {
-         super(param1,param2,param3,param4,param5);
+         super(index,info,showLoading,bg,mouseOverEffBoolean);
          _cellLocked = false;
          mouseChildren = false;
          _isShowIsUsedBitmap = true;
@@ -25,9 +25,9 @@ package bagAndInfo.cell
          return _lockDisplayObject;
       }
       
-      public function set lockDisplayObject(param1:DisplayObject) : void
+      public function set lockDisplayObject(value:DisplayObject) : void
       {
-         _lockDisplayObject = param1;
+         _lockDisplayObject = value;
       }
       
       public function get cellLocked() : Boolean
@@ -35,14 +35,14 @@ package bagAndInfo.cell
          return _cellLocked;
       }
       
-      public function set cellLocked(param1:Boolean) : void
+      public function set cellLocked(value:Boolean) : void
       {
-         _cellLocked = param1;
+         _cellLocked = value;
          if(_lockDisplayObject == null)
          {
             return;
          }
-         if(param1 == true)
+         if(value == true)
          {
             addChild(_lockDisplayObject);
          }
@@ -52,16 +52,16 @@ package bagAndInfo.cell
          }
       }
       
-      override public function set info(param1:ItemTemplateInfo) : void
+      override public function set info(value:ItemTemplateInfo) : void
       {
-         .super.info = param1;
-         if(param1 == null)
+         .super.info = value;
+         if(value == null)
          {
             cellLocked = false;
          }
          else
          {
-            cellLocked = (param1 as InventoryItemInfo).cellLocked;
+            cellLocked = (value as InventoryItemInfo).cellLocked;
          }
       }
    }

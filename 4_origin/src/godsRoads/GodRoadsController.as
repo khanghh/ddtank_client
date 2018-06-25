@@ -20,7 +20,7 @@ package godsRoads
       
       public var lastMssion:int = 0;
       
-      public function GodRoadsController(param1:PrivateClass)
+      public function GodRoadsController(privateClass:PrivateClass)
       {
          super();
       }
@@ -40,12 +40,12 @@ package godsRoads
          GodsRoadsManager.instance.addEventListener("godsroadschangesteps",__onGodsRoadsChangeSteps);
       }
       
-      private function __onGodsRoadsChangeSteps(param1:Event) : void
+      private function __onGodsRoadsChangeSteps(e:Event) : void
       {
          _view.changeSteps(GodsRoadsManager.instance.level);
       }
       
-      private function __onGodsRoadsOpenFrame(param1:Event) : void
+      private function __onGodsRoadsOpenFrame(e:Event) : void
       {
          if(_view == null)
          {
@@ -58,7 +58,7 @@ package godsRoads
          _view.updateView(GodsRoadsManager.instance._model,lastStep,lastMssion);
       }
       
-      private function disposeView(param1:Event) : void
+      private function disposeView(e:Event) : void
       {
          _view.removeEventListener("removedFromStage",disposeView);
          _view = null;

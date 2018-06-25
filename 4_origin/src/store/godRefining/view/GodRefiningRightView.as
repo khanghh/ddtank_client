@@ -65,45 +65,45 @@ package store.godRefining.view
          _proBagList.addEventListener("stopDarg",__stopDargHandler);
       }
       
-      public function updateView(param1:int) : void
+      public function updateView(selectIndex:int) : void
       {
-         _selectIndex = param1;
+         _selectIndex = selectIndex;
          refreshBagList();
          refreshPropBagList();
       }
       
-      private function __startDargHandler(param1:StoreDargEvent) : void
+      private function __startDargHandler(event:StoreDargEvent) : void
       {
-         GodRefiningManager.instance.dispatchEvent(new CEvent("godRefining_equip_startdarg",param1.target));
+         GodRefiningManager.instance.dispatchEvent(new CEvent("godRefining_equip_startdarg",event.target));
       }
       
-      private function __stopDargHandler(param1:StoreDargEvent) : void
+      private function __stopDargHandler(event:StoreDargEvent) : void
       {
-         GodRefiningManager.instance.dispatchEvent(new CEvent("godRefining_equip_stopdarg",param1.target));
+         GodRefiningManager.instance.dispatchEvent(new CEvent("godRefining_equip_stopdarg",event.target));
       }
       
-      private function cellClickHandler(param1:CellEvent) : void
+      private function cellClickHandler(event:CellEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BagCell = param1.data as BagCell;
-         _loc2_.dragStart();
+         var cell:BagCell = event.data as BagCell;
+         cell.dragStart();
       }
       
-      protected function __cellDoubleClick(param1:CellEvent) : void
+      protected function __cellDoubleClick(evt:CellEvent) : void
       {
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:InventoryItemInfo = (param1.data as BagCell).info as InventoryItemInfo;
-         if(param1.target == _proBagList)
+         var info:InventoryItemInfo = (evt.data as BagCell).info as InventoryItemInfo;
+         if(evt.target == _proBagList)
          {
-            GodRefiningManager.instance.dispatchEvent(new CEvent("godRefining_prop_move",_loc2_));
+            GodRefiningManager.instance.dispatchEvent(new CEvent("godRefining_prop_move",info));
          }
          else
          {
-            GodRefiningManager.instance.dispatchEvent(new CEvent("godRefining_equip_move",_loc2_));
+            GodRefiningManager.instance.dispatchEvent(new CEvent("godRefining_equip_move",info));
          }
       }
       
@@ -119,164 +119,161 @@ package store.godRefining.view
          _proBagList.setData(_propBagInfo);
       }
       
-      private function getEquipProData(param1:DictionaryData, param2:Boolean) : DictionaryData
+      private function getEquipProData(bag:DictionaryData, isEquip:Boolean) : DictionaryData
       {
-         var _loc4_:DictionaryData = new DictionaryData();
-         var _loc5_:Array = [];
+         var _canList:DictionaryData = new DictionaryData();
+         var arr:Array = [];
          var _loc8_:int = 0;
-         var _loc7_:* = param1;
-         for each(var _loc6_ in param1)
+         var _loc7_:* = bag;
+         for each(var item in bag)
          {
-            if(param2)
+            if(isEquip)
             {
-               if(_loc6_.isCanGodRefining() && _loc6_.getRemainDate() > 0)
+               if(item.isCanGodRefining() && item.getRemainDate() > 0)
                {
-                  if(_loc6_.Place < 17)
+                  if(item.Place < 17)
                   {
-                     _loc4_.add(_loc4_.length,_loc6_);
+                     _canList.add(_canList.length,item);
                   }
                   else
                   {
-                     _loc5_.push(_loc6_);
+                     arr.push(item);
                   }
                }
             }
-            else if(EquipType.isArmShellClip(_loc6_) || EquipType.isArmShellStone(_loc6_))
+            else if(EquipType.isArmShellClip(item) || EquipType.isArmShellStone(item))
             {
-               _loc4_.add(_loc4_.length,_loc6_);
+               _canList.add(_canList.length,item);
             }
          }
-         if(param2)
+         if(isEquip)
          {
             var _loc10_:int = 0;
-            var _loc9_:* = _loc5_;
-            for each(var _loc3_ in _loc5_)
+            var _loc9_:* = arr;
+            for each(var infoItem in arr)
             {
-               _loc4_.add(_loc4_.length,_loc3_);
+               _canList.add(_canList.length,infoItem);
             }
          }
-         return _loc4_;
+         return _canList;
       }
       
-      public function refreshData(param1:Dictionary, param2:BagInfo) : void
+      public function refreshData(items:Dictionary, bag:BagInfo) : void
       {
-         var _loc3_:* = null;
+         var c:* = null;
          var _loc6_:int = 0;
-         var _loc5_:* = param1;
-         for each(var _loc4_ in param1)
+         var _loc5_:* = items;
+         for each(var i in items)
          {
-            _loc3_ = param2.getItemAt(_loc4_.Place);
-            if(_loc3_)
+            c = bag.getItemAt(i.Place);
+            if(c)
             {
-               if(param2.BagType == 0)
+               if(bag.BagType == 0)
                {
-                  updateEquip(_loc3_);
+                  updateEquip(c);
                }
-               else if(param2.BagType == 1)
+               else if(bag.BagType == 1)
                {
-                  updateProp(_loc3_);
+                  updateProp(c);
                }
             }
-            else if(param2.BagType == 0)
+            else if(bag.BagType == 0)
             {
-               removeFrom(_loc4_,_equipBagInfo);
+               removeFrom(i,_equipBagInfo);
             }
             else
             {
-               removeFrom(_loc4_,_propBagInfo);
+               removeFrom(i,_propBagInfo);
             }
          }
       }
       
-      private function updateEquip(param1:InventoryItemInfo) : void
+      private function updateEquip(item:InventoryItemInfo) : void
       {
-         if(isProperTo_CanEquipList(param1))
+         if(isProperTo_CanEquipList(item))
          {
-            updateDic(_equipBagInfo,param1);
+            updateDic(_equipBagInfo,item);
          }
          else
          {
-            removeFrom(param1,_equipBagInfo);
+            removeFrom(item,_equipBagInfo);
          }
       }
       
-      private function updateProp(param1:InventoryItemInfo) : void
+      private function updateProp(item:InventoryItemInfo) : void
       {
-         if(isProperTo_CanPropList(param1))
+         if(isProperTo_CanPropList(item))
          {
-            updateDic(_propBagInfo,param1);
+            updateDic(_propBagInfo,item);
          }
          else
          {
-            removeFrom(param1,_propBagInfo);
+            removeFrom(item,_propBagInfo);
          }
       }
       
-      private function isProperTo_CanEquipList(param1:InventoryItemInfo) : Boolean
+      private function isProperTo_CanEquipList(item:InventoryItemInfo) : Boolean
       {
-         return EquipType.isArmShell(param1);
+         return EquipType.isArmShell(item);
       }
       
-      private function isProperTo_CanPropList(param1:InventoryItemInfo) : Boolean
+      private function isProperTo_CanPropList(item:InventoryItemInfo) : Boolean
       {
-         return EquipType.isArmShellStone(param1) || EquipType.isArmShellClip(param1);
+         return EquipType.isArmShellStone(item) || EquipType.isArmShellClip(item);
       }
       
-      private function removeFrom(param1:InventoryItemInfo, param2:DictionaryData) : void
+      private function removeFrom(item:InventoryItemInfo, dic:DictionaryData) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = param2.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var i:int = 0;
+         var lth:int = dic.length;
+         for(i = 0; i < lth; )
          {
-            if(param2[_loc4_] && param2[_loc4_].Place == param1.Place)
+            if(dic[i] && dic[i].Place == item.Place)
             {
-               param2[_loc4_] = null;
-               param2.dispatchEvent(new StoreBagEvent("storeBagRemove",_loc4_,param1));
+               dic[i] = null;
+               dic.dispatchEvent(new StoreBagEvent("storeBagRemove",i,item));
                break;
             }
-            _loc4_++;
+            i++;
          }
       }
       
-      private function updateDic(param1:DictionaryData, param2:InventoryItemInfo) : void
+      private function updateDic(dic:DictionaryData, item:InventoryItemInfo) : void
       {
-         var _loc3_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < param1.length)
+         var i:int = 0;
+         for(i = 0; i < dic.length; )
          {
-            if(param1[_loc3_] != null && param1[_loc3_].Place == param2.Place)
+            if(dic[i] != null && dic[i].Place == item.Place)
             {
-               param1.add(_loc3_,param2);
-               param1.dispatchEvent(new UpdateItemEvent("updateItemEvent",_loc3_,param2));
+               dic.add(i,item);
+               dic.dispatchEvent(new UpdateItemEvent("updateItemEvent",i,item));
                return;
             }
-            _loc3_++;
+            i++;
          }
-         addItemToTheFirstNullCell(param2,param1);
+         addItemToTheFirstNullCell(item,dic);
       }
       
-      private function addItemToTheFirstNullCell(param1:InventoryItemInfo, param2:DictionaryData) : void
+      private function addItemToTheFirstNullCell(item:InventoryItemInfo, dic:DictionaryData) : void
       {
-         param2.add(findFirstNullCellID(param2),param1);
+         dic.add(findFirstNullCellID(dic),item);
       }
       
-      private function findFirstNullCellID(param1:DictionaryData) : int
+      private function findFirstNullCellID(dic:DictionaryData) : int
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = -1;
-         var _loc3_:int = param1.length;
-         _loc4_ = 0;
-         while(_loc4_ <= _loc3_)
+         var i:int = 0;
+         var result:* = -1;
+         var lth:int = dic.length;
+         for(i = 0; i <= lth; )
          {
-            if(param1[_loc4_] == null)
+            if(dic[i] == null)
             {
-               _loc2_ = _loc4_;
+               result = i;
                break;
             }
-            _loc4_++;
+            i++;
          }
-         return _loc2_;
+         return result;
       }
       
       private function removeEvent() : void

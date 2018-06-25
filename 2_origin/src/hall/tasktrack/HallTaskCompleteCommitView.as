@@ -38,17 +38,17 @@ package hall.tasktrack
       
       private var _timeOutId:int;
       
-      public function HallTaskCompleteCommitView(param1:int)
+      public function HallTaskCompleteCommitView(questId:int)
       {
          super();
-         _questId = param1;
+         _questId = questId;
          _questInfo = TaskManager.instance.getQuestByID(_questId);
          initView();
          _timeOutId = setTimeout(dispose,5500);
          this.addEventListener("addedToStage",onATS);
       }
       
-      protected function onATS(param1:Event) : void
+      protected function onATS(e:Event) : void
       {
          this.removeEventListener("addedToStage",onATS);
          SoundManager.instance.play("215");
@@ -56,27 +56,27 @@ package hall.tasktrack
       
       private function initView() : void
       {
-         var _loc1_:MovieClip = ComponentFactory.Instance.creat("asset.hall.taskComplete.commitView.bg");
-         var _loc2_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("hall.taskCompleteCommitView.contentTxt");
-         _loc2_.text = getTypeStr(_questInfo) + LanguageMgr.GetTranslation("hall.taskCompleteCommit.contentTxt",_questInfo.Title);
+         var bg:MovieClip = ComponentFactory.Instance.creat("asset.hall.taskComplete.commitView.bg");
+         var contentTxt:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("hall.taskCompleteCommitView.contentTxt");
+         contentTxt.text = getTypeStr(_questInfo) + LanguageMgr.GetTranslation("hall.taskCompleteCommit.contentTxt",_questInfo.Title);
          _commitBtnTxt = ComponentFactory.Instance.creatComponentByStylename("hall.taskCompleteCommitView.commitBtnTxt");
          _commitBtnTxt.htmlText = "<u><a href=\"event:1\">" + LanguageMgr.GetTranslation("hall.taskCompleteCommit.commitTxt") + "</a></u>";
          _commitBtnTxt.addEventListener("link",textClickHandler);
          _commitBtnTxt.mouseEnabled = true;
          _commitBtnTxt.selectable = false;
-         addChild(_loc1_);
-         addChild(_loc2_);
+         addChild(bg);
+         addChild(contentTxt);
          addChild(_commitBtnTxt);
       }
       
-      private function textClickHandler(param1:TextEvent) : void
+      private function textClickHandler(event:TextEvent) : void
       {
-         var _loc2_:* = null;
+         var alert:* = null;
          SoundManager.instance.play("008");
          if(_questInfo.RewardBindMoney != 0 && _questInfo.RewardBindMoney + PlayerManager.Instance.Self.DDTMoney > ServerConfigManager.instance.getBindBidLimit(PlayerManager.Instance.Self.Grade,PlayerManager.Instance.Self.VIPLevel))
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.BindBid.tip"),LanguageMgr.GetTranslation("shop.PresentFrame.OkBtnText"),LanguageMgr.GetTranslation("shop.PresentFrame.CancelBtnText"),false,false,true,1);
-            _loc2_.addEventListener("response",__onResponse);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.BindBid.tip"),LanguageMgr.GetTranslation("shop.PresentFrame.OkBtnText"),LanguageMgr.GetTranslation("shop.PresentFrame.CancelBtnText"),false,false,true,1);
+            alert.addEventListener("response",__onResponse);
          }
          else
          {
@@ -84,48 +84,48 @@ package hall.tasktrack
          }
       }
       
-      private function __onResponse(param1:FrameEvent) : void
+      private function __onResponse(pEvent:FrameEvent) : void
       {
-         param1.currentTarget.removeEventListener("response",__onResponse);
-         if(param1.responseCode == 3)
+         pEvent.currentTarget.removeEventListener("response",__onResponse);
+         if(pEvent.responseCode == 3)
          {
             finishQuest();
          }
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(pEvent.currentTarget);
       }
       
       private function finishQuest() : void
       {
-         var _loc3_:* = null;
-         var _loc1_:Array = [];
+         var info:* = null;
+         var items:Array = [];
          var _loc5_:int = 0;
          var _loc4_:* = _questInfo.itemRewards;
-         for each(var _loc2_ in _questInfo.itemRewards)
+         for each(var temp in _questInfo.itemRewards)
          {
-            _loc3_ = new InventoryItemInfo();
-            _loc3_.TemplateID = _loc2_.itemID;
-            ItemManager.fill(_loc3_);
-            _loc3_.ValidDate = _loc2_.ValidateTime;
-            _loc3_.TemplateID = _loc2_.itemID;
-            _loc3_.IsJudge = true;
-            _loc3_.IsBinds = _loc2_.isBind;
-            _loc3_.AttackCompose = _loc2_.AttackCompose;
-            _loc3_.DefendCompose = _loc2_.DefendCompose;
-            _loc3_.AgilityCompose = _loc2_.AgilityCompose;
-            _loc3_.LuckCompose = _loc2_.LuckCompose;
-            _loc3_.StrengthenLevel = _loc2_.StrengthenLevel;
-            _loc3_.Count = _loc2_.count[_questInfo.QuestLevel - 1];
-            if(!(0 != _loc3_.NeedSex && getSexByInt(PlayerManager.Instance.Self.Sex) != _loc3_.NeedSex))
+            info = new InventoryItemInfo();
+            info.TemplateID = temp.itemID;
+            ItemManager.fill(info);
+            info.ValidDate = temp.ValidateTime;
+            info.TemplateID = temp.itemID;
+            info.IsJudge = true;
+            info.IsBinds = temp.isBind;
+            info.AttackCompose = temp.AttackCompose;
+            info.DefendCompose = temp.DefendCompose;
+            info.AgilityCompose = temp.AgilityCompose;
+            info.LuckCompose = temp.LuckCompose;
+            info.StrengthenLevel = temp.StrengthenLevel;
+            info.Count = temp.count[_questInfo.QuestLevel - 1];
+            if(!(0 != info.NeedSex && getSexByInt(PlayerManager.Instance.Self.Sex) != info.NeedSex))
             {
-               if(_loc2_.isOptional == 1)
+               if(temp.isOptional == 1)
                {
-                  _loc1_.push(_loc3_);
+                  items.push(info);
                }
             }
          }
-         if(_loc1_.length > 0)
+         if(items.length > 0)
          {
-            HallTaskTrackManager.instance.moduleLoad(showSelectedAwardFrame,[_loc1_]);
+            HallTaskTrackManager.instance.moduleLoad(showSelectedAwardFrame,[items]);
          }
          else
          {
@@ -140,62 +140,62 @@ package hall.tasktrack
          dispose();
       }
       
-      private function showSelectedAwardFrame(param1:Array) : void
+      private function showSelectedAwardFrame(items:Array) : void
       {
-         TryonSystemController.Instance.show(param1,chooseReward,null);
+         TryonSystemController.Instance.show(items,chooseReward,null);
       }
       
-      private function chooseReward(param1:ItemTemplateInfo) : void
+      private function chooseReward(item:ItemTemplateInfo) : void
       {
-         SocketManager.Instance.out.sendQuestFinish(_questId,param1.TemplateID);
+         SocketManager.Instance.out.sendQuestFinish(_questId,item.TemplateID);
       }
       
-      private function getSexByInt(param1:Boolean) : int
+      private function getSexByInt(Sex:Boolean) : int
       {
-         if(param1)
+         if(Sex)
          {
             return 1;
          }
          return 2;
       }
       
-      private function getTypeStr(param1:QuestInfo) : String
+      private function getTypeStr(questInfo:QuestInfo) : String
       {
-         var _loc2_:String = "";
-         switch(int(param1.Type))
+         var tmp:String = "";
+         switch(int(questInfo.Type))
          {
             case 0:
-               _loc2_ = LanguageMgr.GetTranslation("tank.view.quest.bubble.TankLink");
+               tmp = LanguageMgr.GetTranslation("tank.view.quest.bubble.TankLink");
                break;
             case 1:
-               _loc2_ = LanguageMgr.GetTranslation("tank.view.quest.bubble.BranchLine");
+               tmp = LanguageMgr.GetTranslation("tank.view.quest.bubble.BranchLine");
                break;
             case 2:
-               _loc2_ = LanguageMgr.GetTranslation("tank.view.quest.bubble.Daily");
+               tmp = LanguageMgr.GetTranslation("tank.view.quest.bubble.Daily");
                break;
             case 3:
-               _loc2_ = LanguageMgr.GetTranslation("tank.view.quest.bubble.Act");
+               tmp = LanguageMgr.GetTranslation("tank.view.quest.bubble.Act");
                break;
             default:
-               _loc2_ = LanguageMgr.GetTranslation("tank.view.quest.bubble.Act");
+               tmp = LanguageMgr.GetTranslation("tank.view.quest.bubble.Act");
                break;
             default:
             case 6:
-               _loc2_ = LanguageMgr.GetTranslation("tank.view.quest.bubble.Act");
+               tmp = LanguageMgr.GetTranslation("tank.view.quest.bubble.Act");
                break;
             default:
-               _loc2_ = LanguageMgr.GetTranslation("tank.view.quest.bubble.Act");
+               tmp = LanguageMgr.GetTranslation("tank.view.quest.bubble.Act");
                break;
             default:
-               _loc2_ = LanguageMgr.GetTranslation("tank.view.quest.bubble.Act");
+               tmp = LanguageMgr.GetTranslation("tank.view.quest.bubble.Act");
                break;
             default:
-               _loc2_ = LanguageMgr.GetTranslation("tank.view.quest.bubble.Act");
+               tmp = LanguageMgr.GetTranslation("tank.view.quest.bubble.Act");
                break;
             case 10:
-               _loc2_ = LanguageMgr.GetTranslation("tank.view.quest.bubble.buried");
+               tmp = LanguageMgr.GetTranslation("tank.view.quest.bubble.buried");
          }
-         return _loc2_;
+         return tmp;
       }
       
       public function dispose() : void

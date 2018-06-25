@@ -41,11 +41,11 @@ package cityBattle.view
       
       private function init() : void
       {
-         var _loc7_:int = 0;
-         var _loc6_:* = null;
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var winfo:* = null;
+         var nowDay:int = 0;
+         var fourCell:* = null;
+         var sevenCell:* = null;
          _bg = ComponentFactory.Instance.creatBitmap("asset.cityBattle.bg3");
          addChild(_bg);
          _myScoreTxt = ComponentFactory.Instance.creatComponentByStylename("welfare.myscore.txt");
@@ -62,106 +62,103 @@ package cityBattle.view
          _winBtn.addEventListener("mouseOut",outHandler);
          _box = new Sprite();
          addChild(_box);
-         var _loc3_:int = 0;
-         var _loc1_:int = 0;
-         _loc7_ = 0;
-         for(; _loc7_ < CityBattleManager.instance.welfareList.length; _loc7_++)
+         var fourIndex:int = 0;
+         var seveIndex:int = 0;
+         for(i = 0; i < CityBattleManager.instance.welfareList.length; i++)
          {
-            _loc6_ = CityBattleManager.instance.welfareList[_loc7_];
-            if(_loc6_.Quality == 2)
+            winfo = CityBattleManager.instance.welfareList[i];
+            if(winfo.Quality == 2)
             {
                if(CityBattleManager.instance.now < 8 && CityBattleManager.instance.now > 0)
                {
-                  _loc5_ = CityBattleManager.instance.now;
+                  nowDay = CityBattleManager.instance.now;
                }
                else
                {
-                  _loc5_ = 7;
+                  nowDay = 7;
                }
-               if(_loc6_.Probability == _loc5_)
+               if(winfo.Probability == nowDay)
                {
-                  _loc4_ = new WelfareCell();
-                  _loc4_.info = _loc6_;
-                  _loc4_.x = 94 * _loc3_ + 319;
-                  _loc4_.y = 180;
-                  _box.addChild(_loc4_);
-                  _loc3_++;
+                  fourCell = new WelfareCell();
+                  fourCell.info = winfo;
+                  fourCell.x = 94 * fourIndex + 319;
+                  fourCell.y = 180;
+                  _box.addChild(fourCell);
+                  fourIndex++;
                   continue;
                }
             }
-            if(_loc6_.Quality == 3)
+            if(winfo.Quality == 3)
             {
-               _loc2_ = new WelfareCell();
-               _loc2_.info = _loc6_;
-               if(_loc1_ <= 2)
+               sevenCell = new WelfareCell();
+               sevenCell.info = winfo;
+               if(seveIndex <= 2)
                {
-                  _loc2_.x = 94 * _loc1_ + 368;
-                  _loc2_.y = 365;
+                  sevenCell.x = 94 * seveIndex + 368;
+                  sevenCell.y = 365;
                }
                else
                {
-                  _loc2_.x = 94 * (_loc1_ - 3) + 318;
-                  _loc2_.y = 455;
+                  sevenCell.x = 94 * (seveIndex - 3) + 318;
+                  sevenCell.y = 455;
                }
-               _box.addChild(_loc2_);
-               _loc1_++;
+               _box.addChild(sevenCell);
+               seveIndex++;
                continue;
             }
          }
          CityBattleManager.instance.addEventListener("scoreChange",_scoreChange);
       }
       
-      private function _scoreChange(param1:CityBattleEvent) : void
+      private function _scoreChange(e:CityBattleEvent) : void
       {
          _myScoreTxt.text = String(CityBattleManager.instance.myScore);
       }
       
-      private function overHandler(param1:MouseEvent) : void
+      private function overHandler(e:MouseEvent) : void
       {
          _winBtn.gotoAndStop(2);
       }
       
-      private function outHandler(param1:MouseEvent) : void
+      private function outHandler(e:MouseEvent) : void
       {
          _winBtn.gotoAndStop(1);
       }
       
-      private function clickHandler(param1:MouseEvent) : void
+      private function clickHandler(e:MouseEvent) : void
       {
-         var _loc7_:int = 0;
-         var _loc5_:* = null;
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc6_:* = null;
+         var i:int = 0;
+         var winfo:* = null;
+         var j:int = 0;
+         var binfo:* = null;
+         var info:* = null;
          _winBtn.gotoAndStop(1);
-         var _loc3_:Array = [];
-         _loc7_ = 0;
-         while(_loc7_ < CityBattleManager.instance.welfareList.length)
+         var _arr:Array = [];
+         for(i = 0; i < CityBattleManager.instance.welfareList.length; )
          {
-            _loc5_ = CityBattleManager.instance.welfareList[_loc7_];
-            if(_loc5_.Quality == 5 && _loc5_.Probability == CityBattleManager.instance.now)
+            winfo = CityBattleManager.instance.welfareList[i];
+            if(winfo.Quality == 5 && winfo.Probability == CityBattleManager.instance.now)
             {
-               _loc4_ = 0;
-               while(_loc4_ < BossBoxManager.instance.cityBattleTempInfoList[_loc5_.TemplateID].length)
+               for(j = 0; j < BossBoxManager.instance.cityBattleTempInfoList[winfo.TemplateID].length; )
                {
-                  _loc2_ = BossBoxManager.instance.cityBattleTempInfoList[_loc5_.TemplateID][_loc4_];
-                  _loc6_ = ItemManager.fillByID(_loc2_.TemplateId);
-                  _loc6_.IsBinds = _loc2_.IsBind;
-                  _loc6_.LuckCompose = _loc2_.LuckCompose;
-                  _loc6_.DefendCompose = _loc2_.DefendCompose;
-                  _loc6_.AttackCompose = _loc2_.AttackCompose;
-                  _loc6_.AgilityCompose = _loc2_.AgilityCompose;
-                  _loc6_.StrengthenLevel = _loc2_.StrengthenLevel;
-                  _loc6_.ValidDate = _loc2_.ItemValid;
-                  _loc6_.Count = _loc2_.ItemCount;
-                  _loc3_.push(_loc6_);
-                  _loc4_++;
+                  binfo = BossBoxManager.instance.cityBattleTempInfoList[winfo.TemplateID][j];
+                  info = ItemManager.fillByID(binfo.TemplateId);
+                  info.IsBinds = binfo.IsBind;
+                  info.LuckCompose = binfo.LuckCompose;
+                  info.DefendCompose = binfo.DefendCompose;
+                  info.AttackCompose = binfo.AttackCompose;
+                  info.AgilityCompose = binfo.AgilityCompose;
+                  info.StrengthenLevel = binfo.StrengthenLevel;
+                  info.ValidDate = binfo.ItemValid;
+                  info.Count = binfo.ItemCount;
+                  _arr.push(info);
+                  j++;
                }
             }
-            _loc7_++;
+            i++;
          }
          _prize = ComponentFactory.Instance.creat("welfare.winnerPrizeView");
-         _prize.goodsList = _loc3_;
+         _prize.goodsList = _arr;
          LayerManager.Instance.addToLayer(_prize,3,true,1);
       }
       

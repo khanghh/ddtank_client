@@ -105,10 +105,10 @@ package roomList.pveRoomList
       
       private var _last_creat:uint;
       
-      public function DungeonListBGView(param1:DungeonListController, param2:DungeonListModel)
+      public function DungeonListBGView(controlle:DungeonListController, model:DungeonListModel)
       {
-         _controlle = param1;
-         _model = param2;
+         _controlle = controlle;
+         _model = model;
          super();
          init();
          initEvent();
@@ -159,9 +159,9 @@ package roomList.pveRoomList
          _iconBtnIII = ComponentFactory.Instance.creatComponentByStylename("asset.ddtroomList.pvp.itemlist.iconbtn3");
          addChild(_iconBtnIII);
          _cut = UICreatShortcut.creatAndAdd("asset.ddtroomList.cut",this);
-         var _loc2_:String = String(ServerManager.Instance.current.Name);
-         var _loc1_:int = _loc2_.indexOf("(");
-         _loc1_ = _loc1_ == -1?_loc2_.length:int(_loc1_);
+         var severName:String = String(ServerManager.Instance.current.Name);
+         var num:int = severName.indexOf("(");
+         num = num == -1?severName.length:int(num);
          _itemList = ComponentFactory.Instance.creat("asset.ddtroomList.DungeonList.ItemList",[2]);
          addChild(_itemList);
          _serverlist = ComponentFactory.Instance.creat("asset.ddtRoomlist.pvp.serverlist");
@@ -220,12 +220,12 @@ package roomList.pveRoomList
          }
       }
       
-      private function __loginRoomRes(param1:Event) : void
+      private function __loginRoomRes(evt:Event) : void
       {
          _isPermissionEnter = true;
       }
       
-      private function __rivalshipBtnClick(param1:MouseEvent) : void
+      private function __rivalshipBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(!_isPermissionEnter)
@@ -236,22 +236,22 @@ package roomList.pveRoomList
          _isPermissionEnter = false;
       }
       
-      private function __stageClick(param1:MouseEvent) : void
+      private function __stageClick(event:MouseEvent) : void
       {
-         if(!DisplayUtils.isTargetOrContain(param1.target as DisplayObject,_iconBtnII) && !DisplayUtils.isTargetOrContain(param1.target as DisplayObject,_iconBtnIII) && !DisplayUtils.isTargetOrContain(param1.target as DisplayObject,_bmpCbFb) && !DisplayUtils.isTargetOrContain(param1.target as DisplayObject,_bmpCbHardLv) && !(param1.target is BaseButton) && !(param1.target is ScaleBitmapImage && (param1.target as DisplayObject).parent is Scrollbar))
+         if(!DisplayUtils.isTargetOrContain(event.target as DisplayObject,_iconBtnII) && !DisplayUtils.isTargetOrContain(event.target as DisplayObject,_iconBtnIII) && !DisplayUtils.isTargetOrContain(event.target as DisplayObject,_bmpCbFb) && !DisplayUtils.isTargetOrContain(event.target as DisplayObject,_bmpCbHardLv) && !(event.target is BaseButton) && !(event.target is ScaleBitmapImage && (event.target as DisplayObject).parent is Scrollbar))
          {
             _pveMapRoomListTipPanel.visible = false;
             _pveHardLeveRoomListTipPanel.visible = false;
          }
       }
       
-      private function __lookupClick(param1:MouseEvent) : void
+      private function __lookupClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _controlle.showFindRoom();
       }
       
-      private function __fbChange(param1:Event) : void
+      private function __fbChange(evt:Event) : void
       {
          sendSift();
          if(_pveMapRoomListTipPanel.value == 10000)
@@ -264,13 +264,13 @@ package roomList.pveRoomList
          }
       }
       
-      private function __hardLvChange(param1:Event) : void
+      private function __hardLvChange(evt:Event) : void
       {
          sendSift();
          setTxtCbHardLv(getHardLvTxt(_pveHardLeveRoomListTipPanel.value));
       }
       
-      private function __siftReset(param1:MouseEvent) : void
+      private function __siftReset(evt:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          resetSift();
@@ -290,21 +290,21 @@ package roomList.pveRoomList
          setTxtCbHardLv("tank.room.difficulty.all");
       }
       
-      private function setTxtCbFb(param1:String) : void
+      private function setTxtCbFb(txt:String) : void
       {
-         _txtCbFb.text = param1;
+         _txtCbFb.text = txt;
          _txtCbFb.x = _bmpCbFb.x + (_bmpCbFb.width - _iconBtnII.width - _txtCbFb.width) / 2;
       }
       
-      private function setTxtCbHardLv(param1:String) : void
+      private function setTxtCbHardLv(txt:String) : void
       {
-         _txtCbHardLv.text = LanguageMgr.GetTranslation(param1);
+         _txtCbHardLv.text = LanguageMgr.GetTranslation(txt);
          _txtCbHardLv.x = _bmpCbHardLv.x + (_bmpCbHardLv.width - _iconBtnIII.width - _txtCbHardLv.width) / 2;
       }
       
-      private function getHardLvTxt(param1:int) : String
+      private function getHardLvTxt(value:int) : String
       {
-         switch(int(param1) - 1007)
+         switch(int(value) - 1007)
          {
             case 0:
                return "tank.room.difficulty.simple";
@@ -321,77 +321,74 @@ package roomList.pveRoomList
       
       private function addTipPanel() : void
       {
-         var _loc8_:int = 0;
-         var _loc5_:int = 0;
-         var _loc6_:int = 0;
-         var _loc2_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtroomList.hardLevel_01");
-         var _loc3_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtroomList.hardLevel_02");
-         var _loc4_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtroomList.hardLevel_03");
-         var _loc11_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtroomList.hardLevel_04");
-         var _loc10_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtroomList.hardLevel_05");
-         var _loc13_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtroomList.hardLevel_06");
-         var _loc12_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtroomList.hardLevel_07");
-         var _loc1_:Point = ComponentFactory.Instance.creatCustomObject("asset.ddtroomList.pve.DungeonListTipPanelSizeII");
-         _pveHardLeveRoomListTipPanel = new RoomListTipPanel(_loc1_.x,_loc1_.y);
-         _pveHardLeveRoomListTipPanel.addItem(_loc10_,1013);
-         _pveHardLeveRoomListTipPanel.addItem(_loc2_,1007);
-         _pveHardLeveRoomListTipPanel.addItem(_loc3_,1008);
-         _pveHardLeveRoomListTipPanel.addItem(_loc4_,1009);
-         _pveHardLeveRoomListTipPanel.addItem(_loc11_,1010);
-         _pveHardLeveRoomListTipPanel.addItem(_loc12_,1011);
-         _pveHardLeveRoomListTipPanel.addItem(_loc13_,1012);
-         var _loc7_:Point = ComponentFactory.Instance.creatCustomObject("asset.ddtroomList.pve.pveHardLeveRoomListTipPanelPos");
-         _pveHardLeveRoomListTipPanel.x = _loc7_.x;
-         _pveHardLeveRoomListTipPanel.y = _loc7_.y;
+         var i:int = 0;
+         var j:int = 0;
+         var k:int = 0;
+         var hardLeve_01:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtroomList.hardLevel_01");
+         var hardLeve_02:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtroomList.hardLevel_02");
+         var hardLeve_03:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtroomList.hardLevel_03");
+         var hardLeve_04:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtroomList.hardLevel_04");
+         var hardLeve_05:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtroomList.hardLevel_05");
+         var hardLeve_06:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtroomList.hardLevel_06");
+         var hardLeve_07:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtroomList.hardLevel_07");
+         var dungeonListTipPanelSizeII:Point = ComponentFactory.Instance.creatCustomObject("asset.ddtroomList.pve.DungeonListTipPanelSizeII");
+         _pveHardLeveRoomListTipPanel = new RoomListTipPanel(dungeonListTipPanelSizeII.x,dungeonListTipPanelSizeII.y);
+         _pveHardLeveRoomListTipPanel.addItem(hardLeve_05,1013);
+         _pveHardLeveRoomListTipPanel.addItem(hardLeve_01,1007);
+         _pveHardLeveRoomListTipPanel.addItem(hardLeve_02,1008);
+         _pveHardLeveRoomListTipPanel.addItem(hardLeve_03,1009);
+         _pveHardLeveRoomListTipPanel.addItem(hardLeve_04,1010);
+         _pveHardLeveRoomListTipPanel.addItem(hardLeve_07,1011);
+         _pveHardLeveRoomListTipPanel.addItem(hardLeve_06,1012);
+         var posII:Point = ComponentFactory.Instance.creatCustomObject("asset.ddtroomList.pve.pveHardLeveRoomListTipPanelPos");
+         _pveHardLeveRoomListTipPanel.x = posII.x;
+         _pveHardLeveRoomListTipPanel.y = posII.y;
          _pveHardLeveRoomListTipPanel.visible = false;
          addChild(_pveHardLeveRoomListTipPanel);
-         var _loc9_:Point = ComponentFactory.Instance.creatCustomObject("asset.ddtroomList.pve.pveMapPanelPos");
-         var _loc14_:Point = ComponentFactory.Instance.creatCustomObject("roomList.DungeonList.DungeonListTipPanelSizeIII");
-         _pveMapRoomListTipPanel = new RoomListMapTipPanel(_loc14_.x,_loc14_.y);
-         _pveMapRoomListTipPanel.x = _loc9_.x;
-         _pveMapRoomListTipPanel.y = _loc9_.y;
+         var posIII:Point = ComponentFactory.Instance.creatCustomObject("asset.ddtroomList.pve.pveMapPanelPos");
+         var dungeonListTipPanelSizeIII:Point = ComponentFactory.Instance.creatCustomObject("roomList.DungeonList.DungeonListTipPanelSizeIII");
+         _pveMapRoomListTipPanel = new RoomListMapTipPanel(dungeonListTipPanelSizeIII.x,dungeonListTipPanelSizeIII.y);
+         _pveMapRoomListTipPanel.x = posIII.x;
+         _pveMapRoomListTipPanel.y = posIII.y;
          _pveMapRoomListTipPanel.addItem(10000);
-         _loc8_ = 1;
-         while(_loc8_ < 13)
+         for(i = 1; i < 13; )
          {
-            if(MapManager.getByOrderingDungeonInfo(_loc8_))
+            if(MapManager.getByOrderingDungeonInfo(i))
             {
-               _pveMapRoomListTipPanel.addItem(MapManager.getByOrderingDungeonInfo(_loc8_).ID);
+               _pveMapRoomListTipPanel.addItem(MapManager.getByOrderingDungeonInfo(i).ID);
             }
-            _loc8_++;
+            i++;
          }
-         _loc5_ = 1;
-         while(_loc5_ < 13)
+         for(j = 1; j < 13; )
          {
-            if(MapManager.getByOrderingAcademyDungeonInfo(_loc5_))
+            if(MapManager.getByOrderingAcademyDungeonInfo(j))
             {
-               _pveMapRoomListTipPanel.addItem(MapManager.getByOrderingAcademyDungeonInfo(_loc5_).ID);
+               _pveMapRoomListTipPanel.addItem(MapManager.getByOrderingAcademyDungeonInfo(j).ID);
             }
-            _loc5_++;
+            j++;
          }
-         _loc6_ = 1;
-         while(_loc6_ < 13)
+         for(k = 1; k < 13; )
          {
-            if(MapManager.getByOrderingActivityDungeonInfo(_loc6_))
+            if(MapManager.getByOrderingActivityDungeonInfo(k))
             {
-               if(MapManager.Instance.activeDoubleIds.indexOf(MapManager.getByOrderingActivityDungeonInfo(_loc6_).ID) == -1)
+               if(MapManager.Instance.activeDoubleIds.indexOf(MapManager.getByOrderingActivityDungeonInfo(k).ID) == -1)
                {
-                  _pveMapRoomListTipPanel.addItem(MapManager.getByOrderingActivityDungeonInfo(_loc6_).ID);
+                  _pveMapRoomListTipPanel.addItem(MapManager.getByOrderingActivityDungeonInfo(k).ID);
                }
             }
-            _loc6_++;
+            k++;
          }
          _pveMapRoomListTipPanel.visible = false;
          addChild(_pveMapRoomListTipPanel);
       }
       
-      private function __clearRoom(param1:DictionaryEvent) : void
+      private function __clearRoom(event:DictionaryEvent) : void
       {
          cleanItem();
          _isPermissionEnter = true;
       }
       
-      private function __addRoom(param1:Event) : void
+      private function __addRoom(event:Event) : void
       {
          upadteItemPos();
          _isPermissionEnter = true;
@@ -399,53 +396,53 @@ package roomList.pveRoomList
       
       private function upadteItemPos() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:int = 0;
-         var _loc3_:* = null;
+         var temInfo:* = null;
+         var temPos:int = 0;
+         var item:* = null;
          _tempDataList = currentDataList;
          if(_tempDataList)
          {
-            _loc2_ = _tempDataList[_selectItemPos];
-            _loc1_ = getInfosPos(_selectItemID);
-            _tempDataList[_selectItemPos] = _tempDataList[_loc1_];
-            _tempDataList[_loc1_] = _loc2_;
+            temInfo = _tempDataList[_selectItemPos];
+            temPos = getInfosPos(_selectItemID);
+            _tempDataList[_selectItemPos] = _tempDataList[temPos];
+            _tempDataList[temPos] = temInfo;
             cleanItem();
             var _loc6_:int = 0;
             var _loc5_:* = _tempDataList;
-            for each(var _loc4_ in _tempDataList)
+            for each(var info in _tempDataList)
             {
-               if(_loc4_)
+               if(info)
                {
-                  _loc3_ = new DungeonListItemView(_loc4_);
-                  _loc3_.addEventListener("click",__itemClick,false,0,true);
-                  _itemList.addChild(_loc3_);
-                  _itemArray.push(_loc3_);
+                  item = new DungeonListItemView(info);
+                  item.addEventListener("click",__itemClick,false,0,true);
+                  _itemList.addChild(item);
+                  _itemArray.push(item);
                }
             }
          }
       }
       
-      private function getSelectItemPos(param1:int) : int
+      private function getSelectItemPos(id:int) : int
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          if(!_itemList)
          {
             return 0;
          }
-         _loc2_ = 0;
-         while(_loc2_ < _itemArray.length)
+         i = 0;
+         while(i < _itemArray.length)
          {
-            if(!(_itemArray[_loc2_] as DungeonListItemView))
+            if(!(_itemArray[i] as DungeonListItemView))
             {
                return 0;
             }
-            if((_itemArray[_loc2_] as DungeonListItemView).id == param1)
+            if((_itemArray[i] as DungeonListItemView).id == id)
             {
-               _selectItemPos = _loc2_;
-               _selectItemID = (_itemArray[_loc2_] as DungeonListItemView).id;
-               return _loc2_;
+               _selectItemPos = i;
+               _selectItemID = (_itemArray[i] as DungeonListItemView).id;
+               return i;
             }
-            _loc2_++;
+            i++;
          }
          return 0;
       }
@@ -459,70 +456,70 @@ package roomList.pveRoomList
          return _model.getRoomList().list;
       }
       
-      private function getInfosPos(param1:int) : int
+      private function getInfosPos(id:int) : int
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          _tempDataList = currentDataList;
          if(!_tempDataList)
          {
             return 0;
          }
-         _loc2_ = 0;
-         while(_loc2_ < _tempDataList.length)
+         i = 0;
+         while(i < _tempDataList.length)
          {
-            if((_tempDataList[_loc2_] as RoomInfo).ID == param1)
+            if((_tempDataList[i] as RoomInfo).ID == id)
             {
-               return _loc2_;
+               return i;
             }
-            _loc2_++;
+            i++;
          }
          return 0;
       }
       
-      private function __iconBtnIIClick(param1:MouseEvent) : void
+      private function __iconBtnIIClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _pveMapRoomListTipPanel.visible = !_pveMapRoomListTipPanel.visible;
          _pveHardLeveRoomListTipPanel.visible = false;
       }
       
-      private function __iconBtnIIIClick(param1:MouseEvent) : void
+      private function __iconBtnIIIClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _pveHardLeveRoomListTipPanel.visible = !_pveHardLeveRoomListTipPanel.visible;
          _pveMapRoomListTipPanel.visible = false;
       }
       
-      private function __updateClick(param1:MouseEvent) : void
+      private function __updateClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          sendSift();
       }
       
-      private function __itemClick(param1:MouseEvent) : void
+      private function __itemClick(event:MouseEvent) : void
       {
          if(!_isPermissionEnter)
          {
             return;
          }
          SoundManager.instance.play("008");
-         var _loc2_:DungeonListItemView = param1.currentTarget as DungeonListItemView;
-         if(PlayerManager.Instance.Self.Grade < 25 && _loc2_.info.type == 21)
+         var itemView:DungeonListItemView = event.currentTarget as DungeonListItemView;
+         if(PlayerManager.Instance.Self.Grade < 25 && itemView.info.type == 21)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.room.ActivityDungeon.promptInfo",25));
             return;
          }
-         gotoIntoRoom(_loc2_.info);
-         getSelectItemPos(_loc2_.id);
+         gotoIntoRoom(itemView.info);
+         getSelectItemPos(itemView.id);
       }
       
-      public function gotoIntoRoom(param1:RoomInfo) : void
+      public function gotoIntoRoom(info:RoomInfo) : void
       {
-         SocketManager.Instance.out.sendGameLogin(2,-1,param1.ID,"");
+         SocketManager.Instance.out.sendGameLogin(2,-1,info.ID,"");
          _isPermissionEnter = false;
       }
       
-      private function __createClick(param1:MouseEvent) : void
+      private function __createClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(getTimer() - _last_creat >= 2000)
@@ -534,13 +531,12 @@ package roomList.pveRoomList
       
       private function cleanItem() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _itemArray.length)
+         var i:int = 0;
+         for(i = 0; i < _itemArray.length; )
          {
-            (_itemArray[_loc1_] as DungeonListItemView).removeEventListener("click",__itemClick);
-            (_itemArray[_loc1_] as DungeonListItemView).dispose();
-            _loc1_++;
+            (_itemArray[i] as DungeonListItemView).removeEventListener("click",__itemClick);
+            (_itemArray[i] as DungeonListItemView).dispose();
+            i++;
          }
          _itemList.disposeAllChildren();
          _itemArray = [];

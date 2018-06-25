@@ -51,109 +51,109 @@ package drgnBoatBuild
          return _instance;
       }
       
-      public function setup(param1:HallPlayerView, param2:BaseButton) : void
+      public function setup(view:HallPlayerView, btn:BaseButton) : void
       {
-         _playerView = param1;
-         _btn = param2;
+         _playerView = view;
+         _btn = btn;
          _btn.visible = false;
       }
       
       public function addToHall() : void
       {
-         var _loc1_:* = null;
+         var staticLayr:* = null;
          _btn.visible = true;
-         var _loc2_:HallScene = StarlingMain.instance.currentScene as HallScene;
-         if(_loc2_)
+         var currentScene:HallScene = StarlingMain.instance.currentScene as HallScene;
+         if(currentScene)
          {
-            _loc1_ = _loc2_.playerView.staticLayer;
-            _loc1_.createNpc("drgnBoatBuilding");
-            _loc1_.changeBuildNpcBtnAni("drgnBoatBuilding","stand" + 6.toString());
+            staticLayr = currentScene.playerView.staticLayer;
+            staticLayr.createNpc("drgnBoatBuilding");
+            staticLayr.changeBuildNpcBtnAni("drgnBoatBuilding","stand" + 6.toString());
          }
       }
       
       public function removeFromHall() : void
       {
-         var _loc1_:* = null;
+         var staticLayr:* = null;
          _btn.visible = false;
-         var _loc2_:HallScene = StarlingMain.instance.currentScene as HallScene;
-         if(_loc2_)
+         var currentScene:HallScene = StarlingMain.instance.currentScene as HallScene;
+         if(currentScene)
          {
-            _loc1_ = _loc2_.playerView.staticLayer;
-            _loc1_.removeBuildNpcBtn("drgnBoatBuilding");
+            staticLayr = currentScene.playerView.staticLayer;
+            staticLayr.removeBuildNpcBtn("drgnBoatBuilding");
          }
       }
       
-      public function initBuildingStatus(param1:PackageIn) : void
+      public function initBuildingStatus(pkg:PackageIn) : void
       {
-         var _loc2_:* = null;
-         buildingStage = param1.readInt();
-         progress = param1.readInt();
-         var _loc3_:HallScene = StarlingMain.instance.currentScene as HallScene;
-         if(_loc3_)
+         var staticLayr:* = null;
+         buildingStage = pkg.readInt();
+         progress = pkg.readInt();
+         var currentScene:HallScene = StarlingMain.instance.currentScene as HallScene;
+         if(currentScene)
          {
-            _loc2_ = _loc3_.playerView.staticLayer;
-            _loc2_.changeBuildNpcBtnAni("drgnBoatBuilding","stand" + 6.toString());
+            staticLayr = currentScene.playerView.staticLayer;
+            staticLayr.changeBuildNpcBtnAni("drgnBoatBuilding","stand" + 6.toString());
          }
       }
       
-      public function updateBuildInfo(param1:PackageIn) : void
+      public function updateBuildInfo(pkg:PackageIn) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc5_:DrgnBoatBuildCellInfo = new DrgnBoatBuildCellInfo();
-         _loc5_.id = param1.readInt();
-         _loc5_.stage = param1.readInt();
-         _loc5_.progress = param1.readInt();
-         if(_loc5_.id == PlayerManager.Instance.Self.ID)
+         var currentScene:* = null;
+         var staticLayr:* = null;
+         var info:DrgnBoatBuildCellInfo = new DrgnBoatBuildCellInfo();
+         info.id = pkg.readInt();
+         info.stage = pkg.readInt();
+         info.progress = pkg.readInt();
+         if(info.id == PlayerManager.Instance.Self.ID)
          {
-            buildingStage = _loc5_.stage;
-            progress = _loc5_.progress;
-            _loc4_ = StarlingMain.instance.currentScene as HallScene;
-            if(_loc4_)
+            buildingStage = info.stage;
+            progress = info.progress;
+            currentScene = StarlingMain.instance.currentScene as HallScene;
+            if(currentScene)
             {
-               _loc3_ = _loc4_.playerView.staticLayer;
-               _loc3_.changeBuildNpcBtnAni("drgnBoatBuilding","stand" + 6.toString());
+               staticLayr = currentScene.playerView.staticLayer;
+               staticLayr.changeBuildNpcBtnAni("drgnBoatBuilding","stand" + 6.toString());
             }
          }
-         var _loc2_:DrgnBoatBuildEvent = new DrgnBoatBuildEvent("updateView");
-         _loc2_.info = _loc5_;
-         dispatchEvent(_loc2_);
+         var event:DrgnBoatBuildEvent = new DrgnBoatBuildEvent("updateView");
+         event.info = info;
+         dispatchEvent(event);
       }
       
-      public function receiveCommitResult(param1:PackageIn) : void
+      public function receiveCommitResult(pkg:PackageIn) : void
       {
-         isMcPlay = param1.readBoolean();
+         isMcPlay = pkg.readBoolean();
          if(isMcPlay)
          {
             SocketManager.Instance.out.updateDrgnBoatBuildInfo();
          }
       }
       
-      public function receiveHelpToBuild(param1:PackageIn) : void
+      public function receiveHelpToBuild(pkg:PackageIn) : void
       {
-         var _loc3_:Boolean = param1.readBoolean();
-         var _loc2_:int = param1.readInt();
-         if(_loc3_)
+         var result:Boolean = pkg.readBoolean();
+         var id:int = pkg.readInt();
+         if(result)
          {
-            SocketManager.Instance.out.updateDrgnBoatBuildInfo(_loc2_);
+            SocketManager.Instance.out.updateDrgnBoatBuildInfo(id);
          }
       }
       
       public function updateDrgnBoatFriendList() : void
       {
-         var _loc2_:URLVariables = new URLVariables();
-         _loc2_["selfid"] = PlayerManager.Instance.Self.ID;
-         _loc2_["key"] = MD5.hash(PlayerManager.Instance.Account.Password);
-         _loc2_["rnd"] = Math.random();
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("DragonBoatFriendInfos.ashx"),6,_loc2_);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingDrgnBoatFriendListFailure");
-         _loc1_.analyzer = new DrgnBoatFriendsAnalyzer(setupFriendList);
-         LoadResourceManager.Instance.startLoad(_loc1_);
+         var args:URLVariables = new URLVariables();
+         args["selfid"] = PlayerManager.Instance.Self.ID;
+         args["key"] = MD5.hash(PlayerManager.Instance.Account.Password);
+         args["rnd"] = Math.random();
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("DragonBoatFriendInfos.ashx"),6,args);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingDrgnBoatFriendListFailure");
+         loader.analyzer = new DrgnBoatFriendsAnalyzer(setupFriendList);
+         LoadResourceManager.Instance.startLoad(loader);
       }
       
-      public function setupFriendList(param1:DrgnBoatFriendsAnalyzer) : void
+      public function setupFriendList(analyzer:DrgnBoatFriendsAnalyzer) : void
       {
-         friendStateList = param1.list;
+         friendStateList = analyzer.list;
          dispatchEvent(new DrgnBoatBuildEvent("updateFriendList"));
       }
       

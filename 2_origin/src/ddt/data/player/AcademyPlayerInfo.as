@@ -17,9 +17,9 @@ package ddt.data.player
          super();
       }
       
-      public function set info(param1:PlayerInfo) : void
+      public function set info($info:PlayerInfo) : void
       {
-         _info = param1;
+         _info = $info;
       }
       
       public function get info() : PlayerInfo

@@ -55,15 +55,15 @@ package farm.viewx
          _back.x = 170;
          _back.y = 324;
          addToContent(_back);
-         var _loc1_:int = ItemManager.Instance.getTemplateById(334102).Property3;
+         var exp:int = ItemManager.Instance.getTemplateById(334102).Property3;
          _text = ComponentFactory.Instance.creatComponentByStylename("Farm.FarmMainView.buyExpExplainText");
          addToContent(_text);
-         var _loc2_:String = "0";
+         var _foodNumTextText:String = "0";
          if(_currentSuperPetFoodPriceInfo)
          {
-            _loc2_ = _currentSuperPetFoodPriceInfo.ItemCount.toString();
+            _foodNumTextText = _currentSuperPetFoodPriceInfo.ItemCount.toString();
          }
-         _text.htmlText = LanguageMgr.GetTranslation("farm.viewx.farmBuyExpFrame.explain",_currentMoney.toString(),_loc2_,_loc1_);
+         _text.htmlText = LanguageMgr.GetTranslation("farm.viewx.farmBuyExpFrame.explain",_currentMoney.toString(),_foodNumTextText,exp);
          addEventListener("response",__onFrameEvent);
          FarmModelController.instance.addEventListener("updateBuyExpRemainNum",__updateNum);
          _doubleSeleItem = new DoubleSelectedItem();
@@ -72,9 +72,9 @@ package farm.viewx
          addToContent(_doubleSeleItem);
       }
       
-      protected function __updateNum(param1:Event) : void
+      protected function __updateNum(event:Event) : void
       {
-         var _loc2_:int = 0;
+         var exp:int = 0;
          if(FarmModelController.instance.model.buyExpRemainNum > 0)
          {
             _currentMoney = FarmModelController.instance.getCurrentMoney();
@@ -83,14 +83,14 @@ package farm.viewx
             {
                return;
             }
-            _loc2_ = ItemManager.Instance.getTemplateById(334102).Property3;
-            _text.htmlText = LanguageMgr.GetTranslation("farm.viewx.farmBuyExpFrame.explain",_currentMoney.toString(),_currentSuperPetFoodPriceInfo.ItemCount.toString(),_loc2_);
+            exp = ItemManager.Instance.getTemplateById(334102).Property3;
+            _text.htmlText = LanguageMgr.GetTranslation("farm.viewx.farmBuyExpFrame.explain",_currentMoney.toString(),_currentSuperPetFoodPriceInfo.ItemCount.toString(),exp);
          }
       }
       
-      protected function __onFrameEvent(param1:FrameEvent) : void
+      protected function __onFrameEvent(event:FrameEvent) : void
       {
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         if(event.responseCode == 2 || event.responseCode == 3)
          {
             SoundManager.instance.playButtonSound();
             if(FarmModelController.instance.model.buyExpRemainNum <= 0)

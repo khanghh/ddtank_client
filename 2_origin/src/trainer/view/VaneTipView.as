@@ -41,7 +41,7 @@ package trainer.view
          addEventListener("response",__responseHandler);
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          SocketManager.Instance.out.syncWeakStep(39);

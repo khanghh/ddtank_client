@@ -12,17 +12,17 @@ package yzhkof
          throw new Error("无法被实例化");
       }
       
-      public static function drawRectangle(param1:Number = 100, param2:Number = 100, param3:Boolean = true, param4:uint = 0) : Sprite
+      public static function drawRectangle(width:Number = 100, height:Number = 100, is_fill:Boolean = true, colour:uint = 0) : Sprite
       {
-         var _loc5_:Sprite = new Sprite();
-         _loc5_.graphics.lineStyle(1,param4);
-         if(param3)
+         var re_obj:Sprite = new Sprite();
+         re_obj.graphics.lineStyle(1,colour);
+         if(is_fill)
          {
-            _loc5_.graphics.beginFill(param4);
+            re_obj.graphics.beginFill(colour);
          }
-         _loc5_.graphics.drawRect(0,0,param1,param2);
-         _loc5_.graphics.endFill();
-         return _loc5_;
+         re_obj.graphics.drawRect(0,0,width,height);
+         re_obj.graphics.endFill();
+         return re_obj;
       }
    }
 }

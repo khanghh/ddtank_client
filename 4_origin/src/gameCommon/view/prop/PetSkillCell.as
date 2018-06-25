@@ -33,12 +33,12 @@ package gameCommon.view.prop
       
       private var _skillPicHeight:Number = 33;
       
-      public function PetSkillCell(param1:String = null, param2:int = -1, param3:Boolean = false, param4:Number = 0, param5:Number = 0)
+      public function PetSkillCell(shortcutKey:String = null, mode:int = -1, allowDrag:Boolean = false, normWidth:Number = 0, normHeight:Number = 0)
       {
-         super(param1,param2,param3);
+         super(shortcutKey,mode,allowDrag);
          this.setGrayFilter();
-         _normWidth = param4;
-         _normHeight = param5;
+         _normWidth = normWidth;
+         _normHeight = normHeight;
       }
       
       override public function get tipStyle() : String
@@ -51,10 +51,10 @@ package gameCommon.view.prop
          return _skill;
       }
       
-      public function creteSkillCell(param1:PetSkill, param2:Boolean = false) : void
+      public function creteSkillCell(value:PetSkill, isLock:Boolean = false) : void
       {
          ShowTipManager.Instance.removeTip(this);
-         _skill = param1;
+         _skill = value;
          if(_skill != null)
          {
             _skillPic = new BitmapLoaderProxy(PathManager.solveSkillPicUrl(_skill.Pic),new Rectangle(0,0,_skillPicWidth,_skillPicHeight));
@@ -75,7 +75,7 @@ package gameCommon.view.prop
             buttonMode = false;
             _tipInfo = null;
          }
-         if(param2)
+         if(isLock)
          {
             drawLockBg();
          }
@@ -185,9 +185,9 @@ package gameCommon.view.prop
          return _turnNum;
       }
       
-      public function set turnNum(param1:int) : void
+      public function set turnNum(value:int) : void
       {
-         _turnNum = param1;
+         _turnNum = value;
       }
    }
 }

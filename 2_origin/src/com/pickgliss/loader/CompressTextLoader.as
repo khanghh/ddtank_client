@@ -10,27 +10,27 @@ package com.pickgliss.loader
       
       private var _deComressedText:String;
       
-      public function CompressTextLoader(param1:int, param2:String, param3:URLVariables = null, param4:String = "GET")
+      public function CompressTextLoader(id:int, url:String, args:URLVariables = null, requestMethod:String = "GET")
       {
-         if(param3 == null)
+         if(args == null)
          {
-            param3 = new URLVariables();
+            args = new URLVariables();
          }
-         if(param3["rnd"] == null)
+         if(args["rnd"] == null)
          {
-            param3["rnd"] = TextLoader.TextLoaderKey;
+            args["rnd"] = TextLoader.TextLoaderKey;
          }
-         super(param1,param2,param3,param4);
+         super(id,url,args,requestMethod);
       }
       
-      override protected function __onDataLoadComplete(param1:Event) : void
+      override protected function __onDataLoadComplete(event:Event) : void
       {
          removeEvent();
          unload();
-         var _loc2_:ByteArray = _loader.data;
-         _loc2_.uncompress();
-         _loc2_.position = 0;
-         _deComressedText = _loc2_.readUTFBytes(_loc2_.bytesAvailable);
+         var temp:ByteArray = _loader.data;
+         temp.uncompress();
+         temp.position = 0;
+         _deComressedText = temp.readUTFBytes(temp.bytesAvailable);
          if(analyzer)
          {
             analyzer.analyzeCompleteCall = fireCompleteEvent;

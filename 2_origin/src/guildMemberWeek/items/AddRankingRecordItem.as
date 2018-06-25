@@ -29,9 +29,9 @@ package guildMemberWeek.items
          addChild(_countTxt);
       }
       
-      public function initText(param1:String) : void
+      public function initText(ShowText:String) : void
       {
-         _countTxt.text = param1;
+         _countTxt.text = ShowText;
       }
       
       public function dispose() : void

@@ -93,16 +93,16 @@ package farm.viewx.newPet
          addToContent(_newPetLvTxt);
       }
       
-      public function set petInfo(param1:PetInfo) : void
+      public function set petInfo(value:PetInfo) : void
       {
          if(!_newPetItem)
          {
-            _newPetItem = new NewPetShowItem(param1);
+            _newPetItem = new NewPetShowItem(value);
             _newPetItem.x = 69;
             _newPetItem.y = 25;
             addToContent(_newPetItem);
          }
-         _PetSkillPnl.itemInfo = param1.skills;
+         _PetSkillPnl.itemInfo = value.skills;
       }
       
       private function initEvent() : void
@@ -110,10 +110,10 @@ package farm.viewx.newPet
          addEventListener("response",__responseHandler);
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         if(!int(param1.responseCode))
+         if(!int(event.responseCode))
          {
             TweenMax.to(this,0.2,{
                "x":250,

@@ -11,34 +11,33 @@ package store.analyze
       
       private var _data:DictionaryData;
       
-      public function EvolutionDataAnalyzer(param1:Function)
+      public function EvolutionDataAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc5_:* = null;
-         var _loc3_:* = null;
-         var _loc4_:int = 0;
-         var _loc2_:XML = new XML(param1);
-         if(_loc2_.@value == "true")
+         var info:* = null;
+         var xmllist:* = null;
+         var i:int = 0;
+         var xml:XML = new XML(data);
+         if(xml.@value == "true")
          {
             _data = new DictionaryData();
-            _loc3_ = _loc2_..Item;
-            _loc4_ = 0;
-            while(_loc4_ < _loc3_.length())
+            xmllist = xml..Item;
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc5_ = new EvolutionData();
-               ObjectUtils.copyPorpertiesByXML(_loc5_,_loc3_[_loc4_]);
-               _data.add(_loc5_.Level,_loc5_);
-               _loc4_++;
+               info = new EvolutionData();
+               ObjectUtils.copyPorpertiesByXML(info,xmllist[i]);
+               _data.add(info.Level,info);
+               i++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc2_.@message;
+            message = xml.@message;
             onAnalyzeError();
          }
       }

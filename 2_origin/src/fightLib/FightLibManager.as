@@ -40,7 +40,7 @@ package fightLib
       
       private var _isWork:Boolean;
       
-      public function FightLibManager(param1:SingletonFocer)
+      public function FightLibManager(singletonFocer:SingletonFocer)
       {
          super();
          addEvent();
@@ -55,9 +55,9 @@ package fightLib
          return _ins;
       }
       
-      public function set isWork(param1:Boolean) : void
+      public function set isWork(value:Boolean) : void
       {
-         _isWork = param1;
+         _isWork = value;
       }
       
       public function get isWork() : Boolean
@@ -70,9 +70,9 @@ package fightLib
          return _lastWin;
       }
       
-      public function set lastWin(param1:Boolean) : void
+      public function set lastWin(val:Boolean) : void
       {
-         _lastWin = param1;
+         _lastWin = val;
       }
       
       private function addEvent() : void
@@ -80,48 +80,48 @@ package fightLib
          SocketManager.Instance.addEventListener("fightLibInfoChange",__infoChange);
       }
       
-      private function __infoChange(param1:CrazyTankSocketEvent) : void
+      private function __infoChange(evt:CrazyTankSocketEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readInt();
-         var _loc4_:int = _loc3_.readInt();
-         currentInfoID = _loc2_;
+         var pkg:PackageIn = evt.pkg;
+         var id:int = pkg.readInt();
+         var difficulty:int = pkg.readInt();
+         currentInfoID = id;
          currentInfo.beginChange();
-         currentInfo.difficulty = _loc4_;
-         var _loc5_:DungeonInfo = findDungInfoByID(_loc2_);
+         currentInfo.difficulty = difficulty;
+         var info:DungeonInfo = findDungInfoByID(id);
          currentInfo.commitChange();
       }
       
-      private function findDungInfoByID(param1:int) : DungeonInfo
+      private function findDungInfoByID(id:int) : DungeonInfo
       {
          var _loc4_:int = 0;
          var _loc3_:* = MapManager.getFightLibList();
-         for each(var _loc2_ in MapManager.getFightLibList())
+         for each(var info in MapManager.getFightLibList())
          {
-            if(_loc2_.ID == param1)
+            if(info.ID == id)
             {
-               return _loc2_;
+               return info;
             }
          }
          return null;
       }
       
-      public function getFightLibInfoByID(param1:int) : FightLibInfo
+      public function getFightLibInfoByID(id:int) : FightLibInfo
       {
-         var _loc2_:* = null;
-         var _loc3_:DungeonInfo = findDungInfoByID(param1);
-         if(_loc3_)
+         var fightInfo:* = null;
+         var info:DungeonInfo = findDungInfoByID(id);
+         if(info)
          {
-            _loc2_ = new FightLibInfo();
-            _loc2_.beginChange();
-            _loc2_.id = _loc3_.ID;
-            _loc2_.description = _loc3_.Description;
-            _loc2_.name = _loc3_.Name;
-            _loc2_.difficulty = -1;
-            _loc2_.requiedLevel = _loc3_.LevelLimits;
-            _loc2_.mapID = int(_loc3_.Pic);
-            _loc2_.commitChange();
-            return _loc2_;
+            fightInfo = new FightLibInfo();
+            fightInfo.beginChange();
+            fightInfo.id = info.ID;
+            fightInfo.description = info.Description;
+            fightInfo.name = info.Name;
+            fightInfo.difficulty = -1;
+            fightInfo.requiedLevel = info.LevelLimits;
+            fightInfo.mapID = int(info.Pic);
+            fightInfo.commitChange();
+            return fightInfo;
          }
          return null;
       }
@@ -131,32 +131,32 @@ package fightLib
          return _currentInfo;
       }
       
-      public function set currentInfo(param1:FightLibInfo) : void
+      public function set currentInfo(value:FightLibInfo) : void
       {
-         _currentInfo = param1;
+         _currentInfo = value;
          dispatchEvent(new Event("change"));
       }
       
-      public function set currentInfoID(param1:int) : void
+      public function set currentInfoID(value:int) : void
       {
-         var _loc2_:* = null;
-         if(currentInfo && currentInfo.id == param1)
+         var fightInfo:* = null;
+         if(currentInfo && currentInfo.id == value)
          {
             return;
          }
-         var _loc3_:DungeonInfo = findDungInfoByID(param1);
-         if(_loc3_)
+         var info:DungeonInfo = findDungInfoByID(value);
+         if(info)
          {
-            _loc2_ = new FightLibInfo();
-            _loc2_.beginChange();
-            _loc2_.id = _loc3_.ID;
-            _loc2_.description = _loc3_.Description;
-            _loc2_.name = _loc3_.Name;
-            _loc2_.difficulty = -1;
-            _loc2_.requiedLevel = _loc3_.LevelLimits;
-            _loc2_.mapID = int(_loc3_.Pic);
-            _loc2_.commitChange();
-            currentInfo = _loc2_;
+            fightInfo = new FightLibInfo();
+            fightInfo.beginChange();
+            fightInfo.id = info.ID;
+            fightInfo.description = info.Description;
+            fightInfo.name = info.Name;
+            fightInfo.difficulty = -1;
+            fightInfo.requiedLevel = info.LevelLimits;
+            fightInfo.mapID = int(info.Pic);
+            fightInfo.commitChange();
+            currentInfo = fightInfo;
          }
       }
       
@@ -165,20 +165,20 @@ package fightLib
          return _reAnswerNum;
       }
       
-      public function set reAnswerNum(param1:int) : void
+      public function set reAnswerNum(value:int) : void
       {
-         _reAnswerNum = param1;
+         _reAnswerNum = value;
       }
       
-      public function getFightLibAwardInfoByID(param1:int) : FightLibAwardInfo
+      public function getFightLibAwardInfoByID(id:int) : FightLibAwardInfo
       {
          var _loc4_:int = 0;
          var _loc3_:* = _awardList;
-         for each(var _loc2_ in _awardList)
+         for each(var awardItem in _awardList)
          {
-            if(_loc2_.id == param1)
+            if(awardItem.id == id)
             {
-               return _loc2_;
+               return awardItem;
             }
          }
          return null;
@@ -189,26 +189,26 @@ package fightLib
          createInitAwardLoader(initAwardInfo);
       }
       
-      private function createInitAwardLoader(param1:Function) : BaseLoader
+      private function createInitAwardLoader(callBack:Function) : BaseLoader
       {
-         var _loc3_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         var _loc2_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("FightLabDropItemList.xml"),5,_loc3_);
-         _loc2_.loadErrorMessage = LanguageMgr.GetTranslation("tank.fightLib.LoaderAwardInfoError");
-         _loc2_.analyzer = new FightLibAwardAnalyzer(param1);
-         LoadResourceManager.Instance.startLoad(_loc2_);
-         return _loc2_;
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("FightLabDropItemList.xml"),5,args);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("tank.fightLib.LoaderAwardInfoError");
+         loader.analyzer = new FightLibAwardAnalyzer(callBack);
+         LoadResourceManager.Instance.startLoad(loader);
+         return loader;
       }
       
-      private function __onLoadError(param1:LoaderEvent) : void
+      private function __onLoadError(evt:LoaderEvent) : void
       {
       }
       
-      private function initAwardInfo(param1:FightLibAwardAnalyzer) : void
+      private function initAwardInfo(analyzer:FightLibAwardAnalyzer) : void
       {
-         _awardList = param1.list;
+         _awardList = analyzer.list;
       }
       
-      public function gainAward(param1:FightLibInfo) : void
+      public function gainAward(info:FightLibInfo) : void
       {
          dispatchEvent(new Event("gainAward"));
       }

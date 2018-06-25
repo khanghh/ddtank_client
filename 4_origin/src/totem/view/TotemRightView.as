@@ -11,7 +11,9 @@ package totem.view
    import dragonBoat.DragonBoatManager;
    import flash.display.Bitmap;
    import flash.display.Sprite;
+   import flash.events.Event;
    import totem.TotemManager;
+   import totem.data.TotemAddInfo;
    import totem.data.TotemDataVo;
    
    public class TotemRightView extends Sprite implements Disposeable
@@ -57,8 +59,8 @@ package totem.view
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var tmp:* = null;
          _bg = ComponentFactory.Instance.creatBitmap("asset.totem.rightView.bg");
          _lvTxt = ComponentFactory.Instance.creatComponentByStylename("totem.rightView.lvTxt");
          _titleTxt1 = ComponentFactory.Instance.creatComponentByStylename("totem.rightView.titleTxt1");
@@ -86,17 +88,17 @@ package totem.view
          addChild(_titleTxt3);
          addChild(_tipTxt);
          _propertyList = new Vector.<TotemRightViewTxtTxtCell>();
-         _loc2_ = 1;
-         while(_loc2_ <= 7)
+         for(i = 1; i <= 7; )
          {
-            _loc1_ = ComponentFactory.Instance.creatCustomObject("TotemRightViewTxtTxtCell" + _loc2_);
-            _loc1_.show(_loc2_);
-            _loc1_.x = 44 + (_loc2_ - 1) % 2 * 110;
-            _loc1_.y = 323 + int((_loc2_ - 1) / 2) * 21;
-            addChild(_loc1_);
-            _propertyList.push(_loc1_);
-            _loc2_++;
+            tmp = ComponentFactory.Instance.creatCustomObject("TotemRightViewTxtTxtCell" + i);
+            tmp.show(i);
+            tmp.x = 44 + (i - 1) % 2 * 110;
+            tmp.y = 323 + int((i - 1) / 2) * 21;
+            addChild(tmp);
+            _propertyList.push(tmp);
+            i++;
          }
+         refreshTxtCell();
          addChild(_honorUpIcon);
          addChild(_totemSignTxtCell);
          _honorTxt1.show(2);
@@ -106,24 +108,38 @@ package totem.view
          refreshView();
       }
       
+      private function refreshTxtCell(evt:Event = null) : void
+      {
+         var i:int = 0;
+         var totemInfo:TotemAddInfo = TotemManager.instance.getTotemAddAllProByProType(PlayerManager.Instance.Self.totemId);
+         if(totemInfo != null)
+         {
+            for(i = 0; i < 7; )
+            {
+               _propertyList[i].refresh(totemInfo);
+               i++;
+            }
+         }
+      }
+      
       private function initEvent() : void
       {
          PlayerManager.Instance.Self.addEventListener("propertychange",propertyChangeHandler);
+         TotemManager.instance.addEventListener("updateUpGrade",refreshTxtCell);
       }
       
       public function refreshView() : void
       {
-         var _loc1_:Number = NaN;
-         var _loc2_:int = 0;
+         var totemSignCount:Number = NaN;
          _totemSignTxtCell.updateData();
-         var _loc3_:int = TotemManager.instance.getTotemPointLevel(PlayerManager.Instance.Self.totemId);
-         _lvTxt.text = LanguageMgr.GetTranslation("ddt.totem.rightView.lvTxt",TotemManager.instance.getCurrentLv(_loc3_));
-         _nextInfo = TotemManager.instance.getNextInfoByLevel(_loc3_);
+         var curLv:int = TotemManager.instance.getTotemPointLevel(PlayerManager.Instance.Self.totemId);
+         _lvTxt.text = LanguageMgr.GetTranslation("ddt.totem.rightView.lvTxt",TotemManager.instance.getCurrentLv(curLv));
+         _nextInfo = TotemManager.instance.getNextInfoByLevel(curLv);
          if(_nextInfo)
          {
             _honorTxt1.refresh(_nextInfo.ConsumeHonor);
             _expTxt1.refresh(_nextInfo.ConsumeExp);
-            _loc1_ = Math.round(_nextInfo.ConsumeExp * ServerConfigManager.instance.totemSignDiscount);
+            totemSignCount = Math.round(_nextInfo.ConsumeExp * ServerConfigManager.instance.totemSignDiscount);
             if(DragonBoatManager.instance.isBuildEnd)
             {
                _expTxt1.rawTextLine();
@@ -133,7 +149,7 @@ package totem.view
                   addChild(_totemRightViewIconTxtDragonBoatCell);
                }
                _totemRightViewIconTxtDragonBoatCell.refresh(_nextInfo.DiscountMoney);
-               _loc1_ = Math.round(_nextInfo.DiscountMoney * (ServerConfigManager.instance.totemSignDiscount / 100));
+               totemSignCount = Math.round(_nextInfo.DiscountMoney * (ServerConfigManager.instance.totemSignDiscount / 100));
             }
             else
             {
@@ -147,60 +163,55 @@ package totem.view
          }
          refreshHonorTxt();
          refreshGPTxt();
-         _loc2_ = 0;
-         while(_loc2_ < 7)
-         {
-            _propertyList[_loc2_].refresh();
-            _loc2_++;
-         }
+         refreshTxtCell();
       }
       
       private function refreshHonorTxt() : void
       {
-         var _loc2_:Boolean = false;
+         var isChangeColor:Boolean = false;
          if(_nextInfo && PlayerManager.Instance.Self.myHonor < _nextInfo.ConsumeHonor)
          {
-            _loc2_ = true;
+            isChangeColor = true;
          }
-         var _loc1_:int = PlayerManager.Instance.Self.myHonor;
-         _honorTxt2.refresh(PlayerManager.Instance.Self.myHonor,_loc2_);
+         var myhhonor:int = PlayerManager.Instance.Self.myHonor;
+         _honorTxt2.refresh(PlayerManager.Instance.Self.myHonor,isChangeColor);
       }
       
       private function refreshGPTxt() : void
       {
-         var _loc4_:Boolean = false;
-         var _loc3_:int = 0;
-         var _loc2_:Number = NaN;
-         var _loc1_:Number = NaN;
+         var isChangeColor:Boolean = false;
+         var totemSignCount:int = 0;
+         var totemSignCount2:Number = NaN;
+         var totemSignCount3:Number = NaN;
          if(_nextInfo)
          {
-            _loc4_ = false;
-            _loc3_ = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(30000,true);
+            isChangeColor = false;
+            totemSignCount = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(30000,true);
             if(DragonBoatManager.instance.isBuildEnd)
             {
-               _loc2_ = Math.round(_nextInfo.DiscountMoney * (ServerConfigManager.instance.totemSignDiscount / 100));
-               if(_loc3_ > _loc2_)
+               totemSignCount2 = Math.round(_nextInfo.DiscountMoney * (ServerConfigManager.instance.totemSignDiscount / 100));
+               if(totemSignCount > totemSignCount2)
                {
-                  _loc3_ = _loc2_;
+                  totemSignCount = totemSignCount2;
                }
-               if(_nextInfo && PlayerManager.Instance.Self.Money + _loc3_ < _nextInfo.DiscountMoney)
+               if(_nextInfo && PlayerManager.Instance.Self.Money + totemSignCount < _nextInfo.DiscountMoney)
                {
-                  _loc4_ = true;
+                  isChangeColor = true;
                }
             }
             else
             {
-               _loc1_ = Math.round(_nextInfo.ConsumeExp * (ServerConfigManager.instance.totemSignDiscount / 100));
-               if(_loc3_ > _loc1_)
+               totemSignCount3 = Math.round(_nextInfo.ConsumeExp * (ServerConfigManager.instance.totemSignDiscount / 100));
+               if(totemSignCount > totemSignCount3)
                {
-                  _loc3_ = _loc1_;
+                  totemSignCount = totemSignCount3;
                }
-               if(_nextInfo && PlayerManager.Instance.Self.Money + _loc3_ < _nextInfo.ConsumeExp)
+               if(_nextInfo && PlayerManager.Instance.Self.Money + totemSignCount < _nextInfo.ConsumeExp)
                {
-                  _loc4_ = true;
+                  isChangeColor = true;
                }
             }
-            _expTxt2.refresh(PlayerManager.Instance.Self.Money,_loc4_);
+            _expTxt2.refresh(PlayerManager.Instance.Self.Money,isChangeColor);
          }
          else
          {
@@ -208,13 +219,13 @@ package totem.view
          }
       }
       
-      private function propertyChangeHandler(param1:PlayerPropertyEvent) : void
+      private function propertyChangeHandler(event:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["myHonor"])
+         if(event.changedProperties["myHonor"])
          {
             refreshHonorTxt();
          }
-         if(param1.changedProperties["GP"])
+         if(event.changedProperties["GP"])
          {
             refreshGPTxt();
          }
@@ -223,6 +234,7 @@ package totem.view
       private function removeEvent() : void
       {
          PlayerManager.Instance.Self.removeEventListener("propertychange",propertyChangeHandler);
+         TotemManager.instance.removeEventListener("updateUpGrade",refreshTxtCell);
       }
       
       public function dispose() : void

@@ -30,9 +30,9 @@ package littleGame
          SocketManager.Instance.addEventListener(PkgEvent.format(80),__actived);
       }
       
-      private function __actived(param1:PkgEvent) : void
+      private function __actived(event:PkgEvent) : void
       {
-         _actived = param1.pkg.readBoolean();
+         _actived = event.pkg.readBoolean();
          dispatchEvent(new LittleGameEvent("activedChanged"));
       }
       
@@ -41,9 +41,9 @@ package littleGame
          return _actived;
       }
       
-      public function hasCanStart(param1:PlayerInfo) : Boolean
+      public function hasCanStart(player:PlayerInfo) : Boolean
       {
-         return param1.Grade >= PathManager.LittleGameMinLv;
+         return player.Grade >= PathManager.LittleGameMinLv;
       }
    }
 }

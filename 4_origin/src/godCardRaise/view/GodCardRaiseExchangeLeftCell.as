@@ -51,10 +51,10 @@ package godCardRaise.view
          this.buttonMode = true;
       }
       
-      public function setListCellStatus(param1:List, param2:Boolean, param3:int) : void
+      public function setListCellStatus(list:List, isSelected:Boolean, index:int) : void
       {
-         _selectedLight.visible = param2;
-         if(param2)
+         _selectedLight.visible = isSelected;
+         if(isSelected)
          {
             _bg.setFrame(2);
             _nameTxt.setFrame(2);
@@ -71,9 +71,9 @@ package godCardRaise.view
          return _data;
       }
       
-      public function setCellValue(param1:*) : void
+      public function setCellValue(value:*) : void
       {
-         _data = param1 as GodCardListGroupInfo;
+         _data = value as GodCardListGroupInfo;
          updateView();
       }
       
@@ -83,11 +83,11 @@ package godCardRaise.view
          {
             return;
          }
-         var _loc3_:int = GodCardRaiseManager.Instance.model.groups[_data.GroupID];
-         var _loc1_:int = GodCardRaiseManager.Instance.calculateExchangeCount(_data);
-         var _loc2_:int = GodCardRaiseManager.Instance.getMyCardCount(13);
-         _nameTxt.text = _data.GroupName + "(" + _loc1_ + "/" + _data.Cards.length + ")";
-         if(_loc1_ + _loc2_ >= _data.Cards.length && _loc1_ != 0 && _data.ExchangeTimes - _loc3_ > 0)
+         var myExchangeCount:int = GodCardRaiseManager.Instance.model.groups[_data.GroupID];
+         var exchangeCount:int = GodCardRaiseManager.Instance.calculateExchangeCount(_data);
+         var universal:int = GodCardRaiseManager.Instance.getMyCardCount(13);
+         _nameTxt.text = _data.GroupName + "(" + exchangeCount + "/" + _data.Cards.length + ")";
+         if(exchangeCount + universal >= _data.Cards.length && exchangeCount != 0 && _data.ExchangeTimes - myExchangeCount > 0)
          {
             _getExchangeBmp.visible = true;
          }

@@ -36,6 +36,7 @@ package
    import dice.DiceControl;
    import draft.DraftControl;
    import dragonBoat.DragonBoatControl;
+   import dreamlandChallenge.DreamlandChallengeControl;
    import drgnBoat.DrgnBoatControl;
    import drgnBoatBuild.DrgnBoatBuildControl;
    import email.manager.MailControl;
@@ -121,6 +122,7 @@ package
    import wonderfulActivity.WonderfulActivityControl;
    import worldBossHelper.WorldBossHelperController;
    import worldboss.WorldBossRoomController;
+   import worldcup.WorldcupControl;
    import yyvip.YYVipControl;
    import zodiac.ZodiacControl;
    
@@ -262,6 +264,8 @@ package
          FunnyGamesManager.getInstance().setup();
          DefendislandControl.instance.setup();
          PvePowerBuffControl.instance.setup();
+         WorldcupControl.instance.setup();
+         DreamlandChallengeControl.instance.setup();
       }
    }
 }

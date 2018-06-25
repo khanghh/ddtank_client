@@ -22,7 +22,7 @@ package ddt.view.tips
          addEventListener("removedFromStage",__leaveStage);
       }
       
-      private function __leaveStage(param1:Event) : void
+      private function __leaveStage(event:Event) : void
       {
          _buffContainer.disposeAllChildren();
       }
@@ -33,27 +33,27 @@ package ddt.view.tips
          addChild(name_txt);
       }
       
-      override protected function setShow(param1:Boolean, param2:Boolean, param3:int, param4:int, param5:int, param6:String) : void
+      override protected function setShow(isActive:Boolean, isFree:Boolean, day:int, hour:int, min:int, describe:String) : void
       {
-         _active = param1;
-         _describe = param6;
+         _active = isActive;
+         _describe = describe;
          _buffContainer.disposeAllChildren();
          if(_active)
          {
             var _loc9_:int = 0;
             var _loc8_:* = _tempData.linkBuffs;
-            for each(var _loc7_ in _tempData.linkBuffs)
+            for each(var buff in _tempData.linkBuffs)
             {
-               if(_loc7_ is BuffInfo)
+               if(buff is BuffInfo)
                {
-                  if(_loc7_.Type != 70 && _loc7_.valided)
+                  if(buff.Type != 70 && buff.valided)
                   {
-                     _buffContainer.addChild(new PayBuffListItem(_loc7_));
+                     _buffContainer.addChild(new PayBuffListItem(buff));
                   }
                }
                else
                {
-                  _buffContainer.addChild(new PayBuffListItem(_loc7_));
+                  _buffContainer.addChild(new PayBuffListItem(buff));
                }
             }
          }

@@ -1,4 +1,2 @@
-package starling.utils
-{
-   public function formatString(param1:String, ... rest) : String{return null;}
-}
+package starling.utils{   public function formatString(format:String, ... args) : String { return null; }
+}

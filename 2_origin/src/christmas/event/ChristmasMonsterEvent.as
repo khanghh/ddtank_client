@@ -14,10 +14,10 @@ package christmas.event
       
       public var data:Object;
       
-      public function ChristmasMonsterEvent(param1:String, param2:Object = null)
+      public function ChristmasMonsterEvent(type:String, dat:Object = null)
       {
-         data = param2;
-         super(param1);
+         data = dat;
+         super(type);
       }
    }
 }

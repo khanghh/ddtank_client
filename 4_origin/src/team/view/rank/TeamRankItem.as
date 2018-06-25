@@ -35,13 +35,13 @@ package team.view.rank
          addChild(_selectBg);
       }
       
-      public function updaInfo(param1:TeamRankInfo) : void
+      public function updaInfo(info:TeamRankInfo) : void
       {
-         if(!param1)
+         if(!info)
          {
             return;
          }
-         _info = param1;
+         _info = info;
          label_name.text = _info.TeamName;
          if(_info.IsVIP > 0)
          {
@@ -68,15 +68,15 @@ package team.view.rank
          _selectBg = null;
       }
       
-      public function set isClick(param1:Boolean) : void
+      public function set isClick(value:Boolean) : void
       {
-         _isClick = param1;
+         _isClick = value;
          _selectBg.visible = _isClick;
       }
       
-      public function set index(param1:int) : void
+      public function set index(value:int) : void
       {
-         _index = param1;
+         _index = value;
          if(_index <= 3)
          {
             image_rankIcon.visible = true;
@@ -91,9 +91,9 @@ package team.view.rank
          }
       }
       
-      public function set isShow(param1:Boolean) : void
+      public function set isShow(value:Boolean) : void
       {
-         _isShow = param1;
+         _isShow = value;
          image_rankIcon.visible = _isShow;
          if(!_isShow)
          {

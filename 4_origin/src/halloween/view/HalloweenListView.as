@@ -49,16 +49,15 @@ package halloween.view
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         _loc2_ = 0;
-         while(_loc2_ < 6)
+         var i:int = 0;
+         var cell:* = null;
+         for(i = 0; i < 6; )
          {
-            _loc1_ = new HalloweenListCell();
-            PositionUtils.setPos(_loc1_,"halloween.listCellPos" + _loc2_);
-            addChild(_loc1_);
-            _cellVec.push(_loc1_);
-            _loc2_++;
+            cell = new HalloweenListCell();
+            PositionUtils.setPos(cell,"halloween.listCellPos" + i);
+            addChild(cell);
+            _cellVec.push(cell);
+            i++;
          }
          _pageBg = ComponentFactory.Instance.creatComponentByStylename("halloween.currentPageInput");
          addChild(_pageBg);
@@ -77,7 +76,7 @@ package halloween.view
          SocketManager.Instance.addEventListener(PkgEvent.format(283,2),__onViewInfo);
       }
       
-      protected function __onNextPageClick(param1:MouseEvent) : void
+      protected function __onNextPageClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(_currentPage < _totalPage)
@@ -87,7 +86,7 @@ package halloween.view
          }
       }
       
-      protected function __onPrePageClick(param1:MouseEvent) : void
+      protected function __onPrePageClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(_currentPage - 1 > 0)
@@ -97,37 +96,35 @@ package halloween.view
          }
       }
       
-      protected function __onViewInfo(param1:PkgEvent) : void
+      protected function __onViewInfo(event:PkgEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readInt();
-         _totalPage = Math.ceil(_loc2_ / 6);
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_)
+         var i:int = 0;
+         var info:* = null;
+         var pkg:PackageIn = event.pkg;
+         var count:int = pkg.readInt();
+         _totalPage = Math.ceil(count / 6);
+         for(i = 0; i < count; )
          {
-            _loc4_ = new HalloweenModel();
-            _loc4_.Index = _loc3_.readInt();
-            _loc4_.Id = _loc3_.readInt();
-            _loc4_.Price = _loc3_.readInt();
-            _infoArray.push(_loc4_);
-            _loc5_++;
+            info = new HalloweenModel();
+            info.Index = pkg.readInt();
+            info.Id = pkg.readInt();
+            info.Price = pkg.readInt();
+            _infoArray.push(info);
+            i++;
          }
          _infoArray.sortOn("Index",16);
          setPageInfo(1);
       }
       
-      public function setPageInfo(param1:int) : void
+      public function setPageInfo(page:int) : void
       {
-         var _loc2_:int = 0;
-         _currentPage = param1;
+         var i:int = 0;
+         _currentPage = page;
          _pageText.text = _currentPage.toString() + "/" + _totalPage.toString();
-         _loc2_ = 0;
-         while(_loc2_ < 6)
+         for(i = 0; i < 6; )
          {
-            _cellVec[_loc2_].info = _infoArray[6 * (_currentPage - 1) + _loc2_];
-            _loc2_++;
+            _cellVec[i].info = _infoArray[6 * (_currentPage - 1) + i];
+            i++;
          }
       }
       
@@ -145,14 +142,13 @@ package halloween.view
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          removeEvent();
-         _loc1_ = 0;
-         while(_loc1_ < _cellVec.length)
+         for(i = 0; i < _cellVec.length; )
          {
-            ObjectUtils.disposeObject(_cellVec[_loc1_]);
-            _cellVec[_loc1_] = null;
-            _loc1_++;
+            ObjectUtils.disposeObject(_cellVec[i]);
+            _cellVec[i] = null;
+            i++;
          }
          _cellVec = null;
          ObjectUtils.disposeObject(_pageBg);

@@ -74,21 +74,21 @@ package bagAndInfo.ddtKingGrade
          super.init();
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(value:Object) : void
       {
-         if(param1 == null)
+         if(value == null)
          {
             return;
          }
-         _tipData = param1;
-         var _loc7_:int = _tipData.cost;
-         var _loc6_:DDTKingGradeInfo = DDTKingGradeManager.Instance.getInfoByCost(_loc7_);
-         var _loc2_:int = _loc6_.Level;
-         var _loc5_:int = _tipData.currentCost;
-         var _loc4_:DDTKingGradeInfo = DDTKingGradeManager.Instance.data[_loc2_ + 1];
-         var _loc3_:Array = ["Attack","Defence","Agility","Lucky","MagicAttack","MagicDefence"];
-         _currentValue.text = _loc6_[_loc3_[_tipData.type]] / 10 + "%";
-         if(_loc4_)
+         _tipData = value;
+         var cost:int = _tipData.cost;
+         var currentInfo:DDTKingGradeInfo = DDTKingGradeManager.Instance.getInfoByCost(cost);
+         var level:int = currentInfo.Level;
+         var currentCost:int = _tipData.currentCost;
+         var nextInfo:DDTKingGradeInfo = DDTKingGradeManager.Instance.data[level + 1];
+         var arr:Array = ["Attack","Defence","Agility","Lucky","MagicAttack","MagicDefence"];
+         _currentValue.text = currentInfo[arr[_tipData.type]] / 10 + "%";
+         if(nextInfo)
          {
             _bg.height = 100;
             _nextText.visible = true;
@@ -96,9 +96,9 @@ package bagAndInfo.ddtKingGrade
             _nextValue.visible = true;
             _needValue.visible = true;
             _maxLevelText.visible = false;
-            _nextValue.text = _loc4_[_loc3_[_tipData.type]] / 10 + "%";
-            _needValue.text = (_loc4_.Cost - _loc7_).toString();
-            if(_loc4_.Cost > _loc7_ + _loc5_)
+            _nextValue.text = nextInfo[arr[_tipData.type]] / 10 + "%";
+            _needValue.text = (nextInfo.Cost - cost).toString();
+            if(nextInfo.Cost > cost + currentCost)
             {
                _needValue.setFrame(3);
             }

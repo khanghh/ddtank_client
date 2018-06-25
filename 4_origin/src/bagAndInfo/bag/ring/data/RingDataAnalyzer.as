@@ -10,35 +10,34 @@ package bagAndInfo.bag.ring.data
       
       private var _data:Dictionary;
       
-      public function RingDataAnalyzer(param1:Function)
+      public function RingDataAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc3_:* = null;
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc2_:XML = new XML(param1);
+         var xmllist:* = null;
+         var i:int = 0;
+         var ringData:* = null;
+         var xml:XML = new XML(data);
          _data = new Dictionary();
-         if(_loc2_.@value == "true")
+         if(xml.@value == "true")
          {
-            _loc3_ = _loc2_..Item;
-            RingSystemData.TotalLevel = _loc3_.length();
-            _loc5_ = 0;
-            while(_loc5_ < RingSystemData.TotalLevel)
+            xmllist = xml..Item;
+            RingSystemData.TotalLevel = xmllist.length();
+            for(i = 0; i < RingSystemData.TotalLevel; )
             {
-               _loc4_ = new RingSystemData();
-               ObjectUtils.copyPorpertiesByXML(_loc4_,_loc3_[_loc5_]);
-               _data[_loc4_.Level] = _loc4_;
-               _loc5_++;
+               ringData = new RingSystemData();
+               ObjectUtils.copyPorpertiesByXML(ringData,xmllist[i]);
+               _data[ringData.Level] = ringData;
+               i++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc2_.@message;
+            message = xml.@message;
             onAnalyzeError();
          }
       }

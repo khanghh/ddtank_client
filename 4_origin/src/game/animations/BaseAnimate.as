@@ -20,7 +20,7 @@ package game.animations
          return _level;
       }
       
-      public function prepare(param1:AnimationSet) : void
+      public function prepare(aniset:AnimationSet) : void
       {
       }
       
@@ -29,13 +29,13 @@ package game.animations
          return !_finished;
       }
       
-      public function update(param1:MapView) : Boolean
+      public function update(movie:MapView) : Boolean
       {
          _finished = true;
          return false;
       }
       
-      public function canReplace(param1:IAnimate) : Boolean
+      public function canReplace(anit:IAnimate) : Boolean
       {
          return true;
       }

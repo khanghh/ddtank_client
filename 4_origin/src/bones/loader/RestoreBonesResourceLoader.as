@@ -28,40 +28,40 @@ package bones.loader
       
       private var _fzip:FZip;
       
-      public function RestoreBonesResourceLoader(param1:BoneVo)
+      public function RestoreBonesResourceLoader(vo:BoneVo)
       {
          super();
-         _vo = param1;
+         _vo = vo;
          _skeletonList = [];
       }
       
       public function load() : void
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(getLoaderPath(_vo),3);
-         _loc1_.addEventListener("complete",__onLoadComplete);
-         LoadResourceManager.Instance.startLoad(_loc1_);
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(getLoaderPath(_vo),3);
+         loader.addEventListener("complete",__onLoadComplete);
+         LoadResourceManager.Instance.startLoad(loader);
       }
       
-      private function __onLoadComplete(param1:LoaderEvent) : void
+      private function __onLoadComplete(e:LoaderEvent) : void
       {
-         param1.loader.removeEventListener("complete",__onLoadComplete);
-         var _loc2_:ByteArray = param1.loader.content;
-         var _loc3_:FZip = new FZip();
-         _loc3_.addEventListener("complete",__onZipParaComplete);
-         _loc3_.loadBytes(_loc2_);
+         e.loader.removeEventListener("complete",__onLoadComplete);
+         var byteArray:ByteArray = e.loader.content;
+         var fzip:FZip = new FZip();
+         fzip.addEventListener("complete",__onZipParaComplete);
+         fzip.loadBytes(byteArray);
       }
       
-      private function __onZipParaComplete(param1:Event) : void
+      private function __onZipParaComplete(e:Event) : void
       {
-         _fzip = param1.currentTarget as FZip;
+         _fzip = e.currentTarget as FZip;
          _fzip.removeEventListener("complete",__onZipParaComplete);
          _loader = new Loader();
          _loader.contentLoaderInfo.addEventListener("complete",onLoadBitmapComplete);
-         var _loc2_:ByteArray = _fzip.getFileByName(_vo.atlasName + ".png").content;
-         _loader.loadBytes(_loc2_);
+         var byts:ByteArray = _fzip.getFileByName(_vo.atlasName + ".png").content;
+         _loader.loadBytes(byts);
       }
       
-      private function onLoadBitmapComplete(param1:Event) : void
+      private function onLoadBitmapComplete(e:Event) : void
       {
          _loader.contentLoaderInfo.removeEventListener("complete",onLoadBitmapComplete);
          _image = _loader.content as Bitmap;
@@ -75,18 +75,18 @@ package bones.loader
          dispatchEvent(new Event("complete"));
       }
       
-      private function getLoaderPath(param1:BoneVo) : String
+      private function getLoaderPath(vo:BoneVo) : String
       {
-         var _loc2_:* = null;
+         var path:* = null;
          if(_vo.loadType == 1)
          {
-            _loc2_ = BonesLoaderManager.FLASHSITE;
+            path = BonesLoaderManager.FLASHSITE;
          }
          else
          {
-            _loc2_ = BonesLoaderManager.SITE_MAIN;
+            path = BonesLoaderManager.SITE_MAIN;
          }
-         return _loc2_ + param1.path + param1.atlasName + param1.ext;
+         return path + vo.path + vo.atlasName + vo.ext;
       }
       
       public function get image() : Bitmap

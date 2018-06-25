@@ -48,19 +48,19 @@ package bagAndInfo.bag
          _cancel.addEventListener("click",__cancelHandler);
       }
       
-      protected function __confirmhandler(param1:MouseEvent) : void
+      protected function __confirmhandler(event:MouseEvent) : void
       {
          ok();
       }
       
-      protected function __cancelHandler(param1:MouseEvent) : void
+      protected function __cancelHandler(event:MouseEvent) : void
       {
          cancel();
       }
       
-      protected function __responseHandler(param1:FrameEvent) : void
+      protected function __responseHandler(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -88,30 +88,30 @@ package bagAndInfo.bag
          dispose();
       }
       
-      public function set itemInfo(param1:InventoryItemInfo) : void
+      public function set itemInfo(info:InventoryItemInfo) : void
       {
-         _itemInfo = param1;
-         _cell.info = param1;
-         if(param1.Name.length > 22)
+         _itemInfo = info;
+         _cell.info = info;
+         if(info.Name.length > 22)
          {
-            _nameTxt.text = param1.Name.substr(0,22) + "...";
+            _nameTxt.text = info.Name.substr(0,22) + "...";
          }
          else
          {
-            _nameTxt.text = param1.Name;
+            _nameTxt.text = info.Name;
          }
-         if(param1.CategoryID == 18)
+         if(info.CategoryID == 18)
          {
-            _nameTxt.textColor = QualityType.QUALITY_COLOR[param1.Quality + 1];
+            _nameTxt.textColor = QualityType.QUALITY_COLOR[info.Quality + 1];
          }
          else
          {
-            _nameTxt.textColor = QualityType.QUALITY_COLOR[param1.Quality];
+            _nameTxt.textColor = QualityType.QUALITY_COLOR[info.Quality];
          }
-         var _loc3_:String = param1.ReclaimType == 1?LanguageMgr.GetTranslation("shop.ShopIIShoppingCarItem.gold"):param1.ReclaimType == 2?LanguageMgr.GetTranslation("tank.gameover.takecard.gifttoken"):"";
-         var _loc2_:String = "                                                       ";
-         _descript.htmlText = LanguageMgr.GetTranslation("bagAndInfo.sellFrame.explainTxt",param1.Count) + "              " + _loc2_.substr(0,_price.text.length * 2 + 2) + _loc3_;
-         _price.text = param1.Count * param1.ReclaimValue + "";
+         var type:String = info.ReclaimType == 1?LanguageMgr.GetTranslation("shop.ShopIIShoppingCarItem.gold"):info.ReclaimType == 2?LanguageMgr.GetTranslation("tank.gameover.takecard.gifttoken"):"";
+         var str:String = "                                                       ";
+         _descript.htmlText = LanguageMgr.GetTranslation("bagAndInfo.sellFrame.explainTxt",info.Count) + "              " + str.substr(0,_price.text.length * 2 + 2) + type;
+         _price.text = info.Count * info.ReclaimValue + "";
       }
       
       private function initView() : void

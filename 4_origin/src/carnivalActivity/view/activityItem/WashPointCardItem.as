@@ -10,9 +10,9 @@ package carnivalActivity.view.activityItem
       protected static var _wordArr:Array = ["一","两","三","四","五","六","七","八","九","十"];
        
       
-      public function WashPointCardItem(param1:int, param2:GiftBagInfo, param3:int)
+      public function WashPointCardItem(type:int, info:GiftBagInfo, index:int)
       {
-         super(param1,param2,param3);
+         super(type,info,index);
       }
       
       override protected function initItem() : void

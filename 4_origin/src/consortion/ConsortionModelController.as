@@ -64,9 +64,9 @@ package consortion
          _manager.addEventListener("cmctrl_clear_reference",onEventsHandler);
       }
       
-      private function onEventsHandler(param1:CEvent) : void
+      private function onEventsHandler(e:CEvent) : void
       {
-         var _loc2_:* = param1.type;
+         var _loc2_:* = e.type;
          if("cmctrl_alert_tax" !== _loc2_)
          {
             if("cmctrl_alert_manager" !== _loc2_)
@@ -138,32 +138,32 @@ package consortion
       
       public function alertTaxFrame() : void
       {
-         var _loc1_:TaxFrame = ComponentFactory.Instance.creatComponentByStylename("taxFrame");
-         LayerManager.Instance.addToLayer(_loc1_,3,true,1);
+         var taxFrame:TaxFrame = ComponentFactory.Instance.creatComponentByStylename("taxFrame");
+         LayerManager.Instance.addToLayer(taxFrame,3,true,1);
       }
       
       public function alertEstablishmentFrame() : void
       {
-         var _loc1_:EstablishmentFrame = ComponentFactory.Instance.creatComponentByStylename("establishmentFrame");
-         LayerManager.Instance.addToLayer(_loc1_,3,true,1);
+         var establishmentFrame:EstablishmentFrame = ComponentFactory.Instance.creatComponentByStylename("establishmentFrame");
+         LayerManager.Instance.addToLayer(establishmentFrame,3,true,1);
       }
       
       public function alertManagerFrame() : void
       {
-         var _loc1_:ManagerFrame = ComponentFactory.Instance.creatComponentByStylename("core.ConsortiaAssetManagerFrame");
-         LayerManager.Instance.addToLayer(_loc1_,3,true,1);
+         var managerFrame:ManagerFrame = ComponentFactory.Instance.creatComponentByStylename("core.ConsortiaAssetManagerFrame");
+         LayerManager.Instance.addToLayer(managerFrame,3,true,1);
       }
       
       public function rankFrame() : void
       {
-         var _loc1_:RankFrame = ComponentFactory.Instance.creatComponentByStylename("consortion.rank.RankFrame");
-         LayerManager.Instance.addToLayer(_loc1_,3,true,1);
+         var frame:RankFrame = ComponentFactory.Instance.creatComponentByStylename("consortion.rank.RankFrame");
+         LayerManager.Instance.addToLayer(frame,3,true,1);
       }
       
       public function alertShopFrame() : void
       {
-         var _loc1_:ConsortionShopFrame = ComponentFactory.Instance.creatComponentByStylename("consortionShopFrame");
-         LayerManager.Instance.addToLayer(_loc1_,3,true,1);
+         var shop:ConsortionShopFrame = ComponentFactory.Instance.creatComponentByStylename("consortionShopFrame");
+         LayerManager.Instance.addToLayer(shop,3,true,1);
       }
       
       public function alertBankFrame() : void
@@ -185,14 +185,14 @@ package consortion
       
       public function alertTakeInFrame() : void
       {
-         var _loc1_:TakeInMemberFrame = ComponentFactory.Instance.creatComponentByStylename("takeInMemberFrame");
-         LayerManager.Instance.addToLayer(_loc1_,3,true,1);
+         var takeIn:TakeInMemberFrame = ComponentFactory.Instance.creatComponentByStylename("takeInMemberFrame");
+         LayerManager.Instance.addToLayer(takeIn,3,true,1);
       }
       
       public function alertQuitFrame() : void
       {
-         var _loc1_:ConsortionQuitFrame = ComponentFactory.Instance.creatComponentByStylename("consortionQuitFrame");
-         LayerManager.Instance.addToLayer(_loc1_,3,true,1);
+         var quitFrame:ConsortionQuitFrame = ComponentFactory.Instance.creatComponentByStylename("consortionQuitFrame");
+         LayerManager.Instance.addToLayer(quitFrame,3,true,1);
       }
       
       public function openBossFrame() : void
@@ -201,8 +201,8 @@ package consortion
          {
             new HelperDataModuleLoad().loadDataModule([LoaderCreate.Instance.createConsortiaBossTemplateLoader],function():void
             {
-               var _loc1_:ConsortiaBossFrame = ComponentFactory.Instance.creatComponentByStylename("consortia.boss.frame");
-               LayerManager.Instance.addToLayer(_loc1_,3,true,1);
+               var bossFrame:ConsortiaBossFrame = ComponentFactory.Instance.creatComponentByStylename("consortia.boss.frame");
+               LayerManager.Instance.addToLayer(bossFrame,3,true,1);
             });
          }
       }

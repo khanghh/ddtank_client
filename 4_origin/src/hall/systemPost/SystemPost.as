@@ -38,14 +38,14 @@ package hall.systemPost
       
       private function initMask() : void
       {
-         var _loc1_:Shape = new Shape();
-         _loc1_.graphics.beginFill(0,0.5);
-         _loc1_.graphics.drawRect(0,0,_postBg.width,_postBg.height);
-         _loc1_.graphics.endFill();
-         _loc1_.x = 0;
-         _loc1_.y = this.y;
-         addChild(_loc1_);
-         _postSprite.mask = _loc1_;
+         var shape:Shape = new Shape();
+         shape.graphics.beginFill(0,0.5);
+         shape.graphics.drawRect(0,0,_postBg.width,_postBg.height);
+         shape.graphics.endFill();
+         shape.x = 0;
+         shape.y = this.y;
+         addChild(shape);
+         _postSprite.mask = shape;
       }
       
       private function initView() : void
@@ -69,10 +69,10 @@ package hall.systemPost
       
       private function initData() : void
       {
-         var _loc1_:Object = SystemPostManager.Instance.postInfo;
-         if(_loc1_)
+         var obj:Object = SystemPostManager.Instance.postInfo;
+         if(obj)
          {
-            addListItem(_loc1_.msg,_loc1_.type);
+            addListItem(obj.msg,obj.type);
          }
          else
          {
@@ -80,34 +80,34 @@ package hall.systemPost
          }
       }
       
-      protected function __onReceivePost(param1:Event) : void
+      protected function __onReceivePost(event:Event) : void
       {
-         var _loc2_:Object = SystemPostManager.Instance.postInfo;
-         addListItem(_loc2_.msg,_loc2_.type);
+         var obj:Object = SystemPostManager.Instance.postInfo;
+         addListItem(obj.msg,obj.type);
          if(_indentationBtn && _indentationBtn.selected)
          {
             _indentationBtn.dispatchEvent(new MouseEvent("click"));
          }
       }
       
-      private function addListItem(param1:String, param2:int) : void
+      private function addListItem(msg:String, type:int) : void
       {
          if(_currItem)
          {
-            _currItem.update(param1,param2);
+            _currItem.update(msg,type);
          }
       }
       
-      protected function __onMouseClick(param1:MouseEvent) : void
+      protected function __onMouseClick(event:MouseEvent) : void
       {
-         PlayerManager.Instance.dispatchEvent(new NewHallEvent("setselfplayerpos",[param1]));
+         PlayerManager.Instance.dispatchEvent(new NewHallEvent("setselfplayerpos",[event]));
       }
       
-      protected function __onIndentationClick(param1:MouseEvent) : void
+      protected function __onIndentationClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:int = !!_indentationBtn.selected?-1 * _postBg.width:0;
-         TweenLite.to(_postSprite,0.5,{"x":_loc2_});
+         var dur:int = !!_indentationBtn.selected?-1 * _postBg.width:0;
+         TweenLite.to(_postSprite,0.5,{"x":dur});
       }
       
       private function removeEvent() : void

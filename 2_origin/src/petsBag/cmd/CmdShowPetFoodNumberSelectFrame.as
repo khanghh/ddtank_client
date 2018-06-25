@@ -26,9 +26,9 @@ package petsBag.cmd
          super();
       }
       
-      public function excute(param1:InventoryItemInfo) : void
+      public function excute(info:InventoryItemInfo) : void
       {
-         info = param1;
+         info = info;
          moveSpeciallFood = function():void
          {
             if(_info)
@@ -37,26 +37,26 @@ package petsBag.cmd
             }
             SocketManager.Instance.out.sendMoveGoods(_info.BagType,_info.Place,12,-1,1);
          };
-         moveFood = function(param1:int):void
+         moveFood = function(count:int):void
          {
-            var _loc3_:PetFoodNumberSelectFrame = ComponentFactory.Instance.creatComponentByStylename("petsBag.PetFoodNumberSelectFrame");
-            var _loc5_:PetInfo = PetsBagManager.instance().petModel.currentPetInfo;
-            _loc3_.foodInfo = info;
-            _loc3_.petInfo = _loc5_;
-            var _loc2_:int = PetExperience.expericence[PetExperience.MAX_LEVEL - 1] - _loc5_.GP;
-            var _loc4_:int = Math.ceil(_loc2_ / info.Property2);
-            _loc3_.addEventListener("response",__onFoodAmountResponse);
-            if(param1 == 0)
+            var alert:PetFoodNumberSelectFrame = ComponentFactory.Instance.creatComponentByStylename("petsBag.PetFoodNumberSelectFrame");
+            var petInfo:PetInfo = PetsBagManager.instance().petModel.currentPetInfo;
+            alert.foodInfo = info;
+            alert.petInfo = petInfo;
+            var upgradeNeeded:int = PetExperience.expericence[PetExperience.MAX_LEVEL - 1] - petInfo.GP;
+            var neededFoodMax:int = Math.ceil(upgradeNeeded / info.Property2);
+            alert.addEventListener("response",__onFoodAmountResponse);
+            if(count == 0)
             {
-               _loc3_.show(_loc4_);
+               alert.show(neededFoodMax);
             }
-            else if(_loc4_ == 0)
+            else if(neededFoodMax == 0)
             {
-               _loc3_.show(param1);
+               alert.show(count);
             }
             else
             {
-               _loc3_.show(Math.min(param1,_loc4_));
+               alert.show(Math.min(count,neededFoodMax));
             }
          };
          if(info == null)
@@ -124,36 +124,36 @@ package petsBag.cmd
          }
       }
       
-      protected function __onFoodAmountResponse(param1:FrameEvent) : void
+      protected function __onFoodAmountResponse(event:FrameEvent) : void
       {
-         var _loc3_:* = null;
+         var foodInfo:* = null;
          SoundManager.instance.play("008");
-         var _loc2_:PetFoodNumberSelectFrame = PetFoodNumberSelectFrame(param1.currentTarget);
-         switch(int(param1.responseCode))
+         var frame:PetFoodNumberSelectFrame = PetFoodNumberSelectFrame(event.currentTarget);
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
-               _loc2_.dispose();
+               frame.dispose();
                break;
             case 2:
             case 3:
             case 4:
-               _loc3_ = _loc2_.foodInfo;
+               foodInfo = frame.foodInfo;
                if(_info)
                {
                   SocketManager.Instance.out.sendClearStoreBag();
                }
-               SocketManager.Instance.out.sendMoveGoods(_loc3_.BagType,_loc3_.Place,12,0,_loc2_.amount,true);
-               _loc2_.dispose();
+               SocketManager.Instance.out.sendMoveGoods(foodInfo.BagType,foodInfo.Place,12,0,frame.amount,true);
+               frame.dispose();
          }
       }
       
-      private function needMaxFood(param1:int, param2:int) : int
+      private function needMaxFood(hunger:int, addHunger:int) : int
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = PetconfigAnalyzer.PetCofnig.MaxHunger - param1;
-         _loc3_ = Math.ceil(_loc4_ / param2);
-         return _loc3_;
+         var maxFood:int = 0;
+         var limitHunger:int = PetconfigAnalyzer.PetCofnig.MaxHunger - hunger;
+         maxFood = Math.ceil(limitHunger / addHunger);
+         return maxFood;
       }
    }
 }

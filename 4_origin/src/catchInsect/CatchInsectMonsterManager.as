@@ -37,10 +37,10 @@ package catchInsect
          return _instance;
       }
       
-      public function set ActiveState(param1:Boolean) : void
+      public function set ActiveState(value:Boolean) : void
       {
-         _activeState = param1;
-         CatchInsectMonsterManager.Instance.dispatchEvent(new InsectEvent("monster_active_start",param1));
+         _activeState = value;
+         CatchInsectMonsterManager.Instance.dispatchEvent(new InsectEvent("monster_active_start",value));
       }
       
       public function setupFightEvent() : void
@@ -48,7 +48,7 @@ package catchInsect
          RoomManager.Instance.addEventListener("gameRoomCreate",__gameStart);
       }
       
-      private function __gameStart(param1:CrazyTankSocketEvent) : void
+      private function __gameStart(pEvent:CrazyTankSocketEvent) : void
       {
          LayerManager.Instance.clearnStageDynamic();
          RoomManager.Instance.removeEventListener("gameRoomCreate",__gameStart);
@@ -70,9 +70,9 @@ package catchInsect
          return _activeState;
       }
       
-      public function set CurrentMonster(param1:InsectInfo) : void
+      public function set CurrentMonster(value:InsectInfo) : void
       {
-         _monsterInfo = param1;
+         _monsterInfo = value;
       }
    }
 }

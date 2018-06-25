@@ -30,10 +30,10 @@ package boguAdventure.view
       
       private var _control:BoguAdventureControl;
       
-      public function BoguAdventureMap(param1:BoguAdventureControl)
+      public function BoguAdventureMap(control:BoguAdventureControl)
       {
          super();
-         _control = param1;
+         _control = control;
          init();
       }
       
@@ -46,56 +46,56 @@ package boguAdventure.view
          createMapCell();
       }
       
-      public function getCellPosIndex(param1:int, param2:Point) : Point
+      public function getCellPosIndex(index:int, focusPos:Point) : Point
       {
-         if(param1 == 0)
+         if(index == 0)
          {
             return new Point(100,100);
          }
-         var _loc7_:BoguAdventureCell = getCellByIndex(param1);
-         var _loc8_:Rectangle = _loc7_.getRect(stage);
-         var _loc6_:Point = this.localToGlobal(new Point(_loc7_.x,_loc7_.y));
-         var _loc4_:Number = _loc6_.x + int(_loc8_.width * 0.5) - param2.x;
-         var _loc5_:Number = _loc6_.y + int(_loc8_.height * 0.5) - param2.y;
-         var _loc3_:String = param1 < 10?param1.toString():param1.toString().charAt(1);
-         if(_loc3_ == "1")
+         var cell:BoguAdventureCell = getCellByIndex(index);
+         var rect:Rectangle = cell.getRect(stage);
+         var realPos:Point = this.localToGlobal(new Point(cell.x,cell.y));
+         var endX:Number = realPos.x + int(rect.width * 0.5) - focusPos.x;
+         var endY:Number = realPos.y + int(rect.height * 0.5) - focusPos.y;
+         var str:String = index < 10?index.toString():index.toString().charAt(1);
+         if(str == "1")
          {
-            §§push(_loc4_ - 10);
+            §§push(endX - 10);
          }
          else
          {
-            if(_loc3_ == "2")
+            if(str == "2")
             {
-               §§push(_loc4_ - 8);
+               §§push(endX - 8);
             }
             else
             {
-               if(_loc3_ == "3")
+               if(str == "3")
                {
-                  _loc4_ = _loc4_ - 6;
-                  §§push(_loc4_ - 6);
+                  endX = endX - 6;
+                  §§push(endX - 6);
                }
                else
                {
-                  §§push(Number(_loc4_));
+                  §§push(Number(endX));
                }
                §§push(Number(§§pop()));
             }
             §§push(Number(§§pop()));
          }
-         _loc4_ = §§pop();
-         return new Point(_loc4_,_loc5_);
+         endX = §§pop();
+         return new Point(endX,endY);
       }
       
-      public function getCellByIndex(param1:int) : BoguAdventureCell
+      public function getCellByIndex(index:int) : BoguAdventureCell
       {
-         return _cellList[param1 - 1];
+         return _cellList[index - 1];
       }
       
-      public function playFineMineAction(param1:int) : void
+      public function playFineMineAction(index:int) : void
       {
-         var _loc2_:BoguAdventureCell = getCellByIndex(param1);
-         _loc2_.playShineAction();
+         var cell:BoguAdventureCell = getCellByIndex(index);
+         cell.playShineAction();
       }
       
       public function mouseClickClose() : void
@@ -112,36 +112,34 @@ package boguAdventure.view
       
       private function createMapCell() : void
       {
-         var _loc1_:* = null;
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
+         var cell:* = null;
+         var i:int = 0;
+         var j:int = 0;
          _cellList = new Vector.<BoguAdventureCell>();
-         _loc3_ = 0;
-         while(_loc3_ < 7)
+         for(i = 0; i < 7; )
          {
-            _loc2_ = 0;
-            while(_loc2_ < 10)
+            for(j = 0; j < 10; )
             {
-               _loc1_ = new BoguAdventureCell();
-               _loc1_.addEventListener("click",__onClickCell);
-               _loc1_.addEventListener("playcomplete",__onPlayComplete);
-               _loc1_.x = 20 + _loc2_ * _loc1_.width;
-               _loc1_.y = 19 + _loc3_ * _loc1_.height;
-               addChild(_loc1_);
-               _cellList.push(_loc1_);
-               _loc2_++;
+               cell = new BoguAdventureCell();
+               cell.addEventListener("click",__onClickCell);
+               cell.addEventListener("playcomplete",__onPlayComplete);
+               cell.x = 20 + j * cell.width;
+               cell.y = 19 + i * cell.height;
+               addChild(cell);
+               _cellList.push(cell);
+               j++;
             }
-            _loc3_++;
+            i++;
          }
       }
       
-      private function __onClickCell(param1:MouseEvent) : void
+      private function __onClickCell(e:MouseEvent) : void
       {
-         if(!(param1.target is BoguAdventureCell))
+         if(!(e.target is BoguAdventureCell))
          {
             return;
          }
-         var _loc2_:BoguAdventureCell = param1.target as BoguAdventureCell;
+         var cell:BoguAdventureCell = e.target as BoguAdventureCell;
          if(_control.changeMouse)
          {
             return;
@@ -150,43 +148,43 @@ package boguAdventure.view
          {
             return;
          }
-         if(_control.currentIndex == _loc2_.info.index)
+         if(_control.currentIndex == cell.info.index)
          {
             return;
          }
-         if(_loc2_.info.state == 2)
+         if(cell.info.state == 2)
          {
-            if(_loc2_.info.result == -1)
+            if(cell.info.result == -1)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("boguAdventure.view.walkTip"));
                return;
             }
          }
-         if(_loc2_.info.state == 1)
+         if(cell.info.state == 1)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("boguAdventure.view.isSign"));
             return;
          }
          mouseClickClose();
-         boguWalk(_loc2_.info.index);
+         boguWalk(cell.info.index);
       }
       
-      private function boguWalk(param1:int) : void
+      private function boguWalk(index:int) : void
       {
-         var _loc2_:int = 0;
-         var _loc8_:Array = [];
-         var _loc4_:int = _control.currentIndex - 1 < 0?0:Number(_control.currentIndex - 1);
-         var _loc3_:uint = param1 - 1 < 0?0:Number(param1 - 1);
-         var _loc5_:String = _loc4_ < 10?"0" + _loc4_:_loc4_.toString();
-         var _loc7_:String = _loc3_ < 10?"0" + _loc3_:_loc3_.toString();
-         var _loc6_:SceneCharacterDirection = null;
+         var hIndex:int = 0;
+         var path:Array = [];
+         var currentIndex:int = _control.currentIndex - 1 < 0?0:Number(_control.currentIndex - 1);
+         var oldIndex:uint = index - 1 < 0?0:Number(index - 1);
+         var old:String = currentIndex < 10?"0" + currentIndex:currentIndex.toString();
+         var current:String = oldIndex < 10?"0" + oldIndex:oldIndex.toString();
+         var dir:SceneCharacterDirection = null;
          if(_control.currentIndex == 0)
          {
-            _loc8_.push(getCellPosIndex(1,_control.bogu.focusPos));
+            path.push(getCellPosIndex(1,_control.bogu.focusPos));
          }
-         if(_loc5_.charAt(1) != _loc7_.charAt(1))
+         if(old.charAt(1) != current.charAt(1))
          {
-            if(_loc5_.charAt(1) < _loc7_.charAt(1))
+            if(old.charAt(1) < current.charAt(1))
             {
                _control.bogu.dir = SceneCharacterDirection.RB;
             }
@@ -194,33 +192,33 @@ package boguAdventure.view
             {
                _control.bogu.dir = SceneCharacterDirection.LB;
             }
-            _loc2_ = int(_loc7_.charAt(0) + _loc5_.charAt(1)) + 1;
-            _loc8_.push(getCellPosIndex(_loc2_,_control.bogu.focusPos));
+            hIndex = int(current.charAt(0) + old.charAt(1)) + 1;
+            path.push(getCellPosIndex(hIndex,_control.bogu.focusPos));
          }
-         _loc8_.push(getCellPosIndex(param1,_control.bogu.focusPos));
-         _control.currentIndex = param1;
-         _control.walk(_loc8_);
+         path.push(getCellPosIndex(index,_control.bogu.focusPos));
+         _control.currentIndex = index;
+         _control.walk(path);
       }
       
-      private function __onPlayComplete(param1:Event) : void
+      private function __onPlayComplete(e:Event) : void
       {
-         var _loc2_:BoguAdventureCell = param1.currentTarget as BoguAdventureCell;
+         var cell:BoguAdventureCell = e.currentTarget as BoguAdventureCell;
          _control.playActionComplete({
             "type":"actionfintmine",
-            "index":_loc2_.info.index
+            "index":cell.info.index
          });
       }
       
       public function dispose() : void
       {
-         var _loc1_:* = null;
+         var cell:* = null;
          while(_cellList.length)
          {
-            _loc1_ = _cellList.pop();
-            _loc1_.removeEventListener("click",__onClickCell);
-            _loc1_.removeEventListener("playcomplete",__onPlayComplete);
-            ObjectUtils.disposeObject(_loc1_);
-            _loc1_ = null;
+            cell = _cellList.pop();
+            cell.removeEventListener("click",__onClickCell);
+            cell.removeEventListener("playcomplete",__onPlayComplete);
+            ObjectUtils.disposeObject(cell);
+            cell = null;
          }
          _cellList = null;
          ObjectUtils.disposeObject(_mapBg);

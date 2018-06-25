@@ -92,52 +92,52 @@ package dragonBones.fast.animation
          return this;
       }
       
-      public function setCurrentTime(param1:Number) : FastAnimationState
+      public function setCurrentTime(value:Number) : FastAnimationState
       {
-         if(param1 < 0 || isNaN(param1))
+         if(value < 0 || isNaN(value))
          {
-            param1 = 0;
+            value = 0;
          }
-         _time = param1;
+         _time = value;
          _currentTime = _time * 1000;
          return this;
       }
       
       function resetTimelineStateList() : void
       {
-         var _loc1_:int = _boneTimelineStateList.length;
+         var i:int = _boneTimelineStateList.length;
          while(true)
          {
-            _loc1_--;
-            if(!_loc1_)
+            i--;
+            if(!i)
             {
                break;
             }
-            FastBoneTimelineState.returnObject(_boneTimelineStateList[_loc1_]);
+            FastBoneTimelineState.returnObject(_boneTimelineStateList[i]);
          }
          _boneTimelineStateList.length = 0;
-         _loc1_ = _slotTimelineStateList.length;
+         i = _slotTimelineStateList.length;
          while(true)
          {
-            _loc1_--;
-            if(!_loc1_)
+            i--;
+            if(!i)
             {
                break;
             }
-            FastSlotTimelineState.returnObject(_slotTimelineStateList[_loc1_]);
+            FastSlotTimelineState.returnObject(_slotTimelineStateList[i]);
          }
          _slotTimelineStateList.length = 0;
          name = null;
       }
       
-      function fadeIn(param1:AnimationData, param2:Number, param3:Number, param4:Number) : void
+      function fadeIn(aniData:AnimationData, playTimes:Number, timeScale:Number, fadeTotalTime:Number) : void
       {
-         animationData = param1;
+         animationData = aniData;
          name = animationData.name;
          _totalTime = animationData.duration;
-         autoTween = param1.autoTween;
-         setTimeScale(param3);
-         setPlayTimes(param2);
+         autoTween = aniData.autoTween;
+         setTimeScale(timeScale);
+         setPlayTimes(playTimes);
          _isComplete = false;
          _currentFrameIndex = -1;
          _currentPlayTimes = -1;
@@ -149,7 +149,7 @@ package dragonBones.fast.animation
          {
             _currentTime = -1;
          }
-         _fadeTotalTime = param4 * _timeScale;
+         _fadeTotalTime = fadeTotalTime * _timeScale;
          _fading = _fadeTotalTime > 0;
          _isPlaying = true;
          _listenCompleteEvent = _armature.hasEventListener("complete");
@@ -165,46 +165,46 @@ package dragonBones.fast.animation
       
       function updateTimelineStateList() : void
       {
-         var _loc2_:* = null;
-         var _loc4_:* = null;
-         var _loc7_:* = null;
-         var _loc6_:* = null;
-         var _loc5_:* = null;
+         var timelineName:* = null;
+         var bone:* = null;
+         var boneTimelineState:* = null;
+         var slot:* = null;
+         var slotTimelineState:* = null;
          resetTimelineStateList();
          var _loc9_:int = 0;
          var _loc8_:* = animationData.timelineList;
-         for each(var _loc3_ in animationData.timelineList)
+         for each(var boneTimeline in animationData.timelineList)
          {
-            _loc2_ = _loc3_.name;
-            _loc4_ = _armature.getBone(_loc2_);
-            if(_loc4_)
+            timelineName = boneTimeline.name;
+            bone = _armature.getBone(timelineName);
+            if(bone)
             {
-               _loc7_ = FastBoneTimelineState.borrowObject();
-               _loc7_.fadeIn(_loc4_,this,_loc3_);
-               _boneTimelineStateList.push(_loc7_);
+               boneTimelineState = FastBoneTimelineState.borrowObject();
+               boneTimelineState.fadeIn(bone,this,boneTimeline);
+               _boneTimelineStateList.push(boneTimelineState);
             }
          }
          var _loc11_:int = 0;
          var _loc10_:* = animationData.slotTimelineList;
-         for each(var _loc1_ in animationData.slotTimelineList)
+         for each(var slotTimeline in animationData.slotTimelineList)
          {
-            _loc2_ = _loc1_.name;
-            _loc6_ = _armature.getSlot(_loc2_);
-            if(_loc6_ && _loc6_.displayList.length > 0)
+            timelineName = slotTimeline.name;
+            slot = _armature.getSlot(timelineName);
+            if(slot && slot.displayList.length > 0)
             {
-               _loc5_ = FastSlotTimelineState.borrowObject();
-               _loc5_.fadeIn(_loc6_,this,_loc1_);
-               _slotTimelineStateList.push(_loc5_);
+               slotTimelineState = FastSlotTimelineState.borrowObject();
+               slotTimelineState.fadeIn(slot,this,slotTimeline);
+               _slotTimelineStateList.push(slotTimelineState);
             }
          }
       }
       
-      function advanceTime(param1:Number) : void
+      function advanceTime(passedTime:Number) : void
       {
-         param1 = param1 * _timeScale;
+         passedTime = passedTime * _timeScale;
          if(_fading)
          {
-            _time = _time + param1;
+            _time = _time + passedTime;
             _progress = _time / _fadeTotalTime;
             if(progress >= 1)
             {
@@ -217,48 +217,48 @@ package dragonBones.fast.animation
          {
             var _loc5_:int = 0;
             var _loc4_:* = _boneTimelineStateList;
-            for each(var _loc3_ in _boneTimelineStateList)
+            for each(var timeline in _boneTimelineStateList)
             {
-               _loc3_.updateFade(progress);
+               timeline.updateFade(progress);
             }
             var _loc7_:int = 0;
             var _loc6_:* = _slotTimelineStateList;
-            for each(var _loc2_ in _slotTimelineStateList)
+            for each(var slotTimeline in _slotTimelineStateList)
             {
-               _loc2_.updateFade(progress);
+               slotTimeline.updateFade(progress);
             }
          }
          else
          {
-            advanceTimelinesTime(param1);
+            advanceTimelinesTime(passedTime);
          }
       }
       
-      private function advanceTimelinesTime(param1:Number) : void
+      private function advanceTimelinesTime(passedTime:Number) : void
       {
-         var _loc5_:* = null;
-         _time = _time + param1;
-         var _loc4_:Boolean = false;
-         var _loc7_:Boolean = false;
-         var _loc3_:Boolean = false;
-         var _loc6_:int = 0;
-         var _loc2_:int = _time * 1000;
-         if(_playTimes == 0 || _loc2_ < _playTimes * _totalTime)
+         var event:* = null;
+         _time = _time + passedTime;
+         var loopCompleteFlg:Boolean = false;
+         var completeFlg:Boolean = false;
+         var isThisComplete:Boolean = false;
+         var currentPlayTimes:int = 0;
+         var currentTime:int = _time * 1000;
+         if(_playTimes == 0 || currentTime < _playTimes * _totalTime)
          {
-            _loc3_ = false;
-            _progress = _loc2_ / _totalTime;
-            _loc6_ = Math.ceil(progress) || 1;
+            isThisComplete = false;
+            _progress = currentTime / _totalTime;
+            currentPlayTimes = Math.ceil(progress) || 1;
             _progress = _progress - Math.floor(progress);
-            _loc2_ = _loc2_ % _totalTime;
+            currentTime = currentTime % _totalTime;
          }
          else
          {
-            _loc6_ = _playTimes;
-            _loc2_ = _totalTime;
-            _loc3_ = true;
+            currentPlayTimes = _playTimes;
+            currentTime = _totalTime;
+            isThisComplete = true;
             _progress = 1;
          }
-         _isComplete = _loc3_;
+         _isComplete = isThisComplete;
          if(this.isUseCache())
          {
             animationCache.update(progress);
@@ -267,113 +267,111 @@ package dragonBones.fast.animation
          {
             updateTransformTimeline(progress);
          }
-         if(_currentTime != _loc2_)
+         if(_currentTime != currentTime)
          {
-            if(_currentPlayTimes != _loc6_)
+            if(_currentPlayTimes != currentPlayTimes)
             {
-               if(_currentPlayTimes > 0 && _loc6_ > 1)
+               if(_currentPlayTimes > 0 && currentPlayTimes > 1)
                {
-                  _loc4_ = true;
+                  loopCompleteFlg = true;
                }
-               _currentPlayTimes = _loc6_;
+               _currentPlayTimes = currentPlayTimes;
             }
             if(_isComplete)
             {
-               _loc7_ = true;
+               completeFlg = true;
             }
             _lastTime = _currentTime;
-            _currentTime = _loc2_;
-            updateMainTimeline(_loc3_);
+            _currentTime = currentTime;
+            updateMainTimeline(isThisComplete);
          }
-         if(_loc7_)
+         if(completeFlg)
          {
             if(_armature.hasEventListener("complete"))
             {
-               _loc5_ = new AnimationEvent("complete");
-               _loc5_.animationState = this;
-               _armature.addEvent(_loc5_);
+               event = new AnimationEvent("complete");
+               event.animationState = this;
+               _armature.addEvent(event);
             }
          }
-         else if(_loc4_)
+         else if(loopCompleteFlg)
          {
             if(_armature.hasEventListener("loopComplete"))
             {
-               _loc5_ = new AnimationEvent("loopComplete");
-               _loc5_.animationState = this;
-               _armature.addEvent(_loc5_);
+               event = new AnimationEvent("loopComplete");
+               event.animationState = this;
+               _armature.addEvent(event);
             }
          }
       }
       
-      private function updateTransformTimeline(param1:Number) : void
+      private function updateTransformTimeline(progress:Number) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:int = _boneTimelineStateList.length;
+         var boneTimeline:* = null;
+         var slotTimeline:* = null;
+         var i:int = _boneTimelineStateList.length;
          if(_isComplete)
          {
             while(true)
             {
-               _loc4_--;
-               if(!_loc4_)
+               i--;
+               if(!i)
                {
                   break;
                }
-               _loc3_ = _boneTimelineStateList[_loc4_];
-               _loc3_.update(param1);
-               _isComplete = _loc3_._isComplete && _isComplete;
+               boneTimeline = _boneTimelineStateList[i];
+               boneTimeline.update(progress);
+               _isComplete = boneTimeline._isComplete && _isComplete;
             }
-            _loc4_ = _slotTimelineStateList.length;
+            i = _slotTimelineStateList.length;
             while(true)
             {
-               _loc4_--;
-               if(!_loc4_)
+               i--;
+               if(!i)
                {
                   break;
                }
-               _loc2_ = _slotTimelineStateList[_loc4_];
-               _loc2_.update(param1);
-               _isComplete = _loc2_._isComplete && _isComplete;
+               slotTimeline = _slotTimelineStateList[i];
+               slotTimeline.update(progress);
+               _isComplete = slotTimeline._isComplete && _isComplete;
             }
          }
          else
          {
             while(true)
             {
-               _loc4_--;
-               if(!_loc4_)
+               i--;
+               if(!i)
                {
                   break;
                }
-               _loc3_ = _boneTimelineStateList[_loc4_];
-               _loc3_.update(param1);
+               boneTimeline = _boneTimelineStateList[i];
+               boneTimeline.update(progress);
             }
-            _loc4_ = _slotTimelineStateList.length;
+            i = _slotTimelineStateList.length;
             while(true)
             {
-               _loc4_--;
-               if(!_loc4_)
+               i--;
+               if(!i)
                {
                   break;
                }
-               _loc2_ = _slotTimelineStateList[_loc4_];
-               _loc2_.update(param1);
+               slotTimeline = _slotTimelineStateList[i];
+               slotTimeline.update(progress);
             }
          }
       }
       
-      private function updateMainTimeline(param1:Boolean) : void
+      private function updateMainTimeline(isThisComplete:Boolean) : void
       {
-         var _loc2_:* = null;
-         var _loc5_:* = null;
-         var _loc6_:int = 0;
-         var _loc3_:int = 0;
-         var _loc4_:Vector.<Frame> = animationData.frameList;
-         if(_loc4_.length > 0)
+         var prevFrame:* = null;
+         var currentFrame:* = null;
+         var i:int = 0;
+         var l:int = 0;
+         var frameList:Vector.<Frame> = animationData.frameList;
+         if(frameList.length > 0)
          {
-            _loc6_ = 0;
-            _loc3_ = animationData.frameList.length;
-            while(_loc6_ < _loc3_)
+            for(i = 0,l = animationData.frameList.length; i < l; )
             {
                if(_currentFrameIndex < 0)
                {
@@ -383,9 +381,9 @@ package dragonBones.fast.animation
                {
                   _lastTime = _currentTime;
                   _currentFrameIndex = Number(_currentFrameIndex) + 1;
-                  if(_currentFrameIndex >= _loc4_.length)
+                  if(_currentFrameIndex >= frameList.length)
                   {
-                     if(param1)
+                     if(isThisComplete)
                      {
                         _currentFrameIndex = Number(_currentFrameIndex) - 1;
                         break;
@@ -397,49 +395,49 @@ package dragonBones.fast.animation
                {
                   break;
                }
-               _loc5_ = _loc4_[_currentFrameIndex];
-               if(_loc2_)
+               currentFrame = frameList[_currentFrameIndex];
+               if(prevFrame)
                {
-                  _armature.arriveAtFrame(_loc2_,this);
+                  _armature.arriveAtFrame(prevFrame,this);
                }
-               _currentFrameDuration = _loc5_.duration;
-               _currentFramePosition = _loc5_.position;
-               _loc2_ = _loc5_;
-               _loc6_++;
+               _currentFrameDuration = currentFrame.duration;
+               _currentFramePosition = currentFrame.position;
+               prevFrame = currentFrame;
+               i++;
             }
-            if(_loc5_)
+            if(currentFrame)
             {
-               _armature.arriveAtFrame(_loc5_,this);
+               _armature.arriveAtFrame(currentFrame,this);
             }
          }
       }
       
       private function hideBones() : void
       {
-         var _loc2_:* = null;
+         var slot:* = null;
          var _loc4_:int = 0;
          var _loc3_:* = animationData.hideTimelineNameMap;
-         for each(var _loc1_ in animationData.hideTimelineNameMap)
+         for each(var timelineName in animationData.hideTimelineNameMap)
          {
-            _loc2_ = _armature.getSlot(_loc1_);
-            if(_loc2_)
+            slot = _armature.getSlot(timelineName);
+            if(slot)
             {
-               _loc2_.hideSlots();
+               slot.hideSlots();
             }
          }
       }
       
-      public function setTimeScale(param1:Number) : FastAnimationState
+      public function setTimeScale(value:Number) : FastAnimationState
       {
-         if(isNaN(param1) || param1 == Infinity)
+         if(isNaN(value) || value == Infinity)
          {
-            param1 = 1;
+            value = 1;
          }
-         _timeScale = param1;
+         _timeScale = value;
          return this;
       }
       
-      public function setPlayTimes(param1:int) : FastAnimationState
+      public function setPlayTimes(value:int) : FastAnimationState
       {
          if(Math.round(_totalTime * 0.001 * animationData.frameRate) < 2)
          {
@@ -447,7 +445,7 @@ package dragonBones.fast.animation
          }
          else
          {
-            _playTimes = param1;
+            _playTimes = value;
          }
          return this;
       }

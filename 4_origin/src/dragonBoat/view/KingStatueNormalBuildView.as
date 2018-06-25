@@ -63,9 +63,9 @@ package dragonBoat.view
          super();
       }
       
-      public function init2(param1:int) : void
+      public function init2(type:int) : void
       {
-         _type = param1;
+         _type = type;
          initView();
          initData();
          initEvent();
@@ -73,7 +73,7 @@ package dragonBoat.view
       
       private function initView() : void
       {
-         var _loc2_:* = null;
+         var title:* = null;
          cancelButtonStyle = "core.simplebt";
          submitButtonStyle = "core.simplebt";
          escEnable = true;
@@ -116,52 +116,52 @@ package dragonBoat.view
          switch(int(_type))
          {
             case 0:
-               _loc2_ = LanguageMgr.GetTranslation("ddt.dragonBoat.normalBuildTxt");
+               title = LanguageMgr.GetTranslation("ddt.dragonBoat.normalBuildTxt");
                _checkBtn1.text = LanguageMgr.GetTranslation("kingStatue.inputLowChip");
                _checkBtn2.text = LanguageMgr.GetTranslation("kingStatue.inputHighChip");
                _bottomPromptTxt.text = LanguageMgr.GetTranslation("kingStatue.normalBuildTips");
                break;
             case 1:
-               _loc2_ = LanguageMgr.GetTranslation("ddt.dragonBoat.normalDecorateTxt");
+               title = LanguageMgr.GetTranslation("ddt.dragonBoat.normalDecorateTxt");
                _checkBtn1.text = LanguageMgr.GetTranslation("kingStatue.inputLowChip");
                _checkBtn2.text = LanguageMgr.GetTranslation("kingStatue.inputHighChip");
                _bottomPromptTxt.text = LanguageMgr.GetTranslation("kingStatue.normalBuildTips");
                break;
             case 2:
-               _loc2_ = LanguageMgr.GetTranslation("laurel.normalFerilizeTxt");
+               title = LanguageMgr.GetTranslation("laurel.normalFerilizeTxt");
                _checkBtn1.text = LanguageMgr.GetTranslation("laurel.useFerilizer");
                _checkBtn2.text = LanguageMgr.GetTranslation("laurel.useHighFerilizer");
                _bottomPromptTxt.text = LanguageMgr.GetTranslation("laurel.normalFerilizeTips");
                break;
             case 3:
-               _loc2_ = LanguageMgr.GetTranslation("laurel.normalPrayTxt");
+               title = LanguageMgr.GetTranslation("laurel.normalPrayTxt");
                _checkBtn1.text = LanguageMgr.GetTranslation("laurel.useFerilizer");
                _checkBtn2.text = LanguageMgr.GetTranslation("laurel.useHighFerilizer");
                _bottomPromptTxt.text = LanguageMgr.GetTranslation("laurel.normalFerilizeTips");
                break;
             case 4:
-               _loc2_ = LanguageMgr.GetTranslation("floatParade.normalPrayTxt");
+               title = LanguageMgr.GetTranslation("floatParade.normalPrayTxt");
                _checkBtn1.text = LanguageMgr.GetTranslation("floatParade.useFerilizer");
                _checkBtn2.text = LanguageMgr.GetTranslation("floatParade.useHighFerilizer");
                _bottomPromptTxt.text = LanguageMgr.GetTranslation("floatParade.normalFerilizeTips");
                break;
             default:
-               _loc2_ = LanguageMgr.GetTranslation("floatParade.normalPrayTxt");
+               title = LanguageMgr.GetTranslation("floatParade.normalPrayTxt");
                _checkBtn1.text = LanguageMgr.GetTranslation("floatParade.useFerilizer");
                _checkBtn2.text = LanguageMgr.GetTranslation("floatParade.useHighFerilizer");
                _bottomPromptTxt.text = LanguageMgr.GetTranslation("floatParade.normalFerilizeTips");
                break;
             case 6:
-               _loc2_ = LanguageMgr.GetTranslation("ddtking.normalFerilizeTxt.title");
+               title = LanguageMgr.GetTranslation("ddtking.normalFerilizeTxt.title");
                _checkBtn1.text = LanguageMgr.GetTranslation("ddtking.normalFerilizeTxt");
                _checkBtn2.text = LanguageMgr.GetTranslation("ddtking.highUseFerilizer");
                _bottomPromptTxt.text = LanguageMgr.GetTranslation("ddtking.normalFerilizeTips");
          }
-         var _loc1_:AlertInfo = new AlertInfo(_loc2_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"));
-         _loc1_.moveEnable = false;
-         _loc1_.autoDispose = false;
-         _loc1_.sound = "008";
-         info = _loc1_;
+         var _alertInfo:AlertInfo = new AlertInfo(title,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"));
+         _alertInfo.moveEnable = false;
+         _alertInfo.autoDispose = false;
+         _alertInfo.sound = "008";
+         info = _alertInfo;
          addToContent(_sprite1);
          addToContent(_inputText);
          addToContent(_maxBtn);
@@ -220,7 +220,7 @@ package dragonBoat.view
          _selectedGroup.addEventListener("change",__groupChangeHandler);
       }
       
-      private function __groupChangeHandler(param1:Event) : void
+      private function __groupChangeHandler(event:Event) : void
       {
          SoundManager.instance.playButtonSound();
          switch(int(_selectedGroup.selectIndex))
@@ -247,41 +247,41 @@ package dragonBoat.view
          }
       }
       
-      private function inputTextChangeHandler(param1:Event) : void
+      private function inputTextChangeHandler(event:Event) : void
       {
-         var _loc3_:FilterFrameText = param1.currentTarget as FilterFrameText;
-         var _loc2_:int = _loc3_.text;
-         if(_loc2_ < 0)
+         var input:FilterFrameText = event.currentTarget as FilterFrameText;
+         var num:int = input.text;
+         if(num < 0)
          {
-            _loc3_.text = "0";
+            input.text = "0";
          }
-         var _loc4_:* = param1.currentTarget;
+         var _loc4_:* = event.currentTarget;
          if(_inputText !== _loc4_)
          {
             if(_inputText2 === _loc4_)
             {
                if(_item2)
                {
-                  if(_loc2_ > _itemMax2)
+                  if(num > _itemMax2)
                   {
-                     _loc3_.text = _itemMax2.toString();
+                     input.text = _itemMax2.toString();
                   }
                }
             }
          }
          else if(_item)
          {
-            if(_loc2_ > _itemMax)
+            if(num > _itemMax)
             {
-               _loc3_.text = _itemMax.toString();
+               input.text = _itemMax.toString();
             }
          }
       }
       
-      private function changeMaxHandler(param1:MouseEvent) : void
+      private function changeMaxHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = event.currentTarget;
          if(_maxBtn !== _loc2_)
          {
             if(_maxBtn2 === _loc2_)
@@ -311,9 +311,9 @@ package dragonBoat.view
          dispose();
       }
       
-      private function responseHandler(param1:FrameEvent) : void
+      private function responseHandler(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:

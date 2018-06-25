@@ -72,14 +72,14 @@ package gameCommon.view
       
       private var _achievShape:BitmapShape;
       
-      public function AchieveAnimation(param1:int, param2:int, param3:int, param4:int)
+      public function AchieveAnimation(achiev:int, num:int, interval:int, start:int)
       {
          _center = new Point();
          super();
-         _interval = param3;
-         _start = param4;
-         _achiev = param1;
-         _num = param2;
+         _interval = interval;
+         _start = start;
+         _achiev = achiev;
+         _num = num;
          _bitmapMgr = BitmapManager.getBitmapMgr("GameView");
          _shine = ComponentFactory.Instance.creatCustomObject("AchievShineShape");
          addChild(_shine);
@@ -154,16 +154,16 @@ package gameCommon.view
          _shine.alpha = 0;
       }
       
-      private function __holdFrame(param1:Event) : void
+      private function __holdFrame(event:Event) : void
       {
-         var _loc2_:int = getTimer();
-         _elapsed = _elapsed + (_loc2_ - _lastTime);
+         var now:int = getTimer();
+         _elapsed = _elapsed + (now - _lastTime);
          if(_elapsed >= _holdTime * 1000)
          {
             holdComplete();
             return;
          }
-         _lastTime = _loc2_;
+         _lastTime = now;
       }
       
       private function holdComplete() : void
@@ -221,28 +221,28 @@ package gameCommon.view
          return _state;
       }
       
-      public function set startY(param1:int) : void
+      public function set startY(val:int) : void
       {
-         _startY = param1;
+         _startY = val;
          y = _startY;
       }
       
-      public function set numCenter(param1:String) : void
+      public function set numCenter(val:String) : void
       {
-         var _loc2_:Array = param1.split(",");
-         _center.x = _loc2_[0];
-         _center.y = _loc2_[1];
+         var arr:Array = val.split(",");
+         _center.x = arr[0];
+         _center.y = arr[1];
       }
       
-      public function set time(param1:String) : void
+      public function set time(val:String) : void
       {
-         var _loc2_:Array = param1.split(",");
-         if(_loc2_.length == 4)
+         var arr:Array = val.split(",");
+         if(arr.length == 4)
          {
-            _flashTime = _loc2_[0] > 0?_loc2_[0]:0.6;
-            _holdTime = _loc2_[1] > 0?_loc2_[1]:2;
-            _fadeOutTime = _loc2_[2] > 0?_loc2_[2]:0.6;
-            _shineTime = _loc2_[3] > 0?_loc2_[3]:0.6;
+            _flashTime = arr[0] > 0?arr[0]:0.6;
+            _holdTime = arr[1] > 0?arr[1]:2;
+            _fadeOutTime = arr[2] > 0?arr[2]:0.6;
+            _shineTime = arr[3] > 0?arr[3]:0.6;
             return;
          }
          throw new Error("在初始化小成就动画时传入了错误的时间值。");
@@ -268,9 +268,9 @@ package gameCommon.view
          return _achiev;
       }
       
-      public function setNum(param1:int) : void
+      public function setNum(num:int) : void
       {
-         _num = param1 > 0?param1:0;
+         _num = num > 0?num:0;
          drawNum();
          if(_state == 2)
          {
@@ -284,10 +284,10 @@ package gameCommon.view
          return _achievShape.height;
       }
       
-      override public function set y(param1:Number) : void
+      override public function set y(value:Number) : void
       {
-         trace(_achiev + ":" + param1);
-         .super.y = param1;
+         trace(_achiev + ":" + value);
+         .super.y = value;
       }
    }
 }

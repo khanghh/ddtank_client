@@ -52,36 +52,35 @@ package gameCommon.view.playerThumbnail
       
       public function init() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var btn:* = null;
          _bg = ComponentFactory.Instance.creatComponentByStylename("game.playerThumbnailTipBg");
          addChild(_bg);
          _items = new Vector.<SimpleItem>();
-         var _loc3_:Point = PositionUtils.creatPoint("game.PlayerThumbnailTipItemPos");
-         _loc2_ = 0;
-         while(_loc2_ < 3)
+         var pos:Point = PositionUtils.creatPoint("game.PlayerThumbnailTipItemPos");
+         for(i = 0; i < 3; )
          {
-            _loc1_ = ComponentFactory.Instance.creatComponentByStylename("game.PlayerThumbnailTipItem");
-            (_loc1_.foreItems[0] as FilterFrameText).text = LanguageMgr.GetTranslation("game.PlayerThumbnailTipItemText_" + _loc2_.toString());
-            _loc1_.addEventListener("rollOver",__onMouseOver);
-            _loc1_.addEventListener("rollOut",__onMouseOut);
-            _loc1_.addEventListener("click",__onMouseClick);
-            _loc1_.backItem.visible = false;
-            _loc1_.buttonMode = true;
-            _loc1_.x = _loc3_.x;
-            _loc1_.y = _loc3_.y;
-            _loc3_.y = _loc3_.y + (_loc1_.height - 2);
-            _items.push(_loc1_);
-            addChild(_loc1_);
-            _loc2_++;
+            btn = ComponentFactory.Instance.creatComponentByStylename("game.PlayerThumbnailTipItem");
+            (btn.foreItems[0] as FilterFrameText).text = LanguageMgr.GetTranslation("game.PlayerThumbnailTipItemText_" + i.toString());
+            btn.addEventListener("rollOver",__onMouseOver);
+            btn.addEventListener("rollOut",__onMouseOut);
+            btn.addEventListener("click",__onMouseClick);
+            btn.backItem.visible = false;
+            btn.buttonMode = true;
+            btn.x = pos.x;
+            btn.y = pos.y;
+            pos.y = pos.y + (btn.height - 2);
+            _items.push(btn);
+            addChild(btn);
+            i++;
          }
          addEventListener("addedToStage",__addStageEvent);
          addEventListener("removedFromStage",__removeFromStage);
       }
       
-      public function set tipDisplay(param1:PlayerThumbnail) : void
+      public function set tipDisplay(value:PlayerThumbnail) : void
       {
-         _playerTipDisplay = param1;
+         _playerTipDisplay = value;
       }
       
       public function get tipDisplay() : PlayerThumbnail
@@ -89,79 +88,79 @@ package gameCommon.view.playerThumbnail
          return _playerTipDisplay;
       }
       
-      private function __addStageEvent(param1:Event) : void
+      private function __addStageEvent(e:Event) : void
       {
          StageReferance.stage.addEventListener("click",__removeStageEvent);
       }
       
-      private function __removeStageEvent(param1:MouseEvent) : void
+      private function __removeStageEvent(e:MouseEvent) : void
       {
-         if(param1.target is HeadFigure)
+         if(e.target is HeadFigure)
          {
             return;
          }
          StageReferance.stage.removeEventListener("click",__removeStageEvent);
-         param1.stopImmediatePropagation();
-         param1.stopPropagation();
+         e.stopImmediatePropagation();
+         e.stopPropagation();
          if(parent)
          {
             parent.removeChild(this);
          }
       }
       
-      private function __removeFromStage(param1:Event) : void
+      private function __removeFromStage(e:Event) : void
       {
          dispatchEvent(new Event("playerThumbnailTipItemClick"));
       }
       
-      private function __onMouseOver(param1:MouseEvent) : void
+      private function __onMouseOver(e:MouseEvent) : void
       {
-         var _loc2_:SimpleItem = param1.currentTarget as SimpleItem;
-         if(_loc2_ && _loc2_.backItem)
+         var btn:SimpleItem = e.currentTarget as SimpleItem;
+         if(btn && btn.backItem)
          {
-            _loc2_.backItem.visible = true;
+            btn.backItem.visible = true;
          }
       }
       
-      private function __onMouseOut(param1:MouseEvent) : void
+      private function __onMouseOut(e:MouseEvent) : void
       {
-         var _loc2_:SimpleItem = param1.currentTarget as SimpleItem;
-         if(_loc2_ && _loc2_.backItem)
+         var btn:SimpleItem = e.currentTarget as SimpleItem;
+         if(btn && btn.backItem)
          {
-            _loc2_.backItem.visible = false;
+            btn.backItem.visible = false;
          }
       }
       
-      private function __onMouseClick(param1:MouseEvent) : void
+      private function __onMouseClick(e:MouseEvent) : void
       {
-         var _loc3_:Boolean = false;
-         var _loc6_:* = null;
-         var _loc2_:* = null;
-         var _loc7_:* = null;
+         var toSetFocus:Boolean = false;
+         var playerInfo:* = null;
+         var areaInfo:* = null;
+         var zoneName:* = null;
          PlayerInfoViewControl.isOpenFromBag = false;
-         var _loc5_:SimpleItem = param1.currentTarget as SimpleItem;
-         var _loc4_:int = _items.indexOf(_loc5_);
+         var btn:SimpleItem = e.currentTarget as SimpleItem;
+         var idx:int = _items.indexOf(btn);
          _isBattle = false;
          if(RoomManager.Instance.current && RoomManager.Instance.current.type == 18)
          {
             _isBattle = true;
          }
-         switch(int(_loc4_))
+         switch(int(idx))
          {
             case 0:
                if(_isBattle)
                {
                   PlayerInfoViewControl._isBattle = _isBattle;
-                  _loc6_ = _playerTipDisplay.info;
-                  _loc6_.Agility = BattleGroudControl.Instance.playerBattleData.Agility;
-                  _loc6_.Attack = BattleGroudControl.Instance.playerBattleData.Attack;
-                  _loc6_.Defence = BattleGroudControl.Instance.playerBattleData.Defend;
-                  _loc6_.Luck = BattleGroudControl.Instance.playerBattleData.Lucky;
-                  _loc6_.Damage = BattleGroudControl.Instance.playerBattleData.Damage;
-                  _loc6_.Blood = BattleGroudControl.Instance.playerBattleData.Blood;
-                  _loc6_.Energy = BattleGroudControl.Instance.playerBattleData.Energy;
-                  _loc6_.Guard = BattleGroudControl.Instance.playerBattleData.Guard;
-                  PlayerInfoViewControl.view(_loc6_,false,_isBattle);
+                  playerInfo = _playerTipDisplay.info;
+                  playerInfo.Agility = BattleGroudControl.Instance.playerBattleData.Agility;
+                  playerInfo.Attack = BattleGroudControl.Instance.playerBattleData.Attack;
+                  playerInfo.Defence = BattleGroudControl.Instance.playerBattleData.Defend;
+                  playerInfo.Luck = BattleGroudControl.Instance.playerBattleData.Lucky;
+                  playerInfo.Damage = BattleGroudControl.Instance.playerBattleData.Damage;
+                  playerInfo.Blood = BattleGroudControl.Instance.playerBattleData.Blood;
+                  playerInfo.Energy = BattleGroudControl.Instance.playerBattleData.Energy;
+                  playerInfo.Guard = BattleGroudControl.Instance.playerBattleData.Guard;
+                  PlayerInfoViewControl.view(playerInfo,false,_isBattle);
                }
                else
                {
@@ -186,16 +185,16 @@ package gameCommon.view.playerThumbnail
             case 2:
                if(_playerTipDisplay.info.ZoneID > 0 && _playerTipDisplay.info.ZoneID != PlayerManager.Instance.Self.ZoneID)
                {
-                  _loc2_ = new AreaInfo();
-                  _loc2_.areaID = _playerTipDisplay.info.ZoneID;
-                  _loc7_ = PlayerManager.Instance.getAreaNameByAreaID(_playerTipDisplay.info.ZoneID);
-                  _loc2_.areaName = _loc7_;
+                  areaInfo = new AreaInfo();
+                  areaInfo.areaID = _playerTipDisplay.info.ZoneID;
+                  zoneName = PlayerManager.Instance.getAreaNameByAreaID(_playerTipDisplay.info.ZoneID);
+                  areaInfo.areaName = zoneName;
                   ChatManager.Instance.output.functionEnabled = true;
-                  ChatManager.Instance.privateChatTo(_playerTipDisplay.info.NickName,0,_loc2_);
+                  ChatManager.Instance.privateChatTo(_playerTipDisplay.info.NickName,0,areaInfo);
                   break;
                }
                ChatManager.Instance.privateChatTo(_playerTipDisplay.info.NickName);
-               _loc3_ = true;
+               toSetFocus = true;
                break;
          }
          StageReferance.stage.removeEventListener("click",__removeStageEvent);
@@ -203,7 +202,7 @@ package gameCommon.view.playerThumbnail
          {
             parent.removeChild(this);
          }
-         if(_loc3_)
+         if(toSetFocus)
          {
             ChatManager.Instance.setFocus();
          }
@@ -214,7 +213,7 @@ package gameCommon.view.playerThumbnail
          return null;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(data:Object) : void
       {
       }
       
@@ -225,18 +224,17 @@ package gameCommon.view.playerThumbnail
       
       public function dispose() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var btn:* = null;
          _isBattle = false;
          _playerTipDisplay = null;
          ObjectUtils.disposeObject(_bg);
-         _loc2_ = 0;
-         while(_loc2_ < _items.length)
+         for(i = 0; i < _items.length; )
          {
-            _loc1_ = _items[_loc2_];
-            ObjectUtils.disposeObject(_loc1_);
-            _loc1_ = null;
-            _loc2_++;
+            btn = _items[i];
+            ObjectUtils.disposeObject(btn);
+            btn = null;
+            i++;
          }
          _items = null;
          if(parent)

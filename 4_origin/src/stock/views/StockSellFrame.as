@@ -15,10 +15,10 @@ package stock.views
       
       private var _data:StockData = null;
       
-      public function StockSellFrame(param1:int)
+      public function StockSellFrame(stockID:int)
       {
          super();
-         data = StockMgr.inst.model.stocks[param1];
+         data = StockMgr.inst.model.stocks[stockID];
       }
       
       override protected function initialize() : void
@@ -51,18 +51,18 @@ package stock.views
          super.dispose();
       }
       
-      private function change(param1:int) : void
+      private function change(value:int) : void
       {
-         lablFund.text = (param1 * _data.price).toString();
+         lablFund.text = (value * _data.price).toString();
       }
       
-      public function set data(param1:StockData) : void
+      public function set data(value:StockData) : void
       {
-         if(!param1)
+         if(!value)
          {
             return;
          }
-         _data = param1;
+         _data = value;
          numStep.maxValue = _data.validNum;
          numStep.numValue = 1;
          lablID.text = _data.StockID.toString();

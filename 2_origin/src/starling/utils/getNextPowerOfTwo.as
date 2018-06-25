@@ -1,18 +1,18 @@
 package starling.utils
 {
-   public function getNextPowerOfTwo(param1:Number) : int
+   public function getNextPowerOfTwo(number:Number) : int
    {
-      var _loc2_:* = 0;
-      if(param1 is int && param1 > 0 && (param1 & param1 - 1) == 0)
+      var result:* = 0;
+      if(number is int && number > 0 && (number & number - 1) == 0)
       {
-         return param1;
+         return number;
       }
-      _loc2_ = 1;
-      param1 = param1 - 1.0e-9;
-      while(_loc2_ < param1)
+      result = 1;
+      number = number - 1.0e-9;
+      while(result < number)
       {
-         _loc2_ = _loc2_ << 1;
+         result = result << 1;
       }
-      return _loc2_;
+      return result;
    }
 }

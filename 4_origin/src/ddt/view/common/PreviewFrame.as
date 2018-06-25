@@ -38,14 +38,14 @@ package ddt.view.common
          super();
       }
       
-      public function setStyle(param1:String, param2:String, param3:String, param4:Function = null, param5:Boolean = true, param6:Bitmap = null) : void
+      public function setStyle(titleTxt:String, previewBitmapStyle:String, scrollStyle:String, submitFunction:Function = null, submitEnable:Boolean = true, previewBitmap:Bitmap = null) : void
       {
-         _titleTxt = param1;
-         _previewBitmapStyle = param2;
-         _scrollStyle = param3;
-         _submitFunction = param4;
-         _submitEnable = param5;
-         _previewBmp = param6;
+         _titleTxt = titleTxt;
+         _previewBitmapStyle = previewBitmapStyle;
+         _scrollStyle = scrollStyle;
+         _submitFunction = submitFunction;
+         _submitEnable = submitEnable;
+         _previewBmp = previewBitmap;
          initContent();
       }
       
@@ -65,25 +65,25 @@ package ddt.view.common
             _previewBitmap = _previewBmp;
          }
          _scroll = ComponentFactory.Instance.creatComponentByStylename(_scrollStyle);
-         var _loc1_:AlertInfo = new AlertInfo(_titleTxt,LanguageMgr.GetTranslation("ok"));
-         _loc1_.autoDispose = false;
+         var alertInfo:AlertInfo = new AlertInfo(_titleTxt,LanguageMgr.GetTranslation("ok"));
+         alertInfo.autoDispose = false;
          var _loc2_:Boolean = false;
-         _loc1_.moveEnable = _loc2_;
-         _loc1_.showCancel = _loc2_;
-         _loc1_.bottomGap = 8;
-         _loc1_.submitLabel = LanguageMgr.GetTranslation("ok");
-         _loc1_.customPos = ComponentFactory.Instance.creatCustomObject("academyCommon.myAcademy.framebuttonPos");
-         info = _loc1_;
+         alertInfo.moveEnable = _loc2_;
+         alertInfo.showCancel = _loc2_;
+         alertInfo.bottomGap = 8;
+         alertInfo.submitLabel = LanguageMgr.GetTranslation("ok");
+         alertInfo.customPos = ComponentFactory.Instance.creatCustomObject("academyCommon.myAcademy.framebuttonPos");
+         info = alertInfo;
          this.submitButtonEnable = _submitEnable;
          _scroll.setView(_previewBitmap);
          addToContent(_scroll);
          addEventListener("response",__frameEvent);
       }
       
-      private function __frameEvent(param1:FrameEvent) : void
+      private function __frameEvent(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:

@@ -59,54 +59,53 @@ package moneyTree.view
       
       override protected function init() : void
       {
-         var _loc4_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var fruit:* = null;
          super.init();
          escEnable = true;
-         var _loc3_:ComponentFactory = ComponentFactory.Instance;
+         var factary:ComponentFactory = ComponentFactory.Instance;
          titleText = LanguageMgr.GetTranslation("moneyTree.title");
-         var _loc2_:Sprite = ComponentFactory.Instance.creat("moneyTree.help");
-         PositionUtils.setPos(_loc2_,"moneytree.HelpContentPos");
-         _helpBtn = HelpFrameUtils.Instance.simpleHelpButton(this,"moneytree.helpBtn",null,LanguageMgr.GetTranslation("moneytree.helpTitle"),_loc2_,404,484) as SimpleBitmapButton;
+         var moenyTreeHelpContent:Sprite = ComponentFactory.Instance.creat("moneyTree.help");
+         PositionUtils.setPos(moenyTreeHelpContent,"moneytree.HelpContentPos");
+         _helpBtn = HelpFrameUtils.Instance.simpleHelpButton(this,"moneytree.helpBtn",null,LanguageMgr.GetTranslation("moneytree.helpTitle"),moenyTreeHelpContent,404,484) as SimpleBitmapButton;
          PositionUtils.setPos(_helpBtn,"moneytree.helpBtnPos");
-         _bg = _loc3_.creatBitmap("moneyTree.bg");
+         _bg = factary.creatBitmap("moneyTree.bg");
          _bg.x = 16;
          _bg.y = 42;
          addToContent(_bg);
-         _bgMC = _loc3_.creat("moneyTree.bg.movie");
+         _bgMC = factary.creat("moneyTree.bg.movie");
          _bgMC.x = 64;
          _bgMC.y = 311;
          addToContent(_bgMC);
-         _loc4_ = 0;
-         while(_loc4_ < 4)
+         for(i = 0; i < 4; )
          {
-            _loc1_ = new Fruit(_loc4_);
-            PositionUtils.setPos(_loc1_,"moneyTree.fruit" + _loc4_.toString() + ".pos");
-            addToContent(_loc1_);
-            _fruitList[_loc4_] = _loc1_;
-            _loc4_++;
+            fruit = new Fruit(i);
+            PositionUtils.setPos(fruit,"moneyTree.fruit" + i.toString() + ".pos");
+            addToContent(fruit);
+            _fruitList[i] = fruit;
+            i++;
          }
          _listBG = ComponentFactory.Instance.creatComponentByStylename("asset.horseracing.bg");
          _listBG.x = 344;
          _listBG.y = 132;
          addToContent(_listBG);
-         _friendsListPanel = _loc3_.creatComponentByStylename("moneyTree.ui.FriendsList");
+         _friendsListPanel = factary.creatComponentByStylename("moneyTree.ui.FriendsList");
          addToContent(_friendsListPanel);
          _listPanelMediator = new ListPanelMediator();
          _listPanelMediator.setPanel(_friendsListPanel);
          _listPanelMediator.refresh(0);
-         _txtRemainNum = _loc3_.creat("moneyTree.txt.TimesRemain");
+         _txtRemainNum = factary.creat("moneyTree.txt.TimesRemain");
          addToContent(_txtRemainNum);
          _txtRemainNum.text = "";
-         _btnSend = _loc3_.creat("moneyTree.btn.send");
+         _btnSend = factary.creat("moneyTree.btn.send");
          addToContent(_btnSend);
          _btnSend.addEventListener("click",onSendClick);
          addEventListener("response",_response);
       }
       
-      public function pick(param1:int) : void
+      public function pick(index:int) : void
       {
-         _fruitList[param1].showPick();
+         _fruitList[index].showPick();
       }
       
       public function resetFriendList() : void
@@ -121,35 +120,34 @@ package moneyTree.view
       
       public function updateFruits() : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:MoneyTreeModel = MoneyTreeManager.getInstance().model;
-         var _loc3_:int = _fruitList.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var i:int = 0;
+         var data:* = null;
+         var model:MoneyTreeModel = MoneyTreeManager.getInstance().model;
+         var len:int = _fruitList.length;
+         for(i = 0; i < len; )
          {
-            _loc2_ = _loc1_.getInfoAt(_loc4_);
-            if(_loc2_.isGrown)
+            data = model.getInfoAt(i);
+            if(data.isGrown)
             {
-               _fruitList[_loc4_].showGrown();
+               _fruitList[i].showGrown();
             }
             else
             {
-               _fruitList[_loc4_].showNormal();
+               _fruitList[i].showNormal();
             }
-            _loc4_++;
+            i++;
          }
       }
       
-      protected function onSendClick(param1:MouseEvent) : void
+      protected function onSendClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          MoneyTreeManager.getInstance().sendRedPkgBtnClicked();
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
             MoneyTreeManager.getInstance().hideMainFrame();
@@ -182,7 +180,7 @@ package moneyTree.view
          _redPkgShineMC.gotoAndPlay(1);
       }
       
-      protected function onRedPkgShine(param1:Event) : void
+      protected function onRedPkgShine(e:Event) : void
       {
          if(_redPkgShineMC.currentFrame == _redPkgShineMC.totalFrames)
          {
@@ -196,7 +194,7 @@ package moneyTree.view
          }
       }
       
-      protected function onShineEF(param1:Event) : void
+      protected function onShineEF(event:Event) : void
       {
          if(_shineMC.currentFrame == _shineMC.totalFrames)
          {

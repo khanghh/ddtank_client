@@ -30,11 +30,11 @@ package roomList.pvpRoomList
          addEventListener("response",__frameEventHandler);
       }
       
-      public function initView(param1:RoomListController, param2:RoomListModel) : void
+      public function initView(controller:RoomListController, model:RoomListModel) : void
       {
          titleText = LanguageMgr.GetTranslation("tank.hall.ChooseHallView.roomList");
-         _model = param2;
-         _controller = param1;
+         _model = model;
+         _controller = controller;
          _roomListBg = new RoomListBGView(_controller,_model);
          addToContent(_roomListBg);
          _playerList = new RoomListPlayerListView(_model.getPlayerList());
@@ -47,10 +47,10 @@ package roomList.pvpRoomList
          return _roomListBg;
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:

@@ -14,11 +14,11 @@ package par.creators
       
       public function createPartical() : DisplayObject
       {
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(0);
-         _loc1_.graphics.drawCircle(0,0,10);
-         _loc1_.graphics.endFill();
-         return _loc1_;
+         var sprit:Sprite = new Sprite();
+         sprit.graphics.beginFill(0);
+         sprit.graphics.drawCircle(0,0,10);
+         sprit.graphics.endFill();
+         return sprit;
       }
    }
 }

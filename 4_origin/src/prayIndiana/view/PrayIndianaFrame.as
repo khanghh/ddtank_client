@@ -208,14 +208,14 @@ package prayIndiana.view
          PrayIndianaManager.Instance.removeEventListener("prayStart",__prayStart);
       }
       
-      private function __refreshBtn(param1:MouseEvent) : void
+      private function __refreshBtn(e:MouseEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:int = PrayIndianaManager.Instance.model.prayInfo[4];
+         var content:* = null;
+         var price1:int = PrayIndianaManager.Instance.model.prayInfo[4];
          if(PrayIndianaManager.Instance.showBuyCountFram3)
          {
-            _loc2_ = LanguageMgr.GetTranslation("horseRace.match.buyCountDescription",_loc3_);
-            alert3 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc2_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
+            content = LanguageMgr.GetTranslation("horseRace.match.buyCountDescription",price1);
+            alert3 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),content,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
             _selectBtn3 = ComponentFactory.Instance.creatComponentByStylename("ddtGame.buyConfirmNo.scb");
             _selectBtn3.text = LanguageMgr.GetTranslation("horseRace.match.notTip");
             _selectBtn3.addEventListener("click",__onClickRefreshSelectedBtn);
@@ -228,7 +228,7 @@ package prayIndiana.view
          }
          else
          {
-            if(PlayerManager.Instance.Self.Money < _loc3_)
+            if(PlayerManager.Instance.Self.Money < price1)
             {
                LeavePageManager.showFillFrame();
                return;
@@ -237,7 +237,7 @@ package prayIndiana.view
          }
       }
       
-      private function __updateGoods(param1:Event) : void
+      private function __updateGoods(e:Event) : void
       {
          enableBtnToFalse();
          _refreshTimer = new Timer(100,5);
@@ -246,7 +246,7 @@ package prayIndiana.view
          _refreshTimer.start();
       }
       
-      private function __refreshTimerHandler(param1:TimerEvent) : void
+      private function __refreshTimerHandler(e:TimerEvent) : void
       {
          _goodsView.goodsItemSprite.alpha = _goodsView.goodsItemSprite.alpha - 0.2;
          if(_goodsView.goodsItemSprite.alpha <= 0)
@@ -255,42 +255,41 @@ package prayIndiana.view
          }
       }
       
-      private function __refreshComplete(param1:TimerEvent) : void
+      private function __refreshComplete(e:TimerEvent) : void
       {
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:int = 0;
+         var i:int = 0;
+         var itemInfo:* = null;
+         var tInfo:* = null;
+         var index:int = 0;
          if(_refreshTimer)
          {
             _refreshTimer.removeEventListener("timer",__showGoodsTimer);
             _refreshTimer.stop();
             _refreshTimer = null;
          }
-         var _loc4_:Array = PrayIndianaManager.Instance.model.goodsAll;
-         _loc6_ = 0;
-         while(_loc6_ < _loc4_.length)
+         var arr:Array = PrayIndianaManager.Instance.model.goodsAll;
+         for(i = 0; i < arr.length; )
          {
-            _goodsView.cellArr[_loc6_].info = null;
-            _goodsView.cellArr[_loc6_].filters = null;
-            _goodsView.cellArr[_loc6_].alpha = 1;
-            _loc5_ = ItemManager.Instance.getTemplateById(_loc4_[_loc6_].TemplateID) as ItemTemplateInfo;
-            _loc3_ = new InventoryItemInfo();
-            ObjectUtils.copyProperties(_loc3_,_loc5_);
-            _loc3_.ValidDate = _loc4_[_loc6_].ValidDate;
-            _loc3_.StrengthenLevel = _loc4_[_loc6_].StrengthLevel;
-            _loc3_.AttackCompose = _loc4_[_loc6_].AttackCompose;
-            _loc3_.DefendCompose = _loc4_[_loc6_].DefendCompose;
-            _loc3_.LuckCompose = _loc4_[_loc6_].LuckCompose;
-            _loc3_.AgilityCompose = _loc4_[_loc6_].AgilityCompose;
-            _loc3_.IsBinds = _loc4_[_loc6_].IsBind;
-            _loc3_.Count = _loc4_[_loc6_].Count;
-            _loc3_.Place = _loc4_[_loc6_].Position;
-            _loc3_.exaltLevel = _loc4_[_loc6_].Quality;
-            _goodsView.cellArr[_loc6_].info = _loc3_;
-            _loc2_ = _goodsView.cellArr[_loc6_].info.exaltLevel < 5?1:2;
-            _goodsView.goodItemContainerAll[_loc6_].gotoAndStop(_loc2_);
-            _loc6_++;
+            _goodsView.cellArr[i].info = null;
+            _goodsView.cellArr[i].filters = null;
+            _goodsView.cellArr[i].alpha = 1;
+            itemInfo = ItemManager.Instance.getTemplateById(arr[i].TemplateID) as ItemTemplateInfo;
+            tInfo = new InventoryItemInfo();
+            ObjectUtils.copyProperties(tInfo,itemInfo);
+            tInfo.ValidDate = arr[i].ValidDate;
+            tInfo.StrengthenLevel = arr[i].StrengthLevel;
+            tInfo.AttackCompose = arr[i].AttackCompose;
+            tInfo.DefendCompose = arr[i].DefendCompose;
+            tInfo.LuckCompose = arr[i].LuckCompose;
+            tInfo.AgilityCompose = arr[i].AgilityCompose;
+            tInfo.IsBinds = arr[i].IsBind;
+            tInfo.Count = arr[i].Count;
+            tInfo.Place = arr[i].Position;
+            tInfo.exaltLevel = arr[i].Quality;
+            _goodsView.cellArr[i].info = tInfo;
+            index = _goodsView.cellArr[i].info.exaltLevel < 5?1:2;
+            _goodsView.goodItemContainerAll[i].gotoAndStop(index);
+            i++;
          }
          _goodsView.goodsItemSprite.alpha = 0;
          _showTimer = new Timer(100,5);
@@ -298,7 +297,7 @@ package prayIndiana.view
          _showTimer.start();
       }
       
-      private function __showGoodsTimer(param1:TimerEvent) : void
+      private function __showGoodsTimer(e:TimerEvent) : void
       {
          _goodsView.goodsItemSprite.alpha = _goodsView.goodsItemSprite.alpha + 0.3;
          if(_goodsView.goodsItemSprite.alpha >= 1)
@@ -315,69 +314,69 @@ package prayIndiana.view
          }
       }
       
-      private function __onClickRefreshSelectedBtn(param1:MouseEvent) : void
+      private function __onClickRefreshSelectedBtn(e:MouseEvent) : void
       {
          PrayIndianaManager.Instance.showBuyCountFram3 = !_selectBtn3.selected;
       }
       
-      private function __onRecoverRefreshResponse(param1:FrameEvent) : void
+      private function __onRecoverRefreshResponse(e:FrameEvent) : void
       {
-         var _loc2_:int = 0;
+         var price:int = 0;
          SoundManager.instance.playButtonSound();
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         if(e.responseCode == 3 || e.responseCode == 2)
          {
             if(PlayerManager.Instance.Self.bagLocked)
             {
                BaglockedManager.Instance.show();
                return;
             }
-            _loc2_ = PrayIndianaManager.Instance.model.prayInfo[4];
-            if(PlayerManager.Instance.Self.Money < _loc2_)
+            price = PrayIndianaManager.Instance.model.prayInfo[4];
+            if(PlayerManager.Instance.Self.Money < price)
             {
                LeavePageManager.showFillFrame();
                return;
             }
             SocketManager.Instance.out.prayIndianaGoodsRefresh();
          }
-         else if(param1.responseCode == 4 || param1.responseCode == 0 || param1.responseCode == 1)
+         else if(e.responseCode == 4 || e.responseCode == 0 || e.responseCode == 1)
          {
             PrayIndianaManager.Instance.showBuyCountFram3 = true;
          }
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",__onRecoverRefreshResponse);
+         (e.currentTarget as BaseAlerFrame).removeEventListener("response",__onRecoverRefreshResponse);
          if(_selectBtn)
          {
             _selectBtn.removeEventListener("click",__onClickRefreshSelectedBtn);
          }
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(e.currentTarget);
       }
       
-      private function __onKeyDownHander(param1:KeyboardEvent) : void
+      private function __onKeyDownHander(event:KeyboardEvent) : void
       {
-         var _loc2_:Number = NaN;
-         if(param1.keyCode == 32)
+         var num:Number = NaN;
+         if(event.keyCode == 32)
          {
-            param1.stopImmediatePropagation();
-            param1.stopPropagation();
+            event.stopImmediatePropagation();
+            event.stopPropagation();
             _slide.slide.gotoAndStop(_slide.slide.currentFrame);
-            _loc2_ = updateSlide();
-            SocketManager.Instance.out.prayIndianaPray(2,_slide.x + 14,_target.x + 4.5,_loc2_);
+            num = updateSlide();
+            SocketManager.Instance.out.prayIndianaPray(2,_slide.x + 14,_target.x + 4.5,num);
             enableBtnToTrue();
             _isQuit = false;
          }
       }
       
-      private function __onPrayBtn(param1:MouseEvent) : void
+      private function __onPrayBtn(e:MouseEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:int = PrayIndianaManager.Instance.model.prayInfo[3];
+         var content:* = null;
+         var price:int = PrayIndianaManager.Instance.model.prayInfo[3];
          if(PrayIndianaManager.Instance.model.UpdateRateCount > 0)
          {
             SocketManager.Instance.out.prayIndianaPray(1);
          }
          else if(PrayIndianaManager.Instance.showBuyCountFram1)
          {
-            _loc2_ = LanguageMgr.GetTranslation("PrayIndianaFrame.PrayTip",_loc3_);
-            alert1 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc2_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
+            content = LanguageMgr.GetTranslation("PrayIndianaFrame.PrayTip",price);
+            alert1 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),content,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
             _selectBtn1 = ComponentFactory.Instance.creatComponentByStylename("ddtGame.buyConfirmNo.scb");
             _selectBtn1.text = LanguageMgr.GetTranslation("horseRace.match.notTip");
             _selectBtn1.addEventListener("click",__onClickPraySelectedBtn);
@@ -390,7 +389,7 @@ package prayIndiana.view
          }
          else
          {
-            if(PlayerManager.Instance.Self.Money < _loc3_)
+            if(PlayerManager.Instance.Self.Money < price)
             {
                LeavePageManager.showFillFrame();
                return;
@@ -399,7 +398,7 @@ package prayIndiana.view
          }
       }
       
-      private function __prayStart(param1:Event) : void
+      private function __prayStart(e:Event) : void
       {
          _isQuit = true;
          stage.focus = this;
@@ -415,30 +414,30 @@ package prayIndiana.view
       
       private function updateSlide() : Number
       {
-         var _loc1_:int = _slide.slide.currentFrame;
-         var _loc2_:* = 0;
-         if(_loc1_ <= 25)
+         var num:int = _slide.slide.currentFrame;
+         var returnNum:* = 0;
+         if(num <= 25)
          {
-            _loc2_ = Number((_loc1_ - 1) * 13.375);
-            return _loc2_;
+            returnNum = Number((num - 1) * 13.375);
+            return returnNum;
          }
-         _loc1_ = 49 - _loc1_ + 1;
-         _loc2_ = Number((_loc1_ - 1) * 13.375);
-         return _loc2_;
+         num = 49 - num + 1;
+         returnNum = Number((num - 1) * 13.375);
+         return returnNum;
       }
       
-      private function __PerfectPrayBtn(param1:MouseEvent) : void
+      private function __PerfectPrayBtn(e:MouseEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:int = PrayIndianaManager.Instance.model.prayInfo[5];
+         var content:* = null;
+         var price2:int = PrayIndianaManager.Instance.model.prayInfo[5];
          if(this.hasEventListener("keyDown"))
          {
             removeEventListener("keyDown",__onKeyDownHander);
          }
          if(PrayIndianaManager.Instance.showBuyCountFram)
          {
-            _loc2_ = LanguageMgr.GetTranslation("PrayIndianaFrame.PerfectPrayTip",_loc3_);
-            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc2_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
+            content = LanguageMgr.GetTranslation("PrayIndianaFrame.PerfectPrayTip",price2);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),content,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
             _selectBtn = ComponentFactory.Instance.creatComponentByStylename("ddtGame.buyConfirmNo.scb");
             _selectBtn.text = LanguageMgr.GetTranslation("horseRace.match.notTip");
             _selectBtn.addEventListener("click",__onClickSelectedBtn);
@@ -451,7 +450,7 @@ package prayIndiana.view
          }
          else
          {
-            if(PlayerManager.Instance.Self.Money < _loc3_)
+            if(PlayerManager.Instance.Self.Money < price2)
             {
                LeavePageManager.showFillFrame();
                return;
@@ -469,29 +468,29 @@ package prayIndiana.view
          }
       }
       
-      private function __onClickSelectedBtn(param1:MouseEvent) : void
+      private function __onClickSelectedBtn(e:MouseEvent) : void
       {
          PrayIndianaManager.Instance.showBuyCountFram = !_selectBtn.selected;
       }
       
-      private function __onClickPraySelectedBtn(param1:MouseEvent) : void
+      private function __onClickPraySelectedBtn(e:MouseEvent) : void
       {
          PrayIndianaManager.Instance.showBuyCountFram1 = !_selectBtn1.selected;
       }
       
-      private function __onRecoverResponse(param1:FrameEvent) : void
+      private function __onRecoverResponse(e:FrameEvent) : void
       {
-         var _loc2_:int = 0;
+         var price:int = 0;
          SoundManager.instance.playButtonSound();
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         if(e.responseCode == 3 || e.responseCode == 2)
          {
             if(PlayerManager.Instance.Self.bagLocked)
             {
                BaglockedManager.Instance.show();
                return;
             }
-            _loc2_ = PrayIndianaManager.Instance.model.prayInfo[5];
-            if(PlayerManager.Instance.Self.Money < _loc2_)
+            price = PrayIndianaManager.Instance.model.prayInfo[5];
+            if(PlayerManager.Instance.Self.Money < price)
             {
                LeavePageManager.showFillFrame();
                return;
@@ -507,7 +506,7 @@ package prayIndiana.view
             }
             SocketManager.Instance.out.prayIndianaPray(3);
          }
-         else if(param1.responseCode == 4 || param1.responseCode == 0 || param1.responseCode == 1)
+         else if(e.responseCode == 4 || e.responseCode == 0 || e.responseCode == 1)
          {
             PrayIndianaManager.Instance.showBuyCountFram = true;
          }
@@ -525,26 +524,26 @@ package prayIndiana.view
          }
       }
       
-      private function __onRecoverPrayResponse(param1:FrameEvent) : void
+      private function __onRecoverPrayResponse(e:FrameEvent) : void
       {
-         var _loc2_:int = 0;
+         var price:int = 0;
          SoundManager.instance.playButtonSound();
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         if(e.responseCode == 3 || e.responseCode == 2)
          {
             if(PlayerManager.Instance.Self.bagLocked)
             {
                BaglockedManager.Instance.show();
                return;
             }
-            _loc2_ = PrayIndianaManager.Instance.model.prayInfo[3];
-            if(PlayerManager.Instance.Self.Money < _loc2_)
+            price = PrayIndianaManager.Instance.model.prayInfo[3];
+            if(PlayerManager.Instance.Self.Money < price)
             {
                LeavePageManager.showFillFrame();
                return;
             }
             SocketManager.Instance.out.prayIndianaPray(1);
          }
-         else if(param1.responseCode == 4 || param1.responseCode == 0 || param1.responseCode == 1)
+         else if(e.responseCode == 4 || e.responseCode == 0 || e.responseCode == 1)
          {
             PrayIndianaManager.Instance.showBuyCountFram1 = true;
          }
@@ -572,14 +571,14 @@ package prayIndiana.view
          showTarget();
       }
       
-      private function __lotteryBtn(param1:MouseEvent) : void
+      private function __lotteryBtn(e:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var content:* = null;
          if(this.hasEventListener("keyDown"))
          {
             removeEventListener("keyDown",__onKeyDownHander);
          }
-         var _loc3_:int = PrayIndianaManager.Instance.model.prayInfo[2];
+         var price3:int = PrayIndianaManager.Instance.model.prayInfo[2];
          if(PrayIndianaManager.Instance.model.PrayGoodsCount > 0 && PrayIndianaManager.Instance.model.PrayLotteryGoodsCount > 0)
          {
             SocketManager.Instance.out.prayIndianaLottery();
@@ -588,8 +587,8 @@ package prayIndiana.view
          {
             if(PrayIndianaManager.Instance.showBuyCountFram2)
             {
-               _loc2_ = LanguageMgr.GetTranslation("horseRace.match.buyCountDescription",_loc3_);
-               alert2 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc2_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
+               content = LanguageMgr.GetTranslation("horseRace.match.buyCountDescription",price3);
+               alert2 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),content,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
                _selectBtn2 = ComponentFactory.Instance.creatComponentByStylename("ddtGame.buyConfirmNo.scb");
                _selectBtn2.text = LanguageMgr.GetTranslation("horseRace.match.notTip");
                _selectBtn2.addEventListener("click",__onClickLotterySelectedBtn);
@@ -602,7 +601,7 @@ package prayIndiana.view
             }
             else
             {
-               if(PlayerManager.Instance.Self.Money < _loc3_)
+               if(PlayerManager.Instance.Self.Money < price3)
                {
                   LeavePageManager.showFillFrame();
                   return;
@@ -634,21 +633,20 @@ package prayIndiana.view
          _timerGoods.start();
       }
       
-      private function __goodsTimerHandler(param1:TimerEvent) : void
+      private function __goodsTimerHandler(e:TimerEvent) : void
       {
-         var _loc3_:int = 0;
+         var i:int = 0;
          indexNum = Math.random() * 28;
-         var _loc2_:Array = PrayIndianaManager.Instance.model.getGoods;
-         if(_loc2_.length > 0)
+         var arr:Array = PrayIndianaManager.Instance.model.getGoods;
+         if(arr.length > 0)
          {
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_.length)
+            for(i = 0; i < arr.length; )
             {
-               if(int(_loc2_[_loc3_]) == indexNum)
+               if(int(arr[i]) == indexNum)
                {
                   indexNum = Math.random() * 28;
                }
-               _loc3_++;
+               i++;
             }
          }
          if(indexNum == _goodsIndex)
@@ -659,74 +657,69 @@ package prayIndiana.view
          _goodsView.goodItemContainerAll[indexNum].gotoAndStop(3);
       }
       
-      private function goodsTimerComplete(param1:int) : void
+      private function goodsTimerComplete(index:int) : void
       {
-         var _loc2_:int = _goodsView.cellArr[param1].info.exaltLevel < 5?1:2;
-         _goodsView.goodItemContainerAll[param1].gotoAndStop(_loc2_);
+         var indexs:int = _goodsView.cellArr[index].info.exaltLevel < 5?1:2;
+         _goodsView.goodItemContainerAll[index].gotoAndStop(indexs);
       }
       
-      private function __goodsTimerComplete(param1:TimerEvent) : void
+      private function __goodsTimerComplete(e:TimerEvent) : void
       {
       }
       
       private function showGoodsItem() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:Array = _goodsView.cellArr;
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_.length)
+         var i:int = 0;
+         var arr:Array = _goodsView.cellArr;
+         for(i = 0; i < arr.length; )
          {
-            if(_loc1_[_loc2_].info.TemplateID == PrayIndianaManager.Instance.model.templateID && _loc1_[_loc2_].info.Place == PrayIndianaManager.Instance.model.position)
+            if(arr[i].info.TemplateID == PrayIndianaManager.Instance.model.templateID && arr[i].info.Place == PrayIndianaManager.Instance.model.position)
             {
-               PrayIndianaManager.Instance.model.getGoods.push(_loc2_);
-               _goodsView.goodItemContainerAll[_loc2_].gotoAndStop(3);
-               _goodsView.cellArr[_loc2_].filters = ComponentFactory.Instance.creatFilters("grayFilter");
-               _goodsView.cellArr[_loc2_].alpha = 0.4;
+               PrayIndianaManager.Instance.model.getGoods.push(i);
+               _goodsView.goodItemContainerAll[i].gotoAndStop(3);
+               _goodsView.cellArr[i].filters = ComponentFactory.Instance.creatFilters("grayFilter");
+               _goodsView.cellArr[i].alpha = 0.4;
                enableBtnToTrue();
-               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("PrayIndianaFrame.GetGoodsTip",_loc1_[_loc2_].info.Name));
+               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("PrayIndianaFrame.GetGoodsTip",arr[i].info.Name));
+               setTimeout(showLotteryGoods,1000,i);
                return;
-               §§push(setTimeout(showLotteryGoods,1000,_loc2_));
             }
-            else
-            {
-               _loc2_++;
-               continue;
-            }
+            i++;
          }
       }
       
-      private function showLotteryGoods(param1:int) : void
+      private function showLotteryGoods(index:int) : void
       {
-         var _loc2_:int = _goodsView.cellArr[param1].info.exaltLevel < 5?1:2;
-         _goodsView.goodItemContainerAll[param1].gotoAndStop(_loc2_);
+         var indexs:int = _goodsView.cellArr[index].info.exaltLevel < 5?1:2;
+         _goodsView.goodItemContainerAll[index].gotoAndStop(indexs);
          updateLotteryNumber();
       }
       
-      private function __onClickLotterySelectedBtn(param1:MouseEvent) : void
+      private function __onClickLotterySelectedBtn(e:MouseEvent) : void
       {
          PrayIndianaManager.Instance.showBuyCountFram2 = !_selectBtn2.selected;
       }
       
-      private function __onRecoverLotteryResponse(param1:FrameEvent) : void
+      private function __onRecoverLotteryResponse(e:FrameEvent) : void
       {
-         var _loc2_:int = 0;
+         var price:int = 0;
          SoundManager.instance.playButtonSound();
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         if(e.responseCode == 3 || e.responseCode == 2)
          {
             if(PlayerManager.Instance.Self.bagLocked)
             {
                BaglockedManager.Instance.show();
                return;
             }
-            _loc2_ = PrayIndianaManager.Instance.model.prayInfo[2];
-            if(PlayerManager.Instance.Self.Money < _loc2_)
+            price = PrayIndianaManager.Instance.model.prayInfo[2];
+            if(PlayerManager.Instance.Self.Money < price)
             {
                LeavePageManager.showFillFrame();
                return;
             }
             SocketManager.Instance.out.prayIndianaLottery();
          }
-         else if(param1.responseCode == 4 || param1.responseCode == 0 || param1.responseCode == 1)
+         else if(e.responseCode == 4 || e.responseCode == 0 || e.responseCode == 1)
          {
             PrayIndianaManager.Instance.showBuyCountFram2 = true;
          }
@@ -744,14 +737,14 @@ package prayIndiana.view
          }
       }
       
-      protected function __onHelpClick(param1:MouseEvent) : void
+      protected function __onHelpClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:DisplayObject = ComponentFactory.Instance.creat("PrayIndianaFrame.HelpPrompt");
-         var _loc3_:HelpFrame = ComponentFactory.Instance.creat("PrayIndianaFrame.HelpFrame");
-         _loc3_.setView(_loc2_);
-         _loc3_.titleText = LanguageMgr.GetTranslation("store.view.HelpButtonText");
-         LayerManager.Instance.addToLayer(_loc3_,1,true,1);
+         var helpBd:DisplayObject = ComponentFactory.Instance.creat("PrayIndianaFrame.HelpPrompt");
+         var helpPage:HelpFrame = ComponentFactory.Instance.creat("PrayIndianaFrame.HelpFrame");
+         helpPage.setView(helpBd);
+         helpPage.titleText = LanguageMgr.GetTranslation("store.view.HelpButtonText");
+         LayerManager.Instance.addToLayer(helpPage,1,true,1);
       }
       
       private function enableBtnToFalse() : void
@@ -828,13 +821,13 @@ package prayIndiana.view
          }
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
          if(_isQuit)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("PrayIndianaFrame.ExitNo"));
          }
-         else if(param1.responseCode == 0 || param1.responseCode == 1)
+         else if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             _isQuit = false;
             SoundManager.instance.play("008");
@@ -851,9 +844,9 @@ package prayIndiana.view
          _probabilityText.text = LanguageMgr.GetTranslation("Pray.PrayIndianaFrame.probabilityText",PrayIndianaManager.Instance.model.probabilityNum.toString());
       }
       
-      private function visiblePaopao(param1:int) : void
+      private function visiblePaopao(num:int) : void
       {
-         if(param1 >= 1)
+         if(num >= 1)
          {
             _paopaoText.visible = true;
             _paopao.visible = true;
@@ -865,9 +858,9 @@ package prayIndiana.view
          }
       }
       
-      private function visiblePaopaoPray(param1:int) : void
+      private function visiblePaopaoPray(num:int) : void
       {
-         if(param1 >= 1)
+         if(num >= 1)
          {
             _paopaoPrayText.visible = true;
             _paopaoPray.visible = true;
@@ -887,8 +880,8 @@ package prayIndiana.view
             _target = null;
          }
          _target = ComponentFactory.Instance.creat("prayIndiana.target");
-         var _loc1_:Number = Math.random() * 295;
-         _target.x = _loc1_ < 85?85:Number(_loc1_);
+         var value:Number = Math.random() * 295;
+         _target.x = value < 85?85:Number(value);
          _target.y = 420;
          addToContent(_target);
       }

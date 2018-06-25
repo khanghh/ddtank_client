@@ -43,9 +43,9 @@ package cardSystem.view.cardCollect
          initView();
       }
       
-      public function set seleted(param1:Boolean) : void
+      public function set seleted(value:Boolean) : void
       {
-         _seleted = param1;
+         _seleted = value;
          if(_seleted)
          {
             _light.visible = true;
@@ -63,7 +63,7 @@ package cardSystem.view.cardCollect
       
       private function initView() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _itemBG = ComponentFactory.Instance.creatComponentByStylename("CollectBagItem.BG");
          _light = ComponentFactory.Instance.creatComponentByStylename("CollectBagItem.light");
          _setsName = ComponentFactory.Instance.creatComponentByStylename("CollectBagItem.setsName");
@@ -73,22 +73,21 @@ package cardSystem.view.cardCollect
          addChild(_setsName);
          addChild(_container);
          _cardsVector = new Vector.<CardBagCell>(5);
-         _loc1_ = 0;
-         while(_loc1_ < 5)
+         for(i = 0; i < 5; )
          {
-            _cardsVector[_loc1_] = new CardBagCell(ComponentFactory.Instance.creatBitmap("asset.cardBag.cardBGOne"));
-            _cardsVector[_loc1_].setContentSize(68,92);
-            _cardsVector[_loc1_].starVisible = false;
-            _cardsVector[_loc1_].mouseChildren = false;
-            _cardsVector[_loc1_].mouseEnabled = false;
-            _container.addChild(_cardsVector[_loc1_]);
-            _loc1_++;
+            _cardsVector[i] = new CardBagCell(ComponentFactory.Instance.creatBitmap("asset.cardBag.cardBGOne"));
+            _cardsVector[i].setContentSize(68,92);
+            _cardsVector[i].starVisible = false;
+            _cardsVector[i].mouseChildren = false;
+            _cardsVector[i].mouseEnabled = false;
+            _container.addChild(_cardsVector[i]);
+            i++;
          }
       }
       
-      public function set setsInfo(param1:SetsInfo) : void
+      public function set setsInfo(value:SetsInfo) : void
       {
-         _setsInfo = param1;
+         _setsInfo = value;
          upView();
       }
       
@@ -99,100 +98,95 @@ package cardSystem.view.cardCollect
       
       private function upView() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
+         var i:int = 0;
+         var j:int = 0;
          seleted = false;
-         var _loc1_:int = 0;
+         var len:int = 0;
          if(_setsInfo)
          {
             _setsName.text = _setsInfo.name;
-            _loc1_ = _setsInfo.cardIdVec.length;
-            _loc3_ = 0;
-            while(_loc3_ < 5)
+            len = _setsInfo.cardIdVec.length;
+            for(i = 0; i < 5; )
             {
-               if(_loc3_ < _loc1_)
+               if(i < len)
                {
-                  _cardsVector[_loc3_].visible = true;
-                  _cardsVector[_loc3_].cardID = _setsInfo.cardIdVec[_loc3_];
-                  _cardsVector[_loc3_].filters = null;
+                  _cardsVector[i].visible = true;
+                  _cardsVector[i].cardID = _setsInfo.cardIdVec[i];
+                  _cardsVector[i].filters = null;
                }
                else
                {
-                  _cardsVector[_loc3_].visible = false;
+                  _cardsVector[i].visible = false;
                }
-               _loc3_++;
+               i++;
             }
          }
          else
          {
-            _loc1_ = 5;
+            len = 5;
             _setsName.text = LanguageMgr.GetTranslation("ddt.cardSyste.bagItem.unkwon");
-            _loc2_ = 0;
-            while(_loc2_ < 5)
+            for(j = 0; j < 5; )
             {
-               _cardsVector[_loc2_].visible = true;
-               _cardsVector[_loc2_].cardInfo = null;
-               _cardsVector[_loc2_].showCardName(LanguageMgr.GetTranslation("ddt.cardSyste.bagItem.unkwon"));
-               _cardsVector[_loc2_].filters = ComponentFactory.Instance.creatFilters("grayFilter");
-               _cardsVector[_loc2_].mouseChildren = false;
-               _cardsVector[_loc2_].mouseEnabled = false;
-               _loc2_++;
+               _cardsVector[j].visible = true;
+               _cardsVector[j].cardInfo = null;
+               _cardsVector[j].showCardName(LanguageMgr.GetTranslation("ddt.cardSyste.bagItem.unkwon"));
+               _cardsVector[j].filters = ComponentFactory.Instance.creatFilters("grayFilter");
+               _cardsVector[j].mouseChildren = false;
+               _cardsVector[j].mouseEnabled = false;
+               j++;
             }
          }
-         _itemBG.width = 78 * _loc1_ + 5;
-         _light.width = 78 * _loc1_ + 15 + _loc1_ * 2;
+         _itemBG.width = 78 * len + 5;
+         _light.width = 78 * len + 15 + len * 2;
       }
       
-      public function setSetsDate(param1:Vector.<CardInfo>) : void
+      public function setSetsDate(date:Vector.<CardInfo>) : void
       {
-         var _loc5_:int = 0;
-         var _loc3_:int = 0;
-         var _loc2_:int = _setsInfo.cardIdVec.length;
-         var _loc4_:int = param1.length;
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_)
+         var i:int = 0;
+         var j:int = 0;
+         var setsLen:int = _setsInfo.cardIdVec.length;
+         var dateLen:int = date.length;
+         for(i = 0; i < setsLen; )
          {
-            if(_loc4_ > 0)
+            if(dateLen > 0)
             {
-               _loc3_ = 0;
-               while(_loc3_ < _loc4_)
+               for(j = 0; j < dateLen; )
                {
-                  if(_cardsVector[_loc5_].cardID == param1[_loc3_].TemplateID)
+                  if(_cardsVector[i].cardID == date[j].TemplateID)
                   {
-                     _cardsVector[_loc5_].cardInfo = param1[_loc3_];
-                     _cardsVector[_loc5_].collectCard = true;
+                     _cardsVector[i].cardInfo = date[j];
+                     _cardsVector[i].collectCard = true;
                      break;
                   }
-                  if(_loc3_ == _loc4_ - 1)
+                  if(j == dateLen - 1)
                   {
-                     _cardsVector[_loc5_].cardInfo = null;
-                     _cardsVector[_loc5_].showCardName(ItemManager.Instance.getTemplateById(_cardsVector[_loc5_].cardID).Name);
+                     _cardsVector[i].cardInfo = null;
+                     _cardsVector[i].showCardName(ItemManager.Instance.getTemplateById(_cardsVector[i].cardID).Name);
                   }
-                  _loc3_++;
+                  j++;
                }
             }
             else
             {
-               _cardsVector[_loc5_].cardInfo = null;
-               _cardsVector[_loc5_].showCardName(ItemManager.Instance.getTemplateById(_cardsVector[_loc5_].cardID).Name);
+               _cardsVector[i].cardInfo = null;
+               _cardsVector[i].showCardName(ItemManager.Instance.getTemplateById(_cardsVector[i].cardID).Name);
             }
-            _loc5_++;
+            i++;
          }
       }
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _setsInfo = null;
          _itemInfo = null;
          ObjectUtils.disposeAllChildren(this);
          _container = null;
          _setsName = null;
-         _loc1_ = 0;
-         while(_loc1_ < _cardsVector.length)
+         for(i = 0; i < _cardsVector.length; )
          {
-            _cardsVector[_loc1_] = null;
-            _loc1_++;
+            _cardsVector[i] = null;
+            i++;
          }
          _cardsVector = null;
          _itemBG = null;

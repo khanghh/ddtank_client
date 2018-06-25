@@ -39,9 +39,9 @@ package labyrinth.view
          _number = UICreatShortcut.creatTextAndAdd("ddt.labyrinth.RankingListItem.text3","23232",this);
       }
       
-      public function setListCellStatus(param1:List, param2:Boolean, param3:int) : void
+      public function setListCellStatus(list:List, isSelected:Boolean, index:int) : void
       {
-         if(param3 % 2 != 0)
+         if(index % 2 != 0)
          {
             _itemBG.setFrame(2);
          }
@@ -56,9 +56,9 @@ package labyrinth.view
          return _info;
       }
       
-      public function setCellValue(param1:*) : void
+      public function setCellValue(value:*) : void
       {
-         _info = param1 as RankingInfo;
+         _info = value as RankingInfo;
          _ranking.text = _info.PlayerRank.toString();
          _name.text = _info.PlayerName.toString();
          _number.text = _info.FamLevel.toString();

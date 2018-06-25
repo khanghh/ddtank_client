@@ -28,10 +28,10 @@ package fightLib.view
          super();
       }
       
-      private static function createShineEffect(param1:LevelButton) : IEffect
+      private static function createShineEffect(target:LevelButton) : IEffect
       {
-         var _loc2_:Point = ComponentFactory.Instance.creatCustomObject("fightLib.Lessons.LevelShinePosition");
-         return EffectManager.Instance.creatEffect(1,param1,"fightLib.Lessons.LevelShine",_loc2_);
+         var position:Point = ComponentFactory.Instance.creatCustomObject("fightLib.Lessons.LevelShinePosition");
+         return EffectManager.Instance.creatEffect(1,target,"fightLib.Lessons.LevelShine",position);
       }
       
       override protected function init() : void
@@ -58,11 +58,11 @@ package fightLib.view
          super.dispose();
       }
       
-      override public function set enable(param1:Boolean) : void
+      override public function set enable(value:Boolean) : void
       {
-         if(_enable != param1)
+         if(_enable != value)
          {
-            .super.enable = param1;
+            .super.enable = value;
             if(_enable)
             {
                this.filters = null;
@@ -87,11 +87,11 @@ package fightLib.view
          return _shine;
       }
       
-      public function set shine(param1:Boolean) : void
+      public function set shine(val:Boolean) : void
       {
-         if(_shine != param1)
+         if(_shine != val)
          {
-            _shine = param1;
+            _shine = val;
             if(_shine)
             {
                if(_enable)
@@ -104,11 +104,11 @@ package fightLib.view
                _shineEffect.stop();
                var _loc4_:int = 0;
                var _loc3_:* = AddMovieEffect(_shineEffect).movie;
-               for each(var _loc2_ in AddMovieEffect(_shineEffect).movie)
+               for each(var movie in AddMovieEffect(_shineEffect).movie)
                {
-                  if(_loc2_ is MovieClip)
+                  if(movie is MovieClip)
                   {
-                     MovieClip(_loc2_).gotoAndStop(1);
+                     MovieClip(movie).gotoAndStop(1);
                   }
                }
             }
@@ -120,11 +120,11 @@ package fightLib.view
          return _selected;
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(val:Boolean) : void
       {
-         if(_selected != param1)
+         if(_selected != val)
          {
-            _selected = param1;
+            _selected = val;
             _selectedBitmap.visible = _selected;
             this.setChildIndex(_selectedBitmap,this.numChildren - 1);
          }

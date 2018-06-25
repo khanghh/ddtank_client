@@ -49,12 +49,12 @@ package ddt.view.caddyII.bead
       {
          _bg = ComponentFactory.Instance.creatComponentByStylename("bead.selectBox.sparkBorder");
          _numberTxt = ComponentFactory.Instance.creatComponentByStylename("bead.numberTxt");
-         var _loc1_:Point = ComponentFactory.Instance.creatCustomObject("bead.cellSize");
-         var _loc2_:Shape = new Shape();
-         _loc2_.graphics.beginFill(16777215,0);
-         _loc2_.graphics.drawRect(0,0,_loc1_.x,_loc1_.y);
-         _loc2_.graphics.endFill();
-         _beadCell = ComponentFactory.Instance.creatCustomObject("bead.selectCell",[_loc2_]);
+         var point:Point = ComponentFactory.Instance.creatCustomObject("bead.cellSize");
+         var shape:Shape = new Shape();
+         shape.graphics.beginFill(16777215,0);
+         shape.graphics.drawRect(0,0,point.x,point.y);
+         shape.graphics.endFill();
+         _beadCell = ComponentFactory.Instance.creatCustomObject("bead.selectCell",[shape]);
          _inputBg = ComponentFactory.Instance.creatBitmap("asset.numInput.bg");
          addChild(_inputBg);
          addChild(_numberTxt);
@@ -75,27 +75,27 @@ package ddt.view.caddyII.bead
          removeEventListener("mouseOut",_out);
       }
       
-      private function _over(param1:MouseEvent) : void
+      private function _over(e:MouseEvent) : void
       {
       }
       
-      private function _out(param1:MouseEvent) : void
+      private function _out(e:MouseEvent) : void
       {
       }
       
-      public function set info(param1:ItemTemplateInfo) : void
+      public function set info(info:ItemTemplateInfo) : void
       {
-         _beadCell.info = param1;
+         _beadCell.info = info;
       }
       
-      public function set autoSelect(param1:Boolean) : void
+      public function set autoSelect(value:Boolean) : void
       {
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         _bg.visible = param1;
-         _isSelected = param1;
+         _bg.visible = value;
+         _isSelected = value;
       }
       
       public function get selected() : Boolean
@@ -108,9 +108,9 @@ package ddt.view.caddyII.bead
          return this as DisplayObject;
       }
       
-      public function set count(param1:int) : void
+      public function set count(value:int) : void
       {
-         _count = param1;
+         _count = value;
          _numberTxt.text = String(_count);
       }
       

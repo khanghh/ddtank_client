@@ -40,7 +40,7 @@ package equipretrieve.view
          addEventListener("response",_response);
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          dispose();

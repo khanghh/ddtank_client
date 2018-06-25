@@ -36,9 +36,9 @@ package flashP2P
       
       private var _readStreams:DictionaryData;
       
-      public function FlashP2PManager(param1:IEventDispatcher = null)
+      public function FlashP2PManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get Instance() : FlashP2PManager
@@ -62,9 +62,9 @@ package flashP2P
          _netConnection.close();
       }
       
-      protected function __netConnectionHandler(param1:NetStatusEvent) : void
+      protected function __netConnectionHandler(event:NetStatusEvent) : void
       {
-         var _loc2_:* = param1.info.code;
+         var _loc2_:* = event.info.code;
          if("NetConnection.Connect.Success" !== _loc2_)
          {
             if("NetConnection.Connect.Closed" !== _loc2_)
@@ -109,96 +109,95 @@ package flashP2P
          _sendStream = new SendStream(_netConnection,"directConnections");
       }
       
-      public function getPeerIDByPlayerID(param1:int) : String
+      public function getPeerIDByPlayerID(playerID:int) : String
       {
          return null;
       }
       
-      public function addReadStream(param1:String, param2:int) : void
+      public function addReadStream(peerID:String, playerID:int) : void
       {
-         var _loc3_:ReadStream = new ReadStream(_netConnection,param2,param1);
-         _loc3_.addEventListener("defaultEvent",onReadStreamHandler);
-         _loc3_.addEventListener("netStatus",__onNetStatus);
-         _loc3_.play("DDT-P2P-PUBLISH-NAME");
+         var readStream:ReadStream = new ReadStream(_netConnection,playerID,peerID);
+         readStream.addEventListener("defaultEvent",onReadStreamHandler);
+         readStream.addEventListener("netStatus",__onNetStatus);
+         readStream.play("DDT-P2P-PUBLISH-NAME");
       }
       
-      protected function __onNetStatus(param1:NetStatusEvent) : void
+      protected function __onNetStatus(event:NetStatusEvent) : void
       {
-         ChatManager.Instance.sysChatRed(param1.info.code);
+         ChatManager.Instance.sysChatRed(event.info.code);
       }
       
-      public function sendPlivateMsg(param1:String, param2:String, param3:String, param4:Number = 0, param5:Boolean = false) : void
+      public function sendPlivateMsg(peerID:String, toNick:String, msg:String, toId:Number = 0, isAutoReply:Boolean = false) : void
       {
-         var _loc6_:ByteArray = new ByteArray();
-         _loc6_.writeInt(param4);
-         _loc6_.writeUTF(param2);
-         _loc6_.writeUTF(PlayerManager.Instance.Self.NickName);
-         _loc6_.writeInt(PlayerManager.Instance.Self.ID);
-         _loc6_.writeUTF(param3);
-         _loc6_.writeBoolean(param5);
-         if(getPeerIndex(param1) != -1)
+         var pkg:ByteArray = new ByteArray();
+         pkg.writeInt(toId);
+         pkg.writeUTF(toNick);
+         pkg.writeUTF(PlayerManager.Instance.Self.NickName);
+         pkg.writeInt(PlayerManager.Instance.Self.ID);
+         pkg.writeUTF(msg);
+         pkg.writeBoolean(isAutoReply);
+         if(getPeerIndex(peerID) != -1)
          {
-            _sendStream.peerStreams[getPeerIndex(param1)].send("readByteArray","PrivateMsg",_loc6_);
+            _sendStream.peerStreams[getPeerIndex(peerID)].send("readByteArray","PrivateMsg",pkg);
          }
       }
       
-      public function sendLookPlayerInfo(param1:String) : void
+      public function sendLookPlayerInfo(peerID:String) : void
       {
-         var _loc2_:ByteArray = new ByteArray();
-         _loc2_.writeUTF(param1);
-         if(getPeerIndex(param1) != -1)
+         var pkg:ByteArray = new ByteArray();
+         pkg.writeUTF(peerID);
+         if(getPeerIndex(peerID) != -1)
          {
-            _sendStream.peerStreams[getPeerIndex(param1)].send("readByteArray","LookPlayerInfo",_loc2_);
+            _sendStream.peerStreams[getPeerIndex(peerID)].send("readByteArray","LookPlayerInfo",pkg);
          }
       }
       
-      public function sendShowPlayerInfo(param1:String, param2:SelfInfo) : void
+      public function sendShowPlayerInfo(peerID:String, self:SelfInfo) : void
       {
-         var _loc3_:Object = GeneralUtils.serializeObject(param2);
-         var _loc4_:ByteArray = new ByteArray();
-         _loc4_.writeUTF(param1);
-         _loc4_.writeObject(_loc3_);
-         if(getPeerIndex(param1) != -1)
+         var selfObj:Object = GeneralUtils.serializeObject(self);
+         var pkg:ByteArray = new ByteArray();
+         pkg.writeUTF(peerID);
+         pkg.writeObject(selfObj);
+         if(getPeerIndex(peerID) != -1)
          {
-            _sendStream.peerStreams[getPeerIndex(param1)].send("readByteArray","ShowPlayerInfo",_loc4_);
+            _sendStream.peerStreams[getPeerIndex(peerID)].send("readByteArray","ShowPlayerInfo",pkg);
          }
       }
       
-      public function getPeerIndex(param1:String) : int
+      public function getPeerIndex(peerID:String) : int
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _sendStream.peerStreams.length)
+         var i:int = 0;
+         for(i = 0; i < _sendStream.peerStreams.length; )
          {
-            if(_sendStream.peerStreams[_loc2_].nearID == param1)
+            if(_sendStream.peerStreams[i].nearID == peerID)
             {
-               return _loc2_;
+               return i;
             }
-            _loc2_++;
+            i++;
          }
          return -1;
       }
       
-      protected function onReadStreamHandler(param1:StreamEvent) : void
+      protected function onReadStreamHandler(event:StreamEvent) : void
       {
-         var _loc2_:* = param1.eventType;
+         var _loc2_:* = event.eventType;
          if("PrivateMsg" !== _loc2_)
          {
             if("LookPlayerInfo" !== _loc2_)
             {
                if("ShowPlayerInfo" === _loc2_)
                {
-                  dispatchEvent(new StreamEvent("ShowPlayerInfo","",param1.readByteArray));
+                  dispatchEvent(new StreamEvent("ShowPlayerInfo","",event.readByteArray));
                }
             }
             else
             {
-               dispatchEvent(new StreamEvent("LookPlayerInfo","",param1.readByteArray));
+               dispatchEvent(new StreamEvent("LookPlayerInfo","",event.readByteArray));
             }
          }
          else
          {
-            dispatchEvent(new StreamEvent("PrivateMsg","",param1.readByteArray));
+            dispatchEvent(new StreamEvent("PrivateMsg","",event.readByteArray));
          }
       }
    }

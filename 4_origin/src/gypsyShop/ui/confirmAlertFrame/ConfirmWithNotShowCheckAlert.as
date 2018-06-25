@@ -17,9 +17,9 @@ package gypsyShop.ui.confirmAlertFrame
          super();
       }
       
-      public function set selectedCheckButton(param1:SelectedCheckButton) : void
+      public function set selectedCheckButton(value:SelectedCheckButton) : void
       {
-         _scb = param1;
+         _scb = value;
       }
       
       public function get isNoPrompt() : Boolean
@@ -27,9 +27,9 @@ package gypsyShop.ui.confirmAlertFrame
          return _scb.selected;
       }
       
-      override public function set info(param1:AlertInfo) : void
+      override public function set info(value:AlertInfo) : void
       {
-         .super.info = param1;
+         .super.info = value;
          if(_scb == null)
          {
             _scb = ComponentFactory.Instance.creatComponentByStylename("ddtGame.buyConfirmNo.scb");

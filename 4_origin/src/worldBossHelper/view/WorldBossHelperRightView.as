@@ -111,9 +111,9 @@ package worldBossHelper.view
       
       private function initView() : void
       {
-         var _loc4_:int = 0;
-         var _loc5_:int = 0;
-         var _loc1_:int = 0;
+         var money1:int = 0;
+         var money2:int = 0;
+         var money:int = 0;
          _rightBg = ComponentFactory.Instance.creat("worldBossHelper.view.rightBg");
          addChild(_rightBg);
          _numBg = ComponentFactory.Instance.creat("worldBossHelper.buff");
@@ -132,33 +132,33 @@ package worldBossHelper.view
          addChild(_selectBg1);
          _selectBtn1 = ComponentFactory.Instance.creatComponentByStylename("worldBossHelper.buybornBtn");
          addChild(_selectBtn1);
-         var _loc6_:ServerConfigInfo = ServerConfigManager.instance.findInfoByName("WorldBossReviveMoney");
-         if(_loc6_ && _loc6_.Value)
+         var moneyNumInfo1:ServerConfigInfo = ServerConfigManager.instance.findInfoByName("WorldBossReviveMoney");
+         if(moneyNumInfo1 && moneyNumInfo1.Value)
          {
-            _loc4_ = _loc6_.Value;
+            money1 = moneyNumInfo1.Value;
          }
          else
          {
-            _loc4_ = 10;
+            money1 = 10;
          }
          _buybornTxt = ComponentFactory.Instance.creatComponentByStylename("worldBossHelper.view.descritionText");
-         _buybornTxt.text = LanguageMgr.GetTranslation("worldbosshelper.buyborn",_loc4_);
+         _buybornTxt.text = LanguageMgr.GetTranslation("worldbosshelper.buyborn",money1);
          _buybornTxt.x = _selectBtn1.x + 20;
          _buybornTxt.y = _selectBtn1.y + 22;
          addChild(_buybornTxt);
          _selectBtn2 = ComponentFactory.Instance.creatComponentByStylename("worldBossHelper.fightnowBtn");
          addChild(_selectBtn2);
-         var _loc3_:ServerConfigInfo = ServerConfigManager.instance.findInfoByName("WorldBossFightMoney");
-         if(_loc3_ && _loc3_.Value)
+         var moneyNumInfo2:ServerConfigInfo = ServerConfigManager.instance.findInfoByName("WorldBossFightMoney");
+         if(moneyNumInfo2 && moneyNumInfo2.Value)
          {
-            _loc5_ = _loc3_.Value;
+            money2 = moneyNumInfo2.Value;
          }
          else
          {
-            _loc5_ = 12;
+            money2 = 12;
          }
          _fightnowTxt = ComponentFactory.Instance.creatComponentByStylename("worldBossHelper.view.descritionText");
-         _fightnowTxt.text = LanguageMgr.GetTranslation("worldbosshelper.fightnow",_loc5_);
+         _fightnowTxt.text = LanguageMgr.GetTranslation("worldbosshelper.fightnow",money2);
          _fightnowTxt.x = _selectBtn2.x + 20;
          _fightnowTxt.y = _selectBtn2.y + 22;
          addChild(_fightnowTxt);
@@ -166,17 +166,17 @@ package worldBossHelper.view
          addChild(_selectBg2);
          _selectBtn3 = ComponentFactory.Instance.creatComponentByStylename("worldBossHelper.startOnceBtn");
          addChild(_selectBtn3);
-         var _loc2_:ServerConfigInfo = ServerConfigManager.instance.findInfoByName("WorldBossAssistantFightMoney");
-         if(_loc2_ && _loc2_.Value)
+         var moneyNumInfo:ServerConfigInfo = ServerConfigManager.instance.findInfoByName("WorldBossAssistantFightMoney");
+         if(moneyNumInfo && moneyNumInfo.Value)
          {
-            _loc1_ = _loc2_.Value;
+            money = moneyNumInfo.Value;
          }
          else
          {
-            _loc1_ = 10;
+            money = 10;
          }
          _startTxt = ComponentFactory.Instance.creatComponentByStylename("worldBossHelper.view.descritionText");
-         _startTxt.text = LanguageMgr.GetTranslation("worldbosshelper.startOnce",_loc1_);
+         _startTxt.text = LanguageMgr.GetTranslation("worldbosshelper.startOnce",money);
          _startTxt.x = _selectBtn3.x + 20;
          _startTxt.y = _selectBtn3.y + 22;
          addChild(_startTxt);
@@ -187,7 +187,7 @@ package worldBossHelper.view
          _typeItemGroup2.addSelectItem(_selectBtn3);
          _typeItemGroup2.addSelectItem(_selectBtn4);
          _startOnceTxt = ComponentFactory.Instance.creatComponentByStylename("worldBossHelper.view.descritionText");
-         _startOnceTxt.text = LanguageMgr.GetTranslation("worldbosshelper.start",_loc1_);
+         _startOnceTxt.text = LanguageMgr.GetTranslation("worldbosshelper.start",money);
          _startOnceTxt.x = _selectBtn4.x + 20;
          _startOnceTxt.y = _selectBtn4.y + 22;
          addChild(_startOnceTxt);
@@ -235,12 +235,12 @@ package worldBossHelper.view
          _selectBtn2.addEventListener("select",__chooseItemHandler);
       }
       
-      protected function __typeItemHandler(param1:Event) : void
+      protected function __typeItemHandler(event:Event) : void
       {
          SoundManager.instance.play("008");
       }
       
-      protected function __chooseItemHandler(param1:Event) : void
+      protected function __chooseItemHandler(event:Event) : void
       {
          if(_selectBtn1.selected)
          {
@@ -268,7 +268,7 @@ package worldBossHelper.view
          _selectBtn2.removeEventListener("select",__chooseItemHandler);
       }
       
-      protected function __inputHandler(param1:Event) : void
+      protected function __inputHandler(event:Event) : void
       {
          if(int(_inputTxt.text) < _minNum)
          {
@@ -282,7 +282,7 @@ package worldBossHelper.view
          updateInputView();
       }
       
-      protected function __maxBtnHandler(param1:MouseEvent) : void
+      protected function __maxBtnHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _inputNum = 20;
@@ -297,31 +297,29 @@ package worldBossHelper.view
       
       public function dispose() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
+         var i:int = 0;
+         var j:int = 0;
          removeEvent();
          _typeItemGroup1 = null;
          _typeItemGroup2 = null;
-         _loc2_ = 0;
-         while(_loc2_ < _disposeArr.length)
+         for(i = 0; i < _disposeArr.length; )
          {
-            if(_disposeArr[_loc2_])
+            if(_disposeArr[i])
             {
-               _disposeArr[_loc2_].dispose();
-               _disposeArr[_loc2_] = null;
+               _disposeArr[i].dispose();
+               _disposeArr[i] = null;
             }
-            _loc2_++;
+            i++;
          }
          _disposeArr = null;
-         _loc1_ = 0;
-         while(_loc1_ < _bitmapArr.length)
+         for(j = 0; j < _bitmapArr.length; )
          {
-            if(_bitmapArr[_loc1_])
+            if(_bitmapArr[j])
             {
-               (_bitmapArr[_loc1_] as Bitmap).bitmapData.dispose();
-               _bitmapArr[_loc1_] = null;
+               (_bitmapArr[j] as Bitmap).bitmapData.dispose();
+               _bitmapArr[j] = null;
             }
-            _loc1_++;
+            j++;
          }
          _bitmapArr = null;
          if(parent)

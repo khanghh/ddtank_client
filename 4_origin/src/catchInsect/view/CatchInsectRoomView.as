@@ -80,11 +80,11 @@ package catchInsect.view
       
       private var _timer:Timer;
       
-      public function CatchInsectRoomView(param1:CatchInsectRoomController, param2:CatchInsectRoomModel)
+      public function CatchInsectRoomView(controller:CatchInsectRoomController, model:CatchInsectRoomModel)
       {
          super();
-         this._contoller = param1;
-         this._model = param2;
+         this._contoller = controller;
+         this._model = model;
          initialize();
          SocketManager.Instance.out.updateInsectInfo();
       }
@@ -156,15 +156,15 @@ package catchInsect.view
       
       private function updateBtnTxt() : void
       {
-         var _loc2_:int = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(11958);
-         var _loc1_:int = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(11968);
-         _useCakeTxt.text = _loc2_ + "";
-         _useWhistleTxt.text = _loc1_ + "";
-         _useCakeTxt.visible = _loc2_ < 1?false:true;
-         _useWhistleTxt.visible = _loc1_ < 1?false:true;
+         var count1:int = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(11958);
+         var count2:int = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(11968);
+         _useCakeTxt.text = count1 + "";
+         _useWhistleTxt.text = count2 + "";
+         _useCakeTxt.visible = count1 < 1?false:true;
+         _useWhistleTxt.visible = count2 < 1?false:true;
       }
       
-      private function __updateFightMonster(param1:CatchInsectRoomEvent) : void
+      private function __updateFightMonster(event:CatchInsectRoomEvent) : void
       {
          if(_useWhistleBtn)
          {
@@ -172,60 +172,60 @@ package catchInsect.view
          }
       }
       
-      protected function __useCakeBtnClick(param1:MouseEvent) : void
+      protected function __useCakeBtnClick(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var _quick:* = null;
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc3_:InventoryItemInfo = PlayerManager.Instance.Self.PropBag.getItemByTemplateId(11958);
-         if(_loc3_)
+         var info:InventoryItemInfo = PlayerManager.Instance.Self.PropBag.getItemByTemplateId(11958);
+         if(info)
          {
-            SocketManager.Instance.out.sendUseCard(_loc3_.BagType,_loc3_.Place,[_loc3_.TemplateID],_loc3_.PayType);
+            SocketManager.Instance.out.sendUseCard(info.BagType,info.Place,[info.TemplateID],info.PayType);
             SocketManager.Instance.out.requestCakeStatus();
          }
          else
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("catchInsect.noCake"));
-            _loc2_ = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
-            _loc2_.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
-            _loc2_.itemID = 11958;
-            LayerManager.Instance.addToLayer(_loc2_,2,true,1);
+            _quick = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
+            _quick.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
+            _quick.itemID = 11958;
+            LayerManager.Instance.addToLayer(_quick,2,true,1);
          }
       }
       
-      protected function __useWhistleBtnClick(param1:MouseEvent) : void
+      protected function __useWhistleBtnClick(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var _quick:* = null;
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc3_:InventoryItemInfo = PlayerManager.Instance.Self.PropBag.getItemByTemplateId(11968);
-         if(_loc3_)
+         var info:InventoryItemInfo = PlayerManager.Instance.Self.PropBag.getItemByTemplateId(11968);
+         if(info)
          {
             SocketManager.Instance.out.requestInsectWhistleUse(11968);
          }
          else
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("catchInsect.noWhistle"));
-            _loc2_ = ComponentFactory.Instance.creatComponentByStylename("catchInsect.QuickFrame");
-            _loc2_.itemID = 11968;
-            _loc2_.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
-            LayerManager.Instance.addToLayer(_loc2_,2,true,1);
+            _quick = ComponentFactory.Instance.creatComponentByStylename("catchInsect.QuickFrame");
+            _quick.itemID = 11968;
+            _quick.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
+            LayerManager.Instance.addToLayer(_quick,2,true,1);
          }
       }
       
-      protected function __updateScore(param1:Event) : void
+      protected function __updateScore(event:Event) : void
       {
-         var _loc2_:int = CatchInsectManager.instance.model.score;
-         var _loc3_:int = CatchInsectManager.instance.model.avaibleScore;
-         _scoreTxt.text = _loc3_.toString();
+         var total:int = CatchInsectManager.instance.model.score;
+         var avaible:int = CatchInsectManager.instance.model.avaibleScore;
+         _scoreTxt.text = avaible.toString();
       }
       
       private function removeEvent() : void
@@ -239,14 +239,14 @@ package catchInsect.view
          CatchInsectManager.instance.removeEventListener("updatefightMonster",__updateFightMonster);
       }
       
-      protected function __updateGoods(param1:BagEvent) : void
+      protected function __updateGoods(evt:BagEvent) : void
       {
          _ballCountTxt.text = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(10615).toString();
          _netCountTxt.text = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(10616).toString();
          updateBtnTxt();
       }
       
-      protected function __buyNetBtnClick(param1:MouseEvent) : void
+      protected function __buyNetBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -254,13 +254,13 @@ package catchInsect.view
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:QuickBuyFrame = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
-         _loc2_.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
-         _loc2_.itemID = 10616;
-         LayerManager.Instance.addToLayer(_loc2_,2,true,1);
+         var _quick:QuickBuyFrame = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
+         _quick.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
+         _quick.itemID = 10616;
+         LayerManager.Instance.addToLayer(_quick,2,true,1);
       }
       
-      protected function __buyBallBtnClick(param1:MouseEvent) : void
+      protected function __buyBallBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -268,10 +268,10 @@ package catchInsect.view
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:QuickBuyFrame = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
-         _loc2_.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
-         _loc2_.itemID = 10615;
-         LayerManager.Instance.addToLayer(_loc2_,2,true,1);
+         var _quick:QuickBuyFrame = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
+         _quick.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
+         _quick.itemID = 10615;
+         LayerManager.Instance.addToLayer(_quick,2,true,1);
       }
       
       public function setViewAgain() : void
@@ -287,36 +287,36 @@ package catchInsect.view
          SocketManager.Instance.out.updateInsectInfo();
       }
       
-      public function setMap(param1:Point = null) : void
+      public function setMap(localPos:Point = null) : void
       {
          clearMap();
-         var _loc6_:MovieClip = new (ClassUtils.uiSourceDomain.getDefinition(LoaderCatchInsectUIModule.Instance.getMapRes()) as Class)() as MovieClip;
-         var _loc4_:Sprite = _loc6_.getChildByName("articleLayer") as Sprite;
-         var _loc2_:Sprite = _loc6_.getChildByName("NPCMouse") as Sprite;
-         var _loc8_:Sprite = _loc6_.getChildByName("mesh") as Sprite;
-         var _loc5_:Sprite = _loc6_.getChildByName("bg") as Sprite;
-         var _loc7_:Sprite = _loc6_.getChildByName("bgSize") as Sprite;
-         var _loc3_:Sprite = _loc6_.getChildByName("decoration") as Sprite;
-         if(_loc7_)
+         var mapRes:MovieClip = new (ClassUtils.uiSourceDomain.getDefinition(LoaderCatchInsectUIModule.Instance.getMapRes()) as Class)() as MovieClip;
+         var entity:Sprite = mapRes.getChildByName("articleLayer") as Sprite;
+         var sky:Sprite = mapRes.getChildByName("NPCMouse") as Sprite;
+         var mesh:Sprite = mapRes.getChildByName("mesh") as Sprite;
+         var bg:Sprite = mapRes.getChildByName("bg") as Sprite;
+         var bgSize:Sprite = mapRes.getChildByName("bgSize") as Sprite;
+         var decoration:Sprite = mapRes.getChildByName("decoration") as Sprite;
+         if(bgSize)
          {
-            MAP_SIZEII[0] = _loc7_.width;
-            MAP_SIZEII[1] = _loc7_.height;
+            MAP_SIZEII[0] = bgSize.width;
+            MAP_SIZEII[1] = bgSize.height;
          }
          else
          {
-            MAP_SIZEII[0] = _loc5_.width;
-            MAP_SIZEII[1] = _loc5_.height;
+            MAP_SIZEII[0] = bg.width;
+            MAP_SIZEII[1] = bg.height;
          }
-         _sceneScene.setHitTester(new PathMapHitTester(_loc8_));
+         _sceneScene.setHitTester(new PathMapHitTester(mesh));
          if(!_sceneMap)
          {
-            _sceneMap = new CatchInsectScneneMap(_model,_sceneScene,_model.getPlayers(),_model.getObjects(),_loc5_,_loc8_,_loc4_,_loc2_,_loc3_);
+            _sceneMap = new CatchInsectScneneMap(_model,_sceneScene,_model.getPlayers(),_model.getObjects(),bg,mesh,entity,sky,decoration);
             addChildAt(_sceneMap,0);
          }
          _sceneMap.sceneMapVO = getSceneMapVO();
-         if(param1)
+         if(localPos)
          {
-            _sceneMap.sceneMapVO.defaultPos = param1;
+            _sceneMap.sceneMapVO.defaultPos = localPos;
          }
          _sceneMap.addSelfPlayer();
          _sceneMap.setCenter();
@@ -324,36 +324,36 @@ package catchInsect.view
       
       public function getSceneMapVO() : SceneMapVO
       {
-         var _loc1_:SceneMapVO = new SceneMapVO();
-         _loc1_.mapName = LanguageMgr.GetTranslation("church.churchScene.WeddingMainScene");
-         _loc1_.mapW = MAP_SIZEII[0];
-         _loc1_.mapH = MAP_SIZEII[1];
-         _loc1_.defaultPos = ComponentFactory.Instance.creatCustomObject("catchInsect.room.sceneMapVOPosII");
-         return _loc1_;
+         var sceneMapVO:SceneMapVO = new SceneMapVO();
+         sceneMapVO.mapName = LanguageMgr.GetTranslation("church.churchScene.WeddingMainScene");
+         sceneMapVO.mapW = MAP_SIZEII[0];
+         sceneMapVO.mapH = MAP_SIZEII[1];
+         sceneMapVO.defaultPos = ComponentFactory.Instance.creatCustomObject("catchInsect.room.sceneMapVOPosII");
+         return sceneMapVO;
       }
       
-      public function movePlayer(param1:int, param2:Array) : void
+      public function movePlayer(id:int, p:Array) : void
       {
          if(_sceneMap)
          {
-            _sceneMap.movePlayer(param1,param2);
+            _sceneMap.movePlayer(id,p);
          }
       }
       
-      public function updatePlayerStauts(param1:int, param2:int, param3:Point = null) : void
+      public function updatePlayerStauts(id:int, status:int, point:Point = null) : void
       {
          if(_sceneMap)
          {
-            _sceneMap.updatePlayersStauts(param1,param2,param3);
+            _sceneMap.updatePlayersStauts(id,status,point);
          }
       }
       
-      public function updateSelfStatus(param1:int) : void
+      public function updateSelfStatus(value:int) : void
       {
-         _sceneMap.updateSelfStatus(param1);
+         _sceneMap.updateSelfStatus(value);
       }
       
-      private function _leaveRoom(param1:Event) : void
+      private function _leaveRoom(e:Event) : void
       {
          StateManager.setState("main");
          _contoller.dispose();

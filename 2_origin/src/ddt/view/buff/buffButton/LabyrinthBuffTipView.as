@@ -34,13 +34,13 @@ package ddt.view.buff.buffButton
       
       private function createIconList() : void
       {
-         var _loc1_:* = null;
+         var item:* = null;
          var _loc4_:int = 0;
          var _loc3_:* = _buffList;
-         for each(var _loc2_ in _buffList)
+         for each(var buffInfo in _buffList)
          {
-            _loc1_ = new LabyrinthBuffItem(_loc2_);
-            _buffItemVBox.addChild(_loc1_);
+            item = new LabyrinthBuffItem(buffInfo);
+            _buffItemVBox.addChild(item);
          }
          _scrollPanel.invalidateViewport();
       }

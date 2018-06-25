@@ -12,10 +12,10 @@ package petsBag.view
          super();
       }
       
-      override public function set valueLimit(param1:String) : void
+      override public function set valueLimit(value:String) : void
       {
-         var _loc2_:Array = param1.split(",");
-         _valueLimit = new Point(_loc2_[0],_loc2_[1]);
+         var arr:Array = value.split(",");
+         _valueLimit = new Point(arr[0],arr[1]);
          currentValue = _valueLimit.y;
       }
    }

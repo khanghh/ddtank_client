@@ -38,22 +38,22 @@ package kingDivision.view
          addChild(_itemCell);
       }
       
-      public function goodsInfo(param1:int, param2:int, param3:int, param4:int, param5:int, param6:int, param7:Boolean, param8:int) : void
+      public function goodsInfo(value:int, ac:int, dc:int, agc:int, lc:int, count:int, isBind:Boolean, validDate:int) : void
       {
-         var _loc9_:InventoryItemInfo = new InventoryItemInfo();
-         _loc9_.TemplateID = param1;
-         ItemManager.fill(_loc9_);
-         _loc9_.AttackCompose = param2;
-         _loc9_.DefendCompose = param3;
-         _loc9_.AgilityCompose = param4;
-         _loc9_.LuckCompose = param5;
-         _loc9_.Count = param6;
-         _loc9_.IsBinds = param7;
-         _loc9_.ValidDate = param8;
-         _itemCell.info = _loc9_;
-         if(_loc9_.Count > 1)
+         var itemInfo:InventoryItemInfo = new InventoryItemInfo();
+         itemInfo.TemplateID = value;
+         ItemManager.fill(itemInfo);
+         itemInfo.AttackCompose = ac;
+         itemInfo.DefendCompose = dc;
+         itemInfo.AgilityCompose = agc;
+         itemInfo.LuckCompose = lc;
+         itemInfo.Count = count;
+         itemInfo.IsBinds = isBind;
+         itemInfo.ValidDate = validDate;
+         _itemCell.info = itemInfo;
+         if(itemInfo.Count > 1)
          {
-            _itemCell.setCount(_loc9_.Count);
+            _itemCell.setCount(itemInfo.Count);
          }
          else
          {
@@ -63,11 +63,11 @@ package kingDivision.view
       
       protected function creatItemCell() : ShopItemCell
       {
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,46,46);
-         _loc1_.graphics.endFill();
-         return CellFactory.instance.createShopItemCell(_loc1_,null,true,true) as ShopItemCell;
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(16777215,0);
+         sp.graphics.drawRect(0,0,46,46);
+         sp.graphics.endFill();
+         return CellFactory.instance.createShopItemCell(sp,null,true,true) as ShopItemCell;
       }
       
       public function dispose() : void

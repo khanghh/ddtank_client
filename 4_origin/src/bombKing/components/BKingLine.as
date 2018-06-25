@@ -17,10 +17,10 @@ package bombKing.components
       
       private var _place:int;
       
-      public function BKingLine(param1:int)
+      public function BKingLine(place:int)
       {
          super();
-         _place = param1;
+         _place = place;
          initView();
       }
       
@@ -65,9 +65,9 @@ package bombKing.components
          _lightLine.visible = false;
       }
       
-      public function set info(param1:BKingPlayerInfo) : void
+      public function set info(info:BKingPlayerInfo) : void
       {
-         if(param1 && param1.status == 1)
+         if(info && info.status == 1)
          {
             _lightLine.visible = true;
             _darkLine.visible = false;

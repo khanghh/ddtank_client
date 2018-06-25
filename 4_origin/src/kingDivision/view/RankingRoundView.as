@@ -174,7 +174,7 @@ package kingDivision.view
          _timerUpdate.removeEventListener("timer",__updateConsortionMessage);
       }
       
-      private function __onStartBtnClick(param1:MouseEvent) : void
+      private function __onStartBtnClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _timerUpdate.stop();
@@ -201,19 +201,19 @@ package kingDivision.view
       
       private function startGame() : void
       {
-         var _loc1_:int = 0;
+         var type:int = 0;
          if(KingDivisionManager.Instance.states == 1)
          {
-            _loc1_ = 3;
+            type = 3;
          }
          else if(KingDivisionManager.Instance.states == 2)
          {
-            _loc1_ = 4;
+            type = 4;
          }
-         GameInSocketOut.sendKingDivisionGameStart(_loc1_);
+         GameInSocketOut.sendKingDivisionGameStart(type);
       }
       
-      private function __onCancelBtnClick(param1:MouseEvent) : void
+      private function __onCancelBtnClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          cancelMatch();
@@ -256,17 +256,17 @@ package kingDivision.view
          _startBtn.visible = true;
       }
       
-      public function updateMessage(param1:int, param2:int) : void
+      public function updateMessage(score:int, gameNum:int) : void
       {
-         _points.text = param1.toString();
-         _numberTxt.text = param2.toString();
+         _points.text = score.toString();
+         _numberTxt.text = gameNum.toString();
       }
       
-      private function __timer(param1:TimerEvent) : void
+      private function __timer(evt:TimerEvent) : void
       {
-         var _loc2_:uint = _timer.currentCount / 60;
-         var _loc3_:uint = _timer.currentCount % 60;
-         _timeTxt.text = _loc3_ > 9?_loc3_.toString():"0" + _loc3_;
+         var min:uint = _timer.currentCount / 60;
+         var sec:uint = _timer.currentCount % 60;
+         _timeTxt.text = sec > 9?sec.toString():"0" + sec;
       }
       
       public function updateButtons() : void
@@ -312,61 +312,61 @@ package kingDivision.view
          }
       }
       
-      private function createCell(param1:int, param2:int) : void
+      private function createCell(round:int, count:int) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         if(param1 == 1)
+         var i:int = 0;
+         var cell:* = null;
+         if(round == 1)
          {
             _items = new Vector.<KingCell>(1);
          }
-         else if(param1 == 2)
+         else if(round == 2)
          {
             _itemsEight = new Vector.<KingCell>(1);
          }
-         else if(param1 == 3)
+         else if(round == 3)
          {
             _itemsFour = new Vector.<KingCell>(1);
          }
-         else if(param1 == 4)
+         else if(round == 4)
          {
             _itemsTwo = new Vector.<KingCell>(1);
          }
-         _loc4_ = 1;
-         while(_loc4_ <= param2)
+         i = 1;
+         while(i <= count)
          {
-            _loc3_ = ComponentFactory.Instance.creatCustomObject("kingdivision.rankingRoundView." + param1 + "." + _loc4_);
-            _loc3_.mouseEnabled = true;
-            _loc3_.index = param1;
-            addChild(_loc3_);
-            if(param1 == 1)
+            cell = ComponentFactory.Instance.creatCustomObject("kingdivision.rankingRoundView." + round + "." + i);
+            cell.mouseEnabled = true;
+            cell.index = round;
+            addChild(cell);
+            if(round == 1)
             {
-               _items.push(_loc3_);
+               _items.push(cell);
             }
-            else if(param1 == 2)
+            else if(round == 2)
             {
-               _itemsEight.push(_loc3_);
+               _itemsEight.push(cell);
             }
-            else if(param1 == 3)
+            else if(round == 3)
             {
-               _itemsFour.push(_loc3_);
+               _itemsFour.push(cell);
             }
-            else if(param1 == 4)
+            else if(round == 4)
             {
-               _itemsTwo.push(_loc3_);
+               _itemsTwo.push(cell);
             }
-            _loc4_++;
+            i++;
          }
       }
       
-      public function set progressBarView(param1:ProgressBarView) : void
+      public function set progressBarView(value:ProgressBarView) : void
       {
-         _proBar = param1;
+         _proBar = value;
       }
       
-      public function set zone(param1:int) : void
+      public function set zone(value:int) : void
       {
-         _zone = param1;
+         _zone = value;
          updateCell();
       }
       
@@ -384,51 +384,51 @@ package kingDivision.view
          }
       }
       
-      private function promotion(param1:Vector.<KingDivisionConsortionItemInfo>) : void
+      private function promotion(info:Vector.<KingDivisionConsortionItemInfo>) : void
       {
-         if(param1 == null)
+         if(info == null)
          {
             return;
          }
-         var _loc3_:Date = TimeManager.Instance.Now();
-         var _loc4_:Array = KingDivisionManager.Instance.dateArr;
-         var _loc2_:Array = KingDivisionManager.Instance.allDateArr;
+         var date:Date = TimeManager.Instance.Now();
+         var dateArr:Array = KingDivisionManager.Instance.dateArr;
+         var dateArrArea:Array = KingDivisionManager.Instance.allDateArr;
          if(_zone == 0)
          {
-            topSixteen(param1);
-            if(_loc4_[1] <= _loc3_.date)
+            topSixteen(info);
+            if(dateArr[1] <= date.date)
             {
                promotionGuild(_items,_itemsEight,1,9,16);
             }
-            if(_loc4_[2] <= _loc3_.date)
+            if(dateArr[2] <= date.date)
             {
                promotionGuild(_itemsEight,_itemsFour,2,5,8);
             }
-            if(_loc4_[3] <= _loc3_.date)
+            if(dateArr[3] <= date.date)
             {
                promotionGuild(_itemsFour,_itemsTwo,3,3,4);
             }
-            if(_loc4_[4] <= _loc3_.date)
+            if(dateArr[4] <= date.date)
             {
                topOne();
             }
          }
          else if(_zone == 1)
          {
-            topSixteenArea(param1);
-            if(_loc2_[1] <= _loc3_.date)
+            topSixteenArea(info);
+            if(dateArrArea[1] <= date.date)
             {
                promotionGuildArea(_items,_itemsEight,1,9,16);
             }
-            if(_loc2_[1] <= _loc3_.date)
+            if(dateArrArea[1] <= date.date)
             {
                promotionGuildArea(_itemsEight,_itemsFour,2,5,8);
             }
-            if(_loc2_[1] <= _loc3_.date)
+            if(dateArrArea[1] <= date.date)
             {
                promotionGuildArea(_itemsFour,_itemsTwo,3,3,4);
             }
-            if(_loc2_[1] <= _loc3_.date)
+            if(dateArrArea[1] <= date.date)
             {
                topOneArea();
             }
@@ -457,22 +457,21 @@ package kingDivision.view
          }
       }
       
-      private function topSixteen(param1:Vector.<KingDivisionConsortionItemInfo>) : void
+      private function topSixteen(eliminateInfo:Vector.<KingDivisionConsortionItemInfo>) : void
       {
-         var _loc2_:int = 0;
-         if(param1 == null)
+         var i:int = 0;
+         if(eliminateInfo == null)
          {
             return;
          }
          index = 0;
-         _loc2_ = 1;
-         while(_loc2_ <= 16)
+         for(i = 1; i <= 16; )
          {
-            if(index < param1.length)
+            if(index < eliminateInfo.length)
             {
-               if(param1[index].conState >= 0)
+               if(eliminateInfo[index].conState >= 0)
                {
-                  if(isConsortiaID || _loc2_ <= param1.length && PlayerManager.Instance.Self.ConsortiaID == param1[_loc2_ - 1].conID && param1[_loc2_ - 1].isGame)
+                  if(isConsortiaID || i <= eliminateInfo.length && PlayerManager.Instance.Self.ConsortiaID == eliminateInfo[i - 1].conID && eliminateInfo[i - 1].isGame)
                   {
                      isConsortiaID = true;
                   }
@@ -480,53 +479,52 @@ package kingDivision.view
                   {
                      isConsortiaID = false;
                   }
-                  if(_loc2_ % 2 != 0)
+                  if(i % 2 != 0)
                   {
                      if(index < 4)
                      {
-                        _items[_loc2_].setNickName(param1[index],"right");
+                        _items[i].setNickName(eliminateInfo[index],"right");
                      }
                      else
                      {
-                        _items[_loc2_].setNickName(param1[index]);
+                        _items[i].setNickName(eliminateInfo[index]);
                      }
                      index = Number(index) + 1;
                   }
-                  else if(index + 7 < param1.length)
+                  else if(index + 7 < eliminateInfo.length)
                   {
                      if(index + 7 < 12)
                      {
-                        _items[_loc2_].setNickName(param1[index + 7],"right");
+                        _items[i].setNickName(eliminateInfo[index + 7],"right");
                      }
                      else
                      {
-                        _items[_loc2_].setNickName(param1[index + 7]);
+                        _items[i].setNickName(eliminateInfo[index + 7]);
                      }
                   }
                }
-               _loc2_++;
+               i++;
                continue;
             }
             break;
          }
       }
       
-      private function topSixteenArea(param1:Vector.<KingDivisionConsortionItemInfo>) : void
+      private function topSixteenArea(info:Vector.<KingDivisionConsortionItemInfo>) : void
       {
-         var _loc2_:int = 0;
-         if(param1 == null)
+         var i:int = 0;
+         if(info == null)
          {
             return;
          }
          index = 0;
-         _loc2_ = 1;
-         while(_loc2_ <= 16)
+         for(i = 1; i <= 16; )
          {
-            if(index < param1.length)
+            if(index < info.length)
             {
-               if(param1[index].consortionState >= 0)
+               if(info[index].consortionState >= 0)
                {
-                  if(isConsortiaID || _loc2_ <= param1.length && PlayerManager.Instance.Self.ConsortiaID == param1[_loc2_ - 1].consortionIDArea && param1[_loc2_ - 1].consortionIsGame)
+                  if(isConsortiaID || i <= info.length && PlayerManager.Instance.Self.ConsortiaID == info[i - 1].consortionIDArea && info[i - 1].consortionIsGame)
                   {
                      isConsortiaID = true;
                   }
@@ -534,50 +532,49 @@ package kingDivision.view
                   {
                      isConsortiaID = false;
                   }
-                  if(_loc2_ % 2 != 0)
+                  if(i % 2 != 0)
                   {
                      if(index < 4)
                      {
-                        _items[_loc2_].setNickName(param1[index],"right");
+                        _items[i].setNickName(info[index],"right");
                      }
                      else
                      {
-                        _items[_loc2_].setNickName(param1[index]);
+                        _items[i].setNickName(info[index]);
                      }
                      index = Number(index) + 1;
                   }
-                  else if(index + 7 < param1.length)
+                  else if(index + 7 < info.length)
                   {
                      if(index + 7 < 12)
                      {
-                        _items[_loc2_].setNickName(param1[index + 7],"right");
+                        _items[i].setNickName(info[index + 7],"right");
                      }
                      else
                      {
-                        _items[_loc2_].setNickName(param1[index + 7]);
+                        _items[i].setNickName(info[index + 7]);
                      }
                   }
                }
-               _loc2_++;
+               i++;
                continue;
             }
             break;
          }
       }
       
-      private function promotionGuild(param1:Vector.<KingCell>, param2:Vector.<KingCell>, param3:int, param4:int, param5:int) : void
+      private function promotionGuild(cell:Vector.<KingCell>, proCell:Vector.<KingCell>, state:int, num:int, linkName:int) : void
       {
-         var _loc7_:int = 0;
-         var _loc6_:* = null;
+         var i:int = 0;
+         var bitMap:* = null;
          index = 1;
-         _loc7_ = 1;
-         while(_loc7_ < param1.length)
+         for(i = 1; i < cell.length; )
          {
-            if(param1[_loc7_]._playerInfo != null)
+            if(cell[i]._playerInfo != null)
             {
-               if(param1[_loc7_]._playerInfo.conState >= param3)
+               if(cell[i]._playerInfo.conState >= state)
                {
-                  if(isConsortiaID || PlayerManager.Instance.Self.ConsortiaID == param1[_loc7_]._playerInfo.conID && param1[_loc7_]._playerInfo.isGame)
+                  if(isConsortiaID || PlayerManager.Instance.Self.ConsortiaID == cell[i]._playerInfo.conID && cell[i]._playerInfo.isGame)
                   {
                      isConsortiaID = true;
                   }
@@ -585,36 +582,35 @@ package kingDivision.view
                   {
                      isConsortiaID = false;
                   }
-                  if(_loc7_ < param4)
+                  if(i < num)
                   {
-                     param2[index].setNickName(param1[_loc7_]._playerInfo,"right");
+                     proCell[index].setNickName(cell[i]._playerInfo,"right");
                   }
                   else
                   {
-                     param2[index].setNickName(param1[_loc7_]._playerInfo);
+                     proCell[index].setNickName(cell[i]._playerInfo);
                   }
-                  _loc6_ = ComponentFactory.Instance.creatBitmap("asst.kingdivision." + param5 + "." + _loc7_);
-                  addChild(_loc6_);
+                  bitMap = ComponentFactory.Instance.creatBitmap("asst.kingdivision." + linkName + "." + i);
+                  addChild(bitMap);
                   index = Number(index) + 1;
                }
             }
-            _loc7_++;
+            i++;
          }
       }
       
-      private function promotionGuildArea(param1:Vector.<KingCell>, param2:Vector.<KingCell>, param3:int, param4:int, param5:int) : void
+      private function promotionGuildArea(cell:Vector.<KingCell>, proCell:Vector.<KingCell>, state:int, num:int, linkName:int) : void
       {
-         var _loc7_:int = 0;
-         var _loc6_:* = null;
+         var i:int = 0;
+         var bitMap:* = null;
          index = 1;
-         _loc7_ = 1;
-         while(_loc7_ < param1.length)
+         for(i = 1; i < cell.length; )
          {
-            if(param1[_loc7_]._playerInfo != null)
+            if(cell[i]._playerInfo != null)
             {
-               if(param1[_loc7_]._playerInfo.consortionState >= param3)
+               if(cell[i]._playerInfo.consortionState >= state)
                {
-                  if(isConsortiaID || PlayerManager.Instance.Self.ConsortiaID == param1[_loc7_]._playerInfo.consortionIDArea && PlayerManager.Instance.Self.ZoneID == param1[_loc7_]._playerInfo.areaID && param1[_loc7_]._playerInfo.consortionIsGame)
+                  if(isConsortiaID || PlayerManager.Instance.Self.ConsortiaID == cell[i]._playerInfo.consortionIDArea && PlayerManager.Instance.Self.ZoneID == cell[i]._playerInfo.areaID && cell[i]._playerInfo.consortionIsGame)
                   {
                      isConsortiaID = true;
                   }
@@ -622,110 +618,107 @@ package kingDivision.view
                   {
                      isConsortiaID = false;
                   }
-                  if(_loc7_ < param4)
+                  if(i < num)
                   {
-                     param2[index].setNickName(param1[_loc7_]._playerInfo,"right");
+                     proCell[index].setNickName(cell[i]._playerInfo,"right");
                   }
                   else
                   {
-                     param2[index].setNickName(param1[_loc7_]._playerInfo);
+                     proCell[index].setNickName(cell[i]._playerInfo);
                   }
-                  _loc6_ = ComponentFactory.Instance.creatBitmap("asst.kingdivision." + param5 + "." + _loc7_);
-                  addChild(_loc6_);
+                  bitMap = ComponentFactory.Instance.creatBitmap("asst.kingdivision." + linkName + "." + i);
+                  addChild(bitMap);
                   index = Number(index) + 1;
                }
             }
-            _loc7_++;
+            i++;
          }
       }
       
       private function topOne() : void
       {
-         var _loc1_:int = 0;
-         var _loc2_:* = null;
-         _loc1_ = 1;
-         while(_loc1_ < _itemsTwo.length)
+         var t:int = 0;
+         var bitMap:* = null;
+         for(t = 1; t < _itemsTwo.length; )
          {
-            if(_itemsTwo[_loc1_]._playerInfo != null)
+            if(_itemsTwo[t]._playerInfo != null)
             {
-               if(_itemsTwo[_loc1_]._playerInfo.conState >= 4)
+               if(_itemsTwo[t]._playerInfo.conState >= 4)
                {
                   if(KingDivisionManager.Instance.isThisZoneWin)
                   {
-                     _areaStyle = _itemsTwo[_loc1_]._playerInfo.conStyle;
-                     _areaSex = _itemsTwo[_loc1_]._playerInfo.conSex;
-                     _areaConsortionName = _itemsTwo[_loc1_]._playerInfo.conName;
+                     _areaStyle = _itemsTwo[t]._playerInfo.conStyle;
+                     _areaSex = _itemsTwo[t]._playerInfo.conSex;
+                     _areaConsortionName = _itemsTwo[t]._playerInfo.conName;
                      isWin = true;
                   }
                   else
                   {
-                     KingDivisionManager.Instance.thisZoneNickName = _itemsTwo[_loc1_]._playerInfo.name;
+                     KingDivisionManager.Instance.thisZoneNickName = _itemsTwo[t]._playerInfo.name;
                      isWin = true;
                   }
-                  _loc2_ = ComponentFactory.Instance.creatBitmap("asst.kingdivision.2." + _loc1_);
-                  addChild(_loc2_);
+                  bitMap = ComponentFactory.Instance.creatBitmap("asst.kingdivision.2." + t);
+                  addChild(bitMap);
                   break;
                }
                _areaStyle = null;
                KingDivisionManager.Instance.thisZoneNickName = "";
             }
-            _loc1_++;
+            t++;
          }
       }
       
       private function topOneArea() : void
       {
-         var _loc1_:int = 0;
-         var _loc2_:* = null;
-         _loc1_ = 1;
-         while(_loc1_ < _itemsTwo.length)
+         var t:int = 0;
+         var bitMap:* = null;
+         for(t = 1; t < _itemsTwo.length; )
          {
-            if(_itemsTwo[_loc1_]._playerInfo != null)
+            if(_itemsTwo[t]._playerInfo != null)
             {
-               if(_itemsTwo[_loc1_]._playerInfo.consortionState >= 4)
+               if(_itemsTwo[t]._playerInfo.consortionState >= 4)
                {
-                  _areaStyle = _itemsTwo[_loc1_]._playerInfo.consortionStyle;
-                  _areaSex = _itemsTwo[_loc1_]._playerInfo.consortionSex;
-                  _areaConsortionName = _itemsTwo[_loc1_]._playerInfo.consortionNameArea;
+                  _areaStyle = _itemsTwo[t]._playerInfo.consortionStyle;
+                  _areaSex = _itemsTwo[t]._playerInfo.consortionSex;
+                  _areaConsortionName = _itemsTwo[t]._playerInfo.consortionNameArea;
                   isWin = true;
-                  _loc2_ = ComponentFactory.Instance.creatBitmap("asst.kingdivision.2." + _loc1_);
-                  addChild(_loc2_);
+                  bitMap = ComponentFactory.Instance.creatBitmap("asst.kingdivision.2." + t);
+                  addChild(bitMap);
                   break;
                }
                _areaStyle = null;
             }
-            _loc1_++;
+            t++;
          }
       }
       
-      public function setDateStages(param1:Array) : void
+      public function setDateStages(arr:Array) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:Date = TimeManager.Instance.Now();
-         _loc3_ = 0;
-         while(_loc3_ < param1.length)
+         var i:int = 0;
+         var date:Date = TimeManager.Instance.Now();
+         for(i = 0; i < arr.length; )
          {
-            if(param1[_loc3_] == _loc2_.date)
+            if(arr[i] == date.date)
             {
-               _proBar.proBarAllMovie.gotoAndStop(_loc3_ + 1);
+               _proBar.proBarAllMovie.gotoAndStop(i + 1);
                break;
             }
-            if(param1[_loc3_] < _loc2_.date)
+            if(arr[i] < date.date)
             {
                _proBar.proBarAllMovie.gotoAndStop(5);
             }
-            _loc3_++;
+            i++;
          }
       }
       
-      private function __onClickAwardsBtn(param1:MouseEvent) : void
+      private function __onClickAwardsBtn(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:RewardView = ComponentFactory.Instance.creatComponentByStylename("qualificationsFrame.RewardView");
-         LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+         var rewView:RewardView = ComponentFactory.Instance.creatComponentByStylename("qualificationsFrame.RewardView");
+         LayerManager.Instance.addToLayer(rewView,3,true,1);
       }
       
-      private function setPlayerInfo(param1:String) : void
+      private function setPlayerInfo(nickName:String) : void
       {
          _info = new PlayerInfo();
          if(KingDivisionManager.Instance.states == 2 && !KingDivisionManager.Instance.isThisZoneWin)
@@ -738,13 +731,13 @@ package kingDivision.view
             }
             return;
          }
-         if(param1 == PlayerManager.Instance.Self.NickName)
+         if(nickName == PlayerManager.Instance.Self.NickName)
          {
             _info = PlayerManager.Instance.Self;
          }
          else
          {
-            _info = PlayerManager.Instance.findPlayerByNickName(_info,param1);
+            _info = PlayerManager.Instance.findPlayerByNickName(_info,nickName);
          }
          if(KingDivisionManager.Instance.isThisZoneWin)
          {
@@ -761,12 +754,12 @@ package kingDivision.view
          }
          else
          {
-            SocketManager.Instance.out.sendItemEquip(param1,true);
+            SocketManager.Instance.out.sendItemEquip(nickName,true);
             _info.addEventListener("propertychange",__playerInfoChange);
          }
       }
       
-      private function __playerInfoChange(param1:PlayerPropertyEvent) : void
+      private function __playerInfoChange(event:PlayerPropertyEvent) : void
       {
          _info.removeEventListener("propertychange",__playerInfoChange);
          updateCharacter();
@@ -877,7 +870,7 @@ package kingDivision.view
          _timer.reset();
       }
       
-      private function __updateConsortionMessage(param1:TimerEvent) : void
+      private function __updateConsortionMessage(evt:TimerEvent) : void
       {
          if(!isCheckTime)
          {

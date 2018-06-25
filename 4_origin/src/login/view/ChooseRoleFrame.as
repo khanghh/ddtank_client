@@ -81,7 +81,7 @@ package login.view
       
       private function configUi() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _disenabelFilter = ComponentFactory.Instance.model.getSet("login.ChooseRole.DisenableGF");
          titleStyle = "login.Title";
          titleText = LanguageMgr.GetTranslation("tank.loginstate.chooseCharacter");
@@ -115,11 +115,10 @@ package login.view
          addToContent(_oneLineTip);
          _oneLineTip.visible = false;
          addEvent();
-         _loc1_ = 0;
-         while(_loc1_ < SelectListManager.Instance.list.length)
+         for(i = 0; i < SelectListManager.Instance.list.length; )
          {
-            addRole(SelectListManager.Instance.list[_loc1_] as Role);
-            _loc1_++;
+            addRole(SelectListManager.Instance.list[i] as Role);
+            i++;
          }
          AlertManager.Instance.layerType = 0;
       }
@@ -140,11 +139,11 @@ package login.view
          _deleteBtnStrip.addEventListener("mouseOut",outHandler,false,0,true);
       }
       
-      private function overHandler(param1:MouseEvent) : void
+      private function overHandler(event:MouseEvent) : void
       {
-         var _loc2_:Sprite = param1.target as Sprite;
-         var _loc3_:String = "";
-         var _loc4_:* = _loc2_;
+         var tmpTarget:Sprite = event.target as Sprite;
+         var tmpTipStr:String = "";
+         var _loc4_:* = tmpTarget;
          if(_recoverBtn !== _loc4_)
          {
             if(_recoverBtnStrip !== _loc4_)
@@ -155,98 +154,98 @@ package login.view
                   {
                   }
                }
-               _loc3_ = LanguageMgr.GetTranslation("ddt.chooseRoleFrame.deleteBtnTipTxt");
+               tmpTipStr = LanguageMgr.GetTranslation("ddt.chooseRoleFrame.deleteBtnTipTxt");
             }
-            addr45:
-            _oneLineTip.tipData = _loc3_;
-            _oneLineTip.x = _loc2_.x - (_oneLineTip.width - _loc2_.width) / 2;
-            _oneLineTip.y = _loc2_.y + _loc2_.height;
+            addr54:
+            _oneLineTip.tipData = tmpTipStr;
+            _oneLineTip.x = tmpTarget.x - (_oneLineTip.width - tmpTarget.width) / 2;
+            _oneLineTip.y = tmpTarget.y + tmpTarget.height;
             _oneLineTip.visible = true;
             return;
          }
-         _loc3_ = LanguageMgr.GetTranslation("ddt.chooseRoleFrame.recoverBtnTipTxt");
-         §§goto(addr45);
+         tmpTipStr = LanguageMgr.GetTranslation("ddt.chooseRoleFrame.recoverBtnTipTxt");
+         §§goto(addr54);
       }
       
-      private function outHandler(param1:MouseEvent) : void
+      private function outHandler(event:MouseEvent) : void
       {
          _oneLineTip.visible = false;
       }
       
-      private function recoverOrDeleteHandler(param1:MouseEvent) : void
+      private function recoverOrDeleteHandler(event:MouseEvent) : void
       {
-         var _loc3_:* = null;
+         var msg:* = null;
          SoundManager.instance.play("008");
          if(!_selectedItem)
          {
             return;
          }
-         if(param1.target == _deleteBtn)
+         if(event.target == _deleteBtn)
          {
-            _loc3_ = LanguageMgr.GetTranslation("ddt.chooseRoleFrame.deleteTipTxt");
+            msg = LanguageMgr.GetTranslation("ddt.chooseRoleFrame.deleteTipTxt");
             _ReOrDeOperate = 1;
          }
          else
          {
-            _loc3_ = LanguageMgr.GetTranslation("ddt.chooseRoleFrame.recoverTipTxt");
+            msg = LanguageMgr.GetTranslation("ddt.chooseRoleFrame.recoverTipTxt");
             _ReOrDeOperate = 2;
          }
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc3_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,false,false,1);
-         _loc2_.moveEnable = false;
-         _loc2_.addEventListener("response",__confirm);
+         var confirmFrame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),msg,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,false,false,1);
+         confirmFrame.moveEnable = false;
+         confirmFrame.addEventListener("response",__confirm);
       }
       
-      private function __confirm(param1:FrameEvent) : void
+      private function __confirm(evt:FrameEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var args:* = null;
+         var loader:* = null;
          SoundManager.instance.play("008");
-         var _loc4_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc4_.removeEventListener("response",__confirm);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",__confirm);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             _recordOperateRoleItem = _selectedItem;
-            _loc3_ = new URLVariables();
-            _loc3_["username"] = PlayerManager.Instance.Account.Account;
-            _loc3_["nickname"] = _selectedItem.roleInfo.NickName;
-            _loc3_["operation"] = _ReOrDeOperate;
-            _loc2_ = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("LoginRemoveSmallAccount.ashx"),6,_loc3_);
-            _loc2_.addEventListener("loadError",__onRequestRecoverDeleteError,false,0,true);
-            _loc2_.addEventListener("complete",__onRequestRecoverDeleteComplete,false,0,true);
-            LoadResourceManager.Instance.startLoad(_loc2_);
+            args = new URLVariables();
+            args["username"] = PlayerManager.Instance.Account.Account;
+            args["nickname"] = _selectedItem.roleInfo.NickName;
+            args["operation"] = _ReOrDeOperate;
+            loader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("LoginRemoveSmallAccount.ashx"),6,args);
+            loader.addEventListener("loadError",__onRequestRecoverDeleteError,false,0,true);
+            loader.addEventListener("complete",__onRequestRecoverDeleteComplete,false,0,true);
+            LoadResourceManager.Instance.startLoad(loader);
          }
       }
       
-      private function __onRequestRecoverDeleteError(param1:LoaderEvent) : void
+      private function __onRequestRecoverDeleteError(evt:LoaderEvent) : void
       {
          trace("RequestRecoverDeleteError");
          _recordOperateRoleItem = null;
-         var _loc2_:RequestLoader = param1.target as RequestLoader;
-         _loc2_.removeEventListener("loadError",__onRequestRecoverDeleteError);
-         _loc2_.removeEventListener("complete",__onRequestRecoverDeleteComplete);
+         var tmpLoader:RequestLoader = evt.target as RequestLoader;
+         tmpLoader.removeEventListener("loadError",__onRequestRecoverDeleteError);
+         tmpLoader.removeEventListener("complete",__onRequestRecoverDeleteComplete);
       }
       
-      private function __onRequestRecoverDeleteComplete(param1:LoaderEvent) : void
+      private function __onRequestRecoverDeleteComplete(evt:LoaderEvent) : void
       {
-         var _loc6_:* = null;
-         var _loc2_:int = 0;
-         var _loc7_:* = undefined;
-         var _loc3_:RequestLoader = param1.target as RequestLoader;
-         _loc3_.removeEventListener("loadError",__onRequestRecoverDeleteError);
-         _loc3_.removeEventListener("complete",__onRequestRecoverDeleteComplete);
-         var _loc4_:XML = new XML(param1.loader.content);
-         if(_loc4_.@value == "true")
+         var tmpNickName:* = null;
+         var loginState:int = 0;
+         var tmpRoleList:* = undefined;
+         var tmpLoader:RequestLoader = evt.target as RequestLoader;
+         tmpLoader.removeEventListener("loadError",__onRequestRecoverDeleteError);
+         tmpLoader.removeEventListener("complete",__onRequestRecoverDeleteComplete);
+         var xml:XML = new XML(evt.loader.content);
+         if(xml.@value == "true")
          {
-            _loc6_ = _loc4_.@NickName;
-            _loc2_ = _loc4_.@LoginState;
-            _loc7_ = SelectListManager.Instance.list;
+            tmpNickName = xml.@NickName;
+            loginState = xml.@LoginState;
+            tmpRoleList = SelectListManager.Instance.list;
             var _loc9_:int = 0;
-            var _loc8_:* = _loc7_;
-            for each(var _loc5_ in _loc7_)
+            var _loc8_:* = tmpRoleList;
+            for each(var tmpRole in tmpRoleList)
             {
-               if(_loc5_.NickName == _loc6_)
+               if(tmpRole.NickName == tmpNickName)
                {
-                  _loc5_.LoginState = _loc2_;
+                  tmpRole.LoginState = loginState;
                   break;
                }
             }
@@ -290,7 +289,7 @@ package login.view
          }
       }
       
-      private function __onEnterClick(param1:MouseEvent) : void
+      private function __onEnterClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_selectedItem == null)
@@ -317,29 +316,29 @@ package login.view
          }
       }
       
-      private function __onRoleClick(param1:ListItemEvent) : void
+      private function __onRoleClick(evt:ListItemEvent) : void
       {
-         var _loc2_:RoleItem = param1.cell as RoleItem;
-         selectedItem = _loc2_;
+         var role:RoleItem = evt.cell as RoleItem;
+         selectedItem = role;
       }
       
-      private function startRenameConsortia(param1:Role) : void
+      private function startRenameConsortia(roleInfo:Role) : void
       {
          _consortiaRenameFrame = ComponentFactory.Instance.creatComponentByStylename("ConsortiaRenameFrame");
-         _consortiaRenameFrame.roleInfo = param1;
+         _consortiaRenameFrame.roleInfo = roleInfo;
          _consortiaRenameFrame.addEventListener("complete",__consortiaRenameComplete);
          LayerManager.Instance.addToLayer(_consortiaRenameFrame,0,true,2);
       }
       
-      private function startRename(param1:Role) : void
+      private function startRename(roleInfo:Role) : void
       {
          _renameFrame = ComponentFactory.Instance.creatComponentByStylename("RoleRenameFrame");
-         _renameFrame.roleInfo = param1;
+         _renameFrame.roleInfo = roleInfo;
          _renameFrame.addEventListener("complete",__onRenameComplete);
          LayerManager.Instance.addToLayer(_renameFrame,0,true,2);
       }
       
-      private function __onRenameComplete(param1:Event) : void
+      private function __onRenameComplete(evt:Event) : void
       {
          _renameFrame.removeEventListener("complete",__onRenameComplete);
          ObjectUtils.disposeObject(_renameFrame);
@@ -347,7 +346,7 @@ package login.view
          __onEnterClick(null);
       }
       
-      private function __consortiaRenameComplete(param1:Event) : void
+      private function __consortiaRenameComplete(evt:Event) : void
       {
          _consortiaRenameFrame.removeEventListener("complete",__onRenameComplete);
          ObjectUtils.disposeObject(_consortiaRenameFrame);
@@ -355,9 +354,9 @@ package login.view
          __onEnterClick(null);
       }
       
-      public function addRole(param1:Role) : void
+      public function addRole(info:Role) : void
       {
-         _roleList.vectorListModel.insertElementAt(param1,_roleList.vectorListModel.elements.length);
+         _roleList.vectorListModel.insertElementAt(info,_roleList.vectorListModel.elements.length);
       }
       
       override public function dispose() : void
@@ -424,23 +423,23 @@ package login.view
          return _selectedItem;
       }
       
-      public function set selectedItem(param1:RoleItem) : void
+      public function set selectedItem(val:RoleItem) : void
       {
-         var _loc2_:* = null;
-         if(_selectedItem != param1)
+         var sel:* = null;
+         if(_selectedItem != val)
          {
-            _loc2_ = _selectedItem;
-            _selectedItem = param1;
+            sel = _selectedItem;
+            _selectedItem = val;
             if(_selectedItem != null)
             {
                _selectedItem.selected = true;
                SelectListManager.Instance.currentLoginRole = _selectedItem.roleInfo;
                judgeSelecteRoleState();
             }
-            if(_loc2_)
+            if(sel)
             {
-               _loc2_.selected = false;
-               _loc2_ = null;
+               sel.selected = false;
+               sel = null;
             }
          }
       }

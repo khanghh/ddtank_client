@@ -12,13 +12,13 @@ package com.pickgliss.loader
       
       public var analyzeErrorCall:Function;
       
-      public function DataAnalyzer(param1:Function)
+      public function DataAnalyzer(onCompleteCall:Function)
       {
          super();
-         _onCompleteCall = param1;
+         _onCompleteCall = onCompleteCall;
       }
       
-      public function analyze(param1:*) : void
+      public function analyze(data:*) : void
       {
       }
       

@@ -50,10 +50,10 @@ package dice.model
       
       private var _rewardItems:Array;
       
-      public function DiceModel(param1:IEventDispatcher = null)
+      public function DiceModel(target:IEventDispatcher = null)
       {
          initialize();
-         super(param1);
+         super(target);
       }
       
       public function get rewardItems() : Array
@@ -61,9 +61,9 @@ package dice.model
          return _rewardItems;
       }
       
-      public function set rewardItems(param1:Array) : void
+      public function set rewardItems(value:Array) : void
       {
-         _rewardItems = param1;
+         _rewardItems = value;
       }
       
       public function get popupAlert() : int
@@ -71,9 +71,9 @@ package dice.model
          return _popupAlert;
       }
       
-      public function set popupAlert(param1:int) : void
+      public function set popupAlert(value:int) : void
       {
-         _popupAlert = param1;
+         _popupAlert = value;
       }
       
       public function get isPlayDownMovie() : Boolean
@@ -81,9 +81,9 @@ package dice.model
          return _isPlayDownMovie;
       }
       
-      public function set isPlayDownMovie(param1:Boolean) : void
+      public function set isPlayDownMovie(value:Boolean) : void
       {
-         _isPlayDownMovie = param1;
+         _isPlayDownMovie = value;
       }
       
       public function get diceType() : int
@@ -91,9 +91,9 @@ package dice.model
          return _diceType;
       }
       
-      public function set diceType(param1:int) : void
+      public function set diceType(value:int) : void
       {
-         _diceType = param1;
+         _diceType = value;
       }
       
       public function get levelInfo() : Array
@@ -101,9 +101,9 @@ package dice.model
          return _levelInfo;
       }
       
-      public function set levelInfo(param1:Array) : void
+      public function set levelInfo(value:Array) : void
       {
-         _levelInfo = param1;
+         _levelInfo = value;
       }
       
       public function get MAX_LEVEL() : int
@@ -111,9 +111,9 @@ package dice.model
          return _MAX_LEVEL;
       }
       
-      public function set MAX_LEVEL(param1:int) : void
+      public function set MAX_LEVEL(value:int) : void
       {
-         _MAX_LEVEL = param1;
+         _MAX_LEVEL = value;
          _levelInfo = [];
       }
       
@@ -122,9 +122,9 @@ package dice.model
          return _smallDicePrice;
       }
       
-      public function set smallDicePrice(param1:int) : void
+      public function set smallDicePrice(value:int) : void
       {
-         _smallDicePrice = param1;
+         _smallDicePrice = value;
       }
       
       public function get bigDicePrice() : int
@@ -132,9 +132,9 @@ package dice.model
          return _bigDicePrice;
       }
       
-      public function set bigDicePrice(param1:int) : void
+      public function set bigDicePrice(value:int) : void
       {
-         _bigDicePrice = param1;
+         _bigDicePrice = value;
       }
       
       public function get doubleDicePrice() : int
@@ -142,9 +142,9 @@ package dice.model
          return _doubleDicePrice;
       }
       
-      public function set doubleDicePrice(param1:int) : void
+      public function set doubleDicePrice(value:int) : void
       {
-         _doubleDicePrice = param1;
+         _doubleDicePrice = value;
       }
       
       public function get commonDicePrice() : int
@@ -152,9 +152,9 @@ package dice.model
          return _commonDicePrice;
       }
       
-      public function set commonDicePrice(param1:int) : void
+      public function set commonDicePrice(value:int) : void
       {
-         _commonDicePrice = param1;
+         _commonDicePrice = value;
       }
       
       public function get refreshPrice() : int
@@ -162,9 +162,9 @@ package dice.model
          return _refreshPrice;
       }
       
-      public function set refreshPrice(param1:int) : void
+      public function set refreshPrice(value:int) : void
       {
-         _refreshPrice = param1;
+         _refreshPrice = value;
       }
       
       public function get freeCount() : int
@@ -172,15 +172,15 @@ package dice.model
          return _freeCount;
       }
       
-      public function set freeCount(param1:int) : void
+      public function set freeCount(value:int) : void
       {
-         if(_freeCount != param1)
+         if(_freeCount != value)
          {
-            if(param1 < 0)
+            if(value < 0)
             {
-               param1 = 0;
+               value = 0;
             }
-            _freeCount = param1;
+            _freeCount = value;
             DiceController.Instance.dispatchEvent(new DiceEvent("dice_freeCount_changed"));
          }
       }
@@ -190,11 +190,11 @@ package dice.model
          return _LuckIntegral_Level;
       }
       
-      public function set LuckIntegralLevel(param1:int) : void
+      public function set LuckIntegralLevel(value:int) : void
       {
-         if(_LuckIntegral_Level != param1 + 1)
+         if(_LuckIntegral_Level != value + 1)
          {
-            _LuckIntegral_Level = param1 + 1;
+            _LuckIntegral_Level = value + 1;
          }
       }
       
@@ -208,16 +208,16 @@ package dice.model
          return _useFirstCell;
       }
       
-      public function set cellCount(param1:int) : void
+      public function set cellCount(value:int) : void
       {
-         _CELL_COUNT = param1;
+         _CELL_COUNT = value;
          _cellItem = [];
          _cellPosition = [];
       }
       
-      public function set userFirstCell(param1:Boolean) : void
+      public function set userFirstCell(value:Boolean) : void
       {
-         _useFirstCell = param1;
+         _useFirstCell = value;
       }
       
       private function initialize() : void
@@ -226,19 +226,18 @@ package dice.model
       
       public function setCellInfo() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _CELL_COUNT)
+         var info:* = null;
+         var i:int = 0;
+         for(i = 0; i < _CELL_COUNT; )
          {
-            if(_cellPosition[_loc1_])
+            if(_cellPosition[i])
             {
-               _cellPosition[_loc1_].dispose();
-               _cellPosition[_loc1_] = null;
+               _cellPosition[i].dispose();
+               _cellPosition[i] = null;
             }
-            _loc2_ = ComponentFactory.Instance.creatCustomObject("asset.dice.cellInfo." + (_loc1_ + 1));
-            _cellPosition[_loc1_] = _loc2_;
-            _loc1_++;
+            info = ComponentFactory.Instance.creatCustomObject("asset.dice.cellInfo." + (i + 1));
+            _cellPosition[i] = info;
+            i++;
          }
       }
       
@@ -247,11 +246,11 @@ package dice.model
          return _LuckIntegral;
       }
       
-      public function set LuckIntegral(param1:int) : void
+      public function set LuckIntegral(value:int) : void
       {
-         if(_LuckIntegral != param1)
+         if(_LuckIntegral != value)
          {
-            _LuckIntegral = param1;
+            _LuckIntegral = value;
          }
          DiceController.Instance.dispatchEvent(new DiceEvent("dice_luckintegral_changed"));
       }
@@ -261,19 +260,19 @@ package dice.model
          return _currentPosition;
       }
       
-      public function set currentPosition(param1:int) : void
+      public function set currentPosition(value:int) : void
       {
-         if(param1 < 0)
+         if(value < 0)
          {
-            param1 = 0;
+            value = 0;
          }
-         else if(param1 >= _CELL_COUNT)
+         else if(value >= _CELL_COUNT)
          {
-            param1 = _CELL_COUNT - 1;
+            value = _CELL_COUNT - 1;
          }
-         if(param1 != DiceController.Instance.CurrentPosition)
+         if(value != DiceController.Instance.CurrentPosition)
          {
-            _currentPosition = param1;
+            _currentPosition = value;
             DiceController.Instance.dispatchEvent(new DiceEvent("dice_position_changed"));
          }
       }
@@ -288,34 +287,33 @@ package dice.model
          return _cellPosition;
       }
       
-      public function addCellItem(param1:DiceCell) : void
+      public function addCellItem(cellValue:DiceCell) : void
       {
-         _cellItem.push(param1);
+         _cellItem.push(cellValue);
       }
       
-      public function removeCellItem(param1:int) : void
+      public function removeCellItem(index:int) : void
       {
-         if(param1 < _cellItem.length)
+         if(index < _cellItem.length)
          {
-            if(_cellItem[param1])
+            if(_cellItem[index])
             {
-               _cellItem[param1].dispose();
+               _cellItem[index].dispose();
             }
-            _cellItem[param1] = null;
-            _cellItem.splice(param1,1);
+            _cellItem[index] = null;
+            _cellItem.splice(index,1);
          }
       }
       
       public function removeAllItem() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(_cellItem)
          {
-            _loc1_ = _cellItem.length;
-            while(_loc1_ > 0)
+            for(i = _cellItem.length; i > 0; )
             {
-               removeCellItem(_loc1_ - 1);
-               _loc1_--;
+               removeCellItem(i - 1);
+               i--;
             }
          }
       }

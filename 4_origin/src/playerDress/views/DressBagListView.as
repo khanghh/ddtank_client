@@ -34,26 +34,26 @@ package playerDress.views
       
       public var locked:Boolean = false;
       
-      public function DressBagListView(param1:int, param2:int = 7, param3:int = 49)
+      public function DressBagListView(bagType:int, columnNum:int = 7, cellNun:int = 49)
       {
-         super(param1,param2,param3);
+         super(bagType,columnNum,cellNun);
       }
       
-      public function setSortType(param1:int, param2:Boolean, param3:String = "") : void
+      public function setSortType(type:int, isMale:Boolean, str:String = "") : void
       {
-         _dressType = param1;
-         _sex = !!param2?1:2;
-         _searchStr = param3;
+         _dressType = type;
+         _sex = !!isMale?1:2;
+         _searchStr = str;
          sortItems();
       }
       
-      override public function setData(param1:BagInfo) : void
+      override public function setData(bag:BagInfo) : void
       {
          if(_equipBag != null)
          {
             _equipBag.removeEventListener("update",__updateGoods);
          }
-         _equipBag = param1;
+         _equipBag = bag;
          setVirtualBagData();
          _equipBag.addEventListener("update",__updateGoods);
       }
@@ -61,20 +61,20 @@ package playerDress.views
       private function setVirtualBagData() : void
       {
          _virtualBag = new BagInfo(0,48);
-         var _loc1_:int = 0;
+         var index:int = 0;
          var _loc4_:int = 0;
          var _loc3_:* = _equipBag.items;
-         for each(var _loc2_ in _equipBag.items)
+         for each(var item in _equipBag.items)
          {
-            if(DressUtils.isDress(_loc2_))
+            if(DressUtils.isDress(item))
             {
-               _virtualBag.items[_loc1_] = _loc2_;
-               _loc1_++;
+               _virtualBag.items[index] = item;
+               index++;
             }
          }
       }
       
-      override protected function __updateGoods(param1:BagEvent) : void
+      override protected function __updateGoods(evt:BagEvent) : void
       {
          if(!locked)
          {
@@ -85,54 +85,54 @@ package playerDress.views
       
       private function sortItems() : void
       {
-         var _loc1_:* = null;
+         var item:* = null;
          _displayItems = new Dictionary();
          clearDataCells();
-         var _loc3_:int = 0;
+         var i:int = 0;
          sequenceItems();
          var _loc5_:int = 0;
          var _loc4_:* = _virtualBag.items;
-         for(var _loc2_ in _virtualBag.items)
+         for(var key in _virtualBag.items)
          {
-            _loc1_ = _virtualBag.items[_loc2_];
-            if(_loc1_.NeedSex == _sex || _loc1_.NeedSex == 0)
+            item = _virtualBag.items[key];
+            if(item.NeedSex == _sex || item.NeedSex == 0)
             {
                if(!PlayerDressControl.instance.showBind)
                {
-                  if(_loc1_.IsBinds == true)
+                  if(item.IsBinds == true)
                   {
                      continue;
                   }
                }
                if(_dressType == -1)
                {
-                  if(_searchStr != "" && _loc1_.Name.indexOf(_searchStr) != -1)
+                  if(_searchStr != "" && item.Name.indexOf(_searchStr) != -1)
                   {
-                     _displayItems[_loc3_] = _loc1_;
-                     if(_loc3_ >= 0 && _loc3_ < _cellNum)
+                     _displayItems[i] = item;
+                     if(i >= 0 && i < _cellNum)
                      {
-                        BaseCell(_cells[_loc3_]).info = _loc1_;
+                        BaseCell(_cells[i]).info = item;
                      }
-                     _loc3_++;
+                     i++;
                   }
                }
                else if(_dressType == 0)
                {
-                  _displayItems[_loc3_] = _loc1_;
-                  if(_loc3_ >= 0 && _loc3_ < _cellNum)
+                  _displayItems[i] = item;
+                  if(i >= 0 && i < _cellNum)
                   {
-                     BaseCell(_cells[_loc3_]).info = _loc1_;
+                     BaseCell(_cells[i]).info = item;
                   }
-                  _loc3_++;
+                  i++;
                }
-               else if(_loc1_.CategoryID == _dressType)
+               else if(item.CategoryID == _dressType)
                {
-                  _displayItems[_loc3_] = _loc1_;
-                  if(_loc3_ >= 0 && _loc3_ < _cellNum)
+                  _displayItems[i] = item;
+                  if(i >= 0 && i < _cellNum)
                   {
-                     BaseCell(_cells[_loc3_]).info = _loc1_;
+                     BaseCell(_cells[i]).info = item;
                   }
-                  _loc3_++;
+                  i++;
                }
             }
          }
@@ -143,179 +143,177 @@ package playerDress.views
       
       private function sequenceItems() : void
       {
-         var _loc8_:int = 0;
-         var _loc6_:BagInfo = new BagInfo(0,48);
-         var _loc3_:Array = [];
-         var _loc5_:Array = [];
+         var i:int = 0;
+         var tempBag:BagInfo = new BagInfo(0,48);
+         var arr:Array = [];
+         var arr2:Array = [];
          var _loc10_:int = 0;
          var _loc9_:* = _virtualBag.items;
-         for each(var _loc4_ in _virtualBag.items)
+         for each(var item in _virtualBag.items)
          {
-            _loc3_.push({
-               "TemplateID":_loc4_.TemplateID,
-               "ItemID":_loc4_.ItemID,
-               "CategoryIDSort":DressUtils.getBagGoodsCategoryIDSort(uint(_loc4_.CategoryID)),
-               "Place":_loc4_.Place,
-               "RemainDate":_loc4_.getRemainDate() > 0,
-               "CanStrengthen":_loc4_.CanStrengthen,
-               "StrengthenLevel":_loc4_.StrengthenLevel,
-               "IsBinds":_loc4_.IsBinds
+            arr.push({
+               "TemplateID":item.TemplateID,
+               "ItemID":item.ItemID,
+               "CategoryIDSort":DressUtils.getBagGoodsCategoryIDSort(uint(item.CategoryID)),
+               "Place":item.Place,
+               "RemainDate":item.getRemainDate() > 0,
+               "CanStrengthen":item.CanStrengthen,
+               "StrengthenLevel":item.StrengthenLevel,
+               "IsBinds":item.IsBinds
             });
          }
-         var _loc7_:ByteArray = new ByteArray();
-         _loc7_.writeObject(_loc3_);
-         _loc7_.position = 0;
-         _loc5_ = _loc7_.readObject() as Array;
-         _loc3_.sortOn(["RemainDate","CategoryIDSort","TemplateID","CanStrengthen","IsBinds","StrengthenLevel","Place"],[2,16,16 | 2,2,2,16 | 2,16]);
-         if(bagComparison(_loc3_,_loc5_))
+         var fooBA:ByteArray = new ByteArray();
+         fooBA.writeObject(arr);
+         fooBA.position = 0;
+         arr2 = fooBA.readObject() as Array;
+         arr.sortOn(["RemainDate","CategoryIDSort","TemplateID","CanStrengthen","IsBinds","StrengthenLevel","Place"],[2,16,16 | 2,2,2,16 | 2,16]);
+         if(bagComparison(arr,arr2))
          {
             return;
          }
-         var _loc1_:int = 0;
-         _loc8_ = 0;
-         while(_loc8_ <= _loc3_.length - 1)
+         var index:int = 0;
+         for(i = 0; i <= arr.length - 1; )
          {
             var _loc12_:int = 0;
             var _loc11_:* = _virtualBag.items;
-            for each(var _loc2_ in _virtualBag.items)
+            for each(var tItem in _virtualBag.items)
             {
-               if(_loc3_[_loc8_].Place == _loc2_.Place)
+               if(arr[i].Place == tItem.Place)
                {
-                  _loc6_.items[_loc1_] = _loc2_;
-                  _loc1_++;
+                  tempBag.items[index] = tItem;
+                  index++;
                   break;
                }
             }
-            _loc8_++;
+            i++;
          }
-         _virtualBag = _loc6_;
+         _virtualBag = tempBag;
       }
       
-      private function bagComparison(param1:Array, param2:Array) : Boolean
+      private function bagComparison(bagArray1:Array, bagArray2:Array) : Boolean
       {
-         var _loc4_:int = 0;
-         if(param1.length < param2.length)
+         var i:int = 0;
+         if(bagArray1.length < bagArray2.length)
          {
             return false;
          }
-         var _loc3_:int = param1.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var len:int = bagArray1.length;
+         for(i = 0; i < len; )
          {
-            if(param1[_loc4_].ItemID != param2[_loc4_].ItemID || param1[_loc4_].TemplateID != param2[_loc4_].TemplateID)
+            if(bagArray1[i].ItemID != bagArray2[i].ItemID || bagArray1[i].TemplateID != bagArray2[i].TemplateID)
             {
                return false;
             }
-            _loc4_++;
+            i++;
          }
          return true;
       }
       
       public function foldItems() : void
       {
-         var _loc9_:* = null;
-         var _loc5_:Boolean = false;
-         var _loc4_:* = null;
-         var _loc7_:* = null;
-         var _loc10_:int = 0;
-         var _loc3_:int = 0;
-         var _loc6_:* = null;
-         var _loc2_:Dictionary = new Dictionary();
-         var _loc8_:Array = [];
+         var item:* = null;
+         var notFind:Boolean = false;
+         var flag:* = null;
+         var s:* = null;
+         var skey:int = 0;
+         var sPlace:int = 0;
+         var str:* = null;
+         var canFoldDic:Dictionary = new Dictionary();
+         var arr:Array = [];
          var _loc15_:int = 0;
          var _loc14_:* = _virtualBag.items;
-         for(var _loc11_ in _virtualBag.items)
+         for(var key in _virtualBag.items)
          {
-            _loc9_ = _virtualBag.items[_loc11_];
-            if(DressUtils.isDress(_loc9_) && DressUtils.hasNoAddition(_loc9_))
+            item = _virtualBag.items[key];
+            if(DressUtils.isDress(item) && DressUtils.hasNoAddition(item))
             {
-               _loc5_ = true;
+               notFind = true;
                var _loc13_:int = 0;
-               var _loc12_:* = _loc2_;
-               for(var _loc1_ in _loc2_)
+               var _loc12_:* = canFoldDic;
+               for(var templateId in canFoldDic)
                {
-                  _loc4_ = !!_loc9_.IsBinds?"t":"f";
-                  _loc7_ = String(_loc9_.TemplateID) + _loc4_;
-                  if(_loc7_ == _loc1_)
+                  flag = !!item.IsBinds?"t":"f";
+                  s = String(item.TemplateID) + flag;
+                  if(s == templateId)
                   {
-                     _loc10_ = _loc2_[_loc1_];
-                     _loc3_ = _virtualBag.items[_loc10_].Place;
-                     _loc8_.push({
-                        "sPlace":_loc3_,
-                        "tPlace":_loc9_.Place
+                     skey = canFoldDic[templateId];
+                     sPlace = _virtualBag.items[skey].Place;
+                     arr.push({
+                        "sPlace":sPlace,
+                        "tPlace":item.Place
                      });
-                     _loc5_ = false;
+                     notFind = false;
                      break;
                   }
                }
-               if(_loc5_)
+               if(notFind)
                {
-                  _loc6_ = !!_loc9_.IsBinds?"t":"f";
-                  _loc2_[String(_loc9_.TemplateID) + _loc6_] = _loc11_;
+                  str = !!item.IsBinds?"t":"f";
+                  canFoldDic[String(item.TemplateID) + str] = key;
                }
             }
          }
-         if(_loc8_.length > 0)
+         if(arr.length > 0)
          {
             _equipBag.isBatch = true;
-            SocketManager.Instance.out.foldDressItem(_loc8_,237,6);
+            SocketManager.Instance.out.foldDressItem(arr,237,6);
          }
       }
       
-      public function fillPage(param1:int) : void
+      public function fillPage(page:int) : void
       {
-         var _loc2_:int = 0;
-         _currentPage = param1;
+         var index:int = 0;
+         _currentPage = page;
          clearDataCells();
          var _loc5_:int = 0;
          var _loc4_:* = _displayItems;
-         for(var _loc3_ in _displayItems)
+         for(var i in _displayItems)
          {
-            _loc2_ = parseInt(_loc3_) - (_currentPage - 1) * _cellNum;
-            if(_loc2_ >= 0 && _loc2_ < _cellNum)
+            index = parseInt(i) - (_currentPage - 1) * _cellNum;
+            if(index >= 0 && index < _cellNum)
             {
-               BaseCell(_cells[_loc2_]).info = _displayItems[_loc3_];
+               BaseCell(_cells[index]).info = _displayItems[i];
             }
          }
       }
       
       public function displayItemsLength() : int
       {
-         var _loc2_:int = 0;
+         var length:int = 0;
          var _loc4_:int = 0;
          var _loc3_:* = _displayItems;
-         for each(var _loc1_ in _displayItems)
+         for each(var item in _displayItems)
          {
-            _loc2_++;
+            length++;
          }
-         return _loc2_;
+         return length;
       }
       
-      private function _cellsSort(param1:Array) : void
+      private function _cellsSort(arr:Array) : void
       {
-         var _loc6_:int = 0;
-         var _loc4_:Number = NaN;
-         var _loc5_:Number = NaN;
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         if(param1.length <= 0)
+         var i:int = 0;
+         var oldx:Number = NaN;
+         var oldy:Number = NaN;
+         var n:int = 0;
+         var oldCell:* = null;
+         if(arr.length <= 0)
          {
             return;
          }
-         _loc6_ = 0;
-         while(_loc6_ < param1.length)
+         i = 0;
+         while(i < arr.length)
          {
-            _loc4_ = param1[_loc6_].x;
-            _loc5_ = param1[_loc6_].y;
-            _loc3_ = _cellVec.indexOf(param1[_loc6_]);
-            _loc2_ = _cellVec[_loc6_];
-            param1[_loc6_].x = _loc2_.x;
-            param1[_loc6_].y = _loc2_.y;
-            _loc2_.x = _loc4_;
-            _loc2_.y = _loc5_;
-            _cellVec[_loc6_] = param1[_loc6_];
-            _cellVec[_loc3_] = _loc2_;
-            _loc6_++;
+            oldx = arr[i].x;
+            oldy = arr[i].y;
+            n = _cellVec.indexOf(arr[i]);
+            oldCell = _cellVec[i];
+            arr[i].x = oldCell.x;
+            arr[i].y = oldCell.y;
+            oldCell.x = oldx;
+            oldCell.y = oldy;
+            _cellVec[i] = arr[i];
+            _cellVec[n] = oldCell;
+            i++;
          }
       }
       

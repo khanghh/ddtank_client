@@ -27,14 +27,14 @@ package cardSystem
          return _instance;
       }
       
-      public function setup(param1:CardGrooveEventAnalyzer) : void
+      public function setup(analyzer:CardGrooveEventAnalyzer) : void
       {
-         _grooveList = param1.list;
+         _grooveList = analyzer.list;
       }
       
-      public function getInfoByLevel(param1:String, param2:String) : CardGrooveInfo
+      public function getInfoByLevel(key:String, type:String) : CardGrooveInfo
       {
-         return _grooveList[param1 + "," + param2];
+         return _grooveList[key + "," + type];
       }
    }
 }

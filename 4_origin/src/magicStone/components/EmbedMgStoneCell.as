@@ -8,15 +8,15 @@ package magicStone.components
    {
        
       
-      public function EmbedMgStoneCell(param1:int = 0, param2:ItemTemplateInfo = null, param3:Boolean = true, param4:DisplayObject = null)
+      public function EmbedMgStoneCell(index:int = 0, info:ItemTemplateInfo = null, showLoading:Boolean = true, bg:DisplayObject = null)
       {
-         super(param1,param2,param3,param4);
+         super(index,info,showLoading,bg);
       }
       
-      override public function set info(param1:ItemTemplateInfo) : void
+      override public function set info(value:ItemTemplateInfo) : void
       {
-         .super.info = param1;
-         if(param1 && _nameTxt)
+         .super.info = value;
+         if(value && _nameTxt)
          {
             _nameTxt.x = -1;
             _nameTxt.y = 37;
@@ -28,9 +28,9 @@ package magicStone.components
          }
       }
       
-      private function getNameTxtColor(param1:int) : uint
+      private function getNameTxtColor(quality:int) : uint
       {
-         switch(int(param1) - 1)
+         switch(int(quality) - 1)
          {
             case 0:
                return 11655167;
@@ -47,14 +47,14 @@ package magicStone.components
          }
       }
       
-      override protected function updateSize(param1:Sprite) : void
+      override protected function updateSize(sp:Sprite) : void
       {
-         if(param1)
+         if(sp)
          {
-            param1.scaleX = 0.7;
-            param1.scaleY = 0.7;
-            param1.x = param1.x - param1.width / 2 + _contentWidth / 2;
-            param1.y = param1.y - param1.height / 2 + _contentHeight / 2;
+            sp.scaleX = 0.7;
+            sp.scaleY = 0.7;
+            sp.x = sp.x - sp.width / 2 + _contentWidth / 2;
+            sp.y = sp.y - sp.height / 2 + _contentHeight / 2;
          }
       }
       

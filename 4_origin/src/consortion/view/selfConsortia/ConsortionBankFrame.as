@@ -56,16 +56,16 @@ package consortion.view.selfConsortia
          removeEventListener("response",__responseHandler);
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(event:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(event.responseCode == 0 || event.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();
          }
       }
       
-      private function __clickHandler(param1:MouseEvent) : void
+      private function __clickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          dispose();

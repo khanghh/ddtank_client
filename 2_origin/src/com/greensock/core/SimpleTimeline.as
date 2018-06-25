@@ -10,94 +10,94 @@ package com.greensock.core
       
       public var autoRemoveChildren:Boolean;
       
-      public function SimpleTimeline(param1:Object = null)
+      public function SimpleTimeline(vars:Object = null)
       {
-         super(0,param1);
+         super(0,vars);
       }
       
-      public function insert(param1:TweenCore, param2:* = 0) : TweenCore
+      public function insert(tween:TweenCore, time:* = 0) : TweenCore
       {
-         if(!param1.cachedOrphan && param1.timeline)
+         if(!tween.cachedOrphan && tween.timeline)
          {
-            param1.timeline.remove(param1,true);
+            tween.timeline.remove(tween,true);
          }
-         param1.timeline = this;
-         param1.cachedStartTime = Number(param2) + param1.delay;
-         if(param1.gc)
+         tween.timeline = this;
+         tween.cachedStartTime = Number(time) + tween.delay;
+         if(tween.gc)
          {
-            param1.setEnabled(true,true);
+            tween.setEnabled(true,true);
          }
-         if(param1.cachedPaused)
+         if(tween.cachedPaused)
          {
-            param1.cachedPauseTime = param1.cachedStartTime + (this.rawTime - param1.cachedStartTime) / param1.cachedTimeScale;
+            tween.cachedPauseTime = tween.cachedStartTime + (this.rawTime - tween.cachedStartTime) / tween.cachedTimeScale;
          }
          if(_lastChild)
          {
-            _lastChild.nextNode = param1;
+            _lastChild.nextNode = tween;
          }
          else
          {
-            _firstChild = param1;
+            _firstChild = tween;
          }
-         param1.prevNode = _lastChild;
-         _lastChild = param1;
-         param1.nextNode = null;
-         param1.cachedOrphan = false;
-         return param1;
+         tween.prevNode = _lastChild;
+         _lastChild = tween;
+         tween.nextNode = null;
+         tween.cachedOrphan = false;
+         return tween;
       }
       
-      public function remove(param1:TweenCore, param2:Boolean = false) : void
+      public function remove(tween:TweenCore, skipDisable:Boolean = false) : void
       {
-         if(param1.cachedOrphan)
+         if(tween.cachedOrphan)
          {
             return;
          }
-         if(!param2)
+         if(!skipDisable)
          {
-            param1.setEnabled(false,true);
+            tween.setEnabled(false,true);
          }
-         if(param1.nextNode)
+         if(tween.nextNode)
          {
-            param1.nextNode.prevNode = param1.prevNode;
+            tween.nextNode.prevNode = tween.prevNode;
          }
-         else if(_lastChild == param1)
+         else if(_lastChild == tween)
          {
-            _lastChild = param1.prevNode;
+            _lastChild = tween.prevNode;
          }
-         if(param1.prevNode)
+         if(tween.prevNode)
          {
-            param1.prevNode.nextNode = param1.nextNode;
+            tween.prevNode.nextNode = tween.nextNode;
          }
-         else if(_firstChild == param1)
+         else if(_firstChild == tween)
          {
-            _firstChild = param1.nextNode;
+            _firstChild = tween.nextNode;
          }
-         param1.cachedOrphan = true;
+         tween.cachedOrphan = true;
       }
       
-      override public function renderTime(param1:Number, param2:Boolean = false, param3:Boolean = false) : void
+      override public function renderTime(time:Number, suppressEvents:Boolean = false, force:Boolean = false) : void
       {
-         var _loc5_:Number = NaN;
-         var _loc6_:* = null;
-         var _loc4_:* = _firstChild;
-         this.cachedTotalTime = param1;
-         this.cachedTime = param1;
-         while(_loc4_)
+         var dur:Number = NaN;
+         var next:* = null;
+         var tween:* = _firstChild;
+         this.cachedTotalTime = time;
+         this.cachedTime = time;
+         while(tween)
          {
-            _loc6_ = _loc4_.nextNode;
-            if(_loc4_.active || param1 >= _loc4_.cachedStartTime && !_loc4_.cachedPaused && !_loc4_.gc)
+            next = tween.nextNode;
+            if(tween.active || time >= tween.cachedStartTime && !tween.cachedPaused && !tween.gc)
             {
-               if(!_loc4_.cachedReversed)
+               if(!tween.cachedReversed)
                {
-                  _loc4_.renderTime((param1 - _loc4_.cachedStartTime) * _loc4_.cachedTimeScale,param2,false);
+                  tween.renderTime((time - tween.cachedStartTime) * tween.cachedTimeScale,suppressEvents,false);
                }
                else
                {
-                  _loc5_ = !!_loc4_.cacheIsDirty?_loc4_.totalDuration:Number(_loc4_.cachedTotalDuration);
-                  _loc4_.renderTime(_loc5_ - (param1 - _loc4_.cachedStartTime) * _loc4_.cachedTimeScale,param2,false);
+                  dur = !!tween.cacheIsDirty?tween.totalDuration:Number(tween.cachedTotalDuration);
+                  tween.renderTime(dur - (time - tween.cachedStartTime) * tween.cachedTimeScale,suppressEvents,false);
                }
             }
-            _loc4_ = _loc6_;
+            tween = next;
          }
       }
       

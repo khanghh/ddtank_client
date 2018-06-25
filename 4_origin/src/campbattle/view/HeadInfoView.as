@@ -50,11 +50,11 @@ package campbattle.view
       
       private var _directrion:String = "left";
       
-      public function HeadInfoView(param1:PlayerInfo)
+      public function HeadInfoView(info:PlayerInfo)
       {
          _capList = ["",LanguageMgr.GetTranslation("ddt.campBattle.qinglong"),LanguageMgr.GetTranslation("ddt.campBattle.baihu"),LanguageMgr.GetTranslation("ddt.campBattle.zhuque"),LanguageMgr.GetTranslation("ddt.campBattle.xuanwu")];
          super();
-         _info = param1;
+         _info = info;
          initView();
       }
       
@@ -67,9 +67,9 @@ package campbattle.view
          _nameTxt = ComponentFactory.Instance.creatComponentByStylename("ddtCampBattle.headName");
          _nameTxt.text = _info.NickName;
          addChild(_nameTxt);
-         var _loc1_:int = StaticFormula.getMaxHp(_info);
+         var max:int = StaticFormula.getMaxHp(_info);
          _bloodTxt = ComponentFactory.Instance.creatComponentByStylename("ddtCampBattle.headBlood");
-         _bloodTxt.text = _loc1_ + "/" + _loc1_;
+         _bloodTxt.text = max + "/" + max;
          addChild(_bloodTxt);
          _teamTxt = ComponentFactory.Instance.creatComponentByStylename("ddtCampBattle.headTeamInfo");
          _teamTxt.text = _capList[CampBattleControl.instance.model.myTeam];
@@ -89,9 +89,9 @@ package campbattle.view
          CampBattleControl.instance.addEventListener("pve_count",pevCountHander);
       }
       
-      private function characterComplete(param1:Event) : void
+      private function characterComplete(evt:Event) : void
       {
-         var _loc2_:* = null;
+         var maskSp:* = null;
          if(_figure && _figure.parent && _figure.bitmapData)
          {
             _figure.parent.removeChild(_figure);
@@ -115,23 +115,23 @@ package campbattle.view
             _figure.scaleY = 0.35;
             _figure.x = _directrion == "left"?18:73;
             _figure.y = 12;
-            _loc2_ = ComponentFactory.Instance.creat("camp.battle.headmask");
-            _loc2_.x = 49;
-            _loc2_.y = 50;
-            addChild(_loc2_);
-            _figure.mask = _loc2_;
+            maskSp = ComponentFactory.Instance.creat("camp.battle.headmask");
+            maskSp.x = 49;
+            maskSp.y = 50;
+            addChild(maskSp);
+            _figure.mask = maskSp;
          }
          addChild(_figure);
       }
       
-      private function pevCountHander(param1:MapEvent) : void
+      private function pevCountHander(e:MapEvent) : void
       {
          _currtAct.text = CampBattleControl.instance.model.monsterCount.toString();
       }
       
-      public function updateScore(param1:int) : void
+      public function updateScore(score:int) : void
       {
-         _myScoreTxt.text = param1.toString();
+         _myScoreTxt.text = score.toString();
       }
       
       public function dispose() : void

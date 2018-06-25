@@ -1,4 +1,2 @@
-package starling.utils
-{
-   public function execute(param1:Function, ... rest) : void{}
-}
+package starling.utils{   public function execute(func:Function, ... args) : void { }
+}

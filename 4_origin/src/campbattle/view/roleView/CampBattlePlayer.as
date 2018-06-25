@@ -38,15 +38,15 @@ package campbattle.view.roleView
       
       private var _walkSpeed:Number;
       
-      public function CampBattlePlayer(param1:RoleData = null, param2:Function = null)
+      public function CampBattlePlayer(playerInfo:RoleData = null, callBack:Function = null)
       {
-         super(param1,param2);
-         if(!param1)
+         super(playerInfo,callBack);
+         if(!playerInfo)
          {
             return;
          }
-         _playerInfo = param1;
-         setPlayerInfo(param1);
+         _playerInfo = playerInfo;
+         setPlayerInfo(playerInfo);
          setPlayerWalkSpeed();
       }
       
@@ -62,17 +62,17 @@ package campbattle.view.roleView
          }
       }
       
-      public function setPlayerInfo(param1:RoleData = null) : void
+      public function setPlayerInfo(playerInfo:RoleData = null) : void
       {
          addEventListener("characterDirectionChange",characterDirectionChange);
          addEventListener("enterFrame",enterFrameHander);
-         x = param1.posX;
-         y = param1.posY;
+         x = playerInfo.posX;
+         y = playerInfo.posY;
          this.character.x = -playerWidth / 2;
          this.character.y = -playerHeight;
          initStatus();
-         setStateType(param1.stateType);
-         setCaptureVisible(param1.isCapture);
+         setStateType(playerInfo.stateType);
+         setCaptureVisible(playerInfo.isCapture);
       }
       
       private function initStatus() : void
@@ -102,24 +102,24 @@ package campbattle.view.roleView
          addChild(capture);
       }
       
-      public function setCaptureVisible(param1:Boolean) : void
+      public function setCaptureVisible(bool:Boolean) : void
       {
-         capture.visible = param1;
-         _playerInfo.isCapture = param1;
+         capture.visible = bool;
+         _playerInfo.isCapture = bool;
       }
       
-      private function cartoonCompleteHandler(param1:Event) : void
+      private function cartoonCompleteHandler(e:Event) : void
       {
          _resurrectCartoon.gotoAndStop(1);
          _resurrectCartoon.visible = false;
       }
       
-      public function setStateType(param1:int) : void
+      public function setStateType(type:int) : void
       {
          tombstone.visible = false;
          fighting.visible = false;
          _resurrectCartoon.visible = false;
-         switch(int(param1))
+         switch(int(type))
          {
             case 0:
                this.character.visible = true;
@@ -147,7 +147,7 @@ package campbattle.view.roleView
                _playerInfo.isDead = true;
                _nameTxt.y = tombstone.y - 80;
          }
-         _playerInfo.stateType = param1;
+         _playerInfo.stateType = type;
       }
       
       override public function dispose() : void
@@ -175,31 +175,31 @@ package campbattle.view.roleView
          super.dispose();
       }
       
-      protected function enterFrameHander(param1:Event) : void
+      protected function enterFrameHander(e:Event) : void
       {
          update();
          playerWalkPath();
          characterMirror();
       }
       
-      public function walk(param1:Point, param2:Function = null, param3:int = 0, param4:int = 0) : void
+      public function walk(p:Point, fun:Function = null, id:int = 0, zoneID:int = 0) : void
       {
          if(!scene)
          {
             return;
          }
          walkPath = [];
-         _targetID = param3;
-         _targetZoneID = param4;
-         walkPath = scene.searchPath(playerPoint,param1);
+         _targetID = id;
+         _targetZoneID = zoneID;
+         walkPath = scene.searchPath(playerPoint,p);
          walkPath.shift();
          isWalkPathChange = true;
-         _walkOverHander = param2;
+         _walkOverHander = fun;
       }
       
       protected function characterMirror() : void
       {
-         var _loc1_:int = playerHeight;
+         var height:int = playerHeight;
          if(!isDefaultCharacter)
          {
             this.character.scaleX = !!sceneCharacterDirection.isMirror?-1:1;
@@ -213,9 +213,9 @@ package campbattle.view.roleView
             this.character.x = -60;
             this.playerHitArea.scaleX = 1;
             this.playerHitArea.x = this.character.x;
-            _loc1_ = 175;
+            height = 175;
          }
-         this.character.y = -_loc1_ + 12;
+         this.character.y = -height + 12;
          this.playerHitArea.y = this.character.y;
       }
       
@@ -228,22 +228,22 @@ package campbattle.view.roleView
          playerWalk(walkPath);
       }
       
-      override public function playerWalk(param1:Array) : void
+      override public function playerWalk(walkPath:Array) : void
       {
-         var _loc2_:Number = NaN;
+         var dis:Number = NaN;
          if(_walkPath != null && !isWalkPathChange && _tween.isPlaying)
          {
             return;
          }
-         _walkPath = param1;
+         _walkPath = walkPath;
          isWalkPathChange = false;
          if(_walkPath && _walkPath.length > 0)
          {
             _currentWalkStartPoint = _walkPath[0] as Point;
             sceneCharacterDirection = setPlayerDirection();
             dispatchEvent(new SceneCharacterEvent("characterDirectionChange",true));
-            _loc2_ = Point.distance(_currentWalkStartPoint,playerPoint);
-            _tween.start(_loc2_ / _walkSpeed,"x",_currentWalkStartPoint.x,"y",_currentWalkStartPoint.y);
+            dis = Point.distance(_currentWalkStartPoint,playerPoint);
+            _tween.start(dis / _walkSpeed,"x",_currentWalkStartPoint.x,"y",_currentWalkStartPoint.y);
             _walkPath.shift();
          }
          else
@@ -254,31 +254,31 @@ package campbattle.view.roleView
       
       private function setPlayerDirection() : SceneCharacterDirection
       {
-         var _loc1_:* = null;
-         _loc1_ = SceneCharacterDirection.getDirection(playerPoint,_currentWalkStartPoint);
+         var direction:* = null;
+         direction = SceneCharacterDirection.getDirection(playerPoint,_currentWalkStartPoint);
          if(_playerInfo.IsMounts)
          {
-            if(_loc1_ == SceneCharacterDirection.LT)
+            if(direction == SceneCharacterDirection.LT)
             {
-               _loc1_ = SceneCharacterDirection.LB;
+               direction = SceneCharacterDirection.LB;
             }
-            else if(_loc1_ == SceneCharacterDirection.RT)
+            else if(direction == SceneCharacterDirection.RT)
             {
-               _loc1_ = SceneCharacterDirection.RB;
+               direction = SceneCharacterDirection.RB;
             }
          }
-         return _loc1_;
+         return direction;
       }
       
-      public function IsShowPlayer(param1:Boolean) : void
+      public function IsShowPlayer(bool:Boolean) : void
       {
-         this.character.visible = param1;
-         _nameTxt.visible = param1;
+         this.character.visible = bool;
+         _nameTxt.visible = bool;
       }
       
-      private function characterDirectionChange(param1:SceneCharacterEvent) : void
+      private function characterDirectionChange(e:SceneCharacterEvent) : void
       {
-         if(param1.data)
+         if(e.data)
          {
             if(sceneCharacterDirection == SceneCharacterDirection.LT || sceneCharacterDirection == SceneCharacterDirection.RT)
             {

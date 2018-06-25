@@ -37,13 +37,13 @@ package stock.items
          StockMgr.inst.requestAward(_data.index);
       }
       
-      public function set data(param1:StockAwardData) : void
+      public function set data(value:StockAwardData) : void
       {
-         if(param1 == null)
+         if(value == null)
          {
             return;
          }
-         _data = param1;
+         _data = value;
          render();
       }
       

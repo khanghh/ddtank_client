@@ -48,15 +48,15 @@ package calendar.view
       
       private var _signed:Boolean;
       
-      public function DayCell(param1:Date, param2:CalendarModel)
+      public function DayCell(date:Date, model:CalendarModel)
       {
          super();
-         _model = param2;
+         _model = model;
          configUI();
          addEvent();
          buttonMode = true;
          mouseChildren = false;
-         this.date = param1;
+         this.date = date;
          this.signed = _model.hasSigned(_date) || _model.hasRestroSigned(_date);
       }
       
@@ -65,13 +65,13 @@ package calendar.view
          return _signed;
       }
       
-      public function set signed(param1:Boolean) : void
+      public function set signed(value:Boolean) : void
       {
-         if(_signed == param1)
+         if(_signed == value)
          {
             return;
          }
-         _signed = param1;
+         _signed = value;
          if(_signed && _signShape == null)
          {
             _signShape = ComponentFactory.Instance.creatBitmap("asset.ddtcalendar.SignShape");
@@ -99,13 +99,13 @@ package calendar.view
          return _date;
       }
       
-      public function set date(param1:Date) : void
+      public function set date(value:Date) : void
       {
-         if(_date == param1)
+         if(_date == value)
          {
             return;
          }
-         _date = param1;
+         _date = value;
          _dayField.text = _date.date.toString();
          isTrue = false;
          if(_signBitmap)
@@ -164,8 +164,8 @@ package calendar.view
       
       private function setLightActive() : void
       {
-         var _loc1_:Date = _model.today;
-         if(_date.fullYear == _loc1_.fullYear && _date.month == _loc1_.month && _date.date == _loc1_.date && !_model.hasSigned(_date))
+         var today:Date = _model.today;
+         if(_date.fullYear == today.fullYear && _date.month == today.month && _date.date == today.date && !_model.hasSigned(_date))
          {
             _tweenMax = TweenMax.to(_back,0.4,{
                "repeat":-1,
@@ -203,7 +203,7 @@ package calendar.view
          addEventListener("click",__click);
       }
       
-      private function __click(param1:MouseEvent) : void
+      private function __click(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(CalendarControl.getInstance().sign(_date))
@@ -227,9 +227,9 @@ package calendar.view
          }
       }
       
-      public function playSignAnimation(param1:String) : void
+      public function playSignAnimation(str:String) : void
       {
-         var _loc3_:* = null;
+         var movie:* = null;
          if(_signBitmap)
          {
             ObjectUtils.disposeObject(_signBitmap);
@@ -253,19 +253,19 @@ package calendar.view
             _tweenMax.pause();
             _back.filters = null;
          }
-         var _loc2_:MovieClip = ClassUtils.CreatInstance(param1);
-         _loc2_.x = 2;
-         if(_loc2_)
+         var mc:MovieClip = ClassUtils.CreatInstance(str);
+         mc.x = 2;
+         if(mc)
          {
-            _loc3_ = new MovieClipWrapper(_loc2_,true,true);
-            _loc3_.addEventListener("complete",__signAnimationComplete);
-            addChild(_loc3_.movie);
+            movie = new MovieClipWrapper(mc,true,true);
+            movie.addEventListener("complete",__signAnimationComplete);
+            addChild(movie.movie);
          }
       }
       
-      private function __signAnimationComplete(param1:Event) : void
+      private function __signAnimationComplete(event:Event) : void
       {
-         param1.currentTarget.removeEventListener("complete",__signAnimationComplete);
+         event.currentTarget.removeEventListener("complete",__signAnimationComplete);
          if(parent)
          {
             signed = true;

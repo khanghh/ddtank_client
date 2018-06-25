@@ -19,110 +19,113 @@ package morn.core.managers
       
       public function DialogManager()
       {
-         this._box = new Box();
-         this._mask = new Box();
-         this._maskBg = new Sprite();
+         _box = new Box();
+         _mask = new Box();
+         _maskBg = new Sprite();
          super();
-         addChild(this._box);
-         this._mask.addChild(this._maskBg);
-         this._maskBg.addChild(ObjectUtils.createBitmap(10,10,0,0.4));
-         addEventListener(Event.ADDED_TO_STAGE,this.onAddedToStage);
+         addChild(_box);
+         _mask.addChild(_maskBg);
+         _maskBg.addChild(ObjectUtils.createBitmap(10,10,0,0.4));
+         addEventListener("addedToStage",onAddedToStage);
       }
       
-      private function onAddedToStage(param1:Event) : void
+      private function onAddedToStage(e:Event) : void
       {
-         removeEventListener(Event.ADDED_TO_STAGE,this.onAddedToStage);
-         stage.addEventListener(Event.RESIZE,this.onResize);
-         this.onResize(null);
+         removeEventListener("addedToStage",onAddedToStage);
+         stage.addEventListener("resize",onResize);
+         onResize(null);
       }
       
-      private function onResize(param1:Event) : void
+      private function onResize(e:Event) : void
       {
-         var _loc3_:Dialog = null;
-         var _loc4_:Bitmap = null;
-         this._box.width = this._mask.width = stage.stageWidth;
-         this._box.height = this._mask.height = stage.stageHeight;
-         var _loc2_:int = this._box.numChildren - 1;
-         while(_loc2_ > -1)
+         var i:int = 0;
+         var item:* = null;
+         var bitmap:* = null;
+         var _loc5_:* = stage.stageWidth;
+         _mask.width = _loc5_;
+         _box.width = _loc5_;
+         _loc5_ = stage.stageHeight;
+         _mask.height = _loc5_;
+         _box.height = _loc5_;
+         for(i = _box.numChildren - 1; i > -1; )
          {
-            _loc3_ = this._box.getChildAt(_loc2_) as Dialog;
-            if(_loc3_.popupCenter)
+            item = _box.getChildAt(i) as Dialog;
+            if(item.popupCenter)
             {
-               _loc3_.x = (stage.stageWidth - _loc3_.width) * 0.5;
-               _loc3_.y = (stage.stageHeight - _loc3_.height) * 0.5;
+               item.x = (stage.stageWidth - item.width) * 0.5;
+               item.y = (stage.stageHeight - item.height) * 0.5;
             }
-            _loc2_--;
+            i--;
          }
-         _loc2_ = this._mask.numChildren - 1;
-         while(_loc2_ > -1)
+         for(i = _mask.numChildren - 1; i > -1; )
          {
-            _loc3_ = this._mask.getChildAt(_loc2_) as Dialog;
-            if(_loc3_)
+            item = _mask.getChildAt(i) as Dialog;
+            if(item)
             {
-               if(_loc3_.popupCenter)
+               if(item.popupCenter)
                {
-                  _loc3_.x = (stage.stageWidth - _loc3_.width) * 0.5;
-                  _loc3_.y = (stage.stageHeight - _loc3_.height) * 0.5;
+                  item.x = (stage.stageWidth - item.width) * 0.5;
+                  item.y = (stage.stageHeight - item.height) * 0.5;
                }
             }
             else
             {
-               _loc4_ = this._maskBg.getChildAt(0) as Bitmap;
-               _loc4_.width = stage.stageWidth;
-               _loc4_.height = stage.stageHeight;
+               bitmap = _maskBg.getChildAt(0) as Bitmap;
+               bitmap.width = stage.stageWidth;
+               bitmap.height = stage.stageHeight;
             }
-            _loc2_--;
+            i--;
          }
       }
       
-      public function show(param1:Dialog, param2:Boolean = false) : void
+      public function show(dialog:Dialog, closeOther:Boolean = false) : void
       {
-         if(param2)
+         if(closeOther)
          {
-            this._box.removeAllChild();
+            _box.removeAllChild();
          }
-         if(param1.popupCenter)
+         if(dialog.popupCenter)
          {
-            param1.x = (stage.stageWidth - param1.width) * 0.5;
-            param1.y = (stage.stageHeight - param1.height) * 0.5;
+            dialog.x = (stage.stageWidth - dialog.width) * 0.5;
+            dialog.y = (stage.stageHeight - dialog.height) * 0.5;
          }
-         this._box.addChild(param1);
+         _box.addChild(dialog);
       }
       
-      public function popup(param1:Dialog, param2:Boolean = false) : void
+      public function popup(dialog:Dialog, closeOther:Boolean = false) : void
       {
-         if(param2)
+         if(closeOther)
          {
-            this._mask.removeAllChild(this._maskBg);
+            _mask.removeAllChild(_maskBg);
          }
-         if(param1.popupCenter)
+         if(dialog.popupCenter)
          {
-            param1.x = (stage.stageWidth - param1.width) * 0.5;
-            param1.y = (stage.stageHeight - param1.height) * 0.5;
+            dialog.x = (stage.stageWidth - dialog.width) * 0.5;
+            dialog.y = (stage.stageHeight - dialog.height) * 0.5;
          }
-         this._mask.addChild(param1);
-         this._mask.swapChildrenAt(this._mask.getChildIndex(this._maskBg),this._mask.numChildren - 2);
-         addChild(this._mask);
+         _mask.addChild(dialog);
+         _mask.swapChildrenAt(_mask.getChildIndex(_maskBg),_mask.numChildren - 2);
+         addChild(_mask);
       }
       
-      public function close(param1:Dialog) : void
+      public function close(dialog:Dialog) : void
       {
-         param1.remove();
-         if(this._mask.numChildren > 1)
+         dialog.remove();
+         if(_mask.numChildren > 1)
          {
-            this._mask.swapChildrenAt(this._mask.getChildIndex(this._maskBg),this._mask.numChildren - 2);
+            _mask.swapChildrenAt(_mask.getChildIndex(_maskBg),_mask.numChildren - 2);
          }
          else
          {
-            this._mask.remove();
+            _mask.remove();
          }
       }
       
       public function closeAll() : void
       {
-         this._box.removeAllChild();
-         this._mask.removeAllChild(this._maskBg);
-         this._mask.remove();
+         _box.removeAllChild();
+         _mask.removeAllChild(_maskBg);
+         _mask.remove();
       }
    }
 }

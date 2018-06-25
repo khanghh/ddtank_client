@@ -49,7 +49,7 @@ package hall.hallInfo.playerInfo
          PlayerManager.Instance.addEventListener("VIPStateChange",__isOpenBtn);
       }
       
-      protected function __isOpenBtn(param1:Event) : void
+      protected function __isOpenBtn(event:Event) : void
       {
          _selfInfo = PlayerManager.Instance.Self;
          setVIPProgress();
@@ -105,33 +105,33 @@ package hall.hallInfo.playerInfo
       
       private function setVIPProgress() : void
       {
-         var _loc1_:int = 0;
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         var _loc4_:int = _selfInfo.VIPLevel;
-         if(_loc4_ == 15)
+         var exp:int = 0;
+         var now:int = 0;
+         var max:int = 0;
+         var curLevel:int = _selfInfo.VIPLevel;
+         if(curLevel == 15)
          {
-            _loc1_ = ServerConfigManager.instance.VIPExpNeededForEachLv[11] - ServerConfigManager.instance.VIPExpNeededForEachLv[10];
+            exp = ServerConfigManager.instance.VIPExpNeededForEachLv[11] - ServerConfigManager.instance.VIPExpNeededForEachLv[10];
             setProgress(1,1);
-            _expText.text = _loc1_ + "/" + _loc1_;
+            _expText.text = exp + "/" + exp;
          }
          else
          {
-            _loc3_ = _selfInfo.VIPExp - ServerConfigManager.instance.VIPExpNeededForEachLv[_loc4_ - 1];
-            _loc2_ = ServerConfigManager.instance.VIPExpNeededForEachLv[_loc4_] - ServerConfigManager.instance.VIPExpNeededForEachLv[_loc4_ - 1];
-            setProgress(_loc3_,_loc2_);
-            _expText.text = _loc3_ + "/" + _loc2_;
+            now = _selfInfo.VIPExp - ServerConfigManager.instance.VIPExpNeededForEachLv[curLevel - 1];
+            max = ServerConfigManager.instance.VIPExpNeededForEachLv[curLevel] - ServerConfigManager.instance.VIPExpNeededForEachLv[curLevel - 1];
+            setProgress(now,max);
+            _expText.text = now + "/" + max;
          }
          setExpTipData();
       }
       
       private function setExpTipData() : void
       {
-         var _loc1_:int = 0;
+         var need:int = 0;
          if(_selfInfo.VIPLevel != 15 && _selfInfo.IsVIP)
          {
-            _loc1_ = ServerConfigManager.instance.VIPExpNeededForEachLv[_selfInfo.VIPLevel] - _selfInfo.VIPExp;
-            _expBitmapTip.tipData = LanguageMgr.GetTranslation("ddt.vip.dueTime.tip",_loc1_,_selfInfo.VIPLevel + 1);
+            need = ServerConfigManager.instance.VIPExpNeededForEachLv[_selfInfo.VIPLevel] - _selfInfo.VIPExp;
+            _expBitmapTip.tipData = LanguageMgr.GetTranslation("ddt.vip.dueTime.tip",need,_selfInfo.VIPLevel + 1);
          }
          else if(!_selfInfo.IsVIP)
          {
@@ -147,12 +147,12 @@ package hall.hallInfo.playerInfo
          }
       }
       
-      private function setProgress(param1:int, param2:int) : void
+      private function setProgress(now:int, max:int) : void
       {
-         _mask.x = -(_expBitmap.width - param1 * _expBitmap.width / param2);
+         _mask.x = -(_expBitmap.width - now * _expBitmap.width / max);
       }
       
-      private function __showVipFrame(param1:MouseEvent) : void
+      private function __showVipFrame(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          VipController.instance.show();

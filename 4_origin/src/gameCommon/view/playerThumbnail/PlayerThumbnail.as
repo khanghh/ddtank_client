@@ -109,11 +109,11 @@ package gameCommon.view.playerThumbnail
       
       private var _tipStyle:String;
       
-      public function PlayerThumbnail(param1:Player, param2:int)
+      public function PlayerThumbnail(info:Player, dirct:int)
       {
          super();
-         _info = param1;
-         _dirct = param2;
+         _info = info;
+         _dirct = dirct;
          init();
          initEvents();
       }
@@ -185,14 +185,14 @@ package gameCommon.view.playerThumbnail
                "gender":_info.playerInfo.Sex
             };
          }
-         var _loc1_:PetInfo = _info.playerInfo.currentPet;
-         if(_loc1_)
+         var currentPet:PetInfo = _info.playerInfo.currentPet;
+         if(currentPet)
          {
             _petTip = ComponentFactory.Instance.creatComponentByStylename("core.PetTip");
             _petTip.tipData = {
-               "petName":_loc1_.Name,
-               "petLevel":_loc1_.Level,
-               "petIconUrl":PetsBagManager.instance().getPicStrByLv(_loc1_)
+               "petName":currentPet.Name,
+               "petLevel":currentPet.Level,
+               "petIconUrl":PetsBagManager.instance().getPicStrByLv(currentPet)
             };
          }
          _trusteeshipIcon = ComponentFactory.Instance.creatComponentByStylename("game.smallplayer.trusteeship");
@@ -243,42 +243,42 @@ package gameCommon.view.playerThumbnail
          tipDirctions = "7";
          tipGapV = 10;
          tipGapH = 10;
-         var _loc1_:LevelTipInfo = new LevelTipInfo();
-         _loc1_.enableTip = true;
-         _loc1_.Battle = _info.playerInfo.FightPower;
-         _loc1_.ddtKingGraed = _info.playerInfo.ddtKingGrade;
-         _loc1_.Level = _info.playerInfo.Grade;
-         _loc1_.Repute = _info.playerInfo.Repute;
-         _loc1_.Total = _info.playerInfo.TotalCount;
-         _loc1_.Win = _info.playerInfo.WinCount;
-         _loc1_.exploit = _info.playerInfo.Offer;
-         _loc1_.team = _info.team;
-         _loc1_.nickName = _info.playerInfo.NickName;
-         tipData = _loc1_;
+         var info:LevelTipInfo = new LevelTipInfo();
+         info.enableTip = true;
+         info.Battle = _info.playerInfo.FightPower;
+         info.ddtKingGraed = _info.playerInfo.ddtKingGrade;
+         info.Level = _info.playerInfo.Grade;
+         info.Repute = _info.playerInfo.Repute;
+         info.Total = _info.playerInfo.TotalCount;
+         info.Win = _info.playerInfo.WinCount;
+         info.exploit = _info.playerInfo.Offer;
+         info.team = _info.team;
+         info.nickName = _info.playerInfo.NickName;
+         tipData = info;
          ShowTipManager.Instance.addTip(this);
       }
       
-      protected function overHandler(param1:MouseEvent) : void
+      protected function overHandler(evt:MouseEvent) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var tip:* = null;
+         var tip2:* = null;
+         var tip3:* = null;
          this.filters = [lightingFilter];
          if(_marryTip)
          {
             _marryTip.visible = true;
             LayerManager.Instance.addToLayer(_marryTip,3);
-            _loc4_ = ShowTipManager.Instance.getTipInstanceByStylename(tipStyle);
-            _marryTip.x = _loc4_.x;
-            _marryTip.y = _loc4_.y + _loc4_.height;
+            tip = ShowTipManager.Instance.getTipInstanceByStylename(tipStyle);
+            _marryTip.x = tip.x;
+            _marryTip.y = tip.y + tip.height;
          }
          if(_petTip)
          {
             _petTip.visible = true;
             LayerManager.Instance.addToLayer(_petTip,3);
-            _loc3_ = ShowTipManager.Instance.getTipInstanceByStylename(tipStyle);
-            _petTip.x = _loc3_.x + _loc3_.width;
-            _petTip.y = _loc3_.y;
+            tip2 = ShowTipManager.Instance.getTipInstanceByStylename(tipStyle);
+            _petTip.x = tip2.x + tip2.width;
+            _petTip.y = tip2.y;
          }
          if(_teamTip)
          {
@@ -291,14 +291,14 @@ package gameCommon.view.playerThumbnail
             }
             else
             {
-               _loc2_ = ShowTipManager.Instance.getTipInstanceByStylename(tipStyle);
-               _teamTip.x = _loc2_.x;
-               _teamTip.y = _loc2_.y + _loc2_.height;
+               tip3 = ShowTipManager.Instance.getTipInstanceByStylename(tipStyle);
+               _teamTip.x = tip3.x;
+               _teamTip.y = tip3.y + tip3.height;
             }
          }
       }
       
-      protected function outHandler(param1:MouseEvent) : void
+      protected function outHandler(evt:MouseEvent) : void
       {
          this.filters = null;
          if(_marryTip)
@@ -315,7 +315,7 @@ package gameCommon.view.playerThumbnail
          }
       }
       
-      protected function clickHandler(param1:MouseEvent) : void
+      protected function clickHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          removeTipTemp();
@@ -379,7 +379,7 @@ package gameCommon.view.playerThumbnail
          return false;
       }
       
-      private function __playerChange(param1:CrazyTankSocketEvent) : void
+      private function __playerChange(e:CrazyTankSocketEvent) : void
       {
          _routeBtn.visible = false;
          _smallPlayerFP.visible = false;
@@ -387,22 +387,22 @@ package gameCommon.view.playerThumbnail
          _selectShiner.stop();
       }
       
-      private function __routeLine(param1:MouseEvent) : void
+      private function __routeLine(event:MouseEvent) : void
       {
          dispatchEvent(new GameEvent("wishSelect",_info.LivingID));
       }
       
       private function setUpLintingFilter() : void
       {
-         var _loc1_:Array = [];
-         _loc1_ = _loc1_.concat([1,0,0,0,25]);
-         _loc1_ = _loc1_.concat([0,1,0,0,25]);
-         _loc1_ = _loc1_.concat([0,0,1,0,25]);
-         _loc1_ = _loc1_.concat([0,0,0,1,0]);
-         lightingFilter = new ColorMatrixFilter(_loc1_);
+         var matrix:Array = [];
+         matrix = matrix.concat([1,0,0,0,25]);
+         matrix = matrix.concat([0,1,0,0,25]);
+         matrix = matrix.concat([0,0,1,0,25]);
+         matrix = matrix.concat([0,0,0,1,0]);
+         lightingFilter = new ColorMatrixFilter(matrix);
       }
       
-      private function __setSmallFP(param1:LivingEvent) : void
+      private function __setSmallFP(event:LivingEvent) : void
       {
          if(_info.playerInfo.ID != PlayerManager.Instance.Self.ID)
          {
@@ -422,7 +422,7 @@ package gameCommon.view.playerThumbnail
          }
       }
       
-      private function __setShiner(param1:LivingEvent) : void
+      private function __setShiner(event:LivingEvent) : void
       {
          if(_info.currentSelectId == _info.LivingID)
          {
@@ -434,7 +434,7 @@ package gameCommon.view.playerThumbnail
          }
       }
       
-      private function __shineChange(param1:LivingEvent) : void
+      private function __shineChange(evt:LivingEvent) : void
       {
          if(_info && _info.isAttacking)
          {
@@ -446,14 +446,14 @@ package gameCommon.view.playerThumbnail
          }
       }
       
-      private function __trusteeshipChange(param1:GameEvent) : void
+      private function __trusteeshipChange(event:GameEvent) : void
       {
          if(_trusteeshipIcon == null)
          {
             return;
          }
-         var _loc2_:Boolean = param1.data as Boolean;
-         if(_loc2_)
+         var flag:Boolean = event.data as Boolean;
+         if(flag)
          {
             addChild(_trusteeshipIcon);
          }
@@ -467,7 +467,7 @@ package gameCommon.view.playerThumbnail
          }
       }
       
-      private function __fightStatusChange(param1:GameEvent) : void
+      private function __fightStatusChange(event:GameEvent) : void
       {
          if(!_waitingIcon || !_actionIcon)
          {
@@ -490,7 +490,7 @@ package gameCommon.view.playerThumbnail
          }
       }
       
-      private function __onUpdateFlagNum(param1:LivingEvent) : void
+      private function __onUpdateFlagNum(e:LivingEvent) : void
       {
          updateFlagNum();
       }
@@ -513,7 +513,7 @@ package gameCommon.view.playerThumbnail
          }
       }
       
-      private function __onUpdateState(param1:LivingEvent) : void
+      private function __onUpdateState(e:LivingEvent) : void
       {
          if(_info.isFeignDeath)
          {
@@ -556,29 +556,29 @@ package gameCommon.view.playerThumbnail
       
       private function createArrow() : void
       {
-         var _loc1_:int = 100000 + _info.LivingID;
-         NewHandContainer.Instance.showArrow(_loc1_,180,new Point(25,145),"","",this,0,true);
+         var temporaryID:int = 100000 + _info.LivingID;
+         NewHandContainer.Instance.showArrow(temporaryID,180,new Point(25,145),"","",this,0,true);
       }
       
       private function clearArrow() : void
       {
-         var _loc1_:int = 100000 + _info.LivingID;
-         NewHandContainer.Instance.clearArrowByID(_loc1_);
+         var temporaryID:int = 100000 + _info.LivingID;
+         NewHandContainer.Instance.clearArrowByID(temporaryID);
       }
       
-      override public function set x(param1:Number) : void
+      override public function set x(value:Number) : void
       {
-         .super.x = param1;
+         .super.x = value;
          __shineChange(null);
       }
       
-      override public function set y(param1:Number) : void
+      override public function set y(value:Number) : void
       {
-         .super.y = param1;
+         .super.y = value;
          __shineChange(null);
       }
       
-      private function __die(param1:LivingEvent) : void
+      private function __die(evt:LivingEvent) : void
       {
          if(_headFigure)
          {
@@ -598,7 +598,7 @@ package gameCommon.view.playerThumbnail
          }
       }
       
-      private function __revive(param1:LivingEvent) : void
+      private function __revive(evt:LivingEvent) : void
       {
          if(_headFigure)
          {
@@ -642,7 +642,7 @@ package gameCommon.view.playerThumbnail
          _routeBtn.removeEventListener("click",__routeLine);
       }
       
-      private function __updateBlood(param1:LivingEvent) : void
+      private function __updateBlood(evt:LivingEvent) : void
       {
          _blood.setProgress(_info.blood,_info.maxBlood);
          if(_hpPercentTxt)
@@ -704,9 +704,9 @@ package gameCommon.view.playerThumbnail
          return _levelTipInfo;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(value:Object) : void
       {
-         _levelTipInfo = param1 as LevelTipInfo;
+         _levelTipInfo = value as LevelTipInfo;
       }
       
       public function get tipDirctions() : String
@@ -714,9 +714,9 @@ package gameCommon.view.playerThumbnail
          return _tipDirctions;
       }
       
-      public function set tipDirctions(param1:String) : void
+      public function set tipDirctions(value:String) : void
       {
-         _tipDirctions = param1;
+         _tipDirctions = value;
       }
       
       public function get tipGapH() : int
@@ -724,9 +724,9 @@ package gameCommon.view.playerThumbnail
          return _tipGapH;
       }
       
-      public function set tipGapH(param1:int) : void
+      public function set tipGapH(value:int) : void
       {
-         _tipGapH = param1;
+         _tipGapH = value;
       }
       
       public function get tipGapV() : int
@@ -734,9 +734,9 @@ package gameCommon.view.playerThumbnail
          return _tipGapV;
       }
       
-      public function set tipGapV(param1:int) : void
+      public function set tipGapV(value:int) : void
       {
-         _tipGapV = param1;
+         _tipGapV = value;
       }
       
       public function get tipStyle() : String
@@ -744,9 +744,9 @@ package gameCommon.view.playerThumbnail
          return _tipStyle;
       }
       
-      public function set tipStyle(param1:String) : void
+      public function set tipStyle(value:String) : void
       {
-         _tipStyle = param1;
+         _tipStyle = value;
       }
       
       public function asDisplayObject() : DisplayObject

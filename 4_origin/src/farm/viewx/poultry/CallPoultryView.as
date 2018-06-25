@@ -40,10 +40,10 @@ package farm.viewx.poultry
       
       private function initView() : void
       {
-         var _loc1_:AlertInfo = new AlertInfo("",LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"));
-         _loc1_.moveEnable = false;
-         _loc1_.autoDispose = false;
-         info = _loc1_;
+         var alertInfo:AlertInfo = new AlertInfo("",LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"));
+         alertInfo.moveEnable = false;
+         alertInfo.autoDispose = false;
+         info = alertInfo;
          _titleBg = ComponentFactory.Instance.creatComponentByStylename("farm.friendListTitleBg");
          PositionUtils.setPos(_titleBg,"asset.farm.poultry.titlePos");
          addToContent(_titleBg);
@@ -64,28 +64,28 @@ package farm.viewx.poultry
       
       private function addPoultryName() : void
       {
-         var _loc2_:VectorListModel = _poultryBox.listPanel.vectorListModel;
-         _loc2_.clear();
-         var _loc1_:int = FarmModelController.instance.model.FarmTreeLevel;
-         var _loc4_:Dictionary = FarmModelController.instance.model.farmPoultryInfo;
-         if(_loc1_ > 0)
+         var comboxModel:VectorListModel = _poultryBox.listPanel.vectorListModel;
+         comboxModel.clear();
+         var level:int = FarmModelController.instance.model.FarmTreeLevel;
+         var farmPoultryInfo:Dictionary = FarmModelController.instance.model.farmPoultryInfo;
+         if(level > 0)
          {
             var _loc6_:int = 0;
-            var _loc5_:* = _loc4_;
-            for each(var _loc3_ in _loc4_)
+            var _loc5_:* = farmPoultryInfo;
+            for each(var item in farmPoultryInfo)
             {
-               if(_loc3_.Level % 10 == 1 && _loc3_.Level <= _loc1_)
+               if(item.Level % 10 == 1 && item.Level <= level)
                {
-                  _loc2_.append(_loc3_.MonsterName);
+                  comboxModel.append(item.MonsterName);
                }
             }
          }
          else
          {
-            _loc2_.append(_loc4_[_loc1_].MonsterName);
+            comboxModel.append(farmPoultryInfo[level].MonsterName);
          }
-         _poultryBox.textField.text = _loc2_.last();
-         _poultryBox.currentSelectedIndex = _loc2_.size() - 1;
+         _poultryBox.textField.text = comboxModel.last();
+         _poultryBox.currentSelectedIndex = comboxModel.size() - 1;
       }
       
       private function initEvent() : void
@@ -94,15 +94,15 @@ package farm.viewx.poultry
          _poultryBox.listPanel.list.addEventListener("listItemClick",__onListClick);
       }
       
-      protected function __onListClick(param1:ListItemEvent) : void
+      protected function __onListClick(event:ListItemEvent) : void
       {
          SoundManager.instance.play("008");
       }
       
-      private function __closeFarmHelper(param1:FrameEvent) : void
+      private function __closeFarmHelper(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         if(!(int(param1.responseCode) - 3))
+         if(!(int(event.responseCode) - 3))
          {
             SocketManager.Instance.out.callFarmPoultry(_poultryBox.currentSelectedIndex * 10 + 1);
          }

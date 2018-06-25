@@ -8,6 +8,7 @@ package mark.views
    import com.pickgliss.utils.ObjectUtils;
    import ddt.manager.LanguageMgr;
    import ddt.manager.PlayerManager;
+   import ddt.manager.SoundManager;
    import ddt.utils.PositionUtils;
    import flash.display.Sprite;
    import flash.events.MouseEvent;
@@ -44,17 +45,16 @@ package mark.views
       
       override protected function initialize() : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          _rankCombo = ComponentFactory.Instance.creatComponentByStylename("mark.rank");
          addChild(_rankCombo);
          _rankCombo.beginChanges();
          _rankCombo.listPanel.vectorListModel.clear();
-         var _loc1_:Array = [LanguageMgr.GetTranslation("mark.defaultRank"),LanguageMgr.GetTranslation("mark.starLvRank"),LanguageMgr.GetTranslation("mark.characterRank")];
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_.length)
+         var rankStrs:Array = [LanguageMgr.GetTranslation("mark.defaultRank"),LanguageMgr.GetTranslation("mark.starLvRank"),LanguageMgr.GetTranslation("mark.characterRank")];
+         for(i = 0; i < rankStrs.length; )
          {
-            _rankCombo.listPanel.vectorListModel.append(_loc1_[_loc2_]);
-            _loc2_++;
+            _rankCombo.listPanel.vectorListModel.append(rankStrs[i]);
+            i++;
          }
          _rankCombo.commitChanges();
          initEvent();
@@ -79,18 +79,18 @@ package mark.views
          _rankCombo.listPanel.list.addEventListener("listItemClick",itemClickHander);
       }
       
-      private function cancelSell(param1:MarkEvent) : void
+      private function cancelSell(evt:MarkEvent) : void
       {
-         var _loc3_:int = 0;
+         var i:int = 0;
          MarkMgr.inst.model.sellList.length = 0;
          btnSell.disabled = true;
-         var _loc2_:MarkBagItem = null;
-         _loc3_ = listBag.startIndex;
-         while(listBag.array && _loc3_ < listBag.array.length)
+         var item:MarkBagItem = null;
+         i = listBag.startIndex;
+         while(listBag.array && i < listBag.array.length)
          {
-            _loc2_ = listBag.getCell(_loc3_) as MarkBagItem;
-            _loc2_.imgStatus.visible = false;
-            _loc3_++;
+            item = listBag.getCell(i) as MarkBagItem;
+            item.imgStatus.visible = false;
+            i++;
          }
       }
       
@@ -104,7 +104,7 @@ package mark.views
          }
       }
       
-      private function updateSellStatus(param1:MarkEvent = null) : void
+      private function updateSellStatus(evt:MarkEvent = null) : void
       {
          btnSell.disabled = MarkMgr.inst.model.sellList == null || MarkMgr.inst.model.sellList.length == 0;
       }
@@ -115,34 +115,35 @@ package mark.views
          {
             return;
          }
-         var _loc1_:MarkHelpView = new MarkHelpView();
-         PositionUtils.setPos(_loc1_,{
+         var frame:MarkHelpView = new MarkHelpView();
+         PositionUtils.setPos(frame,{
             "x":280,
             "y":76
          });
-         _loc1_.data = sortedSuits;
-         LayerManager.Instance.addToLayer(_loc1_,3,false,1);
+         frame.data = sortedSuits;
+         LayerManager.Instance.addToLayer(frame,3,false,1);
       }
       
       private function get sortedSuits() : Array
       {
-         var _loc2_:Array = [];
-         _loc2_.push(MarkMgr.inst.model.cfgSet[_setId]);
+         var arr:Array = [];
+         arr.push(MarkMgr.inst.model.cfgSet[_setId]);
          var _loc4_:int = 0;
          var _loc3_:* = MarkMgr.inst.model.cfgSet;
-         for each(var _loc1_ in MarkMgr.inst.model.cfgSet)
+         for each(var it in MarkMgr.inst.model.cfgSet)
          {
-            if(_loc1_.SetId != _setId)
+            if(it.SetId != _setId)
             {
-               _loc2_.push(_loc1_);
+               arr.push(it);
             }
          }
-         return _loc2_;
+         return arr;
       }
       
-      private function itemClickHander(param1:ListItemEvent) : void
+      private function itemClickHander(event:ListItemEvent) : void
       {
-         _rankType = param1.index;
+         SoundManager.instance.play("008");
+         _rankType = event.index;
          sort();
       }
       
@@ -152,29 +153,29 @@ package mark.views
          {
             return;
          }
-         var tmp:Array = listBag.array.sort(function(param1:MarkChipData, param2:MarkChipData):int
+         var tmp:Array = listBag.array.sort(function(left:MarkChipData, right:MarkChipData):int
          {
-            var _loc4_:MarkChipTemplateData = MarkMgr.inst.model.cfgChip[param1.templateId];
-            var _loc3_:MarkChipTemplateData = MarkMgr.inst.model.cfgChip[param2.templateId];
+            var l:MarkChipTemplateData = MarkMgr.inst.model.cfgChip[left.templateId];
+            var r:MarkChipTemplateData = MarkMgr.inst.model.cfgChip[right.templateId];
             if(_rankType == 0)
             {
-               if(_loc4_.Place < _loc3_.Place)
+               if(l.Place < r.Place)
                {
                   return -1;
                }
-               if(_loc4_.Place == _loc3_.Place)
+               if(l.Place == r.Place)
                {
-                  if(_loc4_.Character < _loc3_.Character)
+                  if(l.Character < r.Character)
                   {
                      return -1;
                   }
-                  if(_loc4_.Character == _loc3_.Character)
+                  if(l.Character == r.Character)
                   {
-                     if(param1.bornLv + param1.hammerLv < param2.bornLv + param2.hammerLv)
+                     if(left.bornLv + left.hammerLv < right.bornLv + right.hammerLv)
                      {
                         return 1;
                      }
-                     if(param1.bornLv + param1.hammerLv == param2.bornLv + param2.hammerLv)
+                     if(left.bornLv + left.hammerLv == right.bornLv + right.hammerLv)
                      {
                         return 0;
                      }
@@ -186,25 +187,25 @@ package mark.views
             }
             if(_rankType == 1)
             {
-               if(param1.bornLv + param1.hammerLv < param2.bornLv + param2.hammerLv)
+               if(left.bornLv + left.hammerLv < right.bornLv + right.hammerLv)
                {
                   return 1;
                }
-               if(param1.bornLv + param1.hammerLv == param2.bornLv + param2.hammerLv)
+               if(left.bornLv + left.hammerLv == right.bornLv + right.hammerLv)
                {
-                  if(_loc4_.Character == _loc3_.Character)
+                  if(l.Character == r.Character)
                   {
-                     if(_loc4_.Place < _loc3_.Place)
+                     if(l.Place < r.Place)
                      {
                         return -1;
                      }
-                     if(_loc4_.Place == _loc3_.Place)
+                     if(l.Place == r.Place)
                      {
                         return 0;
                      }
                      return 1;
                   }
-                  if(_loc4_.Character < _loc3_.Character)
+                  if(l.Character < r.Character)
                   {
                      return 1;
                   }
@@ -214,19 +215,19 @@ package mark.views
             }
             if(_rankType == 2)
             {
-               if(_loc4_.Character == _loc3_.Character)
+               if(l.Character == r.Character)
                {
-                  if(param1.bornLv + param1.hammerLv < param2.bornLv + param2.hammerLv)
+                  if(left.bornLv + left.hammerLv < right.bornLv + right.hammerLv)
                   {
                      return 1;
                   }
-                  if(param1.bornLv + param1.hammerLv == param2.bornLv + param2.hammerLv)
+                  if(left.bornLv + left.hammerLv == right.bornLv + right.hammerLv)
                   {
-                     if(_loc4_.Place < _loc3_.Place)
+                     if(l.Place < r.Place)
                      {
                         return -1;
                      }
-                     if(_loc4_.Place == _loc3_.Place)
+                     if(l.Place == r.Place)
                      {
                         return 0;
                      }
@@ -234,7 +235,7 @@ package mark.views
                   }
                   return -1;
                }
-               if(_loc4_.Character < _loc3_.Character)
+               if(l.Character < r.Character)
                {
                   return 1;
                }
@@ -255,7 +256,7 @@ package mark.views
       
       private function cancel() : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          if(_blackGound)
          {
             _blackGound.visible = false;
@@ -266,13 +267,13 @@ package mark.views
          btnCancel.visible = false;
          btnReturn.visible = true;
          MarkMgr.inst.model.sellList.length = 0;
-         var _loc1_:MarkBagItem = null;
-         _loc2_ = listBag.startIndex;
-         while(listBag.array && _loc2_ < listBag.array.length)
+         var item:MarkBagItem = null;
+         i = listBag.startIndex;
+         while(listBag.array && i < listBag.array.length)
          {
-            _loc1_ = listBag.getCell(_loc2_) as MarkBagItem;
-            _loc1_.imgStatus.visible = false;
-            _loc2_++;
+            item = listBag.getCell(i) as MarkBagItem;
+            item.imgStatus.visible = false;
+            i++;
          }
       }
       
@@ -304,9 +305,9 @@ package mark.views
          btnReturn.visible = false;
       }
       
-      private function __onBlackGoundMouseDown(param1:MouseEvent) : void
+      private function __onBlackGoundMouseDown(event:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
+         event.stopImmediatePropagation();
       }
       
       private function sell() : void
@@ -314,28 +315,28 @@ package mark.views
          MarkMgr.inst.submitSell();
       }
       
-      private function render(param1:MarkBagItem, param2:int) : void
+      private function render(item:MarkBagItem, index:int) : void
       {
-         if(param2 < listBag.array.length)
+         if(index < listBag.array.length)
          {
-            param1.data = listBag.array[param2];
+            item.data = listBag.array[index];
          }
-         else if(param2 < 4 * 7 || (listBag.array.length % 4 + 1) * 7)
+         else if(index < 4 * 7 || (listBag.array.length % 4 + 1) * 7)
          {
-            param1.data = null;
+            item.data = null;
          }
       }
       
-      public function set data(param1:MarkBagData) : void
+      public function set data(value:MarkBagData) : void
       {
-         lblName.text = MarkMgr.inst.model.cfgSet[param1.type].Name;
-         _setId = param1.type;
+         lblName.text = MarkMgr.inst.model.cfgSet[value.type].Name;
+         _setId = value.type;
          listBag.array = [];
          var _loc4_:int = 0;
-         var _loc3_:* = param1.chips;
-         for each(var _loc2_ in param1.chips)
+         var _loc3_:* = value.chips;
+         for each(var chip in value.chips)
          {
-            listBag.array.push(_loc2_);
+            listBag.array.push(chip);
          }
          btnSelectSell.disabled = listBag.array == null || listBag.array.length == 0;
          sort();

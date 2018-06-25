@@ -14,15 +14,15 @@ package gameStarling.objects
       
       private var _currentBombTimer:int = -1;
       
-      public function SpringTimerBomb3D(param1:Bomb, param2:Living, param3:int = 0)
+      public function SpringTimerBomb3D(info:Bomb, owner:Living, refineryLevel:int = 0)
       {
-         super(param1,param2,param3);
+         super(info,owner,refineryLevel);
       }
       
-      override protected function updatePosition(param1:Number) : void
+      override protected function updatePosition(dt:Number) : void
       {
          _lifeTime = _lifeTime + 40;
-         moveTo(computeFallNextXY(param1));
+         moveTo(computeFallNextXY(dt));
          dispatchEvent(new Event("updatenamepos"));
          if(!_isLiving)
          {
@@ -39,15 +39,15 @@ package gameStarling.objects
          }
       }
       
-      override public function moveTo(param1:Point) : void
+      override public function moveTo(p:Point) : void
       {
-         var _loc2_:* = null;
-         var _loc6_:Number = NaN;
-         var _loc5_:Number = NaN;
-         var _loc4_:Number = NaN;
-         var _loc8_:* = null;
-         var _loc7_:* = null;
-         var _loc3_:* = null;
+         var currentAction:* = null;
+         var dis:Number = NaN;
+         var r:Number = NaN;
+         var rotationAngle:Number = NaN;
+         var prePos:* = null;
+         var rect:* = null;
+         var phyObj:* = null;
          if(_currentBombTimer > -1)
          {
             _currentBombTimer = _currentBombTimer + 40;
@@ -56,9 +56,9 @@ package gameStarling.objects
          {
             if(_info.Actions[0].time <= _lifeTime)
             {
-               _loc2_ = _info.Actions.shift();
-               _info.UsedActions.push(_loc2_);
-               _loc2_.execute(this,_game);
+               currentAction = _info.Actions.shift();
+               _info.UsedActions.push(currentAction);
+               currentAction.execute(this,_game);
                if(!_isLiving)
                {
                   return;
@@ -69,7 +69,7 @@ package gameStarling.objects
          }
          if(_isLiving)
          {
-            if(_loc2_ && _loc2_.type == 22 || isLastPosSpring())
+            if(currentAction && currentAction.type == 22 || isLastPosSpring())
             {
                if(_currentBombTimer == -1)
                {
@@ -79,7 +79,7 @@ package gameStarling.objects
                _vx.x0 = pos.x;
                _vy.x0 = pos.y;
             }
-            else if(_map.IsOutMap(param1.x,param1.y))
+            else if(_map.IsOutMap(p.x,p.y))
             {
                die();
             }
@@ -88,10 +88,10 @@ package gameStarling.objects
                map.smallMap.updatePos(_smallBall,pos);
                if(_currentBombTimer > -1)
                {
-                  _loc6_ = Point.distance(param1,pos);
-                  _loc5_ = _testRect.width / 2;
-                  _loc4_ = _loc6_ * 180 / (_loc5_ * 3.14159265358979);
-                  this.angle = this.angle + _loc4_;
+                  dis = Point.distance(p,pos);
+                  r = _testRect.width / 2;
+                  rotationAngle = dis * 180 / (r * 3.14159265358979);
+                  this.angle = this.angle + rotationAngle;
                }
                else if(_particleRenderInfo)
                {
@@ -99,16 +99,16 @@ package gameStarling.objects
                   _particleRenderInfo.emitter.y = y;
                   _particleRenderInfo.addAngle = motionAngle;
                }
-               _loc8_ = new Point(pos.x,pos.y);
-               pos = param1;
-               _loc7_ = getCollideRect();
-               _loc7_.offset(pos.x,pos.y);
+               prePos = new Point(pos.x,pos.y);
+               pos = p;
+               rect = getCollideRect();
+               rect.offset(pos.x,pos.y);
                if(isPillarCollide())
                {
-                  _loc3_ = _map.getSceneEffectPhysicalObject(_loc7_,this,_loc8_);
-                  if(_loc3_ && _loc3_ is GameSceneEffect3D)
+                  phyObj = _map.getSceneEffectPhysicalObject(rect,this,prePos);
+                  if(phyObj && phyObj is GameSceneEffect3D)
                   {
-                     sceneEffectCollideId = _loc3_.Id;
+                     sceneEffectCollideId = phyObj.Id;
                   }
                   checkCreateBombSceneEffect();
                }
@@ -127,24 +127,24 @@ package gameStarling.objects
       
       protected function isLastPosSpring() : Boolean
       {
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var currentAction:* = null;
+         var lastAction:* = null;
          if(_info.UsedActions.length > 0)
          {
-            _loc2_ = _info.UsedActions[_info.UsedActions.length - 1];
-            if(_loc2_.type == 22)
+            currentAction = _info.UsedActions[_info.UsedActions.length - 1];
+            if(currentAction.type == 22)
             {
                var _loc5_:int = 0;
                var _loc4_:* = _info.Actions;
-               for each(var _loc3_ in _info.Actions)
+               for each(var act in _info.Actions)
                {
-                  if(_loc3_.type == 2)
+                  if(act.type == 2)
                   {
-                     _loc1_ = _loc3_;
+                     lastAction = act;
                      break;
                   }
                }
-               if(_loc1_ && _loc1_.type == 2 && _loc2_.param1 == _loc1_.param1 && _loc2_.param2 == _loc1_.param2)
+               if(lastAction && lastAction.type == 2 && currentAction.param1 == lastAction.param1 && currentAction.param2 == lastAction.param2)
                {
                   return true;
                }

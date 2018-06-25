@@ -59,7 +59,7 @@ package wonderfulActivity.items
          initViewWithData();
       }
       
-      public function setState(param1:int, param2:int) : void
+      public function setState(type:int, id:int) : void
       {
       }
       
@@ -87,31 +87,30 @@ package wonderfulActivity.items
       
       private function initData() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:Date = TimeManager.Instance.Now();
+         var i:int = 0;
+         var now:Date = TimeManager.Instance.Now();
          var _loc5_:int = 0;
          var _loc4_:* = WonderfulActivityManager.Instance.activityData;
-         for each(var _loc2_ in WonderfulActivityManager.Instance.activityData)
+         for each(var item in WonderfulActivityManager.Instance.activityData)
          {
-            if(!(_loc1_.time < Date.parse(_loc2_.beginTime) || _loc1_.time > Date.parse(_loc2_.endShowTime)))
+            if(!(now.time < Date.parse(item.beginTime) || now.time > Date.parse(item.endShowTime)))
             {
-               if(_loc2_.activityType == 6 && _loc2_.activityChildType == 1)
+               if(item.activityType == 6 && item.activityChildType == 1)
                {
-                  _activityInfo = _loc2_;
-                  _loc3_ = 0;
-                  while(_loc3_ <= _activityInfo.giftbagArray.length - 1)
+                  _activityInfo = item;
+                  for(i = 0; i <= _activityInfo.giftbagArray.length - 1; )
                   {
-                     if(_activityInfo.giftbagArray[_loc3_].rewardMark != 100 && (_giftCondition == 0 || _giftCondition > _activityInfo.giftbagArray[_loc3_].giftConditionArr[0].conditionValue))
+                     if(_activityInfo.giftbagArray[i].rewardMark != 100 && (_giftCondition == 0 || _giftCondition > _activityInfo.giftbagArray[i].giftConditionArr[0].conditionValue))
                      {
-                        _giftCondition = _activityInfo.giftbagArray[_loc3_].giftConditionArr[0].conditionValue;
-                        _giftNeedMinId = _activityInfo.giftbagArray[_loc3_].giftbagId;
+                        _giftCondition = _activityInfo.giftbagArray[i].giftConditionArr[0].conditionValue;
+                        _giftNeedMinId = _activityInfo.giftbagArray[i].giftbagId;
                      }
-                     _loc3_++;
+                     i++;
                   }
-                  if(WonderfulActivityManager.Instance.activityInitData[_loc2_.activityId])
+                  if(WonderfulActivityManager.Instance.activityInitData[item.activityId])
                   {
-                     _giftInfoDic = WonderfulActivityManager.Instance.activityInitData[_loc2_.activityId]["giftInfoDic"];
-                     _statusArr = WonderfulActivityManager.Instance.activityInitData[_loc2_.activityId]["statusArr"];
+                     _giftInfoDic = WonderfulActivityManager.Instance.activityInitData[item.activityId]["giftInfoDic"];
+                     _statusArr = WonderfulActivityManager.Instance.activityInitData[item.activityId]["statusArr"];
                   }
                }
             }
@@ -120,63 +119,62 @@ package wonderfulActivity.items
       
       private function initViewWithData() : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var j:int = 0;
+         var bagCell:* = null;
          if(!_activityInfo)
          {
             return;
          }
-         var _loc3_:Array = [_activityInfo.beginTime.split(" ")[0],_activityInfo.endTime.split(" ")[0]];
-         _activityTimeTxt.text = _loc3_[0] + "-" + _loc3_[1];
+         var timeArr:Array = [_activityInfo.beginTime.split(" ")[0],_activityInfo.endTime.split(" ")[0]];
+         _activityTimeTxt.text = timeArr[0] + "-" + timeArr[1];
          _contentTxt.text = _activityInfo.desc;
          changeBtnState();
-         _loc4_ = 0;
-         while(_loc4_ < _activityInfo.giftbagArray.length)
+         for(i = 0; i < _activityInfo.giftbagArray.length; )
          {
-            if(_activityInfo.giftbagArray[_loc4_].rewardMark != 100)
+            if(_activityInfo.giftbagArray[i].rewardMark != 100)
             {
-               _loc2_ = 0;
-               while(_loc2_ < _activityInfo.giftbagArray[_loc4_].giftRewardArr.length)
+               j = 0;
+               while(j < _activityInfo.giftbagArray[i].giftRewardArr.length)
                {
-                  _loc1_ = createBagCell(0,_activityInfo.giftbagArray[_loc4_].giftRewardArr[_loc2_]);
-                  _hbox.addChild(_loc1_);
-                  _loc2_++;
+                  bagCell = createBagCell(0,_activityInfo.giftbagArray[i].giftRewardArr[j]);
+                  _hbox.addChild(bagCell);
+                  j++;
                }
             }
-            _loc4_++;
+            i++;
          }
       }
       
-      private function createBagCell(param1:int, param2:GiftRewardInfo) : BagCell
+      private function createBagCell(order:int, gift:GiftRewardInfo) : BagCell
       {
-         var _loc5_:InventoryItemInfo = new InventoryItemInfo();
-         _loc5_.TemplateID = param2.templateId;
-         _loc5_ = ItemManager.fill(_loc5_);
-         _loc5_.IsBinds = param2.isBind;
-         _loc5_.ValidDate = param2.validDate;
-         var _loc4_:Array = param2.property.split(",");
-         _loc5_.StrengthenLevel = parseInt(_loc4_[0]);
-         _loc5_.AttackCompose = parseInt(_loc4_[1]);
-         _loc5_.DefendCompose = parseInt(_loc4_[2]);
-         _loc5_.AgilityCompose = parseInt(_loc4_[3]);
-         _loc5_.LuckCompose = parseInt(_loc4_[4]);
-         if(EquipType.isMagicStone(_loc5_.CategoryID))
+         var info:InventoryItemInfo = new InventoryItemInfo();
+         info.TemplateID = gift.templateId;
+         info = ItemManager.fill(info);
+         info.IsBinds = gift.isBind;
+         info.ValidDate = gift.validDate;
+         var attrArr:Array = gift.property.split(",");
+         info.StrengthenLevel = parseInt(attrArr[0]);
+         info.AttackCompose = parseInt(attrArr[1]);
+         info.DefendCompose = parseInt(attrArr[2]);
+         info.AgilityCompose = parseInt(attrArr[3]);
+         info.LuckCompose = parseInt(attrArr[4]);
+         if(EquipType.isMagicStone(info.CategoryID))
          {
-            _loc5_.Level = _loc5_.StrengthenLevel;
-            _loc5_.Attack = _loc5_.AttackCompose;
-            _loc5_.Defence = _loc5_.DefendCompose;
-            _loc5_.Agility = _loc5_.AgilityCompose;
-            _loc5_.Luck = _loc5_.LuckCompose;
-            _loc5_.MagicAttack = parseInt(_loc4_[6]);
-            _loc5_.MagicDefence = parseInt(_loc4_[7]);
-            _loc5_.StrengthenExp = parseInt(_loc4_[8]);
+            info.Level = info.StrengthenLevel;
+            info.Attack = info.AttackCompose;
+            info.Defence = info.DefendCompose;
+            info.Agility = info.AgilityCompose;
+            info.Luck = info.LuckCompose;
+            info.MagicAttack = parseInt(attrArr[6]);
+            info.MagicDefence = parseInt(attrArr[7]);
+            info.StrengthenExp = parseInt(attrArr[8]);
          }
-         var _loc3_:BagCell = new BagCell(param1);
-         _loc3_.info = _loc5_;
-         _loc3_.setCount(param2.count);
-         _loc3_.setBgVisible(false);
-         return _loc3_;
+         var bagCell:BagCell = new BagCell(order);
+         bagCell.info = info;
+         bagCell.setCount(gift.count);
+         bagCell.setBgVisible(false);
+         return bagCell;
       }
       
       public function updateAwardState() : void
@@ -202,29 +200,28 @@ package wonderfulActivity.items
          }
       }
       
-      protected function __getAwardHandler(param1:MouseEvent) : void
+      protected function __getAwardHandler(event:MouseEvent) : void
       {
-         var _loc3_:int = 0;
+         var j:int = 0;
          SoundManager.instance.play("008");
-         var _loc5_:Vector.<SendGiftInfo> = new Vector.<SendGiftInfo>();
-         var _loc2_:SendGiftInfo = new SendGiftInfo();
-         _loc2_.activityId = _activityInfo.activityId;
-         var _loc4_:Array = [];
-         _loc3_ = 0;
-         while(_loc3_ < _activityInfo.giftbagArray.length)
+         var sendInfoVec:Vector.<SendGiftInfo> = new Vector.<SendGiftInfo>();
+         var sendInfo:SendGiftInfo = new SendGiftInfo();
+         sendInfo.activityId = _activityInfo.activityId;
+         var giftIdArr:Array = [];
+         for(j = 0; j < _activityInfo.giftbagArray.length; )
          {
-            if(_activityInfo.giftbagArray[_loc3_].rewardMark != 100)
+            if(_activityInfo.giftbagArray[j].rewardMark != 100)
             {
-               _loc4_.push(_activityInfo.giftbagArray[_loc3_].giftbagId);
+               giftIdArr.push(_activityInfo.giftbagArray[j].giftbagId);
             }
-            _loc3_++;
+            j++;
          }
-         _loc2_.giftIdArr = _loc4_;
-         _loc5_.push(_loc2_);
-         SocketManager.Instance.out.sendWonderfulActivityGetReward(_loc5_);
+         sendInfo.giftIdArr = giftIdArr;
+         sendInfoVec.push(sendInfo);
+         SocketManager.Instance.out.sendWonderfulActivityGetReward(sendInfoVec);
       }
       
-      public function setData(param1:* = null) : void
+      public function setData(val:* = null) : void
       {
       }
       

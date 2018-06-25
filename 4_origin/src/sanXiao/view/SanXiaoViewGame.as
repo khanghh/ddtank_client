@@ -18,6 +18,7 @@ package sanXiao.view
    import ddt.manager.LanguageMgr;
    import ddt.manager.MessageTipManager;
    import ddt.manager.PlayerManager;
+   import ddt.manager.ServerConfigManager;
    import ddt.manager.SoundManager;
    import ddt.manager.TimeManager;
    import ddt.utils.CheckMoneyUtils;
@@ -107,8 +108,8 @@ package sanXiao.view
       
       private function init() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          _bg = ComponentFactory.Instance.creatBitmap("ast.sanxiao.bg.game");
          PositionUtils.setPos(_bg,"sanxiao.gameBG.pt");
          addChild(_bg);
@@ -124,30 +125,30 @@ package sanXiao.view
          addChild(_mask);
          _game.mask = _mask;
          SanXiaoPropTip;
-         var _loc2_:SXPropTipDataCreater = new SXPropTipDataCreater();
+         var tipDataCreater:SXPropTipDataCreater = new SXPropTipDataCreater();
          _btnPropCrossBomb = ComponentFactory.Instance.creat("sanxiao.prop.CrossBomb.btn");
          _btnPropCrossBomb.tipStyle = "ddt.view.tips.SanXiaoPropTip";
          _btnPropCrossBomb.tipDirctions = "2";
          _btnPropCrossBomb.tipGapV = 4;
-         _btnPropCrossBomb.tipData = _loc2_.getTipData(1);
+         _btnPropCrossBomb.tipData = tipDataCreater.getTipData(1);
          addChild(_btnPropCrossBomb);
          _btnPropSquareBomb = ComponentFactory.Instance.creat("sanxiao.prop.SquareBomb.btn");
          _btnPropSquareBomb.tipStyle = "ddt.view.tips.SanXiaoPropTip";
          _btnPropSquareBomb.tipDirctions = "2";
          _btnPropSquareBomb.tipGapV = 4;
-         _btnPropSquareBomb.tipData = _loc2_.getTipData(2);
+         _btnPropSquareBomb.tipData = tipDataCreater.getTipData(2);
          addChild(_btnPropSquareBomb);
          _btnPropClearColor = ComponentFactory.Instance.creat("sanxiao.prop.ClearColor.btn");
          _btnPropClearColor.tipStyle = "ddt.view.tips.SanXiaoPropTip";
          _btnPropClearColor.tipDirctions = "2";
          _btnPropClearColor.tipGapV = 4;
-         _btnPropClearColor.tipData = _loc2_.getTipData(3);
+         _btnPropClearColor.tipData = tipDataCreater.getTipData(3);
          addChild(_btnPropClearColor);
          _btnPropChangeColor = ComponentFactory.Instance.creat("sanxiao.prop.ChangeColor.btn");
          _btnPropChangeColor.tipStyle = "ddt.view.tips.SanXiaoPropTip";
          _btnPropChangeColor.tipDirctions = "2";
          _btnPropChangeColor.tipGapV = 4;
-         _btnPropChangeColor.tipData = _loc2_.getTipData(4);
+         _btnPropChangeColor.tipData = tipDataCreater.getTipData(4);
          addChild(_btnPropChangeColor);
          _propCursor = ComponentFactory.Instance.creat("sanxiao.propIcon");
          var _loc4_:Boolean = false;
@@ -191,17 +192,16 @@ package sanXiao.view
          _bagListView = new GridBox();
          _bagListView.columnNumber = 7;
          _rewardItemList = new Vector.<SXDropOutItem>();
-         _loc3_ = 0;
-         while(_loc3_ < 49)
+         for(i = 0; i < 49; )
          {
-            _loc1_ = new SXDropOutItem(0);
-            _loc1_.width = 55;
-            _loc1_.height = 55;
-            _loc1_.x = int(_loc3_ % 7) * 49 + 386;
-            _loc1_.y = int(_loc3_ / 7) * 49 + 19;
-            addChild(_loc1_);
-            _rewardItemList.push(_loc1_);
-            _loc3_++;
+            item = new SXDropOutItem(0);
+            item.width = 55;
+            item.height = 55;
+            item.x = int(i % 7) * 49 + 386;
+            item.y = int(i / 7) * 49 + 19;
+            addChild(item);
+            _rewardItemList.push(item);
+            i++;
          }
          PositionUtils.setPos(_bagListView,"sanxiao.bagListView.pt");
          addChild(_bagListView);
@@ -220,7 +220,7 @@ package sanXiao.view
          _timeRemainTimer.start();
       }
       
-      private function __timeRemainHandler(param1:Event) : void
+      private function __timeRemainHandler(evt:Event) : void
       {
          if(_timeRemainText)
          {
@@ -230,9 +230,9 @@ package sanXiao.view
       
       private function getTimeRemainStr() : String
       {
-         var _loc2_:Number = (SanXiaoManager.getInstance().endTime.time - TimeManager.Instance.Now().time) / 1000;
-         var _loc1_:Array = DateUtils.dateTimeRemainArr(_loc2_);
-         return LanguageMgr.GetTranslation("tank.timeRemain.msg1",_loc1_[0],_loc1_[1],_loc1_[2]);
+         var tempTime:Number = (SanXiaoManager.getInstance().endTime.time - TimeManager.Instance.Now().time) / 1000;
+         var timeArr:Array = DateUtils.dateTimeRemainArr(tempTime);
+         return LanguageMgr.GetTranslation("tank.timeRemain.msg1",timeArr[0],timeArr[1],timeArr[2]);
       }
       
       private function addEvents() : void
@@ -249,7 +249,7 @@ package sanXiao.view
          _propBtnListened = false;
       }
       
-      protected function onClick(param1:MouseEvent) : void
+      protected function onClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -262,14 +262,14 @@ package sanXiao.view
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("sanxiao.timesOut"),0,false,1);
             return;
          }
-         var _loc2_:SXBuyTimesFrame = ComponentFactory.Instance.creatComponentByStylename("sanxiao.SanxiaoBuyTimesFrame");
-         _loc2_.buyFunction = onBuy;
-         LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+         var buyTimesFrame:SXBuyTimesFrame = ComponentFactory.Instance.creatComponentByStylename("sanxiao.SanxiaoBuyTimesFrame");
+         buyTimesFrame.buyFunction = onBuy;
+         LayerManager.Instance.addToLayer(buyTimesFrame,3,true,1);
       }
       
-      protected function onPropBtnClick(param1:MouseEvent) : void
+      protected function onPropBtnClick(e:MouseEvent) : void
       {
-         var _loc2_:* = param1.target;
+         var _loc2_:* = e.target;
          if(_btnPropCrossBomb !== _loc2_)
          {
             if(_btnPropSquareBomb !== _loc2_)
@@ -344,20 +344,20 @@ package sanXiao.view
          Mouse.show();
       }
       
-      protected function onCursorMove(param1:MouseEvent) : void
+      protected function onCursorMove(e:MouseEvent) : void
       {
          Mouse.hide();
       }
       
-      private function onBuy(param1:Number, param2:Boolean) : void
+      private function onBuy(times:Number, isBind:Boolean) : void
       {
-         times = param1;
-         isBind = param2;
+         times = times;
+         isBind = isBind;
          goBuy = function():void
          {
             SanXiaoGameMediator.getInstance().buyTimes(times,CheckMoneyUtils.instance.isBind);
          };
-         CheckMoneyUtils.instance.checkMoney(isBind,100 * times,goBuy);
+         CheckMoneyUtils.instance.checkMoney(isBind,int(ServerConfigManager.instance.SanXiaoStepPrice()) * times,goBuy);
       }
       
       public function lockProps() : void
@@ -380,47 +380,46 @@ package sanXiao.view
       
       public function updateDropOutItem() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:Array = SanXiaoManager.getInstance().dropOutItemList;
-         var _loc2_:int = SanXiaoManager.getInstance().lengthAddedDropOutItem;
-         _pageSelector.updateItemDataArr = _loc1_;
-         _loc3_ = _loc2_ - 1;
-         while(_loc3_ >= 0)
+         var i:int = 0;
+         var list:Array = SanXiaoManager.getInstance().dropOutItemList;
+         var len:int = SanXiaoManager.getInstance().lengthAddedDropOutItem;
+         _pageSelector.updateItemDataArr = list;
+         for(i = len - 1; i >= 0; )
          {
-            _pageSelector.updateByIndex(_loc1_.length - 1 - _loc3_);
-            _loc3_--;
+            _pageSelector.updateByIndex(list.length - 1 - i);
+            i--;
          }
       }
       
       public function update() : void
       {
-         var _loc4_:* = null;
-         var _loc3_:* = null;
+         var _templeteInfo:* = null;
+         var __info:* = null;
          _crystalTxt.text = SanXiaoManager.getInstance().crystalNum.toString();
          _scoreTxt.text = SanXiaoManager.getInstance().score.toString();
          _stepRemainTxt.text = SanXiaoManager.getInstance().stepRemain.toString();
-         var _loc1_:Number = SanXiaoManager.getInstance().nextPriseScoreProgress;
-         _progress.gotoAndStop(int(_loc1_));
+         var progress:Number = SanXiaoManager.getInstance().nextPriseScoreProgress;
+         _progress.gotoAndStop(int(progress));
          _progressTips.tipData = SanXiaoManager.getInstance().progressTipsData;
-         _progressText.text = _loc1_.toString() + "%";
-         var _loc2_:SXRewardItemData = SanXiaoManager.getInstance().nextRewardSXRewardItemData;
-         if(_loc2_ == null)
+         _progressText.text = progress.toString() + "%";
+         var data:SXRewardItemData = SanXiaoManager.getInstance().nextRewardSXRewardItemData;
+         if(data == null)
          {
-            _loc4_ = null;
+            _templeteInfo = null;
          }
          else
          {
-            _loc4_ = ItemManager.Instance.getTemplateById(_loc2_.TempleteID);
+            _templeteInfo = ItemManager.Instance.getTemplateById(data.TempleteID);
          }
-         if(_loc4_ != null)
+         if(_templeteInfo != null)
          {
-            _loc3_ = new InventoryItemInfo();
-            ObjectUtils.copyProperties(_loc3_,_loc4_);
-            _loc3_.ValidDate = _loc2_.Valid;
-            _loc3_.Count = _loc2_.count;
-            _loc3_.IsBinds = _loc2_.isBind;
-            _loc3_.Property5 = "1";
-            _iconBoxBagCell.info = _loc3_;
+            __info = new InventoryItemInfo();
+            ObjectUtils.copyProperties(__info,_templeteInfo);
+            __info.ValidDate = data.Valid;
+            __info.Count = data.count;
+            __info.IsBinds = data.isBind;
+            __info.Property5 = "1";
+            _iconBoxBagCell.info = __info;
          }
          else
          {

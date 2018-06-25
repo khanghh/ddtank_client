@@ -104,7 +104,7 @@ package consortion.view.selfConsortia
          _taxMoney.removeEventListener("keyDown",__enterHanlder);
       }
       
-      private function __addToStageHandler(param1:Event) : void
+      private function __addToStageHandler(event:Event) : void
       {
          _taxMoney.setFocus();
          _ownMoney.text = String(PlayerManager.Instance.Self.Money);
@@ -112,16 +112,16 @@ package consortion.view.selfConsortia
          _taxMoney.text = "";
       }
       
-      private function __responseHanlder(param1:FrameEvent) : void
+      private function __responseHanlder(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.responseCode == 1 || param1.responseCode == 0)
+         if(event.responseCode == 1 || event.responseCode == 0)
          {
             dispose();
          }
       }
       
-      private function __confirmHanlder(param1:MouseEvent) : void
+      private function __confirmHanlder(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -129,8 +129,8 @@ package consortion.view.selfConsortia
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:int = _taxMoney.text;
-         if(BuriedManager.Instance.checkMoney(false,_loc2_))
+         var money:int = _taxMoney.text;
+         if(BuriedManager.Instance.checkMoney(false,money))
          {
             return;
          }
@@ -147,48 +147,48 @@ package consortion.view.selfConsortia
          }
       }
       
-      private function __alertResponse(param1:FrameEvent) : void
+      private function __alertResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var alert:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
-            if(_loc2_ == leaveToFillAlert)
+            if(alert == leaveToFillAlert)
             {
                LeavePageManager.leaveToFillPath();
             }
-            else if(_loc2_ == confirmAlert)
+            else if(alert == confirmAlert)
             {
                sendSocketData();
             }
          }
-         _loc2_.removeEventListener("response",__alertResponse);
-         ObjectUtils.disposeObject(_loc2_);
-         if(_loc2_.parent)
+         alert.removeEventListener("response",__alertResponse);
+         ObjectUtils.disposeObject(alert);
+         if(alert.parent)
          {
-            _loc2_.parent.removeChild(_loc2_);
+            alert.parent.removeChild(alert);
          }
-         _loc2_ = null;
+         alert = null;
       }
       
       private function sendSocketData() : void
       {
-         var _loc1_:int = 0;
+         var money:int = 0;
          if(_taxMoney != null)
          {
-            _loc1_ = _taxMoney.text;
-            SocketManager.Instance.out.sendConsortiaRichOffer(_loc1_);
+            money = _taxMoney.text;
+            SocketManager.Instance.out.sendConsortiaRichOffer(money);
             dispose();
          }
       }
       
-      private function __cancelHandler(param1:MouseEvent) : void
+      private function __cancelHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          dispose();
       }
       
-      private function __taxChangeHandler(param1:Event) : void
+      private function __taxChangeHandler(event:Event) : void
       {
          if(_taxMoney.text == "")
          {
@@ -202,22 +202,22 @@ package consortion.view.selfConsortia
             return;
          }
          _confirm.enable = true;
-         var _loc2_:int = _taxMoney.text;
-         if(_loc2_ >= PlayerManager.Instance.Self.Money)
+         var money:int = _taxMoney.text;
+         if(money >= PlayerManager.Instance.Self.Money)
          {
             _taxMoney.text = String(PlayerManager.Instance.Self.Money);
          }
          _moneyForRiches.text = String(int(Math.floor(_taxMoney.text / 2)));
       }
       
-      private function __enterHanlder(param1:KeyboardEvent) : void
+      private function __enterHanlder(event:KeyboardEvent) : void
       {
-         param1.stopImmediatePropagation();
-         if(param1.keyCode == 13)
+         event.stopImmediatePropagation();
+         if(event.keyCode == 13)
          {
             __confirmHanlder(null);
          }
-         if(param1.keyCode == 27)
+         if(event.keyCode == 27)
          {
             SoundManager.instance.play("008");
             dispose();

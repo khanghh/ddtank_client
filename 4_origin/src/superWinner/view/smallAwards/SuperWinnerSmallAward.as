@@ -15,25 +15,25 @@ package superWinner.view.smallAwards
       
       private var _awardNumTxt:FilterFrameText;
       
-      public function SuperWinnerSmallAward(param1:uint)
+      public function SuperWinnerSmallAward($type:uint)
       {
-         _type = param1;
+         _type = $type;
          super();
          init();
       }
       
       private function init() : void
       {
-         var _loc1_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.superWinner.smallAward" + awardType);
-         addChild(_loc1_);
+         var img:Bitmap = ComponentFactory.Instance.creatBitmap("asset.superWinner.smallAward" + awardType);
+         addChild(img);
          _awardNumTxt = ComponentFactory.Instance.creatComponentByStylename("superWinner.smallAwardTxt");
          addChild(_awardNumTxt);
          _awardNumTxt.text = "0";
       }
       
-      public function set awardNum(param1:uint) : void
+      public function set awardNum(val:uint) : void
       {
-         _awardNumTxt.text = param1 + "";
+         _awardNumTxt.text = val + "";
       }
       
       public function get awardType() : uint

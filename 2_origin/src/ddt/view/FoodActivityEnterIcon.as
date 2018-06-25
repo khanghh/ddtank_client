@@ -57,14 +57,13 @@ package ddt.view
       
       public function showTxt() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:Array = FoodActivityManager.Instance.info.remain2.split("|");
+         var i:int = 0;
+         var temp:Array = FoodActivityManager.Instance.info.remain2.split("|");
          _minutesArr = [];
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_.length)
+         for(i = 0; i < temp.length; )
          {
-            _minutesArr.push(_loc1_[_loc2_].split(",")[0]);
-            _loc2_++;
+            _minutesArr.push(temp[i].split(",")[0]);
+            i++;
          }
          if(FoodActivityManager.Instance.cookingCount == 0 && FoodActivityManager.Instance.state == 0)
          {
@@ -76,70 +75,70 @@ package ddt.view
          }
       }
       
-      public function set text(param1:String) : void
+      public function set text(value:String) : void
       {
-         _foodActivityTxt.text = param1;
+         _foodActivityTxt.text = value;
       }
       
-      public function startTime(param1:Boolean = false) : void
+      public function startTime(isUpdateCount:Boolean = false) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
+         var minutes:int = 0;
+         var i:int = 0;
          _timeSp.visible = true;
          if(FoodActivityManager.Instance.sumTime > 0)
          {
             updateTime();
             return;
          }
-         if(param1)
+         if(isUpdateCount)
          {
-            _loc2_ = FoodActivityManager.Instance.delayTime;
+            minutes = FoodActivityManager.Instance.delayTime;
          }
          else
          {
-            _loc3_ = 0;
-            while(_loc3_ < _minutesArr.length)
+            i = 0;
+            while(i < _minutesArr.length)
             {
-               if(FoodActivityManager.Instance.currentSumTime < _minutesArr[_loc3_])
+               if(FoodActivityManager.Instance.currentSumTime < _minutesArr[i])
                {
-                  _loc2_ = _minutesArr[_loc3_] - FoodActivityManager.Instance.currentSumTime;
+                  minutes = _minutesArr[i] - FoodActivityManager.Instance.currentSumTime;
                   break;
                }
-               _loc3_++;
+               i++;
             }
          }
-         if(_loc2_ == 0)
+         if(minutes == 0)
          {
             FoodActivityManager.Instance.endTime();
             return;
          }
-         FoodActivityManager.Instance.sumTime = _loc2_ * 60;
+         FoodActivityManager.Instance.sumTime = minutes * 60;
          updateTime();
       }
       
       public function updateTime() : void
       {
-         var _loc1_:int = FoodActivityManager.Instance.sumTime / 60;
-         var _loc3_:int = FoodActivityManager.Instance.sumTime % 60;
-         var _loc2_:String = "";
-         if(_loc1_ < 10)
+         var _minute:int = FoodActivityManager.Instance.sumTime / 60;
+         var _second:int = FoodActivityManager.Instance.sumTime % 60;
+         var str:String = "";
+         if(_minute < 10)
          {
-            _loc2_ = _loc2_ + ("0" + _loc1_);
+            str = str + ("0" + _minute);
          }
          else
          {
-            _loc2_ = _loc2_ + _loc1_;
+            str = str + _minute;
          }
-         _loc2_ = _loc2_ + ":";
-         if(_loc3_ < 10)
+         str = str + ":";
+         if(_second < 10)
          {
-            _loc2_ = _loc2_ + ("0" + _loc3_);
+            str = str + ("0" + _second);
          }
          else
          {
-            _loc2_ = _loc2_ + _loc3_;
+            str = str + _second;
          }
-         _timeTxt.text = _loc2_;
+         _timeTxt.text = str;
       }
       
       public function endTime() : void
@@ -147,7 +146,7 @@ package ddt.view
          _timeSp.visible = false;
       }
       
-      protected function __showFoodActivityFrame(param1:MouseEvent) : void
+      protected function __showFoodActivityFrame(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          FoodActivityManager.Instance.show();

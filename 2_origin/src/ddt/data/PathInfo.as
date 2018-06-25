@@ -228,6 +228,8 @@ package ddt.data
       
       public var BEAUTY_PROVE_QQ:String;
       
+      public var OLDPLAYER_TRANSFER:Boolean;
+      
       public function PathInfo()
       {
          GRADE_NOTIFICATION = new Dictionary();
@@ -239,13 +241,13 @@ package ddt.data
          return _CLIENT_DOWNLOAD;
       }
       
-      public function set CLIENT_DOWNLOAD(param1:String) : void
+      public function set CLIENT_DOWNLOAD(value:String) : void
       {
-         if(_CLIENT_DOWNLOAD == param1)
+         if(_CLIENT_DOWNLOAD == value)
          {
             return;
          }
-         _CLIENT_DOWNLOAD = param1;
+         _CLIENT_DOWNLOAD = value;
          onPropertiesChanged("CLIENT_DOWNLOAD");
       }
    }

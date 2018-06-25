@@ -17,65 +17,63 @@ package ddt.data.analyze
       
       private var _list:Array;
       
-      public function AllEmailAnalyzer(param1:Function)
+      public function AllEmailAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc8_:* = null;
-         var _loc7_:* = null;
-         var _loc2_:* = null;
-         var _loc11_:int = 0;
-         var _loc10_:* = null;
-         var _loc5_:* = null;
-         var _loc9_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
+         var xmllist:* = null;
+         var ecInfo:* = null;
+         var icInfo:* = null;
+         var i:int = 0;
+         var info:* = null;
+         var subXmllist:* = null;
+         var j:int = 0;
+         var temp:* = null;
+         var itemInfo:* = null;
          _list = [];
-         var _loc6_:XML = new XML(param1);
-         if(_loc6_.@value == "true")
+         var xml:XML = new XML(data);
+         if(xml.@value == "true")
          {
-            MailManager.Instance.Model.lastTime = _loc6_.@Time;
-            _loc8_ = _loc6_.Item;
-            _loc7_ = describeType(new EmailInfo());
-            _loc2_ = describeType(new InventoryItemInfo());
-            _loc11_ = 0;
-            while(_loc11_ < _loc8_.length())
+            MailManager.Instance.Model.lastTime = xml.@Time;
+            xmllist = xml.Item;
+            ecInfo = describeType(new EmailInfo());
+            icInfo = describeType(new InventoryItemInfo());
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc10_ = new EmailInfo();
-               ObjectUtils.copyPorpertiesByXML(_loc10_,_loc8_[_loc11_]);
-               _loc5_ = _loc8_[_loc11_].Item;
-               _loc9_ = 0;
-               while(_loc9_ < _loc5_.length())
+               info = new EmailInfo();
+               ObjectUtils.copyPorpertiesByXML(info,xmllist[i]);
+               subXmllist = xmllist[i].Item;
+               for(j = 0; j < subXmllist.length(); )
                {
-                  _loc4_ = new InventoryItemInfo();
-                  ObjectUtils.copyPorpertiesByXML(_loc4_,_loc5_[_loc9_]);
-                  _loc3_ = ItemManager.fill(_loc4_);
-                  _loc10_["Annex" + getAnnexPos(_loc10_,_loc4_)] = _loc4_;
-                  _loc4_.isGold = _loc5_[_loc9_].@IsGold == "true"?true:false;
-                  _loc4_.goldBeginTime = String(_loc5_[_loc9_].@GoldBeginTime);
-                  _loc4_.goldValidDate = int(_loc5_[_loc9_].@GoldVaild);
-                  _loc4_.latentEnergyCurStr = String(_loc5_[_loc9_].@AvatarPotentialProperty);
-                  _loc4_.latentEnergyEndTime = DateUtils.getDateByStr(String(_loc5_[_loc9_].@AvatarRemoveDate));
-                  _loc4_.MagicAttack = int(_loc5_[_loc9_].@MagicAttack);
-                  _loc4_.MagicDefence = int(_loc5_[_loc9_].@MagicDefence);
-                  _loc4_.MagicLevel = int(_loc5_[_loc9_].@MagicLevel);
-                  _loc10_.UserID = _loc3_.UserID;
-                  _loc9_++;
+                  temp = new InventoryItemInfo();
+                  ObjectUtils.copyPorpertiesByXML(temp,subXmllist[j]);
+                  itemInfo = ItemManager.fill(temp);
+                  info["Annex" + getAnnexPos(info,temp)] = temp;
+                  temp.isGold = subXmllist[j].@IsGold == "true"?true:false;
+                  temp.goldBeginTime = String(subXmllist[j].@GoldBeginTime);
+                  temp.goldValidDate = int(subXmllist[j].@GoldVaild);
+                  temp.latentEnergyCurStr = String(subXmllist[j].@AvatarPotentialProperty);
+                  temp.latentEnergyEndTime = DateUtils.getDateByStr(String(subXmllist[j].@AvatarRemoveDate));
+                  temp.MagicAttack = int(subXmllist[j].@MagicAttack);
+                  temp.MagicDefence = int(subXmllist[j].@MagicDefence);
+                  temp.MagicLevel = int(subXmllist[j].@MagicLevel);
+                  info.UserID = itemInfo.UserID;
+                  j++;
                }
-               if(!SharedManager.Instance.deleteMail[PlayerManager.Instance.Self.ID] || SharedManager.Instance.deleteMail[PlayerManager.Instance.Self.ID].indexOf(_loc10_.ID) < 0)
+               if(!SharedManager.Instance.deleteMail[PlayerManager.Instance.Self.ID] || SharedManager.Instance.deleteMail[PlayerManager.Instance.Self.ID].indexOf(info.ID) < 0)
                {
-                  _list.push(_loc10_);
+                  _list.push(info);
                }
-               _loc11_++;
+               i++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc6_.@message;
+            message = xml.@message;
             onAnalyzeError();
             onAnalyzeComplete();
          }
@@ -87,17 +85,16 @@ package ddt.data.analyze
          return _list;
       }
       
-      private function getAnnexPos(param1:EmailInfo, param2:InventoryItemInfo) : int
+      private function getAnnexPos(info:EmailInfo, itempInfo:InventoryItemInfo) : int
       {
-         var _loc3_:* = 0;
-         _loc3_ = uint(1);
-         while(_loc3_ <= 5)
+         var i:* = 0;
+         for(i = uint(1); i <= 5; )
          {
-            if(param1["Annex" + _loc3_ + "ID"] == param2.ItemID)
+            if(info["Annex" + i + "ID"] == itempInfo.ItemID)
             {
-               return _loc3_;
+               return i;
             }
-            _loc3_++;
+            i++;
          }
          return 1;
       }

@@ -91,17 +91,16 @@ package ddt.view.academyCommon.recommend
       
       protected function initPlayerContainer() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          _items = [];
-         _loc2_ = 0;
-         while(_loc2_ < 3)
+         for(i = 0; i < 3; )
          {
-            _loc1_ = new RecommendPlayerCellView();
-            _loc1_.addEventListener("click",__itemClick);
-            _playerContainer.addChild(_loc1_);
-            _items.push(_loc1_);
-            _loc2_++;
+            item = new RecommendPlayerCellView();
+            item.addEventListener("click",__itemClick);
+            _playerContainer.addChild(item);
+            _items.push(item);
+            i++;
          }
          _players = AcademyManager.Instance.recommendPlayers;
          updateItem();
@@ -114,32 +113,32 @@ package ddt.view.academyCommon.recommend
          _checkBoxBtn.addEventListener("click",__checkBoxBtnClick);
       }
       
-      private function __checkBoxBtnClick(param1:MouseEvent) : void
+      private function __checkBoxBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          SharedManager.Instance.isRecommend = _checkBoxBtn.selected;
          SharedManager.Instance.save();
       }
       
-      protected function __itemClick(param1:MouseEvent) : void
+      protected function __itemClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(!_currentItem)
          {
-            _currentItem = param1.currentTarget as RecommendPlayerCellView;
+            _currentItem = event.currentTarget as RecommendPlayerCellView;
          }
-         if(_currentItem != param1.currentTarget as RecommendPlayerCellView)
+         if(_currentItem != event.currentTarget as RecommendPlayerCellView)
          {
             _currentItem.isSelect = false;
          }
-         _currentItem = param1.currentTarget as RecommendPlayerCellView;
+         _currentItem = event.currentTarget as RecommendPlayerCellView;
          _currentItem.isSelect = true;
       }
       
-      protected function __frameEvent(param1:FrameEvent) : void
+      protected function __frameEvent(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -156,7 +155,7 @@ package ddt.view.academyCommon.recommend
          }
       }
       
-      protected function __titleBtnClick(param1:MouseEvent) : void
+      protected function __titleBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          AcademyFrameManager.Instance.showRecommendAcademyPreviewFrame();
@@ -164,29 +163,28 @@ package ddt.view.academyCommon.recommend
       
       protected function updateItem() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < 3)
+         var i:int = 0;
+         for(i = 0; i < 3; )
          {
-            _items[_loc1_].info = _players[_loc1_];
-            _loc1_++;
+            _items[i].info = _players[i];
+            i++;
          }
       }
       
       private function cleanItem() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(!_items)
          {
             return;
          }
-         _loc1_ = 0;
-         while(_loc1_ < _items.length)
+         i = 0;
+         while(i < _items.length)
          {
-            _items[_loc1_].removeEventListener("click",__itemClick);
-            _items[_loc1_].dispose();
-            _items[_loc1_] = null;
-            _loc1_++;
+            _items[i].removeEventListener("click",__itemClick);
+            _items[i].dispose();
+            _items[i] = null;
+            i++;
          }
          _playerContainer.disposeAllChildren();
          _items = null;

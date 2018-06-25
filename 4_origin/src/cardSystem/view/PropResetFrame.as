@@ -179,14 +179,14 @@ package cardSystem.view
       
       private function initView() : void
       {
-         var _loc3_:int = 0;
-         var _loc6_:* = null;
-         var _loc5_:* = null;
-         var _loc4_:int = 0;
-         var _loc8_:* = null;
-         var _loc1_:* = null;
-         var _loc7_:int = 0;
-         var _loc2_:* = null;
+         var j:int = 0;
+         var lockImg:* = null;
+         var preTextBg1:* = null;
+         var k:int = 0;
+         var preTextBg2:* = null;
+         var upAndDownImg:* = null;
+         var i:int = 0;
+         var text:* = null;
          _headBg1 = ComponentFactory.Instance.creatComponentByStylename("PropResetFrame.headBG1");
          _headBg2 = ComponentFactory.Instance.creatComponentByStylename("PropResetFrame.headBG2");
          _headBg3 = ComponentFactory.Instance.creatComponentByStylename("PropResetFrame.headBG3");
@@ -250,53 +250,50 @@ package cardSystem.view
          _newPropContainer = ComponentFactory.Instance.creatComponentByStylename("PropResetFrame.newPropContainer");
          _upAndDownContainer = ComponentFactory.Instance.creatComponentByStylename("PropResetFrame.upAndDownContainer");
          _lockContainer = ComponentFactory.Instance.creatComponentByStylename("PropResetFrame.lockContainer");
-         _loc3_ = 0;
-         while(_loc3_ < 4)
+         for(j = 0; j < 4; )
          {
-            _loc6_ = ComponentFactory.Instance.creatComponentByStylename("PropResetFrame.lockImg");
-            _loc6_.setFrame(1);
-            _loc6_.buttonMode = true;
-            _loc6_.addEventListener("click",__lockImgClickHandler);
-            _lockVec[_loc3_] = _loc6_;
-            _lockContainer.addChild(_loc6_);
-            _loc5_ = ComponentFactory.Instance.creatComponentByStylename("PropResetFrame.preNumBg");
-            _inputSmallBg1[_loc3_] = _loc5_;
-            _smallinputPropContainer1.addChild(_inputSmallBg1[_loc3_]);
-            _loc3_++;
+            lockImg = ComponentFactory.Instance.creatComponentByStylename("PropResetFrame.lockImg");
+            lockImg.setFrame(1);
+            lockImg.buttonMode = true;
+            lockImg.addEventListener("click",__lockImgClickHandler);
+            _lockVec[j] = lockImg;
+            _lockContainer.addChild(lockImg);
+            preTextBg1 = ComponentFactory.Instance.creatComponentByStylename("PropResetFrame.preNumBg");
+            _inputSmallBg1[j] = preTextBg1;
+            _smallinputPropContainer1.addChild(_inputSmallBg1[j]);
+            j++;
          }
-         _loc4_ = 0;
-         while(_loc4_ < 4)
+         for(k = 0; k < 4; )
          {
-            _loc8_ = ComponentFactory.Instance.creatComponentByStylename("PropResetFrame.newNumBg");
-            _inputSmallBg2[_loc4_] = _loc8_;
-            _smallinputPropContainer2.addChild(_inputSmallBg2[_loc4_]);
-            _loc1_ = ComponentFactory.Instance.creatComponentByStylename("asset.cardSystem.upAndDown");
-            _loc1_.setFrame(1);
-            _loc1_.visible = false;
-            _upAndDownVec[_loc4_] = _loc1_;
-            _upAndDownContainer.addChild(_upAndDownVec[_loc4_]);
-            _loc4_++;
+            preTextBg2 = ComponentFactory.Instance.creatComponentByStylename("PropResetFrame.newNumBg");
+            _inputSmallBg2[k] = preTextBg2;
+            _smallinputPropContainer2.addChild(_inputSmallBg2[k]);
+            upAndDownImg = ComponentFactory.Instance.creatComponentByStylename("asset.cardSystem.upAndDown");
+            upAndDownImg.setFrame(1);
+            upAndDownImg.visible = false;
+            _upAndDownVec[k] = upAndDownImg;
+            _upAndDownContainer.addChild(_upAndDownVec[k]);
+            k++;
          }
-         _loc7_ = 0;
-         while(_loc7_ < 12)
+         for(i = 0; i < 12; )
          {
-            _loc2_ = ComponentFactory.Instance.creatComponentByStylename("PropResetFrame.PropText");
-            if(_loc7_ < 4)
+            text = ComponentFactory.Instance.creatComponentByStylename("PropResetFrame.PropText");
+            if(i < 4)
             {
-               _basicPropVec1[_loc7_] = _loc2_;
-               _basePropContainer1.addChild(_basicPropVec1[_loc7_]);
+               _basicPropVec1[i] = text;
+               _basePropContainer1.addChild(_basicPropVec1[i]);
             }
-            else if(_loc7_ < 8)
+            else if(i < 8)
             {
-               _oldPropVec[_loc7_ % 4] = _loc2_;
-               _oldPropContainer.addChild(_oldPropVec[_loc7_ % 4]);
+               _oldPropVec[i % 4] = text;
+               _oldPropContainer.addChild(_oldPropVec[i % 4]);
             }
             else
             {
-               _newPropVec[_loc7_ % 4] = _loc2_;
-               _newPropContainer.addChild(_newPropVec[_loc7_ % 4]);
+               _newPropVec[i % 4] = text;
+               _newPropContainer.addChild(_newPropVec[i % 4]);
             }
-            _loc7_++;
+            i++;
          }
          addToContent(_cardCell);
          addToContent(_smallinputPropContainer1);
@@ -336,7 +333,7 @@ package cardSystem.view
          _attrGFs = [ComponentFactory.Instance.creatFilters("PropResetFrame.attrGF_Green"),ComponentFactory.Instance.creatFilters("PropResetFrame.attrGF_Blue"),ComponentFactory.Instance.creatFilters("PropResetFrame.attrGF_Purple"),ComponentFactory.Instance.creatFilters("PropResetFrame.attrGF_Orange")];
       }
       
-      private function _levelSelectGroupChangeHandler(param1:Event) : void
+      private function _levelSelectGroupChangeHandler(event:Event) : void
       {
          SoundManager.instance.play("008");
          if(_levelSelectGroup.selectIndex == 0)
@@ -350,72 +347,70 @@ package cardSystem.view
          checkSoul();
       }
       
-      private function __lockImgClickHandler(param1:MouseEvent) : void
+      private function __lockImgClickHandler(event:MouseEvent) : void
       {
-         var _loc5_:int = 0;
+         var i:int = 0;
          SoundManager.instance.play("008");
-         var _loc4_:ScaleFrameImage = param1.currentTarget as ScaleFrameImage;
-         var _loc3_:int = 0;
-         if(_loc4_.getFrame == 1)
+         var img:ScaleFrameImage = event.currentTarget as ScaleFrameImage;
+         var currentState:int = 0;
+         if(img.getFrame == 1)
          {
             if(lockStateNum >= 3)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.lockImgClickMaxMsg"));
                return;
             }
-            _loc4_.setFrame(2);
-            _loc3_ = 1;
+            img.setFrame(2);
+            currentState = 1;
          }
          else
          {
-            _loc4_.setFrame(1);
-            _loc3_ = 0;
+            img.setFrame(1);
+            currentState = 0;
          }
-         _loc5_ = 0;
-         while(_loc5_ < _lockVec.length)
+         for(i = 0; i < _lockVec.length; )
          {
-            if(_loc4_ == _lockVec[_loc5_])
+            if(img == _lockVec[i])
             {
-               _lockStates[_loc5_] = _loc3_;
+               _lockStates[i] = currentState;
                break;
             }
-            _loc5_++;
+            i++;
          }
-         var _loc2_:int = lockStateNum;
-         if(_loc2_ == 0)
+         var stateNum:int = lockStateNum;
+         if(stateNum == 0)
          {
             _useMoneyTxt.text = "0";
          }
          else
          {
-            _useMoneyTxt.text = ServerConfigManager.instance.cardLockAttrMoney[_loc2_ - 1] + "";
+            _useMoneyTxt.text = ServerConfigManager.instance.cardLockAttrMoney[stateNum - 1] + "";
          }
       }
       
       private function get lockStateNum() : int
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _lockStates.length)
+         var j:int = 0;
+         var stateNum:int = 0;
+         for(j = 0; j < _lockStates.length; )
          {
-            if(_lockStates[_loc2_] == 1)
+            if(_lockStates[j] == 1)
             {
-               _loc1_++;
+               stateNum++;
             }
-            _loc2_++;
+            j++;
          }
-         return _loc1_;
+         return stateNum;
       }
       
       public function checkSoul() : void
       {
-         var _loc1_:int = ServerConfigManager.instance.CardRestSoulValue;
+         var soulValue:int = ServerConfigManager.instance.CardRestSoulValue;
          if(_levelSelectGroup && _levelSelectGroup.selectIndex == 1)
          {
-            _loc1_ = ServerConfigManager.instance.highCardResetSoulValue;
+            soulValue = ServerConfigManager.instance.highCardResetSoulValue;
          }
-         if(PlayerManager.Instance.Self.CardSoul < _loc1_)
+         if(PlayerManager.Instance.Self.CardSoul < soulValue)
          {
             _alertInfo.submitEnabled = false;
          }
@@ -425,15 +420,15 @@ package cardSystem.view
          }
       }
       
-      public function show(param1:CardInfo) : void
+      public function show(card:CardInfo) : void
       {
-         var _loc8_:int = 0;
-         var _loc5_:int = 0;
-         var _loc6_:int = 0;
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc7_:* = null;
-         _cardInfo = param1;
+         var i:int = 0;
+         var j:int = 0;
+         var k:int = 0;
+         var tempIndex:int = 0;
+         var tempTxtTF:* = null;
+         var tempTxtFilters:* = null;
+         _cardInfo = card;
          _cardCell.cardInfo = _cardInfo;
          _cardCell.Visibles = false;
          _propertys = new Vector.<PropertyEmu>();
@@ -461,36 +456,34 @@ package cardSystem.view
          {
             _propertys.push(new PropertyEmu("Damage",5));
          }
-         _loc8_ = 0;
-         while(_loc8_ < _propertys.length)
+         i = 0;
+         while(i < _propertys.length)
          {
-            _basicPropVec1[_loc8_].text = LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame." + _propertys[_loc8_].key + "1");
-            _loc8_++;
+            _basicPropVec1[i].text = LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame." + _propertys[i].key + "1");
+            i++;
          }
          UpdateStrArray();
          if(_strArray != null)
          {
-            _loc5_ = 0;
-            while(_loc5_ < _propertys.length)
+            for(j = 0; j < _propertys.length; )
             {
-               _oldPropVec[_loc5_].text = LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.prop",_strArray[_propertys[_loc5_].key] == null || _strArray[_propertys[_loc5_].key] == ""?"0":_strArray[_propertys[_loc5_].key]);
-               _loc5_++;
+               _oldPropVec[j].text = LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.prop",_strArray[_propertys[j].key] == null || _strArray[_propertys[j].key] == ""?"0":_strArray[_propertys[j].key]);
+               j++;
             }
          }
-         var _loc4_:Array = [_cardInfo.Attack,_cardInfo.Defence,_cardInfo.Agility,_cardInfo.Luck];
-         _loc6_ = 0;
-         while(_loc6_ < 4)
+         var tempArr:Array = [_cardInfo.Attack,_cardInfo.Defence,_cardInfo.Agility,_cardInfo.Luck];
+         for(k = 0; k < 4; )
          {
-            _loc3_ = getTxtColorIndex(_loc4_[_loc6_]);
-            _loc2_ = _attrTFs[_loc3_];
-            _loc7_ = _attrGFs[_loc3_];
-            _basicPropVec1[_loc6_].setTextFormat(_loc2_);
-            _basicPropVec1[_loc6_].defaultTextFormat = _loc2_;
-            _basicPropVec1[_loc6_].filters = _loc7_;
-            _oldPropVec[_loc6_].setTextFormat(_loc2_);
-            _oldPropVec[_loc6_].defaultTextFormat = _loc2_;
-            _oldPropVec[_loc6_].filters = _loc7_;
-            _loc6_++;
+            tempIndex = getTxtColorIndex(tempArr[k]);
+            tempTxtTF = _attrTFs[tempIndex];
+            tempTxtFilters = _attrGFs[tempIndex];
+            _basicPropVec1[k].setTextFormat(tempTxtTF);
+            _basicPropVec1[k].defaultTextFormat = tempTxtTF;
+            _basicPropVec1[k].filters = tempTxtFilters;
+            _oldPropVec[k].setTextFormat(tempTxtTF);
+            _oldPropVec[k].defaultTextFormat = tempTxtTF;
+            _oldPropVec[k].filters = tempTxtFilters;
+            k++;
          }
          _levelSelectedNomalTxt.text = LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.levelSelectedNomalTxtMsg",ServerConfigManager.instance.CardRestSoulValue,_cardInfo.templateInfo.Property1,_cardInfo.templateInfo.Property2);
          _levelSelectedAdvancedTxt.text = LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.levelSelectedAdvancedTxtMsg",ServerConfigManager.instance.highCardResetSoulValue,_cardInfo.templateInfo.Property3,_cardInfo.templateInfo.Property2);
@@ -498,21 +491,21 @@ package cardSystem.view
          this.y = this.y - 40;
       }
       
-      private function getTxtColorIndex(param1:int) : int
+      private function getTxtColorIndex(num:int) : int
       {
-         if(param1 >= int(_cardInfo.templateInfo.Property2))
+         if(num >= int(_cardInfo.templateInfo.Property2))
          {
             return 3;
          }
-         if(param1 <= 10)
+         if(num <= 10)
          {
             return 0;
          }
-         if(param1 <= 20)
+         if(num <= 20)
          {
             return 1;
          }
-         if(param1 <= 25)
+         if(num <= 25)
          {
             return 2;
          }
@@ -521,24 +514,24 @@ package cardSystem.view
       
       private function UpdateStrArray() : void
       {
-         var _loc4_:CardTemplateInfo = CardTemplateInfoManager.instance.getInfoByCardId(String(_cardInfo.TemplateID),String(_cardInfo.CardType));
-         var _loc6_:String = _cardInfo.Attack.toString();
-         var _loc3_:String = _cardInfo.Defence.toString();
-         var _loc5_:String = _cardInfo.Agility.toString();
-         var _loc2_:String = _cardInfo.Luck.toString();
-         var _loc7_:String = _cardInfo.Damage.toString();
-         var _loc1_:String = _cardInfo.Guard.toString();
+         var cardTempleInfo:CardTemplateInfo = CardTemplateInfoManager.instance.getInfoByCardId(String(_cardInfo.TemplateID),String(_cardInfo.CardType));
+         var Attackstr:String = _cardInfo.Attack.toString();
+         var Defencestr:String = _cardInfo.Defence.toString();
+         var Agilitystr:String = _cardInfo.Agility.toString();
+         var Luckystr:String = _cardInfo.Luck.toString();
+         var Damagestr:String = _cardInfo.Damage.toString();
+         var Guardstr:String = _cardInfo.Guard.toString();
          _strArray = {
-            "Attack":_loc6_,
-            "Defence":_loc3_,
-            "Agility":_loc5_,
-            "Luck":_loc2_
+            "Attack":Attackstr,
+            "Defence":Defencestr,
+            "Agility":Agilitystr,
+            "Luck":Luckystr
          };
       }
       
-      public function set cardInfo(param1:CardInfo) : void
+      public function set cardInfo(value:CardInfo) : void
       {
-         _cardInfo = param1;
+         _cardInfo = value;
          _propertys = new Vector.<PropertyEmu>();
          if(_cardInfo.realAttack > 0)
          {
@@ -575,9 +568,9 @@ package cardSystem.view
          _levelSelectGroup.addEventListener("change",_levelSelectGroupChangeHandler);
       }
       
-      private function __response(param1:FrameEvent) : void
+      private function __response(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -613,22 +606,22 @@ package cardSystem.view
          _levelSelectGroup.removeEventListener("change",_levelSelectGroupChangeHandler);
       }
       
-      protected function __replaceHandler(param1:MouseEvent) : void
+      protected function __replaceHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:String = LanguageMgr.GetTranslation("tank.view.card.resetAlertMsg");
-         _resetAlert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc2_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
+         var msg:String = LanguageMgr.GetTranslation("tank.view.card.resetAlertMsg");
+         _resetAlert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),msg,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
          _resetAlert.moveEnable = false;
          _resetAlert.addEventListener("response",__replaceAlert);
       }
       
-      private function __replaceAlert(param1:FrameEvent) : void
+      private function __replaceAlert(event:FrameEvent) : void
       {
          if(_resetAlert)
          {
             _resetAlert.removeEventListener("response",__replaceAlert);
          }
-         switch(int(param1.responseCode) - 2)
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
@@ -657,7 +650,7 @@ package cardSystem.view
          }
       }
       
-      private function __changeSoul(param1:CardSocketEvent) : void
+      private function __changeSoul(event:CardSocketEvent) : void
       {
          _ownSoulText.text = PlayerManager.Instance.Self.CardSoul.toString();
          checkSoul();
@@ -666,39 +659,38 @@ package cardSystem.view
       
       private function updateText() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         var _loc4_:* = null;
-         var _loc5_:int = 0;
+         var j:int = 0;
+         var tempIndex:int = 0;
+         var tempTxtTF:* = null;
+         var tempTxtFilters:* = null;
+         var i:int = 0;
          if(_sendReplace)
          {
             _ownSoulText.text = PlayerManager.Instance.Self.CardSoul.toString();
             if(_strArray != null)
             {
-               _loc3_ = 0;
-               while(_loc3_ < _propertys.length)
+               for(j = 0; j < _propertys.length; )
                {
-                  _oldPropVec[_loc3_].text = LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.prop",_newArray[_loc3_].toString());
-                  _strArray[_propertys[_loc3_].key] = _newArray[_loc3_];
-                  _loc2_ = getTxtColorIndex(_newArray[_loc3_]);
-                  _loc1_ = _attrTFs[_loc2_];
-                  _loc4_ = _attrGFs[_loc2_];
-                  _oldPropVec[_loc3_].setTextFormat(_loc1_);
-                  _oldPropVec[_loc3_].defaultTextFormat = _loc1_;
-                  _oldPropVec[_loc3_].filters = _loc4_;
-                  _basicPropVec1[_loc3_].setTextFormat(_loc1_);
-                  _basicPropVec1[_loc3_].defaultTextFormat = _loc1_;
-                  _basicPropVec1[_loc3_].filters = _loc4_;
-                  _loc3_++;
+                  _oldPropVec[j].text = LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.prop",_newArray[j].toString());
+                  _strArray[_propertys[j].key] = _newArray[j];
+                  tempIndex = getTxtColorIndex(_newArray[j]);
+                  tempTxtTF = _attrTFs[tempIndex];
+                  tempTxtFilters = _attrGFs[tempIndex];
+                  _oldPropVec[j].setTextFormat(tempTxtTF);
+                  _oldPropVec[j].defaultTextFormat = tempTxtTF;
+                  _oldPropVec[j].filters = tempTxtFilters;
+                  _basicPropVec1[j].setTextFormat(tempTxtTF);
+                  _basicPropVec1[j].defaultTextFormat = tempTxtTF;
+                  _basicPropVec1[j].filters = tempTxtFilters;
+                  j++;
                }
             }
-            _loc5_ = 0;
-            while(_loc5_ < _newPropVec.length)
+            i = 0;
+            while(i < _newPropVec.length)
             {
-               _upAndDownVec[_loc5_].visible = false;
-               _newPropVec[_loc5_].text = "";
-               _loc5_++;
+               _upAndDownVec[i].visible = false;
+               _newPropVec[i].text = "";
+               i++;
             }
             _sendReplace = false;
             _alertInfo.submitEnabled = true;
@@ -706,37 +698,36 @@ package cardSystem.view
          }
       }
       
-      protected function __resethandler(param1:MouseEvent) : void
+      protected function __resethandler(event:MouseEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var dialogAlert:* = null;
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc4_:int = _cardInfo.templateInfo.Property2;
-         if(_strArray.Attack >= _loc4_ && _strArray.Defence >= _loc4_ && _strArray.Agility >= _loc4_ && _strArray.Luck >= _loc4_)
+         var maxNum:int = _cardInfo.templateInfo.Property2;
+         if(_strArray.Attack >= maxNum && _strArray.Defence >= maxNum && _strArray.Agility >= maxNum && _strArray.Luck >= maxNum)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.allMaxMsg"));
             return;
          }
-         var _loc3_:Boolean = false;
-         _loc5_ = 0;
-         while(_loc5_ < _newArray.length)
+         var bool:Boolean = false;
+         for(i = 0; i < _newArray.length; )
          {
-            if(_newArray[_loc5_] >= _loc4_ && _lockStates[_loc5_] == 0 && _newPropVec[_loc5_].text != "")
+            if(_newArray[i] >= maxNum && _lockStates[i] == 0 && _newPropVec[i].text != "")
             {
-               _loc3_ = true;
+               bool = true;
                break;
             }
-            _loc5_++;
+            i++;
          }
-         if(_loc3_)
+         if(bool)
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.resetMaxMsg"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
-            _loc2_.addEventListener("response",__resetDialogAlertResponse);
+            dialogAlert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.resetMaxMsg"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
+            dialogAlert.addEventListener("response",__resetDialogAlertResponse);
          }
          else
          {
@@ -744,16 +735,16 @@ package cardSystem.view
          }
       }
       
-      private function __resetDialogAlertResponse(param1:FrameEvent) : void
+      private function __resetDialogAlertResponse(event:FrameEvent) : void
       {
-         param1.currentTarget.removeEventListener("response",__resetDialogAlertResponse);
-         switch(int(param1.responseCode) - 2)
+         event.currentTarget.removeEventListener("response",__resetDialogAlertResponse);
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
                buyAlert();
          }
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(event.currentTarget);
       }
       
       private function buyAlert() : void
@@ -763,9 +754,9 @@ package cardSystem.view
             buyIsBind = __data.isBind;
             resetExe(__data.isBind);
          };
-         __onConfirm = function(param1:BaseAlerFrame):void
+         __onConfirm = function(frame:BaseAlerFrame):void
          {
-            if(param1.selectedCheckButton.selected)
+            if(frame.selectedCheckButton.selected)
             {
                resetPointNotAlertAgain = true;
             }
@@ -783,7 +774,7 @@ package cardSystem.view
          }
       }
       
-      private function resetExe(param1:Boolean) : void
+      private function resetExe(isBind:Boolean) : void
       {
          if(_levelSelectGroup.selectIndex == 0)
          {
@@ -798,7 +789,7 @@ package cardSystem.view
             return;
          }
          _enableSubmit = false;
-         SocketManager.Instance.out.sendCardReset(_cardInfo.Place,_levelSelectGroup.selectIndex + 1,_lockStates,param1);
+         SocketManager.Instance.out.sendCardReset(_cardInfo.Place,_levelSelectGroup.selectIndex + 1,_lockStates,isBind);
          setReplaceAbled(true);
          checkSoul();
       }
@@ -806,19 +797,19 @@ package cardSystem.view
       private function __cancelHandel() : void
       {
          SoundManager.instance.play("008");
-         var _loc1_:String = LanguageMgr.GetTranslation("tank.view.card.cancelAlertMsg");
-         _cancelAlert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc1_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
+         var msg:String = LanguageMgr.GetTranslation("tank.view.card.cancelAlertMsg");
+         _cancelAlert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),msg,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
          _cancelAlert.moveEnable = false;
          _cancelAlert.addEventListener("response",__cancelResponse);
       }
       
-      private function __cancelResponse(param1:FrameEvent) : void
+      private function __cancelResponse(event:FrameEvent) : void
       {
          if(_cancelAlert)
          {
             _cancelAlert.removeEventListener("response",__cancelResponse);
          }
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -835,64 +826,62 @@ package cardSystem.view
          }
       }
       
-      private function setReplaceAbled(param1:Boolean) : void
+      private function setReplaceAbled(val:Boolean) : void
       {
-         _alertInfo.cancelEnabled = param1;
+         _alertInfo.cancelEnabled = val;
       }
       
-      private function __reset(param1:PkgEvent) : void
+      private function __reset(event:PkgEvent) : void
       {
-         var _loc10_:int = 0;
-         var _loc6_:int = 0;
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc9_:* = null;
-         var _loc8_:* = null;
+         var i:int = 0;
+         var j:int = 0;
+         var tempIndex:int = 0;
+         var tempTxtTF:* = null;
+         var tempTxtFilters:* = null;
+         var maxTxt:* = null;
          _newArray = [];
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc5_:int = _loc4_.readInt();
-         _loc10_ = 0;
-         while(_loc10_ < _loc5_)
+         var pkg:PackageIn = event.pkg;
+         var len:int = pkg.readInt();
+         for(i = 0; i < len; )
          {
-            _newArray.push(_loc4_.readInt());
-            _loc10_++;
+            _newArray.push(pkg.readInt());
+            i++;
          }
-         var _loc7_:int = _cardInfo.templateInfo.Property2;
-         _loc6_ = 0;
-         while(_loc6_ < _propertys.length)
+         var maxNum:int = _cardInfo.templateInfo.Property2;
+         for(j = 0; j < _propertys.length; )
          {
-            _loc3_ = getTxtColorIndex(_newArray[_loc6_]);
-            _loc2_ = _attrTFs[_loc3_];
-            _loc9_ = _attrGFs[_loc3_];
-            _newPropVec[_loc6_].text = String(_newArray[_loc6_]);
-            _newPropVec[_loc6_].setTextFormat(_loc2_);
-            _newPropVec[_loc6_].defaultTextFormat = _loc2_;
-            _newPropVec[_loc6_].filters = _loc9_;
-            if(_newArray[_loc6_] != int(_strArray[_propertys[_loc6_].key]))
+            tempIndex = getTxtColorIndex(_newArray[j]);
+            tempTxtTF = _attrTFs[tempIndex];
+            tempTxtFilters = _attrGFs[tempIndex];
+            _newPropVec[j].text = String(_newArray[j]);
+            _newPropVec[j].setTextFormat(tempTxtTF);
+            _newPropVec[j].defaultTextFormat = tempTxtTF;
+            _newPropVec[j].filters = tempTxtFilters;
+            if(_newArray[j] != int(_strArray[_propertys[j].key]))
             {
-               _upAndDownVec[_loc6_].visible = true;
-               if(_newArray[_loc6_] < int(_strArray[_propertys[_loc6_].key]))
+               _upAndDownVec[j].visible = true;
+               if(_newArray[j] < int(_strArray[_propertys[j].key]))
                {
-                  _upAndDownVec[_loc6_].setFrame(2);
+                  _upAndDownVec[j].setFrame(2);
                }
-               else if(_newArray[_loc6_] >= _loc7_)
+               else if(_newArray[j] >= maxNum)
                {
-                  _upAndDownVec[_loc6_].setFrame(3);
-                  _loc8_ = _upAndDownVec[_loc6_].getFrameImage(2) as FilterFrameText;
-                  _loc8_.setTextFormat(_loc2_);
-                  _loc8_.defaultTextFormat = _loc2_;
-                  _loc8_.filters = _loc9_;
+                  _upAndDownVec[j].setFrame(3);
+                  maxTxt = _upAndDownVec[j].getFrameImage(2) as FilterFrameText;
+                  maxTxt.setTextFormat(tempTxtTF);
+                  maxTxt.defaultTextFormat = tempTxtTF;
+                  maxTxt.filters = tempTxtFilters;
                }
                else
                {
-                  _upAndDownVec[_loc6_].setFrame(1);
+                  _upAndDownVec[j].setFrame(1);
                }
             }
             else
             {
-               _upAndDownVec[_loc6_].visible = false;
+               _upAndDownVec[j].visible = false;
             }
-            _loc6_++;
+            j++;
          }
          _canReplace = true;
          PlayerManager.Instance.Self.CardSoul = PlayerManager.Instance.Self.CardSoul - soulValue;
@@ -901,8 +890,8 @@ package cardSystem.view
       
       override public function dispose() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
+         var i:int = 0;
+         var k:int = 0;
          if(_cardCell)
          {
             _cardCell.dispose();
@@ -910,15 +899,14 @@ package cardSystem.view
          _cardCell = null;
          super.dispose();
          removeEvent();
-         _loc2_ = 0;
-         while(_loc2_ < 6)
+         for(i = 0; i < 6; )
          {
-            _basicPropVec1[_loc2_] = null;
-            _oldPropVec[_loc2_] = null;
-            _newPropVec[_loc2_] = null;
-            _inputSmallBg1[_loc2_] = null;
-            _inputSmallBg2[_loc2_] = null;
-            _loc2_++;
+            _basicPropVec1[i] = null;
+            _oldPropVec[i] = null;
+            _newPropVec[i] = null;
+            _inputSmallBg1[i] = null;
+            _inputSmallBg2[i] = null;
+            i++;
          }
          _bg1 = null;
          _bg2 = null;
@@ -957,13 +945,12 @@ package cardSystem.view
          _levelSelectedAdvancedTxt = null;
          if(_lockVec)
          {
-            _loc1_ = 0;
-            while(_loc1_ < _lockVec.length)
+            for(k = 0; k < _lockVec.length; )
             {
-               _lockVec[_loc1_].removeEventListener("click",__lockImgClickHandler);
-               ObjectUtils.disposeObject(_lockVec[_loc1_]);
-               _lockVec[_loc1_] = null;
-               _loc1_++;
+               _lockVec[k].removeEventListener("click",__lockImgClickHandler);
+               ObjectUtils.disposeObject(_lockVec[k]);
+               _lockVec[k] = null;
+               k++;
             }
             _lockVec = null;
          }
@@ -983,31 +970,31 @@ package cardSystem.view
          }
       }
       
-      private function __helpOpen(param1:MouseEvent) : void
+      private function __helpOpen(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         param1.stopImmediatePropagation();
-         var _loc3_:DisplayObject = ComponentFactory.Instance.creatComponentByStylename("Scale9CornerImage17");
-         var _loc4_:MovieImage = ComponentFactory.Instance.creatComponentByStylename("ddtcardSystem.resetFrame.help");
-         PositionUtils.setPos(_loc4_,"resetFrame.help.contentPos");
-         var _loc5_:AlertInfo = new AlertInfo();
-         _loc5_.title = LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.help.title");
-         _loc5_.submitLabel = LanguageMgr.GetTranslation("ok");
-         _loc5_.showCancel = false;
-         _loc5_.moveEnable = false;
-         var _loc2_:BaseAlerFrame = ComponentFactory.Instance.creatComponentByStylename("PropResetFrame.HelpFrame");
-         _loc2_.info = _loc5_;
-         _loc2_.addToContent(_loc3_);
-         _loc2_.addToContent(_loc4_);
-         _loc2_.addEventListener("response",__helpResponse);
-         LayerManager.Instance.addToLayer(_loc2_,1,true,1);
+         event.stopImmediatePropagation();
+         var helpBg:DisplayObject = ComponentFactory.Instance.creatComponentByStylename("Scale9CornerImage17");
+         var helpContent:MovieImage = ComponentFactory.Instance.creatComponentByStylename("ddtcardSystem.resetFrame.help");
+         PositionUtils.setPos(helpContent,"resetFrame.help.contentPos");
+         var alertInfo:AlertInfo = new AlertInfo();
+         alertInfo.title = LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.help.title");
+         alertInfo.submitLabel = LanguageMgr.GetTranslation("ok");
+         alertInfo.showCancel = false;
+         alertInfo.moveEnable = false;
+         var frame:BaseAlerFrame = ComponentFactory.Instance.creatComponentByStylename("PropResetFrame.HelpFrame");
+         frame.info = alertInfo;
+         frame.addToContent(helpBg);
+         frame.addToContent(helpContent);
+         frame.addEventListener("response",__helpResponse);
+         LayerManager.Instance.addToLayer(frame,1,true,1);
       }
       
-      private function __helpResponse(param1:FrameEvent) : void
+      private function __helpResponse(event:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__helpResponse);
-         _loc2_.dispose();
+         var alert:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",__helpResponse);
+         alert.dispose();
          SoundManager.instance.play("008");
          StageReferance.stage.focus = this;
       }
@@ -1022,10 +1009,10 @@ class PropertyEmu
    
    public var idx:int;
    
-   function PropertyEmu(param1:String, param2:int)
+   function PropertyEmu(key:String, idx:int)
    {
       super();
-      this.key = param1;
-      this.idx = param2;
+      this.key = key;
+      this.idx = idx;
    }
 }

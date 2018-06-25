@@ -47,7 +47,7 @@ package consortionBattle.view
          super();
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
          if(!ConsortiaBattleManager.instance.isOpen)
          {
@@ -60,7 +60,7 @@ package consortionBattle.view
             InviteManager.Instance.enabled = false;
             CacheSysManager.lock("consortiaBattleInRoom");
             KeyboardShortcutsManager.Instance.forbiddenFull();
-            super.enter(param1,param2);
+            super.enter(prev,data);
             LayerManager.Instance.clearnGameDynamic();
             LayerManager.Instance.clearnStageDynamic();
             MainToolBar.Instance.hide();
@@ -115,7 +115,7 @@ package consortionBattle.view
          ConsortiaBattleManager.instance.addEventListener("consortiaBattleClose",closeHandler);
       }
       
-      private function closeHandler(param1:Event) : void
+      private function closeHandler(event:Event) : void
       {
          StateManager.setState("main");
       }
@@ -124,7 +124,7 @@ package consortionBattle.view
       {
       }
       
-      private function __startLoading(param1:Event) : void
+      private function __startLoading(e:Event) : void
       {
          StateManager.getInGame_Step_6 = true;
          ChatManager.Instance.input.faceEnabled = false;
@@ -133,7 +133,7 @@ package consortionBattle.view
          StateManager.getInGame_Step_7 = true;
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
          InviteManager.Instance.enabled = true;
          CacheSysManager.unlock("consortiaBattleInRoom");
@@ -142,7 +142,7 @@ package consortionBattle.view
          GameControl.Instance.removeEventListener("StartLoading",__startLoading);
          StateManager.getInGame_Step_8 = true;
          ConsortiaBattleManager.instance.removeEventListener("consortiaBattleClose",closeHandler);
-         super.leaving(param1);
+         super.leaving(next);
          ObjectUtils.disposeObject(_mapView);
          _mapView = null;
          ObjectUtils.disposeObject(_exitBtn);

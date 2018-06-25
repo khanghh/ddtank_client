@@ -13,48 +13,47 @@ package team.analyze
       
       public var buyLimitLv:Array;
       
-      public function TeamShopAnalyze(param1:Function)
+      public function TeamShopAnalyze(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(value:*) : void
       {
-         var _loc5_:* = null;
-         var _loc7_:int = 0;
-         var _loc6_:* = null;
-         var _loc2_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:XML = new XML(param1);
+         var xmllist:* = null;
+         var i:int = 0;
+         var info:* = null;
+         var lv:int = 0;
+         var list:* = null;
+         var xml:XML = new XML(value);
          buyLimitLv = [];
          data = new DictionaryData();
-         if(_loc4_.@value == "true")
+         if(xml.@value == "true")
          {
-            _loc5_ = _loc4_..Item;
-            _loc7_ = 0;
-            while(_loc7_ < _loc5_.length())
+            xmllist = xml..Item;
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc6_ = new TeamShopInfo();
-               ObjectUtils.copyPorpertiesByXML(_loc6_,_loc5_[_loc7_]);
-               _loc2_ = _loc5_[_loc7_].@NeedLevel;
-               if(buyLimitLv.indexOf(_loc2_) == -1)
+               info = new TeamShopInfo();
+               ObjectUtils.copyPorpertiesByXML(info,xmllist[i]);
+               lv = xmllist[i].@NeedLevel;
+               if(buyLimitLv.indexOf(lv) == -1)
                {
-                  buyLimitLv.push(_loc2_);
+                  buyLimitLv.push(lv);
                }
-               if(!data.hasKey(_loc6_.ShopType))
+               if(!data.hasKey(info.ShopType))
                {
-                  data.add(_loc6_.ShopType,[]);
+                  data.add(info.ShopType,[]);
                }
-               _loc3_ = data[_loc6_.ShopType];
-               _loc3_.push(_loc6_);
-               _loc7_++;
+               list = data[info.ShopType];
+               list.push(info);
+               i++;
             }
             buyLimitLv.sort();
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc4_.@message;
+            message = xml.@message;
             onAnalyzeError();
          }
          data = null;

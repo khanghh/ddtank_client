@@ -62,115 +62,115 @@ package horseRace.controller
          SocketManager.Instance.addEventListener("horseRace_cmd",pkgHandler);
       }
       
-      public function templateDataSetup(param1:Array) : void
+      public function templateDataSetup(dataList:Array) : void
       {
-         itemInfoList = param1;
+         itemInfoList = dataList;
       }
       
-      private function pkgHandler(param1:CrazyTankSocketEvent) : void
+      private function pkgHandler(event:CrazyTankSocketEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         var _loc3_:int = _loc2_.readByte();
-         switch(int(_loc3_) - 1)
+         var pkg:PackageIn = event.pkg;
+         var type:int = pkg.readByte();
+         switch(int(type) - 1)
          {
             case 0:
-               initPlayerData(_loc2_);
+               initPlayerData(pkg);
                break;
             case 1:
-               updateCount(_loc2_);
+               updateCount(pkg);
                break;
             case 2:
-               startFiveCountDown(_loc2_);
+               startFiveCountDown(pkg);
                break;
             case 3:
-               beginRace(_loc2_);
+               beginRace(pkg);
                break;
             case 4:
-               syn_onesecond(_loc2_);
+               syn_onesecond(pkg);
                break;
             case 5:
-               allPlayerRaceEnd(_loc2_);
+               allPlayerRaceEnd(pkg);
                break;
             case 6:
-               flush_buffItem(_loc2_);
+               flush_buffItem(pkg);
                break;
             default:
-               flush_buffItem(_loc2_);
+               flush_buffItem(pkg);
                break;
             case 8:
-               playerSpeedChange(_loc2_);
+               playerSpeedChange(pkg);
                break;
             case 9:
-               playerRaceEnd(_loc2_);
+               playerRaceEnd(pkg);
                break;
             case 10:
-               show_msg(_loc2_);
+               show_msg(pkg);
          }
       }
       
-      private function updateCount(param1:PackageIn) : void
+      private function updateCount(pkg:PackageIn) : void
       {
-         horseRaceCanRaceTime = param1.readInt();
+         horseRaceCanRaceTime = pkg.readInt();
          if(_matchView)
          {
             _matchView.reflushHorseRaceTime();
          }
       }
       
-      private function show_msg(param1:PackageIn) : void
+      private function show_msg(pkg:PackageIn) : void
       {
-         dispatchEvent(new HorseRaceEvents("HORSERACE_SHOW_MSG",param1));
+         dispatchEvent(new HorseRaceEvents("HORSERACE_SHOW_MSG",pkg));
       }
       
-      private function flush_buffItem(param1:PackageIn) : void
+      private function flush_buffItem(pkg:PackageIn) : void
       {
-         dispatchEvent(new HorseRaceEvents("HORSERACE_BUFF_ITEMFLUSH",param1));
+         dispatchEvent(new HorseRaceEvents("HORSERACE_BUFF_ITEMFLUSH",pkg));
       }
       
-      private function syn_onesecond(param1:PackageIn) : void
+      private function syn_onesecond(pkg:PackageIn) : void
       {
-         dispatchEvent(new HorseRaceEvents("HORSERACE_SYN_ONESECOND",param1));
+         dispatchEvent(new HorseRaceEvents("HORSERACE_SYN_ONESECOND",pkg));
       }
       
-      private function allPlayerRaceEnd(param1:PackageIn) : void
+      private function allPlayerRaceEnd(pkg:PackageIn) : void
       {
-         dispatchEvent(new HorseRaceEvents("HORSERACE_ALLPLAYER_RACEEND",param1));
+         dispatchEvent(new HorseRaceEvents("HORSERACE_ALLPLAYER_RACEEND",pkg));
       }
       
-      private function initPlayerData(param1:PackageIn) : void
+      private function initPlayerData(pkg:PackageIn) : void
       {
          _matchView.dispose2();
          showRaceView();
-         dispatchEvent(new HorseRaceEvents("horseRace_initPlayer",param1));
+         dispatchEvent(new HorseRaceEvents("horseRace_initPlayer",pkg));
       }
       
-      private function startFiveCountDown(param1:PackageIn) : void
+      private function startFiveCountDown(pkg:PackageIn) : void
       {
-         dispatchEvent(new HorseRaceEvents("HORSERACE_START_FIVE",param1));
+         dispatchEvent(new HorseRaceEvents("HORSERACE_START_FIVE",pkg));
       }
       
-      private function beginRace(param1:PackageIn) : void
+      private function beginRace(pkg:PackageIn) : void
       {
-         dispatchEvent(new HorseRaceEvents("HORSERACE_BEGIN_RACE",param1));
+         dispatchEvent(new HorseRaceEvents("HORSERACE_BEGIN_RACE",pkg));
       }
       
-      private function playerSpeedChange(param1:PackageIn) : void
+      private function playerSpeedChange(pkg:PackageIn) : void
       {
-         dispatchEvent(new HorseRaceEvents("HORSERACE_PLAYERSPEED_CHANGE",param1));
+         dispatchEvent(new HorseRaceEvents("HORSERACE_PLAYERSPEED_CHANGE",pkg));
       }
       
-      private function playerRaceEnd(param1:PackageIn) : void
+      private function playerRaceEnd(pkg:PackageIn) : void
       {
-         dispatchEvent(new HorseRaceEvents("HORSERACE_RACE_END",param1));
+         dispatchEvent(new HorseRaceEvents("HORSERACE_RACE_END",pkg));
       }
       
-      private function _open_close(param1:CrazyTankSocketEvent) : void
+      private function _open_close(event:CrazyTankSocketEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = param1._cmd;
-         if(!(int(_loc2_) - 160))
+         var pkg:PackageIn = event.pkg;
+         var cmd:int = event._cmd;
+         if(!(int(cmd) - 160))
          {
-            openOrclose(_loc3_);
+            openOrclose(pkg);
          }
       }
       
@@ -179,9 +179,9 @@ package horseRace.controller
          return _isShowIcon;
       }
       
-      private function openOrclose(param1:PackageIn) : void
+      private function openOrclose(pkg:PackageIn) : void
       {
-         _isShowIcon = param1.readBoolean();
+         _isShowIcon = pkg.readBoolean();
          if(_isShowIcon)
          {
             addEnterIcon();
@@ -229,12 +229,12 @@ package horseRace.controller
       public function addEnterIcon() : void
       {
          HallIconManager.instance.updateSwitchHandler("horseRace",true);
-         var _loc1_:ChatData = new ChatData();
-         _loc1_.channel = 21;
-         _loc1_.childChannelArr = [7,14];
-         _loc1_.type = 889;
-         _loc1_.msg = LanguageMgr.GetTranslation("horseRace.sysOpentxt");
-         ChatManager.Instance.chat(_loc1_);
+         var chatData:ChatData = new ChatData();
+         chatData.channel = 21;
+         chatData.childChannelArr = [7,14];
+         chatData.type = 889;
+         chatData.msg = LanguageMgr.GetTranslation("horseRace.sysOpentxt");
+         ChatManager.Instance.chat(chatData);
       }
       
       private function disposeEnterIcon() : void
@@ -242,7 +242,7 @@ package horseRace.controller
          HallIconManager.instance.updateSwitchHandler("horseRace",false);
       }
       
-      protected function __onClose(param1:Event) : void
+      protected function __onClose(event:Event) : void
       {
          UIModuleSmallLoading.Instance.hide();
          UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);
@@ -250,17 +250,17 @@ package horseRace.controller
          UIModuleLoader.Instance.removeEventListener("uiModuleComplete",__completeShow);
       }
       
-      private function __progressShow(param1:UIModuleEvent) : void
+      private function __progressShow(event:UIModuleEvent) : void
       {
-         if(param1.module == "horseRace")
+         if(event.module == "horseRace")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
       
-      private function __completeShow(param1:UIModuleEvent) : void
+      private function __completeShow(event:UIModuleEvent) : void
       {
-         if(param1.module == "horseRace")
+         if(event.module == "horseRace")
          {
             UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);
             UIModuleLoader.Instance.removeEventListener("uiMoudleProgress",__progressShow);

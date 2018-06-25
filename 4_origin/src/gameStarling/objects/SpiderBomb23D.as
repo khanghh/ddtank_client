@@ -20,33 +20,32 @@ package gameStarling.objects
       
       private var _currentPathIndex:int = 0;
       
-      public function SpiderBomb23D(param1:Bomb, param2:Living, param3:int = 0, param4:Boolean = false)
+      public function SpiderBomb23D(info:Bomb, owner:Living, refineryLevel:int = 0, isPhantom:Boolean = false)
       {
          _path = [];
-         initData(param1);
-         super(param1,param2,param3,param4);
+         initData(info);
+         super(info,owner,refineryLevel,isPhantom);
       }
       
-      private function initData(param1:Bomb) : void
+      private function initData(info:Bomb) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:Array = [];
-         var _loc2_:Array = [];
-         _loc4_ = 0;
-         while(_loc4_ < param1.Actions.length)
+         var i:int = 0;
+         var arr1:Array = [];
+         var arr2:Array = [];
+         for(i = 0; i < info.Actions.length; )
          {
-            if(param1.Actions[_loc4_].type == 27)
+            if(info.Actions[i].type == 27)
             {
-               _loc3_.push(new Point(param1.Actions[_loc4_].param1,param1.Actions[_loc4_].param2));
+               arr1.push(new Point(info.Actions[i].param1,info.Actions[i].param2));
             }
             else
             {
-               _loc2_.push(param1.Actions[_loc4_]);
+               arr2.push(info.Actions[i]);
             }
-            _loc4_++;
+            i++;
          }
-         param1.Actions = _loc2_;
-         _path = _loc3_;
+         info.Actions = arr2;
+         _path = arr1;
       }
       
       override protected function initMovie() : void
@@ -68,19 +67,19 @@ package gameStarling.objects
          });
       }
       
-      override public function moveTo(param1:Point) : void
+      override public function moveTo(p:Point) : void
       {
-         var _loc2_:* = null;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc5_:Point = new Point(pos.x,pos.y);
+         var currentAction:* = null;
+         var rect:* = null;
+         var phyObj:* = null;
+         var prePos:Point = new Point(pos.x,pos.y);
          while(_info.Actions.length > 0)
          {
             if(_info.Actions[0].time <= _lifeTime)
             {
-               _loc2_ = _info.Actions.shift();
-               _info.UsedActions.push(_loc2_);
-               _loc2_.execute(this,_game);
+               currentAction = _info.Actions.shift();
+               _info.UsedActions.push(currentAction);
+               currentAction.execute(this,_game);
                if(!_isLiving)
                {
                   return;
@@ -97,14 +96,14 @@ package gameStarling.objects
          map.smallMap.updatePos(_smallBall,pos);
          if(_isLiving)
          {
-            _loc4_ = getCollideRect();
-            _loc4_.offset(pos.x,pos.y);
+            rect = getCollideRect();
+            rect.offset(pos.x,pos.y);
             if(isPillarCollide())
             {
-               _loc3_ = _map.getSceneEffectPhysicalObject(_loc4_,this,_loc5_);
-               if(_loc3_ && _loc3_ is GameSceneEffect3D)
+               phyObj = _map.getSceneEffectPhysicalObject(rect,this,prePos);
+               if(phyObj && phyObj is GameSceneEffect3D)
                {
-                  sceneEffectCollideId = _loc3_.Id;
+                  sceneEffectCollideId = phyObj.Id;
                }
                checkCreateBombSceneEffect();
             }
@@ -115,15 +114,15 @@ package gameStarling.objects
          }
       }
       
-      override protected function computeFallNextXY(param1:Number) : Point
+      override protected function computeFallNextXY(dt:Number) : Point
       {
          return new Point(_vx.x0,_vy.x0);
       }
       
-      override protected function updatePosition(param1:Number) : void
+      override protected function updatePosition(dt:Number) : void
       {
          _lifeTime = _lifeTime + 40;
-         moveTo(computeFallNextXY(param1));
+         moveTo(computeFallNextXY(dt));
          dispatchEvent(new Event("updatenamepos"));
          if(!_isLiving)
          {
@@ -138,11 +137,11 @@ package gameStarling.objects
       
       private function checkWalkBall() : void
       {
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         var _loc5_:* = null;
-         var _loc2_:Number = NaN;
-         var _loc1_:Number = NaN;
+         var nextPos:* = null;
+         var point1:* = null;
+         var point2:* = null;
+         var disX:Number = NaN;
+         var disY:Number = NaN;
          if(_isLiving && _info)
          {
             if(_isWalk)
@@ -150,22 +149,22 @@ package gameStarling.objects
                if(_path[_currentPathIndex])
                {
                   pos = _path[_currentPathIndex];
-                  _loc3_ = _path[_currentPathIndex + 1];
-                  if(_loc3_)
+                  nextPos = _path[_currentPathIndex + 1];
+                  if(nextPos)
                   {
-                     _loc4_ = _loc3_;
-                     _loc5_ = pos;
-                     _loc2_ = _loc4_.x - _loc5_.x;
-                     _loc1_ = _loc4_.y - _loc5_.y;
-                     if(Math.abs(_loc2_) >= 2 && Math.abs(_loc1_) >= 2)
+                     point1 = nextPos;
+                     point2 = pos;
+                     disX = point1.x - point2.x;
+                     disY = point1.y - point2.y;
+                     if(Math.abs(disX) >= 2 && Math.abs(disY) >= 2)
                      {
                         if(_dir == 1)
                         {
-                           _movie.angle = MathUtils.GetAngleTwoPoint(_loc4_,_loc5_);
+                           _movie.angle = MathUtils.GetAngleTwoPoint(point1,point2);
                         }
                         else
                         {
-                           _movie.angle = MathUtils.GetAngleTwoPoint(_loc4_,_loc5_);
+                           _movie.angle = MathUtils.GetAngleTwoPoint(point1,point2);
                         }
                      }
                   }
@@ -190,11 +189,11 @@ package gameStarling.objects
          }
       }
       
-      public function doAction(param1:String, param2:Function = null) : void
+      public function doAction(type:String, backFun:Function = null) : void
       {
          if(_movie)
          {
-            _movieWrapper.playAction(param1,param2);
+            _movieWrapper.playAction(type,backFun);
          }
       }
       

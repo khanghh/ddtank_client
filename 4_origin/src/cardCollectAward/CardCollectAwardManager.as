@@ -23,10 +23,10 @@ package cardCollectAward
       
       private var _awardInfo:CardCollectAwardInfo = null;
       
-      public function CardCollectAwardManager(param1:IEventDispatcher = null)
+      public function CardCollectAwardManager(target:IEventDispatcher = null)
       {
          _awardInfo = new CardCollectAwardInfo();
-         super(param1);
+         super(target);
       }
       
       public static function get Instance() : CardCollectAwardManager
@@ -54,9 +54,9 @@ package cardCollectAward
          showView();
       }
       
-      protected function openView_Handler(param1:PkgEvent) : void
+      protected function openView_Handler(evt:PkgEvent) : void
       {
-         _dataPkg = param1.pkg;
+         _dataPkg = evt.pkg;
          if(_awardInfo != null)
          {
             _awardInfo.title = _dataPkg.readUTF();

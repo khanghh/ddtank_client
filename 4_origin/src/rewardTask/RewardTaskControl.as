@@ -16,7 +16,7 @@ package rewardTask
       
       private var _model:RewardTaskModel;
       
-      public function RewardTaskControl(param1:inner)
+      public function RewardTaskControl($inner:inner)
       {
          super();
       }
@@ -36,7 +36,7 @@ package rewardTask
          RewardTaskManager.instance.addEventListener("complete",__onComplete);
       }
       
-      private function __onComplete(param1:Event) : void
+      private function __onComplete(e:Event) : void
       {
          SocketManager.Instance.out.sendRewardTaskQuestOfferInfo();
          new HelperUIModuleLoad().loadUIModule(["rewardTask"],showFrame);
@@ -44,8 +44,8 @@ package rewardTask
       
       private function showFrame() : void
       {
-         var _loc1_:RewardTaskMainView = ComponentFactory.Instance.creatComponentByStylename("rewardTask.mainView");
-         _loc1_.show();
+         var frame:RewardTaskMainView = ComponentFactory.Instance.creatComponentByStylename("rewardTask.mainView");
+         frame.show();
       }
       
       public function get model() : RewardTaskModel

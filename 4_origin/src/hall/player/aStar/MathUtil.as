@@ -11,11 +11,11 @@ package hall.player.aStar
          super();
       }
       
-      public static function getLineFunc(param1:Point, param2:Point, param3:int = 0) : Function
+      public static function getLineFunc(ponit1:Point, point2:Point, type:int = 0) : Function
       {
-         ponit1 = param1;
-         point2 = param2;
-         type = param3;
+         ponit1 = ponit1;
+         point2 = point2;
+         type = type;
          if(ponit1.x == point2.x)
          {
             if(type == 0)
@@ -24,7 +24,7 @@ package hall.player.aStar
             }
             if(type == 1)
             {
-               var resultFuc:Function = function(param1:Number):Number
+               var resultFuc:Function = function(y:Number):Number
                {
                   return ponit1.x;
                };
@@ -35,7 +35,7 @@ package hall.player.aStar
          {
             if(type == 0)
             {
-               resultFuc = function(param1:Number):Number
+               resultFuc = function(x:Number):Number
                {
                   return ponit1.y;
                };
@@ -50,24 +50,24 @@ package hall.player.aStar
          var b:Number = ponit1.y - a * ponit1.x;
          if(type == 0)
          {
-            resultFuc = function(param1:Number):Number
+            resultFuc = function(x:Number):Number
             {
-               return a * param1 + b;
+               return a * x + b;
             };
          }
          else if(type == 1)
          {
-            resultFuc = function(param1:Number):Number
+            resultFuc = function(y:Number):Number
             {
-               return (param1 - b) / a;
+               return (y - b) / a;
             };
          }
          return resultFuc;
       }
       
-      public static function getSlope(param1:Point, param2:Point) : Number
+      public static function getSlope(ponit1:Point, point2:Point) : Number
       {
-         return (param2.y - param1.y) / (param2.x - param1.x);
+         return (point2.y - ponit1.y) / (point2.x - ponit1.x);
       }
    }
 }

@@ -34,9 +34,9 @@ package rescue.components
       
       private var _downFlag:Boolean;
       
-      public function RescuePrizeItem(param1:int)
+      public function RescuePrizeItem(index:int)
       {
-         _index = param1;
+         _index = index;
          super();
          initView();
       }
@@ -70,7 +70,7 @@ package rescue.components
          _sp.addEventListener("mouseOut",__mouseOut);
       }
       
-      protected function __mouseOut(param1:MouseEvent) : void
+      protected function __mouseOut(event:MouseEvent) : void
       {
          if(_downFlag)
          {
@@ -81,12 +81,12 @@ package rescue.components
          _sp.filters = null;
       }
       
-      protected function __mouseOver(param1:MouseEvent) : void
+      protected function __mouseOver(event:MouseEvent) : void
       {
          _sp.filters = ComponentFactory.Instance.creatFilters("lightFilter");
       }
       
-      protected function __mouseUp(param1:MouseEvent) : void
+      protected function __mouseUp(event:MouseEvent) : void
       {
          if(_downFlag)
          {
@@ -96,7 +96,7 @@ package rescue.components
          }
       }
       
-      protected function __mouseDown(param1:MouseEvent) : void
+      protected function __mouseDown(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _sp.x = _sp.x + 1;
@@ -105,26 +105,26 @@ package rescue.components
          SocketManager.Instance.out.getRescuePrize(RescueControl.instance.curSceneId,_index + 1);
       }
       
-      public function setData(param1:RescueRewardInfo) : void
+      public function setData(reward:RescueRewardInfo) : void
       {
-         var _loc2_:InventoryItemInfo = new InventoryItemInfo();
-         _loc2_.TemplateID = param1.TemplateID;
-         _loc2_ = ItemManager.fill(_loc2_);
-         _loc2_.IsBinds = param1.IsBind;
-         _loc2_.ValidDate = param1.ValidDate;
-         _loc2_.StrengthenLevel = param1.StrengthenLevel;
-         _loc2_.AttackCompose = param1.AttackCompose;
-         _loc2_.DefendCompose = param1.DefendCompose;
-         _loc2_.AgilityCompose = param1.AgilityCompose;
-         _loc2_.LuckCompose = param1.LuckCompose;
-         _bagCell.info = _loc2_;
+         var info:InventoryItemInfo = new InventoryItemInfo();
+         info.TemplateID = reward.TemplateID;
+         info = ItemManager.fill(info);
+         info.IsBinds = reward.IsBind;
+         info.ValidDate = reward.ValidDate;
+         info.StrengthenLevel = reward.StrengthenLevel;
+         info.AttackCompose = reward.AttackCompose;
+         info.DefendCompose = reward.DefendCompose;
+         info.AgilityCompose = reward.AgilityCompose;
+         info.LuckCompose = reward.LuckCompose;
+         _bagCell.info = info;
          _bagCell.setCountNotVisible();
          _bagCell.setBgVisible(false);
       }
       
-      public function setStatus(param1:int) : void
+      public function setStatus(value:int) : void
       {
-         switch(int(param1))
+         switch(int(value))
          {
             case 0:
                _sp.filters = ComponentFactory.Instance.creatFilters("grayFilter");

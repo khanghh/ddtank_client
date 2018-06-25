@@ -40,10 +40,10 @@ package ddtBuried.event
       
       public var data;
       
-      public function BuriedEvent(param1:String, param2:* = null)
+      public function BuriedEvent(type:String, $data:* = null)
       {
-         super(param1);
-         data = param2;
+         super(type);
+         data = $data;
       }
    }
 }

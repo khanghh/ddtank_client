@@ -5,9 +5,12 @@ package morn.core.ex
    import morn.core.components.Component;
    import morn.core.components.ISelect;
    import morn.core.components.Image;
+   import morn.core.components.Label;
    import morn.core.components.Styles;
    import morn.core.events.UIEvent;
    import morn.core.handlers.Handler;
+   import morn.core.utils.ObjectUtils;
+   import morn.core.utils.StringUtils;
    
    public class TabButtonEx extends Component implements ISelect
    {
@@ -37,188 +40,302 @@ package morn.core.ex
       
       protected var _enableRollOverLightEffect:Boolean = true;
       
+      protected var _btnLabel:Label;
+      
+      protected var _labelMargin:Array;
+      
+      protected var _labelColors:Array;
+      
+      protected var _autoSize:Boolean = true;
+      
       public function TabButtonEx()
       {
-         this._offsets = [0,0];
+         _offsets = [0,0];
+         _labelMargin = Styles.buttonLabelMargin;
+         _labelColors = Styles.buttonLabelColors;
          super();
       }
       
       override protected function createChildren() : void
       {
-         addChild(this._tabItemBg = new Image());
-         addChild(this._tabItemBg2 = new Image());
+         _tabItemBg = new Image();
+         addChild(new Image());
+         _tabItemBg2 = new Image();
+         addChild(new Image());
+         _btnLabel = new Label();
+         addChild(new Label());
       }
       
       override protected function initialize() : void
       {
-         addEventListener(MouseEvent.ROLL_OVER,this.onMouse);
-         addEventListener(MouseEvent.ROLL_OUT,this.onMouse);
-         addEventListener(MouseEvent.CLICK,this.onMouse);
-         addEventListener(MouseEvent.MOUSE_UP,this.onMouse);
+         _btnLabel.align = "center";
+         addEventListener("rollOver",onMouse);
+         addEventListener("rollOut",onMouse);
+         addEventListener("click",onMouse);
+         addEventListener("mouseUp",onMouse);
          buttonMode = true;
       }
       
       public function get selected() : Boolean
       {
-         return this._selected;
+         return _selected;
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         if(this._selected != param1)
+         if(_selected != value)
          {
-            this._selected = param1;
-            if(this._selected == false)
+            _selected = value;
+            if(_selected == false)
             {
                filters = null;
             }
-            callLater(this.changeState);
+            callLater(changeState);
          }
       }
       
-      public function set skin(param1:String) : void
+      public function set skin(value:String) : void
       {
-         if(this._skin != param1)
+         if(_skin != value)
          {
-            this._skin = param1;
-            this.changeSkins();
-            callLater(this.changeState);
+            _skin = value;
+            changeSkins();
+            callLater(changeState);
+            callLater(changeLabelSize);
          }
       }
       
-      public function set offsets(param1:String) : void
+      protected function changeLabelSize() : void
       {
-         if(String(this._offsets) != param1)
+         _btnLabel.width = width - _labelMargin[0] - _labelMargin[2];
+         _btnLabel.height = ObjectUtils.getTextField(_btnLabel.format).height;
+         _btnLabel.x = _labelMargin[0];
+         _btnLabel.y = (height - _btnLabel.height) * 0.5 + _labelMargin[1] - _labelMargin[3];
+      }
+      
+      public function set offsets(value:String) : void
+      {
+         if(String(_offsets) != value)
          {
-            this._offsets = param1.split(",");
-            callLater(this.changeState);
+            _offsets = value.split(",");
+            callLater(changeState);
          }
       }
       
-      public function set toggle(param1:Boolean) : void
+      public function set toggle(value:Boolean) : void
       {
-         this._toggle = param1;
+         _toggle = value;
       }
       
-      public function set showClickTooQuickTip(param1:Boolean) : void
+      public function set showClickTooQuickTip(value:Boolean) : void
       {
-         this._showClickTooQuickTip = param1;
+         _showClickTooQuickTip = value;
       }
       
-      public function set enableRollOverLightEffect(param1:Boolean) : void
+      public function set enableRollOverLightEffect(value:Boolean) : void
       {
-         this._enableRollOverLightEffect = param1;
+         _enableRollOverLightEffect = value;
       }
       
-      public function set clickInterval(param1:int) : void
+      public function set clickInterval(value:int) : void
       {
-         this._clickInterval = param1;
+         _clickInterval = value;
       }
       
       protected function changeState() : void
       {
-         var _loc1_:int = 0;
-         if(this._skins)
+         var index:int = 0;
+         if(_skins)
          {
-            this._tabItemBg2.visible = Boolean(this._skins[0].length == 2);
-            _loc1_ = !!this._selected?1:0;
-            this._tabItemBg.skin = this._skins[_loc1_][0];
-            if(this._tabItemBg2.visible)
+            _tabItemBg2.visible = _skins[0].length == 2;
+            index = !!_selected?1:0;
+            _tabItemBg.skin = _skins[index][0];
+            if(_tabItemBg2.visible)
             {
-               this._tabItemBg2.skin = this._skins[_loc1_][1];
+               _tabItemBg2.skin = _skins[index][1];
             }
-            this._tabItemBg2.x = int(this._offsets[0]);
-            this._tabItemBg2.y = int(this._offsets[1]);
+            _tabItemBg2.x = int(_offsets[0]);
+            _tabItemBg2.y = int(_offsets[1]);
+            _btnLabel.color = _labelColors[0];
          }
       }
       
       protected function changeSkins() : void
       {
-         this._skins = [];
-         var _loc1_:Array = this._skin.split(",");
-         this._skins.push(_loc1_[0].split("|"));
-         this._skins.push(_loc1_[1].split("|"));
+         _skins = [];
+         var skins:Array = _skin.split(",");
+         _skins.push(skins[0].split("|"));
+         _skins.push(skins[1].split("|"));
+      }
+      
+      public function get labelColors() : String
+      {
+         return String(_labelColors);
+      }
+      
+      public function set labelColors(value:String) : void
+      {
+         _labelColors = StringUtils.fillArray(_labelColors,value);
+         callLater(changeState);
       }
       
       public function get clickHandler() : Handler
       {
-         return this._clickHandler;
+         return _clickHandler;
       }
       
-      public function set clickHandler(param1:Handler) : void
+      public function set clickHandler(value:Handler) : void
       {
-         this._clickHandler = param1;
+         _clickHandler = value;
       }
       
-      protected function onMouse(param1:MouseEvent) : void
+      protected function onMouse(e:MouseEvent) : void
       {
-         var _loc2_:int = 0;
-         if(this._toggle == false && this._selected || _disabled)
+         var nowTime:int = 0;
+         if(_toggle == false && _selected || _disabled)
          {
             return;
          }
-         if(param1.type == MouseEvent.CLICK)
+         if(e.type == "click")
          {
-            _loc2_ = getTimer();
-            if(_loc2_ - this._lastClickTime >= this._clickInterval)
+            nowTime = getTimer();
+            if(nowTime - _lastClickTime >= _clickInterval)
             {
-               this._lastClickTime = _loc2_;
-               if(this._toggle)
+               _lastClickTime = nowTime;
+               if(_toggle)
                {
-                  this.selected = !this._selected;
+                  selected = !_selected;
                }
-               if(this._clickHandler)
+               if(_clickHandler)
                {
-                  this._clickHandler.execute();
+                  _clickHandler.execute();
                }
             }
-            else if(this._showClickTooQuickTip)
+            else if(_showClickTooQuickTip)
             {
-               App.stage.dispatchEvent(new UIEvent(UIEvent.APP_DDT_MSG,"您点击的频率太高，请稍后再试"));
+               App.stage.dispatchEvent(new UIEvent("APP_DDT_MSG","您点击的频率太高，请稍后再试"));
             }
             return;
          }
-         if(param1.type == MouseEvent.ROLL_OVER)
+         if(e.type == "rollOver")
          {
-            if(this._enableRollOverLightEffect)
+            if(_enableRollOverLightEffect)
             {
                filters = [Styles.singleButtonFilter];
             }
          }
-         else if(param1.type == MouseEvent.ROLL_OUT)
+         else if(e.type == "rollOut")
          {
-            if(this._enableRollOverLightEffect)
+            if(_enableRollOverLightEffect)
             {
                filters = null;
             }
          }
       }
       
-      public function set text(param1:String) : void
+      public function get label() : String
       {
+         return _btnLabel.text;
       }
       
-      public function set stroke(param1:String) : void
+      public function set label(value:String) : void
       {
+         if(_btnLabel.text != value)
+         {
+            _btnLabel.text = value;
+            callLater(changeState);
+         }
       }
       
-      public function set size(param1:int) : void
+      public function set labelHtml(value:String) : void
       {
+         _btnLabel.htmlText = value;
+         callLater(changeState);
       }
       
-      public function set color(param1:uint) : void
+      public function get labelStroke() : String
       {
+         return _btnLabel.stroke;
+      }
+      
+      public function set labelStroke(value:String) : void
+      {
+         _btnLabel.stroke = value;
+      }
+      
+      public function get labelSize() : Object
+      {
+         return _btnLabel.size;
+      }
+      
+      public function set labelSize(value:Object) : void
+      {
+         _btnLabel.size = value;
+         callLater(changeLabelSize);
+      }
+      
+      public function get labelBold() : Object
+      {
+         return _btnLabel.bold;
+      }
+      
+      public function set labelBold(value:Object) : void
+      {
+         _btnLabel.bold = value;
+         callLater(changeLabelSize);
+      }
+      
+      public function get letterSpacing() : Object
+      {
+         return _btnLabel.letterSpacing;
+      }
+      
+      public function set letterSpacing(value:Object) : void
+      {
+         _btnLabel.letterSpacing = value;
+         callLater(changeLabelSize);
+      }
+      
+      public function get labelFont() : String
+      {
+         return _btnLabel.font;
+      }
+      
+      public function set labelFont(value:String) : void
+      {
+         _btnLabel.font = value;
+         callLater(changeLabelSize);
+      }
+      
+      public function get labelLeading() : Object
+      {
+         return _btnLabel.leading;
+      }
+      
+      public function set labelLeading(value:Object) : void
+      {
+         _btnLabel.leading = value;
+         callLater(changeLabelSize);
+      }
+      
+      public function get btnLabel() : Label
+      {
+         return _btnLabel;
       }
       
       override public function dispose() : void
       {
-         removeEventListener(MouseEvent.ROLL_OVER,this.onMouse);
-         removeEventListener(MouseEvent.ROLL_OUT,this.onMouse);
-         removeEventListener(MouseEvent.MOUSE_UP,this.onMouse);
-         removeEventListener(MouseEvent.CLICK,this.onMouse);
-         this._tabItemBg && this._tabItemBg.dispose();
-         this._tabItemBg2 && this._tabItemBg2.dispose();
+         removeEventListener("rollOver",onMouse);
+         removeEventListener("rollOut",onMouse);
+         removeEventListener("mouseUp",onMouse);
+         removeEventListener("click",onMouse);
+         _tabItemBg && _tabItemBg.dispose();
+         _tabItemBg2 && _tabItemBg2.dispose();
+         _btnLabel && _btnLabel.dispose();
          super.dispose();
+         _tabItemBg = null;
+         _tabItemBg2 = null;
+         _btnLabel = null;
       }
    }
 }

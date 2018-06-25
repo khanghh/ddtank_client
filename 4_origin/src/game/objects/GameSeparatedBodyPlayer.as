@@ -8,9 +8,9 @@ package game.objects
    {
        
       
-      public function GameSeparatedBodyPlayer(param1:Player, param2:ShowCharacter, param3:GameCharacter = null, param4:int = 0)
+      public function GameSeparatedBodyPlayer(player:Player, character:ShowCharacter, movie:GameCharacter = null, templeId:int = 0)
       {
-         super(param1,param2,param3,param4);
+         super(player,character,movie,templeId);
       }
    }
 }

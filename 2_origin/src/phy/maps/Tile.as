@@ -12,43 +12,43 @@ package phy.maps
       
       private var _digable:Boolean;
       
-      public function Tile(param1:BitmapData, param2:Boolean)
+      public function Tile(bitmapData:BitmapData, digable:Boolean)
       {
-         super(param1);
-         _digable = param2;
+         super(bitmapData);
+         _digable = digable;
       }
       
-      public function Dig(param1:Point, param2:Bitmap, param3:Bitmap = null) : void
+      public function Dig(center:Point, surface:Bitmap, border:Bitmap = null) : void
       {
-         var _loc4_:* = null;
-         var _loc5_:Matrix = new Matrix(1,0,0,1,param1.x,param1.y);
-         if(param2 && _digable)
+         var tb:* = null;
+         var matrix:Matrix = new Matrix(1,0,0,1,center.x,center.y);
+         if(surface && _digable)
          {
-            _loc5_.tx = _loc5_.tx - param2.width / 2;
-            _loc5_.ty = _loc5_.ty - param2.height / 2;
-            bitmapData.draw(param2,_loc5_,null,"erase");
+            matrix.tx = matrix.tx - surface.width / 2;
+            matrix.ty = matrix.ty - surface.height / 2;
+            bitmapData.draw(surface,matrix,null,"erase");
          }
-         if(param3 && _digable)
+         if(border && _digable)
          {
-            _loc4_ = param3.bitmapData.clone();
-            _loc5_.tx = -param1.x + param3.width / 2;
-            _loc5_.ty = -param1.y + param3.height / 2;
-            _loc4_.draw(this,_loc5_,null,"alpha");
-            _loc5_.tx = param1.x - param3.width / 2;
-            _loc5_.ty = param1.y - param3.height / 2;
-            bitmapData.draw(_loc4_,_loc5_,null,param3.blendMode);
-            _loc4_.dispose();
+            tb = border.bitmapData.clone();
+            matrix.tx = -center.x + border.width / 2;
+            matrix.ty = -center.y + border.height / 2;
+            tb.draw(this,matrix,null,"alpha");
+            matrix.tx = center.x - border.width / 2;
+            matrix.ty = center.y - border.height / 2;
+            bitmapData.draw(tb,matrix,null,border.blendMode);
+            tb.dispose();
          }
       }
       
-      public function DigFillRect(param1:Rectangle) : void
+      public function DigFillRect(rect:Rectangle) : void
       {
-         bitmapData.fillRect(param1,0);
+         bitmapData.fillRect(rect,0);
       }
       
-      public function GetAlpha(param1:int, param2:int) : uint
+      public function GetAlpha(x:int, y:int) : uint
       {
-         return bitmapData.getPixel32(param1,param2) >> 24 & 255;
+         return bitmapData.getPixel32(x,y) >> 24 & 255;
       }
       
       public function dispose() : void

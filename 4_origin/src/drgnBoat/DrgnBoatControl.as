@@ -36,7 +36,7 @@ package drgnBoat
          DrgnBoatManager.instance.addEventListener("drgnBoatOpenView",__onOpenView);
       }
       
-      protected function __onOpenView(param1:DrgnBoatEvent) : void
+      protected function __onOpenView(event:DrgnBoatEvent) : void
       {
          loadDrgnBoatModule();
       }
@@ -53,29 +53,29 @@ package drgnBoat
          UIModuleLoader.Instance.addUIModuleImp("ddtroom");
       }
       
-      private function onUimoduleLoadProgress(param1:UIModuleEvent) : void
+      private function onUimoduleLoadProgress(event:UIModuleEvent) : void
       {
-         var _loc2_:Number = NaN;
-         if(param1.module == "drgnBoatframe" || param1.module == "drgnBoatgame" || param1.module == "ddtroom")
+         var tmp:Number = NaN;
+         if(event.module == "drgnBoatframe" || event.module == "drgnBoatgame" || event.module == "ddtroom")
          {
-            _loc2_ = param1.loader.progress;
-            _loc2_ = _loc2_ > 0.99?0.99:Number(_loc2_);
-            UIModuleSmallLoading.Instance.progress = _loc2_ * 100;
+            tmp = event.loader.progress;
+            tmp = tmp > 0.99?0.99:Number(tmp);
+            UIModuleSmallLoading.Instance.progress = tmp * 100;
          }
       }
       
-      private function loadFrameCompleteHandler(param1:UIModuleEvent) : void
+      private function loadFrameCompleteHandler(event:UIModuleEvent) : void
       {
-         var _loc2_:* = null;
-         if(param1.module == "drgnBoatframe")
+         var frame:* = null;
+         if(event.module == "drgnBoatframe")
          {
             _loadResCount = Number(_loadResCount) + 1;
          }
-         if(param1.module == "drgnBoatgame")
+         if(event.module == "drgnBoatgame")
          {
             _loadResCount = Number(_loadResCount) + 1;
          }
-         if(param1.module == "ddtroom")
+         if(event.module == "ddtroom")
          {
             _loadResCount = Number(_loadResCount) + 1;
          }
@@ -84,8 +84,8 @@ package drgnBoat
             UIModuleSmallLoading.Instance.hide();
             UIModuleLoader.Instance.removeEventListener("uiModuleComplete",loadFrameCompleteHandler);
             UIModuleLoader.Instance.removeEventListener("uiMoudleProgress",onUimoduleLoadProgress);
-            _loc2_ = ComponentFactory.Instance.creatComponentByStylename("drgnBoat.race.drgnBoatFrame");
-            LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+            frame = ComponentFactory.Instance.creatComponentByStylename("drgnBoat.race.drgnBoatFrame");
+            LayerManager.Instance.addToLayer(frame,3,true,1);
             UIModuleLoader.Instance.addUIModlue("drgnBoatgame");
             UIModuleLoader.Instance.addUIModlue("drgnBoatframe");
          }

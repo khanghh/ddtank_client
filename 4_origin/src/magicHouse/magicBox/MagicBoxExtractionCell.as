@@ -17,14 +17,14 @@ package magicHouse.magicBox
       
       private var _aler:MagicBoxExtractionSelectedNumAlertFrame;
       
-      public function MagicBoxExtractionCell(param1:Sprite, param2:int)
+      public function MagicBoxExtractionCell(bg:Sprite, $index:int)
       {
-         super(param1,param2);
+         super(bg,$index);
       }
       
-      override public function set info(param1:ItemTemplateInfo) : void
+      override public function set info(value:ItemTemplateInfo) : void
       {
-         .super.info = param1;
+         .super.info = value;
          if(_enchantMc)
          {
             var _loc2_:int = 66;
@@ -41,42 +41,42 @@ package magicHouse.magicBox
          }
       }
       
-      override public function dragDrop(param1:DragEffect) : void
+      override public function dragDrop(effect:DragEffect) : void
       {
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:InventoryItemInfo = param1.data as InventoryItemInfo;
-         if(_loc2_ && param1.action != "split")
+         var info:InventoryItemInfo = effect.data as InventoryItemInfo;
+         if(info && effect.action != "split")
          {
-            param1.action = "none";
-            if(_loc2_.Count == 1)
+            effect.action = "none";
+            if(info.Count == 1)
             {
-               SocketManager.Instance.out.sendMoveGoods(_loc2_.BagType,_loc2_.Place,12,1,1);
+               SocketManager.Instance.out.sendMoveGoods(info.BagType,info.Place,12,1,1);
             }
             else
             {
-               showNumAlert(_loc2_,1);
+               showNumAlert(info,1);
             }
-            param1.action = "none";
+            effect.action = "none";
             DragManager.acceptDrag(this);
          }
       }
       
-      private function showNumAlert(param1:InventoryItemInfo, param2:int) : void
+      private function showNumAlert(info:InventoryItemInfo, index:int) : void
       {
          _aler = ComponentFactory.Instance.creatComponentByStylename("magicbox.selectNumAlertFrame");
          _aler.addExeFunction(sellFunction,notSellFunction);
-         _aler.goodsinfo = param1;
-         _aler.index = param2;
-         _aler.show(param1.Count);
+         _aler.goodsinfo = info;
+         _aler.index = index;
+         _aler.show(info.Count);
       }
       
-      private function sellFunction(param1:int, param2:InventoryItemInfo, param3:int) : void
+      private function sellFunction(_nowNum:int, goodsinfo:InventoryItemInfo, index:int) : void
       {
-         SocketManager.Instance.out.sendMoveGoods(param2.BagType,param2.Place,12,param3,param1,true);
+         SocketManager.Instance.out.sendMoveGoods(goodsinfo.BagType,goodsinfo.Place,12,index,_nowNum,true);
          if(_aler)
          {
             _aler.dispose();

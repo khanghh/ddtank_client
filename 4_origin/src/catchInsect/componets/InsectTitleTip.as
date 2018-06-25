@@ -43,9 +43,9 @@ package catchInsect.componets
          return _data;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(data:Object) : void
       {
-         _data = param1;
+         _data = data;
          _contentTxt.text = LanguageMgr.GetTranslation("catchInsect.tipsTxt",_data.Att,_data.Agi,_data.Def,_data.Luck);
          _contentTxt.textColor = 16750899;
          updateTransform();
@@ -64,11 +64,11 @@ package catchInsect.componets
          return _tipWidth;
       }
       
-      public function set tipWidth(param1:int) : void
+      public function set tipWidth(w:int) : void
       {
-         if(_tipWidth != param1)
+         if(_tipWidth != w)
          {
-            _tipWidth = param1;
+            _tipWidth = w;
             updateTransform();
          }
       }
@@ -78,7 +78,7 @@ package catchInsect.componets
          return _bg.height;
       }
       
-      public function set tipHeight(param1:int) : void
+      public function set tipHeight(h:int) : void
       {
       }
       

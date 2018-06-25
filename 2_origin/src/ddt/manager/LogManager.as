@@ -13,9 +13,9 @@ package ddt.manager
       private static var instance:LogManager;
        
       
-      public function LogManager(param1:IEventDispatcher = null)
+      public function LogManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function getInstance() : LogManager
@@ -27,18 +27,18 @@ package ddt.manager
          return instance;
       }
       
-      public function sendLog(param1:String = "") : void
+      public function sendLog(logMsg:String = "") : void
       {
-         var _loc4_:URLRequest = new URLRequest(PathManager.solveRequestPath("LogClickTip.ashx"));
-         var _loc3_:URLVariables = new URLVariables();
-         _loc3_["title"] = param1;
-         _loc4_.data = _loc3_;
-         var _loc2_:URLLoader = new URLLoader(_loc4_);
-         _loc2_.load(_loc4_);
-         _loc2_.addEventListener("ioError",onIOError);
+         var req:URLRequest = new URLRequest(PathManager.solveRequestPath("LogClickTip.ashx"));
+         var toServerData:URLVariables = new URLVariables();
+         toServerData["title"] = logMsg;
+         req.data = toServerData;
+         var loader:URLLoader = new URLLoader(req);
+         loader.load(req);
+         loader.addEventListener("ioError",onIOError);
       }
       
-      protected function onIOError(param1:IOErrorEvent) : void
+      protected function onIOError(event:IOErrorEvent) : void
       {
       }
    }

@@ -110,9 +110,9 @@ package stock.data
          return _cfgStocks;
       }
       
-      public function set cfgStocks(param1:Dictionary) : void
+      public function set cfgStocks(value:Dictionary) : void
       {
-         _cfgStocks = param1;
+         _cfgStocks = value;
       }
       
       public function get sortFlag() : int
@@ -120,9 +120,9 @@ package stock.data
          return _sortFlag;
       }
       
-      public function set sortFlag(param1:int) : void
+      public function set sortFlag(value:int) : void
       {
-         _sortFlag = param1;
+         _sortFlag = value;
       }
       
       public function get stockID() : int
@@ -130,9 +130,9 @@ package stock.data
          return _stockID;
       }
       
-      public function set stockID(param1:int) : void
+      public function set stockID(value:int) : void
       {
-         _stockID = param1;
+         _stockID = value;
       }
       
       public function get lastRequstTimes() : Array
@@ -142,16 +142,16 @@ package stock.data
       
       public function get goodsList() : Array
       {
-         var _loc1_:Array = [];
-         var _loc3_:Vector.<ShopItemInfo> = ShopManager.Instance.getGoodsByType(117);
+         var arr:Array = [];
+         var list:Vector.<ShopItemInfo> = ShopManager.Instance.getGoodsByType(117);
          var _loc5_:int = 0;
-         var _loc4_:* = _loc3_;
-         for each(var _loc2_ in _loc3_)
+         var _loc4_:* = list;
+         for each(var item in list)
          {
-            _loc1_.push(_loc2_.GoodsID);
+            arr.push(item.GoodsID);
          }
-         _loc1_ = _loc1_.sortOn("GoodsID",16);
-         return _loc1_;
+         arr = arr.sortOn("GoodsID",16);
+         return arr;
       }
       
       public function get startTime() : int
@@ -166,33 +166,33 @@ package stock.data
       
       private function parseOpenTime() : Array
       {
-         var _loc2_:Array = [];
-         var _loc3_:String = ServerConfigManager.instance.StockOpenTime;
-         var _loc5_:Array = _loc3_.split("|");
-         var _loc6_:int = TimeManager.Instance.Now().hours;
-         var _loc4_:int = parseInt(String(_loc5_[0]).split(",")[1]);
-         var _loc1_:int = parseInt(String(_loc5_[0]).split(",")[0]);
-         if(_loc6_ <= _loc4_)
+         var arr:Array = [];
+         var timeStr:String = ServerConfigManager.instance.StockOpenTime;
+         var timeArr:Array = timeStr.split("|");
+         var nowTime:int = TimeManager.Instance.Now().hours;
+         var endTime:int = parseInt(String(timeArr[0]).split(",")[1]);
+         var startTime:int = parseInt(String(timeArr[0]).split(",")[0]);
+         if(nowTime <= endTime)
          {
-            _loc2_.push(_loc1_);
-            _loc2_.push(_loc4_);
+            arr.push(startTime);
+            arr.push(endTime);
          }
          else
          {
-            _loc2_.push(parseInt(String(_loc5_[1]).split(",")[0]));
-            _loc2_.push(parseInt(String(_loc5_[1]).split(",")[1]));
+            arr.push(parseInt(String(timeArr[1]).split(",")[0]));
+            arr.push(parseInt(String(timeArr[1]).split(",")[1]));
          }
-         return _loc2_;
+         return arr;
       }
       
       public function get dayHours() : int
       {
-         var _loc1_:Array = [];
-         var _loc2_:String = ServerConfigManager.instance.StockOpenTime;
-         var _loc5_:Array = _loc2_.split("|");
-         var _loc3_:int = parseInt(String(_loc5_[0]).split(",")[1]) - parseInt(String(_loc5_[0]).split(",")[0]);
-         var _loc4_:int = parseInt(String(_loc5_[1]).split(",")[1]) - parseInt(String(_loc5_[1]).split(",")[0]);
-         return _loc3_ + _loc4_;
+         var arr:Array = [];
+         var timeStr:String = ServerConfigManager.instance.StockOpenTime;
+         var timeArr:Array = timeStr.split("|");
+         var timeCnt1:int = parseInt(String(timeArr[0]).split(",")[1]) - parseInt(String(timeArr[0]).split(",")[0]);
+         var timeCnt2:int = parseInt(String(timeArr[1]).split(",")[1]) - parseInt(String(timeArr[1]).split(",")[0]);
+         return timeCnt1 + timeCnt2;
       }
       
       public function get cfgStockNews() : Dictionary
@@ -200,9 +200,9 @@ package stock.data
          return _cfgStockNews;
       }
       
-      public function set cfgStockNews(param1:Dictionary) : void
+      public function set cfgStockNews(value:Dictionary) : void
       {
-         _cfgStockNews = param1;
+         _cfgStockNews = value;
       }
       
       public function get shopCloseTime() : Number

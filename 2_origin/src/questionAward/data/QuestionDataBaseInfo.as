@@ -20,9 +20,9 @@ package questionAward.data
          _content = new Vector.<String>();
       }
       
-      public function addContent(param1:String) : void
+      public function addContent(data:String) : void
       {
-         _content.push(param1);
+         _content.push(data);
       }
       
       public function getContent() : Vector.<String>
@@ -35,9 +35,9 @@ package questionAward.data
          return _isMultiSelect;
       }
       
-      public function set isMultiSelect(param1:Boolean) : void
+      public function set isMultiSelect(value:Boolean) : void
       {
-         _isMultiSelect = param1;
+         _isMultiSelect = value;
       }
       
       public function get type() : int
@@ -45,9 +45,9 @@ package questionAward.data
          return _type;
       }
       
-      public function set type(param1:int) : void
+      public function set type(value:int) : void
       {
-         _type = param1;
+         _type = value;
       }
       
       public function get title() : String
@@ -55,9 +55,9 @@ package questionAward.data
          return qid + "." + _title;
       }
       
-      public function set title(param1:String) : void
+      public function set title(value:String) : void
       {
-         _title = param1;
+         _title = value;
       }
       
       public function get qid() : int
@@ -65,9 +65,9 @@ package questionAward.data
          return _qid;
       }
       
-      public function set qid(param1:int) : void
+      public function set qid(value:int) : void
       {
-         _qid = param1;
+         _qid = value;
       }
    }
 }

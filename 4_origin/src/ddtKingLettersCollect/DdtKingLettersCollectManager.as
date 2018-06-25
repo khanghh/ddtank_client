@@ -33,7 +33,7 @@ package ddtKingLettersCollect
       
       public var WordArray:Dictionary;
       
-      public function DdtKingLettersCollectManager(param1:inner)
+      public function DdtKingLettersCollectManager(single:inner)
       {
          super();
       }
@@ -56,10 +56,10 @@ package ddtKingLettersCollect
          SocketManager.Instance.addEventListener(PkgEvent.format(288,1),__onGetHideTitleFlag);
       }
       
-      protected function __onGetHideTitleFlag(param1:PkgEvent) : void
+      protected function __onGetHideTitleFlag(event:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _isOpen = _loc2_.readBoolean();
+         var pkg:PackageIn = event.pkg;
+         _isOpen = pkg.readBoolean();
          if(_isOpen)
          {
             showIcon(_hall);
@@ -70,15 +70,15 @@ package ddtKingLettersCollect
          }
       }
       
-      public function showIcon(param1:IHallStateView) : void
+      public function showIcon($hall:IHallStateView) : void
       {
-         if(param1 == null)
+         if($hall == null)
          {
             return;
          }
          if(_isOpen)
          {
-            _hall = param1;
+            _hall = $hall;
             if(_icon != null)
             {
                _icon.removeEventListener("click",onIconClick);
@@ -93,7 +93,7 @@ package ddtKingLettersCollect
          }
       }
       
-      public function hideIcon(param1:IHallStateView) : void
+      public function hideIcon($hall:IHallStateView) : void
       {
          _hall = null;
          if(_icon)
@@ -104,7 +104,7 @@ package ddtKingLettersCollect
          }
       }
       
-      protected function onIconClick(param1:MouseEvent) : void
+      protected function onIconClick(e:MouseEvent) : void
       {
          show();
       }
@@ -114,9 +114,9 @@ package ddtKingLettersCollect
          dispatchEvent(new CEvent("dklc_show"));
       }
       
-      public function sendCompose(param1:int) : void
+      public function sendCompose($templeteID:int) : void
       {
-         SocketManager.Instance.out.exchangeNationalGoods(param1);
+         SocketManager.Instance.out.exchangeNationalGoods($templeteID);
       }
    }
 }

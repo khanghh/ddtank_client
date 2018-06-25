@@ -11,9 +11,9 @@ package ddt.view.sceneCharacter
          super();
       }
       
-      public function set clothPath(param1:String) : void
+      public function set clothPath(value:String) : void
       {
-         _clothPath = param1;
+         _clothPath = value;
       }
       
       public function get clothPath() : String

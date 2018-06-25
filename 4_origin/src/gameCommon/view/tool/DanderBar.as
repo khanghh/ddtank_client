@@ -69,11 +69,11 @@ package gameCommon.view.tool
       
       private var _specialEnabled:Boolean = true;
       
-      public function DanderBar(param1:LocalPlayer, param2:DisplayObjectContainer)
+      public function DanderBar(self:LocalPlayer, container:DisplayObjectContainer)
       {
          super();
-         _self = param1;
-         _container = param2;
+         _self = self;
+         _container = container;
          buttonMode = true;
          configUI();
          addEvent();
@@ -97,14 +97,14 @@ package gameCommon.view.tool
          }
       }
       
-      private function __attackingChanged(param1:LivingEvent) : void
+      private function __attackingChanged(evt:LivingEvent) : void
       {
          buttonMode = _self.spellKillEnabled && _self.isAttacking;
       }
       
-      private function __keyDown(param1:KeyboardEvent) : void
+      private function __keyDown(evt:KeyboardEvent) : void
       {
-         if(param1.keyCode == KeyStroke.VK_B.getCode())
+         if(evt.keyCode == KeyStroke.VK_B.getCode())
          {
             useSkill();
          }
@@ -112,11 +112,11 @@ package gameCommon.view.tool
       
       private function useSkill() : void
       {
-         var _loc1_:* = null;
+         var result:* = null;
          if(_specialEnabled && _localVisible)
          {
-            _loc1_ = _self.useSpellKill();
-            if(_loc1_ == "-1")
+            result = _self.useSpellKill();
+            if(result == "-1")
             {
                if(NewHandContainer.Instance.hasArrow(21))
                {
@@ -128,9 +128,9 @@ package gameCommon.view.tool
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("game.view.propContainer.ItemContainer.energy"));
                }
             }
-            else if(_loc1_ != "0")
+            else if(result != "0")
             {
-               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.game.prop." + _loc1_));
+               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.game.prop." + result));
             }
          }
       }
@@ -151,7 +151,7 @@ package gameCommon.view.tool
          _danderStripTip.y = 430;
       }
       
-      private function __mouseOut(param1:MouseEvent) : void
+      private function __mouseOut(evt:MouseEvent) : void
       {
          if(_danderStripTip.parent)
          {
@@ -159,7 +159,7 @@ package gameCommon.view.tool
          }
       }
       
-      private function __mouseOver(param1:MouseEvent) : void
+      private function __mouseOver(evt:MouseEvent) : void
       {
          LayerManager.Instance.addToLayer(_danderStripTip,0,false);
       }
@@ -175,7 +175,7 @@ package gameCommon.view.tool
          KeyboardManager.getInstance().removeEventListener("keyDown",__keyDown);
       }
       
-      private function __spellKillChanged(param1:LivingEvent) : void
+      private function __spellKillChanged(evt:LivingEvent) : void
       {
          if(_self.spellKillEnabled)
          {
@@ -189,12 +189,12 @@ package gameCommon.view.tool
          }
       }
       
-      private function __click(param1:MouseEvent) : void
+      private function __click(event:MouseEvent) : void
       {
          useSkill();
       }
       
-      private function __danderChanged(param1:LivingEvent) : void
+      private function __danderChanged(event:LivingEvent) : void
       {
          setDander();
       }
@@ -222,34 +222,34 @@ package gameCommon.view.tool
          }
       }
       
-      private function drawProgress(param1:Number) : void
+      private function drawProgress(rate:Number) : void
       {
-         var _loc7_:Number = NaN;
-         var _loc4_:Number = NaN;
-         var _loc6_:int = 90 - Math.abs(-180 - 90) * param1;
-         var _loc2_:Graphics = _maskShape.graphics;
-         _loc2_.clear();
-         var _loc3_:int = 52;
-         _loc2_.beginFill(0,1);
-         _loc2_.moveTo(0,0);
-         _loc2_.lineTo(0,_loc3_);
-         var _loc5_:int = 90;
-         while(_loc5_ >= _loc6_)
+         var x:Number = NaN;
+         var y:Number = NaN;
+         var end:int = 90 - Math.abs(-180 - 90) * rate;
+         var pen:Graphics = _maskShape.graphics;
+         pen.clear();
+         var rudis:int = 52;
+         pen.beginFill(0,1);
+         pen.moveTo(0,0);
+         pen.lineTo(0,rudis);
+         var angle:int = 90;
+         while(angle >= end)
          {
-            _loc7_ = _loc3_ * Math.cos(_loc5_ / 180 * 3.14159265358979);
-            _loc4_ = _loc3_ * Math.sin(_loc5_ / 180 * 3.14159265358979);
-            _loc2_.lineTo(_loc7_,_loc4_);
-            _loc5_--;
+            x = rudis * Math.cos(angle / 180 * 3.14159265358979);
+            y = rudis * Math.sin(angle / 180 * 3.14159265358979);
+            pen.lineTo(x,y);
+            angle--;
          }
-         _loc2_.lineTo(0,0);
+         pen.lineTo(0,0);
       }
       
       private function configUI() : void
       {
-         var _loc1_:* = null;
-         var _loc7_:int = 0;
-         var _loc2_:Number = NaN;
-         var _loc3_:Number = NaN;
+         var pen:* = null;
+         var angle:int = 0;
+         var _x:Number = NaN;
+         var _y:Number = NaN;
          _bg = ComponentFactory.Instance.creatBitmap("asset.game.dander.bg");
          addChild(_bg);
          _back = ComponentFactory.Instance.creat("asset.game.dander.back");
@@ -257,42 +257,42 @@ package gameCommon.view.tool
          _back.y = _loc8_;
          _back.x = _loc8_;
          addChild(_back);
-         var _loc6_:int = 52;
+         var rudis:int = 52;
          _tipHitArea = new Sprite();
-         _loc1_ = _tipHitArea.graphics;
-         _loc1_.clear();
-         _loc1_.beginFill(0,0);
-         _loc1_.moveTo(0,0);
-         _loc1_.lineTo(0,_loc6_);
-         _loc7_ = 90;
-         while(_loc7_ >= -180)
+         pen = _tipHitArea.graphics;
+         pen.clear();
+         pen.beginFill(0,0);
+         pen.moveTo(0,0);
+         pen.lineTo(0,rudis);
+         angle = 90;
+         while(angle >= -180)
          {
-            _loc2_ = _loc6_ * Math.cos(_loc7_ / 180 * 3.14159265358979);
-            _loc3_ = _loc6_ * Math.sin(_loc7_ / 180 * 3.14159265358979);
-            _loc1_.lineTo(_loc2_,_loc3_);
-            _loc7_--;
+            _x = rudis * Math.cos(angle / 180 * 3.14159265358979);
+            _y = rudis * Math.sin(angle / 180 * 3.14159265358979);
+            pen.lineTo(_x,_y);
+            angle--;
          }
-         _loc1_.lineTo(0,0);
-         _tipHitArea.x = _loc6_;
-         _tipHitArea.y = _loc6_;
+         pen.lineTo(0,0);
+         _tipHitArea.x = rudis;
+         _tipHitArea.y = rudis;
          addChild(_tipHitArea);
          _maskShape = new Shape();
-         _loc1_ = _maskShape.graphics;
-         _loc1_.clear();
-         _loc1_.beginFill(0,1);
-         _loc1_.moveTo(0,0);
-         _loc1_.lineTo(0,_loc6_);
-         _loc7_ = 90;
-         while(_loc7_ >= 90)
+         pen = _maskShape.graphics;
+         pen.clear();
+         pen.beginFill(0,1);
+         pen.moveTo(0,0);
+         pen.lineTo(0,rudis);
+         angle = 90;
+         while(angle >= 90)
          {
-            _loc2_ = _loc6_ * Math.cos(_loc7_ / 180 * 3.14159265358979);
-            _loc3_ = _loc6_ * Math.sin(_loc7_ / 180 * 3.14159265358979);
-            _loc1_.lineTo(_loc2_,_loc3_);
-            _loc7_--;
+            _x = rudis * Math.cos(angle / 180 * 3.14159265358979);
+            _y = rudis * Math.sin(angle / 180 * 3.14159265358979);
+            pen.lineTo(_x,_y);
+            angle--;
          }
-         _loc1_.lineTo(0,0);
-         _maskShape.x = _loc6_;
-         _maskShape.y = _loc6_;
+         pen.lineTo(0,0);
+         _maskShape.x = rudis;
+         _maskShape.y = rudis;
          addChild(_maskShape);
          _back.mask = _maskShape;
          _animateBack = ComponentFactory.Instance.creatBitmap("asset.game.dander.animate.back");
@@ -324,21 +324,21 @@ package gameCommon.view.tool
          _btn.tipDirctions = "4";
          _btn.tipGapV = 30;
          _btn.tipGapH = 30;
-         var _loc5_:ItemTemplateInfo = new ItemTemplateInfo();
-         _loc5_.Name = LanguageMgr.GetTranslation("tank.game.ToolStripView.itemTemplateInfo.Name");
-         _loc5_.Description = LanguageMgr.GetTranslation("tank.game.ToolStripView.itemTemplateInfo.Description");
-         var _loc4_:ToolPropInfo = new ToolPropInfo();
-         _loc4_.info = _loc5_;
-         _loc4_.showTurn = false;
-         _loc4_.showThew = false;
-         _loc4_.showCount = false;
-         _btn.tipData = _loc4_;
+         var temp:ItemTemplateInfo = new ItemTemplateInfo();
+         temp.Name = LanguageMgr.GetTranslation("tank.game.ToolStripView.itemTemplateInfo.Name");
+         temp.Description = LanguageMgr.GetTranslation("tank.game.ToolStripView.itemTemplateInfo.Description");
+         var tipInfo:ToolPropInfo = new ToolPropInfo();
+         tipInfo.info = temp;
+         tipInfo.showTurn = false;
+         tipInfo.showThew = false;
+         tipInfo.showCount = false;
+         _btn.tipData = tipInfo;
          addDanderStripTip();
       }
       
-      public function set localDander(param1:int) : void
+      public function set localDander(val:int) : void
       {
-         _localDander = param1;
+         _localDander = val;
          drawProgress(_localDander / 200);
       }
       
@@ -347,11 +347,11 @@ package gameCommon.view.tool
          return _localDander;
       }
       
-      public function setVisible(param1:Boolean) : void
+      public function setVisible(val:Boolean) : void
       {
-         if(_localVisible != param1)
+         if(_localVisible != val)
          {
-            _localVisible = param1;
+            _localVisible = val;
             if(_localVisible)
             {
                _container.addChild(this);
@@ -363,11 +363,11 @@ package gameCommon.view.tool
          }
       }
       
-      public function set specialEnabled(param1:Boolean) : void
+      public function set specialEnabled(val:Boolean) : void
       {
-         if(_specialEnabled != param1)
+         if(_specialEnabled != val)
          {
-            _specialEnabled = param1;
+            _specialEnabled = val;
             if(!_specialEnabled)
             {
             }
@@ -425,7 +425,7 @@ package gameCommon.view.tool
          return null;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(value:Object) : void
       {
       }
       
@@ -434,7 +434,7 @@ package gameCommon.view.tool
          return null;
       }
       
-      public function set tipDirctions(param1:String) : void
+      public function set tipDirctions(value:String) : void
       {
       }
       
@@ -443,7 +443,7 @@ package gameCommon.view.tool
          return 0;
       }
       
-      public function set tipGapH(param1:int) : void
+      public function set tipGapH(value:int) : void
       {
       }
       
@@ -452,7 +452,7 @@ package gameCommon.view.tool
          return 0;
       }
       
-      public function set tipGapV(param1:int) : void
+      public function set tipGapV(value:int) : void
       {
       }
       
@@ -461,7 +461,7 @@ package gameCommon.view.tool
          return null;
       }
       
-      public function set tipStyle(param1:String) : void
+      public function set tipStyle(value:String) : void
       {
       }
       

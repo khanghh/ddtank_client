@@ -31,14 +31,14 @@ package cardSystem
          return _instance;
       }
       
-      public function setup(param1:CardTemplateAnalyzer) : void
+      public function setup(analyzer:CardTemplateAnalyzer) : void
       {
-         _cardtemplateList = param1.list;
+         _cardtemplateList = analyzer.list;
       }
       
-      public function getInfoByCardId(param1:String, param2:String) : CardTemplateInfo
+      public function getInfoByCardId(key:String, type:String) : CardTemplateInfo
       {
-         return _cardtemplateList[param1 + "," + param2];
+         return _cardtemplateList[key + "," + type];
       }
    }
 }

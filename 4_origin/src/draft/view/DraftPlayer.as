@@ -85,9 +85,9 @@ package draft.view
          _voteBtn.addEventListener("click",__onVoteBtnClick);
       }
       
-      protected function __onVoteBtnClick(param1:MouseEvent) : void
+      protected function __onVoteBtnClick(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var voteView:* = null;
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -104,14 +104,14 @@ package draft.view
          }
          else
          {
-            _loc2_ = new DraftVoteView(_draftInfo.playerInfo.ID,_draftInfo.id);
-            LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+            voteView = new DraftVoteView(_draftInfo.playerInfo.ID,_draftInfo.id);
+            LayerManager.Instance.addToLayer(voteView,3,true,1);
          }
       }
       
-      public function set drafInfo(param1:DraftModel) : void
+      public function set drafInfo(info:DraftModel) : void
       {
-         _draftInfo = param1;
+         _draftInfo = info;
          ObjectUtils.disposeObject(_charactor);
          _charactor = null;
          if(_draftInfo != null)
@@ -167,7 +167,7 @@ package draft.view
          }
       }
       
-      private function __charactorClick_Handler(param1:MouseEvent) : void
+      private function __charactorClick_Handler(evt:MouseEvent) : void
       {
          if(_draftInfo != null)
          {
@@ -177,24 +177,24 @@ package draft.view
          }
       }
       
-      private function __charactorFilter_Handler(param1:MouseEvent) : void
+      private function __charactorFilter_Handler(evt:MouseEvent) : void
       {
          if(_charactor != null && _charactor is RoomCharacter)
          {
-            if(param1.type == "mouseOver")
+            if(evt.type == "mouseOver")
             {
                _charactor.setCharacterFilter(true);
             }
-            else if(param1.type == "mouseOut")
+            else if(evt.type == "mouseOut")
             {
                _charactor.setCharacterFilter(false);
             }
          }
       }
       
-      public function hideNotNeed(param1:Boolean) : void
+      public function hideNotNeed(value:Boolean) : void
       {
-         var _loc2_:* = param1;
+         var _loc2_:* = value;
          _platform.visible = _loc2_;
          _loc2_ = _loc2_;
          _voteBtn.visible = _loc2_;
@@ -206,10 +206,10 @@ package draft.view
          }
       }
       
-      protected function __onCharacterComplete(param1:Event) : void
+      protected function __onCharacterComplete(event:Event) : void
       {
-         var _loc2_:RoomCharacter = param1.target as RoomCharacter;
-         _loc2_.removeEventListener("complete",__onCharacterComplete);
+         var loader:RoomCharacter = event.target as RoomCharacter;
+         loader.removeEventListener("complete",__onCharacterComplete);
          _charactor.setBodySize();
       }
       

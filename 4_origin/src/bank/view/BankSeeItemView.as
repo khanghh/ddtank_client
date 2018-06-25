@@ -30,25 +30,25 @@ package bank.view
          goSaveBtn.addEventListener("click",goSave);
       }
       
-      public function setInfo(param1:int, param2:int) : void
+      public function setInfo(currentPage:int, index:int) : void
       {
-         var _loc4_:BankRecordInfo = BankManager.instance.model.list[(param1 - 1) * 3 + param2];
-         moneyNum.text = String(_loc4_.Amount);
-         var _loc3_:DictionaryData = BankManager.instance.model.data;
-         if(_loc3_[_loc4_.tempId].DeadLine == 0)
+         var data:BankRecordInfo = BankManager.instance.model.list[(currentPage - 1) * 3 + index];
+         moneyNum.text = String(data.Amount);
+         var modelData:DictionaryData = BankManager.instance.model.data;
+         if(modelData[data.tempId].DeadLine == 0)
          {
             saveType.text = LanguageMgr.GetTranslation("tank.bank.checkingAccountGet");
          }
          else
          {
-            saveType.text = LanguageMgr.GetTranslation("tank.bank.dingqiAccount") + LanguageMgr.GetTranslation("tank.bank.monthNum",_loc3_[_loc4_.tempId].DeadLine);
+            saveType.text = LanguageMgr.GetTranslation("tank.bank.dingqiAccount") + LanguageMgr.GetTranslation("tank.bank.monthNum",modelData[data.tempId].DeadLine);
          }
-         InterestRate.text = LanguageMgr.GetTranslation("tank.bank.interestRate",Number(_loc3_[_loc4_.tempId].InterestRate / 100));
-         myMoney.text = String(_loc4_.Amount);
-         profitMoney.text = String(BankManager.instance.getProfitNum(_loc4_,true));
+         InterestRate.text = LanguageMgr.GetTranslation("tank.bank.interestRate",Number(modelData[data.tempId].InterestRate / 100));
+         myMoney.text = String(data.Amount);
+         profitMoney.text = String(BankManager.instance.getProfitNum(data,true));
       }
       
-      private function goSave(param1:MouseEvent) : void
+      private function goSave(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          BankManager.instance.dispatchEvent(new GameBankEvent("bank_right_view_change",{"type":1}));

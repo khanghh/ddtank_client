@@ -7,9 +7,9 @@ package Indiana.item
    {
        
       
-      public function IndianaSkillItem(param1:PetSkillTemplateInfo, param2:int, param3:Boolean = false, param4:Boolean = false)
+      public function IndianaSkillItem(info:PetSkillTemplateInfo, $index:int, canDrag:Boolean = false, isWatch:Boolean = false)
       {
-         super(param1,param2,param3,param4);
+         super(info,$index,canDrag,isWatch);
       }
       
       override protected function addQuictShortKey() : void

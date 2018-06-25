@@ -4,9 +4,13 @@ package horse.amulet
    import bagAndInfo.cell.BagCell;
    import bagAndInfo.cell.CellFactory;
    import baglocked.BaglockedManager;
+   import com.pickgliss.events.FrameEvent;
    import com.pickgliss.events.InteractiveEvent;
+   import com.pickgliss.ui.AlertManager;
    import com.pickgliss.ui.ComponentFactory;
+   import com.pickgliss.ui.controls.alert.BaseAlerFrame;
    import com.pickgliss.utils.DoubleClickManager;
+   import com.pickgliss.utils.ObjectUtils;
    import ddt.data.BagInfo;
    import ddt.data.goods.InventoryItemInfo;
    import ddt.events.BagEvent;
@@ -32,20 +36,24 @@ package horse.amulet
       
       private var _endIndex:int;
       
+      private var _alertFrame:BaseAlerFrame;
+      
       private var _currentPage:int;
       
-      public function HorseAmuletBagListView(param1:int, param2:int = 7, param3:int = 49)
+      private var _place:int;
+      
+      public function HorseAmuletBagListView(bagType:int, columnNum:int = 7, cellNun:int = 49)
       {
-         super(param1,param2,param3);
+         super(bagType,columnNum,cellNun);
       }
       
-      public function set currentPage(param1:int) : void
+      public function set currentPage(value:int) : void
       {
-         if(_currentPage == param1)
+         if(_currentPage == value)
          {
             return;
          }
-         _currentPage = param1;
+         _currentPage = value;
          _startIndex = 20 + (_currentPage - 1) * 49;
          _endIndex = _startIndex + 49;
          updateBag();
@@ -53,31 +61,30 @@ package horse.amulet
       
       override protected function createCells() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var cell:* = null;
          _cells = new Dictionary();
          _cellMouseOverBg = ComponentFactory.Instance.creatBitmap("bagAndInfo.cell.bagCellOverBgAsset");
-         _loc2_ = 0;
-         while(_loc2_ < _cellNum)
+         for(i = 0; i < _cellNum; )
          {
-            _loc1_ = new HorseAmuletCell(_loc2_ + 20);
-            CellFactory.instance.fillTipProp(_loc1_);
-            _loc1_.mouseOverEffBoolean = false;
-            addChild(_loc1_);
-            _loc1_.addEventListener("interactive_click",__clickHandler);
-            _loc1_.addEventListener("interactive_double_click",__doubleClickHandler);
-            DoubleClickManager.Instance.enableDoubleClick(_loc1_);
-            _loc1_.bagType = _bagType;
-            _loc1_.addEventListener("lockChanged",__cellChanged);
-            _cells[_loc2_] = _loc1_;
-            _cellVec.push(_loc1_);
-            _loc2_++;
+            cell = new HorseAmuletCell(i + 20);
+            CellFactory.instance.fillTipProp(cell);
+            cell.mouseOverEffBoolean = false;
+            addChild(cell);
+            cell.addEventListener("interactive_click",__clickHandler);
+            cell.addEventListener("interactive_double_click",__doubleClickHandler);
+            DoubleClickManager.Instance.enableDoubleClick(cell);
+            cell.bagType = _bagType;
+            cell.addEventListener("lockChanged",__cellChanged);
+            _cells[i] = cell;
+            _cellVec.push(cell);
+            i++;
          }
       }
       
-      override public function setData(param1:BagInfo) : void
+      override public function setData(bag:BagInfo) : void
       {
-         if(_bagdata == param1)
+         if(_bagdata == bag)
          {
             return;
          }
@@ -85,81 +92,80 @@ package horse.amulet
          {
             _bagdata.removeEventListener("update",__updateGoods);
          }
-         _bagdata = param1;
+         _bagdata = bag;
          currentPage = 1;
          _bagdata.addEventListener("update",__updateGoods);
       }
       
       private function updateBag() : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc1_:Array = [];
-         var _loc2_:int = 0;
-         _loc4_ = _startIndex;
-         while(_loc4_ < _endIndex)
+         var i:int = 0;
+         var info:* = null;
+         var _infoArr:Array = [];
+         var index:int = 0;
+         for(i = _startIndex; i < _endIndex; )
          {
-            _loc2_ = (_loc4_ - 20) % 49;
-            _loc3_ = _bagdata.getItemAt(_loc4_) as InventoryItemInfo;
-            _cells[_loc2_].info = _loc3_;
-            _cells[_loc2_].place = _loc4_;
-            _loc1_.push(_cells[_loc2_]);
-            _loc4_++;
+            index = (i - 20) % 49;
+            info = _bagdata.getItemAt(i) as InventoryItemInfo;
+            _cells[index].info = info;
+            _cells[index].place = i;
+            _infoArr.push(_cells[index]);
+            i++;
          }
-         _cellsSort(_loc1_);
+         _cellsSort(_infoArr);
       }
       
-      override protected function __updateGoods(param1:BagEvent) : void
+      override protected function __updateGoods(evt:BagEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc4_:Dictionary = param1.changedSlots;
+         var c:* = null;
+         var changes:Dictionary = evt.changedSlots;
          var _loc6_:int = 0;
-         var _loc5_:* = _loc4_;
-         for each(var _loc3_ in _loc4_)
+         var _loc5_:* = changes;
+         for each(var i in changes)
          {
-            _loc2_ = _bagdata.getItemAt(_loc3_.Place);
-            if(_loc2_)
+            c = _bagdata.getItemAt(i.Place);
+            if(c)
             {
-               setCellInfo(_loc2_.Place,_loc2_);
+               setCellInfo(c.Place,c);
             }
             else
             {
-               setCellInfo(_loc3_.Place,null);
+               setCellInfo(i.Place,null);
             }
             dispatchEvent(new Event("change"));
          }
       }
       
-      override public function setCellInfo(param1:int, param2:InventoryItemInfo) : void
+      override public function setCellInfo($index:int, info:InventoryItemInfo) : void
       {
-         if(param1 < _startIndex || param1 >= _endIndex)
+         if($index < _startIndex || $index >= _endIndex)
          {
             return;
          }
-         var _loc3_:int = (param1 - 20) % 49;
-         if(param2 == null)
+         var index:int = ($index - 20) % 49;
+         if(info == null)
          {
-            if(_cells[_loc3_])
+            if(_cells[index])
             {
-               _cells[_loc3_].info = null;
+               _cells[index].info = null;
             }
             return;
          }
-         if(param2.Count == 0)
+         if(info.Count == 0)
          {
-            _cells[_loc3_].info = null;
+            _cells[index].info = null;
          }
          else
          {
-            _cells[_loc3_].info = param2;
+            _cells[index].info = info;
          }
       }
       
-      override protected function __doubleClickHandler(param1:InteractiveEvent) : void
+      override protected function __doubleClickHandler(evt:InteractiveEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:BagCell = param1.currentTarget as BagCell;
-         if(_loc2_.info == null)
+         var place:int = 0;
+         var bagCell:BagCell = evt.currentTarget as BagCell;
+         if(bagCell.info == null)
          {
             return;
          }
@@ -169,12 +175,21 @@ package horse.amulet
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc4_:HorseAmuletVo = HorseAmuletManager.instance.getHorseAmuletVo((param1.currentTarget as BagCell).info.TemplateID);
+         var vo:HorseAmuletVo = HorseAmuletManager.instance.getHorseAmuletVo((evt.currentTarget as BagCell).info.TemplateID);
          if(HorseAmuletManager.instance.viewType == 2)
          {
-            if(_loc4_.IsCanWash)
+            if(vo.IsCanWash)
             {
-               SocketManager.Instance.out.sendAmuletMove(_loc2_.place,19);
+               if(HorseAmuletManager.instance.isActivate)
+               {
+                  _place = bagCell.place;
+                  _alertFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("tank.horseAmulet.replaceTips"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",30,true);
+                  _alertFrame.addEventListener("response",__onClickFrame);
+               }
+               else
+               {
+                  SocketManager.Instance.out.sendAmuletMove(bagCell.place,19);
+               }
             }
             else
             {
@@ -183,98 +198,116 @@ package horse.amulet
          }
          else if(HorseAmuletManager.instance.viewType == 1)
          {
-            _loc3_ = HorseAmuletManager.instance.canPutInEquipAmulet();
-            if(_loc3_ == -1)
+            place = HorseAmuletManager.instance.canPutInEquipAmulet();
+            if(place == -1)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.horseAmulet.maxPutInEquipTips"));
             }
             else
             {
-               if(!_loc4_.IsCanWash)
+               if(!vo.IsCanWash)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.horseAmulet.notEquip"));
                   return;
                }
-               if(!HorseAmuletManager.instance.canEquipAmulet(_loc2_.info.TemplateID))
+               if(!HorseAmuletManager.instance.canEquipAmulet(bagCell.info.TemplateID))
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.horseAmulet.typeTips"));
                   return;
                }
-               SocketManager.Instance.out.sendAmuletMove(_loc2_.place,_loc3_);
+               SocketManager.Instance.out.sendAmuletMove(bagCell.place,place);
             }
          }
       }
       
-      private function _cellsSort(param1:Array) : void
+      private function __onClickFrame(e:FrameEvent) : void
       {
-         var _loc6_:int = 0;
-         var _loc4_:Number = NaN;
-         var _loc5_:Number = NaN;
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         if(param1.length <= 0)
+         if(e.responseCode == 3 || e.responseCode == 2)
+         {
+            SocketManager.Instance.out.sendAmuletMove(_place,19);
+         }
+         disposeAlertFrame();
+      }
+      
+      private function disposeAlertFrame() : void
+      {
+         if(_alertFrame)
+         {
+            _alertFrame.removeEventListener("response",__onClickFrame);
+            ObjectUtils.disposeObject(_alertFrame);
+            _alertFrame = null;
+         }
+      }
+      
+      private function _cellsSort(arr:Array) : void
+      {
+         var i:int = 0;
+         var oldx:Number = NaN;
+         var oldy:Number = NaN;
+         var n:int = 0;
+         var oldCell:* = null;
+         if(arr.length <= 0)
          {
             return;
          }
-         _loc6_ = 0;
-         while(_loc6_ < param1.length)
+         i = 0;
+         while(i < arr.length)
          {
-            _loc4_ = param1[_loc6_].x;
-            _loc5_ = param1[_loc6_].y;
-            _loc3_ = _cellVec.indexOf(param1[_loc6_]);
-            _loc2_ = _cellVec[_loc6_];
-            param1[_loc6_].x = _loc2_.x;
-            param1[_loc6_].y = _loc2_.y;
-            _loc2_.x = _loc4_;
-            _loc2_.y = _loc5_;
-            _cellVec[_loc6_] = param1[_loc6_];
-            _cellVec[_loc3_] = _loc2_;
-            _loc6_++;
+            oldx = arr[i].x;
+            oldy = arr[i].y;
+            n = _cellVec.indexOf(arr[i]);
+            oldCell = _cellVec[i];
+            arr[i].x = oldCell.x;
+            arr[i].y = oldCell.y;
+            oldCell.x = oldx;
+            oldCell.y = oldy;
+            _cellVec[i] = arr[i];
+            _cellVec[n] = oldCell;
+            i++;
          }
       }
       
       public function getAllEnableSmashPlaceList() : Array
       {
-         var _loc4_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:Array = [];
-         var _loc3_:Boolean = false;
-         _loc4_ = 0;
-         while(_loc4_ < _cellVec.length)
+         var i:int = 0;
+         var cell:* = null;
+         var list:Array = [];
+         var isConfirm:Boolean = false;
+         for(i = 0; i < _cellVec.length; )
          {
-            _loc1_ = _cellVec[_loc4_];
-            if(_loc1_.itemInfo && !_loc1_.itemInfo.cellLocked)
+            cell = _cellVec[i];
+            if(cell.itemInfo && !cell.itemInfo.cellLocked)
             {
-               if(HorseAmuletManager.instance.isHighQuality(_loc1_.itemInfo.TemplateID))
+               if(HorseAmuletManager.instance.isHighQuality(cell.itemInfo.TemplateID))
                {
-                  _loc3_ = true;
+                  isConfirm = true;
                }
-               _loc2_.push(_loc1_.place);
+               list.push(cell.place);
             }
-            _loc4_++;
+            i++;
          }
-         _loc2_.push(_loc3_);
-         return _loc2_;
+         list.push(isConfirm);
+         return list;
       }
       
-      public function lockCellByPlace(param1:Boolean, param2:Array) : void
+      public function lockCellByPlace(lock:Boolean, placeList:Array) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         _loc4_ = 0;
-         while(_loc4_ < _cellVec.length)
+         var i:int = 0;
+         var cell:* = null;
+         for(i = 0; i < _cellVec.length; )
          {
-            _loc3_ = _cellVec[_loc4_];
-            if(param2.indexOf(_loc3_.place) != -1)
+            cell = _cellVec[i];
+            if(placeList.indexOf(cell.place) != -1)
             {
-               _loc3_.locked = param1;
+               cell.locked = lock;
             }
-            _loc4_++;
+            i++;
          }
       }
       
       override public function dispose() : void
       {
+         disposeAlertFrame();
          super.dispose();
       }
    }

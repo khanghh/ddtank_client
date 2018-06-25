@@ -42,12 +42,12 @@ package horseRace.view
       {
       }
       
-      public function addMsg(param1:String) : void
+      public function addMsg(msg:String) : void
       {
-         var _loc2_:FilterFrameText = ComponentFactory.Instance.creat("horseRace.race.matchView.msgTxt");
-         _loc2_.mouseEnabled = false;
-         _loc2_.htmlText = param1;
-         _vbox.addChild(_loc2_);
+         var _lblName:FilterFrameText = ComponentFactory.Instance.creat("horseRace.race.matchView.msgTxt");
+         _lblName.mouseEnabled = false;
+         _lblName.htmlText = msg;
+         _vbox.addChild(_lblName);
          _scrollPanel.invalidateViewport(true);
       }
       

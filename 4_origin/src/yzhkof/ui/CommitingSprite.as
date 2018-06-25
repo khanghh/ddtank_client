@@ -19,9 +19,10 @@ package yzhkof.ui
          this.changes = new Object();
       }
       
-      protected function commitChage(param1:String = "default_change") : void
+      protected function commitChage(changeThing:String = "default_change") : void
       {
-         this.changes[param1] = hasOwnProperty(param1) && this[param1] || null;
+         this.changes[changeThing] = hasOwnProperty(changeThing) && this[changeThing] || null;
+         this.autoDraw && upDateNextRend();
       }
       
       override protected function beforDraw() : void

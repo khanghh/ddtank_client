@@ -17,10 +17,10 @@ package ddt.view.common
       
       private var _topLayer:Boolean;
       
-      public function GradeContainer(param1:Boolean = false)
+      public function GradeContainer(topLayer:Boolean = false)
       {
          super();
-         _topLayer = param1;
+         _topLayer = topLayer;
          init();
       }
       
@@ -30,7 +30,7 @@ package ddt.view.common
          _timer.addEventListener("timerComplete",__timerComplete);
       }
       
-      private function __timerComplete(param1:Event) : void
+      private function __timerComplete(evt:Event) : void
       {
          clearGrade();
       }
@@ -53,10 +53,10 @@ package ddt.view.common
          }
       }
       
-      public function setGrade(param1:MovieClip) : void
+      public function setGrade(grade:MovieClip) : void
       {
          clearGrade();
-         _grade = param1;
+         _grade = grade;
          if(_grade != null)
          {
             _timer.reset();
@@ -67,9 +67,9 @@ package ddt.view.common
       
       public function playerGrade() : void
       {
-         var _loc2_:Class = ClassUtils.uiSourceDomain.getDefinition("asset.core.playerLevelUpFaileAsset") as Class;
-         var _loc1_:MovieClip = new _loc2_() as MovieClip;
-         setGrade(_loc1_);
+         var mvClass:Class = ClassUtils.uiSourceDomain.getDefinition("asset.core.playerLevelUpFaileAsset") as Class;
+         var mv:MovieClip = new mvClass() as MovieClip;
+         setGrade(mv);
       }
       
       public function dispose() : void

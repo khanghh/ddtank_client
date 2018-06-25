@@ -133,7 +133,7 @@ package gemstone.views
          _buyBtn.addEventListener("click",saleClickHander);
       }
       
-      protected function inputChangeHander(param1:Event) : void
+      protected function inputChangeHander(event:Event) : void
       {
          if(int(_inputTxt1.text) > 50)
          {
@@ -146,33 +146,32 @@ package gemstone.views
          _inputTxt2.text = String(int(_inputTxt1.text) * price);
       }
       
-      protected function saleClickHander(param1:MouseEvent) : void
+      protected function saleClickHander(event:MouseEvent) : void
       {
-         var _loc9_:int = 0;
+         var i:int = 0;
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:Array = [];
-         var _loc8_:Array = [];
-         var _loc4_:Array = [];
-         var _loc5_:Array = [];
-         var _loc7_:Array = [];
-         var _loc3_:Array = [];
-         var _loc6_:int = _inputTxt1.text;
-         _loc9_ = 0;
-         while(_loc9_ < int(_inputTxt1.text))
+         var items:Array = [];
+         var types:Array = [];
+         var colors:Array = [];
+         var dresses:Array = [];
+         var places:Array = [];
+         var goodsTypes:Array = [];
+         var len:int = _inputTxt1.text;
+         for(i = 0; i < int(_inputTxt1.text); )
          {
-            _loc2_.push(10010001);
-            _loc8_.push(1);
-            _loc4_.push("");
-            _loc5_.push("");
-            _loc7_.push("");
-            _loc3_.push(1);
-            _loc9_++;
+            items.push(10010001);
+            types.push(1);
+            colors.push("");
+            dresses.push("");
+            places.push("");
+            goodsTypes.push(1);
+            i++;
          }
-         SocketManager.Instance.out.sendBuyGoods(_loc2_,_loc8_,_loc4_,_loc7_,_loc5_,null,0,_loc3_);
+         SocketManager.Instance.out.sendBuyGoods(items,types,colors,places,dresses,null,0,goodsTypes);
       }
       
       override public function dispose() : void

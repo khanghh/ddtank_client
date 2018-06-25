@@ -14,17 +14,17 @@ package farm.player
       
       private var _sex:Boolean;
       
-      public function FarmSceneCharacterLayer(param1:ItemTemplateInfo, param2:String = "", param3:int = 1, param4:Boolean = true, param5:String = "")
+      public function FarmSceneCharacterLayer(info:ItemTemplateInfo, color:String = "", direction:int = 1, sex:Boolean = true, sceneCharacterLoaderPath:String = "")
       {
-         _direction = param3;
-         _sex = param4;
-         _sceneCharacterLoaderPath = param5;
-         super(param1,param2);
+         _direction = direction;
+         _sex = sex;
+         _sceneCharacterLoaderPath = sceneCharacterLoaderPath;
+         super(info,color);
       }
       
-      override protected function getUrl(param1:int) : String
+      override protected function getUrl(layer:int) : String
       {
-         return PathManager.solveSceneCharacterLoaderPath(_info.CategoryID,_info.Pic,_sex,_info.NeedSex == 1,String(param1),_direction,_sceneCharacterLoaderPath);
+         return PathManager.solveSceneCharacterLoaderPath(_info.CategoryID,_info.Pic,_sex,_info.NeedSex == 1,String(layer),_direction,_sceneCharacterLoaderPath);
       }
    }
 }

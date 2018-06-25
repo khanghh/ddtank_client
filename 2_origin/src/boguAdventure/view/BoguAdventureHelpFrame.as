@@ -41,21 +41,21 @@ package boguAdventure.view
          _helpBtn = UICreatShortcut.creatAndAdd("boguAdventure.helpBtn",this);
          _bg = UICreatShortcut.creatAndAdd("boguAdventure.helpBg",_box);
          _panel = UICreatShortcut.creatAndAdd("boguAdventure.helpPanel",_box);
-         var _loc1_:FilterFrameText = ComponentFactory.Instance.creat("boguAdventure.helpText");
-         _loc1_.htmlText = LanguageMgr.GetTranslation("boguAdventure.view.helpText");
-         _panel.setView(_loc1_);
-         var _loc2_:Sprite = new Sprite();
-         _loc2_.graphics.beginFill(16777215);
-         _loc2_.graphics.drawRect(0,0,220,303);
-         addChild(_loc2_);
-         PositionUtils.setPos(_loc2_,"boguAdventure.helpMaskPos");
-         _box.mask = _loc2_;
+         var text:FilterFrameText = ComponentFactory.Instance.creat("boguAdventure.helpText");
+         text.htmlText = LanguageMgr.GetTranslation("boguAdventure.view.helpText");
+         _panel.setView(text);
+         var mask:Sprite = new Sprite();
+         mask.graphics.beginFill(16777215);
+         mask.graphics.drawRect(0,0,220,303);
+         addChild(mask);
+         PositionUtils.setPos(mask,"boguAdventure.helpMaskPos");
+         _box.mask = mask;
          _box.y = -_bg.height;
          _flag = true;
          _helpBtn.addEventListener("click",__onHelpClick);
       }
       
-      private function __onHelpClick(param1:MouseEvent) : void
+      private function __onHelpClick(e:MouseEvent) : void
       {
          TweenLite.killTweensOf(_box);
          if(_flag)

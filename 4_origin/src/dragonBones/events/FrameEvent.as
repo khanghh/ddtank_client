@@ -17,9 +17,9 @@ package dragonBones.events
       
       public var animationState:Object;
       
-      public function FrameEvent(param1:String, param2:Boolean = false)
+      public function FrameEvent(type:String, cancelable:Boolean = false)
       {
-         super(param1,false,param2);
+         super(type,false,cancelable);
       }
       
       public static function get MOVEMENT_FRAME_EVENT() : String
@@ -34,12 +34,12 @@ package dragonBones.events
       
       override public function clone() : Event
       {
-         var _loc1_:FrameEvent = new FrameEvent(type,cancelable);
-         _loc1_.animationState = animationState;
-         _loc1_.bone = bone;
-         _loc1_.animationState = animationState;
-         _loc1_.frameLabel = frameLabel;
-         return _loc1_;
+         var event:FrameEvent = new FrameEvent(type,cancelable);
+         event.animationState = animationState;
+         event.bone = bone;
+         event.animationState = animationState;
+         event.frameLabel = frameLabel;
+         return event;
       }
    }
 }

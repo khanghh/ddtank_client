@@ -31,10 +31,10 @@ package consortiaDomain.view
       
       private var _state:int = -1;
       
-      public function BuildsStateCell(param1:int)
+      public function BuildsStateCell(buildId:int)
       {
          super();
-         _buildId = param1;
+         _buildId = buildId;
          _tfSp = new Sprite();
          addChild(_tfSp);
          _tf = new TextField();
@@ -57,64 +57,64 @@ package consortiaDomain.view
          ConsortiaDomainManager.instance.addEventListener("event_get_consortia_info_res",onChange);
       }
       
-      private function onChange(param1:Event) : void
+      private function onChange(evt:Event) : void
       {
-         var _loc4_:Array = ConsortiaDomainManager.instance.buildNameArr;
-         var _loc3_:EachBuildInfo = ConsortiaDomainManager.instance.model.allBuildInfo[_buildId];
-         if(_loc3_ == null)
+         var buildNameArr:Array = ConsortiaDomainManager.instance.buildNameArr;
+         var buildInfo:EachBuildInfo = ConsortiaDomainManager.instance.model.allBuildInfo[_buildId];
+         if(buildInfo == null)
          {
             return;
          }
-         var _loc5_:int = ConsortiaDomainManager.instance.getBuildLv(_buildId);
-         var _loc6_:String = LanguageMgr.GetTranslation("horse.skillUpFrame.levelTxt",_loc5_);
-         var _loc2_:int = _loc3_.State;
-         if(_loc2_ == 1)
+         var buildLv:int = ConsortiaDomainManager.instance.getBuildLv(_buildId);
+         var lvStr:String = LanguageMgr.GetTranslation("horse.skillUpFrame.levelTxt",buildLv);
+         var buildState:int = buildInfo.State;
+         if(buildState == 1)
          {
             _defaultTextFormat.color = 16777215;
             _tf.defaultTextFormat = _defaultTextFormat;
-            _tf.text = _loc4_[_buildId] + _loc6_;
+            _tf.text = buildNameArr[_buildId] + lvStr;
             _icon.visible = false;
          }
-         else if(_loc2_ == 2)
+         else if(buildState == 2)
          {
             _defaultTextFormat.color = 6289152;
             _tf.defaultTextFormat = _defaultTextFormat;
-            _tf.text = _loc4_[_buildId] + _loc6_;
+            _tf.text = buildNameArr[_buildId] + lvStr;
             _icon.resourceLink = "consortiadomain.smallIcon.upgrade";
             _icon.visible = true;
          }
-         else if(_loc2_ == 3 || _loc2_ == 4)
+         else if(buildState == 3 || buildState == 4)
          {
             _defaultTextFormat.color = 16777215;
             _tf.defaultTextFormat = _defaultTextFormat;
-            _tf.text = _loc4_[_buildId] + _loc6_ + "（" + int((ConsortiaDomainManager.instance.consortiaLandRepairBlood - _loc3_.Repair) * 100 / ConsortiaDomainManager.instance.consortiaLandRepairBlood) + "%）";
+            _tf.text = buildNameArr[_buildId] + lvStr + "（" + int((ConsortiaDomainManager.instance.consortiaLandRepairBlood - buildInfo.Repair) * 100 / ConsortiaDomainManager.instance.consortiaLandRepairBlood) + "%）";
             _icon.resourceLink = "consortiadomain.smallIcon.repair";
             _icon.visible = true;
          }
-         else if(_loc2_ == 6)
+         else if(buildState == 6)
          {
             _defaultTextFormat.color = 16590116;
             _tf.defaultTextFormat = _defaultTextFormat;
-            _tf.text = _loc4_[_buildId] + _loc6_ + "（" + int(_loc3_.Blood * 100 / ConsortiaDomainManager.instance.consortiaLandBuildBlood) + "%）";
+            _tf.text = buildNameArr[_buildId] + lvStr + "（" + int(buildInfo.Blood * 100 / ConsortiaDomainManager.instance.consortiaLandBuildBlood) + "%）";
             _icon.resourceLink = "consortiadomain.smallIcon.fight";
             _icon.visible = true;
          }
-         else if(_loc2_ == 5)
+         else if(buildState == 5)
          {
             _defaultTextFormat.color = 16590116;
             _tf.defaultTextFormat = _defaultTextFormat;
-            _tf.text = _loc4_[_buildId] + _loc6_ + "（" + int(_loc3_.Blood * 100 / ConsortiaDomainManager.instance.consortiaLandBuildBlood) + "%）";
+            _tf.text = buildNameArr[_buildId] + lvStr + "（" + int(buildInfo.Blood * 100 / ConsortiaDomainManager.instance.consortiaLandBuildBlood) + "%）";
             _icon.visible = false;
          }
          _icon.x = _tf.x + _tf.width;
          _icon.y = -1;
       }
       
-      private function onClick(param1:MouseEvent) : void
+      private function onClick(evt:MouseEvent) : void
       {
-         var _loc3_:Point = ConsortiaDomainManager.BUILD_CENTER_POS_ARR[_buildId];
-         var _loc2_:PlayerView = starling.scene.consortiaDomain.ConsortiaDomainScene(StarlingMain.instance.currentScene).playerView;
-         _loc2_.checkAndWalkToPoint(_loc3_);
+         var buildCenterPoint:Point = ConsortiaDomainManager.BUILD_CENTER_POS_ARR[_buildId];
+         var playerView:PlayerView = starling.scene.consortiaDomain.ConsortiaDomainScene(StarlingMain.instance.currentScene).playerView;
+         playerView.checkAndWalkToPoint(buildCenterPoint);
       }
       
       public function dispose() : void

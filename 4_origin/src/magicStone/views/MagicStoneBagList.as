@@ -21,42 +21,41 @@ package magicStone.views
       
       private var _endIndex:int;
       
-      public function MagicStoneBagList(param1:int, param2:int = 7, param3:int = 49)
+      public function MagicStoneBagList(bagType:int, columnNum:int = 7, cellNun:int = 49)
       {
          _curPage = 1;
          _startIndex = 32;
-         _endIndex = 32 + param3 - 1;
-         super(param1,param2,param3);
+         _endIndex = 32 + cellNun - 1;
+         super(bagType,columnNum,cellNun);
       }
       
       override protected function createCells() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var cell:* = null;
          _cells = new Dictionary();
          _cellMouseOverBg = ComponentFactory.Instance.creatBitmap("bagAndInfo.cell.bagCellOverBgAsset");
-         _loc2_ = 32;
-         while(_loc2_ <= 143)
+         for(i = 32; i <= 143; )
          {
-            _loc1_ = new MgStoneCell(_loc2_,null,true);
-            CellFactory.instance.fillTipProp(_loc1_);
-            _loc1_.addEventListener("interactive_click",__clickHandler);
-            _loc1_.addEventListener("interactive_double_click",__doubleClickHandler);
-            DoubleClickManager.Instance.enableDoubleClick(_loc1_);
-            _loc1_.addEventListener("lockChanged",__cellChanged);
-            if(_loc2_ >= _startIndex && _loc2_ <= _endIndex)
+            cell = new MgStoneCell(i,null,true);
+            CellFactory.instance.fillTipProp(cell);
+            cell.addEventListener("interactive_click",__clickHandler);
+            cell.addEventListener("interactive_double_click",__doubleClickHandler);
+            DoubleClickManager.Instance.enableDoubleClick(cell);
+            cell.addEventListener("lockChanged",__cellChanged);
+            if(i >= _startIndex && i <= _endIndex)
             {
-               addChild(_loc1_);
+               addChild(cell);
             }
-            _cells[_loc2_] = _loc1_;
-            _cellVec.push(_loc1_);
-            _loc2_++;
+            _cells[i] = cell;
+            _cellVec.push(cell);
+            i++;
          }
       }
       
-      override public function setData(param1:BagInfo) : void
+      override public function setData(bag:BagInfo) : void
       {
-         if(_bagdata == param1)
+         if(_bagdata == bag)
          {
             return;
          }
@@ -64,85 +63,84 @@ package magicStone.views
          {
             _bagdata.removeEventListener("update",__updateGoods);
          }
-         _bagdata = param1;
+         _bagdata = bag;
          updateBagList();
          _bagdata.addEventListener("update",__updateGoods);
       }
       
-      override protected function __updateGoods(param1:BagEvent) : void
+      override protected function __updateGoods(evt:BagEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc4_:Dictionary = param1.changedSlots;
+         var c:* = null;
+         var changes:Dictionary = evt.changedSlots;
          var _loc6_:int = 0;
-         var _loc5_:* = _loc4_;
-         for each(var _loc3_ in _loc4_)
+         var _loc5_:* = changes;
+         for each(var item in changes)
          {
-            if(_loc3_.Place >= 32 && _loc3_.Place <= 143)
+            if(item.Place >= 32 && item.Place <= 143)
             {
-               _loc2_ = _bagdata.getItemAt(_loc3_.Place);
-               if(_loc2_)
+               c = _bagdata.getItemAt(item.Place);
+               if(c)
                {
-                  setCellInfo(_loc2_.Place,_loc2_);
+                  setCellInfo(c.Place,c);
                }
                else
                {
-                  setCellInfo(_loc3_.Place,null);
+                  setCellInfo(item.Place,null);
                }
                dispatchEvent(new Event("change"));
             }
          }
       }
       
-      override public function setCellInfo(param1:int, param2:InventoryItemInfo) : void
+      override public function setCellInfo(index:int, info:InventoryItemInfo) : void
       {
-         var _loc3_:String = String(param1);
-         if(param2 == null)
+         var key:String = String(index);
+         if(info == null)
          {
-            if(_cells[_loc3_])
+            if(_cells[key])
             {
-               _cells[_loc3_].info = null;
+               _cells[key].info = null;
             }
             return;
          }
-         if(param2.Count == 0)
+         if(info.Count == 0)
          {
-            _cells[_loc3_].info = null;
+            _cells[key].info = null;
          }
          else
          {
-            _cells[_loc3_].info = param2;
+            _cells[key].info = info;
          }
       }
       
       public function updateBagList() : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          clearDataCells();
          removeAllChild();
-         _loc2_ = 32;
-         while(_loc2_ <= 143)
+         for(i = 32; i <= 143; )
          {
-            if(_loc2_ >= _startIndex && _loc2_ <= _endIndex)
+            if(i >= _startIndex && i <= _endIndex)
             {
-               addChild(_cells[_loc2_]);
+               addChild(_cells[i]);
             }
-            _loc2_++;
+            i++;
          }
          var _loc4_:int = 0;
          var _loc3_:* = _bagdata.items;
-         for(var _loc1_ in _bagdata.items)
+         for(var index in _bagdata.items)
          {
-            if(_cells[_loc1_] != null)
+            if(_cells[index] != null)
             {
-               _bagdata.items[_loc1_].isMoveSpace = true;
-               _cells[_loc1_].info = _bagdata.items[_loc1_];
+               _bagdata.items[index].isMoveSpace = true;
+               _cells[index].info = _bagdata.items[index];
             }
          }
       }
       
-      public function set curPage(param1:int) : void
+      public function set curPage(value:int) : void
       {
-         _curPage = param1;
+         _curPage = value;
          _startIndex = 32 + (_curPage - 1) * _cellNum;
          _endIndex = 32 + _curPage * _cellNum - 1;
       }

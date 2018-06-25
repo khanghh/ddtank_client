@@ -44,11 +44,11 @@ package explorerManual.view.page
       
       private var _pageDescribe:FilterFrameText;
       
-      public function ExplorerPageLeftView(param1:int, param2:ExplorerManualInfo)
+      public function ExplorerPageLeftView(type:int, model:ExplorerManualInfo)
       {
          super();
-         _model = param2;
-         _chapterID = param1;
+         _model = model;
+         _chapterID = type;
          _curProSpri = new Sprite();
          addChild(_curProSpri);
          _activeProSpri = new Sprite();
@@ -102,21 +102,21 @@ package explorerManual.view.page
          }
       }
       
-      private function __manualModelUpdateHandler(param1:Event) : void
+      private function __manualModelUpdateHandler(evt:Event) : void
       {
          allProData();
       }
       
-      private function __activeUpdateHandler(param1:Event) : void
+      private function __activeUpdateHandler(evt:Event) : void
       {
-         var _loc2_:Boolean = _model.checkPageActiveByPageID(_curPageInfo.ID);
-         _activeStateTitle.text = LanguageMgr.GetTranslation("explorerManual.activeProState") + (!!_loc2_?LanguageMgr.GetTranslation("explorerManual.active"):LanguageMgr.GetTranslation("explorerManual.unActive"));
+         var result:Boolean = _model.checkPageActiveByPageID(_curPageInfo.ID);
+         _activeStateTitle.text = LanguageMgr.GetTranslation("explorerManual.activeProState") + (!!result?LanguageMgr.GetTranslation("explorerManual.active"):LanguageMgr.GetTranslation("explorerManual.unActive"));
       }
       
-      public function set pageInfo(param1:ManualPageItemInfo) : void
+      public function set pageInfo(info:ManualPageItemInfo) : void
       {
          clear();
-         _curPageInfo = param1;
+         _curPageInfo = info;
          visibleView();
          if(_curPageInfo.Sort == 0)
          {
@@ -150,9 +150,9 @@ package explorerManual.view.page
          _curProTitle.visible = _curPageInfo.Sort > 0;
       }
       
-      public function set curChapter(param1:int) : void
+      public function set curChapter(id:int) : void
       {
-         _chapterID = param1;
+         _chapterID = id;
          updateTitleIcon();
          updatePageDescris();
       }
@@ -169,37 +169,34 @@ package explorerManual.view.page
       
       private function clear() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:int = 0;
-         var _loc2_:int = 0;
+         var i:int = 0;
+         var j:int = 0;
+         var k:int = 0;
          _curPageInfo = null;
          if(_curProSpri)
          {
-            _loc3_ = 0;
-            while(_loc3_ < _curProSpri.numChildren)
+            for(i = 0; i < _curProSpri.numChildren; )
             {
-               ObjectUtils.disposeObject(_curProSpri.getChildAt(_loc3_));
-               _loc3_++;
+               ObjectUtils.disposeObject(_curProSpri.getChildAt(i));
+               i++;
             }
             _curProSpri.removeChildren();
          }
          if(_activeProSpri)
          {
-            _loc1_ = 0;
-            while(_loc1_ < _activeProSpri.numChildren)
+            for(j = 0; j < _activeProSpri.numChildren; )
             {
-               ObjectUtils.disposeObject(_activeProSpri.getChildAt(_loc1_));
-               _loc1_++;
+               ObjectUtils.disposeObject(_activeProSpri.getChildAt(j));
+               j++;
             }
             _activeProSpri.removeChildren();
          }
          if(_totalProSpri)
          {
-            _loc2_ = 0;
-            while(_loc2_ < _totalProSpri.numChildren)
+            for(k = 0; k < _totalProSpri.numChildren; )
             {
-               ObjectUtils.disposeObject(_totalProSpri.getChildAt(_loc2_));
-               _loc2_++;
+               ObjectUtils.disposeObject(_totalProSpri.getChildAt(k));
+               k++;
             }
             _totalProSpri.removeChildren();
          }
@@ -216,77 +213,74 @@ package explorerManual.view.page
       
       private function curProData() : void
       {
-         var _loc2_:* = null;
-         var _loc4_:int = 0;
-         var _loc5_:int = 0;
-         var _loc1_:Array = ManualProType.collectProArr;
-         var _loc3_:Array = LanguageMgr.GetTranslation("explorerManual.manualAllPro.name").split(",");
-         _loc4_ = 0;
-         while(_loc4_ < _loc1_.length)
+         var curPro:* = null;
+         var j:int = 0;
+         var i:int = 0;
+         var collectArr:Array = ManualProType.collectProArr;
+         var lan:Array = LanguageMgr.GetTranslation("explorerManual.manualAllPro.name").split(",");
+         for(j = 0; j < collectArr.length; )
          {
-            if(int(_curPageInfo[_loc1_[_loc4_]]) > 0)
+            if(int(_curPageInfo[collectArr[j]]) > 0)
             {
-               _loc2_ = ComponentFactory.Instance.creatComponentByStylename("explorerManual.pageLeftView.curProValueTxt");
-               _curProSpri.addChild(_loc2_);
-               _loc2_.text = _loc3_[_loc4_] + " +" + _curPageInfo[_loc1_[_loc4_]];
-               _loc2_.x = 100 * (_loc5_ % 2) + 66;
-               _loc2_.y = 163 + int(_loc5_ / 2) * 20;
-               _loc5_++;
-               if(_loc5_ >= 4)
+               curPro = ComponentFactory.Instance.creatComponentByStylename("explorerManual.pageLeftView.curProValueTxt");
+               _curProSpri.addChild(curPro);
+               curPro.text = lan[j] + " +" + _curPageInfo[collectArr[j]];
+               curPro.x = 100 * (i % 2) + 66;
+               curPro.y = 163 + int(i / 2) * 20;
+               i++;
+               if(i >= 4)
                {
                   return;
                }
             }
-            _loc4_++;
+            j++;
          }
       }
       
       private function activeProData() : void
       {
-         var _loc3_:* = null;
-         var _loc4_:int = 0;
-         var _loc5_:int = 0;
-         var _loc1_:Array = ManualProType.activateProArr;
-         var _loc2_:Array = LanguageMgr.GetTranslation("explorerManual.manualAllPro.name").split(",");
-         _loc4_ = 0;
-         while(_loc4_ < _loc1_.length)
+         var activePro:* = null;
+         var j:int = 0;
+         var i:int = 0;
+         var activateArr:Array = ManualProType.activateProArr;
+         var lan:Array = LanguageMgr.GetTranslation("explorerManual.manualAllPro.name").split(",");
+         for(j = 0; j < activateArr.length; )
          {
-            if(int(_curPageInfo[_loc1_[_loc4_]]) > 0)
+            if(int(_curPageInfo[activateArr[j]]) > 0)
             {
-               _loc3_ = ComponentFactory.Instance.creatComponentByStylename("explorerManual.pageLeftView.curProValueTxt");
-               _activeProSpri.addChild(_loc3_);
-               _loc3_.text = _loc2_[_loc4_] + " +" + _curPageInfo[_loc1_[_loc4_]];
-               _loc3_.x = 100 * (_loc5_ % 2) + 66;
-               _loc3_.y = 163 + int(_loc5_ / 2) * 20;
-               _loc5_++;
-               if(_loc5_ >= 4)
+               activePro = ComponentFactory.Instance.creatComponentByStylename("explorerManual.pageLeftView.curProValueTxt");
+               _activeProSpri.addChild(activePro);
+               activePro.text = lan[j] + " +" + _curPageInfo[activateArr[j]];
+               activePro.x = 100 * (i % 2) + 66;
+               activePro.y = 163 + int(i / 2) * 20;
+               i++;
+               if(i >= 4)
                {
                   return;
                }
             }
-            _loc4_++;
+            j++;
          }
       }
       
       private function allProData() : void
       {
-         var _loc4_:* = null;
-         var _loc3_:int = 0;
+         var totalPro:* = null;
+         var j:int = 0;
          if(_totalProSpri && _totalProSpri.numChildren > 0)
          {
             ObjectUtils.disposeAllChildren(_totalProSpri);
          }
-         var _loc1_:Array = ManualProType.pageProArr;
-         var _loc2_:Array = LanguageMgr.GetTranslation("explorerManual.manualAllPro.name").split(",");
-         _loc3_ = 0;
-         while(_loc3_ < _loc1_.length)
+         var allProArr:Array = ManualProType.pageProArr;
+         var lan:Array = LanguageMgr.GetTranslation("explorerManual.manualAllPro.name").split(",");
+         for(j = 0; j < allProArr.length; )
          {
-            _loc4_ = ComponentFactory.Instance.creatComponentByStylename("explorerManual.pageLeftView.curProValueTxt");
-            _totalProSpri.addChild(_loc4_);
-            _loc4_.text = _loc2_[_loc3_] + " +" + _model.pageAllPro[_loc1_[_loc3_]];
-            _loc4_.x = 100 * (_loc3_ % 2) + 66;
-            _loc4_.y = 163 + int(_loc3_ / 2) * 20;
-            _loc3_++;
+            totalPro = ComponentFactory.Instance.creatComponentByStylename("explorerManual.pageLeftView.curProValueTxt");
+            _totalProSpri.addChild(totalPro);
+            totalPro.text = lan[j] + " +" + _model.pageAllPro[allProArr[j]];
+            totalPro.x = 100 * (j % 2) + 66;
+            totalPro.y = 163 + int(j / 2) * 20;
+            j++;
          }
       }
       

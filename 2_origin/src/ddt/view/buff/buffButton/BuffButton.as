@@ -30,6 +30,8 @@ package ddt.view.buff.buffButton
       
       private var _canClick:Boolean;
       
+      protected var _bg:Bitmap;
+      
       protected var _tipStyle:String;
       
       protected var _tipData:BuffTipInfo;
@@ -40,14 +42,14 @@ package ddt.view.buff.buffButton
       
       protected var _tipGapH:int;
       
-      public function BuffButton(param1:String)
+      public function BuffButton(bgString:String)
       {
          super();
-         var _loc2_:Bitmap = ComponentFactory.Instance.creatBitmap(param1);
-         var _loc3_:int = 33;
-         _loc2_.height = _loc3_;
-         _loc2_.width = _loc3_;
-         addChild(_loc2_);
+         _bg = ComponentFactory.Instance.creatBitmap(bgString);
+         var _loc2_:int = 33;
+         _bg.height = _loc2_;
+         _bg.width = _loc2_;
+         addChild(_bg);
          _canClick = true;
          buttonMode = _canClick;
          _tipStyle = "core.buffTip";
@@ -58,18 +60,18 @@ package ddt.view.buff.buffButton
          initEvents();
       }
       
-      public static function createBuffButton(param1:int, param2:String = "") : BuffButton
+      public static function createBuffButton(buffID:int, str:String = "") : BuffButton
       {
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         switch(int(param1))
+         var doubleExp:* = null;
+         var doubleGeste:* = null;
+         switch(int(buffID))
          {
             case 0:
-               _loc4_ = new DoubExpBuffButton();
-               return _loc4_;
+               doubleExp = new DoubExpBuffButton();
+               return doubleExp;
             case 1:
-               _loc3_ = new DoubGesteBuffButton();
-               return _loc3_;
+               doubleGeste = new DoubGesteBuffButton();
+               return doubleGeste;
             case 2:
                return new DoublePrestigeBuffButton();
             case 3:
@@ -86,7 +88,7 @@ package ddt.view.buff.buffButton
          addEventListener("mouseOut",__onMouseOut);
       }
       
-      protected function __onclick(param1:MouseEvent) : void
+      protected function __onclick(evt:MouseEvent) : void
       {
          if(!CanClick)
          {
@@ -95,7 +97,7 @@ package ddt.view.buff.buffButton
          SoundManager.instance.play("008");
       }
       
-      protected function __onMouseOver(param1:MouseEvent) : void
+      protected function __onMouseOver(evt:MouseEvent) : void
       {
          if(_info && _info.IsExist)
          {
@@ -103,7 +105,7 @@ package ddt.view.buff.buffButton
          }
       }
       
-      protected function __onMouseOut(param1:MouseEvent) : void
+      protected function __onMouseOut(evt:MouseEvent) : void
       {
          if(_info && _info.IsExist)
          {
@@ -121,9 +123,9 @@ package ddt.view.buff.buffButton
          return true;
       }
       
-      protected function buyBuff(param1:Boolean = true) : void
+      protected function buyBuff(bool:Boolean = true) : void
       {
-         SocketManager.Instance.out.sendUseCard(-1,-1,[ShopManager.Instance.getMoneyShopItemByTemplateID(_info.buffItemInfo.TemplateID).GoodsID],1,false,param1);
+         SocketManager.Instance.out.sendUseCard(-1,-1,[ShopManager.Instance.getMoneyShopItemByTemplateID(_info.buffItemInfo.TemplateID).GoodsID],1,false,bool);
       }
       
       protected function createTipRender() : Sprite
@@ -131,10 +133,10 @@ package ddt.view.buff.buffButton
          return new Sprite();
       }
       
-      public function setSize(param1:Number, param2:Number) : void
+      public function setSize(width:Number, height:Number) : void
       {
-         param1 = param1;
-         param2 = param2;
+         width = width;
+         height = height;
       }
       
       private function updateView() : void
@@ -149,9 +151,9 @@ package ddt.view.buff.buffButton
          }
       }
       
-      public function set CanClick(param1:Boolean) : void
+      public function set CanClick(value:Boolean) : void
       {
-         _canClick = param1;
+         _canClick = value;
          buttonMode = _canClick;
       }
       
@@ -160,9 +162,9 @@ package ddt.view.buff.buffButton
          return _canClick;
       }
       
-      public function set info(param1:BuffInfo) : void
+      public function set info(value:BuffInfo) : void
       {
-         _info = param1;
+         _info = value;
          if(_info.Type != 14 && _info.Type != 17)
          {
             updateView();
@@ -174,18 +176,18 @@ package ddt.view.buff.buffButton
          return _info;
       }
       
-      protected function __onBuyResponse(param1:FrameEvent) : void
+      protected function __onBuyResponse(evt:FrameEvent) : void
       {
-         var _loc2_:int = 0;
+         var needMoney:int = 0;
          Setting = false;
          SoundManager.instance.play("008");
-         var _loc3_:Boolean = (param1.target as BaseAlerFrame).isBand;
-         (param1.target as BaseAlerFrame).removeEventListener("response",__onBuyResponse);
-         (param1.target as BaseAlerFrame).dispose();
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var isBand:Boolean = (evt.target as BaseAlerFrame).isBand;
+         (evt.target as BaseAlerFrame).removeEventListener("response",__onBuyResponse);
+         (evt.target as BaseAlerFrame).dispose();
+         if(evt.responseCode == 2 || evt.responseCode == 3)
          {
-            _loc2_ = ShopManager.Instance.getMoneyShopItemByTemplateID(_info.buffItemInfo.TemplateID).getItemPrice(1).bothMoneyValue;
-            CheckMoneyUtils.instance.checkMoney(_loc3_,_loc2_,onCheckComplete);
+            needMoney = ShopManager.Instance.getMoneyShopItemByTemplateID(_info.buffItemInfo.TemplateID).getItemPrice(1).bothMoneyValue;
+            CheckMoneyUtils.instance.checkMoney(isBand,needMoney,onCheckComplete);
          }
       }
       
@@ -200,6 +202,11 @@ package ddt.view.buff.buffButton
          removeEventListener("mouseOver",__onMouseOver);
          removeEventListener("mouseOut",__onMouseOut);
          ObjectUtils.disposeAllChildren(this);
+         if(_bg)
+         {
+            ObjectUtils.disposeObject(_bg);
+         }
+         _bg = null;
          _info = null;
          ShowTipManager.Instance.removeTip(this);
          if(parent)
@@ -213,9 +220,9 @@ package ddt.view.buff.buffButton
          return _tipStyle;
       }
       
-      public function set tipStyle(param1:String) : void
+      public function set tipStyle(value:String) : void
       {
-         _tipStyle = param1;
+         _tipStyle = value;
       }
       
       public function get tipData() : Object
@@ -234,9 +241,9 @@ package ddt.view.buff.buffButton
          return _tipData;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(value:Object) : void
       {
-         _tipData = param1 as BuffTipInfo;
+         _tipData = value as BuffTipInfo;
       }
       
       public function get tipDirctions() : String
@@ -244,9 +251,9 @@ package ddt.view.buff.buffButton
          return _tipDirctions;
       }
       
-      public function set tipDirctions(param1:String) : void
+      public function set tipDirctions(value:String) : void
       {
-         _tipDirctions = param1;
+         _tipDirctions = value;
       }
       
       public function get tipGapV() : int
@@ -254,9 +261,9 @@ package ddt.view.buff.buffButton
          return _tipGapV;
       }
       
-      public function set tipGapV(param1:int) : void
+      public function set tipGapV(value:int) : void
       {
-         _tipGapV = param1;
+         _tipGapV = value;
       }
       
       public function get tipGapH() : int
@@ -269,9 +276,9 @@ package ddt.view.buff.buffButton
          return this;
       }
       
-      public function set tipGapH(param1:int) : void
+      public function set tipGapH(value:int) : void
       {
-         _tipGapH = param1;
+         _tipGapH = value;
       }
    }
 }

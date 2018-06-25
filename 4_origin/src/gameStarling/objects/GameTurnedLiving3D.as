@@ -8,9 +8,9 @@ package gameStarling.objects
    {
        
       
-      public function GameTurnedLiving3D(param1:TurnedLiving)
+      public function GameTurnedLiving3D(info:TurnedLiving)
       {
-         super(param1);
+         super(info);
       }
       
       public function get turnedLiving() : TurnedLiving
@@ -33,7 +33,7 @@ package gameStarling.objects
          }
       }
       
-      protected function __attackingChanged(param1:LivingEvent) : void
+      protected function __attackingChanged(event:LivingEvent) : void
       {
          if(_smallView)
          {

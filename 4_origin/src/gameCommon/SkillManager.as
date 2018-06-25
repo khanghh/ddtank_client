@@ -16,140 +16,139 @@ package gameCommon
          super();
       }
       
-      public static function applySkillToLiving(param1:int, param2:int, ... rest) : void
+      public static function applySkillToLiving(skill:int, livingID:int, ... arg) : void
       {
-         switch(int(param1) - 1)
+         switch(int(skill) - 1)
          {
             case 0:
-               applyForbidFly(param2);
+               applyForbidFly(livingID);
                break;
             case 1:
-               applyReduceDander(param2,rest[0]);
+               applyReduceDander(livingID,arg[0]);
                break;
             case 2:
-               applyChangeTurnTime(param2,rest[0],rest[1]);
+               applyChangeTurnTime(livingID,arg[0],arg[1]);
                break;
             case 3:
-               applyLimitMaxForce(param2,rest[0]);
+               applyLimitMaxForce(livingID,arg[0]);
                break;
             case 4:
-               applyReduceStrength(param2,rest[0]);
+               applyReduceStrength(livingID,arg[0]);
                break;
             case 5:
-               applyResolveHurt(param2,rest[0]);
+               applyResolveHurt(livingID,arg[0]);
                break;
             case 6:
-               applyRevert(param2,rest[0]);
+               applyRevert(livingID,arg[0]);
          }
       }
       
-      public static function removeSkillFromLiving(param1:int, param2:int, ... rest) : void
+      public static function removeSkillFromLiving(skill:int, livingID:int, ... arg) : void
       {
-         if(!(int(param1) - 6))
+         if(!(int(skill) - 6))
          {
-            removeResolveHurt(param2,rest[0]);
+            removeResolveHurt(livingID,arg[0]);
          }
       }
       
-      private static function applyReduceStrength(param1:int, param2:int) : void
+      private static function applyReduceStrength(livingid:int, strength:int) : void
       {
-         var _loc3_:* = null;
-         var _loc4_:Living = GameControl.Instance.Current.findLiving(param1);
-         if(_loc4_.isPlayer() && _loc4_.isLiving)
+         var effect:* = null;
+         var living:Living = GameControl.Instance.Current.findLiving(livingid);
+         if(living.isPlayer() && living.isLiving)
          {
-            _loc3_ = MirariEffectIconManager.getInstance().createEffectIcon(12) as ReduceStrengthEffect;
-            _loc3_.strength = param2;
-            if(_loc3_ != null)
+            effect = MirariEffectIconManager.getInstance().createEffectIcon(12) as ReduceStrengthEffect;
+            effect.strength = strength;
+            if(effect != null)
             {
             }
          }
       }
       
-      private static function applyLimitMaxForce(param1:int, param2:int) : void
+      private static function applyLimitMaxForce(livingid:int, maxForce:int) : void
       {
-         var _loc3_:* = null;
-         var _loc4_:Living = GameControl.Instance.Current.findLiving(param1);
-         if(_loc4_.isPlayer() && _loc4_.isLiving)
+         var effect:* = null;
+         var living:Living = GameControl.Instance.Current.findLiving(livingid);
+         if(living.isPlayer() && living.isLiving)
          {
-            _loc3_ = MirariEffectIconManager.getInstance().createEffectIcon(9) as LimitMaxForceEffectIcon;
-            _loc3_.force = param2;
-            if(_loc3_ != null)
+            effect = MirariEffectIconManager.getInstance().createEffectIcon(9) as LimitMaxForceEffectIcon;
+            effect.force = maxForce;
+            if(effect != null)
             {
             }
          }
       }
       
-      private static function applyChangeTurnTime(param1:int, param2:int, param3:int) : void
+      private static function applyChangeTurnTime(livingid:int, time:int, reverse:int) : void
       {
-         var _loc4_:* = null;
-         var _loc5_:Living = GameControl.Instance.Current.findLiving(param1);
-         if(_loc5_.isPlayer() && _loc5_.isLiving)
+         var player:* = null;
+         var living:Living = GameControl.Instance.Current.findLiving(livingid);
+         if(living.isPlayer() && living.isLiving)
          {
-            _loc4_ = _loc5_ as Player;
+            player = living as Player;
          }
       }
       
-      private static function applyReduceDander(param1:int, param2:int) : void
+      private static function applyReduceDander(livingid:int, dander:int) : void
       {
-         var _loc3_:* = null;
-         var _loc4_:Living = GameControl.Instance.Current.findLiving(param1);
-         if(_loc4_.isPlayer() && _loc4_.isLiving)
+         var player:* = null;
+         var living:Living = GameControl.Instance.Current.findLiving(livingid);
+         if(living.isPlayer() && living.isLiving)
          {
-            _loc3_ = _loc4_ as Player;
-            _loc3_.dander = param2;
+            player = living as Player;
+            player.dander = dander;
          }
       }
       
-      private static function applyForbidFly(param1:int) : void
+      private static function applyForbidFly(livingid:int) : void
       {
-         var _loc3_:Living = GameControl.Instance.Current.findLiving(param1);
-         var _loc2_:BaseMirariEffectIcon = MirariEffectIconManager.getInstance().createEffectIcon(8);
-         if(_loc2_ != null && _loc3_.isLiving)
+         var living:Living = GameControl.Instance.Current.findLiving(livingid);
+         var baseEffect:BaseMirariEffectIcon = MirariEffectIconManager.getInstance().createEffectIcon(8);
+         if(baseEffect != null && living.isLiving)
          {
          }
       }
       
-      private static function applyResolveHurt(param1:int, param2:PackageIn) : void
+      private static function applyResolveHurt(livingid:int, pkg:PackageIn) : void
       {
-         var _loc3_:Living = GameControl.Instance.Current.findLiving(param1);
-         if(_loc3_.isLiving)
+         var living:Living = GameControl.Instance.Current.findLiving(livingid);
+         if(living.isLiving)
          {
-            _loc3_.applySkill(6,param2);
+            living.applySkill(6,pkg);
          }
       }
       
-      private static function removeResolveHurt(param1:int, param2:PackageIn) : void
+      private static function removeResolveHurt(livingid:int, pkg:PackageIn) : void
       {
-         var _loc4_:* = null;
-         var _loc6_:int = 0;
-         var _loc5_:Living = GameControl.Instance.Current.findLiving(param1);
-         if(_loc5_ && _loc5_.isPlayer() && _loc5_.isLiving)
+         var player:* = null;
+         var i:int = 0;
+         var living:Living = GameControl.Instance.Current.findLiving(livingid);
+         if(living && living.isPlayer() && living.isLiving)
          {
-            _loc4_ = Player(_loc5_);
-            _loc4_.removeSkillMovie(2);
-            _loc4_.removeMirariEffect(MirariEffectIconManager.getInstance().createEffectIcon(10));
+            player = Player(living);
+            player.removeSkillMovie(2);
+            player.removeMirariEffect(MirariEffectIconManager.getInstance().createEffectIcon(10));
          }
-         var _loc3_:int = param2.readInt();
-         _loc6_ = 0;
-         while(_loc6_ < _loc3_)
+         var count:int = pkg.readInt();
+         for(i = 0; i < count; )
          {
-            _loc5_ = GameControl.Instance.Current.findLiving(param2.readInt());
-            if(_loc5_.isPlayer() && _loc5_.isLiving)
+            living = GameControl.Instance.Current.findLiving(pkg.readInt());
+            if(living.isPlayer() && living.isLiving)
             {
-               _loc4_ = Player(_loc5_);
-               _loc4_.removeSkillMovie(2);
-               _loc4_.removeMirariEffect(MirariEffectIconManager.getInstance().createEffectIcon(10));
+               player = Player(living);
+               player.removeSkillMovie(2);
+               player.removeMirariEffect(MirariEffectIconManager.getInstance().createEffectIcon(10));
             }
-            _loc6_++;
+            i++;
          }
       }
       
-      private static function applyRevert(param1:int, param2:PackageIn) : void
+      private static function applyRevert(livingid:int, pkg:PackageIn) : void
       {
-         var _loc3_:Living = GameControl.Instance.Current.findLiving(param1);
-         if(_loc3_.isLiving)
+         var living:Living = GameControl.Instance.Current.findLiving(livingid);
+         if(living.isLiving)
          {
-            _loc3_.applySkill(7,param2);
+            living.applySkill(7,pkg);
          }
       }
    }

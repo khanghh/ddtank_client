@@ -87,9 +87,9 @@ package roomList.pvpRoomList
       
       private var _vipName:GradientText;
       
-      public function RoomListPlayerListView(param1:DictionaryData)
+      public function RoomListPlayerListView(data:DictionaryData)
       {
-         _data = param1;
+         _data = data;
          super();
          _selfInfo = PlayerManager.Instance.Self;
          initbg();
@@ -97,13 +97,13 @@ package roomList.pvpRoomList
          initEvent();
       }
       
-      public function set type(param1:int) : void
+      public function set type(value:int) : void
       {
       }
       
       protected function initbg() : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          _characterBg = ClassUtils.CreatInstance("asset.ddtroomlist.characterbg") as MovieClip;
          PositionUtils.setPos(_characterBg,"asset.ddtRoomlist.pvp.left.characterbgpos");
          addChild(_characterBg);
@@ -116,15 +116,14 @@ package roomList.pvpRoomList
          PositionUtils.setPos(_listbg,"asset.ddtRoomlist.pvp.left.listbgpos");
          addChild(_listbg);
          _buffbgVec = new Vector.<Bitmap>(6);
-         var _loc1_:Point = ComponentFactory.Instance.creatCustomObject("asset.ddtRoomlist.pvp.buffbgpos");
-         _loc2_ = 0;
-         while(_loc2_ < 6)
+         var startPos:Point = ComponentFactory.Instance.creatCustomObject("asset.ddtRoomlist.pvp.buffbgpos");
+         for(i = 0; i < 6; )
          {
-            _buffbgVec[_loc2_] = ComponentFactory.Instance.creatBitmap("asset.core.buff.buffTiledBg");
-            _buffbgVec[_loc2_].x = _loc1_.x + (_buffbgVec[_loc2_].width - 1) * _loc2_;
-            _buffbgVec[_loc2_].y = _loc1_.y;
-            addChild(_buffbgVec[_loc2_]);
-            _loc2_++;
+            _buffbgVec[i] = ComponentFactory.Instance.creatBitmap("asset.core.buff.buffTiledBg");
+            _buffbgVec[i].x = startPos.x + (_buffbgVec[i].width - 1) * i;
+            _buffbgVec[i].y = startPos.y;
+            addChild(_buffbgVec[i]);
+            i++;
          }
       }
       
@@ -225,97 +224,96 @@ package roomList.pvpRoomList
          _data.addEventListener("update",__updatePlayer);
       }
       
-      private function __updatePlayer(param1:DictionaryEvent) : void
+      private function __updatePlayer(event:DictionaryEvent) : void
       {
-         var _loc2_:PlayerInfo = param1.data as PlayerInfo;
-         _playerList.vectorListModel.remove(_loc2_);
-         _playerList.vectorListModel.insertElementAt(_loc2_,getInsertIndex(_loc2_));
+         var player:PlayerInfo = event.data as PlayerInfo;
+         _playerList.vectorListModel.remove(player);
+         _playerList.vectorListModel.insertElementAt(player,getInsertIndex(player));
          _playerList.list.updateListView();
          upSelfItem();
       }
       
-      private function __addPlayer(param1:DictionaryEvent) : void
+      private function __addPlayer(event:DictionaryEvent) : void
       {
-         var _loc2_:PlayerInfo = param1.data as PlayerInfo;
-         _playerList.vectorListModel.insertElementAt(_loc2_,getInsertIndex(_loc2_));
+         var player:PlayerInfo = event.data as PlayerInfo;
+         _playerList.vectorListModel.insertElementAt(player,getInsertIndex(player));
          upSelfItem();
       }
       
-      private function __removePlayer(param1:DictionaryEvent) : void
+      private function __removePlayer(event:DictionaryEvent) : void
       {
-         var _loc2_:PlayerInfo = param1.data as PlayerInfo;
-         _playerList.vectorListModel.remove(_loc2_);
+         var player:PlayerInfo = event.data as PlayerInfo;
+         _playerList.vectorListModel.remove(player);
          upSelfItem();
       }
       
       private function upSelfItem() : void
       {
-         var _loc2_:PlayerInfo = _data[PlayerManager.Instance.Self.ID];
-         var _loc1_:int = _playerList.vectorListModel.indexOf(_loc2_);
-         if(_loc1_ == -1 || _loc1_ == 0)
+         var selfInfo:PlayerInfo = _data[PlayerManager.Instance.Self.ID];
+         var index:int = _playerList.vectorListModel.indexOf(selfInfo);
+         if(index == -1 || index == 0)
          {
             return;
          }
-         _playerList.vectorListModel.removeAt(_loc1_);
-         _playerList.vectorListModel.append(_loc2_,0);
+         _playerList.vectorListModel.removeAt(index);
+         _playerList.vectorListModel.append(selfInfo,0);
       }
       
-      private function __itemClick(param1:ListItemEvent) : void
+      private function __itemClick(evt:ListItemEvent) : void
       {
          SoundManager.instance.play("008");
          if(!_currentItem)
          {
-            _currentItem = param1.cell as RoomListPlayerItem;
-            _currentItem.setListCellStatus(_playerList.list,true,param1.index);
+            _currentItem = evt.cell as RoomListPlayerItem;
+            _currentItem.setListCellStatus(_playerList.list,true,evt.index);
          }
-         if(_currentItem != param1.cell as RoomListPlayerItem)
+         if(_currentItem != evt.cell as RoomListPlayerItem)
          {
-            _currentItem.setListCellStatus(_playerList.list,false,param1.index);
-            _currentItem = param1.cell as RoomListPlayerItem;
-            _currentItem.setListCellStatus(_playerList.list,true,param1.index);
+            _currentItem.setListCellStatus(_playerList.list,false,evt.index);
+            _currentItem = evt.cell as RoomListPlayerItem;
+            _currentItem.setListCellStatus(_playerList.list,true,evt.index);
          }
       }
       
-      private function getInsertIndex(param1:PlayerInfo) : int
+      private function getInsertIndex(info:PlayerInfo) : int
       {
-         var _loc4_:* = null;
-         var _loc5_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:Array = _playerList.vectorListModel.elements;
-         if(_loc3_.length == 0)
+         var tempInfo:* = null;
+         var i:int = 0;
+         var tempIndex:int = 0;
+         var tempArray:Array = _playerList.vectorListModel.elements;
+         if(tempArray.length == 0)
          {
             return 0;
          }
-         _loc5_ = _loc3_.length - 1;
-         while(_loc5_ >= 0)
+         for(i = tempArray.length - 1; i >= 0; )
          {
-            _loc4_ = _loc3_[_loc5_] as PlayerInfo;
-            if(!(param1.IsVIP && !_loc4_.IsVIP))
+            tempInfo = tempArray[i] as PlayerInfo;
+            if(!(info.IsVIP && !tempInfo.IsVIP))
             {
-               if(!param1.IsVIP && _loc4_.IsVIP)
+               if(!info.IsVIP && tempInfo.IsVIP)
                {
-                  return _loc5_ + 1;
+                  return i + 1;
                }
-               if(param1.IsVIP == _loc4_.IsVIP)
+               if(info.IsVIP == tempInfo.IsVIP)
                {
-                  if(param1.Grade > _loc4_.Grade)
+                  if(info.Grade > tempInfo.Grade)
                   {
-                     _loc2_ = _loc5_ - 1;
+                     tempIndex = i - 1;
                   }
                   else
                   {
-                     return _loc5_ + 1;
+                     return i + 1;
                   }
                }
             }
-            _loc5_--;
+            i--;
          }
-         return _loc2_ < 0?0:_loc2_;
+         return tempIndex < 0?0:tempIndex;
       }
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          SocketManager.Instance.dispatchEvent(new NewHallEvent("showbuffcontrol"));
          _data.removeEventListener("add",__addPlayer);
          _data.removeEventListener("remove",__removePlayer);
@@ -376,12 +374,11 @@ package roomList.pvpRoomList
          _sex = null;
          if(_buffbgVec)
          {
-            _loc1_ = 0;
-            while(_loc1_ < _buffbgVec.length)
+            for(i = 0; i < _buffbgVec.length; )
             {
-               ObjectUtils.disposeObject(_buffbgVec[_loc1_]);
-               _buffbgVec[_loc1_] = null;
-               _loc1_++;
+               ObjectUtils.disposeObject(_buffbgVec[i]);
+               _buffbgVec[i] = null;
+               i++;
             }
             _buffbgVec = null;
          }

@@ -34,14 +34,14 @@ package gameCommon.view.prop
       
       protected var _inited:Boolean = false;
       
-      public function FightPropBar(param1:LocalPlayer)
+      public function FightPropBar(self:LocalPlayer)
       {
          _mode = SharedManager.Instance.propLayerMode;
          _cells = new Vector.<PropCell>();
          _props = new Vector.<PropInfo>();
          _percentPropsList = new Vector.<PropCell>();
          super();
-         _self = param1;
+         _self = self;
          configUI();
          addEvent();
          _inited = true;
@@ -79,24 +79,24 @@ package gameCommon.view.prop
          KeyboardManager.getInstance().addEventListener("keyDown",__keyDown);
       }
       
-      protected function __enabledChanged(param1:LivingEvent) : void
+      protected function __enabledChanged(event:LivingEvent) : void
       {
          enabled = _self.propEnabled;
       }
       
-      protected function __keyDown(param1:KeyboardEvent) : void
+      protected function __keyDown(event:KeyboardEvent) : void
       {
       }
       
-      protected function __die(param1:LivingEvent) : void
+      protected function __die(event:LivingEvent) : void
       {
       }
       
-      protected function __changeAttack(param1:LivingEvent) : void
+      protected function __changeAttack(event:LivingEvent) : void
       {
       }
       
-      protected function __energyChange(param1:LivingEvent) : void
+      protected function __energyChange(event:LivingEvent) : void
       {
          if(_enabled)
          {
@@ -106,23 +106,23 @@ package gameCommon.view.prop
       
       protected function updatePropByEnergy() : void
       {
-         var _loc2_:* = null;
+         var info:* = null;
          var _loc4_:int = 0;
          var _loc3_:* = _cells;
-         for each(var _loc1_ in _cells)
+         for each(var cell in _cells)
          {
-            if(_loc1_.info)
+            if(cell.info)
             {
-               _loc2_ = _loc1_.info;
-               if(_loc2_)
+               info = cell.info;
+               if(info)
                {
-                  if(_self.energy < _loc2_.needEnergy)
+                  if(_self.energy < info.needEnergy)
                   {
-                     _loc1_.enabled = false;
+                     cell.enabled = false;
                   }
                   else
                   {
-                     _loc1_.enabled = true;
+                     cell.enabled = true;
                   }
                }
             }
@@ -144,9 +144,9 @@ package gameCommon.view.prop
       {
          var _loc3_:int = 0;
          var _loc2_:* = _cells;
-         for each(var _loc1_ in _cells)
+         for each(var cell in _cells)
          {
-            _loc1_.info = null;
+            cell.info = null;
          }
       }
       
@@ -154,16 +154,16 @@ package gameCommon.view.prop
       {
       }
       
-      protected function __itemClicked(param1:MouseEvent) : void
+      protected function __itemClicked(event:MouseEvent) : void
       {
          StageReferance.stage.focus = null;
       }
       
-      public function setMode(param1:int) : void
+      public function setMode(mode:int) : void
       {
-         if(_mode != param1)
+         if(_mode != mode)
          {
-            _mode = param1;
+            _mode = mode;
             drawLayer();
          }
       }
@@ -173,11 +173,11 @@ package gameCommon.view.prop
          return _enabled;
       }
       
-      public function set enabled(param1:Boolean) : void
+      public function set enabled(val:Boolean) : void
       {
-         if(_enabled != param1)
+         if(_enabled != val)
          {
-            _enabled = param1;
+            _enabled = val;
             if(_enabled)
             {
                filters = null;
@@ -189,25 +189,24 @@ package gameCommon.view.prop
             }
             var _loc4_:int = 0;
             var _loc3_:* = _cells;
-            for each(var _loc2_ in _cells)
+            for each(var cell in _cells)
             {
-               _loc2_.enabled = _enabled;
+               cell.enabled = _enabled;
             }
          }
       }
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          removeEvent();
          if(_cells)
          {
-            _loc1_ = 0;
-            while(_loc1_ < _cells.length)
+            for(i = 0; i < _cells.length; )
             {
-               _cells[_loc1_].dispose();
-               _cells[_loc1_] = null;
-               _loc1_++;
+               _cells[i].dispose();
+               _cells[i] = null;
+               i++;
             }
          }
          _cells = null;

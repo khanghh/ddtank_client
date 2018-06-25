@@ -52,9 +52,9 @@ package hallIcon.view
          HallIconManager.instance.model.addEventListener("updateLeftIconView",__updateLeftIconView);
       }
       
-      private function addChildBox(param1:DisplayObject) : void
+      private function addChildBox($child:DisplayObject) : void
       {
-         _iconVBox.addChild(param1);
+         _iconVBox.addChild($child);
          _iconVBox.arrange();
       }
       
@@ -76,10 +76,10 @@ package hallIcon.view
          }
       }
       
-      private function __updateLeftIconView(param1:HallIconEvent) : void
+      private function __updateLeftIconView(evt:HallIconEvent) : void
       {
-         var _loc2_:HallIconInfo = param1.data as HallIconInfo;
-         var _loc3_:* = _loc2_.icontype;
+         var hallIconInfo:HallIconInfo = evt.data as HallIconInfo;
+         var _loc3_:* = hallIconInfo.icontype;
          if("expblessed" !== _loc3_)
          {
             if("viplvl" === _loc3_)
@@ -111,7 +111,7 @@ package hallIcon.view
          }
       }
       
-      private function __vipLvlIconClickHandler(param1:MouseEvent) : void
+      private function __vipLvlIconClickHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          VipController.instance.show();
@@ -137,20 +137,20 @@ package hallIcon.view
          }
       }
       
-      private function __kingBlessIconClickHandler(param1:MouseEvent) : void
+      private function __kingBlessIconClickHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }
       
-      private function createComponentIcon(param1:String) : Component
+      private function createComponentIcon($iconString:String) : Component
       {
-         var _loc2_:Component = new Component();
-         _loc2_.tipStyle = "ddt.view.tips.OneLineTip";
-         _loc2_.tipDirctions = "7,3,6";
-         _loc2_.addChild(ComponentFactory.Instance.creat(param1));
-         _loc2_.width = 70;
-         _loc2_.height = 70;
-         return _loc2_;
+         var tempComponent:Component = new Component();
+         tempComponent.tipStyle = "ddt.view.tips.OneLineTip";
+         tempComponent.tipDirctions = "7,3,6";
+         tempComponent.addChild(ComponentFactory.Instance.creat($iconString));
+         tempComponent.width = 70;
+         tempComponent.height = 70;
+         return tempComponent;
       }
       
       private function removeEvent() : void

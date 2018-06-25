@@ -20,10 +20,10 @@ package gameCommon.view.effects
          return 12;
       }
       
-      override protected function excuteEffectImp(param1:Living) : void
+      override protected function excuteEffectImp(live:Living) : void
       {
-         param1.energy = strength;
-         super.excuteEffectImp(param1);
+         live.energy = strength;
+         super.excuteEffectImp(live);
       }
    }
 }

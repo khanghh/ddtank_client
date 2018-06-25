@@ -13,35 +13,35 @@ package farm.analyzer
       
       private var _listDetail:Vector.<FoodComposeListTemplateInfo>;
       
-      public function FoodComposeListAnalyzer(param1:Function)
+      public function FoodComposeListAnalyzer(onCompleteCall:Function)
       {
          list = new Dictionary();
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc6_:XML = XML(param1);
-         var _loc4_:XMLList = _loc6_..Item;
+         var tmpFoodID:int = 0;
+         var foodList:* = null;
+         var xml:XML = XML(data);
+         var items:XMLList = xml..Item;
          var _loc8_:int = 0;
-         var _loc7_:* = _loc4_;
-         for each(var _loc5_ in _loc4_)
+         var _loc7_:* = items;
+         for each(var item in items)
          {
-            _loc2_ = new FoodComposeListTemplateInfo();
-            ObjectUtils.copyPorpertiesByXML(_loc2_,_loc5_);
-            if(_loc3_ != _loc2_.FoodID)
+            foodList = new FoodComposeListTemplateInfo();
+            ObjectUtils.copyPorpertiesByXML(foodList,item);
+            if(tmpFoodID != foodList.FoodID)
             {
-               _loc3_ = _loc2_.FoodID;
+               tmpFoodID = foodList.FoodID;
                _listDetail = new Vector.<FoodComposeListTemplateInfo>();
-               _listDetail.push(_loc2_);
+               _listDetail.push(foodList);
             }
-            else if(_loc3_ == _loc2_.FoodID)
+            else if(tmpFoodID == foodList.FoodID)
             {
-               _listDetail.push(_loc2_);
+               _listDetail.push(foodList);
             }
-            list[_loc3_] = _listDetail;
+            list[tmpFoodID] = _listDetail;
          }
          onAnalyzeComplete();
       }

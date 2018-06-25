@@ -22,9 +22,9 @@ package BombTurnTable.data
          return _goodsInfo;
       }
       
-      public function set goodsInfo(param1:Vector.<BombTurnTableGoodInfo>) : void
+      public function set goodsInfo(value:Vector.<BombTurnTableGoodInfo>) : void
       {
-         _goodsInfo = param1;
+         _goodsInfo = value;
       }
       
       public function get level() : int
@@ -32,9 +32,9 @@ package BombTurnTable.data
          return _level;
       }
       
-      public function set level(param1:int) : void
+      public function set level(value:int) : void
       {
-         _level = param1;
+         _level = value;
       }
       
       public function get quality() : int

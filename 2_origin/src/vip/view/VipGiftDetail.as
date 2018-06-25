@@ -33,9 +33,9 @@ package vip.view
          super();
       }
       
-      public function setData(param1:int) : void
+      public function setData(index:int) : void
       {
-         _index = param1;
+         _index = index;
          updateView();
       }
       
@@ -47,8 +47,8 @@ package vip.view
          _giftIcon = ComponentFactory.Instance.creatComponentByStylename("vip.GiftContentView.GiftIcon");
          _vipSubIcon = ComponentFactory.Instance.creatComponentByStylename("vip.GiftContentView.VipSubIcon" + _index);
          _detailTxt = ComponentFactory.Instance.creatComponentByStylename("vip.GiftContentView.DetailTxt");
-         var _loc1_:String = LanguageMgr.GetTranslation("ddt.vip.GifContentView.itemTxt" + _index);
-         _detailTxt.text = _loc1_;
+         var str:String = LanguageMgr.GetTranslation("ddt.vip.GifContentView.itemTxt" + _index);
+         _detailTxt.text = str;
          addChild(_bg);
          addChild(_iconBg);
          addChild(_line);

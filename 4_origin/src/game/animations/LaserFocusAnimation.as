@@ -6,9 +6,9 @@ package game.animations
    {
        
       
-      public function LaserFocusAnimation(param1:PhysicalObj, param2:int = 100, param3:int = 0)
+      public function LaserFocusAnimation(phy:PhysicalObj, life:int = 100, offsetY:int = 0)
       {
-         super(param1,param2,param3);
+         super(phy,life,offsetY);
       }
    }
 }

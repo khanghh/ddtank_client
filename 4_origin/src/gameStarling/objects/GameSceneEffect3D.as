@@ -26,12 +26,12 @@ package gameStarling.objects
       
       private var _backFun:Function;
       
-      public function GameSceneEffect3D(param1:int, param2:Rectangle = null, param3:int = 7, param4:Number = 1, param5:Number = 1, param6:Number = 0, param7:Number = 1)
+      public function GameSceneEffect3D(id:int, rect:Rectangle = null, layerType:int = 7, mass:Number = 1, gravityFactor:Number = 1, windFactor:Number = 0, airResitFactor:Number = 1)
       {
-         super(param1,param3,param4,param5,param6,param7);
-         if(param2)
+         super(id,layerType,mass,gravityFactor,windFactor,airResitFactor);
+         if(rect)
          {
-            _testRect = param2;
+            _testRect = rect;
          }
          _canCollided = true;
          touchable = false;
@@ -50,10 +50,10 @@ package gameStarling.objects
          startMoving();
       }
       
-      public function updateTxt(param1:Object) : void
+      public function updateTxt(str:Object) : void
       {
-         var _loc2_:String = param1 + "";
-         if(_txt && _txt.text == _loc2_)
+         var text:String = str + "";
+         if(_txt && _txt.text == text)
          {
             return;
          }
@@ -62,7 +62,7 @@ package gameStarling.objects
             _txt = new TextLabel("ddtcorei.gamesceneEffect.txt");
             addChild(_txt);
          }
-         _txt.text = _loc2_;
+         _txt.text = text;
       }
       
       override public function get layer() : int
@@ -109,10 +109,10 @@ package gameStarling.objects
          addChild(_effectMovie.movie);
       }
       
-      public function act(param1:String, param2:Function = null) : void
+      public function act(action:String, back:Function = null) : void
       {
-         action = param1;
-         back = param2;
+         action = action;
+         back = back;
          _effectMovie.playAction(action,function():void
          {
             map.cancelFocus();
@@ -124,20 +124,20 @@ package gameStarling.objects
          needFocus(0,0,0);
       }
       
-      public function set bombBackFun(param1:Function) : void
+      public function set bombBackFun(fun:Function) : void
       {
-         _backFun = param1;
+         _backFun = fun;
       }
       
-      override public function moveTo(param1:Point) : void
+      override public function moveTo(p:Point) : void
       {
          if(!_isDispose)
          {
-            super.moveTo(param1);
+            super.moveTo(p);
          }
       }
       
-      override public function collidedByObject(param1:PhysicalObj3D) : void
+      override public function collidedByObject(obj:PhysicalObj3D) : void
       {
       }
       
@@ -146,11 +146,11 @@ package gameStarling.objects
          return _effectMovie;
       }
       
-      public function needFocus(param1:int = 0, param2:int = 0, param3:Object = null) : void
+      public function needFocus(offsetX:int = 0, offsetY:int = 0, data:Object = null) : void
       {
          if(map)
          {
-            map.livingSetCenter(x + param1,y + param2 - 150,true,2,param3);
+            map.livingSetCenter(x + offsetX,y + offsetY - 150,true,2,data);
          }
       }
       

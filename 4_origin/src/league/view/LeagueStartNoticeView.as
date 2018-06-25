@@ -28,10 +28,10 @@ package league.view
          initView();
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             this.dispose();
          }
@@ -67,9 +67,9 @@ package league.view
          {
             return;
          }
-         var _loc1_:Point = ComponentFactory.Instance.creatCustomObject("trainer.posLeagueStart");
-         x = _loc1_.x;
-         y = _loc1_.y;
+         var pos:Point = ComponentFactory.Instance.creatCustomObject("trainer.posLeagueStart");
+         x = pos.x;
+         y = pos.y;
          LayerManager.Instance.addToLayer(this,3,false,1);
          PlayerManager.Instance.Self._hasPopupLeagueNotice = true;
       }

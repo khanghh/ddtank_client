@@ -119,12 +119,12 @@ package store.fineStore.view.pageBringUp
          createAcceptDragSprite();
       }
       
-      public function update(param1:Object) : void
+      public function update(data:Object) : void
       {
-         var _loc2_:int = FineBringUpController.getInstance().progress(param1 as InventoryItemInfo);
-         if(_progress.totalFrames >= _loc2_)
+         var percent:int = FineBringUpController.getInstance().progress(data as InventoryItemInfo);
+         if(_progress.totalFrames >= percent)
          {
-            _progress && _progress.gotoAndStop(_loc2_);
+            _progress && _progress.gotoAndStop(percent);
             _progressTxt && _loc3_;
          }
          else
@@ -223,15 +223,15 @@ package store.fineStore.view.pageBringUp
          _moneyBoard.addChild(bindMoneyTxt);
          _bindMoneyButton = ComponentFactory.Instance.creatCustomObject("bagAndInfo.bag.GiftButton");
          _bindMoneyButton = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreBagView.GiftButton");
-         var _loc2_:int = 6000;
-         var _loc1_:int = ServerConfigManager.instance.VIPExtraBindMoneyUpper[PlayerManager.Instance.Self.VIPLevel - 1];
+         var levelNum:int = 6000;
+         var vipNum:int = ServerConfigManager.instance.VIPExtraBindMoneyUpper[PlayerManager.Instance.Self.VIPLevel - 1];
          if(PlayerManager.Instance.Self.IsVIP)
          {
-            _bindMoneyButton.tipData = LanguageMgr.GetTranslation("tank.view.bagII.GiftDirections",(_loc2_ + _loc1_).toString());
+            _bindMoneyButton.tipData = LanguageMgr.GetTranslation("tank.view.bagII.GiftDirections",(levelNum + vipNum).toString());
          }
          else
          {
-            _bindMoneyButton.tipData = LanguageMgr.GetTranslation("tank.view.bagII.GiftDirections",_loc2_.toString());
+            _bindMoneyButton.tipData = LanguageMgr.GetTranslation("tank.view.bagII.GiftDirections",levelNum.toString());
          }
          _moneyBoard.addChild(_bindMoneyButton);
          _medelButton = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreBagView.MoneyButton");
@@ -276,23 +276,23 @@ package store.fineStore.view.pageBringUp
          _buyExpBtn.removeEventListener("click",onBuyExpBtnClick);
       }
       
-      private function __updateInventorySlot(param1:CEvent) : void
+      private function __updateInventorySlot(e:CEvent) : void
       {
          if(FineBringUpController.getInstance().onSending)
          {
             return;
          }
-         var _loc2_:InventoryItemInfo = PlayerManager.Instance.Self.getBag(12).getItemAt(0);
-         if(_loc2_ == null)
+         var __info:InventoryItemInfo = PlayerManager.Instance.Self.getBag(12).getItemAt(0);
+         if(__info == null)
          {
-            _bringUpItemCell.info = _loc2_;
+            _bringUpItemCell.info = __info;
             _listData = FineBringUpController.getInstance().getCanBringUpData();
             _bagList.setData(_listData);
             return;
          }
          if(!(_bringUpItemCell == null || FineBringUpController.getInstance().needPlayMovie == false))
          {
-            if(_bringUpItemCell.lastLevel < int(_loc2_.Property1))
+            if(_bringUpItemCell.lastLevel < int(__info.Property1))
             {
                _upgrade.play();
             }
@@ -306,23 +306,23 @@ package store.fineStore.view.pageBringUp
          _bagList.setData(_listData);
       }
       
-      protected function onProgressOut(param1:MouseEvent) : void
+      protected function onProgressOut(event:MouseEvent) : void
       {
       }
       
-      protected function onProgressOver(param1:MouseEvent) : void
+      protected function onProgressOver(event:MouseEvent) : void
       {
-         var _loc3_:ItemTemplateInfo = _bringUpItemCell.info;
-         var _loc2_:String = FineBringUpController.getInstance().progressTipData(_bringUpItemCell.info);
-         _progressTips.tipData = _loc2_;
+         var __info:ItemTemplateInfo = _bringUpItemCell.info;
+         var tipData:String = FineBringUpController.getInstance().progressTipData(_bringUpItemCell.info);
+         _progressTips.tipData = tipData;
          _progressTips.x = mouseX;
          _progressTips.y = mouseY;
          addChild(_progressTips);
       }
       
-      public function __propertyChange(param1:PlayerPropertyEvent) : void
+      public function __propertyChange(evt:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["Money"] || param1.changedProperties["Gold"] || param1.changedProperties["Money"] || param1.changedProperties["BandMoney"])
+         if(evt.changedProperties["Money"] || evt.changedProperties["Gold"] || evt.changedProperties["Money"] || evt.changedProperties["BandMoney"])
          {
             updateMoney();
          }
@@ -335,12 +335,12 @@ package store.fineStore.view.pageBringUp
          bindMoneyTxt.text = String(PlayerManager.Instance.Self.BandMoney);
       }
       
-      protected function onBuyExpBtnClick(param1:MouseEvent) : void
+      protected function onBuyExpBtnClick(e:MouseEvent) : void
       {
-         e = param1;
-         onBuy = function(param1:Object):void
+         e = e;
+         onBuy = function(data:Object):void
          {
-            FineBringUpController.getInstance().buyExp(param1.type,param1.num);
+            FineBringUpController.getInstance().buyExp(data.type,data.num);
          };
          if(_bringUpItemCell.info == null)
          {
@@ -360,9 +360,9 @@ package store.fineStore.view.pageBringUp
          buyView.onBuy = onBuy;
       }
       
-      protected function onBringUpEatResult(param1:CEvent) : void
+      protected function onBringUpEatResult(e:CEvent) : void
       {
-         e = param1;
+         e = e;
          if(_refreshTooFast)
          {
             if(isEatStatus == true)
@@ -395,7 +395,7 @@ package store.fineStore.view.pageBringUp
          }
       }
       
-      protected function onEatBtnClick(param1:MouseEvent) : void
+      protected function onEatBtnClick(e:MouseEvent) : void
       {
          if(FineBringUpController.getInstance().isMaxLevel(_bringUpItemCell.info as InventoryItemInfo))
          {
@@ -407,7 +407,7 @@ package store.fineStore.view.pageBringUp
             _bringUpEatAllBtn.mouseEnabled = false;
             FineBringUpController.getInstance().completeNewHandGuide();
             isEatStatus = true;
-            param1.stopImmediatePropagation();
+            e.stopImmediatePropagation();
             eatStatusChange();
          }
       }
@@ -453,23 +453,23 @@ package store.fineStore.view.pageBringUp
          }
       }
       
-      protected function onEatMouseClick(param1:MouseEvent) : void
+      protected function onEatMouseClick(e:MouseEvent) : void
       {
-         var _loc2_:LockableBagCell = param1.target as LockableBagCell;
-         if(_loc2_ && _loc2_.info)
+         var cell:LockableBagCell = e.target as LockableBagCell;
+         if(cell && cell.info)
          {
-            if(_loc2_.info == _bringUpItemCell.info)
+            if(cell.info == _bringUpItemCell.info)
             {
                eatStatusChange();
             }
             else
             {
-               if(_loc2_.cellLocked)
+               if(cell.cellLocked)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.bagII.bringup.canNotEatLockedCell"),0,true,1);
                   return;
                }
-               onEatClick(_loc2_.info as InventoryItemInfo);
+               onEatClick(cell.info as InventoryItemInfo);
                _usingEatMouse = false;
                StageReferance.stage.removeEventListener("click",onEatMouseClick);
                Mouse.show();
@@ -487,7 +487,7 @@ package store.fineStore.view.pageBringUp
          }
       }
       
-      private function onEatClick(param1:InventoryItemInfo) : void
+      private function onEatClick($info:InventoryItemInfo) : void
       {
          if(FineBringUpController.getInstance().isMaxLevel(_bringUpItemCell.info as InventoryItemInfo))
          {
@@ -495,11 +495,11 @@ package store.fineStore.view.pageBringUp
          }
          else
          {
-            _bringUpItemCell && FineBringUpController.getInstance().eatBtnClick(_bringUpItemCell.info as InventoryItemInfo,param1);
+            _bringUpItemCell && FineBringUpController.getInstance().eatBtnClick(_bringUpItemCell.info as InventoryItemInfo,$info);
          }
       }
       
-      protected function onEatAllClick(param1:MouseEvent) : void
+      protected function onEatAllClick(e:MouseEvent) : void
       {
          if(FineBringUpController.getInstance().isMaxLevel(_bringUpItemCell.info as InventoryItemInfo))
          {
@@ -512,10 +512,10 @@ package store.fineStore.view.pageBringUp
          }
       }
       
-      private function onLockBtnClick(param1:MouseEvent) : void
+      private function onLockBtnClick(e:MouseEvent) : void
       {
          _bringUpEatBtn.mouseEnabled = false;
-         param1.stopImmediatePropagation();
+         e.stopImmediatePropagation();
          lockStatusChange();
       }
       
@@ -556,18 +556,18 @@ package store.fineStore.view.pageBringUp
          }
       }
       
-      protected function onLockMouseClick(param1:MouseEvent) : void
+      protected function onLockMouseClick(e:MouseEvent) : void
       {
-         var _loc2_:LockableBagCell = param1.target as LockableBagCell;
-         if(param1.target is FineBringUpCell)
+         var cell:LockableBagCell = e.target as LockableBagCell;
+         if(e.target is FineBringUpCell)
          {
             lockStatusChange();
          }
-         if(_loc2_ && _loc2_.info)
+         if(cell && cell.info)
          {
-            _loc2_.cellLocked = !_loc2_.cellLocked;
-            (_loc2_.info as InventoryItemInfo).cellLocked = _loc2_.cellLocked;
-            GameInSocketOut.sendBringUpLockStatusUpdate(_loc2_.bagType,(_loc2_.info as InventoryItemInfo).Place,_loc2_.cellLocked);
+            cell.cellLocked = !cell.cellLocked;
+            (cell.info as InventoryItemInfo).cellLocked = cell.cellLocked;
+            GameInSocketOut.sendBringUpLockStatusUpdate(cell.bagType,(cell.info as InventoryItemInfo).Place,cell.cellLocked);
          }
          else
          {
@@ -601,14 +601,14 @@ package store.fineStore.view.pageBringUp
          _bagList.setData(_listData);
       }
       
-      private function cellClickHandler(param1:CellEvent) : void
+      private function cellClickHandler(event:CellEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:LockableBagCell = param1.data as LockableBagCell;
-         _loc2_.dragStart();
+         var cell:LockableBagCell = event.data as LockableBagCell;
+         cell.dragStart();
       }
       
-      protected function __cellDoubleClick(param1:CellEvent) : void
+      protected function __cellDoubleClick(evt:CellEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -616,17 +616,17 @@ package store.fineStore.view.pageBringUp
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:String = "";
-         _loc2_ = "latentEnergy_equip_move";
-         var _loc3_:LatentEnergyEvent = new LatentEnergyEvent(_loc2_);
-         var _loc4_:LockableBagCell = param1.data as LockableBagCell;
-         _loc4_.cellLocked = false;
-         _loc3_.info = _loc4_.info as InventoryItemInfo;
-         _loc3_.moveType = 1;
-         FineBringUpController.getInstance().dispatchEvent(_loc3_);
+         var tmpStr:String = "";
+         tmpStr = "latentEnergy_equip_move";
+         var event:LatentEnergyEvent = new LatentEnergyEvent(tmpStr);
+         var cell:LockableBagCell = evt.data as LockableBagCell;
+         cell.cellLocked = false;
+         event.info = cell.info as InventoryItemInfo;
+         event.moveType = 1;
+         FineBringUpController.getInstance().dispatchEvent(event);
       }
       
-      private function equipChangeHandler(param1:Event) : void
+      private function equipChangeHandler(event:Event) : void
       {
          if(_bringUpEatAllBtn == null || _bringUpEatBtn == null)
          {

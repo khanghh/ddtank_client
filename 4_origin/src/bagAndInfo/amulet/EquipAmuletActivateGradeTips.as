@@ -69,57 +69,56 @@ package bagAndInfo.amulet
          }
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(value:Object) : void
       {
-         var _loc9_:* = null;
-         var _loc11_:* = null;
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc10_:int = 0;
-         var _loc12_:* = null;
-         var _loc2_:int = 0;
-         var _loc6_:* = null;
-         var _loc13_:int = 0;
-         var _loc7_:int = 0;
-         var _loc8_:InventoryItemInfo = param1 as InventoryItemInfo;
-         if(_loc8_)
+         var vo:* = null;
+         var phaseVo:* = null;
+         var count:int = 0;
+         var t1:* = null;
+         var t2:* = null;
+         var i:int = 0;
+         var p:* = null;
+         var limit:int = 0;
+         var k:* = null;
+         var heightMax:int = 0;
+         var widthMax:int = 0;
+         var info:InventoryItemInfo = value as InventoryItemInfo;
+         if(info)
          {
-            _loc9_ = EquipAmuletManager.Instance.getAmuletActivateGradeVo(_loc8_.StrengthenExp);
-            _title.text = LanguageMgr.GetTranslation("tank.equipAmulet.activateGrade",_loc9_.wahsGrade);
-            _loc13_ = _title.y + _title.height;
-            _loc7_ = _title.x + _title.width;
-            _loc11_ = EquipAmuletManager.Instance.getAmuletPhaseVoByGrade(_loc8_.StrengthenLevel);
-            _loc5_ = EquipAmuletManager.Instance.getAmuletActivateNeedCount(_loc8_.StrengthenExp);
-            _text.text = LanguageMgr.GetTranslation("tank.equipAmulet.activateGradeCount",_loc8_.StrengthenExp,_loc5_);
-            _loc13_ = _text.y + _text.height > _loc13_?_text.y + _text.height:_loc13_;
-            _loc7_ = _text.x + _text.width > _loc7_?_text.x + _text.width:_loc7_;
-            _loc4_ = "";
-            _loc3_ = "";
-            _loc10_ = 1;
-            while(_loc10_ <= 9)
+            vo = EquipAmuletManager.Instance.getAmuletActivateGradeVo(info.StrengthenExp);
+            _title.text = LanguageMgr.GetTranslation("tank.equipAmulet.activateGrade",vo.wahsGrade);
+            heightMax = _title.y + _title.height;
+            widthMax = _title.x + _title.width;
+            phaseVo = EquipAmuletManager.Instance.getAmuletPhaseVoByGrade(info.StrengthenLevel);
+            count = EquipAmuletManager.Instance.getAmuletActivateNeedCount(info.StrengthenExp);
+            _text.text = LanguageMgr.GetTranslation("tank.equipAmulet.activateGradeCount",info.StrengthenExp,count);
+            heightMax = _text.y + _text.height > heightMax?_text.y + _text.height:heightMax;
+            widthMax = _text.x + _text.width > widthMax?_text.x + _text.width:widthMax;
+            t1 = "";
+            t2 = "";
+            for(i = 1; i <= 9; )
             {
-               _loc12_ = HorseAmuletManager.instance.getByExtendType(_loc10_);
-               _loc2_ = Math.floor(int(_loc11_["property" + _loc10_]) * (_loc9_.minValue / _loc9_.maxValue));
-               _loc6_ = LanguageMgr.GetTranslation("tank.equipAmulet.activateGradeTip",_loc12_,_loc2_ > 0?_loc2_:1) + "\n";
-               if(_loc10_ % 2 == 0)
+               p = HorseAmuletManager.instance.getByExtendType(i);
+               limit = Math.floor(int(phaseVo["property" + i]) * (vo.minValue / vo.maxValue));
+               k = LanguageMgr.GetTranslation("tank.equipAmulet.activateGradeTip",p,limit > 0?limit:1) + "\n";
+               if(i % 2 == 0)
                {
-                  _loc4_ = _loc4_ + _loc6_;
+                  t1 = t1 + k;
                }
                else
                {
-                  _loc3_ = _loc3_ + _loc6_;
+                  t2 = t2 + k;
                }
-               _loc10_++;
+               i++;
             }
-            _text1.htmlText = _loc4_;
-            _loc13_ = _text1.y + _text1.height > _loc13_?_text1.y + _text1.height:_loc13_;
-            _loc7_ = _text1.x + _text1.width > _loc7_?_text1.x + _text1.width:_loc7_;
-            _text2.htmlText = _loc3_;
-            _loc13_ = _text2.y + _text2.height > _loc13_?_text2.y + _text2.height:_loc13_;
-            _loc7_ = _text2.x + _text2.width > _loc7_?_text2.x + _text2.width:_loc7_;
-            _bg.width = _loc7_ + 5;
-            _bg.height = _loc13_ + 5;
+            _text1.htmlText = t1;
+            heightMax = _text1.y + _text1.height > heightMax?_text1.y + _text1.height:heightMax;
+            widthMax = _text1.x + _text1.width > widthMax?_text1.x + _text1.width:widthMax;
+            _text2.htmlText = t2;
+            heightMax = _text2.y + _text2.height > heightMax?_text2.y + _text2.height:heightMax;
+            widthMax = _text2.x + _text2.width > widthMax?_text2.x + _text2.width:widthMax;
+            _bg.width = widthMax + 5;
+            _bg.height = heightMax + 5;
          }
       }
       

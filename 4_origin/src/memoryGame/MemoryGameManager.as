@@ -64,10 +64,10 @@ package memoryGame
          SocketManager.Instance.addEventListener(PkgEvent.format(329,10),__onGameOpen);
       }
       
-      private function __onGameOpen(param1:PkgEvent) : void
+      private function __onGameOpen(pkg:PkgEvent) : void
       {
-         _isOpen = param1.pkg.readBoolean();
-         _endDate = param1.pkg.readDate();
+         _isOpen = pkg.pkg.readBoolean();
+         _endDate = pkg.pkg.readDate();
          HallIconManager.instance.updateSwitchHandler("memoryGame",_isOpen);
       }
       
@@ -81,8 +81,8 @@ package memoryGame
       
       private function onComplete() : void
       {
-         var _loc1_:* = ComponentFactory.Instance.creatComponentByStylename("memoryGame.MemoryGameFrame");
-         _loc1_.show();
+         var view:* = ComponentFactory.Instance.creatComponentByStylename("memoryGame.MemoryGameFrame");
+         view.show();
       }
       
       public function playOpenAllComplete() : Boolean
@@ -125,9 +125,9 @@ package memoryGame
          return _count;
       }
       
-      public function set count(param1:int) : void
+      public function set count(value:int) : void
       {
-         _count = param1;
+         _count = value;
       }
       
       public function get score() : int
@@ -135,13 +135,13 @@ package memoryGame
          return _score;
       }
       
-      public function set score(param1:int) : void
+      public function set score(value:int) : void
       {
-         if(_score == param1)
+         if(_score == value)
          {
             return;
          }
-         _score = param1;
+         _score = value;
       }
       
       public function dateToString() : String
@@ -154,9 +154,9 @@ package memoryGame
          return _endDate;
       }
       
-      public function analyzer(param1:MemoryGameAnalyzer) : void
+      public function analyzer(analyzer:MemoryGameAnalyzer) : void
       {
-         _list = param1.list;
+         _list = analyzer.list;
       }
       
       public function goodsList() : Vector.<MemoryGameGoodsInfo>
@@ -166,9 +166,9 @@ package memoryGame
       
       public function get isValid() : Boolean
       {
-         var _loc2_:Number = _endDate.getTime();
-         var _loc1_:Number = TimeManager.Instance.Now().getTime();
-         if(_loc2_ > _loc1_)
+         var validTime:Number = _endDate.getTime();
+         var currentTime:Number = TimeManager.Instance.Now().getTime();
+         if(validTime > currentTime)
          {
             return true;
          }

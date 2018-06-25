@@ -21,81 +21,81 @@ package com.greensock.plugins
          this.onInitAllProps = _initAllProps;
       }
       
-      override public function onInitTween(param1:Object, param2:*, param3:TweenLite) : Boolean
+      override public function onInitTween(target:Object, value:*, tween:TweenLite) : Boolean
       {
-         _tween = param3;
-         this.overwriteProps = this.overwriteProps.concat(param2 as Array);
+         _tween = tween;
+         this.overwriteProps = this.overwriteProps.concat(value as Array);
          return true;
       }
       
       protected function _initAllProps() : void
       {
-         var _loc5_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc1_:Array = _tween.vars.roundProps;
-         var _loc4_:int = _loc1_.length;
+         var multiProps:* = null;
+         var pt:* = null;
+         var prop:* = null;
+         var rp:Array = _tween.vars.roundProps;
+         var i:int = rp.length;
          while(true)
          {
-            _loc4_--;
-            if(_loc4_ <= -1)
+            i--;
+            if(i <= -1)
             {
                break;
             }
-            _loc2_ = _loc1_[_loc4_];
-            _loc3_ = _tween.cachedPT1;
-            while(_loc3_)
+            prop = rp[i];
+            pt = _tween.cachedPT1;
+            while(pt)
             {
-               if(_loc3_.name == _loc2_)
+               if(pt.name == prop)
                {
-                  if(_loc3_.isPlugin)
+                  if(pt.isPlugin)
                   {
-                     _loc3_.target.round = true;
+                     pt.target.round = true;
                   }
                   else
                   {
-                     add(_loc3_.target,_loc2_,_loc3_.start,_loc3_.change);
-                     _removePropTween(_loc3_);
-                     _tween.propTweenLookup[_loc2_] = _tween.propTweenLookup.roundProps;
+                     add(pt.target,prop,pt.start,pt.change);
+                     _removePropTween(pt);
+                     _tween.propTweenLookup[prop] = _tween.propTweenLookup.roundProps;
                   }
                }
-               else if(_loc3_.isPlugin && _loc3_.name == "_MULTIPLE_" && !_loc3_.target.round)
+               else if(pt.isPlugin && pt.name == "_MULTIPLE_" && !pt.target.round)
                {
-                  _loc5_ = " " + _loc3_.target.overwriteProps.join(" ") + " ";
-                  if(_loc5_.indexOf(" " + _loc2_ + " ") != -1)
+                  multiProps = " " + pt.target.overwriteProps.join(" ") + " ";
+                  if(multiProps.indexOf(" " + prop + " ") != -1)
                   {
-                     _loc3_.target.round = true;
+                     pt.target.round = true;
                   }
                }
-               _loc3_ = _loc3_.nextNode;
+               pt = pt.nextNode;
             }
          }
       }
       
-      protected function _removePropTween(param1:PropTween) : void
+      protected function _removePropTween(propTween:PropTween) : void
       {
-         if(param1.nextNode)
+         if(propTween.nextNode)
          {
-            param1.nextNode.prevNode = param1.prevNode;
+            propTween.nextNode.prevNode = propTween.prevNode;
          }
-         if(param1.prevNode)
+         if(propTween.prevNode)
          {
-            param1.prevNode.nextNode = param1.nextNode;
+            propTween.prevNode.nextNode = propTween.nextNode;
          }
-         else if(_tween.cachedPT1 == param1)
+         else if(_tween.cachedPT1 == propTween)
          {
-            _tween.cachedPT1 = param1.nextNode;
+            _tween.cachedPT1 = propTween.nextNode;
          }
-         if(param1.isPlugin && param1.target.onDisable)
+         if(propTween.isPlugin && propTween.target.onDisable)
          {
-            param1.target.onDisable();
+            propTween.target.onDisable();
          }
       }
       
-      public function add(param1:Object, param2:String, param3:Number, param4:Number) : void
+      public function add(object:Object, propName:String, start:Number, change:Number) : void
       {
-         addTween(param1,param2,param3,param3 + param4,param2);
-         this.overwriteProps[this.overwriteProps.length] = param2;
+         addTween(object,propName,start,start + change,propName);
+         this.overwriteProps[this.overwriteProps.length] = propName;
       }
    }
 }

@@ -14,11 +14,11 @@ package ddt.events
       
       public var value;
       
-      public function GoodsEvent(param1:String, param2:String = "", param3:* = null, param4:Boolean = false, param5:Boolean = false)
+      public function GoodsEvent(type:String, pro:String = "", va:* = null, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         property = param2;
-         value = param3;
-         super(param1,param4,param5);
+         property = pro;
+         value = va;
+         super(type,bubbles,cancelable);
       }
    }
 }

@@ -14,9 +14,9 @@ package gameStarling.objects
       
       private var tempMap:MapView3D;
       
-      public function SpiderBomb13D(param1:Bomb, param2:Living, param3:int = 0, param4:Boolean = false)
+      public function SpiderBomb13D(info:Bomb, owner:Living, refineryLevel:int = 0, isPhantom:Boolean = false)
       {
-         super(param1,param2,param3,param4);
+         super(info,owner,refineryLevel,isPhantom);
       }
       
       override public function bomb() : void
@@ -52,14 +52,14 @@ package gameStarling.objects
          }
       }
       
-      private function createBomb(param1:Bomb) : void
+      private function createBomb(childBomb:Bomb) : void
       {
-         var _loc2_:SpiderBomb23D = new SpiderBomb23D(param1,_owner,_refineryLevel);
-         _loc2_.sceneEffectCollideId = this.sceneEffectCollideId;
-         tempMap.addPhysical(_loc2_);
+         var simpleBomb:SpiderBomb23D = new SpiderBomb23D(childBomb,_owner,_refineryLevel);
+         simpleBomb.sceneEffectCollideId = this.sceneEffectCollideId;
+         tempMap.addPhysical(simpleBomb);
          if(fastModel)
          {
-            _loc2_.bombAtOnce();
+            simpleBomb.bombAtOnce();
          }
       }
       

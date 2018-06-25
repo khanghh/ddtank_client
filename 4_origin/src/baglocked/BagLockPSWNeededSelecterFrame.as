@@ -61,12 +61,11 @@ package baglocked
          _vBox = new VBox();
          _vBox.spacing = 10;
          initList();
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _needPSWCellList.length)
+         var i:int = 0;
+         for(i = 0; i < _needPSWCellList.length; )
          {
-            _vBox.addChild(_needPSWCellList[_loc1_]);
-            _loc1_++;
+            _vBox.addChild(_needPSWCellList[i]);
+            i++;
          }
          _vBox.arrange();
          _selecterScrollPanel.setView(_vBox);
@@ -79,59 +78,56 @@ package baglocked
       
       public function initList() : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:Array = PlayerManager.Instance.bagLockStateList;
+         var i:int = 0;
+         var list:Array = PlayerManager.Instance.bagLockStateList;
          _needPSWCellList = new Vector.<BagLockPSWNeededSelecterListCell>();
-         var _loc3_:int = 4;
-         var _loc1_:int = _loc2_.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var len:int = 4;
+         var listLen:int = list.length;
+         for(i = 0; i < len; )
          {
-            _needPSWCellList[_loc4_] = new BagLockPSWNeededSelecterListCell(_loc4_,_loc2_[_loc1_ - _loc4_ - 1],"tank.view.baglocked.type" + _loc4_.toString(),true);
-            _loc4_++;
+            _needPSWCellList[i] = new BagLockPSWNeededSelecterListCell(i,list[listLen - i - 1],"tank.view.baglocked.type" + i.toString(),true);
+            i++;
          }
       }
       
       public function refresh() : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:Array = PlayerManager.Instance.bagLockStateList;
-         var _loc3_:int = 4;
-         var _loc1_:int = _loc2_.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var i:int = 0;
+         var list:Array = PlayerManager.Instance.bagLockStateList;
+         var len:int = 4;
+         var listLen:int = list.length;
+         for(i = 0; i < len; )
          {
-            _needPSWCellList[_loc4_].selected = _loc2_[_loc1_ - _loc4_ - 1];
-            _loc4_++;
+            _needPSWCellList[i].selected = list[listLen - i - 1];
+            i++;
          }
       }
       
-      protected function onSubmit(param1:MouseEvent) : void
+      protected function onSubmit(me:MouseEvent) : void
       {
-         var _loc4_:int = 0;
+         var i:int = 0;
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:Array = [];
-         var _loc3_:int = _needPSWCellList.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var selectStateArr:Array = [];
+         var len:int = _needPSWCellList.length;
+         for(i = 0; i < len; )
          {
-            _loc2_[_loc4_] = _needPSWCellList[_loc3_ - _loc4_ - 1].selected;
-            _loc4_++;
+            selectStateArr[i] = _needPSWCellList[len - i - 1].selected;
+            i++;
          }
-         PlayerManager.Instance.submitBagLockPSWNeededList(_loc2_);
+         PlayerManager.Instance.submitBagLockPSWNeededList(selectStateArr);
          return;
          §§push(parent && parent.removeChild(this));
       }
       
       override public function dispose() : void
       {
-         var _loc1_:int = 0;
-         var _loc2_:int = 0;
+         var len:int = 0;
+         var i:int = 0;
          if(_bg != null)
          {
             ObjectUtils.disposeObject(_bg);
@@ -154,13 +150,12 @@ package baglocked
          }
          if(_needPSWCellList != null)
          {
-            _loc1_ = _needPSWCellList.length;
-            _loc2_ = 0;
-            while(_loc2_ < _loc1_)
+            len = _needPSWCellList.length;
+            for(i = 0; i < len; )
             {
-               ObjectUtils.disposeObject(_needPSWCellList[_loc2_]);
-               _needPSWCellList[_loc2_] = null;
-               _loc2_++;
+               ObjectUtils.disposeObject(_needPSWCellList[i]);
+               _needPSWCellList[i] = null;
+               i++;
             }
             _needPSWCellList.length = 0;
             _needPSWCellList = null;

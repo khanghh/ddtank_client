@@ -44,16 +44,16 @@ package dragonBoat.view
          super();
       }
       
-      public function init2(param1:int) : void
+      public function init2(type:int) : void
       {
-         _type = param1;
+         _type = type;
          initView();
          initEvent();
       }
       
       private function initView() : void
       {
-         var _loc1_:* = null;
+         var title:* = null;
          cancelButtonStyle = "core.simplebt";
          submitButtonStyle = "core.simplebt";
          escEnable = true;
@@ -75,46 +75,46 @@ package dragonBoat.view
          switch(int(_type))
          {
             case 0:
-               _loc1_ = LanguageMgr.GetTranslation("ddt.dragonBoat.highBuildTxt");
+               title = LanguageMgr.GetTranslation("ddt.dragonBoat.highBuildTxt");
                _txt.text = LanguageMgr.GetTranslation("kingStatue.highBuild");
                _bottomPromptTxt.text = LanguageMgr.GetTranslation("kingStatue.highBuildTips");
                break;
             case 1:
-               _loc1_ = LanguageMgr.GetTranslation("ddt.dragonBoat.highDecorateTxt");
+               title = LanguageMgr.GetTranslation("ddt.dragonBoat.highDecorateTxt");
                _txt.text = LanguageMgr.GetTranslation("kingStatue.highDecorate");
                _bottomPromptTxt.text = LanguageMgr.GetTranslation("kingStatue.highDecorateTips");
                break;
             case 2:
-               _loc1_ = LanguageMgr.GetTranslation("laurel.highFerilizeTxt");
+               title = LanguageMgr.GetTranslation("laurel.highFerilizeTxt");
                _txt.text = LanguageMgr.GetTranslation("laurel.highFerilizeTxt");
                _bottomPromptTxt.text = LanguageMgr.GetTranslation("laurel.highFerilizeTips");
                break;
             case 3:
-               _loc1_ = LanguageMgr.GetTranslation("laurel.highPrayTxt");
+               title = LanguageMgr.GetTranslation("laurel.highPrayTxt");
                _txt.text = LanguageMgr.GetTranslation("laurel.highPrayTxt");
                _bottomPromptTxt.text = LanguageMgr.GetTranslation("laurel.highPrayTips");
                break;
             case 4:
-               _loc1_ = LanguageMgr.GetTranslation("floatParade.highFerilizeTxt");
+               title = LanguageMgr.GetTranslation("floatParade.highFerilizeTxt");
                _txt.text = LanguageMgr.GetTranslation("floatParade.highFerilizeTxt");
                _bottomPromptTxt.text = LanguageMgr.GetTranslation("floatParade.highFerilizeTips");
                break;
             case 5:
-               _loc1_ = LanguageMgr.GetTranslation("floatParade.highPrayTxt");
+               title = LanguageMgr.GetTranslation("floatParade.highPrayTxt");
                _txt.text = LanguageMgr.GetTranslation("floatParadehighPrayTxt");
                _bottomPromptTxt.text = LanguageMgr.GetTranslation("floatParade.highPrayTips");
                break;
             case 6:
-               _loc1_ = LanguageMgr.GetTranslation("ddtking.highFerilizeTxt");
+               title = LanguageMgr.GetTranslation("ddtking.highFerilizeTxt");
                _txt.text = LanguageMgr.GetTranslation("ddtking.highFerilizeTxt");
                _bottomPromptTxt.text = LanguageMgr.GetTranslation("ddtking.highFerilizeTips");
          }
-         var _loc2_:AlertInfo = new AlertInfo(_loc1_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"));
-         _loc2_.moveEnable = false;
-         _loc2_.autoDispose = false;
-         _loc2_.sound = "008";
-         _loc2_.type = 0;
-         info = _loc2_;
+         var alertInfo:AlertInfo = new AlertInfo(title,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"));
+         alertInfo.moveEnable = false;
+         alertInfo.autoDispose = false;
+         alertInfo.sound = "008";
+         alertInfo.type = 0;
+         info = alertInfo;
          addToContent(_desc);
          addToContent(_ownMoney);
          addToContent(_txt);
@@ -130,28 +130,28 @@ package dragonBoat.view
          _inputText.addEventListener("keyDown",inputKeyDownHandler,false,0,true);
       }
       
-      private function inputTextChangeHandler(param1:Event) : void
+      private function inputTextChangeHandler(event:Event) : void
       {
-         var _loc2_:int = _inputText.text;
-         if(_loc2_ < 1)
+         var num:int = _inputText.text;
+         if(num < 1)
          {
             _inputText.text = "1";
          }
       }
       
-      private function responseHandler(param1:FrameEvent) : void
+      private function responseHandler(event:FrameEvent) : void
       {
-         var _loc4_:* = null;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
+         var cost:* = null;
+         var text:* = null;
+         var alert:* = null;
          SoundManager.instance.playButtonSound();
          _coins = 100 * int(_inputText.text);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         if(event.responseCode == 2 || event.responseCode == 3)
          {
-            _loc4_ = _coins + LanguageMgr.GetTranslation("money");
-            _loc2_ = LanguageMgr.GetTranslation("ddtKing.affirmSpend",_loc4_);
-            _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc2_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2);
-            _loc3_.addEventListener("response",__onResponse);
+            cost = _coins + LanguageMgr.GetTranslation("money");
+            text = LanguageMgr.GetTranslation("ddtKing.affirmSpend",cost);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),text,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2);
+            alert.addEventListener("response",__onResponse);
          }
          else
          {
@@ -159,17 +159,17 @@ package dragonBoat.view
          }
       }
       
-      protected function __onResponse(param1:FrameEvent) : void
+      protected function __onResponse(event:FrameEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         if(event.responseCode == 2 || event.responseCode == 3)
          {
             enterKeyHandler();
          }
-         var _loc2_:BaseAlerFrame = param1.target as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onResponse);
-         _loc2_.dispose();
-         _loc2_ = null;
+         var alert:BaseAlerFrame = event.target as BaseAlerFrame;
+         alert.removeEventListener("response",__onResponse);
+         alert.dispose();
+         alert = null;
       }
       
       private function enterKeyHandler() : void
@@ -183,13 +183,13 @@ package dragonBoat.view
          dispose();
       }
       
-      private function inputKeyDownHandler(param1:KeyboardEvent) : void
+      private function inputKeyDownHandler(event:KeyboardEvent) : void
       {
-         if(param1.keyCode == 13)
+         if(event.keyCode == 13)
          {
             enterKeyHandler();
          }
-         else if(param1.keyCode == 27)
+         else if(event.keyCode == 27)
          {
             dispose();
          }

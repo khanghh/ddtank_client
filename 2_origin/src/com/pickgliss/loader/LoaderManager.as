@@ -56,45 +56,45 @@ package com.pickgliss.loader
          return _instance;
       }
       
-      public function creatLoaderByType(param1:String, param2:int, param3:URLVariables, param4:String, param5:ApplicationDomain) : BaseLoader
+      public function creatLoaderByType(filePath:String, type:int, args:URLVariables, requestMethod:String, domain:ApplicationDomain) : BaseLoader
       {
-         var _loc6_:* = null;
-         switch(int(param2))
+         var loader:* = null;
+         switch(int(type))
          {
             case 0:
-               _loc6_ = new BitmapLoader(getNextLoaderID(),param1);
+               loader = new BitmapLoader(getNextLoaderID(),filePath);
                break;
             case 1:
-               _loc6_ = new DisplayLoader(getNextLoaderID(),param1);
+               loader = new DisplayLoader(getNextLoaderID(),filePath);
                break;
             case 2:
-               _loc6_ = new TextLoader(getNextLoaderID(),param1,param3);
+               loader = new TextLoader(getNextLoaderID(),filePath,args);
                break;
             case 3:
-               _loc6_ = new BaseLoader(getNextLoaderID(),param1);
+               loader = new BaseLoader(getNextLoaderID(),filePath);
                break;
             case 4:
-               _loc6_ = new ModuleLoader(getNextLoaderID(),param1,param5);
+               loader = new ModuleLoader(getNextLoaderID(),filePath,domain);
                break;
             case 5:
-               _loc6_ = new CompressTextLoader(getNextLoaderID(),param1,param3);
+               loader = new CompressTextLoader(getNextLoaderID(),filePath,args);
                break;
             case 6:
-               _loc6_ = new RequestLoader(getNextLoaderID(),param1,param3,param4);
+               loader = new RequestLoader(getNextLoaderID(),filePath,args,requestMethod);
                break;
             case 7:
-               _loc6_ = new CompressRequestLoader(getNextLoaderID(),param1,param3,param4);
+               loader = new CompressRequestLoader(getNextLoaderID(),filePath,args,requestMethod);
                break;
             case 8:
-               _loc6_ = new MornUIDataLoader(getNextLoaderID(),param1,param3,param4);
+               loader = new MornUIDataLoader(getNextLoaderID(),filePath,args,requestMethod);
                break;
             case 9:
-               _loc6_ = new CodeModuleLoader(getNextLoaderID(),param1,param5);
+               loader = new CodeModuleLoader(getNextLoaderID(),filePath,domain);
                break;
             case 10:
-               _loc6_ = new BonesLoader(getNextLoaderID(),param1);
+               loader = new BonesLoader(getNextLoaderID(),filePath);
          }
-         return _loc6_;
+         return loader;
       }
       
       public function getLoadMode() : int
@@ -102,72 +102,72 @@ package com.pickgliss.loader
          return _loadMode;
       }
       
-      public function creatLoader(param1:String, param2:int, param3:URLVariables = null, param4:String = "GET", param5:ApplicationDomain = null) : *
+      public function creatLoader(filePath:String, type:int, args:URLVariables = null, requestMethod:String = "GET", domain:ApplicationDomain = null) : *
       {
-         var _loc6_:* = null;
-         param1 = LoaderNameFilter.getLoadFilePath(param1);
-         var _loc7_:String = fixedVariablesURL(param1,param2,param3);
-         _loc6_ = getLoaderByURL(_loc7_,param3);
-         if(_loc6_ == null)
+         var loader:* = null;
+         filePath = LoaderNameFilter.getLoadFilePath(filePath);
+         var fixedVariablesURLString:String = fixedVariablesURL(filePath,type,args);
+         loader = getLoaderByURL(fixedVariablesURLString,args);
+         if(loader == null)
          {
-            _loc6_ = creatLoaderByType(_loc7_,param2,param3,param4,param5);
+            loader = creatLoaderByType(fixedVariablesURLString,type,args,requestMethod,domain);
          }
          else
          {
-            _loc6_.domain = param5;
+            loader.domain = domain;
          }
-         if(param2 != 6 && param2 != 7 && param2 != 0)
+         if(type != 6 && type != 7 && type != 0)
          {
-            _loaderSaveByID[_loc6_.id] = _loc6_;
-            _loaderSaveByPath[_loc6_.url] = _loc6_;
+            _loaderSaveByID[loader.id] = loader;
+            _loaderSaveByPath[loader.url] = loader;
          }
-         return _loc6_;
+         return loader;
       }
       
-      public function creatLoaderOriginal(param1:String, param2:int, param3:URLVariables = null, param4:String = "GET") : *
+      public function creatLoaderOriginal(filePath:String, type:int, args:URLVariables = null, requestMethod:String = "GET") : *
       {
-         var _loc5_:* = null;
-         var _loc6_:* = null;
-         _loc6_ = _loc6_(param1,param2,param3);
-         _loc5_ = getLoaderByURL(_loc6_,param3);
-         if(_loc5_ == null)
+         var loader:* = null;
+         var fixedVariablesURL:* = null;
+         fixedVariablesURL = fixedVariablesURL(filePath,type,args);
+         loader = getLoaderByURL(fixedVariablesURL,args);
+         if(loader == null)
          {
-            _loc5_ = creatLoaderByType(_loc6_,param2,param3,param4,null);
+            loader = creatLoaderByType(fixedVariablesURL,type,args,requestMethod,null);
          }
-         if(param2 != 6 && param2 != 7 && param2 != 0)
+         if(type != 6 && type != 7 && type != 0)
          {
-            _loaderSaveByID[_loc5_.id] = _loc5_;
-            _loaderSaveByPath[_loc5_.url] = _loc5_;
+            _loaderSaveByID[loader.id] = loader;
+            _loaderSaveByPath[loader.url] = loader;
          }
-         return _loc5_;
+         return loader;
       }
       
-      public function creatAndStartLoad(param1:String, param2:int, param3:URLVariables = null) : BaseLoader
+      public function creatAndStartLoad(filePath:String, type:int, args:URLVariables = null) : BaseLoader
       {
-         var _loc4_:BaseLoader = creatLoader(param1,param2,param3);
-         startLoad(_loc4_);
-         return _loc4_;
+         var loader:BaseLoader = creatLoader(filePath,type,args);
+         startLoad(loader);
+         return loader;
       }
       
-      public function getLoaderByID(param1:int) : BaseLoader
+      public function getLoaderByID(id:int) : BaseLoader
       {
-         return _loaderSaveByID[param1];
+         return _loaderSaveByID[id];
       }
       
       public function clearLoader() : void
       {
          var _loc3_:int = 0;
          var _loc2_:* = _loaderSaveByID;
-         for(var _loc1_ in _loaderSaveByID)
+         for(var id in _loaderSaveByID)
          {
-            _loaderSaveByID[_loc1_].unload();
+            _loaderSaveByID[id].unload();
          }
       }
       
-      public function getLoaderByURL(param1:String, param2:URLVariables) : BaseLoader
+      public function getLoaderByURL(url:String, args:URLVariables) : BaseLoader
       {
-         var _loc3_:BaseLoader = _loaderSaveByPath[param1];
-         return _loc3_;
+         var loader:BaseLoader = _loaderSaveByPath[url];
+         return loader;
       }
       
       public function getNextLoaderID() : int
@@ -176,55 +176,55 @@ package com.pickgliss.loader
          return Number(_loaderIdCounter);
       }
       
-      public function saveFileToLocal(param1:BaseLoader) : void
+      public function saveFileToLocal(loader:BaseLoader) : void
       {
       }
       
-      public function startLoad(param1:BaseLoader, param2:Boolean = false) : void
+      public function startLoad(loader:BaseLoader, loadImp:Boolean = false) : void
       {
-         if(param1)
+         if(loader)
          {
-            param1.addEventListener("complete",__onLoadFinish);
+            loader.addEventListener("complete",__onLoadFinish);
          }
-         if(param1.isComplete)
+         if(loader.isComplete)
          {
-            param1.dispatchEvent(new LoaderEvent("complete",param1));
+            loader.dispatchEvent(new LoaderEvent("complete",loader));
             return;
          }
-         var _loc3_:ByteArray = LoaderSavingManager.loadCachedFile(param1.url,true);
-         if(_loc3_)
+         var ba:ByteArray = LoaderSavingManager.loadCachedFile(loader.url,true);
+         if(ba)
          {
-            param1.loadFromBytes(_loc3_);
+            loader.loadFromBytes(ba);
             return;
          }
-         if(!LoadResourceManager.Instance.isMicroClient && (_loadingLoaderList.length >= 8 && !param2 || getLoadMode() == 0))
+         if(!LoadResourceManager.Instance.isMicroClient && (_loadingLoaderList.length >= 8 && !loadImp || getLoadMode() == 0))
          {
-            if(_waitingLoaderList.indexOf(param1) == -1)
+            if(_waitingLoaderList.indexOf(loader) == -1)
             {
-               _waitingLoaderList.push(param1);
+               _waitingLoaderList.push(loader);
             }
          }
          else
          {
-            if(_loadingLoaderList.indexOf(param1) == -1)
+            if(_loadingLoaderList.indexOf(loader) == -1)
             {
-               _loadingLoaderList.push(param1);
+               _loadingLoaderList.push(loader);
             }
-            if(getLoadMode() == 1 || param1.type == 2)
+            if(getLoadMode() == 1 || loader.type == 2)
             {
-               param1.loadFromWeb();
+               loader.loadFromWeb();
             }
             else if(getLoadMode() == 2)
             {
-               param1.getFilePathFromExternal();
+               loader.getFilePathFromExternal();
             }
          }
       }
       
-      private function __onLoadFinish(param1:LoaderEvent) : void
+      private function __onLoadFinish(event:LoaderEvent) : void
       {
-         param1.loader.removeEventListener("complete",__onLoadFinish);
-         _loadingLoaderList.splice(_loadingLoaderList.indexOf(param1.loader),1);
+         event.loader.removeEventListener("complete",__onLoadFinish);
+         _loadingLoaderList.splice(_loadingLoaderList.indexOf(event.loader),1);
          tryLoadWaiting();
       }
       
@@ -240,10 +240,10 @@ package com.pickgliss.loader
          §§push(setTimeout(setFlashLoadWeb,200));
       }
       
-      private function onExternalLoadStop(param1:int, param2:String) : void
+      private function onExternalLoadStop(id:int, path:String) : void
       {
-         var _loc3_:BaseLoader = getLoaderByID(param1);
-         _loc3_.loadFromExternal(param2);
+         var loader:BaseLoader = getLoaderByID(id);
+         loader.loadFromExternal(path);
       }
       
       private function setFlashLoadExternal() : void
@@ -261,120 +261,119 @@ package com.pickgliss.loader
       
       private function tryLoadWaiting() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         _loc2_ = 0;
-         while(_loc2_ < _waitingLoaderList.length)
+         var i:int = 0;
+         var loader:* = null;
+         for(i = 0; i < _waitingLoaderList.length; )
          {
             if(_loadingLoaderList.length < 8)
             {
-               _loc1_ = _waitingLoaderList.shift();
-               startLoad(_loc1_);
+               loader = _waitingLoaderList.shift();
+               startLoad(loader);
             }
-            _loc2_++;
+            i++;
          }
       }
       
-      public function setup(param1:LoaderContext, param2:String) : void
+      public function setup(context:LoaderContext, textLoaderKey:String) : void
       {
-         DisplayLoader.Context = param1;
-         TextLoader.TextLoaderKey = param2;
+         DisplayLoader.Context = context;
+         TextLoader.TextLoaderKey = textLoaderKey;
          LoaderSavingManager.setup();
       }
       
-      public function fixedVariablesURL(param1:String, param2:int, param3:URLVariables) : String
+      public function fixedVariablesURL(path:String, type:int, variables:URLVariables) : String
       {
-         var _loc5_:* = null;
-         var _loc6_:int = 0;
-         if(param2 != 6 && param2 != 7)
+         var variableString:* = null;
+         var i:int = 0;
+         if(type != 6 && type != 7)
          {
-            _loc5_ = "";
-            if(param3 == null)
+            variableString = "";
+            if(variables == null)
             {
-               param3 = new URLVariables();
+               variables = new URLVariables();
             }
-            if(param2 == 3 || param2 == 1 || param2 == 0 || param2 == 8 || param2 == 10)
+            if(type == 3 || type == 1 || type == 0 || type == 8 || type == 10)
             {
-               if(!param3["lv"])
+               if(!variables["lv"])
                {
-                  param3["lv"] = LoaderSavingManager.Version;
+                  variables["lv"] = LoaderSavingManager.Version;
                }
             }
-            else if(param2 == 5 || param2 == 2)
+            else if(type == 5 || type == 2)
             {
-               if(!param3["rnd"])
+               if(!variables["rnd"])
                {
-                  param3["rnd"] = TextLoader.TextLoaderKey;
+                  variables["rnd"] = TextLoader.TextLoaderKey;
                }
             }
-            else if(param2 == 4 || param2 == 9)
+            else if(type == 4 || type == 9)
             {
-               if(!param3["lv"])
+               if(!variables["lv"])
                {
-                  param3["lv"] = LoaderSavingManager.Version;
+                  variables["lv"] = LoaderSavingManager.Version;
                }
-               if(!param3["rnd"])
+               if(!variables["rnd"])
                {
-                  param3["rnd"] = TextLoader.TextLoaderKey;
+                  variables["rnd"] = TextLoader.TextLoaderKey;
                }
             }
-            _loc6_ = 0;
+            i = 0;
             var _loc8_:int = 0;
-            var _loc7_:* = param3;
-            for(var _loc4_ in param3)
+            var _loc7_:* = variables;
+            for(var p in variables)
             {
-               if(_loc6_ >= 1)
+               if(i >= 1)
                {
-                  _loc5_ = _loc5_ + ("&" + _loc4_ + "=" + param3[_loc4_]);
+                  variableString = variableString + ("&" + p + "=" + variables[p]);
                }
                else
                {
-                  _loc5_ = _loc5_ + (_loc4_ + "=" + param3[_loc4_]);
+                  variableString = variableString + (p + "=" + variables[p]);
                }
-               _loc6_++;
+               i++;
             }
-            return param1 + "?" + _loc5_;
+            return path + "?" + variableString;
          }
-         return param1;
+         return path;
       }
       
-      public function fixedNewVariablesURL(param1:String, param2:int, param3:URLVariables, param4:int) : String
+      public function fixedNewVariablesURL(path:String, type:int, variables:URLVariables, argsCount:int) : String
       {
-         var _loc6_:* = null;
-         var _loc7_:int = 0;
-         if(param2 != 6 && param2 != 7)
+         var variableString:* = null;
+         var i:int = 0;
+         if(type != 6 && type != 7)
          {
-            _loc6_ = "";
-            if(param3 == null)
+            variableString = "";
+            if(variables == null)
             {
-               param3 = new URLVariables();
+               variables = new URLVariables();
             }
-            if(param2 == 3 || param2 == 1 || param2 == 0 || param2 == 4 || param2 == 8 || param2 == 9)
+            if(type == 3 || type == 1 || type == 0 || type == 4 || type == 8 || type == 9)
             {
-               param3["lv"] = LoaderSavingManager.Version + param4;
+               variables["lv"] = LoaderSavingManager.Version + argsCount;
             }
-            else if(param2 == 5 || param2 == 2)
+            else if(type == 5 || type == 2)
             {
-               param3["rnd"] = TextLoader.TextLoaderKey + param4.toString();
+               variables["rnd"] = TextLoader.TextLoaderKey + argsCount.toString();
             }
-            _loc7_ = 0;
+            i = 0;
             var _loc9_:int = 0;
-            var _loc8_:* = param3;
-            for(var _loc5_ in param3)
+            var _loc8_:* = variables;
+            for(var p in variables)
             {
-               if(_loc7_ >= 1)
+               if(i >= 1)
                {
-                  _loc6_ = _loc6_ + ("&" + _loc5_ + "=" + param3[_loc5_]);
+                  variableString = variableString + ("&" + p + "=" + variables[p]);
                }
                else
                {
-                  _loc6_ = _loc6_ + (_loc5_ + "=" + param3[_loc5_]);
+                  variableString = variableString + (p + "=" + variables[p]);
                }
-               _loc7_++;
+               i++;
             }
-            return param1 + "?" + _loc6_;
+            return path + "?" + variableString;
          }
-         return param1;
+         return path;
       }
    }
 }

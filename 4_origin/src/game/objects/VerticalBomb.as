@@ -10,20 +10,20 @@ package game.objects
       
       private var _isFall:Boolean;
       
-      public function VerticalBomb(param1:Bomb, param2:Living, param3:int = 0, param4:Boolean = false)
+      public function VerticalBomb(info:Bomb, owner:Living, refineryLevel:int = 0, isPhantom:Boolean = false)
       {
-         super(param1,param2,param3,param4);
+         super(info,owner,refineryLevel,isPhantom);
       }
       
-      override protected function computeFallNextXY(param1:Number) : Point
+      override protected function computeFallNextXY(dt:Number) : Point
       {
-         var _loc2_:Number = _vy.x1;
+         var preX1:Number = _vy.x1;
          if(!isFall)
          {
-            _vx.ComputeOneEulerStep(_mass,_arf,_wf + _ef.x,param1);
+            _vx.ComputeOneEulerStep(_mass,_arf,_wf + _ef.x,dt);
          }
-         _vy.ComputeOneEulerStep(_mass,_arf,_gf + _ef.y,param1);
-         if(_loc2_ * _vy.x1 <= 0)
+         _vy.ComputeOneEulerStep(_mass,_arf,_gf + _ef.y,dt);
+         if(preX1 * _vy.x1 <= 0)
          {
             _isFall = true;
          }

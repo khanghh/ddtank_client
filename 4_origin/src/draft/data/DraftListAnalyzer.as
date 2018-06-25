@@ -8,43 +8,42 @@ package draft.data
       
       private var _draftInfoVec:Vector.<DraftModel>;
       
-      public function DraftListAnalyzer(param1:Function)
+      public function DraftListAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc4_:* = null;
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
-         var _loc2_:* = null;
+         var xmllist:* = null;
+         var i:int = 0;
+         var info:* = null;
+         var arr:* = null;
          _draftInfoVec = new Vector.<DraftModel>();
-         var _loc3_:XML = new XML(param1);
-         if(_loc3_.@value == "true")
+         var xmlData:XML = new XML(data);
+         if(xmlData.@value == "true")
          {
-            DraftModel.Total = _loc3_.@total;
-            _loc4_ = _loc3_..Item;
-            _loc6_ = 0;
-            while(_loc6_ < _loc4_.length())
+            DraftModel.Total = xmlData.@total;
+            xmllist = xmlData..Item;
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc5_ = new DraftModel();
-               _loc5_.id = _loc4_[_loc6_].@ID;
-               _loc5_.ticketNum = _loc4_[_loc6_].@Count;
-               _loc5_.playerInfo.ID = _loc4_[_loc6_].@UserID;
-               _loc5_.playerInfo.NickName = _loc4_[_loc6_].@NickName;
-               _loc5_.playerInfo.Style = _loc4_[_loc6_].@Style;
-               _loc2_ = _loc4_[_loc6_].@Color.split("#");
-               _loc5_.playerInfo.Colors = _loc2_[0];
-               _loc5_.playerInfo.Skin = _loc2_[1];
-               _draftInfoVec.push(_loc5_);
-               _loc6_++;
+               info = new DraftModel();
+               info.id = xmllist[i].@ID;
+               info.ticketNum = xmllist[i].@Count;
+               info.playerInfo.ID = xmllist[i].@UserID;
+               info.playerInfo.NickName = xmllist[i].@NickName;
+               info.playerInfo.Style = xmllist[i].@Style;
+               arr = xmllist[i].@Color.split("#");
+               info.playerInfo.Colors = arr[0];
+               info.playerInfo.Skin = arr[1];
+               _draftInfoVec.push(info);
+               i++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc3_.@message;
+            message = xmlData.@message;
             onAnalyzeError();
             onAnalyzeComplete();
          }

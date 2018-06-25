@@ -67,31 +67,31 @@ package ddt.view.character
       
       private var _type:String;
       
-      public function RoomPlayerAction(param1:String, param2:Array, param3:Boolean = false, param4:String = "standBy")
+      public function RoomPlayerAction(type:String, frames:Array, repeat:Boolean = false, next:String = "standBy")
       {
          super();
-         _type = param1;
-         _repeat = param3;
-         _frames = param2;
-         _index = param2.length * Math.random();
+         _type = type;
+         _repeat = repeat;
+         _frames = frames;
+         _index = frames.length * Math.random();
       }
       
-      public static function creatAction(param1:String, param2:Boolean) : RoomPlayerAction
+      public static function creatAction(type:String, isSuit:Boolean) : RoomPlayerAction
       {
-         var _loc3_:* = null;
-         if(param2)
+         var f:* = null;
+         if(isSuit)
          {
-            _loc3_ = "SUIT_" + param1.toLocaleUpperCase();
+            f = "SUIT_" + type.toLocaleUpperCase();
          }
          else
          {
-            _loc3_ = "NORMAL_" + param1.toLocaleUpperCase();
+            f = "NORMAL_" + type.toLocaleUpperCase();
          }
-         if(RoomPlayerAction[_loc3_] == null)
+         if(RoomPlayerAction[f] == null)
          {
-            _loc3_ = !!param2?"SUIT_STANDBY":"NORMAL_STANDBY";
+            f = !!isSuit?"SUIT_STANDBY":"NORMAL_STANDBY";
          }
-         return new RoomPlayerAction(param1,RoomPlayerAction[_loc3_][int(RoomPlayerAction[_loc3_].length * Math.random())],false);
+         return new RoomPlayerAction(type,RoomPlayerAction[f][int(RoomPlayerAction[f].length * Math.random())],false);
       }
       
       public function get type() : String

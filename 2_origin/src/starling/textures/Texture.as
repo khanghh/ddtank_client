@@ -35,44 +35,44 @@ package starling.textures
          }
       }
       
-      public static function fromData(param1:Object, param2:TextureOptions = null) : starling.textures.Texture
+      public static function fromData(data:Object, options:TextureOptions = null) : starling.textures.Texture
       {
-         var _loc3_:starling.textures.Texture = null;
-         if(param1 is Bitmap)
+         var texture:starling.textures.Texture = null;
+         if(data is Bitmap)
          {
-            param1 = (param1 as Bitmap).bitmapData;
+            data = (data as Bitmap).bitmapData;
          }
-         if(param2 == null)
+         if(options == null)
          {
-            param2 = new TextureOptions();
+            options = new TextureOptions();
          }
-         if(param1 is Class)
+         if(data is Class)
          {
-            _loc3_ = fromEmbeddedAsset(param1 as Class,param2.mipMapping,param2.optimizeForRenderToTexture,param2.scale,param2.format,param2.repeat);
+            texture = fromEmbeddedAsset(data as Class,options.mipMapping,options.optimizeForRenderToTexture,options.scale,options.format,options.repeat);
          }
-         else if(param1 is BitmapData)
+         else if(data is BitmapData)
          {
-            _loc3_ = fromBitmapData(param1 as BitmapData,param2.mipMapping,param2.optimizeForRenderToTexture,param2.scale,param2.format,param2.repeat);
+            texture = fromBitmapData(data as BitmapData,options.mipMapping,options.optimizeForRenderToTexture,options.scale,options.format,options.repeat);
          }
-         else if(param1 is ByteArray)
+         else if(data is ByteArray)
          {
-            _loc3_ = fromAtfData(param1 as ByteArray,param2.scale,param2.mipMapping,param2.onReady,param2.repeat);
+            texture = fromAtfData(data as ByteArray,options.scale,options.mipMapping,options.onReady,options.repeat);
          }
          else
          {
-            throw new ArgumentError("Unsupported \'data\' type: " + getQualifiedClassName(param1));
+            throw new ArgumentError("Unsupported \'data\' type: " + getQualifiedClassName(data));
          }
-         return _loc3_;
+         return texture;
       }
       
-      public static function fromEmbeddedAsset(param1:Class, param2:Boolean = true, param3:Boolean = false, param4:Number = 1, param5:String = "bgra", param6:Boolean = false) : starling.textures.Texture
+      public static function fromEmbeddedAsset(assetClass:Class, mipMapping:Boolean = true, optimizeForRenderToTexture:Boolean = false, scale:Number = 1, format:String = "bgra", repeat:Boolean = false) : starling.textures.Texture
       {
-         assetClass = param1;
-         mipMapping = param2;
-         optimizeForRenderToTexture = param3;
-         scale = param4;
-         format = param5;
-         repeat = param6;
+         assetClass = assetClass;
+         mipMapping = mipMapping;
+         optimizeForRenderToTexture = optimizeForRenderToTexture;
+         scale = scale;
+         format = format;
+         repeat = repeat;
          var asset:Object = new assetClass();
          if(asset is Bitmap)
          {
@@ -98,19 +98,19 @@ package starling.textures
          return texture;
       }
       
-      public static function fromBitmap(param1:Bitmap, param2:Boolean = true, param3:Boolean = false, param4:Number = 1, param5:String = "bgra", param6:Boolean = false) : starling.textures.Texture
+      public static function fromBitmap(bitmap:Bitmap, generateMipMaps:Boolean = true, optimizeForRenderToTexture:Boolean = false, scale:Number = 1, format:String = "bgra", repeat:Boolean = false) : starling.textures.Texture
       {
-         return fromBitmapData(param1.bitmapData,param2,param3,param4,param5,param6);
+         return fromBitmapData(bitmap.bitmapData,generateMipMaps,optimizeForRenderToTexture,scale,format,repeat);
       }
       
-      public static function fromBitmapData(param1:BitmapData, param2:Boolean = true, param3:Boolean = false, param4:Number = 1, param5:String = "bgra", param6:Boolean = false) : starling.textures.Texture
+      public static function fromBitmapData(data:BitmapData, generateMipMaps:Boolean = true, optimizeForRenderToTexture:Boolean = false, scale:Number = 1, format:String = "bgra", repeat:Boolean = false) : starling.textures.Texture
       {
-         data = param1;
-         generateMipMaps = param2;
-         optimizeForRenderToTexture = param3;
-         scale = param4;
-         format = param5;
-         repeat = param6;
+         data = data;
+         generateMipMaps = generateMipMaps;
+         optimizeForRenderToTexture = optimizeForRenderToTexture;
+         scale = scale;
+         format = format;
+         repeat = repeat;
          var texture:starling.textures.Texture = starling.textures.Texture.empty(data.width / scale,data.height / scale,true,generateMipMaps,optimizeForRenderToTexture,scale,format,repeat);
          texture.root.uploadBitmapData(data);
          texture.root.onRestore = function():void
@@ -120,13 +120,13 @@ package starling.textures
          return texture;
       }
       
-      public static function fromAtfData(param1:ByteArray, param2:Number = 1, param3:Boolean = true, param4:Function = null, param5:Boolean = false) : starling.textures.Texture
+      public static function fromAtfData(data:ByteArray, scale:Number = 1, useMipMaps:Boolean = true, async:Function = null, repeat:Boolean = false) : starling.textures.Texture
       {
-         data = param1;
-         scale = param2;
-         useMipMaps = param3;
-         async = param4;
-         repeat = param5;
+         data = data;
+         scale = scale;
+         useMipMaps = useMipMaps;
+         async = async;
+         repeat = repeat;
          var context:Context3D = Starling.context;
          if(context == null)
          {
@@ -143,31 +143,31 @@ package starling.textures
          return concreteTexture;
       }
       
-      public static function fromNetStream(param1:NetStream, param2:Number = 1, param3:Function = null) : starling.textures.Texture
+      public static function fromNetStream(stream:NetStream, scale:Number = 1, onComplete:Function = null) : starling.textures.Texture
       {
-         stream = param1;
-         scale = param2;
-         onComplete = param3;
+         stream = stream;
+         scale = scale;
+         onComplete = onComplete;
          if(stream.client == stream && !("onMetaData" in stream))
          {
-            stream.client = {"onMetaData":function(param1:Object):void
+            stream.client = {"onMetaData":function(md:Object):void
             {
             }};
          }
          return fromVideoAttachment("NetStream",stream,scale,onComplete);
       }
       
-      public static function fromCamera(param1:Camera, param2:Number = 1, param3:Function = null) : starling.textures.Texture
+      public static function fromCamera(camera:Camera, scale:Number = 1, onComplete:Function = null) : starling.textures.Texture
       {
-         return fromVideoAttachment("Camera",param1,param2,param3);
+         return fromVideoAttachment("Camera",camera,scale,onComplete);
       }
       
-      private static function fromVideoAttachment(param1:String, param2:Object, param3:Number, param4:Function) : starling.textures.Texture
+      private static function fromVideoAttachment(type:String, attachment:Object, scale:Number, onComplete:Function) : starling.textures.Texture
       {
-         type = param1;
-         attachment = param2;
-         scale = param3;
-         onComplete = param4;
+         type = type;
+         attachment = attachment;
+         scale = scale;
+         onComplete = onComplete;
          if(!SystemUtil.supportsVideoTexture)
          {
             throw new NotSupportedError("Video Textures are not supported on this platform");
@@ -179,7 +179,7 @@ package starling.textures
          }
          var base:TextureBase = context["createVideoTexture"]();
          base["attach" + type](attachment);
-         base.addEventListener("textureReady",function(param1:Object):void
+         base.addEventListener("textureReady",function(event:Object):void
          {
             base.removeEventListener("textureReady",arguments.callee);
             execute(onComplete,texture);
@@ -192,14 +192,14 @@ package starling.textures
          return texture;
       }
       
-      public static function fromColor(param1:Number, param2:Number, param3:uint = 4294967295, param4:Boolean = false, param5:Number = -1, param6:String = "bgra") : starling.textures.Texture
+      public static function fromColor(width:Number, height:Number, color:uint = 4294967295, optimizeForRenderToTexture:Boolean = false, scale:Number = -1, format:String = "bgra") : starling.textures.Texture
       {
-         width = param1;
-         height = param2;
-         color = param3;
-         optimizeForRenderToTexture = param4;
-         scale = param5;
-         format = param6;
+         width = width;
+         height = height;
+         color = color;
+         optimizeForRenderToTexture = optimizeForRenderToTexture;
+         scale = scale;
+         format = format;
          var texture:starling.textures.Texture = starling.textures.Texture.empty(width,height,true,false,optimizeForRenderToTexture,scale,format);
          texture.root.clear(color,Color.getAlpha(color) / 255);
          texture.root.onRestore = function():void
@@ -209,54 +209,54 @@ package starling.textures
          return texture;
       }
       
-      public static function empty(param1:Number, param2:Number, param3:Boolean = true, param4:Boolean = true, param5:Boolean = false, param6:Number = -1, param7:String = "bgra", param8:Boolean = false) : starling.textures.Texture
+      public static function empty(width:Number, height:Number, premultipliedAlpha:Boolean = true, mipMapping:Boolean = true, optimizeForRenderToTexture:Boolean = false, scale:Number = -1, format:String = "bgra", repeat:Boolean = false) : starling.textures.Texture
       {
-         var _loc9_:int = 0;
-         var _loc14_:int = 0;
-         var _loc12_:* = null;
-         if(param6 <= 0)
+         var actualHeight:int = 0;
+         var actualWidth:int = 0;
+         var nativeTexture:* = null;
+         if(scale <= 0)
          {
-            param6 = Starling.contentScaleFactor;
+            scale = Starling.contentScaleFactor;
          }
-         var _loc15_:Context3D = Starling.context;
-         if(_loc15_ == null)
+         var context:Context3D = Starling.context;
+         if(context == null)
          {
             throw new MissingContextError();
          }
-         var _loc11_:Number = param1 * param6;
-         var _loc10_:Number = param2 * param6;
-         var _loc16_:Boolean = !param4 && !param8 && Starling.current.profile != "baselineConstrained" && "createRectangleTexture" in _loc15_ && param7.indexOf("compressed") == -1;
-         if(_loc16_)
+         var origWidth:Number = width * scale;
+         var origHeight:Number = height * scale;
+         var useRectTexture:Boolean = !mipMapping && !repeat && Starling.current.profile != "baselineConstrained" && "createRectangleTexture" in context && format.indexOf("compressed") == -1;
+         if(useRectTexture)
          {
-            _loc14_ = Math.ceil(_loc11_ - 1.0e-9);
-            _loc9_ = Math.ceil(_loc10_ - 1.0e-9);
-            _loc12_ = _loc15_["createRectangleTexture"](_loc14_,_loc9_,param7,param5);
+            actualWidth = Math.ceil(origWidth - 1.0e-9);
+            actualHeight = Math.ceil(origHeight - 1.0e-9);
+            nativeTexture = context["createRectangleTexture"](actualWidth,actualHeight,format,optimizeForRenderToTexture);
          }
          else
          {
-            _loc14_ = getNextPowerOfTwo(_loc11_);
-            _loc9_ = getNextPowerOfTwo(_loc10_);
-            _loc12_ = _loc15_.createTexture(_loc14_,_loc9_,param7,param5);
+            actualWidth = getNextPowerOfTwo(origWidth);
+            actualHeight = getNextPowerOfTwo(origHeight);
+            nativeTexture = context.createTexture(actualWidth,actualHeight,format,optimizeForRenderToTexture);
          }
-         var _loc13_:ConcreteTexture = new ConcreteTexture(_loc12_,param7,_loc14_,_loc9_,param4,param3,param5,param6,param8);
-         _loc13_.onRestore = _loc13_.clear;
-         if(_loc14_ - _loc11_ < 0.001 && _loc9_ - _loc10_ < 0.001)
+         var concreteTexture:ConcreteTexture = new ConcreteTexture(nativeTexture,format,actualWidth,actualHeight,mipMapping,premultipliedAlpha,optimizeForRenderToTexture,scale,repeat);
+         concreteTexture.onRestore = concreteTexture.clear;
+         if(actualWidth - origWidth < 0.001 && actualHeight - origHeight < 0.001)
          {
-            return _loc13_;
+            return concreteTexture;
          }
-         return new SubTexture(_loc13_,new Rectangle(0,0,param1,param2),true);
+         return new SubTexture(concreteTexture,new Rectangle(0,0,width,height),true);
       }
       
-      public static function fromTexture(param1:starling.textures.Texture, param2:Rectangle = null, param3:Rectangle = null, param4:Boolean = false) : starling.textures.Texture
+      public static function fromTexture(texture:starling.textures.Texture, region:Rectangle = null, frame:Rectangle = null, rotated:Boolean = false) : starling.textures.Texture
       {
-         return new SubTexture(param1,param2,false,param3,param4);
+         return new SubTexture(texture,region,false,frame,rotated);
       }
       
       public static function get maxSize() : int
       {
-         var _loc1_:Starling = Starling.current;
-         var _loc2_:String = !!_loc1_?_loc1_.profile:"baseline";
-         if(_loc2_ == "baseline" || _loc2_ == "baselineConstrained")
+         var target:Starling = Starling.current;
+         var profile:String = !!target?target.profile:"baseline";
+         if(profile == "baseline" || profile == "baselineConstrained")
          {
             return 2048;
          }
@@ -267,11 +267,11 @@ package starling.textures
       {
       }
       
-      public function adjustVertexData(param1:VertexData, param2:int, param3:int) : void
+      public function adjustVertexData(vertexData:VertexData, vertexID:int, count:int) : void
       {
       }
       
-      public function adjustTexCoords(param1:Vector.<Number>, param2:int = 0, param3:int = 0, param4:int = -1) : void
+      public function adjustTexCoords(texCoords:Vector.<Number>, startIndex:int = 0, stride:int = 0, count:int = -1) : void
       {
       }
       

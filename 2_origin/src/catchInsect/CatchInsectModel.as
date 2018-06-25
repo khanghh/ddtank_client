@@ -28,14 +28,14 @@ package catchInsect
       
       public function get activityTime() : String
       {
-         var _loc1_:String = "";
+         var dateString:String = "";
          beginDate = ServerConfigManager.instance.catchInsectBeginTime.split(" ")[0];
          endDate = ServerConfigManager.instance.catchInsectEndTime.split(" ")[0];
          if(beginDate && endDate)
          {
-            _loc1_ = beginDate.replace(/-/g,".") + "-" + endDate.replace(/-/g,".");
+            dateString = beginDate.replace(/-/g,".") + "-" + endDate.replace(/-/g,".");
          }
-         return _loc1_;
+         return dateString;
       }
       
       public function get endTime() : Date

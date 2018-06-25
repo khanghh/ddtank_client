@@ -29,18 +29,18 @@ package happyLittleGame.cubesGame
       
       private function initView() : void
       {
-         var _loc2_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.cubeGameInfoView.leftWoodBg");
-         PositionUtils.setPos(_loc2_,"cubeGameInfoView.leftWoodBgPos");
-         addChild(_loc2_);
-         var _loc4_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.cubeGameInfoView.rightWoodBg");
-         PositionUtils.setPos(_loc4_,"cubeGameInfoView.rightWoodBgPos");
-         addChild(_loc4_);
-         var _loc3_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.cubeGameInfoView.waveImg");
-         PositionUtils.setPos(_loc3_,"cubeGameInfoView.waveImgPos");
-         addChild(_loc3_);
-         var _loc1_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.cubeGameInfoView.scoreImg");
-         PositionUtils.setPos(_loc1_,"cubeGameInfoView.scoreImgPos");
-         addChild(_loc1_);
+         var leftWoodImg:Bitmap = ComponentFactory.Instance.creatBitmap("asset.cubeGameInfoView.leftWoodBg");
+         PositionUtils.setPos(leftWoodImg,"cubeGameInfoView.leftWoodBgPos");
+         addChild(leftWoodImg);
+         var rightWoodImg:Bitmap = ComponentFactory.Instance.creatBitmap("asset.cubeGameInfoView.rightWoodBg");
+         PositionUtils.setPos(rightWoodImg,"cubeGameInfoView.rightWoodBgPos");
+         addChild(rightWoodImg);
+         var waveImg:Bitmap = ComponentFactory.Instance.creatBitmap("asset.cubeGameInfoView.waveImg");
+         PositionUtils.setPos(waveImg,"cubeGameInfoView.waveImgPos");
+         addChild(waveImg);
+         var scoreImg:Bitmap = ComponentFactory.Instance.creatBitmap("asset.cubeGameInfoView.scoreImg");
+         PositionUtils.setPos(scoreImg,"cubeGameInfoView.scoreImgPos");
+         addChild(scoreImg);
          _levelTxt = ComponentFactory.Instance.creatComponentByStylename("cubeGameInfoView.levelTxt");
          addChild(_levelTxt);
          _waveTxt = ComponentFactory.Instance.creatComponentByStylename("cubeGameInfoView.waveTxt");
@@ -68,17 +68,17 @@ package happyLittleGame.cubesGame
          CubeGameManager.getInstance().removeEventListener("gameResult",updateScore);
       }
       
-      private function updateWave(param1:CubeGameEvent) : void
+      private function updateWave(evt:CubeGameEvent) : void
       {
          _waveTxt.text = CubeGameManager.getInstance().gameInfo.curWaveNum + "/" + CubeGameManager.getInstance().gameInfo.totalWaveNum;
       }
       
-      private function updateScore(param1:CubeGameEvent = null) : void
+      private function updateScore(evt:CubeGameEvent = null) : void
       {
          _scoreTxt.text = CubeGameManager.getInstance().gameInfo.curScore.toString();
       }
       
-      private function __resetInfo(param1:CubeGameEvent) : void
+      private function __resetInfo(evt:CubeGameEvent) : void
       {
          CubeGameManager.getInstance().gameInfo.level = 0;
          _levelTxt.text = CubeGameManager.getInstance().gameInfo.level.toString();
@@ -88,9 +88,9 @@ package happyLittleGame.cubesGame
          _scoreTxt.text = CubeGameManager.getInstance().gameInfo.curScore.toString();
       }
       
-      private function updateView(param1:CubeGameEvent = null) : void
+      private function updateView(evt:CubeGameEvent = null) : void
       {
-         if(!param1 || param1.type != "cubeDeath")
+         if(!evt || evt.type != "cubeDeath")
          {
             _levelTxt.text = CubeGameManager.getInstance().gameInfo.level.toString();
             _waveTxt.text = CubeGameManager.getInstance().gameInfo.curWaveNum + "/" + CubeGameManager.getInstance().gameInfo.totalWaveNum;

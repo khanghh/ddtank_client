@@ -11,19 +11,19 @@ package playerDress.components
          super();
       }
       
-      public static function getBagItems(param1:int, param2:Boolean = false) : int
+      public static function getBagItems($id:int, $isIndex:Boolean = false) : int
       {
-         var _loc3_:Array = [0,2,4,11,1,3,5,13];
-         if(!param2)
+         var numArr:Array = [0,2,4,11,1,3,5,13];
+         if(!$isIndex)
          {
-            return _loc3_[param1] != null?_loc3_[param1]:-1;
+            return numArr[$id] != null?numArr[$id]:-1;
          }
-         return _loc3_.indexOf(param1);
+         return numArr.indexOf($id);
       }
       
-      public static function isDress(param1:InventoryItemInfo) : Boolean
+      public static function isDress(item:InventoryItemInfo) : Boolean
       {
-         var _loc2_:* = param1.CategoryID;
+         var _loc2_:* = item.CategoryID;
          if(1 !== _loc2_)
          {
             if(2 !== _loc2_)
@@ -43,30 +43,30 @@ package playerDress.components
                                  return false;
                               }
                            }
-                           addr13:
+                           addr17:
                            return true;
                         }
-                        addr12:
-                        §§goto(addr13);
+                        addr16:
+                        §§goto(addr17);
                      }
-                     addr11:
-                     §§goto(addr12);
+                     addr15:
+                     §§goto(addr16);
                   }
-                  addr10:
-                  §§goto(addr11);
+                  addr14:
+                  §§goto(addr15);
                }
-               addr9:
-               §§goto(addr10);
+               addr13:
+               §§goto(addr14);
             }
-            addr8:
-            §§goto(addr9);
+            addr12:
+            §§goto(addr13);
          }
-         §§goto(addr8);
+         §§goto(addr12);
       }
       
-      public static function findItemPlace(param1:InventoryItemInfo) : int
+      public static function findItemPlace(item:InventoryItemInfo) : int
       {
-         var _loc2_:* = param1.CategoryID;
+         var _loc2_:* = item.CategoryID;
          if(1 !== _loc2_)
          {
             if(2 !== _loc2_)
@@ -83,7 +83,7 @@ package playerDress.components
                            {
                               if(15 !== _loc2_)
                               {
-                                 return param1.Place;
+                                 return item.Place;
                               }
                               return 13;
                            }
@@ -102,27 +102,26 @@ package playerDress.components
          return 0;
       }
       
-      public static function hasNoAddition(param1:InventoryItemInfo) : Boolean
+      public static function hasNoAddition(item:InventoryItemInfo) : Boolean
       {
-         if(param1.isGold == false && param1.StrengthenLevel <= 0 && param1.AttackCompose <= 0 && param1.DefendCompose <= 0 && param1.AgilityCompose <= 0 && param1.LuckCompose <= 0 && param1.Hole5Level <= 0 && param1.Hole6Level <= 0 && param1.Hole1 <= 0 && param1.Hole2 <= 0 && param1.Hole3 <= 0 && param1.Hole4 <= 0 && param1.Hole5 <= 0 && param1.Hole6 <= 0 && param1.Hole5Exp <= 0 && param1.Hole6Exp <= 0 && param1.StrengthenExp <= 0 && param1.latentEnergyCurStr == "0,0,0,0")
+         if(item.isGold == false && item.StrengthenLevel <= 0 && item.AttackCompose <= 0 && item.DefendCompose <= 0 && item.AgilityCompose <= 0 && item.LuckCompose <= 0 && item.Hole5Level <= 0 && item.Hole6Level <= 0 && item.Hole1 <= 0 && item.Hole2 <= 0 && item.Hole3 <= 0 && item.Hole4 <= 0 && item.Hole5 <= 0 && item.Hole6 <= 0 && item.Hole5Exp <= 0 && item.Hole6Exp <= 0 && item.StrengthenExp <= 0 && item.latentEnergyCurStr == "0,0,0,0")
          {
             return true;
          }
          return false;
       }
       
-      public static function getBagGoodsCategoryIDSort(param1:uint) : int
+      public static function getBagGoodsCategoryIDSort(CategoryID:uint) : int
       {
-         var _loc3_:int = 0;
-         var _loc2_:Array = [7,17,1,5,8,9,2,14,13,15,3,6,4,16];
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_.length)
+         var i:int = 0;
+         var arrCategoryIDSort:Array = [7,17,1,5,8,9,2,14,13,15,3,6,4,16];
+         for(i = 0; i < arrCategoryIDSort.length; )
          {
-            if(param1 == _loc2_[_loc3_])
+            if(CategoryID == arrCategoryIDSort[i])
             {
-               return _loc3_;
+               return i;
             }
-            _loc3_++;
+            i++;
          }
          return 9999;
       }

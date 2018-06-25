@@ -16,7 +16,7 @@ package cloudBuyLottery.loader
       
       private var _type:String;
       
-      public function LoaderUIModule(param1:PrivateClass)
+      public function LoaderUIModule(prc:PrivateClass)
       {
          super();
       }
@@ -30,11 +30,11 @@ package cloudBuyLottery.loader
          return LoaderUIModule._instance;
       }
       
-      public function loadUIModule(param1:Function = null, param2:Array = null, param3:String = "") : void
+      public function loadUIModule(complete:Function = null, completeParams:Array = null, types:String = "") : void
       {
-         _func = param1;
-         _funcParams = param2;
-         _type = param3;
+         _func = complete;
+         _funcParams = completeParams;
+         _type = types;
          UIModuleSmallLoading.Instance.progress = 0;
          UIModuleSmallLoading.Instance.show();
          UIModuleLoader.Instance.addEventListener("uiModuleComplete",loadCompleteHandler);
@@ -42,9 +42,9 @@ package cloudBuyLottery.loader
          UIModuleLoader.Instance.addUIModuleImp(_type);
       }
       
-      private function loadCompleteHandler(param1:UIModuleEvent) : void
+      private function loadCompleteHandler(event:UIModuleEvent) : void
       {
-         if(param1.module == _type)
+         if(event.module == _type)
          {
             UIModuleSmallLoading.Instance.hide();
             UIModuleLoader.Instance.removeEventListener("uiModuleComplete",loadCompleteHandler);
@@ -58,11 +58,11 @@ package cloudBuyLottery.loader
          }
       }
       
-      private function onUimoduleLoadProgress(param1:UIModuleEvent) : void
+      private function onUimoduleLoadProgress(event:UIModuleEvent) : void
       {
-         if(param1.module == _type)
+         if(event.module == _type)
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
    }

@@ -33,10 +33,10 @@ package floatParade.components
       
       private var _index:int;
       
-      public function FloatParadeNameCell(param1:int)
+      public function FloatParadeNameCell(i:int)
       {
          super();
-         _index = param1;
+         _index = i;
          initView();
          addEvents();
       }
@@ -66,18 +66,18 @@ package floatParade.components
          addChild(_selectedLight);
       }
       
-      public function setData(param1:String, param2:int = 25, param3:Boolean = true) : void
+      public function setData(name:String, level:int = 25, isVIP:Boolean = true) : void
       {
-         _name = param1;
-         _level = param2;
-         _isVIP = param3;
+         _name = name;
+         _level = level;
+         _isVIP = isVIP;
          addNickName();
          _levelIcon.setInfo(_level,0,0,0,0,0,0,false,false);
       }
       
       private function addNickName() : void
       {
-         var _loc1_:* = null;
+         var textFormat:* = null;
          if(_vipName)
          {
             _vipName.dispose();
@@ -87,10 +87,10 @@ package floatParade.components
          if(_isVIP)
          {
             _vipName = VipController.instance.getVipNameTxt(1,1);
-            _loc1_ = new TextFormat();
-            _loc1_.align = "center";
-            _loc1_.bold = true;
-            _vipName.textField.defaultTextFormat = _loc1_;
+            textFormat = new TextFormat();
+            textFormat.align = "center";
+            textFormat.bold = true;
+            _vipName.textField.defaultTextFormat = textFormat;
             _vipName.textSize = 16;
             _vipName.textField.width = _nameTxt.width;
             _vipName.x = _nameTxt.x;
@@ -104,9 +104,9 @@ package floatParade.components
          }
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(flag:Boolean) : void
       {
-         _selectedLight.visible = param1;
+         _selectedLight.visible = flag;
       }
       
       public function get selected() : Boolean

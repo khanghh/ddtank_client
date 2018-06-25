@@ -30,12 +30,12 @@ package flowerGiving.components
       
       private var _receiver:String;
       
-      public function FlowerSendRecordItem(param1:int)
+      public function FlowerSendRecordItem(index:int)
       {
          super();
          initView();
          this.graphics.beginFill(0,0);
-         this.graphics.drawRect(0,0,490,param1 % 2 == 0?34:32);
+         this.graphics.drawRect(0,0,490,index % 2 == 0?34:32);
          this.graphics.endFill();
          addEvent();
       }
@@ -52,23 +52,23 @@ package flowerGiving.components
          addChild(_huikuiBtn);
       }
       
-      public function setData(param1:FlowerSendRecordInfo) : void
+      public function setData(info:FlowerSendRecordInfo) : void
       {
-         _num = param1.num;
-         if(param1.flag)
+         _num = info.num;
+         if(info.flag)
          {
             _sender = "bạn";
-            _receiver = param1.nickName;
+            _receiver = info.nickName;
             _huikuiBtn.visible = false;
          }
          else
          {
-            _sender = param1.nickName;
+            _sender = info.nickName;
             _receiver = "bạn";
             _huikuiBtn.visible = true;
          }
          _contentTxt.htmlText = LanguageMgr.GetTranslation("flowerGiving.flowerSendRecordFrame.contentTxt",_sender,_num,_receiver);
-         _timeTxt.text = param1.date;
+         _timeTxt.text = info.date;
       }
       
       private function addEvent() : void
@@ -76,7 +76,7 @@ package flowerGiving.components
          _huikuiBtn.addEventListener("click",__huikuiClick);
       }
       
-      protected function __huikuiClick(param1:MouseEvent) : void
+      protected function __huikuiClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          FlowerGivingController.instance.dispatchEvent(new FlowerSendRecordEvent("huiKuiFlower",_sender));

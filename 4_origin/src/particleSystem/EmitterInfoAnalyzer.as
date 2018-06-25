@@ -9,28 +9,28 @@ package particleSystem
       
       public var emitters:Dictionary;
       
-      public function EmitterInfoAnalyzer(param1:Function)
+      public function EmitterInfoAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         var _loc5_:XML = new XML(param1);
+         var emitterInfo:* = null;
+         var particleIds:* = null;
+         var xml:XML = new XML(data);
          emitters = new Dictionary();
-         var _loc4_:XMLList = _loc5_..emitter;
+         var xml_emitter:XMLList = xml..emitter;
          var _loc8_:int = 0;
-         var _loc7_:* = _loc4_;
-         for each(var _loc6_ in _loc4_)
+         var _loc7_:* = xml_emitter;
+         for each(var x in xml_emitter)
          {
-            _loc2_ = new EmitterInfo();
-            _loc2_.id = _loc6_.@id;
-            _loc2_.name = _loc6_.@name;
-            _loc3_ = String(_loc6_.@particles).split(",");
-            _loc2_.particleIds = _loc3_;
-            emitters[_loc2_.id] = _loc2_;
+            emitterInfo = new EmitterInfo();
+            emitterInfo.id = x.@id;
+            emitterInfo.name = x.@name;
+            particleIds = String(x.@particles).split(",");
+            emitterInfo.particleIds = particleIds;
+            emitters[emitterInfo.id] = emitterInfo;
          }
          onAnalyzeComplete();
       }

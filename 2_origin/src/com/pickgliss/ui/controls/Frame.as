@@ -103,34 +103,34 @@ package com.pickgliss.ui.controls
          addEventListener("mouseDown",__onMouseClickSetFocus);
       }
       
-      protected function __onMouseClickSetFocus(param1:MouseEvent) : void
+      protected function __onMouseClickSetFocus(event:MouseEvent) : void
       {
-         StageReferance.stage.focus = param1.target as InteractiveObject;
+         StageReferance.stage.focus = event.target as InteractiveObject;
       }
       
-      public function addToContent(param1:DisplayObject) : void
+      public function addToContent(display:DisplayObject) : void
       {
-         _container.addChild(param1);
+         _container.addChild(display);
       }
       
-      public function set backStyle(param1:String) : void
+      public function set backStyle(stylename:String) : void
       {
-         if(_backStyle == param1)
+         if(_backStyle == stylename)
          {
             return;
          }
-         _backStyle = param1;
+         _backStyle = stylename;
          backgound = ComponentFactory.Instance.creat(_backStyle);
       }
       
-      public function set backgound(param1:DisplayObject) : void
+      public function set backgound(image:DisplayObject) : void
       {
-         if(_backgound == param1)
+         if(_backgound == image)
          {
             return;
          }
          ObjectUtils.disposeObject(_backgound);
-         _backgound = param1;
+         _backgound = image;
          if(_backgound is InteractiveObject)
          {
             InteractiveObject(_backgound).mouseEnabled = true;
@@ -143,9 +143,9 @@ package com.pickgliss.ui.controls
          return _closeButton;
       }
       
-      public function set closeButton(param1:BaseButton) : void
+      public function set closeButton(button:BaseButton) : void
       {
-         if(_closeButton == param1)
+         if(_closeButton == button)
          {
             return;
          }
@@ -154,66 +154,66 @@ package com.pickgliss.ui.controls
             _closeButton.removeEventListener("click",__onCloseClick);
             ObjectUtils.disposeObject(_closeButton);
          }
-         _closeButton = param1;
+         _closeButton = button;
          onPropertiesChanged("closeButton");
       }
       
-      public function set closeInnerRectString(param1:String) : void
+      public function set closeInnerRectString(value:String) : void
       {
-         if(_closeInnerRectString == param1)
+         if(_closeInnerRectString == value)
          {
             return;
          }
-         _closeInnerRectString = param1;
+         _closeInnerRectString = value;
          _closeInnerRect = ClassUtils.CreatInstance("com.pickgliss.geom.InnerRectangle",ComponentFactory.parasArgs(_closeInnerRectString));
          onPropertiesChanged("closeInnerRect");
       }
       
-      public function set closestyle(param1:String) : void
+      public function set closestyle(stylename:String) : void
       {
-         if(_closestyle == param1)
+         if(_closestyle == stylename)
          {
             return;
          }
-         _closestyle = param1;
+         _closestyle = stylename;
          closeButton = ComponentFactory.Instance.creat(_closestyle);
       }
       
-      public function set containerX(param1:Number) : void
+      public function set containerX(value:Number) : void
       {
-         if(_containerX == param1)
+         if(_containerX == value)
          {
             return;
          }
-         _containerX = param1;
+         _containerX = value;
          onPropertiesChanged("containerX");
       }
       
-      public function set containerY(param1:Number) : void
+      public function set containerY(value:Number) : void
       {
-         if(_containerY == param1)
+         if(_containerY == value)
          {
             return;
          }
-         _containerY = param1;
+         _containerY = value;
          onPropertiesChanged("containerY");
       }
       
-      public function set titleOuterRectPosString(param1:String) : void
+      public function set titleOuterRectPosString(value:String) : void
       {
-         if(_titleOuterRectPosString == param1)
+         if(_titleOuterRectPosString == value)
          {
             return;
          }
-         _titleOuterRectPosString = param1;
+         _titleOuterRectPosString = value;
          _titleOuterRectPos = ClassUtils.CreatInstance("com.pickgliss.geom.OuterRectPos",ComponentFactory.parasArgs(_titleOuterRectPosString));
          onPropertiesChanged("titleOuterRectPos");
       }
       
       override public function dispose() : void
       {
-         var _loc1_:DisplayObject = StageReferance.stage.focus as DisplayObject;
-         if(_loc1_ && contains(_loc1_))
+         var focusDisplay:DisplayObject = StageReferance.stage.focus as DisplayObject;
+         if(focusDisplay && contains(focusDisplay))
          {
             StageReferance.stage.focus = null;
          }
@@ -261,106 +261,106 @@ package com.pickgliss.ui.controls
          return _disposeChildren;
       }
       
-      public function set disposeChildren(param1:Boolean) : void
+      public function set disposeChildren(value:Boolean) : void
       {
-         if(_disposeChildren == param1)
+         if(_disposeChildren == value)
          {
             return;
          }
-         _disposeChildren = param1;
+         _disposeChildren = value;
          onPropertiesChanged("disposeChildren");
       }
       
-      public function set moveEnable(param1:Boolean) : void
+      public function set moveEnable(value:Boolean) : void
       {
-         if(_moveEnable == param1)
+         if(_moveEnable == value)
          {
             return;
          }
-         _moveEnable = param1;
+         _moveEnable = value;
          onPropertiesChanged("moveEnable");
       }
       
-      public function set moveInnerRectString(param1:String) : void
+      public function set moveInnerRectString(value:String) : void
       {
-         if(_moveInnerRectString == param1)
+         if(_moveInnerRectString == value)
          {
             return;
          }
-         _moveInnerRectString = param1;
+         _moveInnerRectString = value;
          _moveInnerRect = ClassUtils.CreatInstance("com.pickgliss.geom.InnerRectangle",ComponentFactory.parasArgs(_moveInnerRectString));
          onPropertiesChanged("moveInnerRect");
       }
       
-      public function set title(param1:TextField) : void
+      public function set title(text:TextField) : void
       {
-         if(_title == param1)
+         if(_title == text)
          {
             return;
          }
-         _title = param1;
+         _title = text;
          onPropertiesChanged("title");
       }
       
-      public function set titleStyle(param1:String) : void
+      public function set titleStyle(stylename:String) : void
       {
-         if(_titleStyle == param1)
+         if(_titleStyle == stylename)
          {
             return;
          }
-         _titleStyle = param1;
+         _titleStyle = stylename;
          title = ComponentFactory.Instance.creat(_titleStyle);
       }
       
-      public function set titleText(param1:String) : void
+      public function set titleText(value:String) : void
       {
-         if(_titleText == param1)
+         if(_titleText == value)
          {
             return;
          }
-         _titleText = param1;
+         _titleText = value;
          onPropertiesChanged("titleText");
       }
       
-      protected function __onAddToStage(param1:Event) : void
+      protected function __onAddToStage(event:Event) : void
       {
          stage.focus = this;
       }
       
-      protected function __onCloseClick(param1:MouseEvent) : void
+      protected function __onCloseClick(event:MouseEvent) : void
       {
          onResponse(0);
       }
       
-      protected function __onKeyDown(param1:KeyboardEvent) : void
+      protected function __onKeyDown(event:KeyboardEvent) : void
       {
-         var _loc2_:DisplayObject = StageReferance.stage.focus as DisplayObject;
-         if(DisplayUtils.isTargetOrContain(_loc2_,this))
+         var focusTarget:DisplayObject = StageReferance.stage.focus as DisplayObject;
+         if(DisplayUtils.isTargetOrContain(focusTarget,this))
          {
-            if(param1.keyCode == 13 && enterEnable)
+            if(event.keyCode == 13 && enterEnable)
             {
-               if(_loc2_ is TextField && TextField(_loc2_).type == "input")
+               if(focusTarget is TextField && TextField(focusTarget).type == "input")
                {
                   return;
                }
                onResponse(2);
-               param1.stopImmediatePropagation();
+               event.stopImmediatePropagation();
             }
-            else if(param1.keyCode == 27 && escEnable)
+            else if(event.keyCode == 27 && escEnable)
             {
                onResponse(1);
-               param1.stopImmediatePropagation();
+               event.stopImmediatePropagation();
             }
          }
       }
       
-      public function set escEnable(param1:Boolean) : void
+      public function set escEnable(value:Boolean) : void
       {
-         if(_escEnable == param1)
+         if(_escEnable == value)
          {
             return;
          }
-         _escEnable = param1;
+         _escEnable = value;
          onPropertiesChanged("escEnable");
       }
       
@@ -369,13 +369,13 @@ package com.pickgliss.ui.controls
          return _escEnable;
       }
       
-      public function set autoExit(param1:Boolean) : void
+      public function set autoExit(value:Boolean) : void
       {
-         if(_autoExit == param1)
+         if(_autoExit == value)
          {
             return;
          }
-         _autoExit = param1;
+         _autoExit = value;
       }
       
       public function get autoExit() : Boolean
@@ -387,13 +387,13 @@ package com.pickgliss.ui.controls
       {
       }
       
-      public function set enterEnable(param1:Boolean) : void
+      public function set enterEnable(value:Boolean) : void
       {
-         if(_enterEnable == param1)
+         if(_enterEnable == value)
          {
             return;
          }
-         _enterEnable = param1;
+         _enterEnable = value;
          onPropertiesChanged("enterEnable");
       }
       
@@ -402,10 +402,10 @@ package com.pickgliss.ui.controls
          return _enterEnable;
       }
       
-      protected function onResponse(param1:int) : void
+      protected function onResponse(type:int) : void
       {
-         dispatchEvent(new FrameEvent(param1));
-         if(param1 == 0 || param1 == 1)
+         dispatchEvent(new FrameEvent(type));
+         if(type == 0 || type == 1)
          {
             onFrameClose();
             if(_autoExit)
@@ -415,14 +415,14 @@ package com.pickgliss.ui.controls
          }
       }
       
-      protected function __onFrameMoveStart(param1:MouseEvent) : void
+      protected function __onFrameMoveStart(event:MouseEvent) : void
       {
          StageReferance.stage.addEventListener("mouseMove",__onMoveWindow);
          StageReferance.stage.addEventListener("mouseUp",__onFrameMoveStop);
          startDrag();
       }
       
-      protected function __onFrameMoveStop(param1:MouseEvent) : void
+      protected function __onFrameMoveStop(event:MouseEvent) : void
       {
          StageReferance.stage.removeEventListener("mouseUp",__onFrameMoveStop);
          StageReferance.stage.removeEventListener("mouseMove",__onMoveWindow);
@@ -528,10 +528,10 @@ package com.pickgliss.ui.controls
          {
             return;
          }
-         var _loc1_:Rectangle = _moveInnerRect.getInnerRect(_width,_height);
+         var resultRect:Rectangle = _moveInnerRect.getInnerRect(_width,_height);
          _moveRect.graphics.clear();
          _moveRect.graphics.beginFill(0,0);
-         _moveRect.graphics.drawRect(_loc1_.x,_loc1_.y,_loc1_.width,_loc1_.height);
+         _moveRect.graphics.drawRect(resultRect.x,resultRect.y,resultRect.width,resultRect.height);
          _moveRect.graphics.endFill();
       }
       
@@ -545,16 +545,16 @@ package com.pickgliss.ui.controls
          {
             return;
          }
-         var _loc1_:Point = _titleOuterRectPos.getPos(_title.width,_title.height,_width,_height);
-         _title.x = _loc1_.x;
-         _title.y = _loc1_.y;
+         var posRect:Point = _titleOuterRectPos.getPos(_title.width,_title.height,_width,_height);
+         _title.x = posRect.x;
+         _title.y = posRect.y;
       }
       
-      protected function __onMoveWindow(param1:MouseEvent) : void
+      protected function __onMoveWindow(event:MouseEvent) : void
       {
-         if(DisplayUtils.isInTheStage(new Point(param1.localX,param1.localY),this))
+         if(DisplayUtils.isInTheStage(new Point(event.localX,event.localY),this))
          {
-            param1.updateAfterEvent();
+            event.updateAfterEvent();
          }
          else
          {

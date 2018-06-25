@@ -36,37 +36,37 @@ package consortion.view.selfConsortia
          addChild(_content);
       }
       
-      public function set info(param1:ConsortiaEventInfo) : void
+      public function set info(o:ConsortiaEventInfo) : void
       {
-         var _loc2_:String = param1.Date.toString().split(" ")[0];
-         switch(int(param1.Type) - 5)
+         var date:String = o.Date.toString().split(" ")[0];
+         switch(int(o.Type) - 5)
          {
             case 0:
                _eventType.setFrame(1);
-               if(param1.NickName.toLowerCase() == "gm")
+               if(o.NickName.toLowerCase() == "gm")
                {
-                  _content.text = LanguageMgr.GetTranslation("ddt.consortia.event.contributeGM",_loc2_,param1.EventValue);
+                  _content.text = LanguageMgr.GetTranslation("ddt.consortia.event.contributeGM",date,o.EventValue);
                }
                else
                {
-                  _content.text = LanguageMgr.GetTranslation("ddt.consortia.event.contribute",_loc2_,param1.NickName,param1.EventValue);
+                  _content.text = LanguageMgr.GetTranslation("ddt.consortia.event.contribute",date,o.NickName,o.EventValue);
                }
                break;
             case 1:
                _eventType.setFrame(2);
-               _content.text = LanguageMgr.GetTranslation("ddt.consortia.event.join",_loc2_,param1.ManagerName,param1.NickName);
+               _content.text = LanguageMgr.GetTranslation("ddt.consortia.event.join",date,o.ManagerName,o.NickName);
                break;
             case 2:
                _eventType.setFrame(3);
-               _content.text = LanguageMgr.GetTranslation("ddt.consortia.event.quite",_loc2_,param1.ManagerName,param1.NickName);
+               _content.text = LanguageMgr.GetTranslation("ddt.consortia.event.quite",date,o.ManagerName,o.NickName);
                break;
             case 3:
                _eventType.setFrame(4);
-               _content.text = LanguageMgr.GetTranslation("ddt.consortia.event.quit",_loc2_,param1.NickName);
+               _content.text = LanguageMgr.GetTranslation("ddt.consortia.event.quit",date,o.NickName);
                break;
             case 4:
                _eventType.setFrame(5);
-               _content.text = LanguageMgr.GetTranslation("ddt.consortia.event.skill",_loc2_,param1.NickName,param1.ManagerName);
+               _content.text = LanguageMgr.GetTranslation("ddt.consortia.event.skill",date,o.NickName,o.ManagerName);
          }
          _content.y = _backGroud.height / 2 - _content.textHeight / 2;
       }

@@ -1,10 +1,12 @@
 package ddt.states
 {
    import com.pickgliss.events.UIModuleEvent;
+   import com.pickgliss.loader.QueueLoader;
    import com.pickgliss.loader.UIModuleLoader;
    import com.pickgliss.utils.StringUtils;
    import ddt.loader.LoaderCreate;
    import ddt.manager.PlayerManager;
+   import ddt.manager.SoundManager;
    import ddt.manager.StateManager;
    import ddt.utils.AssetModuleLoader;
    import ddt.view.UIModuleSmallLoading;
@@ -35,198 +37,198 @@ package ddt.states
          super();
       }
       
-      public static function getNeededUIModuleByType(param1:String) : String
+      public static function getNeededUIModuleByType(type:String) : String
       {
-         var _loc2_:* = null;
-         var _loc3_:String = "";
-         if(param1 == "main")
+         var loadUIModuleTypes:* = null;
+         var extraType:String = "";
+         if(type == "main")
          {
             return "ddthall";
          }
-         if(param1 == "tofflist")
+         if(type == "tofflist")
          {
             return "toffilist";
          }
-         if(param1 == "superWinner")
+         if(type == "superWinner")
          {
             return "superwinner";
          }
-         if(param1 == "auction")
+         if(type == "auction")
          {
             return "ddtbagandinfo,ddtauction,ddtbead";
          }
-         if(param1 == "farm")
+         if(type == "farm")
          {
             return "farm,chatball";
          }
-         if(param1 == "consortia")
+         if(type == "consortia")
          {
             return "ddtbagandinfo,consortionii,ddtconsortion,ddtbead";
          }
-         if(param1 == "shop")
+         if(type == "shop")
          {
             return "ddtshop";
          }
-         if(param1 == "roomlist" || param1 == "dungeon" || param1 == "freshmanRoom1" || param1 == "worldbossRoom")
+         if(type == "roomlist" || type == "dungeon" || type == "freshmanRoom1" || type == "worldbossRoom")
          {
             return "ddtroom,ddtroomlist,chatball,game,gameDecorate,defaultLiving,gameii,gameiii,expression,ddtroomloading,gameover";
          }
-         if(param1 == "freshmanRoom2")
+         if(type == "freshmanRoom2")
          {
             return "ddtroomloading,gameiii";
          }
-         if(param1 == "matchRoom" || param1 == "dungeonRoom" || param1 == "missionResult" || param1 == "battleRoom" || param1 == "teamRoom")
+         if(type == "matchRoom" || type == "dungeonRoom" || type == "missionResult" || type == "battleRoom" || type == "teamRoom" || type == "dreamLandRoom")
          {
-            _loc2_ = "ddtroom,expression,chatball,game,gameDecorate,defaultLiving,gameii,gameiii,ddtroomloading,gameover";
-            if(param1 == "battleRoom")
+            loadUIModuleTypes = "ddtroom,expression,chatball,game,gameDecorate,defaultLiving,gameii,gameiii,ddtroomloading,gameover";
+            if(type == "battleRoom")
             {
-               _loc2_ = _loc2_ + ",gameBattle";
+               loadUIModuleTypes = loadUIModuleTypes + ",gameBattle";
             }
-            return _loc2_;
+            return loadUIModuleTypes;
          }
-         if(param1 == "challengeRoom")
+         if(type == "challengeRoom")
          {
             return "challengeroom,ddtroom,expression,chatball,game,gameDecorate,defaultLiving,gameii,gameiii,ddtroomloading";
          }
-         if(param1 == "renshen")
+         if(type == "renshen")
          {
             return "renshen,ddtroom,expression,chatball,game,gameDecorate,defaultLiving,gameii,gameiii";
          }
-         if(param1 == "ddtchurchroomlist")
+         if(type == "ddtchurchroomlist")
          {
             return "ddtchurchroomlist";
          }
-         if(param1 == "churchRoom")
+         if(type == "churchRoom")
          {
             return "churchroom,ddtchurchroomlist,chatball,expression";
          }
-         if(param1 == "civil")
+         if(type == "civil")
          {
             return "ddtcivil";
          }
-         if(param1 == "hotSpringRoomList")
+         if(type == "hotSpringRoomList")
          {
             return "ddthotspringroomlist";
          }
-         if(param1 == "hotSpringRoom")
+         if(type == "hotSpringRoom")
          {
             return "hotspringroom,expression,chatball";
          }
-         if(param1 == "fighting")
+         if(type == "fighting")
          {
             if(RoomManager.Instance.current.type == 29)
             {
-               _loc3_ = _loc3_ + ",rescue";
+               extraType = extraType + ",rescue";
             }
             else if(RoomManager.Instance.current.type == 52)
             {
-               _loc3_ = _loc3_ + ",catchInsect";
+               extraType = extraType + ",catchInsect";
             }
             if(RoomManager.Instance.current.type == 120 || RoomManager.Instance.current.type == 1 && RoomManager.Instance.current.gameMode == 120)
             {
-               _loc3_ = _loc3_ + ",gameBattle";
+               extraType = extraType + ",gameBattle";
             }
-            return "game,gameDecorate,defaultLiving,gameii,gameiii,gameover,chatball" + _loc3_;
+            return "game,gameDecorate,defaultLiving,gameii,gameiii,gameover,chatball" + extraType;
          }
-         if(param1 == "fighting3d")
+         if(type == "fighting3d")
          {
-            return "game,gameii,gameiii,gameover,gameBattle,chatball" + _loc3_;
+            return "game,gameii,gameiii,gameover,gameBattle,chatball" + extraType;
          }
-         if(param1 == "trainer1")
+         if(type == "trainer1")
          {
             return "game,gameDecorate,defaultLiving,gameii,gameiii,gameover,ddtroomloading,chatball";
          }
-         if(param1 == "trainer2")
+         if(type == "trainer2")
          {
             return "gameiii,ddtroomloading,chatball";
          }
-         if(param1 == "academyRegistration")
+         if(type == "academyRegistration")
          {
             return "ddtacademy,academycommon";
          }
-         if(param1 == "fightLib")
+         if(type == "fightLib")
          {
             return "gameiii,ddtroomloading,game,gameDecorate,defaultLiving,gameii,newfightlib,chatball,ddtroom";
          }
-         if(param1 == "littleHall")
+         if(type == "littleHall")
          {
             return "ddtshop,ddtlittlegame,expression";
          }
-         if(param1 == "worldbossAward")
+         if(type == "worldbossAward")
          {
             return "worldBoss,ddtshop,ddtlittlegame";
          }
-         if(param1 == "worldboss" || param1 == "christmasroom" || param1 == "catchInsect")
+         if(type == "worldboss" || type == "christmasroom" || type == "catchInsect")
          {
             return "worldBoss,ddtroom,ddtroomlist,chatball,game,gameDecorate,defaultLiving,gameii,gameiii,expression,ddtroomloading,gameover";
          }
-         if(param1 == "roomLoading" || param1 == "encounterLoading" || param1 == "campBattleSceneloaing" || param1 == "singleBattleMatching")
+         if(type == "roomLoading" || type == "encounterLoading" || type == "campBattleSceneloaing" || type == "singleBattleMatching")
          {
             return "ddtroom,chatball,game,gameDecorate,defaultLiving,gameii,gameiii,expression,ddtroomloading,gameover";
          }
-         if(param1 == "consortiaBattleScene")
+         if(type == "consortiaBattleScene")
          {
             return "consortiabattle";
          }
-         if(param1 == "campBattleScene")
+         if(type == "campBattleScene")
          {
             return "campbattle,game,gameDecorate,chatball,defaultLiving,consortiabattle,ddtconsortion";
          }
-         if(param1 == "sevenDoubleScene")
+         if(type == "sevenDoubleScene")
          {
             return "sevendoublegame";
          }
-         if(param1 == "escort")
+         if(type == "escort")
          {
             return "escortgame";
          }
-         if(param1 == "collectionTaskScene")
+         if(type == "collectionTaskScene")
          {
             return "collectionTask,chatball";
          }
-         if(param1 == "drgnBoat")
+         if(type == "drgnBoat")
          {
             return "drgnBoatgame,chatball";
          }
-         if(param1 == "magpiebridge")
+         if(type == "magpiebridge")
          {
             return "magpieBridge";
          }
-         if(param1 == "ddtKingFloat")
+         if(type == "ddtKingFloat")
          {
             return "floatParadegame,chatball";
          }
-         if(param1 == "floatparade")
+         if(type == "floatparade")
          {
             return "floatParadegame,chatball";
          }
-         if(param1 == "pyramid")
+         if(type == "pyramid")
          {
             return "pyramid,ddtshop";
          }
-         if(param1 == "boguadventure")
+         if(type == "boguadventure")
          {
             return "boguadventure,chatball,defaultLiving";
          }
-         if(param1 == "demon_chi_you")
+         if(type == "demon_chi_you")
          {
             return "demonchiyou,ddtroom,ddtroomlist,chatball,game,defaultLiving,gameii,gameiii,expression,ddtroomloading,gameover";
          }
-         if(param1 == "consortia_domain")
+         if(type == "consortia_domain")
          {
             return "consortiadomain,ddtroom,ddtroomlist,chatball,game,defaultLiving,gameii,gameiii,expression,ddtroomloading,gameover,ddtbagandinfo,consortionii,ddtconsortion";
          }
-         if(param1 == "consortiaGuard")
+         if(type == "consortiaGuard")
          {
             return "consortiaGuard,ddtroom,ddtroomlist,chatball,game,defaultLiving,gameii,gameiii,expression,ddtroomloading,gameover";
          }
          return "";
       }
       
-      public function create(param1:String, param2:int = 0) : BaseStateView
+      public function create(type:String, id:int = 0) : BaseStateView
       {
-         var _loc3_:* = null;
-         var _loc4_:* = param1;
+         var StateViewClass:* = null;
+         var _loc4_:* = type;
          if("login" !== _loc4_)
          {
             if("main" !== _loc4_)
@@ -341,152 +343,159 @@ package ddt.states
                                                                                                                                                                               {
                                                                                                                                                                                  if("minGameCubes" !== _loc4_)
                                                                                                                                                                                  {
-                                                                                                                                                                                    if("teamRoom" === _loc4_)
+                                                                                                                                                                                    if("teamRoom" !== _loc4_)
                                                                                                                                                                                     {
-                                                                                                                                                                                       _loc3_ = getDefinitionByName("room.view.states.TeamRoomState");
+                                                                                                                                                                                       if("dreamLandRoom" === _loc4_)
+                                                                                                                                                                                       {
+                                                                                                                                                                                          StateViewClass = getDefinitionByName("room.view.states.DreamLandChallengeRoomState");
+                                                                                                                                                                                       }
+                                                                                                                                                                                    }
+                                                                                                                                                                                    else
+                                                                                                                                                                                    {
+                                                                                                                                                                                       StateViewClass = getDefinitionByName("room.view.states.TeamRoomState");
                                                                                                                                                                                     }
                                                                                                                                                                                  }
                                                                                                                                                                                  else
                                                                                                                                                                                  {
-                                                                                                                                                                                    _loc3_ = getDefinitionByName("happyLittleGame.cubesGame.CubeGameStateView");
+                                                                                                                                                                                    StateViewClass = getDefinitionByName("happyLittleGame.cubesGame.CubeGameStateView");
                                                                                                                                                                                  }
                                                                                                                                                                               }
                                                                                                                                                                               else
                                                                                                                                                                               {
-                                                                                                                                                                                 _loc3_ = getDefinitionByName("consortion.view.guard.ConsortiaGuardState");
+                                                                                                                                                                                 StateViewClass = getDefinitionByName("consortion.view.guard.ConsortiaGuardState");
                                                                                                                                                                               }
                                                                                                                                                                            }
                                                                                                                                                                            else
                                                                                                                                                                            {
-                                                                                                                                                                              _loc3_ = getDefinitionByName("consortiaDomain.view.ConsortiaDomainScene");
+                                                                                                                                                                              StateViewClass = getDefinitionByName("consortiaDomain.view.ConsortiaDomainScene");
                                                                                                                                                                            }
                                                                                                                                                                         }
                                                                                                                                                                         else
                                                                                                                                                                         {
-                                                                                                                                                                           _loc3_ = getDefinitionByName("demonChiYou.view.DemonChiYouSence");
+                                                                                                                                                                           StateViewClass = getDefinitionByName("demonChiYou.view.DemonChiYouSence");
                                                                                                                                                                         }
                                                                                                                                                                      }
                                                                                                                                                                      else
                                                                                                                                                                      {
-                                                                                                                                                                        _loc3_ = getDefinitionByName("hotSpring.controller.HotSpringRoomManager");
+                                                                                                                                                                        StateViewClass = getDefinitionByName("hotSpring.controller.HotSpringRoomManager");
                                                                                                                                                                      }
                                                                                                                                                                   }
                                                                                                                                                                   else
                                                                                                                                                                   {
-                                                                                                                                                                     _loc3_ = getDefinitionByName("hotSpring.controller.HotSpringRoomListManager");
+                                                                                                                                                                     StateViewClass = getDefinitionByName("hotSpring.controller.HotSpringRoomListManager");
                                                                                                                                                                   }
                                                                                                                                                                }
                                                                                                                                                                else
                                                                                                                                                                {
-                                                                                                                                                                  _loc3_ = getDefinitionByName("treasure.view.TreasureMain");
+                                                                                                                                                                  StateViewClass = getDefinitionByName("treasure.view.TreasureMain");
                                                                                                                                                                }
                                                                                                                                                             }
                                                                                                                                                             else
                                                                                                                                                             {
-                                                                                                                                                               _loc3_ = getDefinitionByName("boguAdventure.view.BoguAdventureStateView");
+                                                                                                                                                               StateViewClass = getDefinitionByName("boguAdventure.view.BoguAdventureStateView");
                                                                                                                                                             }
                                                                                                                                                          }
                                                                                                                                                          else
                                                                                                                                                          {
-                                                                                                                                                            _loc3_ = getDefinitionByName("dice.view.DiceSystem");
+                                                                                                                                                            StateViewClass = getDefinitionByName("dice.view.DiceSystem");
                                                                                                                                                          }
                                                                                                                                                       }
                                                                                                                                                       else
                                                                                                                                                       {
-                                                                                                                                                         _loc3_ = getDefinitionByName("petIsland.view.PetIslandMainView");
+                                                                                                                                                         StateViewClass = getDefinitionByName("petIsland.view.PetIslandMainView");
                                                                                                                                                       }
                                                                                                                                                    }
                                                                                                                                                    else
                                                                                                                                                    {
-                                                                                                                                                      _loc3_ = getDefinitionByName("pyramid.view.PyramidSystem");
+                                                                                                                                                      StateViewClass = getDefinitionByName("pyramid.view.PyramidSystem");
                                                                                                                                                    }
                                                                                                                                                 }
                                                                                                                                                 else
                                                                                                                                                 {
-                                                                                                                                                   _loc3_ = getDefinitionByName("fightLib.FightLibState");
+                                                                                                                                                   StateViewClass = getDefinitionByName("fightLib.FightLibState");
                                                                                                                                                 }
                                                                                                                                              }
                                                                                                                                              else
                                                                                                                                              {
-                                                                                                                                                _loc3_ = getDefinitionByName("roomLoading.CampBattleLoadingState");
+                                                                                                                                                StateViewClass = getDefinitionByName("roomLoading.CampBattleLoadingState");
                                                                                                                                              }
                                                                                                                                           }
                                                                                                                                           else
                                                                                                                                           {
-                                                                                                                                             _loc3_ = getDefinitionByName("roomLoading.SingleBattleMatchState");
+                                                                                                                                             StateViewClass = getDefinitionByName("roomLoading.SingleBattleMatchState");
                                                                                                                                           }
                                                                                                                                        }
                                                                                                                                        else
                                                                                                                                        {
-                                                                                                                                          _loc3_ = getDefinitionByName("roomLoading.EncounterLoadingState");
+                                                                                                                                          StateViewClass = getDefinitionByName("roomLoading.EncounterLoadingState");
                                                                                                                                        }
                                                                                                                                     }
                                                                                                                                     else
                                                                                                                                     {
-                                                                                                                                       _loc3_ = getDefinitionByName("roomLoading.RoomLoadingState");
+                                                                                                                                       StateViewClass = getDefinitionByName("roomLoading.RoomLoadingState");
                                                                                                                                     }
                                                                                                                                  }
                                                                                                                               }
-                                                                                                                              _loc3_ = getDefinitionByName("room.view.states.FreshmanRoomState");
+                                                                                                                              StateViewClass = getDefinitionByName("room.view.states.FreshmanRoomState");
                                                                                                                            }
                                                                                                                            else
                                                                                                                            {
-                                                                                                                              _loc3_ = getDefinitionByName("room.view.states.MissionRoomState");
+                                                                                                                              StateViewClass = getDefinitionByName("room.view.states.MissionRoomState");
                                                                                                                            }
                                                                                                                         }
                                                                                                                         else
                                                                                                                         {
-                                                                                                                           _loc3_ = getDefinitionByName("room.view.states.ChallengeRoomState");
+                                                                                                                           StateViewClass = getDefinitionByName("room.view.states.ChallengeRoomState");
                                                                                                                         }
                                                                                                                      }
                                                                                                                      else
                                                                                                                      {
-                                                                                                                        _loc3_ = getDefinitionByName("room.view.states.BattleRoomState");
+                                                                                                                        StateViewClass = getDefinitionByName("room.view.states.BattleRoomState");
                                                                                                                      }
                                                                                                                   }
                                                                                                                   else
                                                                                                                   {
-                                                                                                                     _loc3_ = getDefinitionByName("room.view.states.DungeonRoomState");
+                                                                                                                     StateViewClass = getDefinitionByName("room.view.states.DungeonRoomState");
                                                                                                                   }
                                                                                                                }
                                                                                                                else
                                                                                                                {
-                                                                                                                  _loc3_ = getDefinitionByName("room.view.states.MatchRoomState");
+                                                                                                                  StateViewClass = getDefinitionByName("room.view.states.MatchRoomState");
                                                                                                                }
                                                                                                             }
                                                                                                             else
                                                                                                             {
-                                                                                                               _loc3_ = getDefinitionByName("littleGame.LittleGame");
+                                                                                                               StateViewClass = getDefinitionByName("littleGame.LittleGame");
                                                                                                             }
                                                                                                          }
                                                                                                          else
                                                                                                          {
-                                                                                                            _loc3_ = getDefinitionByName("littleGame.LittleHall");
+                                                                                                            StateViewClass = getDefinitionByName("littleGame.LittleHall");
                                                                                                          }
                                                                                                       }
                                                                                                       else
                                                                                                       {
-                                                                                                         _loc3_ = getDefinitionByName("consortionBattle.view.ConsortiaBattleMainView");
+                                                                                                         StateViewClass = getDefinitionByName("consortionBattle.view.ConsortiaBattleMainView");
                                                                                                       }
                                                                                                    }
                                                                                                    else
                                                                                                    {
-                                                                                                      _loc3_ = getDefinitionByName("consortion.ConsortionControl");
+                                                                                                      StateViewClass = getDefinitionByName("consortion.ConsortionControl");
                                                                                                    }
                                                                                                 }
                                                                                                 else
                                                                                                 {
-                                                                                                   _loc3_ = getDefinitionByName("tofflist.TofflistController");
+                                                                                                   StateViewClass = getDefinitionByName("tofflist.TofflistController");
                                                                                                 }
                                                                                              }
                                                                                              else
                                                                                              {
-                                                                                                _loc3_ = getDefinitionByName("worldboss.view.WorldBossFightRoomState");
+                                                                                                StateViewClass = getDefinitionByName("worldboss.view.WorldBossFightRoomState");
                                                                                              }
                                                                                           }
                                                                                           else
                                                                                           {
-                                                                                             _loc3_ = getDefinitionByName("worldboss.WorldBossAwardController");
+                                                                                             StateViewClass = getDefinitionByName("worldboss.WorldBossAwardController");
                                                                                           }
                                                                                        }
                                                                                        else
@@ -496,109 +505,109 @@ package ddt.states
                                                                                     }
                                                                                     else
                                                                                     {
-                                                                                       _loc3_ = getDefinitionByName("collectionTask.view.CollectionTaskMainView");
+                                                                                       StateViewClass = getDefinitionByName("collectionTask.view.CollectionTaskMainView");
                                                                                     }
                                                                                  }
                                                                                  else
                                                                                  {
-                                                                                    _loc3_ = getDefinitionByName("civil.CivilController");
+                                                                                    StateViewClass = getDefinitionByName("civil.CivilController");
                                                                                  }
                                                                               }
                                                                               else
                                                                               {
-                                                                                 _loc3_ = getDefinitionByName("farm.viewx.FarmSwitchView");
+                                                                                 StateViewClass = getDefinitionByName("farm.viewx.FarmSwitchView");
                                                                               }
                                                                            }
                                                                            else
                                                                            {
-                                                                              _loc3_ = getDefinitionByName("campbattle.view.CampBattleView");
+                                                                              StateViewClass = getDefinitionByName("campbattle.view.CampBattleView");
                                                                            }
                                                                         }
                                                                         else
                                                                         {
-                                                                           _loc3_ = getDefinitionByName("magpieBridge.view.MagPieBridgeView");
+                                                                           StateViewClass = getDefinitionByName("magpieBridge.view.MagPieBridgeView");
                                                                         }
                                                                      }
                                                                      else
                                                                      {
-                                                                        _loc3_ = getDefinitionByName("ddtKingFloat.views.DDTKingFloatMainView");
+                                                                        StateViewClass = getDefinitionByName("ddtKingFloat.views.DDTKingFloatMainView");
                                                                      }
                                                                   }
                                                                   else
                                                                   {
-                                                                     _loc3_ = getDefinitionByName("floatParade.views.FloatParadeMainView");
+                                                                     StateViewClass = getDefinitionByName("floatParade.views.FloatParadeMainView");
                                                                   }
                                                                }
                                                                else
                                                                {
-                                                                  _loc3_ = getDefinitionByName("renshen.view.RunningRenshenStateView");
+                                                                  StateViewClass = getDefinitionByName("renshen.view.RunningRenshenStateView");
                                                                }
                                                             }
                                                             else
                                                             {
-                                                               _loc3_ = getDefinitionByName("christmas.controller.ChristmasRoomController");
+                                                               StateViewClass = getDefinitionByName("christmas.controller.ChristmasRoomController");
                                                             }
                                                          }
                                                          else
                                                          {
-                                                            _loc3_ = getDefinitionByName("sevenDouble.view.SevenDoubleMainView");
+                                                            StateViewClass = getDefinitionByName("sevenDouble.view.SevenDoubleMainView");
                                                          }
                                                       }
                                                       else
                                                       {
-                                                         _loc3_ = getDefinitionByName("escort.view.EscortMainView");
+                                                         StateViewClass = getDefinitionByName("escort.view.EscortMainView");
                                                       }
                                                    }
                                                    else
                                                    {
-                                                      _loc3_ = getDefinitionByName("catchInsect.view.CatchInsectRoomController");
+                                                      StateViewClass = getDefinitionByName("catchInsect.view.CatchInsectRoomController");
                                                    }
                                                 }
                                                 else
                                                 {
-                                                   _loc3_ = getDefinitionByName("academy.AcademyController");
+                                                   StateViewClass = getDefinitionByName("academy.AcademyController");
                                                 }
                                              }
                                              else
                                              {
-                                                _loc3_ = getDefinitionByName("auctionHouse.controller.AuctionHouseController");
+                                                StateViewClass = getDefinitionByName("auctionHouse.controller.AuctionHouseController");
                                              }
                                           }
                                           else
                                           {
-                                             _loc3_ = getDefinitionByName("church.controller.ChurchRoomListController");
+                                             StateViewClass = getDefinitionByName("church.controller.ChurchRoomListController");
                                           }
                                        }
                                        else
                                        {
-                                          _loc3_ = getDefinitionByName("church.controller.ChurchRoomController");
+                                          StateViewClass = getDefinitionByName("church.controller.ChurchRoomController");
                                        }
                                     }
                                     else
                                     {
-                                       _loc3_ = getDefinitionByName("fightLib.view.FightLibGameView");
+                                       StateViewClass = getDefinitionByName("fightLib.view.FightLibGameView");
                                     }
                                  }
                               }
-                              _loc3_ = getDefinitionByName("game.view.TrainerGameView");
+                              StateViewClass = getDefinitionByName("game.view.TrainerGameView");
                            }
                            else
                            {
-                              _loc3_ = getDefinitionByName("gameStarling.view.GameView3D");
+                              StateViewClass = getDefinitionByName("gameStarling.view.GameView3D");
                            }
                         }
                         else
                         {
-                           _loc3_ = getDefinitionByName("game.view.GameView");
+                           StateViewClass = getDefinitionByName("game.view.GameView");
                         }
                      }
                      else
                      {
-                        _loc3_ = getDefinitionByName("drgnBoat.views.DrgnBoatMainView");
+                        StateViewClass = getDefinitionByName("drgnBoat.views.DrgnBoatMainView");
                      }
-                     if(_loc3_)
+                     if(StateViewClass)
                      {
-                        return new _loc3_();
+                        return new StateViewClass();
                      }
                      return null;
                   }
@@ -611,21 +620,22 @@ package ddt.states
          return new LoginStateView();
       }
       
-      public function createAsync(param1:String, param2:Function) : void
+      public function createAsync(type:String, callback:Function) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc5_:int = 0;
-         _loadCall = param2;
-         _currentStateType = param1;
-         if(!StateManager.RecordFlag || param1 != "main")
+         var loaderQueue:* = null;
+         var uiModuleStr:* = null;
+         var modules:* = null;
+         var i:int = 0;
+         _loadCall = callback;
+         _currentStateType = type;
+         if(!StateManager.RecordFlag || type != "main")
          {
-            var _loc6_:* = param1;
-            if("consortia" !== _loc6_)
+            var _loc7_:* = type;
+            if("consortia" !== _loc7_)
             {
-               if("farm" !== _loc6_)
+               if("farm" !== _loc7_)
                {
-                  if("pyramid" === _loc6_)
+                  if("pyramid" === _loc7_)
                   {
                      AssetModuleLoader.addRequestLoader(LoaderCreate.Instance.creatPyramidLoader());
                   }
@@ -640,19 +650,36 @@ package ddt.states
                AssetModuleLoader.addRequestLoader(LoaderCreate.Instance.creatBadgeInfoLoader());
                AssetModuleLoader.addRequestLoader(LoaderCreate.Instance.creatConsortiaWeekRewardLoader());
             }
-            _loc4_ = getNeededUIModuleByType(param1);
-            if(_loc4_ != "")
+            if(type == "fighting" || type == "fighting3d" || type == "trainer1" || type == "trainer2")
             {
-               _loc3_ = _loc4_.split(",");
-               _loc5_ = 0;
-               while(_loc5_ < _loc3_.length)
+               loaderQueue = new QueueLoader();
+               if(!SoundManager.instance.audioBattleComplete)
                {
-                  AssetModuleLoader.addModelLoader(_loc3_[_loc5_],6);
-                  _loc5_++;
+                  loaderQueue.addLoader(LoaderCreate.Instance.createAudioBattleLoader());
+                  loaderQueue.addEventListener("complete",__onAudioLoadComplete);
+                  loaderQueue.start();
+               }
+            }
+            uiModuleStr = getNeededUIModuleByType(type);
+            if(uiModuleStr != "")
+            {
+               modules = uiModuleStr.split(",");
+               for(i = 0; i < modules.length; )
+               {
+                  AssetModuleLoader.addModelLoader(modules[i],6);
+                  i++;
+               }
+               if(type == "auction")
+               {
+                  AssetModuleLoader.addModelLoader("mark",7);
+               }
+               else if(type == "dreamLandRoom")
+               {
+                  AssetModuleLoader.addModelLoader("dreamLandBlessing",5);
                }
             }
          }
-         if(isLoaderDDTCORE(param1))
+         if(isLoaderDDTCORE(type))
          {
             AssetModuleLoader.startCodeLoader(loadComplete);
          }
@@ -662,11 +689,17 @@ package ddt.states
          }
       }
       
+      private function __onAudioLoadComplete(e:Event) : void
+      {
+         e.currentTarget.removeEventListener("complete",__onAudioLoadComplete);
+         SoundManager.instance.setupAudioResource(["audiobattle"]);
+      }
+      
       private function loadComplete() : void
       {
       }
       
-      private function __onCloseLoading(param1:Event) : void
+      private function __onCloseLoading(event:Event) : void
       {
          if(PlayerManager.Instance.Self.Grade >= 2)
          {
@@ -681,112 +714,109 @@ package ddt.states
          }
       }
       
-      private function getStateLoadingInfo(param1:String, param2:String = null, param3:Function = null) : StateLoadingInfo
+      private function getStateLoadingInfo(type:String, needUIModule:String = null, callBack:Function = null) : StateLoadingInfo
       {
-         var _loc4_:* = null;
-         var _loc5_:* = null;
-         var _loc6_:int = 0;
-         _loc4_ = _state[param1];
-         if(_loc4_ == null)
+         var stateLoadingInfo:* = null;
+         var modules:* = null;
+         var i:int = 0;
+         stateLoadingInfo = _state[type];
+         if(stateLoadingInfo == null)
          {
-            _loc4_ = new StateLoadingInfo();
-            if(param2 != null && param2 != "")
+            stateLoadingInfo = new StateLoadingInfo();
+            if(needUIModule != null && needUIModule != "")
             {
-               _loc5_ = param2.split(",");
-               _loc6_ = 0;
-               while(_loc6_ < _loc5_.length)
+               modules = needUIModule.split(",");
+               for(i = 0; i < modules.length; )
                {
-                  _loc4_.neededUIModule.push(_loc5_[_loc6_]);
-                  _loc6_++;
+                  stateLoadingInfo.neededUIModule.push(modules[i]);
+                  i++;
                }
             }
             else
             {
-               _loc4_.isComplete = true;
+               stateLoadingInfo.isComplete = true;
             }
-            _loc4_.state = param1;
-            _loc4_.callBack = param3;
-            _state[param1] = _loc4_;
+            stateLoadingInfo.state = type;
+            stateLoadingInfo.callBack = callBack;
+            _state[type] = stateLoadingInfo;
          }
-         return _loc4_;
+         return stateLoadingInfo;
       }
       
-      private function __onUimoduleLoadComplete(param1:UIModuleEvent) : void
+      private function __onUimoduleLoadComplete(event:UIModuleEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
-         if(StringUtils.isEmpty(param1.state))
+         var i:int = 0;
+         var state:* = null;
+         if(StringUtils.isEmpty(event.state))
          {
             return;
          }
-         var _loc4_:StateLoadingInfo = getStateLoadingInfo(param1.state);
-         if(_loc4_.completeedUIModule.indexOf(param1.module) == -1)
+         var stateLoadingInfo:StateLoadingInfo = getStateLoadingInfo(event.state);
+         if(stateLoadingInfo.completeedUIModule.indexOf(event.module) == -1)
          {
-            _loc4_.completeedUIModule.push(param1.module);
+            stateLoadingInfo.completeedUIModule.push(event.module);
          }
-         var _loc2_:Boolean = true;
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_.neededUIModule.length)
+         var allComplete:Boolean = true;
+         for(i = 0; i < stateLoadingInfo.neededUIModule.length; )
          {
-            if(_loc4_.completeedUIModule.indexOf(_loc4_.neededUIModule[_loc5_]) == -1)
+            if(stateLoadingInfo.completeedUIModule.indexOf(stateLoadingInfo.neededUIModule[i]) == -1)
             {
-               _loc2_ = false;
+               allComplete = false;
                break;
             }
-            _loc5_++;
+            i++;
          }
-         _loc4_.isComplete = _loc2_;
-         if(_loc4_.isComplete && _currentStateType == _loc4_.state)
+         stateLoadingInfo.isComplete = allComplete;
+         if(stateLoadingInfo.isComplete && _currentStateType == stateLoadingInfo.state)
          {
             UIModuleLoader.Instance.removeEventListener("uiModuleComplete",__onUimoduleLoadComplete);
             UIModuleLoader.Instance.removeEventListener("uiMoudleProgress",__onUimoduleLoadProgress);
             UIModuleSmallLoading.Instance.hide();
-            _loc3_ = create(param1.state);
-            if(_loc4_.callBack != null)
+            state = create(event.state);
+            if(stateLoadingInfo.callBack != null)
             {
-               _loc4_.callBack(_loc3_);
+               stateLoadingInfo.callBack(state);
             }
          }
       }
       
-      private function __onUimoduleLoadError(param1:UIModuleEvent) : void
+      private function __onUimoduleLoadError(event:UIModuleEvent) : void
       {
       }
       
-      private function __onUimoduleLoadProgress(param1:UIModuleEvent) : void
+      private function __onUimoduleLoadProgress(event:UIModuleEvent) : void
       {
-         var _loc6_:int = 0;
-         var _loc2_:Number = NaN;
+         var i:int = 0;
+         var moduleProgress:Number = NaN;
          var _loc8_:int = 0;
          var _loc7_:* = _state;
-         for each(var _loc5_ in _state)
+         for each(var loadingInfo in _state)
          {
-            if(_loc5_.neededUIModule.indexOf(param1.module) != -1)
+            if(loadingInfo.neededUIModule.indexOf(event.module) != -1)
             {
-               _loc5_.progress[param1.module] = param1.loader.progress;
+               loadingInfo.progress[event.module] = event.loader.progress;
             }
          }
-         var _loc4_:StateLoadingInfo = getStateLoadingInfo(param1.state);
-         var _loc3_:int = 0;
-         _loc6_ = 0;
-         while(_loc6_ < _loc4_.neededUIModule.length)
+         var stateLoadingInfo:StateLoadingInfo = getStateLoadingInfo(event.state);
+         var progress:int = 0;
+         for(i = 0; i < stateLoadingInfo.neededUIModule.length; )
          {
-            if(_loc4_.progress[_loc4_.neededUIModule[_loc6_]] != null)
+            if(stateLoadingInfo.progress[stateLoadingInfo.neededUIModule[i]] != null)
             {
-               _loc2_ = _loc4_.progress[_loc4_.neededUIModule[_loc6_]];
-               _loc3_ = _loc3_ + _loc2_ * 100 / _loc4_.neededUIModule.length;
+               moduleProgress = stateLoadingInfo.progress[stateLoadingInfo.neededUIModule[i]];
+               progress = progress + moduleProgress * 100 / stateLoadingInfo.neededUIModule.length;
             }
-            _loc6_++;
+            i++;
          }
-         if(_currentStateType == _loc4_.state)
+         if(_currentStateType == stateLoadingInfo.state)
          {
-            UIModuleSmallLoading.Instance.progress = _loc3_;
+            UIModuleSmallLoading.Instance.progress = progress;
          }
       }
       
-      private function isLoaderDDTCORE(param1:String) : Boolean
+      private function isLoaderDDTCORE(type:String) : Boolean
       {
-         if(param1 == "escort" || param1 == "worldboss" || param1 == "worldbossRoom" || param1 == "worldbossAward" || param1 == "campBattleScene" || param1 == "farm" || param1 == "floatparade" || param1 == "ddtKingFloat" || param1 == "sevenDoubleScene" || param1 == "christmasroom" || param1 == "magpiebridge" || param1 == "civil" || param1 == "collectionTaskScene" || param1 == "consortia" || param1 == "consortiaBattleScene" || param1 == "matchRoom" || param1 == "dungeonRoom" || param1 == "battleRoom" || param1 == "challengeRoom" || param1 == "missionResult" || param1 == "freshmanRoom1" || param1 == "freshmanRoom2" || param1 == "roomLoading" || param1 == "encounterLoading" || param1 == "singleBattleMatching" || param1 == "campBattleSceneloaing" || param1 == "fightLib" || param1 == "tofflist" || param1 == "littleHall" || param1 == "littleGame" || param1 == "churchRoom" || param1 == "ddtchurchroomlist" || param1 == "auction" || param1 == "drgnBoat" || param1 == "fighting" || param1 == "fighting3d" || param1 == "trainer1" || param1 == "trainer2" || param1 == "fightLabGameView" || param1 == "academyRegistration" || param1 == "catchInsect" || param1 == "pyramid" || param1 == "hotSpringRoomList" || param1 == "hotSpringRoom" || param1 == "demon_chi_you" || param1 == "consortia_domain" || param1 == "consortiaGuard" || param1 == "teamRoom")
+         if(type == "escort" || type == "worldboss" || type == "worldbossRoom" || type == "worldbossAward" || type == "campBattleScene" || type == "farm" || type == "floatparade" || type == "ddtKingFloat" || type == "sevenDoubleScene" || type == "christmasroom" || type == "magpiebridge" || type == "civil" || type == "collectionTaskScene" || type == "consortia" || type == "consortiaBattleScene" || type == "matchRoom" || type == "dungeonRoom" || type == "battleRoom" || type == "challengeRoom" || type == "missionResult" || type == "freshmanRoom1" || type == "freshmanRoom2" || type == "roomLoading" || type == "encounterLoading" || type == "singleBattleMatching" || type == "campBattleSceneloaing" || type == "fightLib" || type == "tofflist" || type == "littleHall" || type == "littleGame" || type == "churchRoom" || type == "ddtchurchroomlist" || type == "auction" || type == "drgnBoat" || type == "fighting" || type == "fighting3d" || type == "trainer1" || type == "trainer2" || type == "fightLabGameView" || type == "academyRegistration" || type == "catchInsect" || type == "pyramid" || type == "hotSpringRoomList" || type == "hotSpringRoom" || type == "demon_chi_you" || type == "consortia_domain" || type == "consortiaGuard" || type == "teamRoom" || type == "dreamLandRoom")
          {
             return true;
          }

@@ -23,10 +23,10 @@ package store
       
       public var mouseSilenced:Boolean = false;
       
-      public function StoreCell(param1:Sprite, param2:int)
+      public function StoreCell(bg:Sprite, $index:int)
       {
-         super(0,null,false,param1);
-         _index = param2;
+         super(0,null,false,bg);
+         _index = $index;
          _shiner = new ShineObject(ComponentFactory.Instance.creat("asset.ddtstore.cellShine"));
          addChild(_shiner);
          var _loc3_:Boolean = false;
@@ -69,7 +69,7 @@ package store
          DoubleClickManager.Instance.disableDoubleClick(this);
       }
       
-      protected function __doubleClickHandler(param1:InteractiveEvent) : void
+      protected function __doubleClickHandler(evt:InteractiveEvent) : void
       {
          if(!DoubleClickEnabled)
          {
@@ -79,9 +79,9 @@ package store
          {
             return;
          }
-         if((param1.currentTarget as BagCell).info != null)
+         if((evt.currentTarget as BagCell).info != null)
          {
-            SocketManager.Instance.out.sendMoveGoods(12,index,itemBagType,-1);
+            SocketManager.Instance.out.sendMoveGoods(12,index,itemBagType,0);
             if(!mouseSilenced)
             {
                SoundManager.instance.play("008");
@@ -89,7 +89,7 @@ package store
          }
       }
       
-      protected function __clickHandler(param1:InteractiveEvent) : void
+      protected function __clickHandler(evt:InteractiveEvent) : void
       {
          if(_info && !locked && stage && allowDrag)
          {

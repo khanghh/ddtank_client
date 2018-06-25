@@ -84,17 +84,17 @@ package foodActivity.view
       
       private function initView() : void
       {
-         var _loc11_:int = 0;
-         var _loc6_:* = null;
-         var _loc8_:int = 0;
-         var _loc1_:* = null;
-         var _loc7_:int = 0;
-         var _loc5_:* = null;
-         var _loc2_:int = 0;
-         var _loc3_:* = null;
-         var _loc10_:* = undefined;
-         var _loc4_:* = null;
-         var _loc9_:* = null;
+         var i:int = 0;
+         var box:* = null;
+         var j:int = 0;
+         var boxNumTxt:* = null;
+         var bi:int = 0;
+         var award:* = null;
+         var kii:int = 0;
+         var giftInfo:* = null;
+         var conditionVec:* = undefined;
+         var name:* = null;
+         var tip:* = null;
          _bg = ComponentFactory.Instance.creat("foodActivity.bg");
          addToContent(_bg);
          _helpBtn = ComponentFactory.Instance.creatComponentByStylename("foodActivity.helpBtn");
@@ -111,27 +111,25 @@ package foodActivity.view
          _progress.mask = _sp;
          addToContent(_sp);
          _boxArr = new Vector.<FoodActivityBox>();
-         _loc11_ = 0;
-         while(_loc11_ < 5)
+         for(i = 0; i < 5; )
          {
-            _loc6_ = new FoodActivityBox();
-            _loc6_.play(1);
-            _loc6_.x = 237 + 93 * (_loc11_ - 1);
-            _loc6_.y = 110;
-            addToContent(_loc6_);
-            _boxArr.push(_loc6_);
-            _loc11_++;
+            box = new FoodActivityBox();
+            box.play(1);
+            box.x = 237 + 93 * (i - 1);
+            box.y = 110;
+            addToContent(box);
+            _boxArr.push(box);
+            i++;
          }
          _boxNumTxtArr = new Vector.<FilterFrameText>();
-         _loc8_ = 0;
-         while(_loc8_ < 5)
+         for(j = 0; j < 5; )
          {
-            _loc1_ = ComponentFactory.Instance.creatComponentByStylename("foodActivity.boxNumTxt");
-            _loc1_.x = 151 + 93 * _loc8_;
-            _loc1_.y = 152;
-            addToContent(_loc1_);
-            _boxNumTxtArr.push(_loc1_);
-            _loc8_++;
+            boxNumTxt = ComponentFactory.Instance.creatComponentByStylename("foodActivity.boxNumTxt");
+            boxNumTxt.x = 151 + 93 * j;
+            boxNumTxt.y = 152;
+            addToContent(boxNumTxt);
+            _boxNumTxtArr.push(boxNumTxt);
+            j++;
          }
          _ripeTxt = ComponentFactory.Instance.creatComponentByStylename("foodActivity.ripeTxt");
          addToContent(_ripeTxt);
@@ -160,29 +158,28 @@ package foodActivity.view
          {
             return;
          }
-         _loc7_ = 0;
-         while(_loc7_ < _boxArr.length)
+         bi = 0;
+         while(bi < _boxArr.length)
          {
-            if(!_boxArr[_loc7_].tipData)
+            if(!_boxArr[bi].tipData)
             {
-               _loc5_ = "";
-               _loc2_ = 0;
-               while(_loc2_ < _data.giftbagArray[_loc7_].giftRewardArr.length)
+               award = "";
+               for(kii = 0; kii < _data.giftbagArray[bi].giftRewardArr.length; )
                {
-                  _loc3_ = _data.giftbagArray[_loc7_].giftRewardArr[_loc2_];
-                  _loc10_ = _data.giftbagArray[_loc7_].giftConditionArr;
-                  _loc4_ = ItemManager.Instance.getTemplateById(_loc3_.templateId).Name;
-                  _loc5_ = _loc5_ + (_loc4_ + "x" + _loc3_.count + (_loc2_ == _data.giftbagArray[_loc7_].giftRewardArr.length - 1?"":"、\n"));
-                  _loc2_++;
+                  giftInfo = _data.giftbagArray[bi].giftRewardArr[kii];
+                  conditionVec = _data.giftbagArray[bi].giftConditionArr;
+                  name = ItemManager.Instance.getTemplateById(giftInfo.templateId).Name;
+                  award = award + (name + "x" + giftInfo.count + (kii == _data.giftbagArray[bi].giftRewardArr.length - 1?"":"、\n"));
+                  kii++;
                }
-               _loc9_ = {};
-               _loc9_.content = LanguageMgr.GetTranslation("foodActivity.boxTipTxt",_loc10_[0].conditionValue,_loc10_[1].conditionValue);
-               _loc9_.awards = _loc5_;
-               _boxArr[_loc7_].tipStyle = "foodActivity.view.FoodActivityTip";
-               _boxArr[_loc7_].tipDirctions = "2,1";
-               _boxArr[_loc7_].tipData = _loc9_;
+               tip = {};
+               tip.content = LanguageMgr.GetTranslation("foodActivity.boxTipTxt",conditionVec[0].conditionValue,conditionVec[1].conditionValue);
+               tip.awards = award;
+               _boxArr[bi].tipStyle = "foodActivity.view.FoodActivityTip";
+               _boxArr[bi].tipDirctions = "2,1";
+               _boxArr[bi].tipData = tip;
             }
-            _loc7_++;
+            bi++;
          }
          updateProgress();
       }
@@ -196,55 +193,53 @@ package foodActivity.view
          _helpBtn.addEventListener("click",__helpHandler);
       }
       
-      protected function __helpHandler(param1:MouseEvent) : void
+      protected function __helpHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         param1.stopImmediatePropagation();
-         var _loc2_:DisplayObject = ComponentFactory.Instance.creat("foodActivity.frame.HelpPrompt" + _data.activityChildType);
-         var _loc3_:HelpFrame = ComponentFactory.Instance.creat("foodActivity.frame.HelpFrame");
-         _loc3_.setView(_loc2_);
-         _loc3_.titleText = LanguageMgr.GetTranslation("store.view.HelpButtonText");
-         LayerManager.Instance.addToLayer(_loc3_,3,true,1);
+         event.stopImmediatePropagation();
+         var helpBd:DisplayObject = ComponentFactory.Instance.creat("foodActivity.frame.HelpPrompt" + _data.activityChildType);
+         var helpPage:HelpFrame = ComponentFactory.Instance.creat("foodActivity.frame.HelpFrame");
+         helpPage.setView(helpBd);
+         helpPage.titleText = LanguageMgr.GetTranslation("store.view.HelpButtonText");
+         LayerManager.Instance.addToLayer(helpPage,3,true,1);
       }
       
       public function updateProgress() : void
       {
-         var _loc6_:int = 0;
-         var _loc7_:int = 0;
-         var _loc5_:int = 0;
+         var k:int = 0;
+         var i:int = 0;
+         var j:int = 0;
          var _loc9_:* = 0;
          var _loc8_:* = _boxArr;
-         for each(var _loc4_ in _boxArr)
+         for each(var box in _boxArr)
          {
-            _loc4_.play(1);
+            box.play(1);
          }
          _giftState = 0;
-         var _loc2_:Array = [];
-         _loc6_ = 0;
-         while(_loc6_ < _data.giftbagArray.length)
+         var cookingNumArr:Array = [];
+         for(k = 0; k < _data.giftbagArray.length; )
          {
-            _loc2_.push(_data.giftbagArray[_loc6_].giftConditionArr[0].conditionValue);
-            _loc6_++;
+            cookingNumArr.push(_data.giftbagArray[k].giftConditionArr[0].conditionValue);
+            k++;
          }
-         var _loc1_:int = _loc2_[4];
-         var _loc3_:int = FoodActivityManager.Instance.ripeNum + _defaultRipeNum;
-         if(_loc3_ == _defaultRipeNum)
+         var max:int = cookingNumArr[4];
+         var sum:int = FoodActivityManager.Instance.ripeNum + _defaultRipeNum;
+         if(sum == _defaultRipeNum)
          {
             _sp.width = _defaultLength;
          }
-         else if(_loc3_ < _loc1_)
+         else if(sum < max)
          {
-            _loc7_ = 1;
-            while(_loc7_ < _loc2_.length)
+            for(i = 1; i < cookingNumArr.length; )
             {
-               if(_loc3_ < _loc2_[_loc7_])
+               if(sum < cookingNumArr[i])
                {
-                  _giftState = 1 << _loc7_ - 1;
-                  _boxArr[_loc7_ - 1].play(2);
-                  _sp.width = _defaultLength + int(93 * ((_loc3_ - _loc2_[_loc7_ - 1]) / (_loc2_[_loc7_] - _loc2_[_loc7_ - 1]) + _loc7_ - 1));
+                  _giftState = 1 << i - 1;
+                  _boxArr[i - 1].play(2);
+                  _sp.width = _defaultLength + int(93 * ((sum - cookingNumArr[i - 1]) / (cookingNumArr[i] - cookingNumArr[i - 1]) + i - 1));
                   break;
                }
-               _loc7_++;
+               i++;
             }
          }
          else
@@ -260,19 +255,18 @@ package foodActivity.view
          _loc9_ = _loc8_;
          _boxMc.mouseChildren = _loc9_;
          _boxMc.mouseEnabled = _loc9_;
-         _boxNumTxtArr[0].text = (_loc2_[0] - 1).toString();
-         _loc5_ = 1;
-         while(_loc5_ < _boxNumTxtArr.length - 1)
+         _boxNumTxtArr[0].text = (cookingNumArr[0] - 1).toString();
+         for(j = 1; j < _boxNumTxtArr.length - 1; )
          {
-            _boxNumTxtArr[_loc5_].text = _loc2_[_loc5_];
-            _loc5_++;
+            _boxNumTxtArr[j].text = cookingNumArr[j];
+            j++;
          }
-         _boxNumTxtArr[4].text = "" + _loc1_;
+         _boxNumTxtArr[4].text = "" + max;
          _ripeTxt.text = "" + (FoodActivityManager.Instance.ripeNum + _defaultRipeNum);
          _countTxt.text = "" + FoodActivityManager.Instance.cookingCount;
       }
       
-      protected function __simpleHandler(param1:MouseEvent) : void
+      protected function __simpleHandler(event:MouseEvent) : void
       {
          if(!click())
          {
@@ -281,31 +275,31 @@ package foodActivity.view
          SocketManager.Instance.out.cooking(1);
       }
       
-      protected function __payHandler(param1:MouseEvent) : void
+      protected function __payHandler(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var confirmFrame:* = null;
          if(!click())
          {
             return;
          }
-         var _loc3_:String = LanguageMgr.GetTranslation("foodActivity.perfectCookingTxt",MONEY);
-         _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc3_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"SimpleAlert",30,true);
-         _loc2_.moveEnable = false;
-         _loc2_.addEventListener("response",__confirm);
+         var msg:String = LanguageMgr.GetTranslation("foodActivity.perfectCookingTxt",MONEY);
+         confirmFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),msg,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"SimpleAlert",30,true);
+         confirmFrame.moveEnable = false;
+         confirmFrame.addEventListener("response",__confirm);
       }
       
-      protected function __confirm(param1:FrameEvent) : void
+      protected function __confirm(event:FrameEvent) : void
       {
-         var _loc2_:* = null;
+         var alertFrame:* = null;
          SoundManager.instance.playButtonSound();
-         var _loc3_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         if(event.responseCode == 3 || event.responseCode == 2)
          {
             if(PlayerManager.Instance.Self.bagLocked)
             {
                BaglockedManager.Instance.show();
-               _loc3_.removeEventListener("response",__confirm);
-               ObjectUtils.disposeObject(_loc3_);
+               confirmFrame.removeEventListener("response",__confirm);
+               ObjectUtils.disposeObject(confirmFrame);
                return;
             }
             if(PlayerManager.Instance.Self.Money >= MONEY)
@@ -315,22 +309,22 @@ package foodActivity.view
             }
             else
             {
-               _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.title"),LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.content"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
-               _loc2_.addEventListener("response",_response);
-               ObjectUtils.disposeObject(_loc3_);
+               alertFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.title"),LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.content"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
+               alertFrame.addEventListener("response",_response);
+               ObjectUtils.disposeObject(confirmFrame);
             }
          }
-         _loc3_.removeEventListener("response",__confirm);
+         confirmFrame.removeEventListener("response",__confirm);
       }
       
-      protected function _response(param1:FrameEvent) : void
+      protected function _response(evt:FrameEvent) : void
       {
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",_response);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         (evt.currentTarget as BaseAlerFrame).removeEventListener("response",_response);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             LeavePageManager.leaveToFillPath();
          }
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(evt.currentTarget);
       }
       
       private function click() : Boolean
@@ -370,7 +364,7 @@ package foodActivity.view
          _boxMc.mouseEnabled = _loc1_;
       }
       
-      protected function __getAwardHandler(param1:MouseEvent) : void
+      protected function __getAwardHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          var _loc2_:* = false;
@@ -381,7 +375,7 @@ package foodActivity.view
          SocketManager.Instance.out.cookingGetAward(_giftState);
       }
       
-      protected function __enterHandler(param1:Event) : void
+      protected function __enterHandler(event:Event) : void
       {
          frame = Number(frame) + 1;
          if(frame >= 120)
@@ -397,9 +391,9 @@ package foodActivity.view
          }
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
             FoodActivityControl.Instance.disposeFrame();
@@ -420,18 +414,18 @@ package foodActivity.view
          removeEvent();
          var _loc4_:int = 0;
          var _loc3_:* = _boxArr;
-         for each(var _loc2_ in _boxArr)
+         for each(var box in _boxArr)
          {
-            ObjectUtils.disposeObject(_loc2_);
-            _loc2_ = null;
+            ObjectUtils.disposeObject(box);
+            box = null;
          }
          _boxArr = null;
          var _loc6_:int = 0;
          var _loc5_:* = _boxNumTxtArr;
-         for each(var _loc1_ in _boxNumTxtArr)
+         for each(var boxTxt in _boxNumTxtArr)
          {
-            ObjectUtils.disposeObject(_loc1_);
-            _loc1_ = null;
+            ObjectUtils.disposeObject(boxTxt);
+            boxTxt = null;
          }
          _boxNumTxtArr = null;
          _boxMc.removeEventListener("enterFrame",__enterHandler);

@@ -18,32 +18,31 @@ package consortionBattle.player
       
       private var _direction:int;
       
-      public function ConsBattSceneCharacterLayer(param1:ItemTemplateInfo, param2:int, param3:Boolean, param4:int, param5:int)
+      public function ConsBattSceneCharacterLayer(info:ItemTemplateInfo, equipType:int, sex:Boolean, index:int, direction:int)
       {
-         _equipType = param2;
-         _sex = param3;
-         _index = param4;
-         _direction = param5;
-         super(param1);
+         _equipType = equipType;
+         _sex = sex;
+         _index = index;
+         _direction = direction;
+         super(info);
       }
       
       override protected function initLoaders() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var url:* = null;
+         var l:* = null;
          if(_info != null)
          {
-            _loc3_ = 0;
-            while(_loc3_ < _info.Property8.length)
+            for(i = 0; i < _info.Property8.length; )
             {
-               _loc2_ = getUrl(int(_info.Property8.charAt(_loc3_)));
-               if(_loc2_ && _loc2_.length > 0)
+               url = getUrl(int(_info.Property8.charAt(i)));
+               if(url && url.length > 0)
                {
-                  _loc1_ = ConsortiaBattleManager.instance.createLoader(_loc2_);
-                  _queueLoader.addLoader(_loc1_);
+                  l = ConsortiaBattleManager.instance.createLoader(url);
+                  _queueLoader.addLoader(l);
                }
-               _loc3_++;
+               i++;
             }
             _defaultLayer = 0;
             _currentEdit = _queueLoader.length;
@@ -52,24 +51,23 @@ package consortionBattle.player
       
       override public function reSetBitmap() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var tmpBitmap:* = null;
          clearBitmap();
-         _loc2_ = 0;
-         while(_loc2_ < _queueLoader.loaders.length)
+         for(i = 0; i < _queueLoader.loaders.length; )
          {
-            if(_queueLoader.loaders[_loc2_].content)
+            if(_queueLoader.loaders[i].content)
             {
-               _loc1_ = new Bitmap((_queueLoader.loaders[_loc2_].content as Bitmap).bitmapData);
+               tmpBitmap = new Bitmap((_queueLoader.loaders[i].content as Bitmap).bitmapData);
             }
-            _bitmaps.push(_loc1_);
-            if(_bitmaps[_loc2_])
+            _bitmaps.push(tmpBitmap);
+            if(_bitmaps[i])
             {
-               _bitmaps[_loc2_].smoothing = true;
-               _bitmaps[_loc2_].visible = false;
-               addChild(_bitmaps[_loc2_]);
+               _bitmaps[i].smoothing = true;
+               _bitmaps[i].visible = false;
+               addChild(_bitmaps[i]);
             }
-            _loc2_++;
+            i++;
          }
       }
       
@@ -82,12 +80,12 @@ package consortionBattle.player
          _bitmaps = new Vector.<Bitmap>();
       }
       
-      override protected function getUrl(param1:int) : String
+      override protected function getUrl(layer:int) : String
       {
-         var _loc2_:String = _equipType == 1?"face":_equipType == 2?"cloth":"hair";
-         var _loc3_:String = !!_sex?"M":"F";
-         var _loc4_:String = _loc2_ + (_direction == 1?"":"F");
-         return ConsortiaBattleManager.instance.resourcePrUrl + _loc2_ + "/" + _loc3_ + "/" + String(_index) + "/" + _loc4_ + "/" + String(param1) + ".png";
+         var equipStr:String = _equipType == 1?"face":_equipType == 2?"cloth":"hair";
+         var sexStr:String = !!_sex?"M":"F";
+         var directionStr:String = equipStr + (_direction == 1?"":"F");
+         return ConsortiaBattleManager.instance.resourcePrUrl + equipStr + "/" + sexStr + "/" + String(_index) + "/" + directionStr + "/" + String(layer) + ".png";
       }
    }
 }

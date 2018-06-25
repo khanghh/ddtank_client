@@ -1,43 +1,42 @@
 package starling.utils
 {
-   public function execute(param1:Function, ... rest) : void
+   public function execute(func:Function, ... args) : void
    {
-      var _loc4_:int = 0;
-      var _loc3_:int = 0;
-      if(param1 != null)
+      var i:int = 0;
+      var maxNumArgs:int = 0;
+      if(func != null)
       {
-         _loc3_ = param1.length;
-         _loc4_ = rest.length;
-         while(_loc4_ < _loc3_)
+         maxNumArgs = func.length;
+         for(i = args.length; i < maxNumArgs; )
          {
-            rest[_loc4_] = null;
-            _loc4_++;
+            args[i] = null;
+            i++;
          }
-         switch(int(_loc3_))
+         switch(int(maxNumArgs))
          {
             case 0:
-               param1();
+               func();
                break;
             case 1:
-               param1(rest[0]);
+               func(args[0]);
                break;
             case 2:
-               param1(rest[0],rest[1]);
+               func(args[0],args[1]);
                break;
             case 3:
-               param1(rest[0],rest[1],rest[2]);
+               func(args[0],args[1],args[2]);
                break;
             case 4:
-               param1(rest[0],rest[1],rest[2],rest[3]);
+               func(args[0],args[1],args[2],args[3]);
                break;
             case 5:
-               param1(rest[0],rest[1],rest[2],rest[3],rest[4]);
+               func(args[0],args[1],args[2],args[3],args[4]);
                break;
             case 6:
-               param1(rest[0],rest[1],rest[2],rest[3],rest[4],rest[5]);
+               func(args[0],args[1],args[2],args[3],args[4],args[5]);
                break;
             case 7:
-               param1(rest[0],rest[1],rest[2],rest[3],rest[4],rest[5],rest[6]);
+               func(args[0],args[1],args[2],args[3],args[4],args[5],args[6]);
          }
       }
    }

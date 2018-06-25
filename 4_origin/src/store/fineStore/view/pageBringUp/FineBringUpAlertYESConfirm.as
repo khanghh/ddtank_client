@@ -42,22 +42,22 @@ package store.fineStore.view.pageBringUp
          textStyle = "bringup.simpleAlertContentText";
       }
       
-      protected function onKeyDown(param1:KeyboardEvent) : void
+      protected function onKeyDown(e:KeyboardEvent) : void
       {
-         if(param1.keyCode == 13)
+         if(e.keyCode == 13)
          {
             dispatchEvent(new FrameEvent(3));
-            param1.stopPropagation();
+            e.stopPropagation();
          }
       }
       
-      override public function set submitButtonStyle(param1:String) : void
+      override public function set submitButtonStyle(stylename:String) : void
       {
-         if(_submitButtonStyle == param1)
+         if(_submitButtonStyle == stylename)
          {
             return;
          }
-         _submitButtonStyle = param1;
+         _submitButtonStyle = stylename;
          _submitButton = ComponentFactory.Instance.creat(_submitButtonStyle);
          onPropertiesChanged("submitButton");
       }
@@ -67,7 +67,7 @@ package store.fineStore.view.pageBringUp
          super.onProppertiesUpdate();
       }
       
-      protected function onInput(param1:Event) : void
+      protected function onInput(e:Event) : void
       {
          if(_confirmInput.text.toLowerCase() == "yes")
          {
@@ -79,11 +79,11 @@ package store.fineStore.view.pageBringUp
          }
       }
       
-      public function upadteView(param1:String, param2:String) : void
+      public function upadteView(lan:String, itemName:String) : void
       {
          !_itemNameText && ComponentFactory.Instance.creat("bringup.itemNameText");
          addToContent(_itemNameText);
-         _itemNameText.text = param2;
+         _itemNameText.text = itemName;
          textStyle = "bringup.simpleAlertContentText";
          _textField.x = 69;
          _textField.y = 48;
@@ -91,7 +91,7 @@ package store.fineStore.view.pageBringUp
          _textField.wordWrap = true;
          _textField.width = 250;
          _textField.height = 50;
-         _textField.htmlText = param1;
+         _textField.htmlText = lan;
       }
       
       public function isYesCorrect() : Boolean

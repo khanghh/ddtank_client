@@ -1,12 +1,12 @@
 package road7th.math
 {
-   public function interpolateColors(param1:uint, param2:uint, param3:Number) : uint
+   public function interpolateColors(color1:uint, color2:uint, ratio:Number) : uint
    {
-      var _loc8_:Number = 1 - param3;
-      var _loc4_:uint = Math.round((param1 >>> 16 & 255) * param3 + (param2 >>> 16 & 255) * _loc8_);
-      var _loc6_:uint = Math.round((param1 >>> 8 & 255) * param3 + (param2 >>> 8 & 255) * _loc8_);
-      var _loc5_:uint = Math.round((param1 & 255) * param3 + (param2 & 255) * _loc8_);
-      var _loc7_:uint = Math.round((param1 >>> 24 & 255) * param3 + (param2 >>> 24 & 255) * _loc8_);
-      return _loc7_ << 24 | _loc4_ << 16 | _loc6_ << 8 | _loc5_;
+      var inv:Number = 1 - ratio;
+      var red:uint = Math.round((color1 >>> 16 & 255) * ratio + (color2 >>> 16 & 255) * inv);
+      var green:uint = Math.round((color1 >>> 8 & 255) * ratio + (color2 >>> 8 & 255) * inv);
+      var blue:uint = Math.round((color1 & 255) * ratio + (color2 & 255) * inv);
+      var alpha:uint = Math.round((color1 >>> 24 & 255) * ratio + (color2 >>> 24 & 255) * inv);
+      return alpha << 24 | red << 16 | green << 8 | blue;
    }
 }

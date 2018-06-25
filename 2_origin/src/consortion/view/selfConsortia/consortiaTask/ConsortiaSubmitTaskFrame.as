@@ -46,15 +46,15 @@ package consortion.view.selfConsortia.consortiaTask
       
       private function initView() : void
       {
-         var _loc1_:AlertInfo = new AlertInfo();
-         _loc1_.submitLabel = LanguageMgr.GetTranslation("consortia.task.releaseTable");
-         _loc1_.title = LanguageMgr.GetTranslation("consortia.task.releasetitle");
-         _loc1_.showCancel = false;
-         _loc1_.showSubmit = false;
-         _loc1_.enterEnable = false;
-         _loc1_.escEnable = false;
-         info = _loc1_;
-         var _loc2_:ScaleBitmapImage = ComponentFactory.Instance.creatComponentByStylename("consortion.submitTaskBG");
+         var alerInfo:AlertInfo = new AlertInfo();
+         alerInfo.submitLabel = LanguageMgr.GetTranslation("consortia.task.releaseTable");
+         alerInfo.title = LanguageMgr.GetTranslation("consortia.task.releasetitle");
+         alerInfo.showCancel = false;
+         alerInfo.showSubmit = false;
+         alerInfo.enterEnable = false;
+         alerInfo.escEnable = false;
+         info = alerInfo;
+         var bg:ScaleBitmapImage = ComponentFactory.Instance.creatComponentByStylename("consortion.submitTaskBG");
          _myResetBtn = ComponentFactory.Instance.creatComponentByStylename("consortion.submitTask.reset");
          _myOkBtn = ComponentFactory.Instance.creatComponentByStylename("consortion.submitTask.ok");
          _myResetBtn.text = LanguageMgr.GetTranslation("consortia.task.resetTable");
@@ -62,7 +62,7 @@ package consortion.view.selfConsortia.consortiaTask
          _itemTxtI = ComponentFactory.Instance.creatComponentByStylename("consortion.submitTask.itemTxtI");
          _itemTxtII = ComponentFactory.Instance.creatComponentByStylename("consortion.submitTask.itemTxtII");
          _itemTxtIII = ComponentFactory.Instance.creatComponentByStylename("consortion.submitTask.itemTxtIII");
-         addToContent(_loc2_);
+         addToContent(bg);
          addToContent(_myResetBtn);
          addToContent(_myOkBtn);
          addToContent(_itemTxtI);
@@ -86,16 +86,16 @@ package consortion.view.selfConsortia.consortiaTask
          _myOkBtn.removeEventListener("click",__okClick);
       }
       
-      private function __response(param1:FrameEvent) : void
+      private function __response(e:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(e.responseCode == 0 || e.responseCode == 1)
          {
             SoundManager.instance.play("008");
             ObjectUtils.disposeObject(this);
          }
       }
       
-      private function __resetClick(param1:MouseEvent) : void
+      private function __resetClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -103,67 +103,67 @@ package consortion.view.selfConsortia.consortiaTask
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("consortia.task.resetTable"),LanguageMgr.GetTranslation("consortia.task.resetContent"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
-         _loc2_.moveEnable = false;
-         _loc2_.addEventListener("response",_responseI);
+         var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("consortia.task.resetTable"),LanguageMgr.GetTranslation("consortia.task.resetContent"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
+         alert.moveEnable = false;
+         alert.addEventListener("response",_responseI);
       }
       
-      private function __okClick(param1:MouseEvent) : void
+      private function __okClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          SocketManager.Instance.out.sendReleaseConsortiaTask(2);
       }
       
-      private function _responseI(param1:FrameEvent) : void
+      private function _responseI(e:FrameEvent) : void
       {
-         var _loc2_:* = null;
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",_responseI);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var alert:* = null;
+         (e.currentTarget as BaseAlerFrame).removeEventListener("response",_responseI);
+         if(e.responseCode == 2 || e.responseCode == 3)
          {
             if(PlayerManager.Instance.Self.Money < RESET_MONEY)
             {
-               _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.consortia.consortiashop.ConsortiaShopItem.Money"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"));
-               _loc2_.addEventListener("response",__onNoMoneyResponse);
+               alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.consortia.consortiashop.ConsortiaShopItem.Money"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"));
+               alert.addEventListener("response",__onNoMoneyResponse);
             }
             else
             {
                SocketManager.Instance.out.sendReleaseConsortiaTask(1);
             }
          }
-         ObjectUtils.disposeObject(param1.currentTarget as BaseAlerFrame);
+         ObjectUtils.disposeObject(e.currentTarget as BaseAlerFrame);
       }
       
-      private function __onNoMoneyResponse(param1:FrameEvent) : void
+      private function __onNoMoneyResponse(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onNoMoneyResponse);
-         _loc2_.disposeChildren = true;
-         _loc2_.dispose();
-         _loc2_ = null;
-         if(param1.responseCode == 3)
+         var alert:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",__onNoMoneyResponse);
+         alert.disposeChildren = true;
+         alert.dispose();
+         alert = null;
+         if(e.responseCode == 3)
          {
             LeavePageManager.leaveToFillPath();
          }
       }
       
-      private function __getTaskInfo(param1:ConsortiaTaskEvent) : void
+      private function __getTaskInfo(e:ConsortiaTaskEvent) : void
       {
-         if(param1.value == 1)
+         if(e.value == 1)
          {
             taskInfo = ConsortionModelManager.Instance.TaskModel.taskInfo;
          }
-         else if(param1.value == 2)
+         else if(e.value == 2)
          {
             ObjectUtils.disposeObject(this);
          }
       }
       
-      public function set taskInfo(param1:ConsortiaTaskInfo) : void
+      public function set taskInfo(value:ConsortiaTaskInfo) : void
       {
-         _itemTxtI.text = "1 .  " + param1.itemList[0]["content"];
-         _itemTxtII.text = "2 .  " + param1.itemList[1]["content"];
-         _itemTxtIII.text = "3 .  " + param1.itemList[2]["content"];
+         _itemTxtI.text = "1 .  " + value.itemList[0]["content"];
+         _itemTxtII.text = "2 .  " + value.itemList[1]["content"];
+         _itemTxtIII.text = "3 .  " + value.itemList[2]["content"];
       }
       
       public function show() : void

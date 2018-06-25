@@ -15,11 +15,11 @@ package gameStarling.actions.newHand
       
       private var _diffBlood:int;
       
-      public function NewHandFightHelpIIAction(param1:LocalPlayer, param2:Number)
+      public function NewHandFightHelpIIAction(player:LocalPlayer, diffBlood:Number)
       {
          super();
-         _player = param1;
-         _diffBlood = param2;
+         _player = player;
+         _diffBlood = diffBlood;
       }
       
       override public function prepare() : void
@@ -36,10 +36,10 @@ package gameStarling.actions.newHand
          }
       }
       
-      override public function connect(param1:BaseAction) : Boolean
+      override public function connect(action:BaseAction) : Boolean
       {
-         var _loc2_:NewHandFightHelpIIAction = param1 as NewHandFightHelpIIAction;
-         if(_loc2_)
+         var act:NewHandFightHelpIIAction = action as NewHandFightHelpIIAction;
+         if(act)
          {
             return true;
          }
@@ -70,11 +70,11 @@ package gameStarling.actions.newHand
       {
          var _loc3_:int = 0;
          var _loc2_:* = GameControl.Instance.Current.livings;
-         for each(var _loc1_ in GameControl.Instance.Current.livings)
+         for each(var p in GameControl.Instance.Current.livings)
          {
-            if(_loc1_.isPlayer() && _loc1_.isLiving && _loc1_ != _player)
+            if(p.isPlayer() && p.isLiving && p != _player)
             {
-               return _loc1_ as Player;
+               return p as Player;
             }
          }
          return null;

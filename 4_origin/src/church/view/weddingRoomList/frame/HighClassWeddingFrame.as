@@ -98,9 +98,9 @@ package church.view.weddingRoomList.frame
          _cells = [];
       }
       
-      public function setController(param1:ChurchRoomListController) : void
+      public function setController(controller:ChurchRoomListController) : void
       {
-         _controller = param1;
+         _controller = controller;
       }
       
       public function initView() : void
@@ -188,9 +188,9 @@ package church.view.weddingRoomList.frame
          return _isSaleWedding;
       }
       
-      public function set isSaleWedding(param1:Boolean) : void
+      public function set isSaleWedding(value:Boolean) : void
       {
-         _isSaleWedding = param1;
+         _isSaleWedding = value;
       }
       
       private function addEvents() : void
@@ -204,28 +204,28 @@ package church.view.weddingRoomList.frame
          _sizeSelectGroup.addEventListener("change",__changeHandler);
       }
       
-      private function onIsGuest1(param1:MouseEvent) : void
+      private function onIsGuest1(event:MouseEvent) : void
       {
          _weddingSmalllMoneyTxt.filters = ComponentFactory.Instance.creatFilters("grayFilter");
          _weddingMidMoneyTxt.filters = ComponentFactory.Instance.creatFilters("grayFilter");
          _weddingBigMoneyTxt.filters = ComponentFactory.Instance.creatFilters("lightFilter");
       }
       
-      private function onIsGuest2(param1:MouseEvent) : void
+      private function onIsGuest2(event:MouseEvent) : void
       {
          _weddingSmalllMoneyTxt.filters = ComponentFactory.Instance.creatFilters("grayFilter");
          _weddingMidMoneyTxt.filters = ComponentFactory.Instance.creatFilters("lightFilter");
          _weddingBigMoneyTxt.filters = ComponentFactory.Instance.creatFilters("grayFilter");
       }
       
-      private function onIsGuest3(param1:MouseEvent) : void
+      private function onIsGuest3(event:MouseEvent) : void
       {
          _weddingSmalllMoneyTxt.filters = ComponentFactory.Instance.creatFilters("lightFilter");
          _weddingMidMoneyTxt.filters = ComponentFactory.Instance.creatFilters("grayFilter");
          _weddingBigMoneyTxt.filters = ComponentFactory.Instance.creatFilters("grayFilter");
       }
       
-      protected function __changeHandler(param1:Event) : void
+      protected function __changeHandler(event:Event) : void
       {
          SoundManager.instance.play("008");
          updateReward();
@@ -233,38 +233,37 @@ package church.view.weddingRoomList.frame
       
       private function updateReward() : void
       {
-         var _loc7_:int = 0;
-         var _loc6_:* = null;
-         var _loc4_:* = null;
+         var i:int = 0;
+         var bg:* = null;
+         var cell:* = null;
          var _loc9_:int = 0;
          var _loc8_:* = _cells;
-         for each(var _loc5_ in _cells)
+         for each(var tCell in _cells)
          {
-            ObjectUtils.disposeObject(_loc5_);
-            _loc5_ = null;
+            ObjectUtils.disposeObject(tCell);
+            tCell = null;
          }
-         var _loc2_:Array = ServerConfigManager.instance.getSeniorMarryGift();
-         var _loc3_:int = _loc2_[_sizeSelectGroup.selectIndex];
-         var _loc1_:Array = BossBoxManager.instance.inventoryItemList[_loc3_];
-         _loc7_ = 0;
-         while(_loc7_ <= _loc1_.length - 1)
+         var giftBoxArr:Array = ServerConfigManager.instance.getSeniorMarryGift();
+         var giftBoxId:int = giftBoxArr[_sizeSelectGroup.selectIndex];
+         var rewardArr:Array = BossBoxManager.instance.inventoryItemList[giftBoxId];
+         for(i = 0; i <= rewardArr.length - 1; )
          {
-            _loc6_ = ComponentFactory.Instance.creat("church.itmeBg");
-            _loc4_ = new BaseCell(_loc6_,ItemManager.Instance.getTemplateById(_loc1_[_loc7_].TemplateId));
-            _loc4_.setContentSize(57,57);
-            _loc4_.PicPos = new Point(15,15);
-            _cellHBox.addChild(_loc4_);
-            _cells.push(_loc4_);
-            _loc7_++;
+            bg = ComponentFactory.Instance.creat("church.itmeBg");
+            cell = new BaseCell(bg,ItemManager.Instance.getTemplateById(rewardArr[i].TemplateId));
+            cell.setContentSize(57,57);
+            cell.PicPos = new Point(15,15);
+            _cellHBox.addChild(cell);
+            _cells.push(cell);
+            i++;
          }
       }
       
-      private function onIsGuest(param1:MouseEvent) : void
+      private function onIsGuest(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }
       
-      private function onRoomPasswordCheck(param1:MouseEvent) : void
+      private function onRoomPasswordCheck(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _txtCreateRoomPassword.enable = _chkCreateRoomPassword.selected;
@@ -278,10 +277,10 @@ package church.view.weddingRoomList.frame
          }
       }
       
-      private function onFrameResponse(param1:FrameEvent) : void
+      private function onFrameResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
@@ -296,8 +295,8 @@ package church.view.weddingRoomList.frame
       
       private function createRoomConfirm() : void
       {
-         var _loc1_:Array = _WdddingMoneyArr;
-         if(PlayerManager.Instance.Self.Money < _loc1_[_sizeSelectGroup.selectIndex])
+         var needMoney:Array = _WdddingMoneyArr;
+         if(PlayerManager.Instance.Self.Money < needMoney[_sizeSelectGroup.selectIndex])
          {
             LeavePageManager.showFillFrame();
             return;
@@ -306,25 +305,25 @@ package church.view.weddingRoomList.frame
          {
             return;
          }
-         var _loc2_:String = "";
-         var _loc4_:String = "";
+         var groomName:String = "";
+         var brideName:String = "";
          if(PlayerManager.Instance.Self.Sex)
          {
-            _loc2_ = PlayerManager.Instance.Self.NickName;
-            _loc4_ = PlayerManager.Instance.Self.SpouseName;
+            groomName = PlayerManager.Instance.Self.NickName;
+            brideName = PlayerManager.Instance.Self.SpouseName;
          }
          else
          {
-            _loc2_ = PlayerManager.Instance.Self.SpouseName;
-            _loc4_ = PlayerManager.Instance.Self.NickName;
+            groomName = PlayerManager.Instance.Self.SpouseName;
+            brideName = PlayerManager.Instance.Self.NickName;
          }
-         var _loc3_:ChurchRoomInfo = new ChurchRoomInfo();
-         _loc3_.roomName = _txtCreateRoomName.text;
-         _loc3_.password = _txtCreateRoomPassword.text;
-         _loc3_.canInvite = _chkCreateRoomIsGuest.selected;
-         _loc3_.discription = LanguageMgr.GetTranslation("church.weddingRoom.frame.CreateRoomFrame._remark_txt",_loc2_,_loc4_);
-         _loc3_.seniorType = _sizeSelectGroup.selectIndex + 1;
-         _controller.createRoom(_loc3_);
+         var roomInfo:ChurchRoomInfo = new ChurchRoomInfo();
+         roomInfo.roomName = _txtCreateRoomName.text;
+         roomInfo.password = _txtCreateRoomPassword.text;
+         roomInfo.canInvite = _chkCreateRoomIsGuest.selected;
+         roomInfo.discription = LanguageMgr.GetTranslation("church.weddingRoom.frame.CreateRoomFrame._remark_txt",groomName,brideName);
+         roomInfo.seniorType = _sizeSelectGroup.selectIndex + 1;
+         _controller.createRoom(roomInfo);
          dispose();
       }
       
@@ -425,9 +424,9 @@ package church.view.weddingRoomList.frame
          return _WeddingMoney;
       }
       
-      public function set WeddingMoney(param1:String) : void
+      public function set WeddingMoney(value:String) : void
       {
-         _WeddingMoney = param1;
+         _WeddingMoney = value;
       }
    }
 }

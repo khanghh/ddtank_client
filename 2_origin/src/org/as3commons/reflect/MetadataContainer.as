@@ -10,10 +10,10 @@ package org.as3commons.reflect
       
       private var _metadata:HashArray;
       
-      public function MetadataContainer(param1:HashArray = null)
+      public function MetadataContainer(metadata:HashArray = null)
       {
          super();
-         this._metadata = param1 == null?new HashArray(METADATA_NAME_PROPERTY,true):param1;
+         this._metadata = metadata == null?new HashArray(METADATA_NAME_PROPERTY,true):metadata;
       }
       
       public function get metadata() : Array
@@ -21,29 +21,29 @@ package org.as3commons.reflect
          return this._metadata.getArray();
       }
       
-      public function addMetadata(param1:Metadata) : void
+      public function addMetadata(metadata:Metadata) : void
       {
-         this._metadata.push(param1);
+         this._metadata.push(metadata);
       }
       
-      public function getMetadata(param1:String) : Array
+      public function getMetadata(key:String) : Array
       {
-         var _loc2_:* = this._metadata.get(param1.toLowerCase());
-         return _loc2_ is Array?_loc2_:_loc2_ != null?[_loc2_]:_loc2_;
+         var result:* = this._metadata.get(key.toLowerCase());
+         return result is Array?result:result != null?[result]:result;
       }
       
-      public function hasMetadata(param1:String) : Boolean
+      public function hasMetadata(key:String) : Boolean
       {
-         return this.getMetadata(param1.toLowerCase()) != null;
+         return this.getMetadata(key.toLowerCase()) != null;
       }
       
-      public function hasExactMetadata(param1:Metadata) : Boolean
+      public function hasExactMetadata(otherMetadata:Metadata) : Boolean
       {
-         var _loc3_:Metadata = null;
-         var _loc2_:Array = this.getMetadata(param1.name);
-         for each(_loc3_ in _loc2_)
+         var metadata:Metadata = null;
+         var metadatas:Array = this.getMetadata(otherMetadata.name);
+         for each(metadata in metadatas)
          {
-            if(_loc3_.equals(param1))
+            if(metadata.equals(otherMetadata))
             {
                return true;
             }

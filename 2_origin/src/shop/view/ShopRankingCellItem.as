@@ -118,11 +118,11 @@ package shop.view
          PositionUtils.setPos(_itemPriceTxt,"ddtshop.GoodItemPricePos");
          _itemCountTxt = ComponentFactory.Instance.creatComponentByStylename("ddtshop.GoodLimitItemCount");
          _itemDotLine = ComponentFactory.Instance.creatComponentByStylename("ddtshop.RankingItemDotLine");
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,75,75);
-         _loc1_.graphics.endFill();
-         _itemCell = CellFactory.instance.createShopItemCell(_loc1_,null,true,true) as ShopItemCell;
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(16777215,0);
+         sp.graphics.drawRect(0,0,75,75);
+         sp.graphics.endFill();
+         _itemCell = CellFactory.instance.createShopItemCell(sp,null,true,true) as ShopItemCell;
          var _loc2_:* = 0.7;
          _itemCell.scaleY = _loc2_;
          _itemCell.scaleX = _loc2_;
@@ -151,21 +151,21 @@ package shop.view
          return _shopItemInfo;
       }
       
-      public function set shopItemInfo(param1:ShopItemInfo) : void
+      public function set shopItemInfo(value:ShopItemInfo) : void
       {
-         if(param1 == null)
+         if(value == null)
          {
             _shopItemInfo = null;
             _itemCell.info = null;
          }
          else
          {
-            _itemCell.info = param1.TemplateInfo;
+            _itemCell.info = value.TemplateInfo;
             if(_shopItemInfo)
             {
                _shopItemInfo.removeEventListener("change",__updateShopItem);
             }
-            _shopItemInfo = param1;
+            _shopItemInfo = value;
          }
          if(_itemCell.info != null)
          {
@@ -196,7 +196,7 @@ package shop.view
          updateCount();
       }
       
-      private function __updateShopItem(param1:Event) : void
+      private function __updateShopItem(evt:Event) : void
       {
          updateCount();
       }
@@ -253,13 +253,13 @@ package shop.view
          return _payPaneAskBtn;
       }
       
-      public function setItemLight(param1:MovieClip) : void
+      public function setItemLight($lightMc:MovieClip) : void
       {
-         if(_lightMc == param1 || !_shopItemInfo)
+         if(_lightMc == $lightMc || !_shopItemInfo)
          {
             return;
          }
-         _lightMc = param1;
+         _lightMc = $lightMc;
          _lightMc.mouseChildren = false;
          _lightMc.mouseEnabled = false;
          _lightMc.x = 3;
@@ -284,7 +284,7 @@ package shop.view
          return this;
       }
       
-      public function set autoSelect(param1:Boolean) : void
+      public function set autoSelect(value:Boolean) : void
       {
       }
       
@@ -293,13 +293,13 @@ package shop.view
          return _selected;
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         if(_selected == param1)
+         if(_selected == value)
          {
             return;
          }
-         _selected = param1;
+         _selected = value;
          _itemBg.setFrame(!!_selected?2:checkType());
       }
       
@@ -340,9 +340,9 @@ package shop.view
          return _limitNum;
       }
       
-      public function set limitNum(param1:int) : void
+      public function set limitNum(value:int) : void
       {
-         _limitNum = param1;
+         _limitNum = value;
          updateCount();
       }
    }

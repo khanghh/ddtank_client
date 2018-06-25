@@ -4,7 +4,6 @@ package playerDress.views
    import bagAndInfo.cell.BagCell;
    import com.pickgliss.events.FrameEvent;
    import com.pickgliss.events.ListItemEvent;
-   import com.pickgliss.ui.AlertManager;
    import com.pickgliss.ui.ComponentFactory;
    import com.pickgliss.ui.controls.ComboBox;
    import com.pickgliss.ui.controls.SelectedButton;
@@ -24,6 +23,8 @@ package playerDress.views
    import ddt.manager.MessageTipManager;
    import ddt.manager.PlayerManager;
    import ddt.manager.SoundManager;
+   import ddt.utils.ConfirmAlertData;
+   import ddt.utils.HelperBuyAlert;
    import ddt.utils.PositionUtils;
    import flash.display.Bitmap;
    import flash.display.Sprite;
@@ -35,6 +36,8 @@ package playerDress.views
    {
       
       public static const CELLS_NUM:int = 49;
+      
+      private static var _sortdreesBagData:ConfirmAlertData = new ConfirmAlertData();
        
       
       private var _assortBox:ComboBox;
@@ -134,11 +137,11 @@ package playerDress.views
          _pageTxt = ComponentFactory.Instance.creatComponentByStylename("playerDress.pageTxt");
          addChild(_pageTxt);
          _pageTxt.text = "2/3";
-         var _loc1_:Boolean = PlayerManager.Instance.Self.Sex;
-         _maleBtn.selected = _loc1_;
-         _maleBtn.mouseEnabled = !_loc1_;
-         _femaleBtn.selected = !_loc1_;
-         _femaleBtn.mouseEnabled = _loc1_;
+         var isMale:Boolean = PlayerManager.Instance.Self.Sex;
+         _maleBtn.selected = isMale;
+         _maleBtn.mouseEnabled = !isMale;
+         _femaleBtn.selected = !isMale;
+         _femaleBtn.mouseEnabled = isMale;
          updateComboBox(_sortArr[_currentSort]);
          _baglist.setData(_info.Bag);
          updateBagList();
@@ -160,56 +163,66 @@ package playerDress.views
          _searchInput.addEventListener("focusOut",__searchInputFocusOut);
       }
       
-      protected function __cellClick(param1:CellEvent) : void
+      protected function __cellClick(event:CellEvent) : void
       {
-         dispatchEvent(new CellEvent("itemclick",param1.data,false,false,param1.ctrlKey));
+         dispatchEvent(new CellEvent("itemclick",event.data,false,false,event.ctrlKey));
       }
       
-      protected function __renewalBtnClick(param1:MouseEvent) : void
+      protected function __renewalBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }
       
-      protected function __sortBtnClick(param1:MouseEvent) : void
+      protected function __sortBtnClick(event:MouseEvent) : void
       {
+         event = event;
+         onClickSortEquipBag = function():void
+         {
+            _baglist.foldItems();
+         };
          SoundManager.instance.play("008");
          if(new CmdCheckBagLockedPSWNeeds().excute(1))
          {
             return;
          }
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("playerDress.sortTips"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2);
-         _loc2_.addEventListener("response",__onResponse);
+         if(_sortdreesBagData.notShowAlertAgain)
+         {
+            _baglist.foldItems();
+            return;
+         }
+         var msg:String = LanguageMgr.GetTranslation("playerDress.sortTips");
+         HelperBuyAlert.getInstance().alert(msg,_sortdreesBagData,"SimpleAlertWithNotShowAgain",null,onClickSortEquipBag,null,0);
       }
       
-      protected function __onResponse(param1:FrameEvent) : void
+      protected function __onResponse(event:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.target as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onResponse);
-         _loc2_.dispose();
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var alert:BaseAlerFrame = event.target as BaseAlerFrame;
+         alert.removeEventListener("response",__onResponse);
+         alert.dispose();
+         if(event.responseCode == 2 || event.responseCode == 3)
          {
             _baglist.foldItems();
          }
       }
       
-      protected function __cellDoubleClick(param1:CellEvent) : void
+      protected function __cellDoubleClick(event:CellEvent) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:PlayerDressView = PlayerDressControl.instance.dressView;
-         if(_loc2_)
+         var cell:* = null;
+         var item:* = null;
+         var dressView:PlayerDressView = PlayerDressControl.instance.dressView;
+         if(dressView)
          {
-            _loc4_ = param1.data as BagCell;
-            _loc3_ = _loc4_.info as InventoryItemInfo;
-            PlayerDressControl.instance.putOnDress(_loc3_);
+            cell = event.data as BagCell;
+            item = cell.info as InventoryItemInfo;
+            PlayerDressControl.instance.putOnDress(item);
          }
          else
          {
-            dispatchEvent(new CellEvent("doubleclick",param1.data));
+            dispatchEvent(new CellEvent("doubleclick",event.data));
          }
       }
       
-      protected function __searchBtnClick(param1:MouseEvent) : void
+      protected function __searchBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_searchInput.text == LanguageMgr.GetTranslation("shop.view.ShopRankingView.shopSearchText") || _searchInput.text.length == 0)
@@ -223,7 +236,7 @@ package playerDress.views
          updateBagList();
       }
       
-      protected function __maleBtnClick(param1:MouseEvent) : void
+      protected function __maleBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _maleBtn.mouseEnabled = false;
@@ -232,7 +245,7 @@ package playerDress.views
          updateBagList();
       }
       
-      protected function __femaleBtnClick(param1:MouseEvent) : void
+      protected function __femaleBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _femaleBtn.mouseEnabled = false;
@@ -241,7 +254,7 @@ package playerDress.views
          updateBagList();
       }
       
-      protected function __rightBtnClick(param1:MouseEvent) : void
+      protected function __rightBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _currentPage = Number(_currentPage) + 1;
@@ -253,7 +266,7 @@ package playerDress.views
          _baglist.fillPage(_currentPage);
       }
       
-      protected function __leftBtnClick(param1:MouseEvent) : void
+      protected function __leftBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _currentPage = Number(_currentPage) - 1;
@@ -265,12 +278,12 @@ package playerDress.views
          _baglist.fillPage(_currentPage);
       }
       
-      protected function __onListClick(param1:ListItemEvent) : void
+      protected function __onListClick(event:ListItemEvent) : void
       {
          SoundManager.instance.play("008");
-         _currentSort = _sortArr.indexOf(param1.cellValue);
+         _currentSort = _sortArr.indexOf(event.cellValue);
          _searchInput.text = "";
-         updateComboBox(param1.cellValue);
+         updateComboBox(event.cellValue);
          updateBagList();
       }
       
@@ -279,9 +292,9 @@ package playerDress.views
          _baglist.setSortType(_sortTypeArr[_currentSort],_maleBtn.selected,_searchInput.text);
       }
       
-      public function set currentPage(param1:int) : void
+      public function set currentPage(value:int) : void
       {
-         _currentPage = param1;
+         _currentPage = value;
       }
       
       public function updatePage() : void
@@ -291,19 +304,19 @@ package playerDress.views
       
       private function pageSum() : int
       {
-         var _loc1_:int = _baglist.displayItemsLength();
-         return _loc1_ == 0?1:Number(Math.ceil(_loc1_ / 49));
+         var len:int = _baglist.displayItemsLength();
+         return len == 0?1:Number(Math.ceil(len / 49));
       }
       
-      private function updateComboBox(param1:* = null) : void
+      private function updateComboBox(obj:* = null) : void
       {
-         var _loc2_:VectorListModel = _assortBox.listPanel.vectorListModel;
-         _loc2_.clear();
-         _loc2_.appendAll(_sortArr);
-         _loc2_.remove(param1);
+         var comboxModel:VectorListModel = _assortBox.listPanel.vectorListModel;
+         comboxModel.clear();
+         comboxModel.appendAll(_sortArr);
+         comboxModel.remove(obj);
       }
       
-      protected function __searchInputFocusIn(param1:FocusEvent) : void
+      protected function __searchInputFocusIn(event:FocusEvent) : void
       {
          if(_searchInput.text == LanguageMgr.GetTranslation("shop.view.ShopRankingView.shopSearchText"))
          {
@@ -311,7 +324,7 @@ package playerDress.views
          }
       }
       
-      protected function __searchInputFocusOut(param1:FocusEvent) : void
+      protected function __searchInputFocusOut(event:FocusEvent) : void
       {
          if(_searchInput.text.length == 0)
          {
@@ -319,9 +332,9 @@ package playerDress.views
          }
       }
       
-      public function enableSortBtn(param1:Boolean) : void
+      public function enableSortBtn(enable:Boolean) : void
       {
-         _sortBtn.enable = param1;
+         _sortBtn.enable = enable;
       }
       
       private function removeEvent() : void

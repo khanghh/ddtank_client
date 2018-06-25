@@ -149,9 +149,25 @@ package ddt.data.player
       
       private var _magicDefTexpExp:int = -1;
       
+      private var _critTexpExp:int = -1;
+      
+      private var _sunderArmorTexpExp:int = -1;
+      
+      private var _critDmgTexpExp:int = -1;
+      
+      private var _speedTexpExp:int = -1;
+      
+      private var _uniqueSkillTexpExp:int = -1;
+      
+      private var _dmgTexpExp:int = -1;
+      
+      private var _armorDefTexpExp:int = -1;
+      
       private var _texpCount:int;
       
       private var _magicTexpCount:int;
+      
+      private var _nsTexpCount:int;
       
       private var _texpTaskCount:int;
       
@@ -218,9 +234,9 @@ package ddt.data.player
          super();
       }
       
-      public function set ZoneID(param1:int) : void
+      public function set ZoneID(zoneID:int) : void
       {
-         _zoneID = param1;
+         _zoneID = zoneID;
       }
       
       public function get ZoneID() : int
@@ -228,9 +244,9 @@ package ddt.data.player
          return _zoneID;
       }
       
-      public function set NickName(param1:String) : void
+      public function set NickName(value:String) : void
       {
-         _nick = param1;
+         _nick = value;
       }
       
       public function get NickName() : String
@@ -243,22 +259,22 @@ package ddt.data.player
          return _totalCount;
       }
       
-      public function set TotalCount(param1:int) : void
+      public function set TotalCount(value:int) : void
       {
-         if(_totalCount == param1 || param1 <= 0)
+         if(_totalCount == value || value <= 0)
          {
             return;
          }
-         if(_totalCount == param1 - 1 || _totalCount == param1 - 2)
+         if(_totalCount == value - 1 || _totalCount == value - 2)
          {
             onPropertiesChanged("TotalCount");
          }
-         _totalCount = param1;
+         _totalCount = value;
       }
       
-      public function set isFirstDivorce(param1:int) : void
+      public function set isFirstDivorce(value:int) : void
       {
-         this._isFirstDivorce = param1;
+         this._isFirstDivorce = value;
       }
       
       public function get isFirstDivorce() : int
@@ -271,9 +287,9 @@ package ddt.data.player
          return _repute;
       }
       
-      public function set Repute(param1:int) : void
+      public function set Repute(value:int) : void
       {
-         _repute = param1;
+         _repute = value;
          onPropertiesChanged("Repute");
       }
       
@@ -282,17 +298,17 @@ package ddt.data.player
          return _grade;
       }
       
-      public function set Grade(param1:int) : void
+      public function set Grade(value:int) : void
       {
-         if(_grade == param1 || param1 <= 0)
+         if(_grade == value || value <= 0)
          {
             return;
          }
-         if(_grade != 0 && _grade < param1)
+         if(_grade != 0 && _grade < value)
          {
             IsUpGrade = true;
          }
-         _grade = param1;
+         _grade = value;
          if(Grade == 11 && !PlayerManager.Instance.Self.IsWeakGuildFinish(132))
          {
             SocketManager.Instance.out.syncWeakStep(132);
@@ -311,13 +327,13 @@ package ddt.data.player
          return _ddtKingGrade;
       }
       
-      public function set ddtKingGrade(param1:int) : void
+      public function set ddtKingGrade(value:int) : void
       {
-         if(_grade == param1)
+         if(_grade == value)
          {
             return;
          }
-         _ddtKingGrade = param1;
+         _ddtKingGrade = value;
          onPropertiesChanged("ddtkingGrade");
       }
       
@@ -326,9 +342,9 @@ package ddt.data.player
          return _IsUpGrade;
       }
       
-      public function set IsUpGrade(param1:Boolean) : void
+      public function set IsUpGrade(value:Boolean) : void
       {
-         _IsUpGrade = param1;
+         _IsUpGrade = value;
          noticeGrade();
       }
       
@@ -341,9 +357,9 @@ package ddt.data.player
          return _headURLPicGirl;
       }
       
-      public function set ImagePath(param1:String) : void
+      public function set ImagePath(value:String) : void
       {
-         _headURLPicGirl = param1;
+         _headURLPicGirl = value;
       }
       
       public function get createPlayerDate() : Date
@@ -351,9 +367,9 @@ package ddt.data.player
          return _createPlayerDate;
       }
       
-      public function set createPlayerDate(param1:Date) : void
+      public function set createPlayerDate(value:Date) : void
       {
-         _createPlayerDate = param1;
+         _createPlayerDate = value;
          WonderfulActivityManager.Instance.updateRealEndTime();
       }
       
@@ -363,17 +379,17 @@ package ddt.data.player
          {
             return;
          }
-         var _loc1_:String = PathManager.solveGradeNotificationPath(Grade);
-         if(_loc1_ == null)
+         var site:String = PathManager.solveGradeNotificationPath(Grade);
+         if(site == null)
          {
             return;
          }
-         var _loc2_:URLRequest = new URLRequest(_loc1_);
-         var _loc3_:URLVariables = new URLVariables();
-         _loc3_["grade"] = Grade;
-         _loc2_.data = _loc3_;
+         var request:URLRequest = new URLRequest(site);
+         var variable:URLVariables = new URLVariables();
+         variable["grade"] = Grade;
+         request.data = variable;
          return;
-         §§push(sendToURL(_loc2_));
+         §§push(sendToURL(request));
       }
       
       public function get FightPower() : int
@@ -390,13 +406,13 @@ package ddt.data.player
          return _matchInfo;
       }
       
-      public function set matchInfo(param1:MatchInfo) : void
+      public function set matchInfo(value:MatchInfo) : void
       {
-         if(_matchInfo == param1)
+         if(_matchInfo == value)
          {
             return;
          }
-         ObjectUtils.copyProperties(matchInfo,param1);
+         ObjectUtils.copyProperties(matchInfo,value);
          onPropertiesChanged("matchInfo");
       }
       
@@ -405,13 +421,13 @@ package ddt.data.player
          return _leagueFirst;
       }
       
-      public function set DailyLeagueFirst(param1:Boolean) : void
+      public function set DailyLeagueFirst(value:Boolean) : void
       {
-         if(_leagueFirst == param1)
+         if(_leagueFirst == value)
          {
             return;
          }
-         _leagueFirst = param1;
+         _leagueFirst = value;
          onPropertiesChanged("DailyLeagueFirst");
       }
       
@@ -420,23 +436,23 @@ package ddt.data.player
          return _lasetWeekScore;
       }
       
-      public function set DailyLeagueLastScore(param1:Number) : void
+      public function set DailyLeagueLastScore(value:Number) : void
       {
-         if(_lasetWeekScore == param1)
+         if(_lasetWeekScore == value)
          {
             return;
          }
-         _lasetWeekScore = param1;
+         _lasetWeekScore = value;
          onPropertiesChanged("DailyLeagueLastScore");
       }
       
-      public function set FightPower(param1:int) : void
+      public function set FightPower(value:int) : void
       {
-         if(_fightPower == param1)
+         if(_fightPower == value)
          {
             return;
          }
-         _fightPower = param1;
+         _fightPower = value;
          onPropertiesChanged("FightPower");
       }
       
@@ -445,13 +461,13 @@ package ddt.data.player
          return _score;
       }
       
-      public function set Score(param1:Number) : void
+      public function set Score(value:Number) : void
       {
-         if(_score == param1)
+         if(_score == value)
          {
             return;
          }
-         _score = param1;
+         _score = value;
          onPropertiesChanged("Score");
       }
       
@@ -460,9 +476,9 @@ package ddt.data.player
          return _CardSoul;
       }
       
-      public function set CardSoul(param1:int) : void
+      public function set CardSoul(value:int) : void
       {
-         _CardSoul = param1;
+         _CardSoul = value;
          onPropertiesChanged("CardSoul");
          updateProperties();
       }
@@ -472,9 +488,9 @@ package ddt.data.player
          return _gP;
       }
       
-      public function set GP(param1:int) : void
+      public function set GP(value:int) : void
       {
-         _gP = param1;
+         _gP = value;
          Grade = Experience.getGrade(_gP);
          onPropertiesChanged("GP");
       }
@@ -484,13 +500,13 @@ package ddt.data.player
          return _offer;
       }
       
-      public function set Offer(param1:int) : void
+      public function set Offer(value:int) : void
       {
-         if(_offer == param1)
+         if(_offer == value)
          {
             return;
          }
-         _offer = param1;
+         _offer = value;
          onPropertiesChanged("Offer");
       }
       
@@ -499,13 +515,13 @@ package ddt.data.player
          return _sign;
       }
       
-      public function set Sign(param1:Boolean) : void
+      public function set Sign(value:Boolean) : void
       {
-         if(_sign == param1)
+         if(_sign == value)
          {
             return;
          }
-         _sign = param1;
+         _sign = value;
          onPropertiesChanged("Sign");
       }
       
@@ -514,9 +530,9 @@ package ddt.data.player
          return _GetSoulCount;
       }
       
-      public function set GetSoulCount(param1:int) : void
+      public function set GetSoulCount(value:int) : void
       {
-         _GetSoulCount = param1;
+         _GetSoulCount = value;
          onPropertiesChanged("GetSoulCount");
          updateProperties();
       }
@@ -530,11 +546,11 @@ package ddt.data.player
          return _state;
       }
       
-      public function set playerState(param1:PlayerState) : void
+      public function set playerState(value:PlayerState) : void
       {
-         if(_state == null || _state.StateID == 1 || _state.StateID != param1.StateID && _state.Priority <= param1.Priority)
+         if(_state == null || _state.StateID == 1 || _state.StateID != value.StateID && _state.Priority <= value.Priority)
          {
-            _state = param1;
+            _state = value;
             onPropertiesChanged("State");
          }
       }
@@ -544,14 +560,14 @@ package ddt.data.player
          return _typeVIP >= 1;
       }
       
-      public function set IsVIP(param1:Boolean) : void
+      public function set IsVIP(value:Boolean) : void
       {
-         _typeVIP = int(param1);
+         _typeVIP = int(value);
       }
       
-      public function set typeVIP(param1:int) : void
+      public function set typeVIP(value:int) : void
       {
-         _typeVIP = param1;
+         _typeVIP = value;
          onPropertiesChanged("isVip");
       }
       
@@ -560,9 +576,9 @@ package ddt.data.player
          return _typeVIP;
       }
       
-      public function set snapVip(param1:Boolean) : void
+      public function set snapVip(value:Boolean) : void
       {
-         _snapVip = param1;
+         _snapVip = value;
       }
       
       public function get snapVip() : Boolean
@@ -575,13 +591,13 @@ package ddt.data.player
          return _honor;
       }
       
-      public function set honor(param1:String) : void
+      public function set honor(value:String) : void
       {
-         if(_honor == param1)
+         if(_honor == value)
          {
             return;
          }
-         _honor = param1;
+         _honor = value;
          onPropertiesChanged("honor");
       }
       
@@ -590,18 +606,18 @@ package ddt.data.player
          return _achievementPoint;
       }
       
-      public function set AchievementPoint(param1:int) : void
+      public function set AchievementPoint(value:int) : void
       {
-         _achievementPoint = param1;
+         _achievementPoint = value;
       }
       
-      public function set SpouseName(param1:String) : void
+      public function set SpouseName(value:String) : void
       {
-         if(_spouseName == param1)
+         if(_spouseName == value)
          {
             return;
          }
-         _spouseName = param1;
+         _spouseName = value;
          onPropertiesChanged("SpouseName");
       }
       
@@ -610,12 +626,12 @@ package ddt.data.player
          return _spouseName;
       }
       
-      public function set IsMarried(param1:Boolean) : void
+      public function set IsMarried(value:Boolean) : void
       {
-         if(param1 && !_isMarried)
+         if(value && !_isMarried)
          {
          }
-         _isMarried = param1;
+         _isMarried = value;
          onPropertiesChanged("IsMarried");
       }
       
@@ -629,13 +645,13 @@ package ddt.data.player
          return _dutyName;
       }
       
-      public function set DutyName(param1:String) : void
+      public function set DutyName(value:String) : void
       {
-         if(_dutyName == param1)
+         if(_dutyName == value)
          {
             return;
          }
-         _dutyName = param1;
+         _dutyName = value;
          onPropertiesChanged("dutyName");
       }
       
@@ -644,13 +660,13 @@ package ddt.data.player
          return _right;
       }
       
-      public function set Right(param1:int) : void
+      public function set Right(value:int) : void
       {
-         if(_right == param1)
+         if(_right == value)
          {
             return;
          }
-         _right = param1;
+         _right = value;
          onPropertiesChanged("Right");
       }
       
@@ -659,13 +675,13 @@ package ddt.data.player
          return _RichesRob;
       }
       
-      public function set RichesRob(param1:int) : void
+      public function set RichesRob(value:int) : void
       {
-         if(_RichesRob == param1)
+         if(_RichesRob == value)
          {
             return;
          }
-         _RichesRob = param1;
+         _RichesRob = value;
          onPropertiesChanged("RichesRob");
       }
       
@@ -674,13 +690,13 @@ package ddt.data.player
          return _RichesOffer;
       }
       
-      public function set RichesOffer(param1:int) : void
+      public function set RichesOffer(value:int) : void
       {
-         if(_RichesOffer == param1)
+         if(_RichesOffer == value)
          {
             return;
          }
-         _RichesOffer = param1;
+         _RichesOffer = value;
          onPropertiesChanged("RichesOffer");
       }
       
@@ -689,13 +705,13 @@ package ddt.data.player
          return _UseOffer;
       }
       
-      public function set UseOffer(param1:int) : void
+      public function set UseOffer(value:int) : void
       {
-         if(_UseOffer == param1)
+         if(_UseOffer == value)
          {
             return;
          }
-         _UseOffer = param1;
+         _UseOffer = value;
          onPropertiesChanged("UseOffer");
       }
       
@@ -704,9 +720,9 @@ package ddt.data.player
          return RichesOffer + RichesRob;
       }
       
-      public function set Riches(param1:int) : void
+      public function set Riches(value:int) : void
       {
-         RichesOffer = param1;
+         RichesOffer = value;
       }
       
       public function get badgeID() : int
@@ -714,15 +730,15 @@ package ddt.data.player
          return _badgeID;
       }
       
-      public function set badgeID(param1:int) : void
+      public function set badgeID(value:int) : void
       {
-         _badgeID = param1;
+         _badgeID = value;
          onPropertiesChanged("badgeid");
       }
       
-      public function set apprenticeshipState(param1:int) : void
+      public function set apprenticeshipState(value:int) : void
       {
-         _apprenticeshipState = param1;
+         _apprenticeshipState = value;
       }
       
       public function get apprenticeshipState() : int
@@ -735,14 +751,14 @@ package ddt.data.player
          return _hpTexpExp;
       }
       
-      public function set hpTexpExp(param1:int) : void
+      public function set hpTexpExp(value:int) : void
       {
-         if(_hpTexpExp == param1)
+         if(_hpTexpExp == value)
          {
             return;
          }
          _lastValue["hpTexpExp"] = _hpTexpExp;
-         _hpTexpExp = param1;
+         _hpTexpExp = value;
          if(_lastValue["hpTexpExp"] != -1)
          {
             onPropertiesChanged("hpTexpExp");
@@ -754,14 +770,14 @@ package ddt.data.player
          return _attTexpExp;
       }
       
-      public function set attTexpExp(param1:int) : void
+      public function set attTexpExp(value:int) : void
       {
-         if(_attTexpExp == param1)
+         if(_attTexpExp == value)
          {
             return;
          }
          _lastValue["attTexpExp"] = _attTexpExp;
-         _attTexpExp = param1;
+         _attTexpExp = value;
          if(_lastValue["attTexpExp"] != -1)
          {
             onPropertiesChanged("attTexpExp");
@@ -773,14 +789,14 @@ package ddt.data.player
          return _defTexpExp;
       }
       
-      public function set defTexpExp(param1:int) : void
+      public function set defTexpExp(value:int) : void
       {
-         if(_defTexpExp == param1)
+         if(_defTexpExp == value)
          {
             return;
          }
          _lastValue["defTexpExp"] = _defTexpExp;
-         _defTexpExp = param1;
+         _defTexpExp = value;
          if(_lastValue["defTexpExp"] != -1)
          {
             onPropertiesChanged("defTexpExp");
@@ -792,14 +808,14 @@ package ddt.data.player
          return _spdTexpExp;
       }
       
-      public function set spdTexpExp(param1:int) : void
+      public function set spdTexpExp(value:int) : void
       {
-         if(_spdTexpExp == param1)
+         if(_spdTexpExp == value)
          {
             return;
          }
          _lastValue["spdTexpExp"] = _spdTexpExp;
-         _spdTexpExp = param1;
+         _spdTexpExp = value;
          if(_lastValue["spdTexpExp"] != -1)
          {
             onPropertiesChanged("spdTexpExp");
@@ -811,14 +827,14 @@ package ddt.data.player
          return _lukTexpExp;
       }
       
-      public function set lukTexpExp(param1:int) : void
+      public function set lukTexpExp(value:int) : void
       {
-         if(_lukTexpExp == param1)
+         if(_lukTexpExp == value)
          {
             return;
          }
          _lastValue["lukTexpExp"] = _lukTexpExp;
-         _lukTexpExp = param1;
+         _lukTexpExp = value;
          if(_lastValue["lukTexpExp"] != -1)
          {
             onPropertiesChanged("lukTexpExp");
@@ -830,14 +846,14 @@ package ddt.data.player
          return _magicAtkTexpExp;
       }
       
-      public function set magicAtkTexpExp(param1:int) : void
+      public function set magicAtkTexpExp(value:int) : void
       {
-         if(_magicAtkTexpExp == param1)
+         if(_magicAtkTexpExp == value)
          {
             return;
          }
          _lastValue["magicAtkTexpExp"] = _magicAtkTexpExp;
-         _magicAtkTexpExp = param1;
+         _magicAtkTexpExp = value;
          if(_lastValue["magicAtkTexpExp"] != -1)
          {
             onPropertiesChanged("magicAtkTexpExp");
@@ -849,17 +865,150 @@ package ddt.data.player
          return _magicDefTexpExp;
       }
       
-      public function set magicDefTexpExp(param1:int) : void
+      public function set magicDefTexpExp(value:int) : void
       {
-         if(_magicDefTexpExp == param1)
+         if(_magicDefTexpExp == value)
          {
             return;
          }
          _lastValue["magicDefTexpExp"] = _magicDefTexpExp;
-         _magicDefTexpExp = param1;
+         _magicDefTexpExp = value;
          if(_lastValue["magicDefTexpExp"] != -1)
          {
             onPropertiesChanged("magicDefTexpExp");
+         }
+      }
+      
+      public function get critTexpExp() : int
+      {
+         return _critTexpExp;
+      }
+      
+      public function set critTexpExp(value:int) : void
+      {
+         if(_critTexpExp == value)
+         {
+            return;
+         }
+         _lastValue["critTexpExp"] = _critTexpExp;
+         _critTexpExp = value;
+         if(_lastValue["critTexpExp"] != -1)
+         {
+            onPropertiesChanged("critTexpExp");
+         }
+      }
+      
+      public function get sunderArmorTexpExp() : int
+      {
+         return _sunderArmorTexpExp;
+      }
+      
+      public function set sunderArmorTexpExp(value:int) : void
+      {
+         if(_sunderArmorTexpExp == value)
+         {
+            return;
+         }
+         _lastValue["sunderArmorTexpExp"] = _sunderArmorTexpExp;
+         _sunderArmorTexpExp = value;
+         if(_lastValue["sunderArmorTexpExp"] != -1)
+         {
+            onPropertiesChanged("sunderArmorTexpExp");
+         }
+      }
+      
+      public function get critDmgTexpExp() : int
+      {
+         return _critDmgTexpExp;
+      }
+      
+      public function set critDmgTexpExp(value:int) : void
+      {
+         if(_critDmgTexpExp == value)
+         {
+            return;
+         }
+         _lastValue["critDmgTexpExp"] = _critDmgTexpExp;
+         _critDmgTexpExp = value;
+         if(_lastValue["critDmgTexpExp"] != -1)
+         {
+            onPropertiesChanged("critDmgTexpExp");
+         }
+      }
+      
+      public function get speedTexpExp() : int
+      {
+         return _speedTexpExp;
+      }
+      
+      public function set speedTexpExp(value:int) : void
+      {
+         if(_speedTexpExp == value)
+         {
+            return;
+         }
+         _lastValue["speedTexpExp"] = _speedTexpExp;
+         _speedTexpExp = value;
+         if(_lastValue["speedTexpExp"] != -1)
+         {
+            onPropertiesChanged("speedTexpExp");
+         }
+      }
+      
+      public function get uniqueSkillTexpExp() : int
+      {
+         return _uniqueSkillTexpExp;
+      }
+      
+      public function set uniqueSkillTexpExp(value:int) : void
+      {
+         if(_uniqueSkillTexpExp == value)
+         {
+            return;
+         }
+         _lastValue["uniqueSkillTexpExp"] = _uniqueSkillTexpExp;
+         _uniqueSkillTexpExp = value;
+         if(_lastValue["uniqueSkillTexpExp"] != -1)
+         {
+            onPropertiesChanged("uniqueSkillTexpExp");
+         }
+      }
+      
+      public function get dmgTexpExp() : int
+      {
+         return _dmgTexpExp;
+      }
+      
+      public function set dmgTexpExp(value:int) : void
+      {
+         if(_dmgTexpExp == value)
+         {
+            return;
+         }
+         _lastValue["dmgTexpExp"] = _dmgTexpExp;
+         _dmgTexpExp = value;
+         if(_lastValue["dmgTexpExp"] != -1)
+         {
+            onPropertiesChanged("dmgTexpExp");
+         }
+      }
+      
+      public function get armorDefTexpExp() : int
+      {
+         return _armorDefTexpExp;
+      }
+      
+      public function set armorDefTexpExp(value:int) : void
+      {
+         if(_armorDefTexpExp == value)
+         {
+            return;
+         }
+         _lastValue["armorDefTexpExp"] = _armorDefTexpExp;
+         _armorDefTexpExp = value;
+         if(_lastValue["armorDefTexpExp"] != -1)
+         {
+            onPropertiesChanged("armorDefTexpExp");
          }
       }
       
@@ -868,9 +1017,9 @@ package ddt.data.player
          return _texpCount;
       }
       
-      public function set texpCount(param1:int) : void
+      public function set texpCount(value:int) : void
       {
-         _texpCount = param1;
+         _texpCount = value;
       }
       
       public function get magicTexpCount() : int
@@ -878,9 +1027,19 @@ package ddt.data.player
          return _magicTexpCount;
       }
       
-      public function set magicTexpCount(param1:int) : void
+      public function set magicTexpCount(value:int) : void
       {
-         _magicTexpCount = param1;
+         _magicTexpCount = value;
+      }
+      
+      public function get nsTexpCount() : int
+      {
+         return _nsTexpCount;
+      }
+      
+      public function set nsTexpCount(value:int) : void
+      {
+         _nsTexpCount = value;
       }
       
       public function get texpTaskCount() : int
@@ -888,9 +1047,9 @@ package ddt.data.player
          return _texpTaskCount;
       }
       
-      public function set texpTaskCount(param1:int) : void
+      public function set texpTaskCount(value:int) : void
       {
-         _texpTaskCount = param1;
+         _texpTaskCount = value;
       }
       
       public function get texpTaskDate() : Date
@@ -898,9 +1057,9 @@ package ddt.data.player
          return _texpTaskDate;
       }
       
-      public function set texpTaskDate(param1:Date) : void
+      public function set texpTaskDate(value:Date) : void
       {
-         _texpTaskDate = param1;
+         _texpTaskDate = value;
       }
       
       public function beginChanges() : void
@@ -918,11 +1077,11 @@ package ddt.data.player
          }
       }
       
-      protected function onPropertiesChanged(param1:String = null) : void
+      protected function onPropertiesChanged(propName:String = null) : void
       {
-         if(param1 != null)
+         if(propName != null)
          {
-            _changedPropeties[param1] = true;
+            _changedPropeties[propName] = true;
          }
          if(_changeCount <= 0)
          {
@@ -936,9 +1095,9 @@ package ddt.data.player
          return _treasure;
       }
       
-      public function set treasure(param1:int) : void
+      public function set treasure(value:int) : void
       {
-         _treasure = param1;
+         _treasure = value;
       }
       
       public function get treasureAdd() : int
@@ -946,9 +1105,9 @@ package ddt.data.player
          return _treasureAdd;
       }
       
-      public function set treasureAdd(param1:int) : void
+      public function set treasureAdd(value:int) : void
       {
-         _treasureAdd = param1;
+         _treasureAdd = value;
       }
       
       public function get isOld() : Boolean
@@ -956,9 +1115,9 @@ package ddt.data.player
          return _isOld;
       }
       
-      public function set isOld(param1:Boolean) : void
+      public function set isOld(value:Boolean) : void
       {
-         _isOld = param1;
+         _isOld = value;
       }
       
       public function get isOld2() : Boolean
@@ -966,18 +1125,18 @@ package ddt.data.player
          return _isOld2;
       }
       
-      public function set isOld2(param1:Boolean) : void
+      public function set isOld2(value:Boolean) : void
       {
-         _isOld2 = param1;
+         _isOld2 = value;
       }
       
       public function updateProperties() : void
       {
-         var _loc2_:Dictionary = _changedPropeties;
-         var _loc1_:Dictionary = _lastValue;
+         var temp:Dictionary = _changedPropeties;
+         var last:Dictionary = _lastValue;
          _changedPropeties = new Dictionary();
          _lastValue = new Dictionary();
-         dispatchEvent(new PlayerPropertyEvent("propertychange",_loc2_,_loc1_));
+         dispatchEvent(new PlayerPropertyEvent("propertychange",temp,last));
       }
       
       public function get activityTanabataNum() : int
@@ -990,15 +1149,15 @@ package ddt.data.player
          return _desertEnterCount;
       }
       
-      public function set desertEnterCount(param1:int) : void
+      public function set desertEnterCount(value:int) : void
       {
-         _desertEnterCount = param1;
+         _desertEnterCount = value;
       }
       
-      public function set activityTanabataNum(param1:int) : void
+      public function set activityTanabataNum(value:int) : void
       {
-         param1 = ServerConfigManager.instance.activityEnterNum - param1;
-         _activityTanabataNum = param1 < 0?0:param1;
+         value = ServerConfigManager.instance.activityEnterNum - value;
+         _activityTanabataNum = value < 0?0:value;
       }
       
       public function get MountsType() : int
@@ -1006,11 +1165,11 @@ package ddt.data.player
          return _mountsType;
       }
       
-      public function set MountsType(param1:int) : void
+      public function set MountsType(value:int) : void
       {
-         if(_mountsType != param1)
+         if(_mountsType != value)
          {
-            _mountsType = param1;
+            _mountsType = value;
             onPropertiesChanged("mountsType");
          }
       }
@@ -1025,9 +1184,9 @@ package ddt.data.player
          return _showMounts;
       }
       
-      public function set showMounts(param1:Boolean) : void
+      public function set showMounts(value:Boolean) : void
       {
-         _showMounts = param1;
+         _showMounts = value;
       }
       
       public function get PetsID() : int
@@ -1035,13 +1194,13 @@ package ddt.data.player
          return _petsID;
       }
       
-      public function set PetsID(param1:int) : void
+      public function set PetsID(value:int) : void
       {
-         if(_petsID == param1)
+         if(_petsID == value)
          {
             return;
          }
-         _petsID = param1;
+         _petsID = value;
          onPropertiesChanged("petsID");
       }
       
@@ -1052,16 +1211,16 @@ package ddt.data.player
       
       public function getPetsPosIndex() : int
       {
-         var _loc1_:int = 0;
+         var index:int = 0;
          if(_petsID >= 62001 && _petsID <= 62003 || _petsID == 62010)
          {
-            _loc1_ = MountsType <= 0?0:2;
+            index = MountsType <= 0?0:2;
          }
          else if(_petsID >= 62004 && _petsID <= 62009 || _petsID == 62011)
          {
-            _loc1_ = MountsType <= 0?1:3;
+            index = MountsType <= 0?1:3;
          }
-         return _loc1_;
+         return index;
       }
       
       public function get isAttest() : Boolean
@@ -1069,9 +1228,9 @@ package ddt.data.player
          return _isAttest;
       }
       
-      public function set isAttest(param1:Boolean) : void
+      public function set isAttest(value:Boolean) : void
       {
-         _isAttest = param1;
+         _isAttest = value;
       }
    }
 }

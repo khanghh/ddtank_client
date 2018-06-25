@@ -38,10 +38,10 @@ package ddt.view.chat.chatBall
          tf.y = 0;
       }
       
-      override public function set text(param1:String) : void
+      override public function set text(value:String) : void
       {
-         tf.htmlText = param1;
-         chooseSize(param1);
+         tf.htmlText = value;
+         chooseSize(value);
          tf.width = _textWidth;
          if(tf.height >= 70)
          {
@@ -51,29 +51,29 @@ package ddt.view.chat.chatBall
          if(tf.numLines > 4)
          {
             _indexOfEnd = tf.getLineOffset(4) - 3;
-            param1 = param1.substring(0,_indexOfEnd) + "...";
+            value = value.substring(0,_indexOfEnd) + "...";
          }
-         tf.htmlText = param1;
+         tf.htmlText = value;
       }
       
-      protected function chooseSize(param1:String) : void
+      protected function chooseSize(message:String) : void
       {
          _indexOfEnd = -1;
-         var _loc3_:TextFormat = tf.defaultTextFormat;
+         var format:TextFormat = tf.defaultTextFormat;
          hiddenTF = new TextField();
          setTextField(hiddenTF);
-         _loc3_.letterSpacing = 1;
-         hiddenTF.defaultTextFormat = _loc3_;
-         _loc3_.align = "center";
-         tf.defaultTextFormat = _loc3_;
-         hiddenTF.text = param1;
-         var _loc2_:int = hiddenTF.textWidth;
-         if(_loc2_ < 80)
+         format.letterSpacing = 1;
+         hiddenTF.defaultTextFormat = format;
+         format.align = "center";
+         tf.defaultTextFormat = format;
+         hiddenTF.text = message;
+         var _width:int = hiddenTF.textWidth;
+         if(_width < 80)
          {
             _textWidth = 80;
             return;
          }
-         if(_loc2_ < 170)
+         if(_width < 170)
          {
             _textWidth = 100;
             return;
@@ -91,9 +91,9 @@ package ddt.view.chat.chatBall
          return tf.height;
       }
       
-      public function setTextField(param1:TextField) : void
+      public function setTextField(tf:TextField) : void
       {
-         param1.autoSize = "left";
+         tf.autoSize = "left";
       }
       
       override public function dispose() : void

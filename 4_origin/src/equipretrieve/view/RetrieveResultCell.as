@@ -23,7 +23,7 @@ package equipretrieve.view
       
       private var _text:FilterFrameText;
       
-      public function RetrieveResultCell(param1:int)
+      public function RetrieveResultCell($index:int)
       {
          bg = new Sprite();
          bgBit = ComponentFactory.Instance.creatBitmap("equipretrieve.trieveCell1");
@@ -31,7 +31,7 @@ package equipretrieve.view
          _text.text = LanguageMgr.GetTranslation("store.Fusion.FusionCellText");
          bg.addChild(bgBit);
          bg.addChild(_text);
-         super(bg,param1);
+         super(bg,$index);
       }
       
       override public function startShine() : void
@@ -56,7 +56,7 @@ package equipretrieve.view
          addChild(_tbxCount);
       }
       
-      override public function dragDrop(param1:DragEffect) : void
+      override public function dragDrop(effect:DragEffect) : void
       {
       }
       

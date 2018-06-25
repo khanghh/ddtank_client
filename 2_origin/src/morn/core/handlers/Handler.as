@@ -8,30 +8,30 @@ package morn.core.handlers
       
       public var args:Array;
       
-      public function Handler(param1:Function = null, param2:Array = null)
+      public function Handler(method:Function = null, args:Array = null)
       {
          super();
-         this.method = param1;
-         this.args = param2;
+         this.method = method;
+         this.args = args;
       }
       
       public function execute() : void
       {
-         if(this.method != null)
+         if(method != null)
          {
-            this.method.apply(null,this.args);
+            method.apply(null,args);
          }
       }
       
-      public function executeWith(param1:Array) : void
+      public function executeWith(data:Array) : void
       {
-         if(param1 == null)
+         if(data == null)
          {
-            return this.execute();
+            return execute();
          }
-         if(this.method != null)
+         if(method != null)
          {
-            this.method.apply(null,!!this.args?this.args.concat(param1):param1);
+            method.apply(null,!!args?args.concat(data):data);
          }
       }
    }

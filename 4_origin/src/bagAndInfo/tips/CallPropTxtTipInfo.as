@@ -24,9 +24,9 @@ package bagAndInfo.tips
          return _atcAdd;
       }
       
-      public function set Attack(param1:int) : void
+      public function set Attack(M:int) : void
       {
-         _atcAdd = param1;
+         _atcAdd = M;
       }
       
       public function get Defend() : int
@@ -34,9 +34,9 @@ package bagAndInfo.tips
          return _defAdd;
       }
       
-      public function set Defend(param1:int) : void
+      public function set Defend(M:int) : void
       {
-         _defAdd = param1;
+         _defAdd = M;
       }
       
       public function get Agility() : int
@@ -44,9 +44,9 @@ package bagAndInfo.tips
          return _agiAdd;
       }
       
-      public function set Agility(param1:int) : void
+      public function set Agility(M:int) : void
       {
-         _agiAdd = param1;
+         _agiAdd = M;
       }
       
       public function get Lucky() : int
@@ -54,9 +54,9 @@ package bagAndInfo.tips
          return _lukAdd;
       }
       
-      public function set Lucky(param1:int) : void
+      public function set Lucky(M:int) : void
       {
-         _lukAdd = param1;
+         _lukAdd = M;
       }
       
       public function get Rank() : String
@@ -64,9 +64,9 @@ package bagAndInfo.tips
          return _rank;
       }
       
-      public function set Rank(param1:String) : void
+      public function set Rank(M:String) : void
       {
-         _rank = param1;
+         _rank = M;
       }
    }
 }

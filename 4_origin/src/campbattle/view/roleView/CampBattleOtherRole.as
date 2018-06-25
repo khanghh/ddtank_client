@@ -15,10 +15,10 @@ package campbattle.view.roleView
       
       private var _sword:MovieClip;
       
-      public function CampBattleOtherRole(param1:RoleData = null, param2:Function = null)
+      public function CampBattleOtherRole(playerInfo:RoleData = null, callBack:Function = null)
       {
-         super(param1,param2);
-         if(param1.team != CampBattleControl.instance.model.myTeam)
+         super(playerInfo,callBack);
+         if(playerInfo.team != CampBattleControl.instance.model.myTeam)
          {
             buttonMode = true;
          }
@@ -27,7 +27,7 @@ package campbattle.view.roleView
          _sword.visible = false;
       }
       
-      override protected function __onMouseOut(param1:MouseEvent) : void
+      override protected function __onMouseOut(event:MouseEvent) : void
       {
          if(_sword)
          {
@@ -35,10 +35,10 @@ package campbattle.view.roleView
          }
          Mouse.show();
          removeEventListener("mouseMove",mouseMoveHander);
-         super.__onMouseOut(param1);
+         super.__onMouseOut(event);
       }
       
-      override protected function __onMouseOver(param1:MouseEvent) : void
+      override protected function __onMouseOver(event:MouseEvent) : void
       {
          if(CampBattleControl.instance.model.myTeam != _playerInfo.team || _playerInfo.stateType == 2)
          {
@@ -48,11 +48,11 @@ package campbattle.view.roleView
             }
             Mouse.hide();
             addEventListener("mouseMove",mouseMoveHander);
-            super.__onMouseOver(param1);
+            super.__onMouseOver(event);
          }
       }
       
-      protected function mouseMoveHander(param1:MouseEvent) : void
+      protected function mouseMoveHander(event:MouseEvent) : void
       {
          if(_sword)
          {
@@ -61,9 +61,9 @@ package campbattle.view.roleView
          }
       }
       
-      override protected function __onMouseClick(param1:MouseEvent) : void
+      override protected function __onMouseClick(e:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
+         e.stopImmediatePropagation();
          if(_playerInfo.team != CampBattleControl.instance.model.myTeam)
          {
             CampBattleControl.instance.dispatchEvent(new MapEvent("goto_fight",[_playerInfo.posX,_playerInfo.posY,_playerInfo.zoneID,_playerInfo.ID]));

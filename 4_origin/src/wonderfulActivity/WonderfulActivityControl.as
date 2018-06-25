@@ -41,14 +41,14 @@ package wonderfulActivity
          WonderfulActivityManager.Instance.addEventListener("wonderfulActivityAddEment",__onAddElement);
       }
       
-      protected function __onOpenView(param1:WonderfulActivityEvent) : void
+      protected function __onOpenView(event:WonderfulActivityEvent) : void
       {
          _frame = ComponentFactory.Instance.creatComponentByStylename("com.wonderfulActivity.WonderfulFrame");
          LayerManager.Instance.addToLayer(_frame,3,true,1);
          _frame.addElement(WonderfulActivityManager.Instance.actList);
       }
       
-      protected function __onAddElement(param1:WonderfulActivityEvent) : void
+      protected function __onAddElement(event:WonderfulActivityEvent) : void
       {
          if(WonderfulActivityManager.Instance.actList.length == 0)
          {
@@ -67,11 +67,11 @@ package wonderfulActivity
          _frame = null;
       }
       
-      protected function onUIProgress(param1:UIModuleEvent) : void
+      protected function onUIProgress(event:UIModuleEvent) : void
       {
-         if(param1.module == "wonderfulactivity")
+         if(event.module == "wonderfulactivity")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
       

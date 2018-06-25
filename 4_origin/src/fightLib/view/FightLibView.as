@@ -58,15 +58,15 @@ package fightLib.view
          _lessonsView.getGuild().visible = false;
       }
       
-      public function showGuild(param1:int) : void
+      public function showGuild(count:int) : void
       {
          _lessonsView.hideShine();
          if(!_lessonsView.getGuild().visible)
          {
             _lessonsView.getGuild().visible = true;
          }
-         _lessonsView.showShine(param1);
-         _lessonsView.getGuild().gotoAndStop(param1);
+         _lessonsView.showShine(count);
+         _lessonsView.getGuild().gotoAndStop(count);
       }
       
       private function configUI() : void

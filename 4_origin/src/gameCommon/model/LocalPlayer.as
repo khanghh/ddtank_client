@@ -121,12 +121,12 @@ package gameCommon.model
       
       private var _usePassBall:Boolean;
       
-      public function LocalPlayer(param1:SelfInfo, param2:int, param3:int, param4:int, param5:int = 0)
+      public function LocalPlayer(info:SelfInfo, id:int, team:int, maxBlood:int, templeId:int = 0)
       {
-         super(param1,param2,param3,param4,param5);
-         if(param1.DeputyWeaponID > 0)
+         super(info,id,team,maxBlood,templeId);
+         if(info.DeputyWeaponID > 0)
          {
-            deputyWeaponCount = param1.DeputyWeapon.StrengthenLevel + 1;
+            deputyWeaponCount = info.DeputyWeapon.StrengthenLevel + 1;
          }
          _numObject = {};
       }
@@ -136,9 +136,9 @@ package gameCommon.model
          return _isUsedPetSkillWithNoItem;
       }
       
-      public function set isUsedPetSkillWithNoItem(param1:Boolean) : void
+      public function set isUsedPetSkillWithNoItem(value:Boolean) : void
       {
-         _isUsedPetSkillWithNoItem = param1;
+         _isUsedPetSkillWithNoItem = value;
       }
       
       public function get isUsedItem() : Boolean
@@ -146,9 +146,9 @@ package gameCommon.model
          return _isUsedItem;
       }
       
-      public function set isUsedItem(param1:Boolean) : void
+      public function set isUsedItem(value:Boolean) : void
       {
-         _isUsedItem = param1;
+         _isUsedItem = value;
       }
       
       public function get selfInfo() : SelfInfo
@@ -156,20 +156,20 @@ package gameCommon.model
          return playerInfo as SelfInfo;
       }
       
-      public function showMark(param1:int) : void
+      public function showMark(mark:int) : void
       {
-         dispatchEvent(new LivingEvent("showMark",0,0,param1 - 1));
+         dispatchEvent(new LivingEvent("showMark",0,0,mark - 1));
       }
       
-      override public function set pos(param1:Point) : void
+      override public function set pos(value:Point) : void
       {
-         if(param1.equals(_pos) == false)
+         if(value.equals(_pos) == false)
          {
             if(isLiving && onChange == true)
             {
-               energy = energy - Math.abs(param1.x - _pos.x) * powerRatio;
+               energy = energy - Math.abs(value.x - _pos.x) * powerRatio;
             }
-            .super.pos = param1;
+            .super.pos = value;
          }
       }
       
@@ -178,17 +178,17 @@ package gameCommon.model
          return _shootCount;
       }
       
-      public function set shootCount(param1:int) : void
+      public function set shootCount(value:int) : void
       {
-         _shootCount = param1;
+         _shootCount = value;
       }
       
-      public function manuallySetGunAngle(param1:Number) : Boolean
+      public function manuallySetGunAngle(value:Number) : Boolean
       {
-         var _loc3_:int = gunAngle;
-         gunAngle = param1;
-         var _loc2_:* = _loc3_ != gunAngle;
-         return _loc2_;
+         var oldGunAngle:int = gunAngle;
+         gunAngle = value;
+         var result:* = oldGunAngle != gunAngle;
+         return result;
       }
       
       public function get gunAngle() : Number
@@ -196,24 +196,24 @@ package gameCommon.model
          return _gunAngle;
       }
       
-      public function set gunAngle(param1:Number) : void
+      public function set gunAngle(value:Number) : void
       {
-         if(param1 == _gunAngle)
+         if(value == _gunAngle)
          {
             return;
          }
-         if((currentBomb == 3 || currentBomb == 110 || currentBomb == 117 || currentBomb == 11196 || RoomManager.Instance.current && RoomManager.Instance.current.type == 29) && (param1 < 0 || param1 > 90))
+         if((currentBomb == 3 || currentBomb == 110 || currentBomb == 117 || currentBomb == 11196 || RoomManager.Instance.current && RoomManager.Instance.current.type == 29) && (value < 0 || value > 90))
          {
             return;
          }
          if(RoomManager.Instance.current)
          {
-            if(currentBomb != 3 && currentBomb != 110 && currentBomb != 117 && currentBomb != 11196 && RoomManager.Instance.current.type != 29 && param1 < currentWeapInfo.armMinAngle)
+            if(currentBomb != 3 && currentBomb != 110 && currentBomb != 117 && currentBomb != 11196 && RoomManager.Instance.current.type != 29 && value < currentWeapInfo.armMinAngle)
             {
                _gunAngle = currentWeapInfo.armMinAngle;
                return;
             }
-            if(currentBomb != 3 && currentBomb != 110 && currentBomb != 117 && currentBomb != 11196 && RoomManager.Instance.current.type != 29 && param1 > currentWeapInfo.armMaxAngle)
+            if(currentBomb != 3 && currentBomb != 110 && currentBomb != 117 && currentBomb != 11196 && RoomManager.Instance.current.type != 29 && value > currentWeapInfo.armMaxAngle)
             {
                _gunAngle = currentWeapInfo.armMaxAngle;
                return;
@@ -221,18 +221,18 @@ package gameCommon.model
          }
          else
          {
-            if(currentBomb != 3 && currentBomb != 110 && currentBomb != 117 && currentBomb != 11196 && param1 < currentWeapInfo.armMinAngle)
+            if(currentBomb != 3 && currentBomb != 110 && currentBomb != 117 && currentBomb != 11196 && value < currentWeapInfo.armMinAngle)
             {
                _gunAngle = currentWeapInfo.armMinAngle;
                return;
             }
-            if(currentBomb != 3 && currentBomb != 110 && currentBomb != 117 && currentBomb != 11196 && param1 > currentWeapInfo.armMaxAngle)
+            if(currentBomb != 3 && currentBomb != 110 && currentBomb != 117 && currentBomb != 11196 && value > currentWeapInfo.armMaxAngle)
             {
                _gunAngle = currentWeapInfo.armMaxAngle;
                return;
             }
          }
-         _gunAngle = param1;
+         _gunAngle = value;
          dispatchEvent(new LivingEvent("gunangleChanged"));
       }
       
@@ -246,9 +246,9 @@ package gameCommon.model
          return _force;
       }
       
-      public function set force(param1:Number) : void
+      public function set force(value:Number) : void
       {
-         _force = Math.min(param1,2000);
+         _force = Math.min(value,2000);
          dispatchEvent(new LivingEvent("forceChanged"));
       }
       
@@ -289,13 +289,13 @@ package gameCommon.model
          }
       }
       
-      public function set iscalcForce(param1:Boolean) : void
+      public function set iscalcForce(value:Boolean) : void
       {
-         if(_iscalcForce == param1)
+         if(_iscalcForce == value)
          {
             return;
          }
-         _iscalcForce = param1;
+         _iscalcForce = value;
          dispatchEvent(new LivingEvent("isCalcForceChange"));
       }
       
@@ -304,24 +304,24 @@ package gameCommon.model
          return _iscalcForce;
       }
       
-      public function sendShootAction(param1:Number) : void
+      public function sendShootAction(force:Number) : void
       {
-         dispatchEvent(new LivingEvent("sendShootAction",0,0,param1));
+         dispatchEvent(new LivingEvent("sendShootAction",0,0,force));
       }
       
-      public function canUseProp(param1:TurnedLiving) : Boolean
+      public function canUseProp(currentPlayer:TurnedLiving) : Boolean
       {
-         return this == param1 && !LockState || !isLiving && team == param1.team;
+         return this == currentPlayer && !LockState || !isLiving && team == currentPlayer.team;
       }
       
-      override public function pick(param1:Object) : void
+      override public function pick(box:Object) : void
       {
-         super.pick(param1);
-         if(param1.isGhost)
+         super.pick(box);
+         if(box.isGhost)
          {
-            psychic = psychic + param1.psychic;
+            psychic = psychic + box.psychic;
          }
-         SocketManager.Instance.out.sendGamePick(param1.Id);
+         SocketManager.Instance.out.sendGamePick(box.Id);
       }
       
       override protected function setWeaponInfo() : void
@@ -354,20 +354,20 @@ package gameCommon.model
          }
       }
       
-      override public function die(param1:Boolean = true) : void
+      override public function die(widthAction:Boolean = true) : void
       {
-         var _loc2_:DictionaryData = GameControl.Instance.Current.findTeam(this.team);
+         var team:DictionaryData = GameControl.Instance.Current.findTeam(this.team);
          var _loc5_:int = 0;
-         var _loc4_:* = _loc2_;
-         for each(var _loc3_ in _loc2_)
+         var _loc4_:* = team;
+         for each(var living in team)
          {
-            if(!_loc3_.isSelf && _loc3_.isLiving)
+            if(!living.isSelf && living.isLiving)
             {
                isLast = false;
                break;
             }
          }
-         super.die(param1);
+         super.die(widthAction);
          _selfDieTimer = new Timer(500,1);
          _selfDieTimer.start();
          _selfDieTimer.addEventListener("timer",__onDieDelayPassed);
@@ -377,11 +377,11 @@ package gameCommon.model
          rightPropEnabled = false;
          if(isSelf)
          {
-            ChatManager.Instance.view.output.ghostState = param1;
+            ChatManager.Instance.view.output.ghostState = widthAction;
          }
       }
       
-      private function __onDieDelayPassed(param1:TimerEvent) : void
+      private function __onDieDelayPassed(event:TimerEvent) : void
       {
          removeSelfDieTimer();
          _selfDieTimeDelayPassed = true;
@@ -409,9 +409,9 @@ package gameCommon.model
          removeSelfDieTimer();
       }
       
-      override public function set isAttacking(param1:Boolean) : void
+      override public function set isAttacking(value:Boolean) : void
       {
-         if(param1)
+         if(value)
          {
             _flyCoolDown = Number(_flyCoolDown) - 1;
             _deputyWeaponCoolDown = Number(_deputyWeaponCoolDown) - 1;
@@ -429,7 +429,7 @@ package gameCommon.model
          spellKillEnabled = true;
          propEnabled = true;
          soulPropEnabled = true;
-         .super.isAttacking = param1;
+         .super.isAttacking = value;
       }
       
       public function get flyCoolDown() : int
@@ -479,13 +479,13 @@ package gameCommon.model
             _flyCoolDown = 2;
          }
          SocketManager.Instance.out.sendAirPlane();
-         var _loc2_:InventoryItemInfo = new InventoryItemInfo();
-         var _loc1_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(10016);
-         _loc2_.TemplateID = _loc1_.TemplateID;
-         _loc2_.Pic = "2";
-         _loc2_.Property4 = _loc1_.Property4;
-         var _loc3_:PropInfo = new PropInfo(_loc2_);
-         useItem(_loc3_.Template);
+         var item:InventoryItemInfo = new InventoryItemInfo();
+         var temInfo:ItemTemplateInfo = ItemManager.Instance.getTemplateById(10016);
+         item.TemplateID = temInfo.TemplateID;
+         item.Pic = "2";
+         item.Property4 = temInfo.Property4;
+         var info:PropInfo = new PropInfo(item);
+         useItem(info.Template);
          currentBomb = 3;
          flyEnabled = false;
          rightPropEnabled = false;
@@ -501,20 +501,20 @@ package gameCommon.model
          return _isLiving && !_lockFly && _flyEnabled && _flyCoolDown <= 0 && _energy >= 150;
       }
       
-      public function set flyEnabled(param1:Boolean) : void
+      public function set flyEnabled(val:Boolean) : void
       {
-         if(_flyEnabled != param1)
+         if(_flyEnabled != val)
          {
-            _flyEnabled = param1;
+            _flyEnabled = val;
             dispatchEvent(new LivingEvent("flyChanged"));
          }
       }
       
-      public function set deputyWeaponEnabled(param1:Boolean) : void
+      public function set deputyWeaponEnabled(val:Boolean) : void
       {
-         if(_deputyWeaponEnabled != param1)
+         if(_deputyWeaponEnabled != val)
          {
-            _deputyWeaponEnabled = param1;
+            _deputyWeaponEnabled = val;
             dispatchEvent(new LivingEvent("deputyweapin_Changed"));
          }
       }
@@ -533,11 +533,11 @@ package gameCommon.model
          return _deputyWeaponCount;
       }
       
-      public function set deputyWeaponCount(param1:int) : void
+      public function set deputyWeaponCount(val:int) : void
       {
-         if(_deputyWeaponCount != param1)
+         if(_deputyWeaponCount != val)
          {
-            _deputyWeaponCount = param1;
+            _deputyWeaponCount = val;
             dispatchEvent(new LivingEvent("deputyweapin_Changed"));
          }
       }
@@ -557,14 +557,14 @@ package gameCommon.model
       
       private function useDeputyWeaponImp() : void
       {
-         var _loc1_:* = null;
+         var dis:* = null;
          _deputyWeaponCoolDown = currentDeputyWeaponInfo.coolDown;
          SocketManager.Instance.out.useDeputyWeapon();
          if(!GameControl.Instance.is3DGame)
          {
-            _loc1_ = currentDeputyWeaponInfo.getDeputyWeaponIcon();
-            _loc1_.x = _loc1_.x + 7;
-            useItemByIcon(_loc1_);
+            dis = currentDeputyWeaponInfo.getDeputyWeaponIcon();
+            dis.x = dis.x + 7;
+            useItemByIcon(dis);
          }
          else
          {
@@ -595,7 +595,7 @@ package gameCommon.model
          {
             SoundManager.instance.play("008");
          }
-         var _loc1_:Number = currentDeputyWeaponInfo.energy;
+         var deputyEnergy:Number = currentDeputyWeaponInfo.energy;
          if(deputyWeaponEnabled && _isAttacking)
          {
             useDeputyWeaponImp();
@@ -618,7 +618,7 @@ package gameCommon.model
             {
                return "4";
             }
-            if(_energy < _loc1_)
+            if(_energy < deputyEnergy)
             {
                return "EmptyEnergy";
             }
@@ -635,76 +635,76 @@ package gameCommon.model
          }
       }
       
-      public function useProp(param1:PropInfo, param2:int) : String
+      public function useProp(prop:PropInfo, type:int) : String
       {
          if(_isLiving)
          {
-            return usePropAtLive(param1,param2);
+            return usePropAtLive(prop,type);
          }
-         return usePropAtSoul(param1,param2);
+         return usePropAtSoul(prop,type);
       }
       
-      private function updateNums(param1:PropInfo) : void
+      private function updateNums(propInfo:PropInfo) : void
       {
-         var _loc2_:int = 0;
-         if(_numObject.hasOwnProperty(param1.TemplateID))
+         var num:int = 0;
+         if(_numObject.hasOwnProperty(propInfo.TemplateID))
          {
-            _loc2_ = _numObject[param1.TemplateID] as int;
+            num = _numObject[propInfo.TemplateID] as int;
          }
-         _loc2_++;
-         _numObject[param1.TemplateID] = _loc2_;
+         num++;
+         _numObject[propInfo.TemplateID] = num;
       }
       
-      private function sendProp(param1:int, param2:PropInfo) : void
+      private function sendProp(type:int, propInfo:PropInfo) : void
       {
-         useItem(param2.Template);
-         GameInSocketOut.sendUseProp(param1,param2.Place,param2.Template.TemplateID);
+         useItem(propInfo.Template);
+         GameInSocketOut.sendUseProp(type,propInfo.Place,propInfo.Template.TemplateID);
          dispatchEvent(new Event("setEnable"));
          twoKillEnabled = false;
       }
       
-      private function pushUseProp(param1:int, param2:PropInfo) : Boolean
+      private function pushUseProp(type:int, propInfo:PropInfo) : Boolean
       {
-         var _loc4_:int = 0;
-         var _loc7_:int = 0;
-         var _loc5_:int = 0;
-         var _loc6_:int = 0;
-         var _loc3_:Boolean = false;
-         if(param2.TemplateID == 10001 || param2.TemplateID == 10002)
+         var num:int = 0;
+         var num1:int = 0;
+         var num2:int = 0;
+         var num3:int = 0;
+         var ref:Boolean = false;
+         if(propInfo.TemplateID == 10001 || propInfo.TemplateID == 10002)
          {
-            _loc4_ = _numObject[param2.TemplateID] as int;
-            if(_loc4_ == 2)
+            num = _numObject[propInfo.TemplateID] as int;
+            if(num == 2)
             {
-               sendProp(param1,param2);
-               _loc3_ = true;
+               sendProp(type,propInfo);
+               ref = true;
             }
-            else if(_loc4_ > 2)
+            else if(num > 2)
             {
-               _loc3_ = true;
+               ref = true;
             }
          }
-         if(param2.TemplateID == 10001 || param2.TemplateID == 10002 || param2.TemplateID == 10003)
+         if(propInfo.TemplateID == 10001 || propInfo.TemplateID == 10002 || propInfo.TemplateID == 10003)
          {
-            _loc7_ = _numObject[10001] as int;
-            _loc5_ = _numObject[10003] as int;
-            _loc6_ = _numObject[10002] as int;
-            if(_loc7_ >= 1 && _loc5_ >= 1)
+            num1 = _numObject[10001] as int;
+            num2 = _numObject[10003] as int;
+            num3 = _numObject[10002] as int;
+            if(num1 >= 1 && num2 >= 1)
             {
-               sendProp(param1,param2);
-               _loc3_ = true;
+               sendProp(type,propInfo);
+               ref = true;
             }
-            else if(_loc5_ >= 1 && _loc6_ >= 1)
+            else if(num2 >= 1 && num3 >= 1)
             {
-               sendProp(param1,param2);
-               _loc3_ = true;
+               sendProp(type,propInfo);
+               ref = true;
             }
-            else if(_loc7_ >= 1 && _loc6_ >= 1)
+            else if(num1 >= 1 && num3 >= 1)
             {
-               sendProp(param1,param2);
-               _loc3_ = true;
+               sendProp(type,propInfo);
+               ref = true;
             }
          }
-         return _loc3_;
+         return ref;
       }
       
       public function clearPropArr() : void
@@ -713,12 +713,12 @@ package gameCommon.model
          twoKillEnabled = true;
       }
       
-      override public function set dander(param1:int) : void
+      override public function set dander(value:int) : void
       {
-         .super.dander = param1;
+         .super.dander = value;
       }
       
-      private function usePropAtSoul(param1:PropInfo, param2:int) : String
+      private function usePropAtSoul(prop:PropInfo, type:int) : String
       {
          if(_soulPropEnabled)
          {
@@ -726,30 +726,30 @@ package gameCommon.model
             {
                return "SoulPropOverFlow";
             }
-            if(param2 == 2)
+            if(type == 2)
             {
-               useItem(param1.Template);
-               GameInSocketOut.sendUseProp(param2,param1.Place,param1.Template.TemplateID);
+               useItem(prop.Template);
+               GameInSocketOut.sendUseProp(type,prop.Place,prop.Template.TemplateID);
                soulPropCount = Number(soulPropCount) + 1;
             }
             else
             {
-               if(psychic < param1.needPsychic)
+               if(psychic < prop.needPsychic)
                {
                   return "EmptyPsychic";
                }
-               useItem(param1.Template);
-               GameInSocketOut.sendUseProp(param2,param1.Place,param1.Template.TemplateID);
-               psychic = psychic - param1.needPsychic;
+               useItem(prop.Template);
+               GameInSocketOut.sendUseProp(type,prop.Place,prop.Template.TemplateID);
+               psychic = psychic - prop.needPsychic;
                soulPropCount = Number(soulPropCount) + 1;
             }
          }
          return "0";
       }
       
-      private function usePropAtLive(param1:PropInfo, param2:int) : String
+      private function usePropAtLive(prop:PropInfo, type:int) : String
       {
-         if(!_isLiving && param2 == 1)
+         if(!_isLiving && type == 1)
          {
             return "NotLiving";
          }
@@ -766,49 +766,49 @@ package gameCommon.model
          }
          else
          {
-            if(_energy < param1.needEnergy)
+            if(_energy < prop.needEnergy)
             {
                return "EmptyEnergy";
             }
-            updateNums(param1);
-            if(param1.TemplateID == 10001 || param1.TemplateID == 10002 || param1.TemplateID == 10003)
+            updateNums(prop);
+            if(prop.TemplateID == 10001 || prop.TemplateID == 10002 || prop.TemplateID == 10003)
             {
                if(!twoKillEnabled)
                {
-                  GameInSocketOut.sendUseProp(param2,param1.Place,param1.Template.TemplateID);
+                  GameInSocketOut.sendUseProp(type,prop.Place,prop.Template.TemplateID);
                   return "-1";
                }
-               if(pushUseProp(param2,param1))
+               if(pushUseProp(type,prop))
                {
                   return "-1";
                }
             }
-            if(param1.TemplateID == 10003)
+            if(prop.TemplateID == 10003)
             {
                if(threeKillEnabled)
                {
-                  useItem(param1.Template);
-                  GameInSocketOut.sendUseProp(param2,param1.Place,param1.Template.TemplateID);
+                  useItem(prop.Template);
+                  GameInSocketOut.sendUseProp(type,prop.Place,prop.Template.TemplateID);
                   return "-1";
                }
             }
             else
             {
-               useItem(param1.Template);
-               GameInSocketOut.sendUseProp(param2,param1.Place,param1.Template.TemplateID);
+               useItem(prop.Template);
+               GameInSocketOut.sendUseProp(type,prop.Place,prop.Template.TemplateID);
                return "-1";
             }
          }
          return "0";
       }
       
-      override public function useItem(param1:ItemTemplateInfo) : void
+      override public function useItem(info:ItemTemplateInfo) : void
       {
-         if(param1.TemplateID == 10003)
+         if(info.TemplateID == 10003)
          {
             useThreeKillImp();
          }
-         super.useItem(param1);
+         super.useItem(info);
       }
       
       public function get threeKillEnabled() : Boolean
@@ -816,11 +816,11 @@ package gameCommon.model
          return _threeKillEnabled && _propEnabled && _rightPropEnabled && checkArmShellSpring();
       }
       
-      public function set threeKillEnabled(param1:Boolean) : void
+      public function set threeKillEnabled(val:Boolean) : void
       {
-         if(_threeKillEnabled != param1)
+         if(_threeKillEnabled != val)
          {
-            _threeKillEnabled = param1;
+            _threeKillEnabled = val;
             dispatchEvent(new LivingEvent("threekillChanged"));
          }
       }
@@ -841,8 +841,8 @@ package gameCommon.model
          {
             return true;
          }
-         var _loc1_:InventoryItemInfo = PlayerManager.Instance.Self.Bag.getItemAt(20);
-         if(_loc1_ && EquipType.isArmShellSpring(_loc1_))
+         var armShellInfo:InventoryItemInfo = PlayerManager.Instance.Self.Bag.getItemAt(20);
+         if(armShellInfo && EquipType.isArmShellSpring(armShellInfo))
          {
             return false;
          }
@@ -880,20 +880,20 @@ package gameCommon.model
          return _spellKillEnabled && _dander >= 200 && !_lockSpellKill && _isLiving;
       }
       
-      public function set spellKillEnabled(param1:Boolean) : void
+      public function set spellKillEnabled(val:Boolean) : void
       {
-         if(_spellKillEnabled != param1)
+         if(_spellKillEnabled != val)
          {
-            _spellKillEnabled = param1;
+            _spellKillEnabled = val;
             dispatchEvent(new LivingEvent("spellkillChanged"));
          }
       }
       
-      public function set propEnabled(param1:Boolean) : void
+      public function set propEnabled(val:Boolean) : void
       {
-         if(_propEnabled != param1)
+         if(_propEnabled != val)
          {
-            _propEnabled = param1;
+            _propEnabled = val;
             dispatchEvent(new LivingEvent("propenabledChanged"));
          }
       }
@@ -903,11 +903,11 @@ package gameCommon.model
          return _propEnabled && !_lockProp;
       }
       
-      public function set petSkillEnabled(param1:Boolean) : void
+      public function set petSkillEnabled(val:Boolean) : void
       {
-         if(_petSkillEnabled != param1)
+         if(_petSkillEnabled != val)
          {
-            _petSkillEnabled = param1;
+            _petSkillEnabled = val;
             dispatchEvent(new LivingEvent("propenabledChanged"));
          }
       }
@@ -919,11 +919,11 @@ package gameCommon.model
       
       public function get totemEnabled() : Boolean
       {
-         var _loc1_:* = null;
+         var armShellInfo:* = null;
          if(GameControl.Instance.Current && (GameControl.Instance.Current.roomType == 120 || GameControl.Instance.Current.roomType == 1 && GameControl.Instance.Current.gameMode == 120))
          {
-            _loc1_ = PlayerManager.Instance.Self.Bag.getItemAt(20);
-            if(_loc1_ && EquipType.isArmShellTotem(_loc1_))
+            armShellInfo = PlayerManager.Instance.Self.Bag.getItemAt(20);
+            if(armShellInfo && EquipType.isArmShellTotem(armShellInfo))
             {
                return _totemEnabled;
             }
@@ -931,16 +931,16 @@ package gameCommon.model
          return true;
       }
       
-      public function set totemEnabled(param1:Boolean) : void
+      public function set totemEnabled(value:Boolean) : void
       {
-         _totemEnabled = param1;
+         _totemEnabled = value;
       }
       
-      public function set dynamismBarDisable(param1:Boolean) : void
+      public function set dynamismBarDisable(val:Boolean) : void
       {
-         if(_petSkillEnabled != param1)
+         if(_petSkillEnabled != val)
          {
-            _dynamismBarDisable = param1;
+            _dynamismBarDisable = val;
             dispatchEvent(new LivingEvent("DisturbStateChanged"));
          }
       }
@@ -950,11 +950,11 @@ package gameCommon.model
          return _dynamismBarDisable;
       }
       
-      public function set soulPropEnabled(param1:Boolean) : void
+      public function set soulPropEnabled(val:Boolean) : void
       {
-         if(_soulPropEnabled != param1)
+         if(_soulPropEnabled != val)
          {
-            _soulPropEnabled = param1;
+            _soulPropEnabled = val;
             dispatchEvent(new LivingEvent("soulPropEnableChanged"));
          }
       }
@@ -969,20 +969,20 @@ package gameCommon.model
          return _customPropEnabled && _propEnabled;
       }
       
-      public function set customPropEnabled(param1:Boolean) : void
+      public function set customPropEnabled(val:Boolean) : void
       {
-         if(_customPropEnabled != param1)
+         if(_customPropEnabled != val)
          {
-            _customPropEnabled = param1;
+            _customPropEnabled = val;
             dispatchEvent(new LivingEvent("customenabledChanged"));
          }
       }
       
-      public function set lockRightProp(param1:Boolean) : void
+      public function set lockRightProp(val:Boolean) : void
       {
-         if(_lockRightProp != param1)
+         if(_lockRightProp != val)
          {
-            _lockRightProp = param1;
+            _lockRightProp = val;
             dispatchEvent(new LivingEvent("rightenabledChanged"));
          }
       }
@@ -997,11 +997,11 @@ package gameCommon.model
          return _rightPropEnabled && _propEnabled && _isLiving && !_lockRightProp;
       }
       
-      public function set rightPropEnabled(param1:Boolean) : void
+      public function set rightPropEnabled(val:Boolean) : void
       {
-         if(_rightPropEnabled != param1)
+         if(_rightPropEnabled != val)
          {
-            _rightPropEnabled = param1;
+            _rightPropEnabled = val;
             dispatchEvent(new LivingEvent("rightenabledChanged"));
          }
       }
@@ -1011,11 +1011,11 @@ package gameCommon.model
          return _lockDeputyWeapon;
       }
       
-      public function set lockDeputyWeapon(param1:Boolean) : void
+      public function set lockDeputyWeapon(val:Boolean) : void
       {
-         if(_lockDeputyWeapon != param1)
+         if(_lockDeputyWeapon != val)
          {
-            _lockDeputyWeapon = param1;
+            _lockDeputyWeapon = val;
             dispatchEvent(new LivingEvent("deputyweapin_Changed"));
          }
       }
@@ -1025,11 +1025,11 @@ package gameCommon.model
          return _lockFly;
       }
       
-      public function set lockFly(param1:Boolean) : void
+      public function set lockFly(val:Boolean) : void
       {
-         if(_lockFly != param1)
+         if(_lockFly != val)
          {
-            _lockFly = param1;
+            _lockFly = val;
             dispatchEvent(new LivingEvent("flyChanged"));
          }
       }
@@ -1039,20 +1039,20 @@ package gameCommon.model
          return _lockSpellKill;
       }
       
-      public function set lockSpellKill(param1:Boolean) : void
+      public function set lockSpellKill(val:Boolean) : void
       {
-         if(_lockSpellKill != param1)
+         if(_lockSpellKill != val)
          {
-            _lockSpellKill = param1;
+            _lockSpellKill = val;
             dispatchEvent(new LivingEvent("spellkillChanged"));
          }
       }
       
-      public function set lockProp(param1:Boolean) : void
+      public function set lockProp(val:Boolean) : void
       {
-         if(_lockProp != param1)
+         if(_lockProp != val)
          {
-            _lockProp = param1;
+            _lockProp = val;
             dispatchEvent(new LivingEvent("propenabledChanged"));
          }
       }
@@ -1067,9 +1067,9 @@ package gameCommon.model
          return _isAttacking && _isLiving;
       }
       
-      public function setCenter(param1:Number, param2:Number, param3:Boolean) : void
+      public function setCenter(px:Number, py:Number, isTween:Boolean) : void
       {
-         dispatchEvent(new LivingEvent("setCenter",0,0,param1,param2,param3));
+         dispatchEvent(new LivingEvent("setCenter",0,0,px,py,isTween));
       }
       
       public function get flyCount() : int
@@ -1077,9 +1077,9 @@ package gameCommon.model
          return _flyCount;
       }
       
-      public function set flyCount(param1:int) : void
+      public function set flyCount(value:int) : void
       {
-         _flyCount = param1;
+         _flyCount = value;
          dispatchEvent(new LivingEvent("flyChanged"));
       }
       
@@ -1088,9 +1088,9 @@ package gameCommon.model
          return _usePassBall;
       }
       
-      public function set usePassBall(param1:Boolean) : void
+      public function set usePassBall(value:Boolean) : void
       {
-         _usePassBall = param1;
+         _usePassBall = value;
       }
    }
 }

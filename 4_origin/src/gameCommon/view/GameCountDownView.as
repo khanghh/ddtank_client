@@ -26,10 +26,10 @@ package gameCommon.view
       
       private var _timer:Timer;
       
-      public function GameCountDownView(param1:int)
+      public function GameCountDownView(total:int)
       {
          super();
-         _total = param1;
+         _total = total;
          _bg = ComponentFactory.Instance.creatBitmap("asset.game.gameCountDown.bg");
          _hundredsTxt = ComponentFactory.Instance.creatComponentByStylename("gameView.countDownView.txt");
          _tensTxt = ComponentFactory.Instance.creatComponentByStylename("gameView.countDownView.txt");
@@ -46,7 +46,7 @@ package gameCommon.view
          _timer.start();
       }
       
-      private function timerHandler(param1:TimerEvent) : void
+      private function timerHandler(event:TimerEvent) : void
       {
          _total = Number(_total) - 1;
          if(_total <= 0)

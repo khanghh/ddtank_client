@@ -29,11 +29,11 @@ package calendar.view
          addChild(_tbxCount);
       }
       
-      public function setCount(param1:int) : void
+      public function setCount(count:int) : void
       {
-         if(param1 > 0)
+         if(count > 0)
          {
-            _tbxCount.text = param1.toString();
+            _tbxCount.text = count.toString();
          }
          else
          {
@@ -50,9 +50,9 @@ package calendar.view
          _picPos = ComponentFactory.Instance.creatCustomObject("ddtcalendar.Award.pic.TopLeft");
       }
       
-      override public function set info(param1:ItemTemplateInfo) : void
+      override public function set info(value:ItemTemplateInfo) : void
       {
-         .super.info = param1;
+         .super.info = value;
          if(_info)
          {
             _nameField.text = _info.Name;

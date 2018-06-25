@@ -37,10 +37,10 @@ package memoryGame.view
       
       private var _cell:BagCell;
       
-      public function MemoryGameCell(param1:int)
+      public function MemoryGameCell(value:int)
       {
          super();
-         _index = param1;
+         _index = value;
          init();
          initEvent();
       }
@@ -54,9 +54,9 @@ package memoryGame.view
          addChild(_cell);
       }
       
-      public function open(param1:int, param2:int) : void
+      public function open(value:int, count:int) : void
       {
-         setInfo(param1,param2);
+         setInfo(value,count);
          if(!_isOpen)
          {
             MemoryGameManager.instance.playOpenStart();
@@ -73,9 +73,9 @@ package memoryGame.view
          _isOpen = false;
       }
       
-      public function openDefault(param1:int, param2:int) : void
+      public function openDefault(value:int, count:int) : void
       {
-         setInfo(param1,param2);
+         setInfo(value,count);
          _isOpen = true;
          _turnMC.gotoAndStop(2);
          _cell.visible = true;
@@ -92,42 +92,42 @@ package memoryGame.view
       {
       }
       
-      private function setInfo(param1:int, param2:int) : void
+      private function setInfo(value:int, count:int) : void
       {
-         if(!_cell.info || _cell.info.TemplateID != param1)
+         if(!_cell.info || _cell.info.TemplateID != value)
          {
-            _cell.info = ItemManager.Instance.getTemplateById(param1);
+            _cell.info = ItemManager.Instance.getTemplateById(value);
          }
-         _cell.setCount(param2);
+         _cell.setCount(count);
       }
       
-      private function __onTurnComplete(param1:Event) : void
+      private function __onTurnComplete(e:Event) : void
       {
          _cell.visible = true;
       }
       
-      private function __onPlayOpenComplete(param1:Event) : void
+      private function __onPlayOpenComplete(e:Event) : void
       {
          MemoryGameManager.instance.playOpenStop();
       }
       
-      private function __onPlayCloseComplete(param1:Event) : void
+      private function __onPlayCloseComplete(e:Event) : void
       {
          MemoryGameManager.instance.playCloseStop();
       }
       
-      private function createCell(param1:int = 11096) : BagCell
+      private function createCell(id:int = 11096) : BagCell
       {
-         var _loc3_:Shape = new Shape();
-         _loc3_.graphics.beginFill(16777215,0);
-         _loc3_.graphics.drawRect(0,0,60,60);
-         _loc3_.graphics.endFill();
-         var _loc2_:BagCell = new BagCell(0,null,true,_loc3_,false);
-         PositionUtils.setPos(_loc2_,"memoryGame.cellPos");
-         return _loc2_;
+         var shape:Shape = new Shape();
+         shape.graphics.beginFill(16777215,0);
+         shape.graphics.drawRect(0,0,60,60);
+         shape.graphics.endFill();
+         var cell:BagCell = new BagCell(0,null,true,shape,false);
+         PositionUtils.setPos(cell,"memoryGame.cellPos");
+         return cell;
       }
       
-      private function __onClick(param1:MouseEvent) : void
+      private function __onClick(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.bagLocked)

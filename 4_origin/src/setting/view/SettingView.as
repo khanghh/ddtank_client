@@ -114,7 +114,7 @@ package setting.view
          initView();
       }
       
-      private function __refusedPrivateChat(param1:MouseEvent) : void
+      private function __refusedPrivateChat(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          PlayerManager.Instance.Self.OptionOnOff = OpitionEnum.setOpitionState(!_refusedPrivateChatBtn.selected,4);
@@ -123,9 +123,9 @@ package setting.view
       
       private function initView() : void
       {
-         var _loc1_:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("tank.game.ToolStripView.set"));
-         _loc1_.moveEnable = false;
-         info = _loc1_;
+         var alertInfo:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("tank.game.ToolStripView.set"));
+         alertInfo.moveEnable = false;
+         info = alertInfo;
          _imgTitle1 = ComponentFactory.Instance.creat("ddtsetting.VolumeSetting");
          addToContent(_imgTitle1);
          _imgTitle2 = ComponentFactory.Instance.creat("ddtsetting.DisplaySetting");
@@ -262,9 +262,9 @@ package setting.view
          return _cbBjyy.selected;
       }
       
-      private function set allowMusic(param1:Boolean) : void
+      private function set allowMusic(value:Boolean) : void
       {
-         _cbBjyy.selected = param1;
+         _cbBjyy.selected = value;
       }
       
       private function get allowSound() : Boolean
@@ -272,9 +272,9 @@ package setting.view
          return _cbYxyx.selected;
       }
       
-      private function set allowSound(param1:Boolean) : void
+      private function set allowSound(value:Boolean) : void
       {
-         _cbYxyx.selected = param1;
+         _cbYxyx.selected = value;
       }
       
       private function get particle() : Boolean
@@ -282,9 +282,9 @@ package setting.view
          return _cbWqtx.selected;
       }
       
-      private function set particle(param1:Boolean) : void
+      private function set particle(value:Boolean) : void
       {
-         _cbWqtx.selected = param1;
+         _cbWqtx.selected = value;
       }
       
       private function get showbugle() : Boolean
@@ -292,9 +292,9 @@ package setting.view
          return _cbLbgn.selected;
       }
       
-      private function set showbugle(param1:Boolean) : void
+      private function set showbugle(value:Boolean) : void
       {
-         _cbLbgn.selected = param1;
+         _cbLbgn.selected = value;
       }
       
       private function get invate() : Boolean
@@ -302,9 +302,9 @@ package setting.view
          return _cbJsyq.selected;
       }
       
-      private function set invate(param1:Boolean) : void
+      private function set invate(value:Boolean) : void
       {
-         _cbJsyq.selected = param1;
+         _cbJsyq.selected = value;
       }
       
       private function get showOL() : Boolean
@@ -312,9 +312,9 @@ package setting.view
          return _cbSxts.selected;
       }
       
-      private function set showOL(param1:Boolean) : void
+      private function set showOL(value:Boolean) : void
       {
-         _cbSxts.selected = param1;
+         _cbSxts.selected = value;
       }
       
       private function get musicVolumn() : int
@@ -322,9 +322,9 @@ package setting.view
          return _sliderBjyy.value;
       }
       
-      private function set musicVolumn(param1:int) : void
+      private function set musicVolumn(value:int) : void
       {
-         _sliderBjyy.value = param1;
+         _sliderBjyy.value = value;
       }
       
       private function get soundVolumn() : int
@@ -332,9 +332,9 @@ package setting.view
          return _sliderYxyx.value;
       }
       
-      private function set soundVolumn(param1:int) : void
+      private function set soundVolumn(value:int) : void
       {
-         _sliderYxyx.value = param1;
+         _sliderYxyx.value = value;
       }
       
       private function get isRecommend() : Boolean
@@ -342,9 +342,9 @@ package setting.view
          return _academy.selected;
       }
       
-      private function set isRecommend(param1:Boolean) : void
+      private function set isRecommend(value:Boolean) : void
       {
-         _academy.selected = param1;
+         _academy.selected = value;
       }
       
       private function audioChanged() : void
@@ -357,9 +357,9 @@ package setting.view
          return _communityFunction.selected;
       }
       
-      private function set isCommunity(param1:Boolean) : void
+      private function set isCommunity(value:Boolean) : void
       {
-         _communityFunction.selected = param1;
+         _communityFunction.selected = value;
       }
       
       private function get friendshipEffect() : Boolean
@@ -411,65 +411,65 @@ package setting.view
          revert();
       }
       
-      private function sliderEnable(param1:Silder, param2:Image, param3:Boolean) : void
+      private function sliderEnable(slider:Silder, sliderBg:Image, enable:Boolean) : void
       {
-         var _loc4_:* = null;
-         param1.mouseChildren = param3;
-         param1.mouseEnabled = param3;
-         if(param3)
+         var filter:* = null;
+         slider.mouseChildren = enable;
+         slider.mouseEnabled = enable;
+         if(enable)
          {
-            param1.filters = null;
-            param2.filters = null;
+            slider.filters = null;
+            sliderBg.filters = null;
          }
          else
          {
-            _loc4_ = [ComponentFactory.Instance.model.getSet("grayFilter")];
-            param2.filters = _loc4_;
-            param1.filters = _loc4_;
+            filter = [ComponentFactory.Instance.model.getSet("grayFilter")];
+            sliderBg.filters = filter;
+            slider.filters = filter;
          }
       }
       
-      private function __checkBoxClick(param1:MouseEvent) : void
+      private function __checkBoxClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }
       
-      private function __audioSelect(param1:MouseEvent) : void
+      private function __audioSelect(evt:MouseEvent) : void
       {
          SharedManager.Instance.allowMusic = allowMusic;
          SharedManager.Instance.allowSound = allowSound;
          audioChanged();
-         if(param1.currentTarget == _cbBjyy)
+         if(evt.currentTarget == _cbBjyy)
          {
             SoundManager.instance.play("008");
             sliderEnable(_sliderBjyy,_sliderBg1,allowMusic);
          }
-         else if(param1.currentTarget == _cbYxyx)
+         else if(evt.currentTarget == _cbYxyx)
          {
             sliderEnable(_sliderYxyx,_sliderBg2,allowSound);
          }
       }
       
-      private function __musicSliderChanged(param1:Event) : void
+      private function __musicSliderChanged(evt:Event) : void
       {
          SharedManager.Instance.musicVolumn = musicVolumn;
          audioChanged();
       }
       
-      private function __soundSliderChanged(param1:Event) : void
+      private function __soundSliderChanged(evt:Event) : void
       {
          SharedManager.Instance.soundVolumn = soundVolumn;
          audioChanged();
       }
       
-      private function __refusedBeFriendHandler(param1:MouseEvent) : void
+      private function __refusedBeFriendHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          PlayerManager.Instance.Self.OptionOnOff = OpitionEnum.setOpitionState(!_refusedBeFriendBtn.selected,1);
          SocketManager.Instance.out.sendOpition(PlayerManager.Instance.Self.OptionOnOff);
       }
       
-      private function __setIsGuideHandler(param1:MouseEvent) : void
+      private function __setIsGuideHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.Grade > 15)
@@ -484,15 +484,15 @@ package setting.view
       
       protected function isSkillCanUse() : Boolean
       {
-         var _loc1_:Boolean = false;
+         var boo:Boolean = false;
          if(PlayerManager.Instance.Self.IsWeakGuildFinish(5) && PlayerManager.Instance.Self.IsWeakGuildFinish(2) && PlayerManager.Instance.Self.IsWeakGuildFinish(12) && PlayerManager.Instance.Self.IsWeakGuildFinish(51) && PlayerManager.Instance.Self.IsWeakGuildFinish(55))
          {
-            _loc1_ = true;
+            boo = true;
          }
-         return _loc1_;
+         return boo;
       }
       
-      private function __keySettingBtnClick(param1:MouseEvent) : void
+      private function __keySettingBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("047");
          if(_keySetFrame == null)
@@ -503,7 +503,7 @@ package setting.view
          _keySetFrame.show();
       }
       
-      private function __onKeySetResponse(param1:FrameEvent) : void
+      private function __onKeySetResponse(event:FrameEvent) : void
       {
          _keySetFrame.removeEventListener("response",__onKeySetResponse);
          _keySetFrame.dispose();
@@ -538,8 +538,8 @@ package setting.view
             _keySetFrame.dispose();
             _keySetFrame = null;
          }
-         var _loc1_:DisplayObject = StageReferance.stage.focus as DisplayObject;
-         if(_loc1_ && contains(_loc1_))
+         var focusDisplay:DisplayObject = StageReferance.stage.focus as DisplayObject;
+         if(focusDisplay && contains(focusDisplay))
          {
             StageReferance.stage.focus = null;
          }

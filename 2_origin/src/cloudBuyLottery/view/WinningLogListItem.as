@@ -36,16 +36,16 @@ package cloudBuyLottery.view
          super();
       }
       
-      public function initView(param1:String, param2:int = 0) : void
+      public function initView(name:String, index:int = 0) : void
       {
-         param2++;
-         if(param2 % 2 == 0)
+         index++;
+         if(index % 2 == 0)
          {
             _bg = ComponentFactory.Instance.creatBitmap("asset.IndividualLottery.cellBg");
             addChild(_bg);
          }
          _nameTxt = ComponentFactory.Instance.creatComponentByStylename("WinningLogListItem.nameTxt");
-         _nameTxt.text = param1;
+         _nameTxt.text = name;
          _txt = ComponentFactory.Instance.creatComponentByStylename("WinningLogListItem.txt");
          _txt.text = LanguageMgr.GetTranslation("WinningLogListItem.txt.LG");
          _cellImg = ComponentFactory.Instance.creatBitmap("asset.IndividualLottery.goodsCell");
@@ -61,34 +61,34 @@ package cloudBuyLottery.view
       
       protected function creatItemCell() : ShopItemCell
       {
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,46,46);
-         _loc1_.graphics.endFill();
-         return CellFactory.instance.createShopItemCell(_loc1_,null,true,true) as ShopItemCell;
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(16777215,0);
+         sp.graphics.drawRect(0,0,46,46);
+         sp.graphics.endFill();
+         return CellFactory.instance.createShopItemCell(sp,null,true,true) as ShopItemCell;
       }
       
-      public function set shopItemInfo(param1:WinningLogItemInfo) : void
+      public function set shopItemInfo(value:WinningLogItemInfo) : void
       {
-         var _loc2_:* = null;
+         var tInfo:* = null;
          if(_shopItemInfo)
          {
             _shopItemInfo.removeEventListener("change",__updateShopItem);
          }
-         _shopItemInfo = param1;
+         _shopItemInfo = value;
          if(_shopItemInfo)
          {
-            _loc2_ = new InventoryItemInfo();
-            ObjectUtils.copyProperties(_loc2_,_shopItemInfo.TemplateInfo);
-            _loc2_.ValidDate = _shopItemInfo.validate;
-            _loc2_.StrengthenLevel = _shopItemInfo.property[0];
-            _loc2_.AttackCompose = _shopItemInfo.property[1];
-            _loc2_.DefendCompose = _shopItemInfo.property[2];
-            _loc2_.LuckCompose = _shopItemInfo.property[3];
-            _loc2_.AgilityCompose = _shopItemInfo.property[4];
-            _loc2_.IsBinds = true;
+            tInfo = new InventoryItemInfo();
+            ObjectUtils.copyProperties(tInfo,_shopItemInfo.TemplateInfo);
+            tInfo.ValidDate = _shopItemInfo.validate;
+            tInfo.StrengthenLevel = _shopItemInfo.property[0];
+            tInfo.AttackCompose = _shopItemInfo.property[1];
+            tInfo.DefendCompose = _shopItemInfo.property[2];
+            tInfo.LuckCompose = _shopItemInfo.property[3];
+            tInfo.AgilityCompose = _shopItemInfo.property[4];
+            tInfo.IsBinds = true;
             _itemID = _shopItemInfo.TemplateID;
-            _itemCell.info = _loc2_;
+            _itemCell.info = tInfo;
             _itemCell.buttonMode = true;
             _shopItemInfo.addEventListener("change",__updateShopItem);
          }
@@ -99,7 +99,7 @@ package cloudBuyLottery.view
          }
       }
       
-      private function __updateShopItem(param1:Event) : void
+      private function __updateShopItem(event:Event) : void
       {
          _itemCell.info = _shopItemInfo.TemplateInfo;
       }
@@ -109,9 +109,9 @@ package cloudBuyLottery.view
          return _itemID;
       }
       
-      public function set itemID(param1:int) : void
+      public function set itemID(value:int) : void
       {
-         _itemID = param1;
+         _itemID = value;
       }
       
       public function dispose() : void

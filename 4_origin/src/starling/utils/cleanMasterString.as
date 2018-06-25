@@ -1,7 +1,7 @@
 package starling.utils
 {
-   public function cleanMasterString(param1:String) : String
+   public function cleanMasterString(str:String) : String
    {
-      return ("_" + param1).substr(1);
+      return ("_" + str).substr(1);
    }
 }

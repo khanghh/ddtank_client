@@ -38,10 +38,10 @@ package starling.events
       
       private var mBubbleChain:Vector.<EventDispatcher>;
       
-      public function Touch(param1:int)
+      public function Touch(id:int)
       {
          super();
-         mID = param1;
+         mID = id;
          mTapCount = 0;
          mPhase = "hover";
          mHeight = 1;
@@ -50,35 +50,35 @@ package starling.events
          mBubbleChain = new Vector.<EventDispatcher>(0);
       }
       
-      public function getLocation(param1:DisplayObject, param2:Point = null) : Point
+      public function getLocation(space:DisplayObject, resultPoint:Point = null) : Point
       {
          sHelperPoint.setTo(mGlobalX,mGlobalY);
-         return param1.globalToLocal(sHelperPoint,param2);
+         return space.globalToLocal(sHelperPoint,resultPoint);
       }
       
-      public function getPreviousLocation(param1:DisplayObject, param2:Point = null) : Point
+      public function getPreviousLocation(space:DisplayObject, resultPoint:Point = null) : Point
       {
          sHelperPoint.setTo(mPreviousGlobalX,mPreviousGlobalY);
-         return param1.globalToLocal(sHelperPoint,param2);
+         return space.globalToLocal(sHelperPoint,resultPoint);
       }
       
-      public function getMovement(param1:DisplayObject, param2:Point = null) : Point
+      public function getMovement(space:DisplayObject, resultPoint:Point = null) : Point
       {
-         if(param2 == null)
+         if(resultPoint == null)
          {
-            param2 = new Point();
+            resultPoint = new Point();
          }
-         getLocation(param1,param2);
-         var _loc4_:Number = param2.x;
-         var _loc3_:Number = param2.y;
-         getPreviousLocation(param1,param2);
-         param2.setTo(_loc4_ - param2.x,_loc3_ - param2.y);
-         return param2;
+         getLocation(space,resultPoint);
+         var x:Number = resultPoint.x;
+         var y:Number = resultPoint.y;
+         getPreviousLocation(space,resultPoint);
+         resultPoint.setTo(x - resultPoint.x,y - resultPoint.y);
+         return resultPoint;
       }
       
-      public function isTouching(param1:DisplayObject) : Boolean
+      public function isTouching(target:DisplayObject) : Boolean
       {
-         return mBubbleChain.indexOf(param1) != -1;
+         return mBubbleChain.indexOf(target) != -1;
       }
       
       public function toString() : String
@@ -88,41 +88,41 @@ package starling.events
       
       public function clone() : Touch
       {
-         var _loc1_:Touch = new Touch(mID);
-         _loc1_.mGlobalX = mGlobalX;
-         _loc1_.mGlobalY = mGlobalY;
-         _loc1_.mPreviousGlobalX = mPreviousGlobalX;
-         _loc1_.mPreviousGlobalY = mPreviousGlobalY;
-         _loc1_.mPhase = mPhase;
-         _loc1_.mTapCount = mTapCount;
-         _loc1_.mTimestamp = mTimestamp;
-         _loc1_.mPressure = mPressure;
-         _loc1_.mWidth = mWidth;
-         _loc1_.mHeight = mHeight;
-         _loc1_.mCancelled = mCancelled;
-         _loc1_.target = mTarget;
-         return _loc1_;
+         var clone:Touch = new Touch(mID);
+         clone.mGlobalX = mGlobalX;
+         clone.mGlobalY = mGlobalY;
+         clone.mPreviousGlobalX = mPreviousGlobalX;
+         clone.mPreviousGlobalY = mPreviousGlobalY;
+         clone.mPhase = mPhase;
+         clone.mTapCount = mTapCount;
+         clone.mTimestamp = mTimestamp;
+         clone.mPressure = mPressure;
+         clone.mWidth = mWidth;
+         clone.mHeight = mHeight;
+         clone.mCancelled = mCancelled;
+         clone.target = mTarget;
+         return clone;
       }
       
       private function updateBubbleChain() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var length:int = 0;
+         var element:* = null;
          if(mTarget)
          {
-            _loc2_ = 1;
-            _loc1_ = mTarget;
+            length = 1;
+            element = mTarget;
             mBubbleChain.length = 1;
-            mBubbleChain[0] = _loc1_;
+            mBubbleChain[0] = element;
             while(true)
             {
-               _loc1_ = _loc1_.parent;
-               if(_loc1_.parent == null)
+               element = element.parent;
+               if(element.parent == null)
                {
                   break;
                }
-               _loc2_++;
-               mBubbleChain[int(_loc2_)] = _loc1_;
+               length++;
+               mBubbleChain[int(length)] = element;
             }
          }
          else
@@ -151,10 +151,10 @@ package starling.events
          return mGlobalX;
       }
       
-      public function set globalX(param1:Number) : void
+      public function set globalX(value:Number) : void
       {
-         mPreviousGlobalX = mGlobalX != mGlobalX?param1:Number(mGlobalX);
-         mGlobalX = param1;
+         mPreviousGlobalX = mGlobalX != mGlobalX?value:Number(mGlobalX);
+         mGlobalX = value;
       }
       
       public function get globalY() : Number
@@ -162,10 +162,10 @@ package starling.events
          return mGlobalY;
       }
       
-      public function set globalY(param1:Number) : void
+      public function set globalY(value:Number) : void
       {
-         mPreviousGlobalY = mGlobalY != mGlobalY?param1:Number(mGlobalY);
-         mGlobalY = param1;
+         mPreviousGlobalY = mGlobalY != mGlobalY?value:Number(mGlobalY);
+         mGlobalY = value;
       }
       
       public function get tapCount() : int
@@ -173,9 +173,9 @@ package starling.events
          return mTapCount;
       }
       
-      public function set tapCount(param1:int) : void
+      public function set tapCount(value:int) : void
       {
-         mTapCount = param1;
+         mTapCount = value;
       }
       
       public function get phase() : String
@@ -183,9 +183,9 @@ package starling.events
          return mPhase;
       }
       
-      public function set phase(param1:String) : void
+      public function set phase(value:String) : void
       {
-         mPhase = param1;
+         mPhase = value;
       }
       
       public function get target() : DisplayObject
@@ -193,11 +193,11 @@ package starling.events
          return mTarget;
       }
       
-      public function set target(param1:DisplayObject) : void
+      public function set target(value:DisplayObject) : void
       {
-         if(mTarget != param1)
+         if(mTarget != value)
          {
-            mTarget = param1;
+            mTarget = value;
             updateBubbleChain();
          }
       }
@@ -207,9 +207,9 @@ package starling.events
          return mTimestamp;
       }
       
-      public function set timestamp(param1:Number) : void
+      public function set timestamp(value:Number) : void
       {
-         mTimestamp = param1;
+         mTimestamp = value;
       }
       
       public function get pressure() : Number
@@ -217,9 +217,9 @@ package starling.events
          return mPressure;
       }
       
-      public function set pressure(param1:Number) : void
+      public function set pressure(value:Number) : void
       {
-         mPressure = param1;
+         mPressure = value;
       }
       
       public function get width() : Number
@@ -227,9 +227,9 @@ package starling.events
          return mWidth;
       }
       
-      public function set width(param1:Number) : void
+      public function set width(value:Number) : void
       {
-         mWidth = param1;
+         mWidth = value;
       }
       
       public function get height() : Number
@@ -237,9 +237,9 @@ package starling.events
          return mHeight;
       }
       
-      public function set height(param1:Number) : void
+      public function set height(value:Number) : void
       {
-         mHeight = param1;
+         mHeight = value;
       }
       
       public function get cancelled() : Boolean
@@ -247,16 +247,16 @@ package starling.events
          return mCancelled;
       }
       
-      public function set cancelled(param1:Boolean) : void
+      public function set cancelled(value:Boolean) : void
       {
-         mCancelled = param1;
+         mCancelled = value;
       }
       
-      function dispatchEvent(param1:TouchEvent) : void
+      function dispatchEvent(event:TouchEvent) : void
       {
          if(mTarget)
          {
-            param1.dispatch(mBubbleChain);
+            event.dispatch(mBubbleChain);
          }
       }
       

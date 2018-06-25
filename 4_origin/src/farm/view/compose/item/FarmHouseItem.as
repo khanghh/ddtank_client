@@ -26,10 +26,10 @@ package farm.view.compose.item
       
       private var _count:FilterFrameText;
       
-      public function FarmHouseItem(param1:int = -1)
+      public function FarmHouseItem(index:int = -1)
       {
          super();
-         _index = param1;
+         _index = index;
          initContent();
       }
       
@@ -37,11 +37,11 @@ package farm.view.compose.item
       {
          _itemBg = ComponentFactory.Instance.creat("asset.farm.baseImage5");
          addChild(_itemBg);
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,62,62);
-         _loc1_.graphics.endFill();
-         _itemCell = CellFactory.instance.createShopItemCell(_loc1_,null,true,true) as ShopItemCell;
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(16777215,0);
+         sp.graphics.drawRect(0,0,62,62);
+         sp.graphics.endFill();
+         _itemCell = CellFactory.instance.createShopItemCell(sp,null,true,true) as ShopItemCell;
          _itemCell.cellSize = 50;
          addChild(_itemCell);
          _count = ComponentFactory.Instance.creatComponentByStylename("farm.housepnl.count");
@@ -52,14 +52,14 @@ package farm.view.compose.item
          return _info;
       }
       
-      public function set info(param1:InventoryItemInfo) : void
+      public function set info(info:InventoryItemInfo) : void
       {
-         if(_info == param1)
+         if(_info == info)
          {
             return;
          }
-         _info = param1;
-         _itemCell.info = param1;
+         _info = info;
+         _itemCell.info = info;
          if(_info)
          {
             _count.text = _info.Count.toString();

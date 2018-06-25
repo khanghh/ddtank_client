@@ -14,16 +14,16 @@ package com.demonsters.debugger
          super();
       }
       
-      static function get(param1:*) : XML
+      static function get(object:*) : XML
       {
-         var _loc3_:String = getQualifiedClassName(param1);
-         if(_loc3_ in cache)
+         var key:String = getQualifiedClassName(object);
+         if(key in cache)
          {
-            return cache[_loc3_];
+            return cache[key];
          }
-         var _loc2_:XML = describeType(param1);
-         cache[_loc3_] = _loc2_;
-         return _loc2_;
+         var xml:XML = describeType(object);
+         cache[key] = xml;
+         return xml;
       }
    }
 }

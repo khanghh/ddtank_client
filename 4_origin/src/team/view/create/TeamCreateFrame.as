@@ -42,16 +42,16 @@ package team.view.create
          }
       }
       
-      override protected function onResponse(param1:int) : void
+      override protected function onResponse(type:int) : void
       {
-         if(param1 == 0 || param1 == 4 || param1 == 1)
+         if(type == 0 || type == 4 || type == 1)
          {
             SoundManager.instance.playButtonSound();
             dispose();
          }
       }
       
-      private function __onCreateComplete(param1:TeamEvent) : void
+      private function __onCreateComplete(e:TeamEvent) : void
       {
          dispose();
          TeamManager.instance.showTeamMainFrame();

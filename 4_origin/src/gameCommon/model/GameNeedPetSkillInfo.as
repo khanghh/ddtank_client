@@ -21,9 +21,9 @@ package gameCommon.model
          return _pic;
       }
       
-      public function set pic(param1:String) : void
+      public function set pic(value:String) : void
       {
-         _pic = param1;
+         _pic = value;
       }
       
       public function get effect() : String
@@ -31,9 +31,9 @@ package gameCommon.model
          return _effect;
       }
       
-      public function set effect(param1:String) : void
+      public function set effect(value:String) : void
       {
-         _effect = param1;
+         _effect = value;
       }
       
       public function get effectClassLink() : String

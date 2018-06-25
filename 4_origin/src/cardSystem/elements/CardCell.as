@@ -88,18 +88,18 @@ package cardSystem.elements
       
       private var _tweenMax:TweenMax;
       
-      public function CardCell(param1:DisplayObject, param2:int = -1, param3:CardInfo = null, param4:Boolean = false, param5:Boolean = true)
+      public function CardCell(bg:DisplayObject, place:int = -1, $info:CardInfo = null, showLoading:Boolean = false, showTip:Boolean = true)
       {
-         _place = param2;
-         super(param1,_cardInfo == null?null:ItemManager.Instance.getTemplateById(_cardInfo.TemplateID),param4,param5);
+         _place = place;
+         super(bg,_cardInfo == null?null:ItemManager.Instance.getTemplateById(_cardInfo.TemplateID),showLoading,showTip);
          open = true;
-         cardInfo = param3;
+         cardInfo = $info;
          setStar();
       }
       
-      public function set canShine(param1:Boolean) : void
+      public function set canShine(value:Boolean) : void
       {
-         _canShine = param1;
+         _canShine = value;
       }
       
       public function get canShine() : Boolean
@@ -112,29 +112,29 @@ package cardSystem.elements
          return _playerInfo;
       }
       
-      public function set playerInfo(param1:PlayerInfo) : void
+      public function set playerInfo(value:PlayerInfo) : void
       {
-         _playerInfo = param1;
+         _playerInfo = value;
       }
       
-      public function showCardName(param1:String) : void
+      public function showCardName(name:String) : void
       {
          if(_cardName == null)
          {
             _cardName = ComponentFactory.Instance.creatComponentByStylename("CardBagCell.name");
             addChild(_cardName);
          }
-         _cardName.text = param1;
+         _cardName.text = name;
          _cardName.y = _bg.height / 2 - _cardName.textHeight / 2;
       }
       
-      public function set cardID(param1:int) : void
+      public function set cardID(value:int) : void
       {
-         if(_cardID == param1)
+         if(_cardID == value)
          {
             return;
          }
-         _cardID = param1;
+         _cardID = value;
       }
       
       public function get cardID() : int
@@ -278,11 +278,11 @@ package cardSystem.elements
          }
       }
       
-      private function _UpdateHandler(param1:MouseEvent) : void
+      private function _UpdateHandler(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
-         param1.stopImmediatePropagation();
-         if(param1.currentTarget is BaseButton)
+         var alert1:* = null;
+         event.stopImmediatePropagation();
+         if(event.currentTarget is BaseButton)
          {
             SoundManager.instance.play("008");
             if(PlayerManager.Instance.Self.bagLocked)
@@ -295,18 +295,18 @@ package cardSystem.elements
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.card.HightLevel"));
                return;
             }
-            _loc2_ = ComponentFactory.Instance.creatComponentByStylename("cardSystem.CardInputFrame");
-            LayerManager.Instance.addToLayer(_loc2_,1,_loc2_.info.frameCenter,1);
-            _loc2_.moveEnable = false;
-            _loc2_.place = _place;
-            param1.stopPropagation();
+            alert1 = ComponentFactory.Instance.creatComponentByStylename("cardSystem.CardInputFrame");
+            LayerManager.Instance.addToLayer(alert1,1,alert1.info.frameCenter,1);
+            alert1.moveEnable = false;
+            alert1.place = _place;
+            event.stopPropagation();
          }
       }
       
-      protected function __propReset(param1:MouseEvent) : void
+      protected function __propReset(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         param1.stopImmediatePropagation();
+         event.stopImmediatePropagation();
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
@@ -315,18 +315,18 @@ package cardSystem.elements
          CardControl.Instance.showPropResetFrame(cardInfo);
       }
       
-      public function setStarPos(param1:int, param2:int) : void
+      public function setStarPos(posX:int, posY:int) : void
       {
-         _starContainer.x = param1;
-         _starContainer.y = param2;
+         _starContainer.x = posX;
+         _starContainer.y = posY;
       }
       
-      public function set cardInfo(param1:CardInfo) : void
+      public function set cardInfo(value:CardInfo) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         var _loc2_:GrooveInfo = new GrooveInfo();
-         _cardInfo = param1;
+         var currentFrame:int = 0;
+         var maxNum:int = 0;
+         var _grooveinfo:GrooveInfo = new GrooveInfo();
+         _cardInfo = value;
          if(_cardInfo == null)
          {
             .super.info = null;
@@ -363,16 +363,16 @@ package cardSystem.elements
             {
                _cardName.visible = false;
             }
-            _loc4_ = 1;
-            _loc3_ = _cardInfo.templateInfo.Property2;
-            if(_cardInfo.Attack >= _loc3_ && _cardInfo.Defence >= _loc3_ && _cardInfo.Agility >= _loc3_ && _cardInfo.Luck >= _loc3_)
+            currentFrame = 1;
+            maxNum = _cardInfo.templateInfo.Property2;
+            if(_cardInfo.Attack >= maxNum && _cardInfo.Defence >= maxNum && _cardInfo.Agility >= maxNum && _cardInfo.Luck >= maxNum)
             {
-               _loc4_ = 2;
+               currentFrame = 2;
             }
             if(_cardInfo.CardType == 1 && _cardInfo.Place == 0)
             {
                _mainGold.visible = true;
-               _mainGold.setFrame(_loc4_);
+               _mainGold.setFrame(currentFrame);
                _maincopper.visible = false;
                _mainsilver.visible = false;
                _mainWhiteGold.visible = false;
@@ -380,7 +380,7 @@ package cardSystem.elements
             else if(_cardInfo.CardType == 2 && _cardInfo.Place == 0)
             {
                _mainsilver.visible = true;
-               _mainsilver.setFrame(_loc4_);
+               _mainsilver.setFrame(currentFrame);
                _maincopper.visible = false;
                _mainGold.visible = false;
                _mainWhiteGold.visible = false;
@@ -388,7 +388,7 @@ package cardSystem.elements
             else if(_cardInfo.CardType == 3 && _cardInfo.Place == 0)
             {
                _maincopper.visible = true;
-               _maincopper.setFrame(_loc4_);
+               _maincopper.setFrame(currentFrame);
                _mainGold.visible = false;
                _mainsilver.visible = false;
                _mainWhiteGold.visible = false;
@@ -403,7 +403,7 @@ package cardSystem.elements
             else if(_cardInfo.CardType == 1 && _cardInfo.Place != 0)
             {
                _deputyGold.visible = true;
-               _deputyGold.setFrame(_loc4_);
+               _deputyGold.setFrame(currentFrame);
                _deputycopper.visible = false;
                _deputysilver.visible = false;
                _deputyWhiteGold.visible = false;
@@ -411,7 +411,7 @@ package cardSystem.elements
             else if(_cardInfo.CardType == 2 && _cardInfo.Place != 0)
             {
                _deputysilver.visible = true;
-               _deputysilver.setFrame(_loc4_);
+               _deputysilver.setFrame(currentFrame);
                _deputycopper.visible = false;
                _deputyGold.visible = false;
                _deputyWhiteGold.visible = false;
@@ -419,7 +419,7 @@ package cardSystem.elements
             else if(_cardInfo.CardType == 3 && _cardInfo.Place != 0)
             {
                _deputycopper.visible = true;
-               _deputycopper.setFrame(_loc4_);
+               _deputycopper.setFrame(currentFrame);
                _deputysilver.visible = false;
                _deputyGold.visible = false;
                _deputyWhiteGold.visible = false;
@@ -448,7 +448,7 @@ package cardSystem.elements
                _deputyGold.visible = _loc5_;
                _deputyWhiteGold.visible = _loc5_;
             }
-            tipData = param1;
+            tipData = value;
             ShowTipManager.Instance.removeAllTip();
             tipStyle = "core.EquipmentCardsTips";
          }
@@ -461,9 +461,9 @@ package cardSystem.elements
          return _cardInfo;
       }
       
-      public function set updatebtnVible(param1:Boolean) : void
+      public function set updatebtnVible(value:Boolean) : void
       {
-         isVible = param1;
+         isVible = value;
       }
       
       public function get updatebtnVible() : Boolean
@@ -489,28 +489,28 @@ package cardSystem.elements
          }
       }
       
-      public function set starVisible(param1:Boolean) : void
+      public function set starVisible(value:Boolean) : void
       {
-         _starVisible = param1;
-         _starContainer.visible = param1;
+         _starVisible = value;
+         _starContainer.visible = value;
       }
       
-      public function set Visibles(param1:Boolean) : void
+      public function set Visibles(value:Boolean) : void
       {
-         _mainWhiteGold.visible = param1;
-         _mainGold.visible = param1;
-         _mainsilver.visible = param1;
-         _maincopper.visible = param1;
-         _deputyGold.visible = param1;
-         _deputysilver.visible = param1;
-         _deputycopper.visible = param1;
-         _deputyWhiteGold.visible = param1;
+         _mainWhiteGold.visible = value;
+         _mainGold.visible = value;
+         _mainsilver.visible = value;
+         _maincopper.visible = value;
+         _deputyGold.visible = value;
+         _deputysilver.visible = value;
+         _deputycopper.visible = value;
+         _deputyWhiteGold.visible = value;
       }
       
-      public function set open(param1:Boolean) : void
+      public function set open(value:Boolean) : void
       {
-         _open = param1;
-         if(param1)
+         _open = value;
+         if(value)
          {
             filters = null;
             mouseEnabled = true;
@@ -527,13 +527,13 @@ package cardSystem.elements
          return _open;
       }
       
-      public function set place(param1:int) : void
+      public function set place(value:int) : void
       {
-         if(_place == param1)
+         if(_place == value)
          {
             return;
          }
-         _place = param1;
+         _place = value;
       }
       
       public function get place() : int
@@ -557,15 +557,15 @@ package cardSystem.elements
          }
       }
       
-      override public function dragDrop(param1:DragEffect) : void
+      override public function dragDrop(effect:DragEffect) : void
       {
-         var _loc2_:* = null;
-         if(param1.data is CardInfo)
+         var cInfo:* = null;
+         if(effect.data is CardInfo)
          {
-            _loc2_ = param1.data as CardInfo;
+            cInfo = effect.data as CardInfo;
             if(locked)
             {
-               if(_loc2_ == cardInfo)
+               if(cInfo == cardInfo)
                {
                   locked = false;
                   DragManager.acceptDrag(this);
@@ -582,27 +582,27 @@ package cardSystem.elements
                   if(!open)
                   {
                      MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.cardSystem.CardCell.notOpen"));
-                     param1.action = "none";
+                     effect.action = "none";
                   }
-                  else if(_place == 0 && _loc2_.templateInfo.Property8 == "0")
+                  else if(_place == 0 && cInfo.templateInfo.Property8 == "0")
                   {
                      MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.cardSystem.CardCell.cannotMoveCardMain"));
-                     param1.action = "none";
+                     effect.action = "none";
                   }
-                  else if(_place <= 4 && _place > 0 && _loc2_.templateInfo.Property8 == "1")
+                  else if(_place <= 4 && _place > 0 && cInfo.templateInfo.Property8 == "1")
                   {
                      MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.cardSystem.CardCell.cannotMoveCardOther"));
-                     param1.action = "none";
+                     effect.action = "none";
                   }
-                  else if(_place > 4 && _loc2_.Place < 5)
+                  else if(_place > 4 && cInfo.Place < 5)
                   {
-                     SocketManager.Instance.out.sendMoveCards(_loc2_.Place,_loc2_.Place);
-                     param1.action = "none";
+                     SocketManager.Instance.out.sendMoveCards(cInfo.Place,cInfo.Place);
+                     effect.action = "none";
                   }
                   else
                   {
-                     SocketManager.Instance.out.sendMoveCards(_loc2_.Place,_place);
-                     param1.action = "none";
+                     SocketManager.Instance.out.sendMoveCards(cInfo.Place,_place);
+                     effect.action = "none";
                   }
                }
                DragManager.acceptDrag(this);
@@ -610,11 +610,11 @@ package cardSystem.elements
          }
       }
       
-      override public function dragStop(param1:DragEffect) : void
+      override public function dragStop(effect:DragEffect) : void
       {
          SoundManager.instance.play("008");
          dispatchEvent(new CellEvent("dragStop",null,true));
-         param1.action = "none";
+         effect.action = "none";
          locked = false;
       }
       
@@ -642,18 +642,18 @@ package cardSystem.elements
          super.dispose();
       }
       
-      override protected function updateSize(param1:Sprite) : void
+      override protected function updateSize(sp:Sprite) : void
       {
-         if(param1)
+         if(sp)
          {
-            param1.height = _contentHeight;
-            param1.width = _contentWidth;
-            param1.x = (_bg.width - _contentWidth) / 2;
-            param1.y = (_bg.height - _contentHeight) / 2 - 9;
+            sp.height = _contentHeight;
+            sp.width = _contentWidth;
+            sp.x = (_bg.width - _contentWidth) / 2;
+            sp.y = (_bg.height - _contentHeight) / 2 - 9;
          }
       }
       
-      override protected function onMouseOver(param1:MouseEvent) : void
+      override protected function onMouseOver(evt:MouseEvent) : void
       {
          if(open && !locked)
          {
@@ -690,14 +690,14 @@ package cardSystem.elements
          }
       }
       
-      public function setBtnVisible(param1:Boolean) : Boolean
+      public function setBtnVisible(value:Boolean) : Boolean
       {
-         var _loc2_:* = param1;
+         var _loc2_:* = value;
          _updateBtn.visible = _loc2_;
          return _loc2_;
       }
       
-      override protected function onMouseClick(param1:MouseEvent) : void
+      override protected function onMouseClick(evt:MouseEvent) : void
       {
          if(_updateBtn)
          {
@@ -709,7 +709,7 @@ package cardSystem.elements
          }
       }
       
-      override protected function onMouseOut(param1:MouseEvent) : void
+      override protected function onMouseOut(evt:MouseEvent) : void
       {
          if(open && !locked)
          {
@@ -727,14 +727,14 @@ package cardSystem.elements
       
       override protected function createDragImg() : DisplayObject
       {
-         var _loc1_:* = null;
+         var img:* = null;
          if(_pic && _pic.width > 0 && _pic.height > 0)
          {
-            _loc1_ = new Bitmap(new BitmapData(_pic.width / _pic.scaleX,_pic.height / _pic.scaleY,true,0),"auto",true);
-            _loc1_.bitmapData.draw(_pic);
-            _loc1_.width = 103;
-            _loc1_.height = 144;
-            return _loc1_;
+            img = new Bitmap(new BitmapData(_pic.width / _pic.scaleX,_pic.height / _pic.scaleY,true,0),"auto",true);
+            img.bitmapData.draw(_pic);
+            img.width = 103;
+            img.height = 144;
+            return img;
          }
          return null;
       }

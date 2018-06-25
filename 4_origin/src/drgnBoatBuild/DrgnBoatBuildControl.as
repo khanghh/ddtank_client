@@ -38,7 +38,7 @@ package drgnBoatBuild
          DrgnBoatBuildManager.instance.addEventListener("drgnBoatOpenView",__onOpenView);
       }
       
-      protected function __onOpenView(param1:DrgnBoatBuildEvent) : void
+      protected function __onOpenView(event:DrgnBoatBuildEvent) : void
       {
          if(!_frame)
          {
@@ -56,7 +56,7 @@ package drgnBoatBuild
          }
       }
       
-      protected function onSmallLoadingClose(param1:Event) : void
+      protected function onSmallLoadingClose(event:Event) : void
       {
          UIModuleSmallLoading.Instance.hide();
          UIModuleSmallLoading.Instance.removeEventListener("close",onSmallLoadingClose);
@@ -64,17 +64,17 @@ package drgnBoatBuild
          UIModuleLoader.Instance.removeEventListener("uiMoudleProgress",onUIProgress);
       }
       
-      protected function onUIProgress(param1:UIModuleEvent) : void
+      protected function onUIProgress(event:UIModuleEvent) : void
       {
-         if(param1.module == "drgnBoatBuild")
+         if(event.module == "drgnBoatBuild")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
       
-      protected function createDrgnBoatBuildFrame(param1:UIModuleEvent) : void
+      protected function createDrgnBoatBuildFrame(event:UIModuleEvent) : void
       {
-         if(param1.module != "drgnBoatBuild")
+         if(event.module != "drgnBoatBuild")
          {
             return;
          }
@@ -86,9 +86,9 @@ package drgnBoatBuild
          LayerManager.Instance.addToLayer(_frame,3,true,1);
       }
       
-      public function set frame(param1:DrgnBoatBuildFrame) : void
+      public function set frame(value:DrgnBoatBuildFrame) : void
       {
-         _frame = param1;
+         _frame = value;
       }
    }
 }

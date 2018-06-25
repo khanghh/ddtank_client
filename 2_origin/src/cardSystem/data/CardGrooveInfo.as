@@ -31,9 +31,9 @@ package cardSystem.data
          super();
       }
       
-      public function set cardInfo(param1:CardInfo) : void
+      public function set cardInfo(value:CardInfo) : void
       {
-         _cardInfo = param1;
+         _cardInfo = value;
       }
       
       public function get cardInfo() : CardInfo

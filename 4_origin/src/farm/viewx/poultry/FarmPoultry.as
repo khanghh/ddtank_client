@@ -87,9 +87,9 @@ package farm.viewx.poultry
       
       private function initView() : void
       {
-         var _loc1_:* = null;
-         _loc1_ = ModuleLoader.getDefinition("game.living.Living380") as Class;
-         _poultry = new _loc1_();
+         var movieClass:* = null;
+         movieClass = ModuleLoader.getDefinition("game.living.Living380") as Class;
+         _poultry = new movieClass();
          PositionUtils.setPos(_poultry,"asset.farm.poultry.poultryPos");
          addChild(_poultry);
          _poultry.stop();
@@ -147,17 +147,17 @@ package farm.viewx.poultry
          RoomManager.Instance.addEventListener("gameRoomCreate",__gameStart);
       }
       
-      public function setInfo(param1:int, param2:int, param3:int, param4:Date) : void
+      public function setInfo(currentExp:int, poultryId:int, state:int, countDownTime:Date) : void
       {
-         var _loc5_:* = null;
-         FarmModelController.instance.model.PoultryState = param3;
+         var poultryInfo:* = null;
+         FarmModelController.instance.model.PoultryState = state;
          initPoultryInfo();
-         if(param3 == 0)
+         if(state == 0)
          {
             this.visible = false;
             PositionUtils.setPos(this,"asset.farm.poultryPos");
          }
-         else if(param3 == 1)
+         else if(state == 1)
          {
             this.visible = true;
             PositionUtils.setPos(this,"asset.farm.poultryPos");
@@ -187,7 +187,7 @@ package farm.viewx.poultry
          {
             this.visible = true;
             FarmModelController.instance.dispatchEvent(new FarmEvent("farmPoultry_setCallBtn"));
-            _loc5_ = FarmModelController.instance.model.farmPoultryInfo[param2];
+            poultryInfo = FarmModelController.instance.model.farmPoultryInfo[poultryId];
             _loc6_ = true;
             _poultryName.visible = _loc6_;
             _loc6_ = _loc6_;
@@ -199,18 +199,18 @@ package farm.viewx.poultry
             _poultry.gotoAndPlay("walkA");
             _poultry.scaleX = this.x < _pointArray[_pointId].x?-0.7:0.7;
             _poultry.scaleY = 0.7;
-            _expText.text = param1 + "/" + _loc5_.MonsterExp;
-            _poultryName.text = _loc5_.MonsterName;
-            setExp(param1,_loc5_.MonsterExp);
+            _expText.text = currentExp + "/" + poultryInfo.MonsterExp;
+            _poultryName.text = poultryInfo.MonsterName;
+            setExp(currentExp,poultryInfo.MonsterExp);
             setWakeFeedBtnState(2);
-            if(param1 >= _loc5_.MonsterExp)
+            if(currentExp >= poultryInfo.MonsterExp)
             {
                _fightBossFlag = true;
                _wakeFeed.visible = false;
             }
             else
             {
-               _wakeFeed.setCountDownTime(param4);
+               _wakeFeed.setCountDownTime(countDownTime);
             }
             creatPoultryArea(2,150,172);
          }
@@ -225,21 +225,21 @@ package farm.viewx.poultry
          removeEventListener("enterFrame",__onEnterFrame);
       }
       
-      private function setExp(param1:int, param2:int) : void
+      private function setExp(currentExp:int, totalExp:int) : void
       {
-         _expText.text = param1 + "/" + param2;
-         var _loc3_:int = _mask.width - (param2 != 0?param1 * _mask.width / param2:0);
-         _mask.x = _blood.x - _loc3_;
+         _expText.text = currentExp + "/" + totalExp;
+         var offLen:int = _mask.width - (totalExp != 0?currentExp * _mask.width / totalExp:0);
+         _mask.x = _blood.x - offLen;
       }
       
-      private function setWakeFeedBtnState(param1:int) : void
+      private function setWakeFeedBtnState(id:int) : void
       {
-         _wakeFeed.setFrame(param1);
-         PositionUtils.setPos(_wakeFeed,"farm.poultry.wakefeedBtnPos" + param1);
-         _wakeFeed.tipData = LanguageMgr.GetTranslation("farm.poultry.wakefeedTipTxt" + param1);
+         _wakeFeed.setFrame(id);
+         PositionUtils.setPos(_wakeFeed,"farm.poultry.wakefeedBtnPos" + id);
+         _wakeFeed.tipData = LanguageMgr.GetTranslation("farm.poultry.wakefeedTipTxt" + id);
       }
       
-      protected function __onPoultryWalk(param1:TimerEvent) : void
+      protected function __onPoultryWalk(event:TimerEvent) : void
       {
          _poultry.scaleX = this.x < _pointArray[_pointId].x?-0.7:0.7;
          _poultry.scaleY = 0.7;
@@ -252,10 +252,10 @@ package farm.viewx.poultry
          }
       }
       
-      protected function __onEnterFrame(param1:Event) : void
+      protected function __onEnterFrame(event:Event) : void
       {
-         var _loc2_:int = Point.distance(new Point(this.x,this.y),_pointArray[_pointId]);
-         if(_loc2_ <= _moveSpeed)
+         var len:int = Point.distance(new Point(this.x,this.y),_pointArray[_pointId]);
+         if(len <= _moveSpeed)
          {
             removeEventListener("enterFrame",__onEnterFrame);
             _walkTimer.start();
@@ -275,30 +275,30 @@ package farm.viewx.poultry
       
       private function loadPoultry() : void
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solvePath("image/game/living/living380.swf"),4);
-         _loc1_.addEventListener("complete",__onLoadComplete);
-         LoadResourceManager.Instance.startLoad(_loc1_);
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solvePath("image/game/living/living380.swf"),4);
+         loader.addEventListener("complete",__onLoadComplete);
+         LoadResourceManager.Instance.startLoad(loader);
       }
       
-      protected function __onLoadComplete(param1:LoaderEvent) : void
+      protected function __onLoadComplete(event:LoaderEvent) : void
       {
-         var _loc2_:BaseLoader = param1.loader;
-         _loc2_.removeEventListener("complete",__onLoadComplete);
+         var loader:BaseLoader = event.loader;
+         loader.removeEventListener("complete",__onLoadComplete);
          initView();
          initEvent();
          this.dispatchEvent(new Event("complete"));
       }
       
-      private function creatPoultryArea(param1:int, param2:int, param3:int) : void
+      private function creatPoultryArea(id:int, width:int, height:int) : void
       {
          if(!_poultryArea)
          {
             _poultryArea = new Sprite();
          }
          _poultryArea.graphics.beginFill(0,0);
-         _poultryArea.graphics.drawRect(0,0,param2,param3);
+         _poultryArea.graphics.drawRect(0,0,width,height);
          _poultryArea.graphics.endFill();
-         PositionUtils.setPos(_poultryArea,"asset.farm.poultryAreaPos" + param1);
+         PositionUtils.setPos(_poultryArea,"asset.farm.poultryAreaPos" + id);
          _poultryArea.addEventListener("mouseOver",__onAreaOver);
          _poultryArea.addEventListener("mouseOut",__onAreaOut);
          _poultryArea.addEventListener("click",__onAreaClick);
@@ -307,7 +307,7 @@ package farm.viewx.poultry
          addChild(_poultryArea);
       }
       
-      protected function __onAreaClick(param1:MouseEvent) : void
+      protected function __onAreaClick(event:MouseEvent) : void
       {
          if(_fightBossFlag)
          {
@@ -327,18 +327,18 @@ package farm.viewx.poultry
          }
       }
       
-      protected function __gameStart(param1:CrazyTankSocketEvent) : void
+      protected function __gameStart(event:CrazyTankSocketEvent) : void
       {
          SocketManager.Instance.out.enterUserGuide(70002,28);
       }
       
-      protected function __onAreaMove(param1:MouseEvent) : void
+      protected function __onAreaMove(event:MouseEvent) : void
       {
          _sward.x = mouseX;
          _sward.y = mouseY;
       }
       
-      protected function __onAreaOut(param1:MouseEvent) : void
+      protected function __onAreaOut(event:MouseEvent) : void
       {
          if(FarmModelController.instance.model.PoultryState == 1)
          {
@@ -372,7 +372,7 @@ package farm.viewx.poultry
          }
       }
       
-      protected function __onAreaOver(param1:MouseEvent) : void
+      protected function __onAreaOver(event:MouseEvent) : void
       {
          if(FarmModelController.instance.model.PoultryState == 1)
          {

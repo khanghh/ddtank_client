@@ -62,10 +62,10 @@ package farm
       
       public var obj:Array;
       
-      public function FarmEvent(param1:String, param2:Array = null, param3:Boolean = false, param4:Boolean = false)
+      public function FarmEvent(type:String, arr:Array = null, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         super(param1,param3,param4);
-         obj = param2;
+         super(type,bubbles,cancelable);
+         obj = arr;
       }
    }
 }

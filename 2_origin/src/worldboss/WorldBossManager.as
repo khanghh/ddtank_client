@@ -131,9 +131,9 @@ package worldboss
          return _isBuyBuffAlert;
       }
       
-      public function set isBuyBuffAlert(param1:Boolean) : void
+      public function set isBuyBuffAlert(value:Boolean) : void
       {
-         _isBuyBuffAlert = param1;
+         _isBuyBuffAlert = value;
       }
       
       public function get autoBuyBuffs() : DictionaryData
@@ -156,61 +156,59 @@ package worldboss
          return _rankingInfos;
       }
       
-      private function __init(param1:PkgEvent) : void
+      private function __init(event:PkgEvent) : void
       {
-         var _loc7_:int = 0;
-         var _loc8_:int = 0;
-         var _loc4_:* = null;
-         _bossResourceId = param1.pkg.readUTF();
-         _currentPVE_ID = param1.pkg.readInt();
-         param1.pkg.readUTF();
+         var j:int = 0;
+         var i:int = 0;
+         var buffInfo:* = null;
+         _bossResourceId = event.pkg.readUTF();
+         _currentPVE_ID = event.pkg.readInt();
+         event.pkg.readUTF();
          iconEnterPath = getWorldbossResource() + "/icon/worldbossIcon.swf";
          addSocketEvent();
          _bossInfo = new WorldBossInfo();
          _bossInfo.myPlayerVO = new PlayerVO();
-         _bossInfo.name = param1.pkg.readUTF();
-         _bossInfo.total_Blood = param1.pkg.readLong();
+         _bossInfo.name = event.pkg.readUTF();
+         _bossInfo.total_Blood = event.pkg.readLong();
          _bossInfo.current_Blood = _bossInfo.total_Blood;
-         var _loc5_:int = param1.pkg.readInt();
-         var _loc6_:int = param1.pkg.readInt();
+         var boss_x:int = event.pkg.readInt();
+         var boss_y:int = event.pkg.readInt();
          mapPath = getWorldbossResource() + "/map/worldbossMap.swf";
          _appearPos.length = 0;
-         var _loc2_:int = param1.pkg.readInt();
-         _loc7_ = 0;
-         while(_loc7_ < _loc2_)
+         var posCount:int = event.pkg.readInt();
+         for(j = 0; j < posCount; )
          {
-            _appearPos.push(new Point(param1.pkg.readInt(),param1.pkg.readInt()));
-            _loc7_++;
+            _appearPos.push(new Point(event.pkg.readInt(),event.pkg.readInt()));
+            j++;
          }
          _bossInfo.playerDefaultPos = Helpers.randomPick(_appearPos);
-         _bossInfo.begin_time = param1.pkg.readDate();
-         _bossInfo.end_time = param1.pkg.readDate();
-         _bossInfo.fight_time = param1.pkg.readInt();
-         _bossInfo.fightOver = param1.pkg.readBoolean();
-         _bossInfo.roomClose = param1.pkg.readBoolean();
-         _bossInfo.ticketID = param1.pkg.readInt();
-         _bossInfo.need_ticket_count = param1.pkg.readInt();
-         _bossInfo.timeCD = param1.pkg.readInt();
-         _bossInfo.reviveMoney = param1.pkg.readInt();
-         _bossInfo.reFightMoney = param1.pkg.readInt();
-         _bossInfo.addInjureBuffMoney = param1.pkg.readInt();
-         _bossInfo.addInjureValue = param1.pkg.readInt();
+         _bossInfo.begin_time = event.pkg.readDate();
+         _bossInfo.end_time = event.pkg.readDate();
+         _bossInfo.fight_time = event.pkg.readInt();
+         _bossInfo.fightOver = event.pkg.readBoolean();
+         _bossInfo.roomClose = event.pkg.readBoolean();
+         _bossInfo.ticketID = event.pkg.readInt();
+         _bossInfo.need_ticket_count = event.pkg.readInt();
+         _bossInfo.timeCD = event.pkg.readInt();
+         _bossInfo.reviveMoney = event.pkg.readInt();
+         _bossInfo.reFightMoney = event.pkg.readInt();
+         _bossInfo.addInjureBuffMoney = event.pkg.readInt();
+         _bossInfo.addInjureValue = event.pkg.readInt();
          _bossInfo.buffArray.length = 0;
-         var _loc3_:int = param1.pkg.readInt();
-         _loc8_ = 0;
-         while(_loc8_ < _loc3_)
+         var count:int = event.pkg.readInt();
+         for(i = 0; i < count; )
          {
-            _loc4_ = new WorldBossBuffInfo();
-            _loc4_.ID = param1.pkg.readInt();
-            _loc4_.name = param1.pkg.readUTF();
-            _loc4_.price = param1.pkg.readInt();
-            _loc4_.decription = param1.pkg.readUTF();
-            _loc4_.costID = param1.pkg.readInt();
-            _bossInfo.buffArray.push(_loc4_);
-            _loc8_++;
+            buffInfo = new WorldBossBuffInfo();
+            buffInfo.ID = event.pkg.readInt();
+            buffInfo.name = event.pkg.readUTF();
+            buffInfo.price = event.pkg.readInt();
+            buffInfo.decription = event.pkg.readUTF();
+            buffInfo.costID = event.pkg.readInt();
+            _bossInfo.buffArray.push(buffInfo);
+            i++;
          }
-         _isShowBlood = param1.pkg.readBoolean();
-         _autoBlood = param1.pkg.readBoolean();
+         _isShowBlood = event.pkg.readBoolean();
+         _autoBlood = event.pkg.readBoolean();
          isOpen = true;
          WorldBossManager.Instance.isLoadingState = false;
          worldBossNum = Number(worldBossNum) + 1;
@@ -258,30 +256,30 @@ package worldboss
          SocketManager.Instance.removeEventListener(PkgEvent.format(102,22),__updatePrivateInfo);
       }
       
-      protected function __updatePrivateInfo(param1:PkgEvent) : void
+      protected function __updatePrivateInfo(event:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         WorldBossManager.Instance.bossInfo.myPlayerVO.myDamage = _loc2_.readInt();
-         WorldBossManager.Instance.bossInfo.myPlayerVO.myHonor = _loc2_.readInt();
+         var pkg:PackageIn = event.pkg;
+         WorldBossManager.Instance.bossInfo.myPlayerVO.myDamage = pkg.readInt();
+         WorldBossManager.Instance.bossInfo.myPlayerVO.myHonor = pkg.readInt();
          dispatchEvent(new Event("change"));
       }
       
-      protected function __updateBuffLevel(param1:PkgEvent) : void
+      protected function __updateBuffLevel(event:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         WorldBossManager.Instance.bossInfo.myPlayerVO.buffLevel = _loc2_.readInt();
-         WorldBossManager.Instance.bossInfo.myPlayerVO.buffInjure = _loc2_.readInt();
+         var pkg:PackageIn = event.pkg;
+         WorldBossManager.Instance.bossInfo.myPlayerVO.buffLevel = pkg.readInt();
+         WorldBossManager.Instance.bossInfo.myPlayerVO.buffInjure = pkg.readInt();
          dispatchEvent(new Event("change"));
       }
       
-      private function __gameRoomFull(param1:CrazyTankSocketEvent) : void
+      private function __gameRoomFull(pEvent:CrazyTankSocketEvent) : void
       {
          dispatchEvent(new WorldBossRoomEvent("worldBossRoomFull"));
       }
       
-      public function creatEnterIcon(param1:Boolean = true, param2:int = 1, param3:String = null) : void
+      public function creatEnterIcon($isUse:Boolean = true, type:int = 1, $timeStr:String = null) : void
       {
-         HallIconManager.instance.updateSwitchHandler(HallIconType["WORLDBOSSENTRANCE" + _bossResourceId],true,param3);
+         HallIconManager.instance.updateSwitchHandler(HallIconType["WORLDBOSSENTRANCE" + _bossResourceId],true,$timeStr);
       }
       
       public function disposeEnterBtn() : void
@@ -293,20 +291,19 @@ package worldboss
          _entranceBtn = null;
       }
       
-      private function __enter(param1:PkgEvent) : void
+      private function __enter(event:PkgEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         if(param1.pkg.bytesAvailable > 0 && param1.pkg.readBoolean())
+         var count:int = 0;
+         var i:int = 0;
+         if(event.pkg.bytesAvailable > 0 && event.pkg.readBoolean())
          {
-            _bossInfo.isLiving = !param1.pkg.readBoolean();
-            _bossInfo.myPlayerVO.reviveCD = param1.pkg.readInt();
-            _loc2_ = param1.pkg.readInt();
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_)
+            _bossInfo.isLiving = !event.pkg.readBoolean();
+            _bossInfo.myPlayerVO.reviveCD = event.pkg.readInt();
+            count = event.pkg.readInt();
+            for(i = 0; i < count; )
             {
-               _bossInfo.myPlayerVO.buffID = param1.pkg.readInt();
-               _loc3_++;
+               _bossInfo.myPlayerVO.buffID = event.pkg.readInt();
+               i++;
             }
             if(_bossInfo.myPlayerVO.reviveCD > 0)
             {
@@ -330,7 +327,7 @@ package worldboss
          LoadResourceManager.Instance.startLoad(_mapLoader);
       }
       
-      private function onMapSrcLoadedComplete(param1:Event) : void
+      private function onMapSrcLoadedComplete(e:Event) : void
       {
          if(StateManager.getState("worldboss") == null)
          {
@@ -339,23 +336,23 @@ package worldboss
          StateManager.setState("worldboss");
       }
       
-      private function __loadingIsCloseRoom(param1:Event) : void
+      private function __loadingIsCloseRoom(e:Event) : void
       {
          UIModuleSmallLoading.Instance.removeEventListener("close",__loadingIsCloseRoom);
       }
       
-      private function __update(param1:PkgEvent) : void
+      private function __update(event:PkgEvent) : void
       {
-         _autoBlood = param1.pkg.readBoolean();
-         _bossInfo.total_Blood = param1.pkg.readLong();
-         _bossInfo.current_Blood = param1.pkg.readLong();
+         _autoBlood = event.pkg.readBoolean();
+         _bossInfo.total_Blood = event.pkg.readLong();
+         _bossInfo.current_Blood = event.pkg.readLong();
          dispatchEvent(new WorldBossRoomEvent("boss_hp_updata"));
       }
       
-      private function __fightOver(param1:PkgEvent) : void
+      private function __fightOver(event:PkgEvent) : void
       {
          _bossInfo.fightOver = true;
-         _bossInfo.isLiving = !param1.pkg.readBoolean();
+         _bossInfo.isLiving = !event.pkg.readBoolean();
          if(_entranceBtn)
          {
             _entranceBtn.setFrame(2);
@@ -363,7 +360,7 @@ package worldboss
          dispatchEvent(new WorldBossRoomEvent("fight_over"));
       }
       
-      private function __leaveRoom(param1:Event) : void
+      private function __leaveRoom(e:Event) : void
       {
          _bossInfo.roomClose = true;
          if(StateManager.currentStateType == "worldboss")
@@ -374,50 +371,49 @@ package worldboss
          dispatchEvent(new WorldBossRoomEvent("room close"));
       }
       
-      private function __showRanking(param1:PkgEvent) : void
+      private function __showRanking(evt:PkgEvent) : void
       {
-         if(param1.pkg.readBoolean())
+         if(evt.pkg.readBoolean())
          {
-            showRankingFrame(param1.pkg);
+            showRankingFrame(evt.pkg);
          }
          else
          {
-            showRankingInRoom(param1.pkg);
+            showRankingInRoom(evt.pkg);
          }
       }
       
-      private function showRankingFrame(param1:PackageIn) : void
+      private function showRankingFrame(pkg:PackageIn) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
+         var i:int = 0;
+         var personInfo:* = null;
          _rankingInfos.length = 0;
-         var _loc3_:WorldBossRankingFram = ComponentFactory.Instance.creat("worldboss.ranking.frame");
-         var _loc2_:int = param1.readInt();
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_)
+         var rankingFrame:WorldBossRankingFram = ComponentFactory.Instance.creat("worldboss.ranking.frame");
+         var count:int = pkg.readInt();
+         for(i = 0; i < count; )
          {
-            _loc4_ = new RankingPersonInfo();
-            _loc4_.id = param1.readInt();
-            _loc4_.name = param1.readUTF();
-            _loc4_.damage = param1.readInt();
-            _loc3_.addPersonRanking(_loc4_);
-            _rankingInfos.push(_loc4_);
-            _loc5_++;
+            personInfo = new RankingPersonInfo();
+            personInfo.id = pkg.readInt();
+            personInfo.name = pkg.readUTF();
+            personInfo.damage = pkg.readInt();
+            rankingFrame.addPersonRanking(personInfo);
+            _rankingInfos.push(personInfo);
+            i++;
          }
          if(!(CacheSysManager.isLock("alertInFight") && StateManager.currentStateType != "worldboss"))
          {
-            _loc3_.show();
+            rankingFrame.show();
          }
       }
       
-      private function showRankingInRoom(param1:PackageIn) : void
+      private function showRankingInRoom(pkg:PackageIn) : void
       {
-         dispatchEvent(new CrazyTankSocketEvent("worldboss_ranking_inroom",param1));
+         dispatchEvent(new CrazyTankSocketEvent("worldboss_ranking_inroom",pkg));
       }
       
-      private function __allOver(param1:PkgEvent) : void
+      private function __allOver(event:PkgEvent) : void
       {
-         event = param1;
+         event = event;
          _bossInfo.fightOver = true;
          _bossInfo.roomClose = true;
          isOpen = false;
@@ -483,19 +479,19 @@ package worldboss
          }
       }
       
-      public function showHallSkyEffort(param1:MovieClip) : void
+      public function showHallSkyEffort(sky:MovieClip) : void
       {
-         if(param1 == _sky)
+         if(sky == _sky)
          {
             return;
          }
          ObjectUtils.disposeObject(_sky);
-         _sky = param1;
+         _sky = sky;
       }
       
-      public function set isOpen(param1:Boolean) : void
+      public function set isOpen(value:Boolean) : void
       {
-         _isOpen = param1;
+         _isOpen = value;
          if(StateManager.currentStateType == "main")
          {
             if(_sky)
@@ -526,51 +522,51 @@ package worldboss
       
       public function getWorldbossResource() : String
       {
-         var _loc1_:String = _bossResourceId == null?"1":_bossResourceId;
-         return PathManager.SITE_MAIN + "image/worldboss/" + _loc1_;
+         var temp:String = _bossResourceId == null?"1":_bossResourceId;
+         return PathManager.SITE_MAIN + "image/worldboss/" + temp;
       }
       
-      public function buyNewBuff(param1:int, param2:Boolean) : void
+      public function buyNewBuff(type:int, isBuyFull:Boolean) : void
       {
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc5_:int = bossInfo.myPlayerVO.buffLevel;
-         if(_loc5_ >= 20)
+         var curLevel:int = bossInfo.myPlayerVO.buffLevel;
+         if(curLevel >= 20)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.worldboss.buffLevelMax"));
             return;
          }
-         var _loc4_:int = WorldBossManager.Instance.bossInfo.addInjureBuffMoney;
-         var _loc3_:* = _loc4_;
-         if(param2)
+         var addInjureBuffMoney:int = WorldBossManager.Instance.bossInfo.addInjureBuffMoney;
+         var needMoney:* = addInjureBuffMoney;
+         if(isBuyFull)
          {
-            _loc3_ = int((20 - _loc5_) * _loc4_);
+            needMoney = int((20 - curLevel) * addInjureBuffMoney);
          }
-         if(param1 == 1)
+         if(type == 1)
          {
-            if(PlayerManager.Instance.Self.Money < _loc3_)
+            if(PlayerManager.Instance.Self.Money < needMoney)
             {
                LeavePageManager.showFillFrame();
                return;
             }
          }
-         else if(param1 == 2)
+         else if(type == 2)
          {
-            if(PlayerManager.Instance.Self.BandMoney < _loc3_)
+            if(PlayerManager.Instance.Self.BandMoney < needMoney)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.view.transfer.StoreIITransferBG.lijinbuzu"));
                return;
             }
          }
-         SocketManager.Instance.out.sendNewBuyWorldBossBuff(param1,!!param2?20 - _loc5_:1);
+         SocketManager.Instance.out.sendNewBuyWorldBossBuff(type,!!isBuyFull?20 - curLevel:1);
       }
       
-      public function set isLoadingState(param1:Boolean) : void
+      public function set isLoadingState(value:Boolean) : void
       {
-         _isLoadingState = param1;
+         _isLoadingState = value;
       }
       
       public function get isLoadingState() : Boolean
@@ -587,14 +583,14 @@ package worldboss
          return getDateHourTime(_bossInfo.begin_time) + 300 - getDateHourTime(TimeManager.Instance.Now());
       }
       
-      private function getDateHourTime(param1:Date) : int
+      private function getDateHourTime(date:Date) : int
       {
-         return int(param1.hours * 3600 + param1.minutes * 60 + param1.seconds);
+         return int(date.hours * 3600 + date.minutes * 60 + date.seconds);
       }
       
-      public function setSelfStatus(param1:int) : void
+      public function setSelfStatus(value:int) : void
       {
-         dispatchEvent(new CEvent("setselfstatus",param1));
+         dispatchEvent(new CEvent("setselfstatus",value));
       }
    }
 }

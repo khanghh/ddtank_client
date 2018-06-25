@@ -2,8 +2,12 @@ package horse.amulet
 {
    import bagAndInfo.cell.DragEffect;
    import baglocked.BaglockedManager;
+   import com.pickgliss.events.FrameEvent;
    import com.pickgliss.events.InteractiveEvent;
+   import com.pickgliss.ui.AlertManager;
+   import com.pickgliss.ui.controls.alert.BaseAlerFrame;
    import com.pickgliss.utils.DoubleClickManager;
+   import com.pickgliss.utils.ObjectUtils;
    import ddt.data.BagInfo;
    import ddt.data.goods.InventoryItemInfo;
    import ddt.events.BagEvent;
@@ -24,6 +28,12 @@ package horse.amulet
       
       private var _bag:BagInfo;
       
+      private var _alertFrame:BaseAlerFrame;
+      
+      private var _oldPlace:int;
+      
+      private var _newPlace:int;
+      
       public function HorseAmuletActivateCell()
       {
          super(19,null,createBg());
@@ -39,19 +49,29 @@ package horse.amulet
          _bag.addEventListener("update",__updateGoods);
       }
       
-      override public function dragDrop(param1:DragEffect) : void
+      override public function dragDrop(effect:DragEffect) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         if(param1 && param1.action == "move" && param1.data)
+         var info:* = null;
+         var vo:* = null;
+         if(effect && effect.action == "move" && effect.data)
          {
-            _loc3_ = param1.data as InventoryItemInfo;
-            if(param1.source is HorseAmuletCell)
+            info = effect.data as InventoryItemInfo;
+            if(effect.source is HorseAmuletCell)
             {
-               _loc2_ = HorseAmuletManager.instance.getHorseAmuletVo((param1.source as HorseAmuletCell).itemInfo.TemplateID);
-               if(_loc2_.IsCanWash)
+               vo = HorseAmuletManager.instance.getHorseAmuletVo((effect.source as HorseAmuletCell).itemInfo.TemplateID);
+               if(vo.IsCanWash)
                {
-                  SocketManager.Instance.out.sendAmuletMove((param1.source as HorseAmuletCell).place,this.place);
+                  _oldPlace = (effect.source as HorseAmuletCell).place;
+                  _newPlace = 19;
+                  if(HorseAmuletManager.instance.isActivate)
+                  {
+                     _alertFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("tank.horseAmulet.replaceTips"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",30,true);
+                     _alertFrame.addEventListener("response",__onClickFrame);
+                  }
+                  else
+                  {
+                     SocketManager.Instance.out.sendAmuletMove(_oldPlace,_newPlace);
+                  }
                }
                else
                {
@@ -67,21 +87,21 @@ package horse.amulet
          DragManager.acceptDrag(this,"none");
       }
       
-      private function __updateGoods(param1:BagEvent) : void
+      private function __updateGoods(evt:BagEvent) : void
       {
-         var _loc3_:Dictionary = param1.changedSlots;
+         var changes:Dictionary = evt.changedSlots;
          var _loc5_:int = 0;
-         var _loc4_:* = _loc3_;
-         for each(var _loc2_ in _loc3_)
+         var _loc4_:* = changes;
+         for each(var i in changes)
          {
-            if(_loc2_.Place == 19)
+            if(i.Place == 19)
             {
-               this.info = _bag.getItemAt(_loc2_.Place);
+               this.info = _bag.getItemAt(i.Place);
             }
          }
       }
       
-      protected function __doubleClickHandler(param1:InteractiveEvent) : void
+      protected function __doubleClickHandler(evt:InteractiveEvent) : void
       {
          if(_info)
          {
@@ -91,43 +111,74 @@ package horse.amulet
                BaglockedManager.Instance.show();
                return;
             }
-            clearCell();
+            _oldPlace = 19;
+            _newPlace = getBagCellIndex();
+            if(HorseAmuletManager.instance.isActivate)
+            {
+               _alertFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("tank.horseAmulet.replaceTips"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",30,true);
+               _alertFrame.addEventListener("response",__onClickFrame);
+            }
+            else
+            {
+               SocketManager.Instance.out.sendAmuletMove(_oldPlace,_newPlace);
+            }
          }
       }
       
-      public function clearCell() : void
+      private function __onClickFrame(e:FrameEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         if(this.info == null)
+         if(e.responseCode == 3 || e.responseCode == 2)
          {
-            return;
-         }
-         _loc2_ = 20;
-         while(_loc2_ < 167)
-         {
-            _loc1_ = PlayerManager.Instance.Self.horseAmuletBag.getItemAt(_loc2_);
-            if(_loc1_ == null)
+            if(_newPlace > 0)
             {
-               SocketManager.Instance.out.sendAmuletMove(19,_loc2_);
-               return;
+               SocketManager.Instance.out.sendAmuletMove(_oldPlace,_newPlace);
             }
-            _loc2_++;
          }
-         MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.horseAmulet.amuletBagTips"));
+         disposeAlertFrame();
+      }
+      
+      private function disposeAlertFrame() : void
+      {
+         if(_alertFrame)
+         {
+            _alertFrame.removeEventListener("response",__onClickFrame);
+            ObjectUtils.disposeObject(_alertFrame);
+            _alertFrame = null;
+         }
+      }
+      
+      private function getBagCellIndex() : int
+      {
+         var i:int = 0;
+         var info:* = null;
+         for(i = 20; i < 167; )
+         {
+            info = PlayerManager.Instance.Self.horseAmuletBag.getItemAt(i);
+            if(info == null)
+            {
+               return i;
+            }
+            i++;
+         }
+         return -1;
       }
       
       private function createBg() : Shape
       {
-         var _loc1_:Shape = new Shape();
-         _loc1_.graphics.beginFill(0,0);
-         _loc1_.graphics.drawRect(0,0,75,75);
-         _loc1_.graphics.endFill();
-         return _loc1_;
+         var shape:Shape = new Shape();
+         shape.graphics.beginFill(0,0);
+         shape.graphics.drawRect(0,0,75,75);
+         shape.graphics.endFill();
+         return shape;
       }
       
       override public function dispose() : void
       {
+         if(this.info)
+         {
+            SocketManager.Instance.out.sendAmuletMove(19,getBagCellIndex());
+         }
+         disposeAlertFrame();
          this.removeEventListener("interactive_double_click",__doubleClickHandler);
          _bag.removeEventListener("update",__updateGoods);
          _bag = null;

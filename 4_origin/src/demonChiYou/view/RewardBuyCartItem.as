@@ -25,10 +25,10 @@ package demonChiYou.view
       
       private var _bagCell:BagCell;
       
-      public function RewardBuyCartItem(param1:int)
+      public function RewardBuyCartItem(index:int)
       {
          super();
-         _index = param1;
+         _index = index;
          _data = DemonChiYouManager.instance.model.shopInfoArr[_index];
          initView();
          initEvent();
@@ -39,19 +39,19 @@ package demonChiYou.view
          UICreatShortcut.creatAndAdd("demonChiYou.rewardBuyCard.CartItemBg",this);
          UICreatShortcut.creatAndAdd("demonChiYou.rewardBuyCard.goldline",this);
          UICreatShortcut.creatAndAdd("demonChiYou.rewardBuyCard.ItemCellBg",this);
-         var _loc3_:InventoryItemInfo = _data["InventoryItemInfo"];
+         var inventoryItemInfo:InventoryItemInfo = _data["InventoryItemInfo"];
          _bagCell = new BagCell(1);
          _bagCell.BGVisible = false;
          _bagCell.setContentSize(60,60);
-         _bagCell.info = _loc3_;
-         _bagCell.setCount(_loc3_.Count);
+         _bagCell.info = inventoryItemInfo;
+         _bagCell.setCount(inventoryItemInfo.Count);
          PositionUtils.setPos(_bagCell,"demonChiYou.rewardBuyCardItemGoodPos");
          addChild(_bagCell);
-         var _loc2_:int = DemonChiYouManager.instance.model.rankInfo.myConsortiaRank;
-         var _loc1_:int = Math.floor(_loc2_ / 10 * _data["Cost"]);
-         UICreatShortcut.creatTextAndAdd("demonChiYou.rewardBuyCardItem.goodNameTf",_loc3_.Name,this);
+         var myConsortiaRank:int = DemonChiYouManager.instance.model.rankInfo.myConsortiaRank;
+         var disCountCost:int = Math.floor(myConsortiaRank / 10 * _data["Cost"]);
+         UICreatShortcut.creatTextAndAdd("demonChiYou.rewardBuyCardItem.goodNameTf",inventoryItemInfo.Name,this);
          UICreatShortcut.creatTextAndAdd("demonChiYou.rewardBuyCardItem.goodOrglCostTf",LanguageMgr.GetTranslation("callbacklotterdraw.priceTxt",_data["Cost"]),this);
-         UICreatShortcut.creatTextAndAdd("demonChiYou.rewardBuyCardItem.goodDisCountCostTf",LanguageMgr.GetTranslation("callbacklotterdraw.newPriceTxt",_loc1_),this);
+         UICreatShortcut.creatTextAndAdd("demonChiYou.rewardBuyCardItem.goodDisCountCostTf",LanguageMgr.GetTranslation("callbacklotterdraw.newPriceTxt",disCountCost),this);
          _cartItemCloseBtn = UICreatShortcut.creatAndAdd("demonChiYou.rewardBuyCard.CartItemCloseBtn",this);
       }
       
@@ -65,7 +65,7 @@ package demonChiYou.view
          _cartItemCloseBtn.removeEventListener("click",onClick);
       }
       
-      private function onClick(param1:MouseEvent) : void
+      private function onClick(evt:MouseEvent) : void
       {
          DemonChiYouManager.instance.dispatchEvent(new CEvent("event_buy_card_remove_item",this));
       }

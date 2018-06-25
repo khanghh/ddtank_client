@@ -44,53 +44,52 @@ package magicHouse.treasureHouse
       
       private var IsOK:Boolean;
       
-      public function MagicHouseTreasureBagListView(param1:int, param2:int = 0)
+      public function MagicHouseTreasureBagListView(bagType:int, num:int = 0)
       {
-         super(param1,MAX_LINE_NUM);
+         super(bagType,MAX_LINE_NUM);
          _selfInfo = PlayerManager.Instance.Self;
       }
       
-      public function addDepot(param1:int) : void
+      public function addDepot(num:int) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = 0;
-         var _loc3_:* = null;
-         if(param1 == _depotNum)
+         var i:int = 0;
+         var index:* = 0;
+         var cell:* = null;
+         if(num == _depotNum)
          {
             return;
          }
-         _loc4_ = _depotNum;
-         while(_loc4_ < param1)
+         for(i = _depotNum; i < num; )
          {
-            _loc2_ = _loc4_;
-            _loc3_ = _cells[_loc2_] as MagicHouseTreasureCell;
-            _loc3_.grayFilters = false;
-            _loc3_.isOpen = true;
-            _loc4_++;
+            index = i;
+            cell = _cells[index] as MagicHouseTreasureCell;
+            cell.grayFilters = false;
+            cell.isOpen = true;
+            i++;
          }
-         _depotNum = param1;
+         _depotNum = num;
       }
       
-      override protected function __doubleClickHandler(param1:InteractiveEvent) : void
+      override protected function __doubleClickHandler(evt:InteractiveEvent) : void
       {
-         if((param1.currentTarget as MagicHouseTreasureCell).info != null)
+         if((evt.currentTarget as MagicHouseTreasureCell).info != null)
          {
-            dispatchEvent(new CellEvent("doubleclick",param1.currentTarget));
+            dispatchEvent(new CellEvent("doubleclick",evt.currentTarget));
          }
       }
       
-      override protected function __clickHandler(param1:InteractiveEvent) : void
+      override protected function __clickHandler(e:InteractiveEvent) : void
       {
-         var _loc8_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         var _loc7_:int = 0;
-         var _loc5_:int = 0;
-         var _loc2_:int = 0;
-         var _loc6_:int = 0;
-         if(param1.currentTarget.isOpen)
+         var i:int = 0;
+         var bagInfo:* = null;
+         var item:* = null;
+         var conut:int = 0;
+         var money:int = 0;
+         var total:int = 0;
+         var counts:int = 0;
+         if(e.currentTarget.isOpen)
          {
-            dispatchEvent(new CellEvent("itemclick",param1.currentTarget,false,false));
+            dispatchEvent(new CellEvent("itemclick",e.currentTarget,false,false));
          }
          else
          {
@@ -100,33 +99,32 @@ package magicHouse.treasureHouse
                return;
             }
             _needMoney = 0;
-            _pos = param1.currentTarget.pos;
-            _loc8_ = MagicHouseModel.instance.depotCount;
-            while(_loc8_ < param1.currentTarget.pos + 1)
+            _pos = e.currentTarget.pos;
+            for(i = MagicHouseModel.instance.depotCount; i < e.currentTarget.pos + 1; )
             {
-               _loc8_++;
-               _needMoney = _needMoney + (MagicHouseModel.instance.openDepotNeedMoney + (_loc8_ - 10 - 1) * MagicHouseModel.instance.depotPromoteNeedMoney);
+               i++;
+               _needMoney = _needMoney + (MagicHouseModel.instance.openDepotNeedMoney + (i - 10 - 1) * MagicHouseModel.instance.depotPromoteNeedMoney);
             }
-            _loc3_ = _selfInfo.getBag(1);
-            _loc4_ = _loc3_.getItemByTemplateId(29995);
-            _loc7_ = _loc3_.getItemCountByTemplateId(29995);
-            _loc5_ = ItemManager.Instance.getTemplateById(29995).Property3;
-            _loc2_ = _loc5_ * _loc7_;
+            bagInfo = _selfInfo.getBag(1);
+            item = bagInfo.getItemByTemplateId(29995);
+            conut = bagInfo.getItemCountByTemplateId(29995);
+            money = ItemManager.Instance.getTemplateById(29995).Property3;
+            total = money * conut;
             if(!_frame)
             {
                _frame = ComponentFactory.Instance.creatComponentByStylename("magichouse.tipFrame");
                _frame.titleText = LanguageMgr.GetTranslation("magichouse.treasureView.openDepotTitle");
-               if(_loc2_ >= _needMoney)
+               if(total >= _needMoney)
                {
                   IsOK = true;
-                  _frame.setTipHtmlText(LanguageMgr.GetTranslation("magichouse.treasureView.openDepotTitle1",int(_needMoney / _loc5_),_loc4_.Name,param1.currentTarget.pos + 1 - MagicHouseModel.instance.depotCount));
+                  _frame.setTipHtmlText(LanguageMgr.GetTranslation("magichouse.treasureView.openDepotTitle1",int(_needMoney / money),item.Name,e.currentTarget.pos + 1 - MagicHouseModel.instance.depotCount));
                   _frame.item.visible = false;
                }
                else
                {
                   IsOK = false;
-                  _loc6_ = _loc5_ <= 0?0:int(_needMoney / _loc5_);
-                  _frame.setTipHtmlText(LanguageMgr.GetTranslation("magichouse.treasureView.openDepotTitle2",_loc6_,_needMoney,param1.currentTarget.pos + 1 - MagicHouseModel.instance.depotCount));
+                  counts = money <= 0?0:int(_needMoney / money);
+                  _frame.setTipHtmlText(LanguageMgr.GetTranslation("magichouse.treasureView.openDepotTitle2",counts,_needMoney,e.currentTarget.pos + 1 - MagicHouseModel.instance.depotCount));
                   _frame.item.visible = true;
                }
                LayerManager.Instance.addToLayer(_frame,3,true,1);
@@ -137,7 +135,7 @@ package magicHouse.treasureHouse
          }
       }
       
-      private function __okBtnHandler(param1:MouseEvent) : void
+      private function __okBtnHandler(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(IsOK)
@@ -162,7 +160,7 @@ package magicHouse.treasureHouse
          SocketManager.Instance.out.magicOpenDepot(_pos,CheckMoneyUtils.instance.isBind);
       }
       
-      private function __cancelBtnHandler(param1:MouseEvent) : void
+      private function __cancelBtnHandler(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _frame.removeEventListener("response",__cancelBtnHandler);
@@ -174,7 +172,7 @@ package magicHouse.treasureHouse
          _frame = null;
       }
       
-      private function __confirmResponse(param1:FrameEvent) : void
+      private function __confirmResponse(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          _frame.removeEventListener("response",__confirmResponse);
@@ -188,68 +186,65 @@ package magicHouse.treasureHouse
       
       override protected function createCells() : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         var _loc1_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var j:int = 0;
+         var index:int = 0;
+         var cell:* = null;
          _cells = new Dictionary();
-         _loc4_ = 0;
-         while(_loc4_ < MAX_LINE_NUM)
+         for(i = 0; i < MAX_LINE_NUM; )
          {
-            _loc3_ = 0;
-            while(_loc3_ < MAX_LINE_NUM)
+            for(j = 0; j < MAX_LINE_NUM; )
             {
-               _loc1_ = _loc4_ * MAX_LINE_NUM + _loc3_;
-               _loc2_ = CellFactory.instance.createTreasureCell(_loc1_) as MagicHouseTreasureCell;
-               addChild(_loc2_);
-               _loc2_.bagType = _bagType;
-               _loc2_.addEventListener("interactive_click",__clickHandler);
-               _loc2_.addEventListener("interactive_double_click",__doubleClickHandler);
-               DoubleClickManager.Instance.enableDoubleClick(_loc2_);
-               _loc2_.addEventListener("lockChanged",__cellChanged);
-               _cells[_loc2_.place] = _loc2_;
-               if(_depotNum <= _loc4_ * MAX_LINE_NUM + _loc3_)
+               index = i * MAX_LINE_NUM + j;
+               cell = CellFactory.instance.createTreasureCell(index) as MagicHouseTreasureCell;
+               addChild(cell);
+               cell.bagType = _bagType;
+               cell.addEventListener("interactive_click",__clickHandler);
+               cell.addEventListener("interactive_double_click",__doubleClickHandler);
+               DoubleClickManager.Instance.enableDoubleClick(cell);
+               cell.addEventListener("lockChanged",__cellChanged);
+               _cells[cell.place] = cell;
+               if(_depotNum <= i * MAX_LINE_NUM + j)
                {
-                  _loc2_.grayFilters = true;
-                  _loc2_.isOpen = false;
+                  cell.grayFilters = true;
+                  cell.isOpen = false;
                }
-               _loc3_++;
+               j++;
             }
-            _loc4_++;
+            i++;
          }
       }
       
       public function checkMagicHouseStoreCell() : int
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         _loc2_ = 0;
-         while(_loc2_ < _depotNum)
+         var i:int = 0;
+         var cell:* = null;
+         for(i = 0; i < _depotNum; )
          {
-            _loc1_ = _cells[_loc2_] as MagicHouseTreasureCell;
-            if(!_loc1_.info)
+            cell = _cells[i] as MagicHouseTreasureCell;
+            if(!cell.info)
             {
                return 1;
             }
-            _loc2_++;
+            i++;
          }
          return 0;
       }
       
-      public function set depotNum(param1:int) : void
+      public function set depotNum(value:int) : void
       {
-         _depotNum = param1;
+         _depotNum = value;
       }
       
       override public function dispose() : void
       {
          var _loc3_:int = 0;
          var _loc2_:* = _cells;
-         for each(var _loc1_ in _cells)
+         for each(var cell in _cells)
          {
-            _loc1_.removeEventListener("interactive_click",__clickHandler);
-            _loc1_.removeEventListener("interactive_double_click",__doubleClickHandler);
-            _loc1_.removeEventListener("lockChanged",__cellChanged);
+            cell.removeEventListener("interactive_click",__clickHandler);
+            cell.removeEventListener("interactive_double_click",__doubleClickHandler);
+            cell.removeEventListener("lockChanged",__cellChanged);
          }
          super.dispose();
          if(this.parent)

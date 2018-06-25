@@ -156,7 +156,7 @@ package tofflist.view
          }
       }
       
-      private function __lookBtnClick(param1:Event) : void
+      private function __lookBtnClick(evt:Event) : void
       {
          SoundManager.instance.play("008");
          if((_info || _teamInfo) && (TofflistModel.firstMenuType == "personal" || TofflistModel.firstMenuType == "consortia" || TofflistModel.firstMenuType == "teams"))
@@ -172,7 +172,7 @@ package tofflist.view
          }
       }
       
-      private function __upCurrentPlayerHandler(param1:TofflistEvent) : void
+      private function __upCurrentPlayerHandler(evt:TofflistEvent) : void
       {
          if(TofflistModel.secondMenuType == "integral")
          {
@@ -192,7 +192,7 @@ package tofflist.view
          _applyJoinBtn.addEventListener("click",onApplyJoinClubBtnClick);
       }
       
-      private function onApplyJoinClubBtnClick(param1:MouseEvent) : void
+      private function onApplyJoinClubBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(TofflistModel.currentConsortiaInfo)
@@ -212,10 +212,10 @@ package tofflist.view
          }
       }
       
-      private function getRank(param1:int) : void
+      private function getRank(rankNumber:int) : void
       {
-         var _loc2_:* = null;
-         var _loc5_:int = 0;
+         var bmp:* = null;
+         var i:int = 0;
          if(!_rankNumber)
          {
             _rankNumber = new Sprite();
@@ -224,47 +224,46 @@ package tofflist.view
          {
             _rankNumber.removeChildAt(0);
          }
-         var _loc6_:String = param1.toString();
-         var _loc4_:int = _loc6_.length;
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         var strNumber:String = rankNumber.toString();
+         var len:int = strNumber.length;
+         for(i = 0; i < len; )
          {
-            _loc2_ = getRankBitmap(int(_loc6_.substr(_loc5_,1)));
-            _loc2_.x = _loc5_ * 30;
-            _rankNumber.addChild(_loc2_);
-            _loc5_++;
+            bmp = getRankBitmap(int(strNumber.substr(i,1)));
+            bmp.x = i * 30;
+            _rankNumber.addChild(bmp);
+            i++;
          }
-         switch(int(param1) - 1)
+         switch(int(rankNumber) - 1)
          {
             case 0:
-               _loc2_ = ComponentFactory.Instance.creatBitmap("asset.Toffilist.PlayerRankSt");
-               _loc2_.x = 25;
-               _loc2_.y = 8;
-               _rankNumber.addChild(_loc2_);
+               bmp = ComponentFactory.Instance.creatBitmap("asset.Toffilist.PlayerRankSt");
+               bmp.x = 25;
+               bmp.y = 8;
+               _rankNumber.addChild(bmp);
                break;
             case 1:
-               _loc2_ = ComponentFactory.Instance.creatBitmap("asset.Toffilist.PlayerRankNd");
-               _loc2_.x = 34;
-               _loc2_.y = 8;
-               _rankNumber.addChild(_loc2_);
+               bmp = ComponentFactory.Instance.creatBitmap("asset.Toffilist.PlayerRankNd");
+               bmp.x = 34;
+               bmp.y = 8;
+               _rankNumber.addChild(bmp);
                break;
             case 2:
-               _loc2_ = ComponentFactory.Instance.creatBitmap("asset.Toffilist.PlayerRankRd");
-               _loc2_.x = 30;
-               _loc2_.y = 8;
-               _rankNumber.addChild(_loc2_);
+               bmp = ComponentFactory.Instance.creatBitmap("asset.Toffilist.PlayerRankRd");
+               bmp.x = 30;
+               bmp.y = 8;
+               _rankNumber.addChild(bmp);
          }
          addChild(_rankNumber);
-         var _loc3_:Point = ComponentFactory.Instance.creat("tofflist.rankPos");
-         _rankNumber.x = _loc3_.x;
-         _rankNumber.y = _loc3_.y;
+         var point:Point = ComponentFactory.Instance.creat("tofflist.rankPos");
+         _rankNumber.x = point.x;
+         _rankNumber.y = point.y;
       }
       
-      private function getRankBitmap(param1:int) : Bitmap
+      private function getRankBitmap(rankCell:int) : Bitmap
       {
-         var _loc2_:* = null;
-         _loc2_ = ComponentFactory.Instance.creatBitmap("asset.Toffilist.PlayerRankNum" + param1);
-         return _loc2_;
+         var bmp:* = null;
+         bmp = ComponentFactory.Instance.creatBitmap("asset.Toffilist.PlayerRankNum" + rankCell);
+         return bmp;
       }
       
       private function init() : void
@@ -323,7 +322,7 @@ package tofflist.view
       
       private function refreshCharater() : void
       {
-         var _loc1_:* = null;
+         var info:* = null;
          if(_player)
          {
             _player.dispose();
@@ -340,8 +339,8 @@ package tofflist.view
          }
          else if(_teamInfo)
          {
-            _loc1_ = getPlayerInfo(_teamInfo);
-            _player = CharactoryFactory.createCharacter(_loc1_,"room");
+            info = getPlayerInfo(_teamInfo);
+            _player = CharactoryFactory.createCharacter(info,"room");
             _player.show(false,-1);
             _player.showGun = false;
             _player.setShowLight(true);
@@ -374,7 +373,7 @@ package tofflist.view
       
       private function upStyle() : void
       {
-         var _loc1_:* = null;
+         var info:* = null;
          _text1.text = "";
          _consortiaName.text = "";
          _nameTxt.text = "";
@@ -467,14 +466,14 @@ package tofflist.view
             _chairmanNameTxt2.text = _teamInfo.CreaterName;
             _chairmanNameTxt2.x = (500 - _chairmanNameTxt2.textWidth) / 2;
             _chairmanNameTxt.x = _chairmanNameTxt2.x - (_chairmanNameTxt.textWidth + 5);
-            _loc1_ = getPlayerInfo(_teamInfo);
-            if(_loc1_.IsVIP)
+            info = getPlayerInfo(_teamInfo);
+            if(info.IsVIP)
             {
                if(_chairmanVipName)
                {
                   ObjectUtils.disposeObject(_chairmanVipName);
                }
-               _chairmanVipName = VipController.instance.getVipNameTxt(165,_loc1_.typeVIP);
+               _chairmanVipName = VipController.instance.getVipNameTxt(165,info.typeVIP);
                _chairmanVipName.textSize = 18;
                _chairmanVipName.x = _chairmanNameTxt2.x;
                _chairmanVipName.y = _chairmanNameTxt2.y;
@@ -595,7 +594,7 @@ package tofflist.view
                   _fightingImg.visible = true;
                }
             }
-            addr237:
+            addr300:
             return;
          }
          _guildImg.visible = true;
@@ -646,15 +645,15 @@ package tofflist.view
          {
             _fightingImg.visible = true;
          }
-         §§goto(addr237);
+         §§goto(addr300);
       }
       
       private function refreshApplyJoinClubBtn() : void
       {
-         var _loc1_:int = 0;
+         var consortiaID:int = 0;
          if(TofflistModel.currentConsortiaInfo)
          {
-            _loc1_ = TofflistModel.currentConsortiaInfo.ConsortiaID;
+            consortiaID = TofflistModel.currentConsortiaInfo.ConsortiaID;
          }
          if(_info && TofflistModel.firstMenuType == "consortia" && PlayerManager.Instance.Self.ConsortiaID == 0)
          {
@@ -664,7 +663,7 @@ package tofflist.view
          {
             _applyJoinBtn.visible = false;
          }
-         if(_loc1_ == 0 || !hasApplyJoinClub(_loc1_))
+         if(consortiaID == 0 || !hasApplyJoinClub(consortiaID))
          {
             _applyJoinBtn.enable = true;
          }
@@ -674,45 +673,44 @@ package tofflist.view
          }
       }
       
-      private function hasApplyJoinClub(param1:int = 0) : Boolean
+      private function hasApplyJoinClub(consortiaID:int = 0) : Boolean
       {
-         var _loc3_:* = null;
-         var _loc4_:int = 0;
-         var _loc2_:Vector.<ConsortiaApplyInfo> = TofflistModel.Instance.myConsortiaAuditingApplyData;
-         if(_loc2_)
+         var item:* = null;
+         var i:int = 0;
+         var arr:Vector.<ConsortiaApplyInfo> = TofflistModel.Instance.myConsortiaAuditingApplyData;
+         if(arr)
          {
-            _loc4_ = 0;
-            while(_loc4_ < _loc2_.length)
+            for(i = 0; i < arr.length; )
             {
-               _loc3_ = _loc2_[_loc4_];
-               if(_loc3_.ConsortiaID == param1)
+               item = arr[i];
+               if(item.ConsortiaID == consortiaID)
                {
                   return true;
                }
-               _loc4_++;
+               i++;
             }
          }
          return false;
       }
       
-      private function getPlayerInfo(param1:TeamRankInfo) : PlayerInfo
+      private function getPlayerInfo(teamInfo:TeamRankInfo) : PlayerInfo
       {
-         var _loc2_:PlayerInfo = PlayerManager.Instance.findPlayer(param1.CreaterId);
-         _loc2_.beginChanges();
-         _loc2_.Style = param1.CreaterStyle;
-         _loc2_.Skin = param1.CreaterSkin;
-         _loc2_.Colors = param1.CreaterColors;
-         _loc2_.Sex = param1.Sex;
-         if(param1.IsVIP > 0)
+         var info:PlayerInfo = PlayerManager.Instance.findPlayer(teamInfo.CreaterId);
+         info.beginChanges();
+         info.Style = teamInfo.CreaterStyle;
+         info.Skin = teamInfo.CreaterSkin;
+         info.Colors = teamInfo.CreaterColors;
+         info.Sex = teamInfo.Sex;
+         if(teamInfo.IsVIP > 0)
          {
-            _loc2_.IsVIP = true;
+            info.IsVIP = true;
          }
          else
          {
-            _loc2_.IsVIP = false;
+            info.IsVIP = false;
          }
-         _loc2_.commitChanges();
-         return _loc2_;
+         info.commitChanges();
+         return info;
       }
    }
 }

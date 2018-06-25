@@ -28,9 +28,9 @@ package BraveDoor.data
          return _filterString;
       }
       
-      public function set filterString(param1:String) : void
+      public function set filterString(value:String) : void
       {
-         _filterString = param1;
+         _filterString = value;
       }
       
       public function get name() : String
@@ -38,9 +38,9 @@ package BraveDoor.data
          return _name;
       }
       
-      public function set name(param1:String) : void
+      public function set name(value:String) : void
       {
-         _name = param1;
+         _name = value;
       }
       
       public function get backStyle() : String
@@ -48,9 +48,9 @@ package BraveDoor.data
          return _backStyle;
       }
       
-      public function set backStyle(param1:String) : void
+      public function set backStyle(value:String) : void
       {
-         _backStyle = param1;
+         _backStyle = value;
       }
       
       public function get y() : int
@@ -58,9 +58,9 @@ package BraveDoor.data
          return _y;
       }
       
-      public function set y(param1:int) : void
+      public function set y(value:int) : void
       {
-         _y = param1;
+         _y = value;
       }
       
       public function get x() : int
@@ -68,9 +68,9 @@ package BraveDoor.data
          return _x;
       }
       
-      public function set x(param1:int) : void
+      public function set x(value:int) : void
       {
-         _x = param1;
+         _x = value;
       }
       
       public function get page() : int
@@ -78,9 +78,9 @@ package BraveDoor.data
          return _page;
       }
       
-      public function set page(param1:int) : void
+      public function set page(value:int) : void
       {
-         _page = param1;
+         _page = value;
       }
       
       public function get id() : int
@@ -88,9 +88,9 @@ package BraveDoor.data
          return _id;
       }
       
-      public function set id(param1:int) : void
+      public function set id(value:int) : void
       {
-         _id = param1;
+         _id = value;
       }
    }
 }

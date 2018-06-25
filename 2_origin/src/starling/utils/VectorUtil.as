@@ -12,166 +12,157 @@ package starling.utils
          throw new AbstractClassError();
       }
       
-      public static function insertIntAt(param1:Vector.<int>, param2:int, param3:uint) : void
+      public static function insertIntAt(vector:Vector.<int>, index:int, value:uint) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:uint = param1.length;
-         if(param2 < 0)
+         var i:int = 0;
+         var length:uint = vector.length;
+         if(index < 0)
          {
-            param2 = param2 + (_loc4_ + 1);
+            index = index + (length + 1);
          }
-         if(param2 < 0)
+         if(index < 0)
          {
-            param2 = 0;
+            index = 0;
          }
-         _loc5_ = param2 - 1;
-         while(_loc5_ >= _loc4_)
+         for(i = index - 1; i >= length; )
          {
-            param1[_loc5_] = 0;
-            _loc5_--;
+            vector[i] = 0;
+            i--;
          }
-         _loc5_ = _loc4_;
-         while(_loc5_ > param2)
+         for(i = length; i > index; )
          {
-            param1[_loc5_] = param1[_loc5_ - 1];
-            _loc5_--;
+            vector[i] = vector[i - 1];
+            i--;
          }
-         param1[param2] = param3;
+         vector[index] = value;
       }
       
-      public static function removeIntAt(param1:Vector.<int>, param2:int) : int
+      public static function removeIntAt(vector:Vector.<int>, index:int) : int
       {
-         var _loc5_:int = 0;
-         var _loc4_:uint = param1.length;
-         if(param2 < 0)
+         var i:int = 0;
+         var length:uint = vector.length;
+         if(index < 0)
          {
-            param2 = param2 + _loc4_;
+            index = index + length;
          }
-         if(param2 < 0)
+         if(index < 0)
          {
-            param2 = 0;
+            index = 0;
          }
-         else if(param2 >= _loc4_)
+         else if(index >= length)
          {
-            param2 = _loc4_ - 1;
+            index = length - 1;
          }
-         var _loc3_:int = param1[param2];
-         _loc5_ = param2 + 1;
-         while(_loc5_ < _loc4_)
+         var value:int = vector[index];
+         for(i = index + 1; i < length; )
          {
-            param1[_loc5_ - 1] = param1[_loc5_];
-            _loc5_++;
+            vector[i - 1] = vector[i];
+            i++;
          }
-         param1.length = _loc4_ - 1;
-         return _loc3_;
+         vector.length = length - 1;
+         return value;
       }
       
-      public static function insertUnsignedIntAt(param1:Vector.<uint>, param2:int, param3:uint) : void
+      public static function insertUnsignedIntAt(vector:Vector.<uint>, index:int, value:uint) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:uint = param1.length;
-         if(param2 < 0)
+         var i:int = 0;
+         var length:uint = vector.length;
+         if(index < 0)
          {
-            param2 = param2 + (_loc4_ + 1);
+            index = index + (length + 1);
          }
-         if(param2 < 0)
+         if(index < 0)
          {
-            param2 = 0;
+            index = 0;
          }
-         _loc5_ = param2 - 1;
-         while(_loc5_ >= _loc4_)
+         for(i = index - 1; i >= length; )
          {
-            param1[_loc5_] = 0;
-            _loc5_--;
+            vector[i] = 0;
+            i--;
          }
-         _loc5_ = _loc4_;
-         while(_loc5_ > param2)
+         for(i = length; i > index; )
          {
-            param1[_loc5_] = param1[_loc5_ - 1];
-            _loc5_--;
+            vector[i] = vector[i - 1];
+            i--;
          }
-         param1[param2] = param3;
+         vector[index] = value;
       }
       
-      public static function removeUnsignedIntAt(param1:Vector.<uint>, param2:int) : uint
+      public static function removeUnsignedIntAt(vector:Vector.<uint>, index:int) : uint
       {
-         var _loc5_:int = 0;
-         var _loc4_:uint = param1.length;
-         if(param2 < 0)
+         var i:int = 0;
+         var length:uint = vector.length;
+         if(index < 0)
          {
-            param2 = param2 + _loc4_;
+            index = index + length;
          }
-         if(param2 < 0)
+         if(index < 0)
          {
-            param2 = 0;
+            index = 0;
          }
-         else if(param2 >= _loc4_)
+         else if(index >= length)
          {
-            param2 = _loc4_ - 1;
+            index = length - 1;
          }
-         var _loc3_:uint = param1[param2];
-         _loc5_ = param2 + 1;
-         while(_loc5_ < _loc4_)
+         var value:uint = vector[index];
+         for(i = index + 1; i < length; )
          {
-            param1[_loc5_ - 1] = param1[_loc5_];
-            _loc5_++;
+            vector[i - 1] = vector[i];
+            i++;
          }
-         param1.length = _loc4_ - 1;
-         return _loc3_;
+         vector.length = length - 1;
+         return value;
       }
       
-      public static function insertNumberAt(param1:Vector.<Number>, param2:int, param3:Number) : void
+      public static function insertNumberAt(vector:Vector.<Number>, index:int, value:Number) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:uint = param1.length;
-         if(param2 < 0)
+         var i:int = 0;
+         var length:uint = vector.length;
+         if(index < 0)
          {
-            param2 = param2 + (_loc4_ + 1);
+            index = index + (length + 1);
          }
-         if(param2 < 0)
+         if(index < 0)
          {
-            param2 = 0;
+            index = 0;
          }
-         _loc5_ = param2 - 1;
-         while(_loc5_ >= _loc4_)
+         for(i = index - 1; i >= length; )
          {
-            param1[_loc5_] = NaN;
-            _loc5_--;
+            vector[i] = NaN;
+            i--;
          }
-         _loc5_ = _loc4_;
-         while(_loc5_ > param2)
+         for(i = length; i > index; )
          {
-            param1[_loc5_] = param1[_loc5_ - 1];
-            _loc5_--;
+            vector[i] = vector[i - 1];
+            i--;
          }
-         param1[param2] = param3;
+         vector[index] = value;
       }
       
-      public static function removeNumberAt(param1:Vector.<Number>, param2:int) : Number
+      public static function removeNumberAt(vector:Vector.<Number>, index:int) : Number
       {
-         var _loc5_:int = 0;
-         var _loc4_:uint = param1.length;
-         if(param2 < 0)
+         var i:int = 0;
+         var length:uint = vector.length;
+         if(index < 0)
          {
-            param2 = param2 + _loc4_;
+            index = index + length;
          }
-         if(param2 < 0)
+         if(index < 0)
          {
-            param2 = 0;
+            index = 0;
          }
-         else if(param2 >= _loc4_)
+         else if(index >= length)
          {
-            param2 = _loc4_ - 1;
+            index = length - 1;
          }
-         var _loc3_:Number = param1[param2];
-         _loc5_ = param2 + 1;
-         while(_loc5_ < _loc4_)
+         var value:Number = vector[index];
+         for(i = index + 1; i < length; )
          {
-            param1[_loc5_ - 1] = param1[_loc5_];
-            _loc5_++;
+            vector[i - 1] = vector[i];
+            i++;
          }
-         param1.length = _loc4_ - 1;
-         return _loc3_;
+         vector.length = length - 1;
+         return value;
       }
    }
 }

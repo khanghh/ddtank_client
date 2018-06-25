@@ -38,20 +38,20 @@ package bagAndInfo.bag
          initEvent();
       }
       
-      public function set item(param1:InventoryItemInfo) : void
+      public function set item(value:InventoryItemInfo) : void
       {
-         _item = param1;
+         _item = value;
       }
       
       private function initView() : void
       {
          cancelButtonStyle = "core.simplebt";
          submitButtonStyle = "core.simplebt";
-         var _loc1_:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("ddt.bag.item.openBatch.titleStr"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"));
-         _loc1_.moveEnable = false;
-         _loc1_.autoDispose = false;
-         _loc1_.sound = "008";
-         info = _loc1_;
+         var _alertInfo:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("ddt.bag.item.openBatch.titleStr"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"));
+         _alertInfo.moveEnable = false;
+         _alertInfo.autoDispose = false;
+         _alertInfo.sound = "008";
+         info = _alertInfo;
          _txt = ComponentFactory.Instance.creatComponentByStylename("openBatchView.promptTxt");
          _txt.text = LanguageMgr.GetTranslation("ddt.bag.item.openBatch.promptStr");
          _inputBg = ComponentFactory.Instance.creatBitmap("bagAndInfo.openBatchView.inputBg");
@@ -71,7 +71,7 @@ package bagAndInfo.bag
          _inputText.addEventListener("change",inputTextChangeHandler,false,0,true);
       }
       
-      private function changeMaxHandler(param1:MouseEvent) : void
+      private function changeMaxHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_item)
@@ -80,25 +80,25 @@ package bagAndInfo.bag
          }
       }
       
-      private function inputTextChangeHandler(param1:Event) : void
+      private function inputTextChangeHandler(event:Event) : void
       {
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
+         var num:int = 0;
+         var maxCount:int = 0;
+         var count:int = 0;
          if(_item)
          {
-            _loc2_ = _inputText.text;
-            _loc4_ = 99;
-            if(_loc2_ > 99)
+            num = _inputText.text;
+            maxCount = 99;
+            if(num > 99)
             {
-               _loc4_ = getOpenMaxCount();
+               maxCount = getOpenMaxCount();
             }
-            _loc3_ = _item.Count > _loc4_?_loc4_:int(_item.Count);
-            if(_loc2_ > _loc3_)
+            count = _item.Count > maxCount?maxCount:int(_item.Count);
+            if(num > count)
             {
-               _inputText.text = _loc3_.toString();
+               _inputText.text = count.toString();
             }
-            if(_loc2_ < 1)
+            if(num < 1)
             {
                _inputText.text = "1";
             }
@@ -107,18 +107,18 @@ package bagAndInfo.bag
       
       private function getOpenMaxCount() : int
       {
-         var _loc1_:DictionaryData = ServerConfigManager.instance.batchOpenConfig;
-         var _loc2_:int = 99;
-         if(_loc1_.hasKey(_item.TemplateID))
+         var allItemArr:DictionaryData = ServerConfigManager.instance.batchOpenConfig;
+         var maxCount:int = 99;
+         if(allItemArr.hasKey(_item.TemplateID))
          {
-            _loc2_ = _loc1_[_item.TemplateID];
+            maxCount = allItemArr[_item.TemplateID];
          }
-         return _loc2_;
+         return maxCount;
       }
       
-      private function responseHandler(param1:FrameEvent) : void
+      private function responseHandler(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -156,6 +156,10 @@ package bagAndInfo.bag
                   else if(_item.CategoryID == 68)
                   {
                      SocketManager.Instance.out.sendOpenAmuletBox(_item.BagType,_item.Place,int(_inputText.text));
+                  }
+                  else if(EquipType.GOURD_EXP_BOTTLE.indexOf(_item.TemplateID) >= 0)
+                  {
+                     SocketManager.Instance.out.sendUseCard(_item.BagType,_item.Place,[_item.TemplateID],_item.PayType,false,true,int(_inputText.text));
                   }
                   else
                   {

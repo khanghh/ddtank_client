@@ -16,10 +16,10 @@ package wantstrong.event
       
       private var _data:Object;
       
-      public function WantStrongEvent(param1:String, param2:Object = null)
+      public function WantStrongEvent(type:String, data:Object = null)
       {
-         super(param1,bubbles,cancelable);
-         _data = param2;
+         super(type,bubbles,cancelable);
+         _data = data;
       }
       
       public function get data() : Object

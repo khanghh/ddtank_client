@@ -18,9 +18,9 @@ package ddt.manager
       
       private var _recordBtn:BaseButton;
       
-      public function RecordManager(param1:IEventDispatcher = null)
+      public function RecordManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get Instance() : RecordManager
@@ -32,24 +32,24 @@ package ddt.manager
          return _instance;
       }
       
-      public function addRecordIcon(param1:HallStateView) : void
+      public function addRecordIcon(hallView:HallStateView) : void
       {
          if(PathManager.getRecordPath() == "true" && _recordBtn == null)
          {
             _recordBtn = ComponentFactory.Instance.creatComponentByStylename("hall.record.playIcon");
             _recordBtn.addEventListener("click",__onRecordClick);
-            param1.addChild(_recordBtn);
+            hallView.addChild(_recordBtn);
          }
       }
       
-      public function resetRecordPos(param1:HallStateView) : void
+      public function resetRecordPos(hallView:HallStateView) : void
       {
          if(_recordBtn != null)
          {
          }
       }
       
-      protected function __onRecordClick(param1:MouseEvent) : void
+      protected function __onRecordClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
       }

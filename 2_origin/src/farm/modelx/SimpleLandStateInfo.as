@@ -24,17 +24,17 @@ package farm.modelx
       
       public function get hasPlantGrown() : Boolean
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
+         var tempTime:int = 0;
+         var realTime:int = 0;
+         var grownTime:int = 0;
          if(seedId == 0)
          {
             return false;
          }
-         _loc3_ = parseInt(ItemManager.Instance.getTemplateById(seedId).Property3);
-         _loc2_ = _loc3_ - AccelerateDate;
-         _loc1_ = (TimeManager.Instance.Now().time - plantTime.time) / 60000;
-         return _loc1_ >= _loc2_;
+         tempTime = parseInt(ItemManager.Instance.getTemplateById(seedId).Property3);
+         realTime = tempTime - AccelerateDate;
+         grownTime = (TimeManager.Instance.Now().time - plantTime.time) / 60000;
+         return grownTime >= realTime;
       }
    }
 }

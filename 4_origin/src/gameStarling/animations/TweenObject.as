@@ -16,20 +16,20 @@ package gameStarling.animations
       
       private var _strategy:String;
       
-      public function TweenObject(param1:Object = null)
+      public function TweenObject(data:Object = null)
       {
          super();
          var _loc4_:int = 0;
-         var _loc3_:* = param1;
-         for(var _loc2_ in param1)
+         var _loc3_:* = data;
+         for(var prop in data)
          {
-            this[_loc2_] = param1[_loc2_];
+            this[prop] = data[prop];
          }
       }
       
-      public function set x(param1:Number) : void
+      public function set x(value:Number) : void
       {
-         _x = param1;
+         _x = value;
       }
       
       public function get x() : Number
@@ -37,9 +37,9 @@ package gameStarling.animations
          return _x;
       }
       
-      public function set y(param1:Number) : void
+      public function set y(value:Number) : void
       {
-         _y = param1;
+         _y = value;
       }
       
       public function get y() : Number
@@ -47,10 +47,10 @@ package gameStarling.animations
          return _y;
       }
       
-      public function set target(param1:Point) : void
+      public function set target(value:Point) : void
       {
-         _x = param1.x;
-         _y = param1.y;
+         _x = value.x;
+         _y = value.y;
       }
       
       public function get target() : Point
@@ -58,9 +58,9 @@ package gameStarling.animations
          return new Point(_x,_y);
       }
       
-      public function set strategy(param1:String) : void
+      public function set strategy(value:String) : void
       {
-         _strategy = param1;
+         _strategy = value;
       }
       
       public function get strategy() : String

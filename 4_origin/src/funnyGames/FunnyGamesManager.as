@@ -17,10 +17,10 @@ package funnyGames
       
       private var _status:Boolean;
       
-      public function FunnyGamesManager(param1:SingleTon)
+      public function FunnyGamesManager(single:SingleTon)
       {
          super();
-         if(!param1)
+         if(!single)
          {
             throw new Error("this is a single instance");
          }
@@ -55,29 +55,29 @@ package funnyGames
          return _status;
       }
       
-      public function requestRankInfo(param1:uint, param2:uint) : void
+      public function requestRankInfo(gameType:uint, rankType:uint) : void
       {
-         if(param1 > 3)
+         if(gameType > 3)
          {
             return;
          }
-         if(param2 > 2)
+         if(rankType > 2)
          {
             return;
          }
-         SocketManager.Instance.out.sendBombGameRank(param1,param2);
+         SocketManager.Instance.out.sendBombGameRank(gameType,rankType);
       }
       
-      public function __onRankHandler(param1:PkgEvent) : void
+      public function __onRankHandler(pkg:PkgEvent) : void
       {
-         var _loc6_:* = null;
-         var _loc2_:int = 0;
-         var _loc3_:int = param1.pkg.readInt();
-         var _loc4_:int = param1.pkg.readInt();
-         var _loc5_:int = param1.pkg.readInt();
-         if(_loc3_ == 3)
+         var info:* = null;
+         var rank:int = 0;
+         var gameType:int = pkg.pkg.readInt();
+         var rankType:int = pkg.pkg.readInt();
+         var len:int = pkg.pkg.readInt();
+         if(gameType == 3)
          {
-            if(_loc4_ == 1)
+            if(rankType == 1)
             {
                CubeGameManager.getInstance().clearTotalRankData();
             }
@@ -86,33 +86,33 @@ package funnyGames
                CubeGameManager.getInstance().clearTodayRankData();
             }
          }
-         _loc2_ = 0;
-         while(_loc2_ < _loc5_)
+         rank = 0;
+         while(rank < len)
          {
-            _loc6_ = new BombRankInfo();
-            _loc6_.rankType = _loc4_;
-            _loc6_.regDis = param1.pkg.readUTF();
-            _loc6_.nameDis = param1.pkg.readUTF();
-            _loc6_.score = param1.pkg.readInt();
-            _loc6_.lvNum = param1.pkg.readInt();
-            _loc6_.rank = _loc2_ + 1;
-            if(_loc4_ == 1)
+            info = new BombRankInfo();
+            info.rankType = rankType;
+            info.regDis = pkg.pkg.readUTF();
+            info.nameDis = pkg.pkg.readUTF();
+            info.score = pkg.pkg.readInt();
+            info.lvNum = pkg.pkg.readInt();
+            info.rank = rank + 1;
+            if(rankType == 1)
             {
-               if(_loc3_ == 3)
+               if(gameType == 3)
                {
-                  CubeGameManager.getInstance().addTotalRankData(new CubeGameRankData(_loc6_.rank,_loc6_.nameDis,_loc6_.score));
+                  CubeGameManager.getInstance().addTotalRankData(new CubeGameRankData(info.rank,info.nameDis,info.score));
                }
-               HappyLittleGameManager.instance.bombManager.initTotalRankData(_loc6_,_loc3_);
+               HappyLittleGameManager.instance.bombManager.initTotalRankData(info,gameType);
             }
             else
             {
-               if(_loc3_ == 3)
+               if(gameType == 3)
                {
-                  CubeGameManager.getInstance().addTodayRankData(new CubeGameRankData(_loc6_.rank,_loc6_.nameDis,_loc6_.score));
+                  CubeGameManager.getInstance().addTodayRankData(new CubeGameRankData(info.rank,info.nameDis,info.score));
                }
-               HappyLittleGameManager.instance.bombManager.initDayRankData(_loc6_,_loc3_);
+               HappyLittleGameManager.instance.bombManager.initDayRankData(info,gameType);
             }
-            _loc2_++;
+            rank++;
          }
          dispatchEvent(new FunnyGamesEvent("rankUpdate"));
       }

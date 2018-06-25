@@ -1,0 +1,9 @@
+package room.view.roomView{   import com.pickgliss.ui.ComponentFactory;   import com.pickgliss.ui.controls.SelectedButton;   import com.pickgliss.ui.controls.container.SimpleTileList;   import com.pickgliss.utils.ClassUtils;   import com.pickgliss.utils.ObjectUtils;   import ddt.utils.PositionUtils;   import dreamlandChallenge.DreamlandChallengeControl;   import dreamlandChallenge.DreamlandChallengeManager;   import dreamlandChallenge.data.DreamLandModel;   import flash.display.MovieClip;   import flash.events.MouseEvent;   import flash.geom.Point;   import room.model.RoomInfo;   import room.view.DreamLandRoomRightPropView;   import room.view.RoomPlayerItem;   import room.view.bigMapInfoPanel.DreamLandBigMapInfoPanel;   import room.view.smallMapInfoPanel.MatchRoomSmallMapInfoPanel;      public class DreamLandRoomView extends BaseRoomView   {                   protected var _bg:MovieClip;            protected var _crossZoneBtn:SelectedButton;            protected var _itemListBg:MovieClip;            protected var _smallMapInfoPanel:MatchRoomSmallMapInfoPanel;            protected var _bigMapInfoPanel:DreamLandBigMapInfoPanel;            protected var _playerItemContainer:SimpleTileList;            public function DreamLandRoomView(info:RoomInfo) { super(null); }
+            override protected function initView() : void { }
+            override protected function __prepareClick(evt:MouseEvent) : void { }
+            override protected function __startClick(evt:MouseEvent) : void { }
+            private function get isEnoughChallengeCount() : Boolean { return false; }
+            override protected function updateButtons() : void { }
+            override protected function initTileList() : void { }
+            override public function dispose() : void { }
+   }}

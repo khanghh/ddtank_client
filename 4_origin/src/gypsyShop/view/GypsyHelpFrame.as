@@ -21,9 +21,9 @@ package gypsyShop.view
       override protected function init() : void
       {
          super.init();
-         var _loc1_:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("tank.game.GameView.gypsyHelpTitle"));
-         _loc1_.showCancel = false;
-         info = _loc1_;
+         var alertInfo:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("tank.game.GameView.gypsyHelpTitle"));
+         alertInfo.showCancel = false;
+         info = alertInfo;
          _mc = ClassUtils.CreatInstance("gypsy.help");
          _mc.x = -7;
          _mc.y = 1;

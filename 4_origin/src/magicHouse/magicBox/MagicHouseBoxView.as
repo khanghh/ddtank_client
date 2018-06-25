@@ -60,7 +60,7 @@ package magicHouse.magicBox
          _btnGroup.removeEventListener("change",__changeHandler);
       }
       
-      private function __changeHandler(param1:Event) : void
+      private function __changeHandler(e:Event) : void
       {
          switch(int(_btnGroup.selectIndex))
          {

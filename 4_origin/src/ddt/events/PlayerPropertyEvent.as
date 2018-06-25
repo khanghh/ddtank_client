@@ -13,11 +13,11 @@ package ddt.events
       
       private var _lastValue:Dictionary;
       
-      public function PlayerPropertyEvent(param1:String, param2:Dictionary, param3:Dictionary = null)
+      public function PlayerPropertyEvent(type:String, changedProperties:Dictionary, lastValue:Dictionary = null)
       {
-         _changedProperties = param2;
-         _lastValue = param3;
-         super(param1);
+         _changedProperties = changedProperties;
+         _lastValue = lastValue;
+         super(type);
       }
       
       public function get changedProperties() : Dictionary

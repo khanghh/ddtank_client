@@ -11,16 +11,16 @@ package gameCommon.model
       
       private var _modelID:int;
       
-      public function SmallEnemy(param1:int, param2:int, param3:int)
+      public function SmallEnemy(id:int, team:int, maxBlood:int)
       {
-         super(param1,param2,param3);
+         super(id,team,maxBlood);
       }
       
-      public function set modelID(param1:int) : void
+      public function set modelID(value:int) : void
       {
-         var _loc2_:int = _modelID;
-         _modelID = param1;
-         dispatchEvent(new LivingEvent("modelChanged",_modelID,_loc2_));
+         var old:int = _modelID;
+         _modelID = value;
+         dispatchEvent(new LivingEvent("modelChanged",_modelID,old));
       }
       
       public function get modelID() : int

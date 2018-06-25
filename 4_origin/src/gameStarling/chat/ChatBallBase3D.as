@@ -28,7 +28,7 @@ package gameStarling.chat
          hide();
       }
       
-      public function setText(param1:String, param2:int = 0) : void
+      public function setText(content:String, chatball:int = 0) : void
       {
       }
       
@@ -37,20 +37,20 @@ package gameStarling.chat
          return _field;
       }
       
-      public function set direction(param1:Point) : void
+      public function set direction(value:Point) : void
       {
-         paopao.direction = param1;
+         paopao.direction = value;
          fitSize(field);
       }
       
-      public function set directionX(param1:Number) : void
+      public function set directionX(value:Number) : void
       {
-         direction = new Point(param1,paopao.direction.y);
+         direction = new Point(value,paopao.direction.y);
       }
       
-      public function set directionY(param1:Number) : void
+      public function set directionY(value:Number) : void
       {
-         direction = new Point(paopao.direction.x,param1);
+         direction = new Point(paopao.direction.x,value);
       }
       
       protected function get paopao() : ChatBallBackground3D
@@ -58,20 +58,20 @@ package gameStarling.chat
          return _chatballBackground;
       }
       
-      protected function fitSize(param1:ChatBallTextAreaBase3D) : void
+      protected function fitSize(field:ChatBallTextAreaBase3D) : void
       {
-         paopao.fitSize(new Point(param1.width,param1.height));
-         param1.x = paopao.textArea.x;
-         param1.y = paopao.textArea.y;
-         if(paopao.textArea.width / param1.width > paopao.textArea.height / param1.height)
+         paopao.fitSize(new Point(field.width,field.height));
+         field.x = paopao.textArea.x;
+         field.y = paopao.textArea.y;
+         if(paopao.textArea.width / field.width > paopao.textArea.height / field.height)
          {
-            param1.x = paopao.textArea.x + (paopao.textArea.width - param1.width) / 2;
+            field.x = paopao.textArea.x + (paopao.textArea.width - field.width) / 2;
          }
          else
          {
-            param1.y = paopao.textArea.y + (paopao.textArea.height - param1.height) / 2;
+            field.y = paopao.textArea.y + (paopao.textArea.height - field.height) / 2;
          }
-         addChild(param1);
+         addChild(field);
       }
       
       protected function beginPopDelay() : void
@@ -81,7 +81,7 @@ package gameStarling.chat
          _popupTimer.start();
       }
       
-      protected function __onPopupTimer(param1:flash.events.Event) : void
+      protected function __onPopupTimer(e:flash.events.Event) : void
       {
          _popupTimer.removeEventListener("timerComplete",__onPopupTimer);
          _popupTimer.stop();

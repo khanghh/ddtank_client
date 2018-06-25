@@ -26,30 +26,30 @@ package gameCommon.view.prop
       {
       }
       
-      public function setInfo(param1:Living) : void
+      public function setInfo(living:Living) : void
       {
          clearCells();
-         var _loc2_:Living = _living;
+         var lv:Living = _living;
          _living = _living;
          addEventToLiving(_living);
-         if(_loc2_ != null)
+         if(lv != null)
          {
-            removeEventFromLiving(_loc2_);
+            removeEventFromLiving(lv);
          }
       }
       
-      private function addEventToLiving(param1:Living) : void
+      private function addEventToLiving(living:Living) : void
       {
-         param1.addEventListener("usingItem",__usingItem);
+         living.addEventListener("usingItem",__usingItem);
       }
       
-      private function __usingItem(param1:LivingEvent) : void
+      private function __usingItem(evt:LivingEvent) : void
       {
       }
       
-      private function removeEventFromLiving(param1:Living) : void
+      private function removeEventFromLiving(living:Living) : void
       {
-         param1.removeEventListener("usingItem",__usingItem);
+         living.removeEventListener("usingItem",__usingItem);
       }
       
       public function dispose() : void

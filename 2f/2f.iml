@@ -20,13 +20,22 @@
           </entries>
           <sdk name="AIRSDK_Compiler" />
         </dependencies>
-        <compiler-options />
+        <compiler-options>
+          <map>
+            <entry key="compiler.debug.swc" value="false" />
+          </map>
+        </compiler-options>
         <packaging-air-desktop />
         <packaging-android />
         <packaging-ios />
       </configuration>
     </configurations>
-    <compiler-options />
+    <compiler-options>
+      <map>
+        <entry key="compiler.debug.swc" value="false" />
+        <entry key="compiler.debug.swf" value="false" />
+      </map>
+    </compiler-options>
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />

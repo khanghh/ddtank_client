@@ -101,23 +101,23 @@ package com.greensock.plugins
          this.activeDisable = true;
       }
       
-      override public function onInitTween(param1:Object, param2:*, param3:TweenLite) : Boolean
+      override public function onInitTween(target:Object, value:*, tween:TweenLite) : Boolean
       {
-         var _loc5_:Number = NaN;
-         var _loc4_:Number = NaN;
-         if(!(param1 is DisplayObject))
+         var x:Number = NaN;
+         var y:Number = NaN;
+         if(!(target is DisplayObject))
          {
             throw new Error("motionBlur tweens only work for DisplayObjects.");
          }
-         if(param2 == false)
+         if(value == false)
          {
             _strength = 0;
          }
-         else if(typeof param2 == "object")
+         else if(typeof value == "object")
          {
-            _strength = (param2.strength || 1) * 0.05;
-            _blur.quality = int(param2.quality) || 2;
-            _fastMode = param2.fastMode == true;
+            _strength = (value.strength || 1) * 0.05;
+            _blur.quality = int(value.quality) || 2;
+            _fastMode = value.fastMode == true;
          }
          if(!_classInitted)
          {
@@ -131,10 +131,10 @@ package com.greensock.plugins
             }
             _classInitted = true;
          }
-         _target = param1 as DisplayObject;
-         _tween = param3;
+         _target = target as DisplayObject;
+         _tween = tween;
          _time = 0;
-         _padding = "padding" in param2?int(param2.padding):10;
+         _padding = "padding" in value?int(value.padding):10;
          _smoothing = _blur.quality > 1;
          _xRef = _target.x;
          _xCurrent = _target.x;
@@ -147,9 +147,9 @@ package com.greensock.plugins
          }
          else if(_tween.vars.x != null || _tween.vars.y != null)
          {
-            _loc5_ = _tween.vars.x || _target.x;
-            _loc4_ = _tween.vars.y || _target.y;
-            _angle = 3.14159265358979 - Math.atan2(_loc4_ - _target.y,_loc5_ - _target.x);
+            x = _tween.vars.x || _target.x;
+            y = _tween.vars.y || _target.y;
+            _angle = 3.14159265358979 - Math.atan2(y - _target.y,x - _target.x);
          }
          else
          {
@@ -210,41 +210,41 @@ package com.greensock.plugins
          }
       }
       
-      override public function set changeFactor(param1:Number) : void
+      override public function set changeFactor(n:Number) : void
       {
-         var _loc4_:* = null;
-         var _loc10_:Boolean = false;
-         var _loc3_:* = null;
-         var _loc6_:Number = NaN;
-         var _loc2_:Number = NaN;
-         var _loc9_:Number = NaN;
-         var _loc5_:Number = _tween.cachedTime - _time;
-         if(_loc5_ < 0)
+         var parentFilters:* = null;
+         var prevVisible:Boolean = false;
+         var bounds:* = null;
+         var height:Number = NaN;
+         var val:Number = NaN;
+         var width:Number = NaN;
+         var time:Number = _tween.cachedTime - _time;
+         if(time < 0)
          {
-            _loc5_ = -_loc5_;
+            time = -time;
          }
-         if(_loc5_ < 1.0e-7)
+         if(time < 1.0e-7)
          {
             return;
          }
-         var _loc7_:Number = _target.x - _xCurrent;
-         var _loc8_:Number = _target.y - _yCurrent;
-         var _loc11_:Number = _target.x - _xRef;
-         var _loc12_:Number = _target.y - _yRef;
-         _changeFactor = param1;
-         if(_loc11_ > 2 || _loc12_ > 2 || _loc11_ < -2 || _loc12_ < -2)
+         var dx:Number = _target.x - _xCurrent;
+         var dy:Number = _target.y - _yCurrent;
+         var rx:Number = _target.x - _xRef;
+         var ry:Number = _target.y - _yRef;
+         _changeFactor = n;
+         if(rx > 2 || ry > 2 || rx < -2 || ry < -2)
          {
-            _angle = 3.14159265358979 - Math.atan2(_loc12_,_loc11_);
+            _angle = 3.14159265358979 - Math.atan2(ry,rx);
             _cos = Math.cos(_angle);
             _sin = Math.sin(_angle);
             _xRef = _target.x;
             _yRef = _target.y;
          }
-         _blur.blurX = Math.sqrt(_loc7_ * _loc7_ + _loc8_ * _loc8_) * _strength / _loc5_;
+         _blur.blurX = Math.sqrt(dx * dx + dy * dy) * _strength / time;
          _xCurrent = _target.x;
          _yCurrent = _target.y;
          _time = _tween.cachedTime;
-         if(param1 == 0 || _target.parent == null)
+         if(n == 0 || _target.parent == null)
          {
             disable();
             return;
@@ -266,32 +266,32 @@ package com.greensock.plugins
          }
          if(!_fastMode || !_cached)
          {
-            _loc4_ = _target.parent.filters;
-            if(_loc4_.length != 0)
+            parentFilters = _target.parent.filters;
+            if(parentFilters.length != 0)
             {
                _target.parent.filters = _blankArray;
             }
             var _loc13_:* = 20000;
             _target.y = _loc13_;
             _target.x = _loc13_;
-            _loc10_ = _target.visible;
+            prevVisible = _target.visible;
             _target.visible = true;
-            _loc3_ = _target.getBounds(_target.parent);
-            if(_loc3_.width + _blur.blurX * 2 > 2870)
+            bounds = _target.getBounds(_target.parent);
+            if(bounds.width + _blur.blurX * 2 > 2870)
             {
-               _blur.blurX = _loc3_.width >= 2870?0:Number((2870 - _loc3_.width) * 0.5);
+               _blur.blurX = bounds.width >= 2870?0:Number((2870 - bounds.width) * 0.5);
             }
-            _xOffset = 20000 - _loc3_.x + _padding;
-            _yOffset = 20000 - _loc3_.y + _padding;
-            _loc3_.width = _loc3_.width + _padding * 2;
-            _loc3_.height = _loc3_.height + _padding * 2;
-            if(_loc3_.height > _bdCache.height || _loc3_.width > _bdCache.width)
+            _xOffset = 20000 - bounds.x + _padding;
+            _yOffset = 20000 - bounds.y + _padding;
+            bounds.width = bounds.width + _padding * 2;
+            bounds.height = bounds.height + _padding * 2;
+            if(bounds.height > _bdCache.height || bounds.width > _bdCache.width)
             {
-               _bdCache = new BitmapData(_loc3_.width,_loc3_.height,true,16777215);
+               _bdCache = new BitmapData(bounds.width,bounds.height,true,16777215);
                _rectCache = new Rectangle(0,0,_bdCache.width,_bdCache.height);
             }
-            _matrix.tx = _padding - _loc3_.x;
-            _matrix.ty = _padding - _loc3_.y;
+            _matrix.tx = _padding - bounds.x;
+            _matrix.ty = _padding - bounds.y;
             _loc13_ = 1;
             _matrix.d = _loc13_;
             _matrix.a = _loc13_;
@@ -299,8 +299,8 @@ package com.greensock.plugins
             _matrix.c = _loc13_;
             _matrix.b = _loc13_;
             _loc13_ = 0;
-            _loc3_.y = _loc13_;
-            _loc3_.x = _loc13_;
+            bounds.y = _loc13_;
+            bounds.x = _loc13_;
             if(_target.alpha == 0.00390625)
             {
                _target.alpha = _alpha;
@@ -314,17 +314,17 @@ package com.greensock.plugins
                _target.parent.mask = null;
             }
             _bdCache.fillRect(_rectCache,16777215);
-            _bdCache.draw(_target.parent,_matrix,_ct,"normal",_loc3_,_smoothing);
+            _bdCache.draw(_target.parent,_matrix,_ct,"normal",bounds,_smoothing);
             if(_parentMask)
             {
                _target.parent.mask = _parentMask;
             }
-            _target.visible = _loc10_;
+            _target.visible = prevVisible;
             _target.x = _xCurrent;
             _target.y = _yCurrent;
-            if(_loc4_.length != 0)
+            if(parentFilters.length != 0)
             {
-               _target.parent.filters = _loc4_;
+               _target.parent.filters = parentFilters;
             }
             _cached = true;
          }
@@ -340,43 +340,43 @@ package com.greensock.plugins
          _matrix.b = _sin;
          _matrix.c = -_sin;
          _matrix.d = _cos;
-         _loc9_ = _matrix.a * _bdCache.width;
+         width = _matrix.a * _bdCache.width;
          if(_matrix.a * _bdCache.width < 0)
          {
-            _matrix.tx = -_loc9_;
-            _loc9_ = -_loc9_;
+            _matrix.tx = -width;
+            width = -width;
          }
-         _loc2_ = _matrix.c * _bdCache.height;
+         val = _matrix.c * _bdCache.height;
          if(_matrix.c * _bdCache.height < 0)
          {
-            _matrix.tx = _matrix.tx - _loc2_;
-            _loc9_ = _loc9_ - _loc2_;
+            _matrix.tx = _matrix.tx - val;
+            width = width - val;
          }
          else
          {
-            _loc9_ = _loc9_ + _loc2_;
+            width = width + val;
          }
-         _loc6_ = _matrix.d * _bdCache.height;
+         height = _matrix.d * _bdCache.height;
          if(_matrix.d * _bdCache.height < 0)
          {
-            _matrix.ty = -_loc6_;
-            _loc6_ = -_loc6_;
+            _matrix.ty = -height;
+            height = -height;
          }
-         _loc2_ = _matrix.b * _bdCache.width;
+         val = _matrix.b * _bdCache.width;
          if(_matrix.b * _bdCache.width < 0)
          {
-            _matrix.ty = _matrix.ty - _loc2_;
-            _loc6_ = _loc6_ - _loc2_;
+            _matrix.ty = _matrix.ty - val;
+            height = height - val;
          }
          else
          {
-            _loc6_ = _loc6_ + _loc2_;
+            height = height + val;
          }
-         _loc9_ = _loc9_ + _blur.blurX * 2;
+         width = width + _blur.blurX * 2;
          _matrix.tx = _matrix.tx + _blur.blurX;
-         if(_loc9_ > _bd.width || _loc6_ > _bd.height)
+         if(width > _bd.width || height > _bd.height)
          {
-            _loc13_ = new BitmapData(_loc9_,_loc6_,true,16777215);
+            _loc13_ = new BitmapData(width,height,true,16777215);
             _bitmap.bitmapData = _loc13_;
             _bd = _loc13_;
             _rect = new Rectangle(0,0,_bd.width,_bd.height);

@@ -20,9 +20,9 @@ package Indiana
          showResoult(1);
       }
       
-      private function showResoult(param1:int) : void
+      private function showResoult(resoult:int) : void
       {
-         switch(int(param1))
+         switch(int(resoult))
          {
             case 0:
                if(_successView == null)

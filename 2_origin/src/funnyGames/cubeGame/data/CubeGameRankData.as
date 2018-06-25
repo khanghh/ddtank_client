@@ -10,12 +10,12 @@ package funnyGames.cubeGame.data
       
       private var _score:uint;
       
-      public function CubeGameRankData(param1:uint, param2:String, param3:uint)
+      public function CubeGameRankData(rank:uint, name:String, score:uint)
       {
          super();
-         _rank = param1;
-         _name = param2;
-         _score = param3;
+         _rank = rank;
+         _name = name;
+         _score = score;
       }
       
       public function get score() : uint

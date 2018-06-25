@@ -76,9 +76,9 @@ package petsBag.view.item
          this.mouseEnabled = false;
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         _info = param1 as PetInfo;
+         _info = data as PetInfo;
          updateView();
       }
       
@@ -118,18 +118,18 @@ package petsBag.view.item
       
       private function getPetStatusArray() : Array
       {
-         var _loc1_:Array = [];
+         var resultArray:Array = [];
          return LanguageMgr.GetTranslation("ddt.petsBag.petStatus").split("||");
       }
       
       private function happyPercent() : Number
       {
-         var _loc1_:* = 0;
+         var resultPercent:* = 0;
          if(_info)
          {
-            _loc1_ = Number(_info.Hunger / 10000 * 100);
+            resultPercent = Number(_info.Hunger / 10000 * 100);
          }
-         return _loc1_;
+         return resultPercent;
       }
       
       override public function dispose() : void

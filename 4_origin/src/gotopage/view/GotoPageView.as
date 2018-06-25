@@ -120,37 +120,35 @@ package gotopage.view
       
       private function creatBtn() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _btnList.length)
+         var i:int = 0;
+         for(i = 0; i < _btnList.length; )
          {
-            _btnList[_loc1_].addEventListener("click",__clickHandle);
-            _loc1_++;
+            _btnList[i].addEventListener("click",__clickHandle);
+            i++;
          }
       }
       
       private function clearBtn() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _btnList.length)
+         var i:int = 0;
+         for(i = 0; i < _btnList.length; )
          {
-            if(_btnList[_loc1_])
+            if(_btnList[i])
             {
-               _btnList[_loc1_].removeEventListener("click",__clickHandle);
-               ObjectUtils.disposeObject(_btnList[_loc1_]);
+               _btnList[i].removeEventListener("click",__clickHandle);
+               ObjectUtils.disposeObject(_btnList[i]);
             }
-            _btnList[_loc1_] = null;
-            _loc1_++;
+            _btnList[i] = null;
+            i++;
          }
       }
       
-      private function __clickHandle(param1:MouseEvent) : void
+      private function __clickHandle(evt:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
-         _event = param1;
+         evt.stopImmediatePropagation();
+         _event = evt;
          SoundManager.instance.play("047");
-         if(param1.currentTarget != _dailyBtn && param1.currentTarget != _setBtn && param1.currentTarget != _eliteBtn && RoomManager.Instance.current != null && RoomManager.Instance.current.selfRoomPlayer != null)
+         if(evt.currentTarget != _dailyBtn && evt.currentTarget != _setBtn && evt.currentTarget != _eliteBtn && RoomManager.Instance.current != null && RoomManager.Instance.current.selfRoomPlayer != null)
          {
             if((StateManager.currentStateType == "missionResult" || RoomManager.Instance.current.isOpenBoss) && !RoomManager.Instance.current.selfRoomPlayer.isViewer)
             {
@@ -158,24 +156,24 @@ package gotopage.view
                return;
             }
          }
-         skipView(param1);
+         skipView(evt);
       }
       
       private function showAlert() : void
       {
-         var _loc1_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.missionsettle.dungeon.leaveConfirm.contents"),"",LanguageMgr.GetTranslation("cancel"),true,true,false,1);
-         _loc1_.moveEnable = false;
-         _loc1_.addEventListener("response",__onResponse);
+         var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.missionsettle.dungeon.leaveConfirm.contents"),"",LanguageMgr.GetTranslation("cancel"),true,true,false,1);
+         alert.moveEnable = false;
+         alert.addEventListener("response",__onResponse);
       }
       
-      private function __onResponse(param1:FrameEvent) : void
+      private function __onResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.target as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onResponse);
-         _loc2_.dispose();
-         _loc2_ = null;
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var alert:BaseAlerFrame = evt.target as BaseAlerFrame;
+         alert.removeEventListener("response",__onResponse);
+         alert.dispose();
+         alert = null;
+         if(evt.responseCode == 2 || evt.responseCode == 3)
          {
             skipView(_event);
          }
@@ -186,18 +184,18 @@ package gotopage.view
          }
       }
       
-      private function skipView(param1:MouseEvent) : void
+      private function skipView(evt:MouseEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc4_:Boolean = false;
-         var _loc3_:int = _btnList.indexOf(param1.currentTarget as SimpleBitmapButton);
-         switch(int(_loc3_))
+         var limitLev:int = 0;
+         var isFirst:Boolean = false;
+         var currentClick:int = _btnList.indexOf(evt.currentTarget as SimpleBitmapButton);
+         switch(int(currentClick))
          {
             case 0:
-               _loc2_ = ServerConfigManager.instance.trialBattleLevelLimit;
-               if(PlayerManager.Instance.Self.Grade < _loc2_)
+               limitLev = ServerConfigManager.instance.trialBattleLevelLimit;
+               if(PlayerManager.Instance.Self.Grade < limitLev)
                {
-                  MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.functionLimitTip",_loc2_));
+                  MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.functionLimitTip",limitLev));
                   return;
                }
                BattleGroudManager.Instance.onShow();
@@ -240,13 +238,13 @@ package gotopage.view
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.functionLimitTip",11));
                   return;
                }
-               _loc4_ = false;
+               isFirst = false;
                if(PlayerManager.Instance.Self.IsWeakGuildFinish(13) && !PlayerManager.Instance.Self.IsWeakGuildFinish(61))
                {
                   SocketManager.Instance.out.syncWeakStep(61);
-                  _loc4_ = true;
+                  isFirst = true;
                }
-               StateManager.setState("civil",_loc4_);
+               StateManager.setState("civil",isFirst);
                ComponentSetting.SEND_USELOG_ID(10);
                break;
             case 5:

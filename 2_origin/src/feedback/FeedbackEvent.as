@@ -14,10 +14,10 @@ package feedback
       
       public var data:Object;
       
-      public function FeedbackEvent(param1:String, param2:Object)
+      public function FeedbackEvent(type:String, data:Object)
       {
-         this.data = param2;
-         super(param1);
+         this.data = data;
+         super(type);
       }
    }
 }

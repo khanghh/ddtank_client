@@ -9,21 +9,20 @@ package cardSystem.analyze
       
       public var setsVector:Vector.<SetsInfo>;
       
-      public function SetsSortRuleAnalyzer(param1:Function)
+      public function SetsSortRuleAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         data = param1;
+         data = data;
          setsVector = new Vector.<SetsInfo>();
          var xml:XML = new XML(data);
          if(xml.@value == "true")
          {
             var xmllist1:XMLList = xml..Item;
-            var i:int = 0;
-            while(i < xmllist1.length())
+            for(var i:int = 0; i < xmllist1.length(); )
             {
                var info:SetsInfo = new SetsInfo();
                info.ID = xmllist1[i].@ID;
@@ -31,8 +30,7 @@ package cardSystem.analyze
                info.storyDescript = xmllist1[i].@Description;
                var suitID:int = parseInt(xmllist1[i].@SuitID) - 1;
                var xmlList2:XMLList = xmllist1[i]..Card;
-               var j:int = 0;
-               while(j < xmlList2.length())
+               for(var j:int = 0; j < xmlList2.length(); )
                {
                   if(xmlList2[j].@ID != "0")
                   {
@@ -43,9 +41,9 @@ package cardSystem.analyze
                setsVector.push(info);
                i = Number(i) + 1;
             }
-            setsVector.sort(function(param1:SetsInfo, param2:SetsInfo):int
+            setsVector.sort(function(a:SetsInfo, b:SetsInfo):int
             {
-               if(int(param1.ID) < int(param2.ID))
+               if(int(a.ID) < int(b.ID))
                {
                   return -1;
                }

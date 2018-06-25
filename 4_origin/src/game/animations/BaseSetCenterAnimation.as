@@ -20,28 +20,28 @@ package game.animations
       
       protected var _tween:BaseStageTween;
       
-      public function BaseSetCenterAnimation(param1:Number, param2:Number, param3:int = 0, param4:Boolean = false, param5:int = 0, param6:int = 4, param7:Object = null)
+      public function BaseSetCenterAnimation(cx:Number, cy:Number, life:int = 0, directed:Boolean = false, level:int = 0, speed:int = 4, data:Object = null)
       {
          super();
-         var _loc8_:TweenObject = new TweenObject(param7);
-         _target = new Point(param1,param2);
-         _loc8_.target = _target;
-         var _loc9_:String = StageTweenStrategys.getTweenClassNameByShortName(_loc8_.strategy);
+         var tweenObject:TweenObject = new TweenObject(data);
+         _target = new Point(cx,cy);
+         tweenObject.target = _target;
+         var tweenType:String = StageTweenStrategys.getTweenClassNameByShortName(tweenObject.strategy);
          _finished = false;
-         _life = param3;
-         _level = param5;
-         if(param7 && param7.priority != null)
+         _life = life;
+         _level = level;
+         if(data && data.priority != null)
          {
-            _level = param7.priority;
+            _level = data.priority;
          }
-         if(param7 && param7.duration != null)
+         if(data && data.duration != null)
          {
-            _life = param7.duration;
+            _life = data.duration;
          }
-         _directed = param4;
-         _speed = param6;
-         var _loc10_:Class = getDefinitionByName(_loc9_) as Class;
-         _tween = new _loc10_(_loc8_);
+         _directed = directed;
+         _speed = speed;
+         var tweenClass:Class = getDefinitionByName(tweenType) as Class;
+         _tween = new tweenClass(tweenObject);
       }
       
       override public function canAct() : Boolean
@@ -57,17 +57,17 @@ package game.animations
          return true;
       }
       
-      override public function prepare(param1:AnimationSet) : void
+      override public function prepare(aniset:AnimationSet) : void
       {
-         _target.x = param1.stageWidth / 2 - _target.x;
-         _target.y = param1.stageHeight / 2 - _target.y;
-         _target.x = _target.x < param1.minX?param1.minX:Number(_target.x > 0?0:Number(_target.x));
-         _target.y = _target.y < param1.minY?param1.minY:Number(_target.y > 0?0:Number(_target.y));
+         _target.x = aniset.stageWidth / 2 - _target.x;
+         _target.y = aniset.stageHeight / 2 - _target.y;
+         _target.x = _target.x < aniset.minX?aniset.minX:Number(_target.x > 0?0:Number(_target.x));
+         _target.y = _target.y < aniset.minY?aniset.minY:Number(_target.y > 0?0:Number(_target.y));
       }
       
-      override public function update(param1:MapView) : Boolean
+      override public function update(movie:MapView) : Boolean
       {
-         var _loc2_:* = null;
+         var result:* = null;
          _life = Number(_life) - 1;
          if(_life <= 0)
          {
@@ -78,9 +78,9 @@ package game.animations
             if(!_directed)
             {
                _tween.target = _target;
-               _loc2_ = _tween.update(param1);
-               param1.x = _loc2_.x;
-               param1.y = _loc2_.y;
+               result = _tween.update(movie);
+               movie.x = result.x;
+               movie.y = result.y;
                if(_tween.isFinished)
                {
                   finished();
@@ -88,11 +88,11 @@ package game.animations
             }
             else
             {
-               param1.x = _target.x;
-               param1.y = _target.y;
+               movie.x = _target.x;
+               movie.y = _target.y;
                finished();
             }
-            param1.setExpressionLoction();
+            movie.setExpressionLoction();
             return true;
          }
          return false;

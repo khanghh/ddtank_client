@@ -16,10 +16,10 @@ package lanternriddles.event
       
       public var Time:String;
       
-      public function LanternEvent(param1:String, param2:String = "")
+      public function LanternEvent(type:String, value:String = "")
       {
-         super(param1,bubbles,cancelable);
-         Time = param2;
+         super(type,bubbles,cancelable);
+         Time = value;
       }
    }
 }

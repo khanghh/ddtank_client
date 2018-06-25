@@ -111,16 +111,16 @@ package gameCommon.view.experience
          }
       }
       
-      public function updateTotalExp(param1:Number) : void
+      public function updateTotalExp(newValue:Number) : void
       {
          if(_expNumTxt == null)
          {
             addTxt();
          }
-         _expNumTxt.setValue(param1);
+         _expNumTxt.setValue(newValue);
       }
       
-      public function updateTotalExploit(param1:Number) : void
+      public function updateTotalExploit(newValue:Number) : void
       {
          if(GameControl.Instance.Current && GameControl.Instance.Current.roomType != 0 && GameControl.Instance.Current.roomType != 1 && GameControl.Instance.Current.roomType != 120)
          {
@@ -130,7 +130,7 @@ package gameCommon.view.experience
          {
             addExploitTxt();
          }
-         _exploitNumTxt.setValue(param1);
+         _exploitNumTxt.setValue(newValue);
       }
       
       public function dispose() : void

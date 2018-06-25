@@ -33,11 +33,11 @@ package BombTurnTable.view
       
       private var _clickNum:Number = 0;
       
-      public function LotteryPointer(param1:int, param2:int)
+      public function LotteryPointer(type:int, curStatus:int)
       {
          super();
-         _curType = param1;
-         _curStatus = param2;
+         _curType = type;
+         _curStatus = curStatus;
          initView();
       }
       
@@ -81,44 +81,44 @@ package BombTurnTable.view
       
       private function initBtnStatus() : void
       {
-         var _loc1_:* = _curStatus == 2;
-         _continuousBtn.visible = !_loc1_;
-         _stopBtn.visible = _loc1_;
-         _lotteryBtn.enable = !_loc1_;
+         var isContinuouse:* = _curStatus == 2;
+         _continuousBtn.visible = !isContinuouse;
+         _stopBtn.visible = isContinuouse;
+         _lotteryBtn.enable = !isContinuouse;
       }
       
-      private function clickLottery_Handler(param1:MouseEvent) : void
+      private function clickLottery_Handler(evt:MouseEvent) : void
       {
-         var _loc2_:Number = new Date().time;
-         if(_loc2_ - _clickNum < 2000)
+         var nowTime:Number = new Date().time;
+         if(nowTime - _clickNum < 2000)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.storeIIStrength.startStrengthClickTimerMsg"));
             return;
          }
-         _clickNum = _loc2_;
+         _clickNum = nowTime;
          this.dispatchEvent(new TurnTableEvent("ClickLottery",1));
       }
       
-      private function continuousLottery_Handler(param1:MouseEvent) : void
+      private function continuousLottery_Handler(evt:MouseEvent) : void
       {
          this.dispatchEvent(new TurnTableEvent("ClickLottery",2));
       }
       
-      private function stopLottery_Handler(param1:MouseEvent) : void
+      private function stopLottery_Handler(evt:MouseEvent) : void
       {
          this.dispatchEvent(new TurnTableEvent("ClickLottery",0));
       }
       
-      public function updateBtnStatus(param1:Boolean) : void
+      public function updateBtnStatus(isContinuouse:Boolean) : void
       {
-         _continuousBtn.visible = !param1;
-         _stopBtn.visible = param1;
-         _lotteryBtn.enable = !param1;
+         _continuousBtn.visible = !isContinuouse;
+         _stopBtn.visible = isContinuouse;
+         _lotteryBtn.enable = !isContinuouse;
       }
       
-      private function updatePointer(param1:int) : void
+      private function updatePointer(index:int) : void
       {
-         _pointer = ComponentFactory.Instance.creatBitmap("asset.bombTurnTable.pointer" + param1);
+         _pointer = ComponentFactory.Instance.creatBitmap("asset.bombTurnTable.pointer" + index);
          addChild(_pointer);
       }
       

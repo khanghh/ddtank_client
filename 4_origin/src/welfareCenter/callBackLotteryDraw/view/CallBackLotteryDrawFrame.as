@@ -22,9 +22,9 @@ package welfareCenter.callBackLotteryDraw.view
       
       private function initView() : void
       {
-         var _loc2_:CallBackLotteryDrawManager = CallBackLotteryDrawManager.instance;
-         var _loc1_:LotteryDrawModel = _loc2_.callBackLotteryDrawModel;
-         if(_loc1_.phase == 0 && _loc2_.getCallBackLeftSec() > 0 || _loc1_.awardArr == null || _loc1_.awardArr.length == 0)
+         var manager:CallBackLotteryDrawManager = CallBackLotteryDrawManager.instance;
+         var model:LotteryDrawModel = manager.callBackLotteryDrawModel;
+         if(model.phase == 0 && manager.getCallBackLeftSec() > 0 || model.awardArr == null || model.awardArr.length == 0)
          {
             _callBackLotteryDrawInitSp = new CallBackLotteryDrawInitSp();
             addChild(_callBackLotteryDrawInitSp);

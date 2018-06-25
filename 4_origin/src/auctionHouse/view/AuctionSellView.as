@@ -46,11 +46,11 @@ package auctionHouse.view
       
       private var _btClickLock:Boolean;
       
-      public function AuctionSellView(param1:AuctionHouseController, param2:AuctionHouseModel)
+      public function AuctionSellView(controller:AuctionHouseController, model:AuctionHouseModel)
       {
          super();
-         _controller = param1;
-         _model = param2;
+         _controller = controller;
+         _model = model;
          initView();
          addEvent();
       }
@@ -92,7 +92,7 @@ package auctionHouse.view
          this.removeEventListener("addedToStage",__addToStage);
       }
       
-      private function __addToStage(param1:Event) : void
+      private function __addToStage(evt:Event) : void
       {
          _cancelBid_btn.enable = false;
          _sendBugle.enable = false;
@@ -115,24 +115,24 @@ package auctionHouse.view
          _right.hideReady();
       }
       
-      function addAuction(param1:AuctionGoodsInfo) : void
+      function addAuction(info:AuctionGoodsInfo) : void
       {
-         _right.addAuction(param1);
+         _right.addAuction(info);
       }
       
-      function setPage(param1:int, param2:int) : void
+      function setPage(start:int, totalCount:int) : void
       {
-         _right.setPage(param1,param2);
+         _right.setPage(start,totalCount);
       }
       
-      function updateList(param1:AuctionGoodsInfo) : void
+      function updateList(info:AuctionGoodsInfo) : void
       {
-         _right.updateAuction(param1);
+         _right.updateAuction(info);
       }
       
-      private function __sendBugle(param1:MouseEvent) : void
+      private function __sendBugle(e:MouseEvent) : void
       {
-         e = param1;
+         e = e;
          if(SharedManager.Instance.isAuctionHouseTodayUseBugle)
          {
             if(_selectCheckBtn == null)
@@ -143,9 +143,9 @@ package auctionHouse.view
             var alert1:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.auctionHouse.view.AuctionSellLeftView.UseBugle"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
             alert1.moveEnable = false;
             alert1.addChild(_selectCheckBtn);
-            alert1.addEventListener("response",function(param1:FrameEvent):void
+            alert1.addEventListener("response",function(e:FrameEvent):void
             {
-               if(param1.responseCode == 2 || param1.responseCode == 3)
+               if(e.responseCode == 2 || e.responseCode == 3)
                {
                   if(_selectCheckBtn.selected)
                   {
@@ -164,7 +164,7 @@ package auctionHouse.view
          }
       }
       
-      private function __cancel(param1:MouseEvent) : void
+      private function __cancel(event:MouseEvent) : void
       {
          SoundManager.instance.play("043");
          _btClickLock = true;
@@ -175,16 +175,16 @@ package auctionHouse.view
          }
          _cancelBid_btn.enable = false;
          _sendBugle.enable = false;
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.auctionHouse.view.AuctionSellView.cancel"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
-         _loc2_.addEventListener("response",_response);
+         var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.auctionHouse.view.AuctionSellView.cancel"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
+         alert.addEventListener("response",_response);
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = BaseAlerFrame(param1.currentTarget);
-         _loc2_.removeEventListener("response",_response);
-         switch(int(param1.responseCode))
+         var alert:BaseAlerFrame = BaseAlerFrame(evt.currentTarget);
+         alert.removeEventListener("response",_response);
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
@@ -195,7 +195,7 @@ package auctionHouse.view
             case 4:
                __cancelOk();
          }
-         ObjectUtils.disposeObject(param1.target);
+         ObjectUtils.disposeObject(evt.target);
       }
       
       private function __cancelOk() : void
@@ -232,12 +232,12 @@ package auctionHouse.view
          _sendBugle.enable = true;
       }
       
-      private function __removeStage(param1:Event) : void
+      private function __removeStage(event:Event) : void
       {
          _left.clear();
       }
       
-      private function __next(param1:MouseEvent) : void
+      private function __next(event:MouseEvent) : void
       {
          SoundManager.instance.play("047");
          _cancelBid_btn.enable = false;
@@ -245,7 +245,7 @@ package auctionHouse.view
          dispatchEvent(new AuctionHouseEvent("nextPage"));
       }
       
-      private function __pre(param1:MouseEvent) : void
+      private function __pre(event:MouseEvent) : void
       {
          SoundManager.instance.play("047");
          _cancelBid_btn.enable = false;
@@ -253,7 +253,7 @@ package auctionHouse.view
          dispatchEvent(new AuctionHouseEvent("prePage"));
       }
       
-      private function sortChange(param1:AuctionHouseEvent) : void
+      private function sortChange(e:AuctionHouseEvent) : void
       {
          _cancelBid_btn.enable = false;
          _sendBugle.enable = false;
@@ -261,12 +261,12 @@ package auctionHouse.view
          _controller.searchAuctionList(1,"",-1,-1,PlayerManager.Instance.Self.ID,-1,_right.sortCondition,_right.sortBy.toString());
       }
       
-      function searchByCurCondition(param1:int, param2:int = -1) : void
+      function searchByCurCondition(currentPage:int, playerID:int = -1) : void
       {
-         _controller.searchAuctionList(param1,"",-1,-1,param2,-1,_right.sortCondition,_right.sortBy.toString());
+         _controller.searchAuctionList(currentPage,"",-1,-1,playerID,-1,_right.sortCondition,_right.sortBy.toString());
       }
       
-      private function __selectStrip(param1:AuctionHouseEvent) : void
+      private function __selectStrip(event:AuctionHouseEvent) : void
       {
          if(_right.getSelectInfo())
          {

@@ -46,22 +46,22 @@ package wonderfulActivity.items
       
       private var _activityId:String;
       
-      public function StrengthDarenItem(param1:int, param2:String, param3:GiftBagInfo, param4:GiftCurInfo, param5:Array)
+      public function StrengthDarenItem(type:int, activityId:String, data:GiftBagInfo, giftcurInfo:GiftCurInfo, statusArr:Array)
       {
          super();
-         _activityId = param2;
-         _data = param3;
-         _giftcurInfo = param4;
-         _strengthGrade = param5[0].statusValue;
-         _statusArr = param5;
-         initView(param1);
+         _activityId = activityId;
+         _data = data;
+         _giftcurInfo = giftcurInfo;
+         _strengthGrade = statusArr[0].statusValue;
+         _statusArr = statusArr;
+         initView(type);
       }
       
-      private function initView(param1:int = 1) : void
+      private function initView(type:int = 1) : void
       {
          _back = ComponentFactory.Instance.creat("wonderfulactivity.newListItem");
          addChild(_back);
-         if(param1 == 1)
+         if(type == 1)
          {
             _back.gotoAndStop(1);
          }
@@ -91,95 +91,93 @@ package wonderfulActivity.items
       
       private function checkBtnState() : Boolean
       {
-         var _loc2_:int = 0;
-         var _loc1_:Boolean = false;
-         _loc2_ = 0;
-         while(_loc2_ < _statusArr.length)
+         var i:int = 0;
+         var flag:Boolean = false;
+         for(i = 0; i < _statusArr.length; )
          {
-            if(_statusArr[_loc2_].statusID == _data.giftConditionArr[0].conditionValue)
+            if(_statusArr[i].statusID == _data.giftConditionArr[0].conditionValue)
             {
-               _loc1_ = true;
-               if(_statusArr[_loc2_].statusValue == 0)
+               flag = true;
+               if(_statusArr[i].statusValue == 0)
                {
                   return true;
                }
             }
-            _loc2_++;
+            i++;
          }
-         if(!_loc1_)
+         if(!flag)
          {
             return true;
          }
          return false;
       }
       
-      private function btnHandler(param1:MouseEvent) : void
+      private function btnHandler(e:MouseEvent) : void
       {
          _btn.enable = false;
          addChild(_btn);
          SoundManager.instance.play("008");
-         var _loc4_:Vector.<SendGiftInfo> = new Vector.<SendGiftInfo>();
-         var _loc2_:SendGiftInfo = new SendGiftInfo();
-         _loc2_.activityId = _activityId;
-         var _loc3_:Array = [];
-         _loc3_.push(_data.giftbagId);
-         _loc2_.giftIdArr = _loc3_;
-         _loc4_.push(_loc2_);
-         SocketManager.Instance.out.sendWonderfulActivityGetReward(_loc4_);
+         var sendInfoVec:Vector.<SendGiftInfo> = new Vector.<SendGiftInfo>();
+         var sendInfo:SendGiftInfo = new SendGiftInfo();
+         sendInfo.activityId = _activityId;
+         var giftIdArr:Array = [];
+         giftIdArr.push(_data.giftbagId);
+         sendInfo.giftIdArr = giftIdArr;
+         sendInfoVec.push(sendInfo);
+         SocketManager.Instance.out.sendWonderfulActivityGetReward(sendInfoVec);
       }
       
       private function initGoods() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var bagCell:* = null;
+         var back:* = null;
          _goodContent = new Sprite();
          addChild(_goodContent);
-         _loc3_ = 0;
-         while(_loc3_ < _data.giftRewardArr.length)
+         for(i = 0; i < _data.giftRewardArr.length; )
          {
-            _loc1_ = createBagCell(0,_data.giftRewardArr[_loc3_]);
-            _loc2_ = ComponentFactory.Instance.creat("wonderfulactivity.goods.back");
-            _loc2_.x = (_loc2_.width + 5) * _loc3_;
-            _loc1_.x = _loc2_.width / 2 - _loc1_.width / 2 + _loc2_.x + 2;
-            _loc1_.y = _loc2_.height / 2 - _loc1_.height / 2 + 1;
-            _goodContent.addChild(_loc2_);
-            _goodContent.addChild(_loc1_);
-            _loc3_++;
+            bagCell = createBagCell(0,_data.giftRewardArr[i]);
+            back = ComponentFactory.Instance.creat("wonderfulactivity.goods.back");
+            back.x = (back.width + 5) * i;
+            bagCell.x = back.width / 2 - bagCell.width / 2 + back.x + 2;
+            bagCell.y = back.height / 2 - bagCell.height / 2 + 1;
+            _goodContent.addChild(back);
+            _goodContent.addChild(bagCell);
+            i++;
          }
          _goodContent.x = 142;
          _goodContent.y = 9;
       }
       
-      private function createBagCell(param1:int, param2:GiftRewardInfo) : BagCell
+      private function createBagCell(order:int, gift:GiftRewardInfo) : BagCell
       {
-         var _loc5_:InventoryItemInfo = new InventoryItemInfo();
-         _loc5_.TemplateID = param2.templateId;
-         _loc5_ = ItemManager.fill(_loc5_);
-         _loc5_.IsBinds = param2.isBind;
-         _loc5_.ValidDate = param2.validDate;
-         var _loc4_:Array = param2.property.split(",");
-         _loc5_.StrengthenLevel = parseInt(_loc4_[0]);
-         _loc5_.AttackCompose = parseInt(_loc4_[1]);
-         _loc5_.DefendCompose = parseInt(_loc4_[2]);
-         _loc5_.AgilityCompose = parseInt(_loc4_[3]);
-         _loc5_.LuckCompose = parseInt(_loc4_[4]);
-         if(EquipType.isMagicStone(_loc5_.CategoryID))
+         var info:InventoryItemInfo = new InventoryItemInfo();
+         info.TemplateID = gift.templateId;
+         info = ItemManager.fill(info);
+         info.IsBinds = gift.isBind;
+         info.ValidDate = gift.validDate;
+         var attrArr:Array = gift.property.split(",");
+         info.StrengthenLevel = parseInt(attrArr[0]);
+         info.AttackCompose = parseInt(attrArr[1]);
+         info.DefendCompose = parseInt(attrArr[2]);
+         info.AgilityCompose = parseInt(attrArr[3]);
+         info.LuckCompose = parseInt(attrArr[4]);
+         if(EquipType.isMagicStone(info.CategoryID))
          {
-            _loc5_.Level = _loc5_.StrengthenLevel;
-            _loc5_.Attack = _loc5_.AttackCompose;
-            _loc5_.Defence = _loc5_.DefendCompose;
-            _loc5_.Agility = _loc5_.AgilityCompose;
-            _loc5_.Luck = _loc5_.LuckCompose;
-            _loc5_.MagicAttack = parseInt(_loc4_[6]);
-            _loc5_.MagicDefence = parseInt(_loc4_[7]);
-            _loc5_.StrengthenExp = parseInt(_loc4_[8]);
+            info.Level = info.StrengthenLevel;
+            info.Attack = info.AttackCompose;
+            info.Defence = info.DefendCompose;
+            info.Agility = info.AgilityCompose;
+            info.Luck = info.LuckCompose;
+            info.MagicAttack = parseInt(attrArr[6]);
+            info.MagicDefence = parseInt(attrArr[7]);
+            info.StrengthenExp = parseInt(attrArr[8]);
          }
-         var _loc3_:BagCell = new BagCell(param1);
-         _loc3_.info = _loc5_;
-         _loc3_.setCount(param2.count);
-         _loc3_.setBgVisible(false);
-         return _loc3_;
+         var bagCell:BagCell = new BagCell(order);
+         bagCell.info = info;
+         bagCell.setCount(gift.count);
+         bagCell.setBgVisible(false);
+         return bagCell;
       }
       
       public function dispose() : void

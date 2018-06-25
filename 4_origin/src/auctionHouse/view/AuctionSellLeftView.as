@@ -103,55 +103,55 @@ package auctionHouse.view
       
       private function initView() : void
       {
-         var _loc17_:MutipleImage = ComponentFactory.Instance.creat("auctionHouse.LeftBG2");
-         addChild(_loc17_);
-         var _loc14_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtauction.Sellbg");
-         addChild(_loc14_);
-         _loc14_.y = 57;
-         var _loc12_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtauction.Sellbg");
-         addChild(_loc12_);
-         _loc12_.y = 302;
-         var _loc16_:MovieImage = ComponentFactory.Instance.creatComponentByStylename("ddtauction.sellItemBG1");
-         addChild(_loc16_);
-         var _loc13_:MovieImage = ComponentFactory.Instance.creatComponentByStylename("ddtauction.sellItemBG2");
-         addChild(_loc13_);
-         var _loc18_:Scale9CornerImage = ComponentFactory.Instance.creatComponentByStylename("ddtauction.sellItemBG3");
-         addChild(_loc18_);
-         var _loc15_:Scale9CornerImage = ComponentFactory.Instance.creatComponentByStylename("ddtauction.sellItemBG4");
-         addChild(_loc15_);
-         var _loc2_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("auctionHouse.SellViewTextI");
-         _loc2_.text = LanguageMgr.GetTranslation("tank.ddtauctionHouse.view.text");
-         addChild(_loc2_);
-         var _loc1_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("auctionHouse.SellViewTextII");
-         _loc1_.text = LanguageMgr.GetTranslation("tank.ddtauctionHouse.view.text1");
-         addChild(_loc1_);
-         var _loc9_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("auctionHouse.SellViewTextIII");
-         _loc9_.text = LanguageMgr.GetTranslation("tank.ddtauctionHouse.view.text2");
-         addChild(_loc9_);
-         var _loc7_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("auctionHouse.SellViewTextIIII");
-         _loc7_.text = LanguageMgr.GetTranslation("tank.ddtauctionHouse.view.text3");
-         addChild(_loc7_);
-         var _loc5_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("auctionHouse.SellViewTextIIIII");
-         _loc5_.text = LanguageMgr.GetTranslation("tank.ddtauctionHouse.view.text4");
-         addChild(_loc5_);
-         var _loc19_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("auctionHouse.SellViewtimerTextI");
-         _loc19_.text = LanguageMgr.GetTranslation("tank.ddtauctionHouse.view.timer8");
-         addChild(_loc19_);
-         var _loc4_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("auctionHouse.SellViewtimerTextII");
-         _loc4_.text = LanguageMgr.GetTranslation("tank.ddtauctionHouse.view.timer24");
-         addChild(_loc4_);
-         var _loc3_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("auctionHouse.SellViewtimerTextIII");
-         _loc3_.text = LanguageMgr.GetTranslation("tank.ddtauctionHouse.view.timer48");
-         addChild(_loc3_);
-         var _loc11_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("auctionHouse.SellViewhelpText");
-         _loc11_.text = LanguageMgr.GetTranslation("tank.ddtauctionHouse.view.text5");
-         addChild(_loc11_);
-         var _loc10_:MutipleImage = ComponentFactory.Instance.creat("auctionHouse.SellLeftIcon0");
-         addChild(_loc10_);
-         var _loc8_:MutipleImage = ComponentFactory.Instance.creat("auctionHouse.SellLeftIcon1");
-         addChild(_loc8_);
-         var _loc6_:MutipleImage = ComponentFactory.Instance.creat("auctionHouse.SellLeftIcon2");
-         addChild(_loc6_);
+         var bg:MutipleImage = ComponentFactory.Instance.creat("auctionHouse.LeftBG2");
+         addChild(bg);
+         var _Sellbg:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtauction.Sellbg");
+         addChild(_Sellbg);
+         _Sellbg.y = 57;
+         var _Sellbg1:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtauction.Sellbg");
+         addChild(_Sellbg1);
+         _Sellbg1.y = 302;
+         var _SellItembg:MovieImage = ComponentFactory.Instance.creatComponentByStylename("ddtauction.sellItemBG1");
+         addChild(_SellItembg);
+         var _SellItembg1:MovieImage = ComponentFactory.Instance.creatComponentByStylename("ddtauction.sellItemBG2");
+         addChild(_SellItembg1);
+         var _textInputBg:Scale9CornerImage = ComponentFactory.Instance.creatComponentByStylename("ddtauction.sellItemBG3");
+         addChild(_textInputBg);
+         var _textInputBg1:Scale9CornerImage = ComponentFactory.Instance.creatComponentByStylename("ddtauction.sellItemBG4");
+         addChild(_textInputBg1);
+         var _Selltext:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("auctionHouse.SellViewTextI");
+         _Selltext.text = LanguageMgr.GetTranslation("tank.ddtauctionHouse.view.text");
+         addChild(_Selltext);
+         var _Selltext1:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("auctionHouse.SellViewTextII");
+         _Selltext1.text = LanguageMgr.GetTranslation("tank.ddtauctionHouse.view.text1");
+         addChild(_Selltext1);
+         var _Selltext2:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("auctionHouse.SellViewTextIII");
+         _Selltext2.text = LanguageMgr.GetTranslation("tank.ddtauctionHouse.view.text2");
+         addChild(_Selltext2);
+         var _Selltext3:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("auctionHouse.SellViewTextIIII");
+         _Selltext3.text = LanguageMgr.GetTranslation("tank.ddtauctionHouse.view.text3");
+         addChild(_Selltext3);
+         var _Selltext4:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("auctionHouse.SellViewTextIIIII");
+         _Selltext4.text = LanguageMgr.GetTranslation("tank.ddtauctionHouse.view.text4");
+         addChild(_Selltext4);
+         var _timerText:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("auctionHouse.SellViewtimerTextI");
+         _timerText.text = LanguageMgr.GetTranslation("tank.ddtauctionHouse.view.timer8");
+         addChild(_timerText);
+         var _timerText1:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("auctionHouse.SellViewtimerTextII");
+         _timerText1.text = LanguageMgr.GetTranslation("tank.ddtauctionHouse.view.timer24");
+         addChild(_timerText1);
+         var _timerText2:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("auctionHouse.SellViewtimerTextIII");
+         _timerText2.text = LanguageMgr.GetTranslation("tank.ddtauctionHouse.view.timer48");
+         addChild(_timerText2);
+         var _helpText:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("auctionHouse.SellViewhelpText");
+         _helpText.text = LanguageMgr.GetTranslation("tank.ddtauctionHouse.view.text5");
+         addChild(_helpText);
+         var icon0:MutipleImage = ComponentFactory.Instance.creat("auctionHouse.SellLeftIcon0");
+         addChild(icon0);
+         var icon1:MutipleImage = ComponentFactory.Instance.creat("auctionHouse.SellLeftIcon1");
+         addChild(icon1);
+         var icon2:MutipleImage = ComponentFactory.Instance.creat("auctionHouse.SellLeftIcon2");
+         addChild(icon2);
          _bid_btn = ComponentFactory.Instance.creat("auctionHouse.StartBid_btn");
          _bid_btn.enable = false;
          addChild(_bid_btn);
@@ -232,21 +232,21 @@ package auctionHouse.view
          _bag.addEventListener("bagClose",__CellstartShine);
       }
       
-      private function __selectBidTimeII(param1:MouseEvent) : void
+      private function __selectBidTimeII(evt:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
-         selectBidUpdate(param1.currentTarget as SelectedButton);
+         evt.stopImmediatePropagation();
+         selectBidUpdate(evt.currentTarget as SelectedButton);
       }
       
-      private function selectBidUpdate(param1:SelectedButton) : void
+      private function selectBidUpdate(button:SelectedButton) : void
       {
-         if(_currentTime != param1)
+         if(_currentTime != button)
          {
             _currentTime.selected = false;
          }
-         if(param1)
+         if(button)
          {
-            var _loc2_:* = param1.name;
+            var _loc2_:* = button.name;
             if(_bidTime1.name !== _loc2_)
             {
                if(_bidTime2.name !== _loc2_)
@@ -318,9 +318,9 @@ package auctionHouse.view
          update();
       }
       
-      public function dragDrop(param1:DragEffect) : void
+      public function dragDrop(effect:DragEffect) : void
       {
-         _cell.dragDrop(param1);
+         _cell.dragDrop(effect);
       }
       
       function clear() : void
@@ -376,7 +376,7 @@ package auctionHouse.view
          return "100";
       }
       
-      private function _onAuctionObjectClicked(param1:Event) : void
+      private function _onAuctionObjectClicked(evt:Event) : void
       {
          _auctionObject.mouseChildren = false;
          _auctionObject.mouseEnabled = false;
@@ -388,7 +388,7 @@ package auctionHouse.view
          __setBidGood(null);
       }
       
-      private function _onAuctionObjectOver(param1:Event) : void
+      private function _onAuctionObjectOver(evt:Event) : void
       {
          if(_cell.info == null)
          {
@@ -399,7 +399,7 @@ package auctionHouse.view
          _auctionObjectBg.alpha = 1;
       }
       
-      private function _onAuctionObjectOut(param1:Event) : void
+      private function _onAuctionObjectOut(evt:Event) : void
       {
          if(_selectObjectTip.parent)
          {
@@ -408,7 +408,7 @@ package auctionHouse.view
          _auctionObjectBg.alpha = 0;
       }
       
-      private function __setBidGood(param1:Event) : void
+      private function __setBidGood(event:Event) : void
       {
          if(_cell && _cell.info)
          {
@@ -422,7 +422,7 @@ package auctionHouse.view
          __stopShine(null);
       }
       
-      private function __CellstartShine(param1:CellEvent) : void
+      private function __CellstartShine(e:CellEvent) : void
       {
          if(_cell.info != null)
          {
@@ -431,19 +431,19 @@ package auctionHouse.view
          _auctionObject.addEventListener("enterFrame",_auctionObjectflash);
       }
       
-      private function __startShine(param1:CellEvent) : void
+      private function __startShine(e:CellEvent) : void
       {
          _auctionObject.addEventListener("enterFrame",_auctionObjectflash);
       }
       
-      private function __stopShine(param1:CellEvent) : void
+      private function __stopShine(e:CellEvent) : void
       {
          _auctionObject.removeEventListener("enterFrame",_auctionObjectflash);
          _auctionObjectBg.alpha = 0;
          _auctionObjectFrame = 0;
       }
       
-      private function _auctionObjectflash(param1:Event) : void
+      private function _auctionObjectflash(e:Event) : void
       {
          _auctionObjectFrame = _auctionObjectFrame + 1;
          if(_auctionObjectFrame == 6)
@@ -457,7 +457,7 @@ package auctionHouse.view
          }
       }
       
-      private function __selectGood(param1:Event) : void
+      private function __selectGood(event:Event) : void
       {
          if(_cell.info)
          {
@@ -472,7 +472,7 @@ package auctionHouse.view
       
       private function initInfo() : void
       {
-         var _loc1_:* = null;
+         var obj:* = null;
          if(EquipType.isBead(int(_cell.info.Property1)))
          {
             name_txt.text = beadSystemManager.Instance.getBeadName(_cell.itemInfo);
@@ -491,20 +491,20 @@ package auctionHouse.view
          _bid_btn.enable = true;
          if(SharedManager.Instance.AuctionInfos != null && SharedManager.Instance.AuctionInfos[_cell.info.Name] != null)
          {
-            _loc1_ = SharedManager.Instance.AuctionInfos[_cell.info.Name];
-            if(_loc1_.itemType != _cell.info.Data || _loc1_.itemLevel != _cell.info.Level)
+            obj = SharedManager.Instance.AuctionInfos[_cell.info.Name];
+            if(obj.itemType != _cell.info.Data || obj.itemLevel != _cell.info.Level)
             {
                selectBidUpdate(null);
                return;
             }
-            if(_loc1_)
+            if(obj)
             {
-               _mouthfulM.text = _loc1_.mouthfulPrice == 0?"":_loc1_.mouthfulPrice;
-               if(Number(_loc1_.startPrice) > Number(_startMoney.text))
+               _mouthfulM.text = obj.mouthfulPrice == 0?"":obj.mouthfulPrice;
+               if(Number(obj.startPrice) > Number(_startMoney.text))
                {
-                  _startMoney.text = _loc1_.startPrice;
+                  _startMoney.text = obj.startPrice;
                }
-               var _loc2_:* = _loc1_.time;
+               var _loc2_:* = obj.time;
                if(0 !== _loc2_)
                {
                   if(1 !== _loc2_)
@@ -535,19 +535,19 @@ package auctionHouse.view
          }
       }
       
-      private function __bid_btnOver(param1:MouseEvent) : void
+      private function __bid_btnOver(e:MouseEvent) : void
       {
          _bidLight.visible = true;
       }
       
-      private function __bid_btnOut(param1:MouseEvent) : void
+      private function __bid_btnOut(e:MouseEvent) : void
       {
          _bidLight.visible = false;
       }
       
-      private function __startBid(param1:MouseEvent) : void
+      private function __startBid(event:MouseEvent) : void
       {
-         event = param1;
+         event = event;
          SoundManager.instance.play("047");
          if(_sellLoudBtn.selected)
          {
@@ -561,9 +561,9 @@ package auctionHouse.view
                var alert1:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.auctionHouse.view.AuctionSellLeftView.UseBugle"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
                alert1.moveEnable = false;
                alert1.addChild(_selectCheckBtn);
-               alert1.addEventListener("response",function(param1:FrameEvent):void
+               alert1.addEventListener("response",function(e:FrameEvent):void
                {
-                  if(param1.responseCode == 2 || param1.responseCode == 3)
+                  if(e.responseCode == 2 || e.responseCode == 3)
                   {
                      if(_selectCheckBtn.selected)
                      {
@@ -587,19 +587,19 @@ package auctionHouse.view
          }
       }
       
-      public function sendFastAuctionBugle(param1:int = 11101) : void
+      public function sendFastAuctionBugle(type:int = 11101) : void
       {
-         if(PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(param1,true) <= 0)
+         if(PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(type,true) <= 0)
          {
             if(!_shopBugle || !_shopBugle.info)
             {
-               _shopBugle = new NewShopBugleView(param1);
+               _shopBugle = new NewShopBugleView(type);
             }
-            else if(_shopBugle.type != param1)
+            else if(_shopBugle.type != type)
             {
                _shopBugle.dispose();
                _shopBugle = null;
-               _shopBugle = new NewShopBugleView(param1);
+               _shopBugle = new NewShopBugleView(type);
             }
          }
          else
@@ -608,47 +608,61 @@ package auctionHouse.view
          }
       }
       
-      private function _responseV(param1:FrameEvent) : void
+      private function _responseV(evt:FrameEvent) : void
       {
-         var _loc2_:* = null;
+         var _quick:* = null;
          SoundManager.instance.play("008");
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",_responseV);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         (evt.currentTarget as BaseAlerFrame).removeEventListener("response",_responseV);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
-            _loc2_ = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
-            _loc2_.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
-            _loc2_.itemID = 11233;
-            LayerManager.Instance.addToLayer(_loc2_,2,true,1);
+            _quick = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
+            _quick.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
+            _quick.itemID = 11233;
+            LayerManager.Instance.addToLayer(_quick,2,true,1);
          }
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(evt.currentTarget);
       }
       
       private function auctionGood() : void
       {
-         var _loc3_:int = 0;
-         var _loc7_:int = 0;
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
-         var _loc4_:int = 0;
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
+         var mouthful:int = 0;
+         var price:int = 0;
+         var validTime:int = 0;
+         var goodsCount:int = 0;
+         var bagType:int = 0;
+         var place:int = 0;
+         var itemID:int = 0;
+         var obj:* = null;
          if(_cell.info)
          {
-            _loc3_ = (_cell.info as InventoryItemInfo).BagType;
-            _loc7_ = (_cell.info as InventoryItemInfo).Place;
-            _loc2_ = Math.floor(Number(_startMoney.text));
-            _loc1_ = _mouthfulM.text == ""?0:Number(Math.floor(Number(_mouthfulM.text)));
-            _loc4_ = _selectRate - 1;
-            _loc6_ = _cell.goodsCount;
-            SocketManager.Instance.out.auctionGood(_loc3_,_loc7_,1,_loc2_,_loc1_,_loc4_,_loc6_,_sellLoudBtn.selected);
-            _loc5_ = {};
-            _loc5_.itemName = _cell.info.Name;
-            _loc5_.itemType = _cell.info.Data;
-            _loc5_.itemLevel = _cell.info.Level;
-            _loc5_.startPrice = _loc2_;
-            _loc5_.mouthfulPrice = _loc1_;
-            _loc5_.time = _loc4_;
-            SharedManager.Instance.AuctionInfos[_cell.info.Name] = _loc5_;
+            if(_cell.info.CategoryID != 74)
+            {
+               bagType = (_cell.info as InventoryItemInfo).BagType;
+               place = (_cell.info as InventoryItemInfo).Place;
+               price = Math.floor(Number(_startMoney.text));
+               mouthful = _mouthfulM.text == ""?0:Number(Math.floor(Number(_mouthfulM.text)));
+               validTime = _selectRate - 1;
+               goodsCount = _cell.goodsCount;
+               SocketManager.Instance.out.auctionGood(bagType,place,1,price,mouthful,validTime,goodsCount,_sellLoudBtn.selected);
+            }
+            else
+            {
+               bagType = (_cell.info as InventoryItemInfo).BagType;
+               itemID = (_cell.info as InventoryItemInfo).ItemID;
+               price = Math.floor(Number(_startMoney.text));
+               mouthful = _mouthfulM.text == ""?0:Number(Math.floor(Number(_mouthfulM.text)));
+               validTime = _selectRate - 1;
+               goodsCount = 1;
+               SocketManager.Instance.out.auctionGood(bagType,itemID,1,price,mouthful,validTime,goodsCount,_sellLoudBtn.selected);
+            }
+            obj = {};
+            obj.itemName = _cell.info.Name;
+            obj.itemType = _cell.info.Data;
+            obj.itemLevel = _cell.info.Level;
+            obj.startPrice = price;
+            obj.mouthfulPrice = mouthful;
+            obj.time = validTime;
+            SharedManager.Instance.AuctionInfos[_cell.info.Name] = obj;
             SharedManager.Instance.save();
          }
          selectBidUpdate(null);
@@ -658,7 +672,7 @@ package auctionHouse.view
       
       private function autionFunc() : void
       {
-         var _loc1_:* = null;
+         var alert:* = null;
          if(!_cell.info)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.auctionHouse.view.AuctionSellLeftView.ChooseTwo"));
@@ -684,15 +698,15 @@ package auctionHouse.view
          }
          if(Number(_keep.text) > PlayerManager.Instance.Self.Gold)
          {
-            _loc1_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.title"),LanguageMgr.GetTranslation("tank.view.GoldInadequate"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
-            _loc1_.moveEnable = false;
-            _loc1_.addEventListener("response",_responseV);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.title"),LanguageMgr.GetTranslation("tank.view.GoldInadequate"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
+            alert.moveEnable = false;
+            alert.addEventListener("response",_responseV);
             return;
          }
          auctionGood();
       }
       
-      private function __change(param1:Event) : void
+      private function __change(event:Event) : void
       {
          if(Number(_startMoney.text) == 0)
          {
@@ -701,30 +715,30 @@ package auctionHouse.view
          update();
       }
       
-      private function __textInput(param1:TextEvent) : void
+      private function __textInput(event:TextEvent) : void
       {
-         if(Number(_keep.text) + Number(param1.text) == 0)
+         if(Number(_keep.text) + Number(event.text) == 0)
          {
             if(_keep.selectedText.length <= 0)
             {
-               param1.preventDefault();
+               event.preventDefault();
             }
          }
       }
       
-      private function __textInputMouth(param1:TextEvent) : void
+      private function __textInputMouth(event:TextEvent) : void
       {
-         var _loc2_:TextField = param1.target as TextField;
-         if(Number(_loc2_.text) + Number(param1.text) == 0)
+         var txt:TextField = event.target as TextField;
+         if(Number(txt.text) + Number(event.text) == 0)
          {
-            if(_loc2_.selectedText.length <= 0)
+            if(txt.selectedText.length <= 0)
             {
-               param1.preventDefault();
+               event.preventDefault();
             }
          }
       }
       
-      private function __timeChange(param1:Event) : void
+      private function __timeChange(event:Event) : void
       {
          update();
       }

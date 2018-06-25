@@ -26,12 +26,12 @@ package wantstrong.view
       
       private var _title:String;
       
-      public function WantStrongCell(param1:Vector.<WantStrongMenuData>, param2:String)
+      public function WantStrongCell(info:Vector.<WantStrongMenuData>, title:String)
       {
          _info = new Vector.<WantStrongMenuData>();
          super();
-         _info = param1;
-         _title = param2;
+         _info = info;
+         _title = title;
          buttonMode = true;
          initUI();
       }
@@ -41,13 +41,13 @@ package wantstrong.view
          return _selected;
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         if(_selected == param1)
+         if(_selected == value)
          {
             return;
          }
-         _selected = param1;
+         _selected = value;
          DisplayUtils.setFrame(_bg,!!_selected?2:1);
          DisplayUtils.setFrame(_titlefield,!!_selected?2:1);
       }

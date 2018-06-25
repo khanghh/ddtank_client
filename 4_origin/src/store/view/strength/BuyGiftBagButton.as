@@ -35,19 +35,19 @@ package store.view.strength
          _itemInfo.TemplateID = 2;
          _itemInfo.CategoryID = 11;
          _itemInfo.Description = LanguageMgr.GetTranslation("tank.view.common.BuyGiftBagButton.initliziItemTemplate.info");
-         var _loc1_:GoodTipInfo = new GoodTipInfo();
-         _loc1_.itemInfo = _itemInfo;
-         _loc1_.isBalanceTip = false;
-         _loc1_.typeIsSecond = false;
-         tipData = _loc1_;
+         var goodInfo:GoodTipInfo = new GoodTipInfo();
+         goodInfo.itemInfo = _itemInfo;
+         goodInfo.isBalanceTip = false;
+         goodInfo.typeIsSecond = false;
+         tipData = goodInfo;
       }
       
-      override protected function __onMouseClick(param1:MouseEvent) : void
+      override protected function __onMouseClick(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var alert1:* = null;
          if(_enable)
          {
-            param1.stopImmediatePropagation();
+            event.stopImmediatePropagation();
             SoundManager.instance.play("008");
             if(PlayerManager.Instance.Self.bagLocked)
             {
@@ -59,21 +59,21 @@ package store.view.strength
                LeavePageManager.showFillFrame();
                return;
             }
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("store.view.strength.buyGift"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
-            _loc2_.moveEnable = false;
-            _loc2_.addEventListener("response",_responseI);
+            alert1 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("store.view.strength.buyGift"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
+            alert1.moveEnable = false;
+            alert1.addEventListener("response",_responseI);
          }
       }
       
-      private function _responseI(param1:FrameEvent) : void
+      private function _responseI(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",_responseI);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         (e.currentTarget as BaseAlerFrame).removeEventListener("response",_responseI);
+         if(e.responseCode == 3 || e.responseCode == 2)
          {
             doBuy();
          }
-         ObjectUtils.disposeObject(param1.target);
+         ObjectUtils.disposeObject(e.target);
       }
       
       private function doBuy() : void

@@ -25,24 +25,23 @@ package ddt.view.tips
       
       private function initContainer() : void
       {
-         var _loc4_:* = 0;
-         var _loc2_:Bitmap = null;
-         var _loc3_:Bitmap = null;
-         var _loc1_:uint = Math.ceil(_maxLv / 2);
+         var i:* = 0;
+         var star:Bitmap = null;
+         var grayStar:Bitmap = null;
+         var cnt:uint = Math.ceil(_maxLv / 2);
          _content = new Sprite();
          _bg = new Sprite();
          addChild(_bg);
          addChild(_content);
-         _loc4_ = uint(0);
-         while(_loc4_ < _loc1_)
+         for(i = uint(0); i < cnt; )
          {
-            _loc3_ = ComponentFactory.Instance.creatBitmap("asset.ddtcoreii.ghostGrayStar");
-            _loc3_.x = _loc3_.width * _loc4_;
-            _bg.addChild(_loc3_);
-            _loc2_ = ComponentFactory.Instance.creatBitmap("asset.ddtcoreii.ghostStar");
-            _loc2_.x = _loc2_.width * _loc4_;
-            _content.addChild(_loc2_);
-            _loc4_++;
+            grayStar = ComponentFactory.Instance.creatBitmap("asset.ddtcoreii.ghostGrayStar");
+            grayStar.x = grayStar.width * i;
+            _bg.addChild(grayStar);
+            star = ComponentFactory.Instance.creatBitmap("asset.ddtcoreii.ghostStar");
+            star.x = star.width * i;
+            _content.addChild(star);
+            i++;
          }
          _mask = new Sprite();
          _mask.graphics.beginFill(16777215,1);
@@ -53,14 +52,14 @@ package ddt.view.tips
          _content.addChild(_mask);
       }
       
-      public function set maxLv(param1:uint) : void
+      public function set maxLv(value:uint) : void
       {
-         _maxLv = param1;
+         _maxLv = value;
       }
       
-      public function set level(param1:uint) : void
+      public function set level(value:uint) : void
       {
-         if(param1 > _maxLv)
+         if(value > _maxLv)
          {
             return;
          }
@@ -68,7 +67,7 @@ package ddt.view.tips
          {
             initContainer();
          }
-         _mask.width = param1 / _maxLv * width;
+         _mask.width = value / _maxLv * width;
       }
       
       public function dispose() : void

@@ -39,78 +39,77 @@ package ddt.view.bossbox
          _list = new SimpleTileList(2);
       }
       
-      public function showForVipAward(param1:Array) : void
+      public function showForVipAward(infoList:Array) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         if(!param1 || param1.length < 1)
+         var i:int = 0;
+         var cell:* = null;
+         if(!infoList || infoList.length < 1)
          {
             return;
          }
-         _goodsList = param1;
+         _goodsList = infoList;
          _cells = new Vector.<BoxVipTipsInfoCell>();
          _list.dispose();
          _list = new SimpleTileList(_goodsList.length);
          _list.vSpace = 12;
          _list.hSpace = 120;
          _list.beginChanges();
-         _loc3_ = 0;
-         while(_loc3_ < _goodsList.length)
+         for(i = 0; i < _goodsList.length; )
          {
-            _loc2_ = ComponentFactory.Instance.creatCustomObject("bossbox.BoxVipTipsInfoCell");
-            if(_goodsList[_loc3_])
+            cell = ComponentFactory.Instance.creatCustomObject("bossbox.BoxVipTipsInfoCell");
+            if(_goodsList[i])
             {
-               _loc2_.info = _goodsList[_loc3_] as ItemTemplateInfo;
-               _loc2_.itemName = (_goodsList[_loc3_] as ItemTemplateInfo).Name;
-               _loc2_.isSelect = isCanSelect(_loc3_);
-               if(isCanSelect(_loc3_))
+               cell.info = _goodsList[i] as ItemTemplateInfo;
+               cell.itemName = (_goodsList[i] as ItemTemplateInfo).Name;
+               cell.isSelect = isCanSelect(i);
+               if(isCanSelect(i))
                {
-                  _currentCell = _loc2_;
+                  _currentCell = cell;
                }
-               _list.addChild(_loc2_);
-               _cells.push(_loc2_);
+               _list.addChild(cell);
+               _cells.push(cell);
             }
-            _loc3_++;
+            i++;
          }
          _list.commitChanges();
          addChild(_list);
       }
       
-      private function isCanSelect(param1:int) : Boolean
+      private function isCanSelect(index:int) : Boolean
       {
-         var _loc3_:Boolean = false;
-         var _loc2_:int = PlayerManager.Instance.Self.VIPLevel;
-         switch(int(param1))
+         var resultBool:Boolean = false;
+         var level:int = PlayerManager.Instance.Self.VIPLevel;
+         switch(int(index))
          {
             case 0:
-               _loc3_ = true && _loc2_ < 12;
+               resultBool = true && level < 12;
                break;
             case 1:
-               _loc3_ = false || _loc2_ == 12;
+               resultBool = false || level == 12;
          }
-         return _loc3_;
+         return resultBool;
       }
       
-      private function __cellClick(param1:CellEvent) : void
+      private function __cellClick(e:CellEvent) : void
       {
-         _currentCell = param1.data as BoxVipTipsInfoCell;
+         _currentCell = e.data as BoxVipTipsInfoCell;
       }
       
-      private function getTemplateInfo(param1:int) : InventoryItemInfo
+      private function getTemplateInfo(id:int) : InventoryItemInfo
       {
-         var _loc2_:InventoryItemInfo = new InventoryItemInfo();
-         _loc2_.TemplateID = param1;
-         ItemManager.fill(_loc2_);
-         return _loc2_;
+         var itemInfo:InventoryItemInfo = new InventoryItemInfo();
+         itemInfo.TemplateID = id;
+         ItemManager.fill(itemInfo);
+         return itemInfo;
       }
       
       public function dispose() : void
       {
          var _loc3_:int = 0;
          var _loc2_:* = _cells;
-         for each(var _loc1_ in _cells)
+         for each(var cell in _cells)
          {
-            _loc1_.dispose();
+            cell.dispose();
          }
          _cells.splice(0,_cells.length);
          _cells = null;

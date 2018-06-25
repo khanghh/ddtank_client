@@ -14,58 +14,57 @@ package gameStarling.objects
       
       private var _tempMap:Map3D;
       
-      public function TowBomb3D(param1:Bomb, param2:Living, param3:int = 0, param4:Boolean = false)
+      public function TowBomb3D(info:Bomb, owner:Living, refineryLevel:int = 0, isPhantom:Boolean = false)
       {
-         initData(param1);
-         super(param1,param2,param3,param4);
+         initData(info);
+         super(info,owner,refineryLevel,isPhantom);
       }
       
-      private function initData(param1:Bomb) : void
+      private function initData(info:Bomb) : void
       {
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
-         var _loc4_:Array = [];
-         var _loc3_:Array = [];
-         _loc5_ = 0;
-         while(_loc5_ < param1.Actions.length)
+         var i:int = 0;
+         var tempAction:* = null;
+         var arr1:Array = [];
+         var arr2:Array = [];
+         for(i = 0; i < info.Actions.length; )
          {
-            _loc2_ = param1.Actions[_loc5_] as BombAction3D;
-            if(_loc2_.type == 25 || _loc2_.type == 26 || _loc2_.type == 5 || _loc2_.type == 29)
+            tempAction = info.Actions[i] as BombAction3D;
+            if(tempAction.type == 25 || tempAction.type == 26 || tempAction.type == 5 || tempAction.type == 29)
             {
-               _loc4_.push(_loc2_);
+               arr1.push(tempAction);
             }
             else
             {
-               _loc3_.push(param1.Actions[_loc5_]);
+               arr2.push(info.Actions[i]);
             }
-            _loc5_++;
+            i++;
          }
-         _loc4_.sort(actionSort);
-         _tempAction = _loc4_;
-         param1.Actions = _loc3_;
+         arr1.sort(actionSort);
+         _tempAction = arr1;
+         info.Actions = arr2;
       }
       
-      private function actionSort(param1:BombAction3D, param2:BombAction3D) : int
+      private function actionSort(a:BombAction3D, b:BombAction3D) : int
       {
-         if(param1.time < param2.time)
+         if(a.time < b.time)
          {
             return -1;
          }
-         if(param1.time == param2.time)
+         if(a.time == b.time)
          {
-            if(param1.type == 23)
+            if(a.type == 23)
             {
                return -1;
             }
-            if(param1.type == 5)
+            if(a.type == 5)
             {
                return 1;
             }
-            if(param1.type == 25 || param1.type == 26 || param1.type == 5 || param1.type == 29)
+            if(a.type == 25 || a.type == 26 || a.type == 5 || a.type == 29)
             {
-               if(param2.type == 26 || param2.type == 25 || param2.type == 5 || param1.type == 29)
+               if(b.type == 26 || b.type == 25 || b.type == 5 || a.type == 29)
                {
-                  if(param1.param4 > param2.param4)
+                  if(a.param4 > b.param4)
                   {
                      return 1;
                   }
@@ -77,12 +76,12 @@ package gameStarling.objects
          return 1;
       }
       
-      override public function setMap(param1:Map3D) : void
+      override public function setMap(map:Map3D) : void
       {
-         super.setMap(param1);
-         if(param1 != null)
+         super.setMap(map);
+         if(map != null)
          {
-            _tempMap = param1;
+            _tempMap = map;
          }
       }
       
@@ -99,36 +98,35 @@ package gameStarling.objects
       
       private function checkMonsterAction() : void
       {
-         var _loc7_:int = 0;
-         var _loc3_:* = null;
-         var _loc1_:int = 0;
-         var _loc2_:* = null;
-         var _loc5_:* = null;
-         var _loc4_:DictionaryData = new DictionaryData();
-         _loc7_ = 0;
-         while(_loc7_ < _tempAction.length)
+         var i:int = 0;
+         var action:* = null;
+         var id:int = 0;
+         var arr:* = null;
+         var living:* = null;
+         var dic:DictionaryData = new DictionaryData();
+         for(i = 0; i < _tempAction.length; )
          {
-            _loc3_ = _tempAction[_loc7_] as BombAction3D;
-            _loc1_ = _loc3_.param1;
-            if(!_loc4_.hasKey(_loc1_))
+            action = _tempAction[i] as BombAction3D;
+            id = action.param1;
+            if(!dic.hasKey(id))
             {
-               _loc4_.add(_loc1_,[]);
+               dic.add(id,[]);
             }
-            _loc2_ = _loc4_[_loc1_];
-            _loc2_.push(_loc3_);
-            _loc7_++;
+            arr = dic[id];
+            arr.push(action);
+            i++;
          }
          var _loc9_:int = 0;
-         var _loc8_:* = _loc4_;
-         for(var _loc6_ in _loc4_)
+         var _loc8_:* = dic;
+         for(var key in dic)
          {
-            _loc5_ = (_tempMap as MapView3D).getPhysical(_loc6_) as GameLiving3D;
-            if(_loc5_)
+            living = (_tempMap as MapView3D).getPhysical(key) as GameLiving3D;
+            if(living)
             {
-               _loc5_.startAction(_loc4_[_loc6_]);
+               living.startAction(dic[key]);
             }
          }
-         _loc4_.clear();
+         dic.clear();
       }
       
       override public function dispose() : void

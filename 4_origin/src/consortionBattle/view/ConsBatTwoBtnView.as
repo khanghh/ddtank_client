@@ -84,7 +84,7 @@ package consortionBattle.view
          addChild(_autoBuyBtn);
       }
       
-      private function refreshView(param1:Event = null) : void
+      private function refreshView(event:Event = null) : void
       {
          if(ConsortiaBattleManager.instance.isPowerFullUsed)
          {
@@ -116,14 +116,14 @@ package consortionBattle.view
          ConsortiaBattleManager.instance.addEventListener("consortiaBattleUpdateSceneInfo",refreshView);
       }
       
-      private function autoClickHandler(param1:MouseEvent) : void
+      private function autoClickHandler(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var confirmFrame:* = null;
          if(!_autoBuyBtn.selected)
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.consortiaBattle.autoBuyPowerFullTipTxt"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
-            _loc2_.moveEnable = false;
-            _loc2_.addEventListener("response",__autoBuyConfirm,false,0,true);
+            confirmFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.consortiaBattle.autoBuyPowerFullTipTxt"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
+            confirmFrame.moveEnable = false;
+            confirmFrame.addEventListener("response",__autoBuyConfirm,false,0,true);
          }
          else
          {
@@ -132,12 +132,12 @@ package consortionBattle.view
          }
       }
       
-      private function __autoBuyConfirm(param1:FrameEvent) : void
+      private function __autoBuyConfirm(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__autoBuyConfirm);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",__autoBuyConfirm);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             _autoBuyBtn.selected = true;
             ConsortiaBattleManager.instance.isAutoPowerFull = true;
@@ -166,7 +166,7 @@ package consortionBattle.view
          }
       }
       
-      private function powerFullHandler(param1:MouseEvent) : void
+      private function powerFullHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(getTimer() - _lastPowerFullClickTime <= 1000)
@@ -179,59 +179,59 @@ package consortionBattle.view
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:Object = ConsortiaBattleManager.instance.getBuyRecordStatus(0);
-         if(_loc2_.isNoPrompt)
+         var tmpObj:Object = ConsortiaBattleManager.instance.getBuyRecordStatus(0);
+         if(tmpObj.isNoPrompt)
          {
-            if(_loc2_.isBand && PlayerManager.Instance.Self.BandMoney < 30)
+            if(tmpObj.isBand && PlayerManager.Instance.Self.BandMoney < 30)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.consortiaBattle.buy.noEnoughBindMoneyTxt"));
-               _loc2_.isNoPrompt = false;
+               tmpObj.isNoPrompt = false;
             }
-            else if(!_loc2_.isBand && PlayerManager.Instance.Self.Money < 30)
+            else if(!tmpObj.isBand && PlayerManager.Instance.Self.Money < 30)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.consortiaBattle.buy.noEnoughMoneyTxt"));
-               _loc2_.isNoPrompt = false;
+               tmpObj.isNoPrompt = false;
             }
             else
             {
-               SocketManager.Instance.out.sendConsBatConsume(1,_loc2_.isBand);
+               SocketManager.Instance.out.sendConsBatConsume(1,tmpObj.isBand);
                return;
             }
          }
-         var _loc3_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.consortiaBattle.buyPowerFull.promptTxt"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"ConsBatBuyConfirmView",30,true,1,-15);
-         _loc3_.moveEnable = false;
-         _loc3_.addEventListener("response",__powerFullConfirm,false,0,true);
+         var confirmFrame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.consortiaBattle.buyPowerFull.promptTxt"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"ConsBatBuyConfirmView",30,true,1,-15);
+         confirmFrame.moveEnable = false;
+         confirmFrame.addEventListener("response",__powerFullConfirm,false,0,true);
       }
       
-      private function __powerFullConfirm(param1:FrameEvent) : void
+      private function __powerFullConfirm(evt:FrameEvent) : void
       {
-         var _loc2_:* = null;
+         var tmpObj:* = null;
          SoundManager.instance.play("008");
-         var _loc3_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc3_.removeEventListener("response",__powerFullConfirm);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",__powerFullConfirm);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
-            if(_loc3_.isBand && PlayerManager.Instance.Self.BandMoney < 30)
+            if(confirmFrame.isBand && PlayerManager.Instance.Self.BandMoney < 30)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.consortiaBattle.buy.noEnoughBindMoneyTxt"));
                return;
             }
-            if(!_loc3_.isBand && PlayerManager.Instance.Self.Money < 30)
+            if(!confirmFrame.isBand && PlayerManager.Instance.Self.Money < 30)
             {
                LeavePageManager.showFillFrame();
                return;
             }
-            if((_loc3_ as ConsBatBuyConfirmView).isNoPrompt)
+            if((confirmFrame as ConsBatBuyConfirmView).isNoPrompt)
             {
-               _loc2_ = ConsortiaBattleManager.instance.getBuyRecordStatus(0);
-               _loc2_.isNoPrompt = true;
-               _loc2_.isBand = _loc3_.isBand;
+               tmpObj = ConsortiaBattleManager.instance.getBuyRecordStatus(0);
+               tmpObj.isNoPrompt = true;
+               tmpObj.isBand = confirmFrame.isBand;
             }
-            SocketManager.Instance.out.sendConsBatConsume(1,_loc3_.isBand);
+            SocketManager.Instance.out.sendConsBatConsume(1,confirmFrame.isBand);
          }
       }
       
-      private function doubleScoreHandler(param1:MouseEvent) : void
+      private function doubleScoreHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -239,29 +239,29 @@ package consortionBattle.view
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.consortiaBattle.buyDoubleScore.promptTxt"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"SimpleAlert",30,true,1);
-         _loc2_.moveEnable = false;
-         _loc2_.addEventListener("response",__doubleScoreConfirm,false,0,true);
+         var confirmFrame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.consortiaBattle.buyDoubleScore.promptTxt"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"SimpleAlert",30,true,1);
+         confirmFrame.moveEnable = false;
+         confirmFrame.addEventListener("response",__doubleScoreConfirm,false,0,true);
       }
       
-      private function __doubleScoreConfirm(param1:FrameEvent) : void
+      private function __doubleScoreConfirm(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__doubleScoreConfirm);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",__doubleScoreConfirm);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
-            if(_loc2_.isBand && PlayerManager.Instance.Self.BandMoney < 300)
+            if(confirmFrame.isBand && PlayerManager.Instance.Self.BandMoney < 300)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.consortiaBattle.buy.noEnoughBindMoneyTxt"));
                return;
             }
-            if(!_loc2_.isBand && PlayerManager.Instance.Self.Money < 300)
+            if(!confirmFrame.isBand && PlayerManager.Instance.Self.Money < 300)
             {
                LeavePageManager.showFillFrame();
                return;
             }
-            SocketManager.Instance.out.sendConsBatConsume(2,_loc2_.isBand);
+            SocketManager.Instance.out.sendConsBatConsume(2,confirmFrame.isBand);
          }
       }
       

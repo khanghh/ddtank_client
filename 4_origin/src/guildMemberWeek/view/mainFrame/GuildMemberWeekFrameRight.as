@@ -25,9 +25,9 @@ package guildMemberWeek.view.mainFrame
          initView();
       }
       
-      public function set itemList(param1:Vector.<AddRankingRecordItem>) : void
+      public function set itemList(value:Vector.<AddRankingRecordItem>) : void
       {
-         this._itemList = param1;
+         this._itemList = value;
       }
       
       public function get itemList() : Vector.<AddRankingRecordItem>
@@ -53,32 +53,31 @@ package guildMemberWeek.view.mainFrame
       
       public function UpRecord() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:int = GuildMemberWeekManager.instance.model.AddRanking.length;
-         var _loc3_:int = itemList.length;
-         _loc3_;
-         while(_loc3_ < _loc2_)
+         var item:* = null;
+         var L:int = GuildMemberWeekManager.instance.model.AddRanking.length;
+         var i:int = itemList.length;
+         i;
+         while(i < L)
          {
-            _loc1_ = ComponentFactory.Instance.creatCustomObject("guildmemberweek.MainFrame.Right.AddRankingRecordItem");
-            _loc1_.initText(GuildMemberWeekManager.instance.model.AddRanking[_loc3_]);
-            itemList.push(_loc1_);
-            _list.addChild(itemList[_loc3_]);
-            _loc3_++;
+            item = ComponentFactory.Instance.creatCustomObject("guildmemberweek.MainFrame.Right.AddRankingRecordItem");
+            item.initText(GuildMemberWeekManager.instance.model.AddRanking[i]);
+            itemList.push(item);
+            _list.addChild(itemList[i]);
+            i++;
          }
          _panel.invalidateViewport();
       }
       
       private function disposeItems() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(itemList)
          {
-            _loc1_ = 0;
-            while(_loc1_ < itemList.length)
+            for(i = 0; i < itemList.length; )
             {
-               ObjectUtils.disposeObject(itemList[_loc1_]);
-               itemList[_loc1_] = null;
-               _loc1_++;
+               ObjectUtils.disposeObject(itemList[i]);
+               itemList[i] = null;
+               i++;
             }
             itemList = null;
          }

@@ -29,7 +29,7 @@ package petIsland
          PetIslandManager.instance.addEventListener("showMainView",__showPetIslandHandler);
       }
       
-      private function __showPetIslandHandler(param1:Event) : void
+      private function __showPetIslandHandler(e:Event) : void
       {
          if(StateManager.currentStateType != "petIsland")
          {

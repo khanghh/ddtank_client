@@ -30,7 +30,7 @@ package dice
          DiceController.Instance.addEventListener("showMainView",__showPetIslandHandler);
       }
       
-      private function __showPetIslandHandler(param1:DiceEvent) : void
+      private function __showPetIslandHandler(e:DiceEvent) : void
       {
          if(StateManager.currentStateType != "diceSystem")
          {

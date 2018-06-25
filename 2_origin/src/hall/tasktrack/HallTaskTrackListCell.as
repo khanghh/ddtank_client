@@ -81,7 +81,7 @@ package hall.tasktrack
          addChild(_extendUnMc);
       }
       
-      public function setListCellStatus(param1:List, param2:Boolean, param3:int) : void
+      public function setListCellStatus(list:List, isSelected:Boolean, index:int) : void
       {
       }
       
@@ -90,31 +90,31 @@ package hall.tasktrack
          return _info;
       }
       
-      public function setCellValue(param1:*) : void
+      public function setCellValue(value:*) : void
       {
-         _info = param1 as QuestInfo;
+         _info = value as QuestInfo;
          updateViewData();
       }
       
       private function updateViewData() : void
       {
-         var _loc2_:* = null;
-         var _loc3_:Boolean = false;
-         var _loc9_:* = null;
-         var _loc13_:* = null;
-         var _loc7_:int = 0;
-         var _loc4_:* = null;
-         var _loc11_:* = null;
-         var _loc1_:* = null;
-         var _loc10_:* = null;
-         var _loc8_:* = null;
+         var tmpCondition:* = null;
+         var isHasOpitional:Boolean = false;
+         var tmp2:* = null;
+         var tmpHtmlText2:* = null;
+         var i:int = 0;
+         var cond:* = null;
+         var tmp:* = null;
+         var tmpText:* = null;
+         var tmpHtmlText:* = null;
+         var tinfo:* = null;
          _conditionTxtVBox.removeAllChild();
          var _loc15_:int = 0;
          var _loc14_:* = _conditionTxtList;
-         for each(var _loc5_ in _conditionTxtList)
+         for each(var txt in _conditionTxtList)
          {
-            _loc5_.removeEventListener("link",textClickHandler);
-            ObjectUtils.disposeObject(_loc5_);
+            txt.removeEventListener("link",textClickHandler);
+            ObjectUtils.disposeObject(txt);
          }
          _conditionTxtList = new Vector.<FilterFrameText>();
          _titleTxt.visible = false;
@@ -137,56 +137,56 @@ package hall.tasktrack
             _titleTxt.htmlText = "";
             _titleTxt.mouseEnabled = false;
             _titleTxt.text = ">>" + _info.Title;
-            _loc2_ = _info.conditions;
-            _loc3_ = false;
+            tmpCondition = _info.conditions;
+            isHasOpitional = false;
             var _loc17_:int = 0;
-            var _loc16_:* = _loc2_;
-            for each(var _loc6_ in _loc2_)
+            var _loc16_:* = tmpCondition;
+            for each(var qc in tmpCondition)
             {
-               if(_loc6_.isOpitional)
+               if(qc.isOpitional)
                {
-                  _loc3_ = true;
+                  isHasOpitional = true;
                   break;
                }
             }
             if(!_info.isCompleted)
             {
-               if(_loc3_)
+               if(isHasOpitional)
                {
-                  _loc9_ = ComponentFactory.Instance.creatComponentByStylename("hall.taskTrack.cellConditionTxt");
-                  _loc9_.mouseEnabled = true;
-                  _loc9_.addEventListener("link",textClickHandler);
-                  _conditionTxtList.push(_loc9_);
-                  _loc13_ = "<u><a href=\"event:-1\">" + LanguageMgr.GetTranslation("hall.taskTrack.tipTxt") + "</a></u>";
-                  _loc9_.htmlText = _loc13_;
-                  _conditionTxtVBox.addChild(_loc9_);
+                  tmp2 = ComponentFactory.Instance.creatComponentByStylename("hall.taskTrack.cellConditionTxt");
+                  tmp2.mouseEnabled = true;
+                  tmp2.addEventListener("link",textClickHandler);
+                  _conditionTxtList.push(tmp2);
+                  tmpHtmlText2 = "<u><a href=\"event:-1\">" + LanguageMgr.GetTranslation("hall.taskTrack.tipTxt") + "</a></u>";
+                  tmp2.htmlText = tmpHtmlText2;
+                  _conditionTxtVBox.addChild(tmp2);
                }
                else
                {
-                  _loc7_ = 0;
-                  while(_info.conditions[_loc7_])
+                  i = 0;
+                  while(_info.conditions[i])
                   {
-                     _loc4_ = _info.conditions[_loc7_];
-                     if(_info.progress[_loc7_] > 0)
+                     cond = _info.conditions[i];
+                     if(_info.progress[i] > 0)
                      {
-                        _loc11_ = ComponentFactory.Instance.creatComponentByStylename("hall.taskTrack.cellConditionTxt");
-                        _loc11_.addEventListener("link",textClickHandler);
-                        _conditionTxtList.push(_loc11_);
-                        _loc1_ = _loc4_.description + _info.conditionStatus[_loc7_];
-                        if(isCanTrack(_info.MapID,_info.conditions[_loc7_].type,_info.conditions[_loc7_].param))
+                        tmp = ComponentFactory.Instance.creatComponentByStylename("hall.taskTrack.cellConditionTxt");
+                        tmp.addEventListener("link",textClickHandler);
+                        _conditionTxtList.push(tmp);
+                        tmpText = cond.description + _info.conditionStatus[i];
+                        if(isCanTrack(_info.MapID,_info.conditions[i].type,_info.conditions[i].param))
                         {
-                           _loc10_ = "<u><a href=\"event:" + _info.conditions[_loc7_].type + "\">" + _loc1_ + "</a></u>";
-                           _loc11_.htmlText = _loc10_;
-                           _loc11_.mouseEnabled = true;
+                           tmpHtmlText = "<u><a href=\"event:" + _info.conditions[i].type + "\">" + tmpText + "</a></u>";
+                           tmp.htmlText = tmpHtmlText;
+                           tmp.mouseEnabled = true;
                         }
                         else
                         {
-                           _loc11_.htmlText = _loc1_;
-                           _loc11_.mouseEnabled = false;
+                           tmp.htmlText = tmpText;
+                           tmp.mouseEnabled = false;
                         }
-                        _conditionTxtVBox.addChild(_loc11_);
+                        _conditionTxtVBox.addChild(tmp);
                      }
-                     _loc7_++;
+                     i++;
                   }
                }
             }
@@ -199,14 +199,14 @@ package hall.tasktrack
                _titleTxt.textColor = 3652688;
                var _loc19_:int = 0;
                var _loc18_:* = _info.itemRewards;
-               for each(var _loc12_ in _info.itemRewards)
+               for each(var temp in _info.itemRewards)
                {
-                  _loc8_ = new InventoryItemInfo();
-                  _loc8_.TemplateID = _loc12_.itemID;
-                  ItemManager.fill(_loc8_);
-                  if(!(0 != _loc8_.NeedSex && getSexByInt(PlayerManager.Instance.Self.Sex) != _loc8_.NeedSex))
+                  tinfo = new InventoryItemInfo();
+                  tinfo.TemplateID = temp.itemID;
+                  ItemManager.fill(tinfo);
+                  if(!(0 != tinfo.NeedSex && getSexByInt(PlayerManager.Instance.Self.Sex) != tinfo.NeedSex))
                   {
-                     if(_loc12_.isOptional == 1)
+                     if(temp.isOptional == 1)
                      {
                         hasOptionalAward = true;
                      }
@@ -224,14 +224,14 @@ package hall.tasktrack
          }
       }
       
-      private function onFinishHandler(param1:TextEvent) : void
+      private function onFinishHandler(event:TextEvent) : void
       {
-         var _loc2_:* = null;
+         var alert:* = null;
          SoundManager.instance.play("008");
          if(_info.RewardBindMoney != 0 && _info.RewardBindMoney + PlayerManager.Instance.Self.DDTMoney > ServerConfigManager.instance.getBindBidLimit(PlayerManager.Instance.Self.Grade,PlayerManager.Instance.Self.VIPLevel))
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.BindBid.tip"),LanguageMgr.GetTranslation("shop.PresentFrame.OkBtnText"),LanguageMgr.GetTranslation("shop.PresentFrame.CancelBtnText"),false,false,true,1);
-            _loc2_.addEventListener("response",__onResponse);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.BindBid.tip"),LanguageMgr.GetTranslation("shop.PresentFrame.OkBtnText"),LanguageMgr.GetTranslation("shop.PresentFrame.CancelBtnText"),false,false,true,1);
+            alert.addEventListener("response",__onResponse);
          }
          else
          {
@@ -239,45 +239,45 @@ package hall.tasktrack
          }
       }
       
-      private function finishQuest(param1:QuestInfo) : void
+      private function finishQuest(pQuestInfo:QuestInfo) : void
       {
-         var _loc2_:* = null;
-         var _loc4_:* = null;
-         if(param1 && !param1.isCompleted)
+         var items:* = null;
+         var info:* = null;
+         if(pQuestInfo && !pQuestInfo.isCompleted)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.task.TaskCatalogContentView.dropTaskIII"));
-            setCellValue(param1);
+            setCellValue(pQuestInfo);
             return;
          }
          if(hasOptionalAward)
          {
-            _loc2_ = [];
+            items = [];
             var _loc6_:int = 0;
-            var _loc5_:* = param1.itemRewards;
-            for each(var _loc3_ in param1.itemRewards)
+            var _loc5_:* = pQuestInfo.itemRewards;
+            for each(var temp in pQuestInfo.itemRewards)
             {
-               _loc4_ = new InventoryItemInfo();
-               _loc4_.TemplateID = _loc3_.itemID;
-               ItemManager.fill(_loc4_);
-               _loc4_.ValidDate = _loc3_.ValidateTime;
-               _loc4_.TemplateID = _loc3_.itemID;
-               _loc4_.IsJudge = true;
-               _loc4_.IsBinds = _loc3_.isBind;
-               _loc4_.AttackCompose = _loc3_.AttackCompose;
-               _loc4_.DefendCompose = _loc3_.DefendCompose;
-               _loc4_.AgilityCompose = _loc3_.AgilityCompose;
-               _loc4_.LuckCompose = _loc3_.LuckCompose;
-               _loc4_.StrengthenLevel = _loc3_.StrengthenLevel;
-               _loc4_.Count = _loc3_.count[param1.QuestLevel - 1];
-               if(!(0 != _loc4_.NeedSex && getSexByInt(PlayerManager.Instance.Self.Sex) != _loc4_.NeedSex))
+               info = new InventoryItemInfo();
+               info.TemplateID = temp.itemID;
+               ItemManager.fill(info);
+               info.ValidDate = temp.ValidateTime;
+               info.TemplateID = temp.itemID;
+               info.IsJudge = true;
+               info.IsBinds = temp.isBind;
+               info.AttackCompose = temp.AttackCompose;
+               info.DefendCompose = temp.DefendCompose;
+               info.AgilityCompose = temp.AgilityCompose;
+               info.LuckCompose = temp.LuckCompose;
+               info.StrengthenLevel = temp.StrengthenLevel;
+               info.Count = temp.count[pQuestInfo.QuestLevel - 1];
+               if(!(0 != info.NeedSex && getSexByInt(PlayerManager.Instance.Self.Sex) != info.NeedSex))
                {
-                  if(_loc3_.isOptional == 1)
+                  if(temp.isOptional == 1)
                   {
-                     _loc2_.push(_loc4_);
+                     items.push(info);
                   }
                }
             }
-            HallTaskTrackManager.instance.moduleLoad(showSelectedAwardFrame,[_loc2_]);
+            HallTaskTrackManager.instance.moduleLoad(showSelectedAwardFrame,[items]);
          }
          else
          {
@@ -289,44 +289,44 @@ package hall.tasktrack
          }
       }
       
-      private function showSelectedAwardFrame(param1:Array) : void
+      private function showSelectedAwardFrame(items:Array) : void
       {
-         TryonSystemController.Instance.show(param1,chooseReward,null);
+         TryonSystemController.Instance.show(items,chooseReward,null);
       }
       
-      private function __onResponse(param1:FrameEvent) : void
+      private function __onResponse(pEvent:FrameEvent) : void
       {
-         param1.currentTarget.removeEventListener("response",__onResponse);
-         if(param1.responseCode == 3)
+         pEvent.currentTarget.removeEventListener("response",__onResponse);
+         if(pEvent.responseCode == 3)
          {
             finishQuest(_info);
          }
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(pEvent.currentTarget);
       }
       
-      private function getSexByInt(param1:Boolean) : int
+      private function getSexByInt(Sex:Boolean) : int
       {
-         if(param1)
+         if(Sex)
          {
             return 1;
          }
          return 2;
       }
       
-      private function chooseReward(param1:ItemTemplateInfo) : void
+      private function chooseReward(item:ItemTemplateInfo) : void
       {
-         SocketManager.Instance.out.sendQuestFinish(_info.QuestID,param1.TemplateID);
+         SocketManager.Instance.out.sendQuestFinish(_info.QuestID,item.TemplateID);
       }
       
-      private function textClickHandler(param1:TextEvent) : void
+      private function textClickHandler(event:TextEvent) : void
       {
          if(_info.MapID > 0)
          {
             TaskManager.instance.jumpToQuestByID(_info.QuestID);
             return;
          }
-         var _loc3_:Dictionary = HallTaskTrackManager.instance.btnIndexMap;
-         var _loc2_:int = param1.text;
+         var idxMap:Dictionary = HallTaskTrackManager.instance.btnIndexMap;
+         var tmp:int = event.text;
          switch(int(_info.ConditionTurn) - -1)
          {
             case 0:
@@ -336,27 +336,27 @@ package hall.tasktrack
                TaskManager.instance.jumpToQuestByID(_info.QuestID);
                break;
             case 2:
-               if(_loc2_ == 9)
+               if(tmp == 9)
                {
                   NoviceDataManager.instance.saveNoviceData(670,PathManager.userName(),PathManager.solveRequestPath());
                }
-               else if(_loc2_ == 19)
+               else if(tmp == 19)
                {
                   IsStore = true;
                   NoviceDataManager.instance.saveNoviceData(850,PathManager.userName(),PathManager.solveRequestPath());
                }
-               (HallTaskTrackManager.instance.btnList[_loc3_["store"]] as BaseButton).dispatchEvent(new MouseEvent("click"));
+               (HallTaskTrackManager.instance.btnList[idxMap["store"]] as BaseButton).dispatchEvent(new MouseEvent("click"));
                break;
             case 3:
-               (HallTaskTrackManager.instance.btnList[_loc3_["constrion"]] as BaseButton).dispatchEvent(new MouseEvent("click"));
+               (HallTaskTrackManager.instance.btnList[idxMap["constrion"]] as BaseButton).dispatchEvent(new MouseEvent("click"));
                break;
             case 4:
                break;
             case 5:
-               (HallTaskTrackManager.instance.btnList[_loc3_["dungeon"]] as BaseButton).dispatchEvent(new MouseEvent("click"));
+               (HallTaskTrackManager.instance.btnList[idxMap["dungeon"]] as BaseButton).dispatchEvent(new MouseEvent("click"));
                break;
             case 6:
-               (HallTaskTrackManager.instance.btnList[_loc3_["roomList"]] as BaseButton).dispatchEvent(new MouseEvent("click"));
+               (HallTaskTrackManager.instance.btnList[idxMap["roomList"]] as BaseButton).dispatchEvent(new MouseEvent("click"));
                break;
             case 7:
                BagAndInfoManager.Instance.showBagAndInfo();
@@ -369,10 +369,10 @@ package hall.tasktrack
             case 10:
                break;
             case 11:
-               (HallTaskTrackManager.instance.btnList[_loc3_["home"]] as BaseButton).dispatchEvent(new MouseEvent("click"));
+               (HallTaskTrackManager.instance.btnList[idxMap["home"]] as BaseButton).dispatchEvent(new MouseEvent("click"));
                break;
             case 12:
-               (HallTaskTrackManager.instance.btnList[_loc3_["cryptBoss"]] as BaseButton).dispatchEvent(new MouseEvent("click"));
+               (HallTaskTrackManager.instance.btnList[idxMap["cryptBoss"]] as BaseButton).dispatchEvent(new MouseEvent("click"));
                break;
             case 13:
                NoviceDataManager.instance.saveNoviceData(820,PathManager.userName(),PathManager.solveRequestPath());
@@ -382,13 +382,13 @@ package hall.tasktrack
                PetsBagManager.instance().show();
                break;
             case 15:
-               (HallTaskTrackManager.instance.btnList[_loc3_["labyrinth"]] as BaseButton).dispatchEvent(new MouseEvent("click"));
+               (HallTaskTrackManager.instance.btnList[idxMap["labyrinth"]] as BaseButton).dispatchEvent(new MouseEvent("click"));
                break;
             case 16:
                BuriedManager.Instance.enter();
                break;
             case 17:
-               (HallTaskTrackManager.instance.btnList[_loc3_["ringStation"]] as BaseButton).dispatchEvent(new MouseEvent("click"));
+               (HallTaskTrackManager.instance.btnList[idxMap["ringStation"]] as BaseButton).dispatchEvent(new MouseEvent("click"));
          }
       }
       
@@ -450,13 +450,13 @@ package hall.tasktrack
          }
       }
       
-      private function isCanTrack(param1:int, param2:int, param3:int) : Boolean
+      private function isCanTrack(mapId:int, typeId:int, param:int) : Boolean
       {
-         if(param1 > 0)
+         if(mapId > 0)
          {
             return true;
          }
-         var _loc4_:* = param2;
+         var _loc4_:* = typeId;
          if(4 !== _loc4_)
          {
             if(5 !== _loc4_)
@@ -530,110 +530,110 @@ package hall.tasktrack
                                                                                                                   return false;
                                                                                                                }
                                                                                                             }
-                                                                                                            addr49:
+                                                                                                            addr62:
                                                                                                             return true;
                                                                                                          }
-                                                                                                         addr48:
-                                                                                                         §§goto(addr49);
+                                                                                                         addr61:
+                                                                                                         §§goto(addr62);
                                                                                                       }
-                                                                                                      addr47:
-                                                                                                      §§goto(addr48);
+                                                                                                      addr60:
+                                                                                                      §§goto(addr61);
                                                                                                    }
-                                                                                                   addr46:
-                                                                                                   §§goto(addr47);
+                                                                                                   addr59:
+                                                                                                   §§goto(addr60);
                                                                                                 }
-                                                                                                addr45:
-                                                                                                §§goto(addr46);
+                                                                                                addr58:
+                                                                                                §§goto(addr59);
                                                                                              }
-                                                                                             addr44:
-                                                                                             §§goto(addr45);
+                                                                                             addr57:
+                                                                                             §§goto(addr58);
                                                                                           }
-                                                                                          addr43:
-                                                                                          §§goto(addr44);
+                                                                                          addr56:
+                                                                                          §§goto(addr57);
                                                                                        }
-                                                                                       addr42:
-                                                                                       §§goto(addr43);
+                                                                                       addr55:
+                                                                                       §§goto(addr56);
                                                                                     }
-                                                                                    addr41:
-                                                                                    §§goto(addr42);
+                                                                                    addr54:
+                                                                                    §§goto(addr55);
                                                                                  }
-                                                                                 addr40:
-                                                                                 §§goto(addr41);
+                                                                                 addr53:
+                                                                                 §§goto(addr54);
                                                                               }
-                                                                              addr39:
-                                                                              §§goto(addr40);
+                                                                              addr52:
+                                                                              §§goto(addr53);
                                                                            }
-                                                                           addr38:
-                                                                           §§goto(addr39);
+                                                                           addr51:
+                                                                           §§goto(addr52);
                                                                         }
-                                                                        addr37:
-                                                                        §§goto(addr38);
+                                                                        addr50:
+                                                                        §§goto(addr51);
                                                                      }
-                                                                     addr36:
-                                                                     §§goto(addr37);
+                                                                     addr49:
+                                                                     §§goto(addr50);
                                                                   }
-                                                                  addr35:
-                                                                  §§goto(addr36);
+                                                                  addr48:
+                                                                  §§goto(addr49);
                                                                }
-                                                               addr34:
-                                                               §§goto(addr35);
+                                                               addr47:
+                                                               §§goto(addr48);
                                                             }
-                                                            addr33:
-                                                            §§goto(addr34);
+                                                            addr46:
+                                                            §§goto(addr47);
                                                          }
-                                                         addr32:
-                                                         §§goto(addr33);
+                                                         addr45:
+                                                         §§goto(addr46);
                                                       }
-                                                      addr31:
-                                                      §§goto(addr32);
+                                                      addr44:
+                                                      §§goto(addr45);
                                                    }
-                                                   addr30:
-                                                   §§goto(addr31);
+                                                   addr43:
+                                                   §§goto(addr44);
                                                 }
-                                                addr29:
-                                                §§goto(addr30);
+                                                addr42:
+                                                §§goto(addr43);
                                              }
-                                             addr28:
-                                             §§goto(addr29);
+                                             addr41:
+                                             §§goto(addr42);
                                           }
-                                          addr27:
-                                          §§goto(addr28);
+                                          addr40:
+                                          §§goto(addr41);
                                        }
-                                       addr26:
-                                       §§goto(addr27);
+                                       addr39:
+                                       §§goto(addr40);
                                     }
-                                    addr25:
-                                    §§goto(addr26);
+                                    addr38:
+                                    §§goto(addr39);
                                  }
-                                 addr24:
-                                 §§goto(addr25);
+                                 addr37:
+                                 §§goto(addr38);
                               }
-                              addr23:
-                              §§goto(addr24);
+                              addr36:
+                              §§goto(addr37);
                            }
-                           addr22:
-                           §§goto(addr23);
+                           addr35:
+                           §§goto(addr36);
                         }
-                        addr21:
-                        §§goto(addr22);
+                        addr34:
+                        §§goto(addr35);
                      }
-                     addr20:
-                     §§goto(addr21);
+                     addr33:
+                     §§goto(addr34);
                   }
-                  addr14:
-                  if(param3 == 14)
+                  addr23:
+                  if(param == 14)
                   {
                      return false;
                   }
-                  §§goto(addr20);
+                  §§goto(addr33);
                }
-               addr13:
-               §§goto(addr14);
+               addr22:
+               §§goto(addr23);
             }
-            addr12:
-            §§goto(addr13);
+            addr21:
+            §§goto(addr22);
          }
-         §§goto(addr12);
+         §§goto(addr21);
       }
       
       public function asDisplayObject() : DisplayObject
@@ -646,10 +646,10 @@ package hall.tasktrack
          _titleTxt.removeEventListener("link",onFinishHandler);
          var _loc3_:int = 0;
          var _loc2_:* = _conditionTxtList;
-         for each(var _loc1_ in _conditionTxtList)
+         for each(var txt in _conditionTxtList)
          {
-            _loc1_.removeEventListener("link",textClickHandler);
-            ObjectUtils.disposeObject(_loc1_);
+            txt.removeEventListener("link",textClickHandler);
+            ObjectUtils.disposeObject(txt);
          }
          ObjectUtils.disposeAllChildren(this);
          _titleTxt = null;

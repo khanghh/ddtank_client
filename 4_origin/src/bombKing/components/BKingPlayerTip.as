@@ -41,7 +41,7 @@ package bombKing.components
          _viewInfo.addEventListener("click",__onViewInfo);
       }
       
-      protected function __onViewInfo(param1:MouseEvent) : void
+      protected function __onViewInfo(event:MouseEvent) : void
       {
          if(userId)
          {
@@ -50,10 +50,10 @@ package bombKing.components
          }
       }
       
-      public function setUserId(param1:int, param2:int) : void
+      public function setUserId(userId:int, areaId:int) : void
       {
-         this.userId = param1;
-         this.areaId = param2;
+         this.userId = userId;
+         this.areaId = areaId;
       }
       
       private function removeEvents() : void

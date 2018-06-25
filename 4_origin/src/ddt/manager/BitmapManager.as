@@ -35,38 +35,38 @@ package ddt.manager
          _bitmapPool = {};
       }
       
-      public static function hasMgr(param1:String) : Boolean
+      public static function hasMgr(name:String) : Boolean
       {
-         return _mgrPool.hasOwnProperty(param1);
+         return _mgrPool.hasOwnProperty(name);
       }
       
-      private static function registerMgr(param1:String, param2:BitmapManager) : void
+      private static function registerMgr(name:String, mgr:BitmapManager) : void
       {
-         _mgrPool[param1] = param2;
+         _mgrPool[name] = mgr;
       }
       
-      private static function removeMgr(param1:String) : void
+      private static function removeMgr(name:String) : void
       {
-         if(hasMgr(param1))
+         if(hasMgr(name))
          {
-            delete _mgrPool[param1];
+            delete _mgrPool[name];
          }
       }
       
-      public static function getBitmapMgr(param1:String) : BitmapManager
+      public static function getBitmapMgr(name:String) : BitmapManager
       {
-         var _loc2_:* = null;
-         if(hasMgr(param1))
+         var mgr:* = null;
+         if(hasMgr(name))
          {
-            _loc2_ = _mgrPool[param1];
-            _loc2_.linkCount = Number(_loc2_.linkCount) + 1;
-            return _loc2_;
+            mgr = _mgrPool[name];
+            mgr.linkCount = Number(mgr.linkCount) + 1;
+            return mgr;
          }
-         _loc2_ = new BitmapManager();
-         _loc2_.name = param1;
-         _loc2_.linkCount = Number(_loc2_.linkCount) + 1;
-         registerMgr(param1,_loc2_);
-         return _loc2_;
+         mgr = new BitmapManager();
+         mgr.name = name;
+         mgr.linkCount = Number(mgr.linkCount) + 1;
+         registerMgr(name,mgr);
+         return mgr;
       }
       
       public function dispose() : void
@@ -80,89 +80,89 @@ package ddt.manager
       
       private function destory() : void
       {
-         var _loc1_:* = null;
+         var bitmap:* = null;
          removeMgr(name);
          var _loc4_:int = 0;
          var _loc3_:* = _bitmapPool;
-         for(var _loc2_ in _bitmapPool)
+         for(var key in _bitmapPool)
          {
-            _loc1_ = _bitmapPool[_loc2_];
-            _loc1_.destory();
-            delete _bitmapPool[_loc2_];
+            bitmap = _bitmapPool[key];
+            bitmap.destory();
+            delete _bitmapPool[key];
          }
          _bitmapPool = null;
       }
       
-      public function creatBitmapShape(param1:String, param2:Matrix = null, param3:Boolean = true, param4:Boolean = false) : BitmapShape
+      public function creatBitmapShape(name:String, matrix:Matrix = null, repeat:Boolean = true, smooth:Boolean = false) : BitmapShape
       {
-         return new BitmapShape(getBitmap(param1),param2,param3,param4);
+         return new BitmapShape(getBitmap(name),matrix,repeat,smooth);
       }
       
-      public function hasBitmap(param1:String) : Boolean
+      public function hasBitmap(name:String) : Boolean
       {
-         return _bitmapPool.hasOwnProperty(param1);
+         return _bitmapPool.hasOwnProperty(name);
       }
       
-      public function getBitmap(param1:String) : BitmapObject
+      public function getBitmap(name:String) : BitmapObject
       {
-         var _loc2_:* = null;
-         if(hasBitmap(param1))
+         var bitmap:* = null;
+         if(hasBitmap(name))
          {
-            _loc2_ = _bitmapPool[param1];
-            _loc2_.linkCount = Number(_loc2_.linkCount) + 1;
-            return _loc2_;
+            bitmap = _bitmapPool[name];
+            bitmap.linkCount = Number(bitmap.linkCount) + 1;
+            return bitmap;
          }
-         _loc2_ = createBitmap(param1);
-         _loc2_.manager = this;
-         _loc2_.linkCount = Number(_loc2_.linkCount) + 1;
-         return _loc2_;
+         bitmap = createBitmap(name);
+         bitmap.manager = this;
+         bitmap.linkCount = Number(bitmap.linkCount) + 1;
+         return bitmap;
       }
       
-      private function createBitmap(param1:String) : BitmapObject
+      private function createBitmap(name:String) : BitmapObject
       {
-         var _loc2_:* = null;
-         var _loc3_:* = ComponentFactory.Instance.creat(param1);
-         if(_loc3_ is BitmapData)
+         var bitmap:* = null;
+         var display:* = ComponentFactory.Instance.creat(name);
+         if(display is BitmapData)
          {
-            _loc2_ = new BitmapObject(_loc3_.width,_loc3_.height,true,0);
-            _loc2_.copyPixels(_loc3_,_loc3_.rect,destPoint);
-            _loc2_.linkName = param1;
-            addBitmap(_loc2_);
-            return _loc2_;
+            bitmap = new BitmapObject(display.width,display.height,true,0);
+            bitmap.copyPixels(display,display.rect,destPoint);
+            bitmap.linkName = name;
+            addBitmap(bitmap);
+            return bitmap;
          }
-         if(_loc3_ is Bitmap)
+         if(display is Bitmap)
          {
-            _loc2_ = new BitmapObject(_loc3_.bitmapData.width,_loc3_.bitmapData.height,true,0);
-            _loc2_.copyPixels(_loc3_.bitmapData,_loc3_.bitmapData.rect,destPoint);
-            _loc2_.linkName = param1;
-            addBitmap(_loc2_);
-            return _loc2_;
+            bitmap = new BitmapObject(display.bitmapData.width,display.bitmapData.height,true,0);
+            bitmap.copyPixels(display.bitmapData,display.bitmapData.rect,destPoint);
+            bitmap.linkName = name;
+            addBitmap(bitmap);
+            return bitmap;
          }
-         if(_loc3_ is DisplayObject)
+         if(display is DisplayObject)
          {
-            _loc2_ = new BitmapObject(_loc3_.width,_loc3_.height,true,0);
-            _loc2_.draw(_loc3_ as IBitmapDrawable);
-            _loc2_.linkName = param1;
-            addBitmap(_loc2_);
-            return _loc2_;
+            bitmap = new BitmapObject(display.width,display.height,true,0);
+            bitmap.draw(display as IBitmapDrawable);
+            bitmap.linkName = name;
+            addBitmap(bitmap);
+            return bitmap;
          }
          return null;
       }
       
-      private function addBitmap(param1:BitmapObject) : void
+      private function addBitmap(bitmap:BitmapObject) : void
       {
-         if(!hasBitmap(param1.linkName))
+         if(!hasBitmap(bitmap.linkName))
          {
             _len = Number(_len) + 1;
          }
-         param1.linkCount = 0;
-         param1.manager = this;
-         _bitmapPool[param1.linkName] = param1;
+         bitmap.linkCount = 0;
+         bitmap.manager = this;
+         _bitmapPool[bitmap.linkName] = bitmap;
       }
       
-      private function removeBitmap(param1:BitmapObject) : void
+      private function removeBitmap(bitmap:BitmapObject) : void
       {
-         if(hasBitmap(param1.linkName))
+         if(hasBitmap(bitmap.linkName))
          {
             _len = Number(_len) - 1;
          }

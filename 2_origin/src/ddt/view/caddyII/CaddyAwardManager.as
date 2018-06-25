@@ -26,11 +26,11 @@ package ddt.view.caddyII
          return _instance;
       }
       
-      public function completeHander(param1:CaddyAwardDataAnalyzer) : void
+      public function completeHander(analyzer:CaddyAwardDataAnalyzer) : void
       {
-         _awards = param1._awards;
-         _silverAwards = param1._silverAwards;
-         _goldAwards = param1._goldAwards;
+         _awards = analyzer._awards;
+         _silverAwards = analyzer._silverAwards;
+         _goldAwards = analyzer._goldAwards;
       }
    }
 }

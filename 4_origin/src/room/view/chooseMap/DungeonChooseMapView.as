@@ -178,8 +178,8 @@ package room.view.chooseMap
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          _modebg = ComponentFactory.Instance.creatComponentByStylename("asset.ddtroom.dungeon.ChooseMap.modeBg");
          addChild(_modebg);
          _roomMode = ComponentFactory.Instance.creatBitmap("asset.ddtroom.setView.modeWord");
@@ -226,17 +226,16 @@ package room.view.chooseMap
          addChild(_chooseFB);
          _dungeonList = ComponentFactory.Instance.creat("asset.room.view.chooseMap.mapList",[4]);
          _maps = [];
-         _loc2_ = 0;
-         while(_loc2_ < 13)
+         for(i = 0; i < 13; )
          {
-            if(PathManager.solveDungeonOpenList && PathManager.solveDungeonOpenList.indexOf(String(_loc2_)) != -1 || PathManager.solveDungeonOpenList == null)
+            if(PathManager.solveDungeonOpenList && PathManager.solveDungeonOpenList.indexOf(String(i)) != -1 || PathManager.solveDungeonOpenList == null)
             {
-               _loc1_ = new DungeonMapItem();
-               _dungeonList.addChild(_loc1_);
-               _loc1_.addEventListener("select",__onItemSelect);
-               _maps.push(_loc1_);
+               item = new DungeonMapItem();
+               _dungeonList.addChild(item);
+               item.addEventListener("select",__onItemSelect);
+               _maps.push(item);
             }
-            _loc2_++;
+            i++;
          }
          _dungeonListContainer = ComponentFactory.Instance.creatComponentByStylename("asset.ddtroom.dungeonMapSetScrollPanel");
          _dungeonListContainer.vScrollProxy = 0;
@@ -384,16 +383,16 @@ package room.view.chooseMap
       
       private function refreshFreeOpenBossView() : void
       {
-         var _loc1_:int = KingBlessManager.instance.getOneBuffData(5);
-         if(_loc1_ <= 0)
+         var count:int = KingBlessManager.instance.getOneBuffData(5);
+         if(count <= 0)
          {
-            _freeOpenBossCountTxt.text = _loc1_.toString();
+            _freeOpenBossCountTxt.text = count.toString();
             _freeOpenBossCountBg.visible = false;
             _freeOpenBossCountTxt.visible = false;
          }
          else
          {
-            _freeOpenBossCountTxt.text = _loc1_.toString();
+            _freeOpenBossCountTxt.text = count.toString();
             _freeOpenBossCountBg.visible = true;
             _freeOpenBossCountTxt.visible = true;
          }
@@ -450,16 +449,16 @@ package room.view.chooseMap
       
       public function checkSelectItemAndLevel() : void
       {
-         var _loc1_:int = RoomManager.Instance.current.mapId;
-         if(_loc1_ > 0 && _loc1_ != -1)
+         var md:int = RoomManager.Instance.current.mapId;
+         if(md > 0 && md != -1)
          {
             var _loc4_:int = 0;
             var _loc3_:* = _maps;
-            for each(var _loc2_ in _maps)
+            for each(var item in _maps)
             {
-               if(_loc2_.mapId == _loc1_)
+               if(item.mapId == md)
                {
-                  _currentSelectedItem = _loc2_;
+                  _currentSelectedItem = item;
                   _currentSelectedItem.selected = true;
                }
             }
@@ -536,7 +535,7 @@ package room.view.chooseMap
          }
       }
       
-      private function __changeHandler(param1:Event) : void
+      private function __changeHandler(event:Event) : void
       {
          if(_enterNumDes)
          {
@@ -613,42 +612,41 @@ package room.view.chooseMap
       
       private function updateAdvancedItem() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          reset();
-         var _loc2_:int = 0;
-         _loc3_ = 1;
-         while(_loc3_ < 13)
+         var j:int = 0;
+         for(i = 1; i < 13; )
          {
-            if(MapManager.getByOrderingAdvancedDungeonInfo(_loc3_))
+            if(MapManager.getByOrderingAdvancedDungeonInfo(i))
             {
-               _loc2_++;
-               _loc1_ = _maps[_loc2_] as DungeonMapItem;
-               _loc1_.isNightmare = false;
-               _loc1_.mapId = MapManager.getByOrderingAdvancedDungeonInfo(_loc3_).ID;
+               j++;
+               item = _maps[j] as DungeonMapItem;
+               item.isNightmare = false;
+               item.mapId = MapManager.getByOrderingAdvancedDungeonInfo(i).ID;
             }
-            _loc3_++;
+            i++;
          }
       }
       
-      private function setBtnVisible(param1:Boolean = false) : void
+      private function setBtnVisible(bool:Boolean = false) : void
       {
-         var _loc2_:int = KingBlessManager.instance.getOneBuffData(5);
-         _bossBtn.visible = param1;
-         _bossBtnStrip.visible = param1;
-         _freeOpenBossCountBg.visible = param1 && _loc2_ > 0;
-         _freeOpenBossCountTxt.visible = param1 && _loc2_ > 0;
+         var count:int = KingBlessManager.instance.getOneBuffData(5);
+         _bossBtn.visible = bool;
+         _bossBtnStrip.visible = bool;
+         _freeOpenBossCountBg.visible = bool && count > 0;
+         _freeOpenBossCountTxt.visible = bool && count > 0;
       }
       
       private function addEnterNumInfo() : void
       {
-         var _loc1_:int = 0;
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         var _loc7_:int = 0;
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         var _loc6_:int = 0;
+         var limit:int = 0;
+         var ticketCount:int = 0;
+         var freeCount:int = 0;
+         var feeCount:int = 0;
+         var currentCount:int = 0;
+         var ticketCount2:int = 0;
+         var ticketCount3:int = 0;
          ObjectUtils.disposeObject(_enterNumDes);
          var _loc8_:* = _currentSelectedItem.mapId;
          if(70001 !== _loc8_)
@@ -674,48 +672,48 @@ package room.view.chooseMap
                               if(_currentSelectedItem.isNightmare)
                               {
                                  _enterNumDes = ComponentFactory.Instance.creatComponentByStylename("room.tanabata.enterCountTxt");
-                                 _loc1_ = ServerConfigManager.instance.nightmareDungeonLimitTimes - PlayerManager.Instance.Self.getDungeonCount(_currentSelectedItem.mapId);
-                                 _enterNumDes.text = LanguageMgr.GetTranslation("ddt.dungeonRoom.todayEnterNum",_loc1_,ServerConfigManager.instance.nightmareDungeonLimitTimes);
+                                 limit = ServerConfigManager.instance.nightmareDungeonLimitTimes - PlayerManager.Instance.Self.getDungeonCount(_currentSelectedItem.mapId);
+                                 _enterNumDes.text = LanguageMgr.GetTranslation("ddt.dungeonRoom.todayEnterNum",limit,ServerConfigManager.instance.nightmareDungeonLimitTimes);
                                  addChild(_enterNumDes);
                               }
                            }
                            else
                            {
                               _enterNumDes = ComponentFactory.Instance.creatComponentByStylename("room.tanabata.enterCountTxt");
-                              _loc6_ = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(201629);
-                              _enterNumDes.text = LanguageMgr.GetTranslation("ddt.dungeonRoom.enterTicketCount",_loc6_,"1");
+                              ticketCount3 = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(201629);
+                              _enterNumDes.text = LanguageMgr.GetTranslation("ddt.dungeonRoom.enterTicketCount",ticketCount3,"1");
                               addChild(_enterNumDes);
                            }
                         }
                      }
                      else
                      {
-                        _loc4_ = ServerConfigManager.instance.getDesertFreeEnterCount();
-                        _loc7_ = ServerConfigManager.instance.getDesertFeeEnterCount();
-                        _loc3_ = PlayerManager.Instance.Self.desertEnterCount;
-                        if(_loc3_ < _loc4_)
+                        freeCount = ServerConfigManager.instance.getDesertFreeEnterCount();
+                        feeCount = ServerConfigManager.instance.getDesertFeeEnterCount();
+                        currentCount = PlayerManager.Instance.Self.desertEnterCount;
+                        if(currentCount < freeCount)
                         {
                            _enterNumDes = ComponentFactory.Instance.creatComponentByStylename("room.tanabata.freeEnterCountTxt");
-                           _enterNumDes.text = LanguageMgr.GetTranslation("ddt.dungeonRoom.freeCount",_loc4_ - _loc3_);
+                           _enterNumDes.text = LanguageMgr.GetTranslation("ddt.dungeonRoom.freeCount",freeCount - currentCount);
                            addChild(_enterNumDes);
                         }
                         else
                         {
                            _enterNumDes = ComponentFactory.Instance.creatComponentByStylename("room.tanabata.feeEnterCountTxt");
-                           _enterNumDes.text = LanguageMgr.GetTranslation("ddt.dungeonRoom.enterPriceAndCount",_loc7_ + _loc4_ - _loc3_);
+                           _enterNumDes.text = LanguageMgr.GetTranslation("ddt.dungeonRoom.enterPriceAndCount",feeCount + freeCount - currentCount);
                            addChild(_enterNumDes);
                         }
                      }
                      _enterNumDes = ComponentFactory.Instance.creatComponentByStylename("room.tanabata.enterCountTxt");
-                     _loc2_ = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(201628);
-                     _enterNumDes.text = LanguageMgr.GetTranslation("ddt.dungeonRoom.enterTicketCount",_loc2_,"1");
+                     ticketCount2 = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(201628);
+                     _enterNumDes.text = LanguageMgr.GetTranslation("ddt.dungeonRoom.enterTicketCount",ticketCount2,"1");
                      addChild(_enterNumDes);
                   }
                   else
                   {
                      _enterNumDes = ComponentFactory.Instance.creatComponentByStylename("room.tanabata.enterCountTxt");
-                     _loc1_ = ServerConfigManager.instance.battleDungeonLimitCount - PlayerManager.Instance.Self.getDungeonCount(30);
-                     _enterNumDes.text = LanguageMgr.GetTranslation("ddt.dungeonRoom.todayEnterNum",_loc1_,ServerConfigManager.instance.battleDungeonLimitCount);
+                     limit = ServerConfigManager.instance.battleDungeonLimitCount - PlayerManager.Instance.Self.getDungeonCount(30);
+                     _enterNumDes.text = LanguageMgr.GetTranslation("ddt.dungeonRoom.todayEnterNum",limit,ServerConfigManager.instance.battleDungeonLimitCount);
                      addChild(_enterNumDes);
                      setSpeBossBtnState(true);
                   }
@@ -723,8 +721,8 @@ package room.view.chooseMap
                else
                {
                   _enterNumDes = ComponentFactory.Instance.creatComponentByStylename("room.tanabata.enterCountTxt");
-                  _loc1_ = ServerConfigManager.instance.battleDungeonLimitCount - PlayerManager.Instance.Self.getDungeonCount(27);
-                  _enterNumDes.text = LanguageMgr.GetTranslation("ddt.dungeonRoom.todayEnterNum",_loc1_,ServerConfigManager.instance.battleDungeonLimitCount);
+                  limit = ServerConfigManager.instance.battleDungeonLimitCount - PlayerManager.Instance.Self.getDungeonCount(27);
+                  _enterNumDes.text = LanguageMgr.GetTranslation("ddt.dungeonRoom.todayEnterNum",limit,ServerConfigManager.instance.battleDungeonLimitCount);
                   addChild(_enterNumDes);
                   setSpeBossBtnState(true);
                }
@@ -732,8 +730,8 @@ package room.view.chooseMap
             else
             {
                _enterNumDes = ComponentFactory.Instance.creatComponentByStylename("room.tanabata.enterCountTxt");
-               _loc5_ = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(11742);
-               _enterNumDes.text = LanguageMgr.GetTranslation("ddt.dungeonRoom.enterTicketCount",_loc5_,"1");
+               ticketCount = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(11742);
+               _enterNumDes.text = LanguageMgr.GetTranslation("ddt.dungeonRoom.enterTicketCount",ticketCount,"1");
                addChild(_enterNumDes);
             }
          }
@@ -745,15 +743,15 @@ package room.view.chooseMap
          }
       }
       
-      private function __soundPlay(param1:MouseEvent) : void
+      private function __soundPlay(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }
       
-      private function __checkBoxClick(param1:MouseEvent) : void
+      private function __checkBoxClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = event.currentTarget;
          if(_checkBox !== _loc2_)
          {
             if(_bossBtn === _loc2_)
@@ -769,190 +767,183 @@ package room.view.chooseMap
       
       private function updateCommonItem() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var dungeonInfo:* = null;
+         var item:* = null;
          reset();
-         _loc3_ = 1;
-         while(_loc3_ < 13)
+         for(i = 1; i < 13; )
          {
-            _loc1_ = MapManager.getByOrderingDungeonInfo(_loc3_);
-            if(_loc1_)
+            dungeonInfo = MapManager.getByOrderingDungeonInfo(i);
+            if(dungeonInfo)
             {
-               _loc2_ = _maps[_loc3_ - 1] as DungeonMapItem;
-               _loc2_.isNightmare = false;
-               _loc2_.mapId = _loc1_.ID;
-               _loc2_.setLimitLevel(_loc1_.MinLv,_loc1_.MaxLv);
+               item = _maps[i - 1] as DungeonMapItem;
+               item.isNightmare = false;
+               item.mapId = dungeonInfo.ID;
+               item.setLimitLevel(dungeonInfo.MinLv,dungeonInfo.MaxLv);
             }
-            _loc3_++;
+            i++;
          }
       }
       
       private function updateSpecialItem() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var dungeonInfo:* = null;
+         var item:* = null;
          reset();
-         _loc3_ = 1;
-         while(_loc3_ < 13)
+         for(i = 1; i < 13; )
          {
-            _loc1_ = MapManager.getByOrderingAcademyDungeonInfo(_loc3_);
-            if(_loc1_)
+            dungeonInfo = MapManager.getByOrderingAcademyDungeonInfo(i);
+            if(dungeonInfo)
             {
-               _loc2_ = _maps[_loc3_ - 1] as DungeonMapItem;
-               _loc2_.isNightmare = false;
-               _loc2_.mapId = MapManager.getByOrderingAcademyDungeonInfo(_loc3_).ID;
-               _loc2_.setLimitLevel(_loc1_.MinLv,_loc1_.MaxLv);
+               item = _maps[i - 1] as DungeonMapItem;
+               item.isNightmare = false;
+               item.mapId = MapManager.getByOrderingAcademyDungeonInfo(i).ID;
+               item.setLimitLevel(dungeonInfo.MinLv,dungeonInfo.MaxLv);
             }
-            _loc3_++;
+            i++;
          }
       }
       
       private function updateActivityItem() : void
       {
-         var _loc8_:int = 0;
-         var _loc2_:* = null;
-         var _loc4_:* = null;
-         var _loc6_:* = null;
-         var _loc1_:* = null;
-         var _loc5_:* = null;
+         var i:int = 0;
+         var dungeonInfo:* = null;
+         var item:* = null;
+         var obj:* = null;
+         var startDate:* = null;
+         var endDate:* = null;
          reset();
-         var _loc7_:Number = TimeManager.Instance.Now().time;
-         var _loc3_:int = 1;
-         _loc8_ = 1;
-         while(_loc8_ < 13)
+         var nowTime:Number = TimeManager.Instance.Now().time;
+         var index:int = 1;
+         for(i = 1; i < 13; )
          {
-            _loc2_ = MapManager.getByOrderingActivityDungeonInfo(_loc8_);
-            if(_loc2_)
+            dungeonInfo = MapManager.getByOrderingActivityDungeonInfo(i);
+            if(dungeonInfo)
             {
-               _loc4_ = _maps[_loc3_ - 1] as DungeonMapItem;
-               if(MapManager.Instance.activeDoubleIds.indexOf(_loc2_.ID) != -1)
+               item = _maps[index - 1] as DungeonMapItem;
+               if(MapManager.Instance.activeDoubleIds.indexOf(dungeonInfo.ID) != -1)
                {
-                  _loc6_ = MapManager.Instance.activeDoubleDic[_loc2_.ID];
-                  if(_loc6_)
+                  obj = MapManager.Instance.activeDoubleDic[dungeonInfo.ID];
+                  if(obj)
                   {
-                     _loc1_ = _loc6_.startDate;
-                     _loc5_ = _loc6_.endDate;
-                     if(_loc7_ >= _loc1_.time && _loc7_ < _loc5_.time)
+                     startDate = obj.startDate;
+                     endDate = obj.endDate;
+                     if(nowTime >= startDate.time && nowTime < endDate.time)
                      {
-                        _loc4_.isDouble = _loc6_.isDouble;
-                        _loc4_.isNightmare = false;
-                        _loc4_.mapId = _loc2_.ID;
-                        _loc4_.setLimitLevel(_loc2_.MinLv,_loc2_.MaxLv);
-                        _loc3_++;
+                        item.isDouble = obj.isDouble;
+                        item.isNightmare = false;
+                        item.mapId = dungeonInfo.ID;
+                        item.setLimitLevel(dungeonInfo.MinLv,dungeonInfo.MaxLv);
+                        index++;
                      }
                   }
                }
                else
                {
-                  _loc4_.isNightmare = false;
-                  _loc4_.mapId = MapManager.getByOrderingActivityDungeonInfo(_loc8_).ID;
-                  _loc4_.setLimitLevel(_loc2_.MinLv,_loc2_.MaxLv);
-                  _loc3_++;
+                  item.isNightmare = false;
+                  item.mapId = MapManager.getByOrderingActivityDungeonInfo(i).ID;
+                  item.setLimitLevel(dungeonInfo.MinLv,dungeonInfo.MaxLv);
+                  index++;
                }
             }
-            _loc8_++;
+            i++;
          }
       }
       
       private function updateNightmareItem() : void
       {
-         var _loc5_:int = 0;
-         var _loc1_:* = null;
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var dungeonInfo:* = null;
+         var item:* = null;
+         var adviceTips:* = null;
+         var levelArr:* = null;
          reset();
-         _loc5_ = 1;
-         while(_loc5_ < 13)
+         for(i = 1; i < 13; )
          {
-            _loc1_ = MapManager.getByOrderingNightmareDungeonInfo(_loc5_);
-            if(_loc1_)
+            dungeonInfo = MapManager.getByOrderingNightmareDungeonInfo(i);
+            if(dungeonInfo)
             {
-               _loc3_ = _maps[_loc5_ - 1] as DungeonMapItem;
-               _loc3_.isNightmare = true;
-               _loc3_.mapId = MapManager.getByOrderingNightmareDungeonInfo(_loc5_).ID;
-               _loc4_ = _loc1_.AdviceTips.split("|");
-               if(_loc4_.length >= 4 + 1)
+               item = _maps[i - 1] as DungeonMapItem;
+               item.isNightmare = true;
+               item.mapId = MapManager.getByOrderingNightmareDungeonInfo(i).ID;
+               adviceTips = dungeonInfo.AdviceTips.split("|");
+               if(adviceTips.length >= 4 + 1)
                {
-                  _loc2_ = _loc4_[4].split("-");
-                  _loc3_.setLimitLevel(_loc2_[0],_loc2_[1]);
+                  levelArr = adviceTips[4].split("-");
+                  item.setLimitLevel(levelArr[0],levelArr[1]);
                }
             }
-            _loc5_++;
+            i++;
          }
       }
       
       private function updateSingleItem() : void
       {
-         var _loc8_:int = 0;
-         var _loc2_:* = null;
-         var _loc4_:* = null;
-         var _loc6_:* = null;
-         var _loc1_:* = null;
-         var _loc5_:* = null;
+         var i:int = 0;
+         var dungeonInfo:* = null;
+         var item:* = null;
+         var obj:* = null;
+         var startDate:* = null;
+         var endDate:* = null;
          reset();
-         var _loc7_:Number = TimeManager.Instance.Now().time;
-         var _loc3_:int = 1;
-         _loc8_ = 1;
-         while(_loc8_ < 13)
+         var nowTime:Number = TimeManager.Instance.Now().time;
+         var index:int = 1;
+         for(i = 1; i < 13; )
          {
-            _loc2_ = MapManager.getByOrderingSingleDungeonInfo(_loc8_);
-            if(_loc2_)
+            dungeonInfo = MapManager.getByOrderingSingleDungeonInfo(i);
+            if(dungeonInfo)
             {
-               _loc4_ = _maps[_loc3_ - 1] as DungeonMapItem;
-               if(MapManager.Instance.singleDoubleIds.indexOf(_loc2_.ID) != -1)
+               item = _maps[index - 1] as DungeonMapItem;
+               if(MapManager.Instance.singleDoubleIds.indexOf(dungeonInfo.ID) != -1)
                {
-                  _loc6_ = MapManager.Instance.singleDoubleDic[_loc2_.ID];
-                  if(_loc6_)
+                  obj = MapManager.Instance.singleDoubleDic[dungeonInfo.ID];
+                  if(obj)
                   {
-                     _loc1_ = _loc6_.startDate;
-                     _loc5_ = _loc6_.endDate;
-                     if(_loc7_ >= _loc1_.time && _loc7_ < _loc5_.time)
+                     startDate = obj.startDate;
+                     endDate = obj.endDate;
+                     if(nowTime >= startDate.time && nowTime < endDate.time)
                      {
-                        _loc4_.isDouble = _loc6_.isDouble;
-                        _loc4_.isNightmare = false;
-                        _loc4_.mapId = _loc2_.ID;
-                        _loc4_.setLimitLevel(_loc2_.MinLv,_loc2_.MaxLv);
-                        _loc3_++;
+                        item.isDouble = obj.isDouble;
+                        item.isNightmare = false;
+                        item.mapId = dungeonInfo.ID;
+                        item.setLimitLevel(dungeonInfo.MinLv,dungeonInfo.MaxLv);
+                        index++;
                      }
                   }
                }
                else
                {
-                  _loc4_.isNightmare = false;
-                  _loc4_.mapId = _loc2_.ID;
-                  _loc4_.setLimitLevel(_loc2_.MinLv,_loc2_.MaxLv);
-                  _loc3_++;
+                  item.isNightmare = false;
+                  item.mapId = dungeonInfo.ID;
+                  item.setLimitLevel(dungeonInfo.MinLv,dungeonInfo.MaxLv);
+                  index++;
                }
             }
-            _loc8_++;
+            i++;
          }
       }
       
       private function reset() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:int = 0;
+         var i:int = 0;
+         var item:* = null;
+         var j:int = 0;
          InitChooseMapState();
-         _loc3_ = 1;
-         while(_loc3_ < _maps.length)
+         for(i = 1; i < _maps.length; )
          {
-            _loc1_ = _maps[_loc3_ - 1] as DungeonMapItem;
-            _loc1_.selected = false;
-            _loc1_.stopShine();
-            _loc1_.mapId = -1;
-            _loc1_.isDouble = false;
-            _loc3_++;
+            item = _maps[i - 1] as DungeonMapItem;
+            item.selected = false;
+            item.stopShine();
+            item.mapId = -1;
+            item.isDouble = false;
+            i++;
          }
-         _loc2_ = 0;
-         while(_loc2_ < _btns.length)
+         for(j = 0; j < _btns.length; )
          {
-            _btns[_loc2_].selected = false;
-            _btns[_loc2_].stopShine();
-            _loc2_++;
+            _btns[j].selected = false;
+            _btns[j].stopShine();
+            j++;
          }
       }
       
@@ -1031,11 +1022,11 @@ package room.view.chooseMap
          return _bossBtn.selected;
       }
       
-      private function __onItemSelect(param1:Event) : void
+      private function __onItemSelect(evt:Event) : void
       {
-         var _loc3_:DungeonMapItem = param1.target as DungeonMapItem;
+         var targetMap:DungeonMapItem = evt.target as DungeonMapItem;
          _bossBtn.selected = false;
-         if(_loc3_.mapId == 31)
+         if(targetMap.mapId == 31)
          {
             setBtnVisible();
          }
@@ -1047,18 +1038,18 @@ package room.view.chooseMap
          {
             setBtnVisible(false);
          }
-         if(_currentSelectedItem && _currentSelectedItem != _loc3_)
+         if(_currentSelectedItem && _currentSelectedItem != targetMap)
          {
             _currentSelectedItem.selected = false;
          }
-         _currentSelectedItem = _loc3_;
+         _currentSelectedItem = targetMap;
          stopShineMap();
          stopShineLevelBtn();
          var _loc5_:int = 0;
          var _loc4_:* = _btns;
-         for each(var _loc2_ in _btns)
+         for each(var btn in _btns)
          {
-            _loc2_.selected = false;
+            btn.selected = false;
          }
          _selectedLevel = -1;
          updateDescription();
@@ -1073,24 +1064,24 @@ package room.view.chooseMap
       
       private function showAlert() : void
       {
-         var _loc1_:Frame = ComponentFactory.Instance.creat("room.FifthPreview");
-         _loc1_.addEventListener("response",__onPreResponse);
-         _loc1_.escEnable = true;
-         LayerManager.Instance.addToLayer(_loc1_,2,false,1);
+         var alert:Frame = ComponentFactory.Instance.creat("room.FifthPreview");
+         alert.addEventListener("response",__onPreResponse);
+         alert.escEnable = true;
+         LayerManager.Instance.addToLayer(alert,2,false,1);
       }
       
-      private function __onPreResponse(param1:FrameEvent) : void
+      private function __onPreResponse(event:FrameEvent) : void
       {
-         var _loc2_:Frame = param1.target as Frame;
-         _loc2_.removeEventListener("response",__onPreResponse);
-         _loc2_.dispose();
+         var alert:Frame = event.target as Frame;
+         alert.removeEventListener("response",__onPreResponse);
+         alert.dispose();
       }
       
-      private function __btnClick(param1:MouseEvent) : void
+      private function __btnClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          stopShineLevelBtn();
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = evt.currentTarget;
          if(_easyBtn !== _loc2_)
          {
             if(_normalBtn !== _loc2_)
@@ -1157,16 +1148,16 @@ package room.view.chooseMap
       
       private function solveTitlePath() : String
       {
-         var _loc1_:String = PathManager.SITE_MAIN + "image/map/";
+         var result:String = PathManager.SITE_MAIN + "image/map/";
          if(_currentSelectedItem)
          {
-            _loc1_ = _loc1_ + (_currentSelectedItem.mapId.toString() + "/icon.png");
+            result = result + (_currentSelectedItem.mapId.toString() + "/icon.png");
          }
          else
          {
-            _loc1_ = _loc1_ + "10000/icon.png";
+            result = result + "10000/icon.png";
          }
-         return _loc1_;
+         return result;
       }
       
       private function updatePreView() : void
@@ -1184,32 +1175,32 @@ package room.view.chooseMap
       
       private function solvePreViewPath() : String
       {
-         var _loc1_:String = PathManager.SITE_MAIN + "image/map/";
+         var result:String = PathManager.SITE_MAIN + "image/map/";
          if(_currentSelectedItem)
          {
             if(_currentSelectedItem.isNightmare)
             {
-               _loc1_ = _loc1_ + (_currentSelectedItem.mapId.toString() + "/samll_map_e.png");
+               result = result + (_currentSelectedItem.mapId.toString() + "/samll_map_e.png");
             }
             else
             {
-               _loc1_ = _loc1_ + (_currentSelectedItem.mapId.toString() + "/samll_map.png");
+               result = result + (_currentSelectedItem.mapId.toString() + "/samll_map.png");
             }
          }
          else
          {
-            _loc1_ = _loc1_ + "10000/samll_map.png";
+            result = result + "10000/samll_map.png";
          }
-         return _loc1_;
+         return result;
       }
       
-      private function setSpeBossBtnState(param1:Boolean) : void
+      private function setSpeBossBtnState(value:Boolean) : void
       {
          _bossBtn.visible = true;
          _bossBtnStrip.visible = true;
          _freeOpenBossCountBg.visible = false;
          _freeOpenBossCountTxt.visible = false;
-         if(PlayerManager.Instance.Self.VIPLevel >= 7 && PlayerManager.Instance.Self.IsVIP && param1)
+         if(PlayerManager.Instance.Self.VIPLevel >= 7 && PlayerManager.Instance.Self.IsVIP && value)
          {
             _bossBtnStrip.visible = false;
             var _loc2_:Boolean = true;
@@ -1228,10 +1219,10 @@ package room.view.chooseMap
          _bossBtn.selected = false;
       }
       
-      private function setBossBtnState(param1:Boolean) : void
+      private function setBossBtnState(value:Boolean) : void
       {
          _bossBtn.visible = true;
-         if(param1)
+         if(value)
          {
             _bossBtnStrip.visible = false;
             var _loc2_:Boolean = true;
@@ -1291,11 +1282,11 @@ package room.view.chooseMap
          }
       }
       
-      private function adaptButtons(param1:int) : void
+      private function adaptButtons(id:int) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:DungeonInfo = MapManager.getDungeonInfo(param1);
-         if(!_loc2_)
+         var i:int = 0;
+         var dungeonInfo:DungeonInfo = MapManager.getDungeonInfo(id);
+         if(!dungeonInfo)
          {
             _easyBtn.visible = false;
             _nightmareBtn.visible = false;
@@ -1318,36 +1309,35 @@ package room.view.chooseMap
             _selectedLevel = 4;
             return;
          }
-         _easyBtn.visible = _loc2_.SimpleTemplateIds != "";
-         _normalBtn.visible = _loc2_.NormalTemplateIds != "";
-         _hardBtn.visible = _loc2_.HardTemplateIds != "";
-         _heroBtn.visible = _loc2_.TerrorTemplateIds != "";
-         _epicBtn.visible = _loc2_.EpicTemplateIds != "";
-         if(_loc2_.ID == 27 || _loc2_.ID == 30)
+         _easyBtn.visible = dungeonInfo.SimpleTemplateIds != "";
+         _normalBtn.visible = dungeonInfo.NormalTemplateIds != "";
+         _hardBtn.visible = dungeonInfo.HardTemplateIds != "";
+         _heroBtn.visible = dungeonInfo.TerrorTemplateIds != "";
+         _epicBtn.visible = dungeonInfo.EpicTemplateIds != "";
+         if(dungeonInfo.ID == 27 || dungeonInfo.ID == 30)
          {
-            _nightmareBtn.visible = _loc2_.NightmareTemplateIds != "";
+            _nightmareBtn.visible = dungeonInfo.NightmareTemplateIds != "";
          }
          else
          {
             _nightmareBtn.visible = false;
          }
-         var _loc3_:Vector.<ShineSelectButton> = new Vector.<ShineSelectButton>();
-         _loc4_ = 0;
-         while(_loc4_ < _btns.length)
+         var visibleBtn:Vector.<ShineSelectButton> = new Vector.<ShineSelectButton>();
+         for(i = 0; i < _btns.length; )
          {
-            if(_btns[_loc4_].visible)
+            if(_btns[i].visible)
             {
-               _loc3_.push(_btns[_loc4_]);
+               visibleBtn.push(_btns[i]);
             }
-            _loc4_++;
+            i++;
          }
-         switch(int(_loc3_.length))
+         switch(int(visibleBtn.length))
          {
             case 0:
                break;
             case 1:
-               _loc3_[0].visible = false;
-               _loc5_ = _loc3_[0];
+               visibleBtn[0].visible = false;
+               _loc5_ = visibleBtn[0];
                if(_easyBtn !== _loc5_)
                {
                   if(_normalBtn !== _loc5_)
@@ -1382,29 +1372,29 @@ package room.view.chooseMap
                }
                break;
             case 2:
-               _loc3_[0].x = _rect2.x;
-               _loc3_[1].x = _rect2.y;
+               visibleBtn[0].x = _rect2.x;
+               visibleBtn[1].x = _rect2.y;
                break;
             case 3:
-               _loc3_[0].x = _rect3.x;
-               _loc3_[1].x = _rect3.y;
-               _loc3_[2].x = _rect3.width;
+               visibleBtn[0].x = _rect3.x;
+               visibleBtn[1].x = _rect3.y;
+               visibleBtn[2].x = _rect3.width;
                break;
             case 4:
-               _loc3_[0].x = _rect1.x;
-               _loc3_[1].x = _rect1.y;
-               _loc3_[2].x = _rect1.width;
-               _loc3_[3].x = _rect1.height;
+               visibleBtn[0].x = _rect1.x;
+               visibleBtn[1].x = _rect1.y;
+               visibleBtn[2].x = _rect1.width;
+               visibleBtn[3].x = _rect1.height;
                break;
             case 5:
-               _loc3_[0].x = _rect4.x;
-               _loc3_[1].x = _rect4.y;
-               _loc3_[2].x = _rect4.width;
-               _loc3_[3].x = _rect4.height;
+               visibleBtn[0].x = _rect4.x;
+               visibleBtn[1].x = _rect4.y;
+               visibleBtn[2].x = _rect4.width;
+               visibleBtn[3].x = _rect4.height;
          }
       }
       
-      private function __onTitleComplete(param1:LoaderEvent) : void
+      private function __onTitleComplete(evt:LoaderEvent) : void
       {
          if(_dungeonTitle && _titleLoader && _titleLoader.content)
          {
@@ -1415,7 +1405,7 @@ package room.view.chooseMap
          }
       }
       
-      private function __onPreViewComplete(param1:LoaderEvent) : void
+      private function __onPreViewComplete(evt:LoaderEvent) : void
       {
          if(_dungeonPreView && _preViewLoader && _preViewLoader.content)
          {
@@ -1440,13 +1430,13 @@ package room.view.chooseMap
       
       public function dispose() : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          removeEvents();
          var _loc4_:int = 0;
          var _loc3_:* = _maps;
-         for each(var _loc1_ in _maps)
+         for each(var item in _maps)
          {
-            _loc1_.removeEventListener("select",__onItemSelect);
+            item.removeEventListener("select",__onItemSelect);
          }
          _titleLoader = null;
          _preViewLoader = null;
@@ -1655,15 +1645,14 @@ package room.view.chooseMap
             ObjectUtils.disposeObject(_bossBtnStrip);
          }
          _bossBtnStrip = null;
-         _loc2_ = 0;
-         while(_loc2_ < _btns.length)
+         for(i = 0; i < _btns.length; )
          {
-            if(_btns[_loc2_])
+            if(_btns[i])
             {
-               ObjectUtils.disposeObject(_btns[_loc2_]);
+               ObjectUtils.disposeObject(_btns[i]);
             }
-            _btns[_loc2_] = null;
-            _loc2_++;
+            _btns[i] = null;
+            i++;
          }
          _btns = null;
          if(parent)
@@ -1718,11 +1707,11 @@ package room.view.chooseMap
       {
          var _loc3_:int = 0;
          var _loc2_:* = _maps;
-         for each(var _loc1_ in _maps)
+         for each(var item in _maps)
          {
-            if(_loc1_.mapId > 0)
+            if(item.mapId > 0)
             {
-               _loc1_.shine();
+               item.shine();
             }
          }
       }
@@ -1731,9 +1720,9 @@ package room.view.chooseMap
       {
          var _loc3_:int = 0;
          var _loc2_:* = _maps;
-         for each(var _loc1_ in _maps)
+         for each(var item in _maps)
          {
-            _loc1_.stopShine();
+            item.stopShine();
          }
       }
       
@@ -1741,11 +1730,11 @@ package room.view.chooseMap
       {
          var _loc3_:int = 0;
          var _loc2_:* = _btns;
-         for each(var _loc1_ in _btns)
+         for each(var btn in _btns)
          {
-            if(_loc1_.enable)
+            if(btn.enable)
             {
-               _loc1_.shine();
+               btn.shine();
             }
          }
       }
@@ -1754,9 +1743,9 @@ package room.view.chooseMap
       {
          var _loc3_:int = 0;
          var _loc2_:* = _btns;
-         for each(var _loc1_ in _btns)
+         for each(var btn in _btns)
          {
-            _loc1_.stopShine();
+            btn.stopShine();
          }
       }
       

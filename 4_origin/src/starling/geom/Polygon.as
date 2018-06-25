@@ -13,410 +13,397 @@ package starling.geom
       
       private var mCoords:Vector.<Number>;
       
-      public function Polygon(param1:Array = null)
+      public function Polygon(vertices:Array = null)
       {
          super();
          mCoords = new Vector.<Number>(0);
-         addVertices.apply(this,param1);
+         addVertices.apply(this,vertices);
       }
       
-      public static function createEllipse(param1:Number, param2:Number, param3:Number, param4:Number) : Polygon
+      public static function createEllipse(x:Number, y:Number, radiusX:Number, radiusY:Number) : Polygon
       {
-         return new Ellipse(param1,param2,param3,param4);
+         return new Ellipse(x,y,radiusX,radiusY);
       }
       
-      public static function createCircle(param1:Number, param2:Number, param3:Number) : Polygon
+      public static function createCircle(x:Number, y:Number, radius:Number) : Polygon
       {
-         return new Ellipse(param1,param2,param3,param3);
+         return new Ellipse(x,y,radius,radius);
       }
       
-      public static function createRectangle(param1:Number, param2:Number, param3:Number, param4:Number) : Polygon
+      public static function createRectangle(x:Number, y:Number, width:Number, height:Number) : Polygon
       {
-         return new Rectangle(param1,param2,param3,param4);
+         return new Rectangle(x,y,width,height);
       }
       
       [Inline]
-      private static function isConvexTriangle(param1:Number, param2:Number, param3:Number, param4:Number, param5:Number, param6:Number) : Boolean
+      private static function isConvexTriangle(ax:Number, ay:Number, bx:Number, by:Number, cx:Number, cy:Number) : Boolean
       {
-         return (param2 - param4) * (param5 - param3) + (param3 - param1) * (param6 - param4) >= 0;
+         return (ay - by) * (cx - bx) + (bx - ax) * (cy - by) >= 0;
       }
       
-      private static function isPointInTriangle(param1:Number, param2:Number, param3:Number, param4:Number, param5:Number, param6:Number, param7:Number, param8:Number) : Boolean
+      private static function isPointInTriangle(px:Number, py:Number, ax:Number, ay:Number, bx:Number, by:Number, cx:Number, cy:Number) : Boolean
       {
-         var _loc17_:Number = param7 - param3;
-         var _loc18_:Number = param8 - param4;
-         var _loc22_:Number = param5 - param3;
-         var _loc19_:Number = param6 - param4;
-         var _loc20_:Number = param1 - param3;
-         var _loc21_:Number = param2 - param4;
-         var _loc14_:Number = _loc17_ * _loc17_ + _loc18_ * _loc18_;
-         var _loc10_:Number = _loc17_ * _loc22_ + _loc18_ * _loc19_;
-         var _loc12_:Number = _loc17_ * _loc20_ + _loc18_ * _loc21_;
-         var _loc11_:Number = _loc22_ * _loc22_ + _loc19_ * _loc19_;
-         var _loc13_:Number = _loc22_ * _loc20_ + _loc19_ * _loc21_;
-         var _loc9_:Number = 1 / (_loc14_ * _loc11_ - _loc10_ * _loc10_);
-         var _loc16_:Number = (_loc11_ * _loc12_ - _loc10_ * _loc13_) * _loc9_;
-         var _loc15_:Number = (_loc14_ * _loc13_ - _loc10_ * _loc12_) * _loc9_;
-         return _loc16_ >= 0 && _loc15_ >= 0 && _loc16_ + _loc15_ < 1;
+         var v0x:Number = cx - ax;
+         var v0y:Number = cy - ay;
+         var v1x:Number = bx - ax;
+         var v1y:Number = by - ay;
+         var v2x:Number = px - ax;
+         var v2y:Number = py - ay;
+         var dot00:Number = v0x * v0x + v0y * v0y;
+         var dot01:Number = v0x * v1x + v0y * v1y;
+         var dot02:Number = v0x * v2x + v0y * v2y;
+         var dot11:Number = v1x * v1x + v1y * v1y;
+         var dot12:Number = v1x * v2x + v1y * v2y;
+         var invDen:Number = 1 / (dot00 * dot11 - dot01 * dot01);
+         var u:Number = (dot11 * dot02 - dot01 * dot12) * invDen;
+         var v:Number = (dot00 * dot12 - dot01 * dot02) * invDen;
+         return u >= 0 && v >= 0 && u + v < 1;
       }
       
-      private static function areVectorsIntersecting(param1:Number, param2:Number, param3:Number, param4:Number, param5:Number, param6:Number, param7:Number, param8:Number) : Boolean
+      private static function areVectorsIntersecting(ax:Number, ay:Number, bx:Number, by:Number, cx:Number, cy:Number, dx:Number, dy:Number) : Boolean
       {
-         if(param1 == param3 && param2 == param4 || param5 == param7 && param6 == param8)
+         if(ax == bx && ay == by || cx == dx && cy == dy)
          {
             return false;
          }
-         var _loc13_:Number = param3 - param1;
-         var _loc15_:Number = param4 - param2;
-         var _loc10_:Number = param7 - param5;
-         var _loc9_:Number = param8 - param6;
-         var _loc14_:Number = _loc9_ * _loc13_ - _loc10_ * _loc15_;
-         if(_loc14_ == 0)
+         var abx:Number = bx - ax;
+         var aby:Number = by - ay;
+         var cdx:Number = dx - cx;
+         var cdy:Number = dy - cy;
+         var tDen:Number = cdy * abx - cdx * aby;
+         if(tDen == 0)
          {
             return false;
          }
-         var _loc11_:Number = (_loc15_ * (param5 - param1) - _loc13_ * (param6 - param2)) / _loc14_;
-         if(_loc11_ < 0 || _loc11_ > 1)
+         var t:Number = (aby * (cx - ax) - abx * (cy - ay)) / tDen;
+         if(t < 0 || t > 1)
          {
             return false;
          }
-         var _loc12_:Number = !!_loc15_?(param6 - param2 + _loc11_ * _loc9_) / _loc15_:Number((param5 - param1 + _loc11_ * _loc10_) / _loc13_);
-         return _loc12_ >= 0 && _loc12_ <= 1;
+         var s:Number = !!aby?(cy - ay + t * cdy) / aby:Number((cx - ax + t * cdx) / abx);
+         return s >= 0 && s <= 1;
       }
       
       public function clone() : Polygon
       {
-         var _loc3_:int = 0;
-         var _loc1_:Polygon = new Polygon();
-         var _loc2_:int = mCoords.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var i:int = 0;
+         var clone:Polygon = new Polygon();
+         var numCoords:int = mCoords.length;
+         for(i = 0; i < numCoords; )
          {
-            _loc1_.mCoords[_loc3_] = mCoords[_loc3_];
-            _loc3_++;
+            clone.mCoords[i] = mCoords[i];
+            i++;
          }
-         return _loc1_;
+         return clone;
       }
       
       public function reverse() : void
       {
-         var _loc1_:Number = NaN;
-         var _loc4_:int = 0;
-         var _loc2_:int = mCoords.length;
-         var _loc3_:int = _loc2_ / 2;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var tmp:Number = NaN;
+         var i:int = 0;
+         var numCoords:int = mCoords.length;
+         var numVertices:int = numCoords / 2;
+         for(i = 0; i < numVertices; )
          {
-            _loc1_ = mCoords[_loc4_];
-            mCoords[_loc4_] = mCoords[_loc2_ - _loc4_ - 2];
-            mCoords[_loc2_ - _loc4_ - 2] = _loc1_;
-            _loc1_ = mCoords[_loc4_ + 1];
-            mCoords[_loc4_ + 1] = mCoords[_loc2_ - _loc4_ - 1];
-            mCoords[_loc2_ - _loc4_ - 1] = _loc1_;
-            _loc4_ = _loc4_ + 2;
+            tmp = mCoords[i];
+            mCoords[i] = mCoords[numCoords - i - 2];
+            mCoords[numCoords - i - 2] = tmp;
+            tmp = mCoords[i + 1];
+            mCoords[i + 1] = mCoords[numCoords - i - 1];
+            mCoords[numCoords - i - 1] = tmp;
+            i = i + 2;
          }
       }
       
-      public function addVertices(... rest) : void
+      public function addVertices(... args) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = rest.length;
-         var _loc2_:int = mCoords.length;
-         if(_loc3_ > 0)
+         var i:int = 0;
+         var numArgs:int = args.length;
+         var numCoords:int = mCoords.length;
+         if(numArgs > 0)
          {
-            if(rest[0] is Point)
+            if(args[0] is Point)
             {
-               _loc4_ = 0;
-               while(_loc4_ < _loc3_)
+               for(i = 0; i < numArgs; )
                {
-                  mCoords[_loc2_ + _loc4_ * 2] = (rest[_loc4_] as Point).x;
-                  mCoords[_loc2_ + _loc4_ * 2 + 1] = (rest[_loc4_] as Point).y;
-                  _loc4_++;
+                  mCoords[numCoords + i * 2] = (args[i] as Point).x;
+                  mCoords[numCoords + i * 2 + 1] = (args[i] as Point).y;
+                  i++;
                }
             }
-            else if(rest[0] is Number)
+            else if(args[0] is Number)
             {
-               _loc4_ = 0;
-               while(_loc4_ < _loc3_)
+               for(i = 0; i < numArgs; )
                {
-                  mCoords[_loc2_ + _loc4_] = rest[_loc4_];
-                  _loc4_++;
+                  mCoords[numCoords + i] = args[i];
+                  i++;
                }
             }
             else
             {
-               throw new ArgumentError("Invalid type: " + getQualifiedClassName(rest[0]));
+               throw new ArgumentError("Invalid type: " + getQualifiedClassName(args[0]));
             }
          }
       }
       
-      public function setVertex(param1:int, param2:Number, param3:Number) : void
+      public function setVertex(index:int, x:Number, y:Number) : void
       {
-         if(param1 >= 0 && param1 <= numVertices)
+         if(index >= 0 && index <= numVertices)
          {
-            mCoords[param1 * 2] = param2;
-            mCoords[param1 * 2 + 1] = param3;
+            mCoords[index * 2] = x;
+            mCoords[index * 2 + 1] = y;
             return;
          }
-         throw new RangeError("Invalid index: " + param1);
+         throw new RangeError("Invalid index: " + index);
       }
       
-      public function getVertex(param1:int, param2:Point = null) : Point
+      public function getVertex(index:int, result:Point = null) : Point
       {
-         if(param1 >= 0 && param1 < numVertices)
+         if(index >= 0 && index < numVertices)
          {
-            if(!param2)
+            if(!result)
             {
-               param2 = new Point();
+               result = new Point();
             }
-            param2.setTo(mCoords[param1 * 2],mCoords[param1 * 2 + 1]);
-            return param2;
+            result.setTo(mCoords[index * 2],mCoords[index * 2 + 1]);
+            return result;
          }
-         throw new RangeError("Invalid index: " + param1);
+         throw new RangeError("Invalid index: " + index);
       }
       
-      public function contains(param1:Number, param2:Number) : Boolean
+      public function contains(x:Number, y:Number) : Boolean
       {
-         var _loc9_:int = 0;
-         var _loc5_:Number = NaN;
-         var _loc6_:Number = NaN;
-         var _loc3_:Number = NaN;
-         var _loc4_:Number = NaN;
-         var _loc8_:* = int(numVertices - 1);
-         var _loc7_:uint = 0;
-         _loc9_ = 0;
-         while(_loc9_ < numVertices)
+         var i:int = 0;
+         var ix:Number = NaN;
+         var iy:Number = NaN;
+         var jx:Number = NaN;
+         var jy:Number = NaN;
+         var j:* = int(numVertices - 1);
+         var oddNodes:uint = 0;
+         for(i = 0; i < numVertices; )
          {
-            _loc5_ = mCoords[_loc9_ * 2];
-            _loc6_ = mCoords[_loc9_ * 2 + 1];
-            _loc3_ = mCoords[_loc8_ * 2];
-            _loc4_ = mCoords[_loc8_ * 2 + 1];
-            if((_loc6_ < param2 && _loc4_ >= param2 || _loc4_ < param2 && _loc6_ >= param2) && (_loc5_ <= param1 || _loc3_ <= param1))
+            ix = mCoords[i * 2];
+            iy = mCoords[i * 2 + 1];
+            jx = mCoords[j * 2];
+            jy = mCoords[j * 2 + 1];
+            if((iy < y && jy >= y || jy < y && iy >= y) && (ix <= x || jx <= x))
             {
-               _loc7_ = _loc7_ ^ uint(_loc5_ + (param2 - _loc6_) / (_loc4_ - _loc6_) * (_loc3_ - _loc5_) < param1);
+               oddNodes = oddNodes ^ uint(ix + (y - iy) / (jy - iy) * (jx - ix) < x);
             }
-            _loc8_ = _loc9_;
-            _loc9_++;
+            j = i;
+            i++;
          }
-         return _loc7_ != 0;
+         return oddNodes != 0;
       }
       
-      public function containsPoint(param1:Point) : Boolean
+      public function containsPoint(point:Point) : Boolean
       {
-         return contains(param1.x,param1.y);
+         return contains(point.x,point.y);
       }
       
-      public function triangulate(param1:Vector.<uint> = null) : Vector.<uint>
+      public function triangulate(result:Vector.<uint> = null) : Vector.<uint>
       {
-         var _loc12_:int = 0;
-         var _loc4_:* = 0;
-         var _loc2_:int = 0;
-         var _loc13_:int = 0;
-         var _loc14_:* = 0;
-         var _loc17_:* = 0;
-         var _loc16_:* = 0;
-         var _loc9_:Number = NaN;
-         var _loc3_:Number = NaN;
-         var _loc8_:Number = NaN;
-         var _loc7_:Number = NaN;
-         var _loc6_:Number = NaN;
-         var _loc5_:Number = NaN;
-         var _loc11_:Boolean = false;
-         var _loc15_:* = 0;
-         if(param1 == null)
+         var restIndexPos:int = 0;
+         var numRestIndices:* = 0;
+         var resultPos:int = 0;
+         var i:int = 0;
+         var i0:* = 0;
+         var i1:* = 0;
+         var i2:* = 0;
+         var ax:Number = NaN;
+         var ay:Number = NaN;
+         var bx:Number = NaN;
+         var by:Number = NaN;
+         var cx:Number = NaN;
+         var cy:Number = NaN;
+         var earFound:Boolean = false;
+         var otherIndex:* = 0;
+         if(result == null)
          {
-            param1 = new Vector.<uint>(0);
+            result = new Vector.<uint>(0);
          }
-         var _loc10_:int = this.numVertices;
-         if(_loc10_ < 3)
+         var numVertices:int = this.numVertices;
+         if(numVertices < 3)
          {
-            return param1;
+            return result;
          }
-         sRestIndices.length = _loc10_;
-         _loc13_ = 0;
-         while(_loc13_ < _loc10_)
+         sRestIndices.length = numVertices;
+         for(i = 0; i < numVertices; sRestIndices[i] = i,i++)
          {
-            sRestIndices[_loc13_] = _loc13_;
-            _loc13_++;
          }
-         _loc12_ = 0;
-         _loc2_ = param1.length;
-         _loc4_ = _loc10_;
-         while(_loc4_ > 3)
+         restIndexPos = 0;
+         resultPos = result.length;
+         numRestIndices = numVertices;
+         while(numRestIndices > 3)
          {
-            _loc14_ = uint(sRestIndices[_loc12_ % _loc4_]);
-            _loc17_ = uint(sRestIndices[(_loc12_ + 1) % _loc4_]);
-            _loc16_ = uint(sRestIndices[(_loc12_ + 2) % _loc4_]);
-            _loc9_ = mCoords[2 * _loc14_];
-            _loc3_ = mCoords[2 * _loc14_ + 1];
-            _loc8_ = mCoords[2 * _loc17_];
-            _loc7_ = mCoords[2 * _loc17_ + 1];
-            _loc6_ = mCoords[2 * _loc16_];
-            _loc5_ = mCoords[2 * _loc16_ + 1];
-            _loc11_ = false;
-            if(isConvexTriangle(_loc9_,_loc3_,_loc8_,_loc7_,_loc6_,_loc5_))
+            i0 = uint(sRestIndices[restIndexPos % numRestIndices]);
+            i1 = uint(sRestIndices[(restIndexPos + 1) % numRestIndices]);
+            i2 = uint(sRestIndices[(restIndexPos + 2) % numRestIndices]);
+            ax = mCoords[2 * i0];
+            ay = mCoords[2 * i0 + 1];
+            bx = mCoords[2 * i1];
+            by = mCoords[2 * i1 + 1];
+            cx = mCoords[2 * i2];
+            cy = mCoords[2 * i2 + 1];
+            earFound = false;
+            if(isConvexTriangle(ax,ay,bx,by,cx,cy))
             {
-               _loc11_ = true;
-               _loc13_ = 3;
-               while(_loc13_ < _loc4_)
+               earFound = true;
+               for(i = 3; i < numRestIndices; )
                {
-                  _loc15_ = uint(sRestIndices[(_loc12_ + _loc13_) % _loc4_]);
-                  if(isPointInTriangle(mCoords[2 * _loc15_],mCoords[2 * _loc15_ + 1],_loc9_,_loc3_,_loc8_,_loc7_,_loc6_,_loc5_))
+                  otherIndex = uint(sRestIndices[(restIndexPos + i) % numRestIndices]);
+                  if(isPointInTriangle(mCoords[2 * otherIndex],mCoords[2 * otherIndex + 1],ax,ay,bx,by,cx,cy))
                   {
-                     _loc11_ = false;
+                     earFound = false;
                      break;
                   }
-                  _loc13_++;
+                  i++;
                }
             }
-            if(_loc11_)
+            if(earFound)
             {
-               _loc2_++;
-               param1[_loc2_] = _loc14_;
-               _loc2_++;
-               param1[_loc2_] = _loc17_;
-               _loc2_++;
-               param1[_loc2_] = _loc16_;
-               VectorUtil.removeUnsignedIntAt(sRestIndices,(_loc12_ + 1) % _loc4_);
-               _loc4_--;
-               _loc12_ = 0;
+               resultPos++;
+               result[resultPos] = i0;
+               resultPos++;
+               result[resultPos] = i1;
+               resultPos++;
+               result[resultPos] = i2;
+               VectorUtil.removeUnsignedIntAt(sRestIndices,(restIndexPos + 1) % numRestIndices);
+               numRestIndices--;
+               restIndexPos = 0;
                continue;
             }
-            _loc12_++;
-            if(_loc12_ != _loc4_)
+            restIndexPos++;
+            if(restIndexPos != numRestIndices)
             {
                continue;
             }
             break;
          }
-         _loc2_++;
-         param1[_loc2_] = sRestIndices[0];
-         _loc2_++;
-         param1[_loc2_] = sRestIndices[1];
-         param1[_loc2_] = sRestIndices[2];
-         return param1;
+         resultPos++;
+         result[resultPos] = sRestIndices[0];
+         resultPos++;
+         result[resultPos] = sRestIndices[1];
+         result[resultPos] = sRestIndices[2];
+         return result;
       }
       
-      public function copyToVertexData(param1:VertexData, param2:int = 0) : void
+      public function copyToVertexData(target:VertexData, targetIndex:int = 0) : void
       {
-         var _loc3_:int = param2 + numVertices;
-         if(param1.numVertices < _loc3_)
+         var requiredTargetLength:int = targetIndex + numVertices;
+         if(target.numVertices < requiredTargetLength)
          {
-            param1.numVertices = _loc3_;
+            target.numVertices = requiredTargetLength;
          }
-         copyToVector(param1.rawData,param2 * 8,8 - 2);
+         copyToVector(target.rawData,targetIndex * 8,8 - 2);
       }
       
-      public function copyToVector(param1:Vector.<Number>, param2:int = 0, param3:int = 0) : void
+      public function copyToVector(target:Vector.<Number>, targetIndex:int = 0, stride:int = 0) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:int = this.numVertices;
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         var i:int = 0;
+         var numVertices:int = this.numVertices;
+         for(i = 0; i < numVertices; )
          {
-            param2++;
-            param1[param2] = mCoords[_loc5_ * 2];
-            param2++;
-            param1[param2] = mCoords[_loc5_ * 2 + 1];
-            param2 = param2 + param3;
-            _loc5_++;
+            targetIndex++;
+            target[targetIndex] = mCoords[i * 2];
+            targetIndex++;
+            target[targetIndex] = mCoords[i * 2 + 1];
+            targetIndex = targetIndex + stride;
+            i++;
          }
       }
       
       public function toString() : String
       {
-         var _loc3_:int = 0;
-         var _loc2_:String = "[Polygon \n";
-         var _loc1_:int = this.numVertices;
-         _loc3_ = 0;
-         while(_loc3_ < _loc1_)
+         var i:int = 0;
+         var result:String = "[Polygon \n";
+         var numPoints:int = this.numVertices;
+         for(i = 0; i < numPoints; )
          {
-            _loc2_ = _loc2_ + ("  [Vertex " + _loc3_ + ": " + "x=" + mCoords[_loc3_ * 2].toFixed(1) + ", " + "y=" + mCoords[_loc3_ * 2 + 1].toFixed(1) + "]" + (_loc3_ == _loc1_ - 1?"\n":",\n"));
-            _loc3_++;
+            result = result + ("  [Vertex " + i + ": " + "x=" + mCoords[i * 2].toFixed(1) + ", " + "y=" + mCoords[i * 2 + 1].toFixed(1) + "]" + (i == numPoints - 1?"\n":",\n"));
+            i++;
          }
-         return _loc2_ + "]";
+         return result + "]";
       }
       
       public function get isSimple() : Boolean
       {
-         var _loc12_:int = 0;
-         var _loc10_:Number = NaN;
-         var _loc1_:Number = NaN;
-         var _loc8_:Number = NaN;
-         var _loc7_:Number = NaN;
-         var _loc4_:Number = NaN;
-         var _loc9_:int = 0;
-         var _loc6_:Number = NaN;
-         var _loc5_:Number = NaN;
-         var _loc2_:Number = NaN;
-         var _loc3_:Number = NaN;
-         var _loc11_:int = mCoords.length;
-         if(_loc11_ <= 6)
+         var i:int = 0;
+         var ax:Number = NaN;
+         var ay:Number = NaN;
+         var bx:Number = NaN;
+         var by:Number = NaN;
+         var endJ:Number = NaN;
+         var j:int = 0;
+         var cx:Number = NaN;
+         var cy:Number = NaN;
+         var dx:Number = NaN;
+         var dy:Number = NaN;
+         var numCoords:int = mCoords.length;
+         if(numCoords <= 6)
          {
             return true;
          }
-         _loc12_ = 0;
-         while(_loc12_ < _loc11_)
+         i = 0;
+         while(i < numCoords)
          {
-            _loc10_ = mCoords[_loc12_];
-            _loc1_ = mCoords[_loc12_ + 1];
-            _loc8_ = mCoords[(_loc12_ + 2) % _loc11_];
-            _loc7_ = mCoords[(_loc12_ + 3) % _loc11_];
-            _loc4_ = _loc12_ + _loc11_ - 2;
-            _loc9_ = _loc12_ + 4;
-            while(_loc9_ < _loc4_)
+            ax = mCoords[i];
+            ay = mCoords[i + 1];
+            bx = mCoords[(i + 2) % numCoords];
+            by = mCoords[(i + 3) % numCoords];
+            endJ = i + numCoords - 2;
+            for(j = i + 4; j < endJ; )
             {
-               _loc6_ = mCoords[_loc9_ % _loc11_];
-               _loc5_ = mCoords[(_loc9_ + 1) % _loc11_];
-               _loc2_ = mCoords[(_loc9_ + 2) % _loc11_];
-               _loc3_ = mCoords[(_loc9_ + 3) % _loc11_];
-               if(areVectorsIntersecting(_loc10_,_loc1_,_loc8_,_loc7_,_loc6_,_loc5_,_loc2_,_loc3_))
+               cx = mCoords[j % numCoords];
+               cy = mCoords[(j + 1) % numCoords];
+               dx = mCoords[(j + 2) % numCoords];
+               dy = mCoords[(j + 3) % numCoords];
+               if(areVectorsIntersecting(ax,ay,bx,by,cx,cy,dx,dy))
                {
                   return false;
                }
-               _loc9_ = _loc9_ + 2;
+               j = j + 2;
             }
-            _loc12_ = _loc12_ + 2;
+            i = i + 2;
          }
          return true;
       }
       
       public function get isConvex() : Boolean
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = mCoords.length;
-         if(_loc1_ < 6)
+         var i:int = 0;
+         var numCoords:int = mCoords.length;
+         if(numCoords < 6)
          {
             return true;
          }
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_)
+         i = 0;
+         while(i < numCoords)
          {
-            if(!isConvexTriangle(mCoords[_loc2_],mCoords[_loc2_ + 1],mCoords[(_loc2_ + 2) % _loc1_],mCoords[(_loc2_ + 3) % _loc1_],mCoords[(_loc2_ + 4) % _loc1_],mCoords[(_loc2_ + 5) % _loc1_]))
+            if(!isConvexTriangle(mCoords[i],mCoords[i + 1],mCoords[(i + 2) % numCoords],mCoords[(i + 3) % numCoords],mCoords[(i + 4) % numCoords],mCoords[(i + 5) % numCoords]))
             {
                return false;
             }
-            _loc2_ = _loc2_ + 2;
+            i = i + 2;
          }
          return true;
       }
       
       public function get area() : Number
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = 0;
-         var _loc2_:int = mCoords.length;
-         if(_loc2_ >= 6)
+         var i:int = 0;
+         var area:* = 0;
+         var numCoords:int = mCoords.length;
+         if(numCoords >= 6)
          {
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_)
+            for(i = 0; i < numCoords; )
             {
-               _loc1_ = Number(_loc1_ + mCoords[_loc3_] * mCoords[(_loc3_ + 3) % _loc2_]);
-               _loc1_ = Number(_loc1_ - mCoords[_loc3_ + 1] * mCoords[(_loc3_ + 2) % _loc2_]);
-               _loc3_ = _loc3_ + 2;
+               area = Number(area + mCoords[i] * mCoords[(i + 3) % numCoords]);
+               area = Number(area - mCoords[i + 1] * mCoords[(i + 2) % numCoords]);
+               i = i + 2;
             }
          }
-         return _loc1_ / 2;
+         return area / 2;
       }
       
       public function get numVertices() : int
@@ -424,20 +411,19 @@ package starling.geom
          return mCoords.length / 2;
       }
       
-      public function set numVertices(param1:int) : void
+      public function set numVertices(value:int) : void
       {
-         var _loc3_:* = 0;
-         var _loc2_:int = numVertices;
-         mCoords.length = param1 * 2;
-         if(_loc2_ < param1)
+         var i:* = 0;
+         var oldLength:int = numVertices;
+         mCoords.length = value * 2;
+         if(oldLength < value)
          {
-            _loc3_ = _loc2_;
-            while(_loc3_ < param1)
+            for(i = oldLength; i < value; )
             {
                var _loc4_:int = 0;
-               mCoords[_loc3_ * 2 + 1] = _loc4_;
-               mCoords[_loc3_ * 2] = _loc4_;
-               _loc3_++;
+               mCoords[i * 2 + 1] = _loc4_;
+               mCoords[i * 2] = _loc4_;
+               i++;
             }
          }
       }
@@ -454,28 +440,28 @@ class ImmutablePolygon extends Polygon
    
    private var mFrozen:Boolean;
    
-   function ImmutablePolygon(param1:Array)
+   function ImmutablePolygon(vertices:Array)
    {
-      super(param1);
+      super(vertices);
       mFrozen = true;
    }
    
-   override public function addVertices(... rest) : void
+   override public function addVertices(... args) : void
    {
       if(mFrozen)
       {
          throw getImmutableError();
       }
-      super.addVertices.apply(this,rest);
+      super.addVertices.apply(this,args);
    }
    
-   override public function setVertex(param1:int, param2:Number, param3:Number) : void
+   override public function setVertex(index:int, x:Number, y:Number) : void
    {
       if(mFrozen)
       {
          throw getImmutableError();
       }
-      super.setVertex(param1,param2,param3);
+      super.setVertex(index,x,y);
    }
    
    override public function reverse() : void
@@ -487,7 +473,7 @@ class ImmutablePolygon extends Polygon
       super.reverse();
    }
    
-   override public function set numVertices(param1:int) : void
+   override public function set numVertices(value:int) : void
    {
       if(mFrozen)
       {
@@ -498,9 +484,9 @@ class ImmutablePolygon extends Polygon
    
    private function getImmutableError() : Error
    {
-      var _loc1_:String = getQualifiedClassName(this).split("::").pop();
-      var _loc2_:String = _loc1_ + " cannot be modified. Call \'clone\' to create a mutable copy.";
-      return new IllegalOperationError(_loc2_);
+      var className:String = getQualifiedClassName(this).split("::").pop();
+      var msg:String = className + " cannot be modified. Call \'clone\' to create a mutable copy.";
+      return new IllegalOperationError(msg);
    }
 }
 
@@ -516,68 +502,66 @@ class Ellipse extends ImmutablePolygon
    
    private var mRadiusY:Number;
    
-   function Ellipse(param1:Number, param2:Number, param3:Number, param4:Number, param5:int = -1)
+   function Ellipse(x:Number, y:Number, radiusX:Number, radiusY:Number, numSides:int = -1)
    {
-      mX = param1;
-      mY = param2;
-      mRadiusX = param3;
-      mRadiusY = param4;
-      super(getVertices(param5));
+      mX = x;
+      mY = y;
+      mRadiusX = radiusX;
+      mRadiusY = radiusY;
+      super(getVertices(numSides));
    }
    
-   private function getVertices(param1:int) : Array
+   private function getVertices(numSides:int) : Array
    {
-      var _loc5_:int = 0;
-      if(param1 < 0)
+      var i:int = 0;
+      if(numSides < 0)
       {
-         param1 = 3.14159265358979 * (mRadiusX + mRadiusY) / 4;
+         numSides = 3.14159265358979 * (mRadiusX + mRadiusY) / 4;
       }
-      if(param1 < 6)
+      if(numSides < 6)
       {
-         param1 = 6;
+         numSides = 6;
       }
-      var _loc3_:Array = [];
-      var _loc2_:Number = 2 * 3.14159265358979 / param1;
-      var _loc4_:* = 0;
-      _loc5_ = 0;
-      while(_loc5_ < param1)
+      var vertices:Array = [];
+      var angleDelta:Number = 2 * 3.14159265358979 / numSides;
+      var angle:* = 0;
+      for(i = 0; i < numSides; )
       {
-         _loc3_[_loc5_ * 2] = Math.cos(_loc4_) * mRadiusX + mX;
-         _loc3_[_loc5_ * 2 + 1] = Math.sin(_loc4_) * mRadiusY + mY;
-         _loc4_ = Number(_loc4_ + _loc2_);
-         _loc5_++;
+         vertices[i * 2] = Math.cos(angle) * mRadiusX + mX;
+         vertices[i * 2 + 1] = Math.sin(angle) * mRadiusY + mY;
+         angle = Number(angle + angleDelta);
+         i++;
       }
-      return _loc3_;
+      return vertices;
    }
    
-   override public function triangulate(param1:Vector.<uint> = null) : Vector.<uint>
+   override public function triangulate(result:Vector.<uint> = null) : Vector.<uint>
    {
-      var _loc4_:int = 0;
-      if(param1 == null)
+      var i:int = 0;
+      if(result == null)
       {
-         param1 = new Vector.<uint>(0);
+         result = new Vector.<uint>(0);
       }
-      var _loc3_:uint = 1;
-      var _loc2_:uint = numVertices - 1;
-      var _loc5_:uint = param1.length;
-      _loc4_ = _loc3_;
-      while(_loc4_ < _loc2_)
+      var from:uint = 1;
+      var to:uint = numVertices - 1;
+      var pos:uint = result.length;
+      for(i = from; i < to; )
       {
-         param1[_loc5_++] = 0;
-         param1[_loc5_++] = _loc4_;
-         param1[_loc5_++] = _loc4_ + 1;
-         _loc4_++;
+         result[pos++] = 0;
+         result[pos++] = i;
+         result[pos++] = i + 1;
+         i++;
       }
-      return param1;
+      return result;
    }
    
-   override public function contains(param1:Number, param2:Number) : Boolean
+   override public function contains(x:Number, y:Number) : Boolean
    {
-      var _loc4_:Number = param1 - mX;
-      var _loc3_:Number = param2 - mY;
-      var _loc6_:Number = _loc4_ / mRadiusX;
-      var _loc5_:Number = _loc3_ / mRadiusY;
-      return _loc6_ * _loc6_ + _loc5_ * _loc5_ <= 1;
+      var vx:Number = x - mX;
+      var vy:Number = y - mY;
+      var a:Number = vx / mRadiusX;
+      var b:Number = vy / mRadiusY;
+      return a * a + b * b <= 1;
    }
    
    override public function get area() : Number
@@ -608,28 +592,28 @@ class Rectangle extends ImmutablePolygon
    
    private var mHeight:Number;
    
-   function Rectangle(param1:Number, param2:Number, param3:Number, param4:Number)
+   function Rectangle(x:Number, y:Number, width:Number, height:Number)
    {
-      mX = param1;
-      mY = param2;
-      mWidth = param3;
-      mHeight = param4;
-      super([param1,param2,param1 + param3,param2,param1 + param3,param2 + param4,param1,param2 + param4]);
+      mX = x;
+      mY = y;
+      mWidth = width;
+      mHeight = height;
+      super([x,y,x + width,y,x + width,y + height,x,y + height]);
    }
    
-   override public function triangulate(param1:Vector.<uint> = null) : Vector.<uint>
+   override public function triangulate(result:Vector.<uint> = null) : Vector.<uint>
    {
-      if(param1 == null)
+      if(result == null)
       {
-         param1 = new Vector.<uint>(0);
+         result = new Vector.<uint>(0);
       }
-      param1.push(0,1,3,1,2,3);
-      return param1;
+      result.push(0,1,3,1,2,3);
+      return result;
    }
    
-   override public function contains(param1:Number, param2:Number) : Boolean
+   override public function contains(x:Number, y:Number) : Boolean
    {
-      return param1 >= mX && param1 <= mX + mWidth && param2 >= mY && param2 <= mY + mHeight;
+      return x >= mX && x <= mX + mWidth && y >= mY && y <= mY + mHeight;
    }
    
    override public function get area() : Number

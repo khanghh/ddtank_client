@@ -23,13 +23,13 @@ package gameStarling.actions.pet
       
       private var _updated:Boolean = false;
       
-      public function PetBeatAction(param1:GamePet3D, param2:GamePlayer3D, param3:String, param4:Point, param5:Array)
+      public function PetBeatAction(pet:GamePet3D, master:GamePlayer3D, act:String, pt:Point, targets:Array)
       {
-         _pet = param1;
-         _act = param3;
-         _pt = param4;
-         _targets = param5;
-         _master = param2;
+         _pet = pet;
+         _act = act;
+         _pt = pt;
+         _targets = targets;
+         _master = master;
          super();
       }
       
@@ -50,10 +50,10 @@ package gameStarling.actions.pet
       
       private function updateHp() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
+         var t:* = null;
+         var hp:int = 0;
+         var dam:int = 0;
+         var dander:int = 0;
          if(_pet == null || _pet.info == null || _master == null || _master.info == null)
          {
             finish();
@@ -63,16 +63,16 @@ package gameStarling.actions.pet
          {
             var _loc7_:int = 0;
             var _loc6_:* = _targets;
-            for each(var _loc5_ in _targets)
+            for each(var target in _targets)
             {
-               _loc2_ = _loc5_.target;
-               _loc1_ = _loc5_.hp;
-               _loc4_ = _loc5_.dam;
-               _loc3_ = _loc5_.dander;
-               _loc2_.updateBlood(_loc1_,3,_loc4_);
-               if(_loc2_ is Player)
+               t = target.target;
+               hp = target.hp;
+               dam = target.dam;
+               dander = target.dander;
+               t.updateBlood(hp,3,dam);
+               if(t is Player)
                {
-                  Player(_loc2_).dander = _loc3_;
+                  Player(t).dander = dander;
                }
             }
             _updated = true;
@@ -86,10 +86,10 @@ package gameStarling.actions.pet
       
       override public function cancel() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
+         var t:* = null;
+         var hp:int = 0;
+         var dam:int = 0;
+         var dander:int = 0;
          if(_pet == null || _pet.info == null || _master == null || _master.info == null)
          {
             finish();
@@ -99,16 +99,16 @@ package gameStarling.actions.pet
          {
             var _loc7_:int = 0;
             var _loc6_:* = _targets;
-            for each(var _loc5_ in _targets)
+            for each(var target in _targets)
             {
-               _loc2_ = _loc5_.target;
-               _loc1_ = _loc5_.hp;
-               _loc4_ = _loc5_.dam;
-               _loc3_ = _loc5_.dander;
-               _loc2_.updateBlood(_loc1_,3,_loc4_);
-               if(_loc2_ is Player)
+               t = target.target;
+               hp = target.hp;
+               dam = target.dam;
+               dander = target.dander;
+               t.updateBlood(hp,3,dam);
+               if(t is Player)
                {
-                  Player(_loc2_).dander = _loc3_;
+                  Player(t).dander = dander;
                }
             }
             _pet.info.pos = _master.info.pos;

@@ -23,9 +23,9 @@ package store
       
       public var autoFusion:Boolean;
       
-      public function StrengthDataManager(param1:IEventDispatcher = null)
+      public function StrengthDataManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
          loadStrengthenLevel();
       }
       
@@ -44,20 +44,20 @@ package store
       
       private function loadStrengthenLevel() : void
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ItemStrengthenData.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("store.view.fusion.LoadStrengthenListError");
-         _loc1_.analyzer = new StrengthenDataAnalyzer(__searchResult);
-         LoadResourceManager.Instance.startLoad(_loc1_);
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ItemStrengthenData.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("store.view.fusion.LoadStrengthenListError");
+         loader.analyzer = new StrengthenDataAnalyzer(__searchResult);
+         LoadResourceManager.Instance.startLoad(loader);
       }
       
-      private function __searchResult(param1:StrengthenDataAnalyzer) : void
+      private function __searchResult(action:StrengthenDataAnalyzer) : void
       {
-         _strengthData = param1._strengthData;
+         _strengthData = action._strengthData;
       }
       
-      public function getRecoverDongAddition(param1:int, param2:int) : Number
+      public function getRecoverDongAddition(TempID:int, strengthenLevel:int) : Number
       {
-         return _strengthData[param2][param1];
+         return _strengthData[strengthenLevel][TempID];
       }
       
       public function fusionFinish() : void
@@ -70,9 +70,9 @@ package store
          dispatchEvent(new StoreIIEvent("exaltFinish"));
       }
       
-      public function exaltFail(param1:int = 0) : void
+      public function exaltFail(lucky:int = 0) : void
       {
-         dispatchEvent(new StoreIIEvent("exaltFail",param1));
+         dispatchEvent(new StoreIIEvent("exaltFail",lucky));
       }
    }
 }

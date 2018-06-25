@@ -18,11 +18,11 @@ package com.greensock.plugins
          this.overwriteProps = ["dropShadowFilter"];
       }
       
-      override public function onInitTween(param1:Object, param2:*, param3:TweenLite) : Boolean
+      override public function onInitTween(target:Object, value:*, tween:TweenLite) : Boolean
       {
-         _target = param1;
+         _target = target;
          _type = DropShadowFilter;
-         initFilter(param2,new DropShadowFilter(0,45,0,0,0,0,1,param2.quality || 2,param2.inner,param2.knockout,param2.hideObject),_propNames);
+         initFilter(value,new DropShadowFilter(0,45,0,0,0,0,1,value.quality || 2,value.inner,value.knockout,value.hideObject),_propNames);
          return true;
       }
    }

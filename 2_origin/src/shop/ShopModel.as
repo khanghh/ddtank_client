@@ -114,53 +114,52 @@ package shop
       
       public function removeLatestItem() : void
       {
-         var _loc3_:* = null;
-         var _loc8_:int = 0;
-         var _loc7_:* = null;
-         var _loc2_:int = 0;
-         var _loc6_:Array = !!_sex?_manTempList:_womanTempList;
+         var arr:* = null;
+         var i:int = 0;
+         var arr1:* = null;
+         var index:int = 0;
+         var list:Array = !!_sex?_manTempList:_womanTempList;
          if(currentHistoryList.length > 0)
          {
-            _loc3_ = currentHistoryList.pop();
+            arr = currentHistoryList.pop();
             var _loc10_:int = 0;
-            var _loc9_:* = _loc3_;
-            for each(var _loc4_ in _loc3_)
+            var _loc9_:* = arr;
+            for each(var item in arr)
             {
-               removeTempEquip(_loc4_);
+               removeTempEquip(item);
             }
          }
-         var _loc1_:Array = [];
-         _loc8_ = currentHistoryList.length - 1;
-         while(_loc8_ > -1)
+         var result:Array = [];
+         for(i = currentHistoryList.length - 1; i > -1; )
          {
-            _loc7_ = currentHistoryList[_loc8_];
+            arr1 = currentHistoryList[i];
             var _loc12_:int = 0;
-            var _loc11_:* = _loc7_;
-            for each(var _loc5_ in _loc7_)
+            var _loc11_:* = arr1;
+            for each(var shopitem in arr1)
             {
-               _loc2_ = currentTempListHasItem(_loc5_.TemplateInfo.CategoryID);
-               if(_loc2_ <= -1)
+               index = currentTempListHasItem(shopitem.TemplateInfo.CategoryID);
+               if(index <= -1)
                {
-                  currentTempList.push(_loc5_);
-                  dispatchEvent(new ShopEvent("addTempEquip",_loc5_));
-                  _loc5_.addEventListener("change",__onItemChange);
+                  currentTempList.push(shopitem);
+                  dispatchEvent(new ShopEvent("addTempEquip",shopitem));
+                  shopitem.addEventListener("change",__onItemChange);
                }
             }
-            _loc8_--;
+            i--;
          }
          updateCost();
       }
       
-      private function currentTempListHasItem(param1:int) : int
+      private function currentTempListHasItem(categoryID:int) : int
       {
-         var _loc2_:Array = currentTempList;
+         var items:Array = currentTempList;
          var _loc5_:int = 0;
-         var _loc4_:* = _loc2_;
-         for each(var _loc3_ in _loc2_)
+         var _loc4_:* = items;
+         for each(var item in items)
          {
-            if(_loc3_.TemplateInfo.CategoryID == param1)
+            if(item.TemplateInfo.CategoryID == categoryID)
             {
-               return _loc2_.indexOf(_loc3_);
+               return items.indexOf(item);
             }
          }
          return -1;
@@ -193,17 +192,17 @@ package shop
       
       public function random() : void
       {
-         var _loc3_:int = 0;
-         var _loc4_:Array = !!_sex?maleCollocation:femaleCollocation;
-         var _loc2_:Array = [];
+         var index:int = 0;
+         var list:Array = !!_sex?maleCollocation:femaleCollocation;
+         var result:Array = [];
          var _loc6_:int = 0;
-         var _loc5_:* = _loc4_;
-         for each(var _loc1_ in _loc4_)
+         var _loc5_:* = list;
+         for each(var vect in list)
          {
-            _loc3_ = Math.floor(Math.random() * _loc1_.length);
-            _loc2_.push(fillToShopCarInfo(_loc1_[_loc3_]));
+            index = Math.floor(Math.random() * vect.length);
+            result.push(fillToShopCarInfo(vect[index]));
          }
-         addTempEquip(_loc2_);
+         addTempEquip(result);
          updateCost();
       }
       
@@ -217,103 +216,102 @@ package shop
          return _carList.length + _manTempList.length + _womanTempList.length >= 20;
       }
       
-      public function addTempEquip(param1:*) : Boolean
+      public function addTempEquip(item:*) : Boolean
       {
-         var _loc7_:* = null;
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
-         var _loc5_:* = null;
-         var _loc8_:int = 0;
-         var _loc6_:* = null;
-         var _loc4_:Boolean = isCarListMax();
-         if(_loc4_)
+         var items:* = null;
+         var history:* = null;
+         var index:int = 0;
+         var t:* = null;
+         var index1:int = 0;
+         var tt:* = null;
+         var cantAdd:Boolean = isCarListMax();
+         if(cantAdd)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("shop.ShopIIModel.car"));
-            return _loc4_;
+            return cantAdd;
          }
-         if(param1 is Array)
+         if(item is Array)
          {
-            _loc7_ = param1 as Array;
-            _loc2_ = [];
+            items = item as Array;
+            history = [];
             var _loc11_:int = 0;
-            var _loc10_:* = _loc7_;
-            for each(var _loc9_ in _loc7_)
+            var _loc10_:* = items;
+            for each(var shopitem in items)
             {
-               _loc3_ = currentTempListHasItem(_loc9_.TemplateInfo.CategoryID);
-               if(_loc3_ > -1)
+               index = currentTempListHasItem(shopitem.TemplateInfo.CategoryID);
+               if(index > -1)
                {
-                  currentTempList.splice(_loc3_,1);
+                  currentTempList.splice(index,1);
                }
-               _loc5_ = fillToShopCarInfo(_loc9_);
-               _loc5_.dressing = true;
-               _loc5_.ModelSex = currentModel.Sex;
-               currentTempList.push(_loc5_);
-               dispatchEvent(new ShopEvent("addTempEquip",_loc5_));
+               t = fillToShopCarInfo(shopitem);
+               t.dressing = true;
+               t.ModelSex = currentModel.Sex;
+               currentTempList.push(t);
+               dispatchEvent(new ShopEvent("addTempEquip",t));
                updateCost();
-               _loc5_.addEventListener("change",__onItemChange);
-               _loc2_.push(_loc5_);
+               t.addEventListener("change",__onItemChange);
+               history.push(t);
             }
-            currentHistoryList.push(_loc2_);
+            currentHistoryList.push(history);
          }
          else
          {
-            _loc8_ = currentTempListHasItem(param1.TemplateInfo.CategoryID);
-            if(_loc8_ > -1)
+            index1 = currentTempListHasItem(item.TemplateInfo.CategoryID);
+            if(index1 > -1)
             {
-               currentTempList.splice(_loc8_,1);
+               currentTempList.splice(index1,1);
             }
-            _loc6_ = fillToShopCarInfo(param1);
-            _loc6_.dressing = true;
-            _loc6_.ModelSex = currentModel.Sex;
-            currentTempList.push(_loc6_);
-            dispatchEvent(new ShopEvent("addTempEquip",_loc6_));
+            tt = fillToShopCarInfo(item);
+            tt.dressing = true;
+            tt.ModelSex = currentModel.Sex;
+            currentTempList.push(tt);
+            dispatchEvent(new ShopEvent("addTempEquip",tt));
             updateCost();
-            _loc6_.addEventListener("change",__onItemChange);
-            currentHistoryList.push([_loc6_]);
+            tt.addEventListener("change",__onItemChange);
+            currentHistoryList.push([tt]);
          }
-         return !_loc4_;
+         return !cantAdd;
       }
       
-      public function addToShoppingCar(param1:ShopCarItemInfo) : void
+      public function addToShoppingCar(item:ShopCarItemInfo) : void
       {
          if(isCarListMax())
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("shop.ShopIIModel.car"));
             return;
          }
-         if(isOverCount(param1))
+         if(isOverCount(item))
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("shop.ShopIIModel.GoodsNumberLimit"));
             return;
          }
-         _carList.push(param1);
+         _carList.push(item);
          updateCost();
-         param1.addEventListener("change",__onItemChange);
-         dispatchEvent(new ShopEvent("addcarequip",param1));
+         item.addEventListener("change",__onItemChange);
+         dispatchEvent(new ShopEvent("addcarequip",item));
       }
       
-      private function __onItemChange(param1:Event) : void
+      private function __onItemChange(evt:Event) : void
       {
          updateCost();
       }
       
-      public function isOverCount(param1:ShopItemInfo) : Boolean
+      public function isOverCount(info:ShopItemInfo) : Boolean
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc2_:uint = 0;
-         var _loc3_:Array = allItems;
-         _loc5_ = 0;
-         while(_loc5_ < _loc3_.length)
+         var i:int = 0;
+         var item:* = null;
+         var count:uint = 0;
+         var arr:Array = allItems;
+         for(i = 0; i < arr.length; )
          {
-            _loc4_ = _loc3_[_loc5_] as ShopCarItemInfo;
-            if(param1.TemplateID == _loc4_.TemplateID)
+            item = arr[i] as ShopCarItemInfo;
+            if(info.TemplateID == item.TemplateID)
             {
-               _loc2_++;
+               count++;
             }
-            _loc5_++;
+            i++;
          }
-         return _loc2_ >= param1.LimitCount && param1.LimitCount != -1?true:false;
+         return count >= info.LimitCount && info.LimitCount != -1?true:false;
       }
       
       public function get allItems() : Array
@@ -326,58 +324,56 @@ package shop
          return _carList.length + _manTempList.length + _womanTempList.length;
       }
       
-      public function calcPrices(param1:Array, param2:Array = null) : Array
+      public function calcPrices(list:Array, list2:Array = null) : Array
       {
-         var _loc7_:int = 0;
-         var _loc8_:ItemPrice = new ItemPrice(null,null,null);
-         var _loc3_:int = 0;
-         var _loc6_:int = 0;
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         _loc7_ = 0;
-         while(_loc7_ < param1.length)
+         var i:int = 0;
+         var totalPrice:ItemPrice = new ItemPrice(null,null,null);
+         var g:int = 0;
+         var m:int = 0;
+         var l:int = 0;
+         var b:int = 0;
+         for(i = 0; i < list.length; )
          {
-            if(param2)
+            if(list2)
             {
-               if(param2[_loc7_])
+               if(list2[i])
                {
-                  _loc8_.addItemPrice(param1[_loc7_].getCurrentPrice(),param2[_loc7_]);
+                  totalPrice.addItemPrice(list[i].getCurrentPrice(),list2[i]);
                }
                else
                {
-                  _loc8_.addItemPrice(param1[_loc7_].getCurrentPrice());
+                  totalPrice.addItemPrice(list[i].getCurrentPrice());
                }
             }
             else
             {
-               _loc8_.addItemPrice(param1[_loc7_].getCurrentPrice());
+               totalPrice.addItemPrice(list[i].getCurrentPrice());
             }
-            _loc7_++;
+            i++;
          }
-         _loc3_ = _loc8_.goldValue;
-         _loc6_ = _loc8_.bothMoneyValue;
-         _loc5_ = _loc8_.ddtMoneyValue;
-         _loc4_ = _loc8_.bandDdtMoneyValue;
-         return [_loc3_,_loc6_,_loc5_,_loc4_];
+         g = totalPrice.goldValue;
+         m = totalPrice.bothMoneyValue;
+         l = totalPrice.ddtMoneyValue;
+         b = totalPrice.bandDdtMoneyValue;
+         return [g,m,l,b];
       }
       
-      public function canBuyLeastOneGood(param1:Array) : Boolean
+      public function canBuyLeastOneGood(array:Array) : Boolean
       {
-         return ShopManager.Instance.buyLeastGood(param1,_self);
+         return ShopManager.Instance.buyLeastGood(array,_self);
       }
       
       public function canChangSkin() : Boolean
       {
-         var _loc2_:int = 0;
-         var _loc1_:Array = currentTempList;
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_.length)
+         var i:int = 0;
+         var list:Array = currentTempList;
+         for(i = 0; i < list.length; )
          {
-            if(_loc1_[_loc2_].CategoryID == 6)
+            if(list[i].CategoryID == 6)
             {
                return true;
             }
-            _loc2_++;
+            i++;
          }
          return false;
       }
@@ -393,19 +389,19 @@ package shop
          init();
       }
       
-      public function clearCurrentTempList(param1:int = 0) : void
+      public function clearCurrentTempList(sex:int = 0) : void
       {
-         var _loc2_:* = null;
-         if(param1 == 0)
+         var list:* = null;
+         if(sex == 0)
          {
-            _loc2_ = !!_sex?_manTempList:_womanTempList;
-            _loc2_.splice(0,_loc2_.length);
+            list = !!_sex?_manTempList:_womanTempList;
+            list.splice(0,list.length);
          }
-         else if(param1 == 1)
+         else if(sex == 1)
          {
             _manTempList.splice(0,_manTempList.length);
          }
-         else if(param1 == 2)
+         else if(sex == 2)
          {
             _womanTempList.splice(0,_womanTempList.length);
          }
@@ -423,15 +419,15 @@ package shop
       
       public function get currentGift() : int
       {
-         var _loc1_:Array = calcPrices(currentTempList);
-         _currentGift = _loc1_[2];
+         var temp:Array = calcPrices(currentTempList);
+         _currentGift = temp[2];
          return _currentGift;
       }
       
       public function get currentGold() : int
       {
-         var _loc1_:Array = calcPrices(currentTempList);
-         _currentGold = _loc1_[0];
+         var temp:Array = calcPrices(currentTempList);
+         _currentGold = temp[0];
          return _currentGold;
       }
       
@@ -442,8 +438,8 @@ package shop
       
       public function get currentMedal() : int
       {
-         var _loc1_:Array = calcPrices(currentTempList);
-         _currentMedal = _loc1_[3];
+         var temp:Array = calcPrices(currentTempList);
+         _currentMedal = temp[3];
          return _currentMedal;
       }
       
@@ -459,23 +455,22 @@ package shop
       
       public function get currentMoney() : int
       {
-         var _loc1_:Array = calcPrices(currentTempList);
-         _currentMoney = _loc1_[1];
+         var temp:Array = calcPrices(currentTempList);
+         _currentMoney = temp[1];
          return _currentMoney;
       }
       
       public function get currentSkin() : String
       {
-         var _loc2_:int = 0;
-         var _loc1_:Array = currentTempList;
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_.length)
+         var i:int = 0;
+         var list:Array = currentTempList;
+         for(i = 0; i < list.length; )
          {
-            if(_loc1_[_loc2_].CategoryID == 6)
+            if(list[i].CategoryID == 6)
             {
-               return _loc1_[_loc2_].skin;
+               return list[i].skin;
             }
-            _loc2_++;
+            i++;
          }
          return "";
       }
@@ -504,14 +499,14 @@ package shop
          return _sex;
       }
       
-      public function set fittingSex(param1:Boolean) : void
+      public function set fittingSex(value:Boolean) : void
       {
-         var _loc2_:* = null;
-         if(_sex != param1)
+         var shopEvt:* = null;
+         if(_sex != value)
          {
-            _sex = param1;
-            _loc2_ = new ShopEvent("fittingmodelchange","sexChange");
-            dispatchEvent(_loc2_);
+            _sex = value;
+            shopEvt = new ShopEvent("fittingmodelchange","sexChange");
+            dispatchEvent(shopEvt);
          }
       }
       
@@ -525,183 +520,177 @@ package shop
          return _manModel;
       }
       
-      public function removeFromShoppingCar(param1:ShopCarItemInfo) : void
+      public function removeFromShoppingCar(item:ShopCarItemInfo) : void
       {
-         removeTempEquip(param1);
-         var _loc2_:int = _carList.indexOf(param1);
-         if(_loc2_ != -1)
+         removeTempEquip(item);
+         var index:int = _carList.indexOf(item);
+         if(index != -1)
          {
-            _carList.splice(_loc2_,1);
+            _carList.splice(index,1);
             updateCost();
-            param1.removeEventListener("change",__onItemChange);
-            dispatchEvent(new ShopEvent("removecarequip",param1));
+            item.removeEventListener("change",__onItemChange);
+            dispatchEvent(new ShopEvent("removecarequip",item));
          }
       }
       
       public function checkPoint() : Boolean
       {
-         var _loc1_:* = null;
-         var _loc5_:int = 0;
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:int = _carList.length;
-         while(_loc5_ < _loc2_)
+         var item:* = null;
+         var i:int = 0;
+         var j:int = 0;
+         var k:int = 0;
+         for(var len:int = _carList.length; i < len; )
          {
-            _loc1_ = _carList[_loc5_] as ShopCarItemInfo;
-            if(_loc1_.getCurrentPrice().ddtMoneyValue > 0 || isBandList[_loc5_])
+            item = _carList[i] as ShopCarItemInfo;
+            if(item.getCurrentPrice().ddtMoneyValue > 0 || isBandList[i])
             {
                return true;
             }
-            _loc5_++;
+            i++;
          }
-         _loc3_ = 0;
-         while(_loc3_ < _manTempList.length)
+         for(j = 0; j < _manTempList.length; )
          {
-            _loc1_ = _manTempList[_loc3_] as ShopCarItemInfo;
-            if(_loc1_.getCurrentPrice().ddtMoneyValue > 0 || isBandList[_loc3_])
+            item = _manTempList[j] as ShopCarItemInfo;
+            if(item.getCurrentPrice().ddtMoneyValue > 0 || isBandList[j])
             {
                return true;
             }
-            _loc3_++;
+            j++;
          }
-         _loc4_ = 0;
-         while(_loc4_ < _womanTempList.length)
+         for(k = 0; k < _womanTempList.length; )
          {
-            _loc1_ = _womanTempList[_loc4_] as ShopCarItemInfo;
-            if(_loc1_.getCurrentPrice().ddtMoneyValue > 0 || isBandList[_loc3_])
+            item = _womanTempList[k] as ShopCarItemInfo;
+            if(item.getCurrentPrice().ddtMoneyValue > 0 || isBandList[j])
             {
                return true;
             }
-            _loc4_++;
+            k++;
          }
          return false;
       }
       
       public function checkDiscount() : Boolean
       {
-         var _loc1_:* = null;
-         var _loc5_:int = 0;
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:int = _carList.length;
-         while(_loc5_ < _loc2_)
+         var item:* = null;
+         var i:int = 0;
+         var j:int = 0;
+         var k:int = 0;
+         for(var len:int = _carList.length; i < len; )
          {
-            _loc1_ = _carList[_loc5_] as ShopCarItemInfo;
-            if(_loc1_.isDiscount == 2)
+            item = _carList[i] as ShopCarItemInfo;
+            if(item.isDiscount == 2)
             {
                return true;
             }
-            _loc5_++;
+            i++;
          }
-         _loc3_ = 0;
-         while(_loc3_ < _manTempList.length)
+         for(j = 0; j < _manTempList.length; )
          {
-            _loc1_ = _manTempList[_loc3_] as ShopCarItemInfo;
-            if(_loc1_.isDiscount == 2)
+            item = _manTempList[j] as ShopCarItemInfo;
+            if(item.isDiscount == 2)
             {
                return true;
             }
-            _loc3_++;
+            j++;
          }
-         _loc4_ = 0;
-         while(_loc4_ < _womanTempList.length)
+         for(k = 0; k < _womanTempList.length; )
          {
-            _loc1_ = _womanTempList[_loc4_] as ShopCarItemInfo;
-            if(_loc1_.isDiscount == 2)
+            item = _womanTempList[k] as ShopCarItemInfo;
+            if(item.isDiscount == 2)
             {
                return true;
             }
-            _loc4_++;
+            k++;
          }
          return false;
       }
       
-      public function removeItem(param1:ShopCarItemInfo) : void
+      public function removeItem(item:ShopCarItemInfo) : void
       {
-         if(_carList.indexOf(param1) != -1)
+         if(_carList.indexOf(item) != -1)
          {
-            _carList.splice(_carList.indexOf(param1),1);
+            _carList.splice(_carList.indexOf(item),1);
             return;
          }
          var _loc5_:int = 0;
          var _loc4_:* = _manTempList;
-         for each(var _loc2_ in _manTempList)
+         for each(var arr in _manTempList)
          {
-            if(_loc2_.indexOf(param1) > -1)
+            if(arr.indexOf(item) > -1)
             {
-               if(_loc2_.length > 1)
+               if(arr.length > 1)
                {
-                  _loc2_.splice(_loc2_.indexOf(param1),1);
+                  arr.splice(arr.indexOf(item),1);
                }
                else
                {
-                  _manTempList.splice(_manTempList.indexOf(_loc2_),1);
+                  _manTempList.splice(_manTempList.indexOf(arr),1);
                }
             }
          }
          var _loc7_:int = 0;
          var _loc6_:* = _womanTempList;
-         for each(var _loc3_ in _womanTempList)
+         for each(var arr1 in _womanTempList)
          {
-            if(_loc3_.indexOf(param1) > -1)
+            if(arr1.indexOf(item) > -1)
             {
-               if(_loc3_.length > 1)
+               if(arr1.length > 1)
                {
-                  _loc3_.splice(_loc3_.indexOf(param1),1);
+                  arr1.splice(arr1.indexOf(item),1);
                }
                else
                {
-                  _womanTempList.splice(_womanTempList.indexOf(_loc3_),1);
+                  _womanTempList.splice(_womanTempList.indexOf(arr1),1);
                }
             }
          }
       }
       
-      public function removeTempEquip(param1:ShopCarItemInfo) : void
+      public function removeTempEquip(item:ShopCarItemInfo) : void
       {
-         var _loc2_:* = null;
-         var _loc4_:* = null;
-         var _loc3_:int = _manTempList.indexOf(param1);
-         if(_loc3_ != -1)
+         var model:* = null;
+         var oldItem:* = null;
+         var index:int = _manTempList.indexOf(item);
+         if(index != -1)
          {
-            _manTempList.splice(_loc3_,1);
-            _loc2_ = _manModel;
+            _manTempList.splice(index,1);
+            model = _manModel;
          }
          else
          {
-            _loc3_ = _womanTempList.indexOf(param1);
-            if(_loc3_ != -1)
+            index = _womanTempList.indexOf(item);
+            if(index != -1)
             {
-               _womanTempList.splice(_loc3_,1);
-               _loc2_ = _womanModel;
+               _womanTempList.splice(index,1);
+               model = _womanModel;
             }
          }
-         if(_loc2_)
+         if(model)
          {
-            _loc4_ = _loc2_.Bag.items[param1.place];
-            if(_loc4_)
+            oldItem = model.Bag.items[item.place];
+            if(oldItem)
             {
-               if(_loc4_.CategoryID >= 1 && _loc4_.CategoryID <= 6 || param1.CategoryID == 13 || param1.CategoryID == 15)
+               if(oldItem.CategoryID >= 1 && oldItem.CategoryID <= 6 || item.CategoryID == 13 || item.CategoryID == 15)
                {
-                  _loc2_.setPartStyle(param1.CategoryID,param1.TemplateInfo.NeedSex,_loc4_.TemplateID,_loc4_.Color);
+                  model.setPartStyle(item.CategoryID,item.TemplateInfo.NeedSex,oldItem.TemplateID,oldItem.Color);
                }
-               if(param1.CategoryID == 6)
+               if(item.CategoryID == 6)
                {
-                  _loc2_.Skin = _self.Skin;
+                  model.Skin = _self.Skin;
                }
             }
-            else if(EquipType.dressAble(param1.TemplateInfo))
+            else if(EquipType.dressAble(item.TemplateInfo))
             {
-               _loc2_.setPartStyle(param1.CategoryID,param1.TemplateInfo.NeedSex);
-               if(param1.CategoryID == 6)
+               model.setPartStyle(item.CategoryID,item.TemplateInfo.NeedSex);
+               if(item.CategoryID == 6)
                {
-                  _loc2_.Skin = "";
+                  model.Skin = "";
                }
             }
-            dispatchEvent(new ShopEvent("removetempequip",param1,_loc2_));
+            dispatchEvent(new ShopEvent("removetempequip",item,model));
          }
          updateCost();
-         param1.removeEventListener("change",__onItemChange);
+         item.removeEventListener("change",__onItemChange);
          if(currentTempList.length > 0)
          {
             setSelectedEquip(currentTempList[currentTempList.length - 1]);
@@ -710,11 +699,11 @@ package shop
       
       public function restoreAllItemsOnBody() : void
       {
-         var _loc1_:* = null;
+         var list:* = null;
          if(currentModel.Sex == _self.Sex && currentTempList.length > 0 || currentModel.Bag.items != _bodyThings)
          {
-            _loc1_ = !!_sex?_manTempList:_womanTempList;
-            _loc1_.splice(0,_loc1_.length);
+            list = !!_sex?_manTempList:_womanTempList;
+            list.splice(0,list.length);
             init();
             dispatchEvent(new ShopEvent("fittingmodelchange"));
             updateCost();
@@ -730,18 +719,18 @@ package shop
          dispatchEvent(new ShopEvent("updateCar"));
       }
       
-      public function setSelectedEquip(param1:ShopCarItemInfo) : void
+      public function setSelectedEquip(item:ShopCarItemInfo) : void
       {
-         var _loc2_:* = null;
-         if(param1 is ShopCarItemInfo)
+         var list:* = null;
+         if(item is ShopCarItemInfo)
          {
-            _loc2_ = currentTempList;
-            if(_loc2_.indexOf(param1) > -1)
+            list = currentTempList;
+            if(list.indexOf(item) > -1)
             {
-               _loc2_.splice(_loc2_.indexOf(param1),1);
-               _loc2_.push(param1);
+               list.splice(list.indexOf(item),1);
+               list.push(item);
             }
-            dispatchEvent(new ShopEvent("selectedequipchange",param1));
+            dispatchEvent(new ShopEvent("selectedequipchange",item));
          }
       }
       
@@ -771,21 +760,21 @@ package shop
          _totalMoney = 0;
          _totalGift = 0;
          _totalMedal = 0;
-         var _loc1_:Array = calcPrices(_carList);
-         _totalGold = _totalGold + _loc1_[0];
-         _totalMoney = _totalMoney + _loc1_[1];
-         _totalGift = _totalGift + _loc1_[2];
-         _totalMedal = _totalMedal + _loc1_[3];
-         _loc1_ = calcPrices(_womanTempList);
-         _totalGold = _totalGold + _loc1_[0];
-         _totalMoney = _totalMoney + _loc1_[1];
-         _totalGift = _totalGift + _loc1_[2];
-         _totalMedal = _totalMedal + _loc1_[3];
-         _loc1_ = calcPrices(_manTempList);
-         _totalGold = _totalGold + _loc1_[0];
-         _totalMoney = _totalMoney + _loc1_[1];
-         _totalGift = _totalGift + _loc1_[2];
-         _totalMedal = _totalMedal + _loc1_[3];
+         var temp:Array = calcPrices(_carList);
+         _totalGold = _totalGold + temp[0];
+         _totalMoney = _totalMoney + temp[1];
+         _totalGift = _totalGift + temp[2];
+         _totalMedal = _totalMedal + temp[3];
+         temp = calcPrices(_womanTempList);
+         _totalGold = _totalGold + temp[0];
+         _totalMoney = _totalMoney + temp[1];
+         _totalGift = _totalGift + temp[2];
+         _totalMedal = _totalMedal + temp[3];
+         temp = calcPrices(_manTempList);
+         _totalGold = _totalGold + temp[0];
+         _totalMoney = _totalMoney + temp[1];
+         _totalGift = _totalGift + temp[2];
+         _totalMedal = _totalMedal + temp[3];
          dispatchEvent(new ShopEvent("costChange"));
       }
       
@@ -794,25 +783,25 @@ package shop
          return _womanModel;
       }
       
-      private function __bagChange(param1:BagEvent) : void
+      private function __bagChange(evt:BagEvent) : void
       {
-         var _loc4_:Boolean = false;
-         var _loc3_:Dictionary = param1.changedSlots;
+         var shouldUpdate:Boolean = false;
+         var items:Dictionary = evt.changedSlots;
          var _loc7_:int = 0;
-         var _loc6_:* = _loc3_;
-         for each(var _loc5_ in _loc3_)
+         var _loc6_:* = items;
+         for each(var item in items)
          {
-            if(_loc5_.Place <= 30)
+            if(item.Place <= 30)
             {
-               _loc4_ = true;
+               shouldUpdate = true;
                break;
             }
          }
-         if(!_loc4_)
+         if(!shouldUpdate)
          {
             return;
          }
-         var _loc2_:PlayerInfo = !!_self.Sex?_manModel:_womanModel;
+         var model:PlayerInfo = !!_self.Sex?_manModel:_womanModel;
          if(_self.Sex)
          {
             _manModel.Bag.items = _self.Bag.items;
@@ -824,13 +813,13 @@ package shop
          dispatchEvent(new ShopEvent("fittingmodelchange"));
       }
       
-      private function __styleChange(param1:PlayerPropertyEvent) : void
+      private function __styleChange(evt:PlayerPropertyEvent) : void
       {
-         var _loc2_:* = null;
-         if(currentModel && param1.changedProperties["Style"])
+         var model:* = null;
+         if(currentModel && evt.changedProperties["Style"])
          {
             _defaultModel = 1;
-            _loc2_ = !!_self.Sex?_manModel:_womanModel;
+            model = !!_self.Sex?_manModel:_womanModel;
             if(_self.Sex)
             {
                _manModel.updateStyle(_self.Sex,_self.Hide,_self.getPrivateStyle(),_self.Colors,_self.getSkinColor());
@@ -851,8 +840,8 @@ package shop
       {
          saveTriedList();
          currentModel.Bag.items = new DictionaryData();
-         var _loc1_:Array = !!_sex?_manTempList:_womanTempList;
-         _loc1_.splice(0,_loc1_.length);
+         var list:Array = !!_sex?_manTempList:_womanTempList;
+         list.splice(0,list.length);
          if(currentModel.Sex)
          {
             currentModel.updateStyle(true,2222222222,DEFAULT_MAN_STYLE,",,,,,,","");
@@ -863,24 +852,23 @@ package shop
          }
       }
       
-      private function fillToShopCarInfo(param1:ShopItemInfo) : ShopCarItemInfo
+      private function fillToShopCarInfo(item:ShopItemInfo) : ShopCarItemInfo
       {
-         var _loc2_:ShopCarItemInfo = new ShopCarItemInfo(param1.GoodsID,param1.TemplateID);
-         ObjectUtils.copyProperties(_loc2_,param1);
-         return _loc2_;
+         var t:ShopCarItemInfo = new ShopCarItemInfo(item.GoodsID,item.TemplateID);
+         ObjectUtils.copyProperties(t,item);
+         return t;
       }
       
-      private function findEquip(param1:Number, param2:Array) : int
+      private function findEquip(id:Number, list:Array) : int
       {
-         var _loc3_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < param2.length)
+         var i:int = 0;
+         for(i = 0; i < list.length; )
          {
-            if(param2[_loc3_].TemplateID == param1)
+            if(list[i].TemplateID == id)
             {
-               return _loc3_;
+               return i;
             }
-            _loc3_++;
+            i++;
          }
          return -1;
       }
@@ -924,11 +912,11 @@ package shop
          _bodyThings = new DictionaryData();
          var _loc3_:int = 0;
          var _loc2_:* = _self.Bag.items;
-         for each(var _loc1_ in _self.Bag.items)
+         for each(var item in _self.Bag.items)
          {
-            if(_loc1_.Place <= 30)
+            if(item.Place <= 30)
             {
-               _bodyThings.add(_loc1_.Place,_loc1_);
+               _bodyThings.add(item.Place,item);
             }
          }
       }
@@ -945,14 +933,14 @@ package shop
          }
       }
       
-      public function getBagItems(param1:int, param2:Boolean = false) : int
+      public function getBagItems($id:int, $isIndex:Boolean = false) : int
       {
-         var _loc3_:Array = [0,2,4,11,1,3,5,13];
-         if(!param2)
+         var numArr:Array = [0,2,4,11,1,3,5,13];
+         if(!$isIndex)
          {
-            return _loc3_[param1] != null?_loc3_[param1]:-1;
+            return numArr[$id] != null?numArr[$id]:-1;
          }
-         return _loc3_.indexOf(param1);
+         return numArr.indexOf($id);
       }
    }
 }

@@ -181,7 +181,7 @@ package invite
          ChatManager.Instance.addEventListener("freeInvited",__freeInvitedHandler);
       }
       
-      private function __freeInvitedHandler(param1:ChatEvent) : void
+      private function __freeInvitedHandler(e:ChatEvent) : void
       {
          if(PlayerManager.Instance.Self.checkFreeInvite())
          {
@@ -190,9 +190,9 @@ package invite
          }
       }
       
-      protected function __onFastInviteClick(param1:MouseEvent) : void
+      protected function __onFastInviteClick(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var confirmFrame:* = null;
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.checkFreeInvite())
          {
@@ -206,24 +206,24 @@ package invite
                BaglockedManager.Instance.show();
                return;
             }
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.game.room.fastInvite.promptTxt"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
-            _loc2_.moveEnable = false;
-            _loc2_.addEventListener("response",__confirmFastInvite);
+            confirmFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.game.room.fastInvite.promptTxt"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
+            confirmFrame.moveEnable = false;
+            confirmFrame.addEventListener("response",__confirmFastInvite);
          }
       }
       
-      private function __confirmFastInvite(param1:FrameEvent) : void
+      private function __confirmFastInvite(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__confirmFastInvite);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",__confirmFastInvite);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             ChatManager.Instance.sendBugle("",11101,true);
          }
       }
       
-      private function __btnChangeHandler(param1:Event) : void
+      private function __btnChangeHandler(event:Event) : void
       {
          SoundManager.instance.play("008");
          _hbox.arrange();
@@ -258,9 +258,9 @@ package invite
          }
       }
       
-      private function __response(param1:FrameEvent) : void
+      private function __response(evt:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
@@ -293,7 +293,7 @@ package invite
          }
       }
       
-      private function __onRefreshClick(param1:MouseEvent) : void
+      private function __onRefreshClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_changeComplete)
@@ -311,197 +311,192 @@ package invite
          }
       }
       
-      private function __onGetList(param1:PkgEvent) : void
+      private function __onGetList(evt:PkgEvent) : void
       {
-         var _loc6_:* = 0;
-         var _loc5_:* = null;
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc4_:Array = [];
-         var _loc2_:int = _loc3_.readByte();
-         _loc6_ = uint(0);
-         while(_loc6_ < _loc2_)
+         var i:* = 0;
+         var info:* = null;
+         var pkg:PackageIn = evt.pkg;
+         var list:Array = [];
+         var _length:int = pkg.readByte();
+         for(i = uint(0); i < _length; )
          {
-            _loc5_ = new PlayerInfo();
-            _loc5_.ID = _loc3_.readInt();
-            _loc5_.NickName = _loc3_.readUTF();
-            _loc5_.typeVIP = _loc3_.readByte();
-            _loc5_.VIPLevel = _loc3_.readInt();
-            _loc5_.Sex = _loc3_.readBoolean();
-            _loc5_.Grade = _loc3_.readInt();
-            _loc5_.ConsortiaID = _loc3_.readInt();
-            _loc5_.ConsortiaName = _loc3_.readUTF();
-            _loc5_.Offer = _loc3_.readInt();
-            _loc5_.WinCount = _loc3_.readInt();
-            _loc5_.TotalCount = _loc3_.readInt();
-            _loc5_.EscapeCount = _loc3_.readInt();
-            _loc5_.Repute = _loc3_.readInt();
-            _loc5_.FightPower = _loc3_.readInt();
-            _loc5_.isOld = _loc3_.readBoolean();
-            _loc5_.isAttest = _loc3_.readBoolean();
-            _loc4_.push(_loc5_);
-            _loc6_++;
+            info = new PlayerInfo();
+            info.ID = pkg.readInt();
+            info.NickName = pkg.readUTF();
+            info.typeVIP = pkg.readByte();
+            info.VIPLevel = pkg.readInt();
+            info.Sex = pkg.readBoolean();
+            info.Grade = pkg.readInt();
+            info.ConsortiaID = pkg.readInt();
+            info.ConsortiaName = pkg.readUTF();
+            info.Offer = pkg.readInt();
+            info.WinCount = pkg.readInt();
+            info.TotalCount = pkg.readInt();
+            info.EscapeCount = pkg.readInt();
+            info.Repute = pkg.readInt();
+            info.FightPower = pkg.readInt();
+            info.isOld = pkg.readBoolean();
+            info.isAttest = pkg.readBoolean();
+            list.push(info);
+            i++;
          }
-         updateList(3,_loc4_);
+         updateList(3,list);
       }
       
-      override protected function __onCloseClick(param1:MouseEvent) : void
+      override protected function __onCloseClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          dispatchEvent(new Event("complete"));
       }
       
-      private function __itemClick(param1:ListItemEvent) : void
+      private function __itemClick(event:ListItemEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc12_:int = 0;
-         var _loc10_:* = null;
-         var _loc13_:* = 0;
-         var _loc6_:int = 0;
-         var _loc11_:* = null;
-         var _loc5_:* = null;
-         var _loc4_:* = null;
-         var _loc8_:int = 0;
-         var _loc9_:* = null;
-         var _loc7_:int = 0;
-         if((param1.cellValue as InvitePlayerInfo).type == 0)
+         var _playerArray:* = null;
+         var titleType:int = 0;
+         var _titleList:* = null;
+         var temp:* = 0;
+         var n:int = 0;
+         var tempArray:* = null;
+         var tempArr:* = null;
+         var tempArr1:* = null;
+         var i:int = 0;
+         var info:* = null;
+         var j:int = 0;
+         if((event.cellValue as InvitePlayerInfo).type == 0)
          {
             SoundManager.instance.play("008");
-            _loc3_ = [];
-            _loc12_ = (param1.cellValue as InvitePlayerInfo).titleType;
-            _loc10_ = PlayerManager.Instance.friendAndCustomTitle;
-            if(_titleSelectStatus[_loc12_] == true)
+            _playerArray = [];
+            titleType = (event.cellValue as InvitePlayerInfo).titleType;
+            _titleList = PlayerManager.Instance.friendAndCustomTitle;
+            if(_titleSelectStatus[titleType] == true)
             {
-               _loc3_ = _loc10_;
+               _playerArray = _titleList;
             }
             else
             {
-               _loc13_ = 0;
-               _loc6_ = 0;
-               while(_loc6_ < _loc10_.length)
+               temp = 0;
+               for(n = 0; n < _titleList.length; )
                {
-                  _loc3_.push(_loc10_[_loc6_]);
-                  if(_loc12_ == _loc10_[_loc6_].titleType)
+                  _playerArray.push(_titleList[n]);
+                  if(titleType == _titleList[n].titleType)
                   {
-                     _loc13_ = _loc6_;
+                     temp = n;
                      break;
                   }
-                  _loc6_++;
+                  n++;
                }
-               _loc11_ = PlayerManager.Instance.getOnlineFriendForCustom(_loc12_);
-               _loc5_ = [];
-               _loc4_ = [];
-               _loc8_ = 0;
-               while(_loc8_ < _loc11_.length)
+               tempArray = PlayerManager.Instance.getOnlineFriendForCustom(titleType);
+               tempArr = [];
+               tempArr1 = [];
+               for(i = 0; i < tempArray.length; )
                {
-                  _loc9_ = _loc11_[_loc8_] as FriendListPlayer;
-                  if(_loc9_.IsVIP)
+                  info = tempArray[i] as FriendListPlayer;
+                  if(info.IsVIP)
                   {
-                     _loc5_.push(_loc9_);
+                     tempArr.push(info);
                   }
                   else
                   {
-                     _loc4_.push(_loc9_);
+                     tempArr1.push(info);
                   }
-                  _loc8_++;
+                  i++;
                }
-               _loc5_ = sort(_loc5_);
-               _loc4_ = sort(_loc4_);
-               _loc11_ = _loc5_.concat(_loc4_);
-               _loc11_ = IMManager.Instance.sortAcademyPlayer(_loc11_);
-               _loc3_ = _loc3_.concat(_loc11_);
-               _loc7_ = _loc13_ + 1;
-               while(_loc7_ < _loc10_.length)
+               tempArr = sort(tempArr);
+               tempArr1 = sort(tempArr1);
+               tempArray = tempArr.concat(tempArr1);
+               tempArray = IMManager.Instance.sortAcademyPlayer(tempArray);
+               _playerArray = _playerArray.concat(tempArray);
+               for(j = temp + 1; j < _titleList.length; )
                {
-                  _loc3_.push(_loc10_[_loc7_]);
-                  _loc7_++;
+                  _playerArray.push(_titleList[j]);
+                  j++;
                }
             }
             var _loc15_:int = 0;
             var _loc14_:* = _titleSelectStatus;
-            for(var _loc2_ in _titleSelectStatus)
+            for(var tmpStr in _titleSelectStatus)
             {
-               if(int(_loc2_) == _loc12_)
+               if(int(tmpStr) == titleType)
                {
-                  _titleSelectStatus[_loc2_] = !_titleSelectStatus[_loc2_];
+                  _titleSelectStatus[tmpStr] = !_titleSelectStatus[tmpStr];
                }
                else
                {
-                  _titleSelectStatus[_loc2_] = false;
+                  _titleSelectStatus[tmpStr] = false;
                }
             }
-            updateList(2,_loc3_);
+            updateList(2,_playerArray);
          }
       }
       
-      private function sort(param1:Array) : Array
+      private function sort(arr:Array) : Array
       {
-         return param1.sortOn("Grade",16 | 2);
+         return arr.sortOn("Grade",16 | 2);
       }
       
-      private function updateList(param1:int, param2:Array) : void
+      private function updateList(type:int, list:Array) : void
       {
-         var _loc6_:* = null;
-         var _loc7_:int = 0;
-         var _loc3_:* = null;
-         var _loc5_:* = null;
-         var _loc4_:* = null;
+         var invitePlayer:* = null;
+         var i:int = 0;
+         var cpInfo:* = null;
+         var friendList:* = null;
+         var intPoint:* = null;
          _changeComplete = true;
-         var _loc8_:int = _list.list.viewPosition.y;
+         var tmpPosY:int = _list.list.viewPosition.y;
          clearList();
          _invitePlayerInfos = [];
-         _loc7_ = 0;
-         while(_loc7_ < param2.length)
+         for(i = 0; i < list.length; )
          {
-            _loc3_ = param2[_loc7_] as BasePlayer;
-            if(_loc3_.ID != PlayerManager.Instance.Self.ID)
+            cpInfo = list[i] as BasePlayer;
+            if(cpInfo.ID != PlayerManager.Instance.Self.ID)
             {
-               _loc6_ = new InvitePlayerInfo();
-               _loc6_.NickName = _loc3_.NickName;
-               _loc6_.typeVIP = _loc3_.typeVIP;
-               _loc6_.Sex = _loc3_.Sex;
-               _loc6_.Grade = _loc3_.Grade;
-               _loc6_.Repute = _loc3_.Repute;
-               _loc6_.WinCount = _loc3_.WinCount;
-               _loc6_.TotalCount = _loc3_.TotalCount;
-               _loc6_.FightPower = _loc3_.FightPower;
-               _loc6_.ID = _loc3_.ID;
-               _loc6_.Offer = _loc3_.Offer;
-               _loc6_.isOld = _loc3_.isOld;
-               _loc6_.isAttest = _loc3_.isAttest;
-               if(param1 == 2)
+               invitePlayer = new InvitePlayerInfo();
+               invitePlayer.NickName = cpInfo.NickName;
+               invitePlayer.typeVIP = cpInfo.typeVIP;
+               invitePlayer.Sex = cpInfo.Sex;
+               invitePlayer.Grade = cpInfo.Grade;
+               invitePlayer.Repute = cpInfo.Repute;
+               invitePlayer.WinCount = cpInfo.WinCount;
+               invitePlayer.TotalCount = cpInfo.TotalCount;
+               invitePlayer.FightPower = cpInfo.FightPower;
+               invitePlayer.ID = cpInfo.ID;
+               invitePlayer.Offer = cpInfo.Offer;
+               invitePlayer.isOld = cpInfo.isOld;
+               invitePlayer.isAttest = cpInfo.isAttest;
+               if(type == 2)
                {
-                  _loc6_.titleType = (_loc3_ as FriendListPlayer).titleType;
-                  _loc6_.type = (_loc3_ as FriendListPlayer).type;
-                  _loc6_.titleText = (_loc3_ as FriendListPlayer).titleText;
-                  _loc6_.titleNumText = (_loc3_ as FriendListPlayer).titleNumText;
-                  if(_titleSelectStatus.hasOwnProperty(_loc6_.titleType.toString()))
+                  invitePlayer.titleType = (cpInfo as FriendListPlayer).titleType;
+                  invitePlayer.type = (cpInfo as FriendListPlayer).type;
+                  invitePlayer.titleText = (cpInfo as FriendListPlayer).titleText;
+                  invitePlayer.titleNumText = (cpInfo as FriendListPlayer).titleNumText;
+                  if(_titleSelectStatus.hasOwnProperty(invitePlayer.titleType.toString()))
                   {
-                     _loc6_.titleIsSelected = _titleSelectStatus[_loc6_.titleType.toString()];
+                     invitePlayer.titleIsSelected = _titleSelectStatus[invitePlayer.titleType.toString()];
                   }
                   else
                   {
-                     _loc6_.titleIsSelected = false;
+                     invitePlayer.titleIsSelected = false;
                   }
                }
-               if(param1 != 2)
+               if(type != 2)
                {
-                  _list.vectorListModel.insertElementAt(_loc6_,getInsertIndex(_loc3_));
+                  _list.vectorListModel.insertElementAt(invitePlayer,getInsertIndex(cpInfo));
                }
-               _invitePlayerInfos.push(_loc6_);
+               _invitePlayerInfos.push(invitePlayer);
             }
-            _loc7_++;
+            i++;
          }
-         if(param1 == 2)
+         if(type == 2)
          {
-            _loc5_ = _invitePlayerInfos;
+            friendList = _invitePlayerInfos;
             _list.vectorListModel.clear();
-            _list.vectorListModel.appendAll(_loc5_);
+            _list.vectorListModel.appendAll(friendList);
          }
          _list.list.updateListView();
-         if(param1 == 2)
+         if(type == 2)
          {
-            _loc4_ = new IntPoint(0,_loc8_);
-            _list.list.viewPosition = _loc4_;
+            intPoint = new IntPoint(0,tmpPosY);
+            _list.list.viewPosition = intPoint;
          }
       }
       
@@ -510,43 +505,42 @@ package invite
          _list.vectorListModel.clear();
       }
       
-      private function getInsertIndex(param1:BasePlayer) : int
+      private function getInsertIndex(info:BasePlayer) : int
       {
-         var _loc2_:int = 0;
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:Array = _list.vectorListModel.elements;
-         if(_loc3_.length == 0)
+         var tempIndex:int = 0;
+         var i:int = 0;
+         var tempInfo:* = null;
+         var tempArray:Array = _list.vectorListModel.elements;
+         if(tempArray.length == 0)
          {
             return 0;
          }
-         _loc5_ = _loc3_.length - 1;
-         while(_loc5_ >= 0)
+         for(i = tempArray.length - 1; i >= 0; )
          {
-            _loc4_ = _loc3_[_loc5_] as PlayerInfo;
-            if(!(param1.IsVIP && !_loc4_.IsVIP))
+            tempInfo = tempArray[i] as PlayerInfo;
+            if(!(info.IsVIP && !tempInfo.IsVIP))
             {
-               if(!param1.IsVIP && _loc4_.IsVIP)
+               if(!info.IsVIP && tempInfo.IsVIP)
                {
-                  return _loc5_ + 1;
+                  return i + 1;
                }
             }
-            _loc5_--;
+            i--;
          }
-         return _loc2_;
+         return tempIndex;
       }
       
-      private function __onResError(param1:UIModuleEvent) : void
+      private function __onResError(evt:UIModuleEvent) : void
       {
          UIModuleLoader.Instance.removeEventListener("uiModuleComplete",__onResComplete);
          UIModuleLoader.Instance.removeEventListener("uiModuleError",__onResError);
       }
       
-      private function __onResComplete(param1:UIModuleEvent) : void
+      private function __onResComplete(evt:UIModuleEvent) : void
       {
          UIModuleLoader.Instance.removeEventListener("uiModuleComplete",__onResComplete);
          UIModuleLoader.Instance.removeEventListener("uiModuleError",__onResError);
-         if(param1.module == "ddtinvite" && _visible)
+         if(evt.module == "ddtinvite" && _visible)
          {
             _resState = "complete";
             configUi();
@@ -562,36 +556,36 @@ package invite
          }
       }
       
-      private function refleshList(param1:int, param2:int = 0) : void
+      private function refleshList(type:int, count:int = 0) : void
       {
-         var _loc3_:* = null;
-         _btnGroup.selectIndex = param1;
-         _oldSelected = param1;
-         if(param1 == 3)
+         var titleList:* = null;
+         _btnGroup.selectIndex = type;
+         _oldSelected = type;
+         if(type == 3)
          {
-            GameInSocketOut.sendGetScenePlayer(param2);
+            GameInSocketOut.sendGetScenePlayer(count);
          }
-         else if(param1 == 2)
+         else if(type == 2)
          {
-            _loc3_ = PlayerManager.Instance.friendAndCustomTitle;
+            titleList = PlayerManager.Instance.friendAndCustomTitle;
             _titleSelectStatus = {};
             var _loc6_:int = 0;
-            var _loc5_:* = _loc3_;
-            for each(var _loc4_ in _loc3_)
+            var _loc5_:* = titleList;
+            for each(var tmpFInfo in titleList)
             {
-               _titleSelectStatus[_loc4_.titleType] = false;
+               _titleSelectStatus[tmpFInfo.titleType] = false;
             }
-            updateList(2,_loc3_);
+            updateList(2,titleList);
          }
-         else if(param1 == 1)
+         else if(type == 1)
          {
             updateList(1,ConsortionModelManager.Instance.model.onlineConsortiaMemberList);
          }
-         else if(param1 == 0)
+         else if(type == 0)
          {
             updateList(0,rerecentContactList);
          }
-         else if(param1 == 4)
+         else if(type == 4)
          {
             updateList(4,TeamManager.instance.model.onlineTeamMemberList);
          }
@@ -599,37 +593,36 @@ package invite
       
       private function get rerecentContactList() : Array
       {
-         var _loc3_:* = null;
-         var _loc6_:int = 0;
-         var _loc4_:* = null;
-         var _loc1_:DictionaryData = PlayerManager.Instance.recentContacts;
-         var _loc5_:Array = IMManager.Instance.recentContactsList;
-         var _loc2_:Array = [];
-         if(_loc5_)
+         var tempInfo:* = null;
+         var i:int = 0;
+         var state:* = null;
+         var tempDictionaryData:DictionaryData = PlayerManager.Instance.recentContacts;
+         var recentContactsList:Array = IMManager.Instance.recentContactsList;
+         var tempArray:Array = [];
+         if(recentContactsList)
          {
-            _loc6_ = 0;
-            while(_loc6_ < _loc5_.length)
+            for(i = 0; i < recentContactsList.length; )
             {
-               if(_loc5_[_loc6_] != 0)
+               if(recentContactsList[i] != 0)
                {
-                  _loc3_ = _loc1_[_loc5_[_loc6_]];
-                  if(_loc3_ && _loc2_.indexOf(_loc3_) == -1)
+                  tempInfo = tempDictionaryData[recentContactsList[i]];
+                  if(tempInfo && tempArray.indexOf(tempInfo) == -1)
                   {
-                     if(PlayerManager.Instance.findPlayer(_loc3_.ID,PlayerManager.Instance.Self.ZoneID))
+                     if(PlayerManager.Instance.findPlayer(tempInfo.ID,PlayerManager.Instance.Self.ZoneID))
                      {
-                        _loc4_ = new PlayerState(PlayerManager.Instance.findPlayer(_loc3_.ID,PlayerManager.Instance.Self.ZoneID).playerState.StateID);
-                        _loc3_.playerState = _loc4_;
+                        state = new PlayerState(PlayerManager.Instance.findPlayer(tempInfo.ID,PlayerManager.Instance.Self.ZoneID).playerState.StateID);
+                        tempInfo.playerState = state;
                      }
-                     if(_loc3_.playerState.StateID != 0)
+                     if(tempInfo.playerState.StateID != 0)
                      {
-                        _loc2_.push(_loc3_);
+                        tempArray.push(tempInfo);
                      }
                   }
                }
-               _loc6_++;
+               i++;
             }
          }
-         return _loc2_;
+         return tempArray;
       }
       
       override public function dispose() : void

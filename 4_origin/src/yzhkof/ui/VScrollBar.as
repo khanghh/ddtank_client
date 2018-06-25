@@ -42,18 +42,18 @@ package yzhkof.ui
          addChild(this.thumb);
       }
       
-      private function __thumbMouseDown(param1:Event) : void
+      private function __thumbMouseDown(e:Event) : void
       {
          this.thumb.startDrag(false,this.dragRectangle);
       }
       
-      private function __thumbMouseUp(param1:Event) : void
+      private function __thumbMouseUp(e:Event) : void
       {
          this.thumb.stopDrag();
          dispatchEvent(new Event(Event.CHANGE));
       }
       
-      private function __thumbDraging(param1:Event) : void
+      private function __thumbDraging(e:Event) : void
       {
          this.updateDataByThumbPosition();
          dispatchEvent(new Event(Event.CHANGE));
@@ -88,13 +88,13 @@ package yzhkof.ui
          return this._maxScrollV;
       }
       
-      public function set maxScrollV(param1:Number) : void
+      public function set maxScrollV(value:Number) : void
       {
-         if(this._maxScrollV == param1)
+         if(this._maxScrollV == value)
          {
             return;
          }
-         this._maxScrollV = param1;
+         this._maxScrollV = value;
          commitChage("maxScrollV");
       }
       
@@ -103,9 +103,9 @@ package yzhkof.ui
          return this._scrollV;
       }
       
-      public function set scrollV(param1:Number) : void
+      public function set scrollV(value:Number) : void
       {
-         if(this._scrollV == param1)
+         if(this._scrollV == value)
          {
             return;
          }
@@ -119,7 +119,7 @@ package yzhkof.ui
          }
          else
          {
-            this._scrollV = param1;
+            this._scrollV = value;
          }
          dispatchEvent(new Event(Event.CHANGE));
          commitChage("scrollV");

@@ -35,11 +35,11 @@ package hotSpring.view
       
       private var _lblMaxCount:FilterFrameText;
       
-      public function RoomListItemView(param1:HotSpringRoomListModel, param2:HotSpringRoomInfo)
+      public function RoomListItemView(model:HotSpringRoomListModel, roomVO:HotSpringRoomInfo)
       {
          super();
-         _model = param1;
-         _roomVO = param2;
+         _model = model;
+         _roomVO = roomVO;
          initialize();
       }
       
@@ -69,8 +69,8 @@ package hotSpring.view
       
       private function updateView() : void
       {
-         var _loc1_:String = _roomVO.roomNumber.toString();
-         _lblRoomNumber.text = _loc1_;
+         var roomNumber:String = _roomVO.roomNumber.toString();
+         _lblRoomNumber.text = roomNumber;
          _lblRoomName.text = _roomVO.roomName;
          _lblCurCount.text = _roomVO.curCount.toString();
          _lblMaxCount.text = _roomVO.maxCount.toString();
@@ -82,12 +82,12 @@ package hotSpring.view
          _model.addEventListener("roomUpdate",roomUpdate);
       }
       
-      private function roomUpdate(param1:HotSpringRoomListEvent) : void
+      private function roomUpdate(evt:HotSpringRoomListEvent) : void
       {
-         var _loc2_:HotSpringRoomInfo = param1.data as HotSpringRoomInfo;
-         if(_roomVO.roomID == _loc2_.roomID)
+         var roomVO:HotSpringRoomInfo = evt.data as HotSpringRoomInfo;
+         if(_roomVO.roomID == roomVO.roomID)
          {
-            _roomVO = _loc2_;
+            _roomVO = roomVO;
             updateView();
          }
       }
@@ -97,13 +97,13 @@ package hotSpring.view
          return _selected;
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         if(_selected == param1)
+         if(_selected == value)
          {
             return;
          }
-         _selected = param1;
+         _selected = value;
       }
       
       public function get roomVO() : HotSpringRoomInfo

@@ -110,70 +110,70 @@ package farm.viewx
          PlayerManager.Instance.friendList.addEventListener("remove",__playerRemove);
       }
       
-      protected function __onBtnGroupChange(param1:Event) : void
+      protected function __onBtnGroupChange(event:Event) : void
       {
          SoundManager.instance.playButtonSound();
          FarmModelController.instance.model.SelectIndex = _selectedButtonGroup.selectIndex;
          FarmModelController.instance.updateSetupFriendListLoader();
       }
       
-      protected function __playerRemove(param1:DictionaryEvent) : void
+      protected function __playerRemove(event:DictionaryEvent) : void
       {
-         var _loc2_:FriendListPlayer = param1.data as FriendListPlayer;
-         FarmModelController.instance.model.friendStateList.remove(_loc2_.ID);
+         var player:FriendListPlayer = event.data as FriendListPlayer;
+         FarmModelController.instance.model.friendStateList.remove(player.ID);
          update();
       }
       
-      protected function __outHandler(param1:MouseEvent) : void
+      protected function __outHandler(event:MouseEvent) : void
       {
          _switchAsset.filters = null;
       }
       
-      protected function __overHandler(param1:MouseEvent) : void
+      protected function __overHandler(event:MouseEvent) : void
       {
          _switchAsset.filters = ComponentFactory.Instance.creatFilters("lightFilter");
       }
       
-      protected function __friendlistHandler(param1:Event) : void
+      protected function __friendlistHandler(event:Event) : void
       {
          update();
       }
       
-      protected function __infoReady(param1:FarmEvent) : void
+      protected function __infoReady(event:FarmEvent) : void
       {
          update();
       }
       
-      protected function __updateFriendListStolen(param1:FarmEvent) : void
+      protected function __updateFriendListStolen(event:FarmEvent) : void
       {
-         var _loc2_:FramFriendStateInfo = FarmModelController.instance.model.friendStateListStolenInfo[FarmModelController.instance.model.currentFarmerId];
+         var friendPlayer:FramFriendStateInfo = FarmModelController.instance.model.friendStateListStolenInfo[FarmModelController.instance.model.currentFarmerId];
          var _loc6_:int = 0;
          var _loc5_:* = _list.list.cell;
-         for each(var _loc3_ in _list.list.cell)
+         for each(var itemInfo in _list.list.cell)
          {
-            if(_loc3_.info)
+            if(itemInfo.info)
             {
-               if(_loc3_.info.id == _loc2_.id)
+               if(itemInfo.info.id == friendPlayer.id)
                {
-                  _loc3_.setCellValue(_loc2_);
+                  itemInfo.setCellValue(friendPlayer);
                   break;
                }
             }
          }
          var _loc8_:int = 0;
          var _loc7_:* = (_list.list.model as VectorListModel).elements;
-         for each(var _loc4_ in (_list.list.model as VectorListModel).elements)
+         for each(var stateInfo in (_list.list.model as VectorListModel).elements)
          {
-            if(_loc4_.id == _loc2_.id)
+            if(stateInfo.id == friendPlayer.id)
             {
-               _loc4_.landStateVec = _loc2_.landStateVec;
-               _loc4_.isFeed = _loc2_.isFeed;
+               stateInfo.landStateVec = friendPlayer.landStateVec;
+               stateInfo.isFeed = friendPlayer.isFeed;
                break;
             }
          }
       }
       
-      private function __onClick(param1:MouseEvent) : void
+      private function __onClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          switchView();
@@ -185,8 +185,8 @@ package farm.viewx
       
       private function switchView() : void
       {
-         var _loc1_:int = !!isOpen?2:1;
-         _switchAsset.setFrame(_loc1_);
+         var tempInt:int = !!isOpen?2:1;
+         _switchAsset.setFrame(tempInt);
          if(isOpen)
          {
             _switchTween = null;
@@ -204,61 +204,60 @@ package farm.viewx
                "ease":Sine.easeInOut
             });
          }
-         isOpen = _loc1_ == 1?true:false;
+         isOpen = tempInt == 1?true:false;
       }
       
       private function update() : void
       {
-         var _loc1_:* = null;
+         var player:* = null;
          _list.vectorListModel.clear();
          var _loc4_:int = 0;
          var _loc3_:* = FarmModelController.instance.model.friendStateList;
-         for each(var _loc2_ in FarmModelController.instance.model.friendStateList)
+         for each(var stateInfo in FarmModelController.instance.model.friendStateList)
          {
-            _loc1_ = _loc2_.playerinfo;
-            if(_loc1_)
+            player = stateInfo.playerinfo;
+            if(player)
             {
-               _list.vectorListModel.insertElementAt(_loc2_,getInsertIndex(_loc1_));
+               _list.vectorListModel.insertElementAt(stateInfo,getInsertIndex(player));
             }
          }
          _list.list.updateListView();
       }
       
-      private function getInsertIndex(param1:PlayerInfo) : int
+      private function getInsertIndex(info:PlayerInfo) : int
       {
-         var _loc4_:* = null;
-         var _loc5_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:Array = _list.vectorListModel.elements;
-         if(_loc3_.length == 0)
+         var tempInfo:* = null;
+         var i:int = 0;
+         var tempIndex:int = 0;
+         var tempArray:Array = _list.vectorListModel.elements;
+         if(tempArray.length == 0)
          {
             return 0;
          }
-         _loc5_ = _loc3_.length - 1;
-         while(_loc5_ >= 0)
+         for(i = tempArray.length - 1; i >= 0; )
          {
-            _loc4_ = (_loc3_[_loc5_] as FramFriendStateInfo).playerinfo;
-            if(!(param1.IsVIP && !_loc4_.IsVIP))
+            tempInfo = (tempArray[i] as FramFriendStateInfo).playerinfo;
+            if(!(info.IsVIP && !tempInfo.IsVIP))
             {
-               if(!param1.IsVIP && _loc4_.IsVIP)
+               if(!info.IsVIP && tempInfo.IsVIP)
                {
-                  return _loc5_ + 1;
+                  return i + 1;
                }
-               if(param1.IsVIP == _loc4_.IsVIP)
+               if(info.IsVIP == tempInfo.IsVIP)
                {
-                  if(param1.Grade > _loc4_.Grade)
+                  if(info.Grade > tempInfo.Grade)
                   {
-                     _loc2_ = _loc5_ - 1;
+                     tempIndex = i - 1;
                   }
                   else
                   {
-                     return _loc5_ + 1;
+                     return i + 1;
                   }
                }
             }
-            _loc5_--;
+            i--;
          }
-         return _loc2_ < 0?0:_loc2_;
+         return tempIndex < 0?0:tempIndex;
       }
       
       private function removeEvent() : void

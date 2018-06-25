@@ -23,25 +23,25 @@ package ddt.data
          super();
       }
       
-      public static function setOpitionState(param1:Boolean, param2:int) : int
+      public static function setOpitionState(value:Boolean, type:int) : int
       {
-         var _loc3_:* = int(PlayerManager.Instance.Self.OptionOnOff);
-         if(param1)
+         var onOff:* = int(PlayerManager.Instance.Self.OptionOnOff);
+         if(value)
          {
-            _loc3_ = _loc3_ | param2;
+            onOff = onOff | type;
          }
          else
          {
-            _loc3_ = ~param2 & _loc3_;
+            onOff = ~type & onOff;
          }
-         return _loc3_;
+         return onOff;
       }
       
-      public static function getOptionEnumState(param1:int) : int
+      public static function getOptionEnumState(type:int) : int
       {
-         var _loc3_:int = PlayerManager.Instance.Self.OptionOnOff;
-         var _loc2_:* = (_loc3_ & param1) > 0;
-         return !!_loc2_?1:0;
+         var onOff:int = PlayerManager.Instance.Self.OptionOnOff;
+         var value:* = (onOff & type) > 0;
+         return !!value?1:0;
       }
    }
 }

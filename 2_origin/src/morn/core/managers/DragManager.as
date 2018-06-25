@@ -22,75 +22,75 @@ package morn.core.managers
          super();
       }
       
-      public function doDrag(param1:Sprite, param2:Sprite = null, param3:* = null, param4:Point = null) : void
+      public function doDrag(dragInitiator:Sprite, dragImage:Sprite = null, data:* = null, offset:Point = null) : void
       {
-         var _loc5_:Point = null;
-         this._dragInitiator = param1;
-         this._dragImage = !!param2?param2:param1;
-         this._data = param3;
-         if(this._dragImage != this._dragInitiator)
+         var p:* = null;
+         _dragInitiator = dragInitiator;
+         _dragImage = !!dragImage?dragImage:dragInitiator;
+         _data = data;
+         if(_dragImage != _dragInitiator)
          {
-            if(!this._dragImage.parent)
+            if(!_dragImage.parent)
             {
-               App.stage.addChild(this._dragImage);
+               App.stage.addChild(_dragImage);
             }
-            param4 = param4 || new Point();
-            _loc5_ = this._dragImage.globalToLocal(new Point(App.stage.mouseX,App.stage.mouseY));
-            this._dragImage.x = _loc5_.x - param4.x;
-            this._dragImage.y = _loc5_.y - param4.y;
-            this._dragImage.visible = false;
+            offset = offset || new Point();
+            p = _dragImage.globalToLocal(new Point(App.stage.mouseX,App.stage.mouseY));
+            _dragImage.x = p.x - offset.x;
+            _dragImage.y = p.y - offset.y;
+            _dragImage.visible = false;
          }
-         App.stage.addEventListener(MouseEvent.MOUSE_MOVE,this.onStageMouseMove);
-         App.stage.addEventListener(MouseEvent.MOUSE_UP,this.onStageMouseUp);
+         App.stage.addEventListener("mouseMove",onStageMouseMove);
+         App.stage.addEventListener("mouseUp",onStageMouseUp);
       }
       
-      private function onStageMouseMove(param1:MouseEvent) : void
+      private function onStageMouseMove(e:MouseEvent) : void
       {
-         if(!this._dragImage.visible)
+         if(!_dragImage.visible)
          {
-            this._dragImage.visible = true;
-            this._dragImage.startDrag();
-            this._dragInitiator.dispatchEvent(new DragEvent(DragEvent.DRAG_START,this._dragInitiator,this._data));
+            _dragImage.visible = true;
+            _dragImage.startDrag();
+            _dragInitiator.dispatchEvent(new DragEvent("dragStart",_dragInitiator,_data));
          }
-         if(param1.stageX <= 0 || param1.stageX >= App.stage.stageWidth || param1.stageY <= 0 || param1.stageY >= App.stage.stageHeight)
+         if(e.stageX <= 0 || e.stageX >= App.stage.stageWidth || e.stageY <= 0 || e.stageY >= App.stage.stageHeight)
          {
-            this._dragImage.stopDrag();
+            _dragImage.stopDrag();
          }
          else
          {
-            this._dragImage.startDrag();
+            _dragImage.startDrag();
          }
       }
       
-      private function onStageMouseUp(param1:Event) : void
+      private function onStageMouseUp(e:Event) : void
       {
-         App.stage.removeEventListener(MouseEvent.MOUSE_MOVE,this.onStageMouseMove);
-         App.stage.removeEventListener(MouseEvent.MOUSE_UP,this.onStageMouseUp);
-         this._dragImage.stopDrag();
-         var _loc2_:DisplayObject = this.getDropTarget(this._dragImage.dropTarget);
-         if(_loc2_)
+         App.stage.removeEventListener("mouseMove",onStageMouseMove);
+         App.stage.removeEventListener("mouseUp",onStageMouseUp);
+         _dragImage.stopDrag();
+         var dropTarget:DisplayObject = getDropTarget(_dragImage.dropTarget);
+         if(dropTarget)
          {
-            _loc2_.dispatchEvent(new DragEvent(DragEvent.DRAG_DROP,this._dragInitiator,this._data));
+            dropTarget.dispatchEvent(new DragEvent("dragDrop",_dragInitiator,_data));
          }
-         this._dragInitiator.dispatchEvent(new DragEvent(DragEvent.DRAG_COMPLETE,this._dragInitiator,this._data));
-         if(this._dragInitiator != this._dragImage && this._dragImage.parent)
+         _dragInitiator.dispatchEvent(new DragEvent("dragComplete",_dragInitiator,_data));
+         if(_dragInitiator != _dragImage && _dragImage.parent)
          {
-            this._dragImage.parent.removeChild(this._dragImage);
+            _dragImage.parent.removeChild(_dragImage);
          }
-         this._dragInitiator = null;
-         this._data = null;
-         this._dragImage = null;
+         _dragInitiator = null;
+         _data = null;
+         _dragImage = null;
       }
       
-      private function getDropTarget(param1:DisplayObject) : DisplayObject
+      private function getDropTarget(value:DisplayObject) : DisplayObject
       {
-         while(param1)
+         while(value)
          {
-            if(param1.hasEventListener(DragEvent.DRAG_DROP))
+            if(value.hasEventListener("dragDrop"))
             {
-               return param1;
+               return value;
             }
-            param1 = param1.parent;
+            value = value.parent;
          }
          return null;
       }

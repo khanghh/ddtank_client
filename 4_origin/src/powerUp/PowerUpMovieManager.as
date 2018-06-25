@@ -47,13 +47,13 @@ package powerUp
          addEventListener("powerUp",__powerUpHandler);
       }
       
-      protected function __fightPowerHandler(param1:PkgEvent) : void
+      protected function __fightPowerHandler(event:PkgEvent) : void
       {
-         powerNum = param1.pkg.readInt();
+         powerNum = event.pkg.readInt();
          isCanPlayMovie = true;
       }
       
-      protected function __powerUpMovieOverHandler(param1:Event) : void
+      protected function __powerUpMovieOverHandler(event:Event) : void
       {
          if(_powerMovie)
          {
@@ -67,7 +67,7 @@ package powerUp
          powerNum = powerNum + addedPowerNum;
       }
       
-      protected function __powerUpHandler(param1:Event) : void
+      protected function __powerUpHandler(event:Event) : void
       {
          if(_powerMovie)
          {

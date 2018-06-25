@@ -22,10 +22,10 @@ package playerDress.event
       
       public var data:Object;
       
-      public function PlayerDressEvent(param1:String, param2:Object = null)
+      public function PlayerDressEvent(type:String, data:Object = null)
       {
-         this.data = param2;
-         super(param1);
+         this.data = data;
+         super(type);
       }
    }
 }

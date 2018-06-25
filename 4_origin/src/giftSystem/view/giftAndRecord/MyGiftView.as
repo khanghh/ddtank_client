@@ -43,20 +43,19 @@ package giftSystem.view.giftAndRecord
          addChild(_panel);
       }
       
-      public function setList(param1:Vector.<MyGiftCellInfo>) : void
+      public function setList(list:Vector.<MyGiftCellInfo>) : void
       {
-         var _loc3_:int = 0;
+         var i:int = 0;
          clearList();
-         var _loc2_:int = param1.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var len:int = list.length;
+         for(i = 0; i < len; )
          {
-            addItem(param1[_loc3_]);
-            _loc3_++;
+            addItem(list[i]);
+            i++;
          }
       }
       
-      public function addItem(param1:MyGiftCellInfo) : void
+      public function addItem(info:MyGiftCellInfo) : void
       {
          if(_count % 3 == 0)
          {
@@ -64,40 +63,38 @@ package giftSystem.view.giftAndRecord
             _myGiftItemContainers[_line] = ComponentFactory.Instance.creatComponentByStylename("MyGiftView.myGiftItemContainer");
             _myGiftItemContainerAll.addChild(_myGiftItemContainers[_line]);
          }
-         var _loc2_:MyGiftItem = new MyGiftItem();
-         _loc2_.info = param1;
-         _myGiftItemContainers[_line].addChild(_loc2_);
-         _itemArr.push(_loc2_);
+         var myGiftItem:MyGiftItem = new MyGiftItem();
+         myGiftItem.info = info;
+         _myGiftItemContainers[_line].addChild(myGiftItem);
+         _itemArr.push(myGiftItem);
          _count = Number(_count) + 1;
-         _myGiftItemContainerAll.height = _loc2_.height * (_line + 1);
+         _myGiftItemContainerAll.height = myGiftItem.height * (_line + 1);
          _panel.invalidateViewport();
       }
       
-      public function upItem(param1:MyGiftCellInfo) : void
+      public function upItem(info:MyGiftCellInfo) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = _itemArr.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var i:int = 0;
+         var len:int = _itemArr.length;
+         for(i = 0; i < len; )
          {
-            if(_itemArr[_loc3_].info.TemplateID == param1.TemplateID)
+            if(_itemArr[i].info.TemplateID == info.TemplateID)
             {
-               _itemArr[_loc3_].info = param1;
+               _itemArr[i].info = info;
                break;
             }
-            _loc3_++;
+            i++;
          }
       }
       
       private function clearList() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          ObjectUtils.disposeAllChildren(_myGiftItemContainerAll);
-         _loc1_ = 0;
-         while(_loc1_ < _line + 1)
+         for(i = 0; i < _line + 1; )
          {
-            _myGiftItemContainers[_loc1_] = null;
-            _loc1_++;
+            _myGiftItemContainers[i] = null;
+            i++;
          }
          _myGiftItemContainers = new Vector.<HBox>();
          _itemArr = null;
@@ -117,14 +114,13 @@ package giftSystem.view.giftAndRecord
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          removeEvent();
          ObjectUtils.disposeAllChildren(this);
-         _loc1_ = 0;
-         while(_loc1_ < _line + 1)
+         for(i = 0; i < _line + 1; )
          {
-            _myGiftItemContainers[_loc1_] = null;
-            _loc1_++;
+            _myGiftItemContainers[i] = null;
+            i++;
          }
          _myGiftItemContainerAll = null;
          _panel = null;

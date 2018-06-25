@@ -42,10 +42,10 @@ package battleSkill.view
       
       private var _lastUpClickTime:int = 0;
       
-      public function BattleSkillCellGroup(param1:BattleSkillSkillInfo = null)
+      public function BattleSkillCellGroup(data:BattleSkillSkillInfo = null)
       {
          super();
-         _data = param1;
+         _data = data;
          initSkillCell();
          if(_data == null)
          {
@@ -82,10 +82,10 @@ package battleSkill.view
       
       private function initState() : void
       {
-         var _loc2_:Boolean = false;
-         var _loc3_:* = null;
-         var _loc1_:Boolean = isFilterByCurRoomType();
-         if(_loc1_)
+         var activateed:Boolean = false;
+         var _nextSkillInfo:* = null;
+         var result:Boolean = isFilterByCurRoomType();
+         if(result)
          {
             _disableTxt.visible = true;
             var _loc4_:* = false;
@@ -98,27 +98,27 @@ package battleSkill.view
          else
          {
             _isDisable = false;
-            _loc2_ = BattleSkillManager.instance.isActivateBySkillID(_data.SkillID);
-            _loc3_ = BattleSkillManager.instance.getNextlevelSkillInfo(_data.SkillID);
-            _activateBtn.visible = !_loc2_;
-            if(_loc2_)
+            activateed = BattleSkillManager.instance.isActivateBySkillID(_data.SkillID);
+            _nextSkillInfo = BattleSkillManager.instance.getNextlevelSkillInfo(_data.SkillID);
+            _activateBtn.visible = !activateed;
+            if(activateed)
             {
                _updateBtn.visible = true;
-               _updateBtn.visible = _loc2_ && _loc3_ != null;
+               _updateBtn.visible = activateed && _nextSkillInfo != null;
             }
-            _fullLevelBtn.visible = _loc2_ && _loc3_ == null;
-            _skillCell.filters = !_loc2_?ComponentFactory.Instance.creatFilters("grayFilter"):null;
+            _fullLevelBtn.visible = activateed && _nextSkillInfo == null;
+            _skillCell.filters = !activateed?ComponentFactory.Instance.creatFilters("grayFilter"):null;
          }
       }
       
       private function isFilterByCurRoomType() : Boolean
       {
-         var _loc2_:* = null;
-         var _loc1_:RoomInfo = RoomManager.Instance.current;
-         if(_loc1_ && _loc1_.type == 123)
+         var _skillInfo:* = null;
+         var roomInfo:RoomInfo = RoomManager.Instance.current;
+         if(roomInfo && roomInfo.type == 123)
          {
-            _loc2_ = HorseManager.instance.getHorseSkillInfoById(_data.SkillID);
-            if(_loc2_ && _loc2_.GameType == 0)
+            _skillInfo = HorseManager.instance.getHorseSkillInfoById(_data.SkillID);
+            if(_skillInfo && _skillInfo.GameType == 0)
             {
                return false;
             }
@@ -127,12 +127,12 @@ package battleSkill.view
          return false;
       }
       
-      public function updateSkillState(param1:BattleSkillSkillInfo) : void
+      public function updateSkillState(info:BattleSkillSkillInfo) : void
       {
-         this.info = param1;
+         this.info = info;
       }
       
-      private function updateClick_Handler(param1:MouseEvent) : void
+      private function updateClick_Handler(evt:MouseEvent) : void
       {
          if(getTimer() - _lastUpClickTime <= 1000)
          {
@@ -144,7 +144,7 @@ package battleSkill.view
          _updateFrame.show(info,BattleSkillOptionType.UPDATE);
       }
       
-      private function activateClick_Handler(param1:MouseEvent) : void
+      private function activateClick_Handler(evt:MouseEvent) : void
       {
          if(getTimer() - _lastUpClickTime <= 1000)
          {
@@ -162,7 +162,7 @@ package battleSkill.view
          LayerManager.Instance.addToLayer(_updateFrame,3,true,1);
       }
       
-      private function cellClick_Handler(param1:MouseEvent) : void
+      private function cellClick_Handler(evt:MouseEvent) : void
       {
          if(_isDisable)
          {
@@ -176,13 +176,13 @@ package battleSkill.view
          SoundManager.instance.playButtonSound();
       }
       
-      public function set info(param1:BattleSkillSkillInfo) : void
+      public function set info(data:BattleSkillSkillInfo) : void
       {
-         _data = param1;
+         _data = data;
          initState();
          if(_skillCell)
          {
-            _skillCell.info = param1;
+            _skillCell.info = data;
          }
       }
       

@@ -46,18 +46,18 @@ package mysteriousRoullete
          MysteriousManager.instance.addEventListener("showView",showFrame);
       }
       
-      public function showFrame(param1:MysteriousEvent) : void
+      public function showFrame(e:MysteriousEvent) : void
       {
-         var _loc2_:MysteriousActivityView = new MysteriousActivityView();
-         _loc2_.init();
-         _loc2_.x = -227;
-         HallIconManager.instance.showCommonFrame(_loc2_,"wonderfulActivityManager.btnTxt14");
+         var _view:MysteriousActivityView = new MysteriousActivityView();
+         _view.init();
+         _view.x = -227;
+         HallIconManager.instance.showCommonFrame(_view,"wonderfulActivityManager.btnTxt14");
       }
       
-      public function loadMysteriousRouletteModule(param1:Function = null, param2:Array = null) : void
+      public function loadMysteriousRouletteModule(complete:Function = null, completeParams:Array = null) : void
       {
-         _func = param1;
-         _funcParams = param2;
+         _func = complete;
+         _funcParams = completeParams;
          UIModuleSmallLoading.Instance.progress = 0;
          UIModuleSmallLoading.Instance.show();
          UIModuleLoader.Instance.addEventListener("uiModuleComplete",loadCompleteHandler);
@@ -65,9 +65,9 @@ package mysteriousRoullete
          UIModuleLoader.Instance.addUIModuleImp("mysteriousRoulette");
       }
       
-      private function loadCompleteHandler(param1:UIModuleEvent) : void
+      private function loadCompleteHandler(event:UIModuleEvent) : void
       {
-         if(param1.module == "mysteriousRoulette")
+         if(event.module == "mysteriousRoulette")
          {
             UIModuleSmallLoading.Instance.hide();
             UIModuleLoader.Instance.removeEventListener("uiModuleComplete",loadCompleteHandler);
@@ -81,17 +81,17 @@ package mysteriousRoullete
          }
       }
       
-      private function onUimoduleLoadProgress(param1:UIModuleEvent) : void
+      private function onUimoduleLoadProgress(event:UIModuleEvent) : void
       {
-         if(param1.module == "mysteriousRoulette")
+         if(event.module == "mysteriousRoulette")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
       
-      public function setView(param1:MysteriousActivityView) : void
+      public function setView(view:MysteriousActivityView) : void
       {
-         mysteriousView = param1;
+         mysteriousView = view;
       }
       
       public function addMask() : void
@@ -117,7 +117,7 @@ package mysteriousRoullete
          }
       }
       
-      private function onMaskClick(param1:MouseEvent) : void
+      private function onMaskClick(event:MouseEvent) : void
       {
          MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("mysteriousRoulette.running"));
       }

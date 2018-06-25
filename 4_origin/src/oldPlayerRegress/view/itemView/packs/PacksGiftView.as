@@ -17,10 +17,10 @@ package oldPlayerRegress.view.itemView.packs
       
       private var _getGiftData:Vector.<GiftData>;
       
-      public function PacksGiftView(param1:Vector.<GiftData> = null)
+      public function PacksGiftView(giftData:Vector.<GiftData> = null)
       {
          super();
-         getGiftData = param1;
+         getGiftData = giftData;
          _init();
       }
       
@@ -39,64 +39,62 @@ package oldPlayerRegress.view.itemView.packs
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         _loc2_ = 0;
-         while(_loc2_ < _packsGiftBgArray.length)
+         var i:int = 0;
+         var giftCell:* = null;
+         for(i = 0; i < _packsGiftBgArray.length; )
          {
-            _packsGiftBgArray[_loc2_] = ComponentFactory.Instance.creatComponentByStylename("regress.packstemCellBg");
-            if(_loc2_ > 0)
+            _packsGiftBgArray[i] = ComponentFactory.Instance.creatComponentByStylename("regress.packstemCellBg");
+            if(i > 0)
             {
-               _packsGiftBgArray[_loc2_].x = _packsGiftBgArray[_loc2_ - 1].x + _packsGiftBgArray[_loc2_ - 1].width + 8;
+               _packsGiftBgArray[i].x = _packsGiftBgArray[i - 1].x + _packsGiftBgArray[i - 1].width + 8;
             }
-            addChild(_packsGiftBgArray[_loc2_]);
-            _loc1_ = new BagCell(_loc2_);
-            _loc1_.x = _packsGiftBgArray[_loc2_].x;
-            _loc1_.y = _packsGiftBgArray[_loc2_].y;
-            _giftContentList.push(_loc1_);
-            _loc2_++;
+            addChild(_packsGiftBgArray[i]);
+            giftCell = new BagCell(i);
+            giftCell.x = _packsGiftBgArray[i].x;
+            giftCell.y = _packsGiftBgArray[i].y;
+            _giftContentList.push(giftCell);
+            i++;
          }
          setGiftInfo();
       }
       
-      public function setGoods(param1:int) : InventoryItemInfo
+      public function setGoods(id:int) : InventoryItemInfo
       {
-         var _loc2_:InventoryItemInfo = new InventoryItemInfo();
-         _loc2_.TemplateID = getGiftData[param1].giftID;
-         _loc2_ = ItemManager.fill(_loc2_);
-         _loc2_.IsBinds = true;
-         return _loc2_;
+         var info:InventoryItemInfo = new InventoryItemInfo();
+         info.TemplateID = getGiftData[id].giftID;
+         info = ItemManager.fill(info);
+         info.IsBinds = true;
+         return info;
       }
       
       public function setGiftInfo() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _giftContentList.length)
+         var i:int = 0;
+         for(i = 0; i < _giftContentList.length; )
          {
             if(getGiftData)
             {
-               if(_loc1_ < getGiftData.length)
+               if(i < getGiftData.length)
                {
-                  _giftContentList[_loc1_].info = setGoods(_loc1_);
-                  _giftContentList[_loc1_].setCount(getGiftData[_loc1_].giftCount);
-                  addChild(_giftContentList[_loc1_]);
+                  _giftContentList[i].info = setGoods(i);
+                  _giftContentList[i].setCount(getGiftData[i].giftCount);
+                  addChild(_giftContentList[i]);
                }
             }
-            _loc1_++;
+            i++;
          }
       }
       
       public function removeGiftChild() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(getGiftData)
          {
-            _loc1_ = 0;
-            while(_loc1_ < getGiftData.length && _loc1_ < 8)
+            i = 0;
+            while(i < getGiftData.length && i < 8)
             {
-               removeChild(_giftContentList[_loc1_]);
-               _loc1_++;
+               removeChild(_giftContentList[i]);
+               i++;
             }
          }
       }
@@ -111,23 +109,22 @@ package oldPlayerRegress.view.itemView.packs
       
       override public function dispose() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
+         var i:int = 0;
+         var j:int = 0;
          super.dispose();
          removeEvent();
-         _loc2_ = 0;
-         while(_loc2_ < _packsGiftBgArray.length)
+         for(i = 0; i < _packsGiftBgArray.length; )
          {
-            _packsGiftBgArray[_loc2_] = null;
-            _loc2_++;
+            _packsGiftBgArray[i] = null;
+            i++;
          }
          if(getGiftData)
          {
-            _loc1_ = 0;
-            while(_loc1_ < getGiftData.length && _loc2_ < 8)
+            j = 0;
+            while(j < getGiftData.length && i < 8)
             {
-               _giftContentList[_loc1_] = null;
-               _loc1_++;
+               _giftContentList[j] = null;
+               j++;
             }
          }
          if(_getGiftData)
@@ -141,9 +138,9 @@ package oldPlayerRegress.view.itemView.packs
          return _getGiftData;
       }
       
-      public function set getGiftData(param1:Vector.<GiftData>) : void
+      public function set getGiftData(value:Vector.<GiftData>) : void
       {
-         _getGiftData = param1;
+         _getGiftData = value;
       }
    }
 }

@@ -27,7 +27,7 @@ package consortiaDomain.view
          super();
       }
       
-      public function setListCellStatus(param1:List, param2:Boolean, param3:int) : void
+      public function setListCellStatus(list:List, isSelected:Boolean, index:int) : void
       {
       }
       
@@ -36,30 +36,30 @@ package consortiaDomain.view
          return _data;
       }
       
-      public function setCellValue(param1:*) : void
+      public function setCellValue(value:*) : void
       {
-         _data = param1;
+         _data = value;
          update();
       }
       
       private function update() : void
       {
-         var _loc1_:String = Math.min(4,_data.Rank).toString();
+         var resIndex:String = Math.min(4,_data.Rank).toString();
          if(!_rankTf)
          {
-            _rankTf = UICreatShortcut.creatTextAndAdd("consortiadomain.killRankView.rankItem" + _loc1_,"",this);
+            _rankTf = UICreatShortcut.creatTextAndAdd("consortiadomain.killRankView.rankItem" + resIndex,"",this);
             PositionUtils.setPos(_rankTf,"consortiadomain.killRankView.item.rankPos");
          }
          _rankTf.text = _data.Rank.toString();
          if(!_playerNameTf)
          {
-            _playerNameTf = UICreatShortcut.creatTextAndAdd("consortiadomain.killRankView.rankItem" + _loc1_,"",this);
+            _playerNameTf = UICreatShortcut.creatTextAndAdd("consortiadomain.killRankView.rankItem" + resIndex,"",this);
             PositionUtils.setPos(_playerNameTf,"consortiadomain.killRankView.item.playerNamePos");
          }
          _playerNameTf.text = _data.NickName;
          if(!_killNumTf)
          {
-            _killNumTf = UICreatShortcut.creatTextAndAdd("consortiadomain.killRankView.rankItem" + _loc1_,"",this);
+            _killNumTf = UICreatShortcut.creatTextAndAdd("consortiadomain.killRankView.rankItem" + resIndex,"",this);
             PositionUtils.setPos(_killNumTf,"consortiadomain.killRankView.item.killNumPos");
          }
          _killNumTf.text = _data.KillCount.toString();

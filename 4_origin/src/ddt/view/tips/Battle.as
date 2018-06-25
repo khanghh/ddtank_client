@@ -15,11 +15,11 @@ package ddt.view.tips
       
       private var _battle_txt:FilterFrameText;
       
-      public function Battle(param1:int)
+      public function Battle(battle:int)
       {
          super();
          init();
-         BattleNum = param1;
+         BattleNum = battle;
       }
       
       public function get bg() : Bitmap
@@ -40,9 +40,9 @@ package ddt.view.tips
          addChild(_battle_txt);
       }
       
-      public function set BattleNum(param1:int) : void
+      public function set BattleNum(battleNum:int) : void
       {
-         _battle_txt.text = param1.toString();
+         _battle_txt.text = battleNum.toString();
       }
       
       public function dispose() : void

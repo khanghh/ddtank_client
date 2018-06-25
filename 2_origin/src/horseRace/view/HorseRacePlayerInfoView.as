@@ -36,47 +36,45 @@ package horseRace.view
          addChild(_vbox);
       }
       
-      public function addPlayerItem(param1:HorseRacePlayerItemView) : void
+      public function addPlayerItem(playerItem:HorseRacePlayerItemView) : void
       {
-         _vbox.addChild(param1);
-         param1.addEventListener("click",_itemClick);
-         _itemList.push(param1);
+         _vbox.addChild(playerItem);
+         playerItem.addEventListener("click",_itemClick);
+         _itemList.push(playerItem);
       }
       
       public function flushBuffList() : void
       {
-         var _loc1_:* = null;
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         _loc3_ = 0;
-         while(_loc3_ < _itemList.length)
+         var item2:* = null;
+         var i:int = 0;
+         var buffList:* = null;
+         for(i = 0; i < _itemList.length; )
          {
-            _loc1_ = _itemList[_loc3_] as HorseRacePlayerItemView;
-            _loc2_ = _loc1_.getPlayerInfo().buffList;
-            _loc1_.flashBuffList(_loc2_);
-            _loc3_++;
+            item2 = _itemList[i] as HorseRacePlayerItemView;
+            buffList = item2.getPlayerInfo().buffList;
+            item2.flashBuffList(buffList);
+            i++;
          }
       }
       
-      private function _itemClick(param1:MouseEvent) : void
+      private function _itemClick(e:MouseEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc4_:int = 0;
-         var _loc3_:HorseRacePlayerItemView = param1.currentTarget as HorseRacePlayerItemView;
-         _loc4_ = 0;
-         while(_loc4_ < _itemList.length)
+         var item2:* = null;
+         var i:int = 0;
+         var item:HorseRacePlayerItemView = e.currentTarget as HorseRacePlayerItemView;
+         for(i = 0; i < _itemList.length; )
          {
-            _loc2_ = _itemList[_loc4_] as HorseRacePlayerItemView;
-            if(_loc2_.getPlayerInfo().playerVO.playerInfo.ID == _loc3_.getPlayerInfo().playerVO.playerInfo.ID)
+            item2 = _itemList[i] as HorseRacePlayerItemView;
+            if(item2.getPlayerInfo().playerVO.playerInfo.ID == item.getPlayerInfo().playerVO.playerInfo.ID)
             {
-               _loc2_.setBgVisible(true);
-               selectItemId = _loc3_.getPlayerInfo().playerVO.playerInfo.ID;
+               item2.setBgVisible(true);
+               selectItemId = item.getPlayerInfo().playerVO.playerInfo.ID;
             }
             else
             {
-               _loc2_.setBgVisible(false);
+               item2.setBgVisible(false);
             }
-            _loc4_++;
+            i++;
          }
       }
       

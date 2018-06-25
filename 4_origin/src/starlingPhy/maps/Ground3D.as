@@ -11,39 +11,39 @@ package starlingPhy.maps
       
       private var _bound:Rectangle;
       
-      public function Ground3D(param1:BitmapData, param2:Boolean)
+      public function Ground3D(bitmapData:BitmapData, digable:Boolean)
       {
-         super(param1,param2);
+         super(bitmapData,digable);
          _bound = new Rectangle(0,0,width,height);
       }
       
-      public function IsEmpty(param1:int, param2:int) : Boolean
+      public function IsEmpty(x:int, y:int) : Boolean
       {
-         return GetAlpha(param1,param2) <= 150;
+         return GetAlpha(x,y) <= 150;
       }
       
-      public function IsRectangleEmpty(param1:Rectangle) : Boolean
+      public function IsRectangleEmpty(rect:Rectangle) : Boolean
       {
-         param1 = _bound.intersection(param1);
-         if(param1.width == 0 || param1.height == 0)
+         rect = _bound.intersection(rect);
+         if(rect.width == 0 || rect.height == 0)
          {
             return true;
          }
-         if(!IsXLineEmpty(param1.x,param1.y,param1.width))
+         if(!IsXLineEmpty(rect.x,rect.y,rect.width))
          {
             return false;
          }
-         if(param1.height > 1)
+         if(rect.height > 1)
          {
-            if(!IsXLineEmpty(param1.x,param1.y + param1.height - 1,param1.width))
+            if(!IsXLineEmpty(rect.x,rect.y + rect.height - 1,rect.width))
             {
                return false;
             }
-            if(!IsYLineEmtpy(param1.x,param1.y + 1,param1.height - 1))
+            if(!IsYLineEmtpy(rect.x,rect.y + 1,rect.height - 1))
             {
                return false;
             }
-            if(param1.width > 1 && !IsYLineEmtpy(param1.x + param1.width - 1,param1.y,param1.height - 1))
+            if(rect.width > 1 && !IsYLineEmtpy(rect.x + rect.width - 1,rect.y,rect.height - 1))
             {
                return false;
             }
@@ -51,78 +51,75 @@ package starlingPhy.maps
          return true;
       }
       
-      public function IsRectangeEmptyQuick(param1:Rectangle) : Boolean
+      public function IsRectangeEmptyQuick(rect:Rectangle) : Boolean
       {
-         param1 = _bound.intersection(param1);
-         if(IsEmpty(param1.right,param1.bottom) && IsEmpty(param1.left,param1.bottom) && IsEmpty(param1.right,param1.top) && IsEmpty(param1.left,param1.top))
+         rect = _bound.intersection(rect);
+         if(IsEmpty(rect.right,rect.bottom) && IsEmpty(rect.left,rect.bottom) && IsEmpty(rect.right,rect.top) && IsEmpty(rect.left,rect.top))
          {
             return true;
          }
          return false;
       }
       
-      public function IsCircleEmptyQuick(param1:Rectangle, param2:Number = 30) : Boolean
+      public function IsCircleEmptyQuick(rect:Rectangle, rAngle:Number = 30) : Boolean
       {
-         var _loc7_:* = NaN;
-         var _loc4_:Number = NaN;
-         var _loc3_:Number = NaN;
-         param1 = _bound.intersection(param1);
-         var _loc5_:Number = param1.width / 2;
-         var _loc8_:Point = new Point(0,0);
-         var _loc6_:Number = 360 / param2;
-         _loc7_ = 1;
-         while(_loc7_ <= _loc6_)
+         var i:* = NaN;
+         var posX:Number = NaN;
+         var posY:Number = NaN;
+         rect = _bound.intersection(rect);
+         var r:Number = rect.width / 2;
+         var xy:Point = new Point(0,0);
+         var length:Number = 360 / rAngle;
+         for(i = 1; i <= length; )
          {
-            _loc8_.x = _loc5_ * Math.cos(_loc7_ * param2 * MathUtils.RADIAN);
-            _loc8_.y = _loc5_ * Math.sin(_loc7_ * param2 * MathUtils.RADIAN);
-            _loc4_ = param1.x + _loc8_.x + _loc5_;
-            _loc3_ = param1.y + _loc8_.y + _loc5_;
-            if(!IsEmpty(_loc4_,_loc3_))
+            xy.x = r * Math.cos(i * rAngle * MathUtils.RADIAN);
+            xy.y = r * Math.sin(i * rAngle * MathUtils.RADIAN);
+            posX = rect.x + xy.x + r;
+            posY = rect.y + xy.y + r;
+            if(!IsEmpty(posX,posY))
             {
                return false;
             }
-            _loc7_++;
+            i++;
          }
          return true;
       }
       
-      public function IsXLineEmpty(param1:int, param2:int, param3:int) : Boolean
+      public function IsXLineEmpty(x:int, y:int, w:int) : Boolean
       {
-         var _loc4_:int = 0;
-         param1 = param1 < 0?0:param1;
-         param3 = param1 + param3 > width?width - param1:param3;
-         _loc4_ = 0;
-         while(_loc4_ < param3)
+         var i:int = 0;
+         x = x < 0?0:x;
+         w = x + w > width?width - x:w;
+         for(i = 0; i < w; )
          {
-            if(!IsEmpty(param1 + _loc4_,param2))
+            if(!IsEmpty(x + i,y))
             {
                return false;
             }
-            _loc4_++;
+            i++;
          }
          return true;
       }
       
-      public function IsYLineEmtpy(param1:int, param2:int, param3:int) : Boolean
+      public function IsYLineEmtpy(x:int, y:int, h:int) : Boolean
       {
-         var _loc4_:int = 0;
-         param2 = param2 < 0?0:param2;
-         param3 = param2 + param3 > height?height - param2:param3;
-         _loc4_ = 0;
-         while(_loc4_ < param3)
+         var i:int = 0;
+         y = y < 0?0:y;
+         h = y + h > height?height - y:h;
+         for(i = 0; i < h; )
          {
-            if(!IsEmpty(param1,param2 + _loc4_))
+            if(!IsEmpty(x,y + i))
             {
                return false;
             }
-            _loc4_++;
+            i++;
          }
          return true;
       }
       
-      public function IsBitmapDataEmpty(param1:BitmapData, param2:Point = null) : Boolean
+      public function IsBitmapDataEmpty(secondObject:BitmapData, secondBitmapDataPoint:Point = null) : Boolean
       {
-         return !bitmapData.hitTest(new Point(this.x,this.y),150,param1,param2,150);
+         return !bitmapData.hitTest(new Point(this.x,this.y),150,secondObject,secondBitmapDataPoint,150);
       }
       
       override public function dispose() : void

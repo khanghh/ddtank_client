@@ -19,11 +19,11 @@ package explorerManual.view.chapter
       
       private var _ctrl:ExplorerManualController;
       
-      public function ExplorerChapterRightView(param1:ExplorerManualInfo, param2:ExplorerManualController)
+      public function ExplorerChapterRightView(model:ExplorerManualInfo, ctrl:ExplorerManualController)
       {
          super();
-         _model = param1;
-         _ctrl = param2;
+         _model = model;
+         _ctrl = ctrl;
          initView();
          initData();
          initEvent();
@@ -40,11 +40,11 @@ package explorerManual.view.chapter
       
       private function initData() : void
       {
-         var _loc1_:Array = ExplorerManualManager.instance.getChaptersInfo();
-         if(_loc1_ != null)
+         var chapters:Array = ExplorerManualManager.instance.getChaptersInfo();
+         if(chapters != null)
          {
-            _loc1_.sortOn("Sort");
-            _chapterList.templeteData = _loc1_;
+            chapters.sortOn("Sort");
+            _chapterList.templeteData = chapters;
          }
       }
       
@@ -64,7 +64,7 @@ package explorerManual.view.chapter
          }
       }
       
-      private function __modelUpdateHandler(param1:Event) : void
+      private function __modelUpdateHandler(evt:Event) : void
       {
          _chapterList.updateProgress(_model);
       }

@@ -38,70 +38,69 @@ package ddt.view.bossbox
          addChild(panel);
       }
       
-      public function show(param1:Array) : void
+      public function show(goodsList:Array) : void
       {
-         var _loc7_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
-         var _loc6_:* = null;
-         var _loc5_:* = null;
-         var _loc4_:* = null;
-         _goodsList = param1;
+         var i:int = 0;
+         var _itemTempleteInfo:* = null;
+         var _count:int = 0;
+         var info:* = null;
+         var boxGoodsInfo:* = null;
+         var cell:* = null;
+         _goodsList = goodsList;
          _cells = [];
          _list.beginChanges();
-         _loc7_ = 0;
-         while(_loc7_ < _goodsList.length)
+         for(i = 0; i < _goodsList.length; )
          {
-            _loc3_ = 0;
-            if(_goodsList[_loc7_] is InventoryItemInfo)
+            _count = 0;
+            if(_goodsList[i] is InventoryItemInfo)
             {
-               _loc6_ = _goodsList[_loc7_];
-               _loc6_.IsJudge = true;
+               info = _goodsList[i];
+               info.IsJudge = true;
             }
-            else if(_goodsList[_loc7_] is BoxGoodsTempInfo)
+            else if(_goodsList[i] is BoxGoodsTempInfo)
             {
-               _loc5_ = _goodsList[_loc7_] as BoxGoodsTempInfo;
-               _loc6_ = getTemplateInfo(_loc5_.TemplateId) as InventoryItemInfo;
-               _loc6_.IsBinds = _loc5_.IsBind;
-               _loc6_.LuckCompose = _loc5_.LuckCompose;
-               _loc6_.DefendCompose = _loc5_.DefendCompose;
-               _loc6_.AttackCompose = _loc5_.AttackCompose;
-               _loc6_.AgilityCompose = _loc5_.AgilityCompose;
-               _loc6_.StrengthenLevel = _loc5_.StrengthenLevel;
-               _loc6_.ValidDate = _loc5_.ItemValid;
-               _loc6_.IsJudge = true;
-               _loc6_.Count = _loc5_.ItemCount;
+               boxGoodsInfo = _goodsList[i] as BoxGoodsTempInfo;
+               info = getTemplateInfo(boxGoodsInfo.TemplateId) as InventoryItemInfo;
+               info.IsBinds = boxGoodsInfo.IsBind;
+               info.LuckCompose = boxGoodsInfo.LuckCompose;
+               info.DefendCompose = boxGoodsInfo.DefendCompose;
+               info.AttackCompose = boxGoodsInfo.AttackCompose;
+               info.AgilityCompose = boxGoodsInfo.AgilityCompose;
+               info.StrengthenLevel = boxGoodsInfo.StrengthenLevel;
+               info.ValidDate = boxGoodsInfo.ItemValid;
+               info.IsJudge = true;
+               info.Count = boxGoodsInfo.ItemCount;
             }
-            else if(_goodsList[_loc7_] is ItemTemplateInfo)
+            else if(_goodsList[i] is ItemTemplateInfo)
             {
-               _loc2_ = _goodsList[_loc7_] as ItemTemplateInfo;
-            }
-            else
-            {
-               _loc2_ = _goodsList[_loc7_].info;
-               _loc3_ = _goodsList[_loc7_].count;
-            }
-            if(_loc6_ != null)
-            {
-               _loc2_ = _loc6_;
-            }
-            _loc4_ = ComponentFactory.Instance.creatCustomObject("bossbox.BoxAwardsCell");
-            _loc4_.info = _loc2_;
-            if(_loc2_.hasOwnProperty("Count"))
-            {
-               _loc4_.count = _loc2_["Count"];
-            }
-            else if(_loc3_ > 0)
-            {
-               _loc4_.count = _loc3_;
+               _itemTempleteInfo = _goodsList[i] as ItemTemplateInfo;
             }
             else
             {
-               _loc4_.count = 1;
+               _itemTempleteInfo = _goodsList[i].info;
+               _count = _goodsList[i].count;
             }
-            _list.addChild(_loc4_);
-            _cells.push(_loc4_);
-            _loc7_++;
+            if(info != null)
+            {
+               _itemTempleteInfo = info;
+            }
+            cell = ComponentFactory.Instance.creatCustomObject("bossbox.BoxAwardsCell");
+            cell.info = _itemTempleteInfo;
+            if(_itemTempleteInfo.hasOwnProperty("Count"))
+            {
+               cell.count = _itemTempleteInfo["Count"];
+            }
+            else if(_count > 0)
+            {
+               cell.count = _count;
+            }
+            else
+            {
+               cell.count = 1;
+            }
+            _list.addChild(cell);
+            _cells.push(cell);
+            i++;
          }
          _list.commitChanges();
          panel.beginChanges();
@@ -111,32 +110,31 @@ package ddt.view.bossbox
          panel.commitChanges();
       }
       
-      public function showForVipAward(param1:Array) : void
+      public function showForVipAward(infoList:Array) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         _goodsList = param1;
+         var i:int = 0;
+         var cell:* = null;
+         _goodsList = infoList;
          _cells = [];
          _list.dispose();
          _list = new SimpleTileList(3);
          _list.vSpace = 6;
          _list.hSpace = 110;
          _list.beginChanges();
-         _loc3_ = 0;
-         while(_loc3_ < _goodsList.length)
+         for(i = 0; i < _goodsList.length; )
          {
-            _loc2_ = ComponentFactory.Instance.creatCustomObject("bossbox.BoxAwardsCell");
-            _loc2_.mouseChildren = false;
-            _loc2_.mouseEnabled = false;
-            _loc2_.info = ItemManager.Instance.getTemplateById(BoxGoodsTempInfo(_goodsList[_loc3_]).TemplateId);
-            if(_goodsList[_loc3_] && _loc2_.info)
+            cell = ComponentFactory.Instance.creatCustomObject("bossbox.BoxAwardsCell");
+            cell.mouseChildren = false;
+            cell.mouseEnabled = false;
+            cell.info = ItemManager.Instance.getTemplateById(BoxGoodsTempInfo(_goodsList[i]).TemplateId);
+            if(_goodsList[i] && cell.info)
             {
-               _loc2_.count = 1;
-               _loc2_.itemName = _loc2_.info.Name + "X" + String(BoxGoodsTempInfo(_goodsList[_loc3_]).ItemCount);
-               _list.addChild(_loc2_);
-               _cells.push(_loc2_);
+               cell.count = 1;
+               cell.itemName = cell.info.Name + "X" + String(BoxGoodsTempInfo(_goodsList[i]).ItemCount);
+               _list.addChild(cell);
+               _cells.push(cell);
             }
-            _loc3_++;
+            i++;
          }
          _list.commitChanges();
          panel.beginChanges();
@@ -148,21 +146,21 @@ package ddt.view.bossbox
          panel.commitChanges();
       }
       
-      private function getTemplateInfo(param1:int) : InventoryItemInfo
+      private function getTemplateInfo(id:int) : InventoryItemInfo
       {
-         var _loc2_:InventoryItemInfo = new InventoryItemInfo();
-         _loc2_.TemplateID = param1;
-         ItemManager.fill(_loc2_);
-         return _loc2_;
+         var itemInfo:InventoryItemInfo = new InventoryItemInfo();
+         itemInfo.TemplateID = id;
+         ItemManager.fill(itemInfo);
+         return itemInfo;
       }
       
       public function dispose() : void
       {
          var _loc3_:int = 0;
          var _loc2_:* = _cells;
-         for each(var _loc1_ in _cells)
+         for each(var cell in _cells)
          {
-            _loc1_.dispose();
+            cell.dispose();
          }
          _cells.splice(0,_cells.length);
          _cells = null;

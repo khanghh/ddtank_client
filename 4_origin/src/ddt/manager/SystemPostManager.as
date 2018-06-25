@@ -16,9 +16,9 @@ package ddt.manager
       
       private var _postInfo:Object;
       
-      public function SystemPostManager(param1:IEventDispatcher = null)
+      public function SystemPostManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get Instance() : SystemPostManager
@@ -35,23 +35,23 @@ package ddt.manager
          ChatManager.Instance.addEventListener("systemPost",__onReceivePost);
       }
       
-      protected function __onReceivePost(param1:ChatEvent) : void
+      protected function __onReceivePost(event:ChatEvent) : void
       {
-         var _loc3_:String = param1.data.msg;
-         var _loc2_:PackageIn = param1.data.pkg;
-         var _loc4_:int = _loc2_.readInt();
-         addInfo(_loc3_,_loc4_);
+         var msg:String = event.data.msg;
+         var pkg:PackageIn = event.data.pkg;
+         var turnType:int = pkg.readInt();
+         addInfo(msg,turnType);
          dispatchEvent(new Event(SYSTEMPOST_UPDATE));
       }
       
-      private function addInfo(param1:String, param2:int) : void
+      private function addInfo(msg:String, type:int) : void
       {
          if(!_postInfo)
          {
             _postInfo = {};
          }
-         _postInfo["msg"] = param1;
-         _postInfo["type"] = param2;
+         _postInfo["msg"] = msg;
+         _postInfo["type"] = type;
       }
       
       public function get postInfo() : Object

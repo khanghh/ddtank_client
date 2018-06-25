@@ -68,9 +68,9 @@ package ddt.command
          return _time;
       }
       
-      public function set time(param1:int) : void
+      public function set time(value:int) : void
       {
-         _time = param1;
+         _time = value;
       }
       
       public function get type() : int
@@ -78,9 +78,9 @@ package ddt.command
          return _type;
       }
       
-      public function set type(param1:int) : void
+      public function set type(value:int) : void
       {
-         _type = param1;
+         _type = value;
       }
       
       public function get isBand() : Boolean
@@ -88,19 +88,19 @@ package ddt.command
          return _isBand;
       }
       
-      public function set isBand(param1:Boolean) : void
+      public function set isBand(b:Boolean) : void
       {
-         _isBand = param1;
+         _isBand = b;
       }
       
       private function initView() : void
       {
-         var _loc1_:Image = ComponentFactory.Instance.creatComponentByStylename("ddtcore.CellBg");
-         addChild(_loc1_);
+         var bg:Image = ComponentFactory.Instance.creatComponentByStylename("ddtcore.CellBg");
+         addChild(bg);
          _number = ComponentFactory.Instance.creatCustomObject("ddtcore.numberSelecter");
          addChild(_number);
-         var _loc2_:Sprite = new Sprite();
-         _loc2_.addChild(ComponentFactory.Instance.creatBitmap("asset.ddtcore.EquipCellBG"));
+         var cellBG:Sprite = new Sprite();
+         cellBG.addChild(ComponentFactory.Instance.creatBitmap("asset.ddtcore.EquipCellBG"));
          _movieBack = ComponentFactory.Instance.creat("asset.core.stranDown");
          _movieBack.x = 176;
          _movieBack.y = 116;
@@ -135,15 +135,15 @@ package ddt.command
          _bandMoney.y = 107;
          _bandMoney.text = LanguageMgr.GetTranslation("ddt.bandMoney");
          addChild(_bandMoney);
-         _cell = new BaseCell(_loc2_);
-         _cell.x = _loc1_.x + 4;
-         _cell.y = _loc1_.y + 4;
+         _cell = new BaseCell(cellBG);
+         _cell.x = bg.x + 4;
+         _cell.y = bg.y + 4;
          addChild(_cell);
          _cell.tipDirctions = "7,0";
          refreshNumText();
       }
       
-      protected function selectedBandHander(param1:MouseEvent) : void
+      protected function selectedBandHander(event:MouseEvent) : void
       {
          if(_selectedBandBtn.selected)
          {
@@ -159,7 +159,7 @@ package ddt.command
          refreshNumText();
       }
       
-      protected function seletedHander(param1:MouseEvent) : void
+      protected function seletedHander(event:MouseEvent) : void
       {
          if(_selectedBtn.selected)
          {
@@ -181,15 +181,15 @@ package ddt.command
          _number.addEventListener("number_close",_numberClose);
       }
       
-      private function selectHandler(param1:Event) : void
+      private function selectHandler(e:Event) : void
       {
          _stoneNumber = _number.number;
          refreshNumText();
       }
       
-      private function _numberClose(param1:Event) : void
+      private function _numberClose(e:Event) : void
       {
-         dispatchEvent(param1);
+         dispatchEvent(e);
       }
       
       public function hideSelectedBand() : void
@@ -222,7 +222,7 @@ package ddt.command
          refreshNumText();
       }
       
-      public function set ItemID(param1:int) : void
+      public function set ItemID(ID:int) : void
       {
          var _loc2_:* = true;
          _selectedBandBtn.visible = _loc2_;
@@ -231,7 +231,7 @@ package ddt.command
          _loc2_ = _loc2_;
          _bandMoney.visible = _loc2_;
          _moneyTxt.visible = _loc2_;
-         _itemID = param1;
+         _itemID = ID;
          if(_itemID == 11023)
          {
             _stoneNumber = 3;
@@ -246,11 +246,11 @@ package ddt.command
          refreshNumText();
       }
       
-      public function setItemID(param1:int, param2:int, param3:int) : void
+      public function setItemID(ID:int, type:int, time:int) : void
       {
-         _itemID = param1;
-         _type = param2;
-         _time = param3;
+         _itemID = ID;
+         _type = type;
+         _time = time;
          if(_itemID == 11023)
          {
             _stoneNumber = 3;
@@ -260,7 +260,7 @@ package ddt.command
             _stoneNumber = 1;
          }
          _number.number = _stoneNumber;
-         if(param2 == 1 || param2 == 2 || param2 == 4 || param2 == 5 || param2 == 6)
+         if(type == 1 || type == 2 || type == 4 || type == 5 || type == 6)
          {
             var _loc4_:* = false;
             _selectedBandBtn.visible = _loc4_;
@@ -272,7 +272,7 @@ package ddt.command
             totalText.y = 108;
             totalTipText.y = 108;
          }
-         else if(param2 == 3)
+         else if(type == 3)
          {
             _selectedBandBtn.selected = true;
             _isBand = true;
@@ -293,9 +293,9 @@ package ddt.command
          refreshNumText();
       }
       
-      public function set stoneNumber(param1:int) : void
+      public function set stoneNumber(value:int) : void
       {
-         _stoneNumber = param1;
+         _stoneNumber = value;
          _number.number = _stoneNumber;
          refreshNumText();
       }
@@ -310,9 +310,9 @@ package ddt.command
          return _itemID;
       }
       
-      public function set maxLimit(param1:int) : void
+      public function set maxLimit(value:int) : void
       {
-         _number.maximum = param1;
+         _number.maximum = value;
       }
       
       private function initInfo() : void

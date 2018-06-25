@@ -206,19 +206,19 @@ package ddtBuried.views
          SocketManager.Instance.out.outCard();
       }
       
-      private function roleCallback(param1:BuriedPlayer, param2:Boolean, param3:int) : void
+      private function roleCallback(role:BuriedPlayer, isLoadSucceed:Boolean, vFlag:int) : void
       {
-         if(param3 == 0)
+         if(vFlag == 0)
          {
-            if(!param1)
+            if(!role)
             {
                return;
             }
-            param1.sceneCharacterStateType = "natural";
-            param1.update();
-            param1.x = rolePoint.x;
-            param1.y = rolePoint.y;
-            addChild(param1);
+            role.sceneCharacterStateType = "natural";
+            role.update();
+            role.x = rolePoint.x;
+            role.y = rolePoint.y;
+            addChild(role);
             addChild(_taskTrackView);
          }
       }
@@ -242,16 +242,16 @@ package ddtBuried.views
             _freeBtn.addChild(_txtNum);
             return;
          }
-         var _loc1_:Boolean = true;
+         var tmpMouseEnable:Boolean = true;
          if(_freeBtn)
          {
-            _loc1_ = _freeBtn.mouseEnabled;
+            tmpMouseEnable = _freeBtn.mouseEnabled;
             _freeBtn.removeEventListener("click",rollClickHander);
             ObjectUtils.disposeObject(_freeBtn);
             _freeBtn = null;
          }
          _freeBtn = ComponentFactory.Instance.creatComponentByStylename("ddtburied.payBtn");
-         _freeBtn.mouseEnabled = _loc1_;
+         _freeBtn.mouseEnabled = tmpMouseEnable;
          _isCount = true;
          if(BuriedManager.Instance.num - BuriedManager.Instance.pay_count > 0)
          {
@@ -270,9 +270,9 @@ package ddtBuried.views
          _freeBtn.addEventListener("click",rollClickHander);
       }
       
-      public function setTxt(param1:String, param2:Boolean) : void
+      public function setTxt(str:String, $visible:Boolean) : void
       {
-         if(param2)
+         if($visible)
          {
             _txtNum.visible = true;
          }
@@ -286,7 +286,7 @@ package ddtBuried.views
             _txtNum = null;
          }
          _txtNum = ComponentFactory.Instance.creatComponentByStylename("ddtburied.right.btnTxt");
-         _txtNum.text = "(" + param1 + ")";
+         _txtNum.text = "(" + str + ")";
          _txtNum.x = 98;
          if(BuriedManager.Instance.num - BuriedManager.Instance.pay_count > 0)
          {
@@ -304,9 +304,9 @@ package ddtBuried.views
          _freeBtn.addChild(_txtNum);
       }
       
-      public function setCrFrame(param1:String) : void
+      public function setCrFrame(str:String) : void
       {
-         _diceRoll.setCrFrame(param1);
+         _diceRoll.setCrFrame(str);
       }
       
       public function play() : void
@@ -342,33 +342,33 @@ package ddtBuried.views
          BuriedManager.Instance.removeEventListener("boxmovie_over",boxMoiveOverHander);
       }
       
-      private function oneStepHander(param1:BuriedEvent) : void
+      private function oneStepHander(e:BuriedEvent) : void
       {
-         var _loc2_:Object = param1.data;
-         onstep = _loc2_.key;
+         var obj:Object = e.data;
+         onstep = obj.key;
          _isOneStep = true;
       }
       
-      private function removeEventHandler(param1:BuriedEvent) : void
+      private function removeEventHandler(e:BuriedEvent) : void
       {
-         var _loc2_:Object = param1.data;
-         currPos = _loc2_.key;
+         var obj:Object = e.data;
+         currPos = obj.key;
          _isRemoeEvent = true;
       }
       
-      private function frameEvent(param1:FrameEvent) : void
+      private function frameEvent(e:FrameEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         param1.currentTarget.dispose();
+         e.currentTarget.dispose();
       }
       
-      private function boxMoiveOverHander(param1:BuriedEvent) : void
+      private function boxMoiveOverHander(e:BuriedEvent) : void
       {
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("buried.alertInfo.mapover"),LanguageMgr.GetTranslation("ok"),"",true,true,true,2,null,"SimpleAlert",60,false);
-         _loc2_.addEventListener("response",onMapOverResponse);
+         var frame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("buried.alertInfo.mapover"),LanguageMgr.GetTranslation("ok"),"",true,true,true,2,null,"SimpleAlert",60,false);
+         frame.addEventListener("response",onMapOverResponse);
       }
       
-      private function starBtnstatsHander(param1:BuriedEvent) : void
+      private function starBtnstatsHander(e:BuriedEvent) : void
       {
          _starBtn.enable = true;
          _starBtnTip.visible = false;
@@ -376,9 +376,9 @@ package ddtBuried.views
       
       private function flyGoods() : void
       {
-         var _loc1_:int = BuriedManager.Instance.currGoodID;
-         var _loc2_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(_loc1_);
-         cell = new BagCell(0,_loc2_);
+         var id:int = BuriedManager.Instance.currGoodID;
+         var info:ItemTemplateInfo = ItemManager.Instance.getTemplateById(id);
+         cell = new BagCell(0,info);
          cell.x = role.x;
          cell.y = role.y;
          addChild(cell);
@@ -400,9 +400,9 @@ package ddtBuried.views
          ObjectUtils.disposeObject(cell);
       }
       
-      private function walkContinueHander(param1:BuriedEvent) : void
+      private function walkContinueHander(e:BuriedEvent) : void
       {
-         var _loc2_:* = null;
+         var roadArray:* = null;
          if(BuriedManager.Instance.isGetGoods)
          {
             BuriedManager.Instance.isGetGoods = false;
@@ -414,15 +414,15 @@ package ddtBuried.views
             _isWalkOver = false;
             BuriedManager.Instance.isContinue = false;
             BuriedManager.Instance.nowPosition = BuriedManager.Instance.eventPosition;
-            _loc2_ = configRoadArray();
-            role.roleWalk(_loc2_);
+            roadArray = configRoadArray();
+            role.roleWalk(roadArray);
             roleWalkPosition(BuriedManager.Instance.nowPosition);
          }
       }
       
-      private function roleWalkOverHander(param1:BuriedEvent) : void
+      private function roleWalkOverHander(e:BuriedEvent) : void
       {
-         var _loc2_:* = null;
+         var roadArray:* = null;
          _isWalkOver = true;
          if(BuriedManager.Instance.isBackToStart)
          {
@@ -475,8 +475,8 @@ package ddtBuried.views
             _isWalkOver = false;
             BuriedManager.Instance.nowPosition = BuriedManager.Instance.eventPosition;
             roleWalkPosition(BuriedManager.Instance.nowPosition);
-            _loc2_ = configRoadArray();
-            role.roleWalk(_loc2_);
+            roadArray = configRoadArray();
+            role.roleWalk(roadArray);
          }
          if(BuriedManager.Instance.isGetGoods && _isWalkOver)
          {
@@ -486,7 +486,7 @@ package ddtBuried.views
          }
       }
       
-      private function mapOverHandler(param1:BuriedEvent) : void
+      private function mapOverHandler(e:BuriedEvent) : void
       {
          _buriedBox.visible = true;
          _buriedBox.initView(BuriedManager.Instance.level);
@@ -496,22 +496,22 @@ package ddtBuried.views
          _returnBtn.mouseChildren = false;
       }
       
-      private function onMapOverResponse(param1:FrameEvent) : void
+      private function onMapOverResponse(e:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",onMapOverResponse);
-         if(param1.responseCode == 1 || param1.responseCode == 2 || param1.responseCode == 3 || param1.responseCode == 0)
+         var frame:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("response",onMapOverResponse);
+         if(e.responseCode == 1 || e.responseCode == 2 || e.responseCode == 3 || e.responseCode == 0)
          {
             SocketManager.Instance.out.refreshMap();
          }
-         _loc2_.dispose();
+         frame.dispose();
       }
       
-      private function diceOverHandler(param1:BuriedEvent) : void
+      private function diceOverHandler(e:BuriedEvent) : void
       {
-         var _loc2_:Array = configRoadArray();
+         var roadArray:Array = configRoadArray();
          _isWalkOver = false;
-         role.roleWalk(_loc2_);
+         role.roleWalk(roadArray);
          roleWalkPosition(BuriedManager.Instance.nowPosition);
          rolePosition = roleNowPosition;
          _starBtn.enable = false;
@@ -523,55 +523,53 @@ package ddtBuried.views
       
       private function configRoadArray() : Array
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
+         var i:int = 0;
+         var j:int = 0;
          roleNowPosition = BuriedManager.Instance.nowPosition;
-         var _loc1_:Array = [];
+         var roadArray:Array = [];
          if(rolePosition < roleNowPosition)
          {
-            _loc3_ = rolePosition;
-            while(_loc3_ <= roleNowPosition)
+            for(i = rolePosition; i <= roleNowPosition; )
             {
-               _loc1_.push(_walkArray[_loc3_]);
-               _loc3_++;
+               roadArray.push(_walkArray[i]);
+               i++;
             }
          }
          else
          {
-            _loc2_ = rolePosition;
-            while(_loc2_ >= roleNowPosition)
+            for(j = rolePosition; j >= roleNowPosition; )
             {
-               _loc1_.push(_walkArray[_loc2_]);
-               _loc2_--;
+               roadArray.push(_walkArray[j]);
+               j--;
             }
          }
          rolePosition = roleNowPosition;
-         return _loc1_;
+         return roadArray;
       }
       
-      private function roleWalkPosition(param1:int) : void
+      private function roleWalkPosition(position:int) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
+         var xpos:int = 0;
+         var ypos:int = 0;
          if(BuriedManager.Instance.mapID == 1)
          {
-            _loc2_ = BuriedControl.Instance.mapArrays.standArray1[param1].x;
-            _loc3_ = BuriedControl.Instance.mapArrays.standArray1[param1].y;
+            xpos = BuriedControl.Instance.mapArrays.standArray1[position].x;
+            ypos = BuriedControl.Instance.mapArrays.standArray1[position].y;
          }
          else if(BuriedManager.Instance.mapID == 2)
          {
-            _loc2_ = BuriedControl.Instance.mapArrays.standArray2[param1].x;
-            _loc3_ = BuriedControl.Instance.mapArrays.standArray2[param1].y;
+            xpos = BuriedControl.Instance.mapArrays.standArray2[position].x;
+            ypos = BuriedControl.Instance.mapArrays.standArray2[position].y;
          }
          else
          {
-            _loc2_ = BuriedControl.Instance.mapArrays.standArray3[param1].x;
-            _loc3_ = BuriedControl.Instance.mapArrays.standArray3[param1].y;
+            xpos = BuriedControl.Instance.mapArrays.standArray3[position].x;
+            ypos = BuriedControl.Instance.mapArrays.standArray3[position].y;
          }
-         _scence.selfFindPath(_loc2_,_loc3_);
+         _scence.selfFindPath(xpos,ypos);
       }
       
-      private function rollClickHander(param1:MouseEvent) : void
+      private function rollClickHander(e:MouseEvent) : void
       {
          if(!PlayerManager.Instance.Self.IsWeakGuildFinish(136))
          {
@@ -630,23 +628,23 @@ package ddtBuried.views
          _returnBtn.mouseChildren = false;
       }
       
-      private function clickCallBack(param1:Boolean) : void
+      private function clickCallBack(bool:Boolean) : void
       {
-         BuriedManager.Instance.setRemindRoll(param1);
+         BuriedManager.Instance.setRemindRoll(bool);
       }
       
-      private function payRollHander(param1:Boolean) : void
+      private function payRollHander(bool:Boolean) : void
       {
-         if(BuriedManager.Instance.checkMoney(param1,BuriedControl.Instance.getPayData().NeedMoney,SocketManager.Instance.out.rollDice))
+         if(BuriedManager.Instance.checkMoney(bool,BuriedControl.Instance.getPayData().NeedMoney,SocketManager.Instance.out.rollDice))
          {
             BuriedManager.Instance.setRemindRoll(false);
             return;
          }
          if(BuriedManager.Instance.getRemindRoll())
          {
-            BuriedManager.Instance.setRemindRollBind(param1);
+            BuriedManager.Instance.setRemindRollBind(bool);
          }
-         SocketManager.Instance.out.rollDice(param1);
+         SocketManager.Instance.out.rollDice(bool);
          _freeBtn.mouseEnabled = false;
          _starBtn.enable = false;
          _returnBtn.mouseEnabled = false;
@@ -654,13 +652,13 @@ package ddtBuried.views
          _diceRoll.resetFrame();
       }
       
-      private function openshopHander(param1:MouseEvent) : void
+      private function openshopHander(e:MouseEvent) : void
       {
          BuriedControl.Instance.openshopHander();
          SoundManager.instance.playButtonSound();
       }
       
-      private function uplevelClickHander(param1:MouseEvent) : void
+      private function uplevelClickHander(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.bagLocked)
@@ -673,24 +671,24 @@ package ddtBuried.views
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("buried.alertInfo.starFull"));
             return;
          }
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("buried.alertInfo.uplevel",BuriedControl.Instance.getUpdateData(true).NeedMoney),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2,null,"SimpleAlert",60,false,1);
-         _loc2_.addEventListener("response",onUpLevelResponse);
+         var frame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("buried.alertInfo.uplevel",BuriedControl.Instance.getUpdateData(true).NeedMoney),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2,null,"SimpleAlert",60,false,1);
+         frame.addEventListener("response",onUpLevelResponse);
       }
       
-      private function onUpLevelResponse(param1:FrameEvent) : void
+      private function onUpLevelResponse(e:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",onUpLevelResponse);
-         if(param1.responseCode == 0 || param1.responseCode == 4 || param1.responseCode == 1)
+         var frame:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("response",onUpLevelResponse);
+         if(e.responseCode == 0 || e.responseCode == 4 || e.responseCode == 1)
          {
-            _loc2_.dispose();
+            frame.dispose();
             return;
          }
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         if(e.responseCode == 2 || e.responseCode == 3)
          {
-            CheckMoneyUtils.instance.checkMoney(_loc2_.isBand,BuriedControl.Instance.getUpdateData(true).NeedMoney,onCheckComplete);
+            CheckMoneyUtils.instance.checkMoney(frame.isBand,BuriedControl.Instance.getUpdateData(true).NeedMoney,onCheckComplete);
          }
-         _loc2_.dispose();
+         frame.dispose();
       }
       
       protected function onCheckComplete() : void
@@ -707,26 +705,26 @@ package ddtBuried.views
          }
       }
       
-      public function setStarList(param1:int) : void
+      public function setStarList(num:int) : void
       {
-         _starItem.setStarList(param1);
+         _starItem.setStarList(num);
       }
       
-      public function updataStarLevel(param1:int) : void
+      public function updataStarLevel(num:int) : void
       {
-         _starItem.updataStarLevel(param1);
+         _starItem.updataStarLevel(num);
       }
       
-      public function addMaps(param1:String, param2:int, param3:int, param4:int, param5:int) : void
+      public function addMaps(str:String, row:int, col:int, _x:int, _y:int) : void
       {
          clearScene();
-         _scence = new Scence1(param1,param2,param3);
-         _scence.x = param4;
-         _scence.y = param5;
+         _scence = new Scence1(str,row,col);
+         _scence.x = _x;
+         _scence.y = _y;
          _mapContent.addChild(_scence);
       }
       
-      public function setLimitNum(param1:int) : void
+      public function setLimitNum(limit:int) : void
       {
          if(BuriedManager.Instance.num - BuriedManager.Instance.pay_count > 0)
          {
@@ -738,7 +736,7 @@ package ddtBuried.views
          }
          else
          {
-            _freeBtn.tipData = LanguageMgr.GetTranslation("buried.alertInfo.DiceOver",param1);
+            _freeBtn.tipData = LanguageMgr.GetTranslation("buried.alertInfo.DiceOver",limit);
          }
       }
       

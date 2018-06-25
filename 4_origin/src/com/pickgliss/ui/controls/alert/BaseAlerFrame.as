@@ -51,36 +51,36 @@ package com.pickgliss.ui.controls.alert
          super();
       }
       
-      public function set buttonToBottom(param1:int) : void
+      public function set buttonToBottom(value:int) : void
       {
-         if(_buttonToBottom == param1)
+         if(_buttonToBottom == value)
          {
             return;
          }
-         _buttonToBottom = param1;
+         _buttonToBottom = value;
          onPropertiesChanged("buttonToBottom");
       }
       
-      public function set cancelButtonEnable(param1:Boolean) : void
+      public function set cancelButtonEnable(value:Boolean) : void
       {
-         _cancelButton.enable = param1;
+         _cancelButton.enable = value;
       }
       
-      public function set cancelButtonStyle(param1:String) : void
+      public function set cancelButtonStyle(stylename:String) : void
       {
-         if(_cancelButtonStyle == param1)
+         if(_cancelButtonStyle == stylename)
          {
             return;
          }
-         _cancelButtonStyle = param1;
+         _cancelButtonStyle = stylename;
          _cancelButton = ComponentFactory.Instance.creat(_cancelButtonStyle);
          onPropertiesChanged("submitButton");
       }
       
       override public function dispose() : void
       {
-         var _loc1_:DisplayObject = StageReferance.stage.focus as DisplayObject;
-         if(_loc1_ && contains(_loc1_))
+         var focusDisplay:DisplayObject = StageReferance.stage.focus as DisplayObject;
+         if(focusDisplay && contains(focusDisplay))
          {
             StageReferance.stage.focus = null;
          }
@@ -111,14 +111,14 @@ package com.pickgliss.ui.controls.alert
          return _isBand;
       }
       
-      public function set isBand(param1:Boolean) : void
+      public function set isBand(b:Boolean) : void
       {
-         _isBand = param1;
+         _isBand = b;
       }
       
-      public function set info(param1:AlertInfo) : void
+      public function set info(value:AlertInfo) : void
       {
-         if(_info == param1)
+         if(_info == value)
          {
             return;
          }
@@ -126,17 +126,17 @@ package com.pickgliss.ui.controls.alert
          {
             _info.removeEventListener("stateChange",__onInfoChanged);
          }
-         _info = param1;
+         _info = value;
          _info.addEventListener("stateChange",__onInfoChanged);
          onPropertiesChanged("info");
       }
       
-      public function setIsShowTheLog(param1:Boolean, param2:String) : void
+      public function setIsShowTheLog(value:Boolean, logText:String) : void
       {
-         if(_isShowTheLog != param1)
+         if(_isShowTheLog != value)
          {
-            _isShowTheLog = param1;
-            _info.logText = param2;
+            _isShowTheLog = value;
+            _info.logText = logText;
             creatTheLog();
          }
       }
@@ -145,23 +145,23 @@ package com.pickgliss.ui.controls.alert
       {
       }
       
-      public function set submitButtonEnable(param1:Boolean) : void
+      public function set submitButtonEnable(value:Boolean) : void
       {
-         _submitButton.enable = param1;
+         _submitButton.enable = value;
       }
       
-      public function set submitButtonStyle(param1:String) : void
+      public function set submitButtonStyle(stylename:String) : void
       {
-         if(_submitButtonStyle == param1)
+         if(_submitButtonStyle == stylename)
          {
             return;
          }
-         _submitButtonStyle = param1;
+         _submitButtonStyle = stylename;
          _submitButton = ComponentFactory.Instance.creat(_submitButtonStyle);
          onPropertiesChanged("submitButton");
       }
       
-      protected function __onCancelClick(param1:MouseEvent) : void
+      protected function __onCancelClick(event:MouseEvent) : void
       {
          if(_sound != null)
          {
@@ -170,28 +170,28 @@ package com.pickgliss.ui.controls.alert
          onResponse(4);
       }
       
-      override protected function __onCloseClick(param1:MouseEvent) : void
+      override protected function __onCloseClick(event:MouseEvent) : void
       {
          if(_sound != null)
          {
             ComponentSetting.PLAY_SOUND_FUNC(_sound);
          }
-         super.__onCloseClick(param1);
+         super.__onCloseClick(event);
       }
       
-      override protected function __onKeyDown(param1:KeyboardEvent) : void
+      override protected function __onKeyDown(event:KeyboardEvent) : void
       {
-         if(param1.keyCode == 13 && enterEnable || param1.keyCode == 27 && escEnable)
+         if(event.keyCode == 13 && enterEnable || event.keyCode == 27 && escEnable)
          {
             if(_sound != null)
             {
                ComponentSetting.PLAY_SOUND_FUNC(_sound);
             }
          }
-         super.__onKeyDown(param1);
+         super.__onKeyDown(event);
       }
       
-      protected function __onSubmitClick(param1:MouseEvent) : void
+      protected function __onSubmitClick(event:MouseEvent) : void
       {
          if(_sound != null)
          {
@@ -261,13 +261,13 @@ package com.pickgliss.ui.controls.alert
          }
       }
       
-      override protected function onResponse(param1:int) : void
+      override protected function onResponse(type:int) : void
       {
          if(_info && _info.autoDispose)
          {
             dispose();
          }
-         super.onResponse(param1);
+         super.onResponse(type);
       }
       
       protected function updatePos() : void
@@ -334,7 +334,7 @@ package com.pickgliss.ui.controls.alert
          }
       }
       
-      private function __onInfoChanged(param1:InteractiveEvent) : void
+      private function __onInfoChanged(event:InteractiveEvent) : void
       {
          onPropertiesChanged("info");
       }

@@ -90,12 +90,12 @@ package giftSystem.element
          _line.x = _loc2_;
          _line.y = 44;
          _line1.y = 61;
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,56,56);
-         _loc1_.graphics.endFill();
-         _loc1_.alpha = 0;
-         _itemCell = CellFactory.instance.createShopItemCell(_loc1_,null,true,true) as ShopItemCell;
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(16777215,0);
+         sp.graphics.drawRect(0,0,56,56);
+         sp.graphics.endFill();
+         sp.alpha = 0;
+         _itemCell = CellFactory.instance.createShopItemCell(sp,null,true,true) as ShopItemCell;
          _itemCell.cellSize = 46;
          PositionUtils.setPos(_itemCell,"giftGoodItem.itemCellPos");
          addChild(_background);
@@ -116,7 +116,7 @@ package giftSystem.element
          _presentBtn.addEventListener("click",__showClearingInterface);
       }
       
-      private function __showClearingInterface(param1:MouseEvent) : void
+      private function __showClearingInterface(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_info.Label == 6 && parseInt(_freeValue.text) <= 0)
@@ -127,13 +127,13 @@ package giftSystem.element
          GiftController.Instance.openClearingInterface(_info);
       }
       
-      public function set info(param1:ShopItemInfo) : void
+      public function set info(value:ShopItemInfo) : void
       {
-         if(_info == param1)
+         if(_info == value)
          {
             return;
          }
-         _info = param1;
+         _info = value;
          upView();
       }
       
@@ -200,7 +200,7 @@ package giftSystem.element
          }
       }
       
-      protected function __upItemCount(param1:Event) : void
+      protected function __upItemCount(event:Event) : void
       {
          _freeValue.text = _info.LimitCount > 0?_info.LimitCount.toString():"0";
       }
@@ -215,7 +215,7 @@ package giftSystem.element
          return _background.width;
       }
       
-      public function set autoSelect(param1:Boolean) : void
+      public function set autoSelect(value:Boolean) : void
       {
       }
       
@@ -224,13 +224,13 @@ package giftSystem.element
          return _selected;
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         if(_selected == param1)
+         if(_selected == value)
          {
             return;
          }
-         _selected = param1;
+         _selected = value;
       }
       
       public function asDisplayObject() : DisplayObject

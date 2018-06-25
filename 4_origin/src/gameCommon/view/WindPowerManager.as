@@ -35,22 +35,22 @@ package gameCommon.view
          SocketManager.Instance.addEventListener("windPic",_windPicCome);
       }
       
-      private function _windPicCome(param1:CrazyTankSocketEvent) : void
+      private function _windPicCome(e:CrazyTankSocketEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readByte();
-         var _loc4_:ByteArray = _loc3_.readByteArray();
-         _windPicMode.refeshData(_loc4_,_loc2_);
+         var pkg:PackageIn = e.pkg;
+         var bmpID:int = pkg.readByte();
+         var bmpBytData:ByteArray = pkg.readByteArray();
+         _windPicMode.refeshData(bmpBytData,bmpID);
       }
       
-      public function getWindPic(param1:Array) : BitmapData
+      public function getWindPic(arr:Array) : BitmapData
       {
-         return _windPicMode.getImgBmp(param1);
+         return _windPicMode.getImgBmp(arr);
       }
       
-      public function getWindPicById(param1:int) : BitmapData
+      public function getWindPicById(id:int) : BitmapData
       {
-         return _windPicMode.getImgBmpById(param1);
+         return _windPicMode.getImgBmpById(id);
       }
    }
 }

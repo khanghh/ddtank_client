@@ -86,7 +86,7 @@ package farm.viewx.poultry
          SocketManager.Instance.addEventListener(PkgEvent.format(81,32),__onWater);
       }
       
-      protected function __onWater(param1:PkgEvent) : void
+      protected function __onWater(event:PkgEvent) : void
       {
          if(_checkBox.selected || _frameIndex == 105)
          {
@@ -100,25 +100,25 @@ package farm.viewx.poultry
          }
       }
       
-      protected function __onWaterBtnClick(param1:MouseEvent) : void
+      protected function __onWaterBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          _waterBtn.enable = false;
-         var _loc2_:int = 1;
-         var _loc3_:int = _totalExp - _currentExp;
+         var num:int = 1;
+         var needNum:int = _totalExp - _currentExp;
          if(_loveNum > 0)
          {
             if(_checkBox.selected)
             {
-               _loc2_ = Math.min(_loveNum,_loc3_);
+               num = Math.min(_loveNum,needNum);
             }
             frameIndex = (_currentExp + 1) * 105 / _totalExp;
-            if(_checkBox.selected && _loveNum >= _loc3_)
+            if(_checkBox.selected && _loveNum >= needNum)
             {
                _isUpgrade = true;
                frameIndex = 105;
             }
-            SocketManager.Instance.out.farmWater(_loc2_);
+            SocketManager.Instance.out.farmWater(num);
          }
          else
          {
@@ -126,16 +126,16 @@ package farm.viewx.poultry
          }
       }
       
-      public function setLevelNum(param1:int) : void
+      public function setLevelNum(level:int) : void
       {
-         _levelNum = param1;
+         _levelNum = level;
          _level.text = LanguageMgr.GetTranslation("ddt.cardSystem.CardEquipView.levelText") + _levelNum;
       }
       
-      public function setExp(param1:Number, param2:Number) : void
+      public function setExp(currentExp:Number, totalExp:Number) : void
       {
-         _currentExp = param1;
-         _totalExp = param2;
+         _currentExp = currentExp;
+         _totalExp = totalExp;
          _exp.text = _currentExp + "/" + _totalExp;
          _waterBtn.enable = _levelNum < FarmModelController.MAXLEVEL;
          frameIndex = _currentExp * 105 / _totalExp;
@@ -143,9 +143,9 @@ package farm.viewx.poultry
          _loading.loading.gotoAndStop(_frameIndex);
       }
       
-      public function setLoveNum(param1:int) : void
+      public function setLoveNum(value:int) : void
       {
-         _loveNum = param1;
+         _loveNum = value;
       }
       
       private function setLoadingFrame() : void
@@ -156,7 +156,7 @@ package farm.viewx.poultry
          addEventListener("enterFrame",__onEnterFrame);
       }
       
-      protected function __onEnterFrame(param1:Event) : void
+      protected function __onEnterFrame(event:Event) : void
       {
          if(_frameIndex < 105 && _loading.currentFrame >= _frameIndex || _loading.currentFrame == _loading.totalFrames)
          {
@@ -175,9 +175,9 @@ package farm.viewx.poultry
          }
       }
       
-      private function set frameIndex(param1:int) : void
+      private function set frameIndex(value:int) : void
       {
-         if(param1 == 0)
+         if(value == 0)
          {
             _loading.visible = false;
             _frameIndex = 1;
@@ -185,7 +185,7 @@ package farm.viewx.poultry
          else
          {
             _loading.visible = true;
-            _frameIndex = param1;
+            _frameIndex = value;
          }
       }
       

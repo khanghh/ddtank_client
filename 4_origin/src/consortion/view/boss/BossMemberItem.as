@@ -31,27 +31,26 @@ package consortion.view.boss
       
       public function BossMemberItem()
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var rankIcon:* = null;
          super();
          _rankIconList = new Vector.<Bitmap>(3);
-         _loc3_ = 0;
-         while(_loc3_ < 3)
+         for(i = 0; i < 3; )
          {
-            _loc1_ = ComponentFactory.Instance.creatBitmap("asset.consortionBossFrame.cellRankth" + (_loc3_ + 1));
-            addChild(_loc1_);
-            _rankIconList[_loc3_] = _loc1_;
-            _loc3_++;
+            rankIcon = ComponentFactory.Instance.creatBitmap("asset.consortionBossFrame.cellRankth" + (i + 1));
+            addChild(rankIcon);
+            _rankIconList[i] = rankIcon;
+            i++;
          }
          _rankTxt = ComponentFactory.Instance.creatComponentByStylename("consortion.bossFrame.cell.rankTxt");
          addChild(_rankTxt);
          _nameTxt = ComponentFactory.Instance.creatComponentByStylename("consortion.bossFrame.cell.nameTxt");
          addChild(_nameTxt);
          _nameFirstTxt = VipController.instance.getVipNameTxt(105,1);
-         var _loc2_:TextFormat = new TextFormat();
-         _loc2_.align = "center";
-         _loc2_.bold = true;
-         _nameFirstTxt.textField.defaultTextFormat = _loc2_;
+         var textFormat:TextFormat = new TextFormat();
+         textFormat.align = "center";
+         textFormat.bold = true;
+         _nameFirstTxt.textField.defaultTextFormat = textFormat;
          _nameFirstTxt.textSize = 14;
          _nameFirstTxt.x = _nameTxt.x + 2;
          _nameFirstTxt.y = _nameTxt.y;
@@ -64,56 +63,55 @@ package consortion.view.boss
          addChild(_honorTxt);
       }
       
-      public function set info(param1:ConsortiaBossDataVo) : void
+      public function set info(info:ConsortiaBossDataVo) : void
       {
-         if(!param1)
+         if(!info)
          {
             return;
          }
-         var _loc2_:int = param1.rank;
-         setRankIconVisible(_loc2_);
-         if(_loc2_ >= 1 && _loc2_ <= 3)
+         var rank:int = info.rank;
+         setRankIconVisible(rank);
+         if(rank >= 1 && rank <= 3)
          {
             _rankTxt.visible = false;
          }
          else
          {
-            _rankTxt.text = _loc2_ + "th";
+            _rankTxt.text = rank + "th";
             _rankTxt.visible = true;
          }
-         if(_loc2_ == 1)
+         if(rank == 1)
          {
             _nameTxt.visible = false;
-            _nameFirstTxt.text = param1.name;
+            _nameFirstTxt.text = info.name;
             _nameFirstTxt.visible = true;
          }
          else
          {
             _nameFirstTxt.visible = false;
-            _nameTxt.text = param1.name;
+            _nameTxt.text = info.name;
             _nameTxt.visible = true;
          }
-         _damageTxt.text = param1.damage.toString();
-         _contributionTxt.text = param1.contribution.toString();
-         _honorTxt.text = param1.honor.toString();
+         _damageTxt.text = info.damage.toString();
+         _contributionTxt.text = info.contribution.toString();
+         _honorTxt.text = info.honor.toString();
       }
       
-      private function setRankIconVisible(param1:int) : void
+      private function setRankIconVisible(rank:int) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = _rankIconList.length;
-         _loc3_ = 1;
-         while(_loc3_ <= _loc2_)
+         var i:int = 0;
+         var len:int = _rankIconList.length;
+         for(i = 1; i <= len; )
          {
-            if(param1 == _loc3_)
+            if(rank == i)
             {
-               _rankIconList[_loc3_ - 1].visible = true;
+               _rankIconList[i - 1].visible = true;
             }
             else
             {
-               _rankIconList[_loc3_ - 1].visible = false;
+               _rankIconList[i - 1].visible = false;
             }
-            _loc3_++;
+            i++;
          }
       }
       

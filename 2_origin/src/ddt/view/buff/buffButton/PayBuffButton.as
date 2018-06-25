@@ -31,16 +31,16 @@ package ddt.view.buff.buffButton
       
       private var _isMouseOver:Boolean = false;
       
-      public function PayBuffButton(param1:String = "")
+      public function PayBuffButton(str:String = "")
       {
          _buffs = new Vector.<BuffInfo>();
-         if(param1 == "")
+         if(str == "")
          {
             _str = "asset.core.payBuffAsset";
          }
          else
          {
-            _str = param1;
+            _str = str;
          }
          super(_str);
          _tipStyle = "core.PayBuffTip";
@@ -64,7 +64,7 @@ package ddt.view.buff.buffButton
          super.dispose();
       }
       
-      private function __timerTick(param1:Event) : void
+      private function __timerTick(event:Event) : void
       {
          validBuff();
          if(_isMouseOver)
@@ -75,28 +75,28 @@ package ddt.view.buff.buffButton
       
       private function validBuff() : void
       {
-         var _loc1_:int = 0;
+         var unValidedCount:int = 0;
          if(_isActived)
          {
-            _loc1_ = 0;
+            unValidedCount = 0;
             var _loc4_:int = 0;
             var _loc3_:* = _buffs;
-            for each(var _loc2_ in _buffs)
+            for each(var buff in _buffs)
             {
-               _loc2_.calculatePayBuffValidDay();
-               if(!_loc2_.valided)
+               buff.calculatePayBuffValidDay();
+               if(!buff.valided)
                {
-                  _loc1_++;
+                  unValidedCount++;
                }
             }
-            if(_loc1_ >= _buffs.length)
+            if(unValidedCount >= _buffs.length)
             {
                setAcived(false);
             }
          }
       }
       
-      override protected function __onclick(param1:MouseEvent) : void
+      override protected function __onclick(evt:MouseEvent) : void
       {
          if(!CanClick)
          {
@@ -107,70 +107,69 @@ package ddt.view.buff.buffButton
       
       private function shop() : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var item:* = null;
+         var carItem:* = null;
          SoundManager.instance.play("008");
-         var _loc4_:Array = [];
-         _loc3_ = ShopManager.Instance.getGoodsByTemplateID(11907);
-         _loc2_ = new ShopCarItemInfo(_loc3_.ShopID,_loc3_.TemplateID);
-         ObjectUtils.copyProperties(_loc2_,_loc3_);
-         _loc4_.push(_loc2_);
-         _loc3_ = ShopManager.Instance.getGoodsByTemplateID(11908);
-         _loc2_ = new ShopCarItemInfo(_loc3_.ShopID,_loc3_.TemplateID);
-         ObjectUtils.copyProperties(_loc2_,_loc3_);
-         _loc4_.push(_loc2_);
-         _loc3_ = ShopManager.Instance.getGoodsByTemplateID(11909);
-         _loc2_ = new ShopCarItemInfo(_loc3_.ShopID,_loc3_.TemplateID);
-         ObjectUtils.copyProperties(_loc2_,_loc3_);
-         _loc4_.push(_loc2_);
-         _loc3_ = ShopManager.Instance.getGoodsByTemplateID(11910);
-         _loc2_ = new ShopCarItemInfo(_loc3_.ShopID,_loc3_.TemplateID);
-         ObjectUtils.copyProperties(_loc2_,_loc3_);
-         _loc4_.push(_loc2_);
-         _loc3_ = ShopManager.Instance.getGoodsByTemplateID(11911);
-         _loc2_ = new ShopCarItemInfo(_loc3_.ShopID,_loc3_.TemplateID);
-         ObjectUtils.copyProperties(_loc2_,_loc3_);
-         _loc4_.push(_loc2_);
-         _loc3_ = ShopManager.Instance.getGoodsByTemplateID(11912);
-         _loc2_ = new ShopCarItemInfo(_loc3_.ShopID,_loc3_.TemplateID);
-         ObjectUtils.copyProperties(_loc2_,_loc3_);
-         _loc4_.push(_loc2_);
-         _loc3_ = ShopManager.Instance.getGoodsByTemplateID(11913);
-         _loc2_ = new ShopCarItemInfo(_loc3_.ShopID,_loc3_.TemplateID);
-         ObjectUtils.copyProperties(_loc2_,_loc3_);
-         _loc4_.push(_loc2_);
-         var _loc1_:SetsShopView = new SetsShopView();
-         _loc1_.initialize(_loc4_);
-         LayerManager.Instance.addToLayer(_loc1_,3,true,1);
+         var list:Array = [];
+         item = ShopManager.Instance.getGoodsByTemplateID(11907);
+         carItem = new ShopCarItemInfo(item.ShopID,item.TemplateID);
+         ObjectUtils.copyProperties(carItem,item);
+         list.push(carItem);
+         item = ShopManager.Instance.getGoodsByTemplateID(11908);
+         carItem = new ShopCarItemInfo(item.ShopID,item.TemplateID);
+         ObjectUtils.copyProperties(carItem,item);
+         list.push(carItem);
+         item = ShopManager.Instance.getGoodsByTemplateID(11909);
+         carItem = new ShopCarItemInfo(item.ShopID,item.TemplateID);
+         ObjectUtils.copyProperties(carItem,item);
+         list.push(carItem);
+         item = ShopManager.Instance.getGoodsByTemplateID(11910);
+         carItem = new ShopCarItemInfo(item.ShopID,item.TemplateID);
+         ObjectUtils.copyProperties(carItem,item);
+         list.push(carItem);
+         item = ShopManager.Instance.getGoodsByTemplateID(11911);
+         carItem = new ShopCarItemInfo(item.ShopID,item.TemplateID);
+         ObjectUtils.copyProperties(carItem,item);
+         list.push(carItem);
+         item = ShopManager.Instance.getGoodsByTemplateID(11912);
+         carItem = new ShopCarItemInfo(item.ShopID,item.TemplateID);
+         ObjectUtils.copyProperties(carItem,item);
+         list.push(carItem);
+         item = ShopManager.Instance.getGoodsByTemplateID(11913);
+         carItem = new ShopCarItemInfo(item.ShopID,item.TemplateID);
+         ObjectUtils.copyProperties(carItem,item);
+         list.push(carItem);
+         var setspayFrame:SetsShopView = new SetsShopView();
+         setspayFrame.initialize(list);
+         LayerManager.Instance.addToLayer(setspayFrame,3,true,1);
          ShowTipManager.Instance.hideTip(this);
       }
       
-      public function addBuff(param1:BuffInfo) : void
+      public function addBuff(buff:BuffInfo) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _buffs.length)
+         var i:int = 0;
+         for(i = 0; i < _buffs.length; )
          {
-            if(_buffs[_loc2_].Type == param1.Type)
+            if(_buffs[i].Type == buff.Type)
             {
-               _buffs[_loc2_] = param1;
+               _buffs[i] = buff;
                setAcived(true);
                return;
             }
-            _loc2_++;
+            i++;
          }
-         _buffs.push(param1);
+         _buffs.push(buff);
          setAcived(true);
          __timerTick(null);
       }
       
-      public function setAcived(param1:Boolean) : void
+      public function setAcived(val:Boolean) : void
       {
-         if(_isActived == param1)
+         if(_isActived == val)
          {
             return;
          }
-         _isActived = param1;
+         _isActived = val;
          if(_isActived)
          {
             filters = null;
@@ -181,7 +180,7 @@ package ddt.view.buff.buffButton
          }
       }
       
-      override protected function __onMouseOver(param1:MouseEvent) : void
+      override protected function __onMouseOver(evt:MouseEvent) : void
       {
          if(_isActived)
          {
@@ -190,7 +189,7 @@ package ddt.view.buff.buffButton
          _isMouseOver = true;
       }
       
-      override protected function __onMouseOut(param1:MouseEvent) : void
+      override protected function __onMouseOut(evt:MouseEvent) : void
       {
          if(_isActived)
          {

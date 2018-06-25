@@ -14,9 +14,9 @@ package store.newFusion
       
       private var _dataList:Object;
       
-      public function FusionNewManager(param1:IEventDispatcher = null)
+      public function FusionNewManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : FusionNewManager
@@ -28,16 +28,16 @@ package store.newFusion
          return _instance;
       }
       
-      public function setup(param1:FusionNewDataAnalyzer) : void
+      public function setup(analyzer:FusionNewDataAnalyzer) : void
       {
-         _dataList = param1.data;
+         _dataList = analyzer.data;
       }
       
-      public function getDataListByType(param1:int) : Array
+      public function getDataListByType(type:int) : Array
       {
          if(_dataList)
          {
-            return _dataList[param1] as Array;
+            return _dataList[type] as Array;
          }
          return [];
       }

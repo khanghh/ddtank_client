@@ -72,28 +72,27 @@ package ddt.view.walkcharacter
       
       private var _clothPath:String;
       
-      public function WalkCharacterLoader(param1:PlayerInfo, param2:String)
+      public function WalkCharacterLoader(info:PlayerInfo, clothpath:String)
       {
          super();
-         _clothPath = param2;
-         _playerInfo = param1;
+         _clothPath = clothpath;
+         _playerInfo = info;
       }
       
       public function load() : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          _layers = new Vector.<WalkCharaterLayer>();
          if(_playerInfo == null || _playerInfo.Style == null)
          {
             return;
          }
          initLoaders();
-         var _loc1_:int = _layers.length;
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_)
+         var layerCount:int = _layers.length;
+         for(i = 0; i < layerCount; )
          {
-            _layers[_loc2_].load(layerComplete);
-            _loc2_++;
+            _layers[i].load(layerComplete);
+            i++;
          }
       }
       
@@ -109,20 +108,19 @@ package ddt.view.walkcharacter
          _layers.push(new WalkCharaterLayer(ItemManager.Instance.getTemplateById(int(_recordStyle[4].split("|")[0])),_recordColor[4],2,_playerInfo.Sex,_clothPath));
       }
       
-      private function layerComplete(param1:ILayer) : void
+      private function layerComplete(layer:ILayer) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:Boolean = true;
-         _loc3_ = 0;
-         while(_loc3_ < _layers.length)
+         var i:int = 0;
+         var isAllLayerComplete:Boolean = true;
+         for(i = 0; i < _layers.length; )
          {
-            if(!_layers[_loc3_].isComplete)
+            if(!_layers[i].isComplete)
             {
-               _loc2_ = false;
+               isAllLayerComplete = false;
             }
-            _loc3_++;
+            i++;
          }
-         if(_loc2_)
+         if(isAllLayerComplete)
          {
             loadComplete();
          }
@@ -130,40 +128,40 @@ package ddt.view.walkcharacter
       
       private function loadComplete() : void
       {
-         drawFrame = function(param1:int, param2:int, param3:int, param4:int, param5:int, param6:int = 0):void
+         drawFrame = function(frameIndex:int, clothIndex:int, hairIndex:int, faceIndex:int, effIndex:int, headDownY:int = 0):void
          {
-            var _loc8_:Rectangle = new Rectangle();
-            _loc8_.width = 120;
-            _loc8_.height = 175;
-            var _loc7_:Point = new Point();
-            _loc7_.x = param1 * 120;
-            if(param2 <= 6)
+            var rectangle:Rectangle = new Rectangle();
+            rectangle.width = 120;
+            rectangle.height = 175;
+            var point:Point = new Point();
+            point.x = frameIndex * 120;
+            if(clothIndex <= 6)
             {
-               _loc8_.x = param4 * 120;
-               _loc8_.y = 0;
-               _loc7_.y = param6;
-               _resultBitmapData.copyPixels(face,_loc8_,_loc7_,null,null,true);
-               _loc8_.x = param3 * 120;
-               _resultBitmapData.copyPixels(hair,_loc8_,_loc7_,null,null,true);
-               _loc8_.x = param5 * 120;
-               _resultBitmapData.copyPixels(eff,_loc8_,_loc7_,null,null,true);
-               _loc8_.x = param2 * 120;
-               _loc7_.y = 0;
-               _resultBitmapData.copyPixels(clothFront,_loc8_,_loc7_,null,null,true);
+               rectangle.x = faceIndex * 120;
+               rectangle.y = 0;
+               point.y = headDownY;
+               _resultBitmapData.copyPixels(face,rectangle,point,null,null,true);
+               rectangle.x = hairIndex * 120;
+               _resultBitmapData.copyPixels(hair,rectangle,point,null,null,true);
+               rectangle.x = effIndex * 120;
+               _resultBitmapData.copyPixels(eff,rectangle,point,null,null,true);
+               rectangle.x = clothIndex * 120;
+               point.y = 0;
+               _resultBitmapData.copyPixels(clothFront,rectangle,point,null,null,true);
             }
             else
             {
-               _loc8_.x = (param2 - 7) * 120;
-               _loc8_.y = 175;
-               _resultBitmapData.copyPixels(clothBack,_loc8_,_loc7_,null,null,true);
-               _loc8_.x = param4 * 120;
-               _loc8_.y = 0;
-               _loc7_.y = param6;
-               _resultBitmapData.copyPixels(face,_loc8_,_loc7_,null,null,true);
-               _loc8_.x = param3 * 120;
-               _resultBitmapData.copyPixels(hair,_loc8_,_loc7_,null,null,true);
-               _loc8_.x = param5 * 120;
-               _resultBitmapData.copyPixels(eff,_loc8_,_loc7_,null,null,true);
+               rectangle.x = (clothIndex - 7) * 120;
+               rectangle.y = 175;
+               _resultBitmapData.copyPixels(clothBack,rectangle,point,null,null,true);
+               rectangle.x = faceIndex * 120;
+               rectangle.y = 0;
+               point.y = headDownY;
+               _resultBitmapData.copyPixels(face,rectangle,point,null,null,true);
+               rectangle.x = hairIndex * 120;
+               _resultBitmapData.copyPixels(hair,rectangle,point,null,null,true);
+               rectangle.x = effIndex * 120;
+               _resultBitmapData.copyPixels(eff,rectangle,point,null,null,true);
             }
          };
          var eff:BitmapData = DisplayUtils.getDisplayBitmapData(_layers[2]);
@@ -197,13 +195,12 @@ package ddt.view.walkcharacter
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _resultBitmapData.dispose();
-         _loc1_ = 0;
-         while(_loc1_ < _layers.length)
+         for(i = 0; i < _layers.length; )
          {
-            _layers[_loc1_].dispose();
-            _loc1_++;
+            _layers[i].dispose();
+            i++;
          }
          _layers = null;
          _recordStyle = null;

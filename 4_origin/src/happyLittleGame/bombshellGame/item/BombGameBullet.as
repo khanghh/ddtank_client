@@ -27,16 +27,16 @@ package happyLittleGame.bombshellGame.item
       
       private var _order:int;
       
-      public function BombGameBullet(param1:int, param2:int, param3:int, param4:int, param5:int)
+      public function BombGameBullet(_direc:int, _vx:int, _vy:int, _x:int, _y:int)
       {
          super();
          bullet = ClassUtils.CreatInstance("asset.bombgame.bullet");
          offx = bullet.width / 2 + 27;
          offy = bullet.height / 2 + 27;
-         direc = param1;
-         vx = param2;
-         vy = param3;
-         initDirec(param4,param5);
+         direc = _direc;
+         vx = _vx;
+         vy = _vy;
+         initDirec(_x,_y);
          addChild(bullet);
       }
       
@@ -45,9 +45,9 @@ package happyLittleGame.bombshellGame.item
          return _order;
       }
       
-      public function set order(param1:int) : void
+      public function set order(value:int) : void
       {
-         _order = param1;
+         _order = value;
       }
       
       public function get MC() : MovieClip
@@ -55,7 +55,7 @@ package happyLittleGame.bombshellGame.item
          return bullet;
       }
       
-      private function initDirec(param1:int, param2:int) : void
+      private function initDirec(_x:int, _y:int) : void
       {
          var _loc3_:* = direc;
          if(BulletDirection.Down !== _loc3_)
@@ -67,29 +67,29 @@ package happyLittleGame.bombshellGame.item
                   if(BulletDirection.Right === _loc3_)
                   {
                      bullet.rotation = 0;
-                     x = param1;
-                     y = param2;
+                     x = _x;
+                     y = _y;
                   }
                }
                else
                {
                   bullet.rotation = 180;
-                  x = param1;
-                  y = param2;
+                  x = _x;
+                  y = _y;
                }
             }
             else
             {
                bullet.rotation = 270;
-               x = param1;
-               y = param2;
+               x = _x;
+               y = _y;
             }
          }
          else
          {
             bullet.rotation = 90;
-            x = param1;
-            y = param2;
+            x = _x;
+            y = _y;
          }
       }
       

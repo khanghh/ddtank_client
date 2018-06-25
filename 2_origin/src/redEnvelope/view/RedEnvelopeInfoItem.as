@@ -35,37 +35,37 @@ package redEnvelope.view
       
       private var _clickTime:Number = 0;
       
-      public function RedEnvelopeInfoItem(param1:int, param2:int, param3:String, param4:int, param5:Boolean = true)
+      public function RedEnvelopeInfoItem(bgType:int, type:int, name:String, id:int, canGet:Boolean = true)
       {
          super();
-         _id = param4;
-         _bg = ComponentFactory.Instance.creatBitmap("asset.redEnvelope.item.bg" + String(param1 % 2));
+         _id = id;
+         _bg = ComponentFactory.Instance.creatBitmap("asset.redEnvelope.item.bg" + String(bgType % 2));
          addChild(_bg);
          _itemSelected = ComponentFactory.Instance.creatBitmap("asset.redEnvelope.itemSelected");
          addChild(_itemSelected);
          _itemSelected.visible = false;
          _redInfoTxt = ComponentFactory.Instance.creatComponentByStylename("redEnvelope.redInfoTxt");
          addChild(_redInfoTxt);
-         _redInfoTxt.text = "[" + param3 + "]" + LanguageMgr.GetTranslation("ddt.redEnvelope.sendInfo");
+         _redInfoTxt.text = "[" + name + "]" + LanguageMgr.GetTranslation("ddt.redEnvelope.sendInfo");
          getBtn = ComponentFactory.Instance.creatComponentByStylename("redEnvelope.getBtn");
          addChild(getBtn);
-         getBtn.enable = param5;
-         if(param5)
+         getBtn.enable = canGet;
+         if(canGet)
          {
             getBtn.addEventListener("click",clickHandler);
          }
-         _redInfoTxt.textFormatStyle = "redEnvelope.redInfoTxtTF_" + String(param2);
+         _redInfoTxt.textFormatStyle = "redEnvelope.redInfoTxtTF_" + String(type);
          redCell = new BagCell(0);
          redCell.BGVisible = false;
          redCell.setContentSize(34,34);
-         redCell.info = ItemManager.Instance.getTemplateById(RedEnvelopeItem.redList[param2 - 1]);
+         redCell.info = ItemManager.Instance.getTemplateById(RedEnvelopeItem.redList[type - 1]);
          addChild(redCell);
          redCell.x = _redInfoTxt.x + _redInfoTxt.textWidth + 5;
          redCell.y = 9;
          this.addEventListener("click",thisClickHandler);
       }
       
-      private function thisClickHandler(param1:MouseEvent) : void
+      private function thisClickHandler(e:MouseEvent) : void
       {
          if(RedEnvelopeManager.instance.checkCanClick)
          {
@@ -86,7 +86,7 @@ package redEnvelope.view
          _itemSelected.visible = false;
       }
       
-      private function clickHandler(param1:MouseEvent) : void
+      private function clickHandler(e:MouseEvent) : void
       {
          if(PlayerManager.Instance.Self.Grade < 15)
          {

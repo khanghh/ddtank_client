@@ -55,7 +55,7 @@ package sanXiao.view
          _gainedBmp.y = _btnGainPrise.y + (_btnGainPrise.height - _gainedBmp.height) * 0.5;
       }
       
-      protected function onGainPriseClick(param1:MouseEvent) : void
+      protected function onGainPriseClick(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(_data == null)
@@ -70,17 +70,17 @@ package sanXiao.view
          GameInSocketOut.sendSXGainPrise(_data.id);
       }
       
-      public function update(param1:Object) : void
+      public function update($data:Object) : void
       {
-         _data = param1 as SXRewardItemData;
-         var _loc2_:InventoryItemInfo = new InventoryItemInfo();
-         ObjectUtils.copyProperties(_loc2_,ItemManager.Instance.getTemplateById(_data.TempleteID));
-         _loc2_.ValidDate = _data.Valid;
-         _loc2_.Count = _data.count;
-         _loc2_.Property5 = "1";
-         _loc2_.IsBinds = _data.isBind;
-         _priseItem.info = _loc2_;
-         _priseItem.setCount(_loc2_.Count);
+         _data = $data as SXRewardItemData;
+         var __info:InventoryItemInfo = new InventoryItemInfo();
+         ObjectUtils.copyProperties(__info,ItemManager.Instance.getTemplateById(_data.TempleteID));
+         __info.ValidDate = _data.Valid;
+         __info.Count = _data.count;
+         __info.Property5 = "1";
+         __info.IsBinds = _data.isBind;
+         _priseItem.info = __info;
+         _priseItem.setCount(__info.Count);
          _scoreNeededText.text = _data.point.toString();
          _btnGainPrise.enable = SanXiaoManager.getInstance().score >= _data.point && !_data.gained;
          if(_data.gained)

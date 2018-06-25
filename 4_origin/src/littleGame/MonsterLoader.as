@@ -24,10 +24,10 @@ package littleGame
       
       private var _shutdown:Boolean = false;
       
-      public function MonsterLoader(param1:Array)
+      public function MonsterLoader(monsters:Array)
       {
          _loaders = new Vector.<BaseLoader>();
-         _monsters = param1;
+         _monsters = monsters;
          _total = _monsters.length;
          super();
       }
@@ -39,32 +39,32 @@ package littleGame
       
       public function startup() : void
       {
-         var _loc2_:* = null;
+         var loader:* = null;
          var _loc4_:int = 0;
          var _loc3_:* = _monsters;
-         for each(var _loc1_ in _monsters)
+         for each(var monster in _monsters)
          {
-            _loc2_ = LoadResourceManager.Instance.createLoader(PathManager.solveASTPath(_loc1_),3);
-            if(CharacterFactory.Instance.hasFile(_loc2_.url))
+            loader = LoadResourceManager.Instance.createLoader(PathManager.solveASTPath(monster),3);
+            if(CharacterFactory.Instance.hasFile(loader.url))
             {
                _loaded = Number(_loaded) + 1;
                complete();
             }
             else
             {
-               _loc2_.addEventListener("loadError",__loaderError);
-               _loc2_.addEventListener("complete",__dataComplete);
-               LoadResourceManager.Instance.startLoad(_loc2_);
-               _loaders.push(_loc2_);
+               loader.addEventListener("loadError",__loaderError);
+               loader.addEventListener("complete",__dataComplete);
+               LoadResourceManager.Instance.startLoad(loader);
+               _loaders.push(loader);
             }
          }
       }
       
-      private function __loaderError(param1:LoaderEvent) : void
+      private function __loaderError(event:LoaderEvent) : void
       {
-         var _loc2_:BaseLoader = param1.currentTarget as BaseLoader;
-         _loc2_.removeEventListener("complete",__dataComplete);
-         _loc2_.removeEventListener("loadError",__loaderError);
+         var loader:BaseLoader = event.currentTarget as BaseLoader;
+         loader.removeEventListener("complete",__dataComplete);
+         loader.removeEventListener("loadError",__loaderError);
       }
       
       public function shutdown() : void
@@ -72,17 +72,17 @@ package littleGame
          _shutdown = true;
       }
       
-      private function __dataComplete(param1:Event) : void
+      private function __dataComplete(event:Event) : void
       {
-         var _loc2_:BaseLoader = param1.currentTarget as BaseLoader;
-         _loc2_.removeEventListener("ioError",__loaderError);
-         _loc2_.removeEventListener("complete",__dataComplete);
-         var _loc4_:ByteArray = _loc2_.content as ByteArray;
-         CharacterFactory.Instance.addFile(_loc2_.url,_loc4_);
-         var _loc3_:int = _loaders.indexOf(_loc2_);
-         if(_loc3_ >= 0)
+         var dataLoader:BaseLoader = event.currentTarget as BaseLoader;
+         dataLoader.removeEventListener("ioError",__loaderError);
+         dataLoader.removeEventListener("complete",__dataComplete);
+         var bytes:ByteArray = dataLoader.content as ByteArray;
+         CharacterFactory.Instance.addFile(dataLoader.url,bytes);
+         var idx:int = _loaders.indexOf(dataLoader);
+         if(idx >= 0)
          {
-            _loaders.splice(_loc3_,1);
+            _loaders.splice(idx,1);
          }
          _loaded = Number(_loaded) + 1;
          complete();

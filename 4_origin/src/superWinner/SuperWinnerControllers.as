@@ -40,13 +40,13 @@ package superWinner
          SuperWinnerManager.instance.addEventListener("disposesuperwinner",__onDisposeSuperWinner);
       }
       
-      private function __onEnterGame(param1:Event) : void
+      private function __onEnterGame(e:Event) : void
       {
          _view = new SuperWinnerView(SuperWinnerController.instance.returnThis());
          LayerManager.Instance.addToLayer(_view,3,true,1);
       }
       
-      private function __onEndGame(param1:Event) : void
+      private function __onEndGame(e:Event) : void
       {
          if(_view)
          {
@@ -54,7 +54,7 @@ package superWinner
          }
       }
       
-      private function __onDisposeSuperWinner(param1:Event) : void
+      private function __onDisposeSuperWinner(e:Event) : void
       {
          ObjectUtils.disposeObject(_view);
       }

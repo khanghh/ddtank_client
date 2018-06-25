@@ -17,83 +17,84 @@ package morn.core.components
          mouseChildren = true;
       }
       
-      public function addElement(param1:DisplayObject, param2:Number, param3:Number) : void
+      public function addElement(element:DisplayObject, x:Number, y:Number) : void
       {
-         param1.x = param2;
-         param1.y = param3;
-         addChild(param1);
+         element.x = x;
+         element.y = y;
+         addChild(element);
       }
       
-      public function addElementAt(param1:DisplayObject, param2:int, param3:Number, param4:Number) : void
+      public function addElementAt(element:DisplayObject, index:int, x:Number, y:Number) : void
       {
-         param1.x = param3;
-         param1.y = param4;
-         addChildAt(param1,param2);
+         element.x = x;
+         element.y = y;
+         addChildAt(element,index);
       }
       
-      public function addElements(param1:Array) : void
+      public function addElements(elements:Array) : void
       {
-         var _loc4_:DisplayObject = null;
-         var _loc2_:int = 0;
-         var _loc3_:int = param1.length;
-         while(_loc2_ < _loc3_)
+         var i:int = 0;
+         var n:int = 0;
+         var item:* = null;
+         for(i = 0,n = elements.length; i < n; )
          {
-            _loc4_ = param1[_loc2_];
-            addChild(_loc4_);
-            _loc2_++;
+            item = elements[i];
+            addChild(item);
+            i++;
          }
       }
       
-      public function removeElement(param1:DisplayObject) : void
+      public function removeElement(element:DisplayObject) : void
       {
-         if(param1 && contains(param1))
+         if(element && contains(element))
          {
-            removeChild(param1);
+            removeChild(element);
          }
       }
       
-      public function removeAllChild(param1:DisplayObject = null) : void
+      public function removeAllChild(except:DisplayObject = null) : void
       {
-         var _loc2_:int = numChildren - 1;
-         while(_loc2_ > -1)
+         var i:int = 0;
+         for(i = numChildren - 1; i > -1; )
          {
-            if(param1 != getChildAt(_loc2_))
+            if(except != getChildAt(i))
             {
-               removeChildAt(_loc2_);
+               removeChildAt(i);
             }
-            _loc2_--;
+            i--;
          }
       }
       
-      public function insertAbove(param1:DisplayObject, param2:DisplayObject) : void
+      public function insertAbove(element:DisplayObject, compare:DisplayObject) : void
       {
-         this.removeElement(param1);
-         var _loc3_:int = getChildIndex(param2);
-         addChildAt(param1,Math.min(_loc3_ + 1,numChildren));
+         removeElement(element);
+         var index:int = getChildIndex(compare);
+         addChildAt(element,Math.min(index + 1,numChildren));
       }
       
-      public function insertBelow(param1:DisplayObject, param2:DisplayObject) : void
+      public function insertBelow(element:DisplayObject, compare:DisplayObject) : void
       {
-         this.removeElement(param1);
-         var _loc3_:int = getChildIndex(param2);
-         addChildAt(param1,Math.max(_loc3_,0));
+         removeElement(element);
+         var index:int = getChildIndex(compare);
+         addChildAt(element,Math.max(index,0));
       }
       
-      override public function set dataSource(param1:Object) : void
+      override public function set dataSource(value:Object) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:Component = null;
-         _dataSource = param1;
-         for(_loc2_ in param1)
+         var comp:* = null;
+         _dataSource = value;
+         var _loc5_:int = 0;
+         var _loc4_:* = value;
+         for(var name in value)
          {
-            _loc3_ = getChildByName(_loc2_) as Component;
-            if(_loc3_)
+            comp = getChildByName(name) as Component;
+            if(comp)
             {
-               _loc3_.dataSource = param1[_loc2_];
+               comp.dataSource = value[name];
             }
-            else if(hasOwnProperty(_loc2_))
+            else if(hasOwnProperty(name))
             {
-               this[_loc2_] = param1[_loc2_];
+               this[name] = value[name];
             }
          }
       }

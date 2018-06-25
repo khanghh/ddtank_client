@@ -48,11 +48,11 @@ package gameCommon.view
          removeEventListener("mouseOut",__mouseOut);
       }
       
-      public function set enabled(param1:Boolean) : void
+      public function set enabled(val:Boolean) : void
       {
-         if(_enabled != param1)
+         if(_enabled != val)
          {
-            _enabled = param1;
+            _enabled = val;
             if(_enabled)
             {
                filters = null;
@@ -73,7 +73,7 @@ package gameCommon.view
          return _enabled;
       }
       
-      private function __mouseOut(param1:MouseEvent) : void
+      private function __mouseOut(evt:MouseEvent) : void
       {
          if(_shine.parent)
          {
@@ -81,7 +81,7 @@ package gameCommon.view
          }
       }
       
-      private function __mouseOver(param1:MouseEvent) : void
+      private function __mouseOver(evt:MouseEvent) : void
       {
          if(_enabled)
          {
@@ -116,7 +116,7 @@ package gameCommon.view
          return _tipData;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(value:Object) : void
       {
       }
       
@@ -125,7 +125,7 @@ package gameCommon.view
          return "7";
       }
       
-      public function set tipDirctions(param1:String) : void
+      public function set tipDirctions(value:String) : void
       {
       }
       
@@ -134,7 +134,7 @@ package gameCommon.view
          return 4;
       }
       
-      public function set tipGapH(param1:int) : void
+      public function set tipGapH(value:int) : void
       {
       }
       
@@ -143,7 +143,7 @@ package gameCommon.view
          return 4;
       }
       
-      public function set tipGapV(param1:int) : void
+      public function set tipGapV(value:int) : void
       {
       }
       
@@ -152,7 +152,7 @@ package gameCommon.view
          return "ddt.view.tips.OneLineTip";
       }
       
-      public function set tipStyle(param1:String) : void
+      public function set tipStyle(value:String) : void
       {
       }
       

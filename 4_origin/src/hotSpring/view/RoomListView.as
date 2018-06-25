@@ -31,13 +31,13 @@ package hotSpring.view
       
       private var _list:VBox;
       
-      public function RoomListView(param1:HotSpringRoomListManager, param2:HotSpringRoomListModel, param3:int = 1, param4:int = 8)
+      public function RoomListView(controller:HotSpringRoomListManager, model:HotSpringRoomListModel, pageIndex:int = 1, pageSize:int = 8)
       {
          super();
-         _controller = param1;
-         _model = param2;
-         _pageIndex = param3;
-         _pageSize = param4;
+         _controller = controller;
+         _model = model;
+         _pageIndex = pageIndex;
+         _pageSize = pageSize;
          initialize();
       }
       
@@ -54,53 +54,52 @@ package hotSpring.view
          _model.addEventListener("roomListUpdate",setRoomList);
       }
       
-      public function setRoomList(param1:HotSpringRoomListEvent = null) : void
+      public function setRoomList(evt:HotSpringRoomListEvent = null) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:* = null;
+         var roomListItem:* = null;
+         var btn:* = null;
          removeRoomList();
          if(!_model.roomList || _model.roomList.length <= 0)
          {
             return;
          }
-         var _loc2_:Array = _model.roomList.list.slice(_pageIndex * _pageSize - _pageSize,_pageIndex * _pageSize <= _model.roomList.length?_pageIndex * _pageSize:_model.roomList.length);
-         var _loc6_:int = 0;
+         var pageList:Array = _model.roomList.list.slice(_pageIndex * _pageSize - _pageSize,_pageIndex * _pageSize <= _model.roomList.length?_pageIndex * _pageSize:_model.roomList.length);
+         var i:int = 0;
          var _loc8_:int = 0;
-         var _loc7_:* = _loc2_;
-         for each(var _loc5_ in _loc2_)
+         var _loc7_:* = pageList;
+         for each(var roomVO in pageList)
          {
-            _loc4_ = new RoomListItemView(_model,_loc5_);
-            _loc3_ = ComponentFactory.Instance.creatComponentByStylename("asset.HotSpringMainView.roomListItemBtn");
-            _loc3_.backgound = _loc4_;
-            _loc3_.mouseChildren = true;
-            _loc4_.addEventListener("click",rootListItemClick);
+            roomListItem = new RoomListItemView(_model,roomVO);
+            btn = ComponentFactory.Instance.creatComponentByStylename("asset.HotSpringMainView.roomListItemBtn");
+            btn.backgound = roomListItem;
+            btn.mouseChildren = true;
+            roomListItem.addEventListener("click",rootListItemClick);
             _list.spacing = 2.2;
-            _list.addChild(_loc3_);
+            _list.addChild(btn);
          }
          _list.refreshChildPos();
          dispatchEvent(new HotSpringRoomListEvent("roomListUpdateView"));
       }
       
-      private function rootListItemClick(param1:MouseEvent) : void
+      private function rootListItemClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         param1.stopImmediatePropagation();
-         var _loc2_:HotSpringRoomInfo = param1.currentTarget.roomVO;
-         if(_loc2_.roomType == 1 || _loc2_.roomType == 2)
+         evt.stopImmediatePropagation();
+         var roomVO:HotSpringRoomInfo = evt.currentTarget.roomVO;
+         if(roomVO.roomType == 1 || roomVO.roomType == 2)
          {
-            _controller.roomEnterConfirm(_loc2_.roomID);
+            _controller.roomEnterConfirm(roomVO.roomID);
          }
       }
       
       private function removeRoomList() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _list.numChildren)
+         var i:int = 0;
+         for(i = 0; i < _list.numChildren; )
          {
-            (_list.getChildAt(_loc1_) as BaseButton).backgound.removeEventListener("click",rootListItemClick);
-            (_list.getChildAt(_loc1_) as BaseButton).dispose();
-            _loc1_++;
+            (_list.getChildAt(i) as BaseButton).backgound.removeEventListener("click",rootListItemClick);
+            (_list.getChildAt(i) as BaseButton).dispose();
+            i++;
          }
          _list.disposeAllChildren();
       }
@@ -110,9 +109,9 @@ package hotSpring.view
          return _pageIndex;
       }
       
-      public function set pageIndex(param1:int) : void
+      public function set pageIndex(value:int) : void
       {
-         _pageIndex = param1;
+         _pageIndex = value;
          setRoomList();
       }
       

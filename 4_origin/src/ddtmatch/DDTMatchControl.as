@@ -34,7 +34,7 @@ package ddtmatch
          DDTMatchManager.instance.addEventListener("showMainView",__showFrameHandler);
       }
       
-      private function __showFrameHandler(param1:Event) : void
+      private function __showFrameHandler(e:Event) : void
       {
          _mainFrame = ComponentFactory.Instance.creatComponentByStylename("ddtmatch.view.mainframe");
          LayerManager.Instance.addToLayer(_mainFrame,3,true,1);

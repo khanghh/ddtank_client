@@ -24,32 +24,32 @@ package hallIcon.view
          super.addChild(_iconSprite);
       }
       
-      override public function addChild(param1:DisplayObject) : DisplayObject
+      override public function addChild(child:DisplayObject) : DisplayObject
       {
-         var _loc2_:DisplayObject = _iconSprite.addChild(param1);
-         return _loc2_;
+         var tempChild:DisplayObject = _iconSprite.addChild(child);
+         return tempChild;
       }
       
-      override public function getChildIndex(param1:DisplayObject) : int
+      override public function getChildIndex(child:DisplayObject) : int
       {
-         return _iconSprite.getChildIndex(param1);
+         return _iconSprite.getChildIndex(child);
       }
       
-      override public function removeChildAt(param1:int) : DisplayObject
+      override public function removeChildAt(index:int) : DisplayObject
       {
-         var _loc2_:DisplayObject = _iconSprite.removeChildAt(param1);
-         return _loc2_;
+         var tempChild:DisplayObject = _iconSprite.removeChildAt(index);
+         return tempChild;
       }
       
-      override public function set x(param1:Number) : void
+      override public function set x(value:Number) : void
       {
-         .super.x = param1;
+         .super.x = value;
          updateBg();
       }
       
-      override public function set y(param1:Number) : void
+      override public function set y(value:Number) : void
       {
-         .super.y = param1;
+         .super.y = value;
          updateBg();
       }
       

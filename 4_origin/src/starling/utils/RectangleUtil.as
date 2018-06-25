@@ -19,141 +19,140 @@ package starling.utils
          throw new AbstractClassError();
       }
       
-      public static function intersect(param1:Rectangle, param2:Rectangle, param3:Rectangle = null) : Rectangle
+      public static function intersect(rect1:Rectangle, rect2:Rectangle, resultRect:Rectangle = null) : Rectangle
       {
-         if(param3 == null)
+         if(resultRect == null)
          {
-            param3 = new Rectangle();
+            resultRect = new Rectangle();
          }
-         var _loc5_:Number = param1.x > param2.x?param1.x:Number(param2.x);
-         var _loc6_:Number = param1.right < param2.right?param1.right:Number(param2.right);
-         var _loc7_:Number = param1.y > param2.y?param1.y:Number(param2.y);
-         var _loc4_:Number = param1.bottom < param2.bottom?param1.bottom:Number(param2.bottom);
-         if(_loc5_ > _loc6_ || _loc7_ > _loc4_)
+         var left:Number = rect1.x > rect2.x?rect1.x:Number(rect2.x);
+         var right:Number = rect1.right < rect2.right?rect1.right:Number(rect2.right);
+         var top:Number = rect1.y > rect2.y?rect1.y:Number(rect2.y);
+         var bottom:Number = rect1.bottom < rect2.bottom?rect1.bottom:Number(rect2.bottom);
+         if(left > right || top > bottom)
          {
-            param3.setEmpty();
+            resultRect.setEmpty();
          }
          else
          {
-            param3.setTo(_loc5_,_loc7_,_loc6_ - _loc5_,_loc4_ - _loc7_);
+            resultRect.setTo(left,top,right - left,bottom - top);
          }
-         return param3;
+         return resultRect;
       }
       
-      public static function fit(param1:Rectangle, param2:Rectangle, param3:String = "showAll", param4:Boolean = false, param5:Rectangle = null) : Rectangle
+      public static function fit(rectangle:Rectangle, into:Rectangle, scaleMode:String = "showAll", pixelPerfect:Boolean = false, resultRect:Rectangle = null) : Rectangle
       {
-         if(!ScaleMode.isValid(param3))
+         if(!ScaleMode.isValid(scaleMode))
          {
-            throw new ArgumentError("Invalid scaleMode: " + param3);
+            throw new ArgumentError("Invalid scaleMode: " + scaleMode);
          }
-         if(param5 == null)
+         if(resultRect == null)
          {
-            param5 = new Rectangle();
+            resultRect = new Rectangle();
          }
-         var _loc9_:Number = param1.width;
-         var _loc6_:Number = param1.height;
-         var _loc7_:Number = param2.width / _loc9_;
-         var _loc8_:Number = param2.height / _loc6_;
-         var _loc10_:* = 1;
-         if(param3 == "showAll")
+         var width:Number = rectangle.width;
+         var height:Number = rectangle.height;
+         var factorX:Number = into.width / width;
+         var factorY:Number = into.height / height;
+         var factor:* = 1;
+         if(scaleMode == "showAll")
          {
-            _loc10_ = Number(_loc7_ < _loc8_?_loc7_:Number(_loc8_));
-            if(param4)
+            factor = Number(factorX < factorY?factorX:Number(factorY));
+            if(pixelPerfect)
             {
-               _loc10_ = Number(nextSuitableScaleFactor(_loc10_,false));
+               factor = Number(nextSuitableScaleFactor(factor,false));
             }
          }
-         else if(param3 == "noBorder")
+         else if(scaleMode == "noBorder")
          {
-            _loc10_ = Number(_loc7_ > _loc8_?_loc7_:Number(_loc8_));
-            if(param4)
+            factor = Number(factorX > factorY?factorX:Number(factorY));
+            if(pixelPerfect)
             {
-               _loc10_ = Number(nextSuitableScaleFactor(_loc10_,true));
+               factor = Number(nextSuitableScaleFactor(factor,true));
             }
          }
-         _loc9_ = _loc9_ * _loc10_;
-         _loc6_ = _loc6_ * _loc10_;
-         param5.setTo(param2.x + (param2.width - _loc9_) / 2,param2.y + (param2.height - _loc6_) / 2,_loc9_,_loc6_);
-         return param5;
+         width = width * factor;
+         height = height * factor;
+         resultRect.setTo(into.x + (into.width - width) / 2,into.y + (into.height - height) / 2,width,height);
+         return resultRect;
       }
       
-      private static function nextSuitableScaleFactor(param1:Number, param2:Boolean) : Number
+      private static function nextSuitableScaleFactor(factor:Number, up:Boolean) : Number
       {
-         var _loc3_:* = 1;
-         if(param2)
+         var divisor:* = 1;
+         if(up)
          {
-            if(param1 >= 0.5)
+            if(factor >= 0.5)
             {
-               return Math.ceil(param1);
+               return Math.ceil(factor);
             }
-            while(1 / (_loc3_ + 1) > param1)
+            while(1 / (divisor + 1) > factor)
             {
-               _loc3_++;
+               divisor++;
             }
          }
          else
          {
-            if(param1 >= 1)
+            if(factor >= 1)
             {
-               return Math.floor(param1);
+               return Math.floor(factor);
             }
-            while(1 / _loc3_ > param1)
+            while(1 / divisor > factor)
             {
-               _loc3_++;
+               divisor++;
             }
          }
-         return 1 / _loc3_;
+         return 1 / divisor;
       }
       
-      public static function normalize(param1:Rectangle) : void
+      public static function normalize(rect:Rectangle) : void
       {
-         if(param1.width < 0)
+         if(rect.width < 0)
          {
-            param1.width = -param1.width;
-            param1.x = param1.x - param1.width;
+            rect.width = -rect.width;
+            rect.x = rect.x - rect.width;
          }
-         if(param1.height < 0)
+         if(rect.height < 0)
          {
-            param1.height = -param1.height;
-            param1.y = param1.y - param1.height;
+            rect.height = -rect.height;
+            rect.y = rect.y - rect.height;
          }
       }
       
-      public static function getBounds(param1:Rectangle, param2:Matrix, param3:Rectangle = null) : Rectangle
+      public static function getBounds(rectangle:Rectangle, transformationMatrix:Matrix, resultRect:Rectangle = null) : Rectangle
       {
-         var _loc7_:int = 0;
-         if(param3 == null)
+         var i:int = 0;
+         if(resultRect == null)
          {
-            param3 = new Rectangle();
+            resultRect = new Rectangle();
          }
-         var _loc6_:* = 1.79769313486232e308;
-         var _loc5_:* = -1.79769313486232e308;
-         var _loc8_:* = 1.79769313486232e308;
-         var _loc4_:* = -1.79769313486232e308;
-         _loc7_ = 0;
-         while(_loc7_ < 4)
+         var minX:* = 1.79769313486232e308;
+         var maxX:* = -1.79769313486232e308;
+         var minY:* = 1.79769313486232e308;
+         var maxY:* = -1.79769313486232e308;
+         for(i = 0; i < 4; )
          {
-            MatrixUtil.transformCoords(param2,sPositions[_loc7_].x * param1.width,sPositions[_loc7_].y * param1.height,sHelperPoint);
-            if(_loc6_ > sHelperPoint.x)
+            MatrixUtil.transformCoords(transformationMatrix,sPositions[i].x * rectangle.width,sPositions[i].y * rectangle.height,sHelperPoint);
+            if(minX > sHelperPoint.x)
             {
-               _loc6_ = Number(sHelperPoint.x);
+               minX = Number(sHelperPoint.x);
             }
-            if(_loc5_ < sHelperPoint.x)
+            if(maxX < sHelperPoint.x)
             {
-               _loc5_ = Number(sHelperPoint.x);
+               maxX = Number(sHelperPoint.x);
             }
-            if(_loc8_ > sHelperPoint.y)
+            if(minY > sHelperPoint.y)
             {
-               _loc8_ = Number(sHelperPoint.y);
+               minY = Number(sHelperPoint.y);
             }
-            if(_loc4_ < sHelperPoint.y)
+            if(maxY < sHelperPoint.y)
             {
-               _loc4_ = Number(sHelperPoint.y);
+               maxY = Number(sHelperPoint.y);
             }
-            _loc7_++;
+            i++;
          }
-         param3.setTo(_loc6_,_loc8_,_loc5_ - _loc6_,_loc4_ - _loc8_);
-         return param3;
+         resultRect.setTo(minX,minY,maxX - minX,maxY - minY);
+         return resultRect;
       }
    }
 }

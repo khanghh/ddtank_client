@@ -32,9 +32,9 @@ package magpieBridge.view
       
       private var _light:MovieClip;
       
-      public function MagpiePlayer(param1:PlayerInfo, param2:Function = null)
+      public function MagpiePlayer(playerInfo:PlayerInfo, callBack:Function = null)
       {
-         super(param1,param2);
+         super(playerInfo,callBack);
          _light = ComponentFactory.Instance.creat("buried.dice.footLigth");
          _light.x = -282;
          _light.y = 38;
@@ -44,7 +44,7 @@ package magpieBridge.view
          addEventListener("enterFrame",enterFrameHander);
       }
       
-      private function enterFrameHander(param1:Event) : void
+      private function enterFrameHander(e:Event) : void
       {
          update();
       }
@@ -61,7 +61,7 @@ package magpieBridge.view
          }
       }
       
-      public function set setSceneCharacterDirectionDefault(param1:SceneCharacterDirection) : void
+      public function set setSceneCharacterDirectionDefault(value:SceneCharacterDirection) : void
       {
          if(sceneCharacterStateType == "natural")
          {
@@ -69,11 +69,11 @@ package magpieBridge.view
          }
       }
       
-      private function characterMirror(param1:int) : void
+      private function characterMirror($x:int) : void
       {
          if(!isDefaultCharacter)
          {
-            if(param1 > x)
+            if($x > x)
             {
                this.character.scaleX = -1;
                this.character.x = playerWitdh - 3;
@@ -91,16 +91,16 @@ package magpieBridge.view
          }
       }
       
-      public function roleWalk(param1:Array) : void
+      public function roleWalk(array:Array) : void
       {
          index = 0;
          _isWalk = true;
-         _walkArray = param1;
+         _walkArray = array;
          dispatchEvent(new SceneCharacterEvent("characterDirectionChange",true));
          characterMirror(_walkArray[index].x);
          TweenMax.to(this,0.3,{
-            "x":param1[index].x,
-            "y":param1[index].y,
+            "x":array[index].x,
+            "y":array[index].y,
             "onComplete":comp,
             "ease":Linear.easeNone
          });
@@ -128,9 +128,9 @@ package magpieBridge.view
          }
       }
       
-      private function characterDirectionChange(param1:SceneCharacterEvent) : void
+      private function characterDirectionChange(e:SceneCharacterEvent) : void
       {
-         if(param1.data)
+         if(e.data)
          {
             if(sceneCharacterDirection == SceneCharacterDirection.LT || sceneCharacterDirection == SceneCharacterDirection.RT)
             {

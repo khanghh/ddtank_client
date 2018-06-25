@@ -45,9 +45,9 @@ package demonChiYou.view
          return "main";
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
-         super.enter(param1,param2);
+         super.enter(prev,data);
          initView();
          BackgoundView.Instance.hide();
          InviteManager.Instance.enabled = false;
@@ -60,9 +60,9 @@ package demonChiYou.view
          ChatManager.Instance.state = 35;
          ChatManager.Instance.lock = true;
          ChatManager.Instance.chatDisabled = false;
-         var _loc3_:ChatView = ChatManager.Instance.view;
-         _loc3_.visible = true;
-         addChild(_loc3_);
+         var chatView:ChatView = ChatManager.Instance.view;
+         chatView.visible = true;
+         addChild(chatView);
          GameControl.Instance.addEventListener("StartLoading",__startLoading);
       }
       
@@ -86,9 +86,9 @@ package demonChiYou.view
          },LanguageMgr.GetTranslation("store.view.HelpButtonText"),"Demonchiyou.help",438,550);
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
-         super.leaving(param1);
+         super.leaving(next);
          BackgoundView.Instance.show();
          InviteManager.Instance.enabled = true;
          CacheSysManager.unlock("demon_chi_you");
@@ -102,7 +102,7 @@ package demonChiYou.view
          _sceneHelpBtn = null;
       }
       
-      private function __startLoading(param1:Event) : void
+      private function __startLoading(e:Event) : void
       {
          StateManager.getInGame_Step_6 = true;
          ChatManager.Instance.input.faceEnabled = false;

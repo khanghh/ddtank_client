@@ -74,9 +74,9 @@ package gameCommon.view.tool
          _bg = ComponentFactory.Instance.creatBitmap("asset.game.health.back");
          addChild(_bg);
          _bloodStrip = new BloodStrip();
-         var _loc1_:Point = ComponentFactory.Instance.creatCustomObject("asset.game.bloodStripPos");
-         _bloodStrip.x = _loc1_.x;
-         _bloodStrip.y = _loc1_.y;
+         var bloodStripPos:Point = ComponentFactory.Instance.creatCustomObject("asset.game.bloodStripPos");
+         _bloodStrip.x = bloodStripPos.x;
+         _bloodStrip.y = bloodStripPos.y;
          addChild(_bloodStrip);
          _danderBar = new DanderBar(GameControl.Instance.Current.selfGamePlayer,this);
          _danderBar.x = 120;
@@ -102,21 +102,21 @@ package gameCommon.view.tool
          _facePanel = ComponentFactory.Instance.creatCustomObject("chat.rightFacePanel",[true]);
          _facePanelPos = ComponentFactory.Instance.creatCustomObject("asset.game.facePanelView");
          _powerStrip = new PowerStrip();
-         var _loc2_:Point = ComponentFactory.Instance.creatCustomObject("asset.game.powerStripPos");
-         _powerStrip.x = _loc2_.x;
-         _powerStrip.y = _loc2_.y;
+         var powerStripPos:Point = ComponentFactory.Instance.creatCustomObject("asset.game.powerStripPos");
+         _powerStrip.x = powerStripPos.x;
+         _powerStrip.y = powerStripPos.y;
          addChild(_powerStrip);
          _transparentBtn = ComponentFactory.Instance.creatComponentByStylename("asset.game.TransparentButton");
          setTip(_transparentBtn,LanguageMgr.GetTranslation("tank.game.ToolStripView.transparent"));
          addChild(_transparentBtn);
       }
       
-      private function setTip(param1:BaseButton, param2:String) : void
+      private function setTip(btn:BaseButton, data:String) : void
       {
-         param1.tipStyle = "ddt.view.tips.OneLineTip";
-         param1.tipDirctions = "0";
-         param1.tipGapV = 5;
-         param1.tipData = param2;
+         btn.tipStyle = "ddt.view.tips.OneLineTip";
+         btn.tipDirctions = "0";
+         btn.tipGapV = 5;
+         btn.tipData = data;
       }
       
       private function initEvents() : void
@@ -131,17 +131,17 @@ package gameCommon.view.tool
          IMManager.Instance.addEventListener("nomessage",__noMessageHandler);
       }
       
-      protected function __noMessageHandler(param1:Event) : void
+      protected function __noMessageHandler(event:Event) : void
       {
          _fastMovie.gotoAndStop(_fastMovie.totalFrames);
       }
       
-      protected function __hasNewHandler(param1:Event) : void
+      protected function __hasNewHandler(event:Event) : void
       {
          _fastMovie.gotoAndPlay(1);
       }
       
-      protected function __overHandler(param1:MouseEvent) : void
+      protected function __overHandler(event:MouseEvent) : void
       {
          if(KeyboardManager.isDown(32))
          {
@@ -150,12 +150,12 @@ package gameCommon.view.tool
          IMManager.Instance.showMessageBox(_faceBtn);
       }
       
-      protected function __outHandler(param1:MouseEvent) : void
+      protected function __outHandler(event:MouseEvent) : void
       {
          IMManager.Instance.hideMessageBox();
       }
       
-      protected function __transparentChanged(param1:MouseEvent) : void
+      protected function __transparentChanged(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          SharedManager.Instance.propTransparent = !SharedManager.Instance.propTransparent;
@@ -227,20 +227,20 @@ package gameCommon.view.tool
          }
       }
       
-      private function __fastChat(param1:MouseEvent) : void
+      private function __fastChat(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         param1.stopImmediatePropagation();
+         event.stopImmediatePropagation();
          ChatManager.Instance.switchVisible();
       }
       
-      private function __setBtn(param1:MouseEvent) : void
+      private function __setBtn(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          SettingController.Instance.switchVisible();
       }
       
-      private function __face(param1:MouseEvent) : void
+      private function __face(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _facePanel.x = localToGlobal(new Point(_facePanelPos.x,_facePanelPos.y)).x;
@@ -248,24 +248,24 @@ package gameCommon.view.tool
          _facePanel.setVisible = true;
       }
       
-      private function __onFaceSelect(param1:Event) : void
+      private function __onFaceSelect(event:Event) : void
       {
          ChatManager.Instance.sendFace(_facePanel.selected);
          _facePanel.setVisible = false;
          StageReferance.stage.focus = null;
       }
       
-      private function __im(param1:MouseEvent) : void
+      private function __im(event:MouseEvent) : void
       {
          IMManager.Instance.show();
          SoundManager.instance.play("008");
       }
       
-      private function updateDander(param1:int) : void
+      private function updateDander(dander:int) : void
       {
       }
       
-      private function __dander(param1:LivingEvent) : void
+      private function __dander(event:LivingEvent) : void
       {
          if(GameControl.Instance.Current.selfGamePlayer.isLiving)
          {
@@ -288,7 +288,7 @@ package gameCommon.view.tool
          SoundManager.instance.play("008");
       }
       
-      private function __die(param1:LivingEvent) : void
+      private function __die(event:LivingEvent) : void
       {
          updateDander(0);
          showDeadTip();
@@ -296,7 +296,7 @@ package gameCommon.view.tool
       
       private function showDeadTip() : void
       {
-         var _loc1_:* = null;
+         var alert:* = null;
          if(GameControl.Instance.Current.selfGamePlayer.playerInfo.Grade >= 10)
          {
             return;
@@ -308,19 +308,19 @@ package gameCommon.view.tool
          if(SharedManager.Instance.deadtip < 2)
          {
             SharedManager.Instance.deadtip++;
-            _loc1_ = ComponentFactory.Instance.creat("GhostTip");
-            LayerManager.Instance.addToLayer(_loc1_,3,true,1);
+            alert = ComponentFactory.Instance.creat("GhostTip");
+            LayerManager.Instance.addToLayer(alert,3,true,1);
          }
       }
       
-      public function set specialEnabled(param1:Boolean) : void
+      public function set specialEnabled(value:Boolean) : void
       {
-         _danderBar.specialEnabled = param1;
+         _danderBar.specialEnabled = value;
       }
       
-      public function setDanderEnable(param1:Boolean) : void
+      public function setDanderEnable(e:Boolean) : void
       {
-         _danderBar.setVisible(param1);
+         _danderBar.setVisible(e);
       }
    }
 }

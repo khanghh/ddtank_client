@@ -15,11 +15,11 @@ package dragonBones.cache
          super();
       }
       
-      override public function copy(param1:FrameCache) : void
+      override public function copy(frameCache:FrameCache) : void
       {
-         super.copy(param1);
-         colorTransform = (param1 as SlotFrameCache).colorTransform;
-         displayIndex = (param1 as SlotFrameCache).displayIndex;
+         super.copy(frameCache);
+         colorTransform = (frameCache as SlotFrameCache).colorTransform;
+         displayIndex = (frameCache as SlotFrameCache).displayIndex;
       }
       
       override public function clear() : void

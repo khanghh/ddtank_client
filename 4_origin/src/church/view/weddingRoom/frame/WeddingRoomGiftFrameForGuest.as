@@ -58,9 +58,9 @@ package church.view.weddingRoom.frame
          return _controller;
       }
       
-      public function set controller(param1:ChurchRoomController) : void
+      public function set controller(value:ChurchRoomController) : void
       {
-         _controller = param1;
+         _controller = value;
       }
       
       protected function initialize() : void
@@ -106,36 +106,36 @@ package church.view.weddingRoom.frame
          _txtMoney.addEventListener("keyDown",__keyDown);
       }
       
-      private function __keyDown(param1:KeyboardEvent) : void
+      private function __keyDown(event:KeyboardEvent) : void
       {
-         if(param1.keyCode == 13)
+         if(event.keyCode == 13)
          {
-            param1.stopImmediatePropagation();
+            event.stopImmediatePropagation();
             SoundManager.instance.play("008");
             confirmSubmit();
          }
       }
       
-      private function __focusOut(param1:FocusEvent) : void
+      private function __focusOut(event:FocusEvent) : void
       {
          checkMoney();
       }
       
       private function checkMoney() : void
       {
-         var _loc1_:uint = Math.floor(PlayerManager.Instance.Self.Money / 100);
-         var _loc2_:* = uint(Math.ceil(_txtMoney.text / 100) == 0?1:Number(Math.ceil(_txtMoney.text / 100)));
-         if(_loc2_ >= _loc1_)
+         var total:uint = Math.floor(PlayerManager.Instance.Self.Money / 100);
+         var current:* = uint(Math.ceil(_txtMoney.text / 100) == 0?1:Number(Math.ceil(_txtMoney.text / 100)));
+         if(current >= total)
          {
-            _loc2_ = _loc1_;
+            current = total;
          }
-         _txtMoney.text = String(_loc2_ * 100);
+         _txtMoney.text = String(current * 100);
       }
       
-      private function onFrameResponse(param1:FrameEvent) : void
+      private function onFrameResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
@@ -155,14 +155,14 @@ package church.view.weddingRoom.frame
          _alertConfirm.addEventListener("response",confirm);
       }
       
-      private function confirm(param1:FrameEvent) : void
+      private function confirm(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
-               ObjectUtils.disposeObject(param1.target);
+               ObjectUtils.disposeObject(evt.target);
                break;
             case 2:
             case 3:

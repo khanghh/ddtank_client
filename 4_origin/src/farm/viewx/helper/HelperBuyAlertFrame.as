@@ -22,12 +22,12 @@ package farm.viewx.helper
       public function HelperBuyAlertFrame()
       {
          super();
-         var _loc1_:AlertInfo = new AlertInfo();
-         _loc1_.title = LanguageMgr.GetTranslation("ddt.farms.helper.buyTxt");
-         _loc1_.bottomGap = 37;
-         _loc1_.buttonGape = 65;
-         _loc1_.customPos = ComponentFactory.Instance.creat("farm.refreshPetAlertBtnPos");
-         this.info = _loc1_;
+         var alertInfo:AlertInfo = new AlertInfo();
+         alertInfo.title = LanguageMgr.GetTranslation("ddt.farms.helper.buyTxt");
+         alertInfo.bottomGap = 37;
+         alertInfo.buttonGape = 65;
+         alertInfo.customPos = ComponentFactory.Instance.creat("farm.refreshPetAlertBtnPos");
+         this.info = alertInfo;
          moveEnable = false;
          initView();
          initEvent();
@@ -49,11 +49,11 @@ package farm.viewx.helper
          addEventListener("response",__framePesponse);
       }
       
-      protected function __framePesponse(param1:FrameEvent) : void
+      protected function __framePesponse(event:FrameEvent) : void
       {
          removeEventListener("response",__framePesponse);
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:

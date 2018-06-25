@@ -16,22 +16,22 @@ package store.equipGhost.data
          super();
       }
       
-      public function initModel(param1:Vector.<GhostData>) : void
+      public function initModel(data:Vector.<GhostData>) : void
       {
-         _dataList = param1;
-         var _loc3_:int = -1;
+         _dataList = data;
+         var key:int = -1;
          var _loc5_:int = 0;
          var _loc4_:* = _dataList;
-         for each(var _loc2_ in _dataList)
+         for each(var gd in _dataList)
          {
-            _loc3_ = _loc2_.categoryID;
-            if(!_topLvDic[_loc3_])
+            key = gd.categoryID;
+            if(!_topLvDic[key])
             {
-               _topLvDic[_loc3_] = 0;
+               _topLvDic[key] = 0;
             }
-            if(_loc2_.level > _topLvDic[_loc3_])
+            if(gd.level > _topLvDic[key])
             {
-               _topLvDic[_loc3_] = _loc2_.level;
+               _topLvDic[key] = gd.level;
             }
          }
       }
@@ -41,15 +41,15 @@ package store.equipGhost.data
          return _topLvDic;
       }
       
-      public function getGhostData(param1:int, param2:int) : GhostData
+      public function getGhostData(categoryID:int, level:int) : GhostData
       {
          var _loc5_:int = 0;
          var _loc4_:* = this._dataList;
-         for each(var _loc3_ in this._dataList)
+         for each(var data in this._dataList)
          {
-            if(_loc3_.categoryID == param1 && _loc3_.level == param2)
+            if(data.categoryID == categoryID && data.level == level)
             {
-               return _loc3_;
+               return data;
             }
          }
          return null;

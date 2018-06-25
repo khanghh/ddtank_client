@@ -43,19 +43,18 @@ package dayActivity.view
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var view:* = null;
          _hBox = ComponentFactory.Instance.creatComponentByStylename("day.ddtImportantAdv.hBox");
          _scrollPanel = ComponentFactory.Instance.creatComponentByStylename("day.ddtImportantAdv.list");
          addChild(_scrollPanel);
          _scrollPanel.setView(_hBox);
-         _loc2_ = 0;
-         while(_loc2_ < _sumIndex)
+         for(i = 0; i < _sumIndex; )
          {
-            _loc1_ = ComponentFactory.Instance.creat("day.actiity.groundBack" + (_loc2_ + 1));
-            _contentViewVector.push(_loc1_);
-            _hBox.addChild(_loc1_);
-            _loc2_++;
+            view = ComponentFactory.Instance.creat("day.actiity.groundBack" + (i + 1));
+            _contentViewVector.push(view);
+            _hBox.addChild(view);
+            i++;
          }
          _scrollPanel.invalidateViewport();
          _prePageBtn = ComponentFactory.Instance.creatComponentByStylename("day.ddtImportantAdv.prePageBtn");
@@ -80,43 +79,42 @@ package dayActivity.view
          _nextPageBtn.addEventListener("click",__rightPageHandler);
       }
       
-      protected function __overHandler(param1:MouseEvent) : void
+      protected function __overHandler(event:MouseEvent) : void
       {
-         (param1.target as SimpleBitmapButton).alpha = 1;
+         (event.target as SimpleBitmapButton).alpha = 1;
       }
       
-      protected function __outHandler(param1:MouseEvent) : void
+      protected function __outHandler(event:MouseEvent) : void
       {
-         (param1.target as SimpleBitmapButton).alpha = 0.3;
+         (event.target as SimpleBitmapButton).alpha = 0.3;
       }
       
-      protected function __leftPageHandler(param1:MouseEvent) : void
+      protected function __leftPageHandler(event:MouseEvent) : void
       {
-         var _loc3_:int = 0;
+         var i:int = 0;
          if(currentIndex <= 0)
          {
             return;
          }
          SoundManager.instance.playButtonSound();
-         _loc3_ = 0;
-         while(_loc3_ < _contentViewVector.length)
+         for(i = 0; i < _contentViewVector.length; )
          {
-            if(_loc3_ == _currentIndex || _loc3_ == _currentIndex - 1)
+            if(i == _currentIndex || i == _currentIndex - 1)
             {
-               _contentViewVector[_loc3_].visible = true;
+               _contentViewVector[i].visible = true;
             }
             else
             {
-               _contentViewVector[_loc3_].visible = false;
+               _contentViewVector[i].visible = false;
             }
-            _loc3_++;
+            i++;
          }
-         var _loc2_:int = _hBox.x;
+         var vX:int = _hBox.x;
          var _loc4_:Boolean = false;
          _nextPageBtn.visible = _loc4_;
          _prePageBtn.visible = _loc4_;
          TweenLite.to(_hBox,1,{
-            "x":_loc2_ + _contentViewVector[_currentIndex].width,
+            "x":vX + _contentViewVector[_currentIndex].width,
             "onComplete":prePage
          });
       }
@@ -145,33 +143,32 @@ package dayActivity.view
          currentIndex = _currentIndex + 1;
       }
       
-      protected function __rightPageHandler(param1:MouseEvent) : void
+      protected function __rightPageHandler(event:MouseEvent) : void
       {
-         var _loc3_:int = 0;
+         var i:int = 0;
          if(currentIndex >= _sumIndex - 1)
          {
             return;
          }
          SoundManager.instance.playButtonSound();
-         _loc3_ = 0;
-         while(_loc3_ < _contentViewVector.length)
+         for(i = 0; i < _contentViewVector.length; )
          {
-            if(_loc3_ == _currentIndex || _loc3_ == _currentIndex + 1)
+            if(i == _currentIndex || i == _currentIndex + 1)
             {
-               _contentViewVector[_loc3_].visible = true;
+               _contentViewVector[i].visible = true;
             }
             else
             {
-               _contentViewVector[_loc3_].visible = false;
+               _contentViewVector[i].visible = false;
             }
-            _loc3_++;
+            i++;
          }
-         var _loc2_:int = _hBox.x;
+         var vX:int = _hBox.x;
          var _loc4_:Boolean = false;
          _nextPageBtn.visible = _loc4_;
          _prePageBtn.visible = _loc4_;
          TweenLite.to(_hBox,1,{
-            "x":_loc2_ - _contentViewVector[_currentIndex].width,
+            "x":vX - _contentViewVector[_currentIndex].width,
             "onComplete":nextPage
          });
       }
@@ -181,22 +178,21 @@ package dayActivity.view
          return _currentIndex;
       }
       
-      public function set currentIndex(param1:int) : void
+      public function set currentIndex(value:int) : void
       {
-         var _loc2_:int = 0;
-         _currentIndex = param1;
-         _loc2_ = 0;
-         while(_loc2_ < _contentViewVector.length)
+         var i:int = 0;
+         _currentIndex = value;
+         for(i = 0; i < _contentViewVector.length; )
          {
-            if(_loc2_ == _currentIndex)
+            if(i == _currentIndex)
             {
-               _contentViewVector[_loc2_].visible = true;
+               _contentViewVector[i].visible = true;
             }
             else
             {
-               _contentViewVector[_loc2_].visible = false;
+               _contentViewVector[i].visible = false;
             }
-            _loc2_++;
+            i++;
          }
          var _loc3_:* = _currentIndex;
          if(0 !== _loc3_)
@@ -246,10 +242,10 @@ package dayActivity.view
       {
          var _loc3_:int = 0;
          var _loc2_:* = _contentViewVector;
-         for each(var _loc1_ in _contentViewVector)
+         for each(var bit in _contentViewVector)
          {
-            ObjectUtils.disposeObject(_loc1_);
-            _loc1_ = null;
+            ObjectUtils.disposeObject(bit);
+            bit = null;
          }
          _contentViewVector = null;
          ObjectUtils.disposeObject(_prePageBtn);

@@ -11,9 +11,9 @@ package gameStarling.objects
    {
        
       
-      public function BurrowBomb3D(param1:Bomb, param2:Living, param3:int = 0, param4:Boolean = false)
+      public function BurrowBomb3D(info:Bomb, owner:Living, refineryLevel:int = 0, isPhantom:Boolean = false)
       {
-         super(param1,param2,param3,param4);
+         super(info,owner,refineryLevel,isPhantom);
       }
       
       override protected function initMovie() : void
@@ -23,19 +23,19 @@ package gameStarling.objects
          _isMoving = true;
       }
       
-      override public function moveTo(param1:Point) : void
+      override public function moveTo(p:Point) : void
       {
-         var _loc2_:* = null;
-         var _loc5_:* = null;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
+         var currentAction:* = null;
+         var prePos:* = null;
+         var rect:* = null;
+         var phyObj:* = null;
          while(_info.Actions.length > 0)
          {
             if(_info.Actions[0].time <= _lifeTime)
             {
-               _loc2_ = _info.Actions.shift();
-               _info.UsedActions.push(_loc2_);
-               _loc2_.execute(this,_game);
+               currentAction = _info.Actions.shift();
+               _info.UsedActions.push(currentAction);
+               currentAction.execute(this,_game);
                if(!_isLiving)
                {
                   return;
@@ -46,13 +46,13 @@ package gameStarling.objects
          }
          if(_isLiving)
          {
-            if(_loc2_ && _loc2_.type == 24)
+            if(currentAction && currentAction.type == 24)
             {
                removeEmitters();
                _gf = _gf * -2;
                _arf = _arf * 8;
             }
-            else if(_map.IsOutMap(param1.x,param1.y))
+            else if(_map.IsOutMap(p.x,p.y))
             {
                die();
             }
@@ -65,16 +65,16 @@ package gameStarling.objects
                   _particleRenderInfo.emitter.y = y;
                   _particleRenderInfo.addAngle = motionAngle;
                }
-               _loc5_ = new Point(pos.x,pos.y);
-               pos = param1;
-               _loc4_ = getCollideRect();
-               _loc4_.offset(pos.x,pos.y);
+               prePos = new Point(pos.x,pos.y);
+               pos = p;
+               rect = getCollideRect();
+               rect.offset(pos.x,pos.y);
                if(isPillarCollide())
                {
-                  _loc3_ = _map.getSceneEffectPhysicalObject(_loc4_,this,_loc5_);
-                  if(_loc3_ && _loc3_ is GameSceneEffect3D)
+                  phyObj = _map.getSceneEffectPhysicalObject(rect,this,prePos);
+                  if(phyObj && phyObj is GameSceneEffect3D)
                   {
-                     sceneEffectCollideId = _loc3_.Id;
+                     sceneEffectCollideId = phyObj.Id;
                   }
                   checkCreateBombSceneEffect();
                }
@@ -91,11 +91,11 @@ package gameStarling.objects
          return Math.atan2(_vy.x1,_vx.x1);
       }
       
-      public function doAction(param1:String, param2:Function = null) : void
+      public function doAction(type:String, backFun:Function = null) : void
       {
          if(_movie)
          {
-            _movieWrapper.playAction(param1,param2);
+            _movieWrapper.playAction(type,backFun);
          }
       }
       

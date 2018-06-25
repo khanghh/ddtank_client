@@ -24,20 +24,20 @@ package starling.display
       
       protected var mVertexData:VertexData;
       
-      public function Quad(param1:Number, param2:Number, param3:uint = 16777215, param4:Boolean = true)
+      public function Quad(width:Number, height:Number, color:uint = 16777215, premultipliedAlpha:Boolean = true)
       {
          super();
-         if(param1 == 0 || param2 == 0)
+         if(width == 0 || height == 0)
          {
             throw new ArgumentError("Invalid size: width and height must not be zero");
          }
-         mTinted = param3 != 16777215;
-         mVertexData = new VertexData(4,param4);
+         mTinted = color != 16777215;
+         mVertexData = new VertexData(4,premultipliedAlpha);
          mVertexData.setPosition(0,0,0);
-         mVertexData.setPosition(1,param1,0);
-         mVertexData.setPosition(2,0,param2);
-         mVertexData.setPosition(3,param1,param2);
-         mVertexData.setUniformColor(param3);
+         mVertexData.setPosition(1,width,0);
+         mVertexData.setPosition(2,0,height);
+         mVertexData.setPosition(3,width,height);
+         mVertexData.setUniformColor(color);
          onVertexDataChanged();
       }
       
@@ -45,60 +45,60 @@ package starling.display
       {
       }
       
-      override public function getBounds(param1:DisplayObject, param2:Rectangle = null) : Rectangle
+      override public function getBounds(targetSpace:DisplayObject, resultRect:Rectangle = null) : Rectangle
       {
-         var _loc3_:Number = NaN;
-         var _loc4_:Number = NaN;
-         if(param2 == null)
+         var scaleX:Number = NaN;
+         var scaleY:Number = NaN;
+         if(resultRect == null)
          {
-            param2 = new Rectangle();
+            resultRect = new Rectangle();
          }
-         if(param1 == this)
+         if(targetSpace == this)
          {
             mVertexData.getPosition(3,sHelperPoint);
-            param2.setTo(0,0,sHelperPoint.x,sHelperPoint.y);
+            resultRect.setTo(0,0,sHelperPoint.x,sHelperPoint.y);
          }
-         else if(param1 == parent && rotation == 0)
+         else if(targetSpace == parent && rotation == 0)
          {
-            _loc3_ = this.scaleX;
-            _loc4_ = this.scaleY;
+            scaleX = this.scaleX;
+            scaleY = this.scaleY;
             mVertexData.getPosition(3,sHelperPoint);
-            param2.setTo(x - pivotX * _loc3_,y - pivotY * _loc4_,sHelperPoint.x * _loc3_,sHelperPoint.y * _loc4_);
-            if(_loc3_ < 0)
+            resultRect.setTo(x - pivotX * scaleX,y - pivotY * scaleY,sHelperPoint.x * scaleX,sHelperPoint.y * scaleY);
+            if(scaleX < 0)
             {
-               param2.width = param2.width * -1;
-               param2.x = param2.x - param2.width;
+               resultRect.width = resultRect.width * -1;
+               resultRect.x = resultRect.x - resultRect.width;
             }
-            if(_loc4_ < 0)
+            if(scaleY < 0)
             {
-               param2.height = param2.height * -1;
-               param2.y = param2.y - param2.height;
+               resultRect.height = resultRect.height * -1;
+               resultRect.y = resultRect.y - resultRect.height;
             }
          }
          else if(is3D && stage)
          {
-            stage.getCameraPosition(param1,sHelperPoint3D);
-            getTransformationMatrix3D(param1,sHelperMatrix3D);
-            mVertexData.getBoundsProjected(sHelperMatrix3D,sHelperPoint3D,0,4,param2);
+            stage.getCameraPosition(targetSpace,sHelperPoint3D);
+            getTransformationMatrix3D(targetSpace,sHelperMatrix3D);
+            mVertexData.getBoundsProjected(sHelperMatrix3D,sHelperPoint3D,0,4,resultRect);
          }
          else
          {
-            getTransformationMatrix(param1,sHelperMatrix);
-            mVertexData.getBounds(sHelperMatrix,0,4,param2);
+            getTransformationMatrix(targetSpace,sHelperMatrix);
+            mVertexData.getBounds(sHelperMatrix,0,4,resultRect);
          }
-         return param2;
+         return resultRect;
       }
       
-      public function getVertexColor(param1:int) : uint
+      public function getVertexColor(vertexID:int) : uint
       {
-         return mVertexData.getColor(param1);
+         return mVertexData.getColor(vertexID);
       }
       
-      public function setVertexColor(param1:int, param2:uint) : void
+      public function setVertexColor(vertexID:int, color:uint) : void
       {
-         mVertexData.setColor(param1,param2);
+         mVertexData.setColor(vertexID,color);
          onVertexDataChanged();
-         if(param2 != 16777215)
+         if(color != 16777215)
          {
             mTinted = true;
          }
@@ -108,16 +108,16 @@ package starling.display
          }
       }
       
-      public function getVertexAlpha(param1:int) : Number
+      public function getVertexAlpha(vertexID:int) : Number
       {
-         return mVertexData.getAlpha(param1);
+         return mVertexData.getAlpha(vertexID);
       }
       
-      public function setVertexAlpha(param1:int, param2:Number) : void
+      public function setVertexAlpha(vertexID:int, alpha:Number) : void
       {
-         mVertexData.setAlpha(param1,param2);
+         mVertexData.setAlpha(vertexID,alpha);
          onVertexDataChanged();
-         if(param2 != 1)
+         if(alpha != 1)
          {
             mTinted = true;
          }
@@ -132,11 +132,11 @@ package starling.display
          return mVertexData.getColor(0);
       }
       
-      public function set color(param1:uint) : void
+      public function set color(value:uint) : void
       {
-         mVertexData.setUniformColor(param1);
+         mVertexData.setUniformColor(value);
          onVertexDataChanged();
-         if(param1 != 16777215 || alpha != 1)
+         if(value != 16777215 || alpha != 1)
          {
             mTinted = true;
          }
@@ -146,10 +146,10 @@ package starling.display
          }
       }
       
-      override public function set alpha(param1:Number) : void
+      override public function set alpha(value:Number) : void
       {
-         .super.alpha = param1;
-         if(param1 < 1)
+         .super.alpha = value;
+         if(value < 1)
          {
             mTinted = true;
          }
@@ -159,19 +159,19 @@ package starling.display
          }
       }
       
-      public function copyVertexDataTo(param1:VertexData, param2:int = 0) : void
+      public function copyVertexDataTo(targetData:VertexData, targetVertexID:int = 0) : void
       {
-         mVertexData.copyTo(param1,param2);
+         mVertexData.copyTo(targetData,targetVertexID);
       }
       
-      public function copyVertexDataTransformedTo(param1:VertexData, param2:int = 0, param3:Matrix = null) : void
+      public function copyVertexDataTransformedTo(targetData:VertexData, targetVertexID:int = 0, matrix:Matrix = null) : void
       {
-         mVertexData.copyTransformedTo(param1,param2,param3,0,4);
+         mVertexData.copyTransformedTo(targetData,targetVertexID,matrix,0,4);
       }
       
-      override public function render(param1:RenderSupport, param2:Number) : void
+      override public function render(support:RenderSupport, parentAlpha:Number) : void
       {
-         param1.batchQuad(this,param2);
+         support.batchQuad(this,parentAlpha);
       }
       
       public function get tinted() : Boolean

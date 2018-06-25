@@ -17,9 +17,9 @@ package starling.display.player
       
       public var stateType:String;
       
-      public function FightPlayerVo(param1:IEventDispatcher = null)
+      public function FightPlayerVo(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public function get isFight() : Boolean
@@ -27,9 +27,9 @@ package starling.display.player
          return _isFight;
       }
       
-      public function set isFight(param1:Boolean) : void
+      public function set isFight(value:Boolean) : void
       {
-         _isFight = param1;
+         _isFight = value;
       }
       
       public function get isDie() : Boolean
@@ -37,9 +37,9 @@ package starling.display.player
          return _isDie;
       }
       
-      public function set isDie(param1:Boolean) : void
+      public function set isDie(value:Boolean) : void
       {
-         _isDie = param1;
+         _isDie = value;
       }
       
       public function get state() : int
@@ -47,9 +47,9 @@ package starling.display.player
          return _state;
       }
       
-      public function set state(param1:int) : void
+      public function set state(value:int) : void
       {
-         _state = param1;
+         _state = value;
          _isFight = false;
          _isDie = false;
          if(_state != 0)
@@ -70,9 +70,9 @@ package starling.display.player
          return _reviveTime;
       }
       
-      public function set reviveTime(param1:Date) : void
+      public function set reviveTime(value:Date) : void
       {
-         _reviveTime = param1;
+         _reviveTime = value;
       }
    }
 }

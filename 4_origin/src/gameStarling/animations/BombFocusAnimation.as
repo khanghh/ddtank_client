@@ -13,40 +13,40 @@ package gameStarling.animations
       
       protected var _owner:GameLiving3D;
       
-      public function BombFocusAnimation(param1:SimpleBomb3D, param2:int = 100, param3:int = 0, param4:PhysicalObj = null)
+      public function BombFocusAnimation(phy:SimpleBomb3D, life:int = 100, offsetY:int = 0, owner:PhysicalObj = null)
       {
-         super(param1,param2,param3);
-         _phy = param1;
+         super(phy,life,offsetY);
+         _phy = phy;
          _level = 1;
-         _owner = param4 as GameLiving3D;
+         _owner = owner as GameLiving3D;
       }
       
-      override public function update(param1:MapView3D) : Boolean
+      override public function update(movie:MapView3D) : Boolean
       {
-         var _loc5_:Number = NaN;
-         var _loc6_:Number = NaN;
-         var _loc2_:Number = NaN;
-         var _loc11_:Number = NaN;
-         var _loc9_:Number = NaN;
-         var _loc7_:Number = NaN;
-         var _loc4_:Number = NaN;
-         var _loc10_:Number = NaN;
-         var _loc8_:Number = NaN;
-         return super.update(param1);
+         var distanceTotal:Number = NaN;
+         var distance:Number = NaN;
+         var progress:Number = NaN;
+         var targetScale:Number = NaN;
+         var minTargetScale:Number = NaN;
+         var minScale:Number = NaN;
+         var scale:Number = NaN;
+         var zoomInProcedure:Number = NaN;
+         var zoomOutProcedure:Number = NaN;
+         return super.update(movie);
       }
       
-      private function smoothDown(param1:Number, param2:Number, param3:Number) : Number
+      private function smoothDown(start:Number, target:Number, progress:Number) : Number
       {
-         param3 = Math.sqrt(param3);
-         var _loc4_:Number = (param2 - param1) * param3;
-         return param1 + _loc4_;
+         progress = Math.sqrt(progress);
+         var smooth:Number = (target - start) * progress;
+         return start + smooth;
       }
       
-      private function smoothUp(param1:Number, param2:Number, param3:Number) : Number
+      private function smoothUp(start:Number, target:Number, progress:Number) : Number
       {
-         param3 = param3 * param3;
-         var _loc4_:Number = (param2 - param1) * param3;
-         return param1 + _loc4_;
+         progress = progress * progress;
+         var smooth:Number = (target - start) * progress;
+         return start + smooth;
       }
    }
 }

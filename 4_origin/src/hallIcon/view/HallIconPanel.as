@@ -49,22 +49,22 @@ package hallIcon.view
       
       private var isExpand:Boolean;
       
-      public function HallIconPanel(param1:String, param2:String = "left", param3:int = -1, param4:int = -1, param5:Array = null)
+      public function HallIconPanel($mainIconString:String, $direction:String = "left", $hNum:int = -1, $vNum:int = -1, $WHSize:Array = null)
       {
          super();
-         _mainIconString = param1;
-         direction = param2;
-         hNum = param3;
-         vNum = param4;
+         _mainIconString = $mainIconString;
+         direction = $direction;
+         hNum = $hNum;
+         vNum = $vNum;
          if(hNum == -1 && vNum == -1)
          {
             vNum = 1;
          }
-         if(param5 == null)
+         if($WHSize == null)
          {
-            param5 = [78,78];
+            $WHSize = [78,78];
          }
-         WHSize = param5;
+         WHSize = $WHSize;
          initView();
          initEvent();
       }
@@ -95,67 +95,65 @@ package hallIcon.view
          StageReferance.stage.addEventListener("click",__mainIconHandler);
       }
       
-      public function addIcon(param1:DisplayObject, param2:String, param3:int = 0, param4:Boolean = false) : DisplayObject
+      public function addIcon($icon:DisplayObject, $icontype:String, $orderId:int = 0, flag:Boolean = false) : DisplayObject
       {
-         _iconBox.addChild(param1);
-         var _loc5_:Object = {};
-         _loc5_.icon = param1;
-         _loc5_.icontype = param2;
-         _loc5_.orderId = param3;
-         _loc5_.flag = param4;
-         _iconArray.push(_loc5_);
+         _iconBox.addChild($icon);
+         var obj:Object = {};
+         obj.icon = $icon;
+         obj.icontype = $icontype;
+         obj.orderId = $orderId;
+         obj.flag = flag;
+         _iconArray.push(obj);
          arrange();
-         return param1;
+         return $icon;
       }
       
-      public function getIconByType(param1:String) : DisplayObject
+      public function getIconByType($icontype:String) : DisplayObject
       {
-         var _loc2_:* = null;
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         _loc4_ = 0;
-         while(_loc4_ < _iconArray.length)
+         var tempChild:* = null;
+         var i:int = 0;
+         var tempType:* = null;
+         for(i = 0; i < _iconArray.length; )
          {
-            _loc3_ = _iconArray[_loc4_].icontype;
-            if(_loc3_ == param1)
+            tempType = _iconArray[i].icontype;
+            if(tempType == $icontype)
             {
-               _loc2_ = _iconArray[_loc4_].icon;
+               tempChild = _iconArray[i].icon;
                break;
             }
-            _loc4_++;
+            i++;
          }
-         return _loc2_;
+         return tempChild;
       }
       
-      public function removeIconByType(param1:String) : void
+      public function removeIconByType($icontype:String) : void
       {
-         var _loc4_:* = null;
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
-         var _loc2_:int = 0;
-         _loc5_ = 0;
-         while(_loc5_ < _iconArray.length)
+         var tempChild:* = null;
+         var i:int = 0;
+         var tempIconType:* = null;
+         var tempIndex:int = 0;
+         for(i = 0; i < _iconArray.length; )
          {
-            _loc3_ = _iconArray[_loc5_].icontype;
-            if(_loc3_ == param1)
+            tempIconType = _iconArray[i].icontype;
+            if(tempIconType == $icontype)
             {
-               _loc4_ = _iconArray[_loc5_].icon;
-               _iconArray.splice(_loc5_,1);
+               tempChild = _iconArray[i].icon;
+               _iconArray.splice(i,1);
                break;
             }
-            _loc5_++;
+            i++;
          }
-         if(_loc4_)
+         if(tempChild)
          {
-            _loc2_ = _iconBox.getChildIndex(_loc4_);
-            if(_loc2_ != -1)
+            tempIndex = _iconBox.getChildIndex(tempChild);
+            if(tempIndex != -1)
             {
-               _iconBox.removeChildAt(_loc2_);
+               _iconBox.removeChildAt(tempIndex);
             }
          }
-         if(_loc4_)
+         if(tempChild)
          {
-            ObjectUtils.disposeObject(_loc4_);
+            ObjectUtils.disposeObject(tempChild);
          }
          arrange();
       }
@@ -173,29 +171,28 @@ package hallIcon.view
       
       private function updateIconsPos() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         _loc2_ = 0;
-         while(_loc2_ < _iconArray.length)
+         var i:int = 0;
+         var tempChild:* = null;
+         for(i = 0; i < _iconArray.length; )
          {
-            _loc1_ = _iconArray[_loc2_].icon;
+            tempChild = _iconArray[i].icon;
             if(hNum == -1)
             {
-               _loc1_.x = _loc2_ * WHSize[0];
+               tempChild.x = i * WHSize[0];
             }
             else
             {
-               _loc1_.x = int(_loc2_ % hNum) * WHSize[0];
+               tempChild.x = int(i % hNum) * WHSize[0];
             }
             if(vNum == -1)
             {
-               _loc1_.y = int(_loc2_ / hNum) * WHSize[1];
+               tempChild.y = int(i / hNum) * WHSize[1];
             }
             else
             {
-               _loc1_.y = _loc2_ * WHSize[1];
+               tempChild.y = i * WHSize[1];
             }
-            _loc2_++;
+            i++;
          }
       }
       
@@ -233,51 +230,51 @@ package hallIcon.view
          }
       }
       
-      private function sortFunctin(param1:Object, param2:Object) : Number
+      private function sortFunctin(a:Object, b:Object) : Number
       {
-         if(param1.orderId > param2.orderId)
+         if(a.orderId > b.orderId)
          {
             return 1;
          }
-         if(param1.orderId < param2.orderId)
+         if(a.orderId < b.orderId)
          {
             return -1;
          }
          return 0;
       }
       
-      public function expand(param1:Boolean) : void
+      public function expand($isBool:Boolean) : void
       {
-         var _loc2_:* = NaN;
-         var _loc3_:* = NaN;
-         if(isExpand != param1 && _iconArray && _iconArray.length > 0)
+         var moveX:* = NaN;
+         var moveY:* = NaN;
+         if(isExpand != $isBool && _iconArray && _iconArray.length > 0)
          {
-            isExpand = param1;
+            isExpand = $isBool;
             if(isExpand)
             {
-               _loc2_ = 0;
-               _loc3_ = 0;
+               moveX = 0;
+               moveY = 0;
                if(direction == "left")
                {
-                  _loc2_ = Number(-getIconSpriteWidth() - 10);
-                  _loc3_ = Number(-(getIconSpriteHeight() - WHSize[1]) / 2);
+                  moveX = Number(-getIconSpriteWidth() - 10);
+                  moveY = Number(-(getIconSpriteHeight() - WHSize[1]) / 2);
                }
                else if(direction == "right")
                {
-                  _loc2_ = Number(_mainIcon.x + _mainIcon.width + 10);
-                  _loc3_ = Number(-(getIconSpriteHeight() - WHSize[1]) / 2);
+                  moveX = Number(_mainIcon.x + _mainIcon.width + 10);
+                  moveY = Number(-(getIconSpriteHeight() - WHSize[1]) / 2);
                }
                else if(direction == "bottom")
                {
                   if(HallIconManager.instance.model.firstRechargeIsOpen && _iconArray[0].flag)
                   {
-                     _loc2_ = Number(-350);
+                     moveX = Number(-350);
                   }
                   else
                   {
-                     _loc2_ = Number(-(getIconSpriteWidth() - WHSize[0]));
+                     moveX = Number(-(getIconSpriteWidth() - WHSize[0]));
                   }
-                  _loc3_ = Number(_mainIcon.y + WHSize[1] + 5);
+                  moveY = Number(_mainIcon.y + WHSize[1] + 5);
                }
                _iconBox.x = _mainIcon.x;
                _iconBox.y = 0;
@@ -286,8 +283,8 @@ package hallIcon.view
                _iconBox.alpha = 0;
                _iconBox.visible = true;
                tweenLiteMax = TweenLite.to(_iconBox,0.2,{
-                  "x":_loc2_,
-                  "y":_loc3_,
+                  "x":moveX,
+                  "y":moveY,
                   "alpha":1,
                   "scaleX":1,
                   "scaleY":1,
@@ -321,52 +318,52 @@ package hallIcon.view
       
       private function getIconSpriteWidth() : Number
       {
-         var _loc1_:* = 0;
+         var tempW:* = 0;
          if(_iconArray.length == 0)
          {
-            _loc1_ = 0;
+            tempW = 0;
          }
          else if(hNum == -1)
          {
-            _loc1_ = Number(_iconArray.length * WHSize[0]);
+            tempW = Number(_iconArray.length * WHSize[0]);
          }
          else if(_iconArray.length >= hNum)
          {
-            _loc1_ = Number(hNum * WHSize[0]);
+            tempW = Number(hNum * WHSize[0]);
          }
          else
          {
-            _loc1_ = Number(_iconArray.length * WHSize[0]);
+            tempW = Number(_iconArray.length * WHSize[0]);
          }
-         return _loc1_;
+         return tempW;
       }
       
       private function getIconSpriteHeight() : Number
       {
-         var _loc1_:int = 0;
-         var _loc2_:* = 0;
+         var tempN:int = 0;
+         var tempH:* = 0;
          if(_iconArray.length == 0)
          {
-            _loc2_ = 0;
+            tempH = 0;
          }
          else if(hNum == -1)
          {
-            _loc2_ = Number(WHSize[1]);
+            tempH = Number(WHSize[1]);
          }
          else if(_iconArray.length >= hNum)
          {
-            _loc1_ = _iconArray.length / hNum;
+            tempN = _iconArray.length / hNum;
             if(_iconArray.length % hNum)
             {
-               _loc1_ = _loc1_ + 1;
+               tempN = tempN + 1;
             }
-            _loc2_ = Number(_loc1_ * WHSize[1]);
+            tempH = Number(tempN * WHSize[1]);
          }
          else
          {
-            _loc2_ = Number(WHSize[1]);
+            tempH = Number(WHSize[1]);
          }
-         return _loc2_;
+         return tempH;
       }
       
       public function removeChildrens() : void
@@ -375,9 +372,9 @@ package hallIcon.view
          _iconArray = [];
       }
       
-      private function __mainIconHandler(param1:MouseEvent) : void
+      private function __mainIconHandler(evt:MouseEvent) : void
       {
-         if(param1.target == _mainIcon)
+         if(evt.target == _mainIcon)
          {
             SoundManager.instance.play("008");
             if(_iconArray && _iconArray.length > 0)
@@ -393,17 +390,17 @@ package hallIcon.view
       
       private function updateHotNum() : void
       {
-         var _loc1_:Boolean = false;
+         var isBool:Boolean = false;
          if(_iconArray && _iconArray.length > 0)
          {
-            _loc1_ = true;
+            isBool = true;
             _hotNum.text = _iconArray.length + "";
          }
          else
          {
             _hotNum.text = "0";
          }
-         var _loc2_:* = _loc1_;
+         var _loc2_:* = isBool;
          _hotNum.visible = _loc2_;
          _hotNumBg.visible = _loc2_;
       }

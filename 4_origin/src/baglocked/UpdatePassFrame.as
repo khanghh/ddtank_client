@@ -52,9 +52,9 @@ package baglocked
          super();
       }
       
-      public function __onTextEnter(param1:KeyboardEvent) : void
+      public function __onTextEnter(event:KeyboardEvent) : void
       {
-         if(param1.keyCode == 13)
+         if(event.keyCode == 13)
          {
             if(_updateBtn.enable)
             {
@@ -63,9 +63,9 @@ package baglocked
          }
       }
       
-      public function set bagLockedController(param1:BagLockedController) : void
+      public function set bagLockedController(value:BagLockedController) : void
       {
-         _bagLockedController = param1;
+         _bagLockedController = value;
       }
       
       override public function dispose() : void
@@ -142,15 +142,15 @@ package baglocked
          addEvent();
       }
       
-      private function __deselectBtn5Click(param1:MouseEvent) : void
+      private function __deselectBtn5Click(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _bagLockedController.closeUpdatePassFrame();
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -159,7 +159,7 @@ package baglocked
          }
       }
       
-      private function __textChange(param1:Event) : void
+      private function __textChange(event:Event) : void
       {
          if(_textInput5_1.textField.length >= 6 && _textInput5_2.textField.length >= 6 && _textInput5_3.textField.length >= 6 && PlayerManager.Instance.Self.leftTimes > 0)
          {
@@ -171,9 +171,9 @@ package baglocked
          }
       }
       
-      private function __updateBtnClick(param1:MouseEvent) : void
+      private function __updateBtnClick(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var leftTimes:* = null;
          SoundManager.instance.play("008");
          if(_textInput5_2.text == _textInput5_3.text)
          {
@@ -184,8 +184,8 @@ package baglocked
                return;
             }
             PlayerManager.Instance.Self.leftTimes--;
-            _loc2_ = PlayerManager.Instance.Self.leftTimes <= 0?"0":String(PlayerManager.Instance.Self.leftTimes);
-            _text5_5.text = LanguageMgr.GetTranslation("baglocked.DelPassFrame.operationAlertInfo",_loc2_);
+            leftTimes = PlayerManager.Instance.Self.leftTimes <= 0?"0":String(PlayerManager.Instance.Self.leftTimes);
+            _text5_5.text = LanguageMgr.GetTranslation("baglocked.DelPassFrame.operationAlertInfo",leftTimes);
             _bagLockedController.bagLockedInfo.psw = _textInput5_1.text;
             _bagLockedController.bagLockedInfo.newPwd = _textInput5_2.text;
             _bagLockedController.updatePassFrameController();
@@ -197,7 +197,7 @@ package baglocked
          }
       }
       
-      private function __updateSuccessHandler(param1:BagEvent) : void
+      private function __updateSuccessHandler(event:BagEvent) : void
       {
          _bagLockedController.closeUpdatePassFrame();
       }

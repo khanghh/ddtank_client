@@ -34,11 +34,11 @@ package gameCommon.objects
       
       private var _offX:int = 8;
       
-      public function ActivityDungeonNextView(param1:int, param2:Number)
+      public function ActivityDungeonNextView(id:int, time:Number)
       {
          super();
-         _id = param1;
-         _cdData = (param2 - TimeManager.Instance.Now().time) / 1000;
+         _id = id;
+         _cdData = (time - TimeManager.Instance.Now().time) / 1000;
          initView();
          initEvent();
       }
@@ -59,7 +59,7 @@ package gameCommon.objects
          setCountDownNumber(_cdData);
       }
       
-      protected function __onTimer(param1:TimerEvent) : void
+      protected function __onTimer(event:TimerEvent) : void
       {
          if(_cdData > 0)
          {
@@ -73,37 +73,35 @@ package gameCommon.objects
          }
       }
       
-      private function setCountDownNumber(param1:int) : void
+      private function setCountDownNumber(points:int) : void
       {
-         var _loc4_:* = null;
-         var _loc5_:int = 0;
-         var _loc3_:String = (String("0" + Math.floor(param1))).substr(-2);
-         var _loc2_:String = "";
+         var bitmap:* = null;
+         var i:int = 0;
+         var pointsStr:String = (String("0" + Math.floor(points))).substr(-2);
+         var num:String = "";
          deleteBitmapArray();
          _numBitmapArray = [];
-         _loc5_ = 0;
-         while(_loc5_ < _loc3_.length)
+         for(i = 0; i < pointsStr.length; )
          {
-            _loc2_ = _loc3_.charAt(_loc5_);
-            _loc4_ = ComponentFactory.Instance.creatBitmap(ACTIVITYDUNGEONPOINTSNUM + _loc2_);
-            _loc4_.x = _loc4_.bitmapData.width * _loc5_ - (_loc5_ == 0?0:_offX);
-            _pointsNum.addChild(_loc4_);
-            _numBitmapArray.push(_loc4_);
-            _loc5_++;
+            num = pointsStr.charAt(i);
+            bitmap = ComponentFactory.Instance.creatBitmap(ACTIVITYDUNGEONPOINTSNUM + num);
+            bitmap.x = bitmap.bitmapData.width * i - (i == 0?0:_offX);
+            _pointsNum.addChild(bitmap);
+            _numBitmapArray.push(bitmap);
+            i++;
          }
       }
       
       private function deleteBitmapArray() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(_numBitmapArray)
          {
-            _loc1_ = 0;
-            while(_loc1_ < _numBitmapArray.length)
+            for(i = 0; i < _numBitmapArray.length; )
             {
-               _numBitmapArray[_loc1_].bitmapData.dispose();
-               _numBitmapArray[_loc1_] = null;
-               _loc1_++;
+               _numBitmapArray[i].bitmapData.dispose();
+               _numBitmapArray[i] = null;
+               i++;
             }
             _numBitmapArray.length = 0;
             _numBitmapArray = null;
@@ -120,7 +118,7 @@ package gameCommon.objects
          _nextBtn.enable = false;
       }
       
-      protected function __onMouseClick(param1:MouseEvent) : void
+      protected function __onMouseClick(event:MouseEvent) : void
       {
          if(RoomManager.Instance.current.type != 49)
          {

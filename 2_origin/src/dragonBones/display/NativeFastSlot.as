@@ -23,9 +23,9 @@ package dragonBones.display
          _nativeDisplay = null;
       }
       
-      override function updateDisplay(param1:Object) : void
+      override function updateDisplay(value:Object) : void
       {
-         _nativeDisplay = param1 as DisplayObject;
+         _nativeDisplay = value as DisplayObject;
       }
       
       override function getDisplayIndex() : int
@@ -37,18 +37,18 @@ package dragonBones.display
          return -1;
       }
       
-      override function addDisplayToContainer(param1:Object, param2:int = -1) : void
+      override function addDisplayToContainer(container:Object, index:int = -1) : void
       {
-         var _loc3_:DisplayObjectContainer = param1 as DisplayObjectContainer;
-         if(_nativeDisplay && _loc3_)
+         var nativeContainer:DisplayObjectContainer = container as DisplayObjectContainer;
+         if(_nativeDisplay && nativeContainer)
          {
-            if(param2 < 0)
+            if(index < 0)
             {
-               _loc3_.addChild(_nativeDisplay);
+               nativeContainer.addChild(_nativeDisplay);
             }
             else
             {
-               _loc3_.addChildAt(_nativeDisplay,Math.min(param2,_loc3_.numChildren));
+               nativeContainer.addChildAt(_nativeDisplay,Math.min(index,nativeContainer.numChildren));
             }
          }
       }
@@ -69,20 +69,20 @@ package dragonBones.display
          }
       }
       
-      override function updateDisplayVisible(param1:Boolean) : void
+      override function updateDisplayVisible(value:Boolean) : void
       {
       }
       
-      override function updateDisplayColor(param1:Number, param2:Number, param3:Number, param4:Number, param5:Number, param6:Number, param7:Number, param8:Number, param9:Boolean = false) : void
+      override function updateDisplayColor(aOffset:Number, rOffset:Number, gOffset:Number, bOffset:Number, aMultiplier:Number, rMultiplier:Number, gMultiplier:Number, bMultiplier:Number, colorChanged:Boolean = false) : void
       {
          if(_nativeDisplay)
          {
-            super.updateDisplayColor(param1,param2,param3,param4,param5,param6,param7,param8,param9);
+            super.updateDisplayColor(aOffset,rOffset,gOffset,bOffset,aMultiplier,rMultiplier,gMultiplier,bMultiplier,colorChanged);
             _nativeDisplay.transform.colorTransform = _colorTransform;
          }
       }
       
-      override function updateDisplayBlendMode(param1:String) : void
+      override function updateDisplayBlendMode(value:String) : void
       {
          if(_nativeDisplay)
          {
@@ -119,46 +119,46 @@ package dragonBones.display
                                                       {
                                                       }
                                                    }
-                                                   addr21:
+                                                   addr25:
                                                    _nativeDisplay.blendMode = blendMode;
                                                 }
-                                                addr20:
-                                                §§goto(addr21);
+                                                addr24:
+                                                §§goto(addr25);
                                              }
-                                             addr19:
-                                             §§goto(addr20);
+                                             addr23:
+                                             §§goto(addr24);
                                           }
-                                          addr18:
-                                          §§goto(addr19);
+                                          addr22:
+                                          §§goto(addr23);
                                        }
-                                       addr17:
-                                       §§goto(addr18);
+                                       addr21:
+                                       §§goto(addr22);
                                     }
-                                    addr16:
-                                    §§goto(addr17);
+                                    addr20:
+                                    §§goto(addr21);
                                  }
-                                 addr15:
-                                 §§goto(addr16);
+                                 addr19:
+                                 §§goto(addr20);
                               }
-                              addr14:
-                              §§goto(addr15);
+                              addr18:
+                              §§goto(addr19);
                            }
-                           addr13:
-                           §§goto(addr14);
+                           addr17:
+                           §§goto(addr18);
                         }
-                        addr12:
-                        §§goto(addr13);
+                        addr16:
+                        §§goto(addr17);
                      }
-                     addr11:
-                     §§goto(addr12);
+                     addr15:
+                     §§goto(addr16);
                   }
-                  addr10:
-                  §§goto(addr11);
+                  addr14:
+                  §§goto(addr15);
                }
-               addr9:
-               §§goto(addr10);
+               addr13:
+               §§goto(addr14);
             }
-            §§goto(addr9);
+            §§goto(addr13);
          }
       }
    }

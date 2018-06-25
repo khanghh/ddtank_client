@@ -33,9 +33,9 @@ package ddQiYuan.view
          addChild(_infoTf);
       }
       
-      public function setData(param1:Object) : void
+      public function setData(data:Object) : void
       {
-         _data = param1;
+         _data = data;
          if(_data["currCount"] < _data["needCount"])
          {
             _bgImage.setFrame(1);
@@ -48,17 +48,17 @@ package ddQiYuan.view
             _infoTf.textFormatStyle = "ddQiYuan.tower.itemCompleteTf.format";
             _infoTf.filterString = "ddQiYuan.tower.itemCompleteTf.filter";
          }
-         var _loc2_:String = ItemManager.Instance.getTemplateById(_data["goodId"]).Name;
-         if(_loc2_.length > 5)
+         var goodName:String = ItemManager.Instance.getTemplateById(_data["goodId"]).Name;
+         if(goodName.length > 5)
          {
             _bgImage.tipStyle = "ddt.view.tips.OneLineTip";
             _bgImage.tipDirctions = "4";
             _bgImage.tipGapV = 2;
             _bgImage.tipGapH = -117;
-            _bgImage.tipData = _loc2_;
-            _loc2_ = _loc2_.slice(0,4) + "...";
+            _bgImage.tipData = goodName;
+            goodName = goodName.slice(0,4) + "...";
          }
-         _infoTf.text = LanguageMgr.GetTranslation("ddQiYuan.tower.frame.itemInfoTfMsg",_data["currCount"],_data["needCount"],_loc2_);
+         _infoTf.text = LanguageMgr.GetTranslation("ddQiYuan.tower.frame.itemInfoTfMsg",_data["currCount"],_data["needCount"],goodName);
       }
       
       public function dispose() : void

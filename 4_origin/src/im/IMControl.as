@@ -70,70 +70,68 @@ package im
          IMManager.Instance.addEventListener("imOpenView",__onOpenView);
       }
       
-      protected function __addCustomHandler(param1:PkgEvent) : void
+      protected function __addCustomHandler(event:PkgEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc8_:int = 0;
-         var _loc6_:PackageIn = param1.pkg;
-         var _loc7_:int = _loc6_.readByte();
-         var _loc5_:Boolean = _loc6_.readBoolean();
-         var _loc2_:int = _loc6_.readInt();
-         var _loc4_:String = _loc6_.readUTF();
-         switch(int(_loc7_) - 1)
+         var temp2:int = 0;
+         var temp4:int = 0;
+         var pkg:PackageIn = event.pkg;
+         var type:int = pkg.readByte();
+         var bol:Boolean = pkg.readBoolean();
+         var id:int = pkg.readInt();
+         var name:String = pkg.readUTF();
+         switch(int(type) - 1)
          {
             case 0:
-               if(_loc5_)
+               if(bol)
                {
-                  MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("IM.addCustom.success",_loc4_));
+                  MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("IM.addCustom.success",name));
                   customInfo = new CustomInfo();
-                  customInfo.ID = _loc2_;
-                  customInfo.Name = _loc4_;
+                  customInfo.ID = id;
+                  customInfo.Name = name;
                   dispatchEvent(new IMEvent("addNewGroup"));
                }
                else
                {
-                  MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("IM.addCustom.fail",_loc4_));
+                  MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("IM.addCustom.fail",name));
                }
                break;
             case 1:
-               if(_loc5_)
+               if(bol)
                {
-                  MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("IM.deleteCustom.success",_loc4_));
-                  PlayerManager.Instance.deleteCustomGroup(_loc2_);
-                  _loc3_ = 0;
-                  while(_loc3_ < PlayerManager.Instance.customList.length)
+                  MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("IM.deleteCustom.success",name));
+                  PlayerManager.Instance.deleteCustomGroup(id);
+                  for(temp2 = 0; temp2 < PlayerManager.Instance.customList.length; )
                   {
-                     if(PlayerManager.Instance.customList[_loc3_].ID == _loc2_)
+                     if(PlayerManager.Instance.customList[temp2].ID == id)
                      {
-                        PlayerManager.Instance.customList.splice(_loc3_,1);
+                        PlayerManager.Instance.customList.splice(temp2,1);
                         break;
                      }
-                     _loc3_++;
+                     temp2++;
                   }
-                  deleteCustomID = _loc2_;
+                  deleteCustomID = id;
                   dispatchEvent(new IMEvent("deleteGroup"));
                }
                else
                {
-                  MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("IM.deleteCustom.fail",_loc4_));
+                  MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("IM.deleteCustom.fail",name));
                }
                break;
             case 2:
-               if(_loc5_)
+               if(bol)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("IM.alertCustom.success"));
                   customInfo = new CustomInfo();
-                  customInfo.ID = _loc2_;
-                  customInfo.Name = _loc4_;
-                  _loc8_ = 0;
-                  while(_loc8_ < PlayerManager.Instance.customList.length)
+                  customInfo.ID = id;
+                  customInfo.Name = name;
+                  for(temp4 = 0; temp4 < PlayerManager.Instance.customList.length; )
                   {
-                     if(PlayerManager.Instance.customList[_loc8_].ID == _loc2_)
+                     if(PlayerManager.Instance.customList[temp4].ID == id)
                      {
-                        PlayerManager.Instance.customList[_loc8_].Name = _loc4_;
+                        PlayerManager.Instance.customList[temp4].Name = name;
                         break;
                      }
-                     _loc8_++;
+                     temp4++;
                   }
                   dispatchEvent(new IMEvent("updateGroup"));
                   break;
@@ -143,24 +141,23 @@ package im
          }
       }
       
-      public function checkHasNew(param1:int) : Boolean
+      public function checkHasNew(id:int) : Boolean
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _manager.existChat.length)
+         var i:int = 0;
+         for(i = 0; i < _manager.existChat.length; )
          {
-            if(param1 == _manager.existChat[_loc2_].id && _manager.existChat[_loc2_].exist == 2)
+            if(id == _manager.existChat[i].id && _manager.existChat[i].exist == 2)
             {
                return true;
             }
-            _loc2_++;
+            i++;
          }
          return false;
       }
       
-      private function __addNewFriend(param1:IMEvent) : void
+      private function __addNewFriend(evt:IMEvent) : void
       {
-         _currentPlayer = param1.data as PlayerInfo;
+         _currentPlayer = evt.data as PlayerInfo;
       }
       
       private function privateChat() : void
@@ -171,9 +168,9 @@ package im
          }
       }
       
-      public function set isShow(param1:Boolean) : void
+      public function set isShow(value:Boolean) : void
       {
-         _isShow = param1;
+         _isShow = value;
       }
       
       private function hide() : void
@@ -193,7 +190,7 @@ package im
          LayerManager.Instance.addToLayer(_imview,3,false);
       }
       
-      protected function __onOpenView(param1:IMEvent) : void
+      protected function __onOpenView(event:IMEvent) : void
       {
          if(_manager.isLoadRecentContacts)
          {
@@ -219,7 +216,7 @@ package im
          }
       }
       
-      private function __recentContactsComplete(param1:Event) : void
+      private function __recentContactsComplete(event:Event) : void
       {
          PlayerManager.Instance.removeEventListener("recentContactsComplete",__recentContactsComplete);
          if(!_manager.isLoadComplete)
@@ -238,9 +235,9 @@ package im
          }
       }
       
-      public function set titleType(param1:int) : void
+      public function set titleType(value:int) : void
       {
-         _titleType = param1;
+         _titleType = value;
       }
       
       public function get titleType() : int
@@ -248,9 +245,9 @@ package im
          return _titleType;
       }
       
-      private function __imviewEvent(param1:FrameEvent) : void
+      private function __imviewEvent(event:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(event.responseCode == 0 || event.responseCode == 1)
          {
             SoundManager.instance.play("008");
             hide();
@@ -259,45 +256,44 @@ package im
       
       public function getRecentContactsStranger() : Array
       {
-         var _loc1_:Array = [];
+         var tempArray:Array = [];
          var _loc4_:int = 0;
          var _loc3_:* = PlayerManager.Instance.recentContacts;
-         for each(var _loc2_ in PlayerManager.Instance.recentContacts)
+         for each(var i in PlayerManager.Instance.recentContacts)
          {
-            if(testAlikeName(_loc2_.NickName))
+            if(testAlikeName(i.NickName))
             {
-               _loc1_.push(_loc2_);
+               tempArray.push(i);
             }
          }
-         return _loc1_;
+         return tempArray;
       }
       
-      public function testAlikeName(param1:String) : Boolean
+      public function testAlikeName(name:String) : Boolean
       {
-         var _loc3_:int = 0;
-         var _loc2_:Array = [];
-         _loc2_ = PlayerManager.Instance.friendList.list;
-         _loc2_ = _loc2_.concat(PlayerManager.Instance.blackList.list);
-         _loc2_ = _loc2_.concat(ConsortionModelManager.Instance.model.memberList.list);
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_.length)
+         var i:int = 0;
+         var temList:Array = [];
+         temList = PlayerManager.Instance.friendList.list;
+         temList = temList.concat(PlayerManager.Instance.blackList.list);
+         temList = temList.concat(ConsortionModelManager.Instance.model.memberList.list);
+         for(i = 0; i < temList.length; )
          {
-            if(_loc2_[_loc3_] is FriendListPlayer && (_loc2_[_loc3_] as FriendListPlayer).NickName == param1)
+            if(temList[i] is FriendListPlayer && (temList[i] as FriendListPlayer).NickName == name)
             {
                return false;
             }
-            if(_loc2_[_loc3_] is ConsortiaPlayerInfo && (_loc2_[_loc3_] as ConsortiaPlayerInfo).NickName == param1)
+            if(temList[i] is ConsortiaPlayerInfo && (temList[i] as ConsortiaPlayerInfo).NickName == name)
             {
                return false;
             }
-            _loc3_++;
+            i++;
          }
          return true;
       }
       
-      public function set likeFriendList(param1:Array) : void
+      public function set likeFriendList(value:Array) : void
       {
-         _likeFriendList = param1;
+         _likeFriendList = value;
       }
       
       public function get likeFriendList() : Array

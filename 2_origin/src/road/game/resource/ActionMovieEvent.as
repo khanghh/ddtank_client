@@ -16,12 +16,12 @@ package road.game.resource
       
       private var _data:Object;
       
-      public function ActionMovieEvent(param1:String, param2:Object = null)
+      public function ActionMovieEvent(type:String, data:Object = null)
       {
-         super(param1);
-         if(param2)
+         super(type);
+         if(data)
          {
-            _data = param2;
+            _data = data;
          }
       }
       

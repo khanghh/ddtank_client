@@ -7,14 +7,14 @@ package starlingui.core.components
    {
        
       
-      public function UVImage(param1:Texture)
+      public function UVImage(texture:Texture)
       {
-         super(param1);
+         super(texture);
       }
       
-      public function setVertexPosion(param1:int, param2:Number, param3:Number) : void
+      public function setVertexPosion(vertexID:int, x:Number, y:Number) : void
       {
-         mVertexData.setPosition(param1,param2,param3);
+         mVertexData.setPosition(vertexID,x,y);
          onVertexDataChanged();
       }
    }

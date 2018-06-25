@@ -20,8 +20,8 @@ package starling.scene.consortiaDomain.buildView
       public function RepairAni()
       {
          super();
-         var _loc1_:Image = new Image(DDTAssetManager.instance.getTexture("consortiaDomainRepairAniBg"));
-         addChild(_loc1_);
+         var repairAniBg:Image = new Image(DDTAssetManager.instance.getTexture("consortiaDomainRepairAniBg"));
+         addChild(repairAniBg);
          _repairIcon = new Image(DDTAssetManager.instance.getTexture("consortiaDomainRepairIcon1"));
          _repairIcon.x = 10;
          _repairIconY = 11;
@@ -55,9 +55,9 @@ package starling.scene.consortiaDomain.buildView
          });
       }
       
-      private function downUpRepairIcon(param1:Boolean) : void
+      private function downUpRepairIcon(isUp:Boolean) : void
       {
-         if(param1)
+         if(isUp)
          {
             Starling.juggler.tween(_repairIcon,0.5,{
                "y":_repairIconY - 2,

@@ -163,25 +163,24 @@ package defendisland.view
       
       public function setData() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:Array = LanguageMgr.GetTranslation("ddt.defendisland.frame.prizeName").split("|");
-         var _loc2_:Array = LanguageMgr.GetTranslation("ddt.defendisland.frame.npcName").split("|");
-         _loc3_ = _bossList.length - 1;
-         while(_loc3_ >= 0)
+         var i:int = 0;
+         var prizeList:Array = LanguageMgr.GetTranslation("ddt.defendisland.frame.prizeName").split("|");
+         var npcList:Array = LanguageMgr.GetTranslation("ddt.defendisland.frame.npcName").split("|");
+         for(i = _bossList.length - 1; i >= 0; )
          {
-            _bossList[_loc3_].tipData = LanguageMgr.GetTranslation("ddt.defendisland.frame.tip",_loc2_[_loc3_],DefendislandManager.instance.model.remainCountList[_loc3_],DefendislandManager.instance.model.countList[_loc3_],_loc1_[_loc3_]);
-            if(DefendislandManager.instance.model.remainCountList[_loc3_] == 0)
+            _bossList[i].tipData = LanguageMgr.GetTranslation("ddt.defendisland.frame.tip",npcList[i],DefendislandManager.instance.model.remainCountList[i],DefendislandManager.instance.model.countList[i],prizeList[i]);
+            if(DefendislandManager.instance.model.remainCountList[i] == 0)
             {
-               _bossList[_loc3_].filters = ComponentFactory.Instance.creatFilters("grayFilter");
+               _bossList[i].filters = ComponentFactory.Instance.creatFilters("grayFilter");
             }
             else
             {
                bossShine.visible = true;
-               _bossList[_loc3_].filters = null;
-               bossShine.x = _bossList[_loc3_].x;
-               bossShine.y = _bossList[_loc3_].y;
+               _bossList[i].filters = null;
+               bossShine.x = _bossList[i].x;
+               bossShine.y = _bossList[i].y;
             }
-            _loc3_--;
+            i--;
          }
          _startGameBtn.visible = true;
          var _loc4_:Boolean = false;
@@ -197,7 +196,7 @@ package defendisland.view
          GameControl.Instance.addEventListener("StartLoading",__startLoading);
       }
       
-      protected function __startLoading(param1:Event) : void
+      protected function __startLoading(event:Event) : void
       {
          StateManager.getInGame_Step_6 = true;
          ChatManager.Instance.input.faceEnabled = false;
@@ -206,7 +205,7 @@ package defendisland.view
          StateManager.getInGame_Step_7 = true;
       }
       
-      private function createRoomBtnHandler(param1:MouseEvent) : void
+      private function createRoomBtnHandler(e:MouseEvent) : void
       {
          if(CheckWeaponManager.instance.isNoWeapon())
          {
@@ -225,7 +224,7 @@ package defendisland.view
          waiting.visible = _loc2_;
       }
       
-      private function quickJoinBtnHandler(param1:MouseEvent) : void
+      private function quickJoinBtnHandler(e:MouseEvent) : void
       {
          GameInSocketOut.sendCancelWait();
          _startGameBtn.visible = true;
@@ -242,10 +241,10 @@ package defendisland.view
          GameControl.Instance.removeEventListener("StartLoading",__startLoading);
       }
       
-      protected function _responseHandle(param1:FrameEvent) : void
+      protected function _responseHandle(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
                dispose();

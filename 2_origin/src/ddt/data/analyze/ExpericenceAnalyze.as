@@ -10,33 +10,32 @@ package ddt.data.analyze
       
       public var HP:Array;
       
-      public function ExpericenceAnalyze(param1:Function)
+      public function ExpericenceAnalyze(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc3_:* = null;
-         var _loc4_:int = 0;
-         var _loc2_:XML = new XML(param1);
+         var xmllist:* = null;
+         var i:int = 0;
+         var xml:XML = new XML(data);
          expericence = [];
          HP = [];
-         if(_loc2_.@value == "true")
+         if(xml.@value == "true")
          {
-            _loc3_ = _loc2_..Item;
-            _loc4_ = 0;
-            while(_loc4_ < _loc3_.length())
+            xmllist = xml..Item;
+            for(i = 0; i < xmllist.length(); )
             {
-               expericence.push(int(_loc3_[_loc4_].@GP));
-               HP.push(int(_loc3_[_loc4_].@Blood));
-               _loc4_++;
+               expericence.push(int(xmllist[i].@GP));
+               HP.push(int(xmllist[i].@Blood));
+               i++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc2_.@message;
+            message = xml.@message;
             onAnalyzeError();
             onAnalyzeComplete();
          }

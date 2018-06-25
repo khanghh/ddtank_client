@@ -62,15 +62,15 @@ package gameCommon.view
       
       private var _showed:Boolean = false;
       
-      public function DungeonHelpView(param1:GameTurnButton, param2:DungeonInfoView, param3:DisplayObjectContainer)
+      public function DungeonHelpView(button:GameTurnButton, barrier:DungeonInfoView, gameContainer:DisplayObjectContainer)
       {
          super();
          _isFirst = true;
          buttonMode = false;
          mouseEnabled = false;
-         _turnButton = param1;
-         _barrier = param2;
-         _gameContainer = param3;
+         _turnButton = button;
+         _barrier = barrier;
+         _gameContainer = gameContainer;
          _container = new Sprite();
          _container.x = 211;
          _container.y = 65;
@@ -82,8 +82,8 @@ package gameCommon.view
       
       protected function init() : void
       {
-         var _loc1_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.game.missionInfoBG2Asset");
-         _container.addChild(_loc1_);
+         var BG:Bitmap = ComponentFactory.Instance.creatBitmap("asset.game.missionInfoBG2Asset");
+         _container.addChild(BG);
          _winTxt1 = ComponentFactory.Instance.creat("asset.DungeonHelpView.winTxt1");
          _container.addChild(_winTxt1);
          _winTxt2 = ComponentFactory.Instance.creat("asset.DungeonHelpView.winTxt2");
@@ -151,7 +151,7 @@ package gameCommon.view
          });
       }
       
-      public function close(param1:Rectangle) : void
+      public function close(to:Rectangle) : void
       {
          if(_tweened)
          {
@@ -160,10 +160,10 @@ package gameCommon.view
          _tweened = true;
          _opened = false;
          TweenLite.to(this,0.6,{
-            "width":param1.width,
-            "height":param1.height,
-            "x":param1.x,
-            "y":param1.y,
+            "width":to.width,
+            "height":to.height,
+            "x":to.x,
+            "y":to.y,
             "ease":Sine.easeIn,
             "onComplete":closeComplete
          });
@@ -180,16 +180,16 @@ package gameCommon.view
          }
       }
       
-      protected function __timerComplete(param1:TimerEvent) : void
+      protected function __timerComplete(evt:TimerEvent) : void
       {
-         var _loc2_:* = null;
+         var bounds:* = null;
          if(_turnButton && _gameContainer)
          {
-            _loc2_ = _turnButton.getBounds(_gameContainer);
-            _loc2_.x = 860;
-            _loc2_.y = 5;
+            bounds = _turnButton.getBounds(_gameContainer);
+            bounds.x = 860;
+            bounds.y = 5;
          }
-         close(_loc2_);
+         close(bounds);
          clearTime();
       }
       
@@ -205,15 +205,15 @@ package gameCommon.view
       
       private function setText() : void
       {
-         var _loc2_:Array = GameControl.Instance.Current.missionInfo.success.split("<br>");
-         var _loc1_:Array = GameControl.Instance.Current.missionInfo.failure.split("<br>");
-         _winTxt1.text = _loc2_[0];
+         var winArr:Array = GameControl.Instance.Current.missionInfo.success.split("<br>");
+         var lostArr:Array = GameControl.Instance.Current.missionInfo.failure.split("<br>");
+         _winTxt1.text = winArr[0];
          _arrow1.y = _winTxt1.y + 5;
          _arrow1.x = _winTxt1.x - 15;
          _arrow1.visible = true;
-         if(_loc2_.length >= 2)
+         if(winArr.length >= 2)
          {
-            _winTxt2.text = _loc2_[1];
+            _winTxt2.text = winArr[1];
             _winTxt2.y = _winTxt1.y + _winTxt1.textHeight + 25;
             _arrow2.y = _winTxt2.y + 5;
             _arrow2.x = _winTxt2.x - 15;
@@ -223,13 +223,13 @@ package gameCommon.view
          {
             _arrow2.visible = false;
          }
-         _lostTxt1.text = _loc1_[0];
+         _lostTxt1.text = lostArr[0];
          _arrow3.y = _lostTxt1.y + 5;
          _arrow3.x = _lostTxt1.x - 15;
          _arrow3.visible = true;
-         if(_loc1_.length >= 2)
+         if(lostArr.length >= 2)
          {
-            _lostTxt2.text = _loc1_[1];
+            _lostTxt2.text = lostArr[1];
             _lostTxt2.y = _lostTxt1.y + _lostTxt1.textHeight + 25;
             _arrow4.y = _lostTxt2.y + 5;
             _arrow4.x = _lostTxt2.x - 15;
@@ -283,7 +283,7 @@ package gameCommon.view
          }
       }
       
-      private function __startEffect(param1:Event) : void
+      private function __startEffect(evt:Event) : void
       {
          _opened = true;
          x = StageReferance.stageWidth >> 1;
@@ -300,9 +300,9 @@ package gameCommon.view
          });
       }
       
-      protected function __closeHandler(param1:MouseEvent) : void
+      protected function __closeHandler(evt:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var bounds:* = null;
          SoundManager.instance.play("008");
          if(_isFirst)
          {
@@ -310,11 +310,11 @@ package gameCommon.view
          }
          else
          {
-            _loc2_ = _barrier.getBounds(_gameContainer);
+            bounds = _barrier.getBounds(_gameContainer);
             var _loc3_:int = 1;
-            _loc2_.height = _loc3_;
-            _loc2_.width = _loc3_;
-            close(_loc2_);
+            bounds.height = _loc3_;
+            bounds.width = _loc3_;
+            close(bounds);
          }
          StageReferance.stage.focus = null;
       }

@@ -24,9 +24,9 @@ package vipCoupons
       
       private var _vipDiscountValidity:Date = null;
       
-      public function VIPCouponsManager(param1:IEventDispatcher = null)
+      public function VIPCouponsManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : VIPCouponsManager
@@ -48,22 +48,22 @@ package vipCoupons
          return _curCoupons;
       }
       
-      public function set curCoupons(param1:int) : void
+      public function set curCoupons(value:int) : void
       {
-         _curCoupons = param1;
+         _curCoupons = value;
       }
       
-      public function useVipCoupons(param1:int, param2:int) : void
+      public function useVipCoupons(bagType:int, place:int) : void
       {
-         _bagType = param1;
-         _place = param2;
+         _bagType = bagType;
+         _place = place;
          dispatchEvent(new CEvent("useVipCoupons",[_bagType,_place]));
       }
       
-      public function openShow(param1:int, param2:int) : void
+      public function openShow(bagType:int, place:int) : void
       {
-         _bagType = param1;
-         _place = param2;
+         _bagType = bagType;
+         _place = place;
          show();
       }
    }

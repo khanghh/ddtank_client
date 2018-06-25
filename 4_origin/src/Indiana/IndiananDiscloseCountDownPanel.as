@@ -118,15 +118,15 @@ package Indiana
          addChild(_linkNum);
       }
       
-      public function setInfo(param1:IndianaShopItemInfo) : void
+      public function setInfo(info:IndianaShopItemInfo) : void
       {
-         var _loc2_:* = null;
-         _info = param1;
+         var severTime:* = null;
+         _info = info;
          if(_info)
          {
             _showdata = IndianaDataManager.instance.currentShowData;
-            _loc2_ = TimeManager.Instance.Now();
-            _countDownDate = (_showdata.humanFullTime.time - _loc2_.time) / 1000 + _info.CountDown;
+            severTime = TimeManager.Instance.Now();
+            _countDownDate = (_showdata.humanFullTime.time - severTime.time) / 1000 + _info.CountDown;
             _timer.start();
             if(_showdata.joinCount > 0)
             {
@@ -153,20 +153,20 @@ package Indiana
       {
       }
       
-      private function __linkHandler(param1:TextEvent) : void
+      private function __linkHandler(e:TextEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:Array = param1.text.split("|");
-         var _loc4_:String = _loc3_[0];
-         if(_loc4_ == "clickother")
+         var id:int = 0;
+         var cmdArray:Array = e.text.split("|");
+         var cmd:String = cmdArray[0];
+         if(cmd == "clickother")
          {
-            _loc2_ = _loc3_[1];
+            id = cmdArray[1];
          }
-         if(_loc4_ == "clickself")
+         if(cmd == "clickself")
          {
-            _loc2_ = PlayerManager.Instance.Self.ID;
+            id = PlayerManager.Instance.Self.ID;
          }
-         SocketManager.Instance.out.sendIndianaCode(_showdata.per_id,_loc2_);
+         SocketManager.Instance.out.sendIndianaCode(_showdata.per_id,id);
       }
       
       private function removeEvent() : void
@@ -176,27 +176,27 @@ package Indiana
          _linkNum.removeEventListener("link",__linkHandler);
       }
       
-      private function __TimerHander(param1:Event) : void
+      private function __TimerHander(evt:Event) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
+         var second:int = 0;
+         var minute:int = 0;
+         var hour:int = 0;
          if(_countDownDate > 0)
          {
             _countDownDate = Number(_countDownDate) - 1;
             if(_countDownDate / 3600 > 0)
             {
-               _loc4_ = _countDownDate / 3600;
+               hour = _countDownDate / 3600;
             }
             if(_countDownDate / 60 > 0)
             {
-               _loc2_ = _countDownDate / 60;
+               minute = _countDownDate / 60;
             }
             if(_countDownDate % 60 > 0)
             {
-               _loc3_ = _countDownDate % 60;
+               second = _countDownDate % 60;
             }
-            if(_loc4_ == 0 && _loc2_ == 0 && _loc3_ == 0)
+            if(hour == 0 && minute == 0 && second == 0)
             {
                countDownComplete = true;
                if(_timer)
@@ -205,25 +205,25 @@ package Indiana
                }
                alert();
             }
-            setDownValue(_loc3_,_loc2_,_loc4_);
+            setDownValue(second,minute,hour);
          }
       }
       
       private function alert() : void
       {
-         var _loc1_:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("AlertDialog.Info"));
-         _loc1_.data = LanguageMgr.GetTranslation("Indiana.update.view");
-         baseAlerFrame = AlertManager.Instance.alert("SimpleAlert",_loc1_,2);
+         var alertInfo:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("AlertDialog.Info"));
+         alertInfo.data = LanguageMgr.GetTranslation("Indiana.update.view");
+         baseAlerFrame = AlertManager.Instance.alert("SimpleAlert",alertInfo,2);
          baseAlerFrame.addEventListener("response",__frameEvent);
       }
       
-      private function __frameEvent(param1:FrameEvent) : void
+      private function __frameEvent(event:FrameEvent) : void
       {
          baseAlerFrame.removeEventListener("response",__frameEvent);
          ObjectUtils.disposeObject(baseAlerFrame);
          baseAlerFrame = null;
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode) - 2)
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
@@ -232,18 +232,18 @@ package Indiana
          }
       }
       
-      private function setDownValue(param1:int, param2:int, param3:int) : void
+      private function setDownValue(secon:int, minute:int, hour:int) : void
       {
-         if(param1 > 0)
+         if(secon > 0)
          {
-            if(param1 > 9)
+            if(secon > 9)
             {
-               _secondNum01.count = int(param1.toString().charAt(1));
-               _secondNum02.count = int(param1.toString().charAt(0));
+               _secondNum01.count = int(secon.toString().charAt(1));
+               _secondNum02.count = int(secon.toString().charAt(0));
             }
             else
             {
-               _secondNum01.count = param1;
+               _secondNum01.count = secon;
                _secondNum02.count = 0;
             }
          }
@@ -252,16 +252,16 @@ package Indiana
             _secondNum01.count = 0;
             _secondNum02.count = 0;
          }
-         if(param2 > 0)
+         if(minute > 0)
          {
-            if(param2 > 9)
+            if(minute > 9)
             {
-               _minuteNum01.count = int(param2.toString().charAt(1));
-               _minuteNum02.count = int(param2.toString().charAt(0));
+               _minuteNum01.count = int(minute.toString().charAt(1));
+               _minuteNum02.count = int(minute.toString().charAt(0));
             }
             else
             {
-               _minuteNum01.count = param2;
+               _minuteNum01.count = minute;
                _minuteNum02.count = 0;
             }
          }
@@ -270,16 +270,16 @@ package Indiana
             _minuteNum01.count = 0;
             _minuteNum02.count = 0;
          }
-         if(param3 > 0)
+         if(hour > 0)
          {
-            if(param3 > 9)
+            if(hour > 9)
             {
-               _hourNum01.count = int(param3.toString().charAt(1));
-               _hourNum02.count = int(param3.toString().charAt(0));
+               _hourNum01.count = int(hour.toString().charAt(1));
+               _hourNum02.count = int(hour.toString().charAt(0));
             }
             else
             {
-               _hourNum01.count = param3;
+               _hourNum01.count = hour;
                _hourNum02.count = 0;
             }
          }
@@ -290,7 +290,7 @@ package Indiana
          }
       }
       
-      private function __TimerCompleteHander(param1:Event) : void
+      private function __TimerCompleteHander(evt:Event) : void
       {
          if(countDownComplete)
          {

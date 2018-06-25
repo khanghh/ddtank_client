@@ -14,39 +14,38 @@ package littleGame.view
    {
        
       
-      public function MarkShape(param1:int)
+      public function MarkShape(time:int)
       {
          super(null,"auto",true);
-         setTime(param1);
+         setTime(time);
       }
       
-      public function setTime(param1:int) : void
+      public function setTime(time:int) : void
       {
-         var _loc10_:int = 0;
-         if(param1 < 0)
+         var i:int = 0;
+         if(time < 0)
          {
             return;
          }
-         var _loc3_:BitmapData = LittleGameManager.Instance.Current.markBack.clone();
-         var _loc4_:String = param1.toString();
-         var _loc7_:BitmapData = LittleGameManager.Instance.Current.bigNum;
-         var _loc2_:int = _loc7_.width / 11;
-         var _loc9_:int = _loc7_.height;
-         var _loc5_:int = param1 < 10?145:118;
-         var _loc8_:Rectangle = new Rectangle(_loc7_.width - _loc2_,0,_loc2_,_loc9_);
-         var _loc6_:int = _loc4_.length;
-         _loc10_ = 0;
-         while(_loc10_ < _loc6_)
+         var bitmap:BitmapData = LittleGameManager.Instance.Current.markBack.clone();
+         var timeStr:String = time.toString();
+         var src:BitmapData = LittleGameManager.Instance.Current.bigNum;
+         var w:int = src.width / 11;
+         var h:int = src.height;
+         var left:int = time < 10?145:118;
+         var rect:Rectangle = new Rectangle(src.width - w,0,w,h);
+         var len:int = timeStr.length;
+         for(i = 0; i < len; )
          {
-            _loc8_.x = int(_loc4_.substr(_loc10_,1)) * _loc2_;
-            _loc3_.copyPixels(_loc7_,_loc8_,new Point(_loc5_ + _loc2_ * _loc10_,0));
-            _loc10_++;
+            rect.x = int(timeStr.substr(i,1)) * w;
+            bitmap.copyPixels(src,rect,new Point(left + w * i,0));
+            i++;
          }
          if(bitmapData)
          {
             bitmapData.dispose();
          }
-         bitmapData = _loc3_;
+         bitmapData = bitmap;
       }
       
       public function dispose() : void

@@ -36,10 +36,10 @@ package ddt.view.tips
          _bg = ComponentFactory.Instance.creat("core.GoodsTipBg");
          buff_txt = ComponentFactory.Instance.creat("core.FightBuffTxt");
          detail_txt = ComponentFactory.Instance.creat("core.FightBuffDetailTxt");
-         var _loc1_:int = detail_txt.width;
+         var txtW:int = detail_txt.width;
          detail_txt.multiline = true;
          detail_txt.wordWrap = true;
-         detail_txt.width = _loc1_;
+         detail_txt.width = txtW;
          detail_txt.selectable = false;
          buff_txt.selectable = false;
          this.tipbackgound = _bg;
@@ -66,14 +66,14 @@ package ddt.view.tips
          return _tempData;
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         if(param1 is PropTxtTipInfo)
+         if(data is PropTxtTipInfo)
          {
-            _tempData = param1;
+            _tempData = data;
             this.visible = true;
-            this.propertyText(param1.property);
-            this.detailText(param1.detail);
+            this.propertyText(data.property);
+            this.detailText(data.detail);
          }
          else
          {
@@ -90,21 +90,21 @@ package ddt.view.tips
          super.dispose();
       }
       
-      private function propertyTextColor(param1:uint) : void
+      private function propertyTextColor(color:uint) : void
       {
-         var _loc2_:TextFormat = buff_txt.getTextFormat();
-         _loc2_.color = param1;
-         buff_txt.setTextFormat(_loc2_);
+         var format:TextFormat = buff_txt.getTextFormat();
+         format.color = color;
+         buff_txt.setTextFormat(format);
       }
       
-      private function propertyText(param1:String) : void
+      private function propertyText(value:String) : void
       {
-         buff_txt.text = param1;
+         buff_txt.text = value;
       }
       
-      private function detailText(param1:String) : void
+      private function detailText(value:String) : void
       {
-         detail_txt.htmlText = param1;
+         detail_txt.htmlText = value;
          updateWH();
       }
       

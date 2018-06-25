@@ -44,37 +44,37 @@ package rescue
          SocketManager.Instance.addEventListener(PkgEvent.format(277,1),__addRescueBtn);
       }
       
-      protected function __addRescueBtn(param1:PkgEvent) : void
+      protected function __addRescueBtn(event:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:Boolean = _loc3_.readBoolean();
-         _isBegin = _loc2_;
+         var pkg:PackageIn = event.pkg;
+         var flag:Boolean = pkg.readBoolean();
+         _isBegin = flag;
          createRescueBtn(_isBegin);
       }
       
-      public function createRescueBtn(param1:Boolean) : void
+      public function createRescueBtn(flag:Boolean) : void
       {
-         HallIconManager.instance.updateSwitchHandler("rescue",param1);
+         HallIconManager.instance.updateSwitchHandler("rescue",flag);
       }
       
-      public function setupRewardList(param1:RescueRewardAnalyzer) : void
+      public function setupRewardList(analyzer:RescueRewardAnalyzer) : void
       {
-         rewardArr = param1.list;
+         rewardArr = analyzer.list;
       }
       
       public function isSpringShowTop() : Boolean
       {
-         var _loc3_:Date = ServerConfigManager.instance.yearMonsterBeginDate();
-         var _loc2_:Date = ServerConfigManager.instance.yearMonsterEndDate();
-         var _loc1_:Date = TimeManager.Instance.Now();
-         return _loc1_.getTime() >= _loc3_.getTime() && _loc1_.getTime() <= _loc2_.getTime();
+         var beginDate:Date = ServerConfigManager.instance.yearMonsterBeginDate();
+         var endDate:Date = ServerConfigManager.instance.yearMonsterEndDate();
+         var now:Date = TimeManager.Instance.Now();
+         return now.getTime() >= beginDate.getTime() && now.getTime() <= endDate.getTime();
       }
       
       public function isSpringBegin() : Boolean
       {
-         var _loc2_:Date = ServerConfigManager.instance.rescueSpringBegin();
-         var _loc1_:Date = TimeManager.Instance.Now();
-         return _loc1_.getTime() >= _loc2_.getTime();
+         var beginDate:Date = ServerConfigManager.instance.rescueSpringBegin();
+         var now:Date = TimeManager.Instance.Now();
+         return now.getTime() >= beginDate.getTime();
       }
       
       override protected function start() : void
@@ -94,9 +94,9 @@ package rescue
          return _isBegin;
       }
       
-      public function set isBegin(param1:Boolean) : void
+      public function set isBegin(value:Boolean) : void
       {
-         _isBegin = param1;
+         _isBegin = value;
       }
    }
 }

@@ -68,22 +68,22 @@ package ddtKingFloat
          SocketManager.Instance.addEventListener("ddt_king_float",pkgHandler);
       }
       
-      private function pkgHandler(param1:CrazyTankSocketEvent) : void
+      private function pkgHandler(event:CrazyTankSocketEvent) : void
       {
-         var _loc3_:Boolean = false;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc4_.readByte();
-         if(_loc2_ == 1)
+         var start:Boolean = false;
+         var pkg:PackageIn = event.pkg;
+         var cmd:int = pkg.readByte();
+         if(cmd == 1)
          {
-            _loc4_.readInt();
-            _loc3_ = _loc4_.readBoolean();
-            _loc4_.position = _loc4_.position - 6;
-            if(_loc3_)
+            pkg.readInt();
+            start = pkg.readBoolean();
+            pkg.position = pkg.position - 6;
+            if(start)
             {
                if(!_isStart)
                {
                   _isStart = true;
-                  _pkg = _loc4_;
+                  _pkg = pkg;
                   loaderIcon();
                   _endTime = DateUtils.getDateByStr(ServerConfigManager.instance.findInfoByName("NewYearEscortEndDate").Value);
                   _hasPrompted = new DictionaryData();
@@ -95,13 +95,13 @@ package ddtKingFloat
             else
             {
                _isStart = false;
-               dispatchEventPkg("floatparadepkg",_loc4_);
+               dispatchEventPkg("floatparadepkg",pkg);
                dispatchEvent(new Event("floatParadeEnd"));
             }
             return;
          }
-         _loc4_.position = _loc4_.position - 1;
-         dispatchEventPkg("floatparadepkg",_loc4_);
+         pkg.position = pkg.position - 1;
+         dispatchEventPkg("floatparadepkg",pkg);
       }
       
       private function loaderIcon() : void
@@ -110,9 +110,9 @@ package ddtKingFloat
          UIModuleLoader.Instance.addUIModuleImp("floatParadeicon");
       }
       
-      private function loadIconCompleteHandler(param1:UIModuleEvent) : void
+      private function loadIconCompleteHandler(event:UIModuleEvent) : void
       {
-         if(param1.module == "floatParadeicon")
+         if(event.module == "floatParadeicon")
          {
             UIModuleLoader.Instance.removeEventListener("uiModuleComplete",loadIconCompleteHandler);
             _isLoadIconComplete = true;
@@ -120,11 +120,11 @@ package ddtKingFloat
          }
       }
       
-      public function dispatchEventPkg(param1:String = null, param2:PackageIn = null) : void
+      public function dispatchEventPkg(eventType:String = null, pkg:PackageIn = null) : void
       {
-         var _loc3_:DDTKingFloatEvent = new DDTKingFloatEvent(param1);
-         _loc3_.savePkg = param2;
-         dispatchEvent(_loc3_);
+         var event:DDTKingFloatEvent = new DDTKingFloatEvent(eventType);
+         event.savePkg = pkg;
+         dispatchEvent(event);
       }
       
       override protected function start() : void
@@ -143,17 +143,17 @@ package ddtKingFloat
          return _isStart;
       }
       
-      private function timerHandler(param1:TimerEvent) : void
+      private function timerHandler(event:TimerEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:int = (_endTime.getTime() - TimeManager.Instance.Now().getTime()) / 1000;
-         if(_loc3_ > 0)
+         var onTime:int = 0;
+         var diff:int = (_endTime.getTime() - TimeManager.Instance.Now().getTime()) / 1000;
+         if(diff > 0)
          {
-            _loc2_ = _loc3_ / 3600 + 1;
-            if(!_hasPrompted.hasKey(_loc2_) && _loc2_ <= 48 && _loc2_ > 0)
+            onTime = diff / 3600 + 1;
+            if(!_hasPrompted.hasKey(onTime) && onTime <= 48 && onTime > 0)
             {
-               ChatManager.Instance.sysChatAmaranth(LanguageMgr.GetTranslation("floatParade.willEnd.promptTxt",_loc2_));
-               _hasPrompted.add(_loc2_,1);
+               ChatManager.Instance.sysChatAmaranth(LanguageMgr.GetTranslation("floatParade.willEnd.promptTxt",onTime));
+               _hasPrompted.add(onTime,1);
             }
          }
          else
@@ -169,13 +169,13 @@ package ddtKingFloat
          }
       }
       
-      public function updateIcon(param1:Sprite) : void
+      public function updateIcon(hall:Sprite) : void
       {
-         if(param1 == null)
+         if(hall == null)
          {
             return;
          }
-         _hall = param1;
+         _hall = hall;
          if(ddtKingFloatActivityStart())
          {
             if(_isLoadIconComplete)
@@ -199,17 +199,17 @@ package ddtKingFloat
       
       public function ddtKingFloatActivityStart() : Boolean
       {
-         var _loc3_:Number = DateUtils.getDateByStr(ServerConfigManager.instance.findInfoByName("TankMatchBeginDate").Value).getTime();
-         var _loc2_:Number = DateUtils.getDateByStr(ServerConfigManager.instance.findInfoByName("TankMatchEndDate").Value).getTime() + 86400000;
-         var _loc1_:Number = TimeManager.Instance.Now().getTime();
-         if(_loc3_ < _loc1_ && _loc1_ < _loc2_)
+         var tmpStartTime:Number = DateUtils.getDateByStr(ServerConfigManager.instance.findInfoByName("TankMatchBeginDate").Value).getTime();
+         var tmpEndTime:Number = DateUtils.getDateByStr(ServerConfigManager.instance.findInfoByName("TankMatchEndDate").Value).getTime() + 86400000;
+         var currentTime:Number = TimeManager.Instance.Now().getTime();
+         if(tmpStartTime < currentTime && currentTime < tmpEndTime)
          {
             return true;
          }
          return false;
       }
       
-      private function __onClickActivityBtn(param1:MouseEvent) : void
+      private function __onClickActivityBtn(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          DragonBoatManager.instance.show();

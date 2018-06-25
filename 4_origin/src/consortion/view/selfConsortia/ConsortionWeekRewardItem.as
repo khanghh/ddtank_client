@@ -55,16 +55,16 @@ package consortion.view.selfConsortia
          addChild(_itemCell);
       }
       
-      public function setCellValue(param1:*) : void
+      public function setCellValue(value:*) : void
       {
-         var _loc2_:int = 0;
-         _playerInfo = param1;
+         var index:int = 0;
+         _playerInfo = value;
          if(_playerInfo)
          {
             _nameText.text = _playerInfo.Name;
             _weekRichesText.text = _playerInfo.Rich.toString();
-            _loc2_ = (_playerInfo.Rank < 4?_playerInfo.Rank:4) - 1;
-            _rankText.text = _playerInfo.Rank.toString() + rankName[_loc2_];
+            index = (_playerInfo.Rank < 4?_playerInfo.Rank:4) - 1;
+            _rankText.text = _playerInfo.Rank.toString() + rankName[index];
             _itemCell.info = ConsortionModelManager.Instance.model.weekReward[_playerInfo.Rank];
          }
          else
@@ -76,19 +76,19 @@ package consortion.view.selfConsortia
          }
       }
       
-      public function setListCellStatus(param1:List, param2:Boolean, param3:int) : void
+      public function setListCellStatus(list:List, isSelected:Boolean, index:int) : void
       {
       }
       
       private function createItemCell() : BaseCell
       {
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,30,30);
-         _loc1_.graphics.endFill();
-         var _loc2_:BaseCell = new BaseCell(_loc1_,null,true,true);
-         CellFactory.instance.fillTipProp(_loc2_);
-         return _loc2_;
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(16777215,0);
+         sp.graphics.drawRect(0,0,30,30);
+         sp.graphics.endFill();
+         var cell:BaseCell = new BaseCell(sp,null,true,true);
+         CellFactory.instance.fillTipProp(cell);
+         return cell;
       }
       
       public function getCellValue() : *

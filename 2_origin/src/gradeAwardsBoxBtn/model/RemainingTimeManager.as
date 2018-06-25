@@ -13,7 +13,7 @@ package gradeAwardsBoxBtn.model
       
       private var _timer:Timer;
       
-      public function RemainingTimeManager(param1:inner)
+      public function RemainingTimeManager(single:inner)
       {
          super();
          _timer = new Timer(30000);
@@ -34,7 +34,7 @@ package gradeAwardsBoxBtn.model
          _timer.start();
       }
       
-      protected function onTimer(param1:TimerEvent) : void
+      protected function onTimer(te:TimerEvent) : void
       {
          if(funOnTimer != null)
          {

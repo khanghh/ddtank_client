@@ -37,11 +37,11 @@ package starling.events
       
       protected var mCurrentTouches:Vector.<Touch>;
       
-      public function TouchProcessor(param1:Stage)
+      public function TouchProcessor(stage:Stage)
       {
          super();
-         mStage = param1;
-         mRoot = param1;
+         mStage = stage;
+         mRoot = stage;
          mElapsedTime = 0;
          mCurrentTouches = new Vector.<Touch>(0);
          mQueue = new Vector.<Array>(0);
@@ -62,138 +62,136 @@ package starling.events
          }
       }
       
-      public function advanceTime(param1:Number) : void
+      public function advanceTime(passedTime:Number) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         mElapsedTime = mElapsedTime + param1;
+         var i:int = 0;
+         var touch:* = null;
+         var touchArgs:* = null;
+         mElapsedTime = mElapsedTime + passedTime;
          sUpdatedTouches.length = 0;
          if(mLastTaps.length > 0)
          {
-            _loc4_ = mLastTaps.length - 1;
-            while(_loc4_ >= 0)
+            for(i = mLastTaps.length - 1; i >= 0; )
             {
-               if(mElapsedTime - mLastTaps[_loc4_].timestamp > mMultitapTime)
+               if(mElapsedTime - mLastTaps[i].timestamp > mMultitapTime)
                {
-                  mLastTaps.splice(_loc4_,1);
+                  mLastTaps.splice(i,1);
                }
-               _loc4_--;
+               i--;
             }
          }
          while(mQueue.length > 0)
          {
             var _loc6_:int = 0;
             var _loc5_:* = mCurrentTouches;
-            for each(_loc2_ in mCurrentTouches)
+            for each(touch in mCurrentTouches)
             {
-               if(_loc2_.phase == "began" || _loc2_.phase == "moved")
+               if(touch.phase == "began" || touch.phase == "moved")
                {
-                  _loc2_.phase = "stationary";
+                  touch.phase = "stationary";
                }
             }
             while(mQueue.length > 0 && !containsTouchWithID(sUpdatedTouches,mQueue[mQueue.length - 1][0]))
             {
-               _loc3_ = mQueue.pop();
-               _loc2_ = createOrUpdateTouch(_loc3_[0],_loc3_[1],_loc3_[2],_loc3_[3],_loc3_[4],_loc3_[5],_loc3_[6]);
-               sUpdatedTouches[sUpdatedTouches.length] = _loc2_;
+               touchArgs = mQueue.pop();
+               touch = createOrUpdateTouch(touchArgs[0],touchArgs[1],touchArgs[2],touchArgs[3],touchArgs[4],touchArgs[5],touchArgs[6]);
+               sUpdatedTouches[sUpdatedTouches.length] = touch;
             }
             processTouches(sUpdatedTouches,mShiftDown,mCtrlDown);
-            _loc4_ = mCurrentTouches.length - 1;
-            while(_loc4_ >= 0)
+            for(i = mCurrentTouches.length - 1; i >= 0; )
             {
-               if(mCurrentTouches[_loc4_].phase == "ended")
+               if(mCurrentTouches[i].phase == "ended")
                {
-                  mCurrentTouches.splice(_loc4_,1);
+                  mCurrentTouches.splice(i,1);
                }
-               _loc4_--;
+               i--;
             }
             sUpdatedTouches.length = 0;
          }
       }
       
-      protected function processTouches(param1:Vector.<Touch>, param2:Boolean, param3:Boolean) : void
+      protected function processTouches(touches:Vector.<Touch>, shiftDown:Boolean, ctrlDown:Boolean) : void
       {
-         var _loc5_:* = null;
+         var touch:* = null;
          sHoveringTouchData.length = 0;
-         var _loc6_:TouchEvent = new TouchEvent("touch",mCurrentTouches,param2,param3);
+         var touchEvent:TouchEvent = new TouchEvent("touch",mCurrentTouches,shiftDown,ctrlDown);
          var _loc8_:int = 0;
-         var _loc7_:* = param1;
-         for each(_loc5_ in param1)
+         var _loc7_:* = touches;
+         for each(touch in touches)
          {
-            if(_loc5_.phase == "hover" && _loc5_.target)
+            if(touch.phase == "hover" && touch.target)
             {
                sHoveringTouchData[sHoveringTouchData.length] = {
-                  "touch":_loc5_,
-                  "target":_loc5_.target,
-                  "bubbleChain":_loc5_.bubbleChain
+                  "touch":touch,
+                  "target":touch.target,
+                  "bubbleChain":touch.bubbleChain
                };
             }
-            if(_loc5_.phase == "hover" || _loc5_.phase == "began")
+            if(touch.phase == "hover" || touch.phase == "began")
             {
-               sHelperPoint.setTo(_loc5_.globalX,_loc5_.globalY);
-               _loc5_.target = mRoot.hitTest(sHelperPoint,true);
+               sHelperPoint.setTo(touch.globalX,touch.globalY);
+               touch.target = mRoot.hitTest(sHelperPoint,true);
             }
          }
          var _loc10_:int = 0;
          var _loc9_:* = sHoveringTouchData;
-         for each(var _loc4_ in sHoveringTouchData)
+         for each(var touchData in sHoveringTouchData)
          {
-            if(_loc4_.touch.target != _loc4_.target)
+            if(touchData.touch.target != touchData.target)
             {
-               _loc6_.dispatch(_loc4_.bubbleChain);
+               touchEvent.dispatch(touchData.bubbleChain);
             }
          }
          var _loc12_:int = 0;
-         var _loc11_:* = param1;
-         for each(_loc5_ in param1)
+         var _loc11_:* = touches;
+         for each(touch in touches)
          {
-            _loc5_.dispatchEvent(_loc6_);
+            touch.dispatchEvent(touchEvent);
          }
       }
       
-      public function enqueue(param1:int, param2:String, param3:Number, param4:Number, param5:Number = 1.0, param6:Number = 1.0, param7:Number = 1.0) : void
+      public function enqueue(touchID:int, phase:String, globalX:Number, globalY:Number, pressure:Number = 1.0, width:Number = 1.0, height:Number = 1.0) : void
       {
          mQueue.unshift(arguments);
-         if(mCtrlDown && simulateMultitouch && param1 == 0)
+         if(mCtrlDown && simulateMultitouch && touchID == 0)
          {
-            mTouchMarker.moveMarker(param3,param4,mShiftDown);
-            mQueue.unshift([1,param2,mTouchMarker.mockX,mTouchMarker.mockY]);
+            mTouchMarker.moveMarker(globalX,globalY,mShiftDown);
+            mQueue.unshift([1,phase,mTouchMarker.mockX,mTouchMarker.mockY]);
          }
       }
       
       public function enqueueMouseLeftStage() : void
       {
-         var _loc4_:Touch = getCurrentTouch(0);
-         if(_loc4_ == null || _loc4_.phase != "hover")
+         var mouse:Touch = getCurrentTouch(0);
+         if(mouse == null || mouse.phase != "hover")
          {
             return;
          }
-         var _loc6_:int = 1;
-         var _loc1_:Number = _loc4_.globalX;
-         var _loc3_:Number = _loc4_.globalY;
-         var _loc5_:Number = _loc4_.globalX;
-         var _loc2_:Number = mStage.stageWidth - _loc5_;
-         var _loc9_:Number = _loc4_.globalY;
-         var _loc8_:Number = mStage.stageHeight - _loc9_;
-         var _loc7_:Number = Math.min(_loc5_,_loc2_,_loc9_,_loc8_);
-         if(_loc7_ == _loc5_)
+         var offset:int = 1;
+         var exitX:Number = mouse.globalX;
+         var exitY:Number = mouse.globalY;
+         var distLeft:Number = mouse.globalX;
+         var distRight:Number = mStage.stageWidth - distLeft;
+         var distTop:Number = mouse.globalY;
+         var distBottom:Number = mStage.stageHeight - distTop;
+         var minDist:Number = Math.min(distLeft,distRight,distTop,distBottom);
+         if(minDist == distLeft)
          {
-            _loc1_ = -_loc6_;
+            exitX = -offset;
          }
-         else if(_loc7_ == _loc2_)
+         else if(minDist == distRight)
          {
-            _loc1_ = mStage.stageWidth + _loc6_;
+            exitX = mStage.stageWidth + offset;
          }
-         else if(_loc7_ == _loc9_)
+         else if(minDist == distTop)
          {
-            _loc3_ = -_loc6_;
+            exitY = -offset;
          }
          else
          {
-            _loc3_ = mStage.stageHeight + _loc6_;
+            exitY = mStage.stageHeight + offset;
          }
-         enqueue(0,"hover",_loc1_,_loc3_);
+         enqueue(0,"hover",exitX,exitY);
       }
       
       public function cancelTouches() : void
@@ -202,12 +200,12 @@ package starling.events
          {
             var _loc3_:int = 0;
             var _loc2_:* = mCurrentTouches;
-            for each(var _loc1_ in mCurrentTouches)
+            for each(var touch in mCurrentTouches)
             {
-               if(_loc1_.phase == "began" || _loc1_.phase == "moved" || _loc1_.phase == "stationary")
+               if(touch.phase == "began" || touch.phase == "moved" || touch.phase == "stationary")
                {
-                  _loc1_.phase = "ended";
-                  _loc1_.cancelled = true;
+                  touch.phase = "ended";
+                  touch.cancelled = true;
                }
             }
             processTouches(mCurrentTouches,mShiftDown,mCtrlDown);
@@ -216,92 +214,91 @@ package starling.events
          mQueue.length = 0;
       }
       
-      private function createOrUpdateTouch(param1:int, param2:String, param3:Number, param4:Number, param5:Number = 1.0, param6:Number = 1.0, param7:Number = 1.0) : Touch
+      private function createOrUpdateTouch(touchID:int, phase:String, globalX:Number, globalY:Number, pressure:Number = 1.0, width:Number = 1.0, height:Number = 1.0) : Touch
       {
-         var _loc8_:Touch = getCurrentTouch(param1);
-         if(_loc8_ == null)
+         var touch:Touch = getCurrentTouch(touchID);
+         if(touch == null)
          {
-            _loc8_ = new Touch(param1);
-            addCurrentTouch(_loc8_);
+            touch = new Touch(touchID);
+            addCurrentTouch(touch);
          }
-         _loc8_.globalX = param3;
-         _loc8_.globalY = param4;
-         _loc8_.phase = param2;
-         _loc8_.timestamp = mElapsedTime;
-         _loc8_.pressure = param5;
-         _loc8_.width = param6;
-         _loc8_.height = param7;
-         if(param2 == "began")
+         touch.globalX = globalX;
+         touch.globalY = globalY;
+         touch.phase = phase;
+         touch.timestamp = mElapsedTime;
+         touch.pressure = pressure;
+         touch.width = width;
+         touch.height = height;
+         if(phase == "began")
          {
-            updateTapCount(_loc8_);
+            updateTapCount(touch);
          }
-         return _loc8_;
+         return touch;
       }
       
-      private function updateTapCount(param1:Touch) : void
+      private function updateTapCount(touch:Touch) : void
       {
-         var _loc2_:Number = NaN;
-         var _loc4_:* = null;
-         var _loc5_:Number = mMultitapDistance * mMultitapDistance;
+         var sqDist:Number = NaN;
+         var nearbyTap:* = null;
+         var minSqDist:Number = mMultitapDistance * mMultitapDistance;
          var _loc7_:int = 0;
          var _loc6_:* = mLastTaps;
-         for each(var _loc3_ in mLastTaps)
+         for each(var tap in mLastTaps)
          {
-            _loc2_ = Math.pow(_loc3_.globalX - param1.globalX,2) + Math.pow(_loc3_.globalY - param1.globalY,2);
-            if(_loc2_ <= _loc5_)
+            sqDist = Math.pow(tap.globalX - touch.globalX,2) + Math.pow(tap.globalY - touch.globalY,2);
+            if(sqDist <= minSqDist)
             {
-               _loc4_ = _loc3_;
+               nearbyTap = tap;
                break;
             }
          }
-         if(_loc4_)
+         if(nearbyTap)
          {
-            param1.tapCount = _loc4_.tapCount + 1;
-            mLastTaps.splice(mLastTaps.indexOf(_loc4_),1);
+            touch.tapCount = nearbyTap.tapCount + 1;
+            mLastTaps.splice(mLastTaps.indexOf(nearbyTap),1);
          }
          else
          {
-            param1.tapCount = 1;
+            touch.tapCount = 1;
          }
-         mLastTaps.push(param1.clone());
+         mLastTaps.push(touch.clone());
       }
       
-      private function addCurrentTouch(param1:Touch) : void
+      private function addCurrentTouch(touch:Touch) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = mCurrentTouches.length - 1;
-         while(_loc2_ >= 0)
+         var i:int = 0;
+         for(i = mCurrentTouches.length - 1; i >= 0; )
          {
-            if(mCurrentTouches[_loc2_].id == param1.id)
+            if(mCurrentTouches[i].id == touch.id)
             {
-               mCurrentTouches.splice(_loc2_,1);
+               mCurrentTouches.splice(i,1);
             }
-            _loc2_--;
+            i--;
          }
-         mCurrentTouches.push(param1);
+         mCurrentTouches.push(touch);
       }
       
-      private function getCurrentTouch(param1:int) : Touch
+      private function getCurrentTouch(touchID:int) : Touch
       {
          var _loc4_:int = 0;
          var _loc3_:* = mCurrentTouches;
-         for each(var _loc2_ in mCurrentTouches)
+         for each(var touch in mCurrentTouches)
          {
-            if(_loc2_.id == param1)
+            if(touch.id == touchID)
             {
-               return _loc2_;
+               return touch;
             }
          }
          return null;
       }
       
-      private function containsTouchWithID(param1:Vector.<Touch>, param2:int) : Boolean
+      private function containsTouchWithID(touches:Vector.<Touch>, touchID:int) : Boolean
       {
          var _loc5_:int = 0;
-         var _loc4_:* = param1;
-         for each(var _loc3_ in param1)
+         var _loc4_:* = touches;
+         for each(var touch in touches)
          {
-            if(_loc3_.id == param2)
+            if(touch.id == touchID)
             {
                return true;
             }
@@ -314,13 +311,13 @@ package starling.events
          return mTouchMarker != null;
       }
       
-      public function set simulateMultitouch(param1:Boolean) : void
+      public function set simulateMultitouch(value:Boolean) : void
       {
-         if(simulateMultitouch == param1)
+         if(simulateMultitouch == value)
          {
             return;
          }
-         if(param1)
+         if(value)
          {
             mTouchMarker = new TouchMarker();
             mTouchMarker.visible = false;
@@ -338,9 +335,9 @@ package starling.events
          return mMultitapTime;
       }
       
-      public function set multitapTime(param1:Number) : void
+      public function set multitapTime(value:Number) : void
       {
-         mMultitapTime = param1;
+         mMultitapTime = value;
       }
       
       public function get multitapDistance() : Number
@@ -348,9 +345,9 @@ package starling.events
          return mMultitapDistance;
       }
       
-      public function set multitapDistance(param1:Number) : void
+      public function set multitapDistance(value:Number) : void
       {
-         mMultitapDistance = param1;
+         mMultitapDistance = value;
       }
       
       public function get root() : DisplayObject
@@ -358,9 +355,9 @@ package starling.events
          return mRoot;
       }
       
-      public function set root(param1:DisplayObject) : void
+      public function set root(value:DisplayObject) : void
       {
-         mRoot = param1;
+         mRoot = value;
       }
       
       public function get stage() : Stage
@@ -373,32 +370,32 @@ package starling.events
          return mCurrentTouches.length;
       }
       
-      private function onKey(param1:KeyboardEvent) : void
+      private function onKey(event:KeyboardEvent) : void
       {
-         var _loc2_:Boolean = false;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         if(param1.keyCode == 17 || param1.keyCode == 15)
+         var wasCtrlDown:Boolean = false;
+         var mouseTouch:* = null;
+         var mockedTouch:* = null;
+         if(event.keyCode == 17 || event.keyCode == 15)
          {
-            _loc2_ = mCtrlDown;
-            mCtrlDown = param1.type == "keyDown";
-            if(simulateMultitouch && _loc2_ != mCtrlDown)
+            wasCtrlDown = mCtrlDown;
+            mCtrlDown = event.type == "keyDown";
+            if(simulateMultitouch && wasCtrlDown != mCtrlDown)
             {
                mTouchMarker.visible = mCtrlDown;
                mTouchMarker.moveCenter(mStage.stageWidth / 2,mStage.stageHeight / 2);
-               _loc4_ = getCurrentTouch(0);
-               _loc3_ = getCurrentTouch(1);
-               if(_loc4_)
+               mouseTouch = getCurrentTouch(0);
+               mockedTouch = getCurrentTouch(1);
+               if(mouseTouch)
                {
-                  mTouchMarker.moveMarker(_loc4_.globalX,_loc4_.globalY);
+                  mTouchMarker.moveMarker(mouseTouch.globalX,mouseTouch.globalY);
                }
-               if(_loc2_ && _loc3_ && _loc3_.phase != "ended")
+               if(wasCtrlDown && mockedTouch && mockedTouch.phase != "ended")
                {
-                  mQueue.unshift([1,"ended",_loc3_.globalX,_loc3_.globalY]);
+                  mQueue.unshift([1,"ended",mockedTouch.globalX,mockedTouch.globalY]);
                }
-               else if(mCtrlDown && _loc4_)
+               else if(mCtrlDown && mouseTouch)
                {
-                  if(_loc4_.phase == "hover" || _loc4_.phase == "ended")
+                  if(mouseTouch.phase == "hover" || mouseTouch.phase == "ended")
                   {
                      mQueue.unshift([1,"hover",mTouchMarker.mockX,mTouchMarker.mockY]);
                   }
@@ -409,27 +406,27 @@ package starling.events
                }
             }
          }
-         else if(param1.keyCode == 16)
+         else if(event.keyCode == 16)
          {
-            mShiftDown = param1.type == "keyDown";
+            mShiftDown = event.type == "keyDown";
          }
       }
       
-      private function monitorInterruptions(param1:Boolean) : void
+      private function monitorInterruptions(enable:Boolean) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var nativeAppClass:* = null;
+         var nativeApp:* = null;
          try
          {
-            _loc3_ = getDefinitionByName("flash.desktop::NativeApplication");
-            _loc2_ = _loc3_["nativeApplication"];
-            if(param1)
+            nativeAppClass = getDefinitionByName("flash.desktop::NativeApplication");
+            nativeApp = nativeAppClass["nativeApplication"];
+            if(enable)
             {
-               _loc2_.addEventListener("deactivate",onInterruption,false,0,true);
+               nativeApp.addEventListener("deactivate",onInterruption,false,0,true);
             }
             else
             {
-               _loc2_.removeEventListener("deactivate",onInterruption);
+               nativeApp.removeEventListener("deactivate",onInterruption);
             }
             return;
          }
@@ -439,7 +436,7 @@ package starling.events
          }
       }
       
-      private function onInterruption(param1:Object) : void
+      private function onInterruption(event:Object) : void
       {
          cancelTouches();
       }

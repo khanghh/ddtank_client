@@ -30,13 +30,13 @@ package room.view
       
       private var _xyz:FilterFrameText;
       
-      public function RoomPropCell(param1:Boolean, param2:int, param3:Boolean = false)
+      public function RoomPropCell(isself:Boolean, place:int, isHorse:Boolean = false)
       {
-         _isself = param1;
-         _place = param2;
+         _isself = isself;
+         _place = place;
          if(_isself)
          {
-            if(param3)
+            if(isHorse)
             {
                _bg = ComponentFactory.Instance.creatBitmap("asset.horse.skillFrame.selfCellBgAsset");
                _xyz = ComponentFactory.Instance.creatComponentByStylename("horse.skillFrame.cellZXC");
@@ -46,7 +46,7 @@ package room.view
                _bg = ComponentFactory.Instance.creatBitmap("asset.ddtroom.selfCellBgAsset");
                _xyz = ComponentFactory.Instance.creatComponentByStylename("asset.ddtroom.cellZXC");
             }
-            switch(int(param2))
+            switch(int(place))
             {
                case 0:
                   _xyz.text = "z";
@@ -83,7 +83,7 @@ package room.view
          removeEventListener("mouseOut",__mouseOut);
       }
       
-      public function set skillId(param1:int) : void
+      public function set skillId(skillId:int) : void
       {
          if(_container)
          {
@@ -91,7 +91,7 @@ package room.view
             _container = null;
          }
          buttonMode = false;
-         _skillId = param1;
+         _skillId = skillId;
          if(_skillId == 0)
          {
             return;
@@ -103,9 +103,9 @@ package room.view
          addChild(_container);
       }
       
-      protected function __mouseClick(param1:MouseEvent) : void
+      protected function __mouseClick(evt:MouseEvent) : void
       {
-         var _loc2_:int = 0;
+         var tmpPlace:int = 0;
          if(_skillId == 0)
          {
             return;
@@ -122,21 +122,21 @@ package room.view
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("horse.skillCannotEquipSame"));
                return;
             }
-            _loc2_ = HorseManager.instance.takeUpSkillPlace;
-            if(_loc2_ == 0)
+            tmpPlace = HorseManager.instance.takeUpSkillPlace;
+            if(tmpPlace == 0)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("horse.skillEquipMax"));
                return;
             }
-            SocketManager.Instance.out.sendHorseTakeUpDownSkill(_skillId,_loc2_);
+            SocketManager.Instance.out.sendHorseTakeUpDownSkill(_skillId,tmpPlace);
          }
       }
       
-      private function __mouseOver(param1:MouseEvent) : void
+      private function __mouseOver(evt:MouseEvent) : void
       {
       }
       
-      private function __mouseOut(param1:MouseEvent) : void
+      private function __mouseOut(evt:MouseEvent) : void
       {
       }
       

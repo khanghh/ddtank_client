@@ -56,7 +56,7 @@ package christmas.view.playingSnowman
          _waitTimer.addEventListener("timerComplete",__onTimerComplete);
       }
       
-      protected function __startLoading(param1:Event) : void
+      protected function __startLoading(e:Event) : void
       {
          StateManager.getInGame_Step_6 = true;
          ChatManager.Instance.input.faceEnabled = false;
@@ -71,12 +71,12 @@ package christmas.view.playingSnowman
          this.visible = false;
       }
       
-      protected function __onTimerComplete(param1:Event) : void
+      protected function __onTimerComplete(event:Event) : void
       {
          dispatchEvent(new ChristmasRoomEvent("enterGameTimeOut"));
       }
       
-      protected function __onTimer(param1:TimerEvent) : void
+      protected function __onTimer(event:TimerEvent) : void
       {
          _currentCountDown = Number(_currentCountDown) - 1;
          _timeText.text = _currentCountDown.toString();
@@ -115,7 +115,7 @@ package christmas.view.playingSnowman
          addEventListener("enterFrame",__onEnterFrame);
       }
       
-      protected function __onEnterFrame(param1:Event) : void
+      protected function __onEnterFrame(event:Event) : void
       {
          _frame = Number(_frame) + 1;
          if(_frame >= 10)

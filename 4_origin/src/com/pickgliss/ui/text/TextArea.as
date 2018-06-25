@@ -52,9 +52,9 @@ package com.pickgliss.ui.text
          return _textField.type == "input";
       }
       
-      public function set editable(param1:Boolean) : void
+      public function set editable(value:Boolean) : void
       {
-         if(param1)
+         if(value)
          {
             _textField.type = "input";
             _viewSource.addEventListener("mouseOver",__onTextAreaOver);
@@ -73,7 +73,7 @@ package com.pickgliss.ui.text
          return _enable;
       }
       
-      public function set enable(param1:Boolean) : void
+      public function set enable(value:Boolean) : void
       {
          _textField.mouseEnabled = _enable;
          if(_enable)
@@ -93,9 +93,9 @@ package com.pickgliss.ui.text
          return _textField.maxChars;
       }
       
-      public function set maxChars(param1:int) : void
+      public function set maxChars(value:int) : void
       {
-         _textField.maxChars = param1;
+         _textField.maxChars = value;
       }
       
       public function get text() : String
@@ -103,15 +103,15 @@ package com.pickgliss.ui.text
          return _textField.text;
       }
       
-      public function set text(param1:String) : void
+      public function set text(value:String) : void
       {
-         _textField.text = param1;
+         _textField.text = value;
          DisplayObjectViewport(_viewSource).invalidateView();
       }
       
-      public function set htmlText(param1:String) : void
+      public function set htmlText(value:String) : void
       {
-         _textField.htmlText = param1;
+         _textField.htmlText = value;
          DisplayObjectViewport(_viewSource).invalidateView();
       }
       
@@ -125,9 +125,9 @@ package com.pickgliss.ui.text
          return _textField;
       }
       
-      public function set textField(param1:FilterFrameText) : void
+      public function set textField(tf:FilterFrameText) : void
       {
-         if(_textField == param1)
+         if(_textField == tf)
          {
             return;
          }
@@ -137,7 +137,7 @@ package com.pickgliss.ui.text
             _textField.removeEventListener("keyDown",__onTextKeyDown);
             ObjectUtils.disposeObject(_textField);
          }
-         _textField = param1;
+         _textField = tf;
          _textField.multiline = true;
          _textField.mouseWheelEnabled = false;
          _textField.addEventListener("keyDown",__onTextKeyDown);
@@ -145,22 +145,22 @@ package com.pickgliss.ui.text
          onPropertiesChanged("textField");
       }
       
-      public function set textStyle(param1:String) : void
+      public function set textStyle(stylename:String) : void
       {
-         if(_textStyle == param1)
+         if(_textStyle == stylename)
          {
             return;
          }
-         _textStyle = param1;
+         _textStyle = stylename;
          textField = ComponentFactory.Instance.creat(_textStyle);
       }
       
       override protected function layoutComponent() : void
       {
          super.layoutComponent();
-         var _loc1_:Rectangle = _viewportInnerRect.getInnerRect(_width,_height);
-         _textField.x = _loc1_.x;
-         _textField.y = _loc1_.y;
+         var texFieldRect:Rectangle = _viewportInnerRect.getInnerRect(_width,_height);
+         _textField.x = texFieldRect.x;
+         _textField.y = texFieldRect.y;
          _textField.width = _viewSource.width;
       }
       
@@ -173,41 +173,41 @@ package com.pickgliss.ui.text
          }
       }
       
-      private function __onTextAreaClick(param1:MouseEvent) : void
+      private function __onTextAreaClick(event:MouseEvent) : void
       {
          _textField.setFocus();
       }
       
-      private function __onTextAreaOut(param1:MouseEvent) : void
+      private function __onTextAreaOut(event:MouseEvent) : void
       {
          Mouse.cursor = "auto";
       }
       
-      private function __onTextAreaOver(param1:MouseEvent) : void
+      private function __onTextAreaOver(event:MouseEvent) : void
       {
          Mouse.cursor = "ibeam";
       }
       
-      private function __onTextChanged(param1:Event) : void
+      private function __onTextChanged(event:Event) : void
       {
          upScrollArea();
       }
       
-      private function __onTextKeyDown(param1:KeyboardEvent) : void
+      private function __onTextKeyDown(event:KeyboardEvent) : void
       {
-         if(param1.keyCode == 13)
+         if(event.keyCode == 13)
          {
-            param1.stopPropagation();
+            event.stopPropagation();
          }
-         else if(param1.keyCode == 38)
-         {
-            upScrollArea();
-         }
-         else if(param1.keyCode == 40)
+         else if(event.keyCode == 38)
          {
             upScrollArea();
          }
-         else if(param1.keyCode == 46)
+         else if(event.keyCode == 40)
+         {
+            upScrollArea();
+         }
+         else if(event.keyCode == 46)
          {
             upScrollArea();
          }
@@ -215,14 +215,14 @@ package com.pickgliss.ui.text
       
       public function upScrollArea() : void
       {
-         var _loc1_:Number = NaN;
-         var _loc8_:* = null;
-         var _loc5_:Number = NaN;
-         var _loc3_:Number = NaN;
-         var _loc4_:Number = NaN;
-         var _loc2_:Number = NaN;
-         var _loc6_:* = NaN;
-         var _loc7_:* = NaN;
+         var lineHeight:Number = NaN;
+         var currentPos:* = null;
+         var careX:Number = NaN;
+         var careY:Number = NaN;
+         var offsetX:Number = NaN;
+         var offsetY:Number = NaN;
+         var resultX:* = NaN;
+         var resultY:* = NaN;
          DisplayObjectViewport(_viewSource).invalidateView();
          if(_textField.caretIndex <= 0)
          {
@@ -230,34 +230,34 @@ package com.pickgliss.ui.text
          }
          else
          {
-            _loc1_ = DisplayUtils.getTextFieldLineHeight(_textField);
-            _loc8_ = viewPort.viewPosition;
-            _loc5_ = DisplayUtils.getTextFieldCareLinePosX(_textField);
-            _loc3_ = DisplayUtils.getTextFieldCareLinePosY(_textField);
-            _loc4_ = _loc5_ - _loc8_.x;
-            _loc2_ = _loc3_ + _loc1_ - _loc8_.y;
+            lineHeight = DisplayUtils.getTextFieldLineHeight(_textField);
+            currentPos = viewPort.viewPosition;
+            careX = DisplayUtils.getTextFieldCareLinePosX(_textField);
+            careY = DisplayUtils.getTextFieldCareLinePosY(_textField);
+            offsetX = careX - currentPos.x;
+            offsetY = careY + lineHeight - currentPos.y;
             DisplayObjectViewport(_viewSource).invalidateView();
-            _loc6_ = Number(_loc8_.x);
-            _loc7_ = Number(_loc8_.y);
-            if(_loc4_ < 0)
+            resultX = Number(currentPos.x);
+            resultY = Number(currentPos.y);
+            if(offsetX < 0)
             {
-               _loc6_ = _loc5_;
+               resultX = careX;
             }
-            else if(_loc4_ > viewPort.getExtentSize().width)
+            else if(offsetX > viewPort.getExtentSize().width)
             {
-               _loc6_ = Number(_loc5_ + viewPort.getExtentSize().width);
+               resultX = Number(careX + viewPort.getExtentSize().width);
             }
-            if(_loc2_ < _loc1_)
+            if(offsetY < lineHeight)
             {
-               _loc7_ = _loc3_;
+               resultY = careY;
             }
-            else if(_loc2_ > viewPort.getExtentSize().height)
+            else if(offsetY > viewPort.getExtentSize().height)
             {
-               _loc7_ = Number(_loc3_ + viewPort.getExtentSize().height);
+               resultY = Number(careY + viewPort.getExtentSize().height);
             }
-            if(_loc6_ > 0 || _loc7_ > 0)
+            if(resultX > 0 || resultY > 0)
             {
-               viewPort.viewPosition = new IntPoint(_loc6_,_loc7_);
+               viewPort.viewPosition = new IntPoint(resultX,resultY);
             }
          }
       }

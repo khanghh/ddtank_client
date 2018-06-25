@@ -49,9 +49,9 @@ package groupPurchase
       
       private var _rankList:Array;
       
-      public function GroupPurchaseManager(param1:IEventDispatcher = null)
+      public function GroupPurchaseManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : GroupPurchaseManager
@@ -105,56 +105,55 @@ package groupPurchase
       
       public function get viewData() : Array
       {
-         var _loc2_:* = 0;
-         var _loc9_:int = 0;
-         var _loc1_:int = 0;
-         var _loc6_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:Array = [];
-         var _loc7_:int = _discountList.length;
-         _loc9_ = _loc7_ - 1;
-         while(_loc9_ >= 0)
+         var curIndex:* = 0;
+         var i:int = 0;
+         var nextDiscount:int = 0;
+         var nextNeedCount:int = 0;
+         var nextReMoney:int = 0;
+         var dataArray:Array = [];
+         var len:int = _discountList.length;
+         for(i = len - 1; i >= 0; )
          {
-            if(_curTotalNum >= _discountList[_loc9_][0])
+            if(_curTotalNum >= _discountList[i][0])
             {
-               _loc2_ = _loc9_;
+               curIndex = i;
                break;
             }
-            _loc9_--;
+            i--;
          }
-         var _loc5_:int = _discountList[_loc2_][1];
-         if(_loc2_ == _discountList.length - 1)
+         var curDiscount:int = _discountList[curIndex][1];
+         if(curIndex == _discountList.length - 1)
          {
-            _loc1_ = -1;
-            _loc6_ = -1;
+            nextDiscount = -1;
+            nextNeedCount = -1;
          }
          else
          {
-            _loc1_ = _discountList[_loc2_ + 1][1];
-            _loc6_ = _discountList[_loc2_ + 1][0];
+            nextDiscount = _discountList[curIndex + 1][1];
+            nextNeedCount = _discountList[curIndex + 1][0];
          }
-         var _loc8_:int = _curMyNum * _price * _loc5_ / 100;
-         if(_loc1_ == -1)
+         var curReMoney:int = _curMyNum * _price * curDiscount / 100;
+         if(nextDiscount == -1)
          {
-            _loc4_ = _curMyNum * _price * _loc5_ / 100;
+            nextReMoney = _curMyNum * _price * curDiscount / 100;
          }
          else
          {
-            _loc4_ = _curMyNum * _price * _loc1_ / 100;
+            nextReMoney = _curMyNum * _price * nextDiscount / 100;
          }
-         _loc3_.push(_loc5_);
-         _loc3_.push(_loc1_);
-         _loc3_.push(_loc6_);
-         _loc3_.push(_curTotalNum);
-         _loc3_.push(_curMyNum);
-         _loc3_.push(_loc8_);
-         _loc3_.push(_loc4_);
-         return _loc3_;
+         dataArray.push(curDiscount);
+         dataArray.push(nextDiscount);
+         dataArray.push(nextNeedCount);
+         dataArray.push(_curTotalNum);
+         dataArray.push(_curMyNum);
+         dataArray.push(curReMoney);
+         dataArray.push(nextReMoney);
+         return dataArray;
       }
       
-      public function awardAnalyComplete(param1:GroupPurchaseAwardAnalyzer) : void
+      public function awardAnalyComplete(analyzer:GroupPurchaseAwardAnalyzer) : void
       {
-         _awardInfoList = param1.awardList;
+         _awardInfoList = analyzer.awardList;
       }
       
       public function setup() : void
@@ -162,65 +161,64 @@ package groupPurchase
          SocketManager.Instance.addEventListener(PkgEvent.format(144),pkgHandler);
       }
       
-      private function pkgHandler(param1:PkgEvent) : void
+      private function pkgHandler(event:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readByte();
-         switch(int(_loc2_) - 1)
+         var pkg:PackageIn = event.pkg;
+         var cmd:int = pkg.readByte();
+         switch(int(cmd) - 1)
          {
             case 0:
-               openOrClose(_loc3_);
+               openOrClose(pkg);
                break;
             case 1:
-               refreshPurchaseData(_loc3_);
+               refreshPurchaseData(pkg);
                break;
             case 2:
-               refreshRankData(_loc3_);
+               refreshRankData(pkg);
          }
       }
       
-      private function refreshRankData(param1:PackageIn) : void
+      private function refreshRankData(pkg:PackageIn) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
+         var i:int = 0;
+         var tmpObj:* = null;
          _rankList = [];
-         var _loc2_:int = param1.readInt();
-         _loc4_ = 0;
-         while(_loc4_ < _loc2_)
+         var count:int = pkg.readInt();
+         for(i = 0; i < count; )
          {
-            _loc3_ = {};
-            _loc3_["rank"] = _loc4_ + 1;
-            _loc3_["name"] = param1.readUTF();
-            _loc3_["num"] = param1.readInt();
-            _rankList.push(_loc3_);
-            _loc4_++;
+            tmpObj = {};
+            tmpObj["rank"] = i + 1;
+            tmpObj["name"] = pkg.readUTF();
+            tmpObj["num"] = pkg.readInt();
+            _rankList.push(tmpObj);
+            i++;
          }
          dispatchEvent(new Event("GROUP_PURCHASE_REFRESH_RANK_DATA"));
       }
       
-      private function refreshPurchaseData(param1:PackageIn) : void
+      private function refreshPurchaseData(pkg:PackageIn) : void
       {
-         _curMyNum = param1.readInt();
-         _curTotalNum = param1.readInt();
+         _curMyNum = pkg.readInt();
+         _curTotalNum = pkg.readInt();
          dispatchEvent(new Event("GROUP_PURCHASE_REFRESH_DATA"));
       }
       
-      private function openOrClose(param1:PackageIn) : void
+      private function openOrClose(pkg:PackageIn) : void
       {
-         var _loc2_:* = null;
-         _isOpen = param1.readBoolean();
+         var loader:* = null;
+         _isOpen = pkg.readBoolean();
          if(_isOpen)
          {
-            _itemId = param1.readInt();
-            _price = param1.readInt();
-            _isUseMoney = param1.readBoolean();
-            _isUseBandMoney = param1.readBoolean();
-            _endTime = param1.readDate();
-            analyDiscountInfo(param1.readUTF());
-            _miniNeedNum = param1.readInt();
-            _loc2_ = LoaderCreate.Instance.createGroupPurchaseAwardInfoLoader();
-            _loc2_.addEventListener("complete",loadAwardInfoComplete);
-            LoadResourceManager.Instance.startLoad(_loc2_);
+            _itemId = pkg.readInt();
+            _price = pkg.readInt();
+            _isUseMoney = pkg.readBoolean();
+            _isUseBandMoney = pkg.readBoolean();
+            _endTime = pkg.readDate();
+            analyDiscountInfo(pkg.readUTF());
+            _miniNeedNum = pkg.readInt();
+            loader = LoaderCreate.Instance.createGroupPurchaseAwardInfoLoader();
+            loader.addEventListener("complete",loadAwardInfoComplete);
+            LoadResourceManager.Instance.startLoad(loader);
          }
          else
          {
@@ -228,25 +226,24 @@ package groupPurchase
          }
       }
       
-      private function analyDiscountInfo(param1:String) : void
+      private function analyDiscountInfo(discountStr:String) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:Array = param1.split("|");
+         var i:int = 0;
+         var tmp:Array = discountStr.split("|");
          _discountList = [];
          _discountList.push([0,0]);
-         var _loc3_:int = _loc2_.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var len:int = tmp.length;
+         for(i = 0; i < len; )
          {
-            _discountList.push(_loc2_[_loc4_].split(","));
-            _loc4_++;
+            _discountList.push(tmp[i].split(","));
+            i++;
          }
       }
       
-      private function loadAwardInfoComplete(param1:LoaderEvent) : void
+      private function loadAwardInfoComplete(event:LoaderEvent) : void
       {
-         var _loc2_:BaseLoader = param1.loader as BaseLoader;
-         _loc2_.removeEventListener("complete",loadAwardInfoComplete);
+         var loader:BaseLoader = event.loader as BaseLoader;
+         loader.removeEventListener("complete",loadAwardInfoComplete);
          if(_isOpen)
          {
             showIcon();

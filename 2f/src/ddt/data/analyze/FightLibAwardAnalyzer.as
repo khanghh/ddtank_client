@@ -1,22 +1,6 @@
-package ddt.data.analyze
-{
-   import com.pickgliss.loader.DataAnalyzer;
-   import ddt.data.fightLib.FightLibAwardInfo;
-   
-   public class FightLibAwardAnalyzer extends DataAnalyzer
-   {
-       
-      
-      public var list:Array;
-      
-      public function FightLibAwardAnalyzer(param1:Function){super(null);}
-      
-      override public function analyze(param1:*) : void{}
-      
-      private function sortItems(param1:Array) : void{}
-      
-      private function pushInListByIDAndDiff(param1:Object, param2:int, param3:int) : void{}
-      
-      private function findAwardInfoByID(param1:int) : FightLibAwardInfo{return null;}
-   }
-}
+package ddt.data.analyze{   import com.pickgliss.loader.DataAnalyzer;   import ddt.data.fightLib.FightLibAwardInfo;      public class FightLibAwardAnalyzer extends DataAnalyzer   {                   public var list:Array;            public function FightLibAwardAnalyzer(onCompleteCall:Function) { super(null); }
+            override public function analyze(data:*) : void { }
+            private function sortItems(items:Array) : void { }
+            private function pushInListByIDAndDiff(item:Object, id:int, diff:int) : void { }
+            private function findAwardInfoByID(id:int) : FightLibAwardInfo { return null; }
+   }}

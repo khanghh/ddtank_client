@@ -8,11 +8,11 @@ package character.action
    {
        
       
-      public function MovieClipAction(param1:MovieClip, param2:String = "", param3:String = "", param4:uint = 0, param5:Boolean = false)
+      public function MovieClipAction(movieclip:MovieClip, name:String = "", nextAction:String = "", priority:uint = 0, endStop:Boolean = false)
       {
-         _asset = param1;
-         _len = param1.totalFrames;
-         super(param2,param3,param4,param5);
+         _asset = movieclip;
+         _len = movieclip.totalFrames;
+         super(name,nextAction,priority,endStop);
          _type = BaseAction.MOVIE_ACTION;
       }
       
@@ -26,20 +26,20 @@ package character.action
          MovieClip(_asset).gotoAndStop(1);
       }
       
-      public function set asset(param1:DisplayObject) : void
+      public function set asset(value:DisplayObject) : void
       {
          if(_asset.parent)
          {
             _asset.parent.removeChild(_asset);
          }
-         _asset = param1;
+         _asset = value;
       }
       
       override public function toXml() : XML
       {
-         var _loc1_:XML = super.toXml();
-         _loc1_.@asset = getQualifiedClassName(_asset).replace("::",".");
-         return _loc1_;
+         var result:XML = super.toXml();
+         result.@asset = getQualifiedClassName(_asset).replace("::",".");
+         return result;
       }
    }
 }

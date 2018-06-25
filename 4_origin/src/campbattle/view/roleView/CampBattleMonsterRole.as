@@ -15,9 +15,9 @@ package campbattle.view.roleView
       
       private var _timer:TimerJuggler;
       
-      public function CampBattleMonsterRole(param1:RoleData, param2:Function = null)
+      public function CampBattleMonsterRole(playerInfo:RoleData, callBack:Function = null)
       {
-         super(param1,param2);
+         super(playerInfo,callBack);
          walkList = new Vector.<Point>();
          walkList.push(new Point(993,901));
          walkList.push(new Point(1208,866));
@@ -30,23 +30,23 @@ package campbattle.view.roleView
          addEventListener("enterFrame",enterFrameHander);
       }
       
-      protected function mouseClickHander(param1:MouseEvent) : void
+      protected function mouseClickHander(e:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
+         e.stopImmediatePropagation();
       }
       
-      private function timerHander(param1:Event) : void
+      private function timerHander(e:Event) : void
       {
          if(!scene)
          {
             return;
          }
-         var _loc2_:int = Math.random() * walkList.length;
-         var _loc3_:Point = walkList[_loc2_];
-         walk(_loc3_);
+         var index:int = Math.random() * walkList.length;
+         var p:Point = walkList[index];
+         walk(p);
       }
       
-      override protected function enterFrameHander(param1:Event) : void
+      override protected function enterFrameHander(e:Event) : void
       {
          update();
          playerWalkPath();

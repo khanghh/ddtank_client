@@ -20,19 +20,19 @@ package game.actions.newHand
       
       private var _tipContainer:Sprite;
       
-      function NewHandFightMessageAnimation(param1:String, param2:Number, param3:Boolean = true)
+      function NewHandFightMessageAnimation(tipStyle:String, duration:Number, autoShow:Boolean = true)
       {
          super();
-         _duration = param2;
+         _duration = duration;
          _tipContainer = new Sprite();
          var _loc4_:Boolean = false;
          _tipContainer.mouseEnabled = _loc4_;
          _tipContainer.mouseChildren = _loc4_;
          _tipContainer.y = StageReferance.stageHeight >> 1;
-         _tipContent = ComponentFactory.Instance.creat(param1);
+         _tipContent = ComponentFactory.Instance.creat(tipStyle);
          _tipContainer.addChild(_tipContent);
          _tipContainer.x = StageReferance.stageWidth - _tipContent.width >> 1;
-         if(param3)
+         if(autoShow)
          {
             show();
          }
@@ -40,14 +40,14 @@ package game.actions.newHand
       
       public function show() : void
       {
-         var _loc1_:int = (StageReferance.stageHeight - _tipContainer.height) / 2 - 10;
+         var tempY:int = (StageReferance.stageHeight - _tipContainer.height) / 2 - 10;
          TweenMax.fromTo(_tipContainer,0.3,{
             "y":StageReferance.stageHeight / 2 + 20,
             "alpha":0,
             "ease":Quint.easeIn,
             "onComplete":onTipToCenter
          },{
-            "y":_loc1_,
+            "y":tempY,
             "alpha":1
          });
          LayerManager.Instance.addToLayer(_tipContainer,1,false,0,false);

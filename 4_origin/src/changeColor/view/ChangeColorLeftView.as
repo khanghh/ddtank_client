@@ -82,9 +82,9 @@ package changeColor.view
          }
       }
       
-      public function set model(param1:ChangeColorModel) : void
+      public function set model(value:ChangeColorModel) : void
       {
-         _model = param1;
+         _model = value;
          dataUpdate();
       }
       
@@ -100,10 +100,10 @@ package changeColor.view
          _model.currentItem = null;
       }
       
-      public function setCurrentItem(param1:BagCell) : void
+      public function setCurrentItem(cell:BagCell) : void
       {
          SoundManager.instance.play("008");
-         if(_cell.bagCell != null || param1.info == null)
+         if(_cell.bagCell != null || cell.info == null)
          {
             _model.initColor = null;
             _model.initSkinColor = null;
@@ -112,51 +112,51 @@ package changeColor.view
                _cell.bagCell.locked = false;
             }
          }
-         _cell.bagCell = param1;
-         param1.locked = true;
+         _cell.bagCell = cell;
+         cell.locked = true;
          updateColorPanel();
       }
       
-      private function __cellChangedHandler(param1:Event) : void
+      private function __cellChangedHandler(evt:Event) : void
       {
-         if((param1.target as BagCell).info && _model.currentItem == null)
+         if((evt.target as BagCell).info && _model.currentItem == null)
          {
             _model.currentItem = _cell.bagCell.itemInfo;
             savaItemInfo();
             updateCharator();
          }
-         else if((param1.target as BagCell).info == null)
+         else if((evt.target as BagCell).info == null)
          {
             reset();
          }
          updateColorPanel();
       }
       
-      private function __hideGalssChange(param1:MouseEvent) : void
+      private function __hideGalssChange(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _model.self.setGlassHide(_hideGlass.selected);
       }
       
-      private function __hideHatChange(param1:MouseEvent) : void
+      private function __hideHatChange(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _model.self.setHatHide(_hideHat.selected);
       }
       
-      private function __hideSuitChange(param1:MouseEvent) : void
+      private function __hideSuitChange(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _model.self.setSuiteHide(_hideSuit.selected);
       }
       
-      private function __hideWingChange(param1:MouseEvent) : void
+      private function __hideWingChange(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _model.self.wingHide = _hideWing.selected;
       }
       
-      private function __setColor(param1:Event) : void
+      private function __setColor(evt:Event) : void
       {
          if(_model.currentItem)
          {
@@ -191,7 +191,7 @@ package changeColor.view
       
       private function initView() : void
       {
-         var _loc1_:* = null;
+         var rec:* = null;
          _bg = ComponentFactory.Instance.creatComponentByStylename("changeColor.rightViewBg");
          addChild(_bg);
          _charaterBack = ComponentFactory.Instance.creatComponentByStylename("changeColor.leftViewBg");
@@ -204,49 +204,49 @@ package changeColor.view
          addChild(_checkBg);
          _title = ComponentFactory.Instance.creatBitmap("asset.changeColor.title");
          addChild(_title);
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("changeColor.leftViewBgImgRec");
-         ObjectUtils.copyPropertyByRectangle(_bg,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("changeColor.leftViewBgImgRec");
+         ObjectUtils.copyPropertyByRectangle(_bg,rec);
          _charater = CharactoryFactory.createCharacter(_model.self);
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("changeColor.charaterRec");
-         ObjectUtils.copyPropertyByRectangle(_charater as DisplayObject,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("changeColor.charaterRec");
+         ObjectUtils.copyPropertyByRectangle(_charater as DisplayObject,rec);
          _charater.show(false,-1);
          _charater.showGun = false;
          addChild(_charater as DisplayObject);
          _cellBg = ComponentFactory.Instance.creatComponentByStylename("ColorEditCell.Bg");
          addChild(_cellBg);
-         var _loc2_:Sprite = new Sprite();
-         _loc2_.graphics.beginFill(0,0);
-         _loc2_.graphics.drawRect(0,0,90,90);
-         _loc2_.graphics.endFill();
-         _cell = new ColorEditCell(_loc2_);
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("changeColor.colorEditCellRec");
-         ObjectUtils.copyPropertyByRectangle(_cell as DisplayObject,_loc1_);
+         var colorCell:Sprite = new Sprite();
+         colorCell.graphics.beginFill(0,0);
+         colorCell.graphics.drawRect(0,0,90,90);
+         colorCell.graphics.endFill();
+         _cell = new ColorEditCell(colorCell);
+         rec = ComponentFactory.Instance.creatCustomObject("changeColor.colorEditCellRec");
+         ObjectUtils.copyPropertyByRectangle(_cell as DisplayObject,rec);
          addChild(_cell);
          _colorEditor = ComponentFactory.Instance.creatCustomObject("changeColor.ColorEdit");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("changeColor.colorEditorRec");
-         ObjectUtils.copyPropertyByRectangle(_colorEditor as DisplayObject,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("changeColor.colorEditorRec");
+         ObjectUtils.copyPropertyByRectangle(_colorEditor as DisplayObject,rec);
          addChild(_colorEditor);
          _hideHat = ComponentFactory.Instance.creatComponentByStylename("personanHideHatCheckBox");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("changeColor.hideHatRec");
-         ObjectUtils.copyPropertyByRectangle(_hideHat as DisplayObject,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("changeColor.hideHatRec");
+         ObjectUtils.copyPropertyByRectangle(_hideHat as DisplayObject,rec);
          _hideHat.text = LanguageMgr.GetTranslation("shop.ShopIITryDressView.hideHat");
          _hideHat.selected = _model.self.getHatHide();
          addChild(_hideHat);
          _hideGlass = ComponentFactory.Instance.creatComponentByStylename("personanHideHatCheckBox");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("changeColor.hideGlassRec");
-         ObjectUtils.copyPropertyByRectangle(_hideGlass as DisplayObject,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("changeColor.hideGlassRec");
+         ObjectUtils.copyPropertyByRectangle(_hideGlass as DisplayObject,rec);
          _hideGlass.text = LanguageMgr.GetTranslation("tank.view.changeColor.ChangeColorLeftView.glass");
          _hideGlass.selected = _model.self.getGlassHide();
          addChild(_hideGlass);
          _hideSuit = ComponentFactory.Instance.creatComponentByStylename("personanHideHatCheckBox");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("changeColor.hideSuitRec");
-         ObjectUtils.copyPropertyByRectangle(_hideSuit as DisplayObject,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("changeColor.hideSuitRec");
+         ObjectUtils.copyPropertyByRectangle(_hideSuit as DisplayObject,rec);
          _hideSuit.text = LanguageMgr.GetTranslation("tank.view.changeColor.ChangeColorLeftView.suit");
          _hideSuit.selected = _model.self.getSuitesHide();
          addChild(_hideSuit);
          _hideWing = ComponentFactory.Instance.creatComponentByStylename("personanHideWingCheckBox");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("changeColor.hideWingRec");
-         ObjectUtils.copyPropertyByRectangle(_hideWing as DisplayObject,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("changeColor.hideWingRec");
+         ObjectUtils.copyPropertyByRectangle(_hideWing as DisplayObject,rec);
          _hideWing.text = LanguageMgr.GetTranslation("tank.view.changeColor.ChangeColorLeftView.wing");
          _hideWing.selected = _model.self.wingHide;
          addChild(_hideWing);
@@ -277,28 +277,28 @@ package changeColor.view
          _model.savaItemInfo();
       }
       
-      private function setItemColor(param1:InventoryItemInfo, param2:String) : void
+      private function setItemColor(item:InventoryItemInfo, color:String) : void
       {
-         if(param1.Color == "||")
+         if(item.Color == "||")
          {
-            param1.Color = "";
+            item.Color = "";
          }
-         var _loc4_:Array = param1.Color.split("|");
-         _loc4_[_cell.editLayer - 1] = String(param2);
-         var _loc3_:String = _loc4_.join("|").replace(/\|$/,"");
-         param1.Color = _loc3_;
-         _cell.setColor(_loc3_);
-         _model.self.setPartColor(_model.currentItem.CategoryID,_loc3_);
+         var _temp:Array = item.Color.split("|");
+         _temp[_cell.editLayer - 1] = String(color);
+         var tempColor_1:String = _temp.join("|").replace(/\|$/,"");
+         item.Color = tempColor_1;
+         _cell.setColor(tempColor_1);
+         _model.self.setPartColor(_model.currentItem.CategoryID,tempColor_1);
          _model.self.setSkinColor(_model.self.getSkinColor());
       }
       
-      private function setItemSkin(param1:InventoryItemInfo, param2:String) : void
+      private function setItemSkin(item:InventoryItemInfo, color:String) : void
       {
-         var _loc4_:Array = param1.Color.split("|");
-         _loc4_[1] = param2;
-         var _loc3_:String = _loc4_.join("|");
-         param1.Skin = param2;
-         _model.self.setSkinColor(param2);
+         var temp:Array = item.Color.split("|");
+         temp[1] = color;
+         var tempColor:String = temp.join("|");
+         item.Skin = color;
+         _model.self.setSkinColor(color);
       }
       
       public function setInitColor() : void
@@ -313,32 +313,31 @@ package changeColor.view
          _cell.itemInfo.Skin = _model.initSkinColor;
       }
       
-      private function checkColorChanged(param1:String, param2:String) : Boolean
+      private function checkColorChanged(initColor:String, nowColor:String) : Boolean
       {
-         var _loc8_:int = 0;
-         var _loc6_:Boolean = false;
-         var _loc7_:Boolean = false;
-         var _loc3_:Array = param1.split("|");
-         var _loc4_:Array = param2.split("|");
-         var _loc5_:int = Math.max(_loc3_.length,_loc4_.length);
-         _loc8_ = 0;
-         while(_loc8_ < _loc5_)
+         var i:int = 0;
+         var b1:Boolean = false;
+         var b2:Boolean = false;
+         var temp1:Array = initColor.split("|");
+         var temp2:Array = nowColor.split("|");
+         var count:int = Math.max(temp1.length,temp2.length);
+         for(i = 0; i < count; )
          {
-            _loc6_ = !StringHelper.isNullOrEmpty(_loc3_[_loc8_]) && _loc3_[_loc8_] != "undefined";
-            _loc7_ = !StringHelper.isNullOrEmpty(_loc4_[_loc8_]) && _loc4_[_loc8_] != "undefined";
-            if((_loc6_ || _loc7_) && _loc3_[_loc8_] != _loc4_[_loc8_])
+            b1 = !StringHelper.isNullOrEmpty(temp1[i]) && temp1[i] != "undefined";
+            b2 = !StringHelper.isNullOrEmpty(temp2[i]) && temp2[i] != "undefined";
+            if((b1 || b2) && temp1[i] != temp2[i])
             {
                return true;
             }
-            _loc8_++;
+            i++;
          }
          return false;
       }
       
-      protected function __reductiveColor(param1:Event) : void
+      protected function __reductiveColor(event:Event) : void
       {
-         var _loc3_:Boolean = false;
-         var _loc2_:Boolean = false;
+         var bool1:Boolean = false;
+         var bool2:Boolean = false;
          if(_colorEditor.selectedType == 1)
          {
             setItemColor(_model.currentItem,"");
@@ -349,9 +348,9 @@ package changeColor.view
          }
          if(_cell.info)
          {
-            _loc3_ = checkColorChanged(_model.initColor,_cell.itemInfo.Color);
-            _loc2_ = checkColorChanged(_model.initSkinColor,_cell.itemInfo.Skin);
-            if(_loc3_ || _loc2_)
+            bool1 = checkColorChanged(_model.initColor,_cell.itemInfo.Color);
+            bool2 = checkColorChanged(_model.initSkinColor,_cell.itemInfo.Skin);
+            if(bool1 || bool2)
             {
                _model.changed = true;
             }
@@ -381,7 +380,7 @@ package changeColor.view
       
       private function updateColorPanel() : void
       {
-         var _loc1_:* = null;
+         var _temp:* = null;
          if(_cell.info == null)
          {
             _colorEditor.skinEditable = false;
@@ -390,8 +389,8 @@ package changeColor.view
          else
          {
             _colorEditor.reset();
-            _loc1_ = _cell.itemInfo.Color.split("|");
-            _colorEditor.colorRestorable = _loc1_.length > _cell.editLayer - 1 && !StringHelper.isNullOrEmpty(_loc1_[_cell.editLayer - 1]) && _loc1_[_cell.editLayer - 1] != "undefined";
+            _temp = _cell.itemInfo.Color.split("|");
+            _colorEditor.colorRestorable = _temp.length > _cell.editLayer - 1 && !StringHelper.isNullOrEmpty(_temp[_cell.editLayer - 1]) && _temp[_cell.editLayer - 1] != "undefined";
             _colorEditor.skinRestorable = !StringHelper.isNullOrEmpty(_cell.itemInfo.Skin) && _cell.itemInfo.Skin != "undefined";
             _itemChanged = _colorEditor.colorRestorable || _colorEditor.skinRestorable;
             if(_cell.info.CategoryID == 6)

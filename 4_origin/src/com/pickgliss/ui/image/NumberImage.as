@@ -26,38 +26,38 @@ package com.pickgliss.ui.image
          _countList = new Vector.<ScaleFrameImage>();
       }
       
-      public function set imageStyle(param1:String) : void
+      public function set imageStyle(stylename:String) : void
       {
-         _stylename = param1;
+         _stylename = stylename;
       }
       
-      public function set countWidth(param1:int) : void
+      public function set countWidth(value:int) : void
       {
-         _countWidth = param1;
+         _countWidth = value;
       }
       
-      public function set space(param1:int) : void
+      public function set space(value:int) : void
       {
-         _space = param1;
+         _space = value;
       }
       
-      public function set count(param1:int) : void
+      public function set count(value:int) : void
       {
-         if(_count == param1.toString())
+         if(_count == value.toString())
          {
             return;
          }
-         _count = param1.toString();
+         _count = value.toString();
          updateView();
       }
       
-      public function set countStr(param1:String) : void
+      public function set countStr(value:String) : void
       {
-         if(_count == param1)
+         if(_count == value)
          {
             return;
          }
-         _count = param1;
+         _count = value;
          updateView();
       }
       
@@ -68,41 +68,41 @@ package com.pickgliss.ui.image
       
       private function updateView() : void
       {
-         var _loc5_:int = 0;
-         var _loc2_:int = 0;
-         var _loc4_:int = _count.length;
-         var _loc3_:Array = _count.split("");
-         while(_loc4_ > _countList.length)
+         var i:int = 0;
+         var index:int = 0;
+         var len:int = _count.length;
+         var _countArr:Array = _count.split("");
+         while(len > _countList.length)
          {
             _countList.unshift(createCountImage(10));
          }
-         while(_loc4_ < _countList.length)
+         while(len < _countList.length)
          {
             ObjectUtils.disposeObject(_countList.shift());
          }
-         var _loc1_:int = 0;
+         var countX:int = 0;
          if(_countWidth > 0)
          {
-            _loc1_ = (_countWidth - _countList[0].width * _loc4_) / 2;
+            countX = (_countWidth - _countList[0].width * len) / 2;
          }
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         i = 0;
+         while(i < len)
          {
-            _countList[_loc5_].x = _loc1_;
-            _loc2_ = int(_loc3_[_loc5_]) == 0?10:int(_loc3_[_loc5_]);
-            _countList[_loc5_].setFrame(_loc2_);
-            _loc1_ = _loc1_ + (_countList[_loc5_].width + _space);
-            _loc5_++;
+            _countList[i].x = countX;
+            index = int(_countArr[i]) == 0?10:int(_countArr[i]);
+            _countList[i].setFrame(index);
+            countX = countX + (_countList[i].width + _space);
+            i++;
          }
-         width = _loc1_;
+         width = countX;
       }
       
-      private function createCountImage(param1:int = 0) : ScaleFrameImage
+      private function createCountImage(frame:int = 0) : ScaleFrameImage
       {
-         var _loc2_:ScaleFrameImage = ComponentFactory.Instance.creatComponentByStylename(_stylename);
-         _loc2_.setFrame(param1);
-         addChild(_loc2_);
-         return _loc2_;
+         var num:ScaleFrameImage = ComponentFactory.Instance.creatComponentByStylename(_stylename);
+         num.setFrame(frame);
+         addChild(num);
+         return num;
       }
       
       override public function dispose() : void

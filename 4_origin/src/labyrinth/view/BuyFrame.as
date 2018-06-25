@@ -40,7 +40,7 @@ package labyrinth.view
          addToContent(_selectedCheckButton);
       }
       
-      protected function __onselectedCheckButtoClick(param1:MouseEvent) : void
+      protected function __onselectedCheckButtoClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          LabyrinthControl.Instance.buyFrameEnable = !_selectedCheckButton.selected;
@@ -59,9 +59,9 @@ package labyrinth.view
          LayerManager.Instance.addToLayer(this,3,true,2);
       }
       
-      public function set value(param1:int) : void
+      public function set value($value:int) : void
       {
-         _value = param1;
+         _value = $value;
       }
       
       override public function dispose() : void

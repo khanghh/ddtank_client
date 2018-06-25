@@ -57,9 +57,9 @@ package fightLib.view
          super();
       }
       
-      public function set backColor(param1:int) : void
+      public function set backColor(val:int) : void
       {
-         _backColor = param1;
+         _backColor = val;
          onPropertiesChanged("P_backColor");
       }
       
@@ -135,24 +135,24 @@ package fightLib.view
       
       private function drawBackground() : void
       {
-         var _loc1_:Graphics = graphics;
-         _loc1_.clear();
-         _loc1_.beginFill(_backColor,0.4);
-         _loc1_.drawRoundRect(0,0,_width <= 0?1:Number(_width),_height <= 0?1:Number(_height),4,4);
-         _loc1_.endFill();
+         var pen:Graphics = graphics;
+         pen.clear();
+         pen.beginFill(_backColor,0.4);
+         pen.drawRoundRect(0,0,_width <= 0?1:Number(_width),_height <= 0?1:Number(_height),4,4);
+         pen.endFill();
       }
       
-      public function setGiftAndExpNum(param1:int, param2:int, param3:int) : void
+      public function setGiftAndExpNum(giftValue:int, expValue:int, medal:int) : void
       {
-         _gift = param1;
-         _exp = param2;
-         _medal = param3;
+         _gift = giftValue;
+         _exp = expValue;
+         _medal = medal;
          updateTxt();
       }
       
-      public function setAwardItems(param1:Array) : void
+      public function setAwardItems(value:Array) : void
       {
-         _items = param1;
+         _items = value;
          updateList();
       }
       
@@ -175,33 +175,33 @@ package fightLib.view
       
       private function updateList() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:AwardCell = _cells.shift();
-         while(_loc2_ != null)
+         var item:* = null;
+         var cell:AwardCell = _cells.shift();
+         while(cell != null)
          {
-            ObjectUtils.disposeObject(_loc2_);
-            _loc2_ = _cells.shift();
+            ObjectUtils.disposeObject(cell);
+            cell = _cells.shift();
          }
-         var _loc5_:Point = ComponentFactory.Instance.creatCustomObject("fightLib.Award.AwardList.cell.PicPos");
-         var _loc4_:Point = ComponentFactory.Instance.creatCustomObject("fightLib.Award.AwardList.cell.ContentSize");
+         var pos:Point = ComponentFactory.Instance.creatCustomObject("fightLib.Award.AwardList.cell.PicPos");
+         var size:Point = ComponentFactory.Instance.creatCustomObject("fightLib.Award.AwardList.cell.ContentSize");
          var _loc7_:int = 0;
          var _loc6_:* = _items;
-         for each(var _loc3_ in _items)
+         for each(var i in _items)
          {
-            _loc1_ = ItemManager.Instance.getTemplateById(_loc3_.id);
-            _loc2_ = ComponentFactory.Instance.creatCustomObject("fightLib.Award.AwardList.cell");
-            _loc2_.info = _loc1_;
-            _loc2_.count = _loc3_.count;
-            _list.addChild(_loc2_);
-            _cells.push(_loc2_);
+            item = ItemManager.Instance.getTemplateById(i.id);
+            cell = ComponentFactory.Instance.creatCustomObject("fightLib.Award.AwardList.cell");
+            cell.info = item;
+            cell.count = i.count;
+            _list.addChild(cell);
+            _cells.push(cell);
          }
       }
       
-      public function set geted(param1:Boolean) : void
+      public function set geted(val:Boolean) : void
       {
-         if(_hasGeted != param1)
+         if(_hasGeted != val)
          {
-            _hasGeted = param1;
+            _hasGeted = val;
             var _loc2_:* = _hasGeted;
             _geted.visible = _loc2_;
             _maskShape.visible = _loc2_;

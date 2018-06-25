@@ -49,12 +49,12 @@ package petIsland.view
          _returnBtn.addEventListener("click",__onReturnClick);
       }
       
-      private function __onStretchBtnClick(param1:MouseEvent) : void
+      private function __onStretchBtnClick(event:MouseEvent) : void
       {
          TweenLite.to(this,0.5,{"x":(!!_stretchBtn.selected?_pos.y:Number(_pos.x))});
       }
       
-      private function __onReturnClick(param1:MouseEvent) : void
+      private function __onReturnClick(event:MouseEvent) : void
       {
          PetIslandManager.instance.dispatchEvent(new PetIslandEvent("return_petIsLand"));
       }

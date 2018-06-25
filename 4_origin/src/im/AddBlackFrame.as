@@ -25,8 +25,8 @@ package im
          _alertInfo.title = LanguageMgr.GetTranslation("tank.view.im.AddBlackListFrame.titleText");
          _alertInfo.submitEnabled = false;
          info = _alertInfo;
-         var _loc1_:Scale9CornerImage = ComponentFactory.Instance.creatComponentByStylename("im.addFriendInputBG");
-         addToContent(_loc1_);
+         var bg:Scale9CornerImage = ComponentFactory.Instance.creatComponentByStylename("im.addFriendInputBG");
+         addToContent(bg);
          _inputText = ComponentFactory.Instance.creat("textinput");
          _inputText.maxChars = 14;
          addToContent(_inputText);

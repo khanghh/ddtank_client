@@ -62,9 +62,9 @@ package ddtmatch.view
          _btn.addEventListener("click",__clickHandler);
       }
       
-      private function __clickHandler(param1:MouseEvent) : void
+      private function __clickHandler(e:MouseEvent) : void
       {
-         var _loc2_:int = parseInt(_sendMoneyTxt.text);
+         var money:int = parseInt(_sendMoneyTxt.text);
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
@@ -75,17 +75,17 @@ package ddtmatch.view
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.DDTMatch.redpacket.messageBlank"));
             return;
          }
-         if(PlayerManager.Instance.Self.Money < _loc2_)
+         if(PlayerManager.Instance.Self.Money < money)
          {
             LeavePageManager.showFillFrame();
             return;
          }
-         if(select.number > _loc2_)
+         if(select.number > money)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.DDTMatch.redpacket.moneyCountError"));
             return;
          }
-         SocketManager.Instance.out.getRedPacketpublish(_messageTxt.text,_loc2_,select.number);
+         SocketManager.Instance.out.getRedPacketpublish(_messageTxt.text,money,select.number);
          onResponse(1);
       }
       

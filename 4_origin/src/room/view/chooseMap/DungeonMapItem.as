@@ -47,14 +47,14 @@ package room.view.chooseMap
          _selectedBg.visible = _selected;
       }
       
-      private function __onTimer(param1:TimerEvent) : void
+      private function __onTimer(evt:TimerEvent) : void
       {
          _selectedBg.visible = _timer.currentCount % 2 == 1;
       }
       
-      override public function set mapId(param1:int) : void
+      override public function set mapId(value:int) : void
       {
-         _mapId = param1;
+         _mapId = value;
          updateMapIcon();
          buttonMode = mapId == -1?false:true;
          _limitLevel.visible = buttonMode;
@@ -62,7 +62,7 @@ package room.view.chooseMap
       
       override protected function updateMapIcon() : void
       {
-         var _loc1_:Object = PlayerManager.Instance.Self.dungeonFlag;
+         var obj:Object = PlayerManager.Instance.Self.dungeonFlag;
          if(_mapId == -1)
          {
             ObjectUtils.disposeAllChildren(_mapIconContaioner);
@@ -89,9 +89,9 @@ package room.view.chooseMap
          return _isNightmare;
       }
       
-      public function set isNightmare(param1:Boolean) : void
+      public function set isNightmare(value:Boolean) : void
       {
-         _isNightmare = param1;
+         _isNightmare = value;
       }
       
       public function get isDouble() : Boolean
@@ -99,9 +99,9 @@ package room.view.chooseMap
          return _isDouble;
       }
       
-      public function set isDouble(param1:Boolean) : void
+      public function set isDouble(value:Boolean) : void
       {
-         _isDouble = param1;
+         _isDouble = value;
          if(_isDouble)
          {
             addDoulbeBmp();

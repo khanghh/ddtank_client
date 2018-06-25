@@ -44,42 +44,40 @@ package civil.view
          _items = new Vector.<CivilPlayerItemFrame>();
       }
       
-      public function MemberList(param1:Array) : void
+      public function MemberList($list:Array) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var item:* = null;
          clearList();
-         if(!param1 || param1.length == 0)
+         if(!$list || $list.length == 0)
          {
             return;
          }
-         var _loc3_:int = param1.length > 9?9:param1.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var length:int = $list.length > 9?9:$list.length;
+         for(i = 0; i < length; )
          {
-            _loc2_ = new CivilPlayerItemFrame(_loc4_);
-            _loc2_.info = param1[_loc4_];
-            _loc2_.addEventListener("click",__onItemClick);
-            _list.addChild(_loc2_);
-            _items.push(_loc2_);
-            if(_loc4_ == 0)
+            item = new CivilPlayerItemFrame(i);
+            item.info = $list[i];
+            item.addEventListener("click",__onItemClick);
+            _list.addChild(item);
+            _items.push(item);
+            if(i == 0)
             {
-               selectedItem = _loc2_;
+               selectedItem = item;
             }
-            _loc4_++;
+            i++;
          }
       }
       
       public function clearList() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _items.length)
+         var i:int = 0;
+         for(i = 0; i < _items.length; )
          {
-            _items[_loc1_].removeEventListener("click",__onItemClick);
-            ObjectUtils.disposeObject(_items[_loc1_]);
-            _items[_loc1_] = null;
-            _loc1_++;
+            _items[i].removeEventListener("click",__onItemClick);
+            ObjectUtils.disposeObject(_items[i]);
+            _items[i] = null;
+            i++;
          }
          _items = new Vector.<CivilPlayerItemFrame>();
          _selectedItem = null;
@@ -87,20 +85,19 @@ package civil.view
          _infoItems = [];
       }
       
-      public function upItem(param1:CivilPlayerInfo) : void
+      public function upItem($info:CivilPlayerInfo) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         _loc3_ = 0;
-         while(_loc3_ < _items.length)
+         var i:int = 0;
+         var item:* = null;
+         for(i = 0; i < _items.length; )
          {
-            _loc2_ = _items[_loc3_] as CivilPlayerItemFrame;
-            if(_loc2_.info.info.ID == param1.info.ID)
+            item = _items[i] as CivilPlayerItemFrame;
+            if(item.info.info.ID == $info.info.ID)
             {
-               _loc2_.info = param1;
+               item.info = $info;
                break;
             }
-            _loc3_++;
+            i++;
          }
       }
       
@@ -119,47 +116,47 @@ package civil.view
          }
       }
       
-      private function __civilListHandle(param1:CivilEvent) : void
+      private function __civilListHandle(e:CivilEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var item:* = null;
          if(_model.civilPlayers == null)
          {
             return;
          }
          clearList();
-         var _loc4_:Array = _model.civilPlayers;
-         var _loc3_:int = _loc4_.length > 9?9:_loc4_.length;
-         if(_loc3_ <= 0)
+         var data:Array = _model.civilPlayers;
+         var length:int = data.length > 9?9:data.length;
+         if(length <= 0)
          {
             selectedItem = null;
          }
          else
          {
-            _loc5_ = 0;
-            while(_loc5_ < _loc3_)
+            i = 0;
+            while(i < length)
             {
-               _loc2_ = new CivilPlayerItemFrame(_loc5_);
-               _loc2_.info = _loc4_[_loc5_];
-               _list.addChild(_loc2_);
-               _items.push(_loc2_);
-               if(_loc5_ == 0)
+               item = new CivilPlayerItemFrame(i);
+               item.info = data[i];
+               _list.addChild(item);
+               _items.push(item);
+               if(i == 0)
                {
-                  selectedItem = _loc2_;
+                  selectedItem = item;
                }
-               _loc2_.addEventListener("click",__onItemClick);
-               _loc5_++;
+               item.addEventListener("click",__onItemClick);
+               i++;
             }
          }
       }
       
-      private function __onItemClick(param1:MouseEvent) : void
+      private function __onItemClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:CivilPlayerItemFrame = param1.currentTarget as CivilPlayerItemFrame;
-         if(!_loc2_.selected)
+         var item:CivilPlayerItemFrame = evt.currentTarget as CivilPlayerItemFrame;
+         if(!item.selected)
          {
-            selectedItem = _loc2_;
+            selectedItem = item;
          }
       }
       
@@ -168,13 +165,13 @@ package civil.view
          return _selectedItem;
       }
       
-      public function set selectedItem(param1:CivilPlayerItemFrame) : void
+      public function set selectedItem(val:CivilPlayerItemFrame) : void
       {
-         var _loc2_:* = null;
-         if(_selectedItem != param1)
+         var item:* = null;
+         if(_selectedItem != val)
          {
-            _loc2_ = _selectedItem;
-            _selectedItem = param1;
+            item = _selectedItem;
+            _selectedItem = val;
             if(_selectedItem)
             {
                _selectedItem.selected = true;
@@ -184,11 +181,11 @@ package civil.view
             {
                _model.currentcivilItemInfo = null;
             }
-            if(_loc2_)
+            if(item)
             {
-               _loc2_.selected = false;
+               item.selected = false;
             }
-            dispatchEvent(new CivilEvent("selected_change",param1));
+            dispatchEvent(new CivilEvent("selected_change",val));
          }
       }
       
@@ -197,15 +194,15 @@ package civil.view
          return _model;
       }
       
-      public function set model(param1:CivilModel) : void
+      public function set model(val:CivilModel) : void
       {
-         if(_model != param1)
+         if(_model != val)
          {
             if(_model)
             {
                _model.removeEventListener("civilplayerinfoarraychange",__civilListHandle);
             }
-            _model = param1;
+            _model = val;
             if(_model)
             {
                _model.addEventListener("civilplayerinfoarraychange",__civilListHandle);

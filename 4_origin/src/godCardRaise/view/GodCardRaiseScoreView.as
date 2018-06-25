@@ -58,9 +58,9 @@ package godCardRaise.view
       
       private function getCurrentTimeStr() : String
       {
-         var _loc1_:Number = (GodCardRaiseManager.Instance.dataEnd.time - TimeManager.Instance.Now().time) / 1000 + 86400;
-         var _loc2_:Array = DateUtils.dateTimeRemainArr(_loc1_);
-         return LanguageMgr.GetTranslation("tank.timeRemain.msg1",_loc2_[0],_loc2_[1],_loc2_[2]);
+         var remainTime:Number = (GodCardRaiseManager.Instance.dataEnd.time - TimeManager.Instance.Now().time) / 1000 + 86400;
+         var dateArr:Array = DateUtils.dateTimeRemainArr(remainTime);
+         return LanguageMgr.GetTranslation("tank.timeRemain.msg1",dateArr[0],dateArr[1],dateArr[2]);
       }
       
       private function initEvent() : void
@@ -69,34 +69,32 @@ package godCardRaise.view
       
       private function addAwards() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:Vector.<GodCardPointRewardListInfo> = GodCardRaiseManager.Instance.godCardPointRewardList;
-         _loc3_ = 0;
-         while(_loc3_ < _loc4_.length)
+         var i:int = 0;
+         var rewardInfo:* = null;
+         var scoreViewItem:* = null;
+         var godCardPointRewardList:Vector.<GodCardPointRewardListInfo> = GodCardRaiseManager.Instance.godCardPointRewardList;
+         for(i = 0; i < godCardPointRewardList.length; )
          {
-            _loc1_ = _loc4_[_loc3_];
-            _loc2_ = new GodCardRaiseScoreViewItem(_loc1_);
-            _loc2_.y = _loc3_ * 65;
-            _awards.addChild(_loc2_);
-            _loc3_++;
+            rewardInfo = godCardPointRewardList[i];
+            scoreViewItem = new GodCardRaiseScoreViewItem(rewardInfo);
+            scoreViewItem.y = i * 65;
+            _awards.addChild(scoreViewItem);
+            i++;
          }
          _scrollPanel.invalidateViewport();
       }
       
       private function updateAwards() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var scoreViewItem:* = null;
          if(_awards)
          {
-            _loc2_ = 0;
-            while(_loc2_ < _awards.numChildren)
+            for(i = 0; i < _awards.numChildren; )
             {
-               _loc1_ = _awards.getChildAt(_loc2_) as GodCardRaiseScoreViewItem;
-               _loc1_.updateView();
-               _loc2_++;
+               scoreViewItem = _awards.getChildAt(i) as GodCardRaiseScoreViewItem;
+               scoreViewItem.updateView();
+               i++;
             }
          }
       }

@@ -19,16 +19,16 @@ package starlingPhy.bombs
       
       protected var _border:Bitmap;
       
-      public function BaseBomb3D(param1:int, param2:Number = 10, param3:Number = 100, param4:Number = 1, param5:Number = 1)
+      public function BaseBomb3D(id:int, mass:Number = 10, gfactor:Number = 100, windFactor:Number = 1, airResitFactor:Number = 1)
       {
-         super(param1,1,param2,param3,param4,param5);
+         super(id,1,mass,gfactor,windFactor,airResitFactor);
          _testRect = new Rectangle(-3,-3,6,6);
       }
       
-      public function setMovie(param1:BoneMovieStarling, param2:Bitmap, param3:Bitmap) : void
+      public function setMovie(movie:BoneMovieStarling, shape:Bitmap, border:Bitmap) : void
       {
          StarlingObjectUtils.disposeObject(_movie);
-         _movie = param1;
+         _movie = movie;
          _movieWrapper = new BoneMovieWrapper(_movie,true);
          if(_movie)
          {
@@ -36,13 +36,13 @@ package starlingPhy.bombs
             _movie.y = 0;
             addChild(_movie);
          }
-         _shape = param2;
-         _border = param3;
+         _shape = shape;
+         _border = border;
       }
       
-      override public function update(param1:Number) : void
+      override public function update(dt:Number) : void
       {
-         super.update(param1);
+         super.update(dt);
       }
       
       override protected function collideGround() : void

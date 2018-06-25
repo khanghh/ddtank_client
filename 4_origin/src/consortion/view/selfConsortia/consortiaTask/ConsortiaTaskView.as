@@ -81,7 +81,7 @@ package consortion.view.selfConsortia.consortiaTask
          ConsortionModelManager.Instance.TaskModel.addEventListener("Consortia_Delay_Task_Time",__updateEndTimeInfo);
       }
       
-      private function __resetClick(param1:MouseEvent) : void
+      private function __resetClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -93,16 +93,16 @@ package consortion.view.selfConsortia.consortiaTask
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("consortia.task.stopTable"));
          }
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("consortia.task.resetTable"),LanguageMgr.GetTranslation("consortia.task.resetContent"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
-         _loc2_.moveEnable = false;
-         _loc2_.addEventListener("response",_responseI);
+         var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("consortia.task.resetTable"),LanguageMgr.GetTranslation("consortia.task.resetContent"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
+         alert.moveEnable = false;
+         alert.addEventListener("response",_responseI);
       }
       
-      private function _responseI(param1:FrameEvent) : void
+      private function _responseI(event:FrameEvent) : void
       {
-         var _loc2_:* = null;
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",_responseI);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var alert:* = null;
+         (event.currentTarget as BaseAlerFrame).removeEventListener("response",_responseI);
+         if(event.responseCode == 2 || event.responseCode == 3)
          {
             if(ConsortionModelManager.Instance.TaskModel.taskInfo == null)
             {
@@ -111,8 +111,8 @@ package consortion.view.selfConsortia.consortiaTask
             }
             else if(PlayerManager.Instance.Self.Money < RESET_MONEY)
             {
-               _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.consortia.consortiashop.ConsortiaShopItem.Money"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"));
-               _loc2_.addEventListener("response",__onNoMoneyResponse);
+               alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.consortia.consortiashop.ConsortiaShopItem.Money"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"));
+               alert.addEventListener("response",__onNoMoneyResponse);
             }
             else
             {
@@ -120,18 +120,18 @@ package consortion.view.selfConsortia.consortiaTask
                SocketManager.Instance.out.sendReleaseConsortiaTask(2);
             }
          }
-         ObjectUtils.disposeObject(param1.currentTarget as BaseAlerFrame);
+         ObjectUtils.disposeObject(event.currentTarget as BaseAlerFrame);
       }
       
-      private function __onNoMoneyResponse(param1:FrameEvent) : void
+      private function __onNoMoneyResponse(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onNoMoneyResponse);
-         _loc2_.disposeChildren = true;
-         _loc2_.dispose();
-         _loc2_ = null;
-         if(param1.responseCode == 3)
+         var alert:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",__onNoMoneyResponse);
+         alert.disposeChildren = true;
+         alert.dispose();
+         alert = null;
+         if(event.responseCode == 3)
          {
             LeavePageManager.leaveToFillPath();
          }
@@ -148,14 +148,14 @@ package consortion.view.selfConsortia.consortiaTask
          ConsortionModelManager.Instance.TaskModel.removeEventListener("Consortia_Delay_Task_Time",__updateEndTimeInfo);
       }
       
-      private function __updateEndTimeInfo(param1:ConsortiaTaskEvent) : void
+      private function __updateEndTimeInfo(e:ConsortiaTaskEvent) : void
       {
-         diff = diff + param1.value * 60;
+         diff = diff + e.value * 60;
       }
       
-      private function __getTaskInfo(param1:ConsortiaTaskEvent) : void
+      private function __getTaskInfo(e:ConsortiaTaskEvent) : void
       {
-         if(param1.value == 3 || param1.value == 2 || param1.value == 4 || param1.value == 5)
+         if(e.value == 3 || e.value == 2 || e.value == 4 || e.value == 5)
          {
             if(ConsortionModelManager.Instance.TaskModel.taskInfo == null)
             {
@@ -170,7 +170,7 @@ package consortion.view.selfConsortia.consortiaTask
       
       private function __showTask() : void
       {
-         var _loc1_:int = PlayerManager.Instance.Self.Right;
+         var right:int = PlayerManager.Instance.Self.Right;
          _noTask.visible = false;
          _timeBG.visible = true;
          _panel.visible = true;
@@ -196,12 +196,12 @@ package consortion.view.selfConsortia.consortiaTask
       
       private function __startTimer() : void
       {
-         var _loc1_:Date = ConsortionModelManager.Instance.TaskModel.taskInfo.beginTime;
-         if(!_loc1_)
+         var bg:Date = ConsortionModelManager.Instance.TaskModel.taskInfo.beginTime;
+         if(!bg)
          {
             return;
          }
-         diff = ConsortionModelManager.Instance.TaskModel.taskInfo.time * 60 - int(TimeManager.Instance.TotalSecondToNow(_loc1_)) + 60;
+         diff = ConsortionModelManager.Instance.TaskModel.taskInfo.time * 60 - int(TimeManager.Instance.TotalSecondToNow(bg)) + 60;
          if(_timer)
          {
             return;
@@ -211,7 +211,7 @@ package consortion.view.selfConsortia.consortiaTask
          _timer.start();
       }
       
-      private function __timerOne(param1:Event) : void
+      private function __timerOne(e:Event) : void
       {
          diff = Number(diff) - 1;
          if(diff <= 0)

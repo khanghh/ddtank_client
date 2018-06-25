@@ -33,32 +33,31 @@ package ddt.view.im
       
       public function FriendGroupFrame()
       {
-         var _loc4_:int = 0;
+         var i:int = 0;
          super();
-         var _loc3_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.awardSystem.addFriendFont");
+         var font:Bitmap = ComponentFactory.Instance.creatBitmap("asset.awardSystem.addFriendFont");
          titleText = LanguageMgr.GetTranslation("AlertDialog.Info");
          _confirm = ComponentFactory.Instance.creatComponentByStylename("friendGroupFrame.confirm");
          _confirm.text = LanguageMgr.GetTranslation("shop.PresentFrame.OkBtnText");
          _close = ComponentFactory.Instance.creatComponentByStylename("friendGroupFrame.close");
          _close.text = LanguageMgr.GetTranslation("shop.PresentFrame.CancelBtnText");
          _combox = ComponentFactory.Instance.creatComponentByStylename("friendGroupFrame.choose");
-         addToContent(_loc3_);
+         addToContent(font);
          addToContent(_confirm);
          addToContent(_close);
          addToContent(_combox);
          _combox.beginChanges();
          _combox.selctedPropName = "text";
-         var _loc1_:VectorListModel = _combox.listPanel.vectorListModel;
-         _loc1_.clear();
+         var comboxModel:VectorListModel = _combox.listPanel.vectorListModel;
+         comboxModel.clear();
          _customList = PlayerManager.Instance.customList;
-         var _loc2_:Array = [];
-         _loc4_ = 0;
-         while(_loc4_ < _customList.length - 1)
+         var names:Array = [];
+         for(i = 0; i < _customList.length - 1; )
          {
-            _loc2_.push(_customList[_loc4_].Name);
-            _loc4_++;
+            names.push(_customList[i].Name);
+            i++;
          }
-         _loc1_.appendAll(_loc2_);
+         comboxModel.appendAll(names);
          _combox.listPanel.list.updateListView();
          _combox.commitChanges();
          _combox.textField.text = _customList[0].Name;
@@ -69,38 +68,37 @@ package ddt.view.im
          _combox.listPanel.list.addEventListener("listItemClick",__itemClick);
       }
       
-      protected function __itemClick(param1:ListItemEvent) : void
+      protected function __itemClick(event:ListItemEvent) : void
       {
          SoundManager.instance.play("008");
       }
       
-      protected function __confirmHandler(param1:MouseEvent) : void
+      protected function __confirmHandler(event:MouseEvent) : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          SoundManager.instance.play("008");
-         _loc2_ = 0;
-         while(_loc2_ < _customList.length)
+         for(i = 0; i < _customList.length; )
          {
-            if(_customList[_loc2_].Name == _combox.textField.text)
+            if(_customList[i].Name == _combox.textField.text)
             {
-               SocketManager.Instance.out.sendAddFriend(nickName,_customList[_loc2_].ID);
+               SocketManager.Instance.out.sendAddFriend(nickName,_customList[i].ID);
                break;
             }
-            _loc2_++;
+            i++;
          }
          dispose();
       }
       
-      protected function __clickHandler(param1:MouseEvent) : void
+      protected function __clickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          dispose();
       }
       
-      protected function __responseHandler(param1:FrameEvent) : void
+      protected function __responseHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -108,7 +106,7 @@ package ddt.view.im
          }
       }
       
-      protected function __buttonClick(param1:MouseEvent) : void
+      protected function __buttonClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }

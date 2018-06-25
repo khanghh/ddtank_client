@@ -18,23 +18,23 @@ package ddQiYuan.view
          super();
       }
       
-      public function update(param1:int) : void
+      public function update(phase:int) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
+         var mc:* = null;
+         var box:* = null;
          ObjectUtils.disposeObject(_aniMc);
          _aniMc = ComponentFactory.Instance.creat("DDQiYuan.BoGuAni");
          addChild(_aniMc);
          _aniMc.gotoAndStop(1);
-         if(param1 > 0)
+         if(phase > 0)
          {
-            _loc2_ = _aniMc["boxContainer1"]["boxContainer2"]["boxContainer3"]["boxContainer4"];
-            _loc2_.removeChildAt(0);
-            _loc3_ = new Image();
-            _loc3_.resourceLink = "DDQiYuan.Box" + param1;
-            _loc3_.width = 80;
-            _loc3_.height = 82;
-            _loc2_.addChild(_loc3_);
+            mc = _aniMc["boxContainer1"]["boxContainer2"]["boxContainer3"]["boxContainer4"];
+            mc.removeChildAt(0);
+            box = new Image();
+            box.resourceLink = "DDQiYuan.Box" + phase;
+            box.width = 80;
+            box.height = 82;
+            mc.addChild(box);
          }
          else if(_aniMc["boxContainer1"]["boxContainer2"])
          {

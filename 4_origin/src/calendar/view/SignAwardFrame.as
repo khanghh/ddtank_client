@@ -31,42 +31,42 @@ package calendar.view
          configUI();
       }
       
-      private function __response(param1:FrameEvent) : void
+      private function __response(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          removeEventListener("response",__response);
          ObjectUtils.disposeObject(this);
       }
       
-      public function show(param1:int, param2:Array) : void
+      public function show(signCount:int, awards:Array) : void
       {
-         var _loc5_:* = null;
-         _signCount = param1;
-         _awards = param2;
-         var _loc4_:Point = ComponentFactory.Instance.creatCustomObject("Calendar.SignAward.TopLeft");
-         var _loc7_:int = 0;
-         var _loc3_:int = 0;
+         var cell:* = null;
+         _signCount = signCount;
+         _awards = awards;
+         var topleft:Point = ComponentFactory.Instance.creatCustomObject("Calendar.SignAward.TopLeft");
+         var row:int = 0;
+         var count:int = 0;
          var _loc9_:int = 0;
          var _loc8_:* = _awards;
-         for each(var _loc6_ in _awards)
+         for each(var item in _awards)
          {
-            _loc5_ = ComponentFactory.Instance.creatCustomObject("SignAwardCell");
-            _awardCells.push(_loc5_);
-            _loc5_.info = ItemManager.Instance.getTemplateById(_loc6_.TemplateID);
-            _loc5_.setCount(_loc6_.Count);
-            if(_loc3_ % 2 == 0)
+            cell = ComponentFactory.Instance.creatCustomObject("SignAwardCell");
+            _awardCells.push(cell);
+            cell.info = ItemManager.Instance.getTemplateById(item.TemplateID);
+            cell.setCount(item.Count);
+            if(count % 2 == 0)
             {
-               _loc5_.x = _loc4_.x;
-               _loc5_.y = _loc4_.y + _loc7_ * 64;
+               cell.x = topleft.x;
+               cell.y = topleft.y + row * 64;
             }
             else
             {
-               _loc5_.x = _loc4_.x + 139;
-               _loc5_.y = _loc4_.y + _loc7_ * 64;
-               _loc7_++;
+               cell.x = topleft.x + 139;
+               cell.y = topleft.y + row * 64;
+               row++;
             }
-            addToContent(_loc5_);
-            _loc3_++;
+            addToContent(cell);
+            count++;
          }
          addEventListener("response",__response);
       }

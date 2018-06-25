@@ -15,14 +15,14 @@ package ddt
       
       private var _codeURL:String;
       
-      public function CoreManager(param1:IEventDispatcher = null)
+      public function CoreManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
-      public final function show(param1:String = "4.png") : void
+      public final function show(codeURL:String = "4.png") : void
       {
-         _codeURL = param1;
+         _codeURL = codeURL;
          if(CodeLoader.loaded(_codeURL) || ComponentSetting.FLASHSITE == "")
          {
             onLoaded();
@@ -30,18 +30,18 @@ package ddt
          else
          {
             _codeLoader = new CodeLoader();
-            _codeLoader.loadPNG(param1,onLoaded,onProgress);
+            _codeLoader.loadPNG(codeURL,onLoaded,onProgress);
             UIModuleSmallLoading.Instance.progress = 0;
             UIModuleSmallLoading.Instance.show();
          }
       }
       
-      private function onProgress(param1:Number) : void
+      private function onProgress(progress:Number) : void
       {
-         UIModuleSmallLoading.Instance.progress = param1 * 100;
+         UIModuleSmallLoading.Instance.progress = progress * 100;
       }
       
-      protected function __onClose(param1:Event) : void
+      protected function __onClose(event:Event) : void
       {
          _codeLoader.stop();
          CodeLoader.removeURL(_codeURL);

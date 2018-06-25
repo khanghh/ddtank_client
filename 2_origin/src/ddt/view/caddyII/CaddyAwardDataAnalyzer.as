@@ -19,54 +19,53 @@ package ddt.view.caddyII
       
       public var _goldToyAwards:Vector.<CaddyAwardInfo>;
       
-      public function CaddyAwardDataAnalyzer(param1:Function)
+      public function CaddyAwardDataAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc6_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var itemData:* = null;
          _awards = new Vector.<CaddyAwardInfo>();
          _silverAwards = new Vector.<CaddyAwardInfo>();
          _goldAwards = new Vector.<CaddyAwardInfo>();
          _treasureAwards = new Vector.<CaddyAwardInfo>();
          _silverToyAwards = new Vector.<CaddyAwardInfo>();
          _goldToyAwards = new Vector.<CaddyAwardInfo>();
-         var _loc3_:XML = new XML(param1);
-         var _loc5_:int = _loc3_.item.length();
-         var _loc4_:XMLList = _loc3_.item;
-         _loc6_ = 0;
-         while(_loc6_ < _loc5_)
+         var xml:XML = new XML(data);
+         var len:int = xml.item.length();
+         var xmllist:XMLList = xml.item;
+         for(i = 0; i < len; )
          {
-            _loc2_ = new CaddyAwardInfo();
-            ObjectUtils.copyPorpertiesByXML(_loc2_,_loc4_[_loc6_]);
-            if(_loc4_[_loc6_].@BoxType == 1)
+            itemData = new CaddyAwardInfo();
+            ObjectUtils.copyPorpertiesByXML(itemData,xmllist[i]);
+            if(xmllist[i].@BoxType == 1)
             {
-               _awards.push(_loc2_);
+               _awards.push(itemData);
             }
-            else if(_loc4_[_loc6_].@BoxType == 2)
+            else if(xmllist[i].@BoxType == 2)
             {
-               _silverAwards.push(_loc2_);
+               _silverAwards.push(itemData);
             }
-            else if(_loc4_[_loc6_].@BoxType == 3)
+            else if(xmllist[i].@BoxType == 3)
             {
-               _goldAwards.push(_loc2_);
+               _goldAwards.push(itemData);
             }
-            else if(_loc4_[_loc6_].@BoxType == 4)
+            else if(xmllist[i].@BoxType == 4)
             {
-               _treasureAwards.push(_loc2_);
+               _treasureAwards.push(itemData);
             }
-            else if(_loc4_[_loc6_].@BoxType == 5)
+            else if(xmllist[i].@BoxType == 5)
             {
-               _silverToyAwards.push(_loc2_);
+               _silverToyAwards.push(itemData);
             }
-            else if(_loc4_[_loc6_].@BoxType == 6)
+            else if(xmllist[i].@BoxType == 6)
             {
-               _goldToyAwards.push(_loc2_);
+               _goldToyAwards.push(itemData);
             }
-            _loc6_++;
+            i++;
          }
          onAnalyzeComplete();
       }

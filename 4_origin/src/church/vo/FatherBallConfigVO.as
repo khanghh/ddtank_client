@@ -26,9 +26,9 @@ package church.vo
          return _isMask;
       }
       
-      public function set isMask(param1:String) : void
+      public function set isMask(value:String) : void
       {
-         _isMask = param1;
+         _isMask = value;
       }
       
       public function get sleepSecond() : int
@@ -36,9 +36,9 @@ package church.vo
          return _sleepSecond;
       }
       
-      public function set sleepSecond(param1:int) : void
+      public function set sleepSecond(value:int) : void
       {
-         _sleepSecond = param1;
+         _sleepSecond = value;
       }
       
       public function get frameStep() : Number
@@ -46,9 +46,9 @@ package church.vo
          return _frameStep;
       }
       
-      public function set frameStep(param1:Number) : void
+      public function set frameStep(value:Number) : void
       {
-         _frameStep = param1;
+         _frameStep = value;
       }
       
       public function get rowHeight() : Number
@@ -56,9 +56,9 @@ package church.vo
          return _rowHeight;
       }
       
-      public function set rowHeight(param1:Number) : void
+      public function set rowHeight(value:Number) : void
       {
-         _rowHeight = param1;
+         _rowHeight = value;
       }
       
       public function get rowWitdh() : Number
@@ -66,9 +66,9 @@ package church.vo
          return _rowWitdh;
       }
       
-      public function set rowWitdh(param1:Number) : void
+      public function set rowWitdh(value:Number) : void
       {
-         _rowWitdh = param1;
+         _rowWitdh = value;
       }
       
       public function get rowNumber() : int
@@ -76,9 +76,9 @@ package church.vo
          return _rowNumber;
       }
       
-      public function set rowNumber(param1:int) : void
+      public function set rowNumber(value:int) : void
       {
-         _rowNumber = param1;
+         _rowNumber = value;
       }
    }
 }

@@ -52,15 +52,14 @@ package com.pickgliss.ui.image
       
       private function creatImages() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var bitmap:* = null;
          _bitmaps = new Vector.<Bitmap>();
-         _loc2_ = 0;
-         while(_loc2_ < _imageLinks.length)
+         for(i = 0; i < _imageLinks.length; )
          {
-            _loc1_ = ComponentFactory.Instance.creat(_imageLinks[_loc2_]);
-            _bitmaps.push(_loc1_);
-            _loc2_++;
+            bitmap = ComponentFactory.Instance.creat(_imageLinks[i]);
+            _bitmaps.push(bitmap);
+            i++;
          }
       }
       
@@ -75,16 +74,16 @@ package com.pickgliss.ui.image
       
       private function removeImages() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(_bitmaps == null)
          {
             return;
          }
-         _loc1_ = 0;
-         while(_loc1_ < _bitmaps.length)
+         i = 0;
+         while(i < _bitmaps.length)
          {
-            ObjectUtils.disposeObject(_bitmaps[_loc1_]);
-            _loc1_++;
+            ObjectUtils.disposeObject(_bitmaps[i]);
+            i++;
          }
       }
    }

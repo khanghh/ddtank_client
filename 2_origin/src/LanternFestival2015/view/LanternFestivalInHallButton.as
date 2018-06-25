@@ -25,11 +25,11 @@ package LanternFestival2015.view
          this.removeEventListener("click",onClick);
       }
       
-      public function show(param1:HallStateView) : void
+      public function show($hall:HallStateView) : void
       {
       }
       
-      protected function onClick(param1:MouseEvent) : void
+      protected function onClick(e:MouseEvent) : void
       {
          LanternFestivalManager.getInstance().onBtnInHallClicked();
       }

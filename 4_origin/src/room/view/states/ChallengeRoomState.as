@@ -16,10 +16,10 @@ package room.view.states
          super();
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
-         prev = param1;
-         data = param2;
+         prev = prev;
+         data = data;
          _roomView = new ChallengeRoomView(RoomManager.Instance.current);
          addChild(_roomView);
          ChatManager.Instance.state = 5;

@@ -59,12 +59,12 @@ package christmas.player
       
       private var aimX:int;
       
-      public function ChristmasMonster(param1:MonsterInfo, param2:Point)
+      public function ChristmasMonster(pMonsterInfo:MonsterInfo, pPos:Point)
       {
          super();
-         _pos = param2.clone();
-         LastPos = param2;
-         _monsterInfo = param1;
+         _pos = pPos.clone();
+         LastPos = pPos;
+         _monsterInfo = pMonsterInfo;
          initMovie();
          _monsterNameTxt = ComponentFactory.Instance.creatComponentByStylename("christmas.monster.name");
          _monsterNameTxt.text = _monsterInfo.MonsterName;
@@ -81,10 +81,10 @@ package christmas.player
          this.MonsterState = _monsterInfo.State;
       }
       
-      public function set Pos(param1:Point) : void
+      public function set Pos(value:Point) : void
       {
-         _pos = param1;
-         LastPos = param1;
+         _pos = value;
+         LastPos = value;
       }
       
       private function TimeEx() : Number
@@ -97,9 +97,9 @@ package christmas.player
          return _state;
       }
       
-      public function set MonsterState(param1:int) : void
+      public function set MonsterState(value:int) : void
       {
-         _state = param1;
+         _state = value;
          if(_state >= 1)
          {
             this.visible = true;
@@ -143,7 +143,7 @@ package christmas.player
          _monsterInfo.removeEventListener("update_monster_state",__onStateChange);
       }
       
-      private function __onMouseOverMonster(param1:MouseEvent) : void
+      private function __onMouseOverMonster(e:MouseEvent) : void
       {
          if(this.MonsterState >= 1)
          {
@@ -155,7 +155,7 @@ package christmas.player
          }
       }
       
-      private function __onMouseOutMonster(param1:MouseEvent) : void
+      private function __onMouseOutMonster(e:MouseEvent) : void
       {
          if(this.MonsterState >= 1)
          {
@@ -167,9 +167,9 @@ package christmas.player
          }
       }
       
-      private function __onStateChange(param1:ChristmasMonsterEvent) : void
+      private function __onStateChange(pEvent:ChristmasMonsterEvent) : void
       {
-         this.MonsterState = param1.data as int;
+         this.MonsterState = pEvent.data as int;
       }
       
       private function startTimer() : void
@@ -179,16 +179,16 @@ package christmas.player
       
       private function initMovie() : void
       {
-         var _loc1_:* = null;
+         var movieClass:* = null;
          if(ModuleLoader.hasDefinition(_monsterInfo.ActionMovieName))
          {
-            _loc1_ = ModuleLoader.getDefinition(_monsterInfo.ActionMovieName) as Class;
+            movieClass = ModuleLoader.getDefinition(_monsterInfo.ActionMovieName) as Class;
             if(_actionMovie)
             {
                _actionMovie.dispose();
                _actionMovie = null;
             }
-            _actionMovie = new _loc1_();
+            _actionMovie = new movieClass();
             _actionMovie.mouseEnabled = true;
             _actionMovie.mouseChildren = true;
             _actionMovie.buttonMode = true;
@@ -217,7 +217,7 @@ package christmas.player
          }
       }
       
-      private function __walkingNow(param1:Event) : void
+      private function __walkingNow(pEvent:Event) : void
       {
          if(_actionMovie)
          {
@@ -225,7 +225,7 @@ package christmas.player
          }
       }
       
-      protected function __checkActionIsReady(param1:Event) : void
+      protected function __checkActionIsReady(event:Event) : void
       {
          if(ModuleLoader.hasDefinition(_monsterInfo.ActionMovieName))
          {
@@ -237,7 +237,7 @@ package christmas.player
          }
       }
       
-      private function __onMonsterClick(param1:MouseEvent) : void
+      private function __onMonsterClick(pEvent:MouseEvent) : void
       {
          ChristmasMonsterManager.Instance.curMonster = this;
       }
@@ -266,23 +266,23 @@ package christmas.player
          ChristmasMonsterManager.Instance.CurrentMonster = null;
       }
       
-      public function walk(param1:Point = null) : void
+      public function walk(pAimPoint:Point = null) : void
       {
-         var _loc2_:int = 0;
+         var dis:int = 0;
          aimX = Math.abs(Math.random()) * 300 + (_pos.x - 150);
          if(aimX >= LastPos.x)
          {
-            _loc2_ = aimX - LastPos.x;
+            dis = aimX - LastPos.x;
             _actionMovie.scaleX = -1;
             _actionMovie.doAction("walk");
          }
          else
          {
-            _loc2_ = LastPos.x - aimX;
+            dis = LastPos.x - aimX;
             _actionMovie.scaleX = 1;
             _actionMovie.doAction("walk");
          }
-         TweenLite.to(this,_loc2_ * TimeEx(),{
+         TweenLite.to(this,dis * TimeEx(),{
             "x":aimX,
             "onComplete":onTweenComplete
          });

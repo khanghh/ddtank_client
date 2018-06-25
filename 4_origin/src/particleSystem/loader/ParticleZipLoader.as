@@ -19,9 +19,9 @@ package particleSystem.loader
       
       public var ID:String;
       
-      public function ParticleZipLoader(param1:int, param2:String, param3:URLVariables = null, param4:String = "GET")
+      public function ParticleZipLoader(id:int, url:String, args:URLVariables = null, requestMethod:String = "GET")
       {
-         super(param1,param2,param3,param4);
+         super(id,url,args,requestMethod);
       }
       
       public function loadZip() : void
@@ -38,85 +38,84 @@ package particleSystem.loader
          }
       }
       
-      private function __onLoadZipComplete(param1:LoaderEvent) : void
+      private function __onLoadZipComplete(evt:LoaderEvent) : void
       {
-         var _loc2_:ParticleZipLoader = param1.loader as ParticleZipLoader;
-         _loc2_.removeEventListener("complete",__onLoadZipComplete);
-         _loc2_.removeEventListener("loadError",__onLoadError);
-         var _loc3_:ByteArray = _loc2_.content;
-         zipLoad(_loc3_,_loc2_.ID);
+         var zipLoader:ParticleZipLoader = evt.loader as ParticleZipLoader;
+         zipLoader.removeEventListener("complete",__onLoadZipComplete);
+         zipLoader.removeEventListener("loadError",__onLoadError);
+         var temp:ByteArray = zipLoader.content;
+         zipLoad(temp,zipLoader.ID);
       }
       
-      private function zipLoad(param1:ByteArray, param2:String) : void
+      private function zipLoad(content:ByteArray, id:String) : void
       {
-         var _loc3_:ParticleFZip = new ParticleFZip();
-         _loc3_.ID = param2;
-         _loc3_.addEventListener("complete",__onZipParaComplete);
-         _loc3_.addEventListener("parseError",__onZipParaError);
-         _loc3_.loadBytes(param1);
+         var zip:ParticleFZip = new ParticleFZip();
+         zip.ID = id;
+         zip.addEventListener("complete",__onZipParaComplete);
+         zip.addEventListener("parseError",__onZipParaError);
+         zip.loadBytes(content);
       }
       
-      private function __onZipParaComplete(param1:Event) : void
+      private function __onZipParaComplete(event:Event) : void
       {
-         var _loc9_:int = 0;
-         var _loc6_:* = null;
-         var _loc7_:* = null;
-         var _loc2_:* = null;
-         var _loc8_:* = null;
-         var _loc5_:* = null;
-         var _loc3_:ParticleFZip = param1.currentTarget as ParticleFZip;
-         _loc3_.removeEventListener("complete",__onZipParaComplete);
-         _loc3_.removeEventListener("parseError",__onZipParaError);
-         var _loc4_:int = _loc3_.getFileCount();
-         _loc9_ = 0;
-         while(_loc9_ < _loc4_)
+         var i:int = 0;
+         var file:* = null;
+         var temp:* = null;
+         var extension:* = null;
+         var xml:* = null;
+         var loader:* = null;
+         var zip:ParticleFZip = event.currentTarget as ParticleFZip;
+         zip.removeEventListener("complete",__onZipParaComplete);
+         zip.removeEventListener("parseError",__onZipParaError);
+         var count:int = zip.getFileCount();
+         for(i = 0; i < count; )
          {
-            _loc6_ = _loc3_.getFileAt(_loc9_);
-            _loc7_ = _loc6_.content;
-            _loc7_.position = 0;
-            _loc2_ = getFileExtension(_loc6_.filename);
-            if(_loc2_ == "pex")
+            file = zip.getFileAt(i);
+            temp = file.content;
+            temp.position = 0;
+            extension = getFileExtension(file.filename);
+            if(extension == "pex")
             {
-               _loc8_ = XML(_loc7_.readUTFBytes(_loc7_.bytesAvailable));
-               ParticleManager.Instance.particleXMLDic[_loc3_.ID] = _loc8_;
+               xml = XML(temp.readUTFBytes(temp.bytesAvailable));
+               ParticleManager.Instance.particleXMLDic[zip.ID] = xml;
             }
-            else if(_loc2_ == "png")
+            else if(extension == "png")
             {
-               _loc5_ = new TextureLoader(_loc3_.ID);
-               _loc5_.contentLoaderInfo.addEventListener("complete",__loadParticleImageComplete);
-               _loc5_.contentLoaderInfo.addEventListener("ioError",__ioError);
-               _loc5_.loadBytes(_loc7_);
+               loader = new TextureLoader(zip.ID);
+               loader.contentLoaderInfo.addEventListener("complete",__loadParticleImageComplete);
+               loader.contentLoaderInfo.addEventListener("ioError",__ioError);
+               loader.loadBytes(temp);
             }
-            _loc9_++;
+            i++;
          }
       }
       
-      private function getFileExtension(param1:String) : String
+      private function getFileExtension(fileName:String) : String
       {
-         return param1.substr(param1.lastIndexOf(".") + 1);
+         return fileName.substr(fileName.lastIndexOf(".") + 1);
       }
       
-      private function __onZipParaError(param1:FZipErrorEvent) : void
-      {
-      }
-      
-      private function __onLoadError(param1:LoaderEvent) : void
+      private function __onZipParaError(evt:FZipErrorEvent) : void
       {
       }
       
-      private function __loadParticleImageComplete(param1:Event) : void
+      private function __onLoadError(event:LoaderEvent) : void
       {
-         var _loc2_:TextureLoader = param1.target.loader as TextureLoader;
-         _loc2_.removeEventListener("complete",__loadParticleImageComplete);
-         _loc2_.removeEventListener("ioError",__ioError);
-         ParticleManager.Instance.particleTextureDic[_loc2_.ID] = (_loc2_.content as Bitmap).bitmapData;
-         if(ParticleManager.Instance.particleXMLDic[_loc2_.ID])
+      }
+      
+      private function __loadParticleImageComplete(evt:Event) : void
+      {
+         var loader:TextureLoader = evt.target.loader as TextureLoader;
+         loader.removeEventListener("complete",__loadParticleImageComplete);
+         loader.removeEventListener("ioError",__ioError);
+         ParticleManager.Instance.particleTextureDic[loader.ID] = (loader.content as Bitmap).bitmapData;
+         if(ParticleManager.Instance.particleXMLDic[loader.ID])
          {
-            dispatchEvent(new ParticleEvent("particle_loaded",_loc2_.ID));
+            dispatchEvent(new ParticleEvent("particle_loaded",loader.ID));
          }
       }
       
-      private function __ioError(param1:IOErrorEvent) : void
+      private function __ioError(evt:IOErrorEvent) : void
       {
       }
    }

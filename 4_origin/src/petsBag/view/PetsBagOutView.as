@@ -32,6 +32,7 @@ package petsBag.view
    import petsBag.PetsBagManager;
    import petsBag.petsAdvanced.PetsAdvancedManager;
    import petsBag.view.item.FeedItem;
+   import petsBag.view.item.StarBar;
    import road7th.data.DictionaryEvent;
    import road7th.utils.StringHelper;
    import store.HelpFrame;
@@ -43,6 +44,8 @@ package petsBag.view
       private var _rePetNameBtn:TextButton;
       
       private var _revertPetBtn:TextButton;
+      
+      private var _washBoneBtn:TextButton;
       
       private var _feedItem:FeedItem;
       
@@ -81,6 +84,9 @@ package petsBag.view
          _revertPetBtn = ComponentFactory.Instance.creatComponentByStylename("petsBag.button.revertPet");
          _revertPetBtn.text = LanguageMgr.GetTranslation("ddt.pets.revert");
          addChild(_revertPetBtn);
+         _washBoneBtn = ComponentFactory.Instance.creatComponentByStylename("petsBag.button.washBonePet");
+         _washBoneBtn.text = LanguageMgr.GetTranslation("ddt.pets.washBone");
+         addChild(_washBoneBtn);
          _feedItem = ComponentFactory.Instance.creat("petsBag.feedItem");
          addChild(_feedItem);
          _unFightBtn = ComponentFactory.Instance.creatComponentByStylename("petsBag.button.unFight");
@@ -133,6 +139,7 @@ package petsBag.view
          super.initEvent();
          _rePetNameBtn.addEventListener("click",__rePetName);
          _releaseBtn.addEventListener("click",__releasePet);
+         _washBoneBtn.addEventListener("click",__washBonePet);
          _revertPetBtn.addEventListener("click",__revertPet);
          _unFightBtn.addEventListener("click",__unFight);
          _fightBtn.addEventListener("click",__fight);
@@ -140,15 +147,28 @@ package petsBag.view
          _groomBtn.addEventListener("click",__groomPet);
       }
       
-      override protected function __onChange(param1:Event) : void
+      private function __washBonePet(evt:MouseEvent) : void
       {
-         super.__onChange(param1);
+         SoundManager.instance.playButtonSound();
+         var curPet:PetInfo = PetsBagManager.instance().petModel.currentPetInfo;
+         if(curPet.StarLevel < StarBar.TOTAL_STAR)
+         {
+            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.pets.washBone.starEnoughfailtMsg"));
+            return;
+         }
+         var washBoneFrame:PetWashBoneFrame = ComponentFactory.Instance.creat("petsBag.washBoneFrame");
+         washBoneFrame.show();
+      }
+      
+      override protected function __onChange(event:Event) : void
+      {
+         super.__onChange(event);
          switchFightUnFight(_currentPet && !_currentPet.IsEquip);
       }
       
-      override public function set infoPlayer(param1:PlayerInfo) : void
+      override public function set infoPlayer(value:PlayerInfo) : void
       {
-         .super.infoPlayer = param1;
+         .super.infoPlayer = value;
          addInfoChangeEvent();
          if(PetsBagManager.instance().petModel.currentPetInfo && PetsBagManager.instance().petModel.currentPetInfo.IsEquip)
          {
@@ -205,20 +225,20 @@ package petsBag.view
          _infoPlayer.pets.removeEventListener("remove",__updateInfoChange);
       }
       
-      private function __updateInfoChange(param1:DictionaryEvent) : void
+      private function __updateInfoChange(e:DictionaryEvent) : void
       {
-         var _loc2_:PetInfo = param1.data as PetInfo;
-         var _loc3_:PetInfo = PetsBagManager.instance().petModel.currentPetInfo;
-         if(_loc2_)
+         var updatePetinfo:PetInfo = e.data as PetInfo;
+         var currentPet:PetInfo = PetsBagManager.instance().petModel.currentPetInfo;
+         if(updatePetinfo)
          {
-            var _loc4_:* = param1.type;
+            var _loc4_:* = e.type;
             if("add" !== _loc4_)
             {
                if("update" !== _loc4_)
                {
                   if("remove" === _loc4_)
                   {
-                     _petMoveScroll.refreshPetInfo(_loc2_,2);
+                     _petMoveScroll.refreshPetInfo(updatePetinfo,2);
                      if(_infoPlayer.pets.length > 0)
                      {
                         PetsBagManager.instance().petModel.currentPetInfo = getFirstPet(_infoPlayer);
@@ -231,22 +251,22 @@ package petsBag.view
                }
                else
                {
-                  _petMoveScroll.refreshPetInfo(_loc2_);
-                  if(_loc3_ && _loc3_.Place == _loc2_.Place)
+                  _petMoveScroll.refreshPetInfo(updatePetinfo);
+                  if(currentPet && currentPet.Place == updatePetinfo.Place)
                   {
-                     PetsBagManager.instance().petModel.currentPetInfo = _loc2_;
+                     PetsBagManager.instance().petModel.currentPetInfo = updatePetinfo;
                   }
                }
             }
             else
             {
-               _petMoveScroll.refreshPetInfo(_loc2_,1);
+               _petMoveScroll.refreshPetInfo(updatePetinfo,1);
             }
          }
          updatePetBagView();
       }
       
-      private function __rePetName(param1:MouseEvent) : void
+      private function __rePetName(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -254,36 +274,36 @@ package petsBag.view
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:RePetNameFrame = ComponentFactory.Instance.creat("petsBag.rePetNameFrame");
-         _loc2_.addEventListener("response",__AlertRePetNameResponse);
-         _loc2_.show();
+         var alertRePetName:RePetNameFrame = ComponentFactory.Instance.creat("petsBag.rePetNameFrame");
+         alertRePetName.addEventListener("response",__AlertRePetNameResponse);
+         alertRePetName.show();
       }
       
-      protected function __AlertRePetNameResponse(param1:FrameEvent) : void
+      protected function __AlertRePetNameResponse(evt:FrameEvent) : void
       {
-         var _loc2_:RePetNameFrame = param1.currentTarget as RePetNameFrame;
-         _loc2_.removeEventListener("response",__AlertRePetNameResponse);
-         switch(int(param1.responseCode) - 2)
+         var alert:RePetNameFrame = evt.currentTarget as RePetNameFrame;
+         alert.removeEventListener("response",__AlertRePetNameResponse);
+         switch(int(evt.responseCode) - 2)
          {
             case 0:
             case 1:
-               if(BuriedManager.Instance.checkMoney(_loc2_.selecetItem.isBind,500))
+               if(BuriedManager.Instance.checkMoney(alert.selecetItem.isBind,500))
                {
-                  _loc2_.dispose();
+                  alert.dispose();
                   return;
                }
-               if(PetsBagManager.instance().petModel.currentPetInfo && _loc2_.petName.length > 0)
+               if(PetsBagManager.instance().petModel.currentPetInfo && alert.petName.length > 0)
                {
-                  SocketManager.Instance.out.sendPetRename(PetsBagManager.instance().petModel.currentPetInfo.Place,_loc2_.petName,_loc2_.selecetItem.isBind);
+                  SocketManager.Instance.out.sendPetRename(PetsBagManager.instance().petModel.currentPetInfo.Place,alert.petName,alert.selecetItem.isBind);
                }
-               _loc2_.dispose();
+               alert.dispose();
                break;
          }
       }
       
-      protected function __revertPet(param1:MouseEvent) : void
+      protected function __revertPet(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var alertAsk:* = null;
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -292,36 +312,36 @@ package petsBag.view
          }
          if(PetsBagManager.instance().petModel.currentPetInfo)
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.pets.revertPetAlertMsg",StringHelper.trim(PetsBagManager.instance().petModel.currentPetInfo.Name)),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
-            _loc2_.addEventListener("response",__alertRevertPet);
+            alertAsk = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.pets.revertPetAlertMsg",StringHelper.trim(PetsBagManager.instance().petModel.currentPetInfo.Name)),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
+            alertAsk.addEventListener("response",__alertRevertPet);
          }
       }
       
-      protected function __alertRevertPet(param1:FrameEvent) : void
+      protected function __alertRevertPet(event:FrameEvent) : void
       {
-         var _loc2_:* = null;
-         switch(int(param1.responseCode) - 2)
+         var alertAsk:* = null;
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
-               _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.pets.revertPetCostMsg",PetconfigAnalyzer.PetCofnig.RecycleCost),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",30,true,1);
-               _loc2_.addEventListener("response",__revertPetCostConfirm);
+               alertAsk = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.pets.revertPetCostMsg",PetconfigAnalyzer.PetCofnig.RecycleCost),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",30,true,1);
+               alertAsk.addEventListener("response",__revertPetCostConfirm);
          }
-         param1.currentTarget.removeEventListener("response",__alertRevertPet);
-         ObjectUtils.disposeObject(param1.currentTarget);
+         event.currentTarget.removeEventListener("response",__alertRevertPet);
+         ObjectUtils.disposeObject(event.currentTarget);
       }
       
-      protected function __revertPetCostConfirm(param1:FrameEvent) : void
+      protected function __revertPetCostConfirm(event:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         switch(int(param1.responseCode) - 2)
+         var alert:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
-               CheckMoneyUtils.instance.checkMoney(_loc2_.isBand,PetconfigAnalyzer.PetCofnig.RecycleCost,onCheckComplete2);
+               CheckMoneyUtils.instance.checkMoney(alert.isBand,PetconfigAnalyzer.PetCofnig.RecycleCost,onCheckComplete2);
          }
-         param1.currentTarget.removeEventListener("response",__revertPetCostConfirm);
-         ObjectUtils.disposeObject(param1.currentTarget);
+         event.currentTarget.removeEventListener("response",__revertPetCostConfirm);
+         ObjectUtils.disposeObject(event.currentTarget);
       }
       
       protected function onCheckComplete2() : void
@@ -329,33 +349,33 @@ package petsBag.view
          SocketManager.Instance.out.sendRevertPet(_petMoveScroll.currentPage * 5 + _petMoveScroll.selectedIndex,CheckMoneyUtils.instance.isBind);
       }
       
-      private function __releasePet(param1:MouseEvent) : void
+      private function __releasePet(e:MouseEvent) : void
       {
-         var _loc3_:* = null;
+         var alertAsk:* = null;
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:PetInfo = PetsBagManager.instance().petModel.currentPetInfo;
-         if(_loc2_)
+         var tmpPetInfo:PetInfo = PetsBagManager.instance().petModel.currentPetInfo;
+         if(tmpPetInfo)
          {
-            if(_loc2_.StarLevel >= PetconfigAnalyzer.PetCofnig.NotRemoveStar)
+            if(tmpPetInfo.StarLevel >= PetconfigAnalyzer.PetCofnig.NotRemoveStar)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.pets.releaseCannotTxt"));
             }
             else
             {
-               _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.farms.releasePet",StringHelper.trim(PetsBagManager.instance().petModel.currentPetInfo.Name)),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
-               _loc3_.addEventListener("response",__alertReleasePet);
+               alertAsk = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.farms.releasePet",StringHelper.trim(PetsBagManager.instance().petModel.currentPetInfo.Name)),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
+               alertAsk.addEventListener("response",__alertReleasePet);
             }
          }
       }
       
-      private function __alertReleasePet(param1:FrameEvent) : void
+      private function __alertReleasePet(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode) - 2)
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
@@ -365,37 +385,37 @@ package petsBag.view
                }
                SocketManager.Instance.out.sendReleasePet(PetsBagManager.instance().petModel.currentPetInfo.Place);
          }
-         param1.currentTarget.removeEventListener("response",__alertReleasePet);
-         ObjectUtils.disposeObject(param1.currentTarget);
+         event.currentTarget.removeEventListener("response",__alertReleasePet);
+         ObjectUtils.disposeObject(event.currentTarget);
       }
       
-      private function __alertReleasePet3(param1:FrameEvent) : void
+      private function __alertReleasePet3(event:FrameEvent) : void
       {
-         var _loc2_:Boolean = false;
-         var _loc3_:int = 0;
-         switch(int(param1.responseCode) - 2)
+         var tmpIsBind:Boolean = false;
+         var tmpNeedMoney:int = 0;
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
-               _loc2_ = (param1.currentTarget as SimpleAlert).isBand;
-               _loc3_ = PetconfigAnalyzer.PetCofnig.HighRemoveStarCost;
-               if(_loc2_ && PlayerManager.Instance.Self.BandMoney >= _loc3_ || PlayerManager.Instance.Self.Money >= _loc3_)
+               tmpIsBind = (event.currentTarget as SimpleAlert).isBand;
+               tmpNeedMoney = PetconfigAnalyzer.PetCofnig.HighRemoveStarCost;
+               if(tmpIsBind && PlayerManager.Instance.Self.BandMoney >= tmpNeedMoney || PlayerManager.Instance.Self.Money >= tmpNeedMoney)
                {
                   if(PlayerManager.Instance.Self.pets.length == 1 || PlayerManager.Instance.Self.currentPet == PetsBagManager.instance().petModel.currentPetInfo)
                   {
                      PetSpriteManager.Instance.dispatchEvent(new Event("close"));
                   }
-                  SocketManager.Instance.out.sendReleasePet(PetsBagManager.instance().petModel.currentPetInfo.Place,true,_loc2_);
+                  SocketManager.Instance.out.sendReleasePet(PetsBagManager.instance().petModel.currentPetInfo.Place,true,tmpIsBind);
                   break;
                }
                LeavePageManager.showFillFrame();
                break;
          }
-         param1.currentTarget.removeEventListener("response",__alertReleasePet3);
-         ObjectUtils.disposeObject(param1.currentTarget);
+         event.currentTarget.removeEventListener("response",__alertReleasePet3);
+         ObjectUtils.disposeObject(event.currentTarget);
       }
       
-      private function __unFight(param1:MouseEvent) : void
+      private function __unFight(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -411,7 +431,7 @@ package petsBag.view
          PetSpriteManager.Instance.dispatchEvent(new Event("close"));
       }
       
-      private function __fight(param1:MouseEvent) : void
+      private function __fight(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -431,13 +451,13 @@ package petsBag.view
          PetSpriteManager.Instance.dispatchEvent(new Event("open"));
       }
       
-      private function switchFightUnFight(param1:Boolean = true) : void
+      private function switchFightUnFight(bool:Boolean = true) : void
       {
-         _fightBtn.visible = param1;
-         _unFightBtn.visible = !param1;
+         _fightBtn.visible = bool;
+         _unFightBtn.visible = !bool;
       }
       
-      private function __feedPet(param1:MouseEvent) : void
+      private function __feedPet(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -464,48 +484,48 @@ package petsBag.view
          }
       }
       
-      private function isCanFeed(param1:InventoryItemInfo) : Boolean
+      private function isCanFeed(_info:InventoryItemInfo) : Boolean
       {
-         var _loc5_:int = needMaxFoods(PetsBagManager.instance().petModel.currentPetInfo.Hunger,int(param1.Property1));
-         var _loc3_:int = PetsBagManager.instance().petModel.currentPetInfo.breakGrade;
-         switch(int(_loc3_) - 1)
+         var needMaxFood:int = needMaxFoods(PetsBagManager.instance().petModel.currentPetInfo.Hunger,int(_info.Property1));
+         var breakGrade:int = PetsBagManager.instance().petModel.currentPetInfo.breakGrade;
+         switch(int(breakGrade) - 1)
          {
             case 0:
-               _loc3_ = 63;
+               breakGrade = 63;
                break;
             case 1:
-               _loc3_ = 65;
+               breakGrade = 65;
                break;
             case 2:
-               _loc3_ = 68;
+               breakGrade = 68;
                break;
             case 3:
-               _loc3_ = 70;
+               breakGrade = 70;
          }
-         var _loc2_:int = PlayerManager.Instance.Self.Grade;
-         var _loc4_:int = PetsBagManager.instance().petModel.currentPetInfo.Level;
-         if(!int(_loc5_))
+         var playerGrade:int = PlayerManager.Instance.Self.Grade;
+         var petsLevel:int = PetsBagManager.instance().petModel.currentPetInfo.Level;
+         if(!int(needMaxFood))
          {
-            if(_loc4_ == _loc3_ || _loc4_ == _loc2_)
+            if(petsLevel == breakGrade || petsLevel == playerGrade)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.pets.hungerFull"));
                return false;
             }
             return true;
          }
-         if(_loc4_ == _loc3_ || _loc4_ == _loc2_)
+         if(petsLevel == breakGrade || petsLevel == playerGrade)
          {
             return true;
          }
          return true;
       }
       
-      private function needMaxFoods(param1:int, param2:int) : int
+      private function needMaxFoods(hunger:int, addHunger:int) : int
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = PetconfigAnalyzer.PetCofnig.MaxHunger - param1;
-         _loc3_ = Math.ceil(_loc4_ / param2);
-         return _loc3_;
+         var maxFood:int = 0;
+         var limitHunger:int = PetconfigAnalyzer.PetCofnig.MaxHunger - hunger;
+         maxFood = Math.ceil(limitHunger / addHunger);
+         return maxFood;
       }
       
       public function startShine() : void
@@ -528,17 +548,17 @@ package petsBag.view
          _feedItem.info = null;
       }
       
-      private function __help(param1:MouseEvent) : void
+      private function __help(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:DisplayObject = ComponentFactory.Instance.creat("petsBag.HelpPrompt");
-         var _loc3_:HelpFrame = ComponentFactory.Instance.creat("petsBag.HelpFrame");
-         _loc3_.setView(_loc2_);
-         _loc3_.titleText = LanguageMgr.GetTranslation("ddt.petsBag.readme");
-         LayerManager.Instance.addToLayer(_loc3_,1,true,1);
+         var helpBd:DisplayObject = ComponentFactory.Instance.creat("petsBag.HelpPrompt");
+         var helpPage:HelpFrame = ComponentFactory.Instance.creat("petsBag.HelpFrame");
+         helpPage.setView(helpBd);
+         helpPage.titleText = LanguageMgr.GetTranslation("ddt.petsBag.readme");
+         LayerManager.Instance.addToLayer(helpPage,1,true,1);
       }
       
-      private function __groomPet(param1:MouseEvent) : void
+      private function __groomPet(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          PetsAdvancedManager.Instance.addEventListener("petsAdvanceFrameClose",__closeHandler);
@@ -546,7 +566,7 @@ package petsBag.view
          _showPet.removeDragInfoArea();
       }
       
-      private function __closeHandler(param1:Event) : void
+      private function __closeHandler(evt:Event) : void
       {
          PetsAdvancedManager.Instance.removeEventListener("petsAdvanceFrameClose",__closeHandler);
          if(_showPet)
@@ -555,7 +575,7 @@ package petsBag.view
          }
       }
       
-      private function __addPet_upGrade_evolution_eat(param1:Event) : void
+      private function __addPet_upGrade_evolution_eat(e:Event) : void
       {
          petCultrueGuilde();
       }
@@ -565,6 +585,7 @@ package petsBag.view
          super.removeEvent();
          _rePetNameBtn.removeEventListener("click",__rePetName);
          _revertPetBtn.removeEventListener("click",__revertPet);
+         _washBoneBtn.removeEventListener("click",__washBonePet);
          _releaseBtn.removeEventListener("click",__releasePet);
          _unFightBtn.removeEventListener("click",__unFight);
          _fightBtn.removeEventListener("click",__fight);
@@ -638,6 +659,8 @@ package petsBag.view
             ObjectUtils.disposeObject(_feedBtn);
             _feedBtn = null;
          }
+         ObjectUtils.disposeObject(_washBoneBtn);
+         _washBoneBtn = null;
          if(_groomBtn)
          {
             HelpBtnEnable.getInstance().removeMouseOverTips(_groomBtn);

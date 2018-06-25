@@ -32,48 +32,50 @@ package ddt.view.tips
       
       private var fightBuffClass;
       
-      public function PayBuffListItem(param1:*)
+      public function PayBuffListItem(buff:*)
       {
          levelDic = new Dictionary();
          super();
          initLevelDic();
-         var _loc2_:String = "";
-         if(param1 is BuffInfo)
+         var bitmapLink:String = "";
+         if(buff is BuffInfo)
          {
-            _loc2_ = "asset.core.payBuffAsset" + param1.Type;
+            bitmapLink = "asset.core.payBuffAsset" + buff.Type;
          }
          else
          {
             fightBuffClass = getDefinitionByName("gameCommon.model.FightBuffInfo");
-            if(fightBuffClass && param1 is fightBuffClass)
+            if(fightBuffClass && buff is fightBuffClass)
             {
-               _loc2_ = "asset.game.buff" + param1.displayid;
+               bitmapLink = "asset.game.buff" + buff.displayid;
             }
          }
-         _icon = addChild(ComponentFactory.Instance.creatBitmap(_loc2_));
-         var _loc3_:Point = ComponentFactory.Instance.creatCustomObject("asset.core.PayBuffIconSize");
-         _icon.width = _loc3_.x;
-         _icon.height = _loc3_.y;
+         _icon = addChild(ComponentFactory.Instance.creatBitmap(bitmapLink));
+         var size:Point = ComponentFactory.Instance.creatCustomObject("asset.core.PayBuffIconSize");
+         _icon.width = size.x;
+         _icon.height = size.y;
          _labelField = ComponentFactory.Instance.creatComponentByStylename("asset.core.PayBuffTipLabel");
-         _labelField.text = param1.buffName;
+         _labelField.text = buff.buffName;
          addChild(_labelField);
-         if(param1 is BuffInfo)
+         if(buff is BuffInfo)
          {
             _countField = ComponentFactory.Instance.creatComponentByStylename("asset.core.PayBuffTipCount");
-            if(param1.maxCount > 0 && param1.isSelf)
+            if(buff.maxCount > 0 && buff.isSelf)
             {
-               _countField.text = param1.ValidCount + "/" + param1.maxCount;
+               _countField.text = buff.ValidCount + "/" + buff.maxCount;
             }
             addChild(_countField);
+            _countField.x = _labelField.x + _labelField.textWidth + 10;
             _timeField = ComponentFactory.Instance.creatComponentByStylename("asset.core.PayBuffTipTime");
-            _timeField.text = LanguageMgr.GetTranslation("tank.view.buff.VipLevelFree",levelDic[param1.Type]);
+            _timeField.text = LanguageMgr.GetTranslation("tank.view.buff.VipLevelFree",levelDic[buff.Type]);
             addChild(_timeField);
+            _timeField.x = _countField.x + _countField.textWidth + 10;
             _w = _timeField.x + _timeField.width;
          }
          else
          {
             _timeField = ComponentFactory.Instance.creatComponentByStylename("asset.core.PayBuffTipTime");
-            _timeField.text = fightBuffClass(param1).description;
+            _timeField.text = fightBuffClass(buff).description;
             addChild(_timeField);
             _timeField.x = _labelField.x + _labelField.textWidth + 15;
             _w = _timeField.x + _timeField.width;

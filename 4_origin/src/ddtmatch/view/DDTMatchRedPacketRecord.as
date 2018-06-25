@@ -55,34 +55,33 @@ package ddtmatch.view
          DDTMatchManager.instance.addEventListener("redpacketRecord",__updataList);
       }
       
-      private function __updataList(param1:CrazyTankSocketEvent) : void
+      private function __updataList(e:CrazyTankSocketEvent) : void
       {
-         var _loc9_:int = 0;
-         var _loc8_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:int = 0;
-         var _loc6_:* = null;
-         var _loc7_:* = null;
-         var _loc5_:PackageIn = param1.pkg;
-         _loc5_.readBoolean();
-         var _loc4_:int = _loc5_.readInt();
+         var i:int = 0;
+         var info:* = null;
+         var name:* = null;
+         var num:int = 0;
+         var date:* = null;
+         var dateStr:* = null;
+         var pkg:PackageIn = e.pkg;
+         pkg.readBoolean();
+         var redPacketListCount:int = pkg.readInt();
          _recordTxt.text = "";
-         _loc9_ = 0;
-         while(_loc9_ < _loc4_)
+         for(i = 0; i < redPacketListCount; )
          {
-            _loc8_ = new RedPacketInfo();
-            _loc3_ = _loc5_.readUTF();
-            _loc2_ = _loc5_.readInt();
-            _loc6_ = _loc5_.readDate();
-            _loc7_ = _loc6_.fullYear.toString() + "-" + (_loc6_.month + 1).toString() + "-" + _loc6_.date.toString() + " " + _loc6_.hours.toString() + ":" + _loc6_.minutes.toString();
-            _recordTxt.text = _recordTxt.text + (LanguageMgr.GetTranslation("ddt.DDTMatch.redpacket.record.info",_loc3_,_loc2_,_loc7_) + "\n");
-            _loc9_++;
+            info = new RedPacketInfo();
+            name = pkg.readUTF();
+            num = pkg.readInt();
+            date = pkg.readDate();
+            dateStr = date.fullYear.toString() + "-" + (date.month + 1).toString() + "-" + date.date.toString() + " " + date.hours.toString() + ":" + date.minutes.toString();
+            _recordTxt.text = _recordTxt.text + (LanguageMgr.GetTranslation("ddt.DDTMatch.redpacket.record.info",name,num,dateStr) + "\n");
+            i++;
          }
       }
       
-      public function setInfo(param1:RedPacketInfo) : void
+      public function setInfo(info:RedPacketInfo) : void
       {
-         _info = param1;
+         _info = info;
          _playerTxt.text = LanguageMgr.GetTranslation("ddt.DDTMatch.redpacket.record.name",_info.nickName);
          _messageTxt.text = _info.name;
          _moneyNumberTxt.text = LanguageMgr.GetTranslation("ddt.DDTMatch.redpacket.record.money",_info.totalMoney);

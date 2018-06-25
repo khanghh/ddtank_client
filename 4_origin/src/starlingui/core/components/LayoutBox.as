@@ -20,58 +20,58 @@ package starlingui.core.components
          super();
       }
       
-      override public function addChild(param1:DisplayObject) : DisplayObject
+      override public function addChild(child:DisplayObject) : DisplayObject
       {
-         setChild(param1);
-         param1.addEventListener("resize",onResize);
-         super.addChild(param1);
+         setChild(child);
+         child.addEventListener("resize",onResize);
+         super.addChild(child);
          changeItems();
-         return param1;
+         return child;
       }
       
-      private function setChild(param1:DisplayObject) : void
+      private function setChild(child:DisplayObject) : void
       {
-         if(param1 is Component)
+         if(child is Component)
          {
-            if(param1.x == 0)
+            if(child.x == 0)
             {
                _maxX = _maxX + 1;
-               param1.x = _maxX + 1;
+               child.x = _maxX + 1;
             }
-            if(param1.y == 0)
+            if(child.y == 0)
             {
                _maxY = _maxY + 1;
-               param1.y = _maxY + 1;
+               child.y = _maxY + 1;
             }
          }
       }
       
-      private function onResize(param1:Event) : void
+      private function onResize(e:Event) : void
       {
          changeItems();
       }
       
-      override public function addChildAt(param1:DisplayObject, param2:int) : DisplayObject
+      override public function addChildAt(child:DisplayObject, index:int) : DisplayObject
       {
-         setChild(param1);
-         param1.addEventListener("resize",onResize);
-         super.addChildAt(param1,param2);
+         setChild(child);
+         child.addEventListener("resize",onResize);
+         super.addChildAt(child,index);
          changeItems();
-         return param1;
+         return child;
       }
       
-      override public function removeChild(param1:DisplayObject, param2:Boolean = false) : DisplayObject
+      override public function removeChild(child:DisplayObject, dispose:Boolean = false) : DisplayObject
       {
-         param1.removeEventListener("resize",onResize);
+         child.removeEventListener("resize",onResize);
          changeItems();
-         return super.removeChild(param1,param2);
+         return super.removeChild(child,dispose);
       }
       
-      override public function removeChildAt(param1:int, param2:Boolean = false) : DisplayObject
+      override public function removeChildAt(index:int, dispose:Boolean = false) : DisplayObject
       {
-         getChildAt(param1).removeEventListener("resize",onResize);
+         getChildAt(index).removeEventListener("resize",onResize);
          changeItems();
-         return super.removeChildAt(param1,param2);
+         return super.removeChildAt(index,dispose);
       }
       
       override public function commitMeasure() : void
@@ -93,9 +93,9 @@ package starlingui.core.components
          return _space;
       }
       
-      public function set space(param1:Number) : void
+      public function set space(value:Number) : void
       {
-         _space = param1;
+         _space = value;
          changeItems();
       }
       
@@ -104,9 +104,9 @@ package starlingui.core.components
          return _align;
       }
       
-      public function set align(param1:String) : void
+      public function set align(value:String) : void
       {
-         _align = param1;
+         _align = value;
          changeItems();
       }
    }

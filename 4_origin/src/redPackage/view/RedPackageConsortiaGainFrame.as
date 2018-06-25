@@ -39,12 +39,12 @@ package redPackage.view
       
       public function update() : void
       {
-         var _loc1_:Number = _listPanel.list.viewPosition.y;
-         var _loc2_:Number = _listPanel.vScrollbar.scrollValue;
+         var viewPositionY:Number = _listPanel.list.viewPosition.y;
+         var scrollValue:Number = _listPanel.vScrollbar.scrollValue;
          _listPanel.vectorListModel.clear();
          _listPanel.vectorListModel.appendAll(RedPackageManager.getInstance().sendRecordArr);
-         _listPanel.list.viewPosition.y = _loc1_;
-         _listPanel.vScrollbar.scrollValue = _loc2_;
+         _listPanel.list.viewPosition.y = viewPositionY;
+         _listPanel.vScrollbar.scrollValue = scrollValue;
       }
       
       private function addEvents() : void
@@ -57,9 +57,9 @@ package redPackage.view
          removeEventListener("response",_response);
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             close();
          }

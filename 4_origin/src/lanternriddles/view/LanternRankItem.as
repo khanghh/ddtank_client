@@ -52,9 +52,9 @@ package lanternriddles.view
          addChild(_award);
       }
       
-      public function set info(param1:LanternInfo) : void
+      public function set info(info:LanternInfo) : void
       {
-         _info = param1;
+         _info = info;
          setRankNum(_info.Rank);
          addNickName();
          _integral.text = _info.Integer.toString();
@@ -66,7 +66,7 @@ package lanternriddles.view
       
       private function addNickName() : void
       {
-         var _loc1_:* = null;
+         var textFormat:* = null;
          if(_vipName)
          {
             _vipName.dispose();
@@ -76,10 +76,10 @@ package lanternriddles.view
          if(_info.IsVIP)
          {
             _vipName = VipController.instance.getVipNameTxt(1,1);
-            _loc1_ = new TextFormat();
-            _loc1_.align = "center";
-            _loc1_.bold = true;
-            _vipName.textField.defaultTextFormat = _loc1_;
+            textFormat = new TextFormat();
+            textFormat.align = "center";
+            textFormat.bold = true;
+            _vipName.textField.defaultTextFormat = textFormat;
             _vipName.textSize = 16;
             _vipName.textField.width = _nickName.width;
             _vipName.x = _nickName.x;
@@ -93,18 +93,18 @@ package lanternriddles.view
          }
       }
       
-      private function setRankNum(param1:int) : void
+      private function setRankNum(num:int) : void
       {
-         _id = param1;
-         if(param1 <= 3)
+         _id = num;
+         if(num <= 3)
          {
             _topThreeRank.visible = true;
-            _topThreeRank.setFrame(param1);
+            _topThreeRank.setFrame(num);
             _rankNum.visible = false;
          }
          else
          {
-            _rankNum.text = param1.toString() + "th";
+            _rankNum.text = num.toString() + "th";
             _topThreeRank.visible = false;
          }
       }

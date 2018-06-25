@@ -32,11 +32,11 @@ package church.view.churchFire
       
       private var _fireItemGlod:FilterFrameText;
       
-      public function ChurchFireCell(param1:DisplayObject, param2:ShopItemInfo, param3:int)
+      public function ChurchFireCell(bg:DisplayObject, $shopItemInfo:ShopItemInfo, TemplateID:int)
       {
-         super(param1,param2.TemplateInfo,true,true);
-         _shopItemInfo = param2;
-         _fireTemplateID = param3;
+         super(bg,$shopItemInfo.TemplateInfo,true,true);
+         _shopItemInfo = $shopItemInfo;
+         _fireTemplateID = TemplateID;
          initialize();
       }
       
@@ -63,9 +63,9 @@ package church.view.churchFire
       override protected function createChildren() : void
       {
          addChildAt(_bg,0);
-         var _loc1_:Point = ComponentFactory.Instance.creatCustomObject("church.ChurchFireCell.bgPos");
-         _bg.x = _loc1_.x;
-         _bg.y = _loc1_.y;
+         var bgPos:Point = ComponentFactory.Instance.creatCustomObject("church.ChurchFireCell.bgPos");
+         _bg.x = bgPos.x;
+         _bg.y = bgPos.y;
          var _loc2_:int = 48;
          _bg.width = _loc2_;
          _contentWidth = _loc2_;
@@ -79,9 +79,9 @@ package church.view.churchFire
          return _fireTemplateID;
       }
       
-      public function set fireTemplateID(param1:int) : void
+      public function set fireTemplateID(value:int) : void
       {
-         _fireTemplateID = param1;
+         _fireTemplateID = value;
          _shopItemInfo = ShopManager.Instance.getGoldShopItemByTemplateID(_fireTemplateID);
       }
       
@@ -91,15 +91,15 @@ package church.view.churchFire
          addEventListener("mouseOut",onMouseOut);
       }
       
-      override protected function onMouseOver(param1:MouseEvent) : void
+      override protected function onMouseOver(evt:MouseEvent) : void
       {
-         super.onMouseOver(param1);
+         super.onMouseOver(evt);
          _fireItemBoxAc.visible = true;
       }
       
-      override protected function onMouseOut(param1:MouseEvent) : void
+      override protected function onMouseOut(evt:MouseEvent) : void
       {
-         super.onMouseOut(param1);
+         super.onMouseOut(evt);
          _fireItemBoxAc.visible = false;
       }
    }

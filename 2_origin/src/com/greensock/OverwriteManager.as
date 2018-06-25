@@ -30,137 +30,136 @@ package com.greensock
          super();
       }
       
-      public static function init(param1:int = 2) : int
+      public static function init(defaultMode:int = 2) : int
       {
          TweenLite.overwriteManager = OverwriteManager;
-         mode = param1;
+         mode = defaultMode;
          enabled = true;
          return mode;
       }
       
-      public static function manageOverwrites(param1:TweenLite, param2:Object, param3:Array, param4:int) : Boolean
+      public static function manageOverwrites(tween:TweenLite, props:Object, targetTweens:Array, mode:int) : Boolean
       {
-         var _loc10_:Boolean = false;
-         var _loc15_:* = null;
-         var _loc11_:* = 0;
-         var _loc8_:int = 0;
-         var _loc7_:* = null;
-         var _loc14_:Number = NaN;
-         var _loc5_:* = null;
-         var _loc6_:Number = NaN;
-         if(param4 >= 4)
+         var changed:Boolean = false;
+         var curTween:* = null;
+         var i:* = 0;
+         var l:int = 0;
+         var cousin:* = null;
+         var cousinStartTime:Number = NaN;
+         var timeline:* = null;
+         var combinedTimeScale:Number = NaN;
+         if(mode >= 4)
          {
-            _loc8_ = param3.length;
-            _loc11_ = 0;
-            while(_loc11_ < _loc8_)
+            l = targetTweens.length;
+            for(i = 0; i < l; )
             {
-               _loc15_ = param3[_loc11_];
-               if(_loc15_ != param1)
+               curTween = targetTweens[i];
+               if(curTween != tween)
                {
-                  if(_loc15_.setEnabled(false,false))
+                  if(curTween.setEnabled(false,false))
                   {
-                     _loc10_ = true;
+                     changed = true;
                   }
                }
-               else if(param4 == 5)
+               else if(mode == 5)
                {
                   break;
                }
-               _loc11_++;
+               i++;
             }
-            return _loc10_;
+            return changed;
          }
-         var _loc12_:Number = param1.cachedStartTime + 1.0e-10;
-         var _loc13_:Array = [];
-         var _loc17_:Array = [];
-         var _loc18_:int = 0;
-         var _loc9_:int = 0;
-         _loc11_ = int(param3.length);
+         var startTime:Number = tween.cachedStartTime + 1.0e-10;
+         var overlaps:Array = [];
+         var cousins:Array = [];
+         var cCount:int = 0;
+         var oCount:int = 0;
+         i = int(targetTweens.length);
          while(true)
          {
-            _loc11_--;
-            if(_loc11_ <= -1)
+            i--;
+            if(i <= -1)
             {
                break;
             }
-            _loc15_ = param3[_loc11_];
-            if(!(_loc15_ == param1 || _loc15_.gc || !_loc15_.initted && _loc12_ - _loc15_.cachedStartTime <= 2.0e-10))
+            curTween = targetTweens[i];
+            if(!(curTween == tween || curTween.gc || !curTween.initted && startTime - curTween.cachedStartTime <= 2.0e-10))
             {
-               if(_loc15_.timeline != param1.timeline)
+               if(curTween.timeline != tween.timeline)
                {
-                  if(!getGlobalPaused(_loc15_))
+                  if(!getGlobalPaused(curTween))
                   {
-                     _loc18_++;
-                     _loc17_[_loc18_] = _loc15_;
+                     cCount++;
+                     cousins[cCount] = curTween;
                   }
                }
-               else if(_loc15_.cachedStartTime <= _loc12_ && _loc15_.cachedStartTime + _loc15_.totalDuration + 1.0e-10 > _loc12_ && !_loc15_.cachedPaused && !(param1.cachedDuration == 0 && _loc12_ - _loc15_.cachedStartTime <= 2.0e-10))
+               else if(curTween.cachedStartTime <= startTime && curTween.cachedStartTime + curTween.totalDuration + 1.0e-10 > startTime && !curTween.cachedPaused && !(tween.cachedDuration == 0 && startTime - curTween.cachedStartTime <= 2.0e-10))
                {
-                  _loc9_++;
-                  _loc13_[_loc9_] = _loc15_;
+                  oCount++;
+                  overlaps[oCount] = curTween;
                }
             }
          }
-         if(_loc18_ != 0)
+         if(cCount != 0)
          {
-            _loc6_ = param1.cachedTimeScale;
-            var _loc16_:* = _loc12_;
-            _loc5_ = param1.timeline;
-            while(_loc5_)
+            combinedTimeScale = tween.cachedTimeScale;
+            var combinedStartTime:* = startTime;
+            timeline = tween.timeline;
+            while(timeline)
             {
-               _loc6_ = _loc6_ * _loc5_.cachedTimeScale;
-               _loc16_ = Number(_loc16_ + _loc5_.cachedStartTime);
-               _loc5_ = _loc5_.timeline;
+               combinedTimeScale = combinedTimeScale * timeline.cachedTimeScale;
+               combinedStartTime = Number(combinedStartTime + timeline.cachedStartTime);
+               timeline = timeline.timeline;
             }
-            _loc12_ = _loc6_ * _loc16_;
-            _loc11_ = _loc18_;
+            startTime = combinedTimeScale * combinedStartTime;
+            i = cCount;
             while(true)
             {
-               _loc11_--;
-               if(_loc11_ <= -1)
+               i--;
+               if(i <= -1)
                {
                   break;
                }
-               _loc7_ = _loc17_[_loc11_];
-               _loc6_ = _loc7_.cachedTimeScale;
-               _loc16_ = Number(_loc7_.cachedStartTime);
-               _loc5_ = _loc7_.timeline;
-               while(_loc5_)
+               cousin = cousins[i];
+               combinedTimeScale = cousin.cachedTimeScale;
+               combinedStartTime = Number(cousin.cachedStartTime);
+               timeline = cousin.timeline;
+               while(timeline)
                {
-                  _loc6_ = _loc6_ * _loc5_.cachedTimeScale;
-                  _loc16_ = Number(_loc16_ + _loc5_.cachedStartTime);
-                  _loc5_ = _loc5_.timeline;
+                  combinedTimeScale = combinedTimeScale * timeline.cachedTimeScale;
+                  combinedStartTime = Number(combinedStartTime + timeline.cachedStartTime);
+                  timeline = timeline.timeline;
                }
-               _loc14_ = _loc6_ * _loc16_;
-               if(_loc14_ <= _loc12_ && (_loc14_ + _loc7_.totalDuration * _loc6_ + 1.0e-10 > _loc12_ || _loc7_.cachedDuration == 0))
+               cousinStartTime = combinedTimeScale * combinedStartTime;
+               if(cousinStartTime <= startTime && (cousinStartTime + cousin.totalDuration * combinedTimeScale + 1.0e-10 > startTime || cousin.cachedDuration == 0))
                {
-                  _loc9_++;
-                  _loc13_[_loc9_] = _loc7_;
+                  oCount++;
+                  overlaps[oCount] = cousin;
                }
             }
          }
-         if(_loc9_ == 0)
+         if(oCount == 0)
          {
-            return _loc10_;
+            return changed;
          }
-         _loc11_ = _loc9_;
-         if(param4 == 2)
+         i = oCount;
+         if(mode == 2)
          {
             while(true)
             {
-               _loc11_--;
-               if(_loc11_ <= -1)
+               i--;
+               if(i <= -1)
                {
                   break;
                }
-               _loc15_ = _loc13_[_loc11_];
-               if(_loc15_.killVars(param2))
+               curTween = overlaps[i];
+               if(curTween.killVars(props))
                {
-                  _loc10_ = true;
+                  changed = true;
                }
-               if(_loc15_.cachedPT1 == null && _loc15_.initted)
+               if(curTween.cachedPT1 == null && curTween.initted)
                {
-                  _loc15_.setEnabled(false,false);
+                  curTween.setEnabled(false,false);
                }
             }
          }
@@ -168,33 +167,33 @@ package com.greensock
          {
             while(true)
             {
-               _loc11_--;
-               if(_loc11_ <= -1)
+               i--;
+               if(i <= -1)
                {
                   break;
                }
-               if(TweenLite(_loc13_[_loc11_]).setEnabled(false,false))
+               if(TweenLite(overlaps[i]).setEnabled(false,false))
                {
-                  _loc10_ = true;
+                  changed = true;
                }
             }
          }
-         return _loc10_;
+         return changed;
       }
       
-      public static function getGlobalPaused(param1:TweenCore) : Boolean
+      public static function getGlobalPaused(tween:TweenCore) : Boolean
       {
-         var _loc2_:Boolean = false;
-         while(param1)
+         var paused:Boolean = false;
+         while(tween)
          {
-            if(param1.cachedPaused)
+            if(tween.cachedPaused)
             {
-               _loc2_ = true;
+               paused = true;
                break;
             }
-            param1 = param1.timeline;
+            tween = tween.timeline;
          }
-         return _loc2_;
+         return paused;
       }
    }
 }

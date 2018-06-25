@@ -49,11 +49,11 @@ package giftSystem.element
          _lineBg = ComponentFactory.Instance.creatComponentByStylename("ddtshop.VerticalLine");
          PositionUtils.setPos(_lineBg,"giftSystem.linePos");
          _InputBg = ComponentFactory.Instance.creatComponentByStylename("ddtgiftSystem.TotalMoneyPanel.InputBg");
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,48,48);
-         _loc1_.graphics.endFill();
-         _itemCell = CellFactory.instance.createShopItemCell(_loc1_,null,true,true) as ShopItemCell;
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(16777215,0);
+         sp.graphics.drawRect(0,0,48,48);
+         sp.graphics.endFill();
+         _itemCell = CellFactory.instance.createShopItemCell(sp,null,true,true) as ShopItemCell;
          _itemCell.cellSize = 60;
          PositionUtils.setPos(_itemCell,"GiftCartItem.cellPos");
          addChild(_bg);
@@ -70,13 +70,13 @@ package giftSystem.element
          return _chooseNum.number;
       }
       
-      public function set info(param1:ShopItemInfo) : void
+      public function set info(value:ShopItemInfo) : void
       {
-         if(_info == param1)
+         if(_info == value)
          {
             return;
          }
-         _info = param1;
+         _info = value;
          upView();
       }
       
@@ -91,7 +91,7 @@ package giftSystem.element
          _chooseNum.addEventListener("numberIsChange",__numberChange);
       }
       
-      private function __numberChange(param1:Event) : void
+      private function __numberChange(event:Event) : void
       {
          dispatchEvent(new Event("numberIsChange"));
       }

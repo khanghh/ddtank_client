@@ -22,12 +22,12 @@ package game.objects
       
       private var shoots:Array;
       
-      public function GameSimpleBoss(param1:SimpleBoss)
+      public function GameSimpleBoss(info:SimpleBoss)
       {
          bombList = [];
          shoots = [];
-         super(param1);
-         param1.defaultAction = "stand";
+         super(info);
+         info.defaultAction = "stand";
       }
       
       override protected function initView() : void
@@ -52,7 +52,7 @@ package game.objects
          _effRect = new Rectangle(-10,35,bodyWidth * 1.3,bodyHeight * 1.4);
       }
       
-      override protected function __forzenChanged(param1:LivingEvent) : void
+      override protected function __forzenChanged(event:LivingEvent) : void
       {
          if(_info.isFrozen)
          {
@@ -70,32 +70,32 @@ package game.objects
          }
       }
       
-      override protected function __dirChanged(param1:LivingEvent) : void
+      override protected function __dirChanged(event:LivingEvent) : void
       {
          _info.act(new ChangeDirectionAction(this,_info.direction));
       }
       
-      override public function setMap(param1:Map) : void
+      override public function setMap(map:Map) : void
       {
-         super.setMap(param1);
-         if(param1)
+         super.setMap(map);
+         if(map)
          {
             __posChanged(null);
          }
       }
       
-      override protected function __shoot(param1:LivingEvent) : void
+      override protected function __shoot(event:LivingEvent) : void
       {
-         map.act(new MonsterShootBombAction(this,param1.paras[0],param1.paras[1],24));
+         map.act(new MonsterShootBombAction(this,event.paras[0],event.paras[1],24));
       }
       
-      override protected function __attackingChanged(param1:LivingEvent) : void
+      override protected function __attackingChanged(event:LivingEvent) : void
       {
       }
       
-      override protected function __posChanged(param1:LivingEvent) : void
+      override protected function __posChanged(event:LivingEvent) : void
       {
-         super.__posChanged(param1);
+         super.__posChanged(event);
       }
       
       public function get simpleBoss() : SimpleBoss
@@ -103,27 +103,27 @@ package game.objects
          return info as SimpleBoss;
       }
       
-      override protected function __bloodChanged(param1:LivingEvent) : void
+      override protected function __bloodChanged(event:LivingEvent) : void
       {
-         if(param1.paras[0] == 0)
+         if(event.paras[0] == 0)
          {
             if(_actionMovie != null)
             {
-               _actionMovie.doAction("renew",super.__bloodChanged,[param1]);
+               _actionMovie.doAction("renew",super.__bloodChanged,[event]);
             }
          }
-         else if(param1.paras[0] == 10)
+         else if(event.paras[0] == 10)
          {
-            super.__bloodChanged(param1);
+            super.__bloodChanged(event);
          }
          else
          {
-            if(param1.paras[0] == 5)
+            if(event.paras[0] == 5)
             {
                updateBloodStrip();
                return;
             }
-            super.__bloodChanged(param1);
+            super.__bloodChanged(event);
             if(_info.State != 1)
             {
                doAction("cry");
@@ -131,19 +131,19 @@ package game.objects
          }
       }
       
-      override protected function __die(param1:LivingEvent) : void
+      override protected function __die(event:LivingEvent) : void
       {
          if(isMoving())
          {
             stopMoving();
          }
-         super.__die(param1);
+         super.__die(event);
          if(_info.typeLiving == 6)
          {
             _actionMovie.doAction("specialDie");
             return;
          }
-         if(param1.paras[0])
+         if(event.paras[0])
          {
             if(_info.typeLiving == 5)
             {
@@ -171,7 +171,7 @@ package game.objects
          deleteSmallView();
       }
       
-      override protected function __changeState(param1:LivingEvent) : void
+      override protected function __changeState(evt:LivingEvent) : void
       {
          if(_info.State == 1)
          {
@@ -197,7 +197,7 @@ package game.objects
          super.dispose();
       }
       
-      private function __disposeLater(param1:Event) : void
+      private function __disposeLater(evt:Event) : void
       {
          _chatballview.removeEventListener("complete",__disposeLater);
          dispose();

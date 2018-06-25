@@ -16,10 +16,10 @@ package morn.core.components
    import morn.core.utils.ObjectUtils;
    import morn.editor.core.IComponent;
    
-   [Event(name="hideTip",type="morn.core.events.UIEvent")]
-   [Event(name="showTip",type="morn.core.events.UIEvent")]
-   [Event(name="move",type="morn.core.events.UIEvent")]
    [Event(name="resize",type="flash.events.Event")]
+   [Event(name="move",type="morn.core.events.UIEvent")]
+   [Event(name="showTip",type="morn.core.events.UIEvent")]
+   [Event(name="hideTip",type="morn.core.events.UIEvent")]
    public class Component extends Sprite implements IComponent, Disposeable, ITipedDisplay, ITip
    {
       
@@ -78,6 +78,8 @@ package morn.core.components
       
       protected var _disposeHandler:Handler;
       
+      protected var _stylename:String;
+      
       protected var _changeCount:int = 0;
       
       protected var _tipData:Object;
@@ -94,12 +96,24 @@ package morn.core.components
       
       public function Component()
       {
-         this._changedPropeties = new Dictionary();
+         _changedPropeties = new Dictionary();
          super();
-         this.mouseChildren = tabEnabled = tabChildren = false;
-         this.preinitialize();
-         this.createChildren();
-         this.initialize();
+         tabChildren = false;
+         tabEnabled = false;
+         mouseChildren = false;
+         preinitialize();
+         createChildren();
+         initialize();
+      }
+      
+      public function get stylename() : String
+      {
+         return _stylename;
+      }
+      
+      public function set stylename(value:String) : void
+      {
+         _stylename = value;
       }
       
       protected function preinitialize() : void
@@ -114,26 +128,26 @@ package morn.core.components
       {
       }
       
-      public function callLater(param1:Function, param2:Array = null) : void
+      public function callLater(method:Function, args:Array = null) : void
       {
-         var _loc3_:Array = [this];
-         if(param2 && param2.length > 0)
+         var oargs:Array = [this];
+         if(args && args.length > 0)
          {
-            _loc3_ = _loc3_.concat(param2);
+            oargs = oargs.concat(args);
          }
-         App.render.callLater(param1,_loc3_);
+         App.render.callLater(method,oargs);
       }
       
-      public function exeCallLater(param1:Function) : void
+      public function exeCallLater(method:Function) : void
       {
-         App.render.exeCallLater(param1);
+         App.render.exeCallLater(method);
       }
       
-      public function sendEvent(param1:String, param2:* = null) : void
+      public function sendEvent(type:String, data:* = null) : void
       {
-         if(hasEventListener(param1))
+         if(hasEventListener(type))
          {
-            dispatchEvent(new UIEvent(param1,param2));
+            dispatchEvent(new UIEvent(type,data));
          }
       }
       
@@ -145,155 +159,155 @@ package morn.core.components
          }
       }
       
-      public function removeChildByName(param1:String) : void
+      public function removeChildByName(name:String) : void
       {
-         var _loc2_:DisplayObject = getChildByName(param1);
-         if(_loc2_)
+         var display:DisplayObject = getChildByName(name);
+         if(display)
          {
-            removeChild(_loc2_);
+            removeChild(display);
          }
       }
       
-      public function setPosition(param1:Number, param2:Number) : void
+      public function setPosition(x:Number, y:Number) : void
       {
-         this.x = param1;
-         this.y = param2;
+         this.x = x;
+         this.y = y;
       }
       
-      override public function set x(param1:Number) : void
+      override public function set x(value:Number) : void
       {
-         super.x = param1;
-         this.callLater(this.sendEvent,[UIEvent.MOVE]);
+         .super.x = value;
+         callLater(sendEvent,["move"]);
       }
       
-      override public function set y(param1:Number) : void
+      override public function set y(value:Number) : void
       {
-         super.y = param1;
-         this.callLater(this.sendEvent,[UIEvent.MOVE]);
+         .super.y = value;
+         callLater(sendEvent,["move"]);
       }
       
       override public function get width() : Number
       {
-         this.exeCallLater(this.resetPosition);
-         if(!isNaN(this._width))
+         exeCallLater(resetPosition);
+         if(!isNaN(_width))
          {
-            return this._width;
+            return _width;
          }
-         if(this._contentWidth != 0)
+         if(_contentWidth != 0)
          {
-            return this._contentWidth;
+            return _contentWidth;
          }
-         return this.measureWidth;
+         return measureWidth;
       }
       
       public function get displayWidth() : Number
       {
-         return this.width * scaleX;
+         return width * scaleX;
       }
       
       protected function get measureWidth() : Number
       {
-         var _loc3_:DisplayObject = null;
-         this.commitMeasure();
-         var _loc1_:* = 0;
-         var _loc2_:int = numChildren - 1;
-         while(_loc2_ > -1)
+         var i:int = 0;
+         var comp:* = null;
+         commitMeasure();
+         var max:* = 0;
+         for(i = numChildren - 1; i > -1; )
          {
-            _loc3_ = getChildAt(_loc2_);
-            if(_loc3_.visible)
+            comp = getChildAt(i);
+            if(comp.visible)
             {
-               _loc1_ = Number(Math.max(_loc3_.x + _loc3_.width * _loc3_.scaleX,_loc1_));
+               max = Number(Math.max(comp.x + comp.width * comp.scaleX,max));
             }
-            _loc2_--;
+            i--;
          }
-         return _loc1_;
+         return max;
       }
       
-      override public function set width(param1:Number) : void
+      override public function set width(value:Number) : void
       {
-         if(this._width != param1)
+         if(_width != value)
          {
-            this._width = param1;
-            this.callLater(this.changeSize);
-            if(this._layOutEabled)
+            _width = value;
+            callLater(changeSize);
+            if(_layOutEabled)
             {
-               this.callLater(this.resetPosition);
+               callLater(resetPosition);
             }
          }
       }
       
       override public function get height() : Number
       {
-         this.exeCallLater(this.resetPosition);
-         if(!isNaN(this._height))
+         exeCallLater(resetPosition);
+         if(!isNaN(_height))
          {
-            return this._height;
+            return _height;
          }
-         if(this._contentHeight != 0)
+         if(_contentHeight != 0)
          {
-            return this._contentHeight;
+            return _contentHeight;
          }
-         return this.measureHeight;
+         return measureHeight;
       }
       
       public function get displayHeight() : Number
       {
-         return this.height * scaleY;
+         return height * scaleY;
       }
       
       protected function get measureHeight() : Number
       {
-         var _loc3_:DisplayObject = null;
-         this.commitMeasure();
-         var _loc1_:* = 0;
-         var _loc2_:int = numChildren - 1;
-         while(_loc2_ > -1)
+         var i:int = 0;
+         var comp:* = null;
+         commitMeasure();
+         var max:* = 0;
+         for(i = numChildren - 1; i > -1; )
          {
-            _loc3_ = getChildAt(_loc2_);
-            if(_loc3_.visible)
+            comp = getChildAt(i);
+            if(comp.visible)
             {
-               _loc1_ = Number(Math.max(_loc3_.y + _loc3_.height * _loc3_.scaleY,_loc1_));
+               max = Number(Math.max(comp.y + comp.height * comp.scaleY,max));
             }
-            _loc2_--;
+            i--;
          }
-         return _loc1_;
+         return max;
       }
       
-      override public function set height(param1:Number) : void
+      override public function set height(value:Number) : void
       {
-         if(this._height != param1)
+         if(_height != value)
          {
-            this._height = param1;
-            this.callLater(this.changeSize);
-            if(this._layOutEabled)
+            _height = value;
+            callLater(changeSize);
+            if(_layOutEabled)
             {
-               this.callLater(this.resetPosition);
+               callLater(resetPosition);
             }
          }
       }
       
       override public function get x() : Number
       {
-         this.exeCallLater(this.resetPosition);
+         exeCallLater(resetPosition);
          return super.x;
       }
       
       override public function get y() : Number
       {
-         this.exeCallLater(this.resetPosition);
+         exeCallLater(resetPosition);
          return super.y;
       }
       
-      override public function set scaleX(param1:Number) : void
+      override public function set scaleX(value:Number) : void
       {
-         super.scaleX = param1;
-         this.callLater(this.changeSize);
+         .super.scaleX = value;
+         callLater(changeSize);
       }
       
-      override public function set scaleY(param1:Number) : void
+      override public function set scaleY(value:Number) : void
       {
-         super.scaleY = param1;
-         this.callLater(this.changeSize);
+         .super.scaleY = value;
+         callLater(changeSize);
       }
       
       public function commitMeasure() : void
@@ -302,18 +316,19 @@ package morn.core.components
       
       protected function changeSize() : void
       {
-         this.sendEvent(Event.RESIZE);
+         sendEvent("resize");
       }
       
-      public function setSize(param1:Number, param2:Number) : void
+      public function setSize(width:Number, height:Number) : void
       {
-         this.width = param1;
-         this.height = param2;
+         this.width = width;
+         this.height = height;
       }
       
-      public function set scale(param1:Number) : void
+      public function set scale(value:Number) : void
       {
-         this.scaleX = this.scaleY = param1;
+         scaleY = value;
+         scaleX = value;
       }
       
       public function get scale() : Number
@@ -323,385 +338,387 @@ package morn.core.components
       
       public function get disabled() : Boolean
       {
-         return this._disabled;
+         return _disabled;
       }
       
-      public function set disabled(param1:Boolean) : void
+      public function set disabled(value:Boolean) : void
       {
-         if(this._disabled != param1)
+         if(_disabled != value)
          {
-            this._disabled = param1;
-            mouseEnabled = !param1;
-            super.mouseChildren = !!param1?false:Boolean(this._mouseChildren);
-            ObjectUtils.gray(this,this._disabled);
+            _disabled = value;
+            mouseEnabled = !value;
+            .super.mouseChildren = !!value?false:Boolean(_mouseChildren);
+            ObjectUtils.gray(this,_disabled);
          }
       }
       
-      override public function set mouseChildren(param1:Boolean) : void
+      override public function set mouseChildren(value:Boolean) : void
       {
-         this._mouseChildren = super.mouseChildren = param1;
+         .super.mouseChildren = value;
+         _mouseChildren = value;
       }
       
       public function get tag() : Object
       {
-         return this._tag;
+         return _tag;
       }
       
-      public function set tag(param1:Object) : void
+      public function set tag(value:Object) : void
       {
-         this._tag = param1;
+         _tag = value;
       }
       
-      public function showBorder(param1:uint = 16711680) : void
+      public function showBorder(color:uint = 16711680) : void
       {
-         this.removeChildByName("border");
-         var _loc2_:Shape = new Shape();
-         _loc2_.name = "border";
-         _loc2_.graphics.lineStyle(1,param1);
-         _loc2_.graphics.drawRect(0,0,this.width,this.height);
-         this.addChild(_loc2_);
+         removeChildByName("border");
+         var border:Shape = new Shape();
+         border.name = "border";
+         border.graphics.lineStyle(1,color);
+         border.graphics.drawRect(0,0,width,height);
+         addChild(border);
       }
       
       public function get comXml() : XML
       {
-         return this._comXml;
+         return _comXml;
       }
       
-      public function set comXml(param1:XML) : void
+      public function set comXml(value:XML) : void
       {
-         this._comXml = param1;
+         _comXml = value;
       }
       
       public function get comJSON() : Object
       {
-         return this._comJSON;
+         return _comJSON;
       }
       
-      public function set comJSON(param1:Object) : void
+      public function set comJSON(value:Object) : void
       {
-         this._comJSON = param1;
+         _comJSON = value;
       }
       
       public function get dataSource() : Object
       {
-         return this._dataSource;
+         return _dataSource;
       }
       
-      public function set dataSource(param1:Object) : void
+      public function set dataSource(value:Object) : void
       {
-         var _loc2_:* = null;
-         this._dataSource = param1;
-         for(_loc2_ in this._dataSource)
+         _dataSource = value;
+         var _loc4_:int = 0;
+         var _loc3_:* = _dataSource;
+         for(var prop in _dataSource)
          {
-            if(hasOwnProperty(_loc2_))
+            if(hasOwnProperty(prop))
             {
-               this[_loc2_] = this._dataSource[_loc2_];
+               this[prop] = _dataSource[prop];
             }
          }
       }
       
       public function get toolTip() : Object
       {
-         return this._toolTip;
+         return _toolTip;
       }
       
-      public function set toolTip(param1:Object) : void
+      public function set toolTip(value:Object) : void
       {
-         if(this._toolTip != param1)
+         if(_toolTip != value)
          {
-            this._toolTip = param1;
-            this.tipData = param1;
+            _toolTip = value;
+            tipData = value;
          }
       }
       
-      private function onRollMouse(param1:MouseEvent) : void
+      private function onRollMouse(e:MouseEvent) : void
       {
-         if(param1.type == MouseEvent.ROLL_OVER)
+         if(e.type == "rollOver")
          {
-            this.draw();
+            draw();
          }
       }
       
       public function get top() : Number
       {
-         return this._top;
+         return _top;
       }
       
-      public function set top(param1:Number) : void
+      public function set top(value:Number) : void
       {
-         this._top = param1;
-         this.layOutEabled = true;
+         _top = value;
+         layOutEabled = true;
       }
       
       public function get bottom() : Number
       {
-         return this._bottom;
+         return _bottom;
       }
       
-      public function set bottom(param1:Number) : void
+      public function set bottom(value:Number) : void
       {
-         this._bottom = param1;
-         this.layOutEabled = true;
+         _bottom = value;
+         layOutEabled = true;
       }
       
       public function get left() : Number
       {
-         return this._left;
+         return _left;
       }
       
-      public function set left(param1:Number) : void
+      public function set left(value:Number) : void
       {
-         this._left = param1;
-         this.layOutEabled = true;
+         _left = value;
+         layOutEabled = true;
       }
       
       public function get right() : Number
       {
-         return this._right;
+         return _right;
       }
       
-      public function set right(param1:Number) : void
+      public function set right(value:Number) : void
       {
-         this._right = param1;
-         this.layOutEabled = true;
+         _right = value;
+         layOutEabled = true;
       }
       
       public function get centerX() : Number
       {
-         return this._centerX;
+         return _centerX;
       }
       
-      public function set centerX(param1:Number) : void
+      public function set centerX(value:Number) : void
       {
-         this._centerX = param1;
-         this.layOutEabled = true;
+         _centerX = value;
+         layOutEabled = true;
       }
       
       public function get centerY() : Number
       {
-         return this._centerY;
+         return _centerY;
       }
       
-      public function set centerY(param1:Number) : void
+      public function set centerY(value:Number) : void
       {
-         this._centerY = param1;
-         this.layOutEabled = true;
+         _centerY = value;
+         layOutEabled = true;
       }
       
-      private function set layOutEabled(param1:Boolean) : void
+      private function set layOutEabled(value:Boolean) : void
       {
-         if(this._layOutEabled != param1)
+         if(_layOutEabled != value)
          {
-            this._layOutEabled = param1;
-            addEventListener(Event.ADDED,this.onAdded);
-            addEventListener(Event.REMOVED,this.onRemoved);
+            _layOutEabled = value;
+            addEventListener("added",onAdded);
+            addEventListener("removed",onRemoved);
          }
-         this.callLater(this.resetPosition);
+         callLater(resetPosition);
       }
       
-      private function onRemoved(param1:Event) : void
+      private function onRemoved(e:Event) : void
       {
-         if(param1.target == this)
+         if(e.target == this)
          {
-            parent.removeEventListener(Event.RESIZE,this.onResize);
-         }
-      }
-      
-      private function onAdded(param1:Event) : void
-      {
-         if(param1.target == this)
-         {
-            parent.addEventListener(Event.RESIZE,this.onResize);
-            this.callLater(this.resetPosition);
+            parent.removeEventListener("resize",onResize);
          }
       }
       
-      private function onResize(param1:Event) : void
+      private function onAdded(e:Event) : void
       {
-         this.callLater(this.resetPosition);
+         if(e.target == this)
+         {
+            parent.addEventListener("resize",onResize);
+            callLater(resetPosition);
+         }
+      }
+      
+      private function onResize(e:Event) : void
+      {
+         callLater(resetPosition);
       }
       
       protected function resetPosition() : void
       {
          if(parent)
          {
-            if(!isNaN(this._centerX))
+            if(!isNaN(_centerX))
             {
-               this.x = (parent.width - this.displayWidth) * 0.5 + this._centerX;
+               x = (parent.width - displayWidth) * 0.5 + _centerX;
             }
-            else if(!isNaN(this._left))
+            else if(!isNaN(_left))
             {
-               this.x = this._left;
-               if(!isNaN(this._right))
+               x = _left;
+               if(!isNaN(_right))
                {
-                  this.width = (parent.width - this._left - this._right) / scaleX;
+                  width = (parent.width - _left - _right) / scaleX;
                }
             }
-            else if(!isNaN(this._right))
+            else if(!isNaN(_right))
             {
-               this.x = parent.width - this.displayWidth - this._right;
+               x = parent.width - displayWidth - _right;
             }
-            if(!isNaN(this._centerY))
+            if(!isNaN(_centerY))
             {
-               this.y = (parent.height - this.displayHeight) * 0.5 + this._centerY;
+               y = (parent.height - displayHeight) * 0.5 + _centerY;
             }
-            else if(!isNaN(this._top))
+            else if(!isNaN(_top))
             {
-               this.y = this._top;
-               if(!isNaN(this._bottom))
+               y = _top;
+               if(!isNaN(_bottom))
                {
-                  this.height = (parent.height - this._top - this._bottom) / scaleY;
+                  height = (parent.height - _top - _bottom) / scaleY;
                }
             }
-            else if(!isNaN(this._bottom))
+            else if(!isNaN(_bottom))
             {
-               this.y = parent.height - this.displayHeight - this._bottom;
+               y = parent.height - displayHeight - _bottom;
             }
          }
       }
       
-      override public function set doubleClickEnabled(param1:Boolean) : void
+      override public function set doubleClickEnabled(value:Boolean) : void
       {
-         var _loc3_:InteractiveObject = null;
-         super.doubleClickEnabled = param1;
-         var _loc2_:int = numChildren - 1;
-         while(_loc2_ > -1)
+         var i:int = 0;
+         var display:* = null;
+         .super.doubleClickEnabled = value;
+         for(i = numChildren - 1; i > -1; )
          {
-            _loc3_ = getChildAt(_loc2_) as InteractiveObject;
-            if(_loc3_)
+            display = getChildAt(i) as InteractiveObject;
+            if(display)
             {
-               _loc3_.doubleClickEnabled = param1;
+               display.doubleClickEnabled = value;
             }
-            _loc2_--;
+            i--;
          }
       }
       
-      override public function addChild(param1:DisplayObject) : DisplayObject
+      override public function addChild(child:DisplayObject) : DisplayObject
       {
-         if(doubleClickEnabled && param1 is InteractiveObject)
+         if(doubleClickEnabled && child is InteractiveObject)
          {
-            InteractiveObject(param1).doubleClickEnabled = true;
+            InteractiveObject(child).doubleClickEnabled = true;
          }
-         return super.addChild(param1);
+         return super.addChild(child);
       }
       
-      override public function addChildAt(param1:DisplayObject, param2:int) : DisplayObject
+      override public function addChildAt(child:DisplayObject, index:int) : DisplayObject
       {
-         if(doubleClickEnabled && param1 is InteractiveObject)
+         if(doubleClickEnabled && child is InteractiveObject)
          {
-            InteractiveObject(param1).doubleClickEnabled = true;
+            InteractiveObject(child).doubleClickEnabled = true;
          }
-         return super.addChildAt(param1,param2);
+         return super.addChildAt(child,index);
       }
       
       public function get tipData() : Object
       {
-         return this._tipData;
+         return _tipData;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(value:Object) : void
       {
-         if(this._tipData == param1)
+         if(_tipData == value)
          {
             return;
          }
-         this._tipData = param1;
-         this.onPropertiesChanged(P_tipData);
+         _tipData = value;
+         onPropertiesChanged("tipData");
       }
       
       public function get tipDirctions() : String
       {
-         return this._tipDirctions;
+         return _tipDirctions;
       }
       
-      public function set tipDirctions(param1:String) : void
+      public function set tipDirctions(value:String) : void
       {
-         if(this._tipDirctions == param1)
+         if(_tipDirctions == value)
          {
             return;
          }
-         this._tipDirctions = param1;
-         this.onPropertiesChanged(P_tipDirction);
+         _tipDirctions = value;
+         onPropertiesChanged("tipDirction");
       }
       
       public function get tipGapV() : int
       {
-         return this._tipGapV;
+         return _tipGapV;
       }
       
-      public function set tipGapV(param1:int) : void
+      public function set tipGapV(value:int) : void
       {
-         if(this._tipGapV == param1)
+         if(_tipGapV == value)
          {
             return;
          }
-         this._tipGapV = param1;
-         this.onPropertiesChanged(P_tipGap);
+         _tipGapV = value;
+         onPropertiesChanged("tipGap");
       }
       
       public function get tipGapH() : int
       {
-         return this._tipGapH;
+         return _tipGapH;
       }
       
-      public function set tipGapH(param1:int) : void
+      public function set tipGapH(value:int) : void
       {
-         if(this._tipGapH == param1)
+         if(_tipGapH == value)
          {
             return;
          }
-         this._tipGapH = param1;
-         this.onPropertiesChanged(P_tipGap);
+         _tipGapH = value;
+         onPropertiesChanged("tipGap");
       }
       
       public function get tipStyle() : String
       {
-         return this._tipStyle;
+         return _tipStyle;
       }
       
-      public function set tipStyle(param1:String) : void
+      public function set tipStyle(value:String) : void
       {
-         if(this._tipStyle == param1)
+         if(_tipStyle == value)
          {
             return;
          }
-         this._tipStyle = param1;
-         this.onPropertiesChanged(P_tipStyle);
+         _tipStyle = value;
+         onPropertiesChanged("tipStyle");
       }
       
-      protected function onPropertiesChanged(param1:String = null) : void
+      protected function onPropertiesChanged(propName:String = null) : void
       {
-         if(this._changedPropeties[param1])
+         if(_changedPropeties[propName])
          {
             return;
          }
-         if(param1 != null)
+         if(propName != null)
          {
-            this._changedPropeties[param1] = true;
+            _changedPropeties[propName] = true;
          }
-         this.invalidate();
+         invalidate();
       }
       
       protected function invalidate() : void
       {
-         if(this._changeCount <= 0)
+         if(_changeCount <= 0)
          {
-            this._changeCount = 0;
-            this.draw();
+            _changeCount = 0;
+            draw();
          }
       }
       
       public function draw() : void
       {
-         this.onProppertiesUpdate();
-         this._changedPropeties = new Dictionary(true);
+         onProppertiesUpdate();
+         _changedPropeties = new Dictionary(true);
       }
       
       protected function onProppertiesUpdate() : void
       {
-         if(this._changedPropeties)
+         if(_changedPropeties)
          {
-            if(this._changedPropeties[P_tipDirction] || this._changedPropeties[P_tipGap] || this._changedPropeties[P_tipStyle] || this._changedPropeties[P_tipData])
+            if(_changedPropeties["tipDirction"] || _changedPropeties["tipGap"] || _changedPropeties["tipStyle"] || _changedPropeties["tipData"])
             {
                ShowTipManager.Instance.addTip(this);
             }
@@ -715,29 +732,29 @@ package morn.core.components
       
       public function get tipWidth() : int
       {
-         return this._tipWidth;
+         return _tipWidth;
       }
       
-      public function set tipWidth(param1:int) : void
+      public function set tipWidth(w:int) : void
       {
-         if(this._tipWidth != param1)
+         if(_tipWidth != w)
          {
-            this._tipWidth = param1;
-            this.updateTransform();
+            _tipWidth = w;
+            updateTransform();
          }
       }
       
       public function get tipHeight() : int
       {
-         return this._tipHeight;
+         return _tipHeight;
       }
       
-      public function set tipHeight(param1:int) : void
+      public function set tipHeight(h:int) : void
       {
-         if(this._tipHeight != param1)
+         if(_tipHeight != h)
          {
-            this._tipHeight = param1;
-            this.updateTransform();
+            _tipHeight = h;
+            updateTransform();
          }
       }
       
@@ -747,32 +764,32 @@ package morn.core.components
       
       public function get disposeHandler() : Handler
       {
-         return this._disposeHandler;
+         return _disposeHandler;
       }
       
-      public function set disposeHandler(param1:Handler) : void
+      public function set disposeHandler(value:Handler) : void
       {
-         this._disposeHandler = param1;
+         _disposeHandler = value;
       }
       
       public function dispose() : void
       {
          ShowTipManager.Instance.removeTip(this);
          App.render.removeCallLaterByObj(this);
-         this._tag = null;
-         this._comXml = null;
-         this._comJSON = null;
-         this._dataSource = null;
-         this._toolTip = null;
+         _tag = null;
+         _comXml = null;
+         _comJSON = null;
+         _dataSource = null;
+         _toolTip = null;
          if(this.parent)
          {
             this.parent.removeChild(this);
          }
-         if(this._disposeHandler)
+         if(_disposeHandler)
          {
-            this._disposeHandler.execute();
+            _disposeHandler.execute();
          }
-         this._disposeHandler = null;
+         _disposeHandler = null;
       }
    }
 }

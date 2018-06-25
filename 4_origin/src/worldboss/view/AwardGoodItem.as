@@ -81,17 +81,17 @@ package worldboss.view
          _exchangeTxt = ComponentFactory.Instance.creatComponentByStylename("littleGame.exchangeText");
          _exchangeTxt.text = LanguageMgr.GetTranslation("tank.littlegame.exchange");
          _exchangeBtn.addChild(_exchangeTxt);
-         var _loc1_:Rectangle = ComponentFactory.Instance.creatCustomObject("littleGame.GoodItemBG.size");
-         _itemBg.width = _loc1_.width;
-         _itemBg.height = _loc1_.height;
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("littleGame.GoodItemName.size");
+         var rect:Rectangle = ComponentFactory.Instance.creatCustomObject("littleGame.GoodItemBG.size");
+         _itemBg.width = rect.width;
+         _itemBg.height = rect.height;
+         rect = ComponentFactory.Instance.creatCustomObject("littleGame.GoodItemName.size");
          ObjectUtils.disposeObject(_itemNameTxt);
          _itemNameTxt = ComponentFactory.Instance.creatComponentByStylename("ddtshop.GoodItemNameII");
-         _itemNameTxt.x = _loc1_.x;
-         _itemNameTxt.width = _loc1_.width;
+         _itemNameTxt.x = rect.x;
+         _itemNameTxt.width = rect.width;
          addChild(_itemNameTxt);
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("littleGame.GoodItemDotLine.size");
-         _dotLine.width = _loc1_.width;
+         rect = ComponentFactory.Instance.creatCustomObject("littleGame.GoodItemDotLine.size");
+         _dotLine.width = rect.width;
          PositionUtils.setPos(_payType,"littleGame.GoodPayTypeLabel.pos");
          PositionUtils.setPos(_payPaneBuyBtn,"littleGame.PayPaneBuyBtn.pos");
          PositionUtils.setPos(_itemNameTxt,"littleGame.GoodItemName.pos");
@@ -115,11 +115,11 @@ package worldboss.view
       
       override protected function creatItemCell() : ShopItemCell
       {
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,61,61);
-         _loc1_.graphics.endFill();
-         return CellFactory.instance.createShopItemCell(_loc1_,null,true,true) as ShopItemCell;
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(16777215,0);
+         sp.graphics.drawRect(0,0,61,61);
+         sp.graphics.endFill();
+         return CellFactory.instance.createShopItemCell(sp,null,true,true) as ShopItemCell;
       }
       
       override protected function addEvent() : void
@@ -132,7 +132,7 @@ package worldboss.view
          _itemBg.addEventListener("mouseOut",__itemMouseOut);
       }
       
-      override protected function __itemMouseOver(param1:MouseEvent) : void
+      override protected function __itemMouseOver(event:MouseEvent) : void
       {
          if(!_itemCell.info)
          {
@@ -147,7 +147,7 @@ package worldboss.view
          __timelineComplete();
       }
       
-      override protected function __itemMouseOut(param1:MouseEvent) : void
+      override protected function __itemMouseOut(event:MouseEvent) : void
       {
          ObjectUtils.disposeObject(_lightMc);
          if(!_shopItemInfo)
@@ -164,7 +164,7 @@ package worldboss.view
          _exchangeBtn.removeEventListener("click",__payPanelClick);
       }
       
-      override protected function __payPanelClick(param1:MouseEvent) : void
+      override protected function __payPanelClick(event:MouseEvent) : void
       {
          if(_shopItemInfo == null)
          {
@@ -202,67 +202,66 @@ package worldboss.view
          _inputText.addEventListener("change",inputTextChangeHandler,false,0,true);
       }
       
-      private function changeMaxHandler(param1:MouseEvent) : void
+      private function changeMaxHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:int = PlayerManager.Instance.Self.damageScores;
-         var _loc4_:int = _shopItemInfo.getItemPrice(1).scoreValue;
-         var _loc3_:int = Math.floor(_loc2_ / _loc4_);
-         if(_loc3_ > 99)
+         var scoreHave:int = PlayerManager.Instance.Self.damageScores;
+         var itemScoreValue:int = _shopItemInfo.getItemPrice(1).scoreValue;
+         var maxNum:int = Math.floor(scoreHave / itemScoreValue);
+         if(maxNum > 99)
          {
-            _loc3_ = 99;
+            maxNum = 99;
          }
-         _inputText.text = _loc3_ + "";
+         _inputText.text = maxNum + "";
       }
       
-      private function inputTextChangeHandler(param1:Event) : void
+      private function inputTextChangeHandler(event:Event) : void
       {
-         var _loc3_:int = PlayerManager.Instance.Self.damageScores;
-         var _loc5_:int = _shopItemInfo.getItemPrice(1).scoreValue;
-         var _loc4_:int = Math.floor(_loc3_ / _loc5_);
-         var _loc2_:int = _inputText.text;
-         if(_loc2_ > _loc4_)
+         var scoreHave:int = PlayerManager.Instance.Self.damageScores;
+         var itemScoreValue:int = _shopItemInfo.getItemPrice(1).scoreValue;
+         var maxNum:int = Math.floor(scoreHave / itemScoreValue);
+         var num:int = _inputText.text;
+         if(num > maxNum)
          {
-            _inputText.text = _loc4_.toString();
+            _inputText.text = maxNum.toString();
          }
-         if(_loc2_ < 1)
+         if(num < 1)
          {
             _inputText.text = "1";
          }
-         if(_loc2_ > 99)
+         if(num > 99)
          {
             _inputText.text = "99";
          }
       }
       
-      private function __onResponse(param1:FrameEvent) : void
+      private function __onResponse(evt:FrameEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc6_:* = null;
-         var _loc5_:* = null;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc8_:int = 0;
+         var arr:* = null;
+         var arr1:* = null;
+         var arr2:* = null;
+         var arr3:* = null;
+         var arr4:* = null;
+         var i:int = 0;
          SoundManager.instance.play("008");
-         var _loc7_:int = _inputText.text;
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var currentValue:int = _inputText.text;
+         if(evt.responseCode == 2 || evt.responseCode == 3)
          {
-            _loc2_ = [];
-            _loc6_ = [];
-            _loc5_ = [];
-            _loc4_ = [];
-            _loc3_ = [];
-            _loc8_ = 0;
-            while(_loc8_ < _loc7_)
+            arr = [];
+            arr1 = [];
+            arr2 = [];
+            arr3 = [];
+            arr4 = [];
+            for(i = 0; i < currentValue; )
             {
-               _loc2_.push(_shopItemInfo.GoodsID);
-               _loc6_.push(1);
-               _loc5_.push("");
-               _loc4_.push("");
-               _loc3_.push("");
-               _loc8_++;
+               arr.push(_shopItemInfo.GoodsID);
+               arr1.push(1);
+               arr2.push("");
+               arr3.push("");
+               arr4.push("");
+               i++;
             }
-            SocketManager.Instance.out.sendBuyGoods(_loc2_,_loc6_,_loc5_,_loc4_,_loc3_);
+            SocketManager.Instance.out.sendBuyGoods(arr,arr1,arr2,arr3,arr4);
          }
          if(_tipsframe)
          {
@@ -278,20 +277,20 @@ package worldboss.view
          _exchangeBtn.enable = WorldBossManager.Instance.bossInfo.roomClose;
       }
       
-      override public function set shopItemInfo(param1:ShopItemInfo) : void
+      override public function set shopItemInfo(value:ShopItemInfo) : void
       {
-         .super.shopItemInfo = param1;
+         .super.shopItemInfo = value;
          _payPaneGivingBtn.visible = false;
          _payPaneBuyBtn.visible = false;
          _payType.visible = false;
-         _exchangeBtn.visible = param1 != null;
+         _exchangeBtn.visible = value != null;
          _itemPriceTxt.visible = false;
          _shopItemCellTypeBg.visible = false;
-         if(param1)
+         if(value)
          {
             _scoreField.visible = true;
             _scoreTitleField.visible = true;
-            _scoreField.text = String(param1.AValue1);
+            _scoreField.text = String(value.AValue1);
          }
          else
          {

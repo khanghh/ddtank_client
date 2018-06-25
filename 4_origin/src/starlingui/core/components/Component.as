@@ -68,21 +68,21 @@ package starlingui.core.components
       {
       }
       
-      public function setPosition(param1:Number, param2:Number) : void
+      public function setPosition(x:Number, y:Number) : void
       {
-         this.x = param1;
-         this.y = param2;
+         this.x = x;
+         this.y = y;
       }
       
-      override public function set x(param1:Number) : void
+      override public function set x(value:Number) : void
       {
-         .super.x = param1;
+         .super.x = value;
          dispatchEvent(new UIEvent("move"));
       }
       
-      override public function set y(param1:Number) : void
+      override public function set y(value:Number) : void
       {
-         .super.y = param1;
+         .super.y = value;
          dispatchEvent(new UIEvent("move"));
       }
       
@@ -107,28 +107,27 @@ package starlingui.core.components
       
       protected function get measureWidth() : Number
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var comp:* = null;
          commitMeasure();
-         var _loc2_:* = 0;
-         _loc3_ = numChildren - 1;
-         while(_loc3_ > -1)
+         var max:* = 0;
+         for(i = numChildren - 1; i > -1; )
          {
-            _loc1_ = getChildAt(_loc3_);
-            if(_loc1_.visible)
+            comp = getChildAt(i);
+            if(comp.visible)
             {
-               _loc2_ = Number(Math.max(_loc1_.x + _loc1_.width * _loc1_.scaleX,_loc2_));
+               max = Number(Math.max(comp.x + comp.width * comp.scaleX,max));
             }
-            _loc3_--;
+            i--;
          }
-         return _loc2_;
+         return max;
       }
       
-      override public function set width(param1:Number) : void
+      override public function set width(value:Number) : void
       {
-         if(_width != param1)
+         if(_width != value)
          {
-            _width = param1;
+            _width = value;
             changeSize();
             if(_layOutEabled)
             {
@@ -158,28 +157,27 @@ package starlingui.core.components
       
       protected function get measureHeight() : Number
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var comp:* = null;
          commitMeasure();
-         var _loc2_:* = 0;
-         _loc3_ = numChildren - 1;
-         while(_loc3_ > -1)
+         var max:* = 0;
+         for(i = numChildren - 1; i > -1; )
          {
-            _loc1_ = getChildAt(_loc3_);
-            if(_loc1_.visible)
+            comp = getChildAt(i);
+            if(comp.visible)
             {
-               _loc2_ = Number(Math.max(_loc1_.y + _loc1_.height * _loc1_.scaleY,_loc2_));
+               max = Number(Math.max(comp.y + comp.height * comp.scaleY,max));
             }
-            _loc3_--;
+            i--;
          }
-         return _loc2_;
+         return max;
       }
       
-      override public function set height(param1:Number) : void
+      override public function set height(value:Number) : void
       {
-         if(_height != param1)
+         if(_height != value)
          {
-            _height = param1;
+            _height = value;
             changeSize();
             if(_layOutEabled)
             {
@@ -200,15 +198,15 @@ package starlingui.core.components
          return super.y;
       }
       
-      override public function set scaleX(param1:Number) : void
+      override public function set scaleX(value:Number) : void
       {
-         .super.scaleX = param1;
+         .super.scaleX = value;
          changeSize();
       }
       
-      override public function set scaleY(param1:Number) : void
+      override public function set scaleY(value:Number) : void
       {
-         .super.scaleY = param1;
+         .super.scaleY = value;
          changeSize();
       }
       
@@ -221,16 +219,16 @@ package starlingui.core.components
          dispatchEvent(new Event("resize"));
       }
       
-      public function setSize(param1:Number, param2:Number) : void
+      public function setSize(width:Number, height:Number) : void
       {
-         this.width = param1;
-         this.height = param2;
+         this.width = width;
+         this.height = height;
       }
       
-      public function set scale(param1:Number) : void
+      public function set scale(value:Number) : void
       {
-         scaleY = param1;
-         scaleX = param1;
+         scaleY = value;
+         scaleX = value;
       }
       
       public function get scale() : Number
@@ -243,12 +241,12 @@ package starlingui.core.components
          return _disabled;
       }
       
-      public function set disabled(param1:Boolean) : void
+      public function set disabled(value:Boolean) : void
       {
-         if(_disabled != param1)
+         if(_disabled != value)
          {
-            _disabled = param1;
-            touchable = !param1;
+            _disabled = value;
+            touchable = !value;
          }
       }
       
@@ -257,16 +255,16 @@ package starlingui.core.components
          return _tag;
       }
       
-      public function set tag(param1:Object) : void
+      public function set tag(value:Object) : void
       {
-         _tag = param1;
+         _tag = value;
       }
       
-      public function showBorder(param1:uint = 16711680) : void
+      public function showBorder(color:uint = 16711680) : void
       {
          _border = _border || new Shape();
          _border.graphics.clear();
-         _border.graphics.lineStyle(1,param1);
+         _border.graphics.lineStyle(1,color);
          _border.graphics.drawRect(0,0,width,height);
          addChild(_border);
       }
@@ -276,9 +274,9 @@ package starlingui.core.components
          return _comXml;
       }
       
-      public function set comXml(param1:XML) : void
+      public function set comXml(value:XML) : void
       {
-         _comXml = param1;
+         _comXml = value;
       }
       
       public function get dataSource() : Object
@@ -286,16 +284,16 @@ package starlingui.core.components
          return _dataSource;
       }
       
-      public function set dataSource(param1:Object) : void
+      public function set dataSource(value:Object) : void
       {
-         _dataSource = param1;
+         _dataSource = value;
          var _loc4_:int = 0;
          var _loc3_:* = _dataSource;
-         for(var _loc2_ in _dataSource)
+         for(var prop in _dataSource)
          {
-            if(hasOwnProperty(_loc2_))
+            if(hasOwnProperty(prop))
             {
-               this[_loc2_] = _dataSource[_loc2_];
+               this[prop] = _dataSource[prop];
             }
          }
       }
@@ -305,9 +303,9 @@ package starlingui.core.components
          return _top;
       }
       
-      public function set top(param1:Number) : void
+      public function set top(value:Number) : void
       {
-         _top = param1;
+         _top = value;
          layOutEabled = true;
       }
       
@@ -316,9 +314,9 @@ package starlingui.core.components
          return _bottom;
       }
       
-      public function set bottom(param1:Number) : void
+      public function set bottom(value:Number) : void
       {
-         _bottom = param1;
+         _bottom = value;
          layOutEabled = true;
       }
       
@@ -327,9 +325,9 @@ package starlingui.core.components
          return _left;
       }
       
-      public function set left(param1:Number) : void
+      public function set left(value:Number) : void
       {
-         _left = param1;
+         _left = value;
          layOutEabled = true;
       }
       
@@ -338,9 +336,9 @@ package starlingui.core.components
          return _right;
       }
       
-      public function set right(param1:Number) : void
+      public function set right(value:Number) : void
       {
-         _right = param1;
+         _right = value;
          layOutEabled = true;
       }
       
@@ -349,9 +347,9 @@ package starlingui.core.components
          return _centerX;
       }
       
-      public function set centerX(param1:Number) : void
+      public function set centerX(value:Number) : void
       {
-         _centerX = param1;
+         _centerX = value;
          layOutEabled = true;
       }
       
@@ -360,41 +358,41 @@ package starlingui.core.components
          return _centerY;
       }
       
-      public function set centerY(param1:Number) : void
+      public function set centerY(value:Number) : void
       {
-         _centerY = param1;
+         _centerY = value;
          layOutEabled = true;
       }
       
-      private function set layOutEabled(param1:Boolean) : void
+      private function set layOutEabled(value:Boolean) : void
       {
-         if(_layOutEabled != param1)
+         if(_layOutEabled != value)
          {
-            _layOutEabled = param1;
+            _layOutEabled = value;
             addEventListener("added",onAdded);
             addEventListener("removed",onRemoved);
          }
          resetPosition();
       }
       
-      private function onRemoved(param1:Event) : void
+      private function onRemoved(e:Event) : void
       {
-         if(param1.target == this)
+         if(e.target == this)
          {
             parent.removeEventListener("resize",onResize);
          }
       }
       
-      private function onAdded(param1:Event) : void
+      private function onAdded(e:Event) : void
       {
-         if(param1.target == this)
+         if(e.target == this)
          {
             parent.addEventListener("resize",onResize);
             resetPosition();
          }
       }
       
-      private function onResize(param1:Event) : void
+      private function onResize(e:Event) : void
       {
          resetPosition();
       }

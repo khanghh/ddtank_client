@@ -1,11 +1,1 @@
-package questionAward.data
-{
-   public interface QuestionIterator
-   {
-       
-      
-      function hasNext() : Boolean;
-      
-      function Next() : Object;
-   }
-}
+package questionAward.data{   public interface QuestionIterator   {                   function hasNext() : Boolean;            function Next() : Object;   }}

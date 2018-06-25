@@ -30,115 +30,115 @@ package gameCommon
          super();
       }
       
-      public static function creatBuff(param1:int) : FightBuffInfo
+      public static function creatBuff(buffid:int) : FightBuffInfo
       {
-         var _loc2_:FightBuffInfo = new FightBuffInfo(param1);
-         if(isCardBuff(_loc2_))
+         var buff:FightBuffInfo = new FightBuffInfo(buffid);
+         if(isCardBuff(buff))
          {
-            _loc2_.type = 4;
-            translateDisplayID(_loc2_);
+            buff.type = 4;
+            translateDisplayID(buff);
          }
-         else if(isConsortiaBuff(_loc2_))
+         else if(isConsortiaBuff(buff))
          {
-            _loc2_.type = 3;
-            translateDisplayID(_loc2_);
+            buff.type = 3;
+            translateDisplayID(buff);
          }
-         else if(BuffType.isLocalBuffByID(param1))
+         else if(BuffType.isLocalBuffByID(buffid))
          {
-            _loc2_.type = 1;
-            translateDisplayID(_loc2_);
-            if(BuffType.isLuckyBuff(param1) && CalendarManager.getInstance().luckyNum >= 0)
+            buff.type = 1;
+            translateDisplayID(buff);
+            if(BuffType.isLuckyBuff(buffid) && CalendarManager.getInstance().luckyNum >= 0)
             {
-               _loc2_.displayid = CalendarManager.getInstance().luckyNum + 40;
+               buff.displayid = CalendarManager.getInstance().luckyNum + 40;
             }
          }
          else
          {
-            _loc2_.displayid = _loc2_.id;
+            buff.displayid = buff.id;
          }
-         return _loc2_;
+         return buff;
       }
       
-      private static function translateDisplayID(param1:FightBuffInfo) : void
+      private static function translateDisplayID(buff:FightBuffInfo) : void
       {
-         switch(int(param1.id) - 16)
+         switch(int(buff.id) - 16)
          {
             case 0:
-               param1.displayid = 13;
+               buff.displayid = 13;
                break;
             default:
             default:
             default:
-               param1.displayid = param1.id;
+               buff.displayid = buff.id;
                break;
             case 4:
-               param1.displayid = 12;
+               buff.displayid = 12;
                break;
             case 5:
-               param1.displayid = 13;
+               buff.displayid = 13;
          }
       }
       
       public static function startLoadBuffEffect() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var args:* = null;
+         var loader:* = null;
          if(!_effectLoaded)
          {
             if(_templateInfoLoaded)
             {
                var _loc5_:int = 0;
                var _loc4_:* = _buffTemplateInfo;
-               for each(var _loc3_ in _buffTemplateInfo)
+               for each(var buff in _buffTemplateInfo)
                {
-                  if(_loc3_.EffectPic)
+                  if(buff.EffectPic)
                   {
-                     LoadResourceManager.Instance.creatAndStartLoad(PathManager.solvePetSkillEffect(_loc3_.EffectPic),4);
+                     LoadResourceManager.Instance.creatAndStartLoad(PathManager.solvePetSkillEffect(buff.EffectPic),4);
                   }
                }
                _effectLoaded = true;
             }
             else
             {
-               _loc2_ = new URLVariables();
-               _loc2_["rnd"] = Math.random();
-               _loc1_ = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("PetSkillElementInfo.xml"),2,_loc2_);
-               _loc1_.addEventListener("complete",onComplete);
-               LoadResourceManager.Instance.startLoad(_loc1_);
+               args = new URLVariables();
+               args["rnd"] = Math.random();
+               loader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("PetSkillElementInfo.xml"),2,args);
+               loader.addEventListener("complete",onComplete);
+               LoadResourceManager.Instance.startLoad(loader);
             }
          }
       }
       
-      private static function onComplete(param1:LoaderEvent) : void
+      private static function onComplete(event:LoaderEvent) : void
       {
-         var _loc5_:* = null;
-         var _loc6_:* = null;
-         var _loc4_:* = null;
-         var _loc2_:BaseLoader = param1.loader;
-         _loc2_.removeEventListener("complete",onComplete);
-         if(_loc2_.isSuccess)
+         var xml:* = null;
+         var xmlList:* = null;
+         var buff:* = null;
+         var loader:BaseLoader = event.loader;
+         loader.removeEventListener("complete",onComplete);
+         if(loader.isSuccess)
          {
-            _loc5_ = new XML(_loc2_.content);
-            _loc6_ = _loc5_..item;
+            xml = new XML(loader.content);
+            xmlList = xml..item;
             var _loc8_:int = 0;
-            var _loc7_:* = _loc6_;
-            for each(var _loc3_ in _loc6_)
+            var _loc7_:* = xmlList;
+            for each(var item in xmlList)
             {
-               _loc4_ = new BuffTemplateInfo();
-               _loc4_.ID = _loc3_.@ID;
-               _loc4_.Name = _loc3_.@Name;
-               _loc4_.Description = _loc3_.@Description;
-               _loc4_.EffectPic = _loc3_.@EffectPic;
-               _buffTemplateInfo[_loc4_.ID] = _loc4_;
+               buff = new BuffTemplateInfo();
+               buff.ID = item.@ID;
+               buff.Name = item.@Name;
+               buff.Description = item.@Description;
+               buff.EffectPic = item.@EffectPic;
+               _buffTemplateInfo[buff.ID] = buff;
             }
             _templateInfoLoaded = true;
             startLoadBuffEffect();
          }
       }
       
-      public static function isConsortiaBuff(param1:FightBuffInfo) : Boolean
+      public static function isConsortiaBuff(buff:FightBuffInfo) : Boolean
       {
-         switch(int(param1.id) - 101)
+         switch(int(buff.id) - 101)
          {
             case 0:
             case 1:
@@ -156,26 +156,26 @@ package gameCommon
          }
       }
       
-      public static function isCardBuff(param1:FightBuffInfo) : Boolean
+      public static function isCardBuff(buff:FightBuffInfo) : Boolean
       {
-         return param1.id >= 211 && param1.id <= 290;
+         return buff.id >= 211 && buff.id <= 290;
       }
       
       public static function loadBuffTemplate() : void
       {
-         var _loc1_:* = null;
+         var loader:* = null;
          if(_buffTemplateData == null)
          {
-            _loc1_ = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("BuffTemplateInfo.xml"),5);
-            _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("tank.gamebuff.LoaderError");
-            _loc1_.analyzer = new GameBuffAnalyzer(analyzerGameBuff);
-            LoadResourceManager.Instance.startLoad(_loc1_);
+            loader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("BuffTemplateInfo.xml"),5);
+            loader.loadErrorMessage = LanguageMgr.GetTranslation("tank.gamebuff.LoaderError");
+            loader.analyzer = new GameBuffAnalyzer(analyzerGameBuff);
+            LoadResourceManager.Instance.startLoad(loader);
          }
       }
       
-      private static function analyzerGameBuff(param1:GameBuffAnalyzer) : void
+      private static function analyzerGameBuff(analyzer:GameBuffAnalyzer) : void
       {
-         _buffTemplateData = param1.data;
+         _buffTemplateData = analyzer.data;
       }
       
       public static function get buffTemplateData() : DictionaryData

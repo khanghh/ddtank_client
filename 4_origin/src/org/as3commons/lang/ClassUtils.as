@@ -33,23 +33,21 @@ package org.as3commons.lang
          super();
       }
       
-      public static function forInstance(param1:*, param2:ApplicationDomain = null) : Class
+      public static function forInstance(instance:*, applicationDomain:ApplicationDomain = null) : Class
       {
-         var _loc3_:String = null;
-         if(!(param1 is Proxy) && param1.hasOwnProperty(CONSTRUCTOR_FIELD_NAME))
+         var className:String = null;
+         if(!(instance is Proxy) && instance.hasOwnProperty(CONSTRUCTOR_FIELD_NAME))
          {
-            return param1[CONSTRUCTOR_FIELD_NAME] as Class;
+            return instance[CONSTRUCTOR_FIELD_NAME] as Class;
          }
-         _loc3_ = getQualifiedClassName(param1);
-         return forName(_loc3_,param2);
+         className = getQualifiedClassName(instance);
+         return forName(className,applicationDomain);
       }
       
-      public static function forName(param1:String, param2:ApplicationDomain = null) : Class
+      public static function forName(name:String, applicationDomain:ApplicationDomain = null) : Class
       {
          var result:Class = null;
-         var name:String = param1;
-         var applicationDomain:ApplicationDomain = param2;
-         applicationDomain = applicationDomain || ApplicationDomain.currentDomain;
+         var applicationDomain:ApplicationDomain = applicationDomain || ApplicationDomain.currentDomain;
          if(!applicationDomain)
          {
             applicationDomain = ApplicationDomain.currentDomain;
@@ -74,60 +72,55 @@ package org.as3commons.lang
          return result;
       }
       
-      public static function getName(param1:Class) : String
+      public static function getName(clazz:Class) : String
       {
-         return getNameFromFullyQualifiedName(getFullyQualifiedName(param1));
+         return getNameFromFullyQualifiedName(getFullyQualifiedName(clazz));
       }
       
-      public static function getNameFromFullyQualifiedName(param1:String) : String
+      public static function getNameFromFullyQualifiedName(fullyQualifiedName:String) : String
       {
-         var _loc2_:int = param1.indexOf(PACKAGE_CLASS_SEPARATOR);
-         if(_loc2_ == -1)
+         var startIndex:int = fullyQualifiedName.indexOf(PACKAGE_CLASS_SEPARATOR);
+         if(startIndex == -1)
          {
-            return param1;
+            return fullyQualifiedName;
          }
-         return param1.substring(_loc2_ + PACKAGE_CLASS_SEPARATOR.length,param1.length);
+         return fullyQualifiedName.substring(startIndex + PACKAGE_CLASS_SEPARATOR.length,fullyQualifiedName.length);
       }
       
-      public static function getFullyQualifiedName(param1:Class, param2:Boolean = false) : String
+      public static function getFullyQualifiedName(clazz:Class, replaceColons:Boolean = false) : String
       {
-         var _loc3_:String = getQualifiedClassName(param1);
-         if(param2)
+         var result:String = getQualifiedClassName(clazz);
+         if(replaceColons)
          {
-            return convertFullyQualifiedName(_loc3_);
+            return convertFullyQualifiedName(result);
          }
-         return _loc3_;
+         return result;
       }
       
-      public static function isAssignableFrom(param1:Class, param2:Class, param3:ApplicationDomain = null) : Boolean
+      public static function isAssignableFrom(clazz1:Class, clazz2:Class, applicationDomain:ApplicationDomain = null) : Boolean
       {
-         return param1 === param2 || isSubclassOf(param2,param1,param3) || isImplementationOf(param2,param1,param3);
+         return clazz1 === clazz2 || isSubclassOf(clazz2,clazz1,applicationDomain) || isImplementationOf(clazz2,clazz1,applicationDomain);
       }
       
-      public static function isPrivateClass(param1:*) : Boolean
+      public static function isPrivateClass(object:*) : Boolean
       {
-         var _loc2_:String = param1 is Class?getQualifiedClassName(param1):param1.toString();
-         var _loc3_:int = _loc2_.indexOf("::");
-         var _loc4_:* = _loc3_ == -1;
-         if(_loc4_)
+         var className:String = object is Class?getQualifiedClassName(object):object.toString();
+         var index:int = className.indexOf("::");
+         var inRootPackage:* = index == -1;
+         if(inRootPackage)
          {
             return false;
          }
-         var _loc5_:String = _loc2_.substr(0,_loc3_);
-         return _loc5_ === "" || _loc5_.indexOf(".as$") > -1;
+         var ns:String = className.substr(0,index);
+         return ns === "" || ns.indexOf(".as$") > -1;
       }
       
-      public static function getProperties(param1:*, param2:Boolean = false, param3:Boolean = true, param4:Boolean = true, param5:ApplicationDomain = null) : Object
+      public static function getProperties(clazz:*, statik:Boolean = false, readable:Boolean = true, writable:Boolean = true, applicationDomain:ApplicationDomain = null) : Object
       {
          var properties:XMLList = null;
          var result:Object = null;
          var node:XML = null;
          var nodeClass:Class = null;
-         var clazz:* = param1;
-         var statik:Boolean = param2;
-         var readable:Boolean = param3;
-         var writable:Boolean = param4;
-         var applicationDomain:ApplicationDomain = param5;
          var xml:XML = getFromObject(clazz,applicationDomain);
          if(!statik)
          {
@@ -172,52 +165,46 @@ package org.as3commons.lang
          return result;
       }
       
-      public static function isSubclassOf(param1:Class, param2:Class, param3:ApplicationDomain = null) : Boolean
+      public static function isSubclassOf(clazz:Class, parentClass:Class, applicationDomain:ApplicationDomain = null) : Boolean
       {
-         var clazz:Class = param1;
-         var parentClass:Class = param2;
-         var applicationDomain:ApplicationDomain = param3;
          var classDescription:XML = getFromObject(clazz,applicationDomain);
          var parentName:String = getQualifiedClassName(parentClass);
          return classDescription.factory.extendsClass.(@type == parentName).length() != 0;
       }
       
-      public static function getSuperClass(param1:Class, param2:ApplicationDomain = null) : Class
+      public static function getSuperClass(clazz:Class, applicationDomain:ApplicationDomain = null) : Class
       {
-         var _loc3_:Class = null;
-         var _loc4_:XML = getFromObject(param1,param2);
-         var _loc5_:XMLList = _loc4_.factory.extendsClass;
-         if(_loc5_.length() > 0)
+         var result:Class = null;
+         var classDescription:XML = getFromObject(clazz,applicationDomain);
+         var superClasses:XMLList = classDescription.factory.extendsClass;
+         if(superClasses.length() > 0)
          {
-            _loc3_ = ClassUtils.forName(_loc5_[0].@type);
+            result = ClassUtils.forName(superClasses[0].@type);
          }
-         return _loc3_;
+         return result;
       }
       
-      public static function getSuperClassName(param1:Class) : String
+      public static function getSuperClassName(clazz:Class) : String
       {
-         var _loc2_:String = getFullyQualifiedSuperClassName(param1);
-         var _loc3_:int = _loc2_.indexOf(PACKAGE_CLASS_SEPARATOR) + PACKAGE_CLASS_SEPARATOR.length;
-         return _loc2_.substring(_loc3_,_loc2_.length);
+         var fullyQualifiedName:String = getFullyQualifiedSuperClassName(clazz);
+         var index:int = fullyQualifiedName.indexOf(PACKAGE_CLASS_SEPARATOR) + PACKAGE_CLASS_SEPARATOR.length;
+         return fullyQualifiedName.substring(index,fullyQualifiedName.length);
       }
       
-      public static function getFullyQualifiedSuperClassName(param1:Class, param2:Boolean = false) : String
+      public static function getFullyQualifiedSuperClassName(clazz:Class, replaceColons:Boolean = false) : String
       {
-         var _loc3_:String = getQualifiedSuperclassName(param1);
-         if(param2)
+         var result:String = getQualifiedSuperclassName(clazz);
+         if(replaceColons)
          {
-            _loc3_ = convertFullyQualifiedName(_loc3_);
+            result = convertFullyQualifiedName(result);
          }
-         return _loc3_;
+         return result;
       }
       
-      public static function isImplementationOf(param1:Class, param2:Class, param3:ApplicationDomain = null) : Boolean
+      public static function isImplementationOf(clazz:Class, interfaze:Class, applicationDomain:ApplicationDomain = null) : Boolean
       {
          var result:Boolean = false;
          var classDescription:XML = null;
-         var clazz:Class = param1;
-         var interfaze:Class = param2;
-         var applicationDomain:ApplicationDomain = param3;
          if(clazz == null)
          {
             result = false;
@@ -230,7 +217,7 @@ package org.as3commons.lang
          return result;
       }
       
-      public static function isInformalImplementationOf(param1:Class, param2:Class, param3:ApplicationDomain = null) : Boolean
+      public static function isInformalImplementationOf(clazz:Class, interfaze:Class, applicationDomain:ApplicationDomain = null) : Boolean
       {
          var classDescription:XML = null;
          var interfaceDescription:XML = null;
@@ -244,9 +231,6 @@ package org.as3commons.lang
          var classMethodParameters:XMLList = null;
          var interfaceParameter:XML = null;
          var parameterMatchesInClass:XMLList = null;
-         var clazz:Class = param1;
-         var interfaze:Class = param2;
-         var applicationDomain:ApplicationDomain = param3;
          var result:Boolean = true;
          if(clazz == null)
          {
@@ -295,107 +279,101 @@ package org.as3commons.lang
          return result;
       }
       
-      public static function isInterface(param1:Class) : Boolean
+      public static function isInterface(clazz:Class) : Boolean
       {
-         return param1 === Object?false:describeType(param1).factory.extendsClass.length() == 0;
+         return clazz === Object?false:describeType(clazz).factory.extendsClass.length() == 0;
       }
       
-      public static function getImplementedInterfaceNames(param1:Class) : Array
+      public static function getImplementedInterfaceNames(clazz:Class) : Array
       {
-         var _loc2_:Array = getFullyQualifiedImplementedInterfaceNames(param1);
-         var _loc3_:int = 0;
-         while(_loc3_ < _loc2_.length)
+         var result:Array = getFullyQualifiedImplementedInterfaceNames(clazz);
+         for(var i:int = 0; i < result.length; i++)
          {
-            _loc2_[_loc3_] = getNameFromFullyQualifiedName(_loc2_[_loc3_]);
-            _loc3_++;
+            result[i] = getNameFromFullyQualifiedName(result[i]);
          }
-         return _loc2_;
+         return result;
       }
       
-      public static function getFullyQualifiedImplementedInterfaceNames(param1:Class, param2:Boolean = false, param3:ApplicationDomain = null) : Array
+      public static function getFullyQualifiedImplementedInterfaceNames(clazz:Class, replaceColons:Boolean = false, applicationDomain:ApplicationDomain = null) : Array
       {
-         var _loc7_:int = 0;
-         var _loc8_:int = 0;
-         var _loc9_:String = null;
-         var _loc4_:Array = [];
-         var _loc5_:XML = getFromObject(param1,param3);
-         var _loc6_:XMLList = _loc5_.factory.implementsInterface;
-         if(_loc6_)
+         var numInterfaces:int = 0;
+         var i:int = 0;
+         var fullyQualifiedInterfaceName:String = null;
+         var result:Array = [];
+         var classDescription:XML = getFromObject(clazz,applicationDomain);
+         var interfacesDescription:XMLList = classDescription.factory.implementsInterface;
+         if(interfacesDescription)
          {
-            _loc7_ = _loc6_.length();
-            _loc8_ = 0;
-            while(_loc8_ < _loc7_)
+            numInterfaces = interfacesDescription.length();
+            for(i = 0; i < numInterfaces; i++)
             {
-               _loc9_ = _loc6_[_loc8_].@type.toString();
-               if(param2)
+               fullyQualifiedInterfaceName = interfacesDescription[i].@type.toString();
+               if(replaceColons)
                {
-                  _loc9_ = convertFullyQualifiedName(_loc9_);
+                  fullyQualifiedInterfaceName = convertFullyQualifiedName(fullyQualifiedInterfaceName);
                }
-               _loc4_[_loc4_.length] = _loc9_;
-               _loc8_++;
+               result[result.length] = fullyQualifiedInterfaceName;
             }
          }
-         return _loc4_;
+         return result;
       }
       
-      public static function getImplementedInterfaces(param1:Class, param2:ApplicationDomain = null) : Array
+      public static function getImplementedInterfaces(clazz:Class, applicationDomain:ApplicationDomain = null) : Array
       {
-         param2 = param2 || ApplicationDomain.currentDomain;
-         var _loc3_:Array = getFullyQualifiedImplementedInterfaceNames(param1);
-         var _loc4_:int = 0;
-         while(_loc4_ < _loc3_.length)
+         applicationDomain = applicationDomain || ApplicationDomain.currentDomain;
+         var result:Array = getFullyQualifiedImplementedInterfaceNames(clazz);
+         for(var i:int = 0; i < result.length; i++)
          {
-            _loc3_[_loc4_] = ClassUtils.forName(_loc3_[_loc4_],param2);
-            _loc4_++;
+            result[i] = ClassUtils.forName(result[i],applicationDomain);
          }
-         return _loc3_;
+         return result;
       }
       
-      public static function newInstance(param1:Class, param2:Array = null) : *
+      public static function newInstance(clazz:Class, args:Array = null) : *
       {
-         var _loc3_:* = undefined;
-         var _loc4_:Array = param2 == null?[]:param2;
-         switch(_loc4_.length)
+         var result:* = undefined;
+         var a:Array = args == null?[]:args;
+         switch(a.length)
          {
             case 1:
-               _loc3_ = new param1(_loc4_[0]);
+               result = new clazz(a[0]);
                break;
             case 2:
-               _loc3_ = new param1(_loc4_[0],_loc4_[1]);
+               result = new clazz(a[0],a[1]);
                break;
             case 3:
-               _loc3_ = new param1(_loc4_[0],_loc4_[1],_loc4_[2]);
+               result = new clazz(a[0],a[1],a[2]);
                break;
             case 4:
-               _loc3_ = new param1(_loc4_[0],_loc4_[1],_loc4_[2],_loc4_[3]);
+               result = new clazz(a[0],a[1],a[2],a[3]);
                break;
             case 5:
-               _loc3_ = new param1(_loc4_[0],_loc4_[1],_loc4_[2],_loc4_[3],_loc4_[4]);
+               result = new clazz(a[0],a[1],a[2],a[3],a[4]);
                break;
             case 6:
-               _loc3_ = new param1(_loc4_[0],_loc4_[1],_loc4_[2],_loc4_[3],_loc4_[4],_loc4_[5]);
+               result = new clazz(a[0],a[1],a[2],a[3],a[4],a[5]);
                break;
             case 7:
-               _loc3_ = new param1(_loc4_[0],_loc4_[1],_loc4_[2],_loc4_[3],_loc4_[4],_loc4_[5],_loc4_[6]);
+               result = new clazz(a[0],a[1],a[2],a[3],a[4],a[5],a[6]);
                break;
             case 8:
-               _loc3_ = new param1(_loc4_[0],_loc4_[1],_loc4_[2],_loc4_[3],_loc4_[4],_loc4_[5],_loc4_[6],_loc4_[7]);
+               result = new clazz(a[0],a[1],a[2],a[3],a[4],a[5],a[6],a[7]);
                break;
             case 9:
-               _loc3_ = new param1(_loc4_[0],_loc4_[1],_loc4_[2],_loc4_[3],_loc4_[4],_loc4_[5],_loc4_[6],_loc4_[7],_loc4_[8]);
+               result = new clazz(a[0],a[1],a[2],a[3],a[4],a[5],a[6],a[7],a[8]);
                break;
             case 10:
-               _loc3_ = new param1(_loc4_[0],_loc4_[1],_loc4_[2],_loc4_[3],_loc4_[4],_loc4_[5],_loc4_[6],_loc4_[7],_loc4_[8],_loc4_[9]);
+               result = new clazz(a[0],a[1],a[2],a[3],a[4],a[5],a[6],a[7],a[8],a[9]);
                break;
             default:
-               _loc3_ = new param1();
+               result = new clazz();
          }
-         return _loc3_;
+         return result;
       }
       
-      public static function convertFullyQualifiedName(param1:String) : String
+      public static function convertFullyQualifiedName(className:String) : String
       {
-         return param1.replace(PACKAGE_CLASS_SEPARATOR,".");
+         return className.replace(PACKAGE_CLASS_SEPARATOR,".");
       }
       
       public static function clearDescribeTypeCache() : void
@@ -407,34 +385,34 @@ package org.as3commons.lang
          }
       }
       
-      public static function getClassParameterFromFullyQualifiedName(param1:String, param2:ApplicationDomain = null) : Class
+      public static function getClassParameterFromFullyQualifiedName(fullName:String, applicationDomain:ApplicationDomain = null) : Class
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         var _loc5_:String = null;
-         if(StringUtils.startsWith(param1,AS3VEC_SUFFIX))
+         var startIdx:int = 0;
+         var len:int = 0;
+         var className:String = null;
+         if(StringUtils.startsWith(fullName,AS3VEC_SUFFIX))
          {
-            _loc3_ = param1.indexOf(LESS_THAN) + 1;
-            _loc4_ = param1.length - _loc3_ - 1;
-            _loc5_ = param1.substr(_loc3_,_loc4_);
-            return forName(_loc5_,param2);
+            startIdx = fullName.indexOf(LESS_THAN) + 1;
+            len = fullName.length - startIdx - 1;
+            className = fullName.substr(startIdx,len);
+            return forName(className,applicationDomain);
          }
          return null;
       }
       
-      private static function timerHandler(param1:TimerEvent) : void
+      private static function timerHandler(e:TimerEvent) : void
       {
          clearDescribeTypeCache();
       }
       
-      private static function getFromObject(param1:Object, param2:ApplicationDomain) : XML
+      private static function getFromObject(object:Object, applicationDomain:ApplicationDomain) : XML
       {
-         var _loc4_:XML = null;
-         Assert.notNull(param1,"The object argument must not be null");
-         var _loc3_:String = getQualifiedClassName(param1);
-         if(_describeTypeCache.hasOwnProperty(_loc3_))
+         var metadata:XML = null;
+         Assert.notNull(object,"The object argument must not be null");
+         var className:String = getQualifiedClassName(object);
+         if(_describeTypeCache.hasOwnProperty(className))
          {
-            _loc4_ = _describeTypeCache[_loc3_];
+            metadata = _describeTypeCache[className];
          }
          else
          {
@@ -443,25 +421,25 @@ package org.as3commons.lang
                _timer = new Timer(clearCacheInterval,1);
                _timer.addEventListener(TimerEvent.TIMER,timerHandler);
             }
-            if(!(param1 is Class))
+            if(!(object is Class))
             {
-               if(param1.hasOwnProperty(CONSTRUCTOR_FIELD_NAME))
+               if(object.hasOwnProperty(CONSTRUCTOR_FIELD_NAME))
                {
-                  param1 = param1.constructor;
+                  object = object.constructor;
                }
                else
                {
-                  param1 = forName(_loc3_,param2);
+                  object = forName(className,applicationDomain);
                }
             }
-            _loc4_ = describeType(param1);
-            _describeTypeCache[_loc3_] = _loc4_;
+            metadata = describeType(object);
+            _describeTypeCache[className] = metadata;
             if(!_timer.running)
             {
                _timer.start();
             }
          }
-         return _loc4_;
+         return metadata;
       }
    }
 }

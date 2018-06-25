@@ -31,10 +31,10 @@ package consortion.view.selfConsortia
       
       private var _buildId:int;
       
-      public function BuildingLevelItem(param1:int)
+      public function BuildingLevelItem(type:int)
       {
          super();
-         _type = param1;
+         _type = type;
          if(_type == 1)
          {
             _buildId = 3;
@@ -81,11 +81,11 @@ package consortion.view.selfConsortia
          return _tipData;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(vaule:Object) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:* = null;
+         var allBuildInfo:* = null;
+         var eachBuildInfo:* = null;
+         var waitRepairTip:* = null;
          if(ConsortiaDomainManager.instance.activeState == 1)
          {
             _isShowConsortiaDomainTips = true;
@@ -94,23 +94,23 @@ package consortion.view.selfConsortia
          }
          else if(ConsortiaDomainManager.instance.activeState == 0 || ConsortiaDomainManager.instance.activeState == 100)
          {
-            _loc3_ = ConsortiaDomainManager.instance.model.allBuildInfo;
-            if(_loc3_)
+            allBuildInfo = ConsortiaDomainManager.instance.model.allBuildInfo;
+            if(allBuildInfo)
             {
-               _loc2_ = _loc3_[_buildId];
+               eachBuildInfo = allBuildInfo[_buildId];
             }
-            if(_loc2_ && _loc2_.Repair > 0)
+            if(eachBuildInfo && eachBuildInfo.Repair > 0)
             {
                _isShowConsortiaDomainTips = true;
-               _loc4_ = LanguageMgr.GetTranslation("consortiadomain.buildStopUse.waitRepair",DateUtils.dateFormat5(ConsortiaDomainManager.instance.model.autoRepairCompleteTime));
-               _tipData = _loc4_;
+               waitRepairTip = LanguageMgr.GetTranslation("consortiadomain.buildStopUse.waitRepair",DateUtils.dateFormat5(ConsortiaDomainManager.instance.model.autoRepairCompleteTime));
+               _tipData = waitRepairTip;
                _level.htmlText = LanguageMgr.GetTranslation("consortiadomain.buildState.waitRepair");
             }
          }
          if(!_isShowConsortiaDomainTips)
          {
-            _tipData = ConsortionModelManager.Instance.model.getLevelString(_type,param1 as int);
-            _level.text = "Lv." + param1;
+            _tipData = ConsortionModelManager.Instance.model.getLevelString(_type,vaule as int);
+            _level.text = "Lv." + vaule;
          }
       }
       
@@ -119,7 +119,7 @@ package consortion.view.selfConsortia
          return "3";
       }
       
-      public function set tipDirctions(param1:String) : void
+      public function set tipDirctions(value:String) : void
       {
       }
       
@@ -128,7 +128,7 @@ package consortion.view.selfConsortia
          return 0;
       }
       
-      public function set tipGapH(param1:int) : void
+      public function set tipGapH(value:int) : void
       {
       }
       
@@ -137,7 +137,7 @@ package consortion.view.selfConsortia
          return 0;
       }
       
-      public function set tipGapV(param1:int) : void
+      public function set tipGapV(value:int) : void
       {
       }
       
@@ -150,7 +150,7 @@ package consortion.view.selfConsortia
          return "consortion.ConsortiaLevelTip";
       }
       
-      public function set tipStyle(param1:String) : void
+      public function set tipStyle(value:String) : void
       {
       }
       

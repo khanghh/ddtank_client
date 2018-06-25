@@ -85,26 +85,26 @@ package questionAward
          }
       }
       
-      private function __nextBtnClickHandler(param1:MouseEvent) : void
+      private function __nextBtnClickHandler(evt:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var answer:* = null;
          SoundManager.instance.playButtonSound();
          if(_frame)
          {
-            _loc2_ = _frame.curQuestionView.getAnswer();
-            if(_loc2_ == "" || _loc2_.length <= 0)
+            answer = _frame.curQuestionView.getAnswer();
+            if(answer == "" || answer.length <= 0)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("questionAward.selectAnswer.noSelectMsg"));
                return;
             }
-            _answerCache = _answerCache + (_loc2_ + "|");
+            _answerCache = _answerCache + (answer + "|");
             _frame.createNextQuestion();
          }
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.playButtonSound();
             if(_frame)

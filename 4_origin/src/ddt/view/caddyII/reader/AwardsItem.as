@@ -66,129 +66,128 @@ package ddt.view.caddyII.reader
       
       private function createMessage() : void
       {
-         var _loc8_:* = null;
-         var _loc4_:* = null;
-         var _loc7_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(_info.TemplateId);
-         var _loc5_:ChatData = new ChatData();
-         var _loc9_:String = LanguageMgr.GetTranslation("tank.view.caddy.awardsPoint") + " ";
-         var _loc3_:String = LanguageMgr.GetTranslation("tank.view.caddy.awardsGong");
-         var _loc2_:String = "<font color=\'#ffffff\'>" + ChatFormats.creatBracketsTag("[" + _info.name + "]",1) + "</font>";
-         var _loc1_:String = LanguageMgr.GetTranslation("tank.data.player.FightingPlayerInfo.your");
-         var _loc6_:String = LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.card");
+         var buff:* = null;
+         var goods:* = null;
+         var itemInfo:ItemTemplateInfo = ItemManager.Instance.getTemplateById(_info.TemplateId);
+         var data:ChatData = new ChatData();
+         var dian:String = LanguageMgr.GetTranslation("tank.view.caddy.awardsPoint") + " ";
+         var gong:String = LanguageMgr.GetTranslation("tank.view.caddy.awardsGong");
+         var name:String = "<font color=\'#ffffff\'>" + ChatFormats.creatBracketsTag("[" + _info.name + "]",1) + "</font>";
+         var have:String = LanguageMgr.GetTranslation("tank.data.player.FightingPlayerInfo.your");
+         var card:String = LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.card");
          if(CaddyModel.instance.type == 6 || CaddyModel.instance.type == 9 || CaddyModel.instance.type == 8)
          {
             if(_info.zoneID == 0)
             {
-               _loc5_.htmlMessage = "<font color=\'#ffad1b\'>" + _loc9_ + _loc3_ + _loc1_ + _info.name;
+               data.htmlMessage = "<font color=\'#ffad1b\'>" + dian + gong + have + _info.name;
                if(_info.channel == 1)
                {
-                  _loc5_.htmlMessage = _loc5_.htmlMessage + (LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.jin") + _loc6_);
+                  data.htmlMessage = data.htmlMessage + (LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.jin") + card);
                }
                else if(_info.channel == 2)
                {
-                  _loc5_.htmlMessage = _loc5_.htmlMessage + (LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.yin") + _loc6_);
+                  data.htmlMessage = data.htmlMessage + (LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.yin") + card);
                }
                else
                {
-                  _loc5_.htmlMessage = _loc5_.htmlMessage + (LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.tong") + _loc6_);
+                  data.htmlMessage = data.htmlMessage + (LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.tong") + card);
                }
-               _loc5_.htmlMessage = _loc5_.htmlMessage + "</font>";
+               data.htmlMessage = data.htmlMessage + "</font>";
             }
             else
             {
-               _loc5_.htmlMessage = _loc9_ + _loc1_ + "(" + _info.zoneID + ")" + LanguageMgr.GetTranslation("ddt.cardSystem.CardSell.SellText1");
+               data.htmlMessage = dian + have + "(" + _info.zoneID + ")" + LanguageMgr.GetTranslation("ddt.cardSystem.CardSell.SellText1");
             }
          }
          else
          {
             if(CaddyModel.instance.type == 2)
             {
-               if(int(_loc7_.Property2) == 1)
+               if(int(itemInfo.Property2) == 1)
                {
-                  _loc8_ = LanguageMgr.GetTranslation("tank.view.award.Attack");
+                  buff = LanguageMgr.GetTranslation("tank.view.award.Attack");
                }
-               else if(int(_loc7_.Property2) == 2)
+               else if(int(itemInfo.Property2) == 2)
                {
-                  _loc8_ = LanguageMgr.GetTranslation("tank.view.award.Defense");
+                  buff = LanguageMgr.GetTranslation("tank.view.award.Defense");
                }
                else
                {
-                  _loc8_ = LanguageMgr.GetTranslation("tank.view.award.Attribute");
+                  buff = LanguageMgr.GetTranslation("tank.view.award.Attribute");
                }
             }
             else
             {
-               _loc8_ = CaddyModel.instance.AwardsBuff;
+               buff = CaddyModel.instance.AwardsBuff;
             }
-            _loc4_ = " " + ChatFormats.creatGoodTag("[" + _loc7_.Name + "]",2,_loc7_.TemplateID,_loc7_.Quality,true,_loc5_);
+            goods = " " + ChatFormats.creatGoodTag("[" + itemInfo.Name + "]",2,itemInfo.TemplateID,itemInfo.Quality,true,data);
             if(_info.isLong)
             {
-               _loc5_.htmlMessage = _loc9_ + _loc3_ + LanguageMgr.GetTranslation("tank.view.award.Player") + _loc2_ + _loc8_ + _loc4_ + "x" + _info.count + "(" + _info.zone + ")";
+               data.htmlMessage = dian + gong + LanguageMgr.GetTranslation("tank.view.award.Player") + name + buff + goods + "x" + _info.count + "(" + _info.zone + ")";
             }
             else
             {
-               _loc5_.htmlMessage = _loc9_ + _loc3_ + _loc2_ + _loc8_ + _loc4_ + "x" + _info.count;
+               data.htmlMessage = dian + gong + name + buff + goods + "x" + _info.count;
             }
          }
-         setChats(_loc5_);
+         setChats(data);
       }
       
-      private function setChats(param1:ChatData) : void
+      private function setChats(chatData:ChatData) : void
       {
-         var _loc2_:String = "";
-         _loc2_ = _loc2_ + Helpers.deCodeString(param1.htmlMessage);
-         _contentField.htmlText = "<a>" + _loc2_ + "</a>";
+         var resultHtmlText:String = "";
+         resultHtmlText = resultHtmlText + Helpers.deCodeString(chatData.htmlMessage);
+         _contentField.htmlText = "<a>" + resultHtmlText + "</a>";
       }
       
-      private function __onTextClicked(param1:TextEvent) : void
+      private function __onTextClicked(event:TextEvent) : void
       {
-         var _loc19_:* = null;
-         var _loc13_:int = 0;
-         var _loc18_:* = null;
-         var _loc6_:int = 0;
-         var _loc5_:int = 0;
-         var _loc15_:* = null;
-         var _loc16_:* = null;
-         var _loc4_:* = null;
-         var _loc10_:int = 0;
-         var _loc14_:int = 0;
-         var _loc12_:* = null;
-         var _loc11_:int = 0;
-         var _loc9_:* = null;
-         var _loc3_:* = null;
-         var _loc17_:* = null;
-         var _loc8_:* = null;
+         var tipPos:* = null;
+         var i:int = 0;
+         var props:* = null;
+         var selfZone:int = 0;
+         var other:int = 0;
+         var pattern:* = null;
+         var str:* = null;
+         var result:* = null;
+         var startIdx:int = 0;
+         var endIdx:int = 0;
+         var pos:* = null;
+         var legalIdx:int = 0;
+         var rect:* = null;
+         var nameTipPos:* = null;
+         var newChannel:* = null;
+         var itemInfo:* = null;
          SoundManager.instance.play("008");
-         var _loc7_:Object = {};
-         var _loc2_:Array = param1.text.split("|");
-         _loc13_ = 0;
-         while(_loc13_ < _loc2_.length)
+         var data:Object = {};
+         var allProperties:Array = event.text.split("|");
+         for(i = 0; i < allProperties.length; )
          {
-            if(_loc2_[_loc13_].indexOf(":"))
+            if(allProperties[i].indexOf(":"))
             {
-               _loc18_ = _loc2_[_loc13_].split(":");
-               _loc7_[_loc18_[0]] = _loc18_[1];
+               props = allProperties[i].split(":");
+               data[props[0]] = props[1];
             }
-            _loc13_++;
+            i++;
          }
-         if(int(_loc7_.clicktype) == 1)
+         if(int(data.clicktype) == 1)
          {
-            _loc6_ = PlayerManager.Instance.Self.ZoneID;
-            _loc5_ = _info.zoneID;
-            if(_loc5_ > 0 && _loc5_ != _loc6_)
+            selfZone = PlayerManager.Instance.Self.ZoneID;
+            other = _info.zoneID;
+            if(other > 0 && other != selfZone)
             {
                ChatManager.Instance.sysChatYellow(LanguageMgr.GetTranslation("core.crossZone.PrivateChatToUnable"));
                return;
             }
             if(IMManager.IS_SHOW_SUB)
             {
-               dispatchEvent(new ChatEvent("nicknameClickToOutside",_loc7_.tagname));
+               dispatchEvent(new ChatEvent("nicknameClickToOutside",data.tagname));
             }
-            else if(IMManager.Instance.isFriend(String(_loc7_.tagname)))
+            else if(IMManager.Instance.isFriend(String(data.tagname)))
             {
                IMEManager.enable();
                ChatManager.Instance.output.functionEnabled = true;
-               ChatManager.Instance.privateChatTo(_loc7_.tagname);
+               ChatManager.Instance.privateChatTo(data.tagname);
             }
             else
             {
@@ -196,70 +195,70 @@ package ddt.view.caddyII.reader
                {
                   _nameTip = ComponentFactory.Instance.creatCustomObject("chat.NamePanel");
                }
-               _loc15_ = new RegExp(String(_loc7_.tagname),"g");
-               _loc16_ = _contentField.text;
-               _loc4_ = _loc15_.exec(_loc16_);
-               while(_loc4_ != null)
+               pattern = new RegExp(String(data.tagname),"g");
+               str = _contentField.text;
+               result = pattern.exec(str);
+               while(result != null)
                {
-                  _loc10_ = _loc4_.index;
-                  _loc14_ = _loc10_ + String(_loc7_.tagname).length;
-                  _loc12_ = _contentField.globalToLocal(new Point(StageReferance.stage.mouseX,StageReferance.stage.mouseY));
-                  _loc11_ = _contentField.getCharIndexAtPoint(_loc12_.x,_loc12_.y);
-                  if(_loc11_ >= _loc10_ && _loc11_ <= _loc14_)
+                  startIdx = result.index;
+                  endIdx = startIdx + String(data.tagname).length;
+                  pos = _contentField.globalToLocal(new Point(StageReferance.stage.mouseX,StageReferance.stage.mouseY));
+                  legalIdx = _contentField.getCharIndexAtPoint(pos.x,pos.y);
+                  if(legalIdx >= startIdx && legalIdx <= endIdx)
                   {
-                     _contentField.setSelection(_loc10_,_loc14_);
-                     _loc9_ = _contentField.getCharBoundaries(_loc14_);
-                     _loc3_ = _contentField.localToGlobal(new Point(_loc9_.x,_loc9_.y));
-                     _nameTip.x = _loc3_.x + _loc9_.width;
-                     _nameTip.y = _loc3_.y - _nameTip.getHeight;
+                     _contentField.setSelection(startIdx,endIdx);
+                     rect = _contentField.getCharBoundaries(endIdx);
+                     nameTipPos = _contentField.localToGlobal(new Point(rect.x,rect.y));
+                     _nameTip.x = nameTipPos.x + rect.width;
+                     _nameTip.y = nameTipPos.y - _nameTip.getHeight;
                      break;
                   }
-                  _loc4_ = _loc15_.exec(_loc16_);
+                  result = pattern.exec(str);
                }
-               ChatManager.Instance.privateChatTo(_loc7_.tagname);
-               _nameTip.playerName = String(_loc7_.tagname);
-               _loc17_ = ChatFormats.Channel_Set[int(_loc7_.channel)];
-               if(_loc17_ == "null" || _loc17_ == null)
+               ChatManager.Instance.privateChatTo(data.tagname);
+               _nameTip.playerName = String(data.tagname);
+               newChannel = ChatFormats.Channel_Set[int(data.channel)];
+               if(newChannel == "null" || newChannel == null)
                {
                   _nameTip.channel = " ";
                }
                else
                {
-                  _nameTip.channel = _loc17_;
+                  _nameTip.channel = newChannel;
                }
-               _nameTip.message = String(_loc7_.message);
+               _nameTip.message = String(data.message);
                _nameTip.setVisible = true;
             }
          }
-         else if(int(_loc7_.clicktype) == 2)
+         else if(int(data.clicktype) == 2)
          {
-            _loc19_ = _contentField.localToGlobal(new Point(_contentField.mouseX,_contentField.mouseY));
-            _loc8_ = ItemManager.Instance.getTemplateById(_loc7_.templeteIDorItemID);
-            _loc8_.BindType = _loc7_.isBind == "true"?0:1;
-            _showLinkGoodsInfo(_loc8_);
+            tipPos = _contentField.localToGlobal(new Point(_contentField.mouseX,_contentField.mouseY));
+            itemInfo = ItemManager.Instance.getTemplateById(data.templeteIDorItemID);
+            itemInfo.BindType = data.isBind == "true"?0:1;
+            _showLinkGoodsInfo(itemInfo);
          }
       }
       
-      private function getTemplateInfo(param1:int) : InventoryItemInfo
+      private function getTemplateInfo(id:int) : InventoryItemInfo
       {
-         var _loc2_:InventoryItemInfo = new InventoryItemInfo();
-         _loc2_.TemplateID = param1;
-         ItemManager.fill(_loc2_);
-         return _loc2_;
+         var itemInfo:InventoryItemInfo = new InventoryItemInfo();
+         itemInfo.TemplateID = id;
+         ItemManager.fill(itemInfo);
+         return itemInfo;
       }
       
-      private function _showLinkGoodsInfo(param1:ItemTemplateInfo) : void
+      private function _showLinkGoodsInfo(info:ItemTemplateInfo) : void
       {
-         var _loc3_:Point = _contentField.localToGlobal(new Point(_contentField.mouseX,_contentField.mouseY));
-         var _loc2_:CaddyEvent = new CaddyEvent("goods_click_awardsItem");
-         _loc2_.itemTemplateInfo = param1;
-         _loc2_.point = _loc3_;
-         dispatchEvent(_loc2_);
+         var tipPos:Point = _contentField.localToGlobal(new Point(_contentField.mouseX,_contentField.mouseY));
+         var event:CaddyEvent = new CaddyEvent("goods_click_awardsItem");
+         event.itemTemplateInfo = info;
+         event.point = tipPos;
+         dispatchEvent(event);
       }
       
-      public function set info(param1:AwardsInfo) : void
+      public function set info(itemInfo:AwardsInfo) : void
       {
-         _info = param1;
+         _info = itemInfo;
          createMessage();
       }
       
@@ -273,9 +272,9 @@ package ddt.view.caddyII.reader
          return _contentField.textHeight + 5;
       }
       
-      public function setTextFieldWidth(param1:int) : void
+      public function setTextFieldWidth(width:int) : void
       {
-         _contentField.width = param1;
+         _contentField.width = width;
       }
       
       public function dispose() : void

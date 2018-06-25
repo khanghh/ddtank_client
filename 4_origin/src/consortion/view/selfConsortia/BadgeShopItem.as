@@ -48,10 +48,10 @@ package consortion.view.selfConsortia
       
       private var _alert:BaseAlerFrame;
       
-      public function BadgeShopItem(param1:BadgeInfo)
+      public function BadgeShopItem(badgeInfo:BadgeInfo)
       {
          super();
-         _info = param1;
+         _info = badgeInfo;
          initView();
          initEvent();
       }
@@ -101,7 +101,7 @@ package consortion.view.selfConsortia
          _btn.removeEventListener("click",onClick);
       }
       
-      private function onClick(param1:MouseEvent) : void
+      private function onClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.bagLocked)
@@ -133,13 +133,13 @@ package consortion.view.selfConsortia
          }
       }
       
-      private function onResponse(param1:FrameEvent) : void
+      private function onResponse(event:FrameEvent) : void
       {
          _alert.removeEventListener("response",onResponse);
          _alert.dispose();
          _alert = null;
          SoundManager.instance.playButtonSound();
-         switch(int(param1.responseCode) - 2)
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:

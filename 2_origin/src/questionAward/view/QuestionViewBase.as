@@ -15,10 +15,10 @@ package questionAward.view
       
       protected var _info:QuestionDataBaseInfo;
       
-      public function QuestionViewBase(param1:QuestionDataBaseInfo)
+      public function QuestionViewBase(value:QuestionDataBaseInfo)
       {
          super();
-         _info = param1;
+         _info = value;
          if(_info == null)
          {
             return;
@@ -40,14 +40,14 @@ package questionAward.view
       
       protected function initData() : void
       {
-         var _loc1_:* = null;
+         var tem:* = null;
          if(_title)
          {
             _title.text = _info.title;
             if(_info.type == 1)
             {
-               _loc1_ = !!_info.isMultiSelect?"questionAward.multiSelectTxt":"questionAward.singleSelectTxt";
-               _title.text = _title.text + LanguageMgr.GetTranslation(_loc1_);
+               tem = !!_info.isMultiSelect?"questionAward.multiSelectTxt":"questionAward.singleSelectTxt";
+               _title.text = _title.text + LanguageMgr.GetTranslation(tem);
             }
          }
       }

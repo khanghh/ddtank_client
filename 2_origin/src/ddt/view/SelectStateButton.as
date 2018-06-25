@@ -41,7 +41,7 @@ package ddt.view
          removeEventListener("click",__clickHander);
       }
       
-      private function __outHander(param1:MouseEvent) : void
+      private function __outHander(event:MouseEvent) : void
       {
          if(enable)
          {
@@ -50,7 +50,7 @@ package ddt.view
          }
       }
       
-      private function __overHandler(param1:MouseEvent) : void
+      private function __overHandler(event:MouseEvent) : void
       {
          if(enable)
          {
@@ -59,11 +59,11 @@ package ddt.view
          }
       }
       
-      private function __clickHander(param1:MouseEvent) : void
+      private function __clickHander(event:MouseEvent) : void
       {
          if(!_enable)
          {
-            param1.stopImmediatePropagation();
+            event.stopImmediatePropagation();
          }
       }
       
@@ -72,9 +72,9 @@ package ddt.view
          return _selected;
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         _selected = param1;
+         _selected = value;
          _bg.visible = !_selected;
          _overBg.visible = _selected;
       }
@@ -84,9 +84,9 @@ package ddt.view
          return _enable;
       }
       
-      public function set enable(param1:Boolean) : void
+      public function set enable(value:Boolean) : void
       {
-         _enable = param1;
+         _enable = value;
       }
       
       public function get gray() : Boolean
@@ -94,9 +94,9 @@ package ddt.view
          return _gray;
       }
       
-      public function set gray(param1:Boolean) : void
+      public function set gray(value:Boolean) : void
       {
-         _gray = param1;
+         _gray = value;
          if(_gray)
          {
             filters = ComponentFactory.Instance.creatFilters("grayFilter");
@@ -107,28 +107,28 @@ package ddt.view
          }
       }
       
-      public function set backGround(param1:DisplayObject) : void
+      public function set backGround(value:DisplayObject) : void
       {
          if(_bg)
          {
             ObjectUtils.disposeObject(_bg);
             _bg = null;
          }
-         _bg = param1;
+         _bg = value;
          if(_bg)
          {
             addChild(_bg);
          }
       }
       
-      public function set overBackGround(param1:DisplayObject) : void
+      public function set overBackGround(value:DisplayObject) : void
       {
          if(_overBg)
          {
             ObjectUtils.disposeObject(_overBg);
             _overBg = null;
          }
-         _overBg = param1;
+         _overBg = value;
          if(_overBg)
          {
             addChild(_overBg);

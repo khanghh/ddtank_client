@@ -22,22 +22,22 @@ package GodSyah
       
       private var _modeArr:Array;
       
-      public function SyahAnalyzer(param1:Function)
+      public function SyahAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc4_:* = null;
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
-         var _loc8_:int = 0;
-         var _loc7_:* = null;
-         var _loc6_:* = null;
-         var _loc3_:XML = new XML(param1);
-         _nowTime = _getEndTime(_loc3_.@nowTime,_loc3_.@nowTime);
-         if(_loc3_.@value == "true")
+         var xmllist:* = null;
+         var j:int = 0;
+         var details:* = null;
+         var i:int = 0;
+         var mode:* = null;
+         var info:* = null;
+         var xml:XML = new XML(data);
+         _nowTime = _getEndTime(xml.@nowTime,xml.@nowTime);
+         if(xml.@value == "true")
          {
             _details = [];
             _modes = new Vector.<SyahMode>();
@@ -45,59 +45,56 @@ package GodSyah
             _syahArr = [];
             _detailsArr = [];
             _modeArr = [];
-            _loc4_ = _loc3_..Condition;
-            _loc5_ = 0;
-            while(_loc5_ < _loc3_.child("Active").length())
+            xmllist = xml..Condition;
+            for(j = 0; j < xml.child("Active").length(); )
             {
-               _detailsArr[_loc5_] = new Vector.<InventoryItemInfo>();
-               _modeArr[_loc5_] = new Vector.<SyahMode>();
-               _loc2_ = [];
-               _loc2_[0] = _loc3_.child("Active")[_loc5_].@IsOpen;
-               _loc2_[1] = _createValid(_loc3_.child("Active")[_loc5_].@StartDate,_loc3_.child("Active")[_loc5_].@EndDate);
-               _loc2_[2] = _loc3_.child("Active")[_loc5_].@ActiveInfo;
-               _loc2_[3] = _getEndTime(_loc3_.child("Active")[_loc5_].@StartDate,_loc3_.child("Active")[_loc5_].@StartTime);
-               _loc2_[4] = _getEndTime(_loc3_.child("Active")[_loc5_].@EndDate,_loc3_.child("Active")[_loc5_].@EndTime);
-               _loc2_[5] = _loc3_.child("Active")[_loc5_].@SubID;
-               _syahArr[_loc5_] = _loc2_;
-               _loc8_ = 0;
-               while(_loc8_ < _loc4_.length())
+               _detailsArr[j] = new Vector.<InventoryItemInfo>();
+               _modeArr[j] = new Vector.<SyahMode>();
+               details = [];
+               details[0] = xml.child("Active")[j].@IsOpen;
+               details[1] = _createValid(xml.child("Active")[j].@StartDate,xml.child("Active")[j].@EndDate);
+               details[2] = xml.child("Active")[j].@ActiveInfo;
+               details[3] = _getEndTime(xml.child("Active")[j].@StartDate,xml.child("Active")[j].@StartTime);
+               details[4] = _getEndTime(xml.child("Active")[j].@EndDate,xml.child("Active")[j].@EndTime);
+               details[5] = xml.child("Active")[j].@SubID;
+               _syahArr[j] = details;
+               for(i = 0; i < xmllist.length(); )
                {
-                  if(_loc3_.child("Active")[_loc5_].@SubID == _loc4_[_loc8_].@SubID)
+                  if(xml.child("Active")[j].@SubID == xmllist[i].@SubID)
                   {
-                     _loc7_ = _createModeValue(_loc4_[_loc8_].@Value);
-                     _loc7_.syahID = _loc4_[_loc8_].@ConditionID;
-                     _loc7_.level = !!_loc7_.isGold?_loc4_[_loc8_].@Type - 100:_loc4_[_loc8_].@Type;
-                     _loc7_.valid = _createValid(_loc3_.child("Active")[_loc5_].@StartDate,_loc3_.child("Active")[_loc5_].@EndDate);
-                     _modeArr[_loc5_].push(_loc7_);
-                     _loc6_ = new InventoryItemInfo();
-                     _loc6_.TemplateID = _loc7_.syahID;
-                     _loc6_ = ItemManager.fill(_loc6_);
-                     _loc6_.StrengthenLevel = _loc7_.level;
-                     _loc6_.isGold = _loc7_.isGold;
-                     _detailsArr[_loc5_].push(_loc6_);
+                     mode = _createModeValue(xmllist[i].@Value);
+                     mode.syahID = xmllist[i].@ConditionID;
+                     mode.level = !!mode.isGold?xmllist[i].@Type - 100:xmllist[i].@Type;
+                     mode.valid = _createValid(xml.child("Active")[j].@StartDate,xml.child("Active")[j].@EndDate);
+                     _modeArr[j].push(mode);
+                     info = new InventoryItemInfo();
+                     info.TemplateID = mode.syahID;
+                     info = ItemManager.fill(info);
+                     info.StrengthenLevel = mode.level;
+                     info.isGold = mode.isGold;
+                     _detailsArr[j].push(info);
                   }
-                  _loc8_++;
+                  i++;
                }
-               _loc5_++;
+               j++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc3_.@message;
+            message = xml.@message;
             onAnalyzeComplete();
          }
       }
       
-      private function _createModeValue(param1:String) : SyahMode
+      private function _createModeValue(s:String) : SyahMode
       {
-         var _loc3_:int = 0;
-         var _loc2_:Array = param1.split("-");
-         var _loc4_:SyahMode = new SyahMode();
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_.length)
+         var i:int = 0;
+         var arr:Array = s.split("-");
+         var mode:SyahMode = new SyahMode();
+         for(i = 0; i < arr.length; )
          {
-            var _loc5_:* = _loc2_[_loc3_];
+            var _loc5_:* = arr[i];
             if("1" !== _loc5_)
             {
                if("2" !== _loc5_)
@@ -114,59 +111,59 @@ package GodSyah
                               {
                                  if("11" === _loc5_)
                                  {
-                                    _loc4_.isGold = _loc2_[_loc3_ + 1] == 1?true:false;
+                                    mode.isGold = arr[i + 1] == 1?true:false;
                                  }
                               }
                               else
                               {
-                                 _loc4_.armor = _loc2_[_loc3_ + 1];
+                                 mode.armor = arr[i + 1];
                               }
                            }
                            else
                            {
-                              _loc4_.damage = _loc2_[_loc3_ + 1];
+                              mode.damage = arr[i + 1];
                            }
                         }
                         else
                         {
-                           _loc4_.hp = _loc2_[_loc3_ + 1];
+                           mode.hp = arr[i + 1];
                         }
                      }
                      else
                      {
-                        _loc4_.lucky = _loc2_[_loc3_ + 1];
+                        mode.lucky = arr[i + 1];
                      }
                   }
                   else
                   {
-                     _loc4_.agility = _loc2_[_loc3_ + 1];
+                     mode.agility = arr[i + 1];
                   }
                }
                else
                {
-                  _loc4_.defense = _loc2_[_loc3_ + 1];
+                  mode.defense = arr[i + 1];
                }
             }
             else
             {
-               _loc4_.attack = _loc2_[_loc3_ + 1];
+               mode.attack = arr[i + 1];
             }
-            _loc3_ = _loc3_ + 2;
+            i = i + 2;
          }
-         return _loc4_;
+         return mode;
       }
       
-      private function _createValid(param1:String, param2:String) : String
+      private function _createValid(sd:String, ed:String) : String
       {
-         return param1.split(" ")[0].replace("-",".").replace("-",".") + "-" + param2.split(" ")[0].replace("-",".").replace("-",".");
+         return sd.split(" ")[0].replace("-",".").replace("-",".") + "-" + ed.split(" ")[0].replace("-",".").replace("-",".");
       }
       
-      private function _getEndTime(param1:String, param2:String) : Date
+      private function _getEndTime(ed:String, et:String) : Date
       {
-         var _loc3_:Array = param1.split(" ")[0].split("-");
-         var _loc5_:String = _loc3_[1] + "/" + _loc3_[2] + "/" + _loc3_[0] + " " + param2.split(" ")[1];
-         var _loc4_:Date = new Date(_loc5_);
-         return _loc4_;
+         var arr1:Array = ed.split(" ")[0].split("-");
+         var end:String = arr1[1] + "/" + arr1[2] + "/" + arr1[0] + " " + et.split(" ")[1];
+         var date:Date = new Date(end);
+         return date;
       }
       
       public function get modes() : Array

@@ -56,9 +56,9 @@ package com.demonsters.debugger
          _retry.addEventListener("timer",retryHandler,false,0,false);
       }
       
-      public function set address(param1:String) : void
+      public function set address(value:String) : void
       {
-         _address = param1;
+         _address = value;
       }
       
       public function get connected() : Boolean
@@ -82,18 +82,18 @@ package com.demonsters.debugger
          }
       }
       
-      public function send(param1:String, param2:Object, param3:Boolean = false) : void
+      public function send(id:String, data:Object, direct:Boolean = false) : void
       {
-         var _loc4_:* = null;
-         if(param3 && param1 == "com.demonsters.debugger.core" && _socket.connected)
+         var bytes:* = null;
+         if(direct && id == "com.demonsters.debugger.core" && _socket.connected)
          {
-            _loc4_ = new MonsterDebuggerData(param1,param2).bytes;
-            _socket.writeUnsignedInt(_loc4_.length);
-            _socket.writeBytes(_loc4_);
+            bytes = new MonsterDebuggerData(id,data).bytes;
+            _socket.writeUnsignedInt(bytes.length);
+            _socket.writeBytes(bytes);
             _socket.flush();
             return;
          }
-         _queue.push(new MonsterDebuggerData(param1,param2));
+         _queue.push(new MonsterDebuggerData(id,data));
          if(_queue.length > 500)
          {
             _queue.shift();
@@ -141,18 +141,18 @@ package com.demonsters.debugger
             connect();
             return;
          }
-         var _loc1_:ByteArray = MonsterDebuggerData(_queue.shift()).bytes;
-         _socket.writeUnsignedInt(_loc1_.length);
-         _socket.writeBytes(_loc1_);
+         var bytes:ByteArray = MonsterDebuggerData(_queue.shift()).bytes;
+         _socket.writeUnsignedInt(bytes.length);
+         _socket.writeBytes(bytes);
          _socket.flush();
-         _loc1_ = null;
+         bytes = null;
          if(_queue.length > 0)
          {
             next();
          }
       }
       
-      private function connectHandler(param1:Event) : void
+      private function connectHandler(event:Event) : void
       {
          _timeout.stop();
          _retry.stop();
@@ -165,13 +165,13 @@ package com.demonsters.debugger
          _socket.flush();
       }
       
-      private function retryHandler(param1:TimerEvent) : void
+      private function retryHandler(event:TimerEvent) : void
       {
          _retry.stop();
          connect();
       }
       
-      private function closeHandler(param1:Event = null) : void
+      private function closeHandler(event:Event = null) : void
       {
          MonsterDebuggerUtils.resume();
          if(!_retry.running)
@@ -184,7 +184,7 @@ package com.demonsters.debugger
          }
       }
       
-      private function dataHandler(param1:ProgressEvent) : void
+      private function dataHandler(event:ProgressEvent) : void
       {
          _bytes = new ByteArray();
          _socket.readBytes(_bytes,0,_socket.bytesAvailable);
@@ -194,8 +194,8 @@ package com.demonsters.debugger
       
       private function processPackage() : void
       {
-         var _loc2_:* = 0;
-         var _loc1_:* = null;
+         var l:* = 0;
+         var item:* = null;
          if(_bytes.bytesAvailable == 0)
          {
             return;
@@ -207,19 +207,19 @@ package com.demonsters.debugger
          }
          if(_package.length < _length && _bytes.bytesAvailable > 0)
          {
-            _loc2_ = uint(_bytes.bytesAvailable);
-            if(_loc2_ > _length - _package.length)
+            l = uint(_bytes.bytesAvailable);
+            if(l > _length - _package.length)
             {
-               _loc2_ = uint(_length - _package.length);
+               l = uint(_length - _package.length);
             }
-            _bytes.readBytes(_package,_package.length,_loc2_);
+            _bytes.readBytes(_package,_package.length,l);
          }
          if(_length != 0 && _package.length == _length)
          {
-            _loc1_ = MonsterDebuggerData.read(_package);
-            if(_loc1_.id != null)
+            item = MonsterDebuggerData.read(_package);
+            if(item.id != null)
             {
-               MonsterDebuggerCore.handle(_loc1_);
+               MonsterDebuggerCore.handle(item);
             }
             _length = 0;
             _package = null;

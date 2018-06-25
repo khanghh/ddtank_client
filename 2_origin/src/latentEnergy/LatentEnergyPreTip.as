@@ -23,15 +23,15 @@ package latentEnergy
          super();
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         .super.tipData = param1;
-         if(!param1)
+         .super.tipData = data;
+         if(!data)
          {
             return;
          }
-         var _loc2_:GoodTipInfo = getPreGoodTipInfo(param1 as GoodTipInfo);
-         if(!_loc2_)
+         var tGoodTipInfo:GoodTipInfo = getPreGoodTipInfo(data as GoodTipInfo);
+         if(!tGoodTipInfo)
          {
             return;
          }
@@ -47,39 +47,39 @@ package latentEnergy
             _laterGoodTip.x = _tipbackgound.x + _tipbackgound.width + 35;
          }
          addChild(_laterGoodTip);
-         _laterGoodTip.tipData = _loc2_;
+         _laterGoodTip.tipData = tGoodTipInfo;
          addChild(_rightArrow);
          _width = _laterGoodTip.x + _laterGoodTip.width;
          _height = _laterGoodTip.height;
       }
       
-      protected function getPreGoodTipInfo(param1:GoodTipInfo) : GoodTipInfo
+      protected function getPreGoodTipInfo(goodTipInfo:GoodTipInfo) : GoodTipInfo
       {
-         var _loc5_:* = null;
-         var _loc6_:InventoryItemInfo = param1.itemInfo as InventoryItemInfo;
-         var _loc3_:GoodTipInfo = new GoodTipInfo();
-         var _loc4_:InventoryItemInfo = new InventoryItemInfo();
-         ObjectUtils.copyProperties(_loc4_,_loc6_);
-         _loc4_.gemstoneList = _loc6_.gemstoneList;
-         _loc4_.IsBinds = true;
-         var _loc2_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(param1.latentEnergyItemId);
-         if(!_loc2_)
+         var tmpDate:* = null;
+         var itemInfo:InventoryItemInfo = goodTipInfo.itemInfo as InventoryItemInfo;
+         var tGoodTipInfo:GoodTipInfo = new GoodTipInfo();
+         var tInfo:InventoryItemInfo = new InventoryItemInfo();
+         ObjectUtils.copyProperties(tInfo,itemInfo);
+         tInfo.gemstoneList = itemInfo.gemstoneList;
+         tInfo.IsBinds = true;
+         var tmpItemInfo:ItemTemplateInfo = ItemManager.Instance.getTemplateById(goodTipInfo.latentEnergyItemId);
+         if(!tmpItemInfo)
          {
             return null;
          }
-         var _loc7_:String = _loc2_.Property3;
-         _loc4_.latentEnergyCurStr = _loc7_ + "," + _loc7_ + "," + _loc7_ + "," + _loc7_;
-         if(_loc6_.isHasLatentEnergy)
+         var valueStr:String = tmpItemInfo.Property3;
+         tInfo.latentEnergyCurStr = valueStr + "," + valueStr + "," + valueStr + "," + valueStr;
+         if(itemInfo.isHasLatentEnergy)
          {
-            _loc4_.latentEnergyEndTime = _loc6_.latentEnergyEndTime;
+            tInfo.latentEnergyEndTime = itemInfo.latentEnergyEndTime;
          }
          else
          {
-            _loc5_ = new Date(TimeManager.Instance.Now().getTime() + int(_loc2_.Property4) * 86400000 - 3600000);
-            _loc4_.latentEnergyEndTime = _loc5_;
+            tmpDate = new Date(TimeManager.Instance.Now().getTime() + int(tmpItemInfo.Property4) * 86400000 - 3600000);
+            tInfo.latentEnergyEndTime = tmpDate;
          }
-         _loc3_.itemInfo = _loc4_;
-         return _loc3_;
+         tGoodTipInfo.itemInfo = tInfo;
+         return tGoodTipInfo;
       }
    }
 }

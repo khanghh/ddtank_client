@@ -518,6 +518,16 @@ package ddt.data
       public static const MARK:String = "mark";
       
       public static const TREASUREROOM:String = "treasureRoom";
+      
+      public static const DEVIL_TURN:String = "devilturn";
+      
+      public static const WORLDCUP_GUESS:String = "worldcup";
+      
+      public static const DREAMLAND_CHALLENGE:String = "dreamlandChallenge";
+      
+      public static const DREAMLAND_BLESSING:String = "dreamLandBlessing";
+      
+      public static const NEWOLDPLAYER:String = "newOldPlayer";
        
       
       public function UIModuleTypes()

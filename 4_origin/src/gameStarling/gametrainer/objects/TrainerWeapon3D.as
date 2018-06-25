@@ -10,9 +10,9 @@ package gameStarling.gametrainer.objects
       
       private var _weaponAsset:BoneMovieStarling;
       
-      public function TrainerWeapon3D(param1:int, param2:int = 1, param3:Number = 1, param4:Number = 1, param5:Number = 1, param6:Number = 1)
+      public function TrainerWeapon3D(id:int, layerType:int = 1, mass:Number = 1, gravityFactor:Number = 1, windFactor:Number = 1, airResitFactor:Number = 1)
       {
-         super(param1,param2,param3,param4,param5,param6);
+         super(id,layerType,mass,gravityFactor,windFactor,airResitFactor);
          init();
       }
       

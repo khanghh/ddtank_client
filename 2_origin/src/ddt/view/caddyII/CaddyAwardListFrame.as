@@ -57,16 +57,16 @@ package ddt.view.caddyII
       
       private function initView() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          titleText = "奖励兑换";
          _bg = ComponentFactory.Instance.creatBitmap("asset.caddy.goods.bigBack");
-         var _loc2_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.corel.formLineBig");
-         _loc2_.x = 159;
-         _loc2_.y = 123;
-         var _loc4_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.corel.formLineBig");
-         _loc4_.x = 323;
-         _loc4_.y = 123;
+         var line1:Bitmap = ComponentFactory.Instance.creatBitmap("asset.corel.formLineBig");
+         line1.x = 159;
+         line1.y = 123;
+         var line2:Bitmap = ComponentFactory.Instance.creatBitmap("asset.corel.formLineBig");
+         line2.x = 323;
+         line2.y = 123;
          sortTitleTxt = ComponentFactory.Instance.creatComponentByStylename("caddy.badLuck.paiTxt");
          sortTitleTxt.text = LanguageMgr.GetTranslation("ddt.caddy.badluck.sortTitletxt");
          NametitleTxt = ComponentFactory.Instance.creatComponentByStylename("caddy.badLuck.nameTxt");
@@ -95,15 +95,14 @@ package ddt.view.caddyII
          _btn.addEventListener("click",clickHander);
          _panel = ComponentFactory.Instance.creatComponentByStylename("caddy.LuckpaihangScrollpanel");
          _panel.setView(_list);
-         _loc3_ = 1;
-         while(_loc3_ < 11)
+         for(i = 1; i < 11; )
          {
-            _loc1_ = new AwardListItem();
-            _loc1_.initView("虚位以待" + _loc3_,"物品" + _loc3_,"url" + _loc3_,_loc3_);
-            _loc1_.y = _loc3_ * 25;
-            _list.addChild(_loc1_);
-            _listArray.push(_loc1_);
-            _loc3_++;
+            item = new AwardListItem();
+            item.initView("虚位以待" + i,"物品" + i,"url" + i,i);
+            item.y = i * 25;
+            _list.addChild(item);
+            _listArray.push(item);
+            i++;
          }
          _panel.invalidateViewport();
          addToContent(_bg);
@@ -116,52 +115,51 @@ package ddt.view.caddyII
          addToContent(_titleBitmap);
          addToContent(_panel);
          addToContent(_btn);
-         addToContent(_loc2_);
-         addToContent(_loc4_);
+         addToContent(line1);
+         addToContent(line2);
          addEventListener("response",_response);
          RouletteManager.instance.addEventListener("luckstone_rank_limit",getBadLuckHandler);
          SocketManager.Instance.out.sendQequestLuckky();
       }
       
-      private function getBadLuckHandler(param1:CaddyEvent) : void
+      private function getBadLuckHandler(e:CaddyEvent) : void
       {
-         _dataList = param1.dataList;
+         _dataList = e.dataList;
          updateData();
       }
       
       private function updateData() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         _loc2_ = 0;
-         while(_loc2_ < 10 && _loc2_ < _dataList.length)
+         var i:int = 0;
+         var obj:* = null;
+         i = 0;
+         while(i < 10 && i < _dataList.length)
          {
-            _loc1_ = _dataList[_loc2_];
-            _listArray[_loc2_].upDataUserName(_loc1_);
-            _loc2_++;
+            obj = _dataList[i];
+            _listArray[i].upDataUserName(obj);
+            i++;
          }
       }
       
-      private function clickHander(param1:MouseEvent) : void
+      private function clickHander(e:MouseEvent) : void
       {
          ObjectUtils.disposeObject(this);
       }
       
       private function upDataUserName() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 10;
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_)
+         var i:int = 0;
+         var len:int = 10;
+         for(i = 0; i < len; )
          {
-            _listArray[_loc2_].upDataUserName("asdasd");
-            _loc2_++;
+            _listArray[i].upDataUserName("asdasd");
+            i++;
          }
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             ObjectUtils.disposeObject(this);
          }

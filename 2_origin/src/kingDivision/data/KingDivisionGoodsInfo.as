@@ -26,11 +26,11 @@ package kingDivision.data
       
       public var LuckCompose:int;
       
-      public function KingDivisionGoodsInfo(param1:int = 0, param2:int = 0)
+      public function KingDivisionGoodsInfo($Quality:int = 0, $TemplateID:int = 0)
       {
          super();
-         Quality = param1;
-         TemplateID = param2;
+         Quality = $Quality;
+         TemplateID = $TemplateID;
       }
    }
 }

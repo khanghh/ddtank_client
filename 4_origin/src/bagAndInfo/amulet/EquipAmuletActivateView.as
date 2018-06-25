@@ -95,9 +95,9 @@ package bagAndInfo.amulet
       
       private function init() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var currentItem:* = null;
+         var newItem:* = null;
          _info = PlayerManager.Instance.Self.Bag.items[18];
          _activateProperty = [];
          _bg = ComponentFactory.Instance.creatBitmap("asset.equipAmulet.activateView");
@@ -120,19 +120,18 @@ package bagAndInfo.amulet
          _phaseTips.tipData = _info;
          _currentEffect = new Vector.<EquipAmuletActivateItem>();
          _newEffect = new Vector.<EquipAmuletActivateItem>();
-         _loc3_ = 0;
-         while(_loc3_ < 4)
+         for(i = 0; i < 4; )
          {
-            _loc2_ = new EquipAmuletActivateItem();
-            _loc2_.addEventListener("change",__onItemChange);
-            PositionUtils.setPos(_loc2_,"equipAmulet.currentItemPos" + _loc3_);
-            _currentEffect.push(_loc2_);
-            addChild(_loc2_);
-            _loc1_ = new EquipAmuletActivateItem(false);
-            PositionUtils.setPos(_loc1_,"equipAmulet.newItemPos" + _loc3_);
-            _newEffect.push(_loc1_);
-            addChild(_loc1_);
-            _loc3_++;
+            currentItem = new EquipAmuletActivateItem();
+            currentItem.addEventListener("change",__onItemChange);
+            PositionUtils.setPos(currentItem,"equipAmulet.currentItemPos" + i);
+            _currentEffect.push(currentItem);
+            addChild(currentItem);
+            newItem = new EquipAmuletActivateItem(false);
+            PositionUtils.setPos(newItem,"equipAmulet.newItemPos" + i);
+            _newEffect.push(newItem);
+            addChild(newItem);
+            i++;
          }
          updateProperty();
          _powerText = ComponentFactory.Instance.creatComponentByStylename("equipAmulet.powerText");
@@ -176,15 +175,15 @@ package bagAndInfo.amulet
          update();
       }
       
-      private function __onItemChange(param1:Event) : void
+      private function __onItemChange(e:Event) : void
       {
-         var _loc3_:EquipAmuletPhaseVo = EquipAmuletManager.Instance.getAmuletPhaseVoByGrade(_info.StrengthenLevel);
+         var phaseVo:EquipAmuletPhaseVo = EquipAmuletManager.Instance.getAmuletPhaseVoByGrade(_info.StrengthenLevel);
          EquipAmuletManager.Instance.lockNum = lockProperty.length;
-         var _loc2_:int = EquipAmuletManager.Instance.lockNum * _loc3_.LockPrice;
-         _consumeMoneyText.htmlText = LanguageMgr.GetTranslation("tank.equipAmulet.consumeMoney",_loc2_);
+         var price:int = EquipAmuletManager.Instance.lockNum * phaseVo.LockPrice;
+         _consumeMoneyText.htmlText = LanguageMgr.GetTranslation("tank.equipAmulet.consumeMoney",price);
       }
       
-      private function __onClickGetStive(param1:MouseEvent) : void
+      private function __onClickGetStive(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(getTimer() - _currentTime < 1500)
@@ -201,7 +200,7 @@ package bagAndInfo.amulet
          buyStive();
       }
       
-      private function __onClickActivate(param1:MouseEvent) : void
+      private function __onClickActivate(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(getTimer() - _currentTime < 1500)
@@ -215,16 +214,16 @@ package bagAndInfo.amulet
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc4_:EquipAmuletPhaseVo = EquipAmuletManager.Instance.getAmuletPhaseVoByGrade(_info.StrengthenLevel);
-         var _loc3_:int = lockProperty.length * _loc4_.LockPrice;
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("tank.equipAmulet.activateTip",_loc4_.Expend,_loc3_),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false);
-         _loc2_.isBand = false;
-         _loc2_.addEventListener("response",__onAlertActivate);
+         var phaseVo:EquipAmuletPhaseVo = EquipAmuletManager.Instance.getAmuletPhaseVoByGrade(_info.StrengthenLevel);
+         var price:int = lockProperty.length * phaseVo.LockPrice;
+         var alertFrame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("tank.equipAmulet.activateTip",phaseVo.Expend,price),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false);
+         alertFrame.isBand = false;
+         alertFrame.addEventListener("response",__onAlertActivate);
       }
       
-      private function __onAlertActivate(param1:FrameEvent) : void
+      private function __onAlertActivate(e:FrameEvent) : void
       {
-         e = param1;
+         e = e;
          var alertFrame:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
          alertFrame.removeEventListener("response",__onAlertActivate);
          if(e.responseCode == 2 || e.responseCode == 3)
@@ -248,42 +247,42 @@ package bagAndInfo.amulet
          alertFrame.dispose();
       }
       
-      private function __onAlertNotStiveFrame(param1:FrameEvent) : void
+      private function __onAlertNotStiveFrame(e:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onAlertNotStiveFrame);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var alertFrame:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         alertFrame.removeEventListener("response",__onAlertNotStiveFrame);
+         if(e.responseCode == 2 || e.responseCode == 3)
          {
             buyStive();
          }
-         _loc2_.dispose();
+         alertFrame.dispose();
       }
       
       private function buyStive() : void
       {
-         var _loc7_:* = null;
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         var _loc6_:int = 0;
-         var _loc1_:* = null;
-         var _loc5_:int = EquipAmuletManager.Instance.buyStiveNum;
-         var _loc4_:int = ServerConfigManager.instance.equipAmuletBuyDustMax;
-         if(_loc5_ < _loc4_)
+         var tips:* = null;
+         var coin:int = 0;
+         var stive:int = 0;
+         var canBuyNum:int = 0;
+         var alertFrame:* = null;
+         var buyNum:int = EquipAmuletManager.Instance.buyStiveNum;
+         var maxBuyNum:int = ServerConfigManager.instance.equipAmuletBuyDustMax;
+         if(buyNum < maxBuyNum)
          {
-            if(_loc5_ == 0)
+            if(buyNum == 0)
             {
-               _loc7_ = LanguageMgr.GetTranslation("tank.equipAmulet.buyFreeStive");
+               tips = LanguageMgr.GetTranslation("tank.equipAmulet.buyFreeStive");
             }
             else
             {
-               _loc3_ = (_loc5_ - 1) * int(ServerConfigManager.instance.AmuletBuyDustCountAndNeedMoney[2]) + int(ServerConfigManager.instance.AmuletBuyDustCountAndNeedMoney[2]);
-               _loc2_ = (_loc5_ - 1) * int(ServerConfigManager.instance.AmuletBuyDustCountAndNeedMoney[0]) + int(ServerConfigManager.instance.AmuletBuyDustCountAndNeedMoney[1]);
-               _loc6_ = _loc4_ - _loc5_;
-               _loc7_ = LanguageMgr.GetTranslation("tank.equipAmulet.buyStiveTip",_loc3_,_loc2_,_loc6_);
+               coin = (buyNum - 1) * int(ServerConfigManager.instance.AmuletBuyDustCountAndNeedMoney[2]) + int(ServerConfigManager.instance.AmuletBuyDustCountAndNeedMoney[2]);
+               stive = (buyNum - 1) * int(ServerConfigManager.instance.AmuletBuyDustCountAndNeedMoney[0]) + int(ServerConfigManager.instance.AmuletBuyDustCountAndNeedMoney[1]);
+               canBuyNum = maxBuyNum - buyNum;
+               tips = LanguageMgr.GetTranslation("tank.equipAmulet.buyStiveTip",coin,stive,canBuyNum);
             }
-            _loc1_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),_loc7_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false);
-            _loc1_.isBand = false;
-            _loc1_.addEventListener("response",__onAlertBuyStiveFrame);
+            alertFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),tips,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false);
+            alertFrame.isBand = false;
+            alertFrame.addEventListener("response",__onAlertBuyStiveFrame);
          }
          else
          {
@@ -291,9 +290,9 @@ package bagAndInfo.amulet
          }
       }
       
-      private function __onAlertBuyStiveFrame(param1:FrameEvent) : void
+      private function __onAlertBuyStiveFrame(e:FrameEvent) : void
       {
-         e = param1;
+         e = e;
          var alertFrame:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
          alertFrame.removeEventListener("response",__onAlertBuyStiveFrame);
          if(e.responseCode == 2 || e.responseCode == 3)
@@ -308,14 +307,14 @@ package bagAndInfo.amulet
       
       private function get buyStiveCoin() : int
       {
-         var _loc2_:int = EquipAmuletManager.Instance.buyStiveNum;
-         var _loc1_:int = ServerConfigManager.instance.equipAmuletBuyDustMax;
-         return _loc2_ == 0?0:Number((_loc2_ - 1) * 150 + 150);
+         var buyNum:int = EquipAmuletManager.Instance.buyStiveNum;
+         var maxBuyNum:int = ServerConfigManager.instance.equipAmuletBuyDustMax;
+         return buyNum == 0?0:Number((buyNum - 1) * 150 + 150);
       }
       
-      private function __onReplace(param1:MouseEvent) : void
+      private function __onReplace(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var alertFrame:* = null;
          SoundManager.instance.playButtonSound();
          if(getTimer() - _currentTime < 1500)
          {
@@ -335,45 +334,44 @@ package bagAndInfo.amulet
          }
          if(_power < 0)
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("tank.equipAmulet.powerReplaceTip"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false);
-            _loc2_.addEventListener("response",__onAlertPowerFrame);
+            alertFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("tank.equipAmulet.powerReplaceTip"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false);
+            alertFrame.addEventListener("response",__onAlertPowerFrame);
             return;
          }
          SocketManager.Instance.out.sendEquipAmuletReplace(true);
       }
       
-      private function __onAlertPowerFrame(param1:FrameEvent) : void
+      private function __onAlertPowerFrame(e:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onAlertBuyStiveFrame);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var alertFrame:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         alertFrame.removeEventListener("response",__onAlertBuyStiveFrame);
+         if(e.responseCode == 2 || e.responseCode == 3)
          {
             SocketManager.Instance.out.sendEquipAmuletReplace(true);
          }
-         _loc2_.dispose();
+         alertFrame.dispose();
       }
       
-      private function __onActivateComplete(param1:PkgEvent) : void
+      private function __onActivateComplete(e:PkgEvent) : void
       {
-         var _loc7_:int = 0;
-         var _loc6_:int = 0;
-         var _loc4_:int = 0;
-         var _loc5_:int = 0;
-         var _loc3_:int = param1.pkg.readInt();
-         _power = param1.pkg.readInt();
-         var _loc2_:int = param1.pkg.readInt();
-         PlayerManager.Instance.Self.stive = _loc2_;
-         _info.StrengthenExp = _loc3_;
-         var _loc8_:EquipAmuletPhaseVo = EquipAmuletManager.Instance.getAmuletPhaseVoByGrade(_info.StrengthenLevel);
-         _loc7_ = 0;
-         while(_loc7_ < 4)
+         var i:int = 0;
+         var type:int = 0;
+         var value:int = 0;
+         var property:int = 0;
+         var count:int = e.pkg.readInt();
+         _power = e.pkg.readInt();
+         var stive:int = e.pkg.readInt();
+         PlayerManager.Instance.Self.stive = stive;
+         _info.StrengthenExp = count;
+         var vo:EquipAmuletPhaseVo = EquipAmuletManager.Instance.getAmuletPhaseVoByGrade(_info.StrengthenLevel);
+         for(i = 0; i < 4; )
          {
-            _loc6_ = param1.pkg.readInt();
-            _loc4_ = param1.pkg.readInt();
-            _activateProperty[_loc7_] = _loc4_;
-            _loc5_ = Math.round(_loc4_ / 10000 * _loc8_["property" + _loc6_]);
-            _newEffect[_loc7_].update(_loc6_,_loc5_ || 1,_loc4_);
-            _loc7_++;
+            type = e.pkg.readInt();
+            value = e.pkg.readInt();
+            _activateProperty[i] = value;
+            property = Math.round(value / 10000 * vo["property" + type]);
+            _newEffect[i].update(type,property || 1,value);
+            i++;
          }
          var _loc9_:Boolean = true;
          _powerArrow.visible = _loc9_;
@@ -385,10 +383,10 @@ package bagAndInfo.amulet
          MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.equipAmulet.activateComplete"));
       }
       
-      private function __onReplaceComplete(param1:PkgEvent) : void
+      private function __onReplaceComplete(e:PkgEvent) : void
       {
-         var _loc2_:Boolean = param1.pkg.readBoolean();
-         if(_loc2_)
+         var bool:Boolean = e.pkg.readBoolean();
+         if(bool)
          {
             _info.Hole1 = _newEffect[0].propertyType;
             _info.Hole5 = _activateProperty[0];
@@ -417,13 +415,13 @@ package bagAndInfo.amulet
       
       public function update() : void
       {
-         var _loc3_:EquipAmuletVo = EquipAmuletManager.Instance.getAmuletVo(_info.StrengthenLevel);
-         _phaseText.text = LanguageMgr.GetTranslation("tank.equipAmulet.phase",_loc3_.phase);
+         var vo:EquipAmuletVo = EquipAmuletManager.Instance.getAmuletVo(_info.StrengthenLevel);
+         _phaseText.text = LanguageMgr.GetTranslation("tank.equipAmulet.phase",vo.phase);
          _gradeText.text = LanguageMgr.GetTranslation("tank.equipAmulet.grade",EquipAmuletManager.Instance.getAmuletPhaseGradeByCount(_info.StrengthenExp));
-         var _loc2_:EquipAmuletPhaseVo = EquipAmuletManager.Instance.getAmuletPhaseVoByGrade(_info.StrengthenLevel);
-         _consumeStiveText.htmlText = LanguageMgr.GetTranslation("tank.equipAmulet.consumeStive",_loc2_.Expend,PlayerManager.Instance.Self.stive);
-         var _loc1_:int = lockProperty.length * _loc2_.LockPrice;
-         _consumeMoneyText.htmlText = LanguageMgr.GetTranslation("tank.equipAmulet.consumeMoney",_loc1_);
+         var phaseVo:EquipAmuletPhaseVo = EquipAmuletManager.Instance.getAmuletPhaseVoByGrade(_info.StrengthenLevel);
+         _consumeStiveText.htmlText = LanguageMgr.GetTranslation("tank.equipAmulet.consumeStive",phaseVo.Expend,PlayerManager.Instance.Self.stive);
+         var price:int = lockProperty.length * phaseVo.LockPrice;
+         _consumeMoneyText.htmlText = LanguageMgr.GetTranslation("tank.equipAmulet.consumeMoney",price);
          _currentEffect[0].update(_info.Hole1,_info.equipAmuletProperty1,_info.Hole5);
          _currentEffect[1].update(_info.Hole2,_info.equipAmuletProperty2,_info.Hole6);
          _currentEffect[2].update(_info.Hole3,_info.equipAmuletProperty3,_info.Hole5Exp);
@@ -437,28 +435,27 @@ package bagAndInfo.amulet
          _bindMoneyText.text = PlayerManager.Instance.Self.BandMoney.toString();
       }
       
-      private function __onBuyStiveComplete(param1:PkgEvent) : void
+      private function __onBuyStiveComplete(e:PkgEvent) : void
       {
-         EquipAmuletManager.Instance.buyStiveNum = param1.pkg.readInt();
-         PlayerManager.Instance.Self.stive = param1.pkg.readInt();
+         EquipAmuletManager.Instance.buyStiveNum = e.pkg.readInt();
+         PlayerManager.Instance.Self.stive = e.pkg.readInt();
          MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.equipAmulet.buyStiveComplete"));
          update();
       }
       
       private function get lockProperty() : Array
       {
-         var _loc2_:int = 0;
-         var _loc1_:Array = [];
-         _loc2_ = 0;
-         while(_loc2_ < _currentEffect.length)
+         var i:int = 0;
+         var list:Array = [];
+         for(i = 0; i < _currentEffect.length; )
          {
-            if(_currentEffect[_loc2_].lockBool)
+            if(_currentEffect[i].lockBool)
             {
-               _loc1_.push(_currentEffect[_loc2_].propertyType);
+               list.push(_currentEffect[i].propertyType);
             }
-            _loc2_++;
+            i++;
          }
-         return _loc1_;
+         return list;
       }
       
       public function get isActivate() : Boolean
@@ -497,9 +494,9 @@ package bagAndInfo.amulet
          _gradeText = null;
          var _loc3_:int = 0;
          var _loc2_:* = _currentEffect;
-         for each(var _loc1_ in _currentEffect)
+         for each(var item in _currentEffect)
          {
-            _loc1_.addEventListener("change",__onItemChange);
+            item.addEventListener("change",__onItemChange);
          }
          ObjectUtils.disposeAllChildren(this);
          _bg = null;

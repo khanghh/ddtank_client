@@ -70,12 +70,12 @@ package catchInsect.view
       
       private function initView() : void
       {
-         var _loc5_:int = 0;
-         var _loc2_:Number = NaN;
-         var _loc3_:Number = NaN;
-         var _loc1_:String = LanguageMgr.GetTranslation("catchInsect.shopFrameTitle");
-         var _loc4_:AlertInfo = new AlertInfo(_loc1_,"",LanguageMgr.GetTranslation("tank.calendar.Activity.BackButtonText"));
-         info = _loc4_;
+         var i:int = 0;
+         var dx:Number = NaN;
+         var dy:Number = NaN;
+         var title:String = LanguageMgr.GetTranslation("catchInsect.shopFrameTitle");
+         var alerInfo:AlertInfo = new AlertInfo(title,"",LanguageMgr.GetTranslation("tank.calendar.Activity.BackButtonText"));
+         info = alerInfo;
          _goodItems = new Vector.<CatchInsectShopItem>();
          _rightItemLightMc = ComponentFactory.Instance.creatCustomObject("catchInsect.shopFrame.RightItemLightMc");
          _goodItemContainerAll = ComponentFactory.Instance.creatCustomObject("catchInsect.shopFrame.GoodItemContainerAll");
@@ -102,19 +102,18 @@ package catchInsect.view
          addToContent(_scoreText);
          addToContent(_scoreNumText);
          addToContent(_label);
-         _loc5_ = 0;
-         while(_loc5_ < 8)
+         for(i = 0; i < 8; )
          {
-            _goodItems[_loc5_] = new CatchInsectShopItem();
-            _loc2_ = _goodItems[_loc5_].width;
-            _loc3_ = _goodItems[_loc5_].height;
-            _loc2_ = _loc2_ * (int(_loc5_ % 2));
-            _loc3_ = _loc3_ * (int(_loc5_ / 2));
-            _goodItems[_loc5_].x = _loc2_;
-            _goodItems[_loc5_].y = _loc3_ + _loc5_ / 2 * 2;
-            _goodItemContainerAll.addChild(_goodItems[_loc5_]);
-            _goodItems[_loc5_].setItemLight(_rightItemLightMc);
-            _loc5_++;
+            _goodItems[i] = new CatchInsectShopItem();
+            dx = _goodItems[i].width;
+            dy = _goodItems[i].height;
+            dx = dx * (int(i % 2));
+            dy = dy * (int(i / 2));
+            _goodItems[i].x = dx;
+            _goodItems[i].y = dy + i / 2 * 2;
+            _goodItemContainerAll.addChild(_goodItems[i]);
+            _goodItems[i].setItemLight(_rightItemLightMc);
+            i++;
          }
       }
       
@@ -124,21 +123,20 @@ package catchInsect.view
          SocketManager.Instance.out.updateRemainCount();
       }
       
-      public function setList(param1:Vector.<ShopItemInfo>) : void
+      public function setList(list:Vector.<ShopItemInfo>) : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          clearitems();
-         _loc2_ = 0;
-         while(_loc2_ < 8)
+         for(i = 0; i < 8; )
          {
-            _goodItems[_loc2_].selected = false;
-            if(param1)
+            _goodItems[i].selected = false;
+            if(list)
             {
-               if(_loc2_ < param1.length && param1[_loc2_])
+               if(i < list.length && list[i])
                {
-                  _goodItems[_loc2_].shopItemInfo = param1[_loc2_];
+                  _goodItems[i].shopItemInfo = list[i];
                }
-               _loc2_++;
+               i++;
                continue;
             }
             break;
@@ -148,12 +146,11 @@ package catchInsect.view
       
       private function clearitems() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ <= _goodItems.length - 1)
+         var i:int = 0;
+         for(i = 0; i <= _goodItems.length - 1; )
          {
-            _goodItems[_loc1_].shopItemInfo = null;
-            _loc1_++;
+            _goodItems[i].shopItemInfo = null;
+            i++;
          }
       }
       
@@ -164,21 +161,21 @@ package catchInsect.view
          CatchInsectManager.instance.addEventListener("updateInfo",__updateView);
       }
       
-      protected function __updateView(param1:Event) : void
+      protected function __updateView(event:Event) : void
       {
-         var _loc2_:int = CatchInsectManager.instance.model.score;
-         var _loc3_:int = CatchInsectManager.instance.model.avaibleScore;
-         _scoreNumText.text = _loc3_.toString();
+         var total:int = CatchInsectManager.instance.model.score;
+         var avaible:int = CatchInsectManager.instance.model.avaibleScore;
+         _scoreNumText.text = avaible.toString();
       }
       
-      private function __pageBtnClick(param1:MouseEvent) : void
+      private function __pageBtnClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(ShopManager.Instance.getResultPages(getType()) == 0)
          {
             return;
          }
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = evt.currentTarget;
          if(_prePageBtn !== _loc2_)
          {
             if(_nextPageBtn === _loc2_)
@@ -201,11 +198,11 @@ package catchInsect.view
          loadList();
       }
       
-      public function updateScore(param1:int) : void
+      public function updateScore(num:int) : void
       {
          if(_scoreNumText)
          {
-            _scoreNumText.text = param1.toString();
+            _scoreNumText.text = num.toString();
          }
       }
       
@@ -223,14 +220,13 @@ package catchInsect.view
       
       override public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          removeEvents();
-         _loc1_ = 0;
-         while(_loc1_ <= _goodItems.length - 1)
+         for(i = 0; i <= _goodItems.length - 1; )
          {
-            ObjectUtils.disposeObject(_goodItems[_loc1_]);
-            _goodItems[_loc1_] = null;
-            _loc1_++;
+            ObjectUtils.disposeObject(_goodItems[i]);
+            _goodItems[i] = null;
+            i++;
          }
          ObjectUtils.disposeObject(_rightItemLightMc);
          _rightItemLightMc = null;

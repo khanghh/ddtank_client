@@ -63,9 +63,9 @@ package trainer.controller
          return _newTask;
       }
       
-      public function set newTask(param1:Boolean) : void
+      public function set newTask(value:Boolean) : void
       {
-         _newTask = param1;
+         _newTask = value;
       }
       
       public function setup() : void
@@ -76,9 +76,9 @@ package trainer.controller
          }
       }
       
-      private function __onChange(param1:PlayerPropertyEvent) : void
+      private function __onChange(event:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["Grade"] && PlayerManager.Instance.Self.IsUpGrade)
+         if(event.changedProperties["Grade"] && PlayerManager.Instance.Self.IsUpGrade)
          {
             checkLevelFunction();
             MainToolBar.Instance.btnOpen();
@@ -86,73 +86,73 @@ package trainer.controller
          }
       }
       
-      public function timeStatistics(param1:int, param2:Number) : void
+      public function timeStatistics(type:int, startTime:Number) : void
       {
-         var _loc4_:Number = new Date().getTime() - param2;
-         if(param1 == 0)
+         var time:Number = new Date().getTime() - startTime;
+         if(type == 0)
          {
-            if(_loc4_ <= 60000)
+            if(time <= 60000)
             {
                return;
             }
          }
-         else if(param1 == 1)
+         else if(type == 1)
          {
-            if(_loc4_ <= 30000)
+            if(time <= 30000)
             {
                return;
             }
          }
-         var _loc3_:URLVariables = new URLVariables();
-         _loc3_.id = PlayerManager.Instance.Self.ID;
-         _loc3_.type = param1;
-         _loc3_.time = _loc4_;
-         _loc3_.grade = PlayerManager.Instance.Self.Grade;
-         _loc3_.serverID = PlayerManager.Instance.Self.ZoneID;
-         var _loc6_:URLRequest = new URLRequest(PathManager.solveRequestPath("LogTime.ashx"));
-         _loc6_.method = "POST";
-         _loc6_.data = _loc3_;
-         var _loc5_:URLLoader = new URLLoader();
-         _loc5_.load(_loc6_);
+         var urlVar:URLVariables = new URLVariables();
+         urlVar.id = PlayerManager.Instance.Self.ID;
+         urlVar.type = type;
+         urlVar.time = time;
+         urlVar.grade = PlayerManager.Instance.Self.Grade;
+         urlVar.serverID = PlayerManager.Instance.Self.ZoneID;
+         var url:URLRequest = new URLRequest(PathManager.solveRequestPath("LogTime.ashx"));
+         url.method = "POST";
+         url.data = urlVar;
+         var loader:URLLoader = new URLLoader();
+         loader.load(url);
       }
       
-      public function statistics(param1:int, param2:Number) : void
+      public function statistics(type:int, startTime:Number) : void
       {
-         var _loc4_:Number = new Date().getTime() - param2;
-         var _loc3_:URLVariables = new URLVariables();
-         _loc3_.id = PlayerManager.Instance.Self.ID;
-         _loc3_.type = param1;
-         _loc3_.time = _loc4_;
-         _loc3_.grade = PlayerManager.Instance.Self.Grade;
-         _loc3_.serverID = PlayerManager.Instance.Self.ZoneID;
-         var _loc6_:URLRequest = new URLRequest(PathManager.solveRequestPath("LogTime.ashx"));
-         _loc6_.method = "POST";
-         _loc6_.data = _loc3_;
-         var _loc5_:URLLoader = new URLLoader();
-         _loc5_.load(_loc6_);
+         var time:Number = new Date().getTime() - startTime;
+         var urlVar:URLVariables = new URLVariables();
+         urlVar.id = PlayerManager.Instance.Self.ID;
+         urlVar.type = type;
+         urlVar.time = time;
+         urlVar.grade = PlayerManager.Instance.Self.Grade;
+         urlVar.serverID = PlayerManager.Instance.Self.ZoneID;
+         var url:URLRequest = new URLRequest(PathManager.solveRequestPath("LogTime.ashx"));
+         url.method = "POST";
+         url.data = urlVar;
+         var loader:URLLoader = new URLLoader();
+         loader.load(url);
       }
       
-      public function setStepFinish(param1:int) : void
+      public function setStepFinish(step:int) : void
       {
-         param1--;
-         var _loc2_:int = param1 / 8;
-         var _loc4_:int = param1 % 8;
-         var _loc3_:ByteArray = PlayerManager.Instance.Self.weaklessGuildProgress;
-         if(_loc3_)
+         step--;
+         var index:int = step / 8;
+         var offset:int = step % 8;
+         var b:ByteArray = PlayerManager.Instance.Self.weaklessGuildProgress;
+         if(b)
          {
-            _loc3_[_loc2_] = _loc3_[_loc2_] | 1 << _loc4_;
-            PlayerManager.Instance.Self.weaklessGuildProgress = _loc3_;
+            b[index] = b[index] | 1 << offset;
+            PlayerManager.Instance.Self.weaklessGuildProgress = b;
          }
       }
       
-      public function showMainToolBarBtnOpen(param1:int, param2:String) : void
+      public function showMainToolBarBtnOpen(step:int, pos:String) : void
       {
-         var _loc4_:Point = ComponentFactory.Instance.creatCustomObject(param2);
-         var _loc3_:MovieClipWrapper = new MovieClipWrapper(ClassUtils.CreatInstance("asset.trainer.openMainToolBtn"),true,true);
-         _loc3_.movie.x = _loc4_.x;
-         _loc3_.movie.y = _loc4_.y;
-         LayerManager.Instance.addToLayer(_loc3_.movie,3,false);
-         SocketManager.Instance.out.syncWeakStep(param1);
+         var p:Point = ComponentFactory.Instance.creatCustomObject(pos);
+         var mc:MovieClipWrapper = new MovieClipWrapper(ClassUtils.CreatInstance("asset.trainer.openMainToolBtn"),true,true);
+         mc.movie.x = p.x;
+         mc.movie.y = p.y;
+         LayerManager.Instance.addToLayer(mc.movie,3,false);
+         SocketManager.Instance.out.syncWeakStep(step);
       }
       
       public function checkFunction() : void
@@ -160,9 +160,9 @@ package trainer.controller
          checkLevelFunction();
       }
       
-      public function checkOpen(param1:int, param2:int) : Boolean
+      public function checkOpen(step:int, lv:int) : Boolean
       {
-         if(PlayerManager.Instance.Self.Grade < param2)
+         if(PlayerManager.Instance.Self.Grade < lv)
          {
             return false;
          }
@@ -170,22 +170,22 @@ package trainer.controller
          {
             return true;
          }
-         if(!PlayerManager.Instance.Self.IsWeakGuildFinish(param1))
+         if(!PlayerManager.Instance.Self.IsWeakGuildFinish(step))
          {
             return false;
          }
          return true;
       }
       
-      public function openBuildTip(param1:String) : void
+      public function openBuildTip(buildName:String) : void
       {
-         MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.hall.ChooseHallView.openBuildTip",LanguageMgr.GetTranslation(param1)));
+         MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.hall.ChooseHallView.openBuildTip",LanguageMgr.GetTranslation(buildName)));
       }
       
-      public function showBuildPreview(param1:String, param2:String) : void
+      public function showBuildPreview(type:String, title:String) : void
       {
-         _type = param1;
-         _title = param2;
+         _type = type;
+         _title = title;
          UIModuleSmallLoading.Instance.progress = 0;
          UIModuleSmallLoading.Instance.show();
          UIModuleSmallLoading.Instance.addEventListener("close",__onClose);
@@ -195,21 +195,21 @@ package trainer.controller
          LoadResourceManager.Instance.startLoad(_bmpLoader);
       }
       
-      private function __loadProgress(param1:LoaderEvent) : void
+      private function __loadProgress(evt:LoaderEvent) : void
       {
-         UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+         UIModuleSmallLoading.Instance.progress = evt.loader.progress * 100;
       }
       
-      private function __loadComplete(param1:LoaderEvent) : void
+      private function __loadComplete(evt:LoaderEvent) : void
       {
          disposeBmpLoader();
-         if(param1.loader.isSuccess)
+         if(evt.loader.isSuccess)
          {
-            PreviewFrameManager.Instance.createBuildPreviewFrame(_title,param1.loader.content);
+            PreviewFrameManager.Instance.createBuildPreviewFrame(_title,evt.loader.content);
          }
       }
       
-      private function __onClose(param1:Event) : void
+      private function __onClose(event:Event) : void
       {
          disposeBmpLoader();
       }
@@ -228,13 +228,13 @@ package trainer.controller
       
       private function checkLevelFunction() : void
       {
-         var _loc1_:int = PlayerManager.Instance.Self.Grade;
-         if(_loc1_ > 1)
+         var lv:int = PlayerManager.Instance.Self.Grade;
+         if(lv > 1)
          {
             openFunction(1);
             openFunction(95);
          }
-         if(_loc1_ > 2)
+         if(lv > 2)
          {
             openFunction(18);
             openFunction(17);
@@ -242,72 +242,72 @@ package trainer.controller
             openFunction(97);
             openFunction(99);
          }
-         if(_loc1_ > 3)
+         if(lv > 3)
          {
             openFunction(19);
          }
-         if(_loc1_ > 4)
+         if(lv > 4)
          {
             openFunction(3);
             openFunction(13);
             openFunction(27);
             openFunction(20);
          }
-         if(_loc1_ > 5)
+         if(lv > 5)
          {
             openFunction(60);
             openFunction(14);
             openFunction(21);
          }
-         if(_loc1_ > 6)
+         if(lv > 6)
          {
             openFunction(62);
             openFunction(15);
             openFunction(22);
             openFunction(33);
          }
-         if(_loc1_ > 7)
+         if(lv > 7)
          {
             openFunction(64);
             openFunction(16);
             openFunction(32);
          }
-         if(_loc1_ > 8)
+         if(lv > 8)
          {
             openFunction(66);
             openFunction(9);
          }
-         if(_loc1_ > 9)
+         if(lv > 9)
          {
             openFunction(35);
          }
-         if(_loc1_ > 11)
+         if(lv > 11)
          {
             openFunction(36);
             openFunction(76);
          }
-         if(_loc1_ > 12)
+         if(lv > 12)
          {
             openFunction(77);
             openFunction(79);
          }
-         if(_loc1_ > 13)
+         if(lv > 13)
          {
             openFunction(80);
             openFunction(82);
          }
-         if(_loc1_ > 14)
+         if(lv > 14)
          {
             openFunction(83);
             openFunction(85);
          }
       }
       
-      private function openFunction(param1:int) : void
+      private function openFunction(id:int) : void
       {
-         if(!PlayerManager.Instance.Self.IsWeakGuildFinish(param1))
+         if(!PlayerManager.Instance.Self.IsWeakGuildFinish(id))
          {
-            SocketManager.Instance.out.syncWeakStep(param1);
+            SocketManager.Instance.out.syncWeakStep(id);
          }
       }
    }

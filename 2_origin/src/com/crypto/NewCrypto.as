@@ -15,50 +15,50 @@ package com.crypto
          super();
       }
       
-      public static function decry(param1:ByteArray) : ByteArray
+      public static function decry(src:ByteArray) : ByteArray
       {
-         if(!isEncryed(param1))
+         if(!isEncryed(src))
          {
-            return param1;
+            return src;
          }
-         var _loc5_:int = param1.position;
-         param1.position = 0;
-         param1.readUTF();
-         var _loc3_:ByteArray = new ByteArray();
-         param1.readBytes(_loc3_,0,16);
-         var _loc4_:int = param1.readByte();
-         _loc4_ = ~_loc4_;
-         var _loc6_:ByteArray = new ByteArray();
-         param1.readBytes(_loc6_,0,_loc6_.bytesAvailable);
-         var _loc2_:ByteArray = new ByteArray();
-         _loc2_.writeBytes(_loc3_);
-         _loc2_.writeByte(_loc4_);
-         _loc2_.writeBytes(_loc6_);
-         param1.position = _loc5_;
-         _loc3_.clear();
-         _loc6_.clear();
-         return _loc2_;
+         var originPos:int = src.position;
+         src.position = 0;
+         src.readUTF();
+         var headBytes:ByteArray = new ByteArray();
+         src.readBytes(headBytes,0,16);
+         var ciphertext:int = src.readByte();
+         ciphertext = ~ciphertext;
+         var lastBytes:ByteArray = new ByteArray();
+         src.readBytes(lastBytes,0,lastBytes.bytesAvailable);
+         var bytes:ByteArray = new ByteArray();
+         bytes.writeBytes(headBytes);
+         bytes.writeByte(ciphertext);
+         bytes.writeBytes(lastBytes);
+         src.position = originPos;
+         headBytes.clear();
+         lastBytes.clear();
+         return bytes;
       }
       
-      public static function isEncryed(param1:ByteArray) : Boolean
+      public static function isEncryed(src:ByteArray) : Boolean
       {
-         var _loc2_:* = null;
-         var _loc4_:int = param1.position;
-         var _loc3_:Boolean = false;
-         param1.position = 0;
+         var flag:* = null;
+         var originPos:int = src.position;
+         var isEncry:Boolean = false;
+         src.position = 0;
          try
          {
-            _loc2_ = param1.readUTF();
+            flag = src.readUTF();
          }
          catch(e:Error)
          {
          }
-         if(_loc2_ == "^_^")
+         if(flag == "^_^")
          {
-            _loc3_ = true;
+            isEncry = true;
          }
-         param1.position = _loc4_;
-         return _loc3_;
+         src.position = originPos;
+         return isEncry;
       }
    }
 }

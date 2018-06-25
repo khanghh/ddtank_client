@@ -8,14 +8,14 @@ package ddt.data.analyze
       
       private var _result:XML;
       
-      public function ReworkNameAnalyzer(param1:Function)
+      public function ReworkNameAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         _result = new XML(param1);
+         _result = new XML(data);
          onAnalyzeComplete();
       }
       

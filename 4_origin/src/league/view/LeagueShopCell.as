@@ -61,11 +61,11 @@ package league.view
          _needMoneyTxt = ComponentFactory.Instance.creatComponentByStylename("leagueShopCell.needMoneyTxt");
          _cannotBuyTipTxt = ComponentFactory.Instance.creatComponentByStylename("leagueShopCell.cannotBuyTipTxt");
          _cannotBuyTipTxt.visible = false;
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,70,70);
-         _loc1_.graphics.endFill();
-         _itemCell = CellFactory.instance.createShopItemCell(_loc1_,null,true,true) as ShopItemCell;
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(16777215,0);
+         sp.graphics.drawRect(0,0,70,70);
+         sp.graphics.endFill();
+         _itemCell = CellFactory.instance.createShopItemCell(sp,null,true,true) as ShopItemCell;
          PositionUtils.setPos(_itemCell,"leagueShopCell.itemCell.pos");
          addChild(_bg);
          addChild(_moneyIcon);
@@ -81,7 +81,7 @@ package league.view
          _buyBtn.addEventListener("click",buyHandler,false,0,true);
       }
       
-      private function buyHandler(param1:MouseEvent) : void
+      private function buyHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -94,40 +94,40 @@ package league.view
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.league.unenoughMoneyTxpTxt"),0,true);
             return;
          }
-         var _loc3_:LeagueShopBuySubmitAlert = ComponentFactory.Instance.creatComponentByStylename("leagueShopAlert");
-         _loc3_.setData(_shopItemInfo.TemplateID,_shopItemInfo.GoodsID,_shopItemInfo.AValue1);
-         var _loc2_:ShopItemInfo = ShopManager.Instance.getShopItemByGoodsID(_shopItemInfo.GoodsID);
-         _loc3_.setBuyNum(_loc2_.personalBuyCnt);
-         LayerManager.Instance.addToLayer(_loc3_,2,true,1);
+         var buyAlert:LeagueShopBuySubmitAlert = ComponentFactory.Instance.creatComponentByStylename("leagueShopAlert");
+         buyAlert.setData(_shopItemInfo.TemplateID,_shopItemInfo.GoodsID,_shopItemInfo.AValue1);
+         var goodInfo:ShopItemInfo = ShopManager.Instance.getShopItemByGoodsID(_shopItemInfo.GoodsID);
+         buyAlert.setBuyNum(goodInfo.personalBuyCnt);
+         LayerManager.Instance.addToLayer(buyAlert,2,true,1);
       }
       
-      private function __confirmBuy(param1:FrameEvent) : void
+      private function __confirmBuy(evt:FrameEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc7_:* = null;
-         var _loc4_:* = null;
-         var _loc6_:* = null;
-         var _loc5_:* = null;
-         var _loc3_:* = null;
+         var items:* = null;
+         var types:* = null;
+         var colors:* = null;
+         var places:* = null;
+         var dresses:* = null;
+         var goodsTypes:* = null;
          SoundManager.instance.play("008");
          _confirmFrame.removeEventListener("response",__confirmBuy);
          _confirmFrame = null;
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
-            _loc2_ = [_shopItemInfo.GoodsID];
-            _loc7_ = [1];
-            _loc4_ = [""];
-            _loc6_ = [""];
-            _loc5_ = [""];
-            _loc3_ = [_shopItemInfo.isDiscount];
-            SocketManager.Instance.out.sendBuyGoods(_loc2_,_loc7_,_loc4_,_loc6_,_loc5_,null,0,_loc3_);
+            items = [_shopItemInfo.GoodsID];
+            types = [1];
+            colors = [""];
+            places = [""];
+            dresses = [""];
+            goodsTypes = [_shopItemInfo.isDiscount];
+            SocketManager.Instance.out.sendBuyGoods(items,types,colors,places,dresses,null,0,goodsTypes);
          }
       }
       
-      public function refreshShow(param1:ShopItemInfo) : void
+      public function refreshShow(value:ShopItemInfo) : void
       {
-         var _loc2_:* = null;
-         _shopItemInfo = param1;
+         var tmpBattleData:* = null;
+         _shopItemInfo = value;
          _itemCell.info = _shopItemInfo.TemplateInfo;
          _itemCell.tipInfo = _shopItemInfo;
          _nameTxt.text = _itemCell.info.Name;
@@ -141,8 +141,8 @@ package league.view
          {
             _buyBtn.visible = false;
             _cannotBuyTipTxt.visible = true;
-            _loc2_ = BattleGroudControl.Instance.getBattleDataByLevel(_shopItemInfo.LimitGrade);
-            _cannotBuyTipTxt.text = LanguageMgr.GetTranslation("ddt.league.cannotBuyTipTxt",_loc2_.Name);
+            tmpBattleData = BattleGroudControl.Instance.getBattleDataByLevel(_shopItemInfo.LimitGrade);
+            _cannotBuyTipTxt.text = LanguageMgr.GetTranslation("ddt.league.cannotBuyTipTxt",tmpBattleData.Name);
             _itemCell.filters = [ComponentFactory.Instance.model.getSet("grayFilter")];
          }
          else

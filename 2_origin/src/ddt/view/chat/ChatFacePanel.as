@@ -32,11 +32,11 @@ package ddt.view.chat
       
       private var _selected:int;
       
-      public function ChatFacePanel(param1:Boolean = false)
+      public function ChatFacePanel(inGame:Boolean = false)
       {
          _faceBtns = new Vector.<BaseButton>();
          super();
-         _inGame = param1;
+         _inGame = inGame;
       }
       
       public function dispose() : void
@@ -44,9 +44,9 @@ package ddt.view.chat
          removeChild(_bg);
          var _loc3_:int = 0;
          var _loc2_:* = _faceBtns;
-         for each(var _loc1_ in _faceBtns)
+         for each(var btn in _faceBtns)
          {
-            _loc1_.dispose();
+            btn.dispose();
          }
          _faceBtns = null;
          if(parent)
@@ -60,16 +60,16 @@ package ddt.view.chat
          return _selected;
       }
       
-      private function __itemClick(param1:MouseEvent) : void
+      private function __itemClick(evt:MouseEvent) : void
       {
-         var _loc3_:String = (param1.target as BaseButton).backStyle;
+         var str:String = (evt.target as BaseButton).backStyle;
          SoundManager.instance.play("008");
-         var _loc2_:int = _loc3_.slice(_loc3_.length - 2);
-         if(_loc2_ >= 49 && _loc2_ <= 71)
+         var id:int = str.slice(str.length - 2);
+         if(id >= 49 && id <= 71)
          {
-            _loc2_ = _loc2_ + 30;
+            id = id + 30;
          }
-         _selected = _loc2_;
+         _selected = id;
          dispatchEvent(new Event("select"));
       }
       
@@ -82,41 +82,39 @@ package ddt.view.chat
       
       override protected function init() : void
       {
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
+         var i:int = 0;
+         var bt:* = null;
          super.init();
          createBg();
-         var _loc4_:Point = ComponentFactory.Instance.creatCustomObject("chat.FacePanelFacePos");
-         var _loc3_:uint = 0;
-         var _loc2_:uint = 0;
-         var _loc1_:Array = PathManager.solveChatFaceDisabledList();
-         _loc6_ = 1;
-         while(_loc6_ < 72)
+         var _facePos:Point = ComponentFactory.Instance.creatCustomObject("chat.FacePanelFacePos");
+         var rowIdx:uint = 0;
+         var colIdx:uint = 0;
+         var disabledList:Array = PathManager.solveChatFaceDisabledList();
+         for(i = 1; i < 72; i++)
          {
-            if(!(_loc1_ && _loc1_.indexOf(String(_loc6_)) > -1))
+            if(!(disabledList && disabledList.indexOf(String(i)) > -1))
             {
-               if(_loc2_ == 10)
+               if(colIdx == 10)
                {
-                  _loc2_ = 0;
-                  _loc3_++;
+                  colIdx = 0;
+                  rowIdx++;
                }
-               _loc5_ = new BaseButton();
-               _loc5_.beginChanges();
-               _loc5_.backStyle = "asset.chat.FaceBtn_" + (_loc6_ < 10?"0" + String(_loc6_):String(_loc6_));
-               _loc5_.tipStyle = "core.ChatFaceTips";
-               _loc5_.tipDirctions = "4";
-               _loc5_.tipGapV = 5;
-               _loc5_.tipGapH = -5;
-               _loc5_.tipData = LanguageMgr.GetTranslation("tank.view.chat.ChatFacePannel.face" + String(_loc6_));
-               _loc5_.commitChanges();
-               _loc5_.x = _loc2_ * 25 + _loc4_.x;
-               _loc5_.y = _loc3_ * 25 + _loc4_.y;
-               _loc5_.addEventListener("click",__itemClick);
-               _faceBtns.push(_loc5_);
-               addChild(_loc5_);
-               _loc2_++;
+               bt = new BaseButton();
+               bt.beginChanges();
+               bt.backStyle = "asset.chat.FaceBtn_" + (i < 10?"0" + String(i):String(i));
+               bt.tipStyle = "core.ChatFaceTips";
+               bt.tipDirctions = "4";
+               bt.tipGapV = 5;
+               bt.tipGapH = -5;
+               bt.tipData = LanguageMgr.GetTranslation("tank.view.chat.ChatFacePannel.face" + String(i));
+               bt.commitChanges();
+               bt.x = colIdx * 25 + _facePos.x;
+               bt.y = rowIdx * 25 + _facePos.y;
+               bt.addEventListener("click",__itemClick);
+               _faceBtns.push(bt);
+               addChild(bt);
+               colIdx++;
             }
-            _loc6_++;
          }
       }
    }

@@ -13,12 +13,12 @@ package game.actions.SkillActions
       
       private var _onCompleteParams:Array;
       
-      public function SkillAction(param1:IAnimate, param2:Function = null, param3:Array = null)
+      public function SkillAction(animate:IAnimate, onComplete:Function = null, onCompleteParams:Array = null)
       {
          super();
-         _animate = param1;
-         _onComplete = param2;
-         _onCompleteParams = param3;
+         _animate = animate;
+         _onComplete = onComplete;
+         _onCompleteParams = onCompleteParams;
       }
       
       override public function execute() : void

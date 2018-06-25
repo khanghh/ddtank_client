@@ -137,24 +137,24 @@ package church.view.weddingRoom
          return _controller;
       }
       
-      public function set controller(param1:ChurchRoomController) : void
+      public function set controller(value:ChurchRoomController) : void
       {
-         _controller = param1;
+         _controller = value;
       }
       
-      public function set churchRoomModel(param1:ChurchRoomModel) : void
+      public function set churchRoomModel(value:ChurchRoomModel) : void
       {
-         _model = param1;
+         _model = value;
       }
       
-      public function set churchRoomControler(param1:ChurchRoomController) : void
+      public function set churchRoomControler(value:ChurchRoomController) : void
       {
-         _churchRoomControler = param1;
+         _churchRoomControler = value;
       }
       
-      public function set inventBtnEnabled(param1:Boolean) : void
+      public function set inventBtnEnabled(value:Boolean) : void
       {
-         this._toolBtnInviteGuest.enable = param1;
+         this._toolBtnInviteGuest.enable = value;
       }
       
       private function initialize() : void
@@ -287,7 +287,7 @@ package church.view.weddingRoom
          }
       }
       
-      private function __weddingStatusChange(param1:WeddingRoomEvent) : void
+      private function __weddingStatusChange(event:WeddingRoomEvent) : void
       {
          if(ChurchManager.instance.currentScene == 0)
          {
@@ -308,7 +308,7 @@ package church.view.weddingRoom
             }
          }
          _startTipTween = null;
-         var _loc2_:String = ChurchManager.instance.currentRoom.status;
+         var status:String = ChurchManager.instance.currentRoom.status;
          if(!ChurchManager.instance.isAdmin(PlayerManager.Instance.Self))
          {
             if(_toolBtnInviteGuest)
@@ -316,7 +316,7 @@ package church.view.weddingRoom
                _toolBtnInviteGuest.enable = ChurchManager.instance.currentRoom.canInvite;
             }
          }
-         if(_loc2_ == "wedding_ing")
+         if(status == "wedding_ing")
          {
             if(_toolBtnStartWedding)
             {
@@ -368,7 +368,7 @@ package church.view.weddingRoom
          }
       }
       
-      private function __updateBtn(param1:WeddingRoomEvent) : void
+      private function __updateBtn(evt:WeddingRoomEvent) : void
       {
          if(_churchInviteController)
          {
@@ -426,39 +426,39 @@ package church.view.weddingRoom
          playerStartTipMovie();
       }
       
-      private function set adminToolVisible(param1:Boolean) : void
+      private function set adminToolVisible(value:Boolean) : void
       {
          if(_toolAdminBg)
          {
-            _toolAdminBg.visible = param1;
+            _toolAdminBg.visible = value;
          }
          if(_toolBtnStartWedding)
          {
-            _toolBtnStartWedding.visible = param1;
+            _toolBtnStartWedding.visible = value;
          }
          if(_toolBtnGuestList)
          {
-            _toolBtnGuestList.visible = param1;
+            _toolBtnGuestList.visible = value;
          }
          if(_toolBtnContinuation)
          {
-            _toolBtnContinuation.visible = param1;
+            _toolBtnContinuation.visible = value;
          }
          if(_toolBtnAdminInviteGuest)
          {
-            _toolBtnAdminInviteGuest.visible = param1;
+            _toolBtnAdminInviteGuest.visible = value;
          }
          if(_toolBtnModify)
          {
-            _toolBtnModify.visible = param1;
+            _toolBtnModify.visible = value;
          }
          if(_startWeddingTip)
          {
-            _startWeddingTip.visible = param1;
+            _startWeddingTip.visible = value;
          }
          if(_startWeddingTip2)
          {
-            _startWeddingTip2.visible = param1;
+            _startWeddingTip2.visible = value;
          }
          if(ChurchManager.instance.currentScene == 0)
          {
@@ -490,17 +490,17 @@ package church.view.weddingRoom
          _toolSendCashBtnForGuest.visible = false;
       }
       
-      private function set GiftToolVisible(param1:Boolean) : void
+      private function set GiftToolVisible(value:Boolean) : void
       {
          if(_toolSendGiftBtn)
          {
-            _toolSendGiftBtn.visible = param1;
+            _toolSendGiftBtn.visible = value;
          }
          if(_sendGiftToolBg)
          {
-            _sendGiftToolBg.visible = param1;
+            _sendGiftToolBg.visible = value;
          }
-         if(!param1)
+         if(!value)
          {
             var _loc2_:Boolean = false;
             _toolSendCashBtnForGuest.visible = _loc2_;
@@ -542,14 +542,14 @@ package church.view.weddingRoom
       
       private function isGuest() : Boolean
       {
-         var _loc2_:Array = [ChurchManager.instance.currentRoom.groomName,ChurchManager.instance.currentRoom.brideName];
-         var _loc1_:int = _loc2_.indexOf(PlayerManager.Instance.Self.NickName);
-         return _loc1_ >= 0?false:true;
+         var tempArr:Array = [ChurchManager.instance.currentRoom.groomName,ChurchManager.instance.currentRoom.brideName];
+         var tempIndex:int = tempArr.indexOf(PlayerManager.Instance.Self.NickName);
+         return tempIndex >= 0?false:true;
       }
       
-      private function onToolMenuClick(param1:MouseEvent) : void
+      private function onToolMenuClick(evt:MouseEvent) : void
       {
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = evt.currentTarget;
          if(_toolBtnGift !== _loc2_)
          {
             if(_toolBtnFire !== _loc2_)
@@ -699,7 +699,7 @@ package church.view.weddingRoom
       
       public function giftView() : void
       {
-         var _loc1_:* = null;
+         var msg:* = null;
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
@@ -707,10 +707,10 @@ package church.view.weddingRoom
          }
          if(PlayerManager.Instance.Self.Money < 100)
          {
-            _loc1_ = new ChatData();
-            _loc1_.channel = 6;
-            _loc1_.msg = LanguageMgr.GetTranslation("church.churchScene.SceneControler.startWedding.Money",100);
-            ChatManager.Instance.chat(_loc1_);
+            msg = new ChatData();
+            msg.channel = 6;
+            msg.msg = LanguageMgr.GetTranslation("church.churchScene.SceneControler.startWedding.Money",100);
+            ChatManager.Instance.chat(msg);
             return;
          }
          if(_weddingRoomGiftFrameViewForGuest)
@@ -733,10 +733,10 @@ package church.view.weddingRoom
          }
       }
       
-      private function exitResponse(param1:FrameEvent) : void
+      private function exitResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
@@ -755,7 +755,7 @@ package church.view.weddingRoom
             case 4:
                exitRoom();
          }
-         ObjectUtils.disposeObject(param1.target);
+         ObjectUtils.disposeObject(evt.target);
       }
       
       private function exitRoom() : void
@@ -770,7 +770,7 @@ package church.view.weddingRoom
          }
       }
       
-      private function toolSwitch(param1:MouseEvent) : void
+      private function toolSwitch(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_switchEnable)
@@ -801,11 +801,11 @@ package church.view.weddingRoom
       
       private function get isFireLoaded() : Boolean
       {
-         var _loc1_:* = null;
+         var fireClass:* = null;
          try
          {
-            _loc1_ = ClassUtils.uiSourceDomain.getDefinition("tank.church.fireAcect.FireItemAccect02") as Class;
-            if(_loc1_)
+            fireClass = ClassUtils.uiSourceDomain.getDefinition("tank.church.fireAcect.FireItemAccect02") as Class;
+            if(fireClass)
             {
                var _loc3_:Boolean = true;
                return _loc3_;
@@ -921,10 +921,10 @@ package church.view.weddingRoom
          _alertStartWedding.addEventListener("response",startWeddingResponse);
       }
       
-      private function startWeddingResponse(param1:FrameEvent) : void
+      private function startWeddingResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
@@ -936,7 +936,7 @@ package church.view.weddingRoom
                _controller.startWedding();
                closeStartWedding();
          }
-         ObjectUtils.disposeObject(param1.target);
+         ObjectUtils.disposeObject(evt.target);
       }
       
       private function closeStartWedding() : void
@@ -960,7 +960,7 @@ package church.view.weddingRoom
          }
       }
       
-      private function closeRoomGift(param1:Event = null) : void
+      private function closeRoomGift(evt:Event = null) : void
       {
          if(_weddingRoomGiftFrameViewForGuest)
          {
@@ -974,7 +974,7 @@ package church.view.weddingRoom
          _weddingRoomGiftFrameViewForGuest = null;
       }
       
-      private function closeRoomConfig(param1:Event = null) : void
+      private function closeRoomConfig(evt:Event = null) : void
       {
          if(_weddingRoomConfigView)
          {
@@ -988,7 +988,7 @@ package church.view.weddingRoom
          _weddingRoomConfigView = null;
       }
       
-      private function closeRoomContinuation(param1:Event = null) : void
+      private function closeRoomContinuation(evt:Event = null) : void
       {
          if(_weddingRoomContinuationView)
          {
@@ -1002,7 +1002,7 @@ package church.view.weddingRoom
          _weddingRoomContinuationView = null;
       }
       
-      private function closeRoomGuestList(param1:Event = null) : void
+      private function closeRoomGuestList(evt:Event = null) : void
       {
          if(_weddingRoomGuestListView)
          {
@@ -1016,7 +1016,7 @@ package church.view.weddingRoom
          _weddingRoomGuestListView = null;
       }
       
-      private function closeInviteGuest(param1:Event = null) : void
+      private function closeInviteGuest(evt:Event = null) : void
       {
          if(_churchInviteController && _churchInviteController.getView() && _churchInviteController.getView().parent)
          {

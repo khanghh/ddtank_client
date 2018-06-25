@@ -21,9 +21,9 @@ package bank.data
          return _data;
       }
       
-      public function set data(param1:DictionaryData) : void
+      public function set data(value:DictionaryData) : void
       {
-         _data = param1;
+         _data = value;
       }
       
       public function get list() : Array
@@ -31,9 +31,9 @@ package bank.data
          return _list;
       }
       
-      public function set list(param1:Array) : void
+      public function set list(value:Array) : void
       {
-         _list = param1;
+         _list = value;
       }
    }
 }

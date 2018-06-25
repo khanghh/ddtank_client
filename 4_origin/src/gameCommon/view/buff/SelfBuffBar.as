@@ -39,12 +39,12 @@ package gameCommon.view.buff
       
       private var _propertyWaterBuffBarVisible:Boolean;
       
-      public function SelfBuffBar(param1:DisplayObjectContainer, param2:DisplayObject)
+      public function SelfBuffBar(container:DisplayObjectContainer, gameArrow:DisplayObject)
       {
          _buffCells = new Vector.<BuffCell>();
          super();
-         _gameArrow = param2;
-         _container = param1;
+         _gameArrow = gameArrow;
+         _container = container;
       }
       
       public function dispose() : void
@@ -53,11 +53,11 @@ package gameCommon.view.buff
          {
             _living.removeEventListener("buffChanged",__updateCell);
          }
-         var _loc1_:BuffCell = _buffCells.shift();
-         while(_loc1_)
+         var cell:BuffCell = _buffCells.shift();
+         while(cell)
          {
-            ObjectUtils.disposeObject(_loc1_);
-            _loc1_ = _buffCells.shift();
+            ObjectUtils.disposeObject(cell);
+            cell = _buffCells.shift();
          }
          _buffCells = null;
          ObjectUtils.disposeObject(_propertyWaterBuffBar);
@@ -75,21 +75,21 @@ package gameCommon.view.buff
          }
       }
       
-      private function __updateCell(param1:LivingEvent) : void
+      private function __updateCell(event:LivingEvent) : void
       {
-         var _loc6_:* = null;
-         var _loc9_:int = 0;
-         var _loc7_:int = 0;
-         var _loc8_:int = 0;
+         var cell:* = null;
+         var i:int = 0;
+         var len:int = 0;
+         var j:int = 0;
          clearBuff();
-         var _loc3_:int = _living == null?0:_living.localBuffs.length;
-         var _loc4_:int = _living == null?0:_living.petBuffs.length;
-         var _loc2_:int = _living == null?0:_living.barBuffs.length;
-         var _loc5_:int = _loc3_ + _loc4_ + _loc2_;
+         var localBuffLen:int = _living == null?0:_living.localBuffs.length;
+         var petBuffLen:int = _living == null?0:_living.petBuffs.length;
+         var barBuffLen:int = _living == null?0:_living.barBuffs.length;
+         var maxLen:int = localBuffLen + petBuffLen + barBuffLen;
          _trueWidth = 0;
-         if(_loc5_ > 0 && _buffCells)
+         if(maxLen > 0 && _buffCells)
          {
-            if(_loc3_ > 0)
+            if(localBuffLen > 0)
             {
                if(!_back)
                {
@@ -106,60 +106,59 @@ package gameCommon.view.buff
                }
                _back = null;
             }
-            _loc9_ = 0;
-            while(_loc9_ < _loc3_)
+            i = 0;
+            while(i < localBuffLen)
             {
-               if(_loc9_ + 1 > _buffCells.length)
+               if(i + 1 > _buffCells.length)
                {
-                  _loc6_ = new BuffCell(null,null,false,true);
-                  _buffCells.push(_loc6_);
+                  cell = new BuffCell(null,null,false,true);
+                  _buffCells.push(cell);
                }
                else
                {
-                  _loc6_ = _buffCells[_loc9_];
+                  cell = _buffCells[i];
                }
-               _loc6_.x = _loc9_ % 10 * 36 + 8;
-               _loc6_.y = -Math.floor(_loc9_ / 10) * 36 + 6;
-               addChild(_loc6_);
-               _loc6_.setInfo(_living.localBuffs[_loc9_]);
+               cell.x = i % 10 * 36 + 8;
+               cell.y = -Math.floor(i / 10) * 36 + 6;
+               addChild(cell);
+               cell.setInfo(_living.localBuffs[i]);
                var _loc10_:int = 32;
-               _loc6_.height = _loc10_;
-               _loc6_.width = _loc10_;
-               _loc9_++;
+               cell.height = _loc10_;
+               cell.width = _loc10_;
+               i++;
             }
-            _loc7_ = _loc4_ + _loc2_;
-            _loc8_ = 0;
-            while(_loc8_ < _loc7_)
+            len = petBuffLen + barBuffLen;
+            for(j = 0; j < len; )
             {
-               if(_loc8_ + 1 + _loc3_ > _buffCells.length)
+               if(j + 1 + localBuffLen > _buffCells.length)
                {
-                  _loc6_ = new BuffCell(null,null,false,true);
-                  _buffCells.push(_loc6_);
+                  cell = new BuffCell(null,null,false,true);
+                  _buffCells.push(cell);
                }
                else
                {
-                  _loc6_ = _buffCells[_loc8_ + _loc3_];
+                  cell = _buffCells[j + localBuffLen];
                }
-               if(_loc3_ > 0)
+               if(localBuffLen > 0)
                {
-                  _loc6_.x = (3 + _loc8_) % 10 * 36 + 15;
+                  cell.x = (3 + j) % 10 * 36 + 15;
                }
                else
                {
-                  _loc6_.x = _loc8_ % 10 * 36;
+                  cell.x = j % 10 * 36;
                }
-               if(_loc8_ < _loc4_)
+               if(j < petBuffLen)
                {
-                  _loc6_.setInfo(_living.petBuffs[_loc8_]);
+                  cell.setInfo(_living.petBuffs[j]);
                }
                else
                {
-                  _loc6_.setInfo(_living.barBuffs[_loc8_ - _loc4_]);
+                  cell.setInfo(_living.barBuffs[j - petBuffLen]);
                }
-               _loc6_.y = -Math.floor((_loc8_ + _loc3_) / 10) * 36 + 6;
-               addChild(_loc6_);
-               _trueWidth = _loc6_.x + 32;
-               _loc8_++;
+               cell.y = -Math.floor((j + localBuffLen) / 10) * 36 + 6;
+               addChild(cell);
+               _trueWidth = cell.x + 32;
+               j++;
             }
             if(parent == null && !(GameControl.Instance.Current.missionInfo && GameControl.Instance.Current.missionInfo.isWorldCupI) && GameControl.Instance.isShowSelfBuffBar)
             {
@@ -183,7 +182,7 @@ package gameCommon.view.buff
       
       private function createPropertyWaterBuffBar() : void
       {
-         if(PropertyWaterBuffBar.getPropertyWaterBuffList(PlayerManager.Instance.Self.buffInfo).length > 0 && RoomManager.Instance.current.type != 18)
+         if(PropertyWaterBuffBar.getPropertyWaterBuffList(PlayerManager.Instance.Self.buffInfo).length > 0 && RoomManager.Instance.current.type != 18 && RoomManager.Instance.current.type != 70)
          {
             if(!_propertyWaterBuffBar)
             {
@@ -207,13 +206,13 @@ package gameCommon.view.buff
          }
       }
       
-      public function drawBuff(param1:Living) : void
+      public function drawBuff(living:Living) : void
       {
          if(_living)
          {
             _living.removeEventListener("buffChanged",__updateCell);
          }
-         _living = param1;
+         _living = living;
          if(_living)
          {
             _living.addEventListener("buffChanged",__updateCell);
@@ -223,31 +222,31 @@ package gameCommon.view.buff
       
       public function get right() : Number
       {
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
-         var _loc1_:int = 0;
-         var _loc3_:int = 0;
-         var _loc6_:int = 0;
-         var _loc5_:int = 0;
+         var localBuffLen:int = 0;
+         var petBuffLen:int = 0;
+         var barBuffLen:int = 0;
+         var propertyBuffLen:int = 0;
+         var buffLen:int = 0;
+         var len:int = 0;
          if(_living)
          {
-            _loc2_ = _living.localBuffs.length;
-            _loc4_ = _living.petBuffs.length;
-            _loc1_ = _living.barBuffs.length;
-            _loc3_ = 0;
+            localBuffLen = _living.localBuffs.length;
+            petBuffLen = _living.petBuffs.length;
+            barBuffLen = _living.barBuffs.length;
+            propertyBuffLen = 0;
             if(_living.playerInfo && _living.playerInfo.buffInfo)
             {
-               _loc3_ = PropertyWaterBuffBar.getPropertyWaterBuffList(_living.playerInfo.buffInfo).length;
+               propertyBuffLen = PropertyWaterBuffBar.getPropertyWaterBuffList(_living.playerInfo.buffInfo).length;
             }
-            _loc6_ = _loc2_ + _loc4_ + _loc1_ + _loc3_;
-            _loc5_ = _loc6_ > 8?8:_loc6_;
+            buffLen = localBuffLen + petBuffLen + barBuffLen + propertyBuffLen;
+            len = buffLen > 8?8:buffLen;
          }
-         return x + 40 + 44 * _loc5_;
+         return x + 40 + 44 * len;
       }
       
-      public function set propertyWaterBuffBarVisible(param1:Boolean) : void
+      public function set propertyWaterBuffBarVisible(value:Boolean) : void
       {
-         _propertyWaterBuffBarVisible = param1;
+         _propertyWaterBuffBarVisible = value;
          if(_propertyWaterBuffBar)
          {
             _propertyWaterBuffBar.visible = _propertyWaterBuffBarVisible;
@@ -263,9 +262,9 @@ package gameCommon.view.buff
       {
          var _loc3_:int = 0;
          var _loc2_:* = _buffCells;
-         for each(var _loc1_ in _buffCells)
+         for each(var cell in _buffCells)
          {
-            _loc1_.clearSelf();
+            cell.clearSelf();
          }
          ObjectUtils.disposeObject(_back);
          _back = null;

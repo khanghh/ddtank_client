@@ -103,10 +103,10 @@ package ddt.view
          SocketManager.Instance.removeEventListener(PkgEvent.format(11),__activeSocket);
       }
       
-      protected function __activeSocket(param1:PkgEvent) : void
+      protected function __activeSocket(event:PkgEvent) : void
       {
-         var _loc2_:Boolean = param1.pkg.readBoolean();
-         if(_loc2_)
+         var boole:Boolean = event.pkg.readBoolean();
+         if(boole)
          {
             dispose();
          }
@@ -116,15 +116,15 @@ package ddt.view
          }
       }
       
-      private function __input(param1:TextEvent) : void
+      private function __input(event:TextEvent) : void
       {
-         if(_textInput.text.length + param1.text.length > 50)
+         if(_textInput.text.length + event.text.length > 50)
          {
-            param1.preventDefault();
+            event.preventDefault();
          }
       }
       
-      private function __onChange(param1:Event) : void
+      private function __onChange(event:Event) : void
       {
          if(_textInput.text != "")
          {
@@ -136,22 +136,22 @@ package ddt.view
          }
       }
       
-      protected function __textInputKeyDown(param1:KeyboardEvent) : void
+      protected function __textInputKeyDown(event:KeyboardEvent) : void
       {
-         if(_activeGetBtn.enable && param1.keyCode == 13)
+         if(_activeGetBtn.enable && event.keyCode == 13)
          {
             __activeGetBtnClick();
          }
       }
       
-      protected function __activeGetBtnClick(param1:MouseEvent = null) : void
+      protected function __activeGetBtnClick(event:MouseEvent = null) : void
       {
-         var _loc2_:* = null;
+         var alert:* = null;
          SoundManager.instance.play("008");
          if(_textInput.text == "")
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.movement.MovementRightView.pass"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,false,false,2);
-            _loc2_.info.showCancel = false;
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.movement.MovementRightView.pass"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,false,false,2);
+            alert.info.showCancel = false;
             return;
          }
          _activeGetBtn.enable = false;
@@ -160,31 +160,31 @@ package ddt.view
       
       public function setup() : void
       {
-         var _loc4_:int = 0;
-         var _loc1_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:Array = null;
-         if(_loc2_ == null)
+         var i:int = 0;
+         var args:* = null;
+         var load:* = null;
+         var data:Array = null;
+         if(data == null)
          {
             dispose();
             return;
          }
-         _loc4_ = 0;
-         while(_loc4_ < _loc2_.length)
+         i = 0;
+         while(i < data.length)
          {
-            if(_loc2_[_loc4_].Type == 10)
+            if(data[i].Type == 10)
             {
-               _activeEventsInfo = _loc2_[_loc4_] as ActiveEventsInfo;
+               _activeEventsInfo = data[i] as ActiveEventsInfo;
             }
-            _loc4_++;
+            i++;
          }
          if(_activeEventsInfo)
          {
-            _loc1_ = RequestVairableCreater.creatWidthKey(true);
-            _loc3_ = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("UserGetActiveState.ashx"),6,_loc1_);
-            _loc3_.addEventListener("complete",__loadComplete);
-            _loc3_.addEventListener("loadError",__loadError);
-            LoadResourceManager.Instance.startLoad(_loc3_);
+            args = RequestVairableCreater.creatWidthKey(true);
+            load = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("UserGetActiveState.ashx"),6,args);
+            load.addEventListener("complete",__loadComplete);
+            load.addEventListener("loadError",__loadError);
+            LoadResourceManager.Instance.startLoad(load);
          }
          else
          {
@@ -192,11 +192,11 @@ package ddt.view
          }
       }
       
-      protected function __loadComplete(param1:LoaderEvent) : void
+      protected function __loadComplete(event:LoaderEvent) : void
       {
-         param1.currentTarget.removeEventListener("complete",__loadComplete);
-         param1.currentTarget.removeEventListener("loadError",__loadError);
-         if(param1.loader.content == "True")
+         event.currentTarget.removeEventListener("complete",__loadComplete);
+         event.currentTarget.removeEventListener("loadError",__loadError);
+         if(event.loader.content == "True")
          {
             _awardTxt.text = _activeEventsInfo.Content;
             show();
@@ -207,10 +207,10 @@ package ddt.view
          }
       }
       
-      protected function __loadError(param1:LoaderEvent) : void
+      protected function __loadError(event:LoaderEvent) : void
       {
-         param1.currentTarget.removeEventListener("complete",__loadComplete);
-         param1.currentTarget.removeEventListener("loadError",__loadError);
+         event.currentTarget.removeEventListener("complete",__loadComplete);
+         event.currentTarget.removeEventListener("loadError",__loadError);
          dispose();
       }
       
@@ -219,15 +219,15 @@ package ddt.view
          LayerManager.Instance.addToLayer(this,3,true,2);
       }
       
-      protected function __activeCloseBtnClick(param1:MouseEvent) : void
+      protected function __activeCloseBtnClick(event:MouseEvent) : void
       {
          dispose();
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:

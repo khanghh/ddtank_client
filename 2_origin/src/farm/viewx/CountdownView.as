@@ -36,14 +36,14 @@ package farm.viewx
          addChild(_fastForward);
       }
       
-      public function setCountdown(param1:int) : void
+      public function setCountdown(fieldID:int) : void
       {
-         _fieldID = param1;
+         _fieldID = fieldID;
       }
       
-      public function setFastBtnEnable(param1:Boolean) : void
+      public function setFastBtnEnable(flag:Boolean) : void
       {
-         _fastForward.visible = param1;
+         _fastForward.visible = flag;
       }
       
       private function initEvent() : void
@@ -51,7 +51,7 @@ package farm.viewx
          _fastForward.addEventListener("click",__fastBtnClick);
       }
       
-      protected function __fastBtnClick(param1:MouseEvent) : void
+      protected function __fastBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          this.visible = false;
@@ -60,25 +60,25 @@ package farm.viewx
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.farms.fastForwardInfo",FarmModelController.instance.gropPrice),"",LanguageMgr.GetTranslation("cancel"),false,false,false,2,null,"SimpleAlert",30,true,0);
-         _loc2_.addEventListener("response",__onResponse);
+         var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.farms.fastForwardInfo",FarmModelController.instance.gropPrice),"",LanguageMgr.GetTranslation("cancel"),false,false,false,2,null,"SimpleAlert",30,true,0);
+         alert.addEventListener("response",__onResponse);
       }
       
-      protected function __onResponse(param1:FrameEvent) : void
+      protected function __onResponse(event:FrameEvent) : void
       {
-         var _loc2_:int = 0;
+         var needMoney:int = 0;
          SoundManager.instance.play("008");
-         var _loc3_:Boolean = (param1.target as BaseAlerFrame).isBand;
-         (param1.target as BaseAlerFrame).removeEventListener("response",__onResponse);
-         (param1.target as BaseAlerFrame).dispose();
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var isBand:Boolean = (event.target as BaseAlerFrame).isBand;
+         (event.target as BaseAlerFrame).removeEventListener("response",__onResponse);
+         (event.target as BaseAlerFrame).dispose();
+         if(event.responseCode == 2 || event.responseCode == 3)
          {
-            _loc2_ = FarmModelController.instance.gropPrice;
-            if(BuriedManager.Instance.checkMoney(_loc3_,_loc2_))
+            needMoney = FarmModelController.instance.gropPrice;
+            if(BuriedManager.Instance.checkMoney(isBand,needMoney))
             {
                return;
             }
-            SocketManager.Instance.out.fastForwardGrop(_loc3_,false,_fieldID);
+            SocketManager.Instance.out.fastForwardGrop(isBand,false,_fieldID);
          }
       }
       

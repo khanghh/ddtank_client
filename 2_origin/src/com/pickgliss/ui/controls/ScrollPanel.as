@@ -81,19 +81,19 @@ package com.pickgliss.ui.controls
       
       protected var _isDisableMouseWheel:Boolean = false;
       
-      public function ScrollPanel(param1:Boolean = true)
+      public function ScrollPanel(creatDefauleViewport:Boolean = true)
       {
          super();
-         if(param1)
+         if(creatDefauleViewport)
          {
             _viewSource = new DisplayObjectViewport();
             _viewSource.addStateListener(__onViewportStateChanged);
          }
       }
       
-      public function set backgound(param1:DisplayObject) : void
+      public function set backgound(back:DisplayObject) : void
       {
-         if(_backgound == param1)
+         if(_backgound == back)
          {
             return;
          }
@@ -101,28 +101,28 @@ package com.pickgliss.ui.controls
          {
             ObjectUtils.disposeObject(_backgound);
          }
-         _backgound = param1;
+         _backgound = back;
          onPropertiesChanged("backgound");
       }
       
-      public function set backgoundInnerRectString(param1:String) : void
+      public function set backgoundInnerRectString(value:String) : void
       {
-         if(_backgoundInnerRectString == param1)
+         if(_backgoundInnerRectString == value)
          {
             return;
          }
-         _backgoundInnerRectString = param1;
+         _backgoundInnerRectString = value;
          _backgoundInnerRect = ClassUtils.CreatInstance("com.pickgliss.geom.InnerRectangle",ComponentFactory.parasArgs(_backgoundInnerRectString));
          onPropertiesChanged("backgoundInnerRect");
       }
       
-      public function set backgoundStyle(param1:String) : void
+      public function set backgoundStyle(stylename:String) : void
       {
-         if(_backgoundStyle == param1)
+         if(_backgoundStyle == stylename)
          {
             return;
          }
-         _backgoundStyle = param1;
+         _backgoundStyle = stylename;
          backgound = ComponentFactory.Instance.creat(_backgoundStyle);
       }
       
@@ -131,13 +131,13 @@ package com.pickgliss.ui.controls
          return _viewSource as DisplayObjectViewport;
       }
       
-      public function set disableMouseWheel(param1:Boolean) : void
+      public function set disableMouseWheel(value:Boolean) : void
       {
-         if(_isDisableMouseWheel == param1)
+         if(_isDisableMouseWheel == value)
          {
             return;
          }
-         _isDisableMouseWheel = param1;
+         _isDisableMouseWheel = value;
       }
       
       public function get disableMouseWheel() : Boolean
@@ -175,54 +175,54 @@ package com.pickgliss.ui.controls
       
       public function getShowHScrollbarExtendHeight() : Number
       {
-         var _loc3_:* = null;
+         var rect:* = null;
          if(_height == 0 || _hScrollbarInnerRect == null)
          {
             return 0;
          }
-         var _loc1_:Rectangle = _viewportInnerRect.getInnerRect(_width,_height);
-         var _loc2_:Rectangle = _hScrollbarInnerRect.getInnerRect(_width,_height);
-         _loc3_ = _loc1_.union(_loc2_);
-         return _loc1_.height - _loc3_.height;
+         var viewPortRect:Rectangle = _viewportInnerRect.getInnerRect(_width,_height);
+         var hbarRect:Rectangle = _hScrollbarInnerRect.getInnerRect(_width,_height);
+         rect = viewPortRect.union(hbarRect);
+         return viewPortRect.height - rect.height;
       }
       
       public function getVisibleRect() : IntRectangle
       {
-         var _loc1_:int = 0;
-         var _loc4_:int = 0;
-         var _loc5_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:IntDimension = _viewSource.getViewSize();
+         var vStartValue:int = 0;
+         var hStartValue:int = 0;
+         var vAmount:int = 0;
+         var hAmount:int = 0;
+         var viewSize:IntDimension = _viewSource.getViewSize();
          if(_hScrollbar == null)
          {
-            _loc4_ = 0;
-            _loc2_ = _loc3_.width;
+            hStartValue = 0;
+            hAmount = viewSize.width;
          }
          else
          {
-            _loc4_ = _hScrollbar.scrollValue;
-            _loc2_ = _hScrollbar.visibleAmount;
+            hStartValue = _hScrollbar.scrollValue;
+            hAmount = _hScrollbar.visibleAmount;
          }
          if(_vScrollbar == null)
          {
-            _loc1_ = 0;
-            _loc5_ = _loc3_.height;
+            vStartValue = 0;
+            vAmount = viewSize.height;
          }
          else
          {
-            _loc1_ = _vScrollbar.scrollValue;
-            _loc5_ = _vScrollbar.visibleAmount;
+            vStartValue = _vScrollbar.scrollValue;
+            vAmount = _vScrollbar.visibleAmount;
          }
-         return new IntRectangle(_loc4_,_loc1_,_loc2_,_loc5_);
+         return new IntRectangle(hStartValue,vStartValue,hAmount,vAmount);
       }
       
-      public function set hScrollProxy(param1:int) : void
+      public function set hScrollProxy(proxy:int) : void
       {
-         if(_hScrollProxy == param1)
+         if(_hScrollProxy == proxy)
          {
             return;
          }
-         _hScrollProxy = param1;
+         _hScrollProxy = proxy;
          onPropertiesChanged("hScrollProxy");
       }
       
@@ -231,9 +231,9 @@ package com.pickgliss.ui.controls
          return _hScrollbar;
       }
       
-      public function set hScrollbar(param1:Scrollbar) : void
+      public function set hScrollbar(bar:Scrollbar) : void
       {
-         if(_hScrollbar == param1)
+         if(_hScrollbar == bar)
          {
             return;
          }
@@ -242,49 +242,49 @@ package com.pickgliss.ui.controls
             _hScrollbar.removeStateListener(__onScrollValueChange);
             ObjectUtils.disposeObject(_hScrollbar);
          }
-         _hScrollbar = param1;
+         _hScrollbar = bar;
          _hScrollbar.addStateListener(__onScrollValueChange);
          onPropertiesChanged("hScrollbar");
       }
       
-      public function set hScrollbarInnerRectString(param1:String) : void
+      public function set hScrollbarInnerRectString(value:String) : void
       {
-         if(_hScrollbarInnerRectString == param1)
+         if(_hScrollbarInnerRectString == value)
          {
             return;
          }
-         _hScrollbarInnerRectString = param1;
+         _hScrollbarInnerRectString = value;
          _hScrollbarInnerRect = ClassUtils.CreatInstance("com.pickgliss.geom.InnerRectangle",ComponentFactory.parasArgs(_hScrollbarInnerRectString));
          onPropertiesChanged("hScrollbarInnerRect");
       }
       
-      public function set hScrollbarStyle(param1:String) : void
+      public function set hScrollbarStyle(stylename:String) : void
       {
-         if(_hScrollbarStyle == param1)
+         if(_hScrollbarStyle == stylename)
          {
             return;
          }
-         _hScrollbarStyle = param1;
+         _hScrollbarStyle = stylename;
          hScrollbar = ComponentFactory.Instance.creat(_hScrollbarStyle);
       }
       
-      public function set hUnitIncrement(param1:int) : void
+      public function set hUnitIncrement(unitIncrement:int) : void
       {
-         _viewSource.horizontalUnitIncrement = param1;
+         _viewSource.horizontalUnitIncrement = unitIncrement;
       }
       
-      public function invalidateViewport(param1:Boolean = false) : void
+      public function invalidateViewport(toBottom:Boolean = false) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:* = null;
+         var max:int = 0;
+         var pt:* = null;
          if(_viewSource is DisplayObjectViewport)
          {
-            if(param1)
+            if(toBottom)
             {
                displayObjectViewport.invalidateView();
-               _loc2_ = viewPort.getViewSize().height;
-               _loc3_ = new IntPoint(0,_loc2_);
-               viewPort.viewPosition = _loc3_;
+               max = viewPort.getViewSize().height;
+               pt = new IntPoint(0,max);
+               viewPort.viewPosition = pt;
             }
             else
             {
@@ -297,18 +297,18 @@ package com.pickgliss.ui.controls
          }
       }
       
-      public function invalidateViewport_toTop(param1:Boolean = false) : void
+      public function invalidateViewport_toTop(toTop:Boolean = false) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:* = null;
+         var max:int = 0;
+         var pt:* = null;
          if(_viewSource is DisplayObjectViewport)
          {
-            if(param1)
+            if(toTop)
             {
                displayObjectViewport.invalidateView();
-               _loc2_ = viewPort.getViewSize().height;
-               _loc3_ = new IntPoint(0,0);
-               viewPort.viewPosition = _loc3_;
+               max = viewPort.getViewSize().height;
+               pt = new IntPoint(0,0);
+               viewPort.viewPosition = pt;
             }
             else
             {
@@ -321,11 +321,11 @@ package com.pickgliss.ui.controls
          }
       }
       
-      public function setView(param1:DisplayObject) : void
+      public function setView(view:DisplayObject) : void
       {
          if(_viewSource is DisplayObjectViewport)
          {
-            displayObjectViewport.setView(param1);
+            displayObjectViewport.setView(view);
          }
          else
          {
@@ -333,13 +333,13 @@ package com.pickgliss.ui.controls
          }
       }
       
-      public function set vScrollProxy(param1:int) : void
+      public function set vScrollProxy(proxy:int) : void
       {
-         if(_vScrollProxy == param1)
+         if(_vScrollProxy == proxy)
          {
             return;
          }
-         _vScrollProxy = param1;
+         _vScrollProxy = proxy;
          onPropertiesChanged("vScrollProxy");
       }
       
@@ -348,9 +348,9 @@ package com.pickgliss.ui.controls
          return _vScrollbar;
       }
       
-      public function set vScrollbar(param1:Scrollbar) : void
+      public function set vScrollbar(bar:Scrollbar) : void
       {
-         if(_vScrollbar == param1)
+         if(_vScrollbar == bar)
          {
             return;
          }
@@ -359,35 +359,35 @@ package com.pickgliss.ui.controls
             _vScrollbar.removeStateListener(__onScrollValueChange);
             ObjectUtils.disposeObject(_vScrollbar);
          }
-         _vScrollbar = param1;
+         _vScrollbar = bar;
          _vScrollbar.addStateListener(__onScrollValueChange);
          onPropertiesChanged("vScrollbar");
       }
       
-      public function set vScrollbarInnerRectString(param1:String) : void
+      public function set vScrollbarInnerRectString(value:String) : void
       {
-         if(_vScrollbarInnerRectString == param1)
+         if(_vScrollbarInnerRectString == value)
          {
             return;
          }
-         _vScrollbarInnerRectString = param1;
+         _vScrollbarInnerRectString = value;
          _vScrollbarInnerRect = ClassUtils.CreatInstance("com.pickgliss.geom.InnerRectangle",ComponentFactory.parasArgs(_vScrollbarInnerRectString));
          onPropertiesChanged("vScrollbarInnerRect");
       }
       
-      public function set vScrollbarStyle(param1:String) : void
+      public function set vScrollbarStyle(stylename:String) : void
       {
-         if(_vScrollbarStyle == param1)
+         if(_vScrollbarStyle == stylename)
          {
             return;
          }
-         _vScrollbarStyle = param1;
+         _vScrollbarStyle = stylename;
          vScrollbar = ComponentFactory.Instance.creat(_vScrollbarStyle);
       }
       
-      public function set vUnitIncrement(param1:int) : void
+      public function set vUnitIncrement(unitIncrement:int) : void
       {
-         _viewSource.verticalUnitIncrement = param1;
+         _viewSource.verticalUnitIncrement = unitIncrement;
       }
       
       public function get viewPort() : IViewprot
@@ -395,9 +395,9 @@ package com.pickgliss.ui.controls
          return _viewSource;
       }
       
-      public function set viewPort(param1:IViewprot) : void
+      public function set viewPort(v:IViewprot) : void
       {
-         if(_viewSource == param1)
+         if(_viewSource == v)
          {
             return;
          }
@@ -406,47 +406,47 @@ package com.pickgliss.ui.controls
             _viewSource.removeStateListener(__onViewportStateChanged);
             ObjectUtils.disposeObject(_viewSource);
          }
-         _viewSource = param1;
+         _viewSource = v;
          _viewSource.addStateListener(__onViewportStateChanged);
          onPropertiesChanged("viewSource");
       }
       
-      public function set viewportInnerRectString(param1:String) : void
+      public function set viewportInnerRectString(value:String) : void
       {
-         if(_viewportInnerRectString == param1)
+         if(_viewportInnerRectString == value)
          {
             return;
          }
-         _viewportInnerRectString = param1;
+         _viewportInnerRectString = value;
          _viewportInnerRect = ClassUtils.CreatInstance("com.pickgliss.geom.InnerRectangle",ComponentFactory.parasArgs(_viewportInnerRectString));
          onPropertiesChanged("viewportInnerRect");
       }
       
-      protected function __onMouseWheel(param1:MouseEvent) : void
+      protected function __onMouseWheel(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var viewPos:* = null;
          if(!_isDisableMouseWheel)
          {
-            _loc2_ = _viewSource.viewPosition.clone();
-            _loc2_.y = _loc2_.y - param1.delta * _viewSource.verticalUnitIncrement;
-            _viewSource.viewPosition = _loc2_;
-            param1.stopImmediatePropagation();
+            viewPos = _viewSource.viewPosition.clone();
+            viewPos.y = viewPos.y - event.delta * _viewSource.verticalUnitIncrement;
+            _viewSource.viewPosition = viewPos;
+            event.stopImmediatePropagation();
          }
       }
       
-      public function setViewPosition(param1:int) : void
+      public function setViewPosition(offset:int) : void
       {
-         var _loc2_:IntPoint = _viewSource.viewPosition.clone();
-         _loc2_.y = _loc2_.y + param1 * _viewSource.verticalUnitIncrement;
-         _viewSource.viewPosition = _loc2_;
+         var viewPos:IntPoint = _viewSource.viewPosition.clone();
+         viewPos.y = viewPos.y + offset * _viewSource.verticalUnitIncrement;
+         _viewSource.viewPosition = viewPos;
       }
       
-      protected function __onScrollValueChange(param1:InteractiveEvent) : void
+      protected function __onScrollValueChange(event:InteractiveEvent) : void
       {
          viewPort.scrollRectToVisible(getVisibleRect());
       }
       
-      protected function __onViewportStateChanged(param1:InteractiveEvent) : void
+      protected function __onViewportStateChanged(event:InteractiveEvent) : void
       {
          syncScrollPaneWithViewport();
       }
@@ -529,38 +529,38 @@ package com.pickgliss.ui.controls
       
       protected function syncScrollPaneWithViewport() : void
       {
-         var _loc6_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:* = null;
-         var _loc1_:int = 0;
-         var _loc5_:int = 0;
-         var _loc3_:int = 0;
+         var extentSize:* = null;
+         var viewSize:* = null;
+         var viewPosition:* = null;
+         var max:int = 0;
+         var value:int = 0;
+         var extent:int = 0;
          if(_viewSource != null)
          {
-            _loc6_ = _viewSource.getExtentSize();
-            if(_loc6_.width <= 0 || _loc6_.height <= 0)
+            extentSize = _viewSource.getExtentSize();
+            if(extentSize.width <= 0 || extentSize.height <= 0)
             {
                return;
             }
-            _loc2_ = _viewSource.getViewSize();
-            _loc4_ = _viewSource.viewPosition;
+            viewSize = _viewSource.getViewSize();
+            viewPosition = _viewSource.viewPosition;
             if(_vScrollbar != null)
             {
-               _loc3_ = _loc6_.height;
-               _loc1_ = _loc2_.height;
-               _loc5_ = Math.max(0,Math.min(_loc4_.y,_loc1_ - _loc3_));
+               extent = extentSize.height;
+               max = viewSize.height;
+               value = Math.max(0,Math.min(viewPosition.y,max - extent));
                _vScrollbar.unitIncrement = _viewSource.verticalUnitIncrement;
                _vScrollbar.blockIncrement = _viewSource.verticalBlockIncrement;
-               _vScrollbar.getModel().setRangeProperties(_loc5_,_loc3_,0,_loc1_,false);
+               _vScrollbar.getModel().setRangeProperties(value,extent,0,max,false);
             }
             if(_hScrollbar != null)
             {
-               _loc3_ = _loc6_.width;
-               _loc1_ = _loc2_.width;
-               _loc5_ = Math.max(0,Math.min(_loc4_.x,_loc1_ - _loc3_));
+               extent = extentSize.width;
+               max = viewSize.width;
+               value = Math.max(0,Math.min(viewPosition.x,max - extent));
                _hScrollbar.unitIncrement = _viewSource.horizontalUnitIncrement;
                _hScrollbar.blockIncrement = _viewSource.horizontalBlockIncrement;
-               _hScrollbar.getModel().setRangeProperties(_loc5_,_loc3_,0,_loc1_,false);
+               _hScrollbar.getModel().setRangeProperties(value,extent,0,max,false);
             }
             updateAutoHiddenScroll();
          }
@@ -568,10 +568,10 @@ package com.pickgliss.ui.controls
       
       private function updateAutoHiddenScroll() : void
       {
-         var _loc4_:* = null;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
-         var _loc3_:* = null;
+         var rect:* = null;
+         var viewPortRect:* = null;
+         var vbarRect:* = null;
+         var hbarRect:* = null;
          if(_vScrollbar == null && _hScrollbar == null)
          {
             return;
@@ -600,44 +600,44 @@ package com.pickgliss.ui.controls
          }
          if(_vScrollProxy == 1 || _hScrollProxy == 1)
          {
-            _loc2_ = _viewportInnerRect.getInnerRect(_width,_height);
+            viewPortRect = _viewportInnerRect.getInnerRect(_width,_height);
             if(_vScrollbarInnerRect)
             {
-               _loc1_ = _vScrollbarInnerRect.getInnerRect(_width,_height);
+               vbarRect = _vScrollbarInnerRect.getInnerRect(_width,_height);
             }
             if(_hScrollbarInnerRect)
             {
-               _loc3_ = _hScrollbarInnerRect.getInnerRect(_width,_height);
+               hbarRect = _hScrollbarInnerRect.getInnerRect(_width,_height);
             }
             if(_vScrollbar != null)
             {
                if(!_vScrollbar.getThumbVisible() || _vScrollbar.visible == false)
                {
-                  _loc4_ = _loc2_.union(_loc1_);
+                  rect = viewPortRect.union(vbarRect);
                }
             }
             if(_hScrollbar != null)
             {
                if(!_hScrollbar.getThumbVisible() || _hScrollbar.visible == false)
                {
-                  if(_loc4_)
+                  if(rect)
                   {
-                     _loc4_ = _loc4_.union(_loc3_);
+                     rect = rect.union(hbarRect);
                   }
                   else
                   {
-                     _loc4_ = _loc2_.union(_loc3_);
+                     rect = viewPortRect.union(hbarRect);
                   }
                }
             }
-            if(_loc4_ == null)
+            if(rect == null)
             {
-               _loc4_ = _loc2_;
+               rect = viewPortRect;
             }
-            _viewSource.x = _loc4_.x;
-            _viewSource.y = _loc4_.y;
-            _viewSource.width = _loc4_.width;
-            _viewSource.height = _loc4_.height;
+            _viewSource.x = rect.x;
+            _viewSource.y = rect.y;
+            _viewSource.width = rect.width;
+            _viewSource.height = rect.height;
          }
       }
    }

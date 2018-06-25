@@ -34,12 +34,12 @@ package explorerManual.view.page
       
       private var _shopFrame:ExplorerManualShop;
       
-      public function ExplorerPageRightViewBase(param1:int, param2:ExplorerManualInfo, param3:ExplorerManualController)
+      public function ExplorerPageRightViewBase(chapterID:int, model:ExplorerManualInfo, ctrl:ExplorerManualController)
       {
          super();
-         _model = param2;
-         _ctrl = param3;
-         _chapterID = param1;
+         _model = model;
+         _ctrl = ctrl;
+         _chapterID = chapterID;
          initView();
          initEvent();
       }
@@ -78,27 +78,27 @@ package explorerManual.view.page
          }
       }
       
-      private function __associationClickHandler(param1:MouseEvent) : void
+      private function __associationClickHandler(evt:MouseEvent) : void
       {
          _shopFrame = ComponentFactory.Instance.creat("explorerManual.ExplorerManualShop.Frame",[_ctrl]);
          _shopFrame.show();
       }
       
-      protected function __modelUpdateHandler(param1:Event) : void
+      protected function __modelUpdateHandler(evt:Event) : void
       {
          updateShowView();
       }
       
-      private function getPregressValue(param1:int, param2:int) : String
+      private function getPregressValue(curValue:int, maxValue:int) : String
       {
-         var _loc3_:* = null;
-         _loc3_ = "<FONT FACE=\'Arial\' SIZE=\'14\' COLOR=\'#FF0000\' ><B>" + param1 + "</B></FONT>" + "/" + param2;
-         return _loc3_;
+         var result:* = null;
+         result = "<FONT FACE=\'Arial\' SIZE=\'14\' COLOR=\'#FF0000\' ><B>" + curValue + "</B></FONT>" + "/" + maxValue;
+         return result;
       }
       
-      public function set pageInfo(param1:ManualPageItemInfo) : void
+      public function set pageInfo(info:ManualPageItemInfo) : void
       {
-         _pageInfo = param1;
+         _pageInfo = info;
          updateShowView();
       }
       
@@ -109,8 +109,8 @@ package explorerManual.view.page
       
       private function piecesPregress() : void
       {
-         var _loc1_:Array = _model.debrisInfo.getHaveDebrisByPageID(_pageInfo.ID);
-         _piecesPregress.htmlText = getPregressValue(_loc1_.length,_pageInfo.DebrisCount);
+         var haveDebris:Array = _model.debrisInfo.getHaveDebrisByPageID(_pageInfo.ID);
+         _piecesPregress.htmlText = getPregressValue(haveDebris.length,_pageInfo.DebrisCount);
       }
       
       public function dispose() : void

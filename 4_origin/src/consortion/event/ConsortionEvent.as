@@ -48,10 +48,10 @@ package consortion.event
       
       public var data:Object;
       
-      public function ConsortionEvent(param1:String, param2:Object = null)
+      public function ConsortionEvent(type:String, data:Object = null)
       {
-         super(param1);
-         this.data = param2;
+         super(type);
+         this.data = data;
       }
    }
 }

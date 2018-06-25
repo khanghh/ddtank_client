@@ -42,9 +42,9 @@ package email.view
          return _annex;
       }
       
-      public function set annex(param1:ItemTemplateInfo) : void
+      public function set annex(value:ItemTemplateInfo) : void
       {
-         _annex = param1;
+         _annex = value;
       }
       
       override protected function initView() : void
@@ -89,7 +89,7 @@ package email.view
          _cell.clearLinkCell();
       }
       
-      private function __click(param1:MouseEvent) : void
+      private function __click(event:MouseEvent) : void
       {
          dispatchEvent(new EmailEvent("showBagframe"));
          if(_annex)
@@ -98,7 +98,7 @@ package email.view
          }
       }
       
-      private function __dragInBag(param1:Event) : void
+      private function __dragInBag(event:Event) : void
       {
          annex = _cell.info;
          if(annex)
@@ -143,49 +143,49 @@ package email.view
          return _tipGapH;
       }
       
-      public function set tipStyle(param1:String) : void
+      public function set tipStyle(value:String) : void
       {
-         if(_tipStyle == param1)
+         if(_tipStyle == value)
          {
             return;
          }
-         _tipStyle = param1;
+         _tipStyle = value;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(value:Object) : void
       {
-         if(_tipData == param1)
+         if(_tipData == value)
          {
             return;
          }
-         _tipData = param1;
+         _tipData = value;
       }
       
-      public function set tipDirctions(param1:String) : void
+      public function set tipDirctions(value:String) : void
       {
-         if(_tipDirctions == param1)
+         if(_tipDirctions == value)
          {
             return;
          }
-         _tipDirctions = param1;
+         _tipDirctions = value;
       }
       
-      public function set tipGapV(param1:int) : void
+      public function set tipGapV(value:int) : void
       {
-         if(_tipGapV == param1)
+         if(_tipGapV == value)
          {
             return;
          }
-         _tipGapV = param1;
+         _tipGapV = value;
       }
       
-      public function set tipGapH(param1:int) : void
+      public function set tipGapH(value:int) : void
       {
-         if(_tipGapH == param1)
+         if(_tipGapH == value)
          {
             return;
          }
-         _tipGapH = param1;
+         _tipGapH = value;
       }
       
       public function asDisplayObject() : DisplayObject

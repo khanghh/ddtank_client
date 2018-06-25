@@ -12,35 +12,34 @@ package consortion.analyze
       
       public var totalCount:int;
       
-      public function ConsortionInventListAnalyzer(param1:Function)
+      public function ConsortionInventListAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc4_:* = null;
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
+         var xmllist:* = null;
+         var i:int = 0;
+         var cData:* = null;
          inventList = new Vector.<ConsortiaInventData>();
-         var _loc3_:XML = new XML(param1);
-         if(_loc3_.@value == "true")
+         var xml:XML = new XML(data);
+         if(xml.@value == "true")
          {
-            totalCount = int(_loc3_.@total);
-            _loc4_ = XML(_loc3_)..Item;
-            _loc5_ = 0;
-            while(_loc5_ < _loc4_.length())
+            totalCount = int(xml.@total);
+            xmllist = XML(xml)..Item;
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc2_ = new ConsortiaInventData();
-               ObjectUtils.copyPorpertiesByXML(_loc2_,_loc4_[_loc5_]);
-               inventList.push(_loc2_);
-               _loc5_++;
+               cData = new ConsortiaInventData();
+               ObjectUtils.copyPorpertiesByXML(cData,xmllist[i]);
+               inventList.push(cData);
+               i++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc3_.@message;
+            message = xml.@message;
             onAnalyzeError();
             onAnalyzeComplete();
          }

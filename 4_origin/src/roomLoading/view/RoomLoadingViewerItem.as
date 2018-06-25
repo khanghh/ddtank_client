@@ -32,40 +32,38 @@ package roomLoading.view
       
       public function init() : void
       {
-         var _loc1_:* = undefined;
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
+         var viewers:* = undefined;
+         var i:int = 0;
+         var item:* = null;
+         var j:int = 0;
+         var _noViewer:* = null;
          _viewerItems = new Vector.<RoomViewerItem>();
          _bg = ComponentFactory.Instance.creatComponentByStylename("roomloading.ViewerFrameBg");
          _viewerTxt = ComponentFactory.Instance.creatBitmap("asset.roomloading.ViewerTxt");
          PositionUtils.setPos(_viewerTxt,"asset.ddtroom.viewerTxt");
          if(RoomManager.Instance.current.type != 56)
          {
-            _loc1_ = findViewers();
-            _loc5_ = 0;
-            while(_loc5_ < _loc1_.length)
+            viewers = findViewers();
+            for(i = 0; i < viewers.length; )
             {
-               _loc3_ = new RoomViewerItem(_loc1_[_loc5_].place);
-               _loc3_.changeBg();
-               _viewerItems.push(_loc3_);
-               _viewerItems[_loc5_].loadingMode = true;
-               _viewerItems[_loc5_].info = _loc1_[_loc5_];
+               item = new RoomViewerItem(viewers[i].place);
+               item.changeBg();
+               _viewerItems.push(item);
+               _viewerItems[i].loadingMode = true;
+               _viewerItems[i].info = viewers[i];
                var _loc6_:Boolean = false;
-               _viewerItems[_loc5_].mouseChildren = _loc6_;
-               _viewerItems[_loc5_].mouseEnabled = _loc6_;
-               PositionUtils.setPos(_viewerItems[_loc5_],"asset.roomLoading.ViewerItemPos_" + String(_loc5_));
-               addChild(_viewerItems[_loc5_]);
-               _loc5_++;
+               _viewerItems[i].mouseChildren = _loc6_;
+               _viewerItems[i].mouseEnabled = _loc6_;
+               PositionUtils.setPos(_viewerItems[i],"asset.roomLoading.ViewerItemPos_" + String(i));
+               addChild(_viewerItems[i]);
+               i++;
             }
-            _loc4_ = 2;
-            while(_loc4_ > _loc1_.length)
+            for(j = 2; j > viewers.length; )
             {
-               _loc2_ = ComponentFactory.Instance.creatBitmap("asset.roomloading.noViewer");
-               PositionUtils.setPos(_loc2_,"asset.roomLoading.ViewerItemPos_" + (_loc4_ - 1).toString());
-               addChild(_loc2_);
-               _loc4_--;
+               _noViewer = ComponentFactory.Instance.creatBitmap("asset.roomloading.noViewer");
+               PositionUtils.setPos(_noViewer,"asset.roomLoading.ViewerItemPos_" + (j - 1).toString());
+               addChild(_noViewer);
+               j--;
             }
          }
          addChildAt(_bg,0);
@@ -74,18 +72,18 @@ package roomLoading.view
       
       private function findViewers() : Vector.<RoomPlayer>
       {
-         var _loc3_:Array = GameControl.Instance.Current.roomPlayers;
-         var _loc1_:Vector.<RoomPlayer> = new Vector.<RoomPlayer>();
+         var players:Array = GameControl.Instance.Current.roomPlayers;
+         var result:Vector.<RoomPlayer> = new Vector.<RoomPlayer>();
          var _loc5_:int = 0;
-         var _loc4_:* = _loc3_;
-         for each(var _loc2_ in _loc3_)
+         var _loc4_:* = players;
+         for each(var roomPlayer in players)
          {
-            if(_loc2_.isViewer)
+            if(roomPlayer.isViewer)
             {
-               _loc1_.push(_loc2_);
+               result.push(roomPlayer);
             }
          }
-         return _loc1_;
+         return result;
       }
       
       public function dispose() : void
@@ -96,10 +94,10 @@ package roomLoading.view
          _viewerTxt = null;
          var _loc3_:int = 0;
          var _loc2_:* = _viewerItems;
-         for each(var _loc1_ in _viewerItems)
+         for each(var item in _viewerItems)
          {
-            _loc1_.dispose();
-            _loc1_ = null;
+            item.dispose();
+            item = null;
          }
          _viewerItems = null;
          if(parent)

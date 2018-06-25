@@ -39,11 +39,11 @@ package ddt.view.common
          _viewLayerType = 3;
       }
       
-      public function setup(param1:int, param2:int, param3:Boolean = false) : void
+      public function setup(itemID:int, storeTab:int, needDispacthEvent:Boolean = false) : void
       {
-         _itemID = param1;
-         _storeTab = param2;
-         _needDispatchEvent = param3;
+         _itemID = itemID;
+         _storeTab = storeTab;
+         _needDispatchEvent = needDispacthEvent;
          initliziItemTemplate();
       }
       
@@ -51,19 +51,19 @@ package ddt.view.common
       {
          _itemInfo = ItemManager.Instance.getTemplateById(_itemID);
          _shopItemInfo = ShopManager.Instance.getMoneyShopItemByTemplateID(_itemID);
-         var _loc1_:GoodTipInfo = new GoodTipInfo();
-         _loc1_.itemInfo = _itemInfo;
-         _loc1_.isBalanceTip = false;
-         _loc1_.typeIsSecond = false;
-         tipData = _loc1_;
+         var goodInfo:GoodTipInfo = new GoodTipInfo();
+         goodInfo.itemInfo = _itemInfo;
+         goodInfo.isBalanceTip = false;
+         goodInfo.typeIsSecond = false;
+         tipData = goodInfo;
       }
       
-      override protected function __onMouseClick(param1:MouseEvent) : void
+      override protected function __onMouseClick(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var _buyFrame:* = null;
          if(_enable)
          {
-            param1.stopImmediatePropagation();
+            event.stopImmediatePropagation();
             if(useLogID != 0 && ComponentSetting.SEND_USELOG_ID != null)
             {
                ComponentSetting.SEND_USELOG_ID(useLogID);
@@ -74,30 +74,30 @@ package ddt.view.common
                BaglockedManager.Instance.show();
                return;
             }
-            _loc2_ = new BuySingleGoodsView(-1);
-            LayerManager.Instance.addToLayer(_loc2_,_viewLayerType,true,1);
-            _loc2_.isDisCount = false;
-            _loc2_.goodsID = int(_itemID.toString() + "01");
-            _loc2_.numberSelecter.valueLimit = "";
+            _buyFrame = new BuySingleGoodsView(-1);
+            LayerManager.Instance.addToLayer(_buyFrame,_viewLayerType,true,1);
+            _buyFrame.isDisCount = false;
+            _buyFrame.goodsID = int(_itemID.toString() + "01");
+            _buyFrame.numberSelecter.valueLimit = "";
          }
       }
       
-      public function set viewLayerType(param1:int) : void
+      public function set viewLayerType(value:int) : void
       {
-         _viewLayerType = param1;
+         _viewLayerType = value;
       }
       
-      private function removeFromStageHandler(param1:Event) : void
+      private function removeFromStageHandler(event:Event) : void
       {
          BagStore.instance.reduceTipPanelNumber();
       }
       
-      private function __shortCutBuyHandler(param1:ShortcutBuyEvent) : void
+      private function __shortCutBuyHandler(evt:ShortcutBuyEvent) : void
       {
-         param1.stopImmediatePropagation();
+         evt.stopImmediatePropagation();
          if(_needDispatchEvent)
          {
-            dispatchEvent(new ShortcutBuyEvent(param1.ItemID,param1.ItemNum));
+            dispatchEvent(new ShortcutBuyEvent(evt.ItemID,evt.ItemNum));
          }
       }
       

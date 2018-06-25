@@ -15,22 +15,22 @@ package game.view
       
       private var _last:uint;
       
-      public function AutoPropEffect(param1:DisplayObject)
+      public function AutoPropEffect(movie:DisplayObject)
       {
          super();
-         param1.x = -20;
-         addChild(param1);
+         movie.x = -20;
+         addChild(movie);
          addEventListener("addedToStage",__addToStage);
       }
       
-      private function __addToStage(param1:Event) : void
+      private function __addToStage(event:Event) : void
       {
          _age = 0;
          _last = getTimer();
          addEventListener("enterFrame",__enterFrame);
       }
       
-      private function __enterFrame(param1:Event) : void
+      private function __enterFrame(event:Event) : void
       {
          if(parent)
          {

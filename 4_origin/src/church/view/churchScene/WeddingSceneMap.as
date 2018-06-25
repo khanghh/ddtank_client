@@ -64,11 +64,11 @@ package church.view.churchScene
       
       private var fireTimer:TimerJuggler;
       
-      public function WeddingSceneMap(param1:ChurchRoomModel, param2:SceneScene, param3:DictionaryData, param4:Sprite, param5:Sprite, param6:Sprite = null, param7:Sprite = null)
+      public function WeddingSceneMap(model:ChurchRoomModel, scene:SceneScene, data:DictionaryData, bg:Sprite, mesh:Sprite, acticle:Sprite = null, sky:Sprite = null)
       {
          _fatherPaopaoConfig = [];
-         _model = param1;
-         super(_model,param2,param3,param4,param5,param6,param7);
+         _model = model;
+         super(_model,scene,data,bg,mesh,acticle,sky);
          SoundManager.instance.playMusic("3002");
          initFather();
       }
@@ -86,18 +86,18 @@ package church.view.churchScene
          }
       }
       
-      public function fireImdily(param1:Point, param2:uint, param3:Boolean = false) : void
+      public function fireImdily(pt:Point, type:uint, playSound:Boolean = false) : void
       {
-         if(param2 > 1)
+         if(type > 1)
          {
             return;
          }
-         var _loc4_:int = _model.fireTemplateIDList[param2];
-         var _loc5_:ChurchFireEffectPlayer = new ChurchFireEffectPlayer(_loc4_);
-         _loc5_.x = param1.x;
-         _loc5_.y = param1.y;
-         addChild(_loc5_);
-         _loc5_.firePlayer(param3);
+         var fireID:int = _model.fireTemplateIDList[type];
+         var fire:ChurchFireEffectPlayer = new ChurchFireEffectPlayer(fireID);
+         fire.x = pt.x;
+         fire.y = pt.y;
+         addChild(fire);
+         fire.firePlayer(playSound);
       }
       
       public function playWeddingMovie() : void
@@ -106,12 +106,12 @@ package church.view.churchScene
          groom = _characters[ChurchManager.instance.currentRoom.groomID] as ChurchPlayer;
          bride.moveSpeed = 0.055;
          groom.moveSpeed = 0.055;
-         var _loc1_:Point = ComponentFactory.Instance.creatCustomObject("church.WeddingSceneMap.bridePos");
-         bride.x = _loc1_.x;
-         bride.y = _loc1_.y;
-         var _loc2_:Point = ComponentFactory.Instance.creatCustomObject("church.WeddingSceneMap.groomPos");
-         groom.x = _loc2_.x;
-         groom.y = _loc2_.y;
+         var bridePos:Point = ComponentFactory.Instance.creatCustomObject("church.WeddingSceneMap.bridePos");
+         bride.x = bridePos.x;
+         bride.y = bridePos.y;
+         var groomPos:Point = ComponentFactory.Instance.creatCustomObject("church.WeddingSceneMap.groomPos");
+         groom.x = groomPos.x;
+         groom.y = groomPos.y;
          rangeGuest();
          ajustScreen(bride);
          bride.addEventListener("characterArrivedNextStep",__arrive);
@@ -126,9 +126,9 @@ package church.view.churchScene
       
       public function stopWeddingMovie() : void
       {
-         var _loc1_:Point = ComponentFactory.Instance.creatCustomObject("church.WeddingSceneMap.bridePosII");
-         bride.x = _loc1_.x;
-         bride.y = _loc1_.y;
+         var bridePosII:Point = ComponentFactory.Instance.creatCustomObject("church.WeddingSceneMap.bridePosII");
+         bride.x = bridePosII.x;
+         bride.y = bridePosII.y;
          bride.sceneCharacterDirection = SceneCharacterDirection.LB;
          groom.moveSpeed = 0.15;
          groom.moveSpeed = 0.15;
@@ -148,7 +148,7 @@ package church.view.churchScene
          bride.removeEventListener("characterArrivedNextStep",__arrive);
       }
       
-      private function __arrive(param1:SceneCharacterEvent) : void
+      private function __arrive(event:SceneCharacterEvent) : void
       {
          bride.removeEventListener("characterArrivedNextStep",__arrive);
          groom.removeEventListener("characterArrivedNextStep",__arrive);
@@ -162,99 +162,98 @@ package church.view.churchScene
       
       public function rangeGuest() : void
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         var _loc1_:* = null;
+         var j:int = 0;
+         var i:int = 0;
+         var player:* = null;
          getGuestPos();
-         var _loc2_:Array = _characters.list;
-         _loc2_.sortOn("ID",16);
-         while(_loc4_ < _characters.length)
+         var playerArr:Array = _characters.list;
+         playerArr.sortOn("ID",16);
+         while(i < _characters.length)
          {
-            _loc1_ = _loc2_[_loc4_] as ChurchPlayer;
-            if(!ChurchManager.instance.isAdmin(_loc1_.playerVO.playerInfo))
+            player = playerArr[i] as ChurchPlayer;
+            if(!ChurchManager.instance.isAdmin(player.playerVO.playerInfo))
             {
-               if(_loc3_ % 2)
+               if(j % 2)
                {
-                  _loc1_.x = (guestPos[0][0] as Point).x;
-                  _loc1_.y = (guestPos[0][0] as Point).y;
+                  player.x = (guestPos[0][0] as Point).x;
+                  player.y = (guestPos[0][0] as Point).y;
                   (guestPos[0] as Array).shift();
-                  _loc1_.sceneCharacterActionType = "naturalStandBack";
-                  _loc1_.sceneCharacterDirection = SceneCharacterDirection.RT;
+                  player.sceneCharacterActionType = "naturalStandBack";
+                  player.sceneCharacterDirection = SceneCharacterDirection.RT;
                }
                else
                {
-                  _loc1_.x = (guestPos[1][0] as Point).x;
-                  _loc1_.y = (guestPos[1][0] as Point).y;
+                  player.x = (guestPos[1][0] as Point).x;
+                  player.y = (guestPos[1][0] as Point).y;
                   (guestPos[1] as Array).shift();
-                  _loc1_.sceneCharacterActionType = "naturalStandBack";
-                  _loc1_.sceneCharacterDirection = SceneCharacterDirection.LT;
+                  player.sceneCharacterActionType = "naturalStandBack";
+                  player.sceneCharacterDirection = SceneCharacterDirection.LT;
                   if((guestPos[1] as Array).length == 0)
                   {
                      guestPos.shift();
                      guestPos.shift();
                   }
                }
-               _loc3_++;
+               j++;
             }
-            _loc4_++;
+            i++;
          }
       }
       
       private function getGuestPos() : void
       {
-         var _loc1_:* = 0;
-         var _loc3_:* = 0;
+         var count:* = 0;
+         var i:* = 0;
          guestPos = [];
-         var _loc4_:Class = ClassUtils.uiSourceDomain.getDefinition("asset.church.room.GuestLineAsset") as Class;
-         var _loc2_:MovieClip = new _loc4_() as MovieClip;
-         addChild(_loc2_);
-         _loc3_ = uint(1);
-         while(_loc3_ <= 8)
+         var lineClass:Class = ClassUtils.uiSourceDomain.getDefinition("asset.church.room.GuestLineAsset") as Class;
+         var lineAsset:MovieClip = new lineClass() as MovieClip;
+         addChild(lineAsset);
+         for(i = uint(1); i <= 8; )
          {
-            if(_loc3_ == 1 || _loc3_ == 2)
+            if(i == 1 || i == 2)
             {
-               _loc1_ = uint(19);
-               guestPos.push(spliceLine(_loc2_["line" + _loc3_],_loc1_,false,false));
+               count = uint(19);
+               guestPos.push(spliceLine(lineAsset["line" + i],count,false,false));
             }
-            else if(_loc3_ == 3 || _loc3_ == 5 || _loc3_ == 7)
+            else if(i == 3 || i == 5 || i == 7)
             {
-               _loc1_ = uint(14);
-               guestPos.push(spliceLine(_loc2_["line" + _loc3_],_loc1_,false,true));
+               count = uint(14);
+               guestPos.push(spliceLine(lineAsset["line" + i],count,false,true));
             }
-            else if(_loc3_ == 4 || _loc3_ == 6 || _loc3_ == 8)
+            else if(i == 4 || i == 6 || i == 8)
             {
-               _loc1_ = uint(14);
-               guestPos.push(spliceLine(_loc2_["line" + _loc3_],_loc1_,true,false));
+               count = uint(14);
+               guestPos.push(spliceLine(lineAsset["line" + i],count,true,false));
             }
-            _loc3_++;
+            i++;
          }
-         removeChild(_loc2_);
+         removeChild(lineAsset);
       }
       
-      private function spliceLine(param1:DisplayObject, param2:uint, param3:Boolean, param4:Boolean) : Array
+      private function spliceLine(line:DisplayObject, count:uint, right:Boolean, top:Boolean) : Array
       {
-         var _loc10_:int = 0;
-         var _loc5_:* = null;
-         var _loc6_:Number = param1.width / param2;
-         var _loc7_:Number = param1.height / param2;
-         var _loc11_:int = !!param3?1:-1;
-         var _loc9_:int = !!param4?-1:1;
-         var _loc8_:Array = [];
-         while(_loc10_ <= param2)
+         var i:int = 0;
+         var point:* = null;
+         var stepX:Number = line.width / count;
+         var stepY:Number = line.height / count;
+         var dirX:int = !!right?1:-1;
+         var dirY:int = !!top?-1:1;
+         var arr:Array = [];
+         while(i <= count)
          {
-            _loc5_ = new Point();
-            _loc5_.x = param1.x + _loc6_ * _loc10_ * _loc11_;
-            _loc5_.y = param1.y + _loc7_ * _loc10_ * _loc9_;
-            _loc8_.push(_loc5_);
-            _loc10_++;
+            point = new Point();
+            point.x = line.x + stepX * i * dirX;
+            point.y = line.y + stepY * i * dirY;
+            arr.push(point);
+            i++;
          }
-         return _loc8_;
+         return arr;
       }
       
       private function playDialogue() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var _fatherPaopaoConfigVO:* = null;
          frame = 1;
          if(father_read)
          {
@@ -264,12 +263,12 @@ package church.view.churchScene
          {
             father_com.visible = false;
          }
-         _loc2_ = 0;
-         while(_loc2_ < 23)
+         i = 0;
+         while(i < 23)
          {
-            _loc1_ = ComponentFactory.Instance.creatCustomObject("church.room.FatherBallConfigVO" + (_loc2_ + 1));
-            _fatherPaopaoConfig.push(_loc1_);
-            _loc2_++;
+            _fatherPaopaoConfigVO = ComponentFactory.Instance.creatCustomObject("church.room.FatherBallConfigVO" + (i + 1));
+            _fatherPaopaoConfig.push(_fatherPaopaoConfigVO);
+            i++;
          }
          _fatherPaopaoBg = ComponentFactory.Instance.creatComponentByStylename("church.room.FatherPaopaoBg");
          _fatherPaopaoBg.setFrame(frame);
@@ -282,7 +281,7 @@ package church.view.churchScene
       
       private function playerFatherPaopaoFrame() : void
       {
-         var _loc1_:* = null;
+         var maskShape:* = null;
          ObjectUtils.disposeObject(_brideName);
          _brideName = null;
          ObjectUtils.disposeObject(_groomName);
@@ -330,15 +329,15 @@ package church.view.churchScene
             _brideName.text = ChurchManager.instance.currentRoom.brideName;
             addChild(_brideName);
          }
-         var _loc2_:FatherBallConfigVO = _fatherPaopaoConfig[frame - 1] as FatherBallConfigVO;
-         if(_loc2_.isMask == "true")
+         var fatherPaopaoConfigVO:FatherBallConfigVO = _fatherPaopaoConfig[frame - 1] as FatherBallConfigVO;
+         if(fatherPaopaoConfigVO.isMask == "true")
          {
-            _loc1_ = new Shape();
-            _loc1_.x = _fatherPaopao.x + _fatherPaopao.getFrameImage(frame - 1).x;
-            _loc1_.y = _fatherPaopao.y + _fatherPaopao.getFrameImage(frame - 1).y;
+            maskShape = new Shape();
+            maskShape.x = _fatherPaopao.x + _fatherPaopao.getFrameImage(frame - 1).x;
+            maskShape.y = _fatherPaopao.y + _fatherPaopao.getFrameImage(frame - 1).y;
          }
          frame = Number(frame) + 1;
-         BitmapUtils.maskMovie(_fatherPaopao,_loc1_,_loc2_.isMask,_loc2_.rowNumber,_loc2_.rowWitdh,_loc2_.rowHeight,_loc2_.frameStep,_loc2_.sleepSecond,playerFatherPaopaoFrame);
+         BitmapUtils.maskMovie(_fatherPaopao,maskShape,fatherPaopaoConfigVO.isMask,fatherPaopaoConfigVO.rowNumber,fatherPaopaoConfigVO.rowWitdh,fatherPaopaoConfigVO.rowHeight,fatherPaopaoConfigVO.frameStep,fatherPaopaoConfigVO.sleepSecond,playerFatherPaopaoFrame);
       }
       
       private function readyForKiss() : void
@@ -379,8 +378,8 @@ package church.view.churchScene
       
       private function playKissMovie() : void
       {
-         var _loc1_:Class = ClassUtils.uiSourceDomain.getDefinition("tank.church.KissMovie") as Class;
-         kissMovie = new _loc1_() as MovieClip;
+         var kissClass:Class = ClassUtils.uiSourceDomain.getDefinition("tank.church.KissMovie") as Class;
+         kissMovie = new kissClass() as MovieClip;
          kissMovie.x = 1040;
          kissMovie.y = 610;
          addChild(kissMovie);
@@ -402,27 +401,27 @@ package church.view.churchScene
          fireTimer.start();
       }
       
-      private function __fireTimer(param1:Event) : void
+      private function __fireTimer(event:Event) : void
       {
-         var _loc4_:* = null;
-         var _loc2_:* = 0;
-         var _loc3_:Boolean = false;
-         _loc4_ = getFirePosition();
-         _loc2_ = uint(Math.round(Math.random() * 3));
-         _loc3_ = !(Math.round(Math.random() * 9) % 3)?true:false;
-         fireImdily(_loc4_,_loc2_,_loc3_);
+         var pos:* = null;
+         var type:* = 0;
+         var playSound:Boolean = false;
+         pos = getFirePosition();
+         type = uint(Math.round(Math.random() * 3));
+         playSound = !(Math.round(Math.random() * 9) % 3)?true:false;
+         fireImdily(pos,type,playSound);
       }
       
       private function getFirePosition() : Point
       {
-         var _loc1_:* = null;
-         var _loc2_:Number = Math.round(Math.random() * 900) + 50;
-         var _loc3_:Number = Math.round(Math.random() * 500) + 50;
-         _loc1_ = this.globalToLocal(new Point(_loc2_,_loc3_));
-         return _loc1_;
+         var point:* = null;
+         var tempX:Number = Math.round(Math.random() * 900) + 50;
+         var tempY:Number = Math.round(Math.random() * 500) + 50;
+         point = this.globalToLocal(new Point(tempX,tempY));
+         return point;
       }
       
-      private function __fireTimerComplete(param1:TimerEvent) : void
+      private function __fireTimerComplete(event:TimerEvent) : void
       {
          if(!fireTimer)
          {
@@ -439,13 +438,13 @@ package church.view.churchScene
          __fireTimerComplete(null);
       }
       
-      override protected function __click(param1:MouseEvent) : void
+      override protected function __click(event:MouseEvent) : void
       {
          if(ChurchManager.instance.currentRoom.status == "wedding_ing")
          {
             return;
          }
-         super.__click(param1);
+         super.__click(event);
       }
       
       override public function dispose() : void

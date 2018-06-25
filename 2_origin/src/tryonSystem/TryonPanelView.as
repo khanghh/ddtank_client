@@ -64,11 +64,11 @@ package tryonSystem
       
       private var _effect:MovieClip;
       
-      public function TryonPanelView(param1:TryonSystemController, param2:TryonPanelFrame)
+      public function TryonPanelView(contro:TryonSystemController, frame:TryonPanelFrame)
       {
          super();
-         _controller = param1;
-         _model = _controller.getModelByView(param2);
+         _controller = contro;
+         _model = _controller.getModelByView(frame);
          _cells = [];
          initView();
          initEvents();
@@ -76,12 +76,12 @@ package tryonSystem
       
       private function initView() : void
       {
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         var _loc8_:* = null;
-         var _loc2_:* = null;
-         var _loc7_:int = 0;
-         var _loc6_:* = null;
+         var sp:* = null;
+         var cell:* = null;
+         var _itemShine:* = null;
+         var animation:* = null;
+         var i:int = 0;
+         var cell1:* = null;
          _bg = ComponentFactory.Instance.creatComponentByStylename("core.tryOnBigBg");
          addChild(_bg);
          _bg1 = ComponentFactory.Instance.creatComponentByStylename("core.tryOnSmallBg");
@@ -119,23 +119,23 @@ package tryonSystem
          _itemList.vSpace = 60;
          _itemList.hSpace = 50;
          PositionUtils.setPos(_itemList,"quest.tryon.simplelistPos");
-         var _loc1_:AnimationControl = new AnimationControl();
-         _loc1_.addEventListener("complete",_cellLightComplete);
+         var animationControl:AnimationControl = new AnimationControl();
+         animationControl.addEventListener("complete",_cellLightComplete);
          var _loc10_:int = 0;
          var _loc9_:* = _model.items;
-         for each(var _loc5_ in _model.items)
+         for each(var item in _model.items)
          {
-            _loc3_ = new Sprite();
-            _loc3_.graphics.beginFill(16777215,0);
-            _loc3_.graphics.drawRect(0,0,43,43);
-            _loc3_.graphics.endFill();
-            _loc4_ = new TryonCell(_loc3_);
-            _loc4_.info = _loc5_;
-            _loc4_.addEventListener("click",__onClick);
-            _loc4_.buttonMode = true;
-            _itemList.addChild(_loc4_);
-            _cells.push(_loc4_);
-            if(_loc5_.CategoryID == 3)
+            sp = new Sprite();
+            sp.graphics.beginFill(16777215,0);
+            sp.graphics.drawRect(0,0,43,43);
+            sp.graphics.endFill();
+            cell = new TryonCell(sp);
+            cell.info = item;
+            cell.addEventListener("click",__onClick);
+            cell.buttonMode = true;
+            _itemList.addChild(cell);
+            _cells.push(cell);
+            if(item.CategoryID == 3)
             {
                _hideHatBtn.selected = true;
                _model.playerInfo.setHatHide(_hideHatBtn.selected);
@@ -144,45 +144,43 @@ package tryonSystem
             {
                _hideHatBtn.selected = _model.playerInfo.getHatHide();
             }
-            _loc8_ = ComponentFactory.Instance.creatComponentByStylename("asset.core.itemBigShinelight");
-            _loc8_.movie.play();
-            _loc4_.addChildAt(_loc8_,1);
-            _loc2_ = new GlowFilterAnimation();
-            _loc2_.start(_loc8_,false,16763955,0,0);
-            _loc2_.addMovie(0,0,19,0);
-            _loc1_.addMovies(_loc2_);
+            _itemShine = ComponentFactory.Instance.creatComponentByStylename("asset.core.itemBigShinelight");
+            _itemShine.movie.play();
+            cell.addChildAt(_itemShine,1);
+            animation = new GlowFilterAnimation();
+            animation.start(_itemShine,false,16763955,0,0);
+            animation.addMovie(0,0,19,0);
+            animationControl.addMovies(animation);
          }
          addChild(_itemList);
          _bagItems = _model.bagItems;
          _bagCells = [];
-         _loc7_ = 0;
-         while(_loc7_ < 8)
+         for(i = 0; i < 8; )
          {
-            _loc6_ = new PersonalInfoCell(_loc7_,_bagItems[CELL_PLACE[_loc7_]] as InventoryItemInfo,true);
-            _bagCells.push(_loc6_);
-            _loc7_++;
+            cell1 = new PersonalInfoCell(i,_bagItems[CELL_PLACE[i]] as InventoryItemInfo,true);
+            _bagCells.push(cell1);
+            i++;
          }
          _nickName = ComponentFactory.Instance.creatComponentByStylename("tryonNickNameText");
          addChild(_nickName);
          _nickName.text = PlayerManager.Instance.Self.NickName;
-         _loc1_.startMovie();
+         animationControl.startMovie();
       }
       
-      private function _cellLightComplete(param1:Event) : void
+      private function _cellLightComplete(e:Event) : void
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         param1.currentTarget.removeEventListener("complete",_cellLightComplete);
+         var len:int = 0;
+         var i:int = 0;
+         var movie:* = null;
+         e.currentTarget.removeEventListener("complete",_cellLightComplete);
          if(_cells)
          {
-            _loc3_ = _cells.length;
-            _loc4_ = 0;
-            while(_loc4_ < _loc3_)
+            len = _cells.length;
+            for(i = 0; i < len; )
             {
-               _loc2_ = _cells[_loc4_].removeChildAt(1);
-               _loc2_.dispose();
-               _loc4_++;
+               movie = _cells[i].removeChildAt(1);
+               movie.dispose();
+               i++;
             }
          }
       }
@@ -205,52 +203,51 @@ package tryonSystem
          _model.removeEventListener("change",__onchange);
       }
       
-      private function __onchange(param1:Event) : void
+      private function __onchange(event:Event) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < 8)
+         var index:int = 0;
+         for(index = 0; index < 8; )
          {
-            _bagCells[_loc2_].info = _bagItems[CELL_PLACE[_loc2_]] as InventoryItemInfo;
-            _loc2_++;
+            _bagCells[index].info = _bagItems[CELL_PLACE[index]] as InventoryItemInfo;
+            index++;
          }
       }
       
-      private function __hideWingClickHandler(param1:MouseEvent) : void
+      private function __hideWingClickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _model.playerInfo.wingHide = _hideWingBtn.selected;
       }
       
-      private function __hideSuitClickHandler(param1:MouseEvent) : void
+      private function __hideSuitClickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _model.playerInfo.setSuiteHide(_hideSuitBtn.selected);
       }
       
-      private function __hideHatClickHandler(param1:MouseEvent) : void
+      private function __hideHatClickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _model.playerInfo.setHatHide(_hideHatBtn.selected);
       }
       
-      private function __hideGlassClickHandler(param1:MouseEvent) : void
+      private function __hideGlassClickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _model.playerInfo.setGlassHide(_hideGlassBtn.selected);
       }
       
-      private function __onClick(param1:MouseEvent) : void
+      private function __onClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          var _loc4_:int = 0;
          var _loc3_:* = _cells;
-         for each(var _loc2_ in _cells)
+         for each(var cell in _cells)
          {
-            _loc2_.selected = false;
+            cell.selected = false;
          }
-         TryonCell(param1.currentTarget).selected = true;
-         _model.selectedItem = TryonCell(param1.currentTarget).info as InventoryItemInfo;
+         TryonCell(event.currentTarget).selected = true;
+         _model.selectedItem = TryonCell(event.currentTarget).info as InventoryItemInfo;
          if(_effect)
          {
             _effect.play();
@@ -262,17 +259,17 @@ package tryonSystem
          removeEvents();
          var _loc4_:int = 0;
          var _loc3_:* = _cells;
-         for each(var _loc1_ in _cells)
+         for each(var cell in _cells)
          {
-            _loc1_.removeEventListener("click",__onClick);
-            _loc1_.dispose();
+            cell.removeEventListener("click",__onClick);
+            cell.dispose();
          }
          _cells = null;
          var _loc6_:int = 0;
          var _loc5_:* = _bagCells;
-         for each(var _loc2_ in _bagCells)
+         for each(var cell1 in _bagCells)
          {
-            _loc2_.dispose();
+            cell1.dispose();
          }
          _bagCells = null;
          if(_effect)

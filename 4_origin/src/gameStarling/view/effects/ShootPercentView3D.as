@@ -23,12 +23,12 @@ package gameStarling.view.effects
       
       private var tmp:int = 0;
       
-      public function ShootPercentView3D(param1:int, param2:int = 1, param3:Boolean = false)
+      public function ShootPercentView3D(n:int, type:int = 1, isadd:Boolean = false)
       {
          super();
-         _type = param2;
-         _isAdd = param3;
-         _picBmp = getPercent(param1);
+         _type = type;
+         _isAdd = isadd;
+         _picBmp = getPercent(n);
          addChild(_picBmp);
          this.addEventListener("addedToStage",__addToStage);
       }
@@ -46,7 +46,7 @@ package gameStarling.view.effects
          super.dispose();
       }
       
-      private function __addToStage(param1:Event) : void
+      private function __addToStage(evt:Event) : void
       {
          removeEventListener("addedToStage",__addToStage);
          if(_picBmp == null)
@@ -68,7 +68,7 @@ package gameStarling.view.effects
          addEventListener("enterFrame",__enterFrame);
       }
       
-      private function __enterFrame(param1:Event) : void
+      private function __enterFrame(evt:Event) : void
       {
          if(_type == 1)
          {
@@ -144,90 +144,88 @@ package gameStarling.view.effects
          }
       }
       
-      public function getPercent(param1:int) : Sprite
+      public function getPercent(n:int) : Sprite
       {
-         var _loc11_:* = null;
-         var _loc4_:* = null;
-         var _loc8_:int = 0;
-         var _loc2_:int = 0;
-         var _loc10_:* = null;
-         var _loc6_:* = null;
-         var _loc9_:int = 0;
-         var _loc3_:* = null;
-         var _loc5_:* = null;
-         var _loc7_:Sprite = new Sprite();
-         _loc7_.touchable = false;
-         if(param1 <= 99999999)
+         var numArr:* = null;
+         var s:* = null;
+         var len:int = 0;
+         var xpos:int = 0;
+         var addIcon:* = null;
+         var bm:* = null;
+         var i:int = 0;
+         var b:* = null;
+         var p:* = null;
+         var numberContainer:Sprite = new Sprite();
+         numberContainer.touchable = false;
+         if(n <= 99999999)
          {
-            _loc11_ = [];
-            _loc11_ = [0,0,0,0];
-            _loc4_ = String(param1);
-            _loc8_ = _loc4_.length;
-            _loc2_ = 33 + (4 - _loc8_) * 10;
+            numArr = [];
+            numArr = [0,0,0,0];
+            s = String(n);
+            len = s.length;
+            xpos = 33 + (4 - len) * 10;
             if(_isAdd)
             {
-               _loc4_ = " " + _loc4_;
-               _loc8_ = _loc8_ + 1;
-               _loc2_ = _loc2_ - 10;
-               _loc10_ = StarlingMain.instance.createImage("game_blood_addIcon");
-               _loc10_.x = _loc2_;
-               _loc10_.y = 20;
-               _loc11_.push(_loc10_);
+               s = " " + s;
+               len = len + 1;
+               xpos = xpos - 10;
+               addIcon = StarlingMain.instance.createImage("game_blood_addIcon");
+               addIcon.x = xpos;
+               addIcon.y = 20;
+               numArr.push(addIcon);
             }
             else if(_type == 2)
             {
-               _loc6_ = StarlingMain.instance.createImage("game_blood_RBg");
-               _loc6_.x = _loc6_.x + 5;
-               _loc6_.y = -10;
-               _loc11_.push(_loc6_);
+               bm = StarlingMain.instance.createImage("game_blood_RBg");
+               bm.x = bm.x + 5;
+               bm.y = -10;
+               numArr.push(bm);
             }
-            _loc9_ = !!_isAdd?1:0;
-            while(_loc9_ < _loc8_)
+            i = !!_isAdd?1:0;
+            while(i < len)
             {
                if(_isAdd)
                {
-                  _loc3_ = BloodNumberCreater.createGreenImageNum(int(_loc4_.charAt(_loc9_)));
+                  b = BloodNumberCreater.createGreenImageNum(int(s.charAt(i)));
                }
                else
                {
-                  _loc3_ = BloodNumberCreater.createRedImageNum(int(_loc4_.charAt(_loc9_)));
+                  b = BloodNumberCreater.createRedImageNum(int(s.charAt(i)));
                }
-               _loc3_.x = _loc2_ + _loc9_ * 20;
-               _loc3_.y = 20;
-               _loc11_.push(_loc3_);
-               _loc9_++;
+               b.x = xpos + i * 20;
+               b.y = 20;
+               numArr.push(b);
+               i++;
             }
-            _loc11_ = returnNum(_loc11_);
-            _loc9_ = 4;
-            while(_loc9_ < _loc11_.length)
+            numArr = returnNum(numArr);
+            for(i = 4; i < numArr.length; )
             {
-               _loc5_ = new Point(_loc11_[_loc9_].x - _loc11_[0],_loc11_[_loc9_].y - _loc11_[1]);
-               PositionUtils.setPos(_loc5_,_loc11_[_loc9_]);
-               _loc7_.addChild(_loc11_[_loc9_]);
-               _loc9_++;
+               p = new Point(numArr[i].x - numArr[0],numArr[i].y - numArr[1]);
+               PositionUtils.setPos(p,numArr[i]);
+               numberContainer.addChild(numArr[i]);
+               i++;
             }
-            _loc7_.x = _loc11_[0];
-            _loc7_.y = _loc11_[1];
-            _loc11_ = null;
+            numberContainer.x = numArr[0];
+            numberContainer.y = numArr[1];
+            numArr = null;
          }
-         return _loc7_;
+         return numberContainer;
       }
       
-      private function returnNum(param1:Array) : Array
+      private function returnNum(arr:Array) : Array
       {
-         var _loc2_:int = 0;
-         _loc2_ = 4;
-         while(_loc2_ < param1.length)
+         var i:int = 0;
+         for(i = 4; i < arr.length; )
          {
-            param1[0] = param1[0] > param1[_loc2_].x?param1[_loc2_].x:param1[0];
-            param1[1] = param1[1] > param1[_loc2_].y?param1[_loc2_].y:param1[1];
-            param1[2] = param1[2] > param1[_loc2_].width + param1[_loc2_].x?param1[2]:param1[_loc2_].width + param1[_loc2_].x;
-            param1[3] = param1[3] > param1[_loc2_].height + param1[_loc2_].y?param1[3]:param1[_loc2_].height + param1[_loc2_].y;
-            _loc2_++;
+            arr[0] = arr[0] > arr[i].x?arr[i].x:arr[0];
+            arr[1] = arr[1] > arr[i].y?arr[i].y:arr[1];
+            arr[2] = arr[2] > arr[i].width + arr[i].x?arr[2]:arr[i].width + arr[i].x;
+            arr[3] = arr[3] > arr[i].height + arr[i].y?arr[3]:arr[i].height + arr[i].y;
+            i++;
          }
-         param1[2] = param1[2] - param1[0];
-         param1[3] = param1[3] - param1[1];
-         return param1;
+         arr[2] = arr[2] - arr[0];
+         arr[3] = arr[3] - arr[1];
+         return arr;
       }
    }
 }

@@ -130,9 +130,9 @@ package feedback.view
          _submitFrame.feedbackInfo.goods_get_date = _getTimeTextInput.text;
       }
       
-      public function set submitFrame(param1:FeedbackSubmitFrame) : void
+      public function set submitFrame($submitFrame:FeedbackSubmitFrame) : void
       {
-         _submitFrame = param1;
+         _submitFrame = $submitFrame;
          if(_submitFrame.feedbackInfo.question_content)
          {
             _detailTextArea.text = _submitFrame.feedbackInfo.question_content;
@@ -148,7 +148,7 @@ package feedback.view
          __texeInput(null);
       }
       
-      private function __backBtnClick(param1:MouseEvent) : void
+      private function __backBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _submitFrame.problemCombox.mouseEnabled = true;
@@ -176,18 +176,18 @@ package feedback.view
          _textInputBg.height = 242;
       }
       
-      private function __texeInput(param1:Event) : void
+      private function __texeInput(event:Event) : void
       {
          _infoText.text = LanguageMgr.GetTranslation("feedback.view.infoText",_detailTextArea.maxChars - _detailTextArea.textField.length);
       }
       
-      private function __closeBtnClick(param1:MouseEvent) : void
+      private function __closeBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          FeedbackManager.instance.closeFrame();
       }
       
-      private function __nextBtnClick(param1:MouseEvent) : void
+      private function __nextBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_submitFrame.feedbackInfo.question_type < 0)
@@ -225,82 +225,82 @@ package feedback.view
          _textInputBg.height = 140;
       }
       
-      private function __submitBtnClick(param1:MouseEvent) : void
+      private function __submitBtnClick(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var info:* = null;
          SoundManager.instance.play("008");
          setFeedbackInfo();
          if(check)
          {
-            _loc2_ = new FeedbackInfo();
-            _loc2_.question_type = _submitFrame.feedbackInfo.question_type;
-            _loc2_.question_title = _submitFrame.feedbackInfo.question_title;
-            _loc2_.occurrence_date = _submitFrame.feedbackInfo.occurrence_date;
-            _loc2_.question_content = _submitFrame.feedbackInfo.question_content;
-            _loc2_.goods_get_method = _submitFrame.feedbackInfo.goods_get_method;
-            _loc2_.goods_get_date = _submitFrame.feedbackInfo.goods_get_date;
-            FeedbackManager.instance.submitFeedbackInfo(_loc2_);
+            info = new FeedbackInfo();
+            info.question_type = _submitFrame.feedbackInfo.question_type;
+            info.question_title = _submitFrame.feedbackInfo.question_title;
+            info.occurrence_date = _submitFrame.feedbackInfo.occurrence_date;
+            info.question_content = _submitFrame.feedbackInfo.question_content;
+            info.goods_get_method = _submitFrame.feedbackInfo.goods_get_method;
+            info.goods_get_date = _submitFrame.feedbackInfo.goods_get_date;
+            FeedbackManager.instance.submitFeedbackInfo(info);
          }
       }
       
       private function _init() : void
       {
-         var _loc1_:* = null;
+         var rec:* = null;
          _explainTextArea = ComponentFactory.Instance.creatComponentByStylename("feedback.simpleTextArea");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.stealHandExplainTextAreaRec");
-         ObjectUtils.copyPropertyByRectangle(_explainTextArea,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.stealHandExplainTextAreaRec");
+         ObjectUtils.copyPropertyByRectangle(_explainTextArea,rec);
          _explainTextArea.textField.htmlText = LanguageMgr.GetTranslation("feedback.view.explainTextAreaText");
          _explainTextArea.textField.type = "dynamic";
          _explainTextArea.invalidateViewport();
          addChildAt(_explainTextArea,0);
          _acquirementTextImg = ComponentFactory.Instance.creatComponentByStylename("ddtfeedback.typeText");
          _acquirementTextImg.text = LanguageMgr.GetTranslation("feedback.view.Feedback.text9");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.stealHandAcquirementTextImgRec");
-         ObjectUtils.copyPropertyByRectangle(_acquirementTextImg,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.stealHandAcquirementTextImgRec");
+         ObjectUtils.copyPropertyByRectangle(_acquirementTextImg,rec);
          _acquirementTextImg.visible = false;
          addChildAt(_acquirementTextImg,0);
          _acquirementTextInput = ComponentFactory.Instance.creatComponentByStylename("feedback.textInput");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.stealHandAcquirementInputRec");
-         ObjectUtils.copyPropertyByRectangle(_acquirementTextInput,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.stealHandAcquirementInputRec");
+         ObjectUtils.copyPropertyByRectangle(_acquirementTextInput,rec);
          _acquirementTextInput.visible = false;
          addChildAt(_acquirementTextInput,0);
          _acquirementAsterisk = ComponentFactory.Instance.creatBitmap("asset.feedback.asteriskImg");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.stealHandAcquirementAsteriskRec");
-         ObjectUtils.copyPropertyByRectangle(_acquirementAsterisk,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.stealHandAcquirementAsteriskRec");
+         ObjectUtils.copyPropertyByRectangle(_acquirementAsterisk,rec);
          _acquirementAsterisk.visible = false;
          addChildAt(_acquirementAsterisk,0);
          _getTimeTextImg = ComponentFactory.Instance.creatComponentByStylename("ddtfeedback.typeText");
          _getTimeTextImg.text = LanguageMgr.GetTranslation("feedback.view.Feedback.text10");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.stealHandGetTimeTextImgRec");
-         ObjectUtils.copyPropertyByRectangle(_getTimeTextImg,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.stealHandGetTimeTextImgRec");
+         ObjectUtils.copyPropertyByRectangle(_getTimeTextImg,rec);
          _getTimeTextImg.visible = false;
          addChildAt(_getTimeTextImg,0);
          _getTimeTextInput = ComponentFactory.Instance.creatComponentByStylename("feedback.textInput");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.stealHandGetTimeInputRec");
-         ObjectUtils.copyPropertyByRectangle(_getTimeTextInput,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.stealHandGetTimeInputRec");
+         ObjectUtils.copyPropertyByRectangle(_getTimeTextInput,rec);
          _getTimeTextInput.visible = false;
          _getTimeTextInput.textField.restrict = "0-9\\-";
          addChildAt(_getTimeTextInput,0);
          _getTimeAsterisk = ComponentFactory.Instance.creatBitmap("asset.feedback.asteriskImg");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.stealHandGetTimeAsteriskRec");
-         ObjectUtils.copyPropertyByRectangle(_getTimeAsterisk,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.stealHandGetTimeAsteriskRec");
+         ObjectUtils.copyPropertyByRectangle(_getTimeAsterisk,rec);
          _getTimeAsterisk.visible = false;
          addChildAt(_getTimeAsterisk,0);
          _infoDateText = ComponentFactory.Instance.creatComponentByStylename("feedback.infoText");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.stealHandInfoDateTextRec");
-         ObjectUtils.copyPropertyByRectangle(_infoDateText,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.stealHandInfoDateTextRec");
+         ObjectUtils.copyPropertyByRectangle(_infoDateText,rec);
          _infoDateText.text = LanguageMgr.GetTranslation("feedback.view.infoDateText");
          addChildAt(_infoDateText,0);
          _infoDateText.visible = false;
          _detailTextImg = ComponentFactory.Instance.creatComponentByStylename("ddtfeedback.descriptionText");
          _detailTextImg.text = LanguageMgr.GetTranslation("feedback.view.Feedback.text6");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.stealHandDetailTextImgRec");
-         ObjectUtils.copyPropertyByRectangle(_detailTextImg,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.stealHandDetailTextImgRec");
+         ObjectUtils.copyPropertyByRectangle(_detailTextImg,rec);
          _detailTextImg.visible = false;
          addChildAt(_detailTextImg,0);
          _infoText = ComponentFactory.Instance.creatComponentByStylename("feedback.infoText");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.stealHandDisappearInfoTextRec");
-         ObjectUtils.copyPropertyByRectangle(_infoText,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.stealHandDisappearInfoTextRec");
+         ObjectUtils.copyPropertyByRectangle(_infoText,rec);
          addChildAt(_infoText,0);
          _infoText.visible = false;
          _csTelText = ComponentFactory.Instance.creatComponentByStylename("feedback.csTelText");
@@ -314,8 +314,8 @@ package feedback.view
          _csTelText.y = 85;
          _csTelText.visible = true;
          _detailTextArea = ComponentFactory.Instance.creatComponentByStylename("feedback.simpleTextArea");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.stealHandDetailTextAreaRec");
-         ObjectUtils.copyPropertyByRectangle(_detailTextArea,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.stealHandDetailTextAreaRec");
+         ObjectUtils.copyPropertyByRectangle(_detailTextArea,rec);
          _detailTextArea.text = "";
          _detailTextArea.visible = false;
          addChildAt(_detailTextArea,0);
@@ -323,24 +323,24 @@ package feedback.view
          _textInputBg = ComponentFactory.Instance.creatComponentByStylename("feedbackStealHand.textBgImg_style");
          addChildAt(_textInputBg,0);
          _nextBtn = ComponentFactory.Instance.creatComponentByStylename("feedback.btn");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.stealHandNextBtnRec");
-         ObjectUtils.copyPropertyByRectangle(_nextBtn,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.stealHandNextBtnRec");
+         ObjectUtils.copyPropertyByRectangle(_nextBtn,rec);
          _nextBtn.text = LanguageMgr.GetTranslation("tank.view.bagII.baglocked.next");
          addChildAt(_nextBtn,0);
          _closeBtn = ComponentFactory.Instance.creatComponentByStylename("feedback.btn");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.closeBtnRec");
-         ObjectUtils.copyPropertyByRectangle(_closeBtn,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.closeBtnRec");
+         ObjectUtils.copyPropertyByRectangle(_closeBtn,rec);
          _closeBtn.text = LanguageMgr.GetTranslation("tank.invite.InviteView.close");
          addChildAt(_closeBtn,0);
          _backBtn = ComponentFactory.Instance.creatComponentByStylename("feedback.btn");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.stealHandBackBtnRec");
-         ObjectUtils.copyPropertyByRectangle(_backBtn,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.stealHandBackBtnRec");
+         ObjectUtils.copyPropertyByRectangle(_backBtn,rec);
          _backBtn.text = LanguageMgr.GetTranslation("tank.view.bagII.baglocked.preview");
          _backBtn.visible = false;
          addChildAt(_backBtn,0);
          _submitBtn = ComponentFactory.Instance.creatComponentByStylename("feedback.btn");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.stealHandSubmitBtnRec");
-         ObjectUtils.copyPropertyByRectangle(_submitBtn,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.stealHandSubmitBtnRec");
+         ObjectUtils.copyPropertyByRectangle(_submitBtn,rec);
          _submitBtn.text = LanguageMgr.GetTranslation("feedback.view.FeedbackSubmitSp.submitBtnText");
          _submitBtn.visible = false;
          addChildAt(_submitBtn,0);

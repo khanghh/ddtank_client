@@ -10,16 +10,16 @@ package com.pickgliss.geom
       
       public var y:int = 0;
       
-      public function IntPoint(param1:int = 0, param2:int = 0)
+      public function IntPoint(x:int = 0, y:int = 0)
       {
          super();
-         this.x = param1;
-         this.y = param2;
+         this.x = x;
+         this.y = y;
       }
       
-      public static function creatWithPoint(param1:Point) : IntPoint
+      public static function creatWithPoint(p:Point) : IntPoint
       {
-         return new IntPoint(param1.x,param1.y);
+         return new IntPoint(p.x,p.y);
       }
       
       public function toPoint() : Point
@@ -27,63 +27,63 @@ package com.pickgliss.geom
          return new Point(x,y);
       }
       
-      public function setWithPoint(param1:Point) : void
+      public function setWithPoint(p:Point) : void
       {
-         x = param1.x;
-         y = param1.y;
+         x = p.x;
+         y = p.y;
       }
       
-      public function setLocation(param1:IntPoint) : void
+      public function setLocation(p:IntPoint) : void
       {
-         this.x = param1.x;
-         this.y = param1.y;
+         this.x = p.x;
+         this.y = p.y;
       }
       
-      public function setLocationXY(param1:int = 0, param2:int = 0) : void
+      public function setLocationXY(x:int = 0, y:int = 0) : void
       {
-         this.x = param1;
-         this.y = param2;
+         this.x = x;
+         this.y = y;
       }
       
-      public function move(param1:int, param2:int) : IntPoint
+      public function move(dx:int, dy:int) : IntPoint
       {
-         x = x + param1;
-         y = y + param2;
+         x = x + dx;
+         y = y + dy;
          return this;
       }
       
-      public function moveRadians(param1:int, param2:int) : IntPoint
+      public function moveRadians(direction:int, distance:int) : IntPoint
       {
-         x = x + Math.round(Math.cos(param1) * param2);
-         y = y + Math.round(Math.sin(param1) * param2);
+         x = x + Math.round(Math.cos(direction) * distance);
+         y = y + Math.round(Math.sin(direction) * distance);
          return this;
       }
       
-      public function nextPoint(param1:Number, param2:Number) : IntPoint
+      public function nextPoint(direction:Number, distance:Number) : IntPoint
       {
-         return new IntPoint(x + Math.cos(param1) * param2,y + Math.sin(param1) * param2);
+         return new IntPoint(x + Math.cos(direction) * distance,y + Math.sin(direction) * distance);
       }
       
-      public function distanceSq(param1:IntPoint) : int
+      public function distanceSq(p:IntPoint) : int
       {
-         var _loc3_:int = param1.x;
-         var _loc2_:int = param1.y;
-         return (x - _loc3_) * (x - _loc3_) + (y - _loc2_) * (y - _loc2_);
+         var xx:int = p.x;
+         var yy:int = p.y;
+         return (x - xx) * (x - xx) + (y - yy) * (y - yy);
       }
       
-      public function distance(param1:IntPoint) : int
+      public function distance(p:IntPoint) : int
       {
-         return Math.sqrt(distanceSq(param1));
+         return Math.sqrt(distanceSq(p));
       }
       
-      public function equals(param1:Object) : Boolean
+      public function equals(o:Object) : Boolean
       {
-         var _loc2_:IntPoint = param1 as IntPoint;
-         if(_loc2_ == null)
+         var toCompare:IntPoint = o as IntPoint;
+         if(toCompare == null)
          {
             return false;
          }
-         return x === _loc2_.x && y === _loc2_.y;
+         return x === toCompare.x && y === toCompare.y;
       }
       
       public function clone() : IntPoint

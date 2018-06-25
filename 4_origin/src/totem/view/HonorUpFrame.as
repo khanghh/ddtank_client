@@ -65,23 +65,23 @@ package totem.view
          HonorUpManager.instance.addEventListener("up_count_update",refreshShow,false,0,true);
       }
       
-      private function refreshShow(param1:Event) : void
+      private function refreshShow(event:Event) : void
       {
-         var _loc4_:* = null;
-         var _loc2_:Array = HonorUpManager.instance.dataList;
-         var _loc3_:int = HonorUpManager.instance.upCount;
-         if(_loc3_ >= _loc2_.length)
+         var data:* = null;
+         var dataList:Array = HonorUpManager.instance.dataList;
+         var upCount:int = HonorUpManager.instance.upCount;
+         if(upCount >= dataList.length)
          {
             dispose();
          }
          else
          {
-            _loc4_ = _loc2_[_loc3_] as HonorUpDataVo;
-            _tip1.htmlText = LanguageMgr.GetTranslation("ddt.totem.honorUpFrame.tip1",_loc4_.money,_loc4_.honor);
+            data = dataList[upCount] as HonorUpDataVo;
+            _tip1.htmlText = LanguageMgr.GetTranslation("ddt.totem.honorUpFrame.tip1",data.money,data.honor);
          }
       }
       
-      private function doUpHonor(param1:MouseEvent) : void
+      private function doUpHonor(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -89,10 +89,10 @@ package totem.view
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:Array = HonorUpManager.instance.dataList;
-         var _loc3_:int = HonorUpManager.instance.upCount;
-         var _loc4_:int = (_loc2_[_loc3_] as HonorUpDataVo).money;
-         CheckMoneyUtils.instance.checkMoney(_selecteItem.isBind,_loc4_,onCheckComplete);
+         var dataList:Array = HonorUpManager.instance.dataList;
+         var upCount:int = HonorUpManager.instance.upCount;
+         var money:int = (dataList[upCount] as HonorUpDataVo).money;
+         CheckMoneyUtils.instance.checkMoney(_selecteItem.isBind,money,onCheckComplete);
       }
       
       protected function onCheckComplete() : void
@@ -100,9 +100,9 @@ package totem.view
          SocketManager.Instance.out.sendHonorUp(2,CheckMoneyUtils.instance.isBind);
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();

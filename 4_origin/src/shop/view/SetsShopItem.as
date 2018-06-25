@@ -29,12 +29,12 @@ package shop.view
          _checkBox.removeEventListener("click",__soundPlay);
       }
       
-      private function __selectedChanged(param1:Event) : void
+      private function __selectedChanged(event:Event) : void
       {
          dispatchEvent(new Event("select"));
       }
       
-      override protected function drawBackground(param1:Boolean = false) : void
+      override protected function drawBackground(bool:Boolean = false) : void
       {
          _bg = ComponentFactory.Instance.creatComponentByStylename("ddtshop.SetsShopItemBg");
          addChild(_bg);
@@ -57,9 +57,9 @@ package shop.view
          return _checkBox.selected;
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(val:Boolean) : void
       {
-         _checkBox.selected = param1;
+         _checkBox.selected = val;
       }
    }
 }

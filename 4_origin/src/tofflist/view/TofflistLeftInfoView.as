@@ -62,9 +62,9 @@ package tofflist.view
          removeEvent();
          var _loc3_:int = 0;
          var _loc2_:* = _textArr;
-         for each(var _loc1_ in _textArr)
+         for each(var txt in _textArr)
          {
-            ObjectUtils.disposeObject(_loc1_);
+            ObjectUtils.disposeObject(txt);
          }
          _textArr = null;
          ObjectUtils.disposeObject(_titleBg);
@@ -104,11 +104,11 @@ package tofflist.view
          return _updateTimeTxt;
       }
       
-      private function __tofflistTypeHandler(param1:TofflistEvent) : void
+      private function __tofflistTypeHandler(evt:TofflistEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc4_:SelfInfo = PlayerManager.Instance.Self;
-         var _loc3_:ClubInfo = PlayerManager.Instance.SelfConsortia;
+         var num:int = 0;
+         var self:SelfInfo = PlayerManager.Instance.Self;
+         var consortia:ClubInfo = PlayerManager.Instance.SelfConsortia;
          _levelStar.visible = false;
          _levelIcon.visible = false;
          _RankingLiftImg.visible = false;
@@ -138,7 +138,7 @@ package tofflist.view
                      _titleBg.setFrame(3);
                      _valueTitle.text = LanguageMgr.GetTranslation("team.rank.score");
                      _textArr[0].text = TofflistModel.Instance.rankInfo == null?"0":TofflistModel.Instance.rankInfo.BattleTeamRank;
-                     _textArr[2].text = _loc4_.teamScore;
+                     _textArr[2].text = self.teamScore;
                   }
                   else
                   {
@@ -154,20 +154,20 @@ package tofflist.view
                               {
                                  _valueTitle.text = LanguageMgr.GetTranslation("ddt.giftSystem.GiftGoodItem.charmNum");
                                  _textArr[0].text = TofflistModel.Instance.rankInfo == null?"0":TofflistModel.Instance.rankInfo.ConsortiaGiftGp;
-                                 _textArr[2].text = _loc4_.charmGP;
+                                 _textArr[2].text = self.charmGP;
                               }
                            }
                            else
                            {
                               _valueTitle.text = LanguageMgr.GetTranslation("tofflist.totalasset");
-                              if(!_loc3_ || !_loc4_.consortiaInfo.ChairmanName)
+                              if(!consortia || !self.consortiaInfo.ChairmanName)
                               {
                                  consortiaEmpty();
                               }
                               else
                               {
                                  _textArr[0].text = TofflistModel.Instance.rankInfo == null?"0":TofflistModel.Instance.rankInfo.ConsortiaRiches;
-                                 _textArr[2].text = _loc4_.consortiaInfo.Riches;
+                                 _textArr[2].text = self.consortiaInfo.Riches;
                               }
                            }
                         }
@@ -178,15 +178,15 @@ package tofflist.view
                            _levelTitle.visible = _loc5_;
                            _textArr[1].visible = _loc5_;
                            _bg.gotoAndStop(1);
-                           if(!_loc3_ || !_loc4_.consortiaInfo.ChairmanName)
+                           if(!consortia || !self.consortiaInfo.ChairmanName)
                            {
                               consortiaEmpty();
                            }
                            else
                            {
                               _textArr[0].text = TofflistModel.Instance.rankInfo == null?"0":TofflistModel.Instance.rankInfo.ConsortiaLevel;
-                              _textArr[2].text = _loc4_.consortiaInfo.Riches;
-                              _textArr[1].text = _loc4_.consortiaInfo.Level;
+                              _textArr[2].text = self.consortiaInfo.Riches;
+                              _textArr[1].text = self.consortiaInfo.Level;
                            }
                         }
                      }
@@ -194,7 +194,7 @@ package tofflist.view
                      {
                         _valueTitle.text = LanguageMgr.GetTranslation("tank.menu.FightPoweTxt");
                         _textArr[0].text = TofflistModel.Instance.rankInfo == null?"0":TofflistModel.Instance.rankInfo.ConsortiaFightPower;
-                        _textArr[2].text = _loc4_.FightPower;
+                        _textArr[2].text = self.FightPower;
                      }
                   }
                }
@@ -214,13 +214,13 @@ package tofflist.view
                            {
                               onComPare(TofflistModel.Instance.rankInfo.ConsortiaGiftGp,TofflistModel.Instance.rankInfo.ConsortiaPrevGiftGp);
                            }
-                           _textArr[2].text = _loc4_.consortiaInfo.CharmGP;
+                           _textArr[2].text = self.consortiaInfo.CharmGP;
                         }
                      }
                      else
                      {
                         _valueTitle.text = LanguageMgr.GetTranslation("tofflist.totalasset");
-                        if(!_loc3_ || !_loc4_.consortiaInfo.ChairmanName)
+                        if(!consortia || !self.consortiaInfo.ChairmanName)
                         {
                            consortiaEmpty();
                         }
@@ -231,7 +231,7 @@ package tofflist.view
                            {
                               onComPare(TofflistModel.Instance.rankInfo.ConsortiaRiches,TofflistModel.Instance.rankInfo.ConsortiaPrevRiches);
                            }
-                           _textArr[2].text = _loc4_.consortiaInfo.Riches;
+                           _textArr[2].text = self.consortiaInfo.Riches;
                         }
                      }
                   }
@@ -242,7 +242,7 @@ package tofflist.view
                      _loc5_ = true;
                      _levelTitle.visible = _loc5_;
                      _textArr[1].visible = _loc5_;
-                     if(!_loc3_ || !_loc4_.consortiaInfo.ChairmanName)
+                     if(!consortia || !self.consortiaInfo.ChairmanName)
                      {
                         consortiaEmpty();
                      }
@@ -251,8 +251,8 @@ package tofflist.view
                      {
                         onComPare(TofflistModel.Instance.rankInfo.ConsortiaLevel,TofflistModel.Instance.rankInfo.ConsortiaPrevLevel);
                      }
-                     _textArr[2].text = _loc4_.consortiaInfo.Riches;
-                     _textArr[1].text = _loc4_.consortiaInfo.Level;
+                     _textArr[2].text = self.consortiaInfo.Riches;
+                     _textArr[1].text = self.consortiaInfo.Level;
                   }
                }
                else
@@ -263,7 +263,7 @@ package tofflist.view
                   {
                      onComPare(TofflistModel.Instance.rankInfo.ConsortiaFightPower,TofflistModel.Instance.rankInfo.ConsortiaPrevFightPower);
                   }
-                  _textArr[2].text = _loc4_.FightPower;
+                  _textArr[2].text = self.FightPower;
                }
             }
             else
@@ -282,14 +282,14 @@ package tofflist.view
                            {
                               _valueTitle.text = LanguageMgr.GetTranslation("ddt.giftSystem.GiftGoodItem.charmNum");
                               _textArr[0].text = TofflistModel.Instance.rankInfo == null?"0":TofflistModel.Instance.rankInfo.GiftGp;
-                              _textArr[2].text = _loc4_.charmGP;
+                              _textArr[2].text = self.charmGP;
                            }
                         }
                         else
                         {
                            _valueTitle.text = LanguageMgr.GetTranslation("tofflist.achivepoint");
                            _textArr[0].text = TofflistModel.Instance.rankInfo == null?"0":TofflistModel.Instance.rankInfo.AchievementPoint;
-                           _textArr[2].text = _loc4_.AchievementPoint;
+                           _textArr[2].text = self.AchievementPoint;
                         }
                      }
                      else
@@ -298,8 +298,8 @@ package tofflist.view
                         _levelTitle.visible = true;
                         _bg.gotoAndStop(1);
                         _textArr[0].text = TofflistModel.Instance.rankInfo == null?"0":TofflistModel.Instance.rankInfo.GP;
-                        _textArr[2].text = _loc4_.GP;
-                        _levelIcon.setInfo(_loc4_.Grade,_loc4_.ddtKingGrade,_loc4_.Repute,_loc4_.WinCount,_loc4_.TotalCount,_loc4_.FightPower,_loc4_.Offer,true,false);
+                        _textArr[2].text = self.GP;
+                        _levelIcon.setInfo(self.Grade,self.ddtKingGrade,self.Repute,self.WinCount,self.TotalCount,self.FightPower,self.Offer,true,false);
                         _levelIcon.visible = true;
                      }
                   }
@@ -307,7 +307,7 @@ package tofflist.view
                   {
                      _valueTitle.text = LanguageMgr.GetTranslation("tank.menu.FightPoweTxt");
                      _textArr[0].text = TofflistModel.Instance.rankInfo == null?"0":TofflistModel.Instance.rankInfo.FightPower;
-                     _textArr[2].text = _loc4_.FightPower;
+                     _textArr[2].text = self.FightPower;
                   }
                }
                else
@@ -356,7 +356,7 @@ package tofflist.view
                            {
                               onComPare(TofflistModel.Instance.rankInfo.GiftGp,TofflistModel.Instance.rankInfo.PrevGiftGp);
                            }
-                           _textArr[2].text = _loc4_.charmGP;
+                           _textArr[2].text = self.charmGP;
                         }
                      }
                      else
@@ -367,7 +367,7 @@ package tofflist.view
                         {
                            onComPare(TofflistModel.Instance.rankInfo.AchievementPoint,TofflistModel.Instance.rankInfo.PrevAchievementPoint);
                         }
-                        _textArr[2].text = _loc4_.AchievementPoint;
+                        _textArr[2].text = self.AchievementPoint;
                      }
                   }
                   else
@@ -380,8 +380,8 @@ package tofflist.view
                      {
                         onComPare(TofflistModel.Instance.rankInfo.GP,TofflistModel.Instance.rankInfo.PrevGP);
                      }
-                     _textArr[2].text = _loc4_.GP;
-                     _levelIcon.setInfo(_loc4_.Grade,_loc4_.ddtKingGrade,_loc4_.Repute,_loc4_.WinCount,_loc4_.TotalCount,_loc4_.FightPower,_loc4_.Offer,true,false);
+                     _textArr[2].text = self.GP;
+                     _levelIcon.setInfo(self.Grade,self.ddtKingGrade,self.Repute,self.WinCount,self.TotalCount,self.FightPower,self.Offer,true,false);
                      _levelIcon.visible = true;
                   }
                }
@@ -393,7 +393,7 @@ package tofflist.view
                   {
                      onComPare(TofflistModel.Instance.rankInfo.FightPower,TofflistModel.Instance.rankInfo.PrevFightPower);
                   }
-                  _textArr[2].text = _loc4_.FightPower;
+                  _textArr[2].text = self.FightPower;
                }
             }
             else
@@ -427,20 +427,19 @@ package tofflist.view
          _textArr[2].x = _textArr[2].x - _textArr[2].textWidth / 2;
       }
       
-      private function getToffistPlayerInfo(param1:int) : TofflistPlayerInfo
+      private function getToffistPlayerInfo(id:int) : TofflistPlayerInfo
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:int = TofflistModel.Instance.personalMatchesWeek.list.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var i:int = 0;
+         var data:* = null;
+         var len:int = TofflistModel.Instance.personalMatchesWeek.list.length;
+         for(i = 0; i < len; )
          {
-            _loc2_ = TofflistModel.Instance.personalMatchesWeek.list[_loc4_];
-            if(_loc2_.ID == param1)
+            data = TofflistModel.Instance.personalMatchesWeek.list[i];
+            if(data.ID == id)
             {
-               return _loc2_;
+               return data;
             }
-            _loc4_++;
+            i++;
          }
          return null;
       }
@@ -451,7 +450,7 @@ package tofflist.view
          TofflistModel.addEventListener("tofflisttypechange",__tofflistTypeHandler);
       }
       
-      private function __rankInfoHandler(param1:TofflistEvent) : void
+      private function __rankInfoHandler(event:TofflistEvent) : void
       {
          __tofflistTypeHandler(null);
       }
@@ -463,23 +462,23 @@ package tofflist.view
          _textArr[0].text = _loc1_;
       }
       
-      private function onComPare(param1:Number, param2:Number) : void
+      private function onComPare(nowN:Number, PreN:Number) : void
       {
-         var _loc3_:int = 0;
+         var num:int = 0;
          _RankingLiftImg.visible = true;
-         if(TofflistModel.Instance.rankInfo != null && param1 < param2)
+         if(TofflistModel.Instance.rankInfo != null && nowN < PreN)
          {
             _RankingLiftImg.setFrame(1);
-            _loc3_ = param2 - param1;
-            _textArr[3].text = _loc3_;
+            num = PreN - nowN;
+            _textArr[3].text = num;
          }
-         if(TofflistModel.Instance.rankInfo != null && param1 > param2)
+         if(TofflistModel.Instance.rankInfo != null && nowN > PreN)
          {
             _RankingLiftImg.setFrame(2);
-            _loc3_ = param1 - param2;
-            _textArr[3].text = _loc3_;
+            num = nowN - PreN;
+            _textArr[3].text = num;
          }
-         if(TofflistModel.Instance.rankInfo != null && (param1 == param2 || param2 == 0))
+         if(TofflistModel.Instance.rankInfo != null && (nowN == PreN || PreN == 0))
          {
             _RankingLiftImg.visible = false;
             _textArr[3].text = "";

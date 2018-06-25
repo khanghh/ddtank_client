@@ -127,20 +127,20 @@ package ddt.view.caddyII
          initEvents();
       }
       
-      override public function setType(param1:int) : void
+      override public function setType(val:int) : void
       {
-         _type = param1;
+         _type = val;
          if(_type == 112222)
          {
          }
          creatTweenMagnify();
       }
       
-      override public function set item(param1:ItemTemplateInfo) : void
+      override public function set item(val:ItemTemplateInfo) : void
       {
-         if(_item != param1)
+         if(_item != val)
          {
-            _item = param1;
+            _item = val;
             if(_item.TemplateID == 112222)
             {
                _cellMC.visible = true;
@@ -168,16 +168,16 @@ package ddt.view.caddyII
       
       private function initView() : void
       {
-         var _loc7_:int = 0;
-         var _loc6_:int = 0;
-         var _loc4_:ScaleBitmapImage = ComponentFactory.Instance.creatComponentByStylename("bead.rightGrid.goldBorder");
+         var i:int = 0;
+         var k:int = 0;
+         var goldBorder:ScaleBitmapImage = ComponentFactory.Instance.creatComponentByStylename("bead.rightGrid.goldBorder");
          _vipDescTxt = ComponentFactory.Instance.creatComponentByStylename("asset.caddy.VipDescTxt");
          _vipDescTxt.text = LanguageMgr.GetTranslation("tank.view.caddy.VipDescTxt");
          _vipIcon = ComponentFactory.Instance.creatComponentByStylename("caddy.VipIcon");
-         var _loc5_:Image = ComponentFactory.Instance.creatComponentByStylename("caddy.GoodsNameBG");
-         var _loc3_:Image = ComponentFactory.Instance.creatComponentByStylename("caddy.numberI");
-         PositionUtils.setPos(_loc3_,"CaddyViewII.numberIPos");
-         var _loc2_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.bead.openBG");
+         var goodsNameBG:Image = ComponentFactory.Instance.creatComponentByStylename("caddy.GoodsNameBG");
+         var numberBG:Image = ComponentFactory.Instance.creatComponentByStylename("caddy.numberI");
+         PositionUtils.setPos(numberBG,"CaddyViewII.numberIPos");
+         var openBG:Bitmap = ComponentFactory.Instance.creatBitmap("asset.bead.openBG");
          _bg = ComponentFactory.Instance.creatComponentByStylename("caddy.rightBG");
          _gridBGI = ComponentFactory.Instance.creatComponentByStylename("caddy.rightGridBGI");
          _lookBtn = ComponentFactory.Instance.creatComponentByStylename("caddy.LookBtn");
@@ -202,53 +202,51 @@ package ddt.view.caddyII
          _turnCell = new BeadCell();
          _turnCell.info = ItemManager.Instance.getTemplateById(112222);
          _movie = ComponentFactory.Instance.creatComponentByStylename("bead.movieAsset");
-         _loc7_ = 0;
-         while(_loc7_ < _movie.movie.currentLabels.length)
+         for(i = 0; i < _movie.movie.currentLabels.length; )
          {
-            if(_movie.movie.currentLabels[_loc7_].name == "endFrame")
+            if(_movie.movie.currentLabels[i].name == "endFrame")
             {
-               _endFrame = _movie.movie.currentLabels[_loc7_].frame;
+               _endFrame = _movie.movie.currentLabels[i].frame;
             }
-            _loc7_++;
+            i++;
          }
          _Vipmovie = ComponentFactory.Instance.creatComponentByStylename("bead.VipmovieAsset");
-         _loc6_ = 0;
-         while(_loc6_ < _Vipmovie.movie.currentLabels.length)
+         for(k = 0; k < _Vipmovie.movie.currentLabels.length; )
          {
-            if(_Vipmovie.movie.currentLabels[_loc6_].name == "endFrame")
+            if(_Vipmovie.movie.currentLabels[k].name == "endFrame")
             {
-               _endFrame = _Vipmovie.movie.currentLabels[_loc6_].frame;
+               _endFrame = _Vipmovie.movie.currentLabels[k].frame;
             }
-            _loc6_++;
+            k++;
          }
          _lookTrophy = ComponentFactory.Instance.creatCustomObject("caddyII.LookTrophy");
          _autoCheck = ComponentFactory.Instance.creatComponentByStylename("AutoOpenButton");
          _autoCheck.text = LanguageMgr.GetTranslation("tank.view.award.auto");
          _autoCheck.selected = SharedManager.Instance.autoCaddy;
-         var _loc1_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("caddy.bagHavingTip");
-         _loc1_.text = LanguageMgr.GetTranslation("tank.view.award.bagHaving");
+         var font:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("caddy.bagHavingTip");
+         font.text = LanguageMgr.GetTranslation("tank.view.award.bagHaving");
          _paiBtn = ComponentFactory.Instance.creatComponentByStylename("caddy.awardListBtn");
          _paiBtn.text = "排行奖励";
          addChild(_bg);
          addChild(_gridBGI);
-         addChild(_loc4_);
+         addChild(goldBorder);
          addChild(_vipDescTxt);
          addChild(_vipIcon);
-         addChild(_loc5_);
-         addChild(_loc3_);
+         addChild(goodsNameBG);
+         addChild(numberBG);
          addChild(_lookBtn);
          addChild(_openBtn);
          addChild(_boxBtn);
          addChild(_goodsNameTxt);
-         addChild(_loc2_);
+         addChild(openBG);
          _turnSprite.addChild(_turnCell);
          addChild(_cellMC);
          addChild(_GoldCell);
          addChild(_SiverCell);
          addChild(_boxNumberTxt);
-         addChild(_loc4_);
+         addChild(goldBorder);
          addChild(_autoCheck);
-         addChild(_loc1_);
+         addChild(font);
          _startY = _turnSprite.y;
          createSelectCell();
          addChild(_movie);
@@ -278,7 +276,7 @@ package ddt.view.caddyII
          _autoCheck.addEventListener("select",__selectedChanged);
       }
       
-      protected function paihangHander(param1:MouseEvent) : void
+      protected function paihangHander(event:MouseEvent) : void
       {
          _listView = ComponentFactory.Instance.creatComponentByStylename("caddyAwardListFrame");
          LayerManager.Instance.addToLayer(_listView,2,true,0);
@@ -303,12 +301,12 @@ package ddt.view.caddyII
       
       private function createSelectCell() : void
       {
-         var _loc2_:Point = ComponentFactory.Instance.creatCustomObject("bead.selectCellSize");
-         var _loc1_:Shape = new Shape();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,_loc2_.x,_loc2_.y);
-         _loc1_.graphics.endFill();
-         _selectCell = new BaseCell(_loc1_);
+         var size:Point = ComponentFactory.Instance.creatCustomObject("bead.selectCellSize");
+         var shape:Shape = new Shape();
+         shape.graphics.beginFill(16777215,0);
+         shape.graphics.drawRect(0,0,size.x,size.y);
+         shape.graphics.endFill();
+         _selectCell = new BaseCell(shape);
          _selectSprite = ComponentFactory.Instance.creatCustomObject("bead.SelectSprite");
          _selectCell.x = _selectCell.width / -2;
          _selectCell.y = _selectCell.height / -2;
@@ -317,13 +315,13 @@ package ddt.view.caddyII
          _selectSprite.visible = false;
       }
       
-      private function _bagUpdate(param1:BagEvent) : void
+      private function _bagUpdate(event:BagEvent) : void
       {
          keyNumber = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(11456);
          boxNumber = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(_item.TemplateID);
       }
       
-      private function _look(param1:MouseEvent) : void
+      private function _look(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(EquipType.isCaddy(_item) || EquipType.isBless(_item))
@@ -337,7 +335,7 @@ package ddt.view.caddyII
          _lookTrophy.show(CaddyModel.instance.getCaddyTrophy(_item.TemplateID));
       }
       
-      private function __openClick(param1:MouseEvent) : void
+      private function __openClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(CaddyModel.instance.bagInfo.itemNumber >= 25)
@@ -350,8 +348,8 @@ package ddt.view.caddyII
       
       private function hasKey() : Boolean
       {
-         var _loc1_:BuffInfo = PlayerManager.Instance.Self.getBuff(70);
-         if(_loc1_ != null && _loc1_.ValidCount > 0)
+         var caddyPayBuff:BuffInfo = PlayerManager.Instance.Self.getBuff(70);
+         if(caddyPayBuff != null && caddyPayBuff.ValidCount > 0)
          {
             return keyNumber + 1 >= 4;
          }
@@ -380,67 +378,65 @@ package ddt.view.caddyII
          _buyKey(null);
       }
       
-      private function _buyKey(param1:MouseEvent) : void
+      private function _buyKey(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _showQuickBuy(0);
       }
       
-      private function _showQuickBuy(param1:int) : void
+      private function _showQuickBuy(id:int) : void
       {
-         var _loc2_:QuickBuyCaddy = ComponentFactory.Instance.creatCustomObject("caddy.QuickBuyCaddy");
-         _loc2_.show(param1);
+         var quick:QuickBuyCaddy = ComponentFactory.Instance.creatCustomObject("caddy.QuickBuyCaddy");
+         quick.show(id);
       }
       
       private function getRandomTempId() : void
       {
-         var _loc8_:int = 0;
-         var _loc6_:int = 0;
-         var _loc7_:int = 0;
-         var _loc5_:Vector.<BoxGoodsTempInfo> = BossBoxManager.instance.caddyBoxGoodsInfo;
+         var i:int = 0;
+         var j:int = 0;
+         var ran1:int = 0;
+         var templateList:Vector.<BoxGoodsTempInfo> = BossBoxManager.instance.caddyBoxGoodsInfo;
          _templateIDList = new Vector.<int>();
-         var _loc4_:int = 0;
-         var _loc3_:int = Math.floor(_loc5_.length / 25);
-         var _loc2_:int = Math.floor(Math.random() * _loc3_);
-         _loc2_ = _loc2_ == 0?1:_loc2_;
-         _loc8_ = 1;
-         while(_loc8_ <= 25)
+         var number:int = 0;
+         var basic:int = Math.floor(templateList.length / 25);
+         var ran:int = Math.floor(Math.random() * basic);
+         ran = ran == 0?1:ran;
+         for(i = 1; i <= 25; )
          {
-            if(_loc2_ * _loc8_ < _loc5_.length)
+            if(ran * i < templateList.length)
             {
-               _templateIDList.push(_loc5_[_loc2_ * _loc8_].TemplateId);
+               _templateIDList.push(templateList[ran * i].TemplateId);
             }
-            _loc8_++;
+            i++;
          }
-         var _loc1_:int = 0;
-         _loc6_ = 0;
-         while(_loc6_ < _templateIDList.length)
+         var itemID:int = 0;
+         for(j = 0; j < _templateIDList.length; )
          {
-            _loc7_ = Math.floor(Math.random() * _templateIDList.length);
-            _loc1_ = _templateIDList[_loc6_];
-            _templateIDList[_loc6_] = _templateIDList[_loc7_];
-            _templateIDList[_loc7_] = _loc1_;
-            _loc6_++;
+            ran1 = Math.floor(Math.random() * _templateIDList.length);
+            itemID = _templateIDList[j];
+            _templateIDList[j] = _templateIDList[ran1];
+            _templateIDList[ran1] = itemID;
+            j++;
          }
       }
       
-      private function __selectedChanged(param1:Event) : void
+      private function __selectedChanged(event:Event) : void
       {
          SoundManager.instance.play("008");
          SharedManager.Instance.autoCaddy = _autoCheck.selected;
       }
       
-      private function creatShape(param1:Number = 100, param2:Number = 25) : Shape
+      private function creatShape(w:Number = 100, h:Number = 25) : Shape
       {
-         var _loc4_:Point = ComponentFactory.Instance.creatCustomObject("caddy.QuickBuyBtn.ButtonSize");
-         var _loc3_:Shape = new Shape();
-         _loc3_.graphics.beginFill(16777215,0);
-         _loc3_.graphics.drawRect(0,0,_loc4_.x,_loc4_.y);
-         _loc3_.graphics.endFill();
-         return _loc3_;
+         var size:Point = ComponentFactory.Instance.creatCustomObject("caddy.QuickBuyBtn.ButtonSize");
+         var shape:Shape = new Shape();
+         shape.graphics.beginFill(16777215,0);
+         shape.graphics.drawRect(0,0,size.x,size.y);
+         shape.graphics.endFill();
+         return shape;
       }
       
-      private function __frameHandler(param1:Event) : void
+      private function __frameHandler(event:Event) : void
       {
          if(_movie.movie.currentFrame == _endFrame)
          {
@@ -450,7 +446,7 @@ package ddt.view.caddyII
          }
       }
       
-      private function __VipframeHandler(param1:Event) : void
+      private function __VipframeHandler(event:Event) : void
       {
          if(_Vipmovie.movie.currentFrame == _endFrame)
          {
@@ -527,9 +523,9 @@ package ddt.view.caddyII
          }
       }
       
-      public function set keyNumber(param1:int) : void
+      public function set keyNumber(value:int) : void
       {
-         _keyNumber = param1;
+         _keyNumber = value;
          _keyNumberTxt.text = String(_keyNumber);
       }
       
@@ -538,9 +534,9 @@ package ddt.view.caddyII
          return _keyNumber;
       }
       
-      public function set boxNumber(param1:int) : void
+      public function set boxNumber(value:int) : void
       {
-         _boxNumber = param1;
+         _boxNumber = value;
          _boxNumberTxt.text = String(_boxNumber);
       }
       
@@ -593,10 +589,10 @@ package ddt.view.caddyII
          }
       }
       
-      override public function setSelectGoodsInfo(param1:InventoryItemInfo) : void
+      override public function setSelectGoodsInfo(info:InventoryItemInfo) : void
       {
          SoundManager.instance.play("139");
-         _selectedGoodsInfo = param1;
+         _selectedGoodsInfo = info;
          _turnSprite.visible = false;
          if(_item.TemplateID == 112222)
          {
@@ -636,9 +632,9 @@ package ddt.view.caddyII
       
       private function _startTurn() : void
       {
-         var _loc1_:CaddyEvent = new CaddyEvent("caddy_start_turn");
-         _loc1_.info = _selectedGoodsInfo;
-         dispatchEvent(_loc1_);
+         var evt:CaddyEvent = new CaddyEvent("caddy_start_turn");
+         evt.info = _selectedGoodsInfo;
+         dispatchEvent(evt);
       }
       
       override public function get openBtnEnable() : Boolean

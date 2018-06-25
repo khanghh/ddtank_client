@@ -46,21 +46,21 @@ package gypsyShop.ui.confirmAlertFrame
          super();
       }
       
-      protected function __confirmhandler(param1:MouseEvent) : void
+      protected function __confirmhandler(event:MouseEvent) : void
       {
          _confirm && _confirm.removeEventListener("click",__confirmhandler);
          dispatchEvent(new FrameEvent(3));
          ok();
       }
       
-      protected function __cancelHandler(param1:MouseEvent) : void
+      protected function __cancelHandler(event:MouseEvent) : void
       {
          cancel();
       }
       
-      protected function __responseHandler(param1:FrameEvent) : void
+      protected function __responseHandler(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -123,9 +123,9 @@ package gypsyShop.ui.confirmAlertFrame
          return _scb.selected;
       }
       
-      public function set selectedCheckButton(param1:SelectedCheckButton) : void
+      public function set selectedCheckButton(value:SelectedCheckButton) : void
       {
-         _scb = param1;
+         _scb = value;
       }
       
       override public function dispose() : void
@@ -157,29 +157,29 @@ package gypsyShop.ui.confirmAlertFrame
          }
       }
       
-      public function set needHonour(param1:int) : void
+      public function set needHonour(value:int) : void
       {
-         _needHonour = param1;
+         _needHonour = value;
       }
       
-      public function set detail(param1:String) : void
+      public function set detail(value:String) : void
       {
-         _detail = param1;
+         _detail = value;
       }
       
-      public function set onNotShowAgain(param1:Function) : void
+      public function set onNotShowAgain(value:Function) : void
       {
-         _onNotShowAgain = param1;
+         _onNotShowAgain = value;
       }
       
-      public function set onComfirm(param1:Function) : void
+      public function set onComfirm(value:Function) : void
       {
-         _onComfirm = param1;
+         _onComfirm = value;
       }
       
-      public function set titleTxt(param1:String) : void
+      public function set titleTxt(value:String) : void
       {
-         _titleTxt = param1;
+         _titleTxt = value;
       }
    }
 }

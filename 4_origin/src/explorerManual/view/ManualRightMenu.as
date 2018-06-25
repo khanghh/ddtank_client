@@ -39,55 +39,53 @@ package explorerManual.view
          initMenu();
       }
       
-      private function __itemClickHandler(param1:MouseEvent) : void
+      private function __itemClickHandler(evt:MouseEvent) : void
       {
-         var _loc2_:* = null;
-         if(param1.target is ManualMenuItem)
+         var item:* = null;
+         if(evt.target is ManualMenuItem)
          {
-            _loc2_ = param1.target as ManualMenuItem;
-            this.dispatchEvent(new CEvent("itemClick",_loc2_.chapter));
-            _loc2_.isHaveNewDebris = false;
-            ExplorerManualManager.instance.removeNewDebris(_loc2_.chapter);
+            item = evt.target as ManualMenuItem;
+            this.dispatchEvent(new CEvent("itemClick",item.chapter));
+            item.isHaveNewDebris = false;
+            ExplorerManualManager.instance.removeNewDebris(item.chapter);
          }
       }
       
       private function initMenu() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _items.length)
+         var i:int = 0;
+         for(i = 0; i < _items.length; )
          {
-            _selectBtn = ComponentFactory.Instance.creatComponentByStylename("explorerManual.manualRightMenu.selBtn" + _loc1_);
-            _selectBtn.chapter = _items[_loc1_];
-            _selectBtn.isHaveNewDebris = ExplorerManualManager.instance.isHaveNewDebris(_items[_loc1_]);
+            _selectBtn = ComponentFactory.Instance.creatComponentByStylename("explorerManual.manualRightMenu.selBtn" + i);
+            _selectBtn.chapter = _items[i];
+            _selectBtn.isHaveNewDebris = ExplorerManualManager.instance.isHaveNewDebris(_items[i]);
             _selectBtn.addEventListener("click",__itemClickHandler);
             _vbox.addChild(_selectBtn);
             _btnGroups.addSelectItem(_selectBtn);
-            _loc1_++;
+            i++;
          }
       }
       
-      public function set selectItem(param1:int) : void
+      public function set selectItem(value:int) : void
       {
-         _btnGroups.selectIndex = _items.indexOf(param1);
+         _btnGroups.selectIndex = _items.indexOf(value);
       }
       
       public function dispose() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:int = 0;
+         var item:* = null;
+         var i:int = 0;
          if(_vbox)
          {
-            _loc2_ = 0;
-            while(_loc2_ < _vbox.numChildren)
+            for(i = 0; i < _vbox.numChildren; )
             {
-               if(_vbox.getChildAt(_loc2_) is ManualMenuItem)
+               if(_vbox.getChildAt(i) is ManualMenuItem)
                {
-                  _loc1_ = _vbox.getChildAt(_loc2_) as ManualMenuItem;
-                  _loc1_.removeEventListener("click",__itemClickHandler);
-                  ObjectUtils.disposeObject(_loc1_);
+                  item = _vbox.getChildAt(i) as ManualMenuItem;
+                  item.removeEventListener("click",__itemClickHandler);
+                  ObjectUtils.disposeObject(item);
                }
-               _loc2_++;
+               i++;
             }
          }
          ObjectUtils.removeChildAllChildren(_vbox);

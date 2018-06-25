@@ -4,15 +4,15 @@ package morn.core.components
    {
        
       
-      public function VScrollBar(param1:String = null)
+      public function VScrollBar(skin:String = null)
       {
-         super(param1);
+         super(skin);
       }
       
       override protected function initialize() : void
       {
          super.initialize();
-         _slider.direction = VERTICAL;
+         _slider.direction = "vertical";
       }
    }
 }

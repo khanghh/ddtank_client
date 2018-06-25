@@ -12,9 +12,9 @@ package ddt.data.analyze
       
       private var _list:Dictionary;
       
-      public function QuestListAnalyzer(param1:Function)
+      public function QuestListAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
       public function get list() : Dictionary
@@ -24,25 +24,24 @@ package ddt.data.analyze
       
       public function get improveXml() : XML
       {
-         var _loc1_:XMLList = _xml..Rate;
-         return _loc1_[0];
+         var xmllist:XMLList = _xml..Rate;
+         return xmllist[0];
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         _xml = new XML(param1);
-         var _loc2_:XMLList = _xml..Item;
+         var i:int = 0;
+         var x:* = null;
+         var info:* = null;
+         _xml = new XML(data);
+         var xmllist:XMLList = _xml..Item;
          _list = new Dictionary();
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_.length())
+         for(i = 0; i < xmllist.length(); )
          {
-            _loc4_ = _loc2_[_loc5_];
-            _loc3_ = QuestInfo.createFromXML(_loc4_);
-            _list[_loc3_.Id] = _loc3_;
-            _loc5_++;
+            x = xmllist[i];
+            info = QuestInfo.createFromXML(x);
+            _list[info.Id] = info;
+            i++;
          }
          onAnalyzeComplete();
       }

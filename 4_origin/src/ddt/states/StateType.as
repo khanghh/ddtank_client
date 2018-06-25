@@ -19,6 +19,8 @@ package ddt.states
       
       public static const MATCH_ROOM:String = "matchRoom";
       
+      public static const DREAMLAND_ROOM:String = "dreamLandRoom";
+      
       public static const BATTLE_ROOM:String = "battleRoom";
       
       public static const CHALLENGE_ROOM:String = "challengeRoom";

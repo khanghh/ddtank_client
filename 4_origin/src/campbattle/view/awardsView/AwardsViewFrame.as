@@ -94,22 +94,22 @@ package campbattle.view.awardsView
          _helpBtn.removeEventListener("click",__onHelpBtnClick);
       }
       
-      protected function __onHelpBtnClick(param1:MouseEvent) : void
+      protected function __onHelpBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:CampBattleHelpView = ComponentFactory.Instance.creatComponentByStylename("ddtCampBattle.views.helpView");
-         _loc2_.addEventListener("response",frameEvent);
-         LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+         var helpframe:CampBattleHelpView = ComponentFactory.Instance.creatComponentByStylename("ddtCampBattle.views.helpView");
+         helpframe.addEventListener("response",frameEvent);
+         LayerManager.Instance.addToLayer(helpframe,3,true,1);
       }
       
-      private function frameEvent(param1:FrameEvent) : void
+      private function frameEvent(event:FrameEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         param1.currentTarget.removeEventListener("response",frameEvent);
-         param1.currentTarget.dispose();
+         event.currentTarget.removeEventListener("response",frameEvent);
+         event.currentTarget.dispose();
       }
       
-      private function __typeChange(param1:Event) : void
+      private function __typeChange(evt:Event) : void
       {
          defaultShowThisZoneView();
       }
@@ -148,9 +148,9 @@ package campbattle.view.awardsView
          addToContent(_rewardPanel);
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();

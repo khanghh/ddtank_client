@@ -31,12 +31,12 @@ package littleGame.view
          addEventListener("mouseOut",__mouseOut);
       }
       
-      private function __mouseOut(param1:MouseEvent) : void
+      private function __mouseOut(event:MouseEvent) : void
       {
          filters = null;
       }
       
-      private function __mouseOver(param1:MouseEvent) : void
+      private function __mouseOver(event:MouseEvent) : void
       {
          filters = ComponentFactory.Instance.creatFilters("lightFilter");
       }
@@ -52,13 +52,13 @@ package littleGame.view
          return _state;
       }
       
-      public function set state(param1:int) : void
+      public function set state(value:int) : void
       {
-         if(_state == param1)
+         if(_state == value)
          {
             return;
          }
-         _state = param1;
+         _state = value;
          DisplayUtils.setFrame(_back,_state);
       }
       

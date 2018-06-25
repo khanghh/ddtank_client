@@ -42,9 +42,9 @@ package gameCommon.view.prop
       
       private var _localFlyEnabled:Boolean = true;
       
-      public function WeaponPropBar(param1:LocalPlayer)
+      public function WeaponPropBar(self:LocalPlayer)
       {
-         super(param1);
+         super(self);
          _canEnable = weaponEnabled();
          visibleFlyForWorldBoss();
          updatePropByEnergy();
@@ -65,8 +65,8 @@ package gameCommon.view.prop
          {
             return;
          }
-         var _loc1_:ConsortiaBattlePlayerInfo = ConsortiaBattleManager.instance.getPlayerInfo(PlayerManager.Instance.Self.ID);
-         if(_loc1_.failBuffCount > 0)
+         var tmp:ConsortiaBattlePlayerInfo = ConsortiaBattleManager.instance.getPlayerInfo(PlayerManager.Instance.Self.ID);
+         if(tmp.failBuffCount > 0)
          {
             _losingStreakIcon = ComponentFactory.Instance.creatComponentByStylename("gameView.ConsBatLosingStreakBuff");
             addChild(_losingStreakIcon);
@@ -79,12 +79,12 @@ package gameCommon.view.prop
       
       private function weaponEnabled() : Boolean
       {
-         var _loc2_:int = 0;
-         var _loc1_:ItemTemplateInfo = _self.currentDeputyWeaponInfo.Template;
-         if(_loc1_.TemplateID == 17200)
+         var roomType:int = 0;
+         var template:ItemTemplateInfo = _self.currentDeputyWeaponInfo.Template;
+         if(template.TemplateID == 17200)
          {
-            _loc2_ = RoomManager.Instance.current.type;
-            if(_loc2_ == 4 || _loc2_ == 11 || _loc2_ == 21 || _loc2_ == 14 || _loc2_ == 123 || _loc2_ == 151 || StateManager.currentStateType == "fightLabGameView")
+            roomType = RoomManager.Instance.current.type;
+            if(roomType == 4 || roomType == 11 || roomType == 21 || roomType == 14 || roomType == 123 || roomType == 151 || StateManager.currentStateType == "fightLabGameView")
             {
                return false;
             }
@@ -117,24 +117,24 @@ package gameCommon.view.prop
          }
       }
       
-      override protected function __itemClicked(param1:MouseEvent) : void
+      override protected function __itemClicked(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var result:* = null;
          if(!_localVisible)
          {
             return;
          }
-         var _loc4_:PropCell = param1.currentTarget as PropCell;
+         var cell:PropCell = event.currentTarget as PropCell;
          SoundManager.instance.play("008");
-         var _loc3_:int = _cells.indexOf(_loc4_);
-         switch(int(_loc3_))
+         var idx:int = _cells.indexOf(cell);
+         switch(int(idx))
          {
             case 0:
                if(!_localFlyEnabled || !_localFlyVisible)
                {
                   return;
                }
-               _loc2_ = _self.useFly();
+               result = _self.useFly();
                break;
             case 1:
                if(!_localDeputyWeaponVisible)
@@ -146,18 +146,18 @@ package gameCommon.view.prop
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.campBattle.onlyFly"));
                   return;
                }
-               _loc2_ = _self.useDeputyWeapon();
+               result = _self.useDeputyWeapon();
                break;
          }
-         if(_loc2_ == "2")
+         if(result == "2")
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.game.prop.NotCoolDown",_self.flyCoolDown));
          }
-         else if(_loc2_ == "4")
+         else if(result == "4")
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.game.prop.NotCoolDown",_self.deputyWeaponCoolDown));
          }
-         else if(_loc2_ == "5")
+         else if(result == "5")
          {
             var _loc5_:* = _self.selfInfo.DeputyWeapon.TemplateID;
             if(17001 !== _loc5_)
@@ -191,31 +191,31 @@ package gameCommon.view.prop
                                  MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.game.deputyWeapon.canNotUse2"));
                               }
                            }
-                           addr157:
+                           addr199:
                         }
-                        addr98:
+                        addr127:
                         MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.game.deputyWeapon.canNotUse"));
-                        §§goto(addr157);
+                        §§goto(addr199);
                      }
-                     addr97:
-                     §§goto(addr98);
+                     addr126:
+                     §§goto(addr127);
                   }
-                  addr96:
-                  §§goto(addr97);
+                  addr125:
+                  §§goto(addr126);
                }
-               addr95:
-               §§goto(addr96);
+               addr124:
+               §§goto(addr125);
             }
-            §§goto(addr95);
+            §§goto(addr124);
          }
-         else if(_loc2_ != "0")
+         else if(result != "0")
          {
-            if(_loc2_ != "LockState" || RoomManager.Instance.current.type != 21)
+            if(result != "LockState" || RoomManager.Instance.current.type != 21)
             {
-               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.game.prop." + _loc2_));
+               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.game.prop." + result));
             }
          }
-         else if(_loc3_ == 0)
+         else if(idx == 0)
          {
             hideGuidePlane();
             if(NewHandGuideManager.Instance.mapID == 115)
@@ -233,13 +233,13 @@ package gameCommon.view.prop
          StageReferance.stage.focus = null;
       }
       
-      override protected function __keyDown(param1:KeyboardEvent) : void
+      override protected function __keyDown(event:KeyboardEvent) : void
       {
          if(GameControl.Instance.Current.missionInfo && GameControl.Instance.Current.missionInfo.isWorldCupI)
          {
             return;
          }
-         var _loc2_:* = param1.keyCode;
+         var _loc2_:* = event.keyCode;
          if(KeyStroke.VK_F.getCode() !== _loc2_)
          {
             if(KeyStroke.VK_R.getCode() === _loc2_)
@@ -259,7 +259,7 @@ package gameCommon.view.prop
          {
             _cells[0].useProp();
          }
-         super.__keyDown(param1);
+         super.__keyDown(event);
       }
       
       override protected function addEvent() : void
@@ -269,14 +269,14 @@ package gameCommon.view.prop
          _self.addEventListener("attackingChanged",__changeAttack);
          var _loc3_:int = 0;
          var _loc2_:* = _cells;
-         for each(var _loc1_ in _cells)
+         for each(var cell in _cells)
          {
-            _loc1_.addEventListener("click",__itemClicked);
+            cell.addEventListener("click",__itemClicked);
          }
          super.addEvent();
       }
       
-      override protected function __changeAttack(param1:LivingEvent) : void
+      override protected function __changeAttack(event:LivingEvent) : void
       {
          if(_self.isAttacking)
          {
@@ -311,14 +311,14 @@ package gameCommon.view.prop
          }
       }
       
-      private function __setDeputyWeaponNumber(param1:CrazyTankSocketEvent) : void
+      private function __setDeputyWeaponNumber(event:CrazyTankSocketEvent) : void
       {
-         var _loc2_:int = param1.pkg.readInt();
-         _cells[1].enabled = _loc2_ != 0;
-         WeaponPropCell(_cells[1]).setCount(_loc2_);
+         var count:int = event.pkg.readInt();
+         _cells[1].enabled = count != 0;
+         WeaponPropCell(_cells[1]).setCount(count);
       }
       
-      private function __deputyWeaponChanged(param1:LivingEvent) : void
+      private function __deputyWeaponChanged(event:LivingEvent) : void
       {
          if(!_canEnable)
          {
@@ -335,7 +335,7 @@ package gameCommon.view.prop
          }
       }
       
-      private function __flyChanged(param1:LivingEvent) : void
+      private function __flyChanged(event:LivingEvent) : void
       {
          _cells[0].enabled = _localFlyEnabled && _self.flyEnabled;
          if(RoomManager.Instance.current.type == 19)
@@ -372,35 +372,35 @@ package gameCommon.view.prop
       
       override protected function drawCells() : void
       {
-         var _loc4_:* = null;
-         var _loc1_:* = null;
-         var _loc3_:WeaponPropCell = new WeaponPropCell("f",_mode);
-         _loc3_.info = new PropInfo(ItemManager.Instance.getTemplateById(10016));
-         _loc4_ = ComponentFactory.Instance.creatCustomObject("WeaponPropCellPosf");
-         _loc3_.setPossiton(_loc4_.x,_loc4_.y);
-         addChild(_loc3_);
-         var _loc2_:WeaponPropCell = new WeaponPropCell("r",_mode);
-         _loc4_ = ComponentFactory.Instance.creatCustomObject("WeaponPropCellPosr");
-         _loc2_.setPossiton(_loc4_.x,_loc4_.y);
-         addChild(_loc2_);
+         var pos:* = null;
+         var template:* = null;
+         var cellf:WeaponPropCell = new WeaponPropCell("f",_mode);
+         cellf.info = new PropInfo(ItemManager.Instance.getTemplateById(10016));
+         pos = ComponentFactory.Instance.creatCustomObject("WeaponPropCellPosf");
+         cellf.setPossiton(pos.x,pos.y);
+         addChild(cellf);
+         var cellr:WeaponPropCell = new WeaponPropCell("r",_mode);
+         pos = ComponentFactory.Instance.creatCustomObject("WeaponPropCellPosr");
+         cellr.setPossiton(pos.x,pos.y);
+         addChild(cellr);
          if(_self.hasDeputyWeapon())
          {
-            _loc1_ = _self.currentDeputyWeaponInfo.Template;
-            if(_loc1_.TemplateID == 17200)
+            template = _self.currentDeputyWeaponInfo.Template;
+            if(template.TemplateID == 17200)
             {
-               _loc1_.Property4 = _self.wishKingEnergy.toString();
+               template.Property4 = _self.wishKingEnergy.toString();
                _self.currentDeputyWeaponInfo.energy = _self.wishKingEnergy;
-               _loc2_.info = new PropInfo(_loc1_);
-               _loc2_.setCount(_self.wishKingCount);
+               cellr.info = new PropInfo(template);
+               cellr.setCount(_self.wishKingCount);
             }
             else
             {
-               _loc2_.info = new PropInfo(_loc1_);
-               _loc2_.setCount(_self.deputyWeaponCount);
+               cellr.info = new PropInfo(template);
+               cellr.setCount(_self.deputyWeaponCount);
             }
          }
-         _cells.push(_loc3_);
-         _cells.push(_loc2_);
+         _cells.push(cellf);
+         _cells.push(cellr);
          super.drawCells();
       }
       
@@ -411,18 +411,18 @@ package gameCommon.view.prop
          _self.removeEventListener("attackingChanged",__changeAttack);
          var _loc3_:int = 0;
          var _loc2_:* = _cells;
-         for each(var _loc1_ in _cells)
+         for each(var cell in _cells)
          {
-            _loc1_.removeEventListener("click",__itemClicked);
+            cell.removeEventListener("click",__itemClicked);
          }
          super.removeEvent();
       }
       
-      public function setFlyVisible(param1:Boolean) : void
+      public function setFlyVisible(val:Boolean) : void
       {
-         if(_localFlyVisible != param1)
+         if(_localFlyVisible != val)
          {
-            _localFlyVisible = param1;
+            _localFlyVisible = val;
             if(_localFlyVisible)
             {
                if(!_cells[0].parent)
@@ -437,23 +437,23 @@ package gameCommon.view.prop
          }
       }
       
-      public function setFlyEnabled(param1:Boolean) : void
+      public function setFlyEnabled(val:Boolean) : void
       {
-         if(_localFlyEnabled != param1)
+         if(_localFlyEnabled != val)
          {
-            _localFlyEnabled = param1;
+            _localFlyEnabled = val;
          }
       }
       
-      public function setDeputyWeaponVisible(param1:Boolean) : void
+      public function setDeputyWeaponVisible(val:Boolean) : void
       {
          if(RoomManager.Instance.current && RoomManager.Instance.current.type == 18)
          {
             return;
          }
-         if(_localDeputyWeaponVisible != param1)
+         if(_localDeputyWeaponVisible != val)
          {
-            _localDeputyWeaponVisible = param1;
+            _localDeputyWeaponVisible = val;
             if(_localDeputyWeaponVisible)
             {
                if(!_cells[1].parent)
@@ -468,9 +468,9 @@ package gameCommon.view.prop
          }
       }
       
-      public function setVisible(param1:Boolean) : void
+      public function setVisible(val:Boolean) : void
       {
-         _localVisible = param1;
+         _localVisible = val;
       }
    }
 }

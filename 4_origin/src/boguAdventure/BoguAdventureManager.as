@@ -33,13 +33,13 @@ package boguAdventure
          SocketManager.Instance.addEventListener("boguadventure",__onActivityState);
       }
       
-      private function __onActivityState(param1:CrazyTankSocketEvent) : void
+      private function __onActivityState(e:CrazyTankSocketEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = param1._cmd;
-         if(param1._cmd == 89)
+         var pkg:PackageIn = e.pkg;
+         var cmd:int = e._cmd;
+         if(e._cmd == 89)
          {
-            _isOpen = _loc3_.readBoolean();
+            _isOpen = pkg.readBoolean();
             checkOpen();
          }
       }

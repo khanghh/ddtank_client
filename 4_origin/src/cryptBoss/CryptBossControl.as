@@ -41,7 +41,7 @@ package cryptBoss
          CryptBossManager.instance.addEventListener("cryptBossOpenView",__onUpdateView);
       }
       
-      protected function __onUpdateView(param1:CryptBossEvent) : void
+      protected function __onUpdateView(event:CryptBossEvent) : void
       {
          if(_cryptBossFrame)
          {
@@ -49,7 +49,7 @@ package cryptBoss
          }
       }
       
-      protected function __onOpenView(param1:CryptBossEvent) : void
+      protected function __onOpenView(event:CryptBossEvent) : void
       {
          show();
       }
@@ -70,9 +70,9 @@ package cryptBoss
          }
       }
       
-      private function loadCompleteHandler(param1:UIModuleEvent) : void
+      private function loadCompleteHandler(event:UIModuleEvent) : void
       {
-         if(param1.module == "cryptBoss")
+         if(event.module == "cryptBoss")
          {
             UIModuleSmallLoading.Instance.hide();
             UIModuleLoader.Instance.removeEventListener("uiModuleComplete",loadCompleteHandler);
@@ -82,11 +82,11 @@ package cryptBoss
          }
       }
       
-      private function onUimoduleLoadProgress(param1:UIModuleEvent) : void
+      private function onUimoduleLoadProgress(event:UIModuleEvent) : void
       {
-         if(param1.module == "horse")
+         if(event.module == "horse")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
       
@@ -100,25 +100,25 @@ package cryptBoss
          }
       }
       
-      public function getTemplateIdArr(param1:int, param2:int) : Array
+      public function getTemplateIdArr(mapId:int, star:int) : Array
       {
-         var _loc3_:DungeonInfo = MapManager.getDungeonInfo(param1);
-         switch(int(param2) - 1)
+         var dungeon:DungeonInfo = MapManager.getDungeonInfo(mapId);
+         switch(int(star) - 1)
          {
             case 0:
-               return _loc3_.SimpleTemplateIds.split(",");
+               return dungeon.SimpleTemplateIds.split(",");
             case 1:
-               return _loc3_.NormalTemplateIds.split(",");
+               return dungeon.NormalTemplateIds.split(",");
             case 2:
-               return _loc3_.HardTemplateIds.split(",");
+               return dungeon.HardTemplateIds.split(",");
             case 3:
-               return _loc3_.TerrorTemplateIds.split(",");
+               return dungeon.TerrorTemplateIds.split(",");
             case 4:
-               return _loc3_.NightmareTemplateIds.split(",");
+               return dungeon.NightmareTemplateIds.split(",");
          }
       }
       
-      private function frameDisposeHandler(param1:ComponentEvent) : void
+      private function frameDisposeHandler(event:ComponentEvent) : void
       {
          if(_cryptBossFrame)
          {

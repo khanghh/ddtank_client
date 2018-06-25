@@ -82,18 +82,18 @@ package bagAndInfo
          PlayerDressManager.instance.removeEventListener("dressViewComplete",showPlayerDressView);
       }
       
-      public function set isScreenFood(param1:Boolean) : void
+      public function set isScreenFood(value:Boolean) : void
       {
-         bagView.isScreenFood = param1;
+         bagView.isScreenFood = value;
       }
       
-      public function switchShow(param1:int, param2:int = 0) : void
+      public function switchShow(type:int, bagtype:int = 0) : void
       {
          info = PlayerManager.Instance.Self;
-         _currentType = param1;
+         _currentType = type;
          bagView.enableOrdisableSB(true);
          bagView.showOrHideSB(true);
-         if(param1 == 0)
+         if(type == 0)
          {
             if(TexpManager.Instance.isShow("texpView"))
             {
@@ -113,7 +113,7 @@ package bagAndInfo
             {
                bagType = 0;
             }
-            this.bagType = param2;
+            this.bagType = bagtype;
             bagView.isNeedCard(true);
             bagView.tableEnable = true;
             bagView.cardbtnVible = false;
@@ -121,9 +121,9 @@ package bagAndInfo
             bagView.breakBtnEnable = true;
             bagView.sortBagFilter = ComponentFactory.Instance.creatFilters("lightFilter");
             bagView.breakBtnFilter = ComponentFactory.Instance.creatFilters("lightFilter");
-            _infoView.visible = param2 == 8?false:true;
+            _infoView.visible = bagtype == 8?false:true;
          }
-         else if(param1 == 3)
+         else if(type == 3)
          {
             _infoView.visible = false;
             bagView.tableEnable = false;
@@ -137,7 +137,7 @@ package bagAndInfo
             bagView.enableDressSelectedBtn(false);
             showTexpView();
          }
-         else if(param1 == 5)
+         else if(type == 5)
          {
             _infoView.visible = false;
             bagView.tableEnable = false;
@@ -151,7 +151,7 @@ package bagAndInfo
             bagView.enableDressSelectedBtn(false);
             showPetsView();
          }
-         else if(param1 == 21)
+         else if(type == 21)
          {
             _infoView.visible = false;
             bagView.isNeedCard(true);
@@ -225,9 +225,9 @@ package bagAndInfo
          }
       }
       
-      private function __createPets(param1:UIModuleEvent) : void
+      private function __createPets(evt:UIModuleEvent) : void
       {
-         if(param1.module == "petsBag")
+         if(evt.module == "petsBag")
          {
             UIModuleSmallLoading.Instance.hide();
             UIModuleSmallLoading.Instance.removeEventListener("close",__onPetsSmallLoadingClose);
@@ -237,7 +237,7 @@ package bagAndInfo
          }
       }
       
-      private function __onPetsSmallLoadingClose(param1:Event) : void
+      private function __onPetsSmallLoadingClose(event:Event) : void
       {
          UIModuleSmallLoading.Instance.hide();
          UIModuleSmallLoading.Instance.removeEventListener("close",__onPetsSmallLoadingClose);
@@ -245,15 +245,15 @@ package bagAndInfo
          UIModuleLoader.Instance.removeEventListener("uiMoudleProgress",__onPetsUIProgress);
       }
       
-      private function __onPetsUIProgress(param1:UIModuleEvent) : void
+      private function __onPetsUIProgress(event:UIModuleEvent) : void
       {
-         if(param1.module == "petsBag")
+         if(event.module == "petsBag")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
       
-      private function __changeHandler(param1:Event) : void
+      private function __changeHandler(event:Event) : void
       {
          if(this.bagView.bagType == 21)
          {
@@ -289,11 +289,11 @@ package bagAndInfo
          }
       }
       
-      private function showPlayerDressView(param1:PlayerDressEvent) : void
+      private function showPlayerDressView(event:PlayerDressEvent) : void
       {
          if(!_playerDressView)
          {
-            _playerDressView = param1.info;
+            _playerDressView = event.info;
             addChild(_playerDressView);
          }
          else
@@ -340,18 +340,18 @@ package bagAndInfo
          }
       }
       
-      private function __onCreateComplete(param1:CEvent) : void
+      private function __onCreateComplete(e:CEvent) : void
       {
          beadSystemManager.Instance.removeEventListener("createComplete",__onCreateComplete);
-         if(param1.data.type == "mainView")
+         if(e.data.type == "mainView")
          {
-            _beadInfoView = param1.data.spr;
+            _beadInfoView = e.data.spr;
             addChild(_beadInfoView);
             this.bagView.initBeadButton();
          }
       }
       
-      private function __stopShine(param1:CellEvent) : void
+      private function __stopShine(event:CellEvent) : void
       {
          _infoView.stopShine();
          if(_beadInfoView)
@@ -380,57 +380,59 @@ package bagAndInfo
          }
       }
       
-      private function __startShine(param1:CellEvent) : void
+      private function __startShine(event:CellEvent) : void
       {
-         if(param1.data is ItemTemplateInfo)
+         var categoryID:* = NaN;
+         if(event.data is ItemTemplateInfo)
          {
-            if((param1.data as ItemTemplateInfo).CategoryID == 20 || (param1.data as ItemTemplateInfo).CategoryID == 53)
+            categoryID = categoryID;
+            if(categoryID == 20 || categoryID == 53 || categoryID == 78)
             {
                if(TexpManager.Instance.isShow("texpView"))
                {
                   TexpManager.Instance.shine(true);
                }
             }
-            else if((param1.data as ItemTemplateInfo).CategoryID == 34)
+            else if(categoryID == 34)
             {
                if(_petsView)
                {
                   _petsView.startShine();
                }
             }
-            else if((param1.data as ItemTemplateInfo).CategoryID == 50)
+            else if(categoryID == 50)
             {
                if(_petsView)
                {
                   _petsView.playShined(0);
                }
             }
-            else if((param1.data as ItemTemplateInfo).CategoryID == 52)
+            else if(categoryID == 52)
             {
                if(_petsView)
                {
                   _petsView.playShined(2);
                }
             }
-            else if((param1.data as ItemTemplateInfo).CategoryID == 51)
+            else if(categoryID == 51)
             {
                if(_petsView)
                {
                   _petsView.playShined(1);
                }
             }
-            else if((param1.data as ItemTemplateInfo).Property1 != "31")
+            else if((event.data as ItemTemplateInfo).Property1 != "31")
             {
-               _infoView.startShine(param1.data as ItemTemplateInfo);
+               _infoView.startShine(event.data as ItemTemplateInfo);
             }
             else
             {
-               _beadInfoView["startShine"](param1.data as ItemTemplateInfo);
+               _beadInfoView["startShine"](event.data as ItemTemplateInfo);
             }
          }
-         else if(param1.data is CardInfo)
+         else if(event.data is CardInfo)
          {
-            _infoView.cardEquipShine(param1.data as CardInfo);
+            _infoView.cardEquipShine(event.data as CardInfo);
          }
       }
       
@@ -467,17 +469,17 @@ package bagAndInfo
          return _info;
       }
       
-      public function set info(param1:SelfInfo) : void
+      public function set info(value:SelfInfo) : void
       {
-         _info = param1;
-         _infoView.info = param1;
-         bagView.info = param1;
+         _info = value;
+         _infoView.info = value;
+         bagView.info = value;
          _infoView.allowLvIconClick();
       }
       
-      public function set bagType(param1:int) : void
+      public function set bagType(value:int) : void
       {
-         bagView.setBagType(param1);
+         bagView.setBagType(value);
       }
       
       public function show() : void

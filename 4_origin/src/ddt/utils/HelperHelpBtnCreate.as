@@ -30,22 +30,22 @@ package ddt.utils
          super();
       }
       
-      public function create(param1:Sprite, param2:String, param3:* = null, param4:* = null, param5:String = "") : void
+      public function create($parent:Sprite, contentStyleName:String, contentPos:* = null, helpBtnPos:* = null, helpFrameTitle:String = "") : void
       {
-         param3 == null && param3;
-         param5 == null && "AlertDialog.help";
-         if(param4 == null)
+         contentPos == null && contentPos;
+         helpFrameTitle == null && "AlertDialog.help";
+         if(helpBtnPos == null)
          {
-            if(param1.parent is Frame)
+            if($parent.parent is Frame)
             {
-               param4 = new Point(param1.parent.width - 100,-37);
+               helpBtnPos = new Point($parent.parent.width - 100,-37);
             }
             else
             {
-               param4 = new Point(300,-37);
+               helpBtnPos = new Point(300,-37);
             }
          }
-         CoreScrollPanelCell.content = ComponentFactory.Instance.creat(param2);
+         CoreScrollPanelCell.content = ComponentFactory.Instance.creat(contentStyleName);
          _scrollPanel = ComponentFactory.Instance.creatComponentByStylename("coreii.help.scrollPanel");
          _scrollPanel.factoryStyle = "com.pickgliss.ui.controls.cell.SimpleListCellFactory|ddt.utils.CoreScrollPanelCell,451,451";
          _scrollPanel.vectorListModel.clear();
@@ -53,9 +53,9 @@ package ddt.utils
          _scrollPanel.list.updateListView();
          _content = new Sprite();
          _content.addChild(_scrollPanel);
-         PositionUtils.setPos(_content,param3);
-         _helpBtn = HelpFrameUtils.Instance.simpleHelpButton(param1,helpBtnStyleName,null,param5,_content,width,height) as SimpleBitmapButton;
-         PositionUtils.setPos(_helpBtn,param4);
+         PositionUtils.setPos(_content,contentPos);
+         _helpBtn = HelpFrameUtils.Instance.simpleHelpButton($parent,helpBtnStyleName,null,helpFrameTitle,_content,width,height) as SimpleBitmapButton;
+         PositionUtils.setPos(_helpBtn,helpBtnPos);
       }
       
       public function dispose() : void

@@ -42,7 +42,7 @@ package ddt.manager
          dispatchEvent(new Event("exitOpenView1"));
       }
       
-      public function receivedFromJavaScript(param1:String = "") : void
+      public function receivedFromJavaScript(str:String = "") : void
       {
          dispatchEvent(new Event("exitOpenView0"));
       }

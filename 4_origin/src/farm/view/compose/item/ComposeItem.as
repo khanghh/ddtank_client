@@ -22,9 +22,9 @@ package farm.view.compose.item
       
       private var _need:int;
       
-      public function ComposeItem(param1:DisplayObject)
+      public function ComposeItem(bg:DisplayObject)
       {
-         super(param1);
+         super(bg);
       }
       
       override protected function createChildren() : void
@@ -36,21 +36,21 @@ package farm.view.compose.item
          _tbxUseCount.mouseEnabled = false;
       }
       
-      override protected function updateSize(param1:Sprite) : void
+      override protected function updateSize(sp:Sprite) : void
       {
-         PositionUtils.setPos(param1,"farm.componseItem.cellPos");
-         param1.width = 50;
-         param1.height = 50;
+         PositionUtils.setPos(sp,"farm.componseItem.cellPos");
+         sp.width = 50;
+         sp.height = 50;
       }
       
-      override public function set info(param1:ItemTemplateInfo) : void
+      override public function set info(value:ItemTemplateInfo) : void
       {
-         .super.info = param1;
+         .super.info = value;
          addChild(_tbxUseCount);
          addChild(_tbxCount);
-         if(param1)
+         if(value)
          {
-            _total = PlayerManager.Instance.Self.getBag(14).getItemCountByTemplateId(param1.TemplateID);
+            _total = PlayerManager.Instance.Self.getBag(14).getItemCountByTemplateId(value.TemplateID);
             _tbxCount.text = _total.toString();
          }
          else
@@ -60,10 +60,10 @@ package farm.view.compose.item
          }
       }
       
-      public function set useCount(param1:int) : void
+      public function set useCount(count:int) : void
       {
-         _need = param1;
-         _tbxUseCount.text = param1 > 0?"/" + param1.toString():"";
+         _need = count;
+         _tbxUseCount.text = count > 0?"/" + count.toString():"";
          fixPos();
       }
       

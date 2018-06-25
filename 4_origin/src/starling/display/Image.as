@@ -22,40 +22,40 @@ package starling.display
       
       private var mVertexDataCacheInvalid:Boolean;
       
-      public function Image(param1:Texture)
+      public function Image(texture:Texture)
       {
-         var _loc3_:* = null;
-         var _loc4_:Number = NaN;
-         var _loc2_:Number = NaN;
-         var _loc5_:Boolean = false;
-         if(param1)
+         var frame:* = null;
+         var width:Number = NaN;
+         var height:Number = NaN;
+         var pma:Boolean = false;
+         if(texture)
          {
-            _loc3_ = param1.frame;
-            _loc4_ = !!_loc3_?_loc3_.width:Number(param1.width);
-            _loc2_ = !!_loc3_?_loc3_.height:Number(param1.height);
-            _loc5_ = param1.premultipliedAlpha;
-            super(_loc4_,_loc2_,16777215,_loc5_);
+            frame = texture.frame;
+            width = !!frame?frame.width:Number(texture.width);
+            height = !!frame?frame.height:Number(texture.height);
+            pma = texture.premultipliedAlpha;
+            super(width,height,16777215,pma);
             mVertexData.setTexCoords(0,0,0);
             mVertexData.setTexCoords(1,1,0);
             mVertexData.setTexCoords(2,0,1);
             mVertexData.setTexCoords(3,1,1);
-            mTexture = param1;
+            mTexture = texture;
             mSmoothing = "bilinear";
-            mVertexDataCache = new VertexData(4,_loc5_);
+            mVertexDataCache = new VertexData(4,pma);
             mVertexDataCacheInvalid = true;
             return;
          }
          throw new ArgumentError("Texture cannot be null");
       }
       
-      public static function fromBitmap(param1:Bitmap, param2:Boolean = true, param3:Number = 1) : Image
+      public static function fromBitmap(bitmap:Bitmap, generateMipMaps:Boolean = true, scale:Number = 1) : Image
       {
-         return new Image(Texture.fromBitmap(param1,param2,false,param3));
+         return new Image(Texture.fromBitmap(bitmap,generateMipMaps,false,scale));
       }
       
-      public static function fromBitmapData(param1:BitmapData, param2:Boolean = true, param3:Number = 1) : Image
+      public static function fromBitmapData(bitmapData:BitmapData, generateMipMaps:Boolean = true, scale:Number = 1) : Image
       {
-         return new Image(Texture.fromBitmapData(param1,param2,false,param3));
+         return new Image(Texture.fromBitmapData(bitmapData,generateMipMaps,false,scale));
       }
       
       override protected function onVertexDataChanged() : void
@@ -65,44 +65,44 @@ package starling.display
       
       public function readjustSize() : void
       {
-         var _loc2_:Rectangle = texture.frame;
-         var _loc3_:Number = !!_loc2_?_loc2_.width:Number(texture.width);
-         var _loc1_:Number = !!_loc2_?_loc2_.height:Number(texture.height);
+         var frame:Rectangle = texture.frame;
+         var width:Number = !!frame?frame.width:Number(texture.width);
+         var height:Number = !!frame?frame.height:Number(texture.height);
          mVertexData.setPosition(0,0,0);
-         mVertexData.setPosition(1,_loc3_,0);
-         mVertexData.setPosition(2,0,_loc1_);
-         mVertexData.setPosition(3,_loc3_,_loc1_);
+         mVertexData.setPosition(1,width,0);
+         mVertexData.setPosition(2,0,height);
+         mVertexData.setPosition(3,width,height);
          onVertexDataChanged();
       }
       
-      public function setTexCoords(param1:int, param2:Point) : void
+      public function setTexCoords(vertexID:int, coords:Point) : void
       {
-         mVertexData.setTexCoords(param1,param2.x,param2.y);
+         mVertexData.setTexCoords(vertexID,coords.x,coords.y);
          onVertexDataChanged();
       }
       
-      public function setTexCoordsTo(param1:int, param2:Number, param3:Number) : void
+      public function setTexCoordsTo(vertexID:int, u:Number, v:Number) : void
       {
-         mVertexData.setTexCoords(param1,param2,param3);
+         mVertexData.setTexCoords(vertexID,u,v);
          onVertexDataChanged();
       }
       
-      public function getTexCoords(param1:int, param2:Point = null) : Point
+      public function getTexCoords(vertexID:int, resultPoint:Point = null) : Point
       {
-         if(param2 == null)
+         if(resultPoint == null)
          {
-            param2 = new Point();
+            resultPoint = new Point();
          }
-         mVertexData.getTexCoords(param1,param2);
-         return param2;
+         mVertexData.getTexCoords(vertexID,resultPoint);
+         return resultPoint;
       }
       
-      override public function copyVertexDataTo(param1:VertexData, param2:int = 0) : void
+      override public function copyVertexDataTo(targetData:VertexData, targetVertexID:int = 0) : void
       {
-         copyVertexDataTransformedTo(param1,param2,null);
+         copyVertexDataTransformedTo(targetData,targetVertexID,null);
       }
       
-      override public function copyVertexDataTransformedTo(param1:VertexData, param2:int = 0, param3:Matrix = null) : void
+      override public function copyVertexDataTransformedTo(targetData:VertexData, targetVertexID:int = 0, matrix:Matrix = null) : void
       {
          if(mVertexDataCacheInvalid)
          {
@@ -110,7 +110,7 @@ package starling.display
             mVertexData.copyTo(mVertexDataCache);
             mTexture.adjustVertexData(mVertexDataCache,0,4);
          }
-         mVertexDataCache.copyTransformedTo(param1,param2,param3,0,4);
+         mVertexDataCache.copyTransformedTo(targetData,targetVertexID,matrix,0,4);
       }
       
       public function get texture() : Texture
@@ -118,15 +118,15 @@ package starling.display
          return mTexture;
       }
       
-      public function set texture(param1:Texture) : void
+      public function set texture(value:Texture) : void
       {
-         if(param1 == null)
+         if(value == null)
          {
             throw new ArgumentError("Texture cannot be null");
          }
-         if(param1 != mTexture)
+         if(value != mTexture)
          {
-            mTexture = param1;
+            mTexture = value;
             mVertexData.setPremultipliedAlpha(mTexture.premultipliedAlpha);
             mVertexDataCache.setPremultipliedAlpha(mTexture.premultipliedAlpha,false);
             onVertexDataChanged();
@@ -138,19 +138,19 @@ package starling.display
          return mSmoothing;
       }
       
-      public function set smoothing(param1:String) : void
+      public function set smoothing(value:String) : void
       {
-         if(TextureSmoothing.isValid(param1))
+         if(TextureSmoothing.isValid(value))
          {
-            mSmoothing = param1;
+            mSmoothing = value;
             return;
          }
-         throw new ArgumentError("Invalid smoothing mode: " + param1);
+         throw new ArgumentError("Invalid smoothing mode: " + value);
       }
       
-      override public function render(param1:RenderSupport, param2:Number) : void
+      override public function render(support:RenderSupport, parentAlpha:Number) : void
       {
-         param1.batchQuad(this,param2,mTexture,mSmoothing);
+         support.batchQuad(this,parentAlpha,mTexture,mSmoothing);
       }
    }
 }

@@ -32,9 +32,9 @@ package gameStick.view
          _alertLabel = ComponentFactory.Instance.creat("");
       }
       
-      private function responseHandler(param1:FrameEvent) : void
+      private function responseHandler(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:

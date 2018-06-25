@@ -47,29 +47,28 @@ package cloudBuyLottery.view
       
       private function initView() : void
       {
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:MutipleImage = ComponentFactory.Instance.creatComponentByStylename("IndividualLottery.TrophyBGI");
-         var _loc2_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.IndividualLottery.lookFont");
+         var i:int = 0;
+         var item:* = null;
+         var _bg1:MutipleImage = ComponentFactory.Instance.creatComponentByStylename("IndividualLottery.TrophyBGI");
+         var font:Bitmap = ComponentFactory.Instance.creatBitmap("asset.IndividualLottery.lookFont");
          _list = ComponentFactory.Instance.creatCustomObject("IndividualLottery.TrophyList",[5]);
-         var _loc1_:Scale9CornerImage = ComponentFactory.Instance.creatComponentByStylename("IndividualLottery.PageCountBg");
+         var _bg2:Scale9CornerImage = ComponentFactory.Instance.creatComponentByStylename("IndividualLottery.PageCountBg");
          _pageTxt = ComponentFactory.Instance.creatComponentByStylename("IndividualLottery.pageTxt");
          _prevBtn = ComponentFactory.Instance.creatComponentByStylename("IndividualLottery.prevBtn");
          _nextBtn = ComponentFactory.Instance.creatComponentByStylename("IndividualLottery.nextBtn");
          _items = new Vector.<BagCell>();
          _list.beginChanges();
-         _loc5_ = 0;
-         while(_loc5_ < 20)
+         for(i = 0; i < 20; )
          {
-            _loc3_ = new BagCell(_loc5_);
-            _items.push(_loc3_);
-            _list.addChild(_loc3_);
-            _loc5_++;
+            item = new BagCell(i);
+            _items.push(item);
+            _list.addChild(item);
+            i++;
          }
          _list.commitChanges();
-         addToContent(_loc4_);
-         addToContent(_loc1_);
-         addToContent(_loc2_);
+         addToContent(_bg1);
+         addToContent(_bg2);
+         addToContent(font);
          addToContent(_list);
          addToContent(_pageTxt);
          addToContent(_prevBtn);
@@ -98,16 +97,16 @@ package cloudBuyLottery.view
          }
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(e.responseCode == 0 || e.responseCode == 1)
          {
             hide();
          }
       }
       
-      private function _nextClick(param1:MouseEvent) : void
+      private function _nextClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          page = Number(page) + 1;
@@ -118,7 +117,7 @@ package cloudBuyLottery.view
          fillPage();
       }
       
-      private function _prevClick(param1:MouseEvent) : void
+      private function _prevClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          page = Number(page) - 1;
@@ -131,38 +130,37 @@ package cloudBuyLottery.view
       
       private function fillPage() : void
       {
-         var _loc3_:* = 0;
-         var _loc4_:int = (page - 1) * 20;
-         var _loc2_:int = page * 20;
-         var _loc1_:int = 0;
-         _loc3_ = _loc4_;
-         while(_loc3_ < _loc2_)
+         var i:* = 0;
+         var begin:int = (page - 1) * 20;
+         var end:int = page * 20;
+         var cellNumber:int = 0;
+         for(i = begin; i < end; )
          {
-            if(_loc1_ < _items.length && _loc3_ < _boxTempIDList.length)
+            if(cellNumber < _items.length && i < _boxTempIDList.length)
             {
-               _items[_loc1_].info = _boxTempIDList[_loc3_];
+               _items[cellNumber].info = _boxTempIDList[i];
             }
             else
             {
-               _items[_loc1_].info = null;
+               _items[cellNumber].info = null;
             }
-            _loc3_++;
-            _loc1_++;
-            _loc1_;
+            i++;
+            cellNumber++;
+            cellNumber;
          }
       }
       
-      private function getTemplateInfo(param1:int) : InventoryItemInfo
+      private function getTemplateInfo(id:int) : InventoryItemInfo
       {
-         var _loc2_:InventoryItemInfo = new InventoryItemInfo();
-         _loc2_.TemplateID = param1;
-         ItemManager.fill(_loc2_);
-         return _loc2_;
+         var itemInfo:InventoryItemInfo = new InventoryItemInfo();
+         itemInfo.TemplateID = id;
+         ItemManager.fill(itemInfo);
+         return itemInfo;
       }
       
-      public function set page(param1:int) : void
+      public function set page(value:int) : void
       {
-         _page = param1;
+         _page = value;
          _pageTxt.text = _page + "/" + pageSum();
       }
       
@@ -176,9 +174,9 @@ package cloudBuyLottery.view
          return Math.ceil(_boxTempIDList.length / 20);
       }
       
-      public function show(param1:Vector.<InventoryItemInfo>) : void
+      public function show(list:Vector.<InventoryItemInfo>) : void
       {
-         _boxTempIDList = param1;
+         _boxTempIDList = list;
          page = 1;
          fillPage();
          LayerManager.Instance.addToLayer(this,2,true,2);
@@ -195,7 +193,7 @@ package cloudBuyLottery.view
       
       override public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          removeEvents();
          if(_list)
          {
@@ -219,11 +217,10 @@ package cloudBuyLottery.view
          _pageTxt = null;
          if(_items != null)
          {
-            _loc1_ = 0;
-            while(_loc1_ < _items.length)
+            for(i = 0; i < _items.length; )
             {
-               ObjectUtils.disposeObject(_items[_loc1_]);
-               _loc1_++;
+               ObjectUtils.disposeObject(_items[i]);
+               i++;
             }
             _items = null;
          }

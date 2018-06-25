@@ -123,6 +123,8 @@ package starling.scene.hall.player
       
       public static const MOUNT_141:Point = POINT_3;
       
+      public static const MOUNT_142:Point = POINT_7;
+      
       public static const PET_X_0:int = 90;
       
       public static const PET_X_1:int = 120;
@@ -224,6 +226,8 @@ package starling.scene.hall.player
       public static const PET_X_140:int = 120;
       
       public static const PET_X_141:int = 180;
+      
+      public static const PET_X_142:int = 100;
       
       public static const FLY_PETS:Array = [62004,62005,62006,62007,62008,62009,62011];
        

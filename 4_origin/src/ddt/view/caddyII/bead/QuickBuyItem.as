@@ -54,12 +54,12 @@ package ddt.view.caddyII.bead
       {
          _countPos = ComponentFactory.Instance.creatCustomObject("caddyII.bead.QuickBuyItem.CountPos");
          _bg = ComponentFactory.Instance.creatComponentByStylename("caddy.QuickBuy.ItemCellBg");
-         var _loc2_:Point = ComponentFactory.Instance.creatCustomObject("bead.quickCellSize");
-         var _loc1_:Shape = new Shape();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,_loc2_.x,_loc2_.y);
-         _loc1_.graphics.endFill();
-         _cell = ComponentFactory.Instance.creatCustomObject("bead.quickCell",[_loc1_]);
+         var size:Point = ComponentFactory.Instance.creatCustomObject("bead.quickCellSize");
+         var shape:Shape = new Shape();
+         shape.graphics.beginFill(16777215,0);
+         shape.graphics.drawRect(0,0,size.x,size.y);
+         shape.graphics.endFill();
+         _cell = ComponentFactory.Instance.creatCustomObject("bead.quickCell",[shape]);
          _selectNumber = ComponentFactory.Instance.creatCustomObject("bead.numberSelecter",[0]);
          _selectNumber.number = 0;
          _countField = ComponentFactory.Instance.creatComponentByStylename("caddy.QuickBuy.ItemCountField");
@@ -83,7 +83,7 @@ package ddt.view.caddyII.bead
          _selectNumber.removeEventListener("number_close",_numberClose);
       }
       
-      private function _numberChange(param1:Event) : void
+      private function _numberChange(e:Event) : void
       {
          if(_cell.info.TemplateID == 11456)
          {
@@ -100,7 +100,7 @@ package ddt.view.caddyII.bead
          dispatchEvent(new Event("change"));
       }
       
-      private function _numberClose(param1:Event) : void
+      private function _numberClose(e:Event) : void
       {
          dispatchEvent(new Event("number_close"));
       }
@@ -110,9 +110,9 @@ package ddt.view.caddyII.bead
          _selectNumber.setFocus();
       }
       
-      public function set itemID(param1:int) : void
+      public function set itemID(id:int) : void
       {
-         _cell.info = ItemManager.Instance.getTemplateById(param1);
+         _cell.info = ItemManager.Instance.getTemplateById(id);
          if(_cell.info.TemplateID == 11456)
          {
             _countField.text = String(5 * _selectNumber.number);
@@ -132,9 +132,9 @@ package ddt.view.caddyII.bead
          return _cell.info;
       }
       
-      public function set count(param1:int) : void
+      public function set count(value:int) : void
       {
-         _selectNumber.number = param1;
+         _selectNumber.number = value;
       }
       
       public function get count() : int
@@ -147,11 +147,11 @@ package ddt.view.caddyII.bead
          return _selsected;
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(val:Boolean) : void
       {
-         if(_selsected != param1)
+         if(_selsected != val)
          {
-            _selsected = param1;
+            _selsected = val;
             _selectedBitmap.visible = _selsected;
          }
       }
@@ -161,9 +161,9 @@ package ddt.view.caddyII.bead
          return _selectNumber;
       }
       
-      public function set selectNumber(param1:NumberSelecter) : void
+      public function set selectNumber(value:NumberSelecter) : void
       {
-         _selectNumber = param1;
+         _selectNumber = value;
       }
       
       public function dispose() : void

@@ -107,14 +107,14 @@ package cityBattle.view
          _territorialWelfareBtn.addEventListener("click",__changeHandler);
       }
       
-      protected function __changeHandler(param1:MouseEvent) : void
+      protected function __changeHandler(event:MouseEvent) : void
       {
          if(_btnGroup.selectIndex == _currentIndex)
          {
             return;
          }
          SoundManager.instance.play("008");
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = event.currentTarget;
          if(_castellanTerritorialBtn !== _loc2_)
          {
             if(_territorialContentionBtn !== _loc2_)
@@ -148,11 +148,11 @@ package cityBattle.view
          _currentIndex = _btnGroup.selectIndex;
       }
       
-      public function changeView(param1:int) : void
+      public function changeView(type:int) : void
       {
          ObjectUtils.disposeObject(_view);
          _view = null;
-         switch(int(param1) - 1)
+         switch(int(type) - 1)
          {
             case 0:
                _view = new CastellanView();
@@ -170,10 +170,10 @@ package cityBattle.view
          }
       }
       
-      protected function _responseHandle(param1:FrameEvent) : void
+      protected function _responseHandle(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
                dispose();

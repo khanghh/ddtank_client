@@ -46,9 +46,9 @@ package cardSystem.elements
          return _cardId;
       }
       
-      public function set cardId(param1:int) : void
+      public function set cardId(value:int) : void
       {
-         _cardId = param1;
+         _cardId = value;
          _cardName.text = ItemManager.Instance.getTemplateById(cardId).Name;
          _cardName.y = 41 - _cardName.textHeight / 2;
       }
@@ -57,11 +57,11 @@ package cardSystem.elements
       {
          mouseChildren = false;
          mouseEnabled = false;
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,57,70);
-         _loc1_.graphics.endFill();
-         _cell = new CardCell(_loc1_);
+         var s:Sprite = new Sprite();
+         s.graphics.beginFill(16777215,0);
+         s.graphics.drawRect(0,0,57,70);
+         s.graphics.endFill();
+         _cell = new CardCell(s);
          _cell.setContentSize(52,70);
          _cell.starVisible = false;
          _cell.Visibles = false;
@@ -88,56 +88,56 @@ package cardSystem.elements
          _bg.visible = _loc2_;
       }
       
-      public function set cardInfo(param1:CardInfo) : void
+      public function set cardInfo(info:CardInfo) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:String = "";
-         if(param1)
+         var cardTempleInfo:* = null;
+         var str:String = "";
+         if(info)
          {
-            _cardInfo = param1;
-            _cell.cardInfo = param1;
+            _cardInfo = info;
+            _cell.cardInfo = info;
             _cell.visible = true;
             _cell.Visibles = false;
-            _loc3_ = CardTemplateInfoManager.instance.getInfoByCardId(String(param1.TemplateID),String(param1.CardType));
-            if(param1.templateInfo.Attack != 0)
+            cardTempleInfo = CardTemplateInfoManager.instance.getInfoByCardId(String(info.TemplateID),String(info.CardType));
+            if(info.templateInfo.Attack != 0)
             {
-               _loc2_ = _loc2_.concat(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Attack",Number(_loc3_.AttackRate)) + "<br/>");
+               str = str.concat(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Attack",Number(cardTempleInfo.AttackRate)) + "<br/>");
             }
-            if(param1.templateInfo.Defence != 0)
+            if(info.templateInfo.Defence != 0)
             {
-               _loc2_ = _loc2_.concat(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Defence",Number(_loc3_.DefendRate)) + "<br/>");
+               str = str.concat(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Defence",Number(cardTempleInfo.DefendRate)) + "<br/>");
             }
-            if(param1.templateInfo.Agility != 0)
+            if(info.templateInfo.Agility != 0)
             {
-               _loc2_ = _loc2_.concat(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Agility",Number(_loc3_.AgilityRate)) + "<br/>");
+               str = str.concat(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Agility",Number(cardTempleInfo.AgilityRate)) + "<br/>");
             }
-            if(param1.templateInfo.Luck != 0)
+            if(info.templateInfo.Luck != 0)
             {
-               _loc2_ = _loc2_.concat(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Luck",Number(_loc3_.LuckyRate)) + "<br/>");
+               str = str.concat(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Luck",Number(cardTempleInfo.LuckyRate)) + "<br/>");
             }
-            if(parseInt(param1.templateInfo.Property4) != 0)
+            if(parseInt(info.templateInfo.Property4) != 0)
             {
-               _loc2_ = _loc2_.concat(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Damage",Number(_loc3_.DamageRate)) + "<br/>");
+               str = str.concat(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Damage",Number(cardTempleInfo.DamageRate)) + "<br/>");
             }
-            if(parseInt(param1.templateInfo.Property5) != 0)
+            if(parseInt(info.templateInfo.Property5) != 0)
             {
-               _loc2_ = _loc2_.concat(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Guard",Number(_loc3_.GuardRate)) + "<br/>");
+               str = str.concat(LanguageMgr.GetTranslation("ddt.cardSystem.PropResetFrame.Guard",Number(cardTempleInfo.GuardRate)) + "<br/>");
             }
-            if(param1.CardType == 1)
+            if(info.CardType == 1)
             {
                _Goldbg.visible = true;
                _Silverbg.visible = false;
                _Coppebg.visible = false;
                _bg.visible = false;
             }
-            else if(param1.CardType == 2)
+            else if(info.CardType == 2)
             {
                _Goldbg.visible = false;
                _Silverbg.visible = true;
                _Coppebg.visible = false;
                _bg.visible = false;
             }
-            else if(param1.CardType == 3)
+            else if(info.CardType == 3)
             {
                _Goldbg.visible = false;
                _Silverbg.visible = false;
@@ -160,9 +160,9 @@ package cardSystem.elements
             _Silverbg.visible = false;
             _Coppebg.visible = false;
             _bg.visible = true;
-            _loc2_ = LanguageMgr.GetTranslation("ddt.cardSystem.cardProp.unknown");
+            str = LanguageMgr.GetTranslation("ddt.cardSystem.cardProp.unknown");
          }
-         _prop.htmlText = _loc2_;
+         _prop.htmlText = str;
       }
       
       override public function get width() : Number

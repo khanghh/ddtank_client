@@ -35,12 +35,12 @@ package wasteRecycle
          SocketManager.Instance.addEventListener(PkgEvent.format(346,4),__onActivity);
       }
       
-      private function __onActivity(param1:PkgEvent) : void
+      private function __onActivity(e:PkgEvent) : void
       {
-         _isOpen = param1.pkg.readBoolean();
+         _isOpen = e.pkg.readBoolean();
          if(_isOpen)
          {
-            _endDate = param1.pkg.readDate();
+            _endDate = e.pkg.readDate();
             WonderfulActivityManager.Instance.addElement(50);
             ChatManager.Instance.sysChatYellow(LanguageMgr.GetTranslation("ddt.wasteRecycle.activityStart"));
          }

@@ -8,9 +8,9 @@ package quest
    {
        
       
-      public function InfoCollectViewPhone(param1:int = 0)
+      public function InfoCollectViewPhone(id:int = 0)
       {
-         super(param1);
+         super(id);
          Type = 2;
       }
       
@@ -20,13 +20,13 @@ package quest
          _dataLabel.text = LanguageMgr.GetTranslation("ddt.quest.collectInfo.phone");
       }
       
-      override protected function fillArgs(param1:URLVariables) : URLVariables
+      override protected function fillArgs(args:URLVariables) : URLVariables
       {
-         param1["phone"] = param1["input"];
-         return param1;
+         args["phone"] = args["input"];
+         return args;
       }
       
-      override protected function updateHelper(param1:String) : String
+      override protected function updateHelper(value:String) : String
       {
          return "";
       }

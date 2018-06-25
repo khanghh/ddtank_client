@@ -44,7 +44,7 @@ package petsBag.petsAdvanced
          addEventListener("starOrGrade_movie_complete",__movieHandler);
       }
       
-      protected function __movieHandler(param1:PetsAdvancedEvent) : void
+      protected function __movieHandler(event:PetsAdvancedEvent) : void
       {
          _advancedMc = ComponentFactory.Instance.creat("petsBag.advanced.AdvancedMc");
          addChild(_advancedMc);
@@ -52,7 +52,7 @@ package petsBag.petsAdvanced
          addEventListener("enterFrame",__enterFrame);
       }
       
-      protected function __enterFrame(param1:Event) : void
+      protected function __enterFrame(event:Event) : void
       {
          if(_advancedMc && _advancedMc.currentFrame >= 22)
          {
@@ -87,12 +87,12 @@ package petsBag.petsAdvanced
          addChild(_petBigItem);
       }
       
-      public function setInfo(param1:PetInfo) : void
+      public function setInfo(info:PetInfo) : void
       {
-         _petName.text = param1.Name;
-         _lvTxt.text = !!param1?param1.Level.toString():"";
-         _starBar.starNum(!!param1?param1.StarLevel:0);
-         _petBigItem.info = param1;
+         _petName.text = info.Name;
+         _lvTxt.text = !!info?info.Level.toString():"";
+         _starBar.starNum(!!info?info.StarLevel:0);
+         _petBigItem.info = info;
          _petBigItem.initTips();
          if(_petBigItem.fightImg)
          {
@@ -100,9 +100,9 @@ package petsBag.petsAdvanced
          }
       }
       
-      public function updateStar(param1:int) : void
+      public function updateStar(starLevel:int) : void
       {
-         _starBar.starNum(param1);
+         _starBar.starNum(starLevel);
       }
       
       private function removeEvent() : void

@@ -16,23 +16,23 @@ package game.gametrainer.view
          removeEventListener("interactive_click",__doubleClickHandler);
       }
       
-      override public function dragDrop(param1:DragEffect) : void
+      override public function dragDrop(effect:DragEffect) : void
       {
       }
       
-      override protected function onMouseOver(param1:MouseEvent) : void
+      override protected function onMouseOver(evt:MouseEvent) : void
       {
          dispatchEvent(new Event("change"));
-         super.onMouseOver(param1);
+         super.onMouseOver(evt);
       }
       
-      override protected function onMouseOut(param1:MouseEvent) : void
+      override protected function onMouseOut(evt:MouseEvent) : void
       {
          dispatchEvent(new Event("complete"));
-         super.onMouseOut(param1);
+         super.onMouseOut(evt);
       }
       
-      override protected function onMouseClick(param1:MouseEvent) : void
+      override protected function onMouseClick(evt:MouseEvent) : void
       {
       }
       

@@ -12,10 +12,10 @@ package redEnvelope.event
       
       public var resultData:int;
       
-      public function RedEnvelopeEvent(param1:String, param2:int = 0, param3:Boolean = false, param4:Boolean = false)
+      public function RedEnvelopeEvent(type:String, _resultData:int = 0, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         resultData = param2;
-         super(param1,param3,param4);
+         resultData = _resultData;
+         super(type,bubbles,cancelable);
       }
    }
 }

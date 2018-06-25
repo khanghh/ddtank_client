@@ -130,6 +130,12 @@ package trainer.data
       public static const MAGICSTONE:int = 40;
       
       public static const MINES:int = 20;
+      
+      public static const GOURD:int = 30;
+      
+      public static const WORLDCUP_GUESS:int = 11;
+      
+      public static const DREAMLAND_BATTLE:int = 23;
        
       
       public function OpenLevel()

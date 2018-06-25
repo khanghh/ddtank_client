@@ -1,7 +1,7 @@
 package starling.utils
 {
-   public function rad2deg(param1:Number) : Number
+   public function rad2deg(rad:Number) : Number
    {
-      return param1 / 3.14159265358979 * 180;
+      return rad / 3.14159265358979 * 180;
    }
 }

@@ -14,22 +14,22 @@ package bagAndInfo.bag.ring
       
       private var _index:int;
       
-      public function RingSystemFilterInfo(param1:int)
+      public function RingSystemFilterInfo(index:int)
       {
          super();
-         _index = param1;
+         _index = index;
          tipStyle = "ddt.view.tips.OneLineTip";
          tipDirctions = "2";
          tipGapV = 4;
          _info = ComponentFactory.Instance.creatComponentByStylename("bagAndInfo.bag.RingSystemView.fightData");
          addChild(_info);
-         _info.setFrame(param1);
+         _info.setFrame(index);
       }
       
-      public function setInfoText(param1:Object) : void
+      public function setInfoText(obj:Object) : void
       {
-         _info.text = param1.info + LanguageMgr.GetTranslation("ddt.vip.PrivilegeViewItem.TimesUnit");
-         tipData = param1.tipData;
+         _info.text = obj.info + LanguageMgr.GetTranslation("ddt.vip.PrivilegeViewItem.TimesUnit");
+         tipData = obj.tipData;
          this.width = _info.width;
          this.height = _info.height;
       }

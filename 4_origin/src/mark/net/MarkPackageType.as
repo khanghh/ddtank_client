@@ -36,6 +36,14 @@ package mark.net
       public static const SELL_CRYSTAL:int = 25;
       
       public static const UPDATE_INVENTORY_INFO:int = 26;
+      
+      public static const EQUIP_SCHEME:int = 29;
+      
+      public static const SAVE_SCHEME:int = 30;
+      
+      public static const SWITCH_SCHEME:int = 32;
+      
+      public static const ADD_SCHEME:int = 31;
        
       
       public function MarkPackageType()

@@ -39,9 +39,9 @@ package room.view.states
          }
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
-         super.enter(param1,param2);
+         super.enter(prev,data);
          if(!StartupResourceLoader.firstEnterHall)
          {
             SoundManager.instance.playMusic("065");
@@ -81,7 +81,7 @@ package room.view.states
          StateManager.getInGame_Step_8 = true;
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
          removeEvents();
          if(_roomView)
@@ -90,18 +90,18 @@ package room.view.states
             _roomView = null;
          }
          _info = null;
-         if(StateManager.isExitRoom(param1.getType()))
+         if(StateManager.isExitRoom(next.getType()))
          {
             GameInSocketOut.sendGamePlayerExit();
             GameControl.Instance.reset();
             RoomManager.Instance.reset();
          }
          MainToolBar.Instance.enableAll();
-         super.leaving(param1);
+         super.leaving(next);
          PlayerManager.Instance.Self.sendOverTimeListByBody();
       }
       
-      protected function __startLoading(param1:Event) : void
+      protected function __startLoading(e:Event) : void
       {
          StateManager.getInGame_Step_6 = true;
          ChatManager.Instance.input.faceEnabled = false;
@@ -110,7 +110,7 @@ package room.view.states
          StateManager.getInGame_Step_7 = true;
       }
       
-      private function __onFightNpc(param1:CrazyTankSocketEvent) : void
+      private function __onFightNpc(evt:CrazyTankSocketEvent) : void
       {
       }
    }

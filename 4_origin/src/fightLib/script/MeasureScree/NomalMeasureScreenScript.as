@@ -11,30 +11,30 @@ package fightLib.script.MeasureScree
    {
        
       
-      public function NomalMeasureScreenScript(param1:Object)
+      public function NomalMeasureScreenScript(fightView:Object)
       {
-         super(param1);
+         super(fightView);
       }
       
       override protected function initializeScript() : void
       {
-         var _loc1_:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.NomalMeasureScreenScript.command2"));
-         _loc1_.excuteFunArr.push(_host.blockSmallMap as Function);
-         var _loc4_:CreateMonsterCommand = new CreateMonsterCommand();
-         var _loc5_:TimeCommand = new TimeCommand(2000);
-         _loc5_.completeFunArr.push(_host.leftJustifyWithPlayer);
-         _loc5_.completeFunArr.push(_host.addRedPointInSmallMap as Function);
-         _loc5_.undoFunArr.push(_host.removeRedPointInSmallMap as Function);
-         var _loc2_:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.NomalMeasureScreenScript.command4"));
-         var _loc3_:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.NomalMeasureScreenScript.command5"),LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.understood"),null,LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.watchAgain"),restart,true,true);
-         _loc3_.excuteFunArr.push(_host.leftJustifyWithRedPoint as Function);
-         _loc3_.completeFunArr.push(_host.removeRedPointInSmallMap as Function);
-         _loc3_.completeFunArr.push(_host.activeSmallMap as Function);
-         _commonds.push(_loc1_);
-         _commonds.push(_loc4_);
-         _commonds.push(_loc5_);
-         _commonds.push(_loc2_);
-         _commonds.push(_loc3_);
+         var command2:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.NomalMeasureScreenScript.command2"));
+         command2.excuteFunArr.push(_host.blockSmallMap as Function);
+         var command3:CreateMonsterCommand = new CreateMonsterCommand();
+         var command4:TimeCommand = new TimeCommand(2000);
+         command4.completeFunArr.push(_host.leftJustifyWithPlayer);
+         command4.completeFunArr.push(_host.addRedPointInSmallMap as Function);
+         command4.undoFunArr.push(_host.removeRedPointInSmallMap as Function);
+         var command5:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.NomalMeasureScreenScript.command4"));
+         var command6:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.NomalMeasureScreenScript.command5"),LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.understood"),null,LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.watchAgain"),restart,true,true);
+         command6.excuteFunArr.push(_host.leftJustifyWithRedPoint as Function);
+         command6.completeFunArr.push(_host.removeRedPointInSmallMap as Function);
+         command6.completeFunArr.push(_host.activeSmallMap as Function);
+         _commonds.push(command2);
+         _commonds.push(command3);
+         _commonds.push(command4);
+         _commonds.push(command5);
+         _commonds.push(command6);
          super.initializeScript();
       }
       

@@ -53,14 +53,14 @@ package ddt.view.bossbox
       
       private var _pointArray:Vector.<Point>;
       
-      public function SmallBoxButton(param1:int)
+      public function SmallBoxButton(type:int)
       {
          super();
-         init(param1);
+         init(type);
          initEvent();
       }
       
-      private function init(param1:int) : void
+      private function init(type:int) : void
       {
          _getPoint();
          _delayText = new Sprite();
@@ -70,9 +70,9 @@ package ddt.view.bossbox
          _openBox.graphics.endFill();
          _closeBox = ComponentFactory.Instance.creat("bossbox.closeBox");
          _openBoxAsset = ComponentFactory.Instance.creat("bossbox.openBox");
-         var _loc2_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.timeBox.timeBGAsset");
+         var timeBG:Bitmap = ComponentFactory.Instance.creatBitmap("asset.timeBox.timeBGAsset");
          timeText = ComponentFactory.Instance.creat("bossbox.TimeBoxStyle");
-         _delayText.addChild(_loc2_);
+         _delayText.addChild(timeBG);
          _delayText.addChild(timeText);
          _timeSprite = ComponentFactory.Instance.creat("TimeBox.TimeTip");
          _timeSprite.tipData = LanguageMgr.GetTranslation("tanl.timebox.tipMes");
@@ -84,21 +84,20 @@ package ddt.view.bossbox
          addChild(_delayText);
          showType(BossBoxManager.instance.boxButtonShowType);
          updateTime(BossBoxManager.instance.delaySumTime);
-         x = _pointArray[param1].x;
-         y = _pointArray[param1].y;
+         x = _pointArray[type].x;
+         y = _pointArray[type].y;
       }
       
       private function _getPoint() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var point:* = null;
          _pointArray = new Vector.<Point>();
-         _loc2_ = 0;
-         while(_loc2_ < 7)
+         for(i = 0; i < 7; )
          {
-            _loc1_ = ComponentFactory.Instance.creatCustomObject("smallBoxbutton.point" + _loc2_);
-            _pointArray.push(_loc1_);
-            _loc2_++;
+            point = ComponentFactory.Instance.creatCustomObject("smallBoxbutton.point" + i);
+            _pointArray.push(point);
+            i++;
          }
       }
       
@@ -111,35 +110,35 @@ package ddt.view.bossbox
          BossBoxManager.instance.addEventListener("updateTimeCount",_updateTimeCount);
       }
       
-      public function updateTime(param1:int) : void
+      public function updateTime(second:int) : void
       {
-         var _loc5_:* = param1;
-         var _loc2_:int = _loc5_ / 60;
-         var _loc4_:int = _loc5_ % 60;
-         var _loc3_:String = "";
-         if(_loc2_ < 10)
+         var _timeSum:* = second;
+         var _minute:int = _timeSum / 60;
+         var _second:int = _timeSum % 60;
+         var str:String = "";
+         if(_minute < 10)
          {
-            _loc3_ = _loc3_ + ("0" + _loc2_);
+            str = str + ("0" + _minute);
          }
          else
          {
-            _loc3_ = _loc3_ + _loc2_;
+            str = str + _minute;
          }
-         _loc3_ = _loc3_ + ":";
-         if(_loc4_ < 10)
+         str = str + ":";
+         if(_second < 10)
          {
-            _loc3_ = _loc3_ + ("0" + _loc4_);
+            str = str + ("0" + _second);
          }
          else
          {
-            _loc3_ = _loc3_ + _loc4_;
+            str = str + _second;
          }
-         timeText.text = _loc3_;
+         timeText.text = str;
       }
       
-      public function showType(param1:int) : void
+      public function showType(value:int) : void
       {
-         switch(int(param1) - 1)
+         switch(int(value) - 1)
          {
             case 0:
                _timeSprite.closeBox.visible = true;
@@ -161,20 +160,20 @@ package ddt.view.bossbox
          }
       }
       
-      private function _click(param1:MouseEvent) : void
+      private function _click(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          BossBoxManager.instance.showTimeBox();
       }
       
-      private function _updateSmallBoxState(param1:TimeBoxEvent) : void
+      private function _updateSmallBoxState(evt:TimeBoxEvent) : void
       {
-         showType(param1.boxButtonShowType);
+         showType(evt.boxButtonShowType);
       }
       
-      private function _updateTimeCount(param1:TimeBoxEvent) : void
+      private function _updateTimeCount(evt:TimeBoxEvent) : void
       {
-         updateTime(param1.delaySumTime);
+         updateTime(evt.delaySumTime);
       }
       
       override public function get width() : Number

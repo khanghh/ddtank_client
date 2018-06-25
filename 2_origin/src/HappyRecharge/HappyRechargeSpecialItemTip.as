@@ -34,28 +34,28 @@ package HappyRecharge
          _line.width = 180;
          PositionUtils.setPos(_line,"mainframe.specialitemtip.line.pos");
          addChild(_line);
-         var _loc1_:Point = PositionUtils.creatPoint("mainframe.specialitemtip.tipwidthandheight");
-         setBGWidth(_loc1_.x);
-         setBGHeight(_loc1_.y);
+         var bgWidthAndHeight:Point = PositionUtils.creatPoint("mainframe.specialitemtip.tipwidthandheight");
+         setBGWidth(bgWidthAndHeight.x);
+         setBGHeight(bgWidthAndHeight.y);
          this.tipbackgound = _bg;
       }
       
-      public function setBGWidth(param1:int = 0) : void
+      public function setBGWidth(bgWidth:int = 0) : void
       {
-         _bg.width = param1;
+         _bg.width = bgWidth;
       }
       
-      public function setBGHeight(param1:int = 0) : void
+      public function setBGHeight(bgHeight:int = 0) : void
       {
-         _bg.height = param1;
+         _bg.height = bgHeight;
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         .super.tipData = param1;
-         var _loc2_:HappyRechargeSpecialItemTipInfo = param1 as HappyRechargeSpecialItemTipInfo;
-         _titleTxt.text = _loc2_._title;
-         _bodyTxt.htmlText = _loc2_._body;
+         .super.tipData = data;
+         var info:HappyRechargeSpecialItemTipInfo = data as HappyRechargeSpecialItemTipInfo;
+         _titleTxt.text = info._title;
+         _bodyTxt.htmlText = info._body;
       }
       
       override protected function addChildren() : void

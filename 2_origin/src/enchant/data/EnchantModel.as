@@ -53,39 +53,39 @@ package enchant.data
          initEquipProData(_propBag,false);
       }
       
-      private function initEquipProData(param1:DictionaryData, param2:Boolean) : void
+      private function initEquipProData(bag:DictionaryData, isEquip:Boolean) : void
       {
-         var _loc4_:Array = [];
+         var arr:Array = [];
          var _loc7_:int = 0;
-         var _loc6_:* = param1;
-         for each(var _loc5_ in param1)
+         var _loc6_:* = bag;
+         for each(var item in bag)
          {
-            if(param2)
+            if(isEquip)
             {
-               if(_loc5_.isCanEnchant() && _loc5_.getRemainDate() > 0)
+               if(item.isCanEnchant() && item.getRemainDate() > 0)
                {
-                  if(_loc5_.Place < 17)
+                  if(item.Place < 17)
                   {
-                     _canEnchantEquipList.add(_canEnchantEquipList.length,_loc5_);
+                     _canEnchantEquipList.add(_canEnchantEquipList.length,item);
                   }
                   else
                   {
-                     _loc4_.push(_loc5_);
+                     arr.push(item);
                   }
                }
             }
-            else if(_loc5_.getRemainDate() > 0 && _loc5_.CategoryID == 11 && int(_loc5_.Property1) == 104)
+            else if(item.getRemainDate() > 0 && item.CategoryID == 11 && int(item.Property1) == 104)
             {
-               _canEnchantPropList.add(_canEnchantPropList.length,_loc5_);
+               _canEnchantPropList.add(_canEnchantPropList.length,item);
             }
          }
-         if(param2)
+         if(isEquip)
          {
             var _loc9_:int = 0;
-            var _loc8_:* = _loc4_;
-            for each(var _loc3_ in _loc4_)
+            var _loc8_:* = arr;
+            for each(var infoItem in arr)
             {
-               _canEnchantEquipList.add(_canEnchantEquipList.length,_loc3_);
+               _canEnchantEquipList.add(_canEnchantEquipList.length,infoItem);
             }
          }
       }
@@ -96,116 +96,113 @@ package enchant.data
          _info.Bag.addEventListener("update",updateBag);
       }
       
-      private function updateBag(param1:BagEvent) : void
+      private function updateBag(evt:BagEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:BagInfo = param1.target as BagInfo;
-         var _loc5_:Dictionary = param1.changedSlots;
+         var c:* = null;
+         var bag:BagInfo = evt.target as BagInfo;
+         var changes:Dictionary = evt.changedSlots;
          var _loc7_:int = 0;
-         var _loc6_:* = _loc5_;
-         for each(var _loc4_ in _loc5_)
+         var _loc6_:* = changes;
+         for each(var i in changes)
          {
-            _loc2_ = _loc3_.getItemAt(_loc4_.Place);
-            if(_loc2_)
+            c = bag.getItemAt(i.Place);
+            if(c)
             {
-               if(_loc3_.BagType == 0)
+               if(bag.BagType == 0)
                {
-                  __updateEquip(_loc2_);
+                  __updateEquip(c);
                }
-               else if(_loc3_.BagType == 1)
+               else if(bag.BagType == 1)
                {
-                  __updateProp(_loc2_);
+                  __updateProp(c);
                }
             }
-            else if(_loc3_.BagType == 0)
+            else if(bag.BagType == 0)
             {
-               removeFrom(_loc4_,_canEnchantEquipList);
+               removeFrom(i,_canEnchantEquipList);
             }
             else
             {
-               removeFrom(_loc4_,_canEnchantPropList);
+               removeFrom(i,_canEnchantPropList);
             }
          }
       }
       
-      private function __updateEquip(param1:InventoryItemInfo) : void
+      private function __updateEquip(item:InventoryItemInfo) : void
       {
-         if(param1.isCanEnchant() && param1.getRemainDate() > 0)
+         if(item.isCanEnchant() && item.getRemainDate() > 0)
          {
-            updateDic(_canEnchantEquipList,param1);
+            updateDic(_canEnchantEquipList,item);
          }
          else
          {
-            removeFrom(param1,_canEnchantEquipList);
+            removeFrom(item,_canEnchantEquipList);
          }
       }
       
-      private function updateDic(param1:DictionaryData, param2:InventoryItemInfo) : void
+      private function updateDic(dic:DictionaryData, item:InventoryItemInfo) : void
       {
-         var _loc3_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < param1.length)
+         var i:int = 0;
+         for(i = 0; i < dic.length; )
          {
-            if(param1[_loc3_] != null && param1[_loc3_].Place == param2.Place)
+            if(dic[i] != null && dic[i].Place == item.Place)
             {
-               param1.add(_loc3_,param2);
-               param1.dispatchEvent(new UpdateItemEvent("updateItemEvent",_loc3_,param2));
+               dic.add(i,item);
+               dic.dispatchEvent(new UpdateItemEvent("updateItemEvent",i,item));
                return;
             }
-            _loc3_++;
+            i++;
          }
-         addItemToTheFirstNullCell(param2,param1);
+         addItemToTheFirstNullCell(item,dic);
       }
       
-      private function addItemToTheFirstNullCell(param1:InventoryItemInfo, param2:DictionaryData) : void
+      private function addItemToTheFirstNullCell(item:InventoryItemInfo, dic:DictionaryData) : void
       {
-         param2.add(findFirstNullCellID(param2),param1);
+         dic.add(findFirstNullCellID(dic),item);
       }
       
-      private function findFirstNullCellID(param1:DictionaryData) : int
+      private function findFirstNullCellID(dic:DictionaryData) : int
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = -1;
-         var _loc3_:int = param1.length;
-         _loc4_ = 0;
-         while(_loc4_ <= _loc3_)
+         var i:int = 0;
+         var result:* = -1;
+         var lth:int = dic.length;
+         for(i = 0; i <= lth; )
          {
-            if(param1[_loc4_] == null)
+            if(dic[i] == null)
             {
-               _loc2_ = _loc4_;
+               result = i;
                break;
             }
-            _loc4_++;
+            i++;
          }
-         return _loc2_;
+         return result;
       }
       
-      private function __updateProp(param1:InventoryItemInfo) : void
+      private function __updateProp(item:InventoryItemInfo) : void
       {
-         if(param1.getRemainDate() > 0 && param1.CategoryID == 11 && int(param1.Property1) == 104)
+         if(item.getRemainDate() > 0 && item.CategoryID == 11 && int(item.Property1) == 104)
          {
-            updateDic(_canEnchantPropList,param1);
+            updateDic(_canEnchantPropList,item);
          }
          else
          {
-            removeFrom(param1,_canEnchantPropList);
+            removeFrom(item,_canEnchantPropList);
          }
       }
       
-      private function removeFrom(param1:InventoryItemInfo, param2:DictionaryData) : void
+      private function removeFrom(item:InventoryItemInfo, dic:DictionaryData) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = param2.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var i:int = 0;
+         var lth:int = dic.length;
+         for(i = 0; i < lth; )
          {
-            if(param2[_loc4_] && param2[_loc4_].Place == param1.Place)
+            if(dic[i] && dic[i].Place == item.Place)
             {
-               param2[_loc4_] = null;
-               param2.dispatchEvent(new StoreBagEvent("storeBagRemove",_loc4_,param1));
+               dic[i] = null;
+               dic.dispatchEvent(new StoreBagEvent("storeBagRemove",i,item));
                break;
             }
-            _loc4_++;
+            i++;
          }
       }
    }

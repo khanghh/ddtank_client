@@ -15,586 +15,570 @@ package com.pickgliss.utils
          super();
       }
       
-      public static function afterFirst(param1:String, param2:String) : String
+      public static function afterFirst(p_string:String, p_char:String) : String
       {
-         if(param1 == null)
+         if(p_string == null)
          {
             return "";
          }
-         var _loc3_:int = param1.indexOf(param2);
-         if(_loc3_ == -1)
+         var idx:int = p_string.indexOf(p_char);
+         if(idx == -1)
          {
             return "";
          }
-         _loc3_ = _loc3_ + param2.length;
-         return param1.substr(_loc3_);
+         idx = idx + p_char.length;
+         return p_string.substr(idx);
       }
       
-      public static function afterLast(param1:String, param2:String) : String
+      public static function afterLast(p_string:String, p_char:String) : String
       {
-         if(param1 == null)
+         if(p_string == null)
          {
             return "";
          }
-         var _loc3_:int = param1.lastIndexOf(param2);
-         if(_loc3_ == -1)
+         var idx:int = p_string.lastIndexOf(p_char);
+         if(idx == -1)
          {
             return "";
          }
-         _loc3_ = _loc3_ + param2.length;
-         return param1.substr(_loc3_);
+         idx = idx + p_char.length;
+         return p_string.substr(idx);
       }
       
-      public static function beginsWith(param1:String, param2:String) : Boolean
+      public static function beginsWith(p_string:String, p_begin:String) : Boolean
       {
-         if(param1 == null)
+         if(p_string == null)
          {
             return false;
          }
-         return param1.indexOf(param2) == 0;
+         return p_string.indexOf(p_begin) == 0;
       }
       
-      public static function beforeFirst(param1:String, param2:String) : String
+      public static function beforeFirst(p_string:String, p_char:String) : String
       {
-         if(param1 == null)
+         if(p_string == null)
          {
             return "";
          }
-         var _loc3_:int = param1.indexOf(param2);
-         if(_loc3_ == -1)
+         var idx:int = p_string.indexOf(p_char);
+         if(idx == -1)
          {
             return "";
          }
-         return param1.substr(0,_loc3_);
+         return p_string.substr(0,idx);
       }
       
-      public static function beforeLast(param1:String, param2:String) : String
+      public static function beforeLast(p_string:String, p_char:String) : String
       {
-         if(param1 == null)
+         if(p_string == null)
          {
             return "";
          }
-         var _loc3_:int = param1.lastIndexOf(param2);
-         if(_loc3_ == -1)
+         var idx:int = p_string.lastIndexOf(p_char);
+         if(idx == -1)
          {
             return "";
          }
-         return param1.substr(0,_loc3_);
+         return p_string.substr(0,idx);
       }
       
-      public static function between(param1:String, param2:String, param3:String) : String
+      public static function between(p_string:String, p_start:String, p_end:String) : String
       {
-         var _loc4_:int = 0;
-         var _loc5_:String = "";
-         if(param1 == null)
+         var endIdx:int = 0;
+         var str:String = "";
+         if(p_string == null)
          {
-            return _loc5_;
+            return str;
          }
-         var _loc6_:int = param1.indexOf(param2);
-         if(_loc6_ != -1)
+         var startIdx:int = p_string.indexOf(p_start);
+         if(startIdx != -1)
          {
-            _loc6_ = _loc6_ + param2.length;
-            _loc4_ = param1.indexOf(param3,_loc6_);
-            if(_loc4_ != -1)
+            startIdx = startIdx + p_start.length;
+            endIdx = p_string.indexOf(p_end,startIdx);
+            if(endIdx != -1)
             {
-               _loc5_ = param1.substr(_loc6_,_loc4_ - _loc6_);
+               str = p_string.substr(startIdx,endIdx - startIdx);
             }
          }
-         return _loc5_;
+         return str;
       }
       
-      public static function block(param1:String, param2:uint, param3:String = ".") : Array
+      public static function block(p_string:String, p_len:uint, p_delim:String = ".") : Array
       {
-         var _loc6_:* = null;
-         var _loc5_:Array = [];
-         if(param1 == null || !contains(param1,param3))
+         var subString:* = null;
+         var arr:Array = [];
+         if(p_string == null || !contains(p_string,p_delim))
          {
-            return _loc5_;
+            return arr;
          }
-         var _loc4_:uint = 0;
-         var _loc7_:uint = param1.length;
-         while(_loc4_ < _loc7_)
+         var chrIndex:uint = 0;
+         var strLen:uint = p_string.length;
+         while(chrIndex < strLen)
          {
-            _loc6_ = param1.substr(_loc4_,param2);
-            if(!contains(_loc6_,param3))
+            subString = p_string.substr(chrIndex,p_len);
+            if(!contains(subString,p_delim))
             {
-               _loc5_.push(truncate(_loc6_,_loc6_.length));
-               _loc4_ = _loc4_ + _loc6_.length;
+               arr.push(truncate(subString,subString.length));
+               chrIndex = chrIndex + subString.length;
             }
-            _loc6_ = _loc6_.replace(new RegExp("[^" + param3 + "]+$"),"");
-            _loc5_.push(_loc6_);
-            _loc4_ = _loc4_ + _loc6_.length;
+            subString = subString.replace(new RegExp("[^" + p_delim + "]+$"),"");
+            arr.push(subString);
+            chrIndex = chrIndex + subString.length;
          }
-         return _loc5_;
+         return arr;
       }
       
-      public static function capitalize(param1:String, ... rest) : String
+      public static function capitalize(p_string:String, ... args) : String
       {
-         var _loc3_:String = trimLeft(param1);
-         if(rest[0] === true)
+         var str:String = trimLeft(p_string);
+         if(args[0] === true)
          {
-            return _loc3_.replace(/^.|\s+(.)/,_upperCase);
+            return str.replace(/^.|\s+(.)/,_upperCase);
          }
-         return _loc3_.replace(/(^\w)/,_upperCase);
+         return str.replace(/(^\w)/,_upperCase);
       }
       
-      public static function ljust(param1:String, param2:uint, param3:String = " ") : String
+      public static function ljust(p_string:String, p_width:uint, p_pad:String = " ") : String
       {
-         var _loc4_:String = param3.substr(0,1);
-         if(param1.length < param2)
+         var pad:String = p_pad.substr(0,1);
+         if(p_string.length < p_width)
          {
-            return param1 + repeat(_loc4_,param2 - param1.length);
+            return p_string + repeat(pad,p_width - p_string.length);
          }
-         return param1;
+         return p_string;
       }
       
-      public static function rjust(param1:String, param2:uint, param3:String = " ") : String
+      public static function rjust(p_string:String, p_width:uint, p_pad:String = " ") : String
       {
-         var _loc4_:String = param3.substr(0,1);
-         if(param1.length < param2)
+         var pad:String = p_pad.substr(0,1);
+         if(p_string.length < p_width)
          {
-            return repeat(_loc4_,param2 - param1.length) + param1;
+            return repeat(pad,p_width - p_string.length) + p_string;
          }
-         return param1;
+         return p_string;
       }
       
-      public static function center(param1:String, param2:uint, param3:String = " ") : String
+      public static function center(p_string:String, p_width:uint, p_pad:String = " ") : String
       {
-         var _loc7_:* = 0;
-         var _loc6_:* = null;
-         var _loc5_:* = null;
-         var _loc4_:String = param3.substr(0,1);
-         if(param1.length < param2)
+         var len:* = 0;
+         var rem:* = null;
+         var pads:* = null;
+         var pad:String = p_pad.substr(0,1);
+         if(p_string.length < p_width)
          {
-            _loc7_ = uint(param2 - param1.length);
-            _loc6_ = _loc7_ % 2 == 0?"":_loc4_;
-            _loc5_ = repeat(_loc4_,Math.round(_loc7_ / 2));
-            return _loc5_ + param1 + _loc5_ + _loc6_;
+            len = uint(p_width - p_string.length);
+            rem = len % 2 == 0?"":pad;
+            pads = repeat(pad,Math.round(len / 2));
+            return pads + p_string + pads + rem;
          }
-         return param1;
+         return p_string;
       }
       
-      public static function repeat(param1:String, param2:uint = 1) : String
+      public static function repeat(p_string:String, p_count:uint = 1) : String
       {
-         var _loc3_:String = "";
-         while(param2--)
+         var s:String = "";
+         while(p_count--)
          {
-            _loc3_ = _loc3_ + param1;
+            s = s + p_string;
          }
-         return _loc3_;
+         return s;
       }
       
-      public static function base64Encode(param1:String) : String
+      public static function base64Encode(p_string:String) : String
       {
-         var _loc2_:Number = NaN;
-         var _loc3_:Number = NaN;
-         var _loc4_:Number = NaN;
-         var _loc7_:String = "";
-         var _loc6_:uint = 0;
-         var _loc5_:uint = param1.length;
-         while(_loc6_ < _loc5_)
+         var c1:Number = NaN;
+         var c2:Number = NaN;
+         var c3:Number = NaN;
+         var out:String = "";
+         var i:uint = 0;
+         var len:uint = p_string.length;
+         while(i < len)
          {
-            _loc2_ = param1.charCodeAt(_loc6_++) & 255;
-            if(_loc6_ == _loc5_)
+            c1 = p_string.charCodeAt(i++) & 255;
+            if(i == len)
             {
-               _loc7_ = _loc7_ + ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".charAt(_loc2_ >> 2) + "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".charAt((_loc2_ & 3) << 4) + "==");
+               out = out + ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".charAt(c1 >> 2) + "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".charAt((c1 & 3) << 4) + "==");
                break;
             }
-            _loc3_ = param1.charCodeAt(_loc6_++);
-            if(_loc6_ == _loc5_)
+            c2 = p_string.charCodeAt(i++);
+            if(i == len)
             {
-               _loc7_ = _loc7_ + ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".charAt(_loc2_ >> 2) + "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".charAt((_loc2_ & 3) << 4 | (_loc3_ & 240) >> 4) + "=");
+               out = out + ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".charAt(c1 >> 2) + "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".charAt((c1 & 3) << 4 | (c2 & 240) >> 4) + "=");
                break;
             }
-            _loc4_ = param1.charCodeAt(_loc6_++);
-            _loc7_ = _loc7_ + ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".charAt(_loc2_ >> 2) + "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".charAt((_loc2_ & 3) << 4 | (_loc3_ & 240) >> 4) + "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".charAt((_loc3_ & 15) << 2 | (_loc4_ & 192) >> 6) + "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".charAt(_loc4_ & 63));
+            c3 = p_string.charCodeAt(i++);
+            out = out + ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".charAt(c1 >> 2) + "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".charAt((c1 & 3) << 4 | (c2 & 240) >> 4) + "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".charAt((c2 & 15) << 2 | (c3 & 192) >> 6) + "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".charAt(c3 & 63));
          }
-         return _loc7_;
+         return out;
       }
       
-      public static function contains(param1:String, param2:String) : Boolean
+      public static function contains(p_string:String, p_char:String) : Boolean
       {
-         if(param1 == null)
+         if(p_string == null)
          {
             return false;
          }
-         return param1.indexOf(param2) != -1;
+         return p_string.indexOf(p_char) != -1;
       }
       
-      public static function countOf(param1:String, param2:String, param3:Boolean = true) : uint
+      public static function countOf(p_string:String, p_char:String, p_caseSensitive:Boolean = true) : uint
       {
-         if(param1 == null)
+         if(p_string == null)
          {
             return 0;
          }
-         var _loc5_:String = escapePattern(param2);
-         var _loc4_:String = !param3?"ig":"g";
-         return param1.match(new RegExp(_loc5_,_loc4_)).length;
+         var char:String = escapePattern(p_char);
+         var flags:String = !p_caseSensitive?"ig":"g";
+         return p_string.match(new RegExp(char,flags)).length;
       }
       
-      public static function editDistance(param1:String, param2:String) : uint
+      public static function editDistance(p_source:String, p_target:String) : uint
       {
-         var _loc11_:* = 0;
-         var _loc6_:* = 0;
-         var _loc4_:* = 0;
-         var _loc5_:* = 0;
-         var _loc13_:* = 0;
-         var _loc8_:* = null;
-         var _loc10_:* = 0;
-         var _loc12_:* = null;
-         if(param1 == null)
+         var cost:* = 0;
+         var a:* = 0;
+         var b:* = 0;
+         var c:* = 0;
+         var i:* = 0;
+         var s_i:* = null;
+         var j:* = 0;
+         var t_j:* = null;
+         if(p_source == null)
          {
-            param1 = "";
+            p_source = "";
          }
-         if(param2 == null)
+         if(p_target == null)
          {
-            param2 = "";
+            p_target = "";
          }
-         if(param1 == param2)
+         if(p_source == p_target)
          {
             return 0;
          }
-         var _loc3_:Array = [];
-         var _loc7_:uint = param1.length;
-         var _loc9_:uint = param2.length;
-         if(_loc7_ == 0)
+         var d:Array = [];
+         var n:uint = p_source.length;
+         var m:uint = p_target.length;
+         if(n == 0)
          {
-            return _loc9_;
+            return m;
          }
-         if(_loc9_ == 0)
+         if(m == 0)
          {
-            return _loc7_;
+            return n;
          }
-         _loc6_ = uint(0);
-         while(_loc6_ <= _loc7_)
+         for(a = uint(0); a <= n; d[a] = [],a++)
          {
-            _loc3_[_loc6_] = [];
-            _loc6_++;
          }
-         _loc4_ = uint(0);
-         while(_loc4_ <= _loc7_)
+         for(b = uint(0); b <= n; d[b][0] = b,b++)
          {
-            _loc3_[_loc4_][0] = _loc4_;
-            _loc4_++;
          }
-         _loc5_ = uint(0);
-         while(_loc5_ <= _loc9_)
+         for(c = uint(0); c <= m; d[0][c] = c,c++)
          {
-            _loc3_[0][_loc5_] = _loc5_;
-            _loc5_++;
          }
-         _loc13_ = uint(1);
-         while(_loc13_ <= _loc7_)
+         for(i = uint(1); i <= n; )
          {
-            _loc8_ = param1.charAt(_loc13_ - 1);
-            _loc10_ = uint(1);
-            while(_loc10_ <= _loc9_)
+            s_i = p_source.charAt(i - 1);
+            for(j = uint(1); j <= m; )
             {
-               _loc12_ = param2.charAt(_loc10_ - 1);
-               if(_loc8_ == _loc12_)
+               t_j = p_target.charAt(j - 1);
+               if(s_i == t_j)
                {
-                  _loc11_ = uint(0);
+                  cost = uint(0);
                }
                else
                {
-                  _loc11_ = uint(1);
+                  cost = uint(1);
                }
-               _loc3_[_loc13_][_loc10_] = Math.min(_loc3_[_loc13_ - 1][_loc10_] + 1,_loc3_[_loc13_][_loc10_ - 1] + 1,_loc3_[_loc13_ - 1][_loc10_ - 1] + _loc11_);
-               _loc10_++;
+               d[i][j] = Math.min(d[i - 1][j] + 1,d[i][j - 1] + 1,d[i - 1][j - 1] + cost);
+               j++;
             }
-            _loc13_++;
+            i++;
          }
-         return _loc3_[_loc7_][_loc9_];
+         return d[n][m];
       }
       
-      public static function endsWith(param1:String, param2:String) : Boolean
+      public static function endsWith(p_string:String, p_end:String) : Boolean
       {
-         return new RegExp(param2 + "$").test(param1);
+         return new RegExp(p_end + "$").test(p_string);
       }
       
-      public static function hasText(param1:String) : Boolean
+      public static function hasText(p_string:String) : Boolean
       {
-         var _loc2_:String = removeExtraWhitespace(param1);
-         return !!_loc2_.length;
+         var str:String = removeExtraWhitespace(p_string);
+         return !!str.length;
       }
       
-      public static function isEmpty(param1:String) : Boolean
+      public static function isEmpty(p_string:String) : Boolean
       {
-         if(param1 == null)
+         if(p_string == null)
          {
             return true;
          }
-         return !param1.length;
+         return !p_string.length;
       }
       
-      public static function isNumeric(param1:String) : Boolean
+      public static function isNumeric(p_string:String) : Boolean
       {
-         if(param1 == null)
+         if(p_string == null)
          {
             return false;
          }
-         var _loc2_:RegExp = /^[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?$/;
-         return _loc2_.test(param1);
+         var regx:RegExp = /^[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?$/;
+         return regx.test(p_string);
       }
       
-      public static function padLeft(param1:String, param2:String, param3:uint) : String
+      public static function padLeft(p_string:String, p_padChar:String, p_length:uint) : String
       {
-         var _loc4_:* = param1;
-         while(_loc4_.length < param3)
+         var s:* = p_string;
+         while(s.length < p_length)
          {
-            _loc4_ = param2 + _loc4_;
+            s = p_padChar + s;
          }
-         return _loc4_;
+         return s;
       }
       
-      public static function padRight(param1:String, param2:String, param3:uint) : String
+      public static function padRight(p_string:String, p_padChar:String, p_length:uint) : String
       {
-         var _loc4_:* = param1;
-         while(_loc4_.length < param3)
+         var s:* = p_string;
+         while(s.length < p_length)
          {
-            _loc4_ = _loc4_ + param2;
+            s = s + p_padChar;
          }
-         return _loc4_;
+         return s;
       }
       
-      public static function properCase(param1:String) : String
+      public static function properCase(p_string:String) : String
       {
-         if(param1 == null)
+         if(p_string == null)
          {
             return "";
          }
-         var _loc2_:String = param1.toLowerCase().replace(/\b([^.?;!]+)/,capitalize);
-         return _loc2_.replace(/\b[i]\b/,"I");
+         var str:String = p_string.toLowerCase().replace(/\b([^.?;!]+)/,capitalize);
+         return str.replace(/\b[i]\b/,"I");
       }
       
-      public static function quote(param1:String) : String
+      public static function quote(p_string:String) : String
       {
-         var _loc2_:RegExp = /[\\"\r\n]/g;
-         return "\"" + param1.replace(_loc2_,_quote) + "\"";
+         var regx:RegExp = /[\\"\r\n]/g;
+         return "\"" + p_string.replace(regx,_quote) + "\"";
       }
       
-      public static function relativePath(param1:String, param2:String, param3:String = "/") : String
+      public static function relativePath(p_base:String, p_path:String, p_delim:String = "/") : String
       {
-         var _loc11_:* = 0;
-         var _loc5_:* = param1;
-         if(endsWith(param1,"/"))
+         var i:* = 0;
+         var baseUri:* = p_base;
+         if(endsWith(p_base,"/"))
          {
-            _loc5_ = StringUtils.beforeLast(param1,"/");
+            baseUri = StringUtils.beforeLast(p_base,"/");
          }
-         var _loc10_:* = param2;
-         if(endsWith(param2,"/"))
+         var pathUri:* = p_path;
+         if(endsWith(p_path,"/"))
          {
-            _loc10_ = StringUtils.beforeLast(param2,"/");
+            pathUri = StringUtils.beforeLast(p_path,"/");
          }
-         var _loc6_:Array = _loc5_.split(param3);
-         var _loc9_:Array = _loc10_.split(param3);
-         var _loc8_:int = Math.min(_loc6_.length,_loc9_.length);
-         var _loc4_:int = 0;
-         _loc11_ = 0;
-         while(_loc11_ < _loc8_)
+         var baseParts:Array = baseUri.split(p_delim);
+         var pathParts:Array = pathUri.split(p_delim);
+         var l:int = Math.min(baseParts.length,pathParts.length);
+         var sameCounter:int = 0;
+         for(i = 0; i < l; )
          {
-            if(_loc6_[_loc11_].toLowerCase() === _loc9_[_loc11_].toLowerCase())
+            if(baseParts[i].toLowerCase() !== pathParts[i].toLowerCase())
             {
-               _loc4_++;
-               _loc11_++;
-               continue;
+               break;
             }
-            break;
+            sameCounter++;
+            i++;
          }
-         if(_loc4_ == 0)
+         if(sameCounter == 0)
          {
-            return param2;
+            return p_path;
          }
-         var _loc7_:String = "";
-         _loc8_ = _loc6_.length;
-         _loc11_ = _loc4_;
-         while(_loc11_ < _loc8_)
+         var newPath:String = "";
+         l = baseParts.length;
+         for(i = sameCounter; i < l; )
          {
-            if(_loc11_ > _loc4_)
+            if(i > sameCounter)
             {
-               _loc7_ = _loc7_ + param3;
+               newPath = newPath + p_delim;
             }
-            _loc7_ = _loc7_ + "..";
-            _loc11_++;
+            newPath = newPath + "..";
+            i++;
          }
-         if(_loc7_.length == 0)
+         if(newPath.length == 0)
          {
-            _loc7_ = ".";
+            newPath = ".";
          }
-         _loc8_ = _loc9_.length;
-         _loc11_ = _loc4_;
-         while(_loc11_ < _loc8_)
+         l = pathParts.length;
+         for(i = sameCounter; i < l; )
          {
-            _loc7_ = _loc7_ + param3;
-            _loc7_ = _loc7_ + _loc9_[_loc11_];
-            _loc11_++;
+            newPath = newPath + p_delim;
+            newPath = newPath + pathParts[i];
+            i++;
          }
-         return _loc7_;
+         return newPath;
       }
       
-      public static function remove(param1:String, param2:String, param3:Boolean = true) : String
+      public static function remove(p_string:String, p_remove:String, p_caseSensitive:Boolean = true) : String
       {
-         if(param1 == null)
+         if(p_string == null)
          {
             return "";
          }
-         var _loc5_:String = escapePattern(param2);
-         var _loc4_:String = !param3?"ig":"g";
-         return param1.replace(new RegExp(_loc5_,_loc4_),"");
+         var rem:String = escapePattern(p_remove);
+         var flags:String = !p_caseSensitive?"ig":"g";
+         return p_string.replace(new RegExp(rem,flags),"");
       }
       
-      public static function removeExtraWhitespace(param1:String) : String
+      public static function removeExtraWhitespace(p_string:String) : String
       {
-         if(param1 == null)
+         if(p_string == null)
          {
             return "";
          }
-         var _loc2_:String = trim(param1);
-         return _loc2_.replace(/\s+/g," ");
+         var str:String = trim(p_string);
+         return str.replace(/\s+/g," ");
       }
       
-      public static function reverse(param1:String) : String
+      public static function reverse(p_string:String) : String
       {
-         if(param1 == null)
+         if(p_string == null)
          {
             return "";
          }
-         return param1.split("").reverse().join("");
+         return p_string.split("").reverse().join("");
       }
       
-      public static function reverseWords(param1:String) : String
+      public static function reverseWords(p_string:String) : String
       {
-         if(param1 == null)
+         if(p_string == null)
          {
             return "";
          }
-         return param1.split(/\s+/).reverse().join("");
+         return p_string.split(/\s+/).reverse().join("");
       }
       
-      public static function similarity(param1:String, param2:String) : Number
+      public static function similarity(p_source:String, p_target:String) : Number
       {
-         var _loc4_:uint = editDistance(param1,param2);
-         var _loc3_:uint = Math.max(param1.length,param2.length);
-         if(_loc3_ == 0)
+         var ed:uint = editDistance(p_source,p_target);
+         var maxLen:uint = Math.max(p_source.length,p_target.length);
+         if(maxLen == 0)
          {
             return 1;
          }
-         return 1 - _loc4_ / _loc3_;
+         return 1 - ed / maxLen;
       }
       
-      public static function stripTags(param1:String) : String
+      public static function stripTags(p_string:String) : String
       {
-         if(param1 == null)
+         if(p_string == null)
          {
             return "";
          }
-         return param1.replace(/<\/?[^>]+>/gim,"");
+         return p_string.replace(/<\/?[^>]+>/gim,"");
       }
       
-      public static function supplant(param1:String, ... rest) : String
+      public static function supplant(p_string:String, ... args) : String
       {
-         var _loc5_:int = 0;
-         var _loc6_:int = 0;
-         var _loc3_:* = param1;
-         if(rest[0] is Object)
+         var l:int = 0;
+         var i:int = 0;
+         var str:* = p_string;
+         if(args[0] is Object)
          {
             var _loc8_:int = 0;
-            var _loc7_:* = rest[0];
-            for(var _loc4_ in rest[0])
+            var _loc7_:* = args[0];
+            for(var n in args[0])
             {
-               _loc3_ = _loc3_.replace(new RegExp("\\{" + _loc4_ + "\\}","g"),rest[0][_loc4_]);
+               str = str.replace(new RegExp("\\{" + n + "\\}","g"),args[0][n]);
             }
          }
          else
          {
-            _loc5_ = rest.length;
-            _loc6_ = 0;
-            while(_loc6_ < _loc5_)
+            l = args.length;
+            for(i = 0; i < l; )
             {
-               _loc3_ = _loc3_.replace(new RegExp("\\{" + _loc6_ + "\\}","g"),rest[_loc6_]);
-               _loc6_++;
+               str = str.replace(new RegExp("\\{" + i + "\\}","g"),args[i]);
+               i++;
             }
          }
-         return _loc3_;
+         return str;
       }
       
-      public static function swapCase(param1:String) : String
+      public static function swapCase(p_string:String) : String
       {
-         if(param1 == null)
+         if(p_string == null)
          {
             return "";
          }
-         return param1.replace(/(\w)/,_swapCase);
+         return p_string.replace(/(\w)/,_swapCase);
       }
       
-      public static function trim(param1:String) : String
+      public static function trim(p_string:String) : String
       {
-         if(param1 == null)
+         if(p_string == null)
          {
             return "";
          }
-         return param1.replace(/^\s+|\s+$/g,"");
+         return p_string.replace(/^\s+|\s+$/g,"");
       }
       
-      public static function trimLeft(param1:String) : String
+      public static function trimLeft(p_string:String) : String
       {
-         if(param1 == null)
+         if(p_string == null)
          {
             return "";
          }
-         return param1.replace(/^\s+/,"");
+         return p_string.replace(/^\s+/,"");
       }
       
-      public static function trimRight(param1:String) : String
+      public static function trimRight(p_string:String) : String
       {
-         if(param1 == null)
+         if(p_string == null)
          {
             return "";
          }
-         return param1.replace(/\s+$/,"");
+         return p_string.replace(/\s+$/,"");
       }
       
-      public static function truncate(param1:String, param2:uint, param3:String = "...") : String
+      public static function truncate(p_string:String, p_len:uint, p_suffix:String = "...") : String
       {
-         if(param1 == null)
+         if(p_string == null)
          {
             return "";
          }
-         if(param2 == 0)
+         if(p_len == 0)
          {
-            param2 = param1.length;
+            p_len = p_string.length;
          }
-         param2 = param2 - param3.length;
-         var _loc4_:* = param1;
-         if(_loc4_.length > param2)
+         p_len = p_len - p_suffix.length;
+         var trunc:* = p_string;
+         if(trunc.length > p_len)
          {
-            _loc4_ = _loc4_.substr(0,param2);
-            if(/[^\s]/.test(param1.charAt(param2)))
+            trunc = trunc.substr(0,p_len);
+            if(/[^\s]/.test(p_string.charAt(p_len)))
             {
-               _loc4_ = trimRight(_loc4_.replace(/\w+$|\s+$/,""));
+               trunc = trimRight(trunc.replace(/\w+$|\s+$/,""));
             }
-            _loc4_ = _loc4_ + param3;
+            trunc = trunc + p_suffix;
          }
-         return _loc4_;
+         return trunc;
       }
       
-      public static function wordCount(param1:String) : uint
+      public static function wordCount(p_string:String) : uint
       {
-         if(param1 == null)
+         if(p_string == null)
          {
             return 0;
          }
-         return param1.match(/\b\w+\b/g).length;
+         return p_string.match(/\b\w+\b/g).length;
       }
       
-      private static function escapePattern(param1:String) : String
+      private static function escapePattern(p_pattern:String) : String
       {
-         return param1.replace(/(\]|\[|\{|\}|\(|\)|\*|\+|\?|\.|\\)/g,"\\$1");
+         return p_pattern.replace(/(\]|\[|\{|\}|\(|\)|\*|\+|\?|\.|\\)/g,"\\$1");
       }
       
-      private static function _quote(param1:String, ... rest) : String
+      private static function _quote(p_string:String, ... args) : String
       {
-         var _loc3_:* = param1;
+         var _loc3_:* = p_string;
          if("\\" !== _loc3_)
          {
             if("\r" !== _loc3_)
@@ -614,90 +598,90 @@ package com.pickgliss.utils
          return "\\\\";
       }
       
-      private static function _upperCase(param1:String, ... rest) : String
+      private static function _upperCase(p_char:String, ... args) : String
       {
-         return param1.toUpperCase();
+         return p_char.toUpperCase();
       }
       
-      private static function _swapCase(param1:String, ... rest) : String
+      private static function _swapCase(p_char:String, ... args) : String
       {
-         var _loc4_:String = param1.toLowerCase();
-         var _loc3_:String = param1.toUpperCase();
-         var _loc5_:* = param1;
-         if(_loc4_ !== _loc5_)
+         var lowChar:String = p_char.toLowerCase();
+         var upChar:String = p_char.toUpperCase();
+         var _loc5_:* = p_char;
+         if(lowChar !== _loc5_)
          {
-            if(_loc3_ !== _loc5_)
+            if(upChar !== _loc5_)
             {
-               return param1;
+               return p_char;
             }
-            return _loc4_;
+            return lowChar;
          }
-         return _loc3_;
+         return upChar;
       }
       
-      public static function converBoolean(param1:String) : Boolean
+      public static function converBoolean(value:String) : Boolean
       {
-         if(param1.toLowerCase() == "true")
+         if(value.toLowerCase() == "true")
          {
             return true;
          }
          return false;
       }
       
-      public static function dictionaryKeyToString(param1:Dictionary) : String
+      public static function dictionaryKeyToString(dic:Dictionary) : String
       {
-         var _loc2_:Array = [];
+         var result:Array = [];
          var _loc5_:int = 0;
-         var _loc4_:* = param1;
-         for(var _loc3_ in param1)
+         var _loc4_:* = dic;
+         for(var key in dic)
          {
-            _loc2_.push(_loc3_);
+            result.push(key);
          }
-         return _loc2_.join(",");
+         return result.join(",");
       }
       
-      public static function trimHtmlText(param1:String) : String
+      public static function trimHtmlText(value:String) : String
       {
          return null;
       }
       
-      public static function replaceValueByIndex(param1:String, ... rest) : String
+      public static function replaceValueByIndex(input:String, ... args) : String
       {
-         var _loc3_:int = 0;
-         var _loc5_:* = null;
-         var _loc4_:int = 0;
-         var _loc6_:Object = _reg.exec(param1);
-         while(_loc6_ && rest.length > 0)
+         var id:int = 0;
+         var str:* = null;
+         var idx:int = 0;
+         var obj:Object = _reg.exec(input);
+         while(obj && args.length > 0)
          {
-            _loc3_ = _loc6_[1];
-            _loc5_ = String(rest[_loc3_]);
-            if(_loc3_ >= 0 && _loc3_ < rest.length)
+            id = obj[1];
+            str = String(args[id]);
+            if(id >= 0 && id < args.length)
             {
-               _loc4_ = _loc5_.indexOf("$");
-               if(_loc4_ > -1)
+               idx = str.indexOf("$");
+               if(idx > -1)
                {
-                  _loc5_ = _loc5_.slice(0,_loc4_) + "$" + _loc5_.slice(_loc4_);
+                  str = str.slice(0,idx) + "$" + str.slice(idx);
                }
-               param1 = param1.replace(_reg,_loc5_);
+               input = input.replace(_reg,str);
             }
             else
             {
-               param1 = param1.replace(_reg,"{}");
+               input = input.replace(_reg,"{}");
             }
-            _loc6_ = _reg.exec(param1);
+            obj = _reg.exec(input);
          }
-         return param1;
+         return input;
       }
       
       public static function getTimeTick() : String
       {
-         var _loc1_:Date = new Date();
-         return _loc1_.time.toString();
+         var date:Date = new Date();
+         return date.time.toString();
       }
       
-      public static function getSuffixStr(param1:String) : String
+      public static function getSuffixStr(value:String) : String
       {
-         return param1.substring(param1.lastIndexOf(".") + 1,param1.length);
+         return value.substring(value.lastIndexOf(".") + 1,value.length);
       }
    }
 }

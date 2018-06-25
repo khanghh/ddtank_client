@@ -62,9 +62,9 @@ package church.view.weddingRoomList.frame
          initialize();
       }
       
-      public function set controller(param1:ChurchRoomListController) : void
+      public function set controller(value:ChurchRoomListController) : void
       {
-         _controller = param1;
+         _controller = value;
       }
       
       protected function initialize() : void
@@ -104,10 +104,10 @@ package church.view.weddingRoomList.frame
          addToContent(_text3);
       }
       
-      public function setText(param1:String = "", param2:String = "", param3:Boolean = false) : void
+      public function setText(str1:String = "", str2:String = "", haveDivorce:Boolean = false) : void
       {
-         _text1.htmlText = param1;
-         _text2.htmlText = param2;
+         _text1.htmlText = str1;
+         _text2.htmlText = str2;
       }
       
       private function removeView() : void
@@ -147,7 +147,7 @@ package church.view.weddingRoomList.frame
          _otherPayBtn.addEventListener("click",mouseClickHander);
       }
       
-      private function mouseClickHander(param1:MouseEvent) : void
+      private function mouseClickHander(e:MouseEvent) : void
       {
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -163,9 +163,9 @@ package church.view.weddingRoomList.frame
          giveFriendOpenFrame.addEventListener("response",responseHandler2,false,0,true);
       }
       
-      private function responseHandler2(param1:FrameEvent) : void
+      private function responseHandler2(event:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1 || param1.responseCode == 4)
+         if(event.responseCode == 0 || event.responseCode == 1 || event.responseCode == 4)
          {
             StageReferance.stage.focus = this;
          }
@@ -177,28 +177,28 @@ package church.view.weddingRoomList.frame
          _otherPayBtn.removeEventListener("click",mouseClickHander);
       }
       
-      private function presentBtnClick(param1:MouseEvent) : void
+      private function presentBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:String = giveFriendOpenFrame.nameInput.text;
-         if(_loc2_ == "")
+         var name:String = giveFriendOpenFrame.nameInput.text;
+         if(name == "")
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("shop.ShopIIPresentView.askPay"));
             return;
          }
-         if(FilterWordManager.IsNullorEmpty(_loc2_))
+         if(FilterWordManager.IsNullorEmpty(name))
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("shop.ShopIIPresentView.askSpace"));
             return;
          }
          _friendInfo = {};
          _friendInfo["id"] = giveFriendOpenFrame.selectPlayerId;
-         _friendInfo["name"] = _loc2_;
+         _friendInfo["name"] = name;
          if(giveFriendOpenFrame.textArea)
          {
             _friendInfo["msg"] = FilterWordManager.filterWrod(giveFriendOpenFrame.textArea.text);
          }
-         var _loc3_:String = PlayerManager.Instance.Self.NickName;
+         var myName:String = PlayerManager.Instance.Self.NickName;
          if(giveFriendOpenFrame.selectPlayerId == -1)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.roomlist.friendOffline"));
@@ -210,10 +210,10 @@ package church.view.weddingRoomList.frame
          dispose();
       }
       
-      private function onFrameResponse(param1:FrameEvent) : void
+      private function onFrameResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
@@ -242,24 +242,24 @@ package church.view.weddingRoomList.frame
          dispose();
       }
       
-      private function _responseV(param1:FrameEvent) : void
+      private function _responseV(evt:FrameEvent) : void
       {
-         var _loc2_:* = null;
+         var _quick:* = null;
          SoundManager.instance.play("008");
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",_responseV);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         (evt.currentTarget as BaseAlerFrame).removeEventListener("response",_responseV);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
-            _loc2_ = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
-            _loc2_.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
-            _loc2_.itemID = 11233;
-            LayerManager.Instance.addToLayer(_loc2_,2,true,1);
+            _quick = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
+            _quick.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
+            _quick.itemID = 11233;
+            LayerManager.Instance.addToLayer(_quick,2,true,1);
          }
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(evt.currentTarget);
       }
       
-      public function show(param1:int) : void
+      public function show(needMoney:int) : void
       {
-         _needMoney = param1;
+         _needMoney = needMoney;
          LayerManager.Instance.addToLayer(this,3,true,1);
       }
       

@@ -65,9 +65,9 @@ package ddt.view
          return _selected;
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         _selected = param1;
+         _selected = value;
          if(_selected)
          {
             _bg.alpha = 1;
@@ -87,14 +87,14 @@ package ddt.view
          return "";
       }
       
-      public function setCellValue(param1:*) : void
+      public function setCellValue(value:*) : void
       {
-         _data = param1;
-         if(param1)
+         _data = value;
+         if(value)
          {
-            _textField.text = param1.NickName;
+            _textField.text = value.NickName;
             _sex_icon.visible = true;
-            _sex_icon.setSex(param1.Sex);
+            _sex_icon.setSex(value.Sex);
          }
          else
          {

@@ -16,43 +16,39 @@ package com.hurlant.crypto.prng
       
       private const psize:uint = 256;
       
-      public function ARC4(param1:ByteArray = null)
+      public function ARC4(key:ByteArray = null)
       {
          i = 0;
          j = 0;
          super();
          S = new ByteArray();
-         if(param1)
+         if(key)
          {
-            init(param1);
+            init(key);
          }
       }
       
-      public function decrypt(param1:ByteArray) : void
+      public function decrypt(block:ByteArray) : void
       {
-         encrypt(param1);
+         encrypt(block);
       }
       
-      public function init(param1:ByteArray) : void
+      public function init(key:ByteArray) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:* = 0;
-         var _loc4_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < 256)
+         var i:int = 0;
+         var j:* = 0;
+         var t:int = 0;
+         for(i = 0; i < 256; i++)
          {
-            S[_loc2_] = _loc2_;
-            _loc2_++;
+            S[i] = i;
          }
-         _loc3_ = 0;
-         _loc2_ = 0;
-         while(_loc2_ < 256)
+         j = 0;
+         for(i = 0; i < 256; i++)
          {
-            _loc3_ = _loc3_ + S[_loc2_] + param1[_loc2_ % param1.length] & 255;
-            _loc4_ = S[_loc2_];
-            S[_loc2_] = S[_loc3_];
-            S[_loc3_] = _loc4_;
-            _loc2_++;
+            j = j + S[i] + key[i % key.length] & 255;
+            t = S[i];
+            S[i] = S[j];
+            S[j] = t;
          }
          this.i = 0;
          this.j = 0;
@@ -60,15 +56,13 @@ package com.hurlant.crypto.prng
       
       public function dispose() : void
       {
-         var _loc1_:uint = 0;
-         _loc1_ = 0;
+         var i:uint = 0;
+         i = 0;
          if(S != null)
          {
-            _loc1_ = 0;
-            while(_loc1_ < S.length)
+            for(i = 0; i < S.length; i++)
             {
-               S[_loc1_] = Math.random() * 256;
-               _loc1_++;
+               S[i] = Math.random() * 256;
             }
             S.length = 0;
             S = null;
@@ -78,25 +72,25 @@ package com.hurlant.crypto.prng
          Memory.gc();
       }
       
-      public function encrypt(param1:ByteArray) : void
+      public function encrypt(block:ByteArray) : void
       {
-         var _loc2_:uint = 0;
-         _loc2_ = 0;
-         while(_loc2_ < param1.length)
+         var i:uint = 0;
+         i = 0;
+         while(i < block.length)
          {
-            param1[_loc2_++] = param1[_loc2_++] ^ next();
+            block[i++] = block[i++] ^ next();
          }
       }
       
       public function next() : uint
       {
-         var _loc1_:int = 0;
+         var t:int = 0;
          i = i + 1 & 255;
          j = j + S[i] & 255;
-         _loc1_ = S[i];
+         t = S[i];
          S[i] = S[j];
-         S[j] = _loc1_;
-         return S[_loc1_ + S[i] & 255];
+         S[j] = t;
+         return S[t + S[i] & 255];
       }
       
       public function getBlockSize() : uint

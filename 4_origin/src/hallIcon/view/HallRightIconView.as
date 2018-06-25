@@ -39,6 +39,7 @@ package hallIcon.view
    import ddt.manager.PolarRegionManager;
    import ddt.manager.PyramidManager;
    import ddt.manager.RouletteManager;
+   import ddt.manager.ServerConfigManager;
    import ddt.manager.SharedManager;
    import ddt.manager.SocketManager;
    import ddt.manager.SoundManager;
@@ -48,6 +49,8 @@ package hallIcon.view
    import ddt.view.bossbox.SmallBoxButton;
    import ddtKingWay.DDTKingWayManager;
    import ddtmatch.manager.DDTMatchManager;
+   import devilTurn.DevilTurnManager;
+   import dreamlandChallenge.DreamlandChallengeManager;
    import entertainmentMode.EntertainmentModeManager;
    import escort.EscortManager;
    import exchangeAct.ExchangeActManager;
@@ -82,6 +85,7 @@ package hallIcon.view
    import moneyTree.MoneyTreeManager;
    import mysteriousRoullete.MysteriousManager;
    import newChickenBox.NewChickenBoxManager;
+   import newOldPlayer.NewOldPlayerManager;
    import newYearRice.NewYearRiceManager;
    import oldPlayerComeBack.OldPlayerComeBackManager;
    import oldPlayerRegress.RegressManager;
@@ -180,7 +184,7 @@ package hallIcon.view
          FirstRechargeManger.Instance.addEventListener("addfirstrechargeicon",__addIcon);
       }
       
-      private function __addIcon(param1:Event) : void
+      private function __addIcon(e:Event) : void
       {
          if(_firstRechargeIcon == null)
          {
@@ -192,47 +196,47 @@ package hallIcon.view
          }
       }
       
-      private function addChildBox(param1:DisplayObject) : void
+      private function addChildBox($child:DisplayObject) : void
       {
-         _iconBox.addChild(param1);
+         _iconBox.addChild($child);
          _iconBox.arrange();
          _iconBox.x = -_iconBox.width;
       }
       
-      private function __updateBatchIconViewHandler(param1:HallIconEvent) : void
+      private function __updateBatchIconViewHandler(evt:HallIconEvent) : void
       {
-         var _loc2_:Dictionary = HallIconManager.instance.model.cacheRightIconDic;
+         var dic:Dictionary = HallIconManager.instance.model.cacheRightIconDic;
          var _loc5_:int = 0;
-         var _loc4_:* = _loc2_;
-         for each(var _loc3_ in _loc2_)
+         var _loc4_:* = dic;
+         for each(var info in dic)
          {
-            updateIconView(_loc3_);
+            updateIconView(info);
          }
       }
       
-      private function __updateIconViewHandler(param1:HallIconEvent) : void
+      private function __updateIconViewHandler(evt:HallIconEvent) : void
       {
-         var _loc2_:HallIconInfo = HallIconInfo(param1.data);
-         updateIconView(_loc2_);
+         var iconInfo:HallIconInfo = HallIconInfo(evt.data);
+         updateIconView(iconInfo);
       }
       
-      private function updateIconView(param1:HallIconInfo) : void
+      private function updateIconView($iconInfo:HallIconInfo) : void
       {
-         if(param1.halltype == 1 && _wonderFulPlay)
+         if($iconInfo.halltype == 1 && _wonderFulPlay)
          {
-            commonUpdateIconPanelView(_wonderFulPlay,param1,false);
-            if(!param1.isopen)
+            commonUpdateIconPanelView(_wonderFulPlay,$iconInfo,false);
+            if(!$iconInfo.isopen)
             {
-               removeWonderFulPlayChildHandler(param1.icontype);
+               removeWonderFulPlayChildHandler($iconInfo.icontype);
             }
          }
-         else if(param1.halltype == 2 && _activity)
+         else if($iconInfo.halltype == 2 && _activity)
          {
-            commonUpdateIconPanelView(_activity,param1,true);
+            commonUpdateIconPanelView(_activity,$iconInfo,true);
          }
          else
          {
-            var _loc2_:* = param1.icontype;
+            var _loc2_:* = $iconInfo.icontype;
             if("wonderfulplay" !== _loc2_)
             {
                if("everydayactivity" !== _loc2_)
@@ -313,23 +317,23 @@ package hallIcon.view
          }
       }
       
-      private function commonUpdateIconPanelView(param1:HallIconPanel, param2:HallIconInfo, param3:Boolean = false) : void
+      private function commonUpdateIconPanelView($hallIconPanel:HallIconPanel, $iconInfo:HallIconInfo, flag:Boolean = false) : void
       {
-         var _loc4_:* = null;
-         if(param2.isopen)
+         var tempIcon:* = null;
+         if($iconInfo.isopen)
          {
-            _loc4_ = param1.getIconByType(param2.icontype) as HallIcon;
-            if(!_loc4_)
+            tempIcon = $hallIconPanel.getIconByType($iconInfo.icontype) as HallIcon;
+            if(!tempIcon)
             {
-               _loc4_ = param1.addIcon(createHallIconPanelIcon(param2),param2.icontype,param2.orderid,param3) as HallIcon;
+               tempIcon = $hallIconPanel.addIcon(createHallIconPanelIcon($iconInfo),$iconInfo.icontype,$iconInfo.orderid,flag) as HallIcon;
             }
-            _loc4_.updateIcon(param2);
+            tempIcon.updateIcon($iconInfo);
          }
          else
          {
-            param1.removeIconByType(param2.icontype);
+            $hallIconPanel.removeIconByType($iconInfo.icontype);
          }
-         param1.arrange();
+         $hallIconPanel.arrange();
       }
       
       private function updateEveryDayActivityIcon() : void
@@ -351,7 +355,7 @@ package hallIcon.view
          }
       }
       
-      private function __everyDayActivityIconClickHandler(param1:MouseEvent) : void
+      private function __everyDayActivityIconClickHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          DayActivityManager.Instance.show();
@@ -387,7 +391,7 @@ package hallIcon.view
          }
       }
       
-      private function __cityBattleIconClickHandler(param1:MouseEvent) : void
+      private function __cityBattleIconClickHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          SocketManager.Instance.out.cityBattleInfo();
@@ -423,7 +427,7 @@ package hallIcon.view
          }
       }
       
-      private function __rankIconClickHandler(param1:MouseEvent) : void
+      private function __rankIconClickHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          RankManager.instance.show();
@@ -448,7 +452,7 @@ package hallIcon.view
          }
       }
       
-      private function __wantstrongIconClickHandler(param1:MouseEvent) : void
+      private function __wantstrongIconClickHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          WantStrongManager.Instance.show();
@@ -473,7 +477,7 @@ package hallIcon.view
          }
       }
       
-      private function __roleRechargeClickHandler(param1:MouseEvent) : void
+      private function __roleRechargeClickHandler(evt:MouseEvent) : void
       {
          SocketManager.Instance.out.requestWonderfulActInit(2);
          WonderfulActivityManager.Instance.refreshIconStatus();
@@ -500,7 +504,7 @@ package hallIcon.view
          }
       }
       
-      private function __polarIconClickHandler(param1:MouseEvent) : void
+      private function __polarIconClickHandler(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          PolarRegionManager.Instance.show();
@@ -525,7 +529,7 @@ package hallIcon.view
          }
       }
       
-      private function __firstRechargeIconClickHandler(param1:MouseEvent) : void
+      private function __firstRechargeIconClickHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          FirstRechargeManger.Instance.show();
@@ -564,10 +568,10 @@ package hallIcon.view
          }
       }
       
-      private function __wonderFulPlayClickHandler(param1:MouseEvent) : void
+      private function __wonderFulPlayClickHandler(evt:MouseEvent) : void
       {
-         var _loc2_:* = null;
-         if(_wonderFulPlay && param1.target == _wonderFulPlay.mainIcon)
+         var icon:* = null;
+         if(_wonderFulPlay && evt.target == _wonderFulPlay.mainIcon)
          {
             topIndex();
             checkNoneActivity(_wonderFulPlay.count);
@@ -579,12 +583,12 @@ package hallIcon.view
             return;
          }
          _lastCreatTime = getTimer();
-         if(param1.target is HallIcon)
+         if(evt.target is HallIcon)
          {
-            _loc2_ = param1.target as HallIcon;
-            if(_loc2_.iconInfo.halltype == 1)
+            icon = evt.target as HallIcon;
+            if(icon.iconInfo.halltype == 1)
             {
-               var _loc3_:* = _loc2_.iconInfo.icontype;
+               var _loc3_:* = icon.iconInfo.icontype;
                if("worldbossentrance1" !== _loc3_)
                {
                   if("worldbossentrance4" !== _loc3_)
@@ -786,7 +790,7 @@ package hallIcon.view
                      }
                      else
                      {
-                        CampBattleManager.instance.__onCampBtnHander(param1);
+                        CampBattleManager.instance.__onCampBtnHander(evt);
                      }
                   }
                }
@@ -796,9 +800,9 @@ package hallIcon.view
          }
       }
       
-      public function removeWonderFulPlayChildHandler(param1:String) : void
+      public function removeWonderFulPlayChildHandler($icontype:String) : void
       {
-         var _loc2_:* = param1;
+         var _loc2_:* = $icontype;
          if("sevendouble" !== _loc2_)
          {
             if("escort" === _loc2_)
@@ -812,13 +816,13 @@ package hallIcon.view
          }
       }
       
-      private function sevenDoubleCanEnterHandler(param1:Event) : void
+      private function sevenDoubleCanEnterHandler(event:Event) : void
       {
          SevenDoubleManager.instance.removeEventListener("sevenDoubleCanEnter",sevenDoubleCanEnterHandler);
          StateManager.setState("sevenDoubleScene");
       }
       
-      private function canEnterHandler(param1:Event) : void
+      private function canEnterHandler(event:Event) : void
       {
          EscortManager.instance.removeEventListener("escortCanEnter",canEnterHandler);
          StateManager.setState("escort");
@@ -841,13 +845,13 @@ package hallIcon.view
          }
       }
       
-      private function __activityClickHandler(param1:MouseEvent) : void
+      private function __activityClickHandler(evt:MouseEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc5_:* = null;
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         if(_activity && param1.target == _activity.mainIcon)
+         var icon:* = null;
+         var self:* = null;
+         var phase1:int = 0;
+         var firstEnterCdSec:int = 0;
+         if(_activity && evt.target == _activity.mainIcon)
          {
             topIndex();
             checkNoneActivity(_activity.count);
@@ -859,12 +863,12 @@ package hallIcon.view
             return;
          }
          _lastCreatTime = getTimer();
-         if(param1.target is HallIcon)
+         if(evt.target is HallIcon)
          {
-            _loc2_ = param1.target as HallIcon;
-            if(_loc2_.iconInfo.halltype == 2)
+            icon = evt.target as HallIcon;
+            if(icon.iconInfo.halltype == 2)
             {
-               var _loc6_:* = _loc2_.iconInfo.icontype;
+               var _loc6_:* = icon.iconInfo.icontype;
                if("christmas" !== _loc6_)
                {
                   if("catchBeast" !== _loc6_)
@@ -987,7 +991,37 @@ package hallIcon.view
                                                                                                                                                                                                 {
                                                                                                                                                                                                    if("bank" !== _loc6_)
                                                                                                                                                                                                    {
-                                                                                                                                                                                                      if("stock" === _loc6_)
+                                                                                                                                                                                                      if("stock" !== _loc6_)
+                                                                                                                                                                                                      {
+                                                                                                                                                                                                         if("devilTurn" !== _loc6_)
+                                                                                                                                                                                                         {
+                                                                                                                                                                                                            if("dreamLandChallenge" !== _loc6_)
+                                                                                                                                                                                                            {
+                                                                                                                                                                                                               if("worldcupGuess" !== _loc6_)
+                                                                                                                                                                                                               {
+                                                                                                                                                                                                                  if("oldPlayer" === _loc6_)
+                                                                                                                                                                                                                  {
+                                                                                                                                                                                                                     SoundManager.instance.playButtonSound();
+                                                                                                                                                                                                                     NewOldPlayerManager.instance.openView();
+                                                                                                                                                                                                                  }
+                                                                                                                                                                                                               }
+                                                                                                                                                                                                               else
+                                                                                                                                                                                                               {
+                                                                                                                                                                                                                  SoundManager.instance.playButtonSound();
+                                                                                                                                                                                                                  SocketManager.Instance.out.getWorldcupInfo();
+                                                                                                                                                                                                               }
+                                                                                                                                                                                                            }
+                                                                                                                                                                                                            else
+                                                                                                                                                                                                            {
+                                                                                                                                                                                                               DreamlandChallengeManager.instance.preOpenView();
+                                                                                                                                                                                                            }
+                                                                                                                                                                                                         }
+                                                                                                                                                                                                         else if(ActivityEnterGrapType.Instance.IsEnterGame(ServerConfigManager.instance.devilTurnOpenLevelLimit))
+                                                                                                                                                                                                         {
+                                                                                                                                                                                                            DevilTurnManager.instance.show();
+                                                                                                                                                                                                         }
+                                                                                                                                                                                                      }
+                                                                                                                                                                                                      else
                                                                                                                                                                                                       {
                                                                                                                                                                                                          StockMgr.inst.showMainFrame();
                                                                                                                                                                                                       }
@@ -1057,18 +1091,18 @@ package hallIcon.view
                                                                                                                                                                      }
                                                                                                                                                                      else
                                                                                                                                                                      {
-                                                                                                                                                                        _loc3_ = CallBackLotteryDrawManager.instance.luckeyLotteryDrawModel.phase;
-                                                                                                                                                                        _loc4_ = CallBackLotteryDrawManager.instance.getLuckeyLeftSec();
-                                                                                                                                                                        if(_loc4_ <= 0)
+                                                                                                                                                                        phase1 = CallBackLotteryDrawManager.instance.luckeyLotteryDrawModel.phase;
+                                                                                                                                                                        firstEnterCdSec = CallBackLotteryDrawManager.instance.getLuckeyLeftSec();
+                                                                                                                                                                        if(firstEnterCdSec <= 0)
                                                                                                                                                                         {
-                                                                                                                                                                           _loc4_ = 0;
+                                                                                                                                                                           firstEnterCdSec = 0;
                                                                                                                                                                         }
-                                                                                                                                                                        if(_loc4_ > 0 && _loc3_ == 0)
+                                                                                                                                                                        if(firstEnterCdSec > 0 && phase1 == 0)
                                                                                                                                                                         {
                                                                                                                                                                            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.activity.notOpen"));
                                                                                                                                                                            return;
                                                                                                                                                                         }
-                                                                                                                                                                        if(_loc4_ <= 0 && _loc3_ == 0 || _loc4_ >= 0 && _loc3_ > 0)
+                                                                                                                                                                        if(firstEnterCdSec <= 0 && phase1 == 0 || firstEnterCdSec >= 0 && phase1 > 0)
                                                                                                                                                                         {
                                                                                                                                                                            SoundManager.instance.playButtonSound();
                                                                                                                                                                            CallBackLotteryDrawManager.instance.type = 1;
@@ -1098,12 +1132,12 @@ package hallIcon.view
                                                                                                                                                       }
                                                                                                                                                       else if(ActivityEnterGrapType.Instance.IsEnterGame(1))
                                                                                                                                                       {
-                                                                                                                                                         GrowthPackageManager.instance.onClickIcon(param1);
+                                                                                                                                                         GrowthPackageManager.instance.onClickIcon(evt);
                                                                                                                                                       }
                                                                                                                                                    }
                                                                                                                                                    else if(ActivityEnterGrapType.Instance.IsEnterGame(17))
                                                                                                                                                    {
-                                                                                                                                                      GuildMemberWeekManager.instance.onClickguildMemberWeekIcon(param1);
+                                                                                                                                                      GuildMemberWeekManager.instance.onClickguildMemberWeekIcon(evt);
                                                                                                                                                    }
                                                                                                                                                 }
                                                                                                                                                 else
@@ -1190,13 +1224,13 @@ package hallIcon.view
                                                                                                                      SoundManager.instance.play("008");
                                                                                                                      if(ActivityEnterGrapType.Instance.IsEnterGame(12))
                                                                                                                      {
-                                                                                                                        _loc5_ = PlayerManager.Instance.Self;
+                                                                                                                        self = PlayerManager.Instance.Self;
                                                                                                                         if(PlayerManager.Instance.Self.Bag.getItemAt(6) == null)
                                                                                                                         {
                                                                                                                            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.room.RoomIIController.weapon"));
                                                                                                                            return;
                                                                                                                         }
-                                                                                                                        if(_loc5_.IsMounts)
+                                                                                                                        if(self.IsMounts)
                                                                                                                         {
                                                                                                                            HorseRaceManager.Instance.enterView();
                                                                                                                         }
@@ -1266,7 +1300,7 @@ package hallIcon.view
                                                                                     }
                                                                                     else if(ActivityEnterGrapType.Instance.IsEnterGame(5))
                                                                                     {
-                                                                                       NewSevenDayAndNewPlayerManager.Instance.onClickSevenDayTargetIcon(param1);
+                                                                                       NewSevenDayAndNewPlayerManager.Instance.onClickSevenDayTargetIcon(evt);
                                                                                     }
                                                                                  }
                                                                                  else if(ActivityEnterGrapType.Instance.IsEnterGame(10))
@@ -1311,7 +1345,7 @@ package hallIcon.view
                                                                   }
                                                                   else if(ActivityEnterGrapType.Instance.IsEnterGame(10))
                                                                   {
-                                                                     GodsRoadsManager.instance.openGodsRoads(param1);
+                                                                     GodsRoadsManager.instance.openGodsRoads(evt);
                                                                   }
                                                                }
                                                                else
@@ -1367,12 +1401,12 @@ package hallIcon.view
                                        }
                                        else if(ActivityEnterGrapType.Instance.IsEnterGame(10))
                                        {
-                                          NewChickenBoxManager.instance.enterNewBoxView(param1);
+                                          NewChickenBoxManager.instance.enterNewBoxView(evt);
                                        }
                                     }
                                     else if(ActivityEnterGrapType.Instance.IsEnterGame(1))
                                     {
-                                       LanternRiddlesManager.instance.onLanternShow(param1);
+                                       LanternRiddlesManager.instance.onLanternShow(evt);
                                     }
                                  }
                                  else if(ActivityEnterGrapType.Instance.IsEnterGame(1))
@@ -1387,17 +1421,17 @@ package hallIcon.view
                            }
                            else if(ActivityEnterGrapType.Instance.IsEnterGame(10))
                            {
-                              LuckStarManager.Instance.onClickLuckyStarIocn(param1);
+                              LuckStarManager.Instance.onClickLuckyStarIocn(evt);
                            }
                         }
                         else if(ActivityEnterGrapType.Instance.IsEnterGame(21))
                         {
-                           SuperWinnerManager.instance.openSuperWinner(param1);
+                           SuperWinnerManager.instance.openSuperWinner(evt);
                         }
                      }
                      else if(ActivityEnterGrapType.Instance.IsEnterGame(13))
                      {
-                        PyramidManager.instance.onClickPyramidIcon(param1);
+                        PyramidManager.instance.onClickPyramidIcon(evt);
                      }
                   }
                   else if(ActivityEnterGrapType.Instance.IsEnterGame(1))
@@ -1413,10 +1447,10 @@ package hallIcon.view
          }
       }
       
-      public function createHallIconPanelIcon(param1:HallIconInfo) : HallIcon
+      public function createHallIconPanelIcon($iconInfo:HallIconInfo) : HallIcon
       {
-         var _loc2_:* = null;
-         var _loc3_:* = param1.icontype;
+         var iconString:* = null;
+         var _loc3_:* = $iconInfo.icontype;
          if("worldbossentrance1" !== _loc3_)
          {
             if("worldbossentrance4" !== _loc3_)
@@ -1595,467 +1629,495 @@ package hallIcon.view
                                                                                                                                                                                                                                                                               {
                                                                                                                                                                                                                                                                                  if("mines" !== _loc3_)
                                                                                                                                                                                                                                                                                  {
-                                                                                                                                                                                                                                                                                    if("teamBattle" === _loc3_)
+                                                                                                                                                                                                                                                                                    if("teamBattle" !== _loc3_)
                                                                                                                                                                                                                                                                                     {
-                                                                                                                                                                                                                                                                                       _loc2_ = "assets.hallIcon.teamBattleIcon";
+                                                                                                                                                                                                                                                                                       if("devilTurn" !== _loc3_)
+                                                                                                                                                                                                                                                                                       {
+                                                                                                                                                                                                                                                                                          if("dreamLandChallenge" !== _loc3_)
+                                                                                                                                                                                                                                                                                          {
+                                                                                                                                                                                                                                                                                             if("worldcupGuess" !== _loc3_)
+                                                                                                                                                                                                                                                                                             {
+                                                                                                                                                                                                                                                                                                if("oldPlayer" === _loc3_)
+                                                                                                                                                                                                                                                                                                {
+                                                                                                                                                                                                                                                                                                   iconString = "assets.hallIcon.oldPlayerIcon";
+                                                                                                                                                                                                                                                                                                }
+                                                                                                                                                                                                                                                                                             }
+                                                                                                                                                                                                                                                                                             else
+                                                                                                                                                                                                                                                                                             {
+                                                                                                                                                                                                                                                                                                iconString = "assets.hallIcon.worldcupIcon";
+                                                                                                                                                                                                                                                                                             }
+                                                                                                                                                                                                                                                                                          }
+                                                                                                                                                                                                                                                                                          else
+                                                                                                                                                                                                                                                                                          {
+                                                                                                                                                                                                                                                                                             iconString = "assets.hallIcon.dreamlandChallengeIcon";
+                                                                                                                                                                                                                                                                                          }
+                                                                                                                                                                                                                                                                                       }
+                                                                                                                                                                                                                                                                                       else
+                                                                                                                                                                                                                                                                                       {
+                                                                                                                                                                                                                                                                                          iconString = "assets.hallIcon.devilTurnIcon";
+                                                                                                                                                                                                                                                                                       }
+                                                                                                                                                                                                                                                                                    }
+                                                                                                                                                                                                                                                                                    else
+                                                                                                                                                                                                                                                                                    {
+                                                                                                                                                                                                                                                                                       iconString = "assets.hallIcon.teamBattleIcon";
                                                                                                                                                                                                                                                                                     }
                                                                                                                                                                                                                                                                                  }
                                                                                                                                                                                                                                                                                  else
                                                                                                                                                                                                                                                                                  {
-                                                                                                                                                                                                                                                                                    _loc2_ = "assets.hallIcon.minesIcon";
+                                                                                                                                                                                                                                                                                    iconString = "assets.hallIcon.minesIcon";
                                                                                                                                                                                                                                                                                  }
                                                                                                                                                                                                                                                                               }
                                                                                                                                                                                                                                                                               else
                                                                                                                                                                                                                                                                               {
-                                                                                                                                                                                                                                                                                 _loc2_ = "assets.hallIcon.stockIcon";
+                                                                                                                                                                                                                                                                                 iconString = "assets.hallIcon.stockIcon";
                                                                                                                                                                                                                                                                               }
                                                                                                                                                                                                                                                                            }
                                                                                                                                                                                                                                                                            else
                                                                                                                                                                                                                                                                            {
-                                                                                                                                                                                                                                                                              _loc2_ = "assets.hallIcon.bankIcon";
+                                                                                                                                                                                                                                                                              iconString = "assets.hallIcon.bankIcon";
                                                                                                                                                                                                                                                                            }
                                                                                                                                                                                                                                                                         }
                                                                                                                                                                                                                                                                         else
                                                                                                                                                                                                                                                                         {
-                                                                                                                                                                                                                                                                           _loc2_ = "assets.hallIcon.conRechargeIcon";
+                                                                                                                                                                                                                                                                           iconString = "assets.hallIcon.conRechargeIcon";
                                                                                                                                                                                                                                                                         }
                                                                                                                                                                                                                                                                      }
                                                                                                                                                                                                                                                                      else
                                                                                                                                                                                                                                                                      {
-                                                                                                                                                                                                                                                                        _loc2_ = "assets.hallIcon.defendDDTIslandIcon";
+                                                                                                                                                                                                                                                                        iconString = "assets.hallIcon.defendDDTIslandIcon";
                                                                                                                                                                                                                                                                      }
                                                                                                                                                                                                                                                                   }
                                                                                                                                                                                                                                                                   else
                                                                                                                                                                                                                                                                   {
-                                                                                                                                                                                                                                                                     _loc2_ = "assets.hallIcon.condiscountIcon";
+                                                                                                                                                                                                                                                                     iconString = "assets.hallIcon.condiscountIcon";
                                                                                                                                                                                                                                                                   }
                                                                                                                                                                                                                                                                }
                                                                                                                                                                                                                                                                else
                                                                                                                                                                                                                                                                {
-                                                                                                                                                                                                                                                                  _loc2_ = "assets.hallIcon.sevendayIcon";
+                                                                                                                                                                                                                                                                  iconString = "assets.hallIcon.sevendayIcon";
                                                                                                                                                                                                                                                                }
                                                                                                                                                                                                                                                             }
                                                                                                                                                                                                                                                             else
                                                                                                                                                                                                                                                             {
-                                                                                                                                                                                                                                                               _loc2_ = "assets.hallIcon.oldPlayerComeBack";
+                                                                                                                                                                                                                                                               iconString = "assets.hallIcon.oldPlayerComeBack";
                                                                                                                                                                                                                                                             }
                                                                                                                                                                                                                                                          }
                                                                                                                                                                                                                                                          else
                                                                                                                                                                                                                                                          {
-                                                                                                                                                                                                                                                            _loc2_ = "assets.hallIcon.indianaIcon";
+                                                                                                                                                                                                                                                            iconString = "assets.hallIcon.indianaIcon";
                                                                                                                                                                                                                                                          }
                                                                                                                                                                                                                                                       }
                                                                                                                                                                                                                                                       else
                                                                                                                                                                                                                                                       {
-                                                                                                                                                                                                                                                         _loc2_ = "assets.hallIcon.ddtKingWayIcon";
+                                                                                                                                                                                                                                                         iconString = "assets.hallIcon.ddtKingWayIcon";
                                                                                                                                                                                                                                                       }
                                                                                                                                                                                                                                                    }
                                                                                                                                                                                                                                                    else
                                                                                                                                                                                                                                                    {
-                                                                                                                                                                                                                                                      _loc2_ = "assets.hallIcon.cityBattle";
+                                                                                                                                                                                                                                                      iconString = "assets.hallIcon.cityBattle";
                                                                                                                                                                                                                                                    }
                                                                                                                                                                                                                                                 }
                                                                                                                                                                                                                                                 else
                                                                                                                                                                                                                                                 {
-                                                                                                                                                                                                                                                   _loc2_ = "assets.hallIcon.goldmineIcon";
+                                                                                                                                                                                                                                                   iconString = "assets.hallIcon.goldmineIcon";
                                                                                                                                                                                                                                                 }
                                                                                                                                                                                                                                              }
                                                                                                                                                                                                                                              else
                                                                                                                                                                                                                                              {
-                                                                                                                                                                                                                                                _loc2_ = "assets.hallIcon.lotteryTicketIcon";
+                                                                                                                                                                                                                                                iconString = "assets.hallIcon.lotteryTicketIcon";
                                                                                                                                                                                                                                              }
                                                                                                                                                                                                                                           }
                                                                                                                                                                                                                                           else
                                                                                                                                                                                                                                           {
-                                                                                                                                                                                                                                             _loc2_ = "assets.hallIcon.braveDoor.icon";
+                                                                                                                                                                                                                                             iconString = "assets.hallIcon.braveDoor.icon";
                                                                                                                                                                                                                                           }
                                                                                                                                                                                                                                        }
                                                                                                                                                                                                                                        else
                                                                                                                                                                                                                                        {
-                                                                                                                                                                                                                                          _loc2_ = "assets.hallIcon.signActivity";
+                                                                                                                                                                                                                                          iconString = "assets.hallIcon.signActivity";
                                                                                                                                                                                                                                        }
                                                                                                                                                                                                                                     }
                                                                                                                                                                                                                                     else
                                                                                                                                                                                                                                     {
-                                                                                                                                                                                                                                       _loc2_ = "asset.hall.callBackLotteryDrawIcon";
+                                                                                                                                                                                                                                       iconString = "asset.hall.callBackLotteryDrawIcon";
                                                                                                                                                                                                                                     }
                                                                                                                                                                                                                                  }
                                                                                                                                                                                                                                  else
                                                                                                                                                                                                                                  {
-                                                                                                                                                                                                                                    _loc2_ = "assets.hallIcon.bombTurnTable.icon";
+                                                                                                                                                                                                                                    iconString = "assets.hallIcon.bombTurnTable.icon";
                                                                                                                                                                                                                                  }
                                                                                                                                                                                                                               }
                                                                                                                                                                                                                               else
                                                                                                                                                                                                                               {
-                                                                                                                                                                                                                                 _loc2_ = "assets.hallIcon.angelInvestmentIcon";
+                                                                                                                                                                                                                                 iconString = "assets.hallIcon.angelInvestmentIcon";
                                                                                                                                                                                                                               }
                                                                                                                                                                                                                            }
                                                                                                                                                                                                                            else
                                                                                                                                                                                                                            {
-                                                                                                                                                                                                                              _loc2_ = "asset.hallIcon.welfareCenterIcon";
+                                                                                                                                                                                                                              iconString = "asset.hallIcon.welfareCenterIcon";
                                                                                                                                                                                                                            }
                                                                                                                                                                                                                         }
                                                                                                                                                                                                                         else
                                                                                                                                                                                                                         {
-                                                                                                                                                                                                                           _loc2_ = "assets.hallIcon.ddQiYuanIcon";
+                                                                                                                                                                                                                           iconString = "assets.hallIcon.ddQiYuanIcon";
                                                                                                                                                                                                                         }
                                                                                                                                                                                                                      }
                                                                                                                                                                                                                      else
                                                                                                                                                                                                                      {
-                                                                                                                                                                                                                        _loc2_ = "assets.hallIcon.redEnvelope";
+                                                                                                                                                                                                                        iconString = "assets.hallIcon.redEnvelope";
                                                                                                                                                                                                                      }
                                                                                                                                                                                                                   }
                                                                                                                                                                                                                   else
                                                                                                                                                                                                                   {
-                                                                                                                                                                                                                     _loc2_ = "assets.hallIcon.godOfWealthIcon";
+                                                                                                                                                                                                                     iconString = "assets.hallIcon.godOfWealthIcon";
                                                                                                                                                                                                                   }
                                                                                                                                                                                                                }
                                                                                                                                                                                                                else
                                                                                                                                                                                                                {
-                                                                                                                                                                                                                  _loc2_ = "asset.hallIcon.exchangeAct";
+                                                                                                                                                                                                                  iconString = "asset.hallIcon.exchangeAct";
                                                                                                                                                                                                                }
                                                                                                                                                                                                             }
                                                                                                                                                                                                             else
                                                                                                                                                                                                             {
-                                                                                                                                                                                                               _loc2_ = "assets.hallIcon.godCard";
+                                                                                                                                                                                                               iconString = "assets.hallIcon.godCard";
                                                                                                                                                                                                             }
                                                                                                                                                                                                          }
                                                                                                                                                                                                          else
                                                                                                                                                                                                          {
-                                                                                                                                                                                                            _loc2_ = "assets.hallIcon.panicBuyingIcon";
+                                                                                                                                                                                                            iconString = "assets.hallIcon.panicBuyingIcon";
                                                                                                                                                                                                          }
                                                                                                                                                                                                       }
                                                                                                                                                                                                       else
                                                                                                                                                                                                       {
-                                                                                                                                                                                                         _loc2_ = "assets.hallIconl.sanxiaoBtn";
+                                                                                                                                                                                                         iconString = "assets.hallIconl.sanxiaoBtn";
                                                                                                                                                                                                       }
                                                                                                                                                                                                    }
                                                                                                                                                                                                    else
                                                                                                                                                                                                    {
-                                                                                                                                                                                                      _loc2_ = "assets.hallIcon.MemoryGameIcon";
+                                                                                                                                                                                                      iconString = "assets.hallIcon.MemoryGameIcon";
                                                                                                                                                                                                    }
                                                                                                                                                                                                 }
                                                                                                                                                                                                 else
                                                                                                                                                                                                 {
-                                                                                                                                                                                                   _loc2_ = "assets.hallIcon.DDTMatch";
+                                                                                                                                                                                                   iconString = "assets.hallIcon.DDTMatch";
                                                                                                                                                                                                 }
                                                                                                                                                                                              }
                                                                                                                                                                                              else
                                                                                                                                                                                              {
-                                                                                                                                                                                                _loc2_ = "assets.hallIcon.happyRecharge";
+                                                                                                                                                                                                iconString = "assets.hallIcon.happyRecharge";
                                                                                                                                                                                              }
                                                                                                                                                                                           }
                                                                                                                                                                                           else
                                                                                                                                                                                           {
-                                                                                                                                                                                             _loc2_ = "assets.hallIcon.petIsland";
+                                                                                                                                                                                             iconString = "assets.hallIcon.petIsland";
                                                                                                                                                                                           }
                                                                                                                                                                                        }
                                                                                                                                                                                        else
                                                                                                                                                                                        {
-                                                                                                                                                                                          _loc2_ = "assets.hallIcon.prayIndianaIcon";
+                                                                                                                                                                                          iconString = "assets.hallIcon.prayIndianaIcon";
                                                                                                                                                                                        }
                                                                                                                                                                                     }
                                                                                                                                                                                     else
                                                                                                                                                                                     {
-                                                                                                                                                                                       _loc2_ = "assets.hallIcon.horseRace";
+                                                                                                                                                                                       iconString = "assets.hallIcon.horseRace";
                                                                                                                                                                                     }
                                                                                                                                                                                  }
                                                                                                                                                                                  else
                                                                                                                                                                                  {
-                                                                                                                                                                                    _loc2_ = "assets.hallIcon.zodiacIcon";
+                                                                                                                                                                                    iconString = "assets.hallIcon.zodiacIcon";
                                                                                                                                                                                  }
                                                                                                                                                                               }
                                                                                                                                                                               else
                                                                                                                                                                               {
-                                                                                                                                                                                 _loc2_ = "assets.hallIcon.newYearRiceIcon";
+                                                                                                                                                                                 iconString = "assets.hallIcon.newYearRiceIcon";
                                                                                                                                                                               }
                                                                                                                                                                            }
                                                                                                                                                                            else
                                                                                                                                                                            {
-                                                                                                                                                                              _loc2_ = "assets.hallIcon.treasureLostIcon";
+                                                                                                                                                                              iconString = "assets.hallIcon.treasureLostIcon";
                                                                                                                                                                            }
                                                                                                                                                                         }
                                                                                                                                                                         else
                                                                                                                                                                         {
-                                                                                                                                                                           _loc2_ = "assets.hallIcon.cloudbuylotteryIcon";
+                                                                                                                                                                           iconString = "assets.hallIcon.cloudbuylotteryIcon";
                                                                                                                                                                         }
                                                                                                                                                                      }
                                                                                                                                                                      else
                                                                                                                                                                      {
-                                                                                                                                                                        _loc2_ = "assets.hallIcon.magpiebridge";
+                                                                                                                                                                        iconString = "assets.hallIcon.magpiebridge";
                                                                                                                                                                      }
                                                                                                                                                                   }
                                                                                                                                                                   else
                                                                                                                                                                   {
-                                                                                                                                                                     _loc2_ = "assets.hallIcon.catchInsect";
+                                                                                                                                                                     iconString = "assets.hallIcon.catchInsect";
                                                                                                                                                                   }
                                                                                                                                                                }
                                                                                                                                                                else
                                                                                                                                                                {
-                                                                                                                                                                  _loc2_ = "assets.hallIcon.rescue";
+                                                                                                                                                                  iconString = "assets.hallIcon.rescue";
                                                                                                                                                                }
                                                                                                                                                             }
                                                                                                                                                             else
                                                                                                                                                             {
-                                                                                                                                                               _loc2_ = "assets.hallIcon.halloweenIcon";
+                                                                                                                                                               iconString = "assets.hallIcon.halloweenIcon";
                                                                                                                                                             }
                                                                                                                                                          }
                                                                                                                                                          else
                                                                                                                                                          {
-                                                                                                                                                            _loc2_ = "asset.hallIcon.FoodActivity";
+                                                                                                                                                            iconString = "asset.hallIcon.FoodActivity";
                                                                                                                                                          }
                                                                                                                                                       }
                                                                                                                                                       else
                                                                                                                                                       {
-                                                                                                                                                         _loc2_ = "assets.hallIcon.worshipTheMoon";
+                                                                                                                                                         iconString = "assets.hallIcon.worshipTheMoon";
                                                                                                                                                       }
                                                                                                                                                    }
                                                                                                                                                    else
                                                                                                                                                    {
-                                                                                                                                                      _loc2_ = "assets.hallIcon.treasurePuzzleIcon";
+                                                                                                                                                      iconString = "assets.hallIcon.treasurePuzzleIcon";
                                                                                                                                                    }
                                                                                                                                                 }
                                                                                                                                                 else
                                                                                                                                                 {
-                                                                                                                                                   _loc2_ = "assets.hallIcon.witchBlessingIcon";
+                                                                                                                                                   iconString = "assets.hallIcon.witchBlessingIcon";
                                                                                                                                                 }
                                                                                                                                              }
                                                                                                                                              else
                                                                                                                                              {
-                                                                                                                                                _loc2_ = "assets.hallIcon.boguAdventureIcon";
+                                                                                                                                                iconString = "assets.hallIcon.boguAdventureIcon";
                                                                                                                                              }
                                                                                                                                           }
                                                                                                                                           else
                                                                                                                                           {
-                                                                                                                                             _loc2_ = "assets.hallIcon.DDPlayIcon";
+                                                                                                                                             iconString = "assets.hallIcon.DDPlayIcon";
                                                                                                                                           }
                                                                                                                                        }
                                                                                                                                        else
                                                                                                                                        {
-                                                                                                                                          _loc2_ = "assets.hallIcon.chickActivationIcon";
+                                                                                                                                          iconString = "assets.hallIcon.chickActivationIcon";
                                                                                                                                        }
                                                                                                                                     }
                                                                                                                                     else
                                                                                                                                     {
-                                                                                                                                       _loc2_ = "assets.hallIcon.kingDivisionIcon";
+                                                                                                                                       iconString = "assets.hallIcon.kingDivisionIcon";
                                                                                                                                     }
                                                                                                                                  }
                                                                                                                                  else
                                                                                                                                  {
-                                                                                                                                    _loc2_ = "assets.hallIcon.saleShopIcon";
+                                                                                                                                    iconString = "assets.hallIcon.saleShopIcon";
                                                                                                                                  }
                                                                                                                               }
                                                                                                                               else
                                                                                                                               {
-                                                                                                                                 _loc2_ = "assets.hallIcon.entertainmentIcon";
+                                                                                                                                 iconString = "assets.hallIcon.entertainmentIcon";
                                                                                                                               }
                                                                                                                            }
                                                                                                                            else
                                                                                                                            {
-                                                                                                                              _loc2_ = "assets.hallIcon.godsRoadsIcon";
+                                                                                                                              iconString = "assets.hallIcon.godsRoadsIcon";
                                                                                                                            }
                                                                                                                         }
                                                                                                                         else
                                                                                                                         {
-                                                                                                                           _loc2_ = "assets.hallIcon.sevenDayTargetIcon";
+                                                                                                                           iconString = "assets.hallIcon.sevenDayTargetIcon";
                                                                                                                         }
                                                                                                                      }
                                                                                                                      else
                                                                                                                      {
-                                                                                                                        _loc2_ = "assets.hallIcon.lightRoadIcon";
+                                                                                                                        iconString = "assets.hallIcon.lightRoadIcon";
                                                                                                                      }
                                                                                                                   }
                                                                                                                   else
                                                                                                                   {
-                                                                                                                     _loc2_ = "assets.hallIcon.limitActivityIcon";
+                                                                                                                     iconString = "assets.hallIcon.limitActivityIcon";
                                                                                                                   }
                                                                                                                }
                                                                                                                else
                                                                                                                {
-                                                                                                                  _loc2_ = "assets.hallIcon.oldPlayerRegressIcon";
+                                                                                                                  iconString = "assets.hallIcon.oldPlayerRegressIcon";
                                                                                                                }
                                                                                                             }
                                                                                                             else
                                                                                                             {
-                                                                                                               _loc2_ = "assets.hallIcon.treasureHuntingIcon";
+                                                                                                               iconString = "assets.hallIcon.treasureHuntingIcon";
                                                                                                             }
                                                                                                          }
                                                                                                          else
                                                                                                          {
-                                                                                                            _loc2_ = "assets.hallIcon.syahIcon";
+                                                                                                            iconString = "assets.hallIcon.syahIcon";
                                                                                                          }
                                                                                                       }
                                                                                                       else
                                                                                                       {
-                                                                                                         _loc2_ = "assets.hallIcon.mysteriousRouletteIcon";
+                                                                                                         iconString = "assets.hallIcon.mysteriousRouletteIcon";
                                                                                                       }
                                                                                                    }
                                                                                                    else
                                                                                                    {
-                                                                                                      _loc2_ = "assets.hallIcon.luckStoneIcon";
+                                                                                                      iconString = "assets.hallIcon.luckStoneIcon";
                                                                                                    }
                                                                                                 }
                                                                                                 else
                                                                                                 {
-                                                                                                   _loc2_ = "assets.hallIcon.groupPurchaseIcon";
+                                                                                                   iconString = "assets.hallIcon.groupPurchaseIcon";
                                                                                                 }
                                                                                              }
                                                                                              else
                                                                                              {
-                                                                                                _loc2_ = "assets.hallIcon.rouletteGunIcon";
+                                                                                                iconString = "assets.hallIcon.rouletteGunIcon";
                                                                                              }
                                                                                           }
                                                                                           else
                                                                                           {
-                                                                                             _loc2_ = "assets.hallIcon.newChickenBoxIcon";
+                                                                                             iconString = "assets.hallIcon.newChickenBoxIcon";
                                                                                           }
                                                                                        }
                                                                                        else
                                                                                        {
-                                                                                          _loc2_ = "assets.hallIcon.lanternriddlesIcon";
+                                                                                          iconString = "assets.hallIcon.lanternriddlesIcon";
                                                                                        }
                                                                                     }
                                                                                     else
                                                                                     {
-                                                                                       _loc2_ = "assets.hallIcon.guildmemberweekIcon";
+                                                                                       iconString = "assets.hallIcon.guildmemberweekIcon";
                                                                                     }
                                                                                  }
                                                                                  else
                                                                                  {
-                                                                                    _loc2_ = "assets.hallIcon.accumulativeLoginIcon";
+                                                                                    iconString = "assets.hallIcon.accumulativeLoginIcon";
                                                                                  }
                                                                               }
                                                                               else
                                                                               {
-                                                                                 _loc2_ = "assets.hallIcon.diceIcon";
+                                                                                 iconString = "assets.hallIcon.diceIcon";
                                                                               }
                                                                            }
                                                                            else
                                                                            {
-                                                                              _loc2_ = "assets.hallIcon.growthPachageIcon";
+                                                                              iconString = "assets.hallIcon.growthPachageIcon";
                                                                            }
                                                                         }
                                                                         else
                                                                         {
-                                                                           _loc2_ = "assets.hallIcon.luckyStarIcon";
+                                                                           iconString = "assets.hallIcon.luckyStarIcon";
                                                                         }
                                                                      }
                                                                      else
                                                                      {
-                                                                        _loc2_ = "assets.hallIcon.superWinnerEntryIcon";
+                                                                        iconString = "assets.hallIcon.superWinnerEntryIcon";
                                                                      }
                                                                   }
                                                                   else
                                                                   {
-                                                                     _loc2_ = "assets.hallIcon.pyramidIcon";
+                                                                     iconString = "assets.hallIcon.pyramidIcon";
                                                                   }
                                                                }
                                                                else
                                                                {
-                                                                  _loc2_ = "asset.hallIcon.catchBeastIcon";
+                                                                  iconString = "asset.hallIcon.catchBeastIcon";
                                                                }
                                                             }
                                                             else
                                                             {
-                                                               _loc2_ = "assets.hallIcon.christmasIcon";
+                                                               iconString = "assets.hallIcon.christmasIcon";
                                                             }
                                                          }
                                                          else
                                                          {
-                                                            _loc2_ = "asset.ddthall.trialEnterIcon";
+                                                            iconString = "asset.ddthall.trialEnterIcon";
                                                          }
                                                       }
                                                       else
                                                       {
-                                                         _loc2_ = "assets.hallIcon.survivalIcon";
+                                                         iconString = "assets.hallIcon.survivalIcon";
                                                       }
                                                    }
                                                    else
                                                    {
-                                                      _loc2_ = "asset.hall.draftIcon";
+                                                      iconString = "asset.hall.draftIcon";
                                                    }
                                                 }
                                                 else
                                                 {
-                                                   _loc2_ = "assets.hallIcon.moneyTree";
+                                                   iconString = "assets.hallIcon.moneyTree";
                                                 }
                                              }
                                              else
                                              {
-                                                _loc2_ = "assets.hallIcon.buriedIcon";
+                                                iconString = "assets.hallIcon.buriedIcon";
                                              }
                                           }
                                           else
                                           {
-                                             _loc2_ = "assets.hallIcon.escortEntryIcon";
+                                             iconString = "assets.hallIcon.escortEntryIcon";
                                           }
                                        }
                                        else
                                        {
-                                          _loc2_ = "assets.hallIcon.flowerGivingIcon";
+                                          iconString = "assets.hallIcon.flowerGivingIcon";
                                        }
                                     }
                                     else
                                     {
-                                       _loc2_ = "assets.hallIcon.littleGameNoteIcon";
+                                       iconString = "assets.hallIcon.littleGameNoteIcon";
                                     }
                                  }
                                  else
                                  {
-                                    _loc2_ = "assets.hallIcon.consortiaBattleEntryIcon";
+                                    iconString = "assets.hallIcon.consortiaBattleEntryIcon";
                                  }
                               }
                               else
                               {
-                                 _loc2_ = "assets.hallIcon.fightFootballTimeIcon";
+                                 iconString = "assets.hallIcon.fightFootballTimeIcon";
                               }
                            }
                            else
                            {
-                              _loc2_ = "assets.hallIcon.transnationalIcon";
+                              iconString = "assets.hallIcon.transnationalIcon";
                            }
                         }
                         else
                         {
-                           _loc2_ = "assets.hallIcon.ringStationIcon";
+                           iconString = "assets.hallIcon.ringStationIcon";
                         }
                      }
                      else
                      {
-                        _loc2_ = "assets.hallIcon.leagueIcon";
+                        iconString = "assets.hallIcon.leagueIcon";
                      }
                   }
                   else
                   {
-                     _loc2_ = "assets.hallIcon.sevenDoubleEntryIcon";
+                     iconString = "assets.hallIcon.sevenDoubleEntryIcon";
                   }
                }
                else
                {
-                  _loc2_ = "assets.hallIcon.campIcon";
+                  iconString = "assets.hallIcon.campIcon";
                }
             }
             else
             {
-               _loc2_ = "assets.hallIcon.worldBossEntrance_4";
+               iconString = "assets.hallIcon.worldBossEntrance_4";
             }
          }
          else
          {
-            _loc2_ = "assets.hallIcon.worldBossEntrance_1";
+            iconString = "assets.hallIcon.worldBossEntrance_1";
          }
-         return new HallIcon(_loc2_,param1);
+         return new HallIcon(iconString,$iconInfo);
       }
       
-      public function getIconByType(param1:int, param2:String) : DisplayObject
+      public function getIconByType($hallType:int, $iconType:String) : DisplayObject
       {
-         if(param1 == 1 && _wonderFulPlay)
+         if($hallType == 1 && _wonderFulPlay)
          {
-            return _wonderFulPlay.getIconByType(param2);
+            return _wonderFulPlay.getIconByType($iconType);
          }
-         if(param1 == 2 && _activity)
+         if($hallType == 2 && _activity)
          {
-            return _activity.getIconByType(param2);
+            return _activity.getIconByType($iconType);
          }
          return null;
       }
@@ -2068,45 +2130,45 @@ package hallIcon.view
          }
       }
       
-      private function checkNoneActivity(param1:int) : void
+      private function checkNoneActivity($count:int) : void
       {
-         if(param1 <= 0)
+         if($count <= 0)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.calendar.NoneActivity"));
          }
       }
       
-      public function __checkHallIconExperienceOpenHandler(param1:HallIconEvent) : void
+      public function __checkHallIconExperienceOpenHandler(evt:HallIconEvent) : void
       {
          updateRightIconTaskArrow();
       }
       
       private function updateRightIconTaskArrow() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:int = 0;
-         var _loc2_:Object = HallIconManager.instance.model.cacheRightIconTask;
-         if(_loc2_ && !_loc2_.isCompleted && SharedManager.Instance.halliconExperienceStep < 2)
+         var step:int = 0;
+         var posId:int = 0;
+         var cacheRightIconTask:Object = HallIconManager.instance.model.cacheRightIconTask;
+         if(cacheRightIconTask && !cacheRightIconTask.isCompleted && SharedManager.Instance.halliconExperienceStep < 2)
          {
-            _loc3_ = SharedManager.Instance.halliconExperienceStep;
-            _loc1_ = 1;
+            step = SharedManager.Instance.halliconExperienceStep;
+            posId = 1;
             if(_iconBox.numChildren == 3)
             {
-               _loc1_ = 2;
+               posId = 2;
             }
             else if(_iconBox.numChildren == 4)
             {
-               _loc1_ = 3;
+               posId = 3;
             }
             else if(_iconBox.numChildren == 5)
             {
-               _loc1_ = 4;
+               posId = 4;
             }
-            if(_loc3_ == 1)
+            if(step == 1)
             {
-               _loc1_ = _loc1_ + 1;
+               posId = posId + 1;
             }
-            NewHandContainer.Instance.showArrow(199,-90,"hallIcon.hallIconExperiencePos" + _loc1_,"assets.hallIcon.experienceClickTxt","hallIcon.hallIconExperienceTxt" + _loc1_,_showArrowSp,0,true);
+            NewHandContainer.Instance.showArrow(199,-90,"hallIcon.hallIconExperiencePos" + posId,"assets.hallIcon.experienceClickTxt","hallIcon.hallIconExperienceTxt" + posId,_showArrowSp,0,true);
          }
          else if(NewHandContainer.Instance.hasArrow(199))
          {
@@ -2114,19 +2176,19 @@ package hallIcon.view
          }
       }
       
-      private function checkRightIconTaskClickHandler(param1:int) : void
+      private function checkRightIconTaskClickHandler($halltype:int) : void
       {
          if(!HallIconManager.instance.model.cacheRightIconTask)
          {
             return;
          }
-         if(param1 == 1 && SharedManager.Instance.halliconExperienceStep == 0)
+         if($halltype == 1 && SharedManager.Instance.halliconExperienceStep == 0)
          {
             SharedManager.Instance.halliconExperienceStep = 1;
             updateRightIconTaskArrow();
             SharedManager.Instance.save();
          }
-         else if(param1 == 2 && SharedManager.Instance.halliconExperienceStep == 1)
+         else if($halltype == 2 && SharedManager.Instance.halliconExperienceStep == 1)
          {
             SharedManager.Instance.halliconExperienceStep = 2;
             updateRightIconTaskArrow();
@@ -2231,7 +2293,7 @@ package hallIcon.view
          }
       }
       
-      private function __removeIcon(param1:Event) : void
+      private function __removeIcon(e:Event) : void
       {
          removeFirstRechargeIcon();
       }

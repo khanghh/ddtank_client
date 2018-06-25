@@ -18,21 +18,21 @@ package starling.textures
       
       private var mRepeat:Boolean = false;
       
-      public function TextureOptions(param1:Number = 1.0, param2:Boolean = false, param3:String = "bgra", param4:Boolean = false)
+      public function TextureOptions(scale:Number = 1.0, mipMapping:Boolean = false, format:String = "bgra", repeat:Boolean = false)
       {
          super();
-         mScale = param1;
-         mFormat = param3;
-         mMipMapping = param2;
-         mRepeat = param4;
+         mScale = scale;
+         mFormat = format;
+         mMipMapping = mipMapping;
+         mRepeat = repeat;
       }
       
       public function clone() : TextureOptions
       {
-         var _loc1_:TextureOptions = new TextureOptions(mScale,mMipMapping,mFormat,mRepeat);
-         _loc1_.mOptimizeForRenderToTexture = mOptimizeForRenderToTexture;
-         _loc1_.mOnReady = mOnReady;
-         return _loc1_;
+         var clone:TextureOptions = new TextureOptions(mScale,mMipMapping,mFormat,mRepeat);
+         clone.mOptimizeForRenderToTexture = mOptimizeForRenderToTexture;
+         clone.mOnReady = mOnReady;
+         return clone;
       }
       
       public function get scale() : Number
@@ -40,9 +40,9 @@ package starling.textures
          return mScale;
       }
       
-      public function set scale(param1:Number) : void
+      public function set scale(value:Number) : void
       {
-         mScale = param1 > 0?param1:Number(Starling.contentScaleFactor);
+         mScale = value > 0?value:Number(Starling.contentScaleFactor);
       }
       
       public function get format() : String
@@ -50,9 +50,9 @@ package starling.textures
          return mFormat;
       }
       
-      public function set format(param1:String) : void
+      public function set format(value:String) : void
       {
-         mFormat = param1;
+         mFormat = value;
       }
       
       public function get mipMapping() : Boolean
@@ -60,9 +60,9 @@ package starling.textures
          return mMipMapping;
       }
       
-      public function set mipMapping(param1:Boolean) : void
+      public function set mipMapping(value:Boolean) : void
       {
-         mMipMapping = param1;
+         mMipMapping = value;
       }
       
       public function get optimizeForRenderToTexture() : Boolean
@@ -70,9 +70,9 @@ package starling.textures
          return mOptimizeForRenderToTexture;
       }
       
-      public function set optimizeForRenderToTexture(param1:Boolean) : void
+      public function set optimizeForRenderToTexture(value:Boolean) : void
       {
-         mOptimizeForRenderToTexture = param1;
+         mOptimizeForRenderToTexture = value;
       }
       
       public function get repeat() : Boolean
@@ -80,9 +80,9 @@ package starling.textures
          return mRepeat;
       }
       
-      public function set repeat(param1:Boolean) : void
+      public function set repeat(value:Boolean) : void
       {
-         mRepeat = param1;
+         mRepeat = value;
       }
       
       public function get onReady() : Function
@@ -90,9 +90,9 @@ package starling.textures
          return mOnReady;
       }
       
-      public function set onReady(param1:Function) : void
+      public function set onReady(value:Function) : void
       {
-         mOnReady = param1;
+         mOnReady = value;
       }
    }
 }

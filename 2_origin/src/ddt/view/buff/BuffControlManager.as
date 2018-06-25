@@ -11,9 +11,9 @@ package ddt.view.buff
       
       private var _buff:BuffControl;
       
-      public function BuffControlManager(param1:IEventDispatcher = null)
+      public function BuffControlManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
          _buff = new BuffControl();
       }
       
@@ -35,9 +35,9 @@ package ddt.view.buff
          return _buff;
       }
       
-      public function set buff(param1:BuffControl) : void
+      public function set buff(value:BuffControl) : void
       {
-         _buff = param1;
+         _buff = value;
       }
    }
 }

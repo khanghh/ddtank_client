@@ -31,7 +31,7 @@ package particleSystem
          return _instance;
       }
       
-      public function registerParticle(param1:DisplayObjectContainer, param2:Number, param3:Array, param4:Point = null) : ParticleRenderInfo
+      public function registerParticle(emitter:DisplayObjectContainer, particleId:Number, particleIdList:Array, emitterPoint:Point = null) : ParticleRenderInfo
       {
          if(!_renderList)
          {
@@ -39,63 +39,63 @@ package particleSystem
          }
          var _loc8_:int = 0;
          var _loc7_:* = _renderList;
-         for each(var _loc6_ in _renderList)
+         for each(var i in _renderList)
          {
-            if(_loc6_.emitter == param1)
+            if(i.emitter == emitter)
             {
-               if(param4)
+               if(emitterPoint)
                {
-                  _loc6_.emitterPoint = param4;
+                  i.emitterPoint = emitterPoint;
                }
-               _loc6_.addParticles(param3);
-               return _loc6_;
+               i.addParticles(particleIdList);
+               return i;
             }
          }
-         var _loc5_:ParticleRenderInfo = new ParticleRenderInfo();
-         _loc5_.id = param2;
-         _loc5_.emitter = param1;
-         if(param4)
+         var info:ParticleRenderInfo = new ParticleRenderInfo();
+         info.id = particleId;
+         info.emitter = emitter;
+         if(emitterPoint)
          {
-            _loc6_.emitterPoint = param4;
+            i.emitterPoint = emitterPoint;
          }
-         _loc5_.addParticles(param3);
-         _renderList.push(_loc5_);
-         return _loc5_;
+         info.addParticles(particleIdList);
+         _renderList.push(info);
+         return info;
       }
       
-      public function unRegisterParticle(param1:DisplayObjectContainer) : void
+      public function unRegisterParticle(emitter:DisplayObjectContainer) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = _renderList;
-         for each(var _loc2_ in _renderList)
+         for each(var i in _renderList)
          {
-            if(_loc2_.emitter == param1)
+            if(i.emitter == emitter)
             {
-               _loc2_.stopParticles();
-               _renderList.splice(_renderList.indexOf(_loc2_),1);
+               i.stopParticles();
+               _renderList.splice(_renderList.indexOf(i),1);
                break;
             }
          }
       }
       
-      public function addWeather(param1:DisplayObjectContainer, param2:*, param3:Array) : void
+      public function addWeather(layer:DisplayObjectContainer, particleId:*, particleIdList:Array) : void
       {
-         var _loc4_:Point = new Point(720,-10);
-         addParticleAtPoint(param1,_loc4_,param2,param3);
+         var point:Point = new Point(720,-10);
+         addParticleAtPoint(layer,point,particleId,particleIdList);
       }
       
-      public function addParticleAtPoint(param1:DisplayObjectContainer, param2:Point, param3:Number, param4:Array) : void
+      public function addParticleAtPoint(layer:DisplayObjectContainer, point:Point, particleId:Number, particleIdList:Array) : void
       {
-         var _loc6_:ParticleRenderInfo = new ParticleRenderInfo();
-         var _loc5_:Sprite = new Sprite();
-         _loc5_.x = param2.x;
-         _loc5_.y = param2.y;
-         param1.addChild(_loc5_);
-         _loc6_.id = param3;
-         _loc6_.emitter = _loc5_;
-         _loc6_.isWeather = true;
-         _loc6_.addParticles(param4);
-         _renderList.push(_loc6_);
+         var info:ParticleRenderInfo = new ParticleRenderInfo();
+         var emitter:Sprite = new Sprite();
+         emitter.x = point.x;
+         emitter.y = point.y;
+         layer.addChild(emitter);
+         info.id = particleId;
+         info.emitter = emitter;
+         info.isWeather = true;
+         info.addParticles(particleIdList);
+         _renderList.push(info);
       }
       
       public function turnOn() : void
@@ -109,36 +109,36 @@ package particleSystem
          Starling.current.root.removeEventListener("enterFrame",__render);
          var _loc3_:int = 0;
          var _loc2_:* = _renderList;
-         for each(var _loc1_ in _renderList)
+         for each(var info in _renderList)
          {
-            _loc1_.dispose();
-            _loc1_ = null;
+            info.dispose();
+            info = null;
          }
          _renderList = null;
       }
       
-      private function __resizeStarling(param1:ResizeEvent) : void
+      private function __resizeStarling(evt:ResizeEvent) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = _renderList;
-         for each(var _loc2_ in _renderList)
+         for each(var info in _renderList)
          {
-            if(_loc2_.isWeather)
+            if(info.isWeather)
             {
-               _loc2_.emitter.x = Starling.current.root.stage.stageWidth >> 1;
+               info.emitter.x = Starling.current.root.stage.stageWidth >> 1;
             }
          }
       }
       
-      private function __render(param1:Event) : void
+      private function __render(evt:Event) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = _renderList;
-         for each(var _loc2_ in _renderList)
+         for each(var info in _renderList)
          {
-            if(_loc2_.emitter.parent)
+            if(info.emitter.parent)
             {
-               _loc2_.update();
+               info.update();
             }
          }
       }

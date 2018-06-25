@@ -22,12 +22,12 @@ package gameCommon.view
       
       private var masker:Sprite;
       
-      public function CheckCodeMixedBack(param1:Number, param2:Number, param3:Number)
+      public function CheckCodeMixedBack($width:Number, $height:Number, $color:Number)
       {
          super();
-         _color = param3;
-         _height = param2;
-         _width = param1;
+         _color = $color;
+         _height = $height;
+         _width = $width;
          _renderBox = new Sprite();
          addChild(_renderBox);
          createPoint();
@@ -37,31 +37,29 @@ package gameCommon.view
       
       private function createPoint() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _renderBox.graphics.beginFill(_color,0.5);
-         _loc1_ = 0;
-         while(_loc1_ < 20)
+         for(i = 0; i < 20; )
          {
             _renderBox.graphics.drawCircle(Math.random() * _width,Math.random() * _height,Math.random() * 1.5);
-            _loc1_++;
+            i++;
          }
          _renderBox.graphics.endFill();
       }
       
       private function creatCurver() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:Number = NaN;
-         var _loc1_:Number = NaN;
+         var i:int = 0;
+         var rW:Number = NaN;
+         var rH:Number = NaN;
          _renderBox.graphics.lineStyle(1,_color,0.5);
-         _loc3_ = 0;
-         while(_loc3_ < 20)
+         for(i = 0; i < 20; )
          {
-            _loc2_ = Math.random() * _width;
-            _loc1_ = Math.random() * _height;
-            _renderBox.graphics.moveTo(_loc2_ + (Math.random() * 10 - 10),_loc1_ + (Math.random() * 10 - 10));
-            _renderBox.graphics.curveTo(_loc2_ + (Math.random() * 10 - 10),_loc1_ + (Math.random() * 10 - 10),_loc2_,_loc1_);
-            _loc3_++;
+            rW = Math.random() * _width;
+            rH = Math.random() * _height;
+            _renderBox.graphics.moveTo(rW + (Math.random() * 10 - 10),rH + (Math.random() * 10 - 10));
+            _renderBox.graphics.curveTo(rW + (Math.random() * 10 - 10),rH + (Math.random() * 10 - 10),rW,rH);
+            i++;
          }
          _renderBox.graphics.endFill();
       }

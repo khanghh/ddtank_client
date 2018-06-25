@@ -30,218 +30,213 @@ package ddt.utils
          super();
       }
       
-      public static function setup(param1:FilterWordAnalyzer) : void
+      public static function setup(analyzer:FilterWordAnalyzer) : void
       {
-         WORDS = param1.words;
-         SERVER_WORDS = param1.serverWords;
-         unableChar = param1.unableChar;
+         WORDS = analyzer.words;
+         SERVER_WORDS = analyzer.serverWords;
+         unableChar = analyzer.unableChar;
          clearnUpNaN_Char(WORDS);
          clearnUpNaN_Char(SERVER_WORDS);
       }
       
-      private static function clearnUpNaN_Char(param1:Array) : void
+      private static function clearnUpNaN_Char(source:Array) : void
       {
-         var _loc2_:int = 0;
-         while(_loc2_ < param1.length)
+         var i:int = 0;
+         while(i < source.length)
          {
-            if(StringHelper.trim(param1[_loc2_]).length == 0)
+            if(StringHelper.trim(source[i]).length == 0)
             {
-               param1.splice(_loc2_,1);
+               source.splice(i,1);
             }
             else
             {
-               _loc2_++;
+               i++;
             }
          }
       }
       
-      public static function containUnableChar(param1:String) : Boolean
+      public static function containUnableChar(s:String) : Boolean
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = param1.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var i:int = 0;
+         var len:int = s.length;
+         for(i = 0; i < len; )
          {
-            if(unableChar.indexOf(param1.charAt(_loc3_)) > -1)
+            if(unableChar.indexOf(s.charAt(i)) > -1)
             {
                return true;
             }
-            _loc3_++;
+            i++;
          }
          return false;
       }
       
-      public static function isGotForbiddenWords(param1:String, param2:String = "chat") : Boolean
+      public static function isGotForbiddenWords(str:String, level:String = "chat") : Boolean
       {
-         var _loc5_:int = 0;
-         var _loc4_:String = StringHelper.trimAll(param1.toLocaleLowerCase());
-         var _loc3_:uint = WORDS.length;
-         if(param2 == "name" || param2 == "chat" || param2 == "all")
+         var i:int = 0;
+         var temS:String = StringHelper.trimAll(str.toLocaleLowerCase());
+         var count:uint = WORDS.length;
+         if(level == "name" || level == "chat" || level == "all")
          {
-            _loc5_ = 0;
-            while(_loc5_ < _loc3_)
+            for(i = 0; i < count; )
             {
-               if(_loc4_.indexOf(WORDS[_loc5_]) > -1)
+               if(temS.indexOf(WORDS[i]) > -1)
                {
                   return true;
                }
-               _loc5_++;
+               i++;
             }
          }
-         if(param2 == "server")
+         if(level == "server")
          {
-            _loc3_ = SERVER_WORDS.length;
-            _loc5_ = 0;
-            while(_loc5_ < _loc3_)
+            count = SERVER_WORDS.length;
+            for(i = 0; i < count; )
             {
-               if(_loc4_.indexOf(SERVER_WORDS[_loc5_]) > -1)
+               if(temS.indexOf(SERVER_WORDS[i]) > -1)
                {
                   return true;
                }
-               _loc5_++;
+               i++;
             }
          }
          return false;
       }
       
-      private static function formatForbiddenWords(param1:String, param2:Array) : String
+      private static function formatForbiddenWords(str:String, arr:Array) : String
       {
-         var _loc5_:* = null;
-         var _loc7_:int = 0;
-         var _loc4_:* = null;
-         if(param2 != SERVER_WORDS)
+         var temS:* = null;
+         var i:int = 0;
+         var obj:* = null;
+         if(arr != SERVER_WORDS)
          {
-            _loc5_ = StringHelper.trimAll(param1.toLocaleLowerCase());
+            temS = StringHelper.trimAll(str.toLocaleLowerCase());
          }
          else
          {
-            _loc5_ = param1;
+            temS = str;
          }
-         var _loc3_:int = param2.length;
-         var _loc6_:Boolean = false;
-         _loc7_ = 0;
-         while(_loc7_ < _loc3_)
+         var count:int = arr.length;
+         var isGotForbiddenWord:Boolean = false;
+         for(i = 0; i < count; )
          {
-            if(_loc5_.indexOf(param2[_loc7_]) > -1)
+            if(temS.indexOf(arr[i]) > -1)
             {
-               _loc6_ = true;
-               _loc4_ = {};
-               _loc4_["word"] = param2[_loc7_];
-               _loc4_["idx"] = _loc5_.indexOf(param2[_loc7_]);
-               _loc4_["length"] = _loc4_["word"].length;
-               _loc5_ = replaceUpperOrLowerCase(_loc5_,_loc4_);
-               param1 = replaceUpperOrLowerCase(param1,_loc4_);
-               _loc7_ = 0;
+               isGotForbiddenWord = true;
+               obj = {};
+               obj["word"] = arr[i];
+               obj["idx"] = temS.indexOf(arr[i]);
+               obj["length"] = obj["word"].length;
+               temS = replaceUpperOrLowerCase(temS,obj);
+               str = replaceUpperOrLowerCase(str,obj);
+               i = 0;
             }
-            _loc7_++;
+            i++;
          }
-         return param1;
+         return str;
       }
       
-      private static function formatChannelWords(param1:String) : String
+      private static function formatChannelWords(str:String) : String
       {
-         var _loc7_:int = 0;
-         var _loc2_:* = 0;
-         var _loc5_:* = 0;
-         var _loc4_:* = 0;
-         if(!param1)
+         var i:int = 0;
+         var idx:* = 0;
+         var idx1:* = 0;
+         var idx2:* = 0;
+         if(!str)
          {
             return undefined;
          }
-         var _loc3_:int = CHANNEL_WORDS.length;
-         var _loc6_:Boolean = false;
-         _loc7_ = 0;
-         while(_loc7_ < _loc3_)
+         var count:int = CHANNEL_WORDS.length;
+         var isGotChannelWord:Boolean = false;
+         for(i = 0; i < count; )
          {
-            _loc2_ = uint(param1.indexOf(CHANNEL_WORDS[_loc7_]));
-            _loc5_ = uint(_loc2_ - 1);
-            _loc4_ = uint(_loc2_ + CHANNEL_WORDS[_loc7_].length);
-            if(_loc2_ > -1)
+            idx = uint(str.indexOf(CHANNEL_WORDS[i]));
+            idx1 = uint(idx - 1);
+            idx2 = uint(idx + CHANNEL_WORDS[i].length);
+            if(idx > -1)
             {
-               if(_loc5_ > -1 && _loc4_ <= param1.length - 1)
+               if(idx1 > -1 && idx2 <= str.length - 1)
                {
-                  if(param1.slice(_loc5_,_loc5_ + 1) == "[" && param1.slice(_loc4_,_loc4_ + 1) == "]")
+                  if(str.slice(idx1,idx1 + 1) == "[" && str.slice(idx2,idx2 + 1) == "]")
                   {
-                     _loc6_ = true;
-                     param1 = param1.slice(0,_loc2_) + getXXX(CHANNEL_WORDS[_loc7_].length) + param1.slice(_loc4_);
+                     isGotChannelWord = true;
+                     str = str.slice(0,idx) + getXXX(CHANNEL_WORDS[i].length) + str.slice(idx2);
                   }
                }
             }
-            _loc7_++;
+            i++;
          }
-         if(_loc6_ && param1)
+         if(isGotChannelWord && str)
          {
-            return param1;
+            return str;
          }
          return undefined;
       }
       
-      private static function replaceUpperOrLowerCase(param1:String, param2:Object) : String
+      private static function replaceUpperOrLowerCase(str:String, obj:Object) : String
       {
-         var _loc3_:* = null;
-         var _loc5_:int = param2["idx"];
-         var _loc4_:int = param2["length"];
-         if(_loc5_ + _loc4_ >= param1.length)
+         var s:* = null;
+         var startIdx:int = obj["idx"];
+         var len:int = obj["length"];
+         if(startIdx + len >= str.length)
          {
-            _loc3_ = param1.slice(_loc5_);
+            s = str.slice(startIdx);
          }
          else
          {
-            _loc3_ = param1.slice(_loc5_,_loc5_ + _loc4_);
+            s = str.slice(startIdx,startIdx + len);
          }
-         param1 = param1.replace(_loc3_,getXXX(_loc4_));
-         return param1;
+         str = str.replace(s,getXXX(len));
+         return str;
       }
       
-      public static function filterWrod(param1:String) : String
+      public static function filterWrod(s:String) : String
       {
-         var _loc5_:* = null;
-         var _loc3_:* = null;
-         var _loc4_:String = StringHelper.trimAll(param1);
-         var _loc2_:String = formatChannelWords(_loc4_);
-         if(_loc2_)
+         var re_str1:* = null;
+         var re_str2:* = null;
+         var temS:String = StringHelper.trimAll(s);
+         var re_str:String = formatChannelWords(temS);
+         if(re_str)
          {
-            _loc5_ = formatForbiddenWords(_loc2_,WORDS);
+            re_str1 = formatForbiddenWords(re_str,WORDS);
          }
          else
          {
-            _loc5_ = formatForbiddenWords(_loc4_,WORDS);
+            re_str1 = formatForbiddenWords(temS,WORDS);
          }
-         if(_loc3_)
+         if(re_str2)
          {
-            return _loc3_;
+            return re_str2;
          }
-         if(_loc5_)
+         if(re_str1)
          {
-            return _loc5_;
+            return re_str1;
          }
-         if(_loc2_)
+         if(re_str)
          {
-            return _loc2_;
+            return re_str;
          }
-         return _loc4_;
+         return temS;
       }
       
-      public static function filterWrodFromServer(param1:String) : String
+      public static function filterWrodFromServer(str:String) : String
       {
-         if(isGotForbiddenWords(param1,"server"))
+         if(isGotForbiddenWords(str,"server"))
          {
-            param1 = formatForbiddenWords(param1,SERVER_WORDS);
+            str = formatForbiddenWords(str,SERVER_WORDS);
          }
-         return param1;
+         return str;
       }
       
-      public static function IsNullorEmpty(param1:String) : Boolean
+      public static function IsNullorEmpty(str:String) : Boolean
       {
-         param1 = StringHelper.trim(param1);
-         return StringHelper.isNullOrEmpty(param1);
+         str = StringHelper.trim(str);
+         return StringHelper.isNullOrEmpty(str);
       }
       
-      private static function getXXX(param1:int) : String
+      private static function getXXX(len:int) : String
       {
-         var _loc3_:uint = Math.round(Math.random() * (REPLACEWORD.length / 4));
-         var _loc2_:String = REPLACEWORD.slice(_loc3_,_loc3_ + param1);
-         return _loc2_;
+         var startIdx:uint = Math.round(Math.random() * (REPLACEWORD.length / 4));
+         var str:String = REPLACEWORD.slice(startIdx,startIdx + len);
+         return str;
       }
    }
 }

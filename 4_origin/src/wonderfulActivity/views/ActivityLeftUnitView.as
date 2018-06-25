@@ -49,11 +49,11 @@ package wonderfulActivity.views
       
       private var hasClickSound:Boolean = true;
       
-      public function ActivityLeftUnitView(param1:int)
+      public function ActivityLeftUnitView(type:int)
       {
          _currentID = "-1";
          super();
-         _type = param1;
+         _type = type;
          initView();
          initEvent();
       }
@@ -63,10 +63,10 @@ package wonderfulActivity.views
          return _type;
       }
       
-      public function setData(param1:Array, param2:Function) : void
+      public function setData(value:Array, rightFun:Function) : void
       {
-         dataList = param1;
-         _updateFun = param2;
+         dataList = value;
+         _updateFun = rightFun;
          initData();
       }
       
@@ -97,25 +97,25 @@ package wonderfulActivity.views
       
       private function getSelectedBtn() : SelectedButton
       {
-         var _loc1_:* = null;
+         var tmp:* = null;
          switch(int(_type) - 1)
          {
             case 0:
-               _loc1_ = ComponentFactory.Instance.creatComponentByStylename("wonderful.leftview.limitSelectedBtn");
+               tmp = ComponentFactory.Instance.creatComponentByStylename("wonderful.leftview.limitSelectedBtn");
                break;
             case 1:
-               _loc1_ = ComponentFactory.Instance.creatComponentByStylename("wonderful.leftview.wonderfulSelectedBtn");
+               tmp = ComponentFactory.Instance.creatComponentByStylename("wonderful.leftview.wonderfulSelectedBtn");
                break;
             case 2:
-               _loc1_ = ComponentFactory.Instance.creatComponentByStylename("wonderful.leftview.newServerSelectedBtn");
+               tmp = ComponentFactory.Instance.creatComponentByStylename("wonderful.leftview.newServerSelectedBtn");
                break;
             case 3:
-               _loc1_ = ComponentFactory.Instance.creatComponentByStylename("wonderful.leftview.exchangeActSelectedBtn");
+               tmp = ComponentFactory.Instance.creatComponentByStylename("wonderful.leftview.exchangeActSelectedBtn");
          }
-         return _loc1_;
+         return tmp;
       }
       
-      private function __selectedBtnClick(param1:MouseEvent) : void
+      private function __selectedBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _bg.visible = _selectedBtn.selected;
@@ -124,10 +124,10 @@ package wonderfulActivity.views
          dispatchEvent(new WonderfulActivityEvent("selected_change"));
       }
       
-      private function __itemClick(param1:ListItemEvent) : void
+      private function __itemClick(event:ListItemEvent) : void
       {
-         WonderfulActivityManager.Instance.currentItem(param1.cell as IShineableCell);
-         _selectedValue = param1.cellValue as ActivityCellVo;
+         WonderfulActivityManager.Instance.currentItem(event.cell as IShineableCell);
+         _selectedValue = event.cellValue as ActivityCellVo;
          if(_selectedValue.id == _currentID)
          {
             return;
@@ -152,45 +152,44 @@ package wonderfulActivity.views
       
       private function autoSelect() : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:IListModel = _list.list.model;
-         var _loc3_:int = _loc1_.getSize();
-         if(_loc3_ > 0)
+         var i:int = 0;
+         var tmpSelectedIndex:int = 0;
+         var intPoint:* = null;
+         var model:IListModel = _list.list.model;
+         var len:int = model.getSize();
+         if(len > 0)
          {
             if(WonderfulActivityManager.Instance.isSkipFromHall)
             {
-               _loc5_ = 0;
-               while(_loc5_ < _loc3_)
+               for(i = 0; i < len; )
                {
-                  if(WonderfulActivityManager.Instance.skipType == (_loc1_.getElementAt(_loc5_) as ActivityCellVo).id)
+                  if(WonderfulActivityManager.Instance.skipType == (model.getElementAt(i) as ActivityCellVo).id)
                   {
-                     _selectedValue = _loc1_.getElementAt(_loc5_) as ActivityCellVo;
+                     _selectedValue = model.getElementAt(i) as ActivityCellVo;
                      WonderfulActivityManager.Instance.isSkipFromHall = false;
                      break;
                   }
-                  _loc5_++;
+                  i++;
                }
                if(!_selectedValue)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("wonderfulActivity.close"));
                   WonderfulActivityManager.Instance.isSkipFromHall = false;
-                  _selectedValue = _loc1_.getElementAt(0) as ActivityCellVo;
+                  _selectedValue = model.getElementAt(0) as ActivityCellVo;
                }
             }
             else if(!_selectedValue)
             {
-               _selectedValue = _loc1_.getElementAt(0) as ActivityCellVo;
+               _selectedValue = model.getElementAt(0) as ActivityCellVo;
             }
-            _loc4_ = getIndexInModel(_selectedValue.id);
-            if(_loc4_ < 0)
+            tmpSelectedIndex = getIndexInModel(_selectedValue.id);
+            if(tmpSelectedIndex < 0)
             {
-               _loc4_ = 0;
+               tmpSelectedIndex = 0;
             }
-            _loc2_ = new IntPoint(0,_loc1_.getCellPosFromIndex(_loc4_));
-            _list.list.viewPosition = _loc2_;
-            _list.list.currentSelectedIndex = _loc4_;
+            intPoint = new IntPoint(0,model.getCellPosFromIndex(tmpSelectedIndex));
+            _list.list.viewPosition = intPoint;
+            _list.list.currentSelectedIndex = tmpSelectedIndex;
          }
          else
          {
@@ -198,18 +197,17 @@ package wonderfulActivity.views
          }
       }
       
-      private function getIndexInModel(param1:String) : int
+      private function getIndexInModel(id:String) : int
       {
-         var _loc3_:int = 0;
-         var _loc2_:IListModel = _list.list.model;
-         _loc3_ = 0;
-         while(_loc3_ <= _loc2_.getSize() - 1)
+         var i:int = 0;
+         var model:IListModel = _list.list.model;
+         for(i = 0; i <= model.getSize() - 1; )
          {
-            if(_loc2_.getElementAt(_loc3_).id == param1)
+            if(model.getElementAt(i).id == id)
             {
-               return _loc3_;
+               return i;
             }
-            _loc3_++;
+            i++;
          }
          return -1;
       }
@@ -285,9 +283,9 @@ package wonderfulActivity.views
          return _bg;
       }
       
-      public function set bg(param1:ScaleBitmapImage) : void
+      public function set bg(value:ScaleBitmapImage) : void
       {
-         _bg = param1;
+         _bg = value;
       }
       
       public function get list() : ListPanel
@@ -295,9 +293,9 @@ package wonderfulActivity.views
          return _list;
       }
       
-      public function set list(param1:ListPanel) : void
+      public function set list(value:ListPanel) : void
       {
-         _list = param1;
+         _list = value;
       }
    }
 }

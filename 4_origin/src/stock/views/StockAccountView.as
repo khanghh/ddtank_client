@@ -40,23 +40,22 @@ package stock.views
          StockMgr.inst.addEventListener("stock_sell_out",stockSellOut);
       }
       
-      private function updateUserInfo(param1:StockEvent = null) : void
+      private function updateUserInfo(event:StockEvent = null) : void
       {
          listMyStocks.array = StockMgr.inst.getMyStocks();
          execRule();
       }
       
-      private function stockMessageUpdate(param1:StockEvent = null) : void
+      private function stockMessageUpdate(event:StockEvent = null) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:String = "";
-         _loc3_ = StockMgr.inst.model.stockAccoutData.historyList.length - 1;
-         while(_loc3_ >= 0)
+         var i:int = 0;
+         var str:String = "";
+         for(i = StockMgr.inst.model.stockAccoutData.historyList.length - 1; i >= 0; )
          {
-            _loc2_ = _loc2_ + StockMgr.inst.model.stockAccoutData.historyList[_loc3_].content;
-            _loc3_--;
+            str = str + StockMgr.inst.model.stockAccoutData.historyList[i].content;
+            i--;
          }
-         txtNotices.text = _loc2_;
+         txtNotices.text = str;
       }
       
       private function removeEvent() : void
@@ -69,7 +68,7 @@ package stock.views
          StockMgr.inst.removeEventListener("stock_sell_out",stockSellOut);
       }
       
-      private function stockSellOut(param1:StockEvent) : void
+      private function stockSellOut(evt:StockEvent) : void
       {
          if(listMyStocks.array && listMyStocks.array.length > 0)
          {
@@ -77,10 +76,10 @@ package stock.views
          }
       }
       
-      private function stockChoose(param1:StockEvent) : void
+      private function stockChoose(evt:StockEvent) : void
       {
-         var _loc2_:int = param1.data;
-         if(_loc2_ == 2)
+         var type:int = evt.data;
+         if(type == 2)
          {
             if(listMyStocks.array && listMyStocks.array.length > 0)
             {
@@ -91,7 +90,7 @@ package stock.views
       
       override protected function initialize() : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          stockText1.text = LanguageMgr.GetTranslation("ddt.stock.allView.text19");
          stockText2.text = LanguageMgr.GetTranslation("ddt.stock.allView.text20");
          stockText3.text = LanguageMgr.GetTranslation("ddt.stock.allView.text21");
@@ -107,62 +106,61 @@ package stock.views
          stockText13.text = LanguageMgr.GetTranslation("ddt.stock.allView.text26");
          stockText14.text = LanguageMgr.GetTranslation("ddt.stock.allView.text27");
          stockText15.text = LanguageMgr.GetTranslation("ddt.stock.allView.text28");
-         var _loc1_:* = StockMgr.inst.model.stockBuyEndTime <= TimeManager.Instance.NowTime();
+         var invalidTime:* = StockMgr.inst.model.stockBuyEndTime <= TimeManager.Instance.NowTime();
          btnLoadIn.clickHandler = new Handler(buyLoan);
-         btnLoadIn.disabled = _loc1_;
+         btnLoadIn.disabled = invalidTime;
          btnAccountBuy.clickHandler = new Handler(buyIn);
          btnAccountSell.clickHandler = new Handler(sellOut);
          listMyStocks.renderHandler = new Handler(render);
          listMyStocks.selectHandler = new Handler(select);
          txtNotices.editable = false;
-         btnAccountBuy.disabled = _loc1_;
+         btnAccountBuy.disabled = invalidTime;
          _sortBtns = [btnID,btnPrice,btnHold,btnValid,btnBenefit];
          _sortStatus = [true,true,true,true,true];
          _sortFields = ["StockID","price","holdNum","validNum","floatBenefit"];
-         _loc2_ = 0;
-         while(_loc2_ < _sortBtns.length)
+         for(i = 0; i < _sortBtns.length; )
          {
-            _sortBtns[_loc2_].clickHandler = new Handler(sort,[_loc2_]);
-            _loc2_++;
+            _sortBtns[i].clickHandler = new Handler(sort,[i]);
+            i++;
          }
          updateAccount();
          updateUserInfo();
          stockMessageUpdate();
       }
       
-      private function sort(param1:int) : void
+      private function sort(idx:int) : void
       {
-         _sortIdx = param1;
-         var _loc2_:Boolean = _sortStatus[param1];
-         _sortStatus[param1] = !_loc2_;
+         _sortIdx = idx;
+         var status:Boolean = _sortStatus[idx];
+         _sortStatus[idx] = !status;
          execRule();
          listMyStocks.selectedIndex = 0;
       }
       
       private function execRule() : void
       {
-         var _loc1_:String = _sortFields[_sortIdx];
-         var _loc2_:Array = listMyStocks.array;
-         _loc2_ = _loc2_.sortOn(_loc1_,!!_sortStatus[_sortIdx]?16:16 | 2);
-         listMyStocks.array = _loc2_;
+         var field:String = _sortFields[_sortIdx];
+         var arr:Array = listMyStocks.array;
+         arr = arr.sortOn(field,!!_sortStatus[_sortIdx]?16:16 | 2);
+         listMyStocks.array = arr;
       }
       
-      private function render(param1:StockDataItem, param2:int) : void
+      private function render(item:StockDataItem, index:int) : void
       {
-         param1.data = listMyStocks.array[param2];
+         item.data = listMyStocks.array[index];
       }
       
-      private function select(param1:int) : void
+      private function select(index:int) : void
       {
-         if(!listMyStocks || !listMyStocks.array || listMyStocks.array.length <= param1)
+         if(!listMyStocks || !listMyStocks.array || listMyStocks.array.length <= index)
          {
             StockMgr.inst.model.stockID = 0;
             return;
          }
-         StockMgr.inst.chooseStock((listMyStocks.array[param1] as StockData).StockID);
+         StockMgr.inst.chooseStock((listMyStocks.array[index] as StockData).StockID);
       }
       
-      private function updateAccount(param1:StockEvent = null) : void
+      private function updateAccount(evt:StockEvent = null) : void
       {
          lablTotalAsset.text = StockMgr.inst.model.stockAccoutData.totalAssets.toString();
          lablTotalBenefit.text = StockMgr.inst.model.stockAccoutData.totalBenefit.toString();
@@ -178,8 +176,8 @@ package stock.views
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("stock.selectStock"));
             return;
          }
-         var _loc1_:StockSellFrame = ComponentFactory.Instance.creatCustomObject("stock.sellFrame",[StockMgr.inst.model.stockID]);
-         LayerManager.Instance.addToLayer(_loc1_,3,false,1);
+         var frame:StockSellFrame = ComponentFactory.Instance.creatCustomObject("stock.sellFrame",[StockMgr.inst.model.stockID]);
+         LayerManager.Instance.addToLayer(frame,3,false,1);
       }
       
       private function buyIn() : void
@@ -189,14 +187,14 @@ package stock.views
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("stock.selectStock1"));
             return;
          }
-         var _loc1_:* = ComponentFactory.Instance.creatCustomObject("stock.buyFrame",[StockMgr.inst.model.stockID]);
-         LayerManager.Instance.addToLayer(_loc1_,3,false,1);
+         var frame:* = ComponentFactory.Instance.creatCustomObject("stock.buyFrame",[StockMgr.inst.model.stockID]);
+         LayerManager.Instance.addToLayer(frame,3,false,1);
       }
       
       private function buyLoan() : void
       {
-         var _loc1_:* = ComponentFactory.Instance.creatCustomObject("stock.loanFrame");
-         LayerManager.Instance.addToLayer(_loc1_,3,false,1);
+         var frame:* = ComponentFactory.Instance.creatCustomObject("stock.loanFrame");
+         LayerManager.Instance.addToLayer(frame,3,false,1);
       }
       
       override public function dispose() : void

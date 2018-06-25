@@ -8,10 +8,10 @@ package tank.events
       
       private var _param:int;
       
-      public function ActionEvent(param1:String, param2:int, param3:Boolean = false, param4:Boolean = false)
+      public function ActionEvent(type:String, param:int, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         super(param1,param3,param4);
-         _param = param2;
+         super(type,bubbles,cancelable);
+         _param = param;
       }
       
       public function get param() : int

@@ -43,11 +43,11 @@ package game.objects
       
       private var _visible:Boolean = true;
       
-      public function SimpleBox(param1:int, param2:String, param3:int = 1)
+      public function SimpleBox(id:int, model:String, subType:int = 1)
       {
-         _subType = param3;
+         _subType = subType;
          _self = GameControl.Instance.Current.selfGamePlayer;
-         super(param1,1,param2,"");
+         super(id,1,model,"");
          this.x = x;
          this.y = y;
          _canCollided = true;
@@ -96,7 +96,7 @@ package game.objects
          _self.addEventListener("livingRevive",__onSelfPlayerRevive);
       }
       
-      private function __click(param1:MouseEvent) : void
+      private function __click(evt:MouseEvent) : void
       {
          if(parent)
          {
@@ -106,8 +106,11 @@ package game.objects
       
       private function removeEvent() : void
       {
-         _self.removeEventListener("die",__onSelfPlayerDie);
-         _self.removeEventListener("livingRevive",__onSelfPlayerRevive);
+         if(_self)
+         {
+            _self.removeEventListener("die",__onSelfPlayerDie);
+            _self.removeEventListener("livingRevive",__onSelfPlayerRevive);
+         }
          removeEventListener("click",__click);
          if(_dieMC)
          {
@@ -130,13 +133,13 @@ package game.objects
          return GhostBoxModel.getInstance().getPsychicByType(_subType);
       }
       
-      protected function setIsGhost(param1:Boolean) : void
+      protected function setIsGhost(value:Boolean) : void
       {
-         if(param1 == _isGhostBox)
+         if(value == _isGhostBox)
          {
             return;
          }
-         _isGhostBox = param1;
+         _isGhostBox = value;
          if(!_isGhostBox == GameControl.Instance.Current.selfGamePlayer.isLiving)
          {
             this.visible = true;
@@ -147,9 +150,9 @@ package game.objects
          }
       }
       
-      public function pickByLiving(param1:Living) : void
+      public function pickByLiving(living:Living) : void
       {
-         param1.pick(this);
+         living.pick(this);
          if(!_self.isLiving)
          {
             SoundManager.instance.play("018");
@@ -157,7 +160,7 @@ package game.objects
          die();
       }
       
-      override protected function creatMovie(param1:String) : void
+      override protected function creatMovie(model:String) : void
       {
          if(isGhost)
          {
@@ -177,14 +180,14 @@ package game.objects
             _box = ComponentFactory.Instance.creatComponentByStylename("asset.game.simpleBoxPicAsset");
             _box.x = -_box.width >> 1;
             _box.y = -_box.height >> 1;
-            _box.setFrame(int(param1));
+            _box.setFrame(int(model));
             addChild(_box);
          }
       }
       
-      public function setContainer(param1:DisplayObjectContainer) : void
+      public function setContainer(constainer:DisplayObjectContainer) : void
       {
-         _constainer = param1;
+         _constainer = constainer;
          if(super.visible)
          {
             if(isGhost)
@@ -201,7 +204,7 @@ package game.objects
          }
       }
       
-      override public function set visible(param1:Boolean) : void
+      override public function set visible(value:Boolean) : void
       {
          if(!_self.isLiving)
          {
@@ -211,20 +214,20 @@ package game.objects
             }
             else
             {
-               .super.visible = param1 && isGhost;
+               .super.visible = value && isGhost;
             }
          }
          else
          {
-            .super.visible = param1 && !isGhost;
+            .super.visible = value && !isGhost;
          }
       }
       
-      override public function collidedByObject(param1:PhysicalObj) : void
+      override public function collidedByObject(obj:PhysicalObj) : void
       {
-         if(param1 is SimpleBomb)
+         if(obj is SimpleBomb)
          {
-            SimpleBomb(param1).owner.pick(this);
+            SimpleBomb(obj).owner.pick(this);
             if(!isGhost && _self.isLiving)
             {
                SoundManager.instance.play("018");
@@ -235,7 +238,7 @@ package game.objects
       
       override public function die() : void
       {
-         var _loc1_:* = null;
+         var movie:* = null;
          if(!_isLiving)
          {
             return;
@@ -245,7 +248,7 @@ package game.objects
          {
             if(isGhost)
             {
-               _loc1_ = ClassUtils.CreatInstance("asset.game.GhostBoxDie") as MovieClip;
+               movie = ClassUtils.CreatInstance("asset.game.GhostBoxDie") as MovieClip;
                if(_ghostBox && _ghostBox.parent)
                {
                   _ghostBox.stop();
@@ -254,13 +257,13 @@ package game.objects
             }
             else
             {
-               _loc1_ = ClassUtils.CreatInstance("asset.game.pickBoxAsset") as MovieClip;
+               movie = ClassUtils.CreatInstance("asset.game.pickBoxAsset") as MovieClip;
                if(_box && _box.parent)
                {
                   _box.parent.removeChild(_box);
                }
             }
-            _dieMC = new MovieClipWrapper(_loc1_,true,true);
+            _dieMC = new MovieClipWrapper(movie,true,true);
             _dieMC.addEventListener("complete",__boxDieComplete);
             addChild(_dieMC.movie);
             smallView.visible = false;
@@ -268,7 +271,7 @@ package game.objects
          super.die();
       }
       
-      protected function __boxDieComplete(param1:Event) : void
+      protected function __boxDieComplete(event:Event) : void
       {
          if(_dieMC)
          {
@@ -306,9 +309,9 @@ package game.objects
          super.dispose();
       }
       
-      override public function playAction(param1:String) : void
+      override public function playAction(action:String) : void
       {
-         var _loc2_:* = param1;
+         var _loc2_:* = action;
          if("BoxNormal" !== _loc2_)
          {
             if("BoxColorChanged" !== _loc2_)
@@ -338,7 +341,7 @@ package game.objects
          }
       }
       
-      private function __onSelfPlayerDie(param1:Event) : void
+      private function __onSelfPlayerDie(evt:Event) : void
       {
          if(!_self.isLast)
          {
@@ -346,7 +349,7 @@ package game.objects
          }
       }
       
-      private function __onSelfPlayerRevive(param1:Event) : void
+      private function __onSelfPlayerRevive(evt:Event) : void
       {
          if(isGhost)
          {

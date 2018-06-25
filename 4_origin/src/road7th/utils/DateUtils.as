@@ -11,219 +11,241 @@ package road7th.utils
          super();
       }
       
-      public static function getDateByStr(param1:String) : Date
+      public static function getDateByStr(value:String) : Date
       {
-         var _loc6_:* = null;
-         var _loc10_:* = null;
-         var _loc7_:int = 0;
-         var _loc5_:int = 0;
-         var _loc9_:int = 0;
-         var _loc3_:* = null;
-         var _loc8_:int = 0;
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
-         if(param1)
+         var temp:* = null;
+         var date:* = null;
+         var year:int = 0;
+         var month:int = 0;
+         var day:int = 0;
+         var time:* = null;
+         var hour:int = 0;
+         var minute:int = 0;
+         var second:int = 0;
+         if(value)
          {
-            _loc6_ = param1.split(" ");
-            _loc10_ = _loc6_[0].split("-");
-            if(_loc10_.length == 1)
+            temp = value.split(" ");
+            date = temp[0].split("-");
+            if(date.length == 1)
             {
-               _loc10_ = _loc6_[0].split("/");
+               date = temp[0].split("/");
             }
-            _loc7_ = _loc10_[0];
-            _loc5_ = _loc10_[1] - 1;
-            _loc9_ = _loc10_[2];
-            if(_loc6_.length == 1)
+            year = date[0];
+            month = date[1] - 1;
+            day = date[2];
+            if(temp.length == 1)
             {
-               _loc8_ = 0;
-               _loc2_ = 0;
-               _loc4_ = 1;
+               hour = 0;
+               minute = 0;
+               second = 1;
             }
             else
             {
-               _loc3_ = _loc6_[1].split(":");
-               _loc8_ = _loc3_[0];
-               _loc2_ = _loc3_[1];
-               _loc4_ = _loc3_[2];
+               time = temp[1].split(":");
+               hour = time[0];
+               minute = time[1];
+               second = time[2];
             }
-            return new Date(_loc7_,_loc5_,_loc9_,_loc8_,_loc2_,_loc4_);
+            return new Date(year,month,day,hour,minute,second);
          }
          return new Date(0);
       }
       
-      public static function checkTime(param1:String, param2:String, param3:Date) : Boolean
+      public static function checkTime(beginTime:String, endTime:String, serverTime:Date) : Boolean
       {
-         if(param3.time > getDateByStr(param1).time && param3.time < getDateByStr(param2).time)
+         if(serverTime.time > getDateByStr(beginTime).time && serverTime.time < getDateByStr(endTime).time)
          {
             return true;
          }
          return false;
       }
       
-      public static function getHourDifference(param1:Number, param2:Number) : int
+      public static function getHourDifference(start:Number, end:Number) : int
       {
-         return Math.floor((param2 - param1) / 3600000);
+         return Math.floor((end - start) / 3600000);
       }
       
-      public static function getDays(param1:int, param2:int) : int
+      public static function getDays(year:int, month:int) : int
       {
-         var _loc3_:Date = new Date(param1,param2);
-         return _loc3_.getUTCDate();
+         var newDate:Date = new Date(year,month);
+         return newDate.getUTCDate();
       }
       
-      public static function decodeDated(param1:String) : Date
+      public static function decodeDated(dateStr:String) : Date
       {
-         var _loc3_:Array = param1.split("T");
-         var _loc4_:Array = _loc3_[0].split("-");
-         var _loc2_:Array = _loc3_[1].split(":");
-         return new Date(_loc4_[0],_loc4_[1] - 1,_loc4_[2],_loc2_[0],_loc2_[1],_loc2_[2]);
+         var temp:Array = dateStr.split("T");
+         var tempD:Array = temp[0].split("-");
+         var tempT:Array = temp[1].split(":");
+         return new Date(tempD[0],tempD[1] - 1,tempD[2],tempT[0],tempT[1],tempT[2]);
       }
       
-      public static function encodeDated(param1:Date) : String
+      public static function encodeDated(date:Date) : String
       {
-         var _loc3_:String = "";
-         var _loc8_:String = param1.fullYear.toString();
-         var _loc6_:String = param1.month + 1 < 10?"0" + param1.month + 1:(param1.month + 1).toString();
-         var _loc7_:String = param1.date < 10?"0" + param1.date:param1.date.toString();
-         var _loc5_:String = param1.hours < 10?"0" + param1.hours:param1.hours.toString();
-         var _loc2_:String = param1.minutes < 10?"0" + param1.minutes:param1.minutes.toString();
-         var _loc4_:String = param1.seconds < 10?"0" + param1.seconds:param1.seconds.toString();
-         return _loc8_ + "-" + _loc6_ + "-" + _loc7_ + "T" + _loc5_ + ":" + _loc2_ + ":" + _loc4_;
+         var str:String = "";
+         var years:String = date.fullYear.toString();
+         var mouth:String = date.month + 1 < 10?"0" + date.month + 1:(date.month + 1).toString();
+         var day:String = date.date < 10?"0" + date.date:date.date.toString();
+         var hours:String = date.hours < 10?"0" + date.hours:date.hours.toString();
+         var min:String = date.minutes < 10?"0" + date.minutes:date.minutes.toString();
+         var sec:String = date.seconds < 10?"0" + date.seconds:date.seconds.toString();
+         return years + "-" + mouth + "-" + day + "T" + hours + ":" + min + ":" + sec;
       }
       
-      public static function isToday(param1:Date) : Boolean
+      public static function isToday(date:Date) : Boolean
       {
-         var _loc2_:Date = new Date();
-         return param1.getDate() == _loc2_.getDate() && param1.getMonth() == _loc2_.getMonth() && param1.getFullYear() == _loc2_.getFullYear();
+         var today:Date = new Date();
+         return date.getDate() == today.getDate() && date.getMonth() == today.getMonth() && date.getFullYear() == today.getFullYear();
       }
       
-      public static function dealWithStringDate(param1:String) : Date
+      public static function dealWithStringDate(date:String) : Date
       {
-         var _loc7_:int = 0;
-         var _loc3_:int = 0;
-         var _loc5_:int = 0;
-         var _loc6_:int = 0;
-         var _loc2_:int = 0;
-         if(param1.indexOf("-") > 0)
+         var h:int = 0;
+         var d:int = 0;
+         var m:int = 0;
+         var y:int = 0;
+         var min:int = 0;
+         if(date.indexOf("-") > 0)
          {
-            _loc7_ = parseInt(param1.split(" ")[1].split(":")[0]);
-            _loc2_ = parseInt(param1.split(" ")[1].split(":")[1]);
-            _loc3_ = parseInt(param1.split(" ")[0].split("-")[2]);
-            _loc5_ = parseInt(param1.split(" ")[0].split("-")[1]) - 1;
-            _loc6_ = parseInt(param1.split(" ")[0].split("-")[0]);
+            h = parseInt(date.split(" ")[1].split(":")[0]);
+            min = parseInt(date.split(" ")[1].split(":")[1]);
+            d = parseInt(date.split(" ")[0].split("-")[2]);
+            m = parseInt(date.split(" ")[0].split("-")[1]) - 1;
+            y = parseInt(date.split(" ")[0].split("-")[0]);
          }
-         if(param1.indexOf("/") > 0)
+         if(date.indexOf("/") > 0)
          {
-            if(param1.indexOf("PM") > 0)
+            if(date.indexOf("PM") > 0)
             {
-               _loc7_ = parseInt(param1.split(" ")[1].split(":")[0]) + 12;
+               h = parseInt(date.split(" ")[1].split(":")[0]) + 12;
             }
             else
             {
-               _loc7_ = parseInt(param1.split(" ")[1].split(":")[0]);
+               h = parseInt(date.split(" ")[1].split(":")[0]);
             }
-            _loc2_ = parseInt(param1.split(" ")[1].split(":")[1]);
-            _loc3_ = parseInt(param1.split(" ")[0].split("/")[1]);
-            _loc5_ = parseInt(param1.split(" ")[0].split("/")[0]) - 1;
-            _loc6_ = parseInt(param1.split(" ")[0].split("/")[2]);
+            min = parseInt(date.split(" ")[1].split(":")[1]);
+            d = parseInt(date.split(" ")[0].split("/")[1]);
+            m = parseInt(date.split(" ")[0].split("/")[0]) - 1;
+            y = parseInt(date.split(" ")[0].split("/")[2]);
          }
-         var _loc4_:Date = new Date(_loc6_,_loc5_,_loc3_,_loc7_,_loc2_);
-         return _loc4_;
+         var realDate:Date = new Date(y,m,d,h,min);
+         return realDate;
       }
       
-      public static function dateFormat(param1:Date) : String
+      public static function dateFormat(date:Date) : String
       {
-         var _loc3_:String = "";
-         var _loc8_:String = param1.fullYear.toString();
-         var _loc6_:String = param1.month + 1 < 10?"0" + (param1.month + 1):(param1.month + 1).toString();
-         var _loc7_:String = param1.date < 10?"0" + param1.date:param1.date.toString();
-         var _loc5_:String = param1.hours < 10?"0" + param1.hours:param1.hours.toString();
-         var _loc2_:String = param1.minutes < 10?"0" + param1.minutes:param1.minutes.toString();
-         var _loc4_:String = param1.seconds < 10?"0" + param1.seconds:param1.seconds.toString();
-         return _loc8_ + "-" + _loc6_ + "-" + _loc7_ + " " + _loc5_ + ":" + _loc2_ + ":" + _loc4_;
+         var str:String = "";
+         var years:String = date.fullYear.toString();
+         var mouth:String = date.month + 1 < 10?"0" + (date.month + 1):(date.month + 1).toString();
+         var day:String = date.date < 10?"0" + date.date:date.date.toString();
+         var hours:String = date.hours < 10?"0" + date.hours:date.hours.toString();
+         var min:String = date.minutes < 10?"0" + date.minutes:date.minutes.toString();
+         var sec:String = date.seconds < 10?"0" + date.seconds:date.seconds.toString();
+         return years + "-" + mouth + "-" + day + " " + hours + ":" + min + ":" + sec;
       }
       
-      public static function dateFormat2(param1:Date) : String
+      public static function dateFormat2(date:Date) : String
       {
-         var _loc3_:String = "";
-         var _loc8_:String = param1.fullYear.toString();
-         var _loc6_:String = param1.month + 1 < 10?"0" + (param1.month + 1):(param1.month + 1).toString();
-         var _loc7_:String = param1.date < 10?"0" + param1.date:param1.date.toString();
-         var _loc5_:String = param1.hours < 10?"0" + param1.hours:param1.hours.toString();
-         var _loc2_:String = param1.minutes < 10?"0" + param1.minutes:param1.minutes.toString();
-         var _loc4_:String = param1.seconds < 10?"0" + param1.seconds:param1.seconds.toString();
-         return _loc8_ + "/" + _loc6_ + "/" + _loc7_ + " " + _loc5_ + ":" + _loc2_ + ":" + _loc4_;
+         var str:String = "";
+         var years:String = date.fullYear.toString();
+         var mouth:String = date.month + 1 < 10?"0" + (date.month + 1):(date.month + 1).toString();
+         var day:String = date.date < 10?"0" + date.date:date.date.toString();
+         var hours:String = date.hours < 10?"0" + date.hours:date.hours.toString();
+         var min:String = date.minutes < 10?"0" + date.minutes:date.minutes.toString();
+         var sec:String = date.seconds < 10?"0" + date.seconds:date.seconds.toString();
+         return years + "/" + mouth + "/" + day + " " + hours + ":" + min + ":" + sec;
       }
       
-      public static function dateFormat3(param1:Date) : String
+      public static function dateFormat3(date:Date) : String
       {
-         var _loc2_:String = "";
-         var _loc5_:String = param1.fullYear.toString();
-         var _loc3_:String = param1.month + 1 < 10?"0" + (param1.month + 1):(param1.month + 1).toString();
-         var _loc4_:String = param1.date < 10?"0" + param1.date:param1.date.toString();
-         return _loc5_ + "/" + _loc3_ + "/" + _loc4_ + " 00:00:00";
+         var str:String = "";
+         var years:String = date.fullYear.toString();
+         var mouth:String = date.month + 1 < 10?"0" + (date.month + 1):(date.month + 1).toString();
+         var day:String = date.date < 10?"0" + date.date:date.date.toString();
+         return years + "/" + mouth + "/" + day + " 00:00:00";
       }
       
-      public static function dateFormat4(param1:Date) : String
+      public static function dateFormat4(date:Date) : String
       {
-         var _loc2_:String = "";
-         var _loc5_:String = param1.fullYear.toString();
-         var _loc3_:String = param1.month + 1 < 10?"0" + (param1.month + 1):(param1.month + 1).toString();
-         var _loc4_:String = param1.date < 10?"0" + param1.date:param1.date.toString();
-         return _loc5_ + "/" + _loc3_ + "/" + _loc4_ + " 23:59:59";
+         var str:String = "";
+         var years:String = date.fullYear.toString();
+         var mouth:String = date.month + 1 < 10?"0" + (date.month + 1):(date.month + 1).toString();
+         var day:String = date.date < 10?"0" + date.date:date.date.toString();
+         return years + "/" + mouth + "/" + day + " 23:59:59";
       }
       
-      public static function dateFormat5(param1:Date) : String
+      public static function dateFormat5(date:Date) : String
       {
-         var _loc3_:String = "";
-         var _loc7_:String = param1.fullYear.toString();
-         var _loc5_:String = param1.month + 1 < 10?"0" + (param1.month + 1):(param1.month + 1).toString();
-         var _loc6_:String = param1.date < 10?"0" + param1.date:param1.date.toString();
-         var _loc4_:String = param1.hours < 10?"0" + param1.hours:param1.hours.toString();
-         var _loc2_:String = param1.minutes < 10?"0" + param1.minutes:param1.minutes.toString();
-         return _loc7_ + "-" + _loc5_ + "-" + _loc6_ + " " + _loc4_ + ":" + _loc2_;
+         var str:String = "";
+         var years:String = date.fullYear.toString();
+         var mouth:String = date.month + 1 < 10?"0" + (date.month + 1):(date.month + 1).toString();
+         var day:String = date.date < 10?"0" + date.date:date.date.toString();
+         var hours:String = date.hours < 10?"0" + date.hours:date.hours.toString();
+         var min:String = date.minutes < 10?"0" + date.minutes:date.minutes.toString();
+         return years + "-" + mouth + "-" + day + " " + hours + ":" + min;
       }
       
-      public static function dateFormat6(param1:Date) : String
+      public static function dateFormat6(date:Date) : String
       {
-         var _loc4_:String = param1.fullYear.toString();
-         var _loc2_:String = param1.month + 1 < 10?"0" + (param1.month + 1):(param1.month + 1).toString();
-         var _loc3_:String = param1.date < 10?"0" + param1.date:param1.date.toString();
-         return _loc4_ + "/" + _loc2_ + "/" + _loc3_;
+         var years:String = date.fullYear.toString();
+         var mouth:String = date.month + 1 < 10?"0" + (date.month + 1):(date.month + 1).toString();
+         var day:String = date.date < 10?"0" + date.date:date.date.toString();
+         return years + "/" + mouth + "/" + day;
       }
       
-      public static function dateFormatString(param1:String, param2:Boolean) : String
+      public static function dateFormatString(date:String, needTime:Boolean) : String
       {
-         var _loc3_:RegExp = /\//g;
-         var _loc4_:String = param1.replace(_loc3_,".");
-         if(!param2)
+         var myPattern:RegExp = /\//g;
+         var resData:String = date.replace(myPattern,".");
+         if(!needTime)
          {
-            _loc4_ = _loc4_.split(" ")[0];
+            resData = resData.split(" ")[0];
          }
-         return _loc4_;
+         return resData;
       }
       
-      public static function dateTimeRemainArr(param1:Number) : Array
+      public static function dateTimeRemainArr(remainSeconds:Number) : Array
       {
-         var _loc6_:int = param1 / 86400;
-         var _loc5_:int = (param1 - _loc6_ * 86400) / 3600;
-         var _loc3_:int = (param1 - _loc6_ * 86400 - _loc5_ * 3600) / 60;
-         var _loc4_:int = (param1 - _loc6_ * 86400 - _loc5_ * 3600) % 60;
-         var _loc2_:Array = [];
-         _loc2_[0] = _loc6_ < 0?0:_loc6_;
-         _loc2_[1] = _loc5_ < 0?0:_loc5_;
-         _loc2_[2] = _loc3_ < 0?0:_loc3_;
-         _loc2_[3] = _loc4_ < 0?0:_loc4_;
-         return _loc2_;
+         var day:int = remainSeconds / 86400;
+         var hour:int = (remainSeconds - day * 86400) / 3600;
+         var minutes:int = (remainSeconds - day * 86400 - hour * 3600) / 60;
+         var seconds:int = (remainSeconds - day * 86400 - hour * 3600) % 60;
+         var resArr:Array = [];
+         resArr[0] = day < 0?0:day;
+         resArr[1] = hour < 0?0:hour;
+         resArr[2] = minutes < 0?0:minutes;
+         resArr[3] = seconds < 0?0:seconds;
+         return resArr;
       }
       
-      public static function weekFormatString(param1:int) : String
+      public static function weekFormatString(NumWeek:int) : String
       {
-         if(param1 > 0 && param1 <= 7)
+         if(NumWeek > 0 && NumWeek <= 7)
          {
-            return _weekString[param1 - 1];
+            return _weekString[NumWeek - 1];
          }
          return "";
+      }
+      
+      public static function shorTimeRemainArr(second:int) : Array
+      {
+         var timeArr:Array = [];
+         var s_time:* = second;
+         var m_time:int = 0;
+         var h_time:int = 0;
+         if(s_time >= 60)
+         {
+            m_time = s_time / 60;
+            s_time = int(s_time % 60);
+            if(m_time > 60)
+            {
+               h_time = m_time / 60;
+               m_time = m_time % 60;
+            }
+         }
+         timeArr.push(h_time.toString());
+         timeArr.push(m_time < 10?"0" + m_time:m_time.toString());
+         timeArr.push(s_time < 10?"0" + s_time:s_time.toString());
+         return timeArr;
       }
    }
 }

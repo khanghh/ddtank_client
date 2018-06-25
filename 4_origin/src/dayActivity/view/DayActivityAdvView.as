@@ -27,10 +27,10 @@ package dayActivity.view
       
       private var _updateTimeTxt:FilterFrameText;
       
-      public function DayActivityAdvView(param1:Array)
+      public function DayActivityAdvView(contentLsit:Array)
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
+         var i:int = 0;
+         var tmp:* = null;
          super();
          _bg = ComponentFactory.Instance.creat("asset.timesUpdate.viewBg");
          _bg.width = _bg.width - 15;
@@ -41,17 +41,16 @@ package dayActivity.view
          _scrollPanel = ComponentFactory.Instance.creatComponentByStylename("timesUpdate.view.contentScrollPanel");
          _scrollPanel.width = _scrollPanel.width - 15;
          _scrollPanel.height = _scrollPanel.height + 50;
-         var _loc2_:int = param1.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc2_)
+         var tmpLen:int = contentLsit.length;
+         for(i = 0; i < tmpLen; )
          {
-            _loc3_ = new TimesUpdateViewCell(param1[_loc4_]);
-            _vbox.addChild(_loc3_);
-            _loc4_++;
+            tmp = new TimesUpdateViewCell(contentLsit[i]);
+            _vbox.addChild(tmp);
+            i++;
          }
          _scrollPanel.setView(_vbox);
          _updateTimeTxt = ComponentFactory.Instance.creatComponentByStylename("timesUpdate.view.updateTimeTxt");
-         _updateTimeTxt.text = param1[0].BeginTime.split("T")[0].replace(/-/g,".");
+         _updateTimeTxt.text = contentLsit[0].BeginTime.split("T")[0].replace(/-/g,".");
          addChild(_bg);
          addChild(_updateContentTip);
          addChild(_updateTimeTip);

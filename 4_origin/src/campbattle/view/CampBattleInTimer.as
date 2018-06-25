@@ -37,25 +37,25 @@ package campbattle.view
          _timer.start();
       }
       
-      override protected function __startCount(param1:Event) : void
+      override protected function __startCount(e:Event) : void
       {
          if(_totalCount < 0)
          {
             __timerComplete();
             return;
          }
-         var _loc3_:String = setFormat(int(_totalCount / 3600)) + ":" + setFormat(int(_totalCount / 60 % 60)) + ":" + setFormat(int(_totalCount % 60));
-         (_timeCD["timeHour2"] as MovieClip).gotoAndStop("num_" + _loc3_.charAt(0));
-         (_timeCD["timeHour"] as MovieClip).gotoAndStop("num_" + _loc3_.charAt(1));
-         (_timeCD["timeMint2"] as MovieClip).gotoAndStop("num_" + _loc3_.charAt(3));
-         (_timeCD["timeMint"] as MovieClip).gotoAndStop("num_" + _loc3_.charAt(4));
-         (_timeCD["timeSecond2"] as MovieClip).gotoAndStop("num_" + _loc3_.charAt(6));
-         (_timeCD["timeSecond"] as MovieClip).gotoAndStop("num_" + _loc3_.charAt(7));
-         var _loc2_:int = _totalCount / 60;
-         if(_loc2_ > 0 && _loc2_ <= 5 && _totalCount % 60 == 0)
+         var str:String = setFormat(int(_totalCount / 3600)) + ":" + setFormat(int(_totalCount / 60 % 60)) + ":" + setFormat(int(_totalCount % 60));
+         (_timeCD["timeHour2"] as MovieClip).gotoAndStop("num_" + str.charAt(0));
+         (_timeCD["timeHour"] as MovieClip).gotoAndStop("num_" + str.charAt(1));
+         (_timeCD["timeMint2"] as MovieClip).gotoAndStop("num_" + str.charAt(3));
+         (_timeCD["timeMint"] as MovieClip).gotoAndStop("num_" + str.charAt(4));
+         (_timeCD["timeSecond2"] as MovieClip).gotoAndStop("num_" + str.charAt(6));
+         (_timeCD["timeSecond"] as MovieClip).gotoAndStop("num_" + str.charAt(7));
+         var count:int = _totalCount / 60;
+         if(count > 0 && count <= 5 && _totalCount % 60 == 0)
          {
-            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.campBattle.onGameOver",_loc2_));
-            ChatManager.Instance.sysChatYellow(LanguageMgr.GetTranslation("ddt.campBattle.onGameOver",_loc2_));
+            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.campBattle.onGameOver",count));
+            ChatManager.Instance.sysChatYellow(LanguageMgr.GetTranslation("ddt.campBattle.onGameOver",count));
          }
          _totalCount = Number(_totalCount) - 1;
       }

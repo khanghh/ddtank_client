@@ -42,7 +42,7 @@ package midAutumnWorshipTheMoon.view
          }
       }
       
-      private function onClick(param1:MouseEvent) : void
+      private function onClick(me:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.Grade >= 15)
@@ -55,9 +55,9 @@ package midAutumnWorshipTheMoon.view
          }
       }
       
-      public function set hallView(param1:HallStateView) : void
+      public function set hallView(value:HallStateView) : void
       {
-         _hall = param1;
+         _hall = value;
       }
       
       override public function dispose() : void

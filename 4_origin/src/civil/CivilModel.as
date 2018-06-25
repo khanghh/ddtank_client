@@ -20,15 +20,15 @@ package civil
       
       private var _IsFirst:Boolean = false;
       
-      public function CivilModel(param1:Boolean)
+      public function CivilModel(isFirst:Boolean)
       {
-         _IsFirst = param1;
+         _IsFirst = isFirst;
          super();
       }
       
-      public function set currentcivilItemInfo(param1:CivilPlayerInfo) : void
+      public function set currentcivilItemInfo($info:CivilPlayerInfo) : void
       {
-         _currentcivilItemInfo = param1;
+         _currentcivilItemInfo = $info;
          dispatchEvent(new CivilEvent("selected_change"));
       }
       
@@ -37,50 +37,47 @@ package civil
          return _currentcivilItemInfo;
       }
       
-      public function upSelfPublishEquit(param1:Boolean) : void
+      public function upSelfPublishEquit(b:Boolean) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _civilPlayers.length)
+         var i:int = 0;
+         for(i = 0; i < _civilPlayers.length; )
          {
-            if(PlayerManager.Instance.Self.ID == _civilPlayers[_loc2_].UserId)
+            if(PlayerManager.Instance.Self.ID == _civilPlayers[i].UserId)
             {
-               (_civilPlayers[_loc2_] as CivilPlayerInfo).IsPublishEquip = param1;
+               (_civilPlayers[i] as CivilPlayerInfo).IsPublishEquip = b;
                break;
             }
-            _loc2_++;
+            i++;
          }
       }
       
-      public function upSelfIntroduction(param1:String) : void
+      public function upSelfIntroduction(msg:String) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _civilPlayers.length)
+         var i:int = 0;
+         for(i = 0; i < _civilPlayers.length; )
          {
-            if(PlayerManager.Instance.Self.ID == _civilPlayers[_loc2_].UserId)
+            if(PlayerManager.Instance.Self.ID == _civilPlayers[i].UserId)
             {
-               (_civilPlayers[_loc2_] as CivilPlayerInfo).Introduction = param1;
+               (_civilPlayers[i] as CivilPlayerInfo).Introduction = msg;
                break;
             }
-            _loc2_++;
+            i++;
          }
       }
       
-      public function set civilPlayers(param1:Array) : void
+      public function set civilPlayers(value:Array) : void
       {
-         var _loc3_:int = 0;
-         _civilPlayers = param1;
-         var _loc2_:int = _civilPlayers.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var i:int = 0;
+         _civilPlayers = value;
+         var len:int = _civilPlayers.length;
+         for(i = 0; i < len; )
          {
-            if(PlayerManager.Instance.Self.ID == _civilPlayers[_loc3_].UserId && PlayerManager.Instance.Self.Introduction == "")
+            if(PlayerManager.Instance.Self.ID == _civilPlayers[i].UserId && PlayerManager.Instance.Self.Introduction == "")
             {
-               PlayerManager.Instance.Self.Introduction = (_civilPlayers[_loc3_] as CivilPlayerInfo).Introduction;
+               PlayerManager.Instance.Self.Introduction = (_civilPlayers[i] as CivilPlayerInfo).Introduction;
                break;
             }
-            _loc3_++;
+            i++;
          }
          dispatchEvent(new CivilEvent("civilplayerinfoarraychange"));
       }
@@ -99,9 +96,9 @@ package civil
          return _civilPlayers;
       }
       
-      public function set TotalPage(param1:int) : void
+      public function set TotalPage(value:int) : void
       {
-         _totalPage = param1;
+         _totalPage = value;
       }
       
       public function get TotalPage() : int
@@ -114,9 +111,9 @@ package civil
          return _currentLeafSex;
       }
       
-      public function set sex(param1:Boolean) : void
+      public function set sex(value:Boolean) : void
       {
-         _currentLeafSex = param1;
+         _currentLeafSex = value;
       }
       
       public function get registed() : Boolean
@@ -124,9 +121,9 @@ package civil
          return _register;
       }
       
-      public function set registed(param1:Boolean) : void
+      public function set registed(val:Boolean) : void
       {
-         _register = param1;
+         _register = val;
          dispatchEvent(new CivilEvent("register_change"));
       }
       

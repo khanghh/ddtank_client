@@ -128,26 +128,26 @@ package ddt.view.im
          _send.tipDirctions = "0";
          _send.tipGapV = 5;
          _send.tipData = LanguageMgr.GetTranslation("IM.privateChatFrame.send.tipdata");
-         var _loc1_:SelfInfo = PlayerManager.Instance.Self;
-         _selfPortrait.info = _loc1_;
+         var self:SelfInfo = PlayerManager.Instance.Self;
+         _selfPortrait.info = self;
          _selfLevelT.text = LanguageMgr.GetTranslation("IM.ChatFrame.level");
          _selfLevel.setSize(1);
-         _selfLevel.setInfo(_loc1_.Grade,_loc1_.ddtKingGrade,_loc1_.Repute,_loc1_.WinCount,_loc1_.TotalCount,_loc1_.FightPower,_loc1_.Offer,false,true);
+         _selfLevel.setInfo(self.Grade,self.ddtKingGrade,self.Repute,self.WinCount,self.TotalCount,self.FightPower,self.Offer,false,true);
          _selfLevel.mouseChildren = false;
          _selfLevel.mouseEnabled = false;
          _selfName = ComponentFactory.Instance.creatComponentByStylename("chatFrame.selfName");
-         if(_loc1_.IsVIP)
+         if(self.IsVIP)
          {
-            _selfVipName = VipController.instance.getVipNameTxt(84,_loc1_.typeVIP);
+            _selfVipName = VipController.instance.getVipNameTxt(84,self.typeVIP);
             _selfVipName.textSize = 14;
             _selfVipName.x = _selfName.x;
             _selfVipName.y = _selfName.y;
-            _selfVipName.text = _loc1_.NickName;
+            _selfVipName.text = self.NickName;
             addToContent(_selfVipName);
          }
          else
          {
-            _selfName.text = _loc1_.NickName;
+            _selfName.text = self.NickName;
             addToContent(_selfName);
          }
          _targetLevelT.text = LanguageMgr.GetTranslation("IM.ChatFrame.level");
@@ -157,15 +157,15 @@ package ddt.view.im
          _warningWord.text = LanguageMgr.GetTranslation("IM.ChatFrame.warning");
       }
       
-      public function set playerInfo(param1:PlayerInfo) : void
+      public function set playerInfo(info:PlayerInfo) : void
       {
-         if(_info != param1)
+         if(_info != info)
          {
             _input.text = "";
             _output.htmlText = "";
             closeRecordFrame();
          }
-         _info = param1;
+         _info = info;
          _targetProtrait.onHeadSelectChange(_info.IsShow);
          _targetProtrait.info = _info;
          _targetLevel.setInfo(_info.Grade,_info.ddtKingGrade,_info.Repute,_info.WinCount,_info.TotalCount,_info.FightPower,_info.Offer,false,true);
@@ -207,22 +207,21 @@ package ddt.view.im
          _output.htmlText = "";
       }
       
-      public function addMessage(param1:String) : void
+      public function addMessage(msg:String) : void
       {
-         _output.htmlText = _output.htmlText + (param1 + "<br/>");
+         _output.htmlText = _output.htmlText + (msg + "<br/>");
          _output.textField.setSelection(_output.text.length - 1,_output.text.length - 1);
          _output.upScrollArea();
       }
       
-      public function addAllMessage(param1:Vector.<String>) : void
+      public function addAllMessage(messages:Vector.<String>) : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          _output.htmlText = "";
-         _loc2_ = 0;
-         while(_loc2_ < param1.length)
+         for(i = 0; i < messages.length; )
          {
-            _output.htmlText = _output.htmlText + (param1[_loc2_] + "<br/>");
-            _loc2_++;
+            _output.htmlText = _output.htmlText + (messages[i] + "<br/>");
+            i++;
          }
          _output.textField.setSelection(_output.text.length - 1,_output.text.length - 1);
          _output.upScrollArea();
@@ -259,50 +258,50 @@ package ddt.view.im
          removeEventListener("addedToStage",__addToStageHandler);
       }
       
-      protected function __targetProtraitClick(param1:MouseEvent) : void
+      protected function __targetProtraitClick(event:MouseEvent) : void
       {
          if(!_nameTip)
          {
             _nameTip = new ChatNamePanel();
          }
-         _nameTip.x = param1.stageX;
-         _nameTip.y = param1.stageY;
+         _nameTip.x = event.stageX;
+         _nameTip.y = event.stageY;
          _nameTip.playerName = _info.NickName;
          _nameTip.setVisible = true;
       }
       
-      private function __keyDownHandler(param1:KeyboardEvent) : void
+      private function __keyDownHandler(event:KeyboardEvent) : void
       {
-         param1.stopImmediatePropagation();
-         param1.stopPropagation();
+         event.stopImmediatePropagation();
+         event.stopPropagation();
       }
       
-      protected function __addToStageHandler(param1:Event) : void
+      protected function __addToStageHandler(event:Event) : void
       {
          _input.textField.setFocus();
       }
       
-      protected function __focusOutHandler(param1:FocusEvent) : void
+      protected function __focusOutHandler(event:FocusEvent) : void
       {
          IMManager.Instance.privateChatFocus = false;
       }
       
-      protected function __focusInHandler(param1:FocusEvent) : void
+      protected function __focusInHandler(event:FocusEvent) : void
       {
          IMManager.Instance.privateChatFocus = true;
       }
       
-      protected function __keyUpHandler(param1:KeyboardEvent) : void
+      protected function __keyUpHandler(event:KeyboardEvent) : void
       {
-         param1.stopImmediatePropagation();
-         param1.stopPropagation();
-         if(param1.keyCode == 13)
+         event.stopImmediatePropagation();
+         event.stopPropagation();
+         if(event.keyCode == 13)
          {
             __sendHandler(null);
          }
       }
       
-      protected function __recordHandler(param1:MouseEvent) : void
+      protected function __recordHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_recordFrame == null)
@@ -333,16 +332,16 @@ package ddt.view.im
          _show = false;
       }
       
-      protected function __recordCloseHandler(param1:Event) : void
+      protected function __recordCloseHandler(event:Event) : void
       {
          SoundManager.instance.play("008");
          _recordFrame.parent.removeChild(_recordFrame);
          _show = false;
       }
       
-      protected function __recordResponseHandler(param1:FrameEvent) : void
+      protected function __recordResponseHandler(event:FrameEvent) : void
       {
-         if(param1.responseCode == 0)
+         if(event.responseCode == 0)
          {
             SoundManager.instance.play("008");
             _recordFrame.parent.removeChild(_recordFrame);
@@ -350,9 +349,9 @@ package ddt.view.im
          }
       }
       
-      protected function __sendHandler(param1:MouseEvent) : void
+      protected function __sendHandler(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var str:* = null;
          SoundManager.instance.play("008");
          if(_info.Grade < 5)
          {
@@ -361,9 +360,9 @@ package ddt.view.im
          }
          if(StringHelper.trim(_input.text) != "")
          {
-            _loc2_ = _input.text.replace(/</g,"&lt;").replace(/>/g,"&gt;");
-            _loc2_ = FilterWordManager.filterWrod(_loc2_);
-            SocketManager.Instance.out.sendOneOnOneTalk(_info.ID,_loc2_);
+            str = _input.text.replace(/</g,"&lt;").replace(/>/g,"&gt;");
+            str = FilterWordManager.filterWrod(str);
+            SocketManager.Instance.out.sendOneOnOneTalk(_info.ID,str);
             _input.text = "";
          }
          else
@@ -373,9 +372,9 @@ package ddt.view.im
          __addToStageHandler(null);
       }
       
-      private function checkHtmlTag(param1:String) : Boolean
+      private function checkHtmlTag(str:String) : Boolean
       {
-         if(param1.indexOf("<") != -1 || FilterWordManager.isGotForbiddenWords(param1))
+         if(str.indexOf("<") != -1 || FilterWordManager.isGotForbiddenWords(str))
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("IM.privateChatFrame.failWord"));
             return false;
@@ -383,10 +382,10 @@ package ddt.view.im
          return true;
       }
       
-      protected function __responseHandler(param1:FrameEvent) : void
+      protected function __responseHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:

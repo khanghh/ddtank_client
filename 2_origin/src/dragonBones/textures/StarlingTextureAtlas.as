@@ -21,16 +21,16 @@ package dragonBones.textures
       
       protected var _name:String;
       
-      public function StarlingTextureAtlas(param1:Texture, param2:Object, param3:Boolean = false)
+      public function StarlingTextureAtlas(texture:Texture, textureAtlasRawData:Object, isDifferentConfig:Boolean = false)
       {
-         super(param1,null);
-         if(param1)
+         super(texture,null);
+         if(texture)
          {
-            _scale = param1.scale;
-            _isDifferentConfig = param3;
+            _scale = texture.scale;
+            _isDifferentConfig = isDifferentConfig;
          }
          _subTextureDic = {};
-         parseData(param2);
+         parseData(textureAtlasRawData);
       }
       
       public function get name() : String
@@ -43,9 +43,9 @@ package dragonBones.textures
          super.dispose();
          var _loc3_:int = 0;
          var _loc2_:* = _subTextureDic;
-         for each(var _loc1_ in _subTextureDic)
+         for each(var subTexture in _subTextureDic)
          {
-            _loc1_.dispose();
+            subTexture.dispose();
          }
          _subTextureDic = null;
          if(_bitmapData)
@@ -55,32 +55,32 @@ package dragonBones.textures
          _bitmapData = null;
       }
       
-      override public function getTexture(param1:String) : Texture
+      override public function getTexture(name:String) : Texture
       {
-         var _loc2_:Texture = _subTextureDic[param1];
-         if(!_loc2_)
+         var texture:Texture = _subTextureDic[name];
+         if(!texture)
          {
-            _loc2_ = super.getTexture(param1);
-            if(_loc2_)
+            texture = super.getTexture(name);
+            if(texture)
             {
-               _subTextureDic[param1] = _loc2_;
+               _subTextureDic[name] = texture;
             }
          }
-         return _loc2_;
+         return texture;
       }
       
-      protected function parseData(param1:Object) : void
+      protected function parseData(textureAtlasRawData:Object) : void
       {
-         var _loc2_:* = null;
-         var _loc4_:Object = DataParser.parseTextureAtlasData(param1,!!_isDifferentConfig?_scale:1);
-         _name = _loc4_.__name;
-         delete _loc4_.__name;
+         var textureData:* = null;
+         var textureAtlasData:Object = DataParser.parseTextureAtlasData(textureAtlasRawData,!!_isDifferentConfig?_scale:1);
+         _name = textureAtlasData.__name;
+         delete textureAtlasData.__name;
          var _loc6_:int = 0;
-         var _loc5_:* = _loc4_;
-         for(var _loc3_ in _loc4_)
+         var _loc5_:* = textureAtlasData;
+         for(var subTextureName in textureAtlasData)
          {
-            _loc2_ = _loc4_[_loc3_];
-            this.addRegion(_loc3_,_loc2_.region,_loc2_.frame);
+            textureData = textureAtlasData[subTextureName];
+            this.addRegion(subTextureName,textureData.region,textureData.frame);
          }
       }
    }

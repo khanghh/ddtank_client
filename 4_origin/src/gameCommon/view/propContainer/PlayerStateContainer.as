@@ -25,9 +25,9 @@ package gameCommon.view.propContainer
       
       private var _info:TurnedLiving;
       
-      public function PlayerStateContainer(param1:Number = 10)
+      public function PlayerStateContainer(column:Number = 10)
       {
-         super(param1);
+         super(column);
          hSpace = 6;
          vSpace = 4;
          mouseEnabled = false;
@@ -39,9 +39,9 @@ package gameCommon.view.propContainer
          return _info;
       }
       
-      public function set info(param1:TurnedLiving) : void
+      public function set info(value:TurnedLiving) : void
       {
-         if(_info == param1)
+         if(_info == value)
          {
             return;
          }
@@ -51,7 +51,7 @@ package gameCommon.view.propContainer
             _info.removeEventListener("usePetSkill",__usePetSkill);
             _info.removeEventListener("horseSkillUse",__useSkillHandler);
          }
-         _info = param1;
+         _info = value;
          if(_info)
          {
             _info.addEventListener("addState",__addingState);
@@ -60,11 +60,11 @@ package gameCommon.view.propContainer
          }
       }
       
-      private function __addingState(param1:LivingEvent) : void
+      private function __addingState(event:LivingEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:* = null;
+         var temp:* = null;
+         var dis:* = null;
+         var special:* = null;
          if(visible == false)
          {
             visible = true;
@@ -74,48 +74,48 @@ package gameCommon.view.propContainer
             visible = false;
             return;
          }
-         if(param1.value > 0)
+         if(event.value > 0)
          {
-            _loc3_ = new InventoryItemInfo();
-            _loc3_.TemplateID = param1.value;
-            ItemManager.fill(_loc3_);
-            if(_loc3_.CategoryID != 17 && _loc3_.CategoryID != 31)
+            temp = new InventoryItemInfo();
+            temp.TemplateID = event.value;
+            ItemManager.fill(temp);
+            if(temp.CategoryID != 17 && temp.CategoryID != 31)
             {
-               addChild(new ItemCellView(0,PropItemView.createView(_loc3_.Pic,40,40)));
+               addChild(new ItemCellView(0,PropItemView.createView(temp.Pic,40,40)));
             }
             else
             {
-               _loc2_ = PlayerManager.Instance.getDeputyWeaponIcon(_loc3_,1);
-               addChild(new ItemCellView(0,_loc2_));
+               dis = PlayerManager.Instance.getDeputyWeaponIcon(temp,1);
+               addChild(new ItemCellView(0,dis));
             }
          }
-         else if(param1.value == -1)
+         else if(event.value == -1)
          {
-            _loc4_ = ComponentFactory.Instance.creatBitmap("game.crazyTank.view.specialKillAsset");
-            _loc4_.width = 40;
-            _loc4_.height = 40;
-            addChild(new ItemCellView(0,_loc4_));
+            special = ComponentFactory.Instance.creatBitmap("game.crazyTank.view.specialKillAsset");
+            special.width = 40;
+            special.height = 40;
+            addChild(new ItemCellView(0,special));
          }
-         else if(param1.value == -2)
+         else if(event.value == -2)
          {
-            addChild(new ItemCellView(0,PropItemView.createView(param1.paras[0],40,40)));
+            addChild(new ItemCellView(0,PropItemView.createView(event.paras[0],40,40)));
          }
-         else if(param1.value == 0)
+         else if(event.value == 0)
          {
             addChild(new ItemCellView(0,PropItemView.createView("wish",40,40)));
          }
       }
       
-      protected function __useSkillHandler(param1:LivingEvent) : void
+      protected function __useSkillHandler(event:LivingEvent) : void
       {
-         var _loc2_:HorseSkillVo = HorseManager.instance.getHorseSkillInfoById(param1.paras[0]);
-         if(_loc2_ && _loc2_.isActiveSkill && _loc2_.Pic != "-1")
+         var horseSkillVo:HorseSkillVo = HorseManager.instance.getHorseSkillInfoById(event.paras[0]);
+         if(horseSkillVo && horseSkillVo.isActiveSkill && horseSkillVo.Pic != "-1")
          {
-            addChild(new ItemCellView(0,PropItemView.createView(_loc2_.Pic,40,40)));
+            addChild(new ItemCellView(0,PropItemView.createView(horseSkillVo.Pic,40,40)));
          }
       }
       
-      private function __usePetSkill(param1:LivingEvent) : void
+      private function __usePetSkill(event:LivingEvent) : void
       {
          visible = true;
          if(!_info.isLiving)
@@ -123,10 +123,10 @@ package gameCommon.view.propContainer
             visible = false;
             return;
          }
-         var _loc2_:PetSkillTemplateInfo = PetSkillManager.getSkillByID(param1.value);
-         if(_loc2_ && _loc2_.isActiveSkill)
+         var skill:PetSkillTemplateInfo = PetSkillManager.getSkillByID(event.value);
+         if(skill && skill.isActiveSkill)
          {
-            addChild(new ItemCellView(0,new BitmapLoaderProxy(PathManager.solveSkillPicUrl(_loc2_.Pic),new Rectangle(0,0,40,40))));
+            addChild(new ItemCellView(0,new BitmapLoaderProxy(PathManager.solveSkillPicUrl(skill.Pic),new Rectangle(0,0,40,40))));
          }
       }
       

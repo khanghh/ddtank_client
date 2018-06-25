@@ -24,18 +24,18 @@ package gameCommon.objects
          return _ins;
       }
       
-      public function set psychics(param1:String) : void
+      public function set psychics(val:String) : void
       {
-         _psychicArr = param1.split(",");
+         _psychicArr = val.split(",");
       }
       
-      public function getPsychicByType(param1:int) : int
+      public function getPsychicByType(type:int) : int
       {
-         if(_psychicArr == null || param1 - 2 > _psychicArr.length || param1 - 2 < 0)
+         if(_psychicArr == null || type - 2 > _psychicArr.length || type - 2 < 0)
          {
             return 0;
          }
-         return _psychicArr[param1 - 2];
+         return _psychicArr[type - 2];
       }
    }
 }

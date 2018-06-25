@@ -63,11 +63,11 @@ package collectionTask.player
       
       private var _currentWalkStartPoint:Point;
       
-      public function CollectionTaskPlayer(param1:PlayerVO, param2:Function = null)
+      public function CollectionTaskPlayer(playerVO:PlayerVO, callBack:Function = null)
       {
-         _playerVO = param1;
+         _playerVO = playerVO;
          _currentWalkStartPoint = _playerVO.playerPos;
-         super(param1.playerInfo,param2);
+         super(playerVO.playerInfo,callBack);
          initialize();
       }
       
@@ -139,13 +139,13 @@ package collectionTask.player
          _spName.x = (playerWitdh - _spName.width) / 2 - playerWitdh / 2;
          _spName.y = -playerHeight;
          _spName.graphics.beginFill(0,0.5);
-         var _loc1_:int = !!_vipIcon?_lblName.textWidth + _vipIcon.width:Number(_lblName.textWidth + 8);
+         var spWidth:int = !!_vipIcon?_lblName.textWidth + _vipIcon.width:Number(_lblName.textWidth + 8);
          if(playerVO.playerInfo.IsVIP)
          {
-            _loc1_ = !!_vipIcon?_vipName.width + _vipIcon.width + 8:Number(_vipName.width + 8);
+            spWidth = !!_vipIcon?_vipName.width + _vipIcon.width + 8:Number(_vipName.width + 8);
             _spName.x = (playerWitdh - (_vipIcon.width + _vipName.width)) / 2 - playerWitdh / 2;
          }
-         _spName.graphics.drawRoundRect(-4,0,_loc1_,22,5,5);
+         _spName.graphics.drawRoundRect(-4,0,spWidth,22,5,5);
          _spName.graphics.endFill();
          addChildAt(_spName,0);
          _spName.visible = _isShowName;
@@ -163,31 +163,31 @@ package collectionTask.player
          ChatManager.Instance.addEventListener("addFace",__getFace);
       }
       
-      public function walk(param1:Point, param2:Function = null) : void
+      public function walk(p:Point, fun:Function = null) : void
       {
          if(!_sceneScene)
          {
             return;
          }
-         _destinationPos = param1;
-         playerVO.walkPath = _sceneScene.searchPath(playerPoint,param1);
+         _destinationPos = p;
+         playerVO.walkPath = _sceneScene.searchPath(playerPoint,p);
          playerVO.walkPath.shift();
          playerVO.scenePlayerDirection = SceneCharacterDirection.getDirection(playerPoint,playerVO.walkPath[0]);
          playerVO.currentWalkStartPoint = currentWalkStartPoint;
          isWalkPathChange = true;
-         _walkOverHander = param2;
+         _walkOverHander = fun;
       }
       
-      public function robertWalk(param1:Vector.<Point>) : void
+      public function robertWalk(vector:Vector.<Point>) : void
       {
-         _robertWalkVector = param1;
+         _robertWalkVector = vector;
          walk(_robertWalkVector[int(Math.random() * 5)]);
       }
       
-      private function characterDirectionChange(param1:SceneCharacterEvent) : void
+      private function characterDirectionChange(evt:SceneCharacterEvent) : void
       {
          _playerVO.scenePlayerDirection = sceneCharacterDirection;
-         if(param1.data)
+         if(evt.data)
          {
             if(sceneCharacterDirection == SceneCharacterDirection.LT || sceneCharacterDirection == SceneCharacterDirection.RT)
             {
@@ -233,7 +233,7 @@ package collectionTask.player
          }
       }
       
-      protected function __robertCollectCompleteHandler(param1:Event) : void
+      protected function __robertCollectCompleteHandler(event:Event) : void
       {
          _robertCollectCount = Number(_robertCollectCount) + 1;
          _robertCollectTimer.removeEventListener("timer",__robertCollectCompleteHandler);
@@ -250,16 +250,16 @@ package collectionTask.player
          }
       }
       
-      public function set setSceneCharacterDirectionDefault(param1:SceneCharacterDirection) : void
+      public function set setSceneCharacterDirectionDefault(value:SceneCharacterDirection) : void
       {
-         if(param1 == SceneCharacterDirection.LT || param1 == SceneCharacterDirection.RT)
+         if(value == SceneCharacterDirection.LT || value == SceneCharacterDirection.RT)
          {
             if(sceneCharacterStateType == "natural")
             {
                sceneCharacterActionType = "naturalStandBack";
             }
          }
-         else if(param1 == SceneCharacterDirection.LB || param1 == SceneCharacterDirection.RB)
+         else if(value == SceneCharacterDirection.LB || value == SceneCharacterDirection.RB)
          {
             if(sceneCharacterStateType == "natural")
             {
@@ -278,18 +278,18 @@ package collectionTask.player
       
       private function characterMirror() : void
       {
-         var _loc1_:Sprite = character;
+         var tmpSprite:Sprite = character;
          if(!isDefaultCharacter)
          {
-            _loc1_.scaleX = !!sceneCharacterDirection.isMirror?-1:1;
-            _loc1_.x = !!sceneCharacterDirection.isMirror?playerWitdh / 2:Number(-playerWitdh / 2);
+            tmpSprite.scaleX = !!sceneCharacterDirection.isMirror?-1:1;
+            tmpSprite.x = !!sceneCharacterDirection.isMirror?playerWitdh / 2:Number(-playerWitdh / 2);
          }
          else
          {
-            _loc1_.scaleX = 1;
-            _loc1_.x = -playerWitdh / 2;
+            tmpSprite.scaleX = 1;
+            tmpSprite.x = -playerWitdh / 2;
          }
-         _loc1_.y = -playerHeight + 12;
+         tmpSprite.y = -playerHeight + 12;
       }
       
       private function playerWalkPath() : void
@@ -305,9 +305,9 @@ package collectionTask.player
          playerWalk(_playerVO.walkPath);
       }
       
-      override public function playerWalk(param1:Array) : void
+      override public function playerWalk(walkPath:Array) : void
       {
-         var _loc2_:Number = NaN;
+         var dis:Number = NaN;
          if(_walkPath != null && _tween.isPlaying && _walkPath == _playerVO.walkPath)
          {
             return;
@@ -318,8 +318,8 @@ package collectionTask.player
             _currentWalkStartPoint = _walkPath[0];
             sceneCharacterDirection = SceneCharacterDirection.getDirection(playerPoint,_currentWalkStartPoint);
             dispatchEvent(new SceneCharacterEvent("characterDirectionChange",true));
-            _loc2_ = Point.distance(_currentWalkStartPoint,playerPoint);
-            _tween.start(_loc2_ / _moveSpeed,"x",_currentWalkStartPoint.x,"y",_currentWalkStartPoint.y);
+            dis = Point.distance(_currentWalkStartPoint,playerPoint);
+            _tween.start(dis / _moveSpeed,"x",_currentWalkStartPoint.x,"y",_currentWalkStartPoint.y);
             _walkPath.shift();
          }
          else
@@ -330,27 +330,26 @@ package collectionTask.player
       
       private function fixPlayerPath() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var lastPath:* = null;
          if(_playerVO.currentWalkStartPoint == null)
          {
             return;
          }
-         var _loc2_:* = -1;
-         _loc3_ = 0;
-         while(_loc3_ < _walkPath.length)
+         var startPointIndex:* = -1;
+         for(i = 0; i < _walkPath.length; )
          {
-            if(_walkPath[_loc3_].x == _playerVO.currentWalkStartPoint.x && _walkPath[_loc3_].y == _playerVO.currentWalkStartPoint.y)
+            if(_walkPath[i].x == _playerVO.currentWalkStartPoint.x && _walkPath[i].y == _playerVO.currentWalkStartPoint.y)
             {
-               _loc2_ = _loc3_;
+               startPointIndex = i;
                break;
             }
-            _loc3_++;
+            i++;
          }
-         if(_loc2_ > 0)
+         if(startPointIndex > 0)
          {
-            _loc1_ = _walkPath.slice(0,_loc2_);
-            _playerVO.walkPath = _loc1_.concat(_playerVO.walkPath);
+            lastPath = _walkPath.slice(0,startPointIndex);
+            _playerVO.walkPath = lastPath.concat(_playerVO.walkPath);
          }
       }
       
@@ -372,25 +371,25 @@ package collectionTask.player
          moveSpeed = _playerVO.playerMoveSpeed;
       }
       
-      private function __getChat(param1:ChatEvent) : void
+      private function __getChat(evt:ChatEvent) : void
       {
-         if(!_isChatBall || !param1.data)
+         if(!_isChatBall || !evt.data)
          {
             return;
          }
-         var _loc2_:ChatData = ChatData(param1.data).clone();
-         if(!_loc2_)
+         var data:ChatData = ChatData(evt.data).clone();
+         if(!data)
          {
             return;
          }
-         _loc2_.msg = Helpers.deCodeString(_loc2_.msg);
-         if(_loc2_.channel == 2 || _loc2_.channel == 3)
+         data.msg = Helpers.deCodeString(data.msg);
+         if(data.channel == 2 || data.channel == 3)
          {
             return;
          }
-         if(_loc2_ && _playerVO.playerInfo && _loc2_.senderID == _playerVO.playerInfo.ID)
+         if(data && _playerVO.playerInfo && data.senderID == _playerVO.playerInfo.ID)
          {
-            _chatBallView.setText(_loc2_.msg,_playerVO.playerInfo.paopaoType);
+            _chatBallView.setText(data.msg,_playerVO.playerInfo.paopaoType);
             if(!_chatBallView.parent)
             {
                addChildAt(_chatBallView,this.getChildIndex(character) + 1);
@@ -398,12 +397,12 @@ package collectionTask.player
          }
       }
       
-      private function __getFace(param1:ChatEvent) : void
+      private function __getFace(evt:ChatEvent) : void
       {
-         var _loc2_:Object = param1.data;
-         if(_loc2_["playerid"] == _playerVO.playerInfo.ID)
+         var data:Object = evt.data;
+         if(data["playerid"] == _playerVO.playerInfo.ID)
          {
-            _face.setFace(_loc2_["faceid"]);
+            _face.setFace(data["faceid"]);
          }
       }
       
@@ -412,9 +411,9 @@ package collectionTask.player
          return _playerVO;
       }
       
-      public function set playerVO(param1:PlayerVO) : void
+      public function set playerVO(value:PlayerVO) : void
       {
-         _playerVO = param1;
+         _playerVO = value;
       }
       
       public function get isShowName() : Boolean
@@ -422,9 +421,9 @@ package collectionTask.player
          return _isShowName;
       }
       
-      public function set isShowName(param1:Boolean) : void
+      public function set isShowName(value:Boolean) : void
       {
-         _isShowName = param1;
+         _isShowName = value;
          if(!_spName)
          {
             return;
@@ -437,13 +436,13 @@ package collectionTask.player
          return _isChatBall;
       }
       
-      public function set isChatBall(param1:Boolean) : void
+      public function set isChatBall(value:Boolean) : void
       {
-         if(_isChatBall == param1 || !_chatBallView)
+         if(_isChatBall == value || !_chatBallView)
          {
             return;
          }
-         _isChatBall = param1;
+         _isChatBall = value;
          if(_isChatBall)
          {
             addChildAt(_chatBallView,this.getChildIndex(character) + 1);
@@ -459,13 +458,13 @@ package collectionTask.player
          return _isShowPlayer;
       }
       
-      public function set isShowPlayer(param1:Boolean) : void
+      public function set isShowPlayer(value:Boolean) : void
       {
-         if(_isShowPlayer == param1)
+         if(_isShowPlayer == value)
          {
             return;
          }
-         _isShowPlayer = param1;
+         _isShowPlayer = value;
          this.visible = _isShowPlayer;
       }
       
@@ -474,9 +473,9 @@ package collectionTask.player
          return _sceneScene;
       }
       
-      public function set sceneScene(param1:SceneScene) : void
+      public function set sceneScene(value:SceneScene) : void
       {
-         _sceneScene = param1;
+         _sceneScene = value;
       }
       
       public function get ID() : int

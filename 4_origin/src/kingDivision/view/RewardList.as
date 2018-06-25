@@ -18,24 +18,23 @@ package kingDivision.view
       
       override protected function init() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          super.init();
          spacing = 10;
          items = new Vector.<RewardListItem>(5);
-         _loc1_ = 0;
-         while(_loc1_ < 5)
+         for(i = 0; i < 5; )
          {
             if(KingDivisionManager.Instance.model.goodsZone == 1)
             {
-               items[_loc1_] = new RewardListItem(_loc1_,_loc1_ + 5);
+               items[i] = new RewardListItem(i,i + 5);
             }
             else
             {
-               items[_loc1_] = new RewardListItem(_loc1_,_loc1_);
+               items[i] = new RewardListItem(i,i);
             }
-            items[_loc1_].buttonMode = true;
-            addChild(items[_loc1_]);
-            _loc1_++;
+            items[i].buttonMode = true;
+            addChild(items[i]);
+            i++;
          }
       }
    }

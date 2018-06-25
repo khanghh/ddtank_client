@@ -31,9 +31,9 @@ package levelFund
       
       private var _hallView:HallStateView;
       
-      public function LevelFundManager(param1:IEventDispatcher = null)
+      public function LevelFundManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : LevelFundManager
@@ -63,9 +63,9 @@ package levelFund
          LayerManager.Instance.addToLayer(_frame,3,true,1);
       }
       
-      public function addLevelFundActivityBtn(param1:HallStateView) : void
+      public function addLevelFundActivityBtn(hall:HallStateView) : void
       {
-         _hallView = param1;
+         _hallView = hall;
          if(_model.isOpen)
          {
             initBtn();
@@ -90,52 +90,51 @@ package levelFund
          }
       }
       
-      private function __levelFundHandler(param1:PkgEvent) : void
+      private function __levelFundHandler(evt:PkgEvent) : void
       {
-         var _loc2_:int = param1.pkg.readByte();
-         if(_loc2_ == 1)
+         var cmd:int = evt.pkg.readByte();
+         if(cmd == 1)
          {
-            getInfoHandler(param1.pkg);
+            getInfoHandler(evt.pkg);
          }
-         else if(_loc2_ == 2)
+         else if(cmd == 2)
          {
-            buyLevelFundHandler(param1.pkg);
+            buyLevelFundHandler(evt.pkg);
          }
-         else if(_loc2_ == 3)
+         else if(cmd == 3)
          {
-            getAwardLevelFundHandler(param1.pkg);
+            getAwardLevelFundHandler(evt.pkg);
          }
       }
       
-      private function getInfoHandler(param1:PackageIn) : void
+      private function getInfoHandler(pkg:PackageIn) : void
       {
-         var _loc3_:int = 0;
-         var _loc7_:int = 0;
-         var _loc2_:int = 0;
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         var _loc6_:Boolean = model.isOpen;
-         model.isOpen = param1.readBoolean();
+         var count:int = 0;
+         var i:int = 0;
+         var level:int = 0;
+         var money:int = 0;
+         var state:int = 0;
+         var isOldOpen:Boolean = model.isOpen;
+         model.isOpen = pkg.readBoolean();
          if(model.isOpen)
          {
-            model.buyType = param1.readInt();
-            _loc3_ = param1.readInt();
+            model.buyType = pkg.readInt();
+            count = pkg.readInt();
             model.dataArr = [];
-            _loc7_ = 0;
-            while(_loc7_ < _loc3_)
+            for(i = 0; i < count; )
             {
-               _loc2_ = param1.readInt();
-               _loc5_ = param1.readInt();
-               _loc4_ = param1.readInt();
+               level = pkg.readInt();
+               money = pkg.readInt();
+               state = pkg.readInt();
                model.dataArr.push({
-                  "level":_loc2_,
-                  "money":_loc5_,
-                  "state":_loc4_
+                  "level":level,
+                  "money":money,
+                  "state":state
                });
-               _loc7_++;
+               i++;
             }
             dispatchEvent(new LevelFundEvent("update_view"));
-            if(!_loc6_)
+            if(!isOldOpen)
             {
                initBtn();
             }
@@ -146,10 +145,10 @@ package levelFund
          }
       }
       
-      private function buyLevelFundHandler(param1:PackageIn) : void
+      private function buyLevelFundHandler(pkg:PackageIn) : void
       {
-         var _loc2_:Boolean = param1.readBoolean();
-         if(_loc2_)
+         var isBool:Boolean = pkg.readBoolean();
+         if(isBool)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("levelFund.buyLevelFund.successMsg"));
          }
@@ -159,10 +158,10 @@ package levelFund
          }
       }
       
-      private function getAwardLevelFundHandler(param1:PackageIn) : void
+      private function getAwardLevelFundHandler(pkg:PackageIn) : void
       {
-         var _loc2_:Boolean = param1.readBoolean();
-         if(_loc2_)
+         var isBool:Boolean = pkg.readBoolean();
+         if(isBool)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("levelFund.getAwardLevelFund.successMsg"));
          }

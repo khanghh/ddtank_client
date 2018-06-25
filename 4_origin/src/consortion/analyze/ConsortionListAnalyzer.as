@@ -12,37 +12,36 @@ package consortion.analyze
       
       public var consortionsTotalCount:int;
       
-      public function ConsortionListAnalyzer(param1:Function)
+      public function ConsortionListAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc3_:* = null;
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
+         var xmllist:* = null;
+         var i:int = 0;
+         var info:* = null;
          consortionList = new Vector.<ConsortiaInfo>();
-         var _loc2_:XML = new XML(param1);
-         if(_loc2_.@value == "true")
+         var xmlData:XML = new XML(data);
+         if(xmlData.@value == "true")
          {
-            consortionsTotalCount = int(_loc2_.@total);
-            _loc3_ = _loc2_..Item;
-            _loc5_ = 0;
-            while(_loc5_ < _loc3_.length())
+            consortionsTotalCount = int(xmlData.@total);
+            xmllist = xmlData..Item;
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc4_ = new ConsortiaInfo();
-               _loc4_.beginChanges();
-               ObjectUtils.copyPorpertiesByXML(_loc4_,_loc3_[_loc5_]);
-               _loc4_.commitChanges();
-               consortionList.push(_loc4_);
-               _loc5_++;
+               info = new ConsortiaInfo();
+               info.beginChanges();
+               ObjectUtils.copyPorpertiesByXML(info,xmllist[i]);
+               info.commitChanges();
+               consortionList.push(info);
+               i++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc2_.@message;
+            message = xmlData.@message;
             onAnalyzeError();
             onAnalyzeComplete();
          }

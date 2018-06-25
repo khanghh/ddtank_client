@@ -41,6 +41,16 @@ package pet.data
       
       public var HighGuard:int;
       
+      public var LowBloodGrow:int;
+      
+      public var LowAttackGrow:int;
+      
+      public var LowDefenceGrow:int;
+      
+      public var LowAgilityGrow:int;
+      
+      public var LowLuckGrow:int;
+      
       public var HighAttackGrow:int;
       
       public var HighDefenceGrow:int;
@@ -55,9 +65,11 @@ package pet.data
       
       public var HighGuardGrow:int;
       
-      public function PetTemplateInfo(param1:IEventDispatcher = null)
+      private var _washGetCount:int;
+      
+      public function PetTemplateInfo(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public function get GameAssetUrl() : String
@@ -65,9 +77,19 @@ package pet.data
          return _GameAssetUrl;
       }
       
-      public function set GameAssetUrl(param1:String) : void
+      public function set GameAssetUrl(value:String) : void
       {
-         _GameAssetUrl = param1;
+         _GameAssetUrl = value;
+      }
+      
+      public function get WashGetCount() : int
+      {
+         return _washGetCount;
+      }
+      
+      public function set WashGetCount(value:int) : void
+      {
+         _washGetCount = value;
       }
    }
 }

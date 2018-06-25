@@ -9,83 +9,82 @@ package ddt.data.analyze
       
       public var list:Array;
       
-      public function FightLibAwardAnalyzer(param1:Function)
+      public function FightLibAwardAnalyzer(onCompleteCall:Function)
       {
          list = [];
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc4_:* = null;
-         var _loc5_:Array = [];
-         var _loc2_:XMLList = XML(param1).Item;
+         var awardItem:* = null;
+         var tempList:Array = [];
+         var infos:XMLList = XML(data).Item;
          var _loc7_:int = 0;
-         var _loc6_:* = _loc2_;
-         for each(var _loc3_ in _loc2_)
+         var _loc6_:* = infos;
+         for each(var awardInfo in infos)
          {
-            _loc4_ = {};
-            _loc4_.id = int(_loc3_.@ID);
-            _loc4_.diff = int(_loc3_.@Easy);
-            _loc4_.itemID = int(_loc3_.@AwardItem);
-            _loc4_.count = int(_loc3_.@Count);
-            _loc5_.push(_loc4_);
+            awardItem = {};
+            awardItem.id = int(awardInfo.@ID);
+            awardItem.diff = int(awardInfo.@Easy);
+            awardItem.itemID = int(awardInfo.@AwardItem);
+            awardItem.count = int(awardInfo.@Count);
+            tempList.push(awardItem);
          }
-         sortItems(_loc5_);
+         sortItems(tempList);
          onAnalyzeComplete();
       }
       
-      private function sortItems(param1:Array) : void
+      private function sortItems(items:Array) : void
       {
          var _loc4_:int = 0;
-         var _loc3_:* = param1;
-         for each(var _loc2_ in param1)
+         var _loc3_:* = items;
+         for each(var item in items)
          {
             pushInListByIDAndDiff({
-               "id":_loc2_.itemID,
-               "count":_loc2_.count
-            },_loc2_.id,_loc2_.diff);
+               "id":item.itemID,
+               "count":item.count
+            },item.id,item.diff);
          }
       }
       
-      private function pushInListByIDAndDiff(param1:Object, param2:int, param3:int) : void
+      private function pushInListByIDAndDiff(item:Object, id:int, diff:int) : void
       {
-         var _loc4_:FightLibAwardInfo = findAwardInfoByID(param2);
-         switch(int(param3))
+         var awardInfo:FightLibAwardInfo = findAwardInfoByID(id);
+         switch(int(diff))
          {
             case 0:
-               _loc4_.easyAward.push(param1);
+               awardInfo.easyAward.push(item);
                break;
             case 1:
-               _loc4_.normalAward.push(param1);
+               awardInfo.normalAward.push(item);
                break;
             case 2:
-               _loc4_.difficultAward.push(param1);
+               awardInfo.difficultAward.push(item);
          }
       }
       
-      private function findAwardInfoByID(param1:int) : FightLibAwardInfo
+      private function findAwardInfoByID(id:int) : FightLibAwardInfo
       {
-         var _loc2_:* = null;
-         var _loc4_:int = 0;
-         var _loc3_:int = list.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var result:* = null;
+         var i:int = 0;
+         var len:int = list.length;
+         for(i = 0; i < len; )
          {
-            if(list[_loc4_].id == param1)
+            if(list[i].id == id)
             {
-               _loc2_ = list[_loc4_];
-               return _loc2_;
+               result = list[i];
+               return result;
             }
-            _loc4_++;
+            i++;
          }
-         if(_loc2_ == null)
+         if(result == null)
          {
-            _loc2_ = new FightLibAwardInfo();
-            _loc2_.id = param1;
-            list.push(_loc2_);
+            result = new FightLibAwardInfo();
+            result.id = id;
+            list.push(result);
          }
-         return _loc2_;
+         return result;
       }
    }
 }

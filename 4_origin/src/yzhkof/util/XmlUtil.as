@@ -9,44 +9,42 @@ package yzhkof.util
          super();
       }
       
-      public static function deleteXmlList(param1:XMLList) : void
+      public static function deleteXmlList(xml_list:XMLList) : void
       {
-         var _loc2_:int = param1.length();
-         var _loc3_:int = 0;
-         while(_loc3_ < _loc2_)
+         var length:int = xml_list.length();
+         for(var i:int = 0; i < length; i++)
          {
-            delete param1[0];
-            _loc3_++;
+            delete xml_list[0];
          }
       }
       
-      public static function sortOnXMLList(param1:XMLList, param2:Object, param3:Object = null) : XMLList
+      public static function sortOnXMLList(xmllist:XMLList, fieldName:Object, options:Object = null) : XMLList
       {
-         var _loc5_:XML = null;
-         var _loc4_:Array = new Array();
-         for each(_loc5_ in param1)
+         var x:XML = null;
+         var sort_arr:Array = new Array();
+         for each(x in xmllist)
          {
-            _loc4_.push(_loc5_);
+            sort_arr.push(x);
          }
-         if(param2)
+         if(fieldName)
          {
-            _loc4_.sortOn(param2,param3);
+            sort_arr.sortOn(fieldName,options);
          }
          else
          {
-            _loc4_.sort();
+            sort_arr.sort();
          }
-         var _loc6_:XMLList = new XMLList();
-         for each(_loc5_ in _loc4_)
+         var re_xmllist:XMLList = new XMLList();
+         for each(x in sort_arr)
          {
-            _loc6_ = _loc6_ + _loc5_;
+            re_xmllist = re_xmllist + x;
          }
-         return _loc6_;
+         return re_xmllist;
       }
       
-      public static function enableSpecialCode(param1:String) : String
+      public static function enableSpecialCode(str:String) : String
       {
-         return param1.replace("\\n","\n");
+         return str.replace("\\n","\n");
       }
    }
 }

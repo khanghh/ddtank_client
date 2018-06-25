@@ -8,11 +8,11 @@ package littleGame.clock
       
       private var _timeSyncDelta:int;
       
-      public function TimeDelta(param1:int, param2:int)
+      public function TimeDelta(latency:int, timeSyncDelta:int)
       {
          super();
-         _latency = param1;
-         _timeSyncDelta = param2;
+         _latency = latency;
+         _timeSyncDelta = timeSyncDelta;
       }
       
       public function get latency() : int

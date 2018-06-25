@@ -60,80 +60,79 @@ package newChickenBox.view
       
       public function getAllItem() : void
       {
-         var _loc11_:int = 0;
-         var _loc2_:* = null;
-         var _loc10_:* = null;
-         var _loc5_:* = null;
-         var _loc8_:* = null;
-         var _loc1_:* = null;
-         var _loc4_:* = null;
-         var _loc6_:* = null;
-         var _loc3_:* = null;
-         var _loc9_:int = Math.random() * 18;
-         var _loc7_:int = getNum(_loc9_);
-         _loc11_ = 0;
-         while(_loc11_ < 18)
+         var i:int = 0;
+         var stand:* = null;
+         var move:* = null;
+         var p:* = null;
+         var iteminfo:* = null;
+         var s:* = null;
+         var cell:* = null;
+         var bg:* = null;
+         var item:* = null;
+         var num1:int = Math.random() * 18;
+         var num2:int = getNum(num1);
+         for(i = 0; i < 18; )
          {
-            _loc2_ = ClassUtils.CreatInstance("asset.newChickenBox.chickenStand") as MovieClip;
-            _loc10_ = ClassUtils.CreatInstance("asset.newChickenBox.chickenMove") as MovieClip;
-            _loc5_ = "newChickenBox.itemPos" + _loc11_;
-            _loc8_ = _model.templateIDList[_loc11_];
-            _loc1_ = new Sprite();
-            _loc1_.graphics.beginFill(16777215,0);
-            _loc1_.graphics.drawRect(0,0,39,39);
-            _loc1_.graphics.endFill();
-            _loc4_ = new NewChickenBoxCell(_loc1_,_loc8_.info);
-            if(_loc11_ == _loc9_ || _loc11_ == _loc7_)
+            stand = ClassUtils.CreatInstance("asset.newChickenBox.chickenStand") as MovieClip;
+            move = ClassUtils.CreatInstance("asset.newChickenBox.chickenMove") as MovieClip;
+            p = "newChickenBox.itemPos" + i;
+            iteminfo = _model.templateIDList[i];
+            s = new Sprite();
+            s.graphics.beginFill(16777215,0);
+            s.graphics.drawRect(0,0,39,39);
+            s.graphics.endFill();
+            cell = new NewChickenBoxCell(s,iteminfo.info);
+            if(i == num1 || i == num2)
             {
-               _loc6_ = _loc10_;
-               moveBackArr.push(_loc11_);
+               bg = move;
+               moveBackArr.push(i);
             }
             else
             {
-               _loc6_ = _loc2_;
+               bg = stand;
             }
-            _loc3_ = new NewChickenBoxItem(_loc4_,_loc6_);
-            _loc3_.info = _loc8_;
-            _loc3_.updateCount();
-            _loc3_.addEventListener("click",tackoverCard);
-            _loc3_.position = _loc11_;
-            PositionUtils.setPos(_loc3_,_loc5_);
+            item = new NewChickenBoxItem(cell,bg);
+            item.info = iteminfo;
+            item.updateCount();
+            item.addEventListener("click",tackoverCard);
+            item.position = i;
+            PositionUtils.setPos(item,p);
             if(_model.itemList.length == 18)
             {
-               _model.itemList[_loc11_].dispose();
-               _model.itemList[_loc11_] = null;
-               _model.itemList[_loc11_] = _loc3_;
+               _model.itemList[i].dispose();
+               _model.itemList[i] = null;
+               _model.itemList[i] = item;
             }
             else
             {
-               _model.itemList.push(_loc3_);
+               _model.itemList.push(item);
             }
-            addChild(_loc3_);
-            _loc11_++;
+            addChild(item);
+            i++;
          }
       }
       
-      private function openAlertFrame(param1:NewChickenBoxItem) : BaseAlerFrame
+      private function openAlertFrame(item:NewChickenBoxItem) : BaseAlerFrame
       {
-         var _loc3_:String = LanguageMgr.GetTranslation("newChickenBox.EagleEye.msg",_model.canEagleEyeCounts - _model.countEye,_model.eagleEyePrice[_model.countEye]);
-         var _loc2_:SelectedCheckButton = ComponentFactory.Instance.creatComponentByStylename("newChickenBox.selectBnt3");
-         _loc2_.text = LanguageMgr.GetTranslation("newChickenBox.noAlert");
-         _loc2_.addEventListener("click",noAlertEable);
+         var msg:String = LanguageMgr.GetTranslation("newChickenBox.EagleEye.msg",_model.canEagleEyeCounts - _model.countEye,_model.eagleEyePrice[_model.countEye]);
+         var select:SelectedCheckButton = ComponentFactory.Instance.creatComponentByStylename("newChickenBox.selectBnt3");
+         select.text = LanguageMgr.GetTranslation("newChickenBox.noAlert");
+         select.addEventListener("click",noAlertEable);
          if(frame)
          {
             ObjectUtils.disposeObject(frame);
          }
-         frame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("newChickenBox.newChickenTitle"),_loc3_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2);
-         frame.addChild(_loc2_);
+         frame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("newChickenBox.newChickenTitle"),msg,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2);
+         frame.addChild(select);
          frame.addEventListener("response",__onResponse);
-         eyeItem = param1;
+         eyeItem = item;
          return frame;
       }
       
-      private function noAlertEable(param1:MouseEvent) : void
+      private function noAlertEable(e:MouseEvent) : void
       {
-         var _loc2_:SelectedCheckButton = param1.currentTarget as SelectedCheckButton;
-         if(_loc2_.selected)
+         var select:SelectedCheckButton = e.currentTarget as SelectedCheckButton;
+         if(select.selected)
          {
             _model.alertEye = false;
          }
@@ -143,39 +142,39 @@ package newChickenBox.view
          }
       }
       
-      private function __onResponse(param1:FrameEvent) : void
+      private function __onResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.target as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onResponse);
-         _loc2_.dispose();
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var alert:BaseAlerFrame = evt.target as BaseAlerFrame;
+         alert.removeEventListener("response",__onResponse);
+         alert.dispose();
+         if(evt.responseCode == 2 || evt.responseCode == 3)
          {
             SocketManager.Instance.out.sendChickenBoxUseEagleEye(eyeItem.position);
          }
       }
       
-      private function openAlertFrame2(param1:NewChickenBoxItem) : BaseAlerFrame
+      private function openAlertFrame2(item:NewChickenBoxItem) : BaseAlerFrame
       {
-         var _loc3_:String = LanguageMgr.GetTranslation("newChickenBox.OpenCard.msg",_model.openCardPrice[_model.countTime]);
-         var _loc2_:SelectedCheckButton = ComponentFactory.Instance.creatComponentByStylename("newChickenBox.selectBnt2");
-         _loc2_.text = LanguageMgr.GetTranslation("newChickenBox.noAlert");
-         _loc2_.addEventListener("click",noAlertEable2);
+         var msg:String = LanguageMgr.GetTranslation("newChickenBox.OpenCard.msg",_model.openCardPrice[_model.countTime]);
+         var select:SelectedCheckButton = ComponentFactory.Instance.creatComponentByStylename("newChickenBox.selectBnt2");
+         select.text = LanguageMgr.GetTranslation("newChickenBox.noAlert");
+         select.addEventListener("click",noAlertEable2);
          if(frame)
          {
             ObjectUtils.disposeObject(frame);
          }
-         frame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("newChickenBox.newChickenTitle"),_loc3_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2);
-         frame.addChild(_loc2_);
+         frame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("newChickenBox.newChickenTitle"),msg,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2);
+         frame.addChild(select);
          frame.addEventListener("response",__onResponse2);
-         eyeItem = param1;
+         eyeItem = item;
          return frame;
       }
       
-      private function noAlertEable2(param1:MouseEvent) : void
+      private function noAlertEable2(e:MouseEvent) : void
       {
-         var _loc2_:SelectedCheckButton = param1.currentTarget as SelectedCheckButton;
-         if(_loc2_.selected)
+         var select:SelectedCheckButton = e.currentTarget as SelectedCheckButton;
+         if(select.selected)
          {
             _model.alertOpenCard = false;
          }
@@ -185,52 +184,52 @@ package newChickenBox.view
          }
       }
       
-      private function __onResponse2(param1:FrameEvent) : void
+      private function __onResponse2(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.target as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onResponse2);
-         _loc2_.dispose();
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var alert:BaseAlerFrame = evt.target as BaseAlerFrame;
+         alert.removeEventListener("response",__onResponse2);
+         alert.dispose();
+         if(evt.responseCode == 2 || evt.responseCode == 3)
          {
             SocketManager.Instance.out.sendChickenBoxTakeOverCard(eyeItem.info.Position);
          }
       }
       
-      public function getItemEvent(param1:NewChickenBoxItem) : void
+      public function getItemEvent(item:NewChickenBoxItem) : void
       {
-         param1.addEventListener("click",tackoverCard);
+         item.addEventListener("click",tackoverCard);
       }
       
-      public function removeItemEvent(param1:NewChickenBoxItem) : void
+      public function removeItemEvent(item:NewChickenBoxItem) : void
       {
-         param1.removeEventListener("click",tackoverCard);
-         param1.dispose();
+         item.removeEventListener("click",tackoverCard);
+         item.dispose();
       }
       
-      public function tackoverCard(param1:MouseEvent) : void
+      public function tackoverCard(e:MouseEvent) : void
       {
-         var _loc3_:int = 0;
+         var moneyValue:int = 0;
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:NewChickenBoxItem = param1.currentTarget as NewChickenBoxItem;
-         var _loc4_:NewChickenBoxGoodsTempInfo = _loc2_.info;
-         if(_model.canclickEnable && !_loc4_.IsSelected && (!_loc2_.cell.visible || _loc2_.cell.alpha < 0.9))
+         var item:NewChickenBoxItem = e.currentTarget as NewChickenBoxItem;
+         var info:NewChickenBoxGoodsTempInfo = item.info;
+         if(_model.canclickEnable && !info.IsSelected && (!item.cell.visible || item.cell.alpha < 0.9))
          {
             if(_model.clickEagleEye)
             {
-               _loc3_ = _model.eagleEyePrice[_model.countEye];
-               trace(_loc3_,_model.countEye);
-               if(PlayerManager.Instance.Self.Money < _loc3_ && _model.freeEyeCount <= 0)
+               moneyValue = _model.eagleEyePrice[_model.countEye];
+               trace(moneyValue,_model.countEye);
+               if(PlayerManager.Instance.Self.Money < moneyValue && _model.freeEyeCount <= 0)
                {
                   LeavePageManager.showFillFrame();
                   return;
                }
-               if(_loc4_.IsSeeded)
+               if(info.IsSeeded)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("newChickenBox.useEyeEnable"));
                   return;
@@ -240,129 +239,128 @@ package newChickenBox.view
                   if(_model.countEye < _model.canEagleEyeCounts)
                   {
                      _model.dispatchEvent(new Event("mouseShapoff"));
-                     openAlertFrame(_loc2_);
+                     openAlertFrame(item);
                   }
                   else
                   {
-                     SocketManager.Instance.out.sendChickenBoxUseEagleEye(_loc2_.position);
+                     SocketManager.Instance.out.sendChickenBoxUseEagleEye(item.position);
                   }
                }
                else
                {
-                  SocketManager.Instance.out.sendChickenBoxUseEagleEye(_loc2_.position);
+                  SocketManager.Instance.out.sendChickenBoxUseEagleEye(item.position);
                }
             }
             else
             {
-               _loc3_ = _model.openCardPrice[_model.countTime];
-               trace(_loc3_,_model.countTime);
-               if(PlayerManager.Instance.Self.Money < _loc3_ && _model.freeOpenCardCount <= 0)
+               moneyValue = _model.openCardPrice[_model.countTime];
+               trace(moneyValue,_model.countTime);
+               if(PlayerManager.Instance.Self.Money < moneyValue && _model.freeOpenCardCount <= 0)
                {
                   LeavePageManager.showFillFrame();
                   return;
                }
                if(_model.alertOpenCard && _model.freeOpenCardCount <= 0)
                {
-                  openAlertFrame2(_loc2_);
+                  openAlertFrame2(item);
                }
                else
                {
-                  SocketManager.Instance.out.sendChickenBoxTakeOverCard(_loc2_.info.Position);
+                  SocketManager.Instance.out.sendChickenBoxTakeOverCard(item.info.Position);
                }
             }
          }
       }
       
-      private function getNum(param1:int) : int
+      private function getNum(num:int) : int
       {
-         var _loc2_:int = Math.random() * 18;
-         if(_loc2_ == param1)
+         var num2:int = Math.random() * 18;
+         if(num2 == num)
          {
-            getNum(param1);
+            getNum(num);
          }
-         return _loc2_;
+         return num2;
       }
       
       public function updataAllItem() : void
       {
-         var _loc10_:int = 0;
-         var _loc5_:* = null;
-         var _loc8_:* = null;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
-         var _loc4_:* = null;
-         var _loc6_:* = null;
-         var _loc3_:* = null;
-         var _loc9_:int = Math.random() * 18;
-         var _loc7_:int = getNum(_loc9_);
-         _loc10_ = 0;
-         while(_loc10_ < _model.templateIDList.length)
+         var i:int = 0;
+         var p:* = null;
+         var iteminfo:* = null;
+         var s:* = null;
+         var tmpItemInfo:* = null;
+         var cell:* = null;
+         var bg:* = null;
+         var item:* = null;
+         var num1:int = Math.random() * 18;
+         var num2:int = getNum(num1);
+         for(i = 0; i < _model.templateIDList.length; )
          {
-            _loc5_ = "newChickenBox.itemPos" + _loc10_;
-            _loc8_ = _model.templateIDList[_loc10_];
-            _loc2_ = new Sprite();
-            _loc2_.graphics.beginFill(16777215,0);
-            _loc2_.graphics.drawRect(0,0,39,39);
-            _loc2_.graphics.endFill();
-            _loc1_ = _loc8_.IsSelected || _loc8_.IsSeeded?_loc8_.info:null;
-            _loc4_ = new NewChickenBoxCell(_loc2_,_loc1_);
-            if((_loc10_ == _loc9_ || _loc10_ == _loc7_) && _loc8_.IsSelected)
+            p = "newChickenBox.itemPos" + i;
+            iteminfo = _model.templateIDList[i];
+            s = new Sprite();
+            s.graphics.beginFill(16777215,0);
+            s.graphics.drawRect(0,0,39,39);
+            s.graphics.endFill();
+            tmpItemInfo = iteminfo.IsSelected || iteminfo.IsSeeded?iteminfo.info:null;
+            cell = new NewChickenBoxCell(s,tmpItemInfo);
+            if((i == num1 || i == num2) && iteminfo.IsSelected)
             {
-               _loc6_ = ClassUtils.CreatInstance("asset.newChickenBox.chickenMove") as MovieClip;
+               bg = ClassUtils.CreatInstance("asset.newChickenBox.chickenMove") as MovieClip;
             }
-            else if(_loc8_.IsSelected)
+            else if(iteminfo.IsSelected)
             {
-               _loc6_ = ClassUtils.CreatInstance("asset.newChickenBox.chickenStand") as MovieClip;
+               bg = ClassUtils.CreatInstance("asset.newChickenBox.chickenStand") as MovieClip;
             }
-            else if(_loc8_.IsSeeded)
+            else if(iteminfo.IsSeeded)
             {
-               _loc6_ = ClassUtils.CreatInstance("asset.newChickenBox.chickenBack") as MovieClip;
-               _loc4_.visible = true;
-               _loc4_.alpha = 0.5;
+               bg = ClassUtils.CreatInstance("asset.newChickenBox.chickenBack") as MovieClip;
+               cell.visible = true;
+               cell.alpha = 0.5;
             }
             else
             {
-               _loc6_ = ClassUtils.CreatInstance("asset.newChickenBox.chickenBack") as MovieClip;
-               _loc4_.visible = false;
+               bg = ClassUtils.CreatInstance("asset.newChickenBox.chickenBack") as MovieClip;
+               cell.visible = false;
             }
-            _loc3_ = new NewChickenBoxItem(_loc4_,_loc6_);
-            _loc3_.info = _loc8_;
-            _loc3_.updateCount();
-            _loc3_.countTextShowIf();
-            _loc3_.addEventListener("click",tackoverCard);
-            _loc3_.position = _loc10_;
-            PositionUtils.setPos(_loc3_,_loc5_);
+            item = new NewChickenBoxItem(cell,bg);
+            item.info = iteminfo;
+            item.updateCount();
+            item.countTextShowIf();
+            item.addEventListener("click",tackoverCard);
+            item.position = i;
+            PositionUtils.setPos(item,p);
             if(_model.itemList.length == 18)
             {
-               _model.itemList[_loc10_].dispose();
-               _model.itemList[_loc10_] = null;
-               _model.itemList[_loc10_] = _loc3_;
+               _model.itemList[i].dispose();
+               _model.itemList[i] = null;
+               _model.itemList[i] = item;
             }
             else
             {
-               _model.itemList.push(_loc3_);
+               _model.itemList.push(item);
             }
-            addChild(_loc3_);
-            _loc10_++;
+            addChild(item);
+            i++;
          }
       }
       
       public function dispose() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          if(frame)
          {
             frame.removeEventListener("response",__onResponse);
             frame.dispose();
          }
-         _loc2_ = 0;
-         while(_loc2_ < _model.templateIDList.length)
+         i = 0;
+         while(i < _model.templateIDList.length)
          {
-            _loc1_ = _model.itemList[_loc2_] as NewChickenBoxItem;
-            _loc1_.dispose();
-            _loc1_ = null;
-            _loc2_++;
+            item = _model.itemList[i] as NewChickenBoxItem;
+            item.dispose();
+            item = null;
+            i++;
          }
          if(this.parent)
          {

@@ -13,9 +13,9 @@ package ddt.manager
          super();
       }
       
-      public static function GetRight(param1:int, param2:int) : Boolean
+      public static function GetRight(right:int, consortiaDutyType:int) : Boolean
       {
-         return (param1 & int(param2)) != 0;
+         return (right & int(consortiaDutyType)) != 0;
       }
       
       public static function get Instance() : ConsortiaDutyManager

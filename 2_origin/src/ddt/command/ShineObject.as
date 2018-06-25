@@ -14,10 +14,10 @@ package ddt.command
       
       private var _addToBottom:Boolean;
       
-      public function ShineObject(param1:MovieClip, param2:Boolean = true)
+      public function ShineObject(shiner:MovieClip, addToBottom:Boolean = true)
       {
-         _shiner = param1;
-         _addToBottom = param2;
+         _shiner = shiner;
+         _addToBottom = addToBottom;
          super();
          init();
          initEvents();
@@ -39,7 +39,7 @@ package ddt.command
          removeEventListener("addedToStage",__addToStage);
       }
       
-      private function __addToStage(param1:Event) : void
+      private function __addToStage(evt:Event) : void
       {
          if(parent)
          {
@@ -54,11 +54,11 @@ package ddt.command
          }
       }
       
-      public function shine(param1:Boolean = false) : void
+      public function shine(playSound:Boolean = false) : void
       {
          if(_shiner)
          {
-            if(!SoundManager.instance.isPlaying("044") && param1)
+            if(!SoundManager.instance.isPlaying("044") && playSound)
             {
                SoundManager.instance.play("044",false,true,100);
             }

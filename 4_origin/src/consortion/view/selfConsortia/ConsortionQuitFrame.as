@@ -85,25 +85,25 @@ package consortion.view.selfConsortia
          _input.removeEventListener("keyDown",__keyDownHandler);
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(event.responseCode == 0 || event.responseCode == 1)
          {
             dispose();
          }
-         if(param1.responseCode == 2)
+         if(event.responseCode == 2)
          {
             quit();
          }
       }
       
-      private function __addToStageHandler(param1:Event) : void
+      private function __addToStageHandler(event:Event) : void
       {
          _input.setFocus();
       }
       
-      private function __clickHandler(param1:MouseEvent) : void
+      private function __clickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          quit();
@@ -123,13 +123,13 @@ package consortion.view.selfConsortia
          }
       }
       
-      private function __cancelHandler(param1:MouseEvent) : void
+      private function __cancelHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          dispose();
       }
       
-      private function __inputChangeHandler(param1:Event) : void
+      private function __inputChangeHandler(event:Event) : void
       {
          if(_input.text.toLowerCase() == "quit")
          {
@@ -141,14 +141,14 @@ package consortion.view.selfConsortia
          }
       }
       
-      private function __keyDownHandler(param1:KeyboardEvent) : void
+      private function __keyDownHandler(evt:KeyboardEvent) : void
       {
-         if(param1.keyCode == 13)
+         if(evt.keyCode == 13)
          {
             SoundManager.instance.play("008");
             quit();
          }
-         else if(param1.keyCode == 27)
+         else if(evt.keyCode == 27)
          {
             SoundManager.instance.play("008");
             dispose();

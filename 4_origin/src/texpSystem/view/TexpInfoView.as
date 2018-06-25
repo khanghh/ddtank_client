@@ -148,18 +148,18 @@ package texpSystem.view
       {
       }
       
-      private function getX(param1:FilterFrameText, param2:Bitmap) : Number
+      private function getX(txt:FilterFrameText, bg:Bitmap) : Number
       {
-         return param2.x + (param2.width - param1.width) / 2;
+         return bg.x + (bg.width - txt.width) / 2;
       }
       
-      public function set info(param1:PlayerInfo) : void
+      public function set info(value:PlayerInfo) : void
       {
-         if(!param1)
+         if(!value)
          {
             return;
          }
-         _info = param1;
+         _info = value;
          _txtAttEff.text = TexpManager.Instance.getInfo(1,_info.attTexpExp).currEffect.toString();
          _txtAttEff.x = getX(_txtAttEff,_txtBg1);
          _txtDefEff.text = TexpManager.Instance.getInfo(2,_info.defTexpExp).currEffect.toString();

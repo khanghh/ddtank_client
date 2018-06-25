@@ -29,22 +29,22 @@ package room.model
       
       public var bombs:Array;
       
-      public function WeaponInfo(param1:ItemTemplateInfo)
+      public function WeaponInfo(info:ItemTemplateInfo)
       {
          super();
-         _info = param1;
-         armMinAngle = Number(param1.Property5);
-         armMaxAngle = Number(param1.Property6);
-         commonBall = Number(param1.Property1);
-         skillBall = Number(param1.Property2);
-         actionType = Number(param1.Property3);
-         skill = int(param1.Property4);
-         bombs = WeaponBallManager.getWeaponBallInfo(param1.TemplateID);
+         _info = info;
+         armMinAngle = Number(info.Property5);
+         armMaxAngle = Number(info.Property6);
+         commonBall = Number(info.Property1);
+         skillBall = Number(info.Property2);
+         actionType = Number(info.Property3);
+         skill = int(info.Property4);
+         bombs = WeaponBallManager.getWeaponBallInfo(info.TemplateID);
          if(bombs && bombs[0])
          {
             commonBall = bombs[0];
          }
-         refineryLevel = int(param1.RefineryLevel);
+         refineryLevel = int(info.RefineryLevel);
       }
       
       public function get TemplateID() : int

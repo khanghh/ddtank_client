@@ -61,9 +61,9 @@ package baglocked
          super();
       }
       
-      public function __onTextEnter(param1:KeyboardEvent) : void
+      public function __onTextEnter(event:KeyboardEvent) : void
       {
-         if(param1.keyCode == 13)
+         if(event.keyCode == 13)
          {
             if(_nextBtn2.enable)
             {
@@ -72,9 +72,9 @@ package baglocked
          }
       }
       
-      public function set bagLockedController(param1:BagLockedController) : void
+      public function set bagLockedController(value:BagLockedController) : void
       {
-         _bagLockedController = param1;
+         _bagLockedController = value;
       }
       
       override public function dispose() : void
@@ -217,7 +217,7 @@ package baglocked
          addEvent();
       }
       
-      private function __backBtn1Click(param1:MouseEvent) : void
+      private function __backBtn1Click(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _bagLockedController.bagLockedInfo.questionOne = _bag_Combox1.textField.text;
@@ -228,9 +228,9 @@ package baglocked
          _bagLockedController.closeSetPassFrame2();
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -240,45 +240,45 @@ package baglocked
          }
       }
       
-      private function __listItemClick(param1:Event) : void
+      private function __listItemClick(event:Event) : void
       {
-         var _loc3_:Boolean = false;
-         var _loc4_:Boolean = false;
+         var selectCustomBool:Boolean = false;
+         var selectFlag:Boolean = false;
          SoundManager.instance.play("008");
-         var _loc2_:ComboBox = param1.currentTarget as ComboBox;
-         if(_loc2_.currentSelectedIndex == _loc2_.listPanel.vectorListModel.elements.length - 1)
+         var combox:ComboBox = event.currentTarget as ComboBox;
+         if(combox.currentSelectedIndex == combox.listPanel.vectorListModel.elements.length - 1)
          {
-            stage.focus = _loc2_.textField;
-            _loc2_.textField.type = "input";
-            _loc2_.textField.autoSize = "none";
-            _loc2_.textField.maxChars = 14;
-            _loc2_.textField.width = 200;
-            _loc2_.textField.text = "";
-            _loc2_.textField.selectable = true;
-            _loc2_.textField.wordWrap = false;
-            _loc2_.textField.multiline = false;
-            _loc3_ = true;
+            stage.focus = combox.textField;
+            combox.textField.type = "input";
+            combox.textField.autoSize = "none";
+            combox.textField.maxChars = 14;
+            combox.textField.width = 200;
+            combox.textField.text = "";
+            combox.textField.selectable = true;
+            combox.textField.wordWrap = false;
+            combox.textField.multiline = false;
+            selectCustomBool = true;
          }
          else
          {
-            _loc2_.textField.type = "dynamic";
-            _loc2_.textField.selectable = false;
-            _loc2_.textField.mouseEnabled = false;
+            combox.textField.type = "dynamic";
+            combox.textField.selectable = false;
+            combox.textField.mouseEnabled = false;
          }
-         _loc4_ = true;
-         if(_loc2_ == _bag_Combox1)
+         selectFlag = true;
+         if(combox == _bag_Combox1)
          {
-            _bagLockedController.bagLockedInfo.isSelectCustomQuestion1 = _loc3_;
-            _bagLockedController.bagLockedInfo.isSelectQuestion1 = _loc4_;
+            _bagLockedController.bagLockedInfo.isSelectCustomQuestion1 = selectCustomBool;
+            _bagLockedController.bagLockedInfo.isSelectQuestion1 = selectFlag;
          }
          else
          {
-            _bagLockedController.bagLockedInfo.isSelectCustomQuestion2 = _loc3_;
-            _bagLockedController.bagLockedInfo.isSelectQuestion2 = _loc4_;
+            _bagLockedController.bagLockedInfo.isSelectCustomQuestion2 = selectCustomBool;
+            _bagLockedController.bagLockedInfo.isSelectQuestion2 = selectFlag;
          }
       }
       
-      private function __nextBtn2Click(param1:MouseEvent) : void
+      private function __nextBtn2Click(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(!_bagLockedController.bagLockedInfo.isSelectQuestion1)
@@ -314,11 +314,11 @@ package baglocked
          _bagLockedController.closeSetPassFrame2();
       }
       
-      private function __textChange(param1:Event) : void
+      private function __textChange(event:Event) : void
       {
-         var _loc3_:String = _textinput2_1.text;
-         var _loc2_:String = _textinput2_2.text;
-         if(StringUtils.trim(_loc3_) != "" && StringUtils.trim(_loc2_) != "")
+         var str1:String = _textinput2_1.text;
+         var str2:String = _textinput2_2.text;
+         if(StringUtils.trim(str1) != "" && StringUtils.trim(str2) != "")
          {
             _nextBtn2.enable = true;
          }
@@ -343,7 +343,7 @@ package baglocked
          _bag_Combox2.addEventListener("click",__ComboxClick);
       }
       
-      private function __ComboxClick(param1:MouseEvent) : void
+      private function __ComboxClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }

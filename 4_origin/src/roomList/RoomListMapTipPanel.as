@@ -32,10 +32,10 @@ package roomList
       
       private var _value:int;
       
-      public function RoomListMapTipPanel(param1:int, param2:int)
+      public function RoomListMapTipPanel(cellWidth:int, cellheight:int)
       {
-         _cellWidth = param1;
-         _cellheight = param2;
+         _cellWidth = cellWidth;
+         _cellheight = cellheight;
          super();
          init();
       }
@@ -62,34 +62,33 @@ package roomList
          _list.setView(_listContent);
       }
       
-      public function addItem(param1:int) : void
+      public function addItem(id:int) : void
       {
-         var _loc2_:MapItemView = new MapItemView(param1,_cellWidth,_cellheight);
-         _loc2_.addEventListener("click",__itemClick);
-         _listContent.addChild(_loc2_);
-         _itemArray.push(_loc2_);
-         var _loc3_:Point = ComponentFactory.Instance.creatCustomObject("asset.ddtroomList.RoomListMapTipPanel.BGSize");
-         _bg.width = _loc3_.x;
-         _bg.height = _loc3_.y;
+         var item:MapItemView = new MapItemView(id,_cellWidth,_cellheight);
+         item.addEventListener("click",__itemClick);
+         _listContent.addChild(item);
+         _itemArray.push(item);
+         var size:Point = ComponentFactory.Instance.creatCustomObject("asset.ddtroomList.RoomListMapTipPanel.BGSize");
+         _bg.width = size.x;
+         _bg.height = size.y;
          _list.invalidateViewport();
       }
       
-      private function __itemClick(param1:MouseEvent) : void
+      private function __itemClick(event:MouseEvent) : void
       {
-         _value = (param1.target as MapItemView).id;
+         _value = (event.target as MapItemView).id;
          dispatchEvent(new Event("fbChange"));
          this.visible = false;
       }
       
       private function cleanItem() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _itemArray.length)
+         var i:int = 0;
+         for(i = 0; i < _itemArray.length; )
          {
-            (_itemArray[_loc1_] as MapItemView).removeEventListener("click",__itemClick);
-            (_itemArray[_loc1_] as MapItemView).dispose();
-            _loc1_++;
+            (_itemArray[i] as MapItemView).removeEventListener("click",__itemClick);
+            (_itemArray[i] as MapItemView).dispose();
+            i++;
          }
          _itemArray = [];
       }

@@ -47,10 +47,10 @@ package auctionHouse.model
       
       private var _buyCurrent:int = 1;
       
-      public function AuctionHouseModel(param1:IEventDispatcher = null)
+      public function AuctionHouseModel(target:IEventDispatcher = null)
       {
          _categorys = new Vector.<CateCoryInfo>();
-         super(param1);
+         super(target);
          _state = "browse";
          _myAuctionData = new DictionaryData();
          _browseAuctionData = new DictionaryData();
@@ -62,9 +62,9 @@ package auctionHouse.model
          return _state;
       }
       
-      public function set state(param1:String) : void
+      public function set state(value:String) : void
       {
-         _state = param1;
+         _state = value;
          dispatchEvent(new AuctionHouseEvent("changeState"));
       }
       
@@ -73,24 +73,24 @@ package auctionHouse.model
          return _categorys.slice(0);
       }
       
-      public function set category(param1:Vector.<CateCoryInfo>) : void
+      public function set category(value:Vector.<CateCoryInfo>) : void
       {
-         _categorys = param1;
-         if(param1.length != 0)
+         _categorys = value;
+         if(value.length != 0)
          {
             dispatchEvent(new AuctionHouseEvent("getGoodCateGory"));
          }
       }
       
-      public function getCatecoryById(param1:int) : CateCoryInfo
+      public function getCatecoryById(id:int) : CateCoryInfo
       {
          var _loc4_:int = 0;
          var _loc3_:* = _categorys;
-         for each(var _loc2_ in _categorys)
+         for each(var info in _categorys)
          {
-            if(_loc2_.ID == param1)
+            if(info.ID == id)
             {
-               return _loc2_;
+               return info;
             }
          }
          return null;
@@ -101,19 +101,19 @@ package auctionHouse.model
          return _myAuctionData;
       }
       
-      public function addMyAuction(param1:AuctionGoodsInfo) : void
+      public function addMyAuction(info:AuctionGoodsInfo) : void
       {
          if(_state == "sell")
          {
-            _myAuctionData.add(param1.AuctionID,param1);
+            _myAuctionData.add(info.AuctionID,info);
          }
          else if(_state == "browse")
          {
-            _browseAuctionData.add(param1.AuctionID,param1);
+            _browseAuctionData.add(info.AuctionID,info);
          }
          else if(_state == "buy")
          {
-            _buyAuctionData.add(param1.AuctionID,param1);
+            _buyAuctionData.add(info.AuctionID,info);
          }
       }
       
@@ -122,25 +122,25 @@ package auctionHouse.model
          _myAuctionData.clear();
       }
       
-      public function removeMyAuction(param1:AuctionGoodsInfo) : void
+      public function removeMyAuction(info:AuctionGoodsInfo) : void
       {
          if(_state == "sell")
          {
-            _myAuctionData.remove(param1.AuctionID);
+            _myAuctionData.remove(info.AuctionID);
          }
          else if(_state == "browse")
          {
-            _browseAuctionData.remove(param1.AuctionID);
+            _browseAuctionData.remove(info.AuctionID);
          }
          else if(_state == "buy")
          {
-            _buyAuctionData.remove(param1.AuctionID);
+            _buyAuctionData.remove(info.AuctionID);
          }
       }
       
-      public function set sellTotal(param1:int) : void
+      public function set sellTotal(value:int) : void
       {
-         _sellTotal = param1;
+         _sellTotal = value;
          dispatchEvent(new AuctionHouseEvent("updatePage"));
       }
       
@@ -154,9 +154,9 @@ package auctionHouse.model
          return Math.ceil(_sellTotal / SINGLE_PAGE_NUM);
       }
       
-      public function set sellCurrent(param1:int) : void
+      public function set sellCurrent(value:int) : void
       {
-         _sellCurrent = param1;
+         _sellCurrent = value;
       }
       
       public function get sellCurrent() : int
@@ -169,9 +169,9 @@ package auctionHouse.model
          return _browseAuctionData;
       }
       
-      public function addBrowseAuctionData(param1:AuctionGoodsInfo) : void
+      public function addBrowseAuctionData(info:AuctionGoodsInfo) : void
       {
-         _browseAuctionData.add(param1.AuctionID,param1);
+         _browseAuctionData.add(info.AuctionID,info);
       }
       
       public function clearBrowseAuctionData() : void
@@ -179,14 +179,14 @@ package auctionHouse.model
          _browseAuctionData.clear();
       }
       
-      public function removeBrowseAuctionData(param1:AuctionGoodsInfo) : void
+      public function removeBrowseAuctionData(info:AuctionGoodsInfo) : void
       {
-         _browseAuctionData.remove(param1.AuctionID);
+         _browseAuctionData.remove(info.AuctionID);
       }
       
-      public function set browseTotal(param1:int) : void
+      public function set browseTotal(value:int) : void
       {
-         _browseTotal = param1;
+         _browseTotal = value;
          dispatchEvent(new AuctionHouseEvent("updatePage"));
       }
       
@@ -200,9 +200,9 @@ package auctionHouse.model
          return Math.ceil(_browseTotal / SINGLE_PAGE_NUM);
       }
       
-      public function set browseCurrent(param1:int) : void
+      public function set browseCurrent(value:int) : void
       {
-         _browseCurrent = param1;
+         _browseCurrent = value;
       }
       
       public function get browseCurrent() : int
@@ -215,9 +215,9 @@ package auctionHouse.model
          return _currentBrowseGoodInfo;
       }
       
-      public function set currentBrowseGoodInfo(param1:CateCoryInfo) : void
+      public function set currentBrowseGoodInfo(value:CateCoryInfo) : void
       {
-         _currentBrowseGoodInfo = param1;
+         _currentBrowseGoodInfo = value;
          _browseCurrent = 1;
          dispatchEvent(new AuctionHouseEvent("browseTypeChange"));
       }
@@ -227,14 +227,14 @@ package auctionHouse.model
          return _buyAuctionData;
       }
       
-      public function addBuyAuctionData(param1:AuctionGoodsInfo) : void
+      public function addBuyAuctionData(info:AuctionGoodsInfo) : void
       {
-         _buyAuctionData.add(param1.AuctionID,param1);
+         _buyAuctionData.add(info.AuctionID,info);
       }
       
-      public function removeBuyAuctionData(param1:AuctionGoodsInfo) : void
+      public function removeBuyAuctionData(info:AuctionGoodsInfo) : void
       {
-         _buyAuctionData.remove(param1);
+         _buyAuctionData.remove(info);
       }
       
       public function clearBuyAuctionData() : void
@@ -242,9 +242,9 @@ package auctionHouse.model
          _buyAuctionData.clear();
       }
       
-      public function set buyTotal(param1:int) : void
+      public function set buyTotal(value:int) : void
       {
-         this._buyTotal = param1;
+         this._buyTotal = value;
          dispatchEvent(new AuctionHouseEvent("updatePage"));
       }
       
@@ -258,9 +258,9 @@ package auctionHouse.model
          return Math.ceil(_buyTotal / 50);
       }
       
-      public function set buyCurrent(param1:int) : void
+      public function set buyCurrent(value:int) : void
       {
-         _buyCurrent = param1;
+         _buyCurrent = value;
       }
       
       public function get buyCurrent() : int

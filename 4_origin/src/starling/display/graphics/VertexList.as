@@ -23,78 +23,78 @@ package starling.display.graphics
          super();
       }
       
-      public static function insertAfter(param1:VertexList, param2:VertexList) : VertexList
+      public static function insertAfter(nodeA:VertexList, nodeB:VertexList) : VertexList
       {
-         var _loc3_:VertexList = param1.next;
-         param1.next = param2;
-         param2.next = _loc3_;
-         param2.prev = param1;
-         param2.head = param1.head;
-         return param2;
+         var temp:VertexList = nodeA.next;
+         nodeA.next = nodeB;
+         nodeB.next = temp;
+         nodeB.prev = nodeA;
+         nodeB.head = nodeA.head;
+         return nodeB;
       }
       
-      public static function clone(param1:VertexList) : VertexList
+      public static function clone(vertexList:VertexList) : VertexList
       {
-         var _loc5_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:VertexList = param1.head;
+         var newHead:* = null;
+         var currentClonedNode:* = null;
+         var newClonedNode:* = null;
+         var currentNode:VertexList = vertexList.head;
          do
          {
-            if(_loc5_ == null)
+            if(newHead == null)
             {
-               _loc5_ = getNode();
-               _loc2_ = getNode();
+               newHead = getNode();
+               newClonedNode = getNode();
             }
             else
             {
-               _loc2_ = getNode();
+               newClonedNode = getNode();
             }
-            _loc2_.head = _loc5_;
-            _loc2_.index = _loc4_.index;
-            _loc2_.vertex = _loc4_.vertex;
-            _loc2_.prev = _loc3_;
-            if(_loc3_)
+            newClonedNode.head = newHead;
+            newClonedNode.index = currentNode.index;
+            newClonedNode.vertex = currentNode.vertex;
+            newClonedNode.prev = currentClonedNode;
+            if(currentClonedNode)
             {
-               _loc3_.next = _loc2_;
+               currentClonedNode.next = newClonedNode;
             }
-            _loc3_ = _loc2_;
-            _loc4_ = _loc4_.next;
+            currentClonedNode = newClonedNode;
+            currentNode = currentNode.next;
          }
-         while(_loc4_ != _loc4_.head);
+         while(currentNode != currentNode.head);
          
-         _loc3_.next = _loc5_;
-         _loc5_.prev = _loc3_;
-         return _loc5_;
+         currentClonedNode.next = newHead;
+         newHead.prev = currentClonedNode;
+         return newHead;
       }
       
-      public static function reverse(param1:VertexList) : void
+      public static function reverse(vertexList:VertexList) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = param1.head;
+         var temp:* = null;
+         var node:* = vertexList.head;
          do
          {
-            _loc3_ = _loc2_.next;
-            _loc2_.next = _loc2_.prev;
-            _loc2_.prev = _loc3_;
-            _loc2_ = _loc3_;
+            temp = node.next;
+            node.next = node.prev;
+            node.prev = temp;
+            node = temp;
          }
-         while(_loc2_ != param1.head);
+         while(node != vertexList.head);
          
       }
       
-      public static function dispose(param1:VertexList) : void
+      public static function dispose(node:VertexList) : void
       {
-         var _loc2_:* = null;
-         while(param1 && param1.head)
+         var temp:* = null;
+         while(node && node.head)
          {
-            releaseNode(param1);
-            _loc2_ = param1.next;
-            param1.next = null;
-            param1.prev = null;
-            param1.head = null;
-            param1.vertex = null;
-            param1 = param1.next;
+            releaseNode(node);
+            temp = node.next;
+            node.next = null;
+            node.prev = null;
+            node.head = null;
+            node.vertex = null;
+            node = node.next;
          }
       }
       
@@ -108,17 +108,17 @@ package starling.display.graphics
          return new VertexList();
       }
       
-      public static function releaseNode(param1:VertexList) : void
+      public static function releaseNode(node:VertexList) : void
       {
          var _loc2_:* = null;
-         param1.head = _loc2_;
+         node.head = _loc2_;
          _loc2_ = _loc2_;
-         param1.next = _loc2_;
-         param1.prev = _loc2_;
-         param1.vertex = null;
-         param1.index = -1;
+         node.next = _loc2_;
+         node.prev = _loc2_;
+         node.vertex = null;
+         node.index = -1;
          nodePoolLength = Number(nodePoolLength) + 1;
-         nodePool[Number(nodePoolLength)] = param1;
+         nodePool[Number(nodePoolLength)] = node;
       }
    }
 }

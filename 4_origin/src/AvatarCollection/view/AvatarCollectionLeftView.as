@@ -34,17 +34,17 @@ package AvatarCollection.view
       
       private var _weaponView:AvatarCollectionUnitWeaponView;
       
-      public function AvatarCollectionLeftView(param1:AvatarCollectionRightView)
+      public function AvatarCollectionLeftView(view:AvatarCollectionRightView)
       {
-         _rightView = param1;
+         _rightView = view;
          super();
          init();
       }
       
       private function init() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:int = 0;
+         var unitView:* = null;
+         var i:int = 0;
          _decorateSelect = ComponentFactory.Instance.creatComponentByStylename("avatarColl.menuSelectBtn");
          _decorateSelect.text = LanguageMgr.GetTranslation("avatarCollection.select.decorate");
          PositionUtils.setPos(_decorateSelect,"avatarColl.decorateSelectPos");
@@ -58,15 +58,14 @@ package AvatarCollection.view
          _vbox.spacing = 2;
          _unitList = new Vector.<AvatarCollectionUnitView>();
          _costumeList = new Vector.<AvatarCollectionUnitView>();
-         _loc2_ = 1;
-         while(_loc2_ <= 2)
+         for(i = 1; i <= 2; )
          {
-            _loc1_ = new AvatarCollectionUnitView(_loc2_,_rightView);
-            _loc1_.addEventListener("avatarCollectionUnitView_selected_change",clickRefreshView,false,0,true);
-            _vbox.addChild(_loc1_);
-            _unitList.push(_loc1_);
-            _costumeList.push(_loc1_);
-            _loc2_++;
+            unitView = new AvatarCollectionUnitView(i,_rightView);
+            unitView.addEventListener("avatarCollectionUnitView_selected_change",clickRefreshView,false,0,true);
+            _vbox.addChild(unitView);
+            _unitList.push(unitView);
+            _costumeList.push(unitView);
+            i++;
          }
          addChild(_vbox);
          _weaponList = new Vector.<AvatarCollectionUnitView>();
@@ -82,7 +81,7 @@ package AvatarCollection.view
          _btnGroup.selectIndex = 0;
       }
       
-      private function __changeHandler(param1:Event) : void
+      private function __changeHandler(event:Event) : void
       {
          AvatarCollectionManager.instance.resetListCellData();
          AvatarCollectionManager.instance.pageType = _btnGroup.selectIndex;
@@ -102,51 +101,51 @@ package AvatarCollection.view
          }
       }
       
-      public function reset(param1:String) : void
+      public function reset(property:String) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = _unitList;
-         for each(var _loc2_ in _unitList)
+         for each(var tmp in _unitList)
          {
-            _loc2_[param1] = false;
+            tmp[property] = false;
          }
       }
       
-      public function canBuyChange(param1:Boolean) : void
+      public function canBuyChange(value:Boolean) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = _unitList;
-         for each(var _loc2_ in _unitList)
+         for each(var tmp in _unitList)
          {
-            _loc2_.isBuyFilter = param1;
+            tmp.isBuyFilter = value;
          }
       }
       
-      public function canActivityChange(param1:Boolean) : void
+      public function canActivityChange(value:Boolean) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = _unitList;
-         for each(var _loc2_ in _unitList)
+         for each(var tmp in _unitList)
          {
-            _loc2_.isFilter = param1;
+            tmp.isFilter = value;
          }
       }
       
-      private function clickRefreshView(param1:Event) : void
+      private function clickRefreshView(event:Event) : void
       {
-         var _loc2_:AvatarCollectionUnitView = param1.target as AvatarCollectionUnitView;
-         refreshView(_loc2_);
+         var tmpTargetUnit:AvatarCollectionUnitView = event.target as AvatarCollectionUnitView;
+         refreshView(tmpTargetUnit);
       }
       
-      private function refreshView(param1:AvatarCollectionUnitView) : void
+      private function refreshView(view:AvatarCollectionUnitView) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = _unitList;
-         for each(var _loc2_ in _unitList)
+         for each(var tmp in _unitList)
          {
-            if(_loc2_ != param1)
+            if(tmp != view)
             {
-               _loc2_.unextendHandler();
+               tmp.unextendHandler();
             }
          }
          _vbox.arrange();
@@ -165,9 +164,9 @@ package AvatarCollection.view
       {
          var _loc3_:int = 0;
          var _loc2_:* = _unitList;
-         for each(var _loc1_ in _unitList)
+         for each(var tmp in _unitList)
          {
-            _loc1_.removeEventListener("avatarCollectionUnitView_selected_change",clickRefreshView);
+            tmp.removeEventListener("avatarCollectionUnitView_selected_change",clickRefreshView);
          }
          _btnGroup.removeEventListener("change",__changeHandler);
          ObjectUtils.disposeObject(_btnGroup);

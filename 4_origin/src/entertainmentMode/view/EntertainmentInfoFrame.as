@@ -39,37 +39,36 @@ package entertainmentMode.view
       
       private function initView() : void
       {
-         var _loc6_:int = 0;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:* = null;
+         var i:int = 0;
+         var prop:* = null;
+         var item:* = null;
+         var propBox:* = null;
          propList = ItemManager.Instance.getPropByTypeAndPro();
-         var _loc1_:ScaleBitmapImage = ComponentFactory.Instance.creatComponentByStylename("entertainment.frameBottom");
+         var _bottom:ScaleBitmapImage = ComponentFactory.Instance.creatComponentByStylename("entertainment.frameBottom");
          _list = ComponentFactory.Instance.creatCustomObject("entertainment.TrophyList",[5]);
          this.titleText = LanguageMgr.GetTranslation("entertainment.view.title");
          _items = new Vector.<PropItemView>();
          _list.beginChanges();
-         _loc6_ = 0;
-         while(_loc6_ < propList.length)
+         for(i = 0; i < propList.length; )
          {
-            _loc3_ = new PropInfo(propList[_loc6_]);
-            _loc2_ = new PropItemView(_loc3_,true,false);
-            _loc2_.propPos = 5;
-            _loc4_ = ComponentFactory.Instance.creat("asset.Entertainment.mode.propBox");
-            _loc4_.width = 48;
-            _loc4_.height = 48;
-            _loc2_.width = 50;
-            _loc2_.height = 50;
-            _loc2_.addChildAt(_loc4_,0);
-            _items.push(_loc2_);
-            _list.addChild(_loc2_);
-            _loc6_++;
+            prop = new PropInfo(propList[i]);
+            item = new PropItemView(prop,true,false);
+            item.propPos = 5;
+            propBox = ComponentFactory.Instance.creat("asset.Entertainment.mode.propBox");
+            propBox.width = 48;
+            propBox.height = 48;
+            item.width = 50;
+            item.height = 50;
+            item.addChildAt(propBox,0);
+            _items.push(item);
+            _list.addChild(item);
+            i++;
          }
          _list.commitChanges();
-         var _loc5_:ScrollPanel = ComponentFactory.Instance.creatComponentByStylename("entertainment.view.scrollPanel");
-         _loc5_.setView(_list);
-         addToContent(_loc1_);
-         addToContent(_loc5_);
+         var _explanationPanel:ScrollPanel = ComponentFactory.Instance.creatComponentByStylename("entertainment.view.scrollPanel");
+         _explanationPanel.setView(_list);
+         addToContent(_bottom);
+         addToContent(_explanationPanel);
          escEnable = true;
       }
       
@@ -83,10 +82,10 @@ package entertainmentMode.view
          removeEventListener("response",_response);
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(e.responseCode == 0 || e.responseCode == 1)
          {
             hide();
          }
@@ -100,7 +99,7 @@ package entertainmentMode.view
          }
       }
       
-      private function _nextClick(param1:MouseEvent) : void
+      private function _nextClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _page = Number(_page) + 1;
@@ -110,7 +109,7 @@ package entertainmentMode.view
          }
       }
       
-      private function _prevClick(param1:MouseEvent) : void
+      private function _prevClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _page = Number(_page) - 1;
@@ -127,7 +126,7 @@ package entertainmentMode.view
       
       override public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          removeEvents();
          if(_list)
          {
@@ -136,11 +135,10 @@ package entertainmentMode.view
          _list = null;
          if(_items != null)
          {
-            _loc1_ = 0;
-            while(_loc1_ < _items.length)
+            for(i = 0; i < _items.length; )
             {
-               ObjectUtils.disposeObject(_items[_loc1_]);
-               _loc1_++;
+               ObjectUtils.disposeObject(_items[i]);
+               i++;
             }
             _items = null;
          }

@@ -11,36 +11,35 @@ package ddt.data.analyze
       
       public var list:Vector.<OpenMapInfo>;
       
-      public function WeekOpenMapAnalyze(param1:Function)
+      public function WeekOpenMapAnalyze(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc4_:* = null;
-         var _loc6_:int = 0;
-         var _loc3_:* = null;
-         var _loc5_:XML = new XML(param1);
-         var _loc2_:String = _loc5_.@value;
-         if(_loc2_ == "true")
+         var nodes:* = null;
+         var i:int = 0;
+         var openMapInfo:* = null;
+         var xml:XML = new XML(data);
+         var result:String = xml.@value;
+         if(result == "true")
          {
             list = new Vector.<OpenMapInfo>();
-            _loc4_ = _loc5_..Item;
-            _loc6_ = 0;
-            while(_loc6_ < _loc4_.length())
+            nodes = xml..Item;
+            for(i = 0; i < nodes.length(); )
             {
-               _loc3_ = new OpenMapInfo();
-               _loc3_.maps = _loc4_[_loc6_].@OpenMap.split(",");
-               _loc3_.serverID = _loc4_[_loc6_].@ServerID;
-               list.push(_loc3_);
-               _loc6_++;
+               openMapInfo = new OpenMapInfo();
+               openMapInfo.maps = nodes[i].@OpenMap.split(",");
+               openMapInfo.serverID = nodes[i].@ServerID;
+               list.push(openMapInfo);
+               i++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc5_.@message;
+            message = xml.@message;
             onAnalyzeError();
          }
       }

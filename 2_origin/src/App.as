@@ -6,8 +6,6 @@ package
    import com.pickgliss.loader.QueueLoader;
    import com.pickgliss.utils.StringUtils;
    import flash.display.Stage;
-   import flash.display.StageAlign;
-   import flash.display.StageScaleMode;
    import flash.events.Event;
    import flash.system.ApplicationDomain;
    import morn.core.managers.AssetManager;
@@ -46,24 +44,25 @@ package
          super();
       }
       
-      public static function init(param1:Stage, param2:ApplicationDomain = null) : void
+      public static function init($stage:Stage, $domain:ApplicationDomain = null) : void
       {
-         var _loc4_:* = null;
-         stage = param1;
+         stage = $stage;
          stage.frameRate = Config.GAME_FPS;
-         stage.scaleMode = StageScaleMode.NO_SCALE;
-         stage.align = StageAlign.TOP_LEFT;
+         stage.scaleMode = "noScale";
+         stage.align = "TL";
          stage.stageFocusRect = false;
          stage.tabChildren = false;
-         asset.setDomain(param2);
-         var _loc3_:Object = stage.loaderInfo.parameters;
-         if(_loc3_ != null)
+         asset.setDomain($domain);
+         var gameVars:Object = stage.loaderInfo.parameters;
+         if(gameVars != null)
          {
-            for(_loc4_ in _loc3_)
+            var _loc6_:int = 0;
+            var _loc5_:* = gameVars;
+            for(var s in gameVars)
             {
-               if(Config[_loc4_] != null)
+               if(Config[s] != null)
                {
-                  Config[_loc4_] = _loc3_[_loc4_];
+                  Config[s] = gameVars[s];
                }
             }
          }
@@ -72,28 +71,23 @@ package
          stage.doubleClickEnabled = true;
       }
       
-      public static function loadUI(param1:String, param2:Function = null) : void
+      public static function loadUI(url:String, complete:Function = null) : void
       {
          XML.ignoreWhitespace = true;
-         _loadUICall = param2;
-         var _loc3_:BaseLoader = LoadResourceManager.Instance.createLoader(param1,BaseLoader.BYTE_LOADER);
-         _loc3_.addEventListener(LoaderEvent.COMPLETE,__onLoadUIComplete);
-         _loc3_.addEventListener(LoaderEvent.LOAD_ERROR,__onLoadUIError);
-         LoadResourceManager.Instance.startLoad(_loc3_);
+         _loadUICall = complete;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(url,3);
+         loader.addEventListener("complete",__onLoadUIComplete);
+         loader.addEventListener("loadError",__onLoadUIError);
+         LoadResourceManager.Instance.startLoad(loader);
       }
       
-      public static function loadAssets(param1:Array, param2:Function) : void
+      public static function loadAssets(urls:Array, complete:Function) : void
       {
-         var queryLoader:QueueLoader = null;
-         var onLoadComplete:Function = null;
-         var url:String = null;
-         var base:BaseLoader = null;
-         var suffix:String = null;
-         var urls:Array = param1;
-         var complete:Function = param2;
-         onLoadComplete = function(param1:Event):void
+         urls = urls;
+         complete = complete;
+         onLoadComplete = function(e:Event):void
          {
-            queryLoader.removeEventListener(Event.COMPLETE,onLoadComplete);
+            queryLoader.removeEventListener("complete",onLoadComplete);
             queryLoader.dispose();
             if(complete != null)
             {
@@ -101,39 +95,38 @@ package
             }
          };
          XML.ignoreWhitespace = true;
-         queryLoader = new QueueLoader();
-         var i:int = 0;
-         while(i < urls.length)
+         var queryLoader:QueueLoader = new QueueLoader();
+         for(var i:int = 0; i < urls.length; )
          {
-            url = urls[i];
-            suffix = StringUtils.getSuffixStr(url);
+            var url:String = urls[i];
+            var suffix:String = StringUtils.getSuffixStr(url);
             if(suffix == "ui")
             {
-               base = LoadResourceManager.Instance.createLoader(url,BaseLoader.MORNUI_DATA_LOADER);
-               base.addEventListener(LoaderEvent.COMPLETE,__onLoadUIComplete);
-               base.addEventListener(LoaderEvent.LOAD_ERROR,__onLoadUIError);
+               var base:BaseLoader = LoadResourceManager.Instance.createLoader(url,8);
+               base.addEventListener("complete",__onLoadUIComplete);
+               base.addEventListener("loadError",__onLoadUIError);
             }
             else if(suffix == "swf")
             {
-               base = LoadResourceManager.Instance.createLoader(url,BaseLoader.MODULE_LOADER);
+               base = LoadResourceManager.Instance.createLoader(url,4);
             }
             else if(suffix == "xml")
             {
-               base = LoadResourceManager.Instance.createLoader(url,BaseLoader.TEXT_LOADER);
-               base.addEventListener(LoaderEvent.COMPLETE,__onLoadXMLComplete);
-               base.addEventListener(LoaderEvent.LOAD_ERROR,__onLoadXMLError);
+               base = LoadResourceManager.Instance.createLoader(url,2);
+               base.addEventListener("complete",__onLoadXMLComplete);
+               base.addEventListener("loadError",__onLoadXMLError);
             }
             queryLoader.addLoader(base);
-            i++;
+            i = Number(i) + 1;
          }
-         queryLoader.addEventListener(Event.COMPLETE,onLoadComplete);
+         queryLoader.addEventListener("complete",onLoadComplete);
          queryLoader.start();
       }
       
-      private static function __onLoadUIComplete(param1:LoaderEvent) : void
+      private static function __onLoadUIComplete(e:LoaderEvent) : void
       {
-         param1.loader.removeEventListener(LoaderEvent.COMPLETE,__onLoadUIComplete);
-         param1.loader.removeEventListener(LoaderEvent.LOAD_ERROR,__onLoadUIError);
+         e.loader.removeEventListener("complete",__onLoadUIComplete);
+         e.loader.removeEventListener("loadError",__onLoadUIError);
          if(_loadUICall != null)
          {
             _loadUICall();
@@ -141,31 +134,30 @@ package
          _loadUICall = null;
       }
       
-      private static function __onLoadUIError(param1:LoaderEvent) : void
+      private static function __onLoadUIError(e:LoaderEvent) : void
       {
-         param1.loader.removeEventListener(LoaderEvent.COMPLETE,__onLoadUIComplete);
-         param1.loader.removeEventListener(LoaderEvent.LOAD_ERROR,__onLoadUIError);
-         trace("------loader morn ui error:" + param1.loader.url);
+         e.loader.removeEventListener("complete",__onLoadUIComplete);
+         e.loader.removeEventListener("loadError",__onLoadUIError);
+         trace("------loader morn ui error:" + e.loader.url);
          _loadUICall = null;
       }
       
-      private static function __onLoadXMLComplete(param1:LoaderEvent) : void
+      private static function __onLoadXMLComplete(e:LoaderEvent) : void
       {
-         param1.loader.removeEventListener(LoaderEvent.COMPLETE,__onLoadXMLComplete);
-         param1.loader.removeEventListener(LoaderEvent.LOAD_ERROR,__onLoadXMLError);
-         Builder.callBack(XML(param1.loader.content));
+         e.loader.removeEventListener("complete",__onLoadXMLComplete);
+         e.loader.removeEventListener("loadError",__onLoadXMLError);
+         Builder.callBack(XML(e.loader.content));
       }
       
-      private static function __onLoadXMLError(param1:LoaderEvent) : void
+      private static function __onLoadXMLError(e:LoaderEvent) : void
       {
-         param1.loader.removeEventListener(LoaderEvent.COMPLETE,__onLoadXMLComplete);
-         param1.loader.removeEventListener(LoaderEvent.LOAD_ERROR,__onLoadXMLError);
-         trace("------loader morn xml error:" + param1.loader.url);
+         e.loader.removeEventListener("complete",__onLoadXMLComplete);
+         e.loader.removeEventListener("loadError",__onLoadXMLError);
       }
       
-      public static function getResPath(param1:String) : String
+      public static function getResPath(url:String) : String
       {
-         return !!/^http:\/\//g.test(param1)?param1:Config.resPath + param1;
+         return !!/^http:\/\//g.test(url)?url:Config.resPath + url;
       }
    }
 }

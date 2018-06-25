@@ -1,7 +1,6 @@
 package morn.core.components
 {
    import flash.display.Shape;
-   import flash.events.Event;
    import morn.core.handlers.Handler;
    
    [Event(name="change",type="flash.events.Event")]
@@ -33,204 +32,210 @@ package morn.core.components
       
       protected var _barMaskOffsetY:Number = 0;
       
-      public function ProgressBar(param1:String = null)
+      public function ProgressBar(skin:String = null)
       {
          super();
-         this.skin = param1;
+         this.skin = skin;
       }
       
       override protected function createChildren() : void
       {
-         addChild(this._bg = new Image());
-         addChild(this._bar = new Image());
-         addChild(this._mark = new Shape());
-         addChild(this._barLabel = new Label());
+         _bg = new Image();
+         addChild(new Image());
+         _bar = new Image();
+         addChild(new Image());
+         _mark = new Shape();
+         addChild(new Shape());
+         _barLabel = new Label();
+         addChild(new Label());
       }
       
       override protected function initialize() : void
       {
-         this._barLabel.width = 200;
-         this._barLabel.height = 18;
-         this._barLabel.align = "center";
-         this._barLabel.stroke = "0x004080";
-         this._barLabel.color = 16777215;
-         this._bar.mask = this._mark;
+         _barLabel.width = 200;
+         _barLabel.height = 18;
+         _barLabel.align = "center";
+         _barLabel.stroke = "0x004080";
+         _barLabel.color = 16777215;
+         _bar.mask = _mark;
       }
       
       public function get skin() : String
       {
-         return this._skin;
+         return _skin;
       }
       
-      public function set skin(param1:String) : void
+      public function set skin(value:String) : void
       {
-         if(this._skin != param1)
+         if(_skin != value)
          {
-            this._skin = param1;
-            this._bg.url = this._skin;
-            this._bar.url = this._skin + "$bar";
-            _contentWidth = this._bg.width;
-            _contentHeight = this._bg.height;
-            callLater(this.changeLabelPoint);
-            callLater(this.changeValue);
+            _skin = value;
+            _bg.url = _skin;
+            _bar.url = _skin + "$bar";
+            _contentWidth = _bg.width;
+            _contentHeight = _bg.height;
+            callLater(changeLabelPoint);
+            callLater(changeValue);
          }
       }
       
       protected function changeLabelPoint() : void
       {
-         this._barLabel.x = !!isNaN(this._barLabelX)?Number((width - this._barLabel.width) * 0.5):Number(this._barLabelX);
-         this._barLabel.y = !!isNaN(this._barLabelY)?Number((height - this._barLabel.height) * 0.5 - 2):Number(this._barLabelY);
+         _barLabel.x = !!isNaN(_barLabelX)?(width - _barLabel.width) * 0.5:Number(_barLabelX);
+         _barLabel.y = !!isNaN(_barLabelY)?(height - _barLabel.height) * 0.5 - 2:Number(_barLabelY);
       }
       
       public function get value() : Number
       {
-         return this._value;
+         return _value;
       }
       
-      public function set value(param1:Number) : void
+      public function set value(num:Number) : void
       {
-         if(this._value != param1)
+         if(_value != num)
          {
-            param1 = param1 > 1?1:param1 < 0?0:Number(param1);
-            this._value = param1;
-            callLater(this.changeValue);
-            sendEvent(Event.CHANGE);
-            if(this._changeHandler != null)
+            num = num > 1?1:Number(num < 0?0:Number(num));
+            _value = num;
+            callLater(changeValue);
+            sendEvent("change");
+            if(_changeHandler != null)
             {
-               this._changeHandler.executeWith([param1]);
+               _changeHandler.executeWith([num]);
             }
          }
       }
       
       protected function changeValue() : void
       {
-         this._mark.graphics.clear();
-         var _loc1_:Number = (Number(_width) || Number(this._bar.width)) * this.value;
-         var _loc2_:Number = _loc1_ - this._barMaskOffsetX * 2;
-         this._mark.graphics.beginFill(0);
-         this._mark.graphics.drawRect(this._barMaskOffsetX,this._barMaskOffsetY,_loc2_ < 0?Number(_loc1_):Number(_loc2_),height);
-         this._mark.graphics.endFill();
+         _mark.graphics.clear();
+         var w:Number = (_width || Number(_bar.width)) * value;
+         var offsetW:Number = w - _barMaskOffsetX * 2;
+         _mark.graphics.beginFill(0);
+         _mark.graphics.drawRect(_barMaskOffsetX,_barMaskOffsetY,offsetW < 0?w:Number(offsetW),height);
+         _mark.graphics.endFill();
       }
       
       public function get label() : String
       {
-         return this._label;
+         return _label;
       }
       
-      public function set label(param1:String) : void
+      public function set label(value:String) : void
       {
-         if(this._label != param1)
+         if(_label != value)
          {
-            this._label = param1;
-            this._barLabel.text = this._label;
+            _label = value;
+            _barLabel.text = _label;
          }
       }
       
       public function get bar() : Image
       {
-         return this._bar;
+         return _bar;
       }
       
       public function get barLabel() : Label
       {
-         return this._barLabel;
+         return _barLabel;
       }
       
       public function get sizeGrid() : String
       {
-         return this._bg.sizeGrid;
+         return _bg.sizeGrid;
       }
       
-      public function set sizeGrid(param1:String) : void
+      public function set sizeGrid(value:String) : void
       {
-         this._bg.sizeGrid = this._bar.sizeGrid = param1;
+         var _loc2_:* = value;
+         _bar.sizeGrid = _loc2_;
+         _bg.sizeGrid = _loc2_;
       }
       
-      override public function set width(param1:Number) : void
+      override public function set width(value:Number) : void
       {
-         super.width = param1;
-         this._bg.width = _width;
-         this._bar.width = _width;
-         this._barLabel.width = _width;
-         callLater(this.changeLabelPoint);
-         callLater(this.changeValue);
+         .super.width = value;
+         _bg.width = _width;
+         _bar.width = _width;
+         _barLabel.width = _width;
+         callLater(changeLabelPoint);
+         callLater(changeValue);
       }
       
-      override public function set height(param1:Number) : void
+      override public function set height(value:Number) : void
       {
-         super.height = param1;
-         this._bg.height = _height;
-         this._bar.height = _height;
-         callLater(this.changeLabelPoint);
+         .super.height = value;
+         _bg.height = _height;
+         _bar.height = _height;
+         callLater(changeLabelPoint);
       }
       
-      override public function set dataSource(param1:Object) : void
+      override public function set dataSource(value:Object) : void
       {
-         _dataSource = param1;
-         if(param1 is Number || param1 is String)
+         _dataSource = value;
+         if(value is Number || value is String)
          {
-            this.value = Number(param1);
+            this.value = Number(value);
          }
          else
          {
-            super.dataSource = param1;
+            .super.dataSource = value;
          }
       }
       
-      public function set barLabelX(param1:Number) : void
+      public function set barLabelX(value:Number) : void
       {
-         this._barLabelX = param1;
-         callLater(this.changeLabelPoint);
+         _barLabelX = value;
+         callLater(changeLabelPoint);
       }
       
       public function get barLabelX() : Number
       {
-         return this._barLabelX;
+         return _barLabelX;
       }
       
-      public function set barLabelY(param1:Number) : void
+      public function set barLabelY(value:Number) : void
       {
-         this._barLabelY = param1;
-         callLater(this.changeLabelPoint);
+         _barLabelY = value;
+         callLater(changeLabelPoint);
       }
       
       public function get barLabelY() : Number
       {
-         return this._barLabelY;
+         return _barLabelY;
       }
       
-      public function set barMaskOffsetX(param1:Number) : void
+      public function set barMaskOffsetX(value:Number) : void
       {
-         this._barMaskOffsetX = param1;
-         callLater(this.changeValue);
+         _barMaskOffsetX = value;
+         callLater(changeValue);
       }
       
       public function get barMaskOffsetX() : Number
       {
-         return this._barMaskOffsetX;
+         return _barMaskOffsetX;
       }
       
-      public function set barMaskOffsetY(param1:Number) : void
+      public function set barMaskOffsetY(value:Number) : void
       {
-         this._barMaskOffsetY = param1;
-         callLater(this.changeValue);
+         _barMaskOffsetY = value;
+         callLater(changeValue);
       }
       
       public function get barMaskOffsetY() : Number
       {
-         return this._barMaskOffsetY;
+         return _barMaskOffsetY;
       }
       
       override public function dispose() : void
       {
          super.dispose();
-         this._bg && this._bg.dispose();
-         this._bar && this._bar.dispose();
-         this._barLabel && this._barLabel.dispose();
-         this._bg = null;
-         this._bar = null;
-         this._barLabel = null;
-         this._changeHandler = null;
+         _bg && _bg.dispose();
+         _bar && _bar.dispose();
+         _barLabel && _barLabel.dispose();
+         _bg = null;
+         _bar = null;
+         _barLabel = null;
+         _changeHandler = null;
       }
    }
 }

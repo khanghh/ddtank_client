@@ -57,15 +57,14 @@ package com.pickgliss.ui.image
       
       private function creatImages() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var bitmap:* = null;
          _bitmaps = new Vector.<Bitmap>();
-         _loc2_ = 0;
-         while(_loc2_ < _imageLinks.length)
+         for(i = 0; i < _imageLinks.length; )
          {
-            _loc1_ = ComponentFactory.Instance.creat(_imageLinks[_loc2_]);
-            _bitmaps.push(_loc1_);
-            _loc2_++;
+            bitmap = ComponentFactory.Instance.creat(_imageLinks[i]);
+            _bitmaps.push(bitmap);
+            i++;
          }
          if(_imageLinks.length == 1 && cutRect)
          {
@@ -77,22 +76,22 @@ package com.pickgliss.ui.image
       
       private function cutImages() : void
       {
-         var _loc4_:* = null;
-         var _loc3_:Bitmap = _bitmaps.shift();
-         var _loc6_:Array = cutRect.split(",");
-         var _loc5_:Rectangle = new Rectangle(0,0,int(_loc6_[0]),_loc3_.height);
-         var _loc2_:Rectangle = new Rectangle(_loc5_.width,0,int(_loc6_[1]),_loc3_.height);
-         var _loc1_:Rectangle = new Rectangle(_loc2_.x + _loc2_.width,0,_loc3_.width - _loc5_.width - _loc2_.width,_loc3_.height);
-         _loc4_ = new BitmapData(_loc5_.width,_loc5_.height);
-         _loc4_.copyPixels(_loc3_.bitmapData,_loc5_,new Point(0,0));
-         _bitmaps[0] = new Bitmap(_loc4_);
-         _loc4_ = new BitmapData(_loc2_.width,_loc2_.height);
-         _loc4_.copyPixels(_loc3_.bitmapData,_loc2_,new Point(0,0));
-         _bitmaps[1] = new Bitmap(_loc4_);
-         _loc4_ = new BitmapData(_loc1_.width,_loc1_.height);
-         _loc4_.copyPixels(_loc3_.bitmapData,_loc1_,new Point(0,0));
-         _bitmaps[2] = new Bitmap(_loc4_);
-         ObjectUtils.disposeObject(_loc3_);
+         var btmd:* = null;
+         var oldBtm:Bitmap = _bitmaps.shift();
+         var pos:Array = cutRect.split(",");
+         var leftRect:Rectangle = new Rectangle(0,0,int(pos[0]),oldBtm.height);
+         var contentRect:Rectangle = new Rectangle(leftRect.width,0,int(pos[1]),oldBtm.height);
+         var rightRect:Rectangle = new Rectangle(contentRect.x + contentRect.width,0,oldBtm.width - leftRect.width - contentRect.width,oldBtm.height);
+         btmd = new BitmapData(leftRect.width,leftRect.height);
+         btmd.copyPixels(oldBtm.bitmapData,leftRect,new Point(0,0));
+         _bitmaps[0] = new Bitmap(btmd);
+         btmd = new BitmapData(contentRect.width,contentRect.height);
+         btmd.copyPixels(oldBtm.bitmapData,contentRect,new Point(0,0));
+         _bitmaps[1] = new Bitmap(btmd);
+         btmd = new BitmapData(rightRect.width,rightRect.height);
+         btmd.copyPixels(oldBtm.bitmapData,rightRect,new Point(0,0));
+         _bitmaps[2] = new Bitmap(btmd);
+         ObjectUtils.disposeObject(oldBtm);
       }
       
       private function drawImage() : void
@@ -106,16 +105,16 @@ package com.pickgliss.ui.image
       
       private function removeImages() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(_bitmaps == null)
          {
             return;
          }
-         _loc1_ = 0;
-         while(_loc1_ < _bitmaps.length)
+         i = 0;
+         while(i < _bitmaps.length)
          {
-            ObjectUtils.disposeObject(_bitmaps[_loc1_]);
-            _loc1_++;
+            ObjectUtils.disposeObject(_bitmaps[i]);
+            i++;
          }
       }
    }

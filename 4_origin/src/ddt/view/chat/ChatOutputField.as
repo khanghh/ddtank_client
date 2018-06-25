@@ -10,6 +10,7 @@ package ddt.view.chat
    import com.pickgliss.ui.ComponentFactory;
    import consortiaDomain.ConsortiaDomainManager;
    import consortion.ConsortionModelManager;
+   import ddt.bagStore.BagStore;
    import ddt.data.goods.InventoryItemInfo;
    import ddt.data.goods.ItemTemplateInfo;
    import ddt.data.player.PlayerInfo;
@@ -27,6 +28,7 @@ package ddt.view.chat
    import ddt.manager.SocketManager;
    import ddt.manager.SoundManager;
    import ddt.manager.StateManager;
+   import ddt.utils.AssetModuleLoader;
    import ddt.utils.Helpers;
    import ddt.utils.PositionUtils;
    import ddt.view.tips.CardBoxTipPanel;
@@ -118,6 +120,8 @@ package ddt.view.chat
       
       private var _lastClickTime:Number;
       
+      private var _data:Object;
+      
       public function ChatOutputField()
       {
          _goodTipPos = new Sprite();
@@ -125,21 +129,21 @@ package ddt.view.chat
          style = "NORMAL_STYLE";
       }
       
-      public function set functionEnabled(param1:Boolean) : void
+      public function set functionEnabled(value:Boolean) : void
       {
-         _functionEnabled = param1;
+         _functionEnabled = value;
       }
       
-      public function set contentWidth(param1:Number) : void
+      public function set contentWidth(value:Number) : void
       {
-         _contentField.width = param1;
-         updateScrollRect(param1,118);
+         _contentField.width = value;
+         updateScrollRect(value,118);
       }
       
-      public function set contentHeight(param1:Number) : void
+      public function set contentHeight(value:Number) : void
       {
-         _contentField.height = param1;
-         updateScrollRect(440,param1);
+         _contentField.height = value;
+         updateScrollRect(440,value);
       }
       
       public function isBottom() : Boolean
@@ -152,23 +156,22 @@ package ddt.view.chat
          return _contentField.maxScrollV - _contentField.scrollV;
       }
       
-      public function set scrollOffset(param1:int) : void
+      public function set scrollOffset(offset:int) : void
       {
-         _contentField.scrollV = _contentField.maxScrollV - param1;
+         _contentField.scrollV = _contentField.maxScrollV - offset;
          onScrollChanged();
       }
       
-      public function setChats(param1:Array) : void
+      public function setChats(chatData:Array) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:String = "";
-         _loc3_ = 0;
-         while(_loc3_ < param1.length)
+         var i:int = 0;
+         var resultHtmlText:String = "";
+         for(i = 0; i < chatData.length; )
          {
-            _loc2_ = _loc2_ + param1[_loc3_].htmlMessage;
-            _loc3_++;
+            resultHtmlText = resultHtmlText + chatData[i].htmlMessage;
+            i++;
          }
-         _contentField.htmlText = _loc2_;
+         _contentField.htmlText = resultHtmlText;
       }
       
       public function toBottom() : void
@@ -183,17 +186,17 @@ package ddt.view.chat
          return new Point(_goodTipPos.x,_goodTipPos.y);
       }
       
-      chat_system function showLinkGoodsInfo(param1:ItemTemplateInfo, param2:uint = 0) : void
+      chat_system function showLinkGoodsInfo(item:ItemTemplateInfo, tipStageClickCount:uint = 0) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         if(param1.CategoryID == 18)
+         var tipData:* = null;
+         var vItemInfo:* = null;
+         if(item.CategoryID == 18)
          {
             if(_cardboxTip == null)
             {
                _cardboxTip = new CardBoxTipPanel();
             }
-            _cardboxTip.tipData = param1;
+            _cardboxTip.tipData = item;
             setTipPos(_cardboxTip);
             StageReferance.stage.addChild(_cardboxTip);
          }
@@ -203,39 +206,39 @@ package ddt.view.chat
             {
                _goodTip = new GoodTip();
             }
-            _loc4_ = new GoodTipInfo();
-            _loc3_ = param1 as InventoryItemInfo;
-            if(param1.Property1 == "31")
+            tipData = new GoodTipInfo();
+            vItemInfo = item as InventoryItemInfo;
+            if(item.Property1 == "31")
             {
-               if(_loc3_ && _loc3_.Hole2 > 0)
+               if(vItemInfo && vItemInfo.Hole2 > 0)
                {
-                  _loc4_.exp = _loc3_.Hole2;
-                  _loc4_.upExp = ServerConfigManager.instance.getBeadUpgradeExp()[_loc3_.Hole1 + 1];
-                  _loc4_.beadName = _loc3_.Name + "-" + beadSystemManager.Instance.getBeadName(_loc3_);
+                  tipData.exp = vItemInfo.Hole2;
+                  tipData.upExp = ServerConfigManager.instance.getBeadUpgradeExp()[vItemInfo.Hole1 + 1];
+                  tipData.beadName = vItemInfo.Name + "-" + beadSystemManager.Instance.getBeadName(vItemInfo);
                }
                else
                {
-                  _loc4_.beadName = param1.Name + "-" + BeadTemplateManager.Instance.GetBeadInfobyID(param1.TemplateID).Name + "Lv" + BeadTemplateManager.Instance.GetBeadInfobyID(param1.TemplateID).BaseLevel;
-                  _loc4_.exp = ServerConfigManager.instance.getBeadUpgradeExp()[BeadTemplateManager.Instance.GetBeadInfobyID(param1.TemplateID).BaseLevel];
-                  _loc4_.upExp = ServerConfigManager.instance.getBeadUpgradeExp()[BeadTemplateManager.Instance.GetBeadInfobyID(param1.TemplateID).BaseLevel + 1];
+                  tipData.beadName = item.Name + "-" + BeadTemplateManager.Instance.GetBeadInfobyID(item.TemplateID).Name + "Lv" + BeadTemplateManager.Instance.GetBeadInfobyID(item.TemplateID).BaseLevel;
+                  tipData.exp = ServerConfigManager.instance.getBeadUpgradeExp()[BeadTemplateManager.Instance.GetBeadInfobyID(item.TemplateID).BaseLevel];
+                  tipData.upExp = ServerConfigManager.instance.getBeadUpgradeExp()[BeadTemplateManager.Instance.GetBeadInfobyID(item.TemplateID).BaseLevel + 1];
                }
             }
-            else if(param1.Property1 == "81")
+            else if(item.Property1 == "81")
             {
-               if(_loc3_ && _loc3_.StrengthenExp > 0)
+               if(vItemInfo && vItemInfo.StrengthenExp > 0)
                {
-                  _loc4_.exp = _loc3_.StrengthenExp - MagicStoneManager.instance.getNeedExp(param1.TemplateID,_loc3_.StrengthenLevel);
+                  tipData.exp = vItemInfo.StrengthenExp - MagicStoneManager.instance.getNeedExp(item.TemplateID,vItemInfo.StrengthenLevel);
                }
                else
                {
-                  _loc4_.exp = 0;
+                  tipData.exp = 0;
                }
-               _loc4_.upExp = MagicStoneManager.instance.getNeedExpPerLevel(param1.TemplateID,param1.Level + 1);
-               _loc4_.beadName = param1.Name + "Lv" + param1.Level;
+               tipData.upExp = MagicStoneManager.instance.getNeedExpPerLevel(item.TemplateID,item.Level + 1);
+               tipData.beadName = item.Name + "Lv" + item.Level;
             }
-            _loc4_.itemInfo = param1;
-            _goodTip.tipData = _loc4_;
-            _goodTip.showTip(param1);
+            tipData.itemInfo = item;
+            _goodTip.tipData = tipData;
+            _goodTip.showTip(item);
             setTipPos(_goodTip);
             StageReferance.stage.addChild(_goodTip);
          }
@@ -244,75 +247,75 @@ package ddt.view.chat
             _nameTip.parent.removeChild(_nameTip);
          }
          StageReferance.stage.addEventListener("click",__stageClickHandler);
-         _tipStageClickCount = param2;
+         _tipStageClickCount = tipStageClickCount;
       }
       
-      chat_system function showBeadTip(param1:ItemTemplateInfo, param2:int, param3:int) : void
+      chat_system function showBeadTip(pItem:ItemTemplateInfo, pBeadLv:int, pBeadExp:int) : void
       {
          if(_goodTip == null)
          {
             _goodTip = new GoodTip();
          }
-         var _loc4_:GoodTipInfo = new GoodTipInfo();
-         _loc4_.beadName = param1.Name + "-" + BeadTemplateManager.Instance.GetBeadInfobyID(param1.TemplateID).Name + "Lv" + param2;
-         _loc4_.upExp = ServerConfigManager.instance.getBeadUpgradeExp()[param2 + 1];
-         _loc4_.exp = param3;
-         _loc4_.itemInfo = param1;
-         _goodTip.tipData = _loc4_;
-         _goodTip.showTip(param1);
+         var vGoodTipData:GoodTipInfo = new GoodTipInfo();
+         vGoodTipData.beadName = pItem.Name + "-" + BeadTemplateManager.Instance.GetBeadInfobyID(pItem.TemplateID).Name + "Lv" + pBeadLv;
+         vGoodTipData.upExp = ServerConfigManager.instance.getBeadUpgradeExp()[pBeadLv + 1];
+         vGoodTipData.exp = pBeadExp;
+         vGoodTipData.itemInfo = pItem;
+         _goodTip.tipData = vGoodTipData;
+         _goodTip.showTip(pItem);
          setTipPos(_goodTip);
          StageReferance.stage.addChild(_goodTip);
       }
       
-      chat_system function showCardGrooveLinkGoodsInfo(param1:GrooveInfo, param2:uint = 0) : void
+      chat_system function showCardGrooveLinkGoodsInfo(item:GrooveInfo, tipStageClickCount:uint = 0) : void
       {
          _grooveTip = new CardsTipPanel();
-         _grooveTip.tipData = param1.Place;
+         _grooveTip.tipData = item.Place;
          _grooveTip.tipDirctions = "7,0";
          setTipPos2(_grooveTip);
          StageReferance.stage.addChild(_grooveTip);
          StageReferance.stage.addEventListener("click",__stageClickHandler);
-         _tipStageClickCount = param2;
+         _tipStageClickCount = tipStageClickCount;
       }
       
-      chat_system function showCardInfoLinkGoodsInfo(param1:CardInfo, param2:uint = 0) : void
+      chat_system function showCardInfoLinkGoodsInfo(item:CardInfo, tipStageClickCount:uint = 0) : void
       {
          _cardInfotTips = new EquipmentCardsTips();
-         _cardInfotTips.tipData = param1;
+         _cardInfotTips.tipData = item;
          _cardInfotTips.tipDirctions = "7,0";
          setTipPos2(_cardInfotTips);
          StageReferance.stage.addChild(_cardInfotTips);
          StageReferance.stage.addEventListener("click",__stageClickHandler);
-         _tipStageClickCount = param2;
+         _tipStageClickCount = tipStageClickCount;
       }
       
-      private function setTipPos(param1:Object) : void
+      private function setTipPos(tip:Object) : void
       {
-         param1.x = _goodTipPos.x;
-         param1.y = _goodTipPos.y - param1.height - 10;
-         if(param1.y < 0)
+         tip.x = _goodTipPos.x;
+         tip.y = _goodTipPos.y - tip.height - 10;
+         if(tip.y < 0)
          {
-            param1.y = 10;
+            tip.y = 10;
          }
       }
       
-      private function setTipPos2(param1:Object) : void
+      private function setTipPos2(tip:Object) : void
       {
-         param1.tipGapH = 218;
-         param1.tipGapV = 245;
-         param1.x = 218;
-         param1.y = 245;
+         tip.tipGapH = 218;
+         tip.tipGapV = 245;
+         tip.x = 218;
+         tip.y = 245;
       }
       
-      chat_system function set style(param1:String) : void
+      chat_system function set style(value:String) : void
       {
-         if(_style != param1)
+         if(_style != value)
          {
-            _style = param1;
+            _style = value;
             disposeView();
             initView();
             initEvent();
-            var _loc2_:* = param1;
+            var _loc2_:* = value;
             if("NORMAL_STYLE" !== _loc2_)
             {
                if("GAME_STYLE" === _loc2_)
@@ -339,58 +342,57 @@ package ddt.view.chat
          removeEventListener("enterFrame",__delayCall);
       }
       
-      private function __onScrollChanged(param1:Event) : void
+      private function __onScrollChanged(event:Event) : void
       {
          onScrollChanged();
       }
       
-      private function __onTextClicked(param1:TextEvent) : void
+      private function __onTextClicked(event:TextEvent) : void
       {
-         var _loc26_:* = null;
-         var _loc19_:int = 0;
-         var _loc25_:* = null;
-         var _loc13_:int = 0;
-         var _loc4_:int = 0;
-         var _loc21_:* = null;
-         var _loc14_:int = 0;
-         var _loc23_:* = null;
-         var _loc22_:* = null;
-         var _loc2_:* = null;
-         var _loc15_:* = null;
-         var _loc9_:int = 0;
-         var _loc20_:int = 0;
-         var _loc10_:* = null;
-         var _loc18_:int = 0;
-         var _loc3_:* = null;
-         var _loc6_:* = null;
-         var _loc11_:* = null;
-         var _loc7_:* = null;
-         var _loc24_:* = null;
-         var _loc16_:* = null;
+         var tipPos:* = null;
+         var i:int = 0;
+         var props:* = null;
+         var selfZone:int = 0;
+         var other:int = 0;
+         var input:* = null;
+         var specialIdx:int = 0;
+         var pattern:* = null;
+         var str:* = null;
+         var result:* = null;
+         var rect:* = null;
+         var startIdx:int = 0;
+         var endIdx:int = 0;
+         var pos:* = null;
+         var legalIdx:int = 0;
+         var nameTipPos:* = null;
+         var itemInfo:* = null;
+         var info:* = null;
+         var self:* = null;
+         var chatArr:* = null;
+         var msg:* = null;
          SoundManager.instance.play("008");
          __stageClickHandler();
-         var _loc17_:Number = new Date().time;
-         if(_loc17_ - _clickNum < 1000)
+         var nowTime:Number = new Date().time;
+         if(nowTime - _clickNum < 1000)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.storeIIStrength.startStrengthClickTimerMsg"));
             return;
          }
-         _clickNum = _loc17_;
-         var _loc5_:Object = {};
-         var _loc12_:Array = param1.text.split("|");
-         _loc19_ = 0;
-         while(_loc19_ < _loc12_.length)
+         _clickNum = nowTime;
+         var data:Object = {};
+         var allProperties:Array = event.text.split("|");
+         for(i = 0; i < allProperties.length; )
          {
-            if(_loc12_[_loc19_].indexOf(":"))
+            if(allProperties[i].indexOf(":"))
             {
-               _loc25_ = _loc12_[_loc19_].split(":");
-               _loc5_[_loc25_[0]] = _loc25_[1];
+               props = allProperties[i].split(":");
+               data[props[0]] = props[1];
             }
-            _loc19_++;
+            i++;
          }
-         if(_loc5_.jumptype)
+         if(data.jumptype)
          {
-            switch(int(_loc5_.jumptype) - 1)
+            switch(int(int(data.jumptype)) - 1)
             {
                case 0:
                   if(StateManager.currentStateType != "main")
@@ -495,133 +497,133 @@ package ddt.view.chat
                   break;
             }
          }
-         else if(int(_loc5_.clicktype) == 0)
+         else if(int(data.clicktype) == 0)
          {
-            ChatManager.Instance.inputChannel = int(_loc5_.channel);
+            ChatManager.Instance.inputChannel = int(data.channel);
             ChatManager.Instance.output.functionEnabled = true;
          }
-         else if(int(_loc5_.clicktype) == 1)
+         else if(int(data.clicktype) == 1)
          {
-            _loc13_ = PlayerManager.Instance.Self.ZoneID;
-            _loc4_ = _loc5_.zoneID;
-            if(_loc4_ > 0 && _loc4_ != _loc13_)
+            selfZone = PlayerManager.Instance.Self.ZoneID;
+            other = data.zoneID;
+            if(other > 0 && other != selfZone)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("core.crossZone.PrivateChatToUnable"));
                return;
             }
             if(IMManager.IS_SHOW_SUB)
             {
-               dispatchEvent(new ChatEvent("nicknameClickToOutside",_loc5_.tagname));
+               dispatchEvent(new ChatEvent("nicknameClickToOutside",data.tagname));
             }
             if(_nameTip == null)
             {
                _nameTip = ComponentFactory.Instance.creatCustomObject("chat.NamePanel");
             }
-            _loc21_ = String(_loc5_.tagname);
-            _loc14_ = _loc21_.indexOf("$");
-            if(_loc14_ > -1)
+            input = String(data.tagname);
+            specialIdx = input.indexOf("$");
+            if(specialIdx > -1)
             {
-               _loc21_ = _loc21_.substr(0,_loc14_);
+               input = input.substr(0,specialIdx);
             }
-            _loc23_ = new RegExp(_loc21_,"g");
-            _loc22_ = _contentField.text;
-            _loc2_ = _loc23_.exec(_loc22_);
-            while(_loc2_ != null)
+            pattern = new RegExp(input,"g");
+            str = _contentField.text;
+            result = pattern.exec(str);
+            while(result != null)
             {
-               _loc9_ = _loc2_.index;
-               _loc20_ = _loc9_ + String(_loc5_.tagname).length;
-               _loc10_ = _contentField.globalToLocal(new Point(StageReferance.stage.mouseX,StageReferance.stage.mouseY));
-               _loc18_ = _contentField.getCharIndexAtPoint(_loc10_.x,_loc10_.y);
-               if(_loc18_ >= _loc9_ && _loc18_ <= _loc20_)
+               startIdx = result.index;
+               endIdx = startIdx + String(data.tagname).length;
+               pos = _contentField.globalToLocal(new Point(StageReferance.stage.mouseX,StageReferance.stage.mouseY));
+               legalIdx = _contentField.getCharIndexAtPoint(pos.x,pos.y);
+               if(legalIdx >= startIdx && legalIdx <= endIdx)
                {
-                  _contentField.setSelection(_loc9_,_loc20_);
-                  _loc15_ = _contentField.getCharBoundaries(_loc20_);
-                  _loc3_ = _contentField.localToGlobal(new Point(_loc15_.x,_loc15_.y));
-                  _nameTip.x = _loc3_.x + _loc15_.width;
-                  _nameTip.y = _loc3_.y - _nameTip.getHeight - (_contentField.scrollV - 1) * 18;
+                  _contentField.setSelection(startIdx,endIdx);
+                  rect = _contentField.getCharBoundaries(endIdx);
+                  nameTipPos = _contentField.localToGlobal(new Point(rect.x,rect.y));
+                  _nameTip.x = nameTipPos.x + rect.width;
+                  _nameTip.y = nameTipPos.y - _nameTip.getHeight - (_contentField.scrollV - 1) * 18;
                   break;
                }
-               _loc2_ = _loc23_.exec(_loc22_);
+               result = pattern.exec(str);
             }
-            _nameTip.playerName = String(_loc5_.tagname);
-            if(_loc5_.channel)
+            _nameTip.playerName = String(data.tagname);
+            if(data.channel)
             {
-               _nameTip.channel = ChatFormats.Channel_Set[int(_loc5_.channel)];
+               _nameTip.channel = ChatFormats.Channel_Set[int(data.channel)];
             }
             else
             {
                _nameTip.channel = null;
             }
-            _nameTip.message = String(_loc5_.message);
+            _nameTip.message = String(data.message);
             if(_goodTip && _goodTip.parent)
             {
                _goodTip.parent.removeChild(_goodTip);
             }
-            if(_loc5_.senderID == -1)
+            if(data.senderID == -1)
             {
                _nameTip.setVisible = false;
             }
             else
             {
                _nameTip.setVisible = true;
-               ChatManager.Instance.privateChatTo(_loc5_.tagname);
+               ChatManager.Instance.privateChatTo(data.tagname);
             }
          }
-         else if(int(_loc5_.clicktype) == 2)
+         else if(int(data.clicktype) == 2)
          {
-            _loc26_ = _contentField.localToGlobal(new Point(_contentField.mouseX,_contentField.mouseY));
-            _goodTipPos.x = _loc26_.x;
-            _goodTipPos.y = _loc26_.y;
-            _loc6_ = ItemManager.Instance.getTemplateById(_loc5_.templeteIDorItemID);
-            _loc6_.BindType = _loc5_.isBind == "true"?0:1;
+            tipPos = _contentField.localToGlobal(new Point(_contentField.mouseX,_contentField.mouseY));
+            _goodTipPos.x = tipPos.x;
+            _goodTipPos.y = tipPos.y;
+            itemInfo = ItemManager.Instance.getTemplateById(data.templeteIDorItemID);
+            itemInfo.BindType = data.isBind == "true"?0:1;
             0;
-            showLinkGoodsInfo(_loc6_);
+            showLinkGoodsInfo(itemInfo);
          }
-         else if(int(_loc5_.clicktype) == 3)
+         else if(int(data.clicktype) == 3)
          {
-            _loc13_ = PlayerManager.Instance.Self.ZoneID;
-            _loc4_ = _loc5_.zoneID;
-            if(_loc4_ > 0 && _loc4_ != _loc13_)
+            selfZone = PlayerManager.Instance.Self.ZoneID;
+            other = data.zoneID;
+            if(other > 0 && other != selfZone)
             {
                ChatManager.Instance.sysChatYellow(LanguageMgr.GetTranslation("core.crossZone.ViewGoodInfoUnable"));
                return;
             }
-            _loc26_ = _contentField.localToGlobal(new Point(_contentField.mouseX,_contentField.mouseY));
-            _goodTipPos.x = _loc26_.x;
-            _goodTipPos.y = _loc26_.y;
-            if(_loc5_.key != "null")
+            tipPos = _contentField.localToGlobal(new Point(_contentField.mouseX,_contentField.mouseY));
+            _goodTipPos.x = tipPos.x;
+            _goodTipPos.y = tipPos.y;
+            if(data.key != "null")
             {
-               _loc11_ = ChatManager.Instance.model.getLink(_loc5_.key);
+               info = ChatManager.Instance.model.getLink(data.key);
             }
             else
             {
-               _loc11_ = ChatManager.Instance.model.getLink(_loc5_.templeteIDorItemID);
+               info = ChatManager.Instance.model.getLink(data.templeteIDorItemID);
             }
-            if(_loc11_)
+            if(info)
             {
-               showLinkGoodsInfo(_loc11_);
+               showLinkGoodsInfo(info);
             }
-            else if(_loc5_.key != "null")
+            else if(data.key != "null")
             {
-               SocketManager.Instance.out.sendGetLinkGoodsInfo(3,String(_loc5_.key),String(_loc5_.templeteIDorItemID));
+               SocketManager.Instance.out.sendGetLinkGoodsInfo(3,String(data.key),String(data.templeteIDorItemID));
             }
             else
             {
-               SocketManager.Instance.out.sendGetLinkGoodsInfo(2,String(_loc5_.templeteIDorItemID));
+               SocketManager.Instance.out.sendGetLinkGoodsInfo(2,String(data.templeteIDorItemID));
             }
          }
-         else if(int(_loc5_.clicktype) == 888)
+         else if(int(data.clicktype) == 888)
          {
             if(StateManager.currentStateType == "main")
             {
-               SocketManager.Instance.out.sendInviteYearFoodRoom(true,int(_loc5_.senderId));
+               SocketManager.Instance.out.sendInviteYearFoodRoom(true,int(data.senderId));
             }
          }
-         else if(int(_loc5_.clicktype) == 111)
+         else if(int(data.clicktype) == 111)
          {
             RedPackageManager.getInstance().showView("red_pkg_consortia_gain");
          }
-         else if(int(_loc5_.clicktype) == 999)
+         else if(int(data.clicktype) == 999)
          {
             if(StateManager.currentStateType != "fighting")
             {
@@ -632,22 +634,22 @@ package ddt.view.chat
                }
             }
          }
-         else if(int(_loc5_.clicktype) == 890)
+         else if(int(data.clicktype) == 890)
          {
-            navigateToURL(new URLRequest(_loc5_.source),"_blank");
+            navigateToURL(new URLRequest(data.source),"_blank");
          }
-         else if(int(_loc5_.clicktype) == 889)
+         else if(int(data.clicktype) == 889)
          {
             if(StateManager.currentStateType == "main")
             {
                SoundManager.instance.play("008");
-               _loc7_ = PlayerManager.Instance.Self;
+               self = PlayerManager.Instance.Self;
                if(PlayerManager.Instance.Self.Bag.getItemAt(6) == null)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.room.RoomIIController.weapon"));
                   return;
                }
-               if(_loc7_.IsMounts)
+               if(self.IsMounts)
                {
                   HorseRaceManager.Instance.enterView();
                }
@@ -657,11 +659,11 @@ package ddt.view.chat
                }
             }
          }
-         else if(int(_loc5_.clicktype) == 4)
+         else if(int(data.clicktype) == 4)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("chat.differZone.cannotChat"));
          }
-         else if(int(_loc5_.clicktype) == 100)
+         else if(int(data.clicktype) == 100)
          {
             if(!EffortManager.Instance.getMainFrameVisible())
             {
@@ -669,29 +671,29 @@ package ddt.view.chat
                EffortManager.Instance.switchVisible();
             }
          }
-         else if(int(_loc5_.clicktype) == 5)
+         else if(int(data.clicktype) == 5)
          {
-            _loc13_ = PlayerManager.Instance.Self.ZoneID;
-            _loc4_ = _loc5_.zoneID;
-            if(_loc4_ > 0 && _loc4_ != _loc13_)
+            selfZone = PlayerManager.Instance.Self.ZoneID;
+            other = data.zoneID;
+            if(other > 0 && other != selfZone)
             {
                ChatManager.Instance.sysChatYellow(LanguageMgr.GetTranslation("core.crossZone.ViewGoodInfoUnable"));
                return;
             }
-            SocketManager.Instance.out.sendGetLinkGoodsInfo(4,String(_loc5_.key));
+            SocketManager.Instance.out.sendGetLinkGoodsInfo(4,String(data.key));
          }
-         else if(int(_loc5_.clicktype) == 6)
+         else if(int(data.clicktype) == 6)
          {
-            _loc13_ = PlayerManager.Instance.Self.ZoneID;
-            _loc4_ = _loc5_.zoneID;
-            if(_loc4_ > 0 && _loc4_ != _loc13_)
+            selfZone = PlayerManager.Instance.Self.ZoneID;
+            other = data.zoneID;
+            if(other > 0 && other != selfZone)
             {
                ChatManager.Instance.sysChatYellow(LanguageMgr.GetTranslation("core.crossZone.ViewGoodInfoUnable"));
                return;
             }
-            SocketManager.Instance.out.sendGetLinkGoodsInfo(5,String(_loc5_.key));
+            SocketManager.Instance.out.sendGetLinkGoodsInfo(5,String(data.key));
          }
-         else if(int(_loc5_.clicktype) == 101)
+         else if(int(data.clicktype) == 101)
          {
             if(StateManager.currentStateType == "fighting" || WorldBossHelperManager.Instance.isInWorldBossHelperFrame)
             {
@@ -703,20 +705,10 @@ package ddt.view.chat
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.room.FastInvite.cannotInvite2"));
                return;
             }
-            if(StateManager.currentStateType == "roomlist")
-            {
-               SocketManager.Instance.out.sendGameLogin(1,-1,_loc5_.roomId,_loc5_.password,true);
-            }
-            else if(StateManager.currentStateType == "dungeon")
-            {
-               SocketManager.Instance.out.sendGameLogin(2,-1,_loc5_.roomId,_loc5_.password,true);
-            }
-            else
-            {
-               SocketManager.Instance.out.sendGameLogin(4,-1,_loc5_.roomId,_loc5_.password,true);
-            }
+            _data = data;
+            AssetModuleLoader.startCodeLoader(__joinRoom);
          }
-         else if(int(_loc5_.clicktype) > ChatFormats.CLICK_ACT_TIP)
+         else if(int(data.clicktype) > ChatFormats.CLICK_ACT_TIP)
          {
             if(getTimer() - _lastClickTime < 2000)
             {
@@ -731,15 +723,15 @@ package ddt.view.chat
             }
             WonderfulActivityManager.Instance.clickWonderfulActView = true;
             WonderfulActivityManager.Instance.isSkipFromHall = true;
-            WonderfulActivityManager.Instance.skipType = _loc5_.rewardType;
+            WonderfulActivityManager.Instance.skipType = data.rewardType;
             SocketManager.Instance.out.requestRookieRankInfo();
             SocketManager.Instance.out.requestWonderfulActInit(1);
          }
-         else if(int(_loc5_.clicktype) == 103)
+         else if(int(data.clicktype) == 103)
          {
-            SocketManager.Instance.out.sendConsortiaInvate(_loc5_.tagname);
+            SocketManager.Instance.out.sendConsortiaInvate(data.tagname);
          }
-         else if(int(_loc5_.clicktype) == 104)
+         else if(int(data.clicktype) == 104)
          {
             if(StateManager.currentStateType == "main")
             {
@@ -750,7 +742,7 @@ package ddt.view.chat
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("lanternRiddles.view.openTips"));
             }
          }
-         else if(int(_loc5_.clicktype) == 105)
+         else if(int(data.clicktype) == 105)
          {
             if(StateManager.currentStateType == "main" || StateManager.currentStateType == "roomlist")
             {
@@ -761,22 +753,22 @@ package ddt.view.chat
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("wonderfulActivity.getRewardTip"));
             }
          }
-         else if(int(_loc5_.clicktype) == 106)
+         else if(int(data.clicktype) == 106)
          {
-            _loc24_ = ChatManager.Instance.model.currentChats;
+            chatArr = ChatManager.Instance.model.currentChats;
             var _loc28_:int = 0;
-            var _loc27_:* = _loc24_;
-            for each(var _loc8_ in _loc24_)
+            var _loc27_:* = chatArr;
+            for each(var chat in chatArr)
             {
-               if(_loc8_.type == 106)
+               if(chat.type == 106)
                {
-                  ChatManager.Instance.notAgainData.add(_loc8_.msg,true);
-                  _loc8_.htmlMessage = _loc8_.htmlMessage.replace("<FONT  COLOR=\'#8dff1e\'>" + LanguageMgr.GetTranslation("notAlertAgain") + "</FONT>","<FONT  COLOR=\'#989898\'>" + LanguageMgr.GetTranslation("notAlertAgain") + "</FONT>");
+                  ChatManager.Instance.notAgainData.add(chat.msg,true);
+                  chat.htmlMessage = chat.htmlMessage.replace("<FONT  COLOR=\'#8dff1e\'>" + LanguageMgr.GetTranslation("notAlertAgain") + "</FONT>","<FONT  COLOR=\'#989898\'>" + LanguageMgr.GetTranslation("notAlertAgain") + "</FONT>");
                }
             }
             ChatManager.Instance.view.output.updateCurrnetChannel();
          }
-         else if(int(_loc5_.clicktype) == 108)
+         else if(int(data.clicktype) == 108)
          {
             if(StateManager.currentStateType != "main")
             {
@@ -786,11 +778,25 @@ package ddt.view.chat
             AvatarCollectionManager.instance.isSkipFromHall = true;
             BagAndInfoManager.Instance.showBagAndInfo(7);
          }
-         else if(int(_loc5_.clicktype) == 112)
+         else if(int(data.clicktype) == 32)
+         {
+            if(dailyRecordGoTurnCheck())
+            {
+               BagStore.instance.openStore("forge_store",1);
+            }
+         }
+         else if(int(data.clicktype) == 33)
+         {
+            if(dailyRecordGoTurnCheck())
+            {
+               BagStore.instance.openStore("forge_store",0);
+            }
+         }
+         else if(int(data.clicktype) == 112)
          {
             ConsortionModelManager.Instance.enterConsortiaState();
          }
-         else if(int(_loc5_.clicktype) == 109)
+         else if(int(data.clicktype) == 109)
          {
             if(StateManager.currentStateType == "main" || StateManager.currentStateType == "tofflist" || StateManager.currentStateType == "consortia" || StateManager.currentStateType == "dungeonRoom" || StateManager.currentStateType == "matchRoom" || StateManager.currentStateType == "farm")
             {
@@ -813,7 +819,7 @@ package ddt.view.chat
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("avatarCollection.pay.tipTxt"));
             }
          }
-         else if(int(_loc5_.clicktype) == 110)
+         else if(int(data.clicktype) == 110)
          {
             if(StateManager.currentStateType == "main" || StateManager.currentStateType == "tofflist" || StateManager.currentStateType == "consortia" || StateManager.currentStateType == "dungeonRoom" || StateManager.currentStateType == "matchRoom" || StateManager.currentStateType == "farm")
             {
@@ -835,150 +841,160 @@ package ddt.view.chat
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("avatarCollection.pay.tipTxt"));
             }
          }
-         else if(int(_loc5_.clicktype) == 113)
+         else if(int(data.clicktype) == 113)
          {
             if(ConsortiaDomainManager.instance.activeState == 1 && StateManager.currentStateType != "fighting" && StateManager.currentStateType != "consortia_domain")
             {
                ConsortiaDomainManager.instance.enterScene(true);
             }
          }
-         else if(int(_loc5_.clicktype) == 114)
+         else if(int(data.clicktype) == 114)
          {
             if(StateManager.currentStateType == "fighting" || StateManager.currentStateType == "fighting3d")
             {
-               _loc16_ = LanguageMgr.GetTranslation("chat.task.NotBattle");
-               MessageTipManager.getInstance().show(_loc16_,0,true,1);
+               msg = LanguageMgr.GetTranslation("chat.task.NotBattle");
+               MessageTipManager.getInstance().show(msg,0,true,1);
                return;
             }
             if(StateManager.currentStateType == "consortia_domain")
             {
-               _loc16_ = LanguageMgr.GetTranslation("chat.task.Notconsortia");
-               MessageTipManager.getInstance().show(_loc16_,0,true,1);
+               msg = LanguageMgr.GetTranslation("chat.task.Notconsortia");
+               MessageTipManager.getInstance().show(msg,0,true,1);
                return;
             }
-            if(TaskManager.instance.getQuestByID(_loc5_.questId) && (TaskManager.instance.getQuestByID(_loc5_.questId).isCompleted && !TaskManager.instance.getQuestByID(_loc5_.questId).isAchieved))
+            if(TaskManager.instance.getQuestByID(data.questId) && (TaskManager.instance.getQuestByID(data.questId).isCompleted && !TaskManager.instance.getQuestByID(data.questId).isAchieved))
             {
-               finishQuest(int(_loc5_.questId));
+               finishQuest(int(data.questId));
             }
             else
             {
-               _loc16_ = LanguageMgr.GetTranslation("ringStation.view.getReward.failed");
-               MessageTipManager.getInstance().show(_loc16_,0,true,1);
+               msg = LanguageMgr.GetTranslation("ringStation.view.getReward.failed");
+               MessageTipManager.getInstance().show(msg,0,true,1);
             }
          }
       }
       
-      private function finishQuest(param1:int) : void
+      private function dailyRecordGoTurnCheck() : Boolean
       {
-         var _loc5_:* = null;
-         curQuestId = param1;
-         var _loc2_:QuestInfo = TaskManager.instance.getQuestByID(param1);
-         var _loc3_:Array = [];
-         var _loc7_:int = 0;
-         var _loc6_:* = _loc2_.itemRewards;
-         for each(var _loc4_ in _loc2_.itemRewards)
+         if(StateManager.currentStateType != "main" && (RoomManager.Instance.isPrepare || RoomManager.Instance.isMatch || StateManager.currentStateType == "fighting" || StateManager.currentStateType == "fighting3d"))
          {
-            _loc5_ = new InventoryItemInfo();
-            _loc5_.TemplateID = _loc4_.itemID;
-            ItemManager.fill(_loc5_);
-            _loc5_.ValidDate = _loc4_.ValidateTime;
-            _loc5_.TemplateID = _loc4_.itemID;
-            _loc5_.IsJudge = true;
-            _loc5_.IsBinds = _loc4_.isBind;
-            _loc5_.AttackCompose = _loc4_.AttackCompose;
-            _loc5_.DefendCompose = _loc4_.DefendCompose;
-            _loc5_.AgilityCompose = _loc4_.AgilityCompose;
-            _loc5_.LuckCompose = _loc4_.LuckCompose;
-            _loc5_.StrengthenLevel = _loc4_.StrengthenLevel;
-            _loc5_.Count = _loc4_.count[_loc2_.QuestLevel - 1];
-            if(!(0 != _loc5_.NeedSex && getSexByInt(PlayerManager.Instance.Self.Sex) != _loc5_.NeedSex))
+            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.dailyRecord.goTurnFailMsg"));
+            return false;
+         }
+         return true;
+      }
+      
+      private function finishQuest(questId:int) : void
+      {
+         var info:* = null;
+         curQuestId = questId;
+         var _questInfo:QuestInfo = TaskManager.instance.getQuestByID(questId);
+         var items:Array = [];
+         var _loc7_:int = 0;
+         var _loc6_:* = _questInfo.itemRewards;
+         for each(var temp in _questInfo.itemRewards)
+         {
+            info = new InventoryItemInfo();
+            info.TemplateID = temp.itemID;
+            ItemManager.fill(info);
+            info.ValidDate = temp.ValidateTime;
+            info.TemplateID = temp.itemID;
+            info.IsJudge = true;
+            info.IsBinds = temp.isBind;
+            info.AttackCompose = temp.AttackCompose;
+            info.DefendCompose = temp.DefendCompose;
+            info.AgilityCompose = temp.AgilityCompose;
+            info.LuckCompose = temp.LuckCompose;
+            info.StrengthenLevel = temp.StrengthenLevel;
+            info.Count = temp.count[_questInfo.QuestLevel - 1];
+            if(!(0 != info.NeedSex && getSexByInt(PlayerManager.Instance.Self.Sex) != info.NeedSex))
             {
-               if(_loc4_.isOptional == 1)
+               if(temp.isOptional == 1)
                {
-                  _loc3_.push(_loc5_);
+                  items.push(info);
                }
             }
          }
-         if(_loc3_.length > 0)
+         if(items.length > 0)
          {
-            HallTaskTrackManager.instance.moduleLoad(showSelectedAwardFrame,[_loc3_]);
+            HallTaskTrackManager.instance.moduleLoad(showSelectedAwardFrame,[items]);
          }
          else
          {
-            TaskManager.instance.sendQuestFinish(_loc2_.QuestID);
+            TaskManager.instance.sendQuestFinish(_questInfo.QuestID);
             if(TaskManager.instance.isAchieved(TaskManager.instance.getQuestByID(318)) && TaskManager.instance.isAchieved(TaskManager.instance.getQuestByID(319)))
             {
                SocketManager.Instance.out.syncWeakStep(49);
             }
-            new CmdThreeAndPowerPickUpAndEnable().excute(param1);
+            new CmdThreeAndPowerPickUpAndEnable().excute(questId);
          }
       }
       
-      private function getSexByInt(param1:Boolean) : int
+      private function getSexByInt(Sex:Boolean) : int
       {
-         if(param1)
+         if(Sex)
          {
             return 1;
          }
          return 2;
       }
       
-      private function showSelectedAwardFrame(param1:Array) : void
+      private function showSelectedAwardFrame(items:Array) : void
       {
-         TryonSystemController.Instance.show(param1,chooseReward,null);
+         TryonSystemController.Instance.show(items,chooseReward,null);
       }
       
-      private function chooseReward(param1:ItemTemplateInfo) : void
+      private function chooseReward(item:ItemTemplateInfo) : void
       {
          new CmdThreeAndPowerPickUpAndEnable().excute(curQuestId);
-         SocketManager.Instance.out.sendQuestFinish(curQuestId,param1.TemplateID);
+         SocketManager.Instance.out.sendQuestFinish(curQuestId,item.TemplateID);
       }
       
-      private function getPos(param1:Object, param2:ChatTransregionalNamePanel) : Point
+      private function getPos(data:Object, namePanel:ChatTransregionalNamePanel) : Point
       {
-         var _loc6_:* = null;
-         var _loc7_:int = 0;
-         var _loc10_:int = 0;
-         var _loc9_:* = null;
-         var _loc8_:int = 0;
-         var _loc4_:* = null;
-         var _loc11_:* = null;
-         var _loc12_:String = String(param1.tagname);
-         var _loc5_:int = _loc12_.indexOf("$");
-         if(_loc5_ > -1)
+         var rect:* = null;
+         var startIdx:int = 0;
+         var endIdx:int = 0;
+         var pos:* = null;
+         var legalIdx:int = 0;
+         var nameTipPos:* = null;
+         var point:* = null;
+         var input:String = String(data.tagname);
+         var specialIdx:int = input.indexOf("$");
+         if(specialIdx > -1)
          {
-            _loc12_ = _loc12_.substr(0,_loc5_);
+            input = input.substr(0,specialIdx);
          }
-         var _loc13_:RegExp = new RegExp(_loc12_,"g");
-         var _loc14_:String = _contentField.text;
-         var _loc3_:Object = _loc13_.exec(_loc14_);
-         while(_loc3_ != null)
+         var pattern:RegExp = new RegExp(input,"g");
+         var str:String = _contentField.text;
+         var result:Object = pattern.exec(str);
+         while(result != null)
          {
-            _loc7_ = _loc3_.index;
-            _loc10_ = _loc7_ + String(param1.tagname).length;
-            _loc9_ = _contentField.globalToLocal(new Point(StageReferance.stage.mouseX,StageReferance.stage.mouseY));
-            _loc8_ = _contentField.getCharIndexAtPoint(_loc9_.x,_loc9_.y);
-            if(_loc8_ >= _loc7_ && _loc8_ <= _loc10_)
+            startIdx = result.index;
+            endIdx = startIdx + String(data.tagname).length;
+            pos = _contentField.globalToLocal(new Point(StageReferance.stage.mouseX,StageReferance.stage.mouseY));
+            legalIdx = _contentField.getCharIndexAtPoint(pos.x,pos.y);
+            if(legalIdx >= startIdx && legalIdx <= endIdx)
             {
-               _contentField.setSelection(_loc7_,_loc10_);
-               _loc6_ = _contentField.getCharBoundaries(_loc10_);
-               _loc4_ = _contentField.localToGlobal(new Point(_loc6_.x,_loc6_.y));
-               _loc11_ = new Point();
-               _loc11_.x = _loc4_.x + _loc6_.width;
-               _loc11_.y = _loc4_.y - param2.getHight() - (_contentField.scrollV - 1) * 18;
+               _contentField.setSelection(startIdx,endIdx);
+               rect = _contentField.getCharBoundaries(endIdx);
+               nameTipPos = _contentField.localToGlobal(new Point(rect.x,rect.y));
+               point = new Point();
+               point.x = nameTipPos.x + rect.width;
+               point.y = nameTipPos.y - namePanel.getHight() - (_contentField.scrollV - 1) * 18;
                break;
             }
-            _loc3_ = _loc13_.exec(_loc14_);
+            result = pattern.exec(str);
          }
-         return _loc11_;
+         return point;
       }
       
-      private function __stageClickHandler(param1:MouseEvent = null) : void
+      private function __stageClickHandler(event:MouseEvent = null) : void
       {
-         if(param1)
+         if(event)
          {
-            param1.stopImmediatePropagation();
-            param1.stopPropagation();
+            event.stopImmediatePropagation();
+            event.stopPropagation();
          }
          if(_tipStageClickCount > 0)
          {
@@ -1032,17 +1048,17 @@ package ddt.view.chat
          _contentField.addEventListener("mouseOut",__onFieldOut);
       }
       
-      protected function __onMouseClick(param1:MouseEvent) : void
+      protected function __onMouseClick(event:MouseEvent) : void
       {
-         PlayerManager.Instance.dispatchEvent(new NewHallEvent("setselfplayerpos",[param1]));
+         PlayerManager.Instance.dispatchEvent(new NewHallEvent("setselfplayerpos",[event]));
       }
       
-      protected function __onFieldOut(param1:MouseEvent) : void
+      protected function __onFieldOut(event:MouseEvent) : void
       {
          Mouse.cursor = "auto";
       }
       
-      protected function __onFieldOver(param1:MouseEvent) : void
+      protected function __onFieldOver(event:MouseEvent) : void
       {
          Mouse.cursor = "arrow";
       }
@@ -1065,10 +1081,26 @@ package ddt.view.chat
          dispatchEvent(new ChatEvent("scrollChanged"));
       }
       
-      private function updateScrollRect(param1:Number, param2:Number) : void
+      private function updateScrollRect($width:Number, $height:Number) : void
       {
-         _srcollRect = new Rectangle(0,0,param1,param2);
+         _srcollRect = new Rectangle(0,0,$width,$height);
          _contentField.scrollRect = _srcollRect;
+      }
+      
+      private function __joinRoom() : void
+      {
+         if(StateManager.currentStateType == "roomlist")
+         {
+            SocketManager.Instance.out.sendGameLogin(1,-1,_data.roomId,_data.password,true);
+         }
+         else if(StateManager.currentStateType == "dungeon")
+         {
+            SocketManager.Instance.out.sendGameLogin(2,-1,_data.roomId,_data.password,true);
+         }
+         else
+         {
+            SocketManager.Instance.out.sendGameLogin(4,-1,_data.roomId,_data.password,true);
+         }
       }
    }
 }

@@ -40,77 +40,77 @@ package com.pickgliss.ui
          return _instance;
       }
       
-      public function set layerType(param1:int) : void
+      public function set layerType(value:int) : void
       {
-         _layerType = param1;
+         _layerType = value;
       }
       
-      public function alert(param1:String, param2:AlertInfo, param3:int = 0, param4:String = null) : BaseAlerFrame
+      public function alert(frameStyle:String, info:AlertInfo, blockBackgound:int = 0, cacheFlag:String = null) : BaseAlerFrame
       {
-         var _loc5_:BaseAlerFrame = ComponentFactory.Instance.creat(param1);
-         _loc5_.addEventListener("propertiesChanged",__onAlertSizeChanged);
-         _loc5_.addEventListener("removedFromStage",__onAlertRemoved);
-         _loc5_.info = param2;
-         if(param4 && CacheSysManager.isLock(param4))
+         var alert:BaseAlerFrame = ComponentFactory.Instance.creat(frameStyle);
+         alert.addEventListener("propertiesChanged",__onAlertSizeChanged);
+         alert.addEventListener("removedFromStage",__onAlertRemoved);
+         alert.info = info;
+         if(cacheFlag && CacheSysManager.isLock(cacheFlag))
          {
-            CacheSysManager.getInstance().cache(param4,new AlertAction(_loc5_,_layerType,param3));
+            CacheSysManager.getInstance().cache(cacheFlag,new AlertAction(alert,_layerType,blockBackgound));
          }
          else
          {
-            LayerManager.Instance.addToLayer(_loc5_,_layerType,_loc5_.info.frameCenter,param3);
-            StageReferance.stage.focus = _loc5_;
+            LayerManager.Instance.addToLayer(alert,_layerType,alert.info.frameCenter,blockBackgound);
+            StageReferance.stage.focus = alert;
          }
-         return _loc5_;
+         return alert;
       }
       
-      private function __onAlertRemoved(param1:Event) : void
+      private function __onAlertRemoved(event:Event) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("propertiesChanged",__onAlertSizeChanged);
-         _loc2_.removeEventListener("removedFromStage",__onAlertRemoved);
+         var alert:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("propertiesChanged",__onAlertSizeChanged);
+         alert.removeEventListener("removedFromStage",__onAlertRemoved);
       }
       
-      private function __onAlertSizeChanged(param1:ComponentEvent) : void
+      private function __onAlertSizeChanged(event:ComponentEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         if(_loc2_.info.frameCenter)
+         var alert:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         if(alert.info.frameCenter)
          {
-            _loc2_.x = (StageReferance.stageWidth - _loc2_.width) / 2;
-            _loc2_.y = (StageReferance.stageHeight - _loc2_.height) / 2;
+            alert.x = (StageReferance.stageWidth - alert.width) / 2;
+            alert.y = (StageReferance.stageHeight - alert.height) / 2;
          }
       }
       
-      public function setup(param1:int, param2:AlertInfo) : void
+      public function setup(layerType:int, simpleAlertInfo:AlertInfo) : void
       {
-         _simpleAlertInfo = param2;
-         _layerType = param1;
+         _simpleAlertInfo = simpleAlertInfo;
+         _layerType = layerType;
       }
       
-      public function simpleAlert(param1:String, param2:String, param3:String = "", param4:String = "", param5:Boolean = false, param6:Boolean = false, param7:Boolean = false, param8:int = 0, param9:String = null, param10:String = "SimpleAlert", param11:int = 30, param12:Boolean = true, param13:int = 0, param14:int = 0) : BaseAlerFrame
+      public function simpleAlert(title:String, msg:String, submitLabel:String = "", cancelLabel:String = "", autoDispose:Boolean = false, enableHtml:Boolean = false, multiLine:Boolean = false, blockBackgound:int = 0, cacheFlag:String = null, frameStyle:String = "SimpleAlert", buttonGape:int = 30, autoButtonGape:Boolean = true, type:int = 0, selectBtnY:int = 0) : BaseAlerFrame
       {
-         if(StringUtils.isEmpty(param3))
+         if(StringUtils.isEmpty(submitLabel))
          {
-            param3 = DEFAULT_CONFIRM_LABEL;
+            submitLabel = DEFAULT_CONFIRM_LABEL;
          }
-         var _loc15_:AlertInfo = new AlertInfo();
-         ObjectUtils.copyProperties(_loc15_,_simpleAlertInfo);
-         _loc15_.sound = _simpleAlertInfo.sound;
-         _loc15_.data = param2;
-         _loc15_.autoDispose = param5;
-         _loc15_.title = param1;
-         _loc15_.submitLabel = param3;
-         _loc15_.cancelLabel = param4;
-         _loc15_.enableHtml = param6;
-         _loc15_.mutiline = param7;
-         _loc15_.buttonGape = param11;
-         _loc15_.autoButtonGape = param12;
-         _loc15_.type = param13;
-         _loc15_.selectBtnY = param14;
-         if(StringUtils.isEmpty(param4))
+         var alerInfo:AlertInfo = new AlertInfo();
+         ObjectUtils.copyProperties(alerInfo,_simpleAlertInfo);
+         alerInfo.sound = _simpleAlertInfo.sound;
+         alerInfo.data = msg;
+         alerInfo.autoDispose = autoDispose;
+         alerInfo.title = title;
+         alerInfo.submitLabel = submitLabel;
+         alerInfo.cancelLabel = cancelLabel;
+         alerInfo.enableHtml = enableHtml;
+         alerInfo.mutiline = multiLine;
+         alerInfo.buttonGape = buttonGape;
+         alerInfo.autoButtonGape = autoButtonGape;
+         alerInfo.type = type;
+         alerInfo.selectBtnY = selectBtnY;
+         if(StringUtils.isEmpty(cancelLabel))
          {
-            _loc15_.showCancel = false;
+            alerInfo.showCancel = false;
          }
-         return alert(param10,_loc15_,param8,param9);
+         return alert(frameStyle,alerInfo,blockBackgound,cacheFlag);
       }
    }
 }

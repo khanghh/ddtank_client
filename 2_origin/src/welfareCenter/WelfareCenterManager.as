@@ -59,38 +59,38 @@ package welfareCenter
          PlayerManager.Instance.Self.addEventListener("propertychange",__onGradeChange);
       }
       
-      public function getitemIsOpen(param1:int) : Boolean
+      public function getitemIsOpen($type:int) : Boolean
       {
-         var _loc2_:Boolean = false;
-         switch(int(param1))
+         var isOpen:Boolean = false;
+         switch(int($type))
          {
             case 0:
-               _loc2_ = CallBackFundManager.instance.isOpen;
+               isOpen = CallBackFundManager.instance.isOpen;
                break;
             case 1:
-               _loc2_ = CallBackLotteryDrawManager.instance.callBackLotteryDrawModel.isOpen;
+               isOpen = CallBackLotteryDrawManager.instance.callBackLotteryDrawModel.isOpen;
                break;
             case 2:
-               _loc2_ = gradeGiftIsOpen;
+               isOpen = gradeGiftIsOpen;
          }
-         return _loc2_;
+         return isOpen;
       }
       
-      public function getItemShine(param1:int) : Boolean
+      public function getItemShine($type:int) : Boolean
       {
-         var _loc2_:Boolean = false;
-         switch(int(param1))
+         var isShine:Boolean = false;
+         switch(int($type))
          {
             case 0:
-               _loc2_ = getitemIsOpen(param1) && CallBackFundManager.instance.state == 1;
+               isShine = getitemIsOpen($type) && CallBackFundManager.instance.state == 1;
                break;
             case 1:
-               _loc2_ = getitemIsOpen(param1) && CallBackLotteryDrawManager.instance.getCallBackLeftSec() <= 0;
+               isShine = getitemIsOpen($type) && CallBackLotteryDrawManager.instance.getCallBackLeftSec() <= 0;
                break;
             case 2:
-               _loc2_ = getitemIsOpen(param1) && PlayerManager.Instance.Self.Grade >= gradeList[_gradeGiftProgress];
+               isShine = getitemIsOpen($type) && PlayerManager.Instance.Self.Grade >= gradeList[_gradeGiftProgress];
          }
-         return _loc2_;
+         return isShine;
       }
       
       public function showMainIcon() : void
@@ -115,7 +115,7 @@ package welfareCenter
          dispatchEvent(new CEvent("welfareCenterShow"));
       }
       
-      private function __onClickIcon(param1:MouseEvent) : void
+      private function __onClickIcon(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          new HelperUIModuleLoad().loadUIModule(["welfareCenter"],show);
@@ -123,21 +123,21 @@ package welfareCenter
       
       private function get isOpen() : Boolean
       {
-         var _loc2_:Boolean = CallBackLotteryDrawManager.instance.callBackLotteryDrawModel.isOpen;
-         var _loc1_:Boolean = CallBackFundManager.instance.isOpen;
-         _isOpen = _loc2_ || _loc1_ || gradeGiftIsOpen;
+         var callLotteryIsOpen:Boolean = CallBackLotteryDrawManager.instance.callBackLotteryDrawModel.isOpen;
+         var callFundIsOpen:Boolean = CallBackFundManager.instance.isOpen;
+         _isOpen = callLotteryIsOpen || callFundIsOpen || gradeGiftIsOpen;
          return _isOpen;
       }
       
-      private function __onOldPlayerGradeGift(param1:PkgEvent) : void
+      private function __onOldPlayerGradeGift(e:PkgEvent) : void
       {
-         var _loc2_:* = null;
-         _gradeGiftIsOpen = param1.pkg.readBoolean();
-         _gradeGiftProgress = param1.pkg.readInt();
+         var date:* = null;
+         _gradeGiftIsOpen = e.pkg.readBoolean();
+         _gradeGiftProgress = e.pkg.readInt();
          if(_gradeGiftIsOpen)
          {
-            _loc2_ = param1.pkg.readDate();
-            _gradeGiftEndTime = _loc2_.time + 7 * 86400000;
+            date = e.pkg.readDate();
+            _gradeGiftEndTime = date.time + 7 * 86400000;
          }
          dispatchEvent(new Event("change"));
          showMainIcon();
@@ -159,9 +159,9 @@ package welfareCenter
          return _gradeGiftEndTime;
       }
       
-      public function __onGradeChange(param1:PlayerPropertyEvent) : void
+      public function __onGradeChange(evt:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["Grade"])
+         if(evt.changedProperties["Grade"])
          {
             checkShineIcon();
          }

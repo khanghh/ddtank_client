@@ -38,10 +38,10 @@ package gameCommon.view.control
       
       private var _mouseArea:MouseArea;
       
-      public function PsychicBar(param1:LocalPlayer)
+      public function PsychicBar(self:LocalPlayer)
       {
          _ghostBitmapPool = {};
-         _self = param1;
+         _self = self;
          super();
          configUI();
          mouseEnabled = false;
@@ -73,33 +73,33 @@ package gameCommon.view.control
          _self.addEventListener("boxPick",__pickBox);
       }
       
-      private function boxTweenComplete(param1:DisplayObject) : void
+      private function boxTweenComplete(box:DisplayObject) : void
       {
-         ObjectUtils.disposeObject(param1);
+         ObjectUtils.disposeObject(box);
       }
       
-      private function __pickBox(param1:LivingEvent) : void
+      private function __pickBox(event:LivingEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:SimpleBox = param1.paras[0] as SimpleBox;
-         if(_loc4_.isGhost)
+         var ghostBox:* = null;
+         var bounds:* = null;
+         var box:SimpleBox = event.paras[0] as SimpleBox;
+         if(box.isGhost)
          {
-            _loc3_ = getGhostShape(_loc4_.subType);
-            addChild(_loc3_);
-            _loc2_ = _loc4_.getBounds(this);
-            _loc3_.x = _loc2_.x;
-            _loc3_.y = _loc2_.y;
-            TweenLite.to(_loc3_,0.3 + 0.3 * Math.random(),{
+            ghostBox = getGhostShape(box.subType);
+            addChild(ghostBox);
+            bounds = box.getBounds(this);
+            ghostBox.x = bounds.x;
+            ghostBox.y = bounds.y;
+            TweenLite.to(ghostBox,0.3 + 0.3 * Math.random(),{
                "x":_ghostBoxCenter.x,
                "y":_ghostBoxCenter.y,
                "onComplete":boxTweenComplete,
-               "onCompleteParams":[_loc3_]
+               "onCompleteParams":[ghostBox]
             });
          }
       }
       
-      private function __psychicChanged(param1:LivingEvent) : void
+      private function __psychicChanged(event:LivingEvent) : void
       {
          _numField.setNum(_self.psychic);
          _numField.x = _back.width - _numField.width >> 1;
@@ -124,7 +124,7 @@ package gameCommon.view.control
       
       public function dispose() : void
       {
-         var _loc1_:* = null;
+         var bitmapData:* = null;
          removeEvent();
          TweenLite.killTweensOf(this);
          ObjectUtils.disposeObject(_back);
@@ -142,14 +142,14 @@ package gameCommon.view.control
          _self = null;
          var _loc4_:int = 0;
          var _loc3_:* = _ghostBitmapPool;
-         for(var _loc2_ in _ghostBitmapPool)
+         for(var key in _ghostBitmapPool)
          {
-            _loc1_ = _ghostBitmapPool[_loc2_] as BitmapData;
-            if(_loc1_)
+            bitmapData = _ghostBitmapPool[key] as BitmapData;
+            if(bitmapData)
             {
-               _loc1_.dispose();
+               bitmapData.dispose();
             }
-            delete _ghostBitmapPool[_loc2_];
+            delete _ghostBitmapPool[key];
          }
          if(parent)
          {
@@ -157,29 +157,29 @@ package gameCommon.view.control
          }
       }
       
-      private function getGhostShape(param1:int) : Shape
+      private function getGhostShape(type:int) : Shape
       {
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         var _loc6_:Shape = new Shape();
-         var _loc5_:String = "ghost" + param1;
-         if(_ghostBitmapPool.hasOwnProperty(_loc5_))
+         var bitmapData:* = null;
+         var ghastBox:* = null;
+         var shape:Shape = new Shape();
+         var name:String = "ghost" + type;
+         if(_ghostBitmapPool.hasOwnProperty(name))
          {
-            _loc3_ = _ghostBitmapPool[_loc5_];
+            bitmapData = _ghostBitmapPool[name];
          }
          else
          {
-            _loc4_ = ClassUtils.CreatInstance("asset.game.GhostBox" + (param1 - 1)) as MovieClip;
-            _loc4_.gotoAndStop("shot");
-            _loc3_ = new BitmapData(_loc4_.width,_loc4_.height,true,0);
-            _loc3_.draw(_loc4_);
-            _ghostBitmapPool[_loc5_] = _loc3_;
+            ghastBox = ClassUtils.CreatInstance("asset.game.GhostBox" + (type - 1)) as MovieClip;
+            ghastBox.gotoAndStop("shot");
+            bitmapData = new BitmapData(ghastBox.width,ghastBox.height,true,0);
+            bitmapData.draw(ghastBox);
+            _ghostBitmapPool[name] = bitmapData;
          }
-         var _loc2_:Graphics = _loc6_.graphics;
-         _loc2_.beginBitmapFill(_loc3_);
-         _loc2_.drawRect(0,0,_loc3_.width,_loc3_.height);
-         _loc2_.endFill();
-         return _loc6_;
+         var pen:Graphics = shape.graphics;
+         pen.beginBitmapFill(bitmapData);
+         pen.drawRect(0,0,bitmapData.width,bitmapData.height);
+         pen.endFill();
+         return shape;
       }
    }
 }
@@ -212,40 +212,39 @@ class PsychicShape extends Sprite implements Disposeable
    
    private function draw() : void
    {
-      var _loc1_:* = null;
-      var _loc4_:int = 0;
+      var num:* = null;
+      var i:int = 0;
       clear();
-      var _loc2_:String = _num.toString();
-      var _loc3_:int = _loc2_.length;
-      _loc4_ = 0;
-      while(_loc4_ < _loc3_)
+      var _numString:String = _num.toString();
+      var len:int = _numString.length;
+      for(i = 0; i < len; )
       {
-         _loc1_ = _bitmapMgr.creatBitmapShape("asset.game.PsychicBar.Num" + _loc2_.substr(_loc4_,1));
-         if(_loc4_ > 0)
+         num = _bitmapMgr.creatBitmapShape("asset.game.PsychicBar.Num" + _numString.substr(i,1));
+         if(i > 0)
          {
-            _loc1_.x = _nums[_loc4_ - 1].x + _nums[_loc4_ - 1].width;
+            num.x = _nums[i - 1].x + _nums[i - 1].width;
          }
-         addChild(_loc1_);
-         _nums.push(_loc1_);
-         _loc4_++;
+         addChild(num);
+         _nums.push(num);
+         i++;
       }
    }
    
    private function clear() : void
    {
-      var _loc1_:BitmapShape = _nums.shift();
-      while(_loc1_)
+      var num:BitmapShape = _nums.shift();
+      while(num)
       {
-         _loc1_.dispose();
-         _loc1_ = _nums.shift();
+         num.dispose();
+         num = _nums.shift();
       }
    }
    
-   public function setNum(param1:int) : void
+   public function setNum(val:int) : void
    {
-      if(_num != param1)
+      if(_num != val)
       {
-         _num = param1;
+         _num = val;
          draw();
       }
    }
@@ -284,20 +283,20 @@ class MouseArea extends Sprite implements Disposeable
    
    private var _tipInfo:ChangeNumToolTipInfo;
    
-   function MouseArea(param1:int)
+   function MouseArea(radius:int)
    {
       super();
-      var _loc2_:Graphics = graphics;
-      _loc2_.beginFill(0,0);
-      _loc2_.drawCircle(param1,param1,param1);
-      _loc2_.endFill();
+      var pen:Graphics = graphics;
+      pen.beginFill(0,0);
+      pen.drawCircle(radius,radius,radius);
+      pen.endFill();
       addTip();
       addEvent();
    }
    
-   public function setPsychic(param1:int) : void
+   public function setPsychic(val:int) : void
    {
-      _tipInfo.current = param1;
+      _tipInfo.current = val;
       _tipPanel.tipData = _tipInfo;
    }
    
@@ -339,7 +338,7 @@ class MouseArea extends Sprite implements Disposeable
       _tipPanel.mouseEnabled = false;
    }
    
-   private function __mouseOut(param1:MouseEvent) : void
+   private function __mouseOut(evt:MouseEvent) : void
    {
       if(_tipPanel && _tipPanel.parent)
       {
@@ -347,11 +346,11 @@ class MouseArea extends Sprite implements Disposeable
       }
    }
    
-   private function __mouseOver(param1:MouseEvent) : void
+   private function __mouseOver(evt:MouseEvent) : void
    {
-      var _loc2_:Rectangle = getBounds(LayerManager.Instance.getLayerByType(0));
-      _tipPanel.x = _loc2_.right;
-      _tipPanel.y = _loc2_.top - _tipPanel.height;
+      var bounds:Rectangle = getBounds(LayerManager.Instance.getLayerByType(0));
+      _tipPanel.x = bounds.right;
+      _tipPanel.y = bounds.top - _tipPanel.height;
       LayerManager.Instance.addToLayer(_tipPanel,0,false);
    }
 }

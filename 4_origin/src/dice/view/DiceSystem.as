@@ -16,21 +16,21 @@ package dice.view
          super();
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
          CacheSysManager.lock("alertInDiceSystem");
          KeyboardShortcutsManager.Instance.forbiddenFull();
          _diceView = new DiceSystemView(DiceController.Instance);
          addChild(_diceView);
-         super.enter(param1,param2);
+         super.enter(prev,data);
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
          CacheSysManager.unlock("alertInDiceSystem");
          CacheSysManager.getInstance().release("alertInDiceSystem");
          KeyboardShortcutsManager.Instance.cancelForbidden();
-         super.leaving(param1);
+         super.leaving(next);
       }
       
       override public function getType() : String

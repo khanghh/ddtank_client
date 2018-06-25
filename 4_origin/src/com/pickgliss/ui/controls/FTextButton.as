@@ -14,20 +14,20 @@ package com.pickgliss.ui.controls
       
       public var id:int;
       
-      public function FTextButton(param1:String, param2:String)
+      public function FTextButton(str:String, txtstr:String)
       {
          super();
-         _btn = ComponentFactory.Instance.creatComponentByStylename(param1);
+         _btn = ComponentFactory.Instance.creatComponentByStylename(str);
          addChild(_btn);
-         _txt = ComponentFactory.Instance.creatComponentByStylename(param2);
+         _txt = ComponentFactory.Instance.creatComponentByStylename(txtstr);
          _txt.text = "前去充值";
          _txt.selectable = false;
          addChild(_txt);
       }
       
-      public function setTxt(param1:String) : void
+      public function setTxt(str:String) : void
       {
-         _txt.text = param1;
+         _txt.text = str;
       }
    }
 }

@@ -180,15 +180,15 @@ package invite.view
          _inviteButton.removeEventListener("click",__onInviteClick);
       }
       
-      private function __onInviteClick(param1:MouseEvent) : void
+      private function __onInviteClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:RoomInfo = RoomManager.Instance.current;
-         if(_loc2_ != null)
+         var roominfo:RoomInfo = RoomManager.Instance.current;
+         if(roominfo != null)
          {
-            if(_loc2_.placeCount < 1)
+            if(roominfo.placeCount < 1)
             {
-               if(_loc2_.players.length > 1)
+               if(roominfo.players.length > 1)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.roomlist.RoomListIIBGView.room"));
                }
@@ -201,33 +201,33 @@ package invite.view
             _inviteButton.enable = false;
             _inviteButton.filters = [ComponentFactory.Instance.model.getSet("asset.ddtinvite.GF4")];
             _data.invited = true;
-            if(_loc2_.type == 0)
+            if(roominfo.type == 0)
             {
                if(inviteLvTip(6))
                {
                   return;
                }
             }
-            else if(_loc2_.type == 1)
+            else if(roominfo.type == 1)
             {
                if(inviteLvTip(12))
                {
                   return;
                }
             }
-            else if(_loc2_.type == 49)
+            else if(roominfo.type == 49)
             {
                if(inviteLvTip(20))
                {
                   return;
                }
             }
-            if((_loc2_.type == 4 || _loc2_.type == 11 || _loc2_.type == 23 || _loc2_.type == 123) && _data.Grade < GameManager.MinLevelDuplicate)
+            if((roominfo.type == 4 || roominfo.type == 11 || roominfo.type == 23 || roominfo.type == 123) && _data.Grade < GameManager.MinLevelDuplicate)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.manager.PlayerManager.gradeLow",GameManager.MinLevelDuplicate));
                return;
             }
-            if(_loc2_.type == 21 && _data.Grade < GameManager.MinLevelActivity)
+            if(roominfo.type == 21 && _data.Grade < GameManager.MinLevelActivity)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.manager.PlayerManager.activityLow",GameManager.MinLevelActivity));
                return;
@@ -256,39 +256,39 @@ package invite.view
          }
       }
       
-      private function inviteLvTip(param1:int) : Boolean
+      private function inviteLvTip(lv:int) : Boolean
       {
          if(_data is ConsortiaPlayerInfo)
          {
-            if(_data.info.Grade < param1)
+            if(_data.info.Grade < lv)
             {
-               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.invite.InvitePlayerItem.cannot",param1));
+               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.invite.InvitePlayerItem.cannot",lv));
                return true;
             }
          }
-         else if(_data.Grade < param1)
+         else if(_data.Grade < lv)
          {
-            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.invite.InvitePlayerItem.cannot",param1));
+            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.invite.InvitePlayerItem.cannot",lv));
             return true;
          }
          return false;
       }
       
-      private function checkLevel(param1:int) : Boolean
+      private function checkLevel(level:int) : Boolean
       {
-         var _loc2_:RoomInfo = RoomManager.Instance.current;
-         if(_loc2_ != null)
+         var roominfo:RoomInfo = RoomManager.Instance.current;
+         if(roominfo != null)
          {
-            if(_loc2_.type > 2)
+            if(roominfo.type > 2)
             {
-               if(param1 < GameManager.MinLevelDuplicate)
+               if(level < GameManager.MinLevelDuplicate)
                {
                   return false;
                }
             }
-            else if(_loc2_.type == 2)
+            else if(roominfo.type == 2)
             {
-               if((_loc2_.levelLimits - 1) * 10 > param1)
+               if((roominfo.levelLimits - 1) * 10 > level)
                {
                   return false;
                }
@@ -297,7 +297,7 @@ package invite.view
          return true;
       }
       
-      public function setListCellStatus(param1:List, param2:Boolean, param3:int) : void
+      public function setListCellStatus(list:List, isSelected:Boolean, index:int) : void
       {
       }
       
@@ -306,9 +306,9 @@ package invite.view
          return _data;
       }
       
-      public function setCellValue(param1:*) : void
+      public function setCellValue(value:*) : void
       {
-         _data = param1;
+         _data = value;
          update();
       }
       
@@ -344,12 +344,12 @@ package invite.view
          }
       }
       
-      private function __itemOver(param1:MouseEvent) : void
+      private function __itemOver(evt:MouseEvent) : void
       {
          _titleBG.alpha = 1;
       }
       
-      private function __itemOut(param1:MouseEvent) : void
+      private function __itemOut(evt:MouseEvent) : void
       {
          if(_titleBG.visible && !_data.titleIsSelected)
          {
@@ -357,27 +357,27 @@ package invite.view
          }
       }
       
-      private function showTitle(param1:Boolean) : void
+      private function showTitle(isShowTitle:Boolean) : void
       {
-         _name.visible = !param1;
-         _levelIcon.visible = !param1;
-         _sexIcon.visible = !param1;
-         _masterIcon.visible = !param1;
-         _inviteButton.visible = !param1;
+         _name.visible = !isShowTitle;
+         _levelIcon.visible = !isShowTitle;
+         _sexIcon.visible = !isShowTitle;
+         _masterIcon.visible = !isShowTitle;
+         _inviteButton.visible = !isShowTitle;
          if(_attestBtn != null)
          {
-            _attestBtn.visible = !param1;
+            _attestBtn.visible = !isShowTitle;
          }
          if(_vipName)
          {
-            _vipName.visible = !param1;
+            _vipName.visible = !isShowTitle;
          }
-         this.buttonMode = param1;
-         _titleBG.visible = param1;
+         this.buttonMode = isShowTitle;
+         _titleBG.visible = isShowTitle;
          _titleBG.alpha = 0;
-         _triangle.visible = param1;
-         _titleText.visible = param1;
-         _numText.visible = param1;
+         _triangle.visible = isShowTitle;
+         _titleText.visible = isShowTitle;
+         _numText.visible = isShowTitle;
       }
       
       private function updateTitle() : void

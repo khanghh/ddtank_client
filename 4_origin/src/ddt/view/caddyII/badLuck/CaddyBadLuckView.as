@@ -43,34 +43,33 @@ package ddt.view.caddyII.badLuck
       
       private function initView() : void
       {
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var item:* = null;
          _bg = ComponentFactory.Instance.creat("asset.caddy.badLuckBG");
-         var _loc3_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("caddy.badLuck.sorttitleTxt");
-         _loc3_.text = LanguageMgr.GetTranslation("ddt.caddy.badluck.sortTitletxt");
-         var _loc4_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("caddy.badLuck.NametitleTxt");
-         _loc4_.text = LanguageMgr.GetTranslation("ddt.caddy.badluck.nameTitletxt");
-         var _loc1_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("caddy.badLuck.NumbertitleTxt");
-         _loc1_.text = LanguageMgr.GetTranslation("ddt.caddy.badluck.numberTitletxt");
+         var sortTitleTxt:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("caddy.badLuck.sorttitleTxt");
+         sortTitleTxt.text = LanguageMgr.GetTranslation("ddt.caddy.badluck.sortTitletxt");
+         var NametitleTxt:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("caddy.badLuck.NametitleTxt");
+         NametitleTxt.text = LanguageMgr.GetTranslation("ddt.caddy.badluck.nameTitletxt");
+         var NumbertitleTxt:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("caddy.badLuck.NumbertitleTxt");
+         NumbertitleTxt.text = LanguageMgr.GetTranslation("ddt.caddy.badluck.numberTitletxt");
          _list = ComponentFactory.Instance.creatComponentByStylename("caddy.badLuckBox");
          _panel = ComponentFactory.Instance.creatComponentByStylename("caddy.badLuckScrollpanel");
          _panel.setView(_list);
          _panel.invalidateViewport();
          _Vline = ComponentFactory.Instance.creatComponentByStylename("caddy.badLuck.Vline");
          addChild(_bg);
-         addChild(_loc3_);
-         addChild(_loc4_);
-         addChild(_loc1_);
+         addChild(sortTitleTxt);
+         addChild(NametitleTxt);
+         addChild(NumbertitleTxt);
          addChild(_panel);
          addChild(_Vline);
          _itemList = new Vector.<BadLuckItem>();
-         _loc5_ = 0;
-         while(_loc5_ < 10)
+         for(i = 0; i < 10; )
          {
-            _loc2_ = ComponentFactory.Instance.creatCustomObject("card.BadLuckItem",[_loc5_]);
-            _list.addChild(_loc2_);
-            _itemList.push(_loc2_);
-            _loc5_++;
+            item = ComponentFactory.Instance.creatCustomObject("card.BadLuckItem",[i]);
+            _list.addChild(item);
+            _itemList.push(item);
+            i++;
          }
          _panel.invalidateViewport();
          _dataList = new Vector.<Object>();
@@ -92,7 +91,7 @@ package ddt.view.caddyII.badLuck
          RouletteManager.instance.removeEventListener("update_badLuck",__getBadLuckHandler);
       }
       
-      private function __oneTimer(param1:Event) : void
+      private function __oneTimer(e:Event) : void
       {
          requestData();
       }
@@ -102,22 +101,22 @@ package ddt.view.caddyII.badLuck
          SocketManager.Instance.out.sendQequestBadLuck(true);
       }
       
-      private function __getBadLuckHandler(param1:CaddyEvent) : void
+      private function __getBadLuckHandler(e:CaddyEvent) : void
       {
-         _dataList = param1.dataList;
+         _dataList = e.dataList;
          updateData();
       }
       
       private function updateData() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         _loc2_ = 0;
-         while(_loc2_ < 10 && _loc2_ < _dataList.length)
+         var i:int = 0;
+         var obj:* = null;
+         i = 0;
+         while(i < 10 && i < _dataList.length)
          {
-            _loc1_ = _dataList[_loc2_];
-            _itemList[_loc2_].update(_loc2_,_loc1_["Nickname"],_loc1_["Count"]);
-            _loc2_++;
+            obj = _dataList[i];
+            _itemList[i].update(i,obj["Nickname"],obj["Count"]);
+            i++;
          }
       }
       
@@ -126,10 +125,10 @@ package ddt.view.caddyII.badLuck
          removeEvents();
          var _loc3_:int = 0;
          var _loc2_:* = _itemList;
-         for each(var _loc1_ in _itemList)
+         for each(var item in _itemList)
          {
-            ObjectUtils.disposeObject(_loc1_);
-            _loc1_ = null;
+            ObjectUtils.disposeObject(item);
+            item = null;
          }
          _dataList = null;
          _itemList = null;

@@ -106,26 +106,26 @@ package dragonBones.animation
          return _pool.pop();
       }
       
-      static function returnObject(param1:AnimationState) : void
+      static function returnObject(animationState:AnimationState) : void
       {
-         param1.clear();
-         if(_pool.indexOf(param1) < 0)
+         animationState.clear();
+         if(_pool.indexOf(animationState) < 0)
          {
-            _pool[_pool.length] = param1;
+            _pool[_pool.length] = animationState;
          }
       }
       
       static function clear() : void
       {
-         var _loc1_:int = _pool.length;
+         var i:int = _pool.length;
          while(true)
          {
-            _loc1_--;
-            if(!_loc1_)
+            i--;
+            if(!i)
             {
                break;
             }
-            _pool[_loc1_].clear();
+            _pool[i].clear();
          }
          _pool.length = 0;
          TimelineState.clear();
@@ -141,60 +141,60 @@ package dragonBones.animation
       
       function resetTimelineStateList() : void
       {
-         var _loc1_:int = _timelineStateList.length;
+         var i:int = _timelineStateList.length;
          while(true)
          {
-            _loc1_--;
-            if(!_loc1_)
+            i--;
+            if(!i)
             {
                break;
             }
-            TimelineState.returnObject(_timelineStateList[_loc1_]);
+            TimelineState.returnObject(_timelineStateList[i]);
          }
          _timelineStateList.length = 0;
-         _loc1_ = _slotTimelineStateList.length;
+         i = _slotTimelineStateList.length;
          while(true)
          {
-            _loc1_--;
-            if(!_loc1_)
+            i--;
+            if(!i)
             {
                break;
             }
-            SlotTimelineState.returnObject(_slotTimelineStateList[_loc1_]);
+            SlotTimelineState.returnObject(_slotTimelineStateList[i]);
          }
          _slotTimelineStateList.length = 0;
       }
       
-      public function containsBoneMask(param1:String) : Boolean
+      public function containsBoneMask(boneName:String) : Boolean
       {
-         return _boneMasks.length == 0 || _boneMasks.indexOf(param1) >= 0;
+         return _boneMasks.length == 0 || _boneMasks.indexOf(boneName) >= 0;
       }
       
-      public function addBoneMask(param1:String, param2:Boolean = true) : AnimationState
+      public function addBoneMask(boneName:String, ifInvolveChildBones:Boolean = true) : AnimationState
       {
-         var _loc3_:* = null;
-         var _loc5_:* = undefined;
-         var _loc6_:int = 0;
-         var _loc4_:* = null;
-         addBoneToBoneMask(param1);
-         if(param2)
+         var currentBone:* = null;
+         var boneList:* = undefined;
+         var i:int = 0;
+         var tempBone:* = null;
+         addBoneToBoneMask(boneName);
+         if(ifInvolveChildBones)
          {
-            _loc3_ = _armature.getBone(param1);
-            if(_loc3_)
+            currentBone = _armature.getBone(boneName);
+            if(currentBone)
             {
-               _loc5_ = _armature.getBones(false);
-               _loc6_ = _loc5_.length;
+               boneList = _armature.getBones(false);
+               i = boneList.length;
                while(true)
                {
-                  _loc6_--;
-                  if(!_loc6_)
+                  i--;
+                  if(!i)
                   {
                      break;
                   }
-                  _loc4_ = _loc5_[_loc6_];
-                  if(_loc3_.contains(_loc4_))
+                  tempBone = boneList[i];
+                  if(currentBone.contains(tempBone))
                   {
-                     addBoneToBoneMask(_loc4_.name);
+                     addBoneToBoneMask(tempBone.name);
                   }
                }
             }
@@ -203,31 +203,31 @@ package dragonBones.animation
          return this;
       }
       
-      public function removeBoneMask(param1:String, param2:Boolean = true) : AnimationState
+      public function removeBoneMask(boneName:String, ifInvolveChildBones:Boolean = true) : AnimationState
       {
-         var _loc3_:* = null;
-         var _loc5_:* = undefined;
-         var _loc6_:int = 0;
-         var _loc4_:* = null;
-         removeBoneFromBoneMask(param1);
-         if(param2)
+         var currentBone:* = null;
+         var boneList:* = undefined;
+         var i:int = 0;
+         var tempBone:* = null;
+         removeBoneFromBoneMask(boneName);
+         if(ifInvolveChildBones)
          {
-            _loc3_ = _armature.getBone(param1);
-            if(_loc3_)
+            currentBone = _armature.getBone(boneName);
+            if(currentBone)
             {
-               _loc5_ = _armature.getBones(false);
-               _loc6_ = _loc5_.length;
+               boneList = _armature.getBones(false);
+               i = boneList.length;
                while(true)
                {
-                  _loc6_--;
-                  if(!_loc6_)
+                  i--;
+                  if(!i)
                   {
                      break;
                   }
-                  _loc4_ = _loc5_[_loc6_];
-                  if(_loc3_.contains(_loc4_))
+                  tempBone = boneList[i];
+                  if(currentBone.contains(tempBone))
                   {
-                     removeBoneFromBoneMask(_loc4_.name);
+                     removeBoneFromBoneMask(tempBone.name);
                   }
                }
             }
@@ -243,149 +243,149 @@ package dragonBones.animation
          return this;
       }
       
-      private function addBoneToBoneMask(param1:String) : void
+      private function addBoneToBoneMask(boneName:String) : void
       {
-         if(_clip.getTimeline(param1) && _boneMasks.indexOf(param1) < 0)
+         if(_clip.getTimeline(boneName) && _boneMasks.indexOf(boneName) < 0)
          {
-            _boneMasks.push(param1);
+            _boneMasks.push(boneName);
          }
       }
       
-      private function removeBoneFromBoneMask(param1:String) : void
+      private function removeBoneFromBoneMask(boneName:String) : void
       {
-         var _loc2_:int = _boneMasks.indexOf(param1);
-         if(_loc2_ >= 0)
+         var index:int = _boneMasks.indexOf(boneName);
+         if(index >= 0)
          {
-            _boneMasks.splice(_loc2_,1);
+            _boneMasks.splice(index,1);
          }
       }
       
       function updateTimelineStates() : void
       {
-         var _loc5_:* = null;
-         var _loc4_:* = null;
-         var _loc6_:int = _timelineStateList.length;
+         var timelineState:* = null;
+         var slotTimelineState:* = null;
+         var i:int = _timelineStateList.length;
          while(true)
          {
-            _loc6_--;
-            if(!_loc6_)
+            i--;
+            if(!i)
             {
                break;
             }
-            _loc5_ = _timelineStateList[_loc6_];
-            if(!_armature.getBone(_loc5_.name))
+            timelineState = _timelineStateList[i];
+            if(!_armature.getBone(timelineState.name))
             {
-               removeTimelineState(_loc5_);
+               removeTimelineState(timelineState);
             }
          }
-         _loc6_ = _slotTimelineStateList.length;
+         i = _slotTimelineStateList.length;
          while(true)
          {
-            _loc6_--;
-            if(!_loc6_)
+            i--;
+            if(!i)
             {
                break;
             }
-            _loc4_ = _slotTimelineStateList[_loc6_];
-            if(!_armature.getSlot(_loc4_.name))
+            slotTimelineState = _slotTimelineStateList[i];
+            if(!_armature.getSlot(slotTimelineState.name))
             {
-               removeSlotTimelineState(_loc4_);
+               removeSlotTimelineState(slotTimelineState);
             }
          }
          if(_boneMasks.length > 0)
          {
-            _loc6_ = _timelineStateList.length;
+            i = _timelineStateList.length;
             while(true)
             {
-               _loc6_--;
-               if(!_loc6_)
+               i--;
+               if(!i)
                {
                   break;
                }
-               _loc5_ = _timelineStateList[_loc6_];
-               if(_boneMasks.indexOf(_loc5_.name) < 0)
+               timelineState = _timelineStateList[i];
+               if(_boneMasks.indexOf(timelineState.name) < 0)
                {
-                  removeTimelineState(_loc5_);
+                  removeTimelineState(timelineState);
                }
             }
             var _loc8_:int = 0;
             var _loc7_:* = _boneMasks;
-            for each(var _loc2_ in _boneMasks)
+            for each(var timelineName in _boneMasks)
             {
-               addTimelineState(_loc2_);
+               addTimelineState(timelineName);
             }
          }
          else
          {
             var _loc10_:int = 0;
             var _loc9_:* = _clip.timelineList;
-            for each(var _loc3_ in _clip.timelineList)
+            for each(var timeline in _clip.timelineList)
             {
-               addTimelineState(_loc3_.name);
+               addTimelineState(timeline.name);
             }
          }
          var _loc12_:int = 0;
          var _loc11_:* = _clip.slotTimelineList;
-         for each(var _loc1_ in _clip.slotTimelineList)
+         for each(var slotTimeline in _clip.slotTimelineList)
          {
-            addSlotTimelineState(_loc1_.name);
+            addSlotTimelineState(slotTimeline.name);
          }
       }
       
-      private function addTimelineState(param1:String) : void
+      private function addTimelineState(timelineName:String) : void
       {
-         var _loc4_:* = null;
-         var _loc2_:Bone = _armature.getBone(param1);
-         if(_loc2_)
+         var timelineState:* = null;
+         var bone:Bone = _armature.getBone(timelineName);
+         if(bone)
          {
             var _loc6_:int = 0;
             var _loc5_:* = _timelineStateList;
-            for each(var _loc3_ in _timelineStateList)
+            for each(var eachState in _timelineStateList)
             {
-               if(_loc3_.name == param1)
+               if(eachState.name == timelineName)
                {
                   return;
                }
             }
-            _loc4_ = TimelineState.borrowObject();
-            _loc4_.fadeIn(_loc2_,this,_clip.getTimeline(param1));
-            _timelineStateList.push(_loc4_);
+            timelineState = TimelineState.borrowObject();
+            timelineState.fadeIn(bone,this,_clip.getTimeline(timelineName));
+            _timelineStateList.push(timelineState);
          }
       }
       
-      private function removeTimelineState(param1:TimelineState) : void
+      private function removeTimelineState(timelineState:TimelineState) : void
       {
-         var _loc2_:int = _timelineStateList.indexOf(param1);
-         _timelineStateList.splice(_loc2_,1);
-         TimelineState.returnObject(param1);
+         var index:int = _timelineStateList.indexOf(timelineState);
+         _timelineStateList.splice(index,1);
+         TimelineState.returnObject(timelineState);
       }
       
-      private function addSlotTimelineState(param1:String) : void
+      private function addSlotTimelineState(timelineName:String) : void
       {
-         var _loc3_:* = null;
-         var _loc4_:Slot = _armature.getSlot(param1);
-         if(_loc4_ && _loc4_.displayList.length > 0)
+         var timelineState:* = null;
+         var slot:Slot = _armature.getSlot(timelineName);
+         if(slot && slot.displayList.length > 0)
          {
             var _loc6_:int = 0;
             var _loc5_:* = _slotTimelineStateList;
-            for each(var _loc2_ in _slotTimelineStateList)
+            for each(var eachState in _slotTimelineStateList)
             {
-               if(_loc2_.name == param1)
+               if(eachState.name == timelineName)
                {
                   return;
                }
             }
-            _loc3_ = SlotTimelineState.borrowObject();
-            _loc3_.fadeIn(_loc4_,this,_clip.getSlotTimeline(param1));
-            _slotTimelineStateList.push(_loc3_);
+            timelineState = SlotTimelineState.borrowObject();
+            timelineState.fadeIn(slot,this,_clip.getSlotTimeline(timelineName));
+            _slotTimelineStateList.push(timelineState);
          }
       }
       
-      private function removeSlotTimelineState(param1:SlotTimelineState) : void
+      private function removeSlotTimelineState(timelineState:SlotTimelineState) : void
       {
-         var _loc2_:int = _slotTimelineStateList.indexOf(param1);
-         _slotTimelineStateList.splice(_loc2_,1);
-         SlotTimelineState.returnObject(param1);
+         var index:int = _slotTimelineStateList.indexOf(timelineState);
+         _slotTimelineStateList.splice(index,1);
+         SlotTimelineState.returnObject(timelineState);
       }
       
       public function play() : AnimationState
@@ -400,20 +400,20 @@ package dragonBones.animation
          return this;
       }
       
-      function fadeIn(param1:Armature, param2:AnimationData, param3:Number, param4:Number, param5:Number, param6:Boolean) : AnimationState
+      function fadeIn(armature:Armature, clip:AnimationData, fadeTotalTime:Number, timeScale:Number, playTimes:Number, pausePlayhead:Boolean) : AnimationState
       {
-         _armature = param1;
-         _clip = param2;
-         _pausePlayheadInFade = param6;
+         _armature = armature;
+         _clip = clip;
+         _pausePlayheadInFade = pausePlayhead;
          _name = _clip.name;
          _totalTime = _clip.duration;
          autoTween = _clip.autoTween;
-         setTimeScale(param4);
-         setPlayTimes(param5);
+         setTimeScale(timeScale);
+         setPlayTimes(playTimes);
          _isComplete = false;
          _currentFrameIndex = -1;
          _currentPlayTimes = -1;
-         if(Math.round(_totalTime * _clip.frameRate * 0.001) < 2 || param4 == Infinity)
+         if(Math.round(_totalTime * _clip.frameRate * 0.001) < 2 || timeScale == Infinity)
          {
             _currentTime = _totalTime;
          }
@@ -429,31 +429,31 @@ package dragonBones.animation
          _fadeState = -1;
          _fadeCurrentTime = 0;
          _fadeBeginTime = _fadeCurrentTime;
-         _fadeTotalTime = param3 * _timeScale;
+         _fadeTotalTime = fadeTotalTime * _timeScale;
          _isPlaying = true;
          displayControl = true;
          lastFrameAutoTween = true;
          additiveBlending = false;
          weight = 1;
-         fadeOutTime = param3;
+         fadeOutTime = fadeTotalTime;
          updateTimelineStates();
          return this;
       }
       
-      public function fadeOut(param1:Number, param2:Boolean) : AnimationState
+      public function fadeOut(fadeTotalTime:Number, pausePlayhead:Boolean) : AnimationState
       {
          if(!_armature)
          {
             return null;
          }
-         if(isNaN(param1) || param1 < 0)
+         if(isNaN(fadeTotalTime) || fadeTotalTime < 0)
          {
-            param1 = 0;
+            fadeTotalTime = 0;
          }
-         _pausePlayheadInFade = param2;
+         _pausePlayheadInFade = pausePlayhead;
          if(_isFadeOut)
          {
-            if(param1 > _fadeTotalTime / _timeScale - (_fadeCurrentTime - _fadeBeginTime))
+            if(fadeTotalTime > _fadeTotalTime / _timeScale - (_fadeCurrentTime - _fadeBeginTime))
             {
                return this;
             }
@@ -462,46 +462,46 @@ package dragonBones.animation
          {
             var _loc5_:int = 0;
             var _loc4_:* = _timelineStateList;
-            for each(var _loc3_ in _timelineStateList)
+            for each(var timelineState in _timelineStateList)
             {
-               _loc3_.fadeOut();
+               timelineState.fadeOut();
             }
          }
          _isFadeOut = true;
          _fadeTotalWeight = _fadeWeight;
          _fadeState = -1;
          _fadeBeginTime = _fadeCurrentTime;
-         _fadeTotalTime = _fadeTotalWeight >= 0?param1 * _timeScale:0;
+         _fadeTotalTime = _fadeTotalWeight >= 0?fadeTotalTime * _timeScale:0;
          displayControl = false;
          return this;
       }
       
-      function advanceTime(param1:Number) : Boolean
+      function advanceTime(passedTime:Number) : Boolean
       {
-         param1 = param1 * _timeScale;
-         advanceFadeTime(param1);
+         passedTime = passedTime * _timeScale;
+         advanceFadeTime(passedTime);
          if(_fadeWeight)
          {
-            advanceTimelinesTime(param1);
+            advanceTimelinesTime(passedTime);
          }
          return _isFadeOut && _fadeState == 1;
       }
       
-      private function advanceFadeTime(param1:Number) : void
+      private function advanceFadeTime(passedTime:Number) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:Boolean = false;
-         var _loc5_:Boolean = false;
+         var fadeState:int = 0;
+         var event:* = null;
+         var fadeStartFlg:Boolean = false;
+         var fadeCompleteFlg:Boolean = false;
          if(_fadeBeginTime >= 0)
          {
-            _loc2_ = _fadeState;
-            _fadeCurrentTime = _fadeCurrentTime + (param1 < 0?-param1:Number(param1));
+            fadeState = _fadeState;
+            _fadeCurrentTime = _fadeCurrentTime + (passedTime < 0?-passedTime:Number(passedTime));
             if(_fadeCurrentTime >= _fadeBeginTime + _fadeTotalTime)
             {
                if(_fadeWeight == 1 || _fadeWeight == 0)
                {
-                  _loc2_ = 1;
+                  fadeState = 1;
                   if(_pausePlayheadInFade)
                   {
                      _pausePlayheadInFade = false;
@@ -512,7 +512,7 @@ package dragonBones.animation
             }
             else if(_fadeCurrentTime >= _fadeBeginTime)
             {
-               _loc2_ = 0;
+               fadeState = 0;
                _fadeWeight = (_fadeCurrentTime - _fadeBeginTime) / _fadeTotalTime * _fadeTotalWeight;
                if(_isFadeOut)
                {
@@ -521,31 +521,31 @@ package dragonBones.animation
             }
             else
             {
-               _loc2_ = -1;
+               fadeState = -1;
                _fadeWeight = !!_isFadeOut?1:0;
             }
-            if(_fadeState != _loc2_)
+            if(_fadeState != fadeState)
             {
                if(_fadeState == -1)
                {
-                  _loc4_ = true;
+                  fadeStartFlg = true;
                }
-               if(_loc2_ == 1)
+               if(fadeState == 1)
                {
-                  _loc5_ = true;
+                  fadeCompleteFlg = true;
                }
-               _fadeState = _loc2_;
+               _fadeState = fadeState;
             }
          }
-         if(_loc4_)
+         if(fadeStartFlg)
          {
             if(_isFadeOut)
             {
                if(_armature.hasEventListener("fadeOut"))
                {
-                  _loc3_ = new AnimationEvent("fadeOut");
-                  _loc3_.animationState = this;
-                  _armature._eventList.push(_loc3_);
+                  event = new AnimationEvent("fadeOut");
+                  event.animationState = this;
+                  _armature._eventList.push(event);
                }
             }
             else
@@ -553,167 +553,165 @@ package dragonBones.animation
                hideBones();
                if(_armature.hasEventListener("fadeIn"))
                {
-                  _loc3_ = new AnimationEvent("fadeIn");
-                  _loc3_.animationState = this;
-                  _armature._eventList.push(_loc3_);
+                  event = new AnimationEvent("fadeIn");
+                  event.animationState = this;
+                  _armature._eventList.push(event);
                }
             }
          }
-         if(_loc5_)
+         if(fadeCompleteFlg)
          {
             if(_isFadeOut)
             {
                if(_armature.hasEventListener("fadeOutComplete"))
                {
-                  _loc3_ = new AnimationEvent("fadeOutComplete");
-                  _loc3_.animationState = this;
-                  _armature._eventList.push(_loc3_);
+                  event = new AnimationEvent("fadeOutComplete");
+                  event.animationState = this;
+                  _armature._eventList.push(event);
                }
             }
             else if(_armature.hasEventListener("fadeInComplete"))
             {
-               _loc3_ = new AnimationEvent("fadeInComplete");
-               _loc3_.animationState = this;
-               _armature._eventList.push(_loc3_);
+               event = new AnimationEvent("fadeInComplete");
+               event.animationState = this;
+               _armature._eventList.push(event);
             }
          }
       }
       
-      private function advanceTimelinesTime(param1:Number) : void
+      private function advanceTimelinesTime(passedTime:Number) : void
       {
-         var _loc8_:int = 0;
-         var _loc7_:* = null;
+         var totalTimes:int = 0;
+         var event:* = null;
          if(_isPlaying && !_pausePlayheadInFade)
          {
-            _time = _time + param1;
+            _time = _time + passedTime;
          }
-         var _loc10_:Boolean = false;
-         var _loc12_:Boolean = false;
-         var _loc6_:Boolean = false;
-         var _loc5_:Boolean = false;
-         var _loc11_:int = 0;
-         var _loc4_:* = int(_time * 1000);
+         var startFlg:Boolean = false;
+         var completeFlg:Boolean = false;
+         var loopCompleteFlg:Boolean = false;
+         var isThisComplete:Boolean = false;
+         var currentPlayTimes:int = 0;
+         var currentTime:* = int(_time * 1000);
          if(_playTimes == 0)
          {
-            _loc5_ = false;
-            _loc11_ = Math.ceil(Math.abs(_loc4_) / _totalTime) || 1;
-            _loc4_ = int(_loc4_ - int(_loc4_ / _totalTime) * _totalTime);
-            if(_loc4_ < 0)
+            isThisComplete = false;
+            currentPlayTimes = Math.ceil(Math.abs(currentTime) / _totalTime) || 1;
+            currentTime = int(currentTime - int(currentTime / _totalTime) * _totalTime);
+            if(currentTime < 0)
             {
-               _loc4_ = int(_loc4_ + _totalTime);
+               currentTime = int(currentTime + _totalTime);
             }
          }
          else
          {
-            _loc8_ = _playTimes * _totalTime;
-            if(_loc4_ >= _loc8_)
+            totalTimes = _playTimes * _totalTime;
+            if(currentTime >= totalTimes)
             {
-               _loc4_ = _loc8_;
-               _loc5_ = true;
+               currentTime = totalTimes;
+               isThisComplete = true;
             }
-            else if(_loc4_ <= -_loc8_)
+            else if(currentTime <= -totalTimes)
             {
-               _loc4_ = int(-_loc8_);
-               _loc5_ = true;
+               currentTime = int(-totalTimes);
+               isThisComplete = true;
             }
             else
             {
-               _loc5_ = false;
+               isThisComplete = false;
             }
-            if(_loc4_ < 0)
+            if(currentTime < 0)
             {
-               _loc4_ = int(_loc4_ + _loc8_);
+               currentTime = int(currentTime + totalTimes);
             }
-            _loc11_ = Math.ceil(_loc4_ / _totalTime) || 1;
-            _loc4_ = int(_loc4_ - int(_loc4_ / _totalTime) * _totalTime);
-            if(_loc5_)
+            currentPlayTimes = Math.ceil(currentTime / _totalTime) || 1;
+            currentTime = int(currentTime - int(currentTime / _totalTime) * _totalTime);
+            if(isThisComplete)
             {
-               _loc4_ = int(_totalTime);
+               currentTime = int(_totalTime);
             }
          }
-         _isComplete = _loc5_;
-         var _loc3_:Number = _time * 1000 / _totalTime;
+         _isComplete = isThisComplete;
+         var progress:Number = _time * 1000 / _totalTime;
          var _loc14_:int = 0;
          var _loc13_:* = _timelineStateList;
-         for each(var _loc9_ in _timelineStateList)
+         for each(var timeline in _timelineStateList)
          {
-            _loc9_.update(_loc3_);
-            _isComplete = _loc9_._isComplete && _isComplete;
+            timeline.update(progress);
+            _isComplete = timeline._isComplete && _isComplete;
          }
          var _loc16_:int = 0;
          var _loc15_:* = _slotTimelineStateList;
-         for each(var _loc2_ in _slotTimelineStateList)
+         for each(var slotTimeline in _slotTimelineStateList)
          {
-            _loc2_.update(_loc3_);
-            _isComplete = _loc2_._isComplete && _isComplete;
+            slotTimeline.update(progress);
+            _isComplete = slotTimeline._isComplete && _isComplete;
          }
-         if(_currentTime != _loc4_)
+         if(_currentTime != currentTime)
          {
-            if(_currentPlayTimes != _loc11_)
+            if(_currentPlayTimes != currentPlayTimes)
             {
-               if(_currentPlayTimes > 0 && _loc11_ > 1)
+               if(_currentPlayTimes > 0 && currentPlayTimes > 1)
                {
-                  _loc6_ = true;
+                  loopCompleteFlg = true;
                }
-               _currentPlayTimes = _loc11_;
+               _currentPlayTimes = currentPlayTimes;
             }
             if(_currentTime < 0)
             {
-               _loc10_ = true;
+               startFlg = true;
             }
             if(_isComplete)
             {
-               _loc12_ = true;
+               completeFlg = true;
             }
             _lastTime = _currentTime;
-            _currentTime = _loc4_;
-            updateMainTimeline(_loc5_);
+            _currentTime = currentTime;
+            updateMainTimeline(isThisComplete);
          }
-         if(_loc10_)
+         if(startFlg)
          {
             if(_armature.hasEventListener("start"))
             {
-               _loc7_ = new AnimationEvent("start");
-               _loc7_.animationState = this;
-               _armature._eventList.push(_loc7_);
+               event = new AnimationEvent("start");
+               event.animationState = this;
+               _armature._eventList.push(event);
             }
          }
-         if(_loc12_)
+         if(completeFlg)
          {
             if(_armature.hasEventListener("complete"))
             {
-               _loc7_ = new AnimationEvent("complete");
-               _loc7_.animationState = this;
-               _armature._eventList.push(_loc7_);
+               event = new AnimationEvent("complete");
+               event.animationState = this;
+               _armature._eventList.push(event);
             }
             if(autoFadeOut)
             {
                fadeOut(fadeOutTime,true);
             }
          }
-         else if(_loc6_)
+         else if(loopCompleteFlg)
          {
             if(_armature.hasEventListener("loopComplete"))
             {
-               _loc7_ = new AnimationEvent("loopComplete");
-               _loc7_.animationState = this;
-               _armature._eventList.push(_loc7_);
+               event = new AnimationEvent("loopComplete");
+               event.animationState = this;
+               _armature._eventList.push(event);
             }
          }
       }
       
-      private function updateMainTimeline(param1:Boolean) : void
+      private function updateMainTimeline(isThisComplete:Boolean) : void
       {
-         var _loc2_:* = null;
-         var _loc5_:* = null;
-         var _loc6_:int = 0;
-         var _loc3_:int = 0;
-         var _loc4_:Vector.<Frame> = _clip.frameList;
-         if(_loc4_.length > 0)
+         var prevFrame:* = null;
+         var currentFrame:* = null;
+         var i:int = 0;
+         var l:int = 0;
+         var frameList:Vector.<Frame> = _clip.frameList;
+         if(frameList.length > 0)
          {
-            _loc6_ = 0;
-            _loc3_ = _clip.frameList.length;
-            while(_loc6_ < _loc3_)
+            for(i = 0,l = _clip.frameList.length; i < l; )
             {
                if(_currentFrameIndex < 0)
                {
@@ -723,9 +721,9 @@ package dragonBones.animation
                {
                   _lastTime = _currentTime;
                   _currentFrameIndex = Number(_currentFrameIndex) + 1;
-                  if(_currentFrameIndex >= _loc4_.length)
+                  if(_currentFrameIndex >= frameList.length)
                   {
-                     if(param1)
+                     if(isThisComplete)
                      {
                         _currentFrameIndex = Number(_currentFrameIndex) - 1;
                         break;
@@ -737,103 +735,103 @@ package dragonBones.animation
                {
                   break;
                }
-               _loc5_ = _loc4_[_currentFrameIndex];
-               if(_loc2_)
+               currentFrame = frameList[_currentFrameIndex];
+               if(prevFrame)
                {
-                  _armature.arriveAtFrame(_loc2_,null,this,true);
+                  _armature.arriveAtFrame(prevFrame,null,this,true);
                }
-               _currentFrameDuration = _loc5_.duration;
-               _currentFramePosition = _loc5_.position;
-               _loc2_ = _loc5_;
-               _loc6_++;
+               _currentFrameDuration = currentFrame.duration;
+               _currentFramePosition = currentFrame.position;
+               prevFrame = currentFrame;
+               i++;
             }
-            if(_loc5_)
+            if(currentFrame)
             {
-               _armature.arriveAtFrame(_loc5_,null,this,false);
+               _armature.arriveAtFrame(currentFrame,null,this,false);
             }
          }
       }
       
       private function hideBones() : void
       {
-         var _loc2_:* = null;
+         var bone:* = null;
          var _loc4_:int = 0;
          var _loc3_:* = _clip.hideTimelineNameMap;
-         for each(var _loc1_ in _clip.hideTimelineNameMap)
+         for each(var timelineName in _clip.hideTimelineNameMap)
          {
-            _loc2_ = _armature.getBone(_loc1_);
-            if(_loc2_)
+            bone = _armature.getBone(timelineName);
+            if(bone)
             {
-               _loc2_.hideSlots();
+               bone.hideSlots();
             }
          }
       }
       
-      public function setAdditiveBlending(param1:Boolean) : AnimationState
+      public function setAdditiveBlending(value:Boolean) : AnimationState
       {
-         additiveBlending = param1;
+         additiveBlending = value;
          return this;
       }
       
-      public function setAutoFadeOut(param1:Boolean, param2:Number = -1) : AnimationState
+      public function setAutoFadeOut(value:Boolean, fadeOutTime:Number = -1) : AnimationState
       {
-         autoFadeOut = param1;
-         if(param2 >= 0)
+         autoFadeOut = value;
+         if(fadeOutTime >= 0)
          {
-            this.fadeOutTime = param2 * _timeScale;
+            this.fadeOutTime = fadeOutTime * _timeScale;
          }
          return this;
       }
       
-      public function setWeight(param1:Number) : AnimationState
+      public function setWeight(value:Number) : AnimationState
       {
-         if(isNaN(param1) || param1 < 0)
+         if(isNaN(value) || value < 0)
          {
-            param1 = 1;
+            value = 1;
          }
-         weight = param1;
+         weight = value;
          return this;
       }
       
-      public function setFrameTween(param1:Boolean, param2:Boolean) : AnimationState
+      public function setFrameTween(autoTween:Boolean, lastFrameAutoTween:Boolean) : AnimationState
       {
-         this.autoTween = param1;
-         this.lastFrameAutoTween = param2;
+         this.autoTween = autoTween;
+         this.lastFrameAutoTween = lastFrameAutoTween;
          return this;
       }
       
-      public function setCurrentTime(param1:Number) : AnimationState
+      public function setCurrentTime(value:Number) : AnimationState
       {
-         if(param1 < 0 || isNaN(param1))
+         if(value < 0 || isNaN(value))
          {
-            param1 = 0;
+            value = 0;
          }
-         _time = param1;
+         _time = value;
          _currentTime = _time * 1000;
          return this;
       }
       
-      public function setTimeScale(param1:Number) : AnimationState
+      public function setTimeScale(value:Number) : AnimationState
       {
-         if(isNaN(param1) || param1 == Infinity)
+         if(isNaN(value) || value == Infinity)
          {
-            param1 = 1;
+            value = 1;
          }
-         _timeScale = param1;
+         _timeScale = value;
          return this;
       }
       
-      public function setPlayTimes(param1:int) : AnimationState
+      public function setPlayTimes(value:int) : AnimationState
       {
          if(Math.round(_totalTime * 0.001 * _clip.frameRate) < 2)
          {
-            _playTimes = param1 < 0?-1:1;
+            _playTimes = value < 0?-1:1;
          }
          else
          {
-            _playTimes = param1 < 0?-param1:param1;
+            _playTimes = value < 0?-value:value;
          }
-         autoFadeOut = param1 < 0?true:false;
+         autoFadeOut = value < 0?true:false;
          return this;
       }
       

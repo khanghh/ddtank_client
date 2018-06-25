@@ -8,27 +8,26 @@ package petsBag.petsAdvanced
       
       private var _list:Vector.<int>;
       
-      public function PetsCellUnlocakPriceAnalyzer(param1:Function)
+      public function PetsCellUnlocakPriceAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:XML = new XML(param1);
-         var _loc3_:int = _loc2_.children().length();
+         var i:int = 0;
+         var xml:XML = new XML(data);
+         var len:int = xml.children().length();
          _list = new Vector.<int>();
-         if(_loc2_.@value == "true")
+         if(xml.@value == "true")
          {
-            _loc4_ = 0;
-            while(_loc4_ < _loc3_)
+            for(i = 0; i < len; )
             {
-               var _loc5_:* = _loc2_.item;
+               var _loc5_:* = xml.item;
                var _loc6_:int = 0;
                var _loc8_:* = new XMLList("");
-               _list[_loc4_] = _loc2_.item.(@ID == _loc4_ + 1).@money;
-               _loc4_++;
+               _list[i] = xml.item.(@ID == i + 1).@money;
+               i++;
             }
             onAnalyzeComplete();
          }

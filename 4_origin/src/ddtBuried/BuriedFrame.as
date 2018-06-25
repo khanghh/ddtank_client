@@ -53,20 +53,20 @@ package ddtBuried
          _rewardsProgressBar.updateProgressState();
       }
       
-      public function updatePlayGainedAnimation(param1:int) : void
+      public function updatePlayGainedAnimation(index:int) : void
       {
-         _rewardsProgressBar.playGainBox(param1);
+         _rewardsProgressBar.playGainBox(index);
       }
       
-      public function updateShowGetRewardBoxAnimation(param1:int) : void
+      public function updateShowGetRewardBoxAnimation(index:int) : void
       {
-         _rewardsProgressBar.playGetRewardBoxAnimation(param1);
+         _rewardsProgressBar.playGetRewardBoxAnimation(index);
       }
       
-      public function addDiceView(param1:int) : void
+      public function addDiceView(type:int) : void
       {
          _diceView = new DiceView();
-         switch(int(param1) - 1)
+         switch(int(type) - 1)
          {
             case 0:
                _diceView.addMaps(BuriedControl.Instance.mapArrays.itemMaps1,11,7,2,94);
@@ -80,24 +80,24 @@ package ddtBuried
          addToContent(_diceView);
       }
       
-      public function setStarList(param1:int) : void
+      public function setStarList(num:int) : void
       {
-         _diceView.setStarList(param1);
+         _diceView.setStarList(num);
       }
       
-      public function updataStarLevel(param1:int) : void
+      public function updataStarLevel(num:int) : void
       {
-         _diceView.updataStarLevel(param1);
+         _diceView.updataStarLevel(num);
       }
       
-      public function setCrFrame(param1:String) : void
+      public function setCrFrame(str:String) : void
       {
-         _diceView.setCrFrame(param1);
+         _diceView.setCrFrame(str);
       }
       
-      public function setTxt(param1:String, param2:Boolean = true) : void
+      public function setTxt(str:String, $visible:Boolean = true) : void
       {
-         _diceView.setTxt(param1,param2);
+         _diceView.setTxt(str,$visible);
       }
       
       public function play() : void
@@ -122,7 +122,7 @@ package ddtBuried
          BuriedControl.Instance.removeEventListener("openburiedview",openBuriedHander);
       }
       
-      private function openBuriedHander(param1:BuriedEvent) : void
+      private function openBuriedHander(e:BuriedEvent) : void
       {
          if(_buriedView)
          {
@@ -133,9 +133,9 @@ package ddtBuried
          addToContent(_buriedView);
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();

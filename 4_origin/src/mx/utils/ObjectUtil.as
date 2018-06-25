@@ -26,153 +26,153 @@ package mx.utils
          super();
       }
       
-      public static function compare(param1:Object, param2:Object, param3:int = -1) : int
+      public static function compare(a:Object, b:Object, depth:int = -1) : int
       {
-         return internalCompare(param1,param2,0,param3,new Dictionary(true));
+         return internalCompare(a,b,0,depth,new Dictionary(true));
       }
       
-      public static function copy(param1:Object) : Object
+      public static function copy(value:Object) : Object
       {
-         var _loc2_:ByteArray = new ByteArray();
-         _loc2_.writeObject(param1);
-         _loc2_.position = 0;
-         var _loc3_:Object = _loc2_.readObject();
-         return _loc3_;
+         var buffer:ByteArray = new ByteArray();
+         buffer.writeObject(value);
+         buffer.position = 0;
+         var result:Object = buffer.readObject();
+         return result;
       }
       
-      public static function clone(param1:Object) : Object
+      public static function clone(value:Object) : Object
       {
-         var _loc2_:Object = copy(param1);
-         cloneInternal(_loc2_,param1);
-         return _loc2_;
+         var result:Object = copy(value);
+         cloneInternal(result,value);
+         return result;
       }
       
-      private static function cloneInternal(param1:Object, param2:Object) : void
+      private static function cloneInternal(result:Object, value:Object) : void
       {
-         var _loc4_:Object = null;
-         var _loc5_:* = undefined;
-         param1.uid = param2.uid;
-         var _loc3_:Object = getClassInfo(param2);
-         for each(_loc5_ in _loc3_.properties)
+         var v:Object = null;
+         var p:* = undefined;
+         result.uid = value.uid;
+         var classInfo:Object = getClassInfo(value);
+         for each(p in classInfo.properties)
          {
-            _loc4_ = param2[_loc5_];
-            if(_loc4_ && _loc4_.hasOwnProperty("uid"))
+            v = value[p];
+            if(v && v.hasOwnProperty("uid"))
             {
-               cloneInternal(param1[_loc5_],_loc4_);
+               cloneInternal(result[p],v);
             }
          }
       }
       
-      public static function isSimple(param1:Object) : Boolean
+      public static function isSimple(value:Object) : Boolean
       {
-         var _loc2_:String = typeof param1;
-         switch(_loc2_)
+         var type:String = typeof value;
+         switch(type)
          {
             case "number":
             case "string":
             case "boolean":
                return true;
             case "object":
-               return param1 is Date || param1 is Array;
+               return value is Date || value is Array;
             default:
                return false;
          }
       }
       
-      public static function numericCompare(param1:Number, param2:Number) : int
+      public static function numericCompare(a:Number, b:Number) : int
       {
-         if(isNaN(param1) && isNaN(param2))
+         if(isNaN(a) && isNaN(b))
          {
             return 0;
          }
-         if(isNaN(param1))
+         if(isNaN(a))
          {
             return 1;
          }
-         if(isNaN(param2))
+         if(isNaN(b))
          {
             return -1;
          }
-         if(param1 < param2)
+         if(a < b)
          {
             return -1;
          }
-         if(param1 > param2)
+         if(a > b)
          {
             return 1;
          }
          return 0;
       }
       
-      public static function stringCompare(param1:String, param2:String, param3:Boolean = false) : int
+      public static function stringCompare(a:String, b:String, caseInsensitive:Boolean = false) : int
       {
-         if(param1 == null && param2 == null)
+         if(a == null && b == null)
          {
             return 0;
          }
-         if(param1 == null)
+         if(a == null)
          {
             return 1;
          }
-         if(param2 == null)
+         if(b == null)
          {
             return -1;
          }
-         if(param3)
+         if(caseInsensitive)
          {
-            param1 = param1.toLocaleLowerCase();
-            param2 = param2.toLocaleLowerCase();
+            a = a.toLocaleLowerCase();
+            b = b.toLocaleLowerCase();
          }
-         var _loc4_:int = param1.localeCompare(param2);
-         if(_loc4_ < -1)
+         var result:int = a.localeCompare(b);
+         if(result < -1)
          {
-            _loc4_ = -1;
+            result = -1;
          }
-         else if(_loc4_ > 1)
+         else if(result > 1)
          {
-            _loc4_ = 1;
+            result = 1;
          }
-         return _loc4_;
+         return result;
       }
       
-      public static function dateCompare(param1:Date, param2:Date) : int
+      public static function dateCompare(a:Date, b:Date) : int
       {
-         if(param1 == null && param2 == null)
+         if(a == null && b == null)
          {
             return 0;
          }
-         if(param1 == null)
+         if(a == null)
          {
             return 1;
          }
-         if(param2 == null)
+         if(b == null)
          {
             return -1;
          }
-         var _loc3_:Number = param1.getTime();
-         var _loc4_:Number = param2.getTime();
-         if(_loc3_ < _loc4_)
+         var na:Number = a.getTime();
+         var nb:Number = b.getTime();
+         if(na < nb)
          {
             return -1;
          }
-         if(_loc3_ > _loc4_)
+         if(na > nb)
          {
             return 1;
          }
          return 0;
       }
       
-      public static function toString(param1:Object, param2:Array = null, param3:Array = null) : String
+      public static function toString(value:Object, namespaceURIs:Array = null, exclude:Array = null) : String
       {
-         if(param3 == null)
+         if(exclude == null)
          {
-            param3 = defaultToStringExcludes;
+            exclude = defaultToStringExcludes;
          }
          refCount = 0;
-         return internalToString(param1,0,null,param2,param3);
+         return internalToString(value,0,null,namespaceURIs,exclude);
       }
       
-      private static function internalToString(param1:Object, param2:int = 0, param3:Dictionary = null, param4:Array = null, param5:Array = null) : String
+      private static function internalToString(value:Object, indent:int = 0, refs:Dictionary = null, namespaceURIs:Array = null, exclude:Array = null) : String
       {
          var str:String = null;
          var classInfo:Object = null;
@@ -182,11 +182,6 @@ package mx.utils
          var prop:* = undefined;
          var j:int = 0;
          var id:Object = null;
-         var value:Object = param1;
-         var indent:int = param2;
-         var refs:Dictionary = param3;
-         var namespaceURIs:Array = param4;
-         var exclude:Array = param5;
          var type:String = value == null?"null":typeof value;
          switch(type)
          {
@@ -216,7 +211,7 @@ package mx.utils
                str = "(" + classInfo.name + ")";
                if(refs == null)
                {
-                  refs = new Dictionary(true);
+                  var refs:Dictionary = new Dictionary(true);
                }
                try
                {
@@ -239,9 +234,8 @@ package mx.utils
                }
                isArray = value is Array;
                isDict = value is Dictionary;
-               indent = indent + 2;
-               j = 0;
-               while(j < properties.length)
+               var indent:int = indent + 2;
+               for(j = 0; j < properties.length; j++)
                {
                   str = newline(str,indent);
                   prop = properties[j];
@@ -281,7 +275,6 @@ package mx.utils
                   {
                      str = str + "?";
                   }
-                  j++;
                }
                indent = indent - 2;
                return str;
@@ -292,121 +285,117 @@ package mx.utils
          }
       }
       
-      private static function newline(param1:String, param2:int = 0) : String
+      private static function newline(str:String, n:int = 0) : String
       {
-         var _loc3_:String = param1;
-         _loc3_ = _loc3_ + "\n";
-         var _loc4_:int = 0;
-         while(_loc4_ < param2)
+         var result:String = str;
+         result = result + "\n";
+         for(var i:int = 0; i < n; i++)
          {
-            _loc3_ = _loc3_ + " ";
-            _loc4_++;
+            result = result + " ";
          }
-         return _loc3_;
+         return result;
       }
       
-      private static function internalCompare(param1:Object, param2:Object, param3:int, param4:int, param5:Dictionary) : int
+      private static function internalCompare(a:Object, b:Object, currentDepth:int, desiredDepth:int, refs:Dictionary) : int
       {
-         var _loc9_:int = 0;
-         var _loc10_:Object = null;
-         var _loc11_:Object = null;
-         var _loc12_:Array = null;
-         var _loc13_:Array = null;
-         var _loc14_:Boolean = false;
-         var _loc15_:QName = null;
-         var _loc16_:Object = null;
-         var _loc17_:Object = null;
-         var _loc18_:int = 0;
-         if(param1 == null && param2 == null)
+         var newDepth:int = 0;
+         var aRef:Object = null;
+         var bRef:Object = null;
+         var aProps:Array = null;
+         var bProps:Array = null;
+         var isDynamicObject:Boolean = false;
+         var propName:QName = null;
+         var aProp:Object = null;
+         var bProp:Object = null;
+         var i:int = 0;
+         if(a == null && b == null)
          {
             return 0;
          }
-         if(param1 == null)
+         if(a == null)
          {
             return 1;
          }
-         if(param2 == null)
+         if(b == null)
          {
             return -1;
          }
-         if(param1 is ObjectProxy)
+         if(a is ObjectProxy)
          {
-            param1 = ObjectProxy(param1).object_proxy::object;
+            a = ObjectProxy(a).object_proxy::object;
          }
-         if(param2 is ObjectProxy)
+         if(b is ObjectProxy)
          {
-            param2 = ObjectProxy(param2).object_proxy::object;
+            b = ObjectProxy(b).object_proxy::object;
          }
-         var _loc6_:String = typeof param1;
-         var _loc7_:String = typeof param2;
-         var _loc8_:int = 0;
-         if(_loc6_ == _loc7_)
+         var typeOfA:String = typeof a;
+         var typeOfB:String = typeof b;
+         var result:int = 0;
+         if(typeOfA == typeOfB)
          {
-            switch(_loc6_)
+            switch(typeOfA)
             {
                case "boolean":
-                  _loc8_ = numericCompare(Number(param1),Number(param2));
+                  result = numericCompare(Number(a),Number(b));
                   break;
                case "number":
-                  _loc8_ = numericCompare(param1 as Number,param2 as Number);
+                  result = numericCompare(a as Number,b as Number);
                   break;
                case "string":
-                  _loc8_ = stringCompare(param1 as String,param2 as String);
+                  result = stringCompare(a as String,b as String);
                   break;
                case "object":
-                  _loc9_ = param4 > 0?int(param4 - 1):int(param4);
-                  _loc10_ = getRef(param1,param5);
-                  _loc11_ = getRef(param2,param5);
-                  if(_loc10_ == _loc11_)
+                  newDepth = desiredDepth > 0?int(desiredDepth - 1):int(desiredDepth);
+                  aRef = getRef(a,refs);
+                  bRef = getRef(b,refs);
+                  if(aRef == bRef)
                   {
                      return 0;
                   }
-                  param5[_loc11_] = _loc10_;
-                  if(param4 != -1 && param3 > param4)
+                  refs[bRef] = aRef;
+                  if(desiredDepth != -1 && currentDepth > desiredDepth)
                   {
-                     _loc8_ = stringCompare(param1.toString(),param2.toString());
+                     result = stringCompare(a.toString(),b.toString());
                   }
-                  else if(param1 is Array && param2 is Array)
+                  else if(a is Array && b is Array)
                   {
-                     _loc8_ = arrayCompare(param1 as Array,param2 as Array,param3,param4,param5);
+                     result = arrayCompare(a as Array,b as Array,currentDepth,desiredDepth,refs);
                   }
-                  else if(param1 is Date && param2 is Date)
+                  else if(a is Date && b is Date)
                   {
-                     _loc8_ = dateCompare(param1 as Date,param2 as Date);
+                     result = dateCompare(a as Date,b as Date);
                   }
-                  else if(param1 is IList && param2 is IList)
+                  else if(a is IList && b is IList)
                   {
-                     _loc8_ = listCompare(param1 as IList,param2 as IList,param3,param4,param5);
+                     result = listCompare(a as IList,b as IList,currentDepth,desiredDepth,refs);
                   }
-                  else if(param1 is ByteArray && param2 is ByteArray)
+                  else if(a is ByteArray && b is ByteArray)
                   {
-                     _loc8_ = byteArrayCompare(param1 as ByteArray,param2 as ByteArray);
+                     result = byteArrayCompare(a as ByteArray,b as ByteArray);
                   }
-                  else if(getQualifiedClassName(param1) == getQualifiedClassName(param2))
+                  else if(getQualifiedClassName(a) == getQualifiedClassName(b))
                   {
-                     _loc12_ = getClassInfo(param1).properties;
-                     _loc14_ = isDynamicObject(param1);
-                     if(_loc14_)
+                     aProps = getClassInfo(a).properties;
+                     isDynamicObject = isDynamicObject(a);
+                     if(isDynamicObject)
                      {
-                        _loc13_ = getClassInfo(param2).properties;
-                        _loc8_ = arrayCompare(_loc12_,_loc13_,param3,_loc9_,param5);
-                        if(_loc8_ != 0)
+                        bProps = getClassInfo(b).properties;
+                        result = arrayCompare(aProps,bProps,currentDepth,newDepth,refs);
+                        if(result != 0)
                         {
-                           return _loc8_;
+                           return result;
                         }
                      }
-                     _loc18_ = 0;
-                     while(_loc18_ < _loc12_.length)
+                     for(i = 0; i < aProps.length; i++)
                      {
-                        _loc15_ = _loc12_[_loc18_];
-                        _loc16_ = param1[_loc15_];
-                        _loc17_ = param2[_loc15_];
-                        _loc8_ = internalCompare(_loc16_,_loc17_,param3 + 1,_loc9_,param5);
-                        if(_loc8_ != 0)
+                        propName = aProps[i];
+                        aProp = a[propName];
+                        bProp = b[propName];
+                        result = internalCompare(aProp,bProp,currentDepth + 1,newDepth,refs);
+                        if(result != 0)
                         {
-                           return _loc8_;
+                           return result;
                         }
-                        _loc18_++;
                      }
                   }
                   else
@@ -415,12 +404,12 @@ package mx.utils
                   }
                   break;
             }
-            return _loc8_;
+            return result;
          }
-         return stringCompare(_loc6_,_loc7_);
+         return stringCompare(typeOfA,typeOfB);
       }
       
-      public static function getClassInfo(param1:Object, param2:Array = null, param3:Object = null) : Object
+      public static function getClassInfo(obj:Object, excludes:Array = null, options:Object = null) : Object
       {
          var n:int = 0;
          var i:int = 0;
@@ -440,16 +429,13 @@ package mx.utils
          var uri:String = null;
          var qName:QName = null;
          var j:int = 0;
-         var obj:Object = param1;
-         var excludes:Array = param2;
-         var options:Object = param3;
          if(obj is ObjectProxy)
          {
-            obj = ObjectProxy(obj).object_proxy::object;
+            var obj:Object = ObjectProxy(obj).object_proxy::object;
          }
          if(options == null)
          {
-            options = {
+            var options:Object = {
                "includeReadOnly":true,
                "uris":null,
                "includeTransient":true
@@ -502,11 +488,9 @@ package mx.utils
          if(excludes)
          {
             n = excludes.length;
-            i = 0;
-            while(i < n)
+            for(i = 0; i < n; i++)
             {
                excludeObject[excludes[i]] = 1;
-               i++;
             }
          }
          var isArray:Boolean = className == "Array";
@@ -549,23 +533,20 @@ package mx.utils
             if(className == "XML")
             {
                n = properties.length();
-               i = 0;
-               while(i < n)
+               for(i = 0; i < n; i++)
                {
                   p = properties[i].name();
                   if(excludeObject[p] != 1)
                   {
                      propertyNames.push(new QName("","@" + p));
                   }
-                  i++;
                }
             }
             else
             {
                n = properties.length();
                uris = options.uris;
-               i = 0;
-               while(i < n)
+               for(i = 0; i < n; i++)
                {
                   prop = properties[i];
                   p = prop.@name.toString();
@@ -590,8 +571,7 @@ package mx.utils
                            }
                            else
                            {
-                              j = 0;
-                              while(j < uris.length)
+                              for(j = 0; j < uris.length; j++)
                               {
                                  uri = uris[j];
                                  if(prop.@uri.toString() == uri)
@@ -606,7 +586,6 @@ package mx.utils
                                     {
                                     }
                                  }
-                                 j++;
                               }
                            }
                         }
@@ -624,22 +603,19 @@ package mx.utils
                         }
                      }
                   }
-                  i++;
                }
             }
          }
          propertyNames.sort(Array.CASEINSENSITIVE | (!!numericIndex?Array.NUMERIC:0));
          if(!isDict)
          {
-            i = 0;
-            while(i < propertyNames.length - 1)
+            for(i = 0; i < propertyNames.length - 1; i++)
             {
                if(propertyNames[i].toString() == propertyNames[i + 1].toString())
                {
                   propertyNames.splice(i,1);
                   i--;
                }
-               i++;
             }
          }
          if(!dynamic)
@@ -650,16 +626,15 @@ package mx.utils
          return result;
       }
       
-      public static function hasMetadata(param1:Object, param2:String, param3:String, param4:Array = null, param5:Object = null) : Boolean
+      public static function hasMetadata(obj:Object, propName:String, metadataName:String, excludes:Array = null, options:Object = null) : Boolean
       {
-         var _loc6_:Object = getClassInfo(param1,param4,param5);
-         var _loc7_:Object = _loc6_["metadata"];
-         return internalHasMetadata(_loc7_,param2,param3);
+         var classInfo:Object = getClassInfo(obj,excludes,options);
+         var metadataInfo:Object = classInfo["metadata"];
+         return internalHasMetadata(metadataInfo,propName,metadataName);
       }
       
-      public static function isDynamicObject(param1:Object) : Boolean
+      public static function isDynamicObject(obj:Object) : Boolean
       {
-         var obj:Object = param1;
          try
          {
             obj["wootHackwoot"];
@@ -671,15 +646,15 @@ package mx.utils
          return true;
       }
       
-      private static function internalHasMetadata(param1:Object, param2:String, param3:String) : Boolean
+      private static function internalHasMetadata(metadataInfo:Object, propName:String, metadataName:String) : Boolean
       {
-         var _loc4_:Object = null;
-         if(param1 != null)
+         var metadata:Object = null;
+         if(metadataInfo != null)
          {
-            _loc4_ = param1[param2];
-            if(_loc4_ != null)
+            metadata = metadataInfo[propName];
+            if(metadata != null)
             {
-               if(_loc4_[param3] != null)
+               if(metadata[metadataName] != null)
                {
                   return true;
                }
@@ -688,7 +663,7 @@ package mx.utils
          return false;
       }
       
-      private static function recordMetadata(param1:XMLList) : Object
+      private static function recordMetadata(properties:XMLList) : Object
       {
          var prop:XML = null;
          var propName:String = null;
@@ -703,7 +678,6 @@ package mx.utils
          var argKey:String = null;
          var argValue:String = null;
          var existingArray:Array = null;
-         var properties:XMLList = param1;
          var result:Object = null;
          try
          {
@@ -763,164 +737,158 @@ package mx.utils
          return result;
       }
       
-      private static function getCacheKey(param1:Object, param2:Array = null, param3:Object = null) : String
+      private static function getCacheKey(o:Object, excludes:Array = null, options:Object = null) : String
       {
-         var _loc5_:uint = 0;
-         var _loc6_:String = null;
-         var _loc7_:* = null;
-         var _loc8_:String = null;
-         var _loc4_:String = getQualifiedClassName(param1);
-         if(param2 != null)
+         var i:uint = 0;
+         var excl:String = null;
+         var flag:* = null;
+         var value:String = null;
+         var key:String = getQualifiedClassName(o);
+         if(excludes != null)
          {
-            _loc5_ = 0;
-            while(_loc5_ < param2.length)
+            for(i = 0; i < excludes.length; i++)
             {
-               _loc6_ = param2[_loc5_] as String;
-               if(_loc6_ != null)
+               excl = excludes[i] as String;
+               if(excl != null)
                {
-                  _loc4_ = _loc4_ + _loc6_;
-               }
-               _loc5_++;
-            }
-         }
-         if(param3 != null)
-         {
-            for(_loc7_ in param3)
-            {
-               _loc4_ = _loc4_ + _loc7_;
-               _loc8_ = param3[_loc7_] as String;
-               if(_loc8_ != null)
-               {
-                  _loc4_ = _loc4_ + _loc8_;
+                  key = key + excl;
                }
             }
          }
-         return _loc4_;
+         if(options != null)
+         {
+            for(flag in options)
+            {
+               key = key + flag;
+               value = options[flag] as String;
+               if(value != null)
+               {
+                  key = key + value;
+               }
+            }
+         }
+         return key;
       }
       
-      private static function arrayCompare(param1:Array, param2:Array, param3:int, param4:int, param5:Dictionary) : int
+      private static function arrayCompare(a:Array, b:Array, currentDepth:int, desiredDepth:int, refs:Dictionary) : int
       {
-         var _loc7_:* = null;
-         var _loc6_:int = 0;
-         if(param1.length != param2.length)
+         var key:* = null;
+         var result:int = 0;
+         if(a.length != b.length)
          {
-            if(param1.length < param2.length)
+            if(a.length < b.length)
             {
-               _loc6_ = -1;
+               result = -1;
             }
             else
             {
-               _loc6_ = 1;
+               result = 1;
             }
          }
          else
          {
-            for(_loc7_ in param1)
+            for(key in a)
             {
-               if(param2.hasOwnProperty(_loc7_))
+               if(b.hasOwnProperty(key))
                {
-                  _loc6_ = internalCompare(param1[_loc7_],param2[_loc7_],param3,param4,param5);
-                  if(_loc6_ != 0)
+                  result = internalCompare(a[key],b[key],currentDepth,desiredDepth,refs);
+                  if(result != 0)
                   {
-                     return _loc6_;
+                     return result;
                   }
                   continue;
                }
                return -1;
             }
-            for(_loc7_ in param2)
+            for(key in b)
             {
-               if(!param1.hasOwnProperty(_loc7_))
+               if(!a.hasOwnProperty(key))
                {
                   return 1;
                }
             }
          }
-         return _loc6_;
+         return result;
       }
       
-      private static function byteArrayCompare(param1:ByteArray, param2:ByteArray) : int
+      private static function byteArrayCompare(a:ByteArray, b:ByteArray) : int
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         if(param1 == param2)
+         var i:int = 0;
+         var result:int = 0;
+         if(a == b)
          {
-            return _loc3_;
+            return result;
          }
-         if(param1.length != param2.length)
+         if(a.length != b.length)
          {
-            if(param1.length < param2.length)
+            if(a.length < b.length)
             {
-               _loc3_ = -1;
+               result = -1;
             }
             else
             {
-               _loc3_ = 1;
+               result = 1;
             }
          }
          else
          {
-            _loc4_ = 0;
-            while(_loc4_ < param1.length)
+            for(i = 0; i < a.length; i++)
             {
-               _loc3_ = numericCompare(param1[_loc4_],param2[_loc4_]);
-               if(_loc3_ != 0)
+               result = numericCompare(a[i],b[i]);
+               if(result != 0)
                {
-                  _loc4_ = param1.length;
+                  i = a.length;
                }
-               _loc4_++;
             }
          }
-         return _loc3_;
+         return result;
       }
       
-      private static function listCompare(param1:IList, param2:IList, param3:int, param4:int, param5:Dictionary) : int
+      private static function listCompare(a:IList, b:IList, currentDepth:int, desiredDepth:int, refs:Dictionary) : int
       {
-         var _loc7_:int = 0;
-         var _loc6_:int = 0;
-         if(param1.length != param2.length)
+         var i:int = 0;
+         var result:int = 0;
+         if(a.length != b.length)
          {
-            if(param1.length < param2.length)
+            if(a.length < b.length)
             {
-               _loc6_ = -1;
+               result = -1;
             }
             else
             {
-               _loc6_ = 1;
+               result = 1;
             }
          }
          else
          {
-            _loc7_ = 0;
-            while(_loc7_ < param1.length)
+            for(i = 0; i < a.length; i++)
             {
-               _loc6_ = internalCompare(param1.getItemAt(_loc7_),param2.getItemAt(_loc7_),param3 + 1,param4,param5);
-               if(_loc6_ != 0)
+               result = internalCompare(a.getItemAt(i),b.getItemAt(i),currentDepth + 1,desiredDepth,refs);
+               if(result != 0)
                {
-                  _loc7_ = param1.length;
+                  i = a.length;
                }
-               _loc7_++;
             }
          }
-         return _loc6_;
+         return result;
       }
       
-      private static function getRef(param1:Object, param2:Dictionary) : Object
+      private static function getRef(o:Object, refs:Dictionary) : Object
       {
-         var _loc3_:Object = param2[param1];
-         while(_loc3_ && _loc3_ != param2[_loc3_])
+         var oRef:Object = refs[o];
+         while(oRef && oRef != refs[oRef])
          {
-            _loc3_ = param2[_loc3_];
+            oRef = refs[oRef];
          }
-         if(!_loc3_)
+         if(!oRef)
          {
-            _loc3_ = param1;
+            oRef = o;
          }
-         if(_loc3_ != param2[param1])
+         if(oRef != refs[o])
          {
-            param2[param1] = _loc3_;
+            refs[o] = oRef;
          }
-         return _loc3_;
+         return oRef;
       }
    }
 }

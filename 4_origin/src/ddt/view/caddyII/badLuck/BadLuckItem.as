@@ -19,31 +19,31 @@ package ddt.view.caddyII.badLuck
       
       private var _numberText:FilterFrameText;
       
-      public function BadLuckItem(param1:int)
+      public function BadLuckItem(unmber:int)
       {
          super();
-         initView(param1);
+         initView(unmber);
       }
       
-      private function initView(param1:int) : void
+      private function initView(unmber:int) : void
       {
          _bg = ComponentFactory.Instance.creatComponentByStylename("caddy.badLuck.bacLuckItemBG");
          _sortText = ComponentFactory.Instance.creatComponentByStylename("caddy.badLuck.sortTxt");
          _nameText = ComponentFactory.Instance.creatComponentByStylename("caddy.badLuck.NameTxt");
          _numberText = ComponentFactory.Instance.creatComponentByStylename("caddy.badLuck.NumberTxt");
          addChild(_bg);
-         _bg.setFrame(param1 % 2 + 1);
+         _bg.setFrame(unmber % 2 + 1);
          addChild(_sortText);
          addChild(_nameText);
          addChild(_numberText);
       }
       
-      public function update(param1:int, param2:String, param3:int) : void
+      public function update(sortNumber:int, name:String, number:int) : void
       {
-         _bg.setFrame(param1 % 2 + 1);
-         _sortText.text = param1 + 1 + "th";
-         _nameText.text = param2;
-         _numberText.text = param3.toString();
+         _bg.setFrame(sortNumber % 2 + 1);
+         _sortText.text = sortNumber + 1 + "th";
+         _nameText.text = name;
+         _numberText.text = number.toString();
       }
       
       public function dispose() : void

@@ -20,86 +20,83 @@ package ddt.data.analyze
       
       public var blackList:DictionaryData;
       
-      public function FriendListAnalyzer(param1:Function)
+      public function FriendListAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc5_:* = null;
-         var _loc11_:int = 0;
-         var _loc6_:* = null;
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc13_:* = null;
-         var _loc9_:int = 0;
-         var _loc10_:* = null;
-         var _loc8_:* = null;
-         var _loc7_:* = null;
-         var _loc12_:* = null;
-         var _loc4_:XML = new XML(param1);
+         var list:* = null;
+         var li:int = 0;
+         var customInfo:* = null;
+         var n:int = 0;
+         var tempInfo:* = null;
+         var xmllist:* = null;
+         var i:int = 0;
+         var info:* = null;
+         var dateStr:* = null;
+         var birthdayArr:* = null;
+         var statePlayerState:* = null;
+         var xml:XML = new XML(data);
          friendlist = new DictionaryData();
          blackList = new DictionaryData();
          customList = new Vector.<CustomInfo>();
-         if(_loc4_.@value == "true")
+         if(xml.@value == "true")
          {
-            _loc5_ = _loc4_..customList;
-            _loc11_ = 0;
-            while(_loc11_ < _loc5_.length())
+            list = xml..customList;
+            for(li = 0; li < list.length(); )
             {
-               if(_loc5_[_loc11_].@Name != "")
+               if(list[li].@Name != "")
                {
-                  _loc6_ = new CustomInfo();
-                  ObjectUtils.copyPorpertiesByXML(_loc6_,_loc5_[_loc11_]);
-                  customList.push(_loc6_);
+                  customInfo = new CustomInfo();
+                  ObjectUtils.copyPorpertiesByXML(customInfo,list[li]);
+                  customList.push(customInfo);
                }
-               _loc11_++;
+               li++;
             }
-            _loc3_ = 0;
-            while(_loc3_ < customList.length)
+            for(n = 0; n < customList.length; )
             {
-               if(customList[_loc3_].ID == 1)
+               if(customList[n].ID == 1)
                {
-                  _loc2_ = customList[_loc3_];
-                  customList.splice(_loc3_,1);
-                  customList.push(_loc2_);
+                  tempInfo = customList[n];
+                  customList.splice(n,1);
+                  customList.push(tempInfo);
                }
-               _loc3_++;
+               n++;
             }
-            _loc13_ = _loc4_..Item;
-            _loc9_ = 0;
-            while(_loc9_ < _loc13_.length())
+            xmllist = xml..Item;
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc10_ = new FriendListPlayer();
-               ObjectUtils.copyPorpertiesByXML(_loc10_,_loc13_[_loc9_]);
-               _loc10_.isOld = int(_loc13_[_loc9_].@OldPlayer) == 1;
-               _loc10_.ddtKingGrade = int(_loc13_[_loc9_].@MaxLevelLevel);
-               _loc8_ = String(_loc13_[_loc9_].@LastDate).replace(/-/g,"/");
-               _loc10_.LastLoginDate = new Date(_loc8_);
-               if(_loc10_.Birthday != "Null")
+               info = new FriendListPlayer();
+               ObjectUtils.copyPorpertiesByXML(info,xmllist[i]);
+               info.isOld = int(xmllist[i].@OldPlayer) == 1;
+               info.ddtKingGrade = int(xmllist[i].@MaxLevelLevel);
+               dateStr = String(xmllist[i].@LastDate).replace(/-/g,"/");
+               info.LastLoginDate = new Date(dateStr);
+               if(info.Birthday != "Null")
                {
-                  _loc7_ = _loc10_.Birthday.split(/-/g);
-                  _loc10_.BirthdayDate = new Date();
-                  _loc10_.BirthdayDate.fullYearUTC = Number(_loc7_[0]);
-                  _loc10_.BirthdayDate.monthUTC = _loc7_[1] - 1;
-                  _loc10_.BirthdayDate.dateUTC = Number(_loc7_[2]);
+                  birthdayArr = info.Birthday.split(/-/g);
+                  info.BirthdayDate = new Date();
+                  info.BirthdayDate.fullYearUTC = Number(birthdayArr[0]);
+                  info.BirthdayDate.monthUTC = birthdayArr[1] - 1;
+                  info.BirthdayDate.dateUTC = Number(birthdayArr[2]);
                }
-               _loc12_ = new PlayerState(int(_loc4_.Item[_loc9_].@State));
-               _loc10_.playerState = _loc12_;
-               _loc10_.apprenticeshipState = _loc4_.Item[_loc9_].@ApprenticeshipState;
-               _loc10_.IsShow = _loc4_.Item[_loc9_].@IsShow == "true"?true:false;
-               _loc10_.ImagePath = _loc4_.Item[_loc9_].@ImagePath;
-               _loc10_.isAttest = _loc4_.Item[_loc9_].@IsBeauty == "false"?false:true;
-               if(_loc10_.Relation != 1)
+               statePlayerState = new PlayerState(int(xml.Item[i].@State));
+               info.playerState = statePlayerState;
+               info.apprenticeshipState = xml.Item[i].@ApprenticeshipState;
+               info.IsShow = xml.Item[i].@IsShow == "true"?true:false;
+               info.ImagePath = xml.Item[i].@ImagePath;
+               info.isAttest = xml.Item[i].@IsBeauty == "false"?false:true;
+               if(info.Relation != 1)
                {
-                  friendlist.add(_loc10_.ID,_loc10_);
+                  friendlist.add(info.ID,info);
                }
                else
                {
-                  blackList.add(_loc10_.ID,_loc10_);
+                  blackList.add(info.ID,info);
                }
-               _loc9_++;
+               i++;
             }
             if(PlayerManager.Instance.Self.IsFirst == 1 && PathManager.CommunityExist())
             {
@@ -109,7 +106,7 @@ package ddt.data.analyze
          }
          else
          {
-            message = _loc4_.@message;
+            message = xml.@message;
             onAnalyzeError();
             onAnalyzeComplete();
          }

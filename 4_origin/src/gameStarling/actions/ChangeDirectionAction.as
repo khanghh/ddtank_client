@@ -13,28 +13,28 @@ package gameStarling.actions
       
       private var _direction:int;
       
-      public function ChangeDirectionAction(param1:GameLiving3D, param2:int)
+      public function ChangeDirectionAction(living:GameLiving3D, $dir:int)
       {
          super();
-         _living = param1;
-         _dir = param2;
+         _living = living;
+         _dir = $dir;
          _direction = _dir > 0?1:-1;
       }
       
-      override public function canReplace(param1:BaseAction) : Boolean
+      override public function canReplace(action:BaseAction) : Boolean
       {
-         var _loc2_:ChangeDirectionAction = param1 as ChangeDirectionAction;
-         if(_loc2_ && _dir == _loc2_.dir)
+         var act:ChangeDirectionAction = action as ChangeDirectionAction;
+         if(act && _dir == act.dir)
          {
             return true;
          }
          return false;
       }
       
-      override public function connect(param1:BaseAction) : Boolean
+      override public function connect(action:BaseAction) : Boolean
       {
-         var _loc2_:ChangeDirectionAction = param1 as ChangeDirectionAction;
-         if(_loc2_ && _dir == _loc2_.dir)
+         var act:ChangeDirectionAction = action as ChangeDirectionAction;
+         if(act && _dir == act.dir)
          {
             return true;
          }

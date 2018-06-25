@@ -192,7 +192,7 @@ package cardSystem.view.achievement
          LayerManager.Instance.addToLayer(this,3,true,1);
       }
       
-      private function __onCardAchievementUpdate(param1:CardSystemEvent) : void
+      private function __onCardAchievementUpdate(e:CardSystemEvent) : void
       {
          update();
       }
@@ -213,92 +213,92 @@ package cardSystem.view.achievement
       
       private function updateProgress() : void
       {
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
+         var count:int = 0;
+         var allHonor:int = 0;
+         var complete:int = 0;
          var _loc7_:int = 0;
          var _loc6_:* = CardManager.Instance.model.achievementData;
-         for each(var _loc5_ in CardManager.Instance.model.achievementData)
+         for each(var info in CardManager.Instance.model.achievementData)
          {
-            if(NewTitleManager.instance.titleInfo[_loc5_.Honor_id])
+            if(NewTitleManager.instance.titleInfo[info.Honor_id])
             {
-               _loc4_++;
-               if(CardManager.Instance.cardAchievementGet(_loc5_.AchievementID))
+               allHonor++;
+               if(CardManager.Instance.cardAchievementGet(info.AchievementID))
                {
-                  _loc2_++;
+                  count++;
                }
             }
-            if(CardManager.Instance.cardAchievementGet(_loc5_.AchievementID))
+            if(CardManager.Instance.cardAchievementGet(info.AchievementID))
             {
-               _loc3_++;
+               complete++;
             }
          }
-         _achievementNumTitle.text = _loc2_.toString();
-         _achievementAllTitle.text = "/" + _loc4_.toString();
-         _progressText.text = Math.ceil(_loc3_ / CardManager.Instance.model.achievementData.length * 100) + "%";
-         var _loc1_:int = Math.ceil(_loc3_ / CardManager.Instance.model.achievementData.length * _progress.width);
+         _achievementNumTitle.text = count.toString();
+         _achievementAllTitle.text = "/" + allHonor.toString();
+         _progressText.text = Math.ceil(complete / CardManager.Instance.model.achievementData.length * 100) + "%";
+         var progress:int = Math.ceil(complete / CardManager.Instance.model.achievementData.length * _progress.width);
          _maskProgress.graphics.clear();
          _maskProgress.graphics.beginFill(0);
-         _maskProgress.graphics.drawRect(0,0,_loc1_,_progress.height);
+         _maskProgress.graphics.drawRect(0,0,progress,_progress.height);
          _maskProgress.graphics.endFill();
       }
       
       public function updateList() : void
       {
-         var _loc1_:DictionaryData = new DictionaryData();
+         var data:DictionaryData = new DictionaryData();
          var _loc5_:int = 0;
          var _loc4_:* = CardManager.Instance.model.achievementData;
-         for each(var _loc3_ in CardManager.Instance.model.achievementData)
+         for each(var info in CardManager.Instance.model.achievementData)
          {
-            if(_loc1_.hasKey(_loc3_.Type))
+            if(data.hasKey(info.Type))
             {
-               if(_loc1_[_loc3_.Type].AchievementID > _loc3_.AchievementID)
+               if(data[info.Type].AchievementID > info.AchievementID)
                {
-                  if(!CardManager.Instance.cardAchievementGet(_loc3_.AchievementID))
+                  if(!CardManager.Instance.cardAchievementGet(info.AchievementID))
                   {
-                     _loc1_.add(_loc3_.Type,_loc3_);
+                     data.add(info.Type,info);
                   }
                }
-               else if(CardManager.Instance.cardAchievementGet(_loc1_[_loc3_.Type].AchievementID))
+               else if(CardManager.Instance.cardAchievementGet(data[info.Type].AchievementID))
                {
-                  _loc1_.add(_loc3_.Type,_loc3_);
+                  data.add(info.Type,info);
                }
             }
             else
             {
-               _loc1_.add(_loc3_.Type,_loc3_);
+               data.add(info.Type,info);
             }
          }
-         var _loc2_:Array = _loc1_.list.concat();
-         _loc1_.clear();
-         _loc2_.sort(sortInfo);
+         var list:Array = data.list.concat();
+         data.clear();
+         list.sort(sortInfo);
          _list.vectorListModel.clear();
-         _list.vectorListModel.appendAll(_loc2_);
+         _list.vectorListModel.appendAll(list);
          _list.list.updateListView();
       }
       
-      private function sortInfo(param1:CardAchievementInfo, param2:CardAchievementInfo) : int
+      private function sortInfo(a:CardAchievementInfo, b:CardAchievementInfo) : int
       {
-         var _loc4_:Boolean = CardManager.Instance.cardAchievementComplete(param1.AchievementID);
-         var _loc6_:Boolean = CardManager.Instance.cardAchievementComplete(param2.AchievementID);
-         var _loc3_:Boolean = CardManager.Instance.cardAchievementGet(param1.AchievementID);
-         var _loc5_:Boolean = CardManager.Instance.cardAchievementGet(param2.AchievementID);
-         if(_loc4_ && !_loc6_ || !_loc3_ && _loc5_)
+         var aComplete:Boolean = CardManager.Instance.cardAchievementComplete(a.AchievementID);
+         var bComplete:Boolean = CardManager.Instance.cardAchievementComplete(b.AchievementID);
+         var aGet:Boolean = CardManager.Instance.cardAchievementGet(a.AchievementID);
+         var bGet:Boolean = CardManager.Instance.cardAchievementGet(b.AchievementID);
+         if(aComplete && !bComplete || !aGet && bGet)
          {
             return -1;
          }
-         if(!_loc4_ && _loc6_ || _loc3_ && !_loc5_)
+         if(!aComplete && bComplete || aGet && !bGet)
          {
             return 1;
          }
-         if(param1.AchievementID < param2.AchievementID)
+         if(a.AchievementID < b.AchievementID)
          {
             return -1;
          }
          return 1;
       }
       
-      private function __itemClick(param1:ListItemEvent) : void
+      private function __itemClick(event:ListItemEvent) : void
       {
          SoundManager.instance.playButtonSound();
       }

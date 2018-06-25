@@ -27,10 +27,10 @@ package worldboss.view
       
       private var _timer:Timer;
       
-      public function WorldBossBeforeTimer(param1:int)
+      public function WorldBossBeforeTimer(total:int)
       {
          super();
-         _total = param1;
+         _total = total;
          initView();
          refreshView(_total);
          _timer = new Timer(1000);
@@ -52,7 +52,7 @@ package worldboss.view
          addChild(_timerMc);
       }
       
-      private function timerHandler(param1:TimerEvent) : void
+      private function timerHandler(event:TimerEvent) : void
       {
          _total = Number(_total) - 1;
          if(_total <= 0)
@@ -63,18 +63,18 @@ package worldboss.view
          refreshView(_total);
       }
       
-      private function refreshView(param1:int) : void
+      private function refreshView(remain:int) : void
       {
-         var _loc3_:int = param1 / (60000 / 1000);
-         var _loc4_:int = _loc3_ / 10;
-         _timerMc_1.gotoAndStop(_loc4_ == 0?10:_loc4_);
-         var _loc2_:int = _loc3_ % 10;
-         _timerMc_2.gotoAndStop(_loc2_ == 0?10:_loc2_);
-         var _loc6_:int = param1 % (60000 / 1000);
-         var _loc5_:int = _loc6_ / 10;
-         _timerMc_3.gotoAndStop(_loc5_ == 0?10:_loc5_);
-         var _loc7_:int = _loc6_ % 10;
-         _timerMc_4.gotoAndStop(_loc7_ == 0?10:_loc7_);
+         var countMin:int = remain / (60000 / 1000);
+         var tenthMin:int = countMin / 10;
+         _timerMc_1.gotoAndStop(tenthMin == 0?10:tenthMin);
+         var unitMin:int = countMin % 10;
+         _timerMc_2.gotoAndStop(unitMin == 0?10:unitMin);
+         var countSecond:int = remain % (60000 / 1000);
+         var tenthSecond:int = countSecond / 10;
+         _timerMc_3.gotoAndStop(tenthSecond == 0?10:tenthSecond);
+         var unitSecond:int = countSecond % 10;
+         _timerMc_4.gotoAndStop(unitSecond == 0?10:unitSecond);
       }
       
       public function dispose() : void

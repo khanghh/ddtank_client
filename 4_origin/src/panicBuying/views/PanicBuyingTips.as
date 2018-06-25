@@ -27,7 +27,7 @@ package panicBuying.views
       
       override protected function createRemainTime() : void
       {
-         var _loc1_:Number = NaN;
+         var tempReman:Number = NaN;
          if(_remainTimeBg.parent)
          {
             _remainTimeBg.parent.removeChild(_remainTimeBg);

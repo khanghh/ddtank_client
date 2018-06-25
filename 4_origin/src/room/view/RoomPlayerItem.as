@@ -119,11 +119,11 @@ package room.view
       
       private var _characterContainer:Sprite;
       
-      public function RoomPlayerItem(param1:int)
+      public function RoomPlayerItem(place:int)
       {
          _bordenArr = [0,0,0,0,0,0,12819,12820,12821,12822,12823,12582,12583,12584,12585,12586,12587,12588];
          super();
-         _place = param1;
+         _place = place;
          initView();
          initEvents();
       }
@@ -136,9 +136,9 @@ package room.view
          _bg.setFrame(1);
          addChild(_bg);
          _hitArea = ComponentFactory.Instance.creatCustomObject("asset.ddtroom.playerItemClickArea");
-         var _loc1_:Rectangle = ComponentFactory.Instance.creatCustomObject("asset.ddtroom.PlayerItem.hitRect");
+         var rect:Rectangle = ComponentFactory.Instance.creatCustomObject("asset.ddtroom.PlayerItem.hitRect");
          _hitArea.graphics.beginFill(0,0);
-         _hitArea.graphics.drawRect(_loc1_.x,_loc1_.y,_loc1_.width,_loc1_.height);
+         _hitArea.graphics.drawRect(rect.x,rect.y,rect.width,rect.height);
          _hitArea.graphics.endFill();
          _hitArea.buttonMode = true;
          addChild(_hitArea);
@@ -165,24 +165,24 @@ package room.view
          addChild(_guildName);
          _face = ComponentFactory.Instance.creatCustomObject("asset.ddtroom.playerItem.face");
          addChild(_face);
-         var _loc2_:Point = ComponentFactory.Instance.creatCustomObject("asset.ddtroom.playerItem.facePos");
+         var pos:Point = ComponentFactory.Instance.creatCustomObject("asset.ddtroom.playerItem.facePos");
          if(RoomManager.Instance.current.type == 1)
          {
             if(_place % 2 == 1)
             {
                _face.scaleX = 1;
-               _face.x = _loc2_.x;
+               _face.x = pos.x;
             }
             else
             {
                _face.scaleX = -1;
-               _face.x = _loc2_.y;
+               _face.x = pos.y;
             }
          }
          else
          {
             _face.scaleX = -1;
-            _face.x = _loc2_.y;
+            _face.x = pos.y;
          }
       }
       
@@ -244,9 +244,9 @@ package room.view
          _roomPlayerItemPet = null;
       }
       
-      public function set switchInEnabled(param1:Boolean) : void
+      public function set switchInEnabled(value:Boolean) : void
       {
-         _switchInEnabled = param1;
+         _switchInEnabled = value;
          if(_switchInEnabled && _opened)
          {
             _hitArea.visible = _switchInEnabled;
@@ -269,18 +269,18 @@ package room.view
          _chatballview.addEventListener("complete",onComplete);
       }
       
-      private function __showExplain(param1:MouseEvent) : void
+      private function __showExplain(evt:MouseEvent) : void
       {
          _signalExplain.visible = true;
          _signalExplain.setFrame(_signal.getFrame);
       }
       
-      private function __hideExplain(param1:MouseEvent) : void
+      private function __hideExplain(evt:MouseEvent) : void
       {
          _signalExplain.visible = false;
       }
       
-      private function __closeStoreHandler(param1:Event) : void
+      private function __closeStoreHandler(event:Event) : void
       {
          if(_chracter)
          {
@@ -288,7 +288,7 @@ package room.view
          }
       }
       
-      private function __openStoreHandler(param1:Event) : void
+      private function __openStoreHandler(event:Event) : void
       {
          if(_chracter)
          {
@@ -296,10 +296,10 @@ package room.view
          }
       }
       
-      private function __changeRoomHostHandler(param1:MouseEvent) : void
+      private function __changeRoomHostHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         param1.stopImmediatePropagation();
+         evt.stopImmediatePropagation();
          GameInSocketOut.sendChangeRoomHost(_info.playerInfo.ID);
       }
       
@@ -326,48 +326,48 @@ package room.view
          _chatballview.removeEventListener("complete",onComplete);
       }
       
-      private function __changeRoomBordenHandler(param1:MouseEvent) : void
+      private function __changeRoomBordenHandler(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         param1.stopImmediatePropagation();
+         e.stopImmediatePropagation();
          AssetModuleLoader.addModelLoader("ddtbagandinfo",6);
          AssetModuleLoader.startLoader(showBordenFrame);
       }
       
       private function showBordenFrame() : void
       {
-         var _loc2_:RoomBordenFrame = ComponentFactory.Instance.creatCustomObject("ddt.room.changeRoomBordenFrame");
-         var _loc1_:Point = this.localToGlobal(new Point(_roomBorden.x,_roomBorden.y));
-         PositionUtils.setPos(_loc2_,new Point(_loc1_.x + 48,_loc1_.y + 26));
-         LayerManager.Instance.addToLayer(_loc2_,3,false,2);
+         var bordenFrame:RoomBordenFrame = ComponentFactory.Instance.creatCustomObject("ddt.room.changeRoomBordenFrame");
+         var point:Point = this.localToGlobal(new Point(_roomBorden.x,_roomBorden.y));
+         PositionUtils.setPos(bordenFrame,new Point(point.x + 48,point.y + 26));
+         LayerManager.Instance.addToLayer(bordenFrame,3,false,2);
       }
       
-      private function __viewClickHandler(param1:MouseEvent) : void
+      private function __viewClickHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         param1.stopImmediatePropagation();
+         evt.stopImmediatePropagation();
          PlayerTipManager.show(_info.playerInfo,localToGlobal(new Point(0,0)).y);
       }
       
-      private function __addFriendHandler(param1:MouseEvent) : void
+      private function __addFriendHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         param1.stopImmediatePropagation();
+         evt.stopImmediatePropagation();
          IMManager.Instance.addFriend(_info.playerInfo.NickName);
       }
       
-      private function __kickOutHandler(param1:MouseEvent) : void
+      private function __kickOutHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         param1.stopImmediatePropagation();
+         evt.stopImmediatePropagation();
          GameInSocketOut.sendGameRoomKick(_place);
       }
       
-      private function __clickHandler(param1:MouseEvent) : void
+      private function __clickHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:RoomInfo = RoomManager.Instance.current;
-         if(_loc2_.mapId != 0 && _loc2_.mapId != 10000 && MapManager.Instance.singleDoubleIds.indexOf(_loc2_.mapId) != -1 && _info == null)
+         var currentRoomInfo:RoomInfo = RoomManager.Instance.current;
+         if(currentRoomInfo.mapId != 0 && currentRoomInfo.mapId != 10000 && MapManager.Instance.singleDoubleIds.indexOf(currentRoomInfo.mapId) != -1 && _info == null)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.room.RoomIIPlayerItem.singleDungeonRoomMsg"));
             return;
@@ -378,14 +378,14 @@ package room.view
          }
          else
          {
-            if(_switchInEnabled && !_loc2_.selfRoomPlayer.isHost)
+            if(_switchInEnabled && !currentRoomInfo.selfRoomPlayer.isHost)
             {
-               GameInSocketOut.sendGameRoomPlaceState(_loc2_.selfRoomPlayer.place,-1,true,_place);
+               GameInSocketOut.sendGameRoomPlaceState(currentRoomInfo.selfRoomPlayer.place,-1,true,_place);
                return;
             }
             if(_opened)
             {
-               if(_loc2_.type == 1)
+               if(currentRoomInfo.type == 1)
                {
                   !!RoomManager.Instance.canCloseItem(this)?GameInSocketOut.sendGameRoomPlaceState(_place,!!_opened?0:-1):MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.room.RoomIIPlayerItem.position"));
                }
@@ -405,17 +405,17 @@ package room.view
          }
       }
       
-      private function __startHandler(param1:RoomEvent) : void
+      private function __startHandler(evt:RoomEvent) : void
       {
          updateButtons();
       }
       
-      private function __updateButton(param1:RoomPlayerEvent) : void
+      private function __updateButton(evt:RoomPlayerEvent) : void
       {
          updateButtons();
       }
       
-      private function onComplete(param1:Event) : void
+      private function onComplete(evt:Event) : void
       {
          if(_chatballview.parent)
          {
@@ -423,49 +423,49 @@ package room.view
          }
       }
       
-      private function __infoStateChange(param1:RoomPlayerEvent) : void
+      private function __infoStateChange(evt:RoomPlayerEvent) : void
       {
          updatePlayerState();
          updateButtons();
       }
       
-      private function __playerInfoChange(param1:PlayerPropertyEvent) : void
+      private function __playerInfoChange(evt:PlayerPropertyEvent) : void
       {
          updateInfoView();
       }
       
-      private function __getFace(param1:ChatEvent) : void
+      private function __getFace(evt:ChatEvent) : void
       {
          if(_info == null)
          {
             return;
          }
-         var _loc2_:Object = param1.data;
-         if(_loc2_["playerid"] == _info.playerInfo.ID)
+         var data:Object = evt.data;
+         if(data["playerid"] == _info.playerInfo.ID)
          {
-            _face.setFace(_loc2_["faceid"]);
+            _face.setFace(data["faceid"]);
          }
          addChild(_face);
       }
       
-      private function __getChat(param1:ChatEvent) : void
+      private function __getChat(evt:ChatEvent) : void
       {
          if(_info == null)
          {
             return;
          }
-         var _loc2_:ChatData = ChatData(param1.data).clone();
-         if(_loc2_.senderID == _info.playerInfo.ID && (_loc2_.channel == 5 || _loc2_.channel == 4))
+         var data:ChatData = ChatData(evt.data).clone();
+         if(data.senderID == _info.playerInfo.ID && (data.channel == 5 || data.channel == 4))
          {
             addChild(_chatballview);
-            _loc2_.msg = Helpers.deCodeString(_loc2_.msg);
-            _chatballview.setText(_loc2_.msg,_info.playerInfo.paopaoType);
+            data.msg = Helpers.deCodeString(data.msg);
+            _chatballview.setText(data.msg,_info.playerInfo.paopaoType);
          }
       }
       
-      public function set info(param1:RoomPlayer) : void
+      public function set info($info:RoomPlayer) : void
       {
-         var _loc2_:* = null;
+         var _gameInfo:* = null;
          if(_info)
          {
             _info.removeEventListener("readyChange",__infoStateChange);
@@ -475,7 +475,7 @@ package room.view
             _info = null;
             _face.clearFace();
          }
-         _info = param1;
+         _info = $info;
          if(_info == null)
          {
             if(RoomManager.Instance.current.selfRoomPlayer.isViewer)
@@ -485,10 +485,10 @@ package room.view
          }
          if(_info)
          {
-            _loc2_ = GameControl.Instance.Current;
-            if(_loc2_ != null && _loc2_.hasNextMission && (RoomManager.Instance.current.type == 4 || RoomManager.Instance.current.type == 23 || RoomManager.Instance.current.type == 11 || RoomManager.Instance.current.type == 123))
+            _gameInfo = GameControl.Instance.Current;
+            if(_gameInfo != null && _gameInfo.hasNextMission && (RoomManager.Instance.current.type == 4 || RoomManager.Instance.current.type == 23 || RoomManager.Instance.current.type == 11 || RoomManager.Instance.current.type == 123))
             {
-               _loc2_.viewerToLiving(_info.playerInfo.ID);
+               _gameInfo.viewerToLiving(_info.playerInfo.ID);
             }
             _info.addEventListener("readyChange",__infoStateChange);
             _info.addEventListener("isHostChange",__infoStateChange);
@@ -515,7 +515,7 @@ package room.view
          return _place;
       }
       
-      private function __updateWebSpeed(param1:WebSpeedEvent) : void
+      private function __updateWebSpeed(evt:WebSpeedEvent) : void
       {
       }
       
@@ -534,25 +534,25 @@ package room.view
       
       private function updateBackground() : void
       {
-         var _loc2_:* = null;
-         var _loc4_:int = 0;
-         var _loc1_:int = 0;
+         var items:* = null;
+         var i:int = 0;
+         var templateId:int = 0;
          if(_info)
          {
             if(_info.isSelf && PlayerManager.Instance.curcentId != 0)
             {
-               _loc2_ = PlayerManager.Instance.Self.getBag(43).items;
+               items = PlayerManager.Instance.Self.getBag(43).items;
                var _loc6_:int = 0;
-               var _loc5_:* = _loc2_;
-               for each(var _loc3_ in _loc2_)
+               var _loc5_:* = items;
+               for each(var cellInfo in items)
                {
-                  if(_loc3_.ItemID == PlayerManager.Instance.curcentId)
+                  if(cellInfo.ItemID == PlayerManager.Instance.curcentId)
                   {
-                     if(_loc3_.getRemainDate() > 0)
+                     if(cellInfo.getRemainDate() > 0)
                      {
-                        _loc1_ = _loc3_.TemplateID;
-                        _loc4_ = _bordenArr.indexOf(_loc1_);
-                        _bg.setFrame(_loc4_);
+                        templateId = cellInfo.TemplateID;
+                        i = _bordenArr.indexOf(templateId);
+                        _bg.setFrame(i);
                      }
                      else if(RoomManager.Instance.current.isYellowBg())
                      {
@@ -567,9 +567,9 @@ package room.view
             }
             else if(info.playerInfo.curcentRoomBordenTemplateId)
             {
-               _loc1_ = info.playerInfo.curcentRoomBordenTemplateId;
-               _loc4_ = _bordenArr.indexOf(_loc1_);
-               _bg.setFrame(_loc4_);
+               templateId = info.playerInfo.curcentRoomBordenTemplateId;
+               i = _bordenArr.indexOf(templateId);
+               _bg.setFrame(i);
             }
             else if(RoomManager.Instance.current.isYellowBg())
             {
@@ -970,9 +970,9 @@ package room.view
          return _opened;
       }
       
-      public function set opened(param1:Boolean) : void
+      public function set opened(value:Boolean) : void
       {
-         _opened = param1;
+         _opened = value;
          updateView();
       }
    }

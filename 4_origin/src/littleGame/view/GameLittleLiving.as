@@ -30,9 +30,9 @@ package littleGame.view
       
       protected var _realRender:Boolean;
       
-      public function GameLittleLiving(param1:LittleLiving)
+      public function GameLittleLiving(living:LittleLiving)
       {
-         _living = param1;
+         _living = living;
          super();
          buttonMode = true;
          configUI();
@@ -45,17 +45,17 @@ package littleGame.view
          return _realRender;
       }
       
-      public function set realRender(param1:Boolean) : void
+      public function set realRender(value:Boolean) : void
       {
-         if(_realRender == param1)
+         if(_realRender == value)
          {
             return;
          }
-         _realRender = param1;
-         ICharacter(_body).realRender = param1;
+         _realRender = value;
+         ICharacter(_body).realRender = value;
       }
       
-      public function setInhaled(param1:Boolean) : void
+      public function setInhaled(val:Boolean) : void
       {
       }
       
@@ -64,11 +64,11 @@ package littleGame.view
          return _living && _living.lock;
       }
       
-      public function set lock(param1:Boolean) : void
+      public function set lock(val:Boolean) : void
       {
          if(_living)
          {
-            _living.lock = param1;
+            _living.lock = val;
          }
       }
       
@@ -91,28 +91,28 @@ package littleGame.view
       
       protected function createBody() : void
       {
-         var _loc1_:ICharacter = CharacterFactory.Instance.creatChacrater(_living._modelID);
-         _loc1_.soundEnabled = false;
-         _body = addChild(_loc1_ as DisplayObject);
-         _body.x = -_loc1_.registerPoint.x;
-         _body.y = -_loc1_.registerPoint.y;
+         var ch:ICharacter = CharacterFactory.Instance.creatChacrater(_living._modelID);
+         ch.soundEnabled = false;
+         _body = addChild(ch as DisplayObject);
+         _body.x = -ch.registerPoint.x;
+         _body.y = -ch.registerPoint.y;
          _hitArea = new Sprite();
          _hitArea.buttonMode = true;
          addChild(_hitArea);
          _hitArea.graphics.clear();
          _hitArea.graphics.beginFill(11141120,0);
-         _hitArea.graphics.drawRect(_loc1_.rect.x,_loc1_.rect.y,_loc1_.rect.width,_loc1_.rect.height);
+         _hitArea.graphics.drawRect(ch.rect.x,ch.rect.y,ch.rect.width,ch.rect.height);
          _hitArea.graphics.endFill();
          __directionChanged(null);
-         _living.bornLife = _loc1_.getActionFrames("born");
-         _living.dieLife = _loc1_.getActionFrames("die");
+         _living.bornLife = ch.getActionFrames("born");
+         _living.dieLife = ch.getActionFrames("die");
          if(_living.currentAction)
          {
-            _loc1_.doAction(_living.currentAction);
+            ch.doAction(_living.currentAction);
          }
          else
          {
-            _loc1_.doAction("stand");
+            ch.doAction("stand");
          }
       }
       
@@ -129,29 +129,29 @@ package littleGame.view
          _living.addEventListener("doAction",__doAction);
       }
       
-      private function __click(param1:MouseEvent) : void
+      private function __click(event:MouseEvent) : void
       {
          if(parent)
          {
             if(Point.distance(LittleGameManager.Instance.Current.selfPlayer.pos,_living.pos) <= 20)
             {
                LittleGameManager.Instance.livingClick(LittleGameManager.Instance.Current,_living,parent.mouseX,parent.mouseY);
-               param1.stopPropagation();
+               event.stopPropagation();
             }
          }
       }
       
-      protected function onOver(param1:MouseEvent) : void
+      protected function onOver(event:MouseEvent) : void
       {
          this.filters = [new GlowFilter(16711680,1,24,24,2)];
       }
       
-      protected function onOut(param1:MouseEvent) : void
+      protected function onOut(event:MouseEvent) : void
       {
          this.filters = [];
       }
       
-      protected function __doAction(param1:LittleLivingEvent) : void
+      protected function __doAction(event:LittleLivingEvent) : void
       {
          if(!lock && _body)
          {
@@ -159,7 +159,7 @@ package littleGame.view
          }
       }
       
-      protected function __directionChanged(param1:LittleLivingEvent) : void
+      protected function __directionChanged(event:LittleLivingEvent) : void
       {
          if(!lock && _living && _body)
          {
@@ -192,14 +192,14 @@ package littleGame.view
       
       protected function centerBody() : void
       {
-         var _loc1_:ICharacter = _body as ICharacter;
-         if(_body && _loc1_)
+         var ch:ICharacter = _body as ICharacter;
+         if(_body && ch)
          {
-            _body.x = _body.scaleX == 1?-_loc1_.registerPoint.x:Number(_loc1_.registerPoint.x);
+            _body.x = _body.scaleX == 1?-ch.registerPoint.x:Number(ch.registerPoint.x);
          }
       }
       
-      private function __posChanged(param1:LittleLivingEvent) : void
+      private function __posChanged(event:LittleLivingEvent) : void
       {
          if(!lock)
          {

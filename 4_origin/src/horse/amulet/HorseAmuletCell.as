@@ -4,7 +4,9 @@ package horse.amulet
    import bagAndInfo.cell.DragEffect;
    import baglocked.BaglockedManager;
    import com.pickgliss.events.FrameEvent;
+   import com.pickgliss.ui.AlertManager;
    import com.pickgliss.ui.ComponentFactory;
+   import com.pickgliss.ui.controls.alert.BaseAlerFrame;
    import com.pickgliss.utils.ObjectUtils;
    import ddt.data.goods.InventoryItemInfo;
    import ddt.data.goods.ItemTemplateInfo;
@@ -26,9 +28,13 @@ package horse.amulet
       
       private var _lockIcon:Bitmap;
       
-      public function HorseAmuletCell(param1:int, param2:ItemTemplateInfo = null, param3:DisplayObject = null)
+      private var _alertFrame:BaseAlerFrame;
+      
+      private var _markPlace:int;
+      
+      public function HorseAmuletCell(index:int, info:ItemTemplateInfo = null, bg:DisplayObject = null)
       {
-         super(param1,param2,false,param3,true);
+         super(index,info,false,bg,true);
       }
       
       public function Lock() : Boolean
@@ -79,22 +85,22 @@ package horse.amulet
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.horseAmulet.smashLockTips"));
             return;
          }
-         var _loc2_:Boolean = HorseAmuletManager.instance.isHighQuality(this.itemInfo.TemplateID);
-         var _loc1_:HorseAmuletSmashAlert = ComponentFactory.Instance.creatComponentByStylename("horseAmulet.smashFrame");
-         _loc1_.show([this.place],_loc2_);
-         _loc1_.addEventListener("response",__onConfirmResponse);
+         var isQuality:Boolean = HorseAmuletManager.instance.isHighQuality(this.itemInfo.TemplateID);
+         var frame:HorseAmuletSmashAlert = ComponentFactory.Instance.creatComponentByStylename("horseAmulet.smashFrame");
+         frame.show([this.place],isQuality);
+         frame.addEventListener("response",__onConfirmResponse);
       }
       
-      private function __onConfirmResponse(param1:FrameEvent) : void
+      private function __onConfirmResponse(event:FrameEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:HorseAmuletSmashAlert = param1.currentTarget as HorseAmuletSmashAlert;
-         _loc2_.removeEventListener("response",__onConfirmResponse);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var alertInfo:HorseAmuletSmashAlert = event.currentTarget as HorseAmuletSmashAlert;
+         alertInfo.removeEventListener("response",__onConfirmResponse);
+         if(event.responseCode == 3 || event.responseCode == 2)
          {
-            SocketManager.Instance.out.sendAmuletSmash(_loc2_.placeList);
+            SocketManager.Instance.out.sendAmuletSmash(alertInfo.placeList);
          }
-         ObjectUtils.disposeObject(_loc2_);
+         ObjectUtils.disposeObject(alertInfo);
       }
       
       override public function dragStart() : void
@@ -108,36 +114,45 @@ package horse.amulet
          super.dragStart();
       }
       
-      override public function dragDrop(param1:DragEffect) : void
+      override public function dragDrop(effect:DragEffect) : void
       {
-         var _loc4_:* = null;
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         if(param1 && param1.action == "move" && param1.data)
+         var info:* = null;
+         var type1:int = 0;
+         var type2:int = 0;
+         if(effect && effect.action == "move" && effect.data)
          {
-            _loc4_ = param1.data as InventoryItemInfo;
-            if(param1.source is HorseAmuletActivateCell)
+            info = effect.data as InventoryItemInfo;
+            if(effect.source is HorseAmuletActivateCell)
             {
-               SocketManager.Instance.out.sendAmuletMove((param1.source as HorseAmuletCell).place,19);
+               if(HorseAmuletManager.instance.isActivate)
+               {
+                  _markPlace = (effect.source as HorseAmuletCell).place;
+                  _alertFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("tank.horseAmulet.replaceTips"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",30,true);
+                  _alertFrame.addEventListener("response",__onClickFrame);
+               }
+               else
+               {
+                  SocketManager.Instance.out.sendAmuletMove((effect.source as HorseAmuletCell).place,19);
+               }
             }
-            else if(param1.source is HorseAmuletEquipCell)
+            else if(effect.source is HorseAmuletEquipCell)
             {
                if(this.info)
                {
-                  _loc2_ = HorseAmuletManager.instance.getHorseAmuletVo(_loc4_.TemplateID).ExtendType1;
-                  _loc3_ = HorseAmuletManager.instance.getHorseAmuletVo(this.info.TemplateID).ExtendType1;
-                  if(_loc2_ != _loc3_ && !HorseAmuletManager.instance.canEquipAmulet(this.info.TemplateID))
+                  type1 = HorseAmuletManager.instance.getHorseAmuletVo(info.TemplateID).ExtendType1;
+                  type2 = HorseAmuletManager.instance.getHorseAmuletVo(this.info.TemplateID).ExtendType1;
+                  if(type1 != type2 && !HorseAmuletManager.instance.canEquipAmulet(this.info.TemplateID))
                   {
                      MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.horseAmulet.typeTips"));
                      DragManager.acceptDrag(null,"none");
                      return;
                   }
                }
-               SocketManager.Instance.out.sendAmuletMove((param1.source as HorseAmuletEquipCell).place,this.place);
+               SocketManager.Instance.out.sendAmuletMove((effect.source as HorseAmuletEquipCell).place,this.place);
             }
-            else if(param1.source is HorseAmuletCell)
+            else if(effect.source is HorseAmuletCell)
             {
-               SocketManager.Instance.out.sendAmuletMove((param1.source as HorseAmuletCell).place,this.place);
+               SocketManager.Instance.out.sendAmuletMove((effect.source as HorseAmuletCell).place,this.place);
             }
             DragManager.acceptDrag(this,"move");
             return;
@@ -146,25 +161,44 @@ package horse.amulet
          DragManager.acceptDrag(this,"none");
       }
       
-      override public function dragStop(param1:DragEffect) : void
+      private function __onClickFrame(e:FrameEvent) : void
+      {
+         if(e.responseCode == 3 || e.responseCode == 2)
+         {
+            SocketManager.Instance.out.sendAmuletMove(_markPlace,19);
+         }
+         disposeAlertFrame();
+      }
+      
+      private function disposeAlertFrame() : void
+      {
+         if(_alertFrame)
+         {
+            _alertFrame.removeEventListener("response",__onClickFrame);
+            ObjectUtils.disposeObject(_alertFrame);
+            _alertFrame = null;
+         }
+      }
+      
+      override public function dragStop(effect:DragEffect) : void
       {
          SoundManager.instance.playButtonSound();
-         if(param1.target != null)
+         if(effect.target != null)
          {
-            if(param1.action == "none")
+            if(effect.action == "none")
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.wasteRecycle.notMove"));
             }
-            else if(param1.action == "move")
+            else if(effect.action == "move")
             {
             }
          }
          locked = false;
       }
       
-      override public function set info(param1:ItemTemplateInfo) : void
+      override public function set info(value:ItemTemplateInfo) : void
       {
-         .super.info = param1;
+         .super.info = value;
          if(_info)
          {
             if(this.itemInfo.cellLocked)
@@ -196,6 +230,7 @@ package horse.amulet
       
       override public function dispose() : void
       {
+         disposeAlertFrame();
          super.dispose();
       }
    }

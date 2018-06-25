@@ -74,14 +74,14 @@ package wonderfulActivity.newActivity.AnnouncementAct
          _contentField = ComponentFactory.Instance.creatComponentByStylename("ddtcalendar.ActivityState.StateContentField");
          _contentWidth = _contentField.width;
          addChild(_contentField);
-         var _loc1_:DisplayObject = ComponentFactory.Instance.creatBitmap("asset.ddtcalendar.ActivityState.SeparatorLine");
-         PositionUtils.setPos(_loc1_,"ddtcalendar.ActivityState.LinePos" + _lines.length);
-         _lines.push(_loc1_);
-         addChild(_loc1_);
-         _loc1_ = ComponentFactory.Instance.creatBitmap("asset.ddtcalendar.ActivityState.SeparatorLine");
-         PositionUtils.setPos(_loc1_,"ddtcalendar.ActivityState.LinePos" + _lines.length);
-         _lines.push(_loc1_);
-         addChild(_loc1_);
+         var line:DisplayObject = ComponentFactory.Instance.creatBitmap("asset.ddtcalendar.ActivityState.SeparatorLine");
+         PositionUtils.setPos(line,"ddtcalendar.ActivityState.LinePos" + _lines.length);
+         _lines.push(line);
+         addChild(line);
+         line = ComponentFactory.Instance.creatBitmap("asset.ddtcalendar.ActivityState.SeparatorLine");
+         PositionUtils.setPos(line,"ddtcalendar.ActivityState.LinePos" + _lines.length);
+         _lines.push(line);
+         addChild(line);
          _time = ComponentFactory.Instance.creatBitmap("asset.ddtcalendar.ActivityState.TimeIcon");
          addChild(_time);
          _award = ComponentFactory.Instance.creatBitmap("asset.ddtcalendar.ActivityState.AwardIcon");
@@ -90,13 +90,13 @@ package wonderfulActivity.newActivity.AnnouncementAct
          addChild(_content);
       }
       
-      public function setData(param1:GmActivityInfo) : void
+      public function setData(activityInfo:GmActivityInfo) : void
       {
-         if(!param1)
+         if(!activityInfo)
          {
             return;
          }
-         _activityInfo = param1;
+         _activityInfo = activityInfo;
          _awardField.y = _award.y + _award.height - 4;
          _awardField.autoSize = "none";
          _awardField.width = _awardWidth;
@@ -119,8 +119,8 @@ package wonderfulActivity.newActivity.AnnouncementAct
          _timeField.y = _lines[1].y + _lines[1].height + 8;
          _timeField.autoSize = "none";
          _timeField.width = _timeWidth;
-         var _loc2_:Array = [_activityInfo.beginTime.split(" ")[0],_activityInfo.endTime.split(" ")[0]];
-         _timeField.text = _loc2_[0] + "-" + _loc2_[1];
+         var timeArr:Array = [_activityInfo.beginTime.split(" ")[0],_activityInfo.endTime.split(" ")[0]];
+         _timeField.text = timeArr[0] + "-" + timeArr[1];
          _timeField.autoSize = "left";
          _time.y = _timeField.y - 2;
          _timeTitle.x = _time.x + _time.width + 4;
@@ -129,9 +129,9 @@ package wonderfulActivity.newActivity.AnnouncementAct
       
       override public function get height() : Number
       {
-         var _loc1_:int = 0;
-         _loc1_ = _timeField.y + _timeField.height + 10;
-         return _loc1_;
+         var h:int = 0;
+         h = _timeField.y + _timeField.height + 10;
+         return h;
       }
       
       public function dispose() : void
@@ -154,12 +154,12 @@ package wonderfulActivity.newActivity.AnnouncementAct
          _awardTitle = null;
          ObjectUtils.disposeObject(_contentTitle);
          _contentTitle = null;
-         var _loc1_:DisplayObject = _lines.shift();
-         while(_loc1_ != null)
+         var line:DisplayObject = _lines.shift();
+         while(line != null)
          {
-            ObjectUtils.disposeObject(_loc1_);
-            _loc1_ = null;
-            _loc1_ = _lines.shift();
+            ObjectUtils.disposeObject(line);
+            line = null;
+            line = _lines.shift();
          }
          _lines = null;
          if(parent)

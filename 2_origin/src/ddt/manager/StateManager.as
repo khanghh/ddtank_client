@@ -91,9 +91,9 @@ package ddt.manager
          return _currentStateType;
       }
       
-      public static function set currentStateType(param1:String) : void
+      public static function set currentStateType(value:String) : void
       {
-         _currentStateType = param1;
+         _currentStateType = value;
       }
       
       public static function get lastStateType() : String
@@ -101,9 +101,9 @@ package ddt.manager
          return _lastStateType;
       }
       
-      public static function set lastStateType(param1:String) : void
+      public static function set lastStateType(value:String) : void
       {
-         _lastStateType = param1;
+         _lastStateType = value;
       }
       
       public static function get nextState() : BaseStateView
@@ -111,58 +111,58 @@ package ddt.manager
          return next;
       }
       
-      public static function setup(param1:Sprite, param2:StateCreater, param3:Boolean = false) : void
+      public static function setup(parent:Sprite, creator:StateCreater, recordFlag:Boolean = false) : void
       {
          dic = new Dictionary();
-         root = param1;
-         _creator = param2;
-         RecordFlag = param3;
+         root = parent;
+         _creator = creator;
+         RecordFlag = recordFlag;
          fadingBlock = new FadingBlock(addNextToStage,showLoading);
       }
       
-      public static function setState(param1:String = "default", param2:Object = null, param3:int = 0) : void
+      public static function setState(type:String = "default", data:Object = null, mapId:int = 0) : void
       {
-         if(param1 == "roomlist")
+         if(type == "roomlist")
          {
             isOpenRoomList = true;
             PolarRegionManager.Instance.ShowFlag = false;
-            param1 = "main";
-            currentStateType = param1;
+            type = "main";
+            currentStateType = type;
          }
-         if(param1 == "dungeon")
+         if(type == "dungeon")
          {
             isOpenDungeonList = true;
-            param1 = "main";
-            currentStateType = param1;
+            type = "main";
+            currentStateType = type;
          }
-         if(param1 != "braveDoorRoom" && currentStateType == "braveDoorRoom")
+         if(type != "braveDoorRoom" && currentStateType == "braveDoorRoom")
          {
             BraveDoorManager.instance.moduleIsShow = false;
          }
-         var _loc4_:BaseStateView = getState(param1);
-         if(param1 == "roomlist" && current.getType() == "matchRoom")
+         var next:BaseStateView = getState(type);
+         if(type == "roomlist" && current.getType() == "matchRoom")
          {
             if(getInGame_Step_1 && getInGame_Step_2)
             {
                if(getInGame_Step_3 && !getInGame_Step_4)
                {
-                  SocketManager.Instance.out.sendErrorMsg("房间类型：" + param1 + "游戏步骤进行到3之后停止了");
+                  SocketManager.Instance.out.sendErrorMsg("房间类型：" + type + "游戏步骤进行到3之后停止了");
                }
                else if(getInGame_Step_4 && !getInGame_Step_5)
                {
-                  SocketManager.Instance.out.sendErrorMsg("房间类型：" + param1 + "游戏步骤进行到4之后停止了");
+                  SocketManager.Instance.out.sendErrorMsg("房间类型：" + type + "游戏步骤进行到4之后停止了");
                }
                else if(getInGame_Step_5 && !getInGame_Step_6)
                {
-                  SocketManager.Instance.out.sendErrorMsg("房间类型：" + param1 + "游戏步骤进行到5之后停止了");
+                  SocketManager.Instance.out.sendErrorMsg("房间类型：" + type + "游戏步骤进行到5之后停止了");
                }
                else if(getInGame_Step_6 && !getInGame_Step_7)
                {
-                  SocketManager.Instance.out.sendErrorMsg("房间类型：" + param1 + "游戏步骤进行到6之后停止了");
+                  SocketManager.Instance.out.sendErrorMsg("房间类型：" + type + "游戏步骤进行到6之后停止了");
                }
                else if(getInGame_Step_7 && !getInGame_Step_8)
                {
-                  SocketManager.Instance.out.sendErrorMsg("房间类型：" + param1 + "游戏步骤进行到7之后停止了");
+                  SocketManager.Instance.out.sendErrorMsg("房间类型：" + type + "游戏步骤进行到7之后停止了");
                }
                getInGame_Step_8 = false;
                getInGame_Step_7 = false;
@@ -174,11 +174,11 @@ package ddt.manager
                getInGame_Step_1 = false;
             }
          }
-         _data = param2;
-         _enterType = param1;
-         if(_loc4_)
+         _data = data;
+         _enterType = type;
+         if(next)
          {
-            setStateImp(_loc4_,param3);
+            setStateImp(next,mapId);
          }
          else
          {
@@ -191,27 +191,27 @@ package ddt.manager
          fadingBlock.stopImidily();
       }
       
-      private static function createCallbak(param1:BaseStateView) : void
+      private static function createCallbak(value:BaseStateView) : void
       {
-         if(param1)
+         if(value)
          {
-            dic[param1.getType()] = param1;
+            dic[value.getType()] = value;
          }
-         setStateImp(param1);
+         setStateImp(value);
       }
       
-      private static function setStateImp(param1:BaseStateView, param2:int = 0) : Boolean
+      private static function setStateImp(value:BaseStateView, id:int = 0) : Boolean
       {
-         if(param1 == null)
+         if(value == null)
          {
             return false;
          }
-         if(param1.getType() != _enterType)
+         if(value.getType() != _enterType)
          {
             return false;
          }
          _enterType = "";
-         if(param1 == current || next == param1)
+         if(value == current || next == value)
          {
             if(!CampBattleManager.instance.campViewFlag)
             {
@@ -220,10 +220,10 @@ package ddt.manager
                return false;
             }
          }
-         if(param1.check(currentStateType))
+         if(value.check(currentStateType))
          {
             QueueManager.pause();
-            next = param1;
+            next = value;
             if(!next.prepared)
             {
                next.prepare();
@@ -257,22 +257,22 @@ package ddt.manager
       
       public static function enterScene() : void
       {
-         var _loc1_:BaseStateView = current;
+         var last:BaseStateView = current;
          current = next;
          currentStateType = current.getType();
          next = null;
          enterStarlingScene(currentStateType);
-         current.enter(_loc1_,_data);
+         current.enter(last,_data);
          MenoryUtil.clearMenory();
          root.addChild(current.getView());
          current.addedToStage();
-         if(_loc1_ && !CampBattleManager.instance.campViewFlag)
+         if(last && !CampBattleManager.instance.campViewFlag)
          {
-            if(_loc1_.getView().parent)
+            if(last.getView().parent)
             {
-               _loc1_.getView().parent.removeChild(_loc1_.getView());
+               last.getView().parent.removeChild(last.getView());
             }
-            _loc1_.removedFromStage();
+            last.removedFromStage();
          }
          if(current.goBack())
          {
@@ -315,30 +315,30 @@ package ddt.manager
          fadingBlock.canDisappear = true;
       }
       
-      private static function enterStarlingScene(param1:String) : void
+      private static function enterStarlingScene(type:String) : void
       {
-         var _loc2_:* = undefined;
-         if(param1 == "main")
+         var scene:* = undefined;
+         if(type == "main")
          {
             StarlingMain.instance.enterScene(new HallScene());
          }
-         else if(param1 == "fighting3d")
+         else if(type == "fighting3d")
          {
-            _loc2_ = getDefinitionByName("gameStarling.view.scene.GameViewScene");
-            StarlingMain.instance.enterScene(new _loc2_());
+            scene = getDefinitionByName("gameStarling.view.scene.GameViewScene");
+            StarlingMain.instance.enterScene(new scene());
          }
-         else if(param1 == "demon_chi_you")
+         else if(type == "demon_chi_you")
          {
             StarlingMain.instance.enterScene(new DemonChiYouScene());
          }
-         else if(param1 == "consortia_domain")
+         else if(type == "consortia_domain")
          {
             StarlingMain.instance.enterScene(new ConsortiaDomainScene());
          }
-         else if(param1 == "consortiaGuard")
+         else if(type == "consortiaGuard")
          {
-            _loc2_ = getDefinitionByName("starling.scene.consortiaGuard.ConsortiaGuardScene");
-            StarlingMain.instance.enterScene(new _loc2_());
+            scene = getDefinitionByName("starling.scene.consortiaGuard.ConsortiaGuardScene");
+            StarlingMain.instance.enterScene(new scene());
          }
          else
          {
@@ -376,40 +376,40 @@ package ddt.manager
       
       public static function back() : void
       {
-         var _loc1_:* = null;
+         var backtype:* = null;
          if(current != null)
          {
-            _loc1_ = current.getBackType();
-            if(_loc1_ != "")
+            backtype = current.getBackType();
+            if(backtype != "")
             {
-               setState(_loc1_);
+               setState(backtype);
             }
          }
       }
       
-      public static function getState(param1:String) : BaseStateView
+      public static function getState(type:String) : BaseStateView
       {
-         return dic[param1] as BaseStateView;
+         return dic[type] as BaseStateView;
       }
       
-      public static function createStateAsync(param1:String, param2:Function = null) : void
+      public static function createStateAsync(type:String, callbak:Function = null) : void
       {
-         _creator.createAsync(param1,param2);
+         _creator.createAsync(type,callbak);
       }
       
-      public static function isExitGame(param1:String) : Boolean
+      public static function isExitGame(type:String) : Boolean
       {
-         return param1 != "fighting" && param1 != "fighting3d" && param1 != "missionResult" && param1 != "fightLabGameView";
+         return type != "fighting" && type != "fighting3d" && type != "missionResult" && type != "fightLabGameView";
       }
       
-      public static function isExitRoom(param1:String) : Boolean
+      public static function isExitRoom(type:String) : Boolean
       {
-         return param1 != "fighting" && param1 != "fighting3d" && param1 != "matchRoom" && param1 != "teamRoom" && param1 != "missionResult" && param1 != "dungeonRoom" && param1 != "challengeRoom" && param1 != "roomLoading" && param1 != "encounterLoading" && param1 != "fightLib" && param1 != "trainer1" && param1 != "trainer2" && param1 != "fightLabGameView" && param1 != "consortiaBattleScene" && param1 != "campBattleScene" && param1 != "battleRoom" && param1 != "consortia_domain" && param1 != "consortiaGuard";
+         return type != "fighting" && type != "fighting3d" && type != "matchRoom" && type != "teamRoom" && type != "missionResult" && type != "dungeonRoom" && type != "challengeRoom" && type != "roomLoading" && type != "encounterLoading" && type != "fightLib" && type != "trainer1" && type != "trainer2" && type != "fightLabGameView" && type != "consortiaBattleScene" && type != "campBattleScene" && type != "battleRoom" && type != "consortia_domain" && type != "consortiaGuard";
       }
       
-      public static function isInGame(param1:String) : Boolean
+      public static function isInGame(type:String) : Boolean
       {
-         var _loc2_:* = param1;
+         var _loc2_:* = type;
          if("fighting" !== _loc2_)
          {
             if("fighting3d" !== _loc2_)
@@ -423,16 +423,16 @@ package ddt.manager
                         return false;
                      }
                   }
-                  addr9:
+                  addr12:
                   return true;
                }
-               addr8:
-               §§goto(addr9);
+               addr11:
+               §§goto(addr12);
             }
-            addr7:
-            §§goto(addr8);
+            addr10:
+            §§goto(addr11);
          }
-         §§goto(addr7);
+         §§goto(addr10);
       }
       
       public static function leaving() : void

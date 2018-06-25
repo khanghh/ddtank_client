@@ -32,10 +32,10 @@ package drgnBoat.views
       
       private const colorList:Array = [16711680,1813759,59158,59158];
       
-      public function DrgnBoatBuffCountDown(param1:Date, param2:int, param3:int)
+      public function DrgnBoatBuffCountDown(endTime:Date, type:int, index:int)
       {
          super();
-         if(param2 == 3)
+         if(type == 3)
          {
             this.x = -87;
          }
@@ -44,8 +44,8 @@ package drgnBoat.views
             this.x = -183;
          }
          this.y = -101;
-         _endTime = param1;
-         _type = param2;
+         _endTime = endTime;
+         _type = type;
          _bg = ComponentFactory.Instance.creatBitmap("drgnBoat.buffCountDownBg");
          _titleTxt = ComponentFactory.Instance.creatComponentByStylename("drgnBoat.game.buffTitleTxt");
          _titleTxt.text = LanguageMgr.GetTranslation("escort.game.buffTitleTxt" + _type);
@@ -65,28 +65,28 @@ package drgnBoat.views
          return _type;
       }
       
-      public function set endTime(param1:Date) : void
+      public function set endTime(value:Date) : void
       {
-         _endTime = param1;
+         _endTime = value;
          refreshTxt(null);
       }
       
-      private function refreshTxt(param1:TimerEvent) : void
+      private function refreshTxt(event:TimerEvent) : void
       {
-         var _loc8_:Number = _endTime.getTime();
-         var _loc6_:Number = TimeManager.Instance.Now().getTime();
-         var _loc3_:Number = _loc8_ - _loc6_;
-         _loc3_ = _loc3_ < 0?0:Number(_loc3_);
-         var _loc2_:int = _loc3_ / 60000;
-         var _loc4_:int = _loc3_ % 60000 / 1000;
-         var _loc5_:String = _loc2_ < 10?"0" + _loc2_:_loc2_.toString();
-         var _loc7_:String = _loc4_ < 10?"0" + _loc4_:_loc4_.toString();
+         var endTimestamp:Number = _endTime.getTime();
+         var nowTimestamp:Number = TimeManager.Instance.Now().getTime();
+         var differ:Number = endTimestamp - nowTimestamp;
+         differ = differ < 0?0:Number(differ);
+         var minute:int = differ / 60000;
+         var second:int = differ % 60000 / 1000;
+         var minStr:String = minute < 10?"0" + minute:minute.toString();
+         var secStr:String = second < 10?"0" + second:second.toString();
          if(_countDownTxt)
          {
-            _countDownTxt.text = _loc5_ + ":" + _loc7_;
+            _countDownTxt.text = minStr + ":" + secStr;
             _countDownTxt.textColor = colorList[_type - 1];
          }
-         if(_loc4_ <= 0)
+         if(second <= 0)
          {
             dispatchEvent(new Event("EscortBuffCountDownEnd"));
          }

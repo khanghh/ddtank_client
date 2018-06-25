@@ -62,35 +62,35 @@ package consortionBattle.view
          _fightingScb.addEventListener("click",clickHandler,false,0,true);
       }
       
-      private function clickHandler(param1:MouseEvent) : void
+      private function clickHandler(event:MouseEvent) : void
       {
-         var _loc3_:int = 0;
+         var tmpInt:int = 0;
          SoundManager.instance.play("008");
-         var _loc2_:SelectedCheckButton = param1.currentTarget as SelectedCheckButton;
-         var _loc4_:* = _loc2_;
+         var tmp:SelectedCheckButton = event.currentTarget as SelectedCheckButton;
+         var _loc4_:* = tmp;
          if(_sameScb !== _loc4_)
          {
             if(_tombScb !== _loc4_)
             {
                if(_fightingScb !== _loc4_)
                {
-                  _loc3_ = 1;
+                  tmpInt = 1;
                }
                else
                {
-                  _loc3_ = 3;
+                  tmpInt = 3;
                }
             }
             else
             {
-               _loc3_ = 2;
+               tmpInt = 2;
             }
          }
          else
          {
-            _loc3_ = 1;
+            tmpInt = 1;
          }
-         ConsortiaBattleManager.instance.changeHideRecord(_loc3_,_loc2_.selected);
+         ConsortiaBattleManager.instance.changeHideRecord(tmpInt,tmp.selected);
          dispatchEvent(new Event("consBatHideTip_selected_change"));
       }
       
@@ -116,8 +116,8 @@ package consortionBattle.view
       
       private function updateTransform() : void
       {
-         var _loc1_:int = Math.max(_sameScb.width,_tombScb.width,_fightingScb.width);
-         _bg.width = _sameScb.x + _loc1_ + 15;
+         var maxWidth:int = Math.max(_sameScb.width,_tombScb.width,_fightingScb.width);
+         _bg.width = _sameScb.x + maxWidth + 15;
          _bg.height = _fightingScb.y + _fightingScb.height + 11;
       }
       

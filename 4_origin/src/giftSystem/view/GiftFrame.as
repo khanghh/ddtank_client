@@ -34,9 +34,9 @@ package giftSystem.view
          addEventListener("response",__responseHandler);
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();
@@ -86,9 +86,9 @@ package giftSystem.view
          addToContent(_back);
       }
       
-      private function __createGift(param1:UIModuleEvent) : void
+      private function __createGift(event:UIModuleEvent) : void
       {
-         if(param1.module == "ddtgiftsystem")
+         if(event.module == "ddtgiftsystem")
          {
             UIModuleSmallLoading.Instance.hide();
             UIModuleSmallLoading.Instance.removeEventListener("close",__onGiftSmallLoadingClose);
@@ -99,7 +99,7 @@ package giftSystem.view
          }
       }
       
-      protected function __onGiftSmallLoadingClose(param1:Event) : void
+      protected function __onGiftSmallLoadingClose(event:Event) : void
       {
          UIModuleSmallLoading.Instance.hide();
          UIModuleSmallLoading.Instance.removeEventListener("close",__onGiftSmallLoadingClose);
@@ -107,11 +107,11 @@ package giftSystem.view
          UIModuleLoader.Instance.removeEventListener("uiMoudleProgress",__onGiftUIProgress);
       }
       
-      protected function __onGiftUIProgress(param1:UIModuleEvent) : void
+      protected function __onGiftUIProgress(event:UIModuleEvent) : void
       {
-         if(param1.module == "ddtgiftsystem")
+         if(event.module == "ddtgiftsystem")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
    }

@@ -48,23 +48,23 @@ package starling.display
       
       private var mTriggerBounds:Rectangle;
       
-      public function Button(param1:Texture, param2:String = "", param3:Texture = null, param4:Texture = null, param5:Texture = null)
+      public function Button(upState:Texture, text:String = "", downState:Texture = null, overState:Texture = null, disabledState:Texture = null)
       {
          super();
-         if(param1 == null)
+         if(upState == null)
          {
             throw new ArgumentError("Texture \'upState\' cannot be null");
          }
-         mUpState = param1;
-         mDownState = param3;
-         mOverState = param4;
-         mDisabledState = param5;
+         mUpState = upState;
+         mDownState = downState;
+         mOverState = overState;
+         mDisabledState = disabledState;
          mState = "up";
-         mBody = new Image(param1);
-         mScaleWhenDown = !!param3?1:0.9;
+         mBody = new Image(upState);
+         mScaleWhenDown = !!downState?1:0.9;
          mAlphaWhenDown = 1;
          mScaleWhenOver = 1;
-         mAlphaWhenDisabled = !!param5?1:0.5;
+         mAlphaWhenDisabled = !!disabledState?1:0.5;
          mEnabled = true;
          mUseHandCursor = true;
          mTextBounds = new Rectangle(0,0,mBody.width,mBody.height);
@@ -73,7 +73,7 @@ package starling.display
          addChild(mContents);
          addEventListener("touch",onTouch);
          this.touchGroup = true;
-         this.text = param2;
+         this.text = text;
       }
       
       override public function dispose() : void
@@ -85,10 +85,10 @@ package starling.display
          super.dispose();
       }
       
-      public function readjustSize(param1:Boolean = true) : void
+      public function readjustSize(resetTextBounds:Boolean = true) : void
       {
          mBody.readjustSize();
-         if(param1 && mTextField != null)
+         if(resetTextBounds && mTextField != null)
          {
             textBounds = new Rectangle(0,0,mBody.width,mBody.height);
          }
@@ -111,45 +111,45 @@ package starling.display
          mTextField.y = mTextBounds.y;
       }
       
-      private function onTouch(param1:TouchEvent) : void
+      private function onTouch(event:TouchEvent) : void
       {
-         var _loc3_:Boolean = false;
-         Mouse.cursor = mUseHandCursor && mEnabled && param1.interactsWith(this)?"button":"auto";
-         var _loc2_:Touch = param1.getTouch(this);
+         var isWithinBounds:Boolean = false;
+         Mouse.cursor = mUseHandCursor && mEnabled && event.interactsWith(this)?"button":"auto";
+         var touch:Touch = event.getTouch(this);
          if(!mEnabled)
          {
             return;
          }
-         if(_loc2_ == null)
+         if(touch == null)
          {
             state = "up";
          }
-         else if(_loc2_.phase == "hover")
+         else if(touch.phase == "hover")
          {
             state = "over";
          }
-         else if(_loc2_.phase == "began" && mState != "down")
+         else if(touch.phase == "began" && mState != "down")
          {
             mTriggerBounds = getBounds(stage,mTriggerBounds);
             mTriggerBounds.inflate(50,50);
             state = "down";
          }
-         else if(_loc2_.phase == "moved")
+         else if(touch.phase == "moved")
          {
-            _loc3_ = mTriggerBounds.contains(_loc2_.globalX,_loc2_.globalY);
-            if(mState == "down" && !_loc3_)
+            isWithinBounds = mTriggerBounds.contains(touch.globalX,touch.globalY);
+            if(mState == "down" && !isWithinBounds)
             {
                state = "up";
             }
-            else if(mState == "up" && _loc3_)
+            else if(mState == "up" && isWithinBounds)
             {
                state = "down";
             }
          }
-         else if(_loc2_.phase == "ended" && mState == "down")
+         else if(touch.phase == "ended" && mState == "down")
          {
             state = "up";
-            if(!_loc2_.cancelled)
+            if(!touch.cancelled)
             {
                dispatchEventWith("triggered",true);
             }
@@ -161,9 +161,9 @@ package starling.display
          return mState;
       }
       
-      public function set state(param1:String) : void
+      public function set state(value:String) : void
       {
-         mState = param1;
+         mState = value;
          var _loc2_:* = 0;
          mContents.y = _loc2_;
          mContents.x = _loc2_;
@@ -213,9 +213,9 @@ package starling.display
          }
       }
       
-      private function setStateTexture(param1:Texture) : void
+      private function setStateTexture(texture:Texture) : void
       {
-         mBody.texture = !!param1?param1:mUpState;
+         mBody.texture = !!texture?texture:mUpState;
       }
       
       public function get scaleWhenDown() : Number
@@ -223,9 +223,9 @@ package starling.display
          return mScaleWhenDown;
       }
       
-      public function set scaleWhenDown(param1:Number) : void
+      public function set scaleWhenDown(value:Number) : void
       {
-         mScaleWhenDown = param1;
+         mScaleWhenDown = value;
       }
       
       public function get scaleWhenOver() : Number
@@ -233,9 +233,9 @@ package starling.display
          return mScaleWhenOver;
       }
       
-      public function set scaleWhenOver(param1:Number) : void
+      public function set scaleWhenOver(value:Number) : void
       {
-         mScaleWhenOver = param1;
+         mScaleWhenOver = value;
       }
       
       public function get alphaWhenDown() : Number
@@ -243,9 +243,9 @@ package starling.display
          return mAlphaWhenDown;
       }
       
-      public function set alphaWhenDown(param1:Number) : void
+      public function set alphaWhenDown(value:Number) : void
       {
-         mAlphaWhenDown = param1;
+         mAlphaWhenDown = value;
       }
       
       public function get alphaWhenDisabled() : Number
@@ -253,9 +253,9 @@ package starling.display
          return mAlphaWhenDisabled;
       }
       
-      public function set alphaWhenDisabled(param1:Number) : void
+      public function set alphaWhenDisabled(value:Number) : void
       {
-         mAlphaWhenDisabled = param1;
+         mAlphaWhenDisabled = value;
       }
       
       public function get enabled() : Boolean
@@ -263,12 +263,12 @@ package starling.display
          return mEnabled;
       }
       
-      public function set enabled(param1:Boolean) : void
+      public function set enabled(value:Boolean) : void
       {
-         if(mEnabled != param1)
+         if(mEnabled != value)
          {
-            mEnabled = param1;
-            state = !!param1?"up":"disabled";
+            mEnabled = value;
+            state = !!value?"up":"disabled";
          }
       }
       
@@ -277,20 +277,20 @@ package starling.display
          return !!mTextField?mTextField.text:"";
       }
       
-      public function set text(param1:String) : void
+      public function set text(value:String) : void
       {
-         if(param1.length == 0)
+         if(value.length == 0)
          {
             if(mTextField)
             {
-               mTextField.text = param1;
+               mTextField.text = value;
                mTextField.removeFromParent();
             }
          }
          else
          {
             createTextField();
-            mTextField.text = param1;
+            mTextField.text = value;
             if(mTextField.parent == null)
             {
                mContents.addChild(mTextField);
@@ -303,10 +303,10 @@ package starling.display
          return !!mTextField?mTextField.fontName:"Verdana";
       }
       
-      public function set fontName(param1:String) : void
+      public function set fontName(value:String) : void
       {
          createTextField();
-         mTextField.fontName = param1;
+         mTextField.fontName = value;
       }
       
       public function get fontSize() : Number
@@ -314,10 +314,10 @@ package starling.display
          return !!mTextField?mTextField.fontSize:12;
       }
       
-      public function set fontSize(param1:Number) : void
+      public function set fontSize(value:Number) : void
       {
          createTextField();
-         mTextField.fontSize = param1;
+         mTextField.fontSize = value;
       }
       
       public function get fontColor() : uint
@@ -325,10 +325,10 @@ package starling.display
          return !!mTextField?mTextField.color:0;
       }
       
-      public function set fontColor(param1:uint) : void
+      public function set fontColor(value:uint) : void
       {
          createTextField();
-         mTextField.color = param1;
+         mTextField.color = value;
       }
       
       public function get fontBold() : Boolean
@@ -336,10 +336,10 @@ package starling.display
          return !!mTextField?mTextField.bold:false;
       }
       
-      public function set fontBold(param1:Boolean) : void
+      public function set fontBold(value:Boolean) : void
       {
          createTextField();
-         mTextField.bold = param1;
+         mTextField.bold = value;
       }
       
       public function get upState() : Texture
@@ -347,18 +347,18 @@ package starling.display
          return mUpState;
       }
       
-      public function set upState(param1:Texture) : void
+      public function set upState(value:Texture) : void
       {
-         if(param1 == null)
+         if(value == null)
          {
             throw new ArgumentError("Texture \'upState\' cannot be null");
          }
-         if(mUpState != param1)
+         if(mUpState != value)
          {
-            mUpState = param1;
+            mUpState = value;
             if(mState == "up" || mState == "disabled" && mDisabledState == null || mState == "down" && mDownState == null || mState == "over" && mOverState == null)
             {
-               setStateTexture(param1);
+               setStateTexture(value);
             }
          }
       }
@@ -368,14 +368,14 @@ package starling.display
          return mDownState;
       }
       
-      public function set downState(param1:Texture) : void
+      public function set downState(value:Texture) : void
       {
-         if(mDownState != param1)
+         if(mDownState != value)
          {
-            mDownState = param1;
+            mDownState = value;
             if(mState == "down")
             {
-               setStateTexture(param1);
+               setStateTexture(value);
             }
          }
       }
@@ -385,14 +385,14 @@ package starling.display
          return mOverState;
       }
       
-      public function set overState(param1:Texture) : void
+      public function set overState(value:Texture) : void
       {
-         if(mOverState != param1)
+         if(mOverState != value)
          {
-            mOverState = param1;
+            mOverState = value;
             if(mState == "over")
             {
-               setStateTexture(param1);
+               setStateTexture(value);
             }
          }
       }
@@ -402,14 +402,14 @@ package starling.display
          return mDisabledState;
       }
       
-      public function set disabledState(param1:Texture) : void
+      public function set disabledState(value:Texture) : void
       {
-         if(mDisabledState != param1)
+         if(mDisabledState != value)
          {
-            mDisabledState = param1;
+            mDisabledState = value;
             if(mState == "disabled")
             {
-               setStateTexture(param1);
+               setStateTexture(value);
             }
          }
       }
@@ -419,10 +419,10 @@ package starling.display
          return !!mTextField?mTextField.vAlign:"center";
       }
       
-      public function set textVAlign(param1:String) : void
+      public function set textVAlign(value:String) : void
       {
          createTextField();
-         mTextField.vAlign = param1;
+         mTextField.vAlign = value;
       }
       
       public function get textHAlign() : String
@@ -430,10 +430,10 @@ package starling.display
          return !!mTextField?mTextField.hAlign:"center";
       }
       
-      public function set textHAlign(param1:String) : void
+      public function set textHAlign(value:String) : void
       {
          createTextField();
-         mTextField.hAlign = param1;
+         mTextField.hAlign = value;
       }
       
       public function get textBounds() : Rectangle
@@ -441,9 +441,9 @@ package starling.display
          return mTextBounds.clone();
       }
       
-      public function set textBounds(param1:Rectangle) : void
+      public function set textBounds(value:Rectangle) : void
       {
-         mTextBounds = param1.clone();
+         mTextBounds = value.clone();
          createTextField();
       }
       
@@ -452,9 +452,9 @@ package starling.display
          return mBody.color;
       }
       
-      public function set color(param1:uint) : void
+      public function set color(value:uint) : void
       {
-         mBody.color = param1;
+         mBody.color = value;
       }
       
       public function get body() : Image
@@ -477,9 +477,9 @@ package starling.display
          return mUseHandCursor;
       }
       
-      override public function set useHandCursor(param1:Boolean) : void
+      override public function set useHandCursor(value:Boolean) : void
       {
-         mUseHandCursor = param1;
+         mUseHandCursor = value;
       }
    }
 }

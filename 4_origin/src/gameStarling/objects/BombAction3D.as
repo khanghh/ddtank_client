@@ -26,15 +26,15 @@ package gameStarling.objects
       
       public var _param4:int;
       
-      public function BombAction3D(param1:int, param2:int, param3:int, param4:int, param5:int, param6:int)
+      public function BombAction3D(time:int, type:int, param1:int, param2:int, param3:int, param4:int)
       {
          super();
-         _time = param1;
-         _type = param2;
-         _param1 = param3;
-         _param2 = param4;
-         _param3 = param5;
-         _param4 = param6;
+         _time = time;
+         _type = type;
+         _param1 = param1;
+         _param2 = param2;
+         _param3 = param3;
+         _param4 = param4;
       }
       
       public function get param1() : int
@@ -67,10 +67,10 @@ package gameStarling.objects
          return _type;
       }
       
-      public function execute(param1:SimpleBomb3D, param2:GameInfo) : void
+      public function execute(ball:SimpleBomb3D, _game:GameInfo) : void
       {
-         ball = param1;
-         _game = param2;
+         ball = ball;
+         _game = _game;
          var _loc4_:* = _type;
          if(1 !== _loc4_)
          {

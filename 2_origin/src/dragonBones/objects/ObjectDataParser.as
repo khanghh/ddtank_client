@@ -18,54 +18,54 @@ package dragonBones.objects
          super();
       }
       
-      public static function parseTextureAtlasData(param1:Object, param2:Number = 1) : Object
+      public static function parseTextureAtlasData(rawData:Object, scale:Number = 1) : Object
       {
-         var _loc4_:* = null;
-         var _loc5_:* = null;
-         var _loc6_:* = null;
-         var _loc9_:* = false;
-         var _loc7_:Number = NaN;
-         var _loc8_:Number = NaN;
-         var _loc10_:Object = {};
-         _loc10_.__name = param1["name"];
+         var subTextureFrame:* = null;
+         var subTextureName:* = null;
+         var subTextureRegion:* = null;
+         var rotated:* = false;
+         var frameWidth:Number = NaN;
+         var frameHeight:Number = NaN;
+         var textureAtlasData:Object = {};
+         textureAtlasData.__name = rawData["name"];
          var _loc12_:int = 0;
-         var _loc11_:* = param1["SubTexture"];
-         for each(var _loc3_ in param1["SubTexture"])
+         var _loc11_:* = rawData["SubTexture"];
+         for each(var subTextureObject in rawData["SubTexture"])
          {
-            _loc5_ = _loc3_["name"];
-            _loc6_ = new Rectangle();
-            _loc6_.x = int(_loc3_["x"]) / param2;
-            _loc6_.y = int(_loc3_["y"]) / param2;
-            _loc6_.width = int(_loc3_["width"]) / param2;
-            _loc6_.height = int(_loc3_["height"]) / param2;
-            _loc9_ = _loc3_["rotated"] == "true";
-            _loc7_ = int(_loc3_["frameWidth"]) / param2;
-            _loc8_ = int(_loc3_["frameHeight"]) / param2;
-            if(_loc7_ > 0 && _loc8_ > 0)
+            subTextureName = subTextureObject["name"];
+            subTextureRegion = new Rectangle();
+            subTextureRegion.x = int(subTextureObject["x"]) / scale;
+            subTextureRegion.y = int(subTextureObject["y"]) / scale;
+            subTextureRegion.width = int(subTextureObject["width"]) / scale;
+            subTextureRegion.height = int(subTextureObject["height"]) / scale;
+            rotated = subTextureObject["rotated"] == "true";
+            frameWidth = int(subTextureObject["frameWidth"]) / scale;
+            frameHeight = int(subTextureObject["frameHeight"]) / scale;
+            if(frameWidth > 0 && frameHeight > 0)
             {
-               _loc4_ = new Rectangle();
-               _loc4_.x = int(_loc3_["frameX"]) / param2;
-               _loc4_.y = int(_loc3_["frameY"]) / param2;
-               _loc4_.width = _loc7_;
-               _loc4_.height = _loc8_;
+               subTextureFrame = new Rectangle();
+               subTextureFrame.x = int(subTextureObject["frameX"]) / scale;
+               subTextureFrame.y = int(subTextureObject["frameY"]) / scale;
+               subTextureFrame.width = frameWidth;
+               subTextureFrame.height = frameHeight;
             }
             else
             {
-               _loc4_ = null;
+               subTextureFrame = null;
             }
-            _loc10_[_loc5_] = new TextureData(_loc6_,_loc4_,_loc9_);
+            textureAtlasData[subTextureName] = new TextureData(subTextureRegion,subTextureFrame,rotated);
          }
-         return _loc10_;
+         return textureAtlasData;
       }
       
-      public static function parseDragonBonesData(param1:Object) : DragonBonesData
+      public static function parseDragonBonesData(rawDataToParse:Object) : DragonBonesData
       {
-         if(!param1)
+         if(!rawDataToParse)
          {
             throw new ArgumentError();
          }
-         var _loc5_:String = param1["version"];
-         var _loc6_:* = _loc5_;
+         var version:String = rawDataToParse["version"];
+         var _loc6_:* = version;
          if("2.3" !== _loc6_)
          {
             if("3.0" !== _loc6_)
@@ -74,341 +74,341 @@ package dragonBones.objects
                {
                   throw new Error("Nonsupport version!");
                }
-               var _loc4_:uint = int(param1["frameRate"]);
-               var _loc3_:DragonBonesData = new DragonBonesData();
-               _loc3_.name = param1["name"];
-               _loc3_.isGlobalData = param1["isGlobal"] == "0"?false:true;
-               tempDragonBonesData = _loc3_;
+               var frameRate:uint = int(rawDataToParse["frameRate"]);
+               var outputDragonBonesData:DragonBonesData = new DragonBonesData();
+               outputDragonBonesData.name = rawDataToParse["name"];
+               outputDragonBonesData.isGlobalData = rawDataToParse["isGlobal"] == "0"?false:true;
+               tempDragonBonesData = outputDragonBonesData;
                var _loc8_:int = 0;
-               var _loc7_:* = param1["armature"];
-               for each(var _loc2_ in param1["armature"])
+               var _loc7_:* = rawDataToParse["armature"];
+               for each(var armatureObject in rawDataToParse["armature"])
                {
-                  _loc3_.addArmatureData(parseArmatureData(_loc2_,_loc4_));
+                  outputDragonBonesData.addArmatureData(parseArmatureData(armatureObject,frameRate));
                }
                tempDragonBonesData = null;
-               return _loc3_;
+               return outputDragonBonesData;
             }
          }
-         return Object3DataParser.parseSkeletonData(param1);
+         return Object3DataParser.parseSkeletonData(rawDataToParse);
       }
       
-      private static function parseArmatureData(param1:Object, param2:uint) : ArmatureData
+      private static function parseArmatureData(armatureDataToParse:Object, frameRate:uint) : ArmatureData
       {
-         var _loc7_:* = null;
-         var _loc6_:ArmatureData = new ArmatureData();
-         _loc6_.name = param1["name"];
+         var animationData:* = null;
+         var outputArmatureData:ArmatureData = new ArmatureData();
+         outputArmatureData.name = armatureDataToParse["name"];
          var _loc10_:int = 0;
-         var _loc9_:* = param1["bone"];
-         for each(var _loc5_ in param1["bone"])
+         var _loc9_:* = armatureDataToParse["bone"];
+         for each(var boneObject in armatureDataToParse["bone"])
          {
-            _loc6_.addBoneData(parseBoneData(_loc5_));
+            outputArmatureData.addBoneData(parseBoneData(boneObject));
          }
          var _loc12_:int = 0;
-         var _loc11_:* = param1["slot"];
-         for each(var _loc8_ in param1["slot"])
+         var _loc11_:* = armatureDataToParse["slot"];
+         for each(var slotObject in armatureDataToParse["slot"])
          {
-            _loc6_.addSlotData(parseSlotData(_loc8_));
+            outputArmatureData.addSlotData(parseSlotData(slotObject));
          }
          var _loc14_:int = 0;
-         var _loc13_:* = param1["skin"];
-         for each(var _loc4_ in param1["skin"])
+         var _loc13_:* = armatureDataToParse["skin"];
+         for each(var skinObject in armatureDataToParse["skin"])
          {
-            _loc6_.addSkinData(parseSkinData(_loc4_));
+            outputArmatureData.addSkinData(parseSkinData(skinObject));
          }
          if(tempDragonBonesData.isGlobalData)
          {
-            DBDataUtil.transformArmatureData(_loc6_);
+            DBDataUtil.transformArmatureData(outputArmatureData);
          }
-         _loc6_.sortBoneDataList();
+         outputArmatureData.sortBoneDataList();
          var _loc16_:int = 0;
-         var _loc15_:* = param1["animation"];
-         for each(var _loc3_ in param1["animation"])
+         var _loc15_:* = armatureDataToParse["animation"];
+         for each(var animationObject in armatureDataToParse["animation"])
          {
-            _loc7_ = parseAnimationData(_loc3_,param2);
-            DBDataUtil.addHideTimeline(_loc7_,_loc6_);
-            DBDataUtil.transformAnimationData(_loc7_,_loc6_,tempDragonBonesData.isGlobalData);
-            _loc6_.addAnimationData(_loc7_);
+            animationData = parseAnimationData(animationObject,frameRate);
+            DBDataUtil.addHideTimeline(animationData,outputArmatureData);
+            DBDataUtil.transformAnimationData(animationData,outputArmatureData,tempDragonBonesData.isGlobalData);
+            outputArmatureData.addAnimationData(animationData);
          }
-         return _loc6_;
+         return outputArmatureData;
       }
       
-      private static function parseBoneData(param1:Object) : BoneData
+      private static function parseBoneData(boneObject:Object) : BoneData
       {
-         var _loc2_:BoneData = new BoneData();
-         _loc2_.name = param1["name"];
-         _loc2_.parent = param1["parent"];
-         _loc2_.length = Number(param1["length"]);
-         _loc2_.inheritRotation = getBoolean(param1,"inheritRotation",true);
-         _loc2_.inheritScale = getBoolean(param1,"inheritScale",true);
-         parseTransform(param1["transform"],_loc2_.transform);
+         var boneData:BoneData = new BoneData();
+         boneData.name = boneObject["name"];
+         boneData.parent = boneObject["parent"];
+         boneData.length = Number(boneObject["length"]);
+         boneData.inheritRotation = getBoolean(boneObject,"inheritRotation",true);
+         boneData.inheritScale = getBoolean(boneObject,"inheritScale",true);
+         parseTransform(boneObject["transform"],boneData.transform);
          if(tempDragonBonesData.isGlobalData)
          {
-            _loc2_.global.copy(_loc2_.transform);
+            boneData.global.copy(boneData.transform);
          }
-         return _loc2_;
+         return boneData;
       }
       
-      private static function parseSkinData(param1:Object) : SkinData
+      private static function parseSkinData(skinObject:Object) : SkinData
       {
-         var _loc2_:SkinData = new SkinData();
-         _loc2_.name = param1["name"];
+         var skinData:SkinData = new SkinData();
+         skinData.name = skinObject["name"];
          var _loc5_:int = 0;
-         var _loc4_:* = param1["slot"];
-         for each(var _loc3_ in param1["slot"])
+         var _loc4_:* = skinObject["slot"];
+         for each(var slotObject in skinObject["slot"])
          {
-            _loc2_.addSlotData(parseSlotDisplayData(_loc3_));
+            skinData.addSlotData(parseSlotDisplayData(slotObject));
          }
-         return _loc2_;
+         return skinData;
       }
       
-      private static function parseSlotDisplayData(param1:Object) : SlotData
+      private static function parseSlotDisplayData(slotObject:Object) : SlotData
       {
-         var _loc2_:SlotData = new SlotData();
-         _loc2_.name = param1["name"];
+         var slotData:SlotData = new SlotData();
+         slotData.name = slotObject["name"];
          var _loc5_:int = 0;
-         var _loc4_:* = param1["display"];
-         for each(var _loc3_ in param1["display"])
+         var _loc4_:* = slotObject["display"];
+         for each(var displayObject in slotObject["display"])
          {
-            _loc2_.addDisplayData(parseDisplayData(_loc3_));
+            slotData.addDisplayData(parseDisplayData(displayObject));
          }
-         return _loc2_;
+         return slotData;
       }
       
-      private static function parseSlotData(param1:Object) : SlotData
+      private static function parseSlotData(slotObject:Object) : SlotData
       {
-         var _loc2_:SlotData = new SlotData();
-         _loc2_.name = param1["name"];
-         _loc2_.parent = param1["parent"];
-         _loc2_.zOrder = getNumber(param1,"z",0) || 0;
-         _loc2_.blendMode = param1["blendMode"];
-         _loc2_.displayIndex = param1["displayIndex"];
-         return _loc2_;
+         var slotData:SlotData = new SlotData();
+         slotData.name = slotObject["name"];
+         slotData.parent = slotObject["parent"];
+         slotData.zOrder = getNumber(slotObject,"z",0) || 0;
+         slotData.blendMode = slotObject["blendMode"];
+         slotData.displayIndex = slotObject["displayIndex"];
+         return slotData;
       }
       
-      private static function parseDisplayData(param1:Object) : DisplayData
+      private static function parseDisplayData(displayObject:Object) : DisplayData
       {
-         var _loc2_:DisplayData = new DisplayData();
-         _loc2_.name = param1["name"];
-         _loc2_.type = param1["type"];
-         parseTransform(param1["transform"],_loc2_.transform,_loc2_.pivot);
-         _loc2_.pivot.x = NaN;
-         _loc2_.pivot.y = NaN;
+         var displayData:DisplayData = new DisplayData();
+         displayData.name = displayObject["name"];
+         displayData.type = displayObject["type"];
+         parseTransform(displayObject["transform"],displayData.transform,displayData.pivot);
+         displayData.pivot.x = NaN;
+         displayData.pivot.y = NaN;
          if(tempDragonBonesData != null)
          {
-            tempDragonBonesData.addDisplayData(_loc2_);
+            tempDragonBonesData.addDisplayData(displayData);
          }
-         return _loc2_;
+         return displayData;
       }
       
-      static function parseAnimationData(param1:Object, param2:uint) : AnimationData
+      static function parseAnimationData(animationObject:Object, frameRate:uint) : AnimationData
       {
-         var _loc4_:* = null;
-         var _loc5_:* = null;
-         var _loc3_:* = null;
-         var _loc10_:AnimationData = new AnimationData();
-         _loc10_.name = param1["name"];
-         _loc10_.frameRate = param2;
-         _loc10_.duration = Math.round((Number(param1["duration"]) || 1) * 1000 / param2);
-         _loc10_.playTimes = int(getNumber(param1,"playTimes",1));
-         _loc10_.fadeTime = getNumber(param1,"fadeInTime",0) || 0;
-         _loc10_.scale = getNumber(param1,"scale",1) || 0;
-         _loc10_.tweenEasing = getNumber(param1,"tweenEasing",NaN);
-         _loc10_.autoTween = getBoolean(param1,"autoTween",true);
+         var frame:* = null;
+         var timeline:* = null;
+         var slotTimeline:* = null;
+         var animationData:AnimationData = new AnimationData();
+         animationData.name = animationObject["name"];
+         animationData.frameRate = frameRate;
+         animationData.duration = Math.round((Number(animationObject["duration"]) || 1) * 1000 / frameRate);
+         animationData.playTimes = int(getNumber(animationObject,"playTimes",1));
+         animationData.fadeTime = getNumber(animationObject,"fadeInTime",0) || 0;
+         animationData.scale = getNumber(animationObject,"scale",1) || 0;
+         animationData.tweenEasing = getNumber(animationObject,"tweenEasing",NaN);
+         animationData.autoTween = getBoolean(animationObject,"autoTween",true);
          var _loc12_:int = 0;
-         var _loc11_:* = param1["frame"];
-         for each(var _loc7_ in param1["frame"])
+         var _loc11_:* = animationObject["frame"];
+         for each(var frameObject in animationObject["frame"])
          {
-            _loc4_ = parseTransformFrame(_loc7_,param2);
-            _loc10_.addFrame(_loc4_);
+            frame = parseTransformFrame(frameObject,frameRate);
+            animationData.addFrame(frame);
          }
-         parseTimeline(param1,_loc10_);
-         var _loc6_:int = _loc10_.duration;
+         parseTimeline(animationObject,animationData);
+         var lastFrameDuration:int = animationData.duration;
          var _loc14_:int = 0;
-         var _loc13_:* = param1["bone"];
-         for each(var _loc8_ in param1["bone"])
+         var _loc13_:* = animationObject["bone"];
+         for each(var timelineObject in animationObject["bone"])
          {
-            _loc5_ = parseTransformTimeline(_loc8_,_loc10_.duration,param2);
-            if(_loc5_.frameList.length > 0)
+            timeline = parseTransformTimeline(timelineObject,animationData.duration,frameRate);
+            if(timeline.frameList.length > 0)
             {
-               _loc6_ = Math.min(_loc6_,_loc5_.frameList[_loc5_.frameList.length - 1].duration);
-               _loc10_.addTimeline(_loc5_);
+               lastFrameDuration = Math.min(lastFrameDuration,timeline.frameList[timeline.frameList.length - 1].duration);
+               animationData.addTimeline(timeline);
             }
          }
          var _loc16_:int = 0;
-         var _loc15_:* = param1["slot"];
-         for each(var _loc9_ in param1["slot"])
+         var _loc15_:* = animationObject["slot"];
+         for each(var slotTimelineObject in animationObject["slot"])
          {
-            _loc3_ = parseSlotTimeline(_loc9_,_loc10_.duration,param2);
-            if(_loc3_.frameList.length > 0)
+            slotTimeline = parseSlotTimeline(slotTimelineObject,animationData.duration,frameRate);
+            if(slotTimeline.frameList.length > 0)
             {
-               _loc6_ = Math.min(_loc6_,_loc3_.frameList[_loc3_.frameList.length - 1].duration);
-               _loc10_.addSlotTimeline(_loc3_);
+               lastFrameDuration = Math.min(lastFrameDuration,slotTimeline.frameList[slotTimeline.frameList.length - 1].duration);
+               animationData.addSlotTimeline(slotTimeline);
             }
          }
-         if(_loc10_.frameList.length > 0)
+         if(animationData.frameList.length > 0)
          {
-            _loc6_ = Math.min(_loc6_,_loc10_.frameList[_loc10_.frameList.length - 1].duration);
+            lastFrameDuration = Math.min(lastFrameDuration,animationData.frameList[animationData.frameList.length - 1].duration);
          }
-         _loc10_.lastFrameDuration = _loc6_;
-         return _loc10_;
+         animationData.lastFrameDuration = lastFrameDuration;
+         return animationData;
       }
       
-      private static function parseTransformTimeline(param1:Object, param2:int, param3:uint) : TransformTimeline
+      private static function parseTransformTimeline(timelineObject:Object, duration:int, frameRate:uint) : TransformTimeline
       {
-         var _loc5_:* = null;
-         var _loc4_:TransformTimeline = new TransformTimeline();
-         _loc4_.name = param1["name"];
-         _loc4_.scale = getNumber(param1,"scale",1) || 0;
-         _loc4_.offset = getNumber(param1,"offset",0) || 0;
-         _loc4_.originPivot.x = getNumber(param1,"pX",0) || 0;
-         _loc4_.originPivot.y = getNumber(param1,"pY",0) || 0;
-         _loc4_.duration = param2;
+         var frame:* = null;
+         var outputTimeline:TransformTimeline = new TransformTimeline();
+         outputTimeline.name = timelineObject["name"];
+         outputTimeline.scale = getNumber(timelineObject,"scale",1) || 0;
+         outputTimeline.offset = getNumber(timelineObject,"offset",0) || 0;
+         outputTimeline.originPivot.x = getNumber(timelineObject,"pX",0) || 0;
+         outputTimeline.originPivot.y = getNumber(timelineObject,"pY",0) || 0;
+         outputTimeline.duration = duration;
          var _loc8_:int = 0;
-         var _loc7_:* = param1["frame"];
-         for each(var _loc6_ in param1["frame"])
+         var _loc7_:* = timelineObject["frame"];
+         for each(var frameObject in timelineObject["frame"])
          {
-            _loc5_ = parseTransformFrame(_loc6_,param3);
-            _loc4_.addFrame(_loc5_);
+            frame = parseTransformFrame(frameObject,frameRate);
+            outputTimeline.addFrame(frame);
          }
-         parseTimeline(param1,_loc4_);
-         return _loc4_;
+         parseTimeline(timelineObject,outputTimeline);
+         return outputTimeline;
       }
       
-      private static function parseSlotTimeline(param1:Object, param2:int, param3:uint) : SlotTimeline
+      private static function parseSlotTimeline(timelineObject:Object, duration:int, frameRate:uint) : SlotTimeline
       {
-         var _loc4_:* = null;
-         var _loc5_:SlotTimeline = new SlotTimeline();
-         _loc5_.name = param1["name"];
-         _loc5_.scale = getNumber(param1,"scale",1) || 0;
-         _loc5_.offset = getNumber(param1,"offset",0) || 0;
-         _loc5_.duration = param2;
+         var frame:* = null;
+         var timeline:SlotTimeline = new SlotTimeline();
+         timeline.name = timelineObject["name"];
+         timeline.scale = getNumber(timelineObject,"scale",1) || 0;
+         timeline.offset = getNumber(timelineObject,"offset",0) || 0;
+         timeline.duration = duration;
          var _loc8_:int = 0;
-         var _loc7_:* = param1["frame"];
-         for each(var _loc6_ in param1["frame"])
+         var _loc7_:* = timelineObject["frame"];
+         for each(var frameObject in timelineObject["frame"])
          {
-            _loc4_ = parseSlotFrame(_loc6_,param3);
-            _loc5_.addFrame(_loc4_);
+            frame = parseSlotFrame(frameObject,frameRate);
+            timeline.addFrame(frame);
          }
-         parseTimeline(param1,_loc5_);
-         return _loc5_;
+         parseTimeline(timelineObject,timeline);
+         return timeline;
       }
       
-      private static function parseMainFrame(param1:Object, param2:uint) : Frame
+      private static function parseMainFrame(frameObject:Object, frameRate:uint) : Frame
       {
-         var _loc3_:Frame = new Frame();
-         parseFrame(param1,_loc3_,param2);
-         return _loc3_;
+         var frame:Frame = new Frame();
+         parseFrame(frameObject,frame,frameRate);
+         return frame;
       }
       
-      private static function parseTransformFrame(param1:Object, param2:uint) : TransformFrame
+      private static function parseTransformFrame(frameObject:Object, frameRate:uint) : TransformFrame
       {
-         var _loc3_:TransformFrame = new TransformFrame();
-         parseFrame(param1,_loc3_,param2);
-         _loc3_.visible = !getBoolean(param1,"hide",false);
-         _loc3_.tweenEasing = getNumber(param1,"tweenEasing",10);
-         _loc3_.tweenRotate = int(getNumber(param1,"tweenRotate",0));
-         _loc3_.tweenScale = getBoolean(param1,"tweenScale",true);
-         parseTransform(param1["transform"],_loc3_.transform,_loc3_.pivot);
+         var outputFrame:TransformFrame = new TransformFrame();
+         parseFrame(frameObject,outputFrame,frameRate);
+         outputFrame.visible = !getBoolean(frameObject,"hide",false);
+         outputFrame.tweenEasing = getNumber(frameObject,"tweenEasing",10);
+         outputFrame.tweenRotate = int(getNumber(frameObject,"tweenRotate",0));
+         outputFrame.tweenScale = getBoolean(frameObject,"tweenScale",true);
+         parseTransform(frameObject["transform"],outputFrame.transform,outputFrame.pivot);
          if(tempDragonBonesData.isGlobalData)
          {
-            _loc3_.global.copy(_loc3_.transform);
+            outputFrame.global.copy(outputFrame.transform);
          }
-         _loc3_.scaleOffset.x = getNumber(param1,"scXOffset",0) || 0;
-         _loc3_.scaleOffset.y = getNumber(param1,"scYOffset",0) || 0;
-         return _loc3_;
+         outputFrame.scaleOffset.x = getNumber(frameObject,"scXOffset",0) || 0;
+         outputFrame.scaleOffset.y = getNumber(frameObject,"scYOffset",0) || 0;
+         return outputFrame;
       }
       
-      private static function parseSlotFrame(param1:Object, param2:uint) : SlotFrame
+      private static function parseSlotFrame(frameObject:Object, frameRate:uint) : SlotFrame
       {
-         var _loc3_:SlotFrame = new SlotFrame();
-         parseFrame(param1,_loc3_,param2);
-         _loc3_.visible = !getBoolean(param1,"hide",false);
-         _loc3_.tweenEasing = getNumber(param1,"tweenEasing",10);
-         _loc3_.displayIndex = int(getNumber(param1,"displayIndex",0));
-         _loc3_.zOrder = getNumber(param1,"z",!!tempDragonBonesData.isGlobalData?NaN:0);
-         var _loc4_:Object = param1["color"];
-         if(_loc4_)
+         var frame:SlotFrame = new SlotFrame();
+         parseFrame(frameObject,frame,frameRate);
+         frame.visible = !getBoolean(frameObject,"hide",false);
+         frame.tweenEasing = getNumber(frameObject,"tweenEasing",10);
+         frame.displayIndex = int(getNumber(frameObject,"displayIndex",0));
+         frame.zOrder = getNumber(frameObject,"z",!!tempDragonBonesData.isGlobalData?NaN:0);
+         var colorTransformObject:Object = frameObject["color"];
+         if(colorTransformObject)
          {
-            _loc3_.color = new ColorTransform();
-            parseColorTransform(_loc4_,_loc3_.color);
+            frame.color = new ColorTransform();
+            parseColorTransform(colorTransformObject,frame.color);
          }
-         return _loc3_;
+         return frame;
       }
       
-      private static function parseTimeline(param1:Object, param2:Timeline) : void
+      private static function parseTimeline(timelineObject:Object, outputTimeline:Timeline) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:int = 0;
+         var frame:* = null;
+         var position:int = 0;
          var _loc6_:int = 0;
-         var _loc5_:* = param2.frameList;
-         for each(_loc4_ in param2.frameList)
+         var _loc5_:* = outputTimeline.frameList;
+         for each(frame in outputTimeline.frameList)
          {
-            _loc4_.position = _loc3_;
-            _loc3_ = _loc3_ + _loc4_.duration;
+            frame.position = position;
+            position = position + frame.duration;
          }
-         if(_loc4_)
+         if(frame)
          {
-            _loc4_.duration = param2.duration - _loc4_.position;
-         }
-      }
-      
-      private static function parseFrame(param1:Object, param2:Frame, param3:uint) : void
-      {
-         param2.duration = Math.round(param1["duration"] * 1000 / param3);
-         param2.action = param1["action"];
-         param2.event = param1["event"];
-         param2.sound = param1["sound"];
-         if(param1["curve"] != null && param1["curve"].length == 4)
-         {
-            param2.curve = new CurveData();
-            param2.curve.pointList = [new Point(param1["curve"][0],param1["curve"][1]),new Point(param1["curve"][2],param1["curve"][3])];
+            frame.duration = outputTimeline.duration - frame.position;
          }
       }
       
-      private static function parseTransform(param1:Object, param2:DBTransform, param3:Point = null) : void
+      private static function parseFrame(frameObject:Object, outputFrame:Frame, frameRate:uint) : void
       {
-         if(param1)
+         outputFrame.duration = Math.round(frameObject["duration"] * 1000 / frameRate);
+         outputFrame.action = frameObject["action"];
+         outputFrame.event = frameObject["event"];
+         outputFrame.sound = frameObject["sound"];
+         if(frameObject["curve"] != null && frameObject["curve"].length == 4)
          {
-            if(param2)
+            outputFrame.curve = new CurveData();
+            outputFrame.curve.pointList = [new Point(frameObject["curve"][0],frameObject["curve"][1]),new Point(frameObject["curve"][2],frameObject["curve"][3])];
+         }
+      }
+      
+      private static function parseTransform(transformObject:Object, transform:DBTransform, pivot:Point = null) : void
+      {
+         if(transformObject)
+         {
+            if(transform)
             {
-               param2.x = getNumber(param1,"x",0) || 0;
-               param2.y = getNumber(param1,"y",0) || 0;
-               param2.skewX = getNumber(param1,"skX",0) * 0.0174532925199433 || 0;
-               param2.skewY = getNumber(param1,"skY",0) * 0.0174532925199433 || 0;
-               param2.scaleX = getNumber(param1,"scX",1) || 0;
-               param2.scaleY = getNumber(param1,"scY",1) || 0;
+               transform.x = getNumber(transformObject,"x",0) || 0;
+               transform.y = getNumber(transformObject,"y",0) || 0;
+               transform.skewX = getNumber(transformObject,"skX",0) * 0.0174532925199433 || 0;
+               transform.skewY = getNumber(transformObject,"skY",0) * 0.0174532925199433 || 0;
+               transform.scaleX = getNumber(transformObject,"scX",1) || 0;
+               transform.scaleY = getNumber(transformObject,"scY",1) || 0;
             }
-            if(param3)
+            if(pivot)
             {
-               param3.x = getNumber(param1,"pX",0) || 0;
-               param3.y = getNumber(param1,"pY",0) || 0;
-            }
-         }
-      }
-      
-      private static function parseColorTransform(param1:Object, param2:ColorTransform) : void
-      {
-         if(param1)
-         {
-            if(param2)
-            {
-               param2.alphaOffset = int(param1["aO"]);
-               param2.redOffset = int(param1["rO"]);
-               param2.greenOffset = int(param1["gO"]);
-               param2.blueOffset = int(param1["bO"]);
-               param2.alphaMultiplier = int(getNumber(param1,"aM",100)) * 0.01;
-               param2.redMultiplier = int(getNumber(param1,"rM",100)) * 0.01;
-               param2.greenMultiplier = int(getNumber(param1,"gM",100)) * 0.01;
-               param2.blueMultiplier = int(getNumber(param1,"bM",100)) * 0.01;
+               pivot.x = getNumber(transformObject,"pX",0) || 0;
+               pivot.y = getNumber(transformObject,"pY",0) || 0;
             }
          }
       }
       
-      private static function getBoolean(param1:Object, param2:String, param3:Boolean) : Boolean
+      private static function parseColorTransform(colorTransformObject:Object, colorTransform:ColorTransform) : void
       {
-         if(param1 && param2 in param1)
+         if(colorTransformObject)
          {
-            var _loc4_:String = param1[param2];
+            if(colorTransform)
+            {
+               colorTransform.alphaOffset = int(colorTransformObject["aO"]);
+               colorTransform.redOffset = int(colorTransformObject["rO"]);
+               colorTransform.greenOffset = int(colorTransformObject["gO"]);
+               colorTransform.blueOffset = int(colorTransformObject["bO"]);
+               colorTransform.alphaMultiplier = int(getNumber(colorTransformObject,"aM",100)) * 0.01;
+               colorTransform.redMultiplier = int(getNumber(colorTransformObject,"rM",100)) * 0.01;
+               colorTransform.greenMultiplier = int(getNumber(colorTransformObject,"gM",100)) * 0.01;
+               colorTransform.blueMultiplier = int(getNumber(colorTransformObject,"bM",100)) * 0.01;
+            }
+         }
+      }
+      
+      private static function getBoolean(data:Object, key:String, defaultValue:Boolean) : Boolean
+      {
+         if(data && key in data)
+         {
+            var _loc4_:String = data[key];
             if("0" !== _loc4_)
             {
                if("NaN" !== _loc4_)
@@ -426,37 +426,37 @@ package dragonBones.objects
                                  if("true" !== _loc4_)
                                  {
                                  }
-                                 addr27:
+                                 addr36:
                                  return true;
                               }
-                              §§goto(addr27);
+                              §§goto(addr36);
                            }
                         }
-                        addr22:
+                        addr30:
                         return false;
                      }
-                     addr21:
-                     §§goto(addr22);
+                     addr29:
+                     §§goto(addr30);
                   }
-                  addr20:
-                  §§goto(addr21);
+                  addr28:
+                  §§goto(addr29);
                }
-               addr19:
-               §§goto(addr20);
+               addr27:
+               §§goto(addr28);
             }
-            §§goto(addr19);
+            §§goto(addr27);
          }
          else
          {
-            return param3;
+            return defaultValue;
          }
       }
       
-      private static function getNumber(param1:Object, param2:String, param3:Number) : Number
+      private static function getNumber(data:Object, key:String, defaultValue:Number) : Number
       {
-         if(param1 && param2 in param1)
+         if(data && key in data)
          {
-            var _loc4_:String = param1[param2];
+            var _loc4_:String = data[key];
             if("NaN" !== _loc4_)
             {
                if("" !== _loc4_)
@@ -467,23 +467,23 @@ package dragonBones.objects
                      {
                         if("undefined" !== _loc4_)
                         {
-                           return Number(param1[param2]);
+                           return Number(data[key]);
                         }
                      }
-                     addr21:
+                     addr29:
                      return NaN;
                   }
-                  addr20:
-                  §§goto(addr21);
+                  addr28:
+                  §§goto(addr29);
                }
-               addr19:
-               §§goto(addr20);
+               addr27:
+               §§goto(addr28);
             }
-            §§goto(addr19);
+            §§goto(addr27);
          }
          else
          {
-            return param3;
+            return defaultValue;
          }
       }
    }

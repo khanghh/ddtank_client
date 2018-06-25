@@ -20,33 +20,33 @@ package room.view.states
          super();
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
          _roomView = new MissionRoomView(RoomManager.Instance.current);
          addChild(_roomView);
          MainToolBar.Instance.backFunction = leaveAlert;
-         super.enter(param1,param2);
+         super.enter(prev,data);
       }
       
       private function leaveAlert() : void
       {
-         var _loc1_:* = null;
+         var alert:* = null;
          if(RoomManager.Instance.current.selfRoomPlayer.isViewer)
          {
             StateManager.setState("dungeon");
          }
          else
          {
-            _loc1_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.missionsettle.dungeon.leaveConfirm.contents"),"",LanguageMgr.GetTranslation("cancel"),true,true,false,1);
-            _loc1_.moveEnable = false;
-            _loc1_.addEventListener("response",__onResponse);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.missionsettle.dungeon.leaveConfirm.contents"),"",LanguageMgr.GetTranslation("cancel"),true,true,false,1);
+            alert.moveEnable = false;
+            alert.addEventListener("response",__onResponse);
          }
       }
       
-      private function __onResponse(param1:FrameEvent) : void
+      private function __onResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         if(evt.responseCode == 2 || evt.responseCode == 3)
          {
             StateManager.setState("dungeon");
          }
@@ -57,10 +57,10 @@ package room.view.states
          return "missionResult";
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
          MainToolBar.Instance.backFunction = null;
-         super.leaving(param1);
+         super.leaving(next);
       }
       
       override public function getBackType() : String

@@ -25,17 +25,17 @@ package org.as3commons.reflect
       
       private var _value:String;
       
-      public function TypeProviderKind(param1:String)
+      public function TypeProviderKind(value:String)
       {
          super();
          Assert.state(!_enumCreated,"TypeProviderKind enumeration has already been created");
-         this._value = param1;
+         this._value = value;
          _items[this._value] = this;
       }
       
-      public static function fromValue(param1:String) : TypeProviderKind
+      public static function fromValue(value:String) : TypeProviderKind
       {
-         return _items[param1] as TypeProviderKind;
+         return _items[value] as TypeProviderKind;
       }
       
       public function get value() : String

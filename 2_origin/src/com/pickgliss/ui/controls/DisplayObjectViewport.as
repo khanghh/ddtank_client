@@ -57,9 +57,9 @@ package com.pickgliss.ui.controls
          super();
       }
       
-      public function addStateListener(param1:Function, param2:int = 0, param3:Boolean = false) : void
+      public function addStateListener(listener:Function, priority:int = 0, useWeakReference:Boolean = false) : void
       {
-         addEventListener("stateChange",param1);
+         addEventListener("stateChange",listener);
       }
       
       override public function dispose() : void
@@ -103,13 +103,13 @@ package com.pickgliss.ui.controls
          return _horizontalBlockIncrement;
       }
       
-      public function set horizontalBlockIncrement(param1:int) : void
+      public function set horizontalBlockIncrement(increment:int) : void
       {
-         if(_horizontalBlockIncrement == param1)
+         if(_horizontalBlockIncrement == increment)
          {
             return;
          }
-         _horizontalBlockIncrement = param1;
+         _horizontalBlockIncrement = increment;
          onPropertiesChanged("horizontalBlockIncrement");
       }
       
@@ -118,29 +118,29 @@ package com.pickgliss.ui.controls
          return _horizontalUnitIncrement;
       }
       
-      public function set horizontalUnitIncrement(param1:int) : void
+      public function set horizontalUnitIncrement(increment:int) : void
       {
-         if(_horizontalUnitIncrement == param1)
+         if(_horizontalUnitIncrement == increment)
          {
             return;
          }
-         _horizontalUnitIncrement = param1;
+         _horizontalUnitIncrement = increment;
          onPropertiesChanged("horizontalUnitIncrement");
       }
       
-      public function removeStateListener(param1:Function) : void
+      public function removeStateListener(listener:Function) : void
       {
-         removeEventListener("stateChange",param1);
+         removeEventListener("stateChange",listener);
       }
       
-      public function scrollRectToVisible(param1:IntRectangle) : void
+      public function scrollRectToVisible(contentRect:IntRectangle) : void
       {
-         viewPosition = new IntPoint(param1.x,param1.y);
+         viewPosition = new IntPoint(contentRect.x,contentRect.y);
       }
       
-      public function setView(param1:DisplayObject) : void
+      public function setView(view:DisplayObject) : void
       {
-         if(_view == param1)
+         if(_view == view)
          {
             return;
          }
@@ -152,7 +152,7 @@ package com.pickgliss.ui.controls
          {
             ObjectUtils.disposeObject(_view);
          }
-         _view = param1;
+         _view = view;
          if(_view is Component)
          {
             Component(_view).addEventListener("propertiesChanged",__onResize);
@@ -160,7 +160,7 @@ package com.pickgliss.ui.controls
          onPropertiesChanged("view");
       }
       
-      public function setViewportTestSize(param1:IntDimension) : void
+      public function setViewportTestSize(s:IntDimension) : void
       {
       }
       
@@ -169,13 +169,13 @@ package com.pickgliss.ui.controls
          return _verticalBlockIncrement;
       }
       
-      public function set verticalBlockIncrement(param1:int) : void
+      public function set verticalBlockIncrement(increment:int) : void
       {
-         if(_verticalBlockIncrement == param1)
+         if(_verticalBlockIncrement == increment)
          {
             return;
          }
-         _verticalBlockIncrement = param1;
+         _verticalBlockIncrement = increment;
          onPropertiesChanged("verticalBlockIncrement");
       }
       
@@ -184,13 +184,13 @@ package com.pickgliss.ui.controls
          return _verticalUnitIncrement;
       }
       
-      public function set verticalUnitIncrement(param1:int) : void
+      public function set verticalUnitIncrement(increment:int) : void
       {
-         if(_verticalUnitIncrement == param1)
+         if(_verticalUnitIncrement == increment)
          {
             return;
          }
-         _verticalUnitIncrement = param1;
+         _verticalUnitIncrement = increment;
          onPropertiesChanged("verticalUnitIncrement");
       }
       
@@ -199,13 +199,13 @@ package com.pickgliss.ui.controls
          return _viewPosition;
       }
       
-      public function set viewPosition(param1:IntPoint) : void
+      public function set viewPosition(p:IntPoint) : void
       {
-         if(_viewPosition.equals(param1))
+         if(_viewPosition.equals(p))
          {
             return;
          }
-         _viewPosition.setLocation(param1);
+         _viewPosition.setLocation(p);
          onPropertiesChanged("viewPosition");
       }
       
@@ -233,25 +233,25 @@ package com.pickgliss.ui.controls
          _mouseActiveObjectShape.graphics.endFill();
       }
       
-      protected function fireStateChanged(param1:Boolean = true) : void
+      protected function fireStateChanged(programmatic:Boolean = true) : void
       {
          dispatchEvent(new InteractiveEvent("stateChange"));
       }
       
       protected function getViewMaxPos() : IntPoint
       {
-         var _loc3_:IntDimension = getExtentSize();
-         var _loc1_:IntDimension = getViewSize();
-         var _loc2_:IntPoint = new IntPoint(_loc1_.width - _loc3_.width,_loc1_.height - _loc3_.height);
-         if(_loc2_.x < 0)
+         var showSize:IntDimension = getExtentSize();
+         var viewSize:IntDimension = getViewSize();
+         var p:IntPoint = new IntPoint(viewSize.width - showSize.width,viewSize.height - showSize.height);
+         if(p.x < 0)
          {
-            _loc2_.x = 0;
+            p.x = 0;
          }
-         if(_loc2_.y < 0)
+         if(p.y < 0)
          {
-            _loc2_.y = 0;
+            p.y = 0;
          }
-         return _loc2_;
+         return p;
       }
       
       override protected function init() : void
@@ -279,12 +279,12 @@ package com.pickgliss.ui.controls
          }
       }
       
-      protected function restrictionViewPos(param1:IntPoint) : IntPoint
+      protected function restrictionViewPos(p:IntPoint) : IntPoint
       {
-         var _loc2_:IntPoint = getViewMaxPos();
-         param1.x = Math.max(0,Math.min(_loc2_.x,param1.x));
-         param1.y = Math.max(0,Math.min(_loc2_.y,param1.y));
-         return param1;
+         var maxPos:IntPoint = getViewMaxPos();
+         p.x = Math.max(0,Math.min(maxPos.x,p.x));
+         p.y = Math.max(0,Math.min(maxPos.y,p.y));
+         return p;
       }
       
       protected function updatePos() : void
@@ -304,9 +304,9 @@ package com.pickgliss.ui.controls
          _mouseActiveObjectShape.height = _loc1_;
       }
       
-      private function __onResize(param1:ComponentEvent) : void
+      private function __onResize(event:ComponentEvent) : void
       {
-         if(param1.changedProperties["height"] || param1.changedProperties["width"])
+         if(event.changedProperties["height"] || event.changedProperties["width"])
          {
             onPropertiesChanged("view");
          }

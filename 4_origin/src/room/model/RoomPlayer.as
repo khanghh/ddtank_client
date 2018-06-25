@@ -56,12 +56,12 @@ package room.model
       
       private var _roomCharater:RoomCharacter;
       
-      public function RoomPlayer(param1:PlayerInfo, param2:Boolean = true)
+      public function RoomPlayer(playerInfo:PlayerInfo, webFlag:Boolean = true)
       {
          super();
-         _playerInfo = param1;
+         _playerInfo = playerInfo;
          initEvents();
-         if(param2)
+         if(webFlag)
          {
             _webSpeedInfo = new WebSpeedInfo(_playerInfo.webSpeed);
          }
@@ -85,7 +85,7 @@ package room.model
          }
       }
       
-      private function __webSpeedHandler(param1:WebSpeedEvent) : void
+      private function __webSpeedHandler(evt:WebSpeedEvent) : void
       {
          _webSpeedInfo.delay = _playerInfo.webSpeed;
       }
@@ -105,9 +105,9 @@ package room.model
          return _team;
       }
       
-      public function set team(param1:int) : void
+      public function set team(value:int) : void
       {
-         _team = param1;
+         _team = value;
       }
       
       public function get place() : int
@@ -115,9 +115,9 @@ package room.model
          return _place;
       }
       
-      public function set place(param1:int) : void
+      public function set place(value:int) : void
       {
-         _place = param1;
+         _place = value;
       }
       
       public function get isFirstIn() : Boolean
@@ -125,9 +125,9 @@ package room.model
          return _isFirstIn;
       }
       
-      public function set isFirstIn(param1:Boolean) : void
+      public function set isFirstIn(value:Boolean) : void
       {
-         _isFirstIn = param1;
+         _isFirstIn = value;
       }
       
       public function get playerInfo() : PlayerInfo
@@ -189,9 +189,9 @@ package room.model
          return _isHost;
       }
       
-      public function set isHost(param1:Boolean) : void
+      public function set isHost(value:Boolean) : void
       {
-         _isHost = param1;
+         _isHost = value;
          dispatchEvent(new RoomPlayerEvent("isHostChange"));
       }
       
@@ -200,9 +200,9 @@ package room.model
          return _isReady;
       }
       
-      public function set isReady(param1:Boolean) : void
+      public function set isReady(value:Boolean) : void
       {
-         _isReady = param1;
+         _isReady = value;
          dispatchEvent(new RoomPlayerEvent("readyChange"));
       }
       
@@ -211,9 +211,9 @@ package room.model
          return _progress;
       }
       
-      public function set progress(param1:Number) : void
+      public function set progress(value:Number) : void
       {
-         _progress = param1;
+         _progress = value;
          dispatchEvent(new RoomPlayerEvent("progressChange"));
       }
       

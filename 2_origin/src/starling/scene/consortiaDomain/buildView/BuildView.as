@@ -58,15 +58,15 @@ package starling.scene.consortiaDomain.buildView
       
       private var _isShow:Boolean;
       
-      public function BuildView(param1:int, param2:Number)
+      public function BuildView(buildId:int, buildImageScale:Number)
       {
          super();
-         this.buildId = param1;
-         _buildImageScale = param2;
-         _buildName = ConsortiaDomainManager.BUILD_RES_NAME_ARR[param1];
-         var _loc3_:Texture = DDTAssetManager.instance.getTexture(_buildName);
-         var _loc4_:BitmapData = DDTAssetManager.instance.nativeAsset.getBitmapData(_buildName);
-         _build = new PixelButton(_loc3_,"",null,null,null,_loc4_);
+         this.buildId = buildId;
+         _buildImageScale = buildImageScale;
+         _buildName = ConsortiaDomainManager.BUILD_RES_NAME_ARR[buildId];
+         var buildT:Texture = DDTAssetManager.instance.getTexture(_buildName);
+         var buildBmd:BitmapData = DDTAssetManager.instance.nativeAsset.getBitmapData(_buildName);
+         _build = new PixelButton(buildT,"",null,null,null,buildBmd);
          var _loc5_:* = _buildImageScale;
          _build.scaleY = _loc5_;
          _build.scaleX = _loc5_;
@@ -84,7 +84,7 @@ package starling.scene.consortiaDomain.buildView
          _upStateIconSp = new UpStateIconSp();
          _upStateIconSp.touchable = false;
          addChild(_upStateIconSp);
-         _downStateIconSp = new DownStateIconSp(param1);
+         _downStateIconSp = new DownStateIconSp(buildId);
          _downStateIconSp.touchable = false;
          addChild(_downStateIconSp);
          addEventListener("touch",onTouchBuild);
@@ -93,28 +93,28 @@ package starling.scene.consortiaDomain.buildView
          onBuildStateChange(null);
       }
       
-      public function setBuildXY(param1:int, param2:int) : void
+      public function setBuildXY(x:int, y:int) : void
       {
-         _build.x = param1;
-         _build.y = param2;
+         _build.x = x;
+         _build.y = y;
       }
       
-      public function createEff(param1:String, param2:int, param3:int, param4:Number = 1, param5:Number = 1) : void
+      public function createEff(effBoneStyle:String, x:int, y:int, scaleX:Number = 1, scaleY:Number = 1) : void
       {
-         var _loc6_:BoneMovieFastStarling = BoneMovieFactory.instance.creatBoneMovieFast(param1);
-         _loc6_.touchable = false;
-         _loc6_.x = param2;
-         _loc6_.y = param3;
-         _loc6_.scaleX = param4;
-         _loc6_.scaleY = param5;
-         _effSp.addChild(_loc6_);
-         _effArr.push(_loc6_);
+         var eff:BoneMovieFastStarling = BoneMovieFactory.instance.creatBoneMovieFast(effBoneStyle);
+         eff.touchable = false;
+         eff.x = x;
+         eff.y = y;
+         eff.scaleX = scaleX;
+         eff.scaleY = scaleY;
+         _effSp.addChild(eff);
+         _effArr.push(eff);
       }
       
       private function openBuildFrame() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var skillFrame:* = null;
+         var _consortionBankFrame:* = null;
          if(buildId == 3)
          {
             ConsortionModelManager.Instance.alertShopFrame();
@@ -134,22 +134,22 @@ package starling.scene.consortiaDomain.buildView
          }
          else if(buildId == 2)
          {
-            _loc2_ = ComponentFactory.Instance.creatComponentByStylename("consortionSkillFrame");
-            LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+            skillFrame = ComponentFactory.Instance.creatComponentByStylename("consortionSkillFrame");
+            LayerManager.Instance.addToLayer(skillFrame,3,true,1);
          }
          else if(buildId == 1)
          {
-            _loc1_ = ComponentFactory.Instance.creatComponentByStylename("consortionBankFrame");
-            LayerManager.Instance.addToLayer(_loc1_,3,true,1);
+            _consortionBankFrame = ComponentFactory.Instance.creatComponentByStylename("consortionBankFrame");
+            LayerManager.Instance.addToLayer(_consortionBankFrame,3,true,1);
          }
       }
       
-      private function onBuildStateChange(param1:flash.events.Event) : void
+      private function onBuildStateChange(evt:flash.events.Event) : void
       {
-         var _loc2_:EachBuildInfo = ConsortiaDomainManager.instance.model.allBuildInfo[buildId];
-         if(_loc2_)
+         var eachBuildInfo:EachBuildInfo = ConsortiaDomainManager.instance.model.allBuildInfo[buildId];
+         if(eachBuildInfo)
          {
-            state = _loc2_.State;
+            state = eachBuildInfo.State;
          }
       }
       
@@ -158,35 +158,35 @@ package starling.scene.consortiaDomain.buildView
          return _state;
       }
       
-      public function set state(param1:int) : void
+      public function set state(value:int) : void
       {
-         if(_state != param1)
+         if(_state != value)
          {
-            if(param1 == 1)
+            if(value == 1)
             {
                this.touchable = true;
             }
-            else if(param1 == 2)
+            else if(value == 2)
             {
                this.touchable = true;
             }
-            else if(param1 == 3)
+            else if(value == 3)
             {
                this.touchable = true;
             }
-            else if(param1 == 4)
+            else if(value == 4)
             {
                this.touchable = true;
             }
-            else if(param1 == 5)
+            else if(value == 5)
             {
                this.touchable = false;
             }
-            else if(param1 == 6)
+            else if(value == 6)
             {
                this.touchable = false;
             }
-            _state = param1;
+            _state = value;
             updateBuildNameImage();
             _upStateIconSp.x = _buildNameImage.x + _buildNameImage.width + 19;
             _upStateIconSp.y = _buildNameImage.y + 15;
@@ -200,25 +200,25 @@ package starling.scene.consortiaDomain.buildView
                _downStateIconSp.y = 85;
             }
          }
-         _upStateIconSp.state = param1;
-         _downStateIconSp.state = param1;
+         _upStateIconSp.state = value;
+         _downStateIconSp.state = value;
       }
       
       private function updateBuildNameImage() : void
       {
-         var _loc1_:* = null;
+         var buildNameT:* = null;
          _buildNameImage.color = 16777215;
          if(_state == 1 || _state == 2)
          {
-            _loc1_ = DDTAssetManager.instance.getTexture(_buildName + "Title1");
+            buildNameT = DDTAssetManager.instance.getTexture(_buildName + "Title1");
          }
          else if(_state == 5 || _state == 6)
          {
-            _loc1_ = DDTAssetManager.instance.getTexture(_buildName + "Title2");
+            buildNameT = DDTAssetManager.instance.getTexture(_buildName + "Title2");
          }
          else if(_state == 3 || _state == 4)
          {
-            _loc1_ = DDTAssetManager.instance.getTexture(_buildName + "Title1");
+            buildNameT = DDTAssetManager.instance.getTexture(_buildName + "Title1");
             _buildNameImage.color = 13421772;
          }
          if(buildId == 5)
@@ -251,13 +251,13 @@ package starling.scene.consortiaDomain.buildView
             _buildNameBg.y = -160;
             _buildNameImage.y = -136;
          }
-         _buildNameImage.x = -_loc1_.width * 0.5 - 11;
-         _buildNameImage.texture = _loc1_;
+         _buildNameImage.x = -buildNameT.width * 0.5 - 11;
+         _buildNameImage.texture = buildNameT;
       }
       
-      private function onTouchBuild(param1:TouchEvent) : void
+      private function onTouchBuild(evt:TouchEvent) : void
       {
-         var _loc2_:* = null;
+         var touch:* = null;
          if(LayerManager.Instance.backGroundInParent)
          {
             showBtns(false);
@@ -265,30 +265,30 @@ package starling.scene.consortiaDomain.buildView
          }
          if(_state == 1 || _state == 2)
          {
-            _loc2_ = param1.getTouch(this);
-            if(_loc2_ == null || _loc2_.phase == "ended")
+            touch = evt.getTouch(this);
+            if(touch == null || touch.phase == "ended")
             {
                showBtns(false);
             }
-            else if(_loc2_.phase == "began" || _loc2_.phase == "hover" || _loc2_.phase == "moved")
+            else if(touch.phase == "began" || touch.phase == "hover" || touch.phase == "moved")
             {
                showBtns(true);
             }
          }
       }
       
-      private function showBtns(param1:Boolean) : void
+      private function showBtns(isShow:Boolean) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:Boolean = false;
-         if(_isShow != param1)
+         var right:int = 0;
+         var isChangeMan:Boolean = false;
+         if(_isShow != isShow)
          {
-            _isShow = param1;
+            _isShow = isShow;
             if(_isShow)
             {
-               _loc3_ = PlayerManager.Instance.Self.Right;
-               _loc2_ = ConsortiaDutyManager.GetRight(_loc3_,512);
-               if(_loc2_)
+               right = PlayerManager.Instance.Self.Right;
+               isChangeMan = ConsortiaDutyManager.GetRight(right,512);
+               if(isChangeMan)
                {
                   if(buildId == 5)
                   {
@@ -355,15 +355,15 @@ package starling.scene.consortiaDomain.buildView
          }
       }
       
-      private function onBtnClick(param1:starling.events.Event) : void
+      private function onBtnClick(evt:starling.events.Event) : void
       {
-         var _loc2_:* = null;
-         if(param1.target == _upGradeBtn)
+         var upGradeFrame:* = null;
+         if(evt.target == _upGradeBtn)
          {
-            _loc2_ = ComponentFactory.Instance.creat("consortionUpGradeFrame",[buildId]);
-            LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+            upGradeFrame = ComponentFactory.Instance.creat("consortionUpGradeFrame",[buildId]);
+            LayerManager.Instance.addToLayer(upGradeFrame,3,true,1);
          }
-         else if(param1.target == _openBtn)
+         else if(evt.target == _openBtn)
          {
             openBuildFrame();
          }

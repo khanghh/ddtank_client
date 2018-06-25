@@ -30,11 +30,11 @@ package campbattle.data
       
       public var IsBind:Boolean;
       
-      public function CampBattleAwardsGoodsInfo(param1:int = 0, param2:int = 0)
+      public function CampBattleAwardsGoodsInfo($ID:int = 0, $ItemID:int = 0)
       {
          super();
-         ID = param1;
-         ItemID = param2;
+         ID = $ID;
+         ItemID = $ItemID;
       }
    }
 }

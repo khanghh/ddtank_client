@@ -37,77 +37,77 @@ package ddt.log
          return _instance;
       }
       
-      public function init(param1:Stage) : void
+      public function init(stage:Stage) : void
       {
-         _stage = param1;
+         _stage = stage;
          _stage.addEventListener("keyUp",onKeyUp);
          _file = new FileReference();
          _file.addEventListener("complete",onFileComplete);
          _msgArr = [];
       }
       
-      private function onKeyUp(param1:KeyboardEvent) : void
+      private function onKeyUp(evt:KeyboardEvent) : void
       {
-         var _loc5_:* = null;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:uint = param1.keyCode;
-         if(_loc2_ == 192 && param1.shiftKey)
+         var msg:* = null;
+         var date:* = null;
+         var dateString:* = null;
+         var keyCode:uint = evt.keyCode;
+         if(keyCode == 192 && evt.shiftKey)
          {
-            _loc5_ = _msgArr.join("\r\n");
-            _loc4_ = new Date();
-            _loc3_ = getDateString(_loc4_);
-            _file.save(_loc5_,_loc3_ + " log.txt");
+            msg = _msgArr.join("\r\n");
+            date = new Date();
+            dateString = getDateString(date);
+            _file.save(msg,dateString + " log.txt");
          }
       }
       
-      private function onFileComplete(param1:Event) : void
+      private function onFileComplete(evt:Event) : void
       {
          _msgArr = [];
       }
       
-      public function log(param1:*, param2:String = null) : void
+      public function log(msg:*, tag:String = null) : void
       {
-         var _loc3_:* = null;
-         if(param1 == null)
+         var tranMsg:* = null;
+         if(msg == null)
          {
             return;
          }
-         false && trace(param1);
-         if(param1 is String)
+         false && trace(msg);
+         if(msg is String)
          {
-            _loc3_ = param1;
+            tranMsg = msg;
          }
          else
          {
-            _loc3_ = JSON.stringify(param1,null,"  ");
+            tranMsg = JSON.stringify(msg,null,"  ");
          }
-         var _loc5_:Date = new Date();
-         var _loc4_:String = "[" + getDateString(_loc5_) + "]";
-         if(param2 == null)
+         var date:Date = new Date();
+         var dateString:String = "[" + getDateString(date) + "]";
+         if(tag == null)
          {
-            _loc3_ = _loc4_ + " " + _loc3_;
+            tranMsg = dateString + " " + tranMsg;
          }
          else
          {
-            _loc3_ = _loc4_ + " [" + param2 + "] " + _loc3_;
+            tranMsg = dateString + " [" + tag + "] " + tranMsg;
          }
-         pushMsg(_loc3_);
+         pushMsg(tranMsg);
       }
       
-      private function getDateString(param1:Date) : String
+      private function getDateString(date:Date) : String
       {
-         return param1.fullYear + "-" + fixTwoDigit(param1.month + 1) + "-" + fixTwoDigit(param1.date) + " " + fixTwoDigit(param1.hours) + "-" + fixTwoDigit(param1.minutes) + "-" + fixTwoDigit(param1.seconds);
+         return date.fullYear + "-" + fixTwoDigit(date.month + 1) + "-" + fixTwoDigit(date.date) + " " + fixTwoDigit(date.hours) + "-" + fixTwoDigit(date.minutes) + "-" + fixTwoDigit(date.seconds);
       }
       
-      private function fixTwoDigit(param1:int) : String
+      private function fixTwoDigit(digit:int) : String
       {
-         return param1 < 10?"0" + param1:param1.toString();
+         return digit < 10?"0" + digit:digit.toString();
       }
       
-      private function pushMsg(param1:String) : void
+      private function pushMsg(msg:String) : void
       {
-         _msgArr.push(param1);
+         _msgArr.push(msg);
          if(_msgArr.length > 1000 + 10)
          {
             _msgArr.splice(0,10);

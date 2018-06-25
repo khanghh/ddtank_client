@@ -41,9 +41,9 @@ package mark
          super.init();
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(value:Object) : void
       {
-         value = param1;
+         value = value;
          if(value == null)
          {
             this.visible = false;
@@ -54,8 +54,7 @@ package mark
          var chipTemplate:MarkChipTemplateData = MarkMgr.inst.model.cfgChip[chip.templateId] as MarkChipTemplateData;
          var itemInfo:ItemTemplateInfo = ItemManager.Instance.getTemplateById(chipTemplate.Id);
          var stars:Array = [_display.clipStar1,_display.clipStar2,_display.clipStar3,_display.clipStar4,_display.clipStar5];
-         var i:int = 0;
-         while(i < stars.length)
+         for(var i:int = 0; i < stars.length; )
          {
             if(i < chip.bornLv + chip.hammerLv)
             {
@@ -68,28 +67,43 @@ package mark
             }
             i = i + 1;
          }
-         _display.isBind.index = !!chip.isbind?0:1;
+         if(chip.isShowBind)
+         {
+            _display.isBind.visible = true;
+            _display.isBind.index = !!chip.isbind?0:1;
+         }
+         else
+         {
+            _display.isBind.visible = false;
+         }
          _display.qualityTxt.text = QualityType.QUALITY_STRING[chipTemplate.Character];
          _display.qualityTxt.color = QualityType.QUALITY_COLOR[chipTemplate.Character];
          _qualityTxt.text = LanguageMgr.GetTranslation("mark.chipTipName",chip.hLv,itemInfo.Name);
          _qualityTxt.textColor = QualityType.QUALITY_COLOR[chipTemplate.Character];
-         _display.lblMainPro.htmlText = LanguageMgr.GetTranslation("mark.tipBaseName",LanguageMgr.GetTranslation("mark.pro" + chip.mainPro.type));
-         _display.lblMainProValue.htmlText = LanguageMgr.GetTranslation("mark.tipValue",LanguageMgr.GetTranslation("mark.tipBaseValue",chip.mainPro.value),chip.mainPro.attachValue > 0?LanguageMgr.GetTranslation("mark.tipHammerValue",chip.mainPro.attachValue):"");
-         _display.lblMainProValue.x = _display.lblMainPro.x + _display.lblMainPro.width + 3;
+         if(chip.mainPro.value <= 0)
+         {
+            _display.lblMainPro.htmlText = LanguageMgr.GetTranslation("mark.tipProUnknown");
+            _display.lblMainProValue.htmlText = "";
+         }
+         else
+         {
+            _display.lblMainPro.htmlText = LanguageMgr.GetTranslation("mark.tipBaseName",LanguageMgr.GetTranslation("mark.pro" + chip.mainPro.type));
+            _display.lblMainProValue.htmlText = LanguageMgr.GetTranslation("mark.tipValue",LanguageMgr.GetTranslation("mark.tipBaseValue",chip.mainPro.value),chip.mainPro.attachValue > 0?LanguageMgr.GetTranslation("mark.tipHammerValue",chip.mainPro.attachValue):"");
+            _display.lblMainProValue.x = _display.lblMainPro.x + _display.lblMainPro.width + 3;
+         }
          var offsetY:int = 172;
          var pro:MarkProData = null;
          var propLbls:Array = [_display.lblPro1,_display.lblPro2,_display.lblPro3,_display.lblPro4];
          var props:Array = [_display.lblProValue1,_display.lblProValue2,_display.lblProValue3,_display.lblProValue4];
          var proCons:Array = [_display.conPro0,_display.conPro1,_display.conPro2,_display.conPro3];
-         proCons.forEach(function(param1:*, param2:int, param3:Array):void
+         proCons.forEach(function(item:*, index:int, array:Array):void
          {
-            param1.visible = false;
+            item.visible = false;
          });
-         var j:int = 0;
-         while(j < chip.props.length)
+         for(var j:int = 0; j < chip.props.length; )
          {
             pro = chip.props[j];
-            if(!(j >= props.length || pro.type <= 0))
+            if(!(j >= props.length || pro.type <= 0 || pro.value <= 0))
             {
                propLbls[j].htmlText = LanguageMgr.GetTranslation(j + 1 < chip.bornLv?"mark.tipBaseName":"mark.tipAddName",LanguageMgr.GetTranslation("mark.pro" + pro.type));
                props[j].htmlText = LanguageMgr.GetTranslation("mark.tipValue",LanguageMgr.GetTranslation("mark.tipBaseValue",pro.value),pro.attachValue > 0?LanguageMgr.GetTranslation("mark.tipHammerValue",pro.attachValue):"");
@@ -115,9 +129,9 @@ package mark
          var lbls:Array = [_display.lblSuit1,_display.lblSuit2];
          var values:Array = [_display.lblSuitEffect1,_display.lblSuitEffect2];
          var suitCons:Array = [_display.conSuit0,_display.conSuit1];
-         suitCons.forEach(function(param1:*, param2:int, param3:Array):void
+         suitCons.forEach(function(item:*, index:int, array:Array):void
          {
-            param1.visible = false;
+            item.visible = false;
          });
          var k:int = 0;
          var _loc4_:int = 0;
@@ -148,6 +162,10 @@ package mark
             {
                var dic:Dictionary = MarkMgr.inst.model.getSuitData();
                var num:int = dic[MarkMgr.inst.model.cfgChip[chip.templateId].SetID].length;
+               if(MarkMgr.inst.model.cfgChip[chip.templateId].SetID == 1005)
+               {
+                  num = num - 2;
+               }
                if(num >= 2 && num < 4)
                {
                   (values[0] as Label).filters = null;

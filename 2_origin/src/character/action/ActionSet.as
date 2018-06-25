@@ -10,32 +10,32 @@ package character.action
       
       private var _currentAction:BaseAction;
       
-      public function ActionSet(param1:XML = null)
+      public function ActionSet(actionDefine:XML = null)
       {
          super();
          this._actions = [];
-         if(param1)
+         if(actionDefine)
          {
-            this.parseFromXml(param1);
+            this.parseFromXml(actionDefine);
          }
       }
       
-      public function addAction(param1:BaseAction) : void
+      public function addAction(action:BaseAction) : void
       {
-         if(param1)
+         if(action)
          {
-            this._actions.push(param1);
+            this._actions.push(action);
          }
       }
       
-      public function getAction(param1:String) : BaseAction
+      public function getAction(name:String) : BaseAction
       {
-         var _loc2_:BaseAction = null;
-         for each(_loc2_ in this._actions)
+         var action:BaseAction = null;
+         for each(action in this._actions)
          {
-            if(_loc2_.name == param1)
+            if(action.name == name)
             {
-               return _loc2_;
+               return action;
             }
          }
          return null;
@@ -43,12 +43,12 @@ package character.action
       
       public function get next() : BaseAction
       {
-         var _loc1_:BaseAction = null;
-         for each(_loc1_ in this._actions)
+         var action:BaseAction = null;
+         for each(action in this._actions)
          {
-            if(_loc1_.name == this._currentAction.name)
+            if(action.name == this._currentAction.name)
             {
-               return _loc1_;
+               return action;
             }
          }
          return this._currentAction;
@@ -69,13 +69,13 @@ package character.action
       
       public function get stringActions() : Array
       {
-         var _loc2_:BaseAction = null;
-         var _loc1_:Array = [];
-         for each(_loc2_ in this._actions)
+         var action:BaseAction = null;
+         var result:Array = [];
+         for each(action in this._actions)
          {
-            _loc1_.push(_loc2_.name);
+            result.push(action.name);
          }
-         return _loc1_;
+         return result;
       }
       
       public function get actions() : Array
@@ -83,43 +83,41 @@ package character.action
          return this._actions;
       }
       
-      public function removeAction(param1:String) : void
+      public function removeAction(action:String) : void
       {
-         var _loc2_:BaseAction = null;
-         for each(_loc2_ in this._actions)
+         var act:BaseAction = null;
+         for each(act in this._actions)
          {
-            if(_loc2_.name == param1)
+            if(act.name == action)
             {
-               this._actions.splice(this._actions.indexOf(_loc2_),1);
-               _loc2_.dispose();
+               this._actions.splice(this._actions.indexOf(act),1);
+               act.dispose();
             }
          }
       }
       
-      private function parseFromXml(param1:XML) : void
+      private function parseFromXml(xml:XML) : void
       {
       }
       
       public function toXml() : XML
       {
-         var _loc3_:BaseAction = null;
-         var _loc1_:XML = <actionSet></actionSet>;
-         var _loc2_:int = 0;
-         while(_loc2_ < this._actions.length)
+         var action:BaseAction = null;
+         var result:XML = <actionSet></actionSet>;
+         for(var i:int = 0; i < this._actions.length; i++)
          {
-            _loc3_ = this._actions[_loc2_];
-            _loc1_.appendChild(_loc3_.toXml());
-            _loc2_++;
+            action = this._actions[i];
+            result.appendChild(action.toXml());
          }
-         return _loc1_;
+         return result;
       }
       
       public function dispose() : void
       {
-         var _loc1_:BaseAction = null;
-         for each(_loc1_ in this._actions)
+         var action:BaseAction = null;
+         for each(action in this._actions)
          {
-            _loc1_.dispose();
+            action.dispose();
          }
       }
    }

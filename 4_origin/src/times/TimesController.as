@@ -60,10 +60,10 @@ package times
       
       private var _isShowUpdateView:Boolean = false;
       
-      public function TimesController(param1:IEventDispatcher = null)
+      public function TimesController(target:IEventDispatcher = null)
       {
          _eggLoc = new Point(-1,-1);
-         super(param1);
+         super(target);
          init();
       }
       
@@ -81,19 +81,19 @@ package times
          return _currentPointer;
       }
       
-      public function set currentPointer(param1:int) : void
+      public function set currentPointer(value:int) : void
       {
-         _currentPointer = param1;
+         _currentPointer = value;
       }
       
-      public function setup(param1:TimesAnalyzer) : void
+      public function setup(analyzer:TimesAnalyzer) : void
       {
-         _model.smallPicInfos = param1.smallPicInfos;
-         _model.bigPicInfos = param1.bigPicInfos;
-         _model.contentInfos = param1.contentInfos;
-         _model.edition = param1.edition;
-         _model.editor = param1.editor;
-         _model.nextDate = param1.nextDate;
+         _model.smallPicInfos = analyzer.smallPicInfos;
+         _model.bigPicInfos = analyzer.bigPicInfos;
+         _model.contentInfos = analyzer.contentInfos;
+         _model.edition = analyzer.edition;
+         _model.editor = analyzer.editor;
+         _model.nextDate = analyzer.nextDate;
          loadThumbnail();
       }
       
@@ -108,16 +108,16 @@ package times
          _tipItemMcs = new Dictionary();
       }
       
-      public function initView(param1:TimesView, param2:TimesThumbnailView, param3:Vector.<TimesContentView>) : void
+      public function initView(timesView:TimesView, thumbnailViews:TimesThumbnailView, contentViews:Vector.<TimesContentView>) : void
       {
-         _timesView = param1;
-         _thumbnailView = param2;
-         _contentViews = param3;
-         var _loc4_:TimesPicInfo = new TimesPicInfo();
-         _loc4_.type = "category0";
-         _loc4_.targetCategory = 0;
-         _loc4_.targetPage = 0;
-         __gotoContent(new TimesEvent("gotoContent",_loc4_));
+         _timesView = timesView;
+         _thumbnailView = thumbnailViews;
+         _contentViews = contentViews;
+         var info:TimesPicInfo = new TimesPicInfo();
+         info.type = "category0";
+         info.targetCategory = 0;
+         info.targetPage = 0;
+         __gotoContent(new TimesEvent("gotoContent",info));
       }
       
       public function initEvent() : void
@@ -138,41 +138,41 @@ package times
          TimesController.Instance.removeEventListener("pushTipCells",__pushTipCells);
       }
       
-      private function __pushTipCells(param1:TimesEvent) : void
+      private function __pushTipCells(event:TimesEvent) : void
       {
-         addTip(param1.info.category,param1.info.page,param1.params);
+         addTip(event.info.category,event.info.page,event.params);
       }
       
-      private function __gotoContent(param1:TimesEvent) : void
+      private function __gotoContent(event:TimesEvent) : void
       {
-         var _loc2_:* = undefined;
-         var _loc3_:TimesPicInfo = param1.info;
-         currentPointer = _loc3_.targetCategory;
+         var managerReference:* = undefined;
+         var info:TimesPicInfo = event.info;
+         currentPointer = info.targetCategory;
          _timesView.menuSelected(currentPointer);
-         _contentViews[currentPointer].frame = _loc3_.targetPage;
+         _contentViews[currentPointer].frame = info.targetPage;
          tryRemoveAllViews();
          _timesView.addChild(_contentViews[currentPointer]);
-         tryShowTipDisplay(currentPointer,_loc3_.targetPage);
+         tryShowTipDisplay(currentPointer,info.targetPage);
          tryShowEgg();
-         updateGuildViewPoint(currentPointer,_loc3_.targetPage);
+         updateGuildViewPoint(currentPointer,info.targetPage);
          if(_statisticsInstance)
          {
             _statisticsInstance.startTick();
          }
          else
          {
-            _loc2_ = getDefinitionByName("times.TimesManager") as Class;
-            if(_loc2_)
+            managerReference = getDefinitionByName("times.TimesManager") as Class;
+            if(managerReference)
             {
-               _statisticsInstance = _loc2_.Instance.statistics;
+               _statisticsInstance = managerReference.Instance.statistics;
                _statisticsInstance.startTick();
             }
          }
       }
       
-      private function __gotoNextContent(param1:TimesEvent) : void
+      private function __gotoNextContent(event:TimesEvent) : void
       {
-         var _loc2_:* = undefined;
+         var managerReference:* = undefined;
          currentPointer = currentPointer < 3?currentPointer + 1:0;
          _timesView.menuSelected(currentPointer);
          tryRemoveAllViews();
@@ -187,18 +187,18 @@ package times
          }
          else
          {
-            _loc2_ = getDefinitionByName("times.TimesManager") as Class;
-            if(_loc2_)
+            managerReference = getDefinitionByName("times.TimesManager") as Class;
+            if(managerReference)
             {
-               _statisticsInstance = _loc2_.Instance.statistics;
+               _statisticsInstance = managerReference.Instance.statistics;
                _statisticsInstance.startTick();
             }
          }
       }
       
-      private function __gotoPreContent(param1:TimesEvent) : void
+      private function __gotoPreContent(event:TimesEvent) : void
       {
-         var _loc2_:* = undefined;
+         var managerReference:* = undefined;
          currentPointer = currentPointer > 0?currentPointer - 1:Number(_contentViews.length - 1);
          _timesView.menuSelected(currentPointer);
          tryRemoveAllViews();
@@ -213,135 +213,132 @@ package times
          }
          else
          {
-            _loc2_ = getDefinitionByName("times.TimesManager") as Class;
-            if(_loc2_)
+            managerReference = getDefinitionByName("times.TimesManager") as Class;
+            if(managerReference)
             {
-               _statisticsInstance = _loc2_.Instance.statistics;
+               _statisticsInstance = managerReference.Instance.statistics;
                _statisticsInstance.startTick();
             }
          }
       }
       
-      private function __pushTipItems(param1:TimesEvent) : void
+      private function __pushTipItems(event:TimesEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc5_:TimesPicInfo = param1.info as TimesPicInfo;
-         var _loc3_:MovieClip = param1.params[0] as MovieClip;
-         var _loc4_:String = String(_loc5_.category) + String(_loc5_.page);
-         if(_tipItemMcs[_loc4_])
+         var arr:* = null;
+         var info:TimesPicInfo = event.info as TimesPicInfo;
+         var item:MovieClip = event.params[0] as MovieClip;
+         var key:String = String(info.category) + String(info.page);
+         if(_tipItemMcs[key])
          {
-            _loc2_ = _tipItemMcs[_loc4_];
+            arr = _tipItemMcs[key];
          }
          else
          {
-            _loc2_ = [];
+            arr = [];
          }
-         _loc2_.push(_loc3_);
-         _tipItemMcs[_loc4_] = _loc2_;
+         arr.push(item);
+         _tipItemMcs[key] = arr;
       }
       
-      public function updateGuildViewPoint(param1:int = -1, param2:int = -1) : void
+      public function updateGuildViewPoint(posX:int = -1, posY:int = -1) : void
       {
-         var _loc6_:int = 0;
-         var _loc4_:int = 0;
-         var _loc5_:* = null;
-         var _loc3_:int = 0;
-         if(param1 == -1 && param2 == -1)
+         var i:int = 0;
+         var j:int = 0;
+         var info:* = null;
+         var idx:int = 0;
+         if(posX == -1 && posY == -1)
          {
-            _thumbnailView.pointIdx = _loc3_;
+            _thumbnailView.pointIdx = idx;
             return;
          }
-         _loc6_ = 0;
-         while(_loc6_ < _model.contentInfos.length)
+         i = 0;
+         while(i < _model.contentInfos.length)
          {
-            _loc4_ = 0;
-            while(_loc4_ < _model.contentInfos[_loc6_].length)
+            for(j = 0; j < _model.contentInfos[i].length; )
             {
-               _loc5_ = _model.contentInfos[_loc6_][_loc4_];
-               if(param1 == _loc5_.category && param2 == _loc5_.page)
+               info = _model.contentInfos[i][j];
+               if(posX == info.category && posY == info.page)
                {
-                  _thumbnailView.pointIdx = _loc3_;
+                  _thumbnailView.pointIdx = idx;
                   return;
                }
-               _loc3_++;
-               _loc4_++;
+               idx++;
+               j++;
             }
-            _loc6_++;
+            i++;
          }
       }
       
       private function tryRemoveAllViews() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _contentViews.length)
+         var i:int = 0;
+         for(i = 0; i < _contentViews.length; )
          {
-            if(_contentViews[_loc1_] && _timesView.contains(_contentViews[_loc1_]))
+            if(_contentViews[i] && _timesView.contains(_contentViews[i]))
             {
-               _timesView.removeChild(_contentViews[_loc1_]);
+               _timesView.removeChild(_contentViews[i]);
             }
-            _loc1_++;
+            i++;
          }
       }
       
-      private function addTip(param1:int, param2:int, param3:Array) : void
+      private function addTip(category:int, page:int, tipDisplayObjs:Array) : void
       {
-         var _loc6_:int = 0;
-         var _loc5_:String = String(param1) + String(param2);
-         var _loc4_:Sprite = new Sprite();
-         TimesUtils.setPos(_loc4_,"times.ContentBigPicPos");
-         _loc6_ = 0;
-         while(_loc6_ < param3.length)
+         var i:int = 0;
+         var key:String = String(category) + String(page);
+         var container:Sprite = new Sprite();
+         TimesUtils.setPos(container,"times.ContentBigPicPos");
+         for(i = 0; i < tipDisplayObjs.length; )
          {
-            _loc4_.addChild(param3[_loc6_]);
-            param3[_loc6_].addEventListener("rollOver",__playEffect);
-            param3[_loc6_].addEventListener("rollOut",__stopEffect);
-            _loc6_++;
+            container.addChild(tipDisplayObjs[i]);
+            tipDisplayObjs[i].addEventListener("rollOver",__playEffect);
+            tipDisplayObjs[i].addEventListener("rollOut",__stopEffect);
+            i++;
          }
          if(_extraDisplays == null)
          {
             _extraDisplays = new Dictionary();
          }
-         _extraDisplays[_loc5_] = _loc4_;
+         _extraDisplays[key] = container;
       }
       
-      private function __stopEffect(param1:MouseEvent) : void
+      private function __stopEffect(event:MouseEvent) : void
       {
          if(_extraDisplays == null)
          {
-            param1.currentTarget.removeEventListener("rollOver",__playEffect);
-            param1.currentTarget.removeEventListener("rollOut",__stopEffect);
+            event.currentTarget.removeEventListener("rollOver",__playEffect);
+            event.currentTarget.removeEventListener("rollOut",__stopEffect);
             return;
          }
-         var _loc2_:int = _extraDisplays[_tipCurrentKey].getChildIndex(param1.currentTarget);
-         _tipItemMcs[_tipCurrentKey][_loc2_].gotoAndStop(1);
+         var idx:int = _extraDisplays[_tipCurrentKey].getChildIndex(event.currentTarget);
+         _tipItemMcs[_tipCurrentKey][idx].gotoAndStop(1);
       }
       
-      private function __playEffect(param1:MouseEvent) : void
+      private function __playEffect(event:MouseEvent) : void
       {
          if(_extraDisplays == null)
          {
-            param1.currentTarget.removeEventListener("rollOver",__playEffect);
-            param1.currentTarget.removeEventListener("rollOut",__stopEffect);
+            event.currentTarget.removeEventListener("rollOver",__playEffect);
+            event.currentTarget.removeEventListener("rollOut",__stopEffect);
             return;
          }
-         var _loc2_:int = _extraDisplays[_tipCurrentKey].getChildIndex(param1.currentTarget);
-         _tipItemMcs[_tipCurrentKey][_loc2_].gotoAndStop(2);
+         var idx:int = _extraDisplays[_tipCurrentKey].getChildIndex(event.currentTarget);
+         _tipItemMcs[_tipCurrentKey][idx].gotoAndStop(2);
       }
       
       public function clearExtraObjects() : void
       {
-         var _loc1_:* = null;
+         var mc:* = null;
          var _loc4_:int = 0;
          var _loc3_:* = _tipItemMcs;
-         for each(var _loc2_ in _tipItemMcs)
+         for each(var arr in _tipItemMcs)
          {
-            while(_loc2_.length > 0)
+            while(arr.length > 0)
             {
-               _loc1_ = _loc2_.shift();
-               _loc1_ = null;
+               mc = arr.shift();
+               mc = null;
             }
-            _loc2_ = null;
+            arr = null;
          }
          _tipItemMcs = new Dictionary();
          if(_egg)
@@ -353,10 +350,10 @@ package times
          deleteTipDisplay();
       }
       
-      public function tryShowTipDisplay(param1:int, param2:int) : void
+      public function tryShowTipDisplay(category:int, page:int) : void
       {
          removeTipDisplay();
-         _tipCurrentKey = String(param1) + String(param2);
+         _tipCurrentKey = String(category) + String(page);
          if(_extraDisplays && _extraDisplays[_tipCurrentKey])
          {
             _timesView.addChild(_extraDisplays[_tipCurrentKey]);
@@ -371,38 +368,37 @@ package times
       {
          var _loc3_:int = 0;
          var _loc2_:* = _extraDisplays;
-         for(var _loc1_ in _extraDisplays)
+         for(var key in _extraDisplays)
          {
-            if(_extraDisplays[_loc1_].parent)
+            if(_extraDisplays[key].parent)
             {
-               _extraDisplays[_loc1_].parent.removeChild(_extraDisplays[_loc1_]);
+               _extraDisplays[key].parent.removeChild(_extraDisplays[key]);
             }
          }
       }
       
       private function deleteTipDisplay() : void
       {
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
-         var _loc1_:* = null;
+         var len:int = 0;
+         var i:int = 0;
+         var disp:* = null;
          removeTipDisplay();
          var _loc6_:int = 0;
          var _loc5_:* = _extraDisplays;
-         for(var _loc3_ in _extraDisplays)
+         for(var key in _extraDisplays)
          {
-            _loc2_ = _extraDisplays[_loc3_];
-            _loc4_ = 0;
-            while(_loc4_ < _loc2_)
+            len = _extraDisplays[key];
+            for(i = 0; i < len; )
             {
-               _loc1_ = _extraDisplays[_loc3_].getChildAt(_loc4_);
-               if(_loc1_ is InteractiveObject)
+               disp = _extraDisplays[key].getChildAt(i);
+               if(disp is InteractiveObject)
                {
-                  _loc1_.addEventListener("rollOver",__playEffect);
-                  _loc1_.addEventListener("rollOut",__stopEffect);
+                  disp.addEventListener("rollOver",__playEffect);
+                  disp.addEventListener("rollOut",__stopEffect);
                }
-               _loc4_++;
+               i++;
             }
-            delete _extraDisplays[_loc3_];
+            delete _extraDisplays[key];
          }
          _extraDisplays = null;
       }
@@ -418,15 +414,15 @@ package times
             _eggLoc.y = _contentViews[_currentPointer].frame;
             _timesView.addChild(_egg);
          };
-         __eggClick = function(param1:MouseEvent):void
+         __eggClick = function(event:MouseEvent):void
          {
             ComponentSetting.SEND_USELOG_ID(145);
             TimesController.Instance.dispatchEvent(new TimesEvent("gotEgg"));
          };
          bingo = function():Boolean
          {
-            var _loc1_:Number = Math.random() * 5;
-            return _loc1_ > 4;
+            var num:Number = Math.random() * 5;
+            return num > 4;
          };
          eggDispose = function():void
          {
@@ -462,7 +458,7 @@ package times
       
       private function loadThumbnail() : void
       {
-         __onQueueComplete = function(param1:Event):void
+         __onQueueComplete = function(e:Event):void
          {
             _queue.dispose();
             _queue = null;
@@ -471,12 +467,10 @@ package times
          _thumbnailLoaders = [];
          var _queue:LoaderQueue = new LoaderQueue();
          _queue.addEventListener("complete",__onQueueComplete);
-         var i:int = 0;
-         while(i < _model.contentInfos.length)
+         for(var i:int = 0; i < _model.contentInfos.length; )
          {
             var arr:Array = [];
-            var j:int = 0;
-            while(j < _model.contentInfos[i].length)
+            for(var j:int = 0; j < _model.contentInfos[i].length; )
             {
                var info:TimesPicInfo = _model.contentInfos[i][j];
                if(info.thumbnailPath && info.thumbnailPath != "null" && info.thumbnailPath != "")
@@ -494,47 +488,44 @@ package times
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
+         var t:int = 0;
+         var p:int = 0;
+         var i:int = 0;
          _model.dispose();
-         _loc1_ = 0;
-         while(_loc1_ < _thumbnailLoaders.length)
+         for(t = 0; t < _thumbnailLoaders.length; )
          {
-            _loc2_ = 0;
-            while(_loc2_ < _thumbnailLoaders[_loc1_].length)
+            for(p = 0; p < _thumbnailLoaders[t].length; )
             {
-               ObjectUtils.disposeObject(_thumbnailLoaders[_loc1_][_loc2_]);
-               _thumbnailLoaders[_loc1_][_loc2_] = null;
-               _loc2_++;
+               ObjectUtils.disposeObject(_thumbnailLoaders[t][p]);
+               _thumbnailLoaders[t][p] = null;
+               p++;
             }
-            _loc1_++;
+            t++;
          }
          _thumbnailLoaders = null;
          var _loc6_:int = 0;
          var _loc5_:* = _extraDisplays;
-         for each(var _loc3_ in _extraDisplays)
+         for each(var display in _extraDisplays)
          {
-            if(_loc3_)
+            if(display)
             {
-               ObjectUtils.disposeObject(_loc3_);
-               _loc3_ = null;
+               ObjectUtils.disposeObject(display);
+               display = null;
             }
          }
          _extraDisplays = null;
-         _loc4_ = 0;
-         while(_loc4_ < _tipItemMcs.length)
+         for(i = 0; i < _tipItemMcs.length; )
          {
-            if(_tipItemMcs[_loc4_])
+            if(_tipItemMcs[i])
             {
-               if(_tipItemMcs[_loc4_].parent)
+               if(_tipItemMcs[i].parent)
                {
-                  _tipItemMcs[_loc4_].parent.removeChild(_tipItemMcs[_loc4_]);
+                  _tipItemMcs[i].parent.removeChild(_tipItemMcs[i]);
                }
-               MovieClip(_tipItemMcs[_loc4_]).loaderInfo.loader.unloadAndStop();
-               _tipItemMcs[_loc4_] = null;
+               MovieClip(_tipItemMcs[i]).loaderInfo.loader.unloadAndStop();
+               _tipItemMcs[i] = null;
             }
-            _loc4_++;
+            i++;
          }
          if(_statisticsInstance)
          {
@@ -550,9 +541,9 @@ package times
          return _updateContenList;
       }
       
-      public function set updateContenList(param1:Array) : void
+      public function set updateContenList(value:Array) : void
       {
-         _updateContenList = param1;
+         _updateContenList = value;
       }
       
       public function get isShowUpdateView() : Boolean
@@ -560,38 +551,38 @@ package times
          return _isShowUpdateView;
       }
       
-      public function set isShowUpdateView(param1:Boolean) : void
+      public function set isShowUpdateView(value:Boolean) : void
       {
-         var _loc6_:* = null;
-         var _loc3_:* = undefined;
-         var _loc2_:* = null;
-         var _loc5_:* = undefined;
-         if(_isShowUpdateView == param1)
+         var tmpArray:* = null;
+         var tmpInfoList:* = undefined;
+         var tmpInfo2:* = null;
+         var tmpInfoList2:* = undefined;
+         if(_isShowUpdateView == value)
          {
             return;
          }
-         _isShowUpdateView = param1;
+         _isShowUpdateView = value;
          if(_isShowUpdateView)
          {
-            _loc6_ = [null];
-            _thumbnailLoaders[0] = _loc6_.concat(_thumbnailLoaders[0] as Array);
-            _loc3_ = _model.contentInfos[0];
+            tmpArray = [null];
+            _thumbnailLoaders[0] = tmpArray.concat(_thumbnailLoaders[0] as Array);
+            tmpInfoList = _model.contentInfos[0];
             var _loc8_:int = 0;
-            var _loc7_:* = _loc3_;
-            for each(var _loc4_ in _loc3_)
+            var _loc7_:* = tmpInfoList;
+            for each(var tmpInfo in tmpInfoList)
             {
-               _loc4_.page = Number(_loc4_.page) + 1;
+               tmpInfo.page = Number(tmpInfo.page) + 1;
             }
-            _loc2_ = new TimesPicInfo();
-            _loc2_.category = 0;
-            _loc2_.page = 0;
-            if(_loc3_[0])
+            tmpInfo2 = new TimesPicInfo();
+            tmpInfo2.category = 0;
+            tmpInfo2.page = 0;
+            if(tmpInfoList[0])
             {
-               _loc2_.type = _loc3_[0].type;
+               tmpInfo2.type = tmpInfoList[0].type;
             }
-            _loc5_ = new Vector.<TimesPicInfo>();
-            _loc5_.push(_loc2_);
-            _model.contentInfos[0] = _loc5_.concat(_model.contentInfos[0]);
+            tmpInfoList2 = new Vector.<TimesPicInfo>();
+            tmpInfoList2.push(tmpInfo2);
+            _model.contentInfos[0] = tmpInfoList2.concat(_model.contentInfos[0]);
          }
       }
    }

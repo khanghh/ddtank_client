@@ -62,10 +62,10 @@ package consortion.view.boss
       
       private var _frame:ConsortiaBossFrame;
       
-      public function ConsortiaBossView(param1:ConsortiaBossFrame)
+      public function ConsortiaBossView(frame:ConsortiaBossFrame)
       {
          super();
-         _frame = param1;
+         _frame = frame;
          init();
          initData();
          initEvent();
@@ -89,7 +89,7 @@ package consortion.view.boss
          _helpBtn = HelpFrameUtils.Instance.simpleHelpButton(this,"core.helpButtonSmall","consort.bossFrame.helpPos",LanguageMgr.GetTranslation("ddt.consortia.bossFrame.helpTitle"),"asset.consortionBossFrame.helpContentTxt",406,483) as SimpleBitmapButton;
       }
       
-      private function extendBossTime(param1:MouseEvent) : void
+      private function extendBossTime(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -97,22 +97,22 @@ package consortion.view.boss
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:int = ConsortionModelManager.Instance.getCallExtendBossCostRich(2,_callBossLevel);
-         var _loc3_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.consortia.bossFrame.extendConfirmTxt",_loc2_),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
-         _loc3_.moveEnable = false;
-         _loc3_.addEventListener("response",__confirmExtendBossTime,false,0,true);
+         var costRich:int = ConsortionModelManager.Instance.getCallExtendBossCostRich(2,_callBossLevel);
+         var confirmFrame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.consortia.bossFrame.extendConfirmTxt",costRich),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
+         confirmFrame.moveEnable = false;
+         confirmFrame.addEventListener("response",__confirmExtendBossTime,false,0,true);
       }
       
-      private function __confirmExtendBossTime(param1:FrameEvent) : void
+      private function __confirmExtendBossTime(evt:FrameEvent) : void
       {
-         var _loc2_:int = 0;
+         var costRich:int = 0;
          SoundManager.instance.play("008");
-         var _loc3_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc3_.removeEventListener("response",__confirmExtendBossTime);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",__confirmExtendBossTime);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
-            _loc2_ = ConsortionModelManager.Instance.getCallExtendBossCostRich(2,_callBossLevel);
-            if(PlayerManager.Instance.Self.consortiaInfo.Riches < _loc2_)
+            costRich = ConsortionModelManager.Instance.getCallExtendBossCostRich(2,_callBossLevel);
+            if(PlayerManager.Instance.Self.consortiaInfo.Riches < costRich)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.consortia.bossFrame.unenoughRiches"));
                return;
@@ -127,10 +127,10 @@ package consortion.view.boss
          }
       }
       
-      private function callOrEnterBoss(param1:MouseEvent) : void
+      private function callOrEnterBoss(event:MouseEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:* = null;
+         var costRich:int = 0;
+         var confirmFrame:* = null;
          SoundManager.instance.play("008");
          if(_bossState == 0)
          {
@@ -139,14 +139,14 @@ package consortion.view.boss
                BaglockedManager.Instance.show();
                return;
             }
-            _loc2_ = ConsortionModelManager.Instance.getCallBossCostRich(_frame.levelView.selectedLevel);
-            _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.consortia.bossFrame.callConfirmTxt",_loc2_),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
-            _loc3_.moveEnable = false;
-            _loc3_.addEventListener("response",__confirmCallBoss,false,0,true);
+            costRich = ConsortionModelManager.Instance.getCallBossCostRich(_frame.levelView.selectedLevel);
+            confirmFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.consortia.bossFrame.callConfirmTxt",costRich),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
+            confirmFrame.moveEnable = false;
+            confirmFrame.addEventListener("response",__confirmCallBoss,false,0,true);
          }
          else if(_bossState == 1)
          {
-            CheckWeaponManager.instance.setFunction(this,callOrEnterBoss,[param1]);
+            CheckWeaponManager.instance.setFunction(this,callOrEnterBoss,[event]);
             if(CheckWeaponManager.instance.isNoWeapon())
             {
                CheckWeaponManager.instance.showAlert();
@@ -160,16 +160,16 @@ package consortion.view.boss
          }
       }
       
-      private function __confirmCallBoss(param1:FrameEvent) : void
+      private function __confirmCallBoss(evt:FrameEvent) : void
       {
-         var _loc2_:int = 0;
+         var costRich:int = 0;
          SoundManager.instance.play("008");
-         var _loc3_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc3_.removeEventListener("response",__confirmCallBoss);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",__confirmCallBoss);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
-            _loc2_ = ConsortionModelManager.Instance.getCallBossCostRich(_frame.levelView.selectedLevel);
-            if(PlayerManager.Instance.Self.consortiaInfo.Riches < _loc2_)
+            costRich = ConsortionModelManager.Instance.getCallBossCostRich(_frame.levelView.selectedLevel);
+            if(PlayerManager.Instance.Self.consortiaInfo.Riches < costRich)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.consortia.bossFrame.unenoughRiches"));
                return;
@@ -194,97 +194,95 @@ package consortion.view.boss
          timerHandler(null);
       }
       
-      private function timerHandler(param1:Event) : void
+      private function timerHandler(event:Event) : void
       {
          SocketManager.Instance.out.sendConsortiaBossInfo(1);
       }
       
-      private function refreshData(param1:PkgEvent) : void
+      private function refreshData(event:PkgEvent) : void
       {
-         var _loc3_:Boolean = false;
-         var _loc2_:* = null;
-         var _loc7_:int = 0;
-         var _loc8_:int = 0;
-         var _loc5_:* = null;
-         var _loc4_:ConsortiaBossModel = new ConsortiaBossModel();
-         _loc4_.endTime = TimeManager.Instance.Now();
-         _loc4_.extendAvailableNum = 3;
-         _loc4_.playerList = new Vector.<ConsortiaBossDataVo>(11);
+         var isHasSelf:Boolean = false;
+         var tmpVo:* = null;
+         var tmpCount:int = 0;
+         var i:int = 0;
+         var tmpVo2:* = null;
+         var model:ConsortiaBossModel = new ConsortiaBossModel();
+         model.endTime = TimeManager.Instance.Now();
+         model.extendAvailableNum = 3;
+         model.playerList = new Vector.<ConsortiaBossDataVo>(11);
          _callBossLevel = 0;
-         var _loc6_:PackageIn = param1.pkg;
-         _loc4_.bossState = _loc6_.readByte();
-         if(_loc4_.bossState == 1 || _loc4_.bossState == 2)
+         var pkg:PackageIn = event.pkg;
+         model.bossState = pkg.readByte();
+         if(model.bossState == 1 || model.bossState == 2)
          {
-            _loc3_ = _loc6_.readBoolean();
-            if(_loc3_)
+            isHasSelf = pkg.readBoolean();
+            if(isHasSelf)
             {
-               _loc2_ = new ConsortiaBossDataVo();
-               _loc2_.name = PlayerManager.Instance.Self.NickName;
-               _loc2_.rank = _loc6_.readInt();
-               _loc2_.damage = _loc6_.readInt();
-               _loc2_.honor = _loc6_.readInt();
-               _loc2_.contribution = _loc6_.readInt();
-               _loc4_.playerList[0] = _loc2_;
+               tmpVo = new ConsortiaBossDataVo();
+               tmpVo.name = PlayerManager.Instance.Self.NickName;
+               tmpVo.rank = pkg.readInt();
+               tmpVo.damage = pkg.readInt();
+               tmpVo.honor = pkg.readInt();
+               tmpVo.contribution = pkg.readInt();
+               model.playerList[0] = tmpVo;
             }
-            _loc7_ = _loc6_.readByte();
-            _loc8_ = 1;
-            while(_loc8_ <= _loc7_)
+            tmpCount = pkg.readByte();
+            for(i = 1; i <= tmpCount; )
             {
-               _loc5_ = new ConsortiaBossDataVo();
-               _loc5_.name = _loc6_.readUTF();
-               _loc5_.rank = _loc6_.readInt();
-               _loc5_.damage = _loc6_.readInt();
-               _loc5_.honor = _loc6_.readInt();
-               _loc5_.contribution = _loc6_.readInt();
-               _loc4_.playerList[_loc8_] = _loc5_;
-               _loc8_++;
+               tmpVo2 = new ConsortiaBossDataVo();
+               tmpVo2.name = pkg.readUTF();
+               tmpVo2.rank = pkg.readInt();
+               tmpVo2.damage = pkg.readInt();
+               tmpVo2.honor = pkg.readInt();
+               tmpVo2.contribution = pkg.readInt();
+               model.playerList[i] = tmpVo2;
+               i++;
             }
-            _loc4_.extendAvailableNum = _loc6_.readByte();
-            _loc4_.endTime = _loc6_.readDate();
-            _loc4_.callBossLevel = _loc6_.readInt();
-            _callBossLevel = _loc4_.callBossLevel;
+            model.extendAvailableNum = pkg.readByte();
+            model.endTime = pkg.readDate();
+            model.callBossLevel = pkg.readInt();
+            _callBossLevel = model.callBossLevel;
          }
-         _bossState = _loc4_.bossState;
-         refreshView(_loc4_);
+         _bossState = model.bossState;
+         refreshView(model);
       }
       
-      private function refreshView(param1:ConsortiaBossModel) : void
+      private function refreshView(model:ConsortiaBossModel) : void
       {
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var tmpVo:* = null;
          if(_frame.cellList == null || _frame.currentPage != 0)
          {
             return;
          }
-         var _loc4_:Vector.<ConsortiaBossDataVo> = param1.playerList;
-         _loc5_ = 0;
-         while(_loc5_ < 11)
+         var list:Vector.<ConsortiaBossDataVo> = model.playerList;
+         for(i = 0; i < 11; )
          {
-            _loc2_ = _loc4_[_loc5_];
-            if(_loc2_)
+            tmpVo = list[i];
+            if(tmpVo)
             {
-               _frame.cellList[_loc5_].info = _loc2_;
-               _frame.cellList[_loc5_].visible = true;
+               _frame.cellList[i].info = tmpVo;
+               _frame.cellList[i].visible = true;
             }
             else
             {
-               _frame.cellList[_loc5_].visible = false;
+               _frame.cellList[i].visible = false;
             }
-            _loc5_++;
+            i++;
          }
-         refreshEndTimeTxt(param1);
-         (_extendBtn.backgound["mc"] as MovieClip).gotoAndStop(param1.extendAvailableNum + 1);
-         var _loc3_:Boolean = ConsortiaDutyManager.GetRight(PlayerManager.Instance.Self.Right,512);
-         if(param1.bossState == 1)
+         refreshEndTimeTxt(model);
+         (_extendBtn.backgound["mc"] as MovieClip).gotoAndStop(model.extendAvailableNum + 1);
+         var isChairman:Boolean = ConsortiaDutyManager.GetRight(PlayerManager.Instance.Self.Right,512);
+         if(model.bossState == 1)
          {
             (_bossStateBtn.backgound["mc"] as MovieClip).gotoAndStop(2);
-            if(param1.extendAvailableNum <= 0)
+            if(model.extendAvailableNum <= 0)
             {
                _extendBtn.enable = false;
             }
             else
             {
-               _extendBtn.enable = _loc3_;
+               _extendBtn.enable = isChairman;
             }
             _bossStateBtn.enable = true;
             _endTimeTxt.visible = true;
@@ -294,9 +292,9 @@ package consortion.view.boss
          {
             _endTimeTxt.visible = false;
             _extendBtn.enable = false;
-            if(param1.bossState == 0)
+            if(model.bossState == 0)
             {
-               if(_loc3_)
+               if(isChairman)
                {
                   (_bossStateBtn.backgound["mc"] as MovieClip).gotoAndStop(4);
                }
@@ -304,9 +302,9 @@ package consortion.view.boss
                {
                   (_bossStateBtn.backgound["mc"] as MovieClip).gotoAndStop(1);
                }
-               _bossStateBtn.enable = _loc3_;
+               _bossStateBtn.enable = isChairman;
             }
-            else if(param1.bossState == 2)
+            else if(model.bossState == 2)
             {
                (_bossStateBtn.backgound["mc"] as MovieClip).gotoAndStop(3);
                _bossStateBtn.enable = false;
@@ -314,7 +312,7 @@ package consortion.view.boss
          }
          if(_frame.levelView)
          {
-            if(param1.bossState == 0)
+            if(model.bossState == 0)
             {
                _frame.levelView.mouseChildren = true;
                _frame.levelView.mouseEnabled = true;
@@ -323,7 +321,7 @@ package consortion.view.boss
             {
                _frame.levelView.mouseChildren = false;
                _frame.levelView.mouseEnabled = false;
-               if(param1.bossState == 1)
+               if(model.bossState == 1)
                {
                   _frame.levelView.selectedLevel = ConsortionModelManager.Instance.getCanCallBossMaxLevel(_callBossLevel);
                }
@@ -331,33 +329,33 @@ package consortion.view.boss
          }
       }
       
-      private function refreshEndTimeTxt(param1:ConsortiaBossModel) : void
+      private function refreshEndTimeTxt(model:ConsortiaBossModel) : void
       {
-         var _loc6_:* = null;
-         var _loc5_:Number = param1.endTime.getTime();
-         var _loc4_:Number = TimeManager.Instance.Now().getTime();
-         var _loc2_:int = _loc5_ - _loc4_;
-         _loc2_ = _loc2_ < 0?0:_loc2_;
-         var _loc3_:int = 0;
-         if(_loc2_ / 3600000 > 1)
+         var timeTxtStr:* = null;
+         var endTimestamp:Number = model.endTime.getTime();
+         var nowTimestamp:Number = TimeManager.Instance.Now().getTime();
+         var differ:int = endTimestamp - nowTimestamp;
+         differ = differ < 0?0:differ;
+         var count:int = 0;
+         if(differ / 3600000 > 1)
          {
-            _loc3_ = _loc2_ / 3600000;
-            _loc6_ = _loc3_ + LanguageMgr.GetTranslation("hour");
+            count = differ / 3600000;
+            timeTxtStr = count + LanguageMgr.GetTranslation("hour");
          }
-         else if(_loc2_ / 60000 > 1)
+         else if(differ / 60000 > 1)
          {
-            _loc3_ = _loc2_ / 60000;
-            _loc6_ = _loc3_ + LanguageMgr.GetTranslation("minute");
+            count = differ / 60000;
+            timeTxtStr = count + LanguageMgr.GetTranslation("minute");
          }
          else
          {
-            _loc3_ = _loc2_ / 1000;
-            _loc6_ = _loc3_ + LanguageMgr.GetTranslation("second");
+            count = differ / 1000;
+            timeTxtStr = count + LanguageMgr.GetTranslation("second");
          }
-         _endTimeTxt.text = _loc6_;
+         _endTimeTxt.text = timeTxtStr;
       }
       
-      private function __startLoading(param1:Event) : void
+      private function __startLoading(e:Event) : void
       {
          StateManager.getInGame_Step_6 = true;
          ChatManager.Instance.input.faceEnabled = false;

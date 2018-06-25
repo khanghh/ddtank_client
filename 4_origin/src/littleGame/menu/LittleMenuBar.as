@@ -48,13 +48,13 @@ package littleGame.menu
          _returnButton.addEventListener("click",__return);
       }
       
-      private function __return(param1:MouseEvent) : void
+      private function __return(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          LittleGameManager.Instance.leave();
       }
       
-      private function __switchMode(param1:MouseEvent) : void
+      private function __switchMode(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_mode == 1)
@@ -72,14 +72,14 @@ package littleGame.menu
       
       private function hide() : void
       {
-         var _loc1_:Point = ComponentFactory.Instance.creatCustomObject("littleGame.menu.pos2");
-         TweenLite.to(this,0.3,{"x":_loc1_.x});
+         var pos:Point = ComponentFactory.Instance.creatCustomObject("littleGame.menu.pos2");
+         TweenLite.to(this,0.3,{"x":pos.x});
       }
       
       private function show() : void
       {
-         var _loc1_:Point = ComponentFactory.Instance.creatCustomObject("littleGame.menu.pos1");
-         TweenLite.to(this,0.3,{"x":_loc1_.x});
+         var pos:Point = ComponentFactory.Instance.creatCustomObject("littleGame.menu.pos1");
+         TweenLite.to(this,0.3,{"x":pos.x});
       }
       
       private function removeEvent() : void

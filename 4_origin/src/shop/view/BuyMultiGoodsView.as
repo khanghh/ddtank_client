@@ -126,11 +126,11 @@ package shop.view
       
       protected function updateTxt() : void
       {
-         var _loc1_:Array = ShopBuyManager.calcPrices(_buyArray);
+         var prices:Array = ShopBuyManager.calcPrices(_buyArray);
          _commodityNumberTip.htmlText = LanguageMgr.GetTranslation("shop.CheckOutView.CommodityNumberTip",_buyArray.length);
-         _commodityPricesText1.text = String(_loc1_[1]);
-         _commodityPricesText3.text = String(_loc1_[2]);
-         _commodityPricesText2.text = String(_loc1_[2]);
+         _commodityPricesText1.text = String(prices[1]);
+         _commodityPricesText3.text = String(prices[2]);
+         _commodityPricesText2.text = String(prices[2]);
       }
       
       private function initEvents() : void
@@ -145,9 +145,9 @@ package shop.view
          _frame.removeEventListener("response",__onResponse);
       }
       
-      private function __onResponse(param1:FrameEvent) : void
+      private function __onResponse(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -156,50 +156,50 @@ package shop.view
          }
       }
       
-      private function __buyAvatar(param1:MouseEvent) : void
+      private function __buyAvatar(event:MouseEvent) : void
       {
-         var _loc9_:int = 0;
-         var _loc11_:* = null;
-         var _loc7_:int = 0;
+         var i:int = 0;
+         var t:* = null;
+         var j:int = 0;
          SoundManager.instance.play("008");
-         var _loc15_:int = _commodityPricesText1.text;
-         var _loc8_:int = _commodityPricesText2.text;
-         var _loc17_:int = _commodityPricesText3.text;
+         var money:int = _commodityPricesText1.text;
+         var bandMoney:int = _commodityPricesText2.text;
+         var orderMoney:int = _commodityPricesText3.text;
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         if(_loc8_ > PlayerManager.Instance.Self.BandMoney)
+         if(bandMoney > PlayerManager.Instance.Self.BandMoney)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.view.transfer.StoreIITransferBG.lijinbuzu"));
             return;
          }
-         if(_loc15_ > PlayerManager.Instance.Self.Money)
+         if(money > PlayerManager.Instance.Self.Money)
          {
             LeavePageManager.showFillFrame();
             return;
          }
-         if(_loc17_ > PlayerManager.Instance.Self.DDTMoney)
+         if(orderMoney > PlayerManager.Instance.Self.DDTMoney)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("shop.view.madelLack"));
             return;
          }
-         var _loc4_:Array = [];
+         var buy:Array = [];
          var _loc21_:int = 0;
          var _loc20_:* = _buyArray;
-         for each(var _loc13_ in _buyArray)
+         for each(var item in _buyArray)
          {
-            _loc4_.push(_loc13_);
+            buy.push(item);
          }
-         var _loc10_:Array = ShopManager.Instance.buyIt(_loc4_);
-         if(_loc10_.length == 0)
+         var canbuy:Array = ShopManager.Instance.buyIt(buy);
+         if(canbuy.length == 0)
          {
             var _loc23_:int = 0;
             var _loc22_:* = _buyArray;
-            for each(var _loc3_ in _buyArray)
+            for each(var item1 in _buyArray)
             {
-               if(_loc3_.getCurrentPrice().bothMoneyValue > 0)
+               if(item1.getCurrentPrice().bothMoneyValue > 0)
                {
                   LeavePageManager.showFillFrame();
                   return;
@@ -208,53 +208,51 @@ package shop.view
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("shop.view.lackCoin"));
             return;
          }
-         if(_loc10_.length < _buyArray.length)
+         if(canbuy.length < _buyArray.length)
          {
          }
-         var _loc12_:Array = [];
-         var _loc18_:Array = [];
-         var _loc5_:Array = [];
-         var _loc14_:Array = [];
-         var _loc6_:Array = [];
-         var _loc19_:Array = [];
-         _loc9_ = 0;
-         while(_loc9_ < _loc10_.length)
+         var items:Array = [];
+         var types:Array = [];
+         var colors:Array = [];
+         var dresses:Array = [];
+         var places:Array = [];
+         var skins:Array = [];
+         for(i = 0; i < canbuy.length; )
          {
-            _loc11_ = _loc10_[_loc9_];
-            _loc12_.push(_loc11_.GoodsID);
-            _loc18_.push(_loc11_.currentBuyType);
-            _loc5_.push(_loc11_.Color);
-            _loc6_.push(_loc11_.place);
-            if(_loc11_.CategoryID == 6)
+            t = canbuy[i];
+            items.push(t.GoodsID);
+            types.push(t.currentBuyType);
+            colors.push(t.Color);
+            places.push(t.place);
+            if(t.CategoryID == 6)
             {
-               _loc19_.push(_loc11_.skin);
+               skins.push(t.skin);
             }
             else
             {
-               _loc19_.push("");
+               skins.push("");
             }
-            _loc14_.push(dressing);
-            _loc9_++;
+            dresses.push(dressing);
+            i++;
          }
-         SocketManager.Instance.out.sendBuyGoods(_loc12_,_loc18_,_loc5_,_loc6_,_loc14_,_loc19_);
-         var _loc16_:Array = [];
-         _loc7_ = _cartList.numChildren - 1;
-         while(_loc7_ >= 0)
+         SocketManager.Instance.out.sendBuyGoods(items,types,colors,places,dresses,skins);
+         var ch:Array = [];
+         for(j = _cartList.numChildren - 1; j >= 0; )
          {
-            _loc16_.push(_cartList.getChildAt(_loc7_));
-            _loc7_--;
+            ch.push(_cartList.getChildAt(j));
+            j--;
          }
          var _loc25_:int = 0;
-         var _loc24_:* = _loc16_;
-         for each(var _loc2_ in _loc16_)
+         var _loc24_:* = ch;
+         for each(var item2 in ch)
          {
-            if(_loc10_.indexOf(_loc2_.shopItemInfo) > -1)
+            if(canbuy.indexOf(item2.shopItemInfo) > -1)
             {
-               _loc2_.removeEventListener("deleteitem",__deleteItem);
-               _loc2_.removeEventListener("conditionchange",__conditionChange);
-               _cartList.removeChild(_loc2_);
-               _buyArray.splice(_buyArray.indexOf(_loc2_.shopItemInfo),1);
-               _loc2_.dispose();
+               item2.removeEventListener("deleteitem",__deleteItem);
+               item2.removeEventListener("conditionchange",__conditionChange);
+               _cartList.removeChild(item2);
+               _buyArray.splice(_buyArray.indexOf(item2.shopItemInfo),1);
+               item2.dispose();
             }
          }
          if(_cartList.numChildren == 0)
@@ -267,48 +265,48 @@ package shop.view
          }
       }
       
-      public function setGoods(param1:Vector.<ShopCarItemInfo>) : void
+      public function setGoods(value:Vector.<ShopCarItemInfo>) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var item:* = null;
+         var cItem:* = null;
          while(_cartList.numChildren > 0)
          {
-            _loc3_ = _cartList.getChildAt(_cartList.numChildren - 1) as ShopCartItem;
-            _loc3_.removeEventListener("deleteitem",__deleteItem);
-            _loc3_.removeEventListener("conditionchange",__conditionChange);
-            _cartList.removeChild(_loc3_);
-            _loc3_.dispose();
+            item = _cartList.getChildAt(_cartList.numChildren - 1) as ShopCartItem;
+            item.removeEventListener("deleteitem",__deleteItem);
+            item.removeEventListener("conditionchange",__conditionChange);
+            _cartList.removeChild(item);
+            item.dispose();
          }
-         _buyArray = param1;
+         _buyArray = value;
          var _loc6_:int = 0;
          var _loc5_:* = _buyArray;
-         for each(var _loc4_ in _buyArray)
+         for each(var info in _buyArray)
          {
-            _loc2_ = new ShopCartItem();
-            _loc2_.setShopItemInfo(_loc4_);
-            _loc2_.setColor(_loc4_.Color);
-            _cartList.addChild(_loc2_);
-            _loc2_.addEventListener("deleteitem",__deleteItem);
-            _loc2_.addEventListener("conditionchange",__conditionChange);
+            cItem = new ShopCartItem();
+            cItem.setShopItemInfo(info);
+            cItem.setColor(info.Color);
+            _cartList.addChild(cItem);
+            cItem.addEventListener("deleteitem",__deleteItem);
+            cItem.addEventListener("conditionchange",__conditionChange);
          }
          _cartScroll.invalidateViewport();
          updateTxt();
       }
       
-      private function __conditionChange(param1:Event) : void
+      private function __conditionChange(evt:Event) : void
       {
          updateTxt();
       }
       
-      private function __deleteItem(param1:Event) : void
+      private function __deleteItem(evt:Event) : void
       {
-         var _loc3_:ShopCartItem = param1.currentTarget as ShopCartItem;
-         var _loc4_:ShopCarItemInfo = _loc3_.shopItemInfo;
-         _loc3_.removeEventListener("deleteitem",__deleteItem);
-         _loc3_.removeEventListener("conditionchange",__conditionChange);
-         _cartList.removeChild(_loc3_);
-         var _loc2_:int = _buyArray.indexOf(_loc4_);
-         _buyArray.splice(_loc2_,1);
+         var item:ShopCartItem = evt.currentTarget as ShopCartItem;
+         var shopItemInfo:ShopCarItemInfo = item.shopItemInfo;
+         item.removeEventListener("deleteitem",__deleteItem);
+         item.removeEventListener("conditionchange",__conditionChange);
+         _cartList.removeChild(item);
+         var index:int = _buyArray.indexOf(shopItemInfo);
+         _buyArray.splice(index,1);
          updateTxt();
          _cartScroll.invalidateViewport();
          if(_buyArray.length < 1)
@@ -319,15 +317,15 @@ package shop.view
       
       public function dispose() : void
       {
-         var _loc1_:* = null;
+         var item:* = null;
          removeEvents();
          while(_cartList.numChildren > 0)
          {
-            _loc1_ = _cartList.getChildAt(_cartList.numChildren - 1) as ShopCartItem;
-            _loc1_.removeEventListener("deleteitem",__deleteItem);
-            _loc1_.removeEventListener("conditionchange",__conditionChange);
-            _cartList.removeChild(_loc1_);
-            _loc1_.dispose();
+            item = _cartList.getChildAt(_cartList.numChildren - 1) as ShopCartItem;
+            item.removeEventListener("deleteitem",__deleteItem);
+            item.removeEventListener("conditionchange",__conditionChange);
+            _cartList.removeChild(item);
+            item.dispose();
          }
          ObjectUtils.disposeObject(_bg);
          _bg = null;

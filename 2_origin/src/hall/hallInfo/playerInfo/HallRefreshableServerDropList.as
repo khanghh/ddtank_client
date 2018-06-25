@@ -26,7 +26,7 @@ package hall.hallInfo.playerInfo
          ServerManager.Instance.addEventListener("changeServer",__changeServerHandler);
       }
       
-      protected function __changeServerHandler(param1:Event) : void
+      protected function __changeServerHandler(event:Event) : void
       {
          _cb.textField.text = ServerManager.Instance.current.Name;
       }
@@ -40,7 +40,7 @@ package hall.hallInfo.playerInfo
          _refreshBtn.addEventListener("click",onRefreshClick);
       }
       
-      protected function onRefreshClick(param1:MouseEvent) : void
+      protected function onRefreshClick(e:MouseEvent) : void
       {
          _refreshBtn.mouseEnabled = false;
          TweenMax.delayedCall(5,refreshBtnEnable);

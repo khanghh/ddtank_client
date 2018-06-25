@@ -36,17 +36,17 @@ package gameStick.view
          addChild(_btnExit);
       }
       
-      protected function onExitClick(param1:MouseEvent) : void
+      protected function onExitClick(e:MouseEvent) : void
       {
          GameStickManager.getInstance().exit();
       }
       
-      protected function onRestartClick(param1:MouseEvent) : void
+      protected function onRestartClick(e:MouseEvent) : void
       {
          GameStickManager.getInstance().restart();
       }
       
-      protected function onShareClick(param1:MouseEvent) : void
+      protected function onShareClick(e:MouseEvent) : void
       {
          GameStickManager.getInstance().share();
       }

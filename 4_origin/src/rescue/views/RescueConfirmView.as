@@ -22,9 +22,9 @@ package rescue.views
          return _scb.selected;
       }
       
-      override public function set info(param1:AlertInfo) : void
+      override public function set info(value:AlertInfo) : void
       {
-         .super.info = param1;
+         .super.info = value;
          _scb = ComponentFactory.Instance.creatComponentByStylename("ddtGame.buyConfirmNo.scb");
          _scb.text = LanguageMgr.GetTranslation("ddt.consortiaBattle.buyConfirm.noAlertTxt");
          _seleContent.y = _seleContent.y + 35;

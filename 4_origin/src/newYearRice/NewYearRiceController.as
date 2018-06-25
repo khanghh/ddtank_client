@@ -21,7 +21,7 @@ package newYearRice
       
       private var _openFrameView:NewYearRiceOpenFrameView;
       
-      public function NewYearRiceController(param1:PrivateClass)
+      public function NewYearRiceController(pct:PrivateClass)
       {
          super();
       }
@@ -41,13 +41,13 @@ package newYearRice
          NewYearRiceManager.instance.addEventListener("newyearrice_invite",__onInviteView);
       }
       
-      private function __onOpenView(param1:Event) : void
+      private function __onOpenView(event:Event) : void
       {
          _main = ComponentFactory.Instance.creatComponentByStylename("NewYearRice.MainView");
          LayerManager.Instance.addToLayer(_main,3,true,2);
       }
       
-      private function __onInviteView(param1:Event) : void
+      private function __onInviteView(event:Event) : void
       {
          if(_openFrameView != null)
          {
@@ -78,9 +78,9 @@ package newYearRice
          return _openFrameView;
       }
       
-      public function set openFrameView(param1:NewYearRiceOpenFrameView) : void
+      public function set openFrameView(value:NewYearRiceOpenFrameView) : void
       {
-         _openFrameView = param1;
+         _openFrameView = value;
       }
    }
 }

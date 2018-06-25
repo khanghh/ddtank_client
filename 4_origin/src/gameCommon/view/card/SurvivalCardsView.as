@@ -44,48 +44,48 @@ package gameCommon.view.card
          addChild(_flopCount);
       }
       
-      override protected function __takeOut(param1:CrazyTankSocketEvent) : void
+      override protected function __takeOut(e:CrazyTankSocketEvent) : void
       {
-         var _loc5_:* = null;
-         var _loc7_:Boolean = false;
-         var _loc6_:Number = NaN;
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:Boolean = false;
-         var _loc8_:* = null;
+         var pkg:* = null;
+         var isSysTake:Boolean = false;
+         var place:Number = NaN;
+         var templateID:int = 0;
+         var count:int = 0;
+         var isVip:Boolean = false;
+         var info:* = null;
          if(_cards.length > 0)
          {
-            _loc5_ = param1.pkg;
-            _loc7_ = _loc5_.readBoolean();
-            if(!_systemToken && _loc7_)
+            pkg = e.pkg;
+            isSysTake = pkg.readBoolean();
+            if(!_systemToken && isSysTake)
             {
                _systemToken = true;
                __disabledAllCards();
             }
-            _loc6_ = _loc5_.readByte();
-            if(_loc6_ == 50)
+            place = pkg.readByte();
+            if(place == 50)
             {
                return;
             }
-            _loc2_ = _loc5_.readInt();
-            _loc4_ = _loc5_.readInt();
-            _loc3_ = _loc5_.readBoolean();
-            _loc8_ = _gameInfo.findPlayer(_loc5_.extend1);
-            if(_loc5_.clientId == _gameInfo.selfGamePlayer.playerInfo.ID)
+            templateID = pkg.readInt();
+            count = pkg.readInt();
+            isVip = pkg.readBoolean();
+            info = _gameInfo.findPlayer(pkg.extend1);
+            if(pkg.clientId == _gameInfo.selfGamePlayer.playerInfo.ID)
             {
-               _loc8_ = _gameInfo.selfGamePlayer;
+               info = _gameInfo.selfGamePlayer;
             }
-            if(_loc8_)
+            if(info)
             {
-               _cards[_loc6_].play(_loc8_,_loc2_,_loc4_,_loc3_);
-               if(_loc8_.isSelf)
+               _cards[place].play(info,templateID,count,isVip);
+               if(info.isSelf)
                {
                   _selectedCnt = Number(_selectedCnt) + 1;
                   if(_flopCount)
                   {
-                     _flopCount.text = (_loc8_.GetCardCount - _selectedCnt).toString();
+                     _flopCount.text = (info.GetCardCount - _selectedCnt).toString();
                   }
-                  _selectCompleted = _selectedCnt >= _loc8_.GetCardCount;
+                  _selectCompleted = _selectedCnt >= info.GetCardCount;
                   if(_selectCompleted)
                   {
                      __disabledAllCards();
@@ -93,18 +93,18 @@ package gameCommon.view.card
                   }
                }
             }
-            if(_loc7_)
+            if(isSysTake)
             {
                showAllCard();
             }
          }
          else
          {
-            _resultCards.push(param1);
+            _resultCards.push(e);
          }
       }
       
-      override protected function __countDownComplete(param1:Event) : void
+      override protected function __countDownComplete(event:Event) : void
       {
          _countDownView.removeEventListener("complete",__countDownComplete);
          __disabledAllCards();

@@ -19,12 +19,12 @@ package gypsyShop.ui
       
       public function alert() : void
       {
-         var _loc2_:String = LanguageMgr.GetTranslation("tank.game.GameView.gypsyHonourConfirm",getPrice());
-         var _loc1_:String = LanguageMgr.GetTranslation("AlertDialog.Info");
-         var _loc3_:String = "SimpleAlert";
-         _confirmFrameMngr.detail = _loc2_;
-         _confirmFrameMngr.title = _loc1_;
-         _confirmFrameMngr.frameType = _loc3_;
+         var detail:String = LanguageMgr.GetTranslation("tank.game.GameView.gypsyHonourConfirm",getPrice());
+         var title:String = LanguageMgr.GetTranslation("AlertDialog.Info");
+         var frameType:String = "SimpleAlert";
+         _confirmFrameMngr.detail = detail;
+         _confirmFrameMngr.title = title;
+         _confirmFrameMngr.frameType = frameType;
          _confirmFrameMngr.needMoney = getPrice();
          _confirmFrameMngr.onComfirm = onConfirm;
          _confirmFrameMngr.onNotShowAgain = onNotShowAgain;
@@ -33,12 +33,12 @@ package gypsyShop.ui
          _confirmFrameMngr.alert();
       }
       
-      protected function onNotShowAgain(param1:Boolean) : void
+      protected function onNotShowAgain(bool:Boolean) : void
       {
-         GypsyPurchaseModel.getInstance().updateShowAlertHonourRefresh(!param1);
+         GypsyPurchaseModel.getInstance().updateShowAlertHonourRefresh(!bool);
       }
       
-      protected function isBind(param1:Boolean) : void
+      protected function isBind(isBind:Boolean) : void
       {
       }
       

@@ -36,59 +36,58 @@ package halloween.view
          PlayerManager.Instance.Self.PropBag.addEventListener("update",__onUpdateExchangeCellInfo);
       }
       
-      protected function __onUpdateExchangeCellInfo(param1:BagEvent) : void
+      protected function __onUpdateExchangeCellInfo(event:BagEvent) : void
       {
          setExchangeCellInfo();
       }
       
-      public function set info(param1:Array) : void
+      public function set info(value:Array) : void
       {
-         if(_idArray == param1)
+         if(_idArray == value)
          {
             return;
          }
-         _idArray = param1;
+         _idArray = value;
          setExchangeCellInfo();
       }
       
       private function setExchangeCellInfo() : void
       {
-         var _loc1_:Boolean = false;
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
+         var hasItemFlag:Boolean = false;
+         var i:int = 0;
+         var items:* = null;
          if(_idArray)
          {
-            _loc1_ = false;
-            _loc3_ = 0;
-            while(_loc3_ < _idArray.length)
+            hasItemFlag = false;
+            for(i = 0; i < _idArray.length; )
             {
-               if(!_itemsArray[_loc3_])
+               if(!_itemsArray[i])
                {
-                  _loc2_ = new BagCell(1);
-                  _loc2_.setBgVisible(false);
-                  _loc2_.info = ItemManager.Instance.getTemplateById(_idArray[_loc3_]);
-                  PositionUtils.setPos(_loc2_,"halloween.exchangeItemsPos" + _loc3_);
-                  addChild(_loc2_);
-                  _itemsArray.push(_loc2_);
+                  items = new BagCell(1);
+                  items.setBgVisible(false);
+                  items.info = ItemManager.Instance.getTemplateById(_idArray[i]);
+                  PositionUtils.setPos(items,"halloween.exchangeItemsPos" + i);
+                  addChild(items);
+                  _itemsArray.push(items);
                }
-               _loc2_ = _itemsArray[_loc3_];
-               if(_loc3_ == _idArray.length - 1)
+               items = _itemsArray[i];
+               if(i == _idArray.length - 1)
                {
-                  _loc2_.grayFilters = _itemsArray[0].grayFlag || _itemsArray[1].grayFlag || _itemsArray[2].grayFlag || _itemsArray[3].grayFlag;
-                  _loc2_.buttonMode = true;
-                  _loc2_.addEventListener("click",__onExchange);
+                  items.grayFilters = _itemsArray[0].grayFlag || _itemsArray[1].grayFlag || _itemsArray[2].grayFlag || _itemsArray[3].grayFlag;
+                  items.buttonMode = true;
+                  items.addEventListener("click",__onExchange);
                }
                else
                {
-                  _loc1_ = PlayerManager.Instance.Self.PropBag.getItemByTemplateId(_idArray[_loc3_]);
-                  _loc2_.grayFilters = !_loc1_;
+                  hasItemFlag = PlayerManager.Instance.Self.PropBag.getItemByTemplateId(_idArray[i]);
+                  items.grayFilters = !hasItemFlag;
                }
-               _loc3_++;
+               i++;
             }
          }
       }
       
-      private function __onExchange(param1:MouseEvent) : void
+      private function __onExchange(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(!_itemsArray[_idArray.length - 1].grayFlag)
@@ -113,18 +112,18 @@ package halloween.view
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          removeEvent();
          if(_itemsArray[_idArray.length - 1])
          {
             _itemsArray[_idArray.length - 1].removeEventListener("click",__onExchange);
          }
-         _loc1_ = 0;
-         while(_loc1_ < _itemsArray.length)
+         i = 0;
+         while(i < _itemsArray.length)
          {
-            ObjectUtils.disposeObject(_itemsArray[_loc1_]);
-            _itemsArray[_loc1_] = null;
-            _loc1_++;
+            ObjectUtils.disposeObject(_itemsArray[i]);
+            _itemsArray[i] = null;
+            i++;
          }
          _itemsArray = null;
          _idArray = null;

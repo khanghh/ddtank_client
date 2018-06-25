@@ -118,48 +118,48 @@ package petsBag.petsAdvanced
       
       private function updateData() : void
       {
-         var _loc2_:* = null;
-         var _loc7_:int = 0;
+         var addedPropArr:* = null;
+         var i:int = 0;
          var _loc11_:int = 0;
          var _loc10_:* = PetsAdvancedManager.Instance.evolutionDataList;
-         for each(var _loc9_ in PetsAdvancedManager.Instance.evolutionDataList)
+         for each(var info in PetsAdvancedManager.Instance.evolutionDataList)
          {
             if(_self.evolutionGrade == 0)
             {
                _currentGradeInfo = new PetFightPropertyData();
             }
-            if(_loc9_.ID == _self.evolutionGrade)
+            if(info.ID == _self.evolutionGrade)
             {
-               _currentGradeInfo = _loc9_;
+               _currentGradeInfo = info;
             }
-            else if(_loc9_.ID == _self.evolutionGrade + 1)
+            else if(info.ID == _self.evolutionGrade + 1)
             {
-               _nextGradeInfo = _loc9_;
+               _nextGradeInfo = info;
             }
          }
-         var _loc6_:int = !!_petInfo.IsEquip?_petInfo.Blood + _currentGradeInfo.Blood:_petInfo.Blood;
-         var _loc5_:int = !!_petInfo.IsEquip?_petInfo.Attack + _currentGradeInfo.Attack:_petInfo.Attack;
-         var _loc3_:int = !!_petInfo.IsEquip?_petInfo.Defence + _currentGradeInfo.Defence:_petInfo.Defence;
-         var _loc8_:int = !!_petInfo.IsEquip?_petInfo.Agility + _currentGradeInfo.Agility:_petInfo.Agility;
-         var _loc4_:int = !!_petInfo.IsEquip?_petInfo.Luck + _currentGradeInfo.Lucky:_petInfo.Luck;
-         var _loc1_:Array = [_loc6_,_loc5_,_loc3_,_loc8_,_loc4_];
+         var blood:int = !!_petInfo.IsEquip?_petInfo.Blood + _currentGradeInfo.Blood:_petInfo.Blood;
+         var attack:int = !!_petInfo.IsEquip?_petInfo.Attack + _currentGradeInfo.Attack:_petInfo.Attack;
+         var defence:int = !!_petInfo.IsEquip?_petInfo.Defence + _currentGradeInfo.Defence:_petInfo.Defence;
+         var agility:int = !!_petInfo.IsEquip?_petInfo.Agility + _currentGradeInfo.Agility:_petInfo.Agility;
+         var luck:int = !!_petInfo.IsEquip?_petInfo.Luck + _currentGradeInfo.Lucky:_petInfo.Luck;
+         var propArr:Array = [blood,attack,defence,agility,luck];
          if(_self.evolutionGrade >= PetsAdvancedManager.Instance.evolutionDataList.length)
          {
             _tip.tipData = "0/0";
             _progress.maxAdvancedGrade();
-            _loc2_ = [0,0,0,0,0];
+            addedPropArr = [0,0,0,0,0];
          }
          else if(_nextGradeInfo)
          {
             _progress.max = _nextGradeInfo.Exp - _currentGradeInfo.Exp;
             _progress.setProgress(_self.evolutionExp - _currentGradeInfo.Exp);
-            _loc2_ = [_nextGradeInfo.Blood - _currentGradeInfo.Blood,_nextGradeInfo.Attack - _currentGradeInfo.Attack,_nextGradeInfo.Defence - _currentGradeInfo.Defence,_nextGradeInfo.Agility - _currentGradeInfo.Agility,_nextGradeInfo.Lucky - _currentGradeInfo.Lucky];
+            addedPropArr = [_nextGradeInfo.Blood - _currentGradeInfo.Blood,_nextGradeInfo.Attack - _currentGradeInfo.Attack,_nextGradeInfo.Defence - _currentGradeInfo.Defence,_nextGradeInfo.Agility - _currentGradeInfo.Agility,_nextGradeInfo.Lucky - _currentGradeInfo.Lucky];
          }
-         _loc7_ = 0;
-         while(_loc7_ < _itemVector.length)
+         i = 0;
+         while(i < _itemVector.length)
          {
-            _itemVector[_loc7_].setData(_loc7_,_loc1_[_loc7_],_loc2_[_loc7_]);
-            _loc7_++;
+            _itemVector[i].setData(i,propArr[i],addedPropArr[i]);
+            i++;
          }
          setAddedTxt();
       }
@@ -173,7 +173,7 @@ package petsBag.petsAdvanced
          _hpAddedTxt.text = "" + _currentGradeInfo.Blood;
       }
       
-      override protected function __enterFrame(param1:Event) : void
+      override protected function __enterFrame(event:Event) : void
       {
          if(!_gradeMc)
          {
@@ -198,17 +198,17 @@ package petsBag.petsAdvanced
          SocketManager.Instance.addEventListener(PkgEvent.format(68,23),__evolutionHandler);
       }
       
-      protected function __evolutionHandler(param1:PkgEvent) : void
+      protected function __evolutionHandler(event:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         var _loc3_:Boolean = _loc2_.readBoolean();
-         if(_loc3_)
+         var pkg:PackageIn = event.pkg;
+         var success:Boolean = pkg.readBoolean();
+         if(success)
          {
             _btn.enable = false;
             PetsAdvancedControl.Instance.dispatchEvent(new PetsAdvancedEvent("advanced_complete"));
          }
          _bagCell.updateCount();
-         _progress.setProgress(_self.evolutionExp - _currentGradeInfo.Exp,_loc3_);
+         _progress.setProgress(_self.evolutionExp - _currentGradeInfo.Exp,success);
       }
       
       override protected function removeEvent() : void

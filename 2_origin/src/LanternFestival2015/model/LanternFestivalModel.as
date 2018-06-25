@@ -40,14 +40,14 @@ package LanternFestival2015.model
          return _isActivityOpen;
       }
       
-      public function set isActivityOpen(param1:Boolean) : void
+      public function set isActivityOpen(value:Boolean) : void
       {
-         _isActivityOpen = param1;
+         _isActivityOpen = value;
       }
       
-      public function set numSendRemain(param1:int) : void
+      public function set numSendRemain(value:int) : void
       {
-         _numSendRemain = param1;
+         _numSendRemain = value;
       }
       
       public function get numSendRemain() : int
@@ -55,9 +55,9 @@ package LanternFestival2015.model
          return _numSendRemain;
       }
       
-      public function set numReceiveRemain(param1:int) : void
+      public function set numReceiveRemain(value:int) : void
       {
-         _numReceiveRemain = param1;
+         _numReceiveRemain = value;
       }
       
       public function get numReceiveRemain() : int
@@ -67,10 +67,10 @@ package LanternFestival2015.model
       
       public function maxLanternCanMake() : int
       {
-         var _loc2_:BagInfo = PlayerManager.Instance.Self.getBag(1);
-         var _loc3_:int = _loc2_.getItemCountByTemplateId(tpIDRice);
-         var _loc1_:int = _loc2_.getItemCountByTemplateId(tpIDFilling);
-         return Math.min(_loc1_,_loc3_);
+         var bagInfo:BagInfo = PlayerManager.Instance.Self.getBag(1);
+         var countRice:int = bagInfo.getItemCountByTemplateId(tpIDRice);
+         var countFilling:int = bagInfo.getItemCountByTemplateId(tpIDFilling);
+         return Math.min(countFilling,countRice);
       }
       
       public function get maxVisitTimes() : int

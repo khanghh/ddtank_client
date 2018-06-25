@@ -53,11 +53,11 @@ package gameCommon.view
       
       private var _freeTimes:int;
       
-      public function WishView(param1:LocalPlayer, param2:Boolean)
+      public function WishView(info:LocalPlayer, pop:Boolean)
       {
-         var _loc3_:int = 0;
+         var level:int = 0;
          super();
-         _self = param1;
+         _self = info;
          _level = _self.playerInfo.Grade;
          _timesRecording = 1;
          _isFirstWish = SharedManager.Instance.isFirstWish;
@@ -65,8 +65,8 @@ package gameCommon.view
          _wishButtom.enable = false;
          if(PlayerManager.Instance.Self.IsVIP)
          {
-            _loc3_ = PlayerManager.Instance.Self.VIPLevel;
-            _useReduceEnerge = int(ServerConfigManager.instance.VIPPayAimEnergy[_loc3_ - 1]);
+            level = PlayerManager.Instance.Self.VIPLevel;
+            _useReduceEnerge = int(ServerConfigManager.instance.VIPPayAimEnergy[level - 1]);
          }
          else
          {
@@ -83,7 +83,7 @@ package gameCommon.view
          freeTimes = GameControl.Instance.Current.selfGamePlayer.wishFreeTime;
          addChild(_text);
          addEvent();
-         initPosition(param2);
+         initPosition(pop);
          stateInit();
       }
       
@@ -113,7 +113,7 @@ package gameCommon.view
          }
       }
       
-      protected function __transparentChanged(param1:Event) : void
+      protected function __transparentChanged(SharedEvent:Event) : void
       {
          if(parent)
          {
@@ -128,7 +128,7 @@ package gameCommon.view
          }
       }
       
-      private function __movePanle(param1:MouseEvent) : void
+      private function __movePanle(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_panelBtn.selected)
@@ -163,9 +163,9 @@ package gameCommon.view
          return _freeTimes;
       }
       
-      public function set freeTimes(param1:int) : void
+      public function set freeTimes(value:int) : void
       {
-         _freeTimes = param1;
+         _freeTimes = value;
          if(_freeTimes > 0)
          {
             _text.text = LanguageMgr.GetTranslation("ddt.games.spandFreeTimes",_freeTimes);
@@ -176,12 +176,12 @@ package gameCommon.view
          }
       }
       
-      private function __playerChange(param1:CrazyTankSocketEvent) : void
+      private function __playerChange(event:CrazyTankSocketEvent) : void
       {
          stateInit();
       }
       
-      private function __ennergChange(param1:LivingEvent) : void
+      private function __ennergChange(event:LivingEvent) : void
       {
          if(_wishButtom.enable)
          {
@@ -194,9 +194,9 @@ package gameCommon.view
          return int(0.1 * _level * Math.pow(2,_timesRecording - 1)) + 2;
       }
       
-      protected function __wishBtnClick(param1:MouseEvent) : void
+      protected function __wishBtnClick(event:MouseEvent) : void
       {
-         var _loc2_:int = 0;
+         var reduce:int = 0;
          SoundManager.instance.play("008");
          if(_isFirstWish)
          {
@@ -225,9 +225,9 @@ package gameCommon.view
          }
       }
       
-      private function initPosition(param1:Boolean) : void
+      private function initPosition(isPop:Boolean) : void
       {
-         if(param1)
+         if(isPop)
          {
             this.x = -150;
             _panelBtn.selected = true;

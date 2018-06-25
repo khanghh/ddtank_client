@@ -76,9 +76,9 @@ package vip.view
          _buyPackageBtn.addEventListener("click",__onBuyClick);
       }
       
-      private function __onBuyClick(param1:MouseEvent) : void
+      private function __onBuyClick(event:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
+         event.stopImmediatePropagation();
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -90,38 +90,38 @@ package vip.view
             LeavePageManager.showFillFrame();
             return;
          }
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.vip.view.buyVipGift"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2);
-         _loc2_.mouseEnabled = false;
-         _loc2_.addEventListener("response",_responseI);
+         var alert1:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.vip.view.buyVipGift"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2);
+         alert1.mouseEnabled = false;
+         alert1.addEventListener("response",_responseI);
       }
       
-      private function _responseI(param1:FrameEvent) : void
+      private function _responseI(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",_responseI);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         (event.currentTarget as BaseAlerFrame).removeEventListener("response",_responseI);
+         if(event.responseCode == 3 || event.responseCode == 2)
          {
             dobuy();
          }
-         ObjectUtils.disposeObject(param1.target);
+         ObjectUtils.disposeObject(event.target);
       }
       
       private function dobuy() : void
       {
-         var _loc1_:Array = [];
-         var _loc6_:Array = [];
-         var _loc3_:Array = [];
-         var _loc4_:Array = [];
-         var _loc5_:Array = [];
-         var _loc2_:Array = [];
-         var _loc7_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(112164);
-         _loc1_.push(_loc7_.TemplateID);
-         _loc6_.push("1");
-         _loc3_.push("");
-         _loc4_.push("");
-         _loc5_.push("");
-         _loc2_.push("1");
-         SocketManager.Instance.out.sendBuyGoods(_loc1_,_loc6_,_loc3_,_loc5_,_loc4_,null,0,_loc2_);
+         var items:Array = [];
+         var types:Array = [];
+         var colors:Array = [];
+         var dresses:Array = [];
+         var places:Array = [];
+         var goodsTypes:Array = [];
+         var _info:ItemTemplateInfo = ItemManager.Instance.getTemplateById(112164);
+         items.push(_info.TemplateID);
+         types.push("1");
+         colors.push("");
+         dresses.push("");
+         places.push("");
+         goodsTypes.push("1");
+         SocketManager.Instance.out.sendBuyGoods(items,types,colors,places,dresses,null,0,goodsTypes);
       }
       
       private function removeEvent() : void
@@ -130,9 +130,9 @@ package vip.view
          _buyPackageBtn.removeEventListener("click",__onBuyClick);
       }
       
-      private function __propertyChange(param1:PlayerPropertyEvent) : void
+      private function __propertyChange(event:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["isVip"] || param1.changedProperties["VipExpireDay"] || param1.changedProperties["VIPNextLevelDaysNeeded"])
+         if(event.changedProperties["isVip"] || event.changedProperties["VipExpireDay"] || event.changedProperties["VIPNextLevelDaysNeeded"])
          {
             upView();
          }
@@ -140,8 +140,8 @@ package vip.view
       
       private function upView() : void
       {
-         var _loc1_:Date = PlayerManager.Instance.Self.VIPExpireDay as Date;
-         _dueData.text = _loc1_.fullYear + "-" + (_loc1_.month + 1) + "-" + _loc1_.date;
+         var date:Date = PlayerManager.Instance.Self.VIPExpireDay as Date;
+         _dueData.text = date.fullYear + "-" + (date.month + 1) + "-" + date.date;
          if(!PlayerManager.Instance.Self.IsVIP)
          {
             _dueData.text = "";

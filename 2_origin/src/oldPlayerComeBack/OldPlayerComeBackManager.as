@@ -41,9 +41,9 @@ package oldPlayerComeBack
       
       private var _iconBtn:BaseButton = null;
       
-      public function OldPlayerComeBackManager(param1:IEventDispatcher = null)
+      public function OldPlayerComeBackManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : OldPlayerComeBackManager
@@ -62,12 +62,12 @@ package oldPlayerComeBack
          SocketManager.Instance.addEventListener(PkgEvent.format(618,2),__rollDiceResultHandler);
       }
       
-      protected function _isOpen(param1:PkgEvent) : void
+      protected function _isOpen(evt:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _showFlag = _loc2_.readBoolean();
-         _startDate = _loc2_.readDate();
-         _endDate = _loc2_.readDate();
+         var pkg:PackageIn = evt.pkg;
+         _showFlag = pkg.readBoolean();
+         _startDate = pkg.readDate();
+         _endDate = pkg.readDate();
          checkIcon();
       }
       
@@ -82,50 +82,49 @@ package oldPlayerComeBack
       
       public function get activityTimeRange() : String
       {
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var startStr:* = null;
+         var endStr:* = null;
          if(_startDate && _endDate)
          {
-            _loc2_ = DateUtils.dateFormatString(DateUtils.dateFormat2(_startDate),false);
-            _loc1_ = DateUtils.dateFormatString(DateUtils.dateFormat2(_endDate),false);
-            return _loc2_ + " - " + _loc1_;
+            startStr = DateUtils.dateFormatString(DateUtils.dateFormat2(_startDate),false);
+            endStr = DateUtils.dateFormatString(DateUtils.dateFormat2(_endDate),false);
+            return startStr + " - " + endStr;
          }
          return "error!";
       }
       
-      private function __questionInfoHandler(param1:PkgEvent) : void
+      private function __questionInfoHandler(evt:PkgEvent) : void
       {
-         var _loc6_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         var _loc7_:* = null;
-         var _loc4_:int = 0;
-         var _loc5_:PackageIn = param1.pkg;
+         var place:int = 0;
+         var templateID:int = 0;
+         var count:int = 0;
+         var info:* = null;
+         var item:int = 0;
+         var pkg:PackageIn = evt.pkg;
          _curAwardInfo = new ComeBackAwardItemsInfo();
-         _curAwardInfo.curPlace = _loc5_.readInt();
-         _loc4_ = 0;
-         while(_loc4_ < 35)
+         _curAwardInfo.curPlace = pkg.readInt();
+         for(item = 0; item < 35; )
          {
-            _loc7_ = new AwardItemInfo();
-            _loc7_.place = _loc5_.readInt();
-            _loc7_.templateID = _loc5_.readUTF();
-            _loc7_.count = _loc5_.readInt();
-            _curAwardInfo.addInfo(_loc7_);
-            _loc4_++;
+            info = new AwardItemInfo();
+            info.place = pkg.readInt();
+            info.templateID = pkg.readUTF();
+            info.count = pkg.readInt();
+            _curAwardInfo.addInfo(info);
+            item++;
          }
          this.dispatchEvent(new Event("UpdateTurntableView"));
       }
       
-      private function __rollDiceResultHandler(param1:PkgEvent) : void
+      private function __rollDiceResultHandler(evt:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readInt();
-         this.dispatchEvent(new CEvent("rollDiceResult",_loc2_));
+         var pkg:PackageIn = evt.pkg;
+         var result:int = pkg.readInt();
+         this.dispatchEvent(new CEvent("rollDiceResult",result));
       }
       
-      public function sendRollDice(param1:int) : void
+      public function sendRollDice(place:int) : void
       {
-         SocketManager.Instance.out.sendRollDice(param1);
+         SocketManager.Instance.out.sendRollDice(place);
       }
       
       public function requestAwardItem() : void
@@ -143,9 +142,9 @@ package oldPlayerComeBack
          return _curAwardInfo;
       }
       
-      public function set curAwardInfo(param1:ComeBackAwardItemsInfo) : void
+      public function set curAwardInfo(value:ComeBackAwardItemsInfo) : void
       {
-         _curAwardInfo = param1;
+         _curAwardInfo = value;
       }
    }
 }

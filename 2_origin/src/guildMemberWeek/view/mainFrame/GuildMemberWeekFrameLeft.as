@@ -22,9 +22,9 @@ package guildMemberWeek.view.mainFrame
          initView();
       }
       
-      public function set itemList(param1:Vector.<ShowGuildMemberDataItem>) : void
+      public function set itemList(value:Vector.<ShowGuildMemberDataItem>) : void
       {
-         this._itemList = param1;
+         this._itemList = value;
       }
       
       public function get itemList() : Vector.<ShowGuildMemberDataItem>
@@ -34,66 +34,66 @@ package guildMemberWeek.view.mainFrame
       
       private function initView() : void
       {
-         var _loc1_:* = null;
+         var item:* = null;
          _list = ComponentFactory.Instance.creatComponentByStylename("guildmemberweek.RankingTopTenListBox");
          itemList = new Vector.<ShowGuildMemberDataItem>();
-         var _loc2_:int = 10;
-         var _loc3_:int = 0;
-         _loc3_;
-         while(_loc3_ < _loc2_)
+         var L:int = 10;
+         var i:int = 0;
+         i;
+         while(i < L)
          {
-            _loc1_ = ComponentFactory.Instance.creatCustomObject("guildmemberweek.MainFrame.Left.ShowGuildMemberDataItem");
-            _loc1_.initView(_loc3_ + 1);
-            _loc1_.initAddPointBook(0);
-            _loc1_.initItemCell(GuildMemberWeekManager.instance.model.TopTenGiftData[_loc3_]);
-            itemList.push(_loc1_);
-            _list.addChild(itemList[_loc3_]);
-            _loc3_++;
+            item = ComponentFactory.Instance.creatCustomObject("guildmemberweek.MainFrame.Left.ShowGuildMemberDataItem");
+            item.initView(i + 1);
+            item.initAddPointBook(0);
+            item.initItemCell(GuildMemberWeekManager.instance.model.TopTenGiftData[i]);
+            itemList.push(item);
+            _list.addChild(itemList[i]);
+            i++;
          }
          addChild(_list);
          UpTop10data("Gift");
       }
       
-      public function UpTop10data(param1:String) : void
+      public function UpTop10data(UpType:String) : void
       {
-         var _loc2_:int = 10;
-         var _loc3_:int = 0;
-         _loc3_;
-         while(_loc3_ < _loc2_)
+         var L:int = 10;
+         var i:int = 0;
+         i;
+         while(i < L)
          {
-            if(param1 == "Member")
+            if(UpType == "Member")
             {
-               if(GuildMemberWeekManager.instance.model.TopTenMemberData[_loc3_] != null)
+               if(GuildMemberWeekManager.instance.model.TopTenMemberData[i] != null)
                {
-                  itemList[_loc3_].initMember(GuildMemberWeekManager.instance.model.TopTenMemberData[_loc3_][1],GuildMemberWeekManager.instance.model.TopTenMemberData[_loc3_][3]);
+                  itemList[i].initMember(GuildMemberWeekManager.instance.model.TopTenMemberData[i][1],GuildMemberWeekManager.instance.model.TopTenMemberData[i][3]);
                }
             }
-            else if(param1 == "PointBook")
+            else if(UpType == "PointBook")
             {
-               itemList[_loc3_].initAddPointBook(GuildMemberWeekManager.instance.model.TopTenAddPointBook[_loc3_]);
+               itemList[i].initAddPointBook(GuildMemberWeekManager.instance.model.TopTenAddPointBook[i]);
             }
-            else if(param1 == "Gift")
+            else if(UpType == "Gift")
             {
-               itemList[_loc3_].initItemCell(GuildMemberWeekManager.instance.model.TopTenGiftData[_loc3_]);
+               itemList[i].initItemCell(GuildMemberWeekManager.instance.model.TopTenGiftData[i]);
             }
-            _loc3_++;
+            i++;
          }
       }
       
       private function disposeItems() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
+         var i:int = 0;
+         var L:int = 0;
          if(itemList)
          {
-            _loc2_ = 0;
-            _loc1_ = itemList.length;
-            _loc2_;
-            while(_loc2_ < _loc1_)
+            i = 0;
+            L = itemList.length;
+            i;
+            while(i < L)
             {
-               ObjectUtils.disposeObject(itemList[_loc2_]);
-               itemList[_loc2_] = null;
-               _loc2_++;
+               ObjectUtils.disposeObject(itemList[i]);
+               itemList[i] = null;
+               i++;
             }
             itemList = null;
          }

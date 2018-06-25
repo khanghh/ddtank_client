@@ -33,7 +33,7 @@ package Indiana
          this.addEventListener("click",__enterIndianaView);
       }
       
-      private function __enterIndianaView(param1:MouseEvent) : void
+      private function __enterIndianaView(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          IndianaDataManager.instance.show();

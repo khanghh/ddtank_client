@@ -108,9 +108,9 @@ package ddt.view.vote
          _okBtn.text = LanguageMgr.GetTranslation("ok");
       }
       
-      public function set info(param1:VoteQuestionInfo) : void
+      public function set info(voteInfo:VoteQuestionInfo) : void
       {
-         _voteInfo = param1;
+         _voteInfo = voteInfo;
          if(_voteInfo.questionType == 1)
          {
             _itemList.hSpace = 60;
@@ -124,9 +124,9 @@ package ddt.view.vote
       
       private function update() : void
       {
-         var _loc4_:int = 0;
-         var _loc1_:Boolean = false;
-         var _loc3_:* = null;
+         var j:int = 0;
+         var otherSelect:Boolean = false;
+         var item:* = null;
          clear();
          _voteProgress.text = "进度" + VoteManager.Instance.count + "/" + VoteManager.Instance.questionLength;
          if(_voteInfo.questionType == 1)
@@ -142,28 +142,27 @@ package ddt.view.vote
             _answerGroup.addEventListener("change",__changeHandler);
          }
          _itemArr = new Vector.<VoteSelectItem>();
-         var _loc2_:int = 0;
+         var index:int = 0;
          _questionContent.text = "    " + _voteInfo.question;
          if(_voteInfo.questionType != 3)
          {
-            _loc4_ = 0;
-            while(_loc4_ < _voteInfo.answer.length)
+            for(j = 0; j < _voteInfo.answer.length; )
             {
-               _loc2_++;
-               if(_voteInfo.questionType == 1 && _voteInfo.otherSelect && _loc4_ == _voteInfo.answer.length - 1)
+               index++;
+               if(_voteInfo.questionType == 1 && _voteInfo.otherSelect && j == _voteInfo.answer.length - 1)
                {
-                  _loc1_ = true;
+                  otherSelect = true;
                }
-               _loc3_ = new VoteSelectItem(_voteInfo.questionType,_voteInfo.answer[_loc4_],_loc1_);
-               _loc3_.text = _loc2_ + ". " + _voteInfo.answer[_loc4_].answer;
-               _itemList.addChild(_loc3_);
-               _itemArr.push(_loc3_);
+               item = new VoteSelectItem(_voteInfo.questionType,_voteInfo.answer[j],otherSelect);
+               item.text = index + ". " + _voteInfo.answer[j].answer;
+               _itemList.addChild(item);
+               _itemArr.push(item);
                if(_voteInfo.questionType == 1)
                {
-                  _answerGroup.addSelectItem(_loc3_.item);
+                  _answerGroup.addSelectItem(item.item);
                }
-               _loc3_.initEvent();
-               _loc4_++;
+               item.initEvent();
+               j++;
             }
          }
          else
@@ -182,14 +181,14 @@ package ddt.view.vote
          panel.invalidateViewport();
       }
       
-      private function __playSound(param1:Event) : void
+      private function __playSound(evt:Event) : void
       {
          SoundManager.instance.play("008");
       }
       
       private function clear() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _questionContent.text = "";
          _voteProgress.text = "";
          if(_answerGroup)
@@ -200,12 +199,11 @@ package ddt.view.vote
          }
          ObjectUtils.disposeObject(_inputTxt);
          _inputTxt = null;
-         _loc1_ = 0;
-         while(_loc1_ < _itemArr.length)
+         for(i = 0; i < _itemArr.length; )
          {
-            _itemArr[_loc1_].dispose();
-            _itemArr[_loc1_] = null;
-            _loc1_++;
+            _itemArr[i].dispose();
+            _itemArr[i] = null;
+            i++;
          }
          _itemArr = null;
          if(_itemList)
@@ -220,14 +218,14 @@ package ddt.view.vote
          _okBtn.addEventListener("click",__clickHandler);
       }
       
-      protected function __inputChangeHandler(param1:Event) : void
+      protected function __inputChangeHandler(event:Event) : void
       {
          ObjectUtils.disposeObject(_defaultInputTxt);
          _defaultInputTxt = null;
          _inputTxt.removeEventListener("change",__inputChangeHandler);
       }
       
-      protected function __searchInputFocusIn(param1:FocusEvent) : void
+      protected function __searchInputFocusIn(event:FocusEvent) : void
       {
          ObjectUtils.disposeObject(_defaultInputTxt);
          _defaultInputTxt = null;
@@ -238,7 +236,7 @@ package ddt.view.vote
          }
       }
       
-      protected function __searchInputFocusOut(param1:FocusEvent) : void
+      protected function __searchInputFocusOut(event:FocusEvent) : void
       {
          ObjectUtils.disposeObject(_defaultInputTxt);
          _defaultInputTxt = null;
@@ -249,7 +247,7 @@ package ddt.view.vote
          }
       }
       
-      protected function __changeHandler(param1:Event) : void
+      protected function __changeHandler(event:Event) : void
       {
          if(_itemArr[_itemArr.length - 1].item.selected)
          {
@@ -261,61 +259,60 @@ package ddt.view.vote
          }
       }
       
-      private function __clickHandler(param1:MouseEvent) : void
+      private function __clickHandler(evt:MouseEvent) : void
       {
-         var _loc5_:int = 0;
+         var i:int = 0;
          SoundManager.instance.play("008");
-         var _loc3_:Boolean = false;
+         var hasChosed:Boolean = false;
          if(_voteInfo.questionType == 1)
          {
             var _loc7_:int = 0;
             var _loc6_:* = _itemArr;
-            for each(var _loc4_ in _itemArr)
+            for each(var item in _itemArr)
             {
-               if(_loc4_.otherSelect && _loc4_.selected)
+               if(item.otherSelect && item.selected)
                {
-                  if(_loc4_.content == "")
+                  if(item.content == "")
                   {
                      MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.view.vote.choseOne3"));
                      return;
                   }
-                  _loc3_ = true;
+                  hasChosed = true;
                   break;
                }
             }
-            if(!_loc3_)
+            if(!hasChosed)
             {
-               _loc5_ = 0;
-               while(_loc5_ < _itemArr.length)
+               for(i = 0; i < _itemArr.length; )
                {
-                  if(_itemArr[_loc5_].selected)
+                  if(_itemArr[i].selected)
                   {
-                     _loc3_ = true;
+                     hasChosed = true;
                      break;
                   }
-                  _loc5_++;
+                  i++;
                }
             }
          }
          else if(_voteInfo.questionType == 2)
          {
-            _loc3_ = true;
+            hasChosed = true;
             var _loc9_:int = 0;
             var _loc8_:* = _itemArr;
-            for each(var _loc2_ in _itemArr)
+            for each(var item2 in _itemArr)
             {
-               if(_loc2_.score == 0)
+               if(item2.score == 0)
                {
-                  _loc3_ = false;
+                  hasChosed = false;
                   break;
                }
             }
          }
          else if(_inputTxt && _inputTxt.text != LanguageMgr.GetTranslation("ddt.view.vote.defaultTxt") && _inputTxt.text.length > 0)
          {
-            _loc3_ = true;
+            hasChosed = true;
          }
-         if(!_loc3_)
+         if(!hasChosed)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.view.vote.choseOne" + _voteInfo.questionType));
             return;
@@ -325,41 +322,40 @@ package ddt.view.vote
       
       public function get selectAnswer() : String
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:String = _voteInfo.questionType + "|";
+         var i:int = 0;
+         var item:* = null;
+         var str:String = _voteInfo.questionType + "|";
          if(_voteInfo.questionType != 3)
          {
-            _loc3_ = 0;
-            while(_loc3_ < _itemArr.length)
+            for(i = 0; i < _itemArr.length; )
             {
-               _loc2_ = _itemArr[_loc3_];
-               if(_loc2_.selected)
+               item = _itemArr[i];
+               if(item.selected)
                {
                   switch(int(_voteInfo.questionType) - 1)
                   {
                      case 0:
-                        if(_loc2_.otherSelect)
+                        if(item.otherSelect)
                         {
-                           _loc1_ = _loc1_ + _loc2_.answerId + "," + _loc2_.content + "|";
+                           str = str + item.answerId + "," + item.content + "|";
                         }
                         else
                         {
-                           _loc1_ = _loc1_ + _loc2_.answerId + "|";
+                           str = str + item.answerId + "|";
                         }
                         break;
                      case 1:
-                        _loc1_ = _loc1_ + _loc2_.answerId + "," + _loc2_.score + "|";
+                        str = str + item.answerId + "," + item.score + "|";
                   }
                }
-               _loc3_++;
+               i++;
             }
          }
          else
          {
-            _loc1_ = _loc1_ + _voteInfo.questionID + "," + _inputTxt.text + "|";
+            str = str + _voteInfo.questionID + "," + _inputTxt.text + "|";
          }
-         return _loc1_;
+         return str;
       }
       
       private function removeEvent() : void
@@ -374,10 +370,10 @@ package ddt.view.vote
          }
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:

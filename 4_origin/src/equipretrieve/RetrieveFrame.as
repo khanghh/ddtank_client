@@ -56,34 +56,34 @@ package equipretrieve
          LayerManager.Instance.addToLayer(this,2,true,1);
       }
       
-      public function updateBag(param1:Dictionary) : void
+      public function updateBag(dic:Dictionary) : void
       {
       }
       
-      private function _updateStoreBag(param1:BagEvent) : void
+      private function _updateStoreBag(e:BagEvent) : void
       {
          if(_retrieveBgView)
          {
-            _retrieveBgView.refreshData(param1.changedSlots);
+            _retrieveBgView.refreshData(e.changedSlots);
          }
       }
       
-      public function cellDoubleClick(param1:BagCell) : void
+      public function cellDoubleClick(cell:BagCell) : void
       {
          if(_retrieveBgView)
          {
-            _retrieveBgView.cellDoubleClick(param1);
+            _retrieveBgView.cellDoubleClick(cell);
          }
       }
       
-      public function set bagType(param1:int) : void
+      public function set bagType(i:int) : void
       {
-         RetrieveBagView(_retrieveBagView.bagView).resultPoint(param1,_retrieveBagView.x - _retrieveBgView.x,_retrieveBagView.y - _retrieveBgView.y);
+         RetrieveBagView(_retrieveBagView.bagView).resultPoint(i,_retrieveBagView.x - _retrieveBgView.x,_retrieveBagView.y - _retrieveBgView.y);
       }
       
-      public function set shine(param1:Boolean) : void
+      public function set shine(boo:Boolean) : void
       {
-         if(param1 == true)
+         if(boo == true)
          {
             if(_retrieveBgView)
             {
@@ -96,10 +96,10 @@ package equipretrieve
          }
       }
       
-      override public function set visible(param1:Boolean) : void
+      override public function set visible(value:Boolean) : void
       {
-         .super.visible = param1;
-         if(!param1)
+         .super.visible = value;
+         if(!value)
          {
             SocketManager.Instance.out.sendClearStoreBag();
          }
@@ -113,35 +113,35 @@ package equipretrieve
          }
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          if(!RetrieveController.Instance.viewMouseEvtBoolean)
          {
             return;
          }
-         if(param1.responseCode == 0 || param1.responseCode == 1 || RetrieveController.Instance.viewMouseEvtBoolean)
+         if(e.responseCode == 0 || e.responseCode == 1 || RetrieveController.Instance.viewMouseEvtBoolean)
          {
             RetrieveController.Instance.close();
          }
       }
       
-      private function __onDoubleClick(param1:Event) : void
+      private function __onDoubleClick(e:Event) : void
       {
          cellDoubleClick(RetrieveController.Instance.cell);
       }
       
-      private function __onRetrieveType(param1:Event) : void
+      private function __onRetrieveType(e:Event) : void
       {
          bagType = RetrieveController.Instance.type;
       }
       
-      private function __onShine(param1:Event) : void
+      private function __onShine(e:Event) : void
       {
          shine = RetrieveController.Instance.shine;
       }
       
-      private function __onMouseEnable(param1:Event) : void
+      private function __onMouseEnable(e:Event) : void
       {
          this.mouseChildren = RetrieveController.Instance.viewMouseEvtBoolean;
          this.mouseEnabled = RetrieveController.Instance.viewMouseEvtBoolean;

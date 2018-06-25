@@ -67,93 +67,90 @@ package treasurePuzzle.view
       
       private function createRewardContent() : void
       {
-         var _loc1_:int = TreasurePuzzleManager.Instance.model.dataArr.length;
-         setRewardInfo(_loc1_);
+         var titleNum:int = TreasurePuzzleManager.Instance.model.dataArr.length;
+         setRewardInfo(titleNum);
       }
       
-      private function setRewardInfo(param1:int) : void
+      private function setRewardInfo(type:int) : void
       {
-         var _loc18_:* = null;
-         var _loc19_:* = null;
-         var _loc22_:* = null;
-         var _loc13_:int = 0;
-         var _loc8_:* = null;
-         var _loc7_:Boolean = false;
-         var _loc15_:* = null;
-         var _loc9_:int = 0;
-         var _loc21_:* = null;
-         var _loc14_:int = 0;
-         var _loc16_:int = 0;
-         var _loc2_:* = null;
-         var _loc10_:int = 0;
-         var _loc20_:* = null;
-         var _loc4_:String = LanguageMgr.GetTranslation("treasurePUzzle.view.helpContentSJ") + LanguageMgr.GetTranslation("treasurePuzzle.view.helpContentTitleRed") + LanguageMgr.GetTranslation("treasurePUzzle.view.helpContentGet");
-         var _loc6_:String = LanguageMgr.GetTranslation("treasurePUzzle.view.helpContentSJ") + LanguageMgr.GetTranslation("treasurePuzzle.view.helpContentTitleBlue") + LanguageMgr.GetTranslation("treasurePUzzle.view.helpContentGet");
-         var _loc5_:String = LanguageMgr.GetTranslation("treasurePUzzle.view.helpContentSJ") + LanguageMgr.GetTranslation("treasurePuzzle.view.helpContentTitleYellow") + LanguageMgr.GetTranslation("treasurePUzzle.view.helpContentGet");
-         var _loc12_:Array = [_loc4_,_loc6_,_loc5_];
-         var _loc17_:String = "";
-         _loc13_ = 0;
-         while(_loc13_ < TreasurePuzzleManager.Instance.model.dataArr.length)
+         var content1:* = null;
+         var content2:* = null;
+         var content3:* = null;
+         var i:int = 0;
+         var data:* = null;
+         var isShiwu:Boolean = false;
+         var rewardList:* = null;
+         var j:int = 0;
+         var rewardData:* = null;
+         var id:int = 0;
+         var num:int = 0;
+         var itemName:* = null;
+         var k:int = 0;
+         var treasureItem:* = null;
+         var title1:String = LanguageMgr.GetTranslation("treasurePUzzle.view.helpContentSJ") + LanguageMgr.GetTranslation("treasurePuzzle.view.helpContentTitleRed") + LanguageMgr.GetTranslation("treasurePUzzle.view.helpContentGet");
+         var title2:String = LanguageMgr.GetTranslation("treasurePUzzle.view.helpContentSJ") + LanguageMgr.GetTranslation("treasurePuzzle.view.helpContentTitleBlue") + LanguageMgr.GetTranslation("treasurePUzzle.view.helpContentGet");
+         var title3:String = LanguageMgr.GetTranslation("treasurePUzzle.view.helpContentSJ") + LanguageMgr.GetTranslation("treasurePuzzle.view.helpContentTitleYellow") + LanguageMgr.GetTranslation("treasurePUzzle.view.helpContentGet");
+         var titleArr:Array = [title1,title2,title3];
+         var str:String = "";
+         for(i = 0; i < TreasurePuzzleManager.Instance.model.dataArr.length; )
          {
-            _loc8_ = TreasurePuzzleManager.Instance.model.dataArr[_loc13_];
-            _loc7_ = _loc8_.isShiwu;
-            if(_loc7_)
+            data = TreasurePuzzleManager.Instance.model.dataArr[i];
+            isShiwu = data.isShiwu;
+            if(isShiwu)
             {
-               _loc17_ = _loc17_ + LanguageMgr.GetTranslation("treasurePuzzle.view.shiwuContent");
+               str = str + LanguageMgr.GetTranslation("treasurePuzzle.view.shiwuContent");
             }
             else
             {
-               _loc15_ = _loc8_.rewardList;
-               _loc9_ = 0;
-               while(_loc9_ < _loc15_.length)
+               rewardList = data.rewardList;
+               for(j = 0; j < rewardList.length; )
                {
-                  _loc21_ = _loc15_[_loc9_];
-                  _loc14_ = _loc21_.rewardId;
-                  _loc16_ = _loc21_.rewardNum;
-                  _loc2_ = ItemManager.Instance.getTemplateById(_loc14_).Name;
-                  if(_loc9_ == 0)
+                  rewardData = rewardList[j];
+                  id = rewardData.rewardId;
+                  num = rewardData.rewardNum;
+                  itemName = ItemManager.Instance.getTemplateById(id).Name;
+                  if(j == 0)
                   {
-                     _loc17_ = _loc17_ + (_loc2_ + "x" + _loc16_);
+                     str = str + (itemName + "x" + num);
                   }
                   else
                   {
-                     _loc17_ = _loc17_ + ("、" + _loc2_ + "x" + _loc16_);
+                     str = str + ("、" + itemName + "x" + num);
                   }
-                  _loc9_++;
+                  j++;
                }
             }
-            _loc17_ = _loc17_ + "/";
-            _loc13_++;
+            str = str + "/";
+            i++;
          }
-         var _loc23_:Array = _loc17_.split("/");
-         _loc23_.splice(-1,1);
-         _loc10_ = 0;
-         while(_loc10_ < _loc23_.length)
+         var strArr:Array = str.split("/");
+         strArr.splice(-1,1);
+         for(k = 0; k < strArr.length; )
          {
-            _loc20_ = new TreasurePuzzleHelpContentItem(_loc10_,_loc12_[_loc10_],_loc23_[_loc10_]);
-            _vbox.addChild(_loc20_);
-            _loc10_++;
+            treasureItem = new TreasurePuzzleHelpContentItem(k,titleArr[k],strArr[k]);
+            _vbox.addChild(treasureItem);
+            k++;
          }
-         var _loc3_:Sprite = new Sprite();
-         var _loc11_:TextField = new TextField();
-         _loc11_.height = 50;
-         _loc11_.text = "111";
-         _loc3_.alpha = 0;
-         _loc3_.addChild(_loc11_);
-         _vbox.addChild(_loc3_);
+         var sp:Sprite = new Sprite();
+         var txt:TextField = new TextField();
+         txt.height = 50;
+         txt.text = "111";
+         sp.alpha = 0;
+         sp.addChild(txt);
+         _vbox.addChild(sp);
          _panel2.setView(_vbox);
       }
       
       private function createContent() : void
       {
-         var _loc1_:Sprite = new Sprite();
-         var _loc2_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("treasurePuzzle.helpView.contentTitle");
-         _loc2_.text = LanguageMgr.GetTranslation("treasurePuzzle.view.helpContentTitle");
-         _loc1_.addChild(_loc2_);
-         var _loc3_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("treasurePuzzle.helpView.contentText");
-         _loc3_.text = LanguageMgr.GetTranslation("treasurePuzzle.view.helpContentText");
-         _loc1_.addChild(_loc3_);
-         _panel.setView(_loc1_);
+         var content:Sprite = new Sprite();
+         var title:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("treasurePuzzle.helpView.contentTitle");
+         title.text = LanguageMgr.GetTranslation("treasurePuzzle.view.helpContentTitle");
+         content.addChild(title);
+         var contentText:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("treasurePuzzle.helpView.contentText");
+         contentText.text = LanguageMgr.GetTranslation("treasurePuzzle.view.helpContentText");
+         content.addChild(contentText);
+         _panel.setView(content);
       }
       
       private function addEvent() : void
@@ -161,10 +158,10 @@ package treasurePuzzle.view
          addEventListener("response",_response);
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.responseCode == 0 || param1.responseCode == 1 || param1.responseCode == 2)
+         if(e.responseCode == 0 || e.responseCode == 1 || e.responseCode == 2)
          {
             close();
          }

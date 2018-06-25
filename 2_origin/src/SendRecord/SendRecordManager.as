@@ -34,47 +34,46 @@ package SendRecord
          return _instance;
       }
       
-      private function sendRecordUserVersion(param1:String = "") : void
+      private function sendRecordUserVersion(paramStr:String = "") : void
       {
-         var _loc5_:* = null;
-         var _loc3_:int = 0;
-         var _loc9_:int = 0;
-         var _loc6_:Dictionary = new Dictionary();
-         if(param1 != "")
+         var data:* = null;
+         var paramsCount:int = 0;
+         var i:int = 0;
+         var userInfo:Dictionary = new Dictionary();
+         if(paramStr != "")
          {
-            _loc5_ = param1.split("|");
-            _loc3_ = _loc5_.length / 2;
-            _loc9_ = 0;
-            while(_loc9_ < _loc3_)
+            data = paramStr.split("|");
+            paramsCount = data.length / 2;
+            for(i = 0; i < paramsCount; )
             {
-               _loc6_[_loc5_[_loc9_ * 2]] = _loc5_[_loc9_ * 2 + 1];
-               _loc9_++;
+               userInfo[data[i * 2]] = data[i * 2 + 1];
+               i++;
             }
          }
-         var _loc8_:URLVariables = new URLVariables();
-         var _loc2_:URLLoader = new URLLoader();
-         _loc8_.Browser = _browserInfo;
-         _loc8_.SiteName = StatisticManager.siteName;
-         _loc8_.UserName = PlayerManager.Instance.Account.Account;
-         _loc8_.Flash = Capabilities.version.split(" ")[1];
-         _loc8_.Sys = Capabilities.os;
-         _loc8_.Is64Bit = Capabilities.supports64BitProcesses;
-         _loc8_.Screen = Capabilities.screenResolutionX + "X" + Capabilities.screenResolutionY;
+         var varialbes:URLVariables = new URLVariables();
+         var urlLoader:URLLoader = new URLLoader();
+         varialbes.Browser = _browserInfo;
+         varialbes.SiteName = StatisticManager.siteName;
+         varialbes.UserName = PlayerManager.Instance.Account.Account;
+         varialbes.Flash = Capabilities.version.split(" ")[1];
+         varialbes.Sys = Capabilities.os;
+         varialbes.Is64Bit = Capabilities.supports64BitProcesses;
+         varialbes.Screen = Capabilities.screenResolutionX + "X" + Capabilities.screenResolutionY;
          var _loc11_:int = 0;
-         var _loc10_:* = _loc6_;
-         for(var _loc7_ in _loc6_)
+         var _loc10_:* = userInfo;
+         for(var key in userInfo)
          {
-            _loc8_[_loc7_] = _loc6_[_loc7_];
+            varialbes[key] = userInfo[key];
          }
-         var _loc4_:URLRequest = new URLRequest(PathManager.solveRequestPath("RecordSysInfo.ashx"));
-         _loc4_.method = "POST";
-         _loc4_.data = _loc8_;
-         _loc2_.load(_loc4_);
+         var request:URLRequest = new URLRequest(PathManager.solveRequestPath("RecordSysInfo.ashx"));
+         request.method = "POST";
+         request.data = varialbes;
+         urlLoader.load(request);
       }
       
-      private function browserInfo(param1:String) : void
+      private function browserInfo(msg:String) : void
       {
-         _browserInfo = param1;
+         _browserInfo = msg;
          if(ExternalInterface.available && !DesktopManager.Instance.isDesktop)
          {
             sendRecordUserVersion();
@@ -88,11 +87,11 @@ package SendRecord
       
       public function setUp() : void
       {
-         var _loc1_:* = null;
+         var msg:* = null;
          if(ExternalInterface.available)
          {
-            _loc1_ = ExternalInterface.call("getBrowserInfo");
-            browserInfo(_loc1_);
+            msg = ExternalInterface.call("getBrowserInfo");
+            browserInfo(msg);
          }
       }
    }

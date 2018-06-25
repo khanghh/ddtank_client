@@ -32,45 +32,44 @@ package signBuff.view
       
       private var _arr:Array;
       
-      public function PowerItem(param1:Array, param2:int)
+      public function PowerItem(arr:Array, index:int)
       {
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
-         var _loc3_:* = null;
-         var _loc4_:* = null;
+         var i:int = 0;
+         var info:* = null;
+         var _cell:* = null;
+         var countTxt:* = null;
          super();
-         _arr = param1;
-         _index = param2;
+         _arr = arr;
+         _index = index;
          _powerTxt = ComponentFactory.Instance.creatComponentByStylename("hall.PowerView.powerTxt");
          addChild(_powerTxt);
-         _powerTxt.text = LanguageMgr.GetTranslation("ddt.hall.signBuff.power",changeNum(param1[0].Quality));
+         _powerTxt.text = LanguageMgr.GetTranslation("ddt.hall.signBuff.power",changeNum(arr[0].Quality));
          _hbox = ComponentFactory.Instance.creatComponentByStylename("hall.powerView.hBox");
          addChild(_hbox);
-         _loc6_ = 0;
-         while(_loc6_ < param1.length)
+         for(i = 0; i < arr.length; )
          {
-            _loc5_ = new InventoryItemInfo();
-            _loc5_.TemplateID = param1[_loc6_].TemplateID;
-            _loc5_ = ItemManager.fill(_loc5_);
-            _loc5_.IsBinds = param1[_loc6_].IsBind;
-            _loc5_.ValidDate = param1[_loc6_].ValidDate;
-            _loc5_.StrengthenLevel = param1[_loc6_].StrengthLevel;
-            _loc5_.AttackCompose = param1[_loc6_].AttackCompose;
-            _loc5_.DefendCompose = param1[_loc6_].DefendCompose;
-            _loc5_.AgilityCompose = param1[_loc6_].AgilityCompose;
-            _loc5_.LuckCompose = param1[_loc6_].LuckCompose;
-            _loc5_.Count = param1[_loc6_].Count;
-            _loc3_ = new BagCell(0,_loc5_,false);
-            if(_loc5_.MaxCount == 1 && _loc5_.Count > _loc5_.MaxCount)
+            info = new InventoryItemInfo();
+            info.TemplateID = arr[i].TemplateID;
+            info = ItemManager.fill(info);
+            info.IsBinds = arr[i].IsBind;
+            info.ValidDate = arr[i].ValidDate;
+            info.StrengthenLevel = arr[i].StrengthLevel;
+            info.AttackCompose = arr[i].AttackCompose;
+            info.DefendCompose = arr[i].DefendCompose;
+            info.AgilityCompose = arr[i].AgilityCompose;
+            info.LuckCompose = arr[i].LuckCompose;
+            info.Count = arr[i].Count;
+            _cell = new BagCell(0,info,false);
+            if(info.MaxCount == 1 && info.Count > info.MaxCount)
             {
-               _loc4_ = ComponentFactory.Instance.creatComponentByStylename("BagCellCountText");
-               _loc4_.text = String(_loc5_.Count);
-               _loc4_.x = 34;
-               _loc4_.y = 31;
-               _loc3_.addChild(_loc4_);
+               countTxt = ComponentFactory.Instance.creatComponentByStylename("BagCellCountText");
+               countTxt.text = String(info.Count);
+               countTxt.x = 34;
+               countTxt.y = 31;
+               _cell.addChild(countTxt);
             }
-            _hbox.addChild(_loc3_);
-            _loc6_++;
+            _hbox.addChild(_cell);
+            i++;
          }
          _getBtn = ComponentFactory.Instance.creatComponentByStylename("hall.powerView.getBtn");
          addChild(_getBtn);
@@ -99,37 +98,37 @@ package signBuff.view
          }
       }
       
-      private function clickHandler(param1:MouseEvent) : void
+      private function clickHandler(e:MouseEvent) : void
       {
          SocketManager.Instance.out.getSignBuff(_arr[0].Quality);
          _hasGet.visible = true;
          _getBtn.visible = false;
       }
       
-      private function changeNum(param1:int) : String
+      private function changeNum(num:int) : String
       {
-         var _loc3_:Number = param1 * 10000;
-         var _loc2_:String = "";
-         if(_loc3_ > 999999999)
+         var _num:Number = num * 10000;
+         var str:String = "";
+         if(_num > 999999999)
          {
-            _loc2_ = String(_loc3_);
-            _loc2_ = _loc2_.substring(0,_loc2_.length - 9) + "," + _loc2_.substring(_loc2_.length - 9,_loc2_.length - 6) + "," + _loc2_.substring(_loc2_.length - 6,_loc2_.length - 3) + "," + _loc2_.substring(_loc2_.length - 3,_loc2_.length);
+            str = String(_num);
+            str = str.substring(0,str.length - 9) + "," + str.substring(str.length - 9,str.length - 6) + "," + str.substring(str.length - 6,str.length - 3) + "," + str.substring(str.length - 3,str.length);
          }
-         else if(_loc3_ > 999999)
+         else if(_num > 999999)
          {
-            _loc2_ = String(_loc3_);
-            _loc2_ = _loc2_.substring(0,_loc2_.length - 6) + "," + _loc2_.substring(_loc2_.length - 6,_loc2_.length - 3) + "," + _loc2_.substring(_loc2_.length - 3,_loc2_.length);
+            str = String(_num);
+            str = str.substring(0,str.length - 6) + "," + str.substring(str.length - 6,str.length - 3) + "," + str.substring(str.length - 3,str.length);
          }
-         else if(_loc3_ > 999)
+         else if(_num > 999)
          {
-            _loc2_ = String(_loc3_);
-            _loc2_ = _loc2_.substring(0,_loc2_.length - 3) + "," + _loc2_.substring(_loc2_.length - 3,_loc2_.length);
+            str = String(_num);
+            str = str.substring(0,str.length - 3) + "," + str.substring(str.length - 3,str.length);
          }
          else
          {
-            _loc2_ = String(_loc3_);
+            str = String(_num);
          }
-         return _loc2_;
+         return str;
       }
       
       public function dispose() : void

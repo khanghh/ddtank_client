@@ -31,10 +31,10 @@ package church.view.weddingRoom
       
       private var _chatMsg:ChatData;
       
-      public function WeddingRoomMask(param1:ChurchRoomController)
+      public function WeddingRoomMask(controller:ChurchRoomController)
       {
          super();
-         this._controller = param1;
+         this._controller = controller;
          init();
       }
       
@@ -49,7 +49,7 @@ package church.view.weddingRoom
          _timer.start();
       }
       
-      private function __timerAlarm(param1:Event) : void
+      private function __timerAlarm(event:Event) : void
       {
          _totalTimes = Number(_totalTimes) - 1;
          if(_totalTimes % 2 && _totalTimes >= 0)
@@ -59,7 +59,7 @@ package church.view.weddingRoom
          countDownMovie.setFrame(countDownMovie.getFrame + 1);
       }
       
-      private function __timerComplete(param1:Event) : void
+      private function __timerComplete(event:Event) : void
       {
          SoundManager.instance.playMusic("3001");
          _timer.removeEventListener("timer",__timerAlarm);
@@ -83,20 +83,20 @@ package church.view.weddingRoom
          }
       }
       
-      private function showAlarm(param1:uint) : void
+      private function showAlarm(value:uint) : void
       {
          _chatMsg = new ChatData();
          _chatMsg.channel = 6;
-         _chatMsg.msg = LanguageMgr.GetTranslation("church.churchScene.SceneMask.chatMsg.msg") + param1;
+         _chatMsg.msg = LanguageMgr.GetTranslation("church.churchScene.SceneMask.chatMsg.msg") + value;
          ChatManager.Instance.chat(_chatMsg);
       }
       
-      private function __click(param1:MouseEvent) : void
+      private function __click(event:MouseEvent) : void
       {
          MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("church.churchScene.SceneMask.click"));
       }
       
-      private function __switchComplete(param1:Event) : void
+      private function __switchComplete(event:Event) : void
       {
          dispatchEvent(new Event("switch complete"));
       }

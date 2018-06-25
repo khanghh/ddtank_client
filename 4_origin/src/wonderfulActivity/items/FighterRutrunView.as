@@ -48,13 +48,13 @@ package wonderfulActivity.items
       
       private var _downBack:ScaleBitmapImage;
       
-      public function FighterRutrunView(param1:ActivityTypeData)
+      public function FighterRutrunView(data:ActivityTypeData)
       {
          super();
-         _data = param1;
+         _data = data;
       }
       
-      public function setState(param1:int, param2:int) : void
+      public function setState(type:int, id:int) : void
       {
       }
       
@@ -69,9 +69,9 @@ package wonderfulActivity.items
       private function fightTimerHander() : void
       {
          nowdate = TimeManager.Instance.Now();
-         var _loc1_:String = WonderfulActivityManager.Instance.getTimeDiff(endData,nowdate);
-         _timerTxt.text = _loc1_;
-         if(_loc1_ == "0")
+         var str:String = WonderfulActivityManager.Instance.getTimeDiff(endData,nowdate);
+         _timerTxt.text = str;
+         if(str == "0")
          {
             dispose();
             WonderfulActivityManager.Instance.delTimerFun("fighter");
@@ -114,46 +114,45 @@ package wonderfulActivity.items
       
       private function initGoods() : void
       {
-         var _loc7_:int = 0;
-         var _loc2_:* = null;
-         var _loc6_:* = null;
-         var _loc3_:* = null;
-         var _loc4_:Vector.<RechargeData> = FirstRechargeManger.Instance.getGoodsList();
-         var _loc5_:int = _loc4_.length;
-         var _loc1_:int = 0;
-         _loc7_ = 0;
-         while(_loc7_ < _loc5_)
+         var i:int = 0;
+         var cell:* = null;
+         var info:* = null;
+         var back:* = null;
+         var list:Vector.<RechargeData> = FirstRechargeManger.Instance.getGoodsList();
+         var len:int = list.length;
+         var count:int = 0;
+         for(i = 0; i < len; )
          {
-            if(_loc1_ >= 5)
+            if(count >= 5)
             {
                return;
             }
-            if(_loc4_[_loc7_].RewardID > 2000 && _loc4_[_loc7_].RewardID < 3000)
+            if(list[i].RewardID > 2000 && list[i].RewardID < 3000)
             {
-               _loc2_ = new BagCell(_loc7_);
-               _loc6_ = new InventoryItemInfo();
-               _loc6_.TemplateID = _loc4_[_loc7_].RewardItemID;
-               _loc6_ = ItemManager.fill(_loc6_);
-               _loc6_.IsBinds = _loc4_[_loc7_].IsBind;
-               _loc6_.ValidDate = _loc4_[_loc7_].RewardItemValid;
-               _loc6_.StrengthenLevel = _loc4_[_loc7_].StrengthenLevel;
-               _loc6_.AttackCompose = _loc4_[_loc7_].AttackCompose;
-               _loc6_.DefendCompose = _loc4_[_loc7_].DefendCompose;
-               _loc6_.AgilityCompose = _loc4_[_loc7_].AgilityCompose;
-               _loc6_.LuckCompose = _loc4_[_loc7_].LuckCompose;
-               _loc2_.info = _loc6_;
-               _loc3_ = ComponentFactory.Instance.creat("wonderfulactivity.goods.back");
-               addChild(_loc3_);
-               _loc3_.x = (_loc3_.width + 5) * _loc1_;
-               _loc2_.x = _loc3_.width / 2 - _loc2_.width / 2 + _loc3_.x + 1;
-               _loc2_.y = _loc3_.height / 2 - _loc2_.height / 2 + 1;
-               _loc2_.setBgVisible(false);
-               _loc2_.setCount(_loc4_[_loc7_].RewardItemCount);
-               _goodsContents.addChild(_loc3_);
-               _goodsContents.addChild(_loc2_);
-               _loc1_++;
+               cell = new BagCell(i);
+               info = new InventoryItemInfo();
+               info.TemplateID = list[i].RewardItemID;
+               info = ItemManager.fill(info);
+               info.IsBinds = list[i].IsBind;
+               info.ValidDate = list[i].RewardItemValid;
+               info.StrengthenLevel = list[i].StrengthenLevel;
+               info.AttackCompose = list[i].AttackCompose;
+               info.DefendCompose = list[i].DefendCompose;
+               info.AgilityCompose = list[i].AgilityCompose;
+               info.LuckCompose = list[i].LuckCompose;
+               cell.info = info;
+               back = ComponentFactory.Instance.creat("wonderfulactivity.goods.back");
+               addChild(back);
+               back.x = (back.width + 5) * count;
+               cell.x = back.width / 2 - cell.width / 2 + back.x + 1;
+               cell.y = back.height / 2 - cell.height / 2 + 1;
+               cell.setBgVisible(false);
+               cell.setCount(list[i].RewardItemCount);
+               _goodsContents.addChild(back);
+               _goodsContents.addChild(cell);
+               count++;
             }
-            _loc7_++;
+            i++;
          }
       }
       

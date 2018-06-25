@@ -44,72 +44,70 @@ package com.pickgliss.ui.image
       
       private function creatImages() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _images = new Vector.<BitmapData>();
-         _loc1_ = 0;
-         while(_loc1_ < _imageLinks.length)
+         for(i = 0; i < _imageLinks.length; )
          {
-            _images.push(ComponentFactory.Instance.creatBitmapData(_imageLinks[_loc1_]));
-            _loc1_++;
+            _images.push(ComponentFactory.Instance.creatBitmapData(_imageLinks[i]));
+            i++;
          }
       }
       
       private function drawImage() : void
       {
          graphics.clear();
-         var _loc1_:Matrix = new Matrix();
-         _loc1_.tx = 0;
-         _loc1_.ty = 0;
-         graphics.beginBitmapFill(_images[0],_loc1_);
+         var startMatrix:Matrix = new Matrix();
+         startMatrix.tx = 0;
+         startMatrix.ty = 0;
+         graphics.beginBitmapFill(_images[0],startMatrix);
          graphics.drawRect(0,0,_images[0].width,_images[0].height);
-         _loc1_.tx = _images[0].width;
-         _loc1_.ty = 0;
-         graphics.beginBitmapFill(_images[1],_loc1_);
+         startMatrix.tx = _images[0].width;
+         startMatrix.ty = 0;
+         graphics.beginBitmapFill(_images[1],startMatrix);
          graphics.drawRect(_images[0].width,0,_width - _images[0].width - _images[2].width,_images[1].height);
-         _loc1_.tx = _width - _images[2].width;
-         _loc1_.ty = 0;
-         graphics.beginBitmapFill(_images[2],_loc1_);
+         startMatrix.tx = _width - _images[2].width;
+         startMatrix.ty = 0;
+         graphics.beginBitmapFill(_images[2],startMatrix);
          graphics.drawRect(_width - _images[2].width,0,_images[2].width,_images[2].height);
-         _loc1_.tx = 0;
-         _loc1_.ty = _images[0].height;
-         graphics.beginBitmapFill(_images[3],_loc1_);
+         startMatrix.tx = 0;
+         startMatrix.ty = _images[0].height;
+         graphics.beginBitmapFill(_images[3],startMatrix);
          graphics.drawRect(0,_images[0].height,_images[3].width,_height - _images[0].height - _images[6].height);
-         _loc1_.tx = _images[0].width;
-         _loc1_.ty = _images[0].height;
-         graphics.beginBitmapFill(_images[4],_loc1_);
+         startMatrix.tx = _images[0].width;
+         startMatrix.ty = _images[0].height;
+         graphics.beginBitmapFill(_images[4],startMatrix);
          graphics.drawRect(_images[0].width,_images[0].height,_width - _images[0].width - _images[2].width,_height - _images[0].height - _images[6].height);
-         _loc1_.tx = _width - _images[5].width;
-         _loc1_.ty = _images[2].height;
-         graphics.beginBitmapFill(_images[5],_loc1_);
+         startMatrix.tx = _width - _images[5].width;
+         startMatrix.ty = _images[2].height;
+         graphics.beginBitmapFill(_images[5],startMatrix);
          graphics.drawRect(_width - _images[5].width,_images[2].height,_images[5].width,_height - _images[2].height - _images[8].height);
-         _loc1_.tx = 0;
-         _loc1_.ty = _height - _images[6].height;
-         graphics.beginBitmapFill(_images[6],_loc1_);
+         startMatrix.tx = 0;
+         startMatrix.ty = _height - _images[6].height;
+         graphics.beginBitmapFill(_images[6],startMatrix);
          graphics.drawRect(0,_height - _images[6].height,_images[6].width,_images[6].height);
-         _loc1_.tx = _images[6].width;
-         _loc1_.ty = _height - _images[7].height;
-         graphics.beginBitmapFill(_images[7],_loc1_);
+         startMatrix.tx = _images[6].width;
+         startMatrix.ty = _height - _images[7].height;
+         graphics.beginBitmapFill(_images[7],startMatrix);
          graphics.drawRect(_images[6].width,_height - _images[7].height,_width - _images[6].width - _images[8].width,_images[7].height);
-         _loc1_.tx = _width - _images[8].width;
-         _loc1_.ty = _height - _images[8].height;
-         graphics.beginBitmapFill(_images[8],_loc1_);
+         startMatrix.tx = _width - _images[8].width;
+         startMatrix.ty = _height - _images[8].height;
+         graphics.beginBitmapFill(_images[8],startMatrix);
          graphics.drawRect(_width - _images[8].width,_height - _images[8].height,_images[8].width,_images[8].height);
          graphics.endFill();
       }
       
       private function removeImages() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(_images == null)
          {
             return;
          }
          graphics.clear();
-         _loc1_ = 0;
-         while(_loc1_ < _images.length)
+         for(i = 0; i < _images.length; )
          {
-            ObjectUtils.disposeObject(_images[_loc1_]);
-            _loc1_++;
+            ObjectUtils.disposeObject(_images[i]);
+            i++;
          }
       }
    }

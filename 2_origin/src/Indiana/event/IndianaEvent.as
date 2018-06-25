@@ -12,9 +12,9 @@ package Indiana.event
       public static const RECODE_ITEM_INFO:String = "recodeiteminfo";
        
       
-      public function IndianaEvent(param1:String, param2:Boolean = false, param3:Boolean = false)
+      public function IndianaEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         super(param1,param2,param3);
+         super(type,bubbles,cancelable);
       }
    }
 }

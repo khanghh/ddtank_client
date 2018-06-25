@@ -10,10 +10,10 @@ package deng.fzip
       
       public var text:String;
       
-      public function FZipErrorEvent(param1:String, param2:String = "", param3:Boolean = false, param4:Boolean = false)
+      public function FZipErrorEvent(type:String, text:String = "", bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         this.text = param2;
-         super(param1,param3,param4);
+         this.text = text;
+         super(type,bubbles,cancelable);
       }
       
       override public function clone() : Event

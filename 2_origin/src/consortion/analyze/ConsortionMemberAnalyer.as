@@ -13,100 +13,99 @@ package consortion.analyze
       
       public var consortionMember:DictionaryData;
       
-      public function ConsortionMemberAnalyer(param1:Function)
+      public function ConsortionMemberAnalyer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc4_:* = null;
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
-         var _loc2_:* = null;
-         var _loc3_:XML = new XML(param1);
+         var xmllist:* = null;
+         var i:int = 0;
+         var info:* = null;
+         var statePlayerState:* = null;
+         var xml:XML = new XML(data);
          consortionMember = new DictionaryData();
-         if(_loc3_.@value == "true")
+         if(xml.@value == "true")
          {
-            ConsortionModelManager.Instance.model.systemDate = XML(_loc3_).@currentDate;
-            _loc4_ = _loc3_..Item;
-            _loc6_ = 0;
-            while(_loc6_ < _loc4_.length())
+            ConsortionModelManager.Instance.model.systemDate = XML(xml).@currentDate;
+            xmllist = xml..Item;
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc5_ = new ConsortiaPlayerInfo();
-               _loc5_.beginChanges();
-               _loc5_.IsVote = converBoolean(_loc4_[_loc6_].@IsVote);
-               _loc5_.privateID = _loc4_[_loc6_].@ID;
-               _loc5_.ConsortiaID = PlayerManager.Instance.Self.ConsortiaID;
-               _loc5_.ConsortiaName = PlayerManager.Instance.Self.ConsortiaName;
-               _loc5_.DutyID = _loc4_[_loc6_].@DutyID;
-               _loc5_.DutyName = _loc4_[_loc6_].@DutyName;
-               _loc5_.GP = _loc4_[_loc6_].@GP;
-               _loc5_.Grade = _loc4_[_loc6_].@Grade;
-               _loc5_.FightPower = _loc4_[_loc6_].@FightPower;
-               _loc5_.AchievementPoint = _loc4_[_loc6_].@AchievementPoint;
-               _loc5_.honor = _loc4_[_loc6_].@Rank;
-               _loc5_.IsChat = converBoolean(_loc4_[_loc6_].@IsChat);
-               _loc5_.IsDiplomatism = converBoolean(_loc4_[_loc6_].@IsDiplomatism);
-               _loc5_.IsDownGrade = converBoolean(_loc4_[_loc6_].@IsDownGrade);
-               _loc5_.IsEditorDescription = converBoolean(_loc4_[_loc6_].@IsEditorDescription);
-               _loc5_.IsEditorPlacard = converBoolean(_loc4_[_loc6_].@IsEditorPlacard);
-               _loc5_.IsEditorUser = converBoolean(_loc4_[_loc6_].@IsEditorUser);
-               _loc5_.IsExpel = converBoolean(_loc4_[_loc6_].@IsExpel);
-               _loc5_.IsInvite = converBoolean(_loc4_[_loc6_].@IsInvite);
-               _loc5_.IsManageDuty = converBoolean(_loc4_[_loc6_].@IsManageDuty);
-               _loc5_.IsRatify = converBoolean(_loc4_[_loc6_].@IsRatify);
-               _loc5_.IsUpGrade = converBoolean(_loc4_[_loc6_].@IsUpGrade);
-               _loc5_.IsBandChat = converBoolean(_loc4_[_loc6_].@IsBanChat);
-               _loc5_.Offer = int(_loc4_[_loc6_].@Offer);
-               _loc5_.RatifierID = _loc4_[_loc6_].@RatifierID;
-               _loc5_.RatifierName = _loc4_[_loc6_].@RatifierName;
-               _loc5_.Remark = _loc4_[_loc6_].@Remark;
-               _loc5_.Repute = _loc4_[_loc6_].@Repute;
-               _loc2_ = new PlayerState(int(_loc4_[_loc6_].@State));
-               _loc5_.playerState = _loc2_;
-               _loc5_.LastDate = _loc4_[_loc6_].@LastDate;
-               _loc5_.ID = _loc4_[_loc6_].@UserID;
-               _loc5_.NickName = _loc4_[_loc6_].@UserName;
-               _loc5_.typeVIP = _loc4_[_loc6_].@typeVIP;
-               _loc5_.VIPLevel = _loc4_[_loc6_].@VIPLevel;
-               _loc5_.LoginName = _loc4_[_loc6_].@LoginName;
-               _loc5_.Sex = converBoolean(_loc4_[_loc6_].@Sex);
-               _loc5_.isAttest = converBoolean(_loc4_[_loc6_].@IsBeauty);
-               _loc5_.EscapeCount = _loc4_[_loc6_].@EscapeCount;
-               _loc5_.Right = _loc4_[_loc6_].@Right;
-               _loc5_.WinCount = _loc4_[_loc6_].@WinCount;
-               _loc5_.TotalCount = _loc4_[_loc6_].@TotalCount;
-               _loc5_.RichesOffer = _loc4_[_loc6_].@RichesOffer;
-               _loc5_.RichesRob = _loc4_[_loc6_].@RichesRob;
-               _loc5_.UseOffer = _loc4_[_loc6_].@TotalRichesOffer;
-               _loc5_.DutyLevel = _loc4_[_loc6_].@DutyLevel;
-               _loc5_.LastWeekRichesOffer = parseInt(_loc4_[_loc6_].@LastWeekRichesOffer);
-               _loc5_.isOld = int(_loc4_[_loc6_].@OldPlayer) == 1;
-               _loc5_.commitChanges();
-               consortionMember.add(_loc5_.ID,_loc5_);
-               if(_loc5_.ID == PlayerManager.Instance.Self.ID)
+               info = new ConsortiaPlayerInfo();
+               info.beginChanges();
+               info.IsVote = converBoolean(xmllist[i].@IsVote);
+               info.privateID = xmllist[i].@ID;
+               info.ConsortiaID = PlayerManager.Instance.Self.ConsortiaID;
+               info.ConsortiaName = PlayerManager.Instance.Self.ConsortiaName;
+               info.DutyID = xmllist[i].@DutyID;
+               info.DutyName = xmllist[i].@DutyName;
+               info.GP = xmllist[i].@GP;
+               info.Grade = xmllist[i].@Grade;
+               info.FightPower = xmllist[i].@FightPower;
+               info.AchievementPoint = xmllist[i].@AchievementPoint;
+               info.honor = xmllist[i].@Rank;
+               info.IsChat = converBoolean(xmllist[i].@IsChat);
+               info.IsDiplomatism = converBoolean(xmllist[i].@IsDiplomatism);
+               info.IsDownGrade = converBoolean(xmllist[i].@IsDownGrade);
+               info.IsEditorDescription = converBoolean(xmllist[i].@IsEditorDescription);
+               info.IsEditorPlacard = converBoolean(xmllist[i].@IsEditorPlacard);
+               info.IsEditorUser = converBoolean(xmllist[i].@IsEditorUser);
+               info.IsExpel = converBoolean(xmllist[i].@IsExpel);
+               info.IsInvite = converBoolean(xmllist[i].@IsInvite);
+               info.IsManageDuty = converBoolean(xmllist[i].@IsManageDuty);
+               info.IsRatify = converBoolean(xmllist[i].@IsRatify);
+               info.IsUpGrade = converBoolean(xmllist[i].@IsUpGrade);
+               info.IsBandChat = converBoolean(xmllist[i].@IsBanChat);
+               info.Offer = int(xmllist[i].@Offer);
+               info.RatifierID = xmllist[i].@RatifierID;
+               info.RatifierName = xmllist[i].@RatifierName;
+               info.Remark = xmllist[i].@Remark;
+               info.Repute = xmllist[i].@Repute;
+               statePlayerState = new PlayerState(int(xmllist[i].@State));
+               info.playerState = statePlayerState;
+               info.LastDate = xmllist[i].@LastDate;
+               info.ID = xmllist[i].@UserID;
+               info.NickName = xmllist[i].@UserName;
+               info.typeVIP = xmllist[i].@typeVIP;
+               info.VIPLevel = xmllist[i].@VIPLevel;
+               info.LoginName = xmllist[i].@LoginName;
+               info.Sex = converBoolean(xmllist[i].@Sex);
+               info.isAttest = converBoolean(xmllist[i].@IsBeauty);
+               info.EscapeCount = xmllist[i].@EscapeCount;
+               info.Right = xmllist[i].@Right;
+               info.WinCount = xmllist[i].@WinCount;
+               info.TotalCount = xmllist[i].@TotalCount;
+               info.RichesOffer = xmllist[i].@RichesOffer;
+               info.RichesRob = xmllist[i].@RichesRob;
+               info.UseOffer = xmllist[i].@TotalRichesOffer;
+               info.DutyLevel = xmllist[i].@DutyLevel;
+               info.LastWeekRichesOffer = parseInt(xmllist[i].@LastWeekRichesOffer);
+               info.isOld = int(xmllist[i].@OldPlayer) == 1;
+               info.commitChanges();
+               consortionMember.add(info.ID,info);
+               if(info.ID == PlayerManager.Instance.Self.ID)
                {
-                  PlayerManager.Instance.Self.ConsortiaID = _loc5_.ConsortiaID;
-                  PlayerManager.Instance.Self.DutyLevel = _loc5_.DutyLevel;
-                  PlayerManager.Instance.Self.DutyName = _loc5_.DutyName;
-                  PlayerManager.Instance.Self.Right = _loc5_.Right;
+                  PlayerManager.Instance.Self.ConsortiaID = info.ConsortiaID;
+                  PlayerManager.Instance.Self.DutyLevel = info.DutyLevel;
+                  PlayerManager.Instance.Self.DutyName = info.DutyName;
+                  PlayerManager.Instance.Self.Right = info.Right;
                }
-               _loc6_++;
+               i++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc3_.@message;
+            message = xml.@message;
             onAnalyzeError();
             onAnalyzeComplete();
          }
       }
       
-      private function converBoolean(param1:String) : Boolean
+      private function converBoolean(b:String) : Boolean
       {
-         return param1 == "true"?true:false;
+         return b == "true"?true:false;
       }
    }
 }

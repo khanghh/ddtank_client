@@ -43,9 +43,9 @@ package auctionHouse.controller
          super();
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
-         super.enter(param1,param2);
+         super.enter(prev,data);
          _model = new AuctionHouseModel();
          _view = new AuctionHouseView(this,_model);
          _view.show();
@@ -61,9 +61,9 @@ package auctionHouse.controller
          SocketManager.Instance.addEventListener(PkgEvent.format(195),__updateAuction);
       }
       
-      public function set model(param1:AuctionHouseModel) : void
+      public function set model(mo:AuctionHouseModel) : void
       {
-         _model = param1;
+         _model = mo;
       }
       
       public function get model() : AuctionHouseModel
@@ -71,9 +71,9 @@ package auctionHouse.controller
          return _model;
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
-         super.leaving(param1);
+         super.leaving(next);
          dispose();
          MainToolBar.Instance.hide();
          PlayerManager.Instance.Self.unlockAllBag();
@@ -90,24 +90,24 @@ package auctionHouse.controller
          return "auction";
       }
       
-      public function setState(param1:String) : void
+      public function setState(value:String) : void
       {
-         _model.state = param1;
-         AuctionState.CURRENTSTATE = param1;
+         _model.state = value;
+         AuctionState.CURRENTSTATE = value;
       }
       
-      public function browseTypeChange(param1:CateCoryInfo, param2:int = -1) : void
+      public function browseTypeChange(info:CateCoryInfo, id:int = -1) : void
       {
-         var _loc3_:* = null;
-         if(param1 == null)
+         var tempInfo:* = null;
+         if(info == null)
          {
-            _loc3_ = _model.getCatecoryById(param2);
+            tempInfo = _model.getCatecoryById(id);
          }
          else
          {
-            _loc3_ = param1;
+            tempInfo = info;
          }
-         _model.currentBrowseGoodInfo = _loc3_;
+         _model.currentBrowseGoodInfo = tempInfo;
       }
       
       public function browseTypeChangeNull() : void
@@ -139,35 +139,35 @@ package auctionHouse.controller
          }
       }
       
-      public function searchAuctionList(param1:int, param2:String, param3:int, param4:int, param5:int, param6:int, param7:uint = 0, param8:String = "false", param9:String = "") : void
+      public function searchAuctionList(page:int, name:String, type:int, pay:int, userID:int, buyId:int, sortIndex:uint = 0, sortBy:String = "false", Auctions:String = "") : void
       {
          if(AuctionHouseModel.searchType == 1)
          {
-            param2 = "";
+            name = "";
          }
-         startLoadAuctionInfo(param1,param2,param3,param4,param5,param6,param7,param8,param9);
+         startLoadAuctionInfo(page,name,type,pay,userID,buyId,sortIndex,sortBy,Auctions);
          (_view as AuctionHouseView).forbidChangeState();
       }
       
-      private function startLoadAuctionInfo(param1:int, param2:String, param3:int, param4:int, param5:int, param6:int, param7:uint = 0, param8:String = "false", param9:String = "") : void
+      private function startLoadAuctionInfo(page:int, name:String, type:int, pay:int, userID:int, buyId:int, sortIndex:uint = 0, sortBy:String = "false", Auctions:String = "") : void
       {
-         var _loc11_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         _loc11_["page"] = param1;
-         _loc11_["name"] = param2;
-         _loc11_["type"] = param3;
-         _loc11_["pay"] = param4;
-         _loc11_["userID"] = param5;
-         _loc11_["buyID"] = param6;
-         _loc11_["order"] = param7;
-         _loc11_["sort"] = param8;
-         _loc11_["Auctions"] = param9;
-         _loc11_["selfid"] = PlayerManager.Instance.Self.ID;
-         _loc11_["key"] = MD5.hash(PlayerManager.Instance.Account.Password);
-         _loc11_["rnd"] = Math.random();
-         var _loc10_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("AuctionPageList.ashx"),6,_loc11_);
-         _loc10_.loadErrorMessage = LanguageMgr.GetTranslation("tank.auctionHouse.controller.AuctionHouseListError");
-         _loc10_.analyzer = new AuctionAnalyzer(__searchResult);
-         LoadResourceManager.Instance.startLoad(_loc10_);
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         args["page"] = page;
+         args["name"] = name;
+         args["type"] = type;
+         args["pay"] = pay;
+         args["userID"] = userID;
+         args["buyID"] = buyId;
+         args["order"] = sortIndex;
+         args["sort"] = sortBy;
+         args["Auctions"] = Auctions;
+         args["selfid"] = PlayerManager.Instance.Self.ID;
+         args["key"] = MD5.hash(PlayerManager.Instance.Account.Password);
+         args["rnd"] = Math.random();
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("AuctionPageList.ashx"),6,args);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("tank.auctionHouse.controller.AuctionHouseListError");
+         loader.analyzer = new AuctionAnalyzer(__searchResult);
+         LoadResourceManager.Instance.startLoad(loader);
          mouseChildren = false;
          mouseEnabled = false;
          if(AuctionHouseModel._dimBooble == false)
@@ -176,12 +176,12 @@ package auctionHouse.controller
          }
       }
       
-      private function __searchResult(param1:AuctionAnalyzer) : void
+      private function __searchResult(action:AuctionAnalyzer) : void
       {
-         var _loc6_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc5_:int = 0;
+         var i:int = 0;
+         var j:int = 0;
+         var auctionIDs:* = null;
+         var k:int = 0;
          mouseChildren = true;
          mouseEnabled = true;
          if(!_view)
@@ -189,123 +189,121 @@ package auctionHouse.controller
             return;
          }
          SimpleLoading.instance.hide();
-         var _loc2_:Vector.<AuctionGoodsInfo> = param1.list;
+         var list:Vector.<AuctionGoodsInfo> = action.list;
          if(_model.state == "sell")
          {
             _model.clearMyAuction();
-            _loc6_ = 0;
-            while(_loc6_ < _loc2_.length)
+            for(i = 0; i < list.length; )
             {
-               _model.addMyAuction(_loc2_[_loc6_]);
-               _loc6_++;
+               _model.addMyAuction(list[i]);
+               i++;
             }
-            _model.sellTotal = param1.total;
+            _model.sellTotal = action.total;
          }
          else if(_model.state == "browse")
          {
             _model.clearBrowseAuctionData();
-            if(_loc2_.length == 0 && AuctionHouseModel.searchType != 3)
+            if(list.length == 0 && AuctionHouseModel.searchType != 3)
             {
                if(AuctionHouseModel._dimBooble == false)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.auctionHouse.controller.AuctionHouseController"));
                }
             }
-            _loc4_ = 0;
-            while(_loc4_ < _loc2_.length)
+            j = 0;
+            while(j < list.length)
             {
-               _model.addBrowseAuctionData(_loc2_[_loc4_]);
-               _loc4_++;
+               _model.addBrowseAuctionData(list[j]);
+               j++;
             }
-            _model.browseTotal = param1.total;
+            _model.browseTotal = action.total;
          }
          else if(_model.state == "buy")
          {
-            _loc3_ = [];
+            auctionIDs = [];
             _model.clearBuyAuctionData();
-            _loc5_ = 0;
-            while(_loc5_ < _loc2_.length)
+            for(k = 0; k < list.length; )
             {
-               _model.addBuyAuctionData(_loc2_[_loc5_]);
-               _loc3_.push(_loc2_[_loc5_].AuctionID);
-               _loc5_++;
+               _model.addBuyAuctionData(list[k]);
+               auctionIDs.push(list[k].AuctionID);
+               k++;
             }
-            _model.buyTotal = param1.total;
-            SharedManager.Instance.AuctionIDs[PlayerManager.Instance.Self.ID] = _loc3_;
+            _model.buyTotal = action.total;
+            SharedManager.Instance.AuctionIDs[PlayerManager.Instance.Self.ID] = auctionIDs;
             SharedManager.Instance.save();
          }
          (_view as AuctionHouseView).allowChangeState();
       }
       
-      private function __updateAuction(param1:PkgEvent) : void
+      private function __updateAuction(event:PkgEvent) : void
       {
-         var _loc4_:Boolean = false;
-         var _loc3_:* = null;
-         param1.pkg.deCompress();
-         var _loc5_:AuctionGoodsInfo = new AuctionGoodsInfo();
-         _loc5_.AuctionID = param1.pkg.readInt();
-         var _loc2_:Boolean = param1.pkg.readBoolean();
-         if(_loc2_)
+         var item:Boolean = false;
+         var bag:* = null;
+         event.pkg.deCompress();
+         var info:AuctionGoodsInfo = new AuctionGoodsInfo();
+         info.AuctionID = event.pkg.readInt();
+         var isExist:Boolean = event.pkg.readBoolean();
+         if(isExist)
          {
-            _loc5_.AuctioneerID = param1.pkg.readInt();
-            _loc5_.AuctioneerName = param1.pkg.readUTF();
-            _loc5_.beginDateObj = param1.pkg.readDate();
-            _loc5_.BuyerID = param1.pkg.readInt();
-            _loc5_.BuyerName = param1.pkg.readUTF();
-            _loc5_.ItemID = param1.pkg.readInt();
-            _loc5_.Mouthful = param1.pkg.readInt();
-            _loc5_.PayType = param1.pkg.readInt();
-            _loc5_.Price = param1.pkg.readInt();
-            _loc5_.Rise = param1.pkg.readInt();
-            _loc5_.ValidDate = param1.pkg.readInt();
-            _loc4_ = param1.pkg.readBoolean();
-            if(_loc4_)
+            info.AuctioneerID = event.pkg.readInt();
+            info.AuctioneerName = event.pkg.readUTF();
+            info.beginDateObj = event.pkg.readDate();
+            info.BuyerID = event.pkg.readInt();
+            info.BuyerName = event.pkg.readUTF();
+            info.ItemID = event.pkg.readInt();
+            info.Mouthful = event.pkg.readInt();
+            info.PayType = event.pkg.readInt();
+            info.Price = event.pkg.readInt();
+            info.Rise = event.pkg.readInt();
+            info.ValidDate = event.pkg.readInt();
+            item = event.pkg.readBoolean();
+            if(item)
             {
-               _loc3_ = new InventoryItemInfo();
-               _loc3_.Count = param1.pkg.readInt();
-               _loc3_.TemplateID = param1.pkg.readInt();
-               _loc3_.AttackCompose = param1.pkg.readInt();
-               _loc3_.DefendCompose = param1.pkg.readInt();
-               _loc3_.AgilityCompose = param1.pkg.readInt();
-               _loc3_.LuckCompose = param1.pkg.readInt();
-               _loc3_.StrengthenLevel = param1.pkg.readInt();
-               _loc3_.IsBinds = param1.pkg.readBoolean();
-               _loc3_.IsJudge = param1.pkg.readBoolean();
-               _loc3_.BeginDate = param1.pkg.readDateString();
-               _loc3_.ValidDate = param1.pkg.readInt();
-               _loc3_.Color = param1.pkg.readUTF();
-               _loc3_.Skin = param1.pkg.readUTF();
-               _loc3_.IsUsed = param1.pkg.readBoolean();
-               _loc3_.Hole1 = param1.pkg.readInt();
-               _loc3_.Hole2 = param1.pkg.readInt();
-               _loc3_.Hole3 = param1.pkg.readInt();
-               _loc3_.Hole4 = param1.pkg.readInt();
-               _loc3_.Hole5 = param1.pkg.readInt();
-               _loc3_.Hole6 = param1.pkg.readInt();
-               _loc3_.Pic = param1.pkg.readUTF();
-               _loc3_.RefineryLevel = param1.pkg.readInt();
-               _loc3_.DiscolorValidDate = param1.pkg.readDateString();
-               _loc3_.Hole5Level = param1.pkg.readByte();
-               _loc3_.Hole5Exp = param1.pkg.readInt();
-               _loc3_.Hole6Level = param1.pkg.readByte();
-               _loc3_.Hole6Exp = param1.pkg.readInt();
-               _loc3_.MagicLevel = param1.pkg.readInt();
-               _loc3_.curExp = param1.pkg.readInt();
-               ItemManager.fill(_loc3_);
-               _loc5_.BagItemInfo = _loc3_;
+               bag = new InventoryItemInfo();
+               bag.Count = event.pkg.readInt();
+               bag.TemplateID = event.pkg.readInt();
+               bag.AttackCompose = event.pkg.readInt();
+               bag.DefendCompose = event.pkg.readInt();
+               bag.AgilityCompose = event.pkg.readInt();
+               bag.LuckCompose = event.pkg.readInt();
+               bag.StrengthenLevel = event.pkg.readInt();
+               bag.IsBinds = event.pkg.readBoolean();
+               bag.IsJudge = event.pkg.readBoolean();
+               bag.BeginDate = event.pkg.readDateString();
+               bag.ValidDate = event.pkg.readInt();
+               bag.Color = event.pkg.readUTF();
+               bag.Skin = event.pkg.readUTF();
+               bag.IsUsed = event.pkg.readBoolean();
+               bag.Hole1 = event.pkg.readInt();
+               bag.Hole2 = event.pkg.readInt();
+               bag.Hole3 = event.pkg.readInt();
+               bag.Hole4 = event.pkg.readInt();
+               bag.Hole5 = event.pkg.readInt();
+               bag.Hole6 = event.pkg.readInt();
+               bag.Pic = event.pkg.readUTF();
+               bag.RefineryLevel = event.pkg.readInt();
+               bag.DiscolorValidDate = event.pkg.readDateString();
+               bag.Hole5Level = event.pkg.readByte();
+               bag.Hole5Exp = event.pkg.readInt();
+               bag.Hole6Level = event.pkg.readByte();
+               bag.Hole6Exp = event.pkg.readInt();
+               bag.MagicLevel = event.pkg.readInt();
+               bag.curExp = event.pkg.readInt();
+               ItemManager.fill(bag);
+               info.BagItemInfo = bag;
                _model.sellTotal = _model.sellTotal + 1;
             }
-            _model.addMyAuction(_loc5_);
+            _model.addMyAuction(info);
          }
          else
          {
-            _model.removeMyAuction(_loc5_);
+            _model.removeMyAuction(info);
          }
       }
       
-      public function visibleHelp(param1:AuctionRightView, param2:int) : void
+      public function visibleHelp(rightView:AuctionRightView, frame:int) : void
       {
-         _rightView = param1;
+         _rightView = rightView;
       }
    }
 }

@@ -76,6 +76,10 @@ package ddt.view.chat
       
       public static const COMPLATE_TASK:int = 114;
       
+      public static const DAILY_GLODEQUIP:int = 32;
+      
+      public static const DAILY_POTENTIAL:int = 33;
+      
       public static const CARD_CAO:int = 5;
       
       public static const CLICK_CARD_INFO:int = 6;
@@ -118,247 +122,248 @@ package ddt.view.chat
          super();
       }
       
-      public static function formatChatStyle(param1:ChatData) : void
+      public static function formatChatStyle(data:ChatData) : void
       {
-         if(param1.htmlMessage != "")
+         if(data.htmlMessage != "")
          {
             return;
          }
-         param1.msg = StringHelper.rePlaceHtmlTextField(param1.msg);
-         var _loc5_:Array = getTagsByChannel(param1);
-         var _loc2_:String = creatChannelTag(param1.channel,param1.bigBuggleType,param1);
-         var _loc3_:String = creatSenderTag(param1);
-         var _loc4_:String = creatContentTag(param1);
-         param1.htmlMessage = _loc5_[0] + _loc2_ + _loc3_ + _loc4_ + _loc5_[1] + "<BR>";
+         data.msg = StringHelper.rePlaceHtmlTextField(data.msg);
+         var channelTag:Array = getTagsByChannel(data);
+         var channelClickTag:String = creatChannelTag(data.channel,data.bigBuggleType,data);
+         var senderClickTag:String = creatSenderTag(data);
+         var contentClickTag:String = creatContentTag(data);
+         data.htmlMessage = channelTag[0] + channelClickTag + senderClickTag + contentClickTag + channelTag[1] + "<BR>";
       }
       
-      public static function formatComplexChatStyle(param1:ChatData) : void
+      public static function formatComplexChatStyle(data:ChatData) : void
       {
-         var _loc5_:int = 0;
-         if(param1.htmlMessage != "")
+         var i:int = 0;
+         if(data.htmlMessage != "")
          {
             return;
          }
-         param1.msg = StringHelper.rePlaceHtmlTextField(param1.msg);
-         var _loc4_:Array = getTagsByChannel(param1);
-         var _loc3_:String = creatContentTag(param1);
-         var _loc2_:Array = _loc3_.split("@@");
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_.length)
+         data.msg = StringHelper.rePlaceHtmlTextField(data.msg);
+         var channelTag:Array = getTagsByChannel(data);
+         var contentClickTag:String = creatContentTag(data);
+         var contentArray:Array = contentClickTag.split("@@");
+         for(i = 0; i < contentArray.length; )
          {
-            param1.htmlMessage = param1.htmlMessage + (_loc4_[2 * _loc5_] + _loc2_[_loc5_] + _loc4_[2 * _loc5_ + 1]);
-            _loc5_++;
+            data.htmlMessage = data.htmlMessage + (channelTag[2 * i] + contentArray[i] + channelTag[2 * i + 1]);
+            i++;
          }
-         param1.htmlMessage = param1.htmlMessage + "<BR>";
+         data.htmlMessage = data.htmlMessage + "<BR>";
       }
       
-      public static function creatBracketsTag(param1:String, param2:int, param3:Array = null, param4:ChatData = null) : String
+      public static function creatBracketsTag(source:String, clickType:int, args:Array = null, data:ChatData = null) : String
       {
-         var _loc12_:* = null;
-         var _loc5_:int = 0;
-         var _loc9_:* = null;
-         var _loc15_:* = null;
-         var _loc10_:* = null;
-         var _loc11_:* = null;
-         var _loc6_:* = null;
-         var _loc7_:* = null;
-         var _loc14_:* = null;
-         var _loc8_:int = 0;
-         var _loc13_:* = null;
-         if(param4 != null && param4.channel == 14 && param4.msg.indexOf("http") != -1)
+         var tmp:* = null;
+         var index:int = 0;
+         var invitStr:* = null;
+         var rep:* = null;
+         var nameArr:* = null;
+         var name:* = null;
+         var namesRec:* = null;
+         var srr:* = null;
+         var argString:* = null;
+         var i:int = 0;
+         var tagname:* = null;
+         if(data != null && data.channel == 14 && data.msg.indexOf("http") != -1)
          {
-            param1 = "<u><a href=\"event:clicktype:" + param2.toString() + "|senderId:" + param4.senderID + "|roomId:" + param4.roomId + "|password:" + param4.password + "|source:" + param4.msg + "\">" + param1 + "</a>" + "</u>";
+            source = "<u><a href=\"event:clicktype:" + clickType.toString() + "|senderId:" + data.senderID + "|roomId:" + data.roomId + "|password:" + data.password + "|source:" + data.msg + "\">" + source + "</a>" + "</u>";
          }
-         if(param2 == 101)
+         if(clickType == 101)
          {
-            param1 = "<u><a href=\"event:clicktype:" + param2.toString() + "|senderId:" + param4.senderID + "|roomId:" + param4.roomId + "|password:" + param4.password + "\">" + param1 + "</a>" + "</u>";
+            source = "<u><a href=\"event:clicktype:" + clickType.toString() + "|senderId:" + data.senderID + "|roomId:" + data.roomId + "|password:" + data.password + "\">" + source + "</a>" + "</u>";
          }
-         if(param2 == 888)
+         if(clickType == 888)
          {
-            if(param4.senderID != PlayerManager.Instance.Self.ID)
+            if(data.senderID != PlayerManager.Instance.Self.ID)
             {
-               param1 = "<u><a href=\"event:clicktype:" + param2.toString() + "|senderId:" + param4.senderID + "|roomId:" + param4.roomId + "|password:" + param4.password + "\">" + param1 + "</a>" + "</u>";
+               source = "<u><a href=\"event:clicktype:" + clickType.toString() + "|senderId:" + data.senderID + "|roomId:" + data.roomId + "|password:" + data.password + "\">" + source + "</a>" + "</u>";
             }
             else
             {
-               param1 = "【" + param4.sender + "】" + LanguageMgr.GetTranslation("tank.newyearFood.view.bugleTxt");
+               source = "【" + data.sender + "】" + LanguageMgr.GetTranslation("tank.newyearFood.view.bugleTxt");
             }
          }
-         if(param2 == 889)
+         if(clickType == 889)
          {
-            param1 = param1.split("|")[0] + "@@" + "<u>" + "<a href=\"event:" + "clicktype:" + param2.toString() + "\">" + param1.split("|")[1] + "</a>" + "</u>";
+            source = source.split("|")[0] + "@@" + "<u>" + "<a href=\"event:" + "clicktype:" + clickType.toString() + "\">" + source.split("|")[1] + "</a>" + "</u>";
          }
-         if(param2 == 107)
+         if(clickType == 107)
          {
-            param1 = "【" + param4.sender + "】" + LanguageMgr.GetTranslation("tank.auctionHouse.view.AuctionSellLeftView.bugleTxt",param4.price,param4.mouthful,param4.auctionGoodName,param4.itemCount);
-            if(param4.playerCharacterID != PlayerManager.Instance.Self.ID)
+            source = "【" + data.sender + "】" + LanguageMgr.GetTranslation("tank.auctionHouse.view.AuctionSellLeftView.bugleTxt",data.price,data.mouthful,data.auctionGoodName,data.itemCount);
+            if(data.playerCharacterID != PlayerManager.Instance.Self.ID)
             {
-               param1 = param1 + ("，<u><a href=\"event:clicktype:" + param2.toString() + "|senderId:" + param4.senderID + "|nickName:" + param4.playerName + "|price:" + param4.price + "|mouthful:" + param4.mouthful + "|auctionID:" + param4.auctionID + "\">" + LanguageMgr.GetTranslation("tank.auctionHouse.view.AuctionSellLeftView.clickToBuy") + "</a></u>");
+               source = source + ("，<u><a href=\"event:clicktype:" + clickType.toString() + "|senderId:" + data.senderID + "|nickName:" + data.playerName + "|price:" + data.price + "|mouthful:" + data.mouthful + "|auctionID:" + data.auctionID + "\">" + LanguageMgr.GetTranslation("tank.auctionHouse.view.AuctionSellLeftView.clickToBuy") + "</a></u>");
             }
          }
-         else if(param2 == 102 || param2 == 108 || param2 == 110 || param2 > CLICK_ACT_TIP)
+         else if(clickType == 102 || clickType == 108 || clickType == 110 || clickType > CLICK_ACT_TIP)
          {
-            param1 = param1.split("|")[0] + "@@" + "<u>" + "<a href=\"event:" + "clicktype:" + param2.toString() + "|rewardType:" + param4.actId + "\">" + param1.split("|")[1] + "</a>" + "</u>";
+            source = source.split("|")[0] + "@@" + "<u>" + "<a href=\"event:" + "clicktype:" + clickType.toString() + "|rewardType:" + data.actId + "\">" + source.split("|")[1] + "</a>" + "</u>";
          }
-         else if(param2 == 113)
+         else if(clickType == 113)
          {
-            param1 = param1.split("|")[0] + "<u>" + "<a href=\"event:" + "clicktype:" + param2.toString() + "\">" + param1.split("|")[1] + "</a>" + "</u>";
+            source = source.split("|")[0] + "<u>" + "<a href=\"event:" + "clicktype:" + clickType.toString() + "\">" + source.split("|")[1] + "</a>" + "</u>";
          }
-         else if(param2 == 103)
+         else if(clickType == 32 || clickType == 33)
          {
-            _loc12_ = param1.split("|");
-            param1 = _loc12_[0];
-            if(param4.receiver != PlayerManager.Instance.Self.NickName)
+            source = source.split("|")[0] + "@@" + "<u>" + "<a href=\"event:" + "clicktype:" + clickType.toString() + "\">" + source.split("|")[1] + "</a>" + "</u>";
+         }
+         else if(clickType == 103)
+         {
+            tmp = source.split("|");
+            source = tmp[0];
+            if(data.receiver != PlayerManager.Instance.Self.NickName)
             {
-               param1 = param1.replace("[" + param4.receiver + "]","<a href=\"event:clicktype:1|tagname:" + param4.receiver + "|zoneID:-1\">" + Helpers.enCodeString("[" + param4.receiver + "]") + "</a>");
+               source = source.replace("[" + data.receiver + "]","<a href=\"event:clicktype:1|tagname:" + data.receiver + "|zoneID:-1\">" + Helpers.enCodeString("[" + data.receiver + "]") + "</a>");
             }
-            if(_loc12_.length > 1)
+            if(tmp.length > 1)
             {
-               param1 = param1 + ("@@<u><a href=\"event:clicktype:" + param2 + "|tagname:" + param4.receiver + "\">" + _loc12_[1] + "</a>" + "</u>");
+               source = source + ("@@<u><a href=\"event:clicktype:" + clickType + "|tagname:" + data.receiver + "\">" + tmp[1] + "</a>" + "</u>");
             }
             else
             {
-               param1 = param1 + "@@";
+               source = source + "@@";
             }
          }
-         else if(param2 == 104)
+         else if(clickType == 104)
          {
-            _loc5_ = param1.indexOf(".") + 1;
-            param1 = param1.slice(0,_loc5_) + "<u>" + "<a href=\"event:" + "clicktype:" + param2.toString() + "\">" + param1.slice(_loc5_,param1.length) + "</a></u>";
+            index = source.indexOf(".") + 1;
+            source = source.slice(0,index) + "<u>" + "<a href=\"event:" + "clicktype:" + clickType.toString() + "\">" + source.slice(index,source.length) + "</a></u>";
          }
-         else if(param2 == 106)
+         else if(clickType == 106)
          {
-            param1 = param1 + ("<u><a href=\"event:clicktype:" + param2.toString() + "\"><FONT  COLOR=\'#8dff1e\'>" + LanguageMgr.GetTranslation("notAlertAgain") + "</FONT></a></u>");
+            source = source + ("<u><a href=\"event:clicktype:" + clickType.toString() + "\"><FONT  COLOR=\'#8dff1e\'>" + LanguageMgr.GetTranslation("notAlertAgain") + "</FONT></a></u>");
          }
-         else if(param2 == 109)
+         else if(clickType == 109)
          {
-            _loc9_ = param1.split("|");
-            _loc15_ = /\[([^\]]*)]*/g;
-            _loc10_ = _loc9_[0].match(_loc15_);
-            _loc11_ = _loc10_[0].substr(1,_loc10_[0].length - 2);
-            param1 = _loc9_[0].replace("[" + _loc11_ + "]","<a href=\"event:clicktype:1|tagname:" + _loc11_ + "|zoneID:" + String(param4.zoneID) + "|zoneName:" + String(param4.zoneName) + "|" + "\">" + Helpers.enCodeString("[" + _loc11_ + "]") + "</a>") + "@@<u>" + _loc9_[1].replace(_loc9_[1],"<a href=\"event:clicktype:" + param2.toString() + "|tagname:" + _loc11_ + "|zoneID:" + String(param4.zoneID) + "|zoneName:" + String(param4.zoneName) + "|" + "\">" + Helpers.enCodeString(_loc9_[1]) + "</a></u>");
+            invitStr = source.split("|");
+            rep = /\[([^\]]*)]*/g;
+            nameArr = invitStr[0].match(rep);
+            name = nameArr[0].substr(1,nameArr[0].length - 2);
+            source = invitStr[0].replace("[" + name + "]","<a href=\"event:clicktype:1|tagname:" + name + "|zoneID:" + String(data.zoneID) + "|zoneName:" + String(data.zoneName) + "|" + "\">" + Helpers.enCodeString("[" + name + "]") + "</a>") + "@@<u>" + invitStr[1].replace(invitStr[1],"<a href=\"event:clicktype:" + clickType.toString() + "|tagname:" + name + "|zoneID:" + String(data.zoneID) + "|zoneName:" + String(data.zoneName) + "|" + "\">" + Helpers.enCodeString(invitStr[1]) + "</a></u>");
          }
-         else if(param2 == 111)
+         else if(clickType == 111)
          {
-            param1 = param1 + ("<u><a href=\"event:clicktype:" + param2.toString() + "\">" + LanguageMgr.GetTranslation("redpackage.clickToGain") + "</a></u>");
+            source = source + ("<u><a href=\"event:clicktype:" + clickType.toString() + "\">" + LanguageMgr.GetTranslation("redpackage.clickToGain") + "</a></u>");
          }
-         else if(param2 == 999)
+         else if(clickType == 999)
          {
-            param1 = param1 + ("<font color=\"" + RedEnvelopeItem.redcolorList[param4.redType - 1] + "\"> " + LanguageMgr.GetTranslation("ddt.redEnvelope.red" + String(param4.redType)) + "</font>");
-            param1 = param1 + ("<u><a href=\"event:clicktype:" + param2.toString() + "\">" + LanguageMgr.GetTranslation("ddt.redEnvelope.chatClick") + "</a></u>");
+            source = source + ("<font color=\"" + RedEnvelopeItem.redcolorList[data.redType - 1] + "\"> " + LanguageMgr.GetTranslation("ddt.redEnvelope.red" + String(data.redType)) + "</font>");
+            source = source + ("<u><a href=\"event:clicktype:" + clickType.toString() + "\">" + LanguageMgr.GetTranslation("ddt.redEnvelope.chatClick") + "</a></u>");
          }
-         else if(param2 == 112)
+         else if(clickType == 112)
          {
-            param1 = "<u><a href=\"event:clicktype:" + param2.toString() + "\">" + param1 + "</a>" + "</u>";
+            source = "<u><a href=\"event:clicktype:" + clickType.toString() + "\">" + source + "</a>" + "</u>";
          }
          else
          {
-            _loc6_ = /\[([^\]]*)]*/g;
-            _loc7_ = param1.match(_loc6_);
-            _loc14_ = "";
-            if(param3)
+            namesRec = /\[([^\]]*)]*/g;
+            srr = source.match(namesRec);
+            argString = "";
+            if(args)
             {
-               _loc14_ = param3.join("|");
+               argString = args.join("|");
             }
-            _loc8_ = 0;
-            while(_loc8_ < _loc7_.length)
+            i = 0;
+            while(i < srr.length)
             {
-               _loc13_ = _loc7_[_loc8_].substr(1,_loc7_[_loc8_].length - 2);
-               if(param2 != 1 || _loc13_ != PlayerManager.Instance.Self.NickName || _loc13_ == PlayerManager.Instance.Self.NickName && param4 && param4.zoneID != PlayerManager.Instance.Self.ZoneID)
+               tagname = srr[i].substr(1,srr[i].length - 2);
+               if(clickType != 1 || tagname != PlayerManager.Instance.Self.NickName || tagname == PlayerManager.Instance.Self.NickName && data && data.zoneID != PlayerManager.Instance.Self.ZoneID)
                {
-                  if(param4)
+                  if(data)
                   {
-                     _loc14_ = _loc14_ + ("channel:" + param4.channel);
+                     argString = argString + ("channel:" + data.channel);
                   }
-                  if(param4 && param4.channel == 12)
+                  if(data && data.channel == 12)
                   {
-                     param1 = param1.replace("[" + _loc13_ + "]","<a href=\"event:clicktype:" + param2.toString() + "|tagname:" + _loc13_ + "|zoneID:" + String(param4.zoneID) + "|zoneName:" + String(param4.zoneName) + "|" + _loc14_ + "\">" + Helpers.enCodeString("[" + _loc13_ + "]") + "</a>");
+                     source = source.replace("[" + tagname + "]","<a href=\"event:clicktype:" + clickType.toString() + "|tagname:" + tagname + "|zoneID:" + String(data.zoneID) + "|zoneName:" + String(data.zoneName) + "|" + argString + "\">" + Helpers.enCodeString("[" + tagname + "]") + "</a>");
                   }
-                  else if(_loc13_ == Channel_Set[12])
+                  else if(tagname == Channel_Set[12])
                   {
-                     param1 = "";
+                     source = "";
                   }
-                  else if(param4)
+                  else if(data)
                   {
-                     if(param4.senderID >= 0)
+                     if(data.senderID >= 0)
                      {
-                        param1 = param1.replace("[" + _loc13_ + "]","<a href=\"event:clicktype:" + param2.toString() + "|tagname:" + _loc13_ + "|zoneID:" + String(param4.zoneID) + "|zoneName:" + String(param4.zoneName) + "|" + _loc14_ + "\">" + Helpers.enCodeString("[" + _loc13_ + "]") + "</a>");
+                        source = source.replace("[" + tagname + "]","<a href=\"event:clicktype:" + clickType.toString() + "|tagname:" + tagname + "|zoneID:" + String(data.zoneID) + "|zoneName:" + String(data.zoneName) + "|" + argString + "\">" + Helpers.enCodeString("[" + tagname + "]") + "</a>");
                      }
                      else
                      {
-                        param1 = param1.replace("[" + _loc13_ + "]","<a href=\"event:clicktype:" + param2.toString() + "|tagname:" + _loc13_ + "|senderID:" + param4.senderID + "|zoneID:" + String(param4.zoneID) + "|zoneName:" + String(param4.zoneName) + "|" + _loc14_ + "\">" + Helpers.enCodeString("[" + _loc13_ + "]") + "</a>");
+                        source = source.replace("[" + tagname + "]","<a href=\"event:clicktype:" + clickType.toString() + "|tagname:" + tagname + "|senderID:" + data.senderID + "|zoneID:" + String(data.zoneID) + "|zoneName:" + String(data.zoneName) + "|" + argString + "\">" + Helpers.enCodeString("[" + tagname + "]") + "</a>");
                      }
                   }
                   else
                   {
-                     param1 = param1.replace("[" + _loc13_ + "]","<a href=\"event:clicktype:" + param2.toString() + "|tagname:" + _loc13_ + "|" + _loc14_ + "\">" + Helpers.enCodeString("[" + _loc13_ + "]") + "</a>");
+                     source = source.replace("[" + tagname + "]","<a href=\"event:clicktype:" + clickType.toString() + "|tagname:" + tagname + "|" + argString + "\">" + Helpers.enCodeString("[" + tagname + "]") + "</a>");
                   }
                }
                else
                {
-                  param1 = param1.replace("[" + _loc13_ + "]",Helpers.enCodeString("[" + _loc13_ + "]"));
+                  source = source.replace("[" + tagname + "]",Helpers.enCodeString("[" + tagname + "]"));
                }
-               _loc8_++;
+               i++;
             }
          }
-         return param1;
+         return source;
       }
       
-      public static function creatGoodTag(param1:String, param2:int, param3:int, param4:int, param5:Boolean, param6:ChatData = null, param7:String = "", param8:int = -1) : String
+      public static function creatGoodTag(source:String, clickType:int, templeteIDorItemID:int, quality:int, isBind:Boolean, data:ChatData = null, key:String = "", $type:int = -1) : String
       {
-         var _loc13_:int = 0;
-         var _loc14_:* = null;
-         var _loc9_:Array = getTagsByQuality(param4);
-         var _loc10_:RegExp = /\[([^\]]*)]*/g;
-         var _loc11_:Array = param1.match(_loc10_);
-         var _loc12_:int = param6.zoneID;
-         _loc13_ = 0;
-         while(_loc13_ < _loc11_.length)
+         var i:int = 0;
+         var tagname:* = null;
+         var qualityTag:Array = getTagsByQuality(quality);
+         var namesRec:RegExp = /\[([^\]]*)]*/g;
+         var srr:Array = source.match(namesRec);
+         var zoneID:int = data.zoneID;
+         for(i = 0; i < srr.length; )
          {
-            _loc14_ = _loc11_[_loc13_].substr(1,_loc11_[_loc13_].length - 2);
-            param1 = param1.replace("[" + _loc14_ + "]",_loc9_[0] + "<a href=\"event:" + "clicktype:" + param2.toString() + "|type:" + param8 + "|tagname:" + _loc14_ + "|isBind:" + param5.toString() + "|templeteIDorItemID:" + param3.toString() + "|key:" + param7 + "|zoneID:" + _loc12_ + "\">" + Helpers.enCodeString("[" + _loc14_ + "]") + "</a>" + _loc9_[1]);
-            _loc13_++;
+            tagname = srr[i].substr(1,srr[i].length - 2);
+            source = source.replace("[" + tagname + "]",qualityTag[0] + "<a href=\"event:" + "clicktype:" + clickType.toString() + "|type:" + $type + "|tagname:" + tagname + "|isBind:" + isBind.toString() + "|templeteIDorItemID:" + templeteIDorItemID.toString() + "|key:" + key + "|zoneID:" + zoneID + "\">" + Helpers.enCodeString("[" + tagname + "]") + "</a>" + qualityTag[1]);
+            i++;
          }
-         return param1;
+         return source;
       }
       
-      public static function getColorByChannel(param1:int) : int
+      public static function getColorByChannel(channel:int) : int
       {
-         return CHAT_COLORS[param1];
+         return CHAT_COLORS[channel];
       }
       
-      public static function getColorByBigBuggleType(param1:int) : int
+      public static function getColorByBigBuggleType(type:int) : int
       {
-         return BIG_BUGGLE_COLOR[param1];
+         return BIG_BUGGLE_COLOR[type];
       }
       
-      public static function getTagsByChannel(param1:ChatData) : Array
+      public static function getTagsByChannel(data:ChatData) : Array
       {
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
-         if(param1.channel != 21)
+         var ctArray:* = null;
+         var i:int = 0;
+         if(data.channel != 21)
          {
-            return ["<CT" + param1.channel.toString() + ">","</CT" + param1.channel.toString() + ">"];
+            return ["<CT" + data.channel.toString() + ">","</CT" + data.channel.toString() + ">"];
          }
-         _loc2_ = [];
-         _loc3_ = 0;
-         while(_loc3_ < param1.childChannelArr.length)
+         ctArray = [];
+         for(i = 0; i < data.childChannelArr.length; )
          {
-            _loc2_.push("<CT" + param1.childChannelArr[_loc3_].toString() + ">");
-            _loc2_.push("</CT" + param1.childChannelArr[_loc3_].toString() + ">");
-            _loc3_++;
+            ctArray.push("<CT" + data.childChannelArr[i].toString() + ">");
+            ctArray.push("</CT" + data.childChannelArr[i].toString() + ">");
+            i++;
          }
-         return _loc2_;
+         return ctArray;
       }
       
-      public static function getTagsByQuality(param1:int) : Array
+      public static function getTagsByQuality(quality:int) : Array
       {
-         return ["<QT" + param1.toString() + ">","</QT" + param1.toString() + ">"];
+         return ["<QT" + quality.toString() + ">","</QT" + quality.toString() + ">"];
       }
       
-      public static function getTextFormatByChannel(param1:int) : TextFormat
+      public static function getTextFormatByChannel(channelid:int) : TextFormat
       {
-         return _formats[param1];
+         return _formats[channelid];
       }
       
       public static function setup() : void
@@ -377,325 +382,330 @@ package ddt.view.chat
          return _gameStyleSheet;
       }
       
-      private static function getBigBuggleTypeString(param1:int) : String
+      private static function getBigBuggleTypeString(type:int) : String
       {
-         return BIG_BUGGLE_TYPE_STRING[param1 - 1];
+         return BIG_BUGGLE_TYPE_STRING[type - 1];
       }
       
-      private static function creatChannelTag(param1:int, param2:int = 0, param3:ChatData = null) : String
+      private static function creatChannelTag(channel:int, bigBuggleType:int = 0, chdata:ChatData = null) : String
       {
-         var _loc4_:String = "";
-         if(Channel_Set[param1] && param1 != 2)
+         var result:String = "";
+         if(Channel_Set[channel] && channel != 2)
          {
-            if(param2 == 0)
+            if(bigBuggleType == 0)
             {
-               if(param1 != 15)
+               if(channel != 15)
                {
-                  _loc4_ = creatBracketsTag("[" + Channel_Set[param1] + "]",0,["channel:" + param1.toString()]);
+                  result = creatBracketsTag("[" + Channel_Set[channel] + "]",0,["channel:" + channel.toString()]);
                }
                else
                {
-                  _loc4_ = creatBracketsTag("[" + Channel_Set[param1] + "]" + "&lt;" + param3.zoneName + "&gt;",0,["channel:" + param1.toString()]);
+                  result = creatBracketsTag("[" + Channel_Set[channel] + "]" + "&lt;" + chdata.zoneName + "&gt;",0,["channel:" + channel.toString()]);
                }
             }
             else
             {
-               _loc4_ = "[" + getBigBuggleTypeString(param2) + Channel_Set[param1] + "]";
+               result = "[" + getBigBuggleTypeString(bigBuggleType) + Channel_Set[channel] + "]";
             }
          }
-         return _loc4_;
+         return result;
       }
       
-      private static function creatContentTag(param1:ChatData) : String
+      private static function creatContentTag(data:ChatData) : String
       {
-         var _loc2_:Number = NaN;
-         var _loc6_:int = 0;
-         var _loc9_:* = null;
-         var _loc8_:* = null;
-         var _loc4_:* = 0;
-         var _loc5_:* = null;
-         var _loc3_:String = param1.msg;
-         var _loc7_:uint = 0;
-         if(param1.link)
+         var ItemID:Number = NaN;
+         var TemplateID:int = 0;
+         var info:* = null;
+         var key:* = null;
+         var index:* = 0;
+         var tag:* = null;
+         var result:String = data.msg;
+         var offset:uint = 0;
+         if(data.link)
          {
-            param1.link.sortOn("index");
+            data.link.sortOn("index");
             var _loc12_:int = 0;
-            var _loc11_:* = param1.link;
-            for each(var _loc10_ in param1.link)
+            var _loc11_:* = data.link;
+            for each(var i in data.link)
             {
-               _loc2_ = _loc10_.ItemID;
-               _loc6_ = _loc10_.TemplateID;
-               _loc9_ = ItemManager.Instance.getTemplateById(_loc6_);
-               _loc8_ = _loc10_.key;
-               _loc4_ = uint(_loc10_.index + _loc7_);
-               if(_loc2_ <= 0)
+               ItemID = i.ItemID;
+               TemplateID = i.TemplateID;
+               info = ItemManager.Instance.getTemplateById(TemplateID);
+               key = i.key;
+               index = uint(i.index + offset);
+               if(ItemID <= 0)
                {
-                  if(_loc9_.CategoryID == 26)
+                  if(info.CategoryID == 26)
                   {
-                     _loc5_ = creatGoodTag("[" + _loc9_.Name + "]",6,_loc2_,_loc9_.Quality,true,param1,_loc8_);
+                     tag = creatGoodTag("[" + info.Name + "]",6,ItemID,info.Quality,true,data,key);
                   }
                   else
                   {
-                     _loc5_ = creatGoodTag("[" + _loc9_.Name + "]",2,_loc9_.TemplateID,_loc9_.Quality,true,param1);
+                     tag = creatGoodTag("[" + info.Name + "]",2,info.TemplateID,info.Quality,true,data);
                   }
                }
-               else if(_loc9_ == null)
+               else if(info == null)
                {
-                  if(_loc6_ == 0)
+                  if(TemplateID == 0)
                   {
-                     _loc5_ = creatGoodTag("[" + LanguageMgr.GetTranslation("tank.view.card.chatLinkText0") + "]",5,_loc2_,2,true,param1,_loc8_);
+                     tag = creatGoodTag("[" + LanguageMgr.GetTranslation("tank.view.card.chatLinkText0") + "]",5,ItemID,2,true,data,key);
                   }
                   else
                   {
-                     _loc5_ = creatGoodTag("[" + String(_loc6_) + LanguageMgr.GetTranslation("tank.view.card.chatLinkText") + "]",5,_loc2_,2,true,param1,_loc8_);
+                     tag = creatGoodTag("[" + String(TemplateID) + LanguageMgr.GetTranslation("tank.view.card.chatLinkText") + "]",5,ItemID,2,true,data,key);
                   }
                }
                else
                {
-                  _loc5_ = creatGoodTag("[" + _loc9_.Name + "]",3,_loc2_,_loc9_.Quality,true,param1,_loc8_);
+                  tag = creatGoodTag("[" + info.Name + "]",3,ItemID,info.Quality,true,data,key);
                }
-               _loc3_ = _loc3_.substring(0,_loc4_) + _loc5_ + _loc3_.substring(_loc4_);
-               _loc7_ = _loc7_ + _loc5_.length;
+               result = result.substring(0,index) + tag + result.substring(index);
+               offset = offset + tag.length;
             }
          }
-         if(param1.type == 113)
+         if(data.type == 113)
          {
-            _loc3_ = creatBracketsTag(_loc3_,113,null,param1);
-            return creatBracketsTag(_loc3_,113,null,param1);
+            result = creatBracketsTag(result,113,null,data);
+            return creatBracketsTag(result,113,null,data);
          }
-         if(param1.type == 110)
+         if(data.type == 110)
          {
-            _loc3_ = creatBracketsTag(_loc3_,110,null,param1);
-            return creatBracketsTag(_loc3_,110,null,param1);
+            result = creatBracketsTag(result,110,null,data);
+            return creatBracketsTag(result,110,null,data);
          }
-         if(param1.type == 109)
+         if(data.type == 109)
          {
-            _loc3_ = creatBracketsTag(_loc3_,109,null,param1);
-            return creatBracketsTag(_loc3_,109,null,param1);
+            result = creatBracketsTag(result,109,null,data);
+            return creatBracketsTag(result,109,null,data);
          }
-         if(param1.type == 99)
+         if(data.type == 99)
          {
-            return StringHelper.reverseHtmlTextField(param1.msg);
+            return StringHelper.reverseHtmlTextField(data.msg);
          }
-         if(param1.type == 100)
+         if(data.type == 100)
          {
-            _loc3_ = creatBracketsTag(_loc3_,100,null,param1);
-            return creatBracketsTag(_loc3_,100,null,param1);
+            result = creatBracketsTag(result,100,null,data);
+            return creatBracketsTag(result,100,null,data);
          }
-         if(param1.type == 101)
+         if(data.type == 101)
          {
-            _loc3_ = creatBracketsTag(_loc3_,101,null,param1);
-            return creatBracketsTag(_loc3_,101,null,param1);
+            result = creatBracketsTag(result,101,null,data);
+            return creatBracketsTag(result,101,null,data);
          }
-         if(param1.type == 888)
+         if(data.type == 888)
          {
-            _loc3_ = creatBracketsTag(_loc3_,888,null,param1);
-            return creatBracketsTag(_loc3_,888,null,param1);
+            result = creatBracketsTag(result,888,null,data);
+            return creatBracketsTag(result,888,null,data);
          }
-         if(param1.type == 889)
+         if(data.type == 889)
          {
-            _loc3_ = creatBracketsTag(_loc3_,889,null,param1);
-            return creatBracketsTag(_loc3_,889,null,param1);
+            result = creatBracketsTag(result,889,null,data);
+            return creatBracketsTag(result,889,null,data);
          }
-         if(param1.type == 107)
+         if(data.type == 107)
          {
-            _loc3_ = creatBracketsTag(_loc3_,107,null,param1);
-            return creatBracketsTag(_loc3_,107,null,param1);
+            result = creatBracketsTag(result,107,null,data);
+            return creatBracketsTag(result,107,null,data);
          }
-         if(param1.type == 102)
+         if(data.type == 102)
          {
-            _loc3_ = creatBracketsTag(_loc3_,102,null,param1);
-            return creatBracketsTag(_loc3_,102,null,param1);
+            result = creatBracketsTag(result,102,null,data);
+            return creatBracketsTag(result,102,null,data);
          }
-         if(param1.type == 102 || param1.type == 108)
+         if(data.type == 102 || data.type == 108)
          {
-            _loc3_ = creatBracketsTag(_loc3_,param1.type,null,param1);
-            return creatBracketsTag(_loc3_,param1.type,null,param1);
+            result = creatBracketsTag(result,data.type,null,data);
+            return creatBracketsTag(result,data.type,null,data);
          }
-         if(param1.type == 108 || param1.type > CLICK_ACT_TIP)
+         if(data.type == 32)
          {
-            _loc3_ = creatBracketsTag(_loc3_,param1.type,null,param1);
-            return creatBracketsTag(_loc3_,param1.type,null,param1);
+            result = creatBracketsTag(result,32,null,data);
+            return creatBracketsTag(result,32,null,data);
          }
-         if(param1.type == 103)
+         if(data.type == 33)
          {
-            _loc3_ = creatBracketsTag(_loc3_,103,null,param1);
-            return creatBracketsTag(_loc3_,103,null,param1);
+            result = creatBracketsTag(result,33,null,data);
+            return creatBracketsTag(result,33,null,data);
          }
-         if(param1.type == 104 || param1.type == 105)
+         if(data.type == 108 || data.type > CLICK_ACT_TIP)
          {
-            _loc3_ = creatBracketsTag(_loc3_,param1.type,null,param1);
-            return creatBracketsTag(_loc3_,param1.type,null,param1);
+            result = creatBracketsTag(result,data.type,null,data);
+            return creatBracketsTag(result,data.type,null,data);
          }
-         if(param1.type == 106)
+         if(data.type == 103)
          {
-            _loc3_ = creatBracketsTag(_loc3_,param1.type,null,param1);
-            return creatBracketsTag(_loc3_,param1.type,null,param1);
+            result = creatBracketsTag(result,103,null,data);
+            return creatBracketsTag(result,103,null,data);
          }
-         if(param1.type == 111)
+         if(data.type == 104 || data.type == 105)
          {
-            _loc3_ = creatBracketsTag(_loc3_,param1.type,null,param1);
-            return creatBracketsTag(_loc3_,param1.type,null,param1);
+            result = creatBracketsTag(result,data.type,null,data);
+            return creatBracketsTag(result,data.type,null,data);
          }
-         if(param1.type == 999)
+         if(data.type == 106)
          {
-            _loc3_ = creatBracketsTag(_loc3_,param1.type,null,param1);
-            return creatBracketsTag(_loc3_,param1.type,null,param1);
+            result = creatBracketsTag(result,data.type,null,data);
+            return creatBracketsTag(result,data.type,null,data);
          }
-         if(param1.channel == 14)
+         if(data.type == 111)
          {
-            _loc3_ = creatBracketsTag(_loc3_,890,null,param1);
-            return creatBracketsTag(_loc3_,890,null,param1);
+            result = creatBracketsTag(result,data.type,null,data);
+            return creatBracketsTag(result,data.type,null,data);
          }
-         if(param1.channel <= 5)
+         if(data.type == 999)
          {
-            if(param1.type == 1 || param1.type == 4)
+            result = creatBracketsTag(result,data.type,null,data);
+            return creatBracketsTag(result,data.type,null,data);
+         }
+         if(data.channel == 14)
+         {
+            result = creatBracketsTag(result,890,null,data);
+            return creatBracketsTag(result,890,null,data);
+         }
+         if(data.channel <= 5)
+         {
+            if(data.type == 1 || data.type == 4)
             {
-               _loc3_ = creatBracketsTag(_loc3_,1,null,param1);
-               return creatBracketsTag(_loc3_,1,null,param1);
+               result = creatBracketsTag(result,1,null,data);
+               return creatBracketsTag(result,1,null,data);
             }
-            return _loc3_;
+            return result;
          }
-         _loc3_ = creatBracketsTag(_loc3_,1,null,param1);
-         return creatBracketsTag(_loc3_,1,null,param1);
+         result = creatBracketsTag(result,1,null,data);
+         return creatBracketsTag(result,1,null,data);
       }
       
-      private static function creatSenderTag(param1:ChatData) : String
+      private static function creatSenderTag(data:ChatData) : String
       {
-         var _loc2_:String = "";
-         if(param1.sender == "")
+         var result:String = "";
+         if(data.sender == "")
          {
-            return _loc2_;
+            return result;
          }
-         if(param1.channel == 2)
+         if(data.channel == 2)
          {
-            if(param1.zoneID <= 0 || !param1.zoneName)
+            if(data.zoneID <= 0 || !data.zoneName)
             {
-               if(param1.sender == PlayerManager.Instance.Self.NickName)
+               if(data.sender == PlayerManager.Instance.Self.NickName)
                {
-                  _loc2_ = creatBracketsTag(LanguageMgr.GetTranslation("tank.view.chatsystem.sendTo") + "[" + param1.receiver + "]: ",1,null,param1);
+                  result = creatBracketsTag(LanguageMgr.GetTranslation("tank.view.chatsystem.sendTo") + "[" + data.receiver + "]: ",1,null,data);
                }
                else
                {
-                  _loc2_ = creatBracketsTag("[" + param1.sender + "]" + LanguageMgr.GetTranslation("tank.view.chatsystem.privateSayToYou"),1,null,param1);
+                  result = creatBracketsTag("[" + data.sender + "]" + LanguageMgr.GetTranslation("tank.view.chatsystem.privateSayToYou"),1,null,data);
                }
             }
-            else if(param1.sender == PlayerManager.Instance.Self.NickName && param1.senderID == PlayerManager.Instance.Self.ID)
+            else if(data.sender == PlayerManager.Instance.Self.NickName && data.senderID == PlayerManager.Instance.Self.ID)
             {
-               _loc2_ = creatBracketsTag(LanguageMgr.GetTranslation("tank.view.chatsystem.sendTo") + "&lt;" + param1.zoneName + "&gt;" + "[" + param1.receiver + "]: ",1,null,param1);
+               result = creatBracketsTag(LanguageMgr.GetTranslation("tank.view.chatsystem.sendTo") + "&lt;" + data.zoneName + "&gt;" + "[" + data.receiver + "]: ",1,null,data);
             }
             else
             {
-               _loc2_ = creatBracketsTag("&lt;" + param1.zoneName + "&gt;" + "[" + param1.sender + "]" + LanguageMgr.GetTranslation("tank.view.chatsystem.privateSayToYou"),1,null,param1);
+               result = creatBracketsTag("&lt;" + data.zoneName + "&gt;" + "[" + data.sender + "]" + LanguageMgr.GetTranslation("tank.view.chatsystem.privateSayToYou"),1,null,data);
             }
          }
-         else if(param1.zoneID == PlayerManager.Instance.Self.ZoneID || param1.zoneID <= 0)
+         else if(data.zoneID == PlayerManager.Instance.Self.ZoneID || data.zoneID <= 0)
          {
-            _loc2_ = creatBracketsTag("[" + param1.sender + "]: ",1,null,param1);
+            result = creatBracketsTag("[" + data.sender + "]: ",1,null,data);
          }
          else
          {
-            _loc2_ = creatBracketsTag("[" + param1.sender + "]: ",4,null,param1);
+            result = creatBracketsTag("[" + data.sender + "]: ",4,null,data);
          }
-         return _loc2_;
+         return result;
       }
       
-      public static function replaceUnacceptableChar(param1:String) : String
+      public static function replaceUnacceptableChar(source:String) : String
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < unacceptableChar.length)
+         var i:int = 0;
+         for(i = 0; i < unacceptableChar.length; )
          {
-            param1 = param1.replace(unacceptableChar[_loc2_],"");
-            _loc2_++;
+            source = source.replace(unacceptableChar[i],"");
+            i++;
          }
-         return param1;
+         return source;
       }
       
-      private static function creatStyleObject(param1:int, param2:uint = 0) : Object
+      private static function creatStyleObject(color:int, type:uint = 0) : Object
       {
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         switch(int(param2))
+         var styleObject:* = null;
+         var fontSize:* = null;
+         switch(int(type))
          {
             case 0:
-               _loc4_ = "13";
+               fontSize = "13";
                break;
             case 1:
-               _loc4_ = "12";
+               fontSize = "12";
          }
-         _loc3_ = {
-            "color":"#" + param1.toString(16),
+         styleObject = {
+            "color":"#" + color.toString(16),
             "leading":"5",
             "fontFamily":"Arial",
             "display":"inline",
-            "fontSize":_loc4_
+            "fontSize":fontSize
          };
-         return _loc3_;
+         return styleObject;
       }
       
       private static function setupFormat() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var format:* = null;
          _formats = new Dictionary();
-         _loc2_ = 0;
-         while(_loc2_ < CHAT_COLORS.length)
+         for(i = 0; i < CHAT_COLORS.length; )
          {
-            _loc1_ = new TextFormat();
-            _loc1_.font = "Arial";
-            _loc1_.size = 13;
-            _loc1_.color = CHAT_COLORS[_loc2_];
-            _formats[_loc2_] = _loc1_;
-            _loc2_++;
+            format = new TextFormat();
+            format.font = "Arial";
+            format.size = 13;
+            format.color = CHAT_COLORS[i];
+            _formats[i] = format;
+            i++;
          }
       }
       
       private static function setupStyle() : void
       {
-         var _loc10_:int = 0;
-         var _loc9_:* = null;
-         var _loc8_:* = null;
-         var _loc6_:int = 0;
-         var _loc4_:* = null;
-         var _loc2_:* = null;
-         var _loc7_:int = 0;
-         var _loc5_:* = null;
-         var _loc3_:* = null;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var ct:* = null;
+         var gct:* = null;
+         var j:int = 0;
+         var ct1:* = null;
+         var gct1:* = null;
+         var k:int = 0;
+         var ct2:* = null;
+         var gct2:* = null;
+         var ctID:* = null;
          _styleSheetData = new Dictionary();
          _styleSheet = new StyleSheet();
          _gameStyleSheet = new StyleSheet();
-         _loc10_ = 0;
-         while(_loc10_ < QualityType.QUALITY_COLOR.length)
+         for(i = 0; i < QualityType.QUALITY_COLOR.length; )
          {
-            _loc9_ = creatStyleObject(QualityType.QUALITY_COLOR[_loc10_]);
-            _loc8_ = creatStyleObject(QualityType.QUALITY_COLOR[_loc10_],1);
-            _styleSheetData["QT" + _loc10_] = _loc9_;
-            _styleSheet.setStyle("QT" + _loc10_,_loc9_);
-            _gameStyleSheet.setStyle("QT" + _loc10_,_loc8_);
-            _loc10_++;
+            ct = creatStyleObject(QualityType.QUALITY_COLOR[i]);
+            gct = creatStyleObject(QualityType.QUALITY_COLOR[i],1);
+            _styleSheetData["QT" + i] = ct;
+            _styleSheet.setStyle("QT" + i,ct);
+            _gameStyleSheet.setStyle("QT" + i,gct);
+            i++;
          }
-         _loc6_ = 0;
-         while(_loc6_ <= CHAT_COLORS.length)
+         for(j = 0; j <= CHAT_COLORS.length; )
          {
-            _loc4_ = creatStyleObject(CHAT_COLORS[_loc6_]);
-            _loc2_ = creatStyleObject(CHAT_COLORS[_loc6_],1);
-            _styleSheetData["CT" + String(_loc6_)] = _loc4_;
-            _styleSheet.setStyle("CT" + String(_loc6_),_loc4_);
-            _gameStyleSheet.setStyle("CT" + String(_loc6_),_loc2_);
-            _loc6_++;
+            ct1 = creatStyleObject(CHAT_COLORS[j]);
+            gct1 = creatStyleObject(CHAT_COLORS[j],1);
+            _styleSheetData["CT" + String(j)] = ct1;
+            _styleSheet.setStyle("CT" + String(j),ct1);
+            _gameStyleSheet.setStyle("CT" + String(j),gct1);
+            j++;
          }
-         _loc7_ = 0;
-         while(_loc7_ <= TITLE_COLORS.length)
+         for(k = 0; k <= TITLE_COLORS.length; )
          {
-            _loc5_ = creatStyleObject(TITLE_COLORS[_loc7_]);
-            _loc3_ = creatStyleObject(TITLE_COLORS[_loc7_],1);
-            _loc1_ = String(NewTitleManager.FIRST_TITLEID + _loc7_);
-            _styleSheetData["CT" + _loc1_] = _loc5_;
-            _styleSheet.setStyle("CT" + _loc1_,_loc5_);
-            _gameStyleSheet.setStyle("CT" + _loc1_,_loc3_);
-            _loc7_++;
+            ct2 = creatStyleObject(TITLE_COLORS[k]);
+            gct2 = creatStyleObject(TITLE_COLORS[k],1);
+            ctID = String(NewTitleManager.FIRST_TITLEID + k);
+            _styleSheetData["CT" + ctID] = ct2;
+            _styleSheet.setStyle("CT" + ctID,ct2);
+            _gameStyleSheet.setStyle("CT" + ctID,gct2);
+            k++;
          }
       }
    }

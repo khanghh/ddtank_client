@@ -10,34 +10,33 @@ package groupPurchase.analyzer
       
       private var _awardList:Object;
       
-      public function GroupPurchaseAwardAnalyzer(param1:Function)
+      public function GroupPurchaseAwardAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc4_:* = null;
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:XML = new XML(param1);
+         var xmllist:* = null;
+         var i:int = 0;
+         var awardInfo:* = null;
+         var xml:XML = new XML(data);
          _awardList = {};
-         if(_loc3_.@value == "true")
+         if(xml.@value == "true")
          {
-            _loc4_ = _loc3_..item;
-            _loc5_ = 0;
-            while(_loc5_ < _loc4_.length())
+            xmllist = xml..item;
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc2_ = new GroupPurchaseAwardInfo();
-               ObjectUtils.copyPorpertiesByXML(_loc2_,_loc4_[_loc5_]);
-               _awardList[_loc2_.SortID] = _loc2_;
-               _loc5_++;
+               awardInfo = new GroupPurchaseAwardInfo();
+               ObjectUtils.copyPorpertiesByXML(awardInfo,xmllist[i]);
+               _awardList[awardInfo.SortID] = awardInfo;
+               i++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc3_.@message;
+            message = xml.@message;
             onAnalyzeError();
             onAnalyzeError();
          }

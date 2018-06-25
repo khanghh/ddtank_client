@@ -9,9 +9,9 @@ package enchant.view
    {
        
       
-      public function EnchantItemCell(param1:int, param2:int, param3:ItemTemplateInfo = null, param4:Boolean = true, param5:DisplayObject = null, param6:Boolean = true)
+      public function EnchantItemCell(type:int, index:int, info:ItemTemplateInfo = null, showLoading:Boolean = true, bg:DisplayObject = null, mouseOverEffBoolean:Boolean = true)
       {
-         super(param1,param2,param3,param4,param5,param6);
+         super(type,index,info,showLoading,bg,mouseOverEffBoolean);
       }
       
       override protected function createChildren() : void

@@ -35,10 +35,10 @@ package collectionTask.view
          PositionUtils.setPos(_progressTxt,"task.progressPos");
       }
       
-      public function refresh(param1:String) : void
+      public function refresh(desc:String) : void
       {
-         _nameStr = param1.split(",")[0];
-         _progressStr = param1.split(",")[1];
+         _nameStr = desc.split(",")[0];
+         _progressStr = desc.split(",")[1];
          _nameTxt.text = _nameStr;
          _progressTxt.text = _progressStr;
       }

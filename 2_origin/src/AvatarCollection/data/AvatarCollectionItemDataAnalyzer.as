@@ -23,21 +23,21 @@ package AvatarCollection.data
       
       private var _realItemIdDic:DictionaryData;
       
-      public function AvatarCollectionItemDataAnalyzer(param1:Function)
+      public function AvatarCollectionItemDataAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc6_:* = null;
-         var _loc9_:int = 0;
-         var _loc3_:* = null;
-         var _loc8_:int = 0;
-         var _loc4_:* = null;
-         var _loc7_:int = 0;
-         var _loc2_:int = 0;
-         var _loc5_:XML = new XML(param1);
+         var xmllist:* = null;
+         var i:int = 0;
+         var tmpVo:* = null;
+         var tmpId:int = 0;
+         var list:* = null;
+         var j:int = 0;
+         var id:int = 0;
+         var xml:XML = new XML(data);
          _maleItemDic = new DictionaryData();
          _femaleItemDic = new DictionaryData();
          _weaponItemDic = new DictionaryData();
@@ -46,71 +46,69 @@ package AvatarCollection.data
          _femaleItemList = new Vector.<AvatarCollectionItemVo>();
          _weaponItemList = new Vector.<AvatarCollectionItemVo>();
          _realItemIdDic = new DictionaryData();
-         if(_loc5_.@value == "true")
+         if(xml.@value == "true")
          {
-            _loc6_ = _loc5_..Item;
-            _loc9_ = 0;
-            while(_loc9_ < _loc6_.length())
+            xmllist = xml..Item;
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc3_ = new AvatarCollectionItemVo();
-               _loc3_.id = _loc6_[_loc9_].@ID;
-               _loc3_.itemId = _loc6_[_loc9_].@TemplateID;
-               _loc3_.proArea = _loc6_[_loc9_].@Description;
-               _loc3_.needGold = _loc6_[_loc9_].@Cost;
-               _loc3_.sex = _loc6_[_loc9_].@Sex;
-               _loc3_.Type = _loc6_[_loc9_].@Type;
-               _loc3_.OtherTemplateID = _loc6_[_loc9_].@OtherTemplateID;
-               _loc8_ = _loc3_.id;
-               if(_loc3_.Type == 1)
+               tmpVo = new AvatarCollectionItemVo();
+               tmpVo.id = xmllist[i].@ID;
+               tmpVo.itemId = xmllist[i].@TemplateID;
+               tmpVo.proArea = xmllist[i].@Description;
+               tmpVo.needGold = xmllist[i].@Cost;
+               tmpVo.sex = xmllist[i].@Sex;
+               tmpVo.Type = xmllist[i].@Type;
+               tmpVo.OtherTemplateID = xmllist[i].@OtherTemplateID;
+               tmpId = tmpVo.id;
+               if(tmpVo.Type == 1)
                {
-                  if(_loc3_.sex == 1)
+                  if(tmpVo.sex == 1)
                   {
-                     if(!_maleItemDic[_loc8_])
+                     if(!_maleItemDic[tmpId])
                      {
-                        _maleItemDic[_loc8_] = new DictionaryData();
+                        _maleItemDic[tmpId] = new DictionaryData();
                      }
-                     _maleItemDic[_loc8_].add(_loc3_.itemId,_loc3_);
-                     _maleItemList.push(_loc3_);
+                     _maleItemDic[tmpId].add(tmpVo.itemId,tmpVo);
+                     _maleItemList.push(tmpVo);
                   }
                   else
                   {
-                     if(!_femaleItemDic[_loc8_])
+                     if(!_femaleItemDic[tmpId])
                      {
-                        _femaleItemDic[_loc8_] = new DictionaryData();
+                        _femaleItemDic[tmpId] = new DictionaryData();
                      }
-                     _femaleItemDic[_loc8_].add(_loc3_.itemId,_loc3_);
-                     _femaleItemList.push(_loc3_);
+                     _femaleItemDic[tmpId].add(tmpVo.itemId,tmpVo);
+                     _femaleItemList.push(tmpVo);
                   }
                }
                else
                {
-                  if(!_weaponItemDic[_loc8_])
+                  if(!_weaponItemDic[tmpId])
                   {
-                     _weaponItemDic[_loc8_] = new DictionaryData();
+                     _weaponItemDic[tmpId] = new DictionaryData();
                   }
-                  _weaponItemDic[_loc8_].add(_loc3_.itemId,_loc3_);
-                  _weaponItemList.push(_loc3_);
+                  _weaponItemDic[tmpId].add(tmpVo.itemId,tmpVo);
+                  _weaponItemList.push(tmpVo);
                }
-               _allGoodsTemplateIDlist[_loc3_.itemId] = true;
-               _loc4_ = _loc3_.OtherTemplateID == ""?[]:_loc3_.OtherTemplateID.split("|");
-               _loc7_ = 0;
-               while(_loc7_ < _loc4_.length)
+               _allGoodsTemplateIDlist[tmpVo.itemId] = true;
+               list = tmpVo.OtherTemplateID == ""?[]:tmpVo.OtherTemplateID.split("|");
+               for(j = 0; j < list.length; )
                {
-                  _loc2_ = _loc4_[_loc7_];
-                  if(_loc2_ != 0)
+                  id = list[j];
+                  if(id != 0)
                   {
-                     _realItemIdDic.add(_loc2_,_loc3_.itemId);
+                     _realItemIdDic.add(id,tmpVo.itemId);
                   }
-                  _loc7_++;
+                  j++;
                }
-               _realItemIdDic.add(_loc3_.itemId,_loc3_.itemId);
-               _loc9_++;
+               _realItemIdDic.add(tmpVo.itemId,tmpVo.itemId);
+               i++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc5_.@message;
+            message = xml.@message;
             onAnalyzeError();
             onAnalyzeError();
          }

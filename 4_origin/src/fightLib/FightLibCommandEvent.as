@@ -10,9 +10,9 @@ package fightLib
       public static const FINISH:String = "finish";
        
       
-      public function FightLibCommandEvent(param1:String, param2:Boolean = false, param3:Boolean = false)
+      public function FightLibCommandEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         super(param1,param2,param3);
+         super(type,bubbles,cancelable);
       }
    }
 }

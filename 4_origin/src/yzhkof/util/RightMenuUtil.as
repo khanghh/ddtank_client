@@ -13,24 +13,24 @@ package yzhkof.util
          super();
       }
       
-      public static function addRightMenu(param1:InteractiveObject, param2:String) : ContextMenuItem
+      public static function addRightMenu(dobj:InteractiveObject, name:String) : ContextMenuItem
       {
-         var _loc3_:ContextMenuItem = new ContextMenuItem(param2);
-         if(param1.contextMenu == null)
+         var item:ContextMenuItem = new ContextMenuItem(name);
+         if(dobj.contextMenu == null)
          {
-            param1.contextMenu = new ContextMenu();
+            dobj.contextMenu = new ContextMenu();
          }
-         ContextMenu(param1.contextMenu).customItems.push(_loc3_);
-         return _loc3_;
+         ContextMenu(dobj.contextMenu).customItems.push(item);
+         return item;
       }
       
-      public static function hideDefaultMenus(param1:InteractiveObject) : void
+      public static function hideDefaultMenus(dobj:InteractiveObject) : void
       {
-         if(param1.contextMenu == null)
+         if(dobj.contextMenu == null)
          {
-            param1.contextMenu = new ContextMenu();
+            dobj.contextMenu = new ContextMenu();
          }
-         ContextMenu(param1.contextMenu).hideBuiltInItems();
+         ContextMenu(dobj.contextMenu).hideBuiltInItems();
       }
    }
 }

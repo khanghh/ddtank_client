@@ -1,13 +1,2 @@
-package sanXiao.model
-{
-   public class Pos
-   {
-       
-      
-      public var row:int;
-      
-      public var column:int;
-      
-      public function Pos(param1:int = 0, param2:int = 0){super();}
-   }
-}
+package sanXiao.model{   public class Pos   {                   public var row:int;            public var column:int;            public function Pos($row:int = 0, $column:int = 0) { super(); }
+   }}

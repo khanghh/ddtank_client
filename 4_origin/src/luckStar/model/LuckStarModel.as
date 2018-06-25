@@ -32,56 +32,56 @@ package luckStar.model
          _goods = new Vector.<InventoryItemInfo>();
       }
       
-      public function set reward(param1:Vector.<InventoryItemInfo>) : void
+      public function set reward(value:Vector.<InventoryItemInfo>) : void
       {
-         _reward = param1;
+         _reward = value;
       }
       
-      public function set rank(param1:Array) : void
+      public function set rank(value:Array) : void
       {
-         _rank = param1;
+         _rank = value;
       }
       
-      public function set newRewardList(param1:Vector.<Array>) : void
+      public function set newRewardList(value:Vector.<Array>) : void
       {
-         _newRewardList = param1;
+         _newRewardList = value;
          dispatchEvent(new LuckStarEvent(2));
       }
       
-      public function set goods(param1:Vector.<InventoryItemInfo>) : void
+      public function set goods(value:Vector.<InventoryItemInfo>) : void
       {
-         _goods = param1;
+         _goods = value;
          dispatchEvent(new LuckStarEvent(0));
       }
       
-      public function set coins(param1:int) : void
+      public function set coins(value:int) : void
       {
-         if(_coins == param1)
+         if(_coins == value)
          {
             return;
          }
-         _coins = param1;
+         _coins = value;
          dispatchEvent(new LuckStarEvent(1));
       }
       
-      public function setActivityDate(param1:Date, param2:Date) : void
+      public function setActivityDate(startDate:Date, endDate:Date) : void
       {
          if(_activityDate == null)
          {
             _activityDate = new Array(2);
          }
-         _activityDate[0] = param1;
-         _activityDate[1] = param2;
+         _activityDate[0] = startDate;
+         _activityDate[1] = endDate;
       }
       
-      public function set selfInfo(param1:LuckStarPlayerInfo) : void
+      public function set selfInfo(value:LuckStarPlayerInfo) : void
       {
-         _selfInfo = param1;
+         _selfInfo = value;
       }
       
-      public function set lastDate(param1:String) : void
+      public function set lastDate(value:String) : void
       {
-         _lastDate = param1;
+         _lastDate = value;
       }
       
       public function get lastDate() : String
@@ -124,9 +124,9 @@ package luckStar.model
          return _coins;
       }
       
-      public function set minUseNum(param1:int) : void
+      public function set minUseNum(value:int) : void
       {
-         _minUseNum = param1;
+         _minUseNum = value;
       }
       
       public function get minUseNum() : int

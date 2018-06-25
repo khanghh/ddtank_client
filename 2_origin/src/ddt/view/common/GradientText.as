@@ -30,21 +30,21 @@ package ddt.view.common
       
       private var randomColor:Array;
       
-      public function GradientText(param1:FilterFrameText, param2:Array = null)
+      public function GradientText(field:FilterFrameText, randomColor:Array = null)
       {
          super();
-         _field = param1;
+         _field = field;
          _textFormat = ComponentFactory.Instance.model.getSet("game.vaneGradientTextTF");
-         this.randomColor = !!param2?param2:RandomColors;
+         this.randomColor = !!randomColor?randomColor:RandomColors;
          addChild(_field);
          graidenBox = new Sprite();
          addChild(graidenBox);
       }
       
-      public function setText(param1:String, param2:Boolean = true, param3:Boolean = false) : void
+      public function setText(s:String, randerColor:Boolean = true, randerFont:Boolean = false) : void
       {
-         _field.text = param1;
-         render(param2,param3);
+         _field.text = s;
+         render(randerColor,randerFont);
       }
       
       public function get text() : String
@@ -52,18 +52,18 @@ package ddt.view.common
          return _field.text;
       }
       
-      public function set autoSize(param1:String) : void
+      public function set autoSize(align:String) : void
       {
-         _field.autoSize = param1;
+         _field.autoSize = align;
       }
       
-      private function render(param1:Boolean, param2:Boolean) : void
+      private function render(isChangeColor:Boolean, isChangeFont:Boolean) : void
       {
-         if(param2)
+         if(isChangeFont)
          {
             setTextStyle(getRandomFont());
          }
-         if(param1)
+         if(isChangeColor)
          {
             drawBox();
          }
@@ -80,40 +80,40 @@ package ddt.view.common
       
       private function drawBox() : void
       {
-         var _loc1_:Array = [1,1];
-         var _loc2_:Array = [0,255];
+         var alphas:Array = [1,1];
+         var ratios:Array = [0,255];
          currentMatix = new Matrix();
          currentMatix.createGradientBox(_field.width / 2,_field.height,3.14159265358979 / 4,0,0);
          currentColors = getRandomColors();
          graidenBox.graphics.clear();
-         graidenBox.graphics.beginGradientFill("linear",currentColors,_loc1_,_loc2_,currentMatix);
+         graidenBox.graphics.beginGradientFill("linear",currentColors,alphas,ratios,currentMatix);
          graidenBox.graphics.drawRect(0,0,_field.width / 2,_field.height);
          graidenBox.graphics.endFill();
          currentMatix = new Matrix();
          currentMatix.createGradientBox(_field.width / 2,_field.height,3.14159265358979 / 4,0,0);
          currentColors = getRandomColors();
-         graidenBox.graphics.beginGradientFill("linear",currentColors,_loc1_,_loc2_,currentMatix);
+         graidenBox.graphics.beginGradientFill("linear",currentColors,alphas,ratios,currentMatix);
          graidenBox.graphics.drawRect(_field.width / 2,0,_field.width / 2,_field.height);
          graidenBox.graphics.endFill();
       }
       
       private function drawBoxWithCurrent() : void
       {
-         var _loc1_:Array = [1,1];
-         var _loc2_:Array = [0,255];
+         var alphas:Array = [1,1];
+         var ratios:Array = [0,255];
          graidenBox.graphics.clear();
-         graidenBox.graphics.beginGradientFill("linear",currentColors,_loc1_,_loc2_,currentMatix);
+         graidenBox.graphics.beginGradientFill("linear",currentColors,alphas,ratios,currentMatix);
          graidenBox.graphics.drawRect(0,0,_field.width,_field.height);
          graidenBox.graphics.endFill();
       }
       
       private function getRandomColors() : Array
       {
-         var _loc3_:Array = [];
-         _loc3_ = randomColor[int(Math.random() * 10000 % 16)];
-         var _loc1_:int = _loc3_[0];
-         var _loc2_:int = _loc3_[1];
-         return [_loc1_,_loc2_];
+         var cs:Array = [];
+         cs = randomColor[int(Math.random() * 10000 % 16)];
+         var c1:int = cs[0];
+         var c2:int = cs[1];
+         return [c1,c2];
       }
       
       private function getRandomFont() : String
@@ -126,11 +126,11 @@ package ddt.view.common
          return randomFontSize[int(Math.random() * 10000 % randomFontSize.length)];
       }
       
-      private function setTextStyle(param1:String) : void
+      private function setTextStyle(ftName:String) : void
       {
-         _textFormat.font = param1;
-         var _loc2_:int = getRandomFontSize();
-         var _loc3_:* = param1;
+         _textFormat.font = ftName;
+         var addFontSize:int = getRandomFontSize();
+         var _loc3_:* = ftName;
          if("AdLib BT" !== _loc3_)
          {
             if("Arial Black" !== _loc3_)
@@ -155,84 +155,84 @@ package ddt.view.common
                                        {
                                           if("FrnkGothITC Hv BT" === _loc3_)
                                           {
-                                             _textFormat.size = 18 + _loc2_;
+                                             _textFormat.size = 18 + addFontSize;
                                              _field.x = 6.2;
                                              _field.y = 1.9;
                                           }
                                        }
                                        else
                                        {
-                                          _textFormat.size = 19 + _loc2_;
+                                          _textFormat.size = 19 + addFontSize;
                                           _field.x = 5.9;
                                           _field.y = 2.1;
                                        }
                                     }
                                     else
                                     {
-                                       _textFormat.size = 19 + _loc2_;
+                                       _textFormat.size = 19 + addFontSize;
                                        _field.x = 3.8;
                                        _field.y = 2.9;
                                     }
                                  }
                                  else
                                  {
-                                    _textFormat.size = 18 + _loc2_;
+                                    _textFormat.size = 18 + addFontSize;
                                     _field.x = 6.1;
                                     _field.y = 0.4;
                                  }
                               }
                               else
                               {
-                                 _textFormat.size = 20 + _loc2_;
+                                 _textFormat.size = 20 + addFontSize;
                                  _field.x = 7.7;
                                  _field.y = 1.7;
                               }
                            }
                            else
                            {
-                              _textFormat.size = 18 + _loc2_;
+                              _textFormat.size = 18 + addFontSize;
                               _field.x = 7.3;
                               _field.y = 2.3;
                            }
                         }
                         else
                         {
-                           _textFormat.size = 19 + _loc2_;
+                           _textFormat.size = 19 + addFontSize;
                            _field.x = 4.7;
                            _field.y = 1.6;
                         }
                      }
                      else
                      {
-                        _textFormat.size = 21 + _loc2_;
+                        _textFormat.size = 21 + addFontSize;
                         _field.x = 5.4;
                         _field.y = 0.3;
                      }
                   }
                   else
                   {
-                     _textFormat.size = 19 + _loc2_;
+                     _textFormat.size = 19 + addFontSize;
                      _field.x = 5.9;
                      _field.y = 2.7;
                   }
                }
                else
                {
-                  _textFormat.size = 18 + _loc2_;
+                  _textFormat.size = 18 + addFontSize;
                   _field.x = 7.4;
                   _field.y = 3;
                }
             }
             else
             {
-               _textFormat.size = 18 + _loc2_;
+               _textFormat.size = 18 + addFontSize;
                _field.x = 5.2;
                _field.y = 0.4;
             }
          }
          else
          {
-            _textFormat.size = 16 + _loc2_;
+            _textFormat.size = 16 + addFontSize;
             _field.x = 5.5;
             _field.y = 3.5;
          }

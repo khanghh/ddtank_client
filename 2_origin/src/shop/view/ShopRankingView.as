@@ -79,17 +79,17 @@ package shop.view
          super();
       }
       
-      public function setup(param1:ShopController) : void
+      public function setup($controller:ShopController) : void
       {
-         _controller = param1;
+         _controller = $controller;
          initView();
          addEvent();
       }
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var separator:* = null;
          _shopSearchBg = ComponentFactory.Instance.creatComponentByStylename("ddtshop.ShopSearchBg");
          addChild(_shopSearchBg);
          _rankingBg = ComponentFactory.Instance.creatComponentByStylename("ddtshop.RankingViewBg");
@@ -109,27 +109,26 @@ package shop.view
          addChild(_vBox);
          _rankingLightMc = ComponentFactory.Instance.creatCustomObject("ddtshop.RankingLightMc");
          _separator = new Vector.<Bitmap>();
-         _loc2_ = 0;
-         while(_loc2_ < 5)
+         for(i = 0; i < 5; )
          {
-            _rankingItems[_loc2_] = ComponentFactory.Instance.creatCustomObject("ddtshop.ShopRankingCellItem");
-            _rankingItems[_loc2_].itemCellBtn.addEventListener("click",__itemClick);
-            _rankingItems[_loc2_].itemCellBtn.addEventListener("mouseOver",__rankingItemsMouseOver);
-            _rankingItems[_loc2_].itemCellBtn.addEventListener("mouseOut",__rankingItemsMouseOut);
-            _rankingItems[_loc2_].itemBg.addEventListener("mouseOver",__rankingItemsMouseOver);
-            _rankingItems[_loc2_].itemBg.addEventListener("mouseOut",__rankingItemsMouseOut);
-            _rankingItems[_loc2_].payPaneGivingBtn.addEventListener("click",__payPaneGivingBtnClick);
-            _rankingItems[_loc2_].payPaneBuyBtn.addEventListener("click",__payPaneBuyBtnClick);
-            _rankingItems[_loc2_].payPaneAskBtn.addEventListener("click",payPaneAskHander);
-            _vBox.addChild(_rankingItems[_loc2_]);
-            if(_loc2_ != 0)
+            _rankingItems[i] = ComponentFactory.Instance.creatCustomObject("ddtshop.ShopRankingCellItem");
+            _rankingItems[i].itemCellBtn.addEventListener("click",__itemClick);
+            _rankingItems[i].itemCellBtn.addEventListener("mouseOver",__rankingItemsMouseOver);
+            _rankingItems[i].itemCellBtn.addEventListener("mouseOut",__rankingItemsMouseOut);
+            _rankingItems[i].itemBg.addEventListener("mouseOver",__rankingItemsMouseOver);
+            _rankingItems[i].itemBg.addEventListener("mouseOut",__rankingItemsMouseOut);
+            _rankingItems[i].payPaneGivingBtn.addEventListener("click",__payPaneGivingBtnClick);
+            _rankingItems[i].payPaneBuyBtn.addEventListener("click",__payPaneBuyBtnClick);
+            _rankingItems[i].payPaneAskBtn.addEventListener("click",payPaneAskHander);
+            _vBox.addChild(_rankingItems[i]);
+            if(i != 0)
             {
-               _loc1_ = ComponentFactory.Instance.creatBitmap("asset.ddtshop.RankingSeparator");
-               PositionUtils.setPos(_loc1_,ComponentFactory.Instance.creatCustomObject("ddtshop.RankingViewSeparator_" + _loc2_));
-               addChild(_loc1_);
-               _separator.push(_loc1_);
+               separator = ComponentFactory.Instance.creatBitmap("asset.ddtshop.RankingSeparator");
+               PositionUtils.setPos(separator,ComponentFactory.Instance.creatCustomObject("ddtshop.RankingViewSeparator_" + i));
+               addChild(separator);
+               _separator.push(separator);
             }
-            _loc2_++;
+            i++;
          }
          loadList();
       }
@@ -144,103 +143,102 @@ package shop.view
       
       private function removeEvent() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _shopSearchText.removeEventListener("focusIn",__shopSearchTextFousIn);
          _shopSearchText.removeEventListener("focusOut",__shopSearchTextFousOut);
          _shopSearchText.removeEventListener("keyDown",__shopSearchTextKeyDown);
          _shopSearchBtn.removeEventListener("click",__shopSearchBtnClick);
-         _loc1_ = 0;
-         while(_loc1_ < 5)
+         for(i = 0; i < 5; )
          {
-            _rankingItems[_loc1_].itemCellBtn.removeEventListener("click",__itemClick);
-            _rankingItems[_loc1_].itemCellBtn.removeEventListener("mouseOver",__rankingItemsMouseOver);
-            _rankingItems[_loc1_].itemCellBtn.removeEventListener("mouseOut",__rankingItemsMouseOut);
-            _rankingItems[_loc1_].itemBg.removeEventListener("mouseOver",__rankingItemsMouseOver);
-            _rankingItems[_loc1_].itemBg.removeEventListener("mouseOut",__rankingItemsMouseOut);
-            _rankingItems[_loc1_].payPaneGivingBtn.removeEventListener("click",__payPaneGivingBtnClick);
-            _rankingItems[_loc1_].payPaneBuyBtn.removeEventListener("click",__payPaneBuyBtnClick);
-            _rankingItems[_loc1_].payPaneAskBtn.removeEventListener("click",payPaneAskHander);
-            _loc1_++;
+            _rankingItems[i].itemCellBtn.removeEventListener("click",__itemClick);
+            _rankingItems[i].itemCellBtn.removeEventListener("mouseOver",__rankingItemsMouseOver);
+            _rankingItems[i].itemCellBtn.removeEventListener("mouseOut",__rankingItemsMouseOut);
+            _rankingItems[i].itemBg.removeEventListener("mouseOver",__rankingItemsMouseOver);
+            _rankingItems[i].itemBg.removeEventListener("mouseOut",__rankingItemsMouseOut);
+            _rankingItems[i].payPaneGivingBtn.removeEventListener("click",__payPaneGivingBtnClick);
+            _rankingItems[i].payPaneBuyBtn.removeEventListener("click",__payPaneBuyBtnClick);
+            _rankingItems[i].payPaneAskBtn.removeEventListener("click",payPaneAskHander);
+            i++;
          }
       }
       
-      private function payPaneAskHander(param1:MouseEvent) : void
+      private function payPaneAskHander(e:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
-         var _loc2_:ShopRankingCellItem = param1.currentTarget.parent as ShopRankingCellItem;
-         var _loc3_:ShopItemInfo = _loc2_.shopItemInfo;
-         if(_loc3_ && _loc3_.LimitCount == 0)
+         e.stopImmediatePropagation();
+         var cell:ShopRankingCellItem = e.currentTarget.parent as ShopRankingCellItem;
+         var shopItemInfo:ShopItemInfo = cell.shopItemInfo;
+         if(shopItemInfo && shopItemInfo.LimitCount == 0)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("shop.ShopIIModel.countOver"));
             return;
          }
-         if(_loc3_ != null)
+         if(shopItemInfo != null)
          {
             SoundManager.instance.play("008");
-            if(_loc3_.isDiscount == 2 && ShopManager.Instance.getDisCountShopItemByGoodsID(_loc3_.GoodsID) == null)
+            if(shopItemInfo.isDiscount == 2 && ShopManager.Instance.getDisCountShopItemByGoodsID(shopItemInfo.GoodsID) == null)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.shop.discount.exit"));
                return;
             }
-            ShopBuyManager.Instance.buy(_loc3_.GoodsID,_loc3_.isDiscount,3);
+            ShopBuyManager.Instance.buy(shopItemInfo.GoodsID,shopItemInfo.isDiscount,3);
          }
       }
       
-      private function __payPaneGivingBtnClick(param1:Event) : void
+      private function __payPaneGivingBtnClick(event:Event) : void
       {
-         param1.stopImmediatePropagation();
-         var _loc2_:ShopRankingCellItem = param1.currentTarget.parent as ShopRankingCellItem;
-         if(_loc2_.shopItemInfo && _loc2_.shopItemInfo.LimitCount == 0)
+         event.stopImmediatePropagation();
+         var item:ShopRankingCellItem = event.currentTarget.parent as ShopRankingCellItem;
+         if(item.shopItemInfo && item.shopItemInfo.LimitCount == 0)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("shop.ShopIIModel.countOver"));
             return;
          }
-         if(_loc2_.shopItemInfo != null)
+         if(item.shopItemInfo != null)
          {
             SoundManager.instance.play("008");
-            ShopGiftsManager.Instance.buy(_loc2_.shopItemInfo.GoodsID,false,2);
+            ShopGiftsManager.Instance.buy(item.shopItemInfo.GoodsID,false,2);
             var _loc5_:int = 0;
             var _loc4_:* = _rankingItems;
-            for each(var _loc3_ in _rankingItems)
+            for each(var j in _rankingItems)
             {
-               _loc3_.selected = false;
+               j.selected = false;
             }
-            _loc2_.selected = true;
+            item.selected = true;
          }
       }
       
-      private function __payPaneBuyBtnClick(param1:Event) : void
+      private function __payPaneBuyBtnClick(event:Event) : void
       {
-         param1.stopImmediatePropagation();
-         var _loc2_:ShopRankingCellItem = param1.currentTarget.parent as ShopRankingCellItem;
-         if(_loc2_.shopItemInfo && _loc2_.shopItemInfo.LimitCount == 0)
+         event.stopImmediatePropagation();
+         var item:ShopRankingCellItem = event.currentTarget.parent as ShopRankingCellItem;
+         if(item.shopItemInfo && item.shopItemInfo.LimitCount == 0)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("shop.ShopIIModel.countOver"));
             return;
          }
-         if(_loc2_.shopItemInfo != null)
+         if(item.shopItemInfo != null)
          {
             SoundManager.instance.play("008");
-            ShopBuyManager.Instance.buy(_loc2_.shopItemInfo.GoodsID);
+            ShopBuyManager.Instance.buy(item.shopItemInfo.GoodsID);
             var _loc5_:int = 0;
             var _loc4_:* = _rankingItems;
-            for each(var _loc3_ in _rankingItems)
+            for each(var j in _rankingItems)
             {
-               _loc3_.selected = false;
+               j.selected = false;
             }
-            _loc2_.selected = true;
+            item.selected = true;
          }
       }
       
-      protected function __shopSearchTextKeyDown(param1:KeyboardEvent) : void
+      protected function __shopSearchTextKeyDown(event:KeyboardEvent) : void
       {
-         if(param1.keyCode == 13)
+         if(event.keyCode == 13)
          {
             __shopSearchBtnClick();
          }
       }
       
-      protected function __shopSearchTextFousIn(param1:FocusEvent) : void
+      protected function __shopSearchTextFousIn(event:FocusEvent) : void
       {
          if(_shopSearchText.text == LanguageMgr.GetTranslation("shop.view.ShopRankingView.shopSearchText"))
          {
@@ -248,7 +246,7 @@ package shop.view
          }
       }
       
-      protected function __shopSearchTextFousOut(param1:FocusEvent) : void
+      protected function __shopSearchTextFousOut(event:FocusEvent) : void
       {
          if(_shopSearchText.text.length == 0)
          {
@@ -256,9 +254,9 @@ package shop.view
          }
       }
       
-      protected function __shopSearchBtnClick(param1:MouseEvent = null) : void
+      protected function __shopSearchBtnClick(event:MouseEvent = null) : void
       {
-         var _loc2_:* = undefined;
+         var list:* = undefined;
          SoundManager.instance.play("008");
          if(_shopSearchText.text == LanguageMgr.GetTranslation("shop.view.ShopRankingView.shopSearchText") || _shopSearchText.text.length == 0)
          {
@@ -268,17 +266,17 @@ package shop.view
          if(_currentShopSearchText != _shopSearchText.text)
          {
             _currentShopSearchText = _shopSearchText.text;
-            _loc2_ = ShopManager.Instance.getDesignatedAllShopItem();
-            _loc2_ = ShopManager.Instance.fuzzySearch(_loc2_,_currentShopSearchText);
-            _currentList = _loc2_;
+            list = ShopManager.Instance.getDesignatedAllShopItem();
+            list = ShopManager.Instance.fuzzySearch(list,_currentShopSearchText);
+            _currentList = list;
          }
          else
          {
-            _loc2_ = _currentList;
+            list = _currentList;
          }
-         if(_loc2_.length > 0)
+         if(list.length > 0)
          {
-            _controller.rightView.searchList(_loc2_);
+            _controller.rightView.searchList(list);
          }
          else
          {
@@ -293,180 +291,177 @@ package shop.view
       
       private function getType() : int
       {
-         var _loc2_:Array = [85,86];
-         var _loc1_:int = _controller.rightView.genderGroup.selectIndex;
-         return int(_loc2_[_loc1_]);
+         var popularityRankingType:Array = [85,86];
+         var sex:int = _controller.rightView.genderGroup.selectIndex;
+         return int(popularityRankingType[sex]);
       }
       
-      public function setList(param1:Vector.<ShopItemInfo>) : void
+      public function setList(list:Vector.<ShopItemInfo>) : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          clearitems();
-         _loc2_ = 0;
-         while(_loc2_ < 5)
+         for(i = 0; i < 5; )
          {
-            if(_loc2_ < param1.length && param1[_loc2_])
+            if(i < list.length && list[i])
             {
-               _rankingItems[_loc2_].shopItemInfo = param1[_loc2_];
+               _rankingItems[i].shopItemInfo = list[i];
             }
-            _loc2_++;
+            i++;
          }
       }
       
       private function clearitems() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < 5)
+         var i:int = 0;
+         for(i = 0; i < 5; )
          {
-            _rankingItems[_loc1_].shopItemInfo = null;
-            _loc1_++;
+            _rankingItems[i].shopItemInfo = null;
+            i++;
          }
       }
       
-      private function __itemClick(param1:MouseEvent) : void
+      private function __itemClick(evt:MouseEvent) : void
       {
-         var _loc3_:Boolean = false;
-         var _loc2_:int = 0;
-         var _loc5_:* = null;
-         var _loc7_:Boolean = false;
-         var _loc4_:ShopRankingCellItem = param1.currentTarget.parent as ShopRankingCellItem;
-         if(!_loc4_.shopItemInfo)
+         var isAdd:Boolean = false;
+         var sexId:int = 0;
+         var shopItem:* = null;
+         var isColorEditorVisble:Boolean = false;
+         var item:ShopRankingCellItem = evt.currentTarget.parent as ShopRankingCellItem;
+         if(!item.shopItemInfo)
          {
             return;
          }
          SoundManager.instance.play("008");
-         if(_loc4_.shopItemInfo.LimitCount == 0)
+         if(item.shopItemInfo.LimitCount == 0)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("shop.ShopIIModel.countOver"));
             return;
          }
-         if(_controller.model.isOverCount(_loc4_.shopItemInfo))
+         if(_controller.model.isOverCount(item.shopItemInfo))
          {
             var _loc10_:int = 0;
             var _loc9_:* = _rankingItems;
-            for each(var _loc8_ in _rankingItems)
+            for each(var i in _rankingItems)
             {
-               _loc8_.selected = _loc8_ == _loc4_;
+               i.selected = i == item;
             }
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("shop.ShopIIModel.GoodsNumberLimit"));
             return;
          }
-         if(_loc4_.shopItemInfo && _loc4_.shopItemInfo.TemplateInfo)
+         if(item.shopItemInfo && item.shopItemInfo.TemplateInfo)
          {
             var _loc12_:int = 0;
             var _loc11_:* = _rankingItems;
-            for each(var _loc6_ in _rankingItems)
+            for each(var j in _rankingItems)
             {
-               _loc6_.selected = _loc6_ == _loc4_;
+               j.selected = j == item;
             }
-            if(EquipType.dressAble(_loc4_.shopItemInfo.TemplateInfo))
+            if(EquipType.dressAble(item.shopItemInfo.TemplateInfo))
             {
-               _loc2_ = _loc4_.shopItemInfo.TemplateInfo.NeedSex != 2?0:1;
-               if(_loc4_.shopItemInfo.TemplateInfo.NeedSex != 0 && _controller.rightView.genderGroup.selectIndex != _loc2_)
+               sexId = item.shopItemInfo.TemplateInfo.NeedSex != 2?0:1;
+               if(item.shopItemInfo.TemplateInfo.NeedSex != 0 && _controller.rightView.genderGroup.selectIndex != sexId)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.changeColor.sexAlert"));
                   return;
                }
-               _controller.addTempEquip(_loc4_.shopItemInfo);
+               _controller.addTempEquip(item.shopItemInfo);
             }
             else
             {
-               _loc5_ = new ShopCarItemInfo(_loc4_.shopItemInfo.GoodsID,_loc4_.shopItemInfo.TemplateID);
-               ObjectUtils.copyProperties(_loc5_,_loc4_.shopItemInfo);
-               _loc3_ = _controller.addToCar(_loc5_);
+               shopItem = new ShopCarItemInfo(item.shopItemInfo.GoodsID,item.shopItemInfo.TemplateID);
+               ObjectUtils.copyProperties(shopItem,item.shopItemInfo);
+               isAdd = _controller.addToCar(shopItem);
             }
-            _loc7_ = _controller.leftView.getColorEditorVisble();
-            if(_loc3_ && !_loc7_)
+            isColorEditorVisble = _controller.leftView.getColorEditorVisble();
+            if(isAdd && !isColorEditorVisble)
             {
-               addCartEffects(_loc4_.itemCell);
+               addCartEffects(item.itemCell);
             }
          }
       }
       
-      private function addCartEffects(param1:DisplayObject) : void
+      private function addCartEffects($item:DisplayObject) : void
       {
-         var _loc5_:* = null;
-         var _loc6_:* = null;
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         if(!param1)
+         var tp:* = null;
+         var timeline:* = null;
+         var tw:* = null;
+         var tw1:* = null;
+         if(!$item)
          {
             return;
          }
-         var _loc7_:BitmapData = new BitmapData(param1.width,param1.height,true,0);
-         _loc7_.draw(param1);
-         var _loc2_:Bitmap = new Bitmap(_loc7_,"auto",true);
-         parent.addChild(_loc2_);
-         _loc5_ = TweenProxy.create(_loc2_);
-         _loc5_.registrationX = _loc5_.width / 2;
-         _loc5_.registrationY = _loc5_.height / 2;
-         var _loc8_:Point = DisplayUtils.localizePoint(parent,param1);
-         _loc5_.x = _loc8_.x + _loc5_.width / 2;
-         _loc5_.y = _loc8_.y + _loc5_.height / 2;
-         _loc6_ = new TimelineLite();
-         _loc6_.vars.onComplete = twComplete;
-         _loc6_.vars.onCompleteParams = [_loc6_,_loc5_,_loc2_];
-         _loc3_ = new TweenLite(_loc5_,0.3,{
+         var tempBitmapD:BitmapData = new BitmapData($item.width,$item.height,true,0);
+         tempBitmapD.draw($item);
+         var bitmap:Bitmap = new Bitmap(tempBitmapD,"auto",true);
+         parent.addChild(bitmap);
+         tp = TweenProxy.create(bitmap);
+         tp.registrationX = tp.width / 2;
+         tp.registrationY = tp.height / 2;
+         var pos:Point = DisplayUtils.localizePoint(parent,$item);
+         tp.x = pos.x + tp.width / 2;
+         tp.y = pos.y + tp.height / 2;
+         timeline = new TimelineLite();
+         timeline.vars.onComplete = twComplete;
+         timeline.vars.onCompleteParams = [timeline,tp,bitmap];
+         tw = new TweenLite(tp,0.3,{
             "x":220,
             "y":430
          });
-         _loc4_ = new TweenLite(_loc5_,0.3,{
+         tw1 = new TweenLite(tp,0.3,{
             "scaleX":0.1,
             "scaleY":0.1
          });
-         _loc6_.append(_loc3_);
-         _loc6_.append(_loc4_,-0.2);
+         timeline.append(tw);
+         timeline.append(tw1,-0.2);
       }
       
-      private function twComplete(param1:TimelineLite, param2:TweenProxy, param3:Bitmap) : void
+      private function twComplete(timeline:TimelineLite, tp:TweenProxy, bitmap:Bitmap) : void
       {
-         if(param1)
+         if(timeline)
          {
-            param1.kill();
+            timeline.kill();
          }
-         if(param2)
+         if(tp)
          {
-            param2.destroy();
+            tp.destroy();
          }
-         if(param3.parent)
+         if(bitmap.parent)
          {
-            param3.parent.removeChild(param3);
-            param3.bitmapData.dispose();
+            bitmap.parent.removeChild(bitmap);
+            bitmap.bitmapData.dispose();
          }
-         param2 = null;
-         param3 = null;
-         param1 = null;
+         tp = null;
+         bitmap = null;
+         timeline = null;
       }
       
-      protected function __rankingItemsMouseOver(param1:MouseEvent) : void
+      protected function __rankingItemsMouseOver(event:MouseEvent) : void
       {
-         var _loc2_:ShopRankingCellItem = param1.currentTarget.parent as ShopRankingCellItem;
-         _loc2_.setItemLight(_rankingLightMc);
-         _loc2_.mouseOver();
+         var item:ShopRankingCellItem = event.currentTarget.parent as ShopRankingCellItem;
+         item.setItemLight(_rankingLightMc);
+         item.mouseOver();
       }
       
-      protected function __rankingItemsMouseOut(param1:MouseEvent) : void
+      protected function __rankingItemsMouseOut(event:MouseEvent) : void
       {
-         var _loc2_:ShopRankingCellItem = param1.currentTarget.parent as ShopRankingCellItem;
-         _loc2_.mouseOut();
+         var item:ShopRankingCellItem = event.currentTarget.parent as ShopRankingCellItem;
+         item.mouseOut();
       }
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          removeEvent();
          if(_separator)
          {
-            _loc1_ = 0;
-            while(_loc1_ < _separator.length)
+            for(i = 0; i < _separator.length; )
             {
-               if(_separator[_loc1_])
+               if(_separator[i])
                {
-                  ObjectUtils.disposeObject(_separator[_loc1_]);
+                  ObjectUtils.disposeObject(_separator[i]);
                }
-               _separator[_loc1_] = null;
-               _loc1_++;
+               _separator[i] = null;
+               i++;
             }
          }
          _separator = null;

@@ -65,10 +65,10 @@ package dragonBones.fast
       
       private var useCache:Boolean = true;
       
-      public function FastArmature(param1:Object)
+      public function FastArmature(display:Object)
       {
          super(this);
-         _display = param1;
+         _display = display;
          _animation = new FastAnimation(this);
          _slotsZOrderChanged = false;
          _armatureData = null;
@@ -91,25 +91,25 @@ package dragonBones.fast
          }
          userData = null;
          _animation.dispose();
-         var _loc1_:int = slotList.length;
+         var i:int = slotList.length;
          while(true)
          {
-            _loc1_--;
-            if(!_loc1_)
+            i--;
+            if(!i)
             {
                break;
             }
-            slotList[_loc1_].dispose();
+            slotList[i].dispose();
          }
-         _loc1_ = boneList.length;
+         i = boneList.length;
          while(true)
          {
-            _loc1_--;
-            if(!_loc1_)
+            i--;
+            if(!i)
             {
                break;
             }
-            boneList[_loc1_].dispose();
+            boneList[i].dispose();
          }
          slotList.fixed = false;
          slotList.length = 0;
@@ -122,30 +122,30 @@ package dragonBones.fast
          _eventList = null;
       }
       
-      public function advanceTime(param1:Number) : void
+      public function advanceTime(passedTime:Number) : void
       {
-         var _loc2_:* = null;
-         var _loc4_:* = null;
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
+         var bone:* = null;
+         var slot:* = null;
+         var i:int = 0;
+         var childArmature:* = null;
          _lockDispose = true;
-         _animation.advanceTime(param1);
+         _animation.advanceTime(passedTime);
          if(_animation.animationState.isUseCache())
          {
             if(!useCache)
             {
                useCache = true;
             }
-            _loc5_ = slotList.length;
+            i = slotList.length;
             while(true)
             {
-               _loc5_--;
-               if(!_loc5_)
+               i--;
+               if(!i)
                {
                   break;
                }
-               _loc4_ = slotList[_loc5_];
-               _loc4_.updateByCache();
+               slot = slotList[i];
+               slot.updateByCache();
             }
          }
          else
@@ -153,54 +153,54 @@ package dragonBones.fast
             if(useCache)
             {
                useCache = false;
-               _loc5_ = slotList.length;
+               i = slotList.length;
                while(true)
                {
-                  _loc5_--;
-                  if(!_loc5_)
+                  i--;
+                  if(!i)
                   {
                      break;
                   }
-                  _loc4_ = slotList[_loc5_];
-                  _loc4_.switchTransformToBackup();
+                  slot = slotList[i];
+                  slot.switchTransformToBackup();
                }
             }
-            _loc5_ = boneList.length;
+            i = boneList.length;
             while(true)
             {
-               _loc5_--;
-               if(!_loc5_)
+               i--;
+               if(!i)
                {
                   break;
                }
-               _loc2_ = boneList[_loc5_];
-               _loc2_.update();
+               bone = boneList[i];
+               bone.update();
             }
-            _loc5_ = slotList.length;
+            i = slotList.length;
             while(true)
             {
-               _loc5_--;
-               if(!_loc5_)
+               i--;
+               if(!i)
                {
                   break;
                }
-               _loc4_ = slotList[_loc5_];
-               _loc4_.update();
+               slot = slotList[i];
+               slot.update();
             }
          }
-         _loc5_ = slotHasChildArmatureList.length;
+         i = slotHasChildArmatureList.length;
          while(true)
          {
-            _loc5_--;
-            if(!_loc5_)
+            i--;
+            if(!i)
             {
                break;
             }
-            _loc4_ = slotHasChildArmatureList[_loc5_];
-            _loc3_ = _loc4_.childArmature as IArmature;
-            if(_loc3_)
+            slot = slotHasChildArmatureList[i];
+            childArmature = slot.childArmature as IArmature;
+            if(childArmature)
             {
-               _loc3_.advanceTime(param1);
+               childArmature.advanceTime(passedTime);
             }
          }
          if(_slotsZOrderChanged)
@@ -218,111 +218,111 @@ package dragonBones.fast
          }
       }
       
-      public function enableAnimationCache(param1:int, param2:Array = null, param3:Boolean = true) : AnimationCacheManager
+      public function enableAnimationCache(frameRate:int, animationList:Array = null, loop:Boolean = true) : AnimationCacheManager
       {
-         var _loc4_:AnimationCacheManager = AnimationCacheManager.initWithArmatureData(armatureData,param1);
-         if(param2)
+         var animationCacheManager:AnimationCacheManager = AnimationCacheManager.initWithArmatureData(armatureData,frameRate);
+         if(animationList)
          {
             var _loc7_:int = 0;
-            var _loc6_:* = param2;
-            for each(var _loc5_ in param2)
+            var _loc6_:* = animationList;
+            for each(var animationName in animationList)
             {
-               _loc4_.initAnimationCache(_loc5_);
+               animationCacheManager.initAnimationCache(animationName);
             }
          }
          else
          {
-            _loc4_.initAllAnimationCache();
+            animationCacheManager.initAllAnimationCache();
          }
-         _loc4_.setCacheGeneratorArmature(this);
-         _loc4_.generateAllAnimationCache(param3);
-         _loc4_.bindCacheUserArmature(this);
+         animationCacheManager.setCacheGeneratorArmature(this);
+         animationCacheManager.generateAllAnimationCache(loop);
+         animationCacheManager.bindCacheUserArmature(this);
          enableCache = true;
-         return _loc4_;
+         return animationCacheManager;
       }
       
-      public function getBone(param1:String) : FastBone
+      public function getBone(boneName:String) : FastBone
       {
-         return _boneDic[param1];
+         return _boneDic[boneName];
       }
       
-      public function getSlot(param1:String) : FastSlot
+      public function getSlot(slotName:String) : FastSlot
       {
-         return _slotDic[param1];
+         return _slotDic[slotName];
       }
       
-      public function getBoneByDisplay(param1:Object) : FastBone
+      public function getBoneByDisplay(display:Object) : FastBone
       {
-         var _loc2_:FastSlot = getSlotByDisplay(param1);
-         return !!_loc2_?_loc2_.parent:null;
+         var slot:FastSlot = getSlotByDisplay(display);
+         return !!slot?slot.parent:null;
       }
       
-      public function getSlotByDisplay(param1:Object) : FastSlot
+      public function getSlotByDisplay(displayObj:Object) : FastSlot
       {
-         if(param1)
+         if(displayObj)
          {
             var _loc4_:int = 0;
             var _loc3_:* = slotList;
-            for each(var _loc2_ in slotList)
+            for each(var slot in slotList)
             {
-               if(_loc2_.display == param1)
+               if(slot.display == displayObj)
                {
-                  return _loc2_;
+                  return slot;
                }
             }
          }
          return null;
       }
       
-      public function getSlots(param1:Boolean = true) : Vector.<FastSlot>
+      public function getSlots(returnCopy:Boolean = true) : Vector.<FastSlot>
       {
-         return !!param1?slotList.concat():slotList;
+         return !!returnCopy?slotList.concat():slotList;
       }
       
       function _updateBonesByCache() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:int = boneList.length;
+         var bone:* = null;
+         var i:int = boneList.length;
          while(true)
          {
-            _loc2_--;
-            if(!_loc2_)
+            i--;
+            if(!i)
             {
                break;
             }
-            _loc1_ = boneList[_loc2_];
-            _loc1_.update();
+            bone = boneList[i];
+            bone.update();
          }
       }
       
-      function addBone(param1:FastBone, param2:String = null) : void
+      function addBone(bone:FastBone, parentName:String = null) : void
       {
-         var _loc3_:* = null;
-         if(param2)
+         var parentBone:* = null;
+         if(parentName)
          {
-            _loc3_ = getBone(param2);
-            _loc3_.boneList.push(param1);
+            parentBone = getBone(parentName);
+            parentBone.boneList.push(bone);
          }
-         param1.armature = this;
-         param1.setParent(_loc3_);
-         boneList.unshift(param1);
-         _boneDic[param1.name] = param1;
+         bone.armature = this;
+         bone.setParent(parentBone);
+         boneList.unshift(bone);
+         _boneDic[bone.name] = bone;
       }
       
-      function addSlot(param1:FastSlot, param2:String) : void
+      function addSlot(slot:FastSlot, parentBoneName:String) : void
       {
-         var _loc3_:FastBone = getBone(param2);
-         if(_loc3_)
+         var bone:FastBone = getBone(parentBoneName);
+         if(bone)
          {
-            param1.armature = this;
-            param1.setParent(_loc3_);
-            _loc3_.slotList.push(param1);
-            param1.addDisplayToContainer(display);
-            slotList.push(param1);
-            _slotDic[param1.name] = param1;
-            if(param1.hasChildArmature)
+            slot.armature = this;
+            slot.setParent(bone);
+            bone.slotList.push(slot);
+            slot.addDisplayToContainer(display);
+            slotList.push(slot);
+            _slotDic[slot.name] = slot;
+            if(slot.hasChildArmature)
             {
-               slotHasChildArmatureList.push(param1);
+               slotHasChildArmatureList.push(slot);
             }
             return;
          }
@@ -331,22 +331,22 @@ package dragonBones.fast
       
       function updateSlotsZOrder() : void
       {
-         var _loc1_:* = null;
+         var slot:* = null;
          slotList.fixed = false;
          slotList.sort(sortSlot);
          slotList.fixed = true;
-         var _loc2_:int = slotList.length;
+         var i:int = slotList.length;
          while(true)
          {
-            _loc2_--;
-            if(!_loc2_)
+            i--;
+            if(!i)
             {
                break;
             }
-            _loc1_ = slotList[_loc2_];
-            if(_loc1_._frameCache && (_loc1_._frameCache as SlotFrameCache).displayIndex >= 0 || !_loc1_._frameCache && _loc1_.displayIndex >= 0)
+            slot = slotList[i];
+            if(slot._frameCache && (slot._frameCache as SlotFrameCache).displayIndex >= 0 || !slot._frameCache && slot.displayIndex >= 0)
             {
-               _loc1_.addDisplayToContainer(_display);
+               slot.addDisplayToContainer(_display);
             }
          }
          _slotsZOrderChanged = false;
@@ -354,87 +354,87 @@ package dragonBones.fast
       
       private function sortBoneList() : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:* = null;
-         var _loc1_:* = null;
-         var _loc5_:int = boneList.length;
-         if(_loc5_ == 0)
+         var level:int = 0;
+         var bone:* = null;
+         var boneParent:* = null;
+         var i:int = boneList.length;
+         if(i == 0)
          {
             return;
          }
-         var _loc4_:Array = [];
+         var helpArray:Array = [];
          while(true)
          {
-            _loc5_--;
-            if(!_loc5_)
+            i--;
+            if(!i)
             {
                break;
             }
-            _loc2_ = 0;
-            _loc3_ = boneList[_loc5_];
-            _loc1_ = _loc3_;
-            while(_loc1_)
+            level = 0;
+            bone = boneList[i];
+            boneParent = bone;
+            while(boneParent)
             {
-               _loc2_++;
-               _loc1_ = _loc1_.parent;
+               level++;
+               boneParent = boneParent.parent;
             }
-            _loc4_[_loc5_] = [_loc2_,_loc3_];
+            helpArray[i] = [level,bone];
          }
-         _loc4_.sortOn("0",16 | 2);
-         _loc5_ = _loc4_.length;
+         helpArray.sortOn("0",16 | 2);
+         i = helpArray.length;
          boneList.fixed = false;
          while(true)
          {
-            _loc5_--;
-            if(!_loc5_)
+            i--;
+            if(!i)
             {
                break;
             }
-            boneList[_loc5_] = _loc4_[_loc5_][1];
+            boneList[i] = helpArray[i][1];
          }
          boneList.fixed = true;
-         _loc4_.length = 0;
+         helpArray.length = 0;
       }
       
-      function arriveAtFrame(param1:Frame, param2:FastAnimationState) : void
+      function arriveAtFrame(frame:Frame, animationState:FastAnimationState) : void
       {
-         var _loc3_:* = null;
-         if(param1.event && this.hasEventListener("animationFrameEvent"))
+         var frameEvent:* = null;
+         if(frame.event && this.hasEventListener("animationFrameEvent"))
          {
-            _loc3_ = new FrameEvent("animationFrameEvent");
-            _loc3_.animationState = param2;
-            _loc3_.frameLabel = param1.event;
-            addEvent(_loc3_);
+            frameEvent = new FrameEvent("animationFrameEvent");
+            frameEvent.animationState = animationState;
+            frameEvent.frameLabel = frame.event;
+            addEvent(frameEvent);
          }
-         if(param1.action)
+         if(frame.action)
          {
-            animation.gotoAndPlay(param1.action);
+            animation.gotoAndPlay(frame.action);
          }
       }
       
-      public function invalidUpdate(param1:String = null) : void
+      public function invalidUpdate(boneName:String = null) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
-         if(param1)
+         var bone:* = null;
+         var i:int = 0;
+         if(boneName)
          {
-            _loc2_ = getBone(param1);
-            if(_loc2_)
+            bone = getBone(boneName);
+            if(bone)
             {
-               _loc2_.invalidUpdate();
+               bone.invalidUpdate();
             }
          }
          else
          {
-            _loc3_ = boneList.length;
+            i = boneList.length;
             while(true)
             {
-               _loc3_--;
-               if(!_loc3_)
+               i--;
+               if(!i)
                {
                   break;
                }
-               boneList[_loc3_].invalidUpdate();
+               boneList[i].invalidUpdate();
             }
          }
       }
@@ -444,16 +444,16 @@ package dragonBones.fast
          animation.animationState.resetTimelineStateList();
          var _loc3_:int = 0;
          var _loc2_:* = boneList;
-         for each(var _loc1_ in boneList)
+         for each(var boneItem in boneList)
          {
-            _loc1_._timelineState = null;
+            boneItem._timelineState = null;
          }
          animation.stop();
       }
       
-      private function sortSlot(param1:FastSlot, param2:FastSlot) : int
+      private function sortSlot(slot1:FastSlot, slot2:FastSlot) : int
       {
-         return param1.zOrder < param2.zOrder?1:-1;
+         return slot1.zOrder < slot2.zOrder?1:-1;
       }
       
       public function getAnimation() : Object
@@ -481,9 +481,9 @@ package dragonBones.fast
          return _enableCache;
       }
       
-      public function set enableCache(param1:Boolean) : void
+      public function set enableCache(value:Boolean) : void
       {
-         _enableCache = param1;
+         _enableCache = value;
       }
       
       public function get enableEventDispatch() : Boolean
@@ -491,9 +491,9 @@ package dragonBones.fast
          return _enableEventDispatch;
       }
       
-      public function set enableEventDispatch(param1:Boolean) : void
+      public function set enableEventDispatch(value:Boolean) : void
       {
-         _enableEventDispatch = param1;
+         _enableEventDispatch = value;
       }
       
       public function getSlotDic() : Object
@@ -501,11 +501,11 @@ package dragonBones.fast
          return _slotDic;
       }
       
-      function addEvent(param1:Event) : void
+      function addEvent(event:Event) : void
       {
          if(_enableEventDispatch)
          {
-            _eventList.push(param1);
+            _eventList.push(event);
          }
       }
    }

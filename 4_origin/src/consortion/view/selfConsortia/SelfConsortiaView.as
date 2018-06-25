@@ -67,7 +67,7 @@ package consortion.view.selfConsortia
       {
       }
       
-      private function __dissolve(param1:MouseEvent) : void
+      private function __dissolve(event:MouseEvent) : void
       {
          SocketManager.Instance.out.sendConsortiaDismiss();
       }

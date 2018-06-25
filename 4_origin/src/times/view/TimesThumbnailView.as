@@ -21,75 +21,72 @@ package times.view
       
       private var _pointIdx:int;
       
-      public function TimesThumbnailView(param1:TimesController)
+      public function TimesThumbnailView($controller:TimesController)
       {
          super();
-         _controller = param1;
+         _controller = $controller;
          init();
       }
       
       private function init() : void
       {
-         var _loc7_:int = 0;
-         var _loc9_:int = 0;
-         var _loc6_:int = 0;
-         var _loc5_:int = 0;
-         var _loc8_:* = null;
-         var _loc1_:* = null;
+         var pointSum:int = 0;
+         var i:int = 0;
+         var k:int = 0;
+         var j:int = 0;
+         var info:* = null;
+         var point:* = null;
          _pointGroup = new SelectedButtonGroup();
          _pointArr = new Vector.<TimesThumbnailPoint>();
-         var _loc4_:Vector.<int> = new Vector.<int>();
-         var _loc3_:int = 0;
-         var _loc2_:Array = _controller.model.contentInfos;
-         _loc9_ = 0;
-         while(_loc9_ < _loc2_.length)
+         var lenArr:Vector.<int> = new Vector.<int>();
+         var idx:int = 0;
+         var infos:Array = _controller.model.contentInfos;
+         for(i = 0; i < infos.length; )
          {
-            _loc4_.push(_loc2_[_loc9_].length);
-            _loc7_ = _loc7_ + _loc4_[_loc9_];
-            _loc9_++;
+            lenArr.push(infos[i].length);
+            pointSum = pointSum + lenArr[i];
+            i++;
          }
-         if(_loc7_ != 0)
+         if(pointSum != 0)
          {
-            _spacing = 360 / (_loc7_ - 1);
+            _spacing = 360 / (pointSum - 1);
          }
-         _loc6_ = 0;
-         while(_loc6_ < _loc2_.length)
+         for(k = 0; k < infos.length; )
          {
-            _loc5_ = 0;
-            while(_loc5_ < _loc4_[_loc6_])
+            for(j = 0; j < lenArr[k]; )
             {
-               _loc8_ = new TimesPicInfo();
-               _loc8_.targetCategory = _loc6_;
-               _loc8_.targetPage = _loc5_;
-               _loc1_ = new TimesThumbnailPoint(_loc8_);
-               _loc1_.tipStyle = "times.view.TimesThumbnailPointTip";
-               _loc1_.tipDirctions = "0";
-               _loc1_.tipGapV = 10;
-               _loc1_.tipData = {
-                  "isRevertTip":_loc3_ > _loc7_ / 2,
-                  "category":_loc6_,
-                  "page":_loc5_
+               info = new TimesPicInfo();
+               info.targetCategory = k;
+               info.targetPage = j;
+               point = new TimesThumbnailPoint(info);
+               point.tipStyle = "times.view.TimesThumbnailPointTip";
+               point.tipDirctions = "0";
+               point.tipGapV = 10;
+               point.tipData = {
+                  "isRevertTip":idx > pointSum / 2,
+                  "category":k,
+                  "page":j
                };
-               _loc3_++;
-               _loc1_.x = _loc3_ * _spacing;
-               _pointGroup.addSelectItem(_loc1_);
-               addChild(_loc1_);
-               _pointArr.push(_loc1_);
-               _loc5_++;
+               idx++;
+               point.x = idx * _spacing;
+               _pointGroup.addSelectItem(point);
+               addChild(point);
+               _pointArr.push(point);
+               j++;
             }
-            _loc6_++;
+            k++;
          }
          _pointGroup.selectIndex = 0;
       }
       
-      public function set pointIdx(param1:int) : void
+      public function set pointIdx(value:int) : void
       {
-         if(_pointIdx == param1)
+         if(_pointIdx == value)
          {
             return;
          }
          _pointArr[_pointIdx].pointPlay("rollOut");
-         _pointIdx = param1;
+         _pointIdx = value;
          _pointArr[_pointIdx].pointStop("selected");
          _pointGroup.selectIndex = _pointIdx;
       }

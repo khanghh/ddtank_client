@@ -11,34 +11,33 @@ package team.analyze
       
       public var data:DictionaryData;
       
-      public function TeamLevelAnalyze(param1:Function)
+      public function TeamLevelAnalyze(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(value:*) : void
       {
-         var _loc3_:* = null;
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc2_:XML = new XML(param1);
+         var xmllist:* = null;
+         var i:int = 0;
+         var info:* = null;
+         var xml:XML = new XML(value);
          data = new DictionaryData();
-         if(_loc2_.@value == "true")
+         if(xml.@value == "true")
          {
-            _loc3_ = _loc2_..Item;
-            _loc5_ = 0;
-            while(_loc5_ < _loc3_.length())
+            xmllist = xml..Item;
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc4_ = new TeamLevelInfo();
-               ObjectUtils.copyPorpertiesByXML(_loc4_,_loc3_[_loc5_]);
-               data.add(_loc4_.Level,_loc4_);
-               _loc5_++;
+               info = new TeamLevelInfo();
+               ObjectUtils.copyPorpertiesByXML(info,xmllist[i]);
+               data.add(info.Level,info);
+               i++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc2_.@message;
+            message = xml.@message;
             onAnalyzeError();
          }
       }

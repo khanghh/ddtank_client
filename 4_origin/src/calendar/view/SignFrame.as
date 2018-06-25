@@ -19,20 +19,20 @@ package calendar.view
       
       private var _model:CalendarModel;
       
-      public function SignFrame(param1:CalendarModel, param2:* = null)
+      public function SignFrame(model:CalendarModel, data:* = null)
       {
          super();
-         initView(param1,param2);
+         initView(model,data);
          addEvent();
       }
       
-      private function initView(param1:*, param2:*) : void
+      private function initView(pData:*, data:*) : void
       {
-         _signCalendar = ComponentFactory.Instance.creatCustomObject("ddtcalendar.CalendarState",[param1]);
+         _signCalendar = ComponentFactory.Instance.creatCustomObject("ddtcalendar.CalendarState",[pData]);
          addToContent(_signCalendar as DisplayObject);
          if(_signCalendar)
          {
-            _signCalendar.setData(param2);
+            _signCalendar.setData(data);
          }
       }
       
@@ -42,10 +42,10 @@ package calendar.view
          addEventListener("addedToStage",__getFocus);
       }
       
-      private function __response(param1:FrameEvent) : void
+      private function __response(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -61,7 +61,7 @@ package calendar.view
          }
       }
       
-      private function __getFocus(param1:Event) : void
+      private function __getFocus(evt:Event) : void
       {
          removeEventListener("addedToStage",__getFocus);
          StageReferance.stage.focus = this;

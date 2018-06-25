@@ -19,7 +19,7 @@ package tool
       
       private var _type1:String;
       
-      public function LoaderClass(param1:PrivateClass)
+      public function LoaderClass(prc:PrivateClass)
       {
          super();
       }
@@ -33,20 +33,20 @@ package tool
          return LoaderClass._instance;
       }
       
-      public function loadUIModule(param1:Function = null, param2:Array = null, param3:String = "", param4:String = "") : void
+      public function loadUIModule(complete:Function = null, completeParams:Array = null, types:String = "", types1:String = "") : void
       {
-         _func = param1;
-         _funcParams = param2;
-         _type = param3;
+         _func = complete;
+         _funcParams = completeParams;
+         _type = types;
          UIModuleSmallLoading.Instance.progress = 0;
          UIModuleSmallLoading.Instance.show();
          UIModuleLoader.Instance.addEventListener("uiModuleComplete",loadCompleteHandler);
          UIModuleLoader.Instance.addEventListener("uiMoudleProgress",onUimoduleLoadProgress);
          UIModuleLoader.Instance.addUIModuleImp(_type);
          loaderTwoUIModule();
-         if(param4 != "")
+         if(types1 != "")
          {
-            _type1 = param4;
+            _type1 = types1;
             setTimeout(daleyTime,2000);
          }
       }
@@ -64,13 +64,13 @@ package tool
          UIModuleLoader.Instance.addUIModuleImp(_type1);
       }
       
-      private function loadCompleteHandler(param1:UIModuleEvent) : void
+      private function loadCompleteHandler(event:UIModuleEvent) : void
       {
-         if(param1.module != _type)
+         if(event.module != _type)
          {
             return;
          }
-         if(param1.module == _type)
+         if(event.module == _type)
          {
             UIModuleSmallLoading.Instance.hide();
             UIModuleLoader.Instance.removeEventListener("uiModuleComplete",loadCompleteHandler);
@@ -84,11 +84,11 @@ package tool
          }
       }
       
-      private function onUimoduleLoadProgress(param1:UIModuleEvent) : void
+      private function onUimoduleLoadProgress(event:UIModuleEvent) : void
       {
-         if(param1.module == _type)
+         if(event.module == _type)
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
    }

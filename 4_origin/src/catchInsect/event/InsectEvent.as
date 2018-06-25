@@ -20,10 +20,10 @@ package catchInsect.event
       
       public var data:Object;
       
-      public function InsectEvent(param1:String, param2:Object = null)
+      public function InsectEvent(type:String, dat:Object = null)
       {
-         data = param2;
-         super(param1);
+         data = dat;
+         super(type);
       }
    }
 }

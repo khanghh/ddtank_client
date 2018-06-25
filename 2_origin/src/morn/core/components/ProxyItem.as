@@ -23,69 +23,70 @@ package morn.core.components
       
       public function ProxyItem()
       {
-         this.oriSize = new Point();
+         oriSize = new Point();
          super();
          mouseChildren = true;
-         width = height = 50;
+         height = 50;
+         width = 50;
       }
       
       public function get bindClass() : String
       {
-         return this._bindClass;
+         return _bindClass;
       }
       
-      public function set bindClass(param1:String) : void
+      public function set bindClass(value:String) : void
       {
-         this._bindClass = param1;
+         _bindClass = value;
       }
       
-      public function init(... rest) : DisplayObject
+      public function init(... args) : DisplayObject
       {
-         if(this.comp)
+         if(comp)
          {
-            ObjectUtils.disposeObject(this.comp);
-            this.comp = null;
+            ObjectUtils.disposeObject(comp);
+            comp = null;
          }
-         this.comp = ClassUtils.CreatInstance(this._bindClass,rest);
-         addChild(this.comp);
-         if(this._fitSize)
+         comp = ClassUtils.CreatInstance(_bindClass,args);
+         addChild(comp);
+         if(_fitSize)
          {
-            this.comp.width = width;
-            this.comp.height = height;
+            comp.width = width;
+            comp.height = height;
          }
-         return this.comp;
+         return comp;
       }
       
       public function setChildFollowParentPosition() : void
       {
-         this.comp.x = x;
-         this.comp.y = y;
+         comp.x = x;
+         comp.y = y;
       }
       
       public function get comp() : DisplayObject
       {
-         return this._comp;
+         return _comp;
       }
       
-      public function set comp(param1:DisplayObject) : void
+      public function set comp(value:DisplayObject) : void
       {
-         this._comp = param1;
+         _comp = value;
       }
       
-      public function set fitSize(param1:Boolean) : void
+      public function set fitSize(value:Boolean) : void
       {
-         this._fitSize = param1;
+         _fitSize = value;
       }
       
       public function get fitSize() : Boolean
       {
-         return this._fitSize;
+         return _fitSize;
       }
       
       override public function dispose() : void
       {
          super.dispose();
-         ObjectUtils.disposeObject(this.comp);
+         ObjectUtils.disposeObject(comp);
       }
    }
 }

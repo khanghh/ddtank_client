@@ -46,7 +46,7 @@ package redPackage
       
       private var _moneyNeededData:ConfirmAlertData;
       
-      public function RedPackageManager(param1:inner)
+      public function RedPackageManager(single:inner)
       {
          super();
          _moneyNeededData = new ConfirmAlertData();
@@ -88,34 +88,34 @@ package redPackage
          SocketManager.Instance.addEventListener(PkgEvent.format(303,3),onSendRecordSocketPkg);
       }
       
-      protected function onGainRecordSocketPkg(param1:PkgEvent) : void
+      protected function onGainRecordSocketPkg(e:PkgEvent) : void
       {
-         var _loc4_:PackageIn = param1.pkg;
+         var pkg:PackageIn = e.pkg;
          _gainRecordObj = {};
-         _gainRecordObj.nick = _loc4_.readUTF();
-         _gainRecordObj.moneyNum = _loc4_.readInt();
-         _gainRecordObj.wishWords = _loc4_.readUTF();
-         var _loc2_:int = _loc4_.readInt();
-         var _loc3_:Array = [];
-         while(_loc4_.bytesAvailable > 0)
+         _gainRecordObj.nick = pkg.readUTF();
+         _gainRecordObj.moneyNum = pkg.readInt();
+         _gainRecordObj.wishWords = pkg.readUTF();
+         var count:int = pkg.readInt();
+         var arr:Array = [];
+         while(pkg.bytesAvailable > 0)
          {
-            _loc3_.push({
+            arr.push({
                "gainedNick":_gainRecordObj.nick,
-               "sendNick":_loc4_.readUTF(),
-               "money":_loc4_.readInt(),
-               "date":_loc4_.readDate()
+               "sendNick":pkg.readUTF(),
+               "money":pkg.readInt(),
+               "date":pkg.readDate()
             });
          }
-         _gainRecordObj.arr = _loc3_;
+         _gainRecordObj.arr = arr;
          dispatchEvent(new CEvent("RedPkg_update_gain_record_view"));
       }
       
-      protected function onSendRecordSocketPkg(param1:PkgEvent) : void
+      protected function onSendRecordSocketPkg(e:PkgEvent) : void
       {
-         e = param1;
-         compareTime = function(param1:Object, param2:Object):Number
+         e = e;
+         compareTime = function(a:Object, b:Object):Number
          {
-            return (param2["date"] as Date).time - (param1["date"] as Date).time;
+            return (b["date"] as Date).time - (a["date"] as Date).time;
          };
          var pkg:PackageIn = e.pkg;
          var state:int = pkg.readByte();
@@ -147,19 +147,19 @@ package redPackage
          dispatchEvent(new CEvent("RedPkg_show"));
       }
       
-      public function showView(param1:String, param2:Object = null) : void
+      public function showView(type:String, data:Object = null) : void
       {
-         _curFrameType = param1;
-         _curFrameData = param2;
+         _curFrameType = type;
+         _curFrameData = data;
          show();
       }
       
-      public function onConsortionMakePackage(param1:int, param2:int, param3:String, param4:Boolean) : void
+      public function onConsortionMakePackage(numMoney:int, numPackage:int, wishWords:String, isAverage:Boolean) : void
       {
-         numMoney = param1;
-         numPackage = param2;
-         wishWords = param3;
-         isAverage = param4;
+         numMoney = numMoney;
+         numPackage = numPackage;
+         wishWords = wishWords;
+         isAverage = isAverage;
          onCheckOut = function():void
          {
             GameInSocketOut.sendRedPkgSend(numMoney,numPackage,wishWords,isAverage);
@@ -171,25 +171,24 @@ package redPackage
          a.alert("Cảnh cáo：",msg,"O K","Hủy",false,true,false,2,null,"SimpleAlert",30,true,0);
       }
       
-      public function onConsortionGainPackage(param1:int) : void
+      public function onConsortionGainPackage(pkgID:int) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = _sendRecordArr.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var i:int = 0;
+         var len:int = _sendRecordArr.length;
+         for(i = 0; i < len; )
          {
-            if(_sendRecordArr[_loc3_].id == param1)
+            if(_sendRecordArr[i].id == pkgID)
             {
-               _sendRecordArr[_loc3_]["isGained"] = true;
+               _sendRecordArr[i]["isGained"] = true;
             }
-            _loc3_++;
+            i++;
          }
-         GameInSocketOut.sendRedPkgGain(param1);
+         GameInSocketOut.sendRedPkgGain(pkgID);
       }
       
-      public function onConsortionGainRecord(param1:int) : void
+      public function onConsortionGainRecord(pkgID:int) : void
       {
-         GameInSocketOut.sendRedPkgGainRecord(param1);
+         GameInSocketOut.sendRedPkgGainRecord(pkgID);
       }
       
       public function onConsortionSendRecord() : void

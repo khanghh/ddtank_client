@@ -14,10 +14,10 @@ package BombTurnTable.event
       
       private var _data:Object;
       
-      public function TurnTableEvent(param1:String, param2:Object, param3:Boolean = false, param4:Boolean = false)
+      public function TurnTableEvent(type:String, data:Object, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         super(param1,param3,param4);
-         _data = param2;
+         super(type,bubbles,cancelable);
+         _data = data;
       }
       
       public function get data() : Object

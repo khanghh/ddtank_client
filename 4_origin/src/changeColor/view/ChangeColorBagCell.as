@@ -11,20 +11,20 @@ package changeColor.view
    {
        
       
-      public function ChangeColorBagCell(param1:int, param2:ItemTemplateInfo = null, param3:Boolean = true, param4:Sprite = null)
+      public function ChangeColorBagCell(index:int, info:ItemTemplateInfo = null, showLoading:Boolean = true, bg:Sprite = null)
       {
-         super(param1,param2,param3,param4);
+         super(index,info,showLoading,bg);
       }
       
-      override public function dragDrop(param1:DragEffect) : void
+      override public function dragDrop(effect:DragEffect) : void
       {
-         var _loc2_:* = null;
-         if(param1.data is InventoryItemInfo)
+         var info:* = null;
+         if(effect.data is InventoryItemInfo)
          {
-            _loc2_ = param1.data as InventoryItemInfo;
+            info = effect.data as InventoryItemInfo;
             if(locked)
             {
-               if(_loc2_ == this.info)
+               if(info == this.info)
                {
                   this.locked = false;
                   DragManager.acceptDrag(this);
@@ -36,7 +36,7 @@ package changeColor.view
             }
             else
             {
-               param1.action = "none";
+               effect.action = "none";
                DragManager.acceptDrag(this);
             }
          }

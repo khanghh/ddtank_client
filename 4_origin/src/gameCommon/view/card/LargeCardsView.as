@@ -106,44 +106,44 @@ package gameCommon.view.card
          RoomManager.Instance.addEventListener("PaymentCard",__disabledAllCards);
       }
       
-      override protected function __takeOut(param1:CrazyTankSocketEvent) : void
+      override protected function __takeOut(e:CrazyTankSocketEvent) : void
       {
-         var _loc5_:* = null;
-         var _loc7_:Boolean = false;
-         var _loc6_:Number = NaN;
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:Boolean = false;
-         var _loc8_:* = null;
+         var pkg:* = null;
+         var isSysTake:Boolean = false;
+         var place:Number = NaN;
+         var templateID:int = 0;
+         var count:int = 0;
+         var isVip:Boolean = false;
+         var info:* = null;
          if(_cards.length > 0)
          {
-            _loc5_ = param1.pkg;
-            _loc7_ = _loc5_.readBoolean();
-            if(!_systemToken && _loc7_)
+            pkg = e.pkg;
+            isSysTake = pkg.readBoolean();
+            if(!_systemToken && isSysTake)
             {
                _systemToken = true;
                __disabledAllCards();
             }
-            _loc6_ = _loc5_.readByte();
-            if(_loc6_ == 50)
+            place = pkg.readByte();
+            if(place == 50)
             {
                return;
             }
-            _loc2_ = _loc5_.readInt();
-            _loc4_ = _loc5_.readInt();
-            _loc3_ = _loc5_.readBoolean();
-            _loc8_ = _gameInfo.findPlayer(_loc5_.extend1);
-            if(_loc5_.clientId == _gameInfo.selfGamePlayer.playerInfo.ID)
+            templateID = pkg.readInt();
+            count = pkg.readInt();
+            isVip = pkg.readBoolean();
+            info = _gameInfo.findPlayer(pkg.extend1);
+            if(pkg.clientId == _gameInfo.selfGamePlayer.playerInfo.ID)
             {
-               _loc8_ = _gameInfo.selfGamePlayer;
+               info = _gameInfo.selfGamePlayer;
             }
-            if(_loc8_)
+            if(info)
             {
-               _cards[_loc6_].play(_loc8_,_loc2_,_loc4_,_loc3_);
-               if(_loc8_.isSelf)
+               _cards[place].play(info,templateID,count,isVip);
+               if(info.isSelf)
                {
                   _selectedCnt = Number(_selectedCnt) + 1;
-                  _selectCompleted = _selectedCnt >= _loc8_.GetCardCount;
+                  _selectCompleted = _selectedCnt >= info.GetCardCount;
                   if(_selectedCnt == 2)
                   {
                      changeCardsToPayType();
@@ -155,50 +155,48 @@ package gameCommon.view.card
                   }
                }
             }
-            if(_loc7_)
+            if(isSysTake)
             {
                showAllCard();
             }
          }
          else
          {
-            _resultCards.push(param1);
+            _resultCards.push(e);
          }
       }
       
       private function changeCardsToPayType() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _cards.length)
+         var i:int = 0;
+         for(i = 0; i < _cards.length; )
          {
-            _cards[_loc1_].isPayed = true;
-            _loc1_++;
+            _cards[i].isPayed = true;
+            i++;
          }
       }
       
-      private function __showAllCard(param1:CrazyTankSocketEvent) : void
+      private function __showAllCard(e:CrazyTankSocketEvent) : void
       {
-         var _loc5_:* = 0;
-         var _loc4_:* = null;
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readInt();
+         var i:* = 0;
+         var obj:* = null;
+         var pkg:PackageIn = e.pkg;
+         var count:int = pkg.readInt();
          _showCardInfos = [];
-         _loc5_ = uint(0);
-         while(_loc5_ < _loc2_)
+         for(i = uint(0); i < count; )
          {
-            _loc4_ = {};
-            _loc4_.index = _loc3_.readByte();
-            _loc4_.templateID = _loc3_.readInt();
-            _loc4_.count = _loc3_.readInt();
-            _showCardInfos.push(_loc4_);
-            _loc5_++;
+            obj = {};
+            obj.index = pkg.readByte();
+            obj.templateID = pkg.readInt();
+            obj.count = pkg.readInt();
+            _showCardInfos.push(obj);
+            i++;
          }
          showAllCard();
          _isShowAllCard = true;
       }
       
-      override protected function __timerForViewComplete(param1:* = null) : void
+      override protected function __timerForViewComplete(event:* = null) : void
       {
          _timerForView.removeEventListener("timerComplete",__timerForViewComplete);
          if(_gameInfo)
@@ -211,15 +209,14 @@ package gameCommon.view.card
       
       protected function showAllCard() : void
       {
-         var _loc1_:* = 0;
+         var i:* = 0;
          LayerManager.Instance.clearnGameDynamic();
          if(_showCardInfos && _showCardInfos.length > 0)
          {
-            _loc1_ = uint(0);
-            while(_loc1_ < _showCardInfos.length)
+            for(i = uint(0); i < _showCardInfos.length; )
             {
-               _cards[uint(_showCardInfos[_loc1_].index)].play(null,int(_showCardInfos[_loc1_].templateID),_showCardInfos[_loc1_].count,false,true);
-               _loc1_++;
+               _cards[uint(_showCardInfos[i].index)].play(null,int(_showCardInfos[i].templateID),_showCardInfos[i].count,false,true);
+               i++;
             }
          }
          _timerForView.reset();
@@ -228,53 +225,51 @@ package gameCommon.view.card
       
       override protected function createCards() : void
       {
-         var _loc4_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:* = null;
-         var _loc3_:Point = new Point(26,25);
-         _loc4_ = 0;
-         while(_loc4_ < _cardCnt)
+         var i:int = 0;
+         var point:* = null;
+         var item:* = null;
+         var offset:Point = new Point(26,25);
+         for(i = 0; i < _cardCnt; )
          {
-            _loc1_ = new Point();
-            _loc2_ = new LuckyCard(_loc4_,0);
-            _loc1_.x = _loc4_ % _cardColumns * (_loc3_.x + _loc2_.width);
-            _loc1_.y = int(_loc4_ / _cardColumns) * (_loc3_.y + _loc2_.height);
-            _loc2_.x = (_loc3_.x + _loc2_.width) * 3;
-            _loc2_.y = _loc3_.y + _loc2_.height;
-            _loc2_.allowClick = _gameInfo.selfGamePlayer.GetCardCount > 0;
-            _loc2_.msg = LanguageMgr.GetTranslation("tank.gameover.DisableGetCard");
-            addChild(_loc2_);
-            _posArr.push(_loc1_);
-            _cards.push(_loc2_);
-            _loc4_++;
+            point = new Point();
+            item = new LuckyCard(i,0);
+            point.x = i % _cardColumns * (offset.x + item.width);
+            point.y = int(i / _cardColumns) * (offset.y + item.height);
+            item.x = (offset.x + item.width) * 3;
+            item.y = offset.y + item.height;
+            item.allowClick = _gameInfo.selfGamePlayer.GetCardCount > 0;
+            item.msg = LanguageMgr.GetTranslation("tank.gameover.DisableGetCard");
+            addChild(item);
+            _posArr.push(point);
+            _cards.push(item);
+            i++;
          }
       }
       
-      override protected function startTween(param1:Event = null) : void
+      override protected function startTween(e:Event = null) : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          removeEventListener("addedToStage",startTween);
-         _loc2_ = 0;
-         while(_loc2_ < 21)
+         for(i = 0; i < 21; )
          {
-            TweenLite.to(_cards[_loc2_],0.8,{
+            TweenLite.to(_cards[i],0.8,{
                "startAt":{
                   "x":_posArr[10].x,
                   "y":_posArr[10].y
                },
-               "x":_posArr[_loc2_].x,
-               "y":_posArr[_loc2_].y,
+               "x":_posArr[i].x,
+               "y":_posArr[i].y,
                "ease":Quint.easeOut,
                "onComplete":cardTweenComplete,
-               "onCompleteParams":[_cards[_loc2_]]
+               "onCompleteParams":[_cards[i]]
             });
-            _loc2_++;
+            i++;
          }
       }
       
-      override protected function __countDownComplete(param1:Event) : void
+      override protected function __countDownComplete(event:Event) : void
       {
-         event = param1;
+         event = event;
          if(_isShowAllCard)
          {
             timeOutHandler(event);
@@ -291,11 +286,11 @@ package gameCommon.view.card
          __disabledAllCards();
       }
       
-      private function timeOutHandler(param1:Event) : void
+      private function timeOutHandler(event:Event) : void
       {
          if(_timerForView)
          {
-            super.__countDownComplete(param1);
+            super.__countDownComplete(event);
          }
       }
       

@@ -27,22 +27,21 @@ package ddt.utils
          super();
       }
       
-      public function loadUIModule(param1:Array, param2:Function, param3:Array = null) : void
+      public function loadUIModule(list:Array, update:Function, params:Array = null) : void
       {
-         var _loc6_:int = 0;
-         var _loc4_:* = null;
-         _update = param2;
-         _params = param3;
+         var i:int = 0;
+         var moduleID:* = null;
+         _update = update;
+         _params = params;
          _loadlist = [];
-         _loc6_ = 0;
-         while(_loc6_ < param1.length)
+         for(i = 0; i < list.length; )
          {
-            _loc4_ = param1[_loc6_];
-            if(_loadedDic[_loc4_] == null)
+            moduleID = list[i];
+            if(_loadedDic[moduleID] == null)
             {
-               _loadlist.push(_loc4_);
+               _loadlist.push(moduleID);
             }
-            _loc6_++;
+            i++;
          }
          if(_loadlist.length > 0)
          {
@@ -53,9 +52,9 @@ package ddt.utils
             UIModuleLoader.Instance.addEventListener("uiMoudleProgress",__onProgress);
             var _loc8_:int = 0;
             var _loc7_:* = _loadlist;
-            for each(var _loc5_ in _loadlist)
+            for each(var module in _loadlist)
             {
-               UIModuleLoader.Instance.addUIModuleImp(_loc5_);
+               UIModuleLoader.Instance.addUIModuleImp(module);
             }
          }
          else
@@ -64,15 +63,15 @@ package ddt.utils
          }
       }
       
-      protected function __onProgress(param1:UIModuleEvent) : void
+      protected function __onProgress(event:UIModuleEvent) : void
       {
-         var _loc2_:Number = (_loadProgress + param1.loader.progress) / _loadlist.length;
-         UIModuleSmallLoading.Instance.progress = _loc2_ * 100;
+         var realProgress:Number = (_loadProgress + event.loader.progress) / _loadlist.length;
+         UIModuleSmallLoading.Instance.progress = realProgress * 100;
       }
       
-      protected function __onUIModuleComplete(param1:UIModuleEvent) : void
+      protected function __onUIModuleComplete(event:UIModuleEvent) : void
       {
-         checkComplete(param1.module);
+         checkComplete(event.module);
          if(_UILoadComplete)
          {
             UIModuleLoader.Instance.removeEventListener("uiModuleComplete",__onUIModuleComplete);
@@ -84,15 +83,15 @@ package ddt.utils
          }
       }
       
-      private function checkComplete(param1:String) : void
+      private function checkComplete(moduleName:String) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = _loadlist;
-         for each(var _loc2_ in _loadlist)
+         for each(var n in _loadlist)
          {
-            if(_loc2_ == param1)
+            if(n == moduleName)
             {
-               _loadedDic[param1] = 1;
+               _loadedDic[moduleName] = 1;
                _loadProgress = Number(_loadProgress) + 1;
                if(_loadProgress >= _loadlist.length)
                {
@@ -102,7 +101,7 @@ package ddt.utils
          }
       }
       
-      protected function __onClose(param1:Event) : void
+      protected function __onClose(event:Event) : void
       {
          UIModuleSmallLoading.Instance.hide();
          UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);

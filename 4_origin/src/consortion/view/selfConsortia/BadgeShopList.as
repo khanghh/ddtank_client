@@ -32,23 +32,23 @@ package consortion.view.selfConsortia
          addChild(_panel);
       }
       
-      public function setList(param1:Array) : void
+      public function setList(arr:Array) : void
       {
-         var _loc2_:* = null;
+         var item1:* = null;
          var _loc6_:int = 0;
          var _loc5_:* = _items;
-         for each(var _loc3_ in _items)
+         for each(var item in _items)
          {
-            _loc3_.dispose();
+            item.dispose();
          }
          _items = [];
          var _loc8_:int = 0;
-         var _loc7_:* = param1;
-         for each(var _loc4_ in param1)
+         var _loc7_:* = arr;
+         for each(var info in arr)
          {
-            _loc2_ = new BadgeShopItem(_loc4_);
-            _list.addChild(_loc2_);
-            _items.push(_loc2_);
+            item1 = new BadgeShopItem(info);
+            _list.addChild(item1);
+            _items.push(item1);
          }
       }
       
@@ -56,9 +56,9 @@ package consortion.view.selfConsortia
       {
          var _loc3_:int = 0;
          var _loc2_:* = _items;
-         for each(var _loc1_ in _items)
+         for each(var item in _items)
          {
-            _loc1_.dispose();
+            item.dispose();
          }
          _items = null;
          _list.dispose();

@@ -59,9 +59,9 @@ package trainer.view
       
       private function initView() : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
+         var i:int = 0;
+         var outBg:* = null;
+         var cell:* = null;
          info = new AlertInfo();
          _info.showCancel = false;
          _info.moveEnable = false;
@@ -82,28 +82,27 @@ package trainer.view
          _bmpNpc = ComponentFactory.Instance.creat("asset.trainer.welcome.girl2");
          PositionUtils.setPos(_bmpNpc,"trainer.second.posGirl");
          addToContent(_bmpNpc);
-         var _loc5_:Point = ComponentFactory.Instance.creatCustomObject("trainer.posSecondTile");
-         var _loc1_:Array = [9003,8003,112097,11998,11901,11233];
+         var pos:Point = ComponentFactory.Instance.creatCustomObject("trainer.posSecondTile");
+         var id:Array = [9003,8003,112097,11998,11901,11233];
          _tile = new SimpleTileList(3);
          _tile.hSpace = 2;
          _tile.vSpace = 2;
-         _tile.x = _loc5_.x;
-         _tile.y = _loc5_.y;
-         _loc4_ = 0;
-         while(_loc4_ < _loc1_.length)
+         _tile.x = pos.x;
+         _tile.y = pos.y;
+         for(i = 0; i < id.length; )
          {
-            _loc2_ = ComponentFactory.Instance.creatBitmap("asset.ddtcore.goods.cellBg");
-            _loc3_ = new BaseCell(_loc2_,ItemManager.Instance.getTemplateById(_loc1_[_loc4_]),true,true);
-            _tile.addChild(_loc3_);
-            _loc4_++;
+            outBg = ComponentFactory.Instance.creatBitmap("asset.ddtcore.goods.cellBg");
+            cell = new BaseCell(outBg,ItemManager.Instance.getTemplateById(id[i]),true,true);
+            _tile.addChild(cell);
+            i++;
          }
          addToContent(_tile);
          ChatManager.Instance.releaseFocus();
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             NoviceDataManager.instance.saveNoviceData(730,PathManager.userName(),PathManager.solveRequestPath());
             SoundManager.instance.play("008");

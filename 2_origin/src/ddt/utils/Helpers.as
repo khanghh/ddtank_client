@@ -34,55 +34,54 @@ package ddt.utils
          super();
       }
       
-      public static function setTextfieldFormat(param1:TextField, param2:Object, param3:Boolean = false) : void
+      public static function setTextfieldFormat(textfield:TextField, chageObject:Object, setAll:Boolean = false) : void
       {
-         var _loc4_:TextFormat = param1.getTextFormat();
+         var textformat:TextFormat = textfield.getTextFormat();
          var _loc7_:int = 0;
-         var _loc6_:* = param2;
-         for(var _loc5_ in param2)
+         var _loc6_:* = chageObject;
+         for(var i in chageObject)
          {
-            _loc4_[_loc5_] = param2[_loc5_] || _loc4_[_loc5_];
+            textformat[i] = chageObject[i] || textformat[i];
          }
-         if(param3)
+         if(setAll)
          {
-            param1.setTextFormat(_loc4_);
+            textfield.setTextFormat(textformat);
          }
-         param1.defaultTextFormat = _loc4_;
+         textfield.defaultTextFormat = textformat;
       }
       
-      public static function hidePosMc(param1:DisplayObjectContainer) : void
+      public static function hidePosMc(object:DisplayObjectContainer) : void
       {
-         var _loc2_:* = null;
-         var _loc4_:int = 0;
-         var _loc3_:RegExp = /_pos$/;
-         _loc4_ = 0;
-         while(_loc4_ < param1.numChildren)
+         var child:* = null;
+         var i:int = 0;
+         var reg:RegExp = /_pos$/;
+         for(i = 0; i < object.numChildren; )
          {
-            _loc2_ = param1.getChildAt(_loc4_);
-            if(_loc3_.test(_loc2_.name))
+            child = object.getChildAt(i);
+            if(reg.test(child.name))
             {
-               _loc2_.visible = false;
+               child.visible = false;
             }
-            _loc4_++;
+            i++;
          }
       }
       
-      public static function registExtendMouseEvent(param1:InteractiveObject) : void
+      public static function registExtendMouseEvent(dobj:InteractiveObject) : void
       {
-         param1.addEventListener("mouseDown",__dobjDown);
+         dobj.addEventListener("mouseDown",__dobjDown);
       }
       
-      private static function __dobjDown(param1:MouseEvent) : void
+      private static function __dobjDown(e:MouseEvent) : void
       {
-         e = param1;
+         e = e;
          var dobj:InteractiveObject = e.currentTarget as InteractiveObject;
-         var fun_up:Function = function(param1:MouseEvent):void
+         var fun_up:Function = function(e:MouseEvent):void
          {
             dobj.dispatchEvent(new Event("STAGE_UP_EVENT"));
             dobj.stage.removeEventListener("mouseUp",fun_up);
             dobj.stage.removeEventListener("mouseMove",fun_move);
          };
-         var fun_move:Function = function(param1:MouseEvent):void
+         var fun_move:Function = function(e:MouseEvent):void
          {
             dobj.dispatchEvent(new Event("MOUSE_DOWN_AND_DRAGING_EVENT"));
          };
@@ -90,11 +89,11 @@ package ddt.utils
          dobj.stage.addEventListener("mouseMove",fun_move);
       }
       
-      public static function delayCall(param1:Function, param2:int = 1) : void
+      public static function delayCall(fun:Function, delay_frame:int = 1) : void
       {
-         fun = param1;
-         delay_frame = param2;
-         var fun_new:Function = function(param1:Event):void
+         fun = fun;
+         delay_frame = delay_frame;
+         var fun_new:Function = function(e:Event):void
          {
             delay_frame = delay_frame - 1;
             if(delay_frame - 1 <= 0)
@@ -106,174 +105,171 @@ package ddt.utils
          enterFrameDispatcher.addEventListener("enterFrame",fun_new);
       }
       
-      public static function copyProperty(param1:Object, param2:Object, param3:Array = null) : void
+      public static function copyProperty(from_obja:Object, to_objb:Object, propertiy:Array = null) : void
       {
          var _loc6_:int = 0;
-         var _loc5_:* = param3;
-         for each(var _loc4_ in param3)
+         var _loc5_:* = propertiy;
+         for each(var i in propertiy)
          {
-            param2[_loc4_] = param1[_loc4_];
+            to_objb[i] = from_obja[i];
          }
       }
       
-      public static function enCodeString(param1:String) : String
+      public static function enCodeString(str:String) : String
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < encode_arr.length)
+         var i:int = 0;
+         for(i = 0; i < encode_arr.length; )
          {
-            param1 = param1.replace(new RegExp(encode_arr[_loc2_][0],"g"),encode_arr[_loc2_][1]);
-            _loc2_++;
+            str = str.replace(new RegExp(encode_arr[i][0],"g"),encode_arr[i][1]);
+            i++;
          }
-         return param1;
+         return str;
       }
       
-      public static function deCodeString(param1:String) : String
+      public static function deCodeString(str:String) : String
       {
-         var _loc2_:int = 0;
-         _loc2_ = decode_arr.length - 1;
-         while(_loc2_ >= 0)
+         var i:int = 0;
+         for(i = decode_arr.length - 1; i >= 0; )
          {
-            param1 = param1.replace(new RegExp(decode_arr[_loc2_][1],"g"),decode_arr[_loc2_][0]);
-            _loc2_--;
+            str = str.replace(new RegExp(decode_arr[i][1],"g"),decode_arr[i][0]);
+            i--;
          }
-         return param1;
+         return str;
       }
       
-      public static function setup(param1:Stage) : void
+      public static function setup(stage:Stage) : void
       {
-         _stage = param1;
+         _stage = stage;
       }
       
-      public static function randomPick(param1:Array) : *
+      public static function randomPick(arr:Array) : *
       {
-         var _loc3_:int = param1.length;
-         var _loc2_:int = Math.floor(_loc3_ * Math.random());
-         return param1[_loc2_];
+         var len:int = arr.length;
+         var index:int = Math.floor(len * Math.random());
+         return arr[index];
       }
       
-      public static function clone(param1:Object) : *
+      public static function clone(source:Object) : *
       {
-         var _loc2_:ByteArray = new ByteArray();
-         _loc2_.writeObject(param1);
-         _loc2_.position = 0;
-         return _loc2_.readObject();
+         var byteArr:ByteArray = new ByteArray();
+         byteArr.writeObject(source);
+         byteArr.position = 0;
+         return byteArr.readObject();
       }
       
-      public static function grey(param1:DisplayObject) : void
+      public static function grey(target:DisplayObject) : void
       {
-         var _loc2_:Array = [];
-         _loc2_ = _loc2_.concat([0.3086,0.6094,0.082,0,0]);
-         _loc2_ = _loc2_.concat([0.3086,0.6094,0.082,0,0]);
-         _loc2_ = _loc2_.concat([0.3086,0.6094,0.082,0,0]);
-         _loc2_ = _loc2_.concat([0,0,0,1,0]);
-         var _loc4_:ColorMatrixFilter = new ColorMatrixFilter(_loc2_);
-         var _loc3_:Array = [];
-         _loc3_.push(_loc4_);
-         param1.filters = _loc3_;
+         var matrix:Array = [];
+         matrix = matrix.concat([0.3086,0.6094,0.082,0,0]);
+         matrix = matrix.concat([0.3086,0.6094,0.082,0,0]);
+         matrix = matrix.concat([0.3086,0.6094,0.082,0,0]);
+         matrix = matrix.concat([0,0,0,1,0]);
+         var filter:ColorMatrixFilter = new ColorMatrixFilter(matrix);
+         var filters:Array = [];
+         filters.push(filter);
+         target.filters = filters;
       }
       
-      public static function colorful(param1:DisplayObject) : void
+      public static function colorful(target:DisplayObject) : void
       {
-         param1.filters = [];
+         target.filters = [];
       }
       
-      public static function setHue(param1:DisplayObject, param2:int) : void
+      public static function setHue(target:DisplayObject, hueValue:int) : void
       {
-         var _loc3_:ColorMatrix = new ColorMatrix();
-         var _loc4_:ColorMatrixFilter = new ColorMatrixFilter();
-         _loc3_.adjustHue(param2);
-         _loc4_.matrix = _loc3_;
-         param1.filters = [_loc4_];
+         var sx_Matrix:ColorMatrix = new ColorMatrix();
+         var sx_Filter:ColorMatrixFilter = new ColorMatrixFilter();
+         sx_Matrix.adjustHue(hueValue);
+         sx_Filter.matrix = sx_Matrix;
+         target.filters = [sx_Filter];
       }
       
-      public static function resetHue(param1:DisplayObject) : void
+      public static function resetHue(target:DisplayObject) : void
       {
-         param1.filters = [];
+         target.filters = [];
       }
       
-      public static function getTimeString(param1:Number, param2:String = "") : String
+      public static function getTimeString(time:Number, type:String = "") : String
       {
-         var _loc6_:* = null;
-         var _loc4_:* = null;
-         var _loc10_:* = null;
-         var _loc9_:* = null;
-         var _loc7_:* = null;
-         var _loc3_:* = null;
-         var _loc8_:* = null;
-         var _loc5_:* = null;
-         param1 = Math.max(0,param1);
-         if(param2 == "cn")
+         var dUnit:* = null;
+         var hUnit:* = null;
+         var mUnit:* = null;
+         var sUnit:* = null;
+         var seconds:* = null;
+         var minutes:* = null;
+         var hours:* = null;
+         var days:* = null;
+         time = Math.max(0,time);
+         if(type == "cn")
          {
-            _loc6_ = "天";
-            _loc4_ = "小时";
-            _loc10_ = "分";
-            _loc9_ = "秒";
+            dUnit = "天";
+            hUnit = "小时";
+            mUnit = "分";
+            sUnit = "秒";
          }
-         else if(param2 == "")
+         else if(type == "")
          {
-            _loc6_ = " ";
-            _loc4_ = ":";
-            _loc10_ = ":";
-            _loc9_ = "";
+            dUnit = " ";
+            hUnit = ":";
+            mUnit = ":";
+            sUnit = "";
          }
-         _loc7_ = String(Math.floor(param1 / 1000 % 60));
-         _loc3_ = String(Math.floor(param1 / 60000 % 60));
-         _loc8_ = String(Math.floor(param1 / 3600000 % 24));
-         _loc5_ = String(Math.floor(param1 / 86400000));
-         _loc7_ = fixZero(_loc7_) + _loc9_;
-         _loc3_ = fixZero(_loc3_) + _loc10_;
-         _loc8_ = fixZero(_loc8_) + _loc4_;
-         _loc5_ = _loc5_ == "0"?"":fixZero(_loc5_) + _loc6_;
-         return _loc5_ + _loc8_ + _loc3_ + _loc7_;
+         seconds = String(Math.floor(time / 1000 % 60));
+         minutes = String(Math.floor(time / 60000 % 60));
+         hours = String(Math.floor(time / 3600000 % 24));
+         days = String(Math.floor(time / 86400000));
+         seconds = fixZero(seconds) + sUnit;
+         minutes = fixZero(minutes) + mUnit;
+         hours = fixZero(hours) + hUnit;
+         days = days == "0"?"":fixZero(days) + dUnit;
+         return days + hours + minutes + seconds;
       }
       
-      public static function fixZero(param1:String) : String
+      public static function fixZero(str:String) : String
       {
-         if(param1.length == 1)
+         if(str.length == 1)
          {
-            param1 = "0" + param1;
+            str = "0" + str;
          }
-         return param1;
+         return str;
       }
       
-      public static function scaleDisplayObject(param1:DisplayObject, param2:*, param3:*, param4:Number = 0) : void
+      public static function scaleDisplayObject($displayObject:DisplayObject, $width:*, $height:*, scaleTo:Number = 0) : void
       {
-         if(param2 != null && param3 == null)
+         if($width != null && $height == null)
          {
-            param1.width = param2;
-            param1.height = param1.scaleX * param1.height;
+            $displayObject.width = $width;
+            $displayObject.height = $displayObject.scaleX * $displayObject.height;
          }
-         else if(param2 == null && param3 != null)
+         else if($width == null && $height != null)
          {
-            param1.height = param3;
-            param1.width = param1.scaleY * param1.width;
+            $displayObject.height = $height;
+            $displayObject.width = $displayObject.scaleY * $displayObject.width;
          }
-         else if(param2 == null && param3 == null && param4 > 0)
+         else if($width == null && $height == null && scaleTo > 0)
          {
-            if(param1.width < param1.height)
+            if($displayObject.width < $displayObject.height)
             {
-               scaleDisplayObject(param1,param4,null);
+               scaleDisplayObject($displayObject,scaleTo,null);
             }
             else
             {
-               scaleDisplayObject(param1,null,param4);
+               scaleDisplayObject($displayObject,null,scaleTo);
             }
          }
       }
       
-      public static function spaceString(param1:Number, param2:Number = 8) : String
+      public static function spaceString(stringWidth:Number, spaceWidth:Number = 8) : String
       {
-         var _loc5_:int = 0;
-         var _loc3_:String = "";
-         var _loc4_:int = param1 / param2;
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         var i:int = 0;
+         var spaceString:String = "";
+         var len:int = stringWidth / spaceWidth;
+         for(i = 0; i < len; )
          {
-            _loc3_ = _loc3_ + " ";
-            _loc5_++;
+            spaceString = spaceString + " ";
+            i++;
          }
-         return _loc3_;
+         return spaceString;
       }
    }
 }

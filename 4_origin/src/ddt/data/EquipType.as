@@ -35,6 +35,8 @@ package ddt.data
       
       public static const VIPCARD:int = 11992;
       
+      public static const WASH_BONE:int = 12656;
+      
       public static const VIPCARD_TEST:int = 11991;
       
       public static const BRAVERY:int = 201531;
@@ -229,6 +231,10 @@ package ddt.data
       
       public static const MAGIC_TEXP_LV_II:int = 40006;
       
+      public static const NS_TEXP_LV_I:int = 40007;
+      
+      public static const NS_TEXP_LV_II:int = 40008;
+      
       public static const DEFAULT_WEAPON:int = 70016;
       
       public static const HEAD:uint = 1;
@@ -343,6 +349,8 @@ package ddt.data
       
       public static const MARK_CHIP:int = 74;
       
+      public static const OLD_PLAYER:int = 79;
+      
       public static const SUPER_PET_EXP_FOOD:int = 334102;
       
       public static const EASY_TICKET_ID:int = 200619;
@@ -357,7 +365,7 @@ package ddt.data
       
       public static const TYPES:Array = ["","head","glass","hair","eff","cloth","face","arm","armlet","ring","","","","suits","necklace","wing","chatBall","","","","","","","","","","","","armlet","ring"];
       
-      public static const PARTNAME:Array = ["",LanguageMgr.GetTranslation("tank.data.EquipType.head"),LanguageMgr.GetTranslation("tank.data.EquipType.glass"),LanguageMgr.GetTranslation("tank.data.EquipType.hair"),LanguageMgr.GetTranslation("tank.data.EquipType.face"),LanguageMgr.GetTranslation("tank.data.EquipType.clothing"),LanguageMgr.GetTranslation("tank.data.EquipType.eye"),LanguageMgr.GetTranslation("tank.data.EquipType.weapon"),LanguageMgr.GetTranslation("tank.data.EquipType.bangle"),LanguageMgr.GetTranslation("tank.data.EquipType.finger"),LanguageMgr.GetTranslation("tank.data.EquipType.tool"),LanguageMgr.GetTranslation("tank.data.EquipType.normal"),"",LanguageMgr.GetTranslation("tank.data.EquipType.suit"),LanguageMgr.GetTranslation("tank.data.EquipType.necklace"),LanguageMgr.GetTranslation("tank.data.EquipType.decorate"),LanguageMgr.GetTranslation("tank.data.EquipType.paopao"),LanguageMgr.GetTranslation("tank.data.EquipType.offhand"),"",LanguageMgr.GetTranslation("tank.manager.ItemManager.aid"),LanguageMgr.GetTranslation("tank.data.EquipType.normal"),LanguageMgr.GetTranslation("tank.manager.ItemManager.cigaretteAsh"),"",LanguageMgr.GetTranslation("tank.data.EquipType.normal"),LanguageMgr.GetTranslation("tank.data.EquipType.normal"),LanguageMgr.GetTranslation("tank.manager.ItemManager.gift"),"",LanguageMgr.GetTranslation("tank.data.EquipType.tempweapon"),LanguageMgr.GetTranslation("tank.data.EquipType.TEMPARMLET"),LanguageMgr.GetTranslation("tank.data.EquipType.tempTEMPRING"),LanguageMgr.GetTranslation("tank.data.EquipType.prop"),LanguageMgr.GetTranslation("tank.data.EquipType.offhand"),LanguageMgr.GetTranslation("tank.data.EquipType.seed"),LanguageMgr.GetTranslation("tank.data.EquipType.manure"),LanguageMgr.GetTranslation("tank.data.EquipType.food"),LanguageMgr.GetTranslation("tank.data.EquipType.petEgg"),LanguageMgr.GetTranslation("tank.data.EquipType.vegetable"),LanguageMgr.GetTranslation("tank.data.EquipType.homeAdorn"),"","",LanguageMgr.GetTranslation("tank.data.EquipType.leagueBadge"),"",LanguageMgr.GetTranslation("tank.data.EquipType.normal"),LanguageMgr.GetTranslation("tank.data.EquipType.normal"),"","","","","","",LanguageMgr.GetTranslation("tank.data.EquipType.petTool"),LanguageMgr.GetTranslation("tank.data.EquipType.petHead"),LanguageMgr.GetTranslation("tank.data.EquipType.petClothing"),LanguageMgr.GetTranslation("tank.data.EquipType.normal"),"","","","","","","",LanguageMgr.GetTranslation("tank.data.EquipType.magicStone"),LanguageMgr.GetTranslation("tank.data.EquipType.normal"),LanguageMgr.GetTranslation("tank.data.gradeBuy.box"),LanguageMgr.GetTranslation("tank.data.EquipType.armShell"),LanguageMgr.GetTranslation("tank.data.EquipType.normal"),LanguageMgr.GetTranslation("tank.data.EquipType.specialCardBox"),"",LanguageMgr.GetTranslation("tank.data.EquipType.amuletBox"),LanguageMgr.GetTranslation("tank.data.EquipType.amulet"),LanguageMgr.GetTranslation("tank.data.EquipType.equipAmulet"),"",LanguageMgr.GetTranslation("tank.data.EquipType.manualBox"),LanguageMgr.GetTranslation("tank.room.borden"),"","","","","","","",LanguageMgr.GetTranslation("tank.data.EquipType.mines")];
+      public static const PARTNAME:Array = ["",LanguageMgr.GetTranslation("tank.data.EquipType.head"),LanguageMgr.GetTranslation("tank.data.EquipType.glass"),LanguageMgr.GetTranslation("tank.data.EquipType.hair"),LanguageMgr.GetTranslation("tank.data.EquipType.face"),LanguageMgr.GetTranslation("tank.data.EquipType.clothing"),LanguageMgr.GetTranslation("tank.data.EquipType.eye"),LanguageMgr.GetTranslation("tank.data.EquipType.weapon"),LanguageMgr.GetTranslation("tank.data.EquipType.bangle"),LanguageMgr.GetTranslation("tank.data.EquipType.finger"),LanguageMgr.GetTranslation("tank.data.EquipType.tool"),LanguageMgr.GetTranslation("tank.data.EquipType.normal"),"",LanguageMgr.GetTranslation("tank.data.EquipType.suit"),LanguageMgr.GetTranslation("tank.data.EquipType.necklace"),LanguageMgr.GetTranslation("tank.data.EquipType.decorate"),LanguageMgr.GetTranslation("tank.data.EquipType.paopao"),LanguageMgr.GetTranslation("tank.data.EquipType.offhand"),"",LanguageMgr.GetTranslation("tank.manager.ItemManager.aid"),LanguageMgr.GetTranslation("tank.data.EquipType.normal"),LanguageMgr.GetTranslation("tank.manager.ItemManager.cigaretteAsh"),"",LanguageMgr.GetTranslation("tank.data.EquipType.normal"),LanguageMgr.GetTranslation("tank.data.EquipType.normal"),LanguageMgr.GetTranslation("tank.manager.ItemManager.gift"),"",LanguageMgr.GetTranslation("tank.data.EquipType.tempweapon"),LanguageMgr.GetTranslation("tank.data.EquipType.TEMPARMLET"),LanguageMgr.GetTranslation("tank.data.EquipType.tempTEMPRING"),LanguageMgr.GetTranslation("tank.data.EquipType.prop"),LanguageMgr.GetTranslation("tank.data.EquipType.offhand"),LanguageMgr.GetTranslation("tank.data.EquipType.seed"),LanguageMgr.GetTranslation("tank.data.EquipType.manure"),LanguageMgr.GetTranslation("tank.data.EquipType.food"),LanguageMgr.GetTranslation("tank.data.EquipType.petEgg"),LanguageMgr.GetTranslation("tank.data.EquipType.vegetable"),LanguageMgr.GetTranslation("tank.data.EquipType.homeAdorn"),"","",LanguageMgr.GetTranslation("tank.data.EquipType.leagueBadge"),"",LanguageMgr.GetTranslation("tank.data.EquipType.normal"),LanguageMgr.GetTranslation("tank.data.EquipType.normal"),"","","","","","",LanguageMgr.GetTranslation("tank.data.EquipType.petTool"),LanguageMgr.GetTranslation("tank.data.EquipType.petHead"),LanguageMgr.GetTranslation("tank.data.EquipType.petClothing"),LanguageMgr.GetTranslation("tank.data.EquipType.normal"),"","","","","","","",LanguageMgr.GetTranslation("tank.data.EquipType.magicStone"),LanguageMgr.GetTranslation("tank.data.EquipType.normal"),LanguageMgr.GetTranslation("tank.data.gradeBuy.box"),LanguageMgr.GetTranslation("tank.data.EquipType.armShell"),LanguageMgr.GetTranslation("tank.data.EquipType.normal"),LanguageMgr.GetTranslation("tank.data.EquipType.specialCardBox"),"",LanguageMgr.GetTranslation("tank.data.EquipType.amuletBox"),LanguageMgr.GetTranslation("tank.data.EquipType.amulet"),LanguageMgr.GetTranslation("tank.data.EquipType.equipAmulet"),"",LanguageMgr.GetTranslation("tank.data.EquipType.manualBox"),LanguageMgr.GetTranslation("tank.room.borden"),"","","","",LanguageMgr.GetTranslation("tank.data.EquipType.normal"),LanguageMgr.GetTranslation("tank.data.EquipType.special"),"",LanguageMgr.GetTranslation("tank.data.EquipType.mines")];
       
       private static const dressAbleIDs:Array = [1,2,3,4,5,6,13,15];
       
@@ -444,6 +452,8 @@ package ddt.data
       public static const CaptainShield:int = 17012;
       
       public static const AresShield:int = 17013;
+      
+      public static const DevilEye:int = 17015;
       
       public static const WishKingBlessing:int = 17200;
       
@@ -570,6 +580,12 @@ package ddt.data
       public static const ROOMBORDENBOX:int = 43;
       
       public static const ROOMBORDENTYPE:int = 73;
+      
+      public static const NS_TEXP:int = 78;
+      
+      public static const GOURD_EXP_BOTTLE:Array = [11196,11197,11198,11199,12211];
+      
+      public static const DEVIL_TURN_BEADLIST:Array = [12623,12624,12625,12626,12627];
        
       
       public function EquipType()
@@ -577,9 +593,9 @@ package ddt.data
          super();
       }
       
-      public static function getPropNameByType(param1:int) : String
+      public static function getPropNameByType(type:int) : String
       {
-         switch(int(param1) - 1)
+         switch(int(type) - 1)
          {
             case 0:
                return "composestone";
@@ -600,33 +616,33 @@ package ddt.data
          }
       }
       
-      public static function dressAble(param1:ItemTemplateInfo) : Boolean
+      public static function dressAble(item:ItemTemplateInfo) : Boolean
       {
-         if(dressAbleIDs.indexOf(param1.CategoryID) != -1)
+         if(dressAbleIDs.indexOf(item.CategoryID) != -1)
          {
             return true;
          }
          return false;
       }
       
-      public static function isRongLing(param1:ItemTemplateInfo) : Boolean
+      public static function isRongLing(item:ItemTemplateInfo) : Boolean
       {
-         return param1.FusionType != 0 && param1.FusionRate > 0;
+         return item.FusionType != 0 && item.FusionRate > 0;
       }
       
-      public static function isJewelryOrRing(param1:ItemTemplateInfo) : Boolean
+      public static function isJewelryOrRing(item:ItemTemplateInfo) : Boolean
       {
-         return param1.CategoryID == 8 || param1.CategoryID == 9;
+         return item.CategoryID == 8 || item.CategoryID == 9;
       }
       
-      public static function isCards(param1:ItemTemplateInfo) : Boolean
+      public static function isCards(item:ItemTemplateInfo) : Boolean
       {
-         return param1.CategoryID == 26;
+         return item.CategoryID == 26;
       }
       
-      public static function isWeddingRing(param1:ItemTemplateInfo) : Boolean
+      public static function isWeddingRing(item:ItemTemplateInfo) : Boolean
       {
-         var _loc2_:* = param1.TemplateID;
+         var _loc2_:* = item.TemplateID;
          if(9022 !== _loc2_)
          {
             if(9122 !== _loc2_)
@@ -642,26 +658,26 @@ package ddt.data
                            return false;
                         }
                      }
-                     addr11:
+                     addr15:
                      return true;
                   }
-                  addr10:
-                  §§goto(addr11);
+                  addr14:
+                  §§goto(addr15);
                }
-               addr9:
-               §§goto(addr10);
+               addr13:
+               §§goto(addr14);
             }
-            addr8:
-            §§goto(addr9);
+            addr12:
+            §§goto(addr13);
          }
-         §§goto(addr8);
+         §§goto(addr12);
       }
       
-      public static function isEditable(param1:ItemTemplateInfo) : Boolean
+      public static function isEditable(item:ItemTemplateInfo) : Boolean
       {
-         if(param1.CategoryID <= 6 && param1.CategoryID >= 1)
+         if(item.CategoryID <= 6 && item.CategoryID >= 1)
          {
-            if(param1.Property6 == "0")
+            if(item.Property6 == "0")
             {
                return true;
             }
@@ -669,178 +685,182 @@ package ddt.data
          return false;
       }
       
-      public static function isPropertyWater(param1:ItemTemplateInfo) : Boolean
+      public static function isPropertyWater(item:ItemTemplateInfo) : Boolean
       {
-         if(!param1)
+         if(!item)
          {
             return false;
          }
-         if(param1.CategoryID == 11 && (int(param1.Property1) >= 74 && int(param1.Property1) <= 80) || param1.TemplateID >= 1120098 && param1.TemplateID <= 1120101)
+         if(item.CategoryID == 11 && (int(item.Property1) >= 74 && int(item.Property1) <= 80) || item.TemplateID >= 1120098 && item.TemplateID <= 1120101)
          {
             return true;
          }
          return false;
       }
       
-      public static function canBeUsed(param1:ItemTemplateInfo) : Boolean
+      public static function canBeUsed(item:ItemTemplateInfo) : Boolean
       {
-         if(param1.CategoryID == 11 && param1.Property1 == "5" && param1.Property2 != "0")
+         if(item.CategoryID == 11 && item.Property1 == "5" && item.Property2 != "0")
          {
             return true;
          }
-         if(param1.CategoryID == 11 && param1.Property1 == "21")
+         if(item.CategoryID == 11 && item.Property1 == "21")
          {
             return true;
          }
-         if(param1.CategoryID == 11 && param1.Property1 == "100")
+         if(item.CategoryID == 11 && item.Property1 == "100")
          {
             return true;
          }
-         if(param1.CategoryID == 11 && param1.Property1 == "115")
+         if(item.CategoryID == 11 && item.Property1 == "115")
          {
             return true;
          }
-         if(param1.CategoryID == 11 && param1.Property1 == "37")
+         if(item.CategoryID == 11 && item.Property1 == "37")
          {
             return true;
          }
-         if(param1.CategoryID == 11 && param1.Property1 == "24")
+         if(item.CategoryID == 11 && item.Property1 == "24")
          {
             return true;
          }
-         if(param1.CategoryID == 11 && param1.Property1 == "26")
+         if(item.CategoryID == 11 && item.Property1 == "26")
          {
             return true;
          }
-         if(param1.CategoryID == 11 && param1.Property1 == "39")
+         if(item.CategoryID == 11 && item.Property1 == "39")
          {
             return true;
          }
-         if(param1.CategoryID == 11 && param1.Property1 == "101")
+         if(item.CategoryID == 11 && item.Property1 == "101")
          {
             return true;
          }
-         if(param1.CategoryID == 11 && param1.Property1 == "45")
+         if(item.CategoryID == 11 && item.Property1 == "45")
          {
             return true;
          }
-         if(param1.CategoryID == 11 && param1.Property1 == "47")
+         if(item.CategoryID == 11 && item.Property1 == "47")
          {
             return true;
          }
-         if(param1.CategoryID == 11 && param1.Property1 == "82")
+         if(item.CategoryID == 11 && item.Property1 == "82")
          {
             return true;
          }
-         if(param1.CategoryID == 11 && (param1.Property1 == "27" || param1.Property1 == "29"))
+         if(item.CategoryID == 11 && (item.Property1 == "27" || item.Property1 == "29"))
          {
             return true;
          }
-         if(param1.CategoryID == 11 && param1.Property1 == "110")
+         if(item.CategoryID == 11 && item.Property1 == "110")
          {
             return true;
          }
-         if(param1.CategoryID == 11 && param1.Property1 == "1100")
+         if(item.CategoryID == 11 && item.Property1 == "1100")
          {
             return true;
          }
-         if(param1.CategoryID == 11 && param1.Property1 == "112")
+         if(item.CategoryID == 11 && item.Property1 == "112")
          {
             return true;
          }
-         if(param1.CategoryID == 11 && param1.Property1 == "113")
+         if(item.CategoryID == 11 && item.Property1 == "113")
          {
             return true;
          }
-         if(param1.CategoryID == 11 && param1.Property1 == "25")
+         if(item.CategoryID == 11 && item.Property1 == "25")
          {
             return true;
          }
-         if(param1.CategoryID == 11 && param1.Property1 == "104")
+         if(item.CategoryID == 11 && item.Property1 == "104")
          {
             return true;
          }
-         if(param1.CategoryID == 11 && param1.Property1 == "106")
+         if(item.CategoryID == 11 && item.Property1 == "106")
          {
             return true;
          }
-         if(param1.CategoryID == 11 && param1.Property1 == "107")
+         if(item.CategoryID == 11 && item.Property1 == "107")
          {
             return true;
          }
-         if(param1.CategoryID == 11 && param1.Property1 == "108")
+         if(item.CategoryID == 11 && item.Property1 == "108")
          {
             return true;
          }
-         if(param1.CategoryID == 11 && param1.Property1 == "130")
+         if(item.CategoryID == 11 && item.Property1 == "130")
          {
             return true;
          }
-         if(param1.CategoryID == 65 && int(param1.Property8) > 0)
+         if(item.CategoryID == 65 && int(item.Property8) > 0)
          {
             return true;
          }
-         if(param1.CategoryID == 11 && param1.Property1 == "116")
+         if(item.CategoryID == 11 && item.Property1 == "116")
          {
             return true;
          }
-         if(param1.CategoryID == 11 && param1.Property1 == "121")
+         if(item.CategoryID == 11 && item.Property1 == "121")
          {
             return true;
          }
-         if(param1.CategoryID == 62 && (param1.Property1 == "1" || param1.Property1 == "0"))
+         if(item.CategoryID == 62 && (item.Property1 == "1" || item.Property1 == "0"))
          {
             return true;
          }
-         if((param1.CategoryID == 20 || param1.CategoryID == 53) && param1.Property1 == "0")
+         if(item.CategoryID == 11 && item.Property1 == "120")
          {
             return true;
          }
-         if(isPropertyWater(param1))
+         if((item.CategoryID == 20 || item.CategoryID == 53) && item.Property1 == "0")
          {
             return true;
          }
-         if(isStrengthStone(param1))
+         if(isPropertyWater(item))
          {
             return true;
          }
-         if(isComposeStone(param1))
+         if(isStrengthStone(item))
          {
             return true;
          }
-         if(param1.CategoryID == 18)
+         if(isComposeStone(item))
          {
             return true;
          }
-         if(param1.CategoryID == 23)
+         if(item.CategoryID == 18)
          {
             return true;
          }
-         if(param1.CategoryID == 24)
+         if(item.CategoryID == 23)
          {
             return true;
          }
-         if(param1.CategoryID == 35)
+         if(item.CategoryID == 24)
          {
             return true;
          }
-         if(param1.CategoryID == 11569)
+         if(item.CategoryID == 35)
          {
             return true;
          }
-         if(param1.CategoryID == 37)
+         if(item.CategoryID == 11569)
          {
             return true;
          }
-         if(param1.CategoryID == 66)
+         if(item.CategoryID == 37)
          {
             return true;
          }
-         if(param1.CategoryID == 73)
+         if(item.CategoryID == 66)
          {
             return true;
          }
-         var _loc2_:* = param1.TemplateID;
+         if(item.CategoryID == 73)
+         {
+            return true;
+         }
+         var _loc2_:* = item.TemplateID;
          if(34101 !== _loc2_)
          {
             if(11999 !== _loc2_)
@@ -912,108 +932,108 @@ package ddt.data
                                                                                                                return false;
                                                                                                             }
                                                                                                          }
-                                                                                                         addr529:
+                                                                                                         addr587:
                                                                                                          return true;
                                                                                                       }
-                                                                                                      addr528:
-                                                                                                      §§goto(addr529);
+                                                                                                      addr586:
+                                                                                                      §§goto(addr587);
                                                                                                    }
-                                                                                                   addr527:
-                                                                                                   §§goto(addr528);
+                                                                                                   addr585:
+                                                                                                   §§goto(addr586);
                                                                                                 }
-                                                                                                addr526:
-                                                                                                §§goto(addr527);
+                                                                                                addr584:
+                                                                                                §§goto(addr585);
                                                                                              }
-                                                                                             addr525:
-                                                                                             §§goto(addr526);
+                                                                                             addr583:
+                                                                                             §§goto(addr584);
                                                                                           }
-                                                                                          addr524:
-                                                                                          §§goto(addr525);
+                                                                                          addr582:
+                                                                                          §§goto(addr583);
                                                                                        }
-                                                                                       addr523:
-                                                                                       §§goto(addr524);
+                                                                                       addr581:
+                                                                                       §§goto(addr582);
                                                                                     }
-                                                                                    addr522:
-                                                                                    §§goto(addr523);
+                                                                                    addr580:
+                                                                                    §§goto(addr581);
                                                                                  }
-                                                                                 addr521:
-                                                                                 §§goto(addr522);
+                                                                                 addr579:
+                                                                                 §§goto(addr580);
                                                                               }
-                                                                              addr520:
-                                                                              §§goto(addr521);
+                                                                              addr578:
+                                                                              §§goto(addr579);
                                                                            }
-                                                                           addr519:
-                                                                           §§goto(addr520);
+                                                                           addr577:
+                                                                           §§goto(addr578);
                                                                         }
-                                                                        addr518:
-                                                                        §§goto(addr519);
+                                                                        addr576:
+                                                                        §§goto(addr577);
                                                                      }
-                                                                     addr517:
-                                                                     §§goto(addr518);
+                                                                     addr575:
+                                                                     §§goto(addr576);
                                                                   }
-                                                                  addr516:
-                                                                  §§goto(addr517);
+                                                                  addr574:
+                                                                  §§goto(addr575);
                                                                }
-                                                               addr515:
-                                                               §§goto(addr516);
+                                                               addr573:
+                                                               §§goto(addr574);
                                                             }
-                                                            addr514:
-                                                            §§goto(addr515);
+                                                            addr572:
+                                                            §§goto(addr573);
                                                          }
-                                                         addr513:
-                                                         §§goto(addr514);
+                                                         addr571:
+                                                         §§goto(addr572);
                                                       }
-                                                      addr512:
-                                                      §§goto(addr513);
+                                                      addr570:
+                                                      §§goto(addr571);
                                                    }
-                                                   addr511:
-                                                   §§goto(addr512);
+                                                   addr569:
+                                                   §§goto(addr570);
                                                 }
-                                                addr510:
-                                                §§goto(addr511);
+                                                addr568:
+                                                §§goto(addr569);
                                              }
-                                             addr509:
-                                             §§goto(addr510);
+                                             addr567:
+                                             §§goto(addr568);
                                           }
-                                          addr508:
-                                          §§goto(addr509);
+                                          addr566:
+                                          §§goto(addr567);
                                        }
-                                       addr507:
-                                       §§goto(addr508);
+                                       addr565:
+                                       §§goto(addr566);
                                     }
-                                    addr506:
-                                    §§goto(addr507);
+                                    addr564:
+                                    §§goto(addr565);
                                  }
-                                 addr505:
-                                 §§goto(addr506);
+                                 addr563:
+                                 §§goto(addr564);
                               }
-                              addr504:
-                              §§goto(addr505);
+                              addr562:
+                              §§goto(addr563);
                            }
-                           addr503:
-                           §§goto(addr504);
+                           addr561:
+                           §§goto(addr562);
                         }
-                        addr502:
-                        §§goto(addr503);
+                        addr560:
+                        §§goto(addr561);
                      }
-                     addr501:
-                     §§goto(addr502);
+                     addr559:
+                     §§goto(addr560);
                   }
-                  addr500:
-                  §§goto(addr501);
+                  addr558:
+                  §§goto(addr559);
                }
-               addr499:
-               §§goto(addr500);
+               addr557:
+               §§goto(addr558);
             }
-            addr498:
-            §§goto(addr499);
+            addr556:
+            §§goto(addr557);
          }
-         §§goto(addr498);
+         §§goto(addr556);
       }
       
-      public static function isEquipBoolean(param1:ItemTemplateInfo) : Boolean
+      public static function isEquipBoolean(item:ItemTemplateInfo) : Boolean
       {
-         var _loc2_:* = param1.CategoryID;
+         var _loc2_:* = item.CategoryID;
          if(1 !== _loc2_)
          {
             if(2 !== _loc2_)
@@ -1051,144 +1071,144 @@ package ddt.data
                                                             return false;
                                                          }
                                                       }
-                                                      addr22:
+                                                      addr26:
                                                       return true;
                                                    }
-                                                   addr21:
-                                                   §§goto(addr22);
+                                                   addr25:
+                                                   §§goto(addr26);
                                                 }
-                                                addr20:
-                                                §§goto(addr21);
+                                                addr24:
+                                                §§goto(addr25);
                                              }
-                                             addr19:
-                                             §§goto(addr20);
+                                             addr23:
+                                             §§goto(addr24);
                                           }
-                                          addr18:
-                                          §§goto(addr19);
+                                          addr22:
+                                          §§goto(addr23);
                                        }
-                                       addr17:
-                                       §§goto(addr18);
+                                       addr21:
+                                       §§goto(addr22);
                                     }
-                                    addr16:
-                                    §§goto(addr17);
+                                    addr20:
+                                    §§goto(addr21);
                                  }
-                                 addr15:
-                                 §§goto(addr16);
+                                 addr19:
+                                 §§goto(addr20);
                               }
-                              addr14:
-                              §§goto(addr15);
+                              addr18:
+                              §§goto(addr19);
                            }
-                           addr13:
-                           §§goto(addr14);
+                           addr17:
+                           §§goto(addr18);
                         }
-                        addr12:
-                        §§goto(addr13);
+                        addr16:
+                        §§goto(addr17);
                      }
-                     addr11:
-                     §§goto(addr12);
+                     addr15:
+                     §§goto(addr16);
                   }
-                  addr10:
-                  §§goto(addr11);
+                  addr14:
+                  §§goto(addr15);
                }
-               addr9:
-               §§goto(addr10);
+               addr13:
+               §§goto(addr14);
             }
-            addr8:
-            §§goto(addr9);
+            addr12:
+            §§goto(addr13);
          }
-         §§goto(addr8);
+         §§goto(addr12);
       }
       
-      public static function isHealStone(param1:ItemTemplateInfo) : Boolean
+      public static function isHealStone(item:ItemTemplateInfo) : Boolean
       {
-         return param1.CategoryID == 19;
+         return item.CategoryID == 19;
       }
       
-      public static function isFusion(param1:ItemTemplateInfo) : Boolean
+      public static function isFusion(item:ItemTemplateInfo) : Boolean
       {
-         return param1.FusionType != 0 && param1.FusionRate > 0;
+         return item.FusionType != 0 && item.FusionRate > 0;
       }
       
-      public static function isStrengthStone(param1:ItemTemplateInfo) : Boolean
+      public static function isStrengthStone(item:ItemTemplateInfo) : Boolean
       {
-         if(param1.CategoryID != 11)
+         if(item.CategoryID != 11)
          {
             return false;
          }
-         if(param1.Property1 == "2" || param1.Property1 == "35")
+         if(item.Property1 == "2" || item.Property1 == "35")
          {
             return true;
          }
          return false;
       }
       
-      public static function isExaltStone(param1:ItemTemplateInfo) : Boolean
+      public static function isExaltStone(item:ItemTemplateInfo) : Boolean
       {
-         if(param1.CategoryID != 11)
+         if(item.CategoryID != 11)
          {
             return false;
          }
-         if(param1.Property1 == "2" || param1.Property1 == "45")
+         if(item.Property1 == "2" || item.Property1 == "45")
          {
             return true;
          }
          return false;
       }
       
-      public static function isSymbol(param1:ItemTemplateInfo) : Boolean
+      public static function isSymbol(item:ItemTemplateInfo) : Boolean
       {
-         if(param1.CategoryID != 11)
+         if(item.CategoryID != 11)
          {
             return false;
          }
-         if(param1.Property1 == "3")
+         if(item.Property1 == "3")
          {
             return true;
          }
          return false;
       }
       
-      public static function isBugle(param1:ItemTemplateInfo) : Boolean
+      public static function isBugle(item:ItemTemplateInfo) : Boolean
       {
-         return param1.TemplateID == 11101 || param1.TemplateID == 11102;
+         return item.TemplateID == 11101 || item.TemplateID == 11102;
       }
       
-      public static function isEquip(param1:ItemTemplateInfo) : Boolean
+      public static function isEquip(item:ItemTemplateInfo) : Boolean
       {
-         if(param1.CategoryID >= 1 && param1.CategoryID < 10 && param1.CategoryID != 7)
+         if(item.CategoryID >= 1 && item.CategoryID < 10 && item.CategoryID != 7)
          {
             return true;
          }
          return false;
       }
       
-      public static function isHead(param1:ItemTemplateInfo) : Boolean
+      public static function isHead(item:ItemTemplateInfo) : Boolean
       {
-         return param1.CategoryID == 1;
+         return item.CategoryID == 1;
       }
       
-      public static function isCloth(param1:ItemTemplateInfo) : Boolean
+      public static function isCloth(item:ItemTemplateInfo) : Boolean
       {
-         return param1.CategoryID == 5;
+         return item.CategoryID == 5;
       }
       
-      public static function isAvatar(param1:int) : Boolean
+      public static function isAvatar(cateID:int) : Boolean
       {
-         return [1,2,3,4,5,6,13,15].indexOf(param1) != -1;
+         return [1,2,3,4,5,6,13,15].indexOf(cateID) != -1;
       }
       
-      public static function isArm(param1:ItemTemplateInfo) : Boolean
+      public static function isArm(item:ItemTemplateInfo) : Boolean
       {
-         return param1.CategoryID == 7 || param1.CategoryID == 27;
+         return item.CategoryID == 7 || item.CategoryID == 27;
       }
       
-      public static function canEquip(param1:ItemTemplateInfo) : Boolean
+      public static function canEquip(item:ItemTemplateInfo) : Boolean
       {
-         if(param1.CategoryID >= 1 && param1.CategoryID <= 9 || param1.CategoryID >= 13 && param1.CategoryID <= 17)
+         if(item.CategoryID >= 1 && item.CategoryID <= 9 || item.CategoryID >= 13 && item.CategoryID <= 17)
          {
             return true;
          }
-         var _loc2_:* = param1.CategoryID;
+         var _loc2_:* = item.CategoryID;
          if(27 !== _loc2_)
          {
             if(28 !== _loc2_)
@@ -1214,58 +1234,58 @@ package ddt.data
                                           return false;
                                        }
                                     }
-                                    addr45:
+                                    addr54:
                                     return true;
                                  }
-                                 addr44:
-                                 §§goto(addr45);
+                                 addr53:
+                                 §§goto(addr54);
                               }
-                              addr43:
-                              §§goto(addr44);
+                              addr52:
+                              §§goto(addr53);
                            }
-                           addr42:
-                           §§goto(addr43);
+                           addr51:
+                           §§goto(addr52);
                         }
-                        addr41:
-                        §§goto(addr42);
+                        addr50:
+                        §§goto(addr51);
                      }
-                     addr40:
-                     §§goto(addr41);
+                     addr49:
+                     §§goto(addr50);
                   }
-                  addr39:
-                  §§goto(addr40);
+                  addr48:
+                  §§goto(addr49);
                }
-               addr38:
-               §§goto(addr39);
+               addr47:
+               §§goto(addr48);
             }
-            addr37:
-            §§goto(addr38);
+            addr46:
+            §§goto(addr47);
          }
-         §§goto(addr37);
+         §§goto(addr46);
       }
       
-      public static function isChest(param1:ItemTemplateInfo) : Boolean
+      public static function isChest(item:ItemTemplateInfo) : Boolean
       {
-         return param1.Property1 == "6";
+         return item.Property1 == "6";
       }
       
-      public static function isMissionGoods(param1:ItemTemplateInfo) : Boolean
+      public static function isMissionGoods(item:ItemTemplateInfo) : Boolean
       {
-         return param1.Property1 == "10";
+         return item.Property1 == "10";
       }
       
-      public static function isProp(param1:ItemTemplateInfo) : Boolean
+      public static function isProp(item:ItemTemplateInfo) : Boolean
       {
-         return param1.CategoryID == 10 || param1.CategoryID == 11;
+         return item.CategoryID == 10 || item.CategoryID == 11;
       }
       
-      public static function isBelongToPropBag(param1:ItemTemplateInfo) : Boolean
+      public static function isBelongToPropBag(info:ItemTemplateInfo) : Boolean
       {
-         if(param1 == null)
+         if(info == null)
          {
             return false;
          }
-         var _loc2_:* = param1.CategoryID;
+         var _loc2_:* = info.CategoryID;
          if(10 !== _loc2_)
          {
             if(11 !== _loc2_)
@@ -1276,150 +1296,155 @@ package ddt.data
                   {
                      if(53 !== _loc2_)
                      {
-                        if(23 !== _loc2_)
+                        if(78 !== _loc2_)
                         {
-                           if(30 !== _loc2_)
+                           if(23 !== _loc2_)
                            {
-                              if(34 !== _loc2_)
+                              if(30 !== _loc2_)
                               {
-                                 if(35 !== _loc2_)
+                                 if(34 !== _loc2_)
                                  {
-                                    if(62 !== _loc2_)
+                                    if(35 !== _loc2_)
                                     {
-                                       if(80 !== _loc2_)
+                                       if(62 !== _loc2_)
                                        {
-                                          if(65 !== _loc2_)
+                                          if(80 !== _loc2_)
                                           {
-                                             if(68 !== _loc2_)
+                                             if(65 !== _loc2_)
                                              {
-                                                if(71 !== _loc2_)
+                                                if(68 !== _loc2_)
                                                 {
-                                                   if(72 !== _loc2_)
+                                                   if(71 !== _loc2_)
                                                    {
-                                                      return false;
+                                                      if(72 !== _loc2_)
+                                                      {
+                                                         return false;
+                                                      }
                                                    }
+                                                   addr31:
+                                                   return true;
                                                 }
-                                                addr25:
-                                                return true;
+                                                addr30:
+                                                §§goto(addr31);
                                              }
-                                             addr24:
-                                             §§goto(addr25);
+                                             addr29:
+                                             §§goto(addr30);
                                           }
-                                          addr23:
-                                          §§goto(addr24);
+                                          addr28:
+                                          §§goto(addr29);
                                        }
-                                       addr22:
-                                       §§goto(addr23);
+                                       addr27:
+                                       §§goto(addr28);
                                     }
-                                    addr21:
-                                    §§goto(addr22);
+                                    addr26:
+                                    §§goto(addr27);
                                  }
-                                 addr20:
-                                 §§goto(addr21);
+                                 addr25:
+                                 §§goto(addr26);
                               }
-                              addr19:
-                              §§goto(addr20);
+                              addr24:
+                              §§goto(addr25);
                            }
-                           addr18:
-                           §§goto(addr19);
+                           addr23:
+                           §§goto(addr24);
                         }
-                        addr17:
-                        §§goto(addr18);
+                        addr22:
+                        §§goto(addr23);
                      }
-                     addr16:
-                     §§goto(addr17);
+                     addr21:
+                     §§goto(addr22);
                   }
-                  addr15:
-                  §§goto(addr16);
+                  addr20:
+                  §§goto(addr21);
                }
-               addr14:
-               §§goto(addr15);
+               addr19:
+               §§goto(addr20);
             }
-            addr13:
-            §§goto(addr14);
+            addr18:
+            §§goto(addr19);
          }
-         §§goto(addr13);
+         §§goto(addr18);
       }
       
-      public static function isTask(param1:ItemTemplateInfo) : Boolean
+      public static function isTask(item:ItemTemplateInfo) : Boolean
       {
-         return param1.CategoryID == 12;
+         return item.CategoryID == 12;
       }
       
-      public static function isPackage(param1:ItemTemplateInfo) : Boolean
+      public static function isPackage(item:ItemTemplateInfo) : Boolean
       {
-         if(param1.CategoryID == 11 && (param1.Property1 == "6" || param1.Property1 == "114"))
+         if(item.CategoryID == 11 && (item.Property1 == "6" || item.Property1 == "114"))
          {
             return true;
          }
-         if(param1.CategoryID == 68 || param1.CategoryID == 72)
-         {
-            return true;
-         }
-         return false;
-      }
-      
-      public static function isGetPackage(param1:ItemTemplateInfo) : Boolean
-      {
-         return param1.CategoryID == 65 && int(param1.Property8) > 0;
-      }
-      
-      public static function isFireworks(param1:ItemTemplateInfo) : Boolean
-      {
-         return param1.TemplateID == 12549 || param1.TemplateID == 12550 || param1.TemplateID == 12551 || param1.TemplateID == 12552 || param1.TemplateID == 12553;
-      }
-      
-      public static function isBatchOnlyDouble(param1:ItemTemplateInfo) : Boolean
-      {
-         return param1.CategoryID == 11 && (param1.Property1 == "26" || param1.Property1 == "110");
-      }
-      
-      public static function isOpenBatch(param1:ItemTemplateInfo) : Boolean
-      {
-         if(param1.CategoryID == 11 && (param1.Property1 == "12" || param1.Property1 == "13" || param1.Property1 == "21"))
-         {
-            return true;
-         }
-         if(param1.TemplateID == 12535)
+         if(item.CategoryID == 68 || item.CategoryID == 72)
          {
             return true;
          }
          return false;
       }
       
-      public static function isCanBatchHandler(param1:InventoryItemInfo) : Boolean
+      public static function isGetPackage(item:ItemTemplateInfo) : Boolean
       {
-         return param1 && param1.Property4 == "2" && param1.Count > 1;
+         return item.CategoryID == 65 && int(item.Property8) > 0;
       }
       
-      public static function isPetEgg(param1:int) : Boolean
+      public static function isFireworks(item:ItemTemplateInfo) : Boolean
       {
-         return param1 == 35;
+         return item.TemplateID == 12549 || item.TemplateID == 12550 || item.TemplateID == 12551 || item.TemplateID == 12552 || item.TemplateID == 12553;
       }
       
-      public static function isPetSpeciallFood(param1:ItemTemplateInfo) : Boolean
+      public static function isBatchOnlyDouble(item:ItemTemplateInfo) : Boolean
       {
-         return param1.TemplateID == 334100;
+         return item.CategoryID == 11 && (item.Property1 == "26" || item.Property1 == "110");
       }
       
-      public static function isSpecilPackage(param1:ItemTemplateInfo) : Boolean
+      public static function isOpenBatch(item:ItemTemplateInfo) : Boolean
       {
-         return param1.Property2 == "6";
+         if(item.CategoryID == 11 && (item.Property1 == "12" || item.Property1 == "13" || item.Property1 == "21"))
+         {
+            return true;
+         }
+         if(item.TemplateID == 12535)
+         {
+            return true;
+         }
+         return false;
       }
       
-      public static function isCardBox(param1:ItemTemplateInfo) : Boolean
+      public static function isCanBatchHandler(item:InventoryItemInfo) : Boolean
       {
-         return param1.CategoryID == 18 && param1.TemplateID != 20150;
+         return item && item.Property4 == "2" && item.Count > 1;
       }
       
-      public static function isCardSoule(param1:ItemTemplateInfo) : Boolean
+      public static function isPetEgg(categoryId:int) : Boolean
       {
-         return param1.CategoryID == 18 || param1.CategoryID == 66;
+         return categoryId == 35;
       }
       
-      public static function placeToCategeryId(param1:int) : int
+      public static function isPetSpeciallFood(item:ItemTemplateInfo) : Boolean
       {
-         switch(int(param1) - 7)
+         return item.TemplateID == 334100;
+      }
+      
+      public static function isSpecilPackage(item:ItemTemplateInfo) : Boolean
+      {
+         return item.Property2 == "6";
+      }
+      
+      public static function isCardBox(item:ItemTemplateInfo) : Boolean
+      {
+         return item.CategoryID == 18 && item.TemplateID != 20150;
+      }
+      
+      public static function isCardSoule(item:ItemTemplateInfo) : Boolean
+      {
+         return item.CategoryID == 18 || item.CategoryID == 66;
+      }
+      
+      public static function placeToCategeryId(place:int) : int
+      {
+         switch(int(place) - 7)
          {
             case 0:
             case 1:
@@ -1436,20 +1461,20 @@ package ddt.data
             default:
             default:
             default:
-               return param1 + 1;
+               return place + 1;
             case 13:
                return 64;
          }
       }
       
-      public static function isArmShellSpring(param1:ItemTemplateInfo) : Boolean
+      public static function isArmShellSpring(item:ItemTemplateInfo) : Boolean
       {
-         return param1.CategoryID == 64 && param1.TemplateID == 10073;
+         return item.CategoryID == 64 && item.TemplateID == 10073;
       }
       
-      public static function CategeryIdToPlace(param1:int, param2:int = -1) : Array
+      public static function CategeryIdToPlace(id:int, place:int = -1) : Array
       {
-         var _loc3_:* = param1;
+         var _loc3_:* = id;
          if(8 !== _loc3_)
          {
             if(28 !== _loc3_)
@@ -1484,15 +1509,15 @@ package ddt.data
                                                       {
                                                          if(70 !== _loc3_)
                                                          {
-                                                            return [param1 - 1];
+                                                            return [id - 1];
                                                          }
                                                          return [18];
                                                       }
-                                                      return [param2];
+                                                      return [place];
                                                    }
-                                                   return [param2];
+                                                   return [place];
                                                 }
-                                                return [param2];
+                                                return [place];
                                              }
                                              return [20];
                                           }
@@ -1518,68 +1543,68 @@ package ddt.data
          return [7,8];
       }
       
-      public static function hasSkin(param1:int) : Boolean
+      public static function hasSkin(categeryId:int) : Boolean
       {
-         return param1 == 6 || param1 == 5;
+         return categeryId == 6 || categeryId == 5;
       }
       
-      public static function getRongLingEquipLevel(param1:ItemTemplateInfo) : int
+      public static function getRongLingEquipLevel(info:ItemTemplateInfo) : int
       {
-         if(isRongLing(param1))
+         if(isRongLing(info))
          {
-            return int(param1.Property1);
+            return int(info.Property1);
          }
          return 0;
       }
       
-      public static function isCaddy(param1:ItemTemplateInfo) : Boolean
+      public static function isCaddy(info:ItemTemplateInfo) : Boolean
       {
-         if(param1.TemplateID == 112047 || param1.TemplateID == 112100 || param1.TemplateID == 112101)
+         if(info.TemplateID == 112047 || info.TemplateID == 112100 || info.TemplateID == 112101)
          {
             return true;
          }
          return false;
       }
       
-      public static function isBless(param1:ItemTemplateInfo) : Boolean
+      public static function isBless(info:ItemTemplateInfo) : Boolean
       {
-         if(param1.TemplateID == 112222 || param1.TemplateID == 112224 || param1.TemplateID == 112223)
+         if(info.TemplateID == 112222 || info.TemplateID == 112224 || info.TemplateID == 112223)
          {
             return true;
          }
          return false;
       }
       
-      public static function isValuableEquip(param1:ItemTemplateInfo) : Boolean
+      public static function isValuableEquip(info:ItemTemplateInfo) : Boolean
       {
-         var _loc2_:InventoryItemInfo = param1 as InventoryItemInfo;
-         if(_loc2_)
+         var item:InventoryItemInfo = info as InventoryItemInfo;
+         if(item)
          {
-            if(_loc2_.CategoryID == 27 || _loc2_.CategoryID == 28 || _loc2_.CategoryID == 29 || _loc2_.CategoryID == 31)
+            if(item.CategoryID == 27 || item.CategoryID == 28 || item.CategoryID == 29 || item.CategoryID == 31)
             {
                return true;
             }
-            if(_loc2_.CategoryID == 1 || _loc2_.CategoryID == 5 || _loc2_.CategoryID == 7 || _loc2_.CategoryID == 17)
+            if(item.CategoryID == 1 || item.CategoryID == 5 || item.CategoryID == 7 || item.CategoryID == 17)
             {
-               if(_loc2_.StrengthenLevel >= 7)
+               if(item.StrengthenLevel >= 7)
                {
                   return true;
                }
             }
-            if(_loc2_.CategoryID == 8 || _loc2_.CategoryID == 9)
+            if(item.CategoryID == 8 || item.CategoryID == 9)
             {
-               if(int(_loc2_.Property1) >= 3)
+               if(int(item.Property1) >= 3)
                {
                   return true;
                }
             }
-            if(_loc2_.MagicLevel >= EnchantManager.instance.infoVec.length)
+            if(item.MagicLevel >= EnchantManager.instance.infoVec.length)
             {
                return true;
             }
-            if(_loc2_.CategoryID == 70)
+            if(item.CategoryID == 70)
             {
-               if(_loc2_.StrengthenLevel >= 20)
+               if(item.StrengthenLevel >= 20)
                {
                   return true;
                }
@@ -1589,45 +1614,45 @@ package ddt.data
          return false;
       }
       
-      public static function isDrill(param1:InventoryItemInfo) : Boolean
+      public static function isDrill(item:InventoryItemInfo) : Boolean
       {
-         if(param1 == null)
+         if(item == null)
          {
             return false;
          }
-         return param1.CategoryID == 11 && param1.Property1 == "16";
+         return item.CategoryID == 11 && item.Property1 == "16";
       }
       
-      public static function isBead(param1:int) : Boolean
+      public static function isBead(property1:int) : Boolean
       {
-         return param1 == 31;
+         return property1 == 31;
       }
       
-      public static function filterEquiqItemId(param1:int) : int
+      public static function filterEquiqItemId(itemId:int) : int
       {
-         switch(int(param1) - -4)
+         switch(int(itemId) - -4)
          {
             case 0:
-               param1 = -200;
+               itemId = -200;
                break;
             case 1:
-               param1 = -200;
+               itemId = -200;
                break;
             case 2:
-               param1 = -200;
+               itemId = -200;
                break;
             case 3:
-               param1 = -200;
+               itemId = -200;
          }
-         return param1;
+         return itemId;
       }
       
-      public static function canBringUp(param1:ItemTemplateInfo) : Boolean
+      public static function canBringUp($info:ItemTemplateInfo) : Boolean
       {
-         $info = param1;
-         isNotWeddingRing = function(param1:ItemTemplateInfo):Boolean
+         $info = $info;
+         isNotWeddingRing = function(item:ItemTemplateInfo):Boolean
          {
-            var _loc2_:* = param1.TemplateID;
+            var _loc2_:* = item.TemplateID;
             if(9022 !== _loc2_)
             {
                if(9122 !== _loc2_)
@@ -1643,19 +1668,19 @@ package ddt.data
                               return true;
                            }
                         }
-                        addr9:
+                        addr13:
                         return false;
                      }
-                     addr8:
-                     §§goto(addr9);
+                     addr12:
+                     §§goto(addr13);
                   }
-                  addr7:
-                  §§goto(addr8);
+                  addr11:
+                  §§goto(addr12);
                }
-               addr6:
-               §§goto(addr7);
+               addr10:
+               §§goto(addr11);
             }
-            §§goto(addr6);
+            §§goto(addr10);
          };
          if(($info.CategoryID == 8 || $info.CategoryID == 9) && isNotWeddingRing($info))
          {
@@ -1664,29 +1689,29 @@ package ddt.data
          return false;
       }
       
-      public static function isMagicStone(param1:int) : Boolean
+      public static function isMagicStone(categoryID:int) : Boolean
       {
-         return param1 == 61;
+         return categoryID == 61;
       }
       
-      public static function isAttackBead(param1:ItemTemplateInfo) : Boolean
+      public static function isAttackBead(item:ItemTemplateInfo) : Boolean
       {
-         return param1.Property2 == "1";
+         return item.Property2 == "1";
       }
       
-      public static function isDefenceBead(param1:ItemTemplateInfo) : Boolean
+      public static function isDefenceBead(item:ItemTemplateInfo) : Boolean
       {
-         return param1.Property2 == "2";
+         return item.Property2 == "2";
       }
       
-      public static function isAttributeBead(param1:ItemTemplateInfo) : Boolean
+      public static function isAttributeBead(item:ItemTemplateInfo) : Boolean
       {
-         return param1.Property2 == "3";
+         return item.Property2 == "3";
       }
       
-      public static function isDynamicWeapon(param1:int) : Boolean
+      public static function isDynamicWeapon(templateId:int) : Boolean
       {
-         var _loc2_:* = param1;
+         var _loc2_:* = templateId;
          if(7144 !== _loc2_)
          {
             if(71441 !== _loc2_)
@@ -1710,76 +1735,76 @@ package ddt.data
                                        return false;
                                     }
                                  }
-                                 addr14:
+                                 addr17:
                                  return true;
                               }
-                              addr13:
-                              §§goto(addr14);
+                              addr16:
+                              §§goto(addr17);
                            }
-                           addr12:
-                           §§goto(addr13);
+                           addr15:
+                           §§goto(addr16);
                         }
-                        addr11:
-                        §§goto(addr12);
+                        addr14:
+                        §§goto(addr15);
                      }
-                     addr10:
-                     §§goto(addr11);
+                     addr13:
+                     §§goto(addr14);
                   }
-                  addr9:
-                  §§goto(addr10);
+                  addr12:
+                  §§goto(addr13);
                }
-               addr8:
-               §§goto(addr9);
+               addr11:
+               §§goto(addr12);
             }
-            addr7:
-            §§goto(addr8);
+            addr10:
+            §§goto(addr11);
          }
-         §§goto(addr7);
+         §§goto(addr10);
       }
       
-      public static function isBeadFromSmelt(param1:ItemTemplateInfo) : Boolean
+      public static function isBeadFromSmelt(item:ItemTemplateInfo) : Boolean
       {
-         return isBeadFromSmeltByID(param1.TemplateID);
+         return isBeadFromSmeltByID(item.TemplateID);
       }
       
-      public static function isBeadFromSmeltByID(param1:int) : Boolean
+      public static function isBeadFromSmeltByID(id:int) : Boolean
       {
-         return BeadModel.getInstance().isBeadFromSmelt(param1);
+         return BeadModel.getInstance().isBeadFromSmelt(id);
       }
       
-      public static function isAttackBeadFromSmeltByID(param1:int) : Boolean
+      public static function isAttackBeadFromSmeltByID(id:int) : Boolean
       {
-         var _loc2_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(param1);
-         if(_loc2_)
+         var tmp:ItemTemplateInfo = ItemManager.Instance.getTemplateById(id);
+         if(tmp)
          {
-            return BeadModel.getInstance().isAttackBead(_loc2_);
+            return BeadModel.getInstance().isAttackBead(tmp);
          }
          return false;
       }
       
-      public static function isDefenceBeadFromSmeltByID(param1:int) : Boolean
+      public static function isDefenceBeadFromSmeltByID(id:int) : Boolean
       {
-         var _loc2_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(param1);
-         if(_loc2_)
+         var tmp:ItemTemplateInfo = ItemManager.Instance.getTemplateById(id);
+         if(tmp)
          {
-            return BeadModel.getInstance().isDefenceBead(_loc2_);
+            return BeadModel.getInstance().isDefenceBead(tmp);
          }
          return false;
       }
       
-      public static function isAttributeBeadFromSmeltByID(param1:int) : Boolean
+      public static function isAttributeBeadFromSmeltByID(id:int) : Boolean
       {
-         var _loc2_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(param1);
-         if(_loc2_)
+         var tmp:ItemTemplateInfo = ItemManager.Instance.getTemplateById(id);
+         if(tmp)
          {
-            return BeadModel.getInstance().isAttributeBead(_loc2_);
+            return BeadModel.getInstance().isAttributeBead(tmp);
          }
          return false;
       }
       
-      public static function isOfferPackage(param1:ItemTemplateInfo) : Boolean
+      public static function isOfferPackage(item:ItemTemplateInfo) : Boolean
       {
-         switch(int(param1.TemplateID) - 11252)
+         switch(int(item.TemplateID) - 11252)
          {
             case 0:
                return true;
@@ -1795,13 +1820,13 @@ package ddt.data
          }
       }
       
-      public static function isBeadNeedOpen(param1:ItemTemplateInfo) : Boolean
+      public static function isBeadNeedOpen(item:ItemTemplateInfo) : Boolean
       {
-         if(isBeadFromSmelt(param1))
+         if(isBeadFromSmelt(item))
          {
             return true;
          }
-         var _loc2_:* = param1.TemplateID;
+         var _loc2_:* = item.TemplateID;
          if(311500 !== _loc2_)
          {
             if(313500 !== _loc2_)
@@ -1811,75 +1836,75 @@ package ddt.data
                   return false;
                }
             }
-            addr14:
+            addr21:
             return true;
          }
-         §§goto(addr14);
+         §§goto(addr21);
       }
       
-      public static function isComposeStone(param1:ItemTemplateInfo) : Boolean
+      public static function isComposeStone(item:ItemTemplateInfo) : Boolean
       {
-         return param1.CategoryID == 11 && param1.Property1 == "1";
+         return item.CategoryID == 11 && item.Property1 == "1";
       }
       
-      public static function isFusionFormula(param1:ItemTemplateInfo) : Boolean
+      public static function isFusionFormula(item:ItemTemplateInfo) : Boolean
       {
-         return param1.CategoryID == 11 && param1.Property1 == "8";
+         return item.CategoryID == 11 && item.Property1 == "8";
       }
       
-      public static function isCaddyCanBay(param1:ItemTemplateInfo) : Boolean
+      public static function isCaddyCanBay(item:ItemTemplateInfo) : Boolean
       {
-         return param1.TemplateID == 112047;
+         return item.TemplateID == 112047;
       }
       
-      public static function isTimeBox(param1:ItemTemplateInfo) : Boolean
+      public static function isTimeBox(info:ItemTemplateInfo) : Boolean
       {
-         return param1.CategoryID == 11 && param1.Property1 == "6" && param1.Property2 == "4";
+         return info.CategoryID == 11 && info.Property1 == "6" && info.Property2 == "4";
       }
       
-      public static function isAngel(param1:ItemTemplateInfo) : Boolean
+      public static function isAngel(item:ItemTemplateInfo) : Boolean
       {
-         return param1.TemplateID == 17001 || param1.TemplateID == 17002 || param1.TemplateID == 17101 || param1.TemplateID == 17005 || param1.TemplateID == 17011 || param1.TemplateID == 17000 || param1.TemplateID == 17010 || param1.TemplateID == 17100 || param1.TemplateID == 17007;
+         return item.TemplateID == 17001 || item.TemplateID == 17002 || item.TemplateID == 17101 || item.TemplateID == 17005 || item.TemplateID == 17011 || item.TemplateID == 17000 || item.TemplateID == 17010 || item.TemplateID == 17100 || item.TemplateID == 17007;
       }
       
-      public static function isShield(param1:ItemTemplateInfo) : Boolean
+      public static function isShield(item:ItemTemplateInfo) : Boolean
       {
-         return param1.TemplateID == 17003 || param1.TemplateID == 17004 || param1.TemplateID == 17013;
+         return item.TemplateID == 17003 || item.TemplateID == 17004 || item.TemplateID == 17013;
       }
       
-      public static function isWishKingBlessing(param1:ItemTemplateInfo) : Boolean
+      public static function isWishKingBlessing(item:ItemTemplateInfo) : Boolean
       {
-         return param1.TemplateID == 17200;
+         return item.TemplateID == 17200;
       }
       
-      public static function isArmShell(param1:ItemTemplateInfo) : Boolean
+      public static function isArmShell(item:ItemTemplateInfo) : Boolean
       {
-         return param1.CategoryID == 64;
+         return item.CategoryID == 64;
       }
       
-      public static function isArmShellTotem(param1:ItemTemplateInfo) : Boolean
+      public static function isArmShellTotem(item:ItemTemplateInfo) : Boolean
       {
-         return param1.CategoryID == 64 && param1.TemplateID == 10083;
+         return item.CategoryID == 64 && item.TemplateID == 10083;
       }
       
-      public static function isArmShellClip(param1:ItemTemplateInfo) : Boolean
+      public static function isArmShellClip(item:ItemTemplateInfo) : Boolean
       {
-         return param1.TemplateID == 13000;
+         return item.TemplateID == 13000;
       }
       
-      public static function isArmShellStone(param1:ItemTemplateInfo) : Boolean
+      public static function isArmShellStone(item:ItemTemplateInfo) : Boolean
       {
-         return param1.CategoryID == 11 && int(param1.Property1) == 1;
+         return item.CategoryID == 11 && int(item.Property1) == 1;
       }
       
-      public static function isArmShellResetStone(param1:ItemTemplateInfo) : Boolean
+      public static function isArmShellResetStone(item:ItemTemplateInfo) : Boolean
       {
-         return param1.CategoryID == 11 && int(param1.Property1) == 1;
+         return item.CategoryID == 11 && int(item.Property1) == 1;
       }
       
-      public static function hasPropAnimation(param1:ItemTemplateInfo) : String
+      public static function hasPropAnimation(item:ItemTemplateInfo) : String
       {
-         switch(int(param1.TemplateID) - 10009)
+         switch(int(item.TemplateID) - 10009)
          {
             case 0:
                return "health";
@@ -1893,6 +1918,15 @@ package ddt.data
             case 6:
                return "freeze";
          }
+      }
+      
+      public static function isDDCloth(item:ItemTemplateInfo) : Boolean
+      {
+         if(item.CategoryID >= 1 && item.CategoryID < 7)
+         {
+            return true;
+         }
+         return false;
       }
    }
 }

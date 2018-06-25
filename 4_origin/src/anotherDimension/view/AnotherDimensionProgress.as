@@ -37,9 +37,9 @@ package anotherDimension.view
          _progressMc.stop();
       }
       
-      public function setProgressTxt(param1:String) : void
+      public function setProgressTxt(txt:String) : void
       {
-         _progressTxt.text = param1;
+         _progressTxt.text = txt;
       }
       
       private function initEvent() : void
@@ -52,7 +52,7 @@ package anotherDimension.view
          removeEventListener("enterFrame",_checkFrame);
       }
       
-      private function _checkFrame(param1:Event) : void
+      private function _checkFrame(e:Event) : void
       {
          if(_nextFrameIndex == _progressMc.currentFrame)
          {
@@ -69,22 +69,22 @@ package anotherDimension.view
          }
       }
       
-      public function setProgress(param1:int) : void
+      public function setProgress(progress:int) : void
       {
-         _progressMc.gotoAndStop(param1);
+         _progressMc.gotoAndStop(progress);
       }
       
-      public function playProgress(param1:int, param2:int = 0) : void
+      public function playProgress(progress:int, nextGrade:int = 0) : void
       {
-         if(_progressMc.currentFrame >= param1 && param2 == 0)
+         if(_progressMc.currentFrame >= progress && nextGrade == 0)
          {
             _progressMc.stop();
             dispatchEvent(new Event("mcStop"));
             return;
          }
          _progressMc.play();
-         _nextFrameIndex = param1;
-         _loop = param2;
+         _nextFrameIndex = progress;
+         _loop = nextGrade;
       }
       
       public function dispose() : void

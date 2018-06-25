@@ -61,19 +61,19 @@ package guildMemberWeek.view.ShowRankingFrame
          _ShowMyRankingText = ComponentFactory.Instance.creatComponentByStylename("guildmemberweek.mainFrame.ShowMyRankingTxt");
          _ShowMyContributeText = ComponentFactory.Instance.creatComponentByStylename("guildmemberweek.mainFrame.ShowMyContributeTxt");
          _TopTenShowSprite.y = 53;
-         var _loc1_:int = 12;
-         _dataTitleRankingText.y = _loc1_;
-         _dataTitleNameText.y = _loc1_;
-         _dataTitleContributeText.y = _loc1_;
-         _dataTitleRankingGiftText.y = _loc1_;
-         _dataTitleAddRankingGiftText.y = _loc1_;
-         var _loc2_:Point = PositionUtils.creatPoint("guildMemberWeek.ShowRankingPos");
-         _loc1_ = _loc2_.y;
-         var _loc3_:int = _loc2_.x;
-         _ShowMyRankingText.x = _ShowMyRankingText.x + _loc3_;
-         _ShowMyRankingText.y = _loc1_;
-         _ShowMyContributeText.x = _ShowMyContributeText.x + _loc3_;
-         _ShowMyContributeText.y = _loc1_;
+         var StartY:int = 12;
+         _dataTitleRankingText.y = StartY;
+         _dataTitleNameText.y = StartY;
+         _dataTitleContributeText.y = StartY;
+         _dataTitleRankingGiftText.y = StartY;
+         _dataTitleAddRankingGiftText.y = StartY;
+         var TPoint:Point = PositionUtils.creatPoint("guildMemberWeek.ShowRankingPos");
+         StartY = TPoint.y;
+         var AddX:int = TPoint.x;
+         _ShowMyRankingText.x = _ShowMyRankingText.x + AddX;
+         _ShowMyRankingText.y = StartY;
+         _ShowMyContributeText.x = _ShowMyContributeText.x + AddX;
+         _ShowMyContributeText.y = StartY;
          addToContent(_runkingBG);
          addToContent(_runkingSG);
          addToContent(_dataTitleRankingText);
@@ -108,9 +108,9 @@ package guildMemberWeek.view.ShowRankingFrame
          removeEventListener("response",__responseHandler);
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
             GuildMemberWeekManager.instance.disposeAllFrame(true);

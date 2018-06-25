@@ -76,100 +76,97 @@ package armShell
          _bagListView.addEventListener("stopDarg",__stopDargHandler);
       }
       
-      private function updateBag(param1:BagEvent) : void
+      private function updateBag(evt:BagEvent) : void
       {
-         var _loc2_:BagInfo = param1.target as BagInfo;
-         refreshData(param1.changedSlots,_loc2_);
+         var bag:BagInfo = evt.target as BagInfo;
+         refreshData(evt.changedSlots,bag);
       }
       
-      public function refreshData(param1:Dictionary, param2:BagInfo) : void
+      public function refreshData(items:Dictionary, bag:BagInfo) : void
       {
-         var _loc3_:* = null;
+         var c:* = null;
          var _loc6_:int = 0;
-         var _loc5_:* = param1;
-         for each(var _loc4_ in param1)
+         var _loc5_:* = items;
+         for each(var i in items)
          {
-            _loc3_ = param2.getItemAt(_loc4_.Place);
-            if(_loc3_)
+            c = bag.getItemAt(i.Place);
+            if(c)
             {
-               if(param2.BagType == 0)
+               if(bag.BagType == 0)
                {
-                  if(_itemPlace == _loc4_.Place)
+                  if(_itemPlace == i.Place)
                   {
-                     _preItemCell.info = _loc3_;
-                     removeFrom(_loc4_,_equipBagInfo);
+                     _preItemCell.info = c;
+                     removeFrom(i,_equipBagInfo);
                   }
                   else
                   {
-                     updateDic(_equipBagInfo,_loc3_);
+                     updateDic(_equipBagInfo,c);
                   }
                }
             }
-            else if(param2.BagType == 0)
+            else if(bag.BagType == 0)
             {
-               if(_itemPlace == _loc4_.Place)
+               if(_itemPlace == i.Place)
                {
                   _preItemCell.info = null;
                }
-               removeFrom(_loc4_,_equipBagInfo);
+               removeFrom(i,_equipBagInfo);
             }
          }
       }
       
-      private function updateDic(param1:DictionaryData, param2:InventoryItemInfo) : void
+      private function updateDic(dic:DictionaryData, item:InventoryItemInfo) : void
       {
-         var _loc3_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < param1.length)
+         var i:int = 0;
+         for(i = 0; i < dic.length; )
          {
-            if(param1[_loc3_] != null && param1[_loc3_].Place == param2.Place)
+            if(dic[i] != null && dic[i].Place == item.Place)
             {
-               param1.add(_loc3_,param2);
-               param1.dispatchEvent(new UpdateItemEvent("updateItemEvent",_loc3_,param2));
+               dic.add(i,item);
+               dic.dispatchEvent(new UpdateItemEvent("updateItemEvent",i,item));
                return;
             }
-            _loc3_++;
+            i++;
          }
-         addItemToTheFirstNullCell(param2,param1);
+         addItemToTheFirstNullCell(item,dic);
       }
       
-      private function addItemToTheFirstNullCell(param1:InventoryItemInfo, param2:DictionaryData) : void
+      private function addItemToTheFirstNullCell(item:InventoryItemInfo, dic:DictionaryData) : void
       {
-         param2.add(findFirstNullCellID(param2),param1);
+         dic.add(findFirstNullCellID(dic),item);
       }
       
-      private function findFirstNullCellID(param1:DictionaryData) : int
+      private function findFirstNullCellID(dic:DictionaryData) : int
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = -1;
-         var _loc3_:int = param1.length;
-         _loc4_ = 0;
-         while(_loc4_ <= _loc3_)
+         var i:int = 0;
+         var result:* = -1;
+         var lth:int = dic.length;
+         for(i = 0; i <= lth; )
          {
-            if(param1[_loc4_] == null)
+            if(dic[i] == null)
             {
-               _loc2_ = _loc4_;
+               result = i;
                break;
             }
-            _loc4_++;
+            i++;
          }
-         return _loc2_;
+         return result;
       }
       
-      private function removeFrom(param1:InventoryItemInfo, param2:DictionaryData) : void
+      private function removeFrom(item:InventoryItemInfo, dic:DictionaryData) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = param2.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var i:int = 0;
+         var lth:int = dic.length;
+         for(i = 0; i < lth; )
          {
-            if(param2[_loc4_] && param2[_loc4_].Place == param1.Place)
+            if(dic[i] && dic[i].Place == item.Place)
             {
-               param2[_loc4_] = null;
-               param2.dispatchEvent(new StoreBagEvent("storeBagRemove",_loc4_,param1));
+               dic[i] = null;
+               dic.dispatchEvent(new StoreBagEvent("storeBagRemove",i,item));
                break;
             }
-            _loc4_++;
+            i++;
          }
       }
       
@@ -179,53 +176,53 @@ package armShell
          _bagListView.setData(_equipBagInfo);
       }
       
-      private function getEquipProData(param1:DictionaryData) : DictionaryData
+      private function getEquipProData(bag:DictionaryData) : DictionaryData
       {
-         var _loc2_:DictionaryData = new DictionaryData();
+         var _canList:DictionaryData = new DictionaryData();
          var _loc5_:int = 0;
-         var _loc4_:* = param1;
-         for each(var _loc3_ in param1)
+         var _loc4_:* = bag;
+         for each(var item in bag)
          {
-            if(EquipType.isArmShell(_loc3_) && _loc3_.getRemainDate() > 0)
+            if(EquipType.isArmShell(item) && item.getRemainDate() > 0)
             {
-               if(_loc3_.Place > 20)
+               if(item.Place > 20)
                {
-                  _loc2_.add(_loc2_.length,_loc3_);
+                  _canList.add(_canList.length,item);
                }
             }
          }
-         return _loc2_;
+         return _canList;
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(event:FrameEvent) : void
       {
          SoundManager.instance.playButtonSound();
       }
       
-      private function cellClickHandler(param1:CellEvent) : void
+      private function cellClickHandler(event:CellEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BagCell = param1.data as BagCell;
-         _loc2_.dragStart();
+         var cell:BagCell = event.data as BagCell;
+         cell.dragStart();
       }
       
-      protected function __cellDoubleClick(param1:CellEvent) : void
+      protected function __cellDoubleClick(evt:CellEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:InventoryItemInfo = (param1.data as BagCell).info as InventoryItemInfo;
-         if(EquipType.isArmShell(_loc3_))
+         var toPlace:int = 0;
+         var info:InventoryItemInfo = (evt.data as BagCell).info as InventoryItemInfo;
+         if(EquipType.isArmShell(info))
          {
-            _loc2_ = EquipType.CategeryIdToPlace(_loc3_.CategoryID)[0];
-            SocketManager.Instance.out.sendMoveGoods(0,_loc3_.Place,0,_loc2_,1,true);
+            toPlace = EquipType.CategeryIdToPlace(info.CategoryID)[0];
+            SocketManager.Instance.out.sendMoveGoods(0,info.Place,0,toPlace,1,true);
          }
       }
       
-      private function __startDargHandler(param1:StoreDargEvent) : void
+      private function __startDargHandler(event:StoreDargEvent) : void
       {
          _preItemCell.startShine();
       }
       
-      private function __stopDargHandler(param1:StoreDargEvent) : void
+      private function __stopDargHandler(event:StoreDargEvent) : void
       {
          _preItemCell.stopShine();
       }

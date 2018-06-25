@@ -812,6 +812,20 @@ package ddt.data.socket
       public static const MARK:int = 529;
       
       public static const AUCTION_MARK:int = 533;
+      
+      public static const SET_EXP_STORAGE:int = 393;
+      
+      public static const STOP_EXP_STORAGE:int = 658;
+      
+      public static const DEVIL_TURN:int = 608;
+      
+      public static const DREAM_LAND:int = 610;
+      
+      public static const TOTEM_INFO_UPDATE:int = 617;
+      
+      public static const TOTEM_INFO_LIST:int = 619;
+      
+      public static const TOTEM_ADV:int = 616;
        
       
       public function ePackageType()

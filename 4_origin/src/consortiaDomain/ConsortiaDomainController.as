@@ -12,9 +12,9 @@ package consortiaDomain
       
       private var _mgr:ConsortiaDomainManager;
       
-      public function ConsortiaDomainController(param1:IEventDispatcher = null)
+      public function ConsortiaDomainController(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : ConsortiaDomainController
@@ -32,7 +32,7 @@ package consortiaDomain
          _mgr.addEventListener("complete",onComplete);
       }
       
-      protected function onComplete(param1:Event) : void
+      protected function onComplete(event:Event) : void
       {
       }
       

@@ -50,10 +50,10 @@ package tofflist.data
          return _mountsLevelInfo;
       }
       
-      public function set MountLv(param1:int) : void
+      public function set MountLv(value:int) : void
       {
-         MountsLevel = param1 / 10;
-         _mountsLevelInfo = String(param1 % 10) + " Sao Lv " + (MountsLevel + 1).toString();
+         MountsLevel = value / 10;
+         _mountsLevelInfo = String(value % 10) + " Sao Lv " + (MountsLevel + 1).toString();
       }
    }
 }

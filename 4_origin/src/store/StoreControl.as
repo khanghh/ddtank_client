@@ -33,28 +33,28 @@ package store
          BagStore.instance.addEventListener("showbuyframe",__onShowBuyFrame);
       }
       
-      private function __onOpenView(param1:*) : void
+      private function __onOpenView(e:*) : void
       {
-         var _loc2_:* = null;
-         if(param1 is CEvent)
+         var _frame:* = null;
+         if(e is CEvent)
          {
-            _loc2_ = ComponentFactory.Instance.creatComponentByStylename("ddtstore.BagStoreFrame");
-            _loc2_.controller = param1.data.control;
-            _loc2_.show(param1.data.type);
+            _frame = ComponentFactory.Instance.creatComponentByStylename("ddtstore.BagStoreFrame");
+            _frame.controller = e.data.control;
+            _frame.show(e.data.type);
             BagStore.instance.isInBagStoreFrame = true;
             BagStore.instance.dispatchEvent(new Event(BagStore.OPEN_BAGSTORE));
          }
       }
       
-      private function __onShowBuyFrame(param1:*) : void
+      private function __onShowBuyFrame(e:*) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         if(param1 is CEvent)
+         var quickBuy:* = null;
+         var data:* = null;
+         if(e is CEvent)
          {
-            _loc3_ = ComponentFactory.Instance.creatComponentByStylename("ddtstore.ShortcutBuyFrame");
-            _loc2_ = param1.data;
-            _loc3_.show(_loc2_.templateIDList,_loc2_.showRadioBtn,_loc2_.title,_loc2_.panelIndex,_loc2_.selectedIndex,_loc2_.hSpace,_loc2_.vSpace);
+            quickBuy = ComponentFactory.Instance.creatComponentByStylename("ddtstore.ShortcutBuyFrame");
+            data = e.data;
+            quickBuy.show(data.templateIDList,data.showRadioBtn,data.title,data.panelIndex,data.selectedIndex,data.hSpace,data.vSpace);
          }
       }
    }

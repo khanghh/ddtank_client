@@ -10,34 +10,33 @@ package consortion.analyze
       
       public var useConditionList:Vector.<ConsortiaAssetLevelOffer>;
       
-      public function ConsortionBuildingUseConditionAnalyer(param1:Function)
+      public function ConsortionBuildingUseConditionAnalyer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc4_:* = null;
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
+         var xmllist:* = null;
+         var i:int = 0;
+         var offer:* = null;
          useConditionList = new Vector.<ConsortiaAssetLevelOffer>();
-         var _loc2_:XML = new XML(param1);
-         if(_loc2_.@value == "true")
+         var xml:XML = new XML(data);
+         if(xml.@value == "true")
          {
-            _loc4_ = XML(_loc2_)..Item;
-            _loc5_ = 0;
-            while(_loc5_ < _loc4_.length())
+            xmllist = XML(xml)..Item;
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc3_ = new ConsortiaAssetLevelOffer();
-               ObjectUtils.copyPorpertiesByXML(_loc3_,_loc4_[_loc5_]);
-               useConditionList.push(_loc3_);
-               _loc5_++;
+               offer = new ConsortiaAssetLevelOffer();
+               ObjectUtils.copyPorpertiesByXML(offer,xmllist[i]);
+               useConditionList.push(offer);
+               i++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc2_.@message;
+            message = xml.@message;
             onAnalyzeError();
             onAnalyzeComplete();
          }

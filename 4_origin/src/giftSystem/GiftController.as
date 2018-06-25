@@ -23,9 +23,9 @@ package giftSystem
       
       private var _CI:ClearingInterface;
       
-      public function GiftController(param1:IEventDispatcher = null)
+      public function GiftController(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get Instance() : GiftController
@@ -43,7 +43,7 @@ package giftSystem
          GiftManager.Instance.addEventListener("giftOpenView",__onOpenView);
       }
       
-      private function __onOpenView(param1:GiftEvent) : void
+      private function __onOpenView(event:GiftEvent) : void
       {
          new HelperUIModuleLoad().loadUIModule(["ddtbagandinfo"],onLoaded);
       }
@@ -71,22 +71,22 @@ package giftSystem
          }
       }
       
-      private function __sendStatus(param1:PkgEvent) : void
+      private function __sendStatus(event:PkgEvent) : void
       {
-         var _loc2_:Boolean = param1.pkg.readBoolean();
-         if(_loc2_)
+         var sended:Boolean = event.pkg.readBoolean();
+         if(sended)
          {
             GiftManager.Instance.loadRecord("GiftSendLog.ashx",PlayerManager.Instance.Self.ID);
          }
-         dispatchEvent(new GiftEvent("sendGiftReturn",_loc2_.toString()));
+         dispatchEvent(new GiftEvent("sendGiftReturn",sended.toString()));
       }
       
-      public function openClearingInterface(param1:ShopItemInfo) : void
+      public function openClearingInterface(info:ShopItemInfo) : void
       {
          _CI = null;
          _CI = ComponentFactory.Instance.creatComponentByStylename("ClearingInterface");
          _CI.setName(GiftManager.Instance.rebackName);
-         _CI.info = param1;
+         _CI.info = info;
          LayerManager.Instance.addToLayer(_CI,3,true,1);
       }
    }

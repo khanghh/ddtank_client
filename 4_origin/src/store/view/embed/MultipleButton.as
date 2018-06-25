@@ -26,13 +26,13 @@ package store.view.embed
          return _tipWidth;
       }
       
-      public function set tipWidth(param1:int) : void
+      public function set tipWidth(value:int) : void
       {
-         if(_tipWidth == param1)
+         if(_tipWidth == value)
          {
             return;
          }
-         _tipWidth = param1;
+         _tipWidth = value;
          onPropertiesChanged(P_tipWidth);
       }
       
@@ -41,13 +41,13 @@ package store.view.embed
          return _tipHeight;
       }
       
-      public function set tipHeight(param1:int) : void
+      public function set tipHeight(value:int) : void
       {
-         if(_tipHeight == param1)
+         if(_tipHeight == value)
          {
             return;
          }
-         _tipHeight = param1;
+         _tipHeight = value;
          onPropertiesChanged(P_tipHeight);
       }
       

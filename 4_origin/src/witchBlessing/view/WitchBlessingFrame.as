@@ -41,61 +41,61 @@ package witchBlessing.view
          _alertInfo.moveEnable = false;
          info = _alertInfo;
          this.escEnable = true;
-         var _loc1_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.witchBlessing.blessCount");
+         var blessCountPic:Bitmap = ComponentFactory.Instance.creatBitmap("asset.witchBlessing.blessCount");
          _numberSelecter = ComponentFactory.Instance.creatComponentByStylename("core.ddtshop.NumberSelecter");
          PositionUtils.setPos(_numberSelecter,"witchBlessing.expCountSelecterPos");
          _numberSelecter.addEventListener("change",__seleterChange);
          _needText = ComponentFactory.Instance.creatComponentByStylename("witchBlessing.NeedText");
          _needText.visible = false;
-         addToContent(_loc1_);
+         addToContent(blessCountPic);
          addToContent(_numberSelecter);
          addToContent(_needText);
       }
       
-      public function show(param1:int, param2:int, param3:int, param4:int) : void
+      public function show(needCount:int, needExp:int, max:int, allNeedMax:int) : void
       {
-         if(param3 > param4)
+         if(max > allNeedMax)
          {
-            _numberSelecter.valueLimit = "1," + param4;
+            _numberSelecter.valueLimit = "1," + allNeedMax;
          }
          else
          {
-            _numberSelecter.valueLimit = "1," + param3;
+            _numberSelecter.valueLimit = "1," + max;
          }
          LayerManager.Instance.addToLayer(this,2,true,1);
          _numberSelecter.currentValue = 1;
          if(isDoubleTime(ServerConfigManager.instance.getWitchBlessDoubleGpTime))
          {
-            _needText.htmlText = LanguageMgr.GetTranslation("witchBlessing.View.NeedExpText",ServerConfigManager.instance.getWitchBlessMoney,int(ServerConfigManager.instance.getWitchBlessGP[2]) * 2,param2);
+            _needText.htmlText = LanguageMgr.GetTranslation("witchBlessing.View.NeedExpText",ServerConfigManager.instance.getWitchBlessMoney,int(ServerConfigManager.instance.getWitchBlessGP[2]) * 2,needExp);
          }
          else
          {
-            _needText.htmlText = LanguageMgr.GetTranslation("witchBlessing.View.NeedExpText",ServerConfigManager.instance.getWitchBlessMoney,ServerConfigManager.instance.getWitchBlessGP[2],param2);
+            _needText.htmlText = LanguageMgr.GetTranslation("witchBlessing.View.NeedExpText",ServerConfigManager.instance.getWitchBlessMoney,ServerConfigManager.instance.getWitchBlessGP[2],needExp);
          }
          _needText.visible = true;
       }
       
-      private function isDoubleTime(param1:String) : Boolean
+      private function isDoubleTime(doubleTime:String) : Boolean
       {
-         var _loc2_:Array = param1.split("-");
-         var _loc5_:Array = _loc2_[0].toString().split(":");
-         var _loc8_:Array = _loc2_[1].toString().split(":");
-         var _loc7_:Date = TimeManager.Instance.Now();
-         var _loc4_:Boolean = false;
-         var _loc3_:Date = TimeManager.Instance.Now();
-         _loc3_.setDate(_loc7_.date);
-         _loc3_.setHours(int(_loc5_[0]),int(_loc5_[1]),0);
-         var _loc6_:Date = new Date();
-         _loc6_.setDate(_loc7_.date);
-         _loc6_.setHours(int(_loc8_[0]),int(_loc8_[1]),0);
-         if(_loc7_.getTime() >= _loc3_.getTime() && _loc7_.getTime() <= _loc6_.getTime())
+         var _dTime:Array = doubleTime.split("-");
+         var starTime:Array = _dTime[0].toString().split(":");
+         var endTime:Array = _dTime[1].toString().split(":");
+         var date:Date = TimeManager.Instance.Now();
+         var flag:Boolean = false;
+         var startDate:Date = TimeManager.Instance.Now();
+         startDate.setDate(date.date);
+         startDate.setHours(int(starTime[0]),int(starTime[1]),0);
+         var endDate:Date = new Date();
+         endDate.setDate(date.date);
+         endDate.setHours(int(endTime[0]),int(endTime[1]),0);
+         if(date.getTime() >= startDate.getTime() && date.getTime() <= endDate.getTime())
          {
-            _loc4_ = true;
+            flag = true;
          }
-         return _loc4_;
+         return flag;
       }
       
-      private function __seleterChange(param1:Event) : void
+      private function __seleterChange(event:Event) : void
       {
          SoundManager.instance.play("008");
       }

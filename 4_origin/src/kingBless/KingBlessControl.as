@@ -35,10 +35,10 @@ package kingBless
          KingBlessManager.instance.addEventListener("kingBlessOpenView",__onShowView);
       }
       
-      public function __onShowView(param1:Event) : void
+      public function __onShowView(event:Event) : void
       {
-         var _loc2_:KingBlessMainFrame = ComponentFactory.Instance.creatComponentByStylename("KingBlessMainFrame");
-         LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+         var frame:KingBlessMainFrame = ComponentFactory.Instance.creatComponentByStylename("KingBlessMainFrame");
+         LayerManager.Instance.addToLayer(frame,3,true,1);
       }
    }
 }

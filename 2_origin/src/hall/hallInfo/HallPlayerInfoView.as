@@ -99,7 +99,7 @@ package hall.hallInfo
          }
       }
       
-      public function __updatePlayerInfo(param1:PlayerDressEvent) : void
+      public function __updatePlayerInfo(event:PlayerDressEvent) : void
       {
          _head.loadHead();
       }
@@ -112,7 +112,7 @@ package hall.hallInfo
          _showHideBtn.addEventListener("click",__onShowHideClick);
       }
       
-      protected function __onShowHideClick(param1:MouseEvent) : void
+      protected function __onShowHideClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          ObjectUtils.disposeObject(_showAnimation);
@@ -129,15 +129,15 @@ package hall.hallInfo
          }
       }
       
-      private function __propertyChange(param1:PlayerPropertyEvent) : void
+      private function __propertyChange(evt:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["FightPower"])
+         if(evt.changedProperties["FightPower"])
          {
             _fighterPower.update();
          }
       }
       
-      protected function __showBuffControl(param1:Event) : void
+      protected function __showBuffControl(event:Event) : void
       {
          if(_buff)
          {

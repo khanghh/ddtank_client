@@ -47,11 +47,11 @@ package AvatarCollection.view
       private function initView() : void
       {
          _bg = ComponentFactory.Instance.creatBitmap("asset.avatarColl.itemCell.bg");
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,74,74);
-         _loc1_.graphics.endFill();
-         _itemCell = new BagCell(1,null,true,_loc1_,false);
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(16777215,0);
+         sp.graphics.drawRect(0,0,74,74);
+         sp.graphics.endFill();
+         _itemCell = new BagCell(1,null,true,sp,false);
          _btn = ComponentFactory.Instance.creatComponentByStylename("avatarColl.itemCell.btn");
          _btn.alpha = 0.8;
          _btn.visible = false;
@@ -72,7 +72,7 @@ package AvatarCollection.view
          this.addEventListener("mouseOut",outHandler,false,0,true);
       }
       
-      private function buyClickHandler(param1:MouseEvent) : void
+      private function buyClickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -85,46 +85,46 @@ package AvatarCollection.view
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("avatarCollection.bagFull"));
             return;
          }
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("avatarCollection.buyConfirm.tipTxt",_data.buyPrice,_data.typeToString),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2,null,"SimpleAlert",60,false,_data.priceType);
-         _loc2_.addEventListener("response",onBuyConfirmResponse);
+         var frame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("avatarCollection.buyConfirm.tipTxt",_data.buyPrice,_data.typeToString),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2,null,"SimpleAlert",60,false,_data.priceType);
+         frame.addEventListener("response",onBuyConfirmResponse);
       }
       
-      private function onBuyConfirmResponse(param1:FrameEvent) : void
+      private function onBuyConfirmResponse(e:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",onBuyConfirmResponse);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var frame:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("response",onBuyConfirmResponse);
+         if(e.responseCode == 2 || e.responseCode == 3)
          {
-            CheckMoneyUtils.instance.checkMoney(_loc2_.isBand,_data.buyPrice,onCheckComplete);
+            CheckMoneyUtils.instance.checkMoney(frame.isBand,_data.buyPrice,onCheckComplete);
          }
-         _loc2_.dispose();
+         frame.dispose();
       }
       
       protected function onCheckComplete() : void
       {
          SocketManager.Instance.addEventListener(PkgEvent.format(44),onBuyedGoods);
-         var _loc2_:Array = [_data.goodsId];
-         var _loc7_:Array = [1];
-         var _loc4_:Array = [""];
-         var _loc5_:Array = [""];
-         var _loc6_:Array = [""];
-         var _loc3_:Array = [_data.isDiscount];
-         var _loc1_:Array = [CheckMoneyUtils.instance.isBind];
-         SocketManager.Instance.out.sendBuyGoods(_loc2_,_loc7_,_loc4_,_loc6_,_loc5_,null,0,_loc3_,_loc1_);
+         var items:Array = [_data.goodsId];
+         var types:Array = [1];
+         var colors:Array = [""];
+         var dresses:Array = [""];
+         var places:Array = [""];
+         var goodsTypes:Array = [_data.isDiscount];
+         var bands:Array = [CheckMoneyUtils.instance.isBind];
+         SocketManager.Instance.out.sendBuyGoods(items,types,colors,places,dresses,null,0,goodsTypes,bands);
       }
       
-      private function onBuyedGoods(param1:PkgEvent) : void
+      private function onBuyedGoods(event:PkgEvent) : void
       {
          SocketManager.Instance.removeEventListener(PkgEvent.format(44),onBuyedGoods);
-         param1.pkg.position = 20;
-         var _loc2_:int = param1.pkg.readInt();
-         if(_loc2_ != 0)
+         event.pkg.position = 20;
+         var success:int = event.pkg.readInt();
+         if(success != 0)
          {
             sendActive();
          }
       }
       
-      private function overHandler(param1:MouseEvent) : void
+      private function overHandler(event:MouseEvent) : void
       {
          if(_data && !_data.isActivity && !_buyBtn.visible)
          {
@@ -132,7 +132,7 @@ package AvatarCollection.view
          }
       }
       
-      private function outHandler(param1:MouseEvent) : void
+      private function outHandler(event:MouseEvent) : void
       {
          if(_data && !_data.isHas)
          {
@@ -140,7 +140,7 @@ package AvatarCollection.view
          }
       }
       
-      private function clickHandler(param1:MouseEvent) : void
+      private function clickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -160,17 +160,17 @@ package AvatarCollection.view
             }
             return;
          }
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("avatarCollection.activeItem.promptTxt",_data.needGold),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
-         _loc2_.moveEnable = false;
-         _loc2_.addEventListener("response",__activeConfirm,false,0,true);
+         var confirmFrame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("avatarCollection.activeItem.promptTxt",_data.needGold),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
+         confirmFrame.moveEnable = false;
+         confirmFrame.addEventListener("response",__activeConfirm,false,0,true);
       }
       
-      private function __activeConfirm(param1:FrameEvent) : void
+      private function __activeConfirm(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__activeConfirm);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",__activeConfirm);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             sendActive();
          }
@@ -188,39 +188,39 @@ package AvatarCollection.view
       
       private function checkGoldEnough() : Boolean
       {
-         var _loc1_:* = null;
+         var alert:* = null;
          if(PlayerManager.Instance.Self.Gold < _data.needGold)
          {
-            _loc1_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.GoldInadequate"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
-            _loc1_.moveEnable = false;
-            _loc1_.addEventListener("response",_responseV);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.GoldInadequate"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
+            alert.moveEnable = false;
+            alert.addEventListener("response",_responseV);
             return false;
          }
          return true;
       }
       
-      private function _responseV(param1:FrameEvent) : void
+      private function _responseV(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",_responseV);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         (evt.currentTarget as BaseAlerFrame).removeEventListener("response",_responseV);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             okFastPurchaseGold();
          }
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(evt.currentTarget);
       }
       
       private function okFastPurchaseGold() : void
       {
-         var _loc1_:QuickBuyFrame = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
-         _loc1_.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
-         _loc1_.itemID = 11233;
-         LayerManager.Instance.addToLayer(_loc1_,2,true,1);
+         var _quick:QuickBuyFrame = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
+         _quick.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
+         _quick.itemID = 11233;
+         LayerManager.Instance.addToLayer(_quick,2,true,1);
       }
       
-      public function refreshView(param1:AvatarCollectionItemVo) : void
+      public function refreshView(data:AvatarCollectionItemVo) : void
       {
-         _data = param1;
+         _data = data;
          if(!_data)
          {
             _itemCell.info = null;

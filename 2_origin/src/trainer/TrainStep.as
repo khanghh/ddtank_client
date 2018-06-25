@@ -16,7 +16,7 @@ package trainer
          super();
       }
       
-      public static function send(param1:int) : void
+      public static function send(value:int) : void
       {
          if(PlayerManager.Instance.Self.Grade >= 15)
          {
@@ -24,7 +24,7 @@ package trainer
          }
          if(Step)
          {
-            Step.instance.send(param1);
+            Step.instance.send(value);
          }
       }
       

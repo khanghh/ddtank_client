@@ -177,9 +177,9 @@ package magicStone.views
          MagicStoneControl.instance.singleFeedFunc = __batCombBtnClick;
       }
       
-      private function __propertyChange(param1:PlayerPropertyEvent) : void
+      private function __propertyChange(evt:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["BandMoney"] || param1.changedProperties["Money"])
+         if(evt.changedProperties["BandMoney"] || evt.changedProperties["Money"])
          {
             updateMoney();
          }
@@ -197,50 +197,50 @@ package magicStone.views
          }
       }
       
-      private function __magicStoneAdd(param1:DictionaryEvent) : void
+      private function __magicStoneAdd(event:DictionaryEvent) : void
       {
-         var _loc3_:InventoryItemInfo = InventoryItemInfo(param1.data);
-         var _loc2_:int = (_loc3_.Place - 32) / 56 + 1;
-         if(_loc2_ <= 0 || _loc2_ > 2 || _loc2_ == curPage)
+         var item:InventoryItemInfo = InventoryItemInfo(event.data);
+         var index:int = (item.Place - 32) / 56 + 1;
+         if(index <= 0 || index > 2 || index == curPage)
          {
             return;
          }
-         curPage = _loc2_;
+         curPage = index;
          _bagList.updateBagList();
       }
       
-      protected function __cellClick(param1:CellEvent) : void
+      protected function __cellClick(event:CellEvent) : void
       {
-         var _loc3_:* = null;
-         param1.stopImmediatePropagation();
-         var _loc2_:MgStoneCell = param1.data as MgStoneCell;
-         if(_loc2_)
+         var info:* = null;
+         event.stopImmediatePropagation();
+         var cell:MgStoneCell = event.data as MgStoneCell;
+         if(cell)
          {
-            _loc3_ = _loc2_.itemInfo as InventoryItemInfo;
+            info = cell.itemInfo as InventoryItemInfo;
          }
-         if(_loc3_ == null)
+         if(info == null)
          {
             return;
          }
-         if(!_loc2_.locked)
+         if(!cell.locked)
          {
             SoundManager.instance.play("008");
-            _loc2_.dragStart();
+            cell.dragStart();
          }
       }
       
-      protected function __cellDoubleClick(param1:CellEvent) : void
+      protected function __cellDoubleClick(event:CellEvent) : void
       {
-         var _loc6_:* = null;
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         param1.stopImmediatePropagation();
-         var _loc3_:MgStoneCell = param1.data as MgStoneCell;
-         if(_loc3_)
+         var info:* = null;
+         var i:int = 0;
+         var place:int = 0;
+         event.stopImmediatePropagation();
+         var cell:MgStoneCell = event.data as MgStoneCell;
+         if(cell)
          {
-            _loc6_ = _loc3_.itemInfo as InventoryItemInfo;
+            info = cell.itemInfo as InventoryItemInfo;
          }
-         if(_loc6_ == null)
+         if(info == null)
          {
             return;
          }
@@ -249,28 +249,27 @@ package magicStone.views
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:BagInfo = PlayerManager.Instance.Self.magicStoneBag;
-         _loc5_ = 0;
-         while(_loc5_ <= 8)
+         var magicStoneBag:BagInfo = PlayerManager.Instance.Self.magicStoneBag;
+         for(i = 0; i <= 8; )
          {
-            _loc4_ = MgStoneUtils.getPlace(_loc5_);
-            if(!_loc2_.getItemAt(_loc4_))
+            place = MgStoneUtils.getPlace(i);
+            if(!magicStoneBag.getItemAt(place))
             {
-               SocketManager.Instance.out.moveMagicStone(_loc6_.Place,_loc4_);
+               SocketManager.Instance.out.moveMagicStone(info.Place,place);
                break;
             }
-            _loc5_++;
+            i++;
          }
       }
       
-      protected function __batCombBtnClick(param1:MouseEvent) : void
+      protected function __batCombBtnClick(event:MouseEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc6_:int = 0;
-         var _loc7_:* = 0;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         _isSingleFeed = !param1;
+         var start:int = 0;
+         var end:int = 0;
+         var i:* = 0;
+         var item:* = null;
+         var alert:* = null;
+         _isSingleFeed = !event;
          SoundManager.instance.play("008");
          _updateItem = PlayerManager.Instance.Self.magicStoneBag.getItemAt(31);
          if(!_updateItem)
@@ -288,56 +287,55 @@ package magicStone.views
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("magicStone.updateCellMaxLevel"));
             return;
          }
-         var _loc8_:int = _updateItem.StrengthenExp;
-         var _loc5_:int = MagicStoneManager.instance.getNeedExp(_updateItem.TemplateID,10);
-         if(!param1)
+         var completed:int = _updateItem.StrengthenExp;
+         var maxLevelNeedExp:int = MagicStoneManager.instance.getNeedExp(_updateItem.TemplateID,10);
+         if(!event)
          {
-            _loc6_ = MagicStoneControl.instance.singleFeedCell.itemInfo.Place;
-            _loc2_ = MagicStoneControl.instance.singleFeedCell.itemInfo.Place;
+            end = MagicStoneControl.instance.singleFeedCell.itemInfo.Place;
+            start = MagicStoneControl.instance.singleFeedCell.itemInfo.Place;
          }
          else
          {
-            _loc2_ = 32 + (_curPage - 1) * 56;
-            _loc6_ = 32 + _curPage * 56 - 1;
+            start = 32 + (_curPage - 1) * 56;
+            end = 32 + _curPage * 56 - 1;
          }
          _allExp = 0;
          _combineArr = [];
          _highLevelArr = [];
-         _loc7_ = _loc2_;
-         while(_loc7_ <= _loc6_)
+         for(i = start; i <= end; )
          {
-            _loc4_ = PlayerManager.Instance.Self.magicStoneBag.getItemAt(_loc7_);
-            if(_loc4_ && !_loc4_.goodsLock)
+            item = PlayerManager.Instance.Self.magicStoneBag.getItemAt(i);
+            if(item && !item.goodsLock)
             {
-               if(!(_loc4_.Level >= 10 && (int(_loc4_.Property3) >= 4 || _loc4_.Quality >= 4)))
+               if(!(item.Level >= 10 && (int(item.Property3) >= 4 || item.Quality >= 4)))
                {
-                  if(int(_loc4_.Property3) != 0 && (int(_loc4_.Property3) >= 4 && _loc4_.Quality > 1 || _loc4_.Level >= 7 || _loc4_.Quality >= 4 || int(_loc4_.Property3) == 3 && _loc4_.Quality > 2))
+                  if(int(item.Property3) != 0 && (int(item.Property3) >= 4 && item.Quality > 1 || item.Level >= 7 || item.Quality >= 4 || int(item.Property3) == 3 && item.Quality > 2))
                   {
-                     _highLevelArr.push(_loc4_);
+                     _highLevelArr.push(item);
                   }
                   else
                   {
-                     _allExp = _allExp + _loc4_.StrengthenExp;
-                     _combineArr.push(_loc4_.Place);
-                     if(_allExp + _loc8_ >= _loc5_)
+                     _allExp = _allExp + item.StrengthenExp;
+                     _combineArr.push(item.Place);
+                     if(_allExp + completed >= maxLevelNeedExp)
                      {
                         break;
                      }
                   }
                }
             }
-            _loc7_++;
+            i++;
          }
          if(_combineArr.length == 0 && _highLevelArr.length == 0)
          {
             if(_isSingleFeed)
             {
-               if(_loc4_.goodsLock)
+               if(item.goodsLock)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("magicStone.lockedTxt"));
                   return;
                }
-               if(_loc4_.Level >= 10)
+               if(item.Level >= 10)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("magicStone.judgeFeedLevel"));
                   return;
@@ -351,10 +349,10 @@ package magicStone.views
          }
          else if(_combineArr.length > 0)
          {
-            if(_isSingleFeed && _loc8_ + _loc4_.StrengthenExp >= _loc5_)
+            if(_isSingleFeed && completed + item.StrengthenExp >= maxLevelNeedExp)
             {
-               _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("magicStone.feedTip2"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
-               _loc3_.addEventListener("response",__onMaxResponse);
+               alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("magicStone.feedTip2"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
+               alert.addEventListener("response",__onMaxResponse);
                return;
             }
             _isPlayMc = true;
@@ -362,18 +360,18 @@ package magicStone.views
          }
          else if(_highLevelArr.length > 0)
          {
-            _isPassExp = _isSingleFeed && _loc8_ + _loc4_.StrengthenExp >= _loc5_;
+            _isPassExp = _isSingleFeed && completed + item.StrengthenExp >= maxLevelNeedExp;
             highLevelAlert();
          }
       }
       
       protected function maxJudge() : void
       {
-         var _loc1_:* = null;
+         var alert2:* = null;
          if(_isPassExp)
          {
-            _loc1_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("magicStone.feedTip2"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
-            _loc1_.addEventListener("response",__onMaxResponse);
+            alert2 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("magicStone.feedTip2"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
+            alert2.addEventListener("response",__onMaxResponse);
          }
          else
          {
@@ -381,14 +379,14 @@ package magicStone.views
          }
       }
       
-      protected function __onMaxResponse(param1:FrameEvent) : void
+      protected function __onMaxResponse(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
-               param1.currentTarget.removeEventListener("response",__onMaxResponse);
-               ObjectUtils.disposeObject(param1.currentTarget);
+               event.currentTarget.removeEventListener("response",__onMaxResponse);
+               ObjectUtils.disposeObject(event.currentTarget);
                break;
             case 2:
             case 3:
@@ -400,43 +398,43 @@ package magicStone.views
       
       private function combineConfirmAlert() : void
       {
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.beadSystem.FeedBeadConfirm"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
-         var _loc1_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("magicStone.ensureAlertTxt");
-         _loc1_.htmlText = LanguageMgr.GetTranslation("magicStone.getExp",_allExp);
-         _loc2_.addChild(_loc1_);
-         _loc2_.addEventListener("response",__onCombineResponse);
+         var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.beadSystem.FeedBeadConfirm"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
+         var showExp:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("magicStone.ensureAlertTxt");
+         showExp.htmlText = LanguageMgr.GetTranslation("magicStone.getExp",_allExp);
+         alert.addChild(showExp);
+         alert.addEventListener("response",__onCombineResponse);
       }
       
       private function highLevelAlert() : void
       {
-         var _loc2_:InventoryItemInfo = _highLevelArr.pop();
-         var _loc4_:int = _updateItem.StrengthenExp;
-         var _loc3_:int = MagicStoneManager.instance.getNeedExp(_updateItem.TemplateID,10);
-         if(_loc4_ + _allExp >= _loc3_)
+         var item:InventoryItemInfo = _highLevelArr.pop();
+         var completed:int = _updateItem.StrengthenExp;
+         var maxLevelNeedExp:int = MagicStoneManager.instance.getNeedExp(_updateItem.TemplateID,10);
+         if(completed + _allExp >= maxLevelNeedExp)
          {
             return;
          }
-         var _loc1_:BeadFeedInfoFrame = ComponentFactory.Instance.creat("BeadFeedInfoFrame");
-         _loc1_.setBeadName(_loc2_.Name + "-Lv" + _loc2_.Level);
-         _loc1_.itemInfo = _loc2_;
-         LayerManager.Instance.addToLayer(_loc1_,1,true,1);
-         _loc1_.textInput.setFocus();
-         _loc1_.addEventListener("response",__onConfirmResponse);
+         var promptAlert:BeadFeedInfoFrame = ComponentFactory.Instance.creat("BeadFeedInfoFrame");
+         promptAlert.setBeadName(item.Name + "-Lv" + item.Level);
+         promptAlert.itemInfo = item;
+         LayerManager.Instance.addToLayer(promptAlert,1,true,1);
+         promptAlert.textInput.setFocus();
+         promptAlert.addEventListener("response",__onConfirmResponse);
       }
       
-      protected function __onConfirmResponse(param1:FrameEvent) : void
+      protected function __onConfirmResponse(event:FrameEvent) : void
       {
-         var _loc2_:BeadFeedInfoFrame = param1.currentTarget as BeadFeedInfoFrame;
+         var alertInfo:BeadFeedInfoFrame = event.currentTarget as BeadFeedInfoFrame;
          SoundManager.instance.playButtonSound();
-         switch(int(param1.responseCode) - 2)
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
-               if(_loc2_.textInput.text == "YES" || _loc2_.textInput.text == "yes")
+               if(alertInfo.textInput.text == "YES" || alertInfo.textInput.text == "yes")
                {
-                  _allExp = _loc2_.itemInfo.StrengthenExp;
+                  _allExp = alertInfo.itemInfo.StrengthenExp;
                   _combineArr = [];
-                  _combineArr.push(_loc2_.itemInfo.Place);
+                  _combineArr.push(alertInfo.itemInfo.Place);
                   if(!_isSingleFeed)
                   {
                      combineConfirmAlert();
@@ -445,8 +443,8 @@ package magicStone.views
                   {
                      maxJudge();
                   }
-                  _loc2_.removeEventListener("response",__onConfirmResponse);
-                  ObjectUtils.disposeObject(_loc2_);
+                  alertInfo.removeEventListener("response",__onConfirmResponse);
+                  ObjectUtils.disposeObject(alertInfo);
                }
                else
                {
@@ -455,10 +453,10 @@ package magicStone.views
          }
       }
       
-      protected function __onCombineResponse(param1:FrameEvent) : void
+      protected function __onCombineResponse(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -500,11 +498,11 @@ package magicStone.views
                }
                break;
          }
-         param1.currentTarget.removeEventListener("response",__onCombineResponse);
-         ObjectUtils.disposeObject(param1.currentTarget);
+         event.currentTarget.removeEventListener("response",__onCombineResponse);
+         ObjectUtils.disposeObject(event.currentTarget);
       }
       
-      protected function __disposeCombineLightMC(param1:Event) : void
+      protected function __disposeCombineLightMC(event:Event) : void
       {
          if(_combineLightMC.currentFrame == _combineLightMC.totalFrames)
          {
@@ -525,9 +523,9 @@ package magicStone.views
       private function updateMagicStone() : void
       {
          SocketManager.Instance.out.updateMagicStone(_combineArr);
-         var _loc2_:int = _updateItem.StrengthenExp;
-         var _loc1_:int = MagicStoneManager.instance.getNeedExp(_updateItem.TemplateID,_updateItem.StrengthenLevel + 1);
-         if(_loc1_ != 0 && _allExp + _loc2_ >= _loc1_)
+         var completed:int = _updateItem.StrengthenExp;
+         var needExp:int = MagicStoneManager.instance.getNeedExp(_updateItem.TemplateID,_updateItem.StrengthenLevel + 1);
+         if(needExp != 0 && _allExp + completed >= needExp)
          {
             MagicStoneControl.instance.playUpgradeMc();
          }
@@ -537,19 +535,19 @@ package magicStone.views
          }
       }
       
-      protected function __lockBtnClick(param1:MouseEvent) : void
+      protected function __lockBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }
       
-      protected function __sortBtnClick(param1:MouseEvent) : void
+      protected function __sortBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BagInfo = PlayerManager.Instance.Self.magicStoneBag;
-         PlayerManager.Instance.Self.PropBag.sortBag(41,_loc2_,32,143);
+         var mgStoneBag:BagInfo = PlayerManager.Instance.Self.magicStoneBag;
+         PlayerManager.Instance.Self.PropBag.sortBag(41,mgStoneBag,32,143);
       }
       
-      protected function __prevBtnClick(param1:MouseEvent) : void
+      protected function __prevBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(curPage > 1)
@@ -563,7 +561,7 @@ package magicStone.views
          _bagList.updateBagList();
       }
       
-      protected function __nextBtnClick(param1:MouseEvent) : void
+      protected function __nextBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(curPage < 2)
@@ -582,9 +580,9 @@ package magicStone.views
          return _curPage;
       }
       
-      public function set curPage(param1:int) : void
+      public function set curPage(value:int) : void
       {
-         _curPage = param1;
+         _curPage = value;
          _bagList.curPage = _curPage;
          _pageTxt.text = _curPage + "/" + 2;
       }

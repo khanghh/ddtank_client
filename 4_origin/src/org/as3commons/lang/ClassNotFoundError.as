@@ -4,9 +4,9 @@ package org.as3commons.lang
    {
        
       
-      public function ClassNotFoundError(param1:String = "")
+      public function ClassNotFoundError(message:String = "")
       {
-         super(param1);
+         super(message);
       }
    }
 }

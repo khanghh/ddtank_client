@@ -24,13 +24,13 @@ package com.pickgliss.ui.core
          return _tipWidth;
       }
       
-      public function set tipWidth(param1:int) : void
+      public function set tipWidth(w:int) : void
       {
-         if(_tipWidth == param1)
+         if(_tipWidth == w)
          {
             return;
          }
-         _tipWidth = param1;
+         _tipWidth = w;
          onPropertiesChanged("tipWidth");
       }
       
@@ -39,13 +39,13 @@ package com.pickgliss.ui.core
          return _tipHeight;
       }
       
-      public function set tipHeight(param1:int) : void
+      public function set tipHeight(h:int) : void
       {
-         if(_tipHeight == param1)
+         if(_tipHeight == h)
          {
             return;
          }
-         _tipHeight = param1;
+         _tipHeight = h;
          onPropertiesChanged("tipHeight");
       }
       

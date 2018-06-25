@@ -77,10 +77,10 @@ package starling.utils
       
       private var mByteArrays:Dictionary;
       
-      public function AssetManager(param1:Number = 1, param2:Boolean = false)
+      public function AssetManager(scaleFactor:Number = 1, useMipmaps:Boolean = false)
       {
          super();
-         mDefaultTextureOptions = new TextureOptions(param1,param2);
+         mDefaultTextureOptions = new TextureOptions(scaleFactor,useMipmaps);
          mTextures = new Dictionary();
          mAtlases = new Dictionary();
          mSounds = new Dictionary();
@@ -96,242 +96,242 @@ package starling.utils
       {
          var _loc6_:int = 0;
          var _loc5_:* = mTextures;
-         for each(var _loc1_ in mTextures)
+         for each(var texture in mTextures)
          {
-            _loc1_.dispose();
+            texture.dispose();
          }
          var _loc8_:int = 0;
          var _loc7_:* = mAtlases;
-         for each(var _loc4_ in mAtlases)
+         for each(var atlas in mAtlases)
          {
-            _loc4_.dispose();
+            atlas.dispose();
          }
          var _loc10_:int = 0;
          var _loc9_:* = mXmls;
-         for each(var _loc3_ in mXmls)
+         for each(var xml in mXmls)
          {
-            System.disposeXML(_loc3_);
+            System.disposeXML(xml);
          }
          var _loc12_:int = 0;
          var _loc11_:* = mByteArrays;
-         for each(var _loc2_ in mByteArrays)
+         for each(var byteArray in mByteArrays)
          {
-            _loc2_.clear();
+            byteArray.clear();
          }
       }
       
-      public function getTexture(param1:String) : Texture
+      public function getTexture(name:String) : Texture
       {
-         var _loc2_:* = null;
-         if(param1 in mTextures)
+         var texture:* = null;
+         if(name in mTextures)
          {
-            return mTextures[param1];
+            return mTextures[name];
          }
          var _loc5_:int = 0;
          var _loc4_:* = mAtlases;
-         for each(var _loc3_ in mAtlases)
+         for each(var atlas in mAtlases)
          {
-            _loc2_ = _loc3_.getTexture(param1);
-            if(_loc2_)
+            texture = atlas.getTexture(name);
+            if(texture)
             {
-               return _loc2_;
+               return texture;
             }
          }
          return null;
       }
       
-      public function getTextures(param1:String = "", param2:Vector.<Texture> = null) : Vector.<Texture>
+      public function getTextures(prefix:String = "", result:Vector.<Texture> = null) : Vector.<Texture>
       {
-         if(param2 == null)
+         if(result == null)
          {
-            param2 = new Vector.<Texture>(0);
+            result = new Vector.<Texture>(0);
          }
          var _loc5_:int = 0;
-         var _loc4_:* = getTextureNames(param1,sNames);
-         for each(var _loc3_ in getTextureNames(param1,sNames))
+         var _loc4_:* = getTextureNames(prefix,sNames);
+         for each(var name in getTextureNames(prefix,sNames))
          {
-            param2[param2.length] = getTexture(_loc3_);
+            result[result.length] = getTexture(name);
          }
          sNames.length = 0;
-         return param2;
+         return result;
       }
       
-      public function getTextureNames(param1:String = "", param2:Vector.<String> = null) : Vector.<String>
+      public function getTextureNames(prefix:String = "", result:Vector.<String> = null) : Vector.<String>
       {
-         param2 = getDictionaryKeys(mTextures,param1,param2);
+         result = getDictionaryKeys(mTextures,prefix,result);
          var _loc5_:int = 0;
          var _loc4_:* = mAtlases;
-         for each(var _loc3_ in mAtlases)
+         for each(var atlas in mAtlases)
          {
-            _loc3_.getNames(param1,param2);
+            atlas.getNames(prefix,result);
          }
-         param2.sort(1);
-         return param2;
+         result.sort(1);
+         return result;
       }
       
-      public function getTextureAtlas(param1:String) : TextureAtlas
+      public function getTextureAtlas(name:String) : TextureAtlas
       {
-         return mAtlases[param1] as TextureAtlas;
+         return mAtlases[name] as TextureAtlas;
       }
       
-      public function getSound(param1:String) : Sound
+      public function getSound(name:String) : Sound
       {
-         return mSounds[param1];
+         return mSounds[name];
       }
       
-      public function getSoundNames(param1:String = "", param2:Vector.<String> = null) : Vector.<String>
+      public function getSoundNames(prefix:String = "", result:Vector.<String> = null) : Vector.<String>
       {
-         return getDictionaryKeys(mSounds,param1,param2);
+         return getDictionaryKeys(mSounds,prefix,result);
       }
       
-      public function playSound(param1:String, param2:Number = 0, param3:int = 0, param4:SoundTransform = null) : SoundChannel
+      public function playSound(name:String, startTime:Number = 0, loops:int = 0, transform:SoundTransform = null) : SoundChannel
       {
-         if(param1 in mSounds)
+         if(name in mSounds)
          {
-            return getSound(param1).play(param2,param3,param4);
+            return getSound(name).play(startTime,loops,transform);
          }
          return null;
       }
       
-      public function getXml(param1:String) : XML
+      public function getXml(name:String) : XML
       {
-         return mXmls[param1];
+         return mXmls[name];
       }
       
-      public function getXmlNames(param1:String = "", param2:Vector.<String> = null) : Vector.<String>
+      public function getXmlNames(prefix:String = "", result:Vector.<String> = null) : Vector.<String>
       {
-         return getDictionaryKeys(mXmls,param1,param2);
+         return getDictionaryKeys(mXmls,prefix,result);
       }
       
-      public function getObject(param1:String) : Object
+      public function getObject(name:String) : Object
       {
-         return mObjects[param1];
+         return mObjects[name];
       }
       
-      public function getObjectNames(param1:String = "", param2:Vector.<String> = null) : Vector.<String>
+      public function getObjectNames(prefix:String = "", result:Vector.<String> = null) : Vector.<String>
       {
-         return getDictionaryKeys(mObjects,param1,param2);
+         return getDictionaryKeys(mObjects,prefix,result);
       }
       
-      public function getByteArray(param1:String) : ByteArray
+      public function getByteArray(name:String) : ByteArray
       {
-         return mByteArrays[param1];
+         return mByteArrays[name];
       }
       
-      public function getByteArrayNames(param1:String = "", param2:Vector.<String> = null) : Vector.<String>
+      public function getByteArrayNames(prefix:String = "", result:Vector.<String> = null) : Vector.<String>
       {
-         return getDictionaryKeys(mByteArrays,param1,param2);
+         return getDictionaryKeys(mByteArrays,prefix,result);
       }
       
-      public function addTexture(param1:String, param2:Texture) : void
+      public function addTexture(name:String, texture:Texture) : void
       {
-         log("Adding texture \'" + param1 + "\'");
-         if(param1 in mTextures)
+         log("Adding texture \'" + name + "\'");
+         if(name in mTextures)
          {
             log("Warning: name was already in use; the previous texture will be replaced.");
-            mTextures[param1].dispose();
+            mTextures[name].dispose();
          }
-         param2.textureName = param1;
-         mTextures[param1] = param2;
+         texture.textureName = name;
+         mTextures[name] = texture;
       }
       
-      public function addTextureAtlas(param1:String, param2:TextureAtlas) : void
+      public function addTextureAtlas(name:String, atlas:TextureAtlas) : void
       {
-         log("Adding texture atlas \'" + param1 + "\'");
-         if(param1 in mAtlases)
+         log("Adding texture atlas \'" + name + "\'");
+         if(name in mAtlases)
          {
             log("Warning: name was already in use; the previous atlas will be replaced.");
-            mAtlases[param1].dispose();
+            mAtlases[name].dispose();
          }
-         mAtlases[param1] = param2;
-         param2.texture.textureName = param1;
+         mAtlases[name] = atlas;
+         atlas.texture.textureName = name;
       }
       
-      public function addSound(param1:String, param2:Sound) : void
+      public function addSound(name:String, sound:Sound) : void
       {
-         log("Adding sound \'" + param1 + "\'");
-         if(param1 in mSounds)
+         log("Adding sound \'" + name + "\'");
+         if(name in mSounds)
          {
             log("Warning: name was already in use; the previous sound will be replaced.");
          }
-         mSounds[param1] = param2;
+         mSounds[name] = sound;
       }
       
-      public function addXml(param1:String, param2:XML) : void
+      public function addXml(name:String, xml:XML) : void
       {
-         log("Adding XML \'" + param1 + "\'");
-         if(param1 in mXmls)
+         log("Adding XML \'" + name + "\'");
+         if(name in mXmls)
          {
             log("Warning: name was already in use; the previous XML will be replaced.");
-            System.disposeXML(mXmls[param1]);
+            System.disposeXML(mXmls[name]);
          }
-         mXmls[param1] = param2;
+         mXmls[name] = xml;
       }
       
-      public function addObject(param1:String, param2:Object) : void
+      public function addObject(name:String, object:Object) : void
       {
-         log("Adding object \'" + param1 + "\'");
-         if(param1 in mObjects)
+         log("Adding object \'" + name + "\'");
+         if(name in mObjects)
          {
             log("Warning: name was already in use; the previous object will be replaced.");
          }
-         mObjects[param1] = param2;
+         mObjects[name] = object;
       }
       
-      public function addByteArray(param1:String, param2:ByteArray) : void
+      public function addByteArray(name:String, byteArray:ByteArray) : void
       {
-         log("Adding byte array \'" + param1 + "\'");
-         if(param1 in mByteArrays)
+         log("Adding byte array \'" + name + "\'");
+         if(name in mByteArrays)
          {
             log("Warning: name was already in use; the previous byte array will be replaced.");
-            mByteArrays[param1].clear();
+            mByteArrays[name].clear();
          }
-         mByteArrays[param1] = param2;
+         mByteArrays[name] = byteArray;
       }
       
-      public function removeTexture(param1:String, param2:Boolean = true) : void
+      public function removeTexture(name:String, dispose:Boolean = true) : void
       {
-         log("Removing texture \'" + param1 + "\'");
-         if(param2 && param1 in mTextures)
+         log("Removing texture \'" + name + "\'");
+         if(dispose && name in mTextures)
          {
-            mTextures[param1].dispose();
-         }
-      }
-      
-      public function removeTextureAtlas(param1:String, param2:Boolean = true) : void
-      {
-         log("Removing texture atlas \'" + param1 + "\'");
-         if(param2 && param1 in mAtlases)
-         {
-            mAtlases[param1].dispose();
+            mTextures[name].dispose();
          }
       }
       
-      public function removeSound(param1:String) : void
+      public function removeTextureAtlas(name:String, dispose:Boolean = true) : void
       {
-         log("Removing sound \'" + param1 + "\'");
-      }
-      
-      public function removeXml(param1:String, param2:Boolean = true) : void
-      {
-         log("Removing xml \'" + param1 + "\'");
-         if(param2 && param1 in mXmls)
+         log("Removing texture atlas \'" + name + "\'");
+         if(dispose && name in mAtlases)
          {
-            System.disposeXML(mXmls[param1]);
+            mAtlases[name].dispose();
          }
       }
       
-      public function removeObject(param1:String) : void
+      public function removeSound(name:String) : void
       {
-         log("Removing object \'" + param1 + "\'");
+         log("Removing sound \'" + name + "\'");
       }
       
-      public function removeByteArray(param1:String, param2:Boolean = true) : void
+      public function removeXml(name:String, dispose:Boolean = true) : void
       {
-         log("Removing byte array \'" + param1 + "\'");
-         if(param2 && param1 in mByteArrays)
+         log("Removing xml \'" + name + "\'");
+         if(dispose && name in mXmls)
          {
-            mByteArrays[param1].clear();
+            System.disposeXML(mXmls[name]);
+         }
+      }
+      
+      public function removeObject(name:String) : void
+      {
+         log("Removing object \'" + name + "\'");
+      }
+      
+      public function removeByteArray(name:String, dispose:Boolean = true) : void
+      {
+         log("Removing byte array \'" + name + "\'");
+         if(dispose && name in mByteArrays)
+         {
+            mByteArrays[name].clear();
          }
       }
       
@@ -354,122 +354,122 @@ package starling.utils
          mByteArrays = new Dictionary();
       }
       
-      public function enqueue(... rest) : void
+      public function enqueue(... rawAssets) : void
       {
-         var _loc4_:* = null;
-         var _loc2_:* = null;
+         var typeXml:* = null;
+         var childNode:* = null;
          var _loc16_:int = 0;
-         var _loc15_:* = rest;
-         for each(var _loc3_ in rest)
+         var _loc15_:* = rawAssets;
+         for each(var rawAsset in rawAssets)
          {
-            if(_loc3_ is Array)
+            if(rawAsset is Array)
             {
-               enqueue.apply(this,_loc3_);
+               enqueue.apply(this,rawAsset);
             }
-            else if(_loc3_ is Class)
+            else if(rawAsset is Class)
             {
-               _loc4_ = describeType(_loc3_);
+               typeXml = describeType(rawAsset);
                if(mVerbose)
                {
-                  log("Looking for static embedded assets in \'" + _loc4_.@name.split("::").pop() + "\'");
+                  log("Looking for static embedded assets in \'" + typeXml.@name.split("::").pop() + "\'");
                }
                var _loc10_:int = 0;
-               var _loc5_:* = _loc4_.constant;
+               var _loc5_:* = typeXml.constant;
                var _loc6_:int = 0;
                var _loc8_:* = new XMLList("");
-               var _loc9_:* = _loc4_.constant.(@type == "Class");
-               for each(_loc2_ in _loc4_.constant.(@type == "Class"))
+               var _loc9_:* = typeXml.constant.(@type == "Class");
+               for each(childNode in typeXml.constant.(@type == "Class"))
                {
-                  enqueueWithName(_loc3_[_loc2_.@name],_loc2_.@name);
+                  enqueueWithName(rawAsset[childNode.@name],childNode.@name);
                }
                var _loc14_:int = 0;
-               var _loc11_:* = _loc4_.variable;
+               var _loc11_:* = typeXml.variable;
                var _loc12_:int = 0;
                _loc5_ = new XMLList("");
-               var _loc13_:* = _loc4_.variable.(@type == "Class");
-               for each(_loc2_ in _loc4_.variable.(@type == "Class"))
+               var _loc13_:* = typeXml.variable.(@type == "Class");
+               for each(childNode in typeXml.variable.(@type == "Class"))
                {
-                  enqueueWithName(_loc3_[_loc2_.@name],_loc2_.@name);
+                  enqueueWithName(rawAsset[childNode.@name],childNode.@name);
                }
             }
-            else if(getQualifiedClassName(_loc3_) == "flash.filesystem::File")
+            else if(getQualifiedClassName(rawAsset) == "flash.filesystem::File")
             {
-               if(!_loc3_["exists"])
+               if(!rawAsset["exists"])
                {
-                  log("File or directory not found: \'" + _loc3_["url"] + "\'");
+                  log("File or directory not found: \'" + rawAsset["url"] + "\'");
                }
-               else if(!_loc3_["isHidden"])
+               else if(!rawAsset["isHidden"])
                {
-                  if(_loc3_["isDirectory"])
+                  if(rawAsset["isDirectory"])
                   {
-                     enqueue.apply(this,_loc3_["getDirectoryListing"]());
+                     enqueue.apply(this,rawAsset["getDirectoryListing"]());
                   }
                   else
                   {
-                     enqueueWithName(_loc3_);
+                     enqueueWithName(rawAsset);
                   }
                }
             }
-            else if(_loc3_ is String || _loc3_ is URLRequest)
+            else if(rawAsset is String || rawAsset is URLRequest)
             {
-               enqueueWithName(_loc3_);
+               enqueueWithName(rawAsset);
             }
             else
             {
-               log("Ignoring unsupported asset type: " + getQualifiedClassName(_loc3_));
+               log("Ignoring unsupported asset type: " + getQualifiedClassName(rawAsset));
             }
          }
       }
       
-      public function enqueueWithName(param1:Object, param2:String = null, param3:TextureOptions = null) : String
+      public function enqueueWithName(asset:Object, name:String = null, options:TextureOptions = null) : String
       {
-         if(getQualifiedClassName(param1) == "flash.filesystem::File")
+         if(getQualifiedClassName(asset) == "flash.filesystem::File")
          {
-            param1 = decodeURI(param1["url"]);
+            asset = decodeURI(asset["url"]);
          }
-         if(param2 == null)
+         if(name == null)
          {
-            param2 = getName(param1);
+            name = getName(asset);
          }
-         if(param3 == null)
+         if(options == null)
          {
-            param3 = mDefaultTextureOptions.clone();
+            options = mDefaultTextureOptions.clone();
          }
          else
          {
-            param3 = param3.clone();
+            options = options.clone();
          }
-         log("Enqueuing \'" + param2 + "\'");
+         log("Enqueuing \'" + name + "\'");
          mQueue.push({
-            "name":param2,
-            "asset":param1,
-            "options":param3
+            "name":name,
+            "asset":asset,
+            "options":options
          });
-         return param2;
+         return name;
       }
       
-      public function loadQueue(param1:Function) : void
+      public function loadQueue(onProgress:Function) : void
       {
-         onProgress = param1;
+         onProgress = onProgress;
          loadNextQueueElement = function():void
          {
-            var _loc1_:int = 0;
+            var index:int = 0;
             if(assetIndex < assetInfos.length)
             {
                assetIndex = Number(assetIndex) + 1;
-               _loc1_ = Number(assetIndex);
-               loadQueueElement(_loc1_,assetInfos[_loc1_]);
+               index = Number(assetIndex);
+               loadQueueElement(index,assetInfos[index]);
             }
          };
-         loadQueueElement = function(param1:int, param2:Object):void
+         loadQueueElement = function(index:int, assetInfo:Object):void
          {
-            index = param1;
-            assetInfo = param2;
+            index = index;
+            assetInfo = assetInfo;
             if(canceled)
             {
                return;
             }
-            var onElementProgress:Function = function(param1:Number):void
+            var onElementProgress:Function = function(progress:Number):void
             {
             };
             var onElementLoaded:Function = function():void
@@ -487,96 +487,92 @@ package starling.utils
             };
             processRawAsset(assetInfo.name,assetInfo.asset,assetInfo.options,xmls,onElementProgress,onElementLoaded);
          };
-         updateAssetProgress = function(param1:int, param2:Number):void
+         updateAssetProgress = function(index:int, progress:Number):void
          {
-            assetProgress[param1] = param2;
-            var _loc3_:* = 0;
-            var _loc4_:int = assetProgress.length;
-            i = 0;
-            while(i < _loc4_)
+            assetProgress[index] = progress;
+            var sum:* = 0;
+            var len:int = assetProgress.length;
+            for(i = 0; i < len; )
             {
-               _loc3_ = Number(_loc3_ + assetProgress[i]);
+               sum = Number(sum + assetProgress[i]);
                i = i + 1;
             }
          };
          processXmls = function():void
          {
-            xmls.sort(function(param1:XML, param2:XML):int
+            xmls.sort(function(a:XML, b:XML):int
             {
-               return param1.localName() == "TextureAtlas"?-1:1;
+               return a.localName() == "TextureAtlas"?-1:1;
             });
          };
-         processXml = function(param1:int):void
+         processXml = function(index:int):void
          {
-            var _loc4_:* = null;
-            var _loc3_:* = null;
+            var name:* = null;
+            var texture:* = null;
             if(canceled)
             {
                return;
             }
-            if(param1 == xmls.length)
+            if(index == xmls.length)
             {
+               finish();
                return;
-               §§push(finish());
             }
-            else
+            var xml:XML = xmls[index];
+            var rootNode:String = xml.localName();
+            var xmlProgress:Number = (index + 1) / (xmls.length + 1);
+            if(rootNode == "TextureAtlas")
             {
-               var _loc5_:XML = xmls[param1];
-               var _loc2_:String = _loc5_.localName();
-               var _loc6_:Number = (param1 + 1) / (xmls.length + 1);
-               if(_loc2_ == "TextureAtlas")
+               name = getName(xml.@imagePath.toString());
+               texture = getTexture(name);
+               if(texture)
                {
-                  _loc4_ = getName(_loc5_.@imagePath.toString());
-                  _loc3_ = getTexture(_loc4_);
-                  if(_loc3_)
+                  addTextureAtlas(name,new TextureAtlas(texture,xml));
+                  removeTexture(name,false);
+                  if(mKeepAtlasXmls)
                   {
-                     addTextureAtlas(_loc4_,new TextureAtlas(_loc3_,_loc5_));
-                     removeTexture(_loc4_,false);
-                     if(mKeepAtlasXmls)
-                     {
-                        addXml(_loc4_,_loc5_);
-                     }
-                     else
-                     {
-                        System.disposeXML(_loc5_);
-                     }
+                     addXml(name,xml);
                   }
                   else
                   {
-                     log("Cannot create atlas: texture \'" + _loc4_ + "\' is missing.");
-                  }
-               }
-               else if(_loc2_ == "font")
-               {
-                  _loc4_ = getName(_loc5_.pages.page.@file.toString());
-                  _loc3_ = getTexture(_loc4_);
-                  if(_loc3_)
-                  {
-                     log("Adding bitmap font \'" + _loc4_ + "\'");
-                     TextField.registerBitmapFont(new BitmapFont(_loc3_,_loc5_),_loc4_);
-                     removeTexture(_loc4_,false);
-                     if(mKeepFontXmls)
-                     {
-                        addXml(_loc4_,_loc5_);
-                     }
-                     else
-                     {
-                        System.disposeXML(_loc5_);
-                     }
-                  }
-                  else
-                  {
-                     log("Cannot create bitmap font: texture \'" + _loc4_ + "\' is missing.");
+                     System.disposeXML(xml);
                   }
                }
                else
                {
-                  throw new Error("XML contents not recognized: " + _loc2_);
+                  log("Cannot create atlas: texture \'" + name + "\' is missing.");
                }
-               onProgress(0.9 + 0.1 * _loc6_);
-               return;
-               §§push(setTimeout(processXml,1,param1 + 1));
             }
+            else if(rootNode == "font")
+            {
+               name = getName(xml.pages.page.@file.toString());
+               texture = getTexture(name);
+               if(texture)
+               {
+                  log("Adding bitmap font \'" + name + "\'");
+                  TextField.registerBitmapFont(new BitmapFont(texture,xml),name);
+                  removeTexture(name,false);
+                  if(mKeepFontXmls)
+                  {
+                     addXml(name,xml);
+                  }
+                  else
+                  {
+                     System.disposeXML(xml);
+                  }
+               }
+               else
+               {
+                  log("Cannot create bitmap font: texture \'" + name + "\' is missing.");
+               }
+            }
+            else
+            {
+               throw new Error("XML contents not recognized: " + rootNode);
+            }
+            onProgress(0.9 + 0.1 * xmlProgress);
+            return;
+            §§push(setTimeout(processXml,1,index + 1));
          };
          cancel = function():void
          {
@@ -595,52 +591,46 @@ package starling.utils
          }
          if(mQueue.length == 0)
          {
+            onProgress(1);
             return;
-            §§push(onProgress(1));
          }
-         else
+         mStarling = Starling.current;
+         if(mStarling == null || mStarling.context == null)
          {
-            mStarling = Starling.current;
-            if(mStarling == null || mStarling.context == null)
-            {
-               throw new Error("The Starling instance needs to be ready before assets can be loaded.");
-            }
-            var canceled:Boolean = false;
-            var xmls:Vector.<XML> = new Vector.<XML>(0);
-            var assetInfos:Array = mQueue.concat();
-            var assetCount:int = mQueue.length;
-            var assetProgress:Array = [];
-            var assetIndex:int = 0;
-            var i:int = 0;
-            while(i < assetCount)
-            {
-               assetProgress[i] = 0;
-               i = i + 1;
-            }
-            i = 0;
-            while(i < mNumConnections)
-            {
-               loadNextQueueElement();
-               i = i + 1;
-            }
-            mQueue.length = 0;
-            mNumLoadingQueues = Number(mNumLoadingQueues) + 1;
-            addEventListener("cancel",cancel);
-            return;
+            throw new Error("The Starling instance needs to be ready before assets can be loaded.");
          }
+         var canceled:Boolean = false;
+         var xmls:Vector.<XML> = new Vector.<XML>(0);
+         var assetInfos:Array = mQueue.concat();
+         var assetCount:int = mQueue.length;
+         var assetProgress:Array = [];
+         var assetIndex:int = 0;
+         for(var i:int = 0; i < assetCount; )
+         {
+            assetProgress[i] = 0;
+            i = i + 1;
+         }
+         for(i = 0; i < mNumConnections; )
+         {
+            loadNextQueueElement();
+            i = i + 1;
+         }
+         mQueue.length = 0;
+         mNumLoadingQueues = Number(mNumLoadingQueues) + 1;
+         addEventListener("cancel",cancel);
       }
       
-      private function processRawAsset(param1:String, param2:Object, param3:TextureOptions, param4:Vector.<XML>, param5:Function, param6:Function) : void
+      private function processRawAsset(name:String, rawAsset:Object, options:TextureOptions, xmls:Vector.<XML>, onProgress:Function, onComplete:Function) : void
       {
-         name = param1;
-         rawAsset = param2;
-         options = param3;
-         xmls = param4;
-         onProgress = param5;
-         onComplete = param6;
-         process = function(param1:Object):void
+         name = name;
+         rawAsset = rawAsset;
+         options = options;
+         xmls = xmls;
+         onProgress = onProgress;
+         onComplete = onComplete;
+         process = function(asset:Object):void
          {
-            asset = param1;
+            asset = asset;
             var object:Object = null;
             var xml:XML = null;
             mStarling.makeCurrent();
@@ -668,67 +658,30 @@ package starling.utils
                   }
                   onComplete();
                }
-               else if(Starling.handleLostContext && mStarling.context.driverInfo == "Disposed")
+               else
                {
-                  log("Context lost while processing assets, retrying ...");
-                  return;
-                  §§push(setTimeout(process,1,asset));
-               }
-               else if(asset is Bitmap)
-               {
-                  var texture:Texture = Texture.fromData(asset,options);
-                  texture.root.onRestore = function():void
+                  if(Starling.handleLostContext && mStarling.context.driverInfo == "Disposed")
                   {
-                     mNumLostTextures = Number(mNumLostTextures) + 1;
-                     loadRawAsset(rawAsset,null,function(param1:Object):void
-                     {
-                        try
-                        {
-                           if(param1 == null)
-                           {
-                              throw new Error("Reload failed");
-                           }
-                           texture.root.uploadBitmap(param1 as Bitmap);
-                           param1.bitmapData.dispose();
-                        }
-                        catch(e:Error)
-                        {
-                           log("Texture restoration failed for \'" + name + "\': " + e.message);
-                        }
-                        mNumRestoredTextures = Number(mNumRestoredTextures) + 1;
-                        if(mNumLostTextures == mNumRestoredTextures)
-                        {
-                           dispatchEventWith("texturesRestored");
-                        }
-                     });
-                  };
-                  asset.bitmapData.dispose();
-                  addTexture(name,texture);
-                  onComplete();
-               }
-               else if(asset is ByteArray)
-               {
-                  var bytes:ByteArray = asset as ByteArray;
-                  if(AtfData.isAtfData(bytes))
+                     log("Context lost while processing assets, retrying ...");
+                     setTimeout(process,1,asset);
+                     return;
+                  }
+                  if(asset is Bitmap)
                   {
-                     options.onReady = prependCallback(options.onReady,function():void
-                     {
-                        addTexture(name,texture);
-                     });
-                     texture = Texture.fromData(bytes,options);
+                     var texture:Texture = Texture.fromData(asset,options);
                      texture.root.onRestore = function():void
                      {
                         mNumLostTextures = Number(mNumLostTextures) + 1;
-                        loadRawAsset(rawAsset,null,function(param1:Object):void
+                        loadRawAsset(rawAsset,null,function(asset:Object):void
                         {
                            try
                            {
-                              if(param1 == null)
+                              if(asset == null)
                               {
                                  throw new Error("Reload failed");
                               }
-                              texture.root.uploadAtfData(param1 as ByteArray,0,true);
-                              param1.clear();
+                              texture.root.uploadBitmap(asset as Bitmap);
+                              asset.bitmapData.dispose();
                            }
                            catch(e:Error)
                            {
@@ -741,61 +694,101 @@ package starling.utils
                            }
                         });
                      };
-                     bytes.clear();
-                  }
-                  else if(byteArrayStartsWith(bytes,"{") || byteArrayStartsWith(bytes,"["))
-                  {
-                     try
-                     {
-                        object = JSON.parse(bytes.readUTFBytes(bytes.length));
-                     }
-                     catch(e:Error)
-                     {
-                        log("Could not parse JSON: " + e.message);
-                        dispatchEventWith("parseError",false,name);
-                     }
-                     if(object)
-                     {
-                        addObject(name,object);
-                     }
-                     bytes.clear();
+                     asset.bitmapData.dispose();
+                     addTexture(name,texture);
                      onComplete();
                   }
-                  else if(byteArrayStartsWith(bytes,"<"))
+                  else if(asset is ByteArray)
                   {
-                     try
+                     var bytes:ByteArray = asset as ByteArray;
+                     if(AtfData.isAtfData(bytes))
                      {
-                        xml = new XML(bytes);
+                        options.onReady = prependCallback(options.onReady,function():void
+                        {
+                           addTexture(name,texture);
+                        });
+                        texture = Texture.fromData(bytes,options);
+                        texture.root.onRestore = function():void
+                        {
+                           mNumLostTextures = Number(mNumLostTextures) + 1;
+                           loadRawAsset(rawAsset,null,function(asset:Object):void
+                           {
+                              try
+                              {
+                                 if(asset == null)
+                                 {
+                                    throw new Error("Reload failed");
+                                 }
+                                 texture.root.uploadAtfData(asset as ByteArray,0,true);
+                                 asset.clear();
+                              }
+                              catch(e:Error)
+                              {
+                                 log("Texture restoration failed for \'" + name + "\': " + e.message);
+                              }
+                              mNumRestoredTextures = Number(mNumRestoredTextures) + 1;
+                              if(mNumLostTextures == mNumRestoredTextures)
+                              {
+                                 dispatchEventWith("texturesRestored");
+                              }
+                           });
+                        };
+                        bytes.clear();
                      }
-                     catch(e:Error)
+                     else if(byteArrayStartsWith(bytes,"{") || byteArrayStartsWith(bytes,"["))
                      {
-                        log("Could not parse XML: " + e.message);
-                        dispatchEventWith("parseError",false,name);
+                        try
+                        {
+                           object = JSON.parse(bytes.readUTFBytes(bytes.length));
+                        }
+                        catch(e:Error)
+                        {
+                           log("Could not parse JSON: " + e.message);
+                           dispatchEventWith("parseError",false,name);
+                        }
+                        if(object)
+                        {
+                           addObject(name,object);
+                        }
+                        bytes.clear();
+                        onComplete();
                      }
-                     process(xml);
-                     bytes.clear();
+                     else if(byteArrayStartsWith(bytes,"<"))
+                     {
+                        try
+                        {
+                           xml = new XML(bytes);
+                        }
+                        catch(e:Error)
+                        {
+                           log("Could not parse XML: " + e.message);
+                           dispatchEventWith("parseError",false,name);
+                        }
+                        process(xml);
+                        bytes.clear();
+                     }
+                     else
+                     {
+                        addByteArray(name,bytes);
+                        onComplete();
+                     }
                   }
                   else
                   {
-                     addByteArray(name,bytes);
+                     addObject(name,asset);
                      onComplete();
                   }
-               }
-               else
-               {
-                  addObject(name,asset);
-                  onComplete();
                }
             }
             var asset:Object = null;
             bytes = null;
             removeEventListener("cancel",cancel);
          };
-         progress = function(param1:Number):void
+         progress = function(ratio:Number):void
          {
             if(!canceled)
             {
-               onProgress(param1);
+               onProgress(ratio);
             }
          };
          cancel = function():void
@@ -807,104 +800,101 @@ package starling.utils
          loadRawAsset(rawAsset,progress,process);
       }
       
-      protected function loadRawAsset(param1:Object, param2:Function, param3:Function) : void
+      protected function loadRawAsset(rawAsset:Object, onProgress:Function, onComplete:Function) : void
       {
-         rawAsset = param1;
-         onProgress = param2;
-         onComplete = param3;
-         onIoError = function(param1:IOErrorEvent):void
+         rawAsset = rawAsset;
+         onProgress = onProgress;
+         onComplete = onComplete;
+         onIoError = function(event:IOErrorEvent):void
          {
-            log("IO error: " + param1.text);
+            log("IO error: " + event.text);
             dispatchEventWith("ioError",false,url);
          };
-         onSecurityError = function(param1:SecurityErrorEvent):void
+         onSecurityError = function(event:SecurityErrorEvent):void
          {
-            log("security error: " + param1.text);
+            log("security error: " + event.text);
             dispatchEventWith("securityError",false,url);
          };
-         onHttpResponseStatus = function(param1:HTTPStatusEvent):void
+         onHttpResponseStatus = function(event:HTTPStatusEvent):void
          {
-            var _loc2_:* = null;
-            var _loc3_:* = null;
+            var headers:* = null;
+            var contentType:* = null;
             if(extension == null)
             {
-               _loc2_ = param1["responseHeaders"];
-               _loc3_ = getHttpHeader(_loc2_,"Content-Type");
-               if(_loc3_ && /(audio|image)\//.exec(_loc3_))
+               headers = event["responseHeaders"];
+               contentType = getHttpHeader(headers,"Content-Type");
+               if(contentType && /(audio|image)\//.exec(contentType))
                {
-                  extension = _loc3_.split("/").pop();
+                  extension = contentType.split("/").pop();
                }
             }
          };
-         onLoadProgress = function(param1:ProgressEvent):void
+         onLoadProgress = function(event:ProgressEvent):void
          {
-            if(onProgress != null && param1.bytesTotal > 0)
+            if(onProgress != null && event.bytesTotal > 0)
             {
-               onProgress(param1.bytesLoaded / param1.bytesTotal);
+               onProgress(event.bytesLoaded / event.bytesTotal);
             }
          };
-         onUrlLoaderComplete = function(param1:Object):void
+         onUrlLoaderComplete = function(event:Object):void
          {
-            var _loc5_:* = null;
-            var _loc4_:* = null;
-            var _loc3_:* = null;
-            var _loc2_:ByteArray = transformData(urlLoader.data as ByteArray,url);
-            if(_loc2_ == null)
+            var sound:* = null;
+            var loaderContext:* = null;
+            var loader:* = null;
+            var bytes:ByteArray = transformData(urlLoader.data as ByteArray,url);
+            if(bytes == null)
             {
+               complete(null);
                return;
-               §§push(complete(null));
             }
-            else
+            if(extension)
             {
-               if(extension)
-               {
-                  extension = extension.toLowerCase();
-               }
-               var _loc6_:* = extension;
-               if("mpeg" !== _loc6_)
-               {
-                  if("mp3" !== _loc6_)
-                  {
-                     if("jpg" !== _loc6_)
-                     {
-                        if("jpeg" !== _loc6_)
-                        {
-                           if("png" !== _loc6_)
-                           {
-                              if("gif" !== _loc6_)
-                              {
-                                 complete(_loc2_);
-                              }
-                           }
-                           addr55:
-                           _loc4_ = new LoaderContext(mCheckPolicyFile);
-                           _loc3_ = new Loader();
-                           _loc4_.imageDecodingPolicy = "onLoad";
-                           loaderInfo = _loc3_.contentLoaderInfo;
-                           loaderInfo.addEventListener("ioError",onIoError);
-                           loaderInfo.addEventListener("complete",onLoaderComplete);
-                           _loc3_.loadBytes(_loc2_,_loc4_);
-                        }
-                        addr54:
-                        §§goto(addr55);
-                     }
-                     §§goto(addr54);
-                  }
-                  addr112:
-                  return;
-               }
-               _loc5_ = new Sound();
-               _loc5_.loadCompressedDataFromByteArray(_loc2_,_loc2_.length);
-               _loc2_.clear();
-               complete(_loc5_);
-               §§goto(addr112);
+               extension = extension.toLowerCase();
             }
+            var _loc6_:* = extension;
+            if("mpeg" !== _loc6_)
+            {
+               if("mp3" !== _loc6_)
+               {
+                  if("jpg" !== _loc6_)
+                  {
+                     if("jpeg" !== _loc6_)
+                     {
+                        if("png" !== _loc6_)
+                        {
+                           if("gif" !== _loc6_)
+                           {
+                              complete(bytes);
+                           }
+                        }
+                        addr75:
+                        loaderContext = new LoaderContext(mCheckPolicyFile);
+                        loader = new Loader();
+                        loaderContext.imageDecodingPolicy = "onLoad";
+                        loaderInfo = loader.contentLoaderInfo;
+                        loaderInfo.addEventListener("ioError",onIoError);
+                        loaderInfo.addEventListener("complete",onLoaderComplete);
+                        loader.loadBytes(bytes,loaderContext);
+                     }
+                     addr74:
+                     §§goto(addr75);
+                  }
+                  §§goto(addr74);
+               }
+               addr146:
+               return;
+            }
+            sound = new Sound();
+            sound.loadCompressedDataFromByteArray(bytes,bytes.length);
+            bytes.clear();
+            complete(sound);
+            §§goto(addr146);
          };
-         onLoaderComplete = function(param1:Object):void
+         onLoaderComplete = function(event:Object):void
          {
             urlLoader.data.clear();
          };
-         complete = function(param1:Object):void
+         complete = function(asset:Object):void
          {
             if(urlLoader)
             {
@@ -921,11 +911,11 @@ package starling.utils
             }
             if(SystemUtil.isDesktop)
             {
-               onComplete(param1);
+               onComplete(asset);
             }
             else
             {
-               SystemUtil.executeWhenApplicationIsActive(onComplete,param1);
+               SystemUtil.executeWhenApplicationIsActive(onComplete,asset);
             }
          };
          var extension:String = null;
@@ -953,140 +943,139 @@ package starling.utils
          }
       }
       
-      protected function getName(param1:Object) : String
+      protected function getName(rawAsset:Object) : String
       {
-         var _loc2_:* = null;
-         if(param1 is String)
+         var name:* = null;
+         if(rawAsset is String)
          {
-            _loc2_ = param1 as String;
+            name = rawAsset as String;
          }
-         else if(param1 is URLRequest)
+         else if(rawAsset is URLRequest)
          {
-            _loc2_ = (param1 as URLRequest).url;
+            name = (rawAsset as URLRequest).url;
          }
-         else if(param1 is FileReference)
+         else if(rawAsset is FileReference)
          {
-            _loc2_ = (param1 as FileReference).name;
+            name = (rawAsset as FileReference).name;
          }
-         if(_loc2_)
+         if(name)
          {
-            _loc2_ = _loc2_.replace(/%20/g," ");
-            _loc2_ = getBasenameFromUrl(_loc2_);
-            if(_loc2_)
+            name = name.replace(/%20/g," ");
+            name = getBasenameFromUrl(name);
+            if(name)
             {
-               return _loc2_;
+               return name;
             }
-            throw new ArgumentError("Could not extract name from String \'" + param1 + "\'");
+            throw new ArgumentError("Could not extract name from String \'" + rawAsset + "\'");
          }
-         _loc2_ = getQualifiedClassName(param1);
-         throw new ArgumentError("Cannot extract names for objects of type \'" + _loc2_ + "\'");
+         name = getQualifiedClassName(rawAsset);
+         throw new ArgumentError("Cannot extract names for objects of type \'" + name + "\'");
       }
       
-      protected function transformData(param1:ByteArray, param2:String) : ByteArray
+      protected function transformData(data:ByteArray, url:String) : ByteArray
       {
-         return param1;
+         return data;
       }
       
-      protected function log(param1:String) : void
+      protected function log(message:String) : void
       {
          if(mVerbose)
          {
-            trace("[AssetManager]",param1);
+            trace("[AssetManager]",message);
          }
       }
       
-      private function byteArrayStartsWith(param1:ByteArray, param2:String) : Boolean
+      private function byteArrayStartsWith(bytes:ByteArray, char:String) : Boolean
       {
-         var _loc7_:* = 0;
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         var _loc5_:int = param1.length;
-         var _loc6_:int = param2.charCodeAt(0);
-         if(_loc5_ >= 4 && (param1[0] == 0 && param1[1] == 0 && param1[2] == 254 && param1[3] == 255) || param1[0] == 255 && param1[1] == 254 && param1[2] == 0 && param1[3] == 0)
+         var i:* = 0;
+         var byte:int = 0;
+         var start:int = 0;
+         var length:int = bytes.length;
+         var wanted:int = char.charCodeAt(0);
+         if(length >= 4 && (bytes[0] == 0 && bytes[1] == 0 && bytes[2] == 254 && bytes[3] == 255) || bytes[0] == 255 && bytes[1] == 254 && bytes[2] == 0 && bytes[3] == 0)
          {
-            _loc4_ = 4;
+            start = 4;
          }
-         else if(_loc5_ >= 3 && param1[0] == 239 && param1[1] == 187 && param1[2] == 191)
+         else if(length >= 3 && bytes[0] == 239 && bytes[1] == 187 && bytes[2] == 191)
          {
-            _loc4_ = 3;
+            start = 3;
          }
-         else if(_loc5_ >= 2 && (param1[0] == 254 && param1[1] == 255) || param1[0] == 255 && param1[1] == 254)
+         else if(length >= 2 && (bytes[0] == 254 && bytes[1] == 255) || bytes[0] == 255 && bytes[1] == 254)
          {
-            _loc4_ = 2;
+            start = 2;
          }
-         _loc7_ = _loc4_;
-         while(_loc7_ < _loc5_)
+         for(i = start; i < length; )
          {
-            _loc3_ = param1[_loc7_];
-            if(!(_loc3_ == 0 || _loc3_ == 10 || _loc3_ == 13 || _loc3_ == 32))
+            byte = bytes[i];
+            if(!(byte == 0 || byte == 10 || byte == 13 || byte == 32))
             {
-               return _loc3_ == _loc6_;
+               return byte == wanted;
             }
-            _loc7_++;
+            i++;
          }
          return false;
       }
       
-      private function getDictionaryKeys(param1:Dictionary, param2:String = "", param3:Vector.<String> = null) : Vector.<String>
+      private function getDictionaryKeys(dictionary:Dictionary, prefix:String = "", result:Vector.<String> = null) : Vector.<String>
       {
-         if(param3 == null)
+         if(result == null)
          {
-            param3 = new Vector.<String>(0);
+            result = new Vector.<String>(0);
          }
          var _loc6_:int = 0;
-         var _loc5_:* = param1;
-         for(var _loc4_ in param1)
+         var _loc5_:* = dictionary;
+         for(var name in dictionary)
          {
-            if(_loc4_.indexOf(param2) == 0)
+            if(name.indexOf(prefix) == 0)
             {
-               param3[param3.length] = _loc4_;
+               result[result.length] = name;
             }
          }
-         param3.sort(1);
-         return param3;
+         result.sort(1);
+         return result;
       }
       
-      private function getHttpHeader(param1:Array, param2:String) : String
+      private function getHttpHeader(headers:Array, headerName:String) : String
       {
-         if(param1)
+         if(headers)
          {
             var _loc5_:int = 0;
-            var _loc4_:* = param1;
-            for each(var _loc3_ in param1)
+            var _loc4_:* = headers;
+            for each(var header in headers)
             {
-               if(_loc3_.name == param2)
+               if(header.name == headerName)
                {
-                  return _loc3_.value;
+                  return header.value;
                }
             }
          }
          return null;
       }
       
-      protected function getBasenameFromUrl(param1:String) : String
+      protected function getBasenameFromUrl(url:String) : String
       {
-         var _loc2_:Array = NAME_REGEX.exec(param1);
-         if(_loc2_ && _loc2_.length > 0)
+         var matches:Array = NAME_REGEX.exec(url);
+         if(matches && matches.length > 0)
          {
-            return _loc2_[1];
+            return matches[1];
          }
          return null;
       }
       
-      protected function getExtensionFromUrl(param1:String) : String
+      protected function getExtensionFromUrl(url:String) : String
       {
-         var _loc2_:Array = NAME_REGEX.exec(param1);
-         if(_loc2_ && _loc2_.length > 1)
+         var matches:Array = NAME_REGEX.exec(url);
+         if(matches && matches.length > 1)
          {
-            return _loc2_[2];
+            return matches[2];
          }
          return null;
       }
       
-      private function prependCallback(param1:Function, param2:Function) : Function
+      private function prependCallback(oldCallback:Function, newCallback:Function) : Function
       {
-         oldCallback = param1;
-         newCallback = param2;
+         oldCallback = oldCallback;
+         newCallback = newCallback;
          if(oldCallback == null)
          {
             return newCallback;
@@ -1116,9 +1105,9 @@ package starling.utils
          return mVerbose;
       }
       
-      public function set verbose(param1:Boolean) : void
+      public function set verbose(value:Boolean) : void
       {
-         mVerbose = param1;
+         mVerbose = value;
       }
       
       public function get isLoading() : Boolean
@@ -1131,9 +1120,9 @@ package starling.utils
          return mDefaultTextureOptions.mipMapping;
       }
       
-      public function set useMipMaps(param1:Boolean) : void
+      public function set useMipMaps(value:Boolean) : void
       {
-         mDefaultTextureOptions.mipMapping = param1;
+         mDefaultTextureOptions.mipMapping = value;
       }
       
       public function get textureRepeat() : Boolean
@@ -1141,9 +1130,9 @@ package starling.utils
          return mDefaultTextureOptions.repeat;
       }
       
-      public function set textureRepeat(param1:Boolean) : void
+      public function set textureRepeat(value:Boolean) : void
       {
-         mDefaultTextureOptions.repeat = param1;
+         mDefaultTextureOptions.repeat = value;
       }
       
       public function get scaleFactor() : Number
@@ -1151,9 +1140,9 @@ package starling.utils
          return mDefaultTextureOptions.scale;
       }
       
-      public function set scaleFactor(param1:Number) : void
+      public function set scaleFactor(value:Number) : void
       {
-         mDefaultTextureOptions.scale = param1;
+         mDefaultTextureOptions.scale = value;
       }
       
       public function get textureFormat() : String
@@ -1161,9 +1150,9 @@ package starling.utils
          return mDefaultTextureOptions.format;
       }
       
-      public function set textureFormat(param1:String) : void
+      public function set textureFormat(value:String) : void
       {
-         mDefaultTextureOptions.format = param1;
+         mDefaultTextureOptions.format = value;
       }
       
       public function get checkPolicyFile() : Boolean
@@ -1171,9 +1160,9 @@ package starling.utils
          return mCheckPolicyFile;
       }
       
-      public function set checkPolicyFile(param1:Boolean) : void
+      public function set checkPolicyFile(value:Boolean) : void
       {
-         mCheckPolicyFile = param1;
+         mCheckPolicyFile = value;
       }
       
       public function get keepAtlasXmls() : Boolean
@@ -1181,9 +1170,9 @@ package starling.utils
          return mKeepAtlasXmls;
       }
       
-      public function set keepAtlasXmls(param1:Boolean) : void
+      public function set keepAtlasXmls(value:Boolean) : void
       {
-         mKeepAtlasXmls = param1;
+         mKeepAtlasXmls = value;
       }
       
       public function get keepFontXmls() : Boolean
@@ -1191,9 +1180,9 @@ package starling.utils
          return mKeepFontXmls;
       }
       
-      public function set keepFontXmls(param1:Boolean) : void
+      public function set keepFontXmls(value:Boolean) : void
       {
-         mKeepFontXmls = param1;
+         mKeepFontXmls = value;
       }
       
       public function get numConnections() : int
@@ -1201,9 +1190,9 @@ package starling.utils
          return mNumConnections;
       }
       
-      public function set numConnections(param1:int) : void
+      public function set numConnections(value:int) : void
       {
-         mNumConnections = param1;
+         mNumConnections = value;
       }
       
       public function get atlases() : Dictionary

@@ -29,7 +29,6 @@ package ddt.manager
    import pet.sprite.PetSpriteManager;
    import quest.TaskManager;
    import road7th.comm.PackageIn;
-   import sevenday.SevendayManager;
    import trainer.controller.SystemOpenPromptManager;
    
    [Event(name="change",type="flash.events.Event")]
@@ -84,9 +83,9 @@ package ddt.manager
          return _zoneName;
       }
       
-      public function set zoneName(param1:String) : void
+      public function set zoneName(value:String) : void
       {
-         _zoneName = param1;
+         _zoneName = value;
          dispatchEvent(new Event("change"));
       }
       
@@ -95,14 +94,14 @@ package ddt.manager
          return _agentid;
       }
       
-      public function set AgentID(param1:int) : void
+      public function set AgentID(value:int) : void
       {
-         _agentid = param1;
+         _agentid = value;
       }
       
-      public function set current(param1:ServerInfo) : void
+      public function set current(value:ServerInfo) : void
       {
-         _current = param1;
+         _current = value;
       }
       
       public function get current() : ServerInfo
@@ -115,17 +114,17 @@ package ddt.manager
          return _list;
       }
       
-      public function set list(param1:Vector.<ServerInfo>) : void
+      public function set list(value:Vector.<ServerInfo>) : void
       {
-         _list = param1;
+         _list = value;
          dispatchEvent(new Event("change"));
       }
       
-      public function setup(param1:ServerListAnalyzer) : void
+      public function setup(analyzer:ServerListAnalyzer) : void
       {
-         _list = param1.list;
-         _agentid = param1.agentId;
-         _zoneName = param1.zoneName;
+         _list = analyzer.list;
+         _agentid = analyzer.agentId;
+         _zoneName = analyzer.zoneName;
       }
       
       public function canAutoLogin() : Boolean
@@ -142,15 +141,15 @@ package ddt.manager
       
       private function searchAvailableServer() : void
       {
-         var _loc1_:SelfInfo = PlayerManager.Instance.Self;
+         var player:SelfInfo = PlayerManager.Instance.Self;
          if(DDT.SERVER_ID != -1)
          {
             _current = getServerInfoByID(DDT.SERVER_ID);
             return;
          }
-         if(_loc1_.LastServerId != -1)
+         if(player.LastServerId != -1)
          {
-            _current = getServerInfoByID(_loc1_.LastServerId);
+            _current = getServerInfoByID(player.LastServerId);
             return;
          }
          _current = searchServerByState(2);
@@ -164,257 +163,263 @@ package ddt.manager
          }
       }
       
-      public function getServerInfoByID(param1:int) : ServerInfo
+      public function getServerInfoByID(id:int) : ServerInfo
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _list.length)
+         var i:int = 0;
+         for(i = 0; i < _list.length; )
          {
-            if(_list[_loc2_].ID == param1)
+            if(_list[i].ID == id)
             {
-               return _list[_loc2_];
+               return _list[i];
             }
-            _loc2_++;
+            i++;
          }
          return null;
       }
       
-      private function searchServerByState(param1:int) : ServerInfo
+      private function searchServerByState(state:int) : ServerInfo
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _list.length)
+         var i:int = 0;
+         for(i = 0; i < _list.length; )
          {
-            if(_list[_loc2_].State == param1)
+            if(_list[i].State == state)
             {
-               return _list[_loc2_];
+               return _list[i];
             }
-            _loc2_++;
+            i++;
          }
          return null;
       }
       
-      public function connentServer(param1:ServerInfo) : Boolean
+      public function connentServer(info:ServerInfo) : Boolean
       {
-         var _loc2_:* = null;
-         if(param1 == null)
+         var alert:* = null;
+         if(info == null)
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.serverlist.ServerListPosView.choose"));
-            alertControl(_loc2_);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.serverlist.ServerListPosView.choose"));
+            alertControl(alert);
             return false;
          }
-         if(param1.MustLevel < PlayerManager.Instance.Self.Grade)
+         if(info.MustLevel < PlayerManager.Instance.Self.Grade)
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.serverlist.ServerListPosView.your"));
-            alertControl(_loc2_);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.serverlist.ServerListPosView.your"));
+            alertControl(alert);
             return false;
          }
-         if(param1.LowestLevel > PlayerManager.Instance.Self.Grade)
+         if(info.LowestLevel > PlayerManager.Instance.Self.Grade)
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.serverlist.ServerListPosView.low"));
-            alertControl(_loc2_);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.serverlist.ServerListPosView.low"));
+            alertControl(alert);
             return false;
          }
-         if(param1.State == 5)
+         if(info.State == 5)
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.serverlist.ServerListPosView.full"));
-            alertControl(_loc2_);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.serverlist.ServerListPosView.full"));
+            alertControl(alert);
             return false;
          }
-         if(param1.State == 1)
+         if(info.State == 1)
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.serverlist.ServerListPosView.maintenance"));
-            alertControl(_loc2_);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.serverlist.ServerListPosView.maintenance"));
+            alertControl(alert);
             return false;
          }
-         _current = param1;
+         _current = info;
          SocketManager.Instance.isChangeChannel = true;
          connentCurrentServer();
          dispatchEvent(new Event("changeServer"));
          return true;
       }
       
-      private function alertControl(param1:BaseAlerFrame) : void
+      private function alertControl(alert:BaseAlerFrame) : void
       {
-         param1.addEventListener("response",__alertResponse);
+         alert.addEventListener("response",__alertResponse);
       }
       
-      private function __alertResponse(param1:FrameEvent) : void
+      private function __alertResponse(evt:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__alertResponse);
-         _loc2_.dispose();
+         var alert:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",__alertResponse);
+         alert.dispose();
       }
       
-      private function __onLoginLastServer(param1:PkgEvent) : void
+      private function __onLoginLastServer(e:PkgEvent) : void
       {
-         var _loc3_:int = param1.pkg.readInt();
-         var _loc2_:int = param1.pkg.readInt();
-         if(_loc3_ == PlayerManager.Instance.Self.ID && _loc2_ != -1)
+         var playerID:int = e.pkg.readInt();
+         var lastServerID:int = e.pkg.readInt();
+         if(playerID == PlayerManager.Instance.Self.ID && lastServerID != -1)
          {
-            PlayerManager.Instance.Self.LastServerId = _loc2_;
-            connentServer(getServerInfoByID(_loc2_));
+            PlayerManager.Instance.Self.LastServerId = lastServerID;
+            connentServer(getServerInfoByID(lastServerID));
          }
       }
       
-      private function __onLoginComplete(param1:PkgEvent) : void
+      private function __onLoginComplete(event:PkgEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc8_:Boolean = false;
-         var _loc7_:Boolean = false;
-         var _loc4_:* = null;
-         var _loc5_:PackageIn = param1.pkg;
-         var _loc6_:SelfInfo = PlayerManager.Instance.Self;
-         if(_loc5_.readByte() == 0)
+         var styleAndSkin:* = null;
+         var t:* = null;
+         var locked:Boolean = false;
+         var lockReleased:Boolean = false;
+         var alert:* = null;
+         var pkg:PackageIn = event.pkg;
+         var self:SelfInfo = PlayerManager.Instance.Self;
+         if(pkg.readByte() == 0)
          {
             CacheSysManager.getInstance().singleRelease("alertInNewversionguidetip");
             CacheSysManager.lock("alertInNewversionguidetip");
-            _loc6_.beginChanges();
+            self.beginChanges();
             SocketManager.Instance.isLogin = true;
-            _loc6_.ZoneID = _loc5_.readInt();
-            _loc6_.Attack = _loc5_.readInt();
-            _loc6_.Defence = _loc5_.readInt();
-            _loc6_.Agility = _loc5_.readInt();
-            _loc6_.Luck = _loc5_.readInt();
-            _loc6_.GP = _loc5_.readInt();
-            _loc6_.Repute = _loc5_.readInt();
-            _loc6_.Gold = _loc5_.readInt();
-            _loc6_.Money = _loc5_.readInt();
-            _loc6_.DDTMoney = _loc5_.readInt();
-            _loc6_.BandMoney = _loc5_.readInt();
-            _loc6_.Score = _loc5_.readInt();
-            _loc6_.Hide = _loc5_.readInt();
-            _loc6_.FightPower = _loc5_.readInt();
-            _loc6_.apprenticeshipState = _loc5_.readInt();
-            _loc6_.masterID = _loc5_.readInt();
-            _loc6_.setMasterOrApprentices(_loc5_.readUTF());
-            _loc6_.graduatesCount = _loc5_.readInt();
-            _loc6_.honourOfMaster = _loc5_.readUTF();
-            _loc6_.freezesDate = _loc5_.readDate();
-            _loc6_.typeVIP = _loc5_.readByte();
-            _loc6_.VIPLevel = _loc5_.readInt();
-            _loc6_.VIPExp = _loc5_.readInt();
-            _loc6_.VIPExpireDay = _loc5_.readDate();
-            _loc6_.LastDate = _loc5_.readDate();
-            _loc6_.VIPNextLevelDaysNeeded = _loc5_.readInt();
-            _loc6_.systemDate = _loc5_.readDate();
-            _loc6_.canTakeVipReward = _loc5_.readBoolean();
-            _loc6_.OptionOnOff = _loc5_.readInt();
-            _loc6_.AchievementPoint = _loc5_.readInt();
-            _loc6_.honor = _loc5_.readUTF();
-            _loc6_.honorId = _loc5_.readInt();
-            TimeManager.Instance.totalGameTime = _loc5_.readInt();
-            _loc6_.Sex = _loc5_.readBoolean();
-            _loc3_ = _loc5_.readUTF();
-            _loc2_ = _loc3_.split("&");
-            _loc6_.Style = _loc2_[0];
-            _loc6_.Colors = _loc2_[1];
-            _loc6_.Skin = _loc5_.readUTF();
-            _loc6_.ConsortiaID = _loc5_.readInt();
-            _loc6_.ConsortiaName = _loc5_.readUTF();
-            _loc6_.badgeID = _loc5_.readInt();
-            _loc6_.DutyLevel = _loc5_.readInt();
-            _loc6_.DutyName = _loc5_.readUTF();
-            _loc6_.Right = _loc5_.readInt();
-            _loc6_.consortiaInfo.ChairmanName = _loc5_.readUTF();
-            _loc6_.consortiaInfo.Honor = _loc5_.readInt();
-            _loc6_.consortiaInfo.Riches = _loc5_.readInt();
-            _loc8_ = _loc5_.readBoolean();
-            _loc7_ = _loc6_.bagPwdState && !_loc6_.bagLocked;
-            _loc6_.bagPwdState = _loc8_;
-            if(_loc7_)
+            self.ZoneID = pkg.readInt();
+            self.Attack = pkg.readInt();
+            self.Defence = pkg.readInt();
+            self.Agility = pkg.readInt();
+            self.Luck = pkg.readInt();
+            self.GP = pkg.readInt();
+            self.Repute = pkg.readInt();
+            self.Gold = pkg.readInt();
+            self.Money = pkg.readInt();
+            self.DDTMoney = pkg.readInt();
+            self.BandMoney = pkg.readInt();
+            self.Score = pkg.readInt();
+            self.Hide = pkg.readInt();
+            self.FightPower = pkg.readInt();
+            self.apprenticeshipState = pkg.readInt();
+            self.masterID = pkg.readInt();
+            self.setMasterOrApprentices(pkg.readUTF());
+            self.graduatesCount = pkg.readInt();
+            self.honourOfMaster = pkg.readUTF();
+            self.freezesDate = pkg.readDate();
+            self.typeVIP = pkg.readByte();
+            self.VIPLevel = pkg.readInt();
+            self.VIPExp = pkg.readInt();
+            self.VIPExpireDay = pkg.readDate();
+            self.LastDate = pkg.readDate();
+            self.VIPNextLevelDaysNeeded = pkg.readInt();
+            self.systemDate = pkg.readDate();
+            self.canTakeVipReward = pkg.readBoolean();
+            self.OptionOnOff = pkg.readInt();
+            self.AchievementPoint = pkg.readInt();
+            self.honor = pkg.readUTF();
+            self.honorId = pkg.readInt();
+            TimeManager.Instance.totalGameTime = pkg.readInt();
+            self.Sex = pkg.readBoolean();
+            styleAndSkin = pkg.readUTF();
+            t = styleAndSkin.split("&");
+            self.Style = t[0];
+            self.Colors = t[1];
+            self.Skin = pkg.readUTF();
+            self.ConsortiaID = pkg.readInt();
+            self.ConsortiaName = pkg.readUTF();
+            self.badgeID = pkg.readInt();
+            self.DutyLevel = pkg.readInt();
+            self.DutyName = pkg.readUTF();
+            self.Right = pkg.readInt();
+            self.consortiaInfo.ChairmanName = pkg.readUTF();
+            self.consortiaInfo.Honor = pkg.readInt();
+            self.consortiaInfo.Riches = pkg.readInt();
+            locked = pkg.readBoolean();
+            lockReleased = self.bagPwdState && !self.bagLocked;
+            self.bagPwdState = locked;
+            if(lockReleased)
             {
                setTimeout(releaseLock,1000);
             }
-            _loc6_.bagLocked = _loc8_;
-            _loc6_.questionOne = _loc5_.readUTF();
-            _loc6_.questionTwo = _loc5_.readUTF();
-            _loc6_.leftTimes = _loc5_.readInt();
-            _loc6_.LoginName = _loc5_.readUTF();
-            _loc6_.Nimbus = _loc5_.readInt();
+            self.bagLocked = locked;
+            self.questionOne = pkg.readUTF();
+            self.questionTwo = pkg.readUTF();
+            self.leftTimes = pkg.readInt();
+            self.LoginName = pkg.readUTF();
+            self.Nimbus = pkg.readInt();
             TaskManager.instance.requestCanAcceptTask();
-            _loc6_.PvePermission = _loc5_.readUTF();
-            _loc6_.fightLibMission = _loc5_.readUTF();
-            _loc6_.userGuildProgress = _loc5_.readInt();
-            _loc6_.LastSpaDate = _loc5_.readDate();
-            _loc6_.shopFinallyGottenTime = _loc5_.readDate();
-            _loc6_.UseOffer = _loc5_.readInt();
-            _loc6_.matchInfo.dailyScore = _loc5_.readInt();
-            _loc6_.matchInfo.dailyWinCount = _loc5_.readInt();
-            _loc6_.matchInfo.dailyGameCount = _loc5_.readInt();
-            _loc6_.DailyLeagueFirst = _loc5_.readBoolean();
-            _loc6_.DailyLeagueLastScore = _loc5_.readInt();
-            _loc6_.matchInfo.weeklyScore = _loc5_.readInt();
-            _loc6_.matchInfo.weeklyGameCount = _loc5_.readInt();
-            _loc6_.matchInfo.weeklyRanking = _loc5_.readInt();
-            _loc6_.spdTexpExp = _loc5_.readInt();
-            _loc6_.attTexpExp = _loc5_.readInt();
-            _loc6_.defTexpExp = _loc5_.readInt();
-            _loc6_.hpTexpExp = _loc5_.readInt();
-            _loc6_.lukTexpExp = _loc5_.readInt();
-            _loc6_.magicAtkTexpExp = _loc5_.readInt();
-            _loc6_.magicDefTexpExp = _loc5_.readInt();
-            _loc6_.texpTaskCount = _loc5_.readInt();
-            _loc6_.texpCount = _loc5_.readInt();
-            _loc6_.magicTexpCount = _loc5_.readInt();
-            _loc6_.texpTaskDate = _loc5_.readDate();
-            _loc6_.isOldPlayerHasValidEquitAtLogin = _loc5_.readBoolean();
-            _loc6_.badLuckNumber = _loc5_.readInt();
-            _loc6_.luckyNum = _loc5_.readInt();
-            _loc6_.lastLuckyNumDate = _loc5_.readDate();
-            _loc6_.lastLuckNum = _loc5_.readInt();
-            _loc6_.isOld = _loc5_.readBoolean();
-            _loc6_.isOld2 = _loc5_.readBoolean();
-            _loc6_.CardSoul = _loc5_.readInt();
-            _loc6_.GetSoulCount = _loc5_.readInt();
-            _loc6_.uesedFinishTime = _loc5_.readInt();
-            _loc6_.totemId = _loc5_.readInt();
-            _loc6_.necklaceExp = _loc5_.readInt();
-            _loc6_.accumulativeLoginDays = _loc5_.readInt();
-            _loc6_.accumulativeAwardDays = _loc5_.readInt();
-            _loc5_.readInt();
-            _loc5_.readInt();
-            _loc5_.readInt();
-            _loc6_.isFirstDivorce = _loc5_.readInt();
-            _loc6_.PveEpicPermission = _loc5_.readUTF();
-            _loc6_.MountsType = _loc5_.readInt();
-            _loc6_.PetsID = _loc5_.readInt();
-            HorseRaceManager.Instance.horseRaceCanRaceTime = _loc5_.readInt();
-            _loc6_.isAttest = _loc5_.readBoolean();
-            _loc6_.ImagePath = _loc5_.readUTF();
-            _loc6_.SubID = _loc5_.readInt();
-            _loc6_.SubName = _loc5_.readUTF();
-            _loc6_.IsShow = _loc5_.readBoolean();
-            _loc5_.readBoolean();
-            _loc6_.createPlayerDate = _loc5_.readDate();
-            _loc6_.commitChanges();
-            _loc6_.vipDiscount = _loc5_.readInt();
-            _loc6_.vipDiscountValidity = _loc5_.readDate();
-            _loc6_.stive = _loc5_.readInt();
-            _loc6_.manualProInfo.manual_Level = _loc5_.readInt();
-            _loc6_.manualProInfo.pro_Agile = _loc5_.readInt();
-            _loc6_.manualProInfo.pro_Armor = _loc5_.readInt();
-            _loc6_.manualProInfo.pro_Attack = _loc5_.readInt();
-            _loc6_.manualProInfo.pro_Damage = _loc5_.readInt();
-            _loc6_.manualProInfo.pro_Defense = _loc5_.readInt();
-            _loc6_.manualProInfo.pro_HP = _loc5_.readInt();
-            _loc6_.manualProInfo.pro_Lucky = _loc5_.readInt();
-            _loc6_.manualProInfo.pro_MagicAttack = _loc5_.readInt();
-            _loc6_.manualProInfo.pro_MagicResistance = _loc5_.readInt();
-            _loc6_.manualProInfo.pro_Stamina = _loc5_.readInt();
-            _loc6_.teamID = _loc5_.readInt();
-            _loc6_.teamName = _loc5_.readUTF();
-            _loc6_.teamTag = _loc5_.readUTF();
-            _loc6_.teamGrade = _loc5_.readInt();
-            _loc6_.teamWinTime = _loc5_.readInt();
-            _loc6_.teamTotalTime = _loc5_.readInt();
-            _loc6_.teamDivision = _loc5_.readInt();
-            _loc6_.teamScore = _loc5_.readInt();
-            _loc6_.teamDuty = _loc5_.readInt();
-            _loc6_.teamPersonalScore = _loc5_.readInt();
-            _loc6_.freeInvitedUsedCnt = _loc5_.readInt();
-            _loc6_.commitChanges();
+            self.PvePermission = pkg.readUTF();
+            self.fightLibMission = pkg.readUTF();
+            self.userGuildProgress = pkg.readInt();
+            self.LastSpaDate = pkg.readDate();
+            self.shopFinallyGottenTime = pkg.readDate();
+            self.UseOffer = pkg.readInt();
+            self.matchInfo.dailyScore = pkg.readInt();
+            self.matchInfo.dailyWinCount = pkg.readInt();
+            self.matchInfo.dailyGameCount = pkg.readInt();
+            self.DailyLeagueFirst = pkg.readBoolean();
+            self.DailyLeagueLastScore = pkg.readInt();
+            self.matchInfo.weeklyScore = pkg.readInt();
+            self.matchInfo.weeklyGameCount = pkg.readInt();
+            self.matchInfo.weeklyRanking = pkg.readInt();
+            self.spdTexpExp = pkg.readInt();
+            self.attTexpExp = pkg.readInt();
+            self.defTexpExp = pkg.readInt();
+            self.hpTexpExp = pkg.readInt();
+            self.lukTexpExp = pkg.readInt();
+            self.magicAtkTexpExp = pkg.readInt();
+            self.magicDefTexpExp = pkg.readInt();
+            self.texpTaskCount = pkg.readInt();
+            self.texpCount = pkg.readInt();
+            self.magicTexpCount = pkg.readInt();
+            self.texpTaskDate = pkg.readDate();
+            self.isOldPlayerHasValidEquitAtLogin = pkg.readBoolean();
+            self.badLuckNumber = pkg.readInt();
+            self.luckyNum = pkg.readInt();
+            self.lastLuckyNumDate = pkg.readDate();
+            self.lastLuckNum = pkg.readInt();
+            self.isOld = pkg.readBoolean();
+            self.isOld2 = pkg.readBoolean();
+            self.CardSoul = pkg.readInt();
+            self.GetSoulCount = pkg.readInt();
+            self.uesedFinishTime = pkg.readInt();
+            self.totemId = pkg.readInt();
+            self.necklaceExp = pkg.readInt();
+            self.accumulativeLoginDays = pkg.readInt();
+            self.accumulativeAwardDays = pkg.readInt();
+            pkg.readInt();
+            pkg.readInt();
+            pkg.readInt();
+            self.isFirstDivorce = pkg.readInt();
+            self.PveEpicPermission = pkg.readUTF();
+            self.MountsType = pkg.readInt();
+            self.PetsID = pkg.readInt();
+            HorseRaceManager.Instance.horseRaceCanRaceTime = pkg.readInt();
+            self.isAttest = pkg.readBoolean();
+            self.ImagePath = pkg.readUTF();
+            self.SubID = pkg.readInt();
+            self.SubName = pkg.readUTF();
+            self.IsShow = pkg.readBoolean();
+            pkg.readBoolean();
+            self.createPlayerDate = pkg.readDate();
+            self.commitChanges();
+            self.vipDiscount = pkg.readInt();
+            self.vipDiscountValidity = pkg.readDate();
+            self.stive = pkg.readInt();
+            self.manualProInfo.manual_Level = pkg.readInt();
+            self.manualProInfo.pro_Agile = pkg.readInt();
+            self.manualProInfo.pro_Armor = pkg.readInt();
+            self.manualProInfo.pro_Attack = pkg.readInt();
+            self.manualProInfo.pro_Damage = pkg.readInt();
+            self.manualProInfo.pro_Defense = pkg.readInt();
+            self.manualProInfo.pro_HP = pkg.readInt();
+            self.manualProInfo.pro_Lucky = pkg.readInt();
+            self.manualProInfo.pro_MagicAttack = pkg.readInt();
+            self.manualProInfo.pro_MagicResistance = pkg.readInt();
+            self.manualProInfo.pro_Stamina = pkg.readInt();
+            self.teamID = pkg.readInt();
+            self.teamName = pkg.readUTF();
+            self.teamTag = pkg.readUTF();
+            self.teamGrade = pkg.readInt();
+            self.teamWinTime = pkg.readInt();
+            self.teamTotalTime = pkg.readInt();
+            self.teamDivision = pkg.readInt();
+            self.teamScore = pkg.readInt();
+            self.teamDuty = pkg.readInt();
+            self.teamPersonalScore = pkg.readInt();
+            self.freeInvitedUsedCnt = pkg.readInt();
+            self.critTexpExp = pkg.readInt();
+            self.sunderArmorTexpExp = pkg.readInt();
+            self.critDmgTexpExp = pkg.readInt();
+            self.speedTexpExp = pkg.readInt();
+            self.uniqueSkillTexpExp = pkg.readInt();
+            self.dmgTexpExp = pkg.readInt();
+            self.armorDefTexpExp = pkg.readInt();
+            self.nsTexpCount = pkg.readInt();
+            self.commitChanges();
             MapManager.buildMap();
             PlayerManager.Instance.Self.loadRelatedPlayersInfo();
             DailyButtunBar.Insance.hideFlag = true;
@@ -424,7 +429,7 @@ package ddt.manager
             if(!StartupResourceLoader.firstEnterHall)
             {
                StartupResourceLoader.Instance.startLoadRelatedInfo();
-               SocketManager.Instance.out.sendPlayerGift(_loc6_.ID);
+               SocketManager.Instance.out.sendPlayerGift(self.ID);
             }
             if(DesktopManager.Instance.isDesktop)
             {
@@ -448,20 +453,19 @@ package ddt.manager
             }
             SocketManager.Instance.out.requestWonderfulActInit(2);
             addLoaderAgain();
-            SevendayManager.instance.setup();
             ConsortionModelManager.Instance.setup();
          }
          else
          {
-            _loc4_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("alert"),LanguageMgr.GetTranslation("ServerLinkError"));
-            alertControl(_loc4_);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("alert"),LanguageMgr.GetTranslation("ServerLinkError"));
+            alertControl(alert);
          }
          WaitTimeAlertManager.Instance.dispose();
       }
       
-      private function addLoader(param1:BaseLoader) : void
+      private function addLoader(loader:BaseLoader) : void
       {
-         _loaderQueue.addLoader(param1);
+         _loaderQueue.addLoader(loader);
       }
       
       private function addLoaderAgain() : void
@@ -472,18 +476,18 @@ package ddt.manager
          _loaderQueue.start();
       }
       
-      private function __onSetupSourceLoadChange(param1:Event) : void
+      private function __onSetupSourceLoadChange(event:Event) : void
       {
-         _requestCompleted = (param1.currentTarget as QueueLoader).completeCount;
+         _requestCompleted = (event.currentTarget as QueueLoader).completeCount;
       }
       
-      private function __onSetupSourceLoadComplete(param1:Event) : void
+      private function __onSetupSourceLoadComplete(event:Event) : void
       {
-         var _loc2_:QueueLoader = param1.currentTarget as QueueLoader;
-         _loc2_.removeEventListener("complete",__onSetupSourceLoadComplete);
-         _loc2_.removeEventListener("change",__onSetupSourceLoadChange);
-         _loc2_.dispose();
-         _loc2_ = null;
+         var queue:QueueLoader = event.currentTarget as QueueLoader;
+         queue.removeEventListener("complete",__onSetupSourceLoadComplete);
+         queue.removeEventListener("change",__onSetupSourceLoadChange);
+         queue.dispose();
+         queue = null;
       }
       
       private function releaseLock() : void
@@ -492,9 +496,9 @@ package ddt.manager
          SocketManager.Instance.out.sendBagLocked(BaglockedManager.PWD,2);
       }
       
-      private function __onLoginCountHandler(param1:CrazyTankSocketEvent) : void
+      private function __onLoginCountHandler(event:CrazyTankSocketEvent) : void
       {
-         event = param1;
+         event = event;
          var pkg:PackageIn = event.pkg;
          var count:int = pkg.readInt();
          var waitTime:int = count * 1;
@@ -504,22 +508,22 @@ package ddt.manager
          });
       }
       
-      private function __onConfigHandler(param1:CrazyTankSocketEvent) : void
+      private function __onConfigHandler(event:CrazyTankSocketEvent) : void
       {
-         var _loc6_:PackageIn = param1.pkg;
+         var pkg:PackageIn = event.pkg;
          PathManager.getPathInfo().beginChanges();
-         var _loc8_:String = _loc6_.readUTF();
-         PathManager.getPathInfo().CLIENT_DOWNLOAD = _loc8_;
-         var _loc5_:Boolean = _loc6_.readBoolean();
-         LandersAwardManager.instance.landersAwardOfficial = _loc5_;
-         var _loc4_:String = _loc6_.readUTF().replace(/#/g,",");
-         PathManager.getPathInfo().DISABLE_TASK_ID = _loc4_;
-         var _loc2_:Boolean = _loc6_.readBoolean();
-         PathManager.getPathInfo().FEEDBACK_ENABLE = _loc2_;
-         var _loc7_:String = _loc6_.readUTF();
-         PathManager.getPathInfo().FEEDBACK_TEL_NUMBER = _loc7_;
-         var _loc3_:Boolean = _loc6_.readBoolean();
-         PathManager.getPathInfo().COMMUNITY_EXIST = _loc3_;
+         var clientDownload:String = pkg.readUTF();
+         PathManager.getPathInfo().CLIENT_DOWNLOAD = clientDownload;
+         var landersAwardOfficial:Boolean = pkg.readBoolean();
+         LandersAwardManager.instance.landersAwardOfficial = landersAwardOfficial;
+         var disableTaskIds:String = pkg.readUTF().replace(/#/g,",");
+         PathManager.getPathInfo().DISABLE_TASK_ID = disableTaskIds;
+         var feedbackEnable:Boolean = pkg.readBoolean();
+         PathManager.getPathInfo().FEEDBACK_ENABLE = feedbackEnable;
+         var feedbackTelNumber:String = pkg.readUTF();
+         PathManager.getPathInfo().FEEDBACK_TEL_NUMBER = feedbackTelNumber;
+         var communityExist:Boolean = pkg.readBoolean();
+         PathManager.getPathInfo().COMMUNITY_EXIST = communityExist;
          PathManager.getPathInfo().commitChanges();
       }
    }

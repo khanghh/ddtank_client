@@ -27,7 +27,7 @@ package escort
          addEventListener("click",clickHandler,false,0,true);
       }
       
-      private function clickHandler(param1:MouseEvent) : void
+      private function clickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(EscortManager.instance.isInGame)
@@ -41,7 +41,7 @@ package escort
          }
       }
       
-      private function canEnterHandler(param1:Event) : void
+      private function canEnterHandler(event:Event) : void
       {
          EscortManager.instance.removeEventListener("escortCanEnter",canEnterHandler);
          StateManager.setState("escort");

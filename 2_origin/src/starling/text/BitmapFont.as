@@ -44,15 +44,15 @@ package starling.text
       
       private var mHelperImage:Image;
       
-      public function BitmapFont(param1:Texture = null, param2:XML = null)
+      public function BitmapFont(texture:Texture = null, fontXml:XML = null)
       {
          super();
-         if(param1 == null && param2 == null)
+         if(texture == null && fontXml == null)
          {
-            param1 = MiniBitmapFont.texture;
-            param2 = MiniBitmapFont.xml;
+            texture = MiniBitmapFont.texture;
+            fontXml = MiniBitmapFont.xml;
          }
-         else if(param1 != null && param2 == null)
+         else if(texture != null && fontXml == null)
          {
             throw new ArgumentError("fontXml cannot be null!");
          }
@@ -62,10 +62,10 @@ package starling.text
          mLineHeight = 14;
          mOffsetY = 0;
          mOffsetX = 0;
-         mTexture = param1;
+         mTexture = texture;
          mChars = new Dictionary();
-         mHelperImage = new Image(param1);
-         parseFontXml(param2);
+         mHelperImage = new Image(texture);
+         parseFontXml(fontXml);
       }
       
       public function dispose() : void
@@ -76,27 +76,27 @@ package starling.text
          }
       }
       
-      private function parseFontXml(param1:XML) : void
+      private function parseFontXml(fontXml:XML) : void
       {
-         var _loc12_:int = 0;
-         var _loc14_:Number = NaN;
-         var _loc4_:Number = NaN;
-         var _loc7_:Number = NaN;
-         var _loc2_:* = null;
-         var _loc8_:* = null;
-         var _loc10_:* = null;
-         var _loc16_:int = 0;
-         var _loc5_:int = 0;
-         var _loc11_:Number = NaN;
-         var _loc3_:Number = mTexture.scale;
-         var _loc13_:Rectangle = mTexture.frame;
-         var _loc15_:Number = !!_loc13_?_loc13_.x:0;
-         var _loc17_:Number = !!_loc13_?_loc13_.y:0;
-         mName = cleanMasterString(param1.info.@face);
-         mSize = parseFloat(param1.info.@size) / _loc3_;
-         mLineHeight = parseFloat(param1.common.@lineHeight) / _loc3_;
-         mBaseline = parseFloat(param1.common.@base) / _loc3_;
-         if(param1.info.@smooth.toString() == "0")
+         var id:int = 0;
+         var xOffset:Number = NaN;
+         var yOffset:Number = NaN;
+         var xAdvance:Number = NaN;
+         var region:* = null;
+         var texture:* = null;
+         var bitmapChar:* = null;
+         var first:int = 0;
+         var second:int = 0;
+         var amount:Number = NaN;
+         var scale:Number = mTexture.scale;
+         var frame:Rectangle = mTexture.frame;
+         var frameX:Number = !!frame?frame.x:0;
+         var frameY:Number = !!frame?frame.y:0;
+         mName = cleanMasterString(fontXml.info.@face);
+         mSize = parseFloat(fontXml.info.@size) / scale;
+         mLineHeight = parseFloat(fontXml.common.@lineHeight) / scale;
+         mBaseline = parseFloat(fontXml.common.@base) / scale;
+         if(fontXml.info.@smooth.toString() == "0")
          {
             smoothing = "none";
          }
@@ -106,307 +106,303 @@ package starling.text
             mSize = mSize == 0?16:Number(mSize * -1);
          }
          var _loc19_:int = 0;
-         var _loc18_:* = param1.chars.char;
-         for each(var _loc9_ in param1.chars.char)
+         var _loc18_:* = fontXml.chars.char;
+         for each(var charElement in fontXml.chars.char)
          {
-            _loc12_ = parseInt(_loc9_.@id);
-            _loc14_ = parseFloat(_loc9_.@xoffset) / _loc3_;
-            _loc4_ = parseFloat(_loc9_.@yoffset) / _loc3_;
-            _loc7_ = parseFloat(_loc9_.@xadvance) / _loc3_;
-            _loc2_ = new Rectangle();
-            _loc2_.x = parseFloat(_loc9_.@x) / _loc3_ + _loc15_;
-            _loc2_.y = parseFloat(_loc9_.@y) / _loc3_ + _loc17_;
-            _loc2_.width = parseFloat(_loc9_.@width) / _loc3_;
-            _loc2_.height = parseFloat(_loc9_.@height) / _loc3_;
-            _loc8_ = Texture.fromTexture(mTexture,_loc2_);
-            _loc10_ = new BitmapChar(_loc12_,_loc8_,_loc14_,_loc4_,_loc7_);
-            addChar(_loc12_,_loc10_);
+            id = parseInt(charElement.@id);
+            xOffset = parseFloat(charElement.@xoffset) / scale;
+            yOffset = parseFloat(charElement.@yoffset) / scale;
+            xAdvance = parseFloat(charElement.@xadvance) / scale;
+            region = new Rectangle();
+            region.x = parseFloat(charElement.@x) / scale + frameX;
+            region.y = parseFloat(charElement.@y) / scale + frameY;
+            region.width = parseFloat(charElement.@width) / scale;
+            region.height = parseFloat(charElement.@height) / scale;
+            texture = Texture.fromTexture(mTexture,region);
+            bitmapChar = new BitmapChar(id,texture,xOffset,yOffset,xAdvance);
+            addChar(id,bitmapChar);
          }
          var _loc21_:int = 0;
-         var _loc20_:* = param1.kernings.kerning;
-         for each(var _loc6_ in param1.kernings.kerning)
+         var _loc20_:* = fontXml.kernings.kerning;
+         for each(var kerningElement in fontXml.kernings.kerning)
          {
-            _loc16_ = parseInt(_loc6_.@first);
-            _loc5_ = parseInt(_loc6_.@second);
-            _loc11_ = parseFloat(_loc6_.@amount) / _loc3_;
-            if(_loc5_ in mChars)
+            first = parseInt(kerningElement.@first);
+            second = parseInt(kerningElement.@second);
+            amount = parseFloat(kerningElement.@amount) / scale;
+            if(second in mChars)
             {
-               getChar(_loc5_).addKerning(_loc16_,_loc11_);
+               getChar(second).addKerning(first,amount);
             }
          }
       }
       
-      public function getChar(param1:int) : BitmapChar
+      public function getChar(charID:int) : BitmapChar
       {
-         return mChars[param1];
+         return mChars[charID];
       }
       
-      public function addChar(param1:int, param2:BitmapChar) : void
+      public function addChar(charID:int, bitmapChar:BitmapChar) : void
       {
-         mChars[param1] = param2;
+         mChars[charID] = bitmapChar;
       }
       
-      public function getCharIDs(param1:Vector.<int> = null) : Vector.<int>
+      public function getCharIDs(result:Vector.<int> = null) : Vector.<int>
       {
-         if(param1 == null)
+         if(result == null)
          {
-            param1 = new Vector.<int>(0);
+            result = new Vector.<int>(0);
          }
          var _loc4_:int = 0;
          var _loc3_:* = mChars;
-         for(param1[param1.length] in mChars)
+         for(result[result.length] in mChars)
          {
          }
-         return param1;
+         return result;
       }
       
-      public function hasChars(param1:String) : Boolean
+      public function hasChars(text:String) : Boolean
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         if(param1 == null)
+         var charID:int = 0;
+         var i:int = 0;
+         if(text == null)
          {
             return true;
          }
-         var _loc2_:int = param1.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc2_)
+         var numChars:int = text.length;
+         for(i = 0; i < numChars; )
          {
-            _loc3_ = param1.charCodeAt(_loc4_);
-            if(_loc3_ != 32 && _loc3_ != 9 && _loc3_ != 10 && _loc3_ != 13 && getChar(_loc3_) == null)
+            charID = text.charCodeAt(i);
+            if(charID != 32 && charID != 9 && charID != 10 && charID != 13 && getChar(charID) == null)
             {
                return false;
             }
-            _loc4_++;
+            i++;
          }
          return true;
       }
       
-      public function createSprite(param1:Number, param2:Number, param3:String, param4:Number = -1, param5:uint = 16777215, param6:String = "center", param7:String = "center", param8:Boolean = true, param9:Boolean = true) : Sprite
+      public function createSprite(width:Number, height:Number, text:String, fontSize:Number = -1, color:uint = 16777215, hAlign:String = "center", vAlign:String = "center", autoScale:Boolean = true, kerning:Boolean = true) : Sprite
       {
-         var _loc14_:int = 0;
-         var _loc15_:* = null;
-         var _loc12_:* = null;
-         var _loc11_:Vector.<CharLocation> = arrangeChars(param1,param2,param3,param4,param6,param7,param8,param9);
-         var _loc10_:int = _loc11_.length;
-         var _loc13_:Sprite = new Sprite();
-         _loc14_ = 0;
-         while(_loc14_ < _loc10_)
+         var i:int = 0;
+         var charLocation:* = null;
+         var char:* = null;
+         var charLocations:Vector.<CharLocation> = arrangeChars(width,height,text,fontSize,hAlign,vAlign,autoScale,kerning);
+         var numChars:int = charLocations.length;
+         var sprite:Sprite = new Sprite();
+         for(i = 0; i < numChars; )
          {
-            _loc15_ = _loc11_[_loc14_];
-            _loc12_ = _loc15_.char.createImage();
-            _loc12_.x = _loc15_.x;
-            _loc12_.y = _loc15_.y;
-            var _loc16_:* = _loc15_.scale;
-            _loc12_.scaleY = _loc16_;
-            _loc12_.scaleX = _loc16_;
-            _loc12_.color = param5;
-            _loc13_.addChild(_loc12_);
-            _loc14_++;
+            charLocation = charLocations[i];
+            char = charLocation.char.createImage();
+            char.x = charLocation.x;
+            char.y = charLocation.y;
+            var _loc16_:* = charLocation.scale;
+            char.scaleY = _loc16_;
+            char.scaleX = _loc16_;
+            char.color = color;
+            sprite.addChild(char);
+            i++;
          }
          CharLocation.rechargePool();
-         return _loc13_;
+         return sprite;
       }
       
-      public function fillQuadBatch(param1:QuadBatch, param2:Number, param3:Number, param4:String, param5:Number = -1, param6:uint = 16777215, param7:String = "center", param8:String = "center", param9:Boolean = true, param10:Boolean = true, param11:Number = 0) : void
+      public function fillQuadBatch(quadBatch:QuadBatch, width:Number, height:Number, text:String, fontSize:Number = -1, color:uint = 16777215, hAlign:String = "center", vAlign:String = "center", autoScale:Boolean = true, kerning:Boolean = true, leading:Number = 0) : void
       {
-         var _loc14_:int = 0;
-         var _loc15_:* = null;
-         var _loc13_:Vector.<CharLocation> = arrangeChars(param2,param3,param4,param5,param7,param8,param9,param10,param11);
-         var _loc12_:int = _loc13_.length;
-         mHelperImage.color = param6;
-         _loc14_ = 0;
-         while(_loc14_ < _loc12_)
+         var i:int = 0;
+         var charLocation:* = null;
+         var charLocations:Vector.<CharLocation> = arrangeChars(width,height,text,fontSize,hAlign,vAlign,autoScale,kerning,leading);
+         var numChars:int = charLocations.length;
+         mHelperImage.color = color;
+         for(i = 0; i < numChars; )
          {
-            _loc15_ = _loc13_[_loc14_];
-            mHelperImage.texture = _loc15_.char.texture;
+            charLocation = charLocations[i];
+            mHelperImage.texture = charLocation.char.texture;
             mHelperImage.readjustSize();
-            mHelperImage.x = _loc15_.x;
-            mHelperImage.y = _loc15_.y;
-            var _loc16_:* = _loc15_.scale;
+            mHelperImage.x = charLocation.x;
+            mHelperImage.y = charLocation.y;
+            var _loc16_:* = charLocation.scale;
             mHelperImage.scaleY = _loc16_;
             mHelperImage.scaleX = _loc16_;
-            param1.addImage(mHelperImage);
-            _loc14_++;
+            quadBatch.addImage(mHelperImage);
+            i++;
          }
          CharLocation.rechargePool();
       }
       
-      private function arrangeChars(param1:Number, param2:Number, param3:String, param4:Number = -1, param5:String = "center", param6:String = "center", param7:Boolean = true, param8:Boolean = true, param9:Number = 0) : Vector.<CharLocation>
+      private function arrangeChars(width:Number, height:Number, text:String, fontSize:Number = -1, hAlign:String = "center", vAlign:String = "center", autoScale:Boolean = true, kerning:Boolean = true, leading:Number = 0) : Vector.<CharLocation>
       {
-         var _loc32_:* = null;
-         var _loc21_:int = 0;
-         var _loc14_:Number = NaN;
-         var _loc24_:Number = NaN;
-         var _loc11_:Number = NaN;
-         var _loc10_:* = 0;
-         var _loc27_:* = 0;
-         var _loc36_:* = NaN;
-         var _loc34_:* = NaN;
-         var _loc30_:* = undefined;
-         var _loc29_:int = 0;
-         var _loc25_:Boolean = false;
-         var _loc18_:int = 0;
-         var _loc15_:* = null;
-         var _loc16_:int = 0;
-         var _loc19_:int = 0;
-         var _loc35_:int = 0;
-         var _loc17_:* = undefined;
-         var _loc31_:int = 0;
-         var _loc28_:* = null;
-         var _loc20_:Number = NaN;
-         var _loc23_:int = 0;
-         if(param3 == null || param3.length == 0)
+         var charLocation:* = null;
+         var numChars:int = 0;
+         var containerWidth:Number = NaN;
+         var containerHeight:Number = NaN;
+         var scale:Number = NaN;
+         var lastWhiteSpace:* = 0;
+         var lastCharID:* = 0;
+         var currentX:* = NaN;
+         var currentY:* = NaN;
+         var currentLine:* = undefined;
+         var i:int = 0;
+         var lineFull:Boolean = false;
+         var charID:int = 0;
+         var char:* = null;
+         var numCharsToRemove:int = 0;
+         var removeIndex:int = 0;
+         var lineID:int = 0;
+         var line:* = undefined;
+         var xOffset:int = 0;
+         var lastLocation:* = null;
+         var right:Number = NaN;
+         var c:int = 0;
+         if(text == null || text.length == 0)
          {
             return CharLocation.vectorFromPool();
          }
-         if(param4 < 0)
+         if(fontSize < 0)
          {
-            param4 = param4 * -mSize;
+            fontSize = fontSize * -mSize;
          }
-         var _loc26_:Boolean = false;
-         while(!_loc26_)
+         var finished:Boolean = false;
+         while(!finished)
          {
             sLines.length = 0;
-            _loc11_ = param4 / mSize;
-            _loc14_ = param1 / _loc11_;
-            _loc24_ = param2 / _loc11_;
-            if(mLineHeight <= _loc24_)
+            scale = fontSize / mSize;
+            containerWidth = width / scale;
+            containerHeight = height / scale;
+            if(mLineHeight <= containerHeight)
             {
-               _loc10_ = -1;
-               _loc27_ = -1;
-               _loc36_ = 0;
-               _loc34_ = 0;
-               _loc30_ = CharLocation.vectorFromPool();
-               _loc21_ = param3.length;
-               _loc29_ = 0;
-               for(; _loc29_ < _loc21_; _loc29_++)
+               lastWhiteSpace = -1;
+               lastCharID = -1;
+               currentX = 0;
+               currentY = 0;
+               currentLine = CharLocation.vectorFromPool();
+               numChars = text.length;
+               for(i = 0; i < numChars; i++)
                {
-                  _loc25_ = false;
-                  _loc18_ = param3.charCodeAt(_loc29_);
-                  _loc15_ = getChar(_loc18_);
-                  if(_loc18_ == 10 || _loc18_ == 13)
+                  lineFull = false;
+                  charID = text.charCodeAt(i);
+                  char = getChar(charID);
+                  if(charID == 10 || charID == 13)
                   {
-                     _loc25_ = true;
+                     lineFull = true;
                   }
-                  else if(_loc15_ == null)
+                  else if(char == null)
                   {
-                     trace("[Starling] Missing character: " + _loc18_);
+                     trace("[Starling] Missing character: " + charID);
                   }
                   else
                   {
-                     if(_loc18_ == 32 || _loc18_ == 9)
+                     if(charID == 32 || charID == 9)
                      {
-                        _loc10_ = _loc29_;
+                        lastWhiteSpace = i;
                      }
-                     if(param8)
+                     if(kerning)
                      {
-                        _loc36_ = Number(_loc36_ + _loc15_.getKerning(_loc27_));
+                        currentX = Number(currentX + char.getKerning(lastCharID));
                      }
-                     _loc32_ = CharLocation.instanceFromPool(_loc15_);
-                     _loc32_.x = _loc36_ + _loc15_.xOffset;
-                     _loc32_.y = _loc34_ + _loc15_.yOffset;
-                     _loc30_[_loc30_.length] = _loc32_;
-                     _loc36_ = Number(_loc36_ + _loc15_.xAdvance);
-                     _loc27_ = _loc18_;
-                     if(_loc32_.x + _loc15_.width > _loc14_)
+                     charLocation = CharLocation.instanceFromPool(char);
+                     charLocation.x = currentX + char.xOffset;
+                     charLocation.y = currentY + char.yOffset;
+                     currentLine[currentLine.length] = charLocation;
+                     currentX = Number(currentX + char.xAdvance);
+                     lastCharID = charID;
+                     if(charLocation.x + char.width > containerWidth)
                      {
-                        if(!(param7 && _loc10_ == -1))
+                        if(!(autoScale && lastWhiteSpace == -1))
                         {
-                           _loc16_ = _loc10_ == -1?1:Number(_loc29_ - _loc10_);
-                           _loc19_ = _loc30_.length - _loc16_;
-                           _loc30_.splice(_loc19_,_loc16_);
-                           if(_loc30_.length != 0)
+                           numCharsToRemove = lastWhiteSpace == -1?1:Number(i - lastWhiteSpace);
+                           removeIndex = currentLine.length - numCharsToRemove;
+                           currentLine.splice(removeIndex,numCharsToRemove);
+                           if(currentLine.length == 0)
                            {
-                              _loc29_ = _loc29_ - _loc16_;
-                              _loc25_ = true;
+                              break;
                            }
-                           break;
+                           i = i - numCharsToRemove;
+                           lineFull = true;
                         }
                         break;
                      }
                   }
-                  if(_loc29_ == _loc21_ - 1)
+                  if(i == numChars - 1)
                   {
-                     sLines[sLines.length] = _loc30_;
-                     _loc26_ = true;
+                     sLines[sLines.length] = currentLine;
+                     finished = true;
                   }
-                  else if(_loc25_)
+                  else if(lineFull)
                   {
-                     sLines[sLines.length] = _loc30_;
-                     if(_loc10_ == _loc29_)
+                     sLines[sLines.length] = currentLine;
+                     if(lastWhiteSpace == i)
                      {
-                        _loc30_.pop();
+                        currentLine.pop();
                      }
-                     if(_loc34_ + param9 + 2 * mLineHeight <= _loc24_)
+                     if(currentY + leading + 2 * mLineHeight <= containerHeight)
                      {
-                        _loc30_ = CharLocation.vectorFromPool();
-                        _loc36_ = 0;
-                        _loc34_ = Number(_loc34_ + (mLineHeight + param9));
-                        _loc10_ = -1;
-                        _loc27_ = -1;
+                        currentLine = CharLocation.vectorFromPool();
+                        currentX = 0;
+                        currentY = Number(currentY + (mLineHeight + leading));
+                        lastWhiteSpace = -1;
+                        lastCharID = -1;
                         continue;
                      }
                      break;
                   }
                }
             }
-            if(param7 && !_loc26_ && param4 > 3)
+            if(autoScale && !finished && fontSize > 3)
             {
-               param4 = param4 - 1;
+               fontSize = fontSize - 1;
             }
             else
             {
-               _loc26_ = true;
+               finished = true;
             }
          }
-         var _loc22_:Vector.<CharLocation> = CharLocation.vectorFromPool();
-         var _loc13_:int = sLines.length;
-         var _loc33_:Number = _loc34_ + mLineHeight;
-         var _loc12_:int = 0;
-         if(param6 == "bottom")
+         var finalLocations:Vector.<CharLocation> = CharLocation.vectorFromPool();
+         var numLines:int = sLines.length;
+         var bottom:Number = currentY + mLineHeight;
+         var yOffset:int = 0;
+         if(vAlign == "bottom")
          {
-            _loc12_ = _loc24_ - _loc33_;
+            yOffset = containerHeight - bottom;
          }
-         else if(param6 == "center")
+         else if(vAlign == "center")
          {
-            _loc12_ = (_loc24_ - _loc33_) / 2;
+            yOffset = (containerHeight - bottom) / 2;
          }
-         _loc35_ = 0;
-         while(_loc35_ < _loc13_)
+         lineID = 0;
+         while(lineID < numLines)
          {
-            _loc17_ = sLines[_loc35_];
-            _loc21_ = _loc17_.length;
-            if(_loc21_ != 0)
+            line = sLines[lineID];
+            numChars = line.length;
+            if(numChars != 0)
             {
-               _loc31_ = 0;
-               _loc28_ = _loc17_[_loc17_.length - 1];
-               _loc20_ = _loc28_.x - _loc28_.char.xOffset + _loc28_.char.xAdvance;
-               if(param5 == "right")
+               xOffset = 0;
+               lastLocation = line[line.length - 1];
+               right = lastLocation.x - lastLocation.char.xOffset + lastLocation.char.xAdvance;
+               if(hAlign == "right")
                {
-                  _loc31_ = _loc14_ - _loc20_;
+                  xOffset = containerWidth - right;
                }
-               else if(param5 == "center")
+               else if(hAlign == "center")
                {
-                  _loc31_ = (_loc14_ - _loc20_) / 2;
+                  xOffset = (containerWidth - right) / 2;
                }
-               _loc23_ = 0;
-               while(_loc23_ < _loc21_)
+               c = 0;
+               while(c < numChars)
                {
-                  _loc32_ = _loc17_[_loc23_];
-                  _loc32_.x = _loc11_ * (_loc32_.x + _loc31_ + mOffsetX);
-                  _loc32_.y = _loc11_ * (_loc32_.y + _loc12_ + mOffsetY);
-                  _loc32_.scale = _loc11_;
-                  if(_loc32_.char.width > 0 && _loc32_.char.height > 0)
+                  charLocation = line[c];
+                  charLocation.x = scale * (charLocation.x + xOffset + mOffsetX);
+                  charLocation.y = scale * (charLocation.y + yOffset + mOffsetY);
+                  charLocation.scale = scale;
+                  if(charLocation.char.width > 0 && charLocation.char.height > 0)
                   {
-                     _loc22_[_loc22_.length] = _loc32_;
+                     finalLocations[finalLocations.length] = charLocation;
                   }
-                  _loc23_++;
+                  c++;
                }
             }
-            _loc35_++;
+            lineID++;
          }
-         return _loc22_;
+         return finalLocations;
       }
       
       public function get name() : String
@@ -424,9 +420,9 @@ package starling.text
          return mLineHeight;
       }
       
-      public function set lineHeight(param1:Number) : void
+      public function set lineHeight(value:Number) : void
       {
-         mLineHeight = param1;
+         mLineHeight = value;
       }
       
       public function get smoothing() : String
@@ -434,9 +430,9 @@ package starling.text
          return mHelperImage.smoothing;
       }
       
-      public function set smoothing(param1:String) : void
+      public function set smoothing(value:String) : void
       {
-         mHelperImage.smoothing = param1;
+         mHelperImage.smoothing = value;
       }
       
       public function get baseline() : Number
@@ -444,9 +440,9 @@ package starling.text
          return mBaseline;
       }
       
-      public function set baseline(param1:Number) : void
+      public function set baseline(value:Number) : void
       {
-         mBaseline = param1;
+         mBaseline = value;
       }
       
       public function get offsetX() : Number
@@ -454,9 +450,9 @@ package starling.text
          return mOffsetX;
       }
       
-      public function set offsetX(param1:Number) : void
+      public function set offsetX(value:Number) : void
       {
-         mOffsetX = param1;
+         mOffsetX = value;
       }
       
       public function get offsetY() : Number
@@ -464,9 +460,9 @@ package starling.text
          return mOffsetY;
       }
       
-      public function set offsetY(param1:Number) : void
+      public function set offsetY(value:Number) : void
       {
-         mOffsetY = param1;
+         mOffsetY = value;
       }
       
       public function get texture() : Texture
@@ -498,49 +494,49 @@ class CharLocation
    
    public var y:Number;
    
-   function CharLocation(param1:BitmapChar)
+   function CharLocation(char:BitmapChar)
    {
       super();
-      reset(param1);
+      reset(char);
    }
    
-   public static function instanceFromPool(param1:BitmapChar) : CharLocation
+   public static function instanceFromPool(char:BitmapChar) : CharLocation
    {
-      var _loc2_:CharLocation = sInstancePool.length > 0?sInstancePool.pop():new CharLocation(param1);
-      _loc2_.reset(param1);
-      sInstanceLoan[sInstanceLoan.length] = _loc2_;
-      return _loc2_;
+      var instance:CharLocation = sInstancePool.length > 0?sInstancePool.pop():new CharLocation(char);
+      instance.reset(char);
+      sInstanceLoan[sInstanceLoan.length] = instance;
+      return instance;
    }
    
    public static function vectorFromPool() : Vector.<CharLocation>
    {
-      var _loc1_:Vector.<CharLocation> = sVectorPool.length > 0?sVectorPool.pop():new Vector.<CharLocation>(0);
-      _loc1_.length = 0;
-      sVectorLoan[sVectorLoan.length] = _loc1_;
-      return _loc1_;
+      var vector:Vector.<CharLocation> = sVectorPool.length > 0?sVectorPool.pop():new Vector.<CharLocation>(0);
+      vector.length = 0;
+      sVectorLoan[sVectorLoan.length] = vector;
+      return vector;
    }
    
    public static function rechargePool() : void
    {
-      var _loc2_:* = null;
-      var _loc1_:* = undefined;
+      var instance:* = null;
+      var vector:* = undefined;
       while(sInstanceLoan.length > 0)
       {
-         _loc2_ = sInstanceLoan.pop();
-         _loc2_.char = null;
-         sInstancePool[sInstancePool.length] = _loc2_;
+         instance = sInstanceLoan.pop();
+         instance.char = null;
+         sInstancePool[sInstancePool.length] = instance;
       }
       while(sVectorLoan.length > 0)
       {
-         _loc1_ = sVectorLoan.pop();
-         _loc1_.length = 0;
-         sVectorPool[sVectorPool.length] = _loc1_;
+         vector = sVectorLoan.pop();
+         vector.length = 0;
+         sVectorPool[sVectorPool.length] = vector;
       }
    }
    
-   private function reset(param1:BitmapChar) : CharLocation
+   private function reset(char:BitmapChar) : CharLocation
    {
-      this.char = param1;
+      this.char = char;
       return this;
    }
 }

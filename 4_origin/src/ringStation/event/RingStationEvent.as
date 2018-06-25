@@ -33,11 +33,11 @@ package ringStation.event
       
       private var _sign:String;
       
-      public function RingStationEvent(param1:String, param2:PackageIn = null, param3:String = "")
+      public function RingStationEvent(type:String, pkg:PackageIn = null, sign:String = "")
       {
-         super(param1,bubbles,cancelable);
-         _pkg = param2;
-         _sign = param3;
+         super(type,bubbles,cancelable);
+         _pkg = pkg;
+         _sign = sign;
       }
       
       public function get pkg() : PackageIn

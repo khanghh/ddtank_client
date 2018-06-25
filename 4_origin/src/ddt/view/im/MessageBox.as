@@ -61,86 +61,84 @@ package ddt.view.im
          addEventListener("mouseOut",__outHandler);
       }
       
-      protected function __outHandler(param1:MouseEvent) : void
+      protected function __outHandler(event:MouseEvent) : void
       {
          overState = false;
          IMManager.Instance.hideMessageBox();
       }
       
-      protected function __overHandler(param1:MouseEvent) : void
+      protected function __overHandler(event:MouseEvent) : void
       {
          overState = true;
       }
       
-      protected function __cancelFlashHandler(param1:MouseEvent) : void
+      protected function __cancelFlashHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          IMManager.Instance.cancelFlash();
       }
       
-      public function set message(param1:Vector.<PresentRecordInfo>) : void
+      public function set message(message:Vector.<PresentRecordInfo>) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var item:* = null;
          clearBox();
-         _loc3_ = 0;
-         while(_loc3_ < param1.length)
+         for(i = 0; i < message.length; )
          {
-            _loc2_ = new MessageBoxItem();
-            _loc2_.recordInfo = param1[_loc3_];
-            _loc2_.addEventListener("click",__itemClickHandler);
-            _loc2_.addEventListener("delete",__itemDeleteHandler);
-            _vbox.addChild(_loc2_);
-            _item.push(_loc2_);
-            _loc3_++;
+            item = new MessageBoxItem();
+            item.recordInfo = message[i];
+            item.addEventListener("click",__itemClickHandler);
+            item.addEventListener("delete",__itemDeleteHandler);
+            _vbox.addChild(item);
+            _item.push(item);
+            i++;
          }
          _bg.height = _item.length * 28 + 88;
       }
       
       private function clearBox() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _item.length)
+         var i:int = 0;
+         for(i = 0; i < _item.length; )
          {
-            if(_item[_loc1_])
+            if(_item[i])
             {
-               _item[_loc1_].removeEventListener("click",__itemClickHandler);
-               _item[_loc1_].removeEventListener("delete",__itemDeleteHandler);
-               ObjectUtils.disposeObject(_item[_loc1_]);
+               _item[i].removeEventListener("click",__itemClickHandler);
+               _item[i].removeEventListener("delete",__itemDeleteHandler);
+               ObjectUtils.disposeObject(_item[i]);
             }
-            _item[_loc1_] = null;
-            _loc1_++;
+            _item[i] = null;
+            i++;
          }
          _item = new Vector.<MessageBoxItem>();
       }
       
-      protected function __itemDeleteHandler(param1:Event) : void
+      protected function __itemDeleteHandler(event:Event) : void
       {
-         var _loc2_:MessageBoxItem = param1.currentTarget as MessageBoxItem;
-         _item.splice(_item.indexOf(_loc2_),1);
-         if(_loc2_)
+         var target:MessageBoxItem = event.currentTarget as MessageBoxItem;
+         _item.splice(_item.indexOf(target),1);
+         if(target)
          {
-            _loc2_.removeEventListener("click",__itemClickHandler);
-            _loc2_.removeEventListener("delete",__itemDeleteHandler);
-            ObjectUtils.disposeObject(_loc2_);
+            target.removeEventListener("click",__itemClickHandler);
+            target.removeEventListener("delete",__itemDeleteHandler);
+            ObjectUtils.disposeObject(target);
          }
-         _loc2_ = null;
+         target = null;
          IMManager.Instance.getMessage();
       }
       
-      protected function __itemClickHandler(param1:MouseEvent) : void
+      protected function __itemClickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:MessageBoxItem = param1.currentTarget as MessageBoxItem;
-         if(_loc2_.recordInfo.teamId)
+         var target:MessageBoxItem = event.currentTarget as MessageBoxItem;
+         if(target.recordInfo.teamId)
          {
             AssetModuleLoader.addModelLoader("team",7);
             AssetModuleLoader.startCodeLoader(showTeamChat);
          }
          else
          {
-            IMManager.Instance.alertPrivateFrame(_loc2_.recordInfo.id);
+            IMManager.Instance.alertPrivateFrame(target.recordInfo.id);
          }
          IMManager.Instance.getMessage();
       }

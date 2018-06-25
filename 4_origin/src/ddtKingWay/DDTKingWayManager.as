@@ -29,7 +29,7 @@ package ddtKingWay
       
       private var _frame:Frame;
       
-      public function DDTKingWayManager(param1:inner)
+      public function DDTKingWayManager($inner:inner)
       {
          super();
       }
@@ -68,9 +68,9 @@ package ddtKingWay
          PlayerManager.Instance.Self.addEventListener("propertychange",ddtKingWayIconShow);
       }
       
-      protected function ddtKingWayIconShow(param1:PlayerPropertyEvent) : void
+      protected function ddtKingWayIconShow(event:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["Grade"])
+         if(event.changedProperties["Grade"])
          {
             if(PlayerManager.Instance.Self.Grade >= 30)
             {
@@ -79,17 +79,17 @@ package ddtKingWay
          }
       }
       
-      protected function __onQuestChange(param1:TaskEvent) : void
+      protected function __onQuestChange(event:TaskEvent) : void
       {
-         if(!isShowIcon && QUEST_LIST.indexOf(param1.info.Id))
+         if(!isShowIcon && QUEST_LIST.indexOf(event.info.Id))
          {
             checkIcon();
          }
       }
       
-      public function analyzer(param1:DDTKingWayDataAnalyzer) : void
+      public function analyzer(analyzer:DDTKingWayDataAnalyzer) : void
       {
-         _model = param1.data;
+         _model = analyzer.data;
       }
       
       public function get model() : DictionaryData
@@ -99,13 +99,13 @@ package ddtKingWay
       
       private function getAllComplete() : Boolean
       {
-         var _loc1_:* = null;
+         var questInfo:* = null;
          var _loc4_:int = 0;
          var _loc3_:* = _model;
-         for each(var _loc2_ in _model)
+         for each(var info in _model)
          {
-            _loc1_ = TaskManager.instance.getQuestByID(_loc2_.QuestID);
-            if(_loc1_.data != null && !(_loc1_.isAchieved && !_loc1_.isAvailable) && checkOut(_loc1_,_loc2_))
+            questInfo = TaskManager.instance.getQuestByID(info.QuestID);
+            if(questInfo.data != null && !(questInfo.isAchieved && !questInfo.isAvailable) && checkOut(questInfo,info))
             {
                return false;
             }
@@ -126,50 +126,48 @@ package ddtKingWay
          return false;
       }
       
-      public function getIndexComplete(param1:int) : Boolean
+      public function getIndexComplete(index:int) : Boolean
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         _loc4_ = 0;
-         while(_loc4_ <= param1)
+         var i:int = 0;
+         var info:* = null;
+         var questInfo:* = null;
+         for(i = 0; i <= index; )
          {
-            _loc3_ = model[QUEST_LIST[_loc4_]];
-            _loc2_ = TaskManager.instance.getQuestByID(_loc3_.QuestID);
-            if(_loc2_.data != null && !(_loc2_.isAchieved && !_loc2_.isAvailable) && checkOut(_loc2_,_loc3_))
+            info = model[QUEST_LIST[i]];
+            questInfo = TaskManager.instance.getQuestByID(info.QuestID);
+            if(questInfo.data != null && !(questInfo.isAchieved && !questInfo.isAvailable) && checkOut(questInfo,info))
             {
                return false;
             }
-            _loc4_++;
+            i++;
          }
          return true;
       }
       
-      public function checkOut(param1:QuestInfo, param2:DDTKingWayData) : Boolean
+      public function checkOut(questInfo:QuestInfo, info:DDTKingWayData) : Boolean
       {
-         if(TimeManager.Instance.NowTime() > param1.data.AddTiemsDate.getTime() + param2.Validay * 86400000)
+         if(TimeManager.Instance.NowTime() > questInfo.data.AddTiemsDate.getTime() + info.Validay * 86400000)
          {
             return false;
          }
          return true;
       }
       
-      public function getPageIndexByGrade(param1:int) : int
+      public function getPageIndexByGrade(grade:int) : int
       {
-         var _loc2_:int = 0;
-         var _loc3_:* = null;
-         _loc2_ = 0;
-         while(_loc2_ < QUEST_LIST.length)
+         var index:int = 0;
+         var data:* = null;
+         for(index = 0; index < QUEST_LIST.length; )
          {
-            _loc3_ = _model[QUEST_LIST[_loc2_]];
-            if(_loc3_.AddRule <= param1)
+            data = _model[QUEST_LIST[index]];
+            if(data.AddRule <= grade)
             {
-               _loc2_++;
+               index++;
                continue;
             }
             break;
          }
-         return _loc2_ - 1;
+         return index - 1;
       }
       
       private function showFrame() : void

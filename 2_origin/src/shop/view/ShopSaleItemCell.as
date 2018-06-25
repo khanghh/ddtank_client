@@ -111,9 +111,9 @@ package shop.view
          addChild(_priceImageCon);
       }
       
-      public function set info(param1:ShopItemInfo) : void
+      public function set info(data:ShopItemInfo) : void
       {
-         _info = param1;
+         _info = data;
          if(_info)
          {
             _itemCell.info = _info.TemplateInfo;
@@ -133,13 +133,13 @@ package shop.view
          return _info;
       }
       
-      public function set limitNum(param1:int) : void
+      public function set limitNum(value:int) : void
       {
-         if(_limitNum == param1)
+         if(_limitNum == value)
          {
             return;
          }
-         _limitNum = param1;
+         _limitNum = value;
          _countText.text = _limitNum.toString();
          if(_countText.text == "-1")
          {
@@ -157,22 +157,22 @@ package shop.view
          limitNum = !!isLimitGoods?_info.LimitPersonalCount:int(_info.LimitAreaCount);
          _icon.setFrame(!!isLimitGoods?2:1);
          _cellName.text = _info.TemplateInfo.Name;
-         var _loc2_:int = _info.getItemPrice(1).bothMoneyValue;
-         var _loc1_:* = int(ShopSaleManager.Instance.getGoodsOldPriceByID(_info.TemplateID));
-         if(_loc1_ <= 0)
+         var newPrice:int = _info.getItemPrice(1).bothMoneyValue;
+         var oldPrice:* = int(ShopSaleManager.Instance.getGoodsOldPriceByID(_info.TemplateID));
+         if(oldPrice <= 0)
          {
-            _loc1_ = _loc2_;
+            oldPrice = newPrice;
          }
-         _savePrice = _loc1_ - _loc2_;
-         _cellPrice.text = LanguageMgr.GetTranslation("asset.ddtshop.newPrice",_loc2_);
-         _cellOldPrice.text = LanguageMgr.GetTranslation("asset.ddtshop.oldPrice",_loc1_);
+         _savePrice = oldPrice - newPrice;
+         _cellPrice.text = LanguageMgr.GetTranslation("asset.ddtshop.newPrice",newPrice);
+         _cellOldPrice.text = LanguageMgr.GetTranslation("asset.ddtshop.oldPrice",oldPrice);
          _deleteLine.x = _cellOldPrice.x + 2;
          _deleteLine.y = _cellOldPrice.y + _cellOldPrice.textHeight / 2 + 2;
          clearAndCreateDeleteLine(_cellOldPrice.textWidth);
          resetPrice();
       }
       
-      private function __onClickBuy(param1:MouseEvent) : void
+      private function __onClickBuy(e:MouseEvent) : void
       {
          if(enableBuy)
          {
@@ -190,7 +190,7 @@ package shop.view
          }
       }
       
-      public function set autoSelect(param1:Boolean) : void
+      public function set autoSelect(value:Boolean) : void
       {
       }
       
@@ -199,13 +199,13 @@ package shop.view
          return _selected;
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         if(_selected == param1)
+         if(_selected == value)
          {
             return;
          }
-         _selected = param1;
+         _selected = value;
          _itemCellBg.setFrame(!!_selected?3:1);
          _cellName.setFrame(selectType);
          _cellPrice.setFrame(selectType);
@@ -234,39 +234,39 @@ package shop.view
       
       private function resetPrice() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:int = 0;
-         var _loc3_:Array = _savePrice.toString().split("");
+         var num:* = null;
+         var index:int = 0;
+         var len:Array = _savePrice.toString().split("");
          while(_priceImage.length)
          {
             ObjectUtils.disposeObject(_priceImage.pop());
          }
-         while(_priceImage.length < _loc3_.length)
+         while(_priceImage.length < len.length)
          {
-            _loc2_ = UICreatShortcut.creatAndAdd("ddtshop.view.SaleCoins",_priceImageCon);
-            _loc1_ = _loc3_[_priceImage.length];
-            _loc2_.setFrame(_loc1_ == 0?10:_loc1_);
-            _loc2_.x = (_loc2_.width - 5) * _priceImage.length;
-            _priceImage.push(_loc2_);
+            num = UICreatShortcut.creatAndAdd("ddtshop.view.SaleCoins",_priceImageCon);
+            index = len[_priceImage.length];
+            num.setFrame(index == 0?10:index);
+            num.x = (num.width - 5) * _priceImage.length;
+            _priceImage.push(num);
          }
       }
       
-      private function clearAndCreateDeleteLine(param1:int) : void
+      private function clearAndCreateDeleteLine(lenght:int) : void
       {
          _deleteLine.graphics.clear();
          _deleteLine.graphics.lineStyle(1,11053223);
          _deleteLine.graphics.moveTo(0,0);
-         _deleteLine.graphics.lineTo(param1,0);
+         _deleteLine.graphics.lineTo(lenght,0);
          _deleteLine.graphics.endFill();
       }
       
       private function createItemCell() : ShopItemCell
       {
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,49,49);
-         _loc1_.graphics.endFill();
-         return CellFactory.instance.createShopItemCell(_loc1_,null,true,true) as ShopItemCell;
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(16777215,0);
+         sp.graphics.drawRect(0,0,49,49);
+         sp.graphics.endFill();
+         return CellFactory.instance.createShopItemCell(sp,null,true,true) as ShopItemCell;
       }
       
       public function dispose() : void

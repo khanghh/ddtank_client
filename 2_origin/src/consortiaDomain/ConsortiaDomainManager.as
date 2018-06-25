@@ -199,7 +199,7 @@ package consortiaDomain
       
       public var isShowFightMonster:Boolean = true;
       
-      public function ConsortiaDomainManager(param1:IEventDispatcher = null)
+      public function ConsortiaDomainManager(target:IEventDispatcher = null)
       {
          super();
          _instance = this;
@@ -235,45 +235,45 @@ package consortiaDomain
          SocketManager.Instance.out.getConsortiaDomainActiveState();
       }
       
-      private function onActiveSate(param1:PkgEvent) : void
+      private function onActiveSate(event:PkgEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc5_:* = null;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc4_.readInt();
-         if(activeState != _loc2_)
+         var alert:* = null;
+         var chatData:* = null;
+         var pkg:PackageIn = event.pkg;
+         var newActiveState:int = pkg.readInt();
+         if(activeState != newActiveState)
          {
-            activeState = _loc2_;
+            activeState = newActiveState;
             checkIcon();
          }
          _hasAskActiveSate = true;
-         var _loc6_:* = StateManager.currentStateType == "consortia_domain";
+         var isInConsortiaDomainScene:* = StateManager.currentStateType == "consortia_domain";
          if(activeState == 1)
          {
-            _loc5_ = new ChatData();
-            _loc5_.channel = 3;
-            _loc5_.type = 113;
-            _loc5_.msg = LanguageMgr.GetTranslation("consortiadomain.clickChatLinkEnterScene");
-            ChatManager.Instance.chat(_loc5_);
-            if(StateManager.currentStateType != "fighting" && StateManager.currentStateType != "gameLoading" && !_loc6_)
+            chatData = new ChatData();
+            chatData.channel = 3;
+            chatData.type = 113;
+            chatData.msg = LanguageMgr.GetTranslation("consortiadomain.clickChatLinkEnterScene");
+            ChatManager.Instance.chat(chatData);
+            if(StateManager.currentStateType != "fighting" && StateManager.currentStateType != "gameLoading" && !isInConsortiaDomainScene)
             {
-               _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("consortiadomain.activeOpenAleart"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
-               _loc3_.addEventListener("response",onActiveOpenAleartResponse);
+               alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("consortiadomain.activeOpenAleart"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
+               alert.addEventListener("response",onActiveOpenAleartResponse);
             }
          }
-         if(_loc6_)
+         if(isInConsortiaDomainScene)
          {
             playMusic();
          }
          dispatchEvent(new Event("event_active_state_change"));
       }
       
-      private function onActiveOpenAleartResponse(param1:FrameEvent) : void
+      private function onActiveOpenAleartResponse(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",onActiveOpenAleartResponse);
-         switch(int(param1.responseCode))
+         var alert:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",onActiveOpenAleartResponse);
+         switch(int(e.responseCode))
          {
             default:
             default:
@@ -283,54 +283,52 @@ package consortiaDomain
             default:
                enterScene(false);
          }
-         _loc2_.dispose();
+         alert.dispose();
       }
       
-      private function onActive(param1:PkgEvent) : void
+      private function onActive(event:PkgEvent) : void
       {
          model.isActive = true;
          dispatchEvent(new Event("event_active_res"));
       }
       
-      private function onGetKillInfo(param1:PkgEvent) : void
+      private function onGetKillInfo(event:PkgEvent) : void
       {
-         var _loc4_:* = null;
-         var _loc5_:int = 0;
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readInt();
+         var obj:* = null;
+         var i:int = 0;
+         var pkg:PackageIn = event.pkg;
+         var count:int = pkg.readInt();
          model.killRankArr = [];
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_)
+         for(i = 0; i < count; )
          {
-            _loc4_ = {};
-            _loc4_["UserID"] = _loc3_.readInt();
-            _loc4_["NickName"] = _loc3_.readUTF();
-            _loc4_["KillCount"] = _loc3_.readInt();
-            model.killRankArr.push(_loc4_);
-            _loc5_++;
+            obj = {};
+            obj["UserID"] = pkg.readInt();
+            obj["NickName"] = pkg.readUTF();
+            obj["KillCount"] = pkg.readInt();
+            model.killRankArr.push(obj);
+            i++;
          }
          model.killRankArr.sortOn("KillCount",2 | 16);
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_)
+         for(i = 0; i < count; )
          {
-            _loc4_ = model.killRankArr[_loc5_];
-            _loc4_["Rank"] = _loc5_ + 1;
-            if(_loc4_["UserID"] == PlayerManager.Instance.Self.ID)
+            obj = model.killRankArr[i];
+            obj["Rank"] = i + 1;
+            if(obj["UserID"] == PlayerManager.Instance.Self.ID)
             {
-               model.myRank = _loc4_["Rank"];
-               model.myKillNum = _loc4_["KillCount"];
+               model.myRank = obj["Rank"];
+               model.myKillNum = obj["KillCount"];
             }
-            _loc5_++;
+            i++;
          }
          dispatchEvent(new Event("event_kill_rank_update"));
       }
       
-      protected function onSecTickTimer(param1:TimerEvent) : void
+      protected function onSecTickTimer(event:TimerEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc6_:int = 0;
-         var _loc5_:int = 0;
+         var activeOpenSec:int = 0;
+         var monsterBornArr:* = null;
+         var i:int = 0;
+         var bornSec:int = 0;
          if(_secTickTimer.currentCount % 5 == 0)
          {
             if(activeState == 0 || activeState == 100 || activeState == -10)
@@ -346,28 +344,27 @@ package consortiaDomain
                SocketManager.Instance.out.getConsortiaDomainKillInfo();
             }
          }
-         var _loc3_:* = -1;
+         var nowMonsterWaveIndex:* = -1;
          if(ConsortiaDomainManager.instance.activeState == 1)
          {
             if(ConsortiaDomainManager.instance.model.monsterBornArr && ConsortiaDomainManager.instance.model.BeginTime)
             {
-               _loc4_ = (TimeManager.Instance.NowTime() - ConsortiaDomainManager.instance.model.BeginTime.time) / 1000;
-               _loc2_ = ConsortiaDomainManager.instance.model.monsterBornArr;
-               _loc6_ = model.monsterWaveIndex + 1;
-               while(_loc6_ < _loc2_.length)
+               activeOpenSec = (TimeManager.Instance.NowTime() - ConsortiaDomainManager.instance.model.BeginTime.time) / 1000;
+               monsterBornArr = ConsortiaDomainManager.instance.model.monsterBornArr;
+               for(i = model.monsterWaveIndex + 1; i < monsterBornArr.length; )
                {
-                  _loc5_ = _loc2_[_loc6_];
-                  if(_loc5_ > _loc4_)
+                  bornSec = monsterBornArr[i];
+                  if(bornSec > activeOpenSec)
                   {
-                     _loc3_ = _loc6_;
+                     nowMonsterWaveIndex = i;
                   }
-                  _loc6_++;
+                  i++;
                }
             }
          }
-         if(_loc3_ > model.monsterWaveIndex)
+         if(nowMonsterWaveIndex > model.monsterWaveIndex)
          {
-            model.monsterWaveIndex = _loc3_;
+            model.monsterWaveIndex = nowMonsterWaveIndex;
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("consortiadomain.monsterIsComing"));
             dispatchEvent(new Event("event_monster_born"));
          }
@@ -377,9 +374,9 @@ package consortiaDomain
       {
          var _loc3_:int = 0;
          var _loc2_:* = model.allBuildInfo;
-         for each(var _loc1_ in model.allBuildInfo)
+         for each(var eachBuildInfo in model.allBuildInfo)
          {
-            if(_loc1_.Repair != 0)
+            if(eachBuildInfo.Repair != 0)
             {
                return false;
             }
@@ -387,133 +384,132 @@ package consortiaDomain
          return true;
       }
       
-      private function onStageResize(param1:Event) : void
+      private function onStageResize(evt:Event) : void
       {
          bgLayerViewRect.width = StageReferance.stageWidth;
          bgLayerViewRect.height = StageReferance.stageHeight;
          dispatchEvent(new Event("resize"));
       }
       
-      private function initFightBuildInfo(param1:int, param2:PackageIn) : void
+      private function initFightBuildInfo(buildId:int, pkg:PackageIn) : void
       {
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
-         var _loc3_:EachBuildInfo = model.allBuildInfo[param1];
-         if(!_loc3_)
+         var i:int = 0;
+         var msg:* = null;
+         var eachBuildInfo:EachBuildInfo = model.allBuildInfo[buildId];
+         if(!eachBuildInfo)
          {
-            _loc3_ = new EachBuildInfo();
-            _loc3_.Id = param1;
-            model.allBuildInfo[param1] = _loc3_;
+            eachBuildInfo = new EachBuildInfo();
+            eachBuildInfo.Id = buildId;
+            model.allBuildInfo[buildId] = eachBuildInfo;
          }
-         _loc3_.Id = param1;
-         _loc3_.Blood = param2.readInt();
-         _loc3_.State = param2.readInt();
-         if(_loc3_.State == 1)
+         eachBuildInfo.Id = buildId;
+         eachBuildInfo.Blood = pkg.readInt();
+         eachBuildInfo.State = pkg.readInt();
+         if(eachBuildInfo.State == 1)
          {
-            _loc3_.State = 6;
+            eachBuildInfo.State = 6;
          }
          else
          {
-            _loc3_.State = 5;
+            eachBuildInfo.State = 5;
          }
-         var _loc4_:* = -1;
-         _loc6_ = 0;
-         while(_loc6_ < BUILD_LOW_HP_WARN_ARR.length)
+         var warnBlood:* = -1;
+         for(i = 0; i < BUILD_LOW_HP_WARN_ARR.length; )
          {
-            if(_loc3_.Blood < BUILD_LOW_HP_WARN_ARR[_loc6_] * consortiaLandBuildBlood && !_loc3_.lowHpWarnArr[_loc6_])
+            if(eachBuildInfo.Blood < BUILD_LOW_HP_WARN_ARR[i] * consortiaLandBuildBlood && !eachBuildInfo.lowHpWarnArr[i])
             {
-               _loc3_.lowHpWarnArr[_loc6_] = true;
-               _loc4_ = Number(BUILD_LOW_HP_WARN_ARR[_loc6_]);
+               eachBuildInfo.lowHpWarnArr[i] = true;
+               warnBlood = Number(BUILD_LOW_HP_WARN_ARR[i]);
             }
-            _loc6_++;
+            i++;
          }
-         if(_loc4_ != -1)
+         if(warnBlood != -1)
          {
-            _loc5_ = LanguageMgr.GetTranslation("consortiadomain.build.lowHp",buildNameArr[param1],int(_loc4_ * 100));
-            ChatManager.Instance.sysChatConsortia(_loc5_);
-            MessageTipManager.getInstance().show(_loc5_);
+            msg = LanguageMgr.GetTranslation("consortiadomain.build.lowHp",buildNameArr[buildId],int(warnBlood * 100));
+            ChatManager.Instance.sysChatConsortia(msg);
+            MessageTipManager.getInstance().show(msg);
          }
       }
       
-      private function initUnFightBuildInfo(param1:int, param2:PackageIn) : void
+      private function initUnFightBuildInfo(buildId:int, pkg:PackageIn) : void
       {
-         var _loc3_:EachBuildInfo = model.allBuildInfo[param1];
-         if(!_loc3_)
+         var eachBuildInfo:EachBuildInfo = model.allBuildInfo[buildId];
+         if(!eachBuildInfo)
          {
-            _loc3_ = new EachBuildInfo();
-            _loc3_.Id = param1;
-            model.allBuildInfo[param1] = _loc3_;
+            eachBuildInfo = new EachBuildInfo();
+            eachBuildInfo.Id = buildId;
+            model.allBuildInfo[buildId] = eachBuildInfo;
          }
-         if(param1 == 5)
+         if(buildId == 5)
          {
-            _loc3_.Repair = 0;
-            _loc3_.State = 0;
+            eachBuildInfo.Repair = 0;
+            eachBuildInfo.State = 0;
          }
-         else if(param2 != null)
+         else if(pkg != null)
          {
-            _loc3_.Repair = param2.readInt();
-            _loc3_.State = param2.readInt();
-            if(_loc3_.Repair == 0)
+            eachBuildInfo.Repair = pkg.readInt();
+            eachBuildInfo.State = pkg.readInt();
+            if(eachBuildInfo.Repair == 0)
             {
-               _loc3_.State = 0;
+               eachBuildInfo.State = 0;
             }
          }
-         _loc3_.State = getFixUnFightBuildState(param1,_loc3_.State,_loc3_.Repair);
+         eachBuildInfo.State = getFixUnFightBuildState(buildId,eachBuildInfo.State,eachBuildInfo.Repair);
       }
       
-      public function isCanGradeBuild(param1:int) : Boolean
+      public function isCanGradeBuild(buildId:int) : Boolean
       {
-         if(param1 == 5)
+         if(buildId == 5)
          {
             return ConsortionModelManager.Instance.model.checkConsortiaRichesForUpGrade(0) && checkGoldOrLevel(0);
          }
-         if(param1 == 4)
+         if(buildId == 4)
          {
             return ConsortionModelManager.Instance.model.checkConsortiaRichesForUpGrade(1) && checkGoldOrLevel(1);
          }
-         if(param1 == 3)
+         if(buildId == 3)
          {
             return ConsortionModelManager.Instance.model.checkConsortiaRichesForUpGrade(2) && checkGoldOrLevel(2);
          }
-         if(param1 == 1)
+         if(buildId == 1)
          {
             return ConsortionModelManager.Instance.model.checkConsortiaRichesForUpGrade(3) && checkGoldOrLevel(3);
          }
-         if(param1 == 2)
+         if(buildId == 2)
          {
             return ConsortionModelManager.Instance.model.checkConsortiaRichesForUpGrade(4) && checkGoldOrLevel(4);
          }
          return false;
       }
       
-      public function getBuildLv(param1:int) : int
+      public function getBuildLv(buildId:int) : int
       {
-         if(param1 == 5)
+         if(buildId == 5)
          {
             return PlayerManager.Instance.Self.consortiaInfo.Level;
          }
-         if(param1 == 3)
+         if(buildId == 3)
          {
             return PlayerManager.Instance.Self.consortiaInfo.ShopLevel;
          }
-         if(param1 == 4)
+         if(buildId == 4)
          {
             return PlayerManager.Instance.Self.consortiaInfo.SmithLevel;
          }
-         if(param1 == 1)
+         if(buildId == 1)
          {
             return PlayerManager.Instance.Self.consortiaInfo.StoreLevel;
          }
-         if(param1 == 2)
+         if(buildId == 2)
          {
             return PlayerManager.Instance.Self.consortiaInfo.BufferLevel;
          }
          return 0;
       }
       
-      private function checkGoldOrLevel(param1:int) : Boolean
+      private function checkGoldOrLevel(_selectIndex:int) : Boolean
       {
-         switch(int(param1))
+         switch(int(_selectIndex))
          {
             case 0:
                if(PlayerManager.Instance.Self.consortiaInfo.Level >= 10)
@@ -562,141 +558,139 @@ package consortiaDomain
                }
                break;
          }
-         if(param1 == 0 && PlayerManager.Instance.Self.Gold < ConsortionModelManager.Instance.model.getLevelData(PlayerManager.Instance.Self.consortiaInfo.Level + 1).NeedGold)
+         if(_selectIndex == 0 && PlayerManager.Instance.Self.Gold < ConsortionModelManager.Instance.model.getLevelData(PlayerManager.Instance.Self.consortiaInfo.Level + 1).NeedGold)
          {
             return false;
          }
          return true;
       }
       
-      private function onGetMonsterInfo(param1:PkgEvent) : void
+      private function onGetMonsterInfo(event:PkgEvent) : void
       {
-         var _loc9_:int = 0;
-         var _loc3_:int = 0;
-         var _loc8_:int = 0;
-         var _loc2_:int = 0;
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc7_:int = _loc4_.readInt();
+         var i:int = 0;
+         var serverMonsterState:int = 0;
+         var clientMonsterState:int = 0;
+         var inCount:int = 0;
+         var j:int = 0;
+         var eachMonsterInfo:* = null;
+         var pkg:PackageIn = event.pkg;
+         var outCount:int = pkg.readInt();
          model.monsterBornArr = [];
-         _loc9_ = 0;
-         while(_loc9_ < _loc7_)
+         for(i = 0; i < outCount; )
          {
-            _loc3_ = _loc4_.readInt();
-            _loc8_ = monsterStateSeverToClient(_loc3_);
-            _loc2_ = _loc4_.readInt();
-            _loc6_ = 0;
-            while(_loc6_ < _loc2_)
+            serverMonsterState = pkg.readInt();
+            clientMonsterState = monsterStateSeverToClient(serverMonsterState);
+            inCount = pkg.readInt();
+            for(j = 0; j < inCount; )
             {
-               _loc5_ = readMonsterInfoSingle(_loc4_);
-               _loc5_.state = _loc8_;
-               _loc5_.serverMonsterState = _loc3_;
-               if(model.monsterBornArr.indexOf(_loc5_.BirthSecond) == -1)
+               eachMonsterInfo = readMonsterInfoSingle(pkg);
+               eachMonsterInfo.state = clientMonsterState;
+               eachMonsterInfo.serverMonsterState = serverMonsterState;
+               if(model.monsterBornArr.indexOf(eachMonsterInfo.BirthSecond) == -1)
                {
-                  model.monsterBornArr.push(_loc5_.BirthSecond);
+                  model.monsterBornArr.push(eachMonsterInfo.BirthSecond);
                }
-               _loc6_++;
+               j++;
             }
-            _loc9_++;
+            i++;
          }
          model.monsterBornArr.sort(16);
          dispatchEvent(new Event("event_monster_state_change"));
       }
       
-      private function monsterStateSeverToClient(param1:int) : int
+      private function monsterStateSeverToClient(serverMonsterState:int) : int
       {
-         var _loc2_:int = 2147483647;
-         if(param1 == -6)
+         var clientMonsterState:int = 2147483647;
+         if(serverMonsterState == -6)
          {
-            _loc2_ = 1;
+            clientMonsterState = 1;
          }
-         else if(param1 == -1)
+         else if(serverMonsterState == -1)
          {
-            _loc2_ = 100;
+            clientMonsterState = 100;
          }
-         else if(param1 == -2 || param1 == -3)
+         else if(serverMonsterState == -2 || serverMonsterState == -3)
          {
-            _loc2_ = 3;
+            clientMonsterState = 3;
          }
-         else if(param1 == -4)
+         else if(serverMonsterState == -4)
          {
-            _loc2_ = 5;
+            clientMonsterState = 5;
          }
-         else if(param1 == -5)
+         else if(serverMonsterState == -5)
          {
-            _loc2_ = 6;
+            clientMonsterState = 6;
          }
-         else if(param1 > 0)
+         else if(serverMonsterState > 0)
          {
-            _loc2_ = 4;
+            clientMonsterState = 4;
          }
-         return _loc2_;
+         return clientMonsterState;
       }
       
-      private function readMonsterInfoSingle(param1:PackageIn) : EachMonsterInfo
+      private function readMonsterInfoSingle(pkg:PackageIn) : EachMonsterInfo
       {
-         var _loc3_:int = param1.readInt();
-         var _loc2_:EachMonsterInfo = model.monsterInfo[_loc3_];
-         if(!_loc2_)
+         var livingID:int = pkg.readInt();
+         var eachMonsterInfo:EachMonsterInfo = model.monsterInfo[livingID];
+         if(!eachMonsterInfo)
          {
-            _loc2_ = new EachMonsterInfo();
-            _loc2_.LivingID = _loc3_;
-            model.monsterInfo[_loc3_] = _loc2_;
+            eachMonsterInfo = new EachMonsterInfo();
+            eachMonsterInfo.LivingID = livingID;
+            model.monsterInfo[livingID] = eachMonsterInfo;
          }
-         _loc2_.LastTargetID = _loc2_.TargetID;
-         _loc2_.TargetID = param1.readInt();
-         _loc2_.Type = param1.readInt();
-         _loc2_.BeginSecond = param1.readInt();
-         _loc2_.BirthSecond = param1.readInt();
-         _loc2_.FightID = param1.readInt();
-         _loc2_.posX = param1.readInt();
-         _loc2_.posY = param1.readInt();
-         return _loc2_;
+         eachMonsterInfo.LastTargetID = eachMonsterInfo.TargetID;
+         eachMonsterInfo.TargetID = pkg.readInt();
+         eachMonsterInfo.Type = pkg.readInt();
+         eachMonsterInfo.BeginSecond = pkg.readInt();
+         eachMonsterInfo.BirthSecond = pkg.readInt();
+         eachMonsterInfo.FightID = pkg.readInt();
+         eachMonsterInfo.posX = pkg.readInt();
+         eachMonsterInfo.posY = pkg.readInt();
+         return eachMonsterInfo;
       }
       
-      private function onMonsterInfoSingle(param1:PkgEvent) : void
+      private function onMonsterInfoSingle(event:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readInt();
-         var _loc5_:int = monsterStateSeverToClient(_loc2_);
-         var _loc4_:EachMonsterInfo = readMonsterInfoSingle(_loc3_);
-         _loc4_.state = _loc5_;
-         _loc4_.serverMonsterState = _loc2_;
-         dispatchEvent(new CEvent("event_monster_info_single",_loc4_));
+         var pkg:PackageIn = event.pkg;
+         var serverMonsterState:int = pkg.readInt();
+         var clientMonsterState:int = monsterStateSeverToClient(serverMonsterState);
+         var eachMonsterInfo:EachMonsterInfo = readMonsterInfoSingle(pkg);
+         eachMonsterInfo.state = clientMonsterState;
+         eachMonsterInfo.serverMonsterState = serverMonsterState;
+         dispatchEvent(new CEvent("event_monster_info_single",eachMonsterInfo));
       }
       
-      private function onGetBuildInfoInFight(param1:PkgEvent) : void
+      private function onGetBuildInfoInFight(event:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _loc2_.readBoolean();
-         _loc2_.readDate();
-         initFightBuildInfo(1,_loc2_);
-         initFightBuildInfo(2,_loc2_);
-         initFightBuildInfo(3,_loc2_);
-         initFightBuildInfo(4,_loc2_);
-         initFightBuildInfo(5,_loc2_);
+         var pkg:PackageIn = event.pkg;
+         pkg.readBoolean();
+         pkg.readDate();
+         initFightBuildInfo(1,pkg);
+         initFightBuildInfo(2,pkg);
+         initFightBuildInfo(3,pkg);
+         initFightBuildInfo(4,pkg);
+         initFightBuildInfo(5,pkg);
          dispatchEvent(new Event("event_build_in_fight_state_change"));
       }
       
-      private function onGetConsortiaInfo(param1:PkgEvent) : void
+      private function onGetConsortiaInfo(event:PkgEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc3_:Boolean = _loc4_.readBoolean();
-         if(_loc3_)
+         var autoRepairCompleteTime:* = null;
+         var pkg:PackageIn = event.pkg;
+         var isCanGet:Boolean = pkg.readBoolean();
+         if(isCanGet)
          {
-            model.isActive = _loc4_.readInt() == 0?false:true;
-            model.BeginTime = _loc4_.readDate();
-            initUnFightBuildInfo(1,_loc4_);
-            initUnFightBuildInfo(2,_loc4_);
-            initUnFightBuildInfo(3,_loc4_);
-            initUnFightBuildInfo(4,_loc4_);
+            model.isActive = pkg.readInt() == 0?false:true;
+            model.BeginTime = pkg.readDate();
+            initUnFightBuildInfo(1,pkg);
+            initUnFightBuildInfo(2,pkg);
+            initUnFightBuildInfo(3,pkg);
+            initUnFightBuildInfo(4,pkg);
             initUnFightBuildInfo(5,null);
-            model.EndTime = _loc4_.readDate();
-            _loc2_ = new Date();
-            _loc2_.time = model.EndTime.time + 172800000;
-            model.autoRepairCompleteTime = _loc2_;
+            model.EndTime = pkg.readDate();
+            autoRepairCompleteTime = new Date();
+            autoRepairCompleteTime.time = model.EndTime.time + 172800000;
+            model.autoRepairCompleteTime = autoRepairCompleteTime;
          }
          else
          {
@@ -705,91 +699,90 @@ package consortiaDomain
          dispatchEvent(new Event("event_get_consortia_info_res"));
       }
       
-      private function getFixUnFightBuildState(param1:int, param2:int, param3:int) : int
+      private function getFixUnFightBuildState(buildId:int, buildState:int, buildRepair:int) : int
       {
-         if(param2 == 0)
+         if(buildState == 0)
          {
-            if(param3 == 0)
+            if(buildRepair == 0)
             {
-               return !!isCanGradeBuild(param1)?2:1;
+               return !!isCanGradeBuild(buildId)?2:1;
             }
             return 4;
          }
-         if(param2 == 1)
+         if(buildState == 1)
          {
             return 3;
          }
          return 0;
       }
       
-      private function onBuildRepairInfo(param1:PkgEvent) : void
+      private function onBuildRepairInfo(event:PkgEvent) : void
       {
-         var _loc6_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc5_:PackageIn = param1.pkg;
-         var _loc3_:int = _loc5_.readInt();
-         _loc6_ = 0;
-         while(_loc6_ < _loc3_)
+         var i:int = 0;
+         var buildId:int = 0;
+         var eachBuildInfo:* = null;
+         var pkg:PackageIn = event.pkg;
+         var count:int = pkg.readInt();
+         for(i = 0; i < count; )
          {
-            _loc4_ = _loc5_.readInt();
-            _loc2_ = model.allBuildInfo[_loc4_];
-            if(!_loc2_)
+            buildId = pkg.readInt();
+            eachBuildInfo = model.allBuildInfo[buildId];
+            if(!eachBuildInfo)
             {
-               _loc2_ = new EachBuildInfo();
-               _loc2_.Id = _loc4_;
-               model.allBuildInfo[_loc4_] = _loc2_;
+               eachBuildInfo = new EachBuildInfo();
+               eachBuildInfo.Id = buildId;
+               model.allBuildInfo[buildId] = eachBuildInfo;
             }
-            _loc2_.repairPlayerNum = _loc5_.readInt();
-            _loc6_++;
+            eachBuildInfo.repairPlayerNum = pkg.readInt();
+            i++;
          }
          dispatchEvent(new Event("event_repair_player_num_change"));
       }
       
-      private function onReduceBloodState(param1:PkgEvent) : void
+      private function onReduceBloodState(event:PkgEvent) : void
       {
-         var _loc5_:* = null;
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc4_:int = _loc3_.readInt();
-         var _loc2_:int = _loc3_.readInt();
-         if(_loc4_ == 0)
+         var msg:* = null;
+         var pkg:PackageIn = event.pkg;
+         var type:int = pkg.readInt();
+         var buildId:int = pkg.readInt();
+         if(type == 0)
          {
-            _loc5_ = LanguageMgr.GetTranslation("consortiadomain.buildFirstBeBeat",buildNameArr[_loc2_]);
+            msg = LanguageMgr.GetTranslation("consortiadomain.buildFirstBeBeat",buildNameArr[buildId]);
          }
-         else if(_loc4_ == 1)
+         else if(type == 1)
          {
-            _loc5_ = LanguageMgr.GetTranslation("consortiadomain.build1MinBeBeat",buildNameArr[_loc2_]);
+            msg = LanguageMgr.GetTranslation("consortiadomain.build1MinBeBeat",buildNameArr[buildId]);
          }
-         ChatManager.Instance.sysChatConsortia(_loc5_);
-         MessageTipManager.getInstance().show(_loc5_);
+         ChatManager.Instance.sysChatConsortia(msg);
+         MessageTipManager.getInstance().show(msg);
       }
       
-      private function onConsortiaBuildLevelUp(param1:Event) : void
+      private function onConsortiaBuildLevelUp(evt:Event) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:Array = [1,2,3,4,5];
+         var eachBuildInfo:* = null;
+         var buildIdArr:Array = [1,2,3,4,5];
          var _loc6_:int = 0;
-         var _loc5_:* = _loc3_;
-         for each(var _loc4_ in _loc3_)
+         var _loc5_:* = buildIdArr;
+         for each(var buildId in buildIdArr)
          {
-            _loc2_ = model.allBuildInfo[_loc4_];
-            _loc2_.State = !!isCanGradeBuild(_loc4_)?2:1;
+            eachBuildInfo = model.allBuildInfo[buildId];
+            eachBuildInfo.State = !!isCanGradeBuild(buildId)?2:1;
          }
          dispatchEvent(new Event("event_get_consortia_info_res"));
       }
       
-      public function enterScene(param1:Boolean) : void
+      public function enterScene(needEnterAlert:Boolean) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
+         var alert:* = null;
+         var alert2:* = null;
          if(model.isActive)
          {
             if(PlayerManager.Instance.Self.ConsortiaID > 0)
             {
-               if(param1)
+               if(needEnterAlert)
                {
-                  _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("consortiadomain.enterSceneAlert"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
-                  _loc2_.addEventListener("response",onEnterSceneResponse);
+                  alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("consortiadomain.enterSceneAlert"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
+                  alert.addEventListener("response",onEnterSceneResponse);
                }
                else
                {
@@ -803,25 +796,25 @@ package consortiaDomain
          }
          else
          {
-            _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("consortiadomain.activityActiveAlert"),LanguageMgr.GetTranslation("ok"),"",false,false,false,2);
-            _loc3_.addEventListener("response",onActivityActiveAlertResponse);
+            alert2 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("consortiadomain.activityActiveAlert"),LanguageMgr.GetTranslation("ok"),"",false,false,false,2);
+            alert2.addEventListener("response",onActivityActiveAlertResponse);
          }
       }
       
-      private function onActivityActiveAlertResponse(param1:FrameEvent) : void
+      private function onActivityActiveAlertResponse(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",onActivityActiveAlertResponse);
-         _loc2_.dispose();
+         var alert:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",onActivityActiveAlertResponse);
+         alert.dispose();
       }
       
-      private function onEnterSceneResponse(param1:FrameEvent) : void
+      private function onEnterSceneResponse(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",onEnterSceneResponse);
-         switch(int(param1.responseCode))
+         var alert:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",onEnterSceneResponse);
+         switch(int(e.responseCode))
          {
             default:
             default:
@@ -831,10 +824,10 @@ package consortiaDomain
             default:
                GameInSocketOut.sendSingleRoomBegin(22);
          }
-         _loc2_.dispose();
+         alert.dispose();
       }
       
-      private function onSingleRoomBeginRes(param1:Event) : void
+      private function onSingleRoomBeginRes(evt:Event) : void
       {
          if(RoomManager.Instance.current.type == 150)
          {
@@ -844,16 +837,16 @@ package consortiaDomain
       
       public function leaveScene() : void
       {
-         var _loc1_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("consortiadomain.leaveSceneAlert"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
-         _loc1_.addEventListener("response",onLeaveSceneResponse);
+         var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("consortiadomain.leaveSceneAlert"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
+         alert.addEventListener("response",onLeaveSceneResponse);
       }
       
-      private function onLeaveSceneResponse(param1:FrameEvent) : void
+      private function onLeaveSceneResponse(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",onLeaveSceneResponse);
-         switch(int(param1.responseCode))
+         var alert:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",onLeaveSceneResponse);
+         switch(int(e.responseCode))
          {
             default:
             default:
@@ -863,7 +856,7 @@ package consortiaDomain
             default:
                SocketManager.Instance.out.leaveConsortiaDomainScene();
          }
-         _loc2_.dispose();
+         alert.dispose();
       }
       
       public function onEnterScene() : void
@@ -877,37 +870,37 @@ package consortiaDomain
          SocketManager.Instance.addEventListener(PkgEvent.format(371,17),onBuildRepairInfo);
          SocketManager.Instance.addEventListener(PkgEvent.format(371,19),onReduceBloodState);
          ConsortionModelManager.Instance.addEventListener("event_consortia_level_up",onConsortiaBuildLevelUp);
-         var _loc2_:ServerConfigInfo = ServerConfigManager.instance.serverConfigInfo["ConsortiaLandBuildBlood"];
-         if(_loc2_ != null)
+         var consortiaLandBuildBloodInfo:ServerConfigInfo = ServerConfigManager.instance.serverConfigInfo["ConsortiaLandBuildBlood"];
+         if(consortiaLandBuildBloodInfo != null)
          {
-            consortiaLandBuildBlood = int(_loc2_.Value);
+            consortiaLandBuildBlood = int(consortiaLandBuildBloodInfo.Value);
          }
          else
          {
             consortiaLandBuildBlood = 1000;
          }
-         var _loc1_:ServerConfigInfo = ServerConfigManager.instance.serverConfigInfo["ConsortiaLandRepairBlood"];
-         if(_loc1_ != null)
+         var consortiaLandRepairBloodInfo:ServerConfigInfo = ServerConfigManager.instance.serverConfigInfo["ConsortiaLandRepairBlood"];
+         if(consortiaLandRepairBloodInfo != null)
          {
-            consortiaLandRepairBlood = int(_loc1_.Value);
+            consortiaLandRepairBlood = int(consortiaLandRepairBloodInfo.Value);
          }
          else
          {
             consortiaLandRepairBlood = 36000;
          }
-         var _loc4_:ServerConfigInfo = ServerConfigManager.instance.serverConfigInfo["ConsortiaLandMonsterSpeedInfo"];
-         if(_loc4_ != null)
+         var consortiaLandMonsterSpeedInfo:ServerConfigInfo = ServerConfigManager.instance.serverConfigInfo["ConsortiaLandMonsterSpeedInfo"];
+         if(consortiaLandMonsterSpeedInfo != null)
          {
-            consortiaLandMonsterSpeed = int(_loc4_.Value);
+            consortiaLandMonsterSpeed = int(consortiaLandMonsterSpeedInfo.Value);
          }
          else
          {
             consortiaLandMonsterSpeed = 10;
          }
-         var _loc3_:ServerConfigInfo = ServerConfigManager.instance.serverConfigInfo["ConsortiaLandRepairCountInfo"];
-         if(_loc3_ != null)
+         var consortiaLandRepairCountInfo:ServerConfigInfo = ServerConfigManager.instance.serverConfigInfo["ConsortiaLandRepairCountInfo"];
+         if(consortiaLandRepairCountInfo != null)
          {
-            consortiaLandRepairCount = int(_loc3_.Value);
+            consortiaLandRepairCount = int(consortiaLandRepairCountInfo.Value);
          }
          else
          {
@@ -927,19 +920,19 @@ package consortiaDomain
          playMusic();
       }
       
-      private function __onKeyDown(param1:KeyboardEvent) : void
+      private function __onKeyDown(e:KeyboardEvent) : void
       {
-         var _loc2_:* = null;
-         if(param1.keyCode == 75 && ConsortiaDomainManager.CAN_USE_K)
+         var _consortionBankFrame:* = null;
+         if(e.keyCode == 75 && ConsortiaDomainManager.CAN_USE_K)
          {
-            _loc2_ = ComponentFactory.Instance.creatComponentByStylename("consortionBankFrame");
-            LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+            _consortionBankFrame = ComponentFactory.Instance.creatComponentByStylename("consortionBankFrame");
+            LayerManager.Instance.addToLayer(_consortionBankFrame,3,true,1);
          }
-         else if(param1.keyCode == 82 && ConsortiaDomainManager.CAN_USE_R)
+         else if(e.keyCode == 82 && ConsortiaDomainManager.CAN_USE_R)
          {
             MailManager.Instance.switchVisible();
          }
-         else if(param1.keyCode == 81 && ConsortiaDomainManager.CAN_USE_Q)
+         else if(e.keyCode == 81 && ConsortiaDomainManager.CAN_USE_Q)
          {
             TaskManager.instance.switchVisible();
          }
@@ -988,11 +981,11 @@ package consortiaDomain
          }
       }
       
-      private function onRemovePlayer(param1:PkgEvent) : void
+      private function onRemovePlayer(evt:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readInt();
-         if(PlayerManager.Instance.Self.ID == _loc2_)
+         var pkg:PackageIn = evt.pkg;
+         var leavePlayerId:int = pkg.readInt();
+         if(PlayerManager.Instance.Self.ID == leavePlayerId)
          {
             if(StateManager.currentStateType == "consortia_domain")
             {
@@ -1001,34 +994,34 @@ package consortiaDomain
          }
          else
          {
-            dispatchEvent(new CEvent("event_remove_other_player",_loc2_));
+            dispatchEvent(new CEvent("event_remove_other_player",leavePlayerId));
          }
       }
       
-      public function getIntersectionPoint(param1:int, param2:int, param3:int, param4:*, param5:*) : Point
+      public function getIntersectionPoint(circleX:int, circleY:int, circleR:int, linePointX:*, linePointY:*) : Point
       {
-         var _loc7_:int = (param1 - param4) * (param1 - param4) + (param2 - param5) * (param2 - param5);
-         if(_loc7_ <= param3 * param3)
+         var dis:int = (circleX - linePointX) * (circleX - linePointX) + (circleY - linePointY) * (circleY - linePointY);
+         if(dis <= circleR * circleR)
          {
             return null;
          }
-         if(param4 == param1)
+         if(linePointX == circleX)
          {
-            if(param5 > param2)
+            if(linePointY > circleY)
             {
-               return new Point(param1,param2 + param3);
+               return new Point(circleX,circleY + circleR);
             }
-            return new Point(param1,param2 - param3);
+            return new Point(circleX,circleY - circleR);
          }
-         var _loc9_:Number = Math.atan2(param5 - param2,param4 - param1);
-         var _loc8_:Number = Math.cos(_loc9_);
-         var _loc6_:Number = Math.sin(_loc9_);
-         return new Point(param1 + _loc8_ * param3,param2 + _loc6_ * param3);
+         var angle:Number = Math.atan2(linePointY - circleY,linePointX - circleX);
+         var cosValue:Number = Math.cos(angle);
+         var sinValue:Number = Math.sin(angle);
+         return new Point(circleX + cosValue * circleR,circleY + sinValue * circleR);
       }
       
       public function getBuildViewUpGradeBtnTexture() : Texture
       {
-         var _loc1_:* = null;
+         var bmd:* = null;
          if(!_buildViewUpGradeBtnTexture)
          {
             if(!_bulidViewBtn)
@@ -1036,17 +1029,17 @@ package consortiaDomain
                _bulidViewBtn = UICreatShortcut.creatAndAdd("consortiadomain.buildView.openBtn");
             }
             _bulidViewBtn.text = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.okLabel");
-            _loc1_ = new BitmapData(_bulidViewBtn.width,_bulidViewBtn.height,true,0);
-            _loc1_.draw(_bulidViewBtn);
-            _buildViewUpGradeBtnTexture = Texture.fromBitmapData(_loc1_,true);
-            _loc1_.dispose();
+            bmd = new BitmapData(_bulidViewBtn.width,_bulidViewBtn.height,true,0);
+            bmd.draw(_bulidViewBtn);
+            _buildViewUpGradeBtnTexture = Texture.fromBitmapData(bmd,true);
+            bmd.dispose();
          }
          return _buildViewUpGradeBtnTexture;
       }
       
       public function getBuildViewOpenBtnTexture() : Texture
       {
-         var _loc1_:* = null;
+         var bmd:* = null;
          if(!_buildViewOpenBtnTexture)
          {
             if(!_bulidViewBtn)
@@ -1054,10 +1047,10 @@ package consortiaDomain
                _bulidViewBtn = UICreatShortcut.creatAndAdd("consortiadomain.buildView.openBtn");
             }
             _bulidViewBtn.text = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.openLabel");
-            _loc1_ = new BitmapData(_bulidViewBtn.width,_bulidViewBtn.height,true,0);
-            _loc1_.draw(_bulidViewBtn);
-            _buildViewOpenBtnTexture = Texture.fromBitmapData(_loc1_,true);
-            _loc1_.dispose();
+            bmd = new BitmapData(_bulidViewBtn.width,_bulidViewBtn.height,true,0);
+            bmd.draw(_bulidViewBtn);
+            _buildViewOpenBtnTexture = Texture.fromBitmapData(bmd,true);
+            bmd.dispose();
          }
          return _buildViewOpenBtnTexture;
       }
@@ -1072,9 +1065,9 @@ package consortiaDomain
          _buildViewUpGradeBtnTexture = null;
       }
       
-      public function initHall(param1:IHallStateView) : void
+      public function initHall(hall:IHallStateView) : void
       {
-         _hall = param1;
+         _hall = hall;
          checkIcon();
       }
       

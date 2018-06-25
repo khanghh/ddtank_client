@@ -18,11 +18,11 @@ package com.greensock.plugins
          this.overwriteProps = ["bevelFilter"];
       }
       
-      override public function onInitTween(param1:Object, param2:*, param3:TweenLite) : Boolean
+      override public function onInitTween(target:Object, value:*, tween:TweenLite) : Boolean
       {
-         _target = param1;
+         _target = target;
          _type = BevelFilter;
-         initFilter(param2,new BevelFilter(0,0,16777215,0.5,0,0.5,2,2,0,param2.quality || 2),_propNames);
+         initFilter(value,new BevelFilter(0,0,16777215,0.5,0,0.5,2,2,0,value.quality || 2),_propNames);
          return true;
       }
    }

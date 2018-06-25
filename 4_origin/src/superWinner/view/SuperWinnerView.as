@@ -80,10 +80,10 @@ package superWinner.view
       
       private var _awardsTip:SuperWinnerAwardsTip;
       
-      public function SuperWinnerView(param1:SuperWinnerController)
+      public function SuperWinnerView($contro:SuperWinnerController)
       {
          _time = new Timer(1000);
-         this._contro = param1;
+         this._contro = $contro;
          this._model = SuperWinnerController.instance.model;
          super();
          init();
@@ -150,44 +150,43 @@ package superWinner.view
          MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.superWinner.waitStart"));
       }
       
-      private function count(param1:Event) : void
+      private function count(evt:Event) : void
       {
          if(!_model.endData)
          {
             return;
          }
-         var _loc2_:int = TimeManager.Instance.TotalSecondToNow(_model.endData);
-         updateTime(_loc2_);
+         var seconds:int = TimeManager.Instance.TotalSecondToNow(_model.endData);
+         updateTime(seconds);
       }
       
       public function endGame() : void
       {
-         var _loc2_:* = null;
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         _loc4_ = 0;
-         while(_loc4_ < 5)
+         var str:* = null;
+         var i:int = 0;
+         var awardsNum:int = 0;
+         for(i = 0; i < 5; )
          {
-            _loc3_ = _loc3_ + _model.awards[_loc4_];
-            _loc4_++;
+            awardsNum = awardsNum + _model.awards[i];
+            i++;
          }
-         if(_loc3_ == 0)
+         if(awardsNum == 0)
          {
-            _loc2_ = LanguageMgr.GetTranslation("ddt.superWinner.endTxt1");
+            str = LanguageMgr.GetTranslation("ddt.superWinner.endTxt1");
          }
          else
          {
-            _loc2_ = LanguageMgr.GetTranslation("ddt.superWinner.endTxt2");
+            str = LanguageMgr.GetTranslation("ddt.superWinner.endTxt2");
          }
-         var _loc1_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc2_,LanguageMgr.GetTranslation("ok"),"",false,true,true,2);
-         _loc1_.cancelButtonEnable = false;
-         _loc1_.addEventListener("response",outRoom);
-         count30s(_loc1_);
+         var alertFrame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),str,LanguageMgr.GetTranslation("ok"),"",false,true,true,2);
+         alertFrame.cancelButtonEnable = false;
+         alertFrame.addEventListener("response",outRoom);
+         count30s(alertFrame);
       }
       
-      private function count30s(param1:BaseAlerFrame) : void
+      private function count30s(alertFrame:BaseAlerFrame) : void
       {
-         alertFrame = param1;
+         alertFrame = alertFrame;
          cot = setTimeout(function():void
          {
             clearTimeout(cot);
@@ -195,15 +194,15 @@ package superWinner.view
          },30000);
       }
       
-      private function outRoom(param1:FrameEvent) : void
+      private function outRoom(e:FrameEvent) : void
       {
          if(cot)
          {
             clearTimeout(cot);
          }
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",outRoom);
-         _loc2_.dispose();
+         var alert:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",outRoom);
+         alert.dispose();
          returnBtn.dispachReturnEvent();
       }
       
@@ -253,77 +252,76 @@ package superWinner.view
          }
       }
       
-      private function __showTip(param1:SuperWinnerEvent) : void
+      private function __showTip(e:SuperWinnerEvent) : void
       {
-         var _loc7_:* = 0;
-         var _loc6_:* = null;
-         var _loc2_:uint = param1.resultData as uint;
-         var _loc5_:Vector.<Object> = SuperWinnerManager.instance.awardsVector;
-         var _loc4_:Vector.<SuperWinnerAwardsMode> = _loc5_[_loc2_ - 1] as Vector.<SuperWinnerAwardsMode>;
-         var _loc3_:String = "";
-         _loc7_ = uint(0);
-         while(_loc7_ < _loc4_.length)
+         var i:* = 0;
+         var mode:* = null;
+         var awardType:uint = e.resultData as uint;
+         var awardsArr:Vector.<Object> = SuperWinnerManager.instance.awardsVector;
+         var awards:Vector.<SuperWinnerAwardsMode> = awardsArr[awardType - 1] as Vector.<SuperWinnerAwardsMode>;
+         var str:String = "";
+         for(i = uint(0); i < awards.length; )
          {
-            _loc6_ = _loc4_[_loc7_];
-            _loc3_ = _loc3_ + (_loc6_.goodName + " ×" + _loc6_.count);
-            if(_loc7_ < _loc4_.length - 1)
+            mode = awards[i];
+            str = str + (mode.goodName + " ×" + mode.count);
+            if(i < awards.length - 1)
             {
-               _loc3_ = _loc3_ + "\r";
+               str = str + "\r";
             }
-            _loc7_++;
+            i++;
          }
-         _awardsTip.tipData = _loc3_;
-         PositionUtils.setPos(_awardsTip,"superWinner.awardTip" + _loc2_);
+         _awardsTip.tipData = str;
+         PositionUtils.setPos(_awardsTip,"superWinner.awardTip" + awardType);
          _awardsTip.visible = true;
       }
       
-      private function __hideTip(param1:SuperWinnerEvent) : void
+      private function __hideTip(e:SuperWinnerEvent) : void
       {
          _awardsTip.visible = false;
          _awardsTip.tipData = "";
       }
       
-      private function __startRollDices(param1:SuperWinnerEvent) : void
+      private function __startRollDices(e:SuperWinnerEvent) : void
       {
          _rollDiceBtn.enable = true;
          _progressBar.playBar();
       }
       
-      public function updateTime(param1:int) : void
+      public function updateTime(second:int) : void
       {
-         _remainTime = Math.abs(param1);
-         var _loc3_:int = _remainTime / 3600;
-         var _loc2_:int = _remainTime / 60 % 60;
-         var _loc6_:int = _remainTime % 60;
-         var _loc4_:String = "";
-         var _loc5_:String = _loc4_ + LanguageMgr.GetTranslation("ddt.superWinner.endTimeTxt");
-         if(_loc3_ < 10)
+         _remainTime = Math.abs(second);
+         var _hours:int = _remainTime / 3600;
+         var _minute:int = _remainTime / 60 % 60;
+         var _second:int = _remainTime % 60;
+         var _roomStr:String = "";
+         var str:String = _roomStr + LanguageMgr.GetTranslation("ddt.superWinner.endTimeTxt");
+         if(_hours < 10)
          {
-            _loc5_ = _loc5_ + ("0" + _loc3_);
+            str = str + ("0" + _hours);
          }
          else
          {
-            _loc5_ = _loc5_ + _loc3_;
+            str = str + _hours;
          }
-         _loc5_ = _loc5_ + "：";
-         if(_loc2_ < 10)
+         str = str + "：";
+         if(_minute < 10)
          {
-            _loc5_ = _loc5_ + ("0" + _loc2_);
+            str = str + ("0" + _minute);
          }
          else
          {
-            _loc5_ = _loc5_ + _loc2_;
+            str = str + _minute;
          }
-         _loc5_ = _loc5_ + "：";
-         if(_loc6_ < 10)
+         str = str + "：";
+         if(_second < 10)
          {
-            _loc5_ = _loc5_ + ("0" + _loc6_);
+            str = str + ("0" + _second);
          }
          else
          {
-            _loc5_ = _loc5_ + _loc6_;
+            str = str + _second;
          }
-         _endTimeTxt.text = _loc5_;
+         _endTimeTxt.text = str;
          if(_remainTime == 0)
          {
             if(_time)
@@ -335,34 +333,34 @@ package superWinner.view
          }
       }
       
-      protected function __openHelpFrame(param1:MouseEvent) : void
+      protected function __openHelpFrame(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc3_:MovieClip = ComponentFactory.Instance.creatCustomObject("asset.superWinner.help");
-         var _loc2_:SuperWinnerHelpFrame = ComponentFactory.Instance.creat("ddt.superWinner.helpFrame");
-         _loc2_.setView(_loc3_);
-         _loc2_.submitButtonPos = "superWinner.helpFrame.submitBtnPos";
-         _loc2_.titleText = LanguageMgr.GetTranslation("store.view.HelpButtonText");
-         _loc2_.addEventListener("response",__frameEvent);
-         LayerManager.Instance.addToLayer(_loc2_,2,true,1,true);
+         var movie:MovieClip = ComponentFactory.Instance.creatCustomObject("asset.superWinner.help");
+         var frame:SuperWinnerHelpFrame = ComponentFactory.Instance.creat("ddt.superWinner.helpFrame");
+         frame.setView(movie);
+         frame.submitButtonPos = "superWinner.helpFrame.submitBtnPos";
+         frame.titleText = LanguageMgr.GetTranslation("store.view.HelpButtonText");
+         frame.addEventListener("response",__frameEvent);
+         LayerManager.Instance.addToLayer(frame,2,true,1,true);
       }
       
-      protected function __frameEvent(param1:FrameEvent) : void
+      protected function __frameEvent(event:FrameEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:Disposeable = param1.target as Disposeable;
-         _loc2_.dispose();
-         _loc2_ = null;
+         var frame:Disposeable = event.target as Disposeable;
+         frame.dispose();
+         frame = null;
       }
       
-      private function __rollDiceFunc(param1:MouseEvent) : void
+      private function __rollDiceFunc(e:MouseEvent) : void
       {
          _rollDiceBtn.enable = false;
          SoundManager.instance.play("008");
          SocketManager.Instance.out.rollDiceInSuperWinner();
       }
       
-      private function __progressTimesUp(param1:SuperWinnerEvent) : void
+      private function __progressTimesUp(e:SuperWinnerEvent) : void
       {
          _rollDiceBtn.enable = false;
          showLastDices();
@@ -370,17 +368,17 @@ package superWinner.view
          _progressBar.resetProgressBar();
       }
       
-      private function __sendNotice(param1:SuperWinnerEvent) : void
+      private function __sendNotice(e:SuperWinnerEvent) : void
       {
-         var _loc2_:String = param1.resultData as String;
-         ChatManager.Instance.sysChatYellow(_loc2_);
+         var msg:String = e.resultData as String;
+         ChatManager.Instance.sysChatYellow(msg);
       }
       
-      private function __championChange(param1:SuperWinnerEvent) : void
+      private function __championChange(e:SuperWinnerEvent) : void
       {
          if(_model.isShowChampionMsg)
          {
-            showChampionMsg(param1.resultData as Boolean);
+            showChampionMsg(e.resultData as Boolean);
          }
          noChampionBg.visible = false;
          championBg.visible = true;
@@ -390,7 +388,7 @@ package superWinner.view
          _championDicesbanner.showLastDices(_model.championDices);
       }
       
-      private function __returnDices(param1:SuperWinnerEvent) : void
+      private function __returnDices(e:SuperWinnerEvent) : void
       {
          showSystemMsg();
          if(_model.currentDicePoints)
@@ -415,36 +413,36 @@ package superWinner.view
       
       private function showSystemMsg() : void
       {
-         var _loc1_:* = null;
+         var str:* = null;
          if(!_model.isCurrentDiceGetAward && _model.currentAwardLevel > 0)
          {
             if(_model.currentAwardLevel == 6)
             {
-               _loc1_ = LanguageMgr.GetTranslation("ddt.superWinner.passTheChampion");
+               str = LanguageMgr.GetTranslation("ddt.superWinner.passTheChampion");
             }
             else
             {
-               _loc1_ = LanguageMgr.GetTranslation("ddt.superWinner.rollRightDiceNoAward",_model.getAwardNameByLevel(_model.currentAwardLevel));
+               str = LanguageMgr.GetTranslation("ddt.superWinner.rollRightDiceNoAward",_model.getAwardNameByLevel(_model.currentAwardLevel));
             }
-            ChatManager.Instance.sysChatYellow(_loc1_);
+            ChatManager.Instance.sysChatYellow(str);
          }
       }
       
-      private function showChampionMsg(param1:Boolean) : void
+      private function showChampionMsg(hadChampion:Boolean) : void
       {
-         var _loc2_:* = null;
-         if(param1)
+         var str:* = null;
+         if(hadChampion)
          {
-            _loc2_ = LanguageMgr.GetTranslation("ddt.superWinner.biggerThanLastChampion",_model.championItem.NickName);
+            str = LanguageMgr.GetTranslation("ddt.superWinner.biggerThanLastChampion",_model.championItem.NickName);
          }
          else
          {
-            _loc2_ = LanguageMgr.GetTranslation("ddt.superWinner.firstChampion",_model.championItem.NickName);
+            str = LanguageMgr.GetTranslation("ddt.superWinner.firstChampion",_model.championItem.NickName);
          }
-         ChatManager.Instance.sysChatYellow(_loc2_);
+         ChatManager.Instance.sysChatYellow(str);
       }
       
-      private function __onReturn(param1:SuperWinnerEvent) : void
+      private function __onReturn(e:SuperWinnerEvent) : void
       {
          SoundManager.instance.play("008");
          SocketManager.Instance.out.outSuperWinner();

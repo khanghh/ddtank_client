@@ -19,73 +19,72 @@ package bagAndInfo.bag
       
       public var _stopIndex:int;
       
-      public function BagEquipListView(param1:int, param2:int = 31, param3:int = 80, param4:int = 7)
+      public function BagEquipListView(bagType:int, startIndex:int = 31, stopIndex:int = 80, columnNum:int = 7)
       {
-         _startIndex = param2;
-         _stopIndex = param3;
-         super(param1,param4);
+         _startIndex = startIndex;
+         _stopIndex = stopIndex;
+         super(bagType,columnNum);
       }
       
       override protected function createCells() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var cell:* = null;
          _cells = new Dictionary();
          _cellMouseOverBg = ComponentFactory.Instance.creatBitmap("bagAndInfo.cell.bagCellOverBgAsset");
-         _loc2_ = _startIndex;
-         while(_loc2_ < _stopIndex)
+         for(i = _startIndex; i < _stopIndex; )
          {
-            _loc1_ = CellFactory.instance.createBagCell(_loc2_) as BagCell;
-            _loc1_.mouseOverEffBoolean = false;
-            addChild(_loc1_);
-            _loc1_.addEventListener("interactive_click",__clickHandler);
-            _loc1_.addEventListener("interactive_double_click",__doubleClickHandler);
-            DoubleClickManager.Instance.enableDoubleClick(_loc1_);
-            _loc1_.bagType = _bagType;
-            _loc1_.addEventListener("lockChanged",__cellChanged);
-            _cells[_loc1_.place] = _loc1_;
-            _cellVec.push(_loc1_);
-            _loc2_++;
+            cell = CellFactory.instance.createBagCell(i) as BagCell;
+            cell.mouseOverEffBoolean = false;
+            addChild(cell);
+            cell.addEventListener("interactive_click",__clickHandler);
+            cell.addEventListener("interactive_double_click",__doubleClickHandler);
+            DoubleClickManager.Instance.enableDoubleClick(cell);
+            cell.bagType = _bagType;
+            cell.addEventListener("lockChanged",__cellChanged);
+            _cells[cell.place] = cell;
+            _cellVec.push(cell);
+            i++;
          }
       }
       
-      override protected function __doubleClickHandler(param1:InteractiveEvent) : void
+      override protected function __doubleClickHandler(evt:InteractiveEvent) : void
       {
-         if((param1.currentTarget as BagCell).info != null)
+         if((evt.currentTarget as BagCell).info != null)
          {
             SoundManager.instance.play("008");
-            dispatchEvent(new CellEvent("doubleclick",param1.currentTarget));
+            dispatchEvent(new CellEvent("doubleclick",evt.currentTarget));
          }
       }
       
-      override protected function __clickHandler(param1:InteractiveEvent) : void
+      override protected function __clickHandler(e:InteractiveEvent) : void
       {
-         if(param1.currentTarget)
+         if(e.currentTarget)
          {
-            dispatchEvent(new CellEvent("itemclick",param1.currentTarget,false,false,param1.ctrlKey));
+            dispatchEvent(new CellEvent("itemclick",e.currentTarget,false,false,e.ctrlKey));
          }
       }
       
-      protected function __cellClick(param1:MouseEvent) : void
+      protected function __cellClick(evt:MouseEvent) : void
       {
       }
       
-      override public function setCellInfo(param1:int, param2:InventoryItemInfo) : void
+      override public function setCellInfo(index:int, info:InventoryItemInfo) : void
       {
-         if(param1 >= _startIndex && param1 < _stopIndex)
+         if(index >= _startIndex && index < _stopIndex)
          {
-            if(param2 == null)
+            if(info == null)
             {
-               _cells[param1].info = null;
+               _cells[index].info = null;
                return;
             }
-            if(param2.Count == 0)
+            if(info.Count == 0)
             {
-               _cells[param1].info = null;
+               _cells[index].info = null;
             }
             else
             {
-               _cells[param1].info = param2;
+               _cells[index].info = info;
             }
          }
       }
@@ -94,12 +93,12 @@ package bagAndInfo.bag
       {
          var _loc3_:int = 0;
          var _loc2_:* = _cells;
-         for each(var _loc1_ in _cells)
+         for each(var cell in _cells)
          {
-            _loc1_.removeEventListener("interactive_click",__clickHandler);
-            _loc1_.removeEventListener("interactive_double_click",__doubleClickHandler);
-            DoubleClickManager.Instance.disableDoubleClick(_loc1_);
-            _loc1_.removeEventListener("lockChanged",__cellChanged);
+            cell.removeEventListener("interactive_click",__clickHandler);
+            cell.removeEventListener("interactive_double_click",__doubleClickHandler);
+            DoubleClickManager.Instance.disableDoubleClick(cell);
+            cell.removeEventListener("lockChanged",__cellChanged);
          }
          _cellMouseOverBg = null;
          super.dispose();

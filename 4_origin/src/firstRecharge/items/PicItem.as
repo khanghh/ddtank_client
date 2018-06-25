@@ -39,23 +39,23 @@ package firstRecharge.items
          _btn.addEventListener("click",mouseClickHander);
       }
       
-      public function setTxtStr(param1:String) : void
+      public function setTxtStr(str:String) : void
       {
-         _txt.text = param1;
+         _txt.text = str;
          _txt.x = _back.width / 2 - _txt.width / 2;
       }
       
-      protected function mouseClickHander(param1:MouseEvent) : void
+      protected function mouseClickHander(event:MouseEvent) : void
       {
       }
       
-      public function addIcon(param1:String) : void
+      public function addIcon(str:String) : void
       {
          if(_icon)
          {
             ObjectUtils.disposeObject(_icon);
          }
-         _icon = ComponentFactory.Instance.creatBitmap(param1);
+         _icon = ComponentFactory.Instance.creatBitmap(str);
          _icon.x = _back.width / 2 - _icon.width / 2;
          _icon.y = _back.height / 2 - _icon.height / 2;
          addChild(_icon);

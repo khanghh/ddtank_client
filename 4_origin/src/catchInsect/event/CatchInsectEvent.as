@@ -35,11 +35,11 @@ package catchInsect.event
       
       private var _pkg:PackageIn;
       
-      public function CatchInsectEvent(param1:String, param2:PackageIn = null, param3:int = 0)
+      public function CatchInsectEvent(type:String, pkg:PackageIn = null, cmd:int = 0)
       {
-         _pkg = param2;
-         _cmd = param3;
-         super(param1,bubbles,cancelable);
+         _pkg = pkg;
+         _cmd = cmd;
+         super(type,bubbles,cancelable);
       }
       
       public function get cmd() : int

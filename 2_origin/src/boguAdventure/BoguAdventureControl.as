@@ -52,134 +52,131 @@ package boguAdventure
          mineNumFocus = new Point(9,70);
       }
       
-      private function __onAllEvent(param1:CrazyTankSocketEvent) : void
+      private function __onAllEvent(e:CrazyTankSocketEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = param1._cmd;
-         switch(int(_loc2_) - 90)
+         var pkg:PackageIn = e.pkg;
+         var cmd:int = e._cmd;
+         switch(int(cmd) - 90)
          {
             case 0:
-               enterGame(_loc3_);
+               enterGame(pkg);
                break;
             case 1:
-               updateCell(_loc3_);
+               updateCell(pkg);
                break;
             case 2:
-               revive(_loc3_);
+               revive(pkg);
                break;
             case 3:
-               acquireAward(_loc3_);
+               acquireAward(pkg);
                break;
             default:
-               acquireAward(_loc3_);
+               acquireAward(pkg);
                break;
             default:
-               acquireAward(_loc3_);
+               acquireAward(pkg);
                break;
             default:
-               acquireAward(_loc3_);
+               acquireAward(pkg);
                break;
             default:
-               acquireAward(_loc3_);
+               acquireAward(pkg);
                break;
             default:
-               acquireAward(_loc3_);
+               acquireAward(pkg);
                break;
             case 9:
-               _model.resetCount = _loc3_.readInt();
-               _model.isFreeReset = _loc3_.readBoolean();
+               _model.resetCount = pkg.readInt();
+               _model.isFreeReset = pkg.readBoolean();
                dispatchEvent(new BoguAdventureEvent("boguadventureeventupdatereset"));
          }
       }
       
-      private function enterGame(param1:PackageIn) : void
+      private function enterGame(pkg:PackageIn) : void
       {
-         var _loc3_:int = 0;
-         var _loc9_:* = null;
-         var _loc8_:int = 0;
-         var _loc7_:* = null;
-         var _loc6_:int = 0;
-         var _loc2_:Vector.<BoguAdventureCellInfo> = new Vector.<BoguAdventureCellInfo>();
-         currentIndex = param1.readInt();
-         hp = param1.readInt();
-         _model.isAcquireAward1 = param1.readInt() == 1;
-         _model.isAcquireAward2 = param1.readInt() == 1;
-         _model.isAcquireAward3 = param1.readInt() == 1;
-         _model.openCount = param1.readInt();
-         _model.findMinePrice = param1.readInt();
-         _model.revivePrice = param1.readInt();
-         _model.resetPrice = param1.readInt();
-         _model.isFreeReset = param1.readBoolean();
-         _model.resetCount = param1.readInt();
-         _loc3_ = param1.readInt();
-         _loc8_ = 0;
-         while(_loc8_ < _loc3_)
+         var count:int = 0;
+         var info:* = null;
+         var i:int = 0;
+         var tip:* = null;
+         var j:int = 0;
+         var infoList:Vector.<BoguAdventureCellInfo> = new Vector.<BoguAdventureCellInfo>();
+         currentIndex = pkg.readInt();
+         hp = pkg.readInt();
+         _model.isAcquireAward1 = pkg.readInt() == 1;
+         _model.isAcquireAward2 = pkg.readInt() == 1;
+         _model.isAcquireAward3 = pkg.readInt() == 1;
+         _model.openCount = pkg.readInt();
+         _model.findMinePrice = pkg.readInt();
+         _model.revivePrice = pkg.readInt();
+         _model.resetPrice = pkg.readInt();
+         _model.isFreeReset = pkg.readBoolean();
+         _model.resetCount = pkg.readInt();
+         count = pkg.readInt();
+         for(i = 0; i < count; )
          {
-            _loc9_ = new BoguAdventureCellInfo();
-            _loc9_.index = param1.readInt();
-            _loc9_.state = param1.readInt();
-            _loc9_.result = param1.readInt();
-            _loc9_.aroundMineCount = param1.readInt();
-            _loc2_.push(_loc9_);
-            _loc8_++;
+            info = new BoguAdventureCellInfo();
+            info.index = pkg.readInt();
+            info.state = pkg.readInt();
+            info.result = pkg.readInt();
+            info.aroundMineCount = pkg.readInt();
+            infoList.push(info);
+            i++;
          }
-         _model.mapInfoList = _loc2_;
-         var _loc5_:Array = [];
-         var _loc4_:Array = [];
-         _loc8_ = 0;
-         while(_loc8_ < 3)
+         _model.mapInfoList = infoList;
+         var awardCount:Array = [];
+         var awardGoodsTip:Array = [];
+         for(i = 0; i < 3; )
          {
-            _loc5_.push(param1.readInt());
-            _loc3_ = param1.readInt();
-            _loc7_ = "";
-            _loc6_ = 0;
-            while(_loc6_ < _loc3_)
+            awardCount.push(pkg.readInt());
+            count = pkg.readInt();
+            tip = "";
+            for(j = 0; j < count; )
             {
-               _loc7_ = _loc7_ + (ItemManager.Instance.getTemplateById(param1.readInt()).Name + "x");
-               _loc7_ = _loc7_ + param1.readInt().toString();
-               _loc7_ = _loc7_ + "\n";
-               _loc6_++;
+               tip = tip + (ItemManager.Instance.getTemplateById(pkg.readInt()).Name + "x");
+               tip = tip + pkg.readInt().toString();
+               tip = tip + "\n";
+               j++;
             }
-            _loc4_.push(_loc7_);
-            _loc8_++;
+            awardGoodsTip.push(tip);
+            i++;
          }
-         _model.awardCount = _loc5_;
-         _model.awardGoodsTip = _loc4_;
+         _model.awardCount = awardCount;
+         _model.awardGoodsTip = awardGoodsTip;
          if(_bogu)
          {
             dispatchEvent(new BoguAdventureEvent("boguadventureeventupdatemap"));
          }
       }
       
-      private function updateCell(param1:PackageIn) : void
+      private function updateCell(pkg:PackageIn) : void
       {
-         var _loc4_:int = param1.readInt();
-         var _loc3_:int = param1.readInt();
-         var _loc2_:int = param1.readInt();
-         _model.findMinePrice = param1.readInt();
-         if(_loc4_ == 4)
+         var type:int = pkg.readInt();
+         var index:int = pkg.readInt();
+         var result:int = pkg.readInt();
+         _model.findMinePrice = pkg.readInt();
+         if(type == 4)
          {
-            currentIndex = _loc3_;
-            hp = param1.readInt();
-            _model.openCount = param1.readInt();
+            currentIndex = index;
+            hp = pkg.readInt();
+            _model.openCount = pkg.readInt();
          }
          dispatchEvent(new BoguAdventureEvent("boguadventureeventupdatecell",{
-            "type":_loc4_,
-            "result":_loc2_,
-            "index":_loc3_
+            "type":type,
+            "result":result,
+            "index":index
          }));
       }
       
-      private function revive(param1:PackageIn) : void
+      private function revive(pkg:PackageIn) : void
       {
-         hp = param1.readInt();
+         hp = pkg.readInt();
       }
       
-      private function acquireAward(param1:PackageIn) : void
+      private function acquireAward(pkg:PackageIn) : void
       {
-         _model.isAcquireAward1 = param1.readInt() == 1;
-         _model.isAcquireAward2 = param1.readInt() == 1;
-         _model.isAcquireAward3 = param1.readInt() == 1;
+         _model.isAcquireAward1 = pkg.readInt() == 1;
+         _model.isAcquireAward2 = pkg.readInt() == 1;
+         _model.isAcquireAward3 = pkg.readInt() == 1;
       }
       
       public function checkGameOver() : Boolean
@@ -202,9 +199,9 @@ package boguAdventure
          return false;
       }
       
-      public function walk(param1:Array) : void
+      public function walk(path:Array) : void
       {
-         dispatchEvent(new BoguAdventureEvent("boguadventureeventwalk",param1));
+         dispatchEvent(new BoguAdventureEvent("boguadventureeventwalk",path));
       }
       
       public function walkComplete() : void
@@ -212,9 +209,9 @@ package boguAdventure
          dispatchEvent(new BoguAdventureEvent("boguadventureeventstop"));
       }
       
-      public function playActionComplete(param1:Object = null) : void
+      public function playActionComplete(data:Object = null) : void
       {
-         dispatchEvent(new BoguAdventureEvent("boguadventureeventactioncomplete",param1));
+         dispatchEvent(new BoguAdventureEvent("boguadventureeventactioncomplete",data));
       }
       
       public function get hp() : int
@@ -222,13 +219,13 @@ package boguAdventure
          return _hp;
       }
       
-      public function set hp(param1:int) : void
+      public function set hp(value:int) : void
       {
-         if(_hp == param1)
+         if(_hp == value)
          {
             return;
          }
-         _hp = param1;
+         _hp = value;
          dispatchEvent(new BoguAdventureEvent("boguadventureeventchangehp"));
       }
       
@@ -237,9 +234,9 @@ package boguAdventure
          return _bogu;
       }
       
-      public function set bogu(param1:BoguAdventurePlayer) : void
+      public function set bogu(value:BoguAdventurePlayer) : void
       {
-         _bogu = param1;
+         _bogu = value;
          if(_model.mapInfoList != null)
          {
             dispatchEvent(new BoguAdventureEvent("boguadventureeventupdatemap"));

@@ -19,9 +19,9 @@ package labyrinth.view
          super();
       }
       
-      override public function set info(param1:AlertInfo) : void
+      override public function set info(value:AlertInfo) : void
       {
-         .super.info = param1;
+         .super.info = value;
          _seleContent.y = _seleContent.y + 55;
          _vip6cut = ComponentFactory.Instance.creat("ddt.labyrinth.CleanOutFrame.VIP6cut");
          addToContent(_vip6cut);

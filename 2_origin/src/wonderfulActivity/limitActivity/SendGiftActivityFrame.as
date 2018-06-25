@@ -56,54 +56,51 @@ package wonderfulActivity.limitActivity
          addToContent(_activityBox);
       }
       
-      public function setData(param1:GmActivityInfo) : void
+      public function setData(info:GmActivityInfo) : void
       {
-         var _loc10_:int = 0;
-         var _loc9_:int = 0;
-         var _loc4_:* = null;
-         var _loc8_:* = null;
-         var _loc7_:* = null;
-         var _loc6_:* = null;
-         var _loc5_:* = null;
-         _info = param1;
+         var i:int = 0;
+         var j:int = 0;
+         var bagInfo:* = null;
+         var item:* = null;
+         var now:* = null;
+         var itemCheck:* = null;
+         var acItem:* = null;
+         _info = info;
          nowId = _info.activityId;
-         _loc10_ = 0;
-         while(_loc10_ < _info.giftbagArray.length)
+         for(i = 0; i < _info.giftbagArray.length; )
          {
-            _loc9_ = 0;
-            while(_loc9_ < _info.giftbagArray[_loc10_].giftRewardArr.length)
+            for(j = 0; j < _info.giftbagArray[i].giftRewardArr.length; )
             {
-               _loc4_ = new GiftRewardInfo();
-               _loc4_ = _info.giftbagArray[_loc10_].giftRewardArr[_loc9_];
-               _loc8_ = new GiftItem();
-               _loc8_.initView(_loc9_ + _loc10_ * _info.giftbagArray[_loc10_].giftRewardArr.length);
-               _loc8_.setCellData(_loc4_);
-               _prizeHBox.addChild(_loc8_);
-               _loc9_++;
+               bagInfo = new GiftRewardInfo();
+               bagInfo = _info.giftbagArray[i].giftRewardArr[j];
+               item = new GiftItem();
+               item.initView(j + i * _info.giftbagArray[i].giftRewardArr.length);
+               item.setCellData(bagInfo);
+               _prizeHBox.addChild(item);
+               j++;
             }
-            _loc10_++;
+            i++;
          }
          _prizeHBox.x = (this.width - _prizeHBox.width) / 2;
-         var _loc3_:Array = _info.remain2.split("|");
-         var _loc2_:int = 0;
-         _loc10_ = 0;
-         while(_loc10_ < _loc3_.length)
+         var activityArr:Array = _info.remain2.split("|");
+         var index:int = 0;
+         for(i = 0; i < activityArr.length; )
          {
-            _loc7_ = TimeManager.Instance.Now();
-            _loc6_ = WonderfulActivityManager.Instance.activityData[_loc3_[_loc10_]];
-            if(_loc6_)
+            now = TimeManager.Instance.Now();
+            itemCheck = WonderfulActivityManager.Instance.activityData[activityArr[i]];
+            if(itemCheck)
             {
-               if(!(_loc7_.time < Date.parse(_loc6_.beginShowTime) || _loc7_.time > Date.parse(_loc6_.endShowTime)))
+               if(!(now.time < Date.parse(itemCheck.beginShowTime) || now.time > Date.parse(itemCheck.endShowTime)))
                {
-                  _loc5_ = new ActivityItem();
-                  _loc5_.setData(_loc3_[_loc10_]);
-                  _loc5_.x = 22;
-                  _loc5_.y = 282 + 34 * _loc2_;
-                  _activityBox.addChild(_loc5_);
-                  _loc2_++;
+                  acItem = new ActivityItem();
+                  acItem.setData(activityArr[i]);
+                  acItem.x = 22;
+                  acItem.y = 282 + 34 * index;
+                  _activityBox.addChild(acItem);
+                  index++;
                }
             }
-            _loc10_++;
+            i++;
          }
       }
       
@@ -122,24 +119,24 @@ package wonderfulActivity.limitActivity
          addEventListener("response",_response);
       }
       
-      private function __sendBtnClickHandler(param1:MouseEvent) : void
+      private function __sendBtnClickHandler(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc4_:Vector.<SendGiftInfo> = new Vector.<SendGiftInfo>();
-         var _loc2_:SendGiftInfo = new SendGiftInfo();
-         _loc2_.activityId = _info.activityId;
-         var _loc3_:Array = [];
-         _loc3_.push(_info.giftbagArray[0].giftbagId);
-         _loc2_.giftIdArr = _loc3_;
-         _loc4_.push(_loc2_);
-         SocketManager.Instance.out.sendWonderfulActivityGetReward(_loc4_);
+         var sendInfoVec:Vector.<SendGiftInfo> = new Vector.<SendGiftInfo>();
+         var sendInfo:SendGiftInfo = new SendGiftInfo();
+         sendInfo.activityId = _info.activityId;
+         var giftIdArr:Array = [];
+         giftIdArr.push(_info.giftbagArray[0].giftbagId);
+         sendInfo.giftIdArr = giftIdArr;
+         sendInfoVec.push(sendInfo);
+         SocketManager.Instance.out.sendWonderfulActivityGetReward(sendInfoVec);
          setBtnFalse();
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             dispose();
          }
@@ -195,12 +192,12 @@ class GiftItem extends Sprite implements Disposeable
       super();
    }
    
-   public function initView(param1:int) : void
+   public function initView(index:int) : void
    {
-      this.index = param1;
+      this.index = index;
       _bg = ComponentFactory.Instance.creat("wonderful.sendGiftActivity.frame");
       addChild(_bg);
-      _bagCell = new BagCell(param1);
+      _bagCell = new BagCell(index);
       var _loc2_:int = 70;
       _bagCell.height = _loc2_;
       _bagCell.width = _loc2_;
@@ -209,27 +206,27 @@ class GiftItem extends Sprite implements Disposeable
       addChild(_bagCell);
    }
    
-   public function setCellData(param1:GiftRewardInfo) : void
+   public function setCellData(gift:GiftRewardInfo) : void
    {
-      if(!param1)
+      if(!gift)
       {
          _bagCell.visible = false;
          return;
       }
       _bagCell.visible = true;
-      var _loc3_:InventoryItemInfo = new InventoryItemInfo();
-      _loc3_.TemplateID = param1.templateId;
-      _loc3_ = ItemManager.fill(_loc3_);
-      _loc3_.IsBinds = param1.isBind;
-      _loc3_.ValidDate = param1.validDate;
-      var _loc2_:Array = param1.property.split(",");
-      _loc3_.StrengthenLevel = parseInt(_loc2_[0]);
-      _loc3_.AttackCompose = parseInt(_loc2_[1]);
-      _loc3_.DefendCompose = parseInt(_loc2_[2]);
-      _loc3_.AgilityCompose = parseInt(_loc2_[3]);
-      _loc3_.LuckCompose = parseInt(_loc2_[4]);
-      _bagCell.info = _loc3_;
-      _bagCell.setCount(param1.count);
+      var info:InventoryItemInfo = new InventoryItemInfo();
+      info.TemplateID = gift.templateId;
+      info = ItemManager.fill(info);
+      info.IsBinds = gift.isBind;
+      info.ValidDate = gift.validDate;
+      var attrArr:Array = gift.property.split(",");
+      info.StrengthenLevel = parseInt(attrArr[0]);
+      info.AttackCompose = parseInt(attrArr[1]);
+      info.DefendCompose = parseInt(attrArr[2]);
+      info.AgilityCompose = parseInt(attrArr[3]);
+      info.LuckCompose = parseInt(attrArr[4]);
+      _bagCell.info = info;
+      _bagCell.setCount(gift.count);
       _bagCell.setBgVisible(false);
    }
    
@@ -284,7 +281,7 @@ class ActivityItem extends Sprite implements Disposeable
       txtBtn.addEventListener("click",clickhandler);
    }
    
-   private function linkhandler(param1:TextEvent) : void
+   private function linkhandler(e:TextEvent) : void
    {
       SoundManager.instance.play("008");
       WonderfulActivityManager.Instance.selectId = _id;
@@ -292,7 +289,7 @@ class ActivityItem extends Sprite implements Disposeable
       SocketManager.Instance.out.requestWonderfulActInit(1);
    }
    
-   private function clickhandler(param1:MouseEvent) : void
+   private function clickhandler(e:MouseEvent) : void
    {
       SoundManager.instance.play("008");
       WonderfulActivityManager.Instance.selectId = _id;
@@ -300,17 +297,17 @@ class ActivityItem extends Sprite implements Disposeable
       SocketManager.Instance.out.requestWonderfulActInit(1);
    }
    
-   public function setData(param1:String) : void
+   public function setData(ID:String) : void
    {
-      _id = param1;
-      var _loc2_:String = WonderfulActivityManager.Instance.activityData[param1].activityName;
-      if(_loc2_.length > 40)
+      _id = ID;
+      var _name:String = WonderfulActivityManager.Instance.activityData[ID].activityName;
+      if(_name.length > 40)
       {
-         nameTxt.htmlText = "<a href=\'event:\'>" + _loc2_.substr(0,40) + "...</a>";
+         nameTxt.htmlText = "<a href=\'event:\'>" + _name.substr(0,40) + "...</a>";
       }
       else
       {
-         nameTxt.htmlText = "<a href=\'event:\'>" + _loc2_ + "</a>";
+         nameTxt.htmlText = "<a href=\'event:\'>" + _name + "</a>";
       }
    }
    

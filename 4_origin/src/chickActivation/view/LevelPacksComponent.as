@@ -19,9 +19,9 @@ package chickActivation.view
          this.mouseChildren = false;
       }
       
-      public function buttonGrayFilters(param1:Boolean) : void
+      public function buttonGrayFilters(isBool:Boolean) : void
       {
-         if(param1)
+         if(isBool)
          {
             this.buttonMode = false;
             isGray = false;

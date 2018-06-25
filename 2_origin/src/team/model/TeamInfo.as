@@ -45,8 +45,8 @@ package team.model
       
       public function get rate() : String
       {
-         var _loc1_:Number = totalTime > 0?winTime / totalTime * 100:0;
-         return _loc1_.toFixed(2) + "%";
+         var r:Number = totalTime > 0?winTime / totalTime * 100:0;
+         return r.toFixed(2) + "%";
       }
       
       public function get exp() : Number

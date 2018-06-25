@@ -53,7 +53,7 @@ package sevenDayTarget.controller
       
       public function get isShowIcon() : Boolean
       {
-         var _loc1_:Boolean = false;
+         var isopen:Boolean = false;
          if(!sevenDayOpen && !newPlayerOpen)
          {
             _isShowIcon = false;
@@ -67,24 +67,24 @@ package sevenDayTarget.controller
       
       public function get sevenDayOpen() : Boolean
       {
-         var _loc1_:Boolean = SevenDayTargetManager.Instance.isShowIcon;
-         return _loc1_;
+         var isopen:Boolean = SevenDayTargetManager.Instance.isShowIcon;
+         return isopen;
       }
       
-      public function set sevenDayOpen(param1:Boolean) : void
+      public function set sevenDayOpen(isopen:Boolean) : void
       {
-         _sevenDayOpen = param1;
+         _sevenDayOpen = isopen;
       }
       
       public function get newPlayerOpen() : Boolean
       {
-         var _loc1_:Boolean = NewPlayerRewardManager.Instance.isShowIcon;
-         return _loc1_;
+         var isopen:Boolean = NewPlayerRewardManager.Instance.isShowIcon;
+         return isopen;
       }
       
-      public function set newPlayerOpen(param1:Boolean) : void
+      public function set newPlayerOpen(isopen:Boolean) : void
       {
-         _newPlayerOpen = param1;
+         _newPlayerOpen = isopen;
       }
       
       public function setup() : void
@@ -96,7 +96,7 @@ package sevenDayTarget.controller
          addEventListener("clickLink",__clickLink);
       }
       
-      private function _aciveOtherManager(param1:Event) : void
+      private function _aciveOtherManager(e:Event) : void
       {
          if(isShowIcon)
          {
@@ -126,7 +126,7 @@ package sevenDayTarget.controller
          HallIconManager.instance.executeCacheRightIconLevelLimit("sevenDayTarget",false);
       }
       
-      public function onClickSevenDayTargetIcon(param1:MouseEvent) : void
+      public function onClickSevenDayTargetIcon(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(sevenDayOpen)
@@ -139,7 +139,7 @@ package sevenDayTarget.controller
          }
       }
       
-      private function _openMainView(param1:Event) : void
+      private function _openMainView(e:Event) : void
       {
          if(!_newSevenDayAndNewPlayerMainView)
          {
@@ -176,11 +176,11 @@ package sevenDayTarget.controller
          _newSevenDayAndNewPlayerMainView = null;
       }
       
-      private function __clickLink(param1:Event) : void
+      private function __clickLink(e:Event) : void
       {
-         var _loc3_:NewTargetQuestionInfo = _newSevenDayAndNewPlayerMainView.todayInfo();
-         var _loc2_:int = _loc3_.linkId;
-         switch(int(_loc2_) - 1)
+         var _todayQuestInfo:NewTargetQuestionInfo = _newSevenDayAndNewPlayerMainView.todayInfo();
+         var linkId:int = _todayQuestInfo.linkId;
+         switch(int(linkId) - 1)
          {
             case 0:
                hideMainView();

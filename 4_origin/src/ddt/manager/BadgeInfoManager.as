@@ -27,29 +27,29 @@ package ddt.manager
          return _instance;
       }
       
-      public function setup(param1:BadgeInfoAnalyzer) : void
+      public function setup(analyzer:BadgeInfoAnalyzer) : void
       {
-         _badgeList = param1.list;
+         _badgeList = analyzer.list;
       }
       
-      public function getBadgeInfoByID(param1:int) : BadgeInfo
+      public function getBadgeInfoByID(id:int) : BadgeInfo
       {
-         return _badgeList[param1];
+         return _badgeList[id];
       }
       
-      public function getBadgeInfoByLevel(param1:int, param2:int) : Array
+      public function getBadgeInfoByLevel(min:int, max:int) : Array
       {
-         var _loc3_:Array = [];
+         var result:Array = [];
          var _loc6_:int = 0;
          var _loc5_:* = _badgeList;
-         for each(var _loc4_ in _badgeList)
+         for each(var info in _badgeList)
          {
-            if(_loc4_.LimitLevel >= param1 && _loc4_.LimitLevel <= param2)
+            if(info.LimitLevel >= min && info.LimitLevel <= max)
             {
-               _loc3_.push(_loc4_);
+               result.push(info);
             }
          }
-         return _loc3_;
+         return result;
       }
    }
 }

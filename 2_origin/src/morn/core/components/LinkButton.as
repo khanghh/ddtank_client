@@ -4,9 +4,9 @@ package morn.core.components
    {
        
       
-      public function LinkButton(param1:String = "")
+      public function LinkButton(label:String = "")
       {
-         super(null,param1);
+         super(null,label);
       }
       
       override protected function preinitialize() : void

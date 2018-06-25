@@ -67,9 +67,9 @@ package ddQiYuan.model
       
       public var OPEN_TREASUREBOX_COST_MONEY:int = 500;
       
-      public function DDQiYuanModel(param1:IEventDispatcher = null)
+      public function DDQiYuanModel(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
    }
 }

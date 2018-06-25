@@ -36,14 +36,14 @@ package shop.view
       
       private var _type:int;
       
-      public function NewShopBugViewItem(param1:int = 0, param2:String = "", param3:int = 0, param4:ShopItemCell = null)
+      public function NewShopBugViewItem($type:int = 0, $count:String = "", $money:int = 0, $cell:ShopItemCell = null)
       {
          super();
          buttonMode = true;
-         _type = param1;
-         _count = param2;
-         _money = param3;
-         _cell = param4;
+         _type = $type;
+         _count = $count;
+         _money = $money;
+         _cell = $cell;
          var _loc5_:* = 61;
          _cell.height = _loc5_;
          _cell.width = _loc5_;
@@ -71,24 +71,23 @@ package shop.view
          addChild(_lightEffect);
       }
       
-      private function getSpecifiedString(param1:String) : String
+      private function getSpecifiedString(str:String) : String
       {
-         var _loc3_:int = 0;
-         if(!param1)
+         var i:int = 0;
+         if(!str)
          {
             return "";
          }
-         var _loc2_:String = "";
-         _loc3_ = 0;
-         while(_loc3_ < param1.length)
+         var temp:String = "";
+         for(i = 0; i < str.length; )
          {
-            if(param1.charCodeAt(_loc3_) >= 48 && param1.charCodeAt(_loc3_) <= 57)
+            if(str.charCodeAt(i) >= 48 && str.charCodeAt(i) <= 57)
             {
-               _loc2_ = _loc2_ + param1.charAt(_loc3_);
+               temp = temp + str.charAt(i);
             }
-            _loc3_++;
+            i++;
          }
-         return "+" + _loc2_;
+         return "+" + temp;
       }
       
       public function get info() : ItemTemplateInfo
@@ -96,7 +95,7 @@ package shop.view
          return _cell.info;
       }
       
-      public function set autoSelect(param1:Boolean) : void
+      public function set autoSelect(value:Boolean) : void
       {
       }
       
@@ -105,9 +104,9 @@ package shop.view
          return _lightEffect.visible;
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         _lightEffect.visible = param1;
+         _lightEffect.visible = value;
       }
       
       public function asDisplayObject() : DisplayObject

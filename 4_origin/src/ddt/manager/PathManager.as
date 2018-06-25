@@ -18,9 +18,9 @@ package ddt.manager
          super();
       }
       
-      public static function setup(param1:PathInfo) : void
+      public static function setup(i:PathInfo) : void
       {
-         info = param1;
+         info = i;
          SITE_MAIN = info.SITE;
          SITE_WEEKLY = info.WEEKLY_SITE;
       }
@@ -59,8 +59,8 @@ package ddt.manager
       
       public static function get solveCommunityFriend() : String
       {
-         var _loc1_:String = info.COMMUNITY_FRIEND_PATH;
-         return _loc1_;
+         var path:String = info.COMMUNITY_FRIEND_PATH;
+         return path;
       }
       
       public static function solveClientDownloadPath() : String
@@ -68,17 +68,17 @@ package ddt.manager
          return info.CLIENT_DOWNLOAD;
       }
       
-      public static function solveWebPlayerInfoPath(param1:String, param2:String = "", param3:String = "") : String
+      public static function solveWebPlayerInfoPath(uid:String, code:String = "", key:String = "") : String
       {
-         var _loc4_:String = info.WEB_PLAYER_INFO_PATH.replace("{uid}",param1);
-         _loc4_ = _loc4_.replace("{code}",param2);
-         _loc4_ = _loc4_.replace("{key}",param3);
-         return _loc4_;
+         var url:String = info.WEB_PLAYER_INFO_PATH.replace("{uid}",uid);
+         url = url.replace("{code}",code);
+         url = url.replace("{key}",key);
+         return url;
       }
       
-      public static function solveFlvSound(param1:String) : String
+      public static function solveFlvSound(id:String) : String
       {
-         return info.SITE + "sound/" + param1 + ".flv";
+         return info.SITE + "sound/" + id + ".flv";
       }
       
       public static function solveFirstPage() : String
@@ -110,9 +110,9 @@ package ddt.manager
          return info.FILL_PATH;
       }
       
-      public static function solveLoginPHP(param1:String) : String
+      public static function solveLoginPHP($loginName:String) : String
       {
-         return info.PHP_PATH.replace("{id}",param1);
+         return info.PHP_PATH.replace("{id}",$loginName);
       }
       
       public static function checkOpenPHP() : Boolean
@@ -125,68 +125,68 @@ package ddt.manager
          return info.TRAINER_PATH;
       }
       
-      public static function solveWeeklyPath(param1:String) : String
+      public static function solveWeeklyPath(str:String) : String
       {
-         return info.WEEKLY_SITE + "weekly/" + param1;
+         return info.WEEKLY_SITE + "weekly/" + str;
       }
       
-      public static function solveMapPath(param1:int, param2:String, param3:String) : String
+      public static function solveMapPath(id:int, name:String, type:String) : String
       {
-         return info.SITE + "image/map/" + param1.toString() + "/" + param2 + "." + param3;
+         return info.SITE + "image/map/" + id.toString() + "/" + name + "." + type;
       }
       
-      public static function solveMapSmallView(param1:int) : String
+      public static function solveMapSmallView(id:int) : String
       {
-         return info.SITE + "image/map/" + param1.toString() + "/small.png";
+         return info.SITE + "image/map/" + id.toString() + "/small.png";
       }
       
-      public static function solveRequestPath(param1:String = "") : String
+      public static function solveRequestPath(path:String = "") : String
       {
-         return info.REQUEST_PATH + param1;
+         return info.REQUEST_PATH + path;
       }
       
-      public static function solvePropPath(param1:String) : String
+      public static function solvePropPath(path:String) : String
       {
-         return info.SITE + "image/tool/" + param1 + ".png";
+         return info.SITE + "image/tool/" + path + ".png";
       }
       
-      public static function solveMapIconPath(param1:int, param2:int, param3:String = "show1.jpg") : String
+      public static function solveMapIconPath(id:int, type:int, missionPic:String = "show1.jpg") : String
       {
-         var _loc4_:String = "";
-         if(param2 == 0)
+         var path:String = "";
+         if(type == 0)
          {
-            _loc4_ = info.SITE + "image/map/" + param1.toString() + "/icon.png";
+            path = info.SITE + "image/map/" + id.toString() + "/icon.png";
          }
-         else if(param2 == 1)
+         else if(type == 1)
          {
-            _loc4_ = info.SITE + "image/map/" + param1.toString() + "/samll_map.png";
+            path = info.SITE + "image/map/" + id.toString() + "/samll_map.png";
          }
-         else if(param2 == 2)
+         else if(type == 2)
          {
-            _loc4_ = info.SITE + "image/map/" + param1.toString() + "/" + param3;
+            path = info.SITE + "image/map/" + id.toString() + "/" + missionPic;
          }
-         else if(param2 == 3)
+         else if(type == 3)
          {
-            _loc4_ = info.SITE + "image/map/" + param1.toString() + "/samll_map_s.jpg";
+            path = info.SITE + "image/map/" + id.toString() + "/samll_map_s.jpg";
          }
-         return _loc4_;
+         return path;
       }
       
-      public static function solveEffortIconPath(param1:String) : String
+      public static function solveEffortIconPath(iconUrl:String) : String
       {
-         var _loc2_:String = "";
-         _loc2_ = info.SITE + "image/effort/" + param1 + "/icon.png";
-         return _loc2_;
+         var path:String = "";
+         path = info.SITE + "image/effort/" + iconUrl + "/icon.png";
+         return path;
       }
       
-      public static function solveFieldPlantPath(param1:String, param2:int) : String
+      public static function solveFieldPlantPath(iconUrl:String, type:int) : String
       {
-         return info.SITE + "image/farm/Crops/" + param1 + "/crop" + param2 + ".png";
+         return info.SITE + "image/farm/Crops/" + iconUrl + "/crop" + type + ".png";
       }
       
-      public static function solveSeedPath(param1:String) : String
+      public static function solveSeedPath(iconUrl:String) : String
       {
-         return info.SITE + "image/farm/Crops/" + param1 + "/seed.png";
+         return info.SITE + "image/farm/Crops/" + iconUrl + "/seed.png";
       }
       
       public static function solveCountPath() : String
@@ -199,174 +199,174 @@ package ddt.manager
          return info.PARTER_ID;
       }
       
-      public static function solveStylePath(param1:Boolean, param2:String, param3:String) : String
+      public static function solveStylePath(sex:Boolean, type:String, path:String) : String
       {
-         return info.SITE + info.STYLE_PATH + (!!param1?"m":"f") + "/" + param2 + "/" + param3 + ".png";
+         return info.SITE + info.STYLE_PATH + (!!sex?"m":"f") + "/" + type + "/" + path + ".png";
       }
       
-      public static function solveArmPath(param1:String, param2:String) : String
+      public static function solveArmPath(type:String, path:String) : String
       {
-         return info.SITE + info.STYLE_PATH + String(param1) + "/" + param2 + ".png";
+         return info.SITE + info.STYLE_PATH + String(type) + "/" + path + ".png";
       }
       
-      public static function solveGoodsPath(param1:Number, param2:String, param3:Boolean = true, param4:String = "show", param5:String = "A", param6:String = "1", param7:int = 1, param8:Boolean = false, param9:int = 0, param10:String = "") : String
+      public static function solveGoodsPath(category:Number, path:String, sex:Boolean = true, pictype:String = "show", dressHat:String = "A", secondLayer:String = "1", level:int = 1, isBack:Boolean = false, propType:int = 0, stateType:String = "") : String
       {
-         var _loc17_:* = null;
-         var _loc14_:String = "";
-         var _loc15_:String = "";
-         var _loc16_:String = "";
-         var _loc12_:String = "";
-         var _loc18_:String = "";
-         var _loc11_:String = "";
-         var _loc13_:String = "";
-         var _loc19_:String = param4 + ".png";
-         if(param2 == "item4")
+         var s:* = null;
+         var type:String = "";
+         var sext:String = "";
+         var equiptype:String = "";
+         var back:String = "";
+         var dresshat:String = "";
+         var secondlayer:String = "";
+         var levelt:String = "";
+         var file:String = pictype + ".png";
+         if(path == "item4")
          {
-            _loc17_ = "";
+            s = "";
          }
-         if(param1 == 7 || param1 == 27 || param1 == 64)
+         if(category == 7 || category == 27 || category == 64)
          {
-            _loc13_ = "/1";
-            _loc14_ = "arm/";
-            if(param4.indexOf("icon") == -1)
+            levelt = "/1";
+            type = "arm/";
+            if(pictype.indexOf("icon") == -1)
             {
-               _loc12_ = !!param8?"/1":"/0";
+               back = !!isBack?"/1":"/0";
             }
-            return info.SITE + "image/arm/" + param2 + _loc13_ + _loc12_ + "/" + _loc19_;
+            return info.SITE + "image/arm/" + path + levelt + back + "/" + file;
          }
-         if(param1 == 24 || param1 == 11 || param1 == 65 || param1 == 68 || param1 == 69 || param1 == 72)
+         if(category == 24 || category == 11 || category == 65 || category == 68 || category == 69 || category == 72 || category == 79)
          {
-            return info.SITE + "image/unfrightprop/" + param2 + "/" + _loc19_;
+            return info.SITE + "image/unfrightprop/" + path + "/" + file;
          }
-         if(param1 == 12)
+         if(category == 12)
          {
-            return info.SITE + "image/task/" + param2 + "/icon.png";
+            return info.SITE + "image/task/" + path + "/icon.png";
          }
-         if(param1 == 16)
+         if(category == 16)
          {
-            return info.SITE + "image/specialprop/chatBall/" + param2 + "/icon.png";
+            return info.SITE + "image/specialprop/chatBall/" + path + "/icon.png";
          }
-         if(param1 < 10 || param1 == 13 || param1 == 14 || param1 == 28 || param1 == 29)
+         if(category < 10 || category == 13 || category == 14 || category == 28 || category == 29)
          {
-            if(param1 == 3)
+            if(category == 3)
             {
-               if(param4.indexOf("icon") == -1)
+               if(pictype.indexOf("icon") == -1)
                {
-                  _loc18_ = "/" + param5;
+                  dresshat = "/" + dressHat;
                }
             }
-            _loc14_ = "equip/";
-            _loc16_ = EquipType.TYPES[param1] + "/";
-            _loc15_ = !!param3?"m/":"f/";
-            if(param1 != 8 && param1 != 9 && param1 != 14 && param1 != 28 && param1 != 29)
+            type = "equip/";
+            equiptype = EquipType.TYPES[category] + "/";
+            sext = !!sex?"m/":"f/";
+            if(category != 8 && category != 9 && category != 14 && category != 28 && category != 29)
             {
-               if(param4 == "icon")
+               if(pictype == "icon")
                {
-                  param4 = "icon_" + param6;
-                  param6 = "";
+                  pictype = "icon_" + secondLayer;
+                  secondLayer = "";
                }
                else
                {
-                  _loc11_ = "/" + param6;
+                  secondlayer = "/" + secondLayer;
                }
             }
             else
             {
-               _loc15_ = "";
+               sext = "";
             }
-            _loc19_ = param4 + param10 + ".png";
-            return info.SITE + "image/" + _loc14_ + _loc15_ + _loc16_ + param2 + _loc11_ + _loc18_ + _loc13_ + _loc12_ + "/" + _loc19_;
+            file = pictype + stateType + ".png";
+            return info.SITE + "image/" + type + sext + equiptype + path + secondlayer + dresshat + levelt + back + "/" + file;
          }
-         if(param1 == 15)
+         if(category == 15)
          {
-            return info.SITE + "image/equip/wing/" + param2 + "/" + _loc19_;
+            return info.SITE + "image/equip/wing/" + path + "/" + file;
          }
-         if(param1 == 17 || param1 == 31)
+         if(category == 17 || category == 31)
          {
-            return info.SITE + "image/equip/offhand/" + param2 + "/icon.png";
+            return info.SITE + "image/equip/offhand/" + path + "/icon.png";
          }
-         if(param1 == 25)
+         if(category == 25)
          {
-            return info.SITE + "image/gift/" + param2 + "/icon.png";
+            return info.SITE + "image/gift/" + path + "/icon.png";
          }
-         if(param1 == 26)
+         if(category == 26)
          {
-            return info.SITE + "image/card/" + param2 + "/icon.jpg";
+            return info.SITE + "image/card/" + path + "/icon.jpg";
          }
-         if(param1 == 18 || param1 == 66)
+         if(category == 18 || category == 66)
          {
-            return info.SITE + "image/cardbox/" + param2 + "/icon.png";
+            return info.SITE + "image/cardbox/" + path + "/icon.png";
          }
-         if(param1 == 19)
+         if(category == 19)
          {
-            return info.SITE + "image/equip/recover/" + param2 + "/icon.png";
+            return info.SITE + "image/equip/recover/" + path + "/icon.png";
          }
-         if(param1 == 70)
+         if(category == 70)
          {
-            return info.SITE + "image/equip/amulet/" + param2 + "/" + param10 + "/icon.png";
+            return info.SITE + "image/equip/amulet/" + path + "/" + stateType + "/icon.png";
          }
-         if(param1 == 20 || param1 == 53 || param1 == 23 || param1 == 30 || param1 == 40)
+         if(category == 20 || category == 53 || category == 78 || category == 23 || category == 30 || category == 40)
          {
-            return info.SITE + "image/unfrightprop/" + param2 + "/icon.png";
+            return info.SITE + "image/unfrightprop/" + path + "/icon.png";
          }
-         if(param1 == 32 || param1 == 36)
+         if(category == 32 || category == 36)
          {
-            return info.SITE + "image/farm/Crops/" + param2 + "/seed.png";
+            return info.SITE + "image/farm/Crops/" + path + "/seed.png";
          }
-         if(param1 == 33)
+         if(category == 33)
          {
-            return info.SITE + "image/farm/Fertilizer/" + param2 + "/icon.png";
+            return info.SITE + "image/farm/Fertilizer/" + path + "/icon.png";
          }
-         if(param1 == 34 || param1 == 35)
+         if(category == 34 || category == 35)
          {
-            return info.SITE + "image/unfrightprop/" + param2 + "/icon.png";
+            return info.SITE + "image/unfrightprop/" + path + "/icon.png";
          }
-         if(param1 == 52)
+         if(category == 52)
          {
-            return info.SITE + "image/petequip/cloth/" + param2 + "/icon.png";
+            return info.SITE + "image/petequip/cloth/" + path + "/icon.png";
          }
-         if(param1 == 50)
+         if(category == 50)
          {
-            return info.SITE + "image/petequip/arm/" + param2 + "/icon.png";
+            return info.SITE + "image/petequip/arm/" + path + "/icon.png";
          }
-         if(param1 == 51)
+         if(category == 51)
          {
-            return info.SITE + "image/petequip/hat/" + param2 + "/icon.png";
+            return info.SITE + "image/petequip/hat/" + path + "/icon.png";
          }
-         if(param1 == 61 || param1 == 62 || param1 == 37)
+         if(category == 61 || category == 62 || category == 37)
          {
-            return info.SITE + "image/unfrightprop/" + param2 + "/" + _loc19_;
+            return info.SITE + "image/unfrightprop/" + path + "/" + file;
          }
-         if(param1 == 74)
+         if(category == 74)
          {
-            return info.SITE + "image/rune/" + param2 + ".png";
+            return info.SITE + "image/rune/" + path + ".png";
          }
-         return info.SITE + "image/prop/" + param2 + "/" + _loc19_;
+         return info.SITE + "image/prop/" + path + "/" + file;
       }
       
-      public static function soloveWingPath(param1:String) : String
+      public static function soloveWingPath(path:String) : String
       {
-         return info.SITE + "image/equip/wing/" + param1 + "/wings.swf";
+         return info.SITE + "image/equip/wing/" + path + "/wings.swf";
       }
       
-      public static function soloveSinpleLightPath(param1:String) : String
+      public static function soloveSinpleLightPath(path:String) : String
       {
-         return info.SITE + "image/equip/sinplelight/" + param1 + ".swf";
+         return info.SITE + "image/equip/sinplelight/" + path + ".swf";
       }
       
-      public static function soloveCircleLightPath(param1:String) : String
+      public static function soloveCircleLightPath(path:String) : String
       {
-         return info.SITE + "image/equip/circlelight/" + param1 + ".swf";
+         return info.SITE + "image/equip/circlelight/" + path + ".swf";
       }
       
-      public static function solveConsortiaIconPath(param1:String) : String
+      public static function solveConsortiaIconPath(path:String) : String
       {
-         return info.SITE + "image/consortiaicon/" + param1 + ".png";
+         return info.SITE + "image/consortiaicon/" + path + ".png";
       }
       
-      public static function solveConsortiaMapPath(param1:String) : String
+      public static function solveConsortiaMapPath(path:String) : String
       {
-         return info.SITE + "image/consortiamap/" + param1 + ".png";
+         return info.SITE + "image/consortiamap/" + path + ".png";
       }
       
       public static function solveWorldbossBuffPath() : String
@@ -379,15 +379,15 @@ package ddt.manager
          return info.SITE + "image/dice/";
       }
       
-      public static function cellMovieClipSpecialEffectPath(param1:String) : String
+      public static function cellMovieClipSpecialEffectPath(path:String) : String
       {
-         return info.SITE + "image/cellEffect/lv" + param1 + ".swf";
+         return info.SITE + "image/cellEffect/lv" + path + ".swf";
       }
       
-      public static function solveSceneCharacterLoaderPath(param1:Number, param2:String, param3:Boolean = true, param4:Boolean = true, param5:String = "1", param6:int = 1, param7:String = "") : String
+      public static function solveSceneCharacterLoaderPath(categoryID:Number, path:String, playerSex:Boolean = true, sex:Boolean = true, secondLayer:String = "1", direction:int = 1, sceneCharacterLoaderPath:String = "") : String
       {
-         var _loc8_:* = null;
-         var _loc9_:* = param1;
+         var type:* = null;
+         var _loc9_:* = categoryID;
          if(3 !== _loc9_)
          {
             if(4 !== _loc9_)
@@ -396,105 +396,105 @@ package ddt.manager
                {
                   if(5 !== _loc9_)
                   {
-                     return info.SITE + "image/virtual/" + (!!param4?"M":"F") + "/" + _loc8_ + "/" + param2 + "/" + param5 + ".png";
+                     return info.SITE + "image/virtual/" + (!!sex?"M":"F") + "/" + type + "/" + path + "/" + secondLayer + ".png";
                   }
-                  _loc8_ = param6 == 1?"clothF":param6 == 2?"cloth":"clothF";
-                  param2 = param7;
-                  if(param7 == "")
+                  type = direction == 1?"clothF":direction == 2?"cloth":"clothF";
+                  path = sceneCharacterLoaderPath;
+                  if(sceneCharacterLoaderPath == "")
                   {
-                     param2 = "default";
+                     path = "default";
                   }
                   if(StateManager.currentStateType == "collectionTaskScene")
                   {
-                     return info.SITE + "image/mounts/clothZ/" + (!!param3?"M":"F") + "/" + _loc8_ + "/1/" + param5 + ".png";
+                     return info.SITE + "image/mounts/clothZ/" + (!!playerSex?"M":"F") + "/" + type + "/1/" + secondLayer + ".png";
                   }
-                  return info.SITE + "image/virtual/" + (!!param3?"M":"F") + "/" + _loc8_ + "/" + param2 + "/" + param5 + ".png";
+                  return info.SITE + "image/virtual/" + (!!playerSex?"M":"F") + "/" + type + "/" + path + "/" + secondLayer + ".png";
                }
-               _loc8_ = "face";
-               return info.SITE + "image/virtual/" + (!!param4?"M":"F") + "/" + _loc8_ + "/" + param2 + "/" + param5 + ".png";
+               type = "face";
+               return info.SITE + "image/virtual/" + (!!sex?"M":"F") + "/" + type + "/" + path + "/" + secondLayer + ".png";
             }
-            _loc8_ = "eff";
-            return info.SITE + "image/virtual/" + (!!param4?"M":"F") + "/" + _loc8_ + "/" + param2 + "/" + param5 + ".png";
+            type = "eff";
+            return info.SITE + "image/virtual/" + (!!sex?"M":"F") + "/" + type + "/" + path + "/" + secondLayer + ".png";
          }
-         _loc8_ = "hair";
-         return info.SITE + "image/virtual/" + (!!param4?"M":"F") + "/" + _loc8_ + "/" + param2 + "/" + param5 + ".png";
+         type = "hair";
+         return info.SITE + "image/virtual/" + (!!sex?"M":"F") + "/" + type + "/" + path + "/" + secondLayer + ".png";
       }
       
-      public static function solveLitteGameCharacterPath(param1:Number, param2:Boolean, param3:int, param4:int, param5:String = "") : String
+      public static function solveLitteGameCharacterPath(categoryID:Number, sex:Boolean, litteGameId:int, layer:int, picId:String = "") : String
       {
-         var _loc8_:* = null;
-         var _loc7_:String = info.SITE + "image/world/player/" + param3 + "/";
-         var _loc6_:* = "";
-         var _loc9_:* = param1;
+         var type:* = null;
+         var mainPath:String = info.SITE + "image/world/player/" + litteGameId + "/";
+         var path:* = "";
+         var _loc9_:* = categoryID;
          if(30 !== _loc9_)
          {
             if(6 !== _loc9_)
             {
                if(5 === _loc9_)
                {
-                  _loc8_ = "body";
-                  _loc6_ = "default";
-                  return _loc7_ + (!!param2?"M":"F") + "/" + _loc8_ + "/" + _loc6_ + "/" + param4 + ".png";
+                  type = "body";
+                  path = "default";
+                  return mainPath + (!!sex?"M":"F") + "/" + type + "/" + path + "/" + layer + ".png";
                }
             }
             else
             {
-               _loc8_ = "face";
-               _loc6_ = param5;
-               return _loc7_ + (!!param2?"M":"F") + "/" + _loc8_ + "/" + _loc6_ + "/" + param4 + ".png";
+               type = "face";
+               path = picId;
+               return mainPath + (!!sex?"M":"F") + "/" + type + "/" + path + "/" + layer + ".png";
             }
          }
          else
          {
-            _loc8_ = "effect";
-            _loc6_ = "default";
+            type = "effect";
+            path = "default";
          }
-         return _loc7_ + (!!param2?"M":"F") + "/" + _loc8_ + "/" + _loc6_ + "/" + param4 + ".png";
+         return mainPath + (!!sex?"M":"F") + "/" + type + "/" + path + "/" + layer + ".png";
       }
       
-      public static function solveBlastPath(param1:String) : String
+      public static function solveBlastPath(path:String) : String
       {
          return info.SITE + "swf/blast.swf";
       }
       
-      public static function solveStyleFullPath(param1:Boolean, param2:String, param3:String, param4:String) : String
+      public static function solveStyleFullPath(sex:Boolean, hair:String, body:String, face:String) : String
       {
-         return info.SITE + info.STYLE_PATH + (!!param1?"M":"F") + "/" + param2 + "/" + param3 + param4 + "/all.png";
+         return info.SITE + info.STYLE_PATH + (!!sex?"M":"F") + "/" + hair + "/" + body + face + "/all.png";
       }
       
-      public static function solveStyleHeadPath(param1:Boolean, param2:String, param3:String) : String
+      public static function solveStyleHeadPath(sex:Boolean, type:String, style:String) : String
       {
-         return info.SITE + info.STYLE_PATH + (!!param1?"M":"F") + "/" + param2 + "/" + param3 + "/head.png";
+         return info.SITE + info.STYLE_PATH + (!!sex?"M":"F") + "/" + type + "/" + style + "/head.png";
       }
       
-      public static function solveStylePreviewPath(param1:Boolean, param2:String, param3:String) : String
+      public static function solveStylePreviewPath(sex:Boolean, type:String, style:String) : String
       {
-         return info.SITE + info.STYLE_PATH + (!!param1?"M":"F") + "/" + param2 + "/" + param3 + "/pre.png";
+         return info.SITE + info.STYLE_PATH + (!!sex?"M":"F") + "/" + type + "/" + style + "/pre.png";
       }
       
-      public static function solvePath(param1:String) : String
+      public static function solvePath(path:String) : String
       {
-         return info.SITE + param1;
+         return info.SITE + path;
       }
       
-      public static function solveWeaponSkillSwf(param1:int) : String
+      public static function solveWeaponSkillSwf(skillid:int) : String
       {
-         return solveSkillSwf(param1);
+         return solveSkillSwf(skillid);
       }
       
-      public static function solveSkillSwf(param1:int) : String
+      public static function solveSkillSwf(skillid:int) : String
       {
-         return info.SITE + "image/skill/" + param1 + ".swf";
+         return info.SITE + "image/skill/" + skillid + ".swf";
       }
       
-      public static function solveBlastOut(param1:int) : String
+      public static function solveBlastOut(id:int) : String
       {
-         return info.SITE + "image/bomb/blastOut/blastOut" + param1 + ".swf";
+         return info.SITE + "image/bomb/blastOut/blastOut" + id + ".swf";
       }
       
-      public static function solveBullet(param1:int) : String
+      public static function solveBullet(id:int) : String
       {
-         return info.SITE + "image/bomb/bullet/bullet" + param1 + ".swf";
+         return info.SITE + "image/bomb/bullet/bullet" + id + ".swf";
       }
       
       public static function solveParticle() : String
@@ -507,19 +507,19 @@ package ddt.manager
          return info.SITE + "image/bome/shape.swf";
       }
       
-      public static function solveCraterBrink(param1:int) : String
+      public static function solveCraterBrink(id:int) : String
       {
-         return info.SITE + "image/bomb/crater/" + param1 + "/craterBrink.png";
+         return info.SITE + "image/bomb/crater/" + id + "/craterBrink.png";
       }
       
-      public static function solveCrater(param1:int) : String
+      public static function solveCrater(id:int) : String
       {
-         return info.SITE + "image/bomb/crater/" + param1 + "/crater.png";
+         return info.SITE + "image/bomb/crater/" + id + "/crater.png";
       }
       
-      public static function solveBombSwf(param1:int) : String
+      public static function solveBombSwf(bombId:int) : String
       {
-         return info.FLASHSITE + "bombs/" + param1 + ".swf";
+         return info.FLASHSITE + "bombs/" + bombId + ".swf";
       }
       
       public static function solveSoundSwf() : String
@@ -537,6 +537,11 @@ package ddt.manager
          return info.FLASHSITE + "audiolite.swf";
       }
       
+      public static function solveSoundSwfBattle() : String
+      {
+         return info.FLASHSITE + "audiobattle.swf";
+      }
+      
       public static function solveParticalXml() : String
       {
          return info.FLASHSITE + "partical.xml";
@@ -552,25 +557,25 @@ package ddt.manager
          return info.FLASHSITE + "Catharine.swf";
       }
       
-      public static function solveChurchSceneSourcePath(param1:String) : String
+      public static function solveChurchSceneSourcePath(path:String) : String
       {
-         return info.SITE + "image/church/scene/" + param1 + ".swf";
+         return info.SITE + "image/church/scene/" + path + ".swf";
       }
       
-      public static function solveGameLivingPath(param1:String) : String
+      public static function solveGameLivingPath(path:String) : String
       {
-         var _loc2_:String = param1.split(".").join("/");
-         return info.SITE + "image/" + _loc2_ + ".swf";
+         var classToPath:String = path.split(".").join("/");
+         return info.SITE + "image/" + classToPath + ".swf";
       }
       
-      public static function solveWeeklyImagePath(param1:String) : String
+      public static function solveWeeklyImagePath(path:String) : String
       {
-         return info.WEEKLY_SITE + "weekly/" + param1;
+         return info.WEEKLY_SITE + "weekly/" + path;
       }
       
-      public static function solveNewHandBuild(param1:String) : String
+      public static function solveNewHandBuild(type:String) : String
       {
-         return getUIPath() + "/img/trainer/" + param1.slice(0,param1.length - 3) + ".png";
+         return getUIPath() + "/img/trainer/" + type.slice(0,type.length - 3) + ".png";
       }
       
       public static function CommnuntyMicroBlog() : Boolean
@@ -628,9 +633,9 @@ package ddt.manager
          return "CMFriendIcon/icon.png";
       }
       
-      public static function CommunitySinaWeibo(param1:String) : String
+      public static function CommunitySinaWeibo(path:String) : String
       {
-         return info.SITE + param1;
+         return info.SITE + path;
       }
       
       public static function solveAllowPopupFavorite() : Boolean
@@ -738,45 +743,45 @@ package ddt.manager
          return info.CHAT_FACE_DISABLED_LIST;
       }
       
-      public static function solveASTPath(param1:String) : String
+      public static function solveASTPath(name:String) : String
       {
-         return info.SITE + "image/world/monster/" + param1 + ".png";
+         return info.SITE + "image/world/monster/" + name + ".png";
       }
       
-      public static function solveLittleGameConfigPath(param1:int) : String
+      public static function solveLittleGameConfigPath(id:int) : String
       {
-         return info.SITE + "image/tilemap/" + param1 + "/map.bin";
+         return info.SITE + "image/tilemap/" + id + "/map.bin";
       }
       
-      public static function solveLittleGameResPath(param1:int) : String
+      public static function solveLittleGameResPath(id:int) : String
       {
-         return info.SITE + "image/world/map/" + param1 + "/scene.swf";
+         return info.SITE + "image/world/map/" + id + "/scene.swf";
       }
       
-      public static function solveLittleGameObjectPath(param1:String) : String
+      public static function solveLittleGameObjectPath(object:String) : String
       {
-         return info.SITE + "image/world/" + param1;
+         return info.SITE + "image/world/" + object;
       }
       
-      public static function solveLittleGameMapPreview(param1:int) : String
+      public static function solveLittleGameMapPreview(id:int) : String
       {
-         return info.SITE + "image/world/map/" + param1 + "/preview.jpg";
+         return info.SITE + "image/world/map/" + id + "/preview.jpg";
       }
       
-      public static function solveBadgePath(param1:int) : String
+      public static function solveBadgePath(id:int) : String
       {
-         return info.SITE + "image/badge/" + param1 + "/icon.png";
+         return info.SITE + "image/badge/" + id + "/icon.png";
       }
       
-      public static function solveLeagueRankPath(param1:int) : String
+      public static function solveLeagueRankPath(id:int) : String
       {
-         return info.SITE + "image/leagueRank/" + param1 + "/icon.png";
+         return info.SITE + "image/leagueRank/" + id + "/icon.png";
       }
       
       public static function getUIPath() : String
       {
-         var _loc1_:String = info.FLASHSITE + "ui/" + PathInfo.LANGUAGE;
-         return _loc1_;
+         var s:String = info.FLASHSITE + "ui/" + PathInfo.LANGUAGE;
+         return s;
       }
       
       public static function get advancedEnable() : Boolean
@@ -786,8 +791,8 @@ package ddt.manager
       
       public static function getCustomResPath() : String
       {
-         var _loc1_:String = getUIPath() + "/customres/";
-         return _loc1_;
+         var s:String = getUIPath() + "/customres/";
+         return s;
       }
       
       public static function getBackUpUIPath() : String
@@ -795,9 +800,9 @@ package ddt.manager
          return info.BACKUP_FLASHSITE;
       }
       
-      public static function getUIConfigPath(param1:String) : String
+      public static function getUIConfigPath(module:String) : String
       {
-         return getUIPath() + "/xml/" + param1 + ".xml";
+         return getUIPath() + "/xml/" + module + ".xml";
       }
       
       public static function getLanguagePath() : String
@@ -805,14 +810,14 @@ package ddt.manager
          return getUIPath() + "/" + "language.png";
       }
       
-      public static function getBraveDoorDuplicateTemplete(param1:String) : String
+      public static function getBraveDoorDuplicateTemplete(module:String) : String
       {
-         return getCustomResPath() + param1 + ".xml";
+         return getCustomResPath() + module + ".xml";
       }
       
-      public static function getBonesPath(param1:String) : String
+      public static function getBonesPath(name:String) : String
       {
-         return getUIPath() + "/bones/" + param1 + ".xml";
+         return getUIPath() + "/bones/" + name + ".xml";
       }
       
       public static function getGameBonesPath() : String
@@ -840,9 +845,9 @@ package ddt.manager
          return getUIPath() + "/" + "zhanCode.txt";
       }
       
-      public static function getCardXMLPath(param1:String) : String
+      public static function getCardXMLPath(xmlName:String) : String
       {
-         return param1;
+         return xmlName;
       }
       
       public static function getFightAchieveEnable() : Boolean
@@ -877,13 +882,13 @@ package ddt.manager
       
       public static function get DISABLE_TASK_ID() : Array
       {
-         var _loc1_:Array = [];
+         var arr:Array = [];
          if(info == null)
          {
-            return _loc1_;
+            return arr;
          }
-         _loc1_ = info.DISABLE_TASK_ID.split(",");
-         return _loc1_;
+         arr = info.DISABLE_TASK_ID.split(",");
+         return arr;
       }
       
       public static function get LittleGameMinLv() : int
@@ -906,47 +911,47 @@ package ddt.manager
          return info.TREASUREHELPTIMES;
       }
       
-      public static function solvePetGameAssetUrl(param1:String) : String
+      public static function solvePetGameAssetUrl(asseturl:String) : String
       {
-         return info.SITE + "image/gameasset/" + param1 + ".swf";
+         return info.SITE + "image/gameasset/" + asseturl + ".swf";
       }
       
-      public static function getWeatherUrl(param1:int) : String
+      public static function getWeatherUrl(id:int) : String
       {
-         return info.SITE + "image/weather/" + param1 + "/1.swf";
+         return info.SITE + "image/weather/" + id + "/1.swf";
       }
       
-      public static function solvePetFarmAssetUrl(param1:String) : String
+      public static function solvePetFarmAssetUrl(asseturl:String) : String
       {
-         return info.SITE + "image/" + param1 + ".swf";
+         return info.SITE + "image/" + asseturl + ".swf";
       }
       
-      public static function solveSkillPicUrl(param1:String) : String
+      public static function solveSkillPicUrl(pic:String) : String
       {
-         return info.SITE + "image/petskill/" + param1 + "/icon.png";
+         return info.SITE + "image/petskill/" + pic + "/icon.png";
       }
       
-      public static function solvePetSkillEffect(param1:String) : String
+      public static function solvePetSkillEffect(effect:String) : String
       {
-         return info.SITE + "image/skilleffect/" + param1 + ".swf";
+         return info.SITE + "image/skilleffect/" + effect + ".swf";
       }
       
-      public static function solvePetBuff(param1:String) : String
+      public static function solvePetBuff(buff:String) : String
       {
-         return info.SITE + "image/buff/" + param1 + "/icon.png";
+         return info.SITE + "image/buff/" + buff + "/icon.png";
       }
       
-      public static function solvePetIconUrl(param1:String) : String
+      public static function solvePetIconUrl(folder:String) : String
       {
-         return info.SITE + "image/pet/" + param1 + ".png";
+         return info.SITE + "image/pet/" + folder + ".png";
       }
       
-      public static function solveGradeNotificationPath(param1:int) : String
+      public static function solveGradeNotificationPath(grade:int) : String
       {
-         return info.GRADE_NOTIFICATION[param1.toString()];
+         return info.GRADE_NOTIFICATION[grade.toString()];
       }
       
-      public static function solveWorldBossMapSourcePath(param1:String) : String
+      public static function solveWorldBossMapSourcePath(path:String) : String
       {
          return getUIPath() + "/" + "Map02.swf";
       }
@@ -976,14 +981,14 @@ package ddt.manager
          return info.CALLBACK_INTERFACE_ENABLE;
       }
       
-      public static function solveChristmasMonsterPath(param1:String) : String
+      public static function solveChristmasMonsterPath(pPath:String) : String
       {
-         return info.SITE + "image/scene/christmas/monsters/" + param1 + ".swf";
+         return info.SITE + "image/scene/christmas/monsters/" + pPath + ".swf";
       }
       
-      public static function solveCollectionTaskSceneSourcePath(param1:String) : String
+      public static function solveCollectionTaskSceneSourcePath(path:String) : String
       {
-         return info.SITE + "image/collectiontask/" + param1 + ".swf";
+         return info.SITE + "image/collectiontask/" + path + ".swf";
       }
       
       public static function get isSendRecordUserVersion() : Boolean
@@ -1038,38 +1043,38 @@ package ddt.manager
          return info.FOOTBALL_ENABLE;
       }
       
-      public static function petsFormPath(param1:String, param2:int) : String
+      public static function petsFormPath(path:String, id:int) : String
       {
-         return info.SITE + "image/pet/" + param1 + "/icon" + param2 + ".png";
+         return info.SITE + "image/pet/" + path + "/icon" + id + ".png";
       }
       
-      public static function petsAnimationPath(param1:String) : String
+      public static function petsAnimationPath(path:String) : String
       {
-         return info.SITE + "image/game/living/" + param1 + ".swf";
+         return info.SITE + "image/game/living/" + path + ".swf";
       }
       
-      public static function solveFurniturePath(param1:String, param2:String) : String
+      public static function solveFurniturePath(category:String, path:String) : String
       {
-         if(param1 == "floor")
+         if(category == "floor")
          {
-            return info.SITE + "image/house/" + param1 + "/" + param2 + ".jpg";
+            return info.SITE + "image/house/" + category + "/" + path + ".jpg";
          }
-         if(param1 == "wall")
+         if(category == "wall")
          {
-            return info.SITE + "image/house/" + param1 + "/" + param2 + ".png";
+            return info.SITE + "image/house/" + category + "/" + path + ".png";
          }
-         return info.SITE + "image/house/" + param1 + "/" + param2 + ".swf";
+         return info.SITE + "image/house/" + category + "/" + path + ".swf";
       }
       
-      public static function solveHomeFishingPath(param1:int) : String
+      public static function solveHomeFishingPath(value:int) : String
       {
-         return info.SITE + "image/home/fishing/" + param1 + ".png";
+         return info.SITE + "image/home/fishing/" + value + ".png";
       }
       
-      public static function getLoaderFileName(param1:String) : String
+      public static function getLoaderFileName(url:String) : String
       {
-         var _loc2_:String = param1.replace(/http:\/\/[^\/]+\//g,"");
-         return _loc2_.split("?")[0];
+         var str:String = url.replace(/http:\/\/[^\/]+\//g,"");
+         return str.split("?")[0];
       }
       
       public static function smallMapEnable() : Boolean
@@ -1127,35 +1132,35 @@ package ddt.manager
          return info.SMALLMAP_SHAPE_ENABLE;
       }
       
-      public static function setSmallMapEnable(param1:String, param2:int) : void
+      public static function setSmallMapEnable(value:String, random:int) : void
       {
-         var _loc9_:int = 0;
-         var _loc3_:Boolean = false;
-         var _loc4_:int = 0;
-         var _loc8_:* = param2;
-         var _loc6_:Array = param1.split(",");
-         var _loc7_:Array = ["0","SMALLMAP_BORDER_ENABLE","SMALLMAP_ALPHA","SMALLMAP_POINT_ENABLE","SMALLMAP_GRID_ENABLE","SMALLMAP_SHAPE_ENABLE"];
-         var _loc5_:Array = [];
-         info.SMALLMAP_ENABLE = Boolean(int(_loc6_[0]));
+         var i:int = 0;
+         var enable:Boolean = false;
+         var enableCount:int = 0;
+         var maxCount:* = random;
+         var enableList:Array = value.split(",");
+         var key:Array = ["0","SMALLMAP_BORDER_ENABLE","SMALLMAP_ALPHA","SMALLMAP_POINT_ENABLE","SMALLMAP_GRID_ENABLE","SMALLMAP_SHAPE_ENABLE"];
+         var openKey:Array = [];
+         info.SMALLMAP_ENABLE = Boolean(int(enableList[0]));
          if(info.SMALLMAP_ENABLE)
          {
             return;
          }
-         _loc9_ = 1;
-         while(_loc9_ < _loc6_.length)
+         i = 1;
+         while(i < enableList.length)
          {
-            _loc3_ = int(_loc6_[_loc9_]);
-            info[_loc7_[_loc9_]] = _loc3_;
-            if(_loc3_)
+            enable = int(enableList[i]);
+            info[key[i]] = enable;
+            if(enable)
             {
-               _loc5_.push(_loc7_[_loc9_]);
-               _loc4_++;
+               openKey.push(key[i]);
+               enableCount++;
             }
-            _loc9_++;
+            i++;
          }
-         if(_loc8_ > 0 && _loc4_ >= _loc8_)
+         if(maxCount > 0 && enableCount >= maxCount)
          {
-            setRandomSmallMapEnalbe(_loc5_,_loc4_,_loc8_);
+            setRandomSmallMapEnalbe(openKey,enableCount,maxCount);
          }
       }
       
@@ -1164,25 +1169,24 @@ package ddt.manager
          return info.RECORD_PATH;
       }
       
-      private static function setRandomSmallMapEnalbe(param1:Array, param2:int, param3:int) : void
+      private static function setRandomSmallMapEnalbe(openKey:Array, enableCount:int, maxCount:int) : void
       {
-         var _loc7_:int = 0;
-         var _loc6_:int = Math.floor(param2 / 2);
-         var _loc5_:int = (param3 - _loc6_) * Math.random() + _loc6_;
-         var _loc4_:int = param1.length;
-         while(_loc4_)
+         var i:int = 0;
+         var minCount:int = Math.floor(enableCount / 2);
+         var randomCount:int = (maxCount - minCount) * Math.random() + minCount;
+         var index:int = openKey.length;
+         while(index)
          {
-            _loc4_--;
-            param1.push(param1.splice(int(Math.random() * _loc4_),1)[0]);
+            index--;
+            openKey.push(openKey.splice(int(Math.random() * index),1)[0]);
          }
-         _loc7_ = 0;
-         while(_loc7_ < param1.length)
+         for(i = 0; i < openKey.length; )
          {
-            if(_loc7_ >= _loc5_)
+            if(i >= randomCount)
             {
-               info[param1[_loc7_]] = false;
+               info[openKey[i]] = false;
             }
-            _loc7_++;
+            i++;
          }
       }
       
@@ -1191,9 +1195,9 @@ package ddt.manager
          return info.VIP_DISCOUNT;
       }
       
-      public static function solveGodCardRaisePath(param1:String) : String
+      public static function solveGodCardRaisePath(pic:String) : String
       {
-         return info.SITE + "image/cardCollect/" + param1 + "/icon.png";
+         return info.SITE + "image/cardCollect/" + pic + "/icon.png";
       }
       
       public static function getAreaNameInfoPath() : String
@@ -1226,14 +1230,14 @@ package ddt.manager
          return info.SITE + "image/equip/f/suits/suits100/1/game.png";
       }
       
-      public static function ManualDebrisIconPath(param1:String) : String
+      public static function ManualDebrisIconPath(pic:String) : String
       {
-         return info.SITE + "image" + param1 + ".jpg";
+         return info.SITE + "image" + pic + ".jpg";
       }
       
-      public static function ManualDebrisPNGIconPath(param1:String) : String
+      public static function ManualDebrisPNGIconPath(pic:String) : String
       {
-         return info.SITE + "image" + param1 + ".png";
+         return info.SITE + "image" + pic + ".png";
       }
       
       public static function get getTrusteeshipViewEnable() : Boolean
@@ -1246,9 +1250,9 @@ package ddt.manager
          return info.LOGINDEVICE_LINK;
       }
       
-      public static function battleSkillIconPath(param1:String) : String
+      public static function battleSkillIconPath(pic:String) : String
       {
-         return info.SITE + "image/skillfair/" + param1 + ".png";
+         return info.SITE + "image/skillfair/" + pic + ".png";
       }
       
       public static function loginDeviceLink() : String
@@ -1266,14 +1270,14 @@ package ddt.manager
          return "image/game/bonesLiving/";
       }
       
-      public static function getBoneLivingHeadPath(param1:String) : String
+      public static function getBoneLivingHeadPath(id:String) : String
       {
-         return info.SITE + "image/game/bonesLivingHead/" + param1 + "Head.png";
+         return info.SITE + "image/game/bonesLivingHead/" + id + "Head.png";
       }
       
-      public static function getBoneLivingBodyPath(param1:String) : String
+      public static function getBoneLivingBodyPath(id:String) : String
       {
-         return info.SITE + "image/game/bonesLivingBody/" + param1 + "Body.png";
+         return info.SITE + "image/game/bonesLivingBody/" + id + "Body.png";
       }
       
       public static function getBeautyProveQQ() : String
@@ -1281,24 +1285,29 @@ package ddt.manager
          return info.BEAUTY_PROVE_QQ;
       }
       
-      public static function getSwfPath(param1:String) : String
+      public static function getSwfPath(name:String) : String
       {
-         return getUIPath() + "/swf/" + param1 + ".swf";
+         return getUIPath() + "/swf/" + name + ".swf";
       }
       
-      public static function getXMLPath(param1:String) : String
+      public static function getXMLPath(name:String) : String
       {
-         return getUIPath() + "/xml/" + param1 + ".xml";
+         return getUIPath() + "/xml/" + name + ".xml";
       }
       
-      public static function getMornUIPath(param1:String) : String
+      public static function getMornUIPath(name:String) : String
       {
-         return getUIPath() + "/morn/ui/" + param1 + ".ui";
+         return getUIPath() + "/morn/ui/" + name + ".ui";
       }
       
-      public static function getMornLangPath(param1:String) : String
+      public static function getMornLangPath(name:String) : String
       {
-         return getUIPath() + "/morn/lang/" + param1 + ".xml";
+         return getUIPath() + "/morn/lang/" + name + ".xml";
+      }
+      
+      public static function get OldPlayerTransferEnable() : Boolean
+      {
+         return info.OLDPLAYER_TRANSFER;
       }
    }
 }

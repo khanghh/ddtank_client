@@ -87,12 +87,12 @@ package consortion.view
          return _tempData;
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
          _name.text = LanguageMgr.GetTranslation("tank.consortia.myconsortia.MyConsortiaInfoPane.week");
          _decript.text = LanguageMgr.GetTranslation("tank.consortia.myconsortia.MyConsortiaInfoPane.time");
-         _time.text = param1 as String;
-         _tempData = param1;
+         _time.text = data as String;
+         _tempData = data;
          drawBG();
       }
       
@@ -102,17 +102,17 @@ package consortion.view
          _bg.width = 0;
       }
       
-      private function drawBG(param1:int = 0) : void
+      private function drawBG($width:int = 0) : void
       {
          reset();
-         if(param1 == 0)
+         if($width == 0)
          {
             _bg.width = _container.width + 20;
             _bg.height = _container.height + 10;
          }
          else
          {
-            _bg.width = param1 + 2;
+            _bg.width = $width + 2;
             _bg.height = _container.height + 5;
          }
          _width = _bg.width;

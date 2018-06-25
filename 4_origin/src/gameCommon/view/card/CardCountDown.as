@@ -32,10 +32,10 @@ package gameCommon.view.card
          init();
       }
       
-      public function tick(param1:uint, param2:Boolean = true) : void
+      public function tick(seconds:uint, isPlaySound:Boolean = true) : void
       {
-         _totalSeconds = param1;
-         _isPlaySound = param2;
+         _totalSeconds = seconds;
+         _isPlaySound = isPlaySound;
          _timer.repeatCount = _totalSeconds;
          __updateView();
          _timer.start();
@@ -43,25 +43,24 @@ package gameCommon.view.card
       
       private function init() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _digit = new Bitmap();
          _tenDigit = new Bitmap();
          _bitmapDatas = new Vector.<BitmapData>();
          _timer = new Timer(1000);
          _timer.addEventListener("timer",__updateView);
          _timer.addEventListener("timerComplete",__onTimerComplete);
-         _loc1_ = 0;
-         while(_loc1_ < 10)
+         for(i = 0; i < 10; )
          {
-            _bitmapDatas.push(ComponentFactory.Instance.creatBitmapData("asset.takeoutCard.CountDownNum_" + String(_loc1_)));
-            _loc1_++;
+            _bitmapDatas.push(ComponentFactory.Instance.creatBitmapData("asset.takeoutCard.CountDownNum_" + String(i)));
+            i++;
          }
       }
       
-      private function __updateView(param1:TimerEvent = null) : void
+      private function __updateView(event:TimerEvent = null) : void
       {
-         var _loc2_:int = _timer.repeatCount - _timer.currentCount;
-         if(_loc2_ <= 4)
+         var num:int = _timer.repeatCount - _timer.currentCount;
+         if(num <= 4)
          {
             if(_isPlaySound)
             {
@@ -73,14 +72,14 @@ package gameCommon.view.card
          {
             SoundManager.instance.play("014");
          }
-         _tenDigit.bitmapData = _bitmapDatas[int(_loc2_ / 10)];
-         _digit.bitmapData = _bitmapDatas[_loc2_ % 10];
+         _tenDigit.bitmapData = _bitmapDatas[int(num / 10)];
+         _digit.bitmapData = _bitmapDatas[num % 10];
          _digit.x = _tenDigit.width - 14;
          addChild(_digit);
          addChild(_tenDigit);
       }
       
-      private function __onTimerComplete(param1:TimerEvent) : void
+      private function __onTimerComplete(event:TimerEvent) : void
       {
          dispatchEvent(new Event("complete"));
       }
@@ -93,10 +92,10 @@ package gameCommon.view.card
          _timer = null;
          var _loc3_:int = 0;
          var _loc2_:* = _bitmapDatas;
-         for each(var _loc1_ in _bitmapDatas)
+         for each(var bmd in _bitmapDatas)
          {
-            _loc1_.dispose();
-            _loc1_ = null;
+            bmd.dispose();
+            bmd = null;
          }
          if(_digit && _digit.parent)
          {

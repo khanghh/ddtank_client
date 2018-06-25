@@ -65,9 +65,9 @@ package cityBattle.view
          _closeBnt.addEventListener("click",_closeClick);
       }
       
-      private function __joinHandler(param1:MouseEvent) : void
+      private function __joinHandler(e:MouseEvent) : void
       {
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = e.currentTarget;
          if(_joinBlueBtn !== _loc2_)
          {
             if(_joinRedBtn !== _loc2_)
@@ -88,14 +88,14 @@ package cityBattle.view
          }
       }
       
-      private function _joinBattleHandler(param1:CityBattleEvent) : void
+      private function _joinBattleHandler(e:CityBattleEvent) : void
       {
          dispose();
          CityBattleManager.instance._mainFrame = ComponentFactory.Instance.creatComponentByStylename("cityBattle.mainFrame");
          LayerManager.Instance.addToLayer(CityBattleManager.instance._mainFrame,3,true,1);
       }
       
-      private function _closeClick(param1:MouseEvent) : void
+      private function _closeClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          dispose();
@@ -113,8 +113,8 @@ package cityBattle.view
       override public function dispose() : void
       {
          removeEvent();
-         var _loc1_:DisplayObject = StageReferance.stage.focus as DisplayObject;
-         if(_loc1_ && contains(_loc1_))
+         var focusDisplay:DisplayObject = StageReferance.stage.focus as DisplayObject;
+         if(focusDisplay && contains(focusDisplay))
          {
             StageReferance.stage.focus = null;
          }

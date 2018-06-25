@@ -48,17 +48,17 @@ package team.view.create
          teamText5.text = LanguageMgr.GetTranslation("ddt.team.allView.text27");
       }
       
-      private function __onCreateComplete(param1:TeamEvent) : void
+      private function __onCreateComplete(e:TeamEvent) : void
       {
          dispose();
       }
       
-      private function __onCheckInput(param1:PkgEvent) : void
+      private function __onCheckInput(e:PkgEvent) : void
       {
-         var _loc3_:Boolean = param1.pkg.readBoolean();
-         var _loc2_:int = param1.pkg.readByte();
-         var _loc4_:* = _loc2_ == 0;
-         checkChange(!!_loc3_?1:2,_loc4_,_loc2_);
+         var isName:Boolean = e.pkg.readBoolean();
+         var errorType:int = e.pkg.readByte();
+         var right:* = errorType == 0;
+         checkChange(!!isName?1:2,right,errorType);
       }
       
       protected function __onClickCheckTag() : void
@@ -81,14 +81,14 @@ package team.view.create
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:String = LanguageMgr.GetTranslation("team.create.confirm",ServerConfigManager.instance.getTeamCreateCoin);
-         var _loc1_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc2_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,1,null,"SimpleAlert",60,false);
-         _loc1_.addEventListener("response",__onAlertCreate);
+         var tip:String = LanguageMgr.GetTranslation("team.create.confirm",ServerConfigManager.instance.getTeamCreateCoin);
+         var alertFrame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),tip,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,1,null,"SimpleAlert",60,false);
+         alertFrame.addEventListener("response",__onAlertCreate);
       }
       
-      private function __onAlertCreate(param1:FrameEvent) : void
+      private function __onAlertCreate(e:FrameEvent) : void
       {
-         e = param1;
+         e = e;
          var alertFrame:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
          alertFrame.removeEventListener("response",__onAlertCreate);
          if(e.responseCode == 2 || e.responseCode == 3)
@@ -110,8 +110,8 @@ package team.view.create
       
       private function checkTag() : Boolean
       {
-         var _loc1_:int = input_tag.text.length;
-         if(_loc1_ < 2 || _loc1_ > 8)
+         var len:int = input_tag.text.length;
+         if(len < 2 || len > 8)
          {
             return false;
          }
@@ -120,36 +120,36 @@ package team.view.create
       
       private function checkName() : Boolean
       {
-         var _loc1_:int = input_name.text.length;
-         if(_loc1_ < 2 || _loc1_ > 12)
+         var len:int = input_name.text.length;
+         if(len < 2 || len > 12)
          {
             return false;
          }
          return true;
       }
       
-      private function checkChange(param1:int, param2:Boolean, param3:int = 0) : void
+      private function checkChange(type:int, value:Boolean, errorType:int = 0) : void
       {
-         var _loc4_:* = null;
-         if(!param2)
+         var link:* = null;
+         if(!value)
          {
-            _loc4_ = "team.create.inputError" + param3;
-            if(param3 == 2)
+            link = "team.create.inputError" + errorType;
+            if(errorType == 2)
             {
-               _loc4_ = _loc4_ + param1;
+               link = link + type;
             }
          }
-         switch(int(param1) - 1)
+         switch(int(type) - 1)
          {
             case 0:
                clip_checkName.visible = true;
-               label_checkName.text = !!param2?"":LanguageMgr.GetTranslation(_loc4_);
-               clip_checkName.index = !!param2?0:1;
+               label_checkName.text = !!value?"":LanguageMgr.GetTranslation(link);
+               clip_checkName.index = !!value?0:1;
                break;
             case 1:
                clip_checkTag.visible = true;
-               label_checkTag.text = !!param2?"":LanguageMgr.GetTranslation(_loc4_);
-               clip_checkTag.index = !!param2?0:1;
+               label_checkTag.text = !!value?"":LanguageMgr.GetTranslation(link);
+               clip_checkTag.index = !!value?0:1;
          }
       }
       

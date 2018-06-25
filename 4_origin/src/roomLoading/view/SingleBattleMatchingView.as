@@ -18,28 +18,27 @@ package roomLoading.view
       
       private var _playerArr:Array;
       
-      public function SingleBattleMatchingView(param1:GameInfo)
+      public function SingleBattleMatchingView($info:GameInfo)
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         super(param1);
+         var i:int = 0;
+         var player:* = null;
+         super($info);
          GameControl.Instance.addEventListener("StartLoading",__onStartLoad);
          _matchTxt = ComponentFactory.Instance.creatBitmap("asset.room.view.roomView.SingleBattleMatch.matchTxt");
          _matchTxt.x = 407;
          _matchTxt.y = 368;
          addChild(_matchTxt);
          _playerArr = [];
-         var _loc3_:int = _gameInfo.roomPlayers.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var len:int = _gameInfo.roomPlayers.length;
+         for(i = 0; i < len; )
          {
-            _loc2_ = ComponentFactory.Instance.creatBitmap("game.player.defaultPlayerCharacter");
-            PositionUtils.setPos(_loc2_,"asset.roomLoading.CharacterItemRedPos_1");
-            addChild(_loc2_);
-            _loc2_.x = _loc2_.x + 90 * _loc4_;
-            _loc2_.y = _loc2_.y + 62;
-            _playerArr.push(_loc2_);
-            _loc4_++;
+            player = ComponentFactory.Instance.creatBitmap("game.player.defaultPlayerCharacter");
+            PositionUtils.setPos(player,"asset.roomLoading.CharacterItemRedPos_1");
+            addChild(player);
+            player.x = player.x + 90 * i;
+            player.y = player.y + 62;
+            _playerArr.push(player);
+            i++;
          }
       }
       
@@ -49,18 +48,18 @@ package roomLoading.view
          StateManager.currentStateType = "singleBattleMatching";
       }
       
-      override protected function __countDownTick(param1:TimerEvent) : void
+      override protected function __countDownTick(evt:TimerEvent) : void
       {
          _countDownTxt.updateNum();
       }
       
-      override protected function initRoomItem(param1:RoomLoadingCharacterItem) : void
+      override protected function initRoomItem(item:RoomLoadingCharacterItem) : void
       {
-         super.initRoomItem(param1);
-         param1.removePerecentageTxt();
+         super.initRoomItem(item);
+         item.removePerecentageTxt();
       }
       
-      protected function __onStartLoad(param1:Event) : void
+      protected function __onStartLoad(event:Event) : void
       {
          if(GameControl.Instance.Current == null)
          {
@@ -71,7 +70,7 @@ package roomLoading.view
       
       override public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          super.dispose();
          GameControl.Instance.removeEventListener("StartLoading",__onStartLoad);
          if(_matchTxt)
@@ -79,12 +78,11 @@ package roomLoading.view
             ObjectUtils.disposeObject(_matchTxt);
          }
          _matchTxt = null;
-         _loc1_ = 0;
-         while(_loc1_ < _playerArr.length)
+         for(i = 0; i < _playerArr.length; )
          {
-            ObjectUtils.disposeObject(_playerArr[_loc1_]);
-            _playerArr[_loc1_] = null;
-            _loc1_++;
+            ObjectUtils.disposeObject(_playerArr[i]);
+            _playerArr[i] = null;
+            i++;
          }
          _playerArr = null;
       }

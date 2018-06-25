@@ -53,17 +53,17 @@ package redPackage.view
       
       public function update() : void
       {
-         var _loc1_:Object = RedPackageManager.getInstance().gainRecordObj;
-         _nickTitleText.text = LanguageMgr.GetTranslation("redpkg.consortion.gainHistory.title",_loc1_.nick);
-         _totalMoneyText.text = _loc1_.moneyNum;
-         _wishWordsText.text = _loc1_.wishWords;
+         var dataObj:Object = RedPackageManager.getInstance().gainRecordObj;
+         _nickTitleText.text = LanguageMgr.GetTranslation("redpkg.consortion.gainHistory.title",dataObj.nick);
+         _totalMoneyText.text = dataObj.moneyNum;
+         _wishWordsText.text = dataObj.wishWords;
          _listPanel.vectorListModel.clear();
-         _listPanel.vectorListModel.appendAll(_loc1_.arr);
+         _listPanel.vectorListModel.appendAll(dataObj.arr);
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             close();
          }

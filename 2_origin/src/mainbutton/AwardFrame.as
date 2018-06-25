@@ -66,7 +66,7 @@ package mainbutton
          addEventListener("response",__confirmResponse);
       }
       
-      private function __vipOpen(param1:MouseEvent) : void
+      private function __vipOpen(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          showVipPackage();
@@ -97,18 +97,18 @@ package mainbutton
          }
       }
       
-      private function getVIPInfoTip(param1:DictionaryData) : Array
+      private function getVIPInfoTip(dic:DictionaryData) : Array
       {
-         var _loc2_:* = null;
-         _loc2_ = PlayerManager.Instance.Self.VIPLevel == 12?[ItemManager.Instance.getTemplateById(int(VipViewFrame._vipChestsArr[PlayerManager.Instance.Self.VIPLevel - 2])),ItemManager.Instance.getTemplateById(int(VipViewFrame._vipChestsArr[PlayerManager.Instance.Self.VIPLevel - 1]))]:[ItemManager.Instance.getTemplateById(int(VipViewFrame._vipChestsArr[PlayerManager.Instance.Self.VIPLevel - 1])),ItemManager.Instance.getTemplateById(int(VipViewFrame._vipChestsArr[PlayerManager.Instance.Self.VIPLevel]))];
-         return _loc2_;
+         var resultGoodsArray:* = null;
+         resultGoodsArray = PlayerManager.Instance.Self.VIPLevel == 12?[ItemManager.Instance.getTemplateById(int(VipViewFrame._vipChestsArr[PlayerManager.Instance.Self.VIPLevel - 2])),ItemManager.Instance.getTemplateById(int(VipViewFrame._vipChestsArr[PlayerManager.Instance.Self.VIPLevel - 1]))]:[ItemManager.Instance.getTemplateById(int(VipViewFrame._vipChestsArr[PlayerManager.Instance.Self.VIPLevel - 1])),ItemManager.Instance.getTemplateById(int(VipViewFrame._vipChestsArr[PlayerManager.Instance.Self.VIPLevel]))];
+         return resultGoodsArray;
       }
       
-      private function __responseVipInfoTipHandler(param1:FrameEvent) : void
+      private function __responseVipInfoTipHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          _vipInfoTipBox.removeEventListener("response",__responseHandler);
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -122,7 +122,7 @@ package mainbutton
          }
       }
       
-      private function __alertHandler(param1:FrameEvent) : void
+      private function __alertHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          alertFrame.removeEventListener("response",__alertHandler);
@@ -137,11 +137,11 @@ package mainbutton
          alertFrame = null;
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          awards.removeEventListener("response",__responseHandler);
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -150,7 +150,7 @@ package mainbutton
          }
       }
       
-      private function showAwards(param1:ItemTemplateInfo) : void
+      private function showAwards(para:ItemTemplateInfo) : void
       {
          awards = ComponentFactory.Instance.creat("vip.awardFrame");
          awards.escEnable = true;
@@ -161,13 +161,13 @@ package mainbutton
          LayerManager.Instance.addToLayer(awards,3,true,1);
       }
       
-      private function _getStrArr(param1:DictionaryData) : Array
+      private function _getStrArr(dic:DictionaryData) : Array
       {
-         var _loc2_:Array = param1[VipViewFrame._vipChestsArr[PlayerManager.Instance.Self.VIPLevel - 1]];
-         return _loc2_;
+         var goodsArr:Array = dic[VipViewFrame._vipChestsArr[PlayerManager.Instance.Self.VIPLevel - 1]];
+         return goodsArr;
       }
       
-      private function __sendReward(param1:Event) : void
+      private function __sendReward(event:Event) : void
       {
          SoundManager.instance.play("008");
          SocketManager.Instance.out.sendDailyAward(3);
@@ -176,11 +176,11 @@ package mainbutton
          PlayerManager.Instance.Self.canTakeVipReward = false;
       }
       
-      private function __confirmResponse(param1:FrameEvent) : void
+      private function __confirmResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          removeEventListener("response",__confirmResponse);
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
                dispose();

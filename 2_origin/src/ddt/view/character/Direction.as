@@ -40,91 +40,91 @@ package ddt.view.character
       
       private var comment:String;
       
-      public function Direction(param1:int, param2:String)
+      public function Direction(num:int, comment:String)
       {
          super();
-         this.num = param1;
-         this.comment = param2;
+         this.num = num;
+         this.comment = comment;
       }
       
-      public static function getDirection(param1:String) : Direction
+      public static function getDirection(name:String) : Direction
       {
-         if(param1.indexOf("5") > -1)
+         if(name.indexOf("5") > -1)
          {
             return TOP;
          }
-         if(param1.indexOf("8") > -1)
+         if(name.indexOf("8") > -1)
          {
             return TOP_RIGHT;
          }
-         if(param1.indexOf("7") > -1)
+         if(name.indexOf("7") > -1)
          {
             return RIGHT;
          }
-         if(param1.indexOf("6") > -1)
+         if(name.indexOf("6") > -1)
          {
             return RIGHT_BUTTOM;
          }
-         if(param1.indexOf("1") > -1)
+         if(name.indexOf("1") > -1)
          {
             return BUTTOM;
          }
-         if(param1.indexOf("2") > -1)
+         if(name.indexOf("2") > -1)
          {
             return BUTTOM_LEFT;
          }
-         if(param1.indexOf("3") > -1)
+         if(name.indexOf("3") > -1)
          {
             return LEFT;
          }
-         if(param1.indexOf("4") > -1)
+         if(name.indexOf("4") > -1)
          {
             return LEFT_TOP;
          }
          return null;
       }
       
-      public static function getDirectionFromAngle(param1:Number) : Direction
+      public static function getDirectionFromAngle(angle:Number) : Direction
       {
-         if(param1 < 0)
+         if(angle < 0)
          {
-            param1 = param1 + 3.14159265358979 * 2;
+            angle = angle + 3.14159265358979 * 2;
          }
-         var _loc2_:Number = param1 / 3.14159265358979 * 180;
-         if(_loc2_ >= 359 || _loc2_ < 1)
+         var temp:Number = angle / 3.14159265358979 * 180;
+         if(temp >= 359 || temp < 1)
          {
             return RIGHT;
          }
-         if(_loc2_ >= 1 && _loc2_ < 89)
+         if(temp >= 1 && temp < 89)
          {
             return RIGHT_BUTTOM;
          }
-         if(_loc2_ >= 89 && _loc2_ < 91)
+         if(temp >= 89 && temp < 91)
          {
             return BUTTOM;
          }
-         if(_loc2_ >= 91 && _loc2_ < 179)
+         if(temp >= 91 && temp < 179)
          {
             return BUTTOM_LEFT;
          }
-         if(_loc2_ >= 179 && _loc2_ < 181)
+         if(temp >= 179 && temp < 181)
          {
             return LEFT;
          }
-         if(_loc2_ >= 181 && _loc2_ < 269)
+         if(temp >= 181 && temp < 269)
          {
             return LEFT_TOP;
          }
-         if(_loc2_ >= 269 && _loc2_ < 271)
+         if(temp >= 269 && temp < 271)
          {
             return TOP;
          }
          return TOP_RIGHT;
       }
       
-      public static function getDirectionByNumber(param1:Number) : Direction
+      public static function getDirectionByNumber(number:Number) : Direction
       {
-         var _loc2_:* = param1;
+         var _loc2_:* = number;
          if(1 !== _loc2_)
          {
             if(2 !== _loc2_)

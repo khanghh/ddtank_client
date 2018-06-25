@@ -46,16 +46,16 @@ package ddt.view.chat
          super();
       }
       
-      public function setup(param1:Function, param2:Boolean = true) : void
+      public function setup(fun:Function, showOffLineList:Boolean = true) : void
       {
-         _func = param1;
-         _showOffLineList = param2;
+         _func = fun;
+         _showOffLineList = showOffLineList;
          __onFriendListComplete();
       }
       
-      public function set currentType(param1:int) : void
+      public function set currentType(value:int) : void
       {
-         _currentType = param1;
+         _currentType = value;
          _btnGroup.selectIndex = _currentType;
          updateBtns();
       }
@@ -72,14 +72,14 @@ package ddt.view.chat
          __onFriendListComplete();
       }
       
-      override public function set visible(param1:Boolean) : void
+      override public function set visible(value:Boolean) : void
       {
-         .super.visible = param1;
+         .super.visible = value;
       }
       
-      override protected function __hideThis(param1:MouseEvent) : void
+      override protected function __hideThis(event:MouseEvent) : void
       {
-         if(!(param1.target is ScaleBitmapImage) && !(param1.target is BaseButton))
+         if(!(event.target is ScaleBitmapImage) && !(event.target is BaseButton))
          {
             SoundManager.instance.play("008");
             setVisible = false;
@@ -90,11 +90,11 @@ package ddt.view.chat
          }
       }
       
-      private function __btnsClick(param1:MouseEvent) : void
+      private function __btnsClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         param1.stopImmediatePropagation();
-         if(param1.currentTarget == _btnFriend)
+         e.stopImmediatePropagation();
+         if(e.currentTarget == _btnFriend)
          {
             __onFriendListComplete();
             _currentType = 0;
@@ -106,21 +106,21 @@ package ddt.view.chat
          }
       }
       
-      private function _scrollClick(param1:MouseEvent) : void
+      private function _scrollClick(e:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
+         e.stopImmediatePropagation();
       }
       
-      private function __onFriendListComplete(param1:Event = null) : void
+      private function __onFriendListComplete(e:Event = null) : void
       {
       }
       
-      private function __updateConsortiaList(param1:Event) : void
+      private function __updateConsortiaList(e:Event) : void
       {
          setList(ConsortionModelManager.Instance.model.onlineConsortiaMemberList);
       }
       
-      private function __updateFriendList(param1:Event) : void
+      private function __updateFriendList(e:Event) : void
       {
          setList(PlayerManager.Instance.onlineFriendList);
       }
@@ -165,18 +165,18 @@ package ddt.view.chat
          PlayerManager.Instance.removeEventListener("friendListComplete",__onFriendListComplete);
       }
       
-      private function setList(param1:Array) : void
+      private function setList(list:Array) : void
       {
          _playerList.vectorListModel.clear();
-         _playerList.vectorListModel.appendAll(param1);
+         _playerList.vectorListModel.appendAll(list);
          _playerList.list.updateListView();
          updateBtns();
       }
       
-      private function __itemClick(param1:ListItemEvent) : void
+      private function __itemClick(event:ListItemEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BasePlayer = param1.cellValue as BasePlayer;
+         var player:BasePlayer = event.cellValue as BasePlayer;
       }
       
       public function dispose() : void

@@ -20,12 +20,12 @@ package dice.vo
       
       private var _caption:FilterFrameText;
       
-      public function DiceAwardCell(param1:ItemTemplateInfo = null, param2:int = 1, param3:Boolean = true, param4:Boolean = true)
+      public function DiceAwardCell($info:ItemTemplateInfo = null, count:int = 1, showLoading:Boolean = true, showTip:Boolean = true)
       {
-         $info = param1;
-         count = param2;
-         showLoading = param3;
-         showTip = param4;
+         $info = $info;
+         count = count;
+         showLoading = showLoading;
+         showTip = showTip;
          _background = new Shape();
          with(_background.graphics)
          {
@@ -45,9 +45,9 @@ package dice.vo
          return _count;
       }
       
-      public function set count(param1:int) : void
+      public function set count(value:int) : void
       {
-         _count = param1;
+         _count = value;
       }
       
       private function initialize() : void
@@ -72,7 +72,7 @@ package dice.vo
          addChild(_caption);
       }
       
-      override public function setContentSize(param1:Number, param2:Number) : void
+      override public function setContentSize(cWidth:Number, cHeight:Number) : void
       {
          PicPos = new Point(-21,-21);
          updateSize(_pic);

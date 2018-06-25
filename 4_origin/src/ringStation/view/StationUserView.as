@@ -199,39 +199,39 @@ package ringStation.view
          SocketManager.Instance.addEventListener(PkgEvent.format(404,8),__onGetReward);
       }
       
-      protected function __onGetReward(param1:PkgEvent) : void
+      protected function __onGetReward(event:PkgEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         var _loc5_:PackageIn = param1.pkg;
-         var _loc4_:Boolean = _loc5_.readBoolean();
-         if(_loc4_)
+         var rank:int = 0;
+         var num:int = 0;
+         var pkg:PackageIn = event.pkg;
+         var flag:Boolean = pkg.readBoolean();
+         if(flag)
          {
-            _loc3_ = _loc5_.readInt();
-            _loc2_ = _loc5_.readInt();
+            rank = pkg.readInt();
+            num = pkg.readInt();
          }
-         var _loc6_:String = !!_loc4_?LanguageMgr.GetTranslation("ringStation.view.getReward.success",_loc3_,_loc2_):LanguageMgr.GetTranslation("ringStation.view.getReward.failed");
-         MessageTipManager.getInstance().show(_loc6_);
-         ChatManager.Instance.sysChatYellow(_loc6_);
+         var msg:String = !!flag?LanguageMgr.GetTranslation("ringStation.view.getReward.success",rank,num):LanguageMgr.GetTranslation("ringStation.view.getReward.failed");
+         MessageTipManager.getInstance().show(msg);
+         ChatManager.Instance.sysChatYellow(msg);
          setReardEnable(false);
       }
       
-      protected function __onGetRewardClickHandle(param1:MouseEvent) : void
+      protected function __onGetRewardClickHandle(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          setReardEnable(false);
          SocketManager.Instance.out.sendGetRingStationReward();
       }
       
-      public function setReardEnable(param1:Boolean) : void
+      public function setReardEnable(flag:Boolean) : void
       {
          if(_rewardBtn != null)
          {
-            _rewardBtn.enable = param1;
+            _rewardBtn.enable = flag;
          }
       }
       
-      private function __signClick(param1:MouseEvent) : void
+      private function __signClick(e:MouseEvent) : void
       {
          if(_signInputFrame == null)
          {
@@ -241,22 +241,22 @@ package ringStation.view
          _signInputFrame.addEventListener("ringStation_sign",__updateSign);
       }
       
-      private function __updateSign(param1:RingStationEvent) : void
+      private function __updateSign(e:RingStationEvent) : void
       {
-         signText.text = param1.sign;
+         signText.text = e.sign;
       }
       
-      public function setRankNum(param1:int) : void
+      public function setRankNum(num:int) : void
       {
-         _rankNum.text = param1.toString();
+         _rankNum.text = num.toString();
       }
       
-      public function setChampionText(param1:String, param2:Boolean) : void
+      public function setChampionText(name:String, isAttest:Boolean) : void
       {
-         if(param1.length > 0)
+         if(name.length > 0)
          {
-            _champion.text = LanguageMgr.GetTranslation("ringstation.view.ChampionName",param1);
-            if(param2)
+            _champion.text = LanguageMgr.GetTranslation("ringstation.view.ChampionName",name);
+            if(isAttest)
             {
                _attestBtn.visible = true;
                _attestBtn.x = _champion.x + _champion.width;
@@ -269,11 +269,11 @@ package ringStation.view
          }
       }
       
-      public function setSignText(param1:String) : void
+      public function setSignText(sign:String) : void
       {
-         if(param1.length > 0)
+         if(sign.length > 0)
          {
-            signText.text = param1;
+            signText.text = sign;
          }
          else
          {
@@ -281,15 +281,15 @@ package ringStation.view
          }
       }
       
-      public function setChallengeNum(param1:int) : void
+      public function setChallengeNum(num:int) : void
       {
-         _challengeInfo.text = LanguageMgr.GetTranslation("ringStation.view.challengeInfoText",param1);
+         _challengeInfo.text = LanguageMgr.GetTranslation("ringStation.view.challengeInfoText",num);
          _addChallengeBtn.x = _challengeInfo.x + _challengeInfo.width + 3;
       }
       
-      public function setChallengeTime(param1:Date) : void
+      public function setChallengeTime(date:Date) : void
       {
-         _countDownTime = param1.time - TimeManager.Instance.Now().time;
+         _countDownTime = date.time - TimeManager.Instance.Now().time;
          if(_countDownTime < 0)
          {
             _countDownSprite.visible = false;
@@ -309,7 +309,7 @@ package ringStation.view
          }
       }
       
-      protected function __onTimer(param1:TimerEvent) : void
+      protected function __onTimer(event:TimerEvent) : void
       {
          _countDownTime = Number(_countDownTime) - 1;
          if(_countDownTime < 0)
@@ -330,76 +330,76 @@ package ringStation.view
          }
       }
       
-      public function setAwardNum(param1:int) : void
+      public function setAwardNum(num:int) : void
       {
-         _getAwardNum.text = param1.toString();
+         _getAwardNum.text = num.toString();
       }
       
-      public function setAwardTime(param1:Date) : void
+      public function setAwardTime(date:Date) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:Number = TimeManager.Instance.Now().time;
-         var _loc4_:Number = (param1.time - _loc3_) / 3600000;
-         if(_loc4_ < 0)
+         var dayNum:int = 0;
+         var nowDate:Number = TimeManager.Instance.Now().time;
+         var hourNum:Number = (date.time - nowDate) / 3600000;
+         if(hourNum < 0)
          {
             _getAwardTime.text = LanguageMgr.GetTranslation("ringStation.view.getAwardTimeText3");
          }
-         else if(_loc4_ < 1)
+         else if(hourNum < 1)
          {
             _getAwardTime.text = LanguageMgr.GetTranslation("ringStation.view.getAwardTimeText4");
          }
-         else if(_loc4_ < 24)
+         else if(hourNum < 24)
          {
-            _getAwardTime.text = LanguageMgr.GetTranslation("ringStation.view.getAwardTimeText2",int(_loc4_));
+            _getAwardTime.text = LanguageMgr.GetTranslation("ringStation.view.getAwardTimeText2",int(hourNum));
          }
          else
          {
-            _loc2_ = _loc4_ / 24;
-            _getAwardTime.text = LanguageMgr.GetTranslation("ringStation.view.getAwardTimeText1",_loc2_);
+            dayNum = hourNum / 24;
+            _getAwardTime.text = LanguageMgr.GetTranslation("ringStation.view.getAwardTimeText1",dayNum);
          }
       }
       
-      protected function __onArmoryHandle(param1:MouseEvent) : void
+      protected function __onArmoryHandle(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          _armoryView = ComponentFactory.Instance.creatComponentByStylename("ringStation.ArmoryView");
          _armoryView.show();
       }
       
-      protected function __onBattleFieldsHandle(param1:MouseEvent) : void
+      protected function __onBattleFieldsHandle(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          _battleFieldsView = ComponentFactory.Instance.creatComponentByStylename("ringStation.BattleFieldsView");
          _battleFieldsView.show();
       }
       
-      protected function __onBuyCount(param1:MouseEvent) : void
+      protected function __onBuyCount(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          _timeFlag = false;
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ringStation.view.buyCount.alertInfo",_buyPrice),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false,1);
-         _loc2_.addEventListener("response",__alertBuyCountOrTime);
+         var alertAsk:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ringStation.view.buyCount.alertInfo",_buyPrice),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false,1);
+         alertAsk.addEventListener("response",__alertBuyCountOrTime);
       }
       
-      protected function __onBuyTime(param1:MouseEvent) : void
+      protected function __onBuyTime(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var alertAsk:* = null;
          SoundManager.instance.playButtonSound();
          _timeFlag = true;
          if(_countDownTime > 0)
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ringStation.view.buyTime.alertInfo",_cdPrice),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false,1);
-            _loc2_.addEventListener("response",__alertBuyCountOrTime);
+            alertAsk = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ringStation.view.buyTime.alertInfo",_cdPrice),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false,1);
+            alertAsk.addEventListener("response",__alertBuyCountOrTime);
          }
       }
       
-      protected function __buyCountOrTime(param1:PkgEvent) : void
+      protected function __buyCountOrTime(event:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:Boolean = _loc3_.readBoolean();
-         if(_loc2_)
+         var pkg:PackageIn = event.pkg;
+         var timeFlag:Boolean = pkg.readBoolean();
+         if(timeFlag)
          {
-            if(_loc3_.readBoolean())
+            if(pkg.readBoolean())
             {
                _challengeTimeNum.text = "00:00";
                _timer.stop();
@@ -409,96 +409,96 @@ package ringStation.view
          }
          else
          {
-            _buyCount = _loc3_.readInt();
-            setChallengeNum(_loc3_.readInt());
+            _buyCount = pkg.readInt();
+            setChallengeNum(pkg.readInt());
          }
       }
       
-      protected function __alertBuyCountOrTime(param1:FrameEvent) : void
+      protected function __alertBuyCountOrTime(event:FrameEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc3_.removeEventListener("response",__alertBuyCountOrTime);
-         switch(int(param1.responseCode) - 2)
+         var alertFrame:* = null;
+         var frame:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("response",__alertBuyCountOrTime);
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
                if(PlayerManager.Instance.Self.bagLocked)
                {
                   BaglockedManager.Instance.show();
-                  ObjectUtils.disposeObject(param1.currentTarget);
+                  ObjectUtils.disposeObject(event.currentTarget);
                   return;
                }
-               if(_loc3_.isBand)
+               if(frame.isBand)
                {
                   if(!checkMoney(true))
                   {
-                     _loc3_.dispose();
-                     _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("buried.alertInfo.noBindMoney"),"",LanguageMgr.GetTranslation("cancel"),true,false,false,2);
-                     _loc2_.addEventListener("response",onResponseHander);
+                     frame.dispose();
+                     alertFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("buried.alertInfo.noBindMoney"),"",LanguageMgr.GetTranslation("cancel"),true,false,false,2);
+                     alertFrame.addEventListener("response",onResponseHander);
                      return;
                   }
                }
                else if(!checkMoney(false))
                {
-                  _loc3_.dispose();
-                  _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.title"),LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.content"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
-                  _loc2_.addEventListener("response",_response);
+                  frame.dispose();
+                  alertFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.title"),LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.content"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
+                  alertFrame.addEventListener("response",_response);
                   return;
                }
-               SocketManager.Instance.out.sendBuyBattleCountOrTime(_loc3_.isBand,_timeFlag);
+               SocketManager.Instance.out.sendBuyBattleCountOrTime(frame.isBand,_timeFlag);
                break;
          }
-         _loc3_.dispose();
+         frame.dispose();
       }
       
-      private function onResponseHander(param1:FrameEvent) : void
+      private function onResponseHander(e:FrameEvent) : void
       {
-         var _loc2_:* = null;
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",onResponseHander);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var alertFrame:* = null;
+         (e.currentTarget as BaseAlerFrame).removeEventListener("response",onResponseHander);
+         if(e.responseCode == 2 || e.responseCode == 3)
          {
             if(!checkMoney(false))
             {
-               _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.title"),LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.content"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
-               _loc2_.addEventListener("response",_response);
+               alertFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.title"),LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.content"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
+               alertFrame.addEventListener("response",_response);
                return;
             }
             SocketManager.Instance.out.sendBuyBattleCountOrTime(false,_timeFlag);
          }
-         param1.currentTarget.dispose();
+         e.currentTarget.dispose();
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(evt:FrameEvent) : void
       {
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",_response);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         (evt.currentTarget as BaseAlerFrame).removeEventListener("response",_response);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             LeavePageManager.leaveToFillPath();
          }
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(evt.currentTarget);
       }
       
-      private function checkMoney(param1:Boolean) : Boolean
+      private function checkMoney(isBand:Boolean) : Boolean
       {
-         var _loc2_:int = !!_timeFlag?_cdPrice:int(_buyPrice);
-         if(param1)
+         var money:int = !!_timeFlag?_cdPrice:int(_buyPrice);
+         if(isBand)
          {
-            if(PlayerManager.Instance.Self.BandMoney < _loc2_)
+            if(PlayerManager.Instance.Self.BandMoney < money)
             {
                return false;
             }
          }
-         else if(PlayerManager.Instance.Self.Money < _loc2_)
+         else if(PlayerManager.Instance.Self.Money < money)
          {
             return false;
          }
          return true;
       }
       
-      private function transSecond(param1:Number) : String
+      private function transSecond(num:Number) : String
       {
-         return (String("0" + Math.floor(param1 / 60))).substr(-2) + ":" + (String("0" + Math.floor(param1 % 60))).substr(-2);
+         return (String("0" + Math.floor(num / 60))).substr(-2) + ":" + (String("0" + Math.floor(num % 60))).substr(-2);
       }
       
       private function removeEvent() : void
@@ -651,9 +651,9 @@ package ringStation.view
          return _buyCount;
       }
       
-      public function set buyCount(param1:int) : void
+      public function set buyCount(value:int) : void
       {
-         _buyCount = param1;
+         _buyCount = value;
       }
       
       public function get buyPrice() : int
@@ -661,9 +661,9 @@ package ringStation.view
          return _buyPrice;
       }
       
-      public function set buyPrice(param1:int) : void
+      public function set buyPrice(value:int) : void
       {
-         _buyPrice = param1;
+         _buyPrice = value;
       }
       
       public function get cdPrice() : int
@@ -671,9 +671,9 @@ package ringStation.view
          return _cdPrice;
       }
       
-      public function set cdPrice(param1:int) : void
+      public function set cdPrice(value:int) : void
       {
-         _cdPrice = param1;
+         _cdPrice = value;
       }
    }
 }

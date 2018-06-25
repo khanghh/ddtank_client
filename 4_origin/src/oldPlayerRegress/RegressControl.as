@@ -48,7 +48,7 @@ package oldPlayerRegress
          RegressManager.instance.addEventListener("regressOpenView",__onOpenView);
       }
       
-      private function __onOpenView(param1:RegressEvent) : void
+      private function __onOpenView(event:RegressEvent) : void
       {
          show();
       }
@@ -84,9 +84,9 @@ package oldPlayerRegress
          _regressView = null;
       }
       
-      private function __complainShow(param1:UIModuleEvent) : void
+      private function __complainShow(event:UIModuleEvent) : void
       {
-         if(param1.module == "ddtregressview")
+         if(event.module == "ddtregressview")
          {
             UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);
             UIModuleLoader.Instance.removeEventListener("uiMoudleProgress",__progressShow);
@@ -98,15 +98,15 @@ package oldPlayerRegress
          }
       }
       
-      private function __progressShow(param1:UIModuleEvent) : void
+      private function __progressShow(event:UIModuleEvent) : void
       {
-         if(param1.module == "ddtregressview")
+         if(event.module == "ddtregressview")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
       
-      protected function __onClose(param1:Event) : void
+      protected function __onClose(event:Event) : void
       {
          UIModuleSmallLoading.Instance.hide();
          UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);
@@ -120,26 +120,26 @@ package oldPlayerRegress
          _regressView.show();
       }
       
-      public function setupAnalyzer(param1:PlayerRegressNotificationAnalyzer) : void
+      public function setupAnalyzer(analyzer:PlayerRegressNotificationAnalyzer) : void
       {
-         updateContent = param1.updateContent;
+         updateContent = analyzer.updateContent;
       }
       
       public function startPlayerRegressNotificationLoader() : void
       {
-         var _loc1_:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.getPlayerRegressNotificationPath(),2);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingPlayerRegressNotificationFailure");
-         _loc1_.analyzer = new PlayerRegressNotificationAnalyzer(setupAnalyzer);
-         _loc1_.addEventListener("loadError",LoaderCreate.Instance.__onLoadError);
-         _loc1_.addEventListener("complete",__loaderComplete);
-         LoaderManager.Instance.startLoad(_loc1_);
+         var loader:BaseLoader = LoaderManager.Instance.creatLoader(PathManager.getPlayerRegressNotificationPath(),2);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingPlayerRegressNotificationFailure");
+         loader.analyzer = new PlayerRegressNotificationAnalyzer(setupAnalyzer);
+         loader.addEventListener("loadError",LoaderCreate.Instance.__onLoadError);
+         loader.addEventListener("complete",__loaderComplete);
+         LoaderManager.Instance.startLoad(loader);
       }
       
-      private function __loaderComplete(param1:LoaderEvent) : void
+      private function __loaderComplete(event:LoaderEvent) : void
       {
-         var _loc2_:BaseLoader = BaseLoader(param1.currentTarget);
-         _loc2_.removeEventListener("loadError",LoaderCreate.Instance.__onLoadError);
-         _loc2_.removeEventListener("complete",__loaderComplete);
+         var loader:BaseLoader = BaseLoader(event.currentTarget);
+         loader.removeEventListener("loadError",LoaderCreate.Instance.__onLoadError);
+         loader.removeEventListener("complete",__loaderComplete);
          show();
       }
    }

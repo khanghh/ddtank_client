@@ -261,9 +261,9 @@ package ddt.manager
          return _manualNewPages;
       }
       
-      public function set manualNewPages(param1:Array) : void
+      public function set manualNewPages(value:Array) : void
       {
-         _manualNewPages = param1;
+         _manualNewPages = value;
       }
       
       public function get manualNewChapters() : Array
@@ -271,9 +271,9 @@ package ddt.manager
          return _manualNewChapters;
       }
       
-      public function set manualNewChapters(param1:Array) : void
+      public function set manualNewChapters(value:Array) : void
       {
-         _manualNewChapters = param1;
+         _manualNewChapters = value;
       }
       
       public function get allowSound() : Boolean
@@ -281,9 +281,9 @@ package ddt.manager
          return _allowSound;
       }
       
-      public function set allowSound(param1:Boolean) : void
+      public function set allowSound(value:Boolean) : void
       {
-         _allowSound = param1;
+         _allowSound = value;
          checkAllMusicClose();
       }
       
@@ -292,24 +292,24 @@ package ddt.manager
          return _allowMusic;
       }
       
-      public function set allowMusic(param1:Boolean) : void
+      public function set allowMusic(value:Boolean) : void
       {
-         _allowMusic = param1;
+         _allowMusic = value;
          checkAllMusicClose();
       }
       
       private function checkAllMusicClose() : void
       {
-         var _loc1_:SoundTransform = SoundMixer.soundTransform;
+         var transform:SoundTransform = SoundMixer.soundTransform;
          if(!_allowSound && !_allowMusic)
          {
-            _loc1_.volume = 0;
+            transform.volume = 0;
          }
          else
          {
-            _loc1_.volume = 1;
+            transform.volume = 1;
          }
-         SoundMixer.soundTransform = _loc1_;
+         SoundMixer.soundTransform = transform;
       }
       
       public function get autoSnsSend() : Boolean
@@ -317,13 +317,13 @@ package ddt.manager
          return _autoSnsSend;
       }
       
-      public function set autoSnsSend(param1:Boolean) : void
+      public function set autoSnsSend(value:Boolean) : void
       {
-         if(_autoSnsSend == param1)
+         if(_autoSnsSend == value)
          {
             return;
          }
-         _autoSnsSend = param1;
+         _autoSnsSend = value;
          save();
       }
       
@@ -337,11 +337,11 @@ package ddt.manager
          return _autoVip;
       }
       
-      public function set autoVip(param1:Boolean) : void
+      public function set autoVip(val:Boolean) : void
       {
-         if(_autoVip != param1)
+         if(_autoVip != val)
          {
-            _autoVip = param1;
+            _autoVip = val;
             save();
          }
       }
@@ -351,11 +351,11 @@ package ddt.manager
          return _autoCelebration;
       }
       
-      public function set autoCelebration(param1:Boolean) : void
+      public function set autoCelebration(value:Boolean) : void
       {
-         if(_autoCelebration != param1)
+         if(_autoCelebration != value)
          {
-            _autoCelebration = param1;
+            _autoCelebration = value;
             save();
          }
       }
@@ -365,11 +365,11 @@ package ddt.manager
          return _autoCaddy;
       }
       
-      public function set autoCaddy(param1:Boolean) : void
+      public function set autoCaddy(val:Boolean) : void
       {
-         if(_autoCaddy != param1)
+         if(_autoCaddy != val)
          {
-            _autoCaddy = param1;
+            _autoCaddy = val;
             save();
          }
       }
@@ -379,11 +379,11 @@ package ddt.manager
          return _autoOfferPack;
       }
       
-      public function set autoOfferPack(param1:Boolean) : void
+      public function set autoOfferPack(val:Boolean) : void
       {
-         if(_autoOfferPack != param1)
+         if(_autoOfferPack != val)
          {
-            _autoOfferPack = param1;
+            _autoOfferPack = val;
             save();
          }
       }
@@ -393,11 +393,11 @@ package ddt.manager
          return _autoBead;
       }
       
-      public function set autoWishBead(param1:Boolean) : void
+      public function set autoWishBead(val:Boolean) : void
       {
-         if(_autoWishBead != param1)
+         if(_autoWishBead != val)
          {
-            _autoWishBead = param1;
+            _autoWishBead = val;
             save();
          }
       }
@@ -407,11 +407,11 @@ package ddt.manager
          return _autoWishBead;
       }
       
-      public function set autoBead(param1:Boolean) : void
+      public function set autoBead(val:Boolean) : void
       {
-         if(_autoBead != param1)
+         if(_autoBead != val)
          {
-            _autoBead = param1;
+            _autoBead = val;
             save();
          }
       }
@@ -421,11 +421,11 @@ package ddt.manager
          return _edictumVersion;
       }
       
-      public function set edictumVersion(param1:String) : void
+      public function set edictumVersion(value:String) : void
       {
-         if(_edictumVersion != param1)
+         if(_edictumVersion != value)
          {
-            _edictumVersion = param1;
+            _edictumVersion = value;
             save();
          }
       }
@@ -439,22 +439,22 @@ package ddt.manager
          return _propLayerMode;
       }
       
-      public function set propLayerMode(param1:int) : void
+      public function set propLayerMode(val:int) : void
       {
-         if(_propLayerMode != param1)
+         if(_propLayerMode != val)
          {
-            _propLayerMode = param1;
+            _propLayerMode = val;
             save();
          }
       }
       
-      public function set allowSnsSend(param1:Boolean) : void
+      public function set allowSnsSend(value:Boolean) : void
       {
-         if(_allowSnsSend == param1)
+         if(_allowSnsSend == value)
          {
             return;
          }
-         _allowSnsSend = param1;
+         _allowSnsSend = value;
          save();
       }
       
@@ -463,9 +463,9 @@ package ddt.manager
          return _showInvateWindow;
       }
       
-      public function set showInvateWindow(param1:Boolean) : void
+      public function set showInvateWindow(value:Boolean) : void
       {
-         _showInvateWindow = param1;
+         _showInvateWindow = value;
       }
       
       public function get isCommunity() : Boolean
@@ -473,9 +473,9 @@ package ddt.manager
          return _isCommunity;
       }
       
-      public function set isCommunity(param1:Boolean) : void
+      public function set isCommunity(value:Boolean) : void
       {
-         _isCommunity = param1;
+         _isCommunity = value;
       }
       
       public function get isWishPop() : Boolean
@@ -483,9 +483,9 @@ package ddt.manager
          return _isWishPop;
       }
       
-      public function set isWishPop(param1:Boolean) : void
+      public function set isWishPop(value:Boolean) : void
       {
-         _isWishPop = param1;
+         _isWishPop = value;
       }
       
       public function get isFirstWish() : Boolean
@@ -493,9 +493,9 @@ package ddt.manager
          return _isFirstWish;
       }
       
-      public function set isFirstWish(param1:Boolean) : void
+      public function set isFirstWish(value:Boolean) : void
       {
-         _isFirstWish = param1;
+         _isFirstWish = value;
       }
       
       public function setup() : void
@@ -505,422 +505,421 @@ package ddt.manager
       
       public function reset() : void
       {
-         var _loc1_:SharedObject = SharedObject.getLocal("road");
-         _loc1_.clear();
-         _loc1_.flush(20971520);
+         var so:SharedObject = SharedObject.getLocal("road");
+         so.clear();
+         so.flush(20971520);
       }
       
       private function load() : void
       {
-         var _loc7_:* = null;
-         var _loc16_:int = 0;
-         var _loc12_:int = 0;
+         var so:* = null;
+         var i:int = 0;
+         var j:int = 0;
          var _loc21_:int = 0;
          try
          {
-            _loc7_ = SharedObject.getLocal("road");
+            so = SharedObject.getLocal("road");
             AuctionInfos = {};
-            if(_loc7_ && _loc7_.data)
+            if(so && so.data)
             {
-               if(_loc7_.data["allowMusic"] != undefined)
+               if(so.data["allowMusic"] != undefined)
                {
-                  allowMusic = _loc7_.data["allowMusic"];
+                  allowMusic = so.data["allowMusic"];
                }
-               if(_loc7_.data["allowSound"] != undefined)
+               if(so.data["allowSound"] != undefined)
                {
-                  allowSound = _loc7_.data["allowSound"];
+                  allowSound = so.data["allowSound"];
                }
-               if(_loc7_.data["showTopMessageBar"] != undefined)
+               if(so.data["showTopMessageBar"] != undefined)
                {
-                  showTopMessageBar = _loc7_.data["showTopMessageBar"];
+                  showTopMessageBar = so.data["showTopMessageBar"];
                }
-               if(_loc7_.data["showInvateWindow"] != undefined)
+               if(so.data["showInvateWindow"] != undefined)
                {
-                  showInvateWindow = _loc7_.data["showInvateWindow"];
+                  showInvateWindow = so.data["showInvateWindow"];
                }
-               if(_loc7_.data["showParticle"] != undefined)
+               if(so.data["showParticle"] != undefined)
                {
-                  showParticle = _loc7_.data["showParticle"];
+                  showParticle = so.data["showParticle"];
                }
-               if(_loc7_.data["showOL"] != undefined)
+               if(so.data["showOL"] != undefined)
                {
-                  showOL = _loc7_.data["showOL"];
+                  showOL = so.data["showOL"];
                }
-               if(_loc7_.data["showCI"] != undefined)
+               if(so.data["showCI"] != undefined)
                {
-                  showCI = _loc7_.data["showCI"];
+                  showCI = so.data["showCI"];
                }
-               if(_loc7_.data["showHat"] != undefined)
+               if(so.data["showHat"] != undefined)
                {
-                  showHat = _loc7_.data["showHat"];
+                  showHat = so.data["showHat"];
                }
-               if(_loc7_.data["showGlass"] != undefined)
+               if(so.data["showGlass"] != undefined)
                {
-                  showGlass = _loc7_.data["showGlass"];
+                  showGlass = so.data["showGlass"];
                }
-               if(_loc7_.data["showSuit"] != undefined)
+               if(so.data["showSuit"] != undefined)
                {
-                  showSuit = _loc7_.data["showSuit"];
+                  showSuit = so.data["showSuit"];
                }
-               if(_loc7_.data["musicVolumn"] != undefined)
+               if(so.data["musicVolumn"] != undefined)
                {
-                  musicVolumn = _loc7_.data["musicVolumn"];
+                  musicVolumn = so.data["musicVolumn"];
                }
-               if(_loc7_.data["soundVolumn"] != undefined)
+               if(so.data["soundVolumn"] != undefined)
                {
-                  soundVolumn = _loc7_.data["soundVolumn"];
+                  soundVolumn = so.data["soundVolumn"];
                }
-               if(_loc7_.data["KeyAutoSnap"] != undefined)
+               if(so.data["KeyAutoSnap"] != undefined)
                {
-                  KeyAutoSnap = _loc7_.data["KeyAutoSnap"];
+                  KeyAutoSnap = so.data["KeyAutoSnap"];
                }
-               if(_loc7_.data["giftFirstShow"] != undefined)
+               if(so.data["giftFirstShow"] != undefined)
                {
-                  giftFirstShow = _loc7_.data["giftFirstShow"];
+                  giftFirstShow = so.data["giftFirstShow"];
                }
-               if(_loc7_.data["cardSystemShow"] != undefined)
+               if(so.data["cardSystemShow"] != undefined)
                {
-                  cardSystemShow = _loc7_.data["cardSystemShow"];
+                  cardSystemShow = so.data["cardSystemShow"];
                }
-               if(_loc7_.data["texpSystemShow"] != undefined)
+               if(so.data["texpSystemShow"] != undefined)
                {
-                  texpSystemShow = _loc7_.data["texpSystemShow"];
+                  texpSystemShow = so.data["texpSystemShow"];
                }
-               if(_loc7_.data["divorceBoolean"] != undefined)
+               if(so.data["divorceBoolean"] != undefined)
                {
-                  divorceBoolean = _loc7_.data["divorceBoolean"];
+                  divorceBoolean = so.data["divorceBoolean"];
                }
-               if(_loc7_.data["friendBrithdayName"] != undefined)
+               if(so.data["friendBrithdayName"] != undefined)
                {
-                  friendBrithdayName = _loc7_.data["friendBrithdayName"];
+                  friendBrithdayName = so.data["friendBrithdayName"];
                }
-               if(_loc7_.data["AutoReady"] != undefined)
+               if(so.data["AutoReady"] != undefined)
                {
-                  AutoReady = _loc7_.data["AutoReady"];
+                  AutoReady = so.data["AutoReady"];
                }
-               if(_loc7_.data["ShowBattleGuide"] != undefined)
+               if(so.data["ShowBattleGuide"] != undefined)
                {
-                  ShowBattleGuide = _loc7_.data["ShowBattleGuide"];
+                  ShowBattleGuide = so.data["ShowBattleGuide"];
                }
-               if(_loc7_.data["isHintPropExpire"] != undefined)
+               if(so.data["isHintPropExpire"] != undefined)
                {
-                  isHintPropExpire = _loc7_.data["isHintPropExpire"];
+                  isHintPropExpire = so.data["isHintPropExpire"];
                }
-               if(_loc7_.data["hasCheckedOverFrameRate"] != undefined)
+               if(so.data["hasCheckedOverFrameRate"] != undefined)
                {
-                  hasCheckedOverFrameRate = _loc7_.data["hasCheckedOverFrameRate"];
+                  hasCheckedOverFrameRate = so.data["hasCheckedOverFrameRate"];
                }
-               if(_loc7_.data["isRecommend"] != undefined)
+               if(so.data["isRecommend"] != undefined)
                {
-                  isRecommend = _loc7_.data["isRecommend"];
+                  isRecommend = so.data["isRecommend"];
                }
-               if(_loc7_.data["recommendNum"] != undefined)
+               if(so.data["recommendNum"] != undefined)
                {
-                  recommendNum = _loc7_.data["recommendNum"];
+                  recommendNum = so.data["recommendNum"];
                }
-               if(_loc7_.data["isSetingMovieClip"] != undefined)
+               if(so.data["isSetingMovieClip"] != undefined)
                {
-                  isSetingMovieClip = _loc7_.data["isSetingMovieClip"];
+                  isSetingMovieClip = so.data["isSetingMovieClip"];
                }
-               if(_loc7_.data["propLayerMode"] != undefined)
+               if(so.data["propLayerMode"] != undefined)
                {
-                  _propLayerMode = _loc7_.data["propLayerMode"];
+                  _propLayerMode = so.data["propLayerMode"];
                }
-               if(_loc7_.data["autoCaddy"] != undefined)
+               if(so.data["autoCaddy"] != undefined)
                {
-                  _autoCaddy = _loc7_.data["autoCaddy"];
+                  _autoCaddy = so.data["autoCaddy"];
                }
-               if(_loc7_.data["autoOfferPack"] != undefined)
+               if(so.data["autoOfferPack"] != undefined)
                {
-                  _autoOfferPack = _loc7_.data["autoOfferPack"];
+                  _autoOfferPack = so.data["autoOfferPack"];
                }
-               if(_loc7_.data["autoBead"] != undefined)
+               if(so.data["autoBead"] != undefined)
                {
-                  _autoBead = _loc7_.data["autoBead"];
+                  _autoBead = so.data["autoBead"];
                }
-               if(_loc7_.data["edictumVersion"] != undefined)
+               if(so.data["edictumVersion"] != undefined)
                {
-                  _edictumVersion = _loc7_.data["edictumVersion"];
+                  _edictumVersion = so.data["edictumVersion"];
                }
-               if(_loc7_.data["isFirstWish"] != undefined)
+               if(so.data["isFirstWish"] != undefined)
                {
-                  _isFirstWish = _loc7_.data["isFirstWish"];
+                  _isFirstWish = so.data["isFirstWish"];
                }
-               if(_loc7_.data["stoneFriend"] != undefined)
+               if(so.data["stoneFriend"] != undefined)
                {
-                  stoneFriend = _loc7_.data["stoneFriend"];
+                  stoneFriend = so.data["stoneFriend"];
                }
-               if(_loc7_.data["halliconExperienceStep"] != undefined)
+               if(so.data["halliconExperienceStep"] != undefined)
                {
-                  halliconExperienceStep = _loc7_.data["halliconExperienceStep"];
+                  halliconExperienceStep = so.data["halliconExperienceStep"];
                }
-               if(_loc7_.data["isRefreshSkill"] != undefined)
+               if(so.data["isRefreshSkill"] != undefined)
                {
-                  isRefreshSkill = _loc7_.data["isRefreshSkill"];
+                  isRefreshSkill = so.data["isRefreshSkill"];
                }
-               if(_loc7_.data["autoCelebration"] != undefined)
+               if(so.data["autoCelebration"] != undefined)
                {
-                  _autoCelebration = _loc7_.data["autoCelebration"];
+                  _autoCelebration = so.data["autoCelebration"];
                }
-               if(_loc7_.data["hasStrength3"] != undefined)
+               if(so.data["hasStrength3"] != undefined)
                {
                   var _loc23_:int = 0;
-                  var _loc22_:* = _loc7_.data["hasStrength3"];
-                  for(var _loc20_ in _loc7_.data["hasStrength3"])
+                  var _loc22_:* = so.data["hasStrength3"];
+                  for(var key in so.data["hasStrength3"])
                   {
-                     hasStrength3[_loc20_] = _loc7_.data["hasStrength3"][_loc20_];
+                     hasStrength3[key] = so.data["hasStrength3"][key];
                   }
                }
-               if(_loc7_.data["recentContactsID"] != undefined)
+               if(so.data["recentContactsID"] != undefined)
                {
                   var _loc25_:int = 0;
-                  var _loc24_:* = _loc7_.data["recentContactsID"];
-                  for(var _loc19_ in _loc7_.data["recentContactsID"])
+                  var _loc24_:* = so.data["recentContactsID"];
+                  for(var keyII in so.data["recentContactsID"])
                   {
-                     recentContactsID[_loc19_] = _loc7_.data["recentContactsID"][_loc19_];
+                     recentContactsID[keyII] = so.data["recentContactsID"][keyII];
                   }
                }
-               if(_loc7_.data["voteData"] != undefined)
+               if(so.data["voteData"] != undefined)
                {
                   var _loc27_:int = 0;
-                  var _loc26_:* = _loc7_.data["voteData"];
-                  for(var _loc18_ in _loc7_.data["voteData"])
+                  var _loc26_:* = so.data["voteData"];
+                  for(var keyIII in so.data["voteData"])
                   {
-                     voteData[_loc18_] = _loc7_.data["voteData"][_loc18_];
+                     voteData[keyIII] = so.data["voteData"][keyIII];
                   }
                }
-               if(_loc7_.data["spacialReadedMail"] != undefined)
+               if(so.data["spacialReadedMail"] != undefined)
                {
                   var _loc29_:int = 0;
-                  var _loc28_:* = _loc7_.data["spacialReadedMail"];
-                  for(var _loc11_ in _loc7_.data["spacialReadedMail"])
+                  var _loc28_:* = so.data["spacialReadedMail"];
+                  for(var keyIV in so.data["spacialReadedMail"])
                   {
-                     spacialReadedMail[_loc11_] = _loc7_.data["spacialReadedMail"][_loc11_];
+                     spacialReadedMail[keyIV] = so.data["spacialReadedMail"][keyIV];
                   }
                }
-               if(_loc7_.data["deleteMail"] != undefined)
+               if(so.data["deleteMail"] != undefined)
                {
                   var _loc31_:int = 0;
-                  var _loc30_:* = _loc7_.data["deleteMail"];
-                  for(var _loc6_ in _loc7_.data["deleteMail"])
+                  var _loc30_:* = so.data["deleteMail"];
+                  for(var keyV in so.data["deleteMail"])
                   {
-                     deleteMail[_loc6_] = _loc7_.data["deleteMail"][_loc6_];
+                     deleteMail[keyV] = so.data["deleteMail"][keyV];
                   }
                }
-               if(_loc7_.data["privateChatRecord"] != undefined)
+               if(so.data["privateChatRecord"] != undefined)
                {
                   var _loc33_:int = 0;
-                  var _loc32_:* = _loc7_.data["privateChatRecord"];
-                  for(var _loc4_ in _loc7_.data["privateChatRecord"])
+                  var _loc32_:* = so.data["privateChatRecord"];
+                  for(var keyP in so.data["privateChatRecord"])
                   {
-                     privateChatRecord[_loc4_] = _loc7_.data["privateChatRecord"][_loc4_];
+                     privateChatRecord[keyP] = so.data["privateChatRecord"][keyP];
                   }
                }
-               if(_loc7_.data["teamChatRecord"] != undefined)
+               if(so.data["teamChatRecord"] != undefined)
                {
                   var _loc35_:int = 0;
-                  var _loc34_:* = _loc7_.data["teamChatRecord"];
-                  for(var _loc15_ in _loc7_.data["teamChatRecord"])
+                  var _loc34_:* = so.data["teamChatRecord"];
+                  for(var kyeL in so.data["teamChatRecord"])
                   {
-                     teamChatRecord[_loc4_] = _loc7_.data["teamChatRecord"][_loc4_];
+                     teamChatRecord[keyP] = so.data["teamChatRecord"][keyP];
                   }
                }
-               if(_loc7_.data["transregionalblackList"] != undefined)
+               if(so.data["transregionalblackList"] != undefined)
                {
                   var _loc37_:int = 0;
-                  var _loc36_:* = _loc7_.data["transregionalblackList"];
-                  for(var _loc9_ in _loc7_.data["transregionalblackList"])
+                  var _loc36_:* = so.data["transregionalblackList"];
+                  for(var keyT in so.data["transregionalblackList"])
                   {
-                     transregionalblackList[_loc9_] = _loc7_.data["transregionalblackList"][_loc9_];
+                     transregionalblackList[keyT] = so.data["transregionalblackList"][keyT];
                   }
                }
-               if(_loc7_.data["GameKeySets"] != undefined)
+               if(so.data["GameKeySets"] != undefined)
                {
-                  _loc16_ = 1;
-                  while(_loc16_ < KEY_SET_ABLE.length + 1)
+                  for(i = 1; i < KEY_SET_ABLE.length + 1; )
                   {
-                     GameKeySets[_loc16_] = _loc7_.data["GameKeySets"][_loc16_];
-                     _loc16_++;
+                     GameKeySets[i] = so.data["GameKeySets"][i];
+                     i++;
                   }
                }
                else
                {
-                  _loc12_ = 0;
-                  while(_loc12_ < KEY_SET_ABLE.length)
+                  j = 0;
+                  while(j < KEY_SET_ABLE.length)
                   {
-                     GameKeySets[_loc12_ + 1] = KEY_SET_ABLE[_loc12_];
-                     _loc12_++;
+                     GameKeySets[j + 1] = KEY_SET_ABLE[j];
+                     j++;
                   }
                }
-               if(_loc7_.data["AuctionInfos"] != undefined)
+               if(so.data["AuctionInfos"] != undefined)
                {
                   var _loc39_:int = 0;
-                  var _loc38_:* = _loc7_.data["AuctionInfos"];
-                  for(var _loc14_ in _loc7_.data["AuctionInfos"])
+                  var _loc38_:* = so.data["AuctionInfos"];
+                  for(var k in so.data["AuctionInfos"])
                   {
-                     AuctionInfos[_loc14_] = _loc7_.data["AuctionInfos"][_loc14_];
+                     AuctionInfos[k] = so.data["AuctionInfos"][k];
                   }
                }
-               if(_loc7_.data["AuctionIDs"] != undefined)
+               if(so.data["AuctionIDs"] != undefined)
                {
-                  AuctionIDs = _loc7_.data["AuctionIDs"];
+                  AuctionIDs = so.data["AuctionIDs"];
                   var _loc41_:int = 0;
-                  var _loc40_:* = _loc7_.data["AuctionInfos"];
-                  for(var _loc17_ in _loc7_.data["AuctionInfos"])
+                  var _loc40_:* = so.data["AuctionInfos"];
+                  for(var id in so.data["AuctionInfos"])
                   {
-                     AuctionIDs[_loc17_] = _loc7_.data["AuctionInfos"][_loc17_];
+                     AuctionIDs[id] = so.data["AuctionInfos"][id];
                   }
                }
-               if(_loc7_.data["setBagLocked" + PlayerManager.Instance.Self.ID] != undefined)
+               if(so.data["setBagLocked" + PlayerManager.Instance.Self.ID] != undefined)
                {
-                  setBagLocked = _loc7_.data["setBagLocked"];
+                  setBagLocked = so.data["setBagLocked"];
                }
-               if(_loc7_.data["deadtip"] != undefined)
+               if(so.data["deadtip"] != undefined)
                {
-                  deadtip = _loc7_.data["deadtip"];
+                  deadtip = so.data["deadtip"];
                }
-               if(_loc7_.data["StoreBuyInfo"] != undefined)
+               if(so.data["StoreBuyInfo"] != undefined)
                {
                   var _loc43_:int = 0;
-                  var _loc42_:* = _loc7_.data["StoreBuyInfo"];
-                  for(var _loc10_ in _loc7_.data["StoreBuyInfo"])
+                  var _loc42_:* = so.data["StoreBuyInfo"];
+                  for(var key1 in so.data["StoreBuyInfo"])
                   {
-                     StoreBuyInfo[_loc10_] = _loc7_.data["StoreBuyInfo"][_loc10_];
+                     StoreBuyInfo[key1] = so.data["StoreBuyInfo"][key1];
                   }
                }
-               if(_loc7_.data["hasEnteredFightLib"] != undefined)
+               if(so.data["hasEnteredFightLib"] != undefined)
                {
                   var _loc45_:int = 0;
-                  var _loc44_:* = _loc7_.data["hasEnteredFightLib"];
-                  for(var _loc8_ in _loc7_.data["hasEnteredFightLib"])
+                  var _loc44_:* = so.data["hasEnteredFightLib"];
+                  for(var key2 in so.data["hasEnteredFightLib"])
                   {
-                     hasEnteredFightLib[_loc8_] = _loc7_.data["hasEnteredFightLib"][_loc8_];
+                     hasEnteredFightLib[key2] = so.data["hasEnteredFightLib"][key2];
                   }
                }
-               if(_loc7_.data["isAffirm"] != isAffirm)
+               if(so.data["isAffirm"] != isAffirm)
                {
-                  isAffirm = _loc7_.data["isAffirm"];
+                  isAffirm = so.data["isAffirm"];
                }
-               if(_loc7_.data["fastReplys"] != undefined)
+               if(so.data["fastReplys"] != undefined)
                {
                   var _loc47_:int = 0;
-                  var _loc46_:* = _loc7_.data["fastReplys"];
-                  for(var _loc2_ in _loc7_.data["fastReplys"])
+                  var _loc46_:* = so.data["fastReplys"];
+                  for(var key3 in so.data["fastReplys"])
                   {
-                     fastReplys[_loc2_] = _loc7_.data["fastReplys"][_loc2_];
+                     fastReplys[key3] = so.data["fastReplys"][key3];
                   }
                }
-               if(_loc7_.data["autoSnsSend"] != undefined)
+               if(so.data["autoSnsSend"] != undefined)
                {
-                  _autoSnsSend = _loc7_.data["autoSnsSend"];
+                  _autoSnsSend = so.data["autoSnsSend"];
                }
-               if(_loc7_.data["allowSnsSend"] != undefined)
+               if(so.data["allowSnsSend"] != undefined)
                {
-                  _allowSnsSend = _loc7_.data["allowSnsSend"];
+                  _allowSnsSend = so.data["allowSnsSend"];
                }
-               if(_loc7_.data["AwayAutoReply"] != undefined)
+               if(so.data["AwayAutoReply"] != undefined)
                {
                   var _loc49_:int = 0;
-                  var _loc48_:* = _loc7_.data["AwayAutoReply"];
-                  for(var _loc1_ in _loc7_.data["AwayAutoReply"])
+                  var _loc48_:* = so.data["AwayAutoReply"];
+                  for(var key4 in so.data["AwayAutoReply"])
                   {
-                     awayAutoReply[_loc1_] = _loc7_.data["AwayAutoReply"][_loc1_];
+                     awayAutoReply[key4] = so.data["AwayAutoReply"][key4];
                   }
                }
-               if(_loc7_.data["BusyAutoReply"] != undefined)
+               if(so.data["BusyAutoReply"] != undefined)
                {
                   var _loc51_:int = 0;
-                  var _loc50_:* = _loc7_.data["BusyAutoReply"];
-                  for(var _loc5_ in _loc7_.data["BusyAutoReply"])
+                  var _loc50_:* = so.data["BusyAutoReply"];
+                  for(var key5 in so.data["BusyAutoReply"])
                   {
-                     busyAutoReply[_loc5_] = _loc7_.data["BusyAutoReply"][_loc5_];
+                     busyAutoReply[key5] = so.data["BusyAutoReply"][key5];
                   }
                }
-               if(_loc7_.data["NoDistrubAutoReply"] != undefined)
+               if(so.data["NoDistrubAutoReply"] != undefined)
                {
                   var _loc53_:int = 0;
-                  var _loc52_:* = _loc7_.data["NoDistrubAutoReply"];
-                  for(var _loc3_ in _loc7_.data["NoDistrubAutoReply"])
+                  var _loc52_:* = so.data["NoDistrubAutoReply"];
+                  for(var key6 in so.data["NoDistrubAutoReply"])
                   {
-                     noDistrubAutoReply[_loc3_] = _loc7_.data["NoDistrubAutoReply"][_loc3_];
+                     noDistrubAutoReply[key6] = so.data["NoDistrubAutoReply"][key6];
                   }
                }
-               if(_loc7_.data["ShoppingAutoReply"] != undefined)
+               if(so.data["ShoppingAutoReply"] != undefined)
                {
                   var _loc55_:int = 0;
-                  var _loc54_:* = _loc7_.data["ShoppingAutoReply"];
-                  for(var _loc13_ in _loc7_.data["ShoppingAutoReply"])
+                  var _loc54_:* = so.data["ShoppingAutoReply"];
+                  for(var key7 in so.data["ShoppingAutoReply"])
                   {
-                     shoppingAutoReply[_loc13_] = _loc7_.data["ShoppingAutoReply"][_loc13_];
+                     shoppingAutoReply[key7] = so.data["ShoppingAutoReply"][key7];
                   }
                }
-               if(_loc7_.data["isCommunity"] != undefined)
+               if(so.data["isCommunity"] != undefined)
                {
-                  isCommunity = _loc7_.data["isCommunity"];
+                  isCommunity = so.data["isCommunity"];
                }
-               if(_loc7_.data["isWishPop"] != undefined)
+               if(so.data["isWishPop"] != undefined)
                {
-                  isWishPop = _loc7_.data["isWishPop"];
+                  isWishPop = so.data["isWishPop"];
                }
-               if(_loc7_.data["autoWish"] != undefined)
+               if(so.data["autoWish"] != undefined)
                {
-                  autoWish = _loc7_.data["autoWish"];
+                  autoWish = so.data["autoWish"];
                }
-               if(_loc7_.data["isRefreshPet"] != undefined)
+               if(so.data["isRefreshPet"] != undefined)
                {
-                  isRefreshPet = _loc7_.data["isRefreshPet"];
+                  isRefreshPet = so.data["isRefreshPet"];
                }
-               if(_loc7_.data["isWorldBossBuyBuff"] != undefined)
+               if(so.data["isWorldBossBuyBuff"] != undefined)
                {
-                  isWorldBossBuyBuff = _loc7_.data["isWorldBossBuyBuff"];
+                  isWorldBossBuyBuff = so.data["isWorldBossBuyBuff"];
                }
-               if(_loc7_.data["isWorldBossBindBuyBuff"] != undefined)
+               if(so.data["isWorldBossBindBuyBuff"] != undefined)
                {
-                  isWorldBossBindBuyBuff = _loc7_.data["isWorldBossBindBuyBuff"];
+                  isWorldBossBindBuyBuff = so.data["isWorldBossBindBuyBuff"];
                }
-               if(_loc7_.data["isWorldBossBuyBuffFull"] != undefined)
+               if(so.data["isWorldBossBuyBuffFull"] != undefined)
                {
-                  isWorldBossBuyBuffFull = _loc7_.data["isWorldBossBuyBuffFull"];
+                  isWorldBossBuyBuffFull = so.data["isWorldBossBuyBuffFull"];
                }
-               if(_loc7_.data["isWorldBossBindBuyBuffFull"] != undefined)
+               if(so.data["isWorldBossBindBuyBuffFull"] != undefined)
                {
-                  isWorldBossBindBuyBuffFull = _loc7_.data["isWorldBossBindBuyBuffFull"];
+                  isWorldBossBindBuyBuffFull = so.data["isWorldBossBindBuyBuffFull"];
                }
-               if(_loc7_.data["isResurrect"] != undefined)
+               if(so.data["isResurrect"] != undefined)
                {
-                  isResurrect = _loc7_.data["isResurrect"];
+                  isResurrect = so.data["isResurrect"];
                }
-               if(_loc7_.data["isReFight"] != undefined)
+               if(so.data["isReFight"] != undefined)
                {
-                  isReFight = _loc7_.data["isReFight"];
+                  isReFight = so.data["isReFight"];
                }
-               if(_loc7_.data["isDragonBoatOpenFrame"] != undefined)
+               if(so.data["isDragonBoatOpenFrame"] != undefined)
                {
-                  isDragonBoatOpenFrame = _loc7_.data["isDragonBoatOpenFrame"];
+                  isDragonBoatOpenFrame = so.data["isDragonBoatOpenFrame"];
                }
-               if(_loc7_.data["isShowDdtImportantView"] != undefined)
+               if(so.data["isShowDdtImportantView"] != undefined)
                {
-                  isShowDdtImportantView = _loc7_.data["isShowDdtImportantView"];
+                  isShowDdtImportantView = so.data["isShowDdtImportantView"];
                }
-               if(_loc7_.data["flashInfoExist"] != undefined)
+               if(so.data["flashInfoExist"] != undefined)
                {
-                  flashInfoExist = _loc7_.data["flashInfoExist"];
+                  flashInfoExist = so.data["flashInfoExist"];
                }
-               if(_loc7_.data["friendshipEffect"] != undefined)
+               if(so.data["friendshipEffect"] != undefined)
                {
-                  friendshipEffect = _loc7_.data["friendshipEffect"];
+                  friendshipEffect = so.data["friendshipEffect"];
                }
-               if(_loc7_.data["guardEffect"] != undefined)
+               if(so.data["guardEffect"] != undefined)
                {
-                  guardEffect = _loc7_.data["guardEffect"];
+                  guardEffect = so.data["guardEffect"];
                }
-               if(_loc7_.data["manualNewDebris"] != undefined)
+               if(so.data["manualNewDebris"] != undefined)
                {
-                  manualNewChapters = _loc7_.data["manualNewDebris"];
+                  manualNewChapters = so.data["manualNewDebris"];
                }
-               if(_loc7_.data["manualNewPages"] != undefined)
+               if(so.data["manualNewPages"] != undefined)
                {
-                  manualNewPages = _loc7_.data["manualNewPages"];
+                  manualNewPages = so.data["manualNewPages"];
                }
             }
          }
@@ -932,130 +931,130 @@ package ddt.manager
       
       public function save() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:* = null;
+         var so:* = null;
+         var obj:* = null;
          try
          {
-            _loc1_ = SharedObject.getLocal("road");
-            _loc1_.data["allowMusic"] = allowMusic;
-            _loc1_.data["allowSound"] = allowSound;
-            _loc1_.data["showTopMessageBar"] = showTopMessageBar;
-            _loc1_.data["showInvateWindow"] = showInvateWindow;
-            _loc1_.data["showParticle"] = showParticle;
-            _loc1_.data["showOL"] = showOL;
-            _loc1_.data["showCI"] = showCI;
-            _loc1_.data["showHat"] = showHat;
-            _loc1_.data["showGlass"] = showGlass;
-            _loc1_.data["showSuit"] = showSuit;
-            _loc1_.data["musicVolumn"] = musicVolumn;
-            _loc1_.data["soundVolumn"] = soundVolumn;
-            _loc1_.data["KeyAutoSnap"] = KeyAutoSnap;
-            _loc1_.data["giftFirstShow"] = giftFirstShow;
-            _loc1_.data["cardSystemShow"] = cardSystemShow;
-            _loc1_.data["texpSystemShow"] = texpSystemShow;
-            _loc1_.data["divorceBoolean"] = divorceBoolean;
-            _loc1_.data["friendBrithdayName"] = friendBrithdayName;
-            _loc1_.data["AutoReady"] = AutoReady;
-            _loc1_.data["ShowBattleGuide"] = ShowBattleGuide;
-            _loc1_.data["isHintPropExpire"] = isHintPropExpire;
-            _loc1_.data["hasCheckedOverFrameRate"] = hasCheckedOverFrameRate;
-            _loc1_.data["isAffirm"] = isAffirm;
-            _loc1_.data["isRecommend"] = isRecommend;
-            _loc1_.data["recommendNum"] = recommendNum;
-            _loc1_.data["isSetingMovieClip"] = isSetingMovieClip;
-            _loc1_.data["propLayerMode"] = propLayerMode;
-            _loc1_.data["autoCaddy"] = _autoCaddy;
-            _loc1_.data["autoOfferPack"] = _autoOfferPack;
-            _loc1_.data["autoBead"] = _autoBead;
-            _loc1_.data["edictumVersion"] = _edictumVersion;
-            _loc1_.data["stoneFriend"] = stoneFriend;
-            _loc1_.data["autoCelebration"] = _autoCelebration;
-            _loc1_.data["isRefreshPet"] = isRefreshSkill;
-            _loc2_ = {};
+            so = SharedObject.getLocal("road");
+            so.data["allowMusic"] = allowMusic;
+            so.data["allowSound"] = allowSound;
+            so.data["showTopMessageBar"] = showTopMessageBar;
+            so.data["showInvateWindow"] = showInvateWindow;
+            so.data["showParticle"] = showParticle;
+            so.data["showOL"] = showOL;
+            so.data["showCI"] = showCI;
+            so.data["showHat"] = showHat;
+            so.data["showGlass"] = showGlass;
+            so.data["showSuit"] = showSuit;
+            so.data["musicVolumn"] = musicVolumn;
+            so.data["soundVolumn"] = soundVolumn;
+            so.data["KeyAutoSnap"] = KeyAutoSnap;
+            so.data["giftFirstShow"] = giftFirstShow;
+            so.data["cardSystemShow"] = cardSystemShow;
+            so.data["texpSystemShow"] = texpSystemShow;
+            so.data["divorceBoolean"] = divorceBoolean;
+            so.data["friendBrithdayName"] = friendBrithdayName;
+            so.data["AutoReady"] = AutoReady;
+            so.data["ShowBattleGuide"] = ShowBattleGuide;
+            so.data["isHintPropExpire"] = isHintPropExpire;
+            so.data["hasCheckedOverFrameRate"] = hasCheckedOverFrameRate;
+            so.data["isAffirm"] = isAffirm;
+            so.data["isRecommend"] = isRecommend;
+            so.data["recommendNum"] = recommendNum;
+            so.data["isSetingMovieClip"] = isSetingMovieClip;
+            so.data["propLayerMode"] = propLayerMode;
+            so.data["autoCaddy"] = _autoCaddy;
+            so.data["autoOfferPack"] = _autoOfferPack;
+            so.data["autoBead"] = _autoBead;
+            so.data["edictumVersion"] = _edictumVersion;
+            so.data["stoneFriend"] = stoneFriend;
+            so.data["autoCelebration"] = _autoCelebration;
+            so.data["isRefreshPet"] = isRefreshSkill;
+            obj = {};
             var _loc6_:int = 0;
             var _loc5_:* = GameKeySets;
-            for(var _loc3_ in GameKeySets)
+            for(var i in GameKeySets)
             {
-               _loc2_[_loc3_] = GameKeySets[_loc3_];
+               obj[i] = GameKeySets[i];
             }
-            _loc1_.data["GameKeySets"] = _loc2_;
+            so.data["GameKeySets"] = obj;
             if(AuctionInfos)
             {
-               _loc1_.data["AuctionInfos"] = AuctionInfos;
+               so.data["AuctionInfos"] = AuctionInfos;
             }
             if(hasStrength3)
             {
-               _loc1_.data["hasStrength3"] = hasStrength3;
+               so.data["hasStrength3"] = hasStrength3;
             }
             if(recentContactsID)
             {
-               _loc1_.data["recentContactsID"] = recentContactsID;
+               so.data["recentContactsID"] = recentContactsID;
             }
             if(voteData)
             {
-               _loc1_.data["voteData"] = voteData;
+               so.data["voteData"] = voteData;
             }
             if(spacialReadedMail)
             {
-               _loc1_.data["spacialReadedMail"] = spacialReadedMail;
+               so.data["spacialReadedMail"] = spacialReadedMail;
             }
             if(deleteMail)
             {
-               _loc1_.data["deleteMail"] = deleteMail;
+               so.data["deleteMail"] = deleteMail;
             }
             if(privateChatRecord)
             {
-               _loc1_.data["privateChatRecord"] = privateChatRecord;
+               so.data["privateChatRecord"] = privateChatRecord;
             }
             if(teamChatRecord)
             {
-               _loc1_.data["teamChatRecord"] = teamChatRecord;
+               so.data["teamChatRecord"] = teamChatRecord;
             }
             if(transregionalblackList)
             {
-               _loc1_.data["transregionalblackList"] = transregionalblackList;
+               so.data["transregionalblackList"] = transregionalblackList;
             }
             if(hasEnteredFightLib)
             {
-               _loc1_.data["hasEnteredFightLib"] = hasEnteredFightLib;
+               so.data["hasEnteredFightLib"] = hasEnteredFightLib;
             }
             if(fastReplys)
             {
-               _loc1_.data["fastReplys"] = fastReplys;
+               so.data["fastReplys"] = fastReplys;
             }
             if(autoWish)
             {
-               _loc1_.data["autoWish"] = autoWish;
+               so.data["autoWish"] = autoWish;
             }
-            _loc1_.data["isRefreshPet"] = isRefreshPet;
-            _loc1_.data["isWorldBossBuyBuff"] = isWorldBossBuyBuff;
-            _loc1_.data["isWorldBossBindBuyBuff"] = isWorldBossBindBuyBuff;
-            _loc1_.data["isWorldBossBuyBuffFull"] = isWorldBossBuyBuffFull;
-            _loc1_.data["isWorldBossBindBuyBuffFull"] = isWorldBossBindBuyBuffFull;
-            _loc1_.data["isResurrect"] = isResurrect;
-            _loc1_.data["isReFight"] = isReFight;
-            _loc1_.data["AuctionIDs"] = AuctionIDs;
-            _loc1_.data["setBagLocked"] = setBagLocked;
-            _loc1_.data["deadtip"] = deadtip;
-            _loc1_.data["StoreBuyInfo"] = StoreBuyInfo;
-            _loc1_.data["halliconExperienceStep"] = halliconExperienceStep;
-            _loc1_.data["autoSnsSend"] = _autoSnsSend;
-            _loc1_.data["allowSnsSend"] = _allowSnsSend;
-            _loc1_.data["AwayAutoReply"] = awayAutoReply;
-            _loc1_.data["BusyAutoReply"] = busyAutoReply;
-            _loc1_.data["NoDistrubAutoReply"] = noDistrubAutoReply;
-            _loc1_.data["ShoppingAutoReply"] = shoppingAutoReply;
-            _loc1_.data["isCommunity"] = isCommunity;
-            _loc1_.data["isWishPop"] = isWishPop;
-            _loc1_.data["isFirstWish"] = isFirstWish;
-            _loc1_.data["isDragonBoatOpenFrame"] = isDragonBoatOpenFrame;
-            _loc1_.data["isShowDdtImportantView"] = isShowDdtImportantView;
-            _loc1_.data["flashInfoExist"] = flashInfoExist;
-            _loc1_.data["friendshipEffect"] = friendshipEffect;
-            _loc1_.data["guardEffect"] = guardEffect;
-            _loc1_.data["manualNewDebris"] = manualNewChapters;
-            _loc1_.data["manualNewPages"] = manualNewPages;
-            _loc1_.flush(20971520);
+            so.data["isRefreshPet"] = isRefreshPet;
+            so.data["isWorldBossBuyBuff"] = isWorldBossBuyBuff;
+            so.data["isWorldBossBindBuyBuff"] = isWorldBossBindBuyBuff;
+            so.data["isWorldBossBuyBuffFull"] = isWorldBossBuyBuffFull;
+            so.data["isWorldBossBindBuyBuffFull"] = isWorldBossBindBuyBuffFull;
+            so.data["isResurrect"] = isResurrect;
+            so.data["isReFight"] = isReFight;
+            so.data["AuctionIDs"] = AuctionIDs;
+            so.data["setBagLocked"] = setBagLocked;
+            so.data["deadtip"] = deadtip;
+            so.data["StoreBuyInfo"] = StoreBuyInfo;
+            so.data["halliconExperienceStep"] = halliconExperienceStep;
+            so.data["autoSnsSend"] = _autoSnsSend;
+            so.data["allowSnsSend"] = _allowSnsSend;
+            so.data["AwayAutoReply"] = awayAutoReply;
+            so.data["BusyAutoReply"] = busyAutoReply;
+            so.data["NoDistrubAutoReply"] = noDistrubAutoReply;
+            so.data["ShoppingAutoReply"] = shoppingAutoReply;
+            so.data["isCommunity"] = isCommunity;
+            so.data["isWishPop"] = isWishPop;
+            so.data["isFirstWish"] = isFirstWish;
+            so.data["isDragonBoatOpenFrame"] = isDragonBoatOpenFrame;
+            so.data["isShowDdtImportantView"] = isShowDdtImportantView;
+            so.data["flashInfoExist"] = flashInfoExist;
+            so.data["friendshipEffect"] = friendshipEffect;
+            so.data["guardEffect"] = guardEffect;
+            so.data["manualNewDebris"] = manualNewChapters;
+            so.data["manualNewPages"] = manualNewPages;
+            so.flush(20971520);
          }
          catch(e:Error)
          {
@@ -1068,21 +1067,21 @@ package ddt.manager
          SoundManager.instance.setConfig(allowMusic,allowSound,musicVolumn,soundVolumn);
          var _loc3_:int = 0;
          var _loc2_:* = GameKeySets;
-         for(var _loc1_ in GameKeySets)
+         for(var i in GameKeySets)
          {
-            if(RIGHT_PROP[int(int(_loc1_) - 1)])
+            if(RIGHT_PROP[int(int(i) - 1)])
             {
-               RIGHT_PROP[int(int(_loc1_) - 1)] = GameKeySets[_loc1_];
+               RIGHT_PROP[int(int(i) - 1)] = GameKeySets[i];
             }
          }
          dispatchEvent(new Event("change"));
       }
       
-      public function set propTransparent(param1:Boolean) : void
+      public function set propTransparent(val:Boolean) : void
       {
-         if(_propTransparent != param1)
+         if(_propTransparent != val)
          {
-            _propTransparent = param1;
+            _propTransparent = val;
             dispatchEvent(new SharedEvent("transparentChanged"));
          }
       }

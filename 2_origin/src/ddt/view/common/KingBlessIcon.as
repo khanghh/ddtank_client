@@ -34,16 +34,16 @@ package ddt.view.common
       
       private var _isSelf:Boolean;
       
-      public function KingBlessIcon(param1:int)
+      public function KingBlessIcon(id:int)
       {
          super();
-         _icon = ComponentFactory.Instance.creatBitmap("asset.playerInfo.kingBless" + param1);
+         _icon = ComponentFactory.Instance.creatBitmap("asset.playerInfo.kingBless" + id);
          addChild(_icon);
          this.buttonMode = true;
          ShowTipManager.Instance.addTip(this);
       }
       
-      protected function __openKingBlessFrameHandlder(param1:MouseEvent) : void
+      protected function __openKingBlessFrameHandlder(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          KingBlessManager.instance.show();
@@ -91,20 +91,20 @@ package ddt.view.common
          KingBlessManager.instance.removeEventListener("update_main_event",__refreshBtnState);
       }
       
-      private function __refreshBtnState(param1:Event) : void
+      private function __refreshBtnState(event:Event) : void
       {
-         var _loc2_:int = KingBlessManager.instance.openType;
-         if(_loc2_ > 0)
+         var openType:int = KingBlessManager.instance.openType;
+         if(openType > 0)
          {
             _isOpen = true;
             updateIcon();
          }
       }
       
-      public function setInfo(param1:Boolean, param2:Boolean) : void
+      public function setInfo(isOpen:Boolean, isSelf:Boolean) : void
       {
-         _isOpen = param1;
-         _isSelf = param2;
+         _isOpen = isOpen;
+         _isSelf = isSelf;
          updateIcon();
          if(_isSelf)
          {
@@ -118,24 +118,24 @@ package ddt.view.common
       
       public function get tipData() : Object
       {
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var obj:* = null;
+         var obj2:* = null;
          if(!_isOpen)
          {
-            _loc2_ = {};
-            _loc2_.isOpen = false;
-            _loc2_.content = LanguageMgr.GetTranslation("ddt.kingBlessFrame.noOpenTipTxt");
-            return _loc2_;
+            obj = {};
+            obj.isOpen = false;
+            obj.content = LanguageMgr.GetTranslation("ddt.kingBlessFrame.noOpenTipTxt");
+            return obj;
          }
          if(_isSelf)
          {
             return KingBlessManager.instance.getRemainTimeTxt();
          }
-         _loc1_ = {};
-         _loc1_.isOpen = true;
-         _loc1_.isSelf = false;
-         _loc1_.content = LanguageMgr.GetTranslation("ddt.kingBlessFrame.openTipTxt");
-         return _loc1_;
+         obj2 = {};
+         obj2.isOpen = true;
+         obj2.isSelf = false;
+         obj2.content = LanguageMgr.GetTranslation("ddt.kingBlessFrame.openTipTxt");
+         return obj2;
       }
       
       public function get tipDirctions() : String
@@ -153,29 +153,29 @@ package ddt.view.common
          return _tipGapH;
       }
       
-      public function set tipStyle(param1:String) : void
+      public function set tipStyle(value:String) : void
       {
-         _tipStyle = param1;
+         _tipStyle = value;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(value:Object) : void
       {
-         _tipData = param1;
+         _tipData = value;
       }
       
-      public function set tipDirctions(param1:String) : void
+      public function set tipDirctions(value:String) : void
       {
-         _tipDirctions = param1;
+         _tipDirctions = value;
       }
       
-      public function set tipGapV(param1:int) : void
+      public function set tipGapV(value:int) : void
       {
-         _tipGapV = param1;
+         _tipGapV = value;
       }
       
-      public function set tipGapH(param1:int) : void
+      public function set tipGapH(value:int) : void
       {
-         _tipGapH = param1;
+         _tipGapH = value;
       }
       
       public function asDisplayObject() : DisplayObject

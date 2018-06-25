@@ -26,10 +26,10 @@ package christmas.event
       
       private var _data:Object;
       
-      public function ChrismasEvent(param1:String, param2:Object = null, param3:Boolean = false, param4:Boolean = false)
+      public function ChrismasEvent(type:String, data:Object = null, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         _data = param2;
-         super(param1,param3,param4);
+         _data = data;
+         super(type,bubbles,cancelable);
       }
       
       public function get data() : Object

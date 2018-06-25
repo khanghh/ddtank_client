@@ -51,11 +51,11 @@ package sanXiao.view
       {
          _bg = ComponentFactory.Instance.creatBitmap("ast.sanxiao.storeBG");
          addChild(_bg);
-         var _loc1_:Shape = new Shape();
-         _loc1_.graphics.beginFill(0,0);
-         _loc1_.graphics.drawRect(0,0,66,66);
-         _loc1_.graphics.endFill();
-         _bagCell = new BagCell(0,null,true,_loc1_);
+         var bg:Shape = new Shape();
+         bg.graphics.beginFill(0,0);
+         bg.graphics.drawRect(0,0,66,66);
+         bg.graphics.endFill();
+         _bagCell = new BagCell(0,null,true,bg);
          _bagCell.width = 66;
          _bagCell.height = 66;
          _bagCell.tbxCount.scaleX = 1 / _bagCell.scaleX;
@@ -77,7 +77,7 @@ package sanXiao.view
          _exchangeBtn.addEventListener("click",onExchangeClick);
       }
       
-      protected function onExchangeClick(param1:MouseEvent) : void
+      protected function onExchangeClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_data == null)
@@ -94,16 +94,16 @@ package sanXiao.view
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("sanxiao.crystalNotEnough"),0,true,1);
             return;
          }
-         var _loc2_:SXShopBuyView = ComponentFactory.Instance.creatComponentByStylename("sanxiao.QuickBuyAlert");
-         _loc2_.setData(_data.TempleteID,_data.TempleteID,_data.price);
-         _loc2_.setID(_data.id);
-         _loc2_.setBuyNum(_data.remain);
-         LayerManager.Instance.addToLayer(_loc2_,2,true,1);
+         var buyAlert:SXShopBuyView = ComponentFactory.Instance.creatComponentByStylename("sanxiao.QuickBuyAlert");
+         buyAlert.setData(_data.TempleteID,_data.TempleteID,_data.price);
+         buyAlert.setID(_data.id);
+         buyAlert.setBuyNum(_data.remain);
+         LayerManager.Instance.addToLayer(buyAlert,2,true,1);
       }
       
-      public function updateItem(param1:Object = null) : void
+      public function updateItem(data:Object = null) : void
       {
-         if(param1 == null)
+         if(data == null)
          {
             _bagCell.info = null;
             _priceText.text = "";
@@ -112,19 +112,19 @@ package sanXiao.view
             _exchangeBtn.visible = false;
             return;
          }
-         _data = param1 as SXStoreItemData;
-         var _loc2_:InventoryItemInfo = new InventoryItemInfo();
-         ObjectUtils.copyProperties(_loc2_,ItemManager.Instance.getTemplateById(_data.TempleteID));
-         _loc2_.ValidDate = _data.Valid;
-         _loc2_.IsBinds = _data.isBind;
-         _loc2_.Count = _data.count;
-         _loc2_.Property5 = "1";
-         _bagCell.info = _loc2_;
+         _data = data as SXStoreItemData;
+         var __info:InventoryItemInfo = new InventoryItemInfo();
+         ObjectUtils.copyProperties(__info,ItemManager.Instance.getTemplateById(_data.TempleteID));
+         __info.ValidDate = _data.Valid;
+         __info.IsBinds = _data.isBind;
+         __info.Count = _data.count;
+         __info.Property5 = "1";
+         _bagCell.info = __info;
          if(_bagCell.info)
          {
             _titleTxt.text = _bagCell.info.Name + "(" + _data.remain + "/" + _data.total + ")";
          }
-         _bagCell.setCount(_loc2_.Count);
+         _bagCell.setCount(__info.Count);
          _priceText.text = _data.price.toString();
          _exchangeBtn.enable = _data.remain >= 1;
          _priceIcon.visible = true;

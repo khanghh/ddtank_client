@@ -27,16 +27,16 @@ package sevenDayTarget.view
       
       private var linkSp:Sprite;
       
-      public function SevenDayTargetConditionCell(param1:NewTargetQuestionInfo)
+      public function SevenDayTargetConditionCell(info:NewTargetQuestionInfo)
       {
          super();
-         _todayQuestInfo = param1;
+         _todayQuestInfo = info;
       }
       
-      public function setView(param1:String, param2:Boolean, param3:Boolean = true) : void
+      public function setView(discripe:String, completed:Boolean, canClick:Boolean = true) : void
       {
          conditionText = ComponentFactory.Instance.creatComponentByStylename("sevenDayTarget.view.conditionText");
-         conditionText.text = param1;
+         conditionText.text = discripe;
          if(conditionText.text.length > 10)
          {
             PositionUtils.setPos(conditionText,"sevenDayTarget.view.conditiontextPos1");
@@ -48,7 +48,7 @@ package sevenDayTarget.view
          addChild(conditionText);
          linkSp = new Sprite();
          linkSp.graphics.beginFill(65280,0);
-         if(param3)
+         if(canClick)
          {
             linkSp.addEventListener("click",__clickLinkText);
             linkSp.buttonMode = true;
@@ -71,7 +71,7 @@ package sevenDayTarget.view
          conditionUnComplete = ComponentFactory.Instance.creat("sevenDayTarget.unfinish");
          PositionUtils.setPos(conditionUnComplete,"sevenDayTarget.view.finishPos");
          addChild(conditionUnComplete);
-         if(param2)
+         if(completed)
          {
             conditionComplete.visible = true;
             conditionUnComplete.visible = false;
@@ -115,7 +115,7 @@ package sevenDayTarget.view
          }
       }
       
-      private function __clickLinkText(param1:MouseEvent) : void
+      private function __clickLinkText(e:MouseEvent) : void
       {
          NewSevenDayAndNewPlayerManager.Instance.dispatchEvent(new Event("clickLink"));
       }

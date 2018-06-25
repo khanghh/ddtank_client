@@ -22,7 +22,7 @@ package times.utils.timerManager
       
       private var _timer1000ms:TManagerJuggler;
       
-      public function TimerManager(param1:inner)
+      public function TimerManager(single:inner)
       {
          super();
          _timerSpecial = new TManagerJuggler(new InternalFlag(),0);
@@ -42,90 +42,90 @@ package times.utils.timerManager
          return instance;
       }
       
-      public function addTimerJuggler(param1:Number, param2:int = 0, param3:Boolean = true, param4:String = "common") : TimerJuggler
+      public function addTimerJuggler(delay:Number, repeatCount:int = 0, revise:Boolean = true, type:String = "common") : TimerJuggler
       {
-         var _loc5_:* = param4;
+         var _loc5_:* = type;
          if("common" !== _loc5_)
          {
             if("80ms" !== _loc5_)
             {
                if("1s" !== _loc5_)
                {
-                  return _timerSpecial.addTimer(param1,param2,param3,param4);
+                  return _timerSpecial.addTimer(delay,repeatCount,revise,type);
                }
-               return _timer1000ms.addTimer(param1,param2,param3,param4);
+               return _timer1000ms.addTimer(delay,repeatCount,revise,type);
             }
-            return _timer80ms.addTimer(param1,param2,param3,param4);
+            return _timer80ms.addTimer(delay,repeatCount,revise,type);
          }
-         return _timerSpecial.addTimer(param1,param2,param3,param4);
+         return _timerSpecial.addTimer(delay,repeatCount,revise,type);
       }
       
-      public function removeTimerJuggler(param1:uint) : void
+      public function removeTimerJuggler(id:uint) : void
       {
-         _timerSpecial.removeTimer(param1);
+         _timerSpecial.removeTimer(id);
       }
       
-      public function removeJugglerByTimer(param1:TimerJuggler) : void
+      public function removeJugglerByTimer(timer:TimerJuggler) : void
       {
-         if(param1 == null)
+         if(timer == null)
          {
             return;
          }
-         var _loc2_:* = param1.type;
+         var _loc2_:* = timer.type;
          if("common" !== _loc2_)
          {
             if("80ms" !== _loc2_)
             {
                if("1s" === _loc2_)
                {
-                  _timer1000ms.removeTimer(param1.id);
+                  _timer1000ms.removeTimer(timer.id);
                }
             }
             else
             {
-               _timer80ms.removeTimer(param1.id);
+               _timer80ms.removeTimer(timer.id);
             }
          }
          else
          {
-            _timerSpecial.removeTimer(param1.id);
+            _timerSpecial.removeTimer(timer.id);
          }
       }
       
-      public function addTimer1000ms(param1:Number, param2:int = 0) : TimerJuggler
+      public function addTimer1000ms(delay:Number, repeatCount:int = 0) : TimerJuggler
       {
-         return _timer1000ms.addTimer(param1,param2,false,"1s");
+         return _timer1000ms.addTimer(delay,repeatCount,false,"1s");
       }
       
-      public function removeTimer1000ms(param1:TimerJuggler) : void
+      public function removeTimer1000ms(timer:TimerJuggler) : void
       {
-         if(param1 == null)
+         if(timer == null)
          {
             return;
          }
-         if(param1.type != "1s")
+         if(timer.type != "1s")
          {
             return;
          }
-         _timer1000ms.removeTimer(param1.id);
+         _timer1000ms.removeTimer(timer.id);
       }
       
-      public function addTimer100ms(param1:Number, param2:int = 0) : TimerJuggler
+      public function addTimer100ms(delay:Number, repeatCount:int = 0) : TimerJuggler
       {
-         return _timerSpecial.addTimer(param1,param2,false,"common");
+         return _timerSpecial.addTimer(delay,repeatCount,false,"common");
       }
       
-      public function removeTimer100ms(param1:TimerJuggler) : void
+      public function removeTimer100ms(timer:TimerJuggler) : void
       {
-         if(param1 == null)
+         if(timer == null)
          {
             return;
          }
-         if(param1.type != "common")
+         if(timer.type != "common")
          {
             return;
          }
-         _timerSpecial.removeTimer(param1.id);
+         _timerSpecial.removeTimer(timer.id);
       }
    }
 }

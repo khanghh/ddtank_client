@@ -46,11 +46,11 @@ package funnyGames.cubeGame.data
       
       private var _linkType:int;
       
-      public function CubeData(param1:int, param2:int)
+      public function CubeData(id:int, type:int)
       {
          super();
-         this._id = param1;
-         this._type = param2;
+         this._id = id;
+         this._type = type;
          parseLink();
       }
       

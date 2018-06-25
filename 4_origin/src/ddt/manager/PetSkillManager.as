@@ -18,27 +18,27 @@ package ddt.manager
          super();
       }
       
-      public static function setup(param1:PetSkillAnalyzer) : void
+      public static function setup(analyzer:PetSkillAnalyzer) : void
       {
-         _skills = param1.list;
+         _skills = analyzer.list;
       }
       
-      public static function getSkillByID(param1:int) : PetSkillTemplateInfo
+      public static function getSkillByID(skillID:int) : PetSkillTemplateInfo
       {
-         return _skills[param1];
+         return _skills[skillID];
       }
       
-      public static function fillPetSkill(param1:PetSkill) : void
+      public static function fillPetSkill(skill:PetSkill) : void
       {
-         var _loc3_:PetSkillTemplateInfo = getSkillByID(param1.ID);
-         var _loc2_:Boolean = PetsBagManager.instance().isAwakenSkill(param1.ID);
-         if(_loc2_)
+         var s:PetSkillTemplateInfo = getSkillByID(skill.ID);
+         var isAwakenSkill:Boolean = PetsBagManager.instance().isAwakenSkill(skill.ID);
+         if(isAwakenSkill)
          {
-            _loc3_.exclusiveID = param1.ID;
+            s.exclusiveID = skill.ID;
          }
-         if(_loc3_)
+         if(s)
          {
-            ObjectUtils.copyProperties(param1,_loc3_);
+            ObjectUtils.copyProperties(skill,s);
          }
       }
    }

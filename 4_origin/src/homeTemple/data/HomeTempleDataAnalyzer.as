@@ -13,30 +13,29 @@ package homeTemple.data
       
       private var _xml:XML;
       
-      public function HomeTempleDataAnalyzer(param1:Function)
+      public function HomeTempleDataAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc2_:* = null;
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         _xml = new XML(param1);
+         var xmllist:* = null;
+         var i:int = 0;
+         var info:* = null;
+         _xml = new XML(data);
          if(_xml.@value == "true")
          {
             list = new Dictionary();
-            _loc2_ = _xml..item;
-            _loc4_ = 0;
-            while(_loc4_ < _loc2_.length())
+            xmllist = _xml..item;
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc3_ = new HomeTempleModel();
-               ObjectUtils.copyPorpertiesByXML(_loc3_,_loc2_[_loc4_]);
-               list[_loc3_.Level] = _loc3_;
-               _loc4_++;
+               info = new HomeTempleModel();
+               ObjectUtils.copyPorpertiesByXML(info,xmllist[i]);
+               list[info.Level] = info;
+               i++;
             }
-            HomeTempleController.MAXLEVEL = _loc2_.length() - 1;
+            HomeTempleController.MAXLEVEL = xmllist.length() - 1;
             onAnalyzeComplete();
          }
          else

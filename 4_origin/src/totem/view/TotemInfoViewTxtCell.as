@@ -4,6 +4,7 @@ package totem.view
    import com.pickgliss.ui.core.Disposeable;
    import com.pickgliss.ui.text.FilterFrameText;
    import com.pickgliss.utils.ObjectUtils;
+   import ddt.data.player.PlayerInfo;
    import ddt.manager.LanguageMgr;
    import flash.display.Bitmap;
    import flash.display.Sprite;
@@ -22,45 +23,48 @@ package totem.view
       
       private var _bg:Bitmap;
       
-      public function TotemInfoViewTxtCell()
+      private var _playerInfo:PlayerInfo;
+      
+      public function TotemInfoViewTxtCell(info:PlayerInfo)
       {
+         _playerInfo = info;
          super();
          _bg = ComponentFactory.Instance.creatBitmap("asset.totem.infoView.txtCellBg");
          _nameTxt = ComponentFactory.Instance.creatComponentByStylename("totem.infoView.propertyName.txt");
          _valueTxt = ComponentFactory.Instance.creatComponentByStylename("totem.infoView.propertyValue.txt");
-         var _loc1_:String = LanguageMgr.GetTranslation("ddt.totem.sevenProperty");
-         _txtArray = _loc1_.split(",");
+         var tmp:String = LanguageMgr.GetTranslation("ddt.totem.sevenProperty");
+         _txtArray = tmp.split(",");
          addChild(_bg);
          addChild(_nameTxt);
          addChild(_valueTxt);
       }
       
-      public function show(param1:int, param2:int) : void
+      public function show(type:int, totemID:int) : void
       {
-         _nameTxt.text = _txtArray[param1 - 1];
-         var _loc3_:TotemAddInfo = TotemManager.instance.getAddInfo(param2);
-         switch(int(param1) - 1)
+         _nameTxt.text = _txtArray[type - 1];
+         var addInfo:TotemAddInfo = TotemManager.instance.otherPlayerTotemAllPro(totemID,_playerInfo.totemGrades);
+         switch(int(type) - 1)
          {
             case 0:
-               _valueTxt.text = _loc3_.Attack.toString();
+               _valueTxt.text = addInfo.Attack.toString();
                break;
             case 1:
-               _valueTxt.text = _loc3_.Defence.toString();
+               _valueTxt.text = addInfo.Defence.toString();
                break;
             case 2:
-               _valueTxt.text = _loc3_.Agility.toString();
+               _valueTxt.text = addInfo.Agility.toString();
                break;
             case 3:
-               _valueTxt.text = _loc3_.Luck.toString();
+               _valueTxt.text = addInfo.Luck.toString();
                break;
             case 4:
-               _valueTxt.text = _loc3_.Blood.toString();
+               _valueTxt.text = addInfo.Blood.toString();
                break;
             case 5:
-               _valueTxt.text = _loc3_.Damage.toString();
+               _valueTxt.text = addInfo.Damage.toString();
                break;
             case 6:
-               _valueTxt.text = _loc3_.Guard.toString();
+               _valueTxt.text = addInfo.Guard.toString();
          }
       }
       

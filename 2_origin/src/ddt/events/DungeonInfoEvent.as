@@ -8,9 +8,9 @@ package ddt.events
       public static const DungeonHelpChanged:String = "DungeonHelpChanged";
        
       
-      public function DungeonInfoEvent(param1:String, param2:Boolean = false, param3:Boolean = false)
+      public function DungeonInfoEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         super(param1,param2,param3);
+         super(type,bubbles,cancelable);
       }
    }
 }

@@ -13,11 +13,11 @@ package ddt.view.sceneCharacter
       
       private var _frameIndex:int;
       
-      public function SceneCharacterBase(param1:Vector.<Bitmap>)
+      public function SceneCharacterBase(frameBitmap:Vector.<Bitmap>)
       {
          _frameIndex = Math.random() * 7;
          super();
-         _frameBitmap = param1;
+         _frameBitmap = frameBitmap;
          initialize();
       }
       
@@ -38,25 +38,25 @@ package ddt.view.sceneCharacter
          }
       }
       
-      private function loadFrame(param1:int) : void
+      private function loadFrame(frameIndex:int) : void
       {
-         if(param1 >= _frameBitmap.length)
+         if(frameIndex >= _frameBitmap.length)
          {
-            param1 = _frameBitmap.length - 1;
+            frameIndex = _frameBitmap.length - 1;
          }
-         if(_frameBitmap && _frameBitmap[param1])
+         if(_frameBitmap && _frameBitmap[frameIndex])
          {
             if(this.numChildren > 0 && this.getChildAt(0))
             {
                removeChildAt(0);
             }
-            addChild(_frameBitmap[param1]);
+            addChild(_frameBitmap[frameIndex]);
          }
       }
       
-      public function set sceneCharacterActionItem(param1:SceneCharacterActionItem) : void
+      public function set sceneCharacterActionItem(value:SceneCharacterActionItem) : void
       {
-         _sceneCharacterActionItem = param1;
+         _sceneCharacterActionItem = value;
          _frameIndex = 0;
       }
       

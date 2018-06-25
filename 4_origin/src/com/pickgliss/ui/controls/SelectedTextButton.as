@@ -50,32 +50,32 @@ package com.pickgliss.ui.controls
          super();
       }
       
-      public function set unSelectedButtonOuterRectPosString(param1:String) : void
+      public function set unSelectedButtonOuterRectPosString(value:String) : void
       {
-         if(_unSelectedButtonOuterRectPosString == param1)
+         if(_unSelectedButtonOuterRectPosString == value)
          {
             return;
          }
-         _unSelectedButtonOuterRectPosString = param1;
+         _unSelectedButtonOuterRectPosString = value;
          _unSelectedButtonOuterRectPos = ClassUtils.CreatInstance("com.pickgliss.geom.OuterRectPos",ComponentFactory.parasArgs(_unSelectedButtonOuterRectPosString));
          onPropertiesChanged("unSelectedButtonOuterRectPos");
       }
       
-      public function set backgoundInnerRectString(param1:String) : void
+      public function set backgoundInnerRectString(value:String) : void
       {
-         if(_backgoundInnerRectString == param1)
+         if(_backgoundInnerRectString == value)
          {
             return;
          }
-         _backgoundInnerRectString = param1;
-         var _loc2_:Array = ComponentFactory.parasArgs(_backgoundInnerRectString);
-         if(_loc2_.length > 0 && _loc2_[0] != "")
+         _backgoundInnerRectString = value;
+         var rectsData:Array = ComponentFactory.parasArgs(_backgoundInnerRectString);
+         if(rectsData.length > 0 && rectsData[0] != "")
          {
-            _selectedBackgoundInnerRect = ClassUtils.CreatInstance("com.pickgliss.geom.InnerRectangle",String(_loc2_[0]).split("|"));
+            _selectedBackgoundInnerRect = ClassUtils.CreatInstance("com.pickgliss.geom.InnerRectangle",String(rectsData[0]).split("|"));
          }
-         if(_loc2_.length > 1 && _loc2_[1] != "")
+         if(rectsData.length > 1 && rectsData[1] != "")
          {
-            _unselectedBackgoundInnerRect = ClassUtils.CreatInstance("com.pickgliss.geom.InnerRectangle",String(_loc2_[1]).split("|"));
+            _unselectedBackgoundInnerRect = ClassUtils.CreatInstance("com.pickgliss.geom.InnerRectangle",String(rectsData[1]).split("|"));
          }
          onPropertiesChanged("backgoundInnerRect");
       }
@@ -95,53 +95,53 @@ package com.pickgliss.ui.controls
          super.dispose();
       }
       
-      public function set text(param1:String) : void
+      public function set text(value:String) : void
       {
-         if(_text == param1)
+         if(_text == value)
          {
             return;
          }
-         _text = param1;
+         _text = value;
          onPropertiesChanged("text");
       }
       
-      public function set selectedTextField(param1:TextField) : void
+      public function set selectedTextField(field:TextField) : void
       {
-         if(_selectedTextField == param1)
+         if(_selectedTextField == field)
          {
             return;
          }
          ObjectUtils.disposeObject(_selectedTextField);
-         _selectedTextField = param1;
+         _selectedTextField = field;
          onPropertiesChanged("selectedtextField");
       }
       
-      public function set unSelectedTextField(param1:TextField) : void
+      public function set unSelectedTextField(field:TextField) : void
       {
-         if(_unSelectedTextField == param1)
+         if(_unSelectedTextField == field)
          {
             return;
          }
          ObjectUtils.disposeObject(_unSelectedTextField);
-         _unSelectedTextField = param1;
+         _unSelectedTextField = field;
          onPropertiesChanged("unselectedtextField");
       }
       
-      public function set textStyle(param1:String) : void
+      public function set textStyle(stylename:String) : void
       {
-         if(_textStyle == param1)
+         if(_textStyle == stylename)
          {
             return;
          }
-         _textStyle = param1;
-         var _loc2_:Array = ComponentFactory.parasArgs(param1);
-         if(_loc2_.length > 0 && _loc2_[0] != "")
+         _textStyle = stylename;
+         var styles:Array = ComponentFactory.parasArgs(stylename);
+         if(styles.length > 0 && styles[0] != "")
          {
-            selectedTextField = ComponentFactory.Instance.creatComponentByStylename(_loc2_[0]);
+            selectedTextField = ComponentFactory.Instance.creatComponentByStylename(styles[0]);
          }
-         if(_loc2_.length > 1 && _loc2_[1] != "")
+         if(styles.length > 1 && styles[1] != "")
          {
-            unSelectedTextField = ComponentFactory.Instance.creatComponentByStylename(_loc2_[1]);
+            unSelectedTextField = ComponentFactory.Instance.creatComponentByStylename(styles[1]);
          }
       }
       
@@ -158,24 +158,24 @@ package com.pickgliss.ui.controls
          }
       }
       
-      override public function set selected(param1:Boolean) : void
+      override public function set selected(value:Boolean) : void
       {
-         .super.selected = param1;
+         .super.selected = value;
          if(_selectedTextField)
          {
-            _selectedTextField.visible = param1;
+            _selectedTextField.visible = value;
          }
          if(_unSelectedTextField)
          {
-            _unSelectedTextField.visible = !param1;
+            _unSelectedTextField.visible = !value;
          }
          onPropertiesChanged("selected");
       }
       
       override protected function onProppertiesUpdate() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var rectangleSe:* = null;
+         var rectangleUnSe:* = null;
          super.onProppertiesUpdate();
          if(_selected && _selectedTextField)
          {
@@ -189,11 +189,11 @@ package com.pickgliss.ui.controls
          {
             if(_selected && _selectedTextField)
             {
-               _loc2_ = _selectedBackgoundInnerRect.getInnerRect(_selectedTextField.textWidth,_selectedTextField.textHeight);
-               var _loc3_:* = _loc2_.width;
+               rectangleSe = _selectedBackgoundInnerRect.getInnerRect(_selectedTextField.textWidth,_selectedTextField.textHeight);
+               var _loc3_:* = rectangleSe.width;
                _selectedButton.width = _loc3_;
                _width = _loc3_;
-               _loc3_ = _loc2_.height;
+               _loc3_ = rectangleSe.height;
                _selectedButton.height = _loc3_;
                _height = _loc3_;
                _selectedTextField.x = _selectedBackgoundInnerRect.para1;
@@ -202,11 +202,11 @@ package com.pickgliss.ui.controls
             else if(!_selected && _unSelectedTextField)
             {
                upUnselectedButtonPos();
-               _loc1_ = _unselectedBackgoundInnerRect.getInnerRect(_unSelectedTextField.textWidth,_unSelectedTextField.textHeight);
-               _loc3_ = _loc1_.width;
+               rectangleUnSe = _unselectedBackgoundInnerRect.getInnerRect(_unSelectedTextField.textWidth,_unSelectedTextField.textHeight);
+               _loc3_ = rectangleUnSe.width;
                _unSelectedButton.width = _loc3_;
                _width = _loc3_;
-               _loc3_ = _loc1_.height;
+               _loc3_ = rectangleUnSe.height;
                _unSelectedButton.height = _loc3_;
                _height = _loc3_;
                _unSelectedTextField.x = _unselectedBackgoundInnerRect.para1 + _unSelectedButton.x;
@@ -256,9 +256,9 @@ package com.pickgliss.ui.controls
          {
             return;
          }
-         var _loc1_:Point = _unSelectedButtonOuterRectPos.getPos(_unSelectedButton.width,_unSelectedButton.height,_selectedButton.width,_selectedButton.height);
-         _unSelectedButton.x = _loc1_.x;
-         _unSelectedButton.y = _loc1_.y;
+         var posRect:Point = _unSelectedButtonOuterRectPos.getPos(_unSelectedButton.width,_unSelectedButton.height,_selectedButton.width,_selectedButton.height);
+         _unSelectedButton.x = posRect.x;
+         _unSelectedButton.y = posRect.y;
       }
    }
 }

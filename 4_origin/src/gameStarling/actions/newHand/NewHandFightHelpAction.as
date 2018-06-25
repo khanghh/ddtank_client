@@ -21,13 +21,13 @@ package gameStarling.actions.newHand
       
       private var _map:MapView3D;
       
-      public function NewHandFightHelpAction(param1:LocalPlayer, param2:int, param3:MapView3D)
+      public function NewHandFightHelpAction(player:LocalPlayer, shootOverCount:int, map:MapView3D)
       {
          super();
-         _player = param1;
+         _player = player;
          _bombs = _player.lastFireBombs;
-         _shootOverCount = param2;
-         _map = param3;
+         _shootOverCount = shootOverCount;
+         _map = map;
       }
       
       override public function prepare() : void
@@ -95,11 +95,11 @@ package gameStarling.actions.newHand
       {
          var _loc3_:int = 0;
          var _loc2_:* = GameControl.Instance.Current.livings;
-         for each(var _loc1_ in GameControl.Instance.Current.livings)
+         for each(var p in GameControl.Instance.Current.livings)
          {
-            if(_loc1_.isPlayer() && _loc1_.isLiving && _loc1_ != _player)
+            if(p.isPlayer() && p.isLiving && p != _player)
             {
-               return _loc1_ as Player;
+               return p as Player;
             }
          }
          return null;
@@ -107,14 +107,14 @@ package gameStarling.actions.newHand
       
       private function checkShootDirection() : Boolean
       {
-         var _loc1_:Bomb = getRecentBomb();
-         if(_loc1_ == null || _loc1_.Template.ID == 3)
+         var bomb:Bomb = getRecentBomb();
+         if(bomb == null || bomb.Template.ID == 3)
          {
             return false;
          }
-         var _loc2_:int = _enemyPlayer.pos.x > _player.pos.x?1:-1;
-         var _loc3_:int = _loc1_.target.x >= _loc1_.X?1:-1;
-         if(_loc2_ != _loc3_)
+         var dic1:int = _enemyPlayer.pos.x > _player.pos.x?1:-1;
+         var dic2:int = bomb.target.x >= bomb.X?1:-1;
+         if(dic1 != dic2)
          {
             showFightTip("tank.trainer.fightAction.newHandTip1");
             return true;
@@ -126,9 +126,9 @@ package gameStarling.actions.newHand
       {
          var _loc3_:int = 0;
          var _loc2_:* = _bombs;
-         for each(var _loc1_ in _bombs)
+         for each(var bomb in _bombs)
          {
-            if(_loc1_.Template.ID != 64 && _map.IsOutMap(_loc1_.target.x,_loc1_.target.y))
+            if(bomb.Template.ID != 64 && _map.IsOutMap(bomb.target.x,bomb.target.y))
             {
                _player.NewHandHurtEnemyCounter++;
                checkHurtEnemy(false);
@@ -141,8 +141,8 @@ package gameStarling.actions.newHand
       
       private function checkHurtSelf() : Boolean
       {
-         var _loc1_:int = _player.NewHandSelfBlood > 0?_player.NewHandSelfBlood:int(_player.maxBlood);
-         if(_loc1_ > _player.blood)
+         var blood:int = _player.NewHandSelfBlood > 0?_player.NewHandSelfBlood:int(_player.maxBlood);
+         if(blood > _player.blood)
          {
             _player.NewHandHurtSelfCounter++;
             if(_player.NewHandHurtSelfCounter > 0)
@@ -160,47 +160,47 @@ package gameStarling.actions.newHand
       
       private function getRecentBomb() : Bomb
       {
-         var _loc1_:* = null;
-         var _loc3_:int = 0;
-         var _loc4_:int = -1;
+         var result:* = null;
+         var TemplateID:int = 0;
+         var inst:int = -1;
          var _loc6_:int = 0;
          var _loc5_:* = _bombs;
-         for each(var _loc2_ in _bombs)
+         for each(var bomb in _bombs)
          {
-            _loc3_ = _loc2_.Template.ID;
-            if(_loc2_ && (_loc3_ != 64 && _loc3_ != 3 && _loc3_ != 1) && (_loc4_ == -1 || Math.abs(_loc2_.target.x - _enemyPlayer.pos.x) < _loc4_))
+            TemplateID = bomb.Template.ID;
+            if(bomb && (TemplateID != 64 && TemplateID != 3 && TemplateID != 1) && (inst == -1 || Math.abs(bomb.target.x - _enemyPlayer.pos.x) < inst))
             {
-               _loc4_ = Math.abs(_loc2_.target.x - _enemyPlayer.pos.x);
-               _loc1_ = _loc2_;
+               inst = Math.abs(bomb.target.x - _enemyPlayer.pos.x);
+               result = bomb;
             }
          }
-         return _loc1_;
+         return result;
       }
       
-      private function checkHurtEnemy(param1:Boolean = true) : Boolean
+      private function checkHurtEnemy(showTip:Boolean = true) : Boolean
       {
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
+         var bomb:* = null;
+         var dic1:int = 0;
+         var dic2:int = 0;
          if(_player.NewHandEnemyBlood != _enemyPlayer.blood || _player.NewHandEnemyIsFrozen && !_enemyPlayer.isFrozen)
          {
             _player.NewHandHurtEnemyCounter = 0;
          }
          else
          {
-            _loc2_ = getRecentBomb();
-            if(_loc2_ == null)
+            bomb = getRecentBomb();
+            if(bomb == null)
             {
                return false;
             }
             _player.NewHandHurtEnemyCounter++;
             if(_player.NewHandHurtEnemyCounter > 1)
             {
-               _loc3_ = _enemyPlayer.pos.x > _player.pos.x?1:-1;
-               _loc4_ = _loc2_.target.x > _enemyPlayer.pos.x?1:-1;
-               if(param1)
+               dic1 = _enemyPlayer.pos.x > _player.pos.x?1:-1;
+               dic2 = bomb.target.x > _enemyPlayer.pos.x?1:-1;
+               if(showTip)
                {
-                  showFightTip("tank.trainer.fightAction.newHandTip3" + (_loc3_ == _loc4_?"Small":"Large"));
+                  showFightTip("tank.trainer.fightAction.newHandTip3" + (dic1 == dic2?"Small":"Large"));
                }
                return true;
             }

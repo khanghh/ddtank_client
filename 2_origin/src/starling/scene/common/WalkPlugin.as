@@ -31,19 +31,19 @@ package starling.scene.common
       
       private var _isWalk:Boolean = false;
       
-      public function WalkPlugin(param1:Object = null, param2:Number = 1, param3:Array = null)
+      public function WalkPlugin(entity:Object = null, speed:Number = 1, pathArr:Array = null)
       {
          super();
-         _entity = param1;
-         _speed = param2;
-         _pathArr = param3;
+         _entity = entity;
+         _speed = speed;
+         _pathArr = pathArr;
          _walkTween = new Tween(_entity,1);
       }
       
       public function walk() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:Number = NaN;
+         var endPoint:* = null;
+         var sec:Number = NaN;
          if(_entity == null)
          {
             throw new Error("必须先设置运动实体entity");
@@ -64,15 +64,15 @@ package starling.scene.common
          if(_currentPathIndex < _pathArr.length)
          {
             _isWalk = true;
-            _loc1_ = _pathArr[_currentPathIndex];
-            _loc2_ = Math.sqrt(Math.pow(_loc1_.x - _entity.x,2) + Math.pow(_loc1_.y - _entity.y,2)) / _speed;
+            endPoint = _pathArr[_currentPathIndex];
+            sec = Math.sqrt(Math.pow(endPoint.x - _entity.x,2) + Math.pow(endPoint.y - _entity.y,2)) / _speed;
             Starling.juggler.add(_walkTween);
-            _walkTween.reset(_entity,_loc2_);
+            _walkTween.reset(_entity,sec);
             _walkTween.onComplete = onWalkPartComplete;
-            _walkTween.moveTo(_loc1_.x,_loc1_.y);
+            _walkTween.moveTo(endPoint.x,endPoint.y);
             if(_entity.hasOwnProperty("direction"))
             {
-               _entity.direction = getDirection(_entity.x,_entity.y,_loc1_.x,_loc1_.y);
+               _entity.direction = getDirection(_entity.x,_entity.y,endPoint.x,endPoint.y);
             }
          }
          else
@@ -81,13 +81,13 @@ package starling.scene.common
          }
       }
       
-      private function getDirection(param1:Number, param2:Number, param3:Number, param4:Number) : int
+      private function getDirection(startX:Number, startY:Number, endX:Number, endY:Number) : int
       {
-         if(param1 <= param3)
+         if(startX <= endX)
          {
-            return param2 <= param4?3:1;
+            return startY <= endY?3:1;
          }
-         return param2 <= param4?4:2;
+         return startY <= endY?4:2;
       }
       
       private function onWalkPartComplete() : void
@@ -111,9 +111,9 @@ package starling.scene.common
          return _entity;
       }
       
-      public function set entity(param1:Object) : void
+      public function set entity(value:Object) : void
       {
-         _entity = param1;
+         _entity = value;
       }
       
       public function get pathArr() : Array
@@ -121,9 +121,9 @@ package starling.scene.common
          return _pathArr;
       }
       
-      public function set pathArr(param1:Array) : void
+      public function set pathArr(value:Array) : void
       {
-         _pathArr = param1;
+         _pathArr = value;
       }
       
       public function get speed() : Number
@@ -131,9 +131,9 @@ package starling.scene.common
          return _speed;
       }
       
-      public function set speed(param1:Number) : void
+      public function set speed(value:Number) : void
       {
-         _speed = param1;
+         _speed = value;
       }
       
       public function get isFinish() : Boolean

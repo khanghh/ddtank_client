@@ -32,11 +32,11 @@ package hall.tasktrack
       
       private var _pointDownArrow:MovieClip;
       
-      public function HallTaskCanGetListView(param1:BaseButton)
+      public function HallTaskCanGetListView(npcBtn:BaseButton)
       {
          super();
          this.mouseEnabled = false;
-         _npcBtn = param1;
+         _npcBtn = npcBtn;
          _dataList = TaskManager.instance.manuGetList;
          initView();
          initEvent();
@@ -64,33 +64,32 @@ package hall.tasktrack
          _dataList.addEventListener("remove",removeHandler);
       }
       
-      private function addHandler(param1:DictionaryEvent) : void
+      private function addHandler(event:DictionaryEvent) : void
       {
          refreshView();
       }
       
-      private function removeHandler(param1:DictionaryEvent) : void
+      private function removeHandler(event:DictionaryEvent) : void
       {
          refreshView();
       }
       
       private function refreshView() : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
+         var i:int = 0;
+         var taskTitleTxt:* = null;
          ObjectUtils.disposeAllChildren(_sprite);
-         var _loc1_:Array = _dataList.list;
-         var _loc2_:int = _loc1_.length;
-         if(_loc2_ > 0)
+         var dataArray:Array = _dataList.list;
+         var tmpLen:int = dataArray.length;
+         if(tmpLen > 0)
          {
-            _loc4_ = 0;
-            while(_loc4_ < _loc2_)
+            for(i = 0; i < tmpLen; )
             {
-               _loc3_ = ComponentFactory.Instance.creatComponentByStylename("hall.taskTrack.cellTitleTxt");
-               _loc3_.text = ">>" + _loc1_[_loc4_].Title;
-               _loc3_.y = 20 * _loc4_;
-               _sprite.addChild(_loc3_);
-               if(_loc1_[_loc4_].QuestID == 558 && !_pointDownArrow)
+               taskTitleTxt = ComponentFactory.Instance.creatComponentByStylename("hall.taskTrack.cellTitleTxt");
+               taskTitleTxt.text = ">>" + dataArray[i].Title;
+               taskTitleTxt.y = 20 * i;
+               _sprite.addChild(taskTitleTxt);
+               if(dataArray[i].QuestID == 558 && !_pointDownArrow)
                {
                   _pointDownArrow = ComponentFactory.Instance.creat("asset.newHandGuide.newArrowPointDown");
                   _pointDownArrow.mouseChildren = false;
@@ -99,7 +98,7 @@ package hall.tasktrack
                   _pointDownArrow.y = -59;
                   addChild(_pointDownArrow);
                }
-               _loc4_++;
+               i++;
             }
             _scrollPanel.setView(_sprite);
             _titleTxt.visible = true;
@@ -119,7 +118,7 @@ package hall.tasktrack
          dispatchEvent(new Event("change"));
       }
       
-      private function textClickHandler(param1:TextEvent) : void
+      private function textClickHandler(event:TextEvent) : void
       {
          _npcBtn.dispatchEvent(new MouseEvent("click"));
       }

@@ -28,7 +28,7 @@ package gameCommon.view.playerThumbnail
       
       private var _living:Living;
       
-      public function BloodItem(param1:int, param2:int)
+      public function BloodItem(currentBlood:int, totalBlood:int)
       {
          super();
          _bg = ComponentFactory.Instance.creatBitmap("asset.game.smallplayer.BloodBack");
@@ -36,30 +36,30 @@ package gameCommon.view.playerThumbnail
          _HPStrip = ComponentFactory.Instance.creatBitmap("asset.game.smallplayer.BloodFore");
          addChild(_HPStrip);
          _width = _HPStrip.width;
-         _totalBlood = param2;
-         _bloodNum = param1;
+         _totalBlood = totalBlood;
+         _bloodNum = currentBlood;
          _visibleRect = new Rectangle(0,0,_HPStrip.width,_HPStrip.height);
          _HPStrip.scrollRect = _visibleRect;
          setProgress(_bloodNum,_totalBlood);
       }
       
-      public function setProgress(param1:int, param2:int) : void
+      public function setProgress(val:int, max:int) : void
       {
-         _visibleRect.width = _width * param1 / param2;
+         _visibleRect.width = _width * val / max;
          _HPStrip.scrollRect = _visibleRect;
       }
       
-      public function set bloodNum(param1:int) : void
+      public function set bloodNum(value:int) : void
       {
-         if(param1 < 0)
+         if(value < 0)
          {
-            param1 = 0;
+            value = 0;
          }
-         else if(param1 > _totalBlood)
+         else if(value > _totalBlood)
          {
-            param1 = _totalBlood;
+            value = _totalBlood;
          }
-         _bloodNum = param1;
+         _bloodNum = value;
          updateView();
       }
       

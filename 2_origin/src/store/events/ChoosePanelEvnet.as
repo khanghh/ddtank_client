@@ -10,9 +10,9 @@ package store.events
       
       private var _currentPanel:int;
       
-      public function ChoosePanelEvnet(param1:int)
+      public function ChoosePanelEvnet(currentPanel:int)
       {
-         this._currentPanel = param1;
+         this._currentPanel = currentPanel;
          super("ChoosePanelEvent",true);
       }
       

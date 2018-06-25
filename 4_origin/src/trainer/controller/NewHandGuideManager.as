@@ -12,7 +12,7 @@ package trainer.controller
       
       private var _mapID:int;
       
-      public function NewHandGuideManager(param1:NewHandGuideManagerEnforcer)
+      public function NewHandGuideManager(enforcer:NewHandGuideManagerEnforcer)
       {
          super();
          initData();
@@ -32,13 +32,13 @@ package trainer.controller
          return _progress;
       }
       
-      public function set progress(param1:int) : void
+      public function set progress(step:int) : void
       {
-         if(param1 <= _progress)
+         if(step <= _progress)
          {
             return;
          }
-         _progress = param1;
+         _progress = step;
       }
       
       public function get mapID() : int
@@ -46,9 +46,9 @@ package trainer.controller
          return _mapID;
       }
       
-      public function set mapID(param1:int) : void
+      public function set mapID(value:int) : void
       {
-         _mapID = param1;
+         _mapID = value;
       }
       
       private function initData() : void

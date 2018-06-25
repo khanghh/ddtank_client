@@ -16,21 +16,21 @@ package pyramid.view
          super();
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
          CacheSysManager.lock("alertInPyramid");
          KeyboardShortcutsManager.Instance.forbiddenFull();
          _pyramidView = new PyramidView();
          addChild(_pyramidView);
-         super.enter(param1,param2);
+         super.enter(prev,data);
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
          CacheSysManager.unlock("alertInPyramid");
          CacheSysManager.getInstance().release("alertInPyramid");
          KeyboardShortcutsManager.Instance.cancelForbidden();
-         super.leaving(param1);
+         super.leaving(next);
          dispose();
       }
       

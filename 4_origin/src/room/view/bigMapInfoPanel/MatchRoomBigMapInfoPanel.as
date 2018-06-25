@@ -110,23 +110,23 @@ package room.view.bigMapInfoPanel
       
       private function setPngBitmap() : void
       {
-         var _loc1_:* = null;
+         var asLink:* = null;
          if(_info.type == 58)
          {
-            _loc1_ = "asset.teamRoom.bg";
+            asLink = "asset.teamRoom.bg";
          }
          else
          {
-            _loc1_ = _info.type == 68?"asset.ddtroom.polarRegion.map":"asset.ddtroom.charecaterPng";
+            asLink = _info.type == 68?"asset.ddtroom.polarRegion.map":"asset.ddtroom.charecaterPng";
          }
          if(!_png)
          {
-            _png = ComponentFactory.Instance.creatBitmap(_loc1_);
+            _png = ComponentFactory.Instance.creatBitmap(asLink);
             addChildAt(_png,1);
          }
       }
       
-      public function set info(param1:RoomInfo) : void
+      public function set info(value:RoomInfo) : void
       {
          if(_info)
          {
@@ -138,7 +138,7 @@ package room.view.bigMapInfoPanel
             _info.removeEventListener("roomplaceChanged",__update);
             _info = null;
          }
-         _info = param1;
+         _info = value;
          if(_info)
          {
             _info.addEventListener("gameModeChange",__update);
@@ -152,20 +152,20 @@ package room.view.bigMapInfoPanel
          updateBtns();
       }
       
-      private function __eliteGameTimerHandler(param1:TimerEvent) : void
+      private function __eliteGameTimerHandler(event:TimerEvent) : void
       {
          _eliteTime = Number(_eliteTime) - 1;
          _eliteTime = _eliteTime < 0?0:_eliteTime;
          _timeTxt.text = _eliteTime < 10?"0" + _eliteTime:_eliteTime + "";
       }
       
-      private function __update(param1:RoomEvent) : void
+      private function __update(evt:RoomEvent) : void
       {
          updateView();
          updateBtns();
       }
       
-      private function __startedHandler(param1:RoomEvent) : void
+      private function __startedHandler(evt:RoomEvent) : void
       {
          RoomManager.Instance.isMatch = _info.started;
          if(_info.started)
@@ -194,11 +194,11 @@ package room.view.bigMapInfoPanel
          updateBtns();
       }
       
-      private function __timer(param1:TimerEvent) : void
+      private function __timer(evt:TimerEvent) : void
       {
-         var _loc2_:uint = _timer.currentCount / 60;
-         var _loc3_:uint = _timer.currentCount % 60;
-         _timeTxt.text = _loc3_ > 9?_loc3_.toString():"0" + _loc3_;
+         var min:uint = _timer.currentCount / 60;
+         var sec:uint = _timer.currentCount % 60;
+         _timeTxt.text = sec > 9?sec.toString():"0" + sec;
          if(_timer.currentCount == 20)
          {
             if(!_info.selfRoomPlayer.isHost && !_info.selfRoomPlayer.isViewer)
@@ -360,7 +360,7 @@ package room.view.bigMapInfoPanel
       
       private function updateBtns() : void
       {
-         var _loc1_:Boolean = _info.canPlayGuidMode();
+         var canPlayeGuildMode:Boolean = _info.canPlayGuidMode();
          if(_freeModeBtn && _gameModeIcon)
          {
             _guildModeBtn.selected = _info && _info.gameMode == 1 || _info && _info.gameMode == 13;
@@ -368,16 +368,16 @@ package room.view.bigMapInfoPanel
             var _loc2_:* = _info && _info.selfRoomPlayer.isHost;
             _freeModeBtn.buttonMode = _loc2_;
             _freeModeBtn.enable = _loc2_;
-            _loc2_ = _info && _info.selfRoomPlayer.isHost && _loc1_;
+            _loc2_ = _info && _info.selfRoomPlayer.isHost && canPlayeGuildMode;
             _guildModeBtn.buttonMode = _loc2_;
             _guildModeBtn.enable = _loc2_;
             _freeModeBtn.gray = false;
-            _freeModeBtn.buttonMode = _info && _loc1_ && _info.selfRoomPlayer.isHost;
-            _guildModeBtn.gray = !(_info && _loc1_);
+            _freeModeBtn.buttonMode = _info && canPlayeGuildMode && _info.selfRoomPlayer.isHost;
+            _guildModeBtn.gray = !(_info && canPlayeGuildMode);
          }
       }
       
-      private function __freeClickHandler(param1:MouseEvent) : void
+      private function __freeClickHandler(evt:MouseEvent) : void
       {
          if(_info && _info.canPlayGuidMode())
          {
@@ -386,7 +386,7 @@ package room.view.bigMapInfoPanel
          SocketManager.Instance.out.sendGameStyle(0);
       }
       
-      private function __guildClickHandler(param1:MouseEvent) : void
+      private function __guildClickHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          SocketManager.Instance.out.sendGameStyle(1);

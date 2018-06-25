@@ -31,12 +31,12 @@ package littleGame.data
       
       private var _height:int;
       
-      public function Grid(param1:int, param2:int)
+      public function Grid(cols:int, rows:int)
       {
          _nodes = [];
          super();
-         _cols = param1;
-         _rows = param2;
+         _cols = cols;
+         _rows = rows;
          _width = _rows * cellSize;
          _height = _cols * cellSize;
          _astar = new AStar(this);
@@ -45,17 +45,17 @@ package littleGame.data
       
       public function dispose() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:Array = _nodes.shift();
-         while(_loc2_ != null)
+         var col:* = null;
+         var rows:Array = _nodes.shift();
+         while(rows != null)
          {
-            _loc1_ = _loc2_.shift();
-            while(_loc1_ != null)
+            col = rows.shift();
+            while(col != null)
             {
-               ObjectUtils.disposeObject(_loc1_);
-               _loc1_ = _loc2_.shift();
+               ObjectUtils.disposeObject(col);
+               col = rows.shift();
             }
-            _loc2_ = _nodes.shift();
+            rows = _nodes.shift();
          }
          ObjectUtils.disposeObject(_astar);
          _astar = null;
@@ -91,19 +91,19 @@ package littleGame.data
          return _startNode;
       }
       
-      public function setEndNode(param1:int, param2:int) : void
+      public function setEndNode(x:int, y:int) : void
       {
-         if(_nodes[param2] != null)
+         if(_nodes[y] != null)
          {
-            _endNode = _nodes[param2][param1];
+            _endNode = _nodes[y][x];
          }
       }
       
-      public function setStartNode(param1:int, param2:int) : void
+      public function setStartNode(x:int, y:int) : void
       {
-         if(_nodes[param2] != null)
+         if(_nodes[y] != null)
          {
-            _startNode = _nodes[param2][param1];
+            _startNode = _nodes[y][x];
          }
       }
       
@@ -114,103 +114,97 @@ package littleGame.data
       
       private function creatGrid() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < _cols)
+         var i:int = 0;
+         var column:* = null;
+         var j:int = 0;
+         for(i = 0; i < _cols; )
          {
-            _loc1_ = [];
-            _loc2_ = 0;
-            while(_loc2_ < _rows)
+            column = [];
+            for(j = 0; j < _rows; )
             {
-               _loc1_.push(new Node(_loc2_,_loc3_));
-               _loc2_++;
+               column.push(new Node(j,i));
+               j++;
             }
-            _nodes.push(_loc1_);
-            _loc3_++;
+            _nodes.push(column);
+            i++;
          }
       }
       
-      public function calculateLinks(param1:int) : void
+      public function calculateLinks(type:int) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         this.type = param1;
-         _loc3_ = 0;
-         while(_loc3_ < _cols)
+         var i:int = 0;
+         var j:int = 0;
+         this.type = type;
+         for(i = 0; i < _cols; )
          {
-            _loc2_ = 0;
-            while(_loc2_ < _rows)
+            for(j = 0; j < _rows; )
             {
-               initNodeLink(_nodes[_loc3_][_loc2_],param1);
-               _loc2_++;
+               initNodeLink(_nodes[i][j],type);
+               j++;
             }
-            _loc3_++;
+            i++;
          }
       }
       
-      public function getNode(param1:int, param2:int) : Node
+      public function getNode(x:int, y:int) : Node
       {
-         var _loc4_:int = Math.min(param2,_nodes.length - 1);
-         _loc4_ = Math.max(0,_loc4_);
-         var _loc3_:int = Math.min(param1,_nodes[0].length - 1);
-         _loc3_ = Math.max(0,_loc3_);
-         return _nodes[_loc4_][_loc3_];
+         var dy:int = Math.min(y,_nodes.length - 1);
+         dy = Math.max(0,dy);
+         var dx:int = Math.min(x,_nodes[0].length - 1);
+         dx = Math.max(0,dx);
+         return _nodes[dy][dx];
       }
       
-      public function setNodeWalkAble(param1:int, param2:int, param3:Boolean) : void
+      public function setNodeWalkAble(x:int, y:int, walkable:Boolean) : void
       {
-         if(_nodes[param2] && _nodes[param2][param1])
+         if(_nodes[y] && _nodes[y][x])
          {
-            _nodes[param2][param1].walkable = param3;
+            _nodes[y][x].walkable = walkable;
          }
       }
       
-      private function clearNodeLink(param1:Node) : void
+      private function clearNodeLink(node:Node) : void
       {
       }
       
-      private function initNodeLink(param1:Node, param2:int) : void
+      private function initNodeLink(node:Node, type:int) : void
       {
-         var _loc11_:* = 0;
-         var _loc9_:* = 0;
-         var _loc6_:* = null;
-         var _loc10_:* = null;
-         var _loc3_:int = Math.max(0,param1.x - 1);
-         var _loc5_:int = Math.min(_rows - 1,param1.x + 1);
-         var _loc4_:int = Math.max(0,param1.y - 1);
-         var _loc7_:int = Math.min(_cols - 1,param1.y + 1);
-         var _loc8_:Vector.<Node> = new Vector.<Node>();
-         _loc11_ = _loc3_;
-         while(_loc11_ <= _loc5_)
+         var i:* = 0;
+         var j:* = 0;
+         var test:* = null;
+         var test2:* = null;
+         var startX:int = Math.max(0,node.x - 1);
+         var endX:int = Math.min(_rows - 1,node.x + 1);
+         var startY:int = Math.max(0,node.y - 1);
+         var endY:int = Math.min(_cols - 1,node.y + 1);
+         var links:Vector.<Node> = new Vector.<Node>();
+         for(i = startX; i <= endX; )
          {
-            _loc9_ = _loc4_;
-            for(; _loc9_ <= _loc7_; _loc9_++)
+            for(j = startY; j <= endY; j++)
             {
-               _loc6_ = getNode(_loc11_,_loc9_);
-               if(!(_loc6_ == param1 || !_loc6_.walkable))
+               test = getNode(i,j);
+               if(!(test == node || !test.walkable))
                {
-                  if(param2 != 2 && _loc11_ != param1.x && _loc9_ != param1.y)
+                  if(type != 2 && i != node.x && j != node.y)
                   {
-                     _loc10_ = getNode(param1.x,_loc9_);
-                     if(_loc10_.walkable)
+                     test2 = getNode(node.x,j);
+                     if(test2.walkable)
                      {
-                        _loc10_ = getNode(_loc11_,param1.y);
-                        if(!_loc10_.walkable)
+                        test2 = getNode(i,node.y);
+                        if(!test2.walkable)
                         {
                         }
                         continue;
                      }
                      continue;
                   }
-                  _loc8_[_loc8_.length] = _loc6_;
+                  links[links.length] = test;
                   continue;
                }
             }
-            _loc11_++;
+            i++;
          }
-         param1.links = _loc8_;
+         node.links = links;
       }
    }
 }

@@ -28,9 +28,9 @@ package newTitle
       
       private var _titleArray:Array;
       
-      public function NewTitleManager(param1:IEventDispatcher = null)
+      public function NewTitleManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : NewTitleManager
@@ -47,40 +47,39 @@ package newTitle
          SocketManager.Instance.addEventListener(PkgEvent.format(279),__onGetHideTitleFlag);
       }
       
-      protected function __onGetHideTitleFlag(param1:PkgEvent) : void
+      protected function __onGetHideTitleFlag(event:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         NewTitleManager.instance.ShowTitle = !_loc2_.readBoolean();
+         var pkg:PackageIn = event.pkg;
+         NewTitleManager.instance.ShowTitle = !pkg.readBoolean();
       }
       
-      public function newTitleDataSetup(param1:NewTitleDataAnalyz) : void
+      public function newTitleDataSetup(analyzer:NewTitleDataAnalyz) : void
       {
-         _titleInfo = param1.list;
+         _titleInfo = analyzer.list;
          _titleArray = [];
          var _loc4_:int = 0;
          var _loc3_:* = _titleInfo;
-         for(var _loc2_ in _titleInfo)
+         for(var id in _titleInfo)
          {
-            _titleArray.push(_titleInfo[_loc2_]);
+            _titleArray.push(_titleInfo[id]);
          }
          _titleArray.sortOn("Order",16);
       }
       
-      public function getTitleByName(param1:String) : NewTitleModel
+      public function getTitleByName(name:String) : NewTitleModel
       {
-         var _loc3_:int = 0;
-         var _loc2_:NewTitleModel = null;
-         _loc3_ = 0;
-         while(_loc3_ < _titleArray.length)
+         var i:int = 0;
+         var title:NewTitleModel = null;
+         for(i = 0; i < _titleArray.length; )
          {
-            if(_titleArray[_loc3_].Name == param1)
+            if(_titleArray[i].Name == name)
             {
-               _loc2_ = _titleArray[_loc3_];
+               title = _titleArray[i];
                break;
             }
-            _loc3_++;
+            i++;
          }
-         return _loc2_;
+         return title;
       }
       
       override protected function start() : void

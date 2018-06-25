@@ -42,7 +42,7 @@ package yzhkof.debug
       
       private var _weak:Boolean = false;
       
-      public function DebugLogViewer(param1:Boolean = false)
+      public function DebugLogViewer(weak:Boolean = false)
       {
          this._logArr = [];
          this._logMap = new Dictionary();
@@ -55,7 +55,7 @@ package yzhkof.debug
          this.stop_btn = new TextPanel(16776960);
          this.start_stop_container = new Sprite();
          super();
-         this._weak = param1;
+         this._weak = weak;
          this.init();
          this.initEvent();
       }
@@ -82,17 +82,17 @@ package yzhkof.debug
       
       private function initEvent() : void
       {
-         this.clean_btn.addEventListener(MouseEvent.CLICK,function(param1:Event):void
+         this.clean_btn.addEventListener(MouseEvent.CLICK,function(e:Event):void
          {
             cleanLog();
          });
-         this.start_btn.addEventListener(MouseEvent.CLICK,function(param1:Event):void
+         this.start_btn.addEventListener(MouseEvent.CLICK,function(e:Event):void
          {
             isStart = true;
             start_btn.visible = !start_btn.visible;
             stop_btn.visible = !stop_btn.visible;
          });
-         this.stop_btn.addEventListener(MouseEvent.CLICK,function(param1:Event):void
+         this.stop_btn.addEventListener(MouseEvent.CLICK,function(e:Event):void
          {
             isStart = false;
             start_btn.visible = !start_btn.visible;
@@ -100,38 +100,38 @@ package yzhkof.debug
          });
       }
       
-      private function __createComplete(param1:Event) : void
+      private function __createComplete(e:Event) : void
       {
          drawBackGround();
          removeEventListener(ComponentEvent.DRAW_COMPLETE,this.__createComplete);
       }
       
-      public function addLog(param1:*, param2:String = "") : void
+      public function addLog(obj:*, tag:String = "") : void
       {
          if(!this.isStart)
          {
             return;
          }
-         this.addLoged(param1,param2);
+         this.addLoged(obj,tag);
       }
       
-      function addLogDirectly(param1:*, param2:String = "") : void
+      function addLogDirectly(obj:*, tag:String = "") : void
       {
-         this.addLoged(param1,param2);
+         this.addLoged(obj,tag);
       }
       
-      private function addLoged(param1:*, param2:String = "") : void
+      private function addLoged(obj:*, tag:String = "") : void
       {
-         var _loc4_:TextPanel = null;
-         var _loc3_:TextPanel = DebugSystem.getDebugTextButton(param1,(param2 == ""?"":param2 + " : ") + getQualifiedClassName(param1));
-         this.addItem(_loc3_,param1);
-         this._logArr.push(_loc3_);
-         this.tileContainer.appendItem(_loc3_);
+         var shift_btn:TextPanel = null;
+         var text_button:TextPanel = DebugSystem.getDebugTextButton(obj,(tag == ""?"":tag + " : ") + getQualifiedClassName(obj));
+         this.addItem(text_button,obj);
+         this._logArr.push(text_button);
+         this.tileContainer.appendItem(text_button);
          if(this._logArr.length >= this.log_max_count)
          {
-            _loc4_ = this._logArr.shift();
-            this.removeItem(_loc4_);
-            this.tileContainer.removeItem(_loc4_);
+            shift_btn = this._logArr.shift();
+            this.removeItem(shift_btn);
+            this.tileContainer.removeItem(shift_btn);
          }
       }
       
@@ -143,54 +143,53 @@ package yzhkof.debug
          this._logWeakMap = new WeakMap();
       }
       
-      private function addItem(param1:Object, param2:Object) : void
+      private function addItem(key:Object, value:Object) : void
       {
          if(this._weak)
          {
-            this._logWeakMap.add(param1,param2);
+            this._logWeakMap.add(key,value);
          }
          else
          {
-            this._logMap[param1] = param2;
+            this._logMap[key] = value;
          }
       }
       
-      private function getItem(param1:*) : *
+      private function getItem(key:*) : *
       {
          if(this._weak)
          {
-            return this._logWeakMap.getValue(param1);
+            return this._logWeakMap.getValue(key);
          }
-         return;
-         §§push(this._logMap[param1]);
+         this._logMap[key];
       }
       
       public function checkGC() : void
       {
-         var _loc2_:TextPanel = null;
+         var i:TextPanel = null;
          if(this._weak == false)
          {
             return;
          }
-         var _loc1_:Array = this._logWeakMap.keySet;
-         for each(_loc2_ in _loc1_)
+         var text_arr:Array = this._logWeakMap.keySet;
+         for each(i in text_arr)
          {
-            if(!this._logWeakMap.getValue(_loc2_))
+            if(!this._logWeakMap.getValue(i))
             {
-               _loc2_.color = 65280;
+               i.color = 65280;
             }
          }
       }
       
-      private function removeItem(param1:*) : void
+      private function removeItem(key:*) : void
       {
          if(this._weak)
          {
-            this._logWeakMap.remove(param1);
+            this._logWeakMap.remove(key);
          }
          else
          {
-            delete this._logMap[param1];
+            delete this._logMap[key];
          }
       }
       

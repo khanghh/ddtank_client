@@ -8,10 +8,10 @@ package ddt.events
       
       public var soundInfo:Object;
       
-      public function SoundEffectEvent(param1:String, param2:Object, param3:Boolean = false, param4:Boolean = false)
+      public function SoundEffectEvent(type:String, $soundInfo:Object, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         soundInfo = param2;
-         super(param1,param3,param4);
+         soundInfo = $soundInfo;
+         super(type,bubbles,cancelable);
       }
    }
 }

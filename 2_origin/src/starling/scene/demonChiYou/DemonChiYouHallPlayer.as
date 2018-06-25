@@ -27,42 +27,42 @@ package starling.scene.demonChiYou
       
       private var _chatBallView:ChatBallPlayer;
       
-      public function DemonChiYouHallPlayer(param1:PlayerVO)
+      public function DemonChiYouHallPlayer(playerVO:PlayerVO)
       {
-         super(param1);
+         super(playerVO);
          _playerView = DemonChiYouScene(StarlingMain.instance.currentScene).playerView;
          ChatManager.Instance.addEventListener("addFace",__getFace);
          ChatManager.Instance.model.addEventListener("addChat",__getChat);
       }
       
-      private function __getFace(param1:ChatEvent) : void
+      private function __getFace(evt:ChatEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:Object = param1.data;
-         if(_loc3_["playerid"] == playerVO.playerInfo.ID)
+         var senceLayer:* = null;
+         var data:Object = evt.data;
+         if(data["playerid"] == playerVO.playerInfo.ID)
          {
-            _loc2_ = LayerManager.Instance.getLayerByType(5);
+            senceLayer = LayerManager.Instance.getLayerByType(5);
             if(!_face)
             {
                _face = new FaceContainer(true);
             }
-            _loc2_.addChild(_face);
-            _face.setFace(_loc3_["faceid"]);
+            senceLayer.addChild(_face);
+            _face.setFace(data["faceid"]);
          }
          onPlayerViewPosUpdate();
       }
       
-      public function showFightState(param1:Boolean) : void
+      public function showFightState(isFight:Boolean) : void
       {
-         var _loc2_:* = null;
-         if(param1)
+         var senceLayer:* = null;
+         if(isFight)
          {
-            _loc2_ = LayerManager.Instance.getLayerByType(5);
+            senceLayer = LayerManager.Instance.getLayerByType(5);
             if(!_fight)
             {
                _fight = ComponentFactory.Instance.creat("Demonchiyou.fighting");
             }
-            _loc2_.addChild(_fight);
+            senceLayer.addChild(_fight);
             stopWalk();
          }
          else
@@ -101,32 +101,32 @@ package starling.scene.demonChiYou
          }
       }
       
-      private function __getChat(param1:ChatEvent) : void
+      private function __getChat(evt:ChatEvent) : void
       {
-         var _loc2_:* = null;
-         if(!param1.data)
+         var senceLayer:* = null;
+         if(!evt.data)
          {
             return;
          }
-         var _loc3_:ChatData = ChatData(param1.data).clone();
-         if(!_loc3_)
+         var data:ChatData = ChatData(evt.data).clone();
+         if(!data)
          {
             return;
          }
-         _loc3_.msg = Helpers.deCodeString(_loc3_.msg);
-         if(_loc3_.channel == 2 || _loc3_.channel == 3)
+         data.msg = Helpers.deCodeString(data.msg);
+         if(data.channel == 2 || data.channel == 3)
          {
             return;
          }
-         if(_loc3_ && playerVO.playerInfo && _loc3_.senderID == playerVO.playerInfo.ID)
+         if(data && playerVO.playerInfo && data.senderID == playerVO.playerInfo.ID)
          {
             if(!_chatBallView)
             {
                _chatBallView = new ChatBallPlayer();
             }
-            _loc2_ = LayerManager.Instance.getLayerByType(5);
-            _loc2_.addChild(_chatBallView);
-            _chatBallView.setText(_loc3_.msg,playerVO.playerInfo.paopaoType);
+            senceLayer = LayerManager.Instance.getLayerByType(5);
+            senceLayer.addChild(_chatBallView);
+            _chatBallView.setText(data.msg,playerVO.playerInfo.paopaoType);
          }
          onPlayerViewPosUpdate();
       }

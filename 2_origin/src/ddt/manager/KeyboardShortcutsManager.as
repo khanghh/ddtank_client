@@ -96,7 +96,7 @@ package ddt.manager
          }
       }
       
-      private function __onKeyDown(param1:KeyboardEvent) : void
+      private function __onKeyDown(event:KeyboardEvent) : void
       {
          if(isFullForbid)
          {
@@ -106,16 +106,16 @@ package ddt.manager
          {
             getKeyboardShortcutsState();
          }
-         if(param1.target is TextField && (param1.target as TextField).type == "input")
+         if(event.target is TextField && (event.target as TextField).type == "input")
          {
             return;
          }
          if(LayerManager.Instance.backGroundInParent)
          {
-            closeCurrentFrame(param1.keyCode);
+            closeCurrentFrame(event.keyCode);
             return;
          }
-         var _loc2_:* = param1.keyCode;
+         var _loc2_:* = event.keyCode;
          if(KeyStroke.VK_M.getCode() !== _loc2_)
          {
             if(KeyStroke.VK_B.getCode() !== _loc2_)
@@ -209,9 +209,9 @@ package ddt.manager
          }
       }
       
-      private function closeCurrentFrame(param1:uint) : void
+      private function closeCurrentFrame(keyCode:uint) : void
       {
-         var _loc2_:* = param1;
+         var _loc2_:* = keyCode;
          if(KeyStroke.VK_M.getCode() !== _loc2_)
          {
             if(KeyStroke.VK_B.getCode() !== _loc2_)
@@ -283,8 +283,8 @@ package ddt.manager
       
       private function getKeyboardShortcutsState() : void
       {
-         var _loc1_:String = StateManager.currentStateType;
-         var _loc2_:* = _loc1_;
+         var currentStateType:String = StateManager.currentStateType;
+         var _loc2_:* = currentStateType;
          if("fightLabGameView" !== _loc2_)
          {
             if("fighting" !== _loc2_)
@@ -348,14 +348,14 @@ package ddt.manager
                                        isProhibit_G = true;
                                        isProhibit_P = true;
                                     }
-                                    addr231:
+                                    addr289:
                                     if(PlayerManager.Instance.Self.Grade < 5)
                                     {
                                        isProhibit_G = false;
                                     }
                                     return;
                                  }
-                                 addr18:
+                                 addr22:
                                  isProhibit_M = false;
                                  isProhibit_B = false;
                                  isProhibit_Q = false;
@@ -366,30 +366,30 @@ package ddt.manager
                                  isProhibit_S = false;
                                  isProhibit_G = true;
                                  isProhibit_P = false;
-                                 §§goto(addr231);
+                                 §§goto(addr289);
                               }
-                              addr17:
-                              §§goto(addr18);
+                              addr21:
+                              §§goto(addr22);
                            }
-                           addr16:
-                           §§goto(addr17);
+                           addr20:
+                           §§goto(addr21);
                         }
-                        addr15:
-                        §§goto(addr16);
+                        addr19:
+                        §§goto(addr20);
                      }
-                     addr14:
-                     §§goto(addr15);
+                     addr18:
+                     §§goto(addr19);
                   }
-                  addr13:
-                  §§goto(addr14);
+                  addr17:
+                  §§goto(addr18);
                }
-               addr12:
-               §§goto(addr13);
+               addr16:
+               §§goto(addr17);
             }
-            addr11:
-            §§goto(addr12);
+            addr15:
+            §§goto(addr16);
          }
-         §§goto(addr11);
+         §§goto(addr15);
       }
       
       public function forbiddenFull() : void
@@ -402,10 +402,10 @@ package ddt.manager
          isFullForbid = false;
       }
       
-      public function forbiddenSection(param1:int, param2:Boolean) : void
+      public function forbiddenSection(type:int, state:Boolean) : void
       {
-         isForbiddenSection = param2;
-         switch(int(param1) - 1)
+         isForbiddenSection = state;
+         switch(int(type) - 1)
          {
             case 0:
                isProhibit_M = false;
@@ -464,39 +464,39 @@ package ddt.manager
          }
       }
       
-      public function prohibitNewHandBag(param1:Boolean) : void
+      public function prohibitNewHandBag(state:Boolean) : void
       {
-         isProhibitNewHand_B = param1;
+         isProhibitNewHand_B = state;
       }
       
-      public function prohibitNewHandFriend(param1:Boolean) : void
+      public function prohibitNewHandFriend(state:Boolean) : void
       {
-         isProhibitNewHand_F = param1;
+         isProhibitNewHand_F = state;
       }
       
-      public function prohibitNewHandChannel(param1:Boolean) : void
+      public function prohibitNewHandChannel(state:Boolean) : void
       {
-         isProhibitNewHand_T = param1;
+         isProhibitNewHand_T = state;
       }
       
-      public function prohibitNewHandMail(param1:Boolean) : void
+      public function prohibitNewHandMail(state:Boolean) : void
       {
-         isProhibitNewHand_R = param1;
+         isProhibitNewHand_R = state;
       }
       
-      public function prohibitNewHandCalendar(param1:Boolean) : void
+      public function prohibitNewHandCalendar(state:Boolean) : void
       {
-         isProhibitNewHand_S = param1;
+         isProhibitNewHand_S = state;
       }
       
-      public function prohibitNewHandSeting(param1:Boolean) : void
+      public function prohibitNewHandSeting(state:Boolean) : void
       {
-         isProhibitNewHand_H = param1;
+         isProhibitNewHand_H = state;
       }
       
-      public function prohibitNewHandPetsBag(param1:Boolean) : void
+      public function prohibitNewHandPetsBag(state:Boolean) : void
       {
-         isProhibitNewHand_P = param1;
+         isProhibitNewHand_P = state;
       }
    }
 }

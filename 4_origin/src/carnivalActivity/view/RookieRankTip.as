@@ -68,78 +68,75 @@ package carnivalActivity.view
          return _data;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(data:Object) : void
       {
-         var _loc12_:int = 0;
-         var _loc6_:* = null;
-         var _loc5_:* = null;
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         var _loc9_:int = 0;
-         var _loc11_:* = null;
-         var _loc8_:* = null;
-         var _loc10_:int = 0;
-         if(param1 != null)
+         var i:int = 0;
+         var item:* = null;
+         var rule:* = null;
+         var wid:int = 0;
+         var hei:int = 0;
+         var j:int = 0;
+         var info:* = null;
+         var ruleIma:* = null;
+         var k:int = 0;
+         if(data != null)
          {
-            _data = param1 as Array;
+            _data = data as Array;
             var _loc14_:int = 0;
             var _loc13_:* = _itemArr;
-            for each(var _loc2_ in _itemArr)
+            for each(var rookieItem in _itemArr)
             {
-               ObjectUtils.disposeObject(_loc2_);
-               _loc2_ = null;
+               ObjectUtils.disposeObject(rookieItem);
+               rookieItem = null;
             }
             _itemArr = [];
             var _loc16_:int = 0;
             var _loc15_:* = _ruleArray;
-            for each(var _loc7_ in _ruleArray)
+            for each(var ruleItem in _ruleArray)
             {
-               ObjectUtils.disposeObject(_loc7_);
-               _loc7_ = null;
+               ObjectUtils.disposeObject(ruleItem);
+               ruleItem = null;
             }
             _ruleArray = [];
-            _loc12_ = 0;
-            while(_loc12_ < _data.length)
+            for(i = 0; i < _data.length; )
             {
-               _loc6_ = new RookieRankTipItem();
-               _loc6_.y = 23 + _loc12_ * 22;
-               addChild(_loc6_);
-               _itemArr.push(_loc6_);
-               if(_loc12_ < _data.length - 1)
+               item = new RookieRankTipItem();
+               item.y = 23 + i * 22;
+               addChild(item);
+               _itemArr.push(item);
+               if(i < _data.length - 1)
                {
-                  _loc5_ = ComponentFactory.Instance.creatComponentByStylename("HRuleAsset");
-                  addChild(_loc5_);
-                  _loc5_.x = 5;
-                  _ruleArray.push(_loc5_);
+                  rule = ComponentFactory.Instance.creatComponentByStylename("HRuleAsset");
+                  addChild(rule);
+                  rule.x = 5;
+                  _ruleArray.push(rule);
                }
-               _loc12_++;
+               i++;
             }
-            _loc4_ = 0;
-            _loc9_ = 0;
-            while(_loc9_ < _data.length)
+            wid = 0;
+            for(j = 0; j < _data.length; )
             {
-               _loc11_ = _data[_loc9_];
-               _itemArr[_loc9_].setData(_loc11_);
-               if(_itemArr[_loc9_].width > _loc4_)
+               info = _data[j];
+               _itemArr[j].setData(info);
+               if(_itemArr[j].width > wid)
                {
-                  _loc4_ = _itemArr[_loc9_].width;
+                  wid = _itemArr[j].width;
                }
-               _loc3_ = _loc3_ + _itemArr[_loc9_].height;
-               if(_loc9_ < _data.length - 1)
+               hei = hei + _itemArr[j].height;
+               if(j < _data.length - 1)
                {
-                  _loc8_ = _ruleArray[_loc9_];
-                  _loc8_.y = _itemArr[_loc9_].y + _itemArr[_loc9_].height;
+                  ruleIma = _ruleArray[j];
+                  ruleIma.y = _itemArr[j].y + _itemArr[j].height;
                }
-               _loc9_++;
+               j++;
             }
          }
-         _bg.width = _loc4_ + 24;
-         _bg.height = _loc3_ + rankTitleTxt.height + 24;
-         _loc10_ = 0;
-         while(_loc10_ < _ruleArray.length)
+         _bg.width = wid + 24;
+         _bg.height = hei + rankTitleTxt.height + 24;
+         for(k = 0; k < _ruleArray.length; )
          {
-            _ruleArray[_loc10_].width = _bg.width - 7;
-            _loc10_++;
+            _ruleArray[k].width = _bg.width - 7;
+            k++;
          }
       }
       
@@ -148,9 +145,9 @@ package carnivalActivity.view
          return _tipWidth;
       }
       
-      public function set tipWidth(param1:int) : void
+      public function set tipWidth(w:int) : void
       {
-         _tipWidth = param1;
+         _tipWidth = w;
       }
       
       public function get tipHeight() : int
@@ -158,7 +155,7 @@ package carnivalActivity.view
          return _bg.height;
       }
       
-      public function set tipHeight(param1:int) : void
+      public function set tipHeight(h:int) : void
       {
       }
       

@@ -10,41 +10,40 @@ package vip.analyze
       
       public var info:VipModelInfo;
       
-      public function PlayerVIPLevleInfoAnalyzer(param1:Function)
+      public function PlayerVIPLevleInfoAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc3_:* = null;
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
+         var levels:* = null;
+         var i:int = 0;
+         var level:* = null;
          info = new VipModelInfo();
-         var _loc4_:XML = new XML(param1);
-         if(_loc4_.@value == "true")
+         var xml:XML = new XML(data);
+         if(xml.@value == "true")
          {
-            info.maxExp = _loc4_.@maxExp;
-            info.ExpForEachDay = _loc4_.@ExpForEachDay;
-            info.ExpDecreaseForEachDay = _loc4_.@ExpDecreaseForEachDay;
-            info.upRuleDescription = _loc4_.@Description;
-            info.RewardDescription = _loc4_.@RewardInfo;
-            _loc3_ = _loc4_..Levels;
-            _loc5_ = 0;
-            while(_loc5_ < _loc3_.length())
+            info.maxExp = xml.@maxExp;
+            info.ExpForEachDay = xml.@ExpForEachDay;
+            info.ExpDecreaseForEachDay = xml.@ExpDecreaseForEachDay;
+            info.upRuleDescription = xml.@Description;
+            info.RewardDescription = xml.@RewardInfo;
+            levels = xml..Levels;
+            for(i = 0; i < levels.length(); )
             {
-               _loc2_ = new Dictionary();
-               _loc2_["level"] = _loc3_[_loc5_].@Level;
-               _loc2_["ExpNeeded"] = _loc3_[_loc5_].@ExpNeeded;
-               _loc2_["Description"] = _loc3_[_loc5_].@Description;
-               info.levelInfo[_loc5_] = _loc2_;
-               _loc5_++;
+               level = new Dictionary();
+               level["level"] = levels[i].@Level;
+               level["ExpNeeded"] = levels[i].@ExpNeeded;
+               level["Description"] = levels[i].@Description;
+               info.levelInfo[i] = level;
+               i++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc4_.@message;
+            message = xml.@message;
             onAnalyzeError();
             onAnalyzeComplete();
          }

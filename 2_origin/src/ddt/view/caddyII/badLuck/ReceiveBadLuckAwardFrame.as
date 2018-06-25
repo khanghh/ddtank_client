@@ -70,13 +70,13 @@ package ddt.view.caddyII.badLuck
       
       private function initView() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:AlertInfo = new AlertInfo();
-         _loc1_.title = LanguageMgr.GetTranslation("tank.ReceiveBadLuckAwardFrame.title");
-         _loc1_.submitLabel = LanguageMgr.GetTranslation("ok");
-         _loc1_.showCancel = false;
-         info = _loc1_;
+         var i:int = 0;
+         var item:* = null;
+         var alerInfo:AlertInfo = new AlertInfo();
+         alerInfo.title = LanguageMgr.GetTranslation("tank.ReceiveBadLuckAwardFrame.title");
+         alerInfo.submitLabel = LanguageMgr.GetTranslation("ok");
+         alerInfo.showCancel = false;
+         info = alerInfo;
          _bg = ComponentFactory.Instance.creatComponentByStylename("caddy.RBadLuckBGI");
          _titleBit = ComponentFactory.Instance.creatBitmap("asset.RBadLuck.FontTitle");
          _bg2 = ComponentFactory.Instance.creatComponentByStylename("caddy.RBadLuckBGII");
@@ -116,13 +116,12 @@ package ddt.view.caddyII.badLuck
          _panel.invalidateViewport();
          addToContent(_panel);
          _itemList = new Vector.<ReceiveBadLuckItem>();
-         _loc3_ = 0;
-         while(_loc3_ < 10)
+         for(i = 0; i < 10; )
          {
-            _loc2_ = ComponentFactory.Instance.creatCustomObject("card.ReceiveBadLuckItem");
-            _list.addChild(_loc2_);
-            _itemList.push(_loc2_);
-            _loc3_++;
+            item = ComponentFactory.Instance.creatCustomObject("card.ReceiveBadLuckItem");
+            _list.addChild(item);
+            _itemList.push(item);
+            i++;
          }
          _panel.invalidateViewport();
       }
@@ -139,59 +138,59 @@ package ddt.view.caddyII.badLuck
       
       private function creatItemTempleteLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("User_LotteryRank.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingGoodsTemplateFailure");
-         _loc1_.analyzer = new InventoryItemAnalyzer(__loadComplete);
-         LoadResourceManager.Instance.startLoad(_loc1_);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("User_LotteryRank.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingGoodsTemplateFailure");
+         loader.analyzer = new InventoryItemAnalyzer(__loadComplete);
+         LoadResourceManager.Instance.startLoad(loader);
+         return loader;
       }
       
-      private function __loadComplete(param1:InventoryItemAnalyzer) : void
+      private function __loadComplete(action:InventoryItemAnalyzer) : void
       {
-         _goodList = param1.list;
-         RouletteManager.instance.goodList = param1.list;
+         _goodList = action.list;
+         RouletteManager.instance.goodList = action.list;
          updateData();
       }
       
       private function updateData() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:Date = TimeManager.Instance.Now();
+         var i:int = 0;
+         var name:* = null;
+         var date:Date = TimeManager.Instance.Now();
          var _loc6_:int = 0;
          var _loc5_:* = _goodList;
-         for each(var _loc4_ in _goodList)
+         for each(var info in _goodList)
          {
-            _loc4_.BeginDate = _loc2_.fullYear + "-" + (_loc2_.month + 1) + "-" + _loc2_.date + " " + _loc2_.hours + ":" + _loc2_.minutes + ":" + _loc2_.seconds;
+            info.BeginDate = date.fullYear + "-" + (date.month + 1) + "-" + date.date + " " + date.hours + ":" + date.minutes + ":" + date.seconds;
          }
-         _loc3_ = 0;
-         while(_loc3_ < 10 && _loc3_ < _goodList.length)
+         i = 0;
+         while(i < 10 && i < _goodList.length)
          {
-            if(_dataList == null || _loc3_ >= _dataList.length || _dataList[_loc3_] == null)
+            if(_dataList == null || i >= _dataList.length || _dataList[i] == null)
             {
-               _loc1_ = "MyName";
+               name = "MyName";
             }
             else
             {
-               _loc1_ = _dataList[_loc3_].Nickname;
+               name = _dataList[i].Nickname;
             }
-            _itemList[_loc3_].update(_loc3_,_loc1_,_goodList[_loc3_]);
-            _loc3_++;
+            _itemList[i].update(i,name,_goodList[i]);
+            i++;
          }
       }
       
-      private function __response(param1:FrameEvent) : void
+      private function __response(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.responseCode == 1 || param1.responseCode == 0 || param1.responseCode == 3)
+         if(e.responseCode == 1 || e.responseCode == 0 || e.responseCode == 3)
          {
             ObjectUtils.disposeObject(this);
          }
       }
       
-      public function set dataList(param1:Vector.<Object>) : void
+      public function set dataList(value:Vector.<Object>) : void
       {
-         _dataList = param1;
+         _dataList = value;
       }
       
       public function show() : void
@@ -278,10 +277,10 @@ package ddt.view.caddyII.badLuck
          _regulationText4 = null;
          var _loc3_:int = 0;
          var _loc2_:* = _itemList;
-         for each(var _loc1_ in _itemList)
+         for each(var item in _itemList)
          {
-            ObjectUtils.disposeObject(_loc1_);
-            _loc1_ = null;
+            ObjectUtils.disposeObject(item);
+            item = null;
          }
          if(_list)
          {

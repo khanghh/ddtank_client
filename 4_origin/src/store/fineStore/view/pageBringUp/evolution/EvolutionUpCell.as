@@ -16,9 +16,9 @@ package store.fineStore.view.pageBringUp.evolution
    {
        
       
-      public function EvolutionUpCell(param1:int, param2:ItemTemplateInfo = null, param3:Boolean = true, param4:DisplayObject = null, param5:Boolean = true)
+      public function EvolutionUpCell(index:int, info:ItemTemplateInfo = null, showLoading:Boolean = true, bg:DisplayObject = null, mouseOverEffBoolean:Boolean = true)
       {
-         super(param1,param2,param3,param4,param5);
+         super(index,info,showLoading,bg,mouseOverEffBoolean);
       }
       
       override public function get tipStyle() : String
@@ -27,16 +27,16 @@ package store.fineStore.view.pageBringUp.evolution
          return "store.fineStore.view.pageBringUp.evolution.EvolutionCellUpGradeTips";
       }
       
-      override public function set info(param1:ItemTemplateInfo) : void
+      override public function set info(value:ItemTemplateInfo) : void
       {
-         .super.info = param1;
-         if(param1)
+         .super.info = value;
+         if(value)
          {
             addEnchantMc();
          }
       }
       
-      override protected function __clickHandler(param1:InteractiveEvent) : void
+      override protected function __clickHandler(evt:InteractiveEvent) : void
       {
          if(!FineBringUpController.getInstance().usingLock)
          {
@@ -45,51 +45,51 @@ package store.fineStore.view.pageBringUp.evolution
          }
       }
       
-      override protected function __doubleClickHandler(param1:InteractiveEvent) : void
+      override protected function __doubleClickHandler(evt:InteractiveEvent) : void
       {
          if(!info || FineBringUpController.getInstance().usingLock)
          {
             return;
          }
          SoundManager.instance.play("008");
-         var _loc2_:LatentEnergyEvent = new LatentEnergyEvent("latentEnergy_equip_move2");
-         _loc2_.info = info as InventoryItemInfo;
-         _loc2_.moveType = 2;
-         FineBringUpController.getInstance().dispatchEvent(_loc2_);
+         var event:LatentEnergyEvent = new LatentEnergyEvent("latentEnergy_equip_move2");
+         event.info = info as InventoryItemInfo;
+         event.moveType = 2;
+         FineBringUpController.getInstance().dispatchEvent(event);
       }
       
       override protected function addEnchantMc() : void
       {
-         var _loc4_:* = null;
-         var _loc2_:* = null;
-         var _loc1_:int = 0;
-         var _loc3_:int = 0;
+         var _info:* = null;
+         var data:* = null;
+         var mcLevel:int = 0;
+         var _lv:int = 0;
          if(info is InventoryItemInfo)
          {
-            _loc4_ = info as InventoryItemInfo;
-            _loc2_ = FineEvolutionManager.Instance.GetEvolutionDataByExp(_loc4_.curExp);
-            if(_loc2_)
+            _info = info as InventoryItemInfo;
+            data = FineEvolutionManager.Instance.GetEvolutionDataByExp(_info.curExp);
+            if(data)
             {
-               _loc1_ = _loc2_.Level;
-               if(_loc1_ > 0)
+               mcLevel = data.Level;
+               if(mcLevel > 0)
                {
-                  if(_loc1_ <= 4)
+                  if(mcLevel <= 4)
                   {
-                     _loc3_ = 1;
+                     _lv = 1;
                   }
-                  if(_loc1_ >= 5 && _loc1_ <= 9)
+                  if(mcLevel >= 5 && mcLevel <= 9)
                   {
-                     _loc3_ = 2;
+                     _lv = 2;
                   }
-                  if(_loc1_ >= 10 && _loc1_ <= 15)
+                  if(mcLevel >= 10 && mcLevel <= 15)
                   {
-                     _loc3_ = 3;
+                     _lv = 3;
                   }
-                  if(_loc1_ >= 16 && _loc1_ <= 20)
+                  if(mcLevel >= 16 && mcLevel <= 20)
                   {
-                     _loc3_ = 4;
+                     _lv = 4;
                   }
-                  _enchantMc = ComponentFactory.Instance.creat(_enchantMcName + _loc3_);
+                  _enchantMc = ComponentFactory.Instance.creat(_enchantMcName + _lv);
                   var _loc5_:* = 1.48;
                   _enchantMc.scaleY = _loc5_;
                   _enchantMc.scaleX = _loc5_;

@@ -60,11 +60,11 @@ package ddt.view.roulette
       
       private var _sound:TurnSoundControl;
       
-      public function TurnControl(param1:IEventDispatcher = null)
+      public function TurnControl(target:IEventDispatcher = null)
       {
          _delay = [500,30,500];
          _moveTime = [2000,3000,2000];
-         super(param1);
+         super(target);
          init();
          initEvent();
       }
@@ -78,9 +78,9 @@ package ddt.view.roulette
          _timerII.stop();
       }
       
-      public function set autoMove(param1:Boolean) : void
+      public function set autoMove(boo:Boolean) : void
       {
-         if(param1)
+         if(boo)
          {
             _timerII.start();
          }
@@ -96,11 +96,11 @@ package ddt.view.roulette
          _timerII.addEventListener("timer",_timerIITimer);
       }
       
-      private function _startTimer(param1:int) : void
+      private function _startTimer(time:int) : void
       {
          if(!_isStopTurn)
          {
-            _timer.delay = param1;
+            _timer.delay = time;
             _timer.reset();
             _timer.start();
          }
@@ -130,23 +130,23 @@ package ddt.view.roulette
          }
       }
       
-      private function _clearPrevSelct(param1:int, param2:int) : void
+      private function _clearPrevSelct(now:int, prev:int) : void
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = param1 - param2 < 0?param1 - param2 + _goodsList.length:Number(param1 - param2);
-         if(_loc4_ == 1)
+         var one:int = 0;
+         var between:int = now - prev < 0?now - prev + _goodsList.length:Number(now - prev);
+         if(between == 1)
          {
-            _goodsList[param2].selected = false;
+            _goodsList[prev].selected = false;
          }
          else
          {
-            _loc3_ = param1 - 1 < 0?param1 - 1 + _goodsList.length:Number(param1 - 1);
-            _goodsList[_loc3_].setGreep();
-            _goodsList[param2].selected = false;
+            one = now - 1 < 0?now - 1 + _goodsList.length:Number(now - 1);
+            _goodsList[one].setGreep();
+            _goodsList[prev].selected = false;
          }
       }
       
-      private function _timeComplete(param1:TimerEvent) : void
+      private function _timeComplete(e:TimerEvent) : void
       {
          _updateTurnType(nowDelayTime);
          nowDelayTime = nowDelayTime + _stepTime;
@@ -154,7 +154,7 @@ package ddt.view.roulette
          _startTimer(nowDelayTime);
       }
       
-      private function _timerIITimer(param1:TimerEvent) : void
+      private function _timerIITimer(e:TimerEvent) : void
       {
          _goodsList[sparkleNumber].setGreep();
          _goodsList[sparkleNumber].selected = false;
@@ -166,12 +166,12 @@ package ddt.view.roulette
          _goodsList[sparkleNumber].setSparkle();
       }
       
-      private function _updateTurnType(param1:int) : void
+      private function _updateTurnType(value:int) : void
       {
          switch(int(turnType) - 1)
          {
             case 0:
-               if(param1 <= _delay[1])
+               if(value <= _delay[1])
                {
                   turnType = 2;
                }
@@ -212,24 +212,24 @@ package ddt.view.roulette
          dispatchEvent(new Event("turn_complete"));
       }
       
-      public function turnPlate(param1:Vector.<RouletteGoodsCell>, param2:int) : void
+      public function turnPlate(list:Vector.<RouletteGoodsCell>, _select:int) : void
       {
          turnType = 1;
-         _goodsList = param1;
-         selectedGoodsNumber = param2;
+         _goodsList = list;
+         selectedGoodsNumber = _select;
          startTurn();
          _startTimer(nowDelayTime);
       }
       
-      public function turnPlateII(param1:Vector.<RouletteGoodsCell>) : void
+      public function turnPlateII(list:Vector.<RouletteGoodsCell>) : void
       {
-         _goodsList = param1;
+         _goodsList = list;
          autoMove = true;
       }
       
-      public function set sparkleNumber(param1:int) : void
+      public function set sparkleNumber(value:int) : void
       {
-         _sparkleNumber = param1;
+         _sparkleNumber = value;
          if(_sparkleNumber >= _goodsList.length)
          {
             _sparkleNumber = 0;
@@ -243,38 +243,38 @@ package ddt.view.roulette
       
       private function get prevSelected() : int
       {
-         var _loc1_:int = 0;
-         var _loc2_:int = 0;
+         var step:int = 0;
+         var prev:int = 0;
          switch(int(_turnType) - 1)
          {
             case 0:
-               _loc2_ = sparkleNumber == 0?_goodsList.length - 1:Number(_sparkleNumber - 1);
+               prev = sparkleNumber == 0?_goodsList.length - 1:Number(_sparkleNumber - 1);
                break;
             case 1:
-               _loc2_ = sparkleNumber - 3 < 0?sparkleNumber - 3 + _goodsList.length:Number(sparkleNumber - 3);
+               prev = sparkleNumber - 3 < 0?sparkleNumber - 3 + _goodsList.length:Number(sparkleNumber - 3);
                break;
             case 2:
                if(_moderationNumber > 9)
                {
-                  _loc2_ = sparkleNumber - 3 < 0?sparkleNumber - 3 + _goodsList.length:Number(sparkleNumber - 3);
+                  prev = sparkleNumber - 3 < 0?sparkleNumber - 3 + _goodsList.length:Number(sparkleNumber - 3);
                   break;
                }
-               _loc1_ = _moderationNumber >= 7?_moderationNumber - 6:1;
-               _loc2_ = sparkleNumber - _loc1_ < 0?sparkleNumber - _loc1_ + _goodsList.length:Number(_sparkleNumber - _loc1_);
+               step = _moderationNumber >= 7?_moderationNumber - 6:1;
+               prev = sparkleNumber - step < 0?sparkleNumber - step + _goodsList.length:Number(_sparkleNumber - step);
                if(_moderationNumber >= 8)
                {
-                  _goodsList[_loc2_ + 1 >= _goodsList.length?0:Number(_loc2_ + 1)].selected = false;
+                  _goodsList[prev + 1 >= _goodsList.length?0:Number(prev + 1)].selected = false;
                   break;
                }
                break;
          }
-         return _loc2_;
+         return prev;
       }
       
-      public function set nowDelayTime(param1:int) : void
+      public function set nowDelayTime(value:int) : void
       {
          _turnTypeTimeSum = _turnTypeTimeSum + _nowDelayTime;
-         _nowDelayTime = param1;
+         _nowDelayTime = value;
       }
       
       public function get nowDelayTime() : int
@@ -282,9 +282,9 @@ package ddt.view.roulette
          return _nowDelayTime;
       }
       
-      public function set turnType(param1:int) : void
+      public function set turnType(value:int) : void
       {
-         _turnType = param1;
+         _turnType = value;
          _turnTypeTimeSum = 0;
          switch(int(_turnType) - 1)
          {
@@ -307,21 +307,21 @@ package ddt.view.roulette
          return _turnType;
       }
       
-      public function set goodsList(param1:Vector.<RouletteGoodsCell>) : void
+      public function set goodsList(list:Vector.<RouletteGoodsCell>) : void
       {
-         _goodsList = param1;
+         _goodsList = list;
       }
       
-      public function set selectedGoodsNumber(param1:int) : void
+      public function set selectedGoodsNumber(value:int) : void
       {
-         _selectedGoodsNumber = param1;
+         _selectedGoodsNumber = value;
          _moderationNumber = (_delay[2] - _delay[1]) / 30;
-         var _loc2_:int = _selectedGoodsNumber - _moderationNumber;
-         while(_loc2_ < 0)
+         var m:int = _selectedGoodsNumber - _moderationNumber;
+         while(m < 0)
          {
-            _loc2_ = _loc2_ + _goodsList.length;
+            m = m + _goodsList.length;
          }
-         _startModerationNumber = _loc2_;
+         _startModerationNumber = m;
       }
       
       public function dispose() : void

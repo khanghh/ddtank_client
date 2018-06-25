@@ -18,9 +18,9 @@ package starling.textures
          throw new AbstractClassError();
       }
       
-      public static function isValid(param1:String) : Boolean
+      public static function isValid(smoothing:String) : Boolean
       {
-         return param1 == "none" || param1 == "bilinear" || param1 == "trilinear";
+         return smoothing == "none" || smoothing == "bilinear" || smoothing == "trilinear";
       }
    }
 }

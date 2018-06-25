@@ -49,11 +49,11 @@ package church.view
       
       private var _bg:Bitmap;
       
-      public function ChurchMainView(param1:ChurchRoomListController, param2:ChurchRoomListModel)
+      public function ChurchMainView(controller:ChurchRoomListController, model:ChurchRoomListModel)
       {
          super();
-         _controller = param1;
-         _model = param2;
+         _controller = controller;
+         _model = model;
          initialize();
       }
       
@@ -68,9 +68,9 @@ package church.view
          _picPreviewAsset = ComponentFactory.Instance.creatComponentByStylename("church.main.picPreviewAsset");
          addChild(_picPreviewAsset);
          _cell = CellFactory.instance.createPersonalInfoCell(-1,ItemManager.Instance.getTemplateById(9022),true) as BagCell;
-         var _loc1_:Point = ComponentFactory.Instance.creatCustomObject("church.view.WeddingRoomListItemView.cellPos");
-         _cell.x = _loc1_.x;
-         _cell.y = _loc1_.y;
+         var pos:Point = ComponentFactory.Instance.creatCustomObject("church.view.WeddingRoomListItemView.cellPos");
+         _cell.x = pos.x;
+         _cell.y = pos.y;
          _cell.setContentSize(60,60);
          addChild(_cell);
          updateViewState();
@@ -80,13 +80,13 @@ package church.view
          ChatManager.Instance.setFocus();
       }
       
-      public function changeState(param1:String) : void
+      public function changeState(state:String) : void
       {
-         if(_currentState == param1)
+         if(_currentState == state)
          {
             return;
          }
-         _currentState = param1;
+         _currentState = state;
          updateViewState();
       }
       

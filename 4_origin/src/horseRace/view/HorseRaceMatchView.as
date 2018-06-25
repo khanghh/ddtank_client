@@ -108,49 +108,48 @@ package horseRace.view
          addToContent(_buyCountTxt);
          addToContent(_buyBnt);
          addToContent(rewardBox);
-         var _loc2_:PlayerVO = new PlayerVO();
-         _loc2_.playerInfo = PlayerManager.Instance.Self;
-         var _loc1_:PlayerInfo = new PlayerInfo();
-         ObjectUtils.copyProperties(_loc1_,PlayerManager.Instance.findPlayer(_loc2_.playerInfo.ID));
-         _loc2_.playerInfo = _loc1_;
-         _loc2_.playerInfo.MountsType = Math.max(1,_loc2_.playerInfo.MountsType);
-         _loc2_.playerInfo.PetsID = 0;
-         walkingPlayer = new HorseRaceWalkPlayer(_loc2_,callBack);
+         var self:PlayerVO = new PlayerVO();
+         self.playerInfo = PlayerManager.Instance.Self;
+         var tempInfo:PlayerInfo = new PlayerInfo();
+         ObjectUtils.copyProperties(tempInfo,PlayerManager.Instance.findPlayer(self.playerInfo.ID));
+         self.playerInfo = tempInfo;
+         self.playerInfo.MountsType = Math.max(1,self.playerInfo.MountsType);
+         self.playerInfo.PetsID = 0;
+         walkingPlayer = new HorseRaceWalkPlayer(self,callBack);
          addToContent(walkingPlayer);
          setRewardToList();
       }
       
       private function setRewardToList() : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         var _loc1_:Array = HorseRaceManager.Instance.itemInfoList;
-         if(_loc1_ == null)
+         var i:int = 0;
+         var itemInfo:* = null;
+         var tInfo:* = null;
+         var cell:* = null;
+         var rewardList:Array = HorseRaceManager.Instance.itemInfoList;
+         if(rewardList == null)
          {
             return;
          }
-         _loc5_ = 0;
-         while(_loc5_ < _loc1_.length)
+         for(i = 0; i < rewardList.length; )
          {
-            _loc4_ = ItemManager.Instance.getTemplateById(_loc1_[_loc5_].TemplateID) as ItemTemplateInfo;
-            _loc2_ = new InventoryItemInfo();
-            ObjectUtils.copyProperties(_loc2_,_loc4_);
-            _loc2_.ValidDate = _loc1_[_loc5_].ValidDate;
-            _loc2_.StrengthenLevel = _loc1_[_loc5_].StrengthLevel;
-            _loc2_.AttackCompose = _loc1_[_loc5_].AttackCompose;
-            _loc2_.DefendCompose = _loc1_[_loc5_].DefendCompose;
-            _loc2_.LuckCompose = _loc1_[_loc5_].LuckCompose;
-            _loc2_.AgilityCompose = _loc1_[_loc5_].AgilityCompose;
-            _loc2_.IsBinds = _loc1_[_loc5_].IsBind;
-            _loc2_.Count = _loc1_[_loc5_].Count;
-            _loc3_ = new BagCell(0,_loc2_,false);
-            _loc3_.x = 6;
-            _loc3_.y = 5;
-            _loc3_.setBgVisible(false);
-            rewardBox.addChild(_loc3_);
-            _loc5_++;
+            itemInfo = ItemManager.Instance.getTemplateById(rewardList[i].TemplateID) as ItemTemplateInfo;
+            tInfo = new InventoryItemInfo();
+            ObjectUtils.copyProperties(tInfo,itemInfo);
+            tInfo.ValidDate = rewardList[i].ValidDate;
+            tInfo.StrengthenLevel = rewardList[i].StrengthLevel;
+            tInfo.AttackCompose = rewardList[i].AttackCompose;
+            tInfo.DefendCompose = rewardList[i].DefendCompose;
+            tInfo.LuckCompose = rewardList[i].LuckCompose;
+            tInfo.AgilityCompose = rewardList[i].AgilityCompose;
+            tInfo.IsBinds = rewardList[i].IsBind;
+            tInfo.Count = rewardList[i].Count;
+            cell = new BagCell(0,tInfo,false);
+            cell.x = 6;
+            cell.y = 5;
+            cell.setBgVisible(false);
+            rewardBox.addChild(cell);
+            i++;
          }
       }
       
@@ -163,19 +162,19 @@ package horseRace.view
          }
       }
       
-      private function callBack(param1:HorseRaceWalkPlayer, param2:Boolean, param3:int) : void
+      private function callBack($walkingPlayer:HorseRaceWalkPlayer, isLoadSucceed:Boolean, vFlag:int) : void
       {
-         if(param3 == 0)
+         if(vFlag == 0)
          {
-            var _loc4_:* = param1.playerVO.scenePlayerDirection;
-            param1.sceneCharacterDirection = _loc4_;
-            param1.setSceneCharacterDirectionDefault = _loc4_;
-            param1.mouseEnabled = false;
-            param1.showPlayerTitle();
-            param1.sceneCharacterStateType = "natural";
-            param1.showPlayerTitle();
-            param1.showVipName();
-            param1.playerPoint = new Point(123,276);
+            var _loc4_:* = $walkingPlayer.playerVO.scenePlayerDirection;
+            $walkingPlayer.sceneCharacterDirection = _loc4_;
+            $walkingPlayer.setSceneCharacterDirectionDefault = _loc4_;
+            $walkingPlayer.mouseEnabled = false;
+            $walkingPlayer.showPlayerTitle();
+            $walkingPlayer.sceneCharacterStateType = "natural";
+            $walkingPlayer.showPlayerTitle();
+            $walkingPlayer.showVipName();
+            $walkingPlayer.playerPoint = new Point(123,276);
          }
       }
       
@@ -205,15 +204,15 @@ package horseRace.view
          walkingPlayer.stop();
       }
       
-      private function _onBuyCountClick(param1:MouseEvent) : void
+      private function _onBuyCountClick(e:MouseEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
+         var price:int = 0;
+         var content:* = null;
          if(HorseRaceManager.Instance.showBuyCountFram)
          {
-            _loc3_ = ServerConfigManager.instance.HorseGameCostMoneyCount;
-            _loc2_ = LanguageMgr.GetTranslation("horseRace.match.buyCountDescription",_loc3_);
-            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc2_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
+            price = ServerConfigManager.instance.HorseGameCostMoneyCount;
+            content = LanguageMgr.GetTranslation("horseRace.match.buyCountDescription",price);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),content,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
             _selectBtn = ComponentFactory.Instance.creatComponentByStylename("ddtGame.buyConfirmNo.scb");
             _selectBtn.text = LanguageMgr.GetTranslation("horseRace.match.notTip");
             _selectBtn.addEventListener("click",__onClickSelectedBtn);
@@ -230,46 +229,46 @@ package horseRace.view
          }
       }
       
-      private function __onClickSelectedBtn(param1:MouseEvent) : void
+      private function __onClickSelectedBtn(e:MouseEvent) : void
       {
          HorseRaceManager.Instance.showBuyCountFram = !_selectBtn.selected;
       }
       
-      private function __onRecoverResponse(param1:FrameEvent) : void
+      private function __onRecoverResponse(e:FrameEvent) : void
       {
-         var _loc2_:int = 0;
+         var price:int = 0;
          SoundManager.instance.playButtonSound();
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         if(e.responseCode == 3 || e.responseCode == 2)
          {
             if(PlayerManager.Instance.Self.bagLocked)
             {
                BaglockedManager.Instance.show();
                return;
             }
-            _loc2_ = ServerConfigManager.instance.HorseGameCostMoneyCount;
-            if(PlayerManager.Instance.Self.Money < _loc2_)
+            price = ServerConfigManager.instance.HorseGameCostMoneyCount;
+            if(PlayerManager.Instance.Self.Money < price)
             {
                LeavePageManager.showFillFrame();
                return;
             }
             SocketManager.Instance.out.buyHorseRaceCount();
          }
-         else if(param1.responseCode == 4 || param1.responseCode == 0 || param1.responseCode == 1)
+         else if(e.responseCode == 4 || e.responseCode == 0 || e.responseCode == 1)
          {
             HorseRaceManager.Instance.showBuyCountFram = true;
          }
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",__onRecoverResponse);
+         (e.currentTarget as BaseAlerFrame).removeEventListener("response",__onRecoverResponse);
          if(_selectBtn)
          {
             _selectBtn.removeEventListener("click",__onClickSelectedBtn);
          }
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(e.currentTarget);
       }
       
-      private function _startClick(param1:MouseEvent) : void
+      private function _startClick(e:MouseEvent) : void
       {
-         var _loc2_:int = HorseRaceManager.Instance.horseRaceCanRaceTime;
-         if(_loc2_ <= 0)
+         var buyCount1:int = HorseRaceManager.Instance.horseRaceCanRaceTime;
+         if(buyCount1 <= 0)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("horseRace.raceView.noTimeToRace"));
             return;
@@ -293,7 +292,7 @@ package horseRace.view
          GameInSocketOut.sendSingleRoomBegin(60);
       }
       
-      private function _onCancel(param1:MouseEvent) : void
+      private function _onCancel(e:MouseEvent) : void
       {
          _timeTxt.visible = false;
          _matchTxt.visible = false;
@@ -306,16 +305,16 @@ package horseRace.view
          GameInSocketOut.sendCancelWait();
       }
       
-      private function cancelMatchHandler(param1:FrameEvent) : void
+      private function cancelMatchHandler(event:FrameEvent) : void
       {
-         if(param1.responseCode == 1 || param1.responseCode == 4 || param1.responseCode == 0)
+         if(event.responseCode == 1 || event.responseCode == 4 || event.responseCode == 0)
          {
             SoundManager.instance.play("008");
             dispose();
          }
       }
       
-      private function timerHandler(param1:TimerEvent) : void
+      private function timerHandler(event:TimerEvent) : void
       {
          _countDown = Number(_countDown) + 1;
          if(_countDown > 10)

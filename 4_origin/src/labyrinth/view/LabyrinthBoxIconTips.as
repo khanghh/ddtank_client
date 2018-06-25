@@ -44,11 +44,11 @@ package labyrinth.view
          return null;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(data:Object) : void
       {
-         if(param1)
+         if(data)
          {
-            _label.text = param1["label"];
+            _label.text = data["label"];
             _bg.width = 75;
             _bg.height = 40;
             _line.visible = false;

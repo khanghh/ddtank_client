@@ -10,68 +10,66 @@ package morn.core.components
       public static const VERTICAL:String = "vertical";
        
       
-      public function RadioGroup(param1:String = null, param2:String = null)
+      public function RadioGroup(labels:String = null, skin:String = null)
       {
-         super(param1,param2);
-         _direction = HORIZENTAL;
+         super(labels,skin);
+         _direction = "horizontal";
       }
       
-      override protected function createItem(param1:String, param2:String) : DisplayObject
+      override protected function createItem(skin:String, label:String) : DisplayObject
       {
-         return new RadioButton(param1,param2);
+         return new RadioButton(skin,label);
       }
       
       override protected function changeLabels() : void
       {
-         var _loc1_:* = NaN;
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         var _loc4_:RadioButton = null;
+         var left:* = NaN;
+         var i:int = 0;
+         var n:int = 0;
+         var radio:* = null;
          if(_items)
          {
-            _loc1_ = 0;
-            _loc2_ = 0;
-            _loc3_ = _items.length;
-            while(_loc2_ < _loc3_)
+            left = 0;
+            for(i = 0,n = _items.length; i < n; )
             {
-               _loc4_ = _items[_loc2_] as RadioButton;
+               radio = _items[i] as RadioButton;
                if(_skin)
                {
-                  _loc4_.skin = _skin;
+                  radio.skin = _skin;
                }
                if(_labelColors)
                {
-                  _loc4_.labelColors = _labelColors;
+                  radio.labelColors = _labelColors;
                }
                if(_labelStroke)
                {
-                  _loc4_.labelStroke = _labelStroke;
+                  radio.labelStroke = _labelStroke;
                }
                if(_labelSize)
                {
-                  _loc4_.labelSize = _labelSize;
+                  radio.labelSize = _labelSize;
                }
                if(_labelBold)
                {
-                  _loc4_.labelBold = _labelBold;
+                  radio.labelBold = _labelBold;
                }
                if(_labelMargin)
                {
-                  _loc4_.labelMargin = _labelMargin;
+                  radio.labelMargin = _labelMargin;
                }
-               if(_direction == HORIZENTAL)
+               if(_direction == "horizontal")
                {
-                  _loc4_.y = 0;
-                  _loc4_.x = _loc1_;
-                  _loc1_ = Number(_loc1_ + (_loc4_.width + _space));
+                  radio.y = 0;
+                  radio.x = left;
+                  left = Number(left + (radio.width + _space));
                }
                else
                {
-                  _loc4_.x = 0;
-                  _loc4_.y = _loc1_;
-                  _loc1_ = Number(_loc1_ + (_loc4_.height + _space));
+                  radio.x = 0;
+                  radio.y = left;
+                  left = Number(left + (radio.height + _space));
                }
-               _loc2_++;
+               i++;
             }
          }
       }
@@ -81,24 +79,22 @@ package morn.core.components
          return _selectedIndex > -1 && _selectedIndex < _items.length?RadioButton(_items[_selectedIndex]).value:null;
       }
       
-      public function set selectedValue(param1:Object) : void
+      public function set selectedValue(value:Object) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         var _loc4_:RadioButton = null;
+         var i:int = 0;
+         var n:int = 0;
+         var item:* = null;
          if(_items)
          {
-            _loc2_ = 0;
-            _loc3_ = _items.length;
-            while(_loc2_ < _loc3_)
+            for(i = 0,n = _items.length; i < n; )
             {
-               _loc4_ = _items[_loc2_] as RadioButton;
-               if(_loc4_.value == param1)
+               item = _items[i] as RadioButton;
+               if(item.value == value)
                {
-                  selectedIndex = _loc2_;
+                  selectedIndex = i;
                   break;
                }
-               _loc2_++;
+               i++;
             }
          }
       }

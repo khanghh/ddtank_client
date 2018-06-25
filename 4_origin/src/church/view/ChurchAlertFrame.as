@@ -16,8 +16,8 @@ package church.view
       public function ChurchAlertFrame()
       {
          super();
-         var _loc1_:AlertInfo = new AlertInfo("离婚支付请求",LanguageMgr.GetTranslation("shop.PresentFrame.OkBtnText"),LanguageMgr.GetTranslation("shop.PresentFrame.CancelBtnText"));
-         info = _loc1_;
+         var alerInfo:AlertInfo = new AlertInfo("离婚支付请求",LanguageMgr.GetTranslation("shop.PresentFrame.OkBtnText"),LanguageMgr.GetTranslation("shop.PresentFrame.CancelBtnText"));
+         info = alerInfo;
          _txt = ComponentFactory.Instance.creatComponentByStylename("FrameTitleTextStyle");
          _txt.autoSize = "none";
          _txt.width = 300;
@@ -29,9 +29,9 @@ package church.view
          addToContent(_txt);
       }
       
-      public function setTxt(param1:String) : void
+      public function setTxt(str:String) : void
       {
-         _txt.text = param1;
+         _txt.text = str;
       }
       
       override public function dispose() : void

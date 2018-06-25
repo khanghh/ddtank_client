@@ -21,38 +21,37 @@ package braveDoor.data
       
       private var _isAddEnd:Boolean;
       
-      public function BraveDoorListModel(param1:IEventDispatcher = null)
+      public function BraveDoorListModel(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
          _roomList = new DictionaryData(true);
       }
       
-      public function updateRoom(param1:Array) : void
+      public function updateRoom(arr:Array) : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          _roomList.clear();
          _isAddEnd = false;
-         if(param1.length == 0)
+         if(arr.length == 0)
          {
             return;
          }
-         param1 = RoomListController.disorder(param1);
-         _loc2_ = 0;
-         while(_loc2_ < param1.length)
+         arr = RoomListController.disorder(arr);
+         for(i = 0; i < arr.length; )
          {
-            _roomList.add((param1[_loc2_] as RoomInfo).ID,param1[_loc2_] as RoomInfo);
-            if(_loc2_ == param1.length - 1)
+            _roomList.add((arr[i] as RoomInfo).ID,arr[i] as RoomInfo);
+            if(i == arr.length - 1)
             {
                _isAddEnd = true;
             }
-            _loc2_++;
+            i++;
          }
          dispatchEvent(new Event("BraveDoorRoomListUpdate"));
       }
       
-      public function getRoomById(param1:int) : RoomInfo
+      public function getRoomById(id:int) : RoomInfo
       {
-         return _roomList[param1];
+         return _roomList[id];
       }
       
       public function getRoomList() : DictionaryData
@@ -60,20 +59,20 @@ package braveDoor.data
          return _roomList;
       }
       
-      private function isOutBounds(param1:*) : Boolean
+      private function isOutBounds(curPage:*) : Boolean
       {
-         if(param1 < 0 || _roomList == null)
+         if(curPage < 0 || _roomList == null)
          {
             return true;
          }
-         var _loc2_:int = _roomList.length % 3;
-         var _loc3_:int = _loc2_ == 0?_roomList.length / 3:Number(_roomList.length / 3 + 1);
-         return param1 > _loc3_;
+         var pageOffset:int = _roomList.length % 3;
+         var totalPage:int = pageOffset == 0?_roomList.length / 3:Number(_roomList.length / 3 + 1);
+         return curPage > totalPage;
       }
       
-      public function set roomTotal(param1:int) : void
+      public function set roomTotal(value:int) : void
       {
-         _roomTotal = param1;
+         _roomTotal = value;
       }
       
       public function get roomTotal() : int

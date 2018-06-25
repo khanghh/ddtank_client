@@ -31,7 +31,7 @@ package bank.view
          getBtn.addEventListener("click",__GetMoney);
       }
       
-      private function __saveMoney(param1:MouseEvent) : void
+      private function __saveMoney(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          dispose();
@@ -40,14 +40,14 @@ package bank.view
          LayerManager.Instance.addToLayer(_saveOrGetView,3,true,1);
       }
       
-      private function __GetMoney(param1:MouseEvent) : void
+      private function __GetMoney(e:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var msg:* = null;
          SoundManager.instance.play("008");
          if(!BankManager.instance.model.list.length)
          {
-            _loc2_ = LanguageMgr.GetTranslation("tank.bank.noSaveMoney");
-            MessageTipManager.getInstance().show(_loc2_,0,true,1);
+            msg = LanguageMgr.GetTranslation("tank.bank.noSaveMoney");
+            MessageTipManager.getInstance().show(msg,0,true,1);
          }
          else
          {
@@ -59,7 +59,7 @@ package bank.view
          }
       }
       
-      private function __closeView(param1:MouseEvent) : void
+      private function __closeView(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          dispose();
@@ -77,9 +77,9 @@ package bank.view
          return _saveOrGetView;
       }
       
-      public function set saveOrGetView(param1:BankSaveOrGetView) : void
+      public function set saveOrGetView(value:BankSaveOrGetView) : void
       {
-         _saveOrGetView = param1;
+         _saveOrGetView = value;
       }
       
       override public function dispose() : void

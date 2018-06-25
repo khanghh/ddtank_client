@@ -60,8 +60,8 @@ package ddtKingWay.view
       
       public function DDTKingWayLevelView()
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          super();
          _remainingTimeText1 = ComponentFactory.Instance.creatComponentByStylename("asset.ddtKingWay.remainingTimeText1");
          _remainingTimeText2 = ComponentFactory.Instance.creatComponentByStylename("asset.ddtKingWay.remainingTimeText2");
@@ -77,24 +77,23 @@ package ddtKingWay.view
          addChild(_getRewardBtn);
          _cellList = new Vector.<DDTKingWayRewardCell>();
          _itemList = new Vector.<DDTKingWayLevelTargetItem>(4);
-         _loc2_ = 0;
-         while(_loc2_ < 4)
+         for(i = 0; i < 4; )
          {
-            _loc1_ = new DDTKingWayLevelTargetItem(_loc2_);
-            PositionUtils.setPos(_loc1_,"asset.ddtKingWay.itemPos" + _loc2_);
-            _itemList[_loc2_] = _loc1_;
-            addChild(_itemList[_loc2_]);
-            _loc2_++;
+            item = new DDTKingWayLevelTargetItem(i);
+            PositionUtils.setPos(item,"asset.ddtKingWay.itemPos" + i);
+            _itemList[i] = item;
+            addChild(_itemList[i]);
+            i++;
          }
          _getRewardBtn.addEventListener("click",__onGetRewardClick);
          TaskManager.instance.addEventListener("changed",__onQuestChange);
       }
       
-      public function updataView(param1:DDTKingWayData, param2:Boolean = true) : void
+      public function updataView(info:DDTKingWayData, isGardeRange:Boolean = true) : void
       {
-         _info = param1;
+         _info = info;
          _taskInfo = TaskManager.instance.getQuestByID(_info.QuestID);
-         _isGardeRange = param2;
+         _isGardeRange = isGardeRange;
          if(_isGardeRange)
          {
             if(_taskInfo.data && !(_taskInfo.isAchieved && !_taskInfo.isAvailable) && !timeOut(_taskInfo,_info))
@@ -154,23 +153,22 @@ package ddtKingWay.view
          }
       }
       
-      private function updataItem(param1:Boolean = true) : void
+      private function updataItem(isGardeRange:Boolean = true) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < 4)
+         var i:int = 0;
+         for(i = 0; i < 4; )
          {
-            _itemList[_loc2_].updataStutas(_taskInfo,timeOut(_taskInfo,_info),_isGardeRange);
-            _loc2_++;
+            _itemList[i].updataStutas(_taskInfo,timeOut(_taskInfo,_info),_isGardeRange);
+            i++;
          }
       }
       
-      public function timeOut(param1:QuestInfo, param2:DDTKingWayData) : Boolean
+      public function timeOut(taskInfo:QuestInfo, info:DDTKingWayData) : Boolean
       {
-         var _loc3_:Date = TimeManager.Instance.Now();
-         if(param1.data != null || param1.isAchieved && !param1.isAvailable)
+         var now:Date = TimeManager.Instance.Now();
+         if(taskInfo.data != null || taskInfo.isAchieved && !taskInfo.isAvailable)
          {
-            _remainingTime = getTimeDiff(_loc3_,param1,param2);
+            _remainingTime = getTimeDiff(now,taskInfo,info);
             if(_remainingTime == "0")
             {
                return true;
@@ -181,35 +179,35 @@ package ddtKingWay.view
          return true;
       }
       
-      public function getTimeDiff(param1:Date, param2:QuestInfo, param3:DDTKingWayData) : String
+      public function getTimeDiff(newDate:Date, taskInfo:QuestInfo, info:DDTKingWayData) : String
       {
-         var _loc4_:* = 0;
-         var _loc8_:* = 0;
-         var _loc7_:* = 0;
-         var _loc5_:* = 0;
-         var _loc6_:Number = Math.round((param2.data.AddTiemsDate.getTime() + param3.Validay * 60 * 60 * 24 * 1000 - param1.getTime()) / 1000);
-         if(_loc6_ >= 0)
+         var d:* = 0;
+         var h:* = 0;
+         var m:* = 0;
+         var s:* = 0;
+         var diff:Number = Math.round((taskInfo.data.AddTiemsDate.getTime() + info.Validay * 60 * 60 * 24 * 1000 - newDate.getTime()) / 1000);
+         if(diff >= 0)
          {
-            _loc4_ = uint(Math.floor(_loc6_ / 60 / 60 / 24));
-            _loc6_ = _loc6_ % 86400;
-            _loc8_ = uint(Math.floor(_loc6_ / 60 / 60));
-            _loc6_ = _loc6_ % 3600;
-            _loc7_ = uint(Math.floor(_loc6_ / 60));
-            _loc5_ = uint(_loc6_ % 60);
-            if(param2.data == null || param2.isAchieved && !param2.isAvailable)
+            d = uint(Math.floor(diff / 60 / 60 / 24));
+            diff = diff % 86400;
+            h = uint(Math.floor(diff / 60 / 60));
+            diff = diff % 3600;
+            m = uint(Math.floor(diff / 60));
+            s = uint(diff % 60);
+            if(taskInfo.data == null || taskInfo.isAchieved && !taskInfo.isAvailable)
             {
                updateTime(0);
                return "0";
             }
-            if(_loc4_ > 0)
+            if(d > 0)
             {
                updateTime(3);
-               return String(_loc4_);
+               return String(d);
             }
-            if(_loc8_ > 0)
+            if(h > 0)
             {
                updateTime(2);
-               return fixZero(_loc8_);
+               return fixZero(h);
             }
             updateTime(1);
             return "1";
@@ -218,57 +216,56 @@ package ddtKingWay.view
          return "0";
       }
       
-      private function fixZero(param1:uint) : String
+      private function fixZero(num:uint) : String
       {
-         return param1 < 10?String(param1):String(param1);
+         return num < 10?String(num):String(num);
       }
       
-      private function updateTime(param1:int) : void
+      private function updateTime(num:int) : void
       {
-         _timeUnit = param1;
+         _timeUnit = num;
       }
       
       private function updateRewardShow() : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc1_:Array = _taskInfo.itemRewards;
-         var _loc2_:int = _loc1_.length > _cellList.length?_loc1_.length:uint(_cellList.length);
-         _loc4_ = 0;
-         while(_loc4_ < _loc2_)
+         var i:int = 0;
+         var info:* = null;
+         var goodArr:Array = _taskInfo.itemRewards;
+         var len:int = goodArr.length > _cellList.length?goodArr.length:uint(_cellList.length);
+         for(i = 0; i < len; )
          {
-            if(_loc4_ < _loc1_.length)
+            if(i < goodArr.length)
             {
-               _loc3_ = ItemManager.fillByID(_loc1_[_loc4_].itemID);
-               _loc3_.IsBinds = _loc1_[_loc4_].isBind;
-               _loc3_.ValidDate = _loc1_[_loc4_].ValidateTime;
-               _loc3_.StrengthenLevel = _loc1_[_loc4_].StrengthenLevel;
-               _loc3_.AttackCompose = _loc1_[_loc4_].AttackCompose;
-               _loc3_.DefendCompose = _loc1_[_loc4_].DefendCompose;
-               _loc3_.AgilityCompose = _loc1_[_loc4_].AgilityCompose;
-               _loc3_.LuckCompose = _loc1_[_loc4_].LuckCompose;
-               if(_loc4_ == _cellList.length)
+               info = ItemManager.fillByID(goodArr[i].itemID);
+               info.IsBinds = goodArr[i].isBind;
+               info.ValidDate = goodArr[i].ValidateTime;
+               info.StrengthenLevel = goodArr[i].StrengthenLevel;
+               info.AttackCompose = goodArr[i].AttackCompose;
+               info.DefendCompose = goodArr[i].DefendCompose;
+               info.AgilityCompose = goodArr[i].AgilityCompose;
+               info.LuckCompose = goodArr[i].LuckCompose;
+               if(i == _cellList.length)
                {
                   _cellList.push(new DDTKingWayRewardCell());
-                  _hBox.addChild(_cellList[_loc4_]);
+                  _hBox.addChild(_cellList[i]);
                }
-               _cellList[_loc4_].info = _loc3_;
-               _cellList[_loc4_].setCount(_loc1_[_loc4_].count[_taskInfo.QuestLevel - 1]);
-               _cellList[_loc4_].visible = true;
+               _cellList[i].info = info;
+               _cellList[i].setCount(goodArr[i].count[_taskInfo.QuestLevel - 1]);
+               _cellList[i].visible = true;
                if((_taskInfo.data == null || _taskInfo.isAchieved && !_taskInfo.isAvailable) && _isGardeRange)
                {
-                  _cellList[_loc4_].showitem = true;
+                  _cellList[i].showitem = true;
                }
                else
                {
-                  _cellList[_loc4_].showitem = false;
+                  _cellList[i].showitem = false;
                }
             }
             else
             {
-               _cellList[_loc4_].visible = false;
+               _cellList[i].visible = false;
             }
-            _loc4_++;
+            i++;
          }
          _hBox.arrange();
          if(_taskInfo.data == null || timeOut(_taskInfo,_info) || !_taskInfo.isCompleted || _taskInfo.isAchieved && !_taskInfo.isAvailable)
@@ -281,19 +278,19 @@ package ddtKingWay.view
          }
       }
       
-      protected function __onGetRewardClick(param1:MouseEvent) : void
+      protected function __onGetRewardClick(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var alert:* = null;
          SoundManager.instance.playButtonSound();
          if(!_taskInfo)
          {
             return;
          }
-         var _loc3_:QuestInfo = _taskInfo;
-         if(_loc3_.RewardBindMoney != 0 && _loc3_.RewardBindMoney + PlayerManager.Instance.Self.DDTMoney > ServerConfigManager.instance.getBindBidLimit(PlayerManager.Instance.Self.Grade,PlayerManager.Instance.Self.VIPLevel))
+         var questInfo:QuestInfo = _taskInfo;
+         if(questInfo.RewardBindMoney != 0 && questInfo.RewardBindMoney + PlayerManager.Instance.Self.DDTMoney > ServerConfigManager.instance.getBindBidLimit(PlayerManager.Instance.Self.Grade,PlayerManager.Instance.Self.VIPLevel))
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.BindBid.tip"),LanguageMgr.GetTranslation("shop.PresentFrame.OkBtnText"),LanguageMgr.GetTranslation("shop.PresentFrame.CancelBtnText"),true,true,true,1);
-            _loc2_.addEventListener("response",__onResponse);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.BindBid.tip"),LanguageMgr.GetTranslation("shop.PresentFrame.OkBtnText"),LanguageMgr.GetTranslation("shop.PresentFrame.CancelBtnText"),true,true,true,1);
+            alert.addEventListener("response",__onResponse);
          }
          else
          {
@@ -301,21 +298,21 @@ package ddtKingWay.view
          }
       }
       
-      private function __onResponse(param1:FrameEvent) : void
+      private function __onResponse(pEvent:FrameEvent) : void
       {
-         var _loc2_:* = null;
-         param1.currentTarget.removeEventListener("response",__onResponse);
-         if(param1.responseCode == 3)
+         var questInfo:* = null;
+         pEvent.currentTarget.removeEventListener("response",__onResponse);
+         if(pEvent.responseCode == 3)
          {
-            _loc2_ = _taskInfo;
+            questInfo = _taskInfo;
             SocketManager.Instance.out.sendQuestFinish(_taskInfo.QuestID,TaskManager.itemAwardSelected);
          }
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(pEvent.currentTarget);
       }
       
-      protected function __onQuestChange(param1:TaskEvent) : void
+      protected function __onQuestChange(event:TaskEvent) : void
       {
-         if(param1.info.Id == _info.QuestID)
+         if(event.info.Id == _info.QuestID)
          {
             updataView(_info);
             DDTKingWayManager.instance.checkIcon();

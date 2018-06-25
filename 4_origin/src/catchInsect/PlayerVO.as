@@ -33,9 +33,9 @@ package catchInsect
          super();
       }
       
-      public function set playerStauts(param1:int) : void
+      public function set playerStauts(value:int) : void
       {
-         _playerStauts = param1;
+         _playerStauts = value;
       }
       
       public function get playerStauts() : int
@@ -48,9 +48,9 @@ package catchInsect
          return _playerPos;
       }
       
-      public function set playerPos(param1:Point) : void
+      public function set playerPos(value:Point) : void
       {
-         _playerPos = param1;
+         _playerPos = value;
          if(_playerInfo)
          {
             dispatchEvent(new CatchInsectRoomEvent("playerPosChange",null,_playerInfo.ID));
@@ -62,9 +62,9 @@ package catchInsect
          return _playerInfo;
       }
       
-      public function set playerInfo(param1:PlayerInfo) : void
+      public function set playerInfo(value:PlayerInfo) : void
       {
-         _playerInfo = param1;
+         _playerInfo = value;
       }
       
       public function get walkPath() : Array
@@ -72,9 +72,9 @@ package catchInsect
          return _walkPath;
       }
       
-      public function set walkPath(param1:Array) : void
+      public function set walkPath(value:Array) : void
       {
-         _walkPath = param1;
+         _walkPath = value;
       }
       
       public function get scenePlayerDirection() : SceneCharacterDirection
@@ -86,9 +86,9 @@ package catchInsect
          return _sceneCharacterDirection;
       }
       
-      public function set scenePlayerDirection(param1:SceneCharacterDirection) : void
+      public function set scenePlayerDirection(value:SceneCharacterDirection) : void
       {
-         _sceneCharacterDirection = param1;
+         _sceneCharacterDirection = value;
          var _loc2_:* = _sceneCharacterDirection;
          if(SceneCharacterDirection.RT !== _loc2_)
          {
@@ -122,9 +122,9 @@ package catchInsect
          return _playerDirection;
       }
       
-      public function set playerDirection(param1:int) : void
+      public function set playerDirection(value:int) : void
       {
-         _playerDirection = param1;
+         _playerDirection = value;
          switch(int(_playerDirection) - 1)
          {
             case 0:
@@ -146,25 +146,25 @@ package catchInsect
          return _playerMoveSpeed;
       }
       
-      public function set playerMoveSpeed(param1:Number) : void
+      public function set playerMoveSpeed(value:Number) : void
       {
-         if(_playerMoveSpeed == param1)
+         if(_playerMoveSpeed == value)
          {
             return;
          }
-         _playerMoveSpeed = param1;
+         _playerMoveSpeed = value;
          dispatchEvent(new CatchInsectRoomEvent("playerMoveSpeedChange",null,_playerInfo.ID));
       }
       
       public function clone() : PlayerVO
       {
-         var _loc1_:PlayerVO = new PlayerVO();
-         _loc1_.playerInfo = _playerInfo;
-         _loc1_.playerPos = _playerPos;
-         _loc1_.walkPath = _walkPath;
-         _loc1_.playerDirection = _playerDirection;
-         _loc1_.playerMoveSpeed = _playerMoveSpeed;
-         return _loc1_;
+         var playerVO:PlayerVO = new PlayerVO();
+         playerVO.playerInfo = _playerInfo;
+         playerVO.playerPos = _playerPos;
+         playerVO.walkPath = _walkPath;
+         playerVO.playerDirection = _playerDirection;
+         playerVO.playerMoveSpeed = _playerMoveSpeed;
+         return playerVO;
       }
       
       public function dispose() : void

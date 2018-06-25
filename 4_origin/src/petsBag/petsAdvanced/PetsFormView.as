@@ -90,43 +90,43 @@ package petsBag.petsAdvanced
       
       private function creatPetsView() : void
       {
-         var _loc4_:int = 0;
-         var _loc1_:* = null;
-         var _loc3_:* = null;
+         var i:int = 0;
+         var petsItem:* = null;
+         var info:* = null;
          var _loc6_:int = 0;
          var _loc5_:* = PetsAdvancedManager.Instance.formDataList;
-         for each(var _loc2_ in PetsAdvancedManager.Instance.formDataList)
+         for each(var tempInfo in PetsAdvancedManager.Instance.formDataList)
          {
-            if(_loc2_.TemplateID == PlayerManager.Instance.Self.PetsID)
+            if(tempInfo.TemplateID == PlayerManager.Instance.Self.PetsID)
             {
-               _loc2_.ShowBtn = 2;
+               tempInfo.ShowBtn = 2;
                break;
             }
          }
-         _loc4_ = 0;
-         while(_loc4_ < 6)
+         i = 0;
+         while(i < 6)
          {
-            _loc1_ = ComponentFactory.Instance.creatComponentByStylename("petsBag.form.PetsFormPetsItem");
-            if(_loc4_ < 3)
+            petsItem = ComponentFactory.Instance.creatComponentByStylename("petsBag.form.PetsFormPetsItem");
+            if(i < 3)
             {
-               _loc1_.x = 34 + 180 * _loc4_;
-               _loc1_.y = 95;
+               petsItem.x = 34 + 180 * i;
+               petsItem.y = 95;
             }
             else
             {
-               _loc1_.x = 34 + 180 * (_loc4_ - 3);
-               _loc1_.y = 243;
+               petsItem.x = 34 + 180 * (i - 3);
+               petsItem.y = 243;
             }
-            _loc3_ = null;
-            if(_loc4_ < PetsAdvancedManager.Instance.formDataList.length)
+            info = null;
+            if(i < PetsAdvancedManager.Instance.formDataList.length)
             {
-               _loc3_ = PetsAdvancedManager.Instance.formDataList[_loc4_];
+               info = PetsAdvancedManager.Instance.formDataList[i];
             }
-            _loc1_.setInfo(_loc4_,_loc3_);
-            _loc1_.addEventListener("itemclick",__onClickPetsItem);
-            addChild(_loc1_);
-            _petsVec.push(_loc1_);
-            _loc4_++;
+            petsItem.setInfo(i,info);
+            petsItem.addEventListener("itemclick",__onClickPetsItem);
+            addChild(petsItem);
+            _petsVec.push(petsItem);
+            i++;
          }
          _shiner = ComponentFactory.Instance.creat("petsBag.form.clickPets");
          setShinerPos(0);
@@ -134,37 +134,36 @@ package petsBag.petsAdvanced
          setItemInfo();
       }
       
-      protected function __onClickPetsItem(param1:PetItemEvent) : void
+      protected function __onClickPetsItem(event:PetItemEvent) : void
       {
-         var _loc2_:int = param1.data.id;
-         setShinerPos(_loc2_);
+         var id:int = event.data.id;
+         setShinerPos(id);
       }
       
-      private function setShinerPos(param1:int) : void
+      private function setShinerPos(id:int) : void
       {
-         _shiner.x = _petsVec[param1].x - 4;
-         _shiner.y = _petsVec[param1].y - 4;
+         _shiner.x = _petsVec[id].x - 4;
+         _shiner.y = _petsVec[id].y - 4;
       }
       
       private function setItemInfo() : void
       {
-         var _loc4_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         _loc4_ = 0;
-         while(_loc4_ < PetsAdvancedManager.Instance.formDataList.length)
+         var i:int = 0;
+         var tempInfo:* = null;
+         var healthNum:int = 0;
+         var damageReduce:int = 0;
+         for(i = 0; i < PetsAdvancedManager.Instance.formDataList.length; )
          {
-            _loc1_ = PetsAdvancedManager.Instance.formDataList[_loc4_];
-            if(_loc1_ && _loc1_.State == 1)
+            tempInfo = PetsAdvancedManager.Instance.formDataList[i];
+            if(tempInfo && tempInfo.State == 1)
             {
-               _loc2_ = _loc2_ + _loc1_.HeathUp;
-               _loc3_ = _loc3_ + _loc1_.DamageReduce;
+               healthNum = healthNum + tempInfo.HeathUp;
+               damageReduce = damageReduce + tempInfo.DamageReduce;
             }
-            _loc4_++;
+            i++;
          }
-         _lifeGuard.text = LanguageMgr.GetTranslation("petsBag.form.petsListGuardTxt",_loc2_);
-         _absorbHurt.text = LanguageMgr.GetTranslation("petsBag.form.petsabsorbHurtTxt",_loc3_);
+         _lifeGuard.text = LanguageMgr.GetTranslation("petsBag.form.petsListGuardTxt",healthNum);
+         _absorbHurt.text = LanguageMgr.GetTranslation("petsBag.form.petsabsorbHurtTxt",damageReduce);
       }
       
       private function initEvent() : void
@@ -176,7 +175,7 @@ package petsBag.petsAdvanced
          SocketManager.Instance.addEventListener(PkgEvent.format(68,32),__onPetsWake);
       }
       
-      protected function __onPrePageClick(param1:MouseEvent) : void
+      protected function __onPrePageClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(_page > 1)
@@ -191,7 +190,7 @@ package petsBag.petsAdvanced
          setPageInfo();
       }
       
-      protected function __onNextPageClick(param1:MouseEvent) : void
+      protected function __onNextPageClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(6 * _page < PetsAdvancedManager.Instance.formDataList.length)
@@ -208,109 +207,105 @@ package petsBag.petsAdvanced
       
       private function setPageInfo() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:int = 0;
-         var _loc2_:* = null;
-         _loc3_ = 0;
-         while(_loc3_ < _petsVec.length)
+         var i:int = 0;
+         var index:int = 0;
+         var info:* = null;
+         for(i = 0; i < _petsVec.length; )
          {
-            _loc1_ = 6 * (_page - 1) + _loc3_;
-            _loc2_ = null;
-            if(_loc1_ < PetsAdvancedManager.Instance.formDataList.length)
+            index = 6 * (_page - 1) + i;
+            info = null;
+            if(index < PetsAdvancedManager.Instance.formDataList.length)
             {
-               _loc2_ = PetsAdvancedManager.Instance.formDataList[_loc1_];
+               info = PetsAdvancedManager.Instance.formDataList[index];
             }
-            _petsVec[_loc3_].setInfo(_loc3_,_loc2_);
-            _loc3_++;
+            _petsVec[i].setInfo(i,info);
+            i++;
          }
       }
       
-      protected function __onGetPetsFormInfo(param1:PkgEvent) : void
+      protected function __onGetPetsFormInfo(event:PkgEvent) : void
       {
-         var _loc7_:int = 0;
-         var _loc6_:int = 0;
-         var _loc2_:int = 0;
-         var _loc4_:* = null;
-         var _loc5_:PackageIn = param1.pkg;
-         var _loc3_:int = _loc5_.readInt();
-         _loc7_ = 0;
-         while(_loc7_ < _loc3_)
+         var i:int = 0;
+         var tempId:int = 0;
+         var index:int = 0;
+         var validDate:* = null;
+         var pkg:PackageIn = event.pkg;
+         var num:int = pkg.readInt();
+         for(i = 0; i < num; )
          {
-            _loc6_ = _loc5_.readInt();
-            _loc2_ = PetsAdvancedManager.Instance.getFormDataIndexByTempId(_loc6_);
-            PetsAdvancedManager.Instance.formDataList[_loc2_].State = 1;
-            PetsAdvancedManager.Instance.formDataList[_loc2_].ShowBtn = 1;
-            PetsAdvancedManager.Instance.formDataList[_loc2_].valid = null;
-            _loc7_++;
+            tempId = pkg.readInt();
+            index = PetsAdvancedManager.Instance.getFormDataIndexByTempId(tempId);
+            PetsAdvancedManager.Instance.formDataList[index].State = 1;
+            PetsAdvancedManager.Instance.formDataList[index].ShowBtn = 1;
+            PetsAdvancedManager.Instance.formDataList[index].valid = null;
+            i++;
          }
-         _loc3_ = _loc5_.readInt();
-         _loc7_ = 0;
-         while(_loc7_ < _loc3_)
+         num = pkg.readInt();
+         for(i = 0; i < num; )
          {
-            _loc6_ = _loc5_.readInt();
-            _loc4_ = _loc5_.readDate();
-            if(_loc4_.getTime() < TimeManager.Instance.Now().getTime())
+            tempId = pkg.readInt();
+            validDate = pkg.readDate();
+            if(validDate.getTime() < TimeManager.Instance.Now().getTime())
             {
-               _loc2_ = PetsAdvancedManager.Instance.getFormDataIndexByTempId(_loc6_);
-               PetsAdvancedManager.Instance.formDataList[_loc2_].State = 0;
-               PetsAdvancedManager.Instance.formDataList[_loc2_].ShowBtn = 3;
-               PetsAdvancedManager.Instance.formDataList[_loc2_].valid = null;
+               index = PetsAdvancedManager.Instance.getFormDataIndexByTempId(tempId);
+               PetsAdvancedManager.Instance.formDataList[index].State = 0;
+               PetsAdvancedManager.Instance.formDataList[index].ShowBtn = 3;
+               PetsAdvancedManager.Instance.formDataList[index].valid = null;
             }
             else
             {
-               _loc2_ = PetsAdvancedManager.Instance.getFormDataIndexByTempId(_loc6_);
-               PetsAdvancedManager.Instance.formDataList[_loc2_].State = 1;
-               PetsAdvancedManager.Instance.formDataList[_loc2_].ShowBtn = 1;
-               PetsAdvancedManager.Instance.formDataList[_loc2_].valid = _loc4_;
+               index = PetsAdvancedManager.Instance.getFormDataIndexByTempId(tempId);
+               PetsAdvancedManager.Instance.formDataList[index].State = 1;
+               PetsAdvancedManager.Instance.formDataList[index].ShowBtn = 1;
+               PetsAdvancedManager.Instance.formDataList[index].valid = validDate;
             }
-            _loc7_++;
+            i++;
          }
          creatPetsView();
       }
       
-      protected function __onPetsWake(param1:PkgEvent) : void
+      protected function __onPetsWake(event:PkgEvent) : void
       {
-         var _loc7_:int = 0;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc6_:int = _loc4_.readInt();
-         var _loc5_:Boolean = _loc4_.readBoolean();
-         var _loc3_:Date = null;
-         if(_loc5_)
+         var i:int = 0;
+         var pkg:PackageIn = event.pkg;
+         var tempId:int = pkg.readInt();
+         var isValid:Boolean = pkg.readBoolean();
+         var validDate:Date = null;
+         if(isValid)
          {
-            _loc3_ = _loc4_.readDate();
+            validDate = pkg.readDate();
          }
-         var _loc2_:int = PetsAdvancedManager.Instance.getFormDataIndexByTempId(_loc6_);
-         PetsAdvancedManager.Instance.formDataList[_loc2_].State = 1;
-         PetsAdvancedManager.Instance.formDataList[_loc2_].valid = _loc3_;
-         resetItemInfo(_loc6_,1,_loc2_);
-         _loc7_ = 0;
-         while(_loc7_ < _petsVec.length)
+         var index:int = PetsAdvancedManager.Instance.getFormDataIndexByTempId(tempId);
+         PetsAdvancedManager.Instance.formDataList[index].State = 1;
+         PetsAdvancedManager.Instance.formDataList[index].valid = validDate;
+         resetItemInfo(tempId,1,index);
+         for(i = 0; i < _petsVec.length; )
          {
-            if(_petsVec[_loc7_].info)
+            if(_petsVec[i].info)
             {
-               if(_petsVec[_loc7_].info.TemplateID == _loc6_)
+               if(_petsVec[i].info.TemplateID == tempId)
                {
-                  _petsVec[_loc7_].addPetBitmap(PetsAdvancedManager.Instance.formDataList[_loc2_].Appearance);
+                  _petsVec[i].addPetBitmap(PetsAdvancedManager.Instance.formDataList[index].Appearance);
                   break;
                }
             }
-            _loc7_++;
+            i++;
          }
       }
       
-      protected function __onPetsFollowOrCall(param1:PkgEvent) : void
+      protected function __onPetsFollowOrCall(event:PkgEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc3_:Boolean = _loc4_.readBoolean();
-         var _loc5_:int = _loc4_.readInt();
-         if(_loc5_ != -1)
+         var index:int = 0;
+         var pkg:PackageIn = event.pkg;
+         var flag:Boolean = pkg.readBoolean();
+         var tempId:int = pkg.readInt();
+         if(tempId != -1)
          {
-            _loc2_ = PetsAdvancedManager.Instance.getFormDataIndexByTempId(_loc5_);
-            resetItemInfo(_loc5_,!!_loc3_?2:1,_loc2_);
-            PlayerManager.Instance.Self.PetsID = !!_loc3_?_loc5_:-1;
-            PlayerManager.Instance.dispatchEvent(new NewHallEvent("showPets",[_loc3_,PetsAdvancedManager.Instance.formDataList[_loc2_].Resource]));
-            if(_loc3_)
+            index = PetsAdvancedManager.Instance.getFormDataIndexByTempId(tempId);
+            resetItemInfo(tempId,!!flag?2:1,index);
+            PlayerManager.Instance.Self.PetsID = !!flag?tempId:-1;
+            PlayerManager.Instance.dispatchEvent(new NewHallEvent("showPets",[flag,PetsAdvancedManager.Instance.formDataList[index].Resource]));
+            if(flag)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("petsBag.form.petsFollowStateTxt"));
             }
@@ -321,36 +316,35 @@ package petsBag.petsAdvanced
          }
       }
       
-      private function resetItemInfo(param1:int, param2:int, param3:int) : void
+      private function resetItemInfo(tempId:int, showBtn:int, index:int) : void
       {
-         var _loc5_:int = 0;
+         var i:int = 0;
          var _loc7_:int = 0;
          var _loc6_:* = PetsAdvancedManager.Instance.formDataList;
-         for each(var _loc4_ in PetsAdvancedManager.Instance.formDataList)
+         for each(var tempInfo in PetsAdvancedManager.Instance.formDataList)
          {
-            if(_loc4_.ShowBtn == 2)
+            if(tempInfo.ShowBtn == 2)
             {
-               _loc4_.ShowBtn = 1;
+               tempInfo.ShowBtn = 1;
                break;
             }
          }
          setItemInfo();
-         PetsAdvancedManager.Instance.formDataList[param3].ShowBtn = param2;
-         _loc5_ = 0;
-         while(_loc5_ < _petsVec.length)
+         PetsAdvancedManager.Instance.formDataList[index].ShowBtn = showBtn;
+         for(i = 0; i < _petsVec.length; )
          {
-            if(_petsVec[_loc5_].info)
+            if(_petsVec[i].info)
             {
-               if(_petsVec[_loc5_].info.TemplateID == param1)
+               if(_petsVec[i].info.TemplateID == tempId)
                {
-                  _petsVec[_loc5_].setInfo(_loc5_,PetsAdvancedManager.Instance.formDataList[param3]);
+                  _petsVec[i].setInfo(i,PetsAdvancedManager.Instance.formDataList[index]);
                }
-               else if(_petsVec[_loc5_].showBtn == 2)
+               else if(_petsVec[i].showBtn == 2)
                {
-                  _petsVec[_loc5_].showBtn = 1;
+                  _petsVec[i].showBtn = 1;
                }
             }
-            _loc5_++;
+            i++;
          }
       }
       
@@ -365,17 +359,16 @@ package petsBag.petsAdvanced
       
       private function deletePets() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _petsVec.length)
+         var i:int = 0;
+         for(i = 0; i < _petsVec.length; )
          {
-            if(_petsVec[_loc1_])
+            if(_petsVec[i])
             {
-               _petsVec[_loc1_].removeEventListener("itemclick",__onClickPetsItem);
-               _petsVec[_loc1_].dispose();
-               _petsVec[_loc1_] = null;
+               _petsVec[i].removeEventListener("itemclick",__onClickPetsItem);
+               _petsVec[i].dispose();
+               _petsVec[i] = null;
             }
-            _loc1_++;
+            i++;
          }
          _petsVec.length = 0;
          _petsVec = null;

@@ -11,49 +11,47 @@ package battleSkill.analyzer
       
       private var _list:Vector.<BattleSkillUpdateInfo>;
       
-      public function BattleSKillUpdateTemplateAnalyzer(param1:Function)
+      public function BattleSKillUpdateTemplateAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc9_:* = null;
-         var _loc2_:* = null;
-         var _loc3_:* = undefined;
-         var _loc6_:* = null;
-         var _loc8_:int = 0;
-         var _loc4_:* = null;
-         var _loc7_:int = 0;
-         var _loc5_:XML = new XML(param1);
+         var skillInfo:* = null;
+         var materialInfo:* = null;
+         var materialDic:* = undefined;
+         var xmllist:* = null;
+         var i:int = 0;
+         var materialXml:* = null;
+         var j:int = 0;
+         var xml:XML = new XML(data);
          _list = new Vector.<BattleSkillUpdateInfo>();
-         if(_loc5_.@value == "true")
+         if(xml.@value == "true")
          {
-            _loc6_ = _loc5_..Skill;
-            _loc8_ = 0;
-            while(_loc8_ < _loc6_.length())
+            xmllist = xml..Skill;
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc9_ = new BattleSkillUpdateInfo();
-               _loc3_ = new Vector.<BattleSkillUpdateMaterialInfo>();
-               _loc9_.SkillID = _loc6_[_loc8_].@SkillID;
-               _loc4_ = _loc6_[_loc8_]..SkillDetail;
-               _loc7_ = 0;
-               while(_loc7_ < _loc4_.length())
+               skillInfo = new BattleSkillUpdateInfo();
+               materialDic = new Vector.<BattleSkillUpdateMaterialInfo>();
+               skillInfo.SkillID = xmllist[i].@SkillID;
+               materialXml = xmllist[i]..SkillDetail;
+               for(j = 0; j < materialXml.length(); )
                {
-                  _loc2_ = new BattleSkillUpdateMaterialInfo();
-                  ObjectUtils.copyPorpertiesByXML(_loc2_,_loc4_[_loc7_]);
-                  _loc3_.push(_loc2_);
-                  _loc9_.UpdateMaterialInfo = _loc3_;
-                  _loc7_++;
+                  materialInfo = new BattleSkillUpdateMaterialInfo();
+                  ObjectUtils.copyPorpertiesByXML(materialInfo,materialXml[j]);
+                  materialDic.push(materialInfo);
+                  skillInfo.UpdateMaterialInfo = materialDic;
+                  j++;
                }
-               _list.push(_loc9_);
-               _loc8_++;
+               _list.push(skillInfo);
+               i++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc5_.@message;
+            message = xml.@message;
             onAnalyzeError();
          }
       }

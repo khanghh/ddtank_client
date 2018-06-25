@@ -109,51 +109,50 @@ package HappyRecharge
          _initEvent();
       }
       
-      public function updateView(param1:HappyRechargeRecordItem = null) : void
+      public function updateView(recordItem:HappyRechargeRecordItem = null) : void
       {
-         var _loc2_:* = null;
+         var view:* = null;
          refreshLotteryCount();
          refreshPrizeCount();
-         if(param1 != null)
+         if(recordItem != null)
          {
-            _loc2_ = new HappyRechargeRecordView(param1.prizeType);
-            _loc2_.setText(param1.nickName,_prizeCell.info.Name,param1.count);
-            _recordContents.addChild(_loc2_);
+            view = new HappyRechargeRecordView(recordItem.prizeType);
+            view.setText(recordItem.nickName,_prizeCell.info.Name,recordItem.count);
+            _recordContents.addChild(view);
             _recordContents.arrange();
             _recordPanel.invalidateViewport();
          }
       }
       
-      public function startTurn(param1:int = 6) : void
+      public function startTurn(pos:int = 6) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var info:* = null;
          !_sound && new TurnSoundControl();
          InviteManager.Instance.enabled = false;
-         _loc3_ = 0;
-         while(_loc3_ < _prizeArr.length)
+         for(i = 0; i < _prizeArr.length; )
          {
-            if(_prizeArr[_loc3_] is HappyRechargeTurnItemInfo)
+            if(_prizeArr[i] is HappyRechargeTurnItemInfo)
             {
-               _loc2_ = _prizeArr[_loc3_] as HappyRechargeTurnItemInfo;
-               if(_loc2_.indexId == param1)
+               info = _prizeArr[i] as HappyRechargeTurnItemInfo;
+               if(info.indexId == pos)
                {
-                  _currentRotation = _loc3_;
+                  _currentRotation = i;
                   break;
                }
             }
-            else if(_prizeArr[_loc3_] == param1)
+            else if(_prizeArr[i] == pos)
             {
-               _currentRotation = _loc3_;
+               _currentRotation = i;
                break;
             }
-            _loc3_++;
+            i++;
          }
          addEventListener("enterFrame",__startroll);
          _showHaloMc();
       }
       
-      private function __startroll(param1:Event) : void
+      private function __startroll(e:Event) : void
       {
          _sound.playThreeStep(3);
          if(_frameIndex < 8)
@@ -182,11 +181,10 @@ package HappyRecharge
          _pointerMc.rotation = _pointerMc.rotation > 360?10:Number(_pointerMc.rotation);
       }
       
-      public function autoStartTuren(param1:int) : void
+      public function autoStartTuren(index:int) : void
       {
-         index = param1;
-         var i:int = 0;
-         while(i < _prizeArr.length)
+         index = index;
+         for(var i:int = 0; i < _prizeArr.length; )
          {
             if(_prizeArr[i] is HappyRechargeTurnItemInfo)
             {
@@ -246,26 +244,26 @@ package HappyRecharge
       
       private function _createCellShine() : void
       {
-         var _loc5_:* = null;
-         var _loc4_:* = null;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
+         var info:* = null;
+         var cell:* = null;
+         var sp:* = null;
+         var bm:* = null;
          _cellShine = ClassUtils.CreatInstance("happyRecharge.mainFrame.cellbackhalo");
          addToContent(_cellShine);
          PositionUtils.setPos(_cellShine,"mainframe.cellshinemc.pos." + _currentRotation);
          _shineObject = new Component();
-         var _loc1_:int = HappyRechargeManager.instance.currentPrizeItemID;
-         if(_loc1_ > 12)
+         var t:int = HappyRechargeManager.instance.currentPrizeItemID;
+         if(t > 12)
          {
-            _loc5_ = ItemManager.Instance.getTemplateById(_loc1_);
-            _loc4_ = new BagCell(0,_loc5_);
-            _loc2_ = _loc4_.getContent();
-            _shineObject.addChild(_loc2_);
+            info = ItemManager.Instance.getTemplateById(t);
+            cell = new BagCell(0,info);
+            sp = cell.getContent();
+            _shineObject.addChild(sp);
          }
          else
          {
-            _loc3_ = ComponentFactory.Instance.creatBitmap("happyRecharge.mainFrame.bigcell.image." + _loc1_);
-            _shineObject.addChild(_loc3_);
+            bm = ComponentFactory.Instance.creatBitmap("happyRecharge.mainFrame.bigcell.image." + t);
+            _shineObject.addChild(bm);
          }
          addToContent(_shineObject);
          PositionUtils.setPos(_shineObject,"mainframe.cellshineobject.pos." + _currentRotation);
@@ -284,7 +282,7 @@ package HappyRecharge
          _cellFlyToBag();
       }
       
-      private function __cellShineHandler(param1:Event) : void
+      private function __cellShineHandler(e:Event) : void
       {
          if(_cellShineIndex == 10)
          {
@@ -388,9 +386,9 @@ package HappyRecharge
          _stopAutoBtn.addEventListener("click",__onClickStopAuto);
       }
       
-      private function updateState(param1:int = 0) : void
+      private function updateState(type:int = 0) : void
       {
-         if(param1 == 0)
+         if(type == 0)
          {
             _startAllBtn.enable = true;
             _startAllBtn.visible = true;
@@ -399,7 +397,7 @@ package HappyRecharge
             InviteManager.Instance.enabled = true;
             HappyRechargeManager.instance.mouseClickEnable = true;
          }
-         else if(param1 == 1)
+         else if(type == 1)
          {
             _startAllBtn.enable = false;
             _startAllBtn.visible = true;
@@ -408,7 +406,7 @@ package HappyRecharge
             InviteManager.Instance.enabled = false;
             HappyRechargeManager.instance.mouseClickEnable = false;
          }
-         else if(param1 == 2)
+         else if(type == 2)
          {
             _startAllBtn.enable = false;
             _startAllBtn.visible = false;
@@ -420,14 +418,14 @@ package HappyRecharge
          }
       }
       
-      private function __onClickStopAuto(param1:MouseEvent) : void
+      private function __onClickStopAuto(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          HappyRechargeManager.instance.isAutoStart = false;
          updateState();
       }
       
-      private function __onClickStartAll(param1:MouseEvent) : void
+      private function __onClickStartAll(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          HappyRechargeManager.instance.isAutoStart = true;
@@ -435,7 +433,7 @@ package HappyRecharge
          startTrun();
       }
       
-      private function ___startBtnHandler(param1:MouseEvent) : void
+      private function ___startBtnHandler(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          HappyRechargeManager.instance.isAutoStart = false;
@@ -484,10 +482,10 @@ package HappyRecharge
       
       private function refreshLotteryCount() : void
       {
-         var _loc3_:* = null;
-         var _loc5_:int = 0;
-         var _loc1_:* = null;
-         var _loc4_:* = null;
+         var bm:* = null;
+         var i:int = 0;
+         var num:* = null;
+         var pos:* = null;
          if(_lotteryCountArr == null)
          {
             _lotteryCountArr = [];
@@ -496,31 +494,30 @@ package HappyRecharge
          {
             while(_lotteryCountArr.length > 0)
             {
-               _loc3_ = _lotteryCountArr.pop();
-               ObjectUtils.disposeObject(_loc3_);
-               _loc3_ = null;
+               bm = _lotteryCountArr.pop();
+               ObjectUtils.disposeObject(bm);
+               bm = null;
             }
          }
-         var _loc2_:String = HappyRechargeManager.instance.lotteryCount.toString();
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_.length)
+         var count:String = HappyRechargeManager.instance.lotteryCount.toString();
+         for(i = 0; i < count.length; )
          {
-            _loc1_ = ComponentFactory.Instance.creatBitmap("happyRecharge.mainFrame.lotteryCount." + _loc2_.charAt(_loc5_));
-            addToContent(_loc1_);
-            _loc4_ = PositionUtils.creatPoint("mainframe.lotterycount.pos");
-            _loc1_.x = _loc4_.x + 13 * _loc5_;
-            _loc1_.y = _loc4_.y;
-            _lotteryCountArr.push(_loc1_);
-            _loc5_++;
+            num = ComponentFactory.Instance.creatBitmap("happyRecharge.mainFrame.lotteryCount." + count.charAt(i));
+            addToContent(num);
+            pos = PositionUtils.creatPoint("mainframe.lotterycount.pos");
+            num.x = pos.x + 13 * i;
+            num.y = pos.y;
+            _lotteryCountArr.push(num);
+            i++;
          }
       }
       
       private function refreshPrizeCount() : void
       {
-         var _loc4_:* = null;
-         var _loc6_:int = 0;
-         var _loc2_:* = null;
-         var _loc5_:* = null;
+         var bm:* = null;
+         var i:int = 0;
+         var num:* = null;
+         var pos:* = null;
          if(_prizeCountArr == null)
          {
             _prizeCountArr = [];
@@ -529,36 +526,35 @@ package HappyRecharge
          {
             while(_prizeCountArr.length > 0)
             {
-               _loc4_ = _prizeCountArr.pop();
-               ObjectUtils.disposeObject(_loc4_);
-               _loc4_ = null;
+               bm = _prizeCountArr.pop();
+               ObjectUtils.disposeObject(bm);
+               bm = null;
             }
          }
-         var _loc3_:String = HappyRechargeManager.instance.prizeCount.toString();
-         _loc6_ = 0;
-         while(_loc6_ < _loc3_.length)
+         var count:String = HappyRechargeManager.instance.prizeCount.toString();
+         for(i = 0; i < count.length; )
          {
-            _loc2_ = ComponentFactory.Instance.creatBitmap("happyRecharge.mainFrame.prizeCount." + _loc3_.charAt(_loc6_));
-            addToContent(_loc2_);
-            _loc5_ = PositionUtils.creatPoint("mainframe.prizecount.pos");
-            _loc2_.x = _loc5_.x + 13 * _loc6_;
-            _loc2_.y = _loc5_.y;
-            _prizeCountArr.push(_loc2_);
-            _loc6_++;
+            num = ComponentFactory.Instance.creatBitmap("happyRecharge.mainFrame.prizeCount." + count.charAt(i));
+            addToContent(num);
+            pos = PositionUtils.creatPoint("mainframe.prizecount.pos");
+            num.x = pos.x + 13 * i;
+            num.y = pos.y;
+            _prizeCountArr.push(num);
+            i++;
          }
-         var _loc1_:Bitmap = ComponentFactory.Instance.creatBitmap("happyRecharge.mainFrame.prizeCount.x");
-         addToContent(_loc1_);
-         PositionUtils.setPos(_loc1_,"mainframe.prizecount.x.pos");
+         var bitmapX:Bitmap = ComponentFactory.Instance.creatBitmap("happyRecharge.mainFrame.prizeCount.x");
+         addToContent(bitmapX);
+         PositionUtils.setPos(bitmapX,"mainframe.prizecount.x.pos");
       }
       
       private function setPrizeCell() : void
       {
-         var _loc2_:ItemTemplateInfo = HappyRechargeManager.instance.prizeItem;
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(16711680,0);
-         _loc1_.graphics.drawRect(0,0,42,42);
-         _loc1_.graphics.endFill();
-         _prizeCell = new BagCell(0,_loc2_,false,_loc1_);
+         var info:ItemTemplateInfo = HappyRechargeManager.instance.prizeItem;
+         var bg:Sprite = new Sprite();
+         bg.graphics.beginFill(16711680,0);
+         bg.graphics.drawRect(0,0,42,42);
+         bg.graphics.endFill();
+         _prizeCell = new BagCell(0,info,false,bg);
          _prizeCell.setCountNotVisible();
          PositionUtils.setPos(_prizeCell,"mainframe.prizecell.pos");
          addToContent(_prizeCell);
@@ -566,16 +562,16 @@ package HappyRecharge
       
       private function setPrizeAreaCell() : void
       {
-         var _loc1_:int = 0;
-         var _loc10_:int = 0;
-         var _loc9_:int = 0;
-         var _loc8_:int = 0;
-         var _loc5_:* = null;
-         var _loc7_:int = 0;
-         var _loc2_:* = null;
-         var _loc6_:* = null;
-         var _loc3_:* = null;
-         var _loc4_:Array = HappyRechargeManager.instance.turnItems;
+         var index:int = 0;
+         var i:int = 0;
+         var bigindex:int = 0;
+         var j:int = 0;
+         var cell:* = null;
+         var type:int = 0;
+         var bgmc:* = null;
+         var image:* = null;
+         var tipinfo:* = null;
+         var tempArr:Array = HappyRechargeManager.instance.turnItems;
          if(_prizeArr == null)
          {
             _prizeArr = [];
@@ -587,144 +583,138 @@ package HappyRecharge
                _prizeArr.pop();
             }
          }
-         while(_loc4_.length > 0)
+         while(tempArr.length > 0)
          {
-            _loc1_ = Math.random() * _loc4_.length;
-            _prizeArr.push(_loc4_[_loc1_]);
-            _loc4_.splice(_loc1_,1);
+            index = Math.random() * tempArr.length;
+            _prizeArr.push(tempArr[index]);
+            tempArr.splice(index,1);
          }
-         _loc10_ = 0;
-         while(_loc10_ < 4)
+         for(i = 0; i < 4; )
          {
-            _loc9_ = Math.random() * _prizeArr.length;
-            _prizeArr.splice(_loc9_,0,_loc10_ + 9);
-            _loc10_++;
+            bigindex = Math.random() * _prizeArr.length;
+            _prizeArr.splice(bigindex,0,i + 9);
+            i++;
          }
-         _loc8_ = 0;
-         while(_loc8_ < 12)
+         for(j = 0; j < 12; )
          {
-            if(_prizeArr[_loc8_] is HappyRechargeTurnItemInfo)
+            if(_prizeArr[j] is HappyRechargeTurnItemInfo)
             {
-               _loc5_ = new BagCell(0,(_prizeArr[_loc8_] as HappyRechargeTurnItemInfo).itemInfo,false,ComponentFactory.Instance.creatBitmap("happyRecharge.mainFrame.cellbg"));
-               addToContent(_loc5_);
-               _loc5_.setContentSize(44,44);
-               _loc5_.PicPos = new Point(4.5,4.5);
-               PositionUtils.setPos(_loc5_,"mainframe.prizeAreacell.pos." + _loc8_);
+               cell = new BagCell(0,(_prizeArr[j] as HappyRechargeTurnItemInfo).itemInfo,false,ComponentFactory.Instance.creatBitmap("happyRecharge.mainFrame.cellbg"));
+               addToContent(cell);
+               cell.setContentSize(44,44);
+               cell.PicPos = new Point(4.5,4.5);
+               PositionUtils.setPos(cell,"mainframe.prizeAreacell.pos." + j);
             }
             else
             {
-               _loc7_ = _prizeArr[_loc8_];
-               _loc2_ = ClassUtils.CreatInstance("happyRecharge.mainFrame.bigcellbg");
-               addToContent(_loc2_);
-               PositionUtils.setPos(_loc2_,"mainframe.prizeAreacell.pos." + _loc8_);
-               _loc6_ = ComponentFactory.Instance.creatComponentByStylename("mainframe.bigcell." + _loc7_);
-               addToContent(_loc6_);
-               _loc6_.x = _loc2_.x + 5;
-               _loc6_.y = _loc2_.y + 5;
-               _loc3_ = new HappyRechargeSpecialItemTipInfo();
-               _loc3_._title = LanguageMgr.GetTranslation("happyRecharge.mainFrame.bigcell.tipTitle" + _loc7_);
-               if(_loc7_ == 9 || _loc7_ == 12)
+               type = _prizeArr[j];
+               bgmc = ClassUtils.CreatInstance("happyRecharge.mainFrame.bigcellbg");
+               addToContent(bgmc);
+               PositionUtils.setPos(bgmc,"mainframe.prizeAreacell.pos." + j);
+               image = ComponentFactory.Instance.creatComponentByStylename("mainframe.bigcell." + type);
+               addToContent(image);
+               image.x = bgmc.x + 5;
+               image.y = bgmc.y + 5;
+               tipinfo = new HappyRechargeSpecialItemTipInfo();
+               tipinfo._title = LanguageMgr.GetTranslation("happyRecharge.mainFrame.bigcell.tipTitle" + type);
+               if(type == 9 || type == 12)
                {
-                  _loc3_._body = LanguageMgr.GetTranslation("happyRecharge.mainFrame.bigcell.tipContext" + _loc7_);
+                  tipinfo._body = LanguageMgr.GetTranslation("happyRecharge.mainFrame.bigcell.tipContext" + type);
                }
                else
                {
-                  _loc3_._body = LanguageMgr.GetTranslation("happyRecharge.mainFrame.bigcell.tipContext" + _loc7_,HappyRechargeManager.instance.specialPrizeCount[_loc7_ - 10]);
+                  tipinfo._body = LanguageMgr.GetTranslation("happyRecharge.mainFrame.bigcell.tipContext" + type,HappyRechargeManager.instance.specialPrizeCount[type - 10]);
                }
-               _loc6_.tipData = _loc3_;
+               image.tipData = tipinfo;
             }
-            _loc8_++;
+            j++;
          }
       }
       
       private function createExchangeView() : void
       {
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc1_:Array = HappyRechargeManager.instance.exchangeItems;
-         _loc5_ = 0;
-         while(_loc5_ < _loc1_.length)
+         var i:int = 0;
+         var item:* = null;
+         var view:* = null;
+         var line:* = null;
+         var items:Array = HappyRechargeManager.instance.exchangeItems;
+         for(i = 0; i < items.length; )
          {
-            _loc2_ = _loc1_[_loc5_] as HappyRechargeExchangeItem;
-            _loc4_ = new HappyRechargeExchangeView();
-            _loc4_.setInfo(_loc2_.info,_loc2_.count,HappyRechargeManager.instance.ticketCount,_loc2_.needCount);
-            _exchangeContents.addChild(_loc4_);
-            if(_loc5_ + 1 < _loc1_.length)
+            item = items[i] as HappyRechargeExchangeItem;
+            view = new HappyRechargeExchangeView();
+            view.setInfo(item.info,item.count,HappyRechargeManager.instance.ticketCount,item.needCount);
+            _exchangeContents.addChild(view);
+            if(i + 1 < items.length)
             {
-               _loc3_ = ComponentFactory.Instance.creatBitmap("happyRecharge.mainFrame.exchangeItem.line");
-               _exchangeContents.addChild(_loc3_);
+               line = ComponentFactory.Instance.creatBitmap("happyRecharge.mainFrame.exchangeItem.line");
+               _exchangeContents.addChild(line);
             }
-            _loc5_++;
+            i++;
          }
          _exchangePanel.invalidateViewport();
       }
       
       private function createRecord() : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         var _loc1_:Array = HappyRechargeManager.instance.recordArr;
-         _loc4_ = 0;
-         while(_loc4_ < _loc1_.length)
+         var i:int = 0;
+         var item:* = null;
+         var view:* = null;
+         var items:Array = HappyRechargeManager.instance.recordArr;
+         for(i = 0; i < items.length; )
          {
-            _loc2_ = _loc1_[_loc4_] as HappyRechargeRecordItem;
-            if(_loc2_.prizeType > 9 && _loc2_.prizeType < 13)
+            item = items[i] as HappyRechargeRecordItem;
+            if(item.prizeType > 9 && item.prizeType < 13)
             {
-               _loc3_ = new HappyRechargeRecordView(_loc2_.prizeType);
-               _loc3_.setText(_loc2_.nickName,_prizeCell.info.Name,_loc2_.count);
-               _recordContents.addChild(_loc3_);
+               view = new HappyRechargeRecordView(item.prizeType);
+               view.setText(item.nickName,_prizeCell.info.Name,item.count);
+               _recordContents.addChild(view);
             }
-            _loc4_++;
+            i++;
          }
          _recordPanel.invalidateViewport();
       }
       
       private function createPrizeAreaCellInfoForTest() : Array
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc1_:Array = [];
-         var _loc2_:Array = [11901,11902,11903,11904,11905,11906,11025,100100];
-         _loc4_ = 0;
-         while(_loc4_ < _loc2_.length)
+         var i:int = 0;
+         var info:* = null;
+         var arr:Array = [];
+         var idArr:Array = [11901,11902,11903,11904,11905,11906,11025,100100];
+         for(i = 0; i < idArr.length; )
          {
-            _loc3_ = ItemManager.Instance.getTemplateById(_loc2_[_loc4_]);
-            _loc1_.push(_loc3_);
-            _loc4_++;
+            info = ItemManager.Instance.getTemplateById(idArr[i]);
+            arr.push(info);
+            i++;
          }
-         return _loc1_;
+         return arr;
       }
       
       private function createExchangeItems() : Array
       {
-         var _loc1_:Array = [];
-         return _loc1_;
+         var arr:Array = [];
+         return arr;
       }
       
       private function createTestRecordData() : Array
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:Array = [];
-         _loc3_ = 0;
-         while(_loc3_ < 8)
+         var i:int = 0;
+         var item:* = null;
+         var arr:Array = [];
+         for(i = 0; i < 8; )
          {
-            _loc2_ = new HappyRechargeRecordItem();
-            _loc2_.nickName = "呵呵哒";
-            _loc2_.prizeType = int(Math.random() * 3 + 10);
-            _loc2_.count = int(Math.random() * 1000);
-            _loc1_.push(_loc2_);
-            _loc3_++;
+            item = new HappyRechargeRecordItem();
+            item.nickName = "呵呵哒";
+            item.prizeType = int(Math.random() * 3 + 10);
+            item.count = int(Math.random() * 1000);
+            arr.push(item);
+            i++;
          }
-         return _loc1_;
+         return arr;
       }
       
-      private function __response(param1:FrameEvent) : void
+      private function __response(e:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(e.responseCode == 0 || e.responseCode == 1)
          {
             SoundManager.instance.play("008");
             if(HappyRechargeManager.instance.mouseClickEnable)
@@ -739,23 +729,23 @@ package HappyRecharge
          }
       }
       
-      private function __helpBtnHandler(param1:MouseEvent) : void
+      private function __helpBtnHandler(e:MouseEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:int = 0;
+         var money:int = 0;
+         var special1:int = 0;
+         var special2:int = 0;
          SoundManager.instance.playButtonSound();
          if(!_helpFrame)
          {
-            _loc3_ = HappyRechargeManager.instance.moneyCount;
-            _loc4_ = HappyRechargeManager.instance.specialPrizeCount[0];
-            _loc2_ = HappyRechargeManager.instance.specialPrizeCount[1];
+            money = HappyRechargeManager.instance.moneyCount;
+            special1 = HappyRechargeManager.instance.specialPrizeCount[0];
+            special2 = HappyRechargeManager.instance.specialPrizeCount[1];
             _helpFrame = ComponentFactory.Instance.creatComponentByStylename("cardSystem.help.main");
             _helpFrame.titleText = LanguageMgr.GetTranslation("happyRecharge.mainFrame.titleTxt");
             _helpFrame.addEventListener("response",__helpFrameRespose);
             _bgHelp = ComponentFactory.Instance.creatComponentByStylename("cardSystem.help.bgHelp");
             _content = ComponentFactory.Instance.creatComponentByStylename("mainframe.helpframe.contentTxt");
-            _content.htmlText = LanguageMgr.GetTranslation("happyRecharge.mainFrame.helpContentTxt",_loc3_,_loc3_,_loc3_ * 2.5,_loc4_,_loc2_);
+            _content.htmlText = LanguageMgr.GetTranslation("happyRecharge.mainFrame.helpContentTxt",money,money,money * 2.5,special1,special2);
             _btnOk = ComponentFactory.Instance.creatComponentByStylename("cardSystem.help.btnOk");
             _btnOk.text = LanguageMgr.GetTranslation("ok");
             _btnOk.addEventListener("click",__closeHelpFrame);
@@ -766,16 +756,16 @@ package HappyRecharge
          LayerManager.Instance.addToLayer(_helpFrame,3,true,2);
       }
       
-      private function __helpFrameRespose(param1:FrameEvent) : void
+      private function __helpFrameRespose(e:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(e.responseCode == 0 || e.responseCode == 1)
          {
             SoundManager.instance.playButtonSound();
             _helpFrame.parent.removeChild(_helpFrame);
          }
       }
       
-      private function __closeHelpFrame(param1:MouseEvent) : void
+      private function __closeHelpFrame(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          _helpFrame.parent.removeChild(_helpFrame);

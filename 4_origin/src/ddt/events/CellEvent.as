@@ -22,11 +22,11 @@ package ddt.events
       
       public var ctrlKey:Boolean;
       
-      public function CellEvent(param1:String, param2:Object = null, param3:Boolean = false, param4:Boolean = false, param5:Boolean = false)
+      public function CellEvent(type:String, obj:Object = null, bubbles:Boolean = false, cancelable:Boolean = false, ctrlKey:Boolean = false)
       {
-         data = param2;
-         this.ctrlKey = param5;
-         super(param1,param3,param4);
+         data = obj;
+         this.ctrlKey = ctrlKey;
+         super(type,bubbles,cancelable);
       }
    }
 }

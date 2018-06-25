@@ -15,38 +15,37 @@ package morn.editor
          super();
       }
       
-      public static function loadRes(param1:String, param2:Function = null) : void
+      public static function loadRes(url:String, loaded:Function = null) : void
       {
       }
       
-      public static function hasRes(param1:String) : Boolean
+      public static function hasRes(name:String) : Boolean
       {
          return false;
       }
       
-      public static function getResClass(param1:String) : Class
+      public static function getResClass(name:String) : Class
       {
          return null;
       }
       
-      public static function getRes(param1:String) : *
+      public static function getRes(name:String) : *
       {
          return null;
       }
       
-      public static function getResBitmapData(param1:String) : BitmapData
+      public static function getResBitmapData(name:String) : BitmapData
       {
          return null;
       }
       
-      public static function getCompInstance(param1:XML) : Sprite
+      public static function getCompInstance(xml:XML) : Sprite
       {
          return null;
       }
       
-      public static function log(... rest) : void
+      public static function log(... args) : void
       {
-         trace(rest.join(","));
       }
    }
 }

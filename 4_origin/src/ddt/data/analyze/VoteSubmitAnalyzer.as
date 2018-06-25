@@ -10,16 +10,16 @@ package ddt.data.analyze
       
       public var result:String = "";
       
-      public function VoteSubmitAnalyzer(param1:Function)
+      public function VoteSubmitAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         if(param1 != -1)
+         if(data != -1)
          {
-            result = param1;
+            result = data;
             onAnalyzeComplete();
          }
          else

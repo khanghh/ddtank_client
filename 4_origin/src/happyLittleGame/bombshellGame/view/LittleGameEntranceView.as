@@ -93,7 +93,7 @@ package happyLittleGame.bombshellGame.view
          FunnyGamesManager.getInstance().addEventListener("rankUpdate",__updateView);
       }
       
-      public function __updateView(param1:FunnyGamesEvent) : void
+      public function __updateView(evt:FunnyGamesEvent) : void
       {
          if(_rankView == null)
          {
@@ -108,14 +108,14 @@ package happyLittleGame.bombshellGame.view
          _rankView.reFreshRank();
       }
       
-      private function __startGameHandler(param1:PkgEvent) : void
+      private function __startGameHandler(pkg:PkgEvent) : void
       {
          HappyLittleGameManager.instance.bombManager.currentGameLv = 1;
          HappyLittleGameManager.instance.bombManager.model.CurrentScores = 0;
          HappyLittleGameManager.instance.dispatchEvent(new HappyLittleGameEvent("entergame"));
       }
       
-      private function __refreshRankHandler(param1:Event) : void
+      private function __refreshRankHandler(evt:Event) : void
       {
          if(_rankView)
          {
@@ -123,25 +123,25 @@ package happyLittleGame.bombshellGame.view
          }
       }
       
-      public function __enterRoomHandler(param1:PkgEvent) : void
+      public function __enterRoomHandler(pkg:PkgEvent) : void
       {
-         var _loc2_:int = param1.pkg.readInt();
-         HappyLittleGameManager.instance.currentGameType = _loc2_;
-         switch(int(_loc2_) - 1)
+         var gameType:int = pkg.pkg.readInt();
+         HappyLittleGameManager.instance.currentGameType = gameType;
+         switch(int(gameType) - 1)
          {
             case 0:
-               HappyLittleGameManager.instance.bombManager.model.randomGameDayMaxScore = param1.pkg.readInt();
-               HappyLittleGameManager.instance.bombManager.model.randomGameHisMaxScore = param1.pkg.readInt();
+               HappyLittleGameManager.instance.bombManager.model.randomGameDayMaxScore = pkg.pkg.readInt();
+               HappyLittleGameManager.instance.bombManager.model.randomGameHisMaxScore = pkg.pkg.readInt();
                break;
             case 1:
-               HappyLittleGameManager.instance.bombManager.model.fixGameDayMaxLevel = param1.pkg.readInt();
-               HappyLittleGameManager.instance.bombManager.model.fixGameDayMaxScore = param1.pkg.readInt();
-               HappyLittleGameManager.instance.bombManager.model.fixGameHisMaxLevel = param1.pkg.readInt();
-               HappyLittleGameManager.instance.bombManager.model.fixGameHisMaxScore = param1.pkg.readInt();
+               HappyLittleGameManager.instance.bombManager.model.fixGameDayMaxLevel = pkg.pkg.readInt();
+               HappyLittleGameManager.instance.bombManager.model.fixGameDayMaxScore = pkg.pkg.readInt();
+               HappyLittleGameManager.instance.bombManager.model.fixGameHisMaxLevel = pkg.pkg.readInt();
+               HappyLittleGameManager.instance.bombManager.model.fixGameHisMaxScore = pkg.pkg.readInt();
                break;
             case 2:
-               CubeGameManager.getInstance().gameInfo.dailyHighScore = param1.pkg.readInt();
-               CubeGameManager.getInstance().gameInfo.historyHgihScore = param1.pkg.readInt();
+               CubeGameManager.getInstance().gameInfo.dailyHighScore = pkg.pkg.readInt();
+               CubeGameManager.getInstance().gameInfo.historyHgihScore = pkg.pkg.readInt();
          }
          if(_rankView == null)
          {
@@ -172,7 +172,7 @@ package happyLittleGame.bombshellGame.view
          _rankView.reFreshRank();
       }
       
-      private function __enterGameHandler(param1:MouseEvent) : void
+      private function __enterGameHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          switch(int(HappyLittleGameManager.instance.currentGameType) - 1)

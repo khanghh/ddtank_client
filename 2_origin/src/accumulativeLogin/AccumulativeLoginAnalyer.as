@@ -11,46 +11,45 @@ package accumulativeLogin
       
       private var _accumulativeloginDataDic:Dictionary;
       
-      public function AccumulativeLoginAnalyer(param1:Function)
+      public function AccumulativeLoginAnalyer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
          _accumulativeloginDataDic = new Dictionary();
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc6_:* = null;
-         var _loc2_:* = null;
-         var _loc7_:int = 0;
-         var _loc4_:* = null;
-         var _loc5_:XML = new XML(param1);
-         if(_loc5_.@value == "true")
+         var xmllist:* = null;
+         var dataArr:* = null;
+         var i:int = 0;
+         var rewardData:* = null;
+         var xml:XML = new XML(data);
+         if(xml.@value == "true")
          {
-            _loc6_ = _loc5_..Item;
-            _loc2_ = [];
-            _loc7_ = 0;
-            while(_loc7_ < _loc6_.length())
+            xmllist = xml..Item;
+            dataArr = [];
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc4_ = new AccumulativeLoginRewardData();
-               ObjectUtils.copyPorpertiesByXML(_loc4_,_loc6_[_loc7_]);
-               _loc2_.push(_loc4_);
-               _loc7_++;
+               rewardData = new AccumulativeLoginRewardData();
+               ObjectUtils.copyPorpertiesByXML(rewardData,xmllist[i]);
+               dataArr.push(rewardData);
+               i++;
             }
             var _loc9_:int = 0;
-            var _loc8_:* = _loc2_;
-            for each(var _loc3_ in _loc2_)
+            var _loc8_:* = dataArr;
+            for each(var accData in dataArr)
             {
-               if(!_accumulativeloginDataDic[_loc3_.Count])
+               if(!_accumulativeloginDataDic[accData.Count])
                {
-                  _accumulativeloginDataDic[_loc3_.Count] = [];
+                  _accumulativeloginDataDic[accData.Count] = [];
                }
-               _accumulativeloginDataDic[_loc3_.Count].push(_loc3_);
+               _accumulativeloginDataDic[accData.Count].push(accData);
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc5_.@message;
+            message = xml.@message;
             onAnalyzeError();
             onAnalyzeError();
          }

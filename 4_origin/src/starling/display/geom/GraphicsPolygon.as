@@ -12,16 +12,16 @@ package starling.display.geom
       
       public var lastIndexIndex:int = -1;
       
-      public function GraphicsPolygon(param1:Array = null, param2:Vector.<uint> = null)
+      public function GraphicsPolygon(vertices:Array = null, gfxIndices:Vector.<uint> = null)
       {
-         super(param1);
-         if(param1)
+         super(vertices);
+         if(vertices)
          {
-            lastVertexIndex = param1.length - 1;
+            lastVertexIndex = vertices.length - 1;
          }
-         if(param2)
+         if(gfxIndices)
          {
-            indices = param2.slice();
+            indices = gfxIndices.slice();
             lastIndexIndex = indices.length;
          }
          else
@@ -30,11 +30,11 @@ package starling.display.geom
          }
       }
       
-      public function append(param1:Array, param2:Vector.<uint>) : void
+      public function append(vertices:Array, gfxIndices:Vector.<uint>) : void
       {
-         var _loc5_:* = 0;
-         var _loc3_:int = param1.length;
-         if(_loc3_ == 0)
+         var i:* = 0;
+         var num:int = vertices.length;
+         if(num == 0)
          {
             return;
          }
@@ -42,39 +42,37 @@ package starling.display.geom
          {
             lastVertexIndex = 0;
          }
-         _loc5_ = 0;
-         while(_loc5_ < _loc3_)
+         i = 0;
+         while(i < num)
          {
-            addVertices(param1[_loc5_]);
-            _loc5_++;
+            addVertices(vertices[i]);
+            i++;
          }
-         lastVertexIndex = lastVertexIndex + _loc3_ / 2;
-         var _loc4_:int = lastIndexIndex == -1?0:lastIndexIndex;
-         _loc3_ = param2.length;
-         _loc5_ = _loc4_;
-         while(_loc5_ < _loc3_)
+         lastVertexIndex = lastVertexIndex + num / 2;
+         var startIndex:int = lastIndexIndex == -1?0:lastIndexIndex;
+         num = gfxIndices.length;
+         for(i = startIndex; i < num; )
          {
-            indices.push(param2[_loc5_]);
-            _loc5_++;
+            indices.push(gfxIndices[i]);
+            i++;
          }
          lastIndexIndex = indices.length;
       }
       
-      override public function triangulate(param1:Vector.<uint> = null) : Vector.<uint>
+      override public function triangulate(result:Vector.<uint> = null) : Vector.<uint>
       {
-         var _loc3_:int = 0;
-         if(param1 == null)
+         var i:int = 0;
+         if(result == null)
          {
-            param1 = new Vector.<uint>(0);
+            result = new Vector.<uint>(0);
          }
-         var _loc2_:int = indices.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var numIndices:int = indices.length;
+         for(i = 0; i < numIndices; )
          {
-            param1.push(indices[_loc3_]);
-            _loc3_++;
+            result.push(indices[i]);
+            i++;
          }
-         return param1;
+         return result;
       }
       
       override public function get isSimple() : Boolean

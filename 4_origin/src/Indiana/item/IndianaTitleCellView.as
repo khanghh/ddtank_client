@@ -35,21 +35,21 @@ package Indiana.item
       
       private function initCell() : void
       {
-         var _loc1_:IndianaTitleCell = new IndianaTitleCell();
-         _loc1_.setContentSize(44,44);
-         _loc1_.addEventListener("click",__cellClickHandler);
-         addChild(_loc1_);
-         group.push(_loc1_);
-         _loc1_ = new IndianaTitleCell();
-         _loc1_.setContentSize(44,44);
-         addChild(_loc1_);
-         _loc1_.addEventListener("click",__cellClickHandler);
-         group.push(_loc1_);
-         _loc1_ = new IndianaTitleCell();
-         _loc1_.setContentSize(44,44);
-         addChild(_loc1_);
-         _loc1_.addEventListener("click",__cellClickHandler);
-         group.push(_loc1_);
+         var cell:IndianaTitleCell = new IndianaTitleCell();
+         cell.setContentSize(44,44);
+         cell.addEventListener("click",__cellClickHandler);
+         addChild(cell);
+         group.push(cell);
+         cell = new IndianaTitleCell();
+         cell.setContentSize(44,44);
+         addChild(cell);
+         cell.addEventListener("click",__cellClickHandler);
+         group.push(cell);
+         cell = new IndianaTitleCell();
+         cell.setContentSize(44,44);
+         addChild(cell);
+         cell.addEventListener("click",__cellClickHandler);
+         group.push(cell);
          PositionUtils.setPos(group[0],"indiana.cell.index_1");
          PositionUtils.setPos(group[1],"indiana.cell.index_2");
          PositionUtils.setPos(group[2],"indiana.cell.index_3");
@@ -57,117 +57,116 @@ package Indiana.item
       
       private function clearCells() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:int = _cells.length;
+         var item:* = null;
+         var len:int = _cells.length;
          while(_cells.length > 0)
          {
-            _loc1_ = _cells.shift();
-            ObjectUtils.disposeObject(_loc1_);
-            _loc1_ = null;
+            item = _cells.shift();
+            ObjectUtils.disposeObject(item);
+            item = null;
          }
       }
       
       private function sortCell() : void
       {
-         var _loc7_:int = 0;
-         var _loc6_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
-         var _loc5_:int = _cells.length;
-         var _loc8_:Array = [];
-         if(_loc5_ > 0)
+         var i:int = 0;
+         var space:int = 0;
+         var item:* = null;
+         var leftpos:* = null;
+         var rightpos:* = null;
+         var centerpos:* = null;
+         var len:int = _cells.length;
+         var pos:Array = [];
+         if(len > 0)
          {
-            _loc7_ = 0;
-            _loc6_ = 10;
-            if(_loc5_ % 2 == 0)
+            i = 0;
+            space = 10;
+            if(len % 2 == 0)
             {
-               _loc3_ = ComponentFactory.Instance.creat("indiana.cell.index_4");
-               _loc2_ = ComponentFactory.Instance.creat("indiana.cell.index_5");
-               _loc7_;
-               while(_loc7_ < _loc5_)
+               leftpos = ComponentFactory.Instance.creat("indiana.cell.index_4");
+               rightpos = ComponentFactory.Instance.creat("indiana.cell.index_5");
+               i;
+               while(i < len)
                {
-                  _loc4_ = new Point();
-                  if(_loc7_ % 2 == 0)
+                  item = new Point();
+                  if(i % 2 == 0)
                   {
-                     _loc4_.x = _loc3_.x - int(_loc7_ / 2) * (_cells[_loc7_].width + _loc6_);
-                     _loc4_.y = _loc3_.y;
+                     item.x = leftpos.x - int(i / 2) * (_cells[i].width + space);
+                     item.y = leftpos.y;
                   }
                   else
                   {
-                     _loc4_.x = _loc2_.x + int(_loc7_ / 2) * (_cells[_loc7_].width + _loc6_);
-                     _loc4_.y = _loc2_.y;
+                     item.x = rightpos.x + int(i / 2) * (_cells[i].width + space);
+                     item.y = rightpos.y;
                   }
-                  _loc8_.push(_loc4_);
-                  _loc7_++;
+                  pos.push(item);
+                  i++;
                }
             }
             else
             {
-               _loc1_ = ComponentFactory.Instance.creat("indiana.cell.index_6");
-               _loc7_;
-               while(_loc7_ < _loc5_)
+               centerpos = ComponentFactory.Instance.creat("indiana.cell.index_6");
+               i;
+               while(i < len)
                {
-                  _loc4_ = new Point();
-                  if(_loc7_ % 2 == 0)
+                  item = new Point();
+                  if(i % 2 == 0)
                   {
-                     _loc4_.x = _loc1_.x - int(_loc7_ / 2) * (_cells[_loc7_].width + _loc6_);
-                     _loc4_.y = _loc1_.y;
+                     item.x = centerpos.x - int(i / 2) * (_cells[i].width + space);
+                     item.y = centerpos.y;
                   }
                   else
                   {
-                     _loc4_.x = _loc1_.x + int(Math.ceil(_loc7_ / 2)) * (_cells[_loc7_].width + _loc6_);
-                     _loc4_.y = _loc1_.y;
+                     item.x = centerpos.x + int(Math.ceil(i / 2)) * (_cells[i].width + space);
+                     item.y = centerpos.y;
                   }
-                  _loc8_.push(_loc4_);
-                  _loc7_++;
+                  pos.push(item);
+                  i++;
                }
             }
-            _loc8_.sort(sortPos);
-            _loc7_ = 0;
-            _loc7_;
-            while(_loc7_ < _loc5_)
+            pos.sort(sortPos);
+            i = 0;
+            i;
+            while(i < len)
             {
-               _cells[_loc7_].x = _loc8_[_loc7_].x;
-               _cells[_loc7_].y = _loc8_[_loc7_].y;
-               _loc7_++;
+               _cells[i].x = pos[i].x;
+               _cells[i].y = pos[i].y;
+               i++;
             }
          }
       }
       
-      private function sortPos(param1:Point, param2:Point) : Number
+      private function sortPos(x:Point, y:Point) : Number
       {
-         if(param1.x < param2.x)
+         if(x.x < y.x)
          {
             return -1;
          }
-         if(param1.x > param2.x)
+         if(x.x > y.x)
          {
             return 1;
          }
          return 0;
       }
       
-      public function setInfos(param1:Array) : void
+      public function setInfos(infos:Array) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc4_:int = 0;
+         var len:int = 0;
+         var cell:* = null;
+         var i:int = 0;
          clearCells();
-         if(param1 != null)
+         if(infos != null)
          {
-            _loc3_ = param1.length;
-            _loc4_ = 0;
-            while(_loc4_ < _loc3_)
+            len = infos.length;
+            for(i = 0; i < len; )
             {
-               _loc2_ = new IndianaTitleCell();
-               _loc2_.setContentSize(44,44);
-               _loc2_.addEventListener("click",__cellClickHandler);
-               _loc2_.Info = param1[_loc4_];
-               _cells.push(_loc2_);
-               addChild(_loc2_);
-               _loc4_++;
+               cell = new IndianaTitleCell();
+               cell.setContentSize(44,44);
+               cell.addEventListener("click",__cellClickHandler);
+               cell.Info = infos[i];
+               _cells.push(cell);
+               addChild(cell);
+               i++;
             }
             sortCell();
          }
@@ -180,14 +179,14 @@ package Indiana.item
       
       public function get leftCell() : IndianaTitleCell
       {
-         var _loc1_:int = 0;
+         var index:int = 0;
          if(_currentCell)
          {
-            _loc1_ = _cells.indexOf(_currentCell);
-            if(_loc1_ > 0)
+            index = _cells.indexOf(_currentCell);
+            if(index > 0)
             {
-               _loc1_--;
-               return _cells[_loc1_];
+               index--;
+               return _cells[index];
             }
             return _cells[_cells.length - 1];
          }
@@ -196,28 +195,28 @@ package Indiana.item
       
       public function get rightCell() : IndianaTitleCell
       {
-         var _loc1_:int = 0;
+         var index:int = 0;
          if(_currentCell)
          {
-            _loc1_ = _cells.indexOf(_currentCell);
-            if(_loc1_ < _cells.length - 1)
+            index = _cells.indexOf(_currentCell);
+            if(index < _cells.length - 1)
             {
-               _loc1_++;
-               return _cells[_loc1_];
+               index++;
+               return _cells[index];
             }
             return _cells[0];
          }
          return null;
       }
       
-      private function __cellClickHandler(param1:MouseEvent) : void
+      private function __cellClickHandler(evt:MouseEvent) : void
       {
-         var _loc2_:IndianaTitleCell = param1.currentTarget as IndianaTitleCell;
-         if(_currentCell != _loc2_)
+         var target:IndianaTitleCell = evt.currentTarget as IndianaTitleCell;
+         if(_currentCell != target)
          {
             _currentCell.selected = false;
-            _currentCell = _loc2_;
-            _loc2_.selected = true;
+            _currentCell = target;
+            target.selected = true;
             if(_currentCell.Info)
             {
                SocketManager.Instance.out.sendUpdateSysDate();
@@ -226,58 +225,55 @@ package Indiana.item
          }
       }
       
-      public function updateCurrentCell(param1:int) : void
+      public function updateCurrentCell(id:int) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = _cells.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var i:int = 0;
+         var len:int = _cells.length;
+         for(i = 0; i < len; )
          {
-            if(_cells[_loc3_].Info.PeriodId == param1)
+            if(_cells[i].Info.PeriodId == id)
             {
                if(_currentCell)
                {
-                  if(_currentCell != _cells[_loc3_])
+                  if(_currentCell != _cells[i])
                   {
                      _currentCell.selected = false;
-                     _cells[_loc3_].selected = true;
-                     _currentCell = _cells[_loc3_];
+                     _cells[i].selected = true;
+                     _currentCell = _cells[i];
                      return;
                   }
                }
                else
                {
-                  _currentCell = _cells[_loc3_];
+                  _currentCell = _cells[i];
                   _currentCell.selected = true;
                }
             }
-            _loc3_++;
+            i++;
          }
       }
       
       private function removeEvent() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = _cells.length;
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_)
+         var i:int = 0;
+         var len:int = _cells.length;
+         for(i = 0; i < len; )
          {
-            _cells[_loc2_].removeEventListener("click",__cellClickHandler);
-            _loc2_++;
+            _cells[i].removeEventListener("click",__cellClickHandler);
+            i++;
          }
       }
       
       public function dispose() : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          removeEvent();
-         var _loc1_:int = _cells.length;
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_)
+         var len:int = _cells.length;
+         for(i = 0; i < len; )
          {
-            ObjectUtils.disposeObject(_cells[_loc2_]);
-            _cells[_loc2_] = null;
-            _loc2_++;
+            ObjectUtils.disposeObject(_cells[i]);
+            _cells[i] = null;
+            i++;
          }
          _cells = null;
       }

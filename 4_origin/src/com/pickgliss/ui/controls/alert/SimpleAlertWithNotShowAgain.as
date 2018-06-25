@@ -20,9 +20,9 @@ package com.pickgliss.ui.controls.alert
          return _scb.selected;
       }
       
-      override public function set info(param1:AlertInfo) : void
+      override public function set info(value:AlertInfo) : void
       {
-         .super.info = param1;
+         .super.info = value;
          _scb = ComponentFactory.Instance.creatComponentByStylename("ddtGame.buyConfirmNo.scb");
          addToContent(_scb);
          _scb.text = "Không nhắc nữa";

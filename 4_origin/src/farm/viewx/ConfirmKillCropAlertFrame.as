@@ -32,12 +32,12 @@ package farm.viewx
       public function ConfirmKillCropAlertFrame()
       {
          super();
-         var _loc1_:AlertInfo = new AlertInfo();
-         _loc1_.title = LanguageMgr.GetTranslation("ddt.farms.killCropComfirmNumPnlTitle");
-         _loc1_.bottomGap = 37;
-         _loc1_.buttonGape = 65;
-         _loc1_.customPos = ComponentFactory.Instance.creat("farm.confirmComposeAlertBtnPos");
-         this.info = _loc1_;
+         var alertInfo:AlertInfo = new AlertInfo();
+         alertInfo.title = LanguageMgr.GetTranslation("ddt.farms.killCropComfirmNumPnlTitle");
+         alertInfo.bottomGap = 37;
+         alertInfo.buttonGape = 65;
+         alertInfo.customPos = ComponentFactory.Instance.creat("farm.confirmComposeAlertBtnPos");
+         this.info = alertInfo;
          initView();
          initEvent();
       }
@@ -51,10 +51,10 @@ package farm.viewx
          addToContent(_msgTxt);
       }
       
-      public function cropName(param1:String, param2:Boolean = false) : void
+      public function cropName(value:String, isAutomatic:Boolean = false) : void
       {
-         this._cropName = param1;
-         if(param2)
+         this._cropName = value;
+         if(isAutomatic)
          {
             _msgTxt.text = LanguageMgr.GetTranslation("ddt.farms.comfirmKillCropMsg2",_cropName);
          }
@@ -64,9 +64,9 @@ package farm.viewx
          }
       }
       
-      public function set fieldId(param1:int) : void
+      public function set fieldId(value:int) : void
       {
-         this._fieldId = param1;
+         this._fieldId = value;
       }
       
       private function initEvent() : void
@@ -74,11 +74,11 @@ package farm.viewx
          addEventListener("response",__framePesponse);
       }
       
-      protected function __framePesponse(param1:FrameEvent) : void
+      protected function __framePesponse(event:FrameEvent) : void
       {
          removeEventListener("response",__framePesponse);
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
                break;

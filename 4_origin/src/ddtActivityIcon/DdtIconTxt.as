@@ -25,26 +25,26 @@ package ddtActivityIcon
          initView();
       }
       
-      public function addActIcon(param1:Sprite) : void
+      public function addActIcon(sp:Sprite) : void
       {
-         _sp = param1;
-         if(param1 is WorldBossIcon)
+         _sp = sp;
+         if(sp is WorldBossIcon)
          {
-            param1.y = 216;
-            param1.x = 33;
-            addChild(param1);
+            sp.y = 216;
+            sp.x = 33;
+            addChild(sp);
             return;
          }
-         if(param1 is ConsortiaBattleEntryBtn)
+         if(sp is ConsortiaBattleEntryBtn)
          {
-            param1.x = 34;
-            param1.y = 167;
-            addChild(param1);
+            sp.x = 34;
+            sp.y = 167;
+            addChild(sp);
             return;
          }
-         addChild(param1);
-         param1.y = _txt.y - param1.height;
-         param1.x = _txt.width / 2 - param1.width / 2 + _txt.x;
+         addChild(sp);
+         sp.y = _txt.y - sp.height;
+         sp.x = _txt.width / 2 - sp.width / 2 + _txt.x;
          isOver = true;
       }
       
@@ -57,9 +57,9 @@ package ddtActivityIcon
          _txt.y = _sp.y + _sp.height;
       }
       
-      public function set isOver(param1:Boolean) : void
+      public function set isOver(bool:Boolean) : void
       {
-         _isOver = param1;
+         _isOver = bool;
       }
       
       public function get isOver() : Boolean
@@ -67,9 +67,9 @@ package ddtActivityIcon
          return _isOver;
       }
       
-      public function set isOpen(param1:Boolean) : void
+      public function set isOpen(bool:Boolean) : void
       {
-         _isOpen = param1;
+         _isOpen = bool;
       }
       
       public function get isOpen() : Boolean
@@ -83,9 +83,9 @@ package ddtActivityIcon
          addChild(_txt);
       }
       
-      public function setTxt(param1:String) : void
+      public function setTxt(str:String) : void
       {
-         _txt.text = param1;
+         _txt.text = str;
       }
       
       public function resetTxt() : void

@@ -4,9 +4,9 @@ package horse.view
    import com.pickgliss.events.FrameEvent;
    import com.pickgliss.ui.AlertManager;
    import com.pickgliss.ui.ComponentFactory;
-   import com.pickgliss.ui.controls.Frame;
    import com.pickgliss.ui.controls.SimpleBitmapButton;
    import com.pickgliss.ui.controls.alert.BaseAlerFrame;
+   import com.pickgliss.ui.core.Disposeable;
    import com.pickgliss.ui.text.FilterFrameText;
    import com.pickgliss.utils.ObjectUtils;
    import ddt.events.BagEvent;
@@ -22,20 +22,20 @@ package horse.view
    import ddt.view.horse.HorseSkillCell;
    import ddtDeed.DeedManager;
    import flash.display.Bitmap;
+   import flash.display.Sprite;
    import flash.events.Event;
    import flash.events.MouseEvent;
    import flash.events.TextEvent;
    import flash.utils.getTimer;
    import horse.HorseManager;
+   import horse.data.HorseEvent;
    import horse.data.HorseSkillExpVo;
    import horse.data.HorseSkillGetVo;
    import shop.manager.ShopBuyManager;
    
-   public class HorseSkillUpFrame extends Frame
+   public class HorseSkillUpFrame extends Sprite implements Disposeable
    {
        
-      
-      private var _bg:Bitmap;
       
       private var _levelTxt:FilterFrameText;
       
@@ -44,10 +44,6 @@ package horse.view
       private var _expCover:Bitmap;
       
       private var _expPerTxt:FilterFrameText;
-      
-      private var _rightArrow:Bitmap;
-      
-      private var _countTitleTxt:FilterFrameText;
       
       private var _txtBg:Bitmap;
       
@@ -66,6 +62,10 @@ package horse.view
       private var _upCurSkillCell:HorseSkillCell;
       
       private var _upNextSkillCell:HorseSkillCell;
+      
+      private var _upCurSkillLevelTxt:FilterFrameText;
+      
+      private var _upNextSkillLevelTxt:FilterFrameText;
       
       private var _itemCell:HorseFrameRightBottomItemCell;
       
@@ -92,17 +92,12 @@ package horse.view
       
       private function initView() : void
       {
-         titleText = LanguageMgr.GetTranslation("horse.skillUpFrame.titleTxt");
-         _bg = ComponentFactory.Instance.creatBitmap("asset.horse.upFrame.bg");
          _levelTxt = ComponentFactory.Instance.creatComponentByStylename("horse.skillUpFrame.levelTxt");
          _expBg = ComponentFactory.Instance.creatBitmap("asset.horse.upFrame.expBg");
          _expCover = ComponentFactory.Instance.creatBitmap("asset.horse.upFrame.expCover");
          _expPerTxt = ComponentFactory.Instance.creatComponentByStylename("horse.frame.progressTxt");
-         _expPerTxt.x = 57;
-         _expPerTxt.y = 39;
-         _rightArrow = ComponentFactory.Instance.creatBitmap("asset.horse.upFrame.rightArrow");
-         _countTitleTxt = ComponentFactory.Instance.creatComponentByStylename("horse.skillUpFrame.countTitleTxt");
-         _countTitleTxt.text = LanguageMgr.GetTranslation("horse.skillUpFrame.countTitleTxt");
+         _expPerTxt.x = 17;
+         _expPerTxt.y = 56;
          _txtBg = ComponentFactory.Instance.creatBitmap("asset.horse.upFrame.txtBg");
          _countTxt = ComponentFactory.Instance.creatComponentByStylename("horse.skillUpFrame.countTxt");
          _countTxt.restrict = "0-9";
@@ -110,37 +105,43 @@ package horse.view
          _upBtn = ComponentFactory.Instance.creatComponentByStylename("horse.upFrame.upBtn");
          _freeUpBtn = ComponentFactory.Instance.creatComponentByStylename("horse.upFrame.upBtn2");
          _freeUpTxt = ComponentFactory.Instance.creatComponentByStylename("horse.upFrame.upBtn2Txt");
-         var _loc1_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.horse.frame.itemBg");
+         var bg:Bitmap = ComponentFactory.Instance.creatBitmap("asset.horse.frame.itemBg");
          _itemCell = new HorseFrameRightBottomItemCell(11165);
          PositionUtils.setPos(_itemCell,"horse.skillUpframe.itemCellPos");
-         addToContent(_bg);
-         addToContent(_levelTxt);
-         addToContent(_expBg);
-         addToContent(_expCover);
-         addToContent(_expPerTxt);
-         addToContent(_rightArrow);
-         addToContent(_itemCell);
-         addToContent(_countTitleTxt);
-         addToContent(_txtBg);
-         addToContent(_countTxt);
-         addToContent(_maxBtn);
-         addToContent(_upBtn);
-         addToContent(_freeUpBtn);
-         addToContent(_freeUpTxt);
+         _upCurSkillLevelTxt = ComponentFactory.Instance.creatComponentByStylename("horse.skillUpFrame.levelTxt2");
+         PositionUtils.setPos(_upCurSkillLevelTxt,"horse.skillUpFrame.upCurSkillLevelTxtPos");
+         _upNextSkillLevelTxt = ComponentFactory.Instance.creatComponentByStylename("horse.skillUpFrame.levelTxt2");
+         PositionUtils.setPos(_upNextSkillLevelTxt,"horse.skillUpFrame.upNextSkillLevelTxtPos");
+         addChild(_levelTxt);
+         addChild(_expBg);
+         addChild(_expCover);
+         _expCover.visible = false;
+         addChild(_expPerTxt);
+         addChild(_itemCell);
+         addChild(_txtBg);
+         addChild(_countTxt);
+         addChild(_maxBtn);
+         addChild(_upBtn);
+         addChild(_upCurSkillLevelTxt);
+         addChild(_upNextSkillLevelTxt);
+         addChild(_freeUpBtn);
+         addChild(_freeUpTxt);
          _toLinkTxt = ComponentFactory.Instance.creat("petAndHorse.risingStar.toLinkTxt");
          _toLinkTxt.mouseEnabled = true;
          _toLinkTxt.htmlText = LanguageMgr.GetTranslation("petAndHorse.risingStar.toLinkTxtValue");
          PositionUtils.setPos(_toLinkTxt,"petAndHorse.risingStar.toLinkTxtPos4");
-         addToContent(_toLinkTxt);
+         addChild(_toLinkTxt);
          _toLinkTxt.visible = false;
          refreshFreeTipTxt();
       }
       
-      public function show(param1:int, param2:HorseSkillExpVo, param3:Vector.<HorseSkillGetVo>) : void
+      public function __show(e:HorseEvent) : void
       {
-         _index = param1;
-         _skillExp = param2;
-         _dataList = param3;
+         var obj:Object = e.data;
+         _index = obj.index;
+         _skillExp = obj.curShowSkill;
+         _dataList = obj.dataList;
+         _expCover.visible = true;
          refreshView();
          calMaxCountUpAndItem();
          if(_itemCount > 0)
@@ -153,16 +154,18 @@ package horse.view
          }
       }
       
-      private function refreshView(param1:Boolean = true) : void
+      private function refreshView(isReCell:Boolean = true) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         if(param1)
+         var curExp:int = 0;
+         var nextExp:int = 0;
+         if(isReCell)
          {
             ObjectUtils.disposeObject(_curSkillCell);
             ObjectUtils.disposeObject(_upCurSkillCell);
             ObjectUtils.disposeObject(_upNextSkillCell);
             _curSkillCell = new HorseSkillCell(_skillExp.skillId);
+            _curSkillCell.width = 71;
+            _curSkillCell.height = 71;
             PositionUtils.setPos(_curSkillCell,"horse.skillUpframe.cellPos1");
             _upCurSkillCell = new HorseSkillCell(_dataList[_index].SkillID);
             PositionUtils.setPos(_upCurSkillCell,"horse.skillUpframe.cellPos2");
@@ -175,17 +178,17 @@ package horse.view
                _upNextSkillCell = new HorseSkillCell(_dataList[_index + 1].SkillID);
             }
             PositionUtils.setPos(_upNextSkillCell,"horse.skillUpframe.cellPos3");
-            addToContent(_curSkillCell);
-            addToContent(_upCurSkillCell);
-            addToContent(_upNextSkillCell);
+            addChild(_curSkillCell);
+            addChild(_upCurSkillCell);
+            addChild(_upNextSkillCell);
          }
          _levelTxt.text = LanguageMgr.GetTranslation("horse.skillUpFrame.levelTxt",_dataList[_index].Level);
          if(_index < _dataList.length - 1)
          {
-            _loc3_ = _skillExp.exp - _dataList[_index].Exp;
-            _loc2_ = _dataList[_index + 1].Exp - _dataList[_index].Exp;
-            _expCover.scaleX = _loc3_ / _loc2_;
-            _expPerTxt.text = _loc3_ + "/" + _loc2_;
+            curExp = _skillExp.exp - _dataList[_index].Exp;
+            nextExp = _dataList[_index + 1].Exp - _dataList[_index].Exp;
+            _expCover.scaleX = curExp / nextExp;
+            _expPerTxt.text = curExp + "/" + nextExp;
          }
          else
          {
@@ -196,21 +199,22 @@ package horse.view
       
       private function calMaxCountUpAndItem() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
-         var _loc3_:int = 0;
+         var curExp:int = 0;
+         var nextExp:int = 0;
+         var upExp:int = 0;
          if(_index < _dataList.length - 1)
          {
-            _loc2_ = _skillExp.exp - _dataList[_index].Exp;
-            _loc1_ = _dataList[_index + 1].Exp - _dataList[_index].Exp;
-            _loc3_ = ItemManager.Instance.getTemplateById(11165).Property2;
-            _maxCount = Math.ceil((_loc1_ - _loc2_) / _loc3_);
+            curExp = _skillExp.exp - _dataList[_index].Exp;
+            nextExp = _dataList[_index + 1].Exp - _dataList[_index].Exp;
+            upExp = ItemManager.Instance.getTemplateById(11165).Property2;
+            _maxCount = Math.ceil((nextExp - curExp) / upExp);
          }
          _itemCount = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(11165);
       }
       
       private function initEvent() : void
       {
+         HorseManager.instance.addEventListener("upHorseSkill",__show);
          addEventListener("response",__responseHandler);
          _upBtn.addEventListener("click",upClickHandler,false,0,true);
          _freeUpBtn.addEventListener("click",upClickHandler,false,0,true);
@@ -223,72 +227,77 @@ package horse.view
          DeedManager.instance.addEventListener("update_main_event",refreshFreeTipTxt);
       }
       
-      private function refreshFreeTipTxt(param1:Event = null) : void
+      private function refreshFreeTipTxt(event:Event = null) : void
       {
-         var _loc2_:int = DeedManager.instance.getOneBuffData(13);
-         if(_loc2_ > 0)
+         var freeCount1:int = DeedManager.instance.getOneBuffData(13);
+         if(freeCount1 > 0)
          {
             _freeUpBtn.visible = true;
             _freeUpTxt.visible = true;
-            _freeUpTxt.text = "(" + _loc2_ + ")";
+            _freeUpTxt.text = "(" + freeCount1 + ")";
             _upBtn.visible = false;
          }
          else
          {
-            _freeUpTxt.text = "(" + _loc2_ + ")";
+            _freeUpTxt.text = "(" + freeCount1 + ")";
             _freeUpBtn.visible = false;
             _freeUpTxt.visible = false;
             _upBtn.visible = true;
          }
       }
       
-      private function itemUpdateHandler(param1:BagEvent) : void
+      private function itemUpdateHandler(event:BagEvent) : void
       {
-         var _loc2_:int = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(11165);
-         if(_itemCount > _loc2_)
+         var curCount:int = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(11165);
+         if(_itemCount > curCount)
          {
-            _countTxt.text = String(int(_countTxt.text) - (_itemCount - _loc2_));
+            _countTxt.text = String(int(_countTxt.text) - (_itemCount - curCount));
          }
-         _itemCount = _loc2_;
+         _itemCount = curCount;
          countTxtChangeHandler(null);
       }
       
-      private function upSkillSucHandler(param1:Event) : void
+      private function upSkillSucHandler(event:Event) : void
       {
-         var _loc2_:Boolean = false;
+         var isReCell:Boolean = false;
          if(_skillExp.skillId != _dataList[_index].SkillID)
          {
             _index = Number(_index) + 1;
-            _loc2_ = true;
+            isReCell = true;
          }
-         refreshView(_loc2_);
+         refreshView(isReCell);
          calMaxCountUpAndItem();
       }
       
-      private function countTxtChangeHandler(param1:Event) : void
+      private function countTxtChangeHandler(event:Event) : void
       {
-         var _loc2_:int = _countTxt.text;
-         if(_itemCount > 0 && _loc2_ <= 0)
+         var inputCount:int = _countTxt.text;
+         if(_itemCount > 0 && inputCount <= 0)
          {
             _countTxt.text = "1";
          }
-         else if(_loc2_ > _itemCount)
+         else if(inputCount > _itemCount)
          {
             _countTxt.text = _itemCount.toString();
          }
       }
       
-      private function maxClickHandler(param1:MouseEvent) : void
+      private function maxClickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _countTxt.text = _maxCount.toString();
          countTxtChangeHandler(null);
       }
       
-      private function upClickHandler(param1:MouseEvent) : void
+      private function upClickHandler(event:MouseEvent) : void
       {
-         var _loc3_:* = null;
+         var confirmFrame:* = null;
          SoundManager.instance.play("008");
+         if(_dataList == null)
+         {
+            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("horse.skillNull"));
+            return;
+         }
          if(_index >= _dataList.length - 1)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("horse.skillCannotUp"));
@@ -304,38 +313,38 @@ package horse.view
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc4_:int = DeedManager.instance.getOneBuffData(13);
-         if(_loc4_ > 0)
+         var freeCount1:int = DeedManager.instance.getOneBuffData(13);
+         if(freeCount1 > 0)
          {
             SocketManager.Instance.out.sendHorseUpSkill(_skillExp.skillId,1);
             return;
          }
          if(int(_countTxt.text) <= 0)
          {
-            _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("horse.itemConfirmBuyPrompt"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
-            _loc3_.moveEnable = false;
-            _loc3_.addEventListener("response",buyConfirm,false,0,true);
+            confirmFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("horse.itemConfirmBuyPrompt"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
+            confirmFrame.moveEnable = false;
+            confirmFrame.addEventListener("response",buyConfirm,false,0,true);
             return;
          }
-         var _loc2_:int = _countTxt.text;
-         _loc2_ = Math.min(_loc2_,_maxCount);
-         SocketManager.Instance.out.sendHorseUpSkill(_skillExp.skillId,_loc2_);
+         var tmp:int = _countTxt.text;
+         tmp = Math.min(tmp,_maxCount);
+         SocketManager.Instance.out.sendHorseUpSkill(_skillExp.skillId,tmp);
       }
       
-      private function buyConfirm(param1:FrameEvent) : void
+      private function buyConfirm(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",buyConfirm);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",buyConfirm);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             ShopBuyManager.Instance.buy(11165,1,-1);
          }
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();
@@ -344,6 +353,7 @@ package horse.view
       
       private function removeEvent() : void
       {
+         HorseManager.instance.removeEventListener("upHorseSkill",__show);
          removeEventListener("response",__responseHandler);
          _upBtn.removeEventListener("click",upClickHandler);
          _freeUpBtn.addEventListener("click",upClickHandler,false,0,true);
@@ -356,35 +366,44 @@ package horse.view
          DeedManager.instance.removeEventListener("update_main_event",refreshFreeTipTxt);
       }
       
-      private function __toLinkTxtHandler(param1:TextEvent) : void
+      private function __toLinkTxtHandler(evt:TextEvent) : void
       {
          SoundManager.instance.playButtonSound();
          StateManager.setState("dungeon");
       }
       
-      override public function dispose() : void
+      public function dispose() : void
       {
          removeEvent();
-         super.dispose();
-         _bg = null;
+         ObjectUtils.disposeObject(_levelTxt);
          _levelTxt = null;
+         ObjectUtils.disposeObject(_expBg);
          _expBg = null;
+         ObjectUtils.disposeObject(_expCover);
          _expCover = null;
+         ObjectUtils.disposeObject(_expPerTxt);
          _expPerTxt = null;
-         _rightArrow = null;
-         _countTitleTxt = null;
+         ObjectUtils.disposeObject(_txtBg);
          _txtBg = null;
+         ObjectUtils.disposeObject(_countTxt);
          _countTxt = null;
+         ObjectUtils.disposeObject(_maxBtn);
          _maxBtn = null;
+         ObjectUtils.disposeObject(_upBtn);
          _upBtn = null;
-         ObjectUtils.disposeObject(_freeUpBtn);
-         _freeUpBtn = null;
-         ObjectUtils.disposeObject(_freeUpTxt);
-         _freeUpTxt = null;
+         ObjectUtils.disposeObject(_curSkillCell);
          _curSkillCell = null;
+         ObjectUtils.disposeObject(_upCurSkillCell);
          _upCurSkillCell = null;
+         ObjectUtils.disposeObject(_upNextSkillCell);
          _upNextSkillCell = null;
+         ObjectUtils.disposeObject(_upCurSkillLevelTxt);
+         _upCurSkillLevelTxt = null;
+         ObjectUtils.disposeObject(_upNextSkillLevelTxt);
+         _upNextSkillLevelTxt = null;
+         ObjectUtils.disposeObject(_itemCell);
          _itemCell = null;
+         ObjectUtils.disposeObject(_skillExp);
          _skillExp = null;
          _dataList = null;
          ObjectUtils.disposeObject(_toLinkTxt);

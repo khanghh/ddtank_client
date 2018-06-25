@@ -36,8 +36,8 @@ package godsRoads.view
       
       private function initView() : void
       {
-         var _loc2_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.godsRoads.underLine");
-         addChild(_loc2_);
+         var _line:Bitmap = ComponentFactory.Instance.creatBitmap("asset.godsRoads.underLine");
+         addChild(_line);
          _missionTxt = ComponentFactory.Instance.creat("godsRoads.missionTxt");
          _missionTxt.mouseEnabled = true;
          addChild(_missionTxt);
@@ -45,9 +45,9 @@ package godsRoads.view
          grayIcon = ComponentFactory.Instance.creatBitmap("asset.godsRoads.grayFinishIcon");
          addChild(lightIcon);
          addChild(grayIcon);
-         var _loc1_:MovieClip = ComponentFactory.Instance.creat("godsRoads.ghostMask");
-         _loc1_.buttonMode = true;
-         addChild(_loc1_);
+         var mc:MovieClip = ComponentFactory.Instance.creat("godsRoads.ghostMask");
+         mc.buttonMode = true;
+         addChild(mc);
       }
       
       private function updateViewData() : void
@@ -82,7 +82,7 @@ package godsRoads.view
       {
       }
       
-      public function setListCellStatus(param1:List, param2:Boolean, param3:int) : void
+      public function setListCellStatus(list:List, isSelected:Boolean, index:int) : void
       {
       }
       
@@ -91,9 +91,9 @@ package godsRoads.view
          return _data;
       }
       
-      public function setCellValue(param1:*) : void
+      public function setCellValue(value:*) : void
       {
-         _data = param1 as GodsRoadsMissionVo;
+         _data = value as GodsRoadsMissionVo;
          _missionTxt.text = _model.getMissionInfoById(_data.ID).conditiontTitle;
          updateViewData();
       }

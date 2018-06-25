@@ -27,20 +27,20 @@ package chickActivation.view
          setupCount();
       }
       
-      public function set count(param1:int) : void
+      public function set count(value:int) : void
       {
-         if(coinsNum == param1)
+         if(coinsNum == value)
          {
             return;
          }
          initCoinsStyle();
-         coinsNum = param1;
+         coinsNum = value;
          updateCount();
       }
       
       private function setupCount() : void
       {
-         var _loc3_:int = 0;
+         var i:int = 0;
          while(len > _num.length)
          {
             _num.unshift(createCoinsNum(10));
@@ -49,23 +49,22 @@ package chickActivation.view
          {
             ObjectUtils.disposeObject(_num.shift());
          }
-         var _loc2_:int = 8 - len;
-         var _loc1_:int = _loc2_ / 2 * 15;
-         _loc3_ = 0;
-         while(_loc3_ < len)
+         var cha:int = 8 - len;
+         var numX:int = cha / 2 * 15;
+         for(i = 0; i < len; )
          {
-            _num[_loc3_].x = _loc1_;
-            _loc1_ = _loc1_ + 15;
-            _loc3_++;
+            _num[i].x = numX;
+            numX = numX + 15;
+            i++;
          }
       }
       
       private function updateCount() : void
       {
-         var _loc1_:int = coinsNum.toString().length;
-         if(_loc1_ != len)
+         var length:int = coinsNum.toString().length;
+         if(length != len)
          {
-            len = _loc1_;
+            len = length;
             setupCount();
          }
          initCoinsStyle();
@@ -73,22 +72,21 @@ package chickActivation.view
       
       private function initCoinsStyle() : void
       {
-         var _loc1_:Array = coinsNum.toString().split("");
-         updateCoinsView(_loc1_);
+         var arr:Array = coinsNum.toString().split("");
+         updateCoinsView(arr);
       }
       
-      private function updateCoinsView(param1:Array) : void
+      private function updateCoinsView(arr:Array) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < len)
+         var i:int = 0;
+         for(i = 0; i < len; )
          {
-            if(param1[_loc2_] == 0)
+            if(arr[i] == 0)
             {
-               param1[_loc2_] = 10;
+               arr[i] = 10;
             }
-            _num[_loc2_].setFrame(param1[_loc2_]);
-            _loc2_++;
+            _num[i].setFrame(arr[i]);
+            i++;
          }
       }
       
@@ -96,12 +94,12 @@ package chickActivation.view
       {
       }
       
-      private function createCoinsNum(param1:int = 0) : ScaleFrameImage
+      private function createCoinsNum(frame:int = 0) : ScaleFrameImage
       {
-         var _loc2_:ScaleFrameImage = ComponentFactory.Instance.creatComponentByStylename("chickActivation.CoinsNum");
-         _loc2_.setFrame(param1);
-         addChild(_loc2_);
-         return _loc2_;
+         var num:ScaleFrameImage = ComponentFactory.Instance.creatComponentByStylename("chickActivation.CoinsNum");
+         num.setFrame(frame);
+         addChild(num);
+         return num;
       }
       
       public function dispose() : void

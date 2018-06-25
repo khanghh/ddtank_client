@@ -29,9 +29,9 @@ package phy.object
          draw();
       }
       
-      override public function set visible(param1:Boolean) : void
+      override public function set visible(value:Boolean) : void
       {
-         .super.visible = param1;
+         .super.visible = value;
       }
       
       public function get color() : int
@@ -39,9 +39,9 @@ package phy.object
          return _color;
       }
       
-      public function set color(param1:int) : void
+      public function set color(val:int) : void
       {
-         _color = param1;
+         _color = val;
          draw();
       }
       
@@ -54,7 +54,7 @@ package phy.object
       {
       }
       
-      public function onFrame(param1:int) : void
+      public function onFrame(frameRate:int) : void
       {
       }
       
@@ -71,9 +71,9 @@ package phy.object
          return _pos;
       }
       
-      public function set isAttacking(param1:Boolean) : void
+      public function set isAttacking(val:Boolean) : void
       {
-         _isAttacking = param1;
+         _isAttacking = val;
       }
       
       public function get isAttacking() : Boolean

@@ -35,14 +35,14 @@ package newTitle.model
          super();
       }
       
-      public function set ID(param1:String) : void
+      public function set ID(value:String) : void
       {
-         id = int(param1);
+         id = int(value);
       }
       
-      public function set OrderNum(param1:String) : void
+      public function set OrderNum(value:String) : void
       {
-         Order = int(param1);
+         Order = int(value);
       }
    }
 }

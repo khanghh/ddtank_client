@@ -91,9 +91,9 @@ package gemstone.views
          addChild(_pZbZhidescriptTxt);
       }
       
-      public function update(param1:Object) : void
+      public function update(obj:Object) : void
       {
-         if(!param1)
+         if(!obj)
          {
             _pdescriptTxt1.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.pdescriptTxt1");
             _pdescriptTxt3.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.pdescriptTxt3");
@@ -101,10 +101,10 @@ package gemstone.views
             _pZbZhidescriptTxt.text = "0";
             return;
          }
-         _pdescriptTxt1.text = String(param1.curLve);
-         _pdescriptTxt3.text = String(param1.upGrdPro);
-         _pZbZhidescriptTxt1.text = String(param1.levHe);
-         _pZbZhidescriptTxt.text = String(param1.proHe);
+         _pdescriptTxt1.text = String(obj.curLve);
+         _pdescriptTxt3.text = String(obj.upGrdPro);
+         _pZbZhidescriptTxt1.text = String(obj.levHe);
+         _pZbZhidescriptTxt.text = String(obj.proHe);
       }
       
       public function dispose() : void

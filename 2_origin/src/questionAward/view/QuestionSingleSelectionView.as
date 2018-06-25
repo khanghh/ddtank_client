@@ -12,9 +12,9 @@ package questionAward.view
       
       private var _questionGroup:SelectedButtonGroup;
       
-      public function QuestionSingleSelectionView(param1:QuestionDataBaseInfo)
+      public function QuestionSingleSelectionView(value:QuestionDataBaseInfo)
       {
-         super(param1);
+         super(value);
       }
       
       override protected function initView() : void
@@ -24,10 +24,10 @@ package questionAward.view
          _questionGroup.selectIndex = 0;
       }
       
-      override protected function createCheckBox(param1:String) : SelectedCheckButton
+      override protected function createCheckBox(name:String) : SelectedCheckButton
       {
          _checkBtn = ComponentFactory.Instance.creatComponentByStylename("questionAward.singleSelectBtn");
-         _checkBtn.text = param1;
+         _checkBtn.text = name;
          _questionGroup.addSelectItem(_checkBtn);
          return _checkBtn;
       }

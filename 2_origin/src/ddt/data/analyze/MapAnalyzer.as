@@ -10,38 +10,37 @@ package ddt.data.analyze
       
       public var list:Vector.<MapInfo>;
       
-      public function MapAnalyzer(param1:Function)
+      public function MapAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc3_:* = null;
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc2_:XML = new XML(param1);
+         var xmllist:* = null;
+         var i:int = 0;
+         var info:* = null;
+         var xml:XML = new XML(data);
          list = new Vector.<MapInfo>();
-         if(_loc2_.@value == "true")
+         if(xml.@value == "true")
          {
-            _loc3_ = _loc2_..Item;
-            _loc5_ = 0;
-            while(_loc5_ < _loc3_.length())
+            xmllist = xml..Item;
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc4_ = new MapInfo();
-               ObjectUtils.copyPorpertiesByXML(_loc4_,_loc3_[_loc5_]);
-               if(_loc4_.Name != "")
+               info = new MapInfo();
+               ObjectUtils.copyPorpertiesByXML(info,xmllist[i]);
+               if(info.Name != "")
                {
-                  _loc4_.canSelect = _loc4_.ID <= 2000;
-                  list.push(_loc4_);
+                  info.canSelect = info.ID <= 2000;
+                  list.push(info);
                }
-               _loc5_++;
+               i++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc2_.@message;
+            message = xml.@message;
             onAnalyzeError();
             onAnalyzeComplete();
          }

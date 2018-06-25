@@ -49,9 +49,9 @@ package oldPlayerComeBack.view
          initEvent();
       }
       
-      public function set initControl(param1:OldPlayerComeBackControl) : void
+      public function set initControl(ctr:OldPlayerComeBackControl) : void
       {
-         _control = param1;
+         _control = ctr;
       }
       
       override protected function init() : void
@@ -117,12 +117,12 @@ package oldPlayerComeBack.view
          PlayerManager.Instance.Self.PropBag.removeEventListener("update",__updateDiceCountHandler);
       }
       
-      private function __updateDiceCountHandler(param1:BagEvent) : void
+      private function __updateDiceCountHandler(evt:BagEvent) : void
       {
          updateDiceCount();
       }
       
-      private function __rollDiceBtnClickHandler(param1:MouseEvent) : void
+      private function __rollDiceBtnClickHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(_isStartRollDice)
@@ -130,8 +130,8 @@ package oldPlayerComeBack.view
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("oldPlayerComeBack.rollDiceFastMsg"));
             return;
          }
-         var _loc2_:InventoryItemInfo = PlayerManager.Instance.Self.PropBag.getItemByTemplateId(12571);
-         if(_loc2_ == null)
+         var info:InventoryItemInfo = PlayerManager.Instance.Self.PropBag.getItemByTemplateId(12571);
+         if(info == null)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("oldPlayerComeBack.diceCountNoHaveMsg"));
             return;
@@ -139,10 +139,10 @@ package oldPlayerComeBack.view
          _isStartRollDice = true;
          _rollDice.enable = !_isStartRollDice;
          _diceRollMc.resetFrame();
-         OldPlayerComeBackManager.instance.sendRollDice(_loc2_.Place);
+         OldPlayerComeBackManager.instance.sendRollDice(info.Place);
       }
       
-      private function __dispatchTaskBtnClickHandler(param1:MouseEvent) : void
+      private function __dispatchTaskBtnClickHandler(evt:MouseEvent) : void
       {
          _taskFrame = ComponentFactory.Instance.creatComponentByStylename("oldPlayerComeBack.taskViewFrame");
          if(_taskFrame)
@@ -151,9 +151,9 @@ package oldPlayerComeBack.view
          }
       }
       
-      public function set rollDiceComplete(param1:Boolean) : void
+      public function set rollDiceComplete(value:Boolean) : void
       {
-         _isStartRollDice = !param1;
+         _isStartRollDice = !value;
          _rollDice.enable = !_isStartRollDice;
       }
       

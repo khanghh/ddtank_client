@@ -220,69 +220,68 @@ package ddt.view
          allBtns.push(_goBuriedBtn);
          addChild(_toolBarBg);
          addChild(_goReturnBtn);
-         var _loc2_:Point = ComponentFactory.Instance.creatCustomObject("toolbar.bagShineIconPos");
-         var _loc1_:Point = ComponentFactory.Instance.creatCustomObject("toolbar.ShineAssetPos");
-         _signShineEffect = EffectManager.Instance.creatEffect(1,_goSignBtn,"asset.toolbar.SignBtnGlow",_loc1_);
-         _friendShineEffec = EffectManager.Instance.creatEffect(1,_goFriendListBtn,"asset.toolbar.friendBtnGlow",_loc1_);
-         _taskShineEffect = EffectManager.Instance.creatEffect(1,_goTaskBtn,"asset.toolbar.TaskBtnGlow",_loc1_);
-         _bagShineEffect = EffectManager.Instance.creatEffect(1,_goBagBtn,"asset.toolbar.bagBtnGlow",_loc2_);
+         var bagShineIconPos:Point = ComponentFactory.Instance.creatCustomObject("toolbar.bagShineIconPos");
+         var glowPos:Point = ComponentFactory.Instance.creatCustomObject("toolbar.ShineAssetPos");
+         _signShineEffect = EffectManager.Instance.creatEffect(1,_goSignBtn,"asset.toolbar.SignBtnGlow",glowPos);
+         _friendShineEffec = EffectManager.Instance.creatEffect(1,_goFriendListBtn,"asset.toolbar.friendBtnGlow",glowPos);
+         _taskShineEffect = EffectManager.Instance.creatEffect(1,_goTaskBtn,"asset.toolbar.TaskBtnGlow",glowPos);
+         _bagShineEffect = EffectManager.Instance.creatEffect(1,_goBagBtn,"asset.toolbar.bagBtnGlow",bagShineIconPos);
       }
       
-      public function setMoveChild(param1:int, param2:int) : void
+      public function setMoveChild(x:int, y:int) : void
       {
-         var _loc3_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < this.numChildren)
+         var i:int = 0;
+         for(i = 0; i < this.numChildren; )
          {
-            this.getChildAt(_loc3_).x = this.getChildAt(_loc3_).x + param1;
-            this.getChildAt(_loc3_).y = this.getChildAt(_loc3_).y + param2;
-            _loc3_++;
+            this.getChildAt(i).x = this.getChildAt(i).x + x;
+            this.getChildAt(i).y = this.getChildAt(i).y + y;
+            i++;
          }
       }
       
       private function createGuideData() : void
       {
-         var _loc6_:Object = {};
-         _loc6_["btn"] = _goShopBtn;
-         _loc6_["place"] = 7;
-         _loc6_["level"] = 6;
-         var _loc5_:Object = {};
-         _loc5_["btn"] = _goBagBtn;
-         _loc5_["place"] = 6;
-         _loc5_["level"] = 0;
-         var _loc1_:Object = {};
-         _loc1_["btn"] = _goPetBtn;
-         _loc1_["place"] = 5;
-         _loc1_["level"] = 19;
-         var _loc2_:Object = {};
-         _loc2_["btn"] = _horseBtn;
-         _loc2_["place"] = 4;
-         _loc2_["level"] = 12;
-         var _loc3_:Object = {};
-         _loc3_["btn"] = _goBuriedBtn;
-         _loc3_["place"] = 3;
-         _loc3_["level"] = 25;
-         var _loc4_:Object = {};
-         _loc4_["btn"] = _goFriendListBtn;
-         _loc4_["place"] = 2;
-         _loc4_["level"] = 11;
-         var _loc8_:Object = {};
-         _loc8_["btn"] = _goChannelBtn;
-         _loc8_["place"] = 1;
-         _loc8_["level"] = 0;
-         var _loc7_:Object = {};
-         _loc7_["btn"] = _goExitBtn;
-         _loc7_["place"] = 0;
-         _loc7_["level"] = 0;
+         var obj:Object = {};
+         obj["btn"] = _goShopBtn;
+         obj["place"] = 7;
+         obj["level"] = 6;
+         var obj2:Object = {};
+         obj2["btn"] = _goBagBtn;
+         obj2["place"] = 6;
+         obj2["level"] = 0;
+         var obj3:Object = {};
+         obj3["btn"] = _goPetBtn;
+         obj3["place"] = 5;
+         obj3["level"] = 19;
+         var obj4:Object = {};
+         obj4["btn"] = _horseBtn;
+         obj4["place"] = 4;
+         obj4["level"] = 12;
+         var obj5:Object = {};
+         obj5["btn"] = _goBuriedBtn;
+         obj5["place"] = 3;
+         obj5["level"] = 25;
+         var obj6:Object = {};
+         obj6["btn"] = _goFriendListBtn;
+         obj6["place"] = 2;
+         obj6["level"] = 11;
+         var obj7:Object = {};
+         obj7["btn"] = _goChannelBtn;
+         obj7["place"] = 1;
+         obj7["level"] = 0;
+         var obj8:Object = {};
+         obj8["btn"] = _goExitBtn;
+         obj8["place"] = 0;
+         obj8["level"] = 0;
          _guideBtnTxtList = [];
-         _guideBtnTxtList.push(_loc6_);
-         _guideBtnTxtList.push(_loc5_);
-         _guideBtnTxtList.push(_loc1_);
-         _guideBtnTxtList.push(_loc2_);
-         _guideBtnTxtList.push(_loc3_);
-         _guideBtnTxtList.push(_loc4_);
-         _guideBtnTxtList.push(_loc8_);
-         _guideBtnTxtList.push(_loc7_);
+         _guideBtnTxtList.push(obj);
+         _guideBtnTxtList.push(obj2);
+         _guideBtnTxtList.push(obj3);
+         _guideBtnTxtList.push(obj4);
+         _guideBtnTxtList.push(obj5);
+         _guideBtnTxtList.push(obj6);
+         _guideBtnTxtList.push(obj7);
+         _guideBtnTxtList.push(obj8);
          _placePointList = [];
          _placePointList.push({
             "btn":new Point(454,-22),
@@ -318,9 +317,9 @@ package ddt.view
          });
       }
       
-      public function set enabled(param1:Boolean) : void
+      public function set enabled(value:Boolean) : void
       {
-         _enabled = param1;
+         _enabled = value;
          update();
       }
       
@@ -363,9 +362,9 @@ package ddt.view
          PlayerManager.Instance.Self.addEventListener("propertychange",__propertyChange);
       }
       
-      protected function __propertyChange(param1:PlayerPropertyEvent) : void
+      protected function __propertyChange(event:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["Grade"])
+         if(event.changedProperties["Grade"])
          {
             if(PlayerManager.Instance.Self.Grade == 45)
             {
@@ -383,16 +382,9 @@ package ddt.view
          }
       }
       
-      private function taskChangeHandler(param1:TaskEvent) : void
+      private function taskChangeHandler(event:TaskEvent) : void
       {
-         if(!PlayerManager.Instance.Self.isNewOnceFinish(111))
-         {
-            if(PlayerManager.Instance.Self.Grade >= 12 && param1.info.QuestID == 568 && param1.data.isAchieved && _horseBtn.parent)
-            {
-               NewHandContainer.Instance.showArrow(128,0,new Point(800,484),"","",this,0,true);
-            }
-         }
-         if(param1.info.QuestID == 7 && param1.data.isAchieved)
+         if(event.info.QuestID == 7 && event.data.isAchieved)
          {
             if(!PlayerManager.Instance.Self.isNewOnceFinish(124) && PlayerManager.Instance.Self.Grade == 13)
             {
@@ -403,7 +395,7 @@ package ddt.view
                NewHandContainer.Instance.clearArrowByID(140);
             }
          }
-         if(param1.info.QuestID == 25 && param1.data.isAchieved)
+         if(event.info.QuestID == 25 && event.data.isAchieved)
          {
             if(!PlayerManager.Instance.Self.isNewOnceFinish(125) && PlayerManager.Instance.Self.Grade == 15)
             {
@@ -414,7 +406,7 @@ package ddt.view
                NewHandContainer.Instance.clearArrowByID(141);
             }
          }
-         if(param1.info.QuestID == 29 && param1.data.isAchieved)
+         if(event.info.QuestID == 29 && event.data.isAchieved)
          {
             if(!PlayerManager.Instance.Self.isNewOnceFinish(126) && PlayerManager.Instance.Self.Grade == 16)
             {
@@ -429,13 +421,6 @@ package ddt.view
       
       private function checkHorseGuide() : void
       {
-         if(!PlayerManager.Instance.Self.isNewOnceFinish(111))
-         {
-            if(PlayerManager.Instance.Self.Grade >= 12 && TaskManager.instance.isAchieved(TaskManager.instance.getQuestByID(568)))
-            {
-               NewHandContainer.Instance.showArrow(128,0,new Point(800,484),"","",this);
-            }
-         }
          if(!PlayerManager.Instance.Self.isNewOnceFinish(124))
          {
             if(PlayerManager.Instance.Self.Grade == 13 && TaskManager.instance.isAchieved(TaskManager.instance.getQuestByID(7)))
@@ -485,7 +470,7 @@ package ddt.view
          }
       }
       
-      protected function __addToStageHandler(param1:Event) : void
+      protected function __addToStageHandler(event:Event) : void
       {
          if(IMManager.Instance.hasUnreadMessage() && !IMManager.Instance.cancelflashState)
          {
@@ -497,12 +482,12 @@ package ddt.view
          }
       }
       
-      protected function __noMessageHandler(param1:Event) : void
+      protected function __noMessageHandler(event:Event) : void
       {
          showFriendShineEffec(false);
       }
       
-      protected function __hasNewHandler(param1:Event) : void
+      protected function __hasNewHandler(event:Event) : void
       {
          if(!_talkTimer.running)
          {
@@ -513,96 +498,93 @@ package ddt.view
          showFriendShineEffec(true);
       }
       
-      private function __stopTalkTime(param1:TimerEvent) : void
+      private function __stopTalkTime(event:TimerEvent) : void
       {
          _talkTimer.stop();
          _talkTimer.removeEventListener("timer",__stopTalkTime);
       }
       
-      protected function __friendOverHandler(param1:MouseEvent) : void
+      protected function __friendOverHandler(event:MouseEvent) : void
       {
          IMManager.Instance.showMessageBox(_goFriendListBtn);
       }
       
-      protected function __friendOutHandler(param1:MouseEvent) : void
+      protected function __friendOutHandler(event:MouseEvent) : void
       {
          IMManager.Instance.hideMessageBox();
       }
       
       public function newBtnOpenCartoon() : Point
       {
-         var _loc5_:* = null;
-         var _loc8_:int = 0;
-         var _loc7_:int = 0;
-         var _loc6_:int = 0;
-         var _loc2_:* = null;
-         var _loc13_:int = PlayerManager.Instance.Self.Grade;
-         var _loc3_:int = _guideBtnTxtList.length;
-         _loc8_ = 0;
-         while(_loc8_ < _loc3_)
+         var openBtn:* = null;
+         var i:int = 0;
+         var k:int = 0;
+         var j:int = 0;
+         var destPosObj:* = null;
+         var curGrade:int = PlayerManager.Instance.Self.Grade;
+         var tmpLen:int = _guideBtnTxtList.length;
+         for(i = 0; i < tmpLen; )
          {
-            if(_loc13_ == _guideBtnTxtList[_loc8_].level)
+            if(curGrade == _guideBtnTxtList[i].level)
             {
-               _loc5_ = _guideBtnTxtList[_loc8_];
+               openBtn = _guideBtnTxtList[i];
                break;
             }
-            _loc8_++;
+            i++;
          }
-         var _loc9_:int = _openBtnList.length;
-         var _loc11_:Array = [];
-         var _loc4_:int = _loc5_.place;
-         _loc7_ = 0;
-         while(_loc7_ < _loc9_)
+         var tmpLen2:int = _openBtnList.length;
+         var tmpMoveBtnList:Array = [];
+         var openPlace:int = openBtn.place;
+         for(k = 0; k < tmpLen2; )
          {
-            if(_openBtnList[_loc7_].place > _loc4_)
+            if(_openBtnList[k].place > openPlace)
             {
-               _loc11_.push(_openBtnList[_loc7_]);
+               tmpMoveBtnList.push(_openBtnList[k]);
             }
-            _loc7_++;
+            k++;
          }
-         _loc11_.sortOn("place",16);
-         var _loc10_:int = _loc11_.length;
-         var _loc12_:int = _openBtnList.length - _loc10_;
-         _loc5_["btn"].x = _placePointList[_loc12_]["btn"].x;
-         _loc5_["btn"].y = _placePointList[_loc12_]["btn"].y;
-         var _loc1_:int = _loc12_ + 1;
-         _loc6_ = 0;
-         while(_loc6_ < _loc10_)
+         tmpMoveBtnList.sortOn("place",16);
+         var tmpLen3:int = tmpMoveBtnList.length;
+         var tmpIndex:int = _openBtnList.length - tmpLen3;
+         openBtn["btn"].x = _placePointList[tmpIndex]["btn"].x;
+         openBtn["btn"].y = _placePointList[tmpIndex]["btn"].y;
+         var tmpStartPlace:int = tmpIndex + 1;
+         for(j = 0; j < tmpLen3; )
          {
-            _loc2_ = _placePointList[_loc1_ + _loc6_];
-            TweenLite.to(_loc11_[_loc6_]["btn"],0.3,{
-               "x":_loc2_["btn"].x,
-               "y":_loc2_["btn"].y
+            destPosObj = _placePointList[tmpStartPlace + j];
+            TweenLite.to(tmpMoveBtnList[j]["btn"],0.3,{
+               "x":destPosObj["btn"].x,
+               "y":destPosObj["btn"].y
             });
-            _loc6_++;
+            j++;
          }
-         setTimeout(showCurLevelOpenBtn,300,_loc5_);
-         return _placePointList[_loc12_]["btn"] as Point;
+         setTimeout(showCurLevelOpenBtn,300,openBtn);
+         return _placePointList[tmpIndex]["btn"] as Point;
       }
       
-      private function showCurLevelOpenBtn(param1:Object) : void
+      private function showCurLevelOpenBtn(openBtn:Object) : void
       {
-         param1.btn.scaleX = 0.2;
-         param1.btn.scaleY = 0.2;
-         var _loc3_:int = param1.btn.x;
-         var _loc2_:int = param1.btn.y;
-         param1.btn.x = param1.btn.x + 23;
-         param1.btn.y = param1.btn.y + 25;
-         TweenLite.to(param1.btn,0.4,{
-            "x":_loc3_,
-            "y":_loc2_,
+         openBtn.btn.scaleX = 0.2;
+         openBtn.btn.scaleY = 0.2;
+         var tmpBtnX:int = openBtn.btn.x;
+         var tmpBtnY:int = openBtn.btn.y;
+         openBtn.btn.x = openBtn.btn.x + 23;
+         openBtn.btn.y = openBtn.btn.y + 25;
+         TweenLite.to(openBtn.btn,0.4,{
+            "x":tmpBtnX,
+            "y":tmpBtnY,
             "scaleX":1,
             "scaleY":1
          });
-         var _loc5_:MovieClip = ComponentFactory.Instance.creat("asset.newOpenGuide.bagOpenLightMc");
-         _loc5_.mouseEnabled = false;
-         _loc5_.mouseChildren = false;
-         _loc5_.x = _loc3_;
-         _loc5_.y = _loc2_;
-         addChild(_loc5_);
-         var _loc4_:MovieClipWrapper = new MovieClipWrapper(_loc5_,true,true);
-         addChild(param1.btn);
-         if(param1.btn == _goShopBtn)
+         var tmpLightMc:MovieClip = ComponentFactory.Instance.creat("asset.newOpenGuide.bagOpenLightMc");
+         tmpLightMc.mouseEnabled = false;
+         tmpLightMc.mouseChildren = false;
+         tmpLightMc.x = tmpBtnX;
+         tmpLightMc.y = tmpBtnY;
+         addChild(tmpLightMc);
+         var mcw:MovieClipWrapper = new MovieClipWrapper(tmpLightMc,true,true);
+         addChild(openBtn.btn);
+         if(openBtn.btn == _goShopBtn)
          {
             addChild(_goSupplyBtn);
          }
@@ -611,32 +593,30 @@ package ddt.view
       
       public function btnOpen() : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
+         var i:int = 0;
+         var k:int = 0;
          _openBtnList = [];
-         var _loc2_:int = _guideBtnTxtList.length;
-         var _loc5_:int = PlayerManager.Instance.Self.Grade;
-         _loc4_ = 0;
-         while(_loc4_ < _loc2_)
+         var tmpLen:int = _guideBtnTxtList.length;
+         var curGrade:int = PlayerManager.Instance.Self.Grade;
+         for(i = 0; i < tmpLen; )
          {
-            if(_loc5_ > _guideBtnTxtList[_loc4_].level || _loc5_ == _guideBtnTxtList[_loc4_].level && PlayerManager.Instance.Self.isNewOnceFinish(200 + _guideBtnTxtList[_loc4_].level))
+            if(curGrade > _guideBtnTxtList[i].level || curGrade == _guideBtnTxtList[i].level && PlayerManager.Instance.Self.isNewOnceFinish(200 + _guideBtnTxtList[i].level))
             {
-               _openBtnList.push(_guideBtnTxtList[_loc4_]);
+               _openBtnList.push(_guideBtnTxtList[i]);
             }
-            _loc4_++;
+            i++;
          }
          _openBtnList.sortOn("place",16);
-         var _loc1_:int = _openBtnList.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc1_)
+         var tmpLen2:int = _openBtnList.length;
+         for(k = 0; k < tmpLen2; )
          {
-            if(!_openBtnList[_loc3_]["btn"].parent)
+            if(!_openBtnList[k]["btn"].parent)
             {
-               addChild(_openBtnList[_loc3_]["btn"]);
+               addChild(_openBtnList[k]["btn"]);
             }
-            _openBtnList[_loc3_]["btn"].x = _placePointList[_loc3_]["btn"].x;
-            _openBtnList[_loc3_]["btn"].y = _placePointList[_loc3_]["btn"].y;
-            _loc3_++;
+            _openBtnList[k]["btn"].x = _placePointList[k]["btn"].x;
+            _openBtnList[k]["btn"].y = _placePointList[k]["btn"].y;
+            k++;
          }
          if(_goShopBtn.parent)
          {
@@ -649,14 +629,14 @@ package ddt.view
          }
       }
       
-      private function questManuGetHandler(param1:PkgEvent) : void
+      private function questManuGetHandler(event:PkgEvent) : void
       {
          HallTaskGuideManager.instance.showTask1ClickBagArrow();
       }
       
-      public function set backFunction(param1:Function) : void
+      public function set backFunction(fn:Function) : void
       {
-         _callBackFun = param1;
+         _callBackFun = fn;
       }
       
       private function removeEvent() : void
@@ -730,10 +710,10 @@ package ddt.view
          setBagEnable(false);
       }
       
-      public function setRoomStartState2(param1:Boolean) : void
+      public function setRoomStartState2(value:Boolean) : void
       {
-         KeyboardShortcutsManager.Instance.forbiddenSection(1,param1);
-         var _loc2_:* = param1;
+         KeyboardShortcutsManager.Instance.forbiddenSection(1,value);
+         var _loc2_:* = value;
          _goBuriedBtn.enable = _loc2_;
          _loc2_ = _loc2_;
          _goPetBtn.enable = _loc2_;
@@ -742,8 +722,8 @@ package ddt.view
          _loc2_ = _loc2_;
          _goShopBtn.enable = _loc2_;
          _goReturnBtn.enable = _loc2_;
-         setChannelEnable(param1);
-         setBagEnable(param1);
+         setChannelEnable(value);
+         setBagEnable(value);
       }
       
       private function setSeverListStartState() : void
@@ -768,23 +748,23 @@ package ddt.view
          }
       }
       
-      public function setReturnEnable(param1:Boolean) : void
+      public function setReturnEnable(value:Boolean) : void
       {
-         _goReturnBtn.enable = param1;
+         _goReturnBtn.enable = value;
       }
       
-      public function setBtnStateForConsortiaDomain(param1:Boolean) : void
+      public function setBtnStateForConsortiaDomain(enable:Boolean) : void
       {
-         _goSupplyBtn.visible = param1;
-         _goShopBtn.enable = param1;
-         _goChannelBtn.enable = param1;
-         _horseBtn.enable = param1;
+         _goSupplyBtn.visible = enable;
+         _goShopBtn.enable = enable;
+         _goChannelBtn.enable = enable;
+         _horseBtn.enable = enable;
       }
       
-      public function updateReturnBtn(param1:int) : void
+      public function updateReturnBtn(type:int) : void
       {
          this.visible = true;
-         switch(int(param1))
+         switch(int(type))
          {
             case 0:
                addChild(_goExitBtn);
@@ -798,24 +778,24 @@ package ddt.view
          }
       }
       
-      public function set ExitBtnVisible(param1:Boolean) : void
+      public function set ExitBtnVisible(value:Boolean) : void
       {
-         _goExitBtn.visible = param1;
+         _goExitBtn.visible = value;
       }
       
-      private function isBitMapAddGrayFilter(param1:Bitmap, param2:Boolean) : void
+      private function isBitMapAddGrayFilter(bmp:Bitmap, flg:Boolean) : void
       {
-         if(param1 == null)
+         if(bmp == null)
          {
             return;
          }
-         if(!param2)
+         if(!flg)
          {
-            param1.filters = ComponentFactory.Instance.creatFilters("grayFilter");
+            bmp.filters = ComponentFactory.Instance.creatFilters("grayFilter");
          }
          else
          {
-            param1.filters = null;
+            bmp.filters = null;
          }
       }
       
@@ -829,7 +809,7 @@ package ddt.view
          }
       }
       
-      private function __onReturnClick(param1:MouseEvent) : void
+      private function __onReturnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("015");
          if(StateManager.currentStateType == "main")
@@ -850,13 +830,13 @@ package ddt.view
          }
       }
       
-      private function __onExitClick(param1:MouseEvent) : void
+      private function __onExitClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          ExitPromptManager.Instance.showView();
       }
       
-      private function __onBuriedClick(param1:MouseEvent) : void
+      private function __onBuriedClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("003");
          if(getTimer() - _lastClick > 1000)
@@ -866,7 +846,7 @@ package ddt.view
          }
       }
       
-      private function __onPetClick(param1:MouseEvent) : void
+      private function __onPetClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("003");
          if(!PetsBagManager.instance().isShow)
@@ -877,56 +857,56 @@ package ddt.view
          }
       }
       
-      private function __onImClick(param1:MouseEvent) : void
+      private function __onImClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("003");
          IMManager.Instance.show();
       }
       
-      private function __onChannelClick(param1:MouseEvent) : void
+      private function __onChannelClick(evnet:MouseEvent) : void
       {
          SoundManager.instance.play("003");
          GotoPageController.Instance.switchVisible();
       }
       
-      private function __onSignClick(param1:MouseEvent) : void
+      private function __onSignClick(evnet:MouseEvent) : void
       {
          SoundManager.instance.play("003");
          _signEffectEnable = false;
          CalendarManager.getInstance().open(2);
       }
       
-      private function __onHorseClick(param1:MouseEvent) : void
+      private function __onHorseClick(evnet:MouseEvent) : void
       {
          SoundManager.instance.play("003");
          HorseManager.instance.show();
       }
       
-      public function set signEffectEnable(param1:Boolean) : void
+      public function set signEffectEnable(value:Boolean) : void
       {
-         _signEffectEnable = param1;
+         _signEffectEnable = value;
       }
       
-      private function _overTaskBtn(param1:MouseEvent) : void
+      private function _overTaskBtn(e:MouseEvent) : void
       {
          ShowTipManager.Instance.removeTip(_goTaskBtn);
          QuestBubbleManager.Instance.addEventListener("show_task_tip",_showTaskTip);
          QuestBubbleManager.Instance.show();
       }
       
-      private function _outTaskBtn(param1:MouseEvent) : void
+      private function _outTaskBtn(e:MouseEvent) : void
       {
          QuestBubbleManager.Instance.dispose();
       }
       
-      private function _showTaskTip(param1:Event) : void
+      private function _showTaskTip(e:Event) : void
       {
          ShowTipManager.Instance.addTip(_goTaskBtn);
          ShowTipManager.Instance.showTip(_goTaskBtn);
          QuestBubbleManager.Instance.dispose();
       }
       
-      private function __onTaskClick(param1:MouseEvent) : void
+      private function __onTaskClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("003");
          if(_taskShineEffect && _taskEffectEnable)
@@ -943,7 +923,7 @@ package ddt.view
          TaskManager.instance.switchVisible();
       }
       
-      private function __onBagClick(param1:MouseEvent) : void
+      private function __onBagClick(evnet:MouseEvent) : void
       {
          SoundManager.instance.play("003");
          BagAndInfoManager.Instance.showBagAndInfo();
@@ -956,13 +936,13 @@ package ddt.view
          MagicStoneManager.instance.removeWeakGuide(0);
       }
       
-      private function __onShopClick(param1:MouseEvent) : void
+      private function __onShopClick(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var alert:* = null;
          if(toShopNeedConfirm())
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.room.ToShopConfirm"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
-            _loc2_.addEventListener("response",__confirmToShopResponse);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.room.ToShopConfirm"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
+            alert.addEventListener("response",__confirmToShopResponse);
          }
          else
          {
@@ -980,30 +960,30 @@ package ddt.view
          return false;
       }
       
-      private function __confirmToShopResponse(param1:FrameEvent) : void
+      private function __confirmToShopResponse(event:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__confirmToShopResponse);
-         ObjectUtils.disposeObject(_loc2_);
+         var alert:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",__confirmToShopResponse);
+         ObjectUtils.disposeObject(alert);
          SoundManager.instance.play("008");
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         if(event.responseCode == 2 || event.responseCode == 3)
          {
             StateManager.setState("shop");
          }
       }
       
-      private function __onSupplyClick(param1:MouseEvent) : void
+      private function __onSupplyClick(evnet:MouseEvent) : void
       {
          LeavePageManager.leaveToFillPath();
       }
       
-      public function set unReadTask(param1:Boolean) : void
+      public function set unReadTask(value:Boolean) : void
       {
-         if(_unReadTask == param1)
+         if(_unReadTask == value)
          {
             return;
          }
-         _unReadTask = param1;
+         _unReadTask = value;
          if(_enabled)
          {
             updateTask();
@@ -1015,7 +995,7 @@ package ddt.view
          return _unReadTask;
       }
       
-      public function set unReadMovement(param1:Boolean) : void
+      public function set unReadMovement(value:Boolean) : void
       {
       }
       
@@ -1056,35 +1036,34 @@ package ddt.view
       
       private function update() : void
       {
-         var _loc1_:* = 0;
-         _loc1_ = uint(0);
-         while(_loc1_ < allBtns.length)
+         var i:* = 0;
+         for(i = uint(0); i < allBtns.length; )
          {
-            setEnableByIndex(_loc1_,_enabled);
-            _loc1_++;
+            setEnableByIndex(i,_enabled);
+            i++;
          }
          setRoomWaitState();
       }
       
-      private function setEnableByIndex(param1:int, param2:Boolean) : void
+      private function setEnableByIndex(index:int, value:Boolean) : void
       {
-         if(param1 == 1)
+         if(index == 1)
          {
-            setBagEnable(param2);
+            setBagEnable(value);
          }
-         else if(param1 == 4)
+         else if(index == 4)
          {
-            setFriendBtnEnable(param2);
+            setFriendBtnEnable(value);
          }
-         else if(param1 != 5)
+         else if(index != 5)
          {
-            if(param1 == 6)
+            if(index == 6)
             {
-               setChannelEnable(param2);
+               setChannelEnable(value);
             }
             else
             {
-               allBtns[param1].enable = param2;
+               allBtns[index].enable = value;
             }
          }
       }
@@ -1103,9 +1082,9 @@ package ddt.view
          tipTask();
       }
       
-      private function showFriendShineEffec(param1:Boolean) : void
+      private function showFriendShineEffec(show:Boolean) : void
       {
-         if(param1 && _goFriendListBtn.parent)
+         if(show && _goFriendListBtn.parent)
          {
             _friendShineEffec.play();
             _goFriendListBtn.alpha = 0;
@@ -1119,13 +1098,13 @@ package ddt.view
          }
       }
       
-      private function showTaskShineEffect(param1:Boolean) : void
+      private function showTaskShineEffect(show:Boolean) : void
       {
       }
       
-      public function showSignShineEffect(param1:Boolean) : void
+      public function showSignShineEffect(show:Boolean) : void
       {
-         if(param1)
+         if(show)
          {
             _signShineEffect.play();
          }
@@ -1135,9 +1114,9 @@ package ddt.view
          }
       }
       
-      public function showBagShineEffect(param1:Boolean) : void
+      public function showBagShineEffect(show:Boolean) : void
       {
-         if(param1 && _goBagBtn.parent)
+         if(show && _goBagBtn.parent)
          {
             _bagShineEffect.play();
             _goBagBtn.alpha = 0;
@@ -1149,7 +1128,7 @@ package ddt.view
          }
       }
       
-      public function __player(param1:MouseEvent) : void
+      public function __player(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }
@@ -1158,11 +1137,11 @@ package ddt.view
       {
       }
       
-      private function setChannelEnable(param1:Boolean) : void
+      private function setChannelEnable(value:Boolean) : void
       {
-         this.isBitMapAddGrayFilter(_otherTxt,param1);
-         _goChannelBtn.enable = param1;
-         if(param1 && PlayerManager.Instance.Self.IsWeakGuildFinish(95))
+         this.isBitMapAddGrayFilter(_otherTxt,value);
+         _goChannelBtn.enable = value;
+         if(value && PlayerManager.Instance.Self.IsWeakGuildFinish(95))
          {
             KeyboardShortcutsManager.Instance.prohibitNewHandChannel(true);
             KeyboardShortcutsManager.Instance.prohibitNewHandSeting(true);
@@ -1174,11 +1153,11 @@ package ddt.view
          }
       }
       
-      private function setBagEnable(param1:Boolean) : void
+      private function setBagEnable(value:Boolean) : void
       {
-         this.isBitMapAddGrayFilter(_bagTxt,param1);
-         _goBagBtn.enable = param1;
-         if(param1)
+         this.isBitMapAddGrayFilter(_bagTxt,value);
+         _goBagBtn.enable = value;
+         if(value)
          {
             if(MagicStoneManager.instance.upTo40Flag)
             {
@@ -1190,7 +1169,7 @@ package ddt.view
             NewHandContainer.Instance.clearArrowByID(124);
             showBagShineEffect(false);
          }
-         if(param1 && PlayerManager.Instance.Self.IsWeakGuildFinish(7))
+         if(value && PlayerManager.Instance.Self.IsWeakGuildFinish(7))
          {
             KeyboardShortcutsManager.Instance.prohibitNewHandBag(true);
          }
@@ -1200,11 +1179,11 @@ package ddt.view
          }
       }
       
-      private function setFriendBtnEnable(param1:Boolean) : void
+      private function setFriendBtnEnable(value:Boolean) : void
       {
-         this.isBitMapAddGrayFilter(_friendTxt,param1);
-         _goFriendListBtn.enable = param1;
-         if(param1 && PlayerManager.Instance.Self.IsWeakGuildFinish(27))
+         this.isBitMapAddGrayFilter(_friendTxt,value);
+         _goFriendListBtn.enable = value;
+         if(value && PlayerManager.Instance.Self.IsWeakGuildFinish(27))
          {
             KeyboardShortcutsManager.Instance.prohibitNewHandFriend(true);
          }
@@ -1214,11 +1193,11 @@ package ddt.view
          }
       }
       
-      private function setSignEnable(param1:Boolean) : void
+      private function setSignEnable(value:Boolean) : void
       {
-         this.isBitMapAddGrayFilter(_signTxt,param1);
-         _goSignBtn.enable = param1;
-         if(param1 && _goSignBtn.parent && _signEffectEnable && !CalendarManager.getInstance().hasTodaySigned())
+         this.isBitMapAddGrayFilter(_signTxt,value);
+         _goSignBtn.enable = value;
+         if(value && _goSignBtn.parent && _signEffectEnable && !CalendarManager.getInstance().hasTodaySigned())
          {
             showSignShineEffect(true);
          }
@@ -1226,7 +1205,7 @@ package ddt.view
          {
             showSignShineEffect(false);
          }
-         if(param1 && PlayerManager.Instance.Self.IsWeakGuildFinish(99))
+         if(value && PlayerManager.Instance.Self.IsWeakGuildFinish(99))
          {
             KeyboardShortcutsManager.Instance.prohibitNewHandCalendar(true);
          }

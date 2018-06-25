@@ -64,34 +64,34 @@ package consortion.guard
          _rankBossList = new DictionaryData();
       }
       
-      public function setBossHp(param1:int, param2:Number) : void
+      public function setBossHp(index:int, hp:Number) : void
       {
-         _bossHp[param1] = param2;
+         _bossHp[index] = hp;
       }
       
-      public function setBossMaxHp(param1:int, param2:Number) : void
+      public function setBossMaxHp(index:int, hp:Number) : void
       {
-         _bossMaxHp[param1] = param2;
+         _bossMaxHp[index] = hp;
       }
       
-      public function setBossState(param1:int, param2:int) : void
+      public function setBossState(index:int, state:int) : void
       {
-         _bossState[param1] = param2;
+         _bossState[index] = state;
       }
       
-      public function getBossHp(param1:int) : Number
+      public function getBossHp(index:int) : Number
       {
-         return _bossHp[param1];
+         return _bossHp[index];
       }
       
-      public function getBossMaxHp(param1:int) : Number
+      public function getBossMaxHp(index:int) : Number
       {
-         return _bossMaxHp[param1];
+         return _bossMaxHp[index];
       }
       
-      public function getBossState(param1:int) : int
+      public function getBossState(index:int) : int
       {
-         return _bossState[param1];
+         return _bossState[index];
       }
       
       public function get playerList() : DictionaryData
@@ -99,9 +99,9 @@ package consortion.guard
          return _playerList;
       }
       
-      public function set isOpen(param1:Boolean) : void
+      public function set isOpen(value:Boolean) : void
       {
-         _isOpen = param1;
+         _isOpen = value;
       }
       
       public function get isOpen() : Boolean
@@ -109,9 +109,9 @@ package consortion.guard
          return _isOpen;
       }
       
-      public function set openTime(param1:Date) : void
+      public function set openTime(value:Date) : void
       {
-         _openTime = param1;
+         _openTime = value;
       }
       
       public function get openTime() : Date
@@ -129,9 +129,9 @@ package consortion.guard
          return _statueHp;
       }
       
-      public function set statueHp(param1:Number) : void
+      public function set statueHp(value:Number) : void
       {
-         _statueHp = param1;
+         _statueHp = value;
       }
       
       public function get statueMaxHp() : Number
@@ -139,9 +139,9 @@ package consortion.guard
          return _statueMaxHp;
       }
       
-      public function set statueMaxHp(param1:Number) : void
+      public function set statueMaxHp(value:Number) : void
       {
-         _statueMaxHp = param1;
+         _statueMaxHp = value;
       }
       
       public function get isFight() : Boolean
@@ -149,9 +149,9 @@ package consortion.guard
          return _isFight;
       }
       
-      public function set isFight(param1:Boolean) : void
+      public function set isFight(value:Boolean) : void
       {
-         _isFight = param1;
+         _isFight = value;
       }
       
       public function get isWin() : Boolean
@@ -159,9 +159,9 @@ package consortion.guard
          return _isWin;
       }
       
-      public function set isWin(param1:Boolean) : void
+      public function set isWin(value:Boolean) : void
       {
-         _isWin = param1;
+         _isWin = value;
       }
       
       public function get endTime() : Number
@@ -169,9 +169,9 @@ package consortion.guard
          return _endTime;
       }
       
-      public function set endTime(param1:Number) : void
+      public function set endTime(value:Number) : void
       {
-         _endTime = param1;
+         _endTime = value;
       }
       
       public function get openLevel() : int
@@ -179,9 +179,9 @@ package consortion.guard
          return _openLevel;
       }
       
-      public function set openLevel(param1:int) : void
+      public function set openLevel(value:int) : void
       {
-         _openLevel = param1;
+         _openLevel = value;
       }
       
       public function get buffLevel() : int
@@ -189,9 +189,9 @@ package consortion.guard
          return _buffLevel;
       }
       
-      public function set buffLevel(param1:int) : void
+      public function set buffLevel(value:int) : void
       {
-         _buffLevel = param1;
+         _buffLevel = value;
       }
       
       public function get rankBossList() : DictionaryData

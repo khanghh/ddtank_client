@@ -70,57 +70,55 @@ package godCardRaise.view
          _exchangeCell.setBgVisible(false);
       }
       
-      public function changeView(param1:GodCardListGroupInfo) : void
+      public function changeView(selectedValue:GodCardListGroupInfo) : void
       {
          reset();
-         _info = param1;
+         _info = selectedValue;
          addCards();
          updateView();
       }
       
       private function addCards() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         _loc2_ = 0;
-         while(_loc2_ < _info.Cards.length)
+         var i:int = 0;
+         var cardView:* = null;
+         for(i = 0; i < _info.Cards.length; )
          {
-            _loc1_ = new GodCardRaiseExchangeRightCard(_info.Cards[_loc2_]);
-            _loc1_.x = _loc2_ * 166;
-            _cards.addChild(_loc1_);
-            _loc2_++;
+            cardView = new GodCardRaiseExchangeRightCard(_info.Cards[i]);
+            cardView.x = i * 166;
+            _cards.addChild(cardView);
+            i++;
          }
       }
       
       public function updateView() : void
       {
-         var _loc5_:int = 0;
-         var _loc1_:* = null;
-         _loc5_ = 0;
-         while(_loc5_ < _cards.numChildren)
+         var i:int = 0;
+         var cardView:* = null;
+         for(i = 0; i < _cards.numChildren; )
          {
-            _loc1_ = _cards.getChildAt(_loc5_) as GodCardRaiseExchangeRightCard;
-            _loc1_.updateView();
-            _loc5_++;
+            cardView = _cards.getChildAt(i) as GodCardRaiseExchangeRightCard;
+            cardView.updateView();
+            i++;
          }
          _cards.x = (_rightBg.width - _info.Cards.length * 166) / 2;
-         var _loc4_:int = GodCardRaiseManager.Instance.model.groups[_info.GroupID];
-         _remainCountTxt.text = LanguageMgr.GetTranslation("godCardRaiseExchangeRightView.remainCountTxtMsg",_info.ExchangeTimes - _loc4_,_info.ExchangeTimes);
-         var _loc3_:InventoryItemInfo = new InventoryItemInfo();
-         _loc3_.TemplateID = _info.GiftID;
-         ItemManager.fill(_loc3_);
-         _loc3_.IsBinds = true;
-         _exchangeCell.info = _loc3_;
+         var myExchangeCount:int = GodCardRaiseManager.Instance.model.groups[_info.GroupID];
+         _remainCountTxt.text = LanguageMgr.GetTranslation("godCardRaiseExchangeRightView.remainCountTxtMsg",_info.ExchangeTimes - myExchangeCount,_info.ExchangeTimes);
+         var tempInfo:InventoryItemInfo = new InventoryItemInfo();
+         tempInfo.TemplateID = _info.GiftID;
+         ItemManager.fill(tempInfo);
+         tempInfo.IsBinds = true;
+         _exchangeCell.info = tempInfo;
          _exchangeCell.setCountNotVisible();
-         var _loc2_:int = GodCardRaiseManager.Instance.calculateExchangeCount(_info);
-         if(_info.ExchangeTimes - _loc4_ <= 0)
+         var exchangeCount:int = GodCardRaiseManager.Instance.calculateExchangeCount(_info);
+         if(_info.ExchangeTimes - myExchangeCount <= 0)
          {
             _exchangeBtn.enable = false;
          }
-         else if(_loc2_ != 0 && _loc2_ + GodCardRaiseManager.Instance.getMyCardCount(13) >= _info.Cards.length)
+         else if(exchangeCount != 0 && exchangeCount + GodCardRaiseManager.Instance.getMyCardCount(13) >= _info.Cards.length)
          {
             _exchangeBtn.enable = true;
-            _canUseUniversalCard = _loc2_ != _info.Cards.length;
+            _canUseUniversalCard = exchangeCount != _info.Cards.length;
          }
          else
          {
@@ -138,16 +136,16 @@ package godCardRaise.view
          _exchangeBtn.addEventListener("click",__exchangeBtnHandler);
       }
       
-      private function __exchangeBtnHandler(param1:MouseEvent) : void
+      private function __exchangeBtnHandler(event:MouseEvent) : void
       {
-         var _loc7_:* = null;
-         var _loc6_:* = null;
-         var _loc9_:int = 0;
-         var _loc5_:* = null;
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
-         var _loc8_:int = 0;
-         var _loc3_:* = null;
+         var tips:* = null;
+         var list:* = null;
+         var i:int = 0;
+         var obj:* = null;
+         var cardId:int = 0;
+         var cardCount:int = 0;
+         var myCardCount:int = 0;
+         var alertFrame:* = null;
          SoundManager.instance.playButtonSound();
          if(_canUseUniversalCard)
          {
@@ -156,26 +154,25 @@ package godCardRaise.view
                GameInSocketOut.sendGodCardExchange(_info.GroupID,true);
                return;
             }
-            _loc7_ = LanguageMgr.GetTranslation("godCardRaise.universalCardTips");
-            _loc6_ = [];
-            _loc9_ = 0;
-            while(_loc9_ < _info.Cards.length)
+            tips = LanguageMgr.GetTranslation("godCardRaise.universalCardTips");
+            list = [];
+            for(i = 0; i < _info.Cards.length; )
             {
-               _loc5_ = _info.Cards[_loc9_];
-               _loc2_ = _loc5_["cardId"];
-               _loc4_ = _loc5_["cardCount"];
-               _loc8_ = GodCardRaiseManager.Instance.getMyCardCount(_loc2_);
-               if(_loc8_ < _loc4_)
+               obj = _info.Cards[i];
+               cardId = obj["cardId"];
+               cardCount = obj["cardCount"];
+               myCardCount = GodCardRaiseManager.Instance.getMyCardCount(cardId);
+               if(myCardCount < cardCount)
                {
-                  _loc7_ = _loc7_ + LanguageMgr.GetTranslation("godCardRaise.universalCardReplace",GodCardRaiseManager.Instance.godCardListInfoList[_loc2_].Name);
+                  tips = tips + LanguageMgr.GetTranslation("godCardRaise.universalCardReplace",GodCardRaiseManager.Instance.godCardListInfoList[cardId].Name);
                }
-               _loc9_++;
+               i++;
             }
-            _loc7_ = _loc7_.substr(0,_loc7_.length - 1) + "?";
-            _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc7_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,1,null,"SimpleAlert",60,false);
-            _loc3_.setIsShowTheLog(true,LanguageMgr.GetTranslation("notAlertAgain"));
-            _loc3_.selectedCheckButton.addEventListener("click",__onSelectCheckClick);
-            _loc3_.addEventListener("response",__onAlertConfirm);
+            tips = tips.substr(0,tips.length - 1) + "?";
+            alertFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),tips,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,1,null,"SimpleAlert",60,false);
+            alertFrame.setIsShowTheLog(true,LanguageMgr.GetTranslation("notAlertAgain"));
+            alertFrame.selectedCheckButton.addEventListener("click",__onSelectCheckClick);
+            alertFrame.addEventListener("response",__onAlertConfirm);
          }
          else
          {
@@ -183,23 +180,23 @@ package godCardRaise.view
          }
       }
       
-      protected function __onSelectCheckClick(param1:MouseEvent) : void
+      protected function __onSelectCheckClick(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:SelectedCheckButton = param1.currentTarget as SelectedCheckButton;
-         notAlertAgain = _loc2_.selected;
+         var btn:SelectedCheckButton = e.currentTarget as SelectedCheckButton;
+         notAlertAgain = btn.selected;
       }
       
-      protected function __onAlertConfirm(param1:FrameEvent) : void
+      protected function __onAlertConfirm(e:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onAlertConfirm);
-         _loc2_.selectedCheckButton.removeEventListener("click",__onSelectCheckClick);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var alertFrame:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         alertFrame.removeEventListener("response",__onAlertConfirm);
+         alertFrame.selectedCheckButton.removeEventListener("click",__onSelectCheckClick);
+         if(e.responseCode == 2 || e.responseCode == 3)
          {
             GameInSocketOut.sendGodCardExchange(_info.GroupID,true);
          }
-         _loc2_.dispose();
+         alertFrame.dispose();
       }
       
       private function removeEvent() : void

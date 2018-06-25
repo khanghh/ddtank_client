@@ -27,35 +27,35 @@ package ddt.data
          return _ins;
       }
       
-      public function set beads(param1:String) : void
+      public function set beads(val:String) : void
       {
-         var _loc3_:Array = param1.split(",");
+         var arr:Array = val.split(",");
          var _loc5_:int = 0;
-         var _loc4_:* = _loc3_;
-         for each(var _loc2_ in _loc3_)
+         var _loc4_:* = arr;
+         for each(var id in arr)
          {
-            _beadDic[_loc2_] = true;
+            _beadDic[id] = true;
          }
       }
       
-      public function isBeadFromSmelt(param1:int) : Boolean
+      public function isBeadFromSmelt(id:int) : Boolean
       {
-         return _beadDic[param1] == true;
+         return _beadDic[id] == true;
       }
       
-      public function isAttackBead(param1:ItemTemplateInfo) : Boolean
+      public function isAttackBead(item:ItemTemplateInfo) : Boolean
       {
-         return isBeadFromSmelt(param1.TemplateID) && param1.Property2 == "1";
+         return isBeadFromSmelt(item.TemplateID) && item.Property2 == "1";
       }
       
-      public function isDefenceBead(param1:ItemTemplateInfo) : Boolean
+      public function isDefenceBead(item:ItemTemplateInfo) : Boolean
       {
-         return isBeadFromSmelt(param1.TemplateID) && param1.Property2 == "2";
+         return isBeadFromSmelt(item.TemplateID) && item.Property2 == "2";
       }
       
-      public function isAttributeBead(param1:ItemTemplateInfo) : Boolean
+      public function isAttributeBead(item:ItemTemplateInfo) : Boolean
       {
-         return isBeadFromSmelt(param1.TemplateID) && param1.Property2 == "3";
+         return isBeadFromSmelt(item.TemplateID) && item.Property2 == "3";
       }
    }
 }

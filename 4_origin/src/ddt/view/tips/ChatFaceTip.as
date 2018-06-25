@@ -47,19 +47,19 @@ package ddt.view.tips
          return _tempData;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(data:Object) : void
       {
-         if(param1 is String && param1 != "")
+         if(data is String && data != "")
          {
-            tip_txt.width = updateW(String(param1));
-            tip_txt.text = String(param1);
+            tip_txt.width = updateW(String(data));
+            tip_txt.text = String(data);
             this.visible = true;
          }
          else
          {
             this.visible = false;
          }
-         _tempData = param1;
+         _tempData = data;
       }
       
       public function asDisplayObject() : DisplayObject
@@ -72,16 +72,16 @@ package ddt.view.tips
          addChild(tip_txt);
       }
       
-      private function updateW(param1:String) : int
+      private function updateW(data:String) : int
       {
-         var _loc2_:TextField = new TextField();
-         _loc2_.autoSize = "left";
-         _loc2_.text = param1;
-         if(_loc2_.width < _minW)
+         var txt:TextField = new TextField();
+         txt.autoSize = "left";
+         txt.text = data;
+         if(txt.width < _minW)
          {
             return _minW;
          }
-         return int(_loc2_.width + 8);
+         return int(txt.width + 8);
       }
    }
 }

@@ -44,7 +44,7 @@ package gradeBuy
       
       private var _countDownDic:Dictionary;
       
-      public function GradeBuyManager(param1:inner)
+      public function GradeBuyManager(single:inner)
       {
          _data = [];
          _countDownDic = new Dictionary();
@@ -65,9 +65,9 @@ package gradeBuy
          return _data;
       }
       
-      public function set data(param1:Array) : void
+      public function set data(value:Array) : void
       {
-         _data = param1;
+         _data = value;
       }
       
       public function setup() : void
@@ -75,32 +75,32 @@ package gradeBuy
          SocketManager.Instance.addEventListener(PkgEvent.format(325),onShowBtnHandler);
       }
       
-      protected function onShowBtnHandler(param1:PkgEvent) : void
+      protected function onShowBtnHandler(e:PkgEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc8_:* = null;
-         var _loc6_:int = 0;
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:Number = NaN;
-         var _loc7_:PackageIn = param1.pkg;
+         var id:int = 0;
+         var date:* = null;
+         var id0:int = 0;
+         var id1:int = 0;
+         var id2:int = 0;
+         var timeRemain:Number = NaN;
+         var pkg:PackageIn = e.pkg;
          _data = [];
-         while(_loc7_.bytesAvailable > 0)
+         while(pkg.bytesAvailable > 0)
          {
-            _loc3_ = _loc7_.readInt();
-            _loc8_ = _loc7_.readDate();
-            _loc6_ = _loc7_.readInt();
-            _loc5_ = _loc7_.readInt();
-            _loc4_ = _loc7_.readInt();
-            _loc2_ = _loc8_.time + 172800000 - TimeManager.Instance.Now().time;
-            if(_loc6_ + _loc5_ + _loc4_ != 0 && _loc2_ > 0)
+            id = pkg.readInt();
+            date = pkg.readDate();
+            id0 = pkg.readInt();
+            id1 = pkg.readInt();
+            id2 = pkg.readInt();
+            timeRemain = date.time + 172800000 - TimeManager.Instance.Now().time;
+            if(id0 + id1 + id2 != 0 && timeRemain > 0)
             {
                _data.push({
-                  "id":_loc3_,
-                  "date":_loc8_.time + 172800000,
-                  "id0":_loc6_,
-                  "id1":_loc5_,
-                  "id2":_loc4_
+                  "id":id,
+                  "date":date.time + 172800000,
+                  "id0":id0,
+                  "id1":id1,
+                  "id2":id2
                });
             }
          }
@@ -134,7 +134,7 @@ package gradeBuy
          }
       }
       
-      protected function onBtnClick(param1:MouseEvent) : void
+      protected function onBtnClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          EnterStart();
@@ -145,9 +145,9 @@ package gradeBuy
          dispatchEvent(new CEvent("gb_show"));
       }
       
-      public function setHall(param1:HallStateView) : void
+      public function setHall($hall:HallStateView) : void
       {
-         _hall = param1;
+         _hall = $hall;
          updateBtn();
       }
       
@@ -162,13 +162,13 @@ package gradeBuy
          _timer.start();
       }
       
-      protected function onTimer(param1:Event) : void
+      protected function onTimer(e:Event) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = _countDownDic;
-         for each(var _loc2_ in _countDownDic)
+         for each(var v in _countDownDic)
          {
-            _loc2_.update();
+            v.update();
          }
       }
       
@@ -189,19 +189,19 @@ package gradeBuy
          _shown = true;
       }
       
-      public function register(param1:String, param2:ICountDown) : void
+      public function register($key:String, countDown:ICountDown) : void
       {
-         _countDownDic[param1] = param2;
+         _countDownDic[$key] = countDown;
       }
       
-      public function unRegister(param1:String) : void
+      public function unRegister($key:String) : void
       {
       }
       
-      public function requireBuy(param1:int, param2:ItemTemplateInfo) : void
+      public function requireBuy(typeTempleteID:int, itemInfo:ItemTemplateInfo) : void
       {
-         typeTempleteID = param1;
-         itemInfo = param2;
+         typeTempleteID = typeTempleteID;
+         itemInfo = itemInfo;
          onBuy = function():void
          {
             GameInSocketOut.sendGradeBuy(typeTempleteID,itemInfo.TemplateID);

@@ -103,97 +103,97 @@ package ddt.view.chat
          ChatManager.Instance.model.addEventListener("addChat",__onAddChat);
       }
       
-      private function __onAddChat(param1:ChatEvent) : void
+      private function __onAddChat(event:ChatEvent) : void
       {
-         var _loc13_:int = 0;
-         var _loc2_:Number = NaN;
-         var _loc7_:int = 0;
-         var _loc11_:* = null;
-         var _loc4_:* = 0;
+         var offset:int = 0;
+         var ItemID:Number = NaN;
+         var TemplateID:int = 0;
+         var info:* = null;
+         var index:* = 0;
          if(ChatManager.Instance.state == 4 || ChatManager.Instance.state == 18 || ChatManager.Instance.state == 20 || ChatManager.Instance.state == 24 || ChatManager.Instance.isInGame || ChatManager.Instance.state == 29)
          {
             return;
          }
-         var _loc6_:ChatData = param1.data as ChatData;
-         var _loc3_:* = "";
-         var _loc5_:RegExp = /&lt;/g;
-         var _loc9_:RegExp = /&gt;/g;
-         var _loc14_:String = _loc6_.msg.replace(_loc5_,"<").replace(_loc9_,">");
-         _loc14_ = Helpers.deCodeString(_loc14_);
-         if(_loc6_.link)
+         var o:ChatData = event.data as ChatData;
+         var result:* = "";
+         var leftPattern:RegExp = /&lt;/g;
+         var rightPattern:RegExp = /&gt;/g;
+         var chatMsg:String = o.msg.replace(leftPattern,"<").replace(rightPattern,">");
+         chatMsg = Helpers.deCodeString(chatMsg);
+         if(o.link)
          {
-            _loc13_ = 0;
-            _loc6_.link.sortOn("index");
+            offset = 0;
+            o.link.sortOn("index");
             var _loc16_:int = 0;
-            var _loc15_:* = _loc6_.link;
-            for each(var _loc10_ in _loc6_.link)
+            var _loc15_:* = o.link;
+            for each(var i in o.link)
             {
-               _loc2_ = _loc10_.ItemID;
-               _loc7_ = _loc10_.TemplateID;
-               _loc11_ = ItemManager.Instance.getTemplateById(_loc7_);
-               _loc4_ = uint(_loc10_.index + _loc13_);
-               if(_loc11_ == null)
+               ItemID = i.ItemID;
+               TemplateID = i.TemplateID;
+               info = ItemManager.Instance.getTemplateById(TemplateID);
+               index = uint(i.index + offset);
+               if(info == null)
                {
-                  if(_loc7_ == 0)
+                  if(TemplateID == 0)
                   {
-                     _loc14_ = _loc14_.substring(0,_loc4_) + "[" + LanguageMgr.GetTranslation("tank.view.card.chatLinkText0") + "]" + _loc14_.substring(_loc4_);
-                     _loc13_ = _loc13_ + LanguageMgr.GetTranslation("tank.view.card.chatLinkText0").length;
+                     chatMsg = chatMsg.substring(0,index) + "[" + LanguageMgr.GetTranslation("tank.view.card.chatLinkText0") + "]" + chatMsg.substring(index);
+                     offset = offset + LanguageMgr.GetTranslation("tank.view.card.chatLinkText0").length;
                   }
                   else
                   {
-                     _loc14_ = _loc14_.substring(0,_loc4_) + "[" + String(_loc7_) + LanguageMgr.GetTranslation("tank.view.card.chatLinkText") + "]" + _loc14_.substring(_loc4_);
-                     _loc13_ = _loc13_ + (String(_loc7_) + LanguageMgr.GetTranslation("tank.view.card.chatLinkText")).length;
+                     chatMsg = chatMsg.substring(0,index) + "[" + String(TemplateID) + LanguageMgr.GetTranslation("tank.view.card.chatLinkText") + "]" + chatMsg.substring(index);
+                     offset = offset + (String(TemplateID) + LanguageMgr.GetTranslation("tank.view.card.chatLinkText")).length;
                   }
                }
                else
                {
-                  _loc14_ = _loc14_.substring(0,_loc4_) + "[" + _loc11_.Name + "]" + _loc14_.substring(_loc4_);
-                  _loc13_ = _loc13_ + _loc11_.Name.length;
+                  chatMsg = chatMsg.substring(0,index) + "[" + info.Name + "]" + chatMsg.substring(index);
+                  offset = offset + info.Name.length;
                }
             }
          }
-         var _loc8_:int = 1;
-         var _loc12_:int = 0;
-         if(_loc6_.channel == 1)
+         var BugleType:int = 1;
+         var BigBugleType:int = 0;
+         if(o.channel == 1)
          {
-            _loc8_ = 2;
-            _loc3_ = "[" + _loc6_.sender + LanguageMgr.GetTranslation("tank.view.common.BuggleView.small") + _loc14_;
+            BugleType = 2;
+            result = "[" + o.sender + LanguageMgr.GetTranslation("tank.view.common.BuggleView.small") + chatMsg;
          }
-         else if(_loc6_.channel == 0)
+         else if(o.channel == 0)
          {
-            _loc8_ = 1;
-            if(_loc6_.bigBuggleType != 0)
+            BugleType = 1;
+            if(o.bigBuggleType != 0)
             {
-               _loc12_ = _loc6_.bigBuggleType;
-               _loc3_ = "[" + _loc6_.sender + "]:" + _loc14_;
+               BigBugleType = o.bigBuggleType;
+               result = "[" + o.sender + "]:" + chatMsg;
             }
             else
             {
-               _loc12_ = 0;
-               _loc3_ = "[" + _loc6_.sender + LanguageMgr.GetTranslation("tank.view.common.BuggleView.big") + _loc14_;
+               BigBugleType = 0;
+               result = "[" + o.sender + LanguageMgr.GetTranslation("tank.view.common.BuggleView.big") + chatMsg;
             }
          }
-         else if(_loc6_.channel == 15)
+         else if(o.channel == 15)
          {
-            _loc8_ = 4;
-            _loc3_ = "[" + _loc6_.sender + LanguageMgr.GetTranslation("tank.view.common.BuggleView.cross") + _loc14_;
+            BugleType = 4;
+            result = "[" + o.sender + LanguageMgr.GetTranslation("tank.view.common.BuggleView.cross") + chatMsg;
          }
-         else if(_loc6_.channel == 12)
+         else if(o.channel == 12)
          {
-            _loc8_ = 3;
-            _loc3_ = _loc14_;
+            BugleType = 3;
+            result = chatMsg;
          }
-         else if(_loc6_.channel == 11)
+         else if(o.channel == 11)
          {
-            _loc8_ = 3;
-            _loc3_ = _loc14_;
+            BugleType = 3;
+            result = chatMsg;
          }
-         else if(_loc6_.channel == 6 || _loc6_.channel == 7)
+         else if(o.channel == 6 || o.channel == 7)
          {
-            if(_loc6_.type == 1 || _loc6_.type == 3 || _loc6_.type == 9 || _loc6_.type == 20 || _loc6_.type == 21)
+            if(o.type == 1 || o.type == 3 || o.type == 9 || o.type == 20 || o.type == 21)
             {
-               _loc8_ = 3;
-               _loc3_ = _loc14_;
+               BugleType = 3;
+               result = chatMsg;
             }
             else
             {
@@ -204,7 +204,7 @@ package ddt.view.chat
          {
             return;
          }
-         _bugleList.push(new ChatBugleData(_loc3_,_loc8_,_loc12_));
+         _bugleList.push(new ChatBugleData(result,BugleType,BigBugleType));
          checkPlay();
       }
       
@@ -216,7 +216,7 @@ package ddt.view.chat
          _showTimer.start();
       }
       
-      private function __showTimer(param1:Event) : void
+      private function __showTimer(evt:Event) : void
       {
          _showTimer.stop();
          _showTimer.reset();
@@ -225,17 +225,17 @@ package ddt.view.chat
       
       private function checkPlay() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var bugleData:* = null;
+         var _currentBugle:* = null;
          trace(_bugleList.length);
          if(PlayerManager.Instance.Self.Grade > 1)
          {
             if(_bugleList.length > 0)
             {
-               _loc2_ = _bugleList.splice(0,1)[0];
-               _loc1_ = _loc2_.content;
-               _currentBugleType = _loc2_.BugleType;
-               _currentBigBugleType = _loc2_.subBugleType;
+               bugleData = _bugleList.splice(0,1)[0];
+               _currentBugle = bugleData.content;
+               _currentBugleType = bugleData.BugleType;
+               _currentBigBugleType = bugleData.subBugleType;
                if(_animationTxt.parent)
                {
                   _animationTxt.parent.removeChild(_animationTxt);
@@ -273,7 +273,7 @@ package ddt.view.chat
                      _bigBugleAnimations[_currentBigBugleType - 1].play();
                      addChild(_bigBugleAnimations[_currentBigBugleType - 1]);
                      addChild(_animationTxt);
-                     _animationTxt.text = _loc1_;
+                     _animationTxt.text = _currentBugle;
                      checkShowTimer();
                      show();
                      return;
@@ -299,7 +299,7 @@ package ddt.view.chat
                {
                   _contentTxt.textColor = ChatFormats.getColorByChannel(12);
                }
-               _contentTxt.text = _loc1_;
+               _contentTxt.text = _currentBugle;
                checkShowTimer();
                show();
             }
@@ -348,21 +348,20 @@ package ddt.view.chat
       
       private function removeAllBuggleAnimations() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(_bigBugleAnimations)
          {
-            _loc1_ = 0;
-            while(_loc1_ < _bigBugleAnimations.length)
+            for(i = 0; i < _bigBugleAnimations.length; )
             {
-               if(_bigBugleAnimations[_loc1_])
+               if(_bigBugleAnimations[i])
                {
-                  if(_bigBugleAnimations[_loc1_].parent)
+                  if(_bigBugleAnimations[i].parent)
                   {
-                     _bigBugleAnimations[_loc1_].parent.removeChild(_bigBugleAnimations[_loc1_]);
+                     _bigBugleAnimations[i].parent.removeChild(_bigBugleAnimations[i]);
                   }
-                  _bigBugleAnimations[_loc1_].stop();
+                  _bigBugleAnimations[i].stop();
                }
-               _loc1_++;
+               i++;
             }
          }
       }
@@ -401,11 +400,11 @@ class ChatBugleData
    
    public var subBugleType:int;
    
-   function ChatBugleData(param1:String, param2:int, param3:int)
+   function ChatBugleData(c:String, t:int, st:int)
    {
       super();
-      content = param1;
-      BugleType = param2;
-      subBugleType = param3;
+      content = c;
+      BugleType = t;
+      subBugleType = st;
    }
 }

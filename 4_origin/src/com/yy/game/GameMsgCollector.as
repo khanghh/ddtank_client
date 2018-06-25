@@ -31,11 +31,11 @@ package com.yy.game
       
       private var isIniting:Boolean = false;
       
-      public function GameMsgCollector(param1:PrivateClass)
+      public function GameMsgCollector(privateClass:PrivateClass)
       {
          this.toCallParamsMap = {};
          super();
-         if(param1 == null)
+         if(privateClass == null)
          {
             throw new ArgumentError("本类是单例实现，请通过instance静态getter获取实例！");
          }
@@ -55,17 +55,9 @@ package com.yy.game
          _instance = null;
       }
       
-      public function collectMessage(param1:String, param2:String, param3:String, param4:String, param5:String, param6:String, param7:String, param8:Function = null) : void
+      public function collectMessage(content:String, toUserRoleName:String, fromUserRoleName:String, msgType:String, gameSceneId:String, serverId:String, gameId:String, onSend:Function = null) : void
       {
          var paramsList:Array = null;
-         var content:String = param1;
-         var toUserRoleName:String = param2;
-         var fromUserRoleName:String = param3;
-         var msgType:String = param4;
-         var gameSceneId:String = param5;
-         var serverId:String = param6;
-         var gameId:String = param7;
-         var onSend:Function = param8;
          if(this.libInstance)
          {
             this.libInstance["collectMessage"].apply(this.libInstance,arguments);
@@ -83,13 +75,9 @@ package com.yy.game
          });
       }
       
-      public function getReportable(param1:String, param2:String, param3:String, param4:String) : void
+      public function getReportable(toUserRoleName:String, gameSceneId:String, serverId:String, gameId:String) : void
       {
          var paramsList:Array = null;
-         var toUserRoleName:String = param1;
-         var gameSceneId:String = param2;
-         var serverId:String = param3;
-         var gameId:String = param4;
          if(this.libInstance)
          {
             this.libInstance["getReportable"].apply(this.libInstance,arguments);
@@ -107,17 +95,9 @@ package com.yy.game
          });
       }
       
-      public function reportGameProfile(param1:String, param2:int, param3:String, param4:String, param5:String, param6:int, param7:String, param8:GameProfileParams = null) : void
+      public function reportGameProfile(passport:String, udbid:int, game:String, gameServer:String, roleName:String, roleLevel:int, gameEvent:String, otherParams:GameProfileParams = null) : void
       {
          var paramsList:Array = null;
-         var passport:String = param1;
-         var udbid:int = param2;
-         var game:String = param3;
-         var gameServer:String = param4;
-         var roleName:String = param5;
-         var roleLevel:int = param6;
-         var gameEvent:String = param7;
-         var otherParams:GameProfileParams = param8;
          if(this.libInstance)
          {
             this.libInstance["reportGameProfile"].apply(this.libInstance,arguments);
@@ -135,25 +115,23 @@ package com.yy.game
          });
       }
       
-      private function initLib(param1:Function) : void
+      private function initLib(onInited:Function) : void
       {
-         var onInited:Function = param1;
          if(this.isIniting)
          {
             return;
          }
          this.isIniting = true;
-         this.loadConfig(function(param1:String):void
+         this.loadConfig(function(version:String):void
          {
-            var version:String = param1;
             if(version == null)
             {
                isIniting = false;
                return;
             }
-            loadLibSwf(version,function(param1:Object):void
+            loadLibSwf(version,function(content:Object):void
             {
-               libInstance = param1;
+               libInstance = content;
                if(libInstance)
                {
                   onInited();
@@ -163,27 +141,28 @@ package com.yy.game
          });
       }
       
-      private function loadLibSwf(param1:String, param2:Function) : void
+      private function loadLibSwf(version:String, onLoaded:Function) : void
       {
          var loader:Loader = null;
          var onComplete:Function = null;
          var onIOError:Function = null;
          var onSecurityError:Function = null;
-         var version:String = param1;
-         var onLoaded:Function = param2;
-         onComplete = function(param1:Event):void
+         onComplete = function(e:Event):void
          {
             removeAllEvents();
+            onLoaded(Object(loader.content)["instance"]);
          };
-         onIOError = function(param1:IOErrorEvent):void
+         onIOError = function(e:IOErrorEvent):void
          {
             removeAllEvents();
             trace("加载GameMsgCollectorLib出错，请与yy游戏相关人员联系");
+            onLoaded(null);
          };
-         onSecurityError = function(param1:SecurityErrorEvent):void
+         onSecurityError = function(e:SecurityErrorEvent):void
          {
             removeAllEvents();
             trace("加载GameMsgCollectorLib出错，请与yy游戏相关人员联系");
+            onLoaded(null);
          };
          var removeAllEvents:Function = function():void
          {
@@ -205,21 +184,22 @@ package com.yy.game
          loader.load(request,context);
       }
       
-      private function loadConfig(param1:Function) : void
+      private function loadConfig(onLoaded:Function) : void
       {
          var loader:URLLoader = null;
          var onComplete:Function = null;
          var onIOError:Function = null;
-         var onLoaded:Function = param1;
-         onComplete = function(param1:Event):void
+         onComplete = function(e:Event):void
          {
             removeAllEvents();
-            var _loc2_:XML = new XML(loader.data);
+            var xml:XML = new XML(loader.data);
+            onLoaded(xml.v);
          };
-         onIOError = function(param1:IOErrorEvent):void
+         onIOError = function(e:IOErrorEvent):void
          {
             removeAllEvents();
             trace("加载GameMsgCollectorLib配置文件出错，请与yy游戏相关人员联系");
+            onLoaded(null);
          };
          var removeAllEvents:Function = function():void
          {

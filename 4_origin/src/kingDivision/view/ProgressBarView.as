@@ -66,27 +66,27 @@ package kingDivision.view
          addDateAndTime(KingDivisionManager.Instance.dateArr,KingDivisionManager.Instance.model.consortiaMatchStartTime);
       }
       
-      public function updateZoneImg(param1:int) : void
+      public function updateZoneImg(value:int) : void
       {
-         _zoneImg.setFrame(param1 + 1);
-         if(param1 == 0)
+         _zoneImg.setFrame(value + 1);
+         if(value == 0)
          {
             updateDateAndTime(KingDivisionManager.Instance.dateArr,KingDivisionManager.Instance.model.consortiaMatchStartTime);
          }
-         else if(param1 == 1)
+         else if(value == 1)
          {
             updateDateAndTime(KingDivisionManager.Instance.allDateArr,KingDivisionManager.Instance.model.consortiaMatchStartTime);
          }
       }
       
-      private function addDateAndTime(param1:Array, param2:Array) : void
+      private function addDateAndTime(dateArr:Array, timeArr:Array) : void
       {
          _dateAndTimeTxt_Qua = ComponentFactory.Instance.creatComponentByStylename("progressBarView.dateAndTimeTxt0");
          _dateAndTimeTxt_FriRou = ComponentFactory.Instance.creatComponentByStylename("progressBarView.dateAndTimeTxt1");
          _dateAndTimeTxt_SecRou = ComponentFactory.Instance.creatComponentByStylename("progressBarView.dateAndTimeTxt2");
          _dateAndTimeTxt_Sem = ComponentFactory.Instance.creatComponentByStylename("progressBarView.dateAndTimeTxt3");
          _dateAndTimeTxt_Fin = ComponentFactory.Instance.creatComponentByStylename("progressBarView.dateAndTimeTxt4");
-         updateDateAndTime(param1,param2);
+         updateDateAndTime(dateArr,timeArr);
          addChild(_dateAndTimeTxt_Qua);
          addChild(_dateAndTimeTxt_FriRou);
          addChild(_dateAndTimeTxt_SecRou);
@@ -94,17 +94,17 @@ package kingDivision.view
          addChild(_dateAndTimeTxt_Fin);
       }
       
-      private function updateDateAndTime(param1:Array, param2:Array) : void
+      private function updateDateAndTime(dateArr:Array, timeArr:Array) : void
       {
-         if(param1 == null || param2 == null)
+         if(dateArr == null || timeArr == null)
          {
             return;
          }
-         _dateAndTimeTxt_Qua.text = LanguageMgr.GetTranslation("kingDivision.progressBarView.dateAndTimeTxt",param1[0],param2[0],param2[1]);
-         _dateAndTimeTxt_FriRou.text = LanguageMgr.GetTranslation("kingDivision.progressBarView.dateAndTimeTxt",param1[1],param2[0],param2[1]);
-         _dateAndTimeTxt_SecRou.text = LanguageMgr.GetTranslation("kingDivision.progressBarView.dateAndTimeTxt",param1[2],param2[0],param2[1]);
-         _dateAndTimeTxt_Sem.text = LanguageMgr.GetTranslation("kingDivision.progressBarView.dateAndTimeTxt",param1[3],param2[0],param2[1]);
-         _dateAndTimeTxt_Fin.text = LanguageMgr.GetTranslation("kingDivision.progressBarView.dateAndTimeTxt",param1[4],param2[0],param2[1]);
+         _dateAndTimeTxt_Qua.text = LanguageMgr.GetTranslation("kingDivision.progressBarView.dateAndTimeTxt",dateArr[0],timeArr[0],timeArr[1]);
+         _dateAndTimeTxt_FriRou.text = LanguageMgr.GetTranslation("kingDivision.progressBarView.dateAndTimeTxt",dateArr[1],timeArr[0],timeArr[1]);
+         _dateAndTimeTxt_SecRou.text = LanguageMgr.GetTranslation("kingDivision.progressBarView.dateAndTimeTxt",dateArr[2],timeArr[0],timeArr[1]);
+         _dateAndTimeTxt_Sem.text = LanguageMgr.GetTranslation("kingDivision.progressBarView.dateAndTimeTxt",dateArr[3],timeArr[0],timeArr[1]);
+         _dateAndTimeTxt_Fin.text = LanguageMgr.GetTranslation("kingDivision.progressBarView.dateAndTimeTxt",dateArr[4],timeArr[0],timeArr[1]);
       }
       
       public function dispose() : void
@@ -120,9 +120,9 @@ package kingDivision.view
          return _proBarAllMovie;
       }
       
-      public function set proBarAllMovie(param1:MovieClip) : void
+      public function set proBarAllMovie(value:MovieClip) : void
       {
-         _proBarAllMovie = param1;
+         _proBarAllMovie = value;
       }
    }
 }

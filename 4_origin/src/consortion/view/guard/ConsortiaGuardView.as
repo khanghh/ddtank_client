@@ -45,17 +45,16 @@ package consortion.view.guard
       
       private function init() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var barUI:* = null;
          _barUIList = new Vector.<ConsortiaGuardBossBar>();
-         _loc2_ = 0;
-         while(_loc2_ < 4)
+         for(i = 0; i < 4; )
          {
-            _loc1_ = new ConsortiaGuardBossBar(_loc2_);
-            _barUIList.push(_loc1_);
-            PositionUtils.setPos(_loc1_,"consortiaGuard.bossUI.BarPos" + _loc2_);
-            addChild(_loc1_);
-            _loc2_++;
+            barUI = new ConsortiaGuardBossBar(i);
+            _barUIList.push(barUI);
+            PositionUtils.setPos(barUI,"consortiaGuard.bossUI.BarPos" + i);
+            addChild(barUI);
+            i++;
          }
          _clickBuyBuff = ComponentFactory.Instance.creatComponentByStylename("consortiaGurad.buyBuffBtn");
          _clickBuyBuff.addEventListener("click",__onClickBuyBuff);
@@ -75,14 +74,14 @@ package consortion.view.guard
          ConsortiaGuardControl.Instance.addEventListener("hideBossRank",__onHideBossRank);
       }
       
-      protected function __onHideBossRank(param1:Event) : void
+      protected function __onHideBossRank(event:Event) : void
       {
          hideBossRank();
       }
       
-      private function __onShowBossRank(param1:ConsortiaGuardEvent) : void
+      private function __onShowBossRank(e:ConsortiaGuardEvent) : void
       {
-         _currentType = int(param1.data) - 1;
+         _currentType = int(e.data) - 1;
          _bossRank.visible = true;
          this.addEventListener("click",removeBossRank);
          PositionUtils.setPos(_bossRank,"consortiaGuard.bossRankPos" + _currentType);
@@ -91,9 +90,9 @@ package consortion.view.guard
          ConsortiaGuardControl.Instance.bossRankShow = true;
       }
       
-      protected function removeBossRank(param1:MouseEvent) : void
+      protected function removeBossRank(event:MouseEvent) : void
       {
-         if(!(param1.target as ConsortiaGuardSubBossRank) && !(param1.target.parent as ConsortiaGuardSubBossRank) && !(param1.target.parent.parent as ConsortiaGuardSubBossRank))
+         if(!(event.target as ConsortiaGuardSubBossRank) && !(event.target.parent as ConsortiaGuardSubBossRank) && !(event.target.parent.parent as ConsortiaGuardSubBossRank))
          {
             hideBossRank();
             this.removeEventListener("click",removeBossRank);
@@ -107,30 +106,30 @@ package consortion.view.guard
          ConsortiaGuardControl.Instance.bossRankShow = false;
       }
       
-      private function __onClickBuyBuff(param1:MouseEvent) : void
+      private function __onClickBuyBuff(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc4_:int = ServerConfigManager.instance.consortiaGuardBuyCost;
-         var _loc3_:int = ServerConfigManager.instance.consortiaGuardBuyBuffMaxLevel;
-         var _loc5_:int = ConsortiaGuardControl.Instance.model.buffLevel;
-         if(_loc5_ >= _loc3_)
+         var count:int = ServerConfigManager.instance.consortiaGuardBuyCost;
+         var maxLevel:int = ServerConfigManager.instance.consortiaGuardBuyBuffMaxLevel;
+         var current:int = ConsortiaGuardControl.Instance.model.buffLevel;
+         if(current >= maxLevel)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.consortiaGurad.buffExist"));
             return;
          }
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("tank.consortiaGurad.buyBuff",_loc4_,_loc5_,_loc3_),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false);
-         _loc2_.addEventListener("response",__onAlertFrame);
+         var alertFrame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("tank.consortiaGurad.buyBuff",count,current,maxLevel),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false);
+         alertFrame.addEventListener("response",__onAlertFrame);
       }
       
-      private function __onAlertFrame(param1:FrameEvent) : void
+      private function __onAlertFrame(e:FrameEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onAlertFrame);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var count:int = 0;
+         var alertFrame:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         alertFrame.removeEventListener("response",__onAlertFrame);
+         if(e.responseCode == 2 || e.responseCode == 3)
          {
-            _loc3_ = ServerConfigManager.instance.consortiaGuardBuyCost;
-            if(PlayerManager.Instance.Self.Riches < _loc3_)
+            count = ServerConfigManager.instance.consortiaGuardBuyCost;
+            if(PlayerManager.Instance.Self.Riches < count)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.consortiaGurad.buyBuffFail"));
             }
@@ -139,10 +138,10 @@ package consortion.view.guard
                SocketManager.Instance.out.sendConsortiaGuradBuyBuff(1);
             }
          }
-         ObjectUtils.disposeObject(_loc2_);
+         ObjectUtils.disposeObject(alertFrame);
       }
       
-      private function __onUpdateGameState(param1:ConsortiaGuardEvent) : void
+      private function __onUpdateGameState(e:ConsortiaGuardEvent) : void
       {
          ConsortiaGuardControl.Instance.removeEventListener("updateGameState",__onUpdateGameState);
          updateGame();

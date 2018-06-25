@@ -4,9 +4,9 @@ package starling.errors
    {
        
       
-      public function AbstractClassError(param1:* = "Cannot instantiate abstract class", param2:* = 0)
+      public function AbstractClassError(message:* = "Cannot instantiate abstract class", id:* = 0)
       {
-         super(param1,param2);
+         super(message,id);
       }
    }
 }

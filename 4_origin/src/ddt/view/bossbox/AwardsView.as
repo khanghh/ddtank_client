@@ -64,15 +64,15 @@ package ddt.view.bossbox
          _button.addEventListener("click",_click);
       }
       
-      private function _click(param1:MouseEvent) : void
+      private function _click(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          dispatchEvent(new Event("_haveBtnClick"));
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -81,9 +81,9 @@ package ddt.view.bossbox
          }
       }
       
-      public function set boxType(param1:int) : void
+      public function set boxType(value:int) : void
       {
-         _boxType = param1 + 1;
+         _boxType = value + 1;
          _timeTip.setFrame(_boxType);
          if(_boxType == 3)
          {
@@ -111,25 +111,25 @@ package ddt.view.bossbox
          return _boxType;
       }
       
-      public function set goodsList(param1:Array) : void
+      public function set goodsList(templateIds:Array) : void
       {
-         _goodsList = param1;
+         _goodsList = templateIds;
          list = ComponentFactory.Instance.creatCustomObject("bossbox.AwardsGoodsList");
          list.show(_goodsList);
          addChild(list);
       }
       
-      public function set vipAwardGoodsList(param1:Array) : void
+      public function set vipAwardGoodsList(templateIds:Array) : void
       {
-         _goodsList = param1;
+         _goodsList = templateIds;
          list = ComponentFactory.Instance.creatCustomObject("bossbox.AwardsGoodsList");
          list.showForVipAward(_goodsList);
          addChild(list);
       }
       
-      public function set fightLibAwardGoodList(param1:Array) : void
+      public function set fightLibAwardGoodList(templateids:Array) : void
       {
-         goodsList = param1;
+         goodsList = templateids;
          list = ComponentFactory.Instance.creatCustomObject("bossbox.AwardsGoodsList");
          list.show(_goodsList);
          addChild(list);
@@ -140,37 +140,37 @@ package ddt.view.bossbox
          closeButton.visible = true;
          _button.enable = false;
          _timeTip.visible = false;
-         var _loc1_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("bossbox.TheNextTimeText");
-         addToContent(_loc1_);
-         _loc1_.text = LanguageMgr.GetTranslation("ddt.view.bossbox.AwardsView.TheNextTimeText",updateTime());
+         var txt:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("bossbox.TheNextTimeText");
+         addToContent(txt);
+         txt.text = LanguageMgr.GetTranslation("ddt.view.bossbox.AwardsView.TheNextTimeText",updateTime());
       }
       
       private function updateTime() : String
       {
-         var _loc5_:Number = BossBoxManager.instance.delaySumTime * 1000 + TimeManager.Instance.Now().time;
-         var _loc4_:Date = new Date(_loc5_);
-         var _loc2_:int = _loc4_.hours;
-         var _loc1_:int = _loc4_.minutes;
-         var _loc3_:String = "";
-         if(_loc2_ < 10)
+         var _timeSum:Number = BossBoxManager.instance.delaySumTime * 1000 + TimeManager.Instance.Now().time;
+         var date:Date = new Date(_timeSum);
+         var _hours:int = date.hours;
+         var _minute:int = date.minutes;
+         var str:String = "";
+         if(_hours < 10)
          {
-            _loc3_ = _loc3_ + ("0" + _loc2_);
+            str = str + ("0" + _hours);
          }
          else
          {
-            _loc3_ = _loc3_ + _loc2_;
+            str = str + _hours;
          }
-         _loc3_ = _loc3_ + "giờ";
-         if(_loc1_ < 10)
+         str = str + "giờ";
+         if(_minute < 10)
          {
-            _loc3_ = _loc3_ + ("0" + _loc1_);
+            str = str + ("0" + _minute);
          }
          else
          {
-            _loc3_ = _loc3_ + _loc1_;
+            str = str + _minute;
          }
-         _loc3_ = _loc3_ + "phút";
-         return _loc3_;
+         str = str + "phút";
+         return str;
       }
       
       override public function dispose() : void

@@ -30,10 +30,10 @@ package email.view
          super();
       }
       
-      public function setup(param1:MailControl, param2:EmailModel) : void
+      public function setup(controller:MailControl, model:EmailModel) : void
       {
-         _controller = param1;
-         _model = param2;
+         _controller = controller;
+         _model = model;
          addEvent();
       }
       
@@ -60,11 +60,11 @@ package email.view
          removeEventListener("keyDown",__keyDownHandler);
       }
       
-      private function __keyDownHandler(param1:KeyboardEvent) : void
+      private function __keyDownHandler(evt:KeyboardEvent) : void
       {
-         if(param1.keyCode == 27)
+         if(evt.keyCode == 27)
          {
-            param1.stopImmediatePropagation();
+            evt.stopImmediatePropagation();
             SoundManager.instance.play("008");
             this.dispatchEvent(new EmailEvent("escapeKey"));
          }
@@ -106,7 +106,7 @@ package email.view
          _read.setListView(_model.getViewData(),_model.totalPage,_model.currentPage);
       }
       
-      private function __addToStage(param1:Event) : void
+      private function __addToStage(event:Event) : void
       {
          MailControl.Instance.changeState("read");
          MailControl.Instance.changeType("all mails");
@@ -117,13 +117,13 @@ package email.view
          }
       }
       
-      private function __changeType(param1:EmailEvent) : void
+      private function __changeType(event:EmailEvent) : void
       {
          _read.switchBtnsVisible(_model.mailType != "sended mails");
          updateListView();
       }
       
-      private function __changeState(param1:EmailEvent) : void
+      private function __changeState(event:EmailEvent) : void
       {
          if(_model.state == "read")
          {
@@ -166,15 +166,15 @@ package email.view
          }
       }
       
-      private function __changePage(param1:EmailEvent) : void
+      private function __changePage(event:EmailEvent) : void
       {
          updateListView();
       }
       
-      private function __selectEmail(param1:EmailEvent) : void
+      private function __selectEmail(event:EmailEvent) : void
       {
-         _read.info = param1.info;
-         if(param1.info == null)
+         _read.info = event.info;
+         if(event.info == null)
          {
             _read.personalHide();
          }
@@ -188,12 +188,12 @@ package email.view
          _read.isCanReply = _model.selectEmail && _model.selectEmail.canReply?true:false;
       }
       
-      private function __removeEmail(param1:EmailEvent) : void
+      private function __removeEmail(event:EmailEvent) : void
       {
          updateListView();
       }
       
-      private function __initEmail(param1:EmailEvent) : void
+      private function __initEmail(event:EmailEvent) : void
       {
          updateListView();
       }

@@ -18,7 +18,7 @@ package gypsyShop.model
       
       private var _showAlertRmbTicketBuy:Boolean = true;
       
-      public function GypsyPurchaseModel(param1:inner)
+      public function GypsyPurchaseModel(single:inner)
       {
          super();
       }
@@ -32,24 +32,24 @@ package gypsyShop.model
          return instance;
       }
       
-      public function updateIsUseBindRmbTicket(param1:Boolean) : void
+      public function updateIsUseBindRmbTicket(isBind:Boolean) : void
       {
-         _useBindRmbTicket = param1;
+         _useBindRmbTicket = isBind;
       }
       
-      public function updateShowAlertHonourRefresh(param1:Boolean) : void
+      public function updateShowAlertHonourRefresh(show:Boolean) : void
       {
-         _showAlertHonourRefresh = param1;
+         _showAlertHonourRefresh = show;
       }
       
-      public function updateShowAlertRMBRefresh(param1:Boolean) : void
+      public function updateShowAlertRMBRefresh(show:Boolean) : void
       {
-         _showAlertRMBRefresh = param1;
+         _showAlertRMBRefresh = show;
       }
       
-      public function updateShowAlertRmbTicketBuy(param1:Boolean) : void
+      public function updateShowAlertRmbTicketBuy(show:Boolean) : void
       {
-         _showAlertRmbTicketBuy = param1;
+         _showAlertRmbTicketBuy = show;
       }
       
       public function isShowRmbTicketBuyAgain() : Boolean
@@ -72,27 +72,26 @@ package gypsyShop.model
          return _useBindRmbTicket;
       }
       
-      public function getRmbTicketNeeded(param1:int) : int
+      public function getRmbTicketNeeded(id:int) : int
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:Vector.<GypsyItemData> = GypsyShopModel.getInstance().itemDataList;
-         if(_loc2_ == null)
+         var len:int = 0;
+         var i:int = 0;
+         var list:Vector.<GypsyItemData> = GypsyShopModel.getInstance().itemDataList;
+         if(list == null)
          {
             return 0;
          }
-         _loc3_ = _loc2_.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         len = list.length;
+         for(i = 0; i < len; )
          {
-            if(_loc2_[_loc4_].id == param1)
+            if(list[i].id == id)
             {
-               if(_loc2_[_loc4_].unit == 1)
+               if(list[i].unit == 1)
                {
-                  return _loc2_[_loc4_].price;
+                  return list[i].price;
                }
             }
-            _loc4_++;
+            i++;
          }
          return 0;
       }
@@ -102,18 +101,18 @@ package gypsyShop.model
          return GypsyShopModel.getInstance().getNeedMoneyTotal();
       }
       
-      public function isBindMoneyEnough(param1:int) : Boolean
+      public function isBindMoneyEnough(id:int) : Boolean
       {
-         if(PlayerManager.Instance.Self.BandMoney < getRmbTicketNeeded(param1))
+         if(PlayerManager.Instance.Self.BandMoney < getRmbTicketNeeded(id))
          {
             return false;
          }
          return true;
       }
       
-      public function isMoneyEnough(param1:int) : Boolean
+      public function isMoneyEnough(id:int) : Boolean
       {
-         if(PlayerManager.Instance.Self.Money < getRmbTicketNeeded(param1))
+         if(PlayerManager.Instance.Self.Money < getRmbTicketNeeded(id))
          {
             return false;
          }

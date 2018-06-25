@@ -20,9 +20,9 @@ package ddtmatch.model
          return _myRedPacketCount;
       }
       
-      public function set myRedPacketCount(param1:int) : void
+      public function set myRedPacketCount(value:int) : void
       {
-         _myRedPacketCount = param1;
+         _myRedPacketCount = value;
       }
       
       public function get myRedPacketMoney() : int
@@ -30,9 +30,9 @@ package ddtmatch.model
          return _myRedPacketMoney;
       }
       
-      public function set myRedPacketMoney(param1:int) : void
+      public function set myRedPacketMoney(value:int) : void
       {
-         _myRedPacketMoney = param1;
+         _myRedPacketMoney = value;
       }
    }
 }

@@ -32,61 +32,60 @@ package ddt.manager
          return _instance;
       }
       
-      public function setup(param1:BeadAnalyzer) : void
+      public function setup(pAnalyzer:BeadAnalyzer) : void
       {
-         _beadList = param1.list;
+         _beadList = pAnalyzer.list;
       }
       
-      public function setupAdvanceBead(param1:AdvanceBeadAnalyzer) : void
+      public function setupAdvanceBead(analyzer:AdvanceBeadAnalyzer) : void
       {
-         _advanceBeadList = param1.list;
+         _advanceBeadList = analyzer.list;
       }
       
-      public function getBeadAdvanceData(param1:int) : DictionaryData
+      public function getBeadAdvanceData(type:int) : DictionaryData
       {
-         var _loc2_:int = 0;
-         var _loc3_:Array = _advanceBeadList.list;
-         var _loc5_:int = _loc3_.length;
-         if(_loc5_ <= 0)
+         var index:int = 0;
+         var temArr:Array = _advanceBeadList.list;
+         var len:int = temArr.length;
+         if(len <= 0)
          {
             return null;
          }
-         var _loc4_:DictionaryData = new DictionaryData();
-         _loc2_ = 0;
-         while(_loc2_ < _loc5_)
+         var temDic:DictionaryData = new DictionaryData();
+         for(index = 0; index < len; )
          {
-            if(_loc3_[_loc2_].quality == param1)
+            if(temArr[index].quality == type)
             {
-               _loc4_.add(_loc3_[_loc2_].advancedTempId,_loc3_[_loc2_]);
+               temDic.add(temArr[index].advancedTempId,temArr[index]);
             }
-            _loc2_++;
+            index++;
          }
-         return _loc4_;
+         return temDic;
       }
       
-      public function GetBeadInfobyID(param1:int) : BeadInfo
+      public function GetBeadInfobyID(pBeadTemplateID:int) : BeadInfo
       {
-         return _beadList[param1];
+         return _beadList[pBeadTemplateID];
       }
       
-      public function GetBeadTemplateIDByLv(param1:int, param2:int) : int
+      public function GetBeadTemplateIDByLv(pLv:int, pIDbefore:int) : int
       {
-         var _loc3_:int = 0;
-         var _loc5_:BeadInfo = BeadTemplateManager.Instance.GetBeadInfobyID(param2);
+         var vResultID:int = 0;
+         var info:BeadInfo = BeadTemplateManager.Instance.GetBeadInfobyID(pIDbefore);
          var _loc7_:int = 0;
          var _loc6_:* = _beadList;
-         for each(var _loc4_ in _beadList)
+         for each(var o in _beadList)
          {
-            if(_loc5_.Name == _loc4_.Name)
+            if(info.Name == o.Name)
             {
-               if(param1 >= _loc4_.BaseLevel && param1 < _loc4_.BaseLevel + _loc4_.MaxLevel)
+               if(pLv >= o.BaseLevel && pLv < o.BaseLevel + o.MaxLevel)
                {
-                  _loc3_ = _loc4_.TemplateID;
+                  vResultID = o.TemplateID;
                   break;
                }
             }
          }
-         return _loc3_;
+         return vResultID;
       }
    }
 }

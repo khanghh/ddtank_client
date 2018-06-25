@@ -93,9 +93,9 @@ package ddQiYuan
       
       public var useType:int = 0;
       
-      public function DDQiYuanManager(param1:IEventDispatcher = null)
+      public function DDQiYuanManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
          _instance = this;
          _model = new DDQiYuanModel();
          _buyConfirmAlertData = new ConfirmAlertData();
@@ -135,217 +135,208 @@ package ddQiYuan
          _isLoadData = true;
          _model.myAreaRankArr = null;
          _model.allAreaRankArr = null;
-         var _loc1_:Array = ServerConfigManager.instance.ddqyOfferCostMoneyArr;
-         _model.OFFER_1_TIME_COST_MONEY = _loc1_[0];
-         _model.OFFER_10_TIME_COST_MONEY = _loc1_[1];
+         var ddqyOfferCostMoneyArr:Array = ServerConfigManager.instance.ddqyOfferCostMoneyArr;
+         _model.OFFER_1_TIME_COST_MONEY = ddqyOfferCostMoneyArr[0];
+         _model.OFFER_10_TIME_COST_MONEY = ddqyOfferCostMoneyArr[1];
          _model.OPEN_TREASUREBOX_COST_MONEY = ServerConfigManager.instance.ddqyOpenTreasureboxCostMoney;
          SocketManager.Instance.out.queryDDQiYuanMyInfo();
       }
       
-      private function onPackTypeMyInfo(param1:PkgEvent) : void
+      private function onPackTypeMyInfo(evt:PkgEvent) : void
       {
-         var _loc6_:int = 0;
-         var _loc2_:* = null;
-         var _loc4_:PackageIn = param1.pkg;
-         _model.myAreaOfferTimes = _loc4_.readInt();
-         _model.myAreaOfferDegree = _loc4_.readInt();
-         _model.myOfferTimes = _loc4_.readInt();
-         var _loc3_:Array = [];
-         var _loc5_:int = _loc4_.readInt();
-         _loc6_ = 0;
-         while(_loc6_ < _loc5_)
+         var i:int = 0;
+         var hasGetGoodItem:* = null;
+         var pkg:PackageIn = evt.pkg;
+         _model.myAreaOfferTimes = pkg.readInt();
+         _model.myAreaOfferDegree = pkg.readInt();
+         _model.myOfferTimes = pkg.readInt();
+         var hasGetGoodArr:Array = [];
+         var hasGetGoodArrLen:int = pkg.readInt();
+         for(i = 0; i < hasGetGoodArrLen; )
          {
-            _loc2_ = {};
-            _loc2_["goodId"] = _loc4_.readInt();
-            _loc2_["goodCount"] = _loc4_.readInt();
-            _loc3_.push(_loc2_);
-            _loc6_++;
+            hasGetGoodItem = {};
+            hasGetGoodItem["goodId"] = pkg.readInt();
+            hasGetGoodItem["goodCount"] = pkg.readInt();
+            hasGetGoodArr.push(hasGetGoodItem);
+            i++;
          }
-         _model.hasGetGoodArr = _loc3_;
-         _model.hasGainTreasureBoxNum = _loc4_.readInt();
-         _model.hasGainJoinRewardCount = _loc4_.readInt();
+         _model.hasGetGoodArr = hasGetGoodArr;
+         _model.hasGainTreasureBoxNum = pkg.readInt();
+         _model.hasGainJoinRewardCount = pkg.readInt();
          SocketManager.Instance.out.queryDDQiYuanRankRewardConfig();
       }
       
-      private function onPackTypeRankRewardConfig(param1:PkgEvent) : void
+      private function onPackTypeRankRewardConfig(evt:PkgEvent) : void
       {
-         var _loc6_:int = 0;
-         var _loc10_:* = null;
-         var _loc13_:* = null;
-         var _loc8_:* = null;
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc5_:Array = [];
-         var _loc7_:int = _loc3_.readInt();
-         _loc6_ = 0;
-         while(_loc6_ < _loc7_)
+         var i:int = 0;
+         var beliefConfigItem:* = null;
+         var myAreaRankConfigItem:* = null;
+         var allAreaRankConfigItem:* = null;
+         var pkg:PackageIn = evt.pkg;
+         var beliefConfigArr:Array = [];
+         var beliefConfigArrLen:int = pkg.readInt();
+         for(i = 0; i < beliefConfigArrLen; )
          {
-            _loc10_ = {};
-            _loc10_["offerTimes"] = _loc3_.readInt();
-            _loc10_["goodId"] = _loc3_.readInt();
-            _loc10_["goodCount"] = _loc3_.readInt();
-            _loc10_["isBind"] = _loc3_.readBoolean();
-            _loc10_["validDate"] = _loc3_.readInt();
-            _loc10_["remind"] = _model.myOfferTimes >= _loc10_["offerTimes"];
-            _loc5_.push(_loc10_);
-            _loc6_++;
+            beliefConfigItem = {};
+            beliefConfigItem["offerTimes"] = pkg.readInt();
+            beliefConfigItem["goodId"] = pkg.readInt();
+            beliefConfigItem["goodCount"] = pkg.readInt();
+            beliefConfigItem["isBind"] = pkg.readBoolean();
+            beliefConfigItem["validDate"] = pkg.readInt();
+            beliefConfigItem["remind"] = _model.myOfferTimes >= beliefConfigItem["offerTimes"];
+            beliefConfigArr.push(beliefConfigItem);
+            i++;
          }
-         _model.beliefConfigArr = _loc5_;
-         var _loc2_:Array = [];
-         var _loc12_:int = _loc3_.readInt();
-         _loc6_ = 0;
-         while(_loc6_ < _loc12_)
+         _model.beliefConfigArr = beliefConfigArr;
+         var myAreaRankConfigArr:Array = [];
+         var myAreaRankConfigArrLen:int = pkg.readInt();
+         for(i = 0; i < myAreaRankConfigArrLen; )
          {
-            _loc13_ = {};
-            _loc13_["rank"] = _loc3_.readInt();
-            _loc13_["goodId"] = _loc3_.readInt();
-            _loc13_["goodCount"] = _loc3_.readInt();
-            _loc13_["isBind"] = _loc3_.readBoolean();
-            _loc13_["validDate"] = _loc3_.readInt();
-            _loc2_.push(_loc13_);
-            _loc6_++;
+            myAreaRankConfigItem = {};
+            myAreaRankConfigItem["rank"] = pkg.readInt();
+            myAreaRankConfigItem["goodId"] = pkg.readInt();
+            myAreaRankConfigItem["goodCount"] = pkg.readInt();
+            myAreaRankConfigItem["isBind"] = pkg.readBoolean();
+            myAreaRankConfigItem["validDate"] = pkg.readInt();
+            myAreaRankConfigArr.push(myAreaRankConfigItem);
+            i++;
          }
-         _model.myAreaRankConfigArr = _loc2_;
-         var _loc4_:Array = [];
-         var _loc14_:int = _loc3_.readInt();
-         _loc6_ = 0;
-         while(_loc6_ < _loc14_)
+         _model.myAreaRankConfigArr = myAreaRankConfigArr;
+         var allAreaRankConfigArr:Array = [];
+         var allAreaRankConfigArrLen:int = pkg.readInt();
+         for(i = 0; i < allAreaRankConfigArrLen; )
          {
-            _loc8_ = {};
-            _loc8_["rank"] = _loc3_.readInt();
-            _loc8_["goodId"] = _loc3_.readInt();
-            _loc8_["goodCount"] = _loc3_.readInt();
-            _loc8_["isBind"] = _loc3_.readBoolean();
-            _loc8_["validDate"] = _loc3_.readInt();
-            _loc4_.push(_loc8_);
-            _loc6_++;
+            allAreaRankConfigItem = {};
+            allAreaRankConfigItem["rank"] = pkg.readInt();
+            allAreaRankConfigItem["goodId"] = pkg.readInt();
+            allAreaRankConfigItem["goodCount"] = pkg.readInt();
+            allAreaRankConfigItem["isBind"] = pkg.readBoolean();
+            allAreaRankConfigItem["validDate"] = pkg.readInt();
+            allAreaRankConfigArr.push(allAreaRankConfigItem);
+            i++;
          }
-         _model.allAreaRankConfigArr = _loc4_;
-         _model.joinRewardLeastOfferTimes = _loc3_.readInt();
-         _model.rankRewardLeastOfferTimes = _loc3_.readInt();
-         var _loc11_:Object = {};
-         _loc11_["goodId"] = _loc3_.readInt();
-         _loc11_["goodCount"] = _loc3_.readInt();
-         _loc11_["isBind"] = _loc3_.readBoolean();
-         _loc11_["validDate"] = _loc3_.readInt();
-         _model.joinRewardGood = _loc11_;
-         var _loc9_:Object = {};
-         _loc9_["goodId"] = _loc3_.readInt();
-         _loc9_["goodCount"] = _loc3_.readInt();
-         _loc9_["isBind"] = _loc3_.readBoolean();
-         _loc9_["validDate"] = _loc3_.readInt();
-         _loc9_["probability"] = _loc3_.readInt() / 10;
-         _model.joinRewardProbabilityGainGood = _loc9_;
-         _model.offerTimesPerBaoZhu = _loc3_.readInt();
-         _model.offerTimesPerTreasureBox = _loc3_.readInt();
-         _model.offer1Or10TimesRewardBoxGoodArr = _loc3_.readUTF().split(",");
-         _model.openTreasureBoxGoodArr = _loc3_.readUTF().split(",");
+         _model.allAreaRankConfigArr = allAreaRankConfigArr;
+         _model.joinRewardLeastOfferTimes = pkg.readInt();
+         _model.rankRewardLeastOfferTimes = pkg.readInt();
+         var joinRewardGood:Object = {};
+         joinRewardGood["goodId"] = pkg.readInt();
+         joinRewardGood["goodCount"] = pkg.readInt();
+         joinRewardGood["isBind"] = pkg.readBoolean();
+         joinRewardGood["validDate"] = pkg.readInt();
+         _model.joinRewardGood = joinRewardGood;
+         var joinRewardProbabilityGainGood:Object = {};
+         joinRewardProbabilityGainGood["goodId"] = pkg.readInt();
+         joinRewardProbabilityGainGood["goodCount"] = pkg.readInt();
+         joinRewardProbabilityGainGood["isBind"] = pkg.readBoolean();
+         joinRewardProbabilityGainGood["validDate"] = pkg.readInt();
+         joinRewardProbabilityGainGood["probability"] = pkg.readInt() / 10;
+         _model.joinRewardProbabilityGainGood = joinRewardProbabilityGainGood;
+         _model.offerTimesPerBaoZhu = pkg.readInt();
+         _model.offerTimesPerTreasureBox = pkg.readInt();
+         _model.offer1Or10TimesRewardBoxGoodArr = pkg.readUTF().split(",");
+         _model.openTreasureBoxGoodArr = pkg.readUTF().split(",");
          _isLoadData = false;
          dispatchEvent(new Event("event_open_frame"));
       }
       
-      private function onPackTypeAreaRank(param1:PkgEvent) : void
+      private function onPackTypeAreaRank(evt:PkgEvent) : void
       {
-         var _loc10_:int = 0;
-         var _loc6_:* = null;
-         var _loc8_:int = 0;
-         var _loc2_:* = null;
-         var _loc9_:* = null;
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc7_:int = _loc4_.readInt();
-         if(_loc7_ == 0)
+         var i:int = 0;
+         var myAreaRankArr:* = null;
+         var myAreaRankArrLen:int = 0;
+         var myAreaRank:* = null;
+         var allAreaRankArr:* = null;
+         var allAreaRankArrLen:int = 0;
+         var allAreaRank:* = null;
+         var pkg:PackageIn = evt.pkg;
+         var type:int = pkg.readInt();
+         if(type == 0)
          {
-            _loc6_ = [];
-            _loc8_ = _loc4_.readInt();
-            _loc10_ = 0;
-            while(_loc10_ < _loc8_)
+            myAreaRankArr = [];
+            myAreaRankArrLen = pkg.readInt();
+            for(i = 0; i < myAreaRankArrLen; )
             {
-               _loc2_ = {};
-               _loc2_["rank"] = _loc10_ + 1;
-               _loc2_["playerId"] = _loc4_.readInt();
-               _loc2_["nickName"] = _loc4_.readUTF();
-               _loc2_["offerTimes"] = _loc4_.readInt();
-               _loc6_.push(_loc2_);
-               _loc10_++;
+               myAreaRank = {};
+               myAreaRank["rank"] = i + 1;
+               myAreaRank["playerId"] = pkg.readInt();
+               myAreaRank["nickName"] = pkg.readUTF();
+               myAreaRank["offerTimes"] = pkg.readInt();
+               myAreaRankArr.push(myAreaRank);
+               i++;
             }
-            _model.myAreaRankArr = _loc6_;
+            _model.myAreaRankArr = myAreaRankArr;
          }
-         else if(_loc7_ == 1)
+         else if(type == 1)
          {
-            _loc9_ = [];
-            _loc5_ = _loc4_.readInt();
-            _loc10_ = 0;
-            while(_loc10_ < _loc5_)
+            allAreaRankArr = [];
+            allAreaRankArrLen = pkg.readInt();
+            for(i = 0; i < allAreaRankArrLen; )
             {
-               _loc3_ = {};
-               _loc3_["areaName"] = _loc4_.readUTF();
-               _loc4_.readInt();
-               _loc3_["nickName"] = _loc4_.readUTF();
-               _loc3_["offerTimes"] = _loc4_.readInt();
-               _loc3_["rank"] = _loc10_ + 1;
-               _loc9_.push(_loc3_);
-               _loc10_++;
+               allAreaRank = {};
+               allAreaRank["areaName"] = pkg.readUTF();
+               pkg.readInt();
+               allAreaRank["nickName"] = pkg.readUTF();
+               allAreaRank["offerTimes"] = pkg.readInt();
+               allAreaRank["rank"] = i + 1;
+               allAreaRankArr.push(allAreaRank);
+               i++;
             }
-            _model.allAreaRankArr = _loc9_;
+            _model.allAreaRankArr = allAreaRankArr;
          }
-         dispatchEvent(new CEvent("event_query_area_rank_back",_loc7_));
+         dispatchEvent(new CEvent("event_query_area_rank_back",type));
       }
       
-      private function onPackTypeQueryTowerTask(param1:PkgEvent) : void
+      private function onPackTypeQueryTowerTask(evt:PkgEvent) : void
       {
-         var _loc8_:int = 0;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc5_:int = 0;
-         var _loc7_:int = 0;
-         var _loc4_:* = null;
-         var _loc12_:int = 0;
-         var _loc6_:PackageIn = param1.pkg;
-         var _loc9_:Array = [];
-         var _loc13_:int = _loc6_.readInt();
-         var _loc10_:Array = [];
-         _loc8_ = 0;
-         while(_loc8_ < _loc13_)
+         var i:int = 0;
+         var reward:* = null;
+         var taskArr:* = null;
+         var taskArrLen:int = 0;
+         var j:int = 0;
+         var task:* = null;
+         var grade:int = 0;
+         var pkg:PackageIn = evt.pkg;
+         var taskGroupArr:Array = [];
+         var taskGroupArrLen:int = pkg.readInt();
+         var rewardArr:Array = [];
+         for(i = 0; i < taskGroupArrLen; )
          {
-            _loc3_ = {};
-            _loc3_["grade"] = _loc6_.readInt();
-            _loc3_["goodId"] = _loc6_.readInt();
-            _loc3_["goodCount"] = _loc6_.readInt();
-            _loc3_["isBind"] = _loc6_.readBoolean();
-            _loc3_["hasGain"] = false;
-            _loc10_.push(_loc3_);
-            _loc2_ = [];
-            _loc5_ = _loc6_.readInt();
-            _loc7_ = 0;
-            while(_loc7_ < _loc5_)
+            reward = {};
+            reward["grade"] = pkg.readInt();
+            reward["goodId"] = pkg.readInt();
+            reward["goodCount"] = pkg.readInt();
+            reward["isBind"] = pkg.readBoolean();
+            reward["hasGain"] = false;
+            rewardArr.push(reward);
+            taskArr = [];
+            taskArrLen = pkg.readInt();
+            for(j = 0; j < taskArrLen; )
             {
-               _loc4_ = {};
-               _loc4_["goodId"] = _loc6_.readInt();
-               _loc4_["needCount"] = _loc6_.readInt();
-               _loc4_["currCount"] = _loc6_.readInt();
-               _loc2_.push(_loc4_);
-               _loc7_++;
+               task = {};
+               task["goodId"] = pkg.readInt();
+               task["needCount"] = pkg.readInt();
+               task["currCount"] = pkg.readInt();
+               taskArr.push(task);
+               j++;
             }
-            _loc9_.push(_loc2_);
-            _loc8_++;
+            taskGroupArr.push(taskArr);
+            i++;
          }
-         var _loc11_:int = _loc6_.readInt();
-         _loc8_ = 0;
-         while(_loc8_ < _loc11_)
+         var gainRewardCount:int = pkg.readInt();
+         for(i = 0; i < gainRewardCount; )
          {
-            _loc12_ = _loc6_.readInt();
-            _loc10_[_loc12_ - 1]["hasGain"] = true;
-            _loc8_++;
+            grade = pkg.readInt();
+            rewardArr[grade - 1]["hasGain"] = true;
+            i++;
          }
-         _model.taskGroupArr = _loc9_;
-         _model.towerTaskRewardArr = _loc10_;
+         _model.taskGroupArr = taskGroupArr;
+         _model.towerTaskRewardArr = rewardArr;
          dispatchEvent(new Event("event_query_tower_task_back"));
       }
       
-      private function onPackTypeOffer(param1:PkgEvent) : void
+      private function onPackTypeOffer(evt:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
+         var pkg:PackageIn = evt.pkg;
          if(_lastOpType == 1)
          {
             _model.myAreaOfferDegree = _model.myAreaOfferDegree + 1;
@@ -359,7 +350,7 @@ package ddQiYuan
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddQiYuan.frame.offer1TimeDegreeTips",1));
             }
-            showPreviewFrame(LanguageMgr.GetTranslation("ddQiYuan.frame.offer1TimeRewardTitle"),_loc2_,LanguageMgr.GetTranslation("ddQiYuan.frame.openOffer1TimeRewardTips"));
+            showPreviewFrame(LanguageMgr.GetTranslation("ddQiYuan.frame.offer1TimeRewardTitle"),pkg,LanguageMgr.GetTranslation("ddQiYuan.frame.openOffer1TimeRewardTips"));
          }
          else
          {
@@ -374,59 +365,59 @@ package ddQiYuan
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddQiYuan.frame.offer10TimeDegreeTips",10));
             }
-            showPreviewFrame(LanguageMgr.GetTranslation("ddQiYuan.frame.offer10TimeRewardTitle"),_loc2_,LanguageMgr.GetTranslation("ddQiYuan.frame.openOffer10TimeRewardTips"));
+            showPreviewFrame(LanguageMgr.GetTranslation("ddQiYuan.frame.offer10TimeRewardTitle"),pkg,LanguageMgr.GetTranslation("ddQiYuan.frame.openOffer10TimeRewardTips"));
          }
          dispatchEvent(new CEvent("event_op_back",_lastOpType));
       }
       
       private function remindGainBeliefReward() : Boolean
       {
-         var _loc2_:Boolean = false;
+         var needRemind:Boolean = false;
          var _loc4_:int = 0;
          var _loc3_:* = _model.beliefConfigArr;
-         for each(var _loc1_ in _model.beliefConfigArr)
+         for each(var obj in _model.beliefConfigArr)
          {
-            if(_loc1_["offerTimes"] <= _model.myOfferTimes && _loc1_["remind"] == false)
+            if(obj["offerTimes"] <= _model.myOfferTimes && obj["remind"] == false)
             {
-               _loc1_["remind"] = true;
-               _loc2_ = true;
+               obj["remind"] = true;
+               needRemind = true;
             }
          }
-         return _loc2_;
+         return needRemind;
       }
       
-      private function onPackTypeOpenBoGuBox(param1:PkgEvent) : void
+      private function onPackTypeOpenBoGuBox(evt:PkgEvent) : void
       {
          _model.hasGainTreasureBoxNum++;
          _model.myAreaOfferDegree = _model.myAreaOfferDegree + 5;
          MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddQiYuan.frame.openTreasureBoxDegreeTips",5));
-         var _loc2_:PackageIn = param1.pkg;
-         showPreviewFrame(LanguageMgr.GetTranslation("ddQiYuan.frame.openTreasureBoxRewardTitle"),_loc2_,LanguageMgr.GetTranslation("ddQiYuan.frame.openTreasureBoxRewardTips"));
+         var pkg:PackageIn = evt.pkg;
+         showPreviewFrame(LanguageMgr.GetTranslation("ddQiYuan.frame.openTreasureBoxRewardTitle"),pkg,LanguageMgr.GetTranslation("ddQiYuan.frame.openTreasureBoxRewardTips"));
          dispatchEvent(new CEvent("event_op_back",_lastOpType));
       }
       
-      private function onPackTypeActiveOpenClose(param1:PkgEvent) : void
+      private function onPackTypeActiveOpenClose(evt:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _model.isOpen = _loc2_.readBoolean();
-         _model.endTime = _loc2_.readDate();
+         var pkg:PackageIn = evt.pkg;
+         _model.isOpen = pkg.readBoolean();
+         _model.endTime = pkg.readDate();
          checkAndShowIcon();
       }
       
-      private function onPackTypeGainJoinReward(param1:PkgEvent) : void
+      private function onPackTypeGainJoinReward(evt:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _model.hasGainJoinRewardCount = _loc2_.readInt();
+         var pkg:PackageIn = evt.pkg;
+         _model.hasGainJoinRewardCount = pkg.readInt();
          dispatchEvent(new Event("event_gain_join_reward_back"));
       }
       
-      private function onPackTypeGainTowerTask(param1:PkgEvent) : void
+      private function onPackTypeGainTowerTask(evt:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc4_:int = _loc3_.readInt();
-         var _loc2_:Object = _model.towerTaskRewardArr[_loc4_ - 1];
-         _loc2_["hasGain"] = true;
-         dispatchEvent(new CEvent("event_gain_bogu_task_reward_back",_loc4_));
+         var pkg:PackageIn = evt.pkg;
+         var phase:int = pkg.readInt();
+         var data:Object = _model.towerTaskRewardArr[phase - 1];
+         data["hasGain"] = true;
+         dispatchEvent(new CEvent("event_gain_bogu_task_reward_back",phase));
       }
       
       private function checkAndShowIcon() : void
@@ -434,7 +425,7 @@ package ddQiYuan
          HallIconManager.instance.updateSwitchHandler("ddqiyuan",_model.isOpen);
       }
       
-      private function __awardframeDispose(param1:CEvent = null) : void
+      private function __awardframeDispose(event:CEvent = null) : void
       {
          if(_awardsViewFrame)
          {
@@ -443,19 +434,18 @@ package ddQiYuan
          }
       }
       
-      private function showPreviewFrame(param1:String, param2:PackageIn, param3:String) : void
+      private function showPreviewFrame(title:String, pkg:PackageIn, tips:String) : void
       {
-         title = param1;
-         pkg = param2;
-         tips = param3;
-         OnPreviewFrameCloseHandler = function(param1:Array):void
+         title = title;
+         pkg = pkg;
+         tips = tips;
+         OnPreviewFrameCloseHandler = function(itemList:Array):void
          {
             BagAndInfoManager.Instance.unregisterOnPreviewFrameCloseHandler("DDQIYuanManager");
          };
          var goodArrLen:int = pkg.readInt();
          var goodArr:Array = [];
-         var i:int = 0;
-         while(i < goodArrLen)
+         for(var i:int = 0; i < goodArrLen; )
          {
             var inventoryItemInfo:InventoryItemInfo = new InventoryItemInfo();
             inventoryItemInfo.TemplateID = pkg.readInt();
@@ -512,9 +502,9 @@ package ddQiYuan
          _awardsViewFrame = BagAndInfoManager.Instance.showPreviewFrame(title,goodArr);
       }
       
-      public function sendOfferTimes(param1:int) : void
+      public function sendOfferTimes(times:int) : void
       {
-         times = param1;
+         times = times;
          _lastOpType = times == 1?1:2;
          var gouYunBagCount:int = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(12543);
          if(gouYunBagCount >= times)
@@ -525,9 +515,9 @@ package ddQiYuan
          }
          else
          {
-            onUsePropConfirm = function(param1:BaseAlerFrame):void
+            onUsePropConfirm = function(frame:BaseAlerFrame):void
             {
-               notShowAlertAgain = param1["isNoPrompt"];
+               notShowAlertAgain = frame["isNoPrompt"];
             };
             onUsePropCheckOut = function():void
             {
@@ -582,9 +572,9 @@ package ddQiYuan
          }
          else
          {
-            onUsePropConfirm = function(param1:BaseAlerFrame):void
+            onUsePropConfirm = function(frame:BaseAlerFrame):void
             {
-               _buyConfirmAlertData.notShowAlertAgain = param1["isNoPrompt"];
+               _buyConfirmAlertData.notShowAlertAgain = frame["isNoPrompt"];
             };
             onUsePropCheckOut = function():void
             {
@@ -614,16 +604,16 @@ package ddQiYuan
          }
       }
       
-      public function getInventoryItemInfo(param1:Object) : InventoryItemInfo
+      public function getInventoryItemInfo(good:Object) : InventoryItemInfo
       {
-         var _loc3_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(param1["goodId"]);
-         var _loc2_:InventoryItemInfo = new InventoryItemInfo();
-         ObjectUtils.copyProperties(_loc2_,_loc3_);
-         _loc2_.ValidDate = param1.validDate;
-         _loc2_.Count = param1.goodCount;
-         _loc2_.IsBinds = param1.isBind;
-         _loc2_.Property5 = "1";
-         return _loc2_;
+         var templeteInfo:ItemTemplateInfo = ItemManager.Instance.getTemplateById(good["goodId"]);
+         var inventoryItemInfo:InventoryItemInfo = new InventoryItemInfo();
+         ObjectUtils.copyProperties(inventoryItemInfo,templeteInfo);
+         inventoryItemInfo.ValidDate = good.validDate;
+         inventoryItemInfo.Count = good.goodCount;
+         inventoryItemInfo.IsBinds = good.isBind;
+         inventoryItemInfo.Property5 = "1";
+         return inventoryItemInfo;
       }
       
       public function get lastOpType() : int

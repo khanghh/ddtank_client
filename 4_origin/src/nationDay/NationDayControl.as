@@ -27,9 +27,9 @@ package nationDay
       
       private var _nationView:NationalDayView;
       
-      public function NationDayControl(param1:IEventDispatcher = null)
+      public function NationDayControl(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : NationDayControl
@@ -51,7 +51,7 @@ package nationDay
          NationDayManager.instance.addEventListener("nationOpenView",__onOpenView);
       }
       
-      protected function __onOpenView(param1:Event) : void
+      protected function __onOpenView(event:Event) : void
       {
          sendPkg();
       }
@@ -61,28 +61,27 @@ package nationDay
          SocketManager.Instance.out.getNationDayInfo();
       }
       
-      protected function __onGetNationInfo(param1:PkgEvent) : void
+      protected function __onGetNationInfo(event:PkgEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:PackageIn = param1.pkg;
+         var i:int = 0;
+         var type:int = 0;
+         var pkg:PackageIn = event.pkg;
          NationDayManager.instance.nationModel = new NationModel();
          NationDayManager.instance.nationModel.StartDate = ServerConfigManager.instance.nationalDayDropBeginDate;
          NationDayManager.instance.nationModel.EndDate = ServerConfigManager.instance.nationalDayDropEndDate;
          NationDayManager.instance.nationModel.Description = LanguageMgr.GetTranslation("nationDay.Description");
-         var _loc2_:int = _loc3_.readInt();
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_)
+         var count:int = pkg.readInt();
+         for(i = 0; i < count; )
          {
-            _loc4_ = _loc3_.readInt();
-            NationDayManager.instance.nationModel.WordArray[_loc4_] = _loc3_.readInt();
-            _loc5_++;
+            type = pkg.readInt();
+            NationDayManager.instance.nationModel.WordArray[type] = pkg.readInt();
+            i++;
          }
          NationDayManager.instance.nationModel.maxTimes = ServerConfigManager.instance.nationDayGetMaxTimes;
-         NationDayManager.instance.nationModel.getTimes[0] = _loc3_.readInt();
-         NationDayManager.instance.nationModel.getTimes[1] = _loc3_.readInt();
-         NationDayManager.instance.nationModel.getTimes[2] = _loc3_.readInt();
-         NationDayManager.instance.nationModel.getTimes[3] = _loc3_.readInt();
+         NationDayManager.instance.nationModel.getTimes[0] = pkg.readInt();
+         NationDayManager.instance.nationModel.getTimes[1] = pkg.readInt();
+         NationDayManager.instance.nationModel.getTimes[2] = pkg.readInt();
+         NationDayManager.instance.nationModel.getTimes[3] = pkg.readInt();
          show();
          if(NationDayManager.instance.nationDayIcon)
          {
@@ -107,9 +106,9 @@ package nationDay
          }
       }
       
-      private function __complainShow(param1:UIModuleEvent) : void
+      private function __complainShow(event:UIModuleEvent) : void
       {
-         if(param1.module == "nationDay")
+         if(event.module == "nationDay")
          {
             UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);
             UIModuleLoader.Instance.removeEventListener("uiMoudleProgress",__progressShow);
@@ -121,15 +120,15 @@ package nationDay
          }
       }
       
-      private function __progressShow(param1:UIModuleEvent) : void
+      private function __progressShow(event:UIModuleEvent) : void
       {
-         if(param1.module == "nationDay")
+         if(event.module == "nationDay")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
       
-      protected function __onClose(param1:Event) : void
+      protected function __onClose(event:Event) : void
       {
          UIModuleSmallLoading.Instance.hide();
          UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);

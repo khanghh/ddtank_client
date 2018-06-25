@@ -41,8 +41,8 @@ package consortion.view.selfConsortia.consortiaTask
       
       public function ConsortionTaskRank()
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          super();
          titleText = LanguageMgr.GetTranslation("consortia.taskRank.title");
          _bg = ComponentFactory.Instance.creatBitmap("asset.consortion.taskRankBG");
@@ -62,15 +62,14 @@ package consortion.view.selfConsortia.consortiaTask
          _pageNum.text = "1/1";
          addToContent(_pageNum);
          _itemList = new Vector.<TaskRankItem>();
-         _loc2_ = 0;
-         while(_loc2_ < _itemLengthPerPage)
+         for(i = 0; i < _itemLengthPerPage; )
          {
-            _loc1_ = new TaskRankItem(_loc2_,"","","","");
-            _loc1_.x = 30;
-            _loc1_.y = (_loc1_.height + 1) * _loc2_ + 92;
-            addToContent(_loc1_);
-            _itemList.push(_loc1_);
-            _loc2_++;
+            item = new TaskRankItem(i,"","","","");
+            item.x = 30;
+            item.y = (item.height + 1) * i + 92;
+            addToContent(item);
+            _itemList.push(item);
+            i++;
          }
          _rightBtn.addEventListener("click",mouseClickHander);
          _leftBtn.addEventListener("click",mouseClickHander);
@@ -79,25 +78,25 @@ package consortion.view.selfConsortia.consortiaTask
          ConsortionModelManager.Instance.getConsortionTaskRank();
       }
       
-      protected function taskRankListHander(param1:ConsortionEvent = null) : void
+      protected function taskRankListHander(e:ConsortionEvent = null) : void
       {
-         if(param1 != null)
+         if(e != null)
          {
-            _taskRankArr = param1.data as Array;
+            _taskRankArr = e.data as Array;
          }
          _totalPage = Math.max(Math.ceil(_taskRankArr.length / _itemLengthPerPage),1);
          _pageNum.text = "1/" + _totalPage.toString();
          setPageArr();
       }
       
-      private function mouseClickHander(param1:MouseEvent) : void
+      private function mouseClickHander(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(!_taskRankArr)
          {
             return;
          }
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = e.currentTarget;
          if(_rightBtn !== _loc2_)
          {
             if(_leftBtn === _loc2_)
@@ -123,30 +122,28 @@ package consortion.view.selfConsortia.consortiaTask
       
       private function setPageArr() : void
       {
-         var _loc2_:* = null;
-         var _loc5_:int = 0;
-         var _loc1_:int = (_curPage - 1) * _itemLengthPerPage;
-         var _loc4_:int = Math.min(_curPage * _itemLengthPerPage,_taskRankArr.length);
-         _loc2_ = _taskRankArr.slice(_loc1_,_loc4_);
+         var arr:* = null;
+         var i:int = 0;
+         var startIndex:int = (_curPage - 1) * _itemLengthPerPage;
+         var endIndex:int = Math.min(_curPage * _itemLengthPerPage,_taskRankArr.length);
+         arr = _taskRankArr.slice(startIndex,endIndex);
          clearAllItemData();
-         var _loc3_:int = _loc2_.length;
-         _loc5_ = 0;
-         while(_loc5_ < _loc3_)
+         var len:int = arr.length;
+         for(i = 0; i < len; )
          {
-            _itemList[_loc5_].update(_loc2_[_loc5_].name,_loc2_[_loc5_].rank,String(_loc2_[_loc5_].percent) + "%",_loc2_[_loc5_].contribute);
-            _loc5_++;
+            _itemList[i].update(arr[i].name,arr[i].rank,String(arr[i].percent) + "%",arr[i].contribute);
+            i++;
          }
       }
       
       private function clearAllItemData() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = _itemList.length;
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_)
+         var i:int = 0;
+         var len:int = _itemList.length;
+         for(i = 0; i < len; )
          {
-            _itemList[_loc2_].update();
-            _loc2_++;
+            _itemList[i].update();
+            i++;
          }
       }
       
@@ -169,9 +166,9 @@ package consortion.view.selfConsortia.consortiaTask
          _taskRankArr = null;
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             ObjectUtils.disposeObject(this);
          }
@@ -203,10 +200,10 @@ class TaskRankItem extends Sprite implements Disposeable
    
    private var _topThreeIcon:ScaleFrameImage;
    
-   function TaskRankItem(param1:int, param2:String = "", param3:String = "", param4:String = "", param5:String = "")
+   function TaskRankItem(index:int, $name:String = "", $rank:String = "", $percent:String = "", $contribute:String = "")
    {
       super();
-      if(int(param1) % 2 == 0)
+      if(int(index) % 2 == 0)
       {
          _itemBg = ComponentFactory.Instance.creat("asset.consortion.taskRankItem.bg1");
       }
@@ -231,29 +228,29 @@ class TaskRankItem extends Sprite implements Disposeable
       addChild(_rankTxt);
       addChild(_percentTxt);
       addChild(_contributeTxt);
-      _nameTxt.text = param2;
-      _rankTxt.text = param3;
-      _percentTxt.text = param4;
-      _contributeTxt.text = param5;
+      _nameTxt.text = $name;
+      _rankTxt.text = $rank;
+      _percentTxt.text = $percent;
+      _contributeTxt.text = $contribute;
    }
    
-   public function update(param1:String = "", param2:String = "", param3:String = "", param4:String = "") : void
+   public function update($name:String = "", $rank:String = "", $percent:String = "", $contribute:String = "") : void
    {
-      _nameTxt.text = param1;
-      if(int(param2) < 4 && param2 != "")
+      _nameTxt.text = $name;
+      if(int($rank) < 4 && $rank != "")
       {
-         _topThreeIcon.setFrame(int(param2));
+         _topThreeIcon.setFrame(int($rank));
          _topThreeIcon.visible = true;
          _rankTxt.visible = false;
       }
       else
       {
-         _rankTxt.text = param2;
+         _rankTxt.text = $rank;
          _rankTxt.visible = true;
          _topThreeIcon.visible = false;
       }
-      _percentTxt.text = param3;
-      _contributeTxt.text = param4;
+      _percentTxt.text = $percent;
+      _contributeTxt.text = $contribute;
    }
    
    public function dispose() : void

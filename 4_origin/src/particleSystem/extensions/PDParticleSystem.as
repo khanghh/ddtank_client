@@ -78,11 +78,11 @@ package particleSystem.extensions
       
       private var mEndColorVariance:ColorArgb;
       
-      public function PDParticleSystem(param1:XML, param2:Texture)
+      public function PDParticleSystem(config:XML, texture:Texture)
       {
-         parseConfig(param1);
-         var _loc3_:Number = mMaxNumParticles / mLifespan;
-         super(param2,_loc3_,mMaxNumParticles,mMaxNumParticles,mBlendFactorSource,mBlendFactorDestination);
+         parseConfig(config);
+         var emissionRate:Number = mMaxNumParticles / mLifespan;
+         super(texture,emissionRate,mMaxNumParticles,mMaxNumParticles,mBlendFactorSource,mBlendFactorDestination);
          mPremultipliedAlpha = false;
       }
       
@@ -91,150 +91,150 @@ package particleSystem.extensions
          return new PDParticle();
       }
       
-      override protected function initParticle(param1:Particle) : void
+      override protected function initParticle(aParticle:Particle) : void
       {
-         var _loc8_:PDParticle = param1 as PDParticle;
-         var _loc15_:Number = mLifespan + mLifespanVariance * (Math.random() * 2 - 1);
-         if(_loc15_ <= 0)
+         var particle:PDParticle = aParticle as PDParticle;
+         var lifespan:Number = mLifespan + mLifespanVariance * (Math.random() * 2 - 1);
+         if(lifespan <= 0)
          {
             return;
          }
-         _loc8_.currentTime = 0;
-         _loc8_.totalTime = _loc15_;
-         _loc8_.x = mEmitterX + mEmitterXVariance * (Math.random() * 2 - 1);
-         _loc8_.y = mEmitterY + mEmitterYVariance * (Math.random() * 2 - 1);
-         _loc8_.startX = mEmitterX;
-         _loc8_.startY = mEmitterY;
-         var _loc6_:Number = mEmitAngle + mEmitAngleVariance * (Math.random() * 2 - 1);
-         var _loc3_:Number = mSpeed + mSpeedVariance * (Math.random() * 2 - 1);
-         _loc8_.velocityX = _loc3_ * Math.cos(_loc6_);
-         _loc8_.velocityY = _loc3_ * Math.sin(_loc6_);
-         _loc8_.emitRadius = mMaxRadius + mMaxRadiusVariance * (Math.random() * 2 - 1);
-         _loc8_.emitRadiusDelta = mMaxRadius / _loc15_;
-         _loc8_.emitRotation = mEmitAngle + mEmitAngleVariance * (Math.random() * 2 - 1);
-         _loc8_.emitRotationDelta = mRotatePerSecond + mRotatePerSecondVariance * (Math.random() * 2 - 1);
-         _loc8_.radialAcceleration = mRadialAcceleration + mRadialAccelerationVariance * (Math.random() * 2 - 1);
-         _loc8_.tangentialAcceleration = mTangentialAcceleration + mTangentialAccelerationVariance * (Math.random() * 2 - 1);
-         var _loc9_:* = Number(mStartSize + mStartSizeVariance * (Math.random() * 2 - 1));
-         var _loc4_:* = Number(mEndSize + mEndSizeVariance * (Math.random() * 2 - 1));
-         if(_loc9_ < 0.1)
+         particle.currentTime = 0;
+         particle.totalTime = lifespan;
+         particle.x = mEmitterX + mEmitterXVariance * (Math.random() * 2 - 1);
+         particle.y = mEmitterY + mEmitterYVariance * (Math.random() * 2 - 1);
+         particle.startX = mEmitterX;
+         particle.startY = mEmitterY;
+         var angle:Number = mEmitAngle + mEmitAngleVariance * (Math.random() * 2 - 1);
+         var speed:Number = mSpeed + mSpeedVariance * (Math.random() * 2 - 1);
+         particle.velocityX = speed * Math.cos(angle);
+         particle.velocityY = speed * Math.sin(angle);
+         particle.emitRadius = mMaxRadius + mMaxRadiusVariance * (Math.random() * 2 - 1);
+         particle.emitRadiusDelta = mMaxRadius / lifespan;
+         particle.emitRotation = mEmitAngle + mEmitAngleVariance * (Math.random() * 2 - 1);
+         particle.emitRotationDelta = mRotatePerSecond + mRotatePerSecondVariance * (Math.random() * 2 - 1);
+         particle.radialAcceleration = mRadialAcceleration + mRadialAccelerationVariance * (Math.random() * 2 - 1);
+         particle.tangentialAcceleration = mTangentialAcceleration + mTangentialAccelerationVariance * (Math.random() * 2 - 1);
+         var startSize:* = Number(mStartSize + mStartSizeVariance * (Math.random() * 2 - 1));
+         var endSize:* = Number(mEndSize + mEndSizeVariance * (Math.random() * 2 - 1));
+         if(startSize < 0.1)
          {
-            _loc9_ = 0.1;
+            startSize = 0.1;
          }
-         if(_loc4_ < 0.1)
+         if(endSize < 0.1)
          {
-            _loc4_ = 0.1;
+            endSize = 0.1;
          }
-         _loc8_.scale = _loc9_ / texture.width;
-         _loc8_.scaleDelta = (_loc4_ - _loc9_) / _loc15_ / texture.width;
-         var _loc12_:ColorArgb = _loc8_.colorArgb;
-         var _loc5_:ColorArgb = _loc8_.colorArgbDelta;
-         _loc12_.red = mStartColor.red;
-         _loc12_.green = mStartColor.green;
-         _loc12_.blue = mStartColor.blue;
-         _loc12_.alpha = mStartColor.alpha;
+         particle.scale = startSize / texture.width;
+         particle.scaleDelta = (endSize - startSize) / lifespan / texture.width;
+         var startColor:ColorArgb = particle.colorArgb;
+         var colorDelta:ColorArgb = particle.colorArgbDelta;
+         startColor.red = mStartColor.red;
+         startColor.green = mStartColor.green;
+         startColor.blue = mStartColor.blue;
+         startColor.alpha = mStartColor.alpha;
          if(mStartColorVariance.red != 0)
          {
-            _loc12_.red = _loc12_.red + mStartColorVariance.red * (Math.random() * 2 - 1);
+            startColor.red = startColor.red + mStartColorVariance.red * (Math.random() * 2 - 1);
          }
          if(mStartColorVariance.green != 0)
          {
-            _loc12_.green = _loc12_.green + mStartColorVariance.green * (Math.random() * 2 - 1);
+            startColor.green = startColor.green + mStartColorVariance.green * (Math.random() * 2 - 1);
          }
          if(mStartColorVariance.blue != 0)
          {
-            _loc12_.blue = _loc12_.blue + mStartColorVariance.blue * (Math.random() * 2 - 1);
+            startColor.blue = startColor.blue + mStartColorVariance.blue * (Math.random() * 2 - 1);
          }
          if(mStartColorVariance.alpha != 0)
          {
-            _loc12_.alpha = _loc12_.alpha + mStartColorVariance.alpha * (Math.random() * 2 - 1);
+            startColor.alpha = startColor.alpha + mStartColorVariance.alpha * (Math.random() * 2 - 1);
          }
-         var _loc14_:Number = mEndColor.red;
-         var _loc11_:Number = mEndColor.green;
-         var _loc10_:Number = mEndColor.blue;
-         var _loc2_:Number = mEndColor.alpha;
+         var endColorRed:Number = mEndColor.red;
+         var endColorGreen:Number = mEndColor.green;
+         var endColorBlue:Number = mEndColor.blue;
+         var endColorAlpha:Number = mEndColor.alpha;
          if(mEndColorVariance.red != 0)
          {
-            _loc14_ = _loc14_ + mEndColorVariance.red * (Math.random() * 2 - 1);
+            endColorRed = endColorRed + mEndColorVariance.red * (Math.random() * 2 - 1);
          }
          if(mEndColorVariance.green != 0)
          {
-            _loc11_ = _loc11_ + mEndColorVariance.green * (Math.random() * 2 - 1);
+            endColorGreen = endColorGreen + mEndColorVariance.green * (Math.random() * 2 - 1);
          }
          if(mEndColorVariance.blue != 0)
          {
-            _loc10_ = _loc10_ + mEndColorVariance.blue * (Math.random() * 2 - 1);
+            endColorBlue = endColorBlue + mEndColorVariance.blue * (Math.random() * 2 - 1);
          }
          if(mEndColorVariance.alpha != 0)
          {
-            _loc2_ = _loc2_ + mEndColorVariance.alpha * (Math.random() * 2 - 1);
+            endColorAlpha = endColorAlpha + mEndColorVariance.alpha * (Math.random() * 2 - 1);
          }
-         _loc5_.red = (_loc14_ - _loc12_.red) / _loc15_;
-         _loc5_.green = (_loc11_ - _loc12_.green) / _loc15_;
-         _loc5_.blue = (_loc10_ - _loc12_.blue) / _loc15_;
-         _loc5_.alpha = (_loc2_ - _loc12_.alpha) / _loc15_;
-         var _loc13_:Number = mStartRotation + mStartRotationVariance * (Math.random() * 2 - 1);
-         var _loc7_:Number = mEndRotation + mEndRotationVariance * (Math.random() * 2 - 1);
-         _loc8_.rotation = _loc13_;
-         _loc8_.rotationDelta = (_loc7_ - _loc13_) / _loc15_;
+         colorDelta.red = (endColorRed - startColor.red) / lifespan;
+         colorDelta.green = (endColorGreen - startColor.green) / lifespan;
+         colorDelta.blue = (endColorBlue - startColor.blue) / lifespan;
+         colorDelta.alpha = (endColorAlpha - startColor.alpha) / lifespan;
+         var startRotation:Number = mStartRotation + mStartRotationVariance * (Math.random() * 2 - 1);
+         var endRotation:Number = mEndRotation + mEndRotationVariance * (Math.random() * 2 - 1);
+         particle.rotation = startRotation;
+         particle.rotationDelta = (endRotation - startRotation) / lifespan;
       }
       
-      override protected function advanceParticle(param1:Particle, param2:Number) : void
+      override protected function advanceParticle(aParticle:Particle, passedTime:Number) : void
       {
-         var _loc4_:Number = NaN;
-         var _loc5_:Number = NaN;
-         var _loc7_:* = NaN;
-         var _loc10_:Number = NaN;
-         var _loc11_:Number = NaN;
-         var _loc12_:* = NaN;
-         var _loc9_:* = NaN;
-         var _loc6_:* = NaN;
-         var _loc3_:PDParticle = param1 as PDParticle;
-         var _loc8_:Number = _loc3_.totalTime - _loc3_.currentTime;
-         param2 = _loc8_ > param2?param2:Number(_loc8_);
-         _loc3_.currentTime = _loc3_.currentTime + param2;
+         var distanceX:Number = NaN;
+         var distanceY:Number = NaN;
+         var distanceScalar:* = NaN;
+         var radialX:Number = NaN;
+         var radialY:Number = NaN;
+         var tangentialX:* = NaN;
+         var tangentialY:* = NaN;
+         var newY:* = NaN;
+         var particle:PDParticle = aParticle as PDParticle;
+         var restTime:Number = particle.totalTime - particle.currentTime;
+         passedTime = restTime > passedTime?passedTime:Number(restTime);
+         particle.currentTime = particle.currentTime + passedTime;
          if(mEmitterType == 1)
          {
-            _loc3_.emitRotation = _loc3_.emitRotation + _loc3_.emitRotationDelta * param2;
-            _loc3_.emitRadius = _loc3_.emitRadius - _loc3_.emitRadiusDelta * param2;
-            _loc3_.x = mEmitterX - Math.cos(_loc3_.emitRotation) * _loc3_.emitRadius;
-            _loc3_.y = mEmitterY - Math.sin(_loc3_.emitRotation) * _loc3_.emitRadius;
-            if(_loc3_.emitRadius < mMinRadius)
+            particle.emitRotation = particle.emitRotation + particle.emitRotationDelta * passedTime;
+            particle.emitRadius = particle.emitRadius - particle.emitRadiusDelta * passedTime;
+            particle.x = mEmitterX - Math.cos(particle.emitRotation) * particle.emitRadius;
+            particle.y = mEmitterY - Math.sin(particle.emitRotation) * particle.emitRadius;
+            if(particle.emitRadius < mMinRadius)
             {
-               _loc3_.currentTime = _loc3_.totalTime;
+               particle.currentTime = particle.totalTime;
             }
          }
          else
          {
-            _loc4_ = _loc3_.x - _loc3_.startX;
-            _loc5_ = _loc3_.y - _loc3_.startY;
-            _loc7_ = Number(Math.sqrt(_loc4_ * _loc4_ + _loc5_ * _loc5_));
-            if(_loc7_ < 0.01)
+            distanceX = particle.x - particle.startX;
+            distanceY = particle.y - particle.startY;
+            distanceScalar = Number(Math.sqrt(distanceX * distanceX + distanceY * distanceY));
+            if(distanceScalar < 0.01)
             {
-               _loc7_ = 0.01;
+               distanceScalar = 0.01;
             }
-            _loc10_ = _loc4_ / _loc7_;
-            _loc11_ = _loc5_ / _loc7_;
-            _loc12_ = _loc10_;
-            _loc9_ = _loc11_;
-            _loc10_ = _loc10_ * _loc3_.radialAcceleration;
-            _loc11_ = _loc11_ * _loc3_.radialAcceleration;
-            _loc6_ = _loc12_;
-            _loc12_ = Number(-_loc9_ * _loc3_.tangentialAcceleration);
-            _loc9_ = Number(_loc6_ * _loc3_.tangentialAcceleration);
-            _loc3_.velocityX = _loc3_.velocityX + param2 * (mGravityX + _loc10_ + _loc12_);
-            _loc3_.velocityY = _loc3_.velocityY + param2 * (mGravityY + _loc11_ + _loc9_);
-            _loc3_.x = _loc3_.x + _loc3_.velocityX * param2;
-            _loc3_.y = _loc3_.y + _loc3_.velocityY * param2;
+            radialX = distanceX / distanceScalar;
+            radialY = distanceY / distanceScalar;
+            tangentialX = radialX;
+            tangentialY = radialY;
+            radialX = radialX * particle.radialAcceleration;
+            radialY = radialY * particle.radialAcceleration;
+            newY = tangentialX;
+            tangentialX = Number(-tangentialY * particle.tangentialAcceleration);
+            tangentialY = Number(newY * particle.tangentialAcceleration);
+            particle.velocityX = particle.velocityX + passedTime * (mGravityX + radialX + tangentialX);
+            particle.velocityY = particle.velocityY + passedTime * (mGravityY + radialY + tangentialY);
+            particle.x = particle.x + particle.velocityX * passedTime;
+            particle.y = particle.y + particle.velocityY * passedTime;
          }
-         _loc3_.scale = _loc3_.scale + _loc3_.scaleDelta * param2;
-         _loc3_.rotation = _loc3_.rotation + _loc3_.rotationDelta * param2;
-         _loc3_.colorArgb.red = _loc3_.colorArgb.red + _loc3_.colorArgbDelta.red * param2;
-         _loc3_.colorArgb.green = _loc3_.colorArgb.green + _loc3_.colorArgbDelta.green * param2;
-         _loc3_.colorArgb.blue = _loc3_.colorArgb.blue + _loc3_.colorArgbDelta.blue * param2;
-         _loc3_.colorArgb.alpha = _loc3_.colorArgb.alpha + _loc3_.colorArgbDelta.alpha * param2;
-         _loc3_.color = _loc3_.colorArgb.toRgb();
-         _loc3_.alpha = _loc3_.colorArgb.alpha;
+         particle.scale = particle.scale + particle.scaleDelta * passedTime;
+         particle.rotation = particle.rotation + particle.rotationDelta * passedTime;
+         particle.colorArgb.red = particle.colorArgb.red + particle.colorArgbDelta.red * passedTime;
+         particle.colorArgb.green = particle.colorArgb.green + particle.colorArgbDelta.green * passedTime;
+         particle.colorArgb.blue = particle.colorArgb.blue + particle.colorArgbDelta.blue * passedTime;
+         particle.colorArgb.alpha = particle.colorArgb.alpha + particle.colorArgbDelta.alpha * passedTime;
+         particle.color = particle.colorArgb.toRgb();
+         particle.alpha = particle.colorArgb.alpha;
       }
       
       private function updateEmissionRate() : void
@@ -242,30 +242,30 @@ package particleSystem.extensions
          emissionRate = mMaxNumParticles / mLifespan;
       }
       
-      public function parseConfig(param1:XML) : void
+      public function parseConfig(config:XML) : void
       {
-         config = param1;
-         getIntValue = function(param1:XMLList):int
+         config = config;
+         getIntValue = function(element:XMLList):int
          {
-            return parseInt(param1.attribute("value"));
+            return parseInt(element.attribute("value"));
          };
-         getFloatValue = function(param1:XMLList):Number
+         getFloatValue = function(element:XMLList):Number
          {
-            return parseFloat(param1.attribute("value"));
+            return parseFloat(element.attribute("value"));
          };
-         getColor = function(param1:XMLList):ColorArgb
+         getColor = function(element:XMLList):ColorArgb
          {
-            var _loc2_:ColorArgb = new ColorArgb();
-            _loc2_.red = parseFloat(param1.attribute("red"));
-            _loc2_.green = parseFloat(param1.attribute("green"));
-            _loc2_.blue = parseFloat(param1.attribute("blue"));
-            _loc2_.alpha = parseFloat(param1.attribute("alpha"));
-            return _loc2_;
+            var color:ColorArgb = new ColorArgb();
+            color.red = parseFloat(element.attribute("red"));
+            color.green = parseFloat(element.attribute("green"));
+            color.blue = parseFloat(element.attribute("blue"));
+            color.alpha = parseFloat(element.attribute("alpha"));
+            return color;
          };
-         getBlendFunc = function(param1:XMLList):String
+         getBlendFunc = function(element:XMLList):String
          {
-            var _loc2_:int = getIntValue(param1);
-            var _loc3_:* = _loc2_;
+            var value:int = getIntValue(element);
+            var _loc3_:* = value;
             if(0 !== _loc3_)
             {
                if(1 !== _loc3_)
@@ -286,7 +286,7 @@ package particleSystem.extensions
                                     {
                                        if(775 !== _loc3_)
                                        {
-                                          throw new ArgumentError("unsupported blending function: " + _loc2_);
+                                          throw new ArgumentError("unsupported blending function: " + value);
                                        }
                                        return "oneMinusDestinationColor";
                                     }
@@ -353,9 +353,9 @@ package particleSystem.extensions
          return mEmitterType;
       }
       
-      public function set emitterType(param1:int) : void
+      public function set emitterType(value:int) : void
       {
-         mEmitterType = param1;
+         mEmitterType = value;
       }
       
       public function get emitterXVariance() : Number
@@ -363,9 +363,9 @@ package particleSystem.extensions
          return mEmitterXVariance;
       }
       
-      public function set emitterXVariance(param1:Number) : void
+      public function set emitterXVariance(value:Number) : void
       {
-         mEmitterXVariance = param1;
+         mEmitterXVariance = value;
       }
       
       public function get emitterYVariance() : Number
@@ -373,9 +373,9 @@ package particleSystem.extensions
          return mEmitterYVariance;
       }
       
-      public function set emitterYVariance(param1:Number) : void
+      public function set emitterYVariance(value:Number) : void
       {
-         mEmitterYVariance = param1;
+         mEmitterYVariance = value;
       }
       
       public function get maxNumParticles() : int
@@ -383,9 +383,9 @@ package particleSystem.extensions
          return mMaxNumParticles;
       }
       
-      public function set maxNumParticles(param1:int) : void
+      public function set maxNumParticles(value:int) : void
       {
-         maxCapacity = param1;
+         maxCapacity = value;
          mMaxNumParticles = maxCapacity;
          updateEmissionRate();
       }
@@ -395,9 +395,9 @@ package particleSystem.extensions
          return mLifespan;
       }
       
-      public function set lifespan(param1:Number) : void
+      public function set lifespan(value:Number) : void
       {
-         mLifespan = Math.max(0.01,param1);
+         mLifespan = Math.max(0.01,value);
          updateEmissionRate();
       }
       
@@ -406,9 +406,9 @@ package particleSystem.extensions
          return mLifespanVariance;
       }
       
-      public function set lifespanVariance(param1:Number) : void
+      public function set lifespanVariance(value:Number) : void
       {
-         mLifespanVariance = param1;
+         mLifespanVariance = value;
       }
       
       public function get startSize() : Number
@@ -416,9 +416,9 @@ package particleSystem.extensions
          return mStartSize;
       }
       
-      public function set startSize(param1:Number) : void
+      public function set startSize(value:Number) : void
       {
-         mStartSize = param1;
+         mStartSize = value;
       }
       
       public function get startSizeVariance() : Number
@@ -426,9 +426,9 @@ package particleSystem.extensions
          return mStartSizeVariance;
       }
       
-      public function set startSizeVariance(param1:Number) : void
+      public function set startSizeVariance(value:Number) : void
       {
-         mStartSizeVariance = param1;
+         mStartSizeVariance = value;
       }
       
       public function get endSize() : Number
@@ -436,9 +436,9 @@ package particleSystem.extensions
          return mEndSize;
       }
       
-      public function set endSize(param1:Number) : void
+      public function set endSize(value:Number) : void
       {
-         mEndSize = param1;
+         mEndSize = value;
       }
       
       public function get endSizeVariance() : Number
@@ -446,9 +446,9 @@ package particleSystem.extensions
          return mEndSizeVariance;
       }
       
-      public function set endSizeVariance(param1:Number) : void
+      public function set endSizeVariance(value:Number) : void
       {
-         mEndSizeVariance = param1;
+         mEndSizeVariance = value;
       }
       
       public function get emitAngle() : Number
@@ -456,9 +456,9 @@ package particleSystem.extensions
          return mEmitAngle;
       }
       
-      public function set emitAngle(param1:Number) : void
+      public function set emitAngle(value:Number) : void
       {
-         mEmitAngle = param1;
+         mEmitAngle = value;
       }
       
       public function get emitAngleVariance() : Number
@@ -466,9 +466,9 @@ package particleSystem.extensions
          return mEmitAngleVariance;
       }
       
-      public function set emitAngleVariance(param1:Number) : void
+      public function set emitAngleVariance(value:Number) : void
       {
-         mEmitAngleVariance = param1;
+         mEmitAngleVariance = value;
       }
       
       public function get startRotation() : Number
@@ -476,9 +476,9 @@ package particleSystem.extensions
          return mStartRotation;
       }
       
-      public function set startRotation(param1:Number) : void
+      public function set startRotation(value:Number) : void
       {
-         mStartRotation = param1;
+         mStartRotation = value;
       }
       
       public function get startRotationVariance() : Number
@@ -486,9 +486,9 @@ package particleSystem.extensions
          return mStartRotationVariance;
       }
       
-      public function set startRotationVariance(param1:Number) : void
+      public function set startRotationVariance(value:Number) : void
       {
-         mStartRotationVariance = param1;
+         mStartRotationVariance = value;
       }
       
       public function get endRotation() : Number
@@ -496,9 +496,9 @@ package particleSystem.extensions
          return mEndRotation;
       }
       
-      public function set endRotation(param1:Number) : void
+      public function set endRotation(value:Number) : void
       {
-         mEndRotation = param1;
+         mEndRotation = value;
       }
       
       public function get endRotationVariance() : Number
@@ -506,9 +506,9 @@ package particleSystem.extensions
          return mEndRotationVariance;
       }
       
-      public function set endRotationVariance(param1:Number) : void
+      public function set endRotationVariance(value:Number) : void
       {
-         mEndRotationVariance = param1;
+         mEndRotationVariance = value;
       }
       
       public function get speed() : Number
@@ -516,9 +516,9 @@ package particleSystem.extensions
          return mSpeed;
       }
       
-      public function set speed(param1:Number) : void
+      public function set speed(value:Number) : void
       {
-         mSpeed = param1;
+         mSpeed = value;
       }
       
       public function get speedVariance() : Number
@@ -526,9 +526,9 @@ package particleSystem.extensions
          return mSpeedVariance;
       }
       
-      public function set speedVariance(param1:Number) : void
+      public function set speedVariance(value:Number) : void
       {
-         mSpeedVariance = param1;
+         mSpeedVariance = value;
       }
       
       public function get gravityX() : Number
@@ -536,9 +536,9 @@ package particleSystem.extensions
          return mGravityX;
       }
       
-      public function set gravityX(param1:Number) : void
+      public function set gravityX(value:Number) : void
       {
-         mGravityX = param1;
+         mGravityX = value;
       }
       
       public function get gravityY() : Number
@@ -546,9 +546,9 @@ package particleSystem.extensions
          return mGravityY;
       }
       
-      public function set gravityY(param1:Number) : void
+      public function set gravityY(value:Number) : void
       {
-         mGravityY = param1;
+         mGravityY = value;
       }
       
       public function get radialAcceleration() : Number
@@ -556,9 +556,9 @@ package particleSystem.extensions
          return mRadialAcceleration;
       }
       
-      public function set radialAcceleration(param1:Number) : void
+      public function set radialAcceleration(value:Number) : void
       {
-         mRadialAcceleration = param1;
+         mRadialAcceleration = value;
       }
       
       public function get radialAccelerationVariance() : Number
@@ -566,9 +566,9 @@ package particleSystem.extensions
          return mRadialAccelerationVariance;
       }
       
-      public function set radialAccelerationVariance(param1:Number) : void
+      public function set radialAccelerationVariance(value:Number) : void
       {
-         mRadialAccelerationVariance = param1;
+         mRadialAccelerationVariance = value;
       }
       
       public function get tangentialAcceleration() : Number
@@ -576,9 +576,9 @@ package particleSystem.extensions
          return mTangentialAcceleration;
       }
       
-      public function set tangentialAcceleration(param1:Number) : void
+      public function set tangentialAcceleration(value:Number) : void
       {
-         mTangentialAcceleration = param1;
+         mTangentialAcceleration = value;
       }
       
       public function get tangentialAccelerationVariance() : Number
@@ -586,9 +586,9 @@ package particleSystem.extensions
          return mTangentialAccelerationVariance;
       }
       
-      public function set tangentialAccelerationVariance(param1:Number) : void
+      public function set tangentialAccelerationVariance(value:Number) : void
       {
-         mTangentialAccelerationVariance = param1;
+         mTangentialAccelerationVariance = value;
       }
       
       public function get maxRadius() : Number
@@ -596,9 +596,9 @@ package particleSystem.extensions
          return mMaxRadius;
       }
       
-      public function set maxRadius(param1:Number) : void
+      public function set maxRadius(value:Number) : void
       {
-         mMaxRadius = param1;
+         mMaxRadius = value;
       }
       
       public function get maxRadiusVariance() : Number
@@ -606,9 +606,9 @@ package particleSystem.extensions
          return mMaxRadiusVariance;
       }
       
-      public function set maxRadiusVariance(param1:Number) : void
+      public function set maxRadiusVariance(value:Number) : void
       {
-         mMaxRadiusVariance = param1;
+         mMaxRadiusVariance = value;
       }
       
       public function get minRadius() : Number
@@ -616,9 +616,9 @@ package particleSystem.extensions
          return mMinRadius;
       }
       
-      public function set minRadius(param1:Number) : void
+      public function set minRadius(value:Number) : void
       {
-         mMinRadius = param1;
+         mMinRadius = value;
       }
       
       public function get rotatePerSecond() : Number
@@ -626,9 +626,9 @@ package particleSystem.extensions
          return mRotatePerSecond;
       }
       
-      public function set rotatePerSecond(param1:Number) : void
+      public function set rotatePerSecond(value:Number) : void
       {
-         mRotatePerSecond = param1;
+         mRotatePerSecond = value;
       }
       
       public function get rotatePerSecondVariance() : Number
@@ -636,9 +636,9 @@ package particleSystem.extensions
          return mRotatePerSecondVariance;
       }
       
-      public function set rotatePerSecondVariance(param1:Number) : void
+      public function set rotatePerSecondVariance(value:Number) : void
       {
-         mRotatePerSecondVariance = param1;
+         mRotatePerSecondVariance = value;
       }
       
       public function get startColor() : ColorArgb
@@ -646,9 +646,9 @@ package particleSystem.extensions
          return mStartColor;
       }
       
-      public function set startColor(param1:ColorArgb) : void
+      public function set startColor(value:ColorArgb) : void
       {
-         mStartColor = param1;
+         mStartColor = value;
       }
       
       public function get startColorVariance() : ColorArgb
@@ -656,9 +656,9 @@ package particleSystem.extensions
          return mStartColorVariance;
       }
       
-      public function set startColorVariance(param1:ColorArgb) : void
+      public function set startColorVariance(value:ColorArgb) : void
       {
-         mStartColorVariance = param1;
+         mStartColorVariance = value;
       }
       
       public function get endColor() : ColorArgb
@@ -666,9 +666,9 @@ package particleSystem.extensions
          return mEndColor;
       }
       
-      public function set endColor(param1:ColorArgb) : void
+      public function set endColor(value:ColorArgb) : void
       {
-         mEndColor = param1;
+         mEndColor = value;
       }
       
       public function get endColorVariance() : ColorArgb
@@ -676,9 +676,9 @@ package particleSystem.extensions
          return mEndColorVariance;
       }
       
-      public function set endColorVariance(param1:ColorArgb) : void
+      public function set endColorVariance(value:ColorArgb) : void
       {
-         mEndColorVariance = param1;
+         mEndColorVariance = value;
       }
    }
 }

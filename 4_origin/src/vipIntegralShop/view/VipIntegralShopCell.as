@@ -57,11 +57,11 @@ package vipIntegralShop.view
          addChild(_nameTxt);
          _needMoneyTxt = ComponentFactory.Instance.creatComponentByStylename("vipIntegralShopView.needMoneyTxt");
          addChild(_needMoneyTxt);
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,70,70);
-         _loc1_.graphics.endFill();
-         _itemCell = CellFactory.instance.createShopItemCell(_loc1_,null,true,true) as ShopItemCell;
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(16777215,0);
+         sp.graphics.drawRect(0,0,70,70);
+         sp.graphics.endFill();
+         _itemCell = CellFactory.instance.createShopItemCell(sp,null,true,true) as ShopItemCell;
          PositionUtils.setPos(_itemCell,"vipIntegralShopView.itemCell.pos");
          addChild(_itemCell);
          _integral = ComponentFactory.Instance.creatComponentByStylename("vipIntegralShopView.integral");
@@ -77,7 +77,7 @@ package vipIntegralShop.view
          _buyBtn.addEventListener("click",buyHandler,false,0,true);
       }
       
-      private function buyHandler(param1:MouseEvent) : void
+      private function buyHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -90,31 +90,31 @@ package vipIntegralShop.view
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.integral.unenoughIntegralText"),0,true);
             return;
          }
-         var _loc2_:VipIntegralShopBuyCell = ComponentFactory.Instance.creatComponentByStylename("vipIntegralShopView.QuickBuyAlert");
-         _loc2_.setData(_vipIntegralInfo.GoodsID,_vipIntegralInfo.ID,_vipIntegralInfo.Price);
-         _loc2_.setBuyNum(_vipIntegralInfo.LimitNum);
-         LayerManager.Instance.addToLayer(_loc2_,2,true,1);
+         var buyAlert:VipIntegralShopBuyCell = ComponentFactory.Instance.creatComponentByStylename("vipIntegralShopView.QuickBuyAlert");
+         buyAlert.setData(_vipIntegralInfo.GoodsID,_vipIntegralInfo.ID,_vipIntegralInfo.Price);
+         buyAlert.setBuyNum(_vipIntegralInfo.LimitNum);
+         LayerManager.Instance.addToLayer(buyAlert,2,true,1);
       }
       
-      public function refreshShow(param1:VipIntegralShopInfo) : void
+      public function refreshShow(value:VipIntegralShopInfo) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:int = 0;
-         _vipIntegralInfo = param1;
+         var property:* = null;
+         var hasBuyNum:int = 0;
+         _vipIntegralInfo = value;
          _itemCell.info = ItemManager.Instance.getTemplateById(_vipIntegralInfo.GoodsID);
          _nameTxt.text = _itemCell.info.Name;
          _needMoneyTxt.text = _vipIntegralInfo.Price.toString();
          if(PlayerManager.Instance.Self.IsVIP)
          {
-            _loc3_ = "Vip" + PlayerManager.Instance.Self.VIPLevel + "Quantity";
-            if(param1[_loc3_] > 0)
+            property = "Vip" + PlayerManager.Instance.Self.VIPLevel + "Quantity";
+            if(value[property] > 0)
             {
-               _loc2_ = 0;
+               hasBuyNum = 0;
                if(VipIntegralShopController.instance.limitDic[_vipIntegralInfo.GoodsID] != null)
                {
-                  _loc2_ = VipIntegralShopController.instance.limitDic[_vipIntegralInfo.GoodsID];
+                  hasBuyNum = VipIntegralShopController.instance.limitDic[_vipIntegralInfo.GoodsID];
                }
-               _vipIntegralInfo.LimitNum = param1[_loc3_] - _loc2_;
+               _vipIntegralInfo.LimitNum = value[property] - hasBuyNum;
                if(_vipIntegralInfo.LimitNum > 0)
                {
                   var _loc4_:Boolean = true;
@@ -150,12 +150,12 @@ package vipIntegralShop.view
       
       private function getBuyVipLevel() : int
       {
-         var _loc1_:int = PlayerManager.Instance.Self.VIPLevel + 1;
-         while(_vipIntegralInfo["Vip" + _loc1_ + "Quantity"] == 0)
+         var level:int = PlayerManager.Instance.Self.VIPLevel + 1;
+         while(_vipIntegralInfo["Vip" + level + "Quantity"] == 0)
          {
-            _loc1_++;
+            level++;
          }
-         return _loc1_;
+         return level;
       }
       
       public function dispose() : void

@@ -12,6 +12,7 @@ package oldPlayerRegress.view
    import ddt.data.quest.QuestCategory;
    import ddt.events.PkgEvent;
    import ddt.manager.LanguageMgr;
+   import ddt.manager.PathManager;
    import ddt.manager.SocketManager;
    import ddt.manager.SoundManager;
    import ddt.utils.PositionUtils;
@@ -19,6 +20,7 @@ package oldPlayerRegress.view
    import flash.display.DisplayObject;
    import flash.events.Event;
    import flash.events.MouseEvent;
+   import oldPlayerRegress.view.itemView.AreaView;
    import oldPlayerRegress.view.itemView.TaskItemView;
    import oldPlayerRegress.view.itemView.WelcomeView;
    import oldPlayerRegress.view.itemView.call.CallView;
@@ -63,8 +65,11 @@ package oldPlayerRegress.view
       
       private var _taskMenuItem:Vector.<TaskItemView>;
       
+      private var _ind:int;
+      
       public function RegressMenuView()
       {
+         _ind = PathManager.OldPlayerTransferEnable == true?4:3;
          super();
          loadTaskUI();
       }
@@ -86,15 +91,15 @@ package oldPlayerRegress.view
          }
       }
       
-      private function __onTaskLoadProgress(param1:UIModuleEvent) : void
+      private function __onTaskLoadProgress(event:UIModuleEvent) : void
       {
-         if(param1.module == "quest")
+         if(event.module == "quest")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
       
-      protected function __onClose(param1:Event) : void
+      protected function __onClose(event:Event) : void
       {
          UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);
          UIModuleLoader.Instance.removeEventListener("uiMoudleProgress",__onTaskLoadProgress);
@@ -102,9 +107,9 @@ package oldPlayerRegress.view
          UIModuleSmallLoading.Instance.hide();
       }
       
-      private function __onTaskLoadComplete(param1:UIModuleEvent) : void
+      private function __onTaskLoadComplete(event:UIModuleEvent) : void
       {
-         if(param1.module == "quest")
+         if(event.module == "quest")
          {
             UIModuleLoader.Instance.removeEventListener("uiModuleComplete",__onTaskLoadComplete);
             UIModuleLoader.Instance.removeEventListener("uiMoudleProgress",__onTaskLoadProgress);
@@ -125,33 +130,43 @@ package oldPlayerRegress.view
       
       private function initData() : void
       {
-         _bgArray = new Array(new ScaleFrameImage(),new ScaleFrameImage(),new ScaleFrameImage(),new ScaleFrameImage());
-         _textArray = new Array(new FilterFrameText(),new FilterFrameText(),new FilterFrameText(),new FilterFrameText());
-         _textNameArray = new Array("ddt.regress.menuView.Welcome","ddt.regress.menuView.Packs","ddt.regress.menuView.Call","ddt.regress.menuView.Task");
-         _btnArray = new Array(new BaseButton(),new BaseButton(),new BaseButton(),new BaseButton());
-         _viewArray = new Array(new WelcomeView(),new PacksView(),new CallView(),new RegressTaskView());
+         if(PathManager.OldPlayerTransferEnable == true)
+         {
+            _bgArray = new Array(new ScaleFrameImage(),new ScaleFrameImage(),new ScaleFrameImage(),new ScaleFrameImage(),new ScaleFrameImage());
+            _textArray = new Array(new FilterFrameText(),new FilterFrameText(),new FilterFrameText(),new FilterFrameText(),new FilterFrameText());
+            _textNameArray = new Array("ddt.regress.menuView.Welcome","ddt.regress.menuView.Packs","ddt.regress.menuView.Call","ddt.regress.menuView.Area","ddt.regress.menuView.Task");
+            _btnArray = new Array(new BaseButton(),new BaseButton(),new BaseButton(),new BaseButton(),new BaseButton());
+            _viewArray = new Array(new WelcomeView(),new PacksView(),new CallView(),new AreaView(),new RegressTaskView());
+         }
+         else
+         {
+            _bgArray = new Array(new ScaleFrameImage(),new ScaleFrameImage(),new ScaleFrameImage(),new ScaleFrameImage());
+            _textArray = new Array(new FilterFrameText(),new FilterFrameText(),new FilterFrameText(),new FilterFrameText());
+            _textNameArray = new Array("ddt.regress.menuView.Welcome","ddt.regress.menuView.Packs","ddt.regress.menuView.Call","ddt.regress.menuView.Task");
+            _btnArray = new Array(new BaseButton(),new BaseButton(),new BaseButton(),new BaseButton());
+            _viewArray = new Array(new WelcomeView(),new PacksView(),new CallView(),new RegressTaskView());
+         }
          _taskData = TaskManager.instance.getAvailableQuests(4);
          _taskMenuItem = new Vector.<TaskItemView>();
       }
       
       private function initView() : void
       {
-         var _loc1_:int = 0;
-         var _loc2_:int = 0;
+         var j:int = 0;
+         var k:int = 0;
          setItemView(_bgArray,"regress.ActivityCellBgUnSelected");
          _menuItemBgSelect = ComponentFactory.Instance.creatComponentByStylename("regress.ActivityCellBgSelected");
          addChild(_menuItemBgSelect);
-         _loc1_ = 0;
-         while(_loc1_ < _textArray.length)
+         for(j = 0; j < _textArray.length; )
          {
-            _textArray[_loc1_] = ComponentFactory.Instance.creatComponentByStylename("regress.view.menuItemName.Text");
-            _textArray[_loc1_].text = LanguageMgr.GetTranslation(_textNameArray[_loc1_]);
-            if(_loc1_ > 0)
+            _textArray[j] = ComponentFactory.Instance.creatComponentByStylename("regress.view.menuItemName.Text");
+            _textArray[j].text = LanguageMgr.GetTranslation(_textNameArray[j]);
+            if(j > 0)
             {
-               _textArray[_loc1_].y = _textArray[_loc1_ - 1].y + _textArray[_loc1_].height + 7;
+               _textArray[j].y = _textArray[j - 1].y + _textArray[j].height + 7;
             }
-            addChild(_textArray[_loc1_]);
-            _loc1_++;
+            addChild(_textArray[j]);
+            j++;
          }
          setItemView(_btnArray,"regress.button");
          if(_taskData.list.length > 0)
@@ -160,22 +175,21 @@ package oldPlayerRegress.view
          }
          else
          {
-            _bgArray[3].visible = false;
-            _btnArray[3].visible = false;
-            _textArray[3].visible = false;
+            _bgArray[_ind].visible = false;
+            _btnArray[_ind].visible = false;
+            _textArray[_ind].visible = false;
          }
          _taskInfoView = new QuestInfoPanelView();
          PositionUtils.setPos(_taskInfoView,"regress.task.view.pos");
          addChild(_taskInfoView);
-         _loc2_ = 0;
-         while(_loc2_ < _viewArray.length)
+         for(k = 0; k < _viewArray.length; )
          {
-            addChild(_viewArray[_loc2_]);
-            if(_loc2_ > 0)
+            addChild(_viewArray[k]);
+            if(k > 0)
             {
-               _viewArray[_loc2_].visible = false;
+               _viewArray[k].visible = false;
             }
-            _loc2_++;
+            k++;
          }
       }
       
@@ -190,42 +204,45 @@ package oldPlayerRegress.view
          _listView.vScrollProxy = 1;
          _listView.hScrollProxy = 2;
          addChild(_listView);
+         if(PathManager.OldPlayerTransferEnable == false)
+         {
+            PositionUtils.setPos(_listView,"regress.leftMenu.titleV.pos");
+            PositionUtils.setPos(_expandBg,"regress.leftMenu.taskExpandBgV.pos");
+         }
          addListItem();
       }
       
       private function addListItem() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         _loc2_ = 0;
-         while(_loc2_ < _taskData.list.length)
+         var i:int = 0;
+         var taskItem:* = null;
+         for(i = 0; i < _taskData.list.length; )
          {
-            _loc1_ = new TaskItemView(taskMenuItemClick);
-            _loc1_.titleField.text = _taskData.list[_loc2_].Title;
-            _loc1_.clickID = _loc2_;
-            if(_taskData.list[_loc2_].isCompleted)
+            taskItem = new TaskItemView(taskMenuItemClick);
+            taskItem.titleField.text = _taskData.list[i].Title;
+            taskItem.clickID = i;
+            if(_taskData.list[i].isCompleted)
             {
-               _loc1_.bmpOK.visible = true;
+               taskItem.bmpOK.visible = true;
             }
-            _loc1_.width = _loc1_.displayWidth;
-            _loc1_.height = _loc1_.displayHeight;
-            _itemList.addChild(_loc1_);
-            _taskMenuItem.push(_loc1_);
-            _loc2_++;
+            taskItem.width = taskItem.displayWidth;
+            taskItem.height = taskItem.displayHeight;
+            _itemList.addChild(taskItem);
+            _taskMenuItem.push(taskItem);
+            i++;
          }
          _itemList.arrange();
          _listView.invalidateViewport();
       }
       
-      protected function __onUpdateTaskMenuItem(param1:Event) : void
+      protected function __onUpdateTaskMenuItem(event:Event) : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          _taskData = TaskManager.instance.getAvailableQuests(4);
-         _loc2_ = 0;
-         while(_loc2_ < _taskMenuItem.length)
+         for(i = 0; i < _taskMenuItem.length; )
          {
-            _itemList.removeChild(_taskMenuItem[_loc2_]);
-            _loc2_++;
+            _itemList.removeChild(_taskMenuItem[i]);
+            i++;
          }
          _taskMenuItem.length = 0;
          if(_taskData.list.length > 0)
@@ -237,154 +254,150 @@ package oldPlayerRegress.view
          {
             _expandBg.visible = false;
             _listView.visible = false;
-            _bgArray[3].visible = false;
-            _btnArray[3].visible = false;
-            _textArray[3].visible = false;
+            _bgArray[_ind].visible = false;
+            _btnArray[_ind].visible = false;
+            _textArray[_ind].visible = false;
             menuItemClick(0);
          }
       }
       
-      private function taskMenuItemClick(param1:int) : void
+      private function taskMenuItemClick(clickID:int) : void
       {
          SoundManager.instance.playButtonSound();
-         _menuItemBgSelect.y = _btnArray[3].y - 2;
+         _menuItemBgSelect.y = _btnArray[_ind].y - 2;
          setViewVisible();
          setTaskMenuBgFrame();
          if(_taskMenuItem.length == 0)
          {
             return;
          }
-         _taskMenuItem[param1].itemBg.setFrame(2);
+         _taskMenuItem[clickID].itemBg.setFrame(2);
          _taskInfoView.visible = true;
          _taskInfoView.regressFlag = true;
-         _taskInfoView.info = _taskData.list[param1];
-         _viewArray[3].visible = true;
-         _viewArray[3].taskInfo = _taskData.list[param1];
-         _viewArray[3].show();
+         _taskInfoView.info = _taskData.list[clickID];
+         _viewArray[_ind].visible = true;
+         _viewArray[_ind].taskInfo = _taskData.list[clickID];
+         _viewArray[_ind].show();
       }
       
       private function setTaskMenuBgFrame() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _taskMenuItem.length)
+         var i:int = 0;
+         for(i = 0; i < _taskMenuItem.length; )
          {
-            _taskMenuItem[_loc1_].itemBg.setFrame(1);
-            _loc1_++;
+            _taskMenuItem[i].itemBg.setFrame(1);
+            i++;
          }
       }
       
-      private function setItemView(param1:Array, param2:String) : void
+      private function setItemView(array:Array, styleName:String) : void
       {
-         var _loc3_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < param1.length)
+         var i:int = 0;
+         for(i = 0; i < array.length; )
          {
-            param1[_loc3_] = ComponentFactory.Instance.creatComponentByStylename(param2);
-            if(_loc3_ > 0)
+            array[i] = ComponentFactory.Instance.creatComponentByStylename(styleName);
+            if(i > 0)
             {
-               param1[_loc3_].y = param1[_loc3_ - 1].y + param1[_loc3_].height + 4;
+               array[i].y = array[i - 1].y + array[i].height + 4;
             }
-            addChild(param1[_loc3_]);
-            _loc3_++;
+            addChild(array[i]);
+            i++;
          }
       }
       
       private function initEvent() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _btnArray.length)
+         var i:int = 0;
+         for(i = 0; i < _btnArray.length; )
          {
-            _btnArray[_loc1_].addEventListener("click",__onMenuItemClick);
-            _loc1_++;
+            _btnArray[i].addEventListener("click",__onMenuItemClick);
+            i++;
          }
          SocketManager.Instance.addEventListener(PkgEvent.format(178),TaskManager.instance.__updateAcceptedTask);
          TaskManager.instance.addEventListener("update_taskMenuItem",__onUpdateTaskMenuItem);
       }
       
-      private function __onMenuItemClick(param1:MouseEvent) : void
+      private function __onMenuItemClick(event:MouseEvent) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _btnArray.length)
+         var i:int = 0;
+         for(i = 0; i < _btnArray.length; )
          {
-            if(_btnArray[_loc2_] == param1.currentTarget)
+            if(_btnArray[i] == event.currentTarget)
             {
                SoundManager.instance.playButtonSound();
-               menuItemClick(_loc2_);
+               menuItemClick(i);
                break;
             }
-            _loc2_++;
+            i++;
          }
       }
       
-      private function menuItemClick(param1:int) : void
+      private function menuItemClick(id:int) : void
       {
-         _menuItemBgSelect.y = _btnArray[param1].y - 2;
+         _menuItemBgSelect.y = _btnArray[id].y - 2;
          setViewVisible();
          _taskInfoView.visible = false;
-         param1 == 3?taskMenuItemClick(0):_viewArray[param1].show();
+         id == _ind?taskMenuItemClick(0):_viewArray[id].show();
+         if(id == 3)
+         {
+            SocketManager.Instance.out.sendRegressApplyEnable();
+         }
       }
       
       private function setViewVisible() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _viewArray.length)
+         var i:int = 0;
+         for(i = 0; i < _viewArray.length; )
          {
-            _viewArray[_loc1_].visible = false;
-            _loc1_++;
+            _viewArray[i].visible = false;
+            i++;
          }
       }
       
       private function removeEvent() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _btnArray.length)
+         var i:int = 0;
+         for(i = 0; i < _btnArray.length; )
          {
-            _btnArray[_loc1_].removeEventListener("click",__onMenuItemClick);
-            _loc1_++;
+            _btnArray[i].removeEventListener("click",__onMenuItemClick);
+            i++;
          }
          TaskManager.instance.removeEventListener("update_taskMenuItem",__onUpdateTaskMenuItem);
       }
       
-      private function removeArray(param1:Array) : void
+      private function removeArray(array:Array) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < param1.length)
+         var i:int = 0;
+         for(i = 0; i < array.length; )
          {
-            if(param1[_loc2_])
+            if(array[i])
             {
-               param1[_loc2_].dispose();
-               param1[_loc2_] = null;
+               array[i].dispose();
+               array[i] = null;
             }
-            _loc2_++;
+            i++;
          }
-         param1.length = 0;
+         array.length = 0;
       }
       
       override public function dispose() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
+         var i:int = 0;
+         var j:int = 0;
          super.dispose();
          removeEvent();
          removeArray(_bgArray);
          removeArray(_textArray);
          removeArray(_btnArray);
          removeArray(_viewArray);
-         _loc2_ = 0;
-         while(_loc2_ < _taskMenuItem.length)
+         for(i = 0; i < _taskMenuItem.length; )
          {
-            if(_taskMenuItem[_loc2_])
+            if(_taskMenuItem[i])
             {
-               _taskMenuItem[_loc2_].dispose();
-               _taskMenuItem[_loc2_] = null;
+               _taskMenuItem[i].dispose();
+               _taskMenuItem[i] = null;
             }
-            _loc2_++;
+            i++;
          }
          _taskMenuItem.length = 0;
          if(_menuItemBgSelect)
@@ -397,11 +410,11 @@ package oldPlayerRegress.view
             _taskInfoView.dispose();
             _taskInfoView = null;
          }
-         _loc1_ = 0;
-         while(_loc1_ < _textNameArray.length)
+         j = 0;
+         while(j < _textNameArray.length)
          {
-            _textNameArray[_loc1_] = null;
-            _loc1_++;
+            _textNameArray[j] = null;
+            j++;
          }
          _textNameArray.length = 0;
          if(_itemList)

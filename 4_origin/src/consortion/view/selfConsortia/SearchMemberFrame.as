@@ -30,11 +30,11 @@ package consortion.view.selfConsortia
       override protected function init() : void
       {
          super.init();
-         var _loc1_:AlertInfo = new AlertInfo();
-         _loc1_.title = LanguageMgr.GetTranslation("consortion.view.selfConsortia.SearchMemberFrame");
-         _loc1_.showCancel = false;
-         _loc1_.moveEnable = false;
-         info = _loc1_;
+         var alertinfo:AlertInfo = new AlertInfo();
+         alertinfo.title = LanguageMgr.GetTranslation("consortion.view.selfConsortia.SearchMemberFrame");
+         alertinfo.showCancel = false;
+         alertinfo.moveEnable = false;
+         info = alertinfo;
          _inputBg = ComponentFactory.Instance.creatComponentByStylename("SearchMemberFrame.memberList.TextInputBg");
          _inputText = ComponentFactory.Instance.creatComponentByStylename("SearchMemberFrame.textInput");
          _inputText.text = LanguageMgr.GetTranslation("consortion.view.selfConsortia.SearchMemberFrame.default");
@@ -61,25 +61,25 @@ package consortion.view.selfConsortia
          }
       }
       
-      private function __onSearchBtnClick(param1:MouseEvent) : void
+      private function __onSearchBtnClick(event:MouseEvent) : void
       {
          dispatchEvent(new FrameEvent(2));
       }
       
-      private function __onTextChange(param1:KeyboardEvent) : void
+      private function __onTextChange(event:KeyboardEvent) : void
       {
          if(_inputText.text == LanguageMgr.GetTranslation("consortion.view.selfConsortia.SearchMemberFrame.default"))
          {
             _inputText.text = "";
             return;
          }
-         if(param1.keyCode == 13)
+         if(event.keyCode == 13)
          {
             dispatchEvent(new FrameEvent(2));
          }
       }
       
-      private function __onInputTextClick(param1:MouseEvent) : void
+      private function __onInputTextClick(event:MouseEvent) : void
       {
          if(_inputText.text == LanguageMgr.GetTranslation("consortion.view.selfConsortia.SearchMemberFrame.default"))
          {

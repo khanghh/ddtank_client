@@ -35,7 +35,7 @@ package wishingTree
          WishingTreeManager.instance.addEventListener("wishingTreeOpen",open);
       }
       
-      private function open(param1:Event) : void
+      private function open(event:Event) : void
       {
          new HelperUIModuleLoad().loadUIModule(["wishingTree"],openFrame);
       }

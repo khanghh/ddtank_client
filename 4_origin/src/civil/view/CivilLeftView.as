@@ -95,10 +95,10 @@ package civil.view
       
       private var _attestBtn:ScaleFrameImage;
       
-      public function CivilLeftView(param1:CivilController, param2:CivilModel)
+      public function CivilLeftView(controller:CivilController, model:CivilModel)
       {
-         _controller = param1;
-         _model = param2;
+         _controller = controller;
+         _model = model;
          super();
          init();
          initContent();
@@ -318,13 +318,13 @@ package civil.view
          _model.removeEventListener("selected_change",__updateView);
       }
       
-      private function __onButtonClick(param1:MouseEvent) : void
+      private function __onButtonClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:CivilPlayerInfo = _controller.currentcivilInfo;
-         if(_loc2_ && _loc2_.info)
+         var info:CivilPlayerInfo = _controller.currentcivilInfo;
+         if(info && info.info)
          {
-            var _loc3_:* = param1.currentTarget;
+            var _loc3_:* = event.currentTarget;
             if(_talkBtn !== _loc3_)
             {
                if(_equipBtn !== _loc3_)
@@ -333,31 +333,31 @@ package civil.view
                   {
                      if(_courtshipBtn === _loc3_)
                      {
-                        ChurchManager.instance.sendValidateMarry(_loc2_.info);
+                        ChurchManager.instance.sendValidateMarry(info.info);
                      }
                   }
                   else
                   {
-                     IMManager.Instance.addFriend(_loc2_.info.NickName);
+                     IMManager.Instance.addFriend(info.info.NickName);
                   }
                }
-               else if(_loc2_.IsPublishEquip)
+               else if(info.IsPublishEquip)
                {
-                  PlayerInfoViewControl.viewByID(_loc2_.info.ID,PlayerManager.Instance.Self.ZoneID);
+                  PlayerInfoViewControl.viewByID(info.info.ID,PlayerManager.Instance.Self.ZoneID);
                }
-               else if(_loc2_.MarryInfoID == PlayerManager.Instance.Self.MarryInfoID && PlayerManager.Instance.Self.IsPublishEquit)
+               else if(info.MarryInfoID == PlayerManager.Instance.Self.MarryInfoID && PlayerManager.Instance.Self.IsPublishEquit)
                {
-                  PlayerInfoViewControl.viewByID(_loc2_.info.ID,PlayerManager.Instance.Self.ZoneID);
+                  PlayerInfoViewControl.viewByID(info.info.ID,PlayerManager.Instance.Self.ZoneID);
                }
             }
             else
             {
-               ChatManager.Instance.privateChatTo(_loc2_.info.NickName,_loc2_.info.ID);
+               ChatManager.Instance.privateChatTo(info.info.NickName,info.info.ID);
             }
          }
       }
       
-      private function __updateView(param1:CivilEvent) : void
+      private function __updateView(evt:CivilEvent) : void
       {
          if(_model.currentcivilItemInfo)
          {
@@ -392,13 +392,13 @@ package civil.view
       
       private function updatePlayerView() : void
       {
-         var _loc2_:CivilPlayerInfo = _model.currentcivilItemInfo;
-         var _loc1_:PlayerInfo = _loc2_.info;
-         _playerNameTxt.text = _loc1_.NickName;
-         if(_loc1_.IsVIP)
+         var info:CivilPlayerInfo = _model.currentcivilItemInfo;
+         var playerInfo:PlayerInfo = info.info;
+         _playerNameTxt.text = playerInfo.NickName;
+         if(playerInfo.IsVIP)
          {
             ObjectUtils.disposeObject(_vipName);
-            _vipName = VipController.instance.getVipNameTxt(152,_loc1_.typeVIP);
+            _vipName = VipController.instance.getVipNameTxt(152,playerInfo.typeVIP);
             _vipName.textSize = 16;
             _vipName.x = _playerNameTxt.x;
             _vipName.y = _playerNameTxt.y;
@@ -411,10 +411,10 @@ package civil.view
             addChild(_playerNameTxt);
             DisplayUtils.removeDisplay(_vipName);
          }
-         _guildNameTxt.text = !!_loc1_.ConsortiaName?_loc1_.ConsortiaName:"";
-         _reputeTxt.text = String(_loc1_.Repute);
-         _marriedTxt.text = !!_loc1_.IsMarried?LanguageMgr.GetTranslation("civil.frame.CivilRegisterFrame.married"):LanguageMgr.GetTranslation("civil.frame.CivilRegisterFrame.marry");
-         _levelIcon.setInfo(_loc1_.Grade,_loc1_.ddtKingGrade,_loc1_.Repute,_loc1_.WinCount,_loc1_.TotalCount,_loc1_.FightPower,_loc1_.Offer,true,false);
+         _guildNameTxt.text = !!playerInfo.ConsortiaName?playerInfo.ConsortiaName:"";
+         _reputeTxt.text = String(playerInfo.Repute);
+         _marriedTxt.text = !!playerInfo.IsMarried?LanguageMgr.GetTranslation("civil.frame.CivilRegisterFrame.married"):LanguageMgr.GetTranslation("civil.frame.CivilRegisterFrame.marry");
+         _levelIcon.setInfo(playerInfo.Grade,playerInfo.ddtKingGrade,playerInfo.Repute,playerInfo.WinCount,playerInfo.TotalCount,playerInfo.FightPower,playerInfo.Offer,true,false);
          _levelIcon.visible = true;
          if(_model.currentcivilItemInfo.MarryInfoID == PlayerManager.Instance.Self.MarryInfoID && PlayerManager.Instance.Self.Introduction != null)
          {
@@ -423,7 +423,7 @@ package civil.view
          }
          else
          {
-            _introductionTxt.text = _loc2_.Introduction;
+            _introductionTxt.text = info.Introduction;
          }
          if(_model.currentcivilItemInfo.MarryInfoID == PlayerManager.Instance.Self.MarryInfoID || _model.currentcivilItemInfo.info.playerState.StateID == 0)
          {
@@ -433,7 +433,7 @@ package civil.view
          {
             _talkBtn.enable = true;
          }
-         if(_loc2_.info.ID == PlayerManager.Instance.Self.ID)
+         if(info.info.ID == PlayerManager.Instance.Self.ID)
          {
             _addBtn.enable = false;
             _equipBtn.enable = _model.currentcivilItemInfo.IsPublishEquip;
@@ -444,19 +444,19 @@ package civil.view
             _equipBtn.enable = _model.currentcivilItemInfo.IsPublishEquip;
          }
          _courtshipBtn.enable = getCourtshipBtnEnable();
-         creatAttestBtn(_loc1_);
+         creatAttestBtn(playerInfo);
       }
       
-      private function creatAttestBtn(param1:PlayerInfo) : void
+      private function creatAttestBtn(playerInfo:PlayerInfo) : void
       {
-         if(param1.isAttest)
+         if(playerInfo.isAttest)
          {
             if(!_attestBtn)
             {
                _attestBtn = ComponentFactory.Instance.creatComponentByStylename("hall.playerInfo.attest");
                addChild(_attestBtn);
             }
-            if(param1.IsVIP)
+            if(playerInfo.IsVIP)
             {
                _attestBtn.x = _vipName.x + _vipName.width;
                _attestBtn.y = _vipName.y;
@@ -485,19 +485,19 @@ package civil.view
       
       private function refreshCharater() : void
       {
-         var _loc1_:* = null;
+         var character:* = null;
          _info = _controller.currentcivilInfo;
          if(_info != null)
          {
-            _loc1_ = _player;
+            character = _player;
             _player = CharactoryFactory.createCharacter(_info.info,"room") as RoomCharacter;
             _player.show(true,-1);
             _player.setShowLight(true);
             PositionUtils.setPos(_player,"civil.playerPos");
             addChild(_player as DisplayObject);
-            if(_loc1_)
+            if(character)
             {
-               _loc1_.dispose();
+               character.dispose();
             }
          }
          else if(_player)

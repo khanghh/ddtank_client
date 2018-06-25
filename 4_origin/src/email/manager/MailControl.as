@@ -81,7 +81,7 @@ package email.manager
          _view.show();
       }
       
-      protected function __onHide(param1:MailEvent) : void
+      protected function __onHide(event:MailEvent) : void
       {
          hide();
       }
@@ -104,7 +104,7 @@ package email.manager
          MailManager.Instance.isOpenFromBag = false;
       }
       
-      private function __escapeKeyDown(param1:EmailEvent) : void
+      private function __escapeKeyDown(evt:EmailEvent) : void
       {
          if(_write && _write.parent)
          {
@@ -126,7 +126,7 @@ package email.manager
          }
       }
       
-      private function __onOpenView(param1:MailEvent) : void
+      private function __onOpenView(event:MailEvent) : void
       {
          if(_view && _view.parent)
          {
@@ -139,14 +139,14 @@ package email.manager
          }
       }
       
-      public function changeState(param1:String) : void
+      public function changeState(state:String) : void
       {
-         MailManager.Instance.Model.state = param1;
+         MailManager.Instance.Model.state = state;
       }
       
-      protected function __onShowWriting(param1:MailEvent) : void
+      protected function __onShowWriting(event:MailEvent) : void
       {
-         _name = String(param1.info);
+         _name = String(event.info);
          creatWriteView();
       }
       
@@ -176,7 +176,7 @@ package email.manager
          _write.addEventListener("disposed",__onDispose);
       }
       
-      private function __closeWriting(param1:FrameEvent) : void
+      private function __closeWriting(event:FrameEvent) : void
       {
          if(_write)
          {
@@ -184,7 +184,7 @@ package email.manager
          }
       }
       
-      private function __closeWritingFrame(param1:EmailEvent) : void
+      private function __closeWritingFrame(event:EmailEvent) : void
       {
          if(_write)
          {
@@ -196,7 +196,7 @@ package email.manager
          }
       }
       
-      private function __onDispose(param1:EmailEvent) : void
+      private function __onDispose(event:EmailEvent) : void
       {
          if(_write)
          {
@@ -214,14 +214,14 @@ package email.manager
          _write = null;
       }
       
-      public function changeType(param1:String) : void
+      public function changeType(type:String) : void
       {
-         if(MailManager.Instance.Model.mailType == param1)
+         if(MailManager.Instance.Model.mailType == type)
          {
             return;
          }
          updateNoReadMails();
-         MailManager.Instance.Model.mailType = param1;
+         MailManager.Instance.Model.mailType = type;
       }
       
       public function updateNoReadMails() : void
@@ -229,95 +229,95 @@ package email.manager
          MailManager.Instance.Model.getNoReadMails();
       }
       
-      public function getAnnexToBag(param1:EmailInfo, param2:int) : void
+      public function getAnnexToBag(info:EmailInfo, type:int) : void
       {
-         if(!HasAtLeastOneDiamond(param1))
+         if(!HasAtLeastOneDiamond(info))
          {
             return;
          }
-         SocketManager.Instance.out.sendGetMail(param1.ID,param2);
+         SocketManager.Instance.out.sendGetMail(info.ID,type);
       }
       
-      private function HasAtLeastOneDiamond(param1:EmailInfo) : Boolean
+      private function HasAtLeastOneDiamond(info:EmailInfo) : Boolean
       {
-         var _loc2_:* = 0;
-         if(param1.Gold > 0)
+         var i:* = 0;
+         if(info.Gold > 0)
          {
             return true;
          }
-         if(param1.Money > 0)
+         if(info.Money > 0)
          {
             return true;
          }
-         if(param1.BindMoney > 0)
+         if(info.BindMoney > 0)
          {
             return true;
          }
-         if(param1.Medal > 0)
+         if(info.Medal > 0)
          {
             return true;
          }
-         _loc2_ = uint(1);
-         while(_loc2_ <= 5)
+         i = uint(1);
+         while(i <= 5)
          {
-            if(param1["Annex" + _loc2_])
+            if(info["Annex" + i])
             {
                return true;
             }
-            _loc2_++;
+            i++;
          }
          return false;
       }
       
-      public function deleteEmail(param1:EmailInfo) : void
+      public function deleteEmail(info:EmailInfo) : void
       {
-         var _loc2_:* = null;
-         if(param1)
+         var arr:* = null;
+         if(info)
          {
-            if(param1.Type == 59)
+            if(info.Type == 59)
             {
                if(SharedManager.Instance.deleteMail[PlayerManager.Instance.Self.ID])
                {
-                  _loc2_ = SharedManager.Instance.deleteMail[PlayerManager.Instance.Self.ID] as Array;
-                  if(_loc2_.indexOf(param1.ID) < 0)
+                  arr = SharedManager.Instance.deleteMail[PlayerManager.Instance.Self.ID] as Array;
+                  if(arr.indexOf(info.ID) < 0)
                   {
-                     _loc2_.push(param1.ID);
+                     arr.push(info.ID);
                   }
                }
                else
                {
-                  SharedManager.Instance.deleteMail[PlayerManager.Instance.Self.ID] = [param1.ID];
+                  SharedManager.Instance.deleteMail[PlayerManager.Instance.Self.ID] = [info.ID];
                }
                SharedManager.Instance.save();
             }
             if(curShowPage == "sent")
             {
-               SocketManager.Instance.out.sendDeleteSentMail(param1.ID);
+               SocketManager.Instance.out.sendDeleteSentMail(info.ID);
             }
             else
             {
-               SocketManager.Instance.out.sendDeleteMail(param1.ID);
+               SocketManager.Instance.out.sendDeleteMail(info.ID);
             }
          }
       }
       
-      public function readEmail(param1:EmailInfo) : void
+      public function readEmail(info:EmailInfo) : void
       {
          if(MailManager.Instance.Model.mailType != "no read mails")
          {
-            MailManager.Instance.Model.removeFromNoRead(param1);
+            MailManager.Instance.Model.removeFromNoRead(info);
          }
-         SocketManager.Instance.out.sendUpdateMail(param1.ID);
+         SocketManager.Instance.out.sendUpdateMail(info.ID);
       }
       
-      public function setPage(param1:Boolean, param2:Boolean = true) : void
+      public function setPage(pre:Boolean, canChangePane:Boolean = true) : void
       {
-         if(!param1 && !param2)
+         if(!pre && !canChangePane)
          {
             MailManager.Instance.Model.currentPage = MailManager.Instance.Model.currentPage;
             return;
          }
-         if(param1)
+         if(pre)
          {
             if(MailManager.Instance.Model.currentPage - 1 > 0)
             {
@@ -342,24 +342,24 @@ package email.manager
          }
       }
       
-      public function sendEmail(param1:Object) : void
+      public function sendEmail(value:Object) : void
       {
-         SocketManager.Instance.out.sendEmail(param1);
+         SocketManager.Instance.out.sendEmail(value);
       }
       
-      public function onSendAnnex(param1:Array) : void
+      public function onSendAnnex(annexArr:Array) : void
       {
-         TaskManager.instance.onSendAnnex(param1);
+         TaskManager.instance.onSendAnnex(annexArr);
       }
       
-      public function removeMail(param1:EmailInfo) : void
+      public function removeMail(info:EmailInfo) : void
       {
-         MailManager.Instance.Model.removeEmail(param1);
+         MailManager.Instance.Model.removeEmail(info);
       }
       
-      private function __sendEmail(param1:PkgEvent) : void
+      private function __sendEmail(event:PkgEvent) : void
       {
-         if(param1.pkg.readBoolean())
+         if(event.pkg.readBoolean())
          {
             if(_view)
             {

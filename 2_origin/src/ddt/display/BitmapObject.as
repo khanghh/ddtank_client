@@ -14,9 +14,9 @@ package ddt.display
       
       public var manager:BitmapManager;
       
-      public function BitmapObject(param1:int, param2:int, param3:Boolean = true, param4:uint = 4294967295)
+      public function BitmapObject(width:int, height:int, transparent:Boolean = true, fillColor:uint = 4294967295)
       {
-         super(param1,param2,param3,param4);
+         super(width,height,transparent,fillColor);
       }
       
       override public function dispose() : void

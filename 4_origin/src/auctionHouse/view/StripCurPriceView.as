@@ -60,9 +60,9 @@ package auctionHouse.view
          yourPrice_bit_y = yourPrice_bit.y;
       }
       
-      function set info(param1:AuctionGoodsInfo) : void
+      function set info(value:AuctionGoodsInfo) : void
       {
-         _info = param1;
+         _info = value;
          update();
       }
       

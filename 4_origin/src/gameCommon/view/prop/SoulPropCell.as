@@ -12,9 +12,9 @@ package gameCommon.view.prop
          this.setGrayFilter();
       }
       
-      override public function setPossiton(param1:int, param2:int) : void
+      override public function setPossiton(x:int, y:int) : void
       {
-         super.setPossiton(param1,param2);
+         super.setPossiton(x,y);
          this.x = _x;
          this.y = _y;
       }

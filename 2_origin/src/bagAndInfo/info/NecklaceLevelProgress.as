@@ -30,15 +30,15 @@ package bagAndInfo.info
       
       override protected function drawProgress() : void
       {
-         var _loc2_:Number = _value / _max > 1?1:Number(_value / _max);
-         var _loc1_:Graphics = _thuck.graphics;
-         _loc1_.clear();
-         if(_loc2_ >= 0)
+         var rate:Number = _value / _max > 1?1:Number(_value / _max);
+         var pen:Graphics = _thuck.graphics;
+         pen.clear();
+         if(rate >= 0)
          {
             _progressLabel.text = _value.toString() + "/" + _max.toString();
-            _loc1_.beginBitmapFill(_graphics_thuck);
-            _loc1_.drawRect(0,0,_width * _loc2_,_height - 8);
-            _loc1_.endFill();
+            pen.beginBitmapFill(_graphics_thuck);
+            pen.drawRect(0,0,_width * rate,_height - 8);
+            pen.endFill();
          }
       }
       

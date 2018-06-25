@@ -133,21 +133,21 @@ package petsBag.view.item
          return _info;
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         _info = param1 as PetInfo;
+         _info = data as PetInfo;
          updateView();
       }
       
       private function updateView() : void
       {
-         var _loc1_:String = LanguageMgr.GetTranslation("ddt.pets.growthText");
+         var growthText:String = LanguageMgr.GetTranslation("ddt.pets.growthText");
          _name.text = String(_info.Name);
-         _attackTxt.text = _info.Attack > 0?String(_info.Attack) + "(" + _loc1_ + (_info.AttackGrow / PetconfigAnalyzer.PetCofnig.PropertiesRate).toFixed(1) + ")":"";
-         _defenceTxt.text = _info.Defence > 0?String(_info.Defence) + "(" + _loc1_ + (_info.DefenceGrow / PetconfigAnalyzer.PetCofnig.PropertiesRate).toFixed(1) + ")":"";
-         _agilityTxt.text = _info.Agility > 0?String(_info.Agility) + "(" + _loc1_ + (_info.AgilityGrow / PetconfigAnalyzer.PetCofnig.PropertiesRate).toFixed(1) + ")":"";
-         _HPTxt.text = _info.Blood > 0?String(_info.Blood) + "(" + _loc1_ + (_info.BloodGrow / PetconfigAnalyzer.PetCofnig.PropertiesRate).toFixed(1) + ")":"";
-         _luckTxt.text = _info.Luck > 0?String(_info.Luck) + "(" + _loc1_ + (_info.LuckGrow / PetconfigAnalyzer.PetCofnig.PropertiesRate).toFixed(1) + ")":"";
+         _attackTxt.text = _info.Attack > 0?String(_info.Attack) + "(" + growthText + (_info.AttackGrow / PetconfigAnalyzer.PetCofnig.PropertiesRate).toFixed(1) + ")":"";
+         _defenceTxt.text = _info.Defence > 0?String(_info.Defence) + "(" + growthText + (_info.DefenceGrow / PetconfigAnalyzer.PetCofnig.PropertiesRate).toFixed(1) + ")":"";
+         _agilityTxt.text = _info.Agility > 0?String(_info.Agility) + "(" + growthText + (_info.AgilityGrow / PetconfigAnalyzer.PetCofnig.PropertiesRate).toFixed(1) + ")":"";
+         _HPTxt.text = _info.Blood > 0?String(_info.Blood) + "(" + growthText + (_info.BloodGrow / PetconfigAnalyzer.PetCofnig.PropertiesRate).toFixed(1) + ")":"";
+         _luckTxt.text = _info.Luck > 0?String(_info.Luck) + "(" + growthText + (_info.LuckGrow / PetconfigAnalyzer.PetCofnig.PropertiesRate).toFixed(1) + ")":"";
          _descTxt.text = String(_info.Description);
          if(_HPTxt.textWidth > _HPTxt.width)
          {

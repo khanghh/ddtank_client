@@ -38,9 +38,9 @@ package uigeneral.team
          teamText7.text = LanguageMgr.GetTranslation("ddt.team.allView.text50");
       }
       
-      private function __onUpdateTeamInfo(param1:TeamEvent) : void
+      private function __onUpdateTeamInfo(e:TeamEvent) : void
       {
-         if(_teamID == int(param1.data))
+         if(_teamID == int(e.data))
          {
             _info = TeamManager.instance.model.getTeamInfoByID(_teamID);
             if(_info)
@@ -57,19 +57,18 @@ package uigeneral.team
          }
       }
       
-      private function getLastSeasonInfo(param1:int) : String
+      private function getLastSeasonInfo(season:int) : String
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         _loc3_ = 0;
-         while(_loc3_ < _info.seasonInfo.length)
+         var i:int = 0;
+         var data:* = null;
+         for(i = 0; i < _info.seasonInfo.length; )
          {
-            _loc2_ = String(_info.seasonInfo[_loc3_]).split(",");
-            if(_loc2_.length > 1 && int(_loc2_[0]) == param1)
+            data = String(_info.seasonInfo[i]).split(",");
+            if(data.length > 1 && int(data[0]) == season)
             {
-               return LanguageMgr.GetTranslation("team.invite.honor",_loc2_[0],_loc2_[1]);
+               return LanguageMgr.GetTranslation("team.invite.honor",data[0],data[1]);
             }
-            _loc3_++;
+            i++;
          }
          return LanguageMgr.GetTranslation("team.invite.nothonor");
       }
@@ -80,10 +79,10 @@ package uigeneral.team
          dispose();
       }
       
-      public function update(param1:int, param2:int) : void
+      public function update(userID:int, teamID:int) : void
       {
-         _userID = param1;
-         _teamID = param2;
+         _userID = userID;
+         _teamID = teamID;
          SocketManager.Instance.out.sendTeamGetInfo(_teamID);
       }
       

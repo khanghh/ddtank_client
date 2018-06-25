@@ -16,9 +16,9 @@ package mark.data
          super();
       }
       
-      public function set type(param1:int) : void
+      public function set type(value:int) : void
       {
-         _type = param1;
+         _type = value;
       }
       
       public function get type() : int
@@ -28,14 +28,14 @@ package mark.data
       
       public function get chipCnt() : int
       {
-         var _loc1_:int = 0;
+         var count:int = 0;
          var _loc4_:int = 0;
          var _loc3_:* = chips;
-         for each(var _loc2_ in chips)
+         for each(var bag in chips)
          {
-            _loc1_++;
+            count++;
          }
-         return _loc1_;
+         return count;
       }
    }
 }

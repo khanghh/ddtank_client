@@ -20,25 +20,25 @@ package hall.player.aStar
       
       public var costMultiplier:Number = 1.0;
       
-      public function Node(param1:int, param2:int)
+      public function Node(x:int, y:int)
       {
          super();
-         this.x = param1;
-         this.y = param2;
+         this.x = x;
+         this.y = y;
       }
       
-      public function equal(param1:Node) : Boolean
+      public function equal(value:Node) : Boolean
       {
-         if(param1 == null)
+         if(value == null)
          {
             return false;
          }
-         return equalXY(param1.x,param1.y);
+         return equalXY(value.x,value.y);
       }
       
-      public function equalXY(param1:int, param2:int) : Boolean
+      public function equalXY(mX:int, mY:int) : Boolean
       {
-         return this.x == param1 && this.y == param2;
+         return this.x == mX && this.y == mY;
       }
    }
 }

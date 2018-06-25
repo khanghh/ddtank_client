@@ -62,8 +62,8 @@ package treasurePuzzle.view
          _textinput2 = ComponentFactory.Instance.creat("treasurePuzzle.view.RewardtextInput2");
          _textinput2.textField.tabIndex = 1;
          _detailAddressArea = ComponentFactory.Instance.creatComponentByStylename("treasurePuzzle.view.RewardsimpleTextArea");
-         var _loc1_:Rectangle = ComponentFactory.Instance.creatCustomObject("treasurePuzzle.DetailTextAreaRec");
-         ObjectUtils.copyPropertyByRectangle(_detailAddressArea,_loc1_);
+         var rec:Rectangle = ComponentFactory.Instance.creatCustomObject("treasurePuzzle.DetailTextAreaRec");
+         ObjectUtils.copyPropertyByRectangle(_detailAddressArea,rec);
          _nameText = ComponentFactory.Instance.creatComponentByStylename("treasurePuzzle.view.RewardNameText");
          _phoneText = ComponentFactory.Instance.creatComponentByStylename("treasurePuzzle.view.RewardPhoneText");
          _addressText = ComponentFactory.Instance.creatComponentByStylename("treasurePuzzle.view.RewardAddressText");
@@ -91,16 +91,16 @@ package treasurePuzzle.view
          _btn.addEventListener("click",btnClickHandler);
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();
          }
       }
       
-      private function btnClickHandler(param1:MouseEvent) : void
+      private function btnClickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          SocketManager.Instance.out.treasurePuzzle_savePlayerInfo(_textinput1.text,_textinput2.text,_detailAddressArea.text,TreasurePuzzleManager.Instance.currentPuzzle);

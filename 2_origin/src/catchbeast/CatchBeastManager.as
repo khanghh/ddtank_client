@@ -44,37 +44,37 @@ package catchbeast
          SocketManager.Instance.addEventListener("catchbeast_begin",__addCatchBeastBtn);
       }
       
-      protected function __addCatchBeastBtn(param1:CrazyTankSocketEvent) : void
+      protected function __addCatchBeastBtn(event:CrazyTankSocketEvent) : void
       {
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:int = param1._cmd;
-         var _loc3_:CrazyTankSocketEvent = null;
-         switch(int(_loc2_) - 32)
+         var pkg:PackageIn = event.pkg;
+         var cmd:int = event._cmd;
+         var events:CrazyTankSocketEvent = null;
+         switch(int(cmd) - 32)
          {
             case 0:
-               openOrclose(_loc4_);
+               openOrclose(pkg);
                break;
             case 1:
-               _loc3_ = new CrazyTankSocketEvent("catchbeast_viewinfo",_loc4_);
+               events = new CrazyTankSocketEvent("catchbeast_viewinfo",pkg);
                break;
             case 2:
-               _loc3_ = new CrazyTankSocketEvent("catchbeast_challenge",_loc4_);
+               events = new CrazyTankSocketEvent("catchbeast_challenge",pkg);
                break;
             case 3:
-               _loc3_ = new CrazyTankSocketEvent("catchbeast_buybuff",_loc4_);
+               events = new CrazyTankSocketEvent("catchbeast_buybuff",pkg);
                break;
             case 4:
-               _loc3_ = new CrazyTankSocketEvent("catchbeast_getaward",_loc4_);
+               events = new CrazyTankSocketEvent("catchbeast_getaward",pkg);
          }
-         if(_loc3_)
+         if(events)
          {
-            dispatchEvent(_loc3_);
+            dispatchEvent(events);
          }
       }
       
-      private function openOrclose(param1:PackageIn) : void
+      private function openOrclose(pkg:PackageIn) : void
       {
-         _isBegin = param1.readBoolean();
+         _isBegin = pkg.readBoolean();
          if(_isBegin)
          {
             createCatchBeastBtn();
@@ -110,9 +110,9 @@ package catchbeast
          return _isBegin;
       }
       
-      public function set isBegin(param1:Boolean) : void
+      public function set isBegin(value:Boolean) : void
       {
-         _isBegin = param1;
+         _isBegin = value;
       }
    }
 }

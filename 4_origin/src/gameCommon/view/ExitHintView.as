@@ -10,24 +10,24 @@ package gameCommon.view
    {
        
       
-      public function ExitHintView(param1:String, param2:String, param3:Boolean = true, param4:Function = null, param5:Function = null, param6:String = null, param7:String = null, param8:Number = 0)
+      public function ExitHintView(title:String, msg:String, model:Boolean = true, callback:Function = null, cancelback:Function = null, confirmLabel:String = null, cancelLabels:String = null, frameWidth:Number = 0)
       {
          super();
       }
       
-      public static function show(param1:String, param2:String, param3:Boolean = true, param4:Function = null, param5:Function = null, param6:Boolean = true, param7:String = null, param8:String = null, param9:Number = 0, param10:Boolean = true) : Frame
+      public static function show(title:String, msg:String, model:Boolean = true, callback:Function = null, cancelback:Function = null, autoClear:Boolean = true, confirmLabel:String = null, cancelLabel:String = null, frameWidth:Number = 0, isSetFocus:Boolean = true) : Frame
       {
-         var _loc12_:TextFormat = new TextFormat("Arial",12,16711680);
-         var _loc11_:TextField = new TextField();
-         _loc11_.defaultTextFormat = _loc12_;
-         _loc11_.text = LanguageMgr.GetTranslation("tank.view.ExitHint.hint.text");
-         _loc11_.autoSize = "left";
-         _loc11_.x = 48;
-         _loc11_.y = 83;
-         var _loc13_:Frame = new ExitHintView(param1,param2,param3,param4,param5,param7,param8,param9);
-         LayerManager.Instance.addToLayer(_loc13_,3);
-         _loc13_.addChild(_loc11_);
-         return _loc13_;
+         var format:TextFormat = new TextFormat("Arial",12,16711680);
+         var hint:TextField = new TextField();
+         hint.defaultTextFormat = format;
+         hint.text = LanguageMgr.GetTranslation("tank.view.ExitHint.hint.text");
+         hint.autoSize = "left";
+         hint.x = 48;
+         hint.y = 83;
+         var dialog:Frame = new ExitHintView(title,msg,model,callback,cancelback,confirmLabel,cancelLabel,frameWidth);
+         LayerManager.Instance.addToLayer(dialog,3);
+         dialog.addChild(hint);
+         return dialog;
       }
    }
 }

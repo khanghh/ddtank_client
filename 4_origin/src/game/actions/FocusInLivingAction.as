@@ -9,10 +9,10 @@ package game.actions
       
       private var _gameLiving:GameLiving;
       
-      public function FocusInLivingAction(param1:GameLiving)
+      public function FocusInLivingAction(gameLiving:GameLiving)
       {
          super();
-         _gameLiving = param1;
+         _gameLiving = gameLiving;
       }
       
       override public function execute() : void

@@ -40,12 +40,12 @@ package ddt.view
       
       private var _tipGapH:int;
       
-      public function PropItemView(param1:PropInfo, param2:Boolean = true, param3:Boolean = true, param4:int = 1)
+      public function PropItemView(info:PropInfo, $isExist:Boolean = true, $showPrice:Boolean = true, $count:int = 1)
       {
          super();
          mouseEnabled = true;
-         _info = param1;
-         _isExist = param2;
+         _info = info;
+         _isExist = $isExist;
          _asset = PropItemView.createView(_info.Template.Pic,38,38);
          _asset.x = 1;
          _asset.y = 1;
@@ -58,37 +58,37 @@ package ddt.view
          tipDirctions = "2,7,5,1,6,4";
          tipGapH = 20;
          tipGapV = 20;
-         var _loc5_:ToolPropInfo = new ToolPropInfo();
-         _loc5_.info = param1.Template;
-         _loc5_.count = param4;
-         _loc5_.showTurn = param3;
-         _loc5_.showThew = true;
-         _loc5_.showCount = true;
-         tipData = _loc5_;
+         var tipInfo:ToolPropInfo = new ToolPropInfo();
+         tipInfo.info = info.Template;
+         tipInfo.count = $count;
+         tipInfo.showTurn = $showPrice;
+         tipInfo.showThew = true;
+         tipInfo.showCount = true;
+         tipData = tipInfo;
          ShowTipManager.Instance.addTip(this);
          addEventListener("mouseOver",__over);
          addEventListener("mouseOut",__out);
       }
       
-      public static function createView(param1:String, param2:int = 62, param3:int = 62, param4:Boolean = true) : Bitmap
+      public static function createView(id:String, width:int = 62, height:int = 62, smoothing:Boolean = true) : Bitmap
       {
-         var _loc7_:* = null;
-         var _loc6_:* = null;
-         var _loc5_:* = null;
-         if(param1 != "wish")
+         var className:* = null;
+         var t:* = null;
+         var wishBtn:* = null;
+         if(id != "wish")
          {
-            _loc7_ = "game.crazyTank.view.Prop" + param1.toString() + "Asset";
-            _loc6_ = ComponentFactory.Instance.creatBitmap(_loc7_);
-            _loc6_.smoothing = param4;
-            _loc6_.width = param2;
-            _loc6_.height = param3;
-            return _loc6_;
+            className = "game.crazyTank.view.Prop" + id.toString() + "Asset";
+            t = ComponentFactory.Instance.creatBitmap(className);
+            t.smoothing = smoothing;
+            t.width = width;
+            t.height = height;
+            return t;
          }
-         _loc5_ = ComponentFactory.Instance.creatBitmap("asset.game.wishBtn");
-         _loc5_.smoothing = param4;
-         _loc5_.width = param2;
-         _loc5_.height = param3;
-         return _loc5_;
+         wishBtn = ComponentFactory.Instance.creatBitmap("asset.game.wishBtn");
+         wishBtn.smoothing = smoothing;
+         wishBtn.width = width;
+         wishBtn.height = height;
+         return wishBtn;
       }
       
       public function get info() : PropInfo
@@ -96,18 +96,18 @@ package ddt.view
          return _info;
       }
       
-      public function set propPos(param1:int) : void
+      public function set propPos(val:int) : void
       {
-         _asset.x = param1;
-         _asset.y = param1;
+         _asset.x = val;
+         _asset.y = val;
       }
       
-      private function __out(param1:MouseEvent) : void
+      private function __out(event:MouseEvent) : void
       {
          dispatchEvent(new Event("out"));
       }
       
-      private function __over(param1:MouseEvent) : void
+      private function __over(event:MouseEvent) : void
       {
          dispatchEvent(new Event("over"));
       }
@@ -158,49 +158,49 @@ package ddt.view
          return _tipGapH;
       }
       
-      public function set tipStyle(param1:String) : void
+      public function set tipStyle(value:String) : void
       {
-         if(_tipStyle == param1)
+         if(_tipStyle == value)
          {
             return;
          }
-         _tipStyle = param1;
+         _tipStyle = value;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(value:Object) : void
       {
-         if(_tipData == param1)
+         if(_tipData == value)
          {
             return;
          }
-         _tipData = param1;
+         _tipData = value;
       }
       
-      public function set tipDirctions(param1:String) : void
+      public function set tipDirctions(value:String) : void
       {
-         if(_tipDirctions == param1)
+         if(_tipDirctions == value)
          {
             return;
          }
-         _tipDirctions = param1;
+         _tipDirctions = value;
       }
       
-      public function set tipGapV(param1:int) : void
+      public function set tipGapV(value:int) : void
       {
-         if(_tipGapV == param1)
+         if(_tipGapV == value)
          {
             return;
          }
-         _tipGapV = param1;
+         _tipGapV = value;
       }
       
-      public function set tipGapH(param1:int) : void
+      public function set tipGapH(value:int) : void
       {
-         if(_tipGapH == param1)
+         if(_tipGapH == value)
          {
             return;
          }
-         _tipGapH = param1;
+         _tipGapH = value;
       }
       
       public function asDisplayObject() : DisplayObject

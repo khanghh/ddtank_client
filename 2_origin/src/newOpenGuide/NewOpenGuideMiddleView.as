@@ -67,7 +67,7 @@ package newOpenGuide
          _btnSprite.addEventListener("click",clickHandler,false,0,true);
       }
       
-      private function enterFrameHandler(param1:Event) : void
+      private function enterFrameHandler(event:Event) : void
       {
          if(_frameMc.currentFrame == 8)
          {
@@ -76,7 +76,7 @@ package newOpenGuide
          }
       }
       
-      private function clickHandler(param1:MouseEvent) : void
+      private function clickHandler(event:MouseEvent) : void
       {
          _btnSprite.visible = false;
          _lightMc.gotoAndPlay(1);
@@ -87,38 +87,38 @@ package newOpenGuide
             "scaleX":1.2,
             "scaleY":1.2
          });
-         var _loc2_:Array = NewOpenGuideManager.instance.getTitleStrIndexByLevel(PlayerManager.Instance.Self.Grade);
-         SocketManager.Instance.out.syncWeakStep(200 + _loc2_[2]);
-         if(_loc2_[0] == 1)
+         var tmp:Array = NewOpenGuideManager.instance.getTitleStrIndexByLevel(PlayerManager.Instance.Self.Grade);
+         SocketManager.Instance.out.syncWeakStep(200 + tmp[2]);
+         if(tmp[0] == 1)
          {
             NoviceDataManager.instance.saveNoviceData(470,PathManager.userName(),PathManager.solveRequestPath());
          }
-         if(_loc2_[0] == 2)
+         if(tmp[0] == 2)
          {
             NoviceDataManager.instance.saveNoviceData(650,PathManager.userName(),PathManager.solveRequestPath());
          }
-         if(_loc2_[0] == 3)
+         if(tmp[0] == 3)
          {
             NoviceDataManager.instance.saveNoviceData(720,PathManager.userName(),PathManager.solveRequestPath());
          }
-         if(_loc2_[0] == 4)
+         if(tmp[0] == 4)
          {
             NoviceDataManager.instance.saveNoviceData(910,PathManager.userName(),PathManager.solveRequestPath());
          }
-         if(_loc2_[0] == 5)
+         if(tmp[0] == 5)
          {
             NoviceDataManager.instance.saveNoviceData(980,PathManager.userName(),PathManager.solveRequestPath());
          }
-         if(_loc2_[0] == 6)
+         if(tmp[0] == 6)
          {
             NoviceDataManager.instance.saveNoviceData(1020,PathManager.userName(),PathManager.solveRequestPath());
          }
       }
       
-      private function enterFrameHandler2(param1:Event) : void
+      private function enterFrameHandler2(event:Event) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
+         var tmpPoint:* = null;
+         var tmpDescPos:* = null;
          if(_lightMc.currentFrame <= 10)
          {
             _iconMc.x = _iconMc.x - 0.5;
@@ -140,14 +140,14 @@ package newOpenGuide
          }
          if(_lightMc.currentFrame == 18)
          {
-            _loc2_ = this.localToGlobal(new Point(_iconMc.x,_iconMc.y));
+            tmpPoint = this.localToGlobal(new Point(_iconMc.x,_iconMc.y));
             LayerManager.Instance.addToLayer(_iconMc,2);
-            _iconMc.x = _loc2_.x;
-            _iconMc.y = _loc2_.y;
-            _loc3_ = NewOpenGuideManager.instance.getMovePos();
+            _iconMc.x = tmpPoint.x;
+            _iconMc.y = tmpPoint.y;
+            tmpDescPos = NewOpenGuideManager.instance.getMovePos();
             TweenLite.to(_iconMc,1,{
-               "x":_loc3_.x,
-               "y":_loc3_.y,
+               "x":tmpDescPos.x,
+               "y":tmpDescPos.y,
                "scaleX":0.6,
                "scaleY":0.6,
                "alpha":0.5,

@@ -38,29 +38,29 @@ package gameCommon.view.experience
          _tweens = new Vector.<TweenCore>();
       }
       
-      public function appendTween(param1:TweenCore, param2:Number = 0, param3:Object = null) : void
+      public function appendTween(tween:TweenCore, offset:Number = 0, obj:Object = null) : void
       {
-         _tweens.push(param1);
-         _timeline.append(param1,param2);
-         if(param3 != null)
+         _tweens.push(tween);
+         _timeline.append(tween,offset);
+         if(obj != null)
          {
-            if(param3.onStart != null && param3.onStartParams != null)
+            if(obj.onStart != null && obj.onStartParams != null)
             {
-               param1.vars.onStart = param3.onStart;
-               param1.vars.onStartParams = param3.onStartParams;
+               tween.vars.onStart = obj.onStart;
+               tween.vars.onStartParams = obj.onStartParams;
             }
-            else if(param3.onStart != null)
+            else if(obj.onStart != null)
             {
-               param1.vars.onStart = param3.onStart;
+               tween.vars.onStart = obj.onStart;
             }
-            if(param3.onComplete != null && param3.onCompleteParams != null)
+            if(obj.onComplete != null && obj.onCompleteParams != null)
             {
-               param1.vars.onComplete = param3.onComplete;
-               param1.vars.onCompleteParams = param3.onCompleteParams;
+               tween.vars.onComplete = obj.onComplete;
+               tween.vars.onCompleteParams = obj.onCompleteParams;
             }
-            else if(param3.onComplete != null)
+            else if(obj.onComplete != null)
             {
-               param1.vars.onComplete = param3.onComplete;
+               tween.vars.onComplete = obj.onComplete;
             }
          }
       }
@@ -82,13 +82,13 @@ package gameCommon.view.experience
       
       public function deleteTweens() : void
       {
-         var _loc1_:* = null;
+         var core:* = null;
          _timeline.stop();
          while(_tweens.length > 0)
          {
-            _loc1_ = _tweens.shift();
-            _loc1_.kill();
-            _loc1_ = null;
+            core = _tweens.shift();
+            core.kill();
+            core = null;
          }
          _tweens = new Vector.<TweenCore>();
          _timeline.kill();

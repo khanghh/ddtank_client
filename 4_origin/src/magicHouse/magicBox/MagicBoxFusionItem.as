@@ -43,23 +43,23 @@ package magicHouse.magicBox
          addChild(_shine);
       }
       
-      public function setItemData(param1:MagicBoxItemInfo) : void
+      public function setItemData($info:MagicBoxItemInfo) : void
       {
-         _info = param1;
-         var _loc2_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(_info.ItemID);
-         _cell = new BagCell(0,_loc2_,true,ComponentFactory.Instance.creatBitmap("magichouse.magicbox.itemselectedcell.bg"));
+         _info = $info;
+         var cellinfo:ItemTemplateInfo = ItemManager.Instance.getTemplateById(_info.ItemID);
+         _cell = new BagCell(0,cellinfo,true,ComponentFactory.Instance.creatBitmap("magichouse.magicbox.itemselectedcell.bg"));
          addChild(_cell);
          var _loc3_:int = 52;
          _cell.height = _loc3_;
          _cell.width = _loc3_;
          PositionUtils.setPos(_cell,"magicbox.fusionview.itemcellPos");
          _cell.PicPos = new Point(2,2);
-         _name.text = _loc2_.Name;
+         _name.text = cellinfo.Name;
       }
       
-      public function setItemShine(param1:Boolean) : void
+      public function setItemShine(s:Boolean) : void
       {
-         _shine.visible = param1;
+         _shine.visible = s;
       }
       
       public function get info() : MagicBoxItemInfo

@@ -11,24 +11,24 @@ package ddt.data.analyze
       
       public var list:Dictionary;
       
-      public function PetInfoAnalyzer(param1:Function)
+      public function PetInfoAnalyzer(onCompleteCall:Function)
       {
          list = new Dictionary();
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc5_:* = null;
-         var _loc4_:XML = XML(param1);
-         var _loc2_:XMLList = _loc4_..item;
+         var pInfo:* = null;
+         var xml:XML = XML(data);
+         var items:XMLList = xml..item;
          var _loc7_:int = 0;
-         var _loc6_:* = _loc2_;
-         for each(var _loc3_ in _loc2_)
+         var _loc6_:* = items;
+         for each(var item in items)
          {
-            _loc5_ = new PetTemplateInfo();
-            ObjectUtils.copyPorpertiesByXML(_loc5_,_loc3_);
-            list[_loc5_.TemplateID] = _loc5_;
+            pInfo = new PetTemplateInfo();
+            ObjectUtils.copyPorpertiesByXML(pInfo,item);
+            list[pInfo.TemplateID] = pInfo;
          }
          onAnalyzeComplete();
       }

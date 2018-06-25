@@ -33,21 +33,21 @@ package store.view.shortcutBuy
       
       private var _shortcutTextBg:ScaleBitmapImage;
       
-      public function ShortcutBuyCell(param1:ItemTemplateInfo)
+      public function ShortcutBuyCell(info:ItemTemplateInfo)
       {
          _nameArr = [LanguageMgr.GetTranslation("store.view.ShortcutBuyCell.lingju"),LanguageMgr.GetTranslation("store.view.ShortcutBuyCell.jiezi"),LanguageMgr.GetTranslation("store.view.ShortcutBuyCell.shouzhuo"),LanguageMgr.GetTranslation("store.view.ShortcutBuyCell.baozhu"),LanguageMgr.GetTranslation("store.view.ShortcutBuyCell.zhuque"),LanguageMgr.GetTranslation("store.view.ShortcutBuyCell.xuanwu"),LanguageMgr.GetTranslation("store.view.ShortcutBuyCell.qinglong"),LanguageMgr.GetTranslation("store.view.ShortcutBuyCell.baihu")];
-         var _loc2_:Sprite = new Sprite();
-         _loc2_.addChild(ComponentFactory.Instance.creatBitmap("asset.ddtstore.EquipCellBG"));
-         super(_loc2_);
+         var bg:Sprite = new Sprite();
+         bg.addChild(ComponentFactory.Instance.creatBitmap("asset.ddtstore.EquipCellBG"));
+         super(bg);
          tipDirctions = "7,0";
-         _itemInfo = param1;
+         _itemInfo = info;
          initII();
       }
       
       private function initII() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:int = 0;
+         var name:* = null;
+         var i:int = 0;
          _mcBg = ComponentFactory.Instance.creatComponentByStylename("ddtstore.ShortcutBuyFrame.ShortcutCellBg");
          _lightEffect = ComponentFactory.Instance.creatComponentByStylename("asset.ddtstore.CellBgSelectEffect");
          _lightEffect.visible = false;
@@ -77,18 +77,17 @@ package store.view.shortcutBuy
          }
          else
          {
-            _loc1_ = "";
-            _loc2_ = 0;
-            while(_loc2_ < _nameArr.length)
+            name = "";
+            for(i = 0; i < _nameArr.length; )
             {
-               if(_itemInfo.Name.indexOf(_nameArr[_loc2_]) > 0)
+               if(_itemInfo.Name.indexOf(_nameArr[i]) > 0)
                {
-                  _loc1_ = _nameArr[_loc2_];
+                  name = _nameArr[i];
                   break;
                }
-               _loc2_++;
+               i++;
             }
-            _shortcutText.text = _loc1_;
+            _shortcutText.text = name;
          }
          _shortcutTextBg.x = _shortcutText.x - 9;
          addChild(_shortcutText);
@@ -103,9 +102,9 @@ package store.view.shortcutBuy
          }
       }
       
-      override public function set info(param1:ItemTemplateInfo) : void
+      override public function set info(value:ItemTemplateInfo) : void
       {
-         .super.info = param1;
+         .super.info = value;
          if(_lightEffect)
          {
             addChild(_lightEffect);
@@ -117,13 +116,13 @@ package store.view.shortcutBuy
          return _selected;
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         if(_selected == param1)
+         if(_selected == value)
          {
             return;
          }
-         _selected = param1;
+         _selected = value;
          _lightEffect.visible = _selected;
       }
       

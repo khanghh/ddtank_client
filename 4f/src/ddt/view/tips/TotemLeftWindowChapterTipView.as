@@ -1,0 +1,7 @@
+package ddt.view.tips{   import com.pickgliss.ui.ComponentFactory;   import com.pickgliss.ui.core.Disposeable;   import com.pickgliss.ui.text.FilterFrameText;   import com.pickgliss.ui.tip.BaseTip;   import com.pickgliss.ui.tip.ITip;   import com.pickgliss.utils.ObjectUtils;   import ddt.manager.LanguageMgr;   import flash.display.Bitmap;   import totem.TotemManager;   import totem.data.TotemAddInfo;   import totem.data.TotemChapterTipInfo;   import totem.data.TotemUpGradDataVo;      public class TotemLeftWindowChapterTipView extends BaseTip implements Disposeable, ITip   {                   private var _bg:Bitmap;            private var _titleTxt:FilterFrameText;            private var _nameTxt:FilterFrameText;            private var _descTxt:FilterFrameText;            private var _tipInfo:TotemChapterTipInfo;            private var _valueTxtList:Vector.<FilterFrameText>;            private var _titleTxtList:Array;            private var _numTxtList:Array;            private var _propertyTxtList:Array;            public function TotemLeftWindowChapterTipView() { super(); }
+            private function initView() : void { }
+            override public function get tipData() : Object { return null; }
+            override public function set tipData(data:Object) : void { }
+            private function getAddValue(index:int, addDataInfo:TotemAddInfo) : int { return 0; }
+            override public function dispose() : void { }
+   }}

@@ -31,10 +31,10 @@ package boguAdventure.view
          super();
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
          CacheSysManager.lock("AlaertInBoguAdventure");
-         super.enter(param1,param2);
+         super.enter(prev,data);
       }
       
       override public function addedToStage() : void
@@ -55,7 +55,7 @@ package boguAdventure.view
          addEventListener("enterFrame",__onUpdateView);
       }
       
-      private function __onUpdateView(param1:Event) : void
+      private function __onUpdateView(e:Event) : void
       {
          _gameView.updateView();
       }
@@ -85,10 +85,10 @@ package boguAdventure.view
          return "boguadventure";
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
          dispose();
-         super.leaving(param1);
+         super.leaving(next);
       }
       
       override public function dispose() : void

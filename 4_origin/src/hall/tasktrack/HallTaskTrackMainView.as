@@ -48,18 +48,18 @@ package hall.tasktrack
       
       private var m_width:Number = 200;
       
-      public function HallTaskTrackMainView(param1:BaseButton)
+      public function HallTaskTrackMainView(npcBtn:BaseButton)
       {
          super();
          UIModuleLoader.Instance.addUIModlue("quest");
-         initView(param1);
+         initView(npcBtn);
          initEvent();
          setInOutVisible(true);
          _btnGroup.selectIndex = 0;
          judgeSelectShow(null);
       }
       
-      public function judgeSelectShow(param1:Event) : void
+      public function judgeSelectShow(event:Event) : void
       {
          if(_listView.isEmpty() && !_canGetListView.isEmpty())
          {
@@ -79,7 +79,7 @@ package hall.tasktrack
          }
       }
       
-      private function initView(param1:BaseButton) : void
+      private function initView(npcBtn:BaseButton) : void
       {
          _bg = ComponentFactory.Instance.creatBitmap("asset.hall.taskTrack.viewBg");
          _bg2 = ComponentFactory.Instance.creatBitmap("asset.hall.taskTrack.viewBg2");
@@ -95,7 +95,7 @@ package hall.tasktrack
          _btnGroup.addSelectItem(_canGetBtn);
          _listView = new HallTaskTrackListView();
          _listView.visible = false;
-         _canGetListView = new HallTaskCanGetListView(param1);
+         _canGetListView = new HallTaskCanGetListView(npcBtn);
          _canGetListView.visible = false;
          addChild(_bg);
          addChild(_bg2);
@@ -120,7 +120,7 @@ package hall.tasktrack
          _canGetListView.addEventListener("change",judgeSelectShow,false,0,true);
       }
       
-      private function __changeHandler(param1:Event) : void
+      private function __changeHandler(event:Event) : void
       {
          switch(int(_btnGroup.selectIndex))
          {
@@ -138,17 +138,17 @@ package hall.tasktrack
          }
       }
       
-      private function __soundPlay(param1:MouseEvent) : void
+      private function __soundPlay(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }
       
-      private function taskClickHandler(param1:MouseEvent) : void
+      private function taskClickHandler(event:MouseEvent) : void
       {
          TaskManager.instance.switchVisible();
       }
       
-      public function moveInClickHandler(param1:MouseEvent) : void
+      public function moveInClickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          setInOutVisible(true);
@@ -158,7 +158,7 @@ package hall.tasktrack
          });
       }
       
-      public function moveOutClickHandler(param1:MouseEvent) : void
+      public function moveOutClickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          setInOutVisible(false);
@@ -194,10 +194,10 @@ package hall.tasktrack
          return 260;
       }
       
-      private function setInOutVisible(param1:Boolean) : void
+      private function setInOutVisible(isOut:Boolean) : void
       {
-         _moveOutBtn.visible = param1;
-         _moveInBtn.visible = !param1;
+         _moveOutBtn.visible = isOut;
+         _moveInBtn.visible = !isOut;
       }
       
       private function removeEvent() : void

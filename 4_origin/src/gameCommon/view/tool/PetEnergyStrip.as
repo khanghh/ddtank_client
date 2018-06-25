@@ -30,10 +30,10 @@ package gameCommon.view.tool
       
       private var _TipInfo:ChangeNumToolTipInfo;
       
-      public function PetEnergyStrip(param1:Pet)
+      public function PetEnergyStrip($pet:Pet)
       {
          super();
-         _pet = param1;
+         _pet = $pet;
          _mp = _pet.MP;
          _maxMp = _pet.MaxMP;
          _TipInfo = new ChangeNumToolTipInfo();
@@ -56,7 +56,7 @@ package gameCommon.view.tool
          _pet.removeEventListener("petEnergyChange",onChange);
       }
       
-      private function onChange(param1:LivingEvent) : void
+      private function onChange(event:LivingEvent) : void
       {
          _mp = _pet.MP;
          _maxMp = _pet.MaxMP;
@@ -91,7 +91,7 @@ package gameCommon.view.tool
          return _TipInfo;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(value:Object) : void
       {
       }
       
@@ -100,7 +100,7 @@ package gameCommon.view.tool
          return "0";
       }
       
-      public function set tipDirctions(param1:String) : void
+      public function set tipDirctions(value:String) : void
       {
       }
       
@@ -109,7 +109,7 @@ package gameCommon.view.tool
          return 0;
       }
       
-      public function set tipGapH(param1:int) : void
+      public function set tipGapH(value:int) : void
       {
       }
       
@@ -118,7 +118,7 @@ package gameCommon.view.tool
          return 20;
       }
       
-      public function set tipGapV(param1:int) : void
+      public function set tipGapV(value:int) : void
       {
       }
       
@@ -127,7 +127,7 @@ package gameCommon.view.tool
          return "ddt.view.tips.ChangeNumToolTip";
       }
       
-      public function set tipStyle(param1:String) : void
+      public function set tipStyle(value:String) : void
       {
       }
       

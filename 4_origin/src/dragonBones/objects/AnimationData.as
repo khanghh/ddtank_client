@@ -58,9 +58,9 @@ package dragonBones.objects
          _timelineList.fixed = false;
          var _loc4_:int = 0;
          var _loc3_:* = _timelineList;
-         for each(var _loc2_ in _timelineList)
+         for each(var timeline in _timelineList)
          {
-            _loc2_.dispose();
+            timeline.dispose();
          }
          _timelineList.fixed = false;
          _timelineList.length = 0;
@@ -68,75 +68,75 @@ package dragonBones.objects
          _slotTimelineList.fixed = false;
          var _loc6_:int = 0;
          var _loc5_:* = _slotTimelineList;
-         for each(var _loc1_ in _slotTimelineList)
+         for each(var slotTimeline in _slotTimelineList)
          {
-            _loc1_.dispose();
+            slotTimeline.dispose();
          }
          _slotTimelineList.fixed = false;
          _slotTimelineList.length = 0;
          _slotTimelineList = null;
       }
       
-      public function getTimeline(param1:String) : TransformTimeline
+      public function getTimeline(timelineName:String) : TransformTimeline
       {
-         var _loc2_:int = _timelineList.length;
+         var i:int = _timelineList.length;
          while(true)
          {
-            _loc2_--;
-            if(!_loc2_)
+            i--;
+            if(!i)
             {
                break;
             }
-            if(_timelineList[_loc2_].name == param1)
+            if(_timelineList[i].name == timelineName)
             {
-               return _timelineList[_loc2_];
+               return _timelineList[i];
             }
          }
          return null;
       }
       
-      public function addTimeline(param1:TransformTimeline) : void
+      public function addTimeline(timeline:TransformTimeline) : void
       {
-         if(!param1)
+         if(!timeline)
          {
             throw new ArgumentError();
          }
-         if(_timelineList.indexOf(param1) < 0)
+         if(_timelineList.indexOf(timeline) < 0)
          {
             _timelineList.fixed = false;
-            _timelineList[_timelineList.length] = param1;
+            _timelineList[_timelineList.length] = timeline;
             _timelineList.fixed = true;
          }
       }
       
-      public function getSlotTimeline(param1:String) : SlotTimeline
+      public function getSlotTimeline(timelineName:String) : SlotTimeline
       {
-         var _loc2_:int = _slotTimelineList.length;
+         var i:int = _slotTimelineList.length;
          while(true)
          {
-            _loc2_--;
-            if(!_loc2_)
+            i--;
+            if(!i)
             {
                break;
             }
-            if(_slotTimelineList[_loc2_].name == param1)
+            if(_slotTimelineList[i].name == timelineName)
             {
-               return _slotTimelineList[_loc2_];
+               return _slotTimelineList[i];
             }
          }
          return null;
       }
       
-      public function addSlotTimeline(param1:SlotTimeline) : void
+      public function addSlotTimeline(timeline:SlotTimeline) : void
       {
-         if(!param1)
+         if(!timeline)
          {
             throw new ArgumentError();
          }
-         if(_slotTimelineList.indexOf(param1) < 0)
+         if(_slotTimelineList.indexOf(timeline) < 0)
          {
             _slotTimelineList.fixed = false;
-            _slotTimelineList[_slotTimelineList.length] = param1;
+            _slotTimelineList[_slotTimelineList.length] = timeline;
             _slotTimelineList.fixed = true;
          }
       }

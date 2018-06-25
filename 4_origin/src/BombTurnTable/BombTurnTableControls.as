@@ -58,10 +58,10 @@ package BombTurnTable
          BombTurnTableManager.instance.addEventListener("TurnTableOpenView",onShowView);
       }
       
-      private function onShowView(param1:CEvent) : void
+      private function onShowView(evt:CEvent) : void
       {
-         var _loc2_:Boolean = BombTurnTableManager.instance.isValid;
-         if(_loc2_)
+         var isValid:Boolean = BombTurnTableManager.instance.isValid;
+         if(isValid)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.activityTime.exceed"));
             return;
@@ -82,28 +82,27 @@ package BombTurnTable
          }
       }
       
-      protected function viewData_Handler(param1:PkgEvent) : void
+      protected function viewData_Handler(evt:PkgEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc5_:int = 0;
-         var _loc4_:PackageIn = param1.pkg;
+         var temGoodInfo:* = null;
+         var i:int = 0;
+         var pkg:PackageIn = evt.pkg;
          _curTurnTableInfo = new BombTurnTableInfo();
-         _curTurnTableInfo.level = _loc4_.readInt();
-         var _loc2_:int = _loc4_.readInt();
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_)
+         _curTurnTableInfo.level = pkg.readInt();
+         var turnTableCount:int = pkg.readInt();
+         for(i = 0; i < turnTableCount; )
          {
-            _loc3_ = new BombTurnTableGoodInfo();
-            _loc3_.place = _loc4_.readInt();
-            _loc3_.templateId = _loc4_.readInt();
-            _loc3_.goodCount = _loc4_.readInt();
-            _loc3_.validDate = _loc4_.readInt();
-            _loc3_.sex = _loc4_.readInt();
-            _loc3_.isReceive = _loc4_.readInt();
-            _curTurnTableInfo.goodsInfo.push(_loc3_);
-            _loc5_++;
+            temGoodInfo = new BombTurnTableGoodInfo();
+            temGoodInfo.place = pkg.readInt();
+            temGoodInfo.templateId = pkg.readInt();
+            temGoodInfo.goodCount = pkg.readInt();
+            temGoodInfo.validDate = pkg.readInt();
+            temGoodInfo.sex = pkg.readInt();
+            temGoodInfo.isReceive = pkg.readInt();
+            _curTurnTableInfo.goodsInfo.push(temGoodInfo);
+            i++;
          }
-         if(_loc2_ == 8)
+         if(turnTableCount == 8)
          {
             dispatchEvent(new TurnTableEvent("updateTurntableData",_curTurnTableInfo));
             if(!_isSingleLottery)
@@ -125,21 +124,21 @@ package BombTurnTable
          }
       }
       
-      protected function winningInfo_Handler(param1:PkgEvent) : void
+      protected function winningInfo_Handler(evt:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readInt();
+         var pkg:PackageIn = evt.pkg;
+         var index:int = pkg.readInt();
          if(_frame && _frame.turnTableView)
          {
             updateBtnState(false);
             _isStart = true;
-            _frame.turnTableView.startLottery(_loc2_);
+            _frame.turnTableView.startLottery(index);
          }
       }
       
-      private function lottery_Handler(param1:TurnTableEvent) : void
+      private function lottery_Handler(evt:TurnTableEvent) : void
       {
-         switch(int(param1.data))
+         switch(int(int(evt.data)))
          {
             case 0:
                isSingleLottery = true;
@@ -179,22 +178,22 @@ package BombTurnTable
       
       private function checkLotteryCondition() : Boolean
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
-         var _loc3_:* = null;
+         var haveTicket:int = 0;
+         var needTicket:int = 0;
+         var temStr:* = null;
          if(_curTurnTableInfo)
          {
-            _loc2_ = getLotteryTicket();
-            _loc1_ = ServerConfigManager.instance.getNeedUseLotteryKicket(_curTurnTableInfo.quality);
-            if(BombTurnTableManager.instance.isValid || _loc2_ < _loc1_)
+            haveTicket = getLotteryTicket();
+            needTicket = ServerConfigManager.instance.getNeedUseLotteryKicket(_curTurnTableInfo.quality);
+            if(BombTurnTableManager.instance.isValid || haveTicket < needTicket)
             {
                if(BombTurnTableManager.instance.isValid)
                {
-                  _loc3_ = "ddt.activityTime.exceed";
+                  temStr = "ddt.activityTime.exceed";
                }
                else
                {
-                  _loc3_ = "ddt.bombTurnTable.ticketLackingMsg";
+                  temStr = "ddt.bombTurnTable.ticketLackingMsg";
                }
                _isStart = false;
                isSingleLottery = true;
@@ -202,7 +201,7 @@ package BombTurnTable
                {
                   _frame.turnTableView.updateTurnTableBtnStatus(false);
                }
-               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation(_loc3_),0,true);
+               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation(temStr),0,true);
                return false;
             }
             return true;
@@ -215,11 +214,11 @@ package BombTurnTable
          BombTurnTableManager.instance.sendStartLottery();
       }
       
-      private function updateBtnState(param1:Boolean = false) : void
+      private function updateBtnState(value:Boolean = false) : void
       {
          if(_frame)
          {
-            _frame.closeButton.enable = param1;
+            _frame.closeButton.enable = value;
          }
       }
       
@@ -261,9 +260,9 @@ package BombTurnTable
          }
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(!_isStart && (param1.responseCode == 0 || param1.responseCode == 1))
+         if(!_isStart && (evt.responseCode == 0 || evt.responseCode == 1))
          {
             SoundManager.instance.playButtonSound();
             if(_frame)
@@ -275,7 +274,7 @@ package BombTurnTable
          }
       }
       
-      private function _turntableEnd_Handler(param1:TurnTableEvent) : void
+      private function _turntableEnd_Handler(evt:TurnTableEvent) : void
       {
          if(curLotteryStatus == 2)
          {
@@ -290,13 +289,13 @@ package BombTurnTable
          }
       }
       
-      public function getLotteryTicket(param1:int = 12554) : int
+      public function getLotteryTicket(id:int = 12554) : int
       {
-         var _loc2_:BagInfo = PlayerManager.Instance.Self.getBag(1);
-         return _loc2_.getItemCountByTemplateId(param1);
+         var bagInfo:BagInfo = PlayerManager.Instance.Self.getBag(1);
+         return bagInfo.getItemCountByTemplateId(id);
       }
       
-      private function _lotteryComplate_Handler(param1:TurnTableEvent) : void
+      private function _lotteryComplate_Handler(evt:TurnTableEvent) : void
       {
          updateBtnState(true);
          _isStart = false;
@@ -308,10 +307,10 @@ package BombTurnTable
          return _isSingleLottery;
       }
       
-      private function set isSingleLottery(param1:Boolean) : void
+      private function set isSingleLottery(value:Boolean) : void
       {
-         _isSingleLottery = param1;
-         _curLotteryStatus = !!param1?1:2;
+         _isSingleLottery = value;
+         _curLotteryStatus = !!value?1:2;
       }
       
       public function get curLotteryStatus() : int

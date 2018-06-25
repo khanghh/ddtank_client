@@ -58,9 +58,9 @@ package consortiaDomain.view
          return "main";
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
-         super.enter(param1,param2);
+         super.enter(prev,data);
          initView();
          BackgoundView.Instance.hide();
          InviteManager.Instance.enabled = false;
@@ -76,9 +76,9 @@ package consortiaDomain.view
          ChatManager.Instance.input.faceEnabled = false;
          ChatManager.Instance.input.savePreChannel();
          ChatManager.Instance.inputChannel = 3;
-         var _loc3_:ChatView = ChatManager.Instance.view;
-         _loc3_.visible = true;
-         addChild(_loc3_);
+         var chatView:ChatView = ChatManager.Instance.view;
+         chatView.visible = true;
+         addChild(chatView);
          _returnBtn = ComponentFactory.Instance.creatCustomObject("asset.simpleReturnBar.Button");
          _returnBtn.returnCall = ConsortiaDomainManager.instance.leaveScene;
          addChild(_returnBtn);
@@ -88,9 +88,9 @@ package consortiaDomain.view
       
       private function initView() : void
       {
-         var _loc1_:int = ConsortiaDomainManager.instance.activeState;
+         var activeState:int = ConsortiaDomainManager.instance.activeState;
          _killRankView = new KillRankView();
-         _killRankView.setOpen(_loc1_ == 1);
+         _killRankView.setOpen(activeState == 1);
          _buildStateView = new BuildsStateView();
          _buildStateView.x = 2;
          _buildStateView.y = 2;
@@ -101,13 +101,13 @@ package consortiaDomain.view
       
       private function checkShowOrHideFightMonsterBtn() : void
       {
-         var _loc1_:int = ConsortiaDomainManager.instance.activeState;
-         if(_loc1_ == 100)
+         var activeState:int = ConsortiaDomainManager.instance.activeState;
+         if(activeState == 100)
          {
             ObjectUtils.disposeObject(_showOrHideFightMonsterBtn);
             _showOrHideFightMonsterBtn = null;
          }
-         else if(_loc1_ == 1)
+         else if(activeState == 1)
          {
             if(!_showOrHideFightMonsterBtn)
             {
@@ -134,15 +134,15 @@ package consortiaDomain.view
          }
       }
       
-      private function onClickShowOrHideFightMonsterBtn(param1:MouseEvent) : void
+      private function onClickShowOrHideFightMonsterBtn(event:MouseEvent) : void
       {
          ConsortiaDomainManager.instance.isShowFightMonster = !ConsortiaDomainManager.instance.isShowFightMonster;
          setShowOrHideFightMonsterBtnBackStyle();
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
-         super.leaving(param1);
+         super.leaving(next);
          ObjectUtils.disposeObject(_returnBtn);
          _returnBtn = null;
          BackgoundView.Instance.show();
@@ -163,7 +163,7 @@ package consortiaDomain.view
          _blackGound = null;
       }
       
-      private function onActiveStateChange(param1:Event) : void
+      private function onActiveStateChange(event:Event) : void
       {
          checkShowNextWaveMonsterView();
          checkShowOrHideFightMonsterBtn();
@@ -187,35 +187,35 @@ package consortiaDomain.view
       
       private function onTweenBlackGoundComplete() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var msg:* = null;
+         var cityEachBuildInfo:* = null;
          ObjectUtils.disposeObject(_blackGound);
          if(ConsortiaDomainManager.instance.activeState == 100)
          {
-            _loc1_ = ConsortiaDomainManager.instance.model.allBuildInfo[5];
-            if(_loc1_ && _loc1_.Blood == 0)
+            cityEachBuildInfo = ConsortiaDomainManager.instance.model.allBuildInfo[5];
+            if(cityEachBuildInfo && cityEachBuildInfo.Blood == 0)
             {
-               _loc2_ = LanguageMgr.GetTranslation("consortiadomain.activeEnd");
-               ChatManager.Instance.sysChatConsortia(_loc2_);
-               MessageTipManager.getInstance().show(_loc2_);
+               msg = LanguageMgr.GetTranslation("consortiadomain.activeEnd");
+               ChatManager.Instance.sysChatConsortia(msg);
+               MessageTipManager.getInstance().show(msg);
             }
          }
          else if(ConsortiaDomainManager.instance.activeState == 1)
          {
-            _loc2_ = LanguageMgr.GetTranslation("consortiadomain.activeOpenAlert");
-            MessageTipManager.getInstance().show(_loc2_);
+            msg = LanguageMgr.GetTranslation("consortiadomain.activeOpenAlert");
+            MessageTipManager.getInstance().show(msg);
          }
       }
       
       private function checkShowNextWaveMonsterView() : void
       {
-         var _loc1_:int = ConsortiaDomainManager.instance.activeState;
-         if(_loc1_ == 100)
+         var activeState:int = ConsortiaDomainManager.instance.activeState;
+         if(activeState == 100)
          {
             ObjectUtils.disposeObject(_nextWaveMonsterView);
             _nextWaveMonsterView = null;
          }
-         else if(_loc1_ == 1 || _loc1_ == -10 || _loc1_ == -5 || _loc1_ == -4 || _loc1_ == -3 || _loc1_ == -2 || _loc1_ == -1)
+         else if(activeState == 1 || activeState == -10 || activeState == -5 || activeState == -4 || activeState == -3 || activeState == -2 || activeState == -1)
          {
             if(!_nextWaveMonsterView)
             {
@@ -227,7 +227,7 @@ package consortiaDomain.view
          }
       }
       
-      private function __startLoading(param1:Event) : void
+      private function __startLoading(e:Event) : void
       {
          StateManager.getInGame_Step_6 = true;
          ChatManager.Instance.input.faceEnabled = false;

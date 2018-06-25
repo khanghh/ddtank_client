@@ -47,18 +47,18 @@ package Indiana.item
          addChild(_selectImage);
       }
       
-      public function set Info(param1:IndianaShopItemInfo) : void
+      public function set Info(value:IndianaShopItemInfo) : void
       {
          if(_info)
          {
             clearCreatingContent();
          }
-         _info = param1;
+         _info = value;
          info = IndianaDataManager.instance.getTemplatesByShopId(_info.ShopId);
          setChildIndex(_selectImage,numChildren - 1);
       }
       
-      override protected function onMouseOver(param1:MouseEvent) : void
+      override protected function onMouseOver(evt:MouseEvent) : void
       {
          if(overBg && !selected)
          {
@@ -67,13 +67,13 @@ package Indiana.item
          }
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         if(!_selectImage.visible && param1)
+         if(!_selectImage.visible && value)
          {
             SoundManager.instance.play("008");
          }
-         _selectImage.visible = param1;
+         _selectImage.visible = value;
       }
       
       public function get selected() : Boolean

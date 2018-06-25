@@ -23,42 +23,42 @@ package com.pickgliss.ui.image
       
       protected var _isMiddle:Boolean = true;
       
-      public function ScorllThumbScaleBitmap(param1:BitmapData = null, param2:String = null, param3:String = null, param4:Boolean = true)
+      public function ScorllThumbScaleBitmap($resource:BitmapData = null, $middleRectString:String = null, $boderRectString:String = null, $isMiddle:Boolean = true)
       {
          super();
-         _isMiddle = param4;
-         resource = param1;
-         middleRect = param2;
-         boderRect = param3;
+         _isMiddle = $isMiddle;
+         resource = $resource;
+         middleRect = $middleRectString;
+         boderRect = $boderRectString;
       }
       
-      public function set middleRect(param1:String) : void
+      public function set middleRect($middleRectString:String) : void
       {
-         if(param1 == null)
+         if($middleRectString == null)
          {
             return;
          }
-         var _loc2_:Array = ComponentFactory.parasArgs(param1);
-         _middleRect = new Rectangle(_loc2_[0],_loc2_[1],_loc2_[2],_loc2_[3]);
+         var args:Array = ComponentFactory.parasArgs($middleRectString);
+         _middleRect = new Rectangle(args[0],args[1],args[2],args[3]);
          updateThumb();
       }
       
-      public function set boderRect(param1:String) : void
+      public function set boderRect($boderRectString:String) : void
       {
-         if(param1 == null)
+         if($boderRectString == null)
          {
             return;
          }
-         var _loc2_:Array = ComponentFactory.parasArgs(param1);
-         _boderRect = new Rectangle(_loc2_[0],_loc2_[1],_loc2_[2],_loc2_[3]);
+         var args:Array = ComponentFactory.parasArgs($boderRectString);
+         _boderRect = new Rectangle(args[0],args[1],args[2],args[3]);
          updateThumb();
       }
       
-      override public function set width(param1:Number) : void
+      override public function set width(w:Number) : void
       {
-         if(param1 != width)
+         if(w != width)
          {
-            _width = param1;
+            _width = w;
             if(_display)
             {
                _display.width = _width;
@@ -68,11 +68,11 @@ package com.pickgliss.ui.image
          }
       }
       
-      override public function set height(param1:Number) : void
+      override public function set height(h:Number) : void
       {
-         if(param1 != height)
+         if(h != height)
          {
-            _height = param1;
+            _height = h;
             if(_display)
             {
                _display.height = _height;
@@ -91,13 +91,13 @@ package com.pickgliss.ui.image
          }
       }
       
-      public function set resource(param1:BitmapData) : void
+      public function set resource(source:BitmapData) : void
       {
-         if(param1 == _resource)
+         if(source == _resource)
          {
             return;
          }
-         _resource = param1;
+         _resource = source;
          onPropertiesChanged("resourceLink");
       }
       
@@ -117,23 +117,23 @@ package com.pickgliss.ui.image
       
       protected function updateThumb() : void
       {
-         var _loc1_:* = null;
+         var middleData:* = null;
          if(!_resource || !_middleRect || !_boderRect)
          {
             return;
          }
          ObjectUtils.disposeObject(_display);
          ObjectUtils.disposeObject(_middleBmp);
-         var _loc2_:BitmapData = new BitmapData(_resource.width,_resource.height - _middleRect.height,true,0);
-         _loc2_.copyPixels(_resource,new Rectangle(0,0,_loc2_.width,_middleRect.y),new Point(0,0));
-         _loc2_.copyPixels(_resource,new Rectangle(0,_middleRect.y + _middleRect.height,_loc2_.width,_resource.height),new Point(0,_middleRect.y));
-         _display = new ScaleBitmap(_loc2_);
-         _display.scale9Grid = new Rectangle(_boderRect.x,_boderRect.y,_loc2_.width - (_boderRect.x + _boderRect.width),_middleRect.y - _boderRect.y);
+         var bgBmpData:BitmapData = new BitmapData(_resource.width,_resource.height - _middleRect.height,true,0);
+         bgBmpData.copyPixels(_resource,new Rectangle(0,0,bgBmpData.width,_middleRect.y),new Point(0,0));
+         bgBmpData.copyPixels(_resource,new Rectangle(0,_middleRect.y + _middleRect.height,bgBmpData.width,_resource.height),new Point(0,_middleRect.y));
+         _display = new ScaleBitmap(bgBmpData);
+         _display.scale9Grid = new Rectangle(_boderRect.x,_boderRect.y,bgBmpData.width - (_boderRect.x + _boderRect.width),_middleRect.y - _boderRect.y);
          if(_isMiddle)
          {
-            _loc1_ = new BitmapData(_middleRect.width,_middleRect.height,true,0);
-            _loc1_.copyPixels(_resource,_middleRect,new Point(0,0));
-            _middleBmp = new Bitmap(_loc1_);
+            middleData = new BitmapData(_middleRect.width,_middleRect.height,true,0);
+            middleData.copyPixels(_resource,_middleRect,new Point(0,0));
+            _middleBmp = new Bitmap(middleData);
             addChild(_middleBmp);
          }
          if(_width > 0)

@@ -51,9 +51,9 @@ package gemstone.items
          super.addChildren();
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         _tempData = param1;
+         _tempData = data;
          if(!_tempData)
          {
             return;
@@ -64,23 +64,23 @@ package gemstone.items
       
       private function clear() : void
       {
-         var _loc1_:* = null;
+         var display:* = null;
          while(numChildren > 0)
          {
-            _loc1_ = getChildAt(0) as DisplayObject;
-            if(_loc1_.parent)
+            display = getChildAt(0) as DisplayObject;
+            if(display.parent)
             {
-               _loc1_.parent.removeChild(_loc1_);
+               display.parent.removeChild(display);
             }
          }
       }
       
       private function updateView() : void
       {
-         var _loc6_:* = null;
-         var _loc4_:* = null;
-         var _loc2_:* = null;
-         var _loc8_:int = 0;
+         var txt:* = null;
+         var gemstonTipItem:* = null;
+         var obj:* = null;
+         var i:int = 0;
          clear();
          _bg = ComponentFactory.Instance.creat("core.GoodsTipBg");
          _bg.width = 300;
@@ -88,99 +88,98 @@ package gemstone.items
          this.tipbackgound = _bg;
          _fiSoulName = ComponentFactory.Instance.creatComponentByStylename("core.GoodsTipItemNameTxt");
          _displayList.push(_fiSoulName);
-         var _loc7_:Vector.<GemstoneStaticInfo> = _tempData as Vector.<GemstoneStaticInfo>;
-         var _loc3_:int = _loc7_.length;
-         var _loc5_:String = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.GoldenAddAttack");
-         var _loc1_:String = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.GoldenReduceDamage");
-         _loc8_ = 0;
-         while(_loc8_ < _loc3_)
+         var temData:Vector.<GemstoneStaticInfo> = _tempData as Vector.<GemstoneStaticInfo>;
+         var len:int = temData.length;
+         var addAttackStr:String = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.GoldenAddAttack");
+         var rdcDamageStr:String = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.GoldenReduceDamage");
+         for(i = 0; i < len; )
          {
-            if(_loc7_[_loc8_].attack != 0)
+            if(temData[i].attack != 0)
             {
-               _loc2_ = {};
-               _loc2_.id = _loc7_[_loc8_].id;
-               if(_loc7_[_loc8_].level == 6)
+               obj = {};
+               obj.id = temData[i].id;
+               if(temData[i].level == 6)
                {
-                  _loc2_.str = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.goldenGemstoneAtc",String(_loc7_[_loc8_].attack) + _loc5_);
+                  obj.str = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.goldenGemstoneAtc",String(temData[i].attack) + addAttackStr);
                }
                else
                {
-                  _loc2_.str = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.redGemstoneAtc",_loc7_[_loc8_].level,String(_loc7_[_loc8_].attack));
+                  obj.str = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.redGemstoneAtc",temData[i].level,String(temData[i].attack));
                }
                _fiSoulName.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.redGemstone");
-               _loc4_ = new GemstonTipItem();
-               _loc4_.setInfo(_loc2_);
-               _displayList.push(_loc4_);
+               gemstonTipItem = new GemstonTipItem();
+               gemstonTipItem.setInfo(obj);
+               _displayList.push(gemstonTipItem);
             }
-            else if(_loc7_[_loc8_].defence != 0)
+            else if(temData[i].defence != 0)
             {
                _fiSoulName.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.bluGemstone");
-               _loc2_ = {};
-               _loc2_.id = _loc7_[_loc8_].id;
-               if(_loc7_[_loc8_].level == 6)
+               obj = {};
+               obj.id = temData[i].id;
+               if(temData[i].level == 6)
                {
-                  _loc2_.str = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.goldenGemstoneDef",String(_loc7_[_loc8_].defence) + _loc1_);
+                  obj.str = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.goldenGemstoneDef",String(temData[i].defence) + rdcDamageStr);
                }
                else
                {
-                  _loc2_.str = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.bluGemstoneDef",_loc7_[_loc8_].level,String(_loc7_[_loc8_].defence));
+                  obj.str = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.bluGemstoneDef",temData[i].level,String(temData[i].defence));
                }
-               _loc4_ = new GemstonTipItem();
-               _loc4_.setInfo(_loc2_);
-               _displayList.push(_loc4_);
+               gemstonTipItem = new GemstonTipItem();
+               gemstonTipItem.setInfo(obj);
+               _displayList.push(gemstonTipItem);
             }
-            else if(_loc7_[_loc8_].agility != 0)
+            else if(temData[i].agility != 0)
             {
                _fiSoulName.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.gesGemstone");
-               _loc2_ = {};
-               _loc2_.id = _loc7_[_loc8_].id;
-               if(_loc7_[_loc8_].level == 6)
+               obj = {};
+               obj.id = temData[i].id;
+               if(temData[i].level == 6)
                {
-                  _loc2_.str = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.goldenGemstoneAgi",String(_loc7_[_loc8_].agility) + _loc5_);
+                  obj.str = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.goldenGemstoneAgi",String(temData[i].agility) + addAttackStr);
                }
                else
                {
-                  _loc2_.str = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.gesGemstoneAgi",_loc7_[_loc8_].level,String(_loc7_[_loc8_].agility));
+                  obj.str = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.gesGemstoneAgi",temData[i].level,String(temData[i].agility));
                }
-               _loc4_ = new GemstonTipItem();
-               _loc4_.setInfo(_loc2_);
-               _displayList.push(_loc4_);
+               gemstonTipItem = new GemstonTipItem();
+               gemstonTipItem.setInfo(obj);
+               _displayList.push(gemstonTipItem);
             }
-            else if(_loc7_[_loc8_].luck != 0)
+            else if(temData[i].luck != 0)
             {
                _fiSoulName.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.yelGemstone");
-               _loc2_ = {};
-               _loc2_.id = _loc7_[_loc8_].id;
-               if(_loc7_[_loc8_].level == 6)
+               obj = {};
+               obj.id = temData[i].id;
+               if(temData[i].level == 6)
                {
-                  _loc2_.str = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.goldenGemstoneLuk",String(_loc7_[_loc8_].luck) + _loc1_);
+                  obj.str = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.goldenGemstoneLuk",String(temData[i].luck) + rdcDamageStr);
                }
                else
                {
-                  _loc2_.str = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.yelGemstoneLuk",_loc7_[_loc8_].level,String(_loc7_[_loc8_].luck));
+                  obj.str = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.yelGemstoneLuk",temData[i].level,String(temData[i].luck));
                }
-               _loc4_ = new GemstonTipItem();
-               _loc4_.setInfo(_loc2_);
-               _displayList.push(_loc4_);
+               gemstonTipItem = new GemstonTipItem();
+               gemstonTipItem.setInfo(obj);
+               _displayList.push(gemstonTipItem);
             }
-            else if(_loc7_[_loc8_].blood != 0)
+            else if(temData[i].blood != 0)
             {
                _fiSoulName.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.purpleGemstone");
-               _loc2_ = {};
-               _loc2_.id = _loc7_[_loc8_].id;
-               if(_loc7_[_loc8_].level == 6)
+               obj = {};
+               obj.id = temData[i].id;
+               if(temData[i].level == 6)
                {
-                  _loc2_.str = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.goldenGemstoneHp",String(_loc7_[_loc8_].blood) + _loc1_);
+                  obj.str = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.goldenGemstoneHp",String(temData[i].blood) + rdcDamageStr);
                }
                else
                {
-                  _loc2_.str = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.purpleGemstoneLuk",_loc7_[_loc8_].level,String(_loc7_[_loc8_].blood));
+                  obj.str = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.purpleGemstoneLuk",temData[i].level,String(temData[i].blood));
                }
-               _loc4_ = new GemstonTipItem();
-               _loc4_.setInfo(_loc2_);
-               _displayList.push(_loc4_);
+               gemstonTipItem = new GemstonTipItem();
+               gemstonTipItem.setInfo(obj);
+               _displayList.push(gemstonTipItem);
             }
-            _loc8_++;
+            i++;
          }
          initPos();
       }
@@ -196,15 +195,14 @@ package gemstone.items
       
       private function initPos() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = _displayList.length;
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_)
+         var i:int = 0;
+         var len:int = _displayList.length;
+         for(i = 0; i < len; )
          {
-            _displayList[_loc2_].y = _loc2_ * 28 + 5;
-            _displayList[_loc2_].x = 5;
-            addChild(_displayList[_loc2_] as DisplayObject);
-            _loc2_++;
+            _displayList[i].y = i * 28 + 5;
+            _displayList[i].x = 5;
+            addChild(_displayList[i] as DisplayObject);
+            i++;
          }
          if(_displayList.length > 0)
          {

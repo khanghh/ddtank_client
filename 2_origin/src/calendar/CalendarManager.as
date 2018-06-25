@@ -110,11 +110,11 @@ package calendar
          }
       }
       
-      private function __userLuckyNum(param1:PkgEvent) : void
+      private function __userLuckyNum(event:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         _luckyNum = _loc3_.readInt();
-         var _loc2_:String = _loc3_.readUTF();
+         var pkg:PackageIn = event.pkg;
+         _luckyNum = pkg.readInt();
+         var luckyBuff:String = pkg.readUTF();
          if(_model)
          {
             _model.luckyNum = _luckyNum;
@@ -123,13 +123,13 @@ package calendar
          _responseLuckyNum = true;
       }
       
-      public function open(param1:int, param2:Boolean = false) : void
+      public function open(current:int, isFromWantStrong:Boolean = false) : void
       {
-         _currentModel = param1;
+         _currentModel = current;
          AssetModuleLoader.addRequestLoader(LoaderCreate.Instance.creatDailyInfoLoader());
          AssetModuleLoader.addRequestLoader(request());
-         var _loc3_:Boolean = _initialized && (!_localVisible || param2) && _today;
-         AssetModuleLoader.addRequestLoader(LoaderCreate.Instance.creatActionExchangeInfoLoader(),_loc3_);
+         var isReset:Boolean = _initialized && (!_localVisible || isFromWantStrong) && _today;
+         AssetModuleLoader.addRequestLoader(LoaderCreate.Instance.creatActionExchangeInfoLoader(),isReset);
          AssetModuleLoader.addModelLoader("ddtcalendar",6);
          AssetModuleLoader.startCodeLoader(loadDataComplete);
       }
@@ -141,14 +141,14 @@ package calendar
          SocketManager.Instance.out.sendOpenDailyView();
       }
       
-      private function __onOpenDailyView(param1:PkgEvent) : void
+      private function __onOpenDailyView(e:PkgEvent) : void
       {
          SocketManager.Instance.removeEventListener(PkgEvent.format(293),__onOpenDailyView);
          _model = new CalendarModel(_today,_signCount,_dayLogDic,_signAwards,_signAwardCounts,_eventActives,_activeExchange);
          _model.luckyNum = _luckyNum;
          _model.myLuckyNum = _myLuckyNum;
-         var _loc2_:Date = new Date();
-         if(_loc2_.time - _today.time > 86400000)
+         var localDate:Date = new Date();
+         if(localDate.time - _today.time > 86400000)
          {
             SocketManager.Instance.out.sendErrorMsg("打开签到的时候，客户端时间与服务器时间间隔超过一天。by" + PlayerManager.Instance.Self.NickName);
          }
@@ -161,10 +161,10 @@ package calendar
          return _luckyNum;
       }
       
-      public function qqOpen(param1:int) : void
+      public function qqOpen(activeID:int) : void
       {
          _isQQopen = true;
-         _activeID = param1;
+         _activeID = activeID;
          if(_initialized && !_localVisible)
          {
             open(2);
@@ -174,56 +174,56 @@ package calendar
       
       public function request() : BaseLoader
       {
-         var _loc1_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         _loc1_["rnd"] = Math.random();
-         var _loc2_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("DailyLogList.ashx"),7,_loc1_);
-         _loc2_.analyzer = new CalendarSignAnalyze(calendarSignComplete);
-         LoadResourceManager.Instance.startLoad(_loc2_);
-         return _loc2_;
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         args["rnd"] = Math.random();
+         var calendarLoader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("DailyLogList.ashx"),7,args);
+         calendarLoader.analyzer = new CalendarSignAnalyze(calendarSignComplete);
+         LoadResourceManager.Instance.startLoad(calendarLoader);
+         return calendarLoader;
       }
       
       public function requestActiveEvent() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ActiveList.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.loadingActivityInformationFailure");
-         _loc1_.analyzer = new ActiveEventsAnalyzer(setEventActivity);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ActiveList.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.loadingActivityInformationFailure");
+         loader.analyzer = new ActiveEventsAnalyzer(setEventActivity);
+         return loader;
       }
       
       public function requestActionExchange() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ActiveConvertItemInfo.xml"),2);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.loadingActivityInformationFailure");
-         _loc1_.analyzer = new ActiveExchangeAnalyzer(setActivityExchange);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ActiveConvertItemInfo.xml"),2);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.loadingActivityInformationFailure");
+         loader.analyzer = new ActiveExchangeAnalyzer(setActivityExchange);
+         return loader;
       }
       
-      private function calendarSignComplete(param1:CalendarSignAnalyze) : void
+      private function calendarSignComplete(analyze:CalendarSignAnalyze) : void
       {
-         var _loc6_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:Date = new Date();
+         var i:int = 0;
+         var day:int = 0;
+         var nowtoday:Date = new Date();
          _startTime = getTimer();
-         _today = param1.date;
-         _times = param1.times;
-         _price = param1.price;
-         _isOK = param1.isOK == "True"?true:false;
+         _today = analyze.date;
+         _times = analyze.times;
+         _price = analyze.price;
+         _isOK = analyze.isOK == "True"?true:false;
          _signCount = 0;
-         var _loc2_:Array = param1.dayLog.split(",");
-         var _loc5_:int = CalendarModel.getMonthMaxDay(_today.month,_today.fullYear);
-         if(_loc2_.length <= 0)
+         var arr:Array = analyze.dayLog.split(",");
+         var len:int = CalendarModel.getMonthMaxDay(_today.month,_today.fullYear);
+         if(arr.length <= 0)
          {
             _isOK = false;
          }
-         _loc6_ = 0;
-         while(_loc6_ < _loc5_)
+         i = 0;
+         while(i < len)
          {
-            if(_loc6_ < _loc2_.length && _loc2_[_loc6_] == "True")
+            if(i < arr.length && arr[i] == "True")
             {
-               _loc4_ = _loc6_ + 1;
+               day = i + 1;
                _signCount = Number(_signCount) + 1;
-               _dayLogDic[_loc6_ + 1] = "True";
-               if(_loc4_ == int(_loc3_.date))
+               _dayLogDic[i + 1] = "True";
+               if(day == int(nowtoday.date))
                {
                   PlayerManager.Instance.Self.Sign = true;
                   MainButtnController.instance.dispatchEvent(new Event(MainButtnController.CLOSESIGN));
@@ -231,9 +231,9 @@ package calendar
             }
             else
             {
-               _dayLogDic[_loc6_ + 1] = "False";
+               _dayLogDic[i + 1] = "False";
             }
-            _loc6_++;
+            i++;
          }
          if(_model && _localVisible)
          {
@@ -265,11 +265,11 @@ package calendar
       {
          var _loc3_:int = 0;
          var _loc2_:* = _eventActives;
-         for each(var _loc1_ in _eventActives)
+         for each(var info in _eventActives)
          {
-            if(_loc1_.IsShow == true && !_loc1_.overdue())
+            if(info.IsShow == true && !info.overdue())
             {
-               _showInfo = _loc1_;
+               _showInfo = info;
                return true;
             }
          }
@@ -281,9 +281,9 @@ package calendar
          return _showInfo;
       }
       
-      public function setEventActivity(param1:ActiveEventsAnalyzer) : void
+      public function setEventActivity(analyzer:ActiveEventsAnalyzer) : void
       {
-         _eventActives = param1.list;
+         _eventActives = analyzer.list;
          WonderfulActivityManager.Instance.setLimitActivities(_eventActives);
       }
       
@@ -292,9 +292,9 @@ package calendar
          return _eventActives;
       }
       
-      public function setActivityExchange(param1:ActiveExchangeAnalyzer) : void
+      public function setActivityExchange(analyzer:ActiveExchangeAnalyzer) : void
       {
-         _activeExchange = param1.list;
+         _activeExchange = analyzer.list;
       }
       
       public function get activeExchange() : Array
@@ -302,18 +302,18 @@ package calendar
          return _activeExchange;
       }
       
-      public function setDailyInfo(param1:DaylyGiveAnalyzer) : void
+      public function setDailyInfo(analyzer:DaylyGiveAnalyzer) : void
       {
-         _dailyInfo = param1.list;
-         _signAwards = param1.signAwardList;
-         _signAwardCounts = param1.signAwardCounts;
-         _signPetInfo = param1.signPetInfo;
+         _dailyInfo = analyzer.list;
+         _signAwards = analyzer.signAwardList;
+         _signAwardCounts = analyzer.signAwardCounts;
+         _signPetInfo = analyzer.signPetInfo;
          _initialized = true;
       }
       
-      public function set dailyAwardState(param1:Boolean) : void
+      public function set dailyAwardState(state:Boolean) : void
       {
-         _dailyAwardState = param1;
+         _dailyAwardState = state;
       }
       
       public function get dailyAwardState() : Boolean
@@ -321,9 +321,9 @@ package calendar
          return _dailyAwardState;
       }
       
-      public function set isQQopen(param1:Boolean) : void
+      public function set isQQopen(value:Boolean) : void
       {
-         _isQQopen = param1;
+         _isQQopen = value;
       }
       
       public function get isQQopen() : Boolean
@@ -341,9 +341,9 @@ package calendar
          return _model;
       }
       
-      public function set localVisible(param1:Boolean) : void
+      public function set localVisible(value:Boolean) : void
       {
-         _localVisible = param1;
+         _localVisible = value;
       }
       
       public function get currentModel() : int
@@ -356,14 +356,14 @@ package calendar
          return _startTime;
       }
       
-      public function set model(param1:CalendarModel) : void
+      public function set model(value:CalendarModel) : void
       {
-         _model = param1;
+         _model = value;
       }
       
-      public function set signCount(param1:int) : void
+      public function set signCount(value:int) : void
       {
-         _signCount = param1;
+         _signCount = value;
       }
       
       public function get isOK() : Boolean
@@ -371,9 +371,9 @@ package calendar
          return _isOK;
       }
       
-      public function set isOK(param1:Boolean) : void
+      public function set isOK(value:Boolean) : void
       {
-         _isOK = param1;
+         _isOK = value;
       }
       
       public function get price() : int
@@ -391,9 +391,9 @@ package calendar
          return _times;
       }
       
-      public function set times(param1:int) : void
+      public function set times(value:int) : void
       {
-         _times = param1;
+         _times = value;
       }
       
       public function get localVisible() : Boolean

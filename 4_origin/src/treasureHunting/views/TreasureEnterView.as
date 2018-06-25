@@ -73,14 +73,14 @@ package treasureHunting.views
       
       private function treasureTimerHandler() : void
       {
-         var _loc3_:Date = TreasureManager.instance.endDate;
-         var _loc2_:Date = TimeManager.Instance.Now();
-         var _loc1_:String = WonderfulActivityManager.Instance.getTimeDiff(_loc3_,_loc2_);
+         var endDate:Date = TreasureManager.instance.endDate;
+         var nowDate:Date = TimeManager.Instance.Now();
+         var str:String = WonderfulActivityManager.Instance.getTimeDiff(endDate,nowDate);
          if(_remain)
          {
-            _remain.text = _loc1_;
+            _remain.text = str;
          }
-         if(_loc1_ == "0")
+         if(str == "0")
          {
             if(_remain)
             {
@@ -99,7 +99,7 @@ package treasureHunting.views
          }
       }
       
-      protected function onEnterBtnClick(param1:MouseEvent) : void
+      protected function onEnterBtnClick(event:MouseEvent) : void
       {
          if(RouletteManager.instance.goodList == null)
          {
@@ -110,9 +110,9 @@ package treasureHunting.views
          LayerManager.Instance.addToLayer(_treasureFrame,3,false,1,false);
       }
       
-      private function loadComplete(param1:InventoryItemAnalyzer) : void
+      private function loadComplete(analyze:InventoryItemAnalyzer) : void
       {
-         RouletteManager.instance.goodList = param1.list;
+         RouletteManager.instance.goodList = analyze.list;
          _treasureFrame = ComponentFactory.Instance.creatComponentByStylename("treasureHunting.TreasureHuntingFrame");
          LayerManager.Instance.addToLayer(_treasureFrame,3,false,1,false);
       }
@@ -156,7 +156,7 @@ package treasureHunting.views
          return this;
       }
       
-      public function setState(param1:int, param2:int) : void
+      public function setState(type:int, id:int) : void
       {
       }
    }

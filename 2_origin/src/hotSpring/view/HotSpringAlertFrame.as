@@ -42,7 +42,7 @@ package hotSpring.view
          _okBtn.addEventListener("click",__onClick);
       }
       
-      private function __onClick(param1:MouseEvent) : void
+      private function __onClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          dispose();

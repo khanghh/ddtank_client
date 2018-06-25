@@ -3,6 +3,7 @@ package ddt.utils
    import com.pickgliss.events.FrameEvent;
    import com.pickgliss.ui.AlertManager;
    import com.pickgliss.ui.controls.alert.BaseAlerFrame;
+   import com.pickgliss.ui.controls.alert.SimpleAlertWithNotShowAgain;
    import ddt.events.CEvent;
    import flash.events.EventDispatcher;
    
@@ -28,10 +29,10 @@ package ddt.utils
       
       private var _data:ConfirmAlertData;
       
-      public function ConfirmAlertHelper(param1:ConfirmAlertData)
+      public function ConfirmAlertHelper(data:ConfirmAlertData)
       {
          super();
-         _data = param1;
+         _data = data;
       }
       
       public function get frame() : BaseAlerFrame
@@ -39,35 +40,39 @@ package ddt.utils
          return _frame;
       }
       
-      public function alertQuick(param1:String, param2:String = "SimpleAlert") : void
+      public function alertQuick(msg:String, frameStyle:String = "SimpleAlert") : void
       {
-         alert("Cảnh cáo：",param1,"O K","Hủy",true,false,false,2,null,param2,30,true,0);
+         alert("Cảnh cáo：",msg,"O K","Hủy",true,false,false,2,null,frameStyle,30,true,0);
       }
       
-      public function alert(param1:String, param2:String, param3:String = "", param4:String = "", param5:Boolean = false, param6:Boolean = false, param7:Boolean = false, param8:int = 2, param9:String = null, param10:String = "SimpleAlert", param11:int = 30, param12:Boolean = true, param13:int = 0, param14:int = 0) : void
+      public function alert(title:String, msg:String, submitLabel:String = "", cancelLabel:String = "", autoDispose:Boolean = false, enableHtml:Boolean = false, multiLine:Boolean = false, blockBackgound:int = 2, cacheFlag:String = null, frameStyle:String = "SimpleAlert", buttonGape:int = 30, autoButtonGape:Boolean = true, type:int = 0, selectBtnY:int = 0) : void
       {
-         _frameStyle = param10;
+         _frameStyle = frameStyle;
          if(_data.notShowAlertAgain == true)
          {
             CheckMoneyUtils.instance.checkMoney(_data.isBind,_data.moneyNeeded,onCheckComplete,onCheckCancel);
             return;
          }
-         _frame = AlertManager.Instance.simpleAlert(param1,param2,param3,param4,param5,param6,param7,param8,param9,param10,param11,param12,param13,param14);
+         _frame = AlertManager.Instance.simpleAlert(title,msg,submitLabel,cancelLabel,autoDispose,enableHtml,multiLine,blockBackgound,cacheFlag,frameStyle,buttonGape,autoButtonGape,type,selectBtnY);
          _frame.addEventListener("response",confirmResponse);
       }
       
-      protected function confirmResponse(param1:FrameEvent) : void
+      protected function confirmResponse(e:FrameEvent) : void
       {
          _frame.removeEventListener("response",confirmResponse);
+         if(_frame is SimpleAlertWithNotShowAgain)
+         {
+            _data.notShowAlertAgain = (_frame as SimpleAlertWithNotShowAgain).isNoPrompt;
+         }
          _data.isBind = _frame.isBand;
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         if(e.responseCode == 2 || e.responseCode == 3)
          {
             onConfirm && onConfirm(_frame);
             onConfirm = null;
             dispatchEvent(new CEvent("confirm_to_pay"));
             CheckMoneyUtils.instance.checkMoney(_data.isBind,_data.moneyNeeded,onCheckComplete,onCheckCancel);
          }
-         else if(param1.responseCode == 4 || param1.responseCode == 0 || param1.responseCode == 1)
+         else if(e.responseCode == 4 || e.responseCode == 0 || e.responseCode == 1)
          {
             onCheckCancel();
          }

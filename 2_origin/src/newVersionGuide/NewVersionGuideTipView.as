@@ -27,11 +27,11 @@ package newVersionGuide
       
       private var _type:int;
       
-      public function NewVersionGuideTipView(param1:int, param2:Function = null)
+      public function NewVersionGuideTipView(type:int, completeGuideFunc:Function = null)
       {
          super();
-         _type = param1;
-         _completeGuideFunc = param2;
+         _type = type;
+         _completeGuideFunc = completeGuideFunc;
          initView();
          initEvent();
       }
@@ -52,7 +52,7 @@ package newVersionGuide
          _btn.addEventListener("click",__clickHandler);
       }
       
-      protected function __clickHandler(param1:MouseEvent) : void
+      protected function __clickHandler(event:MouseEvent) : void
       {
          if(_type == 1)
          {

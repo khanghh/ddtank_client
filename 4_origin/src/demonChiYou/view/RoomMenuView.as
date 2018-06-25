@@ -63,19 +63,19 @@ package demonChiYou.view
          _closeBtn.removeEventListener("click",switchMenu);
       }
       
-      private function backRoomList(param1:MouseEvent) : void
+      private function backRoomList(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("demonChiYou.leaveSceneAlert"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
-         _loc2_.addEventListener("response",__frameResponse);
+         var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("demonChiYou.leaveSceneAlert"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
+         alert.addEventListener("response",__frameResponse);
       }
       
-      private function __frameResponse(param1:FrameEvent) : void
+      private function __frameResponse(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__frameResponse);
-         switch(int(param1.responseCode))
+         var alert:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",__frameResponse);
+         switch(int(e.responseCode))
          {
             default:
             default:
@@ -85,10 +85,10 @@ package demonChiYou.view
             default:
                SocketManager.Instance.out.leaveDemonChiYouScene();
          }
-         _loc2_.dispose();
+         alert.dispose();
       }
       
-      private function switchMenu(param1:MouseEvent) : void
+      private function switchMenu(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_menuIsOpen)
@@ -102,7 +102,7 @@ package demonChiYou.view
          addEventListener("enterFrame",menuShowOrHide);
       }
       
-      private function menuShowOrHide(param1:Event) : void
+      private function menuShowOrHide(evt:Event) : void
       {
          if(_menuIsOpen)
          {

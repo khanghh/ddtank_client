@@ -41,11 +41,11 @@ package bagAndInfo.bag
       
       private var _currentBagType:int;
       
-      public function BagListView(param1:int, param2:int = 7, param3:int = 49)
+      public function BagListView(bagType:int, columnNum:int = 7, cellNun:int = 49)
       {
-         _cellNum = param3;
-         _bagType = param1;
-         super(param2);
+         _cellNum = cellNun;
+         _bagType = bagType;
+         super(columnNum);
          _vSpace = 0;
          _hSpace = 0;
          _cellVec = [];
@@ -54,78 +54,77 @@ package bagAndInfo.bag
       
       protected function createCells() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var cell:* = null;
          _cells = new Dictionary();
          _cellMouseOverBg = ComponentFactory.Instance.creatBitmap("bagAndInfo.cell.bagCellOverBgAsset");
-         _loc2_ = 0;
-         while(_loc2_ < _cellNum)
+         for(i = 0; i < _cellNum; )
          {
-            _loc1_ = BagCell(CellFactory.instance.createBagCell(_loc2_));
-            _loc1_.mouseOverEffBoolean = false;
-            addChild(_loc1_);
-            _loc1_.bagType = _bagType;
-            _loc1_.addEventListener("interactive_click",__clickHandler);
-            _loc1_.addEventListener("mouseOver",_cellOverEff);
-            _loc1_.addEventListener("mouseOut",_cellOutEff);
-            _loc1_.addEventListener("interactive_double_click",__doubleClickHandler);
-            DoubleClickManager.Instance.enableDoubleClick(_loc1_);
-            _loc1_.addEventListener("lockChanged",__cellChanged);
-            _cells[_loc1_.place] = _loc1_;
-            _cellVec.push(_loc1_);
-            _loc2_++;
+            cell = BagCell(CellFactory.instance.createBagCell(i));
+            cell.mouseOverEffBoolean = false;
+            addChild(cell);
+            cell.bagType = _bagType;
+            cell.addEventListener("interactive_click",__clickHandler);
+            cell.addEventListener("mouseOver",_cellOverEff);
+            cell.addEventListener("mouseOut",_cellOutEff);
+            cell.addEventListener("interactive_double_click",__doubleClickHandler);
+            DoubleClickManager.Instance.enableDoubleClick(cell);
+            cell.addEventListener("lockChanged",__cellChanged);
+            _cells[cell.place] = cell;
+            _cellVec.push(cell);
+            i++;
          }
       }
       
-      protected function __doubleClickHandler(param1:InteractiveEvent) : void
+      protected function __doubleClickHandler(evt:InteractiveEvent) : void
       {
-         if((param1.currentTarget as BagCell).info != null)
+         if((evt.currentTarget as BagCell).info != null)
          {
             SoundManager.instance.play("008");
-            dispatchEvent(new CellEvent("doubleclick",param1.currentTarget));
+            dispatchEvent(new CellEvent("doubleclick",evt.currentTarget));
          }
       }
       
-      protected function __cellChanged(param1:Event) : void
+      protected function __cellChanged(event:Event) : void
       {
          dispatchEvent(new Event("change"));
       }
       
-      protected function __clickHandler(param1:InteractiveEvent) : void
+      protected function __clickHandler(evt:InteractiveEvent) : void
       {
-         if((param1.currentTarget as BagCell).info != null)
+         if((evt.currentTarget as BagCell).info != null)
          {
-            dispatchEvent(new CellEvent("itemclick",param1.currentTarget,false,false,param1.ctrlKey));
+            dispatchEvent(new CellEvent("itemclick",evt.currentTarget,false,false,evt.ctrlKey));
          }
       }
       
-      protected function _cellOverEff(param1:MouseEvent) : void
+      protected function _cellOverEff(e:MouseEvent) : void
       {
-         BagCell(param1.currentTarget).onParentMouseOver(_cellMouseOverBg);
+         BagCell(e.currentTarget).onParentMouseOver(_cellMouseOverBg);
       }
       
-      protected function _cellOutEff(param1:MouseEvent) : void
+      protected function _cellOutEff(e:MouseEvent) : void
       {
-         BagCell(param1.currentTarget).onParentMouseOut();
+         BagCell(e.currentTarget).onParentMouseOut();
       }
       
-      public function setCellInfo(param1:int, param2:InventoryItemInfo) : void
+      public function setCellInfo(index:int, info:InventoryItemInfo) : void
       {
-         if(param2 == null)
+         if(info == null)
          {
-            if(_cells[param1])
+            if(_cells[index])
             {
-               _cells[param1].info = null;
+               _cells[index].info = null;
             }
             return;
          }
-         if(param2.Count == 0)
+         if(info.Count == 0)
          {
-            _cells[param1].info = null;
+            _cells[index].info = null;
          }
          else
          {
-            _cells[param1].info = param2;
+            _cells[index].info = info;
          }
       }
       
@@ -133,21 +132,21 @@ package bagAndInfo.bag
       {
          var _loc3_:int = 0;
          var _loc2_:* = _cells;
-         for each(var _loc1_ in _cells)
+         for each(var cell in _cells)
          {
-            _loc1_.info = null;
+            cell.info = null;
          }
       }
       
-      public function set currentBagType(param1:int) : void
+      public function set currentBagType(value:int) : void
       {
-         _currentBagType = param1;
+         _currentBagType = value;
       }
       
-      public function setData(param1:BagInfo) : void
+      public function setData(bag:BagInfo) : void
       {
          _isSetFoodData = false;
-         if(_bagdata == param1)
+         if(_bagdata == bag)
          {
             return;
          }
@@ -156,170 +155,170 @@ package bagAndInfo.bag
             _bagdata.removeEventListener("update",__updateGoods);
          }
          clearDataCells();
-         _bagdata = param1;
-         var _loc2_:Array = [];
+         _bagdata = bag;
+         var infoArr:Array = [];
          var _loc5_:int = 0;
          var _loc4_:* = _bagdata.items;
-         for(var _loc3_ in _bagdata.items)
+         for(var i in _bagdata.items)
          {
-            if(_cells[_loc3_] != null)
+            if(_cells[i] != null)
             {
                if(_currentBagType == 5)
                {
-                  if(_bagdata.items[_loc3_].CategoryID == 50 || _bagdata.items[_loc3_].CategoryID == 51 || _bagdata.items[_loc3_].CategoryID == 52)
+                  if(_bagdata.items[i].CategoryID == 50 || _bagdata.items[i].CategoryID == 51 || _bagdata.items[i].CategoryID == 52)
                   {
-                     _bagdata.items[_loc3_].isMoveSpace = true;
-                     _cells[_loc3_].info = _bagdata.items[_loc3_];
-                     _loc2_.push(_cells[_loc3_]);
+                     _bagdata.items[i].isMoveSpace = true;
+                     _cells[i].info = _bagdata.items[i];
+                     infoArr.push(_cells[i]);
                   }
                }
                else
                {
-                  _bagdata.items[_loc3_].isMoveSpace = true;
-                  _cells[_loc3_].info = _bagdata.items[_loc3_];
+                  _bagdata.items[i].isMoveSpace = true;
+                  _cells[i].info = _bagdata.items[i];
                }
             }
          }
          _bagdata.addEventListener("update",__updateGoods);
          if(_currentBagType == 5)
          {
-            _cellsSort(_loc2_);
+            _cellsSort(infoArr);
          }
       }
       
       private function sortItems() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:Array = [];
+         var item:* = null;
+         var infoArr:Array = [];
          var _loc5_:int = 0;
          var _loc4_:* = _bagdata.items;
-         for(var _loc3_ in _bagdata.items)
+         for(var i in _bagdata.items)
          {
-            _loc1_ = _bagdata.items[_loc3_];
-            if(_cells[_loc3_] != null && _loc1_)
+            item = _bagdata.items[i];
+            if(_cells[i] != null && item)
             {
-               if(_loc1_.CategoryID == 50 || _loc1_.CategoryID == 51 || _loc1_.CategoryID == 52)
+               if(item.CategoryID == 50 || item.CategoryID == 51 || item.CategoryID == 52)
                {
-                  BaseCell(_cells[_loc3_]).info = _loc1_;
-                  _loc2_.push(_cells[_loc3_]);
+                  BaseCell(_cells[i]).info = item;
+                  infoArr.push(_cells[i]);
                }
             }
          }
-         _cellsSort(_loc2_);
+         _cellsSort(infoArr);
       }
       
-      private function _cellsSort(param1:Array) : void
+      private function _cellsSort(arr:Array) : void
       {
-         var _loc6_:int = 0;
-         var _loc4_:Number = NaN;
-         var _loc5_:Number = NaN;
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         if(param1.length <= 0)
+         var i:int = 0;
+         var oldx:Number = NaN;
+         var oldy:Number = NaN;
+         var n:int = 0;
+         var oldCell:* = null;
+         if(arr.length <= 0)
          {
             return;
          }
-         _loc6_ = 0;
-         while(_loc6_ < param1.length)
+         i = 0;
+         while(i < arr.length)
          {
-            _loc4_ = param1[_loc6_].x;
-            _loc5_ = param1[_loc6_].y;
-            _loc3_ = _cellVec.indexOf(param1[_loc6_]);
-            _loc2_ = _cellVec[_loc6_];
-            param1[_loc6_].x = _loc2_.x;
-            param1[_loc6_].y = _loc2_.y;
-            _loc2_.x = _loc4_;
-            _loc2_.y = _loc5_;
-            _cellVec[_loc6_] = param1[_loc6_];
-            _cellVec[_loc3_] = _loc2_;
-            _loc6_++;
+            oldx = arr[i].x;
+            oldy = arr[i].y;
+            n = _cellVec.indexOf(arr[i]);
+            oldCell = _cellVec[i];
+            arr[i].x = oldCell.x;
+            arr[i].y = oldCell.y;
+            oldCell.x = oldx;
+            oldCell.y = oldy;
+            _cellVec[i] = arr[i];
+            _cellVec[n] = oldCell;
+            i++;
          }
       }
       
-      protected function __updateFoodGoods(param1:BagEvent) : void
+      protected function __updateFoodGoods(evt:BagEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc5_:* = null;
-         var _loc4_:* = null;
-         var _loc2_:* = null;
+         var index:int = 0;
+         var c:* = null;
+         var inventoryItemInfo:* = null;
+         var d:* = null;
          if(!_bagdata)
          {
             return;
          }
-         var _loc8_:Dictionary = param1.changedSlots;
+         var changes:Dictionary = evt.changedSlots;
          var _loc12_:int = 0;
-         var _loc11_:* = _loc8_;
-         for each(var _loc7_ in _loc8_)
+         var _loc11_:* = changes;
+         for each(var i in changes)
          {
-            _loc3_ = -1;
-            _loc5_ = null;
+            index = -1;
+            c = null;
             var _loc10_:int = 0;
             var _loc9_:* = _bagdata.items;
-            for(var _loc6_ in _bagdata.items)
+            for(var j in _bagdata.items)
             {
-               _loc4_ = _bagdata.items[_loc6_] as InventoryItemInfo;
-               if(_loc7_.ItemID == _loc4_.ItemID)
+               inventoryItemInfo = _bagdata.items[j] as InventoryItemInfo;
+               if(i.ItemID == inventoryItemInfo.ItemID)
                {
-                  _loc5_ = _loc7_;
-                  _loc3_ = _loc6_;
+                  c = i;
+                  index = j;
                   break;
                }
             }
-            if(_loc3_ != -1)
+            if(index != -1)
             {
-               _loc2_ = _bagdata.getItemAt(_loc3_);
-               if(_loc2_)
+               d = _bagdata.getItemAt(index);
+               if(d)
                {
-                  _loc2_.Count = _loc5_.Count;
-                  if(_cells[_loc3_].info)
+                  d.Count = c.Count;
+                  if(_cells[index].info)
                   {
-                     setCellInfo(_loc3_,null);
+                     setCellInfo(index,null);
                   }
                   else
                   {
-                     setCellInfo(_loc3_,_loc2_);
+                     setCellInfo(index,d);
                   }
                }
                else
                {
-                  setCellInfo(_loc3_,null);
+                  setCellInfo(index,null);
                }
                dispatchEvent(new Event("change"));
             }
          }
       }
       
-      protected function __updateGoods(param1:BagEvent) : void
+      protected function __updateGoods(evt:BagEvent) : void
       {
-         var _loc4_:* = null;
-         var _loc2_:* = null;
+         var changes:* = null;
+         var c:* = null;
          if(_isSetFoodData)
          {
-            __updateFoodGoods(param1);
+            __updateFoodGoods(evt);
          }
          else
          {
-            _loc4_ = param1.changedSlots;
+            changes = evt.changedSlots;
             var _loc6_:int = 0;
-            var _loc5_:* = _loc4_;
-            for each(var _loc3_ in _loc4_)
+            var _loc5_:* = changes;
+            for each(var i in changes)
             {
-               _loc2_ = _bagdata.getItemAt(_loc3_.Place);
-               if(_loc2_)
+               c = _bagdata.getItemAt(i.Place);
+               if(c)
                {
                   if(_currentBagType == 5)
                   {
-                     if(_loc2_.CategoryID != 50 && _loc2_.CategoryID != 51 && _loc2_.CategoryID != 52)
+                     if(c.CategoryID != 50 && c.CategoryID != 51 && c.CategoryID != 52)
                      {
-                        setCellInfo(_loc3_.Place,null);
+                        setCellInfo(i.Place,null);
                         continue;
                      }
                   }
-                  setCellInfo(_loc2_.Place,_loc2_);
+                  setCellInfo(c.Place,c);
                }
                else
                {
-                  setCellInfo(_loc3_.Place,null);
+                  setCellInfo(i.Place,null);
                }
                dispatchEvent(new Event("change"));
             }
@@ -339,15 +338,15 @@ package bagAndInfo.bag
          }
          var _loc3_:int = 0;
          var _loc2_:* = _cells;
-         for each(var _loc1_ in _cells)
+         for each(var i in _cells)
          {
-            _loc1_.removeEventListener("interactive_click",__clickHandler);
-            _loc1_.removeEventListener("lockChanged",__cellChanged);
-            _loc1_.removeEventListener("mouseOver",_cellOverEff);
-            _loc1_.removeEventListener("mouseOut",_cellOutEff);
-            _loc1_.removeEventListener("interactive_double_click",__doubleClickHandler);
-            DoubleClickManager.Instance.disableDoubleClick(_loc1_);
-            _loc1_.dispose();
+            i.removeEventListener("interactive_click",__clickHandler);
+            i.removeEventListener("lockChanged",__cellChanged);
+            i.removeEventListener("mouseOver",_cellOverEff);
+            i.removeEventListener("mouseOut",_cellOutEff);
+            i.removeEventListener("interactive_double_click",__doubleClickHandler);
+            DoubleClickManager.Instance.disableDoubleClick(i);
+            i.dispose();
          }
          _cells = null;
          _cellVec = null;
@@ -368,7 +367,7 @@ package bagAndInfo.bag
          return _cells;
       }
       
-      public function updateBankBag(param1:int) : void
+      public function updateBankBag(count:int) : void
       {
       }
       

@@ -69,7 +69,7 @@ package RechargeRank.views
          RechargeRankManager.instance.addEventListener("rechargeUpdateView",__onUpdateView);
       }
       
-      protected function __onUpdateView(param1:Event) : void
+      protected function __onUpdateView(event:Event) : void
       {
          updateView();
       }
@@ -110,28 +110,27 @@ package RechargeRank.views
       
       public function updateView() : void
       {
-         var _loc8_:int = 0;
-         var _loc7_:* = null;
-         var _loc3_:GmActivityInfo = RechargeRankManager.instance.xmlData;
-         var _loc6_:String = dateTrim(_loc3_.beginTime);
-         var _loc5_:String = dateTrim(_loc3_.endTime);
-         _dateTxt.text = _loc6_ + "-" + _loc5_;
-         _checkBg.tipData = LanguageMgr.GetTranslation("rechargeRank.helpTxt",_loc3_.remain2);
-         var _loc2_:Array = RechargeRankManager.instance.rankList;
-         var _loc4_:int = RechargeRankManager.instance.myConsume;
+         var i:int = 0;
+         var vo:* = null;
+         var xmlData:GmActivityInfo = RechargeRankManager.instance.xmlData;
+         var beginDate:String = dateTrim(xmlData.beginTime);
+         var endDate:String = dateTrim(xmlData.endTime);
+         _dateTxt.text = beginDate + "-" + endDate;
+         _checkBg.tipData = LanguageMgr.GetTranslation("rechargeRank.helpTxt",xmlData.remain2);
+         var arr:Array = RechargeRankManager.instance.rankList;
+         var myConsume:int = RechargeRankManager.instance.myConsume;
          _myRank = -1;
-         _loc8_ = 0;
-         while(_loc8_ <= _loc2_.length - 1)
+         for(i = 0; i <= arr.length - 1; )
          {
-            _loc7_ = _loc2_[_loc8_] as RechargeRankVo;
-            if(_loc7_.userId == PlayerManager.Instance.Self.ID)
+            vo = arr[i] as RechargeRankVo;
+            if(vo.userId == PlayerManager.Instance.Self.ID)
             {
-               _myRank = _loc8_;
+               _myRank = i;
                break;
             }
-            _loc8_++;
+            i++;
          }
-         var _loc1_:int = 0;
+         var remain:int = 0;
          if(_myRank >= 0)
          {
             _outOfRankLabel.visible = false;
@@ -146,8 +145,8 @@ package RechargeRank.views
             else
             {
                _rankLabelTxt.visible = true;
-               _loc1_ = (_loc2_[_myRank - 1] as RechargeRankVo).consume - _loc4_ + 1;
-               _rankLabelTxt.text = LanguageMgr.GetTranslation("rechargeRank.rankLabel",_loc1_);
+               remain = (arr[_myRank - 1] as RechargeRankVo).consume - myConsume + 1;
+               _rankLabelTxt.text = LanguageMgr.GetTranslation("rechargeRank.rankLabel",remain);
             }
             if(RechargeRankManager.instance.status == 2)
             {
@@ -163,16 +162,16 @@ package RechargeRank.views
             _rankTxt.visible = false;
             _rankLabelTxt.visible = true;
             _outOfRankLabel.visible = true;
-            if(_loc2_.length > 0)
+            if(arr.length > 0)
             {
-               _loc1_ = (_loc2_[_loc2_.length - 1] as RechargeRankVo).consume - _loc4_ + 1;
+               remain = (arr[arr.length - 1] as RechargeRankVo).consume - myConsume + 1;
             }
             else
             {
-               _loc1_ = 1;
+               remain = 1;
             }
             _outOfRankLabel.text = LanguageMgr.GetTranslation("rechargeRank.outOfRank");
-            _rankLabelTxt.text = LanguageMgr.GetTranslation("rechargeRank.outOfRankLabel",_loc4_,_loc1_);
+            _rankLabelTxt.text = LanguageMgr.GetTranslation("rechargeRank.outOfRankLabel",myConsume,remain);
             if(RechargeRankManager.instance.status == 2)
             {
                _rankLabelTxt.visible = true;
@@ -185,28 +184,27 @@ package RechargeRank.views
       
       private function updateItems() : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc1_:Array = RechargeRankManager.instance.rankList;
-         var _loc2_:Array = RechargeRankManager.instance.xmlData.giftbagArray;
+         var i:int = 0;
+         var item:* = null;
+         var voArr:Array = RechargeRankManager.instance.rankList;
+         var giftArr:Array = RechargeRankManager.instance.xmlData.giftbagArray;
          _vbox.removeAllChild();
-         _loc4_ = 0;
-         while(_loc4_ <= _loc1_.length - 1)
+         for(i = 0; i <= voArr.length - 1; )
          {
-            _loc3_ = new RechargeRankItem(_loc4_);
-            _loc3_.setData(_loc1_[_loc4_],_loc2_[_loc4_]);
-            _vbox.addChild(_loc3_);
-            _loc4_++;
+            item = new RechargeRankItem(i);
+            item.setData(voArr[i],giftArr[i]);
+            _vbox.addChild(item);
+            i++;
          }
          _scrollPanel.invalidateViewport();
       }
       
-      private function dateTrim(param1:String) : String
+      private function dateTrim(dateStr:String) : String
       {
-         var _loc2_:String = "";
-         var _loc3_:Array = param1.split(" ");
-         _loc2_ = _loc3_[0] + " " + _loc3_[1].slice(0,5);
-         return _loc2_;
+         var str:String = "";
+         var temp:Array = dateStr.split(" ");
+         str = temp[0] + " " + temp[1].slice(0,5);
+         return str;
       }
       
       private function initTimer() : void
@@ -216,13 +214,13 @@ package RechargeRank.views
       
       private function consumeRankTimerHandler() : void
       {
-         var _loc3_:Date = DateUtils.getDateByStr(RechargeRankManager.instance.xmlData.endTime);
-         var _loc2_:Date = TimeManager.Instance.Now();
-         var _loc1_:Number = Math.round((_loc3_.getTime() - _loc2_.getTime()) / 1000);
-         if(_loc1_ > 0)
+         var endDate:Date = DateUtils.getDateByStr(RechargeRankManager.instance.xmlData.endTime);
+         var nowDate:Date = TimeManager.Instance.Now();
+         var diff:Number = Math.round((endDate.getTime() - nowDate.getTime()) / 1000);
+         if(diff > 0)
          {
             refreshCount = Number(refreshCount) + 1;
-            if(_loc1_ >= 3600)
+            if(diff >= 3600)
             {
                if(refreshCount >= 300)
                {
@@ -269,7 +267,7 @@ package RechargeRank.views
          return this;
       }
       
-      public function setState(param1:int, param2:int) : void
+      public function setState(type:int, id:int) : void
       {
       }
    }

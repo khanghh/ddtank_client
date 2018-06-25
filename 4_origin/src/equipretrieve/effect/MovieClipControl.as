@@ -19,23 +19,23 @@ package equipretrieve.effect
       
       private var _arrInt:int;
       
-      public function MovieClipControl(param1:int)
+      public function MovieClipControl(total:int)
       {
          _movieArr = [];
          _evtSprite = new Sprite();
          super();
-         _total = param1;
+         _total = total;
       }
       
-      public function addMovies(param1:MovieClip, param2:int, param3:int) : void
+      public function addMovies(view:MovieClip, goInt:int, totalInt:int) : void
       {
-         var _loc4_:Object = {};
-         param1.visible = false;
-         param1.stop();
-         _loc4_.view = param1;
-         _loc4_.goInt = param2;
-         _loc4_.totalInt = param3 + param2;
-         _movieArr.push(_loc4_);
+         var obj:Object = {};
+         view.visible = false;
+         view.stop();
+         obj.view = view;
+         obj.goInt = goInt;
+         obj.totalInt = totalInt + goInt;
+         _movieArr.push(obj);
       }
       
       public function startMovie() : void
@@ -45,43 +45,41 @@ package equipretrieve.effect
          _evtSprite.addEventListener("enterFrame",_inFrame);
       }
       
-      private function _inFrame(param1:Event) : void
+      private function _inFrame(e:Event) : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          _currentInt = _currentInt + 1;
          if(_currentInt >= _total)
          {
             _allMovieClipOver();
             return;
          }
-         _loc2_ = 0;
-         while(_loc2_ < _arrInt)
+         for(i = 0; i < _arrInt; )
          {
-            if(_movieArr[_loc2_].goInt == _currentInt)
+            if(_movieArr[i].goInt == _currentInt)
             {
-               _movieArr[_loc2_].view.visible = true;
-               _movieArr[_loc2_].view.play();
+               _movieArr[i].view.visible = true;
+               _movieArr[i].view.play();
             }
-            else if(_movieArr[_loc2_].totalInt == _currentInt)
+            else if(_movieArr[i].totalInt == _currentInt)
             {
-               _movieArr[_loc2_].view.visible = false;
-               _movieArr[_loc2_].view.stop();
+               _movieArr[i].view.visible = false;
+               _movieArr[i].view.stop();
             }
-            _loc2_++;
+            i++;
          }
       }
       
       private function _allMovieClipOver() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          dispatchEvent(new Event("complete"));
          _evtSprite.removeEventListener("enterFrame",_inFrame);
-         _loc1_ = 0;
-         while(_loc1_ < _arrInt)
+         for(i = 0; i < _arrInt; )
          {
-            _movieArr[_loc1_].view.visible = false;
-            _movieArr[_loc1_].view.stop();
-            _loc1_++;
+            _movieArr[i].view.visible = false;
+            _movieArr[i].view.stop();
+            i++;
          }
          _removeAllView();
       }

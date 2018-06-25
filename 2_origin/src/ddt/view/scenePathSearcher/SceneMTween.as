@@ -37,13 +37,13 @@ package ddt.view.scenePathSearcher
       
       private var _time:Number;
       
-      public function SceneMTween(param1:Object)
+      public function SceneMTween(obj:Object)
       {
          super();
-         this._obj = param1;
+         this._obj = obj;
       }
       
-      private function onEnterFrame(param1:Event) : void
+      private function onEnterFrame(event:Event) : void
       {
          var _loc2_:* = _prop;
          var _loc3_:* = _obj[_loc2_] + vectors / repeatCount;
@@ -68,17 +68,17 @@ package ddt.view.scenePathSearcher
          dispatchEvent(new Event("change"));
       }
       
-      public function start(param1:Number, param2:String, param3:Number, param4:String = null, param5:Number = 0) : void
+      public function start(time:Number, prop:String, finish:Number, prop2:String = null, finish2:Number = 0) : void
       {
          if(_isPlaying)
          {
             stop();
          }
-         _time = param1;
-         _prop = param2;
-         _finish = param3;
-         _finish2 = param5;
-         _prop2 = param4;
+         _time = time;
+         _prop = prop;
+         _finish = finish;
+         _finish2 = finish2;
+         _prop2 = prop2;
          currentCount = 0;
          vectors = _finish - _obj[_prop];
          if(_prop2)
@@ -123,9 +123,9 @@ package ddt.view.scenePathSearcher
          return _isPlaying;
       }
       
-      public function set time(param1:Number) : void
+      public function set time(value:Number) : void
       {
-         _time = param1;
+         _time = value;
       }
    }
 }

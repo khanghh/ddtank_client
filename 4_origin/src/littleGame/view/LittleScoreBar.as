@@ -19,9 +19,9 @@ package littleGame.view
       
       private var _scoreField:GradientText;
       
-      public function LittleScoreBar(param1:SelfInfo)
+      public function LittleScoreBar(self:SelfInfo)
       {
-         _self = param1;
+         _self = self;
          super();
          configUI();
          addEvent();
@@ -47,9 +47,9 @@ package littleGame.view
          _self.removeEventListener("propertychange",__selfPropertyChanged);
       }
       
-      private function __selfPropertyChanged(param1:PlayerPropertyEvent) : void
+      private function __selfPropertyChanged(event:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["Score"])
+         if(event.changedProperties["Score"])
          {
             _scoreField.text = String(_self.Score);
             _scoreField.x = _back.width - _scoreField.width - 6;

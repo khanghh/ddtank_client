@@ -86,10 +86,10 @@ package tofflist
       
       private var _info:Object;
       
-      public function TofflistEvent(param1:String, param2:Object = null, param3:Boolean = false, param4:Boolean = false)
+      public function TofflistEvent(type:String, $data:Object = null, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         super(param1,param3,param4);
-         this._info = param2;
+         super(type,bubbles,cancelable);
+         this._info = $data;
       }
       
       public function get data() : Object

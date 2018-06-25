@@ -27,24 +27,24 @@ package dragonBones.display
       {
          var _loc3_:int = 0;
          var _loc2_:* = this._displayList;
-         for each(var _loc1_ in this._displayList)
+         for each(var content in this._displayList)
          {
-            if(_loc1_ is FastArmature)
+            if(content is FastArmature)
             {
-               (_loc1_ as FastArmature).dispose();
+               (content as FastArmature).dispose();
             }
-            else if(_loc1_ is DisplayObject)
+            else if(content is DisplayObject)
             {
-               (_loc1_ as DisplayObject).dispose();
+               (content as DisplayObject).dispose();
             }
          }
          super.dispose();
          _starlingDisplay = null;
       }
       
-      override function updateDisplay(param1:Object) : void
+      override function updateDisplay(value:Object) : void
       {
-         _starlingDisplay = param1 as DisplayObject;
+         _starlingDisplay = value as DisplayObject;
       }
       
       override function getDisplayIndex() : int
@@ -56,18 +56,18 @@ package dragonBones.display
          return -1;
       }
       
-      override function addDisplayToContainer(param1:Object, param2:int = -1) : void
+      override function addDisplayToContainer(container:Object, index:int = -1) : void
       {
-         var _loc3_:DisplayObjectContainer = param1 as DisplayObjectContainer;
-         if(_starlingDisplay && _loc3_)
+         var starlingContainer:DisplayObjectContainer = container as DisplayObjectContainer;
+         if(_starlingDisplay && starlingContainer)
          {
-            if(param2 < 0)
+            if(index < 0)
             {
-               _loc3_.addChild(_starlingDisplay);
+               starlingContainer.addChild(_starlingDisplay);
             }
             else
             {
-               _loc3_.addChildAt(_starlingDisplay,Math.min(param2,_loc3_.numChildren));
+               starlingContainer.addChildAt(_starlingDisplay,Math.min(index,starlingContainer.numChildren));
             }
          }
       }
@@ -82,61 +82,61 @@ package dragonBones.display
       
       override function updateTransform() : void
       {
-         var _loc1_:Number = NaN;
-         var _loc2_:Number = NaN;
-         var _loc3_:* = null;
+         var pivotX:Number = NaN;
+         var pivotY:Number = NaN;
+         var displayMatrix:* = null;
          if(_starlingDisplay)
          {
-            _loc1_ = _starlingDisplay.pivotX;
-            _loc2_ = _starlingDisplay.pivotY;
+            pivotX = _starlingDisplay.pivotX;
+            pivotY = _starlingDisplay.pivotY;
             if(updateMatrix)
             {
                _starlingDisplay.transformationMatrix = _globalTransformMatrix;
-               if(_loc1_ || Number(_loc2_))
+               if(pivotX || Number(pivotY))
                {
-                  _starlingDisplay.pivotX = _loc1_;
-                  _starlingDisplay.pivotY = _loc2_;
+                  _starlingDisplay.pivotX = pivotX;
+                  _starlingDisplay.pivotY = pivotY;
                }
             }
             else
             {
-               _loc3_ = _starlingDisplay.transformationMatrix;
-               _loc3_.a = _globalTransformMatrix.a;
-               _loc3_.b = _globalTransformMatrix.b;
-               _loc3_.c = _globalTransformMatrix.c;
-               _loc3_.d = _globalTransformMatrix.d;
-               if(_loc1_ || Number(_loc2_))
+               displayMatrix = _starlingDisplay.transformationMatrix;
+               displayMatrix.a = _globalTransformMatrix.a;
+               displayMatrix.b = _globalTransformMatrix.b;
+               displayMatrix.c = _globalTransformMatrix.c;
+               displayMatrix.d = _globalTransformMatrix.d;
+               if(pivotX || Number(pivotY))
                {
-                  _loc3_.tx = _globalTransformMatrix.tx - (_loc3_.a * _loc1_ + _loc3_.c * _loc2_);
-                  _loc3_.ty = _globalTransformMatrix.ty - (_loc3_.b * _loc1_ + _loc3_.d * _loc2_);
+                  displayMatrix.tx = _globalTransformMatrix.tx - (displayMatrix.a * pivotX + displayMatrix.c * pivotY);
+                  displayMatrix.ty = _globalTransformMatrix.ty - (displayMatrix.b * pivotX + displayMatrix.d * pivotY);
                }
                else
                {
-                  _loc3_.tx = _globalTransformMatrix.tx;
-                  _loc3_.ty = _globalTransformMatrix.ty;
+                  displayMatrix.tx = _globalTransformMatrix.tx;
+                  displayMatrix.ty = _globalTransformMatrix.ty;
                }
             }
          }
       }
       
-      override function updateDisplayVisible(param1:Boolean) : void
+      override function updateDisplayVisible(value:Boolean) : void
       {
       }
       
-      override function updateDisplayColor(param1:Number, param2:Number, param3:Number, param4:Number, param5:Number, param6:Number, param7:Number, param8:Number, param9:Boolean = false) : void
+      override function updateDisplayColor(aOffset:Number, rOffset:Number, gOffset:Number, bOffset:Number, aMultiplier:Number, rMultiplier:Number, gMultiplier:Number, bMultiplier:Number, colorChanged:Boolean = false) : void
       {
          if(_starlingDisplay)
          {
-            super.updateDisplayColor(param1,param2,param3,param4,param5,param6,param7,param8,param9);
-            _starlingDisplay.alpha = param5;
+            super.updateDisplayColor(aOffset,rOffset,gOffset,bOffset,aMultiplier,rMultiplier,gMultiplier,bMultiplier,colorChanged);
+            _starlingDisplay.alpha = aMultiplier;
             if(_starlingDisplay is Quad)
             {
-               (_starlingDisplay as Quad).color = (uint(param6 * 255) << 16) + (uint(param7 * 255) << 8) + uint(param8 * 255);
+               (_starlingDisplay as Quad).color = (uint(rMultiplier * 255) << 16) + (uint(gMultiplier * 255) << 8) + uint(bMultiplier * 255);
             }
          }
       }
       
-      override function updateDisplayBlendMode(param1:String) : void
+      override function updateDisplayBlendMode(value:String) : void
       {
          if(_starlingDisplay)
          {
@@ -187,30 +187,30 @@ package dragonBones.display
                                                                            {
                                                                            }
                                                                         }
-                                                                        addr52:
+                                                                        addr62:
                                                                      }
-                                                                     addr51:
-                                                                     §§goto(addr52);
+                                                                     addr61:
+                                                                     §§goto(addr62);
                                                                   }
-                                                                  addr50:
-                                                                  §§goto(addr51);
+                                                                  addr60:
+                                                                  §§goto(addr61);
                                                                }
-                                                               addr49:
-                                                               §§goto(addr50);
+                                                               addr59:
+                                                               §§goto(addr60);
                                                             }
-                                                            addr48:
-                                                            §§goto(addr49);
+                                                            addr58:
+                                                            §§goto(addr59);
                                                          }
-                                                         addr47:
-                                                         §§goto(addr48);
+                                                         addr57:
+                                                         §§goto(addr58);
                                                       }
-                                                      addr46:
-                                                      §§goto(addr47);
+                                                      addr56:
+                                                      §§goto(addr57);
                                                    }
-                                                   addr45:
-                                                   §§goto(addr46);
+                                                   addr55:
+                                                   §§goto(addr56);
                                                 }
-                                                §§goto(addr45);
+                                                §§goto(addr55);
                                              }
                                              else
                                              {
@@ -238,22 +238,22 @@ package dragonBones.display
                                  }
                               }
                            }
-                           addr13:
+                           addr17:
                            _starlingDisplay.blendMode = blendMode;
                         }
-                        addr12:
-                        §§goto(addr13);
+                        addr16:
+                        §§goto(addr17);
                      }
-                     addr11:
-                     §§goto(addr12);
+                     addr15:
+                     §§goto(addr16);
                   }
-                  addr10:
-                  §§goto(addr11);
+                  addr14:
+                  §§goto(addr15);
                }
-               addr9:
-               §§goto(addr10);
+               addr13:
+               §§goto(addr14);
             }
-            §§goto(addr9);
+            §§goto(addr13);
          }
       }
    }

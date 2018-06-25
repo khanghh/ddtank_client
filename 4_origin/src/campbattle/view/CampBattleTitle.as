@@ -59,21 +59,21 @@ package campbattle.view
          addChild(_titleTxt4);
       }
       
-      public function setTitleTxt4(param1:String) : void
+      public function setTitleTxt4(str:String) : void
       {
-         if(param1)
+         if(str)
          {
-            _titleTxt4.text = param1;
+            _titleTxt4.text = str;
          }
       }
       
-      public function setTitleTxt2(param1:String) : void
+      public function setTitleTxt2(str:String) : void
       {
-         if(!param1)
+         if(!str)
          {
             return;
          }
-         _titleTxt2.text = param1;
+         _titleTxt2.text = str;
       }
       
       public function dispose() : void

@@ -33,10 +33,10 @@ package redEnvelope.view
       
       private var redCell:BagCell;
       
-      public function RedEnvelopeItem(param1:int)
+      public function RedEnvelopeItem(type:int)
       {
          super();
-         _type = param1;
+         _type = type;
          init();
       }
       
@@ -64,12 +64,12 @@ package redEnvelope.view
       
       public function updataRedNum() : void
       {
-         var _loc1_:BagInfo = PlayerManager.Instance.Self.getBag(1);
-         var _loc2_:int = _loc1_.getItemCountByTemplateId(redList[_type - 1]);
-         _redNumTxt.text = "x" + String(_loc2_);
+         var bagInfo:BagInfo = PlayerManager.Instance.Self.getBag(1);
+         var conut:int = bagInfo.getItemCountByTemplateId(redList[_type - 1]);
+         _redNumTxt.text = "x" + String(conut);
       }
       
-      private function __onSelectClick(param1:MouseEvent) : void
+      private function __onSelectClick(event:MouseEvent) : void
       {
          select.movie.gotoAndStop(2);
          dispatchEvent(new RedEnvelopeEvent("select",_type));
@@ -77,37 +77,36 @@ package redEnvelope.view
       
       public function setData() : void
       {
-         var _loc1_:* = null;
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc2_:int = 0;
-         _loc4_ = 0;
-         while(_loc4_ < RedEnvelopeManager.instance.itemInfoList.length)
+         var award:* = null;
+         var i:int = 0;
+         var _info:* = null;
+         var j:int = 0;
+         for(i = 0; i < RedEnvelopeManager.instance.itemInfoList.length; )
          {
-            if(RedEnvelopeManager.instance.itemInfoList[_loc4_].Quality == _type)
+            if(RedEnvelopeManager.instance.itemInfoList[i].Quality == _type)
             {
-               _loc1_ = new BagCell(0,null,true,ComponentFactory.Instance.creatBitmap("asset.redEnvelope.cellBg"));
-               _loc1_.setContentSize(34,34);
-               _loc1_.x = _loc2_ * 50;
-               _loc1_.y = 1;
-               _loc3_ = new InventoryItemInfo();
-               _loc3_.TemplateID = RedEnvelopeManager.instance.itemInfoList[_loc4_].TemplateID;
-               _loc3_ = ItemManager.fill(_loc3_);
-               _loc3_.IsBinds = RedEnvelopeManager.instance.itemInfoList[_loc4_].IsBind;
-               _loc3_.ValidDate = RedEnvelopeManager.instance.itemInfoList[_loc4_].ValidDate;
-               _loc1_.info = _loc3_;
-               if(_loc3_.TemplateID == -200)
+               award = new BagCell(0,null,true,ComponentFactory.Instance.creatBitmap("asset.redEnvelope.cellBg"));
+               award.setContentSize(34,34);
+               award.x = j * 50;
+               award.y = 1;
+               _info = new InventoryItemInfo();
+               _info.TemplateID = RedEnvelopeManager.instance.itemInfoList[i].TemplateID;
+               _info = ItemManager.fill(_info);
+               _info.IsBinds = RedEnvelopeManager.instance.itemInfoList[i].IsBind;
+               _info.ValidDate = RedEnvelopeManager.instance.itemInfoList[i].ValidDate;
+               award.info = _info;
+               if(_info.TemplateID == -200)
                {
-                  _loc1_.setCount(RedEnvelopeManager.instance.itemInfoList[_loc4_].Count);
+                  award.setCount(RedEnvelopeManager.instance.itemInfoList[i].Count);
                }
                else
                {
-                  _loc1_.setCountNotVisible();
+                  award.setCountNotVisible();
                }
-               cellBox.addChild(_loc1_);
-               _loc2_++;
+               cellBox.addChild(award);
+               j++;
             }
-            _loc4_++;
+            i++;
          }
       }
       

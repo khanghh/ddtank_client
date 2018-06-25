@@ -8,11 +8,11 @@ package sanXiao.model
       
       public var id:int;
       
-      public function SXStoreBoughtData(param1:int, param2:int)
+      public function SXStoreBoughtData($id:int, $boughtTimes:int)
       {
          super();
-         id = param1;
-         boughtTimes = param2;
+         id = $id;
+         boughtTimes = $boughtTimes;
       }
    }
 }

@@ -35,28 +35,28 @@ package store.view.shortcutBuy
          super();
       }
       
-      public function show(param1:Array, param2:Boolean, param3:String, param4:int, param5:int = -1, param6:Number = 30, param7:Number = 40) : void
+      public function show(templateIDList:Array, showRadioBtn:Boolean, title:String, panelIndex:int, selectedIndex:int = -1, hSpace:Number = 30, vSpace:Number = 40) : void
       {
-         this.titleText = param3;
-         _showRadioBtn = param2;
-         _panelIndex = param4;
-         _view = ComponentFactory.Instance.creatCustomObject("ddtstore.ShortcutBuyFrame.ShortcutBuyView",[param1,param2]);
+         this.titleText = title;
+         _showRadioBtn = showRadioBtn;
+         _panelIndex = panelIndex;
+         _view = ComponentFactory.Instance.creatCustomObject("ddtstore.ShortcutBuyFrame.ShortcutBuyView",[templateIDList,showRadioBtn]);
          escEnable = true;
          enterEnable = true;
          initII();
          initEvents();
          showToLayer();
-         relocationView(param5,param6,param7);
+         relocationView(selectedIndex,hSpace,vSpace);
       }
       
-      private function relocationView(param1:int, param2:Number, param3:Number) : void
+      private function relocationView(selectedIndex:int, hSpace:Number, vSpace:Number) : void
       {
-         if(param1 != -1)
+         if(selectedIndex != -1)
          {
-            _view.List.selectedIndex = param1;
+            _view.List.selectedIndex = selectedIndex;
          }
-         _view.List.list.hSpace = param2;
-         _view.List.list.vSpace = param3;
+         _view.List.list.hSpace = hSpace;
+         _view.List.list.vSpace = vSpace;
       }
       
       private function initII() : void
@@ -89,36 +89,36 @@ package store.view.shortcutBuy
          removeEventListener("number_enter",_numberEnter);
       }
       
-      private function _numberClose(param1:Event) : void
+      private function _numberClose(e:Event) : void
       {
          ObjectUtils.disposeObject(this);
       }
       
-      private function _numberEnter(param1:Event) : void
+      private function _numberEnter(e:Event) : void
       {
-         param1.stopImmediatePropagation();
+         e.stopImmediatePropagation();
          okFun(null);
       }
       
-      private function changeHandler(param1:Event) : void
+      private function changeHandler(evt:Event) : void
       {
          okBtn.enable = _view.totalDDTMoney != 0 || _view.totalMoney != 0;
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(e.responseCode == 0 || e.responseCode == 1)
          {
             ObjectUtils.disposeObject(this);
          }
-         else if(param1.responseCode == 2)
+         else if(e.responseCode == 2)
          {
             okFun(null);
          }
       }
       
-      private function okFun(param1:MouseEvent) : void
+      private function okFun(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_view.currentShopItem == null)
@@ -139,29 +139,28 @@ package store.view.shortcutBuy
       
       private function buyGoods() : void
       {
-         var _loc10_:int = 0;
-         var _loc3_:Array = [];
-         var _loc8_:Array = [];
-         var _loc4_:Array = [];
-         var _loc5_:Array = [];
-         var _loc9_:Array = [];
-         var _loc6_:Array = [];
-         var _loc2_:Array = [];
-         var _loc7_:int = _view.currentShopItem.GoodsID;
-         var _loc1_:int = _view.totalNum;
-         _loc10_ = 0;
-         while(_loc10_ < _loc1_)
+         var i:int = 0;
+         var items:Array = [];
+         var types:Array = [];
+         var colors:Array = [];
+         var dresses:Array = [];
+         var skins:Array = [];
+         var places:Array = [];
+         var bands:Array = [];
+         var goodsID:int = _view.currentShopItem.GoodsID;
+         var num:int = _view.totalNum;
+         for(i = 0; i < num; )
          {
-            _loc3_.push(_loc7_);
-            _loc8_.push(1);
-            _loc4_.push("");
-            _loc5_.push(false);
-            _loc9_.push("");
-            _loc6_.push(-1);
-            _loc2_.push(CheckMoneyUtils.instance.isBind);
-            _loc10_++;
+            items.push(goodsID);
+            types.push(1);
+            colors.push("");
+            dresses.push(false);
+            skins.push("");
+            places.push(-1);
+            bands.push(CheckMoneyUtils.instance.isBind);
+            i++;
          }
-         SocketManager.Instance.out.sendBuyGoods(_loc3_,_loc8_,_loc4_,_loc5_,_loc9_,_loc6_,_panelIndex,null,_loc2_);
+         SocketManager.Instance.out.sendBuyGoods(items,types,colors,dresses,skins,places,_panelIndex,null,bands);
       }
       
       private function showToLayer() : void

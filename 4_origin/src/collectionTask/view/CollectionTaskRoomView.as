@@ -47,10 +47,10 @@ package collectionTask.view
       
       private var _backBtnMc:MovieClip;
       
-      public function CollectionTaskRoomView(param1:CollectionTaskModel)
+      public function CollectionTaskRoomView(model:CollectionTaskModel)
       {
          super();
-         _model = param1;
+         _model = model;
          initView();
       }
       
@@ -70,29 +70,29 @@ package collectionTask.view
          addChild(_taskProgressView);
       }
       
-      public function setMap(param1:Point = null) : void
+      public function setMap(localPos:Point = null) : void
       {
          clearMap();
-         var _loc6_:MovieClip = new (ClassUtils.uiSourceDomain.getDefinition(getMapRes()) as Class)() as MovieClip;
-         var _loc3_:Sprite = _loc6_.getChildByName("articleLayer") as Sprite;
-         var _loc4_:Sprite = _loc6_.getChildByName("entity") as Sprite;
-         var _loc2_:Sprite = _loc6_.getChildByName("sky") as Sprite;
-         var _loc7_:Sprite = _loc6_.getChildByName("mesh") as Sprite;
-         var _loc5_:Sprite = _loc6_.getChildByName("bg") as Sprite;
-         MAP_SIZE[0] = _loc5_.width;
-         MAP_SIZE[1] = _loc5_.height;
-         _sceneScene.setHitTester(new PathMapHitTester(_loc7_));
+         var mapRes:MovieClip = new (ClassUtils.uiSourceDomain.getDefinition(getMapRes()) as Class)() as MovieClip;
+         var article:Sprite = mapRes.getChildByName("articleLayer") as Sprite;
+         var entity:Sprite = mapRes.getChildByName("entity") as Sprite;
+         var sky:Sprite = mapRes.getChildByName("sky") as Sprite;
+         var mesh:Sprite = mapRes.getChildByName("mesh") as Sprite;
+         var bg:Sprite = mapRes.getChildByName("bg") as Sprite;
+         MAP_SIZE[0] = bg.width;
+         MAP_SIZE[1] = bg.height;
+         _sceneScene.setHitTester(new PathMapHitTester(mesh));
          if(!_sceneMap)
          {
-            _sceneMap = new CollectionTaskSceneMap(_model,_sceneScene,_model.getPlayers(),_loc5_,_loc7_,_loc4_,_loc2_,_loc3_);
+            _sceneMap = new CollectionTaskSceneMap(_model,_sceneScene,_model.getPlayers(),bg,mesh,entity,sky,article);
             addChildAt(_sceneMap,0);
          }
          _sceneMap.setPlayProgressFunc(addProgressMc);
          _sceneMap.setStopProgressFunc(stopProgressMc);
          _sceneMap.sceneMapVO = getSceneMapVO();
-         if(param1)
+         if(localPos)
          {
-            _sceneMap.sceneMapVO.defaultPos = param1;
+            _sceneMap.sceneMapVO.defaultPos = localPos;
          }
          _sceneMap.addSelfPlayer();
          _sceneMap.setCenter();
@@ -116,7 +116,7 @@ package collectionTask.view
          }
       }
       
-      protected function __taskCompleteHandler(param1:Event) : void
+      protected function __taskCompleteHandler(event:Event) : void
       {
          if(_taskCompleteMc.currentFrame >= 71)
          {
@@ -141,23 +141,22 @@ package collectionTask.view
       
       private function checkCanCollect() : Boolean
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         var _loc3_:QuestInfo = CollectionTaskManager.Instance.questInfo;
-         _loc2_ = 0;
-         while(_loc2_ < _loc3_.conditions.length)
+         var i:int = 0;
+         var condition:* = null;
+         var info:QuestInfo = CollectionTaskManager.Instance.questInfo;
+         for(i = 0; i < info.conditions.length; )
          {
-            _loc1_ = _loc3_.conditions[_loc2_];
-            if(_loc1_.param != CollectionTaskManager.Instance.collectedId)
+            condition = info.conditions[i];
+            if(condition.param != CollectionTaskManager.Instance.collectedId)
             {
-               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("collectionTask.cannotCollectTip",ItemManager.Instance.getTemplateById(_loc1_.param).Name));
+               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("collectionTask.cannotCollectTip",ItemManager.Instance.getTemplateById(condition.param).Name));
                return false;
             }
-            if(_loc3_.progress[_loc2_] > 0 && !CollectionTaskManager.Instance.isCollecting)
+            if(info.progress[i] > 0 && !CollectionTaskManager.Instance.isCollecting)
             {
                return true;
             }
-            _loc2_++;
+            i++;
          }
          return false;
       }
@@ -170,19 +169,19 @@ package collectionTask.view
       
       public function getSceneMapVO() : SceneMapVO
       {
-         var _loc1_:SceneMapVO = new SceneMapVO();
-         _loc1_.mapName = LanguageMgr.GetTranslation("collectionTask.scene");
-         _loc1_.mapW = MAP_SIZE[0];
-         _loc1_.mapH = MAP_SIZE[1];
-         _loc1_.defaultPos = ComponentFactory.Instance.creatCustomObject("collectionTask.sceneMapVOPos");
-         return _loc1_;
+         var sceneMapVO:SceneMapVO = new SceneMapVO();
+         sceneMapVO.mapName = LanguageMgr.GetTranslation("collectionTask.scene");
+         sceneMapVO.mapW = MAP_SIZE[0];
+         sceneMapVO.mapH = MAP_SIZE[1];
+         sceneMapVO.defaultPos = ComponentFactory.Instance.creatCustomObject("collectionTask.sceneMapVOPos");
+         return sceneMapVO;
       }
       
-      public function movePlayer(param1:int, param2:Array) : void
+      public function movePlayer(id:int, p:Array) : void
       {
          if(_sceneMap)
          {
-            _sceneMap.movePlayer(param1,param2);
+            _sceneMap.movePlayer(id,p);
          }
       }
       
@@ -191,11 +190,11 @@ package collectionTask.view
          return _sceneMap.characters.length;
       }
       
-      public function addRobertPlayer(param1:int) : void
+      public function addRobertPlayer(len:int) : void
       {
          if(_sceneMap)
          {
-            _sceneMap.addRobertPlayer(param1);
+            _sceneMap.addRobertPlayer(len);
          }
       }
       

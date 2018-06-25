@@ -21,36 +21,36 @@ package store
       
       protected var _types:Array;
       
-      public function StoneCell(param1:Array, param2:int)
+      public function StoneCell(stoneType:Array, $index:int)
       {
-         var _loc3_:Sprite = new Sprite();
-         var _loc4_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtstore.BlankCellBG");
-         _loc3_.addChild(_loc4_);
-         super(_loc3_,param2);
-         _types = param1;
+         var bg:Sprite = new Sprite();
+         var bgBit:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtstore.BlankCellBG");
+         bg.addChild(bgBit);
+         super(bg,$index);
+         _types = stoneType;
          setContentSize(62,62);
          PicPos = new Point(17,17);
       }
       
-      override public function dragDrop(param1:DragEffect) : void
+      override public function dragDrop(effect:DragEffect) : void
       {
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:InventoryItemInfo = param1.data as InventoryItemInfo;
-         if(_loc2_.BagType == 12 && info != null)
+         var sourceInfo:InventoryItemInfo = effect.data as InventoryItemInfo;
+         if(sourceInfo.BagType == 12 && info != null)
          {
             return;
          }
-         if(_loc2_ && param1.action != "split")
+         if(sourceInfo && effect.action != "split")
          {
-            param1.action = "none";
-            if(_loc2_.CategoryID == 11 && _types.indexOf(_loc2_.Property1) > -1 && _loc2_.getRemainDate() > 0)
+            effect.action = "none";
+            if(sourceInfo.CategoryID == 11 && _types.indexOf(sourceInfo.Property1) > -1 && sourceInfo.getRemainDate() > 0)
             {
-               SocketManager.Instance.out.sendMoveGoods(_loc2_.BagType,_loc2_.Place,12,index,1,false);
-               param1.action = "none";
+               SocketManager.Instance.out.sendMoveGoods(sourceInfo.BagType,sourceInfo.Place,12,index,1,false);
+               effect.action = "none";
                DragManager.acceptDrag(this);
             }
          }

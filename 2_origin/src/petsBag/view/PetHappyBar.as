@@ -43,9 +43,9 @@ package petsBag.view
          return _info;
       }
       
-      public function set info(param1:PetInfo) : void
+      public function set info(value:PetInfo) : void
       {
-         _info = param1;
+         _info = value;
          this.tipData = _info;
          happyStatus = !!_info?_info.PetHappyStar:0;
          _lvTxt.text = !!_info?_info.Level.toString():"";
@@ -58,32 +58,31 @@ package petsBag.view
       
       private function initView() : void
       {
-         var _loc1_:int = 0;
-         var _loc2_:* = null;
+         var index:int = 0;
+         var img:* = null;
          _lv = ComponentFactory.Instance.creatBitmap("assets.petsBag.Lv");
          addChild(_lv);
          _lvTxt = ComponentFactory.Instance.creatComponentByStylename("petsBag.text.Lv");
          addChild(_lvTxt);
-         _loc1_ = 0;
-         while(_loc1_ < COUNT)
+         for(index = 0; index < COUNT; )
          {
-            _loc2_ = ComponentFactory.Instance.creatBitmap("assets.petsBag.heart1");
-            _bgImgVec.push(_loc2_);
-            addChild(_loc2_);
-            _loc2_.x = gapWidth() + 2 + _loc1_ * _loc2_.width + SPACE;
-            _loc1_++;
+            img = ComponentFactory.Instance.creatBitmap("assets.petsBag.heart1");
+            _bgImgVec.push(img);
+            addChild(img);
+            img.x = gapWidth() + 2 + index * img.width + SPACE;
+            index++;
          }
       }
       
-      private function set happyStatus(param1:int) : void
+      private function set happyStatus(type:int) : void
       {
-         if(param1 > 0)
+         if(type > 0)
          {
-            if(param1 > COUNT)
+            if(type > COUNT)
             {
-               param1 = COUNT;
+               type = COUNT;
             }
-            update(param1);
+            update(type);
          }
          else
          {
@@ -91,45 +90,42 @@ package petsBag.view
          }
       }
       
-      private function update(param1:int) : void
+      private function update(count:int) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:* = null;
+         var index:int = 0;
+         var img:* = null;
          remove();
-         _loc2_ = 0;
-         while(_loc2_ < param1)
+         for(index = 0; index < count; )
          {
-            _loc3_ = ComponentFactory.Instance.creatBitmap("assets.petsBag.heart2");
-            _heartImgVec.push(_loc3_);
-            addChild(_loc3_);
-            _loc3_.x = gapWidth() + 2 + _loc2_ * _loc3_.width + SPACE;
-            _loc2_++;
+            img = ComponentFactory.Instance.creatBitmap("assets.petsBag.heart2");
+            _heartImgVec.push(img);
+            addChild(img);
+            img.x = gapWidth() + 2 + index * img.width + SPACE;
+            index++;
          }
       }
       
       private function remove() : void
       {
-         var _loc1_:int = 0;
-         var _loc2_:int = _heartImgVec.length;
-         _loc1_ = 0;
-         while(_loc1_ < _loc2_)
+         var index:int = 0;
+         var count:int = _heartImgVec.length;
+         for(index = 0; index < count; )
          {
-            ObjectUtils.disposeObject(_heartImgVec[_loc1_]);
-            _loc1_++;
+            ObjectUtils.disposeObject(_heartImgVec[index]);
+            index++;
          }
          _heartImgVec.splice(0,_heartImgVec.length);
       }
       
       override public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var index:int = 0;
          remove();
          _heartImgVec = null;
-         _loc1_ = 0;
-         while(_loc1_ < COUNT)
+         for(index = 0; index < COUNT; )
          {
-            ObjectUtils.disposeObject(_bgImgVec[_loc1_]);
-            _loc1_++;
+            ObjectUtils.disposeObject(_bgImgVec[index]);
+            index++;
          }
          _bgImgVec.splice(0,_bgImgVec.length);
          _bgImgVec = null;

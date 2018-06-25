@@ -53,16 +53,16 @@ package dice.view
          preInitialize();
       }
       
-      public function set Controller(param1:DiceController) : void
+      public function set Controller(value:DiceController) : void
       {
-         _controller = param1;
+         _controller = value;
          initialize();
          addEvent();
       }
       
       private function initialize() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          addChild(_startBG);
          addChild(_freeCount);
          addChild(_startBtn);
@@ -78,14 +78,14 @@ package dice.view
             }
             addChild(_startArrow);
          }
-         _loc1_ = 0;
-         while(_loc1_ < _cellItem.length && _loc1_ < _controller.CELL_COUNT)
+         i = 0;
+         while(i < _cellItem.length && i < _controller.CELL_COUNT)
          {
-            if(_cellItem[_loc1_])
+            if(_cellItem[i])
             {
-               addChild(_cellItem[_loc1_]);
+               addChild(_cellItem[i]);
             }
-            _loc1_++;
+            i++;
          }
       }
       
@@ -116,9 +116,9 @@ package dice.view
          DiceController.Instance.removeEventListener("dice_freeCount_changed",__onFreeCountChanged);
       }
       
-      private function __onPlayerState(param1:DiceEvent) : void
+      private function __onPlayerState(event:DiceEvent) : void
       {
-         if(param1.resultData.isWalking)
+         if(event.resultData.isWalking)
          {
             _startBtn.visible = false;
             DiceController.Instance.setDestinationCell(-1);
@@ -133,31 +133,31 @@ package dice.view
          }
       }
       
-      private function __getDiceResultData(param1:DiceEvent) : void
+      private function __getDiceResultData(event:DiceEvent) : void
       {
-         var _loc2_:Object = param1.resultData;
-         if(_loc2_)
+         var _proxy:Object = event.resultData;
+         if(_proxy)
          {
-            _target = (int(_loc2_.position) + int(_loc2_.result)) % DiceController.Instance.CELL_COUNT;
-            _target = _target + (_target < int(_loc2_.position) && !DiceController.Instance.hasUsedFirstCell?1:0);
+            _target = (int(_proxy.position) + int(_proxy.result)) % DiceController.Instance.CELL_COUNT;
+            _target = _target + (_target < int(_proxy.position) && !DiceController.Instance.hasUsedFirstCell?1:0);
          }
          _startBtn.visible = false;
       }
       
-      private function __onStartBtnClick(param1:MouseEvent) : void
+      private function __onStartBtnClick(event:MouseEvent) : void
       {
-         var _loc2_:int = DiceController.Instance.commonDicePrice;
+         var price:int = DiceController.Instance.commonDicePrice;
          if(DiceController.Instance.diceType == 1)
          {
-            _loc2_ = DiceController.Instance.doubleDicePrice;
+            price = DiceController.Instance.doubleDicePrice;
          }
          else if(DiceController.Instance.diceType == 2)
          {
-            _loc2_ = DiceController.Instance.bigDicePrice;
+            price = DiceController.Instance.bigDicePrice;
          }
          else if(DiceController.Instance.diceType == 3)
          {
-            _loc2_ = DiceController.Instance.smallDicePrice;
+            price = DiceController.Instance.smallDicePrice;
          }
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -165,7 +165,7 @@ package dice.view
             BaglockedManager.Instance.show();
             return;
          }
-         if(PlayerManager.Instance.Self.Money < Number(_loc2_) && DiceController.Instance.freeCount <= 0)
+         if(PlayerManager.Instance.Self.Money < Number(price) && DiceController.Instance.freeCount <= 0)
          {
             if(_poorManAlert)
             {
@@ -179,11 +179,11 @@ package dice.view
          AlertFeedeductionWindow();
       }
       
-      private function __poorManResponse(param1:FrameEvent) : void
+      private function __poorManResponse(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          _poorManAlert.removeEventListener("response",__poorManResponse);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         if(event.responseCode == 3 || event.responseCode == 2)
          {
             LeavePageManager.leaveToFillPath();
          }
@@ -211,9 +211,9 @@ package dice.view
       
       private function openAlertFrame() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:int = 0;
-         var _loc3_:* = null;
+         var type:* = null;
+         var price:int = 0;
+         var msg:* = null;
          if(_selectCheckBtn == null)
          {
             _selectCheckBtn = ComponentFactory.Instance.creatComponentByStylename("asset.dice.refreshAlert.selectedCheck");
@@ -224,60 +224,60 @@ package dice.view
          switch(int(DiceController.Instance.diceType) - 1)
          {
             case 0:
-               _loc2_ = LanguageMgr.GetTranslation("dice.type.double");
-               _loc1_ = DiceController.Instance.doubleDicePrice;
+               type = LanguageMgr.GetTranslation("dice.type.double");
+               price = DiceController.Instance.doubleDicePrice;
                break;
             case 1:
-               _loc2_ = LanguageMgr.GetTranslation("dice.type.big");
-               _loc1_ = DiceController.Instance.bigDicePrice;
+               type = LanguageMgr.GetTranslation("dice.type.big");
+               price = DiceController.Instance.bigDicePrice;
                break;
             case 2:
-               _loc2_ = LanguageMgr.GetTranslation("dice.type.small");
-               _loc1_ = DiceController.Instance.smallDicePrice;
+               type = LanguageMgr.GetTranslation("dice.type.small");
+               price = DiceController.Instance.smallDicePrice;
          }
-         _loc3_ = LanguageMgr.GetTranslation("dice.type.prompt",_loc2_,_loc1_) + "\n\n";
+         msg = LanguageMgr.GetTranslation("dice.type.prompt",type,price) + "\n\n";
          if(_baseAlert)
          {
             ObjectUtils.disposeObject(_baseAlert);
          }
-         _baseAlert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc3_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,false,false,2);
+         _baseAlert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),msg,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,false,false,2);
          _baseAlert.addChild(_selectCheckBtn);
          _baseAlert.addEventListener("response",__onResponse);
       }
       
-      private function __onCheckBtnClick(param1:MouseEvent) : void
+      private function __onCheckBtnClick(event:MouseEvent) : void
       {
-         var _loc2_:SelectedCheckButton = param1.currentTarget as SelectedCheckButton;
-         DiceController.Instance.setPopupNextStartWindow(_loc2_.selected);
+         var _selectBtn:SelectedCheckButton = event.currentTarget as SelectedCheckButton;
+         DiceController.Instance.setPopupNextStartWindow(_selectBtn.selected);
       }
       
-      private function __onResponse(param1:FrameEvent) : void
+      private function __onResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.target as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onResponse);
+         var alert:BaseAlerFrame = evt.target as BaseAlerFrame;
+         alert.removeEventListener("response",__onResponse);
          _selectCheckBtn.removeEventListener("click",__onCheckBtnClick);
          ObjectUtils.disposeObject(_selectCheckBtn);
          _selectCheckBtn = null;
-         _loc2_.dispose();
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         alert.dispose();
+         if(evt.responseCode == 2 || evt.responseCode == 3)
          {
             _startBtn.visible = false;
             sendStartDataToServer();
          }
       }
       
-      private function __onDicetypeChanged(param1:DiceEvent) : void
+      private function __onDicetypeChanged(event:DiceEvent) : void
       {
          _startBtn.setFrame(DiceController.Instance.diceType + 1);
       }
       
-      private function __onFreeCountChanged(param1:DiceEvent) : void
+      private function __onFreeCountChanged(event:DiceEvent) : void
       {
          _freeCount.text = LanguageMgr.GetTranslation("dice.freeCount",DiceController.Instance.freeCount);
       }
       
-      private function __onRefreshData(param1:DiceEvent) : void
+      private function __onRefreshData(event:DiceEvent) : void
       {
          initialize();
       }

@@ -30,18 +30,17 @@ package mx.binding
       
       private var childChangeEvents:Object;
       
-      public function BindabilityInfo(param1:XML)
+      public function BindabilityInfo(typeDescription:XML)
       {
          this.childChangeEvents = {};
          super();
-         this.typeDescription = param1;
+         this.typeDescription = typeDescription;
       }
       
-      public function getChangeEvents(param1:String) : Object
+      public function getChangeEvents(childName:String) : Object
       {
          var childDesc:XMLList = null;
          var numChildren:int = 0;
-         var childName:String = param1;
          var changeEvents:Object = this.childChangeEvents[childName];
          if(!changeEvents)
          {
@@ -82,27 +81,25 @@ package mx.binding
          return this.classChangeEvents;
       }
       
-      private function addBindabilityEvents(param1:XMLList, param2:Object) : void
+      private function addBindabilityEvents(metadata:XMLList, eventListObj:Object) : void
       {
-         var metadata:XMLList = param1;
-         var eventListObj:Object = param2;
          this.addChangeEvents(metadata.(@name == BINDABLE),eventListObj,true);
          this.addChangeEvents(metadata.(@name == CHANGE_EVENT),eventListObj,true);
          this.addChangeEvents(metadata.(@name == NON_COMMITTING_CHANGE_EVENT),eventListObj,false);
       }
       
-      private function addChangeEvents(param1:XMLList, param2:Object, param3:Boolean) : void
+      private function addChangeEvents(metadata:XMLList, eventListObj:Object, isCommit:Boolean) : void
       {
-         var _loc4_:XML = null;
-         var _loc5_:XMLList = null;
-         var _loc6_:String = null;
-         for each(_loc4_ in param1)
+         var md:XML = null;
+         var arg:XMLList = null;
+         var eventName:String = null;
+         for each(md in metadata)
          {
-            _loc5_ = _loc4_.arg;
-            if(_loc5_.length() > 0)
+            arg = md.arg;
+            if(arg.length() > 0)
             {
-               _loc6_ = _loc5_[0].@value;
-               param2[_loc6_] = param3;
+               eventName = arg[0].@value;
+               eventListObj[eventName] = isCommit;
             }
             else
             {
@@ -111,14 +108,14 @@ package mx.binding
          }
       }
       
-      private function copyProps(param1:Object, param2:Object) : Object
+      private function copyProps(from:Object, to:Object) : Object
       {
-         var _loc3_:* = null;
-         for(_loc3_ in param1)
+         var propName:* = null;
+         for(propName in from)
          {
-            param2[_loc3_] = param1[_loc3_];
+            to[propName] = from[propName];
          }
-         return param2;
+         return to;
       }
    }
 }

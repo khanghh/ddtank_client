@@ -66,9 +66,9 @@ package gameCommon.view.control
       
       private var _isREleaseFours:Boolean;
       
-      public function SoulState(param1:LocalPlayer)
+      public function SoulState(self:LocalPlayer)
       {
-         super(param1);
+         super(self);
          mouseEnabled = false;
       }
       
@@ -134,12 +134,12 @@ package gameCommon.view.control
          _freedomViewBtn.tipData = LanguageMgr.GetTranslation("tank.game.freedomView");
       }
       
-      private function setTip(param1:BaseButton, param2:String) : void
+      private function setTip(btn:BaseButton, data:String) : void
       {
-         param1.tipStyle = "ddt.view.tips.OneLineTip";
-         param1.tipDirctions = "0";
-         param1.tipGapV = 5;
-         param1.tipData = param2;
+         btn.tipStyle = "ddt.view.tips.OneLineTip";
+         btn.tipDirctions = "0";
+         btn.tipGapV = 5;
+         btn.tipData = data;
       }
       
       override protected function addEvent() : void
@@ -156,24 +156,24 @@ package gameCommon.view.control
          _freedomViewBtn.addEventListener("click",__freedomViewClickHandler);
       }
       
-      protected function __noMessageHandler(param1:Event) : void
+      protected function __noMessageHandler(event:Event) : void
       {
          _fastMovie.gotoAndStop(_fastMovie.totalFrames);
       }
       
-      protected function __hasNewHandler(param1:Event) : void
+      protected function __hasNewHandler(event:Event) : void
       {
          _fastMovie.gotoAndPlay(1);
       }
       
-      protected function __onFaceSelect(param1:Event) : void
+      protected function __onFaceSelect(event:Event) : void
       {
          ChatManager.Instance.sendFace(_facePanel.selected);
          _facePanel.setVisible = false;
          StageReferance.stage.focus = null;
       }
       
-      protected function __face(param1:MouseEvent) : void
+      protected function __face(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _facePanel.x = localToGlobal(new Point(_facePanelPos.x,_facePanelPos.y)).x;
@@ -181,12 +181,12 @@ package gameCommon.view.control
          _facePanel.setVisible = true;
       }
       
-      protected function __outHandler(param1:MouseEvent) : void
+      protected function __outHandler(event:MouseEvent) : void
       {
          IMManager.Instance.hideMessageBox();
       }
       
-      protected function __overHandler(param1:MouseEvent) : void
+      protected function __overHandler(event:MouseEvent) : void
       {
          if(KeyboardManager.isDown(32))
          {
@@ -195,14 +195,14 @@ package gameCommon.view.control
          IMManager.Instance.showMessageBox(_fastChatBtn);
       }
       
-      protected function __fastChat(param1:MouseEvent) : void
+      protected function __fastChat(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         param1.stopImmediatePropagation();
+         event.stopImmediatePropagation();
          ChatManager.Instance.switchVisible();
       }
       
-      private function __onFrame(param1:Event) : void
+      private function __onFrame(evt:Event) : void
       {
          if(!(StageReferance.stage.focus is TextField) && KeyboardManager.isDown(KeyStroke.VK_SPACE.getCode()))
          {
@@ -248,27 +248,27 @@ package gameCommon.view.control
          _freedomViewBtn.removeEventListener("click",__freedomViewClickHandler);
       }
       
-      private function __gameViewClickHandler(param1:MouseEvent) : void
+      private function __gameViewClickHandler(evt:MouseEvent) : void
       {
          changeView(true);
          _freedomViewBtn.visible = true;
          _gameViewBtn.visible = false;
       }
       
-      private function __freedomViewClickHandler(param1:MouseEvent) : void
+      private function __freedomViewClickHandler(evt:MouseEvent) : void
       {
          changeView(false);
          _gameViewBtn.visible = true;
          _freedomViewBtn.visible = false;
       }
       
-      private function changeView(param1:Boolean) : void
+      private function changeView(isStop:Boolean) : void
       {
-         GameManager.instance.isStopFocus = param1;
+         GameManager.instance.isStopFocus = isStop;
          MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.game.gameView.changeComplete"));
       }
       
-      override public function enter(param1:DisplayObjectContainer) : void
+      override public function enter(container:DisplayObjectContainer) : void
       {
          if(_psychicBar)
          {
@@ -284,16 +284,16 @@ package gameCommon.view.control
          {
             _tweenMax.play();
          }
-         super.enter(param1);
+         super.enter(container);
       }
       
-      override public function leaving(param1:Function = null) : void
+      override public function leaving(onComplete:Function = null) : void
       {
          if(_tweenMax)
          {
             _tweenMax.pause();
          }
-         super.leaving(param1);
+         super.leaving(onComplete);
       }
       
       override protected function tweenIn() : void
@@ -323,7 +323,7 @@ package gameCommon.view.control
          }
       }
       
-      protected function __mouseUpInStep1(param1:MouseEvent) : void
+      protected function __mouseUpInStep1(event:MouseEvent) : void
       {
          StageReferance.stage.removeEventListener("mouseUp",__mouseUpInStep1);
          if(_msgShape)

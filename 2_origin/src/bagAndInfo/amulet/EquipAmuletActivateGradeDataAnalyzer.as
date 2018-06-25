@@ -10,37 +10,36 @@ package bagAndInfo.amulet
       
       private var _data:DictionaryData;
       
-      public function EquipAmuletActivateGradeDataAnalyzer(param1:Function)
+      public function EquipAmuletActivateGradeDataAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc4_:* = null;
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
+         var xmllist:* = null;
+         var i:int = 0;
+         var tmpVo:* = null;
          _data = new DictionaryData();
-         var _loc3_:XML = new XML(param1);
-         if(_loc3_.@value == "true")
+         var xml:XML = new XML(data);
+         if(xml.@value == "true")
          {
-            _loc4_ = _loc3_..Item;
-            _loc5_ = 0;
-            while(_loc5_ < _loc4_.length())
+            xmllist = xml..Item;
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc2_ = new EquipAmuletActivateGradeVo();
-               _loc2_.wahsGrade = _loc4_[_loc5_].@WahsLevel;
-               _loc2_.WahsTimes = _loc4_[_loc5_].@WahsTimes;
-               _loc2_.minValue = _loc4_[_loc5_].@Minvalue;
-               _loc2_.maxValue = _loc4_[_loc5_].@Maxvalue;
-               _data.add(_loc2_.wahsGrade,_loc2_);
-               _loc5_++;
+               tmpVo = new EquipAmuletActivateGradeVo();
+               tmpVo.wahsGrade = xmllist[i].@WahsLevel;
+               tmpVo.WahsTimes = xmllist[i].@WahsTimes;
+               tmpVo.minValue = xmllist[i].@Minvalue;
+               tmpVo.maxValue = xmllist[i].@Maxvalue;
+               _data.add(tmpVo.wahsGrade,tmpVo);
+               i++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc3_.@message;
+            message = xml.@message;
             onAnalyzeError();
          }
          _data = null;

@@ -48,22 +48,22 @@ package sevenday.view
          addChild(_progressLabel);
       }
       
-      public function setProgress(param1:Number, param2:Number) : void
+      public function setProgress(value:Number, max:Number) : void
       {
-         if(_value != param1 || _max != param2)
+         if(_value != value || _max != max)
          {
-            _value = param1;
-            _max = param2;
+            _value = value;
+            _max = max;
             drawProgress();
          }
       }
       
       protected function drawProgress() : void
       {
-         var _loc2_:Number = _value / _max >= 1?1:Number(_value / _max);
-         var _loc1_:Graphics = _thuck.graphics;
-         _loc1_.clear();
-         if(_loc2_ >= 0)
+         var rate:Number = _value / _max >= 1?1:Number(_value / _max);
+         var pen:Graphics = _thuck.graphics;
+         pen.clear();
+         if(rate >= 0)
          {
             if(_value / 10 == 0)
             {
@@ -78,15 +78,15 @@ package sevenday.view
             {
                _progressLabel.text = _value + "/" + _max;
             }
-            _loc1_.beginBitmapFill(_graphics_thuck,new Matrix(1.04065040650407));
-            _loc1_.drawRect(0,0,(_width + 413) * _loc2_,_height);
-            _loc1_.endFill();
+            pen.beginBitmapFill(_graphics_thuck,new Matrix(1.04065040650407));
+            pen.drawRect(0,0,(_width + 413) * rate,_height);
+            pen.endFill();
          }
       }
       
-      public function set labelText(param1:String) : void
+      public function set labelText(value:String) : void
       {
-         _progressLabel.text = param1;
+         _progressLabel.text = value;
       }
       
       override public function dispose() : void

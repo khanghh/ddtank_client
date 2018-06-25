@@ -16,9 +16,9 @@ package gameCommon.view.smallMap
          super();
       }
       
-      public function set info(param1:Living) : void
+      public function set info(value:Living) : void
       {
-         _info = param1;
+         _info = value;
          fitInfo();
       }
       
@@ -59,39 +59,39 @@ package gameCommon.view.smallMap
       
       protected function drawRect() : void
       {
-         var _loc2_:Array = GameControl.Instance.teamColorData[_info.team.toString()];
-         var _loc3_:Array = [255,255];
-         var _loc1_:Array = [0,255];
-         var _loc4_:Matrix = new Matrix();
-         _loc4_.createGradientBox(_radius * 2,_radius * 2);
+         var c:Array = GameControl.Instance.teamColorData[_info.team.toString()];
+         var a:Array = [255,255];
+         var r:Array = [0,255];
+         var m:Matrix = new Matrix();
+         m.createGradientBox(_radius * 2,_radius * 2);
          graphics.clear();
-         graphics.beginGradientFill("linear",_loc2_,_loc3_,_loc1_,_loc4_);
+         graphics.beginGradientFill("linear",c,a,r,m);
          graphics.drawRect(0,-4,_radius * 2,_radius * 2);
          graphics.endFill();
       }
       
       protected function drawCircle() : void
       {
-         var _loc2_:Array = GameControl.Instance.teamColorData[_info.team.toString()];
-         var _loc3_:Array = [255,255];
-         var _loc1_:Array = [0,255];
-         var _loc4_:Matrix = new Matrix();
-         _loc4_.createGradientBox(_radius * 2,_radius * 2);
+         var c:Array = GameControl.Instance.teamColorData[_info.team.toString()];
+         var a:Array = [255,255];
+         var r:Array = [0,255];
+         var m:Matrix = new Matrix();
+         m.createGradientBox(_radius * 2,_radius * 2);
          graphics.clear();
-         graphics.beginGradientFill("linear",_loc2_,_loc3_,_loc1_,_loc4_);
+         graphics.beginGradientFill("linear",c,a,r,m);
          graphics.drawCircle(0,0,_radius);
          graphics.endFill();
       }
       
       protected function drawTriangle() : void
       {
-         var _loc2_:Array = GameControl.Instance.teamColorData[_info.team.toString()];
-         var _loc3_:Array = [255,255];
-         var _loc1_:Array = [0,255];
-         var _loc4_:Matrix = new Matrix();
-         _loc4_.createGradientBox(_radius * 2,_radius * 2);
+         var c:Array = GameControl.Instance.teamColorData[_info.team.toString()];
+         var a:Array = [255,255];
+         var r:Array = [0,255];
+         var m:Matrix = new Matrix();
+         m.createGradientBox(_radius * 2,_radius * 2);
          graphics.clear();
-         graphics.beginGradientFill("linear",_loc2_,_loc3_,_loc1_,_loc4_);
+         graphics.beginGradientFill("linear",c,a,r,m);
          graphics.moveTo(_radius,0 - _radius);
          graphics.lineTo(0,_radius);
          graphics.lineTo(_radius * 2,_radius);
@@ -101,12 +101,12 @@ package gameCommon.view.smallMap
       
       protected function drawLinearColor() : void
       {
-         var _loc2_:Array = GameControl.Instance.teamColorData[_info.team.toString()];
-         var _loc3_:Array = [255,255];
-         var _loc1_:Array = [0,255];
-         var _loc4_:Matrix = new Matrix();
-         _loc4_.createGradientBox(_radius * 2,_radius * 2);
-         graphics.beginGradientFill("linear",_loc2_,_loc3_,_loc1_,_loc4_);
+         var c:Array = GameControl.Instance.teamColorData[_info.team.toString()];
+         var a:Array = [255,255];
+         var r:Array = [0,255];
+         var m:Matrix = new Matrix();
+         m.createGradientBox(_radius * 2,_radius * 2);
+         graphics.beginGradientFill("linear",c,a,r,m);
       }
       
       protected function fitInfo() : void
@@ -139,9 +139,9 @@ package gameCommon.view.smallMap
          }
       }
       
-      public function setColor(param1:int) : void
+      public function setColor(index:int) : void
       {
-         switch(int(param1) - 1)
+         switch(int(index) - 1)
          {
             case 0:
                color = 26112;

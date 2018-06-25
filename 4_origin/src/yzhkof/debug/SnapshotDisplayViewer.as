@@ -31,9 +31,9 @@ package yzhkof.debug
          this.source = null;
       }
       
-      public function view(param1:DisplayObject) : void
+      public function view(dobj:DisplayObject) : void
       {
-         this.source = param1;
+         this.source = dobj;
          if(this.bitmapdata)
          {
             this.bitmapdata.dispose();
@@ -43,7 +43,7 @@ package yzhkof.debug
          this.onEnterFrame(null);
       }
       
-      private function onEnterFrame(param1:Event) : void
+      private function onEnterFrame(e:Event) : void
       {
          if(this.source && visible)
          {

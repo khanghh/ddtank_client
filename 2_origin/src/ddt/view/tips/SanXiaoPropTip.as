@@ -57,7 +57,7 @@ package ddt.view.tips
          return _width;
       }
       
-      public function set tipWidth(param1:int) : void
+      public function set tipWidth(w:int) : void
       {
       }
       
@@ -66,7 +66,7 @@ package ddt.view.tips
          return !!_isDiscount?_height + 28:Number(_height);
       }
       
-      public function set tipHeight(param1:int) : void
+      public function set tipHeight(h:int) : void
       {
       }
       
@@ -75,12 +75,12 @@ package ddt.view.tips
          return null;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(data:Object) : void
       {
-         _detail.text = param1.detail;
-         _cost.text = LanguageMgr.GetTranslation("sanxiao.propTipPrice",param1.price);
+         _detail.text = data.detail;
+         _cost.text = LanguageMgr.GetTranslation("sanxiao.propTipPrice",data.price);
          _cost.textColor = 16711935;
-         _isDiscount = param1.isDiscount;
+         _isDiscount = data.isDiscount;
          if(_isDiscount)
          {
             _separator || ComponentFactory.Instance.creatComponentByStylename("HRuleAsset");
@@ -90,7 +90,7 @@ package ddt.view.tips
             _discount || ComponentFactory.Instance.creat("core.redTxt");
             _discount.x = 4;
             _discount.y = 82;
-            _discount.text = LanguageMgr.GetTranslation("sanxiao.propTipCurPrice",param1.curPrice);
+            _discount.text = LanguageMgr.GetTranslation("sanxiao.propTipCurPrice",data.curPrice);
             addChild(_discount);
          }
          else

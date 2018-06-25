@@ -8,11 +8,11 @@ package sanXiao.model
       
       public var count:int;
       
-      public function SXGainedItemDATA(param1:int, param2:int)
+      public function SXGainedItemDATA($templeteID:int, $count:int)
       {
          super();
-         templeteID = param1;
-         count = param2;
+         templeteID = $templeteID;
+         count = $count;
       }
    }
 }

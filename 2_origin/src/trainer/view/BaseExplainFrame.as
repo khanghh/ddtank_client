@@ -54,16 +54,16 @@ package trainer.view
          KeyboardManager.getInstance().addEventListener("keyDown",__keyDown,false,1000);
       }
       
-      private function __clickHandler(param1:MouseEvent) : void
+      private function __clickHandler(evt:MouseEvent) : void
       {
          _btnEnter.removeEventListener("click",__clickHandler);
          dispatchEvent(new Event("explainEnter"));
          SoundManager.instance.play("008");
       }
       
-      private function __keyDown(param1:KeyboardEvent) : void
+      private function __keyDown(evt:KeyboardEvent) : void
       {
-         if(param1.keyCode == 13)
+         if(evt.keyCode == 13)
          {
             KeyboardManager.getInstance().removeEventListener("keyDown",__keyDown,false);
             __clickHandler(null);

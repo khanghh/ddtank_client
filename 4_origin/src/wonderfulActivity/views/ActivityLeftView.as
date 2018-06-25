@@ -34,9 +34,9 @@ package wonderfulActivity.views
          selectedUnitIndex = -1;
       }
       
-      public function setRightView(param1:Function) : void
+      public function setRightView(fun:Function) : void
       {
-         _rightFun = param1;
+         _rightFun = fun;
       }
       
       private function initView() : void
@@ -48,93 +48,92 @@ package wonderfulActivity.views
          addChild(_vbox);
       }
       
-      public function addUnitByType(param1:Array, param2:int) : void
+      public function addUnitByType(arr:Array, type:int) : void
       {
-         var _loc3_:ActivityLeftUnitView = getLeftUnitView(param2);
-         if(_loc3_ == null)
+         var leftUnit:ActivityLeftUnitView = getLeftUnitView(type);
+         if(leftUnit == null)
          {
-            _loc3_ = new ActivityLeftUnitView(param2);
-            _loc3_.addEventListener("selected_change",refreshView);
-            _vbox.addChild(_loc3_);
-            _unitList.push(_loc3_);
+            leftUnit = new ActivityLeftUnitView(type);
+            leftUnit.addEventListener("selected_change",refreshView);
+            _vbox.addChild(leftUnit);
+            _unitList.push(leftUnit);
          }
-         setBgHeight(_loc3_);
-         _loc3_.setData(param1,_rightFun);
+         setBgHeight(leftUnit);
+         leftUnit.setData(arr,_rightFun);
          _vbox.refreshChildPos();
       }
       
-      private function setBgHeight(param1:ActivityLeftUnitView) : void
+      private function setBgHeight(leftUnit:ActivityLeftUnitView) : void
       {
          if(isNewServerExist)
          {
-            param1.bg.height = 300;
-            param1.list.height = 280;
+            leftUnit.bg.height = 300;
+            leftUnit.list.height = 280;
          }
          else
          {
-            param1.bg.height = 360;
-            param1.list.height = 340;
+            leftUnit.bg.height = 360;
+            leftUnit.list.height = 340;
          }
       }
       
       public function checkNewServerExist() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:ActivityLeftUnitView = getLeftUnitView(3);
-         if(!_loc1_)
+         var i:int = 0;
+         var leftUnit:ActivityLeftUnitView = getLeftUnitView(3);
+         if(!leftUnit)
          {
             return;
          }
-         _loc2_ = 0;
-         while(_loc2_ < _vbox.numChildren)
+         i = 0;
+         while(i < _vbox.numChildren)
          {
-            if(_vbox.getChildAt(_loc2_) == _loc1_)
+            if(_vbox.getChildAt(i) == leftUnit)
             {
-               _vbox.removeChildAt(_loc2_);
-               _unitList[_loc2_].removeEventListener("selected_change",refreshView);
-               _unitList.splice(_unitList.indexOf(_unitList[_loc2_]),1);
-               ObjectUtils.disposeObject(_loc1_);
-               _loc1_ = null;
+               _vbox.removeChildAt(i);
+               _unitList[i].removeEventListener("selected_change",refreshView);
+               _unitList.splice(_unitList.indexOf(_unitList[i]),1);
+               ObjectUtils.disposeObject(leftUnit);
+               leftUnit = null;
                break;
             }
-            _loc2_++;
+            i++;
          }
          _vbox.refreshChildPos();
       }
       
       public function extendUnitView() : void
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:int = 0;
-         var _loc1_:* = 0;
+         var k:int = 0;
+         var i:int = 0;
+         var j:int = 0;
+         var tmp:* = 0;
          if(selectedUnitIndex < 0)
          {
             if(WonderfulActivityManager.Instance.isSkipFromHall)
             {
-               _loc3_ = 0;
-               while(_loc3_ <= _unitList.length - 1)
+               for(k = 0; k <= _unitList.length - 1; )
                {
-                  if(_unitList[_loc3_].type == WonderfulActivityManager.Instance.leftUnitViewType && _unitList[_loc3_].getModelSize() > 0)
+                  if(_unitList[k].type == WonderfulActivityManager.Instance.leftUnitViewType && _unitList[k].getModelSize() > 0)
                   {
-                     _loc1_ = _loc3_;
+                     tmp = k;
                      break;
                   }
-                  _loc1_ = 2;
-                  _loc3_++;
+                  tmp = 2;
+                  k++;
                }
             }
             else
             {
-               _loc4_ = 0;
-               while(_loc4_ <= _unitList.length - 1)
+               i = 0;
+               while(i <= _unitList.length - 1)
                {
-                  if(_unitList[_loc4_].getModelSize() > 0)
+                  if(_unitList[i].getModelSize() > 0)
                   {
-                     _loc1_ = _loc4_;
+                     tmp = i;
                      break;
                   }
-                  _loc4_++;
+                  i++;
                }
             }
          }
@@ -144,64 +143,60 @@ package wonderfulActivity.views
             {
                selectedUnitIndex = 0;
             }
-            _loc1_ = int(selectedUnitIndex);
+            tmp = int(selectedUnitIndex);
          }
-         (_unitList[_loc1_] as ActivityLeftUnitView).extendSelecteTheFirst();
-         _loc2_ = 0;
-         while(_loc2_ <= _unitList.length - 1)
+         (_unitList[tmp] as ActivityLeftUnitView).extendSelecteTheFirst();
+         for(j = 0; j <= _unitList.length - 1; )
          {
-            if(_loc2_ != _loc1_)
+            if(j != tmp)
             {
-               (_unitList[_loc2_] as ActivityLeftUnitView).unextendHandler();
+               (_unitList[j] as ActivityLeftUnitView).unextendHandler();
             }
-            _loc2_++;
+            j++;
          }
          _vbox.refreshChildPos();
       }
       
-      private function getLeftUnitView(param1:int) : ActivityLeftUnitView
+      private function getLeftUnitView(type:int) : ActivityLeftUnitView
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ <= _unitList.length - 1)
+         var i:int = 0;
+         for(i = 0; i <= _unitList.length - 1; )
          {
-            if(param1 == _unitList[_loc2_].type)
+            if(type == _unitList[i].type)
             {
-               return _unitList[_loc2_];
+               return _unitList[i];
             }
-            _loc2_++;
+            i++;
          }
          return null;
       }
       
-      private function refreshView(param1:WonderfulActivityEvent) : void
+      private function refreshView(event:WonderfulActivityEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:ActivityLeftUnitView = param1.target as ActivityLeftUnitView;
-         _loc3_ = 0;
-         while(_loc3_ <= _unitList.length - 1)
+         var i:int = 0;
+         var selectedUnit:ActivityLeftUnitView = event.target as ActivityLeftUnitView;
+         for(i = 0; i <= _unitList.length - 1; )
          {
-            if(_unitList[_loc3_] == _loc2_)
+            if(_unitList[i] == selectedUnit)
             {
-               selectedUnitIndex = _loc3_;
+               selectedUnitIndex = i;
             }
             else
             {
-               _unitList[_loc3_].unextendHandler();
+               _unitList[i].unextendHandler();
             }
-            _loc3_++;
+            i++;
          }
          _vbox.arrange();
       }
       
       private function removeEvent() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ <= _unitList.length - 1)
+         var i:int = 0;
+         for(i = 0; i <= _unitList.length - 1; )
          {
-            _unitList[_loc1_].removeEventListener("selected_change",refreshView);
-            _loc1_++;
+            _unitList[i].removeEventListener("selected_change",refreshView);
+            i++;
          }
       }
       
@@ -222,10 +217,10 @@ package wonderfulActivity.views
          {
             var _loc3_:int = 0;
             var _loc2_:* = _unitList;
-            for each(var _loc1_ in _unitList)
+            for each(var view in _unitList)
             {
-               ObjectUtils.disposeObject(_loc1_);
-               _loc1_ = null;
+               ObjectUtils.disposeObject(view);
+               view = null;
             }
          }
          _unitList = null;
@@ -236,9 +231,9 @@ package wonderfulActivity.views
          return _isNewServerExist;
       }
       
-      public function set isNewServerExist(param1:Boolean) : void
+      public function set isNewServerExist(value:Boolean) : void
       {
-         _isNewServerExist = param1;
+         _isNewServerExist = value;
       }
    }
 }

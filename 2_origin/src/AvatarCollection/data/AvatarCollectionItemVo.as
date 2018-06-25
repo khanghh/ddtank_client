@@ -47,25 +47,24 @@ package AvatarCollection.data
       
       public function get activateItem() : InventoryItemInfo
       {
-         var _loc3_:int = 0;
-         var _loc2_:Array = OtherTemplateID == ""?[]:OtherTemplateID.split("|");
-         var _loc1_:BagInfo = PlayerManager.Instance.Self.getBag(0);
-         var _loc4_:InventoryItemInfo = null;
-         _loc2_.unshift(itemId);
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_.length)
+         var i:int = 0;
+         var list:Array = OtherTemplateID == ""?[]:OtherTemplateID.split("|");
+         var equipBag:BagInfo = PlayerManager.Instance.Self.getBag(0);
+         var info:InventoryItemInfo = null;
+         list.unshift(itemId);
+         for(i = 0; i < list.length; )
          {
-            if(int(_loc2_[_loc3_]) != 0)
+            if(int(list[i]) != 0)
             {
-               _loc4_ = _loc1_.getItemByTemplateId(int(_loc2_[_loc3_]));
-               if(_loc4_ != null)
+               info = equipBag.getItemByTemplateId(int(list[i]));
+               if(info != null)
                {
                   break;
                }
             }
-            _loc3_++;
+            i++;
          }
-         return _loc4_;
+         return info;
       }
       
       public function get isHas() : Boolean
@@ -80,20 +79,20 @@ package AvatarCollection.data
       
       public function get canBuyStatus() : int
       {
-         var _loc1_:* = null;
+         var tmp:* = null;
          if(_canBuyStatus == -1)
          {
-            _loc1_ = AvatarCollectionManager.instance.getShopItemInfoByItemId(itemId,sex,Type);
-            if(_loc1_)
+            tmp = AvatarCollectionManager.instance.getShopItemInfoByItemId(itemId,sex,Type);
+            if(tmp)
             {
                _canBuyStatus = 1;
-               buyPrice = _loc1_.getItemPrice(1).moneyValue;
+               buyPrice = tmp.getItemPrice(1).moneyValue;
                if(buyPrice <= 0)
                {
-                  buyPrice = _loc1_.getItemPrice(1).bothMoneyValue;
+                  buyPrice = tmp.getItemPrice(1).bothMoneyValue;
                }
-               isDiscount = _loc1_.isDiscount;
-               goodsId = _loc1_.GoodsID;
+               isDiscount = tmp.isDiscount;
+               goodsId = tmp.GoodsID;
             }
             else
             {
@@ -105,19 +104,19 @@ package AvatarCollection.data
       
       public function get priceType() : int
       {
-         var _loc2_:int = 1;
-         var _loc1_:ShopItemInfo = ShopManager.Instance.getGoodsByTempId(itemId);
-         if(_loc1_)
+         var type:int = 1;
+         var tmp:ShopItemInfo = ShopManager.Instance.getGoodsByTempId(itemId);
+         if(tmp)
          {
-            _loc2_ = _loc1_.APrice1 == -8?0:_loc2_;
+            type = tmp.APrice1 == -8?0:type;
             0;
          }
-         return _loc2_;
+         return type;
       }
       
-      public function set canBuyStatus(param1:int) : void
+      public function set canBuyStatus(value:int) : void
       {
-         _canBuyStatus = param1;
+         _canBuyStatus = value;
       }
       
       public function get typeToString() : String

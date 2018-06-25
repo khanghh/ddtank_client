@@ -20,16 +20,16 @@ package ddt.view.tips
       {
          super();
          _reputeBg = ComponentFactory.Instance.creat("asset.core.leveltip.ReputeBg");
-         var _loc1_:Point = ComponentFactory.Instance.creatCustomObject("asset.core.guildReputePos");
-         _reputeBg.x = _loc1_.x;
+         var p:Point = ComponentFactory.Instance.creatCustomObject("asset.core.guildReputePos");
+         _reputeBg.x = p.x;
          _reputeTxt = ComponentFactory.Instance.creat("core.guildReputeTxt");
          addChild(_reputeBg);
          addChild(_reputeTxt);
       }
       
-      public function setRepute(param1:int) : void
+      public function setRepute(re:int) : void
       {
-         _reputeTxt.text = String(param1);
+         _reputeTxt.text = String(re);
       }
       
       public function dispose() : void

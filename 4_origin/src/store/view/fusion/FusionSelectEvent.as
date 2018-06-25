@@ -17,10 +17,10 @@ package store.view.fusion
       
       public var index:int;
       
-      public function FusionSelectEvent(param1:String, param2:int = 0, param3:Boolean = false, param4:Boolean = false)
+      public function FusionSelectEvent(type:String, sellCount:int = 0, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         _sellCount = param2;
-         super(param1,param3,param4);
+         _sellCount = sellCount;
+         super(type,bubbles,cancelable);
       }
       
       public function get sellCount() : int
@@ -33,9 +33,9 @@ package store.view.fusion
          return _info;
       }
       
-      public function set info(param1:InventoryItemInfo) : void
+      public function set info(value:InventoryItemInfo) : void
       {
-         _info = param1;
+         _info = value;
       }
    }
 }

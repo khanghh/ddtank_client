@@ -20,29 +20,29 @@ package mx.utils
          super();
       }
       
-      override flash_proxy function getProperty(param1:*) : *
+      override flash_proxy function getProperty(name:*) : *
       {
-         var _loc2_:* = this.cache[param1];
-         if(_loc2_ === undefined)
+         var result:* = this.cache[name];
+         if(result === undefined)
          {
-            _loc2_ = DescribeTypeCache.extractValue(param1,this);
-            this.cache[param1] = _loc2_;
+            result = DescribeTypeCache.extractValue(name,this);
+            this.cache[name] = result;
          }
-         return _loc2_;
+         return result;
       }
       
-      override flash_proxy function hasProperty(param1:*) : Boolean
+      override flash_proxy function hasProperty(name:*) : Boolean
       {
-         if(param1 in this.cache)
+         if(name in this.cache)
          {
             return true;
          }
-         var _loc2_:* = DescribeTypeCache.extractValue(param1,this);
-         if(_loc2_ === undefined)
+         var value:* = DescribeTypeCache.extractValue(name,this);
+         if(value === undefined)
          {
             return false;
          }
-         this.cache[param1] = _loc2_;
+         this.cache[name] = value;
          return true;
       }
    }

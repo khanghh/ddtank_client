@@ -24,111 +24,104 @@ package bones.model
          _dynamicBoneSets = new DictionaryData();
       }
       
-      public function getBonesStyle(param1:String) : BoneVo
+      public function getBonesStyle(styleName:String) : BoneVo
       {
-         return _boneSets[param1] || _dynamicBoneSets[param1];
+         return _boneSets[styleName] || _dynamicBoneSets[styleName];
       }
       
-      public function hasLoadingBones(param1:String) : Boolean
+      public function hasLoadingBones(type:String) : Boolean
       {
-         return _parasBones.hasKey(param1);
+         return _parasBones.hasKey(type);
       }
       
-      public function parasBonesStyle(param1:XMLList, param2:String) : void
+      public function parasBonesStyle(list:XMLList, type:String) : void
       {
-         var _loc6_:int = 0;
-         var _loc4_:* = null;
-         var _loc5_:* = null;
-         if(hasLoadingBones(param2))
+         var i:int = 0;
+         var xml:* = null;
+         var vo:* = null;
+         if(hasLoadingBones(type))
          {
-            return;
-            §§push(trace("该bones xml已经解析过了 type:" + param2 + " ,请勿重复加载解析!!!!!!!!"));
-         }
-         else
-         {
-            _parasBones.add(param2,true);
-            var _loc3_:int = param1.length();
-            _loc6_ = 0;
-            while(_loc6_ < _loc3_)
-            {
-               _loc4_ = param1[_loc6_] as XML;
-               _loc5_ = new BoneVo();
-               _loc5_.styleName = _loc4_.@styleName;
-               _loc5_.atlasName = _loc4_.@atlasName;
-               _loc5_.path = _loc4_.@path;
-               if(_loc4_.hasOwnProperty("@loadType"))
-               {
-                  _loc5_.loadType = int(_loc4_.@loadType);
-               }
-               if(_loc4_.hasOwnProperty("@boneType"))
-               {
-                  _loc5_.boneType = _loc4_.@boneType;
-               }
-               if(_loc4_.hasOwnProperty("@ext"))
-               {
-                  _loc5_.ext = _loc4_.@ext;
-               }
-               if(_boneSets.hasKey(_loc5_.styleName))
-               {
-                  trace("bone name " + _loc5_.styleName + "重名, 请注意检查!!!!!!!!!!!!!!!!!!!!");
-               }
-               else
-               {
-                  _boneSets.add(_loc5_.styleName,_loc5_);
-               }
-               _loc6_++;
-            }
+            trace("该bones xml已经解析过了 type:" + type + " ,请勿重复加载解析!!!!!!!!");
             return;
          }
+         _parasBones.add(type,true);
+         var listLen:int = list.length();
+         for(i = 0; i < listLen; )
+         {
+            xml = list[i] as XML;
+            vo = new BoneVo();
+            vo.styleName = xml.@styleName;
+            vo.atlasName = xml.@atlasName;
+            vo.path = xml.@path;
+            if(xml.hasOwnProperty("@loadType"))
+            {
+               vo.loadType = int(xml.@loadType);
+            }
+            if(xml.hasOwnProperty("@boneType"))
+            {
+               vo.boneType = xml.@boneType;
+            }
+            if(xml.hasOwnProperty("@ext"))
+            {
+               vo.ext = xml.@ext;
+            }
+            if(_boneSets.hasKey(vo.styleName))
+            {
+               trace("bone name " + vo.styleName + "重名, 请注意检查!!!!!!!!!!!!!!!!!!!!");
+            }
+            else
+            {
+               _boneSets.add(vo.styleName,vo);
+            }
+            i++;
+         }
       }
       
-      public function getBoneVoListByAtlasName(param1:String) : Array
+      public function getBoneVoListByAtlasName(name:String) : Array
       {
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:Array = [];
-         var _loc3_:int = _boneSets.length;
-         _loc5_ = 0;
-         while(_loc5_ < _loc3_)
+         var i:int = 0;
+         var j:int = 0;
+         var list:Array = [];
+         var len:int = _boneSets.length;
+         for(i = 0; i < len; )
          {
-            if(param1 == _boneSets.list[_loc5_].atlasName)
+            if(name == _boneSets.list[i].atlasName)
             {
-               _loc2_.push(_boneSets.list[_loc5_]);
+               list.push(_boneSets.list[i]);
             }
-            _loc5_++;
+            i++;
          }
-         if(_loc2_.length == 0)
+         if(list.length == 0)
          {
-            _loc3_ = _dynamicBoneSets.length;
-            _loc4_ = 0;
-            while(_loc4_ < _loc3_)
+            len = _dynamicBoneSets.length;
+            for(j = 0; j < len; )
             {
-               if(param1 == _dynamicBoneSets.list[_loc4_].atlasName)
+               if(name == _dynamicBoneSets.list[j].atlasName)
                {
-                  _loc2_.push(_dynamicBoneSets.list[_loc4_]);
+                  list.push(_dynamicBoneSets.list[j]);
                }
-               _loc4_++;
+               j++;
             }
          }
-         return _loc2_;
+         return list;
       }
       
-      public function addBoneVo(param1:BoneVo) : void
+      public function addBoneVo(vo:BoneVo) : void
       {
-         _dynamicBoneSets.add(param1.styleName,param1);
+         _dynamicBoneSets.add(vo.styleName,vo);
       }
       
-      public function addBoneVoByStyle(param1:String, param2:String, param3:int = 0, param4:int = 2, param5:String = "none") : void
+      public function addBoneVoByStyle(name:String, path:String, loadType:int = 0, useType:int = 2, boneType:String = "none") : void
       {
-         var _loc6_:BoneVo = new BoneVo();
-         var _loc7_:* = param1;
-         _loc6_.atlasName = _loc7_;
-         _loc6_.styleName = _loc7_;
-         _loc6_.path = param2;
-         _loc6_.loadType = param3;
-         _loc6_.useType = param4;
-         _loc6_.boneType = param5;
-         addBoneVo(_loc6_);
+         var vo:BoneVo = new BoneVo();
+         var _loc7_:* = name;
+         vo.atlasName = _loc7_;
+         vo.styleName = _loc7_;
+         vo.path = path;
+         vo.loadType = loadType;
+         vo.useType = useType;
+         vo.boneType = boneType;
+         addBoneVo(vo);
       }
    }
 }

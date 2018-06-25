@@ -16,18 +16,18 @@ package dragonBones.events
       
       public var sound:String;
       
-      public function SoundEvent(param1:String, param2:Boolean = false)
+      public function SoundEvent(type:String, cancelable:Boolean = false)
       {
-         super(param1,false,param2);
+         super(type,false,cancelable);
       }
       
       override public function clone() : Event
       {
-         var _loc1_:SoundEvent = new SoundEvent(type,cancelable);
-         _loc1_.armature = armature;
-         _loc1_.animationState = animationState;
-         _loc1_.sound = sound;
-         return _loc1_;
+         var event:SoundEvent = new SoundEvent(type,cancelable);
+         event.armature = armature;
+         event.animationState = animationState;
+         event.sound = sound;
+         return event;
       }
    }
 }

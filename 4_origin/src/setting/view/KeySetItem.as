@@ -33,11 +33,11 @@ package setting.view
       
       private const CONST2:int = 35;
       
-      public function KeySetItem(param1:uint = 0, param2:int = 0, param3:int = 0, param4:DisplayObject = null, param5:Boolean = false)
+      public function KeySetItem(index:uint = 0, propIndex:int = 0, propID:int = 0, item:DisplayObject = null, isCount:Boolean = false)
       {
-         super(param1,param4,param5);
-         _propIndex = param2;
-         _propID = param3;
+         super(index,item,isCount);
+         _propIndex = propIndex;
+         _propID = propID;
          glow_mc = ComponentFactory.Instance.creatBitmap("ddtsetting.keyset.glowAsset");
          addChild(glow_mc);
          glow_mc.visible = false;
@@ -63,24 +63,24 @@ package setting.view
          _item.y = 3;
       }
       
-      public function dragDrop(param1:DragEffect) : void
+      public function dragDrop(effect:DragEffect) : void
       {
          DragManager.acceptDrag(this,"none");
       }
       
-      private function __over(param1:MouseEvent) : void
+      private function __over(e:MouseEvent) : void
       {
          filters = ComponentFactory.Instance.creatFilters("lightFilter");
       }
       
-      private function __out(param1:MouseEvent) : void
+      private function __out(e:MouseEvent) : void
       {
          filters = null;
       }
       
-      public function set glow(param1:Boolean) : void
+      public function set glow(b:Boolean) : void
       {
-         _isGlow = param1;
+         _isGlow = b;
          glow_mc.visible = _isGlow;
       }
       
@@ -89,22 +89,22 @@ package setting.view
          return _isGlow;
       }
       
-      public function set propID(param1:int) : void
+      public function set propID(value:int) : void
       {
-         _propID = param1;
+         _propID = value;
       }
       
       public function get tipData() : Object
       {
-         var _loc2_:PropInfo = new PropInfo(ItemManager.Instance.getTemplateById(_propID));
-         var _loc1_:ToolPropInfo = new ToolPropInfo();
-         _loc1_.showThew = true;
-         _loc1_.info = _loc2_.Template;
+         var info:PropInfo = new PropInfo(ItemManager.Instance.getTemplateById(_propID));
+         var tipInfo:ToolPropInfo = new ToolPropInfo();
+         tipInfo.showThew = true;
+         tipInfo.info = info.Template;
          if(_propIndex)
          {
-            _loc1_.shortcutKey = _propIndex.toString();
+            tipInfo.shortcutKey = _propIndex.toString();
          }
-         return _loc1_;
+         return tipInfo;
       }
       
       public function asDisplayObject() : DisplayObject
@@ -112,7 +112,7 @@ package setting.view
          return this;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(value:Object) : void
       {
       }
       
@@ -121,7 +121,7 @@ package setting.view
          return "5,2,7,1,6,4";
       }
       
-      public function set tipDirctions(param1:String) : void
+      public function set tipDirctions(value:String) : void
       {
       }
       
@@ -130,7 +130,7 @@ package setting.view
          return -15;
       }
       
-      public function set tipGapH(param1:int) : void
+      public function set tipGapH(value:int) : void
       {
       }
       
@@ -139,7 +139,7 @@ package setting.view
          return 5;
       }
       
-      public function set tipGapV(param1:int) : void
+      public function set tipGapV(value:int) : void
       {
       }
       
@@ -148,7 +148,7 @@ package setting.view
          return "core.ToolPropTips";
       }
       
-      public function set tipStyle(param1:String) : void
+      public function set tipStyle(value:String) : void
       {
       }
       

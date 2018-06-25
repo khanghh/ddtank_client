@@ -23,104 +23,96 @@ package dragonBones.objects
          _animationDataList = new Vector.<AnimationData>(0,true);
       }
       
-      public function setSkinData(param1:String) : void
+      public function setSkinData(skinName:String) : void
       {
-         var _loc7_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc6_:int = 0;
-         var _loc5_:int = 0;
-         _loc7_ = 0;
-         _loc4_ = _slotDataList.length;
-         while(_loc7_ < _loc4_)
+         var i:int = 0;
+         var len:int = 0;
+         var skinData:* = null;
+         var slotData:* = null;
+         var j:int = 0;
+         var jLen:int = 0;
+         for(i = 0,len = _slotDataList.length; i < len; )
          {
-            _slotDataList[_loc7_].dispose();
-            _loc7_++;
+            _slotDataList[i].dispose();
+            i++;
          }
-         if(!param1 && _skinDataList.length > 0)
+         if(!skinName && _skinDataList.length > 0)
          {
-            _loc3_ = _skinDataList[0];
+            skinData = _skinDataList[0];
          }
          else
          {
-            _loc7_ = 0;
-            _loc4_ = _skinDataList.length;
-            _skinDataList.length;
-            while(_loc7_ < _loc4_)
+            i = 0;
+            for(len = _skinDataList.length,_skinDataList.length; i < len; )
             {
-               if(_skinDataList[_loc7_].name == param1)
+               if(_skinDataList[i].name == skinName)
                {
-                  _loc3_ = _skinDataList[_loc7_];
+                  skinData = _skinDataList[i];
                   break;
                }
-               _loc7_++;
+               i++;
             }
          }
-         if(_loc3_)
+         if(skinData)
          {
-            _loc7_ = 0;
-            _loc4_ = _loc3_.slotDataList.length;
-            _loc3_.slotDataList.length;
-            while(_loc7_ < _loc4_)
+            i = 0;
+            for(len = skinData.slotDataList.length,skinData.slotDataList.length; i < len; )
             {
-               _loc2_ = getSlotData(_loc3_.slotDataList[_loc7_].name);
-               if(_loc2_)
+               slotData = getSlotData(skinData.slotDataList[i].name);
+               if(slotData)
                {
-                  _loc6_ = 0;
-                  _loc5_ = _loc3_.slotDataList[_loc7_].displayDataList.length;
-                  while(_loc6_ < _loc5_)
+                  for(j = 0,jLen = skinData.slotDataList[i].displayDataList.length; j < jLen; )
                   {
-                     _loc2_.addDisplayData(_loc3_.slotDataList[_loc7_].displayDataList[_loc6_]);
-                     _loc6_++;
+                     slotData.addDisplayData(skinData.slotDataList[i].displayDataList[j]);
+                     j++;
                   }
                }
-               _loc7_++;
+               i++;
             }
          }
       }
       
       public function dispose() : void
       {
-         var _loc1_:int = _boneDataList.length;
+         var i:int = _boneDataList.length;
          while(true)
          {
-            _loc1_--;
-            if(!_loc1_)
+            i--;
+            if(!i)
             {
                break;
             }
-            _boneDataList[_loc1_].dispose();
+            _boneDataList[i].dispose();
          }
-         _loc1_ = _skinDataList.length;
+         i = _skinDataList.length;
          while(true)
          {
-            _loc1_--;
-            if(!_loc1_)
+            i--;
+            if(!i)
             {
                break;
             }
-            _skinDataList[_loc1_].dispose();
+            _skinDataList[i].dispose();
          }
-         _loc1_ = _slotDataList.length;
+         i = _slotDataList.length;
          while(true)
          {
-            _loc1_--;
-            if(!_loc1_)
+            i--;
+            if(!i)
             {
                break;
             }
-            _slotDataList[_loc1_].dispose();
+            _slotDataList[i].dispose();
          }
-         _loc1_ = _animationDataList.length;
+         i = _animationDataList.length;
          while(true)
          {
-            _loc1_--;
-            if(!_loc1_)
+            i--;
+            if(!i)
             {
                break;
             }
-            _animationDataList[_loc1_].dispose();
+            _animationDataList[i].dispose();
          }
          _boneDataList.fixed = false;
          _boneDataList.length = 0;
@@ -136,186 +128,186 @@ package dragonBones.objects
          _animationDataList = null;
       }
       
-      public function getBoneData(param1:String) : BoneData
+      public function getBoneData(boneName:String) : BoneData
       {
-         var _loc2_:int = _boneDataList.length;
+         var i:int = _boneDataList.length;
          while(true)
          {
-            _loc2_--;
-            if(!_loc2_)
+            i--;
+            if(!i)
             {
                break;
             }
-            if(_boneDataList[_loc2_].name == param1)
+            if(_boneDataList[i].name == boneName)
             {
-               return _boneDataList[_loc2_];
+               return _boneDataList[i];
             }
          }
          return null;
       }
       
-      public function getSlotData(param1:String) : SlotData
+      public function getSlotData(slotName:String) : SlotData
       {
-         if(!param1 && _slotDataList.length > 0)
+         if(!slotName && _slotDataList.length > 0)
          {
             return _slotDataList[0];
          }
-         var _loc2_:int = _slotDataList.length;
+         var i:int = _slotDataList.length;
          while(true)
          {
-            _loc2_--;
-            if(!_loc2_)
+            i--;
+            if(!i)
             {
                break;
             }
-            if(_slotDataList[_loc2_].name == param1)
+            if(_slotDataList[i].name == slotName)
             {
-               return _slotDataList[_loc2_];
+               return _slotDataList[i];
             }
          }
          return null;
       }
       
-      public function getSkinData(param1:String) : SkinData
+      public function getSkinData(skinName:String) : SkinData
       {
-         if(!param1 && _skinDataList.length > 0)
+         if(!skinName && _skinDataList.length > 0)
          {
             return _skinDataList[0];
          }
-         var _loc2_:int = _skinDataList.length;
+         var i:int = _skinDataList.length;
          while(true)
          {
-            _loc2_--;
-            if(!_loc2_)
+            i--;
+            if(!i)
             {
                break;
             }
-            if(_skinDataList[_loc2_].name == param1)
+            if(_skinDataList[i].name == skinName)
             {
-               return _skinDataList[_loc2_];
+               return _skinDataList[i];
             }
          }
          return null;
       }
       
-      public function getAnimationData(param1:String) : AnimationData
+      public function getAnimationData(animationName:String) : AnimationData
       {
-         var _loc2_:int = _animationDataList.length;
+         var i:int = _animationDataList.length;
          while(true)
          {
-            _loc2_--;
-            if(!_loc2_)
+            i--;
+            if(!i)
             {
                break;
             }
-            if(_animationDataList[_loc2_].name == param1)
+            if(_animationDataList[i].name == animationName)
             {
-               return _animationDataList[_loc2_];
+               return _animationDataList[i];
             }
          }
          return null;
       }
       
-      public function addBoneData(param1:BoneData) : void
+      public function addBoneData(boneData:BoneData) : void
       {
-         if(!param1)
+         if(!boneData)
          {
             throw new ArgumentError();
          }
-         if(_boneDataList.indexOf(param1) < 0)
+         if(_boneDataList.indexOf(boneData) < 0)
          {
             _boneDataList.fixed = false;
-            _boneDataList[_boneDataList.length] = param1;
+            _boneDataList[_boneDataList.length] = boneData;
             _boneDataList.fixed = true;
             return;
          }
          throw new ArgumentError();
       }
       
-      public function addSlotData(param1:SlotData) : void
+      public function addSlotData(slotData:SlotData) : void
       {
-         if(!param1)
+         if(!slotData)
          {
             throw new ArgumentError();
          }
-         if(_slotDataList.indexOf(param1) < 0)
+         if(_slotDataList.indexOf(slotData) < 0)
          {
             _slotDataList.fixed = false;
-            _slotDataList[_slotDataList.length] = param1;
+            _slotDataList[_slotDataList.length] = slotData;
             _slotDataList.fixed = true;
             return;
          }
          throw new ArgumentError();
       }
       
-      public function addSkinData(param1:SkinData) : void
+      public function addSkinData(skinData:SkinData) : void
       {
-         if(!param1)
+         if(!skinData)
          {
             throw new ArgumentError();
          }
-         if(_skinDataList.indexOf(param1) < 0)
+         if(_skinDataList.indexOf(skinData) < 0)
          {
             _skinDataList.fixed = false;
-            _skinDataList[_skinDataList.length] = param1;
+            _skinDataList[_skinDataList.length] = skinData;
             _skinDataList.fixed = true;
             return;
          }
          throw new ArgumentError();
       }
       
-      public function addAnimationData(param1:AnimationData) : void
+      public function addAnimationData(animationData:AnimationData) : void
       {
-         if(!param1)
+         if(!animationData)
          {
             throw new ArgumentError();
          }
-         if(_animationDataList.indexOf(param1) < 0)
+         if(_animationDataList.indexOf(animationData) < 0)
          {
             _animationDataList.fixed = false;
-            _animationDataList[_animationDataList.length] = param1;
+            _animationDataList[_animationDataList.length] = animationData;
             _animationDataList.fixed = true;
          }
       }
       
       public function sortBoneDataList() : void
       {
-         var _loc4_:* = null;
-         var _loc1_:int = 0;
-         var _loc3_:* = null;
-         var _loc5_:int = _boneDataList.length;
-         if(_loc5_ == 0)
+         var boneData:* = null;
+         var level:int = 0;
+         var parentData:* = null;
+         var i:int = _boneDataList.length;
+         if(i == 0)
          {
             return;
          }
-         var _loc2_:Array = [];
+         var helpArray:Array = [];
          while(true)
          {
-            _loc5_--;
-            if(!_loc5_)
+            i--;
+            if(!i)
             {
                break;
             }
-            _loc4_ = _boneDataList[_loc5_];
-            _loc1_ = 0;
-            _loc3_ = _loc4_;
-            while(_loc3_)
+            boneData = _boneDataList[i];
+            level = 0;
+            parentData = boneData;
+            while(parentData)
             {
-               _loc1_++;
-               _loc3_ = getBoneData(_loc3_.parent);
+               level++;
+               parentData = getBoneData(parentData.parent);
             }
-            _loc2_[_loc5_] = [_loc1_,_loc4_];
+            helpArray[i] = [level,boneData];
          }
-         _loc2_.sortOn("0",16);
-         _loc5_ = _loc2_.length;
+         helpArray.sortOn("0",16);
+         i = helpArray.length;
          while(true)
          {
-            _loc5_--;
-            if(!_loc5_)
+            i--;
+            if(!i)
             {
                break;
             }
-            _boneDataList[_loc5_] = _loc2_[_loc5_][1];
+            _boneDataList[i] = helpArray[i][1];
          }
       }
       

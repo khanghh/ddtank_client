@@ -19,7 +19,7 @@ package microenddownload
       
       private var _list:Array;
       
-      public function MicroendDownloadAwardsManager(param1:inner)
+      public function MicroendDownloadAwardsManager(single:inner)
       {
          super();
       }
@@ -33,16 +33,15 @@ package microenddownload
          return instance;
       }
       
-      public function setup(param1:Array) : void
+      public function setup(list:Array) : void
       {
-         var _loc2_:int = 0;
-         _list = param1;
+         var i:int = 0;
+         _list = list;
          bagCellIdList = new Vector.<ItemTemplateInfo>();
-         _loc2_ = 0;
-         while(_loc2_ < param1.length)
+         for(i = 0; i < list.length; )
          {
-            bagCellIdList[_loc2_] = ItemManager.Instance.getTemplateById(param1[_loc2_]["id"]);
-            _loc2_++;
+            bagCellIdList[i] = ItemManager.Instance.getTemplateById(list[i]["id"]);
+            i++;
          }
       }
       
@@ -56,9 +55,9 @@ package microenddownload
          return bagCellIdList;
       }
       
-      public function getCount(param1:int) : int
+      public function getCount(index:int) : int
       {
-         return _list[param1]["count"];
+         return _list[index]["count"];
       }
    }
 }

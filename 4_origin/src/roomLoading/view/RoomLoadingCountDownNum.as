@@ -36,7 +36,7 @@ package roomLoading.view
       
       private function init() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _num = RoomManager.Instance.current.type == 4 || RoomManager.Instance.current.type == 11 || RoomManager.Instance.current.type == 25 || RoomManager.Instance.current.type == 123?90:60;
          _countDownBg = ComponentFactory.Instance.creatBitmap("asset.roomloading.countDownBg");
          addChild(_countDownBg);
@@ -63,11 +63,10 @@ package roomLoading.view
             "alpha":1
          });
          _bitmapDatas = new Vector.<BitmapData>();
-         _loc1_ = 0;
-         while(_loc1_ < 10)
+         for(i = 0; i < 10; )
          {
-            _bitmapDatas.push(ComponentFactory.Instance.creatBitmapData("asset.roomloading.countDownNum_" + _loc1_));
-            _loc1_++;
+            _bitmapDatas.push(ComponentFactory.Instance.creatBitmapData("asset.roomloading.countDownNum_" + i));
+            i++;
          }
          updateNumView();
       }
@@ -98,9 +97,9 @@ package roomLoading.view
          _countDownBg = null;
          var _loc3_:int = 0;
          var _loc2_:* = _bitmapDatas;
-         for each(var _loc1_ in _bitmapDatas)
+         for each(var bmd in _bitmapDatas)
          {
-            _loc1_.dispose();
+            bmd.dispose();
          }
          TweenMax.killTweensOf(_tenDigit);
          ObjectUtils.disposeObject(_tenDigit);

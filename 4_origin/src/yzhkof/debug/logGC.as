@@ -3,30 +3,28 @@ package yzhkof.debug
    import flash.display.DisplayObject;
    import flash.display.DisplayObjectContainer;
    
-   public function logGC(param1:*, param2:String = "", param3:Boolean = false) : void
+   public function logGC(obj:*, tag:String = "", allChild:Boolean = false) : void
    {
-      var _loc4_:int = 0;
+      var i:int = 0;
       if(DebugSystem.isInited == false)
       {
          return;
       }
-      if(param3 == false)
+      if(allChild == false)
       {
-         DebugSystem.weakLogViewer.addLog(param1,param2);
+         DebugSystem.weakLogViewer.addLog(obj,tag);
       }
-      else if(param1 is DisplayObjectContainer)
+      else if(obj is DisplayObjectContainer)
       {
-         _loc4_ = 0;
-         while(_loc4_ < DisplayObjectContainer(param1).numChildren)
+         for(i = 0; i < DisplayObjectContainer(obj).numChildren; i++)
          {
-            logGC(DisplayObjectContainer(param1).getChildAt(_loc4_),param2,true);
-            DebugSystem.weakLogViewer.addLog(param1,param2);
-            _loc4_++;
+            logGC(DisplayObjectContainer(obj).getChildAt(i),tag,true);
+            DebugSystem.weakLogViewer.addLog(obj,tag);
          }
       }
-      else if(param1 is DisplayObject)
+      else if(obj is DisplayObject)
       {
-         DebugSystem.weakLogViewer.addLog(param1,param2);
+         DebugSystem.weakLogViewer.addLog(obj,tag);
       }
    }
 }

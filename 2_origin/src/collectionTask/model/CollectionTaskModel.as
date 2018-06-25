@@ -18,20 +18,20 @@ package collectionTask.model
       
       private var _playerVisible:Boolean = true;
       
-      public function CollectionTaskModel(param1:IEventDispatcher = null)
+      public function CollectionTaskModel(target:IEventDispatcher = null)
       {
          _players = new DictionaryData(true);
-         super(param1);
+         super(target);
       }
       
-      public function addPlayer(param1:PlayerVO) : void
+      public function addPlayer(player:PlayerVO) : void
       {
-         _players.add(param1.playerInfo.ID,param1);
+         _players.add(player.playerInfo.ID,player);
       }
       
-      public function removePlayer(param1:int) : void
+      public function removePlayer(id:int) : void
       {
-         _players.remove(param1);
+         _players.remove(id);
       }
       
       public function get playerNameVisible() : Boolean
@@ -39,9 +39,9 @@ package collectionTask.model
          return _playerNameVisible;
       }
       
-      public function set playerNameVisible(param1:Boolean) : void
+      public function set playerNameVisible(value:Boolean) : void
       {
-         _playerNameVisible = param1;
+         _playerNameVisible = value;
          dispatchEvent(new CollectionTaskEvent("playerNameVisible"));
       }
       
@@ -50,15 +50,15 @@ package collectionTask.model
          return _playerChatBallVisible;
       }
       
-      public function set playerChatBallVisible(param1:Boolean) : void
+      public function set playerChatBallVisible(value:Boolean) : void
       {
-         _playerChatBallVisible = param1;
+         _playerChatBallVisible = value;
          dispatchEvent(new CollectionTaskEvent("playerChatBallVisible"));
       }
       
-      public function set playerVisible(param1:Boolean) : void
+      public function set playerVisible(value:Boolean) : void
       {
-         _playerVisible = param1;
+         _playerVisible = value;
          dispatchEvent(new CollectionTaskEvent("playerVisible"));
       }
       

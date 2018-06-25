@@ -27,14 +27,14 @@ package gameStarling.objects
       
       private var _shouldReCreate:Boolean = false;
       
-      public function SimpleObject3D(param1:int, param2:int, param3:String, param4:String, param5:Boolean = false)
+      public function SimpleObject3D(id:int, type:int, model:String, action:String, isBottom:Boolean = false)
       {
-         super(param1,param2);
+         super(id,type);
          actionMapping = new Dictionary();
          touchable = false;
-         m_model = param3;
-         m_action = param4;
-         _isBottom = param5;
+         m_model = model;
+         m_action = action;
+         _isBottom = isBottom;
          creatMovie(m_model);
          playAction(m_action);
          initSmallMapView();
@@ -59,11 +59,11 @@ package gameStarling.objects
          return _shouldReCreate;
       }
       
-      public function set shouldReCreate(param1:Boolean) : void
+      public function set shouldReCreate(value:Boolean) : void
       {
       }
       
-      protected function creatMovie(param1:String) : void
+      protected function creatMovie(model:String) : void
       {
          m_movie = BoneMovieFactory.instance.creatBoneMovie(m_model);
          addChild(m_movie);
@@ -83,26 +83,26 @@ package gameStarling.objects
          return _smallMapView;
       }
       
-      public function playAction(param1:String) : void
+      public function playAction(action:String) : void
       {
-         if(actionMapping[param1])
+         if(actionMapping[action])
          {
-            param1 = actionMapping[param1];
+            action = actionMapping[action];
          }
          if(_smallMapView != null)
          {
-            _smallMapView.visible = param1 == "2";
+            _smallMapView.visible = action == "2";
          }
       }
       
-      override public function collidedByObject(param1:PhysicalObj3D) : void
+      override public function collidedByObject(obj:PhysicalObj3D) : void
       {
          playAction("pick");
       }
       
-      override public function setActionMapping(param1:String, param2:String) : void
+      override public function setActionMapping(source:String, target:String) : void
       {
-         actionMapping[param1] = param2;
+         actionMapping[source] = target;
       }
       
       override public function dispose() : void

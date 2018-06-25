@@ -22,10 +22,10 @@ package room.view.states
          super();
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
-         prev = param1;
-         data = param2;
+         prev = prev;
+         data = data;
          _roomView = new BattleRoomView(RoomManager.Instance.current);
          PositionUtils.setPos(_roomView,"asset.ddtroom.battleroomstate.pos");
          addChild(_roomView);
@@ -48,9 +48,9 @@ package room.view.states
          }
       }
       
-      override protected function __startLoading(param1:Event) : void
+      override protected function __startLoading(e:Event) : void
       {
-         super.__startLoading(param1);
+         super.__startLoading(e);
       }
       
       override public function getType() : String
@@ -63,10 +63,10 @@ package room.view.states
          return "main";
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
          MainToolBar.Instance.hide();
-         super.leaving(param1);
+         super.leaving(next);
       }
    }
 }

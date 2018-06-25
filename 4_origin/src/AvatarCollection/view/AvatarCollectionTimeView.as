@@ -72,19 +72,19 @@ package AvatarCollection.view
          AvatarCollectionManager.instance.addEventListener("avatar_collection_select_all",onSetSelectedAll);
       }
       
-      protected function onSetSelectedAll(param1:CEvent) : void
+      protected function onSetSelectedAll(e:CEvent) : void
       {
-         var _loc2_:Boolean = param1.data;
-         _btnSelectAll.visible = !_loc2_;
-         _btnUnSelectAll.visible = _loc2_;
+         var bool:Boolean = e.data;
+         _btnSelectAll.visible = !bool;
+         _btnUnSelectAll.visible = bool;
       }
       
-      protected function unSelectAllClickHandler(param1:MouseEvent) : void
+      protected function unSelectAllClickHandler(e:MouseEvent) : void
       {
          onSelectChange();
       }
       
-      protected function selectAllClickHandler(param1:MouseEvent) : void
+      protected function selectAllClickHandler(e:MouseEvent) : void
       {
          onSelectChange();
       }
@@ -97,15 +97,15 @@ package AvatarCollection.view
          AvatarCollectionManager.instance.selectAllClicked();
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         _btnSelectAll.visible = !param1;
-         _btnUnSelectAll.visible = param1;
+         _btnSelectAll.visible = !value;
+         _btnUnSelectAll.visible = value;
       }
       
-      private function delayTimeClickHandler(param1:MouseEvent) : void
+      private function delayTimeClickHandler(event:MouseEvent) : void
       {
-         var _loc3_:* = null;
+         var msgString:* = null;
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -115,36 +115,36 @@ package AvatarCollection.view
          _needHonor = AvatarCollectionManager.instance.honourNeedTotalPerDay();
          if(_needHonor == 0)
          {
-            _loc3_ = LanguageMgr.GetTranslation("avatarCollection.selectOne");
-            MessageTipManager.getInstance().show(_loc3_,0,false,1);
+            msgString = LanguageMgr.GetTranslation("avatarCollection.selectOne");
+            MessageTipManager.getInstance().show(msgString,0,false,1);
             return;
          }
-         var _loc2_:int = PlayerManager.Instance.Self.myHonor / _needHonor;
-         var _loc4_:AvatarCollectionDelayConfirmFrame = ComponentFactory.Instance.creatComponentByStylename("avatarColl.delayConfirmFrame");
-         _loc4_.show(_needHonor,_loc2_);
-         _loc4_.addEventListener("response",__onConfirmResponse);
-         LayerManager.Instance.addToLayer(_loc4_,3,true,1);
+         var count:int = PlayerManager.Instance.Self.myHonor / _needHonor;
+         var alert:AvatarCollectionDelayConfirmFrame = ComponentFactory.Instance.creatComponentByStylename("avatarColl.delayConfirmFrame");
+         alert.show(_needHonor,count);
+         alert.addEventListener("response",__onConfirmResponse);
+         LayerManager.Instance.addToLayer(alert,3,true,1);
       }
       
-      protected function __onConfirmResponse(param1:FrameEvent) : void
+      protected function __onConfirmResponse(event:FrameEvent) : void
       {
-         var _loc2_:int = 0;
+         var tmpValue:int = 0;
          SoundManager.instance.play("008");
-         var _loc3_:AvatarCollectionDelayConfirmFrame = param1.currentTarget as AvatarCollectionDelayConfirmFrame;
-         _loc3_.removeEventListener("response",__onConfirmResponse);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var alert:AvatarCollectionDelayConfirmFrame = event.currentTarget as AvatarCollectionDelayConfirmFrame;
+         alert.removeEventListener("response",__onConfirmResponse);
+         if(event.responseCode == 2 || event.responseCode == 3)
          {
-            _loc2_ = _loc3_.selectValue;
-            if(PlayerManager.Instance.Self.myHonor < _needHonor * _loc2_)
+            tmpValue = alert.selectValue;
+            if(PlayerManager.Instance.Self.myHonor < _needHonor * tmpValue)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("avatarCollection.delayConfirmFrame.noEnoughHonor"));
             }
             else
             {
-               AvatarCollectionManager.instance.delayTheTimeConfirmed(_loc2_);
+               AvatarCollectionManager.instance.delayTheTimeConfirmed(tmpValue);
             }
          }
-         _loc3_.dispose();
+         alert.dispose();
       }
       
       private function initTimer() : void
@@ -153,23 +153,23 @@ package AvatarCollection.view
          _timer.addEventListener("timer",timerHandler,false,0,true);
       }
       
-      private function timerHandler(param1:Event) : void
+      private function timerHandler(event:Event) : void
       {
          refreshTimePlayTxt();
       }
       
-      public function refreshView(param1:AvatarCollectionUnitVo) : void
+      public function refreshView(data:AvatarCollectionUnitVo) : void
       {
-         _data = param1;
+         _data = data;
          if(!_data)
          {
             setDefaultView();
             _timer.stop();
             return;
          }
-         var _loc3_:int = _data.totalItemList.length;
-         var _loc2_:int = _data.totalActivityItemCount;
-         if(_loc2_ < _loc3_ / 2)
+         var totalCount:int = _data.totalItemList.length;
+         var activityCount:int = _data.totalActivityItemCount;
+         if(activityCount < totalCount / 2)
          {
             setDefaultView();
             _timer.stop();
@@ -183,33 +183,33 @@ package AvatarCollection.view
       
       private function refreshTimePlayTxt() : void
       {
-         var _loc5_:* = null;
-         var _loc4_:Number = _data.endTime.getTime();
-         var _loc3_:Number = TimeManager.Instance.Now().getTime();
-         var _loc1_:Number = _loc4_ - _loc3_;
-         _loc1_ = _loc1_ < 0?0:Number(_loc1_);
-         var _loc2_:int = 0;
-         if(_loc1_ / 86400000 > 1)
+         var timeTxtStr:* = null;
+         var endTimestamp:Number = _data.endTime.getTime();
+         var nowTimestamp:Number = TimeManager.Instance.Now().getTime();
+         var differ:Number = endTimestamp - nowTimestamp;
+         differ = differ < 0?0:Number(differ);
+         var count:int = 0;
+         if(differ / 86400000 > 1)
          {
-            _loc2_ = _loc1_ / 86400000;
-            _loc5_ = _loc2_ + LanguageMgr.GetTranslation("day");
+            count = differ / 86400000;
+            timeTxtStr = count + LanguageMgr.GetTranslation("day");
          }
-         else if(_loc1_ / 3600000 > 1)
+         else if(differ / 3600000 > 1)
          {
-            _loc2_ = _loc1_ / 3600000;
-            _loc5_ = _loc2_ + LanguageMgr.GetTranslation("hour");
+            count = differ / 3600000;
+            timeTxtStr = count + LanguageMgr.GetTranslation("hour");
          }
-         else if(_loc1_ / 60000 > 1)
+         else if(differ / 60000 > 1)
          {
-            _loc2_ = _loc1_ / 60000;
-            _loc5_ = _loc2_ + LanguageMgr.GetTranslation("minute");
+            count = differ / 60000;
+            timeTxtStr = count + LanguageMgr.GetTranslation("minute");
          }
          else
          {
-            _loc2_ = _loc1_ / 1000;
-            _loc5_ = _loc2_ + LanguageMgr.GetTranslation("second");
+            count = differ / 1000;
+            timeTxtStr = count + LanguageMgr.GetTranslation("second");
          }
-         _txt.text = LanguageMgr.GetTranslation("avatarCollection.timeView.txt") + _loc5_;
+         _txt.text = LanguageMgr.GetTranslation("avatarCollection.timeView.txt") + timeTxtStr;
       }
       
       private function setDefaultView() : void

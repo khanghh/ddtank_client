@@ -51,12 +51,12 @@ package consortionBattle.view
          PositionUtils.setPos(_portrait,"consortiaBattle.portraitPos");
          _portrait.info = PlayerManager.Instance.Self;
          _portrait.isShowFrame = false;
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(16711680,0.5);
-         _loc1_.graphics.drawCircle(0,0,35);
-         _loc1_.graphics.endFill();
-         PositionUtils.setPos(_loc1_,"consortiaBattle.portraitMaskPos");
-         _portrait.mask = _loc1_;
+         var maskSprite:Sprite = new Sprite();
+         maskSprite.graphics.beginFill(16711680,0.5);
+         maskSprite.graphics.drawCircle(0,0,35);
+         maskSprite.graphics.endFill();
+         PositionUtils.setPos(maskSprite,"consortiaBattle.portraitMaskPos");
+         _portrait.mask = maskSprite;
          _nameTxt = ComponentFactory.Instance.creatComponentByStylename("consortiaBattle.infoView.nameTxt");
          _nameTxt.text = PlayerManager.Instance.Self.NickName;
          _hpTxt = ComponentFactory.Instance.creatComponentByStylename("consortiaBattle.infoView.hpTxt");
@@ -68,7 +68,7 @@ package consortionBattle.view
          PositionUtils.setPos(_scoreTxt,"consortiaBattle.socreTxtPos");
          addChild(_bg);
          addChild(_portrait);
-         addChild(_loc1_);
+         addChild(maskSprite);
          addChild(_hp);
          addChild(_nameTxt);
          addChild(_hpTxt);
@@ -82,12 +82,12 @@ package consortionBattle.view
          ConsortiaBattleManager.instance.addEventListener("consortiaBattleUpdateSceneInfo",refreshView);
       }
       
-      private function refreshView(param1:Event = null) : void
+      private function refreshView(event:Event = null) : void
       {
-         var _loc2_:int = PlayerManager.Instance.Self.hp;
-         var _loc3_:int = ConsortiaBattleManager.instance.curHp == -1?_loc2_:int(ConsortiaBattleManager.instance.curHp);
-         _hpTxt.text = _loc3_ + "/" + _loc2_;
-         _hp.width = _loc3_ / _loc2_ * _hpWidth;
+         var totalHp:int = PlayerManager.Instance.Self.hp;
+         var tmp:int = ConsortiaBattleManager.instance.curHp == -1?totalHp:int(ConsortiaBattleManager.instance.curHp);
+         _hpTxt.text = tmp + "/" + totalHp;
+         _hp.width = tmp / totalHp * _hpWidth;
          _victoryCountTxt.text = ConsortiaBattleManager.instance.victoryCount.toString();
          _winningStreakTxt.text = ConsortiaBattleManager.instance.winningStreak.toString();
          _scoreTxt.text = ConsortiaBattleManager.instance.score.toString();

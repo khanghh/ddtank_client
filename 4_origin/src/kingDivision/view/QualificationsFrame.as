@@ -175,10 +175,10 @@ package kingDivision.view
          _startBtn.visible = true;
       }
       
-      public function updateMessage(param1:int, param2:int) : void
+      public function updateMessage(score:int, gameNum:int) : void
       {
-         _points.text = param1.toString();
-         _numberTxt.text = param2.toString();
+         _points.text = score.toString();
+         _numberTxt.text = gameNum.toString();
       }
       
       public function updateConsortiaMessage() : void
@@ -196,11 +196,11 @@ package kingDivision.view
          addChild(_consorPanel);
       }
       
-      private function __timer(param1:TimerEvent) : void
+      private function __timer(evt:TimerEvent) : void
       {
-         var _loc2_:uint = _timer.currentCount / 60;
-         var _loc3_:uint = _timer.currentCount % 60;
-         _timeTxt.text = _loc3_ > 9?_loc3_.toString():"0" + _loc3_;
+         var min:uint = _timer.currentCount / 60;
+         var sec:uint = _timer.currentCount % 60;
+         _timeTxt.text = sec > 9?sec.toString():"0" + sec;
       }
       
       public function updateButtons() : void
@@ -237,14 +237,13 @@ package kingDivision.view
       
       private function isShowStartBtn() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _info = KingDivisionManager.Instance.model.conItemInfo;
          if(_info != null)
          {
-            _loc1_ = 0;
-            while(_loc1_ < _info.length)
+            for(i = 0; i < _info.length; )
             {
-               if(PlayerManager.Instance.Self.ConsortiaID == _info[_loc1_].consortionIDArea && PlayerManager.Instance.Self.ZoneID == _info[_loc1_].areaID || isConsortiaID)
+               if(PlayerManager.Instance.Self.ConsortiaID == _info[i].consortionIDArea && PlayerManager.Instance.Self.ZoneID == _info[i].areaID || isConsortiaID)
                {
                   isConsortiaID = true;
                }
@@ -252,7 +251,7 @@ package kingDivision.view
                {
                   isConsortiaID = false;
                }
-               _loc1_++;
+               i++;
             }
          }
          if(!isConsortiaID)
@@ -274,7 +273,7 @@ package kingDivision.view
          }
       }
       
-      private function __onStartBtnClick(param1:MouseEvent) : void
+      private function __onStartBtnClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _timerUpdate.stop();
@@ -301,45 +300,45 @@ package kingDivision.view
       
       private function startGame() : void
       {
-         var _loc1_:int = 0;
+         var type:int = 0;
          if(KingDivisionManager.Instance.states == 1)
          {
-            _loc1_ = 3;
+            type = 3;
          }
          else if(KingDivisionManager.Instance.states == 2)
          {
-            _loc1_ = 4;
+            type = 4;
          }
-         GameInSocketOut.sendKingDivisionGameStart(_loc1_);
+         GameInSocketOut.sendKingDivisionGameStart(type);
       }
       
-      private function __onCancelBtnClick(param1:MouseEvent) : void
+      private function __onCancelBtnClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          cancelMatch();
       }
       
-      private function __onClickAwardsBtn(param1:MouseEvent) : void
+      private function __onClickAwardsBtn(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:RewardView = ComponentFactory.Instance.creatComponentByStylename("qualificationsFrame.RewardView");
-         LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+         var rewView:RewardView = ComponentFactory.Instance.creatComponentByStylename("qualificationsFrame.RewardView");
+         LayerManager.Instance.addToLayer(rewView,3,true,1);
       }
       
-      private function addTitleName(param1:Array, param2:int) : void
+      private function addTitleName(arr:Array, len:int) : void
       {
-         if(index > param2 - 1)
+         if(index > len - 1)
          {
             return;
          }
          _titleNameTxt = ComponentFactory.Instance.creatComponentByStylename("qualificationsFrame.titleNameTxt" + index);
-         _titleNameTxt.text = param1[index];
+         _titleNameTxt.text = arr[index];
          index = Number(index) + 1;
          addChild(_titleNameTxt);
-         addTitleName(param1,param2);
+         addTitleName(arr,len);
       }
       
-      private function __updateConsortionMessage(param1:TimerEvent) : void
+      private function __updateConsortionMessage(evt:TimerEvent) : void
       {
          if(!isTrue)
          {
@@ -348,28 +347,27 @@ package kingDivision.view
          KingDivisionManager.Instance.updateConsotionMessage();
       }
       
-      public function set progressBarView(param1:ProgressBarView) : void
+      public function set progressBarView(value:ProgressBarView) : void
       {
-         _proBar = param1;
+         _proBar = value;
       }
       
-      public function setDateStages(param1:Array) : void
+      public function setDateStages(arr:Array) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:Date = TimeManager.Instance.Now();
-         _loc3_ = 0;
-         while(_loc3_ < param1.length)
+         var i:int = 0;
+         var date:Date = TimeManager.Instance.Now();
+         for(i = 0; i < arr.length; )
          {
-            if(param1[_loc3_] == _loc2_.date)
+            if(arr[i] == date.date)
             {
-               _proBar.proBarAllMovie.gotoAndStop(_loc3_ + 1);
+               _proBar.proBarAllMovie.gotoAndStop(i + 1);
                break;
             }
-            if(param1[_loc3_] < _loc2_.date)
+            if(arr[i] < date.date)
             {
                _proBar.proBarAllMovie.gotoAndStop(5);
             }
-            _loc3_++;
+            i++;
          }
       }
       

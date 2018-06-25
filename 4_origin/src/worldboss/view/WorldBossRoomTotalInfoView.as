@@ -65,8 +65,8 @@ package worldboss.view
       
       private function creatTxtInfo() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var txt:* = null;
          _totalInfo_time = ComponentFactory.Instance.creat("worldBossRoom.totalInfo.time");
          _totalInfo_yourSelf = ComponentFactory.Instance.creat("worldBossRoom.totalInfo.yourself");
          _totalInfo_timeTxt = ComponentFactory.Instance.creat("worldBossRoom.totalInfo.timeTxt");
@@ -82,29 +82,28 @@ package worldboss.view
          _totalInfo_timeTxt.text = LanguageMgr.GetTranslation("worldboss.totalInfo.time");
          _totalInfo_yourSelfTxt.text = LanguageMgr.GetTranslation("worldboss.totalInfo.yourself");
          _selfHonorText.text = LanguageMgr.GetTranslation("worldboss.totalInfo.selfHonor");
-         _loc2_ = 0;
-         while(_loc2_ < 20)
+         for(i = 0; i < 20; )
          {
-            if(_loc2_ < 3)
+            if(i < 3)
             {
-               _loc1_ = ComponentFactory.Instance.creat("worldBossRoom.rankingTxt.No" + (_loc2_ + 1));
+               txt = ComponentFactory.Instance.creat("worldBossRoom.rankingTxt.No" + (i + 1));
             }
-            else if(_loc2_ < 10)
+            else if(i < 10)
             {
-               _loc1_ = ComponentFactory.Instance.creat("worldBossRoom.rankingTxt.NoOtherLeft");
+               txt = ComponentFactory.Instance.creat("worldBossRoom.rankingTxt.NoOtherLeft");
             }
-            else if(_loc2_ < 13)
+            else if(i < 13)
             {
-               _loc1_ = ComponentFactory.Instance.creat("worldBossRoom.rankingTxt.No" + (_loc2_ + 1));
+               txt = ComponentFactory.Instance.creat("worldBossRoom.rankingTxt.No" + (i + 1));
             }
             else
             {
-               _loc1_ = ComponentFactory.Instance.creat("worldBossRoom.rankingTxt.NoOtherRight");
+               txt = ComponentFactory.Instance.creat("worldBossRoom.rankingTxt.NoOtherRight");
             }
-            _loc1_.y = _loc1_.y + int(_loc2_ % 10) * 24;
-            addChild(_loc1_);
-            _txtArr.push(_loc1_);
-            _loc2_++;
+            txt.y = txt.y + int(i % 10) * 24;
+            addChild(txt);
+            _txtArr.push(txt);
+            i++;
          }
          if(WorldBossManager.Instance.bossInfo.fightOver)
          {
@@ -122,7 +121,7 @@ package worldboss.view
          WorldBossManager.Instance.addEventListener("change",__onUpdata);
       }
       
-      protected function __onUpdata(param1:Event) : void
+      protected function __onUpdata(event:Event) : void
       {
          updata_yourSelf_damage();
       }
@@ -136,14 +135,14 @@ package worldboss.view
          WorldBossManager.Instance.removeEventListener("change",__onUpdata);
       }
       
-      private function __showTotalInfo(param1:MouseEvent) : void
+      private function __showTotalInfo(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _show_totalInfoBtnIMG.setFrame(!!_open_show?2:1);
          addEventListener("enterFrame",__totalViewShowOrHide);
       }
       
-      private function __totalViewShowOrHide(param1:Event) : void
+      private function __totalViewShowOrHide(evt:Event) : void
       {
          if(_open_show)
          {
@@ -179,34 +178,32 @@ package worldboss.view
          }
       }
       
-      public function setTimeCount(param1:int) : void
+      public function setTimeCount(num:int) : void
       {
-         _totalInfo_time.text = setFormat(int(param1 / 3600)) + ":" + setFormat(int(param1 / 60 % 60)) + ":" + setFormat(int(param1 % 60));
+         _totalInfo_time.text = setFormat(int(num / 3600)) + ":" + setFormat(int(num / 60 % 60)) + ":" + setFormat(int(num % 60));
       }
       
-      public function updataRanking(param1:Array) : void
+      public function updataRanking(arr:Array) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         _loc3_ = 0;
-         while(_loc3_ < param1.length)
+         var i:int = 0;
+         var personInfo:* = null;
+         for(i = 0; i < arr.length; )
          {
-            _loc2_ = param1[_loc3_] as RankingPersonInfo;
-            _txtArr[_loc3_].text = _loc3_ + 1 + "." + _loc2_.name;
-            _txtArr[_loc3_ + 10].text = _loc2_.damage + "(" + _loc2_.getPercentage(WorldBossManager.Instance.bossInfo.total_Blood) + ")";
-            _loc3_++;
+            personInfo = arr[i] as RankingPersonInfo;
+            _txtArr[i].text = i + 1 + "." + personInfo.name;
+            _txtArr[i + 10].text = personInfo.damage + "(" + personInfo.getPercentage(WorldBossManager.Instance.bossInfo.total_Blood) + ")";
+            i++;
          }
       }
       
       private function testshowRanking() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < 10)
+         var i:int = 0;
+         for(i = 0; i < 10; )
          {
-            _txtArr[_loc1_].text = _loc1_ + 1 + ".哈王00" + _loc1_;
-            _txtArr[_loc1_ + 10].text = (9 - _loc1_) * 3 * 10000 + "(2.152%)";
-            _loc1_++;
+            _txtArr[i].text = i + 1 + ".哈王00" + i;
+            _txtArr[i + 10].text = (9 - i) * 3 * 10000 + "(2.152%)";
+            i++;
          }
       }
       
@@ -215,14 +212,14 @@ package worldboss.view
          _totalInfo_time.text = "00:00:00";
       }
       
-      private function setFormat(param1:int) : String
+      private function setFormat(value:int) : String
       {
-         var _loc2_:String = param1.toString();
-         if(param1 < 10)
+         var str:String = value.toString();
+         if(value < 10)
          {
-            _loc2_ = "0" + _loc2_;
+            str = "0" + str;
          }
-         return _loc2_;
+         return str;
       }
       
       public function dispose() : void

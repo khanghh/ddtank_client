@@ -62,30 +62,30 @@ package giftSystem.element
          _checkBtn.addEventListener("click",__check);
       }
       
-      private function __mouseClick(param1:MouseEvent) : void
+      private function __mouseClick(evt:MouseEvent) : void
       {
          hide();
          SoundManager.instance.play("008");
       }
       
-      private function __check(param1:MouseEvent) : void
+      private function __check(event:MouseEvent) : void
       {
          PlayerInfoViewControl.viewByID(_info.playerID);
       }
       
-      private function __reback(param1:MouseEvent) : void
+      private function __reback(event:MouseEvent) : void
       {
       }
       
-      public function show(param1:RecordItemInfo, param2:int, param3:int) : void
+      public function show(info:RecordItemInfo, x:int, y:int) : void
       {
-         if(_info != param1)
+         if(_info != info)
          {
-            _info = param1;
+            _info = info;
          }
          LayerManager.Instance.addToLayer(this,2);
-         this.x = param2;
-         this.y = param3;
+         this.x = x;
+         this.y = y;
       }
       
       public function hide() : void

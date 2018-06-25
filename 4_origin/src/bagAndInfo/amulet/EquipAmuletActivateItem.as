@@ -35,7 +35,7 @@ package bagAndInfo.amulet
       
       private var _startLevel:int;
       
-      public function EquipAmuletActivateItem(param1:Boolean = true)
+      public function EquipAmuletActivateItem(showLock:Boolean = true)
       {
          super();
          _propertyText = ComponentFactory.Instance.creatComponentByStylename("equipAmulet.actifvatePropertyText");
@@ -44,7 +44,7 @@ package bagAndInfo.amulet
          addChild(_propertyText);
          addChild(_valueText);
          addChild(_startLevelText);
-         if(param1)
+         if(showLock)
          {
             _lock = ComponentFactory.Instance.creatComponentByStylename("equipAmulet.lock");
             _lockSpr = new Sprite();
@@ -63,7 +63,7 @@ package bagAndInfo.amulet
          update(1,100);
       }
       
-      private function __onClikc(param1:MouseEvent) : void
+      private function __onClikc(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(_type <= 0)
@@ -80,12 +80,12 @@ package bagAndInfo.amulet
          }
       }
       
-      public function update(param1:int, param2:int, param3:int = 0) : void
+      public function update(property:int, value:int, probability:int = 0) : void
       {
-         _type = param1;
-         _value = param2;
-         var _loc4_:int = int(param3 / 1000) + 1;
-         _startLevel = _loc4_ > 10?10:_loc4_;
+         _type = property;
+         _value = value;
+         var level:int = int(probability / 1000) + 1;
+         _startLevel = level > 10?10:level;
          if(_type <= 0)
          {
             _propertyText.visible = false;
@@ -98,9 +98,9 @@ package bagAndInfo.amulet
          }
          else
          {
-            _propertyText.text = HorseAmuletManager.instance.getByExtendType(param1);
+            _propertyText.text = HorseAmuletManager.instance.getByExtendType(property);
             _propertyText.visible = true;
-            _valueText.text = param2.toString();
+            _valueText.text = value.toString();
             _valueText.visible = true;
             if(_lockSpr)
             {
@@ -112,9 +112,9 @@ package bagAndInfo.amulet
          }
       }
       
-      public function set lockBool(param1:Boolean) : void
+      public function set lockBool(value:Boolean) : void
       {
-         _lockBool = param1;
+         _lockBool = value;
          if(_lock)
          {
             _lock.setFrame(!_lockBool?1:2);

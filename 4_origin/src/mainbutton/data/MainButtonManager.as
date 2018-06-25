@@ -25,14 +25,14 @@ package mainbutton.data
          return _instance;
       }
       
-      public function gethallIconInfo(param1:HallIconDataAnalyz) : void
+      public function gethallIconInfo(analyzer:HallIconDataAnalyz) : void
       {
-         _HallIconList = param1.list;
+         _HallIconList = analyzer.list;
       }
       
-      public function getInfoByID(param1:String) : MainButton
+      public function getInfoByID(key:String) : MainButton
       {
-         return _HallIconList[param1];
+         return _HallIconList[key];
       }
    }
 }

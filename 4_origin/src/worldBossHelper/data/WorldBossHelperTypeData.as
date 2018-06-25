@@ -24,9 +24,9 @@ package worldBossHelper.data
          return _isOpen;
       }
       
-      public function set isOpen(param1:Boolean) : void
+      public function set isOpen(value:Boolean) : void
       {
-         _isOpen = param1;
+         _isOpen = value;
       }
       
       public function get requestType() : int
@@ -34,9 +34,9 @@ package worldBossHelper.data
          return _requestType;
       }
       
-      public function set requestType(param1:int) : void
+      public function set requestType(value:int) : void
       {
-         _requestType = param1;
+         _requestType = value;
       }
       
       public function get openType() : int
@@ -44,9 +44,9 @@ package worldBossHelper.data
          return _openType;
       }
       
-      public function set openType(param1:int) : void
+      public function set openType(value:int) : void
       {
-         _openType = param1;
+         _openType = value;
       }
       
       public function get type() : int
@@ -54,9 +54,9 @@ package worldBossHelper.data
          return _type;
       }
       
-      public function set type(param1:int) : void
+      public function set type(value:int) : void
       {
-         _type = param1;
+         _type = value;
       }
       
       public function get buffNum() : int
@@ -64,9 +64,9 @@ package worldBossHelper.data
          return _buffNum;
       }
       
-      public function set buffNum(param1:int) : void
+      public function set buffNum(value:int) : void
       {
-         _buffNum = param1;
+         _buffNum = value;
       }
    }
 }

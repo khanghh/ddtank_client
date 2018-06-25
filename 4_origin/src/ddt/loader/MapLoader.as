@@ -43,10 +43,10 @@ package ddt.loader
       
       private var _loadCompleted:Boolean;
       
-      public function MapLoader(param1:MapInfo)
+      public function MapLoader(info:MapInfo)
       {
          super();
-         _info = param1;
+         _info = info;
       }
       
       public function get info() : MapInfo
@@ -116,12 +116,12 @@ package ddt.loader
          LoadResourceManager.Instance.startLoad(_loaderBack);
       }
       
-      private function __backComplete(param1:LoaderEvent) : void
+      private function __backComplete(evt:LoaderEvent) : void
       {
-         var _loc2_:DisplayLoader = param1.target as DisplayLoader;
-         if(_loc2_.isSuccess)
+         var loader:DisplayLoader = evt.target as DisplayLoader;
+         if(loader.isSuccess)
          {
-            _back = _loc2_.content as Bitmap;
+            _back = loader.content as Bitmap;
             if(_back != null)
             {
                count();
@@ -129,22 +129,22 @@ package ddt.loader
          }
       }
       
-      private function __middleComplete(param1:LoaderEvent) : void
+      private function __middleComplete(evt:LoaderEvent) : void
       {
-         var _loc2_:DisplayLoader = param1.target as DisplayLoader;
-         if(_loc2_.isSuccess)
+         var loader:DisplayLoader = evt.target as DisplayLoader;
+         if(loader.isSuccess)
          {
-            _middle = _loc2_.content;
+            _middle = loader.content;
          }
          count();
       }
       
-      private function __foreComplete(param1:LoaderEvent) : void
+      private function __foreComplete(evt:LoaderEvent) : void
       {
-         param1.loader.removeEventListener("complete",__foreComplete);
-         if(param1.loader.isSuccess)
+         evt.loader.removeEventListener("complete",__foreComplete);
+         if(evt.loader.isSuccess)
          {
-            _fore = param1.loader.content as Bitmap;
+            _fore = evt.loader.content as Bitmap;
             if(_fore != null)
             {
                count();
@@ -152,12 +152,12 @@ package ddt.loader
          }
       }
       
-      private function __realComplete(param1:LoaderEvent) : void
+      private function __realComplete(evt:LoaderEvent) : void
       {
-         param1.loader.removeEventListener("complete",__realComplete);
-         if(param1.loader.isSuccess)
+         evt.loader.removeEventListener("complete",__realComplete);
+         if(evt.loader.isSuccess)
          {
-            _real = param1.loader.content as Bitmap;
+            _real = evt.loader.content as Bitmap;
             if(_real != null)
             {
                count();
@@ -165,12 +165,12 @@ package ddt.loader
          }
       }
       
-      private function __deadComplete(param1:LoaderEvent) : void
+      private function __deadComplete(evt:LoaderEvent) : void
       {
-         param1.loader.removeEventListener("complete",__deadComplete);
-         if(param1.loader.isSuccess)
+         evt.loader.removeEventListener("complete",__deadComplete);
+         if(evt.loader.isSuccess)
          {
-            _dead = param1.loader.content as Bitmap;
+            _dead = evt.loader.content as Bitmap;
             if(_dead != null)
             {
                count();

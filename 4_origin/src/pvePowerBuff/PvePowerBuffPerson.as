@@ -32,10 +32,10 @@ package pvePowerBuff
       
       private var _playerInfo:PlayerInfo;
       
-      public function PvePowerBuffPerson(param1:int)
+      public function PvePowerBuffPerson(i:int)
       {
          super();
-         _index = param1;
+         _index = i;
          initView();
          initEvent();
       }
@@ -63,19 +63,19 @@ package pvePowerBuff
          addEventListener("click",__clickHandler);
       }
       
-      private function __clickHandler(param1:MouseEvent) : void
+      private function __clickHandler(e:MouseEvent) : void
       {
-         var _loc2_:PvePowerBuffEvent = new PvePowerBuffEvent("select_player");
-         _loc2_.info = this;
-         PvePowerBuffControl.instance.dispatchEvent(_loc2_);
+         var ev:PvePowerBuffEvent = new PvePowerBuffEvent("select_player");
+         ev.info = this;
+         PvePowerBuffControl.instance.dispatchEvent(ev);
       }
       
-      public function updatePlayer(param1:PlayerInfo) : void
+      public function updatePlayer(personInfo:PlayerInfo) : void
       {
-         _playerInfo = param1;
-         _levelIcon.setInfo(param1.Grade,param1.ddtKingGrade,param1.Repute,param1.WinCount,param1.TotalCount,param1.FightPower,param1.Offer,true,false);
-         _nickNameText.text = param1.NickName;
-         _player = CharactoryFactory.createCharacter(param1,"room");
+         _playerInfo = personInfo;
+         _levelIcon.setInfo(personInfo.Grade,personInfo.ddtKingGrade,personInfo.Repute,personInfo.WinCount,personInfo.TotalCount,personInfo.FightPower,personInfo.Offer,true,false);
+         _nickNameText.text = personInfo.NickName;
+         _player = CharactoryFactory.createCharacter(personInfo,"room");
          _player.showGun = true;
          _player.show();
          _player.setShowLight(true);
@@ -95,9 +95,9 @@ package pvePowerBuff
          return _index;
       }
       
-      public function setLightMcVisible(param1:Boolean) : void
+      public function setLightMcVisible(v:Boolean) : void
       {
-         _lightMC.visible = param1;
+         _lightMC.visible = v;
       }
       
       public function dispose() : void

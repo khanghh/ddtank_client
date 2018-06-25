@@ -33,13 +33,13 @@ package store.view.embed
          super();
       }
       
-      public function set backgoundInnerRectString(param1:String) : void
+      public function set backgoundInnerRectString(value:String) : void
       {
-         if(_backgoundInnerRectString == param1)
+         if(_backgoundInnerRectString == value)
          {
             return;
          }
-         _backgoundInnerRectString = param1;
+         _backgoundInnerRectString = value;
          _backInnerRect = ClassUtils.CreatInstance("com.pickgliss.geom.InnerRectangle",ComponentFactory.parasArgs(_backgoundInnerRectString));
          onPropertiesChanged("backOutterRect");
       }
@@ -54,24 +54,24 @@ package store.view.embed
          super.dispose();
       }
       
-      public function set tipTextField(param1:TextField) : void
+      public function set tipTextField(field:TextField) : void
       {
-         if(_tipTextField == param1)
+         if(_tipTextField == field)
          {
             return;
          }
          ObjectUtils.disposeObject(_tipTextField);
-         _tipTextField = param1;
+         _tipTextField = field;
          onPropertiesChanged("tipTextField");
       }
       
-      public function set tipTextStyle(param1:String) : void
+      public function set tipTextStyle(stylename:String) : void
       {
-         if(_tipTextStyle == param1)
+         if(_tipTextStyle == stylename)
          {
             return;
          }
-         _tipTextStyle = param1;
+         _tipTextStyle = stylename;
          tipTextField = ComponentFactory.Instance.creat(_tipTextStyle);
       }
       
@@ -93,47 +93,47 @@ package store.view.embed
          return _currentData;
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         if(param1 as String)
+         var rectangle:* = null;
+         var obj:* = null;
+         if(data as String)
          {
-            if(param1 is String)
+            if(data is String)
             {
                _tipTextField.wordWrap = false;
-               _tipTextField.text = String(param1);
-               _loc2_ = _backInnerRect.getInnerRect(_tipTextField.width,_tipTextField.height);
-               var _loc4_:* = _loc2_.width;
+               _tipTextField.text = String(data);
+               rectangle = _backInnerRect.getInnerRect(_tipTextField.width,_tipTextField.height);
+               var _loc4_:* = rectangle.width;
                _tipbackgound.width = _loc4_;
                _width = _loc4_;
-               _loc4_ = _loc2_.height;
+               _loc4_ = rectangle.height;
                _tipbackgound.height = _loc4_;
                _height = _loc4_;
             }
-            else if(param1 is Array)
+            else if(data is Array)
             {
                _tipTextField.wordWrap = true;
-               _tipTextField.width = int(param1[1]);
-               _tipTextField.text = String(param1[0]);
-               _loc2_ = _backInnerRect.getInnerRect(_tipTextField.width,_tipTextField.height);
-               _loc4_ = _loc2_.width;
+               _tipTextField.width = int(data[1]);
+               _tipTextField.text = String(data[0]);
+               rectangle = _backInnerRect.getInnerRect(_tipTextField.width,_tipTextField.height);
+               _loc4_ = rectangle.width;
                _tipbackgound.width = _loc4_;
                _width = _loc4_;
-               _loc4_ = _loc2_.height;
+               _loc4_ = rectangle.height;
                _tipbackgound.height = _loc4_;
                _height = _loc4_;
             }
             visible = true;
             _tipTextField.x = _backInnerRect.para1;
             _tipTextField.y = _backInnerRect.para3;
-            _currentData = param1;
+            _currentData = data;
          }
-         else if(param1 as GoodTipInfo)
+         else if(data as GoodTipInfo)
          {
-            _loc3_ = param1 as GoodTipInfo;
-            _currentData = _loc3_;
-            showTip(_loc3_.itemInfo,_loc3_.typeIsSecond);
+            obj = data as GoodTipInfo;
+            _currentData = obj;
+            showTip(obj.itemInfo,obj.typeIsSecond);
             visible = true;
          }
          else

@@ -31,9 +31,9 @@ package BraveDoor.data
          return _duplicateInfo;
       }
       
-      public function addDuplicateInfo(param1:DuplicateInfo) : void
+      public function addDuplicateInfo(info:DuplicateInfo) : void
       {
-         _duplicateInfo.push(param1);
+         _duplicateInfo.push(info);
       }
       
       public function get page() : int
@@ -41,9 +41,9 @@ package BraveDoor.data
          return _page;
       }
       
-      public function set page(param1:int) : void
+      public function set page(value:int) : void
       {
-         _page = param1;
+         _page = value;
       }
       
       public function get mapY() : int
@@ -51,9 +51,9 @@ package BraveDoor.data
          return _mapY;
       }
       
-      public function set mapY(param1:int) : void
+      public function set mapY(value:int) : void
       {
-         _mapY = param1;
+         _mapY = value;
       }
       
       public function get mapX() : int
@@ -61,9 +61,9 @@ package BraveDoor.data
          return _mapX;
       }
       
-      public function set mapX(param1:int) : void
+      public function set mapX(value:int) : void
       {
-         _mapX = param1;
+         _mapX = value;
       }
       
       public function get mapHeight() : int
@@ -71,9 +71,9 @@ package BraveDoor.data
          return _mapHeight;
       }
       
-      public function set mapHeight(param1:int) : void
+      public function set mapHeight(value:int) : void
       {
-         _mapHeight = param1;
+         _mapHeight = value;
       }
       
       public function get mapWidth() : int
@@ -81,9 +81,9 @@ package BraveDoor.data
          return _mapWidth;
       }
       
-      public function set mapWidth(param1:int) : void
+      public function set mapWidth(value:int) : void
       {
-         _mapWidth = param1;
+         _mapWidth = value;
       }
       
       public function get mapUrl() : String
@@ -91,9 +91,9 @@ package BraveDoor.data
          return _mapUrl;
       }
       
-      public function set mapUrl(param1:String) : void
+      public function set mapUrl(value:String) : void
       {
-         _mapUrl = param1;
+         _mapUrl = value;
       }
    }
 }

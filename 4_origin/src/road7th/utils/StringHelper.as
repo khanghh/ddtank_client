@@ -33,119 +33,116 @@ package road7th.utils
          super();
       }
       
-      public static function trimLeft(param1:String) : String
+      public static function trimLeft(targetString:String) : String
       {
-         if(!param1)
+         if(!targetString)
          {
-            return param1;
+            return targetString;
          }
-         return param1.replace(/^\s*/g,"");
+         return targetString.replace(/^\s*/g,"");
       }
       
-      public static function trim(param1:String) : String
+      public static function trim(str:String) : String
       {
-         if(!param1)
+         if(!str)
          {
-            return param1;
+            return str;
          }
-         return param1.replace(/(^\s*)|(\s*$)/g,"");
+         return str.replace(/(^\s*)|(\s*$)/g,"");
       }
       
-      public static function trimRight(param1:String) : String
+      public static function trimRight(targetString:String) : String
       {
-         return param1.replace(/\s*$/g,"");
+         return targetString.replace(/\s*$/g,"");
       }
       
-      public static function trimAll(param1:String) : String
+      public static function trimAll(str:String) : String
       {
-         var _loc4_:* = 0;
-         var _loc2_:String = trim(param1);
-         var _loc3_:String = "";
-         _loc4_ = uint(0);
-         while(_loc4_ < _loc2_.length)
+         var i:* = 0;
+         var s:String = trim(str);
+         var newStr:String = "";
+         for(i = uint(0); i < s.length; )
          {
-            if(blankSpaceType.indexOf(_loc2_.charCodeAt(_loc4_)) <= -1)
+            if(blankSpaceType.indexOf(s.charCodeAt(i)) <= -1)
             {
-               _loc3_ = _loc3_ + _loc2_.charAt(_loc4_);
+               newStr = newStr + s.charAt(i);
             }
-            _loc4_++;
+            i++;
          }
-         return _loc3_;
+         return newStr;
       }
       
-      public static function replaceStr(param1:String, param2:String, param3:String) : String
+      public static function replaceStr(str:String, sourceWord:String, targetWord:String) : String
       {
-         return param1.split(param2).join(param3);
+         return str.split(sourceWord).join(targetWord);
       }
       
-      public static function isNullOrEmpty(param1:String) : Boolean
+      public static function isNullOrEmpty(str:String) : Boolean
       {
-         return param1 == null || param1 == "";
+         return str == null || str == "";
       }
       
-      public static function stringToPath(param1:String) : Array
+      public static function stringToPath(pathString:String) : Array
       {
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         var _loc2_:Array = [];
-         _loc5_ = 0;
-         while(_loc5_ < param1.length)
+         var i:int = 0;
+         var x:int = 0;
+         var y:int = 0;
+         var path:Array = [];
+         for(i = 0; i < pathString.length; )
          {
-            _loc4_ = param1.charCodeAt(_loc5_);
-            _loc3_ = param1.charCodeAt(_loc5_ + 1);
-            _loc2_.push(new Point(_loc4_ - 2000,_loc3_ - 2000));
-            _loc5_ = _loc5_ + 2;
+            x = pathString.charCodeAt(i);
+            y = pathString.charCodeAt(i + 1);
+            path.push(new Point(x - 2000,y - 2000));
+            i = i + 2;
          }
-         return _loc2_;
+         return path;
       }
       
-      public static function stringToPoint(param1:String) : Point
+      public static function stringToPoint(str:String) : Point
       {
-         return new Point(param1.charCodeAt(0) - 2000,param1.charCodeAt(1) - 2000);
+         return new Point(str.charCodeAt(0) - 2000,str.charCodeAt(1) - 2000);
       }
       
-      public static function pathToString(param1:Array) : String
+      public static function pathToString(path:Array) : String
       {
-         var _loc3_:int = 0;
-         if(param1 == null || param1.length <= 0)
+         var i:int = 0;
+         if(path == null || path.length <= 0)
          {
             return "";
          }
-         var _loc2_:String = "";
-         _loc3_ = 0;
-         while(_loc3_ < param1.length)
+         var pathString:String = "";
+         for(i = 0; i < path.length; )
          {
-            _loc2_ = _loc2_ + String.fromCharCode(Math.round(param1[_loc3_].x + 2000));
-            _loc2_ = _loc2_ + String.fromCharCode(Math.round(param1[_loc3_].y + 2000));
-            _loc3_++;
+            pathString = pathString + String.fromCharCode(Math.round(path[i].x + 2000));
+            pathString = pathString + String.fromCharCode(Math.round(path[i].y + 2000));
+            i++;
          }
-         return _loc2_;
+         return pathString;
       }
       
-      public static function pointToString(param1:Point) : String
+      public static function pointToString(point:Point) : String
       {
-         var _loc2_:String = "";
-         _loc2_ = _loc2_ + String.fromCharCode(Math.round(param1.x + 2000));
-         _loc2_ = _loc2_ + String.fromCharCode(Math.round(param1.y + 2000));
-         return _loc2_;
+         var result:String = "";
+         result = result + String.fromCharCode(Math.round(point.x + 2000));
+         result = result + String.fromCharCode(Math.round(point.y + 2000));
+         return result;
       }
       
-      public static function numberToString(param1:Number) : String
+      public static function numberToString(number:Number) : String
       {
-         return String.fromCharCode(Math.round(param1 + 2000));
+         return String.fromCharCode(Math.round(number + 2000));
       }
       
-      public static function stringToNumber(param1:String) : Number
+      public static function stringToNumber(str:String) : Number
       {
-         return param1.charCodeAt(0) - 2000;
+         return str.charCodeAt(0) - 2000;
       }
       
-      public static function getIsBiggerMaxCHchar(param1:String, param2:uint) : Boolean
+      public static function getIsBiggerMaxCHchar(str:String, max:uint) : Boolean
       {
-         var _loc3_:ByteArray = new ByteArray();
-         _loc3_.writeUTF(trim(param1));
-         if(_loc3_.length > param2 * 3 + 2)
+         var b:ByteArray = new ByteArray();
+         b.writeUTF(trim(str));
+         if(b.length > max * 3 + 2)
          {
             return true;
          }
@@ -154,69 +151,69 @@ package road7th.utils
       
       public static function getRandomNumber() : String
       {
-         var _loc1_:uint = Math.round(Math.random() * 1000000);
-         return _loc1_.toString();
+         var n:uint = Math.round(Math.random() * 1000000);
+         return n.toString();
       }
       
-      public static function checkTextFieldLength(param1:TextField, param2:uint, param3:String = null) : void
+      public static function checkTextFieldLength(textfield:TextField, max:uint, input:String = null) : void
       {
-         var _loc4_:uint = !!param1.text?param1.text.match(reg).join("").length:0;
-         var _loc5_:uint = !!param3?param3.match(reg).join("").length:0;
-         param1.maxChars = param2 > _loc4_ + _loc5_?param2 - _loc4_ - _loc5_:Number(param2 > _loc5_?param2 - _loc5_:Number(param2 / 2));
+         var ulen1:uint = !!textfield.text?textfield.text.match(reg).join("").length:0;
+         var ulen2:uint = !!input?input.match(reg).join("").length:0;
+         textfield.maxChars = max > ulen1 + ulen2?max - ulen1 - ulen2:Number(max > ulen2?max - ulen2:Number(max / 2));
       }
       
-      public static function rePlaceHtmlTextField(param1:String) : String
+      public static function rePlaceHtmlTextField(s:String) : String
       {
-         param1 = param1.replace(_leftReg,"&lt;");
-         param1 = param1.replace(_rightReg,"&gt;");
-         return param1;
+         s = s.replace(_leftReg,"&lt;");
+         s = s.replace(_rightReg,"&gt;");
+         return s;
       }
       
-      public static function reverseHtmlTextField(param1:String) : String
+      public static function reverseHtmlTextField(s:String) : String
       {
-         param1 = param1.replace(_reverseLeftReg,"<");
-         param1 = param1.replace(_reverseRightReg,">");
-         return param1;
+         s = s.replace(_reverseLeftReg,"<");
+         s = s.replace(_reverseRightReg,">");
+         return s;
       }
       
-      public static function parseTime(param1:String, param2:uint) : String
+      public static function parseTime(res:String, len:uint) : String
       {
-         var _loc4_:* = param1;
-         var _loc3_:Date = new Date(Number(_loc4_.substr(0,4)),_loc4_.substr(5,2) - 1,Number(_loc4_.substr(8,2)));
-         var _loc5_:Date = new Date();
-         _loc5_.setTime(_loc3_.getTime() + (param2 + 1) * 24 * 60 * 60 * 1000);
-         _loc4_ = String(_loc5_.getUTCFullYear()) + "-" + (_loc5_.getUTCMonth() + 1) + "-" + _loc5_.getUTCDate();
-         return _loc4_;
+         var str:* = res;
+         var mlk:Date = new Date(Number(str.substr(0,4)),str.substr(5,2) - 1,Number(str.substr(8,2)));
+         var targetDate:Date = new Date();
+         targetDate.setTime(mlk.getTime() + (len + 1) * 24 * 60 * 60 * 1000);
+         str = String(targetDate.getUTCFullYear()) + "-" + (targetDate.getUTCMonth() + 1) + "-" + targetDate.getUTCDate();
+         return str;
       }
       
-      public static function cidCheck(param1:String) : Boolean
+      public static function cidCheck(id:String) : Boolean
       {
-         if(idArr.indexOf(int(param1.slice(0,2))) != -1 && (idR1.test(param1) || idR2.test(param1)))
+         if(idArr.indexOf(int(id.slice(0,2))) != -1 && (idR1.test(id) || idR2.test(id)))
          {
             return true;
          }
          return false;
       }
       
-      public static function cageCheck(param1:String) : Boolean
+      public static function cageCheck(value:String) : Boolean
       {
-         var _loc4_:int = param1.slice(0,4);
-         var _loc3_:int = param1.slice(4,6);
-         var _loc5_:int = param1.slice(6);
-         var _loc2_:Date = new Date();
-         if(_loc2_.fullYear - _loc4_ > 18)
+         var year:int = value.slice(0,4);
+         var month:int = value.slice(4,6);
+         var day:int = value.slice(6);
+         var nowDate:Date = new Date();
+         if(nowDate.fullYear - year > 18)
          {
             return true;
          }
-         if(_loc2_.fullYear - _loc4_ == 18)
+         if(nowDate.fullYear - year == 18)
          {
-            if(_loc2_.month + 1 > _loc3_)
+            if(nowDate.month + 1 > month)
             {
                return true;
             }
-            if(_loc2_.month + 1 == _loc3_)
+            if(nowDate.month + 1 == month)
             {
-               if(_loc2_.date >= _loc5_)
+               if(nowDate.date >= day)
                {
                   return true;
                }
@@ -225,98 +222,96 @@ package road7th.utils
          return false;
       }
       
-      public static function replaceHtmlTag(param1:String) : String
+      public static function replaceHtmlTag(str:String) : String
       {
-         param1 = param1.replace(/<(\S*?)[^>]*>|<.*? \/>/g,"");
-         return param1;
+         str = str.replace(/<(\S*?)[^>]*>|<.*? \/>/g,"");
+         return str;
       }
       
-      public static function replaceToHtmlText(param1:String) : String
+      public static function replaceToHtmlText(s:String) : String
       {
-         var _loc2_:TextField = new TextField();
-         _loc2_.text = param1;
-         param1 = replaceHtmlTag(_loc2_.htmlText);
-         return param1;
+         var txt:TextField = new TextField();
+         txt.text = s;
+         s = replaceHtmlTag(txt.htmlText);
+         return s;
       }
       
-      public static function getConvertedHtmlArray(param1:String) : Array
+      public static function getConvertedHtmlArray(str:String) : Array
       {
-         return param1.match(/&[a-z]*?;/g);
+         return str.match(/&[a-z]*?;/g);
       }
       
-      public static function format(param1:String, ... rest) : String
+      public static function format(str:String, ... args) : String
       {
-         var _loc3_:* = 0;
-         if(rest == null || rest.length <= 0)
+         var i:* = 0;
+         if(args == null || args.length <= 0)
          {
-            return param1;
+            return str;
          }
-         _loc3_ = uint(0);
-         while(_loc3_ < rest.length)
+         i = uint(0);
+         while(i < args.length)
          {
-            param1 = replaceStr(param1,"{" + _loc3_.toString() + "}",rest[_loc3_]);
-            _loc3_++;
+            str = replaceStr(str,"{" + i.toString() + "}",args[i]);
+            i++;
          }
-         return param1;
+         return str;
       }
       
-      public static function getConvertedLst(param1:String) : Array
+      public static function getConvertedLst(fromCharCode:String) : Array
       {
-         return param1.match(/&[a-z]*?;/g);
+         return fromCharCode.match(/&[a-z]*?;/g);
       }
       
-      public static function trimHtmlText(param1:String) : String
+      public static function trimHtmlText(value:String) : String
       {
-         var _loc3_:* = null;
-         param1 = trim(param1);
-         var _loc7_:int = 0;
-         var _loc2_:int = 0;
-         var _loc5_:RegExp = /<[\S+]>/g;
-         var _loc6_:Object = _loc5_.exec(param1);
-         var _loc4_:Vector.<String> = new Vector.<String>();
-         while(_loc6_)
+         var result:* = null;
+         value = trim(value);
+         var startIdx:int = 0;
+         var endIdx:int = 0;
+         var reg:RegExp = /<[\S+]>/g;
+         var obj:Object = reg.exec(value);
+         var fragments:Vector.<String> = new Vector.<String>();
+         while(obj)
          {
-            _loc2_ = _loc6_.index;
-            _loc4_.push(param1.substring(_loc7_,_loc2_));
-            _loc4_.push(_loc6_[0]);
-            _loc7_ = _loc5_.lastIndex;
-            _loc6_ = _loc5_.exec(param1);
+            endIdx = obj.index;
+            fragments.push(value.substring(startIdx,endIdx));
+            fragments.push(obj[0]);
+            startIdx = reg.lastIndex;
+            obj = reg.exec(value);
          }
-         _loc4_.push(param1.substring(_loc7_));
-         _loc4_[2] = trimLeft(_loc4_[2]);
-         _loc4_[_loc4_.length - 2] = trimRight(_loc4_[_loc4_.length - 2]);
-         return _loc4_.join("");
+         fragments.push(value.substring(startIdx));
+         fragments[2] = trimLeft(fragments[2]);
+         fragments[fragments.length - 2] = trimRight(fragments[fragments.length - 2]);
+         return fragments.join("");
       }
       
-      public static function parseMoneyFormat(param1:int) : String
+      public static function parseMoneyFormat(value:int) : String
       {
-         var _loc4_:int = 0;
-         var _loc3_:String = reverseString(param1.toString());
-         var _loc2_:String = "";
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_.length)
+         var i:int = 0;
+         var tmp:String = reverseString(value.toString());
+         var str:String = "";
+         for(i = 0; i < tmp.length; )
          {
-            if(_loc4_ != 0 && _loc4_ % 3 == 0)
+            if(i != 0 && i % 3 == 0)
             {
-               _loc2_ = _loc2_ + ",";
+               str = str + ",";
             }
-            _loc2_ = _loc2_ + _loc3_.charAt(_loc4_);
-            _loc4_++;
+            str = str + tmp.charAt(i);
+            i++;
          }
-         return reverseString(_loc2_);
+         return reverseString(str);
       }
       
-      private static function reverseString(param1:String) : String
+      private static function reverseString(value:String) : String
       {
-         var _loc3_:int = 0;
-         var _loc2_:String = "";
-         _loc3_ = param1.length - 1;
-         while(_loc3_ >= 0)
+         var i:int = 0;
+         var str:String = "";
+         for(i = value.length - 1; i >= 0; )
          {
-            _loc2_ = _loc2_ + param1.charAt(_loc3_);
-            _loc3_--;
+            str = str + value.charAt(i);
+            i--;
          }
-         return _loc2_;
+         return str;
       }
    }
 }

@@ -10,35 +10,34 @@ package mark.analyzer
       
       public var proNumDic:Array;
       
-      public function MarkProAnalyzer(param1:Function)
+      public function MarkProAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc6_:int = 0;
-         var _loc2_:* = null;
+         var len:int = 0;
+         var xmllist:* = null;
+         var i:int = 0;
+         var itemData:* = null;
          proNumDic = [];
-         var _loc3_:XML = new XML(param1);
-         if(_loc3_.@value == "true")
+         var xml:XML = new XML(data);
+         if(xml.@value == "true")
          {
-            _loc5_ = _loc3_.Item.length();
-            _loc4_ = _loc3_..Item;
-            _loc6_ = 0;
-            while(_loc6_ < _loc5_)
+            len = xml.Item.length();
+            xmllist = xml..Item;
+            for(i = 0; i < len; )
             {
-               _loc2_ = new MarkProNumData();
-               ObjectUtils.copyPorpertiesByXML(_loc2_,_loc4_[_loc6_]);
-               proNumDic.push(_loc2_);
-               _loc6_++;
+               itemData = new MarkProNumData();
+               ObjectUtils.copyPorpertiesByXML(itemData,xmllist[i]);
+               proNumDic.push(itemData);
+               i++;
             }
          }
          else
          {
-            message = _loc3_.@message;
+            message = xml.@message;
             onAnalyzeError();
          }
          onAnalyzeComplete();

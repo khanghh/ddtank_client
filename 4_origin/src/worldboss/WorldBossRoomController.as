@@ -62,7 +62,7 @@ package worldboss
          WorldBossManager.Instance.addEventListener("openview",__onOpenView);
       }
       
-      private function __onOpenView(param1:CEvent) : void
+      private function __onOpenView(e:CEvent) : void
       {
          new HelperUIModuleLoad().loadUIModule(["worldBoss"],loadComplete);
       }
@@ -72,13 +72,13 @@ package worldboss
          SocketManager.Instance.out.enterWorldBossRoom();
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
          InviteManager.Instance.enabled = false;
          CacheSysManager.lock("alertInBossRoom");
          KeyboardShortcutsManager.Instance.forbiddenFull();
          GameLoadingManager.Instance.hide();
-         super.enter(param1,param2);
+         super.enter(prev,data);
          LayerManager.Instance.clearnGameDynamic();
          LayerManager.Instance.clearnStageDynamic();
          MainToolBar.Instance.hide();
@@ -118,7 +118,7 @@ package worldboss
          _waitingView.addEventListener("enterGameTimeOut",__onTimeOut);
       }
       
-      protected function __onTimeOut(param1:Event) : void
+      protected function __onTimeOut(event:Event) : void
       {
          _waitingView.stop();
          _waitingView.visible = false;
@@ -141,7 +141,7 @@ package worldboss
          WorldBossManager.Instance.addEventListener("setselfstatus",__onSetSelfStatus);
       }
       
-      protected function __onUpdateBlood(param1:Event) : void
+      protected function __onUpdateBlood(event:Event) : void
       {
          if(_view)
          {
@@ -149,7 +149,7 @@ package worldboss
          }
       }
       
-      protected function __onGameInit(param1:Event) : void
+      protected function __onGameInit(event:Event) : void
       {
          if(_view)
          {
@@ -157,7 +157,7 @@ package worldboss
          }
       }
       
-      protected function __onEnteringGame(param1:Event) : void
+      protected function __onEnteringGame(event:Event) : void
       {
          _waitingView.visible = true;
          _waitingView.start();
@@ -168,21 +168,21 @@ package worldboss
          _view.checkSelfStatus();
       }
       
-      private function __onSetSelfStatus(param1:CEvent) : void
+      private function __onSetSelfStatus(e:CEvent) : void
       {
-         setSelfStatus(int(param1.data));
+         setSelfStatus(int(e.data));
       }
       
-      public function setSelfStatus(param1:int) : void
+      public function setSelfStatus(value:int) : void
       {
          if(_view)
          {
-            _view.updateSelfStatus(param1);
+            _view.updateSelfStatus(value);
          }
          else
          {
             _callback = setSelfStatus;
-            _callbackArg = param1;
+            _callbackArg = value;
          }
       }
       
@@ -211,98 +211,97 @@ package worldboss
          return "main";
       }
       
-      public function __addPlayer(param1:CrazyTankSocketEvent) : void
+      public function __addPlayer(event:CrazyTankSocketEvent) : void
       {
-         var _loc6_:* = null;
-         var _loc4_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:* = null;
-         var _loc5_:PackageIn = param1.pkg;
-         if(param1.pkg.bytesAvailable > 10)
+         var playerInfo:* = null;
+         var posx:int = 0;
+         var posy:int = 0;
+         var playerVO:* = null;
+         var pkg:PackageIn = event.pkg;
+         if(event.pkg.bytesAvailable > 10)
          {
-            _loc6_ = new PlayerInfo();
-            _loc6_.beginChanges();
-            _loc6_.Grade = _loc5_.readInt();
-            _loc6_.Hide = _loc5_.readInt();
-            _loc6_.Repute = _loc5_.readInt();
-            _loc6_.ID = _loc5_.readInt();
-            _loc6_.NickName = _loc5_.readUTF();
-            _loc6_.typeVIP = _loc5_.readByte();
-            _loc6_.VIPLevel = _loc5_.readInt();
-            _loc6_.Sex = _loc5_.readBoolean();
-            _loc6_.Style = _loc5_.readUTF();
-            _loc6_.Colors = _loc5_.readUTF();
-            _loc6_.Skin = _loc5_.readUTF();
-            _loc4_ = _loc5_.readInt();
-            _loc2_ = _loc5_.readInt();
-            _loc6_.FightPower = _loc5_.readInt();
-            _loc6_.WinCount = _loc5_.readInt();
-            _loc6_.TotalCount = _loc5_.readInt();
-            _loc6_.Offer = _loc5_.readInt();
-            _loc6_.commitChanges();
-            _loc3_ = new PlayerVO();
-            _loc3_.playerInfo = _loc6_;
-            _loc3_.playerPos = new Point(_loc4_,_loc2_);
-            _loc3_.playerStauts = _loc5_.readByte();
-            _loc5_.readInt();
-            _loc3_.playerInfo.MountsType = _loc5_.readInt();
-            _loc3_.playerInfo.PetsID = _loc5_.readInt();
-            if(_loc6_.ID == PlayerManager.Instance.Self.ID)
+            playerInfo = new PlayerInfo();
+            playerInfo.beginChanges();
+            playerInfo.Grade = pkg.readInt();
+            playerInfo.Hide = pkg.readInt();
+            playerInfo.Repute = pkg.readInt();
+            playerInfo.ID = pkg.readInt();
+            playerInfo.NickName = pkg.readUTF();
+            playerInfo.typeVIP = pkg.readByte();
+            playerInfo.VIPLevel = pkg.readInt();
+            playerInfo.Sex = pkg.readBoolean();
+            playerInfo.Style = pkg.readUTF();
+            playerInfo.Colors = pkg.readUTF();
+            playerInfo.Skin = pkg.readUTF();
+            posx = pkg.readInt();
+            posy = pkg.readInt();
+            playerInfo.FightPower = pkg.readInt();
+            playerInfo.WinCount = pkg.readInt();
+            playerInfo.TotalCount = pkg.readInt();
+            playerInfo.Offer = pkg.readInt();
+            playerInfo.commitChanges();
+            playerVO = new PlayerVO();
+            playerVO.playerInfo = playerInfo;
+            playerVO.playerPos = new Point(posx,posy);
+            playerVO.playerStauts = pkg.readByte();
+            pkg.readInt();
+            playerVO.playerInfo.MountsType = pkg.readInt();
+            playerVO.playerInfo.PetsID = pkg.readInt();
+            if(playerInfo.ID == PlayerManager.Instance.Self.ID)
             {
                return;
             }
-            _sceneModel.addPlayer(_loc3_);
+            _sceneModel.addPlayer(playerVO);
          }
       }
       
-      public function __removePlayer(param1:CrazyTankSocketEvent) : void
+      public function __removePlayer(event:CrazyTankSocketEvent) : void
       {
-         var _loc2_:int = param1.pkg.readInt();
-         _sceneModel.removePlayer(_loc2_);
+         var id:int = event.pkg.readInt();
+         _sceneModel.removePlayer(id);
       }
       
-      public function __movePlayer(param1:CrazyTankSocketEvent) : void
+      public function __movePlayer(event:CrazyTankSocketEvent) : void
       {
-         var _loc9_:* = 0;
-         var _loc6_:* = null;
-         var _loc2_:int = param1.pkg.readInt();
-         var _loc5_:int = param1.pkg.readInt();
-         var _loc3_:int = param1.pkg.readInt();
-         var _loc8_:String = param1.pkg.readUTF();
-         if(_loc2_ == PlayerManager.Instance.Self.ID)
+         var i:* = 0;
+         var p:* = null;
+         var id:int = event.pkg.readInt();
+         var posX:int = event.pkg.readInt();
+         var posY:int = event.pkg.readInt();
+         var pathStr:String = event.pkg.readUTF();
+         if(id == PlayerManager.Instance.Self.ID)
          {
             return;
          }
-         var _loc4_:Array = _loc8_.split(",");
-         var _loc7_:Array = [];
-         _loc9_ = uint(0);
-         while(_loc9_ < _loc4_.length)
+         var arr:Array = pathStr.split(",");
+         var path:Array = [];
+         for(i = uint(0); i < arr.length; )
          {
-            _loc6_ = new Point(_loc4_[_loc9_],_loc4_[_loc9_ + 1]);
-            _loc7_.push(_loc6_);
-            _loc9_ = uint(_loc9_ + 2);
+            p = new Point(arr[i],arr[i + 1]);
+            path.push(p);
+            i = uint(i + 2);
          }
-         _view.movePlayer(_loc2_,_loc7_);
+         _view.movePlayer(id,path);
       }
       
-      public function __updatePlayerStauts(param1:CrazyTankSocketEvent) : void
+      public function __updatePlayerStauts(event:CrazyTankSocketEvent) : void
       {
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc4_.readInt();
-         var _loc5_:int = _loc4_.readByte();
-         var _loc3_:Point = new Point(_loc4_.readInt(),_loc4_.readInt());
-         _view.updatePlayerStauts(_loc2_,_loc5_,_loc3_);
-         _sceneModel.updatePlayerStauts(_loc2_,_loc5_,_loc3_);
+         var pkg:PackageIn = event.pkg;
+         var id:int = pkg.readInt();
+         var stauts:int = pkg.readByte();
+         var point:Point = new Point(pkg.readInt(),pkg.readInt());
+         _view.updatePlayerStauts(id,stauts,point);
+         _sceneModel.updatePlayerStauts(id,stauts,point);
       }
       
-      private function __playerRevive(param1:CrazyTankSocketEvent) : void
+      private function __playerRevive(event:CrazyTankSocketEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readInt();
-         _view.playerRevive(_loc2_);
+         var pkg:PackageIn = event.pkg;
+         var id:int = pkg.readInt();
+         _view.playerRevive(id);
       }
       
-      public function __updata(param1:Event) : void
+      public function __updata(e:Event) : void
       {
          if(StateManager.currentStateType == "worldboss")
          {
@@ -311,32 +310,31 @@ package worldboss
          _view.timeComplete();
       }
       
-      public function __updataRanking(param1:CrazyTankSocketEvent) : void
+      public function __updataRanking(evt:CrazyTankSocketEvent) : void
       {
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc3_:Array = [];
-         var _loc2_:int = param1.pkg.readInt();
-         _loc6_ = 0;
-         while(_loc6_ < _loc2_)
+         var i:int = 0;
+         var personInfo:* = null;
+         var pkg:PackageIn = evt.pkg;
+         var arr:Array = [];
+         var count:int = evt.pkg.readInt();
+         for(i = 0; i < count; )
          {
-            _loc5_ = new RankingPersonInfo();
-            _loc5_.id = param1.pkg.readInt();
-            _loc5_.name = param1.pkg.readUTF();
-            _loc5_.damage = param1.pkg.readInt();
-            _loc3_.push(_loc5_);
-            _loc6_++;
+            personInfo = new RankingPersonInfo();
+            personInfo.id = evt.pkg.readInt();
+            personInfo.name = evt.pkg.readUTF();
+            personInfo.damage = evt.pkg.readInt();
+            arr.push(personInfo);
+            i++;
          }
-         _view.updataRanking(_loc3_);
+         _view.updataRanking(arr);
       }
       
-      private function __onClose(param1:CEvent) : void
+      private function __onClose(e:CEvent) : void
       {
          dispose();
       }
       
-      private function __onSetSlefStatus(param1:CEvent) : void
+      private function __onSetSlefStatus(e:CEvent) : void
       {
       }
       
@@ -345,13 +343,13 @@ package worldboss
          return "worldboss";
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
          InviteManager.Instance.enabled = true;
          CacheSysManager.unlock("alertInBossRoom");
          CacheSysManager.getInstance().release("alertInBossRoom");
          KeyboardShortcutsManager.Instance.cancelForbidden();
-         super.leaving(param1);
+         super.leaving(next);
       }
       
       override public function dispose() : void

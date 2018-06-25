@@ -60,12 +60,12 @@ package gameCommon.view.prop
       
       private var _suicideSkill:int = 20090;
       
-      public function HorseGameSkillCell(param1:int, param2:String, param3:LocalPlayer)
+      public function HorseGameSkillCell(skillId:int, shortcutKey:String, self:LocalPlayer)
       {
          super();
-         _skillId = param1;
-         _shortcutKey = param2;
-         _self = param3;
+         _skillId = skillId;
+         _shortcutKey = shortcutKey;
+         _self = self;
          _grayFilter = ComponentFactory.Instance.creatFilters("grayFilter");
          if(_skillId > 0)
          {
@@ -79,8 +79,8 @@ package gameCommon.view.prop
       
       private function initView() : void
       {
-         var _loc1_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.game.prop.ItemBack");
-         addChild(_loc1_);
+         var back:Bitmap = ComponentFactory.Instance.creatBitmap("asset.game.prop.ItemBack");
+         addChild(back);
          if(_skillId > 0)
          {
             _skillCell = new HorseSkillCell(_skillId,false,true);
@@ -88,16 +88,16 @@ package gameCommon.view.prop
             _skillCell.y = -3;
             addChild(_skillCell);
          }
-         var _loc2_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.game.prop.ItemFore");
+         var fore:Bitmap = ComponentFactory.Instance.creatBitmap("asset.game.prop.ItemFore");
          var _loc4_:int = 2;
-         _loc2_.y = _loc4_;
-         _loc2_.x = _loc4_;
-         addChild(_loc2_);
+         fore.y = _loc4_;
+         fore.x = _loc4_;
+         addChild(fore);
          if(_skillId > 0)
          {
             _grayCoverSprite = new Sprite();
             _grayCoverSprite.graphics.beginFill(0,0.5);
-            _grayCoverSprite.graphics.drawRect(_loc1_.x,_loc1_.y,_loc1_.width,_loc1_.height);
+            _grayCoverSprite.graphics.drawRect(back.x,back.y,back.width,back.height);
             _grayCoverSprite.graphics.endFill();
             _grayCoverSprite.mouseChildren = false;
             _grayCoverSprite.mouseEnabled = false;
@@ -107,9 +107,9 @@ package gameCommon.view.prop
             _grayCoverSprite.visible = false;
             _coldDownTxt.visible = false;
          }
-         var _loc3_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.game.prop.ShortcutKey" + _shortcutKey);
-         _loc3_.y = -2;
-         addChild(_loc3_);
+         var shortcutKeyImg:Bitmap = ComponentFactory.Instance.creatBitmap("asset.game.prop.ShortcutKey" + _shortcutKey);
+         shortcutKeyImg.y = -2;
+         addChild(shortcutKeyImg);
          _countTxt = ComponentFactory.Instance.creatComponentByStylename("game.customPropCell.countTxt");
          if(_skillId > 0)
          {
@@ -139,7 +139,7 @@ package gameCommon.view.prop
          }
       }
       
-      private function __clicked(param1:MouseEvent) : void
+      private function __clicked(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          StageReferance.stage.focus = null;
@@ -198,9 +198,9 @@ package gameCommon.view.prop
          _self.energy = _self.energy - skillInfo.CostEnergy;
       }
       
-      private function isForbiddenSkill(param1:int) : Boolean
+      private function isForbiddenSkill(skillId:int) : Boolean
       {
-         var _loc2_:* = param1;
+         var _loc2_:* = skillId;
          if(11101 !== _loc2_)
          {
             if(11102 !== _loc2_)
@@ -264,96 +264,96 @@ package gameCommon.view.prop
                                                                                                    return false;
                                                                                                 }
                                                                                              }
-                                                                                             addr34:
+                                                                                             addr37:
                                                                                              return true;
                                                                                           }
-                                                                                          addr33:
-                                                                                          §§goto(addr34);
+                                                                                          addr36:
+                                                                                          §§goto(addr37);
                                                                                        }
-                                                                                       addr32:
-                                                                                       §§goto(addr33);
+                                                                                       addr35:
+                                                                                       §§goto(addr36);
                                                                                     }
-                                                                                    addr31:
-                                                                                    §§goto(addr32);
+                                                                                    addr34:
+                                                                                    §§goto(addr35);
                                                                                  }
-                                                                                 addr30:
-                                                                                 §§goto(addr31);
+                                                                                 addr33:
+                                                                                 §§goto(addr34);
                                                                               }
-                                                                              addr29:
-                                                                              §§goto(addr30);
+                                                                              addr32:
+                                                                              §§goto(addr33);
                                                                            }
-                                                                           addr28:
-                                                                           §§goto(addr29);
+                                                                           addr31:
+                                                                           §§goto(addr32);
                                                                         }
-                                                                        addr27:
-                                                                        §§goto(addr28);
+                                                                        addr30:
+                                                                        §§goto(addr31);
                                                                      }
-                                                                     addr26:
-                                                                     §§goto(addr27);
+                                                                     addr29:
+                                                                     §§goto(addr30);
                                                                   }
-                                                                  addr25:
-                                                                  §§goto(addr26);
+                                                                  addr28:
+                                                                  §§goto(addr29);
                                                                }
-                                                               addr24:
-                                                               §§goto(addr25);
+                                                               addr27:
+                                                               §§goto(addr28);
                                                             }
-                                                            addr23:
-                                                            §§goto(addr24);
+                                                            addr26:
+                                                            §§goto(addr27);
                                                          }
-                                                         addr22:
-                                                         §§goto(addr23);
+                                                         addr25:
+                                                         §§goto(addr26);
                                                       }
-                                                      addr21:
-                                                      §§goto(addr22);
+                                                      addr24:
+                                                      §§goto(addr25);
                                                    }
-                                                   addr20:
-                                                   §§goto(addr21);
+                                                   addr23:
+                                                   §§goto(addr24);
                                                 }
-                                                addr19:
-                                                §§goto(addr20);
+                                                addr22:
+                                                §§goto(addr23);
                                              }
-                                             addr18:
-                                             §§goto(addr19);
+                                             addr21:
+                                             §§goto(addr22);
                                           }
-                                          addr17:
-                                          §§goto(addr18);
+                                          addr20:
+                                          §§goto(addr21);
                                        }
-                                       addr16:
-                                       §§goto(addr17);
+                                       addr19:
+                                       §§goto(addr20);
                                     }
-                                    addr15:
-                                    §§goto(addr16);
+                                    addr18:
+                                    §§goto(addr19);
                                  }
-                                 addr14:
-                                 §§goto(addr15);
+                                 addr17:
+                                 §§goto(addr18);
                               }
-                              addr13:
-                              §§goto(addr14);
+                              addr16:
+                              §§goto(addr17);
                            }
-                           addr12:
-                           §§goto(addr13);
+                           addr15:
+                           §§goto(addr16);
                         }
-                        addr11:
-                        §§goto(addr12);
+                        addr14:
+                        §§goto(addr15);
                      }
-                     addr10:
-                     §§goto(addr11);
+                     addr13:
+                     §§goto(addr14);
                   }
-                  addr9:
-                  §§goto(addr10);
+                  addr12:
+                  §§goto(addr13);
                }
-               addr8:
-               §§goto(addr9);
+               addr11:
+               §§goto(addr12);
             }
-            addr7:
-            §§goto(addr8);
+            addr10:
+            §§goto(addr11);
          }
-         §§goto(addr7);
+         §§goto(addr10);
       }
       
-      private function setEnable(param1:Boolean) : void
+      private function setEnable(value:Boolean) : void
       {
-         _isCanUse = param1;
+         _isCanUse = value;
          if(_isCanUse && _enabled && _isCanUse2)
          {
             _skillCell.filters = null;
@@ -369,13 +369,13 @@ package gameCommon.view.prop
          return _skillId;
       }
       
-      public function setColdCount(param1:int, param2:int) : void
+      public function setColdCount(cd:int, count:int) : void
       {
-         var _loc3_:int = _skillInfo.UseCount - param2;
-         _countTxt.text = _loc3_.toString();
-         if(_loc3_ > 0)
+         var restCount:int = _skillInfo.UseCount - count;
+         _countTxt.text = restCount.toString();
+         if(restCount > 0)
          {
-            _coldNum = param1;
+            _coldNum = cd;
             if(_coldNum > 0)
             {
                setEnable(false);
@@ -388,13 +388,13 @@ package gameCommon.view.prop
          }
       }
       
-      public function useCompleteHandler(param1:Boolean, param2:int) : void
+      public function useCompleteHandler(isUse:Boolean, restCount:int) : void
       {
-         if(param1)
+         if(isUse)
          {
             setEnable(false);
-            _countTxt.text = param2.toString();
-            if(param2 > 0)
+            _countTxt.text = restCount.toString();
+            if(restCount > 0)
             {
                _coldNum = _needColdNum + 1;
                coldDownShowHide(true);
@@ -406,13 +406,13 @@ package gameCommon.view.prop
          }
       }
       
-      public function attackChangeHandler(param1:Boolean) : void
+      public function attackChangeHandler(isAttacking:Boolean) : void
       {
          if(!_skillCell)
          {
             return;
          }
-         _isAttacking = param1;
+         _isAttacking = isAttacking;
          if(_isAttacking)
          {
             isCanUse2 = true;
@@ -440,10 +440,10 @@ package gameCommon.view.prop
          }
       }
       
-      private function coldDownShowHide(param1:Boolean) : void
+      private function coldDownShowHide(isShow:Boolean) : void
       {
-         _grayCoverSprite.visible = param1;
-         _coldDownTxt.visible = param1;
+         _grayCoverSprite.visible = isShow;
+         _coldDownTxt.visible = isShow;
          _coldDownTxt.text = Math.min(_coldNum,_needColdNum).toString();
       }
       
@@ -452,15 +452,15 @@ package gameCommon.view.prop
          return _enabled;
       }
       
-      public function set enabled(param1:Boolean) : void
+      public function set enabled(val:Boolean) : void
       {
          if(!_skillCell)
          {
             return;
          }
-         if(_enabled != param1)
+         if(_enabled != val)
          {
-            _enabled = param1;
+            _enabled = val;
             if(isSuicideSkill && _enabled && !suicideSkillCanUse)
             {
                _enabled = false;
@@ -493,15 +493,15 @@ package gameCommon.view.prop
          return _isCanUse2;
       }
       
-      public function set isCanUse2(param1:Boolean) : void
+      public function set isCanUse2(val:Boolean) : void
       {
          if(!_skillCell)
          {
             return;
          }
-         if(_isCanUse2 != param1)
+         if(_isCanUse2 != val)
          {
-            _isCanUse2 = param1;
+            _isCanUse2 = val;
             if(_isCanUse2 && _isCanUse && _enabled)
             {
                _skillCell.filters = null;

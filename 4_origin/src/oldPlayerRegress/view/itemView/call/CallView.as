@@ -65,9 +65,9 @@ package oldPlayerRegress.view.itemView.call
          _callInfo.text = LanguageMgr.GetTranslation("ddt.regress.callView.callInfo");
          PositionUtils.setPos(_callInfo,"regress.call.callInfo.pos");
          _callLookupView = new CallLookUpView();
-         var _loc1_:Point = ComponentFactory.Instance.creatCustomObject("regress.call.cookupView.Pos");
-         _callLookupView.x = _loc1_.x;
-         _callLookupView.y = _loc1_.y;
+         var pos:Point = ComponentFactory.Instance.creatCustomObject("regress.call.cookupView.Pos");
+         _callLookupView.x = pos.x;
+         _callLookupView.y = pos.y;
          addToContent(_titleBg);
          addToContent(_bottomBtnBg);
          addToContent(_titleImg);
@@ -82,14 +82,14 @@ package oldPlayerRegress.view.itemView.call
          SocketManager.Instance.addEventListener(PkgEvent.format(149,2),__onCheck);
       }
       
-      protected function __onCheck(param1:PkgEvent) : void
+      protected function __onCheck(event:PkgEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:PackageIn = param1.pkg;
-         if(_loc3_.bytesAvailable > 0)
+         var num:int = 0;
+         var pkg:PackageIn = event.pkg;
+         if(pkg.bytesAvailable > 0)
          {
-            _loc2_ = _loc3_.readInt();
-            if(_loc2_ == 1)
+            num = pkg.readInt();
+            if(num == 1)
             {
                RegressManager.isCallEnable = false;
                _configBtn.enable = false;
@@ -97,7 +97,7 @@ package oldPlayerRegress.view.itemView.call
          }
       }
       
-      protected function __onMouseClick(param1:MouseEvent) : void
+      protected function __onMouseClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(_callLookupView.inputText.text != "")

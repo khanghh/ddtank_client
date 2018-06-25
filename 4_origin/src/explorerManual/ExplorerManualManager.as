@@ -34,9 +34,9 @@ package explorerManual
       
       private var _PageItemData:DictionaryData = null;
       
-      public function ExplorerManualManager(param1:IEventDispatcher = null)
+      public function ExplorerManualManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : ExplorerManualManager
@@ -63,115 +63,113 @@ package explorerManual
          SocketManager.Instance.out.requestManualInitData();
       }
       
-      public function startUpgrade(param1:Boolean, param2:Boolean, param3:Boolean) : void
+      public function startUpgrade(autoBuy:Boolean, bindMoney:Boolean, autoUpgrade:Boolean) : void
       {
-         SocketManager.Instance.out.sendManualUpgrade(param1,param2,param3);
+         SocketManager.Instance.out.sendManualUpgrade(autoBuy,bindMoney,autoUpgrade);
       }
       
-      public function requestManualPageData(param1:int) : void
+      public function requestManualPageData(chapterID:int) : void
       {
-         SocketManager.Instance.out.requestManualPageData(param1);
+         SocketManager.Instance.out.requestManualPageData(chapterID);
       }
       
-      public function sendManualPageActive(param1:int, param2:int) : void
+      public function sendManualPageActive(activeType:int, pageID:int) : void
       {
-         SocketManager.Instance.out.sendManualPageActive(param1,param2);
+         SocketManager.Instance.out.sendManualPageActive(activeType,pageID);
       }
       
-      public function getManualProInfoByLev(param1:int) : ManualItemInfo
+      public function getManualProInfoByLev(lev:int) : ManualItemInfo
       {
-         var _loc2_:* = null;
-         if(_manualItemData && _manualItemData.hasKey(param1))
+         var infos:* = null;
+         if(_manualItemData && _manualItemData.hasKey(lev))
          {
-            _loc2_ = _manualItemData[param1] as ManualItemInfo;
-            return _loc2_;
+            infos = _manualItemData[lev] as ManualItemInfo;
+            return infos;
          }
          return null;
       }
       
-      public function getAddProItemInfo(param1:int) : ManualItemInfo
+      public function getAddProItemInfo(lev:int) : ManualItemInfo
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:ManualItemInfo = new ManualItemInfo();
-         var _loc2_:Array = _manualItemData.list;
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_.length)
+         var i:int = 0;
+         var item:* = null;
+         var temInfo:ManualItemInfo = new ManualItemInfo();
+         var arr:Array = _manualItemData.list;
+         for(i = 0; i < arr.length; )
          {
-            _loc4_ = _loc2_[_loc5_];
-            if(_loc4_.Level <= param1)
+            item = arr[i];
+            if(item.Level <= lev)
             {
-               if(_loc4_.Level == param1)
+               if(item.Level == lev)
                {
-                  _loc3_.Name = _loc4_.Name;
-                  _loc3_.Level = _loc4_.Level;
+                  temInfo.Name = item.Name;
+                  temInfo.Level = item.Level;
                }
-               _loc3_.Boost = _loc3_.Boost + _loc4_.Boost;
-               _loc3_.MagicAttack = _loc3_.MagicAttack + _loc4_.MagicAttack;
-               _loc3_.MagicResistance = _loc3_.MagicResistance + _loc4_.MagicResistance;
+               temInfo.Boost = temInfo.Boost + item.Boost;
+               temInfo.MagicAttack = temInfo.MagicAttack + item.MagicAttack;
+               temInfo.MagicResistance = temInfo.MagicResistance + item.MagicResistance;
             }
-            _loc5_++;
+            i++;
          }
-         if(_loc3_.Level == 0)
+         if(temInfo.Level == 0)
          {
             return null;
          }
-         return _loc3_;
+         return temInfo;
       }
       
-      public function getupgradeConditionByLev(param1:int) : Array
+      public function getupgradeConditionByLev(lev:int) : Array
       {
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
+         var temArr:* = null;
+         var i:int = 0;
          if(_manualUpgradeData)
          {
-            _loc2_ = [];
-            _loc3_ = 0;
-            while(_loc3_ < _manualUpgradeData.length)
+            temArr = [];
+            for(i = 0; i < _manualUpgradeData.length; )
             {
-               if(_manualUpgradeData[_loc3_].ManualLevel == param1)
+               if(_manualUpgradeData[i].ManualLevel == lev)
                {
-                  _loc2_.push(_manualUpgradeData[_loc3_]);
+                  temArr.push(_manualUpgradeData[i]);
                }
-               _loc3_++;
+               i++;
             }
-            return _loc2_;
+            return temArr;
          }
          return null;
       }
       
-      public function getChapterInfoByChapterID(param1:int) : ManualChapterInfo
+      public function getChapterInfoByChapterID(chapterID:int) : ManualChapterInfo
       {
-         var _loc2_:* = null;
+         var temInfo:* = null;
          if(_chapterData)
          {
             var _loc5_:int = 0;
             var _loc4_:* = _chapterData;
-            for each(var _loc3_ in _chapterData)
+            for each(var info in _chapterData)
             {
-               if(_loc3_.ID == param1)
+               if(info.ID == chapterID)
                {
-                  _loc2_ = _loc3_;
+                  temInfo = info;
                   break;
                }
             }
          }
-         return _loc2_;
+         return temInfo;
       }
       
-      public function isHaveNewDebrisForPage(param1:int) : Boolean
+      public function isHaveNewDebrisForPage(pageID:int) : Boolean
       {
-         var _loc2_:Array = SharedManager.Instance.manualNewPages;
-         return _loc2_.indexOf(param1) != -1;
+         var temPageID:Array = SharedManager.Instance.manualNewPages;
+         return temPageID.indexOf(pageID) != -1;
       }
       
-      public function removeNewDebrisForPages(param1:int) : void
+      public function removeNewDebrisForPages(pageID:int) : void
       {
-         var _loc2_:Array = SharedManager.Instance.manualNewPages;
-         if(_loc2_.indexOf(param1) != -1)
+         var temPagesID:Array = SharedManager.Instance.manualNewPages;
+         if(temPagesID.indexOf(pageID) != -1)
          {
-            _loc2_.splice(_loc2_.indexOf(param1),1);
-            SharedManager.Instance.manualNewPages = _loc2_;
+            temPagesID.splice(temPagesID.indexOf(pageID),1);
+            SharedManager.Instance.manualNewPages = temPagesID;
             SharedManager.Instance.save();
          }
       }
@@ -185,69 +183,69 @@ package explorerManual
          return null;
       }
       
-      public function getAllPageByChapterID(param1:int) : Array
+      public function getAllPageByChapterID(chapterID:int) : Array
       {
-         var _loc2_:* = null;
+         var temArr:* = null;
          if(_PageItemData)
          {
-            _loc2_ = [];
+            temArr = [];
             var _loc5_:int = 0;
             var _loc4_:* = _PageItemData;
-            for each(var _loc3_ in _PageItemData)
+            for each(var info in _PageItemData)
             {
-               if(_loc3_.ChapterID == param1)
+               if(info.ChapterID == chapterID)
                {
-                  _loc2_.push(_loc3_);
+                  temArr.push(info);
                }
             }
-            return _loc2_;
+            return temArr;
          }
          return null;
       }
       
-      public function getDebrisByPageID(param1:int) : Array
+      public function getDebrisByPageID(pageID:int) : Array
       {
-         var _loc2_:* = null;
+         var temArr:* = null;
          if(_debrisData)
          {
-            _loc2_ = [];
+            temArr = [];
             var _loc5_:int = 0;
             var _loc4_:* = _debrisData;
-            for each(var _loc3_ in _debrisData)
+            for each(var info in _debrisData)
             {
-               if(_loc3_.PageID == param1)
+               if(info.PageID == pageID)
                {
-                  _loc2_.push(_loc3_);
+                  temArr.push(info);
                }
             }
-            return _loc2_;
+            return temArr;
          }
          return null;
       }
       
-      public function getDeBrisByDeBrisID(param1:int) : ManualDebrisInfo
+      public function getDeBrisByDeBrisID(debrisID:int) : ManualDebrisInfo
       {
-         if(_debrisData && _debrisData.hasKey(param1))
+         if(_debrisData && _debrisData.hasKey(debrisID))
          {
-            return _debrisData[param1];
+            return _debrisData[debrisID];
          }
          return null;
       }
       
-      public function getChapterByPageID(param1:int) : ManualPageItemInfo
+      public function getChapterByPageID(pageID:int) : ManualPageItemInfo
       {
-         if(_PageItemData && _PageItemData.hasKey(param1))
+         if(_PageItemData && _PageItemData.hasKey(pageID))
          {
-            return _PageItemData[param1] as ManualPageItemInfo;
+            return _PageItemData[pageID] as ManualPageItemInfo;
          }
          return null;
       }
       
-      public function getManualInfoByManualLev(param1:int) : ManualItemInfo
+      public function getManualInfoByManualLev(lev:int) : ManualItemInfo
       {
-         if(_manualItemData && _manualItemData.hasKey(param1))
+         if(_manualItemData && _manualItemData.hasKey(lev))
          {
-            return _manualItemData[param1];
+            return _manualItemData[lev];
          }
          return null;
       }
@@ -261,46 +259,46 @@ package explorerManual
          return 0;
       }
       
-      public function isHaveNewDebris(param1:int) : Boolean
+      public function isHaveNewDebris(chapterID:int) : Boolean
       {
-         var _loc2_:Array = SharedManager.Instance.manualNewChapters;
-         return _loc2_.indexOf(param1) != -1;
+         var temChapterID:Array = SharedManager.Instance.manualNewChapters;
+         return temChapterID.indexOf(chapterID) != -1;
       }
       
-      public function removeNewDebris(param1:int) : void
+      public function removeNewDebris(chapterID:int) : void
       {
-         var _loc2_:Array = SharedManager.Instance.manualNewChapters;
-         if(_loc2_.indexOf(param1) != -1)
+         var temChapterID:Array = SharedManager.Instance.manualNewChapters;
+         if(temChapterID.indexOf(chapterID) != -1)
          {
-            _loc2_.splice(_loc2_.indexOf(param1),1);
-            SharedManager.Instance.manualNewChapters = _loc2_;
+            temChapterID.splice(temChapterID.indexOf(chapterID),1);
+            SharedManager.Instance.manualNewChapters = temChapterID;
             SharedManager.Instance.save();
          }
       }
       
-      public function initDebrisData(param1:ManualDebrisAnalyzer) : void
+      public function initDebrisData(analyzer:ManualDebrisAnalyzer) : void
       {
-         _debrisData = param1.data;
+         _debrisData = analyzer.data;
       }
       
-      public function initChapterData(param1:ChapterItemAnalyzer) : void
+      public function initChapterData(analyzer:ChapterItemAnalyzer) : void
       {
-         _chapterData = param1.data;
+         _chapterData = analyzer.data;
       }
       
-      public function initManualItemData(param1:ManualItemAnalyzer) : void
+      public function initManualItemData(analyzer:ManualItemAnalyzer) : void
       {
-         _manualItemData = param1.data;
+         _manualItemData = analyzer.data;
       }
       
-      public function initManualUpgradeData(param1:ManualUpgradeAnalyzer) : void
+      public function initManualUpgradeData(analyzer:ManualUpgradeAnalyzer) : void
       {
-         _manualUpgradeData = param1.data;
+         _manualUpgradeData = analyzer.data;
       }
       
-      public function initPageItemData(param1:ManualPageItemAnalyzer) : void
+      public function initPageItemData(analyzer:ManualPageItemAnalyzer) : void
       {
-         _PageItemData = param1.data;
+         _PageItemData = analyzer.data;
       }
       
       public function get isInitData() : Boolean
@@ -308,36 +306,35 @@ package explorerManual
          return _isInitData;
       }
       
-      public function set isInitData(param1:Boolean) : void
+      public function set isInitData(value:Boolean) : void
       {
-         _isInitData = param1;
+         _isInitData = value;
       }
       
-      public function set cachNewChapter(param1:Array) : void
+      public function set cachNewChapter(chapters:Array) : void
       {
-         var _loc3_:* = null;
-         var _loc5_:int = 0;
-         var _loc4_:Array = SharedManager.Instance.manualNewChapters;
-         var _loc2_:Array = SharedManager.Instance.manualNewPages;
-         _loc5_ = 0;
-         while(_loc5_ < param1.length)
+         var pageInfo:* = null;
+         var i:int = 0;
+         var oldChapters:Array = SharedManager.Instance.manualNewChapters;
+         var oldPages:Array = SharedManager.Instance.manualNewPages;
+         for(i = 0; i < chapters.length; )
          {
-            _loc3_ = getChapterByPageID(param1[_loc5_]);
-            if(_loc3_ != null)
+            pageInfo = getChapterByPageID(chapters[i]);
+            if(pageInfo != null)
             {
-               if(_loc4_.indexOf(_loc3_.ChapterID) == -1)
+               if(oldChapters.indexOf(pageInfo.ChapterID) == -1)
                {
-                  _loc4_.push(_loc3_.ChapterID);
+                  oldChapters.push(pageInfo.ChapterID);
                }
-               if(_loc2_.indexOf(_loc3_.ID) == -1)
+               if(oldPages.indexOf(pageInfo.ID) == -1)
                {
-                  _loc2_.push(_loc3_.ID);
+                  oldPages.push(pageInfo.ID);
                }
             }
-            _loc5_++;
+            i++;
          }
-         SharedManager.Instance.manualNewChapters = _loc4_;
-         SharedManager.Instance.manualNewPages = _loc2_;
+         SharedManager.Instance.manualNewChapters = oldChapters;
+         SharedManager.Instance.manualNewPages = oldPages;
          SharedManager.Instance.save();
       }
    }

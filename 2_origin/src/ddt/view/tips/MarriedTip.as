@@ -25,17 +25,17 @@ package ddt.view.tips
          addChild(_contentTxt);
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         var _loc2_:int = 0;
-         if(param1 != _data)
+         var pos:int = 0;
+         if(data != _data)
          {
-            _data = param1;
+            _data = data;
             _contentTxt.text = LanguageMgr.GetTranslation("core.MarriedTipLatterText" + (String(!!_data.gender?"Husband":"Wife")),_data.nickName);
-            _loc2_ = _contentTxt.text.indexOf(_data.nickName);
-            if(_loc2_ > -1)
+            pos = _contentTxt.text.indexOf(_data.nickName);
+            if(pos > -1)
             {
-               _contentTxt.setTextFormat(_nickNameTF,_loc2_,_loc2_ + _data.nickName.length);
+               _contentTxt.setTextFormat(_nickNameTF,pos,pos + _data.nickName.length);
             }
             updateTransform();
          }
@@ -43,24 +43,24 @@ package ddt.view.tips
       
       private function fitTextWidth() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:int = 0;
-         var _loc4_:Point = localToGlobal(new Point(0,0));
-         var _loc3_:int = _loc4_.x + width - 1000;
-         if(_loc3_ > 0)
+         var originStr:* = null;
+         var tempIndex:int = 0;
+         var pos:Point = localToGlobal(new Point(0,0));
+         var len:int = pos.x + width - 1000;
+         if(len > 0)
          {
-            _loc2_ = _contentTxt.text;
-            _contentTxt.text = _loc2_.substring(0,_loc2_.length - 3);
-            _loc1_ = _contentTxt.getCharIndexAtPoint(_contentTxt.width - _loc3_ - 20,5);
-            _contentTxt.text = _contentTxt.text.substring(0,_loc1_) + "..." + _loc2_.substr(_loc2_.length - 3);
+            originStr = _contentTxt.text;
+            _contentTxt.text = originStr.substring(0,originStr.length - 3);
+            tempIndex = _contentTxt.getCharIndexAtPoint(_contentTxt.width - len - 20,5);
+            _contentTxt.text = _contentTxt.text.substring(0,tempIndex) + "..." + originStr.substr(originStr.length - 3);
          }
          _contentTxt.setTextFormat(_nickNameTF,0,_contentTxt.length - 3);
          updateTransform();
       }
       
-      override public function set x(param1:Number) : void
+      override public function set x(value:Number) : void
       {
-         .super.x = param1;
+         .super.x = value;
       }
    }
 }

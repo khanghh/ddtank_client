@@ -20,265 +20,274 @@ package morn.core.components
       public function Panel()
       {
          super();
-         this.width = this.height = 100;
+         height = 100;
+         width = 100;
       }
       
       override protected function createChildren() : void
       {
-         super.addChild(this._content = new Box());
+         _content = new Box();
+         super.addChild(new Box());
       }
       
-      override public function addChild(param1:DisplayObject) : DisplayObject
+      override public function addChild(child:DisplayObject) : DisplayObject
       {
-         param1.addEventListener(Event.RESIZE,this.onResize);
-         callLater(this.changeScroll);
-         return this._content.addChild(param1);
+         child.addEventListener("resize",onResize);
+         callLater(changeScroll);
+         return _content.addChild(child);
       }
       
-      private function onResize(param1:Event) : void
+      private function onResize(e:Event) : void
       {
-         callLater(this.changeScroll);
+         callLater(changeScroll);
       }
       
-      override public function addChildAt(param1:DisplayObject, param2:int) : DisplayObject
+      override public function addChildAt(child:DisplayObject, index:int) : DisplayObject
       {
-         param1.addEventListener(Event.RESIZE,this.onResize);
-         callLater(this.changeScroll);
-         return this._content.addChildAt(param1,param2);
+         child.addEventListener("resize",onResize);
+         callLater(changeScroll);
+         return _content.addChildAt(child,index);
       }
       
-      override public function removeChild(param1:DisplayObject) : DisplayObject
+      override public function removeChild(child:DisplayObject) : DisplayObject
       {
-         param1.removeEventListener(Event.RESIZE,this.onResize);
-         callLater(this.changeScroll);
-         return this._content.removeChild(param1);
+         child.removeEventListener("resize",onResize);
+         callLater(changeScroll);
+         return _content.removeChild(child);
       }
       
-      override public function removeChildAt(param1:int) : DisplayObject
+      override public function removeChildAt(index:int) : DisplayObject
       {
-         this.getChildAt(param1).removeEventListener(Event.RESIZE,this.onResize);
-         callLater(this.changeScroll);
-         return this._content.removeChildAt(param1);
+         getChildAt(index).removeEventListener("resize",onResize);
+         callLater(changeScroll);
+         return _content.removeChildAt(index);
       }
       
-      override public function removeAllChild(param1:DisplayObject = null) : void
+      override public function removeAllChild(except:DisplayObject = null) : void
       {
-         var _loc2_:int = this._content.numChildren - 1;
-         while(_loc2_ > -1)
+         var i:int = 0;
+         for(i = _content.numChildren - 1; i > -1; )
          {
-            if(param1 != this._content.getChildAt(_loc2_))
+            if(except != _content.getChildAt(i))
             {
-               this._content.removeChildAt(_loc2_);
+               _content.removeChildAt(i);
             }
-            _loc2_--;
+            i--;
          }
-         callLater(this.changeScroll);
+         callLater(changeScroll);
       }
       
-      override public function getChildAt(param1:int) : DisplayObject
+      override public function getChildAt(index:int) : DisplayObject
       {
-         return this._content.getChildAt(param1);
+         return _content.getChildAt(index);
       }
       
-      override public function getChildByName(param1:String) : DisplayObject
+      override public function getChildByName(name:String) : DisplayObject
       {
-         return this._content.getChildByName(param1);
+         return _content.getChildByName(name);
       }
       
-      override public function getChildIndex(param1:DisplayObject) : int
+      override public function getChildIndex(child:DisplayObject) : int
       {
-         return this._content.getChildIndex(param1);
+         return _content.getChildIndex(child);
       }
       
       override public function get numChildren() : int
       {
-         return this._content.numChildren;
+         return _content.numChildren;
       }
       
       private function changeScroll() : void
       {
-         var _loc1_:Number = this.contentWidth;
-         var _loc2_:Number = this.contentHeight;
-         var _loc3_:Boolean = this._vScrollBar && _loc2_ > _height;
-         var _loc4_:Boolean = this._hScrollBar && _loc1_ > _width;
-         var _loc5_:Number = !!_loc3_?Number(_width - this._vScrollBar.width):Number(_width);
-         var _loc6_:Number = !!_loc4_?Number(_height - this._hScrollBar.height):Number(_height);
-         this.setContentSize(_loc5_,_loc6_);
-         if(this._vScrollBar)
+         var contentW:Number = contentWidth;
+         var contentH:Number = contentHeight;
+         var vShow:Boolean = _vScrollBar && contentH > _height;
+         var hShow:Boolean = _hScrollBar && contentW > _width;
+         var showWidth:Number = !!vShow?_width - _vScrollBar.width:Number(_width);
+         var showHeight:Number = !!hShow?_height - _hScrollBar.height:Number(_height);
+         setContentSize(showWidth,showHeight);
+         if(_vScrollBar)
          {
-            this._vScrollBar.x = _width - this._vScrollBar.width;
-            this._vScrollBar.y = 0;
-            this._vScrollBar.height = _height - (!!_loc4_?this._hScrollBar.height:0);
-            this._vScrollBar.scrollSize = Math.max(_height * 0.033,1);
-            this._vScrollBar.thumbPercent = _loc6_ / _loc2_;
-            this._vScrollBar.setScroll(0,_loc2_ - _loc6_,this._vScrollBar.value);
+            _vScrollBar.x = _width - _vScrollBar.width;
+            _vScrollBar.y = 0;
+            _vScrollBar.height = _height - (!!hShow?_hScrollBar.height:0);
+            _vScrollBar.scrollSize = Math.max(_height * 0.033,1);
+            _vScrollBar.thumbPercent = showHeight / contentH;
+            _vScrollBar.setScroll(0,contentH - showHeight,_vScrollBar.value);
          }
-         if(this._hScrollBar)
+         if(_hScrollBar)
          {
-            this._hScrollBar.x = 0;
-            this._hScrollBar.y = _height - this._hScrollBar.height;
-            this._hScrollBar.width = _width - (!!_loc3_?this._vScrollBar.width:0);
-            this._hScrollBar.scrollSize = Math.max(_width * 0.033,1);
-            this._hScrollBar.thumbPercent = _loc5_ / _loc1_;
-            this._hScrollBar.setScroll(0,_loc1_ - _loc5_,this._hScrollBar.value);
+            _hScrollBar.x = 0;
+            _hScrollBar.y = _height - _hScrollBar.height;
+            _hScrollBar.width = _width - (!!vShow?_vScrollBar.width:0);
+            _hScrollBar.scrollSize = Math.max(_width * 0.033,1);
+            _hScrollBar.thumbPercent = showWidth / contentW;
+            _hScrollBar.setScroll(0,contentW - showWidth,_hScrollBar.value);
          }
       }
       
       private function get contentWidth() : Number
       {
-         var _loc3_:DisplayObject = null;
-         var _loc1_:* = 0;
-         var _loc2_:int = this._content.numChildren - 1;
-         while(_loc2_ > -1)
+         var i:int = 0;
+         var comp:* = null;
+         var max:* = 0;
+         for(i = _content.numChildren - 1; i > -1; )
          {
-            _loc3_ = this._content.getChildAt(_loc2_);
-            _loc1_ = Number(Math.max(_loc3_.x + _loc3_.width * _loc3_.scaleX,_loc1_));
-            _loc2_--;
+            comp = _content.getChildAt(i);
+            max = Number(Math.max(comp.x + comp.width * comp.scaleX,max));
+            i--;
          }
-         return _loc1_;
+         return max;
       }
       
       private function get contentHeight() : Number
       {
-         var _loc3_:DisplayObject = null;
-         var _loc1_:* = 0;
-         var _loc2_:int = this._content.numChildren - 1;
-         while(_loc2_ > -1)
+         var i:int = 0;
+         var comp:* = null;
+         var max:* = 0;
+         for(i = _content.numChildren - 1; i > -1; )
          {
-            _loc3_ = this._content.getChildAt(_loc2_);
-            _loc1_ = Number(Math.max(_loc3_.y + _loc3_.height * _loc3_.scaleY,_loc1_));
-            _loc2_--;
+            comp = _content.getChildAt(i);
+            max = Number(Math.max(comp.y + comp.height * comp.scaleY,max));
+            i--;
          }
-         return _loc1_;
+         return max;
       }
       
-      private function setContentSize(param1:Number, param2:Number) : void
+      private function setContentSize(width:Number, height:Number) : void
       {
-         var _loc3_:Graphics = graphics;
-         _loc3_.clear();
-         _loc3_.beginFill(16776960,0);
-         _loc3_.drawRect(0,0,param1,param2);
-         _loc3_.endFill();
-         this._content.width = param1;
-         this._content.height = param2;
-         this._content.scrollRect = new Rectangle(0,0,param1,param2);
+         var g:Graphics = graphics;
+         g.clear();
+         g.beginFill(16776960,0);
+         g.drawRect(0,0,width,height);
+         g.endFill();
+         _content.width = width;
+         _content.height = height;
+         _content.scrollRect = new Rectangle(0,0,width,height);
       }
       
-      override public function set width(param1:Number) : void
+      override public function set width(value:Number) : void
       {
-         super.width = param1;
-         callLater(this.changeScroll);
+         .super.width = value;
+         callLater(changeScroll);
       }
       
-      override public function set height(param1:Number) : void
+      override public function set height(value:Number) : void
       {
-         super.height = param1;
-         callLater(this.changeScroll);
+         .super.height = value;
+         callLater(changeScroll);
       }
       
       public function get vScrollBarSkin() : String
       {
-         return !!this._vScrollBar?this._vScrollBar.skin:null;
+         return !!_vScrollBar?_vScrollBar.skin:null;
       }
       
-      public function set vScrollBarSkin(param1:String) : void
+      public function set vScrollBarSkin(value:String) : void
       {
-         if(this._vScrollBar == null)
+         if(_vScrollBar == null)
          {
-            super.addChild(this._vScrollBar = new VScrollBar());
-            this._vScrollBar.addEventListener(Event.CHANGE,this.onScrollBarChange);
-            this._vScrollBar.target = this;
-            callLater(this.changeScroll);
+            _vScrollBar = new VScrollBar();
+            super.addChild(new VScrollBar());
+            _vScrollBar.addEventListener("change",onScrollBarChange);
+            _vScrollBar.target = this;
+            callLater(changeScroll);
          }
-         this._vScrollBar.skin = param1;
+         _vScrollBar.skin = value;
       }
       
       public function get hScrollBarSkin() : String
       {
-         return !!this._hScrollBar?this._hScrollBar.skin:null;
+         return !!_hScrollBar?_hScrollBar.skin:null;
       }
       
-      public function set hScrollBarSkin(param1:String) : void
+      public function set hScrollBarSkin(value:String) : void
       {
-         if(this._hScrollBar == null)
+         if(_hScrollBar == null)
          {
-            super.addChild(this._hScrollBar = new HScrollBar());
-            this._hScrollBar.addEventListener(Event.CHANGE,this.onScrollBarChange);
-            this._hScrollBar.mouseWheelEnable = false;
-            this._hScrollBar.target = this;
-            callLater(this.changeScroll);
+            _hScrollBar = new HScrollBar();
+            super.addChild(new HScrollBar());
+            _hScrollBar.addEventListener("change",onScrollBarChange);
+            _hScrollBar.mouseWheelEnable = false;
+            _hScrollBar.target = this;
+            callLater(changeScroll);
          }
-         this._hScrollBar.skin = param1;
+         _hScrollBar.skin = value;
       }
       
       public function get vScrollBar() : ScrollBar
       {
-         return this._vScrollBar;
+         return _vScrollBar;
       }
       
       public function get hScrollBar() : ScrollBar
       {
-         return this._hScrollBar;
+         return _hScrollBar;
       }
       
       public function get content() : Sprite
       {
-         return this._content;
+         return _content;
       }
       
-      protected function onScrollBarChange(param1:Event) : void
+      protected function onScrollBarChange(e:Event) : void
       {
-         var _loc3_:ScrollBar = null;
-         var _loc4_:int = 0;
-         var _loc2_:Rectangle = this._content.scrollRect;
-         if(_loc2_)
+         var scroll:* = null;
+         var start:int = 0;
+         var rect:Rectangle = _content.scrollRect;
+         if(rect)
          {
-            _loc3_ = param1.currentTarget as ScrollBar;
-            _loc4_ = Math.round(_loc3_.value);
-            if(_loc3_.direction == ScrollBar.VERTICAL)
+            scroll = e.currentTarget as ScrollBar;
+            start = Math.round(scroll.value);
+            if(scroll.direction == "vertical")
             {
-               _loc2_.y = _loc4_;
+               var _loc5_:* = start;
+               rect.y = _loc5_;
+               §§push(_loc5_);
             }
             else
             {
-               _loc2_.x = _loc4_;
+               _loc5_ = start;
+               rect.x = _loc5_;
+               §§push(Number(_loc5_));
             }
-            this._content.scrollRect = _loc2_;
+            §§pop();
+            _content.scrollRect = rect;
          }
       }
       
       override public function commitMeasure() : void
       {
-         exeCallLater(this.changeScroll);
+         exeCallLater(changeScroll);
       }
       
-      public function scrollTo(param1:Number = 0, param2:Number = 0) : void
+      public function scrollTo(x:Number = 0, y:Number = 0) : void
       {
-         this.commitMeasure();
-         if(this.vScrollBar)
+         commitMeasure();
+         if(vScrollBar)
          {
-            this.vScrollBar.value = param2;
+            vScrollBar.value = y;
          }
-         if(this.hScrollBar)
+         if(hScrollBar)
          {
-            this.hScrollBar.value = param1;
+            hScrollBar.value = x;
          }
       }
       
       public function refresh() : void
       {
-         this.changeScroll();
+         changeScroll();
       }
       
       override public function dispose() : void
       {
          super.dispose();
-         this._content && this._content.dispose();
-         this._vScrollBar && this._vScrollBar.dispose();
-         this._hScrollBar && this._hScrollBar.dispose();
-         this._content = null;
-         this._vScrollBar = null;
-         this._hScrollBar = null;
+         _content && _content.dispose();
+         _vScrollBar && _vScrollBar.dispose();
+         _hScrollBar && _hScrollBar.dispose();
+         _content = null;
+         _vScrollBar = null;
+         _hScrollBar = null;
       }
    }
 }

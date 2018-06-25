@@ -95,28 +95,28 @@ package catchInsect.view
       
       protected var reference:CatchInsectRoomPlayer;
       
-      public function CatchInsectScneneMap(param1:CatchInsectRoomModel, param2:SceneScene, param3:DictionaryData, param4:DictionaryData, param5:Sprite, param6:Sprite, param7:Sprite = null, param8:Sprite = null, param9:Sprite = null, param10:Sprite = null)
+      public function CatchInsectScneneMap(model:CatchInsectRoomModel, sceneScene:SceneScene, data:DictionaryData, objData:DictionaryData, bg:Sprite, mesh:Sprite, acticle:Sprite = null, sky:Sprite = null, decoration:Sprite = null, snow:Sprite = null)
       {
          endPoint = new Point();
          super();
-         _model = param1;
-         this.sceneScene = param2;
-         this._data = param3;
-         this._mapObjs = param4;
-         if(param5 == null)
+         _model = model;
+         this.sceneScene = sceneScene;
+         this._data = data;
+         this._mapObjs = objData;
+         if(bg == null)
          {
             this.bgLayer = new Sprite();
          }
          else
          {
-            this.bgLayer = param5;
+            this.bgLayer = bg;
          }
-         this.meshLayer = param6 == null?new Sprite():param6;
+         this.meshLayer = mesh == null?new Sprite():mesh;
          this.meshLayer.alpha = 0;
-         this.articleLayer = param7 == null?new Sprite():param7;
-         this.decorationLayer = param9 == null?new Sprite():param9;
-         this.skyLayer = param8 == null?new Sprite():param8;
-         this.snowLayer = param10 == null?new Sprite():param10;
+         this.articleLayer = acticle == null?new Sprite():acticle;
+         this.decorationLayer = decoration == null?new Sprite():decoration;
+         this.skyLayer = sky == null?new Sprite():sky;
+         this.snowLayer = snow == null?new Sprite():snow;
          var _loc11_:Boolean = false;
          this.decorationLayer.mouseEnabled = _loc11_;
          this.decorationLayer.mouseChildren = _loc11_;
@@ -132,23 +132,23 @@ package catchInsect.view
       
       private function checkDistance() : Boolean
       {
-         var _loc3_:Number = NaN;
-         var _loc2_:Number = selfPlayer.x - armyPos.x;
-         var _loc1_:Number = selfPlayer.y - armyPos.y;
-         if(Math.pow(_loc2_,2) + Math.pow(_loc1_,2) > Math.pow(r,2))
+         var k:Number = NaN;
+         var disX:Number = selfPlayer.x - armyPos.x;
+         var disY:Number = selfPlayer.y - armyPos.y;
+         if(Math.pow(disX,2) + Math.pow(disY,2) > Math.pow(r,2))
          {
-            _loc3_ = Math.atan2(_loc1_,_loc2_);
+            k = Math.atan2(disY,disX);
             auto = new Point(armyPos.x,armyPos.y);
-            auto.x = auto.x + (_loc2_ > 0?1:-1) * Math.abs(Math.cos(_loc3_) * r);
-            auto.y = auto.y + (_loc1_ > 0?1:-1) * Math.abs(Math.sin(_loc3_) * r);
+            auto.x = auto.x + (disX > 0?1:-1) * Math.abs(Math.cos(k) * r);
+            auto.y = auto.y + (disY > 0?1:-1) * Math.abs(Math.sin(k) * r);
             return false;
          }
          return true;
       }
       
-      public function set enterIng(param1:Boolean) : void
+      public function set enterIng(value:Boolean) : void
       {
-         _entering = param1;
+         _entering = value;
       }
       
       public function get sceneMapVO() : SceneMapVO
@@ -156,17 +156,17 @@ package catchInsect.view
          return _sceneMapVO;
       }
       
-      public function set sceneMapVO(param1:SceneMapVO) : void
+      public function set sceneMapVO(value:SceneMapVO) : void
       {
-         _sceneMapVO = param1;
+         _sceneMapVO = value;
       }
       
       protected function init() : void
       {
          _characters = new DictionaryData(true);
          _monsters = new DictionaryData(true);
-         var _loc1_:Class = ClassUtils.uiSourceDomain.getDefinition("catchInsect.room.MouseClickMovie") as Class;
-         _mouseMovie = new _loc1_() as MovieClip;
+         var mvClass:Class = ClassUtils.uiSourceDomain.getDefinition("catchInsect.room.MouseClickMovie") as Class;
+         _mouseMovie = new mvClass() as MovieClip;
          _mouseMovie.mouseChildren = false;
          _mouseMovie.mouseEnabled = false;
          _mouseMovie.stop();
@@ -192,36 +192,36 @@ package catchInsect.view
          PlayerManager.Instance.addEventListener("setselfplayerpos",__onSetSelfPlayerPos);
       }
       
-      protected function __onSetSelfPlayerPos(param1:NewHallEvent) : void
+      protected function __onSetSelfPlayerPos(event:NewHallEvent) : void
       {
-         __click(param1.data[0]);
+         __click(event.data[0]);
       }
       
-      private function __addMonster(param1:DictionaryEvent) : void
+      private function __addMonster(pEvent:DictionaryEvent) : void
       {
-         var _loc2_:InsectInfo = param1.data as InsectInfo;
-         var _loc3_:CatchInsectMonster = new CatchInsectMonster(_loc2_,_loc2_.MonsterPos);
-         _monsters.add(_loc2_.ID,_loc3_);
-         articleLayer.addChild(_loc3_);
+         var monster:InsectInfo = pEvent.data as InsectInfo;
+         var cMonster:CatchInsectMonster = new CatchInsectMonster(monster,monster.MonsterPos);
+         _monsters.add(monster.ID,cMonster);
+         articleLayer.addChild(cMonster);
       }
       
-      private function __removeMonster(param1:DictionaryEvent) : void
+      private function __removeMonster(pEvent:DictionaryEvent) : void
       {
-         var _loc3_:InsectInfo = param1.data as InsectInfo;
-         var _loc2_:CatchInsectMonster = _monsters[_loc3_.ID] as CatchInsectMonster;
-         _monsters.remove(_loc3_.ID);
-         _loc2_.dispose();
+         var monsterInfo:InsectInfo = pEvent.data as InsectInfo;
+         var monster:CatchInsectMonster = _monsters[monsterInfo.ID] as CatchInsectMonster;
+         _monsters.remove(monsterInfo.ID);
+         monster.dispose();
       }
       
-      private function __onMonsterUpdate(param1:DictionaryEvent) : void
+      private function __onMonsterUpdate(pEvent:DictionaryEvent) : void
       {
-         var _loc3_:InsectInfo = param1.data as InsectInfo;
-         var _loc2_:CatchInsectMonster = _monsters[_loc3_.ID] as CatchInsectMonster;
+         var monsterInfo:InsectInfo = pEvent.data as InsectInfo;
+         var monster:CatchInsectMonster = _monsters[monsterInfo.ID] as CatchInsectMonster;
       }
       
-      private function menuChange(param1:CatchInsectRoomEvent) : void
+      private function menuChange(evt:CatchInsectRoomEvent) : void
       {
-         var _loc2_:* = param1.type;
+         var _loc2_:* = evt.type;
          if("playerNameVisible" === _loc2_)
          {
             nameVisible();
@@ -232,13 +232,13 @@ package catchInsect.view
       {
          var _loc3_:int = 0;
          var _loc2_:* = _characters;
-         for each(var _loc1_ in _characters)
+         for each(var christmasRoomPlayer in _characters)
          {
-            _loc1_.isShowName = _model.playerNameVisible;
+            christmasRoomPlayer.isShowName = _model.playerNameVisible;
          }
       }
       
-      protected function updateMap(param1:Event) : void
+      protected function updateMap(event:Event) : void
       {
          if(!_characters || _characters.length <= 0)
          {
@@ -246,117 +246,117 @@ package catchInsect.view
          }
          var _loc4_:int = 0;
          var _loc3_:* = _characters;
-         for each(var _loc2_ in _characters)
+         for each(var player in _characters)
          {
-            _loc2_.updatePlayer();
-            _loc2_.isShowName = _model.playerNameVisible;
+            player.updatePlayer();
+            player.isShowName = _model.playerNameVisible;
          }
          BuildEntityDepth();
       }
       
-      protected function __click(param1:MouseEvent) : void
+      protected function __click(event:MouseEvent) : void
       {
          if(!selfPlayer || selfPlayer.playerVO.playerStauts != 0 || !selfPlayer.getCanAction())
          {
             return;
          }
-         var _loc2_:Point = this.globalToLocal(new Point(param1.stageX,param1.stageY));
+         var targetPoint:Point = this.globalToLocal(new Point(event.stageX,event.stageY));
          autoMove = false;
          if(new Date().getTime() - _lastClick > _clickInterval)
          {
             _lastClick = new Date().getTime();
-            if(!sceneScene.hit(_loc2_))
+            if(!sceneScene.hit(targetPoint))
             {
-               selfPlayer.playerVO.walkPath = sceneScene.searchPath(selfPlayer.playerPoint,_loc2_);
+               selfPlayer.playerVO.walkPath = sceneScene.searchPath(selfPlayer.playerPoint,targetPoint);
                selfPlayer.playerVO.walkPath.shift();
                selfPlayer.playerVO.scenePlayerDirection = SceneCharacterDirection.getDirection(selfPlayer.playerPoint,selfPlayer.playerVO.walkPath[0]);
                selfPlayer.playerVO.currentWalkStartPoint = selfPlayer.currentWalkStartPoint;
                sendMyPosition(selfPlayer.playerVO.walkPath.concat());
-               _mouseMovie.x = _loc2_.x;
-               _mouseMovie.y = _loc2_.y;
+               _mouseMovie.x = targetPoint.x;
+               _mouseMovie.y = targetPoint.y;
                _mouseMovie.play();
             }
          }
       }
       
-      public function sendMyPosition(param1:Array) : void
+      public function sendMyPosition(p:Array) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:Array = [];
-         while(_loc4_ < param1.length)
+         var i:int = 0;
+         var arr:Array = [];
+         while(i < p.length)
          {
-            _loc2_.push(int(param1[_loc4_].x),int(param1[_loc4_].y));
-            _loc4_++;
+            arr.push(int(p[i].x),int(p[i].y));
+            i++;
          }
-         var _loc3_:String = _loc2_.toString();
-         SocketManager.Instance.out.sendInsectSceneMove(param1[param1.length - 1].x,param1[param1.length - 1].y,_loc3_);
+         var pathStr:String = arr.toString();
+         SocketManager.Instance.out.sendInsectSceneMove(p[p.length - 1].x,p[p.length - 1].y,pathStr);
       }
       
-      public function movePlayer(param1:int, param2:Array) : void
+      public function movePlayer(id:int, p:Array) : void
       {
-         var _loc3_:* = null;
-         if(_characters[param1])
+         var christmasRoomPlayer:* = null;
+         if(_characters[id])
          {
-            _loc3_ = _characters[param1] as CatchInsectRoomPlayer;
-            if(!_loc3_.getCanAction())
+            christmasRoomPlayer = _characters[id] as CatchInsectRoomPlayer;
+            if(!christmasRoomPlayer.getCanAction())
             {
-               _loc3_.playerVO.playerStauts = 0;
-               _loc3_.setStatus();
+               christmasRoomPlayer.playerVO.playerStauts = 0;
+               christmasRoomPlayer.setStatus();
             }
-            _loc3_.playerVO.walkPath = param2;
-            _loc3_.playerWalk(param2);
+            christmasRoomPlayer.playerVO.walkPath = p;
+            christmasRoomPlayer.playerWalk(p);
          }
       }
       
-      public function updatePlayersStauts(param1:int, param2:int, param3:Point) : void
+      public function updatePlayersStauts(id:int, stauts:int, point:Point) : void
       {
-         var _loc4_:* = null;
-         if(_characters[param1])
+         var roomPlayer:* = null;
+         if(_characters[id])
          {
-            _loc4_ = _characters[param1] as CatchInsectRoomPlayer;
-            if(param2 == 0)
+            roomPlayer = _characters[id] as CatchInsectRoomPlayer;
+            if(stauts == 0)
             {
-               _loc4_.playerVO.playerStauts = param2;
-               _loc4_.playerVO.playerPos = param3;
-               _loc4_.setStatus();
+               roomPlayer.playerVO.playerStauts = stauts;
+               roomPlayer.playerVO.playerPos = point;
+               roomPlayer.setStatus();
             }
-            else if(param2 == 1)
+            else if(stauts == 1)
             {
-               if(!_loc4_.getCanAction())
+               if(!roomPlayer.getCanAction())
                {
-                  _loc4_.playerVO.playerStauts = 0;
-                  _loc4_.setStatus();
+                  roomPlayer.playerVO.playerStauts = 0;
+                  roomPlayer.setStatus();
                }
-               _loc4_.playerVO.playerStauts = param2;
-               _loc4_.isReadyFight = true;
-               _loc4_.addEventListener("readyFight",__otherPlayrStartFight);
-               _loc4_.playerVO.walkPath = [param3];
-               _loc4_.playerWalk([param3]);
+               roomPlayer.playerVO.playerStauts = stauts;
+               roomPlayer.isReadyFight = true;
+               roomPlayer.addEventListener("readyFight",__otherPlayrStartFight);
+               roomPlayer.playerVO.walkPath = [point];
+               roomPlayer.playerWalk([point]);
             }
             else
             {
-               _loc4_.playerVO.playerStauts = param2;
-               _loc4_.setStatus();
+               roomPlayer.playerVO.playerStauts = stauts;
+               roomPlayer.setStatus();
             }
          }
       }
       
-      public function __otherPlayrStartFight(param1:CatchInsectRoomEvent) : void
+      public function __otherPlayrStartFight(evt:CatchInsectRoomEvent) : void
       {
-         var _loc2_:CatchInsectRoomPlayer = param1.currentTarget as CatchInsectRoomPlayer;
-         _loc2_.removeEventListener("readyFight",__otherPlayrStartFight);
-         _loc2_.sceneCharacterDirection = SceneCharacterDirection.getDirection(_loc2_.playerPoint,armyPos);
-         _loc2_.dispatchEvent(new SceneCharacterEvent("characterDirectionChange",false));
-         _loc2_.isReadyFight = false;
-         _loc2_.setStatus();
+         var roomPlayer:CatchInsectRoomPlayer = evt.currentTarget as CatchInsectRoomPlayer;
+         roomPlayer.removeEventListener("readyFight",__otherPlayrStartFight);
+         roomPlayer.sceneCharacterDirection = SceneCharacterDirection.getDirection(roomPlayer.playerPoint,armyPos);
+         roomPlayer.dispatchEvent(new SceneCharacterEvent("characterDirectionChange",false));
+         roomPlayer.isReadyFight = false;
+         roomPlayer.setStatus();
       }
       
-      public function updateSelfStatus(param1:int) : void
+      public function updateSelfStatus(value:int) : void
       {
          if(!selfPlayer)
          {
             _isUpdateComplete = false;
-            _updateState = param1;
+            _updateState = value;
             return;
          }
          _isUpdateComplete = true;
@@ -367,7 +367,7 @@ package catchInsect.view
             setCenter();
             _entering = false;
          }
-         selfPlayer.playerVO.playerStauts = param1;
+         selfPlayer.playerVO.playerStauts = value;
          selfPlayer.setStatus();
       }
       
@@ -376,55 +376,55 @@ package catchInsect.view
          return selfPlayer.playerVO.playerStauts;
       }
       
-      public function setCenter(param1:SceneCharacterEvent = null) : void
+      public function setCenter(event:SceneCharacterEvent = null) : void
       {
-         var _loc3_:* = NaN;
-         var _loc2_:* = NaN;
+         var xf:* = NaN;
+         var yf:* = NaN;
          if(reference)
          {
-            _loc3_ = Number(-(reference.x - 1000 / 2));
-            _loc2_ = Number(-(reference.y - 600 / 2) + 50);
+            xf = Number(-(reference.x - 1000 / 2));
+            yf = Number(-(reference.y - 600 / 2) + 50);
          }
          else
          {
-            _loc3_ = Number(-(CatchInsectManager.instance.catchInsectInfo.playerDefaultPos.x - 1000 / 2));
-            _loc2_ = Number(-(CatchInsectManager.instance.catchInsectInfo.playerDefaultPos.y - 600 / 2) + 50);
+            xf = Number(-(CatchInsectManager.instance.catchInsectInfo.playerDefaultPos.x - 1000 / 2));
+            yf = Number(-(CatchInsectManager.instance.catchInsectInfo.playerDefaultPos.y - 600 / 2) + 50);
          }
-         if(_loc3_ > 0)
+         if(xf > 0)
          {
-            _loc3_ = 0;
+            xf = 0;
          }
-         if(_loc3_ < 1000 - _sceneMapVO.mapW)
+         if(xf < 1000 - _sceneMapVO.mapW)
          {
-            _loc3_ = Number(1000 - _sceneMapVO.mapW);
+            xf = Number(1000 - _sceneMapVO.mapW);
          }
-         if(_loc2_ > 0)
+         if(yf > 0)
          {
-            _loc2_ = 0;
+            yf = 0;
          }
-         if(_loc2_ < 600 - _sceneMapVO.mapH)
+         if(yf < 600 - _sceneMapVO.mapH)
          {
-            _loc2_ = Number(600 - _sceneMapVO.mapH);
+            yf = Number(600 - _sceneMapVO.mapH);
          }
-         x = _loc3_;
-         y = _loc2_;
+         x = xf;
+         y = yf;
       }
       
       public function addSelfPlayer() : void
       {
-         var _loc1_:* = null;
+         var selfPlayerVO:* = null;
          if(!selfPlayer)
          {
-            _loc1_ = CatchInsectManager.instance.catchInsectInfo.myPlayerVO;
-            _loc1_.currentWalkStartPoint = _loc1_.playerPos;
-            _loc1_.playerInfo = PlayerManager.Instance.Self;
-            _currentLoadingPlayer = new CatchInsectRoomPlayer(_loc1_,addPlayerCallBack);
+            selfPlayerVO = CatchInsectManager.instance.catchInsectInfo.myPlayerVO;
+            selfPlayerVO.currentWalkStartPoint = selfPlayerVO.playerPos;
+            selfPlayerVO.playerInfo = PlayerManager.Instance.Self;
+            _currentLoadingPlayer = new CatchInsectRoomPlayer(selfPlayerVO,addPlayerCallBack);
          }
       }
       
-      protected function ajustScreen(param1:CatchInsectRoomPlayer) : void
+      protected function ajustScreen(christmasRoomPlayer:CatchInsectRoomPlayer) : void
       {
-         if(param1 == null)
+         if(christmasRoomPlayer == null)
          {
             if(reference)
             {
@@ -437,33 +437,33 @@ package catchInsect.view
          {
             reference.removeEventListener("characterMovement",setCenter);
          }
-         reference = param1;
+         reference = christmasRoomPlayer;
          reference.addEventListener("characterMovement",setCenter);
       }
       
-      protected function __addPlayer(param1:DictionaryEvent) : void
+      protected function __addPlayer(event:DictionaryEvent) : void
       {
-         var _loc2_:PlayerVO = param1.data as PlayerVO;
-         _currentLoadingPlayer = new CatchInsectRoomPlayer(_loc2_,addPlayerCallBack);
+         var playerVO:PlayerVO = event.data as PlayerVO;
+         _currentLoadingPlayer = new CatchInsectRoomPlayer(playerVO,addPlayerCallBack);
       }
       
-      private function addPlayerCallBack(param1:CatchInsectRoomPlayer, param2:Boolean, param3:int) : void
+      private function addPlayerCallBack(roomPlayer:CatchInsectRoomPlayer, isLoadSucceed:Boolean, vFlag:int) : void
       {
-         if(param3 == 0)
+         if(vFlag == 0)
          {
-            if(!articleLayer || !param1)
+            if(!articleLayer || !roomPlayer)
             {
                return;
             }
             _currentLoadingPlayer = null;
-            param1.sceneScene = sceneScene;
-            var _loc4_:* = param1.playerVO.scenePlayerDirection;
-            param1.sceneCharacterDirection = _loc4_;
-            param1.setSceneCharacterDirectionDefault = _loc4_;
-            if(!selfPlayer && param1.playerVO.playerInfo.ID == PlayerManager.Instance.Self.ID)
+            roomPlayer.sceneScene = sceneScene;
+            var _loc4_:* = roomPlayer.playerVO.scenePlayerDirection;
+            roomPlayer.sceneCharacterDirection = _loc4_;
+            roomPlayer.setSceneCharacterDirectionDefault = _loc4_;
+            if(!selfPlayer && roomPlayer.playerVO.playerInfo.ID == PlayerManager.Instance.Self.ID)
             {
-               param1.playerVO.playerPos = param1.playerVO.playerPos;
-               selfPlayer = param1;
+               roomPlayer.playerVO.playerPos = roomPlayer.playerVO.playerPos;
+               selfPlayer = roomPlayer;
                articleLayer.addChild(selfPlayer);
                ajustScreen(selfPlayer);
                setCenter();
@@ -473,12 +473,12 @@ package catchInsect.view
             }
             else
             {
-               articleLayer.addChild(param1);
+               articleLayer.addChild(roomPlayer);
             }
-            param1.playerPoint = param1.playerVO.playerPos;
-            param1.sceneCharacterStateType = "natural";
-            _characters.add(param1.playerVO.playerInfo.ID,param1);
-            param1.isShowName = _model.playerNameVisible;
+            roomPlayer.playerPoint = roomPlayer.playerVO.playerPos;
+            roomPlayer.sceneCharacterStateType = "natural";
+            _characters.add(roomPlayer.playerVO.playerInfo.ID,roomPlayer);
+            roomPlayer.isShowName = _model.playerNameVisible;
             if(!_isUpdateComplete)
             {
                updateSelfStatus(_updateState);
@@ -486,95 +486,93 @@ package catchInsect.view
          }
       }
       
-      private function playerActionChange(param1:SceneCharacterEvent) : void
+      private function playerActionChange(evt:SceneCharacterEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc4_:* = null;
-         var _loc3_:String = param1.data.toString();
-         if(_loc3_ == "naturalStandFront" || _loc3_ == "naturalStandBack")
+         var mon:* = null;
+         var pos:* = null;
+         var type:String = evt.data.toString();
+         if(type == "naturalStandFront" || type == "naturalStandBack")
          {
             _mouseMovie.gotoAndStop(1);
-            _loc2_ = CatchInsectMonsterManager.Instance.curMonster;
-            if(_loc2_ && _loc2_.MonsterState <= 0)
+            mon = CatchInsectMonsterManager.Instance.curMonster;
+            if(mon && mon.MonsterState <= 0)
             {
-               _loc4_ = this.localToGlobal(new Point(selfPlayer.playerPoint.x,selfPlayer.playerPoint.y + 50));
-               if(_loc2_.hitTestPoint(_loc4_.x,_loc4_.y) || _loc2_.hitTestObject(selfPlayer))
+               pos = this.localToGlobal(new Point(selfPlayer.playerPoint.x,selfPlayer.playerPoint.y + 50));
+               if(mon.hitTestPoint(pos.x,pos.y) || mon.hitTestObject(selfPlayer))
                {
-                  _loc2_.StartFight();
+                  mon.StartFight();
                }
             }
          }
       }
       
-      private function __walkEndHandler(param1:SceneCharacterEvent) : void
+      private function __walkEndHandler(event:SceneCharacterEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:Object = _monsters[CatchInsectControl.instance.refMonsID];
-         if(_loc2_)
+         var monster:* = null;
+         var monsObj:Object = _monsters[CatchInsectControl.instance.refMonsID];
+         if(monsObj)
          {
-            _loc3_ = _loc2_ as CatchInsectMonster;
-            _loc3_.walk(selfPlayer.playerVO.currentWalkStartPoint);
+            monster = monsObj as CatchInsectMonster;
+            monster.walk(selfPlayer.playerVO.currentWalkStartPoint);
          }
       }
       
-      protected function __removePlayer(param1:DictionaryEvent) : void
+      protected function __removePlayer(event:DictionaryEvent) : void
       {
-         var _loc2_:int = (param1.data as PlayerVO).playerInfo.ID;
-         var _loc3_:CatchInsectRoomPlayer = _characters[_loc2_] as CatchInsectRoomPlayer;
-         _characters.remove(_loc2_);
-         if(_loc3_)
+         var id:int = (event.data as PlayerVO).playerInfo.ID;
+         var player:CatchInsectRoomPlayer = _characters[id] as CatchInsectRoomPlayer;
+         _characters.remove(id);
+         if(player)
          {
-            if(_loc3_.parent)
+            if(player.parent)
             {
-               _loc3_.parent.removeChild(_loc3_);
+               player.parent.removeChild(player);
             }
-            _loc3_.removeEventListener("characterMovement",setCenter);
-            _loc3_.removeEventListener("characterActionChange",playerActionChange);
-            _loc3_.dispose();
+            player.removeEventListener("characterMovement",setCenter);
+            player.removeEventListener("characterActionChange",playerActionChange);
+            player.dispose();
          }
-         _loc3_ = null;
+         player = null;
       }
       
       protected function BuildEntityDepth() : void
       {
-         var _loc9_:int = 0;
-         var _loc4_:* = null;
-         var _loc8_:Number = NaN;
-         var _loc7_:* = 0;
-         var _loc5_:* = NaN;
-         var _loc6_:int = 0;
-         var _loc3_:* = null;
-         var _loc1_:Number = NaN;
-         var _loc2_:int = articleLayer.numChildren;
-         _loc9_ = 0;
-         while(_loc9_ < _loc2_ - 1)
+         var i:int = 0;
+         var obj:* = null;
+         var depth:Number = NaN;
+         var minIndex:* = 0;
+         var minDepth:* = NaN;
+         var j:int = 0;
+         var temp:* = null;
+         var tempDepth:Number = NaN;
+         var count:int = articleLayer.numChildren;
+         for(i = 0; i < count - 1; )
          {
-            _loc4_ = articleLayer.getChildAt(_loc9_);
-            _loc8_ = this.getPointDepth(_loc4_.x,_loc4_.y);
-            _loc5_ = 1.79769313486232e308;
-            _loc6_ = _loc9_ + 1;
-            while(_loc6_ < _loc2_)
+            obj = articleLayer.getChildAt(i);
+            depth = this.getPointDepth(obj.x,obj.y);
+            minDepth = 1.79769313486232e308;
+            for(j = i + 1; j < count; )
             {
-               _loc3_ = articleLayer.getChildAt(_loc6_);
-               _loc1_ = this.getPointDepth(_loc3_.x,_loc3_.y);
-               if(_loc1_ < _loc5_)
+               temp = articleLayer.getChildAt(j);
+               tempDepth = this.getPointDepth(temp.x,temp.y);
+               if(tempDepth < minDepth)
                {
-                  _loc7_ = _loc6_;
-                  _loc5_ = _loc1_;
+                  minIndex = j;
+                  minDepth = tempDepth;
                }
-               _loc6_++;
+               j++;
             }
-            if(_loc8_ > _loc5_)
+            if(depth > minDepth)
             {
-               articleLayer.swapChildrenAt(_loc9_,_loc7_);
+               articleLayer.swapChildrenAt(i,minIndex);
             }
-            _loc9_++;
+            i++;
          }
       }
       
-      protected function getPointDepth(param1:Number, param2:Number) : Number
+      protected function getPointDepth(x:Number, y:Number) : Number
       {
-         return sceneMapVO.mapW * param2 + param1;
+         return sceneMapVO.mapW * y + x;
       }
       
       protected function removeEvent() : void
@@ -605,8 +603,8 @@ package catchInsect.view
       
       public function dispose() : void
       {
-         var _loc4_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var player:* = null;
          removeEvent();
          if(_mapObjs)
          {
@@ -621,45 +619,44 @@ package catchInsect.view
          _sceneMapVO = null;
          var _loc6_:int = 0;
          var _loc5_:* = _characters;
-         for each(var _loc2_ in _characters)
+         for each(var p in _characters)
          {
-            if(_loc2_.parent)
+            if(p.parent)
             {
-               _loc2_.parent.removeChild(_loc2_);
+               p.parent.removeChild(p);
             }
-            _loc2_.removeEventListener("characterMovement",setCenter);
-            _loc2_.removeEventListener("characterActionChange",playerActionChange);
-            _loc2_.dispose();
-            _loc2_ = null;
+            p.removeEventListener("characterMovement",setCenter);
+            p.removeEventListener("characterActionChange",playerActionChange);
+            p.dispose();
+            p = null;
          }
          _characters.clear();
          _characters = null;
          if(articleLayer)
          {
-            _loc4_ = articleLayer.numChildren;
-            while(_loc4_ > 0)
+            for(i = articleLayer.numChildren; i > 0; )
             {
-               _loc1_ = articleLayer.getChildAt(_loc4_ - 1) as CatchInsectRoomPlayer;
-               if(_loc1_)
+               player = articleLayer.getChildAt(i - 1) as CatchInsectRoomPlayer;
+               if(player)
                {
-                  _loc1_.removeEventListener("characterMovement",setCenter);
-                  _loc1_.removeEventListener("characterActionChange",playerActionChange);
-                  if(_loc1_.parent)
+                  player.removeEventListener("characterMovement",setCenter);
+                  player.removeEventListener("characterActionChange",playerActionChange);
+                  if(player.parent)
                   {
-                     _loc1_.parent.removeChild(_loc1_);
+                     player.parent.removeChild(player);
                   }
-                  _loc1_.dispose();
+                  player.dispose();
                }
-               _loc1_ = null;
+               player = null;
                try
                {
-                  articleLayer.removeChildAt(_loc4_ - 1);
+                  articleLayer.removeChildAt(i - 1);
                }
                catch(e:RangeError)
                {
                   trace(e);
                }
-               _loc4_--;
+               i--;
             }
             if(articleLayer && articleLayer.parent)
             {
@@ -687,10 +684,10 @@ package catchInsect.view
          _currentLoadingPlayer = null;
          var _loc8_:int = 0;
          var _loc7_:* = _monsters;
-         for each(var _loc3_ in _monsters)
+         for each(var o in _monsters)
          {
-            _loc3_.dispose();
-            _loc3_ = null;
+            o.dispose();
+            o = null;
          }
          _monsters.clear();
          if(_mouseMovie && _mouseMovie.parent)

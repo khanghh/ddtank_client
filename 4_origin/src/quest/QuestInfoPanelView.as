@@ -68,24 +68,24 @@ package quest
       {
          var _loc3_:int = 0;
          var _loc2_:* = _items;
-         for each(var _loc1_ in _items)
+         for each(var item in _items)
          {
-            _loc1_.dispose();
+            item.dispose();
          }
       }
       
-      public function set info(param1:QuestInfo) : void
+      public function set info(value:QuestInfo) : void
       {
-         var _loc8_:int = 0;
-         var _loc7_:* = null;
-         var _loc9_:* = null;
-         var _loc5_:* = null;
-         var _loc14_:* = null;
-         var _loc2_:* = null;
-         var _loc13_:* = null;
+         var i:int = 0;
+         var cond:* = null;
+         var tinfo:* = null;
+         var necessaryTarget:* = null;
+         var notNecessaryTarget:* = null;
+         var necessaryAward:* = null;
+         var optionalAward:* = null;
          TaskManager.itemAwardSelected = 0;
          _isImprove = false;
-         _info = param1;
+         _info = value;
          if(_starLevel != _info.QuestLevel)
          {
             _starLevel = _info.QuestLevel;
@@ -98,86 +98,86 @@ package quest
          _complete = _info.isCompleted;
          clearItems();
          _items = new Vector.<QuestInfoItemView>();
-         var _loc15_:Boolean = false;
-         var _loc3_:Boolean = false;
-         var _loc10_:Boolean = false;
-         var _loc6_:Boolean = false;
-         _loc8_ = 0;
-         while(_info.conditions[_loc8_])
+         var hasNeccesaryTarget:Boolean = false;
+         var hasNotNeccessaryTarget:Boolean = false;
+         var hasNecessaryAward:Boolean = false;
+         var hasOptionalAward:Boolean = false;
+         i = 0;
+         while(_info.conditions[i])
          {
-            _loc7_ = _info.conditions[_loc8_];
-            if(!_loc7_.isOpitional)
+            cond = _info.conditions[i];
+            if(!cond.isOpitional)
             {
-               _loc15_ = true;
+               hasNeccesaryTarget = true;
             }
             else
             {
-               _loc3_ = true;
+               hasNotNeccessaryTarget = true;
             }
-            _loc8_++;
+            i++;
          }
-         if(!_loc10_)
+         if(!hasNecessaryAward)
          {
-            _loc10_ = info.hasOtherAward();
+            hasNecessaryAward = info.hasOtherAward();
          }
          var _loc17_:int = 0;
          var _loc16_:* = _info.itemRewards;
-         for each(var _loc12_ in _info.itemRewards)
+         for each(var temp in _info.itemRewards)
          {
-            _loc9_ = new InventoryItemInfo();
-            _loc9_.TemplateID = _loc12_.itemID;
-            ItemManager.fill(_loc9_);
-            if(!(0 != _loc9_.NeedSex && getSexByInt(PlayerManager.Instance.Self.Sex) != _loc9_.NeedSex))
+            tinfo = new InventoryItemInfo();
+            tinfo.TemplateID = temp.itemID;
+            ItemManager.fill(tinfo);
+            if(!(0 != tinfo.NeedSex && getSexByInt(PlayerManager.Instance.Self.Sex) != tinfo.NeedSex))
             {
-               if(_loc12_.isOptional == 0)
+               if(temp.isOptional == 0)
                {
-                  _loc10_ = true;
+                  hasNecessaryAward = true;
                }
-               else if(_loc12_.isOptional == 1)
+               else if(temp.isOptional == 1)
                {
-                  _loc6_ = true;
+                  hasOptionalAward = true;
                }
             }
          }
-         if(_loc15_)
+         if(hasNeccesaryTarget)
          {
-            _loc5_ = new QuestinfoTargetItemView(false);
-            _loc5_.isImprove = _isImprove;
+            necessaryTarget = new QuestinfoTargetItemView(false);
+            necessaryTarget.isImprove = _isImprove;
             if(regressFlag)
             {
-               _loc5_.setStarVipHide();
+               necessaryTarget.setStarVipHide();
             }
-            _items.push(_loc5_);
+            _items.push(necessaryTarget);
          }
-         if(_loc3_)
+         if(hasNotNeccessaryTarget)
          {
-            _loc14_ = new QuestinfoTargetItemView(true);
+            notNecessaryTarget = new QuestinfoTargetItemView(true);
             if(regressFlag)
             {
-               _loc14_.setStarVipHide();
+               notNecessaryTarget.setStarVipHide();
             }
-            _items.push(_loc14_);
+            _items.push(notNecessaryTarget);
          }
-         if(_loc10_)
+         if(hasNecessaryAward)
          {
-            _loc2_ = new QuestinfoAwardItemView(false);
-            _loc2_.isReward = true;
-            _items.push(_loc2_);
+            necessaryAward = new QuestinfoAwardItemView(false);
+            necessaryAward.isReward = true;
+            _items.push(necessaryAward);
          }
-         if(_loc6_)
+         if(hasOptionalAward)
          {
-            _loc13_ = new QuestinfoAwardItemView(true);
+            optionalAward = new QuestinfoAwardItemView(true);
             TaskManager.itemAwardSelected = -1;
-            _items.push(_loc13_);
+            _items.push(optionalAward);
          }
-         var _loc4_:QuestinfoDescriptionItemView = new QuestinfoDescriptionItemView();
-         _items.push(_loc4_);
+         var descriptionItem:QuestinfoDescriptionItemView = new QuestinfoDescriptionItemView();
+         _items.push(descriptionItem);
          var _loc19_:int = 0;
          var _loc18_:* = _items;
-         for each(var _loc11_ in _items)
+         for each(var item in _items)
          {
-            _loc11_.info = _info;
-            container.addChild(_loc11_);
+            item.info = _info;
+            container.addChild(item);
          }
          if(info.QuestID == 339)
          {
@@ -191,21 +191,21 @@ package quest
          visible = true;
       }
       
-      private function __onGoToConsortia(param1:MouseEvent) : void
+      private function __onGoToConsortia(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          gotoCMoive.removeEventListener("click",__onGoToConsortia);
          StateManager.setState("consortia");
       }
       
-      private function getSexByInt(param1:Boolean) : int
+      private function getSexByInt(Sex:Boolean) : int
       {
-         return !!param1?1:2;
+         return !!Sex?1:2;
       }
       
-      public function canGotoConsortia(param1:Boolean) : void
+      public function canGotoConsortia(value:Boolean) : void
       {
-         if(param1)
+         if(value)
          {
             if(gotoCMoive == null)
             {
@@ -230,22 +230,22 @@ package quest
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _info = null;
          if(gotoCMoive)
          {
             gotoCMoive.dispose();
             gotoCMoive = null;
          }
-         _loc1_ = 0;
-         while(_loc1_ < _items.length)
+         i = 0;
+         while(i < _items.length)
          {
-            if(_items[_loc1_])
+            if(_items[i])
             {
-               _items[_loc1_].dispose();
-               _items[_loc1_] = null;
+               _items[i].dispose();
+               _items[i] = null;
             }
-            _loc1_++;
+            i++;
          }
          _items.length = 0;
          if(container)
@@ -265,9 +265,9 @@ package quest
          return _regressFlag;
       }
       
-      public function set regressFlag(param1:Boolean) : void
+      public function set regressFlag(value:Boolean) : void
       {
-         _regressFlag = param1;
+         _regressFlag = value;
       }
    }
 }

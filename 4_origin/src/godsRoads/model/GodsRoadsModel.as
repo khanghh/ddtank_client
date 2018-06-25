@@ -17,26 +17,25 @@ package godsRoads.model
          super();
       }
       
-      public function getMissionInfoById(param1:int) : GodsRoadsMissionInfo
+      public function getMissionInfoById(id:int) : GodsRoadsMissionInfo
       {
-         var _loc3_:* = null;
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _questionTemple.length)
+         var info:* = null;
+         var i:int = 0;
+         for(i = 0; i < _questionTemple.length; )
          {
-            if(param1 == _questionTemple[_loc2_].questId)
+            if(id == _questionTemple[i].questId)
             {
-               _loc3_ = _questionTemple[_loc2_];
+               info = _questionTemple[i];
                break;
             }
-            _loc2_++;
+            i++;
          }
-         return _loc3_;
+         return info;
       }
       
-      public function set godsRoadsData(param1:GodsRoadsVo) : void
+      public function set godsRoadsData(val:GodsRoadsVo) : void
       {
-         vo = param1;
+         vo = val;
       }
       
       public function get godsRoadsData() : GodsRoadsVo
@@ -44,9 +43,9 @@ package godsRoads.model
          return vo;
       }
       
-      public function set missionInfo(param1:Vector.<GodsRoadsMissionInfo>) : void
+      public function set missionInfo(val:Vector.<GodsRoadsMissionInfo>) : void
       {
-         _questionTemple = param1;
+         _questionTemple = val;
       }
       
       public function get missionInfo() : Vector.<GodsRoadsMissionInfo>

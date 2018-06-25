@@ -20,57 +20,57 @@ package com.greensock.plugins
          this.overwriteProps = ["endArray"];
       }
       
-      override public function onInitTween(param1:Object, param2:*, param3:TweenLite) : Boolean
+      override public function onInitTween(target:Object, value:*, tween:TweenLite) : Boolean
       {
-         if(!(param1 is Array) || !(param2 is Array))
+         if(!(target is Array) || !(value is Array))
          {
             return false;
          }
-         init(param1 as Array,param2);
+         init(target as Array,value);
          return true;
       }
       
-      public function init(param1:Array, param2:Array) : void
+      public function init(start:Array, end:Array) : void
       {
-         _a = param1;
-         var _loc3_:int = param2.length;
+         _a = start;
+         var i:int = end.length;
          while(true)
          {
-            _loc3_--;
-            if(!_loc3_)
+            i--;
+            if(!i)
             {
                break;
             }
-            if(param1[_loc3_] != param2[_loc3_] && param1[_loc3_] != null)
+            if(start[i] != end[i] && start[i] != null)
             {
-               _info[_info.length] = new ArrayTweenInfo(_loc3_,_a[_loc3_],param2[_loc3_] - _a[_loc3_]);
+               _info[_info.length] = new ArrayTweenInfo(i,_a[i],end[i] - _a[i]);
             }
          }
       }
       
-      override public function set changeFactor(param1:Number) : void
+      override public function set changeFactor(n:Number) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:Number = NaN;
-         var _loc4_:int = _info.length;
+         var ti:* = null;
+         var val:Number = NaN;
+         var i:int = _info.length;
          if(this.round)
          {
             while(true)
             {
-               _loc4_--;
-               if(!_loc4_)
+               i--;
+               if(!i)
                {
                   break;
                }
-               _loc3_ = _info[_loc4_];
-               _loc2_ = _loc3_.start + _loc3_.change * param1;
-               if(_loc2_ > 0)
+               ti = _info[i];
+               val = ti.start + ti.change * n;
+               if(val > 0)
                {
-                  _a[_loc3_.index] = _loc2_ + 0.5 >> 0;
+                  _a[ti.index] = val + 0.5 >> 0;
                }
                else
                {
-                  _a[_loc3_.index] = _loc2_ - 0.5 >> 0;
+                  _a[ti.index] = val - 0.5 >> 0;
                }
             }
          }
@@ -78,13 +78,13 @@ package com.greensock.plugins
          {
             while(true)
             {
-               _loc4_--;
-               if(!_loc4_)
+               i--;
+               if(!i)
                {
                   break;
                }
-               _loc3_ = _info[_loc4_];
-               _a[_loc3_.index] = _loc3_.start + _loc3_.change * param1;
+               ti = _info[i];
+               _a[ti.index] = ti.start + ti.change * n;
             }
          }
       }
@@ -101,11 +101,11 @@ class ArrayTweenInfo
    
    public var change:Number;
    
-   function ArrayTweenInfo(param1:uint, param2:Number, param3:Number)
+   function ArrayTweenInfo(index:uint, start:Number, change:Number)
    {
       super();
-      this.index = param1;
-      this.start = param2;
-      this.change = param3;
+      this.index = index;
+      this.start = start;
+      this.change = change;
    }
 }

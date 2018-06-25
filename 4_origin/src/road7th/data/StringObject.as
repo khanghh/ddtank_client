@@ -6,22 +6,22 @@ package road7th.data
       
       private var _data:String;
       
-      public function StringObject(param1:String = "")
+      public function StringObject(data:String = "")
       {
          super();
-         _data = param1;
+         _data = data;
       }
       
       public function get isBoolean() : Boolean
       {
-         var _loc1_:String = _data.toLowerCase();
+         var v:String = _data.toLowerCase();
          return _data == "true" || _data == "True" || _data == "False" || _data == "false";
       }
       
       public function get isInt() : Boolean
       {
-         var _loc1_:RegExp = /^-?\d+$/;
-         return _loc1_.test(_data);
+         var patern:RegExp = /^-?\d+$/;
+         return patern.test(_data);
       }
       
       public function get getData() : String

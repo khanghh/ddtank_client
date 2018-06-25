@@ -8,10 +8,10 @@ package com.pickgliss.action
       
       protected var _count:int;
       
-      public function OrderQueueAction(param1:Array, param2:uint = 0)
+      public function OrderQueueAction(actList:Array, timeOut:uint = 0)
       {
-         _actList = param1;
-         super(param2);
+         _actList = actList;
+         super(timeOut);
       }
       
       override public function act() : void
@@ -32,12 +32,12 @@ package com.pickgliss.action
       
       protected function actOne() : void
       {
-         var _loc1_:IAction = _actList[_count] as IAction;
-         _loc1_.setCompleteFun(actOneComplete);
-         _loc1_.act();
+         var action:IAction = _actList[_count] as IAction;
+         action.setCompleteFun(actOneComplete);
+         action.act();
       }
       
-      private function actOneComplete(param1:IAction) : void
+      private function actOneComplete(target:IAction) : void
       {
          actNext();
       }
@@ -57,14 +57,14 @@ package com.pickgliss.action
       
       override public function cancel() : void
       {
-         var _loc1_:* = null;
+         var action:* = null;
          if(_acting)
          {
-            _loc1_ = _actList[_count] as IAction;
-            if(_loc1_)
+            action = _actList[_count] as IAction;
+            if(action)
             {
-               _loc1_.setCompleteFun(null);
-               _loc1_.cancel();
+               action.setCompleteFun(null);
+               action.cancel();
             }
          }
          super.cancel();

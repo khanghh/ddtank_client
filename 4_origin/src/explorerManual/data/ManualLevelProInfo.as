@@ -24,17 +24,17 @@ package explorerManual.data
          return _boost;
       }
       
-      public function set boost(param1:int) : void
+      public function set boost(value:int) : void
       {
-         _boost = param1;
+         _boost = value;
       }
       
-      public function update(param1:ManualItemInfo) : void
+      public function update(info:ManualItemInfo) : void
       {
-         this.magicAttack = param1.MagicAttack;
-         this.magicResistance = param1.MagicResistance;
-         this.boost = param1.Boost;
-         this.name = param1.Name;
+         this.magicAttack = info.MagicAttack;
+         this.magicResistance = info.MagicResistance;
+         this.boost = info.Boost;
+         this.name = info.Name;
       }
    }
 }

@@ -12,27 +12,26 @@ package activeEvents.analyze
       
       private var _xml:XML;
       
-      public function ActiveEventsAnalyzer(param1:Function)
+      public function ActiveEventsAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         _xml = new XML(param1);
+         var i:int = 0;
+         var info:* = null;
+         _xml = new XML(data);
          _list = [];
-         var _loc2_:XMLList = _xml..Item;
+         var xmllist:XMLList = _xml..Item;
          if(_xml.@value == "true")
          {
-            _loc4_ = 0;
-            while(_loc4_ < _loc2_.length())
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc3_ = new ActiveEventsInfo();
-               ObjectUtils.copyPorpertiesByXML(_loc3_,_loc2_[_loc4_]);
-               _list.push(_loc3_);
-               _loc4_++;
+               info = new ActiveEventsInfo();
+               ObjectUtils.copyPorpertiesByXML(info,xmllist[i]);
+               _list.push(info);
+               i++;
             }
             onAnalyzeComplete();
          }

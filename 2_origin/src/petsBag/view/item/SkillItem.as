@@ -69,34 +69,34 @@ package petsBag.view.item
       
       private var _exclusiveMc:MovieClip;
       
-      public function SkillItem(param1:PetSkillTemplateInfo, param2:int, param3:Boolean = false, param4:Boolean = false)
+      public function SkillItem(info:PetSkillTemplateInfo, $index:int, canDrag:Boolean = false, isWatch:Boolean = false)
       {
          super();
-         _canDrag = param3;
-         _isWatch = param4;
-         _index = param2;
-         _info = param1;
+         _canDrag = canDrag;
+         _isWatch = isWatch;
+         _index = $index;
+         _info = info;
          _iconPos = new Point();
          initView();
          initEvent();
       }
       
-      public function set skillID(param1:int) : void
+      public function set skillID(id:int) : void
       {
          info = null;
-         _skillID = param1;
+         _skillID = id;
          ShowTipManager.Instance.removeTip(this);
-         if(param1 < 0)
+         if(id < 0)
          {
             isLock = true;
          }
-         else if(param1 == 0)
+         else if(id == 0)
          {
             isLock = false;
          }
          else
          {
-            info = new PetSkill(param1);
+            info = new PetSkill(id);
             ShowTipManager.Instance.addTip(this);
          }
       }
@@ -121,9 +121,9 @@ package petsBag.view.item
          return _iconPos;
       }
       
-      public function set iconPos(param1:Point) : void
+      public function set iconPos(value:Point) : void
       {
-         _iconPos = param1;
+         _iconPos = value;
          updateSize();
       }
       
@@ -216,7 +216,7 @@ package petsBag.view.item
          DoubleClickManager.Instance.enableDoubleClick(this);
       }
       
-      protected function __doubleClickHandler(param1:InteractiveEvent) : void
+      protected function __doubleClickHandler(evt:InteractiveEvent) : void
       {
          if(!DoubleClickEnabled)
          {
@@ -230,7 +230,7 @@ package petsBag.view.item
          dispatchEvent(new PetItemEvent("itemclick",this));
       }
       
-      protected function __clickHandler(param1:InteractiveEvent) : void
+      protected function __clickHandler(evt:InteractiveEvent) : void
       {
          SoundManager.instance.play("008");
          if(_canDrag && _info && !_isWatch)
@@ -261,9 +261,9 @@ package petsBag.view.item
          }
       }
       
-      public function set isLock(param1:Boolean) : void
+      public function set isLock(value:Boolean) : void
       {
-         _isLock = param1;
+         _isLock = value;
          grayFilters = _isLock;
          _lockImg.visible = _isLock;
          if(_quickShortKey)
@@ -282,9 +282,9 @@ package petsBag.view.item
          return _index;
       }
       
-      public function set index(param1:int) : void
+      public function set index(value:int) : void
       {
-         _index = param1;
+         _index = value;
       }
       
       public function get info() : PetSkillTemplateInfo
@@ -292,9 +292,9 @@ package petsBag.view.item
          return _info;
       }
       
-      public function set info(param1:PetSkillTemplateInfo) : void
+      public function set info(value:PetSkillTemplateInfo) : void
       {
-         _info = param1;
+         _info = value;
          ObjectUtils.disposeObject(_skillIcon);
          _skillIcon = null;
          _tipData = null;
@@ -320,9 +320,9 @@ package petsBag.view.item
          }
       }
       
-      public function set grayFilters(param1:Boolean) : void
+      public function set grayFilters(b:Boolean) : void
       {
-         if(param1)
+         if(b)
          {
             filters = ComponentFactory.Instance.creatFilters("grayFilter");
          }
@@ -337,17 +337,17 @@ package petsBag.view.item
          return this;
       }
       
-      public function dragStop(param1:DragEffect) : void
+      public function dragStop(effect:DragEffect) : void
       {
          SoundManager.instance.play("008");
       }
       
-      public function dragDrop(param1:DragEffect) : void
+      public function dragDrop(effect:DragEffect) : void
       {
-         var _loc2_:SkillItem = param1.source as SkillItem;
-         if(_loc2_ && !_canDrag)
+         var source:SkillItem = effect.source as SkillItem;
+         if(source && !_canDrag)
          {
-            SocketManager.Instance.out.sendEquipPetSkill(PetsBagManager.instance().petModel.currentPetInfo.Place,_loc2_.info.ID,_index);
+            SocketManager.Instance.out.sendEquipPetSkill(PetsBagManager.instance().petModel.currentPetInfo.Place,source.info.ID,_index);
             if(PetsBagManager.instance().petModel.petGuildeOptionOnOff[117] > 0)
             {
                PetsBagManager.instance().clearCurrentPetFarmGuildeArrow(117);
@@ -358,11 +358,11 @@ package petsBag.view.item
       
       protected function creatDragImg() : DisplayObject
       {
-         var _loc1_:Bitmap = new Bitmap(new BitmapData(_skillIcon.width / _skillIcon.scaleX,_skillIcon.height / _skillIcon.scaleY,true,4294967295));
-         _loc1_.bitmapData.draw(_skillIcon);
-         _loc1_.scaleX = 0.75;
-         _loc1_.scaleY = 0.75;
-         return _loc1_;
+         var img:Bitmap = new Bitmap(new BitmapData(_skillIcon.width / _skillIcon.scaleX,_skillIcon.height / _skillIcon.scaleY,true,4294967295));
+         img.bitmapData.draw(_skillIcon);
+         img.scaleX = 0.75;
+         img.scaleY = 0.75;
+         return img;
       }
       
       override public function get height() : Number

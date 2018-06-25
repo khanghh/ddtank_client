@@ -22,10 +22,10 @@ package consortion.view.guard
       
       private var _num:int;
       
-      public function ConsortiaGuardSubBossRankItem(param1:int)
+      public function ConsortiaGuardSubBossRankItem(num:int)
       {
          super();
-         _num = param1;
+         _num = num;
          initView();
       }
       
@@ -46,12 +46,12 @@ package consortion.view.guard
          addChild(_attacksNumText);
       }
       
-      public function updata(param1:ConsortiaBossDataVo) : void
+      public function updata(vo:ConsortiaBossDataVo) : void
       {
-         _rankingText.text = String(param1.rank);
-         _nameText.text = param1.name;
-         _hurtText.text = String(param1.damage);
-         _attacksNumText.text = String(param1.attacksCount);
+         _rankingText.text = String(vo.rank);
+         _nameText.text = vo.name;
+         _hurtText.text = String(vo.damage);
+         _attacksNumText.text = String(vo.attacksCount);
       }
       
       public function dispose() : void

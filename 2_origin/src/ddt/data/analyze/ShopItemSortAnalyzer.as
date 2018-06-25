@@ -25,15 +25,15 @@ package ddt.data.analyze
       
       private var _timer:Timer;
       
-      public function ShopItemSortAnalyzer(param1:Function)
+      public function ShopItemSortAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
          shopSortedGoods = new Dictionary();
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         _xml = new XML(param1);
+         _xml = new XML(data);
          if(_xml.@value == "true")
          {
             _shoplist = _xml..Item;
@@ -53,36 +53,36 @@ package ddt.data.analyze
          _timer.start();
       }
       
-      private function __partexceute(param1:TimerEvent) : void
+      private function __partexceute(evt:TimerEvent) : void
       {
-         var _loc6_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         var _loc5_:* = null;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var type:int = 0;
+         var goodsID:int = 0;
+         var info:* = null;
+         var alert:* = null;
          if(!ShopManager.Instance.initialized)
          {
             return;
          }
-         _loc6_ = 0;
-         while(_loc6_ < 40)
+         i = 0;
+         while(i < 40)
          {
             index = Number(index) + 1;
             if(index < _shoplist.length())
             {
-               _loc4_ = _shoplist[index].@Type;
-               _loc3_ = _shoplist[index].@ShopId;
-               _loc5_ = ShopManager.Instance.getShopItemByGoodsID(_loc3_);
-               if(_loc5_ != null)
+               type = _shoplist[index].@Type;
+               goodsID = _shoplist[index].@ShopId;
+               info = ShopManager.Instance.getShopItemByGoodsID(goodsID);
+               if(info != null)
                {
-                  addToList(_loc4_,_loc5_);
+                  addToList(type,info);
                }
                else
                {
-                  _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("shop.DataError.NoGood") + _loc3_);
-                  _loc2_.addEventListener("response",__onResponse);
+                  alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("shop.DataError.NoGood") + goodsID);
+                  alert.addEventListener("response",__onResponse);
                }
-               _loc6_++;
+               i++;
                continue;
             }
             _timer.removeEventListener("timer",__partexceute);
@@ -93,22 +93,22 @@ package ddt.data.analyze
          }
       }
       
-      private function __onResponse(param1:FrameEvent) : void
+      private function __onResponse(event:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = BaseAlerFrame(param1.target);
-         _loc2_.removeEventListener("response",__onResponse);
-         _loc2_.dispose();
+         var alert:BaseAlerFrame = BaseAlerFrame(event.target);
+         alert.removeEventListener("response",__onResponse);
+         alert.dispose();
       }
       
-      private function addToList(param1:int, param2:ShopItemInfo) : void
+      private function addToList(type:int, shopItem:ShopItemInfo) : void
       {
-         var _loc3_:Vector.<ShopItemInfo> = shopSortedGoods[param1];
-         if(_loc3_ == null)
+         var list:Vector.<ShopItemInfo> = shopSortedGoods[type];
+         if(list == null)
          {
-            _loc3_ = new Vector.<ShopItemInfo>();
-            shopSortedGoods[param1] = _loc3_;
+            list = new Vector.<ShopItemInfo>();
+            shopSortedGoods[type] = list;
          }
-         _loc3_.push(param2);
+         list.push(shopItem);
       }
    }
 }

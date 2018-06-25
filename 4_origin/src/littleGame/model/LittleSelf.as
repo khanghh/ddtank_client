@@ -18,25 +18,25 @@ package littleGame.model
       
       private var _inhaled:Boolean = false;
       
-      public function LittleSelf(param1:SelfInfo, param2:int, param3:int, param4:int, param5:int)
+      public function LittleSelf(self:SelfInfo, id:int, x:int, y:int, type:int)
       {
-         super(param1,param2,param3,param4,param5);
+         super(self,id,x,y,type);
       }
       
       override public function stand() : void
       {
          var _loc3_:int = 0;
          var _loc2_:* = _actionMgr._queue;
-         for each(var _loc1_ in _actionMgr._queue)
+         for each(var action in _actionMgr._queue)
          {
-            if(_loc1_ is LittleSelfMoveAction)
+            if(action is LittleSelfMoveAction)
             {
-               _loc1_.cancel();
+               action.cancel();
             }
          }
       }
       
-      public function collideByNode(param1:Node) : Boolean
+      public function collideByNode(node:Node) : Boolean
       {
          return false;
       }
@@ -51,9 +51,9 @@ package littleGame.model
          return "LittleSelf_" + playerInfo.NickName;
       }
       
-      public function getScore(param1:int) : void
+      public function getScore(score:int) : void
       {
-         dispatchEvent(new LittleLivingEvent("getscore",param1));
+         dispatchEvent(new LittleLivingEvent("getscore",score));
       }
       
       public function get inhaled() : Boolean
@@ -61,13 +61,13 @@ package littleGame.model
          return _inhaled;
       }
       
-      public function set inhaled(param1:Boolean) : void
+      public function set inhaled(value:Boolean) : void
       {
-         if(_inhaled == param1)
+         if(_inhaled == value)
          {
             return;
          }
-         _inhaled = param1;
+         _inhaled = value;
          dispatchEvent(new LittleLivingEvent("inhaledChanged"));
       }
    }

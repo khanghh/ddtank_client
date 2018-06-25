@@ -62,12 +62,12 @@ package battleGroud
          return _instance;
       }
       
-      private function realTimeUpdataValue(param1:PkgEvent) : void
+      private function realTimeUpdataValue(e:PkgEvent) : void
       {
-         orderdata.addDayPrestge = param1.pkg.readInt();
-         orderdata.totalPrestige = param1.pkg.readInt();
-         orderdata.weekPrestige = param1.pkg.readInt();
-         param1.pkg.readInt();
+         orderdata.addDayPrestge = e.pkg.readInt();
+         orderdata.totalPrestige = e.pkg.readInt();
+         orderdata.weekPrestige = e.pkg.readInt();
+         e.pkg.readInt();
          RoomManager.Instance.updateBattleSingleRoom();
          if(_battlGroudView && _battlGroudView.parent)
          {
@@ -75,26 +75,26 @@ package battleGroud
          }
       }
       
-      private function updataValue(param1:PkgEvent) : void
+      private function updataValue(e:PkgEvent) : void
       {
-         var _loc2_:Boolean = param1.pkg.readBoolean();
-         if(!_loc2_)
+         var bool:Boolean = e.pkg.readBoolean();
+         if(!bool)
          {
             return;
          }
-         var _loc3_:int = param1.pkg.readByte();
-         if(_loc3_ == 1)
+         var type:int = e.pkg.readByte();
+         if(type == 1)
          {
-            orderdata.addDayPrestge = param1.pkg.readInt();
-            orderdata.totalPrestige = param1.pkg.readInt();
-            orderdata.fairBattleDayPrestige = param1.pkg.readInt();
-            orderdata.weekPrestige = param1.pkg.readInt();
-            param1.pkg.readInt();
+            orderdata.addDayPrestge = e.pkg.readInt();
+            orderdata.totalPrestige = e.pkg.readInt();
+            orderdata.fairBattleDayPrestige = e.pkg.readInt();
+            orderdata.weekPrestige = e.pkg.readInt();
+            e.pkg.readInt();
             RoomManager.Instance.updateBattleSingleRoom();
          }
-         else if(_loc3_ == 2)
+         else if(type == 2)
          {
-            orderdata.rankings = param1.pkg.readInt();
+            orderdata.rankings = e.pkg.readInt();
          }
          if(_battlGroudView && _battlGroudView.parent)
          {
@@ -102,38 +102,36 @@ package battleGroud
          }
       }
       
-      public function getBattleDataByPrestige(param1:int) : BatlleData
+      public function getBattleDataByPrestige(prestige:int) : BatlleData
       {
-         var _loc3_:int = 0;
+         var i:int = 0;
          if(PlayerManager.Instance.Self.Grade < 20)
          {
             return new BatlleData();
          }
-         var _loc2_:int = _battleDataList.length;
-         _loc3_ = _loc2_ - 1;
-         while(_loc3_ >= 0)
+         var len:int = _battleDataList.length;
+         for(i = len - 1; i >= 0; )
          {
-            if(param1 >= _battleDataList[_loc3_].Prestige)
+            if(prestige >= _battleDataList[i].Prestige)
             {
-               return _battleDataList[_loc3_] as BatlleData;
+               return _battleDataList[i] as BatlleData;
             }
-            _loc3_--;
+            i--;
          }
          return new BatlleData();
       }
       
-      public function getBattleDataByLevel(param1:int) : BatlleData
+      public function getBattleDataByLevel(level:int) : BatlleData
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = _battleDataList.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var i:int = 0;
+         var len:int = _battleDataList.length;
+         for(i = 0; i < len; )
          {
-            if(param1 == _battleDataList[_loc3_].Level)
+            if(level == _battleDataList[i].Level)
             {
-               return _battleDataList[_loc3_] as BatlleData;
+               return _battleDataList[i] as BatlleData;
             }
-            _loc3_++;
+            i++;
          }
          return new BatlleData();
       }
@@ -159,68 +157,67 @@ package battleGroud
          SocketManager.Instance.addEventListener(PkgEvent.format(132,5),playerDataUpDate);
       }
       
-      protected function __onOpenView(param1:CEvent) : void
+      protected function __onOpenView(event:CEvent) : void
       {
-         if(param1.data == "battleground")
+         if(event.data == "battleground")
          {
             initBattleView();
          }
-         else if(param1.data == "ddtroom")
+         else if(event.data == "ddtroom")
          {
             addBattleSingleRoom();
          }
       }
       
-      protected function playerDataUpDate(param1:PkgEvent) : void
+      protected function playerDataUpDate(event:PkgEvent) : void
       {
          playerBattleData = new PlayerBattleData();
-         playerBattleData.Attack = param1.pkg.readInt();
-         playerBattleData.Defend = param1.pkg.readInt();
-         playerBattleData.Agility = param1.pkg.readInt();
-         playerBattleData.Lucky = param1.pkg.readInt();
-         playerBattleData.Damage = param1.pkg.readInt();
-         playerBattleData.Guard = param1.pkg.readInt();
-         playerBattleData.Blood = param1.pkg.readInt();
-         playerBattleData.Energy = param1.pkg.readInt();
+         playerBattleData.Attack = event.pkg.readInt();
+         playerBattleData.Defend = event.pkg.readInt();
+         playerBattleData.Agility = event.pkg.readInt();
+         playerBattleData.Lucky = event.pkg.readInt();
+         playerBattleData.Damage = event.pkg.readInt();
+         playerBattleData.Guard = event.pkg.readInt();
+         playerBattleData.Blood = event.pkg.readInt();
+         playerBattleData.Energy = event.pkg.readInt();
          playerBattleData.ID = PlayerManager.Instance.Self.ID;
       }
       
       private function orderData() : void
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.creatAndStartLoad(PathManager.solveRequestPath("FairBattleRewardTemp.xml"),5);
-         _loc1_.analyzer = new BattleGroundAnalyer(completeHander);
+         var loader:BaseLoader = LoadResourceManager.Instance.creatAndStartLoad(PathManager.solveRequestPath("FairBattleRewardTemp.xml"),5);
+         loader.analyzer = new BattleGroundAnalyer(completeHander);
       }
       
       private function celeTotalPrestigeData() : void
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.creatAndStartLoad(PathManager.solveRequestPath("CelebByTotalPrestige.xml"),5);
-         _loc1_.analyzer = new CeleTotalPrestigeAnalyer(completeHander2);
+         var loader:BaseLoader = LoadResourceManager.Instance.creatAndStartLoad(PathManager.solveRequestPath("CelebByTotalPrestige.xml"),5);
+         loader.analyzer = new CeleTotalPrestigeAnalyer(completeHander2);
       }
       
-      public function completeHander(param1:BattleGroundAnalyer) : void
+      public function completeHander(analyzer:BattleGroundAnalyer) : void
       {
-         _battleDataList = param1.battleDataList;
+         _battleDataList = analyzer.battleDataList;
          celeTotalPrestigeData();
       }
       
-      public function completeHander2(param1:CeleTotalPrestigeAnalyer) : void
+      public function completeHander2(analyzer:CeleTotalPrestigeAnalyer) : void
       {
-         _battlePresDataList = param1.battleDataList;
+         _battlePresDataList = analyzer.battleDataList;
          sendPkg();
       }
       
-      public function getCurrBattlePresData(param1:int) : BattlPrestigeData
+      public function getCurrBattlePresData(id:int) : BattlPrestigeData
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = _battlePresDataList.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var i:int = 0;
+         var len:int = _battlePresDataList.length;
+         for(i = 0; i < len; )
          {
-            if(param1 == _battlePresDataList[_loc3_].ID)
+            if(id == _battlePresDataList[i].ID)
             {
-               return _battlePresDataList[_loc3_];
+               return _battlePresDataList[i];
             }
-            _loc3_++;
+            i++;
          }
          return new BattlPrestigeData();
       }
@@ -265,24 +262,24 @@ package battleGroud
          UIModuleLoader.Instance.addUIModuleImp("ddtroom");
       }
       
-      private function __onProgress(param1:UIModuleEvent) : void
+      private function __onProgress(event:UIModuleEvent) : void
       {
-         if(param1.module == "battleground")
+         if(event.module == "battleground")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
       
       private function lodaDataTemplate() : void
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("FairBatttleWeeklyAwardTemp.xml"),5);
-         _loc1_.analyzer = new BattleWeeklyAwardAnalyzer(dataAnalyzer);
-         new HelperDataModuleLoad().loadDataModule([_loc1_],loadeDataComplete);
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("FairBatttleWeeklyAwardTemp.xml"),5);
+         loader.analyzer = new BattleWeeklyAwardAnalyzer(dataAnalyzer);
+         new HelperDataModuleLoad().loadDataModule([loader],loadeDataComplete);
       }
       
-      private function dataAnalyzer(param1:BattleWeeklyAwardAnalyzer) : void
+      private function dataAnalyzer(e:BattleWeeklyAwardAnalyzer) : void
       {
-         awardDataList = param1.dataList;
+         awardDataList = e.dataList;
       }
       
       public function show() : void
@@ -305,9 +302,9 @@ package battleGroud
          _battlGroudView = null;
       }
       
-      private function __onUIModuleComplete(param1:UIModuleEvent) : void
+      private function __onUIModuleComplete(evt:UIModuleEvent) : void
       {
-         if(param1.module == "battleground")
+         if(evt.module == "battleground")
          {
             UIModuleLoader.Instance.removeEventListener("uiModuleComplete",__onUIModuleComplete);
             UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);
@@ -315,7 +312,7 @@ package battleGroud
             UIModuleSmallLoading.Instance.hide();
             lodaDataTemplate();
          }
-         else if(param1.module == "ddtroom")
+         else if(evt.module == "ddtroom")
          {
             UIModuleLoader.Instance.removeEventListener("uiModuleComplete",__onUIModuleComplete);
             UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);
@@ -325,7 +322,7 @@ package battleGroud
          }
       }
       
-      private function __onClose(param1:Event) : void
+      private function __onClose(event:Event) : void
       {
          _moduleComplete = false;
          UIModuleSmallLoading.Instance.hide();

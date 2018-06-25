@@ -18,47 +18,46 @@ package starling.scene.hall.player
       
       private var _mountsType:int;
       
-      public function HallPlayerBodyLoader(param1:Array, param2:Array, param3:Boolean, param4:int)
+      public function HallPlayerBodyLoader(style:Array, color:Array, sex:Boolean, mountsType:int)
       {
-         _style = param1;
-         _color = param2;
-         _sex = param3;
-         _mountsType = param4;
+         _style = style;
+         _color = color;
+         _sex = sex;
+         _mountsType = mountsType;
          super();
       }
       
       override protected function setLoaderData() : void
       {
-         var _loc1_:Array = _style;
-         var _loc2_:Array = _color;
+         var style:Array = _style;
+         var color:Array = _color;
          if(_mountsType == 140)
          {
-            _loaders.push(new HallSceneCharacterLayer(ItemManager.Instance.getTemplateById(int(_loc1_[4].split("|")[0])),_loc2_[4],1,_sex,2));
+            _loaders.push(new HallSceneCharacterLayer(ItemManager.Instance.getTemplateById(int(style[4].split("|")[0])),color[4],1,_sex,2));
          }
          else
          {
-            _loaders.push(new HallSceneCharacterLayer(ItemManager.Instance.getTemplateById(int(_loc1_[4].split("|")[0])),_loc2_[4],1,_sex,0));
-            _loaders.push(new HallSceneCharacterLayer(ItemManager.Instance.getTemplateById(int(_loc1_[4].split("|")[0])),_loc2_[4],2,_sex,0));
-            _loaders.push(new HallSceneCharacterLayer(ItemManager.Instance.getTemplateById(int(_loc1_[4].split("|")[0])),_loc2_[4],1,_sex,1));
+            _loaders.push(new HallSceneCharacterLayer(ItemManager.Instance.getTemplateById(int(style[4].split("|")[0])),color[4],1,_sex,0));
+            _loaders.push(new HallSceneCharacterLayer(ItemManager.Instance.getTemplateById(int(style[4].split("|")[0])),color[4],2,_sex,0));
+            _loaders.push(new HallSceneCharacterLayer(ItemManager.Instance.getTemplateById(int(style[4].split("|")[0])),color[4],1,_sex,1));
          }
       }
       
       override protected function drawCharacter() : void
       {
-         var _loc1_:* = 0;
+         var i:* = 0;
          if(_loaders[0].width == 0 || _loaders[0].height == 0)
          {
             return;
          }
          _content = new BitmapData(1024,1024,true,0);
-         _loc1_ = uint(0);
-         while(_loc1_ < _loaders.length)
+         for(i = uint(0); i < _loaders.length; )
          {
-            if(!_loaders[_loc1_].isAllLoadSucceed)
+            if(!_loaders[i].isAllLoadSucceed)
             {
                _isAllLoadSucceed = false;
             }
-            _loc1_++;
+            i++;
          }
          if(_mountsType == 140)
          {

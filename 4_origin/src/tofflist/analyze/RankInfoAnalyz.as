@@ -12,20 +12,20 @@ package tofflist.analyze
       
       public var info:RankInfo;
       
-      public function RankInfoAnalyz(param1:Function)
+      public function RankInfoAnalyz(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc2_:* = null;
-         _xml = new XML(param1);
+         var xmllist:* = null;
+         _xml = new XML(data);
          if(_xml.@value == "true")
          {
-            _loc2_ = XML(_xml)..Item;
+            xmllist = XML(_xml)..Item;
             info = new RankInfo();
-            ObjectUtils.copyPorpertiesByXML(info,_loc2_[0]);
+            ObjectUtils.copyPorpertiesByXML(info,xmllist[0]);
             onAnalyzeComplete();
          }
          else

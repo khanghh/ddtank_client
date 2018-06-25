@@ -1,7 +1,6 @@
 package morn.core.components
 {
    import flash.events.Event;
-   import flash.events.MouseEvent;
    
    public class RadioButton extends Button
    {
@@ -9,9 +8,9 @@ package morn.core.components
       
       protected var _value:Object;
       
-      public function RadioButton(param1:String = null, param2:String = "")
+      public function RadioButton(skin:String = null, label:String = "")
       {
-         super(param1,param2);
+         super(skin,label);
       }
       
       override protected function preinitialize() : void
@@ -25,7 +24,7 @@ package morn.core.components
       {
          super.initialize();
          _btnLabel.autoSize = "left";
-         addEventListener(MouseEvent.CLICK,this.onClick);
+         addEventListener("click",onClick);
       }
       
       override protected function changeLabelSize() : void
@@ -37,28 +36,28 @@ package morn.core.components
       
       override public function commitMeasure() : void
       {
-         exeCallLater(this.changeLabelSize);
+         exeCallLater(changeLabelSize);
       }
       
-      protected function onClick(param1:Event) : void
+      protected function onClick(e:Event) : void
       {
          selected = true;
       }
       
       public function get value() : Object
       {
-         return this._value != null?this._value:label;
+         return _value != null?_value:label;
       }
       
-      public function set value(param1:Object) : void
+      public function set value(obj:Object) : void
       {
-         this._value = param1;
+         _value = obj;
       }
       
       override public function dispose() : void
       {
          super.dispose();
-         this._value = null;
+         _value = null;
       }
    }
 }

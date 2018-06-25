@@ -24,15 +24,15 @@ package com.yy.game
       
       private var _referrer:String;
       
-      public function GameProfileParams(param1:Object = null)
+      public function GameProfileParams(data:Object = null)
       {
-         var _loc2_:Object = null;
-         var _loc3_:* = null;
-         var _loc4_:String = null;
+         var map:Object = null;
+         var key:* = null;
+         var thisKey:String = null;
          super();
-         if(param1)
+         if(data)
          {
-            _loc2_ = {
+            map = {
                "equip":"equip",
                "fight_cap":"fightPower",
                "ive":"iversion",
@@ -43,10 +43,10 @@ package com.yy.game
                "sex":"sex",
                "uve":"updateVersion"
             };
-            for(_loc3_ in param1)
+            for(key in data)
             {
-               _loc4_ = _loc2_[_loc3_];
-               this[_loc4_] = param1[_loc3_];
+               thisKey = map[key];
+               this[thisKey] = data[key];
             }
          }
       }
@@ -56,9 +56,9 @@ package com.yy.game
          return this._fightPower;
       }
       
-      public function set fightPower(param1:int) : void
+      public function set fightPower(value:int) : void
       {
-         this._fightPower = param1;
+         this._fightPower = value;
       }
       
       public function get sex() : String
@@ -66,13 +66,13 @@ package com.yy.game
          return this._sex;
       }
       
-      public function set sex(param1:String) : void
+      public function set sex(value:String) : void
       {
-         if(param1 != Gender.MALE && param1 != Gender.FEMALE)
+         if(value != Gender.MALE && value != Gender.FEMALE)
          {
             throw new ArgumentError("性别必须是Gender类的常量值");
          }
-         this._sex = param1;
+         this._sex = value;
       }
       
       public function get job() : String
@@ -80,13 +80,13 @@ package com.yy.game
          return this._job;
       }
       
-      public function set job(param1:String) : void
+      public function set job(value:String) : void
       {
-         if(param1 == null || param1.length <= 0)
+         if(value == null || value.length <= 0)
          {
             throw new ArgumentError("job参数不能是null或空字符串");
          }
-         this._job = param1;
+         this._job = value;
       }
       
       public function get partner() : String
@@ -94,13 +94,13 @@ package com.yy.game
          return this._partner;
       }
       
-      public function set partner(param1:String) : void
+      public function set partner(value:String) : void
       {
-         if(param1 == null || param1.length <= 0)
+         if(value == null || value.length <= 0)
          {
             throw new ArgumentError("partner参数不能是null或空字符串");
          }
-         this._partner = param1;
+         this._partner = value;
       }
       
       public function get equip() : String
@@ -108,13 +108,13 @@ package com.yy.game
          return this._equip;
       }
       
-      public function set equip(param1:String) : void
+      public function set equip(value:String) : void
       {
-         if(param1 == null || param1.length <= 0)
+         if(value == null || value.length <= 0)
          {
             throw new ArgumentError("equip参数不能是null或空字符串");
          }
-         this._equip = param1;
+         this._equip = value;
       }
       
       public function get iversion() : String
@@ -122,13 +122,13 @@ package com.yy.game
          return this._iversion;
       }
       
-      public function set iversion(param1:String) : void
+      public function set iversion(value:String) : void
       {
-         if(param1 == null || param1.length <= 0)
+         if(value == null || value.length <= 0)
          {
             throw new ArgumentError("iversion参数不能是null或空字符串");
          }
-         this._iversion = param1;
+         this._iversion = value;
       }
       
       public function get updateVersion() : String
@@ -140,13 +140,13 @@ package com.yy.game
          return this._updateVersion;
       }
       
-      public function set updateVersion(param1:String) : void
+      public function set updateVersion(value:String) : void
       {
-         if(param1 == null || param1.length <= 0)
+         if(value == null || value.length <= 0)
          {
             throw new ArgumentError("updateVersion参数不能是null或空字符串");
          }
-         this._updateVersion = param1;
+         this._updateVersion = value;
       }
       
       public function get runResource() : String
@@ -154,13 +154,13 @@ package com.yy.game
          return this._runResource;
       }
       
-      public function set runResource(param1:String) : void
+      public function set runResource(value:String) : void
       {
-         if(param1 == null || param1.length <= 0)
+         if(value == null || value.length <= 0)
          {
             throw new ArgumentError("runResource参数不能是null或空字符串");
          }
-         this._runResource = param1;
+         this._runResource = value;
       }
       
       public function get referrer() : String
@@ -168,40 +168,40 @@ package com.yy.game
          return this._referrer;
       }
       
-      public function set referrer(param1:String) : void
+      public function set referrer(value:String) : void
       {
-         if(param1 == null || param1.length <= 0)
+         if(value == null || value.length <= 0)
          {
             throw new ArgumentError("referrer参数不能是null或空字符串");
          }
-         this._referrer = param1;
+         this._referrer = value;
       }
       
-      function setVariable(param1:URLVariables) : void
+      function setVariable(variable:URLVariables) : void
       {
          if(this._iversion)
          {
-            param1.ive = this._iversion;
+            variable.ive = this._iversion;
          }
          if(this._updateVersion)
          {
-            param1.uve = this._updateVersion;
+            variable.uve = this._updateVersion;
          }
          if(this._runResource)
          {
-            param1.rso = this._runResource;
+            variable.rso = this._runResource;
          }
          if(this._referrer)
          {
-            param1.ref = this._referrer;
+            variable.ref = this._referrer;
          }
       }
       
-      private function getVal(param1:String, param2:Object) : String
+      private function getVal(key:String, obj:Object) : String
       {
-         if(param2.hasOwnProperty(param1))
+         if(obj.hasOwnProperty(key))
          {
-            return param2[param1];
+            return obj[key];
          }
          return null;
       }

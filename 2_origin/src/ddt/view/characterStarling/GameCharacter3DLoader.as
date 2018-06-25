@@ -34,9 +34,9 @@ package ddt.view.characterStarling
       
       public var stateType:int = -1;
       
-      public function GameCharacter3DLoader(param1:PlayerInfo)
+      public function GameCharacter3DLoader(info:PlayerInfo)
       {
-         super(param1);
+         super(info);
       }
       
       public function get STATES_ENUM() : Array
@@ -50,15 +50,15 @@ package ddt.view.characterStarling
       
       override protected function initLayers() : void
       {
-         var _loc1_:* = null;
-         var _loc3_:int = 0;
+         var arr:* = null;
+         var i:int = 0;
          if(_layers != null)
          {
             var _loc5_:int = 0;
             var _loc4_:* = _layers;
-            for each(var _loc2_ in _layers)
+            for each(var layer in _layers)
             {
-               _loc2_.dispose();
+               layer.dispose();
             }
             _layers = null;
          }
@@ -87,13 +87,12 @@ package ddt.view.characterStarling
             {
                _layers.push(_layerFactory.createLayer(ItemManager.Instance.getTemplateById(int(_recordStyle[6].split("|")[0])),_info.Sex,_recordColor[6],"game",true,1,_recordStyle[6].split("|")[1]));
             }
-            _loc1_ = STATES_ENUM;
-            _loc3_ = 0;
-            while(_loc3_ < _loc1_.length)
+            arr = STATES_ENUM;
+            for(i = 0; i < arr.length; )
             {
-               _layers.push(_layerFactory.createLayer(ItemManager.Instance.getTemplateById(int(_recordStyle[5].split("|")[0])),_info.Sex,_recordColor[5],"state",false,1,null,String(_loc1_[_loc3_][0])));
-               _layers.push(_layerFactory.createLayer(null,_info.Sex,"","specialEffect",false,1,null,String(_loc1_[_loc3_][1])));
-               _loc3_++;
+               _layers.push(_layerFactory.createLayer(ItemManager.Instance.getTemplateById(int(_recordStyle[5].split("|")[0])),_info.Sex,_recordColor[5],"state",false,1,null,String(arr[i][0])));
+               _layers.push(_layerFactory.createLayer(null,_info.Sex,"","specialEffect",false,1,null,String(arr[i][1])));
+               i++;
             }
          }
       }
@@ -103,9 +102,9 @@ package ddt.view.characterStarling
          super.update();
       }
       
-      override protected function getIndexByTemplateId(param1:String) : int
+      override protected function getIndexByTemplateId(id:String) : int
       {
-         var _loc2_:* = param1.charAt(0);
+         var _loc2_:* = id.charAt(0);
          if("1" !== _loc2_)
          {
             if("2" !== _loc2_)
@@ -134,11 +133,11 @@ package ddt.view.characterStarling
             }
             return 0;
          }
-         if(param1.charAt(1) == "3")
+         if(id.charAt(1) == "3")
          {
             return 0;
          }
-         if(param1.charAt(1) == "5")
+         if(id.charAt(1) == "5")
          {
             return 8;
          }
@@ -159,9 +158,9 @@ package ddt.view.characterStarling
       
       private function drawSuits() : void
       {
-         var _loc1_:Number = _layers[1].width;
-         var _loc2_:Number = _layers[1].height;
-         if(_loc1_ == 0 || _loc2_ == 0)
+         var picWidth:Number = _layers[1].width;
+         var picHeight:Number = _layers[1].height;
+         if(picWidth == 0 || picHeight == 0)
          {
             return;
          }
@@ -169,12 +168,12 @@ package ddt.view.characterStarling
          {
             _normalSuit.dispose();
          }
-         _normalSuit = new BitmapData(_loc1_,_loc2_,true,0);
+         _normalSuit = new BitmapData(picWidth,picHeight,true,0);
          if(_lackHpSuit)
          {
             _lackHpSuit.dispose();
          }
-         _lackHpSuit = new BitmapData(_loc1_,_loc2_,true,0);
+         _lackHpSuit = new BitmapData(picWidth,picHeight,true,0);
          _normalSuit.draw((_layers[2] as ILayer).getContent(),null,null,"normal");
          _lackHpSuit.draw((_layers[2] as ILayer).getContent(),null,null,"normal");
          _normalSuit.draw((_layers[0] as ILayer).getContent(),null,null,"normal");
@@ -183,13 +182,13 @@ package ddt.view.characterStarling
       
       private function drawNormal() : void
       {
-         var _loc9_:int = 0;
-         var _loc7_:int = 0;
-         var _loc2_:* = null;
-         var _loc4_:* = null;
-         var _loc1_:Number = _layers[1].width;
-         var _loc10_:Number = _layers[1].height;
-         if(_loc1_ == 0 || _loc10_ == 0)
+         var i:int = 0;
+         var j:int = 0;
+         var spf:* = null;
+         var sp:* = null;
+         var picWidth:Number = _layers[1].width;
+         var picHeight:Number = _layers[1].height;
+         if(picWidth == 0 || picHeight == 0)
          {
             return;
          }
@@ -197,19 +196,19 @@ package ddt.view.characterStarling
          {
             _face.dispose();
          }
-         _face = new BitmapData(_loc1_,_loc10_,true,0);
+         _face = new BitmapData(picWidth,picHeight,true,0);
          if(_faceup)
          {
             _faceup.dispose();
          }
-         _faceup = new BitmapData(_loc1_,_loc10_,true,0);
+         _faceup = new BitmapData(picWidth,picHeight,true,0);
          if(_sp)
          {
             var _loc12_:int = 0;
             var _loc11_:* = _sp;
-            for each(var _loc3_ in _sp)
+            for each(var bmd in _sp)
             {
-               _loc3_.dispose();
+               bmd.dispose();
             }
          }
          _sp = new Vector.<BitmapData>();
@@ -217,9 +216,9 @@ package ddt.view.characterStarling
          {
             var _loc14_:int = 0;
             var _loc13_:* = _lackHpFace;
-            for each(var _loc8_ in _lackHpFace)
+            for each(var bmd1 in _lackHpFace)
             {
-               _loc8_.dispose();
+               bmd1.dispose();
             }
          }
          _lackHpFace = new Vector.<BitmapData>();
@@ -227,41 +226,39 @@ package ddt.view.characterStarling
          {
             _faceDown.dispose();
          }
-         _faceDown = new BitmapData(_loc1_,_loc10_,true,0);
-         _loc9_ = 6;
-         while(_loc9_ >= 0)
+         _faceDown = new BitmapData(picWidth,picHeight,true,0);
+         for(i = 6; i >= 0; )
          {
-            if(_layers[_loc9_].info.CategoryID != 15)
+            if(_layers[i].info.CategoryID != 15)
             {
-               if(_loc9_ == 5)
+               if(i == 5)
                {
-                  _face.draw((_layers[_loc9_] as ILayer).getContent(),null,null,"normal");
+                  _face.draw((_layers[i] as ILayer).getContent(),null,null,"normal");
                }
-               else if(_loc9_ == 6)
+               else if(i == 6)
                {
-                  _faceDown.draw((_layers[_loc9_] as ILayer).getContent(),null,null,"normal");
+                  _faceDown.draw((_layers[i] as ILayer).getContent(),null,null,"normal");
                }
-               else if(_loc9_ < 5)
+               else if(i < 5)
                {
-                  _faceup.draw((_layers[_loc9_] as ILayer).getContent(),null,null,"normal");
+                  _faceup.draw((_layers[i] as ILayer).getContent(),null,null,"normal");
                }
             }
-            _loc9_--;
+            i--;
          }
-         var _loc6_:Number = _layers[8].width;
-         var _loc5_:Number = _layers[8].height;
-         _loc6_ = _loc6_ == 0?50:Number(_loc6_);
-         _loc5_ = _loc5_ == 0?50:Number(_loc5_);
-         _loc7_ = 8;
-         while(_loc7_ < _layers.length)
+         var picWidth1:Number = _layers[8].width;
+         var picHeight1:Number = _layers[8].height;
+         picWidth1 = picWidth1 == 0?50:Number(picWidth1);
+         picHeight1 = picHeight1 == 0?50:Number(picHeight1);
+         for(j = 8; j < _layers.length; )
          {
-            _loc2_ = new BitmapData(_loc6_,_loc5_,true,0);
-            _loc4_ = new BitmapData(_loc6_,_loc5_,true,0);
-            _loc2_.draw((_layers[_loc7_] as ILayer).getContent(),null,null,"normal");
-            _loc4_.draw((_layers[_loc7_ + 1] as ILayer).getContent(),null,null,"normal");
-            _lackHpFace.push(_loc2_);
-            _sp.push(_loc4_);
-            _loc7_ = _loc7_ + 2;
+            spf = new BitmapData(picWidth1,picHeight1,true,0);
+            sp = new BitmapData(picWidth1,picHeight1,true,0);
+            spf.draw((_layers[j] as ILayer).getContent(),null,null,"normal");
+            sp.draw((_layers[j + 1] as ILayer).getContent(),null,null,"normal");
+            _lackHpFace.push(spf);
+            _sp.push(sp);
+            j = j + 2;
          }
       }
       
@@ -270,13 +267,13 @@ package ddt.view.characterStarling
          return [null,_sp,_faceup,_face,_lackHpFace,_faceDown,_normalSuit,_lackHpSuit];
       }
       
-      override protected function getCharacterLoader(param1:ItemTemplateInfo, param2:String = "", param3:String = null) : ILayer
+      override protected function getCharacterLoader(value:ItemTemplateInfo, color:String = "", pic:String = null) : ILayer
       {
-         if(param1.CategoryID == 3)
+         if(value.CategoryID == 3)
          {
-            return _layerFactory.createLayer(param1,_info.Sex,param2,"game",false,_info.getHairType(),param3);
+            return _layerFactory.createLayer(value,_info.Sex,color,"game",false,_info.getHairType(),pic);
          }
-         return _layerFactory.createLayer(param1,_info.Sex,param2,"game",false,1,param3);
+         return _layerFactory.createLayer(value,_info.Sex,color,"game",false,1,pic);
       }
       
       override public function dispose() : void

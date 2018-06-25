@@ -37,36 +37,36 @@ package demonChiYou.view
       
       private var _rewardResultItemHasBuy:Image;
       
-      public function RewardResultItem(param1:int)
+      public function RewardResultItem(index:int)
       {
          super();
-         _index = param1;
+         _index = index;
          initView();
       }
       
       private function initView() : void
       {
-         var _loc1_:* = null;
+         var Name:* = null;
          _mgr = DemonChiYouManager.instance;
          _model = _mgr.model;
          _data = _model.shopInfoArr[_index];
-         var _loc2_:InventoryItemInfo = _data["InventoryItemInfo"];
-         _rewardResultItemGoodNameTf = UICreatShortcut.creatTextAndAdd("demonChiYou.rewardResultItemGoodNameTf",_loc2_.Name + "*" + _loc2_.Count,this);
+         var inventoryItemInfo:InventoryItemInfo = _data["InventoryItemInfo"];
+         _rewardResultItemGoodNameTf = UICreatShortcut.creatTextAndAdd("demonChiYou.rewardResultItemGoodNameTf",inventoryItemInfo.Name + "*" + inventoryItemInfo.Count,this);
          if(_data["HasRoll"])
          {
             _rewardResultItemOwnerNameTf = UICreatShortcut.creatTextAndAdd("demonChiYou.rewardResultItemOwnerNameTf","",this);
             _rewardResultItemOwnerNameTf.htmlText = LanguageMgr.GetTranslation("demonChiYou.rewardResultItemOwnerName",_data["NickName"]);
          }
-         var _loc3_:int = _data["TopPoint"] == -1?0:_data["TopPoint"];
-         _rewardResultItemTopPointTf = UICreatShortcut.creatTextAndAdd("demonChiYou.rewardResultItemTopPointTf",LanguageMgr.GetTranslation("demonChiYou.rewardResultItemTopPoint",_loc3_),this);
-         var _loc4_:int = _data["MyPoint"] == -1?0:_data["MyPoint"];
-         _rewardResultItemMyPointTf = UICreatShortcut.creatTextAndAdd("demonChiYou.rewardResultItemMyPointTf",LanguageMgr.GetTranslation("demonChiYou.rewardResultItemMyPoint",_loc4_),this);
-         if(_loc4_ > 0)
+         var topPoint:int = _data["TopPoint"] == -1?0:_data["TopPoint"];
+         _rewardResultItemTopPointTf = UICreatShortcut.creatTextAndAdd("demonChiYou.rewardResultItemTopPointTf",LanguageMgr.GetTranslation("demonChiYou.rewardResultItemTopPoint",topPoint),this);
+         var myPoint:int = _data["MyPoint"] == -1?0:_data["MyPoint"];
+         _rewardResultItemMyPointTf = UICreatShortcut.creatTextAndAdd("demonChiYou.rewardResultItemMyPointTf",LanguageMgr.GetTranslation("demonChiYou.rewardResultItemMyPoint",myPoint),this);
+         if(myPoint > 0)
          {
             if(_data["PlayerId"] != PlayerManager.Instance.Self.ID)
             {
-               _loc1_ = ItemManager.Instance.getTemplateById(11903).Name + "*" + _data["MyRollCount"];
-               _rewardResultItemCongratulateTf = UICreatShortcut.creatTextAndAdd("demonChiYou.rewardResultItemCongratulateTf",LanguageMgr.GetTranslation("demonChiYou.rewardResultItemCongratulate",_loc1_),this);
+               Name = ItemManager.Instance.getTemplateById(11903).Name + "*" + _data["MyRollCount"];
+               _rewardResultItemCongratulateTf = UICreatShortcut.creatTextAndAdd("demonChiYou.rewardResultItemCongratulateTf",LanguageMgr.GetTranslation("demonChiYou.rewardResultItemCongratulate",Name),this);
             }
          }
          if(_data["HasBuy"])

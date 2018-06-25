@@ -53,20 +53,20 @@ package bank.view
          getBtn.addEventListener("click",canGetMoney);
       }
       
-      private function textChange(param1:Event) : void
+      private function textChange(e:Event) : void
       {
-         var _loc2_:BankRecordInfo = BankManager.instance.model.list[(_currentPage - 1) * 3 + _index];
-         if(parseInt(getInput.text) > _loc2_.Amount)
+         var info:BankRecordInfo = BankManager.instance.model.list[(_currentPage - 1) * 3 + _index];
+         if(parseInt(getInput.text) > info.Amount)
          {
-            getInput.text = String(_loc2_.Amount);
+            getInput.text = String(info.Amount);
          }
       }
       
-      private function canGetMoney(param1:MouseEvent) : void
+      private function canGetMoney(e:MouseEvent) : void
       {
-         var _loc5_:* = null;
-         var _loc2_:int = 0;
-         var _loc3_:* = null;
+         var msg:* = null;
+         var profit:int = 0;
+         var alert:* = null;
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -79,47 +79,47 @@ package bank.view
             return;
          }
          _clickTime = getTimer();
-         var _loc7_:BankRecordInfo = BankManager.instance.model.list[(_currentPage - 1) * 3 + _index];
-         _info = _loc7_;
-         var _loc6_:int = _loc7_.bankId;
-         var _loc4_:DictionaryData = BankManager.instance.model.data;
+         var info:BankRecordInfo = BankManager.instance.model.list[(_currentPage - 1) * 3 + _index];
+         _info = info;
+         var bankId:int = info.bankId;
+         var data:DictionaryData = BankManager.instance.model.data;
          if(getInput.text == "" || parseInt(getInput.text) == 0)
          {
-            _loc5_ = LanguageMgr.GetTranslation("tank.bank.noGetMoney");
-            MessageTipManager.getInstance().show(_loc5_,0,true,1);
+            msg = LanguageMgr.GetTranslation("tank.bank.noGetMoney");
+            MessageTipManager.getInstance().show(msg,0,true,1);
          }
-         else if(parseInt(getInput.text) > _loc7_.Amount)
+         else if(parseInt(getInput.text) > info.Amount)
          {
-            _loc5_ = LanguageMgr.GetTranslation("tank.bank.getMoneyAlert",_loc4_[_loc7_.tempId].MinAmount);
-            MessageTipManager.getInstance().show(_loc5_,0,true,1);
+            msg = LanguageMgr.GetTranslation("tank.bank.getMoneyAlert",data[info.tempId].MinAmount);
+            MessageTipManager.getInstance().show(msg,0,true,1);
          }
-         else if(parseInt(getInput.text) % _loc4_[_loc7_.tempId].Multiple != 0)
+         else if(parseInt(getInput.text) % data[info.tempId].Multiple != 0)
          {
-            _loc5_ = LanguageMgr.GetTranslation("tank.bank.getBeishu",_loc4_[_loc7_.tempId].Multiple);
-            MessageTipManager.getInstance().show(_loc5_,0,true,1);
+            msg = LanguageMgr.GetTranslation("tank.bank.getBeishu",data[info.tempId].Multiple);
+            MessageTipManager.getInstance().show(msg,0,true,1);
          }
          else
          {
-            _loc2_ = 0;
-            if(BankManager.instance.isAchieve(_loc7_))
+            profit = 0;
+            if(BankManager.instance.isAchieve(info))
             {
-               _loc2_ = BankManager.instance.getProfitNum(_loc7_,false,parseInt(getInput.text));
+               profit = BankManager.instance.getProfitNum(info,false,parseInt(getInput.text));
             }
             else
             {
-               _loc2_ = BankManager.instance.getProfitNum(_loc7_,false,parseInt(getInput.text),false) * (100 - BankManager.instance.model.data[_loc7_.tempId].Consume) / 100;
+               profit = BankManager.instance.getProfitNum(info,false,parseInt(getInput.text),false) * (100 - BankManager.instance.model.data[info.tempId].Consume) / 100;
             }
-            _loc5_ = LanguageMgr.GetTranslation("tank.bank.getalert",parseInt(getInput.text),_loc2_);
-            _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),_loc5_,LanguageMgr.GetTranslation("shop.PresentFrame.OkBtnText"),LanguageMgr.GetTranslation("shop.PresentFrame.CancelBtnText"),true,false,false,2);
-            _loc3_.addEventListener("response",onResponse);
+            msg = LanguageMgr.GetTranslation("tank.bank.getalert",parseInt(getInput.text),profit);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),msg,LanguageMgr.GetTranslation("shop.PresentFrame.OkBtnText"),LanguageMgr.GetTranslation("shop.PresentFrame.CancelBtnText"),true,false,false,2);
+            alert.addEventListener("response",onResponse);
          }
       }
       
-      protected function onResponse(param1:FrameEvent) : void
+      protected function onResponse(e:FrameEvent) : void
       {
-         param1.target.removeEventListener("response",onResponse);
+         e.target.removeEventListener("response",onResponse);
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(e.responseCode))
          {
             default:
             default:
@@ -131,23 +131,23 @@ package bank.view
          }
       }
       
-      private function getMoney(param1:int) : void
+      private function getMoney(bankId:int) : void
       {
-         var _loc2_:int = parseInt(getInput.text);
-         SocketManager.Instance.out.sendBankGetMoney(param1,_loc2_);
+         var Count:int = parseInt(getInput.text);
+         SocketManager.Instance.out.sendBankGetMoney(bankId,Count);
       }
       
-      public function setInfo(param1:int, param2:int) : void
+      public function setInfo(currentPage:int, index:int) : void
       {
-         var _loc5_:Number = NaN;
-         var _loc4_:Number = NaN;
-         var _loc3_:Number = NaN;
-         _currentPage = param1;
-         _index = param2 == -1?0:param2;
-         var _loc7_:BankRecordInfo = BankManager.instance.model.list[(_currentPage - 1) * 3 + _index];
-         moneyNum.text = String(_loc7_.Amount) + " " + LanguageMgr.GetTranslation("createConsortionFrame.ticketText.Text2");
-         var _loc6_:DictionaryData = BankManager.instance.model.data;
-         if(_loc6_[_loc7_.tempId].DeadLine == 0)
+         var now:Number = NaN;
+         var leftTimeNum:Number = NaN;
+         var time:Number = NaN;
+         _currentPage = currentPage;
+         _index = index == -1?0:index;
+         var data:BankRecordInfo = BankManager.instance.model.list[(_currentPage - 1) * 3 + _index];
+         moneyNum.text = String(data.Amount) + " " + LanguageMgr.GetTranslation("createConsortionFrame.ticketText.Text2");
+         var modelData:DictionaryData = BankManager.instance.model.data;
+         if(modelData[data.tempId].DeadLine == 0)
          {
             getTypeImg.skin = "asset.bank.checking";
             saveType.text = LanguageMgr.GetTranslation("tank.bank.checkingAccountGet");
@@ -158,33 +158,33 @@ package bank.view
          {
             getTypeImg.skin = "asset.bank.regular";
             getTip.text = LanguageMgr.GetTranslation("tank.bank.deadTip");
-            saveType.text = LanguageMgr.GetTranslation("tank.bank.dingqiAccount") + LanguageMgr.GetTranslation("tank.bank.monthNum",_loc6_[_loc7_.tempId].DeadLine);
-            _loc5_ = TimeManager.Instance.Now().time;
-            _loc4_ = _loc7_.begainTime.time;
-            _loc3_ = _loc6_[_loc7_.tempId].DeadLine * 30 * 24 * 60 * 60 * 1000;
-            _loc4_ = _loc4_ + _loc3_ - _loc5_;
-            if(_loc4_ <= 0)
+            saveType.text = LanguageMgr.GetTranslation("tank.bank.dingqiAccount") + LanguageMgr.GetTranslation("tank.bank.monthNum",modelData[data.tempId].DeadLine);
+            now = TimeManager.Instance.Now().time;
+            leftTimeNum = data.begainTime.time;
+            time = modelData[data.tempId].DeadLine * 30 * 24 * 60 * 60 * 1000;
+            leftTimeNum = leftTimeNum + time - now;
+            if(leftTimeNum <= 0)
             {
                leftTime.text = LanguageMgr.GetTranslation("tank.bank.arriveGetTime");
             }
             else
             {
-               _loc4_ = _loc4_ / 1000 / 60 / 60 / 24;
-               leftTime.text = _loc4_ >= 1?LanguageMgr.GetTranslation("tank.bank.leftManyTime",int(_loc4_)):LanguageMgr.GetTranslation("tank.bank.leftLittleTime");
+               leftTimeNum = leftTimeNum / 1000 / 60 / 60 / 24;
+               leftTime.text = leftTimeNum >= 1?LanguageMgr.GetTranslation("tank.bank.leftManyTime",int(leftTimeNum)):LanguageMgr.GetTranslation("tank.bank.leftLittleTime");
             }
          }
-         InterestRate.text = LanguageMgr.GetTranslation("tank.bank.interestRate",Number(_loc6_[_loc7_.tempId].InterestRate / 100));
-         myMoney.text = String(_loc7_.Amount);
-         profitMoney.text = String(BankManager.instance.getProfitNum(_loc7_,true));
+         InterestRate.text = LanguageMgr.GetTranslation("tank.bank.interestRate",Number(modelData[data.tempId].InterestRate / 100));
+         myMoney.text = String(data.Amount);
+         profitMoney.text = String(BankManager.instance.getProfitNum(data,true));
       }
       
-      private function getViewBack(param1:MouseEvent) : void
+      private function getViewBack(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          BankManager.instance.dispatchEvent(new GameBankEvent("bank_right_view_back"));
       }
       
-      private function goSave(param1:MouseEvent) : void
+      private function goSave(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          BankManager.instance.dispatchEvent(new GameBankEvent("bank_right_view_change",{

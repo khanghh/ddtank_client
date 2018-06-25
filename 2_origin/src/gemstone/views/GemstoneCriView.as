@@ -103,25 +103,24 @@ package gemstone.views
       
       public function GemstoneCriView()
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var gemCont:* = null;
+         var p:* = null;
          _centerP = new Point(0,0);
          super();
          _pointArray = [];
          _startPointArr = [];
          _funArray = [];
          _contArray = new Vector.<GemstoneContent>();
-         _loc3_ = 0;
-         while(_loc3_ < 3)
+         for(i = 0; i < 3; )
          {
-            _loc2_ = new GemstoneContent(_loc3_,_centerP);
-            _loc2_.id = _loc3_ + 1;
-            addChild(_loc2_);
-            _contArray.push(_loc2_);
-            _loc1_ = new Point(_loc2_.x,_loc2_.y);
-            _startPointArr.push(_loc1_);
-            _loc3_++;
+            gemCont = new GemstoneContent(i,_centerP);
+            gemCont.id = i + 1;
+            addChild(gemCont);
+            _contArray.push(gemCont);
+            p = new Point(gemCont.x,gemCont.y);
+            _startPointArr.push(p);
+            i++;
          }
          _item = new Item();
          _item.x = -105;
@@ -177,41 +176,40 @@ package gemstone.views
          _bgGoldenShiningAnimation.y = -170;
       }
       
-      public function upDataIcon(param1:ItemTemplateInfo) : void
+      public function upDataIcon(info:ItemTemplateInfo) : void
       {
-         _item.upDataIcon(param1);
+         _item.upDataIcon(info);
       }
       
-      public function initFigSkin(param1:String) : void
+      public function initFigSkin(str:String) : void
       {
-         _contArray[0].loadSikn(param1);
-         _contArray[1].loadSikn(param1);
-         _contArray[2].loadSikn(param1);
+         _contArray[0].loadSikn(str);
+         _contArray[1].loadSikn(str);
+         _contArray[2].loadSikn(str);
          _contArray[0].selAlphe(0.4);
          _contArray[1].selAlphe(0.4);
          _contArray[2].selAlphe(0.4);
       }
       
-      public function resetGemstoneList(param1:Vector.<GemstListInfo>) : void
+      public function resetGemstoneList(list:Vector.<GemstListInfo>) : void
       {
-         var _loc6_:int = 0;
-         var _loc5_:int = 0;
-         var _loc2_:int = 0;
-         var _loc4_:int = param1.length;
-         _loc6_ = 0;
-         while(_loc6_ < _loc4_)
+         var i:int = 0;
+         var t_j:int = 0;
+         var total:int = 0;
+         var len:int = list.length;
+         for(i = 0; i < len; )
          {
-            _contArray[_loc6_].x = _startPointArr[_loc6_].x;
-            _contArray[_loc6_].y = _startPointArr[_loc6_].y;
-            _loc6_++;
+            _contArray[i].x = _startPointArr[i].x;
+            _contArray[i].y = _startPointArr[i].y;
+            i++;
          }
-         _loc5_ = 0;
-         while(_loc5_ < 3 && _loc5_ < _loc4_)
+         t_j = 0;
+         while(t_j < 3 && t_j < len)
          {
-            if(param1[_loc5_].place == 0)
+            if(list[t_j].place == 0)
             {
-               _contArray[0].info = param1[_loc5_];
-               if(param1[_loc5_].level > 0)
+               _contArray[0].info = list[t_j];
+               if(list[t_j].level > 0)
                {
                   _contArray[0].selAlphe(1);
                }
@@ -221,10 +219,10 @@ package gemstone.views
                }
                _contArray[0].upDataLevel();
             }
-            else if(param1[_loc5_].place == 1)
+            else if(list[t_j].place == 1)
             {
-               _contArray[1].info = param1[_loc5_];
-               if(param1[_loc5_].level > 0)
+               _contArray[1].info = list[t_j];
+               if(list[t_j].level > 0)
                {
                   _contArray[1].selAlphe(1);
                }
@@ -234,10 +232,10 @@ package gemstone.views
                }
                _contArray[1].upDataLevel();
             }
-            else if(param1[_loc5_].place == 2)
+            else if(list[t_j].place == 2)
             {
-               _contArray[2].info = param1[_loc5_];
-               if(param1[_loc5_].level > 0)
+               _contArray[2].info = list[t_j];
+               if(list[t_j].level > 0)
                {
                   _contArray[2].selAlphe(1);
                }
@@ -246,72 +244,71 @@ package gemstone.views
                   _contArray[2].selAlphe(0.4);
                }
                _contArray[2].upDataLevel();
-               curInfo = param1[_loc5_];
+               curInfo = list[t_j];
                _curItem = _contArray[2];
             }
-            _contArray[_loc5_].setBG();
-            _loc5_++;
+            _contArray[t_j].setBG();
+            t_j++;
          }
-         _item.updataInfo(param1);
+         _item.updataInfo(list);
          curIndex = curInfo.place;
-         var _loc3_:int = curInfo.level;
-         setCurInfo(param1[0].fightSpiritId,_loc3_);
-         if(_loc3_ >= 6)
+         var level:int = curInfo.level;
+         setCurInfo(list[0].fightSpiritId,level);
+         if(level >= 6)
          {
-            _loc3_ = 6;
-            _loc2_ = staticDataList[_loc3_].Exp - staticDataList[_loc3_ - 1].Exp;
-            GemstoneUpView(parent).expBar.initBar(_loc2_,_loc2_,true);
+            level = 6;
+            total = staticDataList[level].Exp - staticDataList[level - 1].Exp;
+            GemstoneUpView(parent).expBar.initBar(total,total,true);
             return;
          }
-         _loc3_++;
-         _loc2_ = staticDataList[_loc3_].Exp - staticDataList[_loc3_ - 1].Exp;
-         GemstoneUpView(parent).expBar.initBar(curInfo.exp,_loc2_);
+         level++;
+         total = staticDataList[level].Exp - staticDataList[level - 1].Exp;
+         GemstoneUpView(parent).expBar.initBar(curInfo.exp,total);
       }
       
       public function updateContentBG() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:Boolean = true;
-         var _loc2_:int = _contArray.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var i:int = 0;
+         var _isAllGolden:Boolean = true;
+         var len:int = _contArray.length;
+         for(i = 0; i < len; )
          {
-            _contArray[_loc3_].setBG();
-            if(_contArray[_loc3_].info.level < 6)
+            _contArray[i].setBG();
+            if(_contArray[i].info.level < 6)
             {
-               _loc1_ = false;
+               _isAllGolden = false;
             }
-            _loc3_++;
+            i++;
          }
-         isAllGoden(_loc1_);
+         isAllGoden(_isAllGolden);
       }
       
       public function changeGhostColorAnimationPlay() : void
       {
-         var _loc1_:Boolean = true;
+         var _isAllGolden:Boolean = true;
          var _loc4_:int = 0;
          var _loc3_:* = _contArray;
-         for each(var _loc2_ in _contArray)
+         for each(var item in _contArray)
          {
-            if(_loc2_.info.place == 2)
+            if(item.info.place == 2)
             {
-               _loc2_.changeBG(startUpGradeAnimation);
+               item.changeBG(startUpGradeAnimation);
             }
             else
             {
-               _loc2_.setBG();
+               item.setBG();
             }
-            if(_loc2_.info.level < 6)
+            if(item.info.level < 6)
             {
-               _loc1_ = false;
+               _isAllGolden = false;
             }
          }
-         isAllGoden(_loc1_);
+         isAllGoden(_isAllGolden);
       }
       
-      private function isAllGoden(param1:Boolean) : void
+      private function isAllGoden(result:Boolean) : void
       {
-         if(param1)
+         if(result)
          {
             addChildAt(_bgGoldenShiningAnimation,0);
             _bgGoldenShiningAnimation.play();
@@ -323,76 +320,76 @@ package gemstone.views
          }
       }
       
-      private function setCurInfo(param1:int, param2:int) : void
+      private function setCurInfo(id:int, level:int) : void
       {
-         var _loc6_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         var _loc5_:Object = {};
-         _loc5_.curLve = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.pdescriptTxt1") + param2;
-         _loc5_.levHe = int(_contArray[0].info.level) + int(_contArray[1].info.level) + int(_contArray[2].info.level);
-         if(param1 == 100001)
+         var pro1:int = 0;
+         var pro2:int = 0;
+         var pro3:int = 0;
+         var obj:Object = {};
+         obj.curLve = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.pdescriptTxt1") + level;
+         obj.levHe = int(_contArray[0].info.level) + int(_contArray[1].info.level) + int(_contArray[2].info.level);
+         if(id == 100001)
          {
-            _loc6_ = staticDataList[_contArray[0].info.level].attack;
-            _loc4_ = staticDataList[_contArray[1].info.level].attack;
-            _loc3_ = staticDataList[_contArray[2].info.level].attack;
-            if(param2 >= 6)
+            pro1 = staticDataList[_contArray[0].info.level].attack;
+            pro2 = staticDataList[_contArray[1].info.level].attack;
+            pro3 = staticDataList[_contArray[2].info.level].attack;
+            if(level >= 6)
             {
-               param2 = 6;
+               level = 6;
             }
-            _loc5_.upGrdPro = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.pdescriptTxt3") + staticDataList[param2].attack;
+            obj.upGrdPro = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.pdescriptTxt3") + staticDataList[level].attack;
          }
-         else if(param1 == 100002)
+         else if(id == 100002)
          {
-            _loc6_ = staticDataList[_contArray[0].info.level].defence;
-            _loc4_ = staticDataList[_contArray[1].info.level].defence;
-            _loc3_ = staticDataList[_contArray[2].info.level].defence;
-            if(param2 >= 6)
+            pro1 = staticDataList[_contArray[0].info.level].defence;
+            pro2 = staticDataList[_contArray[1].info.level].defence;
+            pro3 = staticDataList[_contArray[2].info.level].defence;
+            if(level >= 6)
             {
-               param2 = 6;
+               level = 6;
             }
-            _loc5_.upGrdPro = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.pdescriptTxt3") + staticDataList[param2].defence;
+            obj.upGrdPro = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.pdescriptTxt3") + staticDataList[level].defence;
          }
-         else if(param1 == 100003)
+         else if(id == 100003)
          {
-            _loc6_ = staticDataList[_contArray[0].info.level].agility;
-            _loc4_ = staticDataList[_contArray[1].info.level].agility;
-            _loc3_ = staticDataList[_contArray[2].info.level].agility;
-            if(param2 >= 6)
+            pro1 = staticDataList[_contArray[0].info.level].agility;
+            pro2 = staticDataList[_contArray[1].info.level].agility;
+            pro3 = staticDataList[_contArray[2].info.level].agility;
+            if(level >= 6)
             {
-               param2 = 6;
+               level = 6;
             }
-            _loc5_.upGrdPro = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.pdescriptTxt3") + staticDataList[param2].agility;
+            obj.upGrdPro = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.pdescriptTxt3") + staticDataList[level].agility;
          }
-         else if(param1 == 100004)
+         else if(id == 100004)
          {
-            _loc6_ = staticDataList[_contArray[0].info.level].luck;
-            _loc4_ = staticDataList[_contArray[1].info.level].luck;
-            _loc3_ = staticDataList[_contArray[2].info.level].luck;
-            if(param2 >= 6)
+            pro1 = staticDataList[_contArray[0].info.level].luck;
+            pro2 = staticDataList[_contArray[1].info.level].luck;
+            pro3 = staticDataList[_contArray[2].info.level].luck;
+            if(level >= 6)
             {
-               param2 = 6;
+               level = 6;
             }
-            _loc5_.upGrdPro = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.pdescriptTxt3") + staticDataList[param2].luck;
+            obj.upGrdPro = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.pdescriptTxt3") + staticDataList[level].luck;
          }
-         _loc5_.proHe = _loc6_ + _loc4_ + _loc3_;
-         (parent as GemstoneUpView).upDataCur(_loc5_);
+         obj.proHe = pro1 + pro2 + pro3;
+         (parent as GemstoneUpView).upDataCur(obj);
       }
       
-      public function upGradeAction(param1:GemstoneUpGradeInfo) : void
+      public function upGradeAction(info:GemstoneUpGradeInfo) : void
       {
-         var _loc3_:int = 0;
-         var _loc6_:int = 0;
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         if(param1.list.length == 0)
+         var level:int = 0;
+         var dist:int = 0;
+         var i:int = 0;
+         var total1:int = 0;
+         if(info.list.length == 0)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.gemstone.curInfo.notEquip"));
             GemstoneManager.Instance.gemstoneFrame.getMaskMc().visible = false;
             KeyboardManager.getInstance().isStopDispatching = false;
             return;
          }
-         _info = param1;
+         _info = info;
          if(_info.isMaxLevel)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.gemstone.curInfo.maxLevel"));
@@ -401,72 +398,71 @@ package gemstone.views
          }
          if(curInfo == null)
          {
-            _loc3_ = 0;
+            level = 0;
          }
          else
          {
-            _loc3_ = curInfo.level;
+            level = curInfo.level;
          }
-         if(!param1.isUp)
+         if(!info.isUp)
          {
-            if(!param1.isFall)
+            if(!info.isFall)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.gemstone.curInfo.notfit"));
                GemstoneManager.Instance.gemstoneFrame.getMaskMc().visible = false;
                return;
             }
-            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.gemstone.curInfo.upgradeExp",param1.num * PRICE));
-            _loc5_ = 0;
-            while(_loc5_ < 3)
+            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.gemstone.curInfo.upgradeExp",info.num * PRICE));
+            for(i = 0; i < 3; )
             {
-               if(param1.list[_loc5_].place == 2)
+               if(info.list[i].place == 2)
                {
                   if(curInfo)
                   {
                      GemstoneManager.Instance.gemstoneFrame.getMaskMc().visible = false;
-                     curInfo = param1.list[_loc5_];
+                     curInfo = info.list[i];
                   }
                   else
                   {
                      curInfo = new GemstListInfo();
-                     curInfo = param1.list[_loc5_];
+                     curInfo = info.list[i];
                   }
                   break;
                }
-               _loc5_++;
+               i++;
             }
-            _loc3_++;
-            if(_loc3_ >= 6)
+            level++;
+            if(level >= 6)
             {
-               _loc3_ = 6;
+               level = 6;
             }
-            _loc4_ = staticDataList[_loc3_].Exp - staticDataList[_loc3_ - 1].Exp;
-            GemstoneManager.Instance.expBar.initBar(curInfo.exp,_loc4_);
+            total1 = staticDataList[level].Exp - staticDataList[level - 1].Exp;
+            GemstoneManager.Instance.expBar.initBar(curInfo.exp,total1);
             return;
          }
-         if(param1.dir == 0)
+         if(info.dir == 0)
          {
             _isLeft = false;
             _isAction = true;
          }
-         else if(param1.dir == 1)
+         else if(info.dir == 1)
          {
             _isLeft = true;
             _isAction = true;
          }
-         else if(param1.dir == 2)
+         else if(info.dir == 2)
          {
             _isAction = false;
          }
          MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.gemstone.curInfo.succe"));
          _curItem.info.level++;
-         _loc3_ = _curItem.info.level;
+         level = _curItem.info.level;
          _curItem.upDataLevel();
          _upGradeMc.visible = true;
          _upGradeMc.gotoAndPlay(1);
-         var _loc2_:int = staticDataList[_loc3_].Exp - staticDataList[_loc3_ - 1].Exp;
-         GemstoneManager.Instance.expBar.initBar(_loc2_,_loc2_);
-         if(_loc3_ >= 6)
+         var total:int = staticDataList[level].Exp - staticDataList[level - 1].Exp;
+         GemstoneManager.Instance.expBar.initBar(total,total);
+         if(level >= 6)
          {
             changeGhostColorAnimationPlay();
          }
@@ -483,23 +479,21 @@ package gemstone.views
       
       private function init() : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:Array = [];
-         _loc5_ = 0;
-         while(_loc5_ < 3)
+         var t_i:int = 0;
+         var t_j:int = 0;
+         var arr:Array = [];
+         for(t_i = 0; t_i < 3; )
          {
-            _contArray[_loc5_].x = _startPointArr[_loc5_].x;
-            _contArray[_loc5_].y = _startPointArr[_loc5_].y;
-            _loc5_++;
+            _contArray[t_i].x = _startPointArr[t_i].x;
+            _contArray[t_i].y = _startPointArr[t_i].y;
+            t_i++;
          }
-         _loc4_ = 0;
-         while(_loc4_ < 3)
+         for(t_j = 0; t_j < 3; )
          {
-            if(_info.list[_loc4_].place == 0)
+            if(_info.list[t_j].place == 0)
             {
-               _contArray[0].info = _info.list[_loc4_];
-               if(_info.list[_loc4_].level > 0)
+               _contArray[0].info = _info.list[t_j];
+               if(_info.list[t_j].level > 0)
                {
                   _contArray[0].selAlphe(1);
                }
@@ -509,10 +503,10 @@ package gemstone.views
                }
                _contArray[0].upDataLevel();
             }
-            else if(_info.list[_loc4_].place == 1)
+            else if(_info.list[t_j].place == 1)
             {
-               _contArray[1].info = _info.list[_loc4_];
-               if(_info.list[_loc4_].level > 0)
+               _contArray[1].info = _info.list[t_j];
+               if(_info.list[t_j].level > 0)
                {
                   _contArray[1].selAlphe(1);
                }
@@ -522,10 +516,10 @@ package gemstone.views
                }
                _contArray[1].upDataLevel();
             }
-            else if(_info.list[_loc4_].place == 2)
+            else if(_info.list[t_j].place == 2)
             {
-               _contArray[2].info = _info.list[_loc4_];
-               if(_info.list[_loc4_].level > 0)
+               _contArray[2].info = _info.list[t_j];
+               if(_info.list[t_j].level > 0)
                {
                   _contArray[2].selAlphe(1);
                }
@@ -534,155 +528,149 @@ package gemstone.views
                   _contArray[2].selAlphe(0.4);
                }
                _contArray[2].upDataLevel();
-               curInfo = _info.list[_loc4_];
+               curInfo = _info.list[t_j];
             }
-            _contArray[_loc4_].setBG();
-            _loc4_++;
+            _contArray[t_j].setBG();
+            t_j++;
          }
          curInfoList = _info.list;
-         var _loc2_:int = curInfo.level;
-         setCurInfo(curInfo.fightSpiritId,_loc2_);
+         var level:int = curInfo.level;
+         setCurInfo(curInfo.fightSpiritId,level);
          _item.updataInfo(curInfoList);
-         _loc2_++;
-         if(_loc2_ >= 6)
+         level++;
+         if(level >= 6)
          {
-            _loc2_ = 6;
+            level = 6;
          }
-         var _loc1_:int = staticDataList[_loc2_].Exp - staticDataList[_loc2_ - 1].Exp;
-         GemstoneManager.Instance.expBar.initBar(curInfo.exp,_loc1_);
+         var total:int = staticDataList[level].Exp - staticDataList[level - 1].Exp;
+         GemstoneManager.Instance.expBar.initBar(curInfo.exp,total);
          GemstoneManager.Instance.gemstoneFrame.getMaskMc().visible = false;
          updateContentBG();
       }
       
       public function gemstoAction() : void
       {
-         var _loc8_:int = 0;
-         var _loc4_:int = 0;
-         var _loc5_:int = 0;
-         var _loc7_:int = 0;
-         var _loc6_:int = 0;
-         var _loc1_:int = 0;
-         var _loc2_:* = 0;
-         var _loc3_:int = _contArray.length;
+         var i:int = 0;
+         var j:int = 0;
+         var k:int = 0;
+         var t_i:int = 0;
+         var t_j:int = 0;
+         var t_k:int = 0;
+         var index1:* = 0;
+         var cLen:int = _contArray.length;
          if(!_isLeft)
          {
             if(_contArray[0].x == _startPointArr[2].x)
             {
-               _loc8_ = 0;
-               while(_loc8_ < 3)
+               for(i = 0; i < 3; )
                {
-                  if(_loc8_ == 0)
+                  if(i == 0)
                   {
-                     _loc2_ = 1;
+                     index1 = 1;
                   }
-                  else if(_loc8_ == 1)
+                  else if(i == 1)
                   {
-                     _loc2_ = 2;
+                     index1 = 2;
                   }
-                  else if(_loc8_ == 2)
+                  else if(i == 2)
                   {
-                     _loc2_ = 0;
+                     index1 = 0;
                   }
-                  TweenLite.to(_contArray[_loc8_],0.5,{
-                     "x":_pointArray[_loc2_].x,
-                     "y":_pointArray[_loc2_].y,
-                     "onComplete":_funArray[_loc8_]
+                  TweenLite.to(_contArray[i],0.5,{
+                     "x":_pointArray[index1].x,
+                     "y":_pointArray[index1].y,
+                     "onComplete":_funArray[i]
                   });
-                  _loc8_++;
+                  i++;
                }
             }
             else if(_contArray[0].x == _startPointArr[1].x)
             {
-               _loc4_ = 0;
-               while(_loc4_ < 3)
+               for(j = 0; j < 3; )
                {
-                  _loc2_ = _loc4_;
-                  TweenLite.to(_contArray[_loc4_],0.5,{
-                     "x":_pointArray[_loc2_].x,
-                     "y":_pointArray[_loc2_].y,
-                     "onComplete":_funArray[_loc4_]
+                  index1 = j;
+                  TweenLite.to(_contArray[j],0.5,{
+                     "x":_pointArray[index1].x,
+                     "y":_pointArray[index1].y,
+                     "onComplete":_funArray[j]
                   });
-                  _loc4_++;
+                  j++;
                }
             }
             else if(_contArray[0].x == _startPointArr[0].x)
             {
-               _loc5_ = 0;
-               while(_loc5_ < 3)
+               for(k = 0; k < 3; )
                {
-                  if(_loc5_ == 0)
+                  if(k == 0)
                   {
-                     _loc2_ = 2;
+                     index1 = 2;
                   }
-                  else if(_loc5_ == 1)
+                  else if(k == 1)
                   {
-                     _loc2_ = 0;
+                     index1 = 0;
                   }
-                  else if(_loc5_ == 2)
+                  else if(k == 2)
                   {
-                     _loc2_ = 1;
+                     index1 = 1;
                   }
-                  TweenLite.to(_contArray[_loc5_],0.5,{
-                     "x":_pointArray[_loc2_].x,
-                     "y":_pointArray[_loc2_].y,
-                     "onComplete":_funArray[_loc5_]
+                  TweenLite.to(_contArray[k],0.5,{
+                     "x":_pointArray[index1].x,
+                     "y":_pointArray[index1].y,
+                     "onComplete":_funArray[k]
                   });
-                  _loc5_++;
+                  k++;
                }
             }
             return;
          }
          if(_contArray[0].x == _startPointArr[0].x)
          {
-            _loc7_ = 0;
-            while(_loc7_ < 3)
+            for(t_i = 0; t_i < 3; )
             {
-               _loc2_ = _loc7_;
-               TweenLite.to(_contArray[_loc7_],0.5,{
-                  "x":_pointArray[_loc2_].x,
-                  "y":_pointArray[_loc2_].y,
-                  "onComplete":_funArray[_loc7_]
+               index1 = t_i;
+               TweenLite.to(_contArray[t_i],0.5,{
+                  "x":_pointArray[index1].x,
+                  "y":_pointArray[index1].y,
+                  "onComplete":_funArray[t_i]
                });
-               _loc7_++;
+               t_i++;
             }
          }
          else if(_contArray[0].x == _startPointArr[1].x)
          {
-            _loc6_ = 0;
-            while(_loc6_ < 3)
+            for(t_j = 0; t_j < 3; )
             {
-               _loc2_ = int(_loc6_ + 1);
-               if(_loc2_ > 2)
+               index1 = int(t_j + 1);
+               if(index1 > 2)
                {
-                  _loc2_ = 0;
+                  index1 = 0;
                }
-               TweenLite.to(_contArray[_loc6_],0.5,{
-                  "x":_pointArray[_loc2_].x,
-                  "y":_pointArray[_loc2_].y,
-                  "onComplete":_funArray[_loc6_]
+               TweenLite.to(_contArray[t_j],0.5,{
+                  "x":_pointArray[index1].x,
+                  "y":_pointArray[index1].y,
+                  "onComplete":_funArray[t_j]
                });
-               _loc6_++;
+               t_j++;
             }
          }
          else if(_contArray[0].x == _startPointArr[2].x)
          {
-            _loc1_ = 0;
-            while(_loc1_ < 3)
+            for(t_k = 0; t_k < 3; )
             {
-               if(_loc1_ == 0)
+               if(t_k == 0)
                {
-                  _loc2_ = 2;
+                  index1 = 2;
                }
                else
                {
-                  _loc2_ = int(_loc1_ - 1);
+                  index1 = int(t_k - 1);
                }
-               TweenLite.to(_contArray[_loc1_],0.5,{
-                  "x":_pointArray[_loc2_].x,
-                  "y":_pointArray[_loc2_].y,
-                  "onComplete":_funArray[_loc1_]
+               TweenLite.to(_contArray[t_k],0.5,{
+                  "x":_pointArray[index1].x,
+                  "y":_pointArray[index1].y,
+                  "onComplete":_funArray[t_k]
                });
-               _loc1_++;
+               t_k++;
             }
          }
       }
@@ -756,28 +744,27 @@ package gemstone.views
          SoundManager.instance.play("168");
       }
       
-      private function enterframeHander(param1:Event) : void
+      private function enterframeHander(e:Event) : void
       {
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
-         var _loc5_:int = 0;
-         var _loc3_:int = 0;
+         var total:int = 0;
+         var len:int = 0;
+         var i:int = 0;
+         var level:int = 0;
          if(_upGradeMc.currentFrame == _upGradeMc.totalFrames - 1)
          {
             _upGradeMc.visible = false;
             _upGradeMc.gotoAndStop(_upGradeMc.totalFrames);
             SoundManager.instance.stop("170");
             SoundManager.instance.play("169");
-            _loc4_ = _contArray.length;
-            _loc5_ = 0;
-            while(_loc5_ < _loc4_)
+            len = _contArray.length;
+            for(i = 0; i < len; )
             {
-               if(_contArray[_loc5_].info.level > 0)
+               if(_contArray[i].info.level > 0)
                {
-                  _contArray[_loc5_].selAlphe(1);
-                  _contArray[_loc5_].upDataLevel();
+                  _contArray[i].selAlphe(1);
+                  _contArray[i].upDataLevel();
                }
-               _loc5_++;
+               i++;
             }
             if(_isAction)
             {
@@ -785,19 +772,19 @@ package gemstone.views
             }
             else
             {
-               _loc3_ = curInfo.level;
-               if(_loc3_ >= 6)
+               level = curInfo.level;
+               if(level >= 6)
                {
-                  _loc3_ = 6;
-                  _loc2_ = staticDataList[_loc3_].Exp - staticDataList[_loc3_ - 1].Exp;
-                  GemstoneManager.Instance.expBar.initBar(_loc2_,_loc2_,true);
+                  level = 6;
+                  total = staticDataList[level].Exp - staticDataList[level - 1].Exp;
+                  GemstoneManager.Instance.expBar.initBar(total,total,true);
                   GemstoneManager.Instance.gemstoneFrame.getMaskMc().visible = false;
                   return;
                }
-               setCurInfo(curInfo.fightSpiritId,_loc3_);
-               _loc3_++;
-               _loc2_ = staticDataList[_loc3_].Exp - staticDataList[_loc3_ - 1].Exp;
-               GemstoneManager.Instance.expBar.initBar(0,_loc2_);
+               setCurInfo(curInfo.fightSpiritId,level);
+               level++;
+               total = staticDataList[level].Exp - staticDataList[level - 1].Exp;
+               GemstoneManager.Instance.expBar.initBar(0,total);
                GemstoneManager.Instance.gemstoneFrame.getMaskMc().visible = false;
             }
          }
@@ -953,13 +940,13 @@ package gemstone.views
          _upGradeMc = null;
          var _loc3_:int = 0;
          var _loc2_:* = _contArray;
-         for each(var _loc1_ in _contArray)
+         for each(var tmp in _contArray)
          {
-            if(_loc1_)
+            if(tmp)
             {
-               TweenLite.killTweensOf(_loc1_,true);
+               TweenLite.killTweensOf(tmp,true);
             }
-            ObjectUtils.disposeObject(_loc1_);
+            ObjectUtils.disposeObject(tmp);
          }
          _contArray = null;
          staticDataList = null;
@@ -976,9 +963,9 @@ package gemstone.views
          return _staticDataList;
       }
       
-      public function set staticDataList(param1:Vector.<GemstoneStaticInfo>) : void
+      public function set staticDataList(value:Vector.<GemstoneStaticInfo>) : void
       {
-         _staticDataList = param1;
+         _staticDataList = value;
       }
    }
 }

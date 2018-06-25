@@ -49,19 +49,19 @@ package sevenDouble.player
       
       private var _leapArrow:Bitmap;
       
-      public function SevenDoubleGamePlayer(param1:SevenDoublePlayerInfo)
+      public function SevenDoubleGamePlayer(playerInfo:SevenDoublePlayerInfo)
       {
          _buffCountDownList = new DictionaryData();
          super();
-         _playerInfo = param1;
+         _playerInfo = playerInfo;
          _carInfo = SevenDoubleControl.instance.dataInfo.carInfo[_playerInfo.carType];
          this.x = 280 + _playerInfo.posX;
-         this.y = 150 + 65 * param1.index;
+         this.y = 150 + 65 * playerInfo.index;
          _playerMc = new MovieClip();
-         var _loc2_:Bitmap = ComponentFactory.Instance.creatBitmap("game.player.defaultPlayerCharacter");
-         _loc2_.x = -50;
-         _loc2_.y = -100;
-         _playerMc.addChild(_loc2_);
+         var tmp:Bitmap = ComponentFactory.Instance.creatBitmap("game.player.defaultPlayerCharacter");
+         tmp.x = -50;
+         tmp.y = -100;
+         _playerMc.addChild(tmp);
          addChild(_playerMc);
          loadRes();
          _nameTxt = ComponentFactory.Instance.creatComponentByStylename("sevenDouble.game.playerNameTxt");
@@ -96,35 +96,35 @@ package sevenDouble.player
          return _playerInfo;
       }
       
-      public function set destinationX(param1:Number) : void
+      public function set destinationX(value:Number) : void
       {
-         _destinationX = param1 + 280;
-         var _loc2_:Number = _carInfo.speed;
+         _destinationX = value + 280;
+         var tmpSpeed:Number = _carInfo.speed;
          if(_playerInfo.acceleEndTime.getTime() > TimeManager.Instance.Now().getTime())
          {
-            _loc2_ = _loc2_ * SevenDoubleControl.instance.accelerateRate / 100;
+            tmpSpeed = tmpSpeed * SevenDoubleControl.instance.accelerateRate / 100;
          }
          if(_playerInfo.deceleEndTime.getTime() > TimeManager.Instance.Now().getTime())
          {
-            _loc2_ = _loc2_ * SevenDoubleControl.instance.decelerateRate / 100;
+            tmpSpeed = tmpSpeed * SevenDoubleControl.instance.decelerateRate / 100;
          }
-         if(_destinationX - x > _loc2_ * 30)
+         if(_destinationX - x > tmpSpeed * 30)
          {
-            x = x + _loc2_ * 25;
+            x = x + tmpSpeed * 25;
          }
       }
       
       private function loadRes() : void
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(SevenDoubleManager.instance.getPlayerResUrl(_playerInfo.isSelf,_playerInfo.carType),4);
-         _loc1_.addEventListener("complete",onLoadComplete);
-         LoadResourceManager.Instance.startLoad(_loc1_);
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(SevenDoubleManager.instance.getPlayerResUrl(_playerInfo.isSelf,_playerInfo.carType),4);
+         loader.addEventListener("complete",onLoadComplete);
+         LoadResourceManager.Instance.startLoad(loader);
       }
       
-      private function onLoadComplete(param1:LoaderEvent) : void
+      private function onLoadComplete(event:LoaderEvent) : void
       {
-         var _loc2_:* = null;
-         param1.loader.removeEventListener("complete",onLoadComplete);
+         var tmpStr:* = null;
+         event.loader.removeEventListener("complete",onLoadComplete);
          if(_isDispose)
          {
             return;
@@ -135,105 +135,105 @@ package sevenDouble.player
          }
          if(_playerInfo.isSelf)
          {
-            _loc2_ = "self";
+            tmpStr = "self";
          }
          else
          {
-            _loc2_ = "other";
+            tmpStr = "other";
          }
-         _playerMc = ComponentFactory.Instance.creat("asset.sevenDouble." + _loc2_ + _playerInfo.carType);
+         _playerMc = ComponentFactory.Instance.creat("asset.sevenDouble." + tmpStr + _playerInfo.carType);
          _playerMc.gotoAndPlay("stand");
          addChildAt(_playerMc,0);
          refreshBuffCountDown();
       }
       
-      private function moveTimerHandler(param1:TimerEvent) : void
+      private function moveTimerHandler(event:TimerEvent) : void
       {
          SocketManager.Instance.out.sendSevenDoubleMove();
       }
       
-      private function showOrHideLeapArrow(param1:SevenDoubleEvent) : void
+      private function showOrHideLeapArrow(event:SevenDoubleEvent) : void
       {
-         _leapArrow.visible = param1.data.isShow;
+         _leapArrow.visible = event.data.isShow;
       }
       
       public function refreshBuffCountDown() : void
       {
-         var _loc5_:* = null;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         var _loc1_:Boolean = false;
+         var tmpBuffCDV:* = null;
+         var tmp2:* = null;
+         var tmp3:* = null;
+         var tmp:* = null;
+         var isHasBuff:Boolean = false;
          if(_playerInfo.deceleEndTime.getTime() > TimeManager.Instance.Now().getTime())
          {
             _playerMc.gotoAndPlay("moderate");
-            _loc1_ = true;
+            isHasBuff = true;
             if(_buffCountDownList.hasKey("2"))
             {
                (_buffCountDownList["2"] as SevenDoubleBuffCountDownView).endTime = _playerInfo.deceleEndTime;
             }
             else
             {
-               _loc5_ = new SevenDoubleBuffCountDownView(_playerInfo.deceleEndTime,2,_buffCountDownList.length);
-               _loc5_.addEventListener("SevenDoubleBuffCountDownEnd",buffCountDownEnd,false,0,true);
-               addChild(_loc5_);
-               _buffCountDownList.add("2",_loc5_);
+               tmpBuffCDV = new SevenDoubleBuffCountDownView(_playerInfo.deceleEndTime,2,_buffCountDownList.length);
+               tmpBuffCDV.addEventListener("SevenDoubleBuffCountDownEnd",buffCountDownEnd,false,0,true);
+               addChild(tmpBuffCDV);
+               _buffCountDownList.add("2",tmpBuffCDV);
             }
          }
          else if(_buffCountDownList.hasKey("2"))
          {
-            _loc2_ = _buffCountDownList["2"] as SevenDoubleBuffCountDownView;
-            _loc2_.removeEventListener("SevenDoubleBuffCountDownEnd",buffCountDownEnd);
-            ObjectUtils.disposeObject(_loc2_);
-            _buffCountDownList.remove(_loc2_.type);
+            tmp2 = _buffCountDownList["2"] as SevenDoubleBuffCountDownView;
+            tmp2.removeEventListener("SevenDoubleBuffCountDownEnd",buffCountDownEnd);
+            ObjectUtils.disposeObject(tmp2);
+            _buffCountDownList.remove(tmp2.type);
          }
          if(_playerInfo.acceleEndTime.getTime() > TimeManager.Instance.Now().getTime())
          {
             _playerMc.gotoAndPlay("accelerate");
-            _loc1_ = true;
+            isHasBuff = true;
             if(_buffCountDownList.hasKey("1"))
             {
                (_buffCountDownList["1"] as SevenDoubleBuffCountDownView).endTime = _playerInfo.acceleEndTime;
             }
             else
             {
-               _loc5_ = new SevenDoubleBuffCountDownView(_playerInfo.acceleEndTime,1,_buffCountDownList.length);
-               _loc5_.addEventListener("SevenDoubleBuffCountDownEnd",buffCountDownEnd,false,0,true);
-               addChild(_loc5_);
-               _buffCountDownList.add("1",_loc5_);
+               tmpBuffCDV = new SevenDoubleBuffCountDownView(_playerInfo.acceleEndTime,1,_buffCountDownList.length);
+               tmpBuffCDV.addEventListener("SevenDoubleBuffCountDownEnd",buffCountDownEnd,false,0,true);
+               addChild(tmpBuffCDV);
+               _buffCountDownList.add("1",tmpBuffCDV);
             }
          }
          else if(_buffCountDownList.hasKey("1"))
          {
-            _loc3_ = _buffCountDownList["1"] as SevenDoubleBuffCountDownView;
-            _loc3_.removeEventListener("SevenDoubleBuffCountDownEnd",buffCountDownEnd);
-            ObjectUtils.disposeObject(_loc3_);
-            _buffCountDownList.remove(_loc3_.type);
+            tmp3 = _buffCountDownList["1"] as SevenDoubleBuffCountDownView;
+            tmp3.removeEventListener("SevenDoubleBuffCountDownEnd",buffCountDownEnd);
+            ObjectUtils.disposeObject(tmp3);
+            _buffCountDownList.remove(tmp3.type);
          }
          if(_playerInfo.invisiEndTime.getTime() - TimeManager.Instance.Now().getTime() > 0)
          {
             _playerMc.gotoAndPlay("transparent");
-            _loc1_ = true;
+            isHasBuff = true;
             if(_buffCountDownList.hasKey("3"))
             {
                (_buffCountDownList["3"] as SevenDoubleBuffCountDownView).endTime = _playerInfo.invisiEndTime;
             }
             else
             {
-               _loc5_ = new SevenDoubleBuffCountDownView(_playerInfo.invisiEndTime,3,_buffCountDownList.length);
-               _loc5_.addEventListener("SevenDoubleBuffCountDownEnd",buffCountDownEnd,false,0,true);
-               addChild(_loc5_);
-               _buffCountDownList.add("3",_loc5_);
+               tmpBuffCDV = new SevenDoubleBuffCountDownView(_playerInfo.invisiEndTime,3,_buffCountDownList.length);
+               tmpBuffCDV.addEventListener("SevenDoubleBuffCountDownEnd",buffCountDownEnd,false,0,true);
+               addChild(tmpBuffCDV);
+               _buffCountDownList.add("3",tmpBuffCDV);
             }
          }
          else if(_buffCountDownList.hasKey("3"))
          {
-            _loc4_ = _buffCountDownList["3"] as SevenDoubleBuffCountDownView;
-            _loc4_.removeEventListener("SevenDoubleBuffCountDownEnd",buffCountDownEnd);
-            ObjectUtils.disposeObject(_loc4_);
-            _buffCountDownList.remove(_loc4_.type);
+            tmp = _buffCountDownList["3"] as SevenDoubleBuffCountDownView;
+            tmp.removeEventListener("SevenDoubleBuffCountDownEnd",buffCountDownEnd);
+            ObjectUtils.disposeObject(tmp);
+            _buffCountDownList.remove(tmp.type);
          }
-         if(!_loc1_)
+         if(!isHasBuff)
          {
             _playerMc.gotoAndPlay("stand");
          }
@@ -241,36 +241,36 @@ package sevenDouble.player
          {
             var _loc8_:int = 0;
             var _loc7_:* = _buffCountDownList;
-            for each(var _loc6_ in _buffCountDownList)
+            for each(var tmppp in _buffCountDownList)
             {
-               _loc6_.visible = false;
+               tmppp.visible = false;
             }
          }
       }
       
-      private function buffCountDownEnd(param1:Event) : void
+      private function buffCountDownEnd(event:Event) : void
       {
-         var _loc2_:SevenDoubleBuffCountDownView = param1.target as SevenDoubleBuffCountDownView;
-         _loc2_.removeEventListener("SevenDoubleBuffCountDownEnd",buffCountDownEnd);
-         ObjectUtils.disposeObject(_loc2_);
-         _buffCountDownList.remove(_loc2_.type);
+         var tmp:SevenDoubleBuffCountDownView = event.target as SevenDoubleBuffCountDownView;
+         tmp.removeEventListener("SevenDoubleBuffCountDownEnd",buffCountDownEnd);
+         ObjectUtils.disposeObject(tmp);
+         _buffCountDownList.remove(tmp.type);
          refreshBuffCountDown();
       }
       
       public function updatePlayer() : void
       {
-         var _loc1_:Number = _carInfo.speed;
+         var tmpSpeed:Number = _carInfo.speed;
          if(_playerInfo.acceleEndTime.getTime() > TimeManager.Instance.Now().getTime())
          {
-            _loc1_ = _loc1_ * SevenDoubleControl.instance.accelerateRate / 100;
+            tmpSpeed = tmpSpeed * SevenDoubleControl.instance.accelerateRate / 100;
          }
          if(_playerInfo.deceleEndTime.getTime() > TimeManager.Instance.Now().getTime())
          {
-            _loc1_ = _loc1_ * SevenDoubleControl.instance.decelerateRate / 100;
+            tmpSpeed = tmpSpeed * SevenDoubleControl.instance.decelerateRate / 100;
          }
          if(x < _destinationX)
          {
-            x = x + _loc1_;
+            x = x + tmpSpeed;
          }
       }
       

@@ -1,9 +1,2 @@
-package times.utils.timerManager
-{
-   class InternalFlag
-   {
-       
-      
-      function InternalFlag(){super();}
-   }
-}
+package times.utils.timerManager{   class InternalFlag   {                   function InternalFlag() { super(); }
+   }}

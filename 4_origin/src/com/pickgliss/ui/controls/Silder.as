@@ -73,23 +73,23 @@ package com.pickgliss.ui.controls
          super();
       }
       
-      public function set bar(param1:DisplayObject) : void
+      public function set bar($bar:DisplayObject) : void
       {
-         if(_bar == param1)
+         if(_bar == $bar)
          {
             return;
          }
-         _bar = param1;
+         _bar = $bar;
          onPropertiesChanged("bar");
       }
       
-      public function set barStyle(param1:String) : void
+      public function set barStyle(value:String) : void
       {
-         if(_barStyle == param1)
+         if(_barStyle == value)
          {
             return;
          }
-         _barStyle = param1;
+         _barStyle = value;
          bar = ComponentFactory.Instance.creat(_barStyle);
       }
       
@@ -119,13 +119,13 @@ package com.pickgliss.ui.controls
          return _orientation == 0;
       }
       
-      public function set maskShowAreaInnerRectString(param1:String) : void
+      public function set maskShowAreaInnerRectString(value:String) : void
       {
-         if(_maskShowAreaInnerRectString == param1)
+         if(_maskShowAreaInnerRectString == value)
          {
             return;
          }
-         _maskShowAreaInnerRectString = param1;
+         _maskShowAreaInnerRectString = value;
          _maskShowAreaInnerRect = ClassUtils.CreatInstance("com.pickgliss.geom.InnerRectangle",ComponentFactory.parasArgs(_maskShowAreaInnerRectString));
          onPropertiesChanged("maskShowAreaInnerRect");
       }
@@ -135,13 +135,13 @@ package com.pickgliss.ui.controls
          return getModel().getMaximum();
       }
       
-      public function set maximum(param1:int) : void
+      public function set maximum(maximum:int) : void
       {
-         if(getModel().getMaximum() == param1)
+         if(getModel().getMaximum() == maximum)
          {
             return;
          }
-         getModel().setMaximum(param1);
+         getModel().setMaximum(maximum);
          onPropertiesChanged("maximum");
       }
       
@@ -150,13 +150,13 @@ package com.pickgliss.ui.controls
          return getModel().getMinimum();
       }
       
-      public function set minimum(param1:int) : void
+      public function set minimum(minimum:int) : void
       {
-         if(getModel().getMinimum() == param1)
+         if(getModel().getMinimum() == minimum)
          {
             return;
          }
-         getModel().setMinimum(param1);
+         getModel().setMinimum(minimum);
          onPropertiesChanged("minimum");
       }
       
@@ -165,42 +165,42 @@ package com.pickgliss.ui.controls
          return _orientation;
       }
       
-      public function set orientation(param1:int) : void
+      public function set orientation(ori:int) : void
       {
-         if(_orientation == param1)
+         if(_orientation == ori)
          {
             return;
          }
-         _orientation = param1;
+         _orientation = ori;
          onPropertiesChanged("orientation");
       }
       
-      public function set progressBar(param1:DisplayObject) : void
+      public function set progressBar($progressBar:DisplayObject) : void
       {
-         if(_progressBar == param1)
+         if(_progressBar == $progressBar)
          {
             return;
          }
-         _progressBar = param1;
+         _progressBar = $progressBar;
          onPropertiesChanged("progressBar");
       }
       
-      public function set progressBarStyle(param1:String) : void
+      public function set progressBarStyle(value:String) : void
       {
-         if(_progressBarStyle == param1)
+         if(_progressBarStyle == value)
          {
             return;
          }
-         _progressBarStyle = param1;
+         _progressBarStyle = value;
          progressBar = ComponentFactory.Instance.creat(_progressBarStyle);
       }
       
-      public function removeStateListener(param1:Function) : void
+      public function removeStateListener(listener:Function) : void
       {
-         removeEventListener("stateChange",param1);
+         removeEventListener("stateChange",listener);
       }
       
-      public function setupModel(param1:BoundedRangeModel) : void
+      public function setupModel(model:BoundedRangeModel) : void
       {
          if(_model)
          {
@@ -208,14 +208,14 @@ package com.pickgliss.ui.controls
          }
          else
          {
-            _model = param1;
+            _model = model;
          }
          _model.addStateListener(__onModelChange);
       }
       
-      public function set thumb(param1:BaseButton) : void
+      public function set thumb($thumb:BaseButton) : void
       {
-         if(_thumb == param1)
+         if(_thumb == $thumb)
          {
             return;
          }
@@ -224,29 +224,29 @@ package com.pickgliss.ui.controls
             ObjectUtils.disposeObject(_thumb);
             _thumb.removeEventListener("mouseDown",__onThumbMouseDown);
          }
-         _thumb = param1;
+         _thumb = $thumb;
          _thumb.addEventListener("mouseDown",__onThumbMouseDown);
          onPropertiesChanged("thumb");
       }
       
-      public function set thumbShowInnerRectString(param1:String) : void
+      public function set thumbShowInnerRectString(value:String) : void
       {
-         if(_thumbShowInnerRectString == param1)
+         if(_thumbShowInnerRectString == value)
          {
             return;
          }
-         _thumbShowInnerRectString = param1;
+         _thumbShowInnerRectString = value;
          _thumbShowInnerRect = ClassUtils.CreatInstance("com.pickgliss.geom.InnerRectangle",ComponentFactory.parasArgs(_thumbShowInnerRectString));
          onPropertiesChanged("thumbShowInnerRect");
       }
       
-      public function set thumbStyle(param1:String) : void
+      public function set thumbStyle(stylename:String) : void
       {
-         if(_thumbStyle == param1)
+         if(_thumbStyle == stylename)
          {
             return;
          }
-         _thumbStyle = param1;
+         _thumbStyle = stylename;
          thumb = ComponentFactory.Instance.creat(_thumbStyle);
       }
       
@@ -255,53 +255,53 @@ package com.pickgliss.ui.controls
          return getModel().getValue();
       }
       
-      public function set value(param1:Number) : void
+      public function set value($value:Number) : void
       {
-         if(_value == param1)
+         if(_value == $value)
          {
             return;
          }
-         _value = param1;
+         _value = $value;
          getModel().setValue(_value);
          onPropertiesChanged("value");
       }
       
-      protected function __onModelChange(param1:InteractiveEvent) : void
+      protected function __onModelChange(event:InteractiveEvent) : void
       {
          dispatchEvent(new InteractiveEvent("stateChange"));
       }
       
-      protected function __onSilderClick(param1:MouseEvent) : void
+      protected function __onSilderClick(event:MouseEvent) : void
       {
          scrollThumbToCurrentMousePosition();
-         param1.updateAfterEvent();
+         event.updateAfterEvent();
       }
       
-      protected function __onThumbMouseDown(param1:MouseEvent) : void
+      protected function __onThumbMouseDown(event:MouseEvent) : void
       {
-         var _loc2_:Point = getMousePosition();
-         var _loc3_:int = _loc2_.x;
-         var _loc4_:int = _loc2_.y;
+         var mp:Point = getMousePosition();
+         var mx:int = mp.x;
+         var my:int = mp.y;
          if(isVertical())
          {
-            _thumbDownOffset = _loc4_ - _thumb.y;
+            _thumbDownOffset = my - _thumb.y;
          }
          else
          {
-            _thumbDownOffset = _loc3_ - _thumb.x;
+            _thumbDownOffset = mx - _thumb.x;
          }
          _isDragging = true;
          StageReferance.stage.addEventListener("mouseUp",__onThumbMouseUp);
          StageReferance.stage.addEventListener("mouseMove",__onThumbMouseMoved);
       }
       
-      protected function __onThumbMouseMoved(param1:MouseEvent) : void
+      protected function __onThumbMouseMoved(event:MouseEvent) : void
       {
          scrollThumbToCurrentMousePosition();
-         param1.updateAfterEvent();
+         event.updateAfterEvent();
       }
       
-      protected function __onThumbMouseUp(param1:MouseEvent) : void
+      protected function __onThumbMouseUp(event:MouseEvent) : void
       {
          StageReferance.stage.removeEventListener("mouseUp",__onThumbMouseUp);
          StageReferance.stage.removeEventListener("mouseMove",__onThumbMouseMoved);
@@ -354,26 +354,26 @@ package com.pickgliss.ui.controls
       
       protected function scrollThumbToCurrentMousePosition() : void
       {
-         var _loc4_:int = 0;
-         var _loc6_:int = 0;
-         var _loc2_:int = 0;
-         var _loc1_:Point = getMousePosition();
-         var _loc5_:int = _loc1_.x;
-         var _loc7_:int = _loc1_.y;
-         var _loc3_:Rectangle = _thumbShowInnerRect.getInnerRect(_width,_height);
+         var thumbMax:int = 0;
+         var thumbPos:int = 0;
+         var thumbMin:int = 0;
+         var mp:Point = getMousePosition();
+         var mx:int = mp.x;
+         var my:int = mp.y;
+         var thumbScrollRect:Rectangle = _thumbShowInnerRect.getInnerRect(_width,_height);
          if(isVertical())
          {
-            _loc2_ = _loc3_.y;
-            _loc4_ = _loc3_.y + _loc3_.height;
-            _loc6_ = Math.min(_loc4_,Math.max(_loc2_,_loc7_ - _thumbDownOffset));
+            thumbMin = thumbScrollRect.y;
+            thumbMax = thumbScrollRect.y + thumbScrollRect.height;
+            thumbPos = Math.min(thumbMax,Math.max(thumbMin,my - _thumbDownOffset));
          }
          else
          {
-            _loc2_ = _loc3_.x;
-            _loc4_ = _loc3_.x + _loc3_.width;
-            _loc6_ = Math.min(_loc4_,Math.max(_loc2_,_loc5_ - _thumbDownOffset));
+            thumbMin = thumbScrollRect.x;
+            thumbMax = thumbScrollRect.x + thumbScrollRect.width;
+            thumbPos = Math.min(thumbMax,Math.max(thumbMin,mx - _thumbDownOffset));
          }
-         value = getValueWithThumbMaxMinPos(_loc2_,_loc4_,_loc6_);
+         value = getValueWithThumbMaxMinPos(thumbMin,thumbMax,thumbPos);
       }
       
       protected function setupMask() : void
@@ -390,19 +390,19 @@ package com.pickgliss.ui.controls
          {
             return;
          }
-         var _loc2_:Rectangle = _maskShowAreaInnerRect.getInnerRect(_width,_height);
-         _maskShape.x = _loc2_.x;
-         _maskShape.y = _loc2_.y;
-         var _loc1_:Number = calculateValuePercent();
+         var rect:Rectangle = _maskShowAreaInnerRect.getInnerRect(_width,_height);
+         _maskShape.x = rect.x;
+         _maskShape.y = rect.y;
+         var valuePercent:Number = calculateValuePercent();
          if(isVertical())
          {
-            _maskShape.height = _loc2_.height * _loc1_;
-            _maskShape.width = _loc2_.width;
+            _maskShape.height = rect.height * valuePercent;
+            _maskShape.width = rect.width;
          }
          else
          {
-            _maskShape.width = _loc2_.width * _loc1_;
-            _maskShape.height = _loc2_.height;
+            _maskShape.width = rect.width * valuePercent;
+            _maskShape.height = rect.height;
          }
          if(_maskShape)
          {
@@ -423,34 +423,34 @@ package com.pickgliss.ui.controls
       
       protected function updateThumbPos() : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
+         var rangePos:int = 0;
+         var startPos:int = 0;
          if(_thumbShowInnerRect == null)
          {
             return;
          }
-         var _loc4_:Rectangle = _thumbShowInnerRect.getInnerRect(_width,_height);
-         var _loc1_:Number = calculateValuePercent();
+         var rect:Rectangle = _thumbShowInnerRect.getInnerRect(_width,_height);
+         var valuePercent:Number = calculateValuePercent();
          if(isVertical())
          {
-            _thumb.x = _loc4_.x;
-            _loc2_ = _loc4_.height;
-            _loc3_ = _loc4_.y;
-            _thumb.y = Math.round(_loc1_ * _loc2_) + _loc3_;
+            _thumb.x = rect.x;
+            rangePos = rect.height;
+            startPos = rect.y;
+            _thumb.y = Math.round(valuePercent * rangePos) + startPos;
          }
          else
          {
-            _thumb.y = _loc4_.y;
-            _loc2_ = _loc4_.width;
-            _loc3_ = _loc4_.x;
-            _thumb.x = Math.round(_loc1_ * _loc2_) + _loc3_;
+            _thumb.y = rect.y;
+            rangePos = rect.width;
+            startPos = rect.x;
+            _thumb.x = Math.round(valuePercent * rangePos) + startPos;
          }
          _thumb.tipData = _value;
       }
       
       private function calculateValuePercent() : Number
       {
-         var _loc1_:* = NaN;
+         var valuePercent:* = NaN;
          if(_value < minimum || isNaN(_value))
          {
             _value = minimum;
@@ -461,21 +461,21 @@ package com.pickgliss.ui.controls
          }
          if(maximum > minimum)
          {
-            _loc1_ = Number((_value - minimum) / (maximum - minimum));
+            valuePercent = Number((_value - minimum) / (maximum - minimum));
          }
          else
          {
-            _loc1_ = 1;
+            valuePercent = 1;
          }
-         return _loc1_;
+         return valuePercent;
       }
       
-      private function getValueWithThumbMaxMinPos(param1:Number, param2:Number, param3:Number) : Number
+      private function getValueWithThumbMaxMinPos(min:Number, max:Number, pos:Number) : Number
       {
-         var _loc5_:Number = param2 - param1;
-         var _loc4_:Number = (param3 - param1) / _loc5_;
-         var _loc6_:Number = maximum - minimum;
-         return _loc4_ * _loc6_ + minimum;
+         var range:Number = max - min;
+         var percent:Number = (pos - min) / range;
+         var valueRange:Number = maximum - minimum;
+         return percent * valueRange + minimum;
       }
    }
 }

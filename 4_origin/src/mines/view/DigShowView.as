@@ -33,44 +33,43 @@ package mines.view
          mines5Label.text = checkDrop(4);
       }
       
-      public function checkDrop(param1:int) : String
+      public function checkDrop(index:int) : String
       {
-         var _loc8_:int = 0;
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:Array = ItemManager.Instance.getMinesPropByPro();
-         var _loc9_:DropItemInfo = MinesManager.instance.model.dropList[param1];
-         var _loc6_:String = "";
-         var _loc2_:Array = [_loc9_.Rate1,_loc9_.Rate2,_loc9_.Rate3,_loc9_.Rate4,_loc9_.Rate5,_loc9_.Rate6,_loc9_.Rate7,_loc9_.Rate8,_loc9_.Rate9,_loc9_.Rate10,_loc9_.Rate11];
-         var _loc7_:int = 0;
-         _loc8_ = _loc2_.length - 1;
-         while(_loc8_ > 0)
+         var i:int = 0;
+         var j:int = 0;
+         var item:* = null;
+         var list:Array = ItemManager.Instance.getMinesPropByPro();
+         var info:DropItemInfo = MinesManager.instance.model.dropList[index];
+         var nameList:String = "";
+         var arr:Array = [info.Rate1,info.Rate2,info.Rate3,info.Rate4,info.Rate5,info.Rate6,info.Rate7,info.Rate8,info.Rate9,info.Rate10,info.Rate11];
+         var arrIndex:int = 0;
+         for(i = arr.length - 1; i > 0; )
          {
-            if(_loc2_[_loc8_] != 0)
+            if(arr[i] != 0)
             {
-               _loc7_ = _loc8_ + 1;
+               arrIndex = i + 1;
                break;
             }
-            _loc8_--;
+            i--;
          }
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_.length)
+         j = 0;
+         while(j < list.length)
          {
-            _loc3_ = _loc4_[_loc5_];
-            if(int(_loc3_.Property1) <= _loc7_)
+            item = list[j];
+            if(int(item.Property1) <= arrIndex)
             {
-               if(_loc6_ == "")
+               if(nameList == "")
                {
-                  _loc6_ = _loc3_.Name;
+                  nameList = item.Name;
                }
                else
                {
-                  _loc6_ = _loc6_ + "," + _loc3_.Name;
+                  nameList = nameList + "," + item.Name;
                }
             }
-            _loc5_++;
+            j++;
          }
-         return _loc6_;
+         return nameList;
       }
    }
 }

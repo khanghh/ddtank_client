@@ -72,12 +72,12 @@ package login.view
          removeEventListener("mouseOut",__mouseOutHandler);
       }
       
-      private function __mouseOverHandler(param1:MouseEvent) : void
+      private function __mouseOverHandler(evt:MouseEvent) : void
       {
          _light.visible = true;
       }
       
-      private function __mouseOutHandler(param1:MouseEvent) : void
+      private function __mouseOutHandler(evt:MouseEvent) : void
       {
          _light.visible = _isSelected;
       }
@@ -87,10 +87,10 @@ package login.view
          return _isSelected;
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(val:Boolean) : void
       {
-         _isSelected = param1;
-         _light.visible = param1;
+         _isSelected = val;
+         _light.visible = val;
       }
       
       public function get roleInfo() : Role
@@ -98,9 +98,9 @@ package login.view
          return _roleInfo;
       }
       
-      public function set roleInfo(param1:Role) : void
+      public function set roleInfo(val:Role) : void
       {
-         _roleInfo = param1;
+         _roleInfo = val;
          _levelIcon.setInfo(_roleInfo.Grade,0,0,_roleInfo.WinCount,_roleInfo.TotalCount,1,0);
          _nicknameField.text = _roleInfo.NickName;
          refreshDeleteIcon();
@@ -150,7 +150,7 @@ package login.view
          }
       }
       
-      public function setListCellStatus(param1:List, param2:Boolean, param3:int) : void
+      public function setListCellStatus(list:List, isSelected:Boolean, index:int) : void
       {
       }
       
@@ -164,9 +164,9 @@ package login.view
          return _data;
       }
       
-      public function setCellValue(param1:*) : void
+      public function setCellValue(value:*) : void
       {
-         _data = param1;
+         _data = value;
          roleInfo = _data as Role;
       }
    }

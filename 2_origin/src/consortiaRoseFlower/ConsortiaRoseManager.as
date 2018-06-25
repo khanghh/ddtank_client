@@ -41,7 +41,7 @@ package consortiaRoseFlower
       
       private var _detailView:ConsortiaRoseDetailView;
       
-      public function ConsortiaRoseManager(param1:inner)
+      public function ConsortiaRoseManager(single:inner)
       {
          _playList = [];
          super();
@@ -61,49 +61,49 @@ package consortiaRoseFlower
          SocketManager.Instance.addEventListener(PkgEvent.format(320),onConsortiaRose);
       }
       
-      public function onConsortiaRose(param1:PkgEvent) : void
+      public function onConsortiaRose(e:PkgEvent) : void
       {
-         var _loc3_:* = NaN;
-         var _loc9_:* = null;
-         var _loc5_:PackageIn = param1.pkg;
-         var _loc8_:int = _loc5_.readInt();
-         var _loc2_:String = _loc5_.readUTF();
-         var _loc6_:int = _loc5_.readInt();
-         var _loc4_:String = PlayerManager.Instance.Self.ConsortiaName;
-         var _loc7_:Boolean = false;
+         var timeDuration:* = NaN;
+         var msg:* = null;
+         var pkg:PackageIn = e.pkg;
+         var consortiaID:int = pkg.readInt();
+         var nickName:String = pkg.readUTF();
+         var expGained:int = pkg.readInt();
+         var consortiaName:String = PlayerManager.Instance.Self.ConsortiaName;
+         var isInBtl:Boolean = false;
          if(isInBattle())
          {
-            _loc3_ = Number(_showTime / 1000);
-            _loc7_ = true;
+            timeDuration = Number(_showTime / 1000);
+            isInBtl = true;
          }
          else
          {
-            _loc3_ = 3;
-            _loc7_ = false;
+            timeDuration = 3;
+            isInBtl = false;
          }
-         if(_loc2_ == PlayerManager.Instance.Self.NickName)
+         if(nickName == PlayerManager.Instance.Self.NickName)
          {
-            _loc9_ = LanguageMgr.GetTranslation("consortia.roseFlower.myRoseExp",_loc6_);
-            MessageTipManager.getInstance().show(_loc9_,0,false,3);
-            ChatManager.Instance.sysChatLinkYellow(_loc9_);
+            msg = LanguageMgr.GetTranslation("consortia.roseFlower.myRoseExp",expGained);
+            MessageTipManager.getInstance().show(msg,0,false,3);
+            ChatManager.Instance.sysChatLinkYellow(msg);
          }
          else
          {
-            _loc9_ = LanguageMgr.GetTranslation("consortia.roseFlower.Exp",_loc2_,_loc6_);
-            ChatManager.Instance.sysChatLinkYellow(_loc9_);
+            msg = LanguageMgr.GetTranslation("consortia.roseFlower.Exp",nickName,expGained);
+            ChatManager.Instance.sysChatLinkYellow(msg);
          }
-         _playList.push([_loc7_,_loc4_,_loc2_]);
+         _playList.push([isInBtl,consortiaName,nickName]);
          playRose();
       }
       
       public function playRose() : void
       {
-         var _loc1_:* = null;
+         var dataArr:* = null;
          if(_playList.length > 0 && _isPlaying == false)
          {
             _isPlaying = true;
-            _loc1_ = _playList.shift();
-            show(_loc1_[0],_loc1_[1],_loc1_[2]);
+            dataArr = _playList.shift();
+            show(dataArr[0],dataArr[1],dataArr[2]);
          }
       }
       
@@ -123,23 +123,23 @@ package consortiaRoseFlower
                         return false;
                      }
                   }
-                  addr10:
+                  addr13:
                   return true;
                }
-               addr9:
-               §§goto(addr10);
+               addr12:
+               §§goto(addr13);
             }
-            addr8:
-            §§goto(addr9);
+            addr11:
+            §§goto(addr12);
          }
-         §§goto(addr8);
+         §§goto(addr11);
       }
       
-      public function show(param1:Boolean, param2:String, param3:String) : void
+      public function show($isInBattle:Boolean, consortiaName:String, nickName:String) : void
       {
-         $isInBattle = param1;
-         consortiaName = param2;
-         nickName = param3;
+         $isInBattle = $isInBattle;
+         consortiaName = consortiaName;
+         nickName = nickName;
          onLoaded = function():void
          {
             _roseView = new ConsortiaRoseView();
@@ -177,14 +177,14 @@ package consortiaRoseFlower
          playRose();
       }
       
-      protected function onDetailClose(param1:Event) : void
+      protected function onDetailClose(e:Event) : void
       {
          onTimerComplete(null);
       }
       
-      protected function onTimerComplete(param1:Event) : void
+      protected function onTimerComplete(e:Event) : void
       {
-         e = param1;
+         e = e;
          onHide = function():void
          {
             _roseView.parent && StageReferance.stage.removeChild(_roseView);

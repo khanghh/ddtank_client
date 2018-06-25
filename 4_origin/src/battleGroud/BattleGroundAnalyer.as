@@ -10,35 +10,34 @@ package battleGroud
       
       public var battleDataList:Array;
       
-      public function BattleGroundAnalyer(param1:Function)
+      public function BattleGroundAnalyer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc4_:* = null;
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
+         var xmllist:* = null;
+         var i:int = 0;
+         var rechargeData:* = null;
          battleDataList = [];
-         var _loc3_:XML = new XML(param1);
-         if(_loc3_.@value == "true")
+         var xml:XML = new XML(data);
+         if(xml.@value == "true")
          {
-            _loc4_ = _loc3_..item;
-            _loc5_ = 0;
-            while(_loc5_ < _loc4_.length())
+            xmllist = xml..item;
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc2_ = new BatlleData();
-               ObjectUtils.copyPorpertiesByXML(_loc2_,_loc4_[_loc5_]);
-               battleDataList.push(_loc2_);
-               _loc5_++;
+               rechargeData = new BatlleData();
+               ObjectUtils.copyPorpertiesByXML(rechargeData,xmllist[i]);
+               battleDataList.push(rechargeData);
+               i++;
             }
             battleDataList.sortOn("Level",16);
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc3_.@message;
+            message = xml.@message;
             onAnalyzeError();
             onAnalyzeError();
          }

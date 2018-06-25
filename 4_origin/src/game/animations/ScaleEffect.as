@@ -25,40 +25,40 @@ package game.animations
       
       private var tp2:TweenProxy;
       
-      public function ScaleEffect(param1:int, param2:BitmapData, param3:int = 1)
+      public function ScaleEffect(type:int, srcBmd:BitmapData, dir:int = 1)
       {
          super();
-         var _loc4_:BitmapData = param2.clone();
-         BitmapUtils.reverseBtimapData(_loc4_);
-         scaleX = param3;
+         var bmd:BitmapData = srcBmd.clone();
+         BitmapUtils.reverseBtimapData(bmd);
+         scaleX = dir;
          graphics.beginFill(0,0);
          graphics.drawRect(0,0,1000,600);
          graphics.endFill();
          mouseChildren = false;
          mouseEnabled = false;
          mainTimeLine = new TimelineMax({"useFrames":true});
-         if(param1 == 1)
+         if(type == 1)
          {
-            runScale(_loc4_);
+            runScale(bmd);
          }
-         else if(param1 == 2)
+         else if(type == 2)
          {
-            runDownToUp(_loc4_);
+            runDownToUp(bmd);
          }
-         else if(param1 == 3)
+         else if(type == 3)
          {
-            runRightToLeft(_loc4_);
+            runRightToLeft(bmd);
          }
-         else if(param1 == 4)
+         else if(type == 4)
          {
-            centerToScale(_loc4_);
+            centerToScale(bmd);
          }
       }
       
-      private function runScale(param1:BitmapData) : void
+      private function runScale(srcBmd:BitmapData) : void
       {
-         src1 = new Bitmap(param1,"auto",true);
-         src2 = new Bitmap(param1,"auto",true);
+         src1 = new Bitmap(srcBmd,"auto",true);
+         src2 = new Bitmap(srcBmd,"auto",true);
          addChild(src1);
          addChild(src2);
          var _loc5_:* = [new GlowFilter(16763904,1,38,38,0.3)];
@@ -86,37 +86,37 @@ package game.animations
          _loc5_ = _loc5_;
          tp1.scaleY = _loc5_;
          tp1.scaleX = _loc5_;
-         var _loc3_:Array = TweenMax.allTo([tp1,tp2],4,{
+         var tw1:Array = TweenMax.allTo([tp1,tp2],4,{
             "x":170,
             "y":320,
             "alpha":0.7,
             "scaleX":1.6,
             "scaleY":1.6
          });
-         var _loc2_:Array = TweenMax.allTo([tp1,tp2],30,{
+         var arr:Array = TweenMax.allTo([tp1,tp2],30,{
             "scaleX":1.7,
             "scaleY":1.7,
             "x":170,
             "y":290
          });
-         var _loc4_:Array = TweenMax.allTo([tp1,tp2],4,{
+         var arr1:Array = TweenMax.allTo([tp1,tp2],4,{
             "scaleX":3,
             "scaleY":3,
             "alpha":0
          },1);
-         mainTimeLine.appendMultiple(_loc3_);
-         mainTimeLine.appendMultiple(_loc2_);
-         mainTimeLine.appendMultiple(_loc4_);
+         mainTimeLine.appendMultiple(tw1);
+         mainTimeLine.appendMultiple(arr);
+         mainTimeLine.appendMultiple(arr1);
       }
       
-      private function runUpToDown(param1:BitmapData) : void
+      private function runUpToDown(srcBmd:BitmapData) : void
       {
-         var _loc2_:Shape = new Shape();
-         _loc2_.graphics.beginFill(0,1);
-         _loc2_.graphics.drawRect(0,0,1000,100);
-         _loc2_.graphics.drawRect(0,500,1000,100);
-         _loc2_.graphics.endFill();
-         src1 = new Bitmap(param1,"auto",true);
+         var sp:Shape = new Shape();
+         sp.graphics.beginFill(0,1);
+         sp.graphics.drawRect(0,0,1000,100);
+         sp.graphics.drawRect(0,500,1000,100);
+         sp.graphics.endFill();
+         src1 = new Bitmap(srcBmd,"auto",true);
          addChild(src1);
          tp1 = new TweenProxy(src1);
          tp1.registrationX = src1.width / 2;
@@ -124,23 +124,23 @@ package game.animations
          tp1.x = 250;
          tp1.y = 0;
          tp1.scale = 2;
-         var _loc4_:Array = TweenMax.allTo([tp1],4,{
+         var tw1:Array = TweenMax.allTo([tp1],4,{
             "alpha":1,
             "y":250
          });
-         var _loc3_:Array = TweenMax.allTo([tp1],40,{"y":290});
-         var _loc5_:Array = TweenMax.allTo([tp1],4,{
+         var tw2:Array = TweenMax.allTo([tp1],40,{"y":290});
+         var tw3:Array = TweenMax.allTo([tp1],4,{
             "alpha":0,
             "y":700
          });
-         mainTimeLine.appendMultiple(_loc4_);
-         mainTimeLine.appendMultiple(_loc3_);
-         mainTimeLine.appendMultiple(_loc5_);
+         mainTimeLine.appendMultiple(tw1);
+         mainTimeLine.appendMultiple(tw2);
+         mainTimeLine.appendMultiple(tw3);
       }
       
-      private function runRightToLeft(param1:BitmapData) : void
+      private function runRightToLeft(srcBmd:BitmapData) : void
       {
-         src1 = new Bitmap(param1,"auto",true);
+         src1 = new Bitmap(srcBmd,"auto",true);
          addChild(src1);
          tp1 = new TweenProxy(src1);
          tp1.registrationX = src1.width / 2;
@@ -148,20 +148,20 @@ package game.animations
          tp1.x = 1200;
          tp1.y = 270;
          tp1.alpha = 1;
-         var _loc3_:TweenMax = TweenMax.to(tp1,8,{
+         var tw1:TweenMax = TweenMax.to(tp1,8,{
             "x":170,
             "alpha":1,
             "scaleX":1.8,
             "scaleY":1.8
          });
-         var _loc2_:TweenMax = TweenMax.to(tp1,26,{"x":150});
-         var _loc4_:TweenMax = TweenMax.to(tp1,4,{
+         var tw2:TweenMax = TweenMax.to(tp1,26,{"x":150});
+         var tw3:TweenMax = TweenMax.to(tp1,4,{
             "x":0,
             "alpha":0
          });
-         mainTimeLine.append(_loc3_);
-         mainTimeLine.append(_loc2_);
-         mainTimeLine.append(_loc4_);
+         mainTimeLine.append(tw1);
+         mainTimeLine.append(tw2);
+         mainTimeLine.append(tw3);
       }
       
       private function changeRegist() : void
@@ -170,9 +170,9 @@ package game.animations
          tp1.registrationY = src1.height;
       }
       
-      private function runDownToUp(param1:BitmapData) : void
+      private function runDownToUp(srcBmd:BitmapData) : void
       {
-         src1 = new Bitmap(param1,"auto",true);
+         src1 = new Bitmap(srcBmd,"auto",true);
          addChild(src1);
          tp1 = new TweenProxy(src1);
          tp1.registrationX = src1.width / 2;
@@ -180,23 +180,23 @@ package game.animations
          tp1.x = 170;
          tp1.y = 1000;
          tp1.scale = 2;
-         var _loc3_:Array = TweenMax.allTo([tp1],4,{
+         var tw1:Array = TweenMax.allTo([tp1],4,{
             "alpha":1,
             "y":290
          });
-         var _loc2_:Array = TweenMax.allTo([tp1],22,{"y":250});
-         var _loc4_:Array = TweenMax.allTo([tp1],4,{
+         var tw2:Array = TweenMax.allTo([tp1],22,{"y":250});
+         var tw3:Array = TweenMax.allTo([tp1],4,{
             "alpha":0,
             "y":-100
          });
-         mainTimeLine.appendMultiple(_loc3_,8);
-         mainTimeLine.appendMultiple(_loc2_);
-         mainTimeLine.appendMultiple(_loc4_);
+         mainTimeLine.appendMultiple(tw1,8);
+         mainTimeLine.appendMultiple(tw2);
+         mainTimeLine.appendMultiple(tw3);
       }
       
-      private function runLeftToRight(param1:BitmapData) : void
+      private function runLeftToRight(srcBmd:BitmapData) : void
       {
-         src1 = new Bitmap(param1,"auto",true);
+         src1 = new Bitmap(srcBmd,"auto",true);
          addChild(src1);
          tp1 = new TweenProxy(src1);
          tp1.registrationX = src1.width / 2;
@@ -207,29 +207,29 @@ package game.animations
          tp1.scaleY = _loc5_;
          tp1.scaleX = _loc5_;
          tp1.alpha = 0.5;
-         var _loc3_:TweenMax = TweenMax.to(tp1,3,{
+         var tw1:TweenMax = TweenMax.to(tp1,3,{
             "x":220,
             "alpha":0.8
          });
-         var _loc2_:TweenMax = TweenMax.to(tp1,24,{
+         var tw2:TweenMax = TweenMax.to(tp1,24,{
             "scaleX":2.1,
             "scaleY":2.1,
             "x":240
          });
-         var _loc4_:TweenMax = TweenMax.to(tp1,5,{
+         var tw3:TweenMax = TweenMax.to(tp1,5,{
             "scaleX":4,
             "scaleY":4,
             "alpha":0
          });
-         mainTimeLine.append(_loc3_);
-         mainTimeLine.append(_loc2_);
-         mainTimeLine.append(_loc4_);
+         mainTimeLine.append(tw1);
+         mainTimeLine.append(tw2);
+         mainTimeLine.append(tw3);
       }
       
-      private function centerToScale(param1:BitmapData) : void
+      private function centerToScale(srcBmd:BitmapData) : void
       {
-         src1 = new Bitmap(param1,"auto",true);
-         src2 = new Bitmap(param1,"auto",true);
+         src1 = new Bitmap(srcBmd,"auto",true);
+         src2 = new Bitmap(srcBmd,"auto",true);
          addChild(src1);
          addChild(src2);
          var _loc5_:* = [new GlowFilter(16763904,1,40,40,0.3)];
@@ -257,23 +257,23 @@ package game.animations
          _loc5_ = 0.2;
          tp2.alpha = _loc5_;
          tp1.alpha = _loc5_;
-         var _loc2_:Array = TweenMax.allTo([tp1,tp2],6,{
+         var tw1:Array = TweenMax.allTo([tp1,tp2],6,{
             "scaleX":2,
             "scaleY":2,
             "alpha":0.8
          });
-         var _loc3_:Array = TweenMax.allTo([tp1,tp2],28,{
+         var tw5:Array = TweenMax.allTo([tp1,tp2],28,{
             "scaleX":2.2,
             "scaleY":2.2
          });
-         var _loc4_:Array = TweenMax.allTo([tp1,tp2],4,{
+         var tw6:Array = TweenMax.allTo([tp1,tp2],4,{
             "scaleX":3,
             "scaleY":3,
             "alpha":0
          },2);
-         mainTimeLine.appendMultiple(_loc2_);
-         mainTimeLine.appendMultiple(_loc3_);
-         mainTimeLine.appendMultiple(_loc4_);
+         mainTimeLine.appendMultiple(tw1);
+         mainTimeLine.appendMultiple(tw5);
+         mainTimeLine.appendMultiple(tw6);
       }
       
       public function dispose() : void

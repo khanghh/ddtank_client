@@ -20,17 +20,17 @@ package horseRace.view
       
       private var _func:Function;
       
-      public function HorseRaceStartCountDown(param1:int, param2:String = "begin", param3:Function = null)
+      public function HorseRaceStartCountDown($count:int, type:String = "begin", callFunction:Function = null)
       {
          super();
          PositionUtils.setPos(this,"horseRace.raceView.countDownViewPos");
-         _count = param1;
-         _func = param3;
-         if(param2 == "begin")
+         _count = $count;
+         _func = callFunction;
+         if(type == "begin")
          {
             _mc = ComponentFactory.Instance.creat("horseRace.raceView.gameStartCountDown");
          }
-         else if(param2 == "end")
+         else if(type == "end")
          {
             _mc = ComponentFactory.Instance.creat("horseRace.raceView.gameEndCountDown");
          }
@@ -41,7 +41,7 @@ package horseRace.view
          refreshMc();
       }
       
-      private function timerHandler(param1:TimerEvent) : void
+      private function timerHandler(event:TimerEvent) : void
       {
          _count = Number(_count) + 1;
          if(_count > 10)

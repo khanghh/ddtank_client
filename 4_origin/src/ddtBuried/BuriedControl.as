@@ -65,27 +65,25 @@ package ddtBuried
          return _manager.takeCardPayList[3 - _manager.takeCardLimit];
       }
       
-      public function oneDegreeToTwoDegree(param1:String, param2:int, param3:int) : Array
+      public function oneDegreeToTwoDegree(str:String, row:int, col:int) : Array
       {
-         var _loc6_:int = 0;
-         var _loc8_:int = 0;
-         var _loc4_:Array = param1.split(",");
-         var _loc7_:int = 0;
-         var _loc5_:Array = [];
-         _loc6_ = 0;
-         while(_loc6_ < param3)
+         var j:int = 0;
+         var i:int = 0;
+         var oneDegree:Array = str.split(",");
+         var k:int = 0;
+         var twoDegree:Array = [];
+         for(j = 0; j < col; )
          {
-            _loc5_[_loc6_] = [];
-            _loc8_ = 0;
-            while(_loc8_ < param2)
+            twoDegree[j] = [];
+            for(i = 0; i < row; )
             {
-               _loc5_[_loc6_][_loc8_] = int(_loc4_[_loc7_]);
-               _loc7_++;
-               _loc8_++;
+               twoDegree[j][i] = int(oneDegree[k]);
+               k++;
+               i++;
             }
-            _loc6_++;
+            j++;
          }
-         return _loc5_;
+         return twoDegree;
       }
       
       public function setup() : void
@@ -93,43 +91,41 @@ package ddtBuried
          initEvents();
       }
       
-      public function getUpdateData(param1:Boolean) : UpdateStarData
+      public function getUpdateData(bool:Boolean) : UpdateStarData
       {
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:int = _manager.upDateStarList.length;
-         if(param1)
+         var nextLevel:int = 0;
+         var i:int = 0;
+         var len:int = _manager.upDateStarList.length;
+         if(bool)
          {
-            _loc2_ = _manager.level + 1;
+            nextLevel = _manager.level + 1;
          }
          else
          {
-            _loc2_ = _manager.level;
+            nextLevel = _manager.level;
          }
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         for(i = 0; i < len; )
          {
-            if(_loc2_ == _manager.upDateStarList[_loc4_].StarID)
+            if(nextLevel == _manager.upDateStarList[i].StarID)
             {
-               return _manager.upDateStarList[_loc4_];
+               return _manager.upDateStarList[i];
             }
-            _loc4_++;
+            i++;
          }
          return null;
       }
       
       public function getPayData() : SearchGoodsData
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = _manager.payMoneyList.length;
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_)
+         var i:int = 0;
+         var len:int = _manager.payMoneyList.length;
+         for(i = 0; i < len; )
          {
-            if(_manager.currPayLevel == _manager.payMoneyList[_loc2_].Number)
+            if(_manager.currPayLevel == _manager.payMoneyList[i].Number)
             {
-               return _manager.payMoneyList[_loc2_];
+               return _manager.payMoneyList[i];
             }
-            _loc2_++;
+            i++;
          }
          return null;
       }
@@ -144,14 +140,14 @@ package ddtBuried
          BuriedManager.Instance.addEventListener("buriedOpenView",__onOpenView);
       }
       
-      protected function mapOverHandler(param1:BuriedEvent) : void
+      protected function mapOverHandler(e:BuriedEvent) : void
       {
-         e = param1;
-         callBack = function(param1:int, param2:int, param3:Array):Boolean
+         e = e;
+         callBack = function(item:int, index:int, arr:Array):Boolean
          {
-            if(param1 == reachTimes)
+            if(item == reachTimes)
             {
-               idx = param2;
+               idx = index;
                return true;
             }
             return false;
@@ -163,28 +159,28 @@ package ddtBuried
          }
       }
       
-      public function requireGainRewards(param1:int) : void
+      public function requireGainRewards(index:int) : void
       {
-         _curGainBoxIndex = param1;
-         SocketManager.Instance.out.sendSearchGoodsGainRewards(param1);
+         _curGainBoxIndex = index;
+         SocketManager.Instance.out.sendSearchGoodsGainRewards(index);
       }
       
-      protected function onGainRewards(param1:PkgEvent) : void
+      protected function onGainRewards(e:PkgEvent) : void
       {
-         var _loc2_:ByteArray = param1.pkg;
-         var _loc3_:Boolean = _loc2_.readBoolean();
-         _manager.stateRewardsGained = _loc2_.readInt();
-         _manager.timesReachEnd = _loc2_.readInt();
+         var bytes:ByteArray = e.pkg;
+         var isSuc:Boolean = bytes.readBoolean();
+         _manager.stateRewardsGained = bytes.readInt();
+         _manager.timesReachEnd = bytes.readInt();
          _frame.updatePlayGainedAnimation(_curGainBoxIndex);
       }
       
-      private function playerRollDiceHander(param1:PkgEvent) : void
+      private function playerRollDiceHander(e:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _manager.num = param1.pkg.readInt();
-         _manager.timesBuyDice = param1.pkg.readInt();
-         var _loc3_:int = param1.pkg.readInt();
-         _manager.nowPosition = param1.pkg.readInt();
+         var pkg:PackageIn = e.pkg;
+         _manager.num = e.pkg.readInt();
+         _manager.timesBuyDice = e.pkg.readInt();
+         var type:int = e.pkg.readInt();
+         _manager.nowPosition = e.pkg.readInt();
          if(_manager.nowPosition == 35)
          {
             _manager.isOver = true;
@@ -194,7 +190,7 @@ package ddtBuried
             dispatchEvent(new BuriedEvent("updatabtnstats"));
          }
          _manager.limit = _manager.num - _manager.pay_count;
-         switch(int(_loc3_) - 1)
+         switch(int(type) - 1)
          {
             case 0:
                _frame.setCrFrame("one");
@@ -226,14 +222,14 @@ package ddtBuried
          _frame.setTxt(_manager.limit.toString(),true);
       }
       
-      private function playerUpgradeLevelEnterHander(param1:PkgEvent) : void
+      private function playerUpgradeLevelEnterHander(e:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _manager.level = _loc2_.readInt();
+         var pkg:PackageIn = e.pkg;
+         _manager.level = pkg.readInt();
          _frame.updataStarLevel(_manager.level);
       }
       
-      protected function __onOpenView(param1:BuriedEvent) : void
+      protected function __onOpenView(event:BuriedEvent) : void
       {
          createActivityFrame();
          initFrames();
@@ -265,7 +261,7 @@ package ddtBuried
          LayerManager.Instance.addToLayer(_frame,3,true,1);
       }
       
-      private function openShopView(param1:BuriedEvent) : void
+      private function openShopView(e:BuriedEvent) : void
       {
          if(!_frame)
          {
@@ -290,7 +286,7 @@ package ddtBuried
          }
       }
       
-      protected function frameEvent(param1:FrameEvent) : void
+      protected function frameEvent(event:FrameEvent) : void
       {
          SoundManager.instance.playButtonSound();
          _shopframe.dispose();
@@ -319,13 +315,13 @@ package ddtBuried
          _transactionsFrame = null;
       }
       
-      public function showTransactionFrame(param1:String, param2:Function = null, param3:Function = null, param4:Sprite = null) : void
+      public function showTransactionFrame(str:String, payFun:Function = null, clickFun:Function = null, target:Sprite = null) : void
       {
          _transactionsFrame = ComponentFactory.Instance.creatComponentByStylename("ddtBuried.views.TransactionsDiceFrame");
-         _transactionsFrame.setTxt(param1);
-         _transactionsFrame.buyFunction = param2;
-         _transactionsFrame.clickFunction = param3;
-         _transactionsFrame.target = param4;
+         _transactionsFrame.setTxt(str);
+         _transactionsFrame.buyFunction = payFun;
+         _transactionsFrame.clickFunction = clickFun;
+         _transactionsFrame.target = target;
          LayerManager.Instance.addToLayer(_transactionsFrame,3,true,2);
       }
       

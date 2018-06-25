@@ -58,9 +58,9 @@ package feedback.data
          return _questionTitle;
       }
       
-      public function set question_title(param1:String) : void
+      public function set question_title(value:String) : void
       {
-         _questionTitle = param1;
+         _questionTitle = value;
       }
       
       public function get question_content() : String
@@ -68,9 +68,9 @@ package feedback.data
          return _questionContent;
       }
       
-      public function set question_content(param1:String) : void
+      public function set question_content(value:String) : void
       {
-         _questionContent = param1;
+         _questionContent = value;
       }
       
       public function get occurrence_date() : String
@@ -78,9 +78,9 @@ package feedback.data
          return _occurrenceDate;
       }
       
-      public function set occurrence_date(param1:String) : void
+      public function set occurrence_date(value:String) : void
       {
-         _occurrenceDate = param1;
+         _occurrenceDate = value;
       }
       
       public function get question_type() : int
@@ -88,9 +88,9 @@ package feedback.data
          return _questionType;
       }
       
-      public function set question_type(param1:int) : void
+      public function set question_type(value:int) : void
       {
-         _questionType = param1;
+         _questionType = value;
       }
       
       public function get goods_get_method() : String
@@ -98,9 +98,9 @@ package feedback.data
          return _goodsGetMethod;
       }
       
-      public function set goods_get_method(param1:String) : void
+      public function set goods_get_method(value:String) : void
       {
-         _goodsGetMethod = param1;
+         _goodsGetMethod = value;
       }
       
       public function get goods_get_date() : String
@@ -108,9 +108,9 @@ package feedback.data
          return _goodsGetDate;
       }
       
-      public function set goods_get_date(param1:String) : void
+      public function set goods_get_date(value:String) : void
       {
-         _goodsGetDate = param1;
+         _goodsGetDate = value;
       }
       
       public function get charge_order_id() : String
@@ -118,9 +118,9 @@ package feedback.data
          return _chargeOrderId;
       }
       
-      public function set charge_order_id(param1:String) : void
+      public function set charge_order_id(value:String) : void
       {
-         _chargeOrderId = param1;
+         _chargeOrderId = value;
       }
       
       public function get charge_method() : String
@@ -128,9 +128,9 @@ package feedback.data
          return _chargeMethod;
       }
       
-      public function set charge_method(param1:String) : void
+      public function set charge_method(value:String) : void
       {
-         _chargeMethod = param1;
+         _chargeMethod = value;
       }
       
       public function get charge_moneys() : Number
@@ -138,9 +138,9 @@ package feedback.data
          return _chargeMoneys;
       }
       
-      public function set charge_moneys(param1:Number) : void
+      public function set charge_moneys(value:Number) : void
       {
-         _chargeMoneys = param1;
+         _chargeMoneys = value;
       }
       
       public function get activity_is_error() : Boolean
@@ -148,9 +148,9 @@ package feedback.data
          return _activityIsError;
       }
       
-      public function set activity_is_error(param1:Boolean) : void
+      public function set activity_is_error(value:Boolean) : void
       {
-         _activityIsError = param1;
+         _activityIsError = value;
       }
       
       public function get activity_name() : String
@@ -158,9 +158,9 @@ package feedback.data
          return _activityName;
       }
       
-      public function set activity_name(param1:String) : void
+      public function set activity_name(value:String) : void
       {
-         _activityName = param1;
+         _activityName = value;
       }
       
       public function get report_user_name() : String
@@ -168,9 +168,9 @@ package feedback.data
          return _reportUserName;
       }
       
-      public function set report_user_name(param1:String) : void
+      public function set report_user_name(value:String) : void
       {
-         _reportUserName = param1;
+         _reportUserName = value;
       }
       
       public function get report_url() : String
@@ -178,9 +178,9 @@ package feedback.data
          return _reportUrl;
       }
       
-      public function set report_url(param1:String) : void
+      public function set report_url(value:String) : void
       {
-         _reportUrl = param1;
+         _reportUrl = value;
       }
       
       public function get user_full_name() : String
@@ -188,9 +188,9 @@ package feedback.data
          return _userFullName;
       }
       
-      public function set user_full_name(param1:String) : void
+      public function set user_full_name(value:String) : void
       {
-         _userFullName = param1;
+         _userFullName = value;
       }
       
       public function get user_phone() : String
@@ -198,9 +198,9 @@ package feedback.data
          return _userPhone;
       }
       
-      public function set user_phone(param1:String) : void
+      public function set user_phone(value:String) : void
       {
-         _userPhone = param1;
+         _userPhone = value;
       }
       
       public function get complaints_title() : String
@@ -208,9 +208,9 @@ package feedback.data
          return _complaintsTitle;
       }
       
-      public function set complaints_title(param1:String) : void
+      public function set complaints_title(value:String) : void
       {
-         _complaintsTitle = param1;
+         _complaintsTitle = value;
       }
       
       public function get complaints_source() : String
@@ -218,9 +218,9 @@ package feedback.data
          return _complaintsSource;
       }
       
-      public function set complaints_source(param1:String) : void
+      public function set complaints_source(value:String) : void
       {
-         _complaintsSource = param1;
+         _complaintsSource = value;
       }
       
       public function get appraisal_grade() : String
@@ -228,9 +228,9 @@ package feedback.data
          return _appraisalGrade;
       }
       
-      public function set appraisal_grade(param1:String) : void
+      public function set appraisal_grade(value:String) : void
       {
-         _appraisalGrade = param1;
+         _appraisalGrade = value;
       }
       
       public function get appraisal_content() : String
@@ -238,9 +238,9 @@ package feedback.data
          return _appraisalContent;
       }
       
-      public function set appraisal_content(param1:String) : void
+      public function set appraisal_content(value:String) : void
       {
-         _appraisalContent = param1;
+         _appraisalContent = value;
       }
       
       public function get user_id() : int
@@ -248,9 +248,9 @@ package feedback.data
          return _userID;
       }
       
-      public function set user_id(param1:int) : void
+      public function set user_id(value:int) : void
       {
-         _userID = param1;
+         _userID = value;
       }
       
       public function get user_name() : String
@@ -258,9 +258,9 @@ package feedback.data
          return _userName;
       }
       
-      public function set user_name(param1:String) : void
+      public function set user_name(value:String) : void
       {
-         _userName = param1;
+         _userName = value;
       }
       
       public function get user_nick_name() : String
@@ -268,9 +268,9 @@ package feedback.data
          return _userNickName;
       }
       
-      public function set user_nick_name(param1:String) : void
+      public function set user_nick_name(value:String) : void
       {
-         _userNickName = param1;
+         _userNickName = value;
       }
    }
 }

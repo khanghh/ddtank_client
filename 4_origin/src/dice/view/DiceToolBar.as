@@ -140,7 +140,7 @@ package dice.view
          PlayerManager.Instance.Self.removeEventListener("propertychange",__changeMoney);
       }
       
-      private function __getDiceResultData(param1:DiceEvent) : void
+      private function __getDiceResultData(event:DiceEvent) : void
       {
          _refreshBtn.enable = false;
          _doubleRadio.enable = false;
@@ -148,9 +148,9 @@ package dice.view
          _bigRadio.enable = false;
       }
       
-      private function __onPlayerState(param1:DiceEvent) : void
+      private function __onPlayerState(event:DiceEvent) : void
       {
-         if(param1.resultData.isWalking)
+         if(event.resultData.isWalking)
          {
             _refreshBtn.enable = false;
             _doubleRadio.enable = false;
@@ -166,7 +166,7 @@ package dice.view
          }
       }
       
-      private function __onRefreshBtnClick(param1:MouseEvent) : void
+      private function __onRefreshBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -188,11 +188,11 @@ package dice.view
          AlertFeedeductionWindow();
       }
       
-      private function __poorManResponse(param1:FrameEvent) : void
+      private function __poorManResponse(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          _poorManAlert.removeEventListener("response",__poorManResponse);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         if(event.responseCode == 3 || event.responseCode == 2)
          {
             LeavePageManager.leaveToFillPath();
          }
@@ -219,7 +219,7 @@ package dice.view
       
       private function openAlertFrame() : void
       {
-         var _loc1_:String = LanguageMgr.GetTranslation("dice.refreshPrompt",DiceController.Instance.refreshPrice) + "\n\n";
+         var msg:String = LanguageMgr.GetTranslation("dice.refreshPrompt",DiceController.Instance.refreshPrice) + "\n\n";
          if(_selectCheckBtn == null)
          {
             _selectCheckBtn = ComponentFactory.Instance.creatComponentByStylename("asset.dice.refreshAlert.selectedCheck");
@@ -231,33 +231,33 @@ package dice.view
          {
             ObjectUtils.disposeObject(_baseAlert);
          }
-         _baseAlert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc1_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,false,false,2);
+         _baseAlert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),msg,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,false,false,2);
          _baseAlert.addChild(_selectCheckBtn);
          _baseAlert.addEventListener("response",__onResponse);
       }
       
-      private function __onResponse(param1:FrameEvent) : void
+      private function __onResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.target as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onResponse);
+         var alert:BaseAlerFrame = evt.target as BaseAlerFrame;
+         alert.removeEventListener("response",__onResponse);
          _selectCheckBtn.removeEventListener("click",__onCheckBtnClick);
          ObjectUtils.disposeObject(_selectCheckBtn);
          _selectCheckBtn = null;
-         _loc2_.dispose();
-         _loc2_ = null;
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         alert.dispose();
+         alert = null;
+         if(evt.responseCode == 2 || evt.responseCode == 3)
          {
             sendRefreshDataToServer();
          }
       }
       
-      private function __onCheckBtnClick(param1:MouseEvent) : void
+      private function __onCheckBtnClick(event:MouseEvent) : void
       {
          DiceController.Instance.setPopupNextRefreshWindow(_selectCheckBtn.selected);
       }
       
-      private function __changeMoney(param1:PlayerPropertyEvent) : void
+      private function __changeMoney(event:PlayerPropertyEvent) : void
       {
          if(_currentCoupons)
          {
@@ -265,10 +265,10 @@ package dice.view
          }
       }
       
-      private function __onSelectBtnClick(param1:MouseEvent) : void
+      private function __onSelectBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.playMusic("062");
-         var _loc3_:* = param1.currentTarget;
+         var _loc3_:* = event.currentTarget;
          if(_doubleRadio !== _loc3_)
          {
             if(_smallRadio !== _loc3_)
@@ -290,20 +290,20 @@ package dice.view
             _smallRadio.selected = false;
             _bigRadio.selected = false;
          }
-         var _loc2_:int = 0;
+         var selectedIndex:int = 0;
          if(_doubleRadio.selected)
          {
-            _loc2_ = 1;
+            selectedIndex = 1;
          }
          else if(_bigRadio.selected)
          {
-            _loc2_ = 2;
+            selectedIndex = 2;
          }
          else if(_smallRadio.selected)
          {
-            _loc2_ = 3;
+            selectedIndex = 3;
          }
-         DiceController.Instance.diceType = _loc2_;
+         DiceController.Instance.diceType = selectedIndex;
          DiceController.Instance.dispatchEvent(new DiceEvent("dice_type_changed"));
       }
       

@@ -38,20 +38,20 @@ package moneyTree.view
       
       private var _onComplete:Function;
       
-      public function Fruit(param1:int)
+      public function Fruit(index:int)
       {
          super();
-         _index = param1;
+         _index = index;
          this.useHandCursor = true;
          this.buttonMode = true;
-         var _loc2_:ComponentFactory = ComponentFactory.Instance;
-         _normalBmp = _loc2_.creatBitmap("moneyTree.fruit" + param1 + ".normal");
+         var factory:ComponentFactory = ComponentFactory.Instance;
+         _normalBmp = factory.creatBitmap("moneyTree.fruit" + index + ".normal");
          addChild(_normalBmp);
-         _grownMC = _loc2_.creat("moneyTree.fruit" + param1 + ".grown");
+         _grownMC = factory.creat("moneyTree.fruit" + index + ".grown");
          _grownMC.gotoAndStop(1);
-         _pickMC = _loc2_.creat("moneyTree.fruit" + param1 + ".pick");
+         _pickMC = factory.creat("moneyTree.fruit" + index + ".pick");
          _pickMC.gotoAndStop(1);
-         _countDown = new CountDownBoard(param1,_loc2_.creatBitmap("moneyTree.fruit" + param1 + ".title"));
+         _countDown = new CountDownBoard(index,factory.creatBitmap("moneyTree.fruit" + index + ".title"));
          _countDown.x = 53;
          _countDown.y = 3;
          addChild(_countDown);
@@ -71,8 +71,8 @@ package moneyTree.view
             _countDown.y = 24;
          }
          _tip = new MultipleLineTip();
-         _tip.tipData = LanguageMgr.GetTranslation("moneyTree.fruit.tip").toString().split("|")[param1].toString();
-         PositionUtils.setPos(_tip,"moneyTree.fruit" + param1.toString() + ".Tippos");
+         _tip.tipData = LanguageMgr.GetTranslation("moneyTree.fruit.tip").toString().split("|")[index].toString();
+         PositionUtils.setPos(_tip,"moneyTree.fruit" + index.toString() + ".Tippos");
          _tip.visible = false;
          addChildAt(_tip,1);
          this.addEventListener("click",onClick);
@@ -87,17 +87,17 @@ package moneyTree.view
          return _index;
       }
       
-      private function __showTip(param1:MouseEvent) : void
+      private function __showTip(e:MouseEvent) : void
       {
          _tip.visible = true;
       }
       
-      private function __hideTip(param1:MouseEvent) : void
+      private function __hideTip(e:MouseEvent) : void
       {
          _tip.visible = false;
       }
       
-      protected function onClick(param1:MouseEvent) : void
+      protected function onClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          this.removeEventListener("click",onClick);
@@ -110,7 +110,7 @@ package moneyTree.view
          this.addEventListener("click",onClick);
       }
       
-      protected function updateTime(param1:CEvent) : void
+      protected function updateTime(e:CEvent) : void
       {
          if(_pickMC.hasEventListener("enterFrame"))
          {
@@ -153,7 +153,7 @@ package moneyTree.view
          _pickMC.gotoAndPlay(1);
       }
       
-      protected function onPickEF(param1:Event) : void
+      protected function onPickEF(e:Event) : void
       {
          if(_pickMC == null)
          {
@@ -167,9 +167,9 @@ package moneyTree.view
          }
       }
       
-      private function showDelay(param1:Function) : void
+      private function showDelay(onComplete:Function) : void
       {
-         _onComplete = param1;
+         _onComplete = onComplete;
       }
       
       public function dispose() : void

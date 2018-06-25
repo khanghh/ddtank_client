@@ -29,9 +29,9 @@ package team.view.main
          btn_right.clickHandler = new Handler(__onClickRight);
       }
       
-      public function set info(param1:TeamInvitedMemberInfo) : void
+      public function set info(value:TeamInvitedMemberInfo) : void
       {
-         _info = param1;
+         _info = value;
          btn_close.visible = _info != null;
          btn_right.visible = _info != null && PlayerManager.Instance.Self.teamDuty == 1;
          label_date.visible = _info != null;
@@ -52,39 +52,39 @@ package team.view.main
       private function __onClickClose() : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:String = LanguageMgr.GetTranslation("team.govern.repeal",_info.name);
-         var _loc1_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc2_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,1,null,"SimpleAlert",60,false);
-         _loc1_.addEventListener("response",__onAlertRepeal);
+         var tip:String = LanguageMgr.GetTranslation("team.govern.repeal",_info.name);
+         var alertFrame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),tip,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,1,null,"SimpleAlert",60,false);
+         alertFrame.addEventListener("response",__onAlertRepeal);
       }
       
-      private function __onAlertRepeal(param1:FrameEvent) : void
+      private function __onAlertRepeal(e:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onAlertRepeal);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var alertFrame:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         alertFrame.removeEventListener("response",__onAlertRepeal);
+         if(e.responseCode == 2 || e.responseCode == 3)
          {
             SocketManager.Instance.out.sendTeamInviteRepeal(_info.id);
          }
-         _loc2_.dispose();
+         alertFrame.dispose();
       }
       
       private function __onClickRight() : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:String = LanguageMgr.GetTranslation("team.govern.ratify",_info.name);
-         var _loc1_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc2_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,1,null,"SimpleAlert",60,false);
-         _loc1_.addEventListener("response",__onAlertRatify);
+         var tip:String = LanguageMgr.GetTranslation("team.govern.ratify",_info.name);
+         var alertFrame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),tip,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,1,null,"SimpleAlert",60,false);
+         alertFrame.addEventListener("response",__onAlertRatify);
       }
       
-      private function __onAlertRatify(param1:FrameEvent) : void
+      private function __onAlertRatify(e:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onAlertRatify);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var alertFrame:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         alertFrame.removeEventListener("response",__onAlertRatify);
+         if(e.responseCode == 2 || e.responseCode == 3)
          {
             SocketManager.Instance.out.sendTeamInviteApproval(_info.id);
          }
-         _loc2_.dispose();
+         alertFrame.dispose();
       }
    }
 }

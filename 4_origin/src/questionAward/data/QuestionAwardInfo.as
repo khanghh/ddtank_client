@@ -24,9 +24,9 @@ package questionAward.data
          return _endTime;
       }
       
-      public function set endTime(param1:Date) : void
+      public function set endTime(value:Date) : void
       {
-         _endTime = param1;
+         _endTime = value;
       }
       
       public function get beginTime() : Date
@@ -34,9 +34,9 @@ package questionAward.data
          return _beginTime;
       }
       
-      public function set beginTime(param1:Date) : void
+      public function set beginTime(value:Date) : void
       {
-         _beginTime = param1;
+         _beginTime = value;
       }
       
       public function get minLv() : int
@@ -44,9 +44,9 @@ package questionAward.data
          return _minLv;
       }
       
-      public function set minLv(param1:int) : void
+      public function set minLv(value:int) : void
       {
-         _minLv = param1;
+         _minLv = value;
       }
       
       public function get title() : String
@@ -54,49 +54,48 @@ package questionAward.data
          return _title;
       }
       
-      public function set title(param1:String) : void
+      public function set title(value:String) : void
       {
-         _title = param1;
+         _title = value;
       }
       
-      public function addDataBaseInfo(param1:String) : void
+      public function addDataBaseInfo(data:String) : void
       {
-         var _loc2_:* = null;
-         var _loc7_:int = 0;
-         var _loc4_:* = null;
-         var _loc6_:int = 0;
+         var dataBaseInfo:* = null;
+         var i:int = 0;
+         var infoArr:* = null;
+         var temIndex:int = 0;
          _dataBaseList = new Vector.<QuestionDataBaseInfo>();
-         var _loc3_:Array = param1.split("|");
-         if(_loc3_ == null || _loc3_.length <= 0)
+         var dataArr:Array = data.split("|");
+         if(dataArr == null || dataArr.length <= 0)
          {
             return;
          }
-         var _loc5_:int = 1;
-         _loc7_ = 0;
-         while(_loc7_ < _loc3_.length)
+         var temID:int = 1;
+         for(i = 0; i < dataArr.length; )
          {
-            _loc4_ = String(_loc3_[_loc7_]).split("$");
-            if(!(_loc4_ == null || _loc4_.length <= 0))
+            infoArr = String(dataArr[i]).split("$");
+            if(!(infoArr == null || infoArr.length <= 0))
             {
-               _loc2_ = new QuestionDataBaseInfo();
-               _loc2_.qid = _loc5_;
-               _loc2_.title = _loc4_[0];
-               _loc2_.type = _loc4_[1];
-               if(_loc2_.type == 1)
+               dataBaseInfo = new QuestionDataBaseInfo();
+               dataBaseInfo.qid = temID;
+               dataBaseInfo.title = infoArr[0];
+               dataBaseInfo.type = infoArr[1];
+               if(dataBaseInfo.type == 1)
                {
-                  _loc2_.isMultiSelect = int(_loc4_[2]);
-                  _loc6_ = 3;
-                  _loc6_;
-                  while(_loc6_ < _loc4_.length)
+                  dataBaseInfo.isMultiSelect = int(infoArr[2]);
+                  temIndex = 3;
+                  temIndex;
+                  while(temIndex < infoArr.length)
                   {
-                     _loc2_.addContent(_loc4_[_loc6_]);
-                     _loc6_++;
+                     dataBaseInfo.addContent(infoArr[temIndex]);
+                     temIndex++;
                   }
                }
-               _dataBaseList.push(_loc2_);
-               _loc5_++;
+               _dataBaseList.push(dataBaseInfo);
+               temID++;
             }
-            _loc7_++;
+            i++;
          }
       }
       

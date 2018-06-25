@@ -26,10 +26,10 @@ package cardSystem.view
       
       private var _info:CardAchievementInfo;
       
-      public function CardAchievementCompleteView(param1:*)
+      public function CardAchievementCompleteView(info:*)
       {
          super();
-         _info = param1;
+         _info = info;
          _timeOutId = setTimeout(dispose,5500);
          initView();
          this.addEventListener("addedToStage",onATS);
@@ -42,7 +42,7 @@ package cardSystem.view
          LayerManager.Instance.addToLayer(this,1);
       }
       
-      protected function onATS(param1:Event) : void
+      protected function onATS(e:Event) : void
       {
          this.removeEventListener("addedToStage",onATS);
          SoundManager.instance.play("215");
@@ -50,21 +50,21 @@ package cardSystem.view
       
       private function initView() : void
       {
-         var _loc1_:MovieClip = ComponentFactory.Instance.creat("asset.hall.taskComplete.commitView.bg");
-         _loc1_.gotoAndStop(2);
-         var _loc2_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("hall.taskCompleteCommitView.contentTxt");
-         _loc2_.text = LanguageMgr.GetTranslation("tank.card.achievement.complete",_info.Name);
+         var bg:MovieClip = ComponentFactory.Instance.creat("asset.hall.taskComplete.commitView.bg");
+         bg.gotoAndStop(2);
+         var contentTxt:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("hall.taskCompleteCommitView.contentTxt");
+         contentTxt.text = LanguageMgr.GetTranslation("tank.card.achievement.complete",_info.Name);
          _commitBtnTxt = ComponentFactory.Instance.creatComponentByStylename("hall.taskCompleteCommitView.commitBtnTxt");
          _commitBtnTxt.htmlText = "<u><a href=\"event:1\">" + LanguageMgr.GetTranslation("tank.card.achievement.look") + "</a></u>";
          _commitBtnTxt.addEventListener("link",textClickHandler);
          _commitBtnTxt.mouseEnabled = true;
          _commitBtnTxt.selectable = false;
-         addChild(_loc1_);
-         addChild(_loc2_);
+         addChild(bg);
+         addChild(contentTxt);
          addChild(_commitBtnTxt);
       }
       
-      private function textClickHandler(param1:TextEvent) : void
+      private function textClickHandler(event:TextEvent) : void
       {
          SoundManager.instance.playButtonSound();
          CardManager.Instance.showView(2);

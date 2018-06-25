@@ -57,49 +57,46 @@ package consortion.view.selfConsortia
          }
       }
       
-      public function list(param1:Vector.<ShopItemInfo>, param2:int, param3:int, param4:Boolean = false) : void
+      public function list($list:Vector.<ShopItemInfo>, shopId:int, richNum:int, enable:Boolean = false) : void
       {
-         var _loc9_:int = 0;
-         var _loc6_:* = null;
-         var _loc7_:int = 0;
-         var _loc8_:int = 0;
-         var _loc5_:* = null;
+         var i:int = 0;
+         var item:* = null;
+         var len:int = 0;
+         var j:int = 0;
+         var item2:* = null;
          clearList();
-         _shopId = param2 + 10;
-         _loc9_ = 0;
-         while(_loc9_ < param1.length)
+         _shopId = shopId + 10;
+         for(i = 0; i < $list.length; )
          {
-            _loc6_ = new ConsortionShopItem(param4);
-            _list.addChild(_loc6_);
-            _loc6_.info = param1[_loc9_];
-            _loc6_.neededRich = param3;
-            _items.push(_loc6_);
-            _loc9_++;
+            item = new ConsortionShopItem(enable);
+            _list.addChild(item);
+            item.info = $list[i];
+            item.neededRich = richNum;
+            _items.push(item);
+            i++;
          }
-         if(param1.length < 6)
+         if($list.length < 6)
          {
-            _loc7_ = 6 - param1.length;
-            _loc8_ = 0;
-            while(_loc8_ < _loc7_)
+            len = 6 - $list.length;
+            for(j = 0; j < len; )
             {
-               _loc5_ = new ConsortionShopItem(param4);
-               _list.addChild(_loc5_);
-               _items.push(_loc5_);
-               _loc8_++;
+               item2 = new ConsortionShopItem(enable);
+               _list.addChild(item2);
+               _items.push(item2);
+               j++;
             }
          }
       }
       
       private function clearList() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(_items && _list)
          {
-            _loc1_ = 0;
-            while(_loc1_ < _items.length)
+            for(i = 0; i < _items.length; )
             {
-               _items[_loc1_].dispose();
-               _loc1_++;
+               _items[i].dispose();
+               i++;
             }
             _list.disposeAllChildren();
          }

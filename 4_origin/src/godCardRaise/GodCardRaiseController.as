@@ -38,7 +38,7 @@ package godCardRaise
          GodCardRaiseManager.Instance.addEventListener("closeView",onCloseView);
       }
       
-      private function onShowView(param1:CEvent) : void
+      private function onShowView(e:CEvent) : void
       {
          if(_godCardRaiseMainView)
          {
@@ -49,7 +49,7 @@ package godCardRaise
          LayerManager.Instance.addToLayer(_godCardRaiseMainView,3,true,1);
       }
       
-      private function onCloseView(param1:CEvent) : void
+      private function onCloseView(event:CEvent) : void
       {
          if(_godCardRaiseMainView)
          {

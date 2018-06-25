@@ -20,67 +20,65 @@ package ddt.data
       
       public static function get MAX_LEVEL() : int
       {
-         var _loc2_:PetInfo = PetsBagManager.instance().petModel.currentPetInfo;
-         if(_loc2_ == null)
+         var info:PetInfo = PetsBagManager.instance().petModel.currentPetInfo;
+         if(info == null)
          {
             return 60;
          }
-         var _loc1_:int = _loc2_.breakGrade;
-         switch(int(_loc1_) - 1)
+         var breakGrade:int = info.breakGrade;
+         switch(int(breakGrade) - 1)
          {
             case 0:
-               _loc1_ = 63;
+               breakGrade = 63;
                break;
             case 1:
-               _loc1_ = 65;
+               breakGrade = 65;
                break;
             case 2:
-               _loc1_ = 68;
+               breakGrade = 68;
                break;
             case 3:
-               _loc1_ = 70;
+               breakGrade = 70;
          }
-         return _loc1_;
+         return breakGrade;
       }
       
-      public static function set MAX_LEVEL(param1:int) : void
+      public static function set MAX_LEVEL(value:int) : void
       {
       }
       
-      public static function setup(param1:PetExpericenceAnalyze) : void
+      public static function setup(analyzer:PetExpericenceAnalyze) : void
       {
          PetconfigAnalyzer;
-         expericence = param1.expericence;
+         expericence = analyzer.expericence;
          expericence.sort(16);
-         MAX_LEVEL = param1.expericence.length;
+         MAX_LEVEL = analyzer.expericence.length;
       }
       
-      public static function getExpMax(param1:int) : int
+      public static function getExpMax(maxExp:int) : int
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < expericence.length)
+         var i:int = 0;
+         for(i = 0; i < expericence.length; )
          {
-            if(expericence[_loc2_] > param1)
+            if(expericence[i] > maxExp)
             {
-               return expericence[_loc2_];
+               return expericence[i];
             }
-            _loc2_++;
+            i++;
          }
-         return expericence[_loc2_];
+         return expericence[i];
       }
       
-      public static function getLevelByGP(param1:int) : int
+      public static function getLevelByGP(gp:int) : int
       {
-         var _loc2_:int = 0;
-         _loc2_ = MAX_LEVEL - 1;
-         while(_loc2_ > -1)
+         var i:int = 0;
+         for(i = MAX_LEVEL - 1; i > -1; )
          {
-            if(expericence[_loc2_] <= param1)
+            if(expericence[i] <= gp)
             {
-               return _loc2_ + 1;
+               return i + 1;
             }
-            _loc2_--;
+            i--;
          }
          return 1;
       }

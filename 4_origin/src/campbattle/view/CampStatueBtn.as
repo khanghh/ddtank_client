@@ -36,19 +36,19 @@ package campbattle.view
          _mc.addEventListener("mouseOut",mouseOutHander);
       }
       
-      private function mouseOutHander(param1:MouseEvent) : void
+      private function mouseOutHander(event:MouseEvent) : void
       {
          _mc.gotoAndStop(1);
       }
       
-      private function mouseOverHander(param1:MouseEvent) : void
+      private function mouseOverHander(event:MouseEvent) : void
       {
          _mc.gotoAndStop(2);
       }
       
-      private function clickHander(param1:MouseEvent) : void
+      private function clickHander(e:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
+         e.stopImmediatePropagation();
          SoundManager.instance.playButtonSound();
          if(!CampBattleControl.instance.model.isCapture)
          {

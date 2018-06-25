@@ -64,10 +64,10 @@ package giftSystem.element
          super();
       }
       
-      public function setup(param1:PlayerInfo) : void
+      public function setup(playerInfo:PlayerInfo) : void
       {
          initView();
-         _playerInfo = param1;
+         _playerInfo = playerInfo;
       }
       
       private function initView() : void
@@ -79,11 +79,11 @@ package giftSystem.element
          _headTxt = ComponentFactory.Instance.creatComponentByStylename("RecordItem.headTxt");
          _giftNameTxt = ComponentFactory.Instance.creatComponentByStylename("RecordItem.giftNameTxt");
          _giftCountTxt = ComponentFactory.Instance.creatComponentByStylename("RecordItem.giftCountTxt");
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,50,50);
-         _loc1_.graphics.endFill();
-         _itemCell = CellFactory.instance.createShopItemCell(_loc1_,null,true,true) as ShopItemCell;
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(16777215,0);
+         sp.graphics.drawRect(0,0,50,50);
+         sp.graphics.endFill();
+         _itemCell = CellFactory.instance.createShopItemCell(sp,null,true,true) as ShopItemCell;
          _itemCell.cellSize = 46;
          addChild(_recordItemBg);
          addChild(_line1);
@@ -97,20 +97,20 @@ package giftSystem.element
          _sendIcon.visible = false;
       }
       
-      public function setItemInfoType(param1:RecordItemInfo, param2:int) : void
+      public function setItemInfoType(value:RecordItemInfo, type:int) : void
       {
-         if(_info == param1 || param1 == null)
+         if(_info == value || value == null)
          {
             return;
          }
-         _info = param1;
-         var _loc3_:ShopItemInfo = _info.info;
-         if(_loc3_ == null)
+         _info = value;
+         var shopItemInfo:ShopItemInfo = _info.info;
+         if(shopItemInfo == null)
          {
             return;
          }
-         _itemCell.info = _loc3_.TemplateInfo;
-         switch(int(param2))
+         _itemCell.info = shopItemInfo.TemplateInfo;
+         switch(int(type))
          {
             case 0:
                upSendedItemView();
@@ -175,7 +175,7 @@ package giftSystem.element
          _giftCountTxt.x = _itemCell.x + _itemCell.width + 4;
       }
       
-      private function __clickHandler(param1:MouseEvent) : void
+      private function __clickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          RebackMenu.Instance.show(_info,StageReferance.stage.mouseX,StageReferance.stage.mouseY);

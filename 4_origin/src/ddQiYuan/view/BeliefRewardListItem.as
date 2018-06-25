@@ -32,21 +32,21 @@ package ddQiYuan.view
       {
          _beliefRewardConTf = ComponentFactory.Instance.creatComponentByStylename("ddQiYuan.beliefRewardConTf");
          addChild(_beliefRewardConTf);
-         var _loc1_:Bitmap = ComponentFactory.Instance.creatBitmap("DDQiYuan.Pic27");
-         _bagCell = new BagCell(1,null,true,_loc1_,false);
+         var bagCellBg:Bitmap = ComponentFactory.Instance.creatBitmap("DDQiYuan.Pic27");
+         _bagCell = new BagCell(1,null,true,bagCellBg,false);
          _bagCell.PicPos = new Point(2,2);
          _bagCell.setContentSize(38,38);
          _bagCell.x = 150;
          addChild(_bagCell);
       }
       
-      public function setData(param1:Object) : void
+      public function setData(data:Object) : void
       {
-         _data = param1;
+         _data = data;
          _beliefRewardConTf.text = LanguageMgr.GetTranslation("ddQiYuan.tower.frame.beliefRewardConTfMsg",_data["offerTimes"]);
-         var _loc2_:InventoryItemInfo = DDQiYuanManager.instance.getInventoryItemInfo(param1);
-         _bagCell.info = _loc2_;
-         _bagCell.setCount(_loc2_.Count);
+         var inventoryItemInfo:InventoryItemInfo = DDQiYuanManager.instance.getInventoryItemInfo(data);
+         _bagCell.info = inventoryItemInfo;
+         _bagCell.setCount(inventoryItemInfo.Count);
       }
       
       public function dispose() : void

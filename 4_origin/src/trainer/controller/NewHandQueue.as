@@ -14,7 +14,7 @@ package trainer.controller
       
       private var _isDelay:Boolean;
       
-      public function NewHandQueue(param1:NewHandQueueEnforcer)
+      public function NewHandQueue(enforcer:NewHandQueueEnforcer)
       {
          super();
          _queue = [];
@@ -31,29 +31,29 @@ package trainer.controller
          return _instance;
       }
       
-      public function push(param1:Step) : void
+      public function push(step:Step) : void
       {
-         _queue.push(param1);
+         _queue.push(step);
          if(_queue.length == 1)
          {
             _queue[0].prepare();
          }
       }
       
-      private function __enterFrame(param1:Event) : void
+      private function __enterFrame(evt:Event) : void
       {
-         var _loc2_:* = null;
+         var step:* = null;
          if(_queue == null)
          {
             return;
          }
          if(_isDelay)
          {
-            _loc2_ = _queue[0];
-            _loc2_.delay = Number(_loc2_.delay) - 1;
-            if(_loc2_.delay <= 0)
+            step = _queue[0];
+            step.delay = Number(step.delay) - 1;
+            if(step.delay <= 0)
             {
-               _loc2_.prepare();
+               step.prepare();
                _isDelay = false;
             }
          }
@@ -65,22 +65,22 @@ package trainer.controller
       
       private function execute() : void
       {
-         var _loc1_:* = null;
+         var step:* = null;
          if(!_queue)
          {
             return;
          }
          if(_queue.length > 0)
          {
-            _loc1_ = _queue[0];
-            if(_loc1_.execute())
+            step = _queue[0];
+            if(step.execute())
             {
-               if(_loc1_.ID != 100)
+               if(step.ID != 100)
                {
-                  NewHandGuideManager.Instance.progress = _loc1_.ID;
+                  NewHandGuideManager.Instance.progress = step.ID;
                }
-               _loc1_.finish();
-               _loc1_.dispose();
+               step.finish();
+               step.dispose();
                if(_queue)
                {
                   _queue.shift();
@@ -92,17 +92,17 @@ package trainer.controller
       
       private function next() : void
       {
-         var _loc1_:* = null;
+         var current:* = null;
          if(_queue.length > 0)
          {
-            _loc1_ = _queue[0];
-            if(_loc1_.delay > 0)
+            current = _queue[0];
+            if(current.delay > 0)
             {
                _isDelay = true;
             }
             else
             {
-               _loc1_.prepare();
+               current.prepare();
             }
          }
       }

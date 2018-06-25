@@ -21,9 +21,9 @@ package happyLittleGame.cubesGame
          super();
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
-         super.enter(param1,param2);
+         super.enter(prev,data);
          this._mianSceneView = new CubeGameSceneView();
          this.addChild(this._mianSceneView);
          _rankView = new CubeGameRankView();
@@ -47,13 +47,13 @@ package happyLittleGame.cubesGame
          return "hotSpringRoom";
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
          ObjectUtils.disposeAllChildren(this);
          this._mianSceneView = null;
          _rankView = null;
          StateManager.lastStateType = getType();
-         super.leaving(param1);
+         super.leaving(next);
       }
    }
 }

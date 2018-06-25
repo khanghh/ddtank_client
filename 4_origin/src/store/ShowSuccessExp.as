@@ -99,52 +99,52 @@ package store
          addChild(_showStripVIP);
       }
       
-      public function showAllTips(param1:String, param2:String, param3:String) : void
+      public function showAllTips(strI:String, strIII:String, strIV:String) : void
       {
-         _showStripI.tipData = param1;
-         _showStripIII.tipData = param2;
-         _showStripIV.tipData = param3;
+         _showStripI.tipData = strI;
+         _showStripIII.tipData = strIII;
+         _showStripIV.tipData = strIV;
       }
       
-      public function showVIPTip(param1:String) : void
+      public function showVIPTip(tipData:String) : void
       {
-         _showStripVIP.tipData = param1;
+         _showStripVIP.tipData = tipData;
       }
       
-      public function showAllNum(param1:Number, param2:Number, param3:Number, param4:Number) : void
+      public function showAllNum(numI:Number, numIII:Number, numVIP:Number, numIV:Number) : void
       {
-         _showTxtI.text = String(param1);
-         setTxtIIIText(param2.toString());
-         _showTxtVIP.text = String(param3);
-         _showTxtIV.text = String(param4);
+         _showTxtI.text = String(numI);
+         setTxtIIIText(numIII.toString());
+         _showTxtVIP.text = String(numVIP);
+         _showTxtIV.text = String(numIV);
       }
       
-      private function setTxtIIIText(param1:String) : void
+      private function setTxtIIIText(numIII:String) : void
       {
-         var _loc4_:Boolean = false;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var isShowConsortiaDomainTips:Boolean = false;
+         var allBuildInfo:* = null;
+         var eachBuildInfo:* = null;
          if(ConsortiaDomainManager.instance.activeState == 1)
          {
-            _loc4_ = true;
+            isShowConsortiaDomainTips = true;
             _showTxtIII.htmlText = LanguageMgr.GetTranslation("consortiadomain.buildState.fight");
          }
          else if(ConsortiaDomainManager.instance.activeState == 0 || ConsortiaDomainManager.instance.activeState == 100)
          {
-            _loc3_ = ConsortiaDomainManager.instance.model.allBuildInfo;
-            if(_loc3_)
+            allBuildInfo = ConsortiaDomainManager.instance.model.allBuildInfo;
+            if(allBuildInfo)
             {
-               _loc2_ = _loc3_[4];
+               eachBuildInfo = allBuildInfo[4];
             }
-            if(_loc2_ && _loc2_.Repair > 0)
+            if(eachBuildInfo && eachBuildInfo.Repair > 0)
             {
-               _loc4_ = true;
+               isShowConsortiaDomainTips = true;
                _showTxtIII.htmlText = LanguageMgr.GetTranslation("consortiadomain.buildState.waitRepair");
             }
          }
-         if(!_loc4_)
+         if(!isShowConsortiaDomainTips)
          {
-            _showTxtIII.text = param1;
+            _showTxtIII.text = numIII;
          }
       }
       

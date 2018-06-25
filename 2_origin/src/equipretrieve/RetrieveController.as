@@ -45,35 +45,35 @@ package equipretrieve
          RetrieveModel.Instance.replay();
       }
       
-      public function set viewMouseEvtBoolean(param1:Boolean) : void
+      public function set viewMouseEvtBoolean(boo:Boolean) : void
       {
-         if(_viewMouseEvtBoolean == param1)
+         if(_viewMouseEvtBoolean == boo)
          {
             return;
          }
-         _viewMouseEvtBoolean = param1;
+         _viewMouseEvtBoolean = boo;
          dispatchEvent(new Event("mouseenable"));
       }
       
-      public function set shine(param1:Boolean) : void
+      public function set shine(boo:Boolean) : void
       {
-         if(_shine == param1)
+         if(_shine == boo)
          {
             return;
          }
-         _shine = param1;
+         _shine = boo;
          dispatchEvent(new Event("shine"));
       }
       
-      public function set retrieveType(param1:int) : void
+      public function set retrieveType(i:int) : void
       {
-         _type = param1;
+         _type = i;
          dispatchEvent(new Event("retrievetype"));
       }
       
-      public function cellDoubleClick(param1:BagCell) : void
+      public function cellDoubleClick(cell:BagCell) : void
       {
-         _bagCell = param1;
+         _bagCell = cell;
          dispatchEvent(new Event("doubleclick"));
       }
       

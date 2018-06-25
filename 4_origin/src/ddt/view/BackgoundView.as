@@ -43,8 +43,8 @@ package ddt.view
       
       private function initView() : void
       {
-         var _loc1_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.core.bigbg");
-         addChild(_loc1_);
+         var backgoundImage:Bitmap = ComponentFactory.Instance.creatBitmap("asset.core.bigbg");
+         addChild(backgoundImage);
       }
    }
 }

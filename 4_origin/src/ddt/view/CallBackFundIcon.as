@@ -34,7 +34,7 @@ package ddt.view
          addEventListener("click",showFrame);
       }
       
-      protected function showFrame(param1:MouseEvent) : void
+      protected function showFrame(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
       }

@@ -17,11 +17,11 @@ package gameCommon.model
       
       private var _petBeatInfo:Dictionary;
       
-      public function Pet(param1:PetInfo)
+      public function Pet(petInfo:PetInfo)
       {
          _petBeatInfo = new Dictionary();
          super();
-         _petInfo = param1;
+         _petInfo = petInfo;
       }
       
       public function get petInfo() : PetInfo
@@ -34,13 +34,13 @@ package gameCommon.model
          return _MP;
       }
       
-      public function set MP(param1:int) : void
+      public function set MP(value:int) : void
       {
-         if(param1 == _MP)
+         if(value == _MP)
          {
             return;
          }
-         _MP = param1;
+         _MP = value;
          dispatchEvent(new LivingEvent("petEnergyChange"));
       }
       
@@ -49,9 +49,9 @@ package gameCommon.model
          return _maxMP;
       }
       
-      public function set MaxMP(param1:int) : void
+      public function set MaxMP(value:int) : void
       {
-         _maxMP = param1;
+         _maxMP = value;
       }
       
       public function get equipedSkillIDs() : Array
@@ -59,9 +59,9 @@ package gameCommon.model
          return _petInfo.equipdSkills.list;
       }
       
-      public function useSkill(param1:int, param2:Boolean) : void
+      public function useSkill(skillID:int, isUsed:Boolean) : void
       {
-         dispatchEvent(new LivingEvent("usePetSkill",param1));
+         dispatchEvent(new LivingEvent("usePetSkill",skillID));
       }
       
       public function get petBeatInfo() : Dictionary

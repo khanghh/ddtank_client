@@ -57,14 +57,14 @@ package playerDress
          additionModel = ServerConfigManager.instance.addPlayerDressModel;
       }
       
-      protected function setCurrentModel(param1:PkgEvent) : void
+      protected function setCurrentModel(event:PkgEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc6_:int = 0;
-         var _loc4_:* = null;
-         var _loc5_:PackageIn = param1.pkg;
-         PlayerDressManager.instance.currentIndex = _loc5_.readInt();
+         var items:* = null;
+         var arr:* = null;
+         var i:int = 0;
+         var item:* = null;
+         var pkg:PackageIn = event.pkg;
+         PlayerDressManager.instance.currentIndex = pkg.readInt();
          if(currentModelNum != 6 && currentIndex == currentModelNum)
          {
             currentIndex = currentIndex - 1;
@@ -72,19 +72,18 @@ package playerDress
          if(PlayerDressManager.instance.currentIndex == -1)
          {
             SocketManager.Instance.out.setCurrentModel(0);
-            _loc3_ = PlayerManager.Instance.Self.Bag.items;
-            _loc2_ = [];
-            _loc6_ = 0;
-            while(_loc6_ <= 8 - 1)
+            items = PlayerManager.Instance.Self.Bag.items;
+            arr = [];
+            for(i = 0; i <= 8 - 1; )
             {
-               _loc4_ = _loc3_[DressUtils.getBagItems(_loc6_)];
-               if(_loc4_)
+               item = items[DressUtils.getBagItems(i)];
+               if(item)
                {
-                  _loc2_.push(_loc4_.Place);
+                  arr.push(item.Place);
                }
-               _loc6_++;
+               i++;
             }
-            SocketManager.Instance.out.saveDressModel(0,_loc2_);
+            SocketManager.Instance.out.saveDressModel(0,arr);
          }
          else
          {
@@ -92,63 +91,61 @@ package playerDress
          }
       }
       
-      protected function setDressModelArr(param1:PkgEvent) : void
+      protected function setDressModelArr(event:PkgEvent) : void
       {
-         var _loc9_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         var _loc6_:* = null;
-         var _loc5_:int = 0;
-         var _loc8_:* = null;
-         var _loc4_:PackageIn = param1.pkg;
-         currentModelNum = _loc4_.readInt();
-         var _loc7_:int = _loc4_.readInt();
-         _loc9_ = 0;
-         while(_loc9_ <= _loc7_ - 1)
+         var i:int = 0;
+         var modelId:int = 0;
+         var dressCount:int = 0;
+         var dressArr:* = null;
+         var j:int = 0;
+         var vo:* = null;
+         var pkg:PackageIn = event.pkg;
+         currentModelNum = pkg.readInt();
+         var modelCount:int = pkg.readInt();
+         for(i = 0; i <= modelCount - 1; )
          {
-            _loc2_ = _loc4_.readInt();
-            _loc3_ = _loc4_.readInt();
-            _loc6_ = [];
-            _loc5_ = 0;
-            while(_loc5_ <= _loc3_ - 1)
+            modelId = pkg.readInt();
+            dressCount = pkg.readInt();
+            dressArr = [];
+            for(j = 0; j <= dressCount - 1; )
             {
-               _loc8_ = new DressVo();
-               _loc8_.itemId = _loc4_.readInt();
-               _loc8_.templateId = _loc4_.readInt();
-               _loc6_.push(_loc8_);
-               _loc5_++;
+               vo = new DressVo();
+               vo.itemId = pkg.readInt();
+               vo.templateId = pkg.readInt();
+               dressArr.push(vo);
+               j++;
             }
-            modelArr[_loc2_] = _loc6_;
-            _loc9_++;
+            modelArr[modelId] = dressArr;
+            i++;
          }
          dispatchEvent(new PlayerDressEvent("setBtnStatus"));
          PlayerDressManager.instance.modelArr = modelArr;
       }
       
-      public function showView(param1:int) : void
+      public function showView(type:int) : void
       {
-         if(_viewTypeArr.indexOf(param1) == -1)
+         if(_viewTypeArr.indexOf(type) == -1)
          {
-            _viewTypeArr.push(param1);
+            _viewTypeArr.push(type);
          }
          show();
       }
       
-      public function disposeView(param1:int) : void
+      public function disposeView(type:int) : void
       {
-         var _loc2_:PlayerDressEvent = new PlayerDressEvent("playerDressDispose");
-         _loc2_.info = param1;
-         dispatchEvent(_loc2_);
+         var event:PlayerDressEvent = new PlayerDressEvent("playerDressDispose");
+         event.info = type;
+         dispatchEvent(event);
       }
       
       override protected function start() : void
       {
-         var _loc1_:* = null;
+         var event:* = null;
          while(_viewTypeArr.length > 0)
          {
-            _loc1_ = new PlayerDressEvent("playerDressOpen");
-            _loc1_.info = _viewTypeArr.shift();
-            dispatchEvent(_loc1_);
+            event = new PlayerDressEvent("playerDressOpen");
+            event.info = _viewTypeArr.shift();
+            dispatchEvent(event);
          }
       }
    }

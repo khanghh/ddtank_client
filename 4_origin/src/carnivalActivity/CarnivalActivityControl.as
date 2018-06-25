@@ -39,8 +39,8 @@ package carnivalActivity
       
       public function canGetAward() : Boolean
       {
-         var _loc1_:Number = TimeManager.Instance.Now().time;
-         if(_loc1_ >= getBeginTime && _loc1_ <= getEndTime)
+         var time:Number = TimeManager.Instance.Now().time;
+         if(time >= getBeginTime && time <= getEndTime)
          {
             return true;
          }
@@ -49,8 +49,8 @@ package carnivalActivity
       
       public function rookieRankCanGetAward() : Boolean
       {
-         var _loc1_:Number = TimeManager.Instance.Now().time;
-         if(_loc1_ >= actEndTime && _loc1_ <= getEndTime)
+         var time:Number = TimeManager.Instance.Now().time;
+         if(time >= actEndTime && time <= getEndTime)
          {
             return true;
          }

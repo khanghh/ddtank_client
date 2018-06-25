@@ -39,7 +39,7 @@ package room.view.bigMapInfoPanel
          _info.addEventListener("openBossChange",__openBossChange);
       }
       
-      private function __clickHandler(param1:MouseEvent) : void
+      private function __clickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(RoomManager.Instance.current.isOpenBoss)
@@ -47,8 +47,8 @@ package room.view.bigMapInfoPanel
             _chooseBtn.visible = false;
             return;
          }
-         var _loc2_:DungeonChooseMapFrame = new DungeonChooseMapFrame();
-         _loc2_.show();
+         var mapChooser:DungeonChooseMapFrame = new DungeonChooseMapFrame();
+         mapChooser.show();
          dispatchEvent(new RoomEvent("openDungeonChooser"));
          if(!PlayerManager.Instance.Self.isDungeonGuideFinish(121))
          {
@@ -56,7 +56,7 @@ package room.view.bigMapInfoPanel
          }
       }
       
-      private function __outHandler(param1:MouseEvent) : void
+      private function __outHandler(event:MouseEvent) : void
       {
          if(_info.mapId != 0 && _info.mapId != 10000)
          {
@@ -73,7 +73,7 @@ package room.view.bigMapInfoPanel
          }
       }
       
-      private function __overHandler(param1:MouseEvent) : void
+      private function __overHandler(event:MouseEvent) : void
       {
          if(RoomManager.Instance.current.isOpenBoss)
          {
@@ -146,32 +146,32 @@ package room.view.bigMapInfoPanel
       
       private function showAlert() : void
       {
-         var _loc1_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.missionsettle.dungeon.leaveConfirm.contents"),"",LanguageMgr.GetTranslation("cancel"),true,true,false,1);
-         _loc1_.moveEnable = false;
-         _loc1_.addEventListener("response",__onResponse);
+         var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.missionsettle.dungeon.leaveConfirm.contents"),"",LanguageMgr.GetTranslation("cancel"),true,true,false,1);
+         alert.moveEnable = false;
+         alert.addEventListener("response",__onResponse);
       }
       
-      private function __onResponse(param1:FrameEvent) : void
+      private function __onResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.target as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onResponse);
-         _loc2_.dispose();
-         _loc2_ = null;
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var alert:BaseAlerFrame = evt.target as BaseAlerFrame;
+         alert.removeEventListener("response",__onResponse);
+         alert.dispose();
+         alert = null;
+         if(evt.responseCode == 2 || evt.responseCode == 3)
          {
             StateManager.setState("dungeon");
          }
       }
       
-      private function __onGameStarted(param1:RoomEvent) : void
+      private function __onGameStarted(evt:RoomEvent) : void
       {
          _chooseBtn.enable = !_info.started;
       }
       
-      override protected function __onMapChanged(param1:RoomEvent) : void
+      override protected function __onMapChanged(evt:RoomEvent) : void
       {
-         super.__onMapChanged(param1);
+         super.__onMapChanged(evt);
          if(_info.mapId == 12016 || _info.mapId == 70002 || _info.mapId == 70020)
          {
             _chooseBtn.visible = false;
@@ -186,7 +186,7 @@ package room.view.bigMapInfoPanel
          }
       }
       
-      private function __playerStateChange(param1:RoomEvent) : void
+      private function __playerStateChange(evt:RoomEvent) : void
       {
          if(RoomManager.Instance.current.isOpenBoss || RoomManager.Instance.current.mapId == 12016 || RoomManager.Instance.current.mapId == 70002 || RoomManager.Instance.current.mapId == 70020)
          {
@@ -198,7 +198,7 @@ package room.view.bigMapInfoPanel
          }
       }
       
-      private function __openBossChange(param1:RoomEvent) : void
+      private function __openBossChange(evt:RoomEvent) : void
       {
          updateMap();
          updateDropList();
@@ -215,26 +215,26 @@ package room.view.bigMapInfoPanel
       
       override protected function solvePath() : String
       {
-         var _loc1_:String = PathManager.SITE_MAIN + "image/map/";
+         var result:String = PathManager.SITE_MAIN + "image/map/";
          if(_info && _info.mapId > 0)
          {
             if(_info.isOpenBoss)
             {
                if(_info.pic && _info.pic.length > 0)
                {
-                  _loc1_ = _loc1_ + (_info.mapId + "/" + _info.pic);
+                  result = result + (_info.mapId + "/" + _info.pic);
                }
             }
             else
             {
-               _loc1_ = _loc1_ + (_info.mapId + "/show1.jpg");
+               result = result + (_info.mapId + "/show1.jpg");
             }
          }
          else
          {
-            _loc1_ = _loc1_ + "10000/show1.jpg";
+            result = result + "10000/show1.jpg";
          }
-         return _loc1_;
+         return result;
       }
       
       override public function dispose() : void

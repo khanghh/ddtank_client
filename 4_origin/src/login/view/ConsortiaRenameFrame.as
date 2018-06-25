@@ -39,43 +39,42 @@ package login.view
          }
       }
       
-      override protected function __onModifyClick(param1:MouseEvent) : void
+      override protected function __onModifyClick(evt:MouseEvent) : void
       {
-         super.__onModifyClick(param1);
+         super.__onModifyClick(evt);
       }
       
       override protected function doRename() : void
       {
-         var _loc8_:int = 0;
-         var _loc6_:AccountInfo = PlayerManager.Instance.Account;
-         var _loc5_:Date = new Date();
-         var _loc4_:ByteArray = new ByteArray();
-         _loc4_.writeShort(_loc5_.fullYearUTC);
-         _loc4_.writeByte(_loc5_.monthUTC + 1);
-         _loc4_.writeByte(_loc5_.dateUTC);
-         _loc4_.writeByte(_loc5_.hoursUTC);
-         _loc4_.writeByte(_loc5_.minutesUTC);
-         _loc4_.writeByte(_loc5_.secondsUTC);
-         var _loc3_:String = "";
-         _loc8_ = 0;
-         while(_loc8_ < 6)
+         var i:int = 0;
+         var acc:AccountInfo = PlayerManager.Instance.Account;
+         var date:Date = new Date();
+         var temp:ByteArray = new ByteArray();
+         temp.writeShort(date.fullYearUTC);
+         temp.writeByte(date.monthUTC + 1);
+         temp.writeByte(date.dateUTC);
+         temp.writeByte(date.hoursUTC);
+         temp.writeByte(date.minutesUTC);
+         temp.writeByte(date.secondsUTC);
+         var tempPassword:String = "";
+         for(i = 0; i < 6; )
          {
-            _loc3_ = _loc3_ + w.charAt(int(Math.random() * 26));
-            _loc8_++;
+            tempPassword = tempPassword + w.charAt(int(Math.random() * 26));
+            i++;
          }
-         _loc4_.writeUTFBytes(_loc6_.Account + "," + _loc6_.Password + "," + _loc3_ + "," + _roleInfo.NickName + "," + _newName);
-         var _loc2_:String = CrytoUtils.rsaEncry4(_loc6_.Key,_loc4_);
-         var _loc7_:URLVariables = RequestVairableCreater.creatWidthKey(false);
-         _loc7_["p"] = _loc2_;
-         _loc7_["v"] = 5498628;
-         _loc7_["site"] = PathManager.solveConfigSite();
-         var _loc1_:RequestLoader = createModifyLoader(_path,_loc7_,_loc3_,renameCallBack);
-         LoadResourceManager.Instance.startLoad(_loc1_);
+         temp.writeUTFBytes(acc.Account + "," + acc.Password + "," + tempPassword + "," + _roleInfo.NickName + "," + _newName);
+         var p:String = CrytoUtils.rsaEncry4(acc.Key,temp);
+         var variables:URLVariables = RequestVairableCreater.creatWidthKey(false);
+         variables["p"] = p;
+         variables["v"] = 5498628;
+         variables["site"] = PathManager.solveConfigSite();
+         var loader:RequestLoader = createModifyLoader(_path,variables,tempPassword,renameCallBack);
+         LoadResourceManager.Instance.startLoad(loader);
       }
       
-      override protected function createModifyLoader(param1:String, param2:URLVariables, param3:String, param4:Function) : RequestLoader
+      override protected function createModifyLoader(path:String, variables:URLVariables, tempPassword:String, callBack:Function) : RequestLoader
       {
-         return super.createModifyLoader(param1,param2,param3,param4);
+         return super.createModifyLoader(path,variables,tempPassword,callBack);
       }
       
       override protected function renameComplete() : void

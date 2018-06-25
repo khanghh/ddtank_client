@@ -38,12 +38,12 @@ package consortionBattle.view
          }
       }
       
-      public function setEnble(param1:Boolean) : void
+      public function setEnble(bool:Boolean) : void
       {
-         _isOpen = param1;
-         mouseChildren = param1;
-         mouseEnabled = param1;
-         if(param1)
+         _isOpen = bool;
+         mouseChildren = bool;
+         mouseEnabled = bool;
+         if(bool)
          {
             BuriedManager.Instance.reGray(this);
             playAllMc(_btn);
@@ -68,45 +68,45 @@ package consortionBattle.view
          }
       }
       
-      private function playAllMc(param1:MovieClip) : void
+      private function playAllMc($mc:MovieClip) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
-         if(param1)
+         var cMc:* = null;
+         var index:int = 0;
+         if($mc)
          {
-            while(param1.numChildren - _loc3_)
+            while($mc.numChildren - index)
             {
-               if(param1.getChildAt(_loc3_) is MovieClip)
+               if($mc.getChildAt(index) is MovieClip)
                {
-                  _loc2_ = param1.getChildAt(_loc3_) as MovieClip;
-                  _loc2_.play();
-                  playAllMc(_loc2_);
+                  cMc = $mc.getChildAt(index) as MovieClip;
+                  cMc.play();
+                  playAllMc(cMc);
                }
-               _loc3_++;
+               index++;
             }
          }
       }
       
-      private function stopAllMc(param1:MovieClip) : void
+      private function stopAllMc($mc:MovieClip) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
-         if(param1)
+         var cMc:* = null;
+         var index:int = 0;
+         if($mc)
          {
-            while(param1.numChildren - _loc3_)
+            while($mc.numChildren - index)
             {
-               if(param1.getChildAt(_loc3_) is MovieClip)
+               if($mc.getChildAt(index) is MovieClip)
                {
-                  _loc2_ = param1.getChildAt(_loc3_) as MovieClip;
-                  _loc2_.stop();
-                  stopAllMc(_loc2_);
+                  cMc = $mc.getChildAt(index) as MovieClip;
+                  cMc.stop();
+                  stopAllMc(cMc);
                }
-               _loc3_++;
+               index++;
             }
          }
       }
       
-      private function clickhandler(param1:MouseEvent) : void
+      private function clickhandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(ConsortiaBattleManager.instance.isCanEnter)
@@ -123,13 +123,13 @@ package consortionBattle.view
          }
       }
       
-      private function resLoadComplete(param1:Event) : void
+      private function resLoadComplete(event:Event) : void
       {
          ConsortiaBattleManager.instance.removeEventListener("consBatIconMapComplete",resLoadComplete);
          initThis();
       }
       
-      private function closeHandler(param1:Event) : void
+      private function closeHandler(event:Event) : void
       {
          closeDispose();
          ConsortiaBattleManager.instance.addEventListener("consBatIconMapComplete",resLoadComplete);

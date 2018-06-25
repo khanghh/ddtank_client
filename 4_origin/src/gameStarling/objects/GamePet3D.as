@@ -21,10 +21,10 @@ package gameStarling.objects
       
       private var _effectClassLink:String;
       
-      public function GamePet3D(param1:Living, param2:GamePlayer3D)
+      public function GamePet3D(info:Living, master:GamePlayer3D)
       {
-         super(param1);
-         _master = param2;
+         super(info);
+         _master = master;
          _testRect = new Rectangle(-3,3,6,3);
          _mass = 5;
          _gravityFactor = 50;
@@ -35,9 +35,9 @@ package gameStarling.objects
          return _master;
       }
       
-      public function set effectClassLink(param1:String) : void
+      public function set effectClassLink(value:String) : void
       {
-         _effectClassLink = param1;
+         _effectClassLink = value;
       }
       
       public function get effectClassLink() : String
@@ -51,19 +51,19 @@ package gameStarling.objects
          _info.addEventListener("usePetSkill",__usePetSkill);
       }
       
-      private function __usePetSkill(param1:LivingEvent) : void
+      private function __usePetSkill(event:LivingEvent) : void
       {
-         var _loc2_:* = null;
-         if(param1.paras[0])
+         var skill:* = null;
+         if(event.paras[0])
          {
-            _loc2_ = PetSkillManager.getSkillByID(param1.value);
-            if(_loc2_ == null)
+            skill = PetSkillManager.getSkillByID(event.value);
+            if(skill == null)
             {
-               throw new Error("找不到技能，技能ID为：" + param1.value);
+               throw new Error("找不到技能，技能ID为：" + event.value);
             }
-            if(_loc2_.isActiveSkill)
+            if(skill.isActiveSkill)
             {
-               _propArray.push(new BitmapLoaderProxy(PathManager.solveSkillPicUrl(_loc2_.Pic),new Rectangle(0,0,40,40)));
+               _propArray.push(new BitmapLoaderProxy(PathManager.solveSkillPicUrl(skill.Pic),new Rectangle(0,0,40,40)));
                doUseItemAnimation();
             }
          }
@@ -109,20 +109,20 @@ package gameStarling.objects
       {
       }
       
-      override public function setMap(param1:Map3D) : void
+      override public function setMap(map:Map3D) : void
       {
-         super.setMap(param1);
-         if(param1)
+         super.setMap(map);
+         if(map)
          {
             __posChanged(null);
          }
       }
       
-      override protected function movieEffectEvent(param1:BoneMovieWrapper, param2:Array = null) : void
+      override protected function movieEffectEvent(e:BoneMovieWrapper, args:Array = null) : void
       {
-         if(param2)
+         if(args)
          {
-            _master.showEffect("asset.game.skill.effect." + param2[0]);
+            _master.showEffect("asset.game.skill.effect." + args[0]);
          }
       }
       
@@ -142,14 +142,14 @@ package gameStarling.objects
          _effectClassLink = null;
       }
       
-      override protected function __playerEffect(param1:ActionMovieEvent) : void
+      override protected function __playerEffect(evt:ActionMovieEvent) : void
       {
          showMasterEffect();
       }
       
-      override public function update(param1:Number) : void
+      override public function update(dt:Number) : void
       {
-         super.update(param1);
+         super.update(dt);
       }
       
       public function prepareForShow() : void

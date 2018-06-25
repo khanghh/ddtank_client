@@ -9,41 +9,40 @@ package campbattle.data
       
       public var _dataList:Array;
       
-      public function CampBattleAwardsDataAnalyzer(param1:Function)
+      public function CampBattleAwardsDataAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc5_:* = null;
-         var _loc6_:int = 0;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var xmllist:* = null;
+         var i:int = 0;
+         var itemInfo:* = null;
+         var arr:* = null;
          _dataList = [];
-         var _loc4_:XML = new XML(param1);
-         if(_loc4_.@value == "true")
+         var xml:XML = new XML(data);
+         if(xml.@value == "true")
          {
-            _loc5_ = _loc4_..Item;
-            _loc6_ = 0;
-            while(_loc6_ < _loc5_.length())
+            xmllist = xml..Item;
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc3_ = new CampBattleAwardsGoodsInfo();
-               ObjectUtils.copyPorpertiesByXML(_loc3_,_loc5_[_loc6_]);
-               _loc2_ = _dataList[_loc3_.ID - 1];
-               if(!_loc2_)
+               itemInfo = new CampBattleAwardsGoodsInfo();
+               ObjectUtils.copyPorpertiesByXML(itemInfo,xmllist[i]);
+               arr = _dataList[itemInfo.ID - 1];
+               if(!arr)
                {
-                  _loc2_ = [];
+                  arr = [];
                }
-               _loc2_.push(_loc3_);
-               _dataList[_loc3_.ID - 1] = _loc2_;
-               _loc6_++;
+               arr.push(itemInfo);
+               _dataList[itemInfo.ID - 1] = arr;
+               i++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc4_.@message;
+            message = xml.@message;
             onAnalyzeError();
          }
       }

@@ -18,7 +18,7 @@ package gypsyShop.model
       
       private var _isOpen:Boolean = false;
       
-      public function GypsyNPCModel(param1:inner)
+      public function GypsyNPCModel(single:inner)
       {
          super();
       }
@@ -34,16 +34,16 @@ package gypsyShop.model
       
       public function init() : void
       {
-         var _loc1_:int = 278;
-         var _loc2_:String = PkgEvent.format(_loc1_,1);
-         SocketManager.Instance.addEventListener(_loc2_,onNPCStateChange);
+         var L1:int = 278;
+         var type:String = PkgEvent.format(L1,1);
+         SocketManager.Instance.addEventListener(type,onNPCStateChange);
       }
       
-      protected function onNPCStateChange(param1:PkgEvent) : void
+      protected function onNPCStateChange(e:PkgEvent) : void
       {
-         var _loc2_:ByteArray = param1.pkg;
-         var _loc3_:Boolean = _loc2_.readBoolean();
-         if(_loc3_)
+         var d:ByteArray = e.pkg;
+         var isOpen:Boolean = d.readBoolean();
+         if(isOpen)
          {
             _isStart = true;
             GypsyShopManager.getInstance().showNPC();
@@ -53,7 +53,7 @@ package gypsyShop.model
             _isStart = false;
             GypsyShopManager.getInstance().hideNPC();
          }
-         if(_loc3_)
+         if(isOpen)
          {
             ChatManager.Instance.sysChatAmaranth(LanguageMgr.GetTranslation("gypsy.open"));
          }
@@ -61,7 +61,7 @@ package gypsyShop.model
          {
             ChatManager.Instance.sysChatAmaranth(LanguageMgr.GetTranslation("gypsy.close"));
          }
-         _isOpen = _loc3_;
+         _isOpen = isOpen;
       }
       
       public function refreshNPCState() : void
@@ -80,9 +80,9 @@ package gypsyShop.model
       
       public function dispose() : void
       {
-         var _loc1_:int = 278;
-         var _loc2_:String = PkgEvent.format(_loc1_,1);
-         SocketManager.Instance.removeEventListener(_loc2_,onNPCStateChange);
+         var L1:int = 278;
+         var type:String = PkgEvent.format(L1,1);
+         SocketManager.Instance.removeEventListener(type,onNPCStateChange);
       }
       
       public function isStart() : Boolean

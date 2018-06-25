@@ -42,10 +42,10 @@ package growthPackage.view
       
       private var _cellsBgWidth:Number;
       
-      public function GrowthPackageItem(param1:int)
+      public function GrowthPackageItem($index:int)
       {
          super();
-         _index = param1;
+         _index = $index;
          initView();
          updateView();
          initEvent();
@@ -105,7 +105,7 @@ package growthPackage.view
          _getBtn.removeEventListener("click",__getBtnClickHandler);
       }
       
-      private function __getBtnClickHandler(param1:MouseEvent) : void
+      private function __getBtnClickHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(GrowthPackageManager.instance.model.isBuy < 1)
@@ -120,23 +120,22 @@ package growthPackage.view
       
       private function updateView() : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var growthPackageInfo:* = null;
+         var _info:* = null;
+         var cell:* = null;
          _cellsArr = [];
-         var _loc2_:Vector.<GrowthPackageInfo> = GrowthPackageManager.instance.model.itemInfoList[_index];
-         if(_loc2_)
+         var itemInfoList:Vector.<GrowthPackageInfo> = GrowthPackageManager.instance.model.itemInfoList[_index];
+         if(itemInfoList)
          {
-            _loc5_ = 0;
-            while(_loc5_ < _loc2_.length)
+            for(i = 0; i < itemInfoList.length; )
             {
-               _loc4_ = _loc2_[_loc5_];
-               _loc3_ = GrowthPackageManager.instance.model.getInventoryItemInfo(_loc4_);
-               _loc1_ = creatItemCell(_loc3_);
-               _cells.addChild(_loc1_);
-               _cellsArr.push(_loc1_);
-               _loc5_++;
+               growthPackageInfo = itemInfoList[i];
+               _info = GrowthPackageManager.instance.model.getInventoryItemInfo(growthPackageInfo);
+               cell = creatItemCell(_info);
+               _cells.addChild(cell);
+               _cellsArr.push(cell);
+               i++;
             }
             _cells.arrange();
          }
@@ -150,25 +149,25 @@ package growthPackage.view
       
       public function updateState() : void
       {
-         var _loc1_:int = GrowthPackageManager.instance.model.isCompleteList[_index];
-         var _loc2_:int = GrowthPackageManager.instance.model.gradeList[_index];
-         if(_index == 0 && _loc1_ != 1)
+         var isComp:int = GrowthPackageManager.instance.model.isCompleteList[_index];
+         var grade:int = GrowthPackageManager.instance.model.gradeList[_index];
+         if(_index == 0 && isComp != 1)
          {
             isComplete(2);
          }
-         else if(_loc1_ == 0 && PlayerManager.Instance.Self.Grade >= _loc2_)
+         else if(isComp == 0 && PlayerManager.Instance.Self.Grade >= grade)
          {
             isComplete(2);
          }
          else
          {
-            isComplete(_loc1_);
+            isComplete(isComp);
          }
       }
       
-      public function isComplete(param1:int) : void
+      public function isComplete(value:int) : void
       {
-         if(param1 == 0)
+         if(value == 0)
          {
             _getBtn.mouseEnabled = false;
             _getBtn.filters = ComponentFactory.Instance.creatFilters("grayFilter");
@@ -176,13 +175,13 @@ package growthPackage.view
             _getBtnGlow.visible = false;
             _getIcon.visible = false;
          }
-         else if(param1 == 1)
+         else if(value == 1)
          {
             _getBtn.visible = false;
             _getBtnGlow.visible = false;
             _getIcon.visible = true;
          }
-         else if(param1 == 2)
+         else if(value == 2)
          {
             _getBtn.mouseEnabled = true;
             _getBtn.filters = null;
@@ -192,25 +191,24 @@ package growthPackage.view
          }
       }
       
-      protected function creatItemCell(param1:InventoryItemInfo) : GrowthPackageCell
+      protected function creatItemCell($info:InventoryItemInfo) : GrowthPackageCell
       {
-         var _loc2_:GrowthPackageCell = new GrowthPackageCell(0,null);
-         _loc2_.width = 47;
-         _loc2_.height = 46;
-         _loc2_.info = param1;
-         return _loc2_;
+         var _cell:GrowthPackageCell = new GrowthPackageCell(0,null);
+         _cell.width = 47;
+         _cell.height = 46;
+         _cell.info = $info;
+         return _cell;
       }
       
       private function clearCells() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         _loc2_ = 0;
-         while(_loc2_ < _cellsArr.length)
+         var i:int = 0;
+         var cell:* = null;
+         for(i = 0; i < _cellsArr.length; )
          {
-            _loc1_ = GrowthPackageCell(_cellsArr[_loc2_]);
-            ObjectUtils.disposeObject(_loc1_);
-            _loc2_++;
+            cell = GrowthPackageCell(_cellsArr[i]);
+            ObjectUtils.disposeObject(cell);
+            i++;
          }
          _cellsArr = null;
          ObjectUtils.disposeAllChildren(_cells);

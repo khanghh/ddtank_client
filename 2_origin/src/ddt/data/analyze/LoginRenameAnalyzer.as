@@ -10,14 +10,14 @@ package ddt.data.analyze
       
       public var tempPassword:String;
       
-      public function LoginRenameAnalyzer(param1:Function)
+      public function LoginRenameAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         _result = new XML(param1);
+         _result = new XML(data);
          onAnalyzeComplete();
       }
       

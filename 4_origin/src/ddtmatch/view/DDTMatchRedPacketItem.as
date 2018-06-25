@@ -36,11 +36,11 @@ package ddtmatch.view
       
       private var recordView:DDTMatchRedPacketRecord;
       
-      public function DDTMatchRedPacketItem(param1:int, param2:int)
+      public function DDTMatchRedPacketItem(type:int, index:int)
       {
          super();
-         _type = param1;
-         _index = param2;
+         _type = type;
+         _index = index;
          initView();
          addEvent();
       }
@@ -50,9 +50,9 @@ package ddtmatch.view
          return _info;
       }
       
-      public function set info(param1:RedPacketInfo) : void
+      public function set info(value:RedPacketInfo) : void
       {
-         _info = param1;
+         _info = value;
          if(_type == 1)
          {
             _descriptAllTxt.text = LanguageMgr.GetTranslation("ddt.DDTMatch.redpacket.systemPacket");
@@ -123,14 +123,14 @@ package ddtmatch.view
          _robrecordBtn.addEventListener("click",_robrecordBtnHandler);
       }
       
-      private function _robPacketBtnHandler(param1:MouseEvent) : void
+      private function _robPacketBtnHandler(e:MouseEvent) : void
       {
          SocketManager.Instance.out.getRobRedPacket(_info.id);
          _robPacketBtn.enable = false;
          _robPacketBtn.filters = ComponentFactory.Instance.creatFilters("grayFilter");
       }
       
-      private function _robrecordBtnHandler(param1:MouseEvent) : void
+      private function _robrecordBtnHandler(e:MouseEvent) : void
       {
          recordView = ComponentFactory.Instance.creatComponentByStylename("redPacketRecordFrame");
          recordView.setInfo(_info);
@@ -138,9 +138,9 @@ package ddtmatch.view
          LayerManager.Instance.addToLayer(recordView,3,true,2);
       }
       
-      private function __respose(param1:FrameEvent) : void
+      private function __respose(e:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(e.responseCode == 0 || e.responseCode == 1)
          {
             recordView.dispose();
          }

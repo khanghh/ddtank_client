@@ -72,272 +72,266 @@ package anotherDimension.controller
          dispatchEvent(new Event("showMainView"));
       }
       
-      private function pkgHandler(param1:CrazyTankSocketEvent) : void
+      private function pkgHandler(event:CrazyTankSocketEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readInt();
-         switch(int(_loc2_) - 1)
+         var pkg:PackageIn = event.pkg;
+         var cmd:int = pkg.readInt();
+         switch(int(cmd) - 1)
          {
             case 0:
-               openOrClose(_loc3_);
+               openOrClose(pkg);
                break;
             case 1:
-               updateInfo(_loc3_);
+               updateInfo(pkg);
                break;
             case 2:
-               openMainView(_loc3_);
+               openMainView(pkg);
                break;
             case 3:
-               updateResource(_loc3_);
+               updateResource(pkg);
                break;
             default:
-               updateResource(_loc3_);
+               updateResource(pkg);
                break;
             default:
-               updateResource(_loc3_);
+               updateResource(pkg);
                break;
             case 6:
-               receiveMsg(_loc3_);
+               receiveMsg(pkg);
          }
       }
       
-      private function receiveMsg(param1:PackageIn) : void
+      private function receiveMsg(pkg:PackageIn) : void
       {
-         var _loc2_:int = 0;
-         var _loc8_:int = 0;
-         var _loc7_:* = null;
-         var _loc5_:int = 0;
-         var _loc6_:int = 0;
-         var _loc4_:* = null;
+         var count:int = 0;
+         var i:int = 0;
+         var info:* = null;
+         var count1:int = 0;
+         var j:int = 0;
+         var info1:* = null;
          if(msgArr == null)
          {
             msgArr = [];
          }
-         var _loc3_:Boolean = param1.readBoolean();
-         if(_loc3_)
+         var isLogn:Boolean = pkg.readBoolean();
+         if(isLogn)
          {
-            _loc2_ = param1.readInt();
-            _loc8_ = 0;
-            while(_loc8_ < _loc2_)
+            count = pkg.readInt();
+            for(i = 0; i < count; )
             {
-               _loc7_ = new AnotherDimensionMsgInfo();
-               _loc7_.userID = param1.readInt();
-               _loc7_.ownUserID = param1.readInt();
-               _loc7_.ownName = param1.readUTF();
-               _loc7_.resPos = param1.readInt();
-               _loc7_.restatus = param1.readInt();
+               info = new AnotherDimensionMsgInfo();
+               info.userID = pkg.readInt();
+               info.ownUserID = pkg.readInt();
+               info.ownName = pkg.readUTF();
+               info.resPos = pkg.readInt();
+               info.restatus = pkg.readInt();
                if(msgArr.length < 30)
                {
-                  msgArr.push(_loc7_);
+                  msgArr.push(info);
                }
-               _loc8_++;
+               i++;
             }
          }
          else
          {
-            _loc5_ = param1.readInt();
-            _loc6_ = 0;
-            while(_loc6_ < _loc5_)
+            count1 = pkg.readInt();
+            for(j = 0; j < count1; )
             {
-               _loc4_ = new AnotherDimensionMsgInfo();
-               _loc4_.userID = param1.readInt();
-               _loc4_.ownUserID = param1.readInt();
-               _loc4_.ownName = param1.readUTF();
-               _loc4_.resPos = param1.readInt();
-               _loc4_.restatus = param1.readInt();
+               info1 = new AnotherDimensionMsgInfo();
+               info1.userID = pkg.readInt();
+               info1.ownUserID = pkg.readInt();
+               info1.ownName = pkg.readUTF();
+               info1.resPos = pkg.readInt();
+               info1.restatus = pkg.readInt();
                if(msgArr.length < 30)
                {
-                  msgArr.unshift(_loc4_);
+                  msgArr.unshift(info1);
                }
                else
                {
-                  msgArr.unshift(_loc4_);
+                  msgArr.unshift(info1);
                   msgArr.pop();
                }
-               _loc6_++;
+               j++;
             }
          }
          dispatchEvent(new Event("addMsg"));
       }
       
-      private function openMainView(param1:PackageIn) : void
+      private function openMainView(pkg:PackageIn) : void
       {
-         var _loc10_:int = 0;
-         var _loc4_:* = null;
-         var _loc9_:* = null;
-         var _loc3_:int = 0;
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
+         var i:int = 0;
+         var resourceInfo:* = null;
+         var info:* = null;
+         var sex:int = 0;
+         var j:int = 0;
+         var haveResourceInfo:* = null;
          resourceList = [];
          haveResourceList = [];
          gameOver = false;
-         var _loc2_:int = param1.readInt();
-         _loc10_ = 0;
-         while(_loc10_ < _loc2_)
+         var resourceCount:int = pkg.readInt();
+         for(i = 0; i < resourceCount; )
          {
-            _loc4_ = new AnotherDimensionResourceInfo();
-            _loc4_.isHave = false;
-            _loc4_.resourcePos = param1.readInt();
-            _loc4_.monsterId = param1.readInt();
-            if(_loc4_.monsterId == 0)
+            resourceInfo = new AnotherDimensionResourceInfo();
+            resourceInfo.isHave = false;
+            resourceInfo.resourcePos = pkg.readInt();
+            resourceInfo.monsterId = pkg.readInt();
+            if(resourceInfo.monsterId == 0)
             {
-               _loc9_ = new PlayerInfo();
-               _loc9_.ID = param1.readInt();
-               _loc9_.NickName = param1.readUTF();
-               _loc3_ = param1.readInt();
-               _loc9_.Sex = _loc3_ == 0?false:true;
-               _loc9_.Hide = param1.readInt();
-               _loc9_.Style = param1.readUTF();
-               _loc9_.Colors = param1.readUTF();
-               _loc9_.Skin = param1.readUTF();
-               _loc9_.Grade = param1.readInt();
-               _loc4_.resourcePlayerInfo = _loc9_;
+               info = new PlayerInfo();
+               info.ID = pkg.readInt();
+               info.NickName = pkg.readUTF();
+               sex = pkg.readInt();
+               info.Sex = sex == 0?false:true;
+               info.Hide = pkg.readInt();
+               info.Style = pkg.readUTF();
+               info.Colors = pkg.readUTF();
+               info.Skin = pkg.readUTF();
+               info.Grade = pkg.readInt();
+               resourceInfo.resourcePlayerInfo = info;
             }
             else
             {
-               param1.readInt();
-               param1.readUTF();
-               param1.readInt();
-               param1.readInt();
-               param1.readUTF();
-               param1.readUTF();
-               param1.readUTF();
-               param1.readInt();
+               pkg.readInt();
+               pkg.readUTF();
+               pkg.readInt();
+               pkg.readInt();
+               pkg.readUTF();
+               pkg.readUTF();
+               pkg.readUTF();
+               pkg.readInt();
             }
-            param1.readInt();
-            _loc4_.resourceLevel = param1.readInt();
-            _loc4_.resourceState = param1.readInt();
-            _loc4_.haveResourceTime = param1.readDate();
-            _loc4_.lastMaxMunites = param1.readInt();
-            _loc4_.itemId = param1.readInt();
-            _loc4_.itemCountPerHour = param1.readInt();
-            resourceList.push(_loc4_);
-            _loc10_++;
+            pkg.readInt();
+            resourceInfo.resourceLevel = pkg.readInt();
+            resourceInfo.resourceState = pkg.readInt();
+            resourceInfo.haveResourceTime = pkg.readDate();
+            resourceInfo.lastMaxMunites = pkg.readInt();
+            resourceInfo.itemId = pkg.readInt();
+            resourceInfo.itemCountPerHour = pkg.readInt();
+            resourceList.push(resourceInfo);
+            i++;
          }
-         var _loc8_:int = param1.readInt();
-         var _loc7_:int = 3;
-         _loc6_ = 0;
-         while(_loc6_ < _loc8_)
+         var haveResourceCount:int = pkg.readInt();
+         var resourcePosId:int = 3;
+         for(j = 0; j < haveResourceCount; )
          {
-            _loc5_ = new AnotherDimensionResourceInfo();
-            _loc7_++;
-            _loc5_.isHave = true;
-            _loc5_.resourcePos = _loc7_;
-            _loc5_.resourcePlayerInfo = PlayerManager.Instance.Self;
-            _loc5_.resourceLevel = param1.readInt();
-            _loc5_.haveResourceTime = param1.readDate();
-            _loc5_.haveResourceLast = param1.readInt();
-            _loc5_.lastMaxMunites = _loc5_.haveResourceLast;
-            _loc5_.itemId = param1.readInt();
-            _loc5_.itemCountPerHour = param1.readInt();
-            haveResourceList.push(_loc5_);
-            _loc6_++;
+            haveResourceInfo = new AnotherDimensionResourceInfo();
+            resourcePosId++;
+            haveResourceInfo.isHave = true;
+            haveResourceInfo.resourcePos = resourcePosId;
+            haveResourceInfo.resourcePlayerInfo = PlayerManager.Instance.Self;
+            haveResourceInfo.resourceLevel = pkg.readInt();
+            haveResourceInfo.haveResourceTime = pkg.readDate();
+            haveResourceInfo.haveResourceLast = pkg.readInt();
+            haveResourceInfo.lastMaxMunites = haveResourceInfo.haveResourceLast;
+            haveResourceInfo.itemId = pkg.readInt();
+            haveResourceInfo.itemCountPerHour = pkg.readInt();
+            haveResourceList.push(haveResourceInfo);
+            j++;
          }
          show();
       }
       
-      private function updateInfo(param1:PackageIn) : void
+      private function updateInfo(pkg:PackageIn) : void
       {
-         var _loc2_:Boolean = false;
+         var flag:Boolean = false;
          anotherDimensionInfo = new AnotherDimensionInfo();
-         anotherDimensionInfo.occupyCount = param1.readInt();
-         anotherDimensionInfo.totalOccupyCount = param1.readInt();
-         anotherDimensionInfo.lootCount = param1.readInt();
-         anotherDimensionInfo.totalLootCount = param1.readInt();
-         anotherDimensionInfo.refreshCount = param1.readInt();
+         anotherDimensionInfo.occupyCount = pkg.readInt();
+         anotherDimensionInfo.totalOccupyCount = pkg.readInt();
+         anotherDimensionInfo.lootCount = pkg.readInt();
+         anotherDimensionInfo.totalLootCount = pkg.readInt();
+         anotherDimensionInfo.refreshCount = pkg.readInt();
          if(anotherDimensionInfo.refreshCount != refreshOnly)
          {
-            _loc2_ = true;
+            flag = true;
          }
-         anotherDimensionInfo.timeControlLv = param1.readInt();
-         anotherDimensionInfo.timeControlExp = param1.readInt();
-         anotherDimensionInfo.spaceControlLv = param1.readInt();
-         anotherDimensionInfo.spaceControlExp = param1.readInt();
-         anotherDimensionInfo.looterControlLv = param1.readInt();
-         anotherDimensionInfo.looterControlExp = param1.readInt();
+         anotherDimensionInfo.timeControlLv = pkg.readInt();
+         anotherDimensionInfo.timeControlExp = pkg.readInt();
+         anotherDimensionInfo.spaceControlLv = pkg.readInt();
+         anotherDimensionInfo.spaceControlExp = pkg.readInt();
+         anotherDimensionInfo.looterControlLv = pkg.readInt();
+         anotherDimensionInfo.looterControlExp = pkg.readInt();
          refreshOnly = anotherDimensionInfo.refreshCount;
-         if(!_loc2_)
+         if(!flag)
          {
             dispatchEvent(new Event("updateView"));
          }
       }
       
-      private function openOrClose(param1:PackageIn) : void
+      private function openOrClose(pkg:PackageIn) : void
       {
-         isOpen = param1.readBoolean();
+         isOpen = pkg.readBoolean();
       }
       
-      private function updateResource(param1:PackageIn) : void
+      private function updateResource(pkg:PackageIn) : void
       {
-         var _loc10_:int = 0;
-         var _loc4_:* = null;
-         var _loc9_:* = null;
-         var _loc3_:int = 0;
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
+         var i:int = 0;
+         var resourceInfo:* = null;
+         var info:* = null;
+         var sex:int = 0;
+         var j:int = 0;
+         var haveResourceInfo:* = null;
          resourceList = [];
          haveResourceList = [];
-         var _loc2_:int = param1.readInt();
-         _loc10_ = 0;
-         while(_loc10_ < _loc2_)
+         var resourceCount:int = pkg.readInt();
+         for(i = 0; i < resourceCount; )
          {
-            _loc4_ = new AnotherDimensionResourceInfo();
-            _loc4_.isHave = false;
-            _loc4_.resourcePos = param1.readInt();
-            _loc4_.monsterId = param1.readInt();
-            if(_loc4_.monsterId == 0)
+            resourceInfo = new AnotherDimensionResourceInfo();
+            resourceInfo.isHave = false;
+            resourceInfo.resourcePos = pkg.readInt();
+            resourceInfo.monsterId = pkg.readInt();
+            if(resourceInfo.monsterId == 0)
             {
-               _loc9_ = new PlayerInfo();
-               _loc9_.ID = param1.readInt();
-               _loc9_.NickName = param1.readUTF();
-               _loc3_ = param1.readInt();
-               _loc9_.Sex = _loc3_ == 0?false:true;
-               _loc9_.Hide = param1.readInt();
-               _loc9_.Style = param1.readUTF();
-               _loc9_.Colors = param1.readUTF();
-               _loc9_.Skin = param1.readUTF();
-               _loc9_.Grade = param1.readInt();
-               _loc4_.resourcePlayerInfo = _loc9_;
+               info = new PlayerInfo();
+               info.ID = pkg.readInt();
+               info.NickName = pkg.readUTF();
+               sex = pkg.readInt();
+               info.Sex = sex == 0?false:true;
+               info.Hide = pkg.readInt();
+               info.Style = pkg.readUTF();
+               info.Colors = pkg.readUTF();
+               info.Skin = pkg.readUTF();
+               info.Grade = pkg.readInt();
+               resourceInfo.resourcePlayerInfo = info;
             }
             else
             {
-               param1.readInt();
-               param1.readUTF();
-               param1.readInt();
-               param1.readInt();
-               param1.readUTF();
-               param1.readUTF();
-               param1.readUTF();
-               param1.readInt();
+               pkg.readInt();
+               pkg.readUTF();
+               pkg.readInt();
+               pkg.readInt();
+               pkg.readUTF();
+               pkg.readUTF();
+               pkg.readUTF();
+               pkg.readInt();
             }
-            param1.readInt();
-            _loc4_.resourceLevel = param1.readInt();
-            _loc4_.resourceState = param1.readInt();
-            _loc4_.haveResourceTime = param1.readDate();
-            _loc4_.lastMaxMunites = param1.readInt();
-            _loc4_.itemId = param1.readInt();
-            _loc4_.itemCountPerHour = param1.readInt();
-            resourceList.push(_loc4_);
-            _loc10_++;
+            pkg.readInt();
+            resourceInfo.resourceLevel = pkg.readInt();
+            resourceInfo.resourceState = pkg.readInt();
+            resourceInfo.haveResourceTime = pkg.readDate();
+            resourceInfo.lastMaxMunites = pkg.readInt();
+            resourceInfo.itemId = pkg.readInt();
+            resourceInfo.itemCountPerHour = pkg.readInt();
+            resourceList.push(resourceInfo);
+            i++;
          }
-         var _loc8_:int = param1.readInt();
-         var _loc7_:int = 3;
-         _loc6_ = 0;
-         while(_loc6_ < _loc8_)
+         var haveResourceCount:int = pkg.readInt();
+         var resourcePosId:int = 3;
+         for(j = 0; j < haveResourceCount; )
          {
-            _loc5_ = new AnotherDimensionResourceInfo();
-            _loc7_++;
-            _loc5_.isHave = true;
-            _loc5_.resourcePos = _loc7_;
-            _loc5_.resourcePlayerInfo = PlayerManager.Instance.Self;
-            _loc5_.resourceLevel = param1.readInt();
-            _loc5_.haveResourceTime = param1.readDate();
-            _loc5_.haveResourceLast = param1.readInt();
-            _loc5_.lastMaxMunites = _loc5_.haveResourceLast;
-            _loc5_.itemId = param1.readInt();
-            _loc5_.itemCountPerHour = param1.readInt();
-            haveResourceList.push(_loc5_);
-            _loc6_++;
+            haveResourceInfo = new AnotherDimensionResourceInfo();
+            resourcePosId++;
+            haveResourceInfo.isHave = true;
+            haveResourceInfo.resourcePos = resourcePosId;
+            haveResourceInfo.resourcePlayerInfo = PlayerManager.Instance.Self;
+            haveResourceInfo.resourceLevel = pkg.readInt();
+            haveResourceInfo.haveResourceTime = pkg.readDate();
+            haveResourceInfo.haveResourceLast = pkg.readInt();
+            haveResourceInfo.lastMaxMunites = haveResourceInfo.haveResourceLast;
+            haveResourceInfo.itemId = pkg.readInt();
+            haveResourceInfo.itemCountPerHour = pkg.readInt();
+            haveResourceList.push(haveResourceInfo);
+            j++;
          }
          dispatchEvent(new Event("updateResourceData"));
       }

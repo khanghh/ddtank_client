@@ -15,10 +15,10 @@ package cardSystem.view.cardEquip
       
       private var _view:CardEquipView;
       
-      public function CardEquipDragArea(param1:CardEquipView)
+      public function CardEquipDragArea(view:CardEquipView)
       {
          super();
-         _view = param1;
+         _view = view;
          init();
       }
       
@@ -29,40 +29,39 @@ package cardSystem.view.cardEquip
          graphics.endFill();
       }
       
-      public function dragDrop(param1:DragEffect) : void
+      public function dragDrop(effect:DragEffect) : void
       {
-         var _loc3_:* = null;
-         var _loc4_:int = 0;
+         var dic:* = null;
+         var i:int = 0;
          if(PlayerManager.Instance.Self.bagLocked)
          {
             return;
          }
-         var _loc2_:CardInfo = param1.data as CardInfo;
-         if(_loc2_)
+         var cInfo:CardInfo = effect.data as CardInfo;
+         if(cInfo)
          {
-            if(_loc2_.templateInfo.Property8 == "1")
+            if(cInfo.templateInfo.Property8 == "1")
             {
-               SocketManager.Instance.out.sendMoveCards(_loc2_.Place,0);
-               param1.action = "none";
+               SocketManager.Instance.out.sendMoveCards(cInfo.Place,0);
+               effect.action = "none";
             }
             else
             {
-               _loc3_ = PlayerManager.Instance.Self.cardEquipDic;
-               _loc4_ = 1;
-               while(_loc4_ < 5)
+               dic = PlayerManager.Instance.Self.cardEquipDic;
+               for(i = 1; i < 5; )
                {
-                  if((_loc3_[_loc4_] == null || _loc3_[_loc4_].Count < 0) && _view._equipCells[_loc4_].open)
+                  if((dic[i] == null || dic[i].Count < 0) && _view._equipCells[i].open)
                   {
-                     SocketManager.Instance.out.sendMoveCards(_loc2_.Place,_loc4_);
-                     param1.action = "none";
+                     SocketManager.Instance.out.sendMoveCards(cInfo.Place,i);
+                     effect.action = "none";
                      break;
                   }
-                  if(_loc4_ == 4)
+                  if(i == 4)
                   {
-                     SocketManager.Instance.out.sendMoveCards(_loc2_.Place,1);
-                     param1.action = "none";
+                     SocketManager.Instance.out.sendMoveCards(cInfo.Place,1);
+                     effect.action = "none";
                   }
-                  _loc4_++;
+                  i++;
                }
                DragManager.acceptDrag(this);
             }

@@ -15,36 +15,35 @@ package tofflist.analyze
       
       public var data:TofflistListData;
       
-      public function TofflistListThirdAnalyzer(param1:Function)
+      public function TofflistListThirdAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc6_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:* = null;
-         var _loc7_:int = 0;
-         var _loc3_:* = null;
-         _xml = new XML(param1);
-         var _loc5_:Array = [];
+         var xmllist:* = null;
+         var _tempInfo:* = null;
+         var _xmlInfo:* = null;
+         var i:int = 0;
+         var p:* = null;
+         _xml = new XML(data);
+         var list:Array = [];
          this.data = new TofflistListData();
          this.data.lastUpdateTime = _xml.@date;
          if(_xml.@value == "true")
          {
-            _loc6_ = XML(_xml)..Item;
-            _loc2_ = new TofflistPlayerInfo();
-            _loc4_ = describeType(_loc2_);
-            _loc7_ = 0;
-            while(_loc7_ < _loc6_.length())
+            xmllist = XML(_xml)..Item;
+            _tempInfo = new TofflistPlayerInfo();
+            _xmlInfo = describeType(_tempInfo);
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc3_ = new TeamRankInfo();
-               ObjectUtils.copyPorpertiesByXML(_loc3_,_loc6_[_loc7_]);
-               _loc5_.push(_loc3_);
-               _loc7_++;
+               p = new TeamRankInfo();
+               ObjectUtils.copyPorpertiesByXML(p,xmllist[i]);
+               list.push(p);
+               i++;
             }
-            this.data.list = _loc5_;
+            this.data.list = list;
             onAnalyzeComplete();
          }
          else

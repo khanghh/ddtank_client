@@ -20,11 +20,11 @@ package uiModeManager.bombUI.model.rank
          return _cfg;
       }
       
-      public function set cfg(param1:DictionaryData) : void
+      public function set cfg(value:DictionaryData) : void
       {
-         if(param1)
+         if(value)
          {
-            this._cfg = param1;
+            this._cfg = value;
             this._aviliable = true;
          }
       }

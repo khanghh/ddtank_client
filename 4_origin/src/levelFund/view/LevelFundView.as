@@ -77,12 +77,12 @@ package levelFund.view
          updateItems(LevelFundManager.instance.model.getBuyMultiple);
       }
       
-      private function setBuyCompleteState(param1:int = 0) : void
+      private function setBuyCompleteState(type:int = 0) : void
       {
-         if(param1 > 0)
+         if(type > 0)
          {
             _buyCompleteIcon.visible = true;
-            PositionUtils.setPos(_buyCompleteIcon,"levelFund.levelFundView.getAwardCompleteIconPos" + param1);
+            PositionUtils.setPos(_buyCompleteIcon,"levelFund.levelFundView.getAwardCompleteIconPos" + type);
             _buyFundBtn1.mouseEnabled = false;
             _buyFundBtn2.mouseEnabled = false;
             _buyFundBtn3.mouseEnabled = false;
@@ -98,33 +98,31 @@ package levelFund.view
       
       private function addItems() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var item:* = null;
          _items = [];
-         var _loc1_:Array = LevelFundManager.instance.model.dataArr;
-         _loc3_ = 0;
-         while(_loc3_ < _loc1_.length)
+         var dataArr:Array = LevelFundManager.instance.model.dataArr;
+         for(i = 0; i < dataArr.length; )
          {
-            _loc2_ = new LevelFundViewItem(_loc3_);
-            _loc2_.y = _loc3_ * 39;
-            _items.push(_loc2_);
-            _itemsSprite.addChild(_loc2_);
-            _loc3_++;
+            item = new LevelFundViewItem(i);
+            item.y = i * 39;
+            _items.push(item);
+            _itemsSprite.addChild(item);
+            i++;
          }
          _panel.invalidateViewport();
       }
       
-      private function updateItems(param1:int) : void
+      private function updateItems(buyMultiple:int) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc2_:Array = LevelFundManager.instance.model.dataArr;
-         _loc4_ = 0;
-         while(_loc4_ < _items.length)
+         var i:int = 0;
+         var item:* = null;
+         var dataArr:Array = LevelFundManager.instance.model.dataArr;
+         for(i = 0; i < _items.length; )
          {
-            _loc3_ = _items[_loc4_];
-            _loc3_.updateView(_loc2_[_loc4_],param1);
-            _loc4_++;
+            item = _items[i];
+            item.updateView(dataArr[i],buyMultiple);
+            i++;
          }
       }
       
@@ -142,7 +140,7 @@ package levelFund.view
          LevelFundManager.instance.addEventListener("update_view",__updateViewHandler);
       }
       
-      private function __buyFundBtnClickHandler(param1:MouseEvent) : void
+      private function __buyFundBtnClickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.bagLocked)
@@ -150,48 +148,48 @@ package levelFund.view
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:int = 3;
-         if(param1.target == _buyFundBtn1)
+         var buyType:int = 3;
+         if(event.target == _buyFundBtn1)
          {
-            _loc2_ = 1;
+            buyType = 1;
          }
-         else if(param1.target == _buyFundBtn2)
+         else if(event.target == _buyFundBtn2)
          {
-            _loc2_ = 2;
+            buyType = 2;
          }
-         showBuyTipFrame(_loc2_);
+         showBuyTipFrame(buyType);
       }
       
-      private function showBuyTipFrame(param1:int) : void
+      private function showBuyTipFrame(buyType:int) : void
       {
-         _buyType = param1;
-         var _loc3_:int = 5;
+         _buyType = buyType;
+         var multiple:int = 5;
          if(_buyType == 1)
          {
-            _loc3_ = 1;
+            multiple = 1;
          }
          else if(_buyType == 2)
          {
-            _loc3_ = 3;
+            multiple = 3;
          }
-         var _loc4_:Array = ServerConfigManager.instance.levelFundPrice;
-         if(_loc4_)
+         var levelFundPrice:Array = ServerConfigManager.instance.levelFundPrice;
+         if(levelFundPrice)
          {
-            _buyPrice = int(_loc4_[_buyType - 1]);
+            _buyPrice = int(levelFundPrice[_buyType - 1]);
          }
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("levelFund.buyLevelFund.buyTipTxt",_buyPrice,_loc3_),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2,null,"SimpleAlert",60,false,0);
-         _loc2_.addEventListener("response",confirmResponse);
+         var frame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("levelFund.buyLevelFund.buyTipTxt",_buyPrice,multiple),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2,null,"SimpleAlert",60,false,0);
+         frame.addEventListener("response",confirmResponse);
       }
       
-      private function confirmResponse(param1:FrameEvent) : void
+      private function confirmResponse(e:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",confirmResponse);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var frame:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("response",confirmResponse);
+         if(e.responseCode == 2 || e.responseCode == 3)
          {
-            CheckMoneyUtils.instance.checkMoney(_loc2_.isBand,_buyPrice,onCheckComplete);
+            CheckMoneyUtils.instance.checkMoney(frame.isBand,_buyPrice,onCheckComplete);
          }
-         _loc2_.dispose();
+         frame.dispose();
       }
       
       protected function onCheckComplete() : void
@@ -199,26 +197,26 @@ package levelFund.view
          SocketManager.Instance.out.sendBuyLevelFund(CheckMoneyUtils.instance.isBind,_buyType);
       }
       
-      private function __buyFundBtnOverHandler(param1:MouseEvent) : void
+      private function __buyFundBtnOverHandler(event:MouseEvent) : void
       {
-         var _loc2_:int = 5;
-         if(param1.target == _buyFundBtn1)
+         var multiple:int = 5;
+         if(event.target == _buyFundBtn1)
          {
-            _loc2_ = 1;
+            multiple = 1;
          }
-         else if(param1.target == _buyFundBtn2)
+         else if(event.target == _buyFundBtn2)
          {
-            _loc2_ = 3;
+            multiple = 3;
          }
-         updateItems(_loc2_);
+         updateItems(multiple);
       }
       
-      private function __buyFundBtnOutHandler(param1:MouseEvent) : void
+      private function __buyFundBtnOutHandler(event:MouseEvent) : void
       {
          updateItems(LevelFundManager.instance.model.getBuyMultiple);
       }
       
-      private function __updateViewHandler(param1:LevelFundEvent) : void
+      private function __updateViewHandler(event:LevelFundEvent) : void
       {
          setBuyCompleteState(LevelFundManager.instance.model.buyType);
          updateItems(LevelFundManager.instance.model.getBuyMultiple);

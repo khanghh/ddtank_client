@@ -79,10 +79,10 @@ package magicHouse.magicCollection
       
       private var _lastStrengthTime:int = 0;
       
-      public function MagicHouseCollectionItemView(param1:int)
+      public function MagicHouseCollectionItemView(type:int)
       {
          super();
-         _type = param1;
+         _type = type;
          _self = PlayerManager.Instance.Self;
          initView();
          initEvent();
@@ -90,8 +90,8 @@ package magicHouse.magicCollection
       
       private function initView() : void
       {
-         var _loc1_:int = 0;
-         var _loc2_:* = null;
+         var titleID:int = 0;
+         var titleInfo:* = null;
          _item1 = new MagicHouseItemCell();
          addChild(_item1);
          PositionUtils.setPos(_item1,"magicHouse.collection.itemcell1Pos");
@@ -135,8 +135,8 @@ package magicHouse.magicCollection
          PositionUtils.setPos(_nextValue2,"magicHouse.collection.itemNextLevelValueTxtPos2");
          _itemLvl = ComponentFactory.Instance.creatComponentByStylename("magicHouse.collectionItemView.itemLvlText");
          addChild(_itemLvl);
-         var _loc3_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(201489);
-         _upGradeCell = new BagCell(0,_loc3_,true,ComponentFactory.Instance.creatBitmap("magichouse.collectionItem.potionCellBg"));
+         var info:ItemTemplateInfo = ItemManager.Instance.getTemplateById(201489);
+         _upGradeCell = new BagCell(0,info,true,ComponentFactory.Instance.creatBitmap("magichouse.collectionItem.potionCellBg"));
          _upGradeCell.PicPos = new Point(2,2);
          addChild(_upGradeCell);
          var _loc4_:int = 52;
@@ -152,24 +152,24 @@ package magicHouse.magicCollection
          _collectionTypeCon = ComponentFactory.Instance.creatComponentByStylename("magichouse.collectionItem.titleTipContent");
          if(_type == 1)
          {
-            _loc1_ = 1010;
+            titleID = 1010;
          }
          else if(_type == 2)
          {
-            _loc1_ = 1011;
+            titleID = 1011;
          }
          else
          {
-            _loc1_ = 1012;
+            titleID = 1012;
          }
-         if(NewTitleManager.instance.titleInfo && NewTitleManager.instance.titleInfo[_loc1_])
+         if(NewTitleManager.instance.titleInfo && NewTitleManager.instance.titleInfo[titleID])
          {
-            _loc2_ = new CallPropTxtTipInfo();
-            _loc2_.Attack = NewTitleManager.instance.titleInfo[_loc1_].Att;
-            _loc2_.Defend = NewTitleManager.instance.titleInfo[_loc1_].Def;
-            _loc2_.Agility = NewTitleManager.instance.titleInfo[_loc1_].Agi;
-            _loc2_.Lucky = NewTitleManager.instance.titleInfo[_loc1_].Luck;
-            _collectionTypeCon.tipData = _loc2_;
+            titleInfo = new CallPropTxtTipInfo();
+            titleInfo.Attack = NewTitleManager.instance.titleInfo[titleID].Att;
+            titleInfo.Defend = NewTitleManager.instance.titleInfo[titleID].Def;
+            titleInfo.Agility = NewTitleManager.instance.titleInfo[titleID].Agi;
+            titleInfo.Lucky = NewTitleManager.instance.titleInfo[titleID].Luck;
+            _collectionTypeCon.tipData = titleInfo;
          }
          _collectionTypeCon.addChild(_collectionType);
          addChild(_collectionTypeCon);
@@ -316,21 +316,21 @@ package magicHouse.magicCollection
       
       private function _setData() : void
       {
-         var _loc8_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         var _loc7_:int = 0;
+         var itemLvl:int = 0;
+         var j:int = 0;
+         var m:int = 0;
+         var s:int = 0;
          _setCell();
          upDatafitCount();
-         var _loc11_:Array = MagicHouseModel.instance.activityWeapons;
-         var _loc1_:Array = MagicHouseModel.instance.juniorAddAttribute;
-         var _loc5_:int = MagicHouseModel.instance.magicJuniorLv;
-         var _loc6_:Array = MagicHouseModel.instance.midAddAttribute;
-         var _loc9_:int = MagicHouseModel.instance.magicMidLv;
-         var _loc2_:Array = MagicHouseModel.instance.seniorAddAttribute;
-         var _loc10_:int = MagicHouseModel.instance.magicSeniorLv;
-         var _loc12_:int = 0;
-         var _loc13_:int = 0;
+         var weapons:Array = MagicHouseModel.instance.activityWeapons;
+         var juniorAttribute:Array = MagicHouseModel.instance.juniorAddAttribute;
+         var juniorLv:int = MagicHouseModel.instance.magicJuniorLv;
+         var minAttribute:Array = MagicHouseModel.instance.midAddAttribute;
+         var midLv:int = MagicHouseModel.instance.magicMidLv;
+         var seniorAttribute:Array = MagicHouseModel.instance.seniorAddAttribute;
+         var seniorLv:int = MagicHouseModel.instance.magicSeniorLv;
+         var attribute1:int = 0;
+         var attribute2:int = 0;
          if(_type == 1)
          {
             var _loc14_:* = LanguageMgr.GetTranslation("magichouse.collectionItem.addMagicDamage");
@@ -339,19 +339,18 @@ package magicHouse.magicCollection
             _loc14_ = LanguageMgr.GetTranslation("magichouse.collectionItem.addMagicDefense");
             _nextAttribute2.text = _loc14_;
             _attribute2.text = _loc14_;
-            _loc8_ = MagicHouseModel.instance.magicJuniorLv;
-            _itemLvl.text = "Lv." + _loc8_;
-            if(_loc11_[0] != 0 && _loc11_[1] != 0 && _loc11_[2] != 0)
+            itemLvl = MagicHouseModel.instance.magicJuniorLv;
+            _itemLvl.text = "Lv." + itemLvl;
+            if(weapons[0] != 0 && weapons[1] != 0 && weapons[2] != 0)
             {
                _addAttributeTxt.text = LanguageMgr.GetTranslation("magichouse.collectionItem.addAttribute" + _type);
-               _loc4_ = 0;
-               while(_loc4_ <= _loc5_)
+               for(j = 0; j <= juniorLv; )
                {
-                  _loc12_ = _loc12_ + int(_loc1_[_loc4_].split(",")[0]);
-                  _loc13_ = _loc13_ + int(_loc1_[_loc4_].split(",")[1]);
-                  _loc4_++;
+                  attribute1 = attribute1 + int(juniorAttribute[j].split(",")[0]);
+                  attribute2 = attribute2 + int(juniorAttribute[j].split(",")[1]);
+                  j++;
                }
-               if(_loc5_ == _loc1_.length - 1)
+               if(juniorLv == juniorAttribute.length - 1)
                {
                   _nextValue1.text = LanguageMgr.GetTranslation("magichouse.collectionItem.maxLevel");
                   PositionUtils.setPos(_nextValue1,"magicHouse.attributeTopTxtPos");
@@ -362,17 +361,17 @@ package magicHouse.magicCollection
                }
                else
                {
-                  _nextValue1.text = _loc1_[_loc5_ + 1].split(",")[0] + "%";
-                  _nextValue2.text = _loc1_[_loc5_ + 1].split(",")[1] + "%";
+                  _nextValue1.text = juniorAttribute[juniorLv + 1].split(",")[0] + "%";
+                  _nextValue2.text = juniorAttribute[juniorLv + 1].split(",")[1] + "%";
                }
             }
             else
             {
                _addAttributeTxt.text = LanguageMgr.GetTranslation("magichouse.collectionItem.afterActivate");
-               _loc12_ = _loc1_[0].split(",")[0];
-               _loc13_ = _loc1_[0].split(",")[1];
-               _nextValue1.text = _loc1_[1].split(",")[0] + "%";
-               _nextValue2.text = _loc1_[1].split(",")[1] + "%";
+               attribute1 = juniorAttribute[0].split(",")[0];
+               attribute2 = juniorAttribute[0].split(",")[1];
+               _nextValue1.text = juniorAttribute[1].split(",")[0] + "%";
+               _nextValue2.text = juniorAttribute[1].split(",")[1] + "%";
             }
          }
          else if(_type == 2)
@@ -384,18 +383,17 @@ package magicHouse.magicCollection
             _loc14_ = LanguageMgr.GetTranslation("magichouse.collectionItem.addCritDamage");
             _nextAttribute2.text = _loc14_;
             _attribute2.text = _loc14_;
-            _loc8_ = MagicHouseModel.instance.magicMidLv;
-            _itemLvl.text = "Lv." + _loc8_;
-            if(_loc11_[3] != 0 && _loc11_[4] != 0 && _loc11_[5] != 0)
+            itemLvl = MagicHouseModel.instance.magicMidLv;
+            _itemLvl.text = "Lv." + itemLvl;
+            if(weapons[3] != 0 && weapons[4] != 0 && weapons[5] != 0)
             {
-               _loc3_ = 0;
-               while(_loc3_ <= _loc9_)
+               for(m = 0; m <= midLv; )
                {
-                  _loc12_ = _loc12_ + int(_loc6_[_loc3_].split(",")[1]);
-                  _loc13_ = _loc13_ + int(_loc6_[_loc3_].split(",")[2]);
-                  _loc3_++;
+                  attribute1 = attribute1 + int(minAttribute[m].split(",")[1]);
+                  attribute2 = attribute2 + int(minAttribute[m].split(",")[2]);
+                  m++;
                }
-               if(_loc9_ == _loc6_.length - 1)
+               if(midLv == minAttribute.length - 1)
                {
                   _nextValue1.text = LanguageMgr.GetTranslation("magichouse.collectionItem.maxLevel");
                   PositionUtils.setPos(_nextValue1,"magicHouse.attributeTopTxtPos");
@@ -406,17 +404,17 @@ package magicHouse.magicCollection
                }
                else
                {
-                  _nextValue1.text = _loc6_[_loc9_ + 1].split(",")[1] + "%";
-                  _nextValue2.text = _loc6_[_loc9_ + 1].split(",")[2] + "%";
+                  _nextValue1.text = minAttribute[midLv + 1].split(",")[1] + "%";
+                  _nextValue2.text = minAttribute[midLv + 1].split(",")[2] + "%";
                }
             }
             else
             {
                _addAttributeTxt.text = LanguageMgr.GetTranslation("magichouse.collectionItem.afterActivate");
-               _loc12_ = _loc6_[0].split(",")[1];
-               _loc13_ = _loc6_[0].split(",")[2];
-               _nextValue1.text = _loc6_[1].split(",")[1] + "%";
-               _nextValue2.text = _loc6_[1].split(",")[2] + "%";
+               attribute1 = minAttribute[0].split(",")[1];
+               attribute2 = minAttribute[0].split(",")[2];
+               _nextValue1.text = minAttribute[1].split(",")[1] + "%";
+               _nextValue2.text = minAttribute[1].split(",")[2] + "%";
             }
          }
          else
@@ -428,18 +426,17 @@ package magicHouse.magicCollection
             _loc14_ = LanguageMgr.GetTranslation("magichouse.collectionItem.addCritDamage");
             _nextAttribute2.text = _loc14_;
             _attribute2.text = _loc14_;
-            _loc8_ = MagicHouseModel.instance.magicSeniorLv;
-            _itemLvl.text = "Lv." + _loc8_;
-            if(_loc11_[6] != 0 && _loc11_[7] != 0 && _loc11_[8] != 0)
+            itemLvl = MagicHouseModel.instance.magicSeniorLv;
+            _itemLvl.text = "Lv." + itemLvl;
+            if(weapons[6] != 0 && weapons[7] != 0 && weapons[8] != 0)
             {
-               _loc7_ = 0;
-               while(_loc7_ <= _loc10_)
+               for(s = 0; s <= seniorLv; )
                {
-                  _loc12_ = _loc12_ + int(_loc2_[_loc7_].split(",")[0]);
-                  _loc13_ = _loc13_ + int(_loc2_[_loc7_].split(",")[2]);
-                  _loc7_++;
+                  attribute1 = attribute1 + int(seniorAttribute[s].split(",")[0]);
+                  attribute2 = attribute2 + int(seniorAttribute[s].split(",")[2]);
+                  s++;
                }
-               if(_loc10_ == _loc2_.length - 1)
+               if(seniorLv == seniorAttribute.length - 1)
                {
                   _nextValue1.text = LanguageMgr.GetTranslation("magichouse.collectionItem.maxLevel");
                   PositionUtils.setPos(_nextValue1,"magicHouse.attributeTopTxtPos");
@@ -450,22 +447,22 @@ package magicHouse.magicCollection
                }
                else
                {
-                  _nextValue1.text = _loc2_[_loc10_ + 1].split(",")[0] + "%";
-                  _nextValue2.text = _loc2_[_loc10_ + 1].split(",")[2] + "%";
+                  _nextValue1.text = seniorAttribute[seniorLv + 1].split(",")[0] + "%";
+                  _nextValue2.text = seniorAttribute[seniorLv + 1].split(",")[2] + "%";
                }
             }
             else
             {
                _addAttributeTxt.text = LanguageMgr.GetTranslation("magichouse.collectionItem.afterActivate");
-               _loc12_ = _loc2_[0].split(",")[0];
-               _loc13_ = _loc2_[0].split(",")[2];
-               _nextValue1.text = _loc2_[1].split(",")[0] + "%";
-               _nextValue2.text = _loc2_[1].split(",")[2] + "%";
+               attribute1 = seniorAttribute[0].split(",")[0];
+               attribute2 = seniorAttribute[0].split(",")[2];
+               _nextValue1.text = seniorAttribute[1].split(",")[0] + "%";
+               _nextValue2.text = seniorAttribute[1].split(",")[2] + "%";
             }
          }
-         _attributeValue1.text = _loc12_ + "%";
-         _attributeValue2.text = _loc13_ + "%";
-         _upGradeBtn.enable = _item1.isOpen && _item2.isOpen && _item3.isOpen && _loc8_ < 5;
+         _attributeValue1.text = attribute1 + "%";
+         _attributeValue2.text = attribute2 + "%";
+         _upGradeBtn.enable = _item1.isOpen && _item2.isOpen && _item3.isOpen && itemLvl < 5;
       }
       
       private function initEvent() : void
@@ -482,12 +479,12 @@ package magicHouse.magicCollection
          MagicHouseManager.instance.removeEventListener("magichouse_updata",__messageUpdate);
       }
       
-      private function onBuyedGoods(param1:CrazyTankSocketEvent) : void
+      private function onBuyedGoods(event:CrazyTankSocketEvent) : void
       {
          upDatafitCount();
       }
       
-      private function __upGrade(param1:MouseEvent) : void
+      private function __upGrade(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(201489) > 0)
@@ -502,7 +499,7 @@ package magicHouse.magicCollection
          }
       }
       
-      private function __messageUpdate(param1:Event) : void
+      private function __messageUpdate(e:Event) : void
       {
          _setData();
          _updateProgress();
@@ -514,9 +511,9 @@ package magicHouse.magicCollection
          {
             return;
          }
-         var _loc1_:BagInfo = _self.getBag(1);
-         var _loc2_:int = _loc1_.getItemCountByTemplateId(201489);
-         _upGradeCell.setCount(_loc2_);
+         var bagInfo:BagInfo = _self.getBag(1);
+         var conut:int = bagInfo.getItemCountByTemplateId(201489);
+         _upGradeCell.setCount(conut);
       }
       
       public function dispose() : void

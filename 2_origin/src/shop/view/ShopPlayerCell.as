@@ -19,26 +19,26 @@ package shop.view
       
       private var _light:MovieImage;
       
-      public function ShopPlayerCell(param1:DisplayObject)
+      public function ShopPlayerCell(bg:DisplayObject)
       {
-         super(param1);
+         super(bg);
       }
       
-      public function set shopItemInfo(param1:ShopCarItemInfo) : void
+      public function set shopItemInfo(value:ShopCarItemInfo) : void
       {
-         if(param1 == null)
+         if(value == null)
          {
             .super.info = null;
          }
          else
          {
-            .super.info = param1.TemplateInfo;
+            .super.info = value.TemplateInfo;
          }
-         _shopItemInfo = param1;
+         _shopItemInfo = value;
          locked = false;
-         if(param1 is ShopCarItemInfo)
+         if(value is ShopCarItemInfo)
          {
-            setColor(ShopCarItemInfo(param1).Color);
+            setColor(ShopCarItemInfo(value).Color);
          }
          dispatchEvent(new ShopEvent("itemInfoChange",null,null));
       }
@@ -48,24 +48,24 @@ package shop.view
          return _shopItemInfo;
       }
       
-      public function setSkinColor(param1:String) : void
+      public function setSkinColor(color:String) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
+         var t:* = null;
+         var cs:* = null;
          if(shopItemInfo && EquipType.hasSkin(shopItemInfo.CategoryID))
          {
-            _loc2_ = shopItemInfo.Color.split("|");
-            _loc3_ = "";
-            if(_loc2_.length > 2)
+            t = shopItemInfo.Color.split("|");
+            cs = "";
+            if(t.length > 2)
             {
-               _loc3_ = _loc2_[0] + "|" + param1 + "|" + _loc2_[2];
+               cs = t[0] + "|" + color + "|" + t[2];
             }
             else
             {
-               _loc3_ = _loc2_[0] + "|" + param1 + "|" + _loc2_[1];
+               cs = t[0] + "|" + color + "|" + t[1];
             }
-            shopItemInfo.Color = _loc3_;
-            setColor(_loc3_);
+            shopItemInfo.Color = cs;
+            setColor(cs);
          }
       }
       

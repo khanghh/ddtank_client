@@ -63,13 +63,13 @@ package christmas.controller
          return _instance;
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
          InviteManager.Instance.enabled = false;
          CacheSysManager.lock("alertInChristmasRoom");
          KeyboardShortcutsManager.Instance.forbiddenFull();
          GameLoadingManager.Instance.hide();
-         super.enter(param1,param2);
+         super.enter(prev,data);
          LayerManager.Instance.clearnGameDynamic();
          LayerManager.Instance.clearnStageDynamic();
          MainToolBar.Instance.hide();
@@ -109,7 +109,7 @@ package christmas.controller
          _waitingView.addEventListener("enterGameTimeOut",__onTimeOut);
       }
       
-      protected function __onTimeOut(param1:Event) : void
+      protected function __onTimeOut(event:Event) : void
       {
          _waitingView.stop();
          _waitingView.visible = false;
@@ -125,133 +125,131 @@ package christmas.controller
          ChristmasCoreManager.instance.addEventListener("christmas_monster",__monstersEvent);
       }
       
-      public function __updatePlayerStauts(param1:CrazyTankSocketEvent) : void
+      public function __updatePlayerStauts(event:CrazyTankSocketEvent) : void
       {
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc4_.readInt();
-         var _loc5_:int = _loc4_.readByte();
-         var _loc3_:Point = new Point(_loc4_.readInt(),_loc4_.readInt());
-         _view.updatePlayerStauts(_loc2_,_loc5_,_loc3_);
-         _sceneModel.updatePlayerStauts(_loc2_,_loc5_,_loc3_);
+         var pkg:PackageIn = event.pkg;
+         var id:int = pkg.readInt();
+         var stauts:int = pkg.readByte();
+         var point:Point = new Point(pkg.readInt(),pkg.readInt());
+         _view.updatePlayerStauts(id,stauts,point);
+         _sceneModel.updatePlayerStauts(id,stauts,point);
       }
       
-      private function __monstersEvent(param1:CrazyTankSocketEvent) : void
+      private function __monstersEvent(pEvent:CrazyTankSocketEvent) : void
       {
-         var _loc12_:int = 0;
-         var _loc2_:* = null;
-         var _loc13_:int = 0;
-         var _loc3_:int = 0;
-         var _loc11_:int = 0;
-         var _loc15_:int = 0;
-         var _loc8_:int = 0;
-         var _loc9_:int = 0;
-         var _loc7_:int = 0;
-         var _loc16_:int = 0;
-         var _loc5_:int = 0;
-         var _loc10_:QueueLoader = new QueueLoader();
-         var _loc14_:PackageIn = param1.pkg;
-         var _loc4_:int = _loc14_.readByte();
-         var _loc17_:String = "";
-         if(_loc4_ == 0)
+         var i:int = 0;
+         var monsInfo:* = null;
+         var id:int = 0;
+         var count:int = 0;
+         var k:int = 0;
+         var monsterID:int = 0;
+         var monsterX:int = 0;
+         var monsterY:int = 0;
+         var monsterState:int = 0;
+         var ID:int = 0;
+         var state:int = 0;
+         var queryLoader:QueueLoader = new QueueLoader();
+         var p:PackageIn = pEvent.pkg;
+         var select:int = p.readByte();
+         var path:String = "";
+         if(select == 0)
          {
-            _monsterCount = _loc14_.readInt();
-            _loc12_ = 0;
-            while(_loc12_ < _monsterCount)
+            _monsterCount = p.readInt();
+            for(i = 0; i < _monsterCount; )
             {
-               _loc2_ = new MonsterInfo();
-               _loc2_.ID = _loc14_.readInt();
-               _loc2_.type = _loc14_.readInt();
-               switch(int(_loc2_.type))
+               monsInfo = new MonsterInfo();
+               monsInfo.ID = p.readInt();
+               monsInfo.type = p.readInt();
+               switch(int(monsInfo.type))
                {
                   case 0:
-                     _loc2_.ActionMovieName = "game.living.Living0012";
-                     _loc2_.MissionID = 3101;
-                     _loc17_ = "living1";
+                     monsInfo.ActionMovieName = "game.living.Living0012";
+                     monsInfo.MissionID = 3101;
+                     path = "living1";
                      break;
                   case 1:
-                     _loc2_.ActionMovieName = "game.living.Living0014";
-                     _loc2_.MissionID = 3102;
-                     _loc17_ = "living2";
+                     monsInfo.ActionMovieName = "game.living.Living0014";
+                     monsInfo.MissionID = 3102;
+                     path = "living2";
                      break;
                   case 2:
-                     _loc2_.ActionMovieName = "game.living.Living0013";
-                     _loc2_.MissionID = 3103;
-                     _loc17_ = "living3";
+                     monsInfo.ActionMovieName = "game.living.Living0013";
+                     monsInfo.MissionID = 3103;
+                     path = "living3";
                }
-               _loc2_.MonsterName = "";
-               _loc2_.State = _loc14_.readInt();
-               _loc2_.MonsterPos = new Point(_loc14_.readInt(),_loc14_.readInt());
-               if(_loc2_.State != 2 && !_sceneModel._mapObjects.hasKey(_loc2_.ID))
+               monsInfo.MonsterName = "";
+               monsInfo.State = p.readInt();
+               monsInfo.MonsterPos = new Point(p.readInt(),p.readInt());
+               if(monsInfo.State != 2 && !_sceneModel._mapObjects.hasKey(monsInfo.ID))
                {
-                  _loc10_.addLoader(LoadResourceManager.Instance.createLoader(PathManager.solveChristmasMonsterPath(_loc17_),4));
-                  _sceneModel._mapObjects.add(_loc2_.ID,_loc2_);
+                  queryLoader.addLoader(LoadResourceManager.Instance.createLoader(PathManager.solveChristmasMonsterPath(path),4));
+                  _sceneModel._mapObjects.add(monsInfo.ID,monsInfo);
                }
-               _loc12_++;
+               i++;
             }
-            _loc10_.addEventListener("complete",__onLoadComplete);
-            _loc10_.start();
+            queryLoader.addEventListener("complete",__onLoadComplete);
+            queryLoader.start();
          }
-         else if(_loc4_ == 1)
+         else if(select == 1)
          {
-            _loc13_ = _loc14_.readInt();
+            id = p.readInt();
             var _loc19_:int = 0;
             var _loc18_:* = _sceneModel._mapObjects;
-            for each(var _loc6_ in _sceneModel._mapObjects)
+            for each(var o in _sceneModel._mapObjects)
             {
-               if(_loc6_.ID == _loc13_)
+               if(o.ID == id)
                {
-                  _sceneModel._mapObjects.remove(_loc6_.ID);
+                  _sceneModel._mapObjects.remove(o.ID);
                }
             }
          }
-         else if(_loc4_ == 2)
+         else if(select == 2)
          {
-            _loc3_ = _loc14_.readInt();
-            _loc11_ = 0;
-            while(_loc11_ < _loc3_)
+            count = p.readInt();
+            for(k = 0; k < count; )
             {
-               _loc15_ = _loc14_.readInt();
-               _loc8_ = _loc14_.readInt();
-               _loc9_ = _loc14_.readInt();
-               _loc7_ = _loc14_.readInt();
-               if(_sceneModel._mapObjects && _sceneModel._mapObjects.hasKey(_loc15_) && _sceneModel._mapObjects[_loc15_].State != 1)
+               monsterID = p.readInt();
+               monsterX = p.readInt();
+               monsterY = p.readInt();
+               monsterState = p.readInt();
+               if(_sceneModel._mapObjects && _sceneModel._mapObjects.hasKey(monsterID) && _sceneModel._mapObjects[monsterID].State != 1)
                {
-                  _sceneModel._mapObjects[_loc15_].State = _loc7_;
-                  _sceneModel._mapObjects[_loc15_].MonsterNewPos = new Point(_loc8_,_loc9_);
+                  _sceneModel._mapObjects[monsterID].State = monsterState;
+                  _sceneModel._mapObjects[monsterID].MonsterNewPos = new Point(monsterX,monsterY);
                }
-               _loc11_++;
+               k++;
             }
          }
-         else if(_loc4_ == 3)
+         else if(select == 3)
          {
-            _loc16_ = _loc14_.readInt();
-            _loc5_ = _loc14_.readInt();
-            if(_sceneModel._mapObjects && _sceneModel._mapObjects.hasKey(_loc16_))
+            ID = p.readInt();
+            state = p.readInt();
+            if(_sceneModel._mapObjects && _sceneModel._mapObjects.hasKey(ID))
             {
-               _sceneModel._mapObjects[_loc16_].State = _loc5_;
+               _sceneModel._mapObjects[ID].State = state;
             }
          }
       }
       
-      private function __onLoadComplete(param1:Event) : void
+      private function __onLoadComplete(pEvent:Event) : void
       {
-         var _loc2_:QueueLoader = param1.currentTarget as QueueLoader;
-         if(_loc2_.completeCount == _monsterCount)
+         var loaderQueue:QueueLoader = pEvent.currentTarget as QueueLoader;
+         if(loaderQueue.completeCount == _monsterCount)
          {
-            _loc2_.removeEvent();
+            loaderQueue.removeEvent();
          }
       }
       
-      public function setSelfStatus(param1:int) : void
+      public function setSelfStatus(value:int) : void
       {
          if(_view)
          {
-            _view.updateSelfStatus(param1);
+            _view.updateSelfStatus(value);
          }
          else
          {
             _callback = setSelfStatus;
-            _callbackArg = param1;
+            _callbackArg = value;
          }
       }
       
@@ -273,54 +271,53 @@ package christmas.controller
          return "main";
       }
       
-      public function __addPlayer(param1:CrazyTankSocketEvent) : void
+      public function __addPlayer(event:CrazyTankSocketEvent) : void
       {
-         var _loc8_:int = 0;
-         var _loc7_:* = null;
-         var _loc4_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:* = null;
-         var _loc5_:PackageIn = param1.pkg;
-         var _loc6_:int = _loc5_.readInt();
-         _loc8_ = 0;
-         while(_loc8_ < _loc6_)
+         var i:int = 0;
+         var playerInfo:* = null;
+         var posx:int = 0;
+         var posy:int = 0;
+         var playerVO:* = null;
+         var pkg:PackageIn = event.pkg;
+         var len:int = pkg.readInt();
+         for(i = 0; i < len; )
          {
-            _loc7_ = new PlayerInfo();
-            _loc7_.beginChanges();
-            _loc7_.Grade = _loc5_.readInt();
-            _loc7_.Hide = _loc5_.readInt();
-            _loc7_.Repute = _loc5_.readInt();
-            _loc7_.ID = _loc5_.readInt();
-            _loc7_.NickName = _loc5_.readUTF();
-            _loc7_.typeVIP = _loc5_.readByte();
-            _loc7_.VIPLevel = _loc5_.readInt();
-            _loc7_.Sex = _loc5_.readBoolean();
-            _loc7_.Style = _loc5_.readUTF();
-            _loc7_.Colors = _loc5_.readUTF();
-            _loc7_.Skin = _loc5_.readUTF();
-            _loc7_.FightPower = _loc5_.readInt();
-            _loc7_.WinCount = _loc5_.readInt();
-            _loc7_.TotalCount = _loc5_.readInt();
-            _loc7_.Offer = _loc5_.readInt();
-            _loc7_.commitChanges();
-            _loc4_ = _loc5_.readInt();
-            _loc2_ = _loc5_.readInt();
-            _loc3_ = new PlayerVO();
-            _loc3_.playerInfo = _loc7_;
-            _loc3_.playerPos = new Point(_loc4_,_loc2_);
-            _loc3_.playerStauts = _loc5_.readByte();
-            if(_loc7_.ID != PlayerManager.Instance.Self.ID)
+            playerInfo = new PlayerInfo();
+            playerInfo.beginChanges();
+            playerInfo.Grade = pkg.readInt();
+            playerInfo.Hide = pkg.readInt();
+            playerInfo.Repute = pkg.readInt();
+            playerInfo.ID = pkg.readInt();
+            playerInfo.NickName = pkg.readUTF();
+            playerInfo.typeVIP = pkg.readByte();
+            playerInfo.VIPLevel = pkg.readInt();
+            playerInfo.Sex = pkg.readBoolean();
+            playerInfo.Style = pkg.readUTF();
+            playerInfo.Colors = pkg.readUTF();
+            playerInfo.Skin = pkg.readUTF();
+            playerInfo.FightPower = pkg.readInt();
+            playerInfo.WinCount = pkg.readInt();
+            playerInfo.TotalCount = pkg.readInt();
+            playerInfo.Offer = pkg.readInt();
+            playerInfo.commitChanges();
+            posx = pkg.readInt();
+            posy = pkg.readInt();
+            playerVO = new PlayerVO();
+            playerVO.playerInfo = playerInfo;
+            playerVO.playerPos = new Point(posx,posy);
+            playerVO.playerStauts = pkg.readByte();
+            if(playerInfo.ID != PlayerManager.Instance.Self.ID)
             {
-               _sceneModel.addPlayer(_loc3_);
+               _sceneModel.addPlayer(playerVO);
             }
-            _loc8_++;
+            i++;
          }
       }
       
-      public function __removePlayer(param1:CrazyTankSocketEvent) : void
+      public function __removePlayer(event:CrazyTankSocketEvent) : void
       {
-         var _loc2_:int = param1.pkg.readInt();
-         if(_loc2_ == PlayerManager.Instance.Self.ID)
+         var id:int = event.pkg.readInt();
+         if(id == PlayerManager.Instance.Self.ID)
          {
             if(StateManager.currentStateType == "christmasroom")
             {
@@ -333,29 +330,28 @@ package christmas.controller
                _view.removeTimer();
             }
          }
-         _sceneModel.removePlayer(_loc2_);
+         _sceneModel.removePlayer(id);
       }
       
-      public function __movePlayer(param1:CrazyTankSocketEvent) : void
+      public function __movePlayer(event:CrazyTankSocketEvent) : void
       {
-         var _loc9_:* = 0;
-         var _loc6_:* = null;
-         var _loc2_:int = param1.pkg.readInt();
-         var _loc5_:int = param1.pkg.readInt();
-         var _loc3_:int = param1.pkg.readInt();
-         var _loc8_:String = param1.pkg.readUTF();
-         if(_loc2_ == PlayerManager.Instance.Self.ID)
+         var i:* = 0;
+         var p:* = null;
+         var id:int = event.pkg.readInt();
+         var posX:int = event.pkg.readInt();
+         var posY:int = event.pkg.readInt();
+         var pathStr:String = event.pkg.readUTF();
+         if(id == PlayerManager.Instance.Self.ID)
          {
             return;
          }
-         var _loc4_:Array = _loc8_.split(",");
-         var _loc7_:Array = [];
-         _loc9_ = uint(0);
-         while(_loc9_ < _loc4_.length)
+         var arr:Array = pathStr.split(",");
+         var path:Array = [];
+         for(i = uint(0); i < arr.length; )
          {
-            _loc6_ = new Point(_loc4_[_loc9_],_loc4_[_loc9_ + 1]);
-            _loc7_.push(_loc6_);
-            _loc9_ = uint(_loc9_ + 2);
+            p = new Point(arr[i],arr[i + 1]);
+            path.push(p);
+            i = uint(i + 2);
          }
          if(_view == null)
          {
@@ -366,7 +362,7 @@ package christmas.controller
             _view = new ChristmasRoomView(this,_sceneModel);
             _view.show();
          }
-         _view.movePlayer(_loc2_,_loc7_);
+         _view.movePlayer(id,path);
       }
       
       override public function getType() : String
@@ -374,13 +370,13 @@ package christmas.controller
          return "christmasroom";
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
          InviteManager.Instance.enabled = true;
          CacheSysManager.unlock("alertInChristmasRoom");
          CacheSysManager.getInstance().release("alertInChristmasRoom");
          KeyboardShortcutsManager.Instance.cancelForbidden();
-         super.leaving(param1);
+         super.leaving(next);
       }
       
       override public function dispose() : void

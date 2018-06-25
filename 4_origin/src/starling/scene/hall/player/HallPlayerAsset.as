@@ -37,10 +37,10 @@ package starling.scene.hall.player
       
       private var _mountLoader:HallPlayerBaseLoader;
       
-      public function HallPlayerAsset(param1:PlayerInfo)
+      public function HallPlayerAsset(playerInfo:PlayerInfo)
       {
          super();
-         _playerInfo = param1;
+         _playerInfo = playerInfo;
          _asset = DDTAssetManager.instance;
       }
       
@@ -109,9 +109,9 @@ package starling.scene.hall.player
          }
       }
       
-      private function loaderComplete(param1:HallPlayerBaseLoader) : void
+      private function loaderComplete(loader:HallPlayerBaseLoader) : void
       {
-         loader = param1;
+         loader = loader;
          if(_playerInfo == null)
          {
             loader.dispose();
@@ -133,8 +133,8 @@ package starling.scene.hall.player
                   var headColor:Array = _playerInfoColor;
                   texture.root.onRestore = function():void
                   {
-                     var _loc1_:HallPlayerHeadLoader = new HallPlayerHeadLoader(headStyle,headColor);
-                     _loc1_.load(loaderComplete);
+                     var loader:HallPlayerHeadLoader = new HallPlayerHeadLoader(headStyle,headColor);
+                     loader.load(loaderComplete);
                   };
                   _asset.addTexture(headAssetName,texture,"main");
                }
@@ -154,8 +154,8 @@ package starling.scene.hall.player
                   var sex:Boolean = _playerInfoSex;
                   texture.root.onRestore = function():void
                   {
-                     var _loc1_:HallPlayerBodyLoader = new HallPlayerBodyLoader(bodyStyle,bodyColor,sex,_playerInfoMountsType);
-                     _loc1_.load(loaderComplete);
+                     var loader:HallPlayerBodyLoader = new HallPlayerBodyLoader(bodyStyle,bodyColor,sex,_playerInfoMountsType);
+                     loader.load(loaderComplete);
                   };
                   _asset.addTexture(bodyAssetName,texture,"main");
                }
@@ -172,8 +172,8 @@ package starling.scene.hall.player
                   texture = Texture.fromBitmap(loader.content.image as Bitmap,false);
                   texture.root.onRestore = function():void
                   {
-                     var _loc1_:HallPlayerMountsLoader = new HallPlayerMountsLoader(_playerInfoMountsType);
-                     _loc1_.load(loaderComplete);
+                     var loader:HallPlayerMountsLoader = new HallPlayerMountsLoader(_playerInfoMountsType);
+                     loader.load(loaderComplete);
                   };
                   var atlas:TextureAtlas = new TextureAtlas(texture,XML(loader.content.xml));
                   _asset.addTextureAtlas(mountsAssetName,atlas,"main");
@@ -209,9 +209,9 @@ package starling.scene.hall.player
          return true;
       }
       
-      public function isResetByAssetName(param1:String) : Boolean
+      public function isResetByAssetName(value:String) : Boolean
       {
-         return _isResetLoad.indexOf(param1) != -1;
+         return _isResetLoad.indexOf(value) != -1;
       }
       
       public function isFirstLoad() : Boolean
@@ -234,8 +234,8 @@ package starling.scene.hall.player
       
       public function get bodyAssetName() : String
       {
-         var _loc1_:String = _playerInfoMountsType == 140?"n":!!_playerInfo.Sex?"m":"f";
-         return "scene_cloth_" + _loc1_ + "_" + "1";
+         var bs:String = _playerInfoMountsType == 140?"n":!!_playerInfo.Sex?"m":"f";
+         return "scene_cloth_" + bs + "_" + "1";
       }
       
       public function get mountsAssetName() : String

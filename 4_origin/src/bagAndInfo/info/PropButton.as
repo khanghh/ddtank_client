@@ -59,9 +59,9 @@ package bagAndInfo.info
          return _tipData.color;
       }
       
-      public function set color(param1:int) : void
+      public function set color(val:int) : void
       {
-         _tipData.color = param1;
+         _tipData.color = val;
       }
       
       public function get property() : String
@@ -69,9 +69,9 @@ package bagAndInfo.info
          return _tipData.property;
       }
       
-      public function set property(param1:String) : void
+      public function set property(val:String) : void
       {
-         _tipData.property = "[" + param1 + "]";
+         _tipData.property = "[" + val + "]";
       }
       
       public function get detail() : String
@@ -79,9 +79,9 @@ package bagAndInfo.info
          return _tipData.detail;
       }
       
-      public function set detail(param1:String) : void
+      public function set detail(val:String) : void
       {
-         _tipData.detail = param1;
+         _tipData.detail = val;
       }
       
       public function get propertySource() : String
@@ -89,9 +89,9 @@ package bagAndInfo.info
          return _tipData.propertySource;
       }
       
-      public function set propertySource(param1:String) : void
+      public function set propertySource(val:String) : void
       {
-         _tipData.propertySource = param1;
+         _tipData.propertySource = val;
       }
       
       public function get tipData() : Object
@@ -99,9 +99,9 @@ package bagAndInfo.info
          return _tipData;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(value:Object) : void
       {
-         _tipData = param1 as CharacterPropTxtTipInfo;
+         _tipData = value as CharacterPropTxtTipInfo;
       }
       
       public function get tipDirctions() : String
@@ -109,9 +109,9 @@ package bagAndInfo.info
          return _tipDirection;
       }
       
-      public function set tipDirctions(param1:String) : void
+      public function set tipDirctions(value:String) : void
       {
-         _tipDirection = param1;
+         _tipDirection = value;
       }
       
       public function get tipGapH() : int
@@ -119,9 +119,9 @@ package bagAndInfo.info
          return _tipGapH;
       }
       
-      public function set tipGapH(param1:int) : void
+      public function set tipGapH(value:int) : void
       {
-         _tipGapH = param1;
+         _tipGapH = value;
       }
       
       public function get tipGapV() : int
@@ -129,9 +129,9 @@ package bagAndInfo.info
          return _tipGapV;
       }
       
-      public function set tipGapV(param1:int) : void
+      public function set tipGapV(value:int) : void
       {
-         _tipGapV = param1;
+         _tipGapV = value;
       }
       
       public function get tipStyle() : String
@@ -139,9 +139,9 @@ package bagAndInfo.info
          return _tipStyle;
       }
       
-      public function set tipStyle(param1:String) : void
+      public function set tipStyle(value:String) : void
       {
-         _tipStyle = param1;
+         _tipStyle = value;
       }
       
       public function asDisplayObject() : DisplayObject

@@ -208,10 +208,10 @@ package consortion
          _taskModel.addEventListener("getConsortiaTaskInfo",onTaskInfoChange);
       }
       
-      protected function onTaskInfoChange(param1:ConsortiaTaskEvent) : void
+      protected function onTaskInfoChange(e:ConsortiaTaskEvent) : void
       {
-         var _loc2_:ConsortiaTaskInfo = _taskModel.taskInfo;
-         if(_loc2_ != null && _loc2_.beginTime != null)
+         var __taskInfo:ConsortiaTaskInfo = _taskModel.taskInfo;
+         if(__taskInfo != null && __taskInfo.beginTime != null)
          {
             if(_timer == null)
             {
@@ -230,168 +230,166 @@ package consortion
          }
       }
       
-      protected function onTaskTimerTimer(param1:Event) : void
+      protected function onTaskTimerTimer(e:Event) : void
       {
-         var _loc6_:int = 0;
-         var _loc8_:int = 0;
-         var _loc4_:Boolean = false;
-         var _loc5_:* = null;
-         var _loc3_:Number = NaN;
-         var _loc7_:* = null;
-         var _loc2_:int = 0;
+         var len:int = 0;
+         var i:int = 0;
+         var isFinished:Boolean = false;
+         var bg:* = null;
+         var remainTime:Number = NaN;
+         var __MsgText:* = null;
+         var __MsgNumber:int = 0;
          if(_taskModel.taskInfo && _taskModel.taskInfo.beginTime)
          {
-            _loc4_ = true;
-            _loc6_ = _taskModel.taskInfo.itemList.length;
-            _loc8_ = 0;
-            while(_loc8_ < _loc6_)
+            isFinished = true;
+            len = _taskModel.taskInfo.itemList.length;
+            for(i = 0; i < len; )
             {
-               if(_taskModel.taskInfo.itemList[_loc8_].currenValue - _taskModel.taskInfo.itemList[_loc8_].targetValue < 0)
+               if(_taskModel.taskInfo.itemList[i].currenValue - _taskModel.taskInfo.itemList[i].targetValue < 0)
                {
-                  _loc4_ = false;
+                  isFinished = false;
                   break;
                }
-               _loc8_++;
+               i++;
             }
-            if(_loc4_)
+            if(isFinished)
             {
                return;
             }
-            _loc5_ = ConsortionModelManager.Instance.TaskModel.taskInfo.beginTime;
-            _loc3_ = ConsortionModelManager.Instance.TaskModel.taskInfo.time * 60 - int(TimeManager.Instance.TotalSecondToNow(_loc5_)) + 60;
-            if(_loc3_ <= 0)
+            bg = ConsortionModelManager.Instance.TaskModel.taskInfo.beginTime;
+            remainTime = ConsortionModelManager.Instance.TaskModel.taskInfo.time * 60 - int(TimeManager.Instance.TotalSecondToNow(bg)) + 60;
+            if(remainTime <= 0)
             {
                return;
             }
-            _loc3_ = _loc3_ * 1000;
-            _loc6_ = _alertFlagList.length;
-            _loc8_ = 0;
-            while(_loc8_ < _loc6_)
+            remainTime = remainTime * 1000;
+            len = _alertFlagList.length;
+            for(i = 0; i < len; )
             {
-               if(_loc3_ <= _alertFlagList[_loc8_])
+               if(remainTime <= _alertFlagList[i])
                {
-                  if(_alertStatusList[_loc8_] == false)
+                  if(_alertStatusList[i] == false)
                   {
-                     _alertStatusList[_loc8_] = true;
+                     _alertStatusList[i] = true;
                      if(_firstShow)
                      {
                         _firstShow = false;
-                        _loc7_ = _loc8_ > 1?_alertMsgList[1]:_alertMsgList[0];
-                        _loc2_ = _loc8_ > 1?Math.round(_loc3_ / 60000):int(_loc3_ / 1000);
-                        ChatManager.Instance.sysChatConsortia(LanguageMgr.GetTranslation(_loc7_,_loc2_));
+                        __MsgText = i > 1?_alertMsgList[1]:_alertMsgList[0];
+                        __MsgNumber = i > 1?Math.round(remainTime / 60000):int(remainTime / 1000);
+                        ChatManager.Instance.sysChatConsortia(LanguageMgr.GetTranslation(__MsgText,__MsgNumber));
                      }
                      else
                      {
-                        _loc7_ = _loc8_ > 0?_alertMsgList[1]:_alertMsgList[0];
-                        _loc2_ = _loc8_ > 0?Math.round(_alertFlagList[_loc8_] / 60000):30;
-                        ChatManager.Instance.sysChatConsortia(LanguageMgr.GetTranslation(_loc7_,_loc2_));
+                        __MsgText = i > 0?_alertMsgList[1]:_alertMsgList[0];
+                        __MsgNumber = i > 0?Math.round(_alertFlagList[i] / 60000):30;
+                        ChatManager.Instance.sysChatConsortia(LanguageMgr.GetTranslation(__MsgText,__MsgNumber));
                      }
                   }
                   break;
                }
-               _loc8_++;
+               i++;
             }
          }
       }
       
-      private function __consortiaResponse(param1:PkgEvent) : void
+      private function __consortiaResponse(event:PkgEvent) : void
       {
-         var _loc16_:int = 0;
-         var _loc19_:* = null;
-         var _loc6_:* = null;
-         var _loc36_:Boolean = false;
-         var _loc24_:int = 0;
-         var _loc28_:* = null;
-         var _loc11_:int = 0;
-         var _loc2_:* = null;
-         var _loc35_:int = 0;
-         var _loc25_:Boolean = false;
-         var _loc5_:* = null;
-         var _loc3_:* = null;
-         var _loc22_:int = 0;
-         var _loc20_:* = null;
-         var _loc21_:int = 0;
-         var _loc33_:* = null;
-         var _loc7_:int = 0;
-         var _loc30_:* = null;
-         var _loc43_:* = null;
-         var _loc40_:* = null;
-         var _loc8_:int = 0;
-         var _loc37_:* = null;
-         var _loc23_:int = 0;
-         var _loc42_:int = 0;
-         var _loc15_:int = 0;
-         var _loc41_:int = 0;
-         var _loc27_:* = null;
-         var _loc29_:int = 0;
-         var _loc12_:* = null;
-         var _loc10_:int = 0;
-         var _loc31_:int = 0;
-         var _loc34_:* = null;
-         var _loc4_:* = null;
-         var _loc13_:* = null;
-         var _loc9_:* = null;
-         var _loc17_:int = 0;
-         var _loc44_:int = 0;
-         var _loc18_:* = null;
-         var _loc38_:int = 0;
-         var _loc26_:* = null;
-         var _loc39_:int = 0;
-         var _loc32_:PackageIn = param1.pkg;
-         var _loc14_:int = _loc32_.readByte();
-         switch(int(_loc14_) - 1)
+         var id:int = 0;
+         var name:* = null;
+         var memberInfo:* = null;
+         var isInvent:Boolean = false;
+         var inventID:int = 0;
+         var inventName:* = null;
+         var state:int = 0;
+         var msgTxt1:* = null;
+         var consortiaID:int = 0;
+         var isKick:Boolean = false;
+         var kickName:* = null;
+         var msgTxt5:* = null;
+         var unkwon1:int = 0;
+         var unkwon2:* = null;
+         var unkwon3:int = 0;
+         var intviteName:* = null;
+         var unkwon4:int = 0;
+         var consortiaName:* = null;
+         var context:* = null;
+         var lastFocusObject:* = null;
+         var myid:int = 0;
+         var myname:* = null;
+         var myLevel:int = 0;
+         var subType:int = 0;
+         var consortiaId:int = 0;
+         var playerId:int = 0;
+         var playerName:* = null;
+         var dutyLeve:int = 0;
+         var dName:* = null;
+         var rights:int = 0;
+         var handleID:int = 0;
+         var handleName:* = null;
+         var msgTxt6:* = null;
+         var msgTxt7:* = null;
+         var msgTxt9:* = null;
+         var consortiaId9:int = 0;
+         var playerId9:int = 0;
+         var playerName9:* = null;
+         var riches:int = 0;
+         var msgTxt10:* = null;
+         var t:int = 0;
+         var pkg:PackageIn = event.pkg;
+         var type:int = pkg.readByte();
+         switch(int(type) - 1)
          {
             case 0:
-               _loc6_ = new ConsortiaPlayerInfo();
-               _loc6_.privateID = _loc32_.readInt();
-               _loc36_ = _loc32_.readBoolean();
-               _loc6_.ConsortiaID = _loc32_.readInt();
-               _loc6_.ConsortiaName = _loc32_.readUTF();
-               _loc6_.ID = _loc32_.readInt();
-               _loc6_.NickName = _loc32_.readUTF();
-               _loc24_ = _loc32_.readInt();
-               _loc28_ = _loc32_.readUTF();
-               _loc6_.DutyID = _loc32_.readInt();
-               _loc6_.DutyName = _loc32_.readUTF();
-               _loc6_.Offer = _loc32_.readInt();
-               _loc6_.RichesOffer = _loc32_.readInt();
-               _loc6_.RichesRob = _loc32_.readInt();
-               _loc6_.LastDate = _loc32_.readDateString();
-               _loc6_.Grade = _loc32_.readInt();
-               _loc6_.DutyLevel = _loc32_.readInt();
-               _loc11_ = _loc32_.readInt();
-               _loc6_.playerState = new PlayerState(_loc11_);
-               _loc6_.Sex = _loc32_.readBoolean();
-               _loc6_.Right = _loc32_.readInt();
-               _loc6_.WinCount = _loc32_.readInt();
-               _loc6_.TotalCount = _loc32_.readInt();
-               _loc6_.EscapeCount = _loc32_.readInt();
-               _loc6_.Repute = _loc32_.readInt();
-               _loc6_.LoginName = _loc32_.readUTF();
-               _loc6_.FightPower = _loc32_.readInt();
-               _loc6_.AchievementPoint = _loc32_.readInt();
-               _loc6_.honor = _loc32_.readUTF();
-               _loc6_.UseOffer = _loc32_.readInt();
-               if(!(_loc36_ && _loc6_.ID == PlayerManager.Instance.Self.ID))
+               memberInfo = new ConsortiaPlayerInfo();
+               memberInfo.privateID = pkg.readInt();
+               isInvent = pkg.readBoolean();
+               memberInfo.ConsortiaID = pkg.readInt();
+               memberInfo.ConsortiaName = pkg.readUTF();
+               memberInfo.ID = pkg.readInt();
+               memberInfo.NickName = pkg.readUTF();
+               inventID = pkg.readInt();
+               inventName = pkg.readUTF();
+               memberInfo.DutyID = pkg.readInt();
+               memberInfo.DutyName = pkg.readUTF();
+               memberInfo.Offer = pkg.readInt();
+               memberInfo.RichesOffer = pkg.readInt();
+               memberInfo.RichesRob = pkg.readInt();
+               memberInfo.LastDate = pkg.readDateString();
+               memberInfo.Grade = pkg.readInt();
+               memberInfo.DutyLevel = pkg.readInt();
+               state = pkg.readInt();
+               memberInfo.playerState = new PlayerState(state);
+               memberInfo.Sex = pkg.readBoolean();
+               memberInfo.Right = pkg.readInt();
+               memberInfo.WinCount = pkg.readInt();
+               memberInfo.TotalCount = pkg.readInt();
+               memberInfo.EscapeCount = pkg.readInt();
+               memberInfo.Repute = pkg.readInt();
+               memberInfo.LoginName = pkg.readUTF();
+               memberInfo.FightPower = pkg.readInt();
+               memberInfo.AchievementPoint = pkg.readInt();
+               memberInfo.honor = pkg.readUTF();
+               memberInfo.UseOffer = pkg.readInt();
+               if(!(isInvent && memberInfo.ID == PlayerManager.Instance.Self.ID))
                {
-                  if(_loc6_.ID == PlayerManager.Instance.Self.ID)
+                  if(memberInfo.ID == PlayerManager.Instance.Self.ID)
                   {
-                     MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.manager.PlayerManager.one",_loc6_.ConsortiaName));
+                     MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.manager.PlayerManager.one",memberInfo.ConsortiaName));
                   }
                }
-               _loc2_ = "";
-               if(_loc6_.ID == PlayerManager.Instance.Self.ID)
+               msgTxt1 = "";
+               if(memberInfo.ID == PlayerManager.Instance.Self.ID)
                {
-                  setPlayerConsortia(_loc6_.ConsortiaID,_loc6_.ConsortiaName);
+                  setPlayerConsortia(memberInfo.ConsortiaID,memberInfo.ConsortiaName);
                   getConsortionMember(memberListComplete);
-                  getConsortionList(selfConsortionComplete,1,6,_loc6_.ConsortiaName,-1,-1,-1,_loc6_.ConsortiaID);
-                  if(_loc36_)
+                  getConsortionList(selfConsortionComplete,1,6,memberInfo.ConsortiaName,-1,-1,-1,memberInfo.ConsortiaID);
+                  if(isInvent)
                   {
-                     _loc2_ = LanguageMgr.GetTranslation("tank.manager.PlayerManager.isInvent.msg",_loc6_.ConsortiaName);
+                     msgTxt1 = LanguageMgr.GetTranslation("tank.manager.PlayerManager.isInvent.msg",memberInfo.ConsortiaName);
                   }
                   else
                   {
-                     _loc2_ = LanguageMgr.GetTranslation("tank.manager.PlayerManager.pass",_loc6_.ConsortiaName);
+                     msgTxt1 = LanguageMgr.GetTranslation("tank.manager.PlayerManager.pass",memberInfo.ConsortiaName);
                   }
                   if(StateManager.currentStateType == "consortia")
                   {
@@ -400,23 +398,23 @@ package consortion
                   TaskManager.instance.requestClubTask();
                   if(PathManager.solveExternalInterfaceEnabel())
                   {
-                     ExternalInterfaceManager.sendToAgent(5,PlayerManager.Instance.Self.ID,PlayerManager.Instance.Self.NickName,ServerManager.Instance.zoneName,-1,_loc6_.ConsortiaName);
+                     ExternalInterfaceManager.sendToAgent(5,PlayerManager.Instance.Self.ID,PlayerManager.Instance.Self.NickName,ServerManager.Instance.zoneName,-1,memberInfo.ConsortiaName);
                   }
                }
                else
                {
-                  _model.addMember(_loc6_);
-                  _loc2_ = LanguageMgr.GetTranslation("tank.manager.PlayerManager.player",_loc6_.NickName);
+                  _model.addMember(memberInfo);
+                  msgTxt1 = LanguageMgr.GetTranslation("tank.manager.PlayerManager.player",memberInfo.NickName);
                }
-               _loc2_ = StringHelper.rePlaceHtmlTextField(_loc2_);
-               ChatManager.Instance.sysChatYellow(_loc2_);
-               if(_loc6_.ConsortiaID == 0)
+               msgTxt1 = StringHelper.rePlaceHtmlTextField(msgTxt1);
+               ChatManager.Instance.sysChatYellow(msgTxt1);
+               if(memberInfo.ConsortiaID == 0)
                {
                   ConsortionModelManager.Instance.TaskModel.taskInfo = null;
                }
                break;
             case 1:
-               _loc16_ = _loc32_.readInt();
+               id = pkg.readInt();
                PlayerManager.Instance.Self.consortiaInfo.Level = 0;
                setPlayerConsortia();
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.manager.PlayerManager.your"));
@@ -429,26 +427,26 @@ package consortion
                ConsortionModelManager.Instance.TaskModel.taskInfo = null;
                break;
             case 2:
-               _loc16_ = _loc32_.readInt();
-               _loc35_ = _loc32_.readInt();
-               _loc25_ = _loc32_.readBoolean();
-               _loc19_ = _loc32_.readUTF();
-               _loc5_ = _loc32_.readUTF();
-               if(PlayerManager.Instance.Self.ID == _loc16_)
+               id = pkg.readInt();
+               consortiaID = pkg.readInt();
+               isKick = pkg.readBoolean();
+               name = pkg.readUTF();
+               kickName = pkg.readUTF();
+               if(PlayerManager.Instance.Self.ID == id)
                {
                   setPlayerConsortia();
                   getConsortionMember();
                   TaskManager.instance.onGuildUpdate();
-                  _loc3_ = "";
-                  if(_loc25_)
+                  msgTxt5 = "";
+                  if(isKick)
                   {
                      this.dispatchEvent(new ConsortionEvent("kick_consortion"));
-                     _loc3_ = LanguageMgr.GetTranslation("tank.manager.PlayerManager.delect",_loc5_);
+                     msgTxt5 = LanguageMgr.GetTranslation("tank.manager.PlayerManager.delect",kickName);
                      MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.manager.PlayerManager.hit"));
                   }
                   else
                   {
-                     _loc3_ = LanguageMgr.GetTranslation("tank.manager.PlayerManager.leave");
+                     msgTxt5 = LanguageMgr.GetTranslation("tank.manager.PlayerManager.leave");
                   }
                   if(StateManager.currentStateType == "consortia")
                   {
@@ -459,48 +457,48 @@ package consortion
                      StateManager.setState("main");
                   }
                   PlayerManager.Instance.Self.consortiaInfo.StoreLevel = 0;
-                  _loc3_ = StringHelper.rePlaceHtmlTextField(_loc3_);
-                  ChatManager.Instance.sysChatRed(_loc3_);
+                  msgTxt5 = StringHelper.rePlaceHtmlTextField(msgTxt5);
+                  ChatManager.Instance.sysChatRed(msgTxt5);
                }
                else
                {
-                  removeConsortiaMember(_loc16_,_loc25_,_loc5_);
+                  removeConsortiaMember(id,isKick,kickName);
                }
-               if(_loc19_ == PlayerManager.Instance.Self.NickName)
+               if(name == PlayerManager.Instance.Self.NickName)
                {
                   ConsortionModelManager.Instance.TaskModel.taskInfo = null;
                }
                break;
             case 3:
-               _invateID = _loc32_.readInt();
-               _loc22_ = _loc32_.readInt();
-               _loc20_ = _loc32_.readUTF();
-               _loc21_ = _loc32_.readInt();
-               _loc33_ = _loc32_.readUTF();
-               _loc7_ = _loc32_.readInt();
-               _loc30_ = _loc32_.readUTF();
+               _invateID = pkg.readInt();
+               unkwon1 = pkg.readInt();
+               unkwon2 = pkg.readUTF();
+               unkwon3 = pkg.readInt();
+               intviteName = pkg.readUTF();
+               unkwon4 = pkg.readInt();
+               consortiaName = pkg.readUTF();
                if(SharedManager.Instance.showCI)
                {
-                  if(str != _loc33_)
+                  if(str != intviteName)
                   {
                      SoundManager.instance.play("018");
-                     _loc43_ = _loc33_ + LanguageMgr.GetTranslation("tank.manager.PlayerManager.come",_loc30_);
-                     _loc43_ = StringHelper.rePlaceHtmlTextField(_loc43_);
-                     _loc40_ = StageReferance.stage.focus;
+                     context = intviteName + LanguageMgr.GetTranslation("tank.manager.PlayerManager.come",consortiaName);
+                     context = StringHelper.rePlaceHtmlTextField(context);
+                     lastFocusObject = StageReferance.stage.focus;
                      if(_enterConfirm)
                      {
                         _enterConfirm.removeEventListener("response",__enterConsortiaConfirm);
                         ObjectUtils.disposeObject(_enterConfirm);
                         _enterConfirm = null;
                      }
-                     _enterConfirm = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.manager.PlayerManager.request"),_loc43_,LanguageMgr.GetTranslation("tank.manager.PlayerManager.sure"),LanguageMgr.GetTranslation("tank.manager.PlayerManager.refuse"),false,true,true,2,"alertInFight");
+                     _enterConfirm = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.manager.PlayerManager.request"),context,LanguageMgr.GetTranslation("tank.manager.PlayerManager.sure"),LanguageMgr.GetTranslation("tank.manager.PlayerManager.refuse"),false,true,true,2,"alertInFight");
                      _enterConfirm.addEventListener("response",__enterConsortiaConfirm);
-                     str = _loc33_;
-                     if(_loc40_ is TextField)
+                     str = intviteName;
+                     if(lastFocusObject is TextField)
                      {
-                        if(TextField(_loc40_).type == "input")
+                        if(TextField(lastFocusObject).type == "input")
                         {
-                           StageReferance.stage.focus = _loc40_;
+                           StageReferance.stage.focus = lastFocusObject;
                         }
                      }
                   }
@@ -509,13 +507,13 @@ package consortion
             case 4:
                break;
             case 5:
-               _loc8_ = _loc32_.readInt();
-               _loc37_ = _loc32_.readUTF();
-               _loc23_ = _loc32_.readInt();
-               if(PlayerManager.Instance.Self.ConsortiaID == _loc8_)
+               myid = pkg.readInt();
+               myname = pkg.readUTF();
+               myLevel = pkg.readInt();
+               if(PlayerManager.Instance.Self.ConsortiaID == myid)
                {
-                  PlayerManager.Instance.Self.consortiaInfo.Level = _loc23_;
-                  ChatManager.Instance.sysChatYellow(LanguageMgr.GetTranslation("tank.manager.PlayerManager.upgrade",_loc23_,_model.getLevelData(_loc23_).Count));
+                  PlayerManager.Instance.Self.consortiaInfo.Level = myLevel;
+                  ChatManager.Instance.sysChatYellow(LanguageMgr.GetTranslation("tank.manager.PlayerManager.upgrade",myLevel,_model.getLevelData(myLevel).Count));
                   TaskManager.instance.requestClubTask();
                   SoundManager.instance.play("1001");
                   getConsortionList(selfConsortionComplete,1,6,PlayerManager.Instance.Self.ConsortiaName,-1,-1,-1,PlayerManager.Instance.Self.ConsortiaID);
@@ -525,122 +523,122 @@ package consortion
             case 6:
                break;
             case 7:
-               _loc42_ = _loc32_.readByte();
-               _loc15_ = _loc32_.readInt();
-               _loc41_ = _loc32_.readInt();
-               _loc27_ = _loc32_.readUTF();
-               _loc29_ = _loc32_.readInt();
-               _loc12_ = _loc32_.readUTF();
-               _loc10_ = _loc32_.readInt();
-               _loc31_ = _loc32_.readInt();
-               _loc34_ = _loc32_.readUTF();
-               if(_loc42_ != 1)
+               subType = pkg.readByte();
+               consortiaId = pkg.readInt();
+               playerId = pkg.readInt();
+               playerName = pkg.readUTF();
+               dutyLeve = pkg.readInt();
+               dName = pkg.readUTF();
+               rights = pkg.readInt();
+               handleID = pkg.readInt();
+               handleName = pkg.readUTF();
+               if(subType != 1)
                {
-                  if(_loc42_ == 2)
+                  if(subType == 2)
                   {
-                     updateDutyInfo(_loc29_,_loc12_,_loc10_);
+                     updateDutyInfo(dutyLeve,dName,rights);
                   }
-                  else if(_loc42_ == 3)
+                  else if(subType == 3)
                   {
-                     upDateSelfDutyInfo(_loc29_,_loc12_,_loc10_);
+                     upDateSelfDutyInfo(dutyLeve,dName,rights);
                   }
-                  else if(_loc42_ == 4)
+                  else if(subType == 4)
                   {
-                     upDateSelfDutyInfo(_loc29_,_loc12_,_loc10_);
+                     upDateSelfDutyInfo(dutyLeve,dName,rights);
                   }
-                  else if(_loc42_ == 5)
+                  else if(subType == 5)
                   {
-                     upDateSelfDutyInfo(_loc29_,_loc12_,_loc10_);
+                     upDateSelfDutyInfo(dutyLeve,dName,rights);
                   }
-                  else if(_loc42_ == 6)
+                  else if(subType == 6)
                   {
-                     updateConsortiaMemberDuty(_loc41_,_loc29_,_loc12_,_loc10_);
-                     _loc4_ = "";
-                     if(_loc41_ == PlayerManager.Instance.Self.ID)
+                     updateConsortiaMemberDuty(playerId,dutyLeve,dName,rights);
+                     msgTxt6 = "";
+                     if(playerId == PlayerManager.Instance.Self.ID)
                      {
-                        _loc4_ = LanguageMgr.GetTranslation("tank.manager.PlayerManager.youUpgrade",_loc34_,_loc12_);
+                        msgTxt6 = LanguageMgr.GetTranslation("tank.manager.PlayerManager.youUpgrade",handleName,dName);
                      }
-                     else if(_loc41_ == _loc31_)
+                     else if(playerId == handleID)
                      {
-                        _loc4_ = LanguageMgr.GetTranslation("tank.manager.PlayerManager.upgradeSelf",_loc27_,_loc12_);
-                     }
-                     else
-                     {
-                        _loc4_ = LanguageMgr.GetTranslation("tank.manager.PlayerManager.upgradeOther",_loc34_,_loc27_,_loc12_);
-                     }
-                     _loc4_ = StringHelper.rePlaceHtmlTextField(_loc4_);
-                     ChatManager.Instance.sysChatYellow(_loc4_);
-                  }
-                  else if(_loc42_ == 7)
-                  {
-                     updateConsortiaMemberDuty(_loc41_,_loc29_,_loc12_,_loc10_);
-                     _loc13_ = "";
-                     if(_loc41_ == PlayerManager.Instance.Self.ID)
-                     {
-                        _loc13_ = LanguageMgr.GetTranslation("tank.manager.PlayerManager.youDemotion",_loc34_,_loc12_);
-                     }
-                     else if(_loc41_ == _loc31_)
-                     {
-                        _loc13_ = LanguageMgr.GetTranslation("tank.manager.PlayerManager.demotionSelf",_loc27_,_loc12_);
+                        msgTxt6 = LanguageMgr.GetTranslation("tank.manager.PlayerManager.upgradeSelf",playerName,dName);
                      }
                      else
                      {
-                        _loc13_ = LanguageMgr.GetTranslation("tank.manager.PlayerManager.demotionOther",_loc34_,_loc27_,_loc12_);
+                        msgTxt6 = LanguageMgr.GetTranslation("tank.manager.PlayerManager.upgradeOther",handleName,playerName,dName);
                      }
-                     _loc13_ = StringHelper.rePlaceHtmlTextField(_loc13_);
-                     ChatManager.Instance.sysChatYellow(_loc13_);
+                     msgTxt6 = StringHelper.rePlaceHtmlTextField(msgTxt6);
+                     ChatManager.Instance.sysChatYellow(msgTxt6);
                   }
-                  else if(_loc42_ == 8)
+                  else if(subType == 7)
                   {
-                     updateConsortiaMemberDuty(_loc41_,_loc29_,_loc12_,_loc10_);
+                     updateConsortiaMemberDuty(playerId,dutyLeve,dName,rights);
+                     msgTxt7 = "";
+                     if(playerId == PlayerManager.Instance.Self.ID)
+                     {
+                        msgTxt7 = LanguageMgr.GetTranslation("tank.manager.PlayerManager.youDemotion",handleName,dName);
+                     }
+                     else if(playerId == handleID)
+                     {
+                        msgTxt7 = LanguageMgr.GetTranslation("tank.manager.PlayerManager.demotionSelf",playerName,dName);
+                     }
+                     else
+                     {
+                        msgTxt7 = LanguageMgr.GetTranslation("tank.manager.PlayerManager.demotionOther",handleName,playerName,dName);
+                     }
+                     msgTxt7 = StringHelper.rePlaceHtmlTextField(msgTxt7);
+                     ChatManager.Instance.sysChatYellow(msgTxt7);
+                  }
+                  else if(subType == 8)
+                  {
+                     updateConsortiaMemberDuty(playerId,dutyLeve,dName,rights);
                      SoundManager.instance.play("1001");
                   }
-                  else if(_loc42_ == 9)
+                  else if(subType == 9)
                   {
-                     updateConsortiaMemberDuty(_loc41_,_loc29_,_loc12_,_loc10_);
-                     PlayerManager.Instance.Self.consortiaInfo.ChairmanName = _loc27_;
-                     _loc9_ = "<" + _loc27_ + ">" + LanguageMgr.GetTranslation("tank.manager.PlayerManager.up") + _loc12_;
-                     _loc9_ = StringHelper.rePlaceHtmlTextField(_loc9_);
-                     ChatManager.Instance.sysChatYellow(_loc9_);
+                     updateConsortiaMemberDuty(playerId,dutyLeve,dName,rights);
+                     PlayerManager.Instance.Self.consortiaInfo.ChairmanName = playerName;
+                     msgTxt9 = "<" + playerName + ">" + LanguageMgr.GetTranslation("tank.manager.PlayerManager.up") + dName;
+                     msgTxt9 = StringHelper.rePlaceHtmlTextField(msgTxt9);
+                     ChatManager.Instance.sysChatYellow(msgTxt9);
                      SoundManager.instance.play("1001");
                   }
                }
                break;
             case 8:
-               _loc17_ = _loc32_.readInt();
-               _loc44_ = _loc32_.readInt();
-               _loc18_ = _loc32_.readUTF();
-               _loc38_ = _loc32_.readInt();
-               if(_loc17_ != PlayerManager.Instance.Self.ConsortiaID)
+               consortiaId9 = pkg.readInt();
+               playerId9 = pkg.readInt();
+               playerName9 = pkg.readUTF();
+               riches = pkg.readInt();
+               if(consortiaId9 != PlayerManager.Instance.Self.ConsortiaID)
                {
                   return;
                }
-               _loc26_ = "";
-               if(PlayerManager.Instance.Self.ID == _loc44_)
+               msgTxt10 = "";
+               if(PlayerManager.Instance.Self.ID == playerId9)
                {
-                  _loc26_ = LanguageMgr.GetTranslation("tank.manager.PlayerManager.contributionSelf",_loc38_);
+                  msgTxt10 = LanguageMgr.GetTranslation("tank.manager.PlayerManager.contributionSelf",riches);
                }
                else
                {
-                  _loc26_ = LanguageMgr.GetTranslation("tank.manager.PlayerManager.contributionOther",_loc18_,_loc38_);
+                  msgTxt10 = LanguageMgr.GetTranslation("tank.manager.PlayerManager.contributionOther",playerName9,riches);
                }
-               ChatManager.Instance.sysChatYellow(_loc26_);
+               ChatManager.Instance.sysChatYellow(msgTxt10);
                break;
             case 9:
-               consortiaUpLevel(10,_loc32_.readInt(),_loc32_.readUTF(),_loc32_.readInt());
+               consortiaUpLevel(10,pkg.readInt(),pkg.readUTF(),pkg.readInt());
                break;
             case 10:
-               consortiaUpLevel(11,_loc32_.readInt(),_loc32_.readUTF(),_loc32_.readInt());
+               consortiaUpLevel(11,pkg.readInt(),pkg.readUTF(),pkg.readInt());
                break;
             case 11:
-               consortiaUpLevel(12,_loc32_.readInt(),_loc32_.readUTF(),_loc32_.readInt());
+               consortiaUpLevel(12,pkg.readInt(),pkg.readUTF(),pkg.readInt());
                break;
             case 12:
-               consortiaUpLevel(13,_loc32_.readInt(),_loc32_.readUTF(),_loc32_.readInt());
+               consortiaUpLevel(13,pkg.readInt(),pkg.readUTF(),pkg.readInt());
                break;
             case 13:
-               _loc39_ = _loc32_.readInt();
-               switch(int(_loc39_) - 1)
+               t = pkg.readInt();
+               switch(int(t) - 1)
                {
                   case 0:
                      PlayerManager.Instance.Self.consortiaInfo.IsVoting = true;
@@ -653,183 +651,183 @@ package consortion
                }
                break;
             case 14:
-               _loc32_.readInt();
-               ChatManager.Instance.sysChatYellow(_loc32_.readUTF());
+               pkg.readInt();
+               ChatManager.Instance.sysChatYellow(pkg.readUTF());
                break;
             case 15:
                getConsortionList(selfConsortionComplete,1,6,PlayerManager.Instance.Self.ConsortiaName,-1,-1,-1,PlayerManager.Instance.Self.ConsortiaID);
          }
       }
       
-      private function consortiaUpLevel(param1:int, param2:int, param3:String, param4:int) : void
+      private function consortiaUpLevel(type:int, id:int, name:String, level:int) : void
       {
-         if(param2 != PlayerManager.Instance.Self.ConsortiaID)
+         if(id != PlayerManager.Instance.Self.ConsortiaID)
          {
             return;
          }
          SoundManager.instance.play("1001");
-         var _loc5_:String = "";
-         if(param1 == 10)
+         var tipText:String = "";
+         if(type == 10)
          {
             if(PlayerManager.Instance.Self.DutyLevel == 1)
             {
-               _loc5_ = LanguageMgr.GetTranslation("tank.manager.PlayerManager.consortiaShop",param4);
+               tipText = LanguageMgr.GetTranslation("tank.manager.PlayerManager.consortiaShop",level);
             }
             else
             {
-               _loc5_ = LanguageMgr.GetTranslation("tank.manager.PlayerManager.consortiaShop2",param4);
+               tipText = LanguageMgr.GetTranslation("tank.manager.PlayerManager.consortiaShop2",level);
             }
-            PlayerManager.Instance.Self.consortiaInfo.ShopLevel = param4;
+            PlayerManager.Instance.Self.consortiaInfo.ShopLevel = level;
          }
-         else if(param1 == 11)
+         else if(type == 11)
          {
             if(PlayerManager.Instance.Self.DutyLevel == 1)
             {
-               _loc5_ = LanguageMgr.GetTranslation("tank.manager.PlayerManager.consortiaStore",param4);
+               tipText = LanguageMgr.GetTranslation("tank.manager.PlayerManager.consortiaStore",level);
             }
             else
             {
-               _loc5_ = LanguageMgr.GetTranslation("tank.manager.PlayerManager.consortiaStore2",param4);
+               tipText = LanguageMgr.GetTranslation("tank.manager.PlayerManager.consortiaStore2",level);
             }
-            PlayerManager.Instance.Self.consortiaInfo.SmithLevel = param4;
+            PlayerManager.Instance.Self.consortiaInfo.SmithLevel = level;
          }
-         else if(param1 == 12)
+         else if(type == 12)
          {
             if(PlayerManager.Instance.Self.DutyLevel == 1)
             {
-               _loc5_ = LanguageMgr.GetTranslation("tank.manager.PlayerManager.consortiaSmith",param4);
+               tipText = LanguageMgr.GetTranslation("tank.manager.PlayerManager.consortiaSmith",level);
             }
             else
             {
-               _loc5_ = LanguageMgr.GetTranslation("tank.manager.PlayerManager.consortiaSmith2",param4);
+               tipText = LanguageMgr.GetTranslation("tank.manager.PlayerManager.consortiaSmith2",level);
             }
-            PlayerManager.Instance.Self.consortiaInfo.StoreLevel = param4;
+            PlayerManager.Instance.Self.consortiaInfo.StoreLevel = level;
          }
-         else if(param1 == 13)
+         else if(type == 13)
          {
             if(PlayerManager.Instance.Self.DutyLevel == 1)
             {
-               _loc5_ = LanguageMgr.GetTranslation("tank.manager.PlayerManager.consortiaSkill",param4);
+               tipText = LanguageMgr.GetTranslation("tank.manager.PlayerManager.consortiaSkill",level);
             }
             else
             {
-               _loc5_ = LanguageMgr.GetTranslation("tank.manager.PlayerManager.consortiaSkill2",param4);
+               tipText = LanguageMgr.GetTranslation("tank.manager.PlayerManager.consortiaSkill2",level);
             }
-            PlayerManager.Instance.Self.consortiaInfo.BufferLevel = param4;
+            PlayerManager.Instance.Self.consortiaInfo.BufferLevel = level;
          }
-         ChatManager.Instance.sysChatYellow(_loc5_);
+         ChatManager.Instance.sysChatYellow(tipText);
          getConsortionList(selfConsortionComplete,1,6,PlayerManager.Instance.Self.ConsortiaName,-1,-1,-1,PlayerManager.Instance.Self.ConsortiaID);
          TaskManager.instance.onGuildUpdate();
       }
       
-      private function updateDutyInfo(param1:int, param2:String, param3:int) : void
+      private function updateDutyInfo(dutyLevel:int, dutyName:String, right:int) : void
       {
          var _loc6_:int = 0;
          var _loc5_:* = _model.memberList;
-         for each(var _loc4_ in _model.memberList)
+         for each(var i in _model.memberList)
          {
-            if(_loc4_.DutyLevel == param1)
+            if(i.DutyLevel == dutyLevel)
             {
-               _loc4_.DutyLevel == param1;
-               _loc4_.DutyName = param2;
-               _loc4_.Right = param3;
-               _model.updataMember(_loc4_);
+               i.DutyLevel == dutyLevel;
+               i.DutyName = dutyName;
+               i.Right = right;
+               _model.updataMember(i);
             }
          }
       }
       
-      private function upDateSelfDutyInfo(param1:int, param2:String, param3:int) : void
+      private function upDateSelfDutyInfo(dutyLevel:int, dutyName:String, right:int) : void
       {
          var _loc7_:int = 0;
          var _loc6_:* = _model.memberList;
-         for each(var _loc4_ in _model.memberList)
+         for each(var i in _model.memberList)
          {
-            if(_loc4_.ID == PlayerManager.Instance.Self.ID)
+            if(i.ID == PlayerManager.Instance.Self.ID)
             {
                PlayerManager.Instance.Self.beginChanges();
-               var _loc5_:* = param1;
+               var _loc5_:* = dutyLevel;
                PlayerManager.Instance.Self.DutyLevel = _loc5_;
-               _loc4_.DutyLevel = _loc5_;
-               _loc5_ = param2;
+               i.DutyLevel = _loc5_;
+               _loc5_ = dutyName;
                PlayerManager.Instance.Self.DutyName = _loc5_;
-               _loc4_.DutyName = _loc5_;
-               _loc5_ = param3;
+               i.DutyName = _loc5_;
+               _loc5_ = right;
                PlayerManager.Instance.Self.Right = _loc5_;
-               _loc4_.Right = _loc5_;
+               i.Right = _loc5_;
                PlayerManager.Instance.Self.commitChanges();
-               _model.updataMember(_loc4_);
+               _model.updataMember(i);
             }
          }
       }
       
-      private function updateConsortiaMemberDuty(param1:int, param2:int, param3:String, param4:int) : void
+      private function updateConsortiaMemberDuty(playerId:int, dutyLevel:int, dutyName:String, right:int) : void
       {
          var _loc7_:int = 0;
          var _loc6_:* = _model.memberList;
-         for each(var _loc5_ in _model.memberList)
+         for each(var i in _model.memberList)
          {
-            if(_loc5_.ID == param1)
+            if(i.ID == playerId)
             {
-               _loc5_.beginChanges();
-               _loc5_.DutyLevel = param2;
-               _loc5_.DutyName = param3;
-               _loc5_.Right = param4;
-               if(_loc5_.ID == PlayerManager.Instance.Self.ID)
+               i.beginChanges();
+               i.DutyLevel = dutyLevel;
+               i.DutyName = dutyName;
+               i.Right = right;
+               if(i.ID == PlayerManager.Instance.Self.ID)
                {
                   PlayerManager.Instance.Self.beginChanges();
-                  PlayerManager.Instance.Self.DutyLevel = param2;
-                  PlayerManager.Instance.Self.DutyName = param3;
-                  PlayerManager.Instance.Self.Right = param4;
+                  PlayerManager.Instance.Self.DutyLevel = dutyLevel;
+                  PlayerManager.Instance.Self.DutyName = dutyName;
+                  PlayerManager.Instance.Self.Right = right;
                   PlayerManager.Instance.Self.consortiaInfo.Level = PlayerManager.Instance.Self.consortiaInfo.Level == 0?1:PlayerManager.Instance.Self.consortiaInfo.Level;
                   PlayerManager.Instance.Self.commitChanges();
                   getConsortionList(selfConsortionComplete,1,6,PlayerManager.Instance.Self.consortiaInfo.ConsortiaName,-1,-1,-1,PlayerManager.Instance.Self.consortiaInfo.ConsortiaID);
                }
-               _loc5_.commitChanges();
-               _model.updataMember(_loc5_);
+               i.commitChanges();
+               _model.updataMember(i);
             }
          }
       }
       
-      private function removeConsortiaMember(param1:int, param2:Boolean, param3:String) : void
+      private function removeConsortiaMember(id:int, isKick:Boolean, kickName:String) : void
       {
-         var _loc4_:* = null;
+         var msgTxt:* = null;
          var _loc7_:int = 0;
          var _loc6_:* = _model.memberList;
-         for each(var _loc5_ in _model.memberList)
+         for each(var i in _model.memberList)
          {
-            if(_loc5_.ID == param1)
+            if(i.ID == id)
             {
-               _loc4_ = "";
-               if(param2)
+               msgTxt = "";
+               if(isKick)
                {
-                  _loc4_ = LanguageMgr.GetTranslation("tank.manager.PlayerManager.consortia",param3,_loc5_.NickName);
+                  msgTxt = LanguageMgr.GetTranslation("tank.manager.PlayerManager.consortia",kickName,i.NickName);
                }
                else
                {
-                  _loc4_ = LanguageMgr.GetTranslation("tank.manager.PlayerManager.leaveconsortia",_loc5_.NickName);
+                  msgTxt = LanguageMgr.GetTranslation("tank.manager.PlayerManager.leaveconsortia",i.NickName);
                }
-               _loc4_ = StringHelper.rePlaceHtmlTextField(_loc4_);
-               ChatManager.Instance.sysChatYellow(_loc4_);
-               _model.removeMember(_loc5_);
+               msgTxt = StringHelper.rePlaceHtmlTextField(msgTxt);
+               ChatManager.Instance.sysChatYellow(msgTxt);
+               _model.removeMember(i);
             }
          }
       }
       
-      private function __enterConsortiaConfirm(param1:FrameEvent) : void
+      private function __enterConsortiaConfirm(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__enterConsortiaConfirm);
-         if(_loc2_)
+         var frame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("response",__enterConsortiaConfirm);
+         if(frame)
          {
-            ObjectUtils.disposeObject(_loc2_);
-            _loc2_ = null;
+            ObjectUtils.disposeObject(frame);
+            frame = null;
          }
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             accpetConsortiaInvent();
          }
-         if(param1.responseCode == 0 || param1.responseCode == 4)
+         if(evt.responseCode == 0 || evt.responseCode == 4)
          {
             rejectConsortiaInvent();
          }
@@ -847,59 +845,58 @@ package consortion
          str = "";
       }
       
-      private function __givceOffer(param1:PkgEvent) : void
+      private function __givceOffer(e:PkgEvent) : void
       {
-         var _loc2_:int = param1.pkg.readInt();
-         var _loc3_:Boolean = param1.pkg.readBoolean();
-         var _loc4_:String = param1.pkg.readUTF();
-         MessageTipManager.getInstance().show(_loc4_);
-         if(_loc3_)
+         var num:int = e.pkg.readInt();
+         var isSuccess:Boolean = e.pkg.readBoolean();
+         var msg:String = e.pkg.readUTF();
+         MessageTipManager.getInstance().show(msg);
+         if(isSuccess)
          {
-            PlayerManager.Instance.Self.consortiaInfo.Riches = PlayerManager.Instance.Self.consortiaInfo.Riches + Math.floor(Number(_loc2_ / 2));
-            _model.getConsortiaMemberInfo(PlayerManager.Instance.Self.ID).RichesOffer = _model.getConsortiaMemberInfo(PlayerManager.Instance.Self.ID).RichesOffer + Math.floor(Number(_loc2_ / 2));
+            PlayerManager.Instance.Self.consortiaInfo.Riches = PlayerManager.Instance.Self.consortiaInfo.Riches + Math.floor(Number(num / 2));
+            _model.getConsortiaMemberInfo(PlayerManager.Instance.Self.ID).RichesOffer = _model.getConsortiaMemberInfo(PlayerManager.Instance.Self.ID).RichesOffer + Math.floor(Number(num / 2));
             TaskManager.instance.onGuildUpdate();
          }
       }
       
-      private function __onConsortiaEquipControl(param1:PkgEvent) : void
+      private function __onConsortiaEquipControl(evt:PkgEvent) : void
       {
-         var _loc2_:* = undefined;
-         var _loc4_:int = 0;
-         var _loc3_:Boolean = param1.pkg.readBoolean();
-         if(_loc3_)
+         var list:* = undefined;
+         var i:int = 0;
+         var isSuccess:Boolean = evt.pkg.readBoolean();
+         if(isSuccess)
          {
-            _loc2_ = new Vector.<ConsortiaAssetLevelOffer>();
-            _loc4_ = 0;
-            while(_loc4_ < 7)
+            list = new Vector.<ConsortiaAssetLevelOffer>();
+            for(i = 0; i < 7; )
             {
-               _loc2_[_loc4_] = new ConsortiaAssetLevelOffer();
-               if(_loc4_ < 5)
+               list[i] = new ConsortiaAssetLevelOffer();
+               if(i < 5)
                {
-                  _loc2_[_loc4_].Type = 1;
-                  _loc2_[_loc4_].Level = _loc4_ + 1;
+                  list[i].Type = 1;
+                  list[i].Level = i + 1;
                }
-               else if(_loc4_ == 5)
+               else if(i == 5)
                {
-                  _loc2_[_loc4_].Type = 2;
+                  list[i].Type = 2;
                }
                else
                {
-                  _loc2_[_loc4_].Type = 3;
+                  list[i].Type = 3;
                }
-               _loc4_++;
+               i++;
             }
-            _loc2_[0].Riches = param1.pkg.readInt();
-            _loc2_[1].Riches = param1.pkg.readInt();
-            _loc2_[2].Riches = param1.pkg.readInt();
-            _loc2_[3].Riches = param1.pkg.readInt();
-            _loc2_[4].Riches = param1.pkg.readInt();
-            _loc2_[5].Riches = param1.pkg.readInt();
-            _loc2_[6].Riches = param1.pkg.readInt();
+            list[0].Riches = evt.pkg.readInt();
+            list[1].Riches = evt.pkg.readInt();
+            list[2].Riches = evt.pkg.readInt();
+            list[3].Riches = evt.pkg.readInt();
+            list[4].Riches = evt.pkg.readInt();
+            list[5].Riches = evt.pkg.readInt();
+            list[6].Riches = evt.pkg.readInt();
             if(PlayerManager.Instance.Self.ID == PlayerManager.Instance.Self.consortiaInfo.ChairmanID)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.consortia.onConsortiaEquipControl.executeSuccess"));
             }
-            _model.useConditionList = _loc2_;
+            _model.useConditionList = list;
          }
          else if(PlayerManager.Instance.Self.ID == PlayerManager.Instance.Self.consortiaInfo.ChairmanID)
          {
@@ -907,97 +904,97 @@ package consortion
          }
       }
       
-      private function __consortiaTryIn(param1:PkgEvent) : void
+      private function __consortiaTryIn(evt:PkgEvent) : void
       {
-         var _loc2_:int = param1.pkg.readInt();
-         var _loc3_:Boolean = param1.pkg.readBoolean();
-         var _loc4_:String = param1.pkg.readUTF();
-         MessageTipManager.getInstance().show(_loc4_);
-         if(_loc3_)
+         var id:int = evt.pkg.readInt();
+         var isScuess:Boolean = evt.pkg.readBoolean();
+         var msg:String = evt.pkg.readUTF();
+         MessageTipManager.getInstance().show(msg);
+         if(isScuess)
          {
             getApplyRecordList(applyListComplete,PlayerManager.Instance.Self.ID);
          }
       }
       
-      private function __tryInDel(param1:PkgEvent) : void
+      private function __tryInDel(evt:PkgEvent) : void
       {
-         var _loc2_:int = param1.pkg.readInt();
-         var _loc4_:Boolean = param1.pkg.readBoolean();
-         var _loc3_:String = param1.pkg.readUTF();
-         MessageTipManager.getInstance().show(_loc3_);
-         if(_loc4_)
+         var id:int = evt.pkg.readInt();
+         var isScuss:Boolean = evt.pkg.readBoolean();
+         var msg:String = evt.pkg.readUTF();
+         MessageTipManager.getInstance().show(msg);
+         if(isScuss)
          {
-            _model.deleteOneApplyRecord(_loc2_);
+            _model.deleteOneApplyRecord(id);
          }
       }
       
-      private function __consortiaTryInPass(param1:PkgEvent) : void
+      private function __consortiaTryInPass(e:PkgEvent) : void
       {
-         var _loc2_:int = param1.pkg.readInt();
-         var _loc3_:Boolean = param1.pkg.readBoolean();
-         var _loc4_:String = param1.pkg.readUTF();
-         MessageTipManager.getInstance().show(_loc4_);
-         if(_loc3_)
+         var id:int = e.pkg.readInt();
+         var isSuccess:Boolean = e.pkg.readBoolean();
+         var msg:String = e.pkg.readUTF();
+         MessageTipManager.getInstance().show(msg);
+         if(isSuccess)
          {
-            _model.deleteOneApplyRecord(_loc2_);
+            _model.deleteOneApplyRecord(id);
          }
       }
       
-      private function __consortiaInvate(param1:PkgEvent) : void
+      private function __consortiaInvate(evt:PkgEvent) : void
       {
-         var _loc2_:String = param1.pkg.readUTF();
-         var _loc3_:Boolean = param1.pkg.readBoolean();
-         var _loc4_:String = param1.pkg.readUTF();
-         MessageTipManager.getInstance().show(_loc4_);
+         var name:String = evt.pkg.readUTF();
+         var isSuccess:Boolean = evt.pkg.readBoolean();
+         var msg:String = evt.pkg.readUTF();
+         MessageTipManager.getInstance().show(msg);
       }
       
-      private function __consortiaInvitePass(param1:PkgEvent) : void
+      private function __consortiaInvitePass(evt:PkgEvent) : void
       {
-         var _loc5_:int = param1.pkg.readInt();
-         var _loc4_:Boolean = param1.pkg.readBoolean();
-         var _loc2_:int = param1.pkg.readInt();
-         var _loc3_:String = param1.pkg.readUTF();
-         MessageTipManager.getInstance().show(param1.pkg.readUTF());
-         if(_loc4_)
+         var unkwon:int = evt.pkg.readInt();
+         var success:Boolean = evt.pkg.readBoolean();
+         var id:int = evt.pkg.readInt();
+         var name:String = evt.pkg.readUTF();
+         MessageTipManager.getInstance().show(evt.pkg.readUTF());
+         if(success)
          {
-            setPlayerConsortia(_loc2_,_loc3_);
+            setPlayerConsortia(id,name);
             getConsortionMember(memberListComplete);
-            getConsortionList(selfConsortionComplete,1,6,_loc3_,-1,-1,-1,_loc2_);
+            getConsortionList(selfConsortionComplete,1,6,name,-1,-1,-1,id);
          }
       }
       
-      private function __consortiaCreate(param1:PkgEvent) : void
+      private function __consortiaCreate(evt:PkgEvent) : void
       {
-         var _loc5_:String = param1.pkg.readUTF();
-         var _loc4_:Boolean = param1.pkg.readBoolean();
-         var _loc2_:int = param1.pkg.readInt();
-         var _loc7_:String = param1.pkg.readUTF();
-         var _loc9_:String = param1.pkg.readUTF();
-         MessageTipManager.getInstance().show(_loc9_);
-         var _loc3_:int = param1.pkg.readInt();
-         var _loc6_:String = param1.pkg.readUTF();
-         var _loc8_:int = param1.pkg.readInt();
-         if(_loc4_)
+         var n:String = evt.pkg.readUTF();
+         var isSucuess:Boolean = evt.pkg.readBoolean();
+         var id:int = evt.pkg.readInt();
+         var cName:String = evt.pkg.readUTF();
+         var msg:String = evt.pkg.readUTF();
+         MessageTipManager.getInstance().show(msg);
+         var level:int = evt.pkg.readInt();
+         var dutyName:String = evt.pkg.readUTF();
+         var right:int = evt.pkg.readInt();
+         if(isSucuess)
          {
-            setPlayerConsortia(_loc2_,_loc5_);
+            setPlayerConsortia(id,n);
             getConsortionMember(memberListComplete);
-            getConsortionList(selfConsortionComplete,1,6,_loc5_,-1,-1,-1,_loc2_);
+            getConsortionList(selfConsortionComplete,1,6,n,-1,-1,-1,id);
             dispatchEvent(new ConsortionEvent("consortionStateChange"));
             TaskManager.instance.requestClubTask();
             if(PathManager.solveExternalInterfaceEnabel())
             {
-               ExternalInterfaceManager.sendToAgent(4,PlayerManager.Instance.Self.ID,PlayerManager.Instance.Self.NickName,ServerManager.Instance.zoneName,-1,_loc7_);
+               ExternalInterfaceManager.sendToAgent(4,PlayerManager.Instance.Self.ID,PlayerManager.Instance.Self.NickName,ServerManager.Instance.zoneName,-1,cName);
             }
          }
       }
       
-      private function __consortiaDisband(param1:PkgEvent) : void
+      private function __consortiaDisband(evt:PkgEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:* = null;
-         if(param1.pkg.readBoolean())
+         var id:int = 0;
+         var msgii:* = null;
+         if(evt.pkg.readBoolean())
          {
-            if(param1.pkg.readInt() == PlayerManager.Instance.Self.ID)
+            if(evt.pkg.readInt() == PlayerManager.Instance.Self.ID)
             {
                setPlayerConsortia();
                if(StateManager.currentStateType == "consortia")
@@ -1005,81 +1002,81 @@ package consortion
                   StateManager.back();
                }
                ChatManager.Instance.sysChatRed(LanguageMgr.GetTranslation("tank.manager.PlayerManager.msg"));
-               MessageTipManager.getInstance().show(param1.pkg.readUTF());
+               MessageTipManager.getInstance().show(evt.pkg.readUTF());
             }
          }
          else
          {
-            _loc2_ = param1.pkg.readInt();
-            _loc3_ = param1.pkg.readUTF();
-            MessageTipManager.getInstance().show(_loc3_);
+            id = evt.pkg.readInt();
+            msgii = evt.pkg.readUTF();
+            MessageTipManager.getInstance().show(msgii);
          }
       }
       
-      private function __consortiaPlacardUpdate(param1:PkgEvent) : void
+      private function __consortiaPlacardUpdate(evt:PkgEvent) : void
       {
-         PlayerManager.Instance.Self.consortiaInfo.Placard = param1.pkg.readUTF();
-         var _loc2_:Boolean = param1.pkg.readBoolean();
-         var _loc3_:String = param1.pkg.readUTF();
-         MessageTipManager.getInstance().show(_loc3_);
+         PlayerManager.Instance.Self.consortiaInfo.Placard = evt.pkg.readUTF();
+         var isSuccess:Boolean = evt.pkg.readBoolean();
+         var msg:String = evt.pkg.readUTF();
+         MessageTipManager.getInstance().show(msg);
       }
       
-      private function __renegadeUser(param1:PkgEvent) : void
+      private function __renegadeUser(e:PkgEvent) : void
       {
-         var _loc2_:int = param1.pkg.readInt();
-         var _loc3_:Boolean = param1.pkg.readBoolean();
-         var _loc4_:String = param1.pkg.readUTF();
-         MessageTipManager.getInstance().show(_loc4_);
+         var id:int = e.pkg.readInt();
+         var isSuccess:Boolean = e.pkg.readBoolean();
+         var msg:String = e.pkg.readUTF();
+         MessageTipManager.getInstance().show(msg);
          PlayerManager.Instance.Self.consortiaInfo.StoreLevel = 0;
       }
       
-      private function __onConsortiaLevelUp(param1:PkgEvent) : void
+      private function __onConsortiaLevelUp(e:PkgEvent) : void
       {
-         var _loc4_:int = param1.pkg.readByte();
-         var _loc2_:int = param1.pkg.readByte();
-         var _loc3_:Boolean = param1.pkg.readBoolean();
-         var _loc5_:String = param1.pkg.readUTF();
-         MessageTipManager.getInstance().show(_loc5_);
-         if(_loc3_)
+         var type:int = e.pkg.readByte();
+         var level:int = e.pkg.readByte();
+         var isSuccess:Boolean = e.pkg.readBoolean();
+         var msg:String = e.pkg.readUTF();
+         MessageTipManager.getInstance().show(msg);
+         if(isSuccess)
          {
-            switch(int(_loc4_) - 1)
+            switch(int(type) - 1)
             {
                case 0:
-                  PlayerManager.Instance.Self.consortiaInfo.Level = _loc2_;
+                  PlayerManager.Instance.Self.consortiaInfo.Level = level;
                   break;
                case 1:
-                  PlayerManager.Instance.Self.consortiaInfo.StoreLevel = _loc2_;
+                  PlayerManager.Instance.Self.consortiaInfo.StoreLevel = level;
                   break;
                case 2:
-                  PlayerManager.Instance.Self.consortiaInfo.ShopLevel = _loc2_;
+                  PlayerManager.Instance.Self.consortiaInfo.ShopLevel = level;
                   break;
                case 3:
-                  PlayerManager.Instance.Self.consortiaInfo.SmithLevel = _loc2_;
+                  PlayerManager.Instance.Self.consortiaInfo.SmithLevel = level;
                   break;
                case 4:
-                  PlayerManager.Instance.Self.consortiaInfo.BufferLevel = _loc2_;
+                  PlayerManager.Instance.Self.consortiaInfo.BufferLevel = level;
             }
             dispatchEvent(new Event("event_consortia_level_up"));
          }
       }
       
-      private function __oncharmanChange(param1:PkgEvent) : void
+      private function __oncharmanChange(e:PkgEvent) : void
       {
-         var _loc2_:String = param1.pkg.readUTF();
-         var _loc3_:Boolean = param1.pkg.readBoolean();
-         var _loc4_:String = param1.pkg.readUTF();
-         MessageTipManager.getInstance().show(_loc4_);
+         var nick:String = e.pkg.readUTF();
+         var isSuccess:Boolean = e.pkg.readBoolean();
+         var msg:String = e.pkg.readUTF();
+         MessageTipManager.getInstance().show(msg);
       }
       
-      private function __consortiaUserUpGrade(param1:PkgEvent) : void
+      private function __consortiaUserUpGrade(e:PkgEvent) : void
       {
-         var _loc2_:int = param1.pkg.readInt();
-         var _loc3_:Boolean = param1.pkg.readBoolean();
-         var _loc4_:Boolean = param1.pkg.readBoolean();
-         var _loc5_:String = param1.pkg.readUTF();
-         if(_loc3_)
+         var id:int = e.pkg.readInt();
+         var isUpGrade:Boolean = e.pkg.readBoolean();
+         var isSuccess:Boolean = e.pkg.readBoolean();
+         var msg:String = e.pkg.readUTF();
+         if(isUpGrade)
          {
-            if(_loc4_)
+            if(isSuccess)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.manager.PlayerManager.upsuccess"));
             }
@@ -1088,7 +1085,7 @@ package consortion
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.manager.PlayerManager.upfalse"));
             }
          }
-         else if(_loc4_)
+         else if(isSuccess)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.manager.PlayerManager.downsuccess"));
          }
@@ -1098,336 +1095,335 @@ package consortion
          }
       }
       
-      private function __consortiaDescriptionUpdate(param1:PkgEvent) : void
+      private function __consortiaDescriptionUpdate(evt:PkgEvent) : void
       {
-         var _loc2_:String = param1.pkg.readUTF();
-         var _loc3_:Boolean = param1.pkg.readBoolean();
-         var _loc4_:String = param1.pkg.readUTF();
-         MessageTipManager.getInstance().show(_loc4_);
-         if(_loc3_)
+         var description:String = evt.pkg.readUTF();
+         var isSuccess:Boolean = evt.pkg.readBoolean();
+         var msg:String = evt.pkg.readUTF();
+         MessageTipManager.getInstance().show(msg);
+         if(isSuccess)
          {
-            PlayerManager.Instance.Self.consortiaInfo.Description = _loc2_;
+            PlayerManager.Instance.Self.consortiaInfo.Description = description;
          }
       }
       
-      private function __skillChangehandler(param1:PkgEvent) : void
+      private function __skillChangehandler(evt:PkgEvent) : void
       {
-         var _loc7_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:Boolean = false;
-         var _loc6_:* = null;
-         var _loc4_:int = 0;
-         var _loc5_:int = param1.pkg.readInt();
-         _loc7_ = 0;
-         while(_loc7_ < _loc5_)
+         var i:int = 0;
+         var id:int = 0;
+         var b:Boolean = false;
+         var beginDate:* = null;
+         var validDay:int = 0;
+         var len:int = evt.pkg.readInt();
+         for(i = 0; i < len; )
          {
-            _loc2_ = param1.pkg.readInt();
-            _loc3_ = param1.pkg.readBoolean();
-            _loc6_ = param1.pkg.readDate();
-            _loc4_ = param1.pkg.readInt();
-            _model.updateSkillInfo(_loc2_,_loc3_,_loc6_,_loc4_);
-            _loc7_++;
+            id = evt.pkg.readInt();
+            b = evt.pkg.readBoolean();
+            beginDate = evt.pkg.readDate();
+            validDay = evt.pkg.readInt();
+            _model.updateSkillInfo(id,b,beginDate,validDay);
+            i++;
          }
-         if(_loc5_ > 0)
+         if(len > 0)
          {
             getConsortionList(selfConsortionComplete,1,6,PlayerManager.Instance.Self.ConsortiaName,-1,-1,-1,PlayerManager.Instance.Self.ConsortiaID);
          }
          dispatchEvent(new ConsortionEvent("skillStateChange"));
       }
       
-      private function __consortiaMailMessage(param1:PkgEvent) : void
+      private function __consortiaMailMessage(evt:PkgEvent) : void
       {
-         var _loc3_:String = param1.pkg.readUTF();
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc3_,LanguageMgr.GetTranslation("ok"),"",false,true,true,1);
-         _loc2_.moveEnable = false;
-         _loc2_.addEventListener("response",__quitConsortiaResponse);
+         var str:String = evt.pkg.readUTF();
+         var quitConsortiaConfirm:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),str,LanguageMgr.GetTranslation("ok"),"",false,true,true,1);
+         quitConsortiaConfirm.moveEnable = false;
+         quitConsortiaConfirm.addEventListener("response",__quitConsortiaResponse);
          PlayerManager.Instance.Self.consortiaInfo.StoreLevel = 0;
       }
       
-      private function __quitConsortiaResponse(param1:FrameEvent) : void
+      private function __quitConsortiaResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__quitConsortiaResponse);
-         _loc2_.dispose();
-         _loc2_ = null;
+         var frame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("response",__quitConsortiaResponse);
+         frame.dispose();
+         frame = null;
       }
       
-      private function setPlayerConsortia(param1:uint = 0, param2:String = "") : void
+      private function setPlayerConsortia(id:uint = 0, name:String = "") : void
       {
-         PlayerManager.Instance.Self.ConsortiaName = param2;
-         PlayerManager.Instance.Self.ConsortiaID = param1;
-         if(param1 == 0)
+         PlayerManager.Instance.Self.ConsortiaName = name;
+         PlayerManager.Instance.Self.ConsortiaID = id;
+         if(id == 0)
          {
             PlayerManager.Instance.Self.consortiaInfo.Level = 0;
          }
       }
       
-      public function memberListComplete(param1:ConsortionMemberAnalyer) : void
+      public function memberListComplete(analyzer:ConsortionMemberAnalyer) : void
       {
-         _model.memberList = param1.consortionMember;
+         _model.memberList = analyzer.consortionMember;
          TaskManager.instance.onGuildUpdate();
       }
       
-      public function clubSearchConsortions(param1:ConsortionListAnalyzer) : void
+      public function clubSearchConsortions(anlyzer:ConsortionListAnalyzer) : void
       {
-         _model.consortionList = param1.consortionList;
-         _model.consortionsListTotalCount = Math.ceil(param1.consortionsTotalCount / 6);
+         _model.consortionList = anlyzer.consortionList;
+         _model.consortionsListTotalCount = Math.ceil(anlyzer.consortionsTotalCount / 6);
       }
       
-      public function selfConsortionComplete(param1:ConsortionListAnalyzer) : void
+      public function selfConsortionComplete(anlyzer:ConsortionListAnalyzer) : void
       {
-         if(param1.consortionList.length > 0)
+         if(anlyzer.consortionList.length > 0)
          {
-            PlayerManager.Instance.Self.consortiaInfo = param1.consortionList[0] as ConsortiaInfo;
+            PlayerManager.Instance.Self.consortiaInfo = anlyzer.consortionList[0] as ConsortiaInfo;
          }
       }
       
-      public function applyListComplete(param1:ConsortionApplyListAnalyzer) : void
+      public function applyListComplete(anlyzer:ConsortionApplyListAnalyzer) : void
       {
-         _model.myApplyList = param1.applyList;
-         _model.applyListTotalCount = param1.totalCount;
+         _model.myApplyList = anlyzer.applyList;
+         _model.applyListTotalCount = anlyzer.totalCount;
       }
       
-      public function InventListComplete(param1:ConsortionInventListAnalyzer) : void
+      public function InventListComplete(anlyzer:ConsortionInventListAnalyzer) : void
       {
-         _model.inventList = param1.inventList;
-         _model.inventListTotalCount = param1.totalCount;
+         _model.inventList = anlyzer.inventList;
+         _model.inventListTotalCount = anlyzer.totalCount;
       }
       
-      private function levelUpInfoComplete(param1:ConsortionLevelUpAnalyzer) : void
+      private function levelUpInfoComplete(anlyzer:ConsortionLevelUpAnalyzer) : void
       {
-         _model.levelUpData = param1.levelUpData;
+         _model.levelUpData = anlyzer.levelUpData;
       }
       
-      public function eventListComplete(param1:ConsortionEventListAnalyzer) : void
+      public function eventListComplete(anlyzer:ConsortionEventListAnalyzer) : void
       {
-         _model.eventList = param1.eventList;
+         _model.eventList = anlyzer.eventList;
       }
       
-      public function useConditionListComplete(param1:ConsortionBuildingUseConditionAnalyer) : void
+      public function useConditionListComplete(anlyzer:ConsortionBuildingUseConditionAnalyer) : void
       {
-         _model.useConditionList = param1.useConditionList;
+         _model.useConditionList = anlyzer.useConditionList;
       }
       
-      public function dutyListComplete(param1:ConsortionDutyListAnalyzer) : void
+      public function dutyListComplete(anlyzer:ConsortionDutyListAnalyzer) : void
       {
-         _model.dutyList = param1.dutyList;
+         _model.dutyList = anlyzer.dutyList;
       }
       
-      public function pollListComplete(param1:ConsortionPollListAnalyzer) : void
+      public function pollListComplete(anlyzer:ConsortionPollListAnalyzer) : void
       {
-         _model.pollList = param1.pollList;
+         _model.pollList = anlyzer.pollList;
       }
       
-      public function skillInfoListComplete(param1:ConsortionSkillInfoAnalyzer) : void
+      public function skillInfoListComplete(anlyzer:ConsortionSkillInfoAnalyzer) : void
       {
-         _model.skillInfoList = param1.skillInfoList;
+         _model.skillInfoList = anlyzer.skillInfoList;
       }
       
-      public function analyzeRichRank(param1:ConsortiaRichRankAnalyze) : void
+      public function analyzeRichRank(e:ConsortiaRichRankAnalyze) : void
       {
-         _model.richRankList = param1.dataList;
+         _model.richRankList = e.dataList;
       }
       
-      public function analyzeWeekReward(param1:ConsortiaWeekRewardAnalyze) : void
+      public function analyzeWeekReward(e:ConsortiaWeekRewardAnalyze) : void
       {
-         _model.weekReward = param1.dataList;
+         _model.weekReward = e.dataList;
       }
       
-      public function getConsortionList(param1:Function, param2:int = 1, param3:int = 6, param4:String = "", param5:int = -1, param6:int = -1, param7:int = -1, param8:int = -1) : void
+      public function getConsortionList(callBackFun:Function, page:int = 1, size:int = 6, name:String = "", order:int = -1, openApply:int = -1, level:int = -1, ConsortiaID:int = -1) : void
       {
-         var _loc9_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         _loc9_["page"] = param2;
-         _loc9_["size"] = param3;
-         _loc9_["name"] = param4;
-         _loc9_["level"] = param7;
-         _loc9_["ConsortiaID"] = param8;
-         _loc9_["order"] = param5;
-         _loc9_["openApply"] = param6;
-         var _loc10_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ConsortiaList.ashx"),7,_loc9_);
-         _loc10_.loadErrorMessage = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.LoadMyconsortiaListError");
-         _loc10_.analyzer = new ConsortionListAnalyzer(param1);
-         LoadResourceManager.Instance.startLoad(_loc10_);
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         args["page"] = page;
+         args["size"] = size;
+         args["name"] = name;
+         args["level"] = level;
+         args["ConsortiaID"] = ConsortiaID;
+         args["order"] = order;
+         args["openApply"] = openApply;
+         var loadConsortias:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ConsortiaList.ashx"),7,args);
+         loadConsortias.loadErrorMessage = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.LoadMyconsortiaListError");
+         loadConsortias.analyzer = new ConsortionListAnalyzer(callBackFun);
+         LoadResourceManager.Instance.startLoad(loadConsortias);
       }
       
-      public function getApplyRecordList(param1:Function, param2:int = -1, param3:int = -1) : void
+      public function getApplyRecordList(callBackFun:Function, playerID:int = -1, consortiaID:int = -1) : void
       {
-         var _loc4_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         _loc4_["page"] = 1;
-         _loc4_["size"] = 1000;
-         _loc4_["order"] = -1;
-         _loc4_["consortiaID"] = param3;
-         _loc4_["applyID"] = -1;
-         _loc4_["userID"] = param2;
-         _loc4_["userLevel"] = -1;
-         var _loc5_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ConsortiaApplyUsersList.ashx"),6,_loc4_);
-         _loc5_.loadErrorMessage = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.LoadApplyRecordError");
-         _loc5_.analyzer = new ConsortionApplyListAnalyzer(param1);
-         LoadResourceManager.Instance.startLoad(_loc5_);
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         args["page"] = 1;
+         args["size"] = 1000;
+         args["order"] = -1;
+         args["consortiaID"] = consortiaID;
+         args["applyID"] = -1;
+         args["userID"] = playerID;
+         args["userLevel"] = -1;
+         var loadConsortiaApplyUsersList:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ConsortiaApplyUsersList.ashx"),6,args);
+         loadConsortiaApplyUsersList.loadErrorMessage = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.LoadApplyRecordError");
+         loadConsortiaApplyUsersList.analyzer = new ConsortionApplyListAnalyzer(callBackFun);
+         LoadResourceManager.Instance.startLoad(loadConsortiaApplyUsersList);
       }
       
-      public function getInviteRecordList(param1:Function) : void
+      public function getInviteRecordList(callBackFun:Function) : void
       {
-         var _loc2_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         _loc2_["page"] = 1;
-         _loc2_["size"] = 1000;
-         _loc2_["order"] = -1;
-         _loc2_["userID"] = PlayerManager.Instance.Self.ID;
-         _loc2_["inviteID"] = -1;
-         var _loc3_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ConsortiaInviteUsersList.ashx"),6,_loc2_);
-         _loc3_.loadErrorMessage = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.LoadApplyRecordError");
-         _loc3_.analyzer = new ConsortionInventListAnalyzer(param1);
-         LoadResourceManager.Instance.startLoad(_loc3_);
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         args["page"] = 1;
+         args["size"] = 1000;
+         args["order"] = -1;
+         args["userID"] = PlayerManager.Instance.Self.ID;
+         args["inviteID"] = -1;
+         var loadConsortiaInventList:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ConsortiaInviteUsersList.ashx"),6,args);
+         loadConsortiaInventList.loadErrorMessage = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.LoadApplyRecordError");
+         loadConsortiaInventList.analyzer = new ConsortionInventListAnalyzer(callBackFun);
+         LoadResourceManager.Instance.startLoad(loadConsortiaInventList);
       }
       
-      public function getConsortionMember(param1:Function = null) : void
+      public function getConsortionMember(callBackFun:Function = null) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
+         var args:* = null;
+         var loadSelfConsortiaMemberList:* = null;
          if(PlayerManager.Instance.Self.ConsortiaID == 0)
          {
             _model.memberList.clear();
          }
          else
          {
-            _loc2_ = RequestVairableCreater.creatWidthKey(true);
-            _loc2_["page"] = 1;
-            _loc2_["size"] = 10000;
-            _loc2_["order"] = -1;
-            _loc2_["consortiaID"] = PlayerManager.Instance.Self.ConsortiaID;
-            _loc2_["userID"] = -1;
-            _loc2_["state"] = -1;
-            _loc2_["rnd"] = Math.random();
-            _loc3_ = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ConsortiaUsersList.ashx"),7,_loc2_);
-            _loc3_.loadErrorMessage = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.LoadMemberInfoError");
-            _loc3_.analyzer = new ConsortionMemberAnalyer(param1);
-            LoadResourceManager.Instance.startLoad(_loc3_);
+            args = RequestVairableCreater.creatWidthKey(true);
+            args["page"] = 1;
+            args["size"] = 10000;
+            args["order"] = -1;
+            args["consortiaID"] = PlayerManager.Instance.Self.ConsortiaID;
+            args["userID"] = -1;
+            args["state"] = -1;
+            args["rnd"] = Math.random();
+            loadSelfConsortiaMemberList = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ConsortiaUsersList.ashx"),7,args);
+            loadSelfConsortiaMemberList.loadErrorMessage = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.LoadMemberInfoError");
+            loadSelfConsortiaMemberList.analyzer = new ConsortionMemberAnalyer(callBackFun);
+            LoadResourceManager.Instance.startLoad(loadSelfConsortiaMemberList);
          }
       }
       
       public function getLevelUpInfo() : BaseLoader
       {
-         var _loc1_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         var _loc2_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ConsortiaLevelList.xml"),7,_loc1_);
-         _loc2_.loadErrorMessage = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.LoadMyconsortiaLevelError");
-         _loc2_.analyzer = new ConsortionLevelUpAnalyzer(levelUpInfoComplete);
-         return _loc2_;
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         var loadConsortiaLevelData:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ConsortiaLevelList.xml"),7,args);
+         loadConsortiaLevelData.loadErrorMessage = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.LoadMyconsortiaLevelError");
+         loadConsortiaLevelData.analyzer = new ConsortionLevelUpAnalyzer(levelUpInfoComplete);
+         return loadConsortiaLevelData;
       }
       
-      public function loadEventList(param1:Function, param2:int = -1) : void
+      public function loadEventList(callBackFun:Function, consortiaID:int = -1) : void
       {
-         var _loc3_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         _loc3_["page"] = 1;
-         _loc3_["size"] = 50;
-         _loc3_["order"] = -1;
-         _loc3_["consortiaID"] = param2;
-         var _loc4_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ConsortiaEventList.ashx"),6,_loc3_);
-         _loc4_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.consortion.loadEventList.fail");
-         _loc4_.analyzer = new ConsortionEventListAnalyzer(param1);
-         LoadResourceManager.Instance.startLoad(_loc4_);
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         args["page"] = 1;
+         args["size"] = 50;
+         args["order"] = -1;
+         args["consortiaID"] = consortiaID;
+         var eventList:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ConsortiaEventList.ashx"),6,args);
+         eventList.loadErrorMessage = LanguageMgr.GetTranslation("ddt.consortion.loadEventList.fail");
+         eventList.analyzer = new ConsortionEventListAnalyzer(callBackFun);
+         LoadResourceManager.Instance.startLoad(eventList);
       }
       
-      public function loadUseConditionList(param1:Function, param2:int = -1) : void
+      public function loadUseConditionList(callBackFun:Function, consortionID:int = -1) : void
       {
-         var _loc3_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         _loc3_["consortiaID"] = param2;
-         _loc3_["level"] = -1;
-         _loc3_["type"] = -1;
-         var _loc4_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ConsortiaEquipControlList.ashx"),6,_loc3_);
-         _loc4_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.consortion.loadUseCondition.fail");
-         _loc4_.analyzer = new ConsortionBuildingUseConditionAnalyer(param1);
-         LoadResourceManager.Instance.startLoad(_loc4_);
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         args["consortiaID"] = consortionID;
+         args["level"] = -1;
+         args["type"] = -1;
+         var loadConsortiaAssetRight:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ConsortiaEquipControlList.ashx"),6,args);
+         loadConsortiaAssetRight.loadErrorMessage = LanguageMgr.GetTranslation("ddt.consortion.loadUseCondition.fail");
+         loadConsortiaAssetRight.analyzer = new ConsortionBuildingUseConditionAnalyer(callBackFun);
+         LoadResourceManager.Instance.startLoad(loadConsortiaAssetRight);
       }
       
-      public function loadDutyList(param1:Function, param2:int = -1, param3:int = -1) : void
+      public function loadDutyList(callBackFun:Function, consortiaID:int = -1, dutyID:int = -1) : void
       {
-         var _loc5_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         _loc5_["page"] = 1;
-         _loc5_["size"] = 1000;
-         _loc5_["ConsortiaID"] = param2;
-         _loc5_["order"] = -1;
-         _loc5_["dutyID"] = param3;
-         var _loc4_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ConsortiaDutyList.ashx"),6,_loc5_);
-         _loc4_.loadErrorMessage = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.LoadDutyListError");
-         _loc4_.analyzer = new ConsortionDutyListAnalyzer(param1);
-         LoadResourceManager.Instance.startLoad(_loc4_);
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         args["page"] = 1;
+         args["size"] = 1000;
+         args["ConsortiaID"] = consortiaID;
+         args["order"] = -1;
+         args["dutyID"] = dutyID;
+         var loadConsortiaDutyList:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ConsortiaDutyList.ashx"),6,args);
+         loadConsortiaDutyList.loadErrorMessage = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.LoadDutyListError");
+         loadConsortiaDutyList.analyzer = new ConsortionDutyListAnalyzer(callBackFun);
+         LoadResourceManager.Instance.startLoad(loadConsortiaDutyList);
       }
       
-      public function loadPollList(param1:int) : void
+      public function loadPollList(consortionID:int) : void
       {
-         var _loc2_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         _loc2_["ConsortiaID"] = param1;
-         var _loc3_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ConsortiaCandidateList.ashx"),6,_loc2_);
-         _loc3_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.consortion.pollload.error");
-         _loc3_.analyzer = new ConsortionPollListAnalyzer(pollListComplete);
-         LoadResourceManager.Instance.startLoad(_loc3_);
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         args["ConsortiaID"] = consortionID;
+         var pollListLoader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ConsortiaCandidateList.ashx"),6,args);
+         pollListLoader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.consortion.pollload.error");
+         pollListLoader.analyzer = new ConsortionPollListAnalyzer(pollListComplete);
+         LoadResourceManager.Instance.startLoad(pollListLoader);
       }
       
       public function loadSkillInfoList() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ConsortiaBufferTemp.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.consortion.skillInfo.loadError");
-         _loc1_.analyzer = new ConsortionSkillInfoAnalyzer(skillInfoListComplete);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ConsortiaBufferTemp.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.consortion.skillInfo.loadError");
+         loader.analyzer = new ConsortionSkillInfoAnalyzer(skillInfoListComplete);
+         return loader;
       }
       
-      private function __buyBadgeHandler(param1:PkgEvent) : void
+      private function __buyBadgeHandler(event:PkgEvent) : void
       {
-         var _loc7_:* = null;
-         var _loc6_:PackageIn = param1.pkg;
-         var _loc8_:int = _loc6_.readInt();
-         var _loc4_:int = _loc6_.readInt();
-         var _loc3_:int = _loc6_.readInt();
-         var _loc5_:Date = _loc6_.readDate();
-         var _loc2_:Boolean = _loc6_.readBoolean();
-         if(_loc8_ == PlayerManager.Instance.Self.ConsortiaID)
+         var badgeInfo:* = null;
+         var pkg:PackageIn = event.pkg;
+         var consortiaID:int = pkg.readInt();
+         var badgeID:int = pkg.readInt();
+         var validdate:int = pkg.readInt();
+         var beginTime:Date = pkg.readDate();
+         var result:Boolean = pkg.readBoolean();
+         if(consortiaID == PlayerManager.Instance.Self.ConsortiaID)
          {
-            PlayerManager.Instance.Self.consortiaInfo.BadgeBuyTime = DateUtils.dateFormat(_loc5_);
-            PlayerManager.Instance.Self.consortiaInfo.BadgeID = _loc4_;
-            PlayerManager.Instance.Self.consortiaInfo.ValidDate = _loc3_;
-            PlayerManager.Instance.Self.badgeID = _loc4_;
-            _loc7_ = BadgeInfoManager.instance.getBadgeInfoByID(_loc4_);
-            PlayerManager.Instance.Self.consortiaInfo.Riches = PlayerManager.Instance.Self.consortiaInfo.Riches - _loc7_.Cost;
+            PlayerManager.Instance.Self.consortiaInfo.BadgeBuyTime = DateUtils.dateFormat(beginTime);
+            PlayerManager.Instance.Self.consortiaInfo.BadgeID = badgeID;
+            PlayerManager.Instance.Self.consortiaInfo.ValidDate = validdate;
+            PlayerManager.Instance.Self.badgeID = badgeID;
+            badgeInfo = BadgeInfoManager.instance.getBadgeInfoByID(badgeID);
+            PlayerManager.Instance.Self.consortiaInfo.Riches = PlayerManager.Instance.Self.consortiaInfo.Riches - badgeInfo.Cost;
          }
       }
       
       public function getPerRank() : void
       {
-         var _loc2_:URLVariables = new URLVariables();
-         _loc2_.UserID = PlayerManager.Instance.Self.ID;
-         _loc2_.ConsortiaID = PlayerManager.Instance.Self.ConsortiaID;
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.creatAndStartLoad(PathManager.solveRequestPath("ConsortiaWarPlayerRank.ashx"),6,_loc2_);
-         _loc1_.analyzer = new PersonalRankAnalyze(perRankPayHander);
+         var urlVariables:URLVariables = new URLVariables();
+         urlVariables.UserID = PlayerManager.Instance.Self.ID;
+         urlVariables.ConsortiaID = PlayerManager.Instance.Self.ConsortiaID;
+         var loader:BaseLoader = LoadResourceManager.Instance.creatAndStartLoad(PathManager.solveRequestPath("ConsortiaWarPlayerRank.ashx"),6,urlVariables);
+         loader.analyzer = new PersonalRankAnalyze(perRankPayHander);
       }
       
-      private function perRankPayHander(param1:PersonalRankAnalyze) : void
+      private function perRankPayHander(analyze:PersonalRankAnalyze) : void
       {
-         ConsortionModelManager.Instance.dispatchEvent(new ConsortionEvent("club_per_list",param1.dataList));
+         ConsortionModelManager.Instance.dispatchEvent(new ConsortionEvent("club_per_list",analyze.dataList));
       }
       
       public function getConsortionRank() : void
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.creatAndStartLoad(PathManager.solveRequestPath("ConsortiaWarConsortiaRank.ashx"),6);
-         _loc1_.analyzer = new ConsortiaAnalyze(ConsortiaRankPayHander);
+         var loader:BaseLoader = LoadResourceManager.Instance.creatAndStartLoad(PathManager.solveRequestPath("ConsortiaWarConsortiaRank.ashx"),6);
+         loader.analyzer = new ConsortiaAnalyze(ConsortiaRankPayHander);
       }
       
-      private function ConsortiaRankPayHander(param1:ConsortiaAnalyze) : void
+      private function ConsortiaRankPayHander(analyze:ConsortiaAnalyze) : void
       {
-         ConsortionModelManager.Instance.dispatchEvent(new ConsortionEvent("club_rank_list",param1.dataList));
+         ConsortionModelManager.Instance.dispatchEvent(new ConsortionEvent("club_rank_list",analyze.dataList));
       }
       
       public function getConsortionTaskRank() : void
       {
-         var _loc2_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         _loc2_.ConsortiaID = PlayerManager.Instance.Self.ConsortiaID;
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.creatAndStartLoad(PathManager.solveRequestPath("ConsortiaMissionList.ashx"),7,_loc2_);
-         _loc1_.analyzer = new ConsortiaTaskRankAnalyzer(ConsortiaTaskRankHander);
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         args.ConsortiaID = PlayerManager.Instance.Self.ConsortiaID;
+         var loader:BaseLoader = LoadResourceManager.Instance.creatAndStartLoad(PathManager.solveRequestPath("ConsortiaMissionList.ashx"),7,args);
+         loader.analyzer = new ConsortiaTaskRankAnalyzer(ConsortiaTaskRankHander);
       }
       
-      private function ConsortiaTaskRankHander(param1:ConsortiaTaskRankAnalyzer) : void
+      private function ConsortiaTaskRankHander(analyze:ConsortiaTaskRankAnalyzer) : void
       {
-         ConsortionModelManager.Instance.dispatchEvent(new ConsortionEvent("task_rank_list",param1.dataList));
+         ConsortionModelManager.Instance.dispatchEvent(new ConsortionEvent("task_rank_list",analyze.dataList));
       }
       
       public function alertTaxFrame() : void
@@ -1484,9 +1480,9 @@ package consortion
          dispatchEvent(new CEvent("cmctrl_alert_quit"));
       }
       
-      public function bossConfigDataSetup(param1:ConsortiaBossDataAnalyzer) : void
+      public function bossConfigDataSetup(analyzer:ConsortiaBossDataAnalyzer) : void
       {
-         _bossConfigDataList = param1.dataList;
+         _bossConfigDataList = analyzer.dataList;
       }
       
       public function get bossMaxLv() : int
@@ -1503,85 +1499,83 @@ package consortion
          return 3;
       }
       
-      public function getCallExtendBossCostRich(param1:int, param2:int = 0) : int
+      public function getCallExtendBossCostRich(type:int, totalLevel:int = 0) : int
       {
-         var _loc3_:* = 0;
-         var _loc7_:int = 0;
-         var _loc5_:ConsortiaInfo = PlayerManager.Instance.Self.consortiaInfo;
-         if(param2 == 0)
+         var tmpTotalLevel:* = 0;
+         var i:int = 0;
+         var conInfo:ConsortiaInfo = PlayerManager.Instance.Self.consortiaInfo;
+         if(totalLevel == 0)
          {
-            _loc3_ = int(_loc5_.Level + _loc5_.SmithLevel + _loc5_.ShopLevel + _loc5_.StoreLevel + _loc5_.BufferLevel);
+            tmpTotalLevel = int(conInfo.Level + conInfo.SmithLevel + conInfo.ShopLevel + conInfo.StoreLevel + conInfo.BufferLevel);
          }
          else
          {
-            _loc3_ = param2;
+            tmpTotalLevel = totalLevel;
          }
-         var _loc4_:int = 100001;
-         var _loc6_:int = _bossConfigDataList.length;
-         _loc7_ = 0;
-         while(_loc7_ < _loc6_)
+         var rich:int = 100001;
+         var len:int = _bossConfigDataList.length;
+         for(i = 0; i < len; )
          {
-            if(_loc3_ >= _bossConfigDataList[_loc7_].level)
+            if(tmpTotalLevel >= _bossConfigDataList[i].level)
             {
-               if(param1 == 1)
+               if(type == 1)
                {
-                  _loc4_ = _bossConfigDataList[_loc7_].callBossRich;
+                  rich = _bossConfigDataList[i].callBossRich;
                }
                else
                {
-                  _loc4_ = _bossConfigDataList[_loc7_].extendTimeRich;
+                  rich = _bossConfigDataList[i].extendTimeRich;
                }
-               _loc7_++;
+               i++;
                continue;
             }
             break;
          }
-         return _loc4_;
+         return rich;
       }
       
-      public function getCallBossCostRich(param1:int) : int
+      public function getCallBossCostRich(level:int) : int
       {
-         return _bossConfigDataList[param1 - 1].callBossRich;
+         return _bossConfigDataList[level - 1].callBossRich;
       }
       
-      public function getCanCallBossMaxLevel(param1:int = 0) : int
+      public function getCanCallBossMaxLevel(totalLevel:int = 0) : int
       {
-         var _loc3_:* = 0;
-         var _loc6_:int = 0;
-         var _loc4_:ConsortiaInfo = PlayerManager.Instance.Self.consortiaInfo;
-         if(param1 == 0)
+         var tmpTotalLevel:* = 0;
+         var i:int = 0;
+         var conInfo:ConsortiaInfo = PlayerManager.Instance.Self.consortiaInfo;
+         if(totalLevel == 0)
          {
-            _loc3_ = int(_loc4_.Level + _loc4_.SmithLevel + _loc4_.ShopLevel + _loc4_.StoreLevel + _loc4_.BufferLevel);
+            tmpTotalLevel = int(conInfo.Level + conInfo.SmithLevel + conInfo.ShopLevel + conInfo.StoreLevel + conInfo.BufferLevel);
          }
          else
          {
-            _loc3_ = param1;
+            tmpTotalLevel = totalLevel;
          }
-         var _loc5_:int = _bossConfigDataList.length;
-         var _loc2_:int = 1;
-         _loc6_ = _loc5_ - 1;
-         while(_loc6_ >= 0)
+         var len:int = _bossConfigDataList.length;
+         var tmpMax:int = 1;
+         for(i = len - 1; i >= 0; )
          {
-            if(_loc3_ >= _bossConfigDataList[_loc6_].level)
+            if(tmpTotalLevel >= _bossConfigDataList[i].level)
             {
-               _loc2_ = _loc6_ + 1;
+               tmpMax = i + 1;
                break;
             }
-            _loc6_--;
+            i--;
          }
-         return _loc2_;
+         return tmpMax;
       }
       
-      public function getRequestCallBossLevel(param1:int) : int
+      public function getRequestCallBossLevel(level:int) : int
       {
-         return _bossConfigDataList[param1 - 1].level;
+         return _bossConfigDataList[level - 1].level;
       }
       
-      private function bossOpenCloseHandler(param1:PkgEvent) : void
+      private function bossOpenCloseHandler(event:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         var _loc3_:int = _loc2_.readByte();
-         if(_loc3_ == 0)
+         var pkg:PackageIn = event.pkg;
+         var type:int = pkg.readByte();
+         if(type == 0)
          {
             isShowBossOpenTip = true;
             isBossOpen = true;
@@ -1592,7 +1586,7 @@ package consortion
                SystemOpenPromptManager.instance.showFrame();
             }
          }
-         else if(_loc3_ == 3)
+         else if(type == 3)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.consortia.bossExtendTipTxt"));
             ChatManager.Instance.sysChatYellow(LanguageMgr.GetTranslation("ddt.consortia.bossExtendTipTxt"));
@@ -1601,7 +1595,7 @@ package consortion
          {
             isShowBossOpenTip = false;
             isBossOpen = false;
-            if(_loc3_ == 1)
+            if(type == 1)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.consortia.bossCloseTipTxt"));
                ChatManager.Instance.sysChatYellow(LanguageMgr.GetTranslation("ddt.consortia.bossCloseTipTxt"));
@@ -1615,30 +1609,30 @@ package consortion
          }
       }
       
-      public function showEnterBtnInHallStateView(param1:IHallStateView) : void
+      public function showEnterBtnInHallStateView($parent:IHallStateView) : void
       {
          if(_enterBtn == null)
          {
             _enterBtn = ComponentFactory.Instance.creat("hall.consortia.btn");
          }
-         param1.leftTopGbox.addChild(_enterBtn);
-         param1.arrangeLeftGrid();
+         $parent.leftTopGbox.addChild(_enterBtn);
+         $parent.arrangeLeftGrid();
          _enterBtn.addEventListener("click",onEnterBtnClick);
       }
       
-      public function hideEnterBtnInHallStateView(param1:IHallStateView) : void
+      public function hideEnterBtnInHallStateView($parent:IHallStateView) : void
       {
          if(_enterBtn != null && _enterBtn.parent != null)
          {
-            param1.leftTopGbox.removeChild(_enterBtn);
-            param1.leftTopGbox.arrange();
+            $parent.leftTopGbox.removeChild(_enterBtn);
+            $parent.leftTopGbox.arrange();
             _enterBtn.removeEventListener("click",onEnterBtnClick);
          }
          ObjectUtils.disposeObject(_enterBtn);
          _enterBtn = null;
       }
       
-      protected function onEnterBtnClick(param1:MouseEvent) : void
+      protected function onEnterBtnClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          new HelperDataModuleLoad().loadDataModule([LoaderCreate.Instance.createConsortiaBossTemplateLoader],gotoConsortia);
@@ -1660,63 +1654,61 @@ package consortion
          dispatchEvent(new CEvent("cmctrl_open_boss"));
       }
       
-      private function onConSortiaBackAward(param1:PkgEvent) : void
+      private function onConSortiaBackAward(event:PkgEvent) : void
       {
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc3_:int = _loc4_.readInt();
-         var _loc2_:CallBackModel = _model.callBackModel;
-         _loc2_.awardStateMap[_loc3_.toString()] = 1;
+         var pkg:PackageIn = event.pkg;
+         var awardId:int = pkg.readInt();
+         var callBackModel:CallBackModel = _model.callBackModel;
+         callBackModel.awardStateMap[awardId.toString()] = 1;
          dispatchEvent(new Event("event_consortia_back_award"));
       }
       
-      private function onConSortiaBackInfo(param1:PkgEvent) : void
+      private function onConSortiaBackInfo(event:PkgEvent) : void
       {
-         var _loc6_:int = 0;
-         var _loc8_:int = 0;
-         var _loc5_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         var _loc13_:int = 0;
-         var _loc11_:* = null;
-         var _loc10_:* = null;
-         var _loc9_:int = 0;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc7_:CallBackModel = _model.callBackModel;
-         _loc7_.startTime = _loc4_.readDate();
-         _loc7_.endTime = _loc4_.readDate();
-         _loc7_.callBackCount = _loc4_.readInt();
-         _loc7_.awardArr = [];
-         var _loc14_:int = _loc4_.readInt();
-         _loc6_ = 0;
-         while(_loc6_ < _loc14_)
+         var i:int = 0;
+         var awardID:int = 0;
+         var TemplateID:int = 0;
+         var Count:int = 0;
+         var VaildDate:int = 0;
+         var BackCount:int = 0;
+         var templeteInfo:* = null;
+         var inventoryItemInfo:* = null;
+         var awardID2:int = 0;
+         var pkg:PackageIn = event.pkg;
+         var callBackModel:CallBackModel = _model.callBackModel;
+         callBackModel.startTime = pkg.readDate();
+         callBackModel.endTime = pkg.readDate();
+         callBackModel.callBackCount = pkg.readInt();
+         callBackModel.awardArr = [];
+         var awardArrLength:int = pkg.readInt();
+         for(i = 0; i < awardArrLength; )
          {
-            _loc8_ = _loc4_.readInt();
-            _loc5_ = _loc4_.readInt();
-            _loc2_ = _loc4_.readInt();
-            _loc3_ = _loc4_.readInt();
-            _loc13_ = _loc4_.readInt();
-            _loc11_ = ItemManager.Instance.getTemplateById(_loc5_);
-            _loc10_ = new InventoryItemInfo();
-            ObjectUtils.copyProperties(_loc10_,_loc11_);
-            _loc10_.ValidDate = _loc3_;
-            _loc10_.Count = _loc2_;
-            _loc10_.IsBinds = true;
-            _loc10_.Property5 = "1";
-            _loc7_.awardArr.push({
-               "itemTemplateInfo":_loc10_,
-               "awardID":_loc8_,
-               "backCount":_loc13_
+            awardID = pkg.readInt();
+            TemplateID = pkg.readInt();
+            Count = pkg.readInt();
+            VaildDate = pkg.readInt();
+            BackCount = pkg.readInt();
+            templeteInfo = ItemManager.Instance.getTemplateById(TemplateID);
+            inventoryItemInfo = new InventoryItemInfo();
+            ObjectUtils.copyProperties(inventoryItemInfo,templeteInfo);
+            inventoryItemInfo.ValidDate = VaildDate;
+            inventoryItemInfo.Count = Count;
+            inventoryItemInfo.IsBinds = true;
+            inventoryItemInfo.Property5 = "1";
+            callBackModel.awardArr.push({
+               "itemTemplateInfo":inventoryItemInfo,
+               "awardID":awardID,
+               "backCount":BackCount
             });
-            _loc6_++;
+            i++;
          }
-         _loc7_.awardStateMap = {};
-         var _loc12_:int = _loc4_.readInt();
-         _loc6_ = 0;
-         while(_loc6_ < _loc12_)
+         callBackModel.awardStateMap = {};
+         var awardStateMapLength:int = pkg.readInt();
+         for(i = 0; i < awardStateMapLength; )
          {
-            _loc9_ = _loc4_.readInt();
-            _loc7_.awardStateMap[_loc9_] = _loc4_.readInt();
-            _loc6_++;
+            awardID2 = pkg.readInt();
+            callBackModel.awardStateMap[awardID2] = pkg.readInt();
+            i++;
          }
          dispatchEvent(new Event("event_consortia_back_info"));
       }
@@ -1731,35 +1723,35 @@ package consortion
          SocketManager.Instance.out.sendConsortionActiveTargetSchedule();
       }
       
-      private function onConSortionActiveTargetSchedule(param1:PkgEvent) : void
+      private function onConSortionActiveTargetSchedule(pkg:PkgEvent) : void
       {
-         var _loc3_:int = param1.pkg.readInt();
-         var _loc7_:int = param1.pkg.readInt();
-         var _loc5_:int = param1.pkg.readInt();
-         var _loc2_:int = param1.pkg.readInt();
+         var missionCnt:int = pkg.pkg.readInt();
+         var onlineCnt:int = pkg.pkg.readInt();
+         var contributionValue:int = pkg.pkg.readInt();
+         var assets:int = pkg.pkg.readInt();
          var _loc11_:int = 0;
          var _loc10_:* = _model.activeTargetDic;
-         for each(var _loc6_ in _model.activeTargetDic)
+         for each(var targets in _model.activeTargetDic)
          {
             var _loc9_:int = 0;
-            var _loc8_:* = _loc6_;
-            for each(var _loc4_ in _loc6_)
+            var _loc8_:* = targets;
+            for each(var target in targets)
             {
-               if(_loc4_.targetId == 1)
+               if(target.targetId == 1)
                {
-                  _loc4_.processValue = _loc3_;
+                  target.processValue = missionCnt;
                }
-               else if(_loc4_.targetId == 2)
+               else if(target.targetId == 2)
                {
-                  _loc4_.processValue = _loc7_;
+                  target.processValue = onlineCnt;
                }
-               else if(_loc4_.targetId == 3)
+               else if(target.targetId == 3)
                {
-                  _loc4_.processValue = _loc5_;
+                  target.processValue = contributionValue;
                }
-               else if(_loc4_.targetId == 4)
+               else if(target.targetId == 4)
                {
-                  _loc4_.processValue = _loc2_;
+                  target.processValue = assets;
                }
             }
          }
@@ -1772,132 +1764,128 @@ package consortion
          SocketManager.Instance.out.sendConsortionActiveTagertStatus();
       }
       
-      public function requestConsortionActiveTagertReward(param1:int) : void
+      public function requestConsortionActiveTagertReward(lv:int) : void
       {
-         SocketManager.Instance.out.sendConsortionActiveTagertReward(param1);
+         SocketManager.Instance.out.sendConsortionActiveTagertReward(lv);
       }
       
-      private function onConSortionActiveTargetStatus(param1:PkgEvent) : void
+      private function onConSortionActiveTargetStatus(pkg:PkgEvent) : void
       {
-         var _loc7_:int = 0;
-         var _loc2_:int = param1.pkg.readInt();
-         ConsortionModelManager.Instance.model.rewardLv = _loc2_;
-         var _loc6_:Vector.<ConsortionActiveTargetData> = null;
-         var _loc5_:Boolean = true;
-         var _loc4_:* = 0;
-         _loc7_ = 1;
-         while(_loc7_ <= 3)
+         var i:int = 0;
+         var level:int = pkg.pkg.readInt();
+         ConsortionModelManager.Instance.model.rewardLv = level;
+         var targets:Vector.<ConsortionActiveTargetData> = null;
+         var isCompeleted:Boolean = true;
+         var lastCompleteIdx:* = 0;
+         for(i = 1; i <= 3; )
          {
-            if(_loc7_ <= _loc2_)
+            if(i <= level)
             {
-               _model.activeTargetStautsDic[_loc7_] = 3;
-               _loc4_ = _loc2_;
+               _model.activeTargetStautsDic[i] = 3;
+               lastCompleteIdx = level;
             }
             else
             {
-               _loc6_ = ConsortionModelManager.Instance.model.activeTargetDic[_loc7_];
+               targets = ConsortionModelManager.Instance.model.activeTargetDic[i];
                var _loc9_:int = 0;
-               var _loc8_:* = _loc6_;
-               for each(var _loc3_ in _loc6_)
+               var _loc8_:* = targets;
+               for each(var target in targets)
                {
-                  if(_loc3_.processValue < _loc3_.conditionValue)
+                  if(target.processValue < target.conditionValue)
                   {
-                     _loc5_ = false;
+                     isCompeleted = false;
                      break;
                   }
                }
-               if(_loc5_)
+               if(isCompeleted)
                {
-                  _model.activeTargetStautsDic[_loc7_] = 2;
-                  _loc4_ = _loc7_;
+                  _model.activeTargetStautsDic[i] = 2;
+                  lastCompleteIdx = i;
                }
-               else if(_loc7_ >= 1 && _loc4_ == _loc7_ - 1)
+               else if(i >= 1 && lastCompleteIdx == i - 1)
                {
-                  _model.activeTargetStautsDic[_loc7_] = 1;
+                  _model.activeTargetStautsDic[i] = 1;
                }
                else
                {
-                  _model.activeTargetStautsDic[_loc7_] = 0;
+                  _model.activeTargetStautsDic[i] = 0;
                }
             }
-            _loc7_++;
+            i++;
          }
          ConsortionModelManager.Instance.dispatchEvent(new CEvent("updateActiveTargetStatus"));
       }
       
       public function initConsortionActiveTarget() : void
       {
-         var _loc7_:int = 0;
-         var _loc5_:int = 0;
+         var i:int = 0;
+         var j:int = 0;
          if(_model.hasActiveTargetInited)
          {
             return;
          }
-         var _loc4_:String = ServerConfigManager.instance.consortionActiveTarget;
-         var _loc2_:Array = _loc4_.split("|");
-         var _loc1_:Array = null;
-         var _loc3_:ConsortionActiveTargetData = null;
-         var _loc6_:Vector.<ConsortionActiveTargetData> = null;
-         _loc7_ = 1;
-         while(_loc7_ <= _loc2_.length)
+         var cfg:String = ServerConfigManager.instance.consortionActiveTarget;
+         var levelCfg:Array = cfg.split("|");
+         var targetCfg:Array = null;
+         var target:ConsortionActiveTargetData = null;
+         var targets:Vector.<ConsortionActiveTargetData> = null;
+         for(i = 1; i <= levelCfg.length; )
          {
-            _loc6_ = new Vector.<ConsortionActiveTargetData>();
-            _model.activeTargetDic[_loc7_] = _loc6_;
-            _loc1_ = String(_loc2_[_loc7_ - 1]).split(",");
-            _loc5_ = 1;
-            while(_loc5_ <= _loc1_.length)
+            targets = new Vector.<ConsortionActiveTargetData>();
+            _model.activeTargetDic[i] = targets;
+            targetCfg = String(levelCfg[i - 1]).split(",");
+            for(j = 1; j <= targetCfg.length; )
             {
-               _loc3_ = new ConsortionActiveTargetData();
-               _loc3_.targetId = _loc5_;
-               _loc3_.conditionValue = _loc1_[_loc5_ - 1];
-               _loc3_.targetLv = _loc7_;
-               _loc6_.push(_loc3_);
-               _loc5_++;
+               target = new ConsortionActiveTargetData();
+               target.targetId = j;
+               target.conditionValue = targetCfg[j - 1];
+               target.targetLv = i;
+               targets.push(target);
+               j++;
             }
-            _loc7_++;
+            i++;
          }
          _model.hasActiveTargetInited = true;
       }
       
       public function checkRewardStauts() : Boolean
       {
-         var _loc6_:int = 0;
-         var _loc1_:int = ConsortionModelManager.Instance.model.rewardLv;
-         var _loc5_:Vector.<ConsortionActiveTargetData> = null;
-         var _loc2_:int = 0;
-         var _loc4_:Boolean = true;
-         _loc6_ = 1;
-         while(_loc6_ <= 3)
+         var i:int = 0;
+         var level:int = ConsortionModelManager.Instance.model.rewardLv;
+         var targets:Vector.<ConsortionActiveTargetData> = null;
+         var rewardCnt:int = 0;
+         var isCompeleted:Boolean = true;
+         for(i = 1; i <= 3; )
          {
-            if(_loc6_ <= _loc1_)
+            if(i <= level)
             {
-               _loc2_ = _loc2_ + 0;
+               rewardCnt = rewardCnt + 0;
             }
             else
             {
-               _loc5_ = ConsortionModelManager.Instance.model.activeTargetDic[_loc6_];
+               targets = ConsortionModelManager.Instance.model.activeTargetDic[i];
                var _loc8_:int = 0;
-               var _loc7_:* = _loc5_;
-               for each(var _loc3_ in _loc5_)
+               var _loc7_:* = targets;
+               for each(var target in targets)
                {
-                  if(_loc3_.processValue < _loc3_.conditionValue)
+                  if(target.processValue < target.conditionValue)
                   {
-                     _loc4_ = false;
+                     isCompeleted = false;
                      break;
                   }
                }
-               if(_loc4_)
+               if(isCompeleted)
                {
-                  _loc2_ = _loc2_ + 1;
+                  rewardCnt = rewardCnt + 1;
                }
                else
                {
-                  _loc2_ = _loc2_ + 0;
+                  rewardCnt = rewardCnt + 0;
                }
             }
-            _loc6_++;
+            i++;
          }
-         return _loc2_ > 0;
+         return rewardCnt > 0;
       }
    }
 }

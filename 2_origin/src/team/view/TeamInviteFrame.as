@@ -31,9 +31,9 @@ package team.view
          super();
       }
       
-      public static function hasAlert(param1:int) : Boolean
+      public static function hasAlert(teamID:int) : Boolean
       {
-         if(_notAlertTeam.hasKey(param1))
+         if(_notAlertTeam.hasKey(teamID))
          {
             return false;
          }
@@ -56,33 +56,33 @@ package team.view
          addToContent(_selectedCheckBtn);
       }
       
-      public function setupData(param1:Object) : void
+      public function setupData(data:Object) : void
       {
-         _teamID = param1.TeamID;
-         _playerID = param1.PlayerID;
-         var _loc2_:AlertInfo = new AlertInfo();
-         _loc2_.mutiline = false;
-         _loc2_.buttonGape = 60;
-         _loc2_.autoButtonGape = false;
-         _loc2_.autoDispose = true;
-         _loc2_.enableHtml = true;
-         _loc2_.sound = "008";
-         _loc2_.title = LanguageMgr.GetTranslation("team.invite.title");
-         _loc2_.data = LanguageMgr.GetTranslation("team.invite.des",param1.UserName,param1.TeamName);
-         _loc2_.submitLabel = LanguageMgr.GetTranslation("ok");
-         _loc2_.cancelLabel = LanguageMgr.GetTranslation("team.invite.look");
-         info = _loc2_;
+         _teamID = data.TeamID;
+         _playerID = data.PlayerID;
+         var alertInfo:AlertInfo = new AlertInfo();
+         alertInfo.mutiline = false;
+         alertInfo.buttonGape = 60;
+         alertInfo.autoButtonGape = false;
+         alertInfo.autoDispose = true;
+         alertInfo.enableHtml = true;
+         alertInfo.sound = "008";
+         alertInfo.title = LanguageMgr.GetTranslation("team.invite.title");
+         alertInfo.data = LanguageMgr.GetTranslation("team.invite.des",data.UserName,data.TeamName);
+         alertInfo.submitLabel = LanguageMgr.GetTranslation("ok");
+         alertInfo.cancelLabel = LanguageMgr.GetTranslation("team.invite.look");
+         info = alertInfo;
       }
       
-      override protected function onResponse(param1:int) : void
+      override protected function onResponse(type:int) : void
       {
-         if(param1 == 4)
+         if(type == 4)
          {
             AssetModuleLoader.addModelLoader("uigeneral",1);
             AssetModuleLoader.startLoader(alertTeamInfoFrame);
             return;
          }
-         if(param1 == 2 || param1 == 3)
+         if(type == 2 || type == 3)
          {
             SocketManager.Instance.out.sendTeamInviteAccept(_playerID,_teamID);
          }
@@ -91,13 +91,13 @@ package team.view
       
       private function alertTeamInfoFrame() : void
       {
-         var _loc1_:TeamInviteView = new TeamInviteView();
-         _loc1_.update(_playerID,_teamID);
-         PositionUtils.setPos(_loc1_,"team.invite.alertPos");
-         LayerManager.Instance.addToLayer(_loc1_,1,false,1);
+         var view:TeamInviteView = new TeamInviteView();
+         view.update(_playerID,_teamID);
+         PositionUtils.setPos(view,"team.invite.alertPos");
+         LayerManager.Instance.addToLayer(view,1,false,1);
       }
       
-      protected function __onSelectCheckClick(param1:MouseEvent) : void
+      protected function __onSelectCheckClick(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(_selectedCheckBtn.selected)

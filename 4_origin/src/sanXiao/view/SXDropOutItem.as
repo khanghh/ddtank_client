@@ -12,23 +12,23 @@ package sanXiao.view
    {
        
       
-      public function SXDropOutItem(param1:int, param2:ItemTemplateInfo = null, param3:Boolean = true, param4:DisplayObject = null, param5:Boolean = true)
+      public function SXDropOutItem(index:int, info:ItemTemplateInfo = null, showLoading:Boolean = true, bg:DisplayObject = null, mouseOverEffBoolean:Boolean = true)
       {
-         super(param1,param2,param3,param4,param5);
+         super(index,info,showLoading,bg,mouseOverEffBoolean);
       }
       
-      public function updateItem(param1:Object = null) : void
+      public function updateItem(data:Object = null) : void
       {
-         var _loc2_:SXGainedItemDATA = param1 as SXGainedItemDATA;
-         if(_loc2_ == null)
+         var __data:SXGainedItemDATA = data as SXGainedItemDATA;
+         if(__data == null)
          {
             info = null;
             this.tbxCount.text = "0";
          }
          else
          {
-            info = ItemManager.Instance.getTemplateById(_loc2_.templeteID);
-            this.tbxCount.text = _loc2_.count.toString();
+            info = ItemManager.Instance.getTemplateById(__data.templeteID);
+            this.tbxCount.text = __data.count.toString();
             this.tbxCount.visible = true;
             addChild(tbxCount);
          }

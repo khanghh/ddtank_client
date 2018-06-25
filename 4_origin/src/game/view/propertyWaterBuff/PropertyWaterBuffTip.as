@@ -60,30 +60,30 @@ package game.view.propertyWaterBuff
          return _buffInfo;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(data:Object) : void
       {
-         _buffInfo = param1 as BuffInfo;
+         _buffInfo = data as BuffInfo;
          update();
       }
       
       private function update() : void
       {
-         var _loc3_:int = _buffInfo.getLeftTimeByUnit(86400000);
-         var _loc2_:int = _buffInfo.getLeftTimeByUnit(3600000);
-         var _loc1_:int = _buffInfo.getLeftTimeByUnit(60000);
+         var day:int = _buffInfo.getLeftTimeByUnit(86400000);
+         var hour:int = _buffInfo.getLeftTimeByUnit(3600000);
+         var min:int = _buffInfo.getLeftTimeByUnit(60000);
          _name.text = _buffInfo.buffName;
          _explication.text = _buffInfo.buffItemInfo.Description;
-         if(_loc3_ > 0)
+         if(day > 0)
          {
-            _timer.text = LanguageMgr.GetTranslation("game.view.propertyWaterBuff.timer",_loc3_);
+            _timer.text = LanguageMgr.GetTranslation("game.view.propertyWaterBuff.timer",day);
          }
-         else if(_loc2_ > 0)
+         else if(hour > 0)
          {
-            _timer.text = LanguageMgr.GetTranslation("game.view.propertyWaterBuff.timerI",_loc2_);
+            _timer.text = LanguageMgr.GetTranslation("game.view.propertyWaterBuff.timerI",hour);
          }
-         else if(_loc1_ > 0)
+         else if(min > 0)
          {
-            _timer.text = LanguageMgr.GetTranslation("game.view.propertyWaterBuff.timerII",_loc1_);
+            _timer.text = LanguageMgr.GetTranslation("game.view.propertyWaterBuff.timerII",min);
          }
          else
          {

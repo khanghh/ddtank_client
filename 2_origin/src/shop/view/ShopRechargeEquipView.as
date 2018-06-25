@@ -119,8 +119,8 @@ package shop.view
          _playerOrderTxt = ComponentFactory.Instance.creatComponentByStylename("ddtshop.RechargeView.RightOrderNumberText");
          _currentCountTxt = ComponentFactory.Instance.creatComponentByStylename("ddtshop.RechargeViewCurrentCount");
          _affirmContinuBt = ComponentFactory.Instance.creatComponentByStylename("ddtshop.RechargeView.RechargeConfirmationBtn");
-         var _loc1_:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("tank.view.continuation.contiuationTitle"),LanguageMgr.GetTranslation("tank.view.common.AddPricePanel.xu"),LanguageMgr.GetTranslation("cancel"),false,false);
-         _frame.info = _loc1_;
+         var ai:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("tank.view.continuation.contiuationTitle"),LanguageMgr.GetTranslation("tank.view.common.AddPricePanel.xu"),LanguageMgr.GetTranslation("cancel"),false,false);
+         _frame.info = ai;
          _equipList = PlayerManager.Instance.Self.OvertimeListByBody;
          _scrollPanel.vScrollProxy = 0;
          _scrollPanel.setView(_itemContainer);
@@ -156,10 +156,10 @@ package shop.view
          addChild(_frame);
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(e.responseCode))
          {
             case 0:
             case 1:
@@ -183,23 +183,23 @@ package shop.view
          }
       }
       
-      private function _clickContinuBt(param1:MouseEvent) : void
+      private function _clickContinuBt(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:int = _costMoneyTxt.text;
-         var _loc4_:int = _costGiftTxt.text;
-         var _loc3_:int = _costOrderTxt.text;
+         var money:int = _costMoneyTxt.text;
+         var bandMoney:int = _costGiftTxt.text;
+         var orderMoney:int = _costOrderTxt.text;
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         if(_loc2_ > PlayerManager.Instance.Self.Money)
+         if(money > PlayerManager.Instance.Self.Money)
          {
             LeavePageManager.showFillFrame();
             return;
          }
-         if(_loc4_ > PlayerManager.Instance.Self.BandMoney)
+         if(bandMoney > PlayerManager.Instance.Self.BandMoney)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("shop.view.lackCoin"));
             return;
@@ -207,52 +207,51 @@ package shop.view
          payAll();
       }
       
-      private function __onChargeClick(param1:Event) : void
+      private function __onChargeClick(e:Event) : void
       {
          LeavePageManager.leaveToFillPath();
       }
       
       private function payAll() : void
       {
-         var _loc3_:* = null;
-         var _loc5_:* = null;
-         var _loc6_:* = null;
-         var _loc2_:* = 0;
-         var _loc4_:* = null;
-         var _loc11_:int = 0;
-         var _loc1_:* = false;
-         var _loc7_:Array = shopInfoList;
-         var _loc9_:Array = ShopManager.Instance.buyIt(shopInfoListWithOutDelete);
+         var payArr:* = null;
+         var infoArr:* = null;
+         var removeArr:* = null;
+         var index:* = 0;
+         var item:* = null;
+         var i:int = 0;
+         var isDress:* = false;
+         var shopInfoListArr:Array = shopInfoList;
+         var buyArr:Array = ShopManager.Instance.buyIt(shopInfoListWithOutDelete);
          if(shopInfoListWithOutDelete.length > 0)
          {
-            _loc3_ = [];
-            _loc5_ = [];
-            _loc6_ = [];
+            payArr = [];
+            infoArr = [];
+            removeArr = [];
             var _loc13_:int = 0;
             var _loc12_:* = shopInfoListWithOutDelete;
-            for each(var _loc8_ in shopInfoListWithOutDelete)
+            for each(var j in shopInfoListWithOutDelete)
             {
-               _loc2_ = uint(_loc7_.indexOf(_loc8_));
-               _loc4_ = _itemContainer.getChildAt(_loc2_) as ShopRechargeEquipViewItem;
-               _loc5_.push(_loc4_.info);
-               _loc6_.push(_loc4_);
+               index = uint(shopInfoListArr.indexOf(j));
+               item = _itemContainer.getChildAt(index) as ShopRechargeEquipViewItem;
+               infoArr.push(item.info);
+               removeArr.push(item);
             }
             var _loc15_:int = 0;
-            var _loc14_:* = _loc6_;
-            for each(var _loc10_ in _loc6_)
+            var _loc14_:* = removeArr;
+            for each(var k in removeArr)
             {
-               _itemContainer.removeChild(_loc10_);
+               _itemContainer.removeChild(k);
             }
             _scrollPanel.invalidateViewport();
-            _loc11_ = 0;
-            while(_loc11_ < _loc5_.length)
+            for(i = 0; i < infoArr.length; )
             {
-               _loc1_ = _loc5_[_loc11_].Place <= 30;
-               _loc3_.push([_loc5_[_loc11_].BagType,_loc5_[_loc11_].Place,_loc9_[_loc11_].GoodsID,_loc9_[_loc11_].currentBuyType,_loc1_,_isBandList[_loc11_].moneType]);
-               _loc11_++;
+               isDress = infoArr[i].Place <= 30;
+               payArr.push([infoArr[i].BagType,infoArr[i].Place,buyArr[i].GoodsID,buyArr[i].currentBuyType,isDress,_isBandList[i].moneType]);
+               i++;
             }
             updateTxt();
-            SocketManager.Instance.out.sendGoodsContinue(_loc3_);
+            SocketManager.Instance.out.sendGoodsContinue(payArr);
             if(_itemContainer.numChildren <= 0)
             {
                dispose();
@@ -271,16 +270,16 @@ package shop.view
       
       private function setList() : void
       {
-         _equipList.sort(function(param1:InventoryItemInfo, param2:InventoryItemInfo):Number
+         _equipList.sort(function(a:InventoryItemInfo, b:InventoryItemInfo):Number
          {
-            var _loc3_:Array = [7,5,1,17,8,9,14,6,13,15,3,4,2];
-            var _loc5_:uint = _loc3_.indexOf(param1.CategoryID);
-            var _loc4_:uint = _loc3_.indexOf(param2.CategoryID);
-            if(_loc5_ < _loc4_)
+            var sort_arr:Array = [7,5,1,17,8,9,14,6,13,15,3,4,2];
+            var a_index:uint = sort_arr.indexOf(a.CategoryID);
+            var b_index:uint = sort_arr.indexOf(b.CategoryID);
+            if(a_index < b_index)
             {
                return -1;
             }
-            if(_loc5_ == _loc4_)
+            if(a_index == b_index)
             {
                return 0;
             }
@@ -310,73 +309,70 @@ package shop.view
          updateTxt();
       }
       
-      private function setIsBandList(param1:int, param2:int) : void
+      private function setIsBandList(id:int, _type:int) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = _isBandList.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var i:int = 0;
+         var len:int = _isBandList.length;
+         for(i = 0; i < len; )
          {
-            if(_isBandList[_loc4_].id == param1)
+            if(_isBandList[i].id == id)
             {
-               _isBandList[_loc4_].moneType = param2;
+               _isBandList[i].moneType = _type;
                return;
             }
-            _loc4_++;
+            i++;
          }
       }
       
-      private function __onItemDelete(param1:Event) : void
+      private function __onItemDelete(e:Event) : void
       {
       }
       
-      private function __onItemChange(param1:Event) : void
+      private function __onItemChange(e:Event) : void
       {
          updateTxt();
       }
       
       private function get shopInfoListWithOutDelete() : Array
       {
-         var _loc4_:* = 0;
-         var _loc2_:* = null;
-         var _loc1_:Array = [];
+         var i:* = 0;
+         var item:* = null;
+         var arr:Array = [];
          _isBandList = new Vector.<ShopRechargeEquipViewItem>();
-         var _loc3_:int = _itemContainer.numChildren - 1;
-         _loc4_ = uint(0);
-         while(_loc4_ < _itemContainer.numChildren)
+         var len:int = _itemContainer.numChildren - 1;
+         for(i = uint(0); i < _itemContainer.numChildren; )
          {
-            _loc2_ = _itemContainer.getChildAt(_loc3_ - _loc4_) as ShopRechargeEquipViewItem;
-            if(_loc2_ && !_loc2_.isDelete)
+            item = _itemContainer.getChildAt(len - i) as ShopRechargeEquipViewItem;
+            if(item && !item.isDelete)
             {
-               _loc1_.push(_loc2_.shopItemInfo);
-               _isBandList.push(_loc2_);
+               arr.push(item.shopItemInfo);
+               _isBandList.push(item);
             }
-            _loc4_++;
+            i++;
          }
-         return _loc1_;
+         return arr;
       }
       
       private function get shopInfoList() : Array
       {
-         var _loc3_:* = 0;
-         var _loc2_:* = null;
-         var _loc1_:Array = [];
-         _loc3_ = uint(0);
-         while(_loc3_ < _itemContainer.numChildren)
+         var i:* = 0;
+         var item:* = null;
+         var arr:Array = [];
+         for(i = uint(0); i < _itemContainer.numChildren; )
          {
-            _loc2_ = _itemContainer.getChildAt(_loc3_) as ShopRechargeEquipViewItem;
-            _loc1_.push(_loc2_.shopItemInfo);
-            _loc3_++;
+            item = _itemContainer.getChildAt(i) as ShopRechargeEquipViewItem;
+            arr.push(item.shopItemInfo);
+            i++;
          }
-         return _loc1_;
+         return arr;
       }
       
       private function updateTxt() : void
       {
-         var _loc2_:Array = shopInfoListWithOutDelete;
-         var _loc1_:uint = _loc2_.length;
-         _currentCountTxt.text = String(_loc1_);
-         if(_loc1_ == 0)
+         var arr:Array = shopInfoListWithOutDelete;
+         var count:uint = arr.length;
+         _currentCountTxt.text = String(count);
+         if(count == 0)
          {
             _affirmContinuBt.enable = false;
          }
@@ -384,15 +380,15 @@ package shop.view
          {
             _affirmContinuBt.enable = true;
          }
-         _frame.submitButtonEnable = _loc1_ <= 0?false:true;
+         _frame.submitButtonEnable = count <= 0?false:true;
          price = new ItemPrice(null,null,null);
-         var _loc4_:int = 0;
+         var t_i:int = 0;
          var _loc6_:int = 0;
-         var _loc5_:* = _loc2_;
-         for each(var _loc3_ in _loc2_)
+         var _loc5_:* = arr;
+         for each(var i in arr)
          {
-            price.addItemPrice(_loc3_.getCurrentPrice(),false,_isBandList[_loc4_].moneType);
-            _loc4_++;
+            price.addItemPrice(i.getCurrentPrice(),false,_isBandList[t_i].moneType);
+            t_i++;
          }
          _costMoneyTxt.text = String(price.bothMoneyValue);
          _costGiftTxt.text = String(price.bandDdtMoneyValue);
@@ -400,7 +396,7 @@ package shop.view
          PlayerManager.Instance.Self.addEventListener("propertychange",__onPlayerPropertyChange,false,0,true);
       }
       
-      private function __onPlayerPropertyChange(param1:Event = null) : void
+      private function __onPlayerPropertyChange(e:Event = null) : void
       {
          _playerMoneyTxt.text = String(PlayerManager.Instance.Self.Money);
          _playerGiftTxt.text = String(PlayerManager.Instance.Self.BandMoney);
@@ -433,10 +429,10 @@ package shop.view
       
       private function showAlert() : void
       {
-         var _loc1_:* = null;
+         var frame:* = null;
          if(price.bothMoneyValue > PlayerManager.Instance.Self.Money)
          {
-            _loc1_ = LeavePageManager.showFillFrame();
+            frame = LeavePageManager.showFillFrame();
          }
       }
       

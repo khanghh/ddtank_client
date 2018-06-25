@@ -34,14 +34,14 @@ package game.actions
       
       private var _canShootImp:Boolean;
       
-      public function MonsterShootBombAction(param1:GameLiving, param2:Array, param3:CrazyTankSocketEvent, param4:int)
+      public function MonsterShootBombAction(monster:GameLiving, bombs:Array, event:CrazyTankSocketEvent, interval:int)
       {
          super();
-         _monster = param1;
-         _bombs = param2;
-         _event = param3;
+         _monster = monster;
+         _bombs = bombs;
+         _event = event;
          _prepared = false;
-         _shootInterval = param4 / 40;
+         _shootInterval = interval / 40;
       }
       
       override public function prepare() : void
@@ -52,7 +52,7 @@ package game.actions
          _monster.actionMovie.doAction("shoot",onCallbackPrepared);
       }
       
-      protected function onEventPrepared(param1:Event) : void
+      protected function onEventPrepared(evt:Event) : void
       {
          canShoot();
       }
@@ -90,39 +90,37 @@ package game.actions
          }
       }
       
-      private function executeImp(param1:Boolean) : void
+      private function executeImp(fastModel:Boolean) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
+         var i:int = 0;
+         var j:int = 0;
+         var bomb:* = null;
          if(!_isShoot)
          {
             _isShoot = true;
             SoundManager.instance.play(_info.ShootSound);
-            _loc5_ = 0;
-            while(_loc5_ < _bombs.length)
+            for(i = 0; i < _bombs.length; )
             {
-               _loc4_ = 0;
-               while(_loc4_ < _bombs[_loc5_].Actions.length)
+               for(j = 0; j < _bombs[i].Actions.length; )
                {
-                  if(_bombs[_loc5_].Actions[_loc4_].type == 5)
+                  if(_bombs[i].Actions[j].type == 5)
                   {
-                     _bombs.unshift(_bombs.splice(_loc5_,1)[0]);
+                     _bombs.unshift(_bombs.splice(i,1)[0]);
                      break;
                   }
-                  _loc4_++;
+                  j++;
                }
-               _loc5_++;
+               i++;
             }
             var _loc7_:int = 0;
             var _loc6_:* = _bombs;
-            for each(var _loc2_ in _bombs)
+            for each(var b in _bombs)
             {
-               _loc3_ = new SimpleBomb(_loc2_,_monster.info);
-               _monster.map.addPhysical(_loc3_);
-               if(param1)
+               bomb = new SimpleBomb(b,_monster.info);
+               _monster.map.addPhysical(bomb);
+               if(fastModel)
                {
-                  _loc3_.bombAtOnce();
+                  bomb.bombAtOnce();
                }
             }
          }

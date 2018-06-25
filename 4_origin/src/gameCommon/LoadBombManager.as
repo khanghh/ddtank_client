@@ -13,7 +13,7 @@ package gameCommon
       
       public static const SpecialBomb:Array = [1,3,4];
       
-      public static const SpecialAllBomb:Array = [1,3,4,64,59,97,98,120,10619];
+      public static const SpecialAllBomb:Array = [1,3,4,64,59,97,98,120,189,10619];
       
       public static const SceneEffectBomb:Array = [107,130,147,149];
       
@@ -45,27 +45,27 @@ package gameCommon
          return _instance;
       }
       
-      public function loadFullRoomPlayersBomb(param1:Array) : void
+      public function loadFullRoomPlayersBomb(roomPlayers:Array) : void
       {
-         loadFullWeaponBombMovie(param1);
-         loadFullWeaponBombBitMap(param1);
+         loadFullWeaponBombMovie(roomPlayers);
+         loadFullWeaponBombBitMap(roomPlayers);
       }
       
-      private function loadFullWeaponBombMovie(param1:Array) : void
+      private function loadFullWeaponBombMovie(roomPlayers:Array) : void
       {
-         var _loc4_:int = 0;
+         var weaponID:int = 0;
          _tempWeaponInfos = null;
          _tempWeaponInfos = new Dictionary();
          var _loc6_:int = 0;
-         var _loc5_:* = param1;
-         for each(var _loc2_ in param1)
+         var _loc5_:* = roomPlayers;
+         for each(var player in roomPlayers)
          {
-            if(!_loc2_.isViewer)
+            if(!player.isViewer)
             {
-               _loc4_ = _loc2_.playerInfo.WeaponID > 0?_loc2_.currentWeapInfo.TemplateID:70016;
-               if(!_tempWeaponInfos[_loc4_])
+               weaponID = player.playerInfo.WeaponID > 0?player.currentWeapInfo.TemplateID:70016;
+               if(!_tempWeaponInfos[weaponID])
                {
-                  _tempWeaponInfos[_loc4_] = new WeaponInfo(ItemManager.Instance.getTemplateById(_loc4_));
+                  _tempWeaponInfos[weaponID] = new WeaponInfo(ItemManager.Instance.getTemplateById(weaponID));
                }
             }
          }
@@ -73,198 +73,189 @@ package gameCommon
          {
             var _loc8_:int = 0;
             var _loc7_:* = _tempWeaponInfos;
-            for each(var _loc3_ in _tempWeaponInfos)
+            for each(var weapInfo in _tempWeaponInfos)
             {
-               loadBomb(_loc3_);
+               loadBomb(weapInfo);
             }
          }
       }
       
-      private function loadFullWeaponBombBitMap(param1:Array) : void
+      private function loadFullWeaponBombBitMap(roomPlayers:Array) : void
       {
-         var _loc5_:int = 0;
-         var _loc3_:int = 0;
+         var i:int = 0;
+         var bombId:int = 0;
          _tempCraterIDs = null;
          _tempCraterIDs = new Dictionary();
          var _loc7_:int = 0;
          var _loc6_:* = _tempWeaponInfos;
-         for each(var _loc2_ in _tempWeaponInfos)
+         for each(var weapInfo in _tempWeaponInfos)
          {
-            _loc5_ = 0;
-            while(_loc5_ < _loc2_.bombs.length)
+            for(i = 0; i < weapInfo.bombs.length; )
             {
-               _loc3_ = _loc2_.bombs[_loc5_];
-               if(TwoBomb.hasOwnProperty(_loc3_))
+               bombId = weapInfo.bombs[i];
+               if(TwoBomb.hasOwnProperty(bombId))
                {
-                  if(!_tempCraterIDs[BallManager.instance.findBall(TwoBomb[_loc3_]).craterID])
+                  if(!_tempCraterIDs[BallManager.instance.findBall(TwoBomb[bombId]).craterID])
                   {
-                     _tempCraterIDs[BallManager.instance.findBall(TwoBomb[_loc3_]).craterID] = BallManager.instance.findBall(TwoBomb[_loc3_]);
+                     _tempCraterIDs[BallManager.instance.findBall(TwoBomb[bombId]).craterID] = BallManager.instance.findBall(TwoBomb[bombId]);
                   }
                }
-               if(!_tempCraterIDs[BallManager.instance.findBall(_loc2_.bombs[_loc5_]).craterID])
+               if(!_tempCraterIDs[BallManager.instance.findBall(weapInfo.bombs[i]).craterID])
                {
-                  _tempCraterIDs[BallManager.instance.findBall(_loc2_.bombs[_loc5_]).craterID] = BallManager.instance.findBall(_loc2_.bombs[_loc5_]);
+                  _tempCraterIDs[BallManager.instance.findBall(weapInfo.bombs[i]).craterID] = BallManager.instance.findBall(weapInfo.bombs[i]);
                }
-               _loc5_++;
+               i++;
             }
          }
          var _loc9_:int = 0;
          var _loc8_:* = _tempCraterIDs;
-         for each(var _loc4_ in _tempCraterIDs)
+         for each(var ballInfo in _tempCraterIDs)
          {
-            _loc4_.loadCraterBitmap();
+            ballInfo.loadCraterBitmap();
          }
       }
       
-      private function loadBomb(param1:WeaponInfo) : void
+      private function loadBomb(info:WeaponInfo) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < param1.bombs.length)
+         var i:int = 0;
+         var bombId:int = 0;
+         for(i = 0; i < info.bombs.length; )
          {
-            BallManager.instance.findBall(param1.bombs[_loc3_]).loadBombAsset();
-            _loc2_ = param1.bombs[_loc3_];
-            if(TwoBomb.hasOwnProperty(_loc2_))
+            BallManager.instance.findBall(info.bombs[i]).loadBombAsset();
+            bombId = info.bombs[i];
+            if(TwoBomb.hasOwnProperty(bombId))
             {
-               BallManager.instance.findBall(TwoBomb[_loc2_]).loadBombAsset();
+               BallManager.instance.findBall(TwoBomb[bombId]).loadBombAsset();
             }
-            BallManager.instance.findBall(_loc2_).loadBombAsset();
-            _loc3_++;
+            BallManager.instance.findBall(bombId).loadBombAsset();
+            i++;
          }
       }
       
-      public function getLoadBombComplete(param1:WeaponInfo) : Boolean
+      public function getLoadBombComplete(info:WeaponInfo) : Boolean
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < param1.bombs.length)
+         var i:int = 0;
+         var bombId:int = 0;
+         for(i = 0; i < info.bombs.length; )
          {
-            _loc2_ = param1.bombs[_loc3_];
-            if(TwoBomb.hasOwnProperty(_loc2_))
+            bombId = info.bombs[i];
+            if(TwoBomb.hasOwnProperty(bombId))
             {
-               if(!BallManager.instance.findBall(TwoBomb[_loc2_]).isComplete())
+               if(!BallManager.instance.findBall(TwoBomb[bombId]).isComplete())
                {
                   return false;
                }
             }
-            if(!BallManager.instance.findBall(_loc2_).isComplete())
+            if(!BallManager.instance.findBall(bombId).isComplete())
             {
                return false;
             }
-            _loc3_++;
+            i++;
          }
          return true;
       }
       
-      public function getUnloadedBombString(param1:WeaponInfo) : String
+      public function getUnloadedBombString(info:WeaponInfo) : String
       {
-         var _loc3_:int = 0;
-         var _loc2_:String = "";
-         _loc3_ = 0;
-         while(_loc3_ < param1.bombs.length)
+         var i:int = 0;
+         var result:String = "";
+         for(i = 0; i < info.bombs.length; )
          {
-            if(!BallManager.instance.findBall(param1.bombs[_loc3_]).isComplete())
+            if(!BallManager.instance.findBall(info.bombs[i]).isComplete())
             {
-               _loc2_ = _loc2_ + (param1.bombs[_loc3_] + ",");
+               result = result + (info.bombs[i] + ",");
             }
-            _loc3_++;
+            i++;
          }
-         return _loc2_;
+         return result;
       }
       
-      public function loadLivingBomb(param1:int) : void
+      public function loadLivingBomb(id:int) : void
       {
          try
          {
-            BallManager.instance.findBall(param1).loadBombAsset();
-            BallManager.instance.findBall(param1).loadCraterBitmap();
+            BallManager.instance.findBall(id).loadBombAsset();
+            BallManager.instance.findBall(id).loadCraterBitmap();
             return;
          }
          catch(e:Error)
          {
-            throw new Error("刘雯静你的意大利炮" + param1.toString() + "呢?");
+            throw new Error("刘雯静你的意大利炮" + id.toString() + "呢?");
          }
       }
       
-      public function getLivingBombComplete(param1:int) : Boolean
+      public function getLivingBombComplete(id:int) : Boolean
       {
-         return BallManager.instance.findBall(param1).isComplete();
+         return BallManager.instance.findBall(id).isComplete();
       }
       
       public function loadSpecialBomb() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < SpecialAllBomb.length)
+         var i:int = 0;
+         for(i = 0; i < SpecialAllBomb.length; )
          {
-            BallManager.instance.findBall(SpecialAllBomb[_loc1_]).loadBombAsset();
-            BallManager.instance.findBall(SpecialAllBomb[_loc1_]).loadCraterBitmap();
-            _loc1_++;
+            BallManager.instance.findBall(SpecialAllBomb[i]).loadBombAsset();
+            BallManager.instance.findBall(SpecialAllBomb[i]).loadCraterBitmap();
+            i++;
          }
       }
       
       public function loadSceneEffectBomb() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         _loc2_ = 0;
-         while(_loc2_ < SceneEffectBomb.length)
+         var i:int = 0;
+         var ball:* = null;
+         for(i = 0; i < SceneEffectBomb.length; )
          {
-            _loc1_ = BallManager.instance.findBall(SceneEffectBomb[_loc2_]);
-            _loc1_.loadBombAsset();
-            _loc1_.loadCraterBitmap();
-            _loc2_++;
+            ball = BallManager.instance.findBall(SceneEffectBomb[i]);
+            ball.loadBombAsset();
+            ball.loadCraterBitmap();
+            i++;
          }
       }
       
       public function getUnloadedSpecialBombString() : String
       {
-         var _loc2_:int = 0;
-         var _loc1_:String = "";
-         _loc2_ = 0;
-         while(_loc2_ < SpecialAllBomb.length)
+         var i:int = 0;
+         var result:String = "";
+         for(i = 0; i < SpecialAllBomb.length; )
          {
-            if(!BallManager.instance.findBall(SpecialAllBomb[_loc2_]).isComplete())
+            if(!BallManager.instance.findBall(SpecialAllBomb[i]).isComplete())
             {
-               _loc1_ = _loc1_ + (SpecialAllBomb[_loc2_] + ",");
+               result = result + (SpecialAllBomb[i] + ",");
             }
-            _loc2_++;
+            i++;
          }
-         return _loc1_;
+         return result;
       }
       
       public function getLoadSpecialBombComplete() : Boolean
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < SpecialAllBomb.length)
+         var i:int = 0;
+         for(i = 0; i < SpecialAllBomb.length; )
          {
-            if(!BallManager.instance.findBall(SpecialAllBomb[_loc1_]).isComplete())
+            if(!BallManager.instance.findBall(SpecialAllBomb[i]).isComplete())
             {
                return false;
             }
-            _loc1_++;
+            i++;
          }
          return true;
       }
       
-      public function loadOutBomb(param1:Array) : void
+      public function loadOutBomb(list:Array) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < param1.length)
+         var i:int = 0;
+         for(i = 0; i < list.length; )
          {
-            if(!hasLoadWeaponBomb(param1[_loc2_]))
+            if(!hasLoadWeaponBomb(list[i]))
             {
-               BallManager.instance.findBall(param1[_loc2_]).loadCraterBitmap();
+               BallManager.instance.findBall(list[i]).loadCraterBitmap();
             }
-            _loc2_++;
+            i++;
          }
       }
       
-      private function hasLoadWeaponBomb(param1:int) : Boolean
+      private function hasLoadWeaponBomb(id:int) : Boolean
       {
          if(_tempCraterIDs == null)
          {
@@ -272,9 +263,9 @@ package gameCommon
          }
          var _loc4_:int = 0;
          var _loc3_:* = _tempCraterIDs;
-         for each(var _loc2_ in _tempCraterIDs)
+         for each(var info in _tempCraterIDs)
          {
-            if(_loc2_.ID == param1)
+            if(info.ID == id)
             {
                return true;
             }
@@ -282,42 +273,42 @@ package gameCommon
          return false;
       }
       
-      public function loadFullRoomPlayersBomb3D(param1:Array) : void
+      public function loadFullRoomPlayersBomb3D(roomPlayers:Array) : void
       {
-         loadFullWeaponBombMovie3D(param1);
-         loadFullWeaponBombBitMap(param1);
+         loadFullWeaponBombMovie3D(roomPlayers);
+         loadFullWeaponBombBitMap(roomPlayers);
       }
       
-      private function loadFullWeaponBombMovie3D(param1:Array) : void
+      private function loadFullWeaponBombMovie3D(roomPlayers:Array) : void
       {
-         var _loc4_:int = 0;
-         var _loc6_:* = null;
-         var _loc5_:int = 0;
+         var weaponID:int = 0;
+         var weaponInfo:* = null;
+         var bombId:int = 0;
          _tempWeaponInfos = null;
          _tempWeaponInfos = new Dictionary();
          var _loc8_:int = 0;
-         var _loc7_:* = param1;
-         for each(var _loc2_ in param1)
+         var _loc7_:* = roomPlayers;
+         for each(var player in roomPlayers)
          {
-            if(!_loc2_.isViewer)
+            if(!player.isViewer)
             {
-               _loc4_ = _loc2_.playerInfo.WeaponID > 0?_loc2_.currentWeapInfo.TemplateID:70016;
-               if(!_tempWeaponInfos[_loc4_])
+               weaponID = player.playerInfo.WeaponID > 0?player.currentWeapInfo.TemplateID:70016;
+               if(!_tempWeaponInfos[weaponID])
                {
-                  _loc6_ = new WeaponInfo(ItemManager.Instance.getTemplateById(_loc4_));
-                  _tempWeaponInfos[_loc4_] = _loc6_;
-                  _loc5_ = _loc6_.bombs[0];
-                  if(TwoBomb.hasOwnProperty(_loc5_))
+                  weaponInfo = new WeaponInfo(ItemManager.Instance.getTemplateById(weaponID));
+                  _tempWeaponInfos[weaponID] = weaponInfo;
+                  bombId = weaponInfo.bombs[0];
+                  if(TwoBomb.hasOwnProperty(bombId))
                   {
-                     BallManager.instance.findBall(TwoBomb[_loc5_]).loadBombAsset3D();
+                     BallManager.instance.findBall(TwoBomb[bombId]).loadBombAsset3D();
                   }
                }
-               if(!StartupResourceLoader.firstEnterHall && _loc2_.playerInfo.DeputyWeaponID > 0)
+               if(!StartupResourceLoader.firstEnterHall && player.playerInfo.DeputyWeaponID > 0)
                {
-                  _loc6_ = new WeaponInfo(ItemManager.Instance.getTemplateById(_loc2_.playerInfo.DeputyWeaponID));
-                  if(_loc6_.bombs && _loc6_.bombs.length && !_tempWeaponInfos[_loc6_.bombs[0]] && SpecialAllBomb.indexOf(_loc6_.bombs[0]) != -1)
+                  weaponInfo = new WeaponInfo(ItemManager.Instance.getTemplateById(player.playerInfo.DeputyWeaponID));
+                  if(weaponInfo.bombs && weaponInfo.bombs.length && !_tempWeaponInfos[weaponInfo.bombs[0]] && SpecialAllBomb.indexOf(weaponInfo.bombs[0]) != -1)
                   {
-                     _tempWeaponInfos[_loc6_.bombs[0]] = _loc6_;
+                     _tempWeaponInfos[weaponInfo.bombs[0]] = weaponInfo;
                   }
                }
             }
@@ -326,80 +317,77 @@ package gameCommon
          {
             var _loc10_:int = 0;
             var _loc9_:* = _tempWeaponInfos;
-            for each(var _loc3_ in _tempWeaponInfos)
+            for each(var weapInfo in _tempWeaponInfos)
             {
-               if(_loc3_.bombs.length)
+               if(weapInfo.bombs.length)
                {
-                  loadLivingBomb3D(_loc3_.bombs[0]);
+                  loadLivingBomb3D(weapInfo.bombs[0]);
                }
             }
          }
       }
       
-      public function loadLivingBomb3D(param1:int) : void
+      public function loadLivingBomb3D(id:int) : void
       {
-         BallManager.instance.findBall(param1).loadBombAsset3D();
-         BallManager.instance.findBall(param1).loadCraterBitmap();
+         BallManager.instance.findBall(id).loadBombAsset3D();
+         BallManager.instance.findBall(id).loadCraterBitmap();
       }
       
-      public function getLivingBombComplete3D(param1:int) : Boolean
+      public function getLivingBombComplete3D(id:int) : Boolean
       {
-         return BallManager.instance.findBall(param1).isComplete3D();
+         return BallManager.instance.findBall(id).isComplete3D();
       }
       
       public function loadSpecialBomb3D() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < SpecialBomb.length)
+         var i:int = 0;
+         for(i = 0; i < SpecialBomb.length; )
          {
-            BallManager.instance.findBall(SpecialBomb[_loc1_]).loadBombAsset3D();
-            BallManager.instance.findBall(SpecialBomb[_loc1_]).loadCraterBitmap();
-            _loc1_++;
+            BallManager.instance.findBall(SpecialBomb[i]).loadBombAsset3D();
+            BallManager.instance.findBall(SpecialBomb[i]).loadCraterBitmap();
+            i++;
          }
       }
       
-      public function loadOutBomb3D(param1:Array) : void
+      public function loadOutBomb3D(list:Array) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < param1.length)
+         var i:int = 0;
+         for(i = 0; i < list.length; )
          {
-            if(!hasLoadWeaponBomb(param1[_loc2_]))
+            if(!hasLoadWeaponBomb(list[i]))
             {
-               BallManager.instance.findBall(param1[_loc2_]).loadCraterBitmap();
+               BallManager.instance.findBall(list[i]).loadCraterBitmap();
             }
-            _loc2_++;
+            i++;
          }
       }
       
       public function loadSceneEffectBomb3D() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         _loc2_ = 0;
-         while(_loc2_ < SceneEffectBomb.length)
+         var i:int = 0;
+         var ball:* = null;
+         for(i = 0; i < SceneEffectBomb.length; )
          {
-            _loc1_ = BallManager.instance.findBall(SceneEffectBomb[_loc2_]);
-            _loc1_.loadBombAsset3D();
-            _loc1_.loadCraterBitmap();
-            _loc2_++;
+            ball = BallManager.instance.findBall(SceneEffectBomb[i]);
+            ball.loadBombAsset3D();
+            ball.loadCraterBitmap();
+            i++;
          }
       }
       
-      public function getLoadBombComplete3D(param1:WeaponInfo) : Boolean
+      public function getLoadBombComplete3D(info:WeaponInfo) : Boolean
       {
-         var _loc2_:int = 0;
-         if(param1.bombs.length > 0)
+         var bombId:int = 0;
+         if(info.bombs.length > 0)
          {
-            if(!BallManager.instance.findBall(param1.bombs[0]).isComplete3D())
+            if(!BallManager.instance.findBall(info.bombs[0]).isComplete3D())
             {
                return false;
             }
-            _loc2_ = param1.bombs[0];
-            if(TwoBomb.hasOwnProperty(_loc2_))
+            bombId = info.bombs[0];
+            if(TwoBomb.hasOwnProperty(bombId))
             {
-               if(!BallManager.instance.findBall(TwoBomb[_loc2_]).isComplete3D())
+               if(!BallManager.instance.findBall(TwoBomb[bombId]).isComplete3D())
                {
                   return false;
                }
@@ -410,46 +398,43 @@ package gameCommon
       
       public function getLoadSpecialBombComplete3D() : Boolean
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < SpecialBomb.length)
+         var i:int = 0;
+         for(i = 0; i < SpecialBomb.length; )
          {
-            if(!BallManager.instance.findBall(SpecialBomb[_loc1_]).isComplete3D())
+            if(!BallManager.instance.findBall(SpecialBomb[i]).isComplete3D())
             {
                return false;
             }
-            _loc1_++;
+            i++;
          }
          return true;
       }
       
       public function getUnloadedSpecialBomb3DString() : String
       {
-         var _loc2_:int = 0;
-         var _loc1_:String = "";
-         _loc2_ = 0;
-         while(_loc2_ < SpecialBomb.length)
+         var i:int = 0;
+         var result:String = "";
+         for(i = 0; i < SpecialBomb.length; )
          {
-            if(!BallManager.instance.findBall(SpecialBomb[_loc2_]).isComplete())
+            if(!BallManager.instance.findBall(SpecialBomb[i]).isComplete())
             {
-               _loc1_ = _loc1_ + (SpecialBomb[_loc2_] + ",");
+               result = result + (SpecialBomb[i] + ",");
             }
-            _loc2_++;
+            i++;
          }
-         return _loc1_;
+         return result;
       }
       
       public function getLoadSceneEffectBombComplete3D() : Boolean
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < SceneEffectBomb.length)
+         var i:int = 0;
+         for(i = 0; i < SceneEffectBomb.length; )
          {
-            if(!BallManager.instance.findBall(SceneEffectBomb[_loc1_]).isComplete3D())
+            if(!BallManager.instance.findBall(SceneEffectBomb[i]).isComplete3D())
             {
                return false;
             }
-            _loc1_++;
+            i++;
          }
          return true;
       }

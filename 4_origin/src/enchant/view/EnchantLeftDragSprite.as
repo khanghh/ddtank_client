@@ -23,7 +23,7 @@ package enchant.view
          super();
       }
       
-      public function dragDrop(param1:DragEffect) : void
+      public function dragDrop(effect:DragEffect) : void
       {
          DragManager.acceptDrag(this,"none");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -31,20 +31,20 @@ package enchant.view
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:InventoryItemInfo = param1.data as InventoryItemInfo;
-         if(_loc2_.MagicLevel >= EnchantManager.instance.infoVec.length)
+         var tmp:InventoryItemInfo = effect.data as InventoryItemInfo;
+         if(tmp.MagicLevel >= EnchantManager.instance.infoVec.length)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("enchant.cannotUp"));
             return;
          }
-         if(_loc2_.BagType == 0)
+         if(tmp.BagType == 0)
          {
             equipCellActionState = true;
-            SocketManager.Instance.out.sendMoveGoods(_loc2_.BagType,_loc2_.Place,12,1,1);
+            SocketManager.Instance.out.sendMoveGoods(tmp.BagType,tmp.Place,12,1,1);
          }
-         else if(_loc2_.BagType == 1)
+         else if(tmp.BagType == 1)
          {
-            SocketManager.Instance.out.sendMoveGoods(_loc2_.BagType,_loc2_.Place,12,0,_loc2_.Count,true);
+            SocketManager.Instance.out.sendMoveGoods(tmp.BagType,tmp.Place,12,0,tmp.Count,true);
          }
       }
    }

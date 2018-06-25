@@ -42,7 +42,7 @@ package petsBag.petsAdvanced
          addEventListener("enterFrame",__enterFrame);
       }
       
-      protected function __enterFrame(param1:Event) : void
+      protected function __enterFrame(event:Event) : void
       {
          if(_progressMc.currentFrame >= 25)
          {
@@ -101,10 +101,10 @@ package petsBag.petsAdvanced
          setProgress(0);
       }
       
-      public function setProgress(param1:Number, param2:Boolean = false) : void
+      public function setProgress(exp:Number, success:Boolean = false) : void
       {
-         _currentExp = param1;
-         if(param2)
+         _currentExp = exp;
+         if(success)
          {
             _progressBarMask.width = _sumWidth;
             _progressTxt.text = "100%";
@@ -155,9 +155,9 @@ package petsBag.petsAdvanced
          return _max;
       }
       
-      public function set max(param1:Number) : void
+      public function set max(value:Number) : void
       {
-         _max = param1;
+         _max = value;
       }
       
       public function get currentExp() : int
@@ -165,9 +165,9 @@ package petsBag.petsAdvanced
          return _currentExp;
       }
       
-      public function set currentExp(param1:int) : void
+      public function set currentExp(value:int) : void
       {
-         _currentExp = param1;
+         _currentExp = value;
       }
    }
 }

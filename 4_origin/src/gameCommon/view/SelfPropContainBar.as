@@ -38,41 +38,41 @@ package gameCommon.view
       
       private var _myitems:Array;
       
-      public function SelfPropContainBar(param1:LocalPlayer)
+      public function SelfPropContainBar(self:LocalPlayer)
       {
-         super(param1,3,3,false,false,false,"propShortCutView");
+         super(self,3,3,false,false,false,"propShortCutView");
          _back = ComponentFactory.Instance.creatBitmap("asset.game.propBackAsset");
          addChild(_back);
-         var _loc2_:Point = ComponentFactory.Instance.creatCustomObject("asset.game.itemContainerPos");
-         _itemContainer.x = _loc2_.x;
-         _itemContainer.y = _loc2_.y;
+         var itemPos:Point = ComponentFactory.Instance.creatCustomObject("asset.game.itemContainerPos");
+         _itemContainer.x = itemPos.x;
+         _itemContainer.y = itemPos.y;
          addChild(_itemContainer);
          _shortCut = new PropShortCutView();
          _shortCut.setPropCloseEnabled(0,false);
          _shortCut.setPropCloseEnabled(1,false);
          _shortCut.setPropCloseEnabled(2,false);
          addChild(_shortCut);
-         setLocalPlayer(param1.playerInfo as SelfInfo);
+         setLocalPlayer(self.playerInfo as SelfInfo);
          initData();
       }
       
       private function initData() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:BagInfo = _info.FightBag;
+         var propInfo:* = null;
+         var bag:BagInfo = _info.FightBag;
          var _loc5_:int = 0;
-         var _loc4_:* = _loc1_.items;
-         for each(var _loc3_ in _loc1_.items)
+         var _loc4_:* = bag.items;
+         for each(var info in bag.items)
          {
-            _loc2_ = new PropInfo(_loc3_);
-            _loc2_.Place = _loc3_.Place;
-            addProp(_loc2_);
+            propInfo = new PropInfo(info);
+            propInfo.Place = info.Place;
+            addProp(propInfo);
          }
       }
       
-      private function __keyDown(param1:KeyboardEvent) : void
+      private function __keyDown(event:KeyboardEvent) : void
       {
-         var _loc2_:* = param1.keyCode;
+         var _loc2_:* = event.keyCode;
          if(KeyStroke.VK_Z.getCode() !== _loc2_)
          {
             if(KeyStroke.VK_X.getCode() !== _loc2_)
@@ -106,16 +106,16 @@ package gameCommon.view
          KeyboardManager.getInstance().removeEventListener("keyDown",__keyDown);
       }
       
-      public function setLocalPlayer(param1:SelfInfo) : void
+      public function setLocalPlayer(value:SelfInfo) : void
       {
-         if(_info != param1)
+         if(_info != value)
          {
             if(_info)
             {
                _info.FightBag.removeEventListener("update",__updateProp);
                _itemContainer.clear();
             }
-            _info = param1;
+            _info = value;
             if(_info)
             {
                _info.FightBag.addEventListener("update",__updateProp);
@@ -123,48 +123,48 @@ package gameCommon.view
          }
       }
       
-      private function __removeProp(param1:BagEvent) : void
+      private function __removeProp(event:BagEvent) : void
       {
-         var _loc2_:PropInfo = new PropInfo(param1.changedSlots as InventoryItemInfo);
-         _loc2_.Place = param1.changedSlots.Place;
-         removeProp(_loc2_ as PropInfo);
+         var propInfo:PropInfo = new PropInfo(event.changedSlots as InventoryItemInfo);
+         propInfo.Place = event.changedSlots.Place;
+         removeProp(propInfo as PropInfo);
       }
       
-      private function __updateProp(param1:BagEvent) : void
+      private function __updateProp(event:BagEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         var _loc6_:Dictionary = param1.changedSlots;
+         var c:* = null;
+         var propInfo:* = null;
+         var propInfo1:* = null;
+         var changes:Dictionary = event.changedSlots;
          var _loc8_:int = 0;
-         var _loc7_:* = _loc6_;
-         for each(var _loc5_ in _loc6_)
+         var _loc7_:* = changes;
+         for each(var i in changes)
          {
-            _loc2_ = _info.FightBag.getItemAt(_loc5_.Place);
-            if(_loc2_)
+            c = _info.FightBag.getItemAt(i.Place);
+            if(c)
             {
-               _loc3_ = new PropInfo(_loc2_);
-               _loc3_.Place = _loc2_.Place;
-               addProp(_loc3_);
+               propInfo = new PropInfo(c);
+               propInfo.Place = c.Place;
+               addProp(propInfo);
             }
             else
             {
-               _loc4_ = new PropInfo(_loc5_);
-               _loc4_.Place = _loc5_.Place;
-               removeProp(_loc4_);
+               propInfo1 = new PropInfo(i);
+               propInfo1.Place = i.Place;
+               removeProp(propInfo1);
             }
          }
       }
       
-      override public function setClickEnabled(param1:Boolean, param2:Boolean) : void
+      override public function setClickEnabled(clickAble:Boolean, isGray:Boolean) : void
       {
-         super.setClickEnabled(param1,param2);
+         super.setClickEnabled(clickAble,isGray);
       }
       
-      override protected function __click(param1:ItemEvent) : void
+      override protected function __click(event:ItemEvent) : void
       {
-         var _loc2_:* = null;
-         if(param1.item == null)
+         var info:* = null;
+         if(event.item == null)
          {
             return;
          }
@@ -183,21 +183,21 @@ package gameCommon.view
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.game.ArrowViewIII.fall"));
                return;
             }
-            if(self.energy >= Number(PropItemView(param1.item).info.Template.Property4))
+            if(self.energy >= Number(PropItemView(event.item).info.Template.Property4))
             {
-               _loc2_ = PropItemView(param1.item).info;
-               self.useItem(_loc2_.Template);
-               GameInSocketOut.sendUseProp(2,_loc2_.Place,_loc2_.Template.TemplateID);
-               if(_loc2_.Template.TemplateID == 10003)
+               info = PropItemView(event.item).info;
+               self.useItem(info.Template);
+               GameInSocketOut.sendUseProp(2,info.Place,info.Template.TemplateID);
+               if(info.Template.TemplateID == 10003)
                {
                   dispatchEvent(new Event(USE_THREE_SKILL));
                }
-               if(_loc2_.Template.TemplateID == 10016)
+               if(info.Template.TemplateID == 10016)
                {
                   dispatchEvent(new Event(USE_PLANE));
                }
-               _itemContainer.setItemClickAt(_loc2_.Place,false,true);
-               _shortCut.setPropCloseVisible(_loc2_.Place,false);
+               _itemContainer.setItemClickAt(info.Place,false,true);
+               _shortCut.setPropCloseVisible(info.Place,false);
             }
             else
             {
@@ -206,29 +206,29 @@ package gameCommon.view
          }
       }
       
-      override protected function __over(param1:ItemEvent) : void
+      override protected function __over(event:ItemEvent) : void
       {
-         super.__over(param1);
-         _shortCut.setPropCloseVisible(param1.index,true);
+         super.__over(event);
+         _shortCut.setPropCloseVisible(event.index,true);
       }
       
-      override protected function __out(param1:ItemEvent) : void
+      override protected function __out(event:ItemEvent) : void
       {
-         super.__out(param1);
-         _shortCut.setPropCloseVisible(param1.index,false);
+         super.__out(event);
+         _shortCut.setPropCloseVisible(event.index,false);
       }
       
-      public function addProp(param1:PropInfo) : void
+      public function addProp(info:PropInfo) : void
       {
-         _shortCut.setPropCloseEnabled(param1.Place,true);
-         _itemContainer.appendItemAt(new PropItemView(param1,true,false),param1.Place);
+         _shortCut.setPropCloseEnabled(info.Place,true);
+         _itemContainer.appendItemAt(new PropItemView(info,true,false),info.Place);
       }
       
-      public function removeProp(param1:PropInfo) : void
+      public function removeProp(info:PropInfo) : void
       {
-         _shortCut.setPropCloseEnabled(param1.Place,false);
-         _shortCut.setPropCloseVisible(param1.Place,false);
-         _itemContainer.removeItemAt(param1.Place);
+         _shortCut.setPropCloseEnabled(info.Place,false);
+         _shortCut.setPropCloseVisible(info.Place,false);
+         _itemContainer.removeItemAt(info.Place);
       }
    }
 }

@@ -56,17 +56,17 @@ package hall
          _okBtn.removeEventListener("click",_okClick);
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             dispose();
             sendStatInfo("no");
          }
       }
       
-      private function _okClick(param1:MouseEvent) : void
+      private function _okClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          dispose();
@@ -75,13 +75,13 @@ package hall
          sendStatInfo("yes");
       }
       
-      private function sendStatInfo(param1:String) : void
+      private function sendStatInfo(status:String) : void
       {
          if(PathManager.solveParterId() == null)
          {
             return;
          }
-         StatisticManager.Instance().startAction("saveFile",param1);
+         StatisticManager.Instance().startAction("saveFile",status);
       }
       
       public function show() : void

@@ -24,22 +24,22 @@ package wantstrong.view
       
       private var _model:WantStrongModel;
       
-      public function WantStrongMenu(param1:WantStrongModel)
+      public function WantStrongMenu(model:WantStrongModel)
       {
-         _menuArr = [1,2,3,4,5];
+         _menuArr = [1,2,3,4,5,6,7,8];
          _titleArr = [LanguageMgr.GetTranslation("ddt.wantStrong.view.titleText"),LanguageMgr.GetTranslation("ddt.wantStrong.view.levelUp"),LanguageMgr.GetTranslation("ddt.wantStrong.view.earnMoney"),LanguageMgr.GetTranslation("ddt.wantStrong.view.artifact"),LanguageMgr.GetTranslation("ddt.wantStrong.view.findBack")];
          _cellArr = [];
          super();
          WantStrongManager.Instance.addEventListener("cellChange",cellChangeHandler);
-         _model = param1;
+         _model = model;
          createUI();
       }
       
-      private function cellChangeHandler(param1:Event) : void
+      private function cellChangeHandler(event:Event) : void
       {
          if(_model.data[5].length == 0)
          {
-            removeChildAt(4);
+            removeChildAt(this.numChildren - 1);
             WantStrongManager.Instance.findBackExist = false;
             setSelectItem(_cellArr[_model.activeId - 1]);
          }
@@ -47,20 +47,19 @@ package wantstrong.view
       
       private function createUI() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         _loc2_ = 0;
-         while(_loc2_ < _menuArr.length)
+         var i:int = 0;
+         var cell:* = null;
+         for(i = 0; i < _menuArr.length; )
          {
-            if(_model.data[_menuArr[_loc2_]])
+            if(_model.data[_menuArr[i]])
             {
-               _loc1_ = new WantStrongCell(_model.data[_menuArr[_loc2_]],_titleArr[_loc2_]);
-               _loc1_.y = _loc2_ * 54;
-               _loc1_.addEventListener("click",_cellClickedHandle);
-               addChild(_loc1_);
-               _cellArr.push(_loc1_);
+               cell = new WantStrongCell(_model.data[_menuArr[i]],_titleArr[i]);
+               cell.y = i * 54;
+               cell.addEventListener("click",_cellClickedHandle);
+               addChild(cell);
+               _cellArr.push(cell);
             }
-            _loc2_++;
+            i++;
          }
          if(_cellArr.length > 0)
          {
@@ -69,31 +68,31 @@ package wantstrong.view
          }
       }
       
-      protected function _cellClickedHandle(param1:MouseEvent) : void
+      protected function _cellClickedHandle(event:MouseEvent) : void
       {
-         var _loc2_:WantStrongCell = param1.currentTarget as WantStrongCell;
-         setSelectItem(_loc2_);
-         WantStrongControl.Instance.setCurrentInfo(_loc2_.info);
+         var item:WantStrongCell = event.currentTarget as WantStrongCell;
+         setSelectItem(item);
+         WantStrongControl.Instance.setCurrentInfo(item.info);
          SoundManager.instance.play("008");
       }
       
-      private function setSelectItem(param1:WantStrongCell) : void
+      private function setSelectItem(item:WantStrongCell) : void
       {
-         if(param1 != _selectItem)
+         if(item != _selectItem)
          {
             if(_selectItem)
             {
                _selectItem.selected = false;
             }
-            _selectItem = param1;
+            _selectItem = item;
             _selectItem.selected = true;
          }
       }
       
       public function dispose() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var cell:* = null;
          WantStrongManager.Instance.removeEventListener("cellChange",cellChangeHandler);
          _menuArr = null;
          _titleArr = null;
@@ -102,17 +101,17 @@ package wantstrong.view
             _selectItem.dispose();
             _selectItem = null;
          }
-         _loc2_ = 0;
-         while(_loc2_ < _cellArr.length)
+         i = 0;
+         while(i < _cellArr.length)
          {
-            _loc1_ = _cellArr[_loc2_];
-            if(_loc1_)
+            cell = _cellArr[i];
+            if(cell)
             {
-               _loc1_.removeEventListener("click",_cellClickedHandle);
-               _loc1_.dispose();
-               _loc1_ = null;
+               cell.removeEventListener("click",_cellClickedHandle);
+               cell.dispose();
+               cell = null;
             }
-            _loc2_++;
+            i++;
          }
          _cellArr = null;
          if(parent)

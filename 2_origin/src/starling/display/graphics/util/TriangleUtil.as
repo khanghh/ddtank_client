@@ -11,79 +11,79 @@ package starling.display.graphics.util
          super();
       }
       
-      public static function isLeft(param1:Number, param2:Number, param3:Number, param4:Number, param5:Number, param6:Number) : Boolean
+      public static function isLeft(v0x:Number, v0y:Number, v1x:Number, v1y:Number, px:Number, py:Number) : Boolean
       {
-         return (param3 - param1) * (param6 - param2) - (param4 - param2) * (param5 - param1) < 0;
+         return (v1x - v0x) * (py - v0y) - (v1y - v0y) * (px - v0x) < 0;
       }
       
-      public static function isPointInTriangle(param1:Number, param2:Number, param3:Number, param4:Number, param5:Number, param6:Number, param7:Number, param8:Number) : Boolean
+      public static function isPointInTriangle(v0x:Number, v0y:Number, v1x:Number, v1y:Number, v2x:Number, v2y:Number, px:Number, py:Number) : Boolean
       {
-         if(isLeft(param5,param6,param1,param2,param7,param8))
+         if(isLeft(v2x,v2y,v0x,v0y,px,py))
          {
             return false;
          }
-         if(isLeft(param1,param2,param3,param4,param7,param8))
+         if(isLeft(v0x,v0y,v1x,v1y,px,py))
          {
             return false;
          }
-         if(isLeft(param3,param4,param5,param6,param7,param8))
+         if(isLeft(v1x,v1y,v2x,v2y,px,py))
          {
             return false;
          }
          return true;
       }
       
-      public static function isPointInTriangleBarycentric(param1:Number, param2:Number, param3:Number, param4:Number, param5:Number, param6:Number, param7:Number, param8:Number) : Boolean
+      public static function isPointInTriangleBarycentric(v0x:Number, v0y:Number, v1x:Number, v1y:Number, v2x:Number, v2y:Number, px:Number, py:Number) : Boolean
       {
-         var _loc10_:Number = ((param4 - param6) * (param7 - param5) + (param5 - param3) * (param8 - param6)) / ((param4 - param6) * (param1 - param5) + (param5 - param3) * (param2 - param6));
-         var _loc11_:Number = ((param6 - param2) * (param7 - param5) + (param1 - param5) * (param8 - param6)) / ((param4 - param6) * (param1 - param5) + (param5 - param3) * (param2 - param6));
-         var _loc9_:Number = 1 - _loc10_ - _loc11_;
-         if(_loc10_ > 0 && _loc11_ > 0 && _loc9_ > 0)
+         var alpha:Number = ((v1y - v2y) * (px - v2x) + (v2x - v1x) * (py - v2y)) / ((v1y - v2y) * (v0x - v2x) + (v2x - v1x) * (v0y - v2y));
+         var beta:Number = ((v2y - v0y) * (px - v2x) + (v0x - v2x) * (py - v2y)) / ((v1y - v2y) * (v0x - v2x) + (v2x - v1x) * (v0y - v2y));
+         var gamma:Number = 1 - alpha - beta;
+         if(alpha > 0 && beta > 0 && gamma > 0)
          {
             return true;
          }
          return false;
       }
       
-      public static function isPointOnLine(param1:Number, param2:Number, param3:Number, param4:Number, param5:Number, param6:Number, param7:Number) : Boolean
+      public static function isPointOnLine(v0x:Number, v0y:Number, v1x:Number, v1y:Number, px:Number, py:Number, distance:Number) : Boolean
       {
-         var _loc8_:Number = (param3 - param1) * (param3 - param1) + (param4 - param2) * (param4 - param2);
-         var _loc11_:Number = ((param5 - param1) * (param3 - param1) + (param6 - param2) * (param4 - param2)) / _loc8_;
-         if(_loc11_ < 0 || _loc11_ > 1)
+         var lineLengthSquared:Number = (v1x - v0x) * (v1x - v0x) + (v1y - v0y) * (v1y - v0y);
+         var interpolation:Number = ((px - v0x) * (v1x - v0x) + (py - v0y) * (v1y - v0y)) / lineLengthSquared;
+         if(interpolation < 0 || interpolation > 1)
          {
             return false;
          }
-         var _loc9_:Number = param1 + _loc11_ * (param3 - param1);
-         var _loc13_:Number = param2 + _loc11_ * (param4 - param2);
-         var _loc10_:Number = (param5 - _loc9_) * (param5 - _loc9_) + (param6 - _loc13_) * (param6 - _loc13_);
-         var _loc12_:Number = 1 + param7;
-         if(_loc10_ <= _loc12_ * _loc12_)
+         var intersectionX:Number = v0x + interpolation * (v1x - v0x);
+         var intersectionY:Number = v0y + interpolation * (v1y - v0y);
+         var distanceSquared:Number = (px - intersectionX) * (px - intersectionX) + (py - intersectionY) * (py - intersectionY);
+         var intersectThickness:Number = 1 + distance;
+         if(distanceSquared <= intersectThickness * intersectThickness)
          {
             return true;
          }
          return false;
       }
       
-      public static function lineIntersectLine(param1:Number, param2:Number, param3:Number, param4:Number, param5:Number, param6:Number, param7:Number, param8:Number, param9:Point) : Boolean
+      public static function lineIntersectLine(line1V0x:Number, line1V0y:Number, line1V1x:Number, line1V1y:Number, line2V0x:Number, line2V0y:Number, line2V1x:Number, line2V1y:Number, intersectPoint:Point) : Boolean
       {
-         var _loc17_:Number = param4 - param2;
-         var _loc16_:Number = param1 - param3;
-         var _loc14_:Number = param3 * param2 - param1 * param4;
-         var _loc18_:Number = param8 - param6;
-         var _loc13_:Number = param5 - param7;
-         var _loc15_:Number = param7 * param6 - param5 * param8;
-         var _loc10_:Number = _loc17_ * _loc13_ - _loc18_ * _loc16_;
-         if(_loc10_ == 0)
+         var a1:Number = line1V1y - line1V0y;
+         var b1:Number = line1V0x - line1V1x;
+         var c1:Number = line1V1x * line1V0y - line1V0x * line1V1y;
+         var a2:Number = line2V1y - line2V0y;
+         var b2:Number = line2V0x - line2V1x;
+         var c2:Number = line2V1x * line2V0y - line2V0x * line2V1y;
+         var d:Number = a1 * b2 - a2 * b1;
+         if(d == 0)
          {
             return false;
          }
-         var _loc19_:Number = 1 / _loc10_;
-         var _loc11_:Number = (_loc16_ * _loc15_ - _loc13_ * _loc14_) * _loc19_;
-         var _loc12_:Number = (_loc18_ * _loc14_ - _loc17_ * _loc15_) * _loc19_;
-         if(isPointOnLine(param1,param2,param3,param4,_loc11_,_loc12_,0) && isPointOnLine(param5,param6,param7,param8,_loc11_,_loc12_,0))
+         var invD:Number = 1 / d;
+         var ptx:Number = (b1 * c2 - b2 * c1) * invD;
+         var pty:Number = (a2 * c1 - a1 * c2) * invD;
+         if(isPointOnLine(line1V0x,line1V0y,line1V1x,line1V1y,ptx,pty,0) && isPointOnLine(line2V0x,line2V0y,line2V1x,line2V1y,ptx,pty,0))
          {
-            param9.x = _loc11_;
-            param9.y = _loc12_;
+            intersectPoint.x = ptx;
+            intersectPoint.y = pty;
             return true;
          }
          return false;

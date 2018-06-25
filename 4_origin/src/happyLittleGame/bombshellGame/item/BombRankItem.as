@@ -78,7 +78,7 @@ package happyLittleGame.bombshellGame.item
          addEventListener("mouseOut",__outHandler);
       }
       
-      private function __overHandler(param1:MouseEvent) : void
+      private function __overHandler(e:MouseEvent) : void
       {
          if(_info)
          {
@@ -87,7 +87,7 @@ package happyLittleGame.bombshellGame.item
          }
       }
       
-      private function __outHandler(param1:MouseEvent) : void
+      private function __outHandler(e:MouseEvent) : void
       {
          if(_info)
          {
@@ -102,9 +102,9 @@ package happyLittleGame.bombshellGame.item
          removeEventListener("mouseOut",__outHandler);
       }
       
-      public function set Info(param1:BombRankInfo) : void
+      public function set Info(info:BombRankInfo) : void
       {
-         _info = param1;
+         _info = info;
          setRank(_info.rank);
          _nameDis = _info.nameDis;
          _tipDis.text = _info.regDis + "-" + _info.nameDis;
@@ -131,9 +131,9 @@ package happyLittleGame.bombshellGame.item
          _rankTxt.text = "";
       }
       
-      public function setRank(param1:int) : void
+      public function setRank(ranking:int) : void
       {
-         _rank = param1;
+         _rank = ranking;
          if(_rank <= 3)
          {
             _icon.setFrame(_rank);
@@ -142,24 +142,24 @@ package happyLittleGame.bombshellGame.item
          else
          {
             _icon.visible = false;
-            _rankTxt.text = param1 + "";
+            _rankTxt.text = ranking + "";
          }
       }
       
-      private function getComponentByStylename(param1:String) : *
+      private function getComponentByStylename(stylename:String) : *
       {
-         return ComponentFactory.Instance.creatComponentByStylename(param1);
+         return ComponentFactory.Instance.creatComponentByStylename(stylename);
       }
       
       public function dispose() : void
       {
-         var _loc1_:* = null;
+         var obj:* = null;
          removeEvent();
          while(this.numChildren > 0)
          {
-            _loc1_ = removeChildAt(0);
-            ObjectUtils.disposeObject(_loc1_);
-            _loc1_ = null;
+            obj = removeChildAt(0);
+            ObjectUtils.disposeObject(obj);
+            obj = null;
          }
       }
    }

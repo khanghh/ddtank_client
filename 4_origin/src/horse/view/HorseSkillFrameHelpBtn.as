@@ -26,15 +26,15 @@ package horse.view
          _btn.addEventListener("click",clickHandler,false,0,true);
       }
       
-      private function clickHandler(param1:MouseEvent) : void
+      private function clickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         param1.stopImmediatePropagation();
-         var _loc2_:DisplayObject = ComponentFactory.Instance.creat("horse.skillFrame.HelpPrompt");
-         var _loc3_:HelpFrame = ComponentFactory.Instance.creat("horse.skillFrame.HelpFrame");
-         _loc3_.setView(_loc2_);
-         _loc3_.titleText = LanguageMgr.GetTranslation("store.view.HelpButtonText");
-         LayerManager.Instance.addToLayer(_loc3_,3,true,1);
+         event.stopImmediatePropagation();
+         var helpBd:DisplayObject = ComponentFactory.Instance.creat("horse.skillFrame.HelpPrompt");
+         var helpPage:HelpFrame = ComponentFactory.Instance.creat("horse.skillFrame.HelpFrame");
+         helpPage.setView(helpBd);
+         helpPage.titleText = LanguageMgr.GetTranslation("store.view.HelpButtonText");
+         LayerManager.Instance.addToLayer(helpPage,3,true,1);
       }
       
       public function dispose() : void

@@ -22,125 +22,124 @@ package times.utils
          super();
       }
       
-      public static function setPos(param1:*, param2:String) : void
+      public static function setPos(obj:*, posStyle:String) : void
       {
-         var _loc3_:Point = ComponentFactory.Instance.creatCustomObject(param2);
-         param1.x = _loc3_.x;
-         param1.y = _loc3_.y;
+         var pos:Point = ComponentFactory.Instance.creatCustomObject(posStyle);
+         obj.x = pos.x;
+         obj.y = pos.y;
       }
       
-      public static function getWords(param1:String, ... rest) : String
+      public static function getWords(stylename:String, ... args) : String
       {
-         var _loc3_:int = 0;
-         var _loc6_:XML = ComponentFactory.Instance.getCustomStyle(param1);
-         var _loc4_:String = _loc6_.@value;
-         var _loc5_:Object = _reg.exec(_loc4_);
-         while(_loc5_ && rest.length > 0)
+         var id:int = 0;
+         var xml:XML = ComponentFactory.Instance.getCustomStyle(stylename);
+         var str:String = xml.@value;
+         var obj:Object = _reg.exec(str);
+         while(obj && args.length > 0)
          {
-            _loc3_ = _loc5_[1];
-            if(_loc3_ >= 0 && _loc3_ < rest.length)
+            id = obj[1];
+            if(id >= 0 && id < args.length)
             {
-               _loc4_ = _loc4_.replace(_reg,rest[_loc3_]);
+               str = str.replace(_reg,args[id]);
             }
             else
             {
-               _loc4_ = _loc4_.replace(_reg,"{}");
+               str = str.replace(_reg,"{}");
             }
-            _loc5_ = _reg.exec(_loc4_);
+            obj = _reg.exec(str);
          }
-         return _loc4_;
+         return str;
       }
       
-      public static function createCell(param1:Loader, param2:TimesPicInfo) : Array
+      public static function createCell(loader:Loader, info:TimesPicInfo) : Array
       {
-         var _loc3_:* = null;
-         var _loc5_:* = null;
-         var _loc12_:* = null;
-         var _loc7_:int = 0;
-         var _loc10_:* = null;
-         var _loc11_:* = undefined;
-         var _loc9_:int = 0;
-         var _loc4_:* = undefined;
-         var _loc8_:* = null;
-         var _loc6_:* = null;
-         if(param1 && param1.content as MovieClip)
+         var arr:* = null;
+         var movie:* = null;
+         var itemMc:* = null;
+         var len:int = 0;
+         var name:* = null;
+         var factory:* = undefined;
+         var i:int = 0;
+         var cell:* = undefined;
+         var shape:* = null;
+         var shape1:* = null;
+         if(loader && loader.content as MovieClip)
          {
-            _loc5_ = param1.content as MovieClip;
-            _loc7_ = _loc5_.numChildren;
-            _loc11_ = getDefinitionByName("bagAndInfo.cell.CellFactory");
-            _loc9_ = 0;
-            while(_loc9_ < _loc7_)
+            movie = loader.content as MovieClip;
+            len = movie.numChildren;
+            factory = getDefinitionByName("bagAndInfo.cell.CellFactory");
+            for(i = 0; i < len; )
             {
-               _loc12_ = _loc5_.getChildAt(_loc9_) as MovieClip;
-               if(_loc12_ != null)
+               itemMc = movie.getChildAt(i) as MovieClip;
+               if(itemMc != null)
                {
-                  _loc10_ = _loc12_.name;
-                  if(_loc10_.substr(0,4) == "good")
+                  name = itemMc.name;
+                  if(name.substr(0,4) == "good")
                   {
-                     if(!_loc3_)
+                     if(!arr)
                      {
-                        _loc3_ = [];
+                        arr = [];
                      }
-                     _loc8_ = new Shape();
-                     _loc8_.graphics.lineStyle(1,16777215,0);
-                     _loc8_.graphics.drawRect(0,0,_loc12_.width,_loc12_.height);
-                     _loc4_ = _loc11_.instance.createWeeklyItemCell(_loc8_,_loc10_.substr(5));
-                     _loc4_.x = _loc12_.x;
-                     _loc4_.y = _loc12_.y;
-                     _loc4_.alpha = 0;
-                     _loc3_.push(_loc4_);
+                     shape = new Shape();
+                     shape.graphics.lineStyle(1,16777215,0);
+                     shape.graphics.drawRect(0,0,itemMc.width,itemMc.height);
+                     cell = factory.instance.createWeeklyItemCell(shape,name.substr(5));
+                     cell.x = itemMc.x;
+                     cell.y = itemMc.y;
+                     cell.alpha = 0;
+                     arr.push(cell);
                   }
-                  else if(_loc10_.substr(0,8) == "purchase")
+                  else if(name.substr(0,8) == "purchase")
                   {
-                     TimesController.Instance.dispatchEvent(new TimesEvent("pushTipItems",param2,[_loc12_]));
-                     if(!_loc3_)
+                     TimesController.Instance.dispatchEvent(new TimesEvent("pushTipItems",info,[itemMc]));
+                     if(!arr)
                      {
-                        _loc3_ = [];
+                        arr = [];
                      }
-                     _loc6_ = new Shape();
-                     _loc6_.graphics.lineStyle(1,16777215,0);
-                     _loc6_.graphics.drawRect(0,0,_loc12_.width,_loc12_.height);
-                     _loc4_ = _loc11_.instance.createWeeklyItemCell(_loc6_,_loc10_.substr(9));
-                     _loc4_.name = _loc10_.substr(9);
-                     _loc4_.x = _loc12_.x;
-                     _loc4_.y = _loc12_.y;
-                     _loc4_.alpha = 0;
-                     _loc4_.addEventListener("click",quickBuy);
-                     _loc4_.buttonMode = true;
-                     _loc3_.push(_loc4_);
+                     shape1 = new Shape();
+                     shape1.graphics.lineStyle(1,16777215,0);
+                     shape1.graphics.drawRect(0,0,itemMc.width,itemMc.height);
+                     cell = factory.instance.createWeeklyItemCell(shape1,name.substr(9));
+                     cell.name = name.substr(9);
+                     cell.x = itemMc.x;
+                     cell.y = itemMc.y;
+                     cell.alpha = 0;
+                     cell.addEventListener("click",quickBuy);
+                     cell.buttonMode = true;
+                     arr.push(cell);
                   }
                }
-               _loc9_++;
+               i++;
             }
          }
-         var _loc13_:int = 0;
-         if(_loc5_ && _loc3_ && _loc3_.length > 0)
+         var key:int = 0;
+         if(movie && arr && arr.length > 0)
          {
-            while(_loc5_.numChildren == _loc7_ && _loc7_ > _loc13_)
+            while(movie.numChildren == len && len > key)
             {
-               if(_loc5_.getChildAt(_loc13_).name.substr(0,4) == "good")
+               if(movie.getChildAt(key).name.substr(0,4) == "good")
                {
-                  _loc5_.removeChildAt(_loc13_);
-                  _loc7_--;
+                  movie.removeChildAt(key);
+                  len--;
                }
                else
                {
-                  _loc13_++;
+                  key++;
                }
             }
          }
-         if(_loc3_)
+         if(arr)
          {
-            TimesController.Instance.dispatchEvent(new TimesEvent("pushTipCells",param2,_loc3_));
+            TimesController.Instance.dispatchEvent(new TimesEvent("pushTipCells",info,arr));
          }
-         return _loc3_;
+         return arr;
       }
       
-      private static function quickBuy(param1:MouseEvent) : void
+      private static function quickBuy(e:MouseEvent) : void
       {
-         var _loc2_:TimesPicInfo = new TimesPicInfo();
-         _loc2_.templateID = int(param1.currentTarget.name);
-         TimesController.Instance.dispatchEvent(new TimesEvent("purchase",_loc2_));
+         var info:TimesPicInfo = new TimesPicInfo();
+         info.templateID = int(e.currentTarget.name);
+         TimesController.Instance.dispatchEvent(new TimesEvent("purchase",info));
       }
    }
 }

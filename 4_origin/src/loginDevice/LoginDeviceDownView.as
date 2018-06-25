@@ -31,8 +31,8 @@ package loginDevice
       
       private function _initView() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var _cell:* = null;
          _bg = ComponentFactory.Instance.creatBitmap("loginDevice.mainView.downDetailsbg");
          addChild(_bg);
          if(LoginDeviceManager.instance().loginType == "3")
@@ -45,17 +45,16 @@ package loginDevice
             _downBtn = ComponentFactory.Instance.creatComponentByStylename("loginDevice.downView.downBtn");
             addChild(_downBtn);
          }
-         var _loc2_:Array = LoginDeviceManager.instance().downRewardInfoList;
-         if(_loc2_)
+         var rewards:Array = LoginDeviceManager.instance().downRewardInfoList;
+         if(rewards)
          {
             _rewardsHBox = ComponentFactory.Instance.creatComponentByStylename("loginDevice.downView.rewardsHBox");
             addChild(_rewardsHBox);
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_.length)
+            for(i = 0; i < rewards.length; )
             {
-               _loc1_ = LoginDeviceManager.instance().createCell(_loc2_[_loc3_]);
-               _rewardsHBox.addChild(_loc1_);
-               _loc3_++;
+               _cell = LoginDeviceManager.instance().createCell(rewards[i]);
+               _rewardsHBox.addChild(_cell);
+               i++;
             }
          }
       }
@@ -84,12 +83,12 @@ package loginDevice
          }
       }
       
-      private function __downHandler(param1:MouseEvent) : void
+      private function __downHandler(e:MouseEvent) : void
       {
          LoginDeviceControl.instance().gotoDownDevice();
       }
       
-      private function __getRewardHandler(param1:MouseEvent) : void
+      private function __getRewardHandler(e:MouseEvent) : void
       {
          LoginDeviceControl.instance().getDownReward();
       }

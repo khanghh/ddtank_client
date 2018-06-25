@@ -25,111 +25,113 @@ package morn.core.managers
       
       public function TimerManager()
       {
-         this._shape = new Shape();
-         this._pool = new Vector.<TimerHandler>();
-         this._handlers = new Dictionary();
-         this._currTimer = getTimer();
+         _shape = new Shape();
+         _pool = new Vector.<TimerHandler>();
+         _handlers = new Dictionary();
+         _currTimer = getTimer();
          super();
-         this._shape.addEventListener(Event.ENTER_FRAME,this.onEnterFrame);
+         _shape.addEventListener("enterFrame",onEnterFrame);
       }
       
-      private function onEnterFrame(param1:Event) : void
+      private function onEnterFrame(e:Event) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:TimerHandler = null;
-         var _loc4_:int = 0;
-         var _loc5_:Function = null;
-         var _loc6_:Array = null;
-         this._currFrame++;
-         this._currTimer = getTimer();
-         for(_loc2_ in this._handlers)
+         var handler:* = null;
+         var t:int = 0;
+         var method:* = null;
+         var args:* = null;
+         _currFrame = Number(_currFrame) + 1;
+         _currTimer = getTimer();
+         var _loc8_:int = 0;
+         var _loc7_:* = _handlers;
+         for(var key in _handlers)
          {
-            _loc3_ = this._handlers[_loc2_];
-            _loc4_ = !!_loc3_.userFrame?int(this._currFrame):int(this._currTimer);
-            if(_loc4_ >= _loc3_.exeTime)
+            handler = _handlers[key];
+            t = !!handler.userFrame?_currFrame:int(_currTimer);
+            if(t >= handler.exeTime)
             {
-               _loc5_ = _loc3_.method;
-               _loc6_ = _loc3_.args;
-               if(_loc3_.repeat)
+               method = handler.method;
+               args = handler.args;
+               if(handler.repeat)
                {
-                  while(_loc4_ >= _loc3_.exeTime && _loc2_ in this._handlers && _loc3_.repeat)
+                  while(t >= handler.exeTime && key in _handlers && handler.repeat)
                   {
-                     _loc3_.exeTime = _loc3_.exeTime + _loc3_.delay;
-                     _loc5_.apply(null,_loc6_);
+                     handler.exeTime = handler.exeTime + handler.delay;
+                     method.apply(null,args);
                   }
                }
                else
                {
-                  this.clearTimer(_loc2_);
-                  _loc5_.apply(null,_loc6_);
+                  clearTimer(key);
+                  method.apply(null,args);
                }
             }
          }
       }
       
-      private function create(param1:Boolean, param2:Boolean, param3:int, param4:Function, param5:Array = null, param6:Boolean = true) : Object
+      private function create(useFrame:Boolean, repeat:Boolean, delay:int, method:Function, args:Array = null, cover:Boolean = true) : Object
       {
-         var _loc7_:Object = null;
-         if(param6)
+         var key:* = null;
+         if(cover)
          {
-            this.clearTimer(param4);
-            _loc7_ = param4;
+            clearTimer(method);
+            key = method;
          }
          else
          {
-            _loc7_ = this._index++;
+            _index = Number(_index) + 1;
+            key = Number(_index);
          }
-         if(param3 < 1)
+         if(delay < 1)
          {
-            param4.apply(null,param5);
+            method.apply(null,args);
             return -1;
          }
-         var _loc8_:TimerHandler = this._pool.length > 0?this._pool.pop():new TimerHandler();
-         _loc8_.userFrame = param1;
-         _loc8_.repeat = param2;
-         _loc8_.delay = param3;
-         _loc8_.method = param4;
-         _loc8_.args = param5;
-         _loc8_.exeTime = param3 + (!!param1?this._currFrame:this._currTimer);
-         this._handlers[_loc7_] = _loc8_;
-         this._count++;
-         return _loc7_;
+         var handler:TimerHandler = _pool.length > 0?_pool.pop():new TimerHandler();
+         handler.userFrame = useFrame;
+         handler.repeat = repeat;
+         handler.delay = delay;
+         handler.method = method;
+         handler.args = args;
+         handler.exeTime = delay + (!!useFrame?_currFrame:int(_currTimer));
+         _handlers[key] = handler;
+         _count = Number(_count) + 1;
+         return key;
       }
       
-      public function doOnce(param1:int, param2:Function, param3:Array = null, param4:Boolean = true) : Object
+      public function doOnce(delay:int, method:Function, args:Array = null, cover:Boolean = true) : Object
       {
-         return this.create(false,false,param1,param2,param3,param4);
+         return create(false,false,delay,method,args,cover);
       }
       
-      public function doLoop(param1:int, param2:Function, param3:Array = null, param4:Boolean = true) : Object
+      public function doLoop(delay:int, method:Function, args:Array = null, cover:Boolean = true) : Object
       {
-         return this.create(false,true,param1,param2,param3,param4);
+         return create(false,true,delay,method,args,cover);
       }
       
-      public function doFrameOnce(param1:int, param2:Function, param3:Array = null, param4:Boolean = true) : Object
+      public function doFrameOnce(delay:int, method:Function, args:Array = null, cover:Boolean = true) : Object
       {
-         return this.create(true,false,param1,param2,param3,param4);
+         return create(true,false,delay,method,args,cover);
       }
       
-      public function doFrameLoop(param1:int, param2:Function, param3:Array = null, param4:Boolean = true) : Object
+      public function doFrameLoop(delay:int, method:Function, args:Array = null, cover:Boolean = true) : Object
       {
-         return this.create(true,true,param1,param2,param3,param4);
+         return create(true,true,delay,method,args,cover);
       }
       
       public function get count() : int
       {
-         return this._count;
+         return _count;
       }
       
-      public function clearTimer(param1:Object) : void
+      public function clearTimer(method:Object) : void
       {
-         var _loc2_:TimerHandler = this._handlers[param1];
-         if(_loc2_ != null)
+         var handler:TimerHandler = _handlers[method];
+         if(handler != null)
          {
-            delete this._handlers[param1];
-            _loc2_.clear();
-            this._pool.push(_loc2_);
-            this._count--;
+            delete _handlers[method];
+            handler.clear();
+            _pool.push(handler);
+            _count = Number(_count) - 1;
          }
       }
    }
@@ -158,7 +160,7 @@ class TimerHandler
    
    public function clear() : void
    {
-      this.method = null;
-      this.args = null;
+      method = null;
+      args = null;
    }
 }

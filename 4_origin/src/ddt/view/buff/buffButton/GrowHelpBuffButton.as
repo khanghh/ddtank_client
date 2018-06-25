@@ -35,24 +35,23 @@ package ddt.view.buff.buffButton
          this.useHandCursor = true;
       }
       
-      override protected function __onclick(param1:MouseEvent) : void
+      override protected function __onclick(event:MouseEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         super.__onclick(param1);
+         var len:int = 0;
+         var i:int = 0;
+         var viewPos:* = null;
+         super.__onclick(event);
          if(_helpViewShow)
          {
-            param1.stopImmediatePropagation();
-            _loc2_ = buffArray.length;
-            _loc4_ = 0;
-            while(_loc4_ < _loc2_)
+            event.stopImmediatePropagation();
+            len = buffArray.length;
+            for(i = 0; i < len; )
             {
-               if(buffArray[_loc4_] is RandomSuitButton)
+               if(buffArray[i] is RandomSuitButton)
                {
-                  (buffArray[_loc4_] as RandomSuitButton).info.IsExist = RandomSuitCardManager.getInstance().isExist();
+                  (buffArray[i] as RandomSuitButton).info.IsExist = RandomSuitCardManager.getInstance().isExist();
                }
-               _loc4_++;
+               i++;
             }
             if(!_growHelpTipView)
             {
@@ -60,8 +59,8 @@ package ddt.view.buff.buffButton
                _growHelpTipView.addBuff(buffArray);
             }
             _growHelpTipView.visible = true;
-            _loc3_ = this.localToGlobal(new Point(this.x + this.width,this.y + this.height));
-            PositionUtils.setPos(_growHelpTipView,_loc3_);
+            viewPos = this.localToGlobal(new Point(this.x + this.width,this.y + this.height));
+            PositionUtils.setPos(_growHelpTipView,viewPos);
             LayerManager.Instance.addToLayer(_growHelpTipView,3);
             stage.addEventListener("click",__closeChairChnnel);
          }
@@ -72,13 +71,13 @@ package ddt.view.buff.buffButton
          _helpViewShow = !!_helpViewShow?false:true;
       }
       
-      protected function __closeChairChnnel(param1:MouseEvent) : void
+      protected function __closeChairChnnel(event:MouseEvent) : void
       {
          if(!_growHelpTipView)
          {
             return;
          }
-         if(param1.target != _growHelpTipView.viewBg)
+         if(event.target != _growHelpTipView.viewBg)
          {
             stage.removeEventListener("click",__closeChairChnnel);
             if(_growHelpTipView)

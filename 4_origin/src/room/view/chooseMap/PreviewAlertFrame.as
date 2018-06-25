@@ -44,14 +44,14 @@ package room.view.chooseMap
          _okBtn.addEventListener("click",__onClick);
       }
       
-      private function __onClick(param1:MouseEvent) : void
+      private function __onClick(event:MouseEvent) : void
       {
          dispose();
       }
       
-      override protected function __onCloseClick(param1:MouseEvent) : void
+      override protected function __onCloseClick(event:MouseEvent) : void
       {
-         super.__onCloseClick(param1);
+         super.__onCloseClick(event);
       }
       
       private function removeEvents() : void

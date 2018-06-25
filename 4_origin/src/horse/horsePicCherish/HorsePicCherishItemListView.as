@@ -10,31 +10,31 @@ package horse.horsePicCherish
       
       private var _itemList:Vector.<HorsePicCherishItem>;
       
-      public function HorsePicCherishItemListView(param1:Vector.<HorsePicCherishItem>)
+      public function HorsePicCherishItemListView(list:Vector.<HorsePicCherishItem>)
       {
          super();
-         _itemList = param1;
+         _itemList = list;
       }
       
-      public function show(param1:int) : void
+      public function show(index:int) : void
       {
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
+         var count:int = 0;
+         var i:int = 0;
+         var item:* = null;
          while(numChildren > 0)
          {
             removeChildAt(0);
          }
-         _loc4_ = (param1 - 1) * 8;
-         while(_loc4_ < param1 * 8 && _loc4_ < _itemList.length)
+         i = (index - 1) * 10;
+         while(i < index * 10 && i < _itemList.length)
          {
-            _loc3_ = _itemList[_loc4_];
-            _loc3_.x = _loc2_ % 4 * (_loc3_.width + 2);
-            _loc3_.y = int(_loc2_ / 4) * (_loc3_.height - 2);
-            addChild(_loc3_);
-            _loc4_++;
-            _loc2_++;
-            _loc2_;
+            item = _itemList[i];
+            item.x = count % 5 * (item.width + 2);
+            item.y = int(count / 5) * (item.height - 2);
+            addChild(item);
+            i++;
+            count++;
+            count;
          }
       }
       
@@ -42,10 +42,10 @@ package horse.horsePicCherish
       {
          var _loc3_:int = 0;
          var _loc2_:* = _itemList;
-         for each(var _loc1_ in _itemList)
+         for each(var item in _itemList)
          {
-            ObjectUtils.disposeObject(_loc1_);
-            _loc1_ = null;
+            ObjectUtils.disposeObject(item);
+            item = null;
          }
          _itemList = null;
          if(parent)

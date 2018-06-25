@@ -44,10 +44,10 @@ package homeTemple.view
          addToContent(_levelView);
       }
       
-      protected function __onResponse(param1:FrameEvent) : void
+      protected function __onResponse(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:

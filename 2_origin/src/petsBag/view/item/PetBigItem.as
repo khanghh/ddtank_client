@@ -44,25 +44,25 @@ package petsBag.view.item
          tipDirctions = "5,2,7,1,6,4";
       }
       
-      public function set info(param1:PetInfo) : void
+      public function set info(petinfo:PetInfo) : void
       {
-         var _loc3_:* = null;
-         if(param1 == _info)
+         var movieClass:* = null;
+         if(petinfo == _info)
          {
             return;
          }
-         var _loc2_:Boolean = false;
-         if(_info && param1)
+         var samePet:Boolean = false;
+         if(_info && petinfo)
          {
-            _loc2_ = _info.ID == param1.ID && _info.GameAssetUrl == param1.GameAssetUrl;
+            samePet = _info.ID == petinfo.ID && _info.GameAssetUrl == petinfo.GameAssetUrl;
          }
-         if(!_loc2_ && _loader && _loader.isLoading)
+         if(!samePet && _loader && _loader.isLoading)
          {
             _loader.removeEventListener("complete",__onComplete);
          }
-         _info = param1;
-         tipData = param1;
-         if((!_info || !_loc2_) && _petMovie)
+         _info = petinfo;
+         tipData = petinfo;
+         if((!_info || !samePet) && _petMovie)
          {
             _petMovie.removeEventListener("actionEnd",doNextAction);
             _petMovie.dispose();
@@ -83,14 +83,14 @@ package petsBag.view.item
             {
                _fightImg.visible = false;
             }
-            if(_loc2_)
+            if(samePet)
             {
                return;
             }
-            if(ModuleLoader.hasDefinition("pet.asset.game." + param1.GameAssetUrl))
+            if(ModuleLoader.hasDefinition("pet.asset.game." + petinfo.GameAssetUrl))
             {
-               _loc3_ = ModuleLoader.getDefinition("pet.asset.game." + param1.GameAssetUrl) as Class;
-               _petMovie = new _loc3_();
+               movieClass = ModuleLoader.getDefinition("pet.asset.game." + petinfo.GameAssetUrl) as Class;
+               _petMovie = new movieClass();
                _petMovie.mute();
                _petMovie.doAction(Helpers.randomPick(ACTIONS));
                _petMovie.addEventListener("actionEnd",doNextAction);
@@ -98,7 +98,7 @@ package petsBag.view.item
             }
             else
             {
-               _loader = LoadResourceManager.Instance.createLoader(PathManager.solvePetGameAssetUrl(param1.GameAssetUrl),4);
+               _loader = LoadResourceManager.Instance.createLoader(PathManager.solvePetGameAssetUrl(petinfo.GameAssetUrl),4);
                _loader.addEventListener("complete",__onComplete);
                LoadResourceManager.Instance.startLoad(_loader);
             }
@@ -109,14 +109,14 @@ package petsBag.view.item
          }
       }
       
-      private function __onComplete(param1:LoaderEvent) : void
+      private function __onComplete(event:LoaderEvent) : void
       {
-         var _loc2_:* = null;
+         var movieClass:* = null;
          _loader.removeEventListener("complete",__onComplete);
          if(ModuleLoader.hasDefinition("pet.asset.game." + _info.GameAssetUrl))
          {
-            _loc2_ = ModuleLoader.getDefinition("pet.asset.game." + _info.GameAssetUrl) as Class;
-            _petMovie = new _loc2_();
+            movieClass = ModuleLoader.getDefinition("pet.asset.game." + _info.GameAssetUrl) as Class;
+            _petMovie = new movieClass();
             _petMovie.mute();
             _petMovie.doAction(Helpers.randomPick(ACTIONS));
             _petMovie.addEventListener("actionEnd",doNextAction);
@@ -124,7 +124,7 @@ package petsBag.view.item
          }
       }
       
-      private function doNextAction(param1:ActionMovieEvent) : void
+      private function doNextAction(event:ActionMovieEvent) : void
       {
          if(_petMovie)
          {

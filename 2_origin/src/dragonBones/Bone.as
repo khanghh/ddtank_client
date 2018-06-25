@@ -70,14 +70,14 @@ package dragonBones
          _needUpdate = 2;
       }
       
-      public static function initWithBoneData(param1:BoneData) : Bone
+      public static function initWithBoneData(boneData:BoneData) : Bone
       {
-         var _loc2_:Bone = new Bone();
-         _loc2_.name = param1.name;
-         _loc2_.inheritRotation = param1.inheritRotation;
-         _loc2_.inheritScale = param1.inheritScale;
-         _loc2_.origin.copy(param1.transform);
-         return _loc2_;
+         var outputBone:Bone = new Bone();
+         outputBone.name = boneData.name;
+         outputBone.inheritRotation = boneData.inheritRotation;
+         outputBone.inheritScale = boneData.inheritScale;
+         outputBone.origin.copy(boneData.transform);
+         return outputBone;
       }
       
       override public function dispose() : void
@@ -87,25 +87,25 @@ package dragonBones
             return;
          }
          super.dispose();
-         var _loc1_:int = _boneList.length;
+         var i:int = _boneList.length;
          while(true)
          {
-            _loc1_--;
-            if(!_loc1_)
+            i--;
+            if(!i)
             {
                break;
             }
-            _boneList[_loc1_].dispose();
+            _boneList[i].dispose();
          }
-         _loc1_ = _slotList.length;
+         i = _slotList.length;
          while(true)
          {
-            _loc1_--;
-            if(!_loc1_)
+            i--;
+            if(!i)
             {
                break;
             }
-            _slotList[_loc1_].dispose();
+            _slotList[i].dispose();
          }
          _boneList.fixed = false;
          _boneList.length = 0;
@@ -119,113 +119,113 @@ package dragonBones
          _timelineStateList = null;
       }
       
-      public function contains(param1:DBObject) : Boolean
+      public function contains(child:DBObject) : Boolean
       {
-         if(!param1)
+         if(!child)
          {
             throw new ArgumentError();
          }
-         if(param1 == this)
+         if(child == this)
          {
             return false;
          }
-         var _loc2_:* = param1;
-         while(!(_loc2_ == this || _loc2_ == null))
+         var ancestor:* = child;
+         while(!(ancestor == this || ancestor == null))
          {
-            _loc2_ = _loc2_.parent;
+            ancestor = ancestor.parent;
          }
-         return _loc2_ == this;
+         return ancestor == this;
       }
       
-      public function addChildBone(param1:Bone, param2:Boolean = false) : void
+      public function addChildBone(childBone:Bone, updateLater:Boolean = false) : void
       {
-         if(!param1)
+         if(!childBone)
          {
             throw new ArgumentError();
          }
-         if(param1 == this || param1.contains(this))
+         if(childBone == this || childBone.contains(this))
          {
             throw new ArgumentError("An Bone cannot be added as a child to itself or one of its children (or children\'s children, etc.)");
          }
-         if(param1.parent == this)
+         if(childBone.parent == this)
          {
             return;
          }
-         if(param1.parent)
+         if(childBone.parent)
          {
-            param1.parent.removeChildBone(param1);
+            childBone.parent.removeChildBone(childBone);
          }
          _boneList.fixed = false;
-         _boneList[_boneList.length] = param1;
+         _boneList[_boneList.length] = childBone;
          _boneList.fixed = true;
-         param1.setParent(this);
-         param1.setArmature(_armature);
-         if(_armature && !param2)
+         childBone.setParent(this);
+         childBone.setArmature(_armature);
+         if(_armature && !updateLater)
          {
             _armature.updateAnimationAfterBoneListChanged();
          }
       }
       
-      public function removeChildBone(param1:Bone, param2:Boolean = false) : void
+      public function removeChildBone(childBone:Bone, updateLater:Boolean = false) : void
       {
-         if(!param1)
+         if(!childBone)
          {
             throw new ArgumentError();
          }
-         var _loc3_:int = _boneList.indexOf(param1);
-         if(_loc3_ < 0)
+         var index:int = _boneList.indexOf(childBone);
+         if(index < 0)
          {
             throw new ArgumentError();
          }
          _boneList.fixed = false;
-         _boneList.splice(_loc3_,1);
+         _boneList.splice(index,1);
          _boneList.fixed = true;
-         param1.setParent(null);
-         param1.setArmature(null);
-         if(_armature && !param2)
+         childBone.setParent(null);
+         childBone.setArmature(null);
+         if(_armature && !updateLater)
          {
             _armature.updateAnimationAfterBoneListChanged(false);
          }
       }
       
-      public function addSlot(param1:Slot) : void
+      public function addSlot(childSlot:Slot) : void
       {
-         if(!param1)
+         if(!childSlot)
          {
             throw new ArgumentError();
          }
-         if(param1.parent)
+         if(childSlot.parent)
          {
-            param1.parent.removeSlot(param1);
+            childSlot.parent.removeSlot(childSlot);
          }
          _slotList.fixed = false;
-         _slotList[_slotList.length] = param1;
+         _slotList[_slotList.length] = childSlot;
          _slotList.fixed = true;
-         param1.setParent(this);
-         param1.setArmature(this._armature);
+         childSlot.setParent(this);
+         childSlot.setArmature(this._armature);
       }
       
-      public function removeSlot(param1:Slot) : void
+      public function removeSlot(childSlot:Slot) : void
       {
-         if(!param1)
+         if(!childSlot)
          {
             throw new ArgumentError();
          }
-         var _loc2_:int = _slotList.indexOf(param1);
-         if(_loc2_ < 0)
+         var index:int = _slotList.indexOf(childSlot);
+         if(index < 0)
          {
             throw new ArgumentError();
          }
          _slotList.fixed = false;
-         _slotList.splice(_loc2_,1);
+         _slotList.splice(index,1);
          _slotList.fixed = true;
-         param1.setParent(null);
-         param1.setArmature(null);
+         childSlot.setParent(null);
+         childSlot.setArmature(null);
       }
       
-      override function setArmature(param1:Armature) : void
+      override function setArmature(value:Armature) : void
       {
-         if(_armature == param1)
+         if(_armature == value)
          {
             return;
          }
@@ -234,41 +234,41 @@ package dragonBones
             _armature.removeBoneFromBoneList(this);
             _armature.updateAnimationAfterBoneListChanged(false);
          }
-         _armature = param1;
+         _armature = value;
          if(_armature)
          {
             _armature.addBoneToBoneList(this);
          }
-         var _loc2_:int = _boneList.length;
+         var i:int = _boneList.length;
          while(true)
          {
-            _loc2_--;
-            if(!_loc2_)
+            i--;
+            if(!i)
             {
                break;
             }
-            _boneList[_loc2_].setArmature(this._armature);
+            _boneList[i].setArmature(this._armature);
          }
-         _loc2_ = _slotList.length;
+         i = _slotList.length;
          while(true)
          {
-            _loc2_--;
-            if(!_loc2_)
+            i--;
+            if(!i)
             {
                break;
             }
-            _slotList[_loc2_].setArmature(this._armature);
+            _slotList[i].setArmature(this._armature);
          }
       }
       
-      public function getBones(param1:Boolean = true) : Vector.<Bone>
+      public function getBones(returnCopy:Boolean = true) : Vector.<Bone>
       {
-         return !!param1?_boneList.concat():_boneList;
+         return !!returnCopy?_boneList.concat():_boneList;
       }
       
-      public function getSlots(param1:Boolean = true) : Vector.<Slot>
+      public function getSlots(returnCopy:Boolean = true) : Vector.<Slot>
       {
-         return !!param1?_slotList.concat():_slotList;
+         return !!returnCopy?_slotList.concat():_slotList;
       }
       
       public function invalidUpdate() : void
@@ -286,20 +286,20 @@ package dragonBones
          _global.y = this._origin.y + _tween.y + this._offset.y;
       }
       
-      function update(param1:Boolean = false) : void
+      function update(needUpdate:Boolean = false) : void
       {
          _needUpdate = Number(_needUpdate) - 1;
-         if(param1 || _needUpdate > 0 || this._parent && this._parent._needUpdate > 0)
+         if(needUpdate || _needUpdate > 0 || this._parent && this._parent._needUpdate > 0)
          {
             _needUpdate = 1;
             blendingTimeline();
-            var _loc2_:Object = updateGlobal();
-            var _loc5_:DBTransform = !!_loc2_?_loc2_.parentGlobalTransform:null;
-            var _loc6_:Matrix = !!_loc2_?_loc2_.parentGlobalTransformMatrix:null;
-            var _loc7_:Boolean = _offset.x != 0 || _offset.y != 0;
-            var _loc3_:Boolean = _offset.scaleX != 1 || _offset.scaleY != 1;
-            var _loc4_:Boolean = _offset.skewX != 0 || _offset.skewY != 0;
-            if((!_loc7_ || applyOffsetTranslationToChild) && (!_loc3_ || applyOffsetScaleToChild) && (!_loc4_ || applyOffsetRotationToChild))
+            var result:Object = updateGlobal();
+            var parentGlobalTransform:DBTransform = !!result?result.parentGlobalTransform:null;
+            var parentGlobalTransformMatrix:Matrix = !!result?result.parentGlobalTransformMatrix:null;
+            var ifExistOffsetTranslation:Boolean = _offset.x != 0 || _offset.y != 0;
+            var ifExistOffsetScale:Boolean = _offset.scaleX != 1 || _offset.scaleY != 1;
+            var ifExistOffsetRotation:Boolean = _offset.skewX != 0 || _offset.skewY != 0;
+            if((!ifExistOffsetTranslation || applyOffsetTranslationToChild) && (!ifExistOffsetScale || applyOffsetScaleToChild) && (!ifExistOffsetRotation || applyOffsetRotationToChild))
             {
                _globalTransformForChild = _global;
                _globalTransformMatrixForChild = _globalTransformMatrix;
@@ -338,10 +338,10 @@ package dragonBones
                   _globalTransformForChild.skewY = _globalTransformForChild.skewY + this._offset.skewY;
                }
                TransformUtil.transformToMatrix(_globalTransformForChild,_globalTransformMatrixForChild);
-               if(_loc6_)
+               if(parentGlobalTransformMatrix)
                {
-                  _globalTransformMatrixForChild.concat(_loc6_);
-                  TransformUtil.matrixToTransform(_globalTransformMatrixForChild,_globalTransformForChild,_globalTransformForChild.scaleX * _loc5_.scaleX >= 0,_globalTransformForChild.scaleY * _loc5_.scaleY >= 0);
+                  _globalTransformMatrixForChild.concat(parentGlobalTransformMatrix);
+                  TransformUtil.matrixToTransform(_globalTransformMatrixForChild,_globalTransformForChild,_globalTransformForChild.scaleX * parentGlobalTransform.scaleX >= 0,_globalTransformForChild.scaleY * parentGlobalTransform.scaleY >= 0);
                }
             }
             return;
@@ -352,68 +352,68 @@ package dragonBones
       {
          var _loc3_:int = 0;
          var _loc2_:* = _slotList;
-         for each(var _loc1_ in _slotList)
+         for each(var childSlot in _slotList)
          {
-            _loc1_.changeDisplay(-1);
+            childSlot.changeDisplay(-1);
          }
       }
       
-      function arriveAtFrame(param1:Frame, param2:TimelineState, param3:AnimationState, param4:Boolean) : void
+      function arriveAtFrame(frame:Frame, timelineState:TimelineState, animationState:AnimationState, isCross:Boolean) : void
       {
-         var _loc9_:* = null;
-         var _loc5_:* = null;
-         var _loc7_:* = null;
-         var _loc6_:* = null;
-         var _loc8_:Boolean = param3.displayControl && (!displayController || displayController == param3.name) && param3.containsBoneMask(name);
-         if(_loc8_)
+         var childSlot:* = null;
+         var frameEvent:* = null;
+         var soundEvent:* = null;
+         var childArmature:* = null;
+         var displayControl:Boolean = animationState.displayControl && (!displayController || displayController == animationState.name) && animationState.containsBoneMask(name);
+         if(displayControl)
          {
-            if(param1.event && this._armature.hasEventListener("boneFrameEvent"))
+            if(frame.event && this._armature.hasEventListener("boneFrameEvent"))
             {
-               _loc5_ = new FrameEvent("boneFrameEvent");
-               _loc5_.bone = this;
-               _loc5_.animationState = param3;
-               _loc5_.frameLabel = param1.event;
-               this._armature._eventList.push(_loc5_);
+               frameEvent = new FrameEvent("boneFrameEvent");
+               frameEvent.bone = this;
+               frameEvent.animationState = animationState;
+               frameEvent.frameLabel = frame.event;
+               this._armature._eventList.push(frameEvent);
             }
-            if(param1.sound && _soundManager.hasEventListener("sound"))
+            if(frame.sound && _soundManager.hasEventListener("sound"))
             {
-               _loc7_ = new SoundEvent("sound");
-               _loc7_.armature = this._armature;
-               _loc7_.animationState = param3;
-               _loc7_.sound = param1.sound;
-               _soundManager.dispatchEvent(_loc7_);
+               soundEvent = new SoundEvent("sound");
+               soundEvent.armature = this._armature;
+               soundEvent.animationState = animationState;
+               soundEvent.sound = frame.sound;
+               _soundManager.dispatchEvent(soundEvent);
             }
-            if(param1.action)
+            if(frame.action)
             {
                var _loc11_:int = 0;
                var _loc10_:* = _slotList;
-               for each(_loc9_ in _slotList)
+               for each(childSlot in _slotList)
                {
-                  _loc6_ = _loc9_.childArmature;
-                  if(_loc6_)
+                  childArmature = childSlot.childArmature;
+                  if(childArmature)
                   {
-                     _loc6_.animation.gotoAndPlay(param1.action);
+                     childArmature.animation.gotoAndPlay(frame.action);
                   }
                }
             }
          }
       }
       
-      function addState(param1:TimelineState) : void
+      function addState(timelineState:TimelineState) : void
       {
-         if(_timelineStateList.indexOf(param1) < 0)
+         if(_timelineStateList.indexOf(timelineState) < 0)
          {
-            _timelineStateList.push(param1);
+            _timelineStateList.push(timelineState);
             _timelineStateList.sort(sortState);
          }
       }
       
-      function removeState(param1:TimelineState) : void
+      function removeState(timelineState:TimelineState) : void
       {
-         var _loc2_:int = _timelineStateList.indexOf(param1);
-         if(_loc2_ >= 0)
+         var index:int = _timelineStateList.indexOf(timelineState);
+         if(index >= 0)
          {
-            _timelineStateList.splice(_loc2_,1);
+            _timelineStateList.splice(index,1);
          }
       }
       
@@ -424,103 +424,103 @@ package dragonBones
       
       private function blendingTimeline() : void
       {
-         var _loc8_:* = null;
-         var _loc13_:* = null;
-         var _loc14_:* = null;
-         var _loc5_:Number = NaN;
-         var _loc17_:* = NaN;
-         var _loc16_:* = NaN;
-         var _loc10_:* = NaN;
-         var _loc11_:* = NaN;
-         var _loc2_:* = NaN;
-         var _loc3_:* = NaN;
-         var _loc4_:* = NaN;
-         var _loc6_:* = NaN;
-         var _loc15_:* = NaN;
-         var _loc1_:* = NaN;
-         var _loc7_:* = 0;
-         var _loc9_:int = 0;
-         var _loc12_:int = _timelineStateList.length;
-         if(_loc12_ == 1)
+         var timelineState:* = null;
+         var transform:* = null;
+         var pivot:* = null;
+         var weight:Number = NaN;
+         var x:* = NaN;
+         var y:* = NaN;
+         var skewX:* = NaN;
+         var skewY:* = NaN;
+         var scaleX:* = NaN;
+         var scaleY:* = NaN;
+         var pivotX:* = NaN;
+         var pivotY:* = NaN;
+         var weigthLeft:* = NaN;
+         var layerTotalWeight:* = NaN;
+         var prevLayer:* = 0;
+         var currentLayer:int = 0;
+         var i:int = _timelineStateList.length;
+         if(i == 1)
          {
-            _loc8_ = _timelineStateList[0];
-            _loc5_ = _loc8_._animationState.weight * _loc8_._animationState.fadeWeight;
-            _loc8_._weight = _loc5_;
-            _loc13_ = _loc8_._transform;
-            _loc14_ = _loc8_._pivot;
-            _tween.x = _loc13_.x * _loc5_;
-            _tween.y = _loc13_.y * _loc5_;
-            _tween.skewX = _loc13_.skewX * _loc5_;
-            _tween.skewY = _loc13_.skewY * _loc5_;
-            _tween.scaleX = 1 + (_loc13_.scaleX - 1) * _loc5_;
-            _tween.scaleY = 1 + (_loc13_.scaleY - 1) * _loc5_;
-            _tweenPivot.x = _loc14_.x * _loc5_;
-            _tweenPivot.y = _loc14_.y * _loc5_;
+            timelineState = _timelineStateList[0];
+            weight = timelineState._animationState.weight * timelineState._animationState.fadeWeight;
+            timelineState._weight = weight;
+            transform = timelineState._transform;
+            pivot = timelineState._pivot;
+            _tween.x = transform.x * weight;
+            _tween.y = transform.y * weight;
+            _tween.skewX = transform.skewX * weight;
+            _tween.skewY = transform.skewY * weight;
+            _tween.scaleX = 1 + (transform.scaleX - 1) * weight;
+            _tween.scaleY = 1 + (transform.scaleY - 1) * weight;
+            _tweenPivot.x = pivot.x * weight;
+            _tweenPivot.y = pivot.y * weight;
          }
-         else if(_loc12_ > 1)
+         else if(i > 1)
          {
-            _loc17_ = 0;
-            _loc16_ = 0;
-            _loc10_ = 0;
-            _loc11_ = 0;
-            _loc2_ = 1;
-            _loc3_ = 1;
-            _loc4_ = 0;
-            _loc6_ = 0;
-            _loc15_ = 1;
-            _loc1_ = 0;
-            _loc7_ = int(_timelineStateList[_loc12_ - 1]._animationState.layer);
+            x = 0;
+            y = 0;
+            skewX = 0;
+            skewY = 0;
+            scaleX = 1;
+            scaleY = 1;
+            pivotX = 0;
+            pivotY = 0;
+            weigthLeft = 1;
+            layerTotalWeight = 0;
+            prevLayer = int(_timelineStateList[i - 1]._animationState.layer);
             while(true)
             {
-               _loc12_--;
-               if(_loc12_)
+               i--;
+               if(i)
                {
-                  _loc8_ = _timelineStateList[_loc12_];
-                  _loc9_ = _loc8_._animationState.layer;
-                  if(_loc7_ != _loc9_)
+                  timelineState = _timelineStateList[i];
+                  currentLayer = timelineState._animationState.layer;
+                  if(prevLayer != currentLayer)
                   {
-                     if(_loc1_ >= _loc15_)
+                     if(layerTotalWeight >= weigthLeft)
                      {
-                        _loc8_._weight = 0;
+                        timelineState._weight = 0;
                         break;
                      }
-                     _loc15_ = Number(_loc15_ - _loc1_);
+                     weigthLeft = Number(weigthLeft - layerTotalWeight);
                   }
-                  _loc7_ = _loc9_;
-                  _loc5_ = _loc8_._animationState.weight * _loc8_._animationState.fadeWeight * _loc15_;
-                  _loc8_._weight = _loc5_;
-                  if(_loc5_ && _loc8_._blendEnabled)
+                  prevLayer = currentLayer;
+                  weight = timelineState._animationState.weight * timelineState._animationState.fadeWeight * weigthLeft;
+                  timelineState._weight = weight;
+                  if(weight && timelineState._blendEnabled)
                   {
-                     _loc13_ = _loc8_._transform;
-                     _loc14_ = _loc8_._pivot;
-                     _loc17_ = Number(_loc17_ + _loc13_.x * _loc5_);
-                     _loc16_ = Number(_loc16_ + _loc13_.y * _loc5_);
-                     _loc10_ = Number(_loc10_ + _loc13_.skewX * _loc5_);
-                     _loc11_ = Number(_loc11_ + _loc13_.skewY * _loc5_);
-                     _loc2_ = Number(_loc2_ + (_loc13_.scaleX - 1) * _loc5_);
-                     _loc3_ = Number(_loc3_ + (_loc13_.scaleY - 1) * _loc5_);
-                     _loc4_ = Number(_loc4_ + _loc14_.x * _loc5_);
-                     _loc6_ = Number(_loc6_ + _loc14_.y * _loc5_);
-                     _loc1_ = Number(_loc1_ + _loc5_);
+                     transform = timelineState._transform;
+                     pivot = timelineState._pivot;
+                     x = Number(x + transform.x * weight);
+                     y = Number(y + transform.y * weight);
+                     skewX = Number(skewX + transform.skewX * weight);
+                     skewY = Number(skewY + transform.skewY * weight);
+                     scaleX = Number(scaleX + (transform.scaleX - 1) * weight);
+                     scaleY = Number(scaleY + (transform.scaleY - 1) * weight);
+                     pivotX = Number(pivotX + pivot.x * weight);
+                     pivotY = Number(pivotY + pivot.y * weight);
+                     layerTotalWeight = Number(layerTotalWeight + weight);
                   }
                   continue;
                }
                break;
             }
-            _tween.x = _loc17_;
-            _tween.y = _loc16_;
-            _tween.skewX = _loc10_;
-            _tween.skewY = _loc11_;
-            _tween.scaleX = _loc2_;
-            _tween.scaleY = _loc3_;
-            _tweenPivot.x = _loc4_;
-            _tweenPivot.y = _loc6_;
+            _tween.x = x;
+            _tween.y = y;
+            _tween.skewX = skewX;
+            _tween.skewY = skewY;
+            _tween.scaleX = scaleX;
+            _tween.scaleY = scaleY;
+            _tweenPivot.x = pivotX;
+            _tweenPivot.y = pivotY;
          }
       }
       
-      private function sortState(param1:TimelineState, param2:TimelineState) : int
+      private function sortState(state1:TimelineState, state2:TimelineState) : int
       {
-         return param1._animationState.layer < param2._animationState.layer?-1:1;
+         return state1._animationState.layer < state2._animationState.layer?-1:1;
       }
       
       public function get childArmature() : Armature
@@ -541,11 +541,11 @@ package dragonBones
          return null;
       }
       
-      public function set display(param1:Object) : void
+      public function set display(value:Object) : void
       {
          if(slot)
          {
-            slot.display = param1;
+            slot.display = value;
          }
       }
       
@@ -554,16 +554,16 @@ package dragonBones
          return _offset;
       }
       
-      override public function set visible(param1:Boolean) : void
+      override public function set visible(value:Boolean) : void
       {
-         if(this._visible != param1)
+         if(this._visible != value)
          {
-            this._visible = param1;
+            this._visible = value;
             var _loc4_:int = 0;
             var _loc3_:* = _slotList;
-            for each(var _loc2_ in _slotList)
+            for each(var childSlot in _slotList)
             {
-               _loc2_.updateDisplayVisible(this._visible);
+               childSlot.updateDisplayVisible(this._visible);
             }
          }
       }

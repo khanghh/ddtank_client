@@ -32,10 +32,10 @@ package petsBag.petsAdvanced
       
       private var _bagType:int;
       
-      public function PetsAwakenEquipList(param1:int = 18)
+      public function PetsAwakenEquipList(cellNum:int = 18)
       {
          super();
-         _cellNum = param1;
+         _cellNum = cellNum;
          initView();
          initEquipCell(_cellNum);
       }
@@ -48,27 +48,26 @@ package petsBag.petsAdvanced
          _equipPanel.setView(_equipList);
       }
       
-      private function initEquipCell(param1:int) : void
+      private function initEquipCell(cellNum:int) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
+         var cell:* = null;
+         var i:int = 0;
          _equipArr = [];
-         _loc3_ = 0;
-         while(_loc3_ < param1)
+         for(i = 0; i < cellNum; )
          {
-            _loc2_ = new PetsAwakenEquipCell(_loc3_);
-            _loc2_.allowDrag = true;
-            _loc2_.isReceiveDrag = true;
-            appendEvent(_loc2_);
-            _equipList.addChild(_loc2_);
-            _equipArr.push(_loc2_);
-            _loc3_++;
+            cell = new PetsAwakenEquipCell(i);
+            cell.allowDrag = true;
+            cell.isReceiveDrag = true;
+            appendEvent(cell);
+            _equipList.addChild(cell);
+            _equipArr.push(cell);
+            i++;
          }
       }
       
-      public function set bagType(param1:int) : void
+      public function set bagType(value:int) : void
       {
-         _bagType = param1;
+         _bagType = value;
       }
       
       public function get bagType() : int
@@ -76,91 +75,90 @@ package petsBag.petsAdvanced
          return _bagType;
       }
       
-      public function setInfo(param1:BagInfo, param2:BagInfo) : void
+      public function setInfo(value:BagInfo, storeInfo:BagInfo) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         _info = param1;
-         _store = param2;
+         var temCell:* = null;
+         var storeCell:* = null;
+         _info = value;
+         _store = storeInfo;
          clareEquipCache();
-         var _loc5_:int = 0;
+         var temIndex:int = 0;
          var _loc8_:int = 0;
          var _loc7_:* = _info.items;
-         for each(var _loc6_ in _info.items)
+         for each(var info in _info.items)
          {
             if(bagType == 5)
             {
-               if((_loc6_.CategoryID == 50 || _loc6_.CategoryID == 51 || _loc6_.CategoryID == 52) && _loc6_.Quality == 5 && _loc6_.getRemainDate() > 0)
+               if((info.CategoryID == 50 || info.CategoryID == 51 || info.CategoryID == 52) && info.Quality == 5 && info.getRemainDate() > 0)
                {
-                  if(_equipArr[_loc5_] == null)
+                  if(_equipArr[temIndex] == null)
                   {
-                     _loc4_ = new PetsAwakenEquipCell(_loc5_);
-                     _loc4_.isReceiveDrag = true;
-                     _loc4_.allowDrag = true;
-                     _equipArr[_loc5_] = _loc4_;
-                     _equipList.addChild(_loc4_);
-                     appendEvent(_loc4_);
+                     temCell = new PetsAwakenEquipCell(temIndex);
+                     temCell.isReceiveDrag = true;
+                     temCell.allowDrag = true;
+                     _equipArr[temIndex] = temCell;
+                     _equipList.addChild(temCell);
+                     appendEvent(temCell);
                   }
-                  _equipArr[_loc5_].info = _loc6_;
-                  _loc5_++;
+                  _equipArr[temIndex].info = info;
+                  temIndex++;
                }
             }
          }
          var _loc10_:int = 0;
          var _loc9_:* = _store.items;
-         for each(_loc6_ in _store.items)
+         for each(info in _store.items)
          {
-            if(_loc6_.Property1 == "132" && _loc6_.getRemainDate() > 0)
+            if(info.Property1 == "132" && info.getRemainDate() > 0)
             {
-               if(_equipArr[_loc5_] == null)
+               if(_equipArr[temIndex] == null)
                {
-                  _loc3_ = new PetsAwakenEquipCell(_loc5_);
-                  _loc3_.allowDrag = true;
-                  _loc3_.isReceiveDrag = true;
-                  _equipArr[_loc5_] = _loc3_;
-                  _equipList.addChild(_loc3_);
-                  appendEvent(_loc3_);
+                  storeCell = new PetsAwakenEquipCell(temIndex);
+                  storeCell.allowDrag = true;
+                  storeCell.isReceiveDrag = true;
+                  _equipArr[temIndex] = storeCell;
+                  _equipList.addChild(storeCell);
+                  appendEvent(storeCell);
                }
-               _equipArr[_loc5_].info = _loc6_;
-               _equipArr[_loc5_].itemInfo = _loc6_;
-               _loc5_++;
+               _equipArr[temIndex].info = info;
+               _equipArr[temIndex].itemInfo = info;
+               temIndex++;
             }
          }
       }
       
       private function clareEquipCache() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _equipArr.length)
+         var i:int = 0;
+         for(i = 0; i < _equipArr.length; )
          {
-            _equipArr[_loc1_].info = null;
-            _equipArr[_loc1_].updateCount();
-            _loc1_++;
+            _equipArr[i].info = null;
+            _equipArr[i].updateCount();
+            i++;
          }
       }
       
-      private function appendEvent(param1:BaseCell) : void
+      private function appendEvent(cell:BaseCell) : void
       {
-         param1.addEventListener("interactive_click",__equipClickHandler);
-         param1.addEventListener("interactive_double_click",__equipDoubleClickHandler);
-         DoubleClickManager.Instance.enableDoubleClick(param1);
+         cell.addEventListener("interactive_click",__equipClickHandler);
+         cell.addEventListener("interactive_double_click",__equipDoubleClickHandler);
+         DoubleClickManager.Instance.enableDoubleClick(cell);
       }
       
-      private function __equipClickHandler(param1:InteractiveEvent) : void
+      private function __equipClickHandler(evt:InteractiveEvent) : void
       {
-         if(param1.target)
+         if(evt.target)
          {
-            dispatchEvent(new CellEvent("itemclick",param1.target));
+            dispatchEvent(new CellEvent("itemclick",evt.target));
          }
       }
       
-      private function __equipDoubleClickHandler(param1:InteractiveEvent) : void
+      private function __equipDoubleClickHandler(evt:InteractiveEvent) : void
       {
-         if(param1.target)
+         if(evt.target)
          {
             SoundManager.instance.play("008");
-            dispatchEvent(new CellEvent("doubleclick",param1.target));
+            dispatchEvent(new CellEvent("doubleclick",evt.target));
          }
       }
       
@@ -173,11 +171,11 @@ package petsBag.petsAdvanced
          _equipPanel = null;
          var _loc3_:int = 0;
          var _loc2_:* = _equipArr;
-         for each(var _loc1_ in _equipArr)
+         for each(var cell in _equipArr)
          {
-            _loc1_.removeEventListener("interactive_click",__equipClickHandler);
-            _loc1_.removeEventListener("interactive_double_click",__equipDoubleClickHandler);
-            DoubleClickManager.Instance.disableDoubleClick(_loc1_);
+            cell.removeEventListener("interactive_click",__equipClickHandler);
+            cell.removeEventListener("interactive_double_click",__equipDoubleClickHandler);
+            DoubleClickManager.Instance.disableDoubleClick(cell);
          }
          if(_equipList)
          {

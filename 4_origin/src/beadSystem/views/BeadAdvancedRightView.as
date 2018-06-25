@@ -116,32 +116,31 @@ package beadSystem.views
       
       private function createCells() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:int = 0;
+         var cell:* = null;
+         var i:int = 0;
          _beadCellArr = [];
          _skillSpri.removeChildren();
-         _loc2_ = 0;
-         while(_loc2_ < 18)
+         for(i = 0; i < 18; )
          {
-            _loc1_ = createCell(_loc2_);
-            _skillSpri.addChild(_loc1_);
-            _beadCellArr.push(_loc1_);
-            _loc2_++;
+            cell = createCell(i);
+            _skillSpri.addChild(cell);
+            _beadCellArr.push(cell);
+            i++;
          }
          _panel.setView(_skillSpri);
       }
       
-      private function createCell(param1:int) : BeadAdvanceCell
+      private function createCell(index:int) : BeadAdvanceCell
       {
-         var _loc2_:* = null;
-         _loc2_ = new BeadAdvanceCell(param1);
-         _loc2_.setContentSize(50,50);
-         _loc2_.PicPos = new Point(-3,-2);
-         _loc2_.x = param1 % 6 * 49 + 10;
-         _loc2_.y = int(param1 / 6) * 49;
-         _loc2_.addEventListener("interactive_click",beadCellClickHandler);
-         DoubleClickManager.Instance.enableDoubleClick(_loc2_);
-         return _loc2_;
+         var temCell:* = null;
+         temCell = new BeadAdvanceCell(index);
+         temCell.setContentSize(50,50);
+         temCell.PicPos = new Point(-3,-2);
+         temCell.x = index % 6 * 49 + 10;
+         temCell.y = int(index / 6) * 49;
+         temCell.addEventListener("interactive_click",beadCellClickHandler);
+         DoubleClickManager.Instance.enableDoubleClick(temCell);
+         return temCell;
       }
       
       private function initEvent() : void
@@ -164,30 +163,30 @@ package beadSystem.views
          }
       }
       
-      private function cellInfoClickHandler(param1:InteractiveEvent) : void
+      private function cellInfoClickHandler(evt:InteractiveEvent) : void
       {
-         var _loc2_:* = null;
-         param1.stopImmediatePropagation();
-         if(param1.target is BeadAdvanceInfoCell)
+         var cell:* = null;
+         evt.stopImmediatePropagation();
+         if(evt.target is BeadAdvanceInfoCell)
          {
-            _loc2_ = param1.target as BeadAdvanceInfoCell;
-            if(_loc2_.info == null)
+            cell = evt.target as BeadAdvanceInfoCell;
+            if(cell.info == null)
             {
                return;
             }
-            _loc2_.dragStart();
+            cell.dragStart();
          }
       }
       
-      private function cellInfoRemoveHandler(param1:InteractiveEvent) : void
+      private function cellInfoRemoveHandler(evt:InteractiveEvent) : void
       {
-         var _loc2_:* = null;
-         if(param1.target is BeadAdvanceInfoCell)
+         var temCell:* = null;
+         if(evt.target is BeadAdvanceInfoCell)
          {
-            _loc2_ = param1.target as BeadAdvanceInfoCell;
+            temCell = evt.target as BeadAdvanceInfoCell;
             var _loc3_:* = null;
-            _loc2_.itemInfo = _loc3_;
-            _loc2_.info = _loc3_;
+            temCell.itemInfo = _loc3_;
+            temCell.info = _loc3_;
          }
          update(_info,_curTabIndex);
       }
@@ -212,7 +211,7 @@ package beadSystem.views
          }
       }
       
-      private function exchangeHandler(param1:MouseEvent) : void
+      private function exchangeHandler(evt:MouseEvent) : void
       {
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -225,16 +224,16 @@ package beadSystem.views
             return;
          }
          _clickDate = new Date().time;
-         var _loc2_:String = LanguageMgr.GetTranslation("beadSystem.beadAdvance.exchangeTipMsg");
-         _confirmFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc2_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,1,null,"SimpleAlert",30,true);
+         var msg:String = LanguageMgr.GetTranslation("beadSystem.beadAdvance.exchangeTipMsg");
+         _confirmFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),msg,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,1,null,"SimpleAlert",30,true);
          _confirmFrame.moveEnable = false;
          _confirmFrame.addEventListener("response",__confirm);
       }
       
-      private function __confirm(param1:FrameEvent) : void
+      private function __confirm(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode) - 2)
+         switch(int(evt.responseCode) - 2)
          {
             case 0:
             case 1:
@@ -250,35 +249,35 @@ package beadSystem.views
       
       private function exchange() : void
       {
-         var _loc4_:int = _info.advancedTempId;
-         var _loc2_:BagInfo = PlayerManager.Instance.Self.BeadBag;
-         var _loc1_:int = -1;
-         var _loc3_:int = -1;
+         var itemId:int = _info.advancedTempId;
+         var bag:BagInfo = PlayerManager.Instance.Self.BeadBag;
+         var mainIndex:int = -1;
+         var secondIndex:int = -1;
          if(_mainCell && _mainCell.info)
          {
-            _loc1_ = (_mainCell.info as InventoryItemInfo).Place;
+            mainIndex = (_mainCell.info as InventoryItemInfo).Place;
          }
          if(_secondCell && _secondCell.info)
          {
-            _loc3_ = (_secondCell.info as InventoryItemInfo).Place;
+            secondIndex = (_secondCell.info as InventoryItemInfo).Place;
          }
-         if(_loc1_ == -1)
+         if(mainIndex == -1)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("beadSystem.beadAdvance.mainMaterial.nuLLMsg"));
             return;
          }
-         if(_loc3_ == -1)
+         if(secondIndex == -1)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("beadSystem.beadAdvance.secondMaterial.nuLLMsg"));
             return;
          }
-         SocketManager.Instance.out.sendBeadAdvanceExchange(_loc4_,_loc1_,_loc3_);
+         SocketManager.Instance.out.sendBeadAdvanceExchange(itemId,mainIndex,secondIndex);
       }
       
-      public function update(param1:AdvanceBeadInfo, param2:int) : void
+      public function update(info:AdvanceBeadInfo, tabIndex:int) : void
       {
-         _info = param1;
-         _curTabIndex = param2;
+         _info = info;
+         _curTabIndex = tabIndex;
          clearAdvanceBeadInfoCell();
          updateData();
       }
@@ -309,115 +308,114 @@ package beadSystem.views
       {
          var _loc4_:int = 0;
          var _loc3_:* = _beadCellArr;
-         for each(var _loc1_ in _beadCellArr)
+         for each(var cell in _beadCellArr)
          {
-            if(_loc1_.info)
+            if(cell.info)
             {
                var _loc2_:* = null;
-               _loc1_.itemInfo = _loc2_;
-               _loc1_.info = _loc2_;
+               cell.itemInfo = _loc2_;
+               cell.info = _loc2_;
             }
          }
       }
       
       private function updateBeadDesc() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:String = LanguageMgr.GetTranslation("beadSystem.beadAdvance.anySingleProperty");
-         var _loc3_:String = LanguageMgr.GetTranslation("beadSystem.beadAdvance.anyDoubleProperty");
-         var _loc4_:String = LanguageMgr.GetTranslation("tank.auctionHouse.view.sphere");
+         var temId:int = 0;
+         var singProTxt:String = LanguageMgr.GetTranslation("beadSystem.beadAdvance.anySingleProperty");
+         var doubleProTxt:String = LanguageMgr.GetTranslation("beadSystem.beadAdvance.anyDoubleProperty");
+         var beadTxt:String = LanguageMgr.GetTranslation("tank.auctionHouse.view.sphere");
          if(_info.mainMaterials.split("|").length > 1)
          {
-            _mainBeadDescTxt.text = _curTabIndex == 0?_loc1_:_loc3_;
+            _mainBeadDescTxt.text = _curTabIndex == 0?singProTxt:doubleProTxt;
          }
          else
          {
-            _loc2_ = _info.mainMaterials;
-            _mainBeadDescTxt.text = BeadTemplateManager.Instance.GetBeadInfobyID(_loc2_).Name + _loc4_;
+            temId = _info.mainMaterials;
+            _mainBeadDescTxt.text = BeadTemplateManager.Instance.GetBeadInfobyID(temId).Name + beadTxt;
          }
          if(_info.auxiliaryMaterials.split("|").length > 1)
          {
-            _secondBeadDescTxt.text = _curTabIndex == 0?_loc1_:_loc3_;
+            _secondBeadDescTxt.text = _curTabIndex == 0?singProTxt:doubleProTxt;
          }
          else
          {
-            _loc2_ = _info.auxiliaryMaterials;
-            _secondBeadDescTxt.text = BeadTemplateManager.Instance.GetBeadInfobyID(_loc2_).Name + _loc4_;
+            temId = _info.auxiliaryMaterials;
+            _secondBeadDescTxt.text = BeadTemplateManager.Instance.GetBeadInfobyID(temId).Name + beadTxt;
          }
       }
       
       protected function updateData() : void
       {
-         var _loc3_:int = 0;
-         var _loc6_:* = null;
-         var _loc1_:* = null;
-         var _loc8_:int = 0;
-         var _loc7_:Array = _info.getAllBead();
-         var _loc4_:BagInfo = PlayerManager.Instance.Self.BeadBag;
-         if(_beadCellArr == null && _loc4_ == null)
+         var beadId:int = 0;
+         var itemInfo:* = null;
+         var temCeLL:* = null;
+         var i:int = 0;
+         var beadArr:Array = _info.getAllBead();
+         var bag:BagInfo = PlayerManager.Instance.Self.BeadBag;
+         if(_beadCellArr == null && bag == null)
          {
             return;
          }
          clearBeadCellInfo();
          updateBeadDesc();
          _lookBead.info = createBagCellInfo(_info.maxLevelTempRunId);
-         var _loc2_:int = 0;
-         _loc8_ = 0;
-         while(_loc8_ < _loc7_.length)
+         var index:int = 0;
+         for(i = 0; i < beadArr.length; )
          {
-            _loc3_ = _loc7_[_loc8_];
+            beadId = beadArr[i];
             var _loc10_:int = 0;
-            var _loc9_:* = _loc4_.items;
-            for(var _loc5_ in _loc4_.items)
+            var _loc9_:* = bag.items;
+            for(var item in bag.items)
             {
-               _loc6_ = _loc4_.items[_loc5_] as InventoryItemInfo;
-               if(_loc6_.TemplateID == _loc3_ && _loc6_.Place >= 32)
+               itemInfo = bag.items[item] as InventoryItemInfo;
+               if(itemInfo.TemplateID == beadId && itemInfo.Place >= 32)
                {
-                  if(_beadCellArr.length > _loc2_)
+                  if(_beadCellArr.length > index)
                   {
-                     _loc1_ = _beadCellArr[_loc2_] as BeadAdvanceCell;
+                     temCeLL = _beadCellArr[index] as BeadAdvanceCell;
                   }
                   else
                   {
-                     _loc1_ = createCell(_loc2_);
-                     _skillSpri.addChild(_loc1_);
-                     _beadCellArr[_loc2_] = _loc1_;
+                     temCeLL = createCell(index);
+                     _skillSpri.addChild(temCeLL);
+                     _beadCellArr[index] = temCeLL;
                   }
-                  _loc1_.itemInfo = _loc6_;
-                  _loc1_.info = _loc6_;
-                  _loc2_++;
+                  temCeLL.itemInfo = itemInfo;
+                  temCeLL.info = itemInfo;
+                  index++;
                }
             }
-            _loc8_++;
+            i++;
          }
       }
       
-      private function createBagCellInfo(param1:int) : InventoryItemInfo
+      private function createBagCellInfo(templeteId:int) : InventoryItemInfo
       {
-         var _loc2_:InventoryItemInfo = new InventoryItemInfo();
-         _loc2_.TemplateID = param1;
-         _loc2_ = ItemManager.fill(_loc2_);
-         _loc2_.IsBinds = true;
-         return _loc2_;
+         var info:InventoryItemInfo = new InventoryItemInfo();
+         info.TemplateID = templeteId;
+         info = ItemManager.fill(info);
+         info.IsBinds = true;
+         return info;
       }
       
-      private function beadCellClickHandler(param1:InteractiveEvent) : void
+      private function beadCellClickHandler(evt:InteractiveEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         param1.stopImmediatePropagation();
-         if(param1.currentTarget is BeadCell)
+         var cell:* = null;
+         var info:* = null;
+         evt.stopImmediatePropagation();
+         if(evt.currentTarget is BeadCell)
          {
-            _loc2_ = param1.target as BeadCell;
-            if(_loc2_)
+            cell = evt.target as BeadCell;
+            if(cell)
             {
-               _loc3_ = _loc2_.itemInfo as InventoryItemInfo;
+               info = cell.itemInfo as InventoryItemInfo;
             }
-            if(_loc3_ == null)
+            if(info == null)
             {
                return;
             }
-            _loc2_.dragStart();
+            cell.dragStart();
          }
       }
       

@@ -40,7 +40,7 @@ package room.view.smallMapInfoPanel
          addChild(_btn);
       }
       
-      private function __onClick(param1:MouseEvent) : void
+      private function __onClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(RoomManager.Instance.current.isOpenBoss && !RoomManager.Instance.current.selfRoomPlayer.isViewer)
@@ -48,33 +48,33 @@ package room.view.smallMapInfoPanel
             showAlert();
             return;
          }
-         var _loc2_:DungeonChooseMapFrame = new DungeonChooseMapFrame();
-         _loc2_.show();
+         var mapChooser:DungeonChooseMapFrame = new DungeonChooseMapFrame();
+         mapChooser.show();
       }
       
       private function showAlert() : void
       {
-         var _loc1_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.missionsettle.dungeon.leaveConfirm.contents"),"",LanguageMgr.GetTranslation("cancel"),true,true,false,1);
-         _loc1_.moveEnable = false;
-         _loc1_.addEventListener("response",__onResponse);
+         var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.missionsettle.dungeon.leaveConfirm.contents"),"",LanguageMgr.GetTranslation("cancel"),true,true,false,1);
+         alert.moveEnable = false;
+         alert.addEventListener("response",__onResponse);
       }
       
-      private function __onResponse(param1:FrameEvent) : void
+      private function __onResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.target as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onResponse);
-         _loc2_.dispose();
-         _loc2_ = null;
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var alert:BaseAlerFrame = evt.target as BaseAlerFrame;
+         alert.removeEventListener("response",__onResponse);
+         alert.dispose();
+         alert = null;
+         if(evt.responseCode == 2 || evt.responseCode == 3)
          {
             StateManager.setState("dungeon");
          }
       }
       
-      override public function set info(param1:RoomInfo) : void
+      override public function set info(value:RoomInfo) : void
       {
-         .super.info = param1;
+         .super.info = value;
          if(_info)
          {
             _info.selfRoomPlayer.addEventListener("isHostChange",__update);
@@ -93,7 +93,7 @@ package room.view.smallMapInfoPanel
          }
       }
       
-      private function __update(param1:RoomPlayerEvent) : void
+      private function __update(evt:RoomPlayerEvent) : void
       {
          if(_info.selfRoomPlayer.isHost && _info.mapId != 12016 && _info.mapId != 70002 && _info.mapId != 70020)
          {

@@ -61,7 +61,7 @@ package ddt
          _timer.addEventListener("timerComplete",__timerComplete);
       }
       
-      private function createTween(param1:Function = null, param2:Array = null) : void
+      private function createTween(onComplete:Function = null, completeParam:Array = null) : void
       {
          MessageTipManager.getInstance().kill();
          TweenMax.killTweensOf(_moveSprite);
@@ -73,90 +73,90 @@ package ddt
             "delay":1.4,
             "y":130 * -1,
             "alpha":0,
-            "onComplete":(param1 == null?removeTips:param1),
-            "onCompleteParams":param2
+            "onComplete":(onComplete == null?removeTips:onComplete),
+            "onCompleteParams":completeParam
          });
       }
       
-      private function showPropertyChange(param1:InventoryItemInfo) : String
+      private function showPropertyChange(info:InventoryItemInfo) : String
       {
-         var _loc3_:Number = NaN;
-         var _loc2_:String = "";
-         var _loc4_:String = "";
-         if(EquipType.isArm(param1))
+         var diff:Number = NaN;
+         var str:String = "";
+         var chatStr:String = "";
+         if(EquipType.isArm(info))
          {
-            _loc3_ = StaticFormula.getHertAddition(int(param1.Property7),param1.StrengthenLevel) - StaticFormula.getHertAddition(int(param1.Property7),param1.StrengthenLevel - 1);
-            _loc2_ = LanguageMgr.GetTranslation("store.storeTip.hurt"," "," +",_loc3_);
-            _loc4_ = LanguageMgr.GetTranslation("store.storeTip.chatHurt",_loc3_);
+            diff = StaticFormula.getHertAddition(int(info.Property7),info.StrengthenLevel) - StaticFormula.getHertAddition(int(info.Property7),info.StrengthenLevel - 1);
+            str = LanguageMgr.GetTranslation("store.storeTip.hurt"," "," +",diff);
+            chatStr = LanguageMgr.GetTranslation("store.storeTip.chatHurt",diff);
          }
-         else if(int(param1.Property3) == 32)
+         else if(int(info.Property3) == 32)
          {
-            _loc3_ = StaticFormula.getRecoverHPAddition(int(param1.Property7),param1.StrengthenLevel) - StaticFormula.getRecoverHPAddition(int(param1.Property7),param1.StrengthenLevel - 1);
-            _loc2_ = LanguageMgr.GetTranslation("store.storeTip.AddHP"," "," +",_loc3_);
-            _loc4_ = LanguageMgr.GetTranslation("store.storeTip.chatAddHP",_loc3_);
+            diff = StaticFormula.getRecoverHPAddition(int(info.Property7),info.StrengthenLevel) - StaticFormula.getRecoverHPAddition(int(info.Property7),info.StrengthenLevel - 1);
+            str = LanguageMgr.GetTranslation("store.storeTip.AddHP"," "," +",diff);
+            chatStr = LanguageMgr.GetTranslation("store.storeTip.chatAddHP",diff);
          }
-         else if(int(param1.Property3) == 31)
+         else if(int(info.Property3) == 31)
          {
-            _loc3_ = StaticFormula.getDefenseAddition(int(param1.Property7),param1.StrengthenLevel) - StaticFormula.getDefenseAddition(int(param1.Property7),param1.StrengthenLevel - 1);
-            _loc2_ = LanguageMgr.GetTranslation("store.storeTip.subHurt"," "," +",_loc3_);
-            _loc4_ = LanguageMgr.GetTranslation("store.storeTip.chatSubHurt",_loc3_);
+            diff = StaticFormula.getDefenseAddition(int(info.Property7),info.StrengthenLevel) - StaticFormula.getDefenseAddition(int(info.Property7),info.StrengthenLevel - 1);
+            str = LanguageMgr.GetTranslation("store.storeTip.subHurt"," "," +",diff);
+            chatStr = LanguageMgr.GetTranslation("store.storeTip.chatSubHurt",diff);
          }
-         else if(EquipType.isEquip(param1))
+         else if(EquipType.isEquip(info))
          {
-            _loc3_ = StaticFormula.getDefenseAddition(int(param1.Property7),param1.StrengthenLevel) - StaticFormula.getDefenseAddition(int(param1.Property7),param1.StrengthenLevel - 1);
-            _loc2_ = LanguageMgr.GetTranslation("store.storeTip.Armor"," "," +",_loc3_);
-            _loc4_ = LanguageMgr.GetTranslation("store.storeTip.chatArmor",_loc3_);
+            diff = StaticFormula.getDefenseAddition(int(info.Property7),info.StrengthenLevel) - StaticFormula.getDefenseAddition(int(info.Property7),info.StrengthenLevel - 1);
+            str = LanguageMgr.GetTranslation("store.storeTip.Armor"," "," +",diff);
+            chatStr = LanguageMgr.GetTranslation("store.storeTip.chatArmor",diff);
          }
-         _lastTipString = _lastTipString + _loc2_;
-         return _loc4_;
+         _lastTipString = _lastTipString + str;
+         return chatStr;
       }
       
-      private function showHoleTip(param1:InventoryItemInfo) : String
+      private function showHoleTip(info:InventoryItemInfo) : String
       {
-         var _loc3_:* = null;
-         var _loc4_:int = 0;
-         var _loc5_:String = "";
-         var _loc2_:String = LanguageMgr.GetTranslation("store.storeTip.openHole");
-         if(param1.CategoryID == 1 || param1.CategoryID == 5)
+         var arr:* = null;
+         var number:int = 0;
+         var chatStr:String = "";
+         var str:String = LanguageMgr.GetTranslation("store.storeTip.openHole");
+         if(info.CategoryID == 1 || info.CategoryID == 5)
          {
-            if(param1.StrengthenLevel == 3 || param1.StrengthenLevel == 9 || param1.StrengthenLevel == 12)
+            if(info.StrengthenLevel == 3 || info.StrengthenLevel == 9 || info.StrengthenLevel == 12)
             {
-               _loc2_ = _loc2_ + (" " + LanguageMgr.GetTranslation("store.storeTip.weaponOpenProperty"));
+               str = str + (" " + LanguageMgr.GetTranslation("store.storeTip.weaponOpenProperty"));
             }
-            if(param1.StrengthenLevel == 6)
+            if(info.StrengthenLevel == 6)
             {
-               _loc2_ = _loc2_ + (" " + LanguageMgr.GetTranslation("store.storeTip.clothOpenDefense"));
+               str = str + (" " + LanguageMgr.GetTranslation("store.storeTip.clothOpenDefense"));
             }
          }
-         else if(param1.CategoryID == 7)
+         else if(info.CategoryID == 7)
          {
-            if(param1.StrengthenLevel == 6 || param1.StrengthenLevel == 9 || param1.StrengthenLevel == 12)
+            if(info.StrengthenLevel == 6 || info.StrengthenLevel == 9 || info.StrengthenLevel == 12)
             {
-               _loc2_ = _loc2_ + (" " + LanguageMgr.GetTranslation("store.storeTip.weaponOpenProperty"));
+               str = str + (" " + LanguageMgr.GetTranslation("store.storeTip.weaponOpenProperty"));
             }
-            if(param1.StrengthenLevel == 3)
+            if(info.StrengthenLevel == 3)
             {
-               _loc2_ = _loc2_ + (" " + LanguageMgr.GetTranslation("store.storeTip.weaponOpenAttack"));
+               str = str + (" " + LanguageMgr.GetTranslation("store.storeTip.weaponOpenAttack"));
             }
          }
-         if((param1.CategoryID == 1 || param1.CategoryID == 5 || param1.CategoryID == 7) && (param1.StrengthenLevel == 3 || param1.StrengthenLevel == 6 || param1.StrengthenLevel == 9 || param1.StrengthenLevel == 12))
+         if((info.CategoryID == 1 || info.CategoryID == 5 || info.CategoryID == 7) && (info.StrengthenLevel == 3 || info.StrengthenLevel == 6 || info.StrengthenLevel == 9 || info.StrengthenLevel == 12))
          {
-            _loc3_ = param1.Hole.split("|");
-            _loc4_ = param1.StrengthenLevel / 3;
-            if(_loc3_[_loc4_ - 1].split(",")[1] > 0 && param1["Hole" + _loc4_] >= 0)
+            arr = info.Hole.split("|");
+            number = info.StrengthenLevel / 3;
+            if(arr[number - 1].split(",")[1] > 0 && info["Hole" + number] >= 0)
             {
-               _lastTipString = _lastTipString + ("\n" + _loc2_);
-               return _loc5_;
+               _lastTipString = _lastTipString + ("\n" + str);
+               return chatStr;
             }
          }
          return null;
       }
       
-      private function showOpenHoleTip(param1:InventoryItemInfo) : String
+      private function showOpenHoleTip(info:InventoryItemInfo) : String
       {
-         var _loc2_:String = LanguageMgr.GetTranslation("store.storeTip.openHole");
-         _loc2_ = _loc2_ + (" " + LanguageMgr.GetTranslation("store.storeTip.weaponOpenProperty"));
-         return _loc2_;
+         var str:String = LanguageMgr.GetTranslation("store.storeTip.openHole");
+         str = str + (" " + LanguageMgr.GetTranslation("store.storeTip.weaponOpenProperty"));
+         return str;
       }
       
       public function showSuccess() : void
@@ -177,10 +177,10 @@ package ddt
          _timer.start();
       }
       
-      public function showStrengthSuccess(param1:InventoryItemInfo, param2:Boolean) : void
+      public function showStrengthSuccess(info:InventoryItemInfo, isShowHoleTip:Boolean) : void
       {
-         var _loc3_:* = null;
-         var _loc4_:* = null;
+         var propertyString:* = null;
+         var holeString:* = null;
          _lastTipString = "";
          removeTips();
          if(isDisplayerTip)
@@ -191,33 +191,33 @@ package ddt
                addChild(_moveSprite);
             }
             _moveSprite.addChild(_successBit);
-            _loc3_ = showPropertyChange(param1);
-            _loc4_ = !!param2?showHoleTip(param1):null;
-            if(_loc4_)
+            propertyString = showPropertyChange(info);
+            holeString = !!isShowHoleTip?showHoleTip(info):null;
+            if(holeString)
             {
-               _loc3_ = _loc3_.replace("!",",");
-               _loc3_ = _loc3_ + _loc4_;
+               propertyString = propertyString.replace("!",",");
+               propertyString = propertyString + holeString;
             }
-            createTween(strengthTweenComplete,[_loc3_]);
-            ChatManager.Instance.sysChatYellow(LanguageMgr.GetTranslation("store.Strength.Succes.ChatSay") + _loc3_);
+            createTween(strengthTweenComplete,[propertyString]);
+            ChatManager.Instance.sysChatYellow(LanguageMgr.GetTranslation("store.Strength.Succes.ChatSay") + propertyString);
          }
          SoundManager.instance.pauseMusic();
          SoundManager.instance.play("063",false,false);
          _timer.start();
       }
       
-      private function strengthTweenComplete(param1:String) : void
+      private function strengthTweenComplete(content:String) : void
       {
-         if(param1)
+         if(content)
          {
-            MessageTipManager.getInstance().show(param1);
+            MessageTipManager.getInstance().show(content);
          }
          removeTips();
       }
       
-      public function showEmbedSuccess(param1:InventoryItemInfo) : void
+      public function showEmbedSuccess(info:InventoryItemInfo) : void
       {
-         var _loc2_:* = null;
+         var openHoleString:* = null;
          _lastTipString = "";
          if(isDisplayerTip)
          {
@@ -227,9 +227,9 @@ package ddt
                addChild(_moveSprite);
             }
             _moveSprite.addChild(_successBit);
-            _loc2_ = showOpenHoleTip(param1);
+            openHoleString = showOpenHoleTip(info);
             createTween(embedTweenComplete);
-            _lastTipString = _loc2_;
+            _lastTipString = openHoleString;
             ChatManager.Instance.sysChatYellow(LanguageMgr.GetTranslation("store.Strength.Succes.ChatSay") + _lastTipString);
          }
          SoundManager.instance.pauseMusic();
@@ -279,7 +279,7 @@ package ddt
          _timer.start();
       }
       
-      private function __timerComplete(param1:TimerEvent) : void
+      private function __timerComplete(evt:TimerEvent) : void
       {
          _timer.reset();
          SoundManager.instance.resumeMusic();

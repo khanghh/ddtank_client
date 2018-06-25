@@ -34,7 +34,7 @@ package ddt.view.chat
          removeEventListener("click",__hideThis);
       }
       
-      protected function __hideThis(param1:MouseEvent) : void
+      protected function __hideThis(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          setVisible = false;
@@ -44,13 +44,13 @@ package ddt.view.chat
          }
       }
       
-      public function set setVisible(param1:Boolean) : void
+      public function set setVisible(value:Boolean) : void
       {
-         if(visible == true && param1 == false)
+         if(visible == true && value == false)
          {
             ShowTipManager.Instance.removeCurrentTip();
          }
-         if(param1)
+         if(value)
          {
             LayerManager.Instance.addToLayer(this,2,false,0,false);
          }

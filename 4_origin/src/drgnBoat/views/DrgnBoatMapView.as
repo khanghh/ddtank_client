@@ -84,14 +84,14 @@ package drgnBoat.views
          initEvent();
       }
       
-      public function set runPercent(param1:DrgnBoatRunPercent) : void
+      public function set runPercent(value:DrgnBoatRunPercent) : void
       {
-         _runPercent = param1;
+         _runPercent = value;
       }
       
-      public function set arriveCountDown(param1:DrgnBoatArriveCountDown) : void
+      public function set arriveCountDown(value:DrgnBoatArriveCountDown) : void
       {
-         _arriveCountDown = param1;
+         _arriveCountDown = value;
       }
       
       private function initView() : void
@@ -102,20 +102,19 @@ package drgnBoat.views
       
       private function initMapLayer() : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var bitmap:* = null;
+         var mc:* = null;
          _mapLayer = new Sprite();
          addChild(_mapLayer);
          _mapBitmapData = ComponentFactory.Instance.creatBitmapData("drgnBoat.mapBg");
-         var _loc3_:int = Math.ceil(33600 / 1551);
-         _loc4_ = 0;
-         while(_loc4_ <= _loc3_)
+         var count:int = Math.ceil(33600 / 1551);
+         for(i = 0; i <= count; )
          {
-            _loc2_ = new Bitmap(_mapBitmapData);
-            _loc2_.x = _loc4_ * 1551;
-            _mapLayer.addChild(_loc2_);
-            _loc4_++;
+            bitmap = new Bitmap(_mapBitmapData);
+            bitmap.x = i * 1551;
+            _mapLayer.addChild(bitmap);
+            i++;
          }
          _startMc = ComponentFactory.Instance.creat("drgnBoat.StartEndTagMC");
          _startMc.gotoAndStop(1);
@@ -126,16 +125,15 @@ package drgnBoat.views
          _endMc.x = 280 + 33600;
          _endMc.y = 174;
          _boguArr = [];
-         _loc4_ = 0;
-         while(_loc4_ <= 2)
+         for(i = 0; i <= 2; )
          {
-            _loc1_ = ComponentFactory.Instance.creat("drgnBoat.bogu" + _loc4_);
-            _loc1_.gotoAndPlay(1);
-            _loc1_.x = 300 + _loc4_ * 1000;
-            _loc1_.y = 120;
-            _boguArr.push(_loc1_);
-            _mapLayer.addChild(_loc1_);
-            _loc4_++;
+            mc = ComponentFactory.Instance.creat("drgnBoat.bogu" + i);
+            mc.gotoAndPlay(1);
+            mc.x = 300 + i * 1000;
+            mc.y = 120;
+            _boguArr.push(mc);
+            _mapLayer.addChild(mc);
+            i++;
          }
          _mapLayer.addChild(_startMc);
          _mapLayer.addChild(_endMc);
@@ -143,51 +141,50 @@ package drgnBoat.views
       
       private function initPlayer() : void
       {
-         var _loc8_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
-         var _loc6_:int = 0;
-         var _loc5_:int = 0;
+         var i:int = 0;
+         var tmp:* = null;
+         var tmpP:* = null;
+         var totalTime:int = 0;
+         var cha:int = 0;
          _playerLayer = new Sprite();
          addChild(_playerLayer);
-         var _loc3_:Vector.<DrgnBoatPlayerInfo> = DrgnBoatManager.instance.playerList;
-         if(!_loc3_)
+         var playerInfoList:Vector.<DrgnBoatPlayerInfo> = DrgnBoatManager.instance.playerList;
+         if(!playerInfoList)
          {
             return;
          }
          _playerList = new Vector.<DrgnBoatGamePlayer>();
          _needRankList = new DictionaryData();
-         var _loc4_:int = _loc3_.length;
-         _loc8_ = 0;
-         while(_loc8_ < _loc4_)
+         var len:int = playerInfoList.length;
+         for(i = 0; i < len; )
          {
-            _loc2_ = _loc3_[_loc8_];
-            _loc1_ = new DrgnBoatGamePlayer(_loc2_);
-            _playerLayer.addChild(_loc1_);
-            _playerList.push(_loc1_);
-            _playerItemList.push(_loc1_);
-            _needRankList.add(_loc8_.toString(),_loc8_);
-            if(_loc2_.isSelf)
+            tmp = playerInfoList[i];
+            tmpP = new DrgnBoatGamePlayer(tmp);
+            _playerLayer.addChild(tmpP);
+            _playerList.push(tmpP);
+            _playerItemList.push(tmpP);
+            _needRankList.add(i.toString(),i);
+            if(tmp.isSelf)
             {
-               _selfPlayer = _loc1_;
+               _selfPlayer = tmpP;
             }
-            _loc8_++;
+            i++;
          }
-         var _loc7_:DrgnBoatPlayerInfo = new DrgnBoatPlayerInfo();
-         _loc7_.carType = 3;
-         _loc7_.name = "巴罗夫";
+         var info:DrgnBoatPlayerInfo = new DrgnBoatPlayerInfo();
+         info.carType = 3;
+         info.name = "巴罗夫";
          if(_npcArriveTime)
          {
-            _loc6_ = ServerConfigManager.instance.dragonBoatFastTime * 1000;
-            _loc5_ = _npcArriveTime.getTime() - TimeManager.Instance.Now().getTime();
-            _loc5_ = _loc5_ > 0?_loc5_:0;
-            _loc7_.posX = 280 + 33600 - _loc5_ / _loc6_ * 33600;
+            totalTime = ServerConfigManager.instance.dragonBoatFastTime * 1000;
+            cha = _npcArriveTime.getTime() - TimeManager.Instance.Now().getTime();
+            cha = cha > 0?cha:0;
+            info.posX = 280 + 33600 - cha / totalTime * 33600;
          }
-         _npcPlayer = new DrgnBoatGamePlayer(_loc7_);
+         _npcPlayer = new DrgnBoatGamePlayer(info);
          _playerLayer.addChild(_npcPlayer);
          _playerList.push(_npcPlayer);
          _playerItemList.push(_npcPlayer);
-         _needRankList.add(_loc8_.toString(),_loc8_);
+         _needRankList.add(i.toString(),i);
          playerItemDepth();
          refreshNeedRankList();
          setCenter(false);
@@ -206,9 +203,9 @@ package drgnBoat.views
          DrgnBoatManager.instance.addEventListener("",rankArriveListChangeHandler);
       }
       
-      private function rankArriveListChangeHandler(param1:DrgnBoatEvent) : void
+      private function rankArriveListChangeHandler(event:DrgnBoatEvent) : void
       {
-         _rankArriveList = param1.data as Array;
+         _rankArriveList = event.data as Array;
          refreshNeedRankList();
       }
       
@@ -218,178 +215,177 @@ package drgnBoat.views
          {
             return;
          }
-         var _loc4_:Array = [];
+         var needDelete:Array = [];
          var _loc8_:int = 0;
          var _loc7_:* = _needRankList;
-         for each(var _loc2_ in _needRankList)
+         for each(var tmp in _needRankList)
          {
             var _loc6_:int = 0;
             var _loc5_:* = _rankArriveList;
-            for each(var _loc3_ in _rankArriveList)
+            for each(var obj in _rankArriveList)
             {
-               if(_loc3_.id == _playerList[_loc2_].playerInfo.id && _loc3_.zoneId == _playerList[_loc2_].playerInfo.zoneId)
+               if(obj.id == _playerList[tmp].playerInfo.id && obj.zoneId == _playerList[tmp].playerInfo.zoneId)
                {
-                  _loc4_.push(_loc2_);
+                  needDelete.push(tmp);
                   break;
                }
             }
          }
          var _loc10_:int = 0;
-         var _loc9_:* = _loc4_;
-         for each(var _loc1_ in _loc4_)
+         var _loc9_:* = needDelete;
+         for each(var tmp2 in needDelete)
          {
-            _needRankList.remove(_loc1_.toString());
+            _needRankList.remove(tmp2.toString());
          }
       }
       
       private function updateRankList() : void
       {
-         var _loc5_:int = 0;
+         var j:int = 0;
          if(!_playerList)
          {
             return;
          }
-         var _loc2_:Array = [];
+         var tmpPlayerList:Array = [];
          var _loc8_:int = 0;
          var _loc7_:* = _needRankList;
-         for each(var _loc6_ in _needRankList)
+         for each(var i in _needRankList)
          {
-            _loc2_.push(_playerList[_loc6_]);
+            tmpPlayerList.push(_playerList[i]);
          }
-         _loc2_.sortOn("x",16 | 2);
-         var _loc1_:Array = [];
-         var _loc4_:int = _loc2_.length;
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         tmpPlayerList.sortOn("x",16 | 2);
+         var rankList:Array = [];
+         var len:int = tmpPlayerList.length;
+         for(j = 0; j < len; )
          {
-            _loc1_.push({
-               "name":_loc2_[_loc5_].playerInfo.name,
-               "carType":_loc2_[_loc5_].playerInfo.carType,
-               "isSelf":_loc2_[_loc5_].playerInfo.isSelf
+            rankList.push({
+               "name":tmpPlayerList[j].playerInfo.name,
+               "carType":tmpPlayerList[j].playerInfo.carType,
+               "isSelf":tmpPlayerList[j].playerInfo.isSelf
             });
-            _loc5_++;
+            j++;
          }
-         var _loc3_:DrgnBoatEvent = new DrgnBoatEvent("drgnBoatRankList");
-         _loc3_.data = _rankArriveList.concat(_loc1_);
-         DrgnBoatManager.instance.dispatchEvent(_loc3_);
+         var tmpEvent:DrgnBoatEvent = new DrgnBoatEvent("drgnBoatRankList");
+         tmpEvent.data = _rankArriveList.concat(rankList);
+         DrgnBoatManager.instance.dispatchEvent(tmpEvent);
       }
       
-      private function playerFightStateChangeHandler(param1:DrgnBoatEvent) : void
+      private function playerFightStateChangeHandler(event:DrgnBoatEvent) : void
       {
-         var _loc2_:Object = param1.data;
+         var dataInfo:Object = event.data;
          var _loc5_:int = 0;
          var _loc4_:* = _playerList;
-         for each(var _loc3_ in _playerList)
+         for each(var tmp in _playerList)
          {
-            if(_loc3_.playerInfo.zoneId == _loc2_.zoneId && _loc3_.playerInfo.id == _loc2_.id)
+            if(tmp.playerInfo.zoneId == dataInfo.zoneId && tmp.playerInfo.id == dataInfo.id)
             {
-               _loc3_.playerInfo.fightState = _loc2_.fightState;
-               _loc3_.refreshFightMc();
-               _loc3_.x = _loc2_.posX + 280;
+               tmp.playerInfo.fightState = dataInfo.fightState;
+               tmp.refreshFightMc();
+               tmp.x = dataInfo.posX + 280;
                break;
             }
          }
       }
       
-      private function createPlayerHandler(param1:Event) : void
+      private function createPlayerHandler(event:Event) : void
       {
          initPlayer();
       }
       
-      private function useSkillHandler(param1:DrgnBoatEvent) : void
+      private function useSkillHandler(event:DrgnBoatEvent) : void
       {
-         var _loc2_:Object = param1.data;
+         var dataInfo:Object = event.data;
          var _loc5_:int = 0;
          var _loc4_:* = _playerList;
-         for each(var _loc3_ in _playerList)
+         for each(var tmp in _playerList)
          {
-            if(_loc3_.playerInfo.zoneId == _loc2_.zoneId && _loc3_.playerInfo.id == _loc2_.id)
+            if(tmp.playerInfo.zoneId == dataInfo.zoneId && tmp.playerInfo.id == dataInfo.id)
             {
-               if(_loc2_.sound)
+               if(dataInfo.sound)
                {
                   SoundManager.instance.play("escort04");
                }
-               _loc3_.x = _loc2_.leapX + 280;
+               tmp.x = dataInfo.leapX + 280;
                break;
             }
          }
       }
       
-      private function refreshBuffHandler(param1:DrgnBoatEvent) : void
+      private function refreshBuffHandler(event:DrgnBoatEvent) : void
       {
-         var _loc2_:Object = param1.data;
+         var dataInfo:Object = event.data;
          var _loc5_:int = 0;
          var _loc4_:* = _playerList;
-         for each(var _loc3_ in _playerList)
+         for each(var tmp in _playerList)
          {
-            if(_loc3_.playerInfo.zoneId == _loc2_.zoneId && _loc3_.playerInfo.id == _loc2_.id)
+            if(tmp.playerInfo.zoneId == dataInfo.zoneId && tmp.playerInfo.id == dataInfo.id)
             {
-               if(_loc3_.playerInfo.isSelf)
+               if(tmp.playerInfo.isSelf)
                {
-                  if((_loc2_.acceleEndTime as Date).getTime() - _loc3_.playerInfo.acceleEndTime.getTime() > 1000)
+                  if((dataInfo.acceleEndTime as Date).getTime() - tmp.playerInfo.acceleEndTime.getTime() > 1000)
                   {
                      SoundManager.instance.play("escort01");
                   }
-                  if((_loc2_.deceleEndTime as Date).getTime() - _loc3_.playerInfo.deceleEndTime.getTime() > 1000)
+                  if((dataInfo.deceleEndTime as Date).getTime() - tmp.playerInfo.deceleEndTime.getTime() > 1000)
                   {
                      SoundManager.instance.play("escort02");
                   }
-                  else if((_loc2_.deceleEndTime as Date).getTime() - _loc3_.playerInfo.deceleEndTime.getTime() < -1000)
+                  else if((dataInfo.deceleEndTime as Date).getTime() - tmp.playerInfo.deceleEndTime.getTime() < -1000)
                   {
                      SoundManager.instance.play("escort05");
                   }
-                  if((_loc2_.invisiEndTime as Date).getTime() - _loc3_.playerInfo.invisiEndTime.getTime() > 1000)
+                  if((dataInfo.invisiEndTime as Date).getTime() - tmp.playerInfo.invisiEndTime.getTime() > 1000)
                   {
                      SoundManager.instance.play("escort03");
                   }
-                  if((_loc2_.missileEndTime as Date).getTime() - _loc3_.playerInfo.missileEndTime.getTime() > 1000)
+                  if((dataInfo.missileEndTime as Date).getTime() - tmp.playerInfo.missileEndTime.getTime() > 1000)
                   {
                      SoundManager.instance.play("087");
                   }
-                  else if((_loc2_.missileEndTime as Date).getTime() - _loc3_.playerInfo.missileEndTime.getTime() < -1000)
+                  else if((dataInfo.missileEndTime as Date).getTime() - tmp.playerInfo.missileEndTime.getTime() < -1000)
                   {
                      SoundManager.instance.play("escort05");
                   }
                }
-               _loc3_.playerInfo.acceleEndTime = _loc2_.acceleEndTime;
-               _loc3_.playerInfo.deceleEndTime = _loc2_.deceleEndTime;
-               _loc3_.playerInfo.invisiEndTime = _loc2_.invisiEndTime;
-               _loc3_.playerInfo.missileEndTime = _loc2_.missileEndTime;
-               _loc3_.playerInfo.missileHitEndTime = new Date(TimeManager.Instance.Now().getTime() + 1000);
-               _loc3_.refreshBuffCountDown();
+               tmp.playerInfo.acceleEndTime = dataInfo.acceleEndTime;
+               tmp.playerInfo.deceleEndTime = dataInfo.deceleEndTime;
+               tmp.playerInfo.invisiEndTime = dataInfo.invisiEndTime;
+               tmp.playerInfo.missileEndTime = dataInfo.missileEndTime;
+               tmp.playerInfo.missileHitEndTime = new Date(TimeManager.Instance.Now().getTime() + 1000);
+               tmp.refreshBuffCountDown();
                break;
             }
          }
       }
       
-      private function refreshItemHandler(param1:DrgnBoatEvent) : void
+      private function refreshItemHandler(event:DrgnBoatEvent) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:int = 0;
-         var _loc7_:* = null;
-         var _loc2_:Object = param1.data;
-         var _loc6_:Array = _loc2_.itemList;
+         var tmpItem:* = null;
+         var tag:int = 0;
+         var addItem:* = null;
+         var itemData:Object = event.data;
+         var tmpItemList:Array = itemData.itemList;
          var _loc9_:int = 0;
-         var _loc8_:* = _loc6_;
-         for each(var _loc5_ in _loc6_)
+         var _loc8_:* = tmpItemList;
+         for each(var obj in tmpItemList)
          {
-            _loc4_ = _itemList[_loc5_.index];
-            ObjectUtils.disposeObject(_loc4_);
-            if(_loc4_)
+            tmpItem = _itemList[obj.index];
+            ObjectUtils.disposeObject(tmpItem);
+            if(tmpItem)
             {
-               _playerItemList.splice(_playerItemList.indexOf(_loc4_),1);
+               _playerItemList.splice(_playerItemList.indexOf(tmpItem),1);
             }
-            _loc3_ = _loc5_.tag;
-            if(_loc3_ == 0)
+            tag = obj.tag;
+            if(tag == 0)
             {
-               _itemList.remove(_loc5_.index);
+               _itemList.remove(obj.index);
             }
             else
             {
-               _loc7_ = new DrgnBoatGameItem(_loc5_.index,_loc5_.type,_loc5_.posX);
-               _playerLayer.addChild(_loc7_);
-               _itemList.add(_loc5_.index,_loc7_);
-               _playerItemList.push(_loc7_);
+               addItem = new DrgnBoatGameItem(obj.index,obj.type,obj.posX);
+               _playerLayer.addChild(addItem);
+               _itemList.add(obj.index,addItem);
+               _playerItemList.push(addItem);
             }
          }
          playerItemDepth();
@@ -397,36 +393,35 @@ package drgnBoat.views
       
       private function playerItemDepth() : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          _playerItemList.sortOn("y",16);
-         var _loc1_:int = _playerItemList.length;
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_)
+         var len:int = _playerItemList.length;
+         for(i = 0; i < len; )
          {
-            _playerLayer.addChild(_playerItemList[_loc2_]);
-            _loc2_++;
+            _playerLayer.addChild(_playerItemList[i]);
+            i++;
          }
       }
       
-      private function moveHandler(param1:DrgnBoatEvent) : void
+      private function moveHandler(event:DrgnBoatEvent) : void
       {
-         var _loc2_:Object = param1.data;
+         var dataInfo:Object = event.data;
          var _loc5_:int = 0;
          var _loc4_:* = _playerList;
-         for each(var _loc3_ in _playerList)
+         for each(var tmp in _playerList)
          {
-            if(_loc3_.playerInfo.zoneId == _loc2_.zoneId && _loc3_.playerInfo.id == _loc2_.id)
+            if(tmp.playerInfo.zoneId == dataInfo.zoneId && tmp.playerInfo.id == dataInfo.id)
             {
-               _loc3_.destinationX = _loc2_.destX;
+               tmp.destinationX = dataInfo.destX;
                break;
             }
          }
       }
       
-      private function updateMap(param1:Event) : void
+      private function updateMap(event:Event) : void
       {
-         var _loc3_:* = null;
-         var _loc5_:* = null;
+         var mc:* = null;
+         var carInfo:* = null;
          if(!_isStartGame)
          {
             return;
@@ -465,49 +460,49 @@ package drgnBoat.views
          {
             _npcPlayer.x = _npcPlayer.x + DrgnBoatManager.instance.npcSpeed;
          }
-         var _loc2_:Boolean = false;
+         var flag:Boolean = false;
          var _loc7_:int = 0;
          var _loc6_:* = _playerList;
-         for each(var _loc4_ in _playerList)
+         for each(var tmp in _playerList)
          {
-            _loc4_.updatePlayer();
-            if(_loc4_.x > _npcPlayer.x)
+            tmp.updatePlayer();
+            if(tmp.x > _npcPlayer.x)
             {
-               _loc2_ = true;
+               flag = true;
             }
          }
-         if(_loc2_ && !_beyondNPC && !_endFlag)
+         if(flag && !_beyondNPC && !_endFlag)
          {
             npcChat(LanguageMgr.GetTranslation("drgnBoat.npc.beyonded"));
          }
-         _beyondNPC = _loc2_;
+         _beyondNPC = flag;
          setCenter();
          if(_selfPlayer.x >= _boguArr[1].x)
          {
-            _loc3_ = _boguArr.shift() as MovieClip;
-            _loc3_.x = _loc3_.x + 3000;
-            _boguArr.push(_loc3_);
+            mc = _boguArr.shift() as MovieClip;
+            mc.x = mc.x + 3000;
+            _boguArr.push(mc);
          }
          if(_selfPlayer && _arriveCountDown)
          {
-            _loc5_ = DrgnBoatManager.instance.dataInfo.carInfo[_selfPlayer.playerInfo.carType];
-            _arriveCountDown.refreshView(_selfPlayer.x,_loc5_.speed);
+            carInfo = DrgnBoatManager.instance.dataInfo.carInfo[_selfPlayer.playerInfo.carType];
+            _arriveCountDown.refreshView(_selfPlayer.x,carInfo.speed);
          }
       }
       
       private function calibrateNpcPos() : void
       {
-         var _loc3_:int = ServerConfigManager.instance.dragonBoatFastTime * 1000;
-         var _loc2_:int = _npcArriveTime.getTime() - TimeManager.Instance.Now().getTime();
-         _loc2_ = _loc2_ > 0?_loc2_:0;
-         var _loc1_:int = 280 + 33600 - _loc2_ / _loc3_ * 33600;
-         if(Math.abs(_loc1_ - _npcPlayer.x) >= 50)
+         var totalTime:int = ServerConfigManager.instance.dragonBoatFastTime * 1000;
+         var cha:int = _npcArriveTime.getTime() - TimeManager.Instance.Now().getTime();
+         cha = cha > 0?cha:0;
+         var posX:int = 280 + 33600 - cha / totalTime * 33600;
+         if(Math.abs(posX - _npcPlayer.x) >= 50)
          {
-            _npcPlayer.x = _loc1_;
+            _npcPlayer.x = posX;
          }
       }
       
-      private function setCenter(param1:Boolean = true) : void
+      private function setCenter(isNeedTween:Boolean = true) : void
       {
          if(!_selfPlayer)
          {
@@ -517,27 +512,27 @@ package drgnBoat.views
          {
             return;
          }
-         var _loc3_:* = Number(350 - _selfPlayer.x);
-         if(_loc3_ > 0)
+         var xf:* = Number(350 - _selfPlayer.x);
+         if(xf > 0)
          {
-            _loc3_ = 0;
+            xf = 0;
          }
-         if(_loc3_ < 1000 - _mapLayer.width)
+         if(xf < 1000 - _mapLayer.width)
          {
-            _loc3_ = Number(1000 - _mapLayer.width);
+            xf = Number(1000 - _mapLayer.width);
          }
-         var _loc2_:Number = Math.abs(x - _loc3_);
-         if(param1 && _loc2_ > 14)
+         var tmp:Number = Math.abs(x - xf);
+         if(isNeedTween && tmp > 14)
          {
-            TweenLite.to(this,_loc2_ / 400 * 0.5,{
-               "x":_loc3_,
+            TweenLite.to(this,tmp / 400 * 0.5,{
+               "x":xf,
                "onComplete":tweenComplete
             });
             _isTween = true;
          }
          else
          {
-            x = _loc3_;
+            x = xf;
          }
       }
       
@@ -551,9 +546,9 @@ package drgnBoat.views
          _isStartGame = true;
          var _loc3_:int = 0;
          var _loc2_:* = _playerList;
-         for each(var _loc1_ in _playerList)
+         for each(var tmp in _playerList)
          {
-            _loc1_.startGame();
+            tmp.startGame();
          }
       }
       
@@ -562,42 +557,42 @@ package drgnBoat.views
          _isStartGame = false;
          var _loc3_:int = 0;
          var _loc2_:* = _playerList;
-         for each(var _loc1_ in _playerList)
+         for each(var tmp in _playerList)
          {
-            _loc1_.endGame();
+            tmp.endGame();
          }
       }
       
-      private function playLaunchMcHandler(param1:DrgnBoatEvent) : void
+      private function playLaunchMcHandler(event:DrgnBoatEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc4_:Object = param1.data;
+         var timer:* = null;
+         var obj:Object = event.data;
          var _loc6_:int = 0;
          var _loc5_:* = _playerList;
-         for each(var _loc3_ in _playerList)
+         for each(var tmp in _playerList)
          {
-            if(_loc3_.playerInfo.id == _loc4_.id && _loc3_.playerInfo.zoneId == _loc4_.zoneId)
+            if(tmp.playerInfo.id == obj.id && tmp.playerInfo.zoneId == obj.zoneId)
             {
-               if(_loc3_.playerInfo.isSelf)
+               if(tmp.playerInfo.isSelf)
                {
-                  _loc2_ = new Timer(2000,1);
-                  _loc2_.addEventListener("timerComplete",__launchTimerComplete);
-                  _loc2_.start();
+                  timer = new Timer(2000,1);
+                  timer.addEventListener("timerComplete",__launchTimerComplete);
+                  timer.start();
                }
-               _loc3_.playerInfo.missileLaunchEndTime = new Date(TimeManager.Instance.Now().getTime() + 2000);
-               _loc3_.refreshBuffCountDown();
+               tmp.playerInfo.missileLaunchEndTime = new Date(TimeManager.Instance.Now().getTime() + 2000);
+               tmp.refreshBuffCountDown();
                break;
             }
          }
       }
       
-      protected function __launchTimerComplete(param1:TimerEvent) : void
+      protected function __launchTimerComplete(event:TimerEvent) : void
       {
-         var _loc3_:Timer = param1.target as Timer;
-         _loc3_.removeEventListener("timerComplete",__launchTimerComplete);
-         _loc3_.stop();
-         var _loc2_:Array = DrgnBoatManager.instance.missileArgArr;
-         SocketManager.Instance.out.sendEscortUseSkill(_loc2_[0],_loc2_[1],_loc2_[2],_loc2_[3],_loc2_[4]);
+         var timer:Timer = event.target as Timer;
+         timer.removeEventListener("timerComplete",__launchTimerComplete);
+         timer.stop();
+         var args:Array = DrgnBoatManager.instance.missileArgArr;
+         SocketManager.Instance.out.sendEscortUseSkill(args[0],args[1],args[2],args[3],args[4]);
       }
       
       private function removeEvent() : void
@@ -661,16 +656,16 @@ package drgnBoat.views
          return _selfPlayer;
       }
       
-      public function set npcArriveTime(param1:Date) : void
+      public function set npcArriveTime(value:Date) : void
       {
-         _npcArriveTime = param1;
-         var _loc3_:int = ServerConfigManager.instance.dragonBoatFastTime * 1000;
-         var _loc2_:int = _npcArriveTime.getTime() - TimeManager.Instance.Now().getTime();
-         _loc2_ = _loc2_ > 0?_loc2_:0;
-         _npcPlayer.x = 280 + 33600 - _loc2_ / _loc3_ * 33600;
+         _npcArriveTime = value;
+         var totalTime:int = ServerConfigManager.instance.dragonBoatFastTime * 1000;
+         var cha:int = _npcArriveTime.getTime() - TimeManager.Instance.Now().getTime();
+         cha = cha > 0?cha:0;
+         _npcPlayer.x = 280 + 33600 - cha / totalTime * 33600;
       }
       
-      public function npcChat(param1:String, param2:int = 0) : void
+      public function npcChat(str:String, direction:int = 0) : void
       {
          if(_paopaoView)
          {
@@ -678,13 +673,13 @@ package drgnBoat.views
          }
          ObjectUtils.disposeObject(_paopaoView);
          _paopaoView = null;
-         _paopaoView = new DrgnBoatNPCpaopao(param2);
+         _paopaoView = new DrgnBoatNPCpaopao(direction);
          _paopaoView.addEventListener("complete",__paopaoViewHide);
          _npcPlayer.addChild(_paopaoView);
-         _paopaoView.setTxt(param1);
+         _paopaoView.setTxt(str);
       }
       
-      protected function __paopaoViewHide(param1:Event) : void
+      protected function __paopaoViewHide(event:Event) : void
       {
          _paopaoView.removeEventListener("complete",__paopaoViewHide);
          ObjectUtils.disposeObject(_paopaoView);

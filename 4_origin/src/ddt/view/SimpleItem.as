@@ -35,13 +35,13 @@ package ddt.view
          super.init();
       }
       
-      public function set backStyle(param1:String) : void
+      public function set backStyle(stylename:String) : void
       {
-         if(param1 == _backStyle)
+         if(stylename == _backStyle)
          {
             return;
          }
-         _backStyle = param1;
+         _backStyle = stylename;
          if(_back)
          {
             ObjectUtils.disposeObject(_back);
@@ -50,42 +50,40 @@ package ddt.view
          onPropertiesChanged("backStyle");
       }
       
-      public function set foreStyle(param1:String) : void
+      public function set foreStyle(stylename:String) : void
       {
-         if(param1 == _foreStyle)
+         if(stylename == _foreStyle)
          {
             return;
          }
-         _foreStyle = param1;
+         _foreStyle = stylename;
          clearObject();
-         _foreLinks = ComponentFactory.parasArgs(param1);
+         _foreLinks = ComponentFactory.parasArgs(stylename);
          onPropertiesChanged("foreStyle");
       }
       
       private function clearObject() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _foreLinks.length)
+         var i:int = 0;
+         for(i = 0; i < _foreLinks.length; )
          {
-            if(_foreLinks[_loc1_])
+            if(_foreLinks[i])
             {
-               ObjectUtils.disposeObject(_foreLinks[_loc1_]);
+               ObjectUtils.disposeObject(_foreLinks[i]);
             }
-            _loc1_++;
+            i++;
          }
       }
       
       private function createObject() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         _loc2_ = 0;
-         while(_loc2_ < _foreLinks.length)
+         var i:int = 0;
+         var dp:* = null;
+         for(i = 0; i < _foreLinks.length; )
          {
-            _loc1_ = ComponentFactory.Instance.creat(_foreLinks[_loc2_]);
-            _fore.push(_loc1_);
-            _loc2_++;
+            dp = ComponentFactory.Instance.creat(_foreLinks[i]);
+            _fore.push(dp);
+            i++;
          }
       }
       
@@ -101,17 +99,17 @@ package ddt.view
       
       override protected function addChildren() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          super.addChildren();
          if(_back)
          {
             addChild(_back);
          }
-         _loc1_ = 0;
-         while(_loc1_ < _fore.length)
+         i = 0;
+         while(i < _fore.length)
          {
-            addChild(_fore[_loc1_]);
-            _loc1_++;
+            addChild(_fore[i]);
+            i++;
          }
       }
       
@@ -134,15 +132,14 @@ package ddt.view
       
       override public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          ObjectUtils.disposeObject(_back);
          _back = null;
-         _loc1_ = 0;
-         while(_loc1_ < _fore.length)
+         for(i = 0; i < _fore.length; )
          {
-            ObjectUtils.disposeObject(_fore[_loc1_]);
-            _fore[_loc1_] = null;
-            _loc1_++;
+            ObjectUtils.disposeObject(_fore[i]);
+            _fore[i] = null;
+            i++;
          }
          _foreLinks = null;
          super.dispose();

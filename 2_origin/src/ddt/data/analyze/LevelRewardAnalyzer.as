@@ -10,40 +10,40 @@ package ddt.data.analyze
       
       public var list:Dictionary;
       
-      public function LevelRewardAnalyzer(param1:Function)
+      public function LevelRewardAnalyzer(onCompleteCall:Function)
       {
          list = new Dictionary();
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc3_:int = 0;
-         var _loc9_:* = null;
-         var _loc8_:* = null;
-         var _loc2_:* = null;
-         var _loc6_:XML = XML(param1);
-         var _loc5_:XMLList = _loc6_.reward;
+         var level:int = 0;
+         var rewardItems:* = null;
+         var rewardItemList:* = null;
+         var rewardInfo:* = null;
+         var xml:XML = XML(data);
+         var rewards:XMLList = xml.reward;
          var _loc13_:int = 0;
-         var _loc12_:* = _loc5_;
-         for each(var _loc4_ in _loc5_)
+         var _loc12_:* = rewards;
+         for each(var item in rewards)
          {
-            _loc3_ = _loc4_.@level;
-            _loc9_ = new Dictionary();
-            _loc8_ = _loc4_.rewardItem;
+            level = item.@level;
+            rewardItems = new Dictionary();
+            rewardItemList = item.rewardItem;
             var _loc11_:int = 0;
-            var _loc10_:* = _loc8_;
-            for each(var _loc7_ in _loc8_)
+            var _loc10_:* = rewardItemList;
+            for each(var i in rewardItemList)
             {
-               _loc2_ = new LevelRewardInfo();
-               _loc2_.sort = int(_loc7_.@sort);
-               _loc2_.title = String(_loc7_.@title);
-               _loc2_.content = String(_loc7_.@content);
-               _loc2_.girlItems = String(_loc7_.@items).split("|")[0].split(",");
-               _loc2_.boyItems = String(_loc7_.@items).split("|")[1].split(",");
-               _loc9_[_loc2_.sort] = _loc2_;
+               rewardInfo = new LevelRewardInfo();
+               rewardInfo.sort = int(i.@sort);
+               rewardInfo.title = String(i.@title);
+               rewardInfo.content = String(i.@content);
+               rewardInfo.girlItems = String(i.@items).split("|")[0].split(",");
+               rewardInfo.boyItems = String(i.@items).split("|")[1].split(",");
+               rewardItems[rewardInfo.sort] = rewardInfo;
             }
-            list[_loc3_] = _loc9_;
+            list[level] = rewardItems;
          }
          onAnalyzeComplete();
       }

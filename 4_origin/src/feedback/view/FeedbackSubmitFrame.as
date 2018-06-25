@@ -128,9 +128,9 @@ package feedback.view
          LayerManager.Instance.addToLayer(this,3,true,1);
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -139,7 +139,7 @@ package feedback.view
          }
       }
       
-      private function __problemComboxChanged(param1:Event) : void
+      private function __problemComboxChanged(event:Event) : void
       {
          SoundManager.instance.play("008");
          if(_feedbackSp)
@@ -156,9 +156,9 @@ package feedback.view
          }
       }
       
-      private function fixFeedBackTopImg(param1:int) : void
+      private function fixFeedBackTopImg($type:int) : void
       {
-         switch(int(param1))
+         switch(int($type))
          {
             case 0:
                _feedbackBg.height = 120;
@@ -188,8 +188,8 @@ package feedback.view
       
       private function _init() : void
       {
-         var _loc1_:* = null;
-         var _loc6_:* = 0;
+         var rec:* = null;
+         var i:* = 0;
          titleText = LanguageMgr.GetTranslation("feedback.view.FeedbackSubmitFrame.title");
          _feedbackSp = getFeedbackSp(0);
          addToContent(_feedbackSp as Sprite);
@@ -197,12 +197,12 @@ package feedback.view
          addToContent(_box);
          _problemTypesTextImg = ComponentFactory.Instance.creatComponentByStylename("ddtfeedback.typeText");
          _problemTypesTextImg.text = LanguageMgr.GetTranslation("feedback.view.Feedback.text");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.problemTypesTextImgRec");
-         ObjectUtils.copyPropertyByRectangle(_problemTypesTextImg,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.problemTypesTextImgRec");
+         ObjectUtils.copyPropertyByRectangle(_problemTypesTextImg,rec);
          _box.addChildAt(_problemTypesTextImg,0);
          _problemCombox = ComponentFactory.Instance.creatComponentByStylename("feedback.combox");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.comboxRec");
-         ObjectUtils.copyPropertyByRectangle(_problemCombox,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.comboxRec");
+         ObjectUtils.copyPropertyByRectangle(_problemCombox,rec);
          _problemCombox.beginChanges();
          _problemCombox.selctedPropName = "text";
          _problemCombox.listPanel.vectorListModel.append(LanguageMgr.GetTranslation("feedback.view.problemCombox_text0"));
@@ -219,88 +219,85 @@ package feedback.view
          _problemCombox.textField.text = LanguageMgr.GetTranslation("feedback.view.FeedbackSubmitSp.comBoxText");
          _box.addChildAt(_problemCombox,0);
          _problemTypesAsterisk = ComponentFactory.Instance.creatBitmap("asset.feedback.asteriskImg");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.problemTypesAsteriskTextRec");
-         ObjectUtils.copyPropertyByRectangle(_problemTypesAsterisk,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.problemTypesAsteriskTextRec");
+         ObjectUtils.copyPropertyByRectangle(_problemTypesAsterisk,rec);
          _box.addChildAt(_problemTypesAsterisk,0);
          _problemTitleTextImg = ComponentFactory.Instance.creatComponentByStylename("ddtfeedback.titleText");
          _problemTitleTextImg.text = LanguageMgr.GetTranslation("feedback.view.Feedback.text1");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.problemTitleTextImgRec");
-         ObjectUtils.copyPropertyByRectangle(_problemTitleTextImg,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.problemTitleTextImgRec");
+         ObjectUtils.copyPropertyByRectangle(_problemTitleTextImg,rec);
          _box.addChildAt(_problemTitleTextImg,0);
          _problemTitleInput = ComponentFactory.Instance.creatComponentByStylename("feedback.textInput");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.problemTitleInputRec");
-         ObjectUtils.copyPropertyByRectangle(_problemTitleInput,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.problemTitleInputRec");
+         ObjectUtils.copyPropertyByRectangle(_problemTitleInput,rec);
          _box.addChildAt(_problemTitleInput,0);
          _problemTitleAsterisk = ComponentFactory.Instance.creatBitmap("asset.feedback.asteriskImg");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.problemTitleAsteriskTextRec");
-         ObjectUtils.copyPropertyByRectangle(_problemTitleAsterisk,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.problemTitleAsteriskTextRec");
+         ObjectUtils.copyPropertyByRectangle(_problemTitleAsterisk,rec);
          _box.addChildAt(_problemTitleAsterisk,0);
          _occurrenceTimeTextImg = ComponentFactory.Instance.creatComponentByStylename("ddtfeedback.timerText");
          _occurrenceTimeTextImg.text = LanguageMgr.GetTranslation("feedback.view.Feedback.text2");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.occurrenceTimeTextImgRec");
-         ObjectUtils.copyPropertyByRectangle(_occurrenceTimeTextImg,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.occurrenceTimeTextImgRec");
+         ObjectUtils.copyPropertyByRectangle(_occurrenceTimeTextImg,rec);
          _box.addChildAt(_occurrenceTimeTextImg,0);
          _yearCombox = ComponentFactory.Instance.creatComponentByStylename("feedback.combox2");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.yearComboxRec");
-         ObjectUtils.copyPropertyByRectangle(_yearCombox,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.yearComboxRec");
+         ObjectUtils.copyPropertyByRectangle(_yearCombox,rec);
          _yearCombox.beginChanges();
-         var _loc4_:Number = new Date().getFullYear();
-         _yearCombox.textField.text = String(_loc4_);
+         var year:Number = new Date().getFullYear();
+         _yearCombox.textField.text = String(year);
          _yearCombox.snapItemHeight = true;
          _yearCombox.selctedPropName = "text";
-         _loc6_ = uint(_loc4_);
-         while(_loc6_ >= _loc4_ - 2)
+         for(i = uint(year); i >= year - 2; )
          {
-            _yearCombox.listPanel.vectorListModel.append(_loc6_);
-            _loc6_--;
+            _yearCombox.listPanel.vectorListModel.append(i);
+            i--;
          }
          _yearCombox.commitChanges();
          _box.addChildAt(_yearCombox,0);
          _yearTextImg = ComponentFactory.Instance.creatComponentByStylename("ddtfeedback.yearText");
          _yearTextImg.text = LanguageMgr.GetTranslation("feedback.view.Feedback.text3");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.yearTextImgRec");
-         ObjectUtils.copyPropertyByRectangle(_yearTextImg,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.yearTextImgRec");
+         ObjectUtils.copyPropertyByRectangle(_yearTextImg,rec);
          _box.addChildAt(_yearTextImg,0);
          _monthCombox = ComponentFactory.Instance.creatComponentByStylename("feedback.combox3");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.monthComboxRec");
-         ObjectUtils.copyPropertyByRectangle(_monthCombox,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.monthComboxRec");
+         ObjectUtils.copyPropertyByRectangle(_monthCombox,rec);
          _monthCombox.beginChanges();
-         var _loc2_:Number = new Date().getMonth() + 1;
-         _monthCombox.textField.text = String(_loc2_);
+         var month:Number = new Date().getMonth() + 1;
+         _monthCombox.textField.text = String(month);
          _monthCombox.selctedPropName = "text";
-         _loc6_ = uint(1);
-         while(_loc6_ <= 12)
+         for(i = uint(1); i <= 12; )
          {
-            _monthCombox.listPanel.vectorListModel.append(_loc6_);
-            _loc6_++;
+            _monthCombox.listPanel.vectorListModel.append(i);
+            i++;
          }
          _monthCombox.commitChanges();
          _box.addChildAt(_monthCombox,0);
          _monthTextImg = ComponentFactory.Instance.creatComponentByStylename("ddtfeedback.monthText");
          _monthTextImg.text = LanguageMgr.GetTranslation("feedback.view.Feedback.text4");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.monthTextImgRec");
-         ObjectUtils.copyPropertyByRectangle(_monthTextImg,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.monthTextImgRec");
+         ObjectUtils.copyPropertyByRectangle(_monthTextImg,rec);
          _box.addChildAt(_monthTextImg,0);
          _dayCombox = ComponentFactory.Instance.creatComponentByStylename("feedback.combox4");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.dayComboxRec");
-         ObjectUtils.copyPropertyByRectangle(_dayCombox,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.dayComboxRec");
+         ObjectUtils.copyPropertyByRectangle(_dayCombox,rec);
          _dayCombox.beginChanges();
-         var _loc5_:Number = new Date().getDate();
-         _dayCombox.textField.text = String(_loc5_);
+         var day:Number = new Date().getDate();
+         _dayCombox.textField.text = String(day);
          _dayCombox.selctedPropName = "text";
-         var _loc3_:Number = DateUtils.getDays(_loc4_,_loc2_);
-         _loc6_ = uint(1);
-         while(_loc6_ <= _loc3_)
+         var dayTotal:Number = DateUtils.getDays(year,month);
+         for(i = uint(1); i <= dayTotal; )
          {
-            _dayCombox.listPanel.vectorListModel.append(_loc6_);
-            _loc6_++;
+            _dayCombox.listPanel.vectorListModel.append(i);
+            i++;
          }
          _dayCombox.commitChanges();
          _box.addChildAt(_dayCombox,0);
          _dayTextImg = ComponentFactory.Instance.creatComponentByStylename("ddtfeedback.dayText");
          _dayTextImg.text = LanguageMgr.GetTranslation("feedback.view.Feedback.text5");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.dayTextImgRec");
-         ObjectUtils.copyPropertyByRectangle(_dayTextImg,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.dayTextImgRec");
+         ObjectUtils.copyPropertyByRectangle(_dayTextImg,rec);
          _box.addChildAt(_dayTextImg,0);
          _feedbackBg = ComponentFactory.Instance.creatComponentByStylename("feedback.textBgImg_style1");
          _box.addChildAt(_feedbackBg,0);
@@ -320,74 +317,73 @@ package feedback.view
          _dayCombox.addEventListener("click",__comboxClick);
       }
       
-      private function __comboxClick(param1:Event) : void
+      private function __comboxClick(event:Event) : void
       {
          SoundManager.instance.play("008");
       }
       
-      private function _dateChanged(param1:InteractiveEvent) : void
+      private function _dateChanged(event:InteractiveEvent) : void
       {
-         var _loc3_:* = 0;
+         var i:* = 0;
          SoundManager.instance.play("008");
          _dayCombox.textField.text = "1";
-         var _loc2_:Number = DateUtils.getDays(Number(_yearCombox.textField.text),Number(_monthCombox.textField.text));
+         var dayTotal:Number = DateUtils.getDays(Number(_yearCombox.textField.text),Number(_monthCombox.textField.text));
          _dayCombox.listPanel.vectorListModel.clear();
          _dayCombox.beginChanges();
-         _loc3_ = uint(1);
-         while(_loc3_ <= _loc2_)
+         for(i = uint(1); i <= dayTotal; )
          {
-            _dayCombox.listPanel.vectorListModel.append(_loc3_);
-            _loc3_++;
+            _dayCombox.listPanel.vectorListModel.append(i);
+            i++;
          }
          _dayCombox.commitChanges();
       }
       
-      private function getFeedbackSp(param1:int) : Disposeable
+      private function getFeedbackSp($type:int) : Disposeable
       {
-         var _loc2_:* = null;
-         switch(int(param1))
+         var sp:* = null;
+         switch(int($type))
          {
             case 0:
-               _loc2_ = new FeedbackConsultingSp();
+               sp = new FeedbackConsultingSp();
                this.height = 450;
                this.y = 75;
                break;
             case 1:
-               _loc2_ = new FeedbackProblemsSp();
+               sp = new FeedbackProblemsSp();
                this.height = 450;
                this.y = 75;
                break;
             case 2:
-               _loc2_ = new FeedbackPrepaidCardSp();
+               sp = new FeedbackPrepaidCardSp();
                this.height = 450;
                this.y = 75;
                break;
             case 3:
-               _loc2_ = new FeedbackPropsDisappearSp();
+               sp = new FeedbackPropsDisappearSp();
                this.height = 450;
                this.y = 75;
                break;
             case 4:
             case 5:
             case 6:
-               _loc2_ = new FeedbackStealHandSp();
-               PositionUtils.setPos(_loc2_,"feedback.FeedbackStealHandSp.pos");
+               sp = new FeedbackStealHandSp();
+               PositionUtils.setPos(sp,"feedback.FeedbackStealHandSp.pos");
                this.height = this.height + 40;
                this.y = 55;
                break;
             case 7:
-               _loc2_ = new FeedbackComplaintSp();
+               sp = new FeedbackComplaintSp();
                this.height = 450;
                this.y = 75;
                break;
             case 8:
             case 9:
-               _loc2_ = new FeedbackReportSp();
+               sp = new FeedbackReportSp();
                this.height = 450;
                this.y = 75;
          }
-         _loc2_["submitFrame"] = this;
-         return _loc2_;
+         sp["submitFrame"] = this;
+         return sp;
       }
       
       private function remvoeEvent() : void

@@ -213,18 +213,18 @@ package petsBag.petsAdvanced
          PetsBagManager.instance().petModel.addEventListener("eat_pets_complete",_infoChangeHandler);
       }
       
-      protected function __hideTip(param1:MouseEvent) : void
+      protected function __hideTip(event:MouseEvent) : void
       {
          _tip.visible = false;
       }
       
-      protected function __showTip(param1:MouseEvent) : void
+      protected function __showTip(event:MouseEvent) : void
       {
          _tip.tipData = _progress.currentExp + "/" + _progress.max;
          _tip.visible = true;
       }
       
-      private function _infoChangeHandler(param1:PetItemEvent) : void
+      private function _infoChangeHandler(e:PetItemEvent) : void
       {
          updataPets();
          stopAllMc();
@@ -244,16 +244,16 @@ package petsBag.petsAdvanced
          }
       }
       
-      private function _mcExpChangeHandler(param1:Event) : void
+      private function _mcExpChangeHandler(e:Event) : void
       {
          progressSet();
-         var _loc2_:* = param1.target;
+         var _loc2_:* = e.target;
          if(_eatPetsMc !== _loc2_)
          {
             if(_eatStoneMc !== _loc2_)
             {
             }
-            addr35:
+            addr44:
             return;
          }
          if(_eatEnd && PetsBagManager.instance().petModel.eatPetsLevelUp)
@@ -261,12 +261,12 @@ package petsBag.petsAdvanced
             PetsBagManager.instance().petModel.eatPetsLevelUp = false;
             _eatEnd.gotoAndPlay(2);
          }
-         §§goto(addr35);
+         §§goto(addr44);
       }
       
-      private function _mcEndHandler(param1:Event) : void
+      private function _mcEndHandler(e:Event) : void
       {
-         var _loc2_:* = param1.target;
+         var _loc2_:* = e.target;
          if(_eatEnd === _loc2_)
          {
             update();
@@ -330,42 +330,41 @@ package petsBag.petsAdvanced
       
       private function updataPets() : void
       {
-         var _loc2_:* = null;
+         var cell:* = null;
          clearPets();
-         var _loc3_:int = 0;
+         var i:int = 0;
          var _loc5_:int = 0;
          var _loc4_:* = PlayerManager.Instance.Self.pets;
-         for(var _loc1_ in PlayerManager.Instance.Self.pets)
+         for(var index in PlayerManager.Instance.Self.pets)
          {
-            if(!PlayerManager.Instance.Self.pets[_loc1_].IsEquip && PlayerManager.Instance.Self.pets[_loc1_].StarLevel >= 3)
+            if(!PlayerManager.Instance.Self.pets[index].IsEquip && PlayerManager.Instance.Self.pets[index].StarLevel >= 3)
             {
-               _loc2_ = new PetsEatSmallItem();
-               _loc2_.info = PlayerManager.Instance.Self.pets[_loc1_];
-               _loc2_.initTips();
-               _loc2_.x = 17 + _loc3_ % 2 * 85;
-               _loc2_.y = Math.floor(_loc3_ / 2) * 82;
-               _loc2_.addEventListener("selected",selectedHandler);
-               _loc3_++;
-               _listContainer.addChild(_loc2_);
-               _petsImgVec.push(_loc2_);
+               cell = new PetsEatSmallItem();
+               cell.info = PlayerManager.Instance.Self.pets[index];
+               cell.initTips();
+               cell.x = 17 + i % 2 * 85;
+               cell.y = Math.floor(i / 2) * 82;
+               cell.addEventListener("selected",selectedHandler);
+               i++;
+               _listContainer.addChild(cell);
+               _petsImgVec.push(cell);
             }
          }
       }
       
-      private function selectedHandler(param1:Event) : void
+      private function selectedHandler(e:Event) : void
       {
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
+         var exp:int = 0;
+         var i:int = 0;
+         var info:* = null;
          checkItem();
-         _loc4_ = 0;
-         while(_loc4_ < _selectedArr.length)
+         for(i = 0; i < _selectedArr.length; )
          {
-            _loc3_ = _selectedArr[_loc4_][1];
-            _loc2_ = _loc2_ + (Math.pow(10,_loc3_.StarLevel - 2) + 5 * Math.max(_loc3_.Level - 8,_loc3_.Level * 0.2));
-            _loc4_++;
+            info = _selectedArr[i][1];
+            exp = exp + (Math.pow(10,info.StarLevel - 2) + 5 * Math.max(info.Level - 8,info.Level * 0.2));
+            i++;
          }
-         _petAddExpTxt.text = String(_loc2_);
+         _petAddExpTxt.text = String(exp);
       }
       
       private function stopAllMc() : void
@@ -377,119 +376,118 @@ package petsBag.petsAdvanced
       
       public function update() : void
       {
-         var _loc4_:int = 0;
-         var _loc1_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
+         var dis1:int = 0;
+         var dis2:int = 0;
+         var dis3:int = 0;
+         var dis4:int = 0;
          switch(int(_chooseMc.currentFrame) - 1)
          {
             case 0:
                if(PetsBagManager.instance().petModel.eatPetsInfo.weaponLevel > 0 && PetsBagManager.instance().petModel.eatPetsInfo.weaponLevel < PetsAdvancedManager.Instance.petMoePropertyList.length)
                {
-                  _loc4_ = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.weaponLevel - 1].Attack;
-                  _loc1_ = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.weaponLevel - 1].Lucky;
-                  _loc2_ = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.weaponLevel].Attack;
-                  _loc3_ = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.weaponLevel].Lucky;
+                  dis1 = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.weaponLevel - 1].Attack;
+                  dis2 = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.weaponLevel - 1].Lucky;
+                  dis3 = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.weaponLevel].Attack;
+                  dis4 = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.weaponLevel].Lucky;
                }
                else if(PetsBagManager.instance().petModel.eatPetsInfo.weaponLevel == 0)
                {
-                  _loc4_ = 0;
-                  _loc1_ = 0;
-                  _loc2_ = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.weaponLevel].Attack;
-                  _loc3_ = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.weaponLevel].Lucky;
+                  dis1 = 0;
+                  dis2 = 0;
+                  dis3 = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.weaponLevel].Attack;
+                  dis4 = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.weaponLevel].Lucky;
                }
                else if(PetsBagManager.instance().petModel.eatPetsInfo.weaponLevel == PetsAdvancedManager.Instance.petMoePropertyList.length)
                {
-                  _loc4_ = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.weaponLevel - 1].Attack;
-                  _loc1_ = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.weaponLevel - 1].Lucky;
-                  _loc2_ = 0;
-                  _loc3_ = 0;
+                  dis1 = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.weaponLevel - 1].Attack;
+                  dis2 = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.weaponLevel - 1].Lucky;
+                  dis3 = 0;
+                  dis4 = 0;
                }
                break;
             case 1:
                if(PetsBagManager.instance().petModel.eatPetsInfo.clothesLevel > 0 && PetsBagManager.instance().petModel.eatPetsInfo.clothesLevel < PetsAdvancedManager.Instance.petMoePropertyList.length)
                {
-                  _loc4_ = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.clothesLevel - 1].Agility;
-                  _loc1_ = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.clothesLevel - 1].Blood;
-                  _loc2_ = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.clothesLevel].Agility;
-                  _loc3_ = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.clothesLevel].Blood;
+                  dis1 = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.clothesLevel - 1].Agility;
+                  dis2 = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.clothesLevel - 1].Blood;
+                  dis3 = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.clothesLevel].Agility;
+                  dis4 = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.clothesLevel].Blood;
                }
                else if(PetsBagManager.instance().petModel.eatPetsInfo.clothesLevel == 0)
                {
-                  _loc4_ = 0;
-                  _loc1_ = 0;
-                  _loc2_ = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.clothesLevel].Agility;
-                  _loc3_ = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.clothesLevel].Blood;
+                  dis1 = 0;
+                  dis2 = 0;
+                  dis3 = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.clothesLevel].Agility;
+                  dis4 = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.clothesLevel].Blood;
                }
                else if(PetsBagManager.instance().petModel.eatPetsInfo.clothesLevel == PetsAdvancedManager.Instance.petMoePropertyList.length)
                {
-                  _loc4_ = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.clothesLevel - 1].Agility;
-                  _loc1_ = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.clothesLevel - 1].Blood;
-                  _loc2_ = 0;
-                  _loc3_ = 0;
+                  dis1 = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.clothesLevel - 1].Agility;
+                  dis2 = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.clothesLevel - 1].Blood;
+                  dis3 = 0;
+                  dis4 = 0;
                }
                break;
             case 2:
                if(PetsBagManager.instance().petModel.eatPetsInfo.hatLevel > 0 && PetsBagManager.instance().petModel.eatPetsInfo.hatLevel < PetsAdvancedManager.Instance.petMoePropertyList.length)
                {
-                  _loc4_ = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.hatLevel - 1].Defence;
-                  _loc1_ = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.hatLevel - 1].Guard;
-                  _loc2_ = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.hatLevel].Defence;
-                  _loc3_ = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.hatLevel].Guard;
+                  dis1 = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.hatLevel - 1].Defence;
+                  dis2 = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.hatLevel - 1].Guard;
+                  dis3 = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.hatLevel].Defence;
+                  dis4 = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.hatLevel].Guard;
                   break;
                }
                if(PetsBagManager.instance().petModel.eatPetsInfo.hatLevel == 0)
                {
-                  _loc4_ = 0;
-                  _loc1_ = 0;
-                  _loc2_ = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.hatLevel].Defence;
-                  _loc3_ = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.hatLevel].Guard;
+                  dis1 = 0;
+                  dis2 = 0;
+                  dis3 = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.hatLevel].Defence;
+                  dis4 = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.hatLevel].Guard;
                   break;
                }
                if(PetsBagManager.instance().petModel.eatPetsInfo.hatLevel == PetsAdvancedManager.Instance.petMoePropertyList.length)
                {
-                  _loc4_ = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.hatLevel - 1].Defence;
-                  _loc1_ = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.hatLevel - 1].Guard;
-                  _loc2_ = 0;
-                  _loc3_ = 0;
+                  dis1 = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.hatLevel - 1].Defence;
+                  dis2 = PetsAdvancedManager.Instance.petMoePropertyList[PetsBagManager.instance().petModel.eatPetsInfo.hatLevel - 1].Guard;
+                  dis3 = 0;
+                  dis4 = 0;
                   break;
                }
                break;
          }
-         _attackTxt.text = String(_loc4_);
-         _defenceTxt.text = String(_loc1_);
-         _attackAddTxt.text = String(_loc2_);
-         _defenceAddTxt.text = String(_loc3_);
+         _attackTxt.text = String(dis1);
+         _defenceTxt.text = String(dis2);
+         _attackAddTxt.text = String(dis3);
+         _defenceAddTxt.text = String(dis4);
       }
       
       private function checkItem() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          _selectedArr = [];
-         _loc2_ = 0;
-         while(_loc2_ < _petsImgVec.length)
+         for(i = 0; i < _petsImgVec.length; )
          {
-            _loc1_ = _petsImgVec[_loc2_] as PetsEatSmallItem;
-            if(_loc1_.selected)
+            item = _petsImgVec[i] as PetsEatSmallItem;
+            if(item.selected)
             {
-               _selectedArr.push([_loc1_.info.Place,_loc1_.info]);
+               _selectedArr.push([item.info.Place,item.info]);
             }
-            _loc2_++;
+            i++;
          }
       }
       
-      private function _eatBtnHandler(param1:MouseEvent) : void
+      private function _eatBtnHandler(e:MouseEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var alertAsk:* = null;
+         var alertAsk1:* = null;
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc4_:* = param1.target;
+         var _loc4_:* = e.target;
          if(_eatPetsBtn !== _loc4_)
          {
             if(_eatStoneBtn === _loc4_)
@@ -532,73 +530,72 @@ package petsBag.petsAdvanced
             }
             if(checkEatGreatPets())
             {
-               _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.petsBag.eatpets.eatGreatPets"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
-               _loc3_.addEventListener("response",__alertEatGreatPet);
+               alertAsk = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.petsBag.eatpets.eatGreatPets"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
+               alertAsk.addEventListener("response",__alertEatGreatPet);
                return;
             }
             if(_listContainer.numChildren == _selectedArr.length)
             {
-               _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.petsBag.eatpets.eatAllPets"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
-               _loc2_.addEventListener("response",__alertEatAllPet);
+               alertAsk1 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.petsBag.eatpets.eatAllPets"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
+               alertAsk1.addEventListener("response",__alertEatAllPet);
                return;
             }
             SocketManager.Instance.out.eatPetsHandler(_chooseMc.currentFrame - 1,1,0,_selectedArr);
          }
       }
       
-      private function __alertEatGreatPet(param1:FrameEvent) : void
+      private function __alertEatGreatPet(event:FrameEvent) : void
       {
-         var _loc2_:* = null;
-         switch(int(param1.responseCode) - 2)
+         var alertAsk:* = null;
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
                if(_listContainer.numChildren == _selectedArr.length)
                {
-                  _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.petsBag.eatpets.eatAllPets"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
-                  _loc2_.addEventListener("response",__alertEatAllPet);
-                  param1.currentTarget.removeEventListener("response",__alertEatGreatPet);
-                  ObjectUtils.disposeObject(param1.currentTarget);
+                  alertAsk = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.petsBag.eatpets.eatAllPets"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
+                  alertAsk.addEventListener("response",__alertEatAllPet);
+                  event.currentTarget.removeEventListener("response",__alertEatGreatPet);
+                  ObjectUtils.disposeObject(event.currentTarget);
                   return;
                }
                SocketManager.Instance.out.eatPetsHandler(_chooseMc.currentFrame - 1,1,0,_selectedArr);
                break;
          }
-         param1.currentTarget.removeEventListener("response",__alertEatGreatPet);
-         ObjectUtils.disposeObject(param1.currentTarget);
+         event.currentTarget.removeEventListener("response",__alertEatGreatPet);
+         ObjectUtils.disposeObject(event.currentTarget);
       }
       
       private function checkEatGreatPets() : Boolean
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _selectedArr.length)
+         var i:int = 0;
+         for(i = 0; i < _selectedArr.length; )
          {
-            if(_selectedArr[_loc1_][1].StarLevel >= 3)
+            if(_selectedArr[i][1].StarLevel >= 3)
             {
                return true;
             }
-            _loc1_++;
+            i++;
          }
          return false;
       }
       
-      private function __alertEatAllPet(param1:FrameEvent) : void
+      private function __alertEatAllPet(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode) - 2)
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
                SocketManager.Instance.out.eatPetsHandler(_chooseMc.currentFrame - 1,1,0,_selectedArr);
          }
-         param1.currentTarget.removeEventListener("response",__alertEatAllPet);
-         ObjectUtils.disposeObject(param1.currentTarget);
+         event.currentTarget.removeEventListener("response",__alertEatAllPet);
+         ObjectUtils.disposeObject(event.currentTarget);
       }
       
-      private function _selectHandler(param1:MouseEvent) : void
+      private function _selectHandler(e:MouseEvent) : void
       {
          stopAllMc();
-         var _loc2_:* = param1.target;
+         var _loc2_:* = e.target;
          if(_weaponBtn !== _loc2_)
          {
             if(_clothesBtn !== _loc2_)
@@ -625,8 +622,8 @@ package petsBag.petsAdvanced
          }
          update();
          progressSet();
-         _btnLight.x = param1.target.x;
-         _btnLight.y = param1.target.y;
+         _btnLight.x = e.target.x;
+         _btnLight.y = e.target.y;
       }
       
       private function removeEvent() : void

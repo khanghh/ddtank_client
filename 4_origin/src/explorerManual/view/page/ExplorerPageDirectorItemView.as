@@ -39,11 +39,11 @@ package explorerManual.view.page
       
       private var _selectedBg:Bitmap;
       
-      public function ExplorerPageDirectorItemView(param1:int, param2:ExplorerManualInfo)
+      public function ExplorerPageDirectorItemView(index:int, model:ExplorerManualInfo)
       {
          super();
-         _index = param1;
-         _model = param2;
+         _index = index;
+         _model = model;
          initView();
          initEvent();
       }
@@ -84,29 +84,29 @@ package explorerManual.view.page
          this.removeEventListener("mouseOver",__mouseOverHandler);
       }
       
-      private function __mouseOverHandler(param1:MouseEvent) : void
+      private function __mouseOverHandler(evt:MouseEvent) : void
       {
          _selectedBg.visible = true;
       }
       
-      private function __mouseOutHandler(param1:MouseEvent) : void
+      private function __mouseOutHandler(evt:MouseEvent) : void
       {
          _selectedBg.visible = false;
       }
       
-      private function itemLinkClick_Handler(param1:TextEvent) : void
+      private function itemLinkClick_Handler(evt:TextEvent) : void
       {
          if(_info && _icon.visible)
          {
             ExplorerManualManager.instance.removeNewDebrisForPages(_info.ID);
             _icon.visible = false;
          }
-         this.dispatchEvent(new CEvent("directorItemClick",param1.text));
+         this.dispatchEvent(new CEvent("directorItemClick",evt.text));
       }
       
-      public function set info(param1:ManualPageItemInfo) : void
+      public function set info(value:ManualPageItemInfo) : void
       {
-         _info = param1;
+         _info = value;
          if(_info == null)
          {
             return;
@@ -126,13 +126,13 @@ package explorerManual.view.page
       
       private function createItem() : void
       {
-         var _loc4_:* = null;
-         var _loc1_:String = _info.Name;
-         _loc4_ = _loc1_ + "....................................................................";
-         var _loc3_:int = _model.debrisInfo.getHaveDebrisByPageID(_info.ID).length;
-         var _loc2_:int = _info.DebrisCount;
-         _processText.text = _index + " ( " + _loc3_ + "/" + _loc2_ + " )";
-         _itemTxt.htmlText = "<a href=\'event:" + _info.Sort + "\'>" + _loc4_ + "</a>";
+         var itemStr:* = null;
+         var pageName:String = _info.Name;
+         itemStr = pageName + "....................................................................";
+         var haveDebris:int = _model.debrisInfo.getHaveDebrisByPageID(_info.ID).length;
+         var totalDebris:int = _info.DebrisCount;
+         _processText.text = _index + " ( " + haveDebris + "/" + totalDebris + " )";
+         _itemTxt.htmlText = "<a href=\'event:" + _info.Sort + "\'>" + itemStr + "</a>";
       }
       
       public function dispose() : void

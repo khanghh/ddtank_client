@@ -28,10 +28,10 @@ package explorerManual.view.chapter
       
       private var _model:ExplorerManualInfo;
       
-      public function ManualPropertyPrgress(param1:ExplorerManualInfo)
+      public function ManualPropertyPrgress(model:ExplorerManualInfo)
       {
          super();
-         _model = param1;
+         _model = model;
          _height = 10;
          _width = 10;
          initView();
@@ -49,41 +49,41 @@ package explorerManual.view.chapter
          addChild(_progressLabel);
       }
       
-      public function setProgress(param1:Number, param2:Number) : void
+      public function setProgress(curValue:Number, maxValue:Number) : void
       {
          _oldValue = _value;
-         _value = param1;
-         _max = param2;
+         _value = curValue;
+         _max = maxValue;
          drawProgress();
       }
       
       protected function drawProgress() : void
       {
-         var _loc2_:int = 0;
+         var vScale:int = 0;
          if(_value <= 0 && _isInit)
          {
-            _loc2_ = 225;
+            vScale = 225;
          }
          else
          {
-            _loc2_ = 225 * _value / _max;
+            vScale = 225 * _value / _max;
          }
-         var _loc4_:Number = _progressLabel.text;
-         var _loc3_:Number = _value == 0?_max:Number(_value);
-         var _loc1_:Number = (_loc3_ - _loc4_) / 25;
+         var curV:Number = _progressLabel.text;
+         var maxV:Number = _value == 0?_max:Number(_value);
+         var offsetV:Number = (maxV - curV) / 25;
          TweenLite.to(_proBitMask,1,{
-            "width":_loc2_,
+            "width":vScale,
             "onUpdate":updateLabel,
-            "onUpdateParams":[_loc1_],
+            "onUpdateParams":[offsetV],
             "onComplete":updateComplete
          });
       }
       
-      private function updateLabel(param1:int) : void
+      private function updateLabel(pOffsetV:int) : void
       {
          if(_isInit)
          {
-            _progressLabel.text = (int(_progressLabel.text) + param1).toString();
+            _progressLabel.text = (int(_progressLabel.text) + pOffsetV).toString();
          }
       }
       

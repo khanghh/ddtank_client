@@ -19,21 +19,21 @@ package store.fineStore.view.pageBringUp
          super();
       }
       
-      public function dragDrop(param1:DragEffect) : void
+      public function dragDrop(effect:DragEffect) : void
       {
-         var _loc2_:* = null;
+         var tmpStr:* = null;
          DragManager.acceptDrag(this,"none");
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc4_:InventoryItemInfo = param1.data as InventoryItemInfo;
-         _loc2_ = "latentEnergy_equip_move";
-         var _loc3_:LatentEnergyEvent = new LatentEnergyEvent(_loc2_);
-         _loc3_.info = _loc4_;
-         _loc3_.moveType = 1;
-         FineBringUpController.getInstance().dispatchEvent(_loc3_);
+         var tmp:InventoryItemInfo = effect.data as InventoryItemInfo;
+         tmpStr = "latentEnergy_equip_move";
+         var event:LatentEnergyEvent = new LatentEnergyEvent(tmpStr);
+         event.info = tmp;
+         event.moveType = 1;
+         FineBringUpController.getInstance().dispatchEvent(event);
       }
    }
 }

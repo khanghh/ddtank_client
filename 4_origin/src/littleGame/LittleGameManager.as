@@ -60,415 +60,411 @@ package littleGame
          return _ins || new LittleGameManager();
       }
       
-      public function kickPlayer(param1:PackageIn) : void
+      public function kickPlayer(pkg:PackageIn) : void
       {
          StateManager.setState("main");
       }
       
-      public function fillPath(param1:LittleLiving, param2:Grid, param3:int, param4:int, param5:int, param6:int) : Array
+      public function fillPath(living:LittleLiving, grid:Grid, startX:int, startY:int, endX:int, endY:int) : Array
       {
-         var _loc7_:* = null;
-         if(param1.isSelf && param1.MotionState <= 1)
+         var path:* = null;
+         if(living.isSelf && living.MotionState <= 1)
          {
             return null;
          }
-         var _loc8_:Node = param2.getNode(param5,param6);
-         if(_loc8_ && _loc8_.walkable)
+         var end:Node = grid.getNode(endX,endY);
+         if(end && end.walkable)
          {
-            param2.setStartNode(param3,param4);
-            param2.setEndNode(param5,param6);
-            if(param2.fillPath())
+            grid.setStartNode(startX,startY);
+            grid.setEndNode(endX,endY);
+            if(grid.fillPath())
             {
-               _loc7_ = param2.path;
-               return _loc7_;
+               path = grid.path;
+               return path;
             }
             return null;
          }
          return null;
       }
       
-      public function collide(param1:LittleSelf, param2:LittleLiving) : Boolean
+      public function collide(self:LittleSelf, target:LittleLiving) : Boolean
       {
          return true;
       }
       
       public function enterWorld() : void
       {
-         var _loc1_:PackageOut = createPackageOut();
-         _loc1_.writeByte(2);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = createPackageOut();
+         pkg.writeByte(2);
+         sendPackage(pkg);
       }
       
-      public function enterGame(param1:Scenario, param2:PackageIn) : void
+      public function enterGame(scene:Scenario, pkg:PackageIn) : void
       {
-         var _loc4_:int = 0;
+         var i:int = 0;
          BoguGiveUp.NoteCount = 0;
          NormalBoguInhaled.NoteCount = 0;
-         _current = param1;
+         _current = scene;
          _current.drawNum();
-         var _loc3_:int = param2.readInt();
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var count:int = pkg.readInt();
+         for(i = 0; i < count; )
          {
-            param1.addLiving(readLivingFromPacket(param2,param1));
-            _loc4_++;
+            scene.addLiving(readLivingFromPacket(pkg,scene));
+            i++;
          }
       }
       
-      public function addObject(param1:Scenario, param2:String, param3:PackageIn = null) : ILittleObject
+      public function addObject(scene:Scenario, type:String, pkg:PackageIn = null) : ILittleObject
       {
-         var _loc4_:ILittleObject = ObjectCreator.CreatObject(param2);
-         if(_loc4_)
+         var object:ILittleObject = ObjectCreator.CreatObject(type);
+         if(object)
          {
-            _loc4_.initialize(param1,param3);
-            param1.addObject(_loc4_);
+            object.initialize(scene,pkg);
+            scene.addObject(object);
          }
-         return _loc4_;
+         return object;
       }
       
-      public function removeObject(param1:Scenario, param2:PackageIn) : ILittleObject
+      public function removeObject(scene:Scenario, pkg:PackageIn) : ILittleObject
       {
-         var _loc3_:int = param2.readInt();
-         return param1.removeObject(param1.findObject(_loc3_));
+         var id:int = pkg.readInt();
+         return scene.removeObject(scene.findObject(id));
       }
       
-      public function invokeObject(param1:Scenario, param2:PackageIn) : ILittleObject
+      public function invokeObject(scene:Scenario, pkg:PackageIn) : ILittleObject
       {
-         var _loc3_:int = param2.readInt();
-         var _loc4_:ILittleObject = param1.findObject(_loc3_);
-         _loc4_.invoke(param2);
-         return _loc4_;
+         var id:int = pkg.readInt();
+         var obj:ILittleObject = scene.findObject(id);
+         obj.invoke(pkg);
+         return obj;
       }
       
-      public function addLiving(param1:Scenario, param2:PackageIn) : LittleLiving
+      public function addLiving(scene:Scenario, pkg:PackageIn) : LittleLiving
       {
-         return param1.addLiving(readLivingFromPacket(param2,param1));
+         return scene.addLiving(readLivingFromPacket(pkg,scene));
       }
       
-      public function removeLiving(param1:Scenario, param2:PackageIn) : LittleLiving
+      public function removeLiving(scene:Scenario, pkg:PackageIn) : LittleLiving
       {
-         var _loc4_:int = param2.readInt();
-         var _loc3_:LittleLiving = param1.livings[_loc4_];
-         if(_loc3_ && !_loc3_.dieing)
+         var livingID:int = pkg.readInt();
+         var living:LittleLiving = scene.livings[livingID];
+         if(living && !living.dieing)
          {
-            param1.removeLiving(_loc3_);
+            scene.removeLiving(living);
          }
-         return _loc3_;
+         return living;
       }
       
-      public function livingDie(param1:Scenario, param2:LittleLiving, param3:int = 6) : void
+      public function livingDie(scene:Scenario, living:LittleLiving, lifetime:int = 6) : void
       {
-         var _loc4_:LittleAction = new LittleLivingDieAction(param1,param2,param3);
-         param2.act(_loc4_);
+         var act:LittleAction = new LittleLivingDieAction(scene,living,lifetime);
+         living.act(act);
       }
       
-      private function readLivingFromPacket(param1:PackageIn, param2:Scenario = null) : LittleLiving
+      private function readLivingFromPacket(pkg:PackageIn, scene:Scenario = null) : LittleLiving
       {
-         var _loc5_:* = null;
-         var _loc14_:* = null;
-         var _loc11_:* = null;
-         var _loc10_:* = null;
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         var _loc8_:int = 0;
-         var _loc12_:* = null;
-         var _loc9_:int = param1.readInt();
-         var _loc16_:int = param1.readInt();
-         var _loc15_:int = param1.readInt();
-         var _loc6_:int = param1.readInt();
-         if(_loc6_ == 1)
+         var living:* = null;
+         var playerInfo:* = null;
+         var name:* = null;
+         var modelID:* = null;
+         var dx:int = 0;
+         var dy:int = 0;
+         var i:int = 0;
+         var action:* = null;
+         var id:int = pkg.readInt();
+         var x:int = pkg.readInt();
+         var y:int = pkg.readInt();
+         var type:int = pkg.readInt();
+         if(type == 1)
          {
-            _loc14_ = new PlayerInfo();
-            _loc14_.ID = param1.readInt();
-            _loc14_.Grade = param1.readInt();
-            _loc14_.Repute = param1.readInt();
-            _loc14_.NickName = param1.readUTF();
-            _loc14_.typeVIP = param1.readByte();
-            _loc14_.VIPLevel = param1.readInt();
-            _loc14_.Sex = param1.readBoolean();
-            _loc14_.Style = param1.readUTF();
-            _loc14_.Colors = param1.readUTF();
-            _loc14_.Skin = param1.readUTF();
-            _loc14_.Hide = param1.readInt();
-            _loc14_.FightPower = param1.readInt();
-            _loc14_.WinCount = param1.readInt();
-            _loc14_.TotalCount = param1.readInt();
-            if(_loc14_.ID == PlayerManager.Instance.Self.ID)
+            playerInfo = new PlayerInfo();
+            playerInfo.ID = pkg.readInt();
+            playerInfo.Grade = pkg.readInt();
+            playerInfo.Repute = pkg.readInt();
+            playerInfo.NickName = pkg.readUTF();
+            playerInfo.typeVIP = pkg.readByte();
+            playerInfo.VIPLevel = pkg.readInt();
+            playerInfo.Sex = pkg.readBoolean();
+            playerInfo.Style = pkg.readUTF();
+            playerInfo.Colors = pkg.readUTF();
+            playerInfo.Skin = pkg.readUTF();
+            playerInfo.Hide = pkg.readInt();
+            playerInfo.FightPower = pkg.readInt();
+            playerInfo.WinCount = pkg.readInt();
+            playerInfo.TotalCount = pkg.readInt();
+            if(playerInfo.ID == PlayerManager.Instance.Self.ID)
             {
-               _loc5_ = new LittleSelf(PlayerManager.Instance.Self,_loc9_,_loc16_,_loc15_,_loc6_);
+               living = new LittleSelf(PlayerManager.Instance.Self,id,x,y,type);
             }
             else
             {
-               _loc5_ = new LittlePlayer(_loc14_,_loc9_,_loc16_,_loc15_,_loc6_);
+               living = new LittlePlayer(playerInfo,id,x,y,type);
             }
          }
          else
          {
-            _loc11_ = param1.readUTF();
-            _loc10_ = param1.readUTF();
-            _loc5_ = new LittleLiving(_loc9_,_loc16_,_loc15_,_loc6_,_loc10_);
-            _loc5_.name = _loc11_;
+            name = pkg.readUTF();
+            modelID = pkg.readUTF();
+            living = new LittleLiving(id,x,y,type,modelID);
+            living.name = name;
          }
-         var _loc7_:Boolean = param1.readBoolean();
-         if(_loc7_)
+         var isMove:Boolean = pkg.readBoolean();
+         if(isMove)
          {
-            _loc3_ = param1.readInt();
-            _loc4_ = param1.readInt();
-            if(param2)
+            dx = pkg.readInt();
+            dy = pkg.readInt();
+            if(scene)
             {
-               fillPath(_loc5_,param2.grid,_loc16_,_loc15_,_loc3_,_loc4_);
+               fillPath(living,scene.grid,x,y,dx,dy);
             }
          }
-         var _loc13_:int = param1.readInt();
-         _loc8_ = 0;
-         while(_loc8_ < _loc13_)
+         var actCount:int = pkg.readInt();
+         for(i = 0; i < actCount; )
          {
-            _loc12_ = doAction(param2,param1);
-            _loc12_.initializeLiving(_loc5_);
-            _loc5_.act(_loc12_);
-            _loc8_++;
+            action = doAction(scene,pkg);
+            action.initializeLiving(living);
+            living.act(action);
+            i++;
          }
-         return _loc5_;
+         return living;
       }
       
-      private function setLivingSize(param1:LittleLiving, param2:String) : void
+      private function setLivingSize(living:LittleLiving, modelID:String) : void
       {
-         if(param2 == "bogu4" || param2 == "bogu5" || param2 == "bogu8")
+         if(modelID == "bogu4" || modelID == "bogu5" || modelID == "bogu8")
          {
-            param1.size = 1;
+            living.size = 1;
          }
-         else if(param2 == "bogu6")
+         else if(modelID == "bogu6")
          {
-            param1.size = 2;
+            living.size = 2;
          }
-         else if(param2 == "bogu7")
+         else if(modelID == "bogu7")
          {
-            param1.size = 3;
-         }
-      }
-      
-      public function updatePos(param1:Scenario, param2:PackageIn) : void
-      {
-         var _loc8_:int = 0;
-         var _loc3_:int = 0;
-         var _loc7_:int = 0;
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
-         param2.readDouble();
-         var _loc4_:int = param2.readInt();
-         _loc8_ = 0;
-         while(_loc8_ < _loc4_)
-         {
-            _loc3_ = param2.readInt();
-            _loc7_ = param2.readInt();
-            _loc6_ = param2.readInt();
-            _loc5_ = param1.findLiving(_loc3_);
-            _loc8_++;
+            living.size = 3;
          }
       }
       
-      public function livingMove(param1:Scenario, param2:PackageIn) : LittleLiving
+      public function updatePos(scene:Scenario, pkg:PackageIn) : void
       {
-         var _loc6_:* = null;
-         var _loc3_:int = param2.readInt();
-         var _loc4_:int = param2.readInt();
-         var _loc5_:int = param2.readInt();
-         var _loc7_:LittleLiving = param1.findLiving(_loc3_);
-         if(_loc7_ && !_loc7_.lock && !_loc7_.dieing && !_loc7_.borning && _loc7_.MotionState > 1)
+         var i:int = 0;
+         var id:int = 0;
+         var x:int = 0;
+         var y:int = 0;
+         var living:* = null;
+         pkg.readDouble();
+         var count:int = pkg.readInt();
+         for(i = 0; i < count; )
          {
-            _loc6_ = LittleGameManager.Instance.fillPath(_loc7_,param1.grid,_loc7_.pos.x,_loc7_.pos.y,_loc4_,_loc5_);
-            if(_loc6_)
+            id = pkg.readInt();
+            x = pkg.readInt();
+            y = pkg.readInt();
+            living = scene.findLiving(id);
+            i++;
+         }
+      }
+      
+      public function livingMove(scene:Scenario, pkg:PackageIn) : LittleLiving
+      {
+         var path:* = null;
+         var id:int = pkg.readInt();
+         var dx:int = pkg.readInt();
+         var dy:int = pkg.readInt();
+         var living:LittleLiving = scene.findLiving(id);
+         if(living && !living.lock && !living.dieing && !living.borning && living.MotionState > 1)
+         {
+            path = LittleGameManager.Instance.fillPath(living,scene.grid,living.pos.x,living.pos.y,dx,dy);
+            if(path)
             {
-               if(!_loc7_.isSelf)
+               if(!living.isSelf)
                {
-                  _loc7_.act(new LittleLivingMoveAction(_loc7_,_loc6_,param1));
+                  living.act(new LittleLivingMoveAction(living,path,scene));
                }
             }
-            return _loc7_;
+            return living;
          }
          return null;
       }
       
-      public function selfMoveTo(param1:Scenario, param2:LittleSelf, param3:int, param4:int, param5:int, param6:int, param7:int, param8:Array) : void
+      public function selfMoveTo(scene:Scenario, self:LittleSelf, x:int, y:int, dx:int, dy:int, clock:int, path:Array) : void
       {
-         param2.act(new LittleSelfMoveAction(param2,param8,_current,param7,param7 + param8.length * 40,true));
-         var _loc9_:PackageOut = createPackageOut();
-         _loc9_.writeByte(32);
-         _loc9_.writeInt(param3);
-         _loc9_.writeInt(param4);
-         _loc9_.writeInt(param5);
-         _loc9_.writeInt(param6);
-         _loc9_.writeInt(param7);
-         sendPackage(_loc9_);
+         self.act(new LittleSelfMoveAction(self,path,_current,clock,clock + path.length * 40,true));
+         var pkg:PackageOut = createPackageOut();
+         pkg.writeByte(32);
+         pkg.writeInt(x);
+         pkg.writeInt(y);
+         pkg.writeInt(dx);
+         pkg.writeInt(dy);
+         pkg.writeInt(clock);
+         sendPackage(pkg);
       }
       
-      public function inhaled(param1:LittleSelf) : void
+      public function inhaled(self:LittleSelf) : void
       {
-         param1.inhaled = false;
+         self.inhaled = false;
       }
       
-      public function updateLivingProperty(param1:Scenario, param2:PackageIn) : void
+      public function updateLivingProperty(scene:Scenario, pkg:PackageIn) : void
       {
-         var _loc6_:* = null;
-         var _loc8_:int = 0;
-         var _loc3_:* = undefined;
-         var _loc9_:int = 0;
-         var _loc4_:int = param2.readInt();
-         var _loc5_:int = param2.readInt();
-         var _loc7_:LittleLiving = param1.findLiving(_loc4_);
-         if(_loc7_)
+         var name:* = null;
+         var type:int = 0;
+         var val:* = undefined;
+         var i:int = 0;
+         var id:int = pkg.readInt();
+         var count:int = pkg.readInt();
+         var living:LittleLiving = scene.findLiving(id);
+         if(living)
          {
-            _loc9_ = 0;
-            for(; _loc9_ < _loc5_; _loc9_++)
+            for(i = 0; i < count; i++)
             {
-               _loc6_ = param2.readUTF();
-               _loc8_ = param2.readInt();
-               switch(int(_loc8_) - 1)
+               name = pkg.readUTF();
+               type = pkg.readInt();
+               switch(int(type) - 1)
                {
                   case 0:
-                     _loc3_ = param2.readInt();
+                     val = pkg.readInt();
                      break;
                   case 1:
-                     _loc3_ = param2.readBoolean();
+                     val = pkg.readBoolean();
                      break;
                   case 2:
-                     _loc3_ = param2.readUTF();
+                     val = pkg.readUTF();
                }
-               if(_loc7_.hasOwnProperty(_loc6_))
+               if(living.hasOwnProperty(name))
                {
-                  _loc7_[_loc6_] = _loc3_;
+                  living[name] = val;
                   continue;
                }
             }
          }
       }
       
-      public function doAction(param1:Scenario, param2:PackageIn) : LittleAction
+      public function doAction(scene:Scenario, pkg:PackageIn) : LittleAction
       {
-         var _loc4_:String = param2.readUTF();
-         var _loc3_:LittleAction = LittleActionCreator.CreatAction(_loc4_);
-         if(_loc3_)
+         var type:String = pkg.readUTF();
+         var action:LittleAction = LittleActionCreator.CreatAction(type);
+         if(action)
          {
-            _loc3_.parsePackege(param1,param2);
+            action.parsePackege(scene,pkg);
          }
-         return _loc3_;
+         return action;
       }
       
-      public function doMovie(param1:Scenario, param2:PackageIn) : void
+      public function doMovie(scene:Scenario, pkg:PackageIn) : void
       {
-         var _loc3_:int = param2.readInt();
-         var _loc5_:LittleLiving = param1.findLiving(_loc3_);
-         var _loc4_:String = param2.readUTF();
-         if(!_loc5_)
+         var id:int = pkg.readInt();
+         var living:LittleLiving = scene.findLiving(id);
+         var act:String = pkg.readUTF();
+         if(!living)
          {
          }
       }
       
-      public function setClock(param1:Scenario, param2:PackageIn) : void
+      public function setClock(scene:Scenario, pkg:PackageIn) : void
       {
-         var _loc3_:int = param2.readInt();
+         var clock:int = pkg.readInt();
       }
       
-      public function pong(param1:Scenario, param2:PackageIn) : void
+      public function pong(scene:Scenario, pkg:PackageIn) : void
       {
-         var _loc3_:int = param2.readInt();
-         var _loc4_:PackageOut = createPackageOut();
-         _loc4_.writeByte(6);
-         _loc4_.writeInt(_loc3_);
-         sendPackage(_loc4_);
+         var timestamp:int = pkg.readInt();
+         var pkgOut:PackageOut = createPackageOut();
+         pkgOut.writeByte(6);
+         pkgOut.writeInt(timestamp);
+         sendPackage(pkgOut);
       }
       
-      public function ping(param1:int) : void
+      public function ping(timestamp:int) : void
       {
-         var _loc2_:PackageOut = createPackageOut();
-         _loc2_.writeByte(6);
-         _loc2_.writeInt(param1);
-         sendPackage(_loc2_);
+         var pkg:PackageOut = createPackageOut();
+         pkg.writeByte(6);
+         pkg.writeInt(timestamp);
+         sendPackage(pkg);
       }
       
-      public function setNetDelay(param1:Scenario, param2:PackageIn) : void
+      public function setNetDelay(scene:Scenario, pkg:PackageIn) : void
       {
-         var _loc3_:int = param2.readInt();
-         param1.delay = _loc3_;
-         ChatManager.Instance.sysChatYellow("delay:" + _loc3_);
+         var delay:int = pkg.readInt();
+         scene.delay = delay;
+         ChatManager.Instance.sysChatYellow("delay:" + delay);
       }
       
-      public function getScore(param1:Scenario, param2:PackageIn) : void
+      public function getScore(scene:Scenario, pkg:PackageIn) : void
       {
-         var _loc3_:int = param2.readInt();
-         param1.selfPlayer.getScore(_loc3_);
+         var score:int = pkg.readInt();
+         scene.selfPlayer.getScore(score);
       }
       
-      public function livingClick(param1:Scenario, param2:LittleLiving, param3:int, param4:int) : void
+      public function livingClick(scene:Scenario, living:LittleLiving, x:int, y:int) : void
       {
-         var _loc5_:int = 0;
-         var _loc6_:int = 0;
-         var _loc9_:* = null;
-         var _loc7_:* = null;
-         var _loc8_:* = null;
-         if(!param2.isPlayer && !param2.dieing)
+         var dx:int = 0;
+         var dy:int = 0;
+         var self:* = null;
+         var path:* = null;
+         var pkg:* = null;
+         if(!living.isPlayer && !living.dieing)
          {
-            _loc5_ = param3 / _current.grid.cellSize;
-            _loc6_ = param4 / _current.grid.cellSize;
-            _loc9_ = _current.selfPlayer;
-            _loc7_ = fillPath(_loc9_,_current.grid,_loc9_.pos.x,_loc9_.pos.y,_loc5_,_loc6_);
-            if(!_loc7_)
+            dx = x / _current.grid.cellSize;
+            dy = y / _current.grid.cellSize;
+            self = _current.selfPlayer;
+            path = fillPath(self,_current.grid,self.pos.x,self.pos.y,dx,dy);
+            if(!path)
             {
             }
-            if(!param2.borning && _loc9_.MotionState > 1)
+            if(!living.borning && self.MotionState > 1)
             {
-               _loc8_ = createPackageOut();
-               _loc8_.writeByte(65);
-               _loc8_.writeInt(param2.id);
-               _loc8_.writeInt(param2.pos.x);
-               _loc8_.writeInt(param2.pos.y);
-               _loc8_.writeInt(_loc9_.pos.x);
-               _loc8_.writeInt(_loc9_.pos.y);
-               sendPackage(_loc8_);
+               pkg = createPackageOut();
+               pkg.writeByte(65);
+               pkg.writeInt(living.id);
+               pkg.writeInt(living.pos.x);
+               pkg.writeInt(living.pos.y);
+               pkg.writeInt(self.pos.x);
+               pkg.writeInt(self.pos.y);
+               sendPackage(pkg);
             }
          }
       }
       
-      public function cancelInhaled(param1:int) : void
+      public function cancelInhaled(id:int) : void
       {
-         var _loc2_:PackageOut = createPackageOut();
-         _loc2_.writeByte(66);
-         _loc2_.writeInt(param1);
-         sendPackage(_loc2_);
+         var pkg:PackageOut = createPackageOut();
+         pkg.writeByte(66);
+         pkg.writeInt(id);
+         sendPackage(pkg);
       }
       
-      public function synchronousLivingPos(param1:int, param2:int) : void
+      public function synchronousLivingPos(x:int, y:int) : void
       {
-         trace("同步位置: ",param1,"  ",param2);
-         var _loc3_:PackageOut = createPackageOut();
-         _loc3_.writeByte(33);
-         _loc3_.writeInt(param1);
-         _loc3_.writeInt(param2);
-         sendPackage(_loc3_);
+         trace("同步位置: ",x,"  ",y);
+         var pkg:PackageOut = createPackageOut();
+         pkg.writeByte(33);
+         pkg.writeInt(x);
+         pkg.writeInt(y);
+         sendPackage(pkg);
       }
       
       public function loadComplete() : void
       {
-         var _loc1_:PackageOut = createPackageOut();
-         _loc1_.writeByte(3);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = createPackageOut();
+         pkg.writeByte(3);
+         sendPackage(pkg);
       }
       
-      public function createGame(param1:PackageIn) : Scenario
+      public function createGame(pkg:PackageIn) : Scenario
       {
-         var _loc2_:Scenario = new Scenario();
-         _loc2_.worldID = param1.readInt();
-         _loc2_.id = param1.readInt();
-         _loc2_.monsters = param1.readUTF();
-         _loc2_.music = param1.readUTF();
-         return _loc2_;
+         var scene:Scenario = new Scenario();
+         scene.worldID = pkg.readInt();
+         scene.id = pkg.readInt();
+         scene.monsters = pkg.readUTF();
+         scene.music = pkg.readUTF();
+         return scene;
       }
       
       public function leave() : void
       {
-         var _loc1_:PackageOut = createPackageOut();
-         _loc1_.writeByte(4);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = createPackageOut();
+         pkg.writeByte(4);
+         sendPackage(pkg);
          StateManager.setState("littleHall");
          LittleGamePacketQueue.Instance.shutdown();
       }
@@ -478,13 +474,13 @@ package littleGame
          return _current;
       }
       
-      public function sendScore(param1:int, param2:int) : void
+      public function sendScore(score:int, id:int) : void
       {
-         var _loc3_:PackageOut = createPackageOut();
-         _loc3_.writeByte(64);
-         _loc3_.writeInt(param1);
-         _loc3_.writeInt(param2);
-         sendPackage(_loc3_);
+         var pkg:PackageOut = createPackageOut();
+         pkg.writeByte(64);
+         pkg.writeInt(score);
+         pkg.writeInt(id);
+         sendPackage(pkg);
       }
       
       private function createPackageOut() : PackageOut
@@ -492,19 +488,19 @@ package littleGame
          return new PackageOut(166);
       }
       
-      public function sendPackage(param1:PackageOut) : void
+      public function sendPackage(pkg:PackageOut) : void
       {
-         SocketManager.Instance.out.sendPackage(param1);
+         SocketManager.Instance.out.sendPackage(pkg);
       }
       
-      public function setMainStage(param1:DisplayObjectContainer) : void
+      public function setMainStage(val:DisplayObjectContainer) : void
       {
-         _mainStage = param1;
+         _mainStage = val;
       }
       
-      public function setGameScene(param1:GameScene) : void
+      public function setGameScene(val:GameScene) : void
       {
-         _gamescene = param1;
+         _gamescene = val;
       }
       
       public function get gameScene() : GameScene

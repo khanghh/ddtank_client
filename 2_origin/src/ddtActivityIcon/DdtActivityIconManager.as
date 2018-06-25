@@ -41,9 +41,9 @@ package ddtActivityIcon
       
       public var currObj:Array;
       
-      public function DdtActivityIconManager(param1:IEventDispatcher = null)
+      public function DdtActivityIconManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
          _timer = new Timer(10000);
          _timer.addEventListener("timer",timerHander);
       }
@@ -57,7 +57,7 @@ package ddtActivityIcon
          return _instance;
       }
       
-      private function timerHander(param1:TimerEvent) : void
+      private function timerHander(e:TimerEvent) : void
       {
          checkTodayActList();
          checkSpecialActivity();
@@ -65,40 +65,40 @@ package ddtActivityIcon
       
       private function checkSpecialActivity() : void
       {
-         var _loc6_:* = null;
+         var tStr:* = null;
          if(_isAlreadyOpen)
          {
             return;
          }
-         var _loc4_:Date = TimeManager.Instance.Now();
-         var _loc7_:String = _loc4_.getFullYear().toString() + "/" + (_loc4_.month + 1).toString() + "/" + _loc4_.date.toString() + " ";
-         var _loc3_:DictionaryData = ServerConfigManager.instance.serverConfigInfo;
-         var _loc2_:Date = DateUtils.getDateByStr(_loc3_["LightRiddleBeginDate"].Value);
-         var _loc1_:Date = DateUtils.getDateByStr(transformTime(_loc7_,_loc3_["LightRiddleBeginTime"].Value));
-         var _loc5_:Date = DateUtils.getDateByStr(_loc3_["LightRiddleEndDate"].Value);
+         var now:Date = TimeManager.Instance.Now();
+         var nowTime:String = now.getFullYear().toString() + "/" + (now.month + 1).toString() + "/" + now.date.toString() + " ";
+         var serverData:DictionaryData = ServerConfigManager.instance.serverConfigInfo;
+         var startDate:Date = DateUtils.getDateByStr(serverData["LightRiddleBeginDate"].Value);
+         var startTime:Date = DateUtils.getDateByStr(transformTime(nowTime,serverData["LightRiddleBeginTime"].Value));
+         var endDate:Date = DateUtils.getDateByStr(serverData["LightRiddleEndDate"].Value);
          if(PlayerManager.Instance.Self.Grade >= 15)
          {
-            if(_loc4_.time > _loc2_.time && _loc4_.time < _loc5_.time)
+            if(now.time > startDate.time && now.time < endDate.time)
             {
-               if(_loc1_.time > _loc4_.time && _loc1_.time - _loc4_.time <= 3600000)
+               if(startTime.time > now.time && startTime.time - now.time <= 3600000)
                {
                   _isAlreadyOpen = true;
-                  _loc6_ = addO(_loc1_.hours) + ":" + addO(_loc1_.minutes) + LanguageMgr.GetTranslation("ddt.activityIcon.timePreStartTxt");
-                  dispatchEvent(new LanternEvent("lanternSettime",_loc6_));
+                  tStr = addO(startTime.hours) + ":" + addO(startTime.minutes) + LanguageMgr.GetTranslation("ddt.activityIcon.timePreStartTxt");
+                  dispatchEvent(new LanternEvent("lanternSettime",tStr));
                }
             }
          }
       }
       
-      private function transformTime(param1:String, param2:String) : String
+      private function transformTime(nowTime:String, startTime:String) : String
       {
-         var _loc3_:Array = param2.split(" ");
-         return param1 + _loc3_[1];
+         var temp:Array = startTime.split(" ");
+         return nowTime + temp[1];
       }
       
-      public function set timerList(param1:Vector.<DayActiveData>) : void
+      public function set timerList(list:Vector.<DayActiveData>) : void
       {
-         _timerList = param1;
+         _timerList = list;
       }
       
       public function setup() : void
@@ -120,26 +120,25 @@ package ddtActivityIcon
       
       private function initToDayActivie() : Array
       {
-         var _loc1_:int = 0;
-         var _loc2_:int = 0;
+         var len:int = 0;
+         var i:int = 0;
          if(_timerList)
          {
             todayActList = [];
-            _loc1_ = _timerList.length;
-            _loc2_ = 0;
-            while(_loc2_ < _loc1_)
+            len = _timerList.length;
+            for(i = 0; i < len; )
             {
-               if(checkToday(_timerList[_loc2_].DayOfWeek))
+               if(checkToday(_timerList[i].DayOfWeek))
                {
-                  if(!(int(_timerList[_loc2_].JumpType) == 1 && int(_timerList[_loc2_].LevelLimit) > PlayerManager.Instance.Self.Grade))
+                  if(!(int(_timerList[i].JumpType) == 1 && int(_timerList[i].LevelLimit) > PlayerManager.Instance.Self.Grade))
                   {
-                     if(!(int(_timerList[_loc2_].JumpType) == 10 && int(_timerList[_loc2_].LevelLimit) > PlayerManager.Instance.Self.Grade))
+                     if(!(int(_timerList[i].JumpType) == 10 && int(_timerList[i].LevelLimit) > PlayerManager.Instance.Self.Grade))
                      {
-                        todayActList.push(strToDataArray(_timerList[_loc2_].ActiveTime,int(_timerList[_loc2_].JumpType)));
+                        todayActList.push(strToDataArray(_timerList[i].ActiveTime,int(_timerList[i].JumpType)));
                      }
                   }
                }
-               _loc2_++;
+               i++;
             }
          }
          return todayActList;
@@ -150,199 +149,196 @@ package ddtActivityIcon
          return _isOneOpen;
       }
       
-      public function set isOneOpen(param1:Boolean) : void
+      public function set isOneOpen(bool:Boolean) : void
       {
-         _isOneOpen = param1;
+         _isOneOpen = bool;
       }
       
       private function checkTodayActList() : void
       {
-         var _loc10_:int = 0;
-         var _loc2_:* = null;
-         var _loc9_:* = null;
-         var _loc3_:* = null;
-         var _loc8_:int = 0;
-         var _loc6_:* = null;
-         var _loc5_:* = null;
-         var _loc4_:* = null;
+         var i:int = 0;
+         var obj1:* = null;
+         var end:* = null;
+         var obj2:* = null;
+         var j:int = 0;
+         var objReady1:* = null;
+         var endReady1:* = null;
+         var objReady2:* = null;
          if(!todayActList)
          {
             return;
          }
-         var _loc7_:int = todayActList.length;
-         var _loc1_:Date = TimeManager.Instance.Now();
-         _loc10_ = 0;
-         while(_loc10_ < _loc7_)
+         var len:int = todayActList.length;
+         var now:Date = TimeManager.Instance.Now();
+         for(i = 0; i < len; )
          {
-            _loc2_ = todayActList[_loc10_][0];
-            _loc9_ = _loc2_.end;
-            checkActOpen(_loc2_);
-            if(todayActList[_loc10_][1] && _loc1_.time > _loc9_.time)
+            obj1 = todayActList[i][0];
+            end = obj1.end;
+            checkActOpen(obj1);
+            if(todayActList[i][1] && now.time > end.time)
             {
-               _loc3_ = todayActList[_loc10_][1];
-               checkActOpen(_loc3_);
+               obj2 = todayActList[i][1];
+               checkActOpen(obj2);
             }
-            _loc10_++;
+            i++;
          }
          if(_isOneOpen)
          {
             return;
          }
-         _loc8_ = 0;
-         while(_loc8_ < _loc7_)
+         for(j = 0; j < len; )
          {
-            _loc6_ = todayActList[_loc8_][0];
-            _loc5_ = _loc6_.end;
-            checkActReady(_loc6_);
-            if(todayActList[_loc8_][1] && _loc1_.time > _loc5_.time)
+            objReady1 = todayActList[j][0];
+            endReady1 = objReady1.end;
+            checkActReady(objReady1);
+            if(todayActList[j][1] && now.time > endReady1.time)
             {
-               _loc4_ = todayActList[_loc8_][1];
-               checkActReady(_loc4_);
+               objReady2 = todayActList[j][1];
+               checkActReady(objReady2);
             }
-            _loc8_++;
+            j++;
          }
       }
       
-      private function checkToday(param1:String) : Boolean
+      private function checkToday(str:String) : Boolean
       {
-         var _loc5_:int = 0;
-         var _loc3_:Date = TimeManager.Instance.Now();
-         var _loc2_:Array = param1.split(",");
-         var _loc4_:int = _loc2_.length;
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         var i:int = 0;
+         var now:Date = TimeManager.Instance.Now();
+         var arr:Array = str.split(",");
+         var len:int = arr.length;
+         for(i = 0; i < len; )
          {
-            if(_loc3_.day == int(_loc2_[_loc5_]))
+            if(now.day == int(arr[i]))
             {
                return true;
             }
-            _loc5_++;
+            i++;
          }
          return false;
       }
       
-      private function checkActOpen(param1:Object) : void
+      private function checkActOpen(obj:Object) : void
       {
-         var _loc2_:int = 0;
-         var _loc5_:* = null;
-         var _loc4_:Date = TimeManager.Instance.Now();
-         var _loc3_:Date = param1.start;
-         var _loc7_:Date = param1.end;
-         var _loc6_:int = _loc3_.time - _loc4_.time;
-         if(_loc4_.time >= _loc3_.time && _loc4_.time < _loc7_.time)
+         var JumpType:int = 0;
+         var tStr:* = null;
+         var now:Date = TimeManager.Instance.Now();
+         var start:Date = obj.start;
+         var end:Date = obj.end;
+         var disT:int = start.time - now.time;
+         if(now.time >= start.time && now.time < end.time)
          {
-            if(param1.name == 4)
+            if(obj.name == 4)
             {
-               _loc2_ = 4;
+               JumpType = 4;
             }
-            else if(param1.name == 11)
+            else if(obj.name == 11)
             {
-               _loc2_ = 11;
+               JumpType = 11;
             }
             else
             {
-               _loc2_ = -100;
+               JumpType = -100;
             }
             _isOneOpen = true;
             currObj = [];
-            currObj.push(param1.name);
-            currObj.push(_loc2_);
-            _loc5_ = LanguageMgr.GetTranslation("ddt.activityIcon.timeStartTxt") + " " + addO(_loc3_.hours) + ":" + addO(_loc3_.minutes);
-            currObj.push(_loc5_);
-            dispatchEvent(new ActivitStateEvent("start",[param1.name,_loc2_,_loc5_]));
+            currObj.push(obj.name);
+            currObj.push(JumpType);
+            tStr = LanguageMgr.GetTranslation("ddt.activityIcon.timeStartTxt") + " " + addO(start.hours) + ":" + addO(start.minutes);
+            currObj.push(tStr);
+            dispatchEvent(new ActivitStateEvent("start",[obj.name,JumpType,tStr]));
          }
       }
       
-      private function checkActReady(param1:Object) : void
+      private function checkActReady(obj:Object) : void
       {
-         var _loc2_:int = 0;
-         var _loc5_:* = null;
-         var _loc4_:Date = TimeManager.Instance.Now();
-         var _loc3_:Date = param1.start;
-         var _loc7_:Date = param1.end;
-         var _loc6_:int = _loc3_.time - _loc4_.time;
-         if(_loc3_.time > _loc4_.time && _loc6_ < 3600000)
+         var JumpType:int = 0;
+         var tStr:* = null;
+         var now:Date = TimeManager.Instance.Now();
+         var start:Date = obj.start;
+         var end:Date = obj.end;
+         var disT:int = start.time - now.time;
+         if(start.time > now.time && disT < 3600000)
          {
-            if(param1.name == 4)
+            if(obj.name == 4)
             {
-               _loc2_ = 4;
+               JumpType = 4;
             }
-            else if(param1.name == 11)
+            else if(obj.name == 11)
             {
-               _loc2_ = 11;
+               JumpType = 11;
             }
-            else if(param1.name == 10)
+            else if(obj.name == 10)
             {
-               _loc2_ = 10;
+               JumpType = 10;
             }
             else
             {
-               _loc2_ = -100;
+               JumpType = -100;
             }
             _isOneOpen = false;
-            _loc5_ = addO(_loc3_.hours) + ":" + addO(_loc3_.minutes) + " " + LanguageMgr.GetTranslation("ddt.activityIcon.timePreStartTxt");
-            dispatchEvent(new ActivitStateEvent("ready_start",[param1.name,_loc2_,_loc5_]));
+            tStr = addO(start.hours) + ":" + addO(start.minutes) + " " + LanguageMgr.GetTranslation("ddt.activityIcon.timePreStartTxt");
+            dispatchEvent(new ActivitStateEvent("ready_start",[obj.name,JumpType,tStr]));
          }
       }
       
-      private function addO(param1:Number) : String
+      private function addO(num:Number) : String
       {
-         var _loc2_:String = param1.toString();
-         if(_loc2_.length == 1)
+         var str:String = num.toString();
+         if(str.length == 1)
          {
-            _loc2_ = "0" + _loc2_;
+            str = "0" + str;
          }
-         return _loc2_;
+         return str;
       }
       
-      private function strToDataArray(param1:String, param2:int) : Array
+      private function strToDataArray(str:String, JumpType:int) : Array
       {
-         var _loc3_:* = null;
-         var _loc6_:* = null;
-         var _loc11_:* = null;
-         var _loc12_:* = null;
-         var _loc10_:* = null;
-         var _loc8_:Array = [];
-         var _loc5_:Array = param1.split("|");
-         var _loc4_:String = _loc5_[0].substr(0,5);
-         var _loc7_:String = _loc5_[0].substr(6,5);
-         var _loc14_:Date = strToDate(_loc4_);
-         var _loc13_:Date = strToDate(_loc7_);
-         var _loc9_:Object = {};
-         _loc9_.start = _loc14_;
-         _loc9_.end = _loc13_;
-         _loc9_.name = param2;
-         _loc8_.push(_loc9_);
-         if(_loc5_[1])
+         var startStr2:* = null;
+         var endStr2:* = null;
+         var startDate2:* = null;
+         var endDate2:* = null;
+         var obj2:* = null;
+         var dataArr:Array = [];
+         var arr:Array = str.split("|");
+         var startStr1:String = arr[0].substr(0,5);
+         var endStr1:String = arr[0].substr(6,5);
+         var startDate1:Date = strToDate(startStr1);
+         var endDate1:Date = strToDate(endStr1);
+         var obj1:Object = {};
+         obj1.start = startDate1;
+         obj1.end = endDate1;
+         obj1.name = JumpType;
+         dataArr.push(obj1);
+         if(arr[1])
          {
-            _loc3_ = _loc5_[1].substr(0,5);
-            _loc6_ = _loc5_[1].substr(6,5);
-            _loc11_ = strToDate(_loc3_);
-            _loc12_ = strToDate(_loc6_);
-            _loc10_ = {};
-            _loc10_.start = _loc11_;
-            _loc10_.end = _loc12_;
-            _loc10_.name = param2;
-            _loc8_.push(_loc10_);
+            startStr2 = arr[1].substr(0,5);
+            endStr2 = arr[1].substr(6,5);
+            startDate2 = strToDate(startStr2);
+            endDate2 = strToDate(endStr2);
+            obj2 = {};
+            obj2.start = startDate2;
+            obj2.end = endDate2;
+            obj2.name = JumpType;
+            dataArr.push(obj2);
          }
-         return _loc8_;
+         return dataArr;
       }
       
-      private function strToDate(param1:String) : Date
+      private function strToDate(str:String) : Date
       {
-         var _loc3_:Date = TimeManager.Instance.Now();
-         var _loc6_:Number = _loc3_.fullYear;
-         var _loc5_:int = _loc3_.month;
-         var _loc7_:Number = _loc3_.date;
-         var _loc4_:String = param1.substr(0,2);
-         var _loc2_:String = param1.substr(3,2);
-         var _loc8_:Date = new Date(_loc6_,_loc5_,_loc7_,_loc4_,_loc2_);
-         return _loc8_;
+         var now:Date = TimeManager.Instance.Now();
+         var year:Number = now.fullYear;
+         var month:int = now.month;
+         var day:Number = now.date;
+         var hours:String = str.substr(0,2);
+         var minutes:String = str.substr(3,2);
+         var date:Date = new Date(year,month,day,hours,minutes);
+         return date;
       }
       
-      public function set isAlreadyOpen(param1:Boolean) : void
+      public function set isAlreadyOpen(value:Boolean) : void
       {
-         _isAlreadyOpen = param1;
+         _isAlreadyOpen = value;
       }
    }
 }

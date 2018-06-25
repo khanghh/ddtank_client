@@ -29,35 +29,35 @@ package dragonBones.objects
          _displayDataList.length = 0;
       }
       
-      public function addDisplayData(param1:DisplayData) : void
+      public function addDisplayData(displayData:DisplayData) : void
       {
-         if(!param1)
+         if(!displayData)
          {
             throw new ArgumentError();
          }
-         if(_displayDataList.indexOf(param1) < 0)
+         if(_displayDataList.indexOf(displayData) < 0)
          {
             _displayDataList.fixed = false;
-            _displayDataList[_displayDataList.length] = param1;
+            _displayDataList[_displayDataList.length] = displayData;
             _displayDataList.fixed = true;
             return;
          }
          throw new ArgumentError();
       }
       
-      public function getDisplayData(param1:String) : DisplayData
+      public function getDisplayData(displayName:String) : DisplayData
       {
-         var _loc2_:int = _displayDataList.length;
+         var i:int = _displayDataList.length;
          while(true)
          {
-            _loc2_--;
-            if(!_loc2_)
+            i--;
+            if(!i)
             {
                break;
             }
-            if(_displayDataList[_loc2_].name == param1)
+            if(_displayDataList[i].name == displayName)
             {
-               return _displayDataList[_loc2_];
+               return _displayDataList[i];
             }
          }
          return null;

@@ -26,9 +26,9 @@ package bagAndInfo.info
          return _showOverGraphics;
       }
       
-      public function set showOverGraphics(param1:Boolean) : void
+      public function set showOverGraphics(value:Boolean) : void
       {
-         _showOverGraphics = param1;
+         _showOverGraphics = value;
       }
       
       override protected function addChildren() : void
@@ -46,14 +46,14 @@ package bagAndInfo.info
          }
       }
       
-      public function setOverGraphicsPosition(param1:Point) : void
+      public function setOverGraphicsPosition(p:Point) : void
       {
-         if(!param1)
+         if(!p)
          {
             return;
          }
-         _overGraphics.x = param1.x;
-         _overGraphics.y = param1.y;
+         _overGraphics.x = p.x;
+         _overGraphics.y = p.y;
       }
       
       private function addEvent() : void
@@ -62,12 +62,12 @@ package bagAndInfo.info
          addEventListener("rollOut",__onMouseRollout);
       }
       
-      private function __onMouseRollover(param1:MouseEvent) : void
+      private function __onMouseRollover(evt:MouseEvent) : void
       {
          _overGraphics.visible = true && _showOverGraphics;
       }
       
-      private function __onMouseRollout(param1:MouseEvent) : void
+      private function __onMouseRollout(evt:MouseEvent) : void
       {
          _overGraphics.visible = false && _showOverGraphics;
       }

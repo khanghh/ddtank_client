@@ -37,37 +37,37 @@ package littleGame.actions
       
       private var _reset:Boolean;
       
-      public function LittleSelfMoveAction(param1:LittleSelf, param2:Array, param3:Scenario, param4:int, param5:int, param6:Boolean = false)
+      public function LittleSelfMoveAction(self:LittleSelf, path:Array, scene:Scenario, startTime:int, endTime:int, reset:Boolean = false)
       {
-         _scene = param3;
-         _self = param1;
-         _living = param1;
-         _path = param2;
+         _scene = scene;
+         _self = self;
+         _living = self;
+         _path = path;
          _grid = _scene.grid;
-         _startTime = param4;
-         _endTime = param5;
+         _startTime = startTime;
+         _endTime = endTime;
          _len = _path.length;
-         _reset = param6;
+         _reset = reset;
          super();
       }
       
-      override public function connect(param1:LittleAction) : Boolean
+      override public function connect(action:LittleAction) : Boolean
       {
-         var _loc2_:* = null;
-         if(param1 is InhaleAction)
+         var act:* = null;
+         if(action is InhaleAction)
          {
             cancel();
             return false;
          }
-         if(param1 is LittleSelfMoveAction)
+         if(action is LittleSelfMoveAction)
          {
-            _loc2_ = param1 as LittleSelfMoveAction;
-            _scene = _loc2_._scene;
-            _self = _loc2_._self;
-            _path = _loc2_._path;
-            _grid = _loc2_._grid;
-            _startTime = _loc2_._startTime;
-            _len = _loc2_._len;
+            act = action as LittleSelfMoveAction;
+            _scene = act._scene;
+            _self = act._self;
+            _path = act._path;
+            _grid = act._grid;
+            _startTime = act._startTime;
+            _len = act._len;
             _idx = 0;
             return true;
          }
@@ -77,27 +77,27 @@ package littleGame.actions
       override public function prepare() : void
       {
          LittleGameManager.Instance.Current.startSysnPos();
-         var _loc2_:Node = _path[0];
-         var _loc1_:Point = new Point(_loc2_.x,_loc2_.y);
-         _self.setNextDirection(_loc1_);
-         _self.pos = _loc1_;
+         var node:Node = _path[0];
+         var nextPos:Point = new Point(node.x,node.y);
+         _self.setNextDirection(nextPos);
+         _self.pos = nextPos;
          super.prepare();
          _last = getTimer();
       }
       
       override public function execute() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var node:* = null;
+         var nextPos:* = null;
          if(_idx < _path.length)
          {
             _idx = Number(_idx) + 1;
-            _loc2_ = _path[Number(_idx)];
-            if(_loc2_)
+            node = _path[Number(_idx)];
+            if(node)
             {
-               _loc1_ = new Point(_loc2_.x,_loc2_.y);
-               _self.setNextDirection(_loc1_);
-               _self.pos = _loc1_;
+               nextPos = new Point(node.x,node.y);
+               _self.setNextDirection(nextPos);
+               _self.pos = nextPos;
             }
          }
          else

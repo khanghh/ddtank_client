@@ -25,55 +25,52 @@ package road7th.comm
          super();
       }
       
-      public function load(param1:ByteArray, param2:int) : void
+      public function load(src:ByteArray, len:int) : void
       {
-         writeByte(param1.readByte());
+         writeByte(src.readByte());
          readHeader();
       }
       
-      public function loadE(param1:ByteArray, param2:int, param3:ByteArray) : void
+      public function loadE(src:ByteArray, len:int, key:ByteArray) : void
       {
-         var _loc6_:int = 0;
-         var _loc5_:ByteArray = new ByteArray();
-         var _loc4_:ByteArray = new ByteArray();
-         _loc6_ = 0;
-         while(_loc6_ < param2)
+         var i:int = 0;
+         var origion:ByteArray = new ByteArray();
+         var result:ByteArray = new ByteArray();
+         for(i = 0; i < len; )
          {
-            _loc5_.writeByte(param1.readByte());
-            _loc4_.writeByte(_loc5_[_loc6_]);
-            _loc6_++;
+            origion.writeByte(src.readByte());
+            result.writeByte(origion[i]);
+            i++;
          }
-         _loc6_ = 0;
-         while(_loc6_ < param2)
+         for(i = 0; i < len; )
          {
-            if(_loc6_ > 0)
+            if(i > 0)
             {
-               param3[_loc6_ % 8] = param3[_loc6_ % 8] + _loc5_[_loc6_ - 1] ^ _loc6_;
-               _loc4_[_loc6_] = _loc5_[_loc6_] - _loc5_[_loc6_ - 1] ^ param3[_loc6_ % 8];
+               key[i % 8] = key[i % 8] + origion[i - 1] ^ i;
+               result[i] = origion[i] - origion[i - 1] ^ key[i % 8];
             }
             else
             {
-               _loc4_[_loc6_] = _loc5_[_loc6_] ^ param3[0];
+               result[i] = origion[i] ^ key[0];
             }
-            _loc6_++;
+            i++;
          }
-         _loc4_.position = 0;
-         _loc6_ = 0;
-         while(_loc6_ < param2)
+         result.position = 0;
+         for(i = 0; i < len; )
          {
-            writeByte(_loc4_.readByte());
-            _loc6_++;
+            writeByte(result.readByte());
+            i++;
          }
          position = 0;
          readHeader();
       }
       
-      public function loadFightByteInfo(param1:int, param2:int, param3:int, param4:ByteArray, param5:int) : void
+      public function loadFightByteInfo(extend1:int, extend2:int, len:int, src:ByteArray, index:int) : void
       {
-         _extend1 = param1;
-         _extend2 = param2;
-         _len = param3;
-         writeBytes(param4);
+         _extend1 = extend1;
+         _extend2 = extend2;
+         _len = len;
+         writeBytes(src);
          position = 20;
       }
       
@@ -120,14 +117,14 @@ package road7th.comm
       
       public function calculateCheckSum() : int
       {
-         var _loc1_:int = 119;
-         var _loc2_:int = 6;
-         while(_loc2_ < length)
+         var val1:int = 119;
+         var i:int = 6;
+         while(i < length)
          {
-            _loc2_++;
-            _loc1_ = _loc1_ + this[_loc2_];
+            i++;
+            val1 = val1 + this[i];
          }
-         return _loc1_ & 32639;
+         return val1 & 32639;
       }
       
       public function readXml() : XML
@@ -142,48 +139,48 @@ package road7th.comm
       
       public function readDate() : Date
       {
-         var _loc5_:int = readShort();
-         var _loc4_:int = readByte() - 1;
-         var _loc6_:int = readByte();
-         var _loc3_:int = readByte();
-         var _loc1_:int = readByte();
-         var _loc2_:int = readByte();
-         var _loc7_:Date = new Date(_loc5_,_loc4_,_loc6_,_loc3_,_loc1_,_loc2_);
-         return _loc7_;
+         var year:int = readShort();
+         var month:int = readByte() - 1;
+         var day:int = readByte();
+         var hours:int = readByte();
+         var minutes:int = readByte();
+         var seconds:int = readByte();
+         var date:Date = new Date(year,month,day,hours,minutes,seconds);
+         return date;
       }
       
       public function readByteArray() : ByteArray
       {
-         var _loc1_:ByteArray = new ByteArray();
-         readBytes(_loc1_,0,_len - position);
-         _loc1_.position = 0;
-         return _loc1_;
+         var temp:ByteArray = new ByteArray();
+         readBytes(temp,0,_len - position);
+         temp.position = 0;
+         return temp;
       }
       
       public function deCompress() : void
       {
          position = 20;
-         var _loc1_:ByteArray = new ByteArray();
-         readBytes(_loc1_,0,_len - 20);
-         _loc1_.uncompress();
+         var temp:ByteArray = new ByteArray();
+         readBytes(temp,0,_len - 20);
+         temp.uncompress();
          position = 20;
-         writeBytes(_loc1_,0,_loc1_.length);
-         _len = 20 + _loc1_.length;
+         writeBytes(temp,0,temp.length);
+         _len = 20 + temp.length;
          position = 20;
       }
       
       public function readLong() : Number
       {
-         var _loc3_:Number = new Number();
-         var _loc2_:Number = new Number(readInt());
-         var _loc1_:Number = new Number(readUnsignedInt());
-         var _loc4_:int = 1;
-         if(_loc2_ < 0)
+         var value:Number = new Number();
+         var H32:Number = new Number(readInt());
+         var D32:Number = new Number(readUnsignedInt());
+         var temp:int = 1;
+         if(H32 < 0)
          {
-            _loc4_ = -1;
+            temp = -1;
          }
-         _loc3_ = _loc4_ * (Math.abs(_loc2_ * Math.pow(2,32)) + _loc1_);
-         return _loc3_;
+         value = temp * (Math.abs(H32 * Math.pow(2,32)) + D32);
+         return value;
       }
    }
 }

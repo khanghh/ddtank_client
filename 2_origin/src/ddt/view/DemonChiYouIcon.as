@@ -41,11 +41,11 @@ package ddt.view
          this.addEventListener("click",enterBossSence);
       }
       
-      protected function enterBossSence(param1:MouseEvent) : void
+      protected function enterBossSence(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:int = getTimer();
-         if(_loc2_ - _lastClickTime > 1000)
+         var currTime:int = getTimer();
+         if(currTime - _lastClickTime > 1000)
          {
             if(PlayerManager.Instance.Self.ConsortiaID > 0)
             {
@@ -55,7 +55,7 @@ package ddt.view
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("demonChiYou.cannotEnter.noConsortia"));
             }
-            _lastClickTime = _loc2_;
+            _lastClickTime = currTime;
          }
       }
       

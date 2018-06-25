@@ -8,9 +8,9 @@ package fightLib.command
       
       private var _delay:int;
       
-      public function TimeCommand(param1:int)
+      public function TimeCommand(delay:int)
       {
-         _delay = param1;
+         _delay = delay;
          super();
       }
       

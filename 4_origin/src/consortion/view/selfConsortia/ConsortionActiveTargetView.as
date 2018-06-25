@@ -42,7 +42,7 @@ package consortion.view.selfConsortia
          ConsortionModelManager.Instance.removeEventListener("updatectiveTargetSchedule",update);
       }
       
-      private function onClick(param1:MouseEvent) : void
+      private function onClick(evt:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          ConsortionModelManager.Instance.dispatchEvent(new Event("leave_call_back_view"));
@@ -54,47 +54,45 @@ package consortion.view.selfConsortia
          update();
       }
       
-      private function update(param1:CEvent = null) : void
+      private function update(evt:CEvent = null) : void
       {
-         var _loc5_:int = 0;
+         var i:int = 0;
          clearItems();
-         var _loc4_:Vector.<ConsortionActiveTargetData> = null;
-         var _loc3_:ConsortionActiveTargetData = null;
-         var _loc2_:ConsortionActiveTargetItem = null;
-         _loc5_ = 1;
-         while(_loc5_ <= 3)
+         var targets:Vector.<ConsortionActiveTargetData> = null;
+         var target:ConsortionActiveTargetData = null;
+         var targetItem:ConsortionActiveTargetItem = null;
+         for(i = 1; i <= 3; )
          {
-            _loc2_ = new ConsortionActiveTargetItem();
-            _loc4_ = ConsortionModelManager.Instance.model.activeTargetDic[_loc5_];
-            addChild(_loc2_);
-            _loc2_.data = _loc5_;
-            _targetItems.push(_loc2_);
-            _loc5_++;
+            targetItem = new ConsortionActiveTargetItem();
+            targets = ConsortionModelManager.Instance.model.activeTargetDic[i];
+            addChild(targetItem);
+            targetItem.data = i;
+            _targetItems.push(targetItem);
+            i++;
          }
          layoutItems();
       }
       
       private function clearItems() : void
       {
-         var _loc1_:ConsortionActiveTargetItem = null;
+         var item:ConsortionActiveTargetItem = null;
          while(_targetItems.length > 0)
          {
-            _loc1_ = _targetItems.pop();
-            ObjectUtils.disposeObject(_loc1_);
+            item = _targetItems.pop();
+            ObjectUtils.disposeObject(item);
          }
       }
       
       private function layoutItems() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:ConsortionActiveTargetItem = null;
-         _loc2_ = 0;
-         while(_loc2_ < _targetItems.length)
+         var i:int = 0;
+         var targetItem:ConsortionActiveTargetItem = null;
+         for(i = 0; i < _targetItems.length; )
          {
-            _loc1_ = _targetItems[_loc2_];
-            _loc1_.x = -2;
-            _loc1_.y = _loc2_ == 0?10:_targetItems[_loc2_ - 1].y + _targetItems[_loc2_ - 1].height + 8;
-            _loc2_++;
+            targetItem = _targetItems[i];
+            targetItem.x = -2;
+            targetItem.y = i == 0?10:_targetItems[i - 1].y + _targetItems[i - 1].height + 8;
+            i++;
          }
       }
       

@@ -107,8 +107,8 @@ package christmas.view.makingSnowmenView
       
       private function goodsCell() : void
       {
-         var _loc1_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(201144);
-         _bagitem = new BagCell(0,_loc1_);
+         var christmasInfo:ItemTemplateInfo = ItemManager.Instance.getTemplateById(201144);
+         _bagitem = new BagCell(0,christmasInfo);
          _bagitem.x = 30;
          _bagitem.y = 389;
          var _loc2_:int = 41;
@@ -118,7 +118,7 @@ package christmas.view.makingSnowmenView
          upDatafitCount();
       }
       
-      protected function updateCount(param1:BagEvent) : void
+      protected function updateCount(event:BagEvent) : void
       {
          upDatafitCount();
       }
@@ -129,9 +129,9 @@ package christmas.view.makingSnowmenView
          {
             return;
          }
-         var _loc1_:BagInfo = _selfInfo.getBag(1);
-         var _loc2_:int = _loc1_.getItemCountByTemplateId(201144);
-         _bagitem.setCount(_loc2_);
+         var bagInfo:BagInfo = _selfInfo.getBag(1);
+         var conut:int = bagInfo.getItemCountByTemplateId(201144);
+         _bagitem.setCount(conut);
       }
       
       private function initEvent() : void
@@ -142,32 +142,32 @@ package christmas.view.makingSnowmenView
          _selfInfo.PropBag.addEventListener("update",__updateBag);
       }
       
-      protected function __updateBag(param1:BagEvent) : void
+      protected function __updateBag(event:BagEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:BagInfo = param1.target as BagInfo;
-         var _loc5_:Dictionary = param1.changedSlots;
+         var info:* = null;
+         var bag:BagInfo = event.target as BagInfo;
+         var changes:Dictionary = event.changedSlots;
          var _loc7_:int = 0;
-         var _loc6_:* = _loc5_;
-         for each(var _loc4_ in _loc5_)
+         var _loc6_:* = changes;
+         for each(var i in changes)
          {
-            _loc3_ = _loc2_.getItemAt(_loc4_.Place);
-            if(_loc3_ && _loc3_.TemplateID == 201144)
+            info = bag.getItemAt(i.Place);
+            if(info && info.TemplateID == 201144)
             {
-               _bagitem.setCount(_loc2_.getItemCountByTemplateId(201144));
+               _bagitem.setCount(bag.getItemCountByTemplateId(201144));
             }
          }
       }
       
-      private function __onClickAddSnowHander(param1:MouseEvent) : void
+      private function __onClickAddSnowHander(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          ChristmasCoreController.instance.showTransactionFrame("",showIsBuyFrame,null,this,true,true);
       }
       
-      private function showIsBuyFrame(param1:int = 1) : void
+      private function showIsBuyFrame(num:int = 1) : void
       {
-         if(param1 <= 0)
+         if(num <= 0)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("christmas.curInfo.notfitNum"));
             return;
@@ -177,45 +177,45 @@ package christmas.view.makingSnowmenView
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("christmas.curInfo.notfit"));
             return;
          }
-         sendBuyToSnowPackDouble(param1);
+         sendBuyToSnowPackDouble(num);
       }
       
-      private function sendBuyToSnowPackDouble(param1:int = 1) : void
+      private function sendBuyToSnowPackDouble(num:int = 1) : void
       {
-         var _loc2_:Boolean = ChristmasCoreManager.instance.model.isSelect;
-         if(_loc2_)
+         var isDouble:Boolean = ChristmasCoreManager.instance.model.isSelect;
+         if(isDouble)
          {
-            if(!ChristmasCoreManager.instance.checkMoney(param1 * ChristmasCoreManager.instance.model.money))
+            if(!ChristmasCoreManager.instance.checkMoney(num * ChristmasCoreManager.instance.model.money))
             {
-               SocketManager.Instance.out.sendChristmasUpGrade(param1,_loc2_);
+               SocketManager.Instance.out.sendChristmasUpGrade(num,isDouble);
                KeyboardManager.getInstance().isStopDispatching = true;
                SoundManager.instance.play("170");
             }
             ChristmasCoreManager.instance.model.isSelect = false;
             return;
          }
-         SocketManager.Instance.out.sendChristmasUpGrade(param1,_loc2_);
+         SocketManager.Instance.out.sendChristmasUpGrade(num,isDouble);
          KeyboardManager.getInstance().isStopDispatching = true;
          SoundManager.instance.play("170");
       }
       
-      private function __scoreConvertEventHandler(param1:ChristmasRoomEvent) : void
+      private function __scoreConvertEventHandler(event:ChristmasRoomEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
+         var i:int = 0;
+         var poorNum:int = 0;
          _addCountText.text = ChristmasCoreManager.instance.model.count + "";
          if(_mSnoRight.shopItemArr == null)
          {
             return;
          }
-         _loc3_ = 0;
-         while(_loc3_ < ChristmasCoreManager.instance.model.packsLen - 1)
+         i = 0;
+         while(i < ChristmasCoreManager.instance.model.packsLen - 1)
          {
-            if(ChristmasCoreManager.instance.CanGetGift(_loc3_) && ChristmasCoreManager.instance.model.count >= _mSnoRight.shopItemArr[_loc3_].snowPackNum)
+            if(ChristmasCoreManager.instance.CanGetGift(i) && ChristmasCoreManager.instance.model.count >= _mSnoRight.shopItemArr[i].snowPackNum)
             {
-               _mSnoRight.shopItemArr[_loc3_].specialButton();
+               _mSnoRight.shopItemArr[i].specialButton();
             }
-            _loc3_++;
+            i++;
          }
          if(ChristmasCoreManager.instance.model.lastPacks > ChristmasCoreManager.instance.model.count)
          {
@@ -230,15 +230,15 @@ package christmas.view.makingSnowmenView
             }
             else
             {
-               _loc2_ = ChristmasCoreManager.instance.model.snowPackNum[ChristmasCoreManager.instance.model.packsLen - 1] - (ChristmasCoreManager.instance.model.count - (ChristmasCoreManager.instance.model.snowPackNum[ChristmasCoreManager.instance.model.packsLen - 2] + ChristmasCoreManager.instance.model.snowPackNum[ChristmasCoreManager.instance.model.packsLen - 1] * ChristmasCoreManager.instance.model.packsNumber));
-               _mSnoRight.shopItemArr[ChristmasCoreManager.instance.model.packsLen - 1]._poorTxt.text = LanguageMgr.GetTranslation("christmas.list.poorTxt.LG",_loc2_);
+               poorNum = ChristmasCoreManager.instance.model.snowPackNum[ChristmasCoreManager.instance.model.packsLen - 1] - (ChristmasCoreManager.instance.model.count - (ChristmasCoreManager.instance.model.snowPackNum[ChristmasCoreManager.instance.model.packsLen - 2] + ChristmasCoreManager.instance.model.snowPackNum[ChristmasCoreManager.instance.model.packsLen - 1] * ChristmasCoreManager.instance.model.packsNumber));
+               _mSnoRight.shopItemArr[ChristmasCoreManager.instance.model.packsLen - 1]._poorTxt.text = LanguageMgr.GetTranslation("christmas.list.poorTxt.LG",poorNum);
             }
          }
       }
       
-      public function snowmenAction(param1:ChristmasSystemItemsInfo) : void
+      public function snowmenAction(info:ChristmasSystemItemsInfo) : void
       {
-         _christmasSnowmenView.upGradeAction(param1);
+         _christmasSnowmenView.upGradeAction(info);
       }
       
       private function removeEvent() : void
@@ -253,9 +253,9 @@ package christmas.view.makingSnowmenView
          _selfInfo.PropBag.removeEventListener("update",__updateBag);
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();

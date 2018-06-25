@@ -110,11 +110,11 @@ package consortion
       
       private var _weekReward:DictionaryData;
       
-      public function ConsortionModel(param1:IEventDispatcher = null)
+      public function ConsortionModel(target:IEventDispatcher = null)
       {
          activeTargetDic = new Dictionary(true);
          activeTargetStautsDic = new Dictionary(true);
-         super(param1);
+         super(target);
       }
       
       public function get memberList() : DictionaryData
@@ -126,70 +126,70 @@ package consortion
          return _memberList;
       }
       
-      public function set memberList(param1:DictionaryData) : void
+      public function set memberList(value:DictionaryData) : void
       {
-         if(_memberList == param1)
+         if(_memberList == value)
          {
             return;
          }
-         _memberList = param1;
+         _memberList = value;
          dispatchEvent(new ConsortionEvent("memberListLoadComplete"));
       }
       
-      public function addMember(param1:ConsortiaPlayerInfo) : void
+      public function addMember(consortiaPlayerInfo:ConsortiaPlayerInfo) : void
       {
-         _memberList.add(param1.ID,param1);
-         dispatchEvent(new ConsortionEvent("addMember",param1));
+         _memberList.add(consortiaPlayerInfo.ID,consortiaPlayerInfo);
+         dispatchEvent(new ConsortionEvent("addMember",consortiaPlayerInfo));
       }
       
-      public function removeMember(param1:ConsortiaPlayerInfo) : void
+      public function removeMember(consortiaPlayerInfo:ConsortiaPlayerInfo) : void
       {
-         _memberList.remove(param1.ID);
-         dispatchEvent(new ConsortionEvent("removeMember",param1));
+         _memberList.remove(consortiaPlayerInfo.ID);
+         dispatchEvent(new ConsortionEvent("removeMember",consortiaPlayerInfo));
       }
       
-      public function updataMember(param1:ConsortiaPlayerInfo) : void
+      public function updataMember(consortiaPlayerInfo:ConsortiaPlayerInfo) : void
       {
-         _memberList.add(param1.ID,param1);
-         dispatchEvent(new ConsortionEvent("memberUpdata",param1));
+         _memberList.add(consortiaPlayerInfo.ID,consortiaPlayerInfo);
+         dispatchEvent(new ConsortionEvent("memberUpdata",consortiaPlayerInfo));
       }
       
       public function get consortiaInfo() : Array
       {
-         var _loc2_:Array = [];
-         var _loc3_:Array = onlineConsortiaMemberList;
-         var _loc1_:ConsortiaPlayerInfo = new ConsortiaPlayerInfo();
-         _loc1_.type = 0;
-         _loc1_.isSelected = true;
-         _loc1_.RatifierName = LanguageMgr.GetTranslation("ddt.consortion.ratifierName") + " [" + _loc3_.length + "/" + this.memberList.length + "]";
-         _loc2_.push(_loc1_);
-         return _loc2_;
+         var temp:Array = [];
+         var onlineTemp:Array = onlineConsortiaMemberList;
+         var consortiaInfo:ConsortiaPlayerInfo = new ConsortiaPlayerInfo();
+         consortiaInfo.type = 0;
+         consortiaInfo.isSelected = true;
+         consortiaInfo.RatifierName = LanguageMgr.GetTranslation("ddt.consortion.ratifierName") + " [" + onlineTemp.length + "/" + this.memberList.length + "]";
+         temp.push(consortiaInfo);
+         return temp;
       }
       
       public function get onlineConsortiaMemberList() : Array
       {
-         var _loc1_:Array = [];
+         var temp:Array = [];
          var _loc4_:int = 0;
          var _loc3_:* = memberList;
-         for each(var _loc2_ in memberList)
+         for each(var i in memberList)
          {
-            if(_loc2_.playerState.StateID != 0)
+            if(i.playerState.StateID != 0)
             {
-               _loc1_.push(_loc2_);
+               temp.push(i);
             }
          }
-         return _loc1_;
+         return temp;
       }
       
-      public function getConsortiaMemberInfo(param1:int) : ConsortiaPlayerInfo
+      public function getConsortiaMemberInfo(id:int) : ConsortiaPlayerInfo
       {
          var _loc4_:int = 0;
          var _loc3_:* = memberList;
-         for each(var _loc2_ in memberList)
+         for each(var i in memberList)
          {
-            if(_loc2_.ID == param1)
+            if(i.ID == id)
             {
-               return _loc2_;
+               return i;
             }
          }
          return null;
@@ -197,42 +197,42 @@ package consortion
       
       public function get offlineConsortiaMemberList() : Array
       {
-         var _loc1_:Array = [];
+         var temp:Array = [];
          var _loc4_:int = 0;
          var _loc3_:* = memberList;
-         for each(var _loc2_ in memberList)
+         for each(var i in memberList)
          {
-            if(_loc2_.playerState.StateID == 0)
+            if(i.playerState.StateID == 0)
             {
-               _loc1_.push(_loc2_);
+               temp.push(i);
             }
          }
-         return _loc1_;
+         return temp;
       }
       
-      public function consortiaPlayerStateChange(param1:int, param2:int) : void
+      public function consortiaPlayerStateChange(id:int, state:int) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:ConsortiaPlayerInfo = getConsortiaMemberInfo(param1);
-         if(_loc3_ == null)
+         var playerState:* = null;
+         var _clube_member_info:ConsortiaPlayerInfo = getConsortiaMemberInfo(id);
+         if(_clube_member_info == null)
          {
             return;
          }
-         if(_loc3_)
+         if(_clube_member_info)
          {
-            _loc4_ = new PlayerState(param2);
-            _loc3_.playerState = _loc4_;
-            updataMember(_loc3_);
+            playerState = new PlayerState(state);
+            _clube_member_info.playerState = playerState;
+            updataMember(_clube_member_info);
          }
       }
       
-      public function set consortionList(param1:Vector.<ConsortiaInfo>) : void
+      public function set consortionList(result:Vector.<ConsortiaInfo>) : void
       {
-         if(_consortionList == param1)
+         if(_consortionList == result)
          {
             return;
          }
-         _consortionList = param1;
+         _consortionList = result;
          dispatchEvent(new ConsortionEvent("consortionListIsChange"));
       }
       
@@ -241,13 +241,13 @@ package consortion
          return _consortionList;
       }
       
-      public function set myApplyList(param1:Vector.<ConsortiaApplyInfo>) : void
+      public function set myApplyList(list:Vector.<ConsortiaApplyInfo>) : void
       {
-         if(_myApplyList == param1)
+         if(_myApplyList == list)
          {
             return;
          }
-         _myApplyList = param1;
+         _myApplyList = list;
          dispatchEvent(new ConsortionEvent("myApplyListIsChange"));
       }
       
@@ -256,36 +256,35 @@ package consortion
          return _myApplyList;
       }
       
-      public function getapplyListWithPage(param1:int, param2:int = 10) : Vector.<ConsortiaApplyInfo>
+      public function getapplyListWithPage(page:int, pageCount:int = 10) : Vector.<ConsortiaApplyInfo>
       {
-         param1 = param1 < 0?1:param1 > Math.ceil(_myApplyList.length / param2)?Math.ceil(_myApplyList.length / param2):param1;
-         return myApplyList.slice((param1 - 1) * param2,param1 * param2);
+         page = page < 0?1:page > Math.ceil(_myApplyList.length / pageCount)?Math.ceil(_myApplyList.length / pageCount):page;
+         return myApplyList.slice((page - 1) * pageCount,page * pageCount);
       }
       
-      public function deleteOneApplyRecord(param1:int) : void
+      public function deleteOneApplyRecord(id:int) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = myApplyList.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var i:int = 0;
+         var len:int = myApplyList.length;
+         for(i = 0; i < len; )
          {
-            if(myApplyList[_loc3_].ID == param1)
+            if(myApplyList[i].ID == id)
             {
-               myApplyList.splice(_loc3_,1);
+               myApplyList.splice(i,1);
                dispatchEvent(new ConsortionEvent("myApplyListIsChange"));
                break;
             }
-            _loc3_++;
+            i++;
          }
       }
       
-      public function set inventList(param1:Vector.<ConsortiaInventData>) : void
+      public function set inventList(list:Vector.<ConsortiaInventData>) : void
       {
-         if(_inventList == param1)
+         if(_inventList == list)
          {
             return;
          }
-         _inventList = param1;
+         _inventList = list;
          dispatchEvent(new ConsortionEvent("inventListIsChange"));
       }
       
@@ -299,13 +298,13 @@ package consortion
          return _eventList;
       }
       
-      public function set eventList(param1:Vector.<ConsortiaEventInfo>) : void
+      public function set eventList(value:Vector.<ConsortiaEventInfo>) : void
       {
-         if(_eventList == param1)
+         if(_eventList == value)
          {
             return;
          }
-         _eventList = param1;
+         _eventList = value;
          dispatchEvent(new ConsortionEvent("eventListChange"));
       }
       
@@ -314,13 +313,13 @@ package consortion
          return _useConditionList;
       }
       
-      public function set useConditionList(param1:Vector.<ConsortiaAssetLevelOffer>) : void
+      public function set useConditionList(value:Vector.<ConsortiaAssetLevelOffer>) : void
       {
-         if(_useConditionList == param1)
+         if(_useConditionList == value)
          {
             return;
          }
-         _useConditionList = param1;
+         _useConditionList = value;
          ConsortionModelManager.Instance.model.dispatchEvent(new ConsortionEvent("useConditionChange"));
       }
       
@@ -329,28 +328,27 @@ package consortion
          return _dutyList;
       }
       
-      public function set dutyList(param1:Vector.<ConsortiaDutyInfo>) : void
+      public function set dutyList(value:Vector.<ConsortiaDutyInfo>) : void
       {
-         if(_dutyList == param1)
+         if(_dutyList == value)
          {
             return;
          }
-         _dutyList = param1;
+         _dutyList = value;
          dispatchEvent(new ConsortionEvent("dutyListChange"));
       }
       
-      public function changeDutyListName(param1:int, param2:String) : void
+      public function changeDutyListName(dutyId:int, name:String) : void
       {
-         var _loc3_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < _dutyList.length)
+         var i:int = 0;
+         for(i = 0; i < _dutyList.length; )
          {
-            if(_dutyList[_loc3_].DutyID == param1)
+            if(_dutyList[i].DutyID == dutyId)
             {
-               _dutyList[_loc3_].DutyName = param2;
+               _dutyList[i].DutyName = name;
                break;
             }
-            _loc3_++;
+            i++;
          }
       }
       
@@ -359,13 +357,13 @@ package consortion
          return _pollList;
       }
       
-      public function set pollList(param1:Vector.<ConsortionPollInfo>) : void
+      public function set pollList(value:Vector.<ConsortionPollInfo>) : void
       {
-         if(_pollList == param1)
+         if(_pollList == value)
          {
             return;
          }
-         _pollList = param1;
+         _pollList = value;
          dispatchEvent(new ConsortionEvent("pollListChange"));
       }
       
@@ -374,90 +372,86 @@ package consortion
          return _skillInfoList;
       }
       
-      public function set skillInfoList(param1:Vector.<ConsortionSkillInfo>) : void
+      public function set skillInfoList(value:Vector.<ConsortionSkillInfo>) : void
       {
-         if(_skillInfoList == param1)
+         if(_skillInfoList == value)
          {
             return;
          }
-         _skillInfoList = param1;
+         _skillInfoList = value;
          dispatchEvent(new ConsortionEvent("skillListChange"));
       }
       
-      public function getskillInfoWithTypeAndLevel(param1:int, param2:int) : Vector.<ConsortionSkillInfo>
+      public function getskillInfoWithTypeAndLevel(type:int, level:int) : Vector.<ConsortionSkillInfo>
       {
-         var _loc4_:int = 0;
-         var _loc5_:Vector.<ConsortionSkillInfo> = new Vector.<ConsortionSkillInfo>();
-         var _loc3_:int = skillInfoList.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var i:int = 0;
+         var vec:Vector.<ConsortionSkillInfo> = new Vector.<ConsortionSkillInfo>();
+         var len:int = skillInfoList.length;
+         for(i = 0; i < len; )
          {
-            if(skillInfoList[_loc4_].type == param1 && skillInfoList[_loc4_].level == param2)
+            if(skillInfoList[i].type == type && skillInfoList[i].level == level)
             {
-               _loc5_.push(skillInfoList[_loc4_]);
+               vec.push(skillInfoList[i]);
             }
-            _loc4_++;
+            i++;
          }
-         return _loc5_;
+         return vec;
       }
       
-      public function getSkillInfoByID(param1:int) : ConsortionSkillInfo
+      public function getSkillInfoByID(id:int) : ConsortionSkillInfo
       {
-         var _loc3_:* = null;
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < skillInfoList.length)
+         var vec:* = null;
+         var i:int = 0;
+         for(i = 0; i < skillInfoList.length; )
          {
-            if(skillInfoList[_loc2_].id == param1)
+            if(skillInfoList[i].id == id)
             {
-               _loc3_ = skillInfoList[_loc2_];
+               vec = skillInfoList[i];
             }
-            _loc2_++;
+            i++;
          }
-         return _loc3_;
+         return vec;
       }
       
-      public function updateSkillInfo(param1:int, param2:Boolean, param3:Date, param4:int) : void
+      public function updateSkillInfo(id:int, isopen:Boolean, beginDate:Date, validDate:int) : void
       {
-         var _loc6_:int = 0;
-         var _loc5_:int = skillInfoList.length;
-         _loc6_ = 0;
-         while(_loc6_ < _loc5_)
+         var i:int = 0;
+         var len:int = skillInfoList.length;
+         for(i = 0; i < len; )
          {
-            if(skillInfoList[_loc6_].id == param1)
+            if(skillInfoList[i].id == id)
             {
-               skillInfoList[_loc6_].isOpen = param2;
-               skillInfoList[_loc6_].beginDate = param3;
-               skillInfoList[_loc6_].validDate = param4;
+               skillInfoList[i].isOpen = isopen;
+               skillInfoList[i].beginDate = beginDate;
+               skillInfoList[i].validDate = validDate;
                break;
             }
-            _loc6_++;
+            i++;
          }
       }
       
-      public function hasSomeGroupSkill(param1:int, param2:int) : Boolean
+      public function hasSomeGroupSkill(group:int, id:int) : Boolean
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = skillInfoList.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var i:int = 0;
+         var len:int = skillInfoList.length;
+         for(i = 0; i < len; )
          {
-            if(skillInfoList[_loc4_].group == param1 && skillInfoList[_loc4_].isOpen && skillInfoList[_loc4_].id != param2)
+            if(skillInfoList[i].group == group && skillInfoList[i].isOpen && skillInfoList[i].id != id)
             {
                return true;
             }
-            _loc4_++;
+            i++;
          }
          return false;
       }
       
-      public function set levelUpData(param1:Vector.<ConsortiaLevelInfo>) : void
+      public function set levelUpData(value:Vector.<ConsortiaLevelInfo>) : void
       {
-         if(_levelUpData == param1)
+         if(_levelUpData == value)
          {
             return;
          }
-         _levelUpData = param1;
+         _levelUpData = value;
          dispatchEvent(new ConsortionEvent("levelUpRuleChange"));
       }
       
@@ -466,139 +460,139 @@ package consortion
          return _levelUpData;
       }
       
-      public function getLevelData(param1:int) : ConsortiaLevelInfo
+      public function getLevelData(level:int) : ConsortiaLevelInfo
       {
-         var _loc2_:* = 0;
+         var i:* = 0;
          if(levelUpData == null)
          {
             return null;
          }
-         _loc2_ = uint(0);
-         while(_loc2_ < levelUpData.length)
+         i = uint(0);
+         while(i < levelUpData.length)
          {
-            if(levelUpData[_loc2_]["Level"] == param1)
+            if(levelUpData[i]["Level"] == level)
             {
-               return levelUpData[_loc2_];
+               return levelUpData[i];
             }
-            _loc2_++;
+            i++;
          }
          return null;
       }
       
-      public function getLevelString(param1:int, param2:int) : Vector.<String>
+      public function getLevelString(type:int, level:int) : Vector.<String>
       {
-         var _loc3_:Vector.<String> = new Vector.<String>(4);
-         switch(int(param1))
+         var result:Vector.<String> = new Vector.<String>(4);
+         switch(int(type))
          {
             case 0:
-               if(param2 >= 10)
+               if(level >= 10)
                {
-                  _loc3_[0] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.explainTxt",getLevelData(param2).Count);
-                  _loc3_[1] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.null");
-                  _loc3_[3] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.null");
+                  result[0] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.explainTxt",getLevelData(level).Count);
+                  result[1] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.null");
+                  result[3] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.null");
                }
                else
                {
-                  _loc3_[0] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.upgrade",getLevelData(param2).Count);
-                  _loc3_[1] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.nextLevel",param2 + 1,getLevelData(param2 + 1).Count);
-                  _loc3_[3] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.consumeTxt",String(getLevelData(param2 + 1).Riches),checkRiches(getLevelData(param2 + 1).Riches),getLevelData(param2 + 1).NeedGold) + checkGold(getLevelData(param2 + 1).NeedGold);
+                  result[0] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.upgrade",getLevelData(level).Count);
+                  result[1] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.nextLevel",level + 1,getLevelData(level + 1).Count);
+                  result[3] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.consumeTxt",String(getLevelData(level + 1).Riches),checkRiches(getLevelData(level + 1).Riches),getLevelData(level + 1).NeedGold) + checkGold(getLevelData(level + 1).NeedGold);
                }
-               _loc3_[2] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.null");
+               result[2] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.null");
                break;
             case 1:
-               if(param2 >= 5)
+               if(level >= 5)
                {
-                  _loc3_[0] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.consortiaShopLevel");
-                  _loc3_[1] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.null");
-                  _loc3_[2] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.null");
-                  _loc3_[3] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.null");
+                  result[0] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.consortiaShopLevel");
+                  result[1] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.null");
+                  result[2] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.null");
+                  result[3] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.null");
                }
                else
                {
-                  _loc3_[0] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.CONSORTIASHOPGRADE.explainTxt");
-                  _loc3_[1] = LanguageMgr.GetTranslation("tank.consortia.consortiashop.ConsortiaShopView.titleText") + (param2 + 1) + LanguageMgr.GetTranslation("grade");
-                  _loc3_[2] = LanguageMgr.GetTranslation("consortia.upgrade") + (param2 + 1) * 2 + LanguageMgr.GetTranslation("grade");
-                  if(getLevelData(param2 + 1))
+                  result[0] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.CONSORTIASHOPGRADE.explainTxt");
+                  result[1] = LanguageMgr.GetTranslation("tank.consortia.consortiashop.ConsortiaShopView.titleText") + (level + 1) + LanguageMgr.GetTranslation("grade");
+                  result[2] = LanguageMgr.GetTranslation("consortia.upgrade") + (level + 1) * 2 + LanguageMgr.GetTranslation("grade");
+                  if(getLevelData(level + 1))
                   {
-                     _loc3_[3] = getLevelData(param2 + 1).ShopRiches + LanguageMgr.GetTranslation("consortia.Money") + checkRiches(getLevelData(param2 + 1).ShopRiches);
+                     result[3] = getLevelData(level + 1).ShopRiches + LanguageMgr.GetTranslation("consortia.Money") + checkRiches(getLevelData(level + 1).ShopRiches);
                   }
                }
                break;
             case 2:
-               if(param2 >= 10)
+               if(level >= 10)
                {
-                  _loc3_[0] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.store");
-                  _loc3_[1] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.null");
-                  _loc3_[2] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.null");
-                  _loc3_[3] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.null");
+                  result[0] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.store");
+                  result[1] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.null");
+                  result[2] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.null");
+                  result[3] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.null");
                }
                else
                {
-                  _loc3_[0] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.success") + param2 * 10 + "%";
-                  _loc3_[1] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.storeSuccess",param2 + 1,(param2 + 1) * 10 + "%");
-                  _loc3_[2] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.appealTxt",param2 + 1);
-                  if(getLevelData(param2 + 1))
+                  result[0] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.success") + level * 10 + "%";
+                  result[1] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.storeSuccess",level + 1,(level + 1) * 10 + "%");
+                  result[2] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.appealTxt",level + 1);
+                  if(getLevelData(level + 1))
                   {
-                     _loc3_[3] = getLevelData(param2 + 1).SmithRiches + LanguageMgr.GetTranslation("consortia.Money") + checkRiches(getLevelData(param2 + 1).SmithRiches);
+                     result[3] = getLevelData(level + 1).SmithRiches + LanguageMgr.GetTranslation("consortia.Money") + checkRiches(getLevelData(level + 1).SmithRiches);
                   }
                }
                break;
             case 3:
-               if(param2 >= 10)
+               if(level >= 10)
                {
-                  _loc3_[0] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.bank");
-                  _loc3_[1] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.null");
-                  _loc3_[2] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.null");
-                  _loc3_[3] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.null");
+                  result[0] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.bank");
+                  result[1] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.null");
+                  result[2] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.null");
+                  result[3] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.null");
                }
                else
                {
-                  _loc3_[0] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.contentUpgrade",param2 * 10);
-                  _loc3_[1] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.contentSmith",param2 + 1,(param2 + 1) * 10);
-                  _loc3_[2] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.appealTxt",param2 + 1);
-                  if(getLevelData(param2 + 1))
+                  result[0] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.contentUpgrade",level * 10);
+                  result[1] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.contentSmith",level + 1,(level + 1) * 10);
+                  result[2] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.appealTxt",level + 1);
+                  if(getLevelData(level + 1))
                   {
-                     _loc3_[3] = getLevelData(param2 + 1).StoreRiches + LanguageMgr.GetTranslation("consortia.Money") + checkRiches(getLevelData(param2 + 1).StoreRiches);
+                     result[3] = getLevelData(level + 1).StoreRiches + LanguageMgr.GetTranslation("consortia.Money") + checkRiches(getLevelData(level + 1).StoreRiches);
                   }
                }
                break;
             case 4:
-               if(param2 >= 10)
+               if(level >= 10)
                {
-                  _loc3_[0] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.skill");
-                  _loc3_[1] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.null");
-                  _loc3_[2] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.null");
-                  _loc3_[3] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.null");
+                  result[0] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.skill");
+                  result[1] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.null");
+                  result[2] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.null");
+                  result[3] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.null");
                   break;
                }
-               _loc3_[0] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.skill.explainTxt");
-               _loc3_[1] = LanguageMgr.GetTranslation("tank.consortia.consortiashop.ConsortiaShopView.skill",param2 + 1);
-               _loc3_[2] = LanguageMgr.GetTranslation("consortia.upgrade") + (param2 + 1) + LanguageMgr.GetTranslation("grade");
-               if(getLevelData(param2 + 1))
+               result[0] = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.skill.explainTxt");
+               result[1] = LanguageMgr.GetTranslation("tank.consortia.consortiashop.ConsortiaShopView.skill",level + 1);
+               result[2] = LanguageMgr.GetTranslation("consortia.upgrade") + (level + 1) + LanguageMgr.GetTranslation("grade");
+               if(getLevelData(level + 1))
                {
-                  _loc3_[3] = getLevelData(param2 + 1).BufferRiches + LanguageMgr.GetTranslation("consortia.Money") + checkRiches(getLevelData(param2 + 1).BufferRiches);
+                  result[3] = getLevelData(level + 1).BufferRiches + LanguageMgr.GetTranslation("consortia.Money") + checkRiches(getLevelData(level + 1).BufferRiches);
                   break;
                }
                break;
          }
-         return _loc3_;
+         return result;
       }
       
-      public function checkConsortiaRichesForUpGrade(param1:int) : Boolean
+      public function checkConsortiaRichesForUpGrade(type:int) : Boolean
       {
-         var _loc3_:* = null;
-         var _loc2_:int = PlayerManager.Instance.Self.consortiaInfo.Riches;
-         switch(int(param1))
+         var consortiaLevelInfo:* = null;
+         var riches:int = PlayerManager.Instance.Self.consortiaInfo.Riches;
+         switch(int(type))
          {
             case 0:
                if(PlayerManager.Instance.Self.consortiaInfo.Level < 10)
                {
-                  _loc3_ = getLevelData(PlayerManager.Instance.Self.consortiaInfo.Level + 1);
-                  if(!_loc3_)
+                  consortiaLevelInfo = getLevelData(PlayerManager.Instance.Self.consortiaInfo.Level + 1);
+                  if(!consortiaLevelInfo)
                   {
                      return false;
                   }
-                  if(_loc2_ < _loc3_.Riches)
+                  if(riches < consortiaLevelInfo.Riches)
                   {
                      return false;
                   }
@@ -607,12 +601,12 @@ package consortion
             case 1:
                if(PlayerManager.Instance.Self.consortiaInfo.SmithLevel < 10)
                {
-                  _loc3_ = getLevelData(PlayerManager.Instance.Self.consortiaInfo.SmithLevel + 1);
-                  if(!_loc3_)
+                  consortiaLevelInfo = getLevelData(PlayerManager.Instance.Self.consortiaInfo.SmithLevel + 1);
+                  if(!consortiaLevelInfo)
                   {
                      return false;
                   }
-                  if(_loc2_ < _loc3_.SmithRiches)
+                  if(riches < consortiaLevelInfo.SmithRiches)
                   {
                      return false;
                   }
@@ -621,12 +615,12 @@ package consortion
             case 2:
                if(PlayerManager.Instance.Self.consortiaInfo.ShopLevel < 5)
                {
-                  _loc3_ = getLevelData(PlayerManager.Instance.Self.consortiaInfo.ShopLevel + 1);
-                  if(!_loc3_)
+                  consortiaLevelInfo = getLevelData(PlayerManager.Instance.Self.consortiaInfo.ShopLevel + 1);
+                  if(!consortiaLevelInfo)
                   {
                      return false;
                   }
-                  if(_loc2_ < _loc3_.ShopRiches)
+                  if(riches < consortiaLevelInfo.ShopRiches)
                   {
                      return false;
                   }
@@ -635,12 +629,12 @@ package consortion
             case 3:
                if(PlayerManager.Instance.Self.consortiaInfo.StoreLevel < 10)
                {
-                  _loc3_ = getLevelData(PlayerManager.Instance.Self.consortiaInfo.StoreLevel + 1);
-                  if(!_loc3_)
+                  consortiaLevelInfo = getLevelData(PlayerManager.Instance.Self.consortiaInfo.StoreLevel + 1);
+                  if(!consortiaLevelInfo)
                   {
                      return false;
                   }
-                  if(_loc2_ < _loc3_.StoreRiches)
+                  if(riches < consortiaLevelInfo.StoreRiches)
                   {
                      return false;
                   }
@@ -649,49 +643,48 @@ package consortion
             case 4:
                if(PlayerManager.Instance.Self.consortiaInfo.BufferLevel < 10)
                {
-                  _loc3_ = getLevelData(PlayerManager.Instance.Self.consortiaInfo.BufferLevel + 1);
-                  if(!_loc3_)
+                  consortiaLevelInfo = getLevelData(PlayerManager.Instance.Self.consortiaInfo.BufferLevel + 1);
+                  if(!consortiaLevelInfo)
                   {
                      return false;
                   }
-                  if(_loc2_ < _loc3_.BufferRiches)
+                  if(riches < consortiaLevelInfo.BufferRiches)
                   {
                      return false;
                   }
-                  break;
                }
          }
          return true;
       }
       
-      private function checkRiches(param1:int) : String
+      private function checkRiches($riches:int) : String
       {
-         var _loc2_:String = "";
-         if(PlayerManager.Instance.Self.consortiaInfo.Riches < param1)
+         var result:String = "";
+         if(PlayerManager.Instance.Self.consortiaInfo.Riches < $riches)
          {
-            _loc2_ = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.condition");
+            result = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.condition");
          }
-         return _loc2_;
+         return result;
       }
       
-      private function checkGold(param1:int) : String
+      private function checkGold($gold:int) : String
       {
-         var _loc2_:String = "";
-         if(PlayerManager.Instance.Self.Gold < param1)
+         var result:String = "";
+         if(PlayerManager.Instance.Self.Gold < $gold)
          {
-            _loc2_ = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.condition");
+            result = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.condition");
          }
-         return _loc2_;
+         return result;
       }
       
-      public function set richRankList(param1:Array) : void
+      public function set richRankList(value:Array) : void
       {
-         _richRankList = param1;
+         _richRankList = value;
       }
       
-      public function set weekReward(param1:DictionaryData) : void
+      public function set weekReward(value:DictionaryData) : void
       {
-         _weekReward = param1;
+         _weekReward = value;
       }
       
       public function get richRankList() : Array

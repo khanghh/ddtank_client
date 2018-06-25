@@ -30,7 +30,7 @@ package ddt.view.caddyII
       {
       }
       
-      public function setSelectGoodsInfo(param1:InventoryItemInfo) : void
+      public function setSelectGoodsInfo(info:InventoryItemInfo) : void
       {
       }
       
@@ -45,14 +45,14 @@ package ddt.view.caddyII
          return _item;
       }
       
-      public function set item(param1:ItemTemplateInfo) : void
+      public function set item(val:ItemTemplateInfo) : void
       {
-         _item = param1;
+         _item = val;
       }
       
-      public function setType(param1:int) : void
+      public function setType(val:int) : void
       {
-         _type = param1;
+         _type = val;
       }
       
       public function get openBtnEnable() : Boolean

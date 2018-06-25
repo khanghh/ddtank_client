@@ -29,13 +29,13 @@ package explorerManual.view
          return _isHaveNewDebris;
       }
       
-      public function set isHaveNewDebris(param1:Boolean) : void
+      public function set isHaveNewDebris(value:Boolean) : void
       {
-         if(_isHaveNewDebris == param1)
+         if(_isHaveNewDebris == value)
          {
             return;
          }
-         _isHaveNewDebris = param1;
+         _isHaveNewDebris = value;
          _icon.visible = isHaveNewDebris;
       }
       
@@ -44,9 +44,9 @@ package explorerManual.view
          return _chapter;
       }
       
-      public function set chapter(param1:int) : void
+      public function set chapter(value:int) : void
       {
-         _chapter = param1;
+         _chapter = value;
       }
       
       override protected function addChildren() : void

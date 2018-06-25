@@ -54,10 +54,10 @@ package anotherDimension.view
       
       private var minuteTime:Number = 60000.0;
       
-      public function AnotherDimensionSelfItemView(param1:AnotherDimensionResourceInfo)
+      public function AnotherDimensionSelfItemView(anotherDimensionInfo:AnotherDimensionResourceInfo)
       {
          super();
-         _anotherDimensionInfo = param1;
+         _anotherDimensionInfo = anotherDimensionInfo;
          initView();
          loadHead();
          initEvent();
@@ -68,9 +68,9 @@ package anotherDimension.view
          return _resourceLevel;
       }
       
-      public function set resourceLevel(param1:int) : void
+      public function set resourceLevel(value:int) : void
       {
-         _resourceLevel = param1;
+         _resourceLevel = value;
          _resourceLevelBg.gotoAndStop(_resourceLevel);
       }
       
@@ -104,21 +104,21 @@ package anotherDimension.view
          _headLoader.load(headLoaderCallBack);
       }
       
-      private function headLoaderCallBack(param1:SceneCharacterLoaderHead, param2:Boolean = true) : void
+      private function headLoaderCallBack(headLoader:SceneCharacterLoaderHead, isAllLoadSucceed:Boolean = true) : void
       {
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         if(param1)
+         var rectangle:* = null;
+         var headBmp:* = null;
+         if(headLoader)
          {
             if(!_headBitmap)
             {
                _headBitmap = new Bitmap();
             }
-            _loc3_ = new Rectangle(0,0,HeadWidth,HeadHeight);
-            _loc4_ = new BitmapData(HeadWidth,HeadHeight,true,0);
-            _loc4_.copyPixels(param1.getContent()[0] as BitmapData,_loc3_,new Point(0,0));
-            _headBitmap.bitmapData = _loc4_;
-            param1.dispose();
+            rectangle = new Rectangle(0,0,HeadWidth,HeadHeight);
+            headBmp = new BitmapData(HeadWidth,HeadHeight,true,0);
+            headBmp.copyPixels(headLoader.getContent()[0] as BitmapData,rectangle,new Point(0,0));
+            _headBitmap.bitmapData = headBmp;
+            headLoader.dispose();
             _headBitmap.rotationY = 180;
             _headBitmap.width = 80;
             _headBitmap.height = 80;
@@ -135,20 +135,20 @@ package anotherDimension.view
       
       private function setDaojishi() : void
       {
-         var _loc9_:Date = _anotherDimensionInfo.haveResourceTime;
-         var _loc5_:int = _anotherDimensionInfo.haveResourceLast;
-         var _loc8_:Date = TimeManager.Instance.Now();
-         var _loc3_:Number = _loc9_.getTime();
-         var _loc2_:Number = _loc5_ * minuteTime;
-         var _loc1_:Number = _loc8_.getTime();
-         var _loc7_:Number = _loc3_ + _loc2_ - _loc1_;
-         var _loc6_:int = Math.floor(_loc7_ / minuteTime);
-         if(_loc6_ <= 1)
+         var zhanlingTime:Date = _anotherDimensionInfo.haveResourceTime;
+         var lastTime:int = _anotherDimensionInfo.haveResourceLast;
+         var nowTime:Date = TimeManager.Instance.Now();
+         var zhanlingTotal:Number = zhanlingTime.getTime();
+         var lastTimeTotal:Number = lastTime * minuteTime;
+         var nowTimeTotal:Number = nowTime.getTime();
+         var between:Number = zhanlingTotal + lastTimeTotal - nowTimeTotal;
+         var betweenMinute:int = Math.floor(between / minuteTime);
+         if(betweenMinute <= 1)
          {
-            _loc6_ = 1;
+            betweenMinute = 1;
          }
-         var _loc4_:String = _loc6_ + "phút";
-         _daojishiTxt.text = _loc4_;
+         var timeStr:String = betweenMinute + "phút";
+         _daojishiTxt.text = timeStr;
       }
       
       private function initEvent() : void
@@ -160,7 +160,7 @@ package anotherDimension.view
          _timer.start();
       }
       
-      private function _reflushTip(param1:TimerEvent) : void
+      private function _reflushTip(e:TimerEvent) : void
       {
          _anotherDimensionOthertip.refreshView(_anotherDimensionInfo);
          _anotherDimensionOthertip.setSelfTipStyle(_anotherDimensionInfo);
@@ -179,13 +179,13 @@ package anotherDimension.view
          }
       }
       
-      private function overHandler(param1:MouseEvent) : void
+      private function overHandler(event:MouseEvent) : void
       {
          _anotherDimensionOthertip.visible = true;
          this.parent.setChildIndex(this,this.parent.numChildren - 1);
       }
       
-      private function outHandler(param1:MouseEvent) : void
+      private function outHandler(event:MouseEvent) : void
       {
          _anotherDimensionOthertip.visible = false;
       }

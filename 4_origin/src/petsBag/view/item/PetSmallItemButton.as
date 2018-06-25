@@ -31,9 +31,9 @@ package petsBag.view.item
       
       private var _tipGapH:int;
       
-      public function PetSmallItemButton(param1:PetInfo = null)
+      public function PetSmallItemButton(info:PetInfo = null)
       {
-         super(param1);
+         super(info);
          this.mouseChildren = false;
          _star = new StarBar();
          _star.y = 62;
@@ -42,9 +42,9 @@ package petsBag.view.item
          tipDirctions = "2,7,5,1,6,4";
       }
       
-      public function setButtonStyleName(param1:String) : void
+      public function setButtonStyleName(stylename:String) : void
       {
-         if(param1 == null)
+         if(stylename == null)
          {
             ObjectUtils.disposeObject(_bmpBtn);
             _bmpBtn = null;
@@ -52,11 +52,11 @@ package petsBag.view.item
             info = null;
             return;
          }
-         if(_btnStyleName == param1)
+         if(_btnStyleName == stylename)
          {
             return;
          }
-         _btnStyleName = param1;
+         _btnStyleName = stylename;
          if(_bmpBtn == null)
          {
             _bmpBtn = new Bitmap();
@@ -74,21 +74,21 @@ package petsBag.view.item
          addEventListener("rollOver",onOver);
       }
       
-      protected function onOver(param1:MouseEvent) : void
+      protected function onOver(e:MouseEvent) : void
       {
       }
       
-      protected function onOut(param1:MouseEvent) : void
+      protected function onOut(e:MouseEvent) : void
       {
       }
       
-      override public function set info(param1:PetInfo) : void
+      override public function set info(value:PetInfo) : void
       {
-         if(param1 != null)
+         if(value != null)
          {
             setButtonStyleName(null);
          }
-         .super.info = param1;
+         .super.info = value;
          if(info)
          {
             _star.starNum(info.StarLevel,"assets.petsBag.starSmall");
@@ -104,9 +104,9 @@ package petsBag.view.item
          }
       }
       
-      public function set superInfo(param1:PetInfo) : void
+      public function set superInfo(value:PetInfo) : void
       {
-         .super.info = param1;
+         .super.info = value;
       }
       
       override public function dispose() : void
@@ -132,9 +132,9 @@ package petsBag.view.item
          return _place;
       }
       
-      public function set place(param1:int) : void
+      public function set place(value:int) : void
       {
-         _place = param1;
+         _place = value;
       }
       
       public function get tipStyle() : String
@@ -162,49 +162,49 @@ package petsBag.view.item
          return _tipGapH;
       }
       
-      public function set tipStyle(param1:String) : void
+      public function set tipStyle(value:String) : void
       {
-         if(_tipStyle == param1)
+         if(_tipStyle == value)
          {
             return;
          }
-         _tipStyle = param1;
+         _tipStyle = value;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(value:Object) : void
       {
-         if(_tipData == param1)
+         if(_tipData == value)
          {
             return;
          }
-         _tipData = param1;
+         _tipData = value;
       }
       
-      public function set tipDirctions(param1:String) : void
+      public function set tipDirctions(value:String) : void
       {
-         if(_tipDirctions == param1)
+         if(_tipDirctions == value)
          {
             return;
          }
-         _tipDirctions = param1;
+         _tipDirctions = value;
       }
       
-      public function set tipGapV(param1:int) : void
+      public function set tipGapV(value:int) : void
       {
-         if(_tipGapV == param1)
+         if(_tipGapV == value)
          {
             return;
          }
-         _tipGapV = param1;
+         _tipGapV = value;
       }
       
-      public function set tipGapH(param1:int) : void
+      public function set tipGapH(value:int) : void
       {
-         if(_tipGapH == param1)
+         if(_tipGapH == value)
          {
             return;
          }
-         _tipGapH = param1;
+         _tipGapH = value;
       }
       
       public function asDisplayObject() : DisplayObject

@@ -12,9 +12,9 @@ package starling.display.sceneCharacter
          _dataSet = new Vector.<SceneCharacterTextureItem>();
       }
       
-      public function push(param1:SceneCharacterTextureItem) : void
+      public function push(sceneCharacterItem:SceneCharacterTextureItem) : void
       {
-         _dataSet.push(param1);
+         _dataSet.push(sceneCharacterItem);
       }
       
       public function get length() : uint
@@ -27,60 +27,57 @@ package starling.display.sceneCharacter
          return _dataSet;
       }
       
-      public function replace(param1:SceneCharacterTextureItem) : void
+      public function replace(item:SceneCharacterTextureItem) : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          if(_dataSet)
          {
-            _loc2_ = 0;
-            while(_loc2_ < _dataSet.length)
+            for(i = 0; i < _dataSet.length; )
             {
-               if(_dataSet[_loc2_].type == param1.type)
+               if(_dataSet[i].type == item.type)
                {
-                  if(_dataSet[_loc2_] != param1)
+                  if(_dataSet[i] != item)
                   {
-                     _dataSet.splice(_loc2_,1,param1);
+                     _dataSet.splice(i,1,item);
                   }
                   return;
                }
-               _loc2_++;
+               i++;
             }
-            _dataSet.push(param1);
+            _dataSet.push(item);
          }
       }
       
-      public function getItem(param1:String) : SceneCharacterTextureItem
+      public function getItem(type:String) : SceneCharacterTextureItem
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          if(_dataSet && _dataSet.length > 0)
          {
-            _loc2_ = 0;
-            while(_loc2_ < _dataSet.length)
+            for(i = 0; i < _dataSet.length; )
             {
-               if(_dataSet[_loc2_].type == param1)
+               if(_dataSet[i].type == type)
                {
-                  return _dataSet[_loc2_];
+                  return _dataSet[i];
                }
-               _loc2_++;
+               i++;
             }
          }
          return null;
       }
       
-      public function removeItem(param1:String) : void
+      public function removeItem(type:String) : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          if(_dataSet)
          {
-            _loc2_ = 0;
-            while(_loc2_ < _dataSet.length)
+            for(i = 0; i < _dataSet.length; )
             {
-               if(_dataSet[_loc2_].type == param1)
+               if(_dataSet[i].type == type)
                {
-                  _dataSet.splice(_loc2_,1);
+                  _dataSet.splice(i,1);
                   return;
                }
-               _loc2_++;
+               i++;
             }
          }
       }

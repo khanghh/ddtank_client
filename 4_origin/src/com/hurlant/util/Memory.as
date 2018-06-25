@@ -18,11 +18,9 @@ package com.hurlant.util
          {
             new LocalConnection().connect("foo");
             new LocalConnection().connect("foo");
-            return;
          }
          catch(e:*)
          {
-            return;
          }
       }
       

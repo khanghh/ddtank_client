@@ -24,77 +24,77 @@ package dragonBones.utils
          super();
       }
       
-      public static function transformToMatrix(param1:DBTransform, param2:Matrix) : void
+      public static function transformToMatrix(transform:DBTransform, matrix:Matrix) : void
       {
-         param2.a = param1.scaleX * Math.cos(param1.skewY);
-         param2.b = param1.scaleX * Math.sin(param1.skewY);
-         param2.c = -param1.scaleY * Math.sin(param1.skewX);
-         param2.d = param1.scaleY * Math.cos(param1.skewX);
-         param2.tx = param1.x;
-         param2.ty = param1.y;
+         matrix.a = transform.scaleX * Math.cos(transform.skewY);
+         matrix.b = transform.scaleX * Math.sin(transform.skewY);
+         matrix.c = -transform.scaleY * Math.sin(transform.skewX);
+         matrix.d = transform.scaleY * Math.cos(transform.skewX);
+         matrix.tx = transform.x;
+         matrix.ty = transform.y;
       }
       
-      public static function formatRadian(param1:Number) : Number
+      public static function formatRadian(radian:Number) : Number
       {
-         if(param1 > 3.14159265358979)
+         if(radian > 3.14159265358979)
          {
-            param1 = param1 - 6.28318530717959;
+            radian = radian - 6.28318530717959;
          }
-         if(param1 < -3.14159265358979)
+         if(radian < -3.14159265358979)
          {
-            param1 = param1 + 6.28318530717959;
+            radian = radian + 6.28318530717959;
          }
-         return param1;
+         return radian;
       }
       
-      public static function globalToLocal(param1:DBTransform, param2:DBTransform) : void
+      public static function globalToLocal(transform:DBTransform, parent:DBTransform) : void
       {
-         transformToMatrix(param1,_helpTransformMatrix);
-         transformToMatrix(param2,_helpParentTransformMatrix);
+         transformToMatrix(transform,_helpTransformMatrix);
+         transformToMatrix(parent,_helpParentTransformMatrix);
          _helpParentTransformMatrix.invert();
          _helpTransformMatrix.concat(_helpParentTransformMatrix);
-         matrixToTransform(_helpTransformMatrix,param1,param1.scaleX * param2.scaleX >= 0,param1.scaleY * param2.scaleY >= 0);
+         matrixToTransform(_helpTransformMatrix,transform,transform.scaleX * parent.scaleX >= 0,transform.scaleY * parent.scaleY >= 0);
       }
       
-      public static function matrixToTransform(param1:Matrix, param2:DBTransform, param3:Boolean, param4:Boolean) : void
+      public static function matrixToTransform(matrix:Matrix, transform:DBTransform, scaleXF:Boolean, scaleYF:Boolean) : void
       {
-         param2.x = param1.tx;
-         param2.y = param1.ty;
-         param2.scaleX = Math.sqrt(param1.a * param1.a + param1.b * param1.b) * (!!param3?1:-1);
-         param2.scaleY = Math.sqrt(param1.d * param1.d + param1.c * param1.c) * (!!param4?1:-1);
-         var _loc6_:Array = [];
-         _loc6_[0] = Math.acos(param1.d / param2.scaleY);
-         _loc6_[1] = -_loc6_[0];
-         _loc6_[2] = Math.asin(-param1.c / param2.scaleY);
-         _loc6_[3] = _loc6_[2] >= 0?3.14159265358979 - _loc6_[2]:Number(_loc6_[2] - 3.14159265358979);
-         if(Number(_loc6_[0]).toFixed(4) == Number(_loc6_[2]).toFixed(4) || Number(_loc6_[0]).toFixed(4) == Number(_loc6_[3]).toFixed(4))
+         transform.x = matrix.tx;
+         transform.y = matrix.ty;
+         transform.scaleX = Math.sqrt(matrix.a * matrix.a + matrix.b * matrix.b) * (!!scaleXF?1:-1);
+         transform.scaleY = Math.sqrt(matrix.d * matrix.d + matrix.c * matrix.c) * (!!scaleYF?1:-1);
+         var skewXArray:Array = [];
+         skewXArray[0] = Math.acos(matrix.d / transform.scaleY);
+         skewXArray[1] = -skewXArray[0];
+         skewXArray[2] = Math.asin(-matrix.c / transform.scaleY);
+         skewXArray[3] = skewXArray[2] >= 0?3.14159265358979 - skewXArray[2]:Number(skewXArray[2] - 3.14159265358979);
+         if(Number(skewXArray[0]).toFixed(4) == Number(skewXArray[2]).toFixed(4) || Number(skewXArray[0]).toFixed(4) == Number(skewXArray[3]).toFixed(4))
          {
-            param2.skewX = _loc6_[0];
+            transform.skewX = skewXArray[0];
          }
          else
          {
-            param2.skewX = _loc6_[1];
+            transform.skewX = skewXArray[1];
          }
-         var _loc5_:Array = [];
-         _loc5_[0] = Math.acos(param1.a / param2.scaleX);
-         _loc5_[1] = -_loc5_[0];
-         _loc5_[2] = Math.asin(param1.b / param2.scaleX);
-         _loc5_[3] = _loc5_[2] >= 0?3.14159265358979 - _loc5_[2]:Number(_loc5_[2] - 3.14159265358979);
-         if(Number(_loc5_[0]).toFixed(4) == Number(_loc5_[2]).toFixed(4) || Number(_loc5_[0]).toFixed(4) == Number(_loc5_[3]).toFixed(4))
+         var skewYArray:Array = [];
+         skewYArray[0] = Math.acos(matrix.a / transform.scaleX);
+         skewYArray[1] = -skewYArray[0];
+         skewYArray[2] = Math.asin(matrix.b / transform.scaleX);
+         skewYArray[3] = skewYArray[2] >= 0?3.14159265358979 - skewYArray[2]:Number(skewYArray[2] - 3.14159265358979);
+         if(Number(skewYArray[0]).toFixed(4) == Number(skewYArray[2]).toFixed(4) || Number(skewYArray[0]).toFixed(4) == Number(skewYArray[3]).toFixed(4))
          {
-            param2.skewY = _loc5_[0];
+            transform.skewY = skewYArray[0];
          }
          else
          {
-            param2.skewY = _loc5_[1];
+            transform.skewY = skewYArray[1];
          }
       }
       
-      public static function normalizeRotation(param1:Number) : Number
+      public static function normalizeRotation(rotation:Number) : Number
       {
-         param1 = (param1 + 3.14159265358979) % (2 * 3.14159265358979);
-         param1 = param1 > 0?param1:Number(2 * 3.14159265358979 + param1);
-         return param1 - 3.14159265358979;
+         rotation = (rotation + 3.14159265358979) % (2 * 3.14159265358979);
+         rotation = rotation > 0?rotation:Number(2 * 3.14159265358979 + rotation);
+         return rotation - 3.14159265358979;
       }
    }
 }

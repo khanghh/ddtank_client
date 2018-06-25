@@ -16,40 +16,40 @@ package store.view.fusion
    {
        
       
-      public function AccessoryItemCell(param1:int)
+      public function AccessoryItemCell($index:int)
       {
-         var _loc2_:Sprite = new Sprite();
-         var _loc3_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtstore.GoodPanelSmall");
-         _loc2_.addChild(_loc3_);
-         super(_loc2_,param1);
+         var bg:Sprite = new Sprite();
+         var bgBit:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtstore.GoodPanelSmall");
+         bg.addChild(bgBit);
+         super(bg,$index);
       }
       
-      override public function dragDrop(param1:DragEffect) : void
+      override public function dragDrop(effect:DragEffect) : void
       {
          if(PlayerManager.Instance.Self.bagLocked)
          {
             return;
          }
-         var _loc2_:InventoryItemInfo = param1.data as InventoryItemInfo;
-         if(_loc2_.BagType == 12 && info != null)
+         var sourceInfo:InventoryItemInfo = effect.data as InventoryItemInfo;
+         if(sourceInfo.BagType == 12 && info != null)
          {
             return;
          }
-         if(_loc2_ && param1.action != "split")
+         if(sourceInfo && effect.action != "split")
          {
-            param1.action = "none";
-            if(_loc2_.getRemainDate() <= 0)
+            effect.action = "none";
+            if(sourceInfo.getRemainDate() <= 0)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.view.fusion.AccessoryItemCell.overdue"));
             }
-            else if(_loc2_.FusionType == 0)
+            else if(sourceInfo.FusionType == 0)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.view.fusion.AccessoryItemCell.fusion"));
             }
             else
             {
-               SocketManager.Instance.out.sendMoveGoods(_loc2_.BagType,_loc2_.Place,12,index,1);
-               param1.action = "none";
+               SocketManager.Instance.out.sendMoveGoods(sourceInfo.BagType,sourceInfo.Place,12,index,1);
+               effect.action = "none";
                DragManager.acceptDrag(this);
             }
          }

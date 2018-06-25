@@ -178,14 +178,14 @@ package gameStarling.objects
       
       private var _actionList:Array;
       
-      public function GameLiving3D(param1:Living)
+      public function GameLiving3D(info:Living)
       {
          _buffEffect = new DictionaryData();
          _noRemoveEffect = [20090];
          _attackEffectPos = new Point(0,5);
          _moviePool = {};
-         super(param1.LivingID);
-         _info = param1;
+         super(info.LivingID);
+         _info = info;
          initView();
          initListener();
          initInfoChange();
@@ -257,12 +257,12 @@ package gameStarling.objects
          }
       }
       
-      public function setFightPower(param1:int) : void
+      public function setFightPower(fightPower:int) : void
       {
-         if(param1 > 0 && param1 <= 100)
+         if(fightPower > 0 && fightPower <= 100)
          {
             fightPowerVisible = true;
-            _fightPower.text = LanguageMgr.GetTranslation("ddt.games.powerText",param1);
+            _fightPower.text = LanguageMgr.GetTranslation("ddt.games.powerText",fightPower);
          }
          else
          {
@@ -270,9 +270,9 @@ package gameStarling.objects
          }
       }
       
-      public function set fightPowerVisible(param1:Boolean) : void
+      public function set fightPowerVisible(value:Boolean) : void
       {
-         if(_fightPower == null && param1)
+         if(_fightPower == null && value)
          {
             _fightPower = new TextLabel("GameLiving.fightPower");
             _fightPower.x = _nickName.x - 27;
@@ -281,7 +281,7 @@ package gameStarling.objects
          }
          if(_fightPower)
          {
-            _fightPower.visible = param1;
+            _fightPower.visible = value;
          }
       }
       
@@ -368,13 +368,13 @@ package gameStarling.objects
       
       protected function initSmallMapObject() : void
       {
-         var _loc1_:* = null;
+         var smallPlayer:* = null;
          if(_info.isShowSmallMapPoint)
          {
             if(_info.isPlayer())
             {
-               _loc1_ = new SmallPlayer();
-               _smallView = _loc1_;
+               smallPlayer = new SmallPlayer();
+               _smallView = smallPlayer;
             }
             else
             {
@@ -491,10 +491,10 @@ package gameStarling.objects
          }
       }
       
-      protected function movieActionEvent(param1:BoneMovieWrapper, param2:Array = null) : void
+      protected function movieActionEvent(e:BoneMovieWrapper, args:Array = null) : void
       {
-         var _loc3_:String = param2[0];
-         var _loc4_:* = _loc3_;
+         var label:String = args[0];
+         var _loc4_:* = label;
          if(RENEW !== _loc4_)
          {
             if(SHOCK_EVENT !== _loc4_)
@@ -509,7 +509,7 @@ package gameStarling.objects
                         {
                            if(BOMB_EVENT !== _loc4_)
                            {
-                              trace("gameLiving3D living:( " + param1.movie.styleName + " ) 动作:( " + _loc3_ + " ) 未处理");
+                              trace("gameLiving3D living:( " + e.movie.styleName + " ) 动作:( " + label + " ) 未处理");
                            }
                            else
                            {
@@ -518,7 +518,7 @@ package gameStarling.objects
                         }
                         else
                         {
-                           attackCompleteFocus(param2[1]);
+                           attackCompleteFocus(args[1]);
                         }
                      }
                      else
@@ -526,9 +526,9 @@ package gameStarling.objects
                         showDefence();
                      }
                   }
-                  else if(param2.length >= 3)
+                  else if(args.length >= 3)
                   {
-                     needFocus(param2[1],param2[2],param2[3]);
+                     needFocus(args[1],args[2],args[3]);
                   }
                }
                else
@@ -538,7 +538,7 @@ package gameStarling.objects
             }
             else
             {
-               shockMap(param2[1]);
+               shockMap(args[1]);
             }
          }
          else
@@ -547,11 +547,11 @@ package gameStarling.objects
          }
       }
       
-      protected function movieEffectEvent(param1:BoneMovieWrapper, param2:Array = null) : void
+      protected function movieEffectEvent(e:BoneMovieWrapper, args:Array = null) : void
       {
       }
       
-      protected function movieSkillEvent(param1:BoneMovieWrapper, param2:Array = null) : void
+      protected function movieSkillEvent(e:BoneMovieWrapper, args:Array = null) : void
       {
       }
       
@@ -560,11 +560,11 @@ package gameStarling.objects
          this._info.showAttackEffect(2);
       }
       
-      protected function shockMap(param1:int) : void
+      protected function shockMap(radius:int) : void
       {
          if(map)
          {
-            map.animateSet.addAnimation(new ShockMapAnimation(this,param1,20));
+            map.animateSet.addAnimation(new ShockMapAnimation(this,radius,20));
          }
       }
       
@@ -578,15 +578,15 @@ package gameStarling.objects
       
       protected function showDefence() : void
       {
-         var _loc1_:ShowEffect3D = new ShowEffect3D(ShowEffect3D.GUARD);
-         _loc1_.x = x + offset();
-         _loc1_.y = y - 50 + offset(25);
-         _map.addChild(_loc1_);
+         var show:ShowEffect3D = new ShowEffect3D(ShowEffect3D.GUARD);
+         show.x = x + offset();
+         show.y = y - 50 + offset(25);
+         _map.addChild(show);
       }
       
-      private function attackCompleteFocus(param1:Object) : void
+      private function attackCompleteFocus(obj:Object) : void
       {
-         map.setSelfCenter(true,2,param1);
+         map.setSelfCenter(true,2,obj);
       }
       
       protected function startBlank() : void
@@ -594,24 +594,24 @@ package gameStarling.objects
          addEventListener("enterFrame",drawBlank);
       }
       
-      protected function __addToState(param1:starling.events.Event) : void
+      protected function __addToState(event:starling.events.Event) : void
       {
          initInfoChange();
       }
       
-      protected function __removeContinuousEffect(param1:LivingEvent) : void
+      protected function __removeContinuousEffect(event:LivingEvent) : void
       {
-         removeBuffEffect(int(param1.paras[0]));
+         removeBuffEffect(int(event.paras[0]));
       }
       
-      protected function __playContinuousEffect(param1:LivingEvent) : void
+      protected function __playContinuousEffect(event:LivingEvent) : void
       {
-         showBuffEffect(param1.paras[0],int(param1.paras[1]));
+         showBuffEffect(event.paras[0],int(event.paras[1]));
       }
       
-      protected function __buffChanged(param1:LivingEvent) : void
+      protected function __buffChanged(event:LivingEvent) : void
       {
-         if((param1.paras[0] == 0 || param1.paras[0] == 6) && _info && _info.isLiving)
+         if((event.paras[0] == 0 || event.paras[0] == 6) && _info && _info.isLiving)
          {
             if(_buffBar)
             {
@@ -634,20 +634,20 @@ package gameStarling.objects
          }
       }
       
-      protected function __applySkill(param1:LivingEvent) : void
+      protected function __applySkill(event:LivingEvent) : void
       {
       }
       
-      protected function __playSkillMovie(param1:LivingEvent) : void
+      protected function __playSkillMovie(event:LivingEvent) : void
       {
-         showEffect(param1.paras[0]);
+         showEffect(event.paras[0]);
       }
       
-      protected function __bombed(param1:LivingEvent) : void
+      protected function __bombed(event:LivingEvent) : void
       {
       }
       
-      protected function drawBlank(param1:starling.events.Event) : void
+      protected function drawBlank(evt:starling.events.Event) : void
       {
          if(counter <= 15)
          {
@@ -686,13 +686,13 @@ package gameStarling.objects
          return _effectIconContainer;
       }
       
-      protected function __sizeChangeHandler(param1:starling.events.Event) : void
+      protected function __sizeChangeHandler(e:starling.events.Event) : void
       {
          EffectIcon.x = 5 - EffectIcon.width / 2;
          EffectIcon.y = bodyHeight * -1 - EffectIcon.height;
       }
       
-      protected function __changeState(param1:LivingEvent) : void
+      protected function __changeState(evt:LivingEvent) : void
       {
       }
       
@@ -702,12 +702,12 @@ package gameStarling.objects
          {
             return;
          }
-         var _loc1_:String = info.actionBonesMovieName;
-         var _loc2_:ActionMovieBone = new ActionMovieBone(_loc1_);
-         _loc2_.boneMovie.movie.stop();
-         addChild(_loc2_);
+         var movieName:String = info.actionBonesMovieName;
+         var bone:ActionMovieBone = new ActionMovieBone(movieName);
+         bone.boneMovie.movie.stop();
+         addChild(bone);
          _info.actionMovieBitmap = null;
-         _actionMovie = _loc2_;
+         _actionMovie = bone;
          initChatball();
          loadBodyBitmap();
       }
@@ -719,10 +719,10 @@ package gameStarling.objects
          LoadResourceManager.Instance.startLoad(_bodyLoader);
       }
       
-      private function __onBodyLoaderComplete(param1:LoaderEvent) : void
+      private function __onBodyLoaderComplete(e:LoaderEvent) : void
       {
          _bodyLoader.removeEventListener("complete",__onBodyLoaderComplete);
-         if(param1.loader.isSuccess)
+         if(e.loader.isSuccess)
          {
             _info.actionMovieBitmap = _bodyLoader.content as Bitmap;
          }
@@ -744,33 +744,33 @@ package gameStarling.objects
          _originalWidth = _actionMovie.width;
       }
       
-      protected function __startMoving(param1:LivingEvent) : void
+      protected function __startMoving(event:LivingEvent) : void
       {
          if(_map == null)
          {
             return;
          }
-         var _loc2_:Point = _map.findYLineNotEmptyPointDown(x,y,_map.height);
-         if(_loc2_ == null)
+         var pos:Point = _map.findYLineNotEmptyPointDown(x,y,_map.height);
+         if(pos == null)
          {
-            _loc2_ = new Point(x,_map.height + 1);
+            pos = new Point(x,_map.height + 1);
          }
-         _info.fallTo(_loc2_,20);
+         _info.fallTo(pos,20);
       }
       
-      protected function __say(param1:LivingEvent) : void
+      protected function __say(event:LivingEvent) : void
       {
          if(_info.isHidden)
          {
             return;
          }
-         var _loc2_:String = param1.paras[0] as String;
-         var _loc3_:int = 0;
-         if(param1.paras[1])
+         var data:String = event.paras[0] as String;
+         var type:int = 0;
+         if(event.paras[1])
          {
-            _loc3_ = param1.paras[1];
+            type = event.paras[1];
          }
-         _chatballview.setText(_loc2_,_loc3_);
+         _chatballview.setText(data,type);
          fitChatBallPos();
       }
       
@@ -782,126 +782,125 @@ package gameStarling.objects
       
       protected function get popPos() : Point
       {
-         var _loc1_:* = null;
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
+         var movie:* = null;
+         var x:int = 0;
+         var y:int = 0;
          if(actionMovie)
          {
-            _loc1_ = actionMovie.boneMovie.movie as BoneMovieStarling;
-            if(_loc1_ != null && _loc1_.armature != null)
+            movie = actionMovie.boneMovie.movie as BoneMovieStarling;
+            if(movie != null && movie.armature != null)
             {
-               _loc3_ = _loc1_.getValueByAttribute("popupPosX");
-               _loc2_ = _loc1_.getValueByAttribute("popupPosY");
-               return new Point(_loc3_,_loc2_);
+               x = movie.getValueByAttribute("popupPosX");
+               y = movie.getValueByAttribute("popupPosY");
+               return new Point(x,y);
             }
             return new Point(18,-40);
          }
-         return new Point(-(_originalWidth * 0.4) * _loc1_.scaleX,-(_originalHeight * 0.8) * _loc1_.scaleY);
+         return new Point(-(_originalWidth * 0.4) * movie.scaleX,-(_originalHeight * 0.8) * movie.scaleY);
       }
       
       protected function get popDir() : Point
       {
-         var _loc2_:* = null;
-         var _loc1_:int = 0;
+         var movie:* = null;
+         var dic:int = 0;
          if(actionMovie)
          {
-            _loc2_ = actionMovie.boneMovie.movie as BoneMovieStarling;
-            if(_loc2_ != null && _loc2_.armature != null)
+            movie = actionMovie.boneMovie.movie as BoneMovieStarling;
+            if(movie != null && movie.armature != null)
             {
-               _loc1_ = _loc2_.getValueByAttribute("popupDir") as int;
-               return new Point(_loc1_ * _loc2_.scaleX,_loc2_.scaleY);
+               dic = movie.getValueByAttribute("popupDir") as int;
+               return new Point(dic * movie.scaleX,movie.scaleY);
             }
          }
-         return new Point(-(_originalWidth * 0.4) * _loc2_.scaleX,-(_originalHeight * 0.8) * _loc2_.scaleY);
+         return new Point(-(_originalWidth * 0.4) * movie.scaleX,-(_originalHeight * 0.8) * movie.scaleY);
       }
       
-      protected function __beat(param1:LivingEvent) : void
+      protected function __beat(event:LivingEvent) : void
       {
-         var _loc2_:* = null;
+         var action:* = null;
          if(_isLiving)
          {
-            targetAttackEffect = param1.paras[0][0].attackEffect;
-            _loc2_ = param1.paras[0][0].action;
-            if(_loc2_ != "")
+            targetAttackEffect = event.paras[0][0].attackEffect;
+            action = event.paras[0][0].action;
+            if(action != "")
             {
-               actionMovie.doAction(_loc2_,updateTargetsBlood,param1.paras[0]);
+               actionMovie.doAction(action,updateTargetsBlood,event.paras[0]);
             }
             else
             {
-               updateTargetsBlood(param1.paras[0]);
+               updateTargetsBlood(event.paras[0]);
             }
          }
       }
       
-      protected function updateTargetsBlood(param1:Array) : void
+      protected function updateTargetsBlood(arg:Array) : void
       {
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
-         if(param1 == null)
+         var i:int = 0;
+         var living:* = null;
+         if(arg == null)
          {
             return;
          }
-         var _loc4_:Array = [];
-         var _loc2_:Boolean = false;
-         _loc5_ = 0;
-         while(_loc5_ < param1.length)
+         var deadEffectLivings:Array = [];
+         var selfFocus:Boolean = false;
+         for(i = 0; i < arg.length; )
          {
-            if(param1[_loc5_] && param1[_loc5_].target && param1[_loc5_].target.isLiving)
+            if(arg[i] && arg[i].target && arg[i].target.isLiving)
             {
-               _loc3_ = param1[_loc5_].target;
-               _loc3_.isHidden = false;
-               if(param1[_loc5_].deadEffect != "")
+               living = arg[i].target;
+               living.isHidden = false;
+               if(arg[i].deadEffect != "")
                {
-                  _loc4_.push(param1[_loc5_]);
+                  deadEffectLivings.push(arg[i]);
                }
                else
                {
-                  _loc3_.showAttackEffect(param1[_loc5_].attackEffect);
-                  _loc3_.updateBlood(param1[_loc5_].targetBlood,param1[_loc5_].type,param1[_loc5_].damage);
+                  living.showAttackEffect(arg[i].attackEffect);
+                  living.updateBlood(arg[i].targetBlood,arg[i].type,arg[i].damage);
                }
-               if(!_loc2_)
+               if(!selfFocus)
                {
-                  map.setCenter(_loc3_.pos.x,_loc3_.pos.y - 150,true);
+                  map.setCenter(living.pos.x,living.pos.y - 150,true);
                }
-               if(_loc3_.isSelf)
+               if(living.isSelf)
                {
-                  _loc2_ = true;
+                  selfFocus = true;
                }
             }
-            _loc5_++;
+            i++;
          }
-         if(_loc4_.length > 0)
+         if(deadEffectLivings.length > 0)
          {
-            map.act(new LivingDeadEffectAction(_loc4_));
+            map.act(new LivingDeadEffectAction(deadEffectLivings));
          }
       }
       
-      protected function __beginNewTurn(param1:LivingEvent) : void
+      protected function __beginNewTurn(event:LivingEvent) : void
       {
       }
       
-      protected function __playMovie(param1:LivingEvent) : void
+      protected function __playMovie(event:LivingEvent) : void
       {
-         doAction(param1.paras[0],param1.paras[1],param1.paras[2]);
+         doAction(event.paras[0],event.paras[1],event.paras[2]);
       }
       
-      protected function __turnRotation(param1:LivingEvent) : void
+      protected function __turnRotation(event:LivingEvent) : void
       {
-         act(new LivingTurnAction(this,param1.paras[0],param1.paras[1],param1.paras[2]));
+         act(new LivingTurnAction(this,event.paras[0],event.paras[1],event.paras[2]));
       }
       
-      protected function __bloodChanged(param1:LivingEvent) : void
+      protected function __bloodChanged(event:LivingEvent) : void
       {
-         var _loc4_:* = null;
-         var _loc2_:int = 0;
-         var _loc5_:int = 0;
+         var movie:* = null;
+         var index:int = 0;
+         var showBlood:int = 0;
          if(!isExist || !_map)
          {
             return;
          }
-         var _loc3_:Number = param1.value - param1.old;
-         var _loc6_:int = param1.paras[0];
-         var _loc7_:* = _loc6_;
+         var diff:Number = event.value - event.old;
+         var type:int = event.paras[0];
+         var _loc7_:* = type;
          if(0 !== _loc7_)
          {
             if(90 !== _loc7_)
@@ -912,32 +911,32 @@ package gameStarling.objects
                   {
                      if(11 !== _loc7_)
                      {
-                        _loc5_ = param1.paras[1];
-                        if(_loc5_ < 0)
+                        showBlood = event.paras[1];
+                        if(showBlood < 0)
                         {
-                           _loc3_ = _loc5_;
+                           diff = showBlood;
                         }
-                        if(_loc3_ != 0)
+                        if(diff != 0)
                         {
-                           _loc4_ = new ShootPercentView3D(Math.abs(_loc3_),param1.paras[0],false);
-                           _loc4_.x = x + offset();
-                           _loc4_.y = y - 50 + offset(25);
+                           movie = new ShootPercentView3D(Math.abs(diff),event.paras[0],false);
+                           movie.x = x + offset();
+                           movie.y = y - 50 + offset(25);
                            _loc7_ = 0.8 + Math.random() * 0.4;
-                           _loc4_.scaleY = _loc7_;
-                           _loc4_.scaleX = _loc7_;
-                           _map.addToPhyLayer(_loc4_);
+                           movie.scaleY = _loc7_;
+                           movie.scaleX = _loc7_;
+                           _map.addToPhyLayer(movie);
                            if(GameControl.Instance.Current.roomType != 120)
                            {
                               if(_info.isHidden)
                               {
                                  if(_info.team == GameControl.Instance.Current.selfGamePlayer.team)
                                  {
-                                    _loc4_.alpha == 0.5;
+                                    movie.alpha == 0.5;
                                  }
                                  else
                                  {
                                     visible = false;
-                                    _loc4_.alpha = 0;
+                                    movie.alpha = 0;
                                  }
                               }
                            }
@@ -945,73 +944,73 @@ package gameStarling.objects
                      }
                      else
                      {
-                        _loc5_ = param1.paras[1];
-                        if(_loc5_ < 0)
+                        showBlood = event.paras[1];
+                        if(showBlood < 0)
                         {
-                           _loc3_ = _loc5_;
+                           diff = showBlood;
                         }
-                        if(_loc3_ != 0)
+                        if(diff != 0)
                         {
-                           _loc4_ = new ShootPercentView3D(Math.abs(_loc3_),param1.paras[0],false);
-                           _loc4_.x = x - 70;
-                           _loc4_.y = y - 80;
+                           movie = new ShootPercentView3D(Math.abs(diff),event.paras[0],false);
+                           movie.x = x - 70;
+                           movie.y = y - 80;
                            _loc7_ = 0.8 + Math.random() * 0.4;
-                           _loc4_.scaleY = _loc7_;
-                           _loc4_.scaleX = _loc7_;
-                           _map.addToPhyLayer(_loc4_);
+                           movie.scaleY = _loc7_;
+                           movie.scaleX = _loc7_;
+                           _map.addToPhyLayer(movie);
                         }
                      }
                   }
                   else
                   {
-                     _loc5_ = param1.paras[1];
-                     _loc3_ = _loc5_;
-                     if(_loc3_ != 0)
+                     showBlood = event.paras[1];
+                     diff = showBlood;
+                     if(diff != 0)
                      {
-                        _loc4_ = new ShootPercentView3D(Math.abs(_loc3_),1,false);
-                        _loc4_.x = x + offset();
-                        _loc4_.y = y - 50 + offset(25);
+                        movie = new ShootPercentView3D(Math.abs(diff),1,false);
+                        movie.x = x + offset();
+                        movie.y = y - 50 + offset(25);
                         _loc7_ = 0.8 + Math.random() * 0.4;
-                        _loc4_.scaleY = _loc7_;
-                        _loc4_.scaleX = _loc7_;
-                        _map.addToPhyLayer(_loc4_);
+                        movie.scaleY = _loc7_;
+                        movie.scaleX = _loc7_;
+                        _map.addToPhyLayer(movie);
                      }
                   }
                }
             }
             else
             {
-               _loc4_ = new ShootPercentView3D(0,2);
-               _loc4_.x = x + offset();
-               _loc4_.y = y - 50 + offset(25);
+               movie = new ShootPercentView3D(0,2);
+               movie.x = x + offset();
+               movie.y = y - 50 + offset(25);
                _loc7_ = 0.8 + Math.random() * 0.4;
-               _loc4_.scaleY = _loc7_;
-               _loc4_.scaleX = _loc7_;
-               _map.addToPhyLayer(_loc4_);
+               movie.scaleY = _loc7_;
+               movie.scaleX = _loc7_;
+               _map.addToPhyLayer(movie);
             }
          }
          else
          {
-            _loc3_ = param1.paras[1];
-            if(_loc3_ != 0 && _info.blood != 0)
+            diff = event.paras[1];
+            if(diff != 0 && _info.blood != 0)
             {
-               _loc4_ = new ShootPercentView3D(Math.abs(_loc3_),1,true);
-               _loc4_.x = x + offset();
-               _loc4_.y = y - 50 + offset(25);
+               movie = new ShootPercentView3D(Math.abs(diff),1,true);
+               movie.x = x + offset();
+               movie.y = y - 50 + offset(25);
                _loc7_ = 0.8 + Math.random() * 0.4;
-               _loc4_.scaleY = _loc7_;
-               _loc4_.scaleX = _loc7_;
-               _map.addToPhyLayer(_loc4_);
+               movie.scaleY = _loc7_;
+               movie.scaleX = _loc7_;
+               _map.addToPhyLayer(movie);
                if(_info.isHidden)
                {
                   if(_info.team == GameControl.Instance.Current.selfGamePlayer.team)
                   {
-                     _loc4_.alpha == 0.5;
+                     movie.alpha == 0.5;
                   }
                   else
                   {
                      visible = false;
-                     _loc4_.alpha = 0;
+                     movie.alpha = 0;
                   }
                }
             }
@@ -1019,36 +1018,36 @@ package gameStarling.objects
          updateBloodStrip();
       }
       
-      protected function __maxHpChanged(param1:LivingEvent) : void
+      protected function __maxHpChanged(event:LivingEvent) : void
       {
          updateBloodStrip();
       }
       
       protected function updateBloodStrip() : void
       {
-         var _loc1_:Number = NaN;
+         var w:Number = NaN;
          if(info.blood < 0)
          {
             _HPStrip.width = 0;
          }
          else
          {
-            _loc1_ = Math.floor(_bloodWidth / info.maxBlood * info.blood);
-            _HPStrip.width = _loc1_ > _bloodWidth?_bloodWidth:_loc1_;
+            w = Math.floor(_bloodWidth / info.maxBlood * info.blood);
+            _HPStrip.width = w > _bloodWidth?_bloodWidth:w;
          }
       }
       
-      private function offset(param1:int = 30) : int
+      private function offset(off:int = 30) : int
       {
-         var _loc2_:int = Math.random() * 10;
-         if(_loc2_ % 2 == 0)
+         var i:int = Math.random() * 10;
+         if(i % 2 == 0)
          {
-            return -(int(Math.random() * param1));
+            return -(int(Math.random() * off));
          }
-         return int(Math.random() * param1);
+         return int(Math.random() * off);
       }
       
-      protected function __die(param1:LivingEvent) : void
+      protected function __die(event:LivingEvent) : void
       {
          if(_isLiving)
          {
@@ -1090,7 +1089,7 @@ package gameStarling.objects
          _buffBar.clearBuff();
       }
       
-      protected function __dirChanged(param1:LivingEvent) : void
+      protected function __dirChanged(event:LivingEvent) : void
       {
          if(_info.direction > 0)
          {
@@ -1102,7 +1101,7 @@ package gameStarling.objects
          }
       }
       
-      protected function __forzenChanged(param1:LivingEvent) : void
+      protected function __forzenChanged(event:LivingEvent) : void
       {
          if(_info.isFrozen)
          {
@@ -1122,11 +1121,11 @@ package gameStarling.objects
          }
       }
       
-      protected function __lockStateChanged(param1:LivingEvent) : void
+      protected function __lockStateChanged(evt:LivingEvent) : void
       {
       }
       
-      protected function _solidIceStateChanged(param1:LivingEvent) : void
+      protected function _solidIceStateChanged(event:LivingEvent) : void
       {
          if(_info.showSolidIce)
          {
@@ -1144,55 +1143,55 @@ package gameStarling.objects
          }
       }
       
-      protected function _targetStealthStateChanged(param1:LivingEvent) : void
+      protected function _targetStealthStateChanged(event:LivingEvent) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = map.gameInfo.livings;
-         for each(var _loc2_ in map.gameInfo.livings)
+         for each(var player in map.gameInfo.livings)
          {
-            if(_loc2_.isPlayer() && _loc2_.team != _info.team && !_loc2_.isSelf)
+            if(player.isPlayer() && player.team != _info.team && !player.isSelf)
             {
                if(_info.isRemoveStealth)
                {
-                  if(_loc2_.isHidden)
+                  if(player.isHidden)
                   {
-                     _loc2_.removeStealth = true;
+                     player.removeStealth = true;
                   }
                }
-               else if(_loc2_.removeStealth)
+               else if(player.removeStealth)
                {
-                  _loc2_.removeStealth = false;
+                  player.removeStealth = false;
                }
             }
          }
       }
       
-      protected function _enableSpellSkill(param1:LivingEvent) : void
+      protected function _enableSpellSkill(evt:LivingEvent) : void
       {
          GameControl.Instance.Current.selfGamePlayer.lockSpellKill = _info.noUseCritical;
       }
       
-      protected function _addSkillBuffBar_Handler(param1:LivingEvent) : void
+      protected function _addSkillBuffBar_Handler(evt:LivingEvent) : void
       {
-         var _loc2_:Boolean = false;
-         var _loc3_:int = 0;
-         var _loc4_:Array = param1.paras;
-         if(_skillBuffBar && _loc4_.length >= 2)
+         var isAdd:Boolean = false;
+         var iconId:int = 0;
+         var paras:Array = evt.paras;
+         if(_skillBuffBar && paras.length >= 2)
          {
-            _loc2_ = _loc4_[1];
-            _loc3_ = _loc4_[0];
-            !!_loc2_?_skillBuffBar.addIcon(_loc3_):_skillBuffBar.removeIcon(_loc3_);
+            isAdd = paras[1];
+            iconId = paras[0];
+            !!isAdd?_skillBuffBar.addIcon(iconId):_skillBuffBar.removeIcon(iconId);
             _skillBuffBar.x = -(_skillBuffBar.width / 2);
          }
       }
       
-      public function showIcon(param1:int, param2:Boolean = true) : void
+      public function showIcon(iconId:int, isAdd:Boolean = true) : void
       {
-         !!param2?_skillBuffBar.addIcon(param1):_skillBuffBar.removeIcon(param1);
+         !!isAdd?_skillBuffBar.addIcon(iconId):_skillBuffBar.removeIcon(iconId);
          _skillBuffBar.x = -(_skillBuffBar.width / 2);
       }
       
-      protected function __hiddenChanged(param1:LivingEvent) : void
+      protected function __hiddenChanged(event:LivingEvent) : void
       {
          if(_info.isHidden)
          {
@@ -1231,16 +1230,16 @@ package gameStarling.objects
          }
       }
       
-      protected function __posChanged(param1:LivingEvent) : void
+      protected function __posChanged(event:LivingEvent) : void
       {
-         var _loc3_:Number = NaN;
+         var angle:Number = NaN;
          pos = _info.pos;
-         var _loc2_:Point = popPos;
-         (_chatballview as ChatBallPlayer3D).setPos(_loc2_.x,_loc2_.y);
+         var ballPos:Point = popPos;
+         (_chatballview as ChatBallPlayer3D).setPos(ballPos.x,ballPos.y);
          if(_isLiving)
          {
-            _loc3_ = calcObjectAngle(16);
-            _info.playerAngle = _loc3_;
+            angle = calcObjectAngle(16);
+            _info.playerAngle = angle;
          }
          if(map)
          {
@@ -1248,74 +1247,74 @@ package gameStarling.objects
          }
       }
       
-      protected function __jump(param1:LivingEvent) : void
+      protected function __jump(event:LivingEvent) : void
       {
-         doAction(param1.paras[2]);
-         act(new LivingJumpAction(this,param1.paras[0],param1.paras[1],param1.paras[3]));
+         doAction(event.paras[2]);
+         act(new LivingJumpAction(this,event.paras[0],event.paras[1],event.paras[3]));
       }
       
-      protected function __moveTo(param1:LivingEvent) : void
+      protected function __moveTo(event:LivingEvent) : void
       {
-         var _loc13_:* = null;
-         var _loc10_:String = param1.paras[4];
-         doAction(_loc10_);
-         var _loc3_:int = param1.paras[5];
-         if(_loc3_ == 0)
+         var offset:* = null;
+         var action:String = event.paras[4];
+         doAction(action);
+         var speed:int = event.paras[5];
+         if(speed == 0)
          {
-            _loc3_ = 7;
+            speed = 7;
          }
-         var _loc11_:Point = param1.paras[1] as Point;
-         var _loc8_:int = param1.paras[2];
-         var _loc6_:String = param1.paras[6];
-         if(x == _loc11_.x && y == _loc11_.y)
+         var pt:Point = event.paras[1] as Point;
+         var dir:int = event.paras[2];
+         var endAction:String = event.paras[6];
+         if(x == pt.x && y == pt.y)
          {
             return;
          }
-         var _loc12_:Array = [];
-         var _loc7_:int = x;
-         var _loc5_:int = y;
-         var _loc2_:Point = new Point(x,y);
-         var _loc4_:int = _loc11_.x > _loc7_?1:-1;
-         var _loc9_:Point = new Point(x,y);
-         if(_loc10_.substr(0,3) == "fly")
+         var path:Array = [];
+         var tx:int = x;
+         var ty:int = y;
+         var thisPos:Point = new Point(x,y);
+         var direction:int = pt.x > tx?1:-1;
+         var p:Point = new Point(x,y);
+         if(action.substr(0,3) == "fly")
          {
-            _loc13_ = new Point(_loc11_.x - _loc9_.x,_loc11_.y - _loc9_.y);
-            while(_loc13_.length > _loc3_)
+            offset = new Point(pt.x - p.x,pt.y - p.y);
+            while(offset.length > speed)
             {
-               _loc13_.normalize(_loc3_);
-               _loc9_ = new Point(_loc9_.x + _loc13_.x,_loc9_.y + _loc13_.y);
-               _loc13_ = new Point(_loc11_.x - _loc9_.x,_loc11_.y - _loc9_.y);
-               if(_loc9_)
+               offset.normalize(speed);
+               p = new Point(p.x + offset.x,p.y + offset.y);
+               offset = new Point(pt.x - p.x,pt.y - p.y);
+               if(p)
                {
-                  _loc12_.push(_loc9_);
+                  path.push(p);
                   continue;
                }
-               _loc12_.push(_loc11_);
+               path.push(pt);
                break;
             }
          }
          else
          {
-            while((_loc11_.x - _loc7_) * _loc4_ > 0)
+            while((pt.x - tx) * direction > 0)
             {
-               _loc9_ = _map.findNextWalkPoint(_loc7_,_loc5_,_loc4_,_loc3_ * 1,_loc3_ * 3);
-               if(_loc9_)
+               p = _map.findNextWalkPoint(tx,ty,direction,speed * 1,speed * 3);
+               if(p)
                {
-                  _loc12_.push(_loc9_);
-                  _loc7_ = _loc9_.x;
-                  _loc5_ = _loc9_.y;
+                  path.push(p);
+                  tx = p.x;
+                  ty = p.y;
                   continue;
                }
                break;
             }
          }
-         if(_loc12_.length > 0)
+         if(path.length > 0)
          {
-            _info.act(new LivingMoveAction(this,_loc12_,_loc8_,_loc6_));
+            _info.act(new LivingMoveAction(this,path,dir,endAction));
          }
-         else if(_loc6_ != "")
+         else if(endAction != "")
          {
-            doAction(_loc6_);
+            doAction(endAction);
          }
          else
          {
@@ -1323,49 +1322,49 @@ package gameStarling.objects
          }
       }
       
-      public function canMoveDirection(param1:Number) : Boolean
+      public function canMoveDirection(dir:Number) : Boolean
       {
-         return !map.IsOutMap(x + (15 + Player.MOVE_SPEED) * param1,y);
+         return !map.IsOutMap(x + (15 + Player.MOVE_SPEED) * dir,y);
       }
       
-      public function canStand(param1:int, param2:int) : Boolean
+      public function canStand(x:int, y:int) : Boolean
       {
-         return !map.IsEmpty(param1 - 1,param2) || !map.IsEmpty(param1 + 1,param2);
+         return !map.IsEmpty(x - 1,y) || !map.IsEmpty(x + 1,y);
       }
       
-      public function getNextWalkPoint(param1:int) : Point
+      public function getNextWalkPoint(dir:int) : Point
       {
-         if(canMoveDirection(param1))
+         if(canMoveDirection(dir))
          {
-            return _map.findNextWalkPoint(x,y,param1,stepX,stepY);
+            return _map.findNextWalkPoint(x,y,dir,stepX,stepY);
          }
          return null;
       }
       
-      protected function __playerEffect(param1:ActionMovieEvent) : void
+      protected function __playerEffect(evt:ActionMovieEvent) : void
       {
       }
       
-      public function needFocus(param1:int = 0, param2:int = 0, param3:Object = null) : void
+      public function needFocus(offsetX:int = 0, offsetY:int = 0, data:Object = null) : void
       {
          if(map)
          {
-            map.livingSetCenter(x + param1,y + param2 - 150,true,2,param3);
+            map.livingSetCenter(x + offsetX,y + offsetY - 150,true,2,data);
          }
       }
       
-      protected function __shoot(param1:LivingEvent) : void
+      protected function __shoot(event:LivingEvent) : void
       {
       }
       
-      protected function __transmit(param1:LivingEvent) : void
+      protected function __transmit(event:LivingEvent) : void
       {
-         info.pos = param1.paras[0];
+         info.pos = event.paras[0];
       }
       
-      protected function __fall(param1:LivingEvent) : void
+      protected function __fall(event:LivingEvent) : void
       {
-         _info.act(new LivingFallingAction(this,param1.paras[0],param1.paras[1],param1.paras[3]));
+         _info.act(new LivingFallingAction(this,event.paras[0],event.paras[1],event.paras[3]));
       }
       
       public function get actionMovie() : ActionMovieBone
@@ -1378,11 +1377,11 @@ package gameStarling.objects
          return _actionMovie;
       }
       
-      public function doAction(param1:*, param2:Function = null, param3:Array = null) : void
+      public function doAction(actionType:*, callback:Function = null, args:Array = null) : void
       {
-         actionType = param1;
-         callback = param2;
-         args = param3;
+         actionType = actionType;
+         callback = callback;
+         args = args;
          if(actionMovie != null)
          {
             actionMovie.visible = true;
@@ -1402,11 +1401,11 @@ package gameStarling.objects
          }
       }
       
-      private function doActionCallBack(param1:Function = null, param2:Array = null) : void
+      private function doActionCallBack(callback:Function = null, args:Array = null) : void
       {
-         if(param1 != null)
+         if(callback != null)
          {
-            param1.apply(this,param2);
+            callback.apply(this,args);
          }
          else
          {
@@ -1414,70 +1413,70 @@ package gameStarling.objects
          }
       }
       
-      public function showEffect(param1:String) : void
+      public function showEffect(classLink:String) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         if(param1)
+         var display:* = null;
+         var mc:* = null;
+         if(classLink)
          {
-            if(BoneMovieFactory.instance.hasBoneMovie(param1))
+            if(BoneMovieFactory.instance.hasBoneMovie(classLink))
             {
-               _loc3_ = BoneMovieFactory.instance.creatBoneMovie(param1);
+               display = BoneMovieFactory.instance.creatBoneMovie(classLink);
             }
             else
             {
-               _loc3_ = StarlingMain.instance.createImage(param1);
+               display = StarlingMain.instance.createImage(classLink);
             }
-            _loc2_ = new AutoDisappearStarling(_loc3_);
-            addChild(_loc2_);
+            mc = new AutoDisappearStarling(display);
+            addChild(mc);
          }
       }
       
-      public function showBuffEffect(param1:String, param2:int) : void
+      public function showBuffEffect(classLink:String, buffId:int) : void
       {
-         var _loc3_:* = null;
-         var _loc4_:String = param1.replace("asset.game.AttackEffect2","bonesGameAttackEffect2");
-         if(_loc4_ && BoneMovieFactory.instance.model.getBonesStyle(_loc4_))
+         var display:* = null;
+         var className:String = classLink.replace("asset.game.AttackEffect2","bonesGameAttackEffect2");
+         if(className && BoneMovieFactory.instance.model.getBonesStyle(className))
          {
             if(!_buffEffect)
             {
                return;
             }
-            if(_buffEffect && _buffEffect.hasKey(param2))
+            if(_buffEffect && _buffEffect.hasKey(buffId))
             {
-               removeBuffEffect(param2);
+               removeBuffEffect(buffId);
             }
-            if(BoneMovieFactory.instance.hasBoneMovie(_loc4_))
+            if(BoneMovieFactory.instance.hasBoneMovie(className))
             {
-               _loc3_ = BoneMovieFactory.instance.creatBoneMovie(_loc4_);
-               if(_noRemoveEffect.indexOf(param2) != -1)
+               display = BoneMovieFactory.instance.creatBoneMovie(className);
+               if(_noRemoveEffect.indexOf(buffId) != -1)
                {
-                  _buffEffect.add(param2,_loc3_);
+                  _buffEffect.add(buffId,display);
                }
             }
             else
             {
-               _loc3_ = StarlingMain.instance.createImage(_loc4_);
-               _buffEffect.add(param2,_loc3_);
+               display = StarlingMain.instance.createImage(className);
+               _buffEffect.add(buffId,display);
             }
-            addChild(_loc3_);
+            addChild(display);
          }
       }
       
-      public function removeBuffEffect(param1:int) : void
+      public function removeBuffEffect(buffId:int) : void
       {
-         var _loc2_:* = null;
-         if(_buffEffect && _buffEffect.hasKey(param1))
+         var mc:* = null;
+         if(_buffEffect && _buffEffect.hasKey(buffId))
          {
-            _loc2_ = _buffEffect[param1] as DisplayObject;
-            StarlingObjectUtils.disposeObject(_loc2_);
-            _buffEffect.remove(param1);
+            mc = _buffEffect[buffId] as DisplayObject;
+            StarlingObjectUtils.disposeObject(mc);
+            _buffEffect.remove(buffId);
          }
       }
       
-      public function act(param1:BaseAction) : void
+      public function act(action:BaseAction) : void
       {
-         _info.act(param1);
+         _info.act(action);
       }
       
       public function traceCurrentAction() : void
@@ -1485,13 +1484,13 @@ package gameStarling.objects
          _info.traceCurrentAction();
       }
       
-      override public function update(param1:Number) : void
+      override public function update(dt:Number) : void
       {
          if(_isDie)
          {
             return;
          }
-         super.update(param1);
+         super.update(dt);
          _info.update();
       }
       
@@ -1517,9 +1516,9 @@ package gameStarling.objects
          {
             var _loc3_:int = 0;
             var _loc2_:* = _buffEffect.list;
-            for each(var _loc1_ in _buffEffect.list)
+            for each(var buf in _buffEffect.list)
             {
-               ObjectUtils.disposeObject(_loc1_);
+               ObjectUtils.disposeObject(buf);
             }
             _buffEffect.clear();
          }
@@ -1561,11 +1560,11 @@ package gameStarling.objects
          {
             var _loc3_:int = 0;
             var _loc2_:* = _propArray;
-            for each(var _loc1_ in _propArray)
+            for each(var o in _propArray)
             {
-               if(_loc1_ is Image)
+               if(o is Image)
                {
-                  StarlingObjectUtils.disposeObject(_loc1_);
+                  StarlingObjectUtils.disposeObject(o);
                }
             }
          }
@@ -1584,7 +1583,7 @@ package gameStarling.objects
          return _smallView;
       }
       
-      protected function __showAttackEffect(param1:LivingEvent) : void
+      protected function __showAttackEffect(event:LivingEvent) : void
       {
          if(_attackEffectPlaying)
          {
@@ -1595,92 +1594,92 @@ package gameStarling.objects
             return;
          }
          _attackEffectPlaying = true;
-         var _loc4_:int = param1.paras[0];
-         var _loc2_:BoneMovieStarling = creatAttackEffectAssetByID(_loc4_);
-         _loc2_.scaleX = -1 * _info.direction;
+         var effectID:int = event.paras[0];
+         var effect:BoneMovieStarling = creatAttackEffectAssetByID(effectID);
+         effect.scaleX = -1 * _info.direction;
          StarlingObjectUtils.disposeObject(_attackEffectPlayer);
          _attackEffectPlayer = new PhysicalObj3D(-1);
-         _attackEffectPlayer.addChild(_loc2_);
-         var _loc3_:Point = _map.globalToLocal(movie.localToGlobal(_attackEffectPos));
-         _attackEffectPlayer.x = _loc3_.x;
-         _attackEffectPlayer.y = _loc3_.y;
+         _attackEffectPlayer.addChild(effect);
+         var pos:Point = _map.globalToLocal(movie.localToGlobal(_attackEffectPos));
+         _attackEffectPlayer.x = pos.x;
+         _attackEffectPlayer.y = pos.y;
          _map.addPhysical(_attackEffectPlayer);
-         _loc2_.armature.addEventListener("complete",__playComplete);
-         _loc2_.play();
+         effect.armature.addEventListener("complete",__playComplete);
+         effect.play();
       }
       
-      protected function __playDeadEffect(param1:LivingEvent) : void
+      protected function __playDeadEffect(event:LivingEvent) : void
       {
-         var _loc2_:Function = param1.paras[2] as Function;
-         if(_loc2_ != null)
+         var backFun:Function = event.paras[2] as Function;
+         if(backFun != null)
          {
-            _loc2_(param1.paras[3]);
+            backFun(event.paras[3]);
          }
       }
       
-      private function __playComplete(param1:AnimationEvent) : void
+      private function __playComplete(event:AnimationEvent) : void
       {
-         param1.currentTarget.removeEventListener("complete",__playComplete);
+         event.currentTarget.removeEventListener("complete",__playComplete);
          if(_map)
          {
             _map.removePhysical(_attackEffectPlayer);
          }
-         var _loc2_:BoneMovieStarling = _attackEffectPlayer.getChildAt(0) as BoneMovieStarling;
-         delete _moviePool[_loc2_.styleName];
-         StarlingObjectUtils.disposeObject(_loc2_);
+         var movie:BoneMovieStarling = _attackEffectPlayer.getChildAt(0) as BoneMovieStarling;
+         delete _moviePool[movie.styleName];
+         StarlingObjectUtils.disposeObject(movie);
          StarlingObjectUtils.disposeObject(_attackEffectPlayer);
          _attackEffectPlaying = false;
          _attackEffectPlayer = null;
       }
       
-      protected function creatAttackEffectAssetByID(param1:int) : BoneMovieStarling
+      protected function creatAttackEffectAssetByID(id:int) : BoneMovieStarling
       {
-         var _loc2_:String = "bonesGameAttackEffect" + param1;
-         var _loc3_:BoneMovieStarling = BoneMovieFactory.instance.creatBoneMovie(_loc2_);
-         _moviePool[_loc2_] = _loc3_;
-         return _loc3_;
+         var name:String = "bonesGameAttackEffect" + id;
+         var movie:BoneMovieStarling = BoneMovieFactory.instance.creatBoneMovie(name);
+         _moviePool[name] = movie;
+         return movie;
       }
       
       private function cleanMovies() : void
       {
-         var _loc1_:* = null;
+         var movie:* = null;
          var _loc4_:int = 0;
          var _loc3_:* = _moviePool;
-         for(var _loc2_ in _moviePool)
+         for(var key in _moviePool)
          {
-            _loc1_ = _moviePool[_loc2_];
-            StarlingObjectUtils.disposeObject(_loc1_);
-            delete _moviePool[_loc2_];
+            movie = _moviePool[key];
+            StarlingObjectUtils.disposeObject(movie);
+            delete _moviePool[key];
          }
       }
       
-      public function showBlood(param1:Boolean) : void
+      public function showBlood(value:Boolean) : void
       {
-         var _loc2_:* = param1;
+         var _loc2_:* = value;
          _HPStrip.visible = _loc2_;
          _bloodStripBg.visible = _loc2_;
-         _nickName.visible = param1;
+         _nickName.visible = value;
       }
       
-      override public function setActionMapping(param1:String, param2:String) : void
+      override public function setActionMapping(source:String, target:String) : void
       {
-         actionMovie.setActionMapping(param1,param2);
+         actionMovie.setActionMapping(source,target);
       }
       
-      override public function set visible(param1:Boolean) : void
+      override public function set visible(value:Boolean) : void
       {
          if(hiddenByServer)
          {
             return;
          }
-         .super.visible = param1;
+         .super.visible = value;
          if(_onSmallMap == false)
          {
             return;
          }
          if(_smallView)
          {
-            _smallView.visible = param1;
+            _smallView.visible = value;
          }
       }
       
@@ -1689,9 +1688,9 @@ package gameStarling.objects
          return _hiddenByServer;
       }
       
-      private function set hiddenByServer(param1:Boolean) : void
+      private function set hiddenByServer(value:Boolean) : void
       {
-         if(param1)
+         if(value)
          {
             .super.visible = false;
          }
@@ -1699,17 +1698,17 @@ package gameStarling.objects
          {
             .super.visible = true;
          }
-         _hiddenByServer = param1;
+         _hiddenByServer = value;
       }
       
-      protected function __onLivingCommand(param1:LivingCommandEvent) : void
+      protected function __onLivingCommand(evt:LivingCommandEvent) : void
       {
-         var _loc2_:* = param1.commandType;
+         var _loc2_:* = evt.commandType;
          if("focusSelf" !== _loc2_)
          {
             if("focus" === _loc2_)
             {
-               needFocus(param1.object.x,param1.object.y);
+               needFocus(evt.object.x,evt.object.y);
                return;
             }
          }
@@ -1719,7 +1718,7 @@ package gameStarling.objects
          }
       }
       
-      protected function onChatBallComplete(param1:flash.events.Event) : void
+      protected function onChatBallComplete(evt:flash.events.Event) : void
       {
          if(_chatballview && _chatballview.parent)
          {
@@ -1731,18 +1730,18 @@ package gameStarling.objects
          }
       }
       
-      protected function doUseItemAnimation(param1:Boolean = false) : void
+      protected function doUseItemAnimation(skip:Boolean = false) : void
       {
-         var _loc2_:* = null;
+         var using:* = null;
          SoundManager.instance.play("039");
-         if(!param1)
+         if(!skip)
          {
-            _loc2_ = new BoneMovieWrapper("bonesGameGhostPcikPropAsset",false,true);
-            _loc2_.addFrameScript("effect",headPropEffect);
-            _loc2_.asDisplay.x = 0;
-            _loc2_.asDisplay.y = -10;
-            addChild(_loc2_.asDisplay);
-            _loc2_.playAction();
+            using = new BoneMovieWrapper("bonesGameGhostPcikPropAsset",false,true);
+            using.addFrameScript("effect",headPropEffect);
+            using.asDisplay.x = 0;
+            using.asDisplay.y = -10;
+            addChild(using.asDisplay);
+            using.playAction();
          }
          else
          {
@@ -1750,46 +1749,46 @@ package gameStarling.objects
          }
       }
       
-      protected function headPropEffect(param1:BoneMovieWrapper = null, param2:Array = null) : void
+      protected function headPropEffect(bone:BoneMovieWrapper = null, arge:Array = null) : void
       {
-         var _loc3_:* = null;
-         var _loc5_:* = null;
-         var _loc4_:* = null;
+         var movie:* = null;
+         var head:* = null;
+         var pic:* = null;
          if(_propArray && _propArray.length > 0)
          {
             if(_propArray[0] is String)
             {
-               _loc4_ = _propArray.shift();
-               if(_loc4_ == "-1")
+               pic = _propArray.shift();
+               if(pic == "-1")
                {
-                  _loc3_ = StarlingMain.instance.createImage("game_specialKillAsset");
+                  movie = StarlingMain.instance.createImage("game_specialKillAsset");
                }
                else
                {
-                  if(_loc4_ == "wish")
+                  if(pic == "wish")
                   {
-                     _loc3_ = StarlingMain.instance.createImage("game_wishBtn");
+                     movie = StarlingMain.instance.createImage("game_wishBtn");
                   }
                   else
                   {
-                     _loc3_ = StarlingMain.instance.createImage("game_prop_" + _loc4_);
+                     movie = StarlingMain.instance.createImage("game_prop_" + pic);
                   }
                   var _loc6_:int = 60;
-                  _loc3_.height = _loc6_;
-                  _loc3_.width = _loc6_;
+                  movie.height = _loc6_;
+                  movie.width = _loc6_;
                }
-               _loc5_ = new AutoPropEffect3D(_loc3_);
-               _loc5_.x = -5;
-               _loc5_.y = -140;
+               head = new AutoPropEffect3D(movie);
+               head.x = -5;
+               head.y = -140;
             }
             else
             {
-               _loc3_ = _propArray.shift() as CellContent3D;
-               _loc5_ = new AutoPropEffect3D(_loc3_);
-               _loc5_.x = 5;
-               _loc5_.y = -140;
+               movie = _propArray.shift() as CellContent3D;
+               head = new AutoPropEffect3D(movie);
+               head.x = 5;
+               head.y = -140;
             }
-            addChild(_loc5_);
+            addChild(head);
          }
       }
       
@@ -1811,10 +1810,10 @@ package gameStarling.objects
          }
       }
       
-      public function setProperty(param1:String, param2:String) : void
+      public function setProperty(property:String, value:String) : void
       {
-         var _loc3_:StringObject = new StringObject(param2);
-         var _loc4_:* = param1;
+         var vo:StringObject = new StringObject(value);
+         var _loc4_:* = property;
          if("visible" !== _loc4_)
          {
             if("offsetX" !== _loc4_)
@@ -1829,20 +1828,20 @@ package gameStarling.objects
                         {
                            if("speedMult" !== _loc4_)
                            {
-                              info.setProperty(param1,param2);
+                              info.setProperty(property,value);
                            }
                            else
                            {
-                              speedMult = _loc3_.getInt();
+                              speedMult = vo.getInt();
                            }
                         }
                         else
                         {
                            if(smallView)
                            {
-                              smallView.visible = _loc3_.getBoolean();
+                              smallView.visible = vo.getBoolean();
                            }
-                           _onSmallMap = _loc3_.getBoolean();
+                           _onSmallMap = vo.getBoolean();
                            if(_onSmallMap && _smallView)
                            {
                               _smallView.info = _info;
@@ -1851,24 +1850,24 @@ package gameStarling.objects
                      }
                      else
                      {
-                        speedMult = _loc3_.getInt() / _speedY;
+                        speedMult = vo.getInt() / _speedY;
                      }
                   }
                   else
                   {
-                     speedMult = _loc3_.getInt() / _speedX;
+                     speedMult = vo.getInt() / _speedX;
                   }
                   return;
                }
-               _offsetY = _loc3_.getInt();
+               _offsetY = vo.getInt();
                map.smallMap.updatePos(_smallView,new Point(x,y));
                return;
             }
-            _offsetX = _loc3_.getInt();
+            _offsetX = vo.getInt();
             map.smallMap.updatePos(_smallView,new Point(x,y));
             return;
          }
-         hiddenByServer = !_loc3_.getBoolean();
+         hiddenByServer = !vo.getBoolean();
       }
       
       public function modifyPlayerColor() : void
@@ -1890,36 +1889,36 @@ package gameStarling.objects
          }
       }
       
-      public function playerMoveTo(param1:Array) : void
+      public function playerMoveTo(params:Array) : void
       {
-         var _loc2_:int = param1[0];
-         switch(int(_loc2_))
+         var type:int = params[0];
+         switch(int(type))
          {
             case 0:
-               act(new PlayerWalkAction(this,param1[1],param1[2],getAction("walk"),param1[5]));
+               act(new PlayerWalkAction(this,params[1],params[2],getAction("walk"),params[5]));
                break;
             case 1:
-               act(new PlayerFallingAction(this,param1[1],param1[3],false,param1[5]));
+               act(new PlayerFallingAction(this,params[1],params[3],false,params[5]));
                break;
             default:
-               act(new PlayerFallingAction(this,param1[1],param1[3],false,param1[5]));
+               act(new PlayerFallingAction(this,params[1],params[3],false,params[5]));
                break;
             case 3:
-               act(new PlayerFallingAction(this,param1[1],param1[3],true,param1[5]));
+               act(new PlayerFallingAction(this,params[1],params[3],true,params[5]));
                break;
             case 4:
-               act(new PlayerWalkAction(this,param1[1],param1[2],getAction("stand"),param1[5]));
+               act(new PlayerWalkAction(this,params[1],params[2],getAction("stand"),params[5]));
          }
       }
       
-      public function getAction(param1:String) : *
+      public function getAction(type:String) : *
       {
-         return param1;
+         return type;
       }
       
-      public function startAction(param1:Array) : void
+      public function startAction(actionList:Array) : void
       {
-         _actionList = param1;
+         _actionList = actionList;
          executeAction();
       }
       
@@ -1998,12 +1997,12 @@ package gameStarling.objects
          }
       }
       
-      public function changeSmallViewColor(param1:int) : void
+      public function changeSmallViewColor(index:int) : void
       {
          if(_smallView)
          {
             _smallView.alpha = 1;
-            _smallView.setColor(param1);
+            _smallView.setColor(index);
          }
       }
    }

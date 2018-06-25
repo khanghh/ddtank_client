@@ -23,12 +23,12 @@ package game.view.effects
       
       private var tmp:int = 0;
       
-      public function ShootPercentView(param1:int, param2:int = 1, param3:Boolean = false)
+      public function ShootPercentView(n:int, type:int = 1, isadd:Boolean = false)
       {
          super();
-         _type = param2;
-         _isAdd = param3;
-         _picBmp = getPercent(param1);
+         _type = type;
+         _isAdd = isadd;
+         _picBmp = getPercent(n);
          this.addEventListener("addedToStage",__addToStage);
          if(_picBmp != null)
          {
@@ -51,7 +51,7 @@ package game.view.effects
          }
       }
       
-      private function __addToStage(param1:Event) : void
+      private function __addToStage(evt:Event) : void
       {
          removeEventListener("addedToStage",__addToStage);
          if(_picBmp == null)
@@ -73,7 +73,7 @@ package game.view.effects
          addEventListener("enterFrame",__enterFrame);
       }
       
-      private function __enterFrame(param1:Event) : void
+      private function __enterFrame(evt:Event) : void
       {
          if(_type == 1)
          {
@@ -149,92 +149,90 @@ package game.view.effects
          }
       }
       
-      public function getPercent(param1:int) : Bitmap
+      public function getPercent(n:int) : Bitmap
       {
-         var _loc6_:* = null;
-         var _loc10_:* = null;
-         var _loc9_:int = 0;
-         var _loc4_:* = null;
-         if(param1 > 99999999)
+         var bm:* = null;
+         var addIcon:* = null;
+         var i:int = 0;
+         var b:* = null;
+         if(n > 99999999)
          {
             return null;
          }
-         var _loc7_:Sprite = new Sprite();
-         var _loc11_:Array = [];
-         _loc11_ = [0,0,0,0];
+         var numberContainer:Sprite = new Sprite();
+         var numArr:Array = [];
+         numArr = [0,0,0,0];
          var _loc12_:Boolean = false;
-         _loc7_.mouseEnabled = _loc12_;
-         _loc7_.mouseChildren = _loc12_;
+         numberContainer.mouseEnabled = _loc12_;
+         numberContainer.mouseChildren = _loc12_;
          if(_type == 2)
          {
             if(!_isAdd)
             {
-               _loc6_ = ComponentFactory.Instance.creatBitmap("asset.game.redNumberBackgoundAsset") as Bitmap;
-               _loc6_.x = _loc6_.x + 5;
-               _loc6_.y = -10;
-               _loc11_.push(_loc6_);
+               bm = ComponentFactory.Instance.creatBitmap("asset.game.redNumberBackgoundAsset") as Bitmap;
+               bm.x = bm.x + 5;
+               bm.y = -10;
+               numArr.push(bm);
             }
          }
-         var _loc5_:String = String(param1);
-         var _loc8_:int = _loc5_.length;
-         var _loc3_:int = 33 + (4 - _loc8_) * 10;
+         var s:String = String(n);
+         var len:int = s.length;
+         var xpos:int = 33 + (4 - len) * 10;
          if(_isAdd)
          {
-            _loc5_ = " " + _loc5_;
-            _loc8_ = _loc8_ + 1;
-            _loc3_ = _loc3_ - 10;
-            _loc10_ = ComponentFactory.Instance.creatBitmap("asset.game.addBloodIconAsset") as Bitmap;
-            _loc10_.x = _loc3_;
-            _loc10_.y = 20;
-            _loc11_.push(_loc10_);
+            s = " " + s;
+            len = len + 1;
+            xpos = xpos - 10;
+            addIcon = ComponentFactory.Instance.creatBitmap("asset.game.addBloodIconAsset") as Bitmap;
+            addIcon.x = xpos;
+            addIcon.y = 20;
+            numArr.push(addIcon);
          }
-         _loc9_ = !!_isAdd?1:0;
-         while(_loc9_ < _loc8_)
+         i = !!_isAdd?1:0;
+         while(i < len)
          {
             if(_isAdd)
             {
-               _loc4_ = BloodNumberCreater.createGreenNum(int(_loc5_.charAt(_loc9_)));
+               b = BloodNumberCreater.createGreenNum(int(s.charAt(i)));
             }
             else
             {
-               _loc4_ = BloodNumberCreater.createRedNum(int(_loc5_.charAt(_loc9_)));
+               b = BloodNumberCreater.createRedNum(int(s.charAt(i)));
             }
-            _loc4_.smoothing = true;
-            _loc4_.x = _loc3_ + _loc9_ * 20;
-            _loc4_.y = 20;
-            _loc11_.push(_loc4_);
-            _loc9_++;
+            b.smoothing = true;
+            b.x = xpos + i * 20;
+            b.y = 20;
+            numArr.push(b);
+            i++;
          }
-         _loc11_ = returnNum(_loc11_);
-         var _loc2_:BitmapData = new BitmapData(_loc11_[2],_loc11_[3],true,0);
-         _picBmp = new Bitmap(_loc2_,"auto",true);
-         _loc9_ = 4;
-         while(_loc9_ < _loc11_.length)
+         numArr = returnNum(numArr);
+         var bmpData:BitmapData = new BitmapData(numArr[2],numArr[3],true,0);
+         _picBmp = new Bitmap(bmpData,"auto",true);
+         for(i = 4; i < numArr.length; )
          {
-            _loc2_.copyPixels(_loc11_[_loc9_].bitmapData,new Rectangle(0,0,_loc11_[_loc9_].width,_loc11_[_loc9_].height),new Point(_loc11_[_loc9_].x - _loc11_[0],_loc11_[_loc9_].y - _loc11_[1]),null,null,true);
-            _loc9_++;
+            bmpData.copyPixels(numArr[i].bitmapData,new Rectangle(0,0,numArr[i].width,numArr[i].height),new Point(numArr[i].x - numArr[0],numArr[i].y - numArr[1]),null,null,true);
+            i++;
          }
-         _picBmp.x = _loc11_[0];
-         _picBmp.y = _loc11_[1];
-         _loc11_ = null;
+         _picBmp.x = numArr[0];
+         _picBmp.y = numArr[1];
+         numArr = null;
          return _picBmp;
       }
       
-      private function returnNum(param1:Array) : Array
+      private function returnNum(arr:Array) : Array
       {
-         var _loc2_:int = 0;
-         _loc2_ = 4;
-         while(_loc2_ < param1.length)
+         var i:int = 0;
+         for(i = 4; i < arr.length; )
          {
-            param1[0] = param1[0] > param1[_loc2_].x?param1[_loc2_].x:param1[0];
-            param1[1] = param1[1] > param1[_loc2_].y?param1[_loc2_].y:param1[1];
-            param1[2] = param1[2] > param1[_loc2_].width + param1[_loc2_].x?param1[2]:param1[_loc2_].width + param1[_loc2_].x;
-            param1[3] = param1[3] > param1[_loc2_].height + param1[_loc2_].y?param1[3]:param1[_loc2_].height + param1[_loc2_].y;
-            _loc2_++;
+            arr[0] = arr[0] > arr[i].x?arr[i].x:arr[0];
+            arr[1] = arr[1] > arr[i].y?arr[i].y:arr[1];
+            arr[2] = arr[2] > arr[i].width + arr[i].x?arr[2]:arr[i].width + arr[i].x;
+            arr[3] = arr[3] > arr[i].height + arr[i].y?arr[3]:arr[i].height + arr[i].y;
+            i++;
          }
-         param1[2] = param1[2] - param1[0];
-         param1[3] = param1[3] - param1[1];
-         return param1;
+         arr[2] = arr[2] - arr[0];
+         arr[3] = arr[3] - arr[1];
+         return arr;
       }
    }
 }

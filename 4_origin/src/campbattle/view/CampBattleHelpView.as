@@ -27,8 +27,8 @@ package campbattle.view
       override protected function init() : void
       {
          super.init();
-         var _loc1_:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("store.view.HelpButtonText"),"",LanguageMgr.GetTranslation("shop.PresentFrame.OkBtnText"));
-         info = _loc1_;
+         var alerInfo:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("store.view.HelpButtonText"),"",LanguageMgr.GetTranslation("shop.PresentFrame.OkBtnText"));
+         info = alerInfo;
          _back = ComponentFactory.Instance.creat("camp.battle.back");
          addToContent(_back);
          _scrollPanel = ComponentFactory.Instance.creatComponentByStylename("ddtCampBattle.views.helpViewScroll");

@@ -46,45 +46,44 @@ package luckStar.view
       
       private function updateView() : void
       {
-         var _loc5_:int = 0;
-         var _loc7_:int = 0;
-         var _loc1_:* = null;
-         var _loc4_:Array = [11,12,13,14,15,16];
-         var _loc3_:Vector.<InventoryItemInfo> = LuckStarManager.Instance.model.reward;
-         var _loc6_:int = _loc3_.length;
-         var _loc2_:int = 0;
-         _list = new Vector.<BaseCell>(_loc6_);
-         while(_loc4_.length)
+         var quality:int = 0;
+         var i:int = 0;
+         var text:* = null;
+         var qualityList:Array = [11,12,13,14,15,16];
+         var awardList:Vector.<InventoryItemInfo> = LuckStarManager.Instance.model.reward;
+         var len:int = awardList.length;
+         var index:int = 0;
+         _list = new Vector.<BaseCell>(len);
+         while(qualityList.length)
          {
-            _loc5_ = _loc4_.shift();
-            _loc2_ = 0;
-            _loc7_ = 0;
-            while(_loc7_ < _loc6_)
+            quality = qualityList.shift();
+            index = 0;
+            for(i = 0; i < len; )
             {
-               if(_loc3_[_loc7_].Quality == _loc5_)
+               if(awardList[i].Quality == quality)
                {
-                  _list[_loc7_] = new BaseCell(ComponentFactory.Instance.creatComponentByStylename("luckyStar.view.awardcellBg"));
-                  _list[_loc7_].info = _loc3_[_loc7_];
-                  _list[_loc7_].info.Quality = ItemManager.Instance.getTemplateById(_loc3_[_loc7_].TemplateID).Quality;
-                  PositionUtils.setPos(_list[_loc7_],"luckyStar.view.awardPos" + _loc5_ + _loc2_);
-                  addChild(_list[_loc7_]);
-                  if(_loc3_[_loc7_].Count > 1)
+                  _list[i] = new BaseCell(ComponentFactory.Instance.creatComponentByStylename("luckyStar.view.awardcellBg"));
+                  _list[i].info = awardList[i];
+                  _list[i].info.Quality = ItemManager.Instance.getTemplateById(awardList[i].TemplateID).Quality;
+                  PositionUtils.setPos(_list[i],"luckyStar.view.awardPos" + quality + index);
+                  addChild(_list[i]);
+                  if(awardList[i].Count > 1)
                   {
-                     _loc1_ = ComponentFactory.Instance.creat("luckyStar.view.cellCount");
-                     _loc1_.text = _loc3_[_loc7_].Count.toString();
-                     _loc1_.x = _list[_loc7_].x - 12;
-                     _loc1_.y = _list[_loc7_].y + 25;
-                     addChild(_loc1_);
-                     _countList.push(_loc1_);
+                     text = ComponentFactory.Instance.creat("luckyStar.view.cellCount");
+                     text.text = awardList[i].Count.toString();
+                     text.x = _list[i].x - 12;
+                     text.y = _list[i].y + 25;
+                     addChild(text);
+                     _countList.push(text);
                   }
-                  _loc2_++;
+                  index++;
                }
-               _loc7_++;
+               i++;
             }
          }
       }
       
-      private function __onClose(param1:MouseEvent) : void
+      private function __onClose(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          this.parent.removeChild(this);

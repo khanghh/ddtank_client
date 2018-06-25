@@ -21,43 +21,41 @@ package starlingui.core.components
       
       override protected function changeItems() : void
       {
-         var _loc6_:int = 0;
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:Array = [];
-         var _loc4_:* = 0;
-         _loc6_ = 0;
-         _loc3_ = numChildren;
-         while(_loc6_ < _loc3_)
+         var i:int = 0;
+         var n:int = 0;
+         var item:* = null;
+         var items:Array = [];
+         var maxHeight:* = 0;
+         for(i = 0,n = numChildren; i < n; )
          {
-            _loc2_ = getChildAt(_loc6_) as DisplayObject;
-            if(_loc2_)
+            item = getChildAt(i) as DisplayObject;
+            if(item)
             {
-               _loc1_.push(_loc2_);
-               _loc4_ = Number(Math.max(_loc4_,_loc2_.height));
+               items.push(item);
+               maxHeight = Number(Math.max(maxHeight,item.height));
             }
-            _loc6_++;
+            i++;
          }
-         _loc1_.sortOn(["x"],16);
-         var _loc5_:* = 0;
+         items.sortOn(["x"],16);
+         var left:* = 0;
          var _loc8_:int = 0;
-         var _loc7_:* = _loc1_;
-         for each(_loc2_ in _loc1_)
+         var _loc7_:* = items;
+         for each(item in items)
          {
-            _maxX = _loc5_;
-            _loc2_.x = _loc5_;
-            _loc5_ = Number(_loc5_ + (_loc2_.width + _space));
+            _maxX = left;
+            item.x = left;
+            left = Number(left + (item.width + _space));
             if(_align == "top")
             {
-               _loc2_.y = 0;
+               item.y = 0;
             }
             else if(_align == "middle")
             {
-               _loc2_.y = (_loc4_ - _loc2_.height) * 0.5;
+               item.y = (maxHeight - item.height) * 0.5;
             }
             else if(_align == "bottom")
             {
-               _loc2_.y = _loc4_ - _loc2_.height;
+               item.y = maxHeight - item.height;
             }
          }
          changeSize();

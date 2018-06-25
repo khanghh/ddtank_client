@@ -9,34 +9,34 @@ package org.as3commons.lang
          super();
       }
       
-      public static function containsAny(param1:Array, param2:Array) : Boolean
+      public static function containsAny(array:Array, items:Array) : Boolean
       {
-         return containsAnyStrictEquality(param1,param2);
+         return containsAnyStrictEquality(array,items);
       }
       
-      public static function containsAnyEquality(param1:Array, param2:Array) : Boolean
+      public static function containsAnyEquality(array:Array, items:Array) : Boolean
       {
-         return containsAnyWithComparisonFunction(param1,param2,containsEquality);
+         return containsAnyWithComparisonFunction(array,items,containsEquality);
       }
       
-      public static function containsAnyStrictEquality(param1:Array, param2:Array) : Boolean
+      public static function containsAnyStrictEquality(array:Array, items:Array) : Boolean
       {
-         return containsAnyWithComparisonFunction(param1,param2,containsStrictEquality);
+         return containsAnyWithComparisonFunction(array,items,containsStrictEquality);
       }
       
-      public static function containsAnyEquals(param1:Array, param2:Array) : Boolean
+      public static function containsAnyEquals(array:Array, items:Array) : Boolean
       {
-         return containsAnyWithComparisonFunction(param1,param2,containsEquals);
+         return containsAnyWithComparisonFunction(array,items,containsEquals);
       }
       
-      private static function containsAnyWithComparisonFunction(param1:Array, param2:Array, param3:Function) : Boolean
+      private static function containsAnyWithComparisonFunction(array:Array, items:Array, comparisonFunction:Function) : Boolean
       {
-         var _loc4_:* = undefined;
-         if(isNotEmpty(param1) && isNotEmpty(param2))
+         var item:* = undefined;
+         if(isNotEmpty(array) && isNotEmpty(items))
          {
-            for each(_loc4_ in param2)
+            for each(item in items)
             {
-               if(param3(param1,_loc4_))
+               if(comparisonFunction(array,item))
                {
                   return true;
                }
@@ -45,234 +45,230 @@ package org.as3commons.lang
          return false;
       }
       
-      public static function containsAll(param1:Array, param2:Array) : Boolean
+      public static function containsAll(array:Array, find:Array) : Boolean
       {
-         return containsAllStrictEquality(param1,param2);
+         return containsAllStrictEquality(array,find);
       }
       
-      public static function containsAllEquality(param1:Array, param2:Array) : Boolean
+      public static function containsAllEquality(array:Array, items:Array) : Boolean
       {
-         return containsAllWithComparisonFunction(param1,param2,containsEquality);
+         return containsAllWithComparisonFunction(array,items,containsEquality);
       }
       
-      public static function containsAllStrictEquality(param1:Array, param2:Array) : Boolean
+      public static function containsAllStrictEquality(array:Array, items:Array) : Boolean
       {
-         return containsAllWithComparisonFunction(param1,param2,containsStrictEquality);
+         return containsAllWithComparisonFunction(array,items,containsStrictEquality);
       }
       
-      public static function containsAllEquals(param1:Array, param2:Array) : Boolean
+      public static function containsAllEquals(array:Array, items:Array) : Boolean
       {
-         return containsAllWithComparisonFunction(param1,param2,containsEquals);
+         return containsAllWithComparisonFunction(array,items,containsEquals);
       }
       
-      private static function containsAllWithComparisonFunction(param1:Array, param2:Array, param3:Function) : Boolean
+      private static function containsAllWithComparisonFunction(array:Array, items:Array, comparisonFunction:Function) : Boolean
       {
-         var _loc5_:* = undefined;
-         var _loc4_:Boolean = false;
-         if(isNotEmpty(param1) && isNotEmpty(param2))
+         var item:* = undefined;
+         var result:Boolean = false;
+         if(isNotEmpty(array) && isNotEmpty(items))
          {
-            _loc4_ = true;
-            for each(_loc5_ in param2)
+            result = true;
+            for each(item in items)
             {
-               _loc4_ = _loc4_ && param3(param1,_loc5_);
+               result = result && comparisonFunction(array,item);
             }
          }
-         return _loc4_;
+         return result;
       }
       
-      public static function contains(param1:Array, param2:*) : Boolean
+      public static function contains(array:Array, item:*) : Boolean
       {
-         return containsStrictEquality(param1,param2);
+         return containsStrictEquality(array,item);
       }
       
-      public static function containsEquality(param1:Array, param2:*) : Boolean
+      public static function containsEquality(array:Array, item:*) : Boolean
       {
-         return indexOfEquality(param1,param2) > -1;
+         return indexOfEquality(array,item) > -1;
       }
       
-      public static function containsStrictEquality(param1:Array, param2:*) : Boolean
+      public static function containsStrictEquality(array:Array, item:*) : Boolean
       {
-         return indexOfStrictEquality(param1,param2) > -1;
+         return indexOfStrictEquality(array,item) > -1;
       }
       
-      public static function containsEquals(param1:Array, param2:IEquals) : Boolean
+      public static function containsEquals(array:Array, item:IEquals) : Boolean
       {
-         return indexOfEquals(param1,param2) > -1;
+         return indexOfEquals(array,item) > -1;
       }
       
-      public static function indexOf(param1:Array, param2:*) : int
+      public static function indexOf(array:Array, item:*) : int
       {
-         return indexOfStrictEquality(param1,param2);
+         return indexOfStrictEquality(array,item);
       }
       
-      public static function indexOfEquality(param1:Array, param2:*) : int
+      public static function indexOfEquality(array:Array, item:*) : int
       {
-         return indexOfWithComparisonFunction(param1,param2,compareEquality);
+         return indexOfWithComparisonFunction(array,item,compareEquality);
       }
       
-      public static function indexOfStrictEquality(param1:Array, param2:*) : int
+      public static function indexOfStrictEquality(array:Array, item:*) : int
       {
-         return indexOfWithComparisonFunction(param1,param2,compareStrictEquality);
+         return indexOfWithComparisonFunction(array,item,compareStrictEquality);
       }
       
-      public static function indexOfEquals(param1:Array, param2:IEquals) : int
+      public static function indexOfEquals(array:Array, item:IEquals) : int
       {
-         return indexOfWithComparisonFunction(param1,param2,compareEquals);
+         return indexOfWithComparisonFunction(array,item,compareEquals);
       }
       
-      private static function indexOfWithComparisonFunction(param1:Array, param2:*, param3:Function) : int
+      private static function indexOfWithComparisonFunction(array:Array, item:*, comparisonFunction:Function) : int
       {
-         var _loc5_:int = 0;
-         var _loc4_:int = getLength(param1);
-         if(_loc4_ > 0 && param2)
+         var i:int = 0;
+         var numItems:int = getLength(array);
+         if(numItems > 0 && item)
          {
-            _loc5_ = 0;
-            while(_loc5_ < _loc4_)
+            for(i = 0; i < numItems; i++)
             {
-               if(param3(param2,param1[_loc5_]))
+               if(comparisonFunction(item,array[i]))
                {
-                  return _loc5_;
+                  return i;
                }
-               _loc5_++;
             }
          }
          return -1;
       }
       
-      private static function compareEquality(param1:*, param2:*) : Boolean
+      private static function compareEquality(item1:*, item2:*) : Boolean
       {
-         return param1 == param2;
+         return item1 == item2;
       }
       
-      private static function compareStrictEquality(param1:*, param2:*) : Boolean
+      private static function compareStrictEquality(item1:*, item2:*) : Boolean
       {
-         return param1 === param2;
+         return item1 === item2;
       }
       
-      private static function compareEquals(param1:IEquals, param2:IEquals) : Boolean
+      private static function compareEquals(item1:IEquals, item2:IEquals) : Boolean
       {
-         return param1.equals(param2);
+         return item1.equals(item2);
       }
       
-      public static function removeAllItems(param1:Array, param2:Array) : Array
+      public static function removeAllItems(array:Array, itemsToRemove:Array) : Array
       {
-         return removeAllItemsStrictEquality(param1,param2);
+         return removeAllItemsStrictEquality(array,itemsToRemove);
       }
       
-      public static function removeAllItemsEquality(param1:Array, param2:Array) : Array
+      public static function removeAllItemsEquality(array:Array, itemsToRemove:Array) : Array
       {
-         return removeAllItemsWithRemoveFunction(param1,param2,removeItemEquality);
+         return removeAllItemsWithRemoveFunction(array,itemsToRemove,removeItemEquality);
       }
       
-      public static function removeAllItemsStrictEquality(param1:Array, param2:Array) : Array
+      public static function removeAllItemsStrictEquality(array:Array, itemsToRemove:Array) : Array
       {
-         return removeAllItemsWithRemoveFunction(param1,param2,removeItemStrictEquality);
+         return removeAllItemsWithRemoveFunction(array,itemsToRemove,removeItemStrictEquality);
       }
       
-      public static function removeAllItemsEquals(param1:Array, param2:Array) : Array
+      public static function removeAllItemsEquals(array:Array, itemsToRemove:Array) : Array
       {
-         return removeAllItemsWithRemoveFunction(param1,param2,removeItemEquals);
+         return removeAllItemsWithRemoveFunction(array,itemsToRemove,removeItemEquals);
       }
       
-      private static function removeAllItemsWithRemoveFunction(param1:Array, param2:Array, param3:Function) : Array
+      private static function removeAllItemsWithRemoveFunction(array:Array, itemsToRemove:Array, removeFunction:Function) : Array
       {
-         var _loc5_:* = undefined;
-         var _loc4_:Array = [];
-         if(isNotEmpty(param1) && isNotEmpty(param2))
+         var item:* = undefined;
+         var result:Array = [];
+         if(isNotEmpty(array) && isNotEmpty(itemsToRemove))
          {
-            for each(_loc5_ in param2)
+            for each(item in itemsToRemove)
             {
-               param3(param1,_loc5_);
+               removeFunction(array,item);
             }
          }
-         return param1;
+         return array;
       }
       
-      public static function removeItem(param1:Array, param2:*) : Array
+      public static function removeItem(array:Array, item:*) : Array
       {
-         return removeItemStrictEquality(param1,param2);
+         return removeItemStrictEquality(array,item);
       }
       
-      public static function removeItemEquality(param1:Array, param2:*) : Array
+      public static function removeItemEquality(array:Array, item:*) : Array
       {
-         return removeItemWithComparisonFunction(param1,param2,compareEquality);
+         return removeItemWithComparisonFunction(array,item,compareEquality);
       }
       
-      public static function removeItemStrictEquality(param1:Array, param2:*) : Array
+      public static function removeItemStrictEquality(array:Array, item:*) : Array
       {
-         return removeItemWithComparisonFunction(param1,param2,compareStrictEquality);
+         return removeItemWithComparisonFunction(array,item,compareStrictEquality);
       }
       
-      public static function removeItemEquals(param1:Array, param2:*) : Array
+      public static function removeItemEquals(array:Array, item:*) : Array
       {
-         return removeItemWithComparisonFunction(param1,param2,compareEquals);
+         return removeItemWithComparisonFunction(array,item,compareEquals);
       }
       
-      private static function removeItemWithComparisonFunction(param1:Array, param2:*, param3:Function) : Array
+      private static function removeItemWithComparisonFunction(array:Array, item:*, comparisonFunction:Function) : Array
       {
-         var _loc5_:Number = NaN;
-         var _loc4_:Array = [];
-         if(isNotEmpty(param1))
+         var i:Number = NaN;
+         var result:Array = [];
+         if(isNotEmpty(array))
          {
-            _loc5_ = param1.length;
-            while(--_loc5_ - -1)
+            i = array.length;
+            while(--i - -1)
             {
-               if(param3(param1[_loc5_],param2))
+               if(comparisonFunction(array[i],item))
                {
-                  _loc4_.unshift(_loc5_);
-                  param1.splice(_loc5_,1);
+                  result.unshift(i);
+                  array.splice(i,1);
                }
             }
          }
-         return _loc4_;
+         return result;
       }
       
-      public static function removeLastOccurance(param1:Array, param2:*) : int
+      public static function removeLastOccurance(array:Array, item:*) : int
       {
-         var _loc3_:int = param1.lastIndexOf(param2);
-         if(_loc3_ > -1)
+         var idx:int = array.lastIndexOf(item);
+         if(idx > -1)
          {
-            param1.splice(_loc3_,1);
+            array.splice(idx,1);
          }
-         return _loc3_;
+         return idx;
       }
       
-      public static function removeFirstOccurance(param1:Array, param2:*) : int
+      public static function removeFirstOccurance(array:Array, item:*) : int
       {
-         var _loc3_:int = param1.indexOf(param2);
-         if(_loc3_ > -1)
+         var idx:int = array.indexOf(item);
+         if(idx > -1)
          {
-            param1.splice(_loc3_,1);
+            array.splice(idx,1);
          }
-         return _loc3_;
+         return idx;
       }
       
-      public static function shuffle(param1:Array) : void
+      public static function shuffle(array:Array) : void
       {
-         var _loc3_:Number = NaN;
-         var _loc4_:* = undefined;
-         var _loc2_:Number = param1.length;
-         var _loc5_:Number = _loc2_ - 1;
-         while(_loc5_ >= 0)
+         var rand:Number = NaN;
+         var temp:* = undefined;
+         var len:Number = array.length;
+         for(var i:Number = len - 1; i >= 0; i--)
          {
-            _loc3_ = Math.floor(Math.random() * _loc2_);
-            _loc4_ = param1[_loc5_];
-            param1[_loc5_] = param1[_loc3_];
-            param1[_loc3_] = _loc4_;
-            _loc5_--;
+            rand = Math.floor(Math.random() * len);
+            temp = array[i];
+            array[i] = array[rand];
+            array[rand] = temp;
          }
       }
       
-      public static function isSame(param1:Array, param2:Array) : Boolean
+      public static function isSame(array1:Array, array2:Array) : Boolean
       {
-         var _loc3_:Number = param1.length;
-         if(_loc3_ != param2.length)
+         var i:Number = array1.length;
+         if(i != array2.length)
          {
             return false;
          }
-         while(--_loc3_ - -1)
+         while(--i - -1)
          {
-            if(param1[_loc3_] !== param2[_loc3_])
+            if(array1[i] !== array2[i])
             {
                return false;
             }
@@ -280,123 +276,121 @@ package org.as3commons.lang
          return true;
       }
       
-      public static function getLength(param1:Array) : int
+      public static function getLength(array:Array) : int
       {
-         if(isNotEmpty(param1))
+         if(isNotEmpty(array))
          {
-            return param1.length;
+            return array.length;
          }
          return 0;
       }
       
-      public static function getUniqueValues(param1:Array) : Array
+      public static function getUniqueValues(array:Array) : Array
       {
-         var _loc3_:Object = null;
-         var _loc2_:Array = [];
-         if(isNotEmpty(param1))
+         var obj:Object = null;
+         var result:Array = [];
+         if(isNotEmpty(array))
          {
-            for each(_loc3_ in param1)
+            for each(obj in array)
             {
-               if(!contains(_loc2_,_loc3_))
+               if(!contains(result,obj))
                {
-                  _loc2_.push(_loc3_);
+                  result.push(obj);
                }
             }
          }
-         return _loc2_;
+         return result;
       }
       
-      public static function getItemAt(param1:Array, param2:int, param3:* = null) : *
+      public static function getItemAt(array:Array, index:int, defaultValue:* = null) : *
       {
-         if(isNotEmpty(param1) && param1.length > param2)
+         if(isNotEmpty(array) && array.length > index)
          {
-            return param1[param2];
+            return array[index];
          }
-         return param3;
+         return defaultValue;
       }
       
-      public static function getItemsByType(param1:Array, param2:Class) : Array
+      public static function getItemsByType(items:Array, type:Class) : Array
       {
-         var _loc3_:Array = [];
-         var _loc4_:int = 0;
-         while(_loc4_ < param1.length)
+         var result:Array = [];
+         for(var i:int = 0; i < items.length; i++)
          {
-            if(param1[_loc4_] is param2)
+            if(items[i] is type)
             {
-               _loc3_.push(param1[_loc4_]);
+               result.push(items[i]);
             }
-            _loc4_++;
          }
-         return _loc3_;
+         return result;
       }
       
-      public static function addAll(param1:Array, param2:Array) : void
+      public static function addAll(array:Array, itemsToAdd:Array) : void
       {
-         var _loc3_:* = undefined;
-         if(param1 != null && isNotEmpty(param2))
+         var item:* = undefined;
+         if(array != null && isNotEmpty(itemsToAdd))
          {
-            for each(_loc3_ in param2)
+            for each(item in itemsToAdd)
             {
-               param1.push(_loc3_);
+               array.push(item);
             }
          }
       }
       
-      public static function addAllIgnoreNull(param1:Array, param2:Array) : void
+      public static function addAllIgnoreNull(array:Array, itemsToAdd:Array) : void
       {
-         var _loc3_:* = undefined;
-         if(param1 != null && isNotEmpty(param2))
+         var element:* = undefined;
+         if(array != null && isNotEmpty(itemsToAdd))
          {
-            for each(_loc3_ in param2)
+            for each(element in itemsToAdd)
             {
-               addIgnoreNull(param1,_loc3_);
+               addIgnoreNull(array,element);
             }
          }
       }
       
-      public static function addIgnoreNull(param1:Array, param2:*) : void
+      public static function addIgnoreNull(array:Array, element:*) : void
       {
-         if(param1 != null && param2 != null)
+         if(array != null && element != null)
          {
-            param1.push(param2);
+            array.push(element);
          }
       }
       
-      public static function moveElement(param1:Array, param2:*, param3:int) : void
+      public static function moveElement(array:Array, element:*, newIndex:int) : void
       {
-         if(isNotEmpty(param1) && contains(param1,param2))
+         if(isNotEmpty(array) && contains(array,element))
          {
-            param1.splice(param1.indexOf(param2),1);
-            param1.splice(param3,0,param2);
+            array.splice(array.indexOf(element),1);
+            array.splice(newIndex,0,element);
          }
       }
       
-      public static function removeAll(param1:Array) : void
+      public static function removeAll(array:Array) : void
       {
-         if(isNotEmpty(param1))
+         if(isNotEmpty(array))
          {
-            param1.splice(0,param1.length);
+            array.splice(0,array.length);
          }
       }
       
-      public static function isNotEmpty(param1:Array) : Boolean
+      public static function isNotEmpty(array:Array) : Boolean
       {
-         return !isEmpty(param1);
+         return !isEmpty(array);
       }
       
-      public static function isEmpty(param1:Array) : Boolean
+      public static function isEmpty(array:Array) : Boolean
       {
-         return param1 == null || param1.length == 0;
+         return array == null || array.length == 0;
       }
       
-      public static function clone(param1:Array) : Array
+      public static function clone(array:Array) : Array
       {
-         return param1.concat();
+         return array.concat();
       }
       
-      public static function toString(param1:Array, param2:String = ", ") : String
+      public static function toString(array:Array, separator:String = ", ") : String
       {
-         return !param1?"":param1.join(param2);
+         return !array?"":array.join(separator);
       }
    }
 }

@@ -236,20 +236,19 @@ package starling.text
       
       private static function getBitmapData() : BitmapData
       {
-         var _loc4_:int = 0;
-         var _loc1_:BitmapData = new BitmapData(128,64);
-         var _loc3_:ByteArray = new ByteArray();
-         var _loc2_:int = BITMAP_DATA.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc2_)
+         var i:int = 0;
+         var bmpData:BitmapData = new BitmapData(128,64);
+         var bmpBytes:ByteArray = new ByteArray();
+         var numBytes:int = BITMAP_DATA.length;
+         for(i = 0; i < numBytes; )
          {
-            _loc3_.writeUnsignedInt(BITMAP_DATA[_loc4_]);
-            _loc4_++;
+            bmpBytes.writeUnsignedInt(BITMAP_DATA[i]);
+            i++;
          }
-         _loc3_.uncompress();
-         _loc1_.setPixels(new Rectangle(0,0,128,64),_loc3_);
-         _loc3_.clear();
-         return _loc1_;
+         bmpBytes.uncompress();
+         bmpData.setPixels(new Rectangle(0,0,128,64),bmpBytes);
+         bmpBytes.clear();
+         return bmpData;
       }
       
       public static function get xml() : XML

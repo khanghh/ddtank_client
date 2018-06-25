@@ -55,84 +55,83 @@ package ddt.data
       
       public var items:Array;
       
-      public function PyramidModel(param1:IEventDispatcher = null)
+      public function PyramidModel(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
-      public function getLevelCardItems(param1:int) : Array
+      public function getLevelCardItems(level:int) : Array
       {
-         return items[param1 - 1];
+         return items[level - 1];
       }
       
-      public function getLevelCardItem(param1:int, param2:int) : PyramidSystemItemsInfo
+      public function getLevelCardItem(level:int, templateID:int) : PyramidSystemItemsInfo
       {
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
+         var item:* = null;
+         var arr:* = null;
+         var i:int = 0;
+         var temp:* = null;
          if(isUp)
          {
-            _loc3_ = items[param1 - 2];
+            arr = items[level - 2];
          }
          else
          {
-            _loc3_ = items[param1 - 1];
+            arr = items[level - 1];
          }
-         _loc6_ = 0;
-         while(_loc6_ < _loc3_.length)
+         for(i = 0; i < arr.length; )
          {
-            _loc5_ = _loc3_[_loc6_];
-            if(_loc5_.TemplateID == param2)
+            temp = arr[i];
+            if(temp.TemplateID == templateID)
             {
-               _loc4_ = _loc5_;
+               item = temp;
                break;
             }
-            _loc6_++;
+            i++;
          }
-         return _loc4_;
+         return item;
       }
       
-      public function getInventoryItemInfo(param1:PyramidSystemItemsInfo) : InventoryItemInfo
+      public function getInventoryItemInfo(info:PyramidSystemItemsInfo) : InventoryItemInfo
       {
-         var _loc3_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(param1.TemplateID);
-         var _loc2_:InventoryItemInfo = new InventoryItemInfo();
-         ObjectUtils.copyProperties(_loc2_,_loc3_);
-         _loc2_.LuckCompose = param1.TemplateID;
-         _loc2_.ValidDate = param1.ValidDate;
-         _loc2_.Count = param1.Count;
-         _loc2_.IsBinds = param1.IsBind;
-         _loc2_.StrengthenLevel = param1.StrengthLevel;
-         _loc2_.AttackCompose = param1.AttackCompose;
-         _loc2_.DefendCompose = param1.DefendCompose;
-         _loc2_.AgilityCompose = param1.AgilityCompose;
-         _loc2_.LuckCompose = param1.LuckCompose;
-         _loc2_.isShowBind = false;
-         return _loc2_;
+         var tempInfo:ItemTemplateInfo = ItemManager.Instance.getTemplateById(info.TemplateID);
+         var tInfo:InventoryItemInfo = new InventoryItemInfo();
+         ObjectUtils.copyProperties(tInfo,tempInfo);
+         tInfo.LuckCompose = info.TemplateID;
+         tInfo.ValidDate = info.ValidDate;
+         tInfo.Count = info.Count;
+         tInfo.IsBinds = info.IsBind;
+         tInfo.StrengthenLevel = info.StrengthLevel;
+         tInfo.AttackCompose = info.AttackCompose;
+         tInfo.DefendCompose = info.DefendCompose;
+         tInfo.AgilityCompose = info.AgilityCompose;
+         tInfo.LuckCompose = info.LuckCompose;
+         tInfo.isShowBind = false;
+         return tInfo;
       }
       
       public function get startActivityTime() : String
       {
-         var _loc1_:* = null;
-         var _loc2_:String = "";
+         var minutes:* = null;
+         var dateString:String = "";
          if(beginTime)
          {
-            _loc1_ = beginTime.minutes > 9?beginTime.minutes + "":"0" + beginTime.minutes;
-            _loc2_ = beginTime.fullYear + "." + (beginTime.month + 1) + "." + beginTime.date + " " + beginTime.hours + ":" + _loc1_;
+            minutes = beginTime.minutes > 9?beginTime.minutes + "":"0" + beginTime.minutes;
+            dateString = beginTime.fullYear + "." + (beginTime.month + 1) + "." + beginTime.date + " " + beginTime.hours + ":" + minutes;
          }
-         return _loc2_;
+         return dateString;
       }
       
       public function get endActivityTime() : String
       {
-         var _loc1_:* = null;
-         var _loc2_:String = "";
+         var minutes:* = null;
+         var dateString:String = "";
          if(endTime)
          {
-            _loc1_ = endTime.minutes > 9?endTime.minutes + "":"0" + endTime.minutes;
-            _loc2_ = endTime.fullYear + "." + (endTime.month + 1) + "." + endTime.date + " " + endTime.hours + ":" + _loc1_;
+            minutes = endTime.minutes > 9?endTime.minutes + "":"0" + endTime.minutes;
+            dateString = endTime.fullYear + "." + (endTime.month + 1) + "." + endTime.date + " " + endTime.hours + ":" + minutes;
          }
-         return _loc2_;
+         return dateString;
       }
       
       public function get isShuffleMovie() : Boolean
@@ -149,29 +148,29 @@ package ddt.data
          {
             return true;
          }
-         var _loc2_:int = 0;
-         var _loc1_:Dictionary = selectLayerItems[currentLayer];
+         var length:int = 0;
+         var dic:Dictionary = selectLayerItems[currentLayer];
          var _loc5_:int = 0;
-         var _loc4_:* = _loc1_;
-         for each(var _loc3_ in _loc1_)
+         var _loc4_:* = dic;
+         for each(var obj in dic)
          {
-            _loc2_++;
+            length++;
          }
-         if(_loc2_ > 0)
+         if(length > 0)
          {
             return false;
          }
          return true;
       }
       
-      public function dataChange(param1:String, param2:Object = null) : void
+      public function dataChange(_eventType:String, _resultData:Object = null) : void
       {
-         dispatchEvent(new PyramidEvent(param1,param2));
+         dispatchEvent(new PyramidEvent(_eventType,_resultData));
       }
       
-      public function set totalPoint(param1:int) : void
+      public function set totalPoint(value:int) : void
       {
-         _totalPoint = param1;
+         _totalPoint = value;
          dispatchEvent(new PyramidEvent("dataChange"));
       }
       

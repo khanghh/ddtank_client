@@ -55,7 +55,7 @@ package littleGame.view
       
       private function initView() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _noteDesc = ComponentFactory.Instance.creat("asset.littleGame.ScoreNote");
          addChild(_noteDesc);
          _pageBg = ComponentFactory.Instance.creatComponentByStylename("ddtlittleGameRightViewBG5");
@@ -68,14 +68,13 @@ package littleGame.view
          _goodItems = new Vector.<AwardGoodItem>();
          _goodItemContainerAll = new Sprite();
          PositionUtils.setPos(_goodItemContainerAll,"littleGame.goodItemContainer.pos");
-         _loc1_ = 0;
-         while(_loc1_ < 8)
+         for(i = 0; i < 8; )
          {
-            _goodItems[_loc1_] = ComponentFactory.Instance.creatCustomObject("littleGame.GoodItem");
-            _goodItemContainerAll.addChild(_goodItems[_loc1_]);
-            _goodItems[_loc1_].addEventListener("itemClick",__itemClick);
-            _goodItems[_loc1_].addEventListener("itemSelect",__itemSelect);
-            _loc1_++;
+            _goodItems[i] = ComponentFactory.Instance.creatCustomObject("littleGame.GoodItem");
+            _goodItemContainerAll.addChild(_goodItems[i]);
+            _goodItems[i].addEventListener("itemClick",__itemClick);
+            _goodItems[i].addEventListener("itemSelect",__itemSelect);
+            i++;
          }
          DisplayUtils.horizontalArrange(_goodItemContainerAll,2,5);
          addChild(_firstPage);
@@ -98,16 +97,15 @@ package littleGame.view
       
       private function removeEvent() : void
       {
-         var _loc1_:* = 0;
+         var i:* = 0;
          _firstPage.removeEventListener("click",__pageBtnClick);
          _prePageBtn.removeEventListener("click",__pageBtnClick);
          _nextPageBtn.removeEventListener("click",__pageBtnClick);
          _endPageBtn.removeEventListener("click",__pageBtnClick);
-         _loc1_ = uint(0);
-         while(_loc1_ < 8)
+         for(i = uint(0); i < 8; )
          {
-            _goodItems[_loc1_].removeEventListener("itemClick",__itemClick);
-            _loc1_++;
+            _goodItems[i].removeEventListener("itemClick",__itemClick);
+            i++;
          }
       }
       
@@ -116,43 +114,41 @@ package littleGame.view
          setList(ShopManager.Instance.getValidSortedGoodsByType(87,_currentPage));
       }
       
-      public function setList(param1:Vector.<ShopItemInfo>) : void
+      public function setList(list:Vector.<ShopItemInfo>) : void
       {
-         var _loc2_:int = 0;
-         _list = param1;
+         var i:int = 0;
+         _list = list;
          clearitems();
-         _loc2_ = 0;
-         while(_loc2_ < 8)
+         for(i = 0; i < 8; )
          {
-            _goodItems[_loc2_].selected = false;
-            if(_loc2_ < param1.length && param1[_loc2_])
+            _goodItems[i].selected = false;
+            if(i < list.length && list[i])
             {
-               _goodItems[_loc2_].shopItemInfo = param1[_loc2_];
+               _goodItems[i].shopItemInfo = list[i];
             }
-            _loc2_++;
+            i++;
          }
          _currentPageTxt.text = _currentPage + "/" + ShopManager.Instance.getResultPages(87);
       }
       
       private function clearitems() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < 8)
+         var i:int = 0;
+         for(i = 0; i < 8; )
          {
-            _goodItems[_loc1_].shopItemInfo = null;
-            _loc1_++;
+            _goodItems[i].shopItemInfo = null;
+            i++;
          }
       }
       
-      private function __pageBtnClick(param1:MouseEvent) : void
+      private function __pageBtnClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(ShopManager.Instance.getResultPages(87) == 0)
          {
             return;
          }
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = evt.currentTarget;
          if(_firstPage !== _loc2_)
          {
             if(_prePageBtn !== _loc2_)
@@ -192,26 +188,26 @@ package littleGame.view
          loadList();
       }
       
-      private function __itemClick(param1:ItemEvent) : void
+      private function __itemClick(evt:ItemEvent) : void
       {
       }
       
-      private function __itemSelect(param1:ItemEvent) : void
+      private function __itemSelect(evt:ItemEvent) : void
       {
-         param1.stopImmediatePropagation();
-         var _loc2_:ShopGoodItem = param1.currentTarget as ShopGoodItem;
+         evt.stopImmediatePropagation();
+         var item:ShopGoodItem = evt.currentTarget as ShopGoodItem;
          var _loc5_:int = 0;
          var _loc4_:* = _goodItems;
-         for each(var _loc3_ in _goodItems)
+         for each(var j in _goodItems)
          {
-            _loc3_.selected = false;
+            j.selected = false;
          }
-         _loc2_.selected = true;
+         item.selected = true;
       }
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          removeEvent();
          ObjectUtils.disposeAllChildren(this);
          ObjectUtils.disposeObject(_goodItemContainerAll);
@@ -228,12 +224,11 @@ package littleGame.view
          _firstPage = null;
          ObjectUtils.disposeObject(_endPageBtn);
          _endPageBtn = null;
-         _loc1_ = 0;
-         while(_loc1_ < 8)
+         for(i = 0; i < 8; )
          {
-            ObjectUtils.disposeObject(_goodItems[_loc1_]);
-            _goodItems[_loc1_] = null;
-            _loc1_++;
+            ObjectUtils.disposeObject(_goodItems[i]);
+            _goodItems[i] = null;
+            i++;
          }
          if(parent)
          {

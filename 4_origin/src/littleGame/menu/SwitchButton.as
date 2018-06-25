@@ -36,12 +36,12 @@ package littleGame.menu
          addEventListener("mouseOut",__mouseOut);
       }
       
-      private function __mouseOut(param1:MouseEvent) : void
+      private function __mouseOut(event:MouseEvent) : void
       {
          _fore.visible = false;
       }
       
-      private function __mouseOver(param1:MouseEvent) : void
+      private function __mouseOver(event:MouseEvent) : void
       {
          _fore.visible = true;
       }
@@ -52,9 +52,9 @@ package littleGame.menu
          removeEventListener("mouseOut",__mouseOut);
       }
       
-      public function set mode(param1:int) : void
+      public function set mode(val:int) : void
       {
-         DisplayUtils.setFrame(_back,param1);
+         DisplayUtils.setFrame(_back,val);
       }
       
       public function dispose() : void

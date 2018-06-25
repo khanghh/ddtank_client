@@ -25,9 +25,9 @@ package quest
          _content.addChild(_discriptionTxt);
       }
       
-      override public function set info(param1:QuestInfo) : void
+      override public function set info(value:QuestInfo) : void
       {
-         _info = param1;
+         _info = value;
          _discriptionTxt.htmlText = "<br/>   " + QuestDescTextAnalyz.start(_info.Detail) + "<br/><br/>";
          _panel.setViewPosition(1);
       }

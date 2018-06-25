@@ -11,14 +11,14 @@ package room.view
    {
        
       
-      public function RoomEqualityPropCell(param1:Boolean, param2:int, param3:Boolean = false)
+      public function RoomEqualityPropCell(isself:Boolean, place:int, isHorse:Boolean = false)
       {
-         super(param1,param2,param3);
+         super(isself,place,isHorse);
       }
       
-      override protected function __mouseClick(param1:MouseEvent) : void
+      override protected function __mouseClick(evt:MouseEvent) : void
       {
-         var _loc2_:int = 0;
+         var tmpPlace:int = 0;
          if(_skillId == 0)
          {
             return;
@@ -35,13 +35,13 @@ package room.view
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("horse.skillCannotEquipSame"));
                return;
             }
-            _loc2_ = HorseManager.instance.takeUpEqualSkillPlace;
-            if(_loc2_ == 0)
+            tmpPlace = HorseManager.instance.takeUpEqualSkillPlace;
+            if(tmpPlace == 0)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("horse.skillEquipMax"));
                return;
             }
-            SocketManager.Instance.out.sendBallteHorseTakeUpDownSkill(_skillId,_loc2_);
+            SocketManager.Instance.out.sendBallteHorseTakeUpDownSkill(_skillId,tmpPlace);
          }
       }
    }

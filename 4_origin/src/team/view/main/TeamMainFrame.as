@@ -53,44 +53,44 @@ package team.view.main
       
       override protected function init() : void
       {
-         var _loc4_:SelectedButton = ComponentFactory.Instance.creatComponentByStylename("team.mainTab.infoBtn");
-         var _loc2_:SelectedButton = ComponentFactory.Instance.creatComponentByStylename("team.mainTab.recordBtn");
-         var _loc5_:SelectedButton = ComponentFactory.Instance.creatComponentByStylename("team.mainTab.governBtn");
-         var _loc3_:SelectedButton = ComponentFactory.Instance.creatComponentByStylename("team.mainTab.activeBtn");
-         var _loc6_:SelectedButton = ComponentFactory.Instance.creatComponentByStylename("team.mainTab.shopBtn");
-         var _loc1_:SelectedButton = ComponentFactory.Instance.creatComponentByStylename("team.mainTab.memberBtn");
+         var infoBtn:SelectedButton = ComponentFactory.Instance.creatComponentByStylename("team.mainTab.infoBtn");
+         var recordBtn:SelectedButton = ComponentFactory.Instance.creatComponentByStylename("team.mainTab.recordBtn");
+         var governBtn:SelectedButton = ComponentFactory.Instance.creatComponentByStylename("team.mainTab.governBtn");
+         var activeBtn:SelectedButton = ComponentFactory.Instance.creatComponentByStylename("team.mainTab.activeBtn");
+         var shopBtn:SelectedButton = ComponentFactory.Instance.creatComponentByStylename("team.mainTab.shopBtn");
+         var memberBtn:SelectedButton = ComponentFactory.Instance.creatComponentByStylename("team.mainTab.memberBtn");
          _rankBtn = ComponentFactory.Instance.creatComponentByStylename("team.main.rankBtn");
          _rankBtn.addEventListener("click",__onClickRank);
          _hBox = ComponentFactory.Instance.creatComponentByStylename("team.mainTab.hBox");
-         _hBox.addChild(_loc4_);
-         _hBox.addChild(_loc2_);
-         _hBox.addChild(_loc5_);
-         _hBox.addChild(_loc3_);
-         _hBox.addChild(_loc6_);
-         _hBox.addChild(_loc1_);
+         _hBox.addChild(infoBtn);
+         _hBox.addChild(recordBtn);
+         _hBox.addChild(governBtn);
+         _hBox.addChild(activeBtn);
+         _hBox.addChild(shopBtn);
+         _hBox.addChild(memberBtn);
          _btnGroup = new SelectedButtonGroup();
-         _btnGroup.addSelectItem(_loc4_);
-         _btnGroup.addSelectItem(_loc2_);
-         _btnGroup.addSelectItem(_loc5_);
-         _btnGroup.addSelectItem(_loc3_);
-         _btnGroup.addSelectItem(_loc6_);
-         _btnGroup.addSelectItem(_loc1_);
+         _btnGroup.addSelectItem(infoBtn);
+         _btnGroup.addSelectItem(recordBtn);
+         _btnGroup.addSelectItem(governBtn);
+         _btnGroup.addSelectItem(activeBtn);
+         _btnGroup.addSelectItem(shopBtn);
+         _btnGroup.addSelectItem(memberBtn);
          _btnGroup.addEventListener("change",__changeHandler);
          _viewList = [];
          super.init();
          _btnHelp = HelpFrameUtils.Instance.simpleHelpButton(this,"core.helpButtonSmall",{
             "x":696,
             "y":4
-         },LanguageMgr.GetTranslation("store.view.HelpButtonText"),"asset.team.mainHelp",408,590);
+         },LanguageMgr.GetTranslation("store.view.HelpButtonText"),"asset.team.mainHelp",528,590);
       }
       
-      protected function __onClickRank(param1:MouseEvent) : void
+      protected function __onClickRank(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          TeamManager.instance.showTeamRankFrame();
       }
       
-      private function __changeHandler(param1:Event) : void
+      private function __changeHandler(e:Event) : void
       {
          SoundManager.instance.playButtonSound();
          hideTabAllView();
@@ -119,56 +119,55 @@ package team.view.main
       
       private function hideTabAllView() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _viewList.length)
+         var i:int = 0;
+         for(i = 0; i < _viewList.length; )
          {
-            if(_viewList[_loc1_])
+            if(_viewList[i])
             {
-               _viewList[_loc1_].visible = false;
+               _viewList[i].visible = false;
             }
-            _loc1_++;
+            i++;
          }
       }
       
-      private function createView(param1:int) : DisplayObject
+      private function createView(index:int) : DisplayObject
       {
-         var _loc2_:* = null;
-         switch(int(param1))
+         var view:* = null;
+         switch(int(index))
          {
             case 0:
-               _loc2_ = new TeamInfoView();
+               view = new TeamInfoView();
                break;
             case 1:
-               _loc2_ = new TeamRecordView();
+               view = new TeamRecordView();
                break;
             case 2:
-               _loc2_ = new TeamGovernView();
+               view = new TeamGovernView();
                break;
             case 3:
-               _loc2_ = new TeamActiveView();
+               view = new TeamActiveView();
                break;
             case 4:
-               _loc2_ = new TeamShopView();
+               view = new TeamShopView();
                break;
             case 5:
-               _loc2_ = new TeamMemberView();
+               view = new TeamMemberView();
          }
-         return _loc2_;
+         return view;
       }
       
-      override protected function onResponse(param1:int) : void
+      override protected function onResponse(type:int) : void
       {
-         if(param1 == 0 || param1 == 4 || param1 == 1)
+         if(type == 0 || type == 4 || type == 1)
          {
             SoundManager.instance.playButtonSound();
-            dispose();
+            TeamManager.instance.disposeTeamMainFrame();
          }
       }
       
-      private function __onExitTeam(param1:PkgEvent) : void
+      private function __onExitTeam(e:PkgEvent) : void
       {
-         dispose();
+         TeamManager.instance.disposeTeamMainFrame();
       }
       
       override public function dispose() : void

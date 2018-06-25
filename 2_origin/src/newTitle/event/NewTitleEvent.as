@@ -18,10 +18,10 @@ package newTitle.event
       
       public var data:Array;
       
-      public function NewTitleEvent(param1:String, param2:Array = null)
+      public function NewTitleEvent(type:String, obj:Array = null)
       {
-         super(param1,bubbles,cancelable);
-         data = param2;
+         super(type,bubbles,cancelable);
+         data = obj;
       }
    }
 }

@@ -55,14 +55,14 @@ package com.pickgliss.loader
          return _version;
       }
       
-      public static function set Version(param1:int) : void
+      public static function set Version(value:int) : void
       {
-         _version = param1;
+         _version = value;
       }
       
-      public static function set cacheAble(param1:Boolean) : void
+      public static function set cacheAble(value:Boolean) : void
       {
-         _cacheFile = param1;
+         _cacheFile = value;
       }
       
       public static function get cacheAble() : Boolean
@@ -77,18 +77,18 @@ package com.pickgliss.loader
          loadFilesInLocal();
       }
       
-      public static function applyUpdate(param1:int, param2:int, param3:Array) : void
+      public static function applyUpdate(fromv:int, tov:int, updatelist:Array) : void
       {
-         var _loc7_:* = null;
-         var _loc5_:* = null;
-         var _loc9_:* = null;
-         if(param2 <= param1)
+         var updated:* = null;
+         var t:* = null;
+         var temp:* = null;
+         if(tov <= fromv)
          {
             return;
          }
-         if(_version < param2)
+         if(_version < tov)
          {
-            if(_version < param1)
+            if(_version < fromv)
             {
                _files = {};
                _so.data["data"] = {};
@@ -96,67 +96,67 @@ package com.pickgliss.loader
             }
             else
             {
-               _loc7_ = [];
+               updated = [];
                var _loc11_:int = 0;
-               var _loc10_:* = param3;
-               for each(var _loc6_ in param3)
+               var _loc10_:* = updatelist;
+               for each(var s in updatelist)
                {
-                  _loc5_ = getPath(_loc6_);
-                  _loc5_ = _loc5_.replace("*","\\w*");
-                  _loc7_.push(new RegExp(_loc5_));
-                  LoadResourceManager.Instance.addDeleteRequest(_loc6_);
+                  t = getPath(s);
+                  t = t.replace("*","\\w*");
+                  updated.push(new RegExp(t));
+                  LoadResourceManager.Instance.addDeleteRequest(s);
                }
-               _loc9_ = [];
+               temp = [];
                var _loc13_:int = 0;
                var _loc12_:* = _files;
-               for(var _loc4_ in _files)
+               for(var f in _files)
                {
-                  _loc4_ = _loc4_.toLocaleLowerCase();
-                  if(hasUpdate(_loc4_,_loc7_))
+                  f = f.toLocaleLowerCase();
+                  if(hasUpdate(f,updated))
                   {
-                     _loc9_.push(_loc4_);
+                     temp.push(f);
                   }
                }
                var _loc15_:int = 0;
-               var _loc14_:* = _loc9_;
-               for each(var _loc8_ in _loc9_)
+               var _loc14_:* = temp;
+               for each(var n in temp)
                {
-                  delete _files[_loc8_];
+                  delete _files[n];
                }
             }
-            _version = param2;
-            _files["version"] = param2;
+            _version = tov;
+            _files["version"] = tov;
             _changed = true;
          }
       }
       
-      public static function clearFiles(param1:String) : void
+      public static function clearFiles(filter:String) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc6_:* = null;
+         var updated:* = null;
+         var t:* = null;
+         var temp:* = null;
          if(_files)
          {
-            _loc4_ = [];
-            _loc3_ = getPath(param1);
-            _loc3_ = _loc3_.replace("*","\\w*");
-            _loc4_.push(new RegExp(_loc3_));
-            _loc6_ = [];
+            updated = [];
+            t = getPath(filter);
+            t = t.replace("*","\\w*");
+            updated.push(new RegExp(t));
+            temp = [];
             var _loc8_:int = 0;
             var _loc7_:* = _files;
-            for(var _loc2_ in _files)
+            for(var f in _files)
             {
-               _loc2_ = _loc2_.toLocaleLowerCase();
-               if(hasUpdate(_loc2_,_loc4_))
+               f = f.toLocaleLowerCase();
+               if(hasUpdate(f,updated))
                {
-                  _loc6_.push(_loc2_);
+                  temp.push(f);
                }
             }
             var _loc10_:int = 0;
-            var _loc9_:* = _loc6_;
-            for each(var _loc5_ in _loc6_)
+            var _loc9_:* = temp;
+            for each(var n in temp)
             {
-               delete _files[_loc5_];
+               delete _files[n];
             }
             try
             {
@@ -211,16 +211,16 @@ package com.pickgliss.loader
          ReadShareError = true;
       }
       
-      private static function getPath(param1:String) : String
+      private static function getPath(path:String) : String
       {
-         param1 = LoaderNameFilter.getRealFilePath(param1);
-         var _loc2_:int = param1.indexOf("?");
-         if(_loc2_ != -1)
+         path = LoaderNameFilter.getRealFilePath(path);
+         var index:int = path.indexOf("?");
+         if(index != -1)
          {
-            param1 = param1.substring(0,_loc2_);
+            path = path.substring(0,index);
          }
-         param1 = param1.replace(_reg1,"");
-         return param1.replace(_reg2,"-").toLocaleLowerCase();
+         path = path.replace(_reg1,"");
+         return path.replace(_reg2,"-").toLocaleLowerCase();
       }
       
       public static function saveFilesToLocal() : void
@@ -240,28 +240,27 @@ package com.pickgliss.loader
          }
       }
       
-      private static function save(param1:Event) : void
+      private static function save(event:Event) : void
       {
-         var _loc4_:* = null;
-         var _loc2_:int = 0;
-         var _loc5_:* = null;
-         var _loc3_:* = null;
+         var state:* = null;
+         var tick:int = 0;
+         var obj:* = null;
+         var so:* = null;
          try
          {
-            _loc4_ = _so.flush(20971520);
-            if(_loc4_ != "pending")
+            state = _so.flush(20971520);
+            if(state != "pending")
             {
-               _loc2_ = getTimer();
+               tick = getTimer();
                if(_save.length > 0)
                {
-                  _loc5_ = _save[0];
-                  _loc3_ = SharedObject.getLocal(_loc5_.p,"/");
-                  _loc3_.data["data"] = _loc5_.d;
-                  _loc3_.flush();
-                  _files[_loc5_.p] = true;
+                  obj = _save[0];
+                  so = SharedObject.getLocal(obj.p,"/");
+                  so.data["data"] = obj.d;
+                  so.flush();
+                  _files[obj.p] = true;
                   _so.flush();
                   _save.shift();
-                  trace("save local data spend:",getTimer() - _loc2_,"  left:",_save.length,"  file:",_loc5_.p);
                }
                if(_save.length == 0)
                {
@@ -279,13 +278,13 @@ package com.pickgliss.loader
          }
       }
       
-      private static function hasUpdate(param1:String, param2:Array) : Boolean
+      private static function hasUpdate(path:String, updateList:Array) : Boolean
       {
          var _loc5_:int = 0;
-         var _loc4_:* = param2;
-         for each(var _loc3_ in param2)
+         var _loc4_:* = updateList;
+         for each(var s in updateList)
          {
-            if(param1.match(_loc3_))
+            if(path.match(s))
             {
                return true;
             }
@@ -293,64 +292,64 @@ package com.pickgliss.loader
          return false;
       }
       
-      public static function loadCachedFile(param1:String, param2:Boolean) : ByteArray
+      public static function loadCachedFile(path:String, cacheInMem:Boolean) : ByteArray
       {
-         var _loc6_:* = null;
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc5_:* = null;
+         var p:* = null;
+         var tick:int = 0;
+         var f:* = null;
+         var so:* = null;
          if(_files)
          {
-            _loc6_ = getPath(param1);
-            _loc4_ = getTimer();
-            _loc3_ = findInSave(_loc6_);
-            if(_loc3_ == null && _files[_loc6_])
+            p = getPath(path);
+            tick = getTimer();
+            f = findInSave(p);
+            if(f == null && _files[p])
             {
-               _loc5_ = SharedObject.getLocal(_loc6_,"/");
-               _loc3_ = ByteArray(_loc5_.data["data"]);
+               so = SharedObject.getLocal(p,"/");
+               f = ByteArray(so.data["data"]);
             }
-            if(_loc3_)
+            if(f)
             {
-               trace("get{local:",getTimer() - _loc4_,"ms}",param1);
-               return _loc3_;
+               trace("get{local:",getTimer() - tick,"ms}",path);
+               return f;
             }
          }
-         trace("get{network}",param1);
+         trace("get{network}",path);
          return null;
       }
       
-      private static function findInSave(param1:String) : ByteArray
+      private static function findInSave(path:String) : ByteArray
       {
          var _loc4_:int = 0;
          var _loc3_:* = _save;
-         for each(var _loc2_ in _save)
+         for each(var cache in _save)
          {
-            if(_loc2_.p == param1)
+            if(cache.p == path)
             {
-               return ByteArray(_loc2_.d);
+               return ByteArray(cache.d);
             }
          }
          return null;
       }
       
-      public static function cacheFile(param1:String, param2:ByteArray, param3:Boolean) : void
+      public static function cacheFile(path:String, data:ByteArray, cacheInMem:Boolean) : void
       {
-         var _loc4_:* = null;
+         var p:* = null;
          if(!LoadResourceManager.Instance.isMicroClient && _files)
          {
-            _loc4_ = getPath(param1);
+            p = getPath(path);
             _save.push({
-               "p":_loc4_,
-               "d":param2
+               "p":p,
+               "d":data
             });
             _changed = true;
          }
       }
       
-      private static function __netStatus(param1:NetStatusEvent) : void
+      private static function __netStatus(event:NetStatusEvent) : void
       {
-         trace(param1.info.code);
-         var _loc2_:* = param1.info.code;
+         trace(event.info.code);
+         var _loc2_:* = event.info.code;
          if("SharedObject.Flush.Failed" !== _loc2_)
          {
             _retryCount = 0;
@@ -366,50 +365,50 @@ package com.pickgliss.loader
          }
       }
       
-      public static function updateList(param1:XMLList) : void
+      public static function updateList(list:XMLList) : void
       {
          var _loc4_:int = 0;
-         var _loc3_:* = param1;
-         for each(var _loc2_ in param1)
+         var _loc3_:* = list;
+         for each(var node in list)
          {
-            parseUpdate(_loc2_);
+            parseUpdate(node);
          }
          LoadResourceManager.Instance.addEventListener("delete",__deleteComplete);
          LoadResourceManager.Instance.startDelete();
       }
       
-      protected static function __deleteComplete(param1:Event) : void
+      protected static function __deleteComplete(event:Event) : void
       {
          eventDispatcher.dispatchEvent(new Event("complete"));
       }
       
-      public static function parseUpdate(param1:XML) : void
+      public static function parseUpdate(config:XML) : void
       {
-         var _loc6_:* = null;
-         var _loc2_:int = 0;
-         var _loc8_:int = 0;
-         var _loc4_:* = null;
-         var _loc5_:* = null;
+         var vs:* = null;
+         var tov:int = 0;
+         var fromv:int = 0;
+         var fs:* = null;
+         var updatelist:* = null;
          try
          {
-            _loc6_ = param1..version;
+            vs = config..version;
             var _loc13_:int = 0;
-            var _loc12_:* = _loc6_;
-            for each(var _loc3_ in _loc6_)
+            var _loc12_:* = vs;
+            for each(var unode in vs)
             {
-               _loc2_ = _loc3_.@to;
-               if(_version <= _loc2_)
+               tov = unode.@to;
+               if(_version <= tov)
                {
-                  _loc8_ = _loc3_.@from;
-                  _loc4_ = _loc3_..file;
-                  _loc5_ = [];
+                  fromv = unode.@from;
+                  fs = unode..file;
+                  updatelist = [];
                   var _loc11_:int = 0;
-                  var _loc10_:* = _loc4_;
-                  for each(var _loc7_ in _loc4_)
+                  var _loc10_:* = fs;
+                  for each(var fn in fs)
                   {
-                     _loc5_.push(String(_loc7_.@value));
+                     updatelist.push(String(fn.@value));
                   }
-                  applyUpdate(_loc8_,_loc2_,_loc5_);
+                  applyUpdate(fromv,tov,updatelist);
                }
             }
          }
@@ -434,8 +433,8 @@ package com.pickgliss.loader
       
       public static function clearAllCache() : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var file:* = null;
+         var fileSO:* = null;
          if(LoadResourceManager.Instance.isMicroClient)
          {
             LoadResourceManager.Instance.deleteResource("*");
@@ -444,28 +443,28 @@ package com.pickgliss.loader
          {
             return;
          }
-         var _loc1_:Array = [];
+         var fileList:Array = [];
          var _loc6_:int = 0;
          var _loc5_:* = _files;
-         for(var _loc4_ in _files)
+         for(var a in _files)
          {
-            if(_loc4_ != "version")
+            if(a != "version")
             {
-               _loc4_ = _loc4_.toLocaleLowerCase();
-               _loc1_.push(_loc4_);
-               delete _files[_loc4_];
+               a = a.toLocaleLowerCase();
+               fileList.push(a);
+               delete _files[a];
             }
          }
          while(true)
          {
-            _loc3_ = _loc1_.pop();
-            if(!_loc1_.pop())
+            file = fileList.pop();
+            if(!fileList.pop())
             {
                break;
             }
-            _loc2_ = SharedObject.getLocal(_loc3_,"/");
-            _loc2_.data["data"] = {};
-            _loc2_.flush();
+            fileSO = SharedObject.getLocal(file,"/");
+            fileSO.data["data"] = {};
+            fileSO.flush();
          }
          _version = -1;
          _files = {};

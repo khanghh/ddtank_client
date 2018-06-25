@@ -33,17 +33,17 @@ package littleGame.actions
          super(null,null,null);
       }
       
-      override public function parsePackege(param1:Scenario, param2:PackageIn = null) : void
+      override public function parsePackege(scene:Scenario, pkg:PackageIn = null) : void
       {
-         _scene = param1;
+         _scene = scene;
          _grid = _scene != null?_scene.grid:null;
-         var _loc3_:int = param2.readInt();
-         _endAction = param2.readUTF();
-         _direction = param2.readUTF();
-         _life = param2.readInt();
-         _dx = param2.readInt();
-         _dy = param2.readInt();
-         _living = _scene != null?_scene.findLiving(_loc3_):null;
+         var id:int = pkg.readInt();
+         _endAction = pkg.readUTF();
+         _direction = pkg.readUTF();
+         _life = pkg.readInt();
+         _dx = pkg.readInt();
+         _dy = pkg.readInt();
+         _living = _scene != null?_scene.findLiving(id):null;
          if(_living != null)
          {
             _living.act(this);

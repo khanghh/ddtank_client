@@ -19,7 +19,7 @@ package midAutumnWorshipTheMoon
       
       private var _isOpen:Boolean = false;
       
-      public function WorshipTheMoonController(param1:inner)
+      public function WorshipTheMoonController(single:inner)
       {
          super();
       }
@@ -47,9 +47,9 @@ package midAutumnWorshipTheMoon
          _manager.addEventListener("wship_dispose_frame",onEventHandler);
       }
       
-      protected function onEventHandler(param1:CEvent) : void
+      protected function onEventHandler(e:CEvent) : void
       {
-         var _loc2_:* = param1.type;
+         var _loc2_:* = e.type;
          if("wship_hide" !== _loc2_)
          {
             if("wship_show" !== _loc2_)

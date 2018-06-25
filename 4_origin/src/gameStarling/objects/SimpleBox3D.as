@@ -39,11 +39,11 @@ package gameStarling.objects
       
       private var _visible:Boolean = true;
       
-      public function SimpleBox3D(param1:int, param2:String, param3:int = 1)
+      public function SimpleBox3D(id:int, model:String, subType:int = 1)
       {
-         _subType = param3;
+         _subType = subType;
          _self = GameControl.Instance.Current.selfGamePlayer;
-         super(param1,1,param2,"");
+         super(id,1,model,"");
          this.x = x;
          this.y = y;
          _canCollided = true;
@@ -90,7 +90,7 @@ package gameStarling.objects
          _self.addEventListener("livingRevive",__onSelfPlayerRevive);
       }
       
-      private function __click(param1:MouseEvent) : void
+      private function __click(evt:MouseEvent) : void
       {
          if(parent)
          {
@@ -120,13 +120,13 @@ package gameStarling.objects
          return GhostBoxModel.getInstance().getPsychicByType(_subType);
       }
       
-      protected function setIsGhost(param1:Boolean) : void
+      protected function setIsGhost(value:Boolean) : void
       {
-         if(param1 == _isGhostBox)
+         if(value == _isGhostBox)
          {
             return;
          }
-         _isGhostBox = param1;
+         _isGhostBox = value;
          if(!_isGhostBox == GameControl.Instance.Current.selfGamePlayer.isLiving)
          {
             this.visible = true;
@@ -137,9 +137,9 @@ package gameStarling.objects
          }
       }
       
-      public function pickByLiving(param1:Living) : void
+      public function pickByLiving(living:Living) : void
       {
-         param1.pick(this);
+         living.pick(this);
          if(!_self.isLiving)
          {
             SoundManager.instance.play("018");
@@ -147,7 +147,7 @@ package gameStarling.objects
          die();
       }
       
-      override protected function creatMovie(param1:String) : void
+      override protected function creatMovie(model:String) : void
       {
          if(isGhost)
          {
@@ -162,16 +162,16 @@ package gameStarling.objects
          }
          else
          {
-            _box = StarlingMain.instance.createImage("asset.game.simpleBoxPicAsset" + param1);
+            _box = StarlingMain.instance.createImage("asset.game.simpleBoxPicAsset" + model);
             _box.x = -_box.width >> 1;
             _box.y = -_box.height >> 1;
             addChild(_box);
          }
       }
       
-      public function setContainer(param1:DisplayObjectContainer) : void
+      public function setContainer(constainer:DisplayObjectContainer) : void
       {
-         _constainer = param1;
+         _constainer = constainer;
          if(super.visible)
          {
             if(isGhost)
@@ -188,7 +188,7 @@ package gameStarling.objects
          }
       }
       
-      override public function set visible(param1:Boolean) : void
+      override public function set visible(value:Boolean) : void
       {
          if(!_self.isLiving)
          {
@@ -198,20 +198,20 @@ package gameStarling.objects
             }
             else
             {
-               .super.visible = param1 && isGhost;
+               .super.visible = value && isGhost;
             }
          }
          else
          {
-            .super.visible = param1 && !isGhost;
+            .super.visible = value && !isGhost;
          }
       }
       
-      override public function collidedByObject(param1:PhysicalObj3D) : void
+      override public function collidedByObject(obj:PhysicalObj3D) : void
       {
-         if(param1 is SimpleBomb3D)
+         if(obj is SimpleBomb3D)
          {
-            SimpleBomb3D(param1).owner.pick(this);
+            SimpleBomb3D(obj).owner.pick(this);
             if(!isGhost && _self.isLiving)
             {
                SoundManager.instance.play("018");
@@ -251,7 +251,7 @@ package gameStarling.objects
          super.die();
       }
       
-      protected function __boxDieComplete(param1:Event) : void
+      protected function __boxDieComplete(event:Event) : void
       {
          if(_dieMC)
          {
@@ -286,9 +286,9 @@ package gameStarling.objects
          super.dispose();
       }
       
-      override public function playAction(param1:String) : void
+      override public function playAction(action:String) : void
       {
-         var _loc2_:* = param1;
+         var _loc2_:* = action;
          if("BoxNormal" !== _loc2_)
          {
             if("BoxColorChanged" !== _loc2_)
@@ -321,7 +321,7 @@ package gameStarling.objects
          }
       }
       
-      private function __onSelfPlayerDie(param1:Event) : void
+      private function __onSelfPlayerDie(evt:Event) : void
       {
          if(!_self.isLast)
          {
@@ -329,7 +329,7 @@ package gameStarling.objects
          }
       }
       
-      private function __onSelfPlayerRevive(param1:Event) : void
+      private function __onSelfPlayerRevive(evt:Event) : void
       {
          if(isGhost)
          {

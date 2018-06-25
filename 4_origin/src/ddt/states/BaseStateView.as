@@ -48,7 +48,7 @@ package ddt.states
          return _prepared;
       }
       
-      public function check(param1:String) : Boolean
+      public function check(type:String) : Boolean
       {
          return true;
       }
@@ -58,10 +58,10 @@ package ddt.states
          _prepared = true;
       }
       
-      public function enter(param1:BaseStateView, param2:Object = null) : void
+      public function enter(prev:BaseStateView, data:Object = null) : void
       {
-         var _loc3_:String = getType();
-         if(_loc3_ != "roomLoading" && _loc3_ != "consortia_domain" && !StartupResourceLoader.firstEnterHall)
+         var type:String = getType();
+         if(type != "roomLoading" && type != "consortia_domain" && !StartupResourceLoader.firstEnterHall)
          {
             SoundManager.instance.playMusic("062",true,false);
          }
@@ -93,19 +93,18 @@ package ddt.states
       
       private function createShapes() : void
       {
-         var _loc4_:int = 0;
-         var _loc1_:int = 0;
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:BitmapData = new BitmapData(_size,_size,false,0);
+         var h:int = 0;
+         var w:int = 0;
+         var i:int = 0;
+         var bitmap:* = null;
+         var src:BitmapData = new BitmapData(_size,_size,false,0);
          if(_shapes)
          {
-            _loc5_ = 0;
-            while(_loc5_ < _shapes.length)
+            for(i = 0; i < _shapes.length; )
             {
-               ObjectUtils.disposeObject(_shapes[_loc5_]);
-               _shapes[_loc5_] = null;
-               _loc5_++;
+               ObjectUtils.disposeObject(_shapes[i]);
+               _shapes[i] = null;
+               i++;
             }
             _shapes.splice(0,_shapes.length);
          }
@@ -115,74 +114,74 @@ package ddt.states
          }
          do
          {
-            _loc4_ = 0;
+            h = 0;
             do
             {
-               _loc2_ = new Bitmap(_loc3_);
-               _shapes.push(_loc2_);
-               _loc4_ = _loc4_ + _size;
+               bitmap = new Bitmap(src);
+               _shapes.push(bitmap);
+               h = h + _size;
             }
-            while(_loc4_ < StageReferance.stageHeight);
+            while(h < StageReferance.stageHeight);
             
-            _loc1_ = _loc1_ + _size;
+            w = w + _size;
          }
-         while(_loc1_ < StageReferance.stageWidth);
+         while(w < StageReferance.stageWidth);
          
       }
       
       private function rebackInitState() : void
       {
-         var _loc1_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
+         var w:int = 0;
+         var h:int = 0;
+         var i:int = 0;
          do
          {
-            _loc2_ = 0;
+            h = 0;
             do
             {
-               if(_loc3_ < _shapes.length)
+               if(i < _shapes.length)
                {
-                  _shapes[_loc3_].width = _size;
-                  _shapes[_loc3_].height = _size;
-                  _shapes[_loc3_].x = _loc1_;
-                  _shapes[_loc3_].y = _loc2_;
-                  _shapes[_loc3_].alpha = 1;
-                  _container.addChild(_shapes[_loc3_]);
-                  _loc3_++;
+                  _shapes[i].width = _size;
+                  _shapes[i].height = _size;
+                  _shapes[i].x = w;
+                  _shapes[i].y = h;
+                  _shapes[i].alpha = 1;
+                  _container.addChild(_shapes[i]);
+                  i++;
                }
-               _loc2_ = _loc2_ + _size;
+               h = h + _size;
             }
-            while(_loc2_ < StageReferance.stageHeight);
+            while(h < StageReferance.stageHeight);
             
-            _loc1_ = _loc1_ + _size;
+            w = w + _size;
          }
-         while(_loc1_ < StageReferance.stageWidth);
+         while(w < StageReferance.stageWidth);
          
          index = 0;
       }
       
-      private function __tick(param1:TimerEvent) : void
+      private function __tick(evt:TimerEvent) : void
       {
-         var _loc3_:* = 0;
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc2_:int = _timer.currentCount - 1;
-         if(_loc2_ >= 0)
+         var half:* = 0;
+         var len:int = 0;
+         var shape:* = null;
+         var idx:int = _timer.currentCount - 1;
+         if(idx >= 0)
          {
-            _loc3_ = _size >> 1;
-            _loc5_ = StageReferance.stageHeight / _size;
+            half = _size >> 1;
+            len = StageReferance.stageHeight / _size;
             while(true)
             {
-               _loc5_--;
-               if(!(_loc5_ > 0 && index < _shapes.length))
+               len--;
+               if(!(len > 0 && index < _shapes.length))
                {
                   break;
                }
                index = Number(index) + 1;
-               _loc4_ = _shapes[Number(index)];
-               TweenLite.to(_loc4_,0.7,{
-                  "x":_loc4_.x + _loc3_,
-                  "y":_loc4_.y + _loc3_,
+               shape = _shapes[Number(index)];
+               TweenLite.to(shape,0.7,{
+                  "x":shape.x + half,
+                  "y":shape.y + half,
                   "width":0,
                   "height":0,
                   "alpha":0,
@@ -210,7 +209,7 @@ package ddt.states
       {
       }
       
-      public function leaving(param1:BaseStateView) : void
+      public function leaving(next:BaseStateView) : void
       {
          NewHandContainer.Instance.clearArrowByID(-1);
          PetSpriteManager.Instance.hidePetSprite(true,false);

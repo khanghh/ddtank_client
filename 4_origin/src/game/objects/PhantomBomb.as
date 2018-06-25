@@ -13,21 +13,20 @@ package game.objects
       
       private var _currentBombAction:BombAction;
       
-      public function PhantomBomb(param1:Bomb, param2:Living, param3:int = 0)
+      public function PhantomBomb(info:Bomb, owner:Living, refineryLevel:int = 0)
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         super(param1,param2,param3);
-         _loc5_ = 0;
-         while(_loc5_ < _info.Actions.length)
+         var i:int = 0;
+         var bombAction:* = null;
+         super(info,owner,refineryLevel);
+         for(i = 0; i < _info.Actions.length; )
          {
-            _loc4_ = _info.Actions[_loc5_] as BombAction;
-            if(_loc4_.type == 2 || _loc4_.type == 4)
+            bombAction = _info.Actions[i] as BombAction;
+            if(bombAction.type == 2 || bombAction.type == 4)
             {
-               _currentBombAction = _loc4_;
+               _currentBombAction = bombAction;
                break;
             }
-            _loc5_++;
+            i++;
          }
          if(_currentBombAction)
          {
@@ -35,25 +34,25 @@ package game.objects
          }
       }
       
-      override public function moveTo(param1:Point) : void
+      override public function moveTo(p:Point) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         super.moveTo(param1);
+         var newInfo:* = null;
+         var simpleBomb:* = null;
+         super.moveTo(p);
          if(_lifeTime % 80 == 0)
          {
             if(_phantomCount > 0)
             {
-               _loc2_ = new Bomb();
-               ObjectUtils.copyProperties(_loc2_,_info);
-               _loc2_.Template = _info.Template;
-               _loc2_.Actions = [_currentBombAction];
-               _loc3_ = new SimpleBomb(_loc2_,_owner,_refineryLevel,true);
-               _loc3_.alpha = 0.5;
-               this.map.addPhysical(_loc3_);
+               newInfo = new Bomb();
+               ObjectUtils.copyProperties(newInfo,_info);
+               newInfo.Template = _info.Template;
+               newInfo.Actions = [_currentBombAction];
+               simpleBomb = new SimpleBomb(newInfo,_owner,_refineryLevel,true);
+               simpleBomb.alpha = 0.5;
+               this.map.addPhysical(simpleBomb);
                if(fastModel)
                {
-                  _loc3_.bombAtOnce();
+                  simpleBomb.bombAtOnce();
                }
             }
             _phantomCount = Number(_phantomCount) - 1;

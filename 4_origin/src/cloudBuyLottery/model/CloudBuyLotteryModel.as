@@ -58,9 +58,9 @@ package cloudBuyLottery.model
          return _isOpen;
       }
       
-      public function set isOpen(param1:Boolean) : void
+      public function set isOpen(value:Boolean) : void
       {
-         _isOpen = param1;
+         _isOpen = value;
       }
       
       public function get luckTime() : Date
@@ -68,9 +68,9 @@ package cloudBuyLottery.model
          return _luckTime;
       }
       
-      public function set luckTime(param1:Date) : void
+      public function set luckTime(value:Date) : void
       {
-         _luckTime = param1;
+         _luckTime = value;
       }
       
       public function get moneyNum() : int
@@ -78,9 +78,9 @@ package cloudBuyLottery.model
          return _moneyNum;
       }
       
-      public function set moneyNum(param1:int) : void
+      public function set moneyNum(value:int) : void
       {
-         _moneyNum = param1;
+         _moneyNum = value;
       }
       
       public function get templateId() : int
@@ -88,9 +88,9 @@ package cloudBuyLottery.model
          return _templateId;
       }
       
-      public function set templateId(param1:int) : void
+      public function set templateId(value:int) : void
       {
-         _templateId = param1;
+         _templateId = value;
       }
       
       public function get validDate() : int
@@ -98,9 +98,9 @@ package cloudBuyLottery.model
          return _validDate;
       }
       
-      public function set validDate(param1:int) : void
+      public function set validDate(value:int) : void
       {
-         _validDate = param1;
+         _validDate = value;
       }
       
       public function get count() : int
@@ -108,9 +108,9 @@ package cloudBuyLottery.model
          return _count;
       }
       
-      public function set count(param1:int) : void
+      public function set count(value:int) : void
       {
-         _count = param1;
+         _count = value;
       }
       
       public function get buyGoodsIDArray() : Array
@@ -118,9 +118,9 @@ package cloudBuyLottery.model
          return _buyGoodsIDArray;
       }
       
-      public function set buyGoodsIDArray(param1:Array) : void
+      public function set buyGoodsIDArray(value:Array) : void
       {
-         _buyGoodsIDArray = param1;
+         _buyGoodsIDArray = value;
       }
       
       public function get buyGoodsCountArray() : Array
@@ -128,9 +128,9 @@ package cloudBuyLottery.model
          return _buyGoodsCountArray;
       }
       
-      public function set buyGoodsCountArray(param1:Array) : void
+      public function set buyGoodsCountArray(value:Array) : void
       {
-         _buyGoodsCountArray = param1;
+         _buyGoodsCountArray = value;
       }
       
       public function get buyMoney() : int
@@ -138,9 +138,9 @@ package cloudBuyLottery.model
          return _buyMoney;
       }
       
-      public function set buyMoney(param1:int) : void
+      public function set buyMoney(value:int) : void
       {
-         _buyMoney = param1;
+         _buyMoney = value;
       }
       
       public function get maxNum() : int
@@ -148,9 +148,9 @@ package cloudBuyLottery.model
          return _maxNum;
       }
       
-      public function set maxNum(param1:int) : void
+      public function set maxNum(value:int) : void
       {
-         _maxNum = param1;
+         _maxNum = value;
       }
       
       public function get currentNum() : int
@@ -158,9 +158,9 @@ package cloudBuyLottery.model
          return _currentNum;
       }
       
-      public function set currentNum(param1:int) : void
+      public function set currentNum(value:int) : void
       {
-         _currentNum = param1;
+         _currentNum = value;
       }
       
       public function get totalSeconds() : int
@@ -168,9 +168,9 @@ package cloudBuyLottery.model
          return _totalSeconds;
       }
       
-      public function set totalSeconds(param1:int) : void
+      public function set totalSeconds(value:int) : void
       {
-         _totalSeconds = param1;
+         _totalSeconds = value;
       }
       
       public function get luckCount() : int
@@ -178,9 +178,9 @@ package cloudBuyLottery.model
          return _luckCount;
       }
       
-      public function set luckCount(param1:int) : void
+      public function set luckCount(value:int) : void
       {
-         _luckCount = param1;
+         _luckCount = value;
       }
       
       public function get remainTimes() : int
@@ -188,9 +188,9 @@ package cloudBuyLottery.model
          return _remainTimes;
       }
       
-      public function set remainTimes(param1:int) : void
+      public function set remainTimes(value:int) : void
       {
-         _remainTimes = param1;
+         _remainTimes = value;
       }
       
       public function get property() : Array
@@ -198,9 +198,9 @@ package cloudBuyLottery.model
          return _property;
       }
       
-      public function set property(param1:Array) : void
+      public function set property(value:Array) : void
       {
-         _property = param1;
+         _property = value;
       }
       
       public function get luckDrawId() : int
@@ -208,9 +208,9 @@ package cloudBuyLottery.model
          return _luckDrawId;
       }
       
-      public function set luckDrawId(param1:int) : void
+      public function set luckDrawId(value:int) : void
       {
-         _luckDrawId = param1;
+         _luckDrawId = value;
       }
       
       public function get isGame() : Boolean
@@ -218,9 +218,9 @@ package cloudBuyLottery.model
          return _isGame;
       }
       
-      public function set isGame(param1:Boolean) : void
+      public function set isGame(value:Boolean) : void
       {
-         _isGame = param1;
+         _isGame = value;
       }
       
       public function get isGetReward() : Boolean
@@ -228,9 +228,9 @@ package cloudBuyLottery.model
          return _isGetReward;
       }
       
-      public function set isGetReward(param1:Boolean) : void
+      public function set isGetReward(value:Boolean) : void
       {
-         _isGetReward = param1;
+         _isGetReward = value;
       }
       
       public function get templatedIdCount() : int
@@ -238,9 +238,9 @@ package cloudBuyLottery.model
          return _templatedIdCount;
       }
       
-      public function set templatedIdCount(param1:int) : void
+      public function set templatedIdCount(value:int) : void
       {
-         _templatedIdCount = param1;
+         _templatedIdCount = value;
       }
    }
 }

@@ -26,9 +26,9 @@ package consortion.view.selfConsortia
          addToContent(_panel);
       }
       
-      override protected function onResponse(param1:int) : void
+      override protected function onResponse(type:int) : void
       {
-         switch(int(param1))
+         switch(int(type))
          {
             case 0:
             case 1:

@@ -28,68 +28,68 @@ package dragonBones.factories
          super(this);
       }
       
-      override protected function generateTextureAtlas(param1:Object, param2:Object) : ITextureAtlas
+      override protected function generateTextureAtlas(content:Object, textureAtlasRawData:Object) : ITextureAtlas
       {
-         var _loc3_:NativeTextureAtlas = new NativeTextureAtlas(param1,param2,1,false);
-         return _loc3_;
+         var textureAtlas:NativeTextureAtlas = new NativeTextureAtlas(content,textureAtlasRawData,1,false);
+         return textureAtlas;
       }
       
       override protected function generateArmature() : Armature
       {
-         var _loc2_:Sprite = new Sprite();
-         var _loc1_:Armature = new Armature(_loc2_);
-         return _loc1_;
+         var display:Sprite = new Sprite();
+         var armature:Armature = new Armature(display);
+         return armature;
       }
       
       override protected function generateFastArmature() : FastArmature
       {
-         var _loc1_:FastArmature = new FastArmature(new Sprite());
-         return _loc1_;
+         var armature:FastArmature = new FastArmature(new Sprite());
+         return armature;
       }
       
       override protected function generateFastSlot() : FastSlot
       {
-         var _loc1_:FastSlot = new NativeFastSlot();
-         return _loc1_;
+         var slot:FastSlot = new NativeFastSlot();
+         return slot;
       }
       
       override protected function generateSlot() : Slot
       {
-         var _loc1_:Slot = new NativeSlot();
-         return _loc1_;
+         var slot:Slot = new NativeSlot();
+         return slot;
       }
       
-      override protected function generateDisplay(param1:Object, param2:String, param3:Number, param4:Number) : Object
+      override protected function generateDisplay(textureAtlas:Object, fullName:String, pivotX:Number, pivotY:Number) : Object
       {
-         var _loc8_:* = null;
-         var _loc10_:* = null;
-         var _loc5_:* = null;
-         var _loc7_:* = null;
-         var _loc6_:* = null;
-         var _loc9_:* = null;
-         if(param1 is NativeTextureAtlas)
+         var nativeTextureAtlas:* = null;
+         var movieClip:* = null;
+         var displaySWF:* = null;
+         var subTextureRegion:* = null;
+         var subTextureFrame:* = null;
+         var displayShape:* = null;
+         if(textureAtlas is NativeTextureAtlas)
          {
-            _loc8_ = param1 as NativeTextureAtlas;
+            nativeTextureAtlas = textureAtlas as NativeTextureAtlas;
          }
-         if(_loc8_)
+         if(nativeTextureAtlas)
          {
-            _loc10_ = _loc8_.movieClip;
-            if(useBitmapDataTexture && _loc10_)
+            movieClip = nativeTextureAtlas.movieClip;
+            if(useBitmapDataTexture && movieClip)
             {
-               _loc8_.movieClipToBitmapData();
+               nativeTextureAtlas.movieClipToBitmapData();
             }
-            if(!useBitmapDataTexture && _loc10_ && _loc10_.totalFrames >= 3)
+            if(!useBitmapDataTexture && movieClip && movieClip.totalFrames >= 3)
             {
-               _loc10_.gotoAndStop(_loc10_.totalFrames);
-               _loc10_.gotoAndStop(param2);
-               if(_loc10_.numChildren > 0)
+               movieClip.gotoAndStop(movieClip.totalFrames);
+               movieClip.gotoAndStop(fullName);
+               if(movieClip.numChildren > 0)
                {
                   try
                   {
-                     _loc5_ = _loc10_.getChildAt(0);
-                     _loc5_.x = 0;
-                     _loc5_.y = 0;
-                     var _loc12_:* = _loc5_;
+                     displaySWF = movieClip.getChildAt(0);
+                     displaySWF.x = 0;
+                     displaySWF.y = 0;
+                     var _loc12_:* = displaySWF;
                      return _loc12_;
                   }
                   catch(e:Error)
@@ -98,41 +98,41 @@ package dragonBones.factories
                   }
                }
             }
-            else if(_loc8_.bitmapData)
+            else if(nativeTextureAtlas.bitmapData)
             {
-               _loc7_ = _loc8_.getRegion(param2);
-               if(_loc7_)
+               subTextureRegion = nativeTextureAtlas.getRegion(fullName);
+               if(subTextureRegion)
                {
-                  _loc6_ = _loc8_.getFrame(param2);
-                  if(isNaN(param3) || isNaN(param3))
+                  subTextureFrame = nativeTextureAtlas.getFrame(fullName);
+                  if(isNaN(pivotX) || isNaN(pivotX))
                   {
-                     if(_loc6_)
+                     if(subTextureFrame)
                      {
-                        param3 = _loc6_.width / 2 + _loc6_.x;
-                        param4 = _loc6_.height / 2 + _loc6_.y;
+                        pivotX = subTextureFrame.width / 2 + subTextureFrame.x;
+                        pivotY = subTextureFrame.height / 2 + subTextureFrame.y;
                      }
                      else
                      {
-                        param3 = _loc7_.width / 2;
-                        param4 = _loc7_.height / 2;
+                        pivotX = subTextureRegion.width / 2;
+                        pivotY = subTextureRegion.height / 2;
                      }
                   }
-                  else if(_loc6_)
+                  else if(subTextureFrame)
                   {
-                     param3 = param3 + _loc6_.x;
-                     param4 = param4 + _loc6_.y;
+                     pivotX = pivotX + subTextureFrame.x;
+                     pivotY = pivotY + subTextureFrame.y;
                   }
-                  _loc9_ = new Shape();
+                  displayShape = new Shape();
                   _helpMatrix.a = 1;
                   _helpMatrix.b = 0;
                   _helpMatrix.c = 0;
                   _helpMatrix.d = 1;
-                  _helpMatrix.scale(1 / _loc8_.scale,1 / _loc8_.scale);
-                  _helpMatrix.tx = -param3 - _loc7_.x;
-                  _helpMatrix.ty = -param4 - _loc7_.y;
-                  _loc9_.graphics.beginBitmapFill(_loc8_.bitmapData,_helpMatrix,false,fillBitmapSmooth);
-                  _loc9_.graphics.drawRect(-param3,-param4,_loc7_.width,_loc7_.height);
-                  return _loc9_;
+                  _helpMatrix.scale(1 / nativeTextureAtlas.scale,1 / nativeTextureAtlas.scale);
+                  _helpMatrix.tx = -pivotX - subTextureRegion.x;
+                  _helpMatrix.ty = -pivotY - subTextureRegion.y;
+                  displayShape.graphics.beginBitmapFill(nativeTextureAtlas.bitmapData,_helpMatrix,false,fillBitmapSmooth);
+                  displayShape.graphics.drawRect(-pivotX,-pivotY,subTextureRegion.width,subTextureRegion.height);
+                  return displayShape;
                }
             }
             else

@@ -101,10 +101,10 @@ package tofflist.view
          _btns.push(_totalBtn);
          var _loc3_:int = 0;
          var _loc2_:* = _btns;
-         for each(var _loc1_ in _btns)
+         for each(var btn in _btns)
          {
-            _loc1_.addEventListener("click",__selectToolBarHandler);
-            addChild(_loc1_);
+            btn.addEventListener("click",__selectToolBarHandler);
+            addChild(btn);
          }
       }
       
@@ -112,15 +112,15 @@ package tofflist.view
       {
          var _loc3_:int = 0;
          var _loc2_:* = _btns;
-         for each(var _loc1_ in _btns)
+         for each(var btn in _btns)
          {
-            _loc1_.removeEventListener("click",__selectToolBarHandler);
-            _loc1_.dispose();
+            btn.removeEventListener("click",__selectToolBarHandler);
+            btn.dispose();
          }
          _btns = null;
       }
       
-      public function selectType(param1:String, param2:String) : void
+      public function selectType(parentType:String, secondType:String) : void
       {
          var _loc3_:* = TofflistModel.firstMenuType;
          if("personal" !== _loc3_)
@@ -158,7 +158,7 @@ package tofflist.view
                      _selectedButtonGroup.selectIndex = 1;
                      type = "week";
                   }
-                  addr143:
+                  addr170:
                }
                _loc3_ = false;
                _btns[1].enable = _loc3_;
@@ -166,9 +166,9 @@ package tofflist.view
                _btns[2].enable = true;
                _selectedButtonGroup.selectIndex = 2;
                type = "total";
-               §§goto(addr143);
+               §§goto(addr170);
             }
-            addr189:
+            addr226:
             return;
          }
          _loc3_ = TofflistModel.secondMenuType;
@@ -184,8 +184,8 @@ package tofflist.view
                _selectedButtonGroup.selectIndex = 1;
                type = "week";
             }
-            addr74:
-            §§goto(addr189);
+            addr90:
+            §§goto(addr226);
          }
          _loc3_ = false;
          _btns[1].enable = _loc3_;
@@ -193,7 +193,7 @@ package tofflist.view
          _btns[2].enable = true;
          _selectedButtonGroup.selectIndex = 2;
          type = "total";
-         §§goto(addr74);
+         §§goto(addr90);
       }
       
       public function get type() : String
@@ -201,20 +201,20 @@ package tofflist.view
          return TofflistModel.thirdMenuType;
       }
       
-      public function set type(param1:String) : void
+      public function set type(value:String) : void
       {
-         TofflistModel.thirdMenuType = param1;
+         TofflistModel.thirdMenuType = value;
          dispatchEvent(new TofflistEvent("tofflisttoolbarselect",type));
       }
       
-      private function __selectToolBarHandler(param1:MouseEvent) : void
+      private function __selectToolBarHandler(event:MouseEvent) : void
       {
-         if(type == param1.currentTarget.name)
+         if(type == event.currentTarget.name)
          {
             return;
          }
          SoundManager.instance.play("008");
-         type = BTN_CONST[_btns.indexOf(param1.currentTarget)];
+         type = BTN_CONST[_btns.indexOf(event.currentTarget)];
       }
    }
 }

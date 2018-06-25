@@ -23,27 +23,26 @@ package gradeAwardsBoxBtn.view
          super();
       }
       
-      public function onFrameClose(param1:Array) : void
+      public function onFrameClose(infos:Array) : void
       {
-         var _loc4_:* = null;
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
-         var _loc3_:* = null;
-         if(param1 == null)
+         var globalPoint:* = null;
+         var i:int = 0;
+         var info:* = null;
+         var bag:* = null;
+         if(infos == null)
          {
             return;
          }
-         var _loc2_:BaseButton = MainToolBar.Instance.goBagBtn;
-         if(_loc2_ && _loc2_.parent)
+         var goBagBtn:BaseButton = MainToolBar.Instance.goBagBtn;
+         if(goBagBtn && goBagBtn.parent)
          {
-            _loc4_ = MainToolBar.Instance.localToGlobal(new Point(_loc2_.x,_loc2_.y));
+            globalPoint = MainToolBar.Instance.localToGlobal(new Point(goBagBtn.x,goBagBtn.y));
          }
          else
          {
-            _loc4_ = new Point(MainToolBar.Instance.x,MainToolBar.Instance.y);
+            globalPoint = new Point(MainToolBar.Instance.x,MainToolBar.Instance.y);
          }
-         _loc6_ = 0;
-         while(_loc6_ < param1.length)
+         for(i = 0; i < infos.length; )
          {
             if(!tooMuch)
             {
@@ -53,20 +52,20 @@ package gradeAwardsBoxBtn.view
                   setTimeout(notTooMuchNow,2000);
                }
                totalCellFlying = Number(totalCellFlying) + 1;
-               _loc5_ = param1[_loc6_] as InventoryItemInfo;
-               _loc3_ = new BagCell(0,_loc5_);
-               _loc3_.x = StageReferance.stageWidth * 0.5;
-               _loc3_.y = StageReferance.stageHeight * 0.5;
-               TweenMax.to(_loc3_,0.8,{
+               info = infos[i] as InventoryItemInfo;
+               bag = new BagCell(0,info);
+               bag.x = StageReferance.stageWidth * 0.5;
+               bag.y = StageReferance.stageHeight * 0.5;
+               TweenMax.to(bag,0.8,{
                   "onStart":onFlyStart,
-                  "onStartParams":[_loc3_],
-                  "delay":_loc6_ * 0.1,
-                  "x":_loc4_.x,
-                  "y":_loc4_.y,
+                  "onStartParams":[bag],
+                  "delay":i * 0.1,
+                  "x":globalPoint.x,
+                  "y":globalPoint.y,
                   "onComplete":onGoodsIconFlied,
-                  "onCompleteParams":[_loc3_]
+                  "onCompleteParams":[bag]
                });
-               _loc6_++;
+               i++;
                continue;
             }
             break;
@@ -78,18 +77,18 @@ package gradeAwardsBoxBtn.view
          tooMuch = false;
       }
       
-      private function onFlyStart(param1:BagCell) : void
+      private function onFlyStart(tag:BagCell) : void
       {
-         LayerManager.Instance.addToLayer(param1,2);
+         LayerManager.Instance.addToLayer(tag,2);
       }
       
-      private function onGoodsIconFlied(param1:BagCell) : void
+      private function onGoodsIconFlied(tag:BagCell) : void
       {
          totalCellFlying = Number(totalCellFlying) - 1;
          totalCellFlying = Math.max(0,totalCellFlying);
-         param1.parent && param1.parent.removeChild(param1);
-         param1.dispose();
-         param1 = null;
+         tag.parent && tag.parent.removeChild(tag);
+         tag.dispose();
+         tag = null;
       }
    }
 }

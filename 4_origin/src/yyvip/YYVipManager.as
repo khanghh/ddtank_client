@@ -28,15 +28,15 @@ package yyvip
       
       private var _entryBtn:YYVipEntryBtn;
       
-      public function YYVipManager(param1:IEventDispatcher = null)
+      public function YYVipManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
          awardList = new DictionaryData();
          var _loc4_:int = 0;
          var _loc3_:* = award_id_list;
-         for each(var _loc2_ in award_id_list)
+         for each(var id in award_id_list)
          {
-            awardList.add(_loc2_,[]);
+            awardList.add(id,[]);
          }
       }
       
@@ -69,12 +69,12 @@ package yyvip
          dispatchEvent(new CEvent("yyvipOpenView"));
       }
       
-      public function createEntryBtn(param1:HBox) : void
+      public function createEntryBtn(hBox:HBox) : void
       {
          if(isShowEntryBtn)
          {
             _entryBtn = new YYVipEntryBtn();
-            param1.addChild(_entryBtn);
+            hBox.addChild(_entryBtn);
          }
       }
       

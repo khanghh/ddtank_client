@@ -46,24 +46,24 @@ package consortion.view.selfConsortia
          _completeFlag.visible = false;
       }
       
-      public function setData(param1:int) : void
+      public function setData(index:int) : void
       {
-         _index = param1;
+         _index = index;
          _callBackModel = ConsortionModelManager.Instance.model.callBackModel;
-         var _loc2_:Object = _callBackModel.awardArr[_index];
-         UICreatShortcut.creatTextAndAdd("consortion.callBackView.conTf",LanguageMgr.GetTranslation("consortion.callBackView.con",_loc2_["backCount"]),this);
-         var _loc3_:int = _callBackModel.callBackCount > _loc2_["backCount"]?_loc2_["backCount"]:_callBackModel.callBackCount;
-         UICreatShortcut.creatTextAndAdd("consortion.callBackView.CountTf",_loc3_ + "/" + _loc2_["backCount"],this);
-         _itemCell.info = _loc2_["itemTemplateInfo"];
-         _itemCell.setCount(_loc2_["itemTemplateInfo"].Count);
-         if(_callBackModel.awardStateMap[_loc2_["awardID"]])
+         var award:Object = _callBackModel.awardArr[_index];
+         UICreatShortcut.creatTextAndAdd("consortion.callBackView.conTf",LanguageMgr.GetTranslation("consortion.callBackView.con",award["backCount"]),this);
+         var conditionCount:int = _callBackModel.callBackCount > award["backCount"]?award["backCount"]:_callBackModel.callBackCount;
+         UICreatShortcut.creatTextAndAdd("consortion.callBackView.CountTf",conditionCount + "/" + award["backCount"],this);
+         _itemCell.info = award["itemTemplateInfo"];
+         _itemCell.setCount(award["itemTemplateInfo"].Count);
+         if(_callBackModel.awardStateMap[award["awardID"]])
          {
             _completeFlag.visible = true;
          }
          else
          {
             _completeFlag.visible = false;
-            if(leftCallBackCount() >= _loc2_["backCount"])
+            if(leftCallBackCount() >= award["backCount"])
             {
                _itemCell.lightPic();
                _itemCell.addEventListener("click",onClick);
@@ -77,17 +77,17 @@ package consortion.view.selfConsortia
       
       private function leftCallBackCount() : int
       {
-         var _loc1_:int = _callBackModel.callBackCount;
-         return _loc1_;
+         var leftCount:int = _callBackModel.callBackCount;
+         return leftCount;
       }
       
-      private function onClick(param1:MouseEvent) : void
+      private function onClick(evt:MouseEvent) : void
       {
-         var _loc2_:Object = _callBackModel.awardArr[_index];
-         if(leftCallBackCount() >= _loc2_["backCount"])
+         var award:Object = _callBackModel.awardArr[_index];
+         if(leftCallBackCount() >= award["backCount"])
          {
             SoundManager.instance.playButtonSound();
-            SocketManager.Instance.out.getConsortionCallBackAward(_loc2_["awardID"]);
+            SocketManager.Instance.out.getConsortionCallBackAward(award["awardID"]);
          }
       }
       

@@ -15,10 +15,10 @@ package HappyRecharge
       
       private var _type:int;
       
-      public function HappyRechargeRecordView(param1:int = 10)
+      public function HappyRechargeRecordView(type:int = 10)
       {
          super();
-         _type = param1;
+         _type = type;
          initText();
       }
       
@@ -39,11 +39,11 @@ package HappyRecharge
          }
       }
       
-      public function setText(param1:String, param2:String, param3:int) : void
+      public function setText(nickName:String, itemName:String, count:int) : void
       {
          if(_conText)
          {
-            _conText.text = LanguageMgr.GetTranslation("happyRecharge.mainFrame.record" + _type,param1,param2,param3);
+            _conText.text = LanguageMgr.GetTranslation("happyRecharge.mainFrame.record" + _type,nickName,itemName,count);
          }
       }
       

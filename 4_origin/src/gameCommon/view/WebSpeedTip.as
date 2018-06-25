@@ -66,27 +66,27 @@ package gameCommon.view
          return _tempData;
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         _tempData = param1;
-         if(param1.stateTxt == WebSpeedInfo.BEST)
+         _tempData = data;
+         if(data.stateTxt == WebSpeedInfo.BEST)
          {
-            _stateTxt.htmlText = "<font color=\'#00FF33\'>" + param1.stateTxt + "</font>";
-            _delayTxt.htmlText = "<font color=\'#00FF33\'>" + param1.delayTxt + "</font>";
+            _stateTxt.htmlText = "<font color=\'#00FF33\'>" + data.stateTxt + "</font>";
+            _delayTxt.htmlText = "<font color=\'#00FF33\'>" + data.delayTxt + "</font>";
          }
-         else if(param1.stateTxt == WebSpeedInfo.BETTER)
+         else if(data.stateTxt == WebSpeedInfo.BETTER)
          {
-            _stateTxt.htmlText = "<font color=\'#cc9900\'>" + param1.stateTxt + "</font>";
-            _delayTxt.htmlText = "<font color=\'#cc9900\'>" + param1.delayTxt + "</font>";
+            _stateTxt.htmlText = "<font color=\'#cc9900\'>" + data.stateTxt + "</font>";
+            _delayTxt.htmlText = "<font color=\'#cc9900\'>" + data.delayTxt + "</font>";
          }
-         else if(param1.stateTxt == WebSpeedInfo.WORST)
+         else if(data.stateTxt == WebSpeedInfo.WORST)
          {
-            _stateTxt.htmlText = "<font color=\'#ff0000\'>" + param1.stateTxt + "</font>";
-            _delayTxt.htmlText = "<font color=\'#ff0000\'>" + param1.delayTxt + "</font>";
+            _stateTxt.htmlText = "<font color=\'#ff0000\'>" + data.stateTxt + "</font>";
+            _delayTxt.htmlText = "<font color=\'#ff0000\'>" + data.delayTxt + "</font>";
          }
-         _fpsTxt.text = param1.fpsTxt;
-         _explain1.text = param1.explain1;
-         _explain2.htmlText = param1.explain2;
+         _fpsTxt.text = data.fpsTxt;
+         _explain1.text = data.explain1;
+         _explain2.htmlText = data.explain2;
          drawBG();
       }
       
@@ -96,17 +96,17 @@ package gameCommon.view
          _bg.width = 0;
       }
       
-      private function drawBG(param1:int = 0) : void
+      private function drawBG($width:int = 0) : void
       {
          reset();
-         if(param1 == 0)
+         if($width == 0)
          {
             _bg.width = _container.width + 20;
             _bg.height = _container.height + 10;
          }
          else
          {
-            _bg.width = param1 + 2;
+            _bg.width = $width + 2;
             _bg.height = _container.height + 5;
          }
          _width = _bg.width;

@@ -80,7 +80,7 @@ package magicHouse
       
       public var chargeBoxGoodListInfos:Array;
       
-      public function MagicHouseModel(param1:MagicHouseInstance)
+      public function MagicHouseModel($instance:MagicHouseInstance)
       {
          super();
       }
@@ -99,9 +99,9 @@ package magicHouse
          return _activityWeapons;
       }
       
-      public function set activityWeapons(param1:Array) : void
+      public function set activityWeapons(arr:Array) : void
       {
-         _activityWeapons = param1;
+         _activityWeapons = arr;
       }
       
       public function get magicJuniorLv() : int
@@ -109,9 +109,9 @@ package magicHouse
          return _magicJuniorLv;
       }
       
-      public function set magicJuniorLv(param1:int) : void
+      public function set magicJuniorLv(i:int) : void
       {
-         _magicJuniorLv = param1;
+         _magicJuniorLv = i;
       }
       
       public function get magicJuniorExp() : int
@@ -119,9 +119,9 @@ package magicHouse
          return _magicJuniorExp;
       }
       
-      public function set magicJuniorExp(param1:int) : void
+      public function set magicJuniorExp(i:int) : void
       {
-         _magicJuniorExp = param1;
+         _magicJuniorExp = i;
       }
       
       public function get magicMidLv() : int
@@ -129,9 +129,9 @@ package magicHouse
          return _magicMidLv;
       }
       
-      public function set magicMidLv(param1:int) : void
+      public function set magicMidLv(i:int) : void
       {
-         _magicMidLv = param1;
+         _magicMidLv = i;
       }
       
       public function get magicMidExp() : int
@@ -139,9 +139,9 @@ package magicHouse
          return _magicMidExp;
       }
       
-      public function set magicMidExp(param1:int) : void
+      public function set magicMidExp(i:int) : void
       {
-         _magicMidExp = param1;
+         _magicMidExp = i;
       }
       
       public function get magicSeniorLv() : int
@@ -149,9 +149,9 @@ package magicHouse
          return _magicSeniorLv;
       }
       
-      public function set magicSeniorLv(param1:int) : void
+      public function set magicSeniorLv(i:int) : void
       {
-         _magicSeniorLv = param1;
+         _magicSeniorLv = i;
       }
       
       public function get magicSeniorExp() : int
@@ -159,9 +159,9 @@ package magicHouse
          return _magicSeniorExp;
       }
       
-      public function set magicSeniorExp(param1:int) : void
+      public function set magicSeniorExp(i:int) : void
       {
-         _magicSeniorExp = param1;
+         _magicSeniorExp = i;
       }
       
       public function get freeGetCount() : int
@@ -169,9 +169,9 @@ package magicHouse
          return _freeGetCount;
       }
       
-      public function set freeGetCount(param1:int) : void
+      public function set freeGetCount(i:int) : void
       {
-         _freeGetCount = param1;
+         _freeGetCount = i;
       }
       
       public function get freeGetTime() : Date
@@ -179,9 +179,9 @@ package magicHouse
          return _freeGetTime;
       }
       
-      public function set freeGetTime(param1:Date) : void
+      public function set freeGetTime(d:Date) : void
       {
-         _freeGetTime = param1;
+         _freeGetTime = d;
       }
       
       public function get chargeGetCount() : int
@@ -189,9 +189,9 @@ package magicHouse
          return _chargeGetCount;
       }
       
-      public function set chargeGetCount(param1:int) : void
+      public function set chargeGetCount(i:int) : void
       {
-         _chargeGetCount = param1;
+         _chargeGetCount = i;
       }
       
       public function get chargeGetTime() : Date
@@ -199,9 +199,9 @@ package magicHouse
          return _chargeGetTime;
       }
       
-      public function set chargeGetTime(param1:Date) : void
+      public function set chargeGetTime(d:Date) : void
       {
-         _chargeGetTime = param1;
+         _chargeGetTime = d;
       }
       
       public function get depotCount() : int
@@ -209,9 +209,9 @@ package magicHouse
          return _depotCount;
       }
       
-      public function set depotCount(param1:int) : void
+      public function set depotCount(i:int) : void
       {
-         _depotCount = param1;
+         _depotCount = i;
       }
       
       public function get juniorWeaponList() : Array
@@ -219,9 +219,9 @@ package magicHouse
          return _juniorWeaponList;
       }
       
-      public function set juniorWeaponList(param1:Array) : void
+      public function set juniorWeaponList(arr:Array) : void
       {
-         _juniorWeaponList = param1;
+         _juniorWeaponList = arr;
       }
       
       public function get midWeaponList() : Array
@@ -229,9 +229,9 @@ package magicHouse
          return _midWeaponList;
       }
       
-      public function set midWeaponList(param1:Array) : void
+      public function set midWeaponList(arr:Array) : void
       {
-         _midWeaponList = param1;
+         _midWeaponList = arr;
       }
       
       public function get seniorWeapinList() : Array
@@ -239,9 +239,9 @@ package magicHouse
          return _seniorWeapinList;
       }
       
-      public function set seniorWeapinList(param1:Array) : void
+      public function set seniorWeapinList(arr:Array) : void
       {
-         _seniorWeapinList = param1;
+         _seniorWeapinList = arr;
       }
       
       public function get boxNeedmoney() : int
@@ -249,9 +249,9 @@ package magicHouse
          return _boxNeedmoney;
       }
       
-      public function set boxNeedmoney(param1:int) : void
+      public function set boxNeedmoney(i:int) : void
       {
-         _boxNeedmoney = param1;
+         _boxNeedmoney = i;
       }
       
       public function get levelUpNumber() : Array
@@ -259,9 +259,9 @@ package magicHouse
          return _levelUpNumber;
       }
       
-      public function set levelUpNumber(param1:Array) : void
+      public function set levelUpNumber(arr:Array) : void
       {
-         _levelUpNumber = param1;
+         _levelUpNumber = arr;
       }
       
       public function get openDepotNeedMoney() : int
@@ -269,9 +269,9 @@ package magicHouse
          return _openDepotNeedMoney;
       }
       
-      public function set openDepotNeedMoney(param1:int) : void
+      public function set openDepotNeedMoney(i:int) : void
       {
-         _openDepotNeedMoney = param1;
+         _openDepotNeedMoney = i;
       }
       
       public function get depotPromoteNeedMoney() : int
@@ -279,9 +279,9 @@ package magicHouse
          return _depotPromoteNeedMoney;
       }
       
-      public function set depotPromoteNeedMoney(param1:int) : void
+      public function set depotPromoteNeedMoney(i:int) : void
       {
-         _depotPromoteNeedMoney = param1;
+         _depotPromoteNeedMoney = i;
       }
       
       public function get equipOpenList() : Array
@@ -289,9 +289,9 @@ package magicHouse
          return _equipOpenList;
       }
       
-      public function set equipOpenList(param1:Array) : void
+      public function set equipOpenList(arr:Array) : void
       {
-         _equipOpenList = param1;
+         _equipOpenList = arr;
       }
       
       public function get juniorAddAttribute() : Array
@@ -299,9 +299,9 @@ package magicHouse
          return _juniorAddAttribute;
       }
       
-      public function set juniorAddAttribute(param1:Array) : void
+      public function set juniorAddAttribute(arr:Array) : void
       {
-         _juniorAddAttribute = param1;
+         _juniorAddAttribute = arr;
       }
       
       public function get midAddAttribute() : Array
@@ -309,9 +309,9 @@ package magicHouse
          return _midAddAttribute;
       }
       
-      public function set midAddAttribute(param1:Array) : void
+      public function set midAddAttribute(arr:Array) : void
       {
-         _midAddAttribute = param1;
+         _midAddAttribute = arr;
       }
       
       public function get seniorAddAttribute() : Array
@@ -319,9 +319,9 @@ package magicHouse
          return _seniorAddAttribute;
       }
       
-      public function set seniorAddAttribute(param1:Array) : void
+      public function set seniorAddAttribute(arr:Array) : void
       {
-         _seniorAddAttribute = param1;
+         _seniorAddAttribute = arr;
       }
       
       public function get titleDatas() : Array
@@ -329,9 +329,9 @@ package magicHouse
          return _titleDatas;
       }
       
-      public function set titleDatas(param1:Array) : void
+      public function set titleDatas(arr:Array) : void
       {
-         _titleDatas = param1;
+         _titleDatas = arr;
       }
    }
 }

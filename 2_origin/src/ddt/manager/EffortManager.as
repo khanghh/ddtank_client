@@ -144,13 +144,13 @@ package ddt.manager
          return progressEfforts;
       }
       
-      public function getEffortByID(param1:int) : EffortInfo
+      public function getEffortByID(id:int) : EffortInfo
       {
          if(!allEfforts)
          {
             return null;
          }
-         return allEfforts[param1];
+         return allEfforts[id];
       }
       
       public function getIntegrationEffort() : Array
@@ -194,34 +194,33 @@ package ddt.manager
       
       private function splitHonorEffort() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          honorEfforts = [];
          completeHonorEfforts = [];
          inCompleteHonorEfforts = [];
          var _loc4_:int = 0;
          var _loc3_:* = allEfforts;
-         for each(var _loc2_ in allEfforts)
+         for each(var info in allEfforts)
          {
-            if(_loc2_.effortRewardArray)
+            if(info.effortRewardArray)
             {
-               _loc1_ = 0;
-               while(_loc1_ < _loc2_.effortRewardArray.length)
+               i = 0;
+               while(i < info.effortRewardArray.length)
                {
-                  if((_loc2_.effortRewardArray[_loc1_] as EffortRewardInfo).RewardType == 1)
+                  if((info.effortRewardArray[i] as EffortRewardInfo).RewardType == 1)
                   {
-                     honorEfforts.push(_loc2_);
-                     if(_loc2_.CompleteStateInfo)
+                     honorEfforts.push(info);
+                     if(info.CompleteStateInfo)
                      {
-                        completeHonorEfforts.push(_loc2_);
+                        completeHonorEfforts.push(info);
                      }
                      else
                      {
-                        inCompleteHonorEfforts.push(_loc2_);
+                        inCompleteHonorEfforts.push(info);
                      }
                   }
-                  _loc1_++;
+                  i++;
                }
-               continue;
             }
          }
       }
@@ -259,17 +258,17 @@ package ddt.manager
          return currentEfforts;
       }
       
-      public function set currentEffortList(param1:Array) : void
+      public function set currentEffortList(currentList:Array) : void
       {
          currentEfforts = [];
-         currentEfforts = param1;
+         currentEfforts = currentList;
          dispatchEvent(new EffortEvent("listChanged"));
       }
       
-      public function setEffortType(param1:int) : void
+      public function setEffortType(type:int) : void
       {
-         currentType = param1;
-         switch(int(param1))
+         currentType = type;
+         switch(int(type))
          {
             case 0:
                splitEffort(preTopEfforts);
@@ -283,9 +282,9 @@ package ddt.manager
          dispatchEvent(new EffortEvent("typeChanged"));
       }
       
-      private function splitEffort(param1:DictionaryData) : void
+      private function splitEffort(dic:DictionaryData) : void
       {
-         if(!param1)
+         if(!dic)
          {
             return;
          }
@@ -295,27 +294,27 @@ package ddt.manager
          duplicateEfforts = [];
          combatEfforts = [];
          var _loc4_:int = 0;
-         var _loc3_:* = param1;
-         for each(var _loc2_ in param1)
+         var _loc3_:* = dic;
+         for each(var i in dic)
          {
-            if(_loc2_)
+            if(i)
             {
-               switch(int(_loc2_.PlaceID))
+               switch(int(i.PlaceID))
                {
                   case 0:
-                     integrationEfforts.push(_loc2_);
+                     integrationEfforts.push(i);
                      continue;
                   case 1:
-                     roleEfforts.push(_loc2_);
+                     roleEfforts.push(i);
                      continue;
                   case 2:
-                     taskEfforts.push(_loc2_);
+                     taskEfforts.push(i);
                      continue;
                   case 3:
-                     duplicateEfforts.push(_loc2_);
+                     duplicateEfforts.push(i);
                      continue;
                   case 4:
-                     combatEfforts.push(_loc2_);
+                     combatEfforts.push(i);
                      continue;
                }
             }
@@ -326,121 +325,116 @@ package ddt.manager
          }
       }
       
-      private function __updateAchievement(param1:PkgEvent) : void
+      private function __updateAchievement(evt:PkgEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc2_:int = param1.pkg.readInt();
-         _loc4_ = 0;
-         while(_loc4_ < _loc2_)
+         var i:int = 0;
+         var info:* = null;
+         var len:int = evt.pkg.readInt();
+         for(i = 0; i < len; )
          {
-            _loc3_ = new EffortProgressInfo();
-            _loc3_.RecordID = param1.pkg.readInt();
-            _loc3_.Total = param1.pkg.readInt();
-            progressEfforts[_loc3_.RecordID] = _loc3_;
-            updateProgress(_loc3_);
-            _loc4_++;
+            info = new EffortProgressInfo();
+            info.RecordID = evt.pkg.readInt();
+            info.Total = evt.pkg.readInt();
+            progressEfforts[info.RecordID] = info;
+            updateProgress(info);
+            i++;
          }
       }
       
-      private function __initializeAchievement(param1:PkgEvent) : void
+      private function __initializeAchievement(evt:PkgEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc2_:int = param1.pkg.readInt();
-         _loc4_ = 0;
-         while(_loc4_ < _loc2_)
+         var i:int = 0;
+         var info:* = null;
+         var len:int = evt.pkg.readInt();
+         for(i = 0; i < len; )
          {
-            _loc3_ = new EffortProgressInfo();
-            _loc3_.RecordID = param1.pkg.readInt();
-            _loc3_.Total = param1.pkg.readInt();
-            progressEfforts.add(_loc3_.RecordID,_loc3_);
-            _loc4_++;
+            info = new EffortProgressInfo();
+            info.RecordID = evt.pkg.readInt();
+            info.Total = evt.pkg.readInt();
+            progressEfforts.add(info.RecordID,info);
+            i++;
          }
          trace("初始化成绩进展成功");
          updateWholeProgress();
          splitHonorEffort();
       }
       
-      private function __initializeAchievementData(param1:PkgEvent) : void
+      private function __initializeAchievementData(evt:PkgEvent) : void
       {
-         var _loc8_:int = 0;
-         var _loc7_:* = null;
-         var _loc6_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         var _loc5_:* = null;
+         var i:int = 0;
+         var info:* = null;
+         var fullYearUTC:int = 0;
+         var monthUTC:int = 0;
+         var dateUTC:int = 0;
+         var date:* = null;
          newlyCompleteEffort = [];
-         var _loc4_:int = param1.pkg.readInt();
-         count = _loc4_;
-         _loc8_ = 0;
-         while(_loc8_ < _loc4_)
+         var len:int = evt.pkg.readInt();
+         count = len;
+         for(i = 0; i < len; )
          {
-            _loc7_ = new EffortCompleteStateInfo();
-            _loc7_.ID = param1.pkg.readInt();
-            _loc6_ = param1.pkg.readInt();
-            _loc2_ = param1.pkg.readInt();
-            _loc3_ = param1.pkg.readInt();
-            _loc5_ = new Date(_loc6_,_loc2_ - 1,_loc3_);
-            _loc7_.CompletedDate = _loc5_;
-            if(allEfforts[_loc7_.ID])
+            info = new EffortCompleteStateInfo();
+            info.ID = evt.pkg.readInt();
+            fullYearUTC = evt.pkg.readInt();
+            monthUTC = evt.pkg.readInt();
+            dateUTC = evt.pkg.readInt();
+            date = new Date(fullYearUTC,monthUTC - 1,dateUTC);
+            info.CompletedDate = date;
+            if(allEfforts[info.ID])
             {
-               (allEfforts[_loc7_.ID] as EffortInfo).CompleteStateInfo = _loc7_;
-               (allEfforts[_loc7_.ID] as EffortInfo).completedDate = _loc7_.CompletedDate;
-               if(_loc8_ < 4)
+               (allEfforts[info.ID] as EffortInfo).CompleteStateInfo = info;
+               (allEfforts[info.ID] as EffortInfo).completedDate = info.CompletedDate;
+               if(i < 4)
                {
-                  newlyCompleteEffort.push(allEfforts[_loc7_.ID]);
+                  newlyCompleteEffort.push(allEfforts[info.ID]);
                }
             }
-            _loc8_++;
+            i++;
          }
          splitPreEffort();
       }
       
-      private function __userRank(param1:PkgEvent) : void
+      private function __userRank(event:PkgEvent) : void
       {
-         var _loc10_:int = 0;
-         var _loc6_:* = null;
-         var _loc2_:int = 0;
-         var _loc3_:* = null;
-         var _loc5_:* = null;
-         var _loc7_:* = null;
-         var _loc9_:int = 0;
+         var i:int = 0;
+         var titleModel:* = null;
+         var id:int = 0;
+         var startDate:* = null;
+         var endDate:* = null;
+         var titleInfo:* = null;
+         var j:int = 0;
          honorArray = [];
-         var _loc4_:Array = [];
-         var _loc8_:int = param1.pkg.readInt();
-         _loc10_ = 0;
-         while(_loc10_ < _loc8_)
+         var oldTitleArr:Array = [];
+         var len:int = event.pkg.readInt();
+         for(i = 0; i < len; )
          {
-            _loc6_ = new NewTitleModel();
-            _loc2_ = param1.pkg.readInt();
-            _loc6_.id = _loc2_;
-            _loc6_.Name = param1.pkg.readUTF();
-            _loc3_ = param1.pkg.readDate();
-            _loc5_ = param1.pkg.readDate();
-            _loc6_.Valid = DateUtils.getHourDifference(new Date().time,_loc5_.time) / 24 + 1;
-            if(_loc2_ >= NewTitleManager.FIRST_TITLEID)
+            titleModel = new NewTitleModel();
+            id = event.pkg.readInt();
+            titleModel.id = id;
+            titleModel.Name = event.pkg.readUTF();
+            startDate = event.pkg.readDate();
+            endDate = event.pkg.readDate();
+            titleModel.Valid = DateUtils.getHourDifference(new Date().time,endDate.time) / 24 + 1;
+            if(id >= NewTitleManager.FIRST_TITLEID)
             {
-               NewTitleManager.instance.titleInfo[_loc2_].Valid = _loc6_.Valid;
-               honorArray.push(NewTitleManager.instance.titleInfo[_loc2_]);
+               NewTitleManager.instance.titleInfo[id].Valid = titleModel.Valid;
+               honorArray.push(NewTitleManager.instance.titleInfo[id]);
             }
             else
             {
-               _loc7_ = NewTitleManager.instance.getTitleByName(_loc6_.Name);
-               if(_loc7_)
+               titleInfo = NewTitleManager.instance.getTitleByName(titleModel.Name);
+               if(titleInfo)
                {
-                  _loc6_.Desc = _loc7_.Desc;
-                  _loc4_.push(_loc6_);
+                  titleModel.Desc = titleInfo.Desc;
+                  oldTitleArr.push(titleModel);
                }
             }
-            _loc10_++;
+            i++;
          }
          honorArray.sortOn("id",16);
-         _loc9_ = 0;
-         while(_loc9_ < _loc4_.length)
+         for(j = 0; j < oldTitleArr.length; )
          {
-            honorArray.push(_loc4_[_loc9_]);
-            _loc9_++;
+            honorArray.push(oldTitleArr[j]);
+            j++;
          }
          dispatchEvent(new EffortEvent("finish"));
       }
@@ -449,19 +443,19 @@ package ddt.manager
       {
          var _loc3_:int = 0;
          var _loc2_:* = allEfforts;
-         for each(var _loc1_ in allEfforts)
+         for each(var info in allEfforts)
          {
-            if(estimateEffortState(_loc1_))
+            if(estimateEffortState(info))
             {
-               preEfforts.add(_loc1_.ID,_loc1_);
+               preEfforts.add(info.ID,info);
             }
-            if(estimateEffortState(_loc1_) && (isTopEffort(_loc1_) || !_loc1_.CompleteStateInfo))
+            if(estimateEffortState(info) && (isTopEffort(info) || !info.CompleteStateInfo))
             {
-               preTopEfforts.add(_loc1_.ID,_loc1_);
+               preTopEfforts.add(info.ID,info);
             }
-            else if(!estimateEffortState(_loc1_))
+            else if(!estimateEffortState(info))
             {
-               nextEfforts.add(_loc1_.ID,_loc1_);
+               nextEfforts.add(info.ID,info);
             }
          }
          splitCompleteEffort();
@@ -470,48 +464,47 @@ package ddt.manager
       
       private function inCompletedToPreTopEfforts() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
+         var tempArray:* = null;
+         var tempInfo:* = null;
+         var i:int = 0;
          var _loc6_:int = 0;
          var _loc5_:* = completeEfforts;
-         for each(var _loc4_ in completeEfforts)
+         for each(var info in completeEfforts)
          {
-            _loc1_ = getFellNextEffort(_loc4_.ID);
-            _loc1_.sortOn("ID");
-            _loc3_ = 0;
-            while(_loc3_ < _loc1_.length)
+            tempArray = getFellNextEffort(info.ID);
+            tempArray.sortOn("ID");
+            for(i = 0; i < tempArray.length; )
             {
-               _loc2_ = _loc1_[_loc3_] as EffortInfo;
-               if(!_loc2_.CompleteStateInfo && !isTopEffort(_loc2_))
+               tempInfo = tempArray[i] as EffortInfo;
+               if(!tempInfo.CompleteStateInfo && !isTopEffort(tempInfo))
                {
-                  preTopEfforts.add(_loc2_.ID,_loc2_);
+                  preTopEfforts.add(tempInfo.ID,tempInfo);
                   return;
                }
-               _loc3_++;
+               i++;
             }
          }
       }
       
-      private function estimateEffortState(param1:EffortInfo) : Boolean
+      private function estimateEffortState(info:EffortInfo) : Boolean
       {
-         var _loc3_:int = 0;
-         var _loc2_:Array = [];
-         _loc2_ = param1.PreAchievementID.split(",");
-         if(_loc2_.length == 2 && _loc2_[0] == "0")
+         var i:int = 0;
+         var strArray:Array = [];
+         strArray = info.PreAchievementID.split(",");
+         if(strArray.length == 2 && strArray[0] == "0")
          {
             return true;
          }
-         _loc3_ = 0;
-         while(_loc3_ <= _loc2_.length)
+         i = 0;
+         while(i <= strArray.length)
          {
-            if(_loc2_[_loc3_] != "")
+            if(strArray[i] != "")
             {
-               if((allEfforts[int(_loc2_[_loc3_])] as EffortInfo).CompleteStateInfo == null)
+               if((allEfforts[int(strArray[i])] as EffortInfo).CompleteStateInfo == null)
                {
                   return false;
                }
-               _loc3_++;
+               i++;
                continue;
             }
             break;
@@ -519,308 +512,303 @@ package ddt.manager
          return true;
       }
       
-      public function getTopEffort1(param1:EffortInfo) : int
+      public function getTopEffort1(info:EffortInfo) : int
       {
-         var _loc2_:int = 0;
-         if(isTopEffort(param1) || !param1.CompleteStateInfo)
+         var i:int = 0;
+         if(isTopEffort(info) || !info.CompleteStateInfo)
          {
-            return param1.ID;
+            return info.ID;
          }
-         _loc2_ = 1;
-         while(!isTopEffort(getEffortByID(param1.ID - _loc2_)))
+         i = 1;
+         while(!isTopEffort(getEffortByID(info.ID - i)))
          {
-            _loc2_++;
+            i++;
          }
-         return getEffortByID(param1.ID - _loc2_).ID;
+         return getEffortByID(info.ID - i).ID;
       }
       
-      public function getTopEffort(param1:EffortInfo) : int
+      public function getTopEffort(info:EffortInfo) : int
       {
-         if(isTopEffort(param1) || !param1.CompleteStateInfo)
+         if(isTopEffort(info) || !info.CompleteStateInfo)
          {
-            return param1.ID;
+            return info.ID;
          }
-         var _loc2_:Array = [];
-         var _loc4_:int = getLastID(param1);
-         var _loc3_:int = -1;
-         var _loc5_:EffortInfo = getEffortByID(_loc4_);
-         while(!isTopEffort(_loc5_))
+         var strArray:Array = [];
+         var lastID:int = getLastID(info);
+         var resultID:int = -1;
+         var info2:EffortInfo = getEffortByID(lastID);
+         while(!isTopEffort(info2))
          {
-            _loc4_ = getLastID(_loc5_);
-            _loc5_ = getEffortByID(_loc4_);
+            lastID = getLastID(info2);
+            info2 = getEffortByID(lastID);
          }
-         return _loc4_;
+         return lastID;
       }
       
-      private function getLastID(param1:EffortInfo) : int
+      private function getLastID(info:EffortInfo) : int
       {
-         var _loc3_:int = 0;
-         var _loc2_:Array = [];
-         _loc2_ = param1.PreAchievementID.split(",");
-         var _loc4_:int = -1;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_.length)
+         var j:int = 0;
+         var strArray:Array = [];
+         strArray = info.PreAchievementID.split(",");
+         var lastID:int = -1;
+         for(j = 0; j < strArray.length; )
          {
-            if(_loc2_[_loc3_].toString().length > 0)
+            if(strArray[j].toString().length > 0)
             {
-               _loc4_ = _loc2_[_loc3_];
+               lastID = strArray[j];
             }
-            _loc3_++;
+            j++;
          }
-         return _loc4_;
+         return lastID;
       }
       
-      public function getCompleteNextEffort1(param1:int) : Array
+      public function getCompleteNextEffort1(id:int) : Array
       {
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:Array = [];
-         var _loc3_:Array = [];
-         if(completeEfforts[param1])
+         var i:int = 0;
+         var j:int = 0;
+         var completeNextEffortArray:Array = [];
+         var strArray:Array = [];
+         if(completeEfforts[id])
          {
-            _loc2_.push(completeEfforts[param1]);
+            completeNextEffortArray.push(completeEfforts[id]);
          }
-         _loc5_ = 1;
-         while(completeEfforts[param1 + _loc5_])
+         i = 1;
+         while(completeEfforts[id + i])
          {
-            _loc3_ = (completeEfforts[param1 + _loc5_] as EffortInfo).PreAchievementID.split(",");
-            _loc4_ = 0;
-            while(_loc4_ < _loc3_.length)
+            strArray = (completeEfforts[id + i] as EffortInfo).PreAchievementID.split(",");
+            for(j = 0; j < strArray.length; )
             {
-               if(isTopEffort(completeEfforts[param1 + _loc5_]))
+               if(isTopEffort(completeEfforts[id + i]))
                {
-                  return _loc2_;
+                  return completeNextEffortArray;
                }
-               if(param1 + _loc5_ - 1 == int(_loc3_[_loc4_]))
+               if(id + i - 1 == int(strArray[j]))
                {
-                  _loc2_.push(completeEfforts[param1 + _loc5_]);
+                  completeNextEffortArray.push(completeEfforts[id + i]);
                }
-               _loc4_++;
+               j++;
             }
-            _loc5_++;
+            i++;
          }
-         return _loc2_;
+         return completeNextEffortArray;
       }
       
-      public function getCompleteNextEffort(param1:int) : Array
+      public function getCompleteNextEffort(id:int) : Array
       {
-         var _loc4_:int = 0;
-         var _loc2_:Array = [];
-         var _loc3_:Array = [];
+         var j:int = 0;
+         var completeNextEffortArray:Array = [];
+         var strArray:Array = [];
          completeEfforts.list.sortOn("ID",16);
-         if(completeEfforts[param1])
+         if(completeEfforts[id])
          {
-            _loc2_.push(completeEfforts[param1]);
+            completeNextEffortArray.push(completeEfforts[id]);
          }
-         var _loc5_:* = param1;
+         var lastID:* = id;
          var _loc8_:int = 0;
          var _loc7_:* = completeEfforts.list;
-         for each(var _loc6_ in completeEfforts.list)
+         for each(var info in completeEfforts.list)
          {
-            if(_loc6_ && _loc6_.ID != param1)
+            if(info && info.ID != id)
             {
-               _loc3_ = _loc6_.PreAchievementID.split(",");
-               _loc4_ = 0;
-               while(_loc4_ < _loc3_.length)
+               strArray = info.PreAchievementID.split(",");
+               for(j = 0; j < strArray.length; )
                {
-                  if(!isTopEffort(_loc6_))
+                  if(!isTopEffort(info))
                   {
-                     if(_loc5_ == int(_loc3_[_loc4_]))
+                     if(lastID == int(strArray[j]))
                      {
-                        _loc2_.push(_loc6_);
-                        _loc5_ = int(_loc6_.ID);
+                        completeNextEffortArray.push(info);
+                        lastID = int(info.ID);
                      }
                   }
-                  _loc4_++;
+                  j++;
                }
             }
          }
-         return _loc2_;
+         return completeNextEffortArray;
       }
       
-      public function getFellNextEffort(param1:int) : Array
+      public function getFellNextEffort(id:int) : Array
       {
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:Array = [];
-         var _loc2_:Array = [];
-         if(allEfforts[param1])
+         var i:int = 0;
+         var j:int = 0;
+         var fellNextEffortArray:Array = [];
+         var strArray:Array = [];
+         if(allEfforts[id])
          {
-            _loc3_.push(allEfforts[param1]);
+            fellNextEffortArray.push(allEfforts[id]);
          }
-         _loc5_ = 1;
-         while(allEfforts[param1 + _loc5_])
+         i = 1;
+         while(allEfforts[id + i])
          {
-            _loc2_ = (allEfforts[param1 + _loc5_] as EffortInfo).PreAchievementID.split(",");
-            _loc4_ = 0;
-            while(_loc4_ < _loc2_.length)
+            strArray = (allEfforts[id + i] as EffortInfo).PreAchievementID.split(",");
+            for(j = 0; j < strArray.length; )
             {
-               if(isTopEffort(allEfforts[param1 + _loc5_]))
+               if(isTopEffort(allEfforts[id + i]))
                {
-                  return _loc3_;
+                  return fellNextEffortArray;
                }
-               if(param1 + _loc5_ - 1 == int(_loc2_[_loc4_]))
+               if(id + i - 1 == int(strArray[j]))
                {
-                  _loc3_.push(allEfforts[param1 + _loc5_]);
+                  fellNextEffortArray.push(allEfforts[id + i]);
                }
-               _loc4_++;
+               j++;
             }
-            _loc5_++;
+            i++;
          }
-         return _loc3_;
+         return fellNextEffortArray;
       }
       
       private function splitCompleteEffort() : void
       {
          var _loc3_:int = 0;
          var _loc2_:* = preEfforts;
-         for each(var _loc1_ in preEfforts)
+         for each(var info in preEfforts)
          {
-            if(_loc1_.CompleteStateInfo != null && isTopEffort(_loc1_))
+            if(info.CompleteStateInfo != null && isTopEffort(info))
             {
-               completeTopEfforts.add(_loc1_.ID,_loc1_);
+               completeTopEfforts.add(info.ID,info);
             }
-            if(_loc1_.CompleteStateInfo != null)
+            if(info.CompleteStateInfo != null)
             {
-               completeEfforts.add(_loc1_.ID,_loc1_);
+               completeEfforts.add(info.ID,info);
             }
             else
             {
-               inCompleteEfforts.add(_loc1_.ID,_loc1_);
+               inCompleteEfforts.add(info.ID,info);
             }
          }
       }
       
-      private function __AchievementFinish(param1:PkgEvent) : void
+      private function __AchievementFinish(evt:PkgEvent) : void
       {
-         var _loc6_:EffortCompleteStateInfo = new EffortCompleteStateInfo();
-         _loc6_.ID = param1.pkg.readInt();
-         var _loc5_:int = param1.pkg.readInt();
-         var _loc2_:int = param1.pkg.readInt();
-         var _loc3_:int = param1.pkg.readInt();
-         var _loc4_:Date = new Date(_loc5_,_loc2_ - 1,_loc3_);
-         _loc6_.CompletedDate = _loc4_;
-         trace("接受完成" + _loc6_.ID);
-         if(inCompleteEfforts[_loc6_.ID])
+         var info:EffortCompleteStateInfo = new EffortCompleteStateInfo();
+         info.ID = evt.pkg.readInt();
+         var fullYearUTC:int = evt.pkg.readInt();
+         var monthUTC:int = evt.pkg.readInt();
+         var dateUTC:int = evt.pkg.readInt();
+         var date:Date = new Date(fullYearUTC,monthUTC - 1,dateUTC);
+         info.CompletedDate = date;
+         trace("接受完成" + info.ID);
+         if(inCompleteEfforts[info.ID])
          {
-            (inCompleteEfforts[_loc6_.ID] as EffortInfo).CompleteStateInfo = _loc6_;
-            (inCompleteEfforts[_loc6_.ID] as EffortInfo).completedDate = _loc6_.CompletedDate;
+            (inCompleteEfforts[info.ID] as EffortInfo).CompleteStateInfo = info;
+            (inCompleteEfforts[info.ID] as EffortInfo).completedDate = info.CompletedDate;
          }
-         if(allEfforts[_loc6_.ID])
+         if(allEfforts[info.ID])
          {
-            (allEfforts[_loc6_.ID] as EffortInfo).CompleteStateInfo = _loc6_;
-            (allEfforts[_loc6_.ID] as EffortInfo).completedDate = _loc6_.CompletedDate;
+            (allEfforts[info.ID] as EffortInfo).CompleteStateInfo = info;
+            (allEfforts[info.ID] as EffortInfo).completedDate = info.CompletedDate;
          }
-         completeToInComplete(_loc6_.ID);
+         completeToInComplete(info.ID);
          if(newlyCompleteEffort)
          {
-            newlyCompleteEffort.unshift(completeEfforts[_loc6_.ID]);
+            newlyCompleteEffort.unshift(completeEfforts[info.ID]);
          }
          dispatchEvent(new EffortEvent("finish"));
       }
       
       private function updateWholeProgress() : void
       {
-         var _loc4_:int = 0;
+         var j:int = 0;
          var _loc9_:int = 0;
          var _loc8_:* = allEfforts;
-         for each(var _loc1_ in allEfforts)
+         for each(var effortInfo in allEfforts)
          {
             var _loc7_:int = 0;
-            var _loc6_:* = _loc1_.EffortQualificationList;
-            for each(var _loc3_ in _loc1_.EffortQualificationList)
+            var _loc6_:* = effortInfo.EffortQualificationList;
+            for each(var effortQualificationInfo in effortInfo.EffortQualificationList)
             {
-               if(!progressEfforts[_loc3_.CondictionType])
+               if(!progressEfforts[effortQualificationInfo.CondictionType])
                {
-                  trace("成就进展出错，没有" + _loc3_.CondictionType + "（CondictionType）");
+                  trace("成就进展出错，没有" + effortQualificationInfo.CondictionType + "（CondictionType）");
                }
-               _loc3_.para2_currentValue = (progressEfforts[_loc3_.CondictionType] as EffortProgressInfo).Total;
-               _loc1_.addEffortQualification(_loc3_);
+               effortQualificationInfo.para2_currentValue = (progressEfforts[effortQualificationInfo.CondictionType] as EffortProgressInfo).Total;
+               effortInfo.addEffortQualification(effortQualificationInfo);
             }
-            allEfforts[_loc1_.ID] = _loc1_;
+            allEfforts[effortInfo.ID] = effortInfo;
          }
          trace("初始化成绩赋值成功");
          trace("初始化成绩赋值成功");
-         var _loc2_:Array = [];
+         var tempArray:Array = [];
          var _loc11_:int = 0;
          var _loc10_:* = allEfforts;
-         for each(var _loc5_ in allEfforts)
+         for each(var i in allEfforts)
          {
-            if(testEffortIsComplete(_loc5_))
+            if(testEffortIsComplete(i))
             {
-               _loc2_.push(_loc5_);
+               tempArray.push(i);
             }
          }
-         _loc2_.sortOn("ID");
-         if(count != _loc2_.length)
+         tempArray.sortOn("ID");
+         if(count != tempArray.length)
          {
-            _loc4_ = 0;
-            while(_loc4_ < _loc2_.length)
+            for(j = 0; j < tempArray.length; )
             {
-               trace("初始化发送已完成" + _loc2_[_loc4_].ID);
-               SocketManager.Instance.out.sendAchievementFinish(_loc2_[_loc4_].ID);
-               _loc4_++;
+               trace("初始化发送已完成" + tempArray[j].ID);
+               SocketManager.Instance.out.sendAchievementFinish(tempArray[j].ID);
+               j++;
             }
          }
       }
       
-      private function updateProgress(param1:EffortProgressInfo) : void
+      private function updateProgress(info:EffortProgressInfo) : void
       {
-         var _loc6_:int = 0;
-         var _loc3_:Array = [];
+         var k:int = 0;
+         var tempArray:Array = [];
          var _loc11_:int = 0;
          var _loc10_:* = allEfforts;
-         for each(var _loc2_ in allEfforts)
+         for each(var effortInfo in allEfforts)
          {
             var _loc9_:int = 0;
-            var _loc8_:* = _loc2_.EffortQualificationList;
-            for each(var _loc4_ in _loc2_.EffortQualificationList)
+            var _loc8_:* = effortInfo.EffortQualificationList;
+            for each(var effortQualificationInfo in effortInfo.EffortQualificationList)
             {
-               if(_loc4_.CondictionType == param1.RecordID)
+               if(effortQualificationInfo.CondictionType == info.RecordID)
                {
-                  _loc4_.para2_currentValue = param1.Total;
-                  _loc2_.addEffortQualification(_loc4_);
+                  effortQualificationInfo.para2_currentValue = info.Total;
+                  effortInfo.addEffortQualification(effortQualificationInfo);
                }
             }
          }
          var _loc13_:int = 0;
          var _loc12_:* = inCompleteEfforts;
-         for each(var _loc7_ in inCompleteEfforts)
+         for each(var i in inCompleteEfforts)
          {
-            if(testEffortIsComplete(_loc7_))
+            if(testEffortIsComplete(i))
             {
-               _loc3_.push(_loc7_);
+               tempArray.push(i);
             }
          }
          var _loc15_:int = 0;
          var _loc14_:* = nextEfforts;
-         for each(var _loc5_ in nextEfforts)
+         for each(var j in nextEfforts)
          {
-            if(testEffortIsComplete(_loc5_))
+            if(testEffortIsComplete(j))
             {
-               _loc3_.push(_loc5_);
+               tempArray.push(j);
             }
          }
-         if(_loc3_ && _loc3_[0])
+         if(tempArray && tempArray[0])
          {
-            _loc3_.sortOn("ID");
+            tempArray.sortOn("ID");
          }
-         _loc6_ = 0;
-         while(_loc6_ < _loc3_.length)
+         k = 0;
+         while(k < tempArray.length)
          {
-            trace("初始化发送已完成" + _loc3_[_loc6_].ID);
-            SocketManager.Instance.out.sendAchievementFinish(_loc3_[_loc6_].ID);
-            _loc6_++;
+            trace("初始化发送已完成" + tempArray[k].ID);
+            SocketManager.Instance.out.sendAchievementFinish(tempArray[k].ID);
+            k++;
          }
       }
       
-      private function testEffortIsComplete(param1:EffortInfo) : Boolean
+      private function testEffortIsComplete(info:EffortInfo) : Boolean
       {
          var _loc4_:int = 0;
-         var _loc3_:* = param1.EffortQualificationList;
-         for each(var _loc2_ in param1.EffortQualificationList)
+         var _loc3_:* = info.EffortQualificationList;
+         for each(var effortQualificationInfo in info.EffortQualificationList)
          {
-            if(_loc2_.para2_currentValue < _loc2_.Condiction_Para2)
+            if(effortQualificationInfo.para2_currentValue < effortQualificationInfo.Condiction_Para2)
             {
                return false;
             }
@@ -828,99 +816,98 @@ package ddt.manager
          return true;
       }
       
-      public function splitTitle(param1:String) : String
+      public function splitTitle(str:String) : String
       {
-         var _loc2_:Array = [];
-         _loc2_ = param1.split("/");
-         if(_loc2_.length > 1 && _loc2_[1] != "")
+         var strArray:Array = [];
+         strArray = str.split("/");
+         if(strArray.length > 1 && strArray[1] != "")
          {
             if(PlayerManager.Instance.Self.Sex)
             {
-               return _loc2_[0];
+               return strArray[0];
             }
-            return _loc2_[1];
+            return strArray[1];
          }
-         return _loc2_[0];
+         return strArray[0];
       }
       
-      public function testFunction(param1:int) : void
+      public function testFunction(id:int) : void
       {
       }
       
-      private function completeToInComplete(param1:int) : void
+      private function completeToInComplete(id:int) : void
       {
-         if(inCompleteEfforts[param1] && isTopEffort(inCompleteEfforts[param1]))
+         if(inCompleteEfforts[id] && isTopEffort(inCompleteEfforts[id]))
          {
-            completeTopEfforts.add(param1,inCompleteEfforts[param1]);
-            preTopEfforts.add(param1,inCompleteEfforts[param1]);
+            completeTopEfforts.add(id,inCompleteEfforts[id]);
+            preTopEfforts.add(id,inCompleteEfforts[id]);
          }
-         if(inCompleteEfforts[param1])
+         if(inCompleteEfforts[id])
          {
-            completeEfforts.add(param1,inCompleteEfforts[param1]);
+            completeEfforts.add(id,inCompleteEfforts[id]);
          }
-         var _loc2_:Array = getFellNextEffort(param1);
-         if(param1 == _loc2_[_loc2_.length - 1].ID && (allEfforts[param1] as EffortInfo).IsOther)
+         var fullEffort:Array = getFellNextEffort(id);
+         if(id == fullEffort[fullEffort.length - 1].ID && (allEfforts[id] as EffortInfo).IsOther)
          {
-            preTopEfforts.remove(param1);
+            preTopEfforts.remove(id);
          }
-         inCompleteEfforts.remove(param1);
+         inCompleteEfforts.remove(id);
          nextToPre();
       }
       
-      private function isTopEffort(param1:EffortInfo) : Boolean
+      private function isTopEffort(info:EffortInfo) : Boolean
       {
-         return param1.PreAchievementID == "0,";
+         return info.PreAchievementID == "0,";
       }
       
       private function nextToPre() : void
       {
          var _loc3_:int = 0;
          var _loc2_:* = nextEfforts;
-         for each(var _loc1_ in nextEfforts)
+         for each(var info in nextEfforts)
          {
-            if(estimateEffortState(_loc1_))
+            if(estimateEffortState(info))
             {
-               preEfforts.add(_loc1_.ID,_loc1_);
-               nextEfforts.remove(_loc1_.ID);
-               nexToPreTop(_loc1_);
-               if(testEffortIsComplete(_loc1_) && isTopEffort(_loc1_))
+               preEfforts.add(info.ID,info);
+               nextEfforts.remove(info.ID);
+               nexToPreTop(info);
+               if(testEffortIsComplete(info) && isTopEffort(info))
                {
-                  completeTopEfforts.add(_loc1_.ID,_loc1_);
+                  completeTopEfforts.add(info.ID,info);
                }
-               if(testEffortIsComplete(_loc1_))
+               if(testEffortIsComplete(info))
                {
-                  completeEfforts.add(_loc1_.ID,_loc1_);
+                  completeEfforts.add(info.ID,info);
                }
                else
                {
-                  inCompleteEfforts.add(_loc1_.ID,_loc1_);
+                  inCompleteEfforts.add(info.ID,info);
                }
             }
          }
          setEffortType(currentType);
       }
       
-      private function nexToPreTop(param1:EffortInfo) : void
+      private function nexToPreTop(info:EffortInfo) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
-         if(!param1.CompleteStateInfo)
+         var strArray:* = null;
+         var i:int = 0;
+         if(!info.CompleteStateInfo)
          {
-            preTopEfforts.add(param1.ID,param1);
-            if(param1.PreAchievementID != "0,")
+            preTopEfforts.add(info.ID,info);
+            if(info.PreAchievementID != "0,")
             {
-               _loc2_ = [];
-               _loc2_ = param1.PreAchievementID.split(",");
-               _loc3_ = 0;
-               while(_loc3_ <= _loc2_.length)
+               strArray = [];
+               strArray = info.PreAchievementID.split(",");
+               for(i = 0; i <= strArray.length; )
                {
-                  if(_loc2_[_loc3_] != "")
+                  if(strArray[i] != "")
                   {
-                     if(preTopEfforts[int(_loc2_[_loc3_])] && !isTopEffort(preTopEfforts[int(_loc2_[_loc3_])]))
+                     if(preTopEfforts[int(strArray[i])] && !isTopEffort(preTopEfforts[int(strArray[i])]))
                      {
-                        preTopEfforts.remove(int(_loc2_[_loc3_]));
+                        preTopEfforts.remove(int(strArray[i]));
                      }
-                     _loc3_++;
+                     i++;
                      continue;
                   }
                   break;
@@ -929,14 +916,14 @@ package ddt.manager
          }
       }
       
-      public function lookUpEffort(param1:int) : void
+      public function lookUpEffort(id:int) : void
       {
-         SocketManager.Instance.out.sendLookupEffort(param1);
+         SocketManager.Instance.out.sendLookupEffort(id);
       }
       
-      private function __lookUpEffort(param1:PkgEvent) : void
+      private function __lookUpEffort(evt:PkgEvent) : void
       {
-         var _loc4_:int = 0;
+         var i:int = 0;
          tempPreEfforts = new DictionaryData();
          tempPreTopEfforts = new DictionaryData();
          tempCompleteEfforts = new DictionaryData();
@@ -945,45 +932,44 @@ package ddt.manager
          tempInCompleteTopEfforts = new DictionaryData();
          tempNewlyCompleteEffort = [];
          tempCompleteID = [];
-         tempAchievementPoint = param1.pkg.readInt();
-         var _loc2_:int = param1.pkg.readInt();
-         _loc4_ = 0;
-         while(_loc4_ < _loc2_)
+         tempAchievementPoint = evt.pkg.readInt();
+         var len:int = evt.pkg.readInt();
+         for(i = 0; i < len; )
          {
-            if(_loc2_ != 0)
+            if(len != 0)
             {
-               tempCompleteID[_loc4_] = param1.pkg.readInt();
-               if(allEfforts[tempCompleteID[_loc4_]] && isTopEffort(allEfforts[tempCompleteID[_loc4_]]))
+               tempCompleteID[i] = evt.pkg.readInt();
+               if(allEfforts[tempCompleteID[i]] && isTopEffort(allEfforts[tempCompleteID[i]]))
                {
-                  tempInCompleteTopEfforts.add(tempCompleteID[_loc4_],allEfforts[tempCompleteID[_loc4_]]);
+                  tempInCompleteTopEfforts.add(tempCompleteID[i],allEfforts[tempCompleteID[i]]);
                }
-               if(allEfforts[tempCompleteID[_loc4_]])
+               if(allEfforts[tempCompleteID[i]])
                {
-                  tempCompleteEfforts.add(tempCompleteID[_loc4_],allEfforts[tempCompleteID[_loc4_]]);
+                  tempCompleteEfforts.add(tempCompleteID[i],allEfforts[tempCompleteID[i]]);
                }
-               if(_loc4_ < 4)
+               if(i < 4)
                {
-                  tempNewlyCompleteEffort[_loc4_] = allEfforts[tempCompleteID[_loc4_]];
+                  tempNewlyCompleteEffort[i] = allEfforts[tempCompleteID[i]];
                }
-               _loc4_++;
+               i++;
                continue;
             }
             break;
          }
          var _loc6_:int = 0;
          var _loc5_:* = allEfforts;
-         for each(var _loc3_ in allEfforts)
+         for each(var info in allEfforts)
          {
-            if(estimateTempEffortState(_loc3_))
+            if(estimateTempEffortState(info))
             {
-               tempPreEfforts.add(_loc3_.ID,_loc3_);
-               if(isTopEffort(_loc3_) || !tempCompleteEfforts[_loc3_.ID])
+               tempPreEfforts.add(info.ID,info);
+               if(isTopEffort(info) || !tempCompleteEfforts[info.ID])
                {
-                  tempPreTopEfforts.add(_loc3_.ID,_loc3_);
+                  tempPreTopEfforts.add(info.ID,info);
                }
-               if(!tempCompleteEfforts[_loc3_.ID])
+               if(!tempCompleteEfforts[info.ID])
                {
-                  tempInCompleteEfforts.add(_loc3_.ID,_loc3_);
+                  tempInCompleteEfforts.add(info.ID,info);
                }
             }
          }
@@ -992,25 +978,25 @@ package ddt.manager
          EffortManager.Instance.switchVisible();
       }
       
-      private function estimateTempEffortState(param1:EffortInfo) : Boolean
+      private function estimateTempEffortState(info:EffortInfo) : Boolean
       {
-         var _loc3_:int = 0;
-         var _loc2_:Array = [];
-         _loc2_ = param1.PreAchievementID.split(",");
-         if(_loc2_.length == 2 && _loc2_[0] == "0")
+         var i:int = 0;
+         var strArray:Array = [];
+         strArray = info.PreAchievementID.split(",");
+         if(strArray.length == 2 && strArray[0] == "0")
          {
             return true;
          }
-         _loc3_ = 0;
-         while(_loc3_ <= _loc2_.length)
+         i = 0;
+         while(i <= strArray.length)
          {
-            if(_loc2_[_loc3_] != "")
+            if(strArray[i] != "")
             {
-               if(tempCompleteEfforts[int(_loc2_[_loc3_])] == null)
+               if(tempCompleteEfforts[int(strArray[i])] == null)
                {
                   return false;
                }
-               _loc3_++;
+               i++;
                continue;
             }
             break;
@@ -1018,9 +1004,9 @@ package ddt.manager
          return true;
       }
       
-      public function setTempEffortType(param1:int) : void
+      public function setTempEffortType(type:int) : void
       {
-         switch(int(param1))
+         switch(int(type))
          {
             case 0:
                splitTempEffort(tempPreTopEfforts);
@@ -1034,9 +1020,9 @@ package ddt.manager
          dispatchEvent(new EffortEvent("typeChanged"));
       }
       
-      private function splitTempEffort(param1:DictionaryData) : void
+      private function splitTempEffort(dic:DictionaryData) : void
       {
-         if(!param1)
+         if(!dic)
          {
             return;
          }
@@ -1046,27 +1032,27 @@ package ddt.manager
          tempDuplicateEfforts = [];
          tempCombatEfforts = [];
          var _loc4_:int = 0;
-         var _loc3_:* = param1;
-         for each(var _loc2_ in param1)
+         var _loc3_:* = dic;
+         for each(var i in dic)
          {
-            if(_loc2_)
+            if(i)
             {
-               switch(int(_loc2_.PlaceID))
+               switch(int(i.PlaceID))
                {
                   case 0:
-                     tempIntegrationEfforts.push(_loc2_);
+                     tempIntegrationEfforts.push(i);
                      continue;
                   case 1:
-                     tempRoleEfforts.push(_loc2_);
+                     tempRoleEfforts.push(i);
                      continue;
                   case 2:
-                     tempTaskEfforts.push(_loc2_);
+                     tempTaskEfforts.push(i);
                      continue;
                   case 3:
-                     tempDuplicateEfforts.push(_loc2_);
+                     tempDuplicateEfforts.push(i);
                      continue;
                   case 4:
-                     tempCombatEfforts.push(_loc2_);
+                     tempCombatEfforts.push(i);
                      continue;
                }
             }
@@ -1077,83 +1063,81 @@ package ddt.manager
          }
       }
       
-      public function getTempTopEffort(param1:EffortInfo) : int
+      public function getTempTopEffort(info:EffortInfo) : int
       {
-         var _loc2_:int = 0;
-         if(isTopEffort(param1) || !tempEffortIsComplete(param1.ID))
+         var i:int = 0;
+         if(isTopEffort(info) || !tempEffortIsComplete(info.ID))
          {
-            return param1.ID;
+            return info.ID;
          }
-         _loc2_ = 1;
-         while(!isTopEffort(getEffortByID(param1.ID - _loc2_)))
+         i = 1;
+         while(!isTopEffort(getEffortByID(info.ID - i)))
          {
-            _loc2_++;
+            i++;
          }
-         return getEffortByID(param1.ID - _loc2_).ID;
+         return getEffortByID(info.ID - i).ID;
       }
       
-      public function getTempCompleteNextEffort(param1:int) : Array
+      public function getTempCompleteNextEffort(id:int) : Array
       {
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:Array = [];
-         var _loc3_:Array = [];
-         if(tempEffortIsComplete(param1))
+         var i:int = 0;
+         var j:int = 0;
+         var completeNextEffortArray:Array = [];
+         var strArray:Array = [];
+         if(tempEffortIsComplete(id))
          {
-            _loc2_.push(tempCompleteEfforts[param1]);
+            completeNextEffortArray.push(tempCompleteEfforts[id]);
          }
-         _loc5_ = 1;
-         while(tempCompleteEfforts[param1 + _loc5_])
+         i = 1;
+         while(tempCompleteEfforts[id + i])
          {
-            _loc3_ = (tempCompleteEfforts[param1 + _loc5_] as EffortInfo).PreAchievementID.split(",");
-            _loc4_ = 0;
-            while(_loc4_ < _loc3_.length)
+            strArray = (tempCompleteEfforts[id + i] as EffortInfo).PreAchievementID.split(",");
+            for(j = 0; j < strArray.length; )
             {
-               if(isTopEffort(tempCompleteEfforts[param1 + _loc5_]))
+               if(isTopEffort(tempCompleteEfforts[id + i]))
                {
-                  return _loc2_;
+                  return completeNextEffortArray;
                }
-               if(param1 + _loc5_ - 1 == int(_loc3_[_loc4_]))
+               if(id + i - 1 == int(strArray[j]))
                {
-                  _loc2_.push(tempCompleteEfforts[param1 + _loc5_]);
+                  completeNextEffortArray.push(tempCompleteEfforts[id + i]);
                }
-               _loc4_++;
+               j++;
             }
-            _loc5_++;
+            i++;
          }
-         return _loc2_;
+         return completeNextEffortArray;
       }
       
       private function splitTempHonorEffort() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          tempHonorEfforts = [];
          tempCompleteHonorEfforts = [];
          tempInCompleteHonorEfforts = [];
          var _loc4_:int = 0;
          var _loc3_:* = allEfforts;
-         for each(var _loc2_ in allEfforts)
+         for each(var info in allEfforts)
          {
-            if(_loc2_.effortRewardArray)
+            if(info.effortRewardArray)
             {
-               _loc1_ = 0;
-               while(_loc1_ < _loc2_.effortRewardArray.length)
+               i = 0;
+               while(i < info.effortRewardArray.length)
                {
-                  if((_loc2_.effortRewardArray[_loc1_] as EffortRewardInfo).RewardType == 1)
+                  if((info.effortRewardArray[i] as EffortRewardInfo).RewardType == 1)
                   {
-                     tempHonorEfforts.push(_loc2_);
-                     if(EffortManager.Instance.tempEffortIsComplete(_loc2_.ID))
+                     tempHonorEfforts.push(info);
+                     if(EffortManager.Instance.tempEffortIsComplete(info.ID))
                      {
-                        tempCompleteHonorEfforts.push(_loc2_);
+                        tempCompleteHonorEfforts.push(info);
                      }
                      else
                      {
-                        tempInCompleteHonorEfforts.push(_loc2_);
+                        tempInCompleteHonorEfforts.push(info);
                      }
                   }
-                  _loc1_++;
+                  i++;
                }
-               continue;
             }
          }
       }
@@ -1176,9 +1160,9 @@ package ddt.manager
          return tempInCompleteHonorEfforts;
       }
       
-      public function tempEffortIsComplete(param1:int) : Boolean
+      public function tempEffortIsComplete(id:int) : Boolean
       {
-         return tempCompleteEfforts[param1];
+         return tempCompleteEfforts[id];
       }
       
       public function getTempIntegrationEffort() : Array
@@ -1211,9 +1195,9 @@ package ddt.manager
          return tempNewlyCompleteEffort;
       }
       
-      public function set isSelf(param1:Boolean) : void
+      public function set isSelf(value:Boolean) : void
       {
-         _isSelf = param1;
+         _isSelf = value;
       }
       
       public function get isSelf() : Boolean
@@ -1241,21 +1225,21 @@ package ddt.manager
          UIModuleLoader.Instance.addUIModuleImp("ddtEffort");
       }
       
-      private function __onClose(param1:Event) : void
+      private function __onClose(event:Event) : void
       {
          UIModuleLoader.Instance.removeEventListener("uiModuleComplete",__onUIModuleComplete);
          UIModuleSmallLoading.Instance.hide();
          UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);
       }
       
-      private function __onProgress(param1:UIModuleEvent) : void
+      private function __onProgress(event:UIModuleEvent) : void
       {
-         UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+         UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
       }
       
-      private function __onUIModuleComplete(param1:UIModuleEvent) : void
+      private function __onUIModuleComplete(event:UIModuleEvent) : void
       {
-         if(param1.module == "ddtEffort")
+         if(event.module == "ddtEffort")
          {
             UIModuleSmallLoading.Instance.hide();
             UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);
@@ -1272,10 +1256,10 @@ package ddt.manager
          BagAndInfoManager.Instance.showBagAndInfo(3);
       }
       
-      private function __frameEvent(param1:FrameEvent) : void
+      private function __frameEvent(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             default:
             default:

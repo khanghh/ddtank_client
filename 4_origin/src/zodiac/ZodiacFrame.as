@@ -53,9 +53,9 @@ package zodiac
          removeEventListener("response",__response);
       }
       
-      private function __response(param1:FrameEvent) : void
+      private function __response(e:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(e.responseCode == 0 || e.responseCode == 1)
          {
             SoundManager.instance.play("008");
             if(ZodiacControl.instance.inRolling)

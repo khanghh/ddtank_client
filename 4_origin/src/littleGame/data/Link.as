@@ -8,11 +8,11 @@ package littleGame.data
       
       public var cost:Number;
       
-      function Link(param1:Node, param2:Number)
+      function Link(node:Node, cost:Number)
       {
          super();
-         this.node = param1;
-         this.cost = param2;
+         this.node = node;
+         this.cost = cost;
       }
    }
 }

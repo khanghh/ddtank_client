@@ -30,31 +30,31 @@ package im
          recordMessage = new Vector.<Object>();
       }
       
-      public function addMessage(param1:String, param2:Date, param3:String) : void
+      public function addMessage(name:String, date:Date, content:String) : void
       {
-         var _loc5_:String = DateUtils.dateFormat(param2);
-         var _loc6_:String = "";
-         if(param1 == PlayerManager.Instance.Self.NickName)
+         var dd:String = DateUtils.dateFormat(date);
+         var str:String = "";
+         if(name == PlayerManager.Instance.Self.NickName)
          {
-            _loc6_ = _loc6_ + ("<FONT COLOR=\'#06f710\'>" + param1 + "   " + _loc5_.split(" ")[1] + "</FONT>\n");
+            str = str + ("<FONT COLOR=\'#06f710\'>" + name + "   " + dd.split(" ")[1] + "</FONT>\n");
          }
          else
          {
-            _loc6_ = _loc6_ + ("<FONT COLOR=\'#ffff01\'>" + param1 + "   " + _loc5_.split(" ")[1] + "</FONT>\n");
+            str = str + ("<FONT COLOR=\'#ffff01\'>" + name + "   " + dd.split(" ")[1] + "</FONT>\n");
          }
-         _loc6_ = _loc6_ + param3;
-         messages.push(_loc6_);
-         var _loc4_:String = "";
-         if(param1 == PlayerManager.Instance.Self.NickName)
+         str = str + content;
+         messages.push(str);
+         var str1:String = "";
+         if(name == PlayerManager.Instance.Self.NickName)
          {
-            _loc4_ = _loc4_ + ("<FONT COLOR=\'#06f710\'>" + param1 + "   " + _loc5_ + "</FONT>\n");
+            str1 = str1 + ("<FONT COLOR=\'#06f710\'>" + name + "   " + dd + "</FONT>\n");
          }
          else
          {
-            _loc4_ = _loc4_ + ("<FONT COLOR=\'#ffff01\'>" + param1 + "   " + _loc5_ + "</FONT>\n");
+            str1 = str1 + ("<FONT COLOR=\'#ffff01\'>" + name + "   " + dd + "</FONT>\n");
          }
-         _loc4_ = _loc4_ + param3;
-         recordMessage.push(_loc4_);
+         str1 = str1 + content;
+         recordMessage.push(str1);
       }
       
       public function get lastMessage() : String

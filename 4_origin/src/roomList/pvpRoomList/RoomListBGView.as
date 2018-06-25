@@ -87,11 +87,11 @@ package roomList.pvpRoomList
       
       private var _lastCreatTime:int = 0;
       
-      public function RoomListBGView(param1:RoomListController, param2:RoomListModel)
+      public function RoomListBGView(controller:RoomListController, model:RoomListModel)
       {
          _modeArray = ["ddt.roomList.roomListBG.full","ddt.roomList.roomListBG.Athletics","ddt.roomList.roomListBG.challenge"];
-         _model = param2;
-         _controller = param1;
+         _model = model;
+         _controller = controller;
          super();
          init();
          initEvent();
@@ -168,58 +168,57 @@ package roomList.pvpRoomList
          }
       }
       
-      private function __updateItem(param1:Event) : void
+      private function __updateItem(event:Event) : void
       {
          upadteItemPos();
          _isPermissionEnter = true;
       }
       
-      private function __onListClick(param1:ListItemEvent) : void
+      private function __onListClick(event:ListItemEvent) : void
       {
          SoundManager.instance.play("008");
-         _currentMode = getCurrentMode(param1.cellValue);
+         _currentMode = getCurrentMode(event.cellValue);
          addTipPanel();
       }
       
-      private function getCurrentMode(param1:String) : int
+      private function getCurrentMode(value:String) : int
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _modeArray.length)
+         var i:int = 0;
+         for(i = 0; i < _modeArray.length; )
          {
-            if(LanguageMgr.GetTranslation(_modeArray[_loc2_]) == param1)
+            if(LanguageMgr.GetTranslation(_modeArray[i]) == value)
             {
-               return _loc2_;
+               return i;
             }
-            _loc2_++;
+            i++;
          }
          return -1;
       }
       
       private function addTipPanel() : void
       {
-         var _loc1_:VectorListModel = _modeMenu.listPanel.vectorListModel;
-         _loc1_.clear();
+         var comboxModel:VectorListModel = _modeMenu.listPanel.vectorListModel;
+         comboxModel.clear();
          switch(int(_currentMode))
          {
             case 0:
-               _loc1_.append(LanguageMgr.GetTranslation(_modeArray[1]));
-               _loc1_.append(LanguageMgr.GetTranslation(_modeArray[2]));
+               comboxModel.append(LanguageMgr.GetTranslation(_modeArray[1]));
+               comboxModel.append(LanguageMgr.GetTranslation(_modeArray[2]));
                SocketManager.Instance.out.sendUpdateRoomList(1,3);
                break;
             case 1:
-               _loc1_.append(LanguageMgr.GetTranslation(_modeArray[0]));
-               _loc1_.append(LanguageMgr.GetTranslation(_modeArray[2]));
+               comboxModel.append(LanguageMgr.GetTranslation(_modeArray[0]));
+               comboxModel.append(LanguageMgr.GetTranslation(_modeArray[2]));
                SocketManager.Instance.out.sendUpdateRoomList(1,4);
                break;
             case 2:
-               _loc1_.append(LanguageMgr.GetTranslation(_modeArray[0]));
-               _loc1_.append(LanguageMgr.GetTranslation(_modeArray[1]));
+               comboxModel.append(LanguageMgr.GetTranslation(_modeArray[0]));
+               comboxModel.append(LanguageMgr.GetTranslation(_modeArray[1]));
                SocketManager.Instance.out.sendUpdateRoomList(1,5);
          }
       }
       
-      private function __clearRoom(param1:DictionaryEvent) : void
+      private function __clearRoom(event:DictionaryEvent) : void
       {
          cleanItem();
          _isPermissionEnter = true;
@@ -227,66 +226,64 @@ package roomList.pvpRoomList
       
       private function updateList() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
-         _loc3_ = 0;
-         while(_loc3_ < _model.getRoomList().length)
+         var i:int = 0;
+         var info:* = null;
+         var item:* = null;
+         for(i = 0; i < _model.getRoomList().length; )
          {
-            _loc2_ = _model.getRoomList().list[_loc3_];
-            _loc1_ = new RoomListItemView(_loc2_);
-            _loc1_.addEventListener("click",__itemClick);
-            _itemList.addChild(_loc1_);
-            _itemArray.push(_loc1_);
-            _loc3_++;
+            info = _model.getRoomList().list[i];
+            item = new RoomListItemView(info);
+            item.addEventListener("click",__itemClick);
+            _itemList.addChild(item);
+            _itemArray.push(item);
+            i++;
          }
       }
       
       private function cleanItem() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _itemArray.length)
+         var i:int = 0;
+         for(i = 0; i < _itemArray.length; )
          {
-            (_itemArray[_loc1_] as RoomListItemView).removeEventListener("click",__itemClick);
-            (_itemArray[_loc1_] as RoomListItemView).dispose();
-            _loc1_++;
+            (_itemArray[i] as RoomListItemView).removeEventListener("click",__itemClick);
+            (_itemArray[i] as RoomListItemView).dispose();
+            i++;
          }
          _itemList.disposeAllChildren();
          _itemArray = [];
       }
       
-      private function __itemClick(param1:MouseEvent) : void
+      private function __itemClick(event:MouseEvent) : void
       {
          if(!_isPermissionEnter)
          {
             return;
          }
-         gotoIntoRoom((param1.currentTarget as RoomListItemView).info);
-         getSelectItemPos((param1.currentTarget as RoomListItemView).id);
+         gotoIntoRoom((event.currentTarget as RoomListItemView).info);
+         getSelectItemPos((event.currentTarget as RoomListItemView).id);
       }
       
-      private function getSelectItemPos(param1:int) : int
+      private function getSelectItemPos(id:int) : int
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          if(!_itemList)
          {
             return 0;
          }
-         _loc2_ = 0;
-         while(_loc2_ < _itemArray.length)
+         i = 0;
+         while(i < _itemArray.length)
          {
-            if(!(_itemArray[_loc2_] as RoomListItemView))
+            if(!(_itemArray[i] as RoomListItemView))
             {
                return 0;
             }
-            if((_itemArray[_loc2_] as RoomListItemView).id == param1)
+            if((_itemArray[i] as RoomListItemView).id == id)
             {
-               _selectItemPos = _loc2_;
-               _selectItemID = (_itemArray[_loc2_] as RoomListItemView).id;
-               return _loc2_;
+               _selectItemPos = i;
+               _selectItemID = (_itemArray[i] as RoomListItemView).id;
+               return i;
             }
-            _loc2_++;
+            i++;
          }
          return 0;
       }
@@ -300,90 +297,90 @@ package roomList.pvpRoomList
          return _model.getRoomList().list;
       }
       
-      private function getInfosPos(param1:int) : int
+      private function getInfosPos(id:int) : int
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          _tempDataList = currentDataList;
          if(!_tempDataList)
          {
             return 0;
          }
-         _loc2_ = 0;
-         while(_loc2_ < _tempDataList.length)
+         i = 0;
+         while(i < _tempDataList.length)
          {
-            if((_tempDataList[_loc2_] as RoomInfo).ID == param1)
+            if((_tempDataList[i] as RoomInfo).ID == id)
             {
-               return _loc2_;
+               return i;
             }
-            _loc2_++;
+            i++;
          }
          return 0;
       }
       
       private function upadteItemPos() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:int = 0;
-         var _loc3_:* = null;
+         var temInfo:* = null;
+         var temPos:int = 0;
+         var item:* = null;
          _tempDataList = currentDataList;
          if(_tempDataList)
          {
-            _loc2_ = _tempDataList[_selectItemPos];
-            _loc1_ = getInfosPos(_selectItemID);
-            _tempDataList[_selectItemPos] = _tempDataList[_loc1_];
-            _tempDataList[_loc1_] = _loc2_;
+            temInfo = _tempDataList[_selectItemPos];
+            temPos = getInfosPos(_selectItemID);
+            _tempDataList[_selectItemPos] = _tempDataList[temPos];
+            _tempDataList[temPos] = temInfo;
             _tempDataList = sortRooInfo(_tempDataList);
             cleanItem();
             var _loc6_:int = 0;
             var _loc5_:* = _tempDataList;
-            for each(var _loc4_ in _tempDataList)
+            for each(var info in _tempDataList)
             {
-               if(!_loc4_)
+               if(!info)
                {
                   return;
                }
-               _loc3_ = new RoomListItemView(_loc4_);
-               _loc3_.addEventListener("click",__itemClick,false,0,true);
-               _itemList.addChild(_loc3_);
-               _itemArray.push(_loc3_);
+               item = new RoomListItemView(info);
+               item.addEventListener("click",__itemClick,false,0,true);
+               _itemList.addChild(item);
+               _itemArray.push(item);
             }
          }
       }
       
-      private function sortRooInfo(param1:Array) : Array
+      private function sortRooInfo(roomInfos:Array) : Array
       {
-         var _loc2_:int = 0;
-         var _loc3_:Array = [];
+         var roomType:int = 0;
+         var newRoomInfos:Array = [];
          switch(int(_currentMode) - 1)
          {
             case 0:
-               _loc2_ = 0;
+               roomType = 0;
                break;
             case 1:
-               _loc2_ = 1;
+               roomType = 1;
          }
          var _loc6_:int = 0;
-         var _loc5_:* = param1;
-         for each(var _loc4_ in param1)
+         var _loc5_:* = roomInfos;
+         for each(var info in roomInfos)
          {
-            if(_loc4_)
+            if(info)
             {
-               if(_loc4_.type == _loc2_ && !_loc4_.isPlaying)
+               if(info.type == roomType && !info.isPlaying)
                {
-                  _loc3_.unshift(_loc4_);
+                  newRoomInfos.unshift(info);
                }
                else
                {
-                  _loc3_.push(_loc4_);
+                  newRoomInfos.push(info);
                }
             }
          }
-         return _loc3_;
+         return newRoomInfos;
       }
       
-      private function gotoTip(param1:int) : Boolean
+      private function gotoTip(type:int) : Boolean
       {
-         if(param1 == 0)
+         if(type == 0)
          {
             if(PlayerManager.Instance.Self.Grade < 6)
             {
@@ -391,7 +388,7 @@ package roomList.pvpRoomList
                return true;
             }
          }
-         else if(param1 == 1)
+         else if(type == 1)
          {
             if(PlayerManager.Instance.Self.Grade < 12)
             {
@@ -402,18 +399,18 @@ package roomList.pvpRoomList
          return false;
       }
       
-      public function gotoIntoRoom(param1:RoomInfo) : void
+      public function gotoIntoRoom(info:RoomInfo) : void
       {
          SoundManager.instance.play("008");
-         if(gotoTip(param1.type))
+         if(gotoTip(info.type))
          {
             return;
          }
-         SocketManager.Instance.out.sendGameLogin(1,-1,param1.ID,"");
+         SocketManager.Instance.out.sendGameLogin(1,-1,info.ID,"");
          _isPermissionEnter = false;
       }
       
-      private function _rivalshipClick(param1:MouseEvent) : void
+      private function _rivalshipClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(!_isPermissionEnter)
@@ -428,37 +425,37 @@ package roomList.pvpRoomList
          _isPermissionEnter = false;
       }
       
-      private function __updateClick(param1:MouseEvent) : void
+      private function __updateClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          sendUpdate();
       }
       
-      private function __placeCountClick(param1:MouseEvent) : void
+      private function __placeCountClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          sendUpdate();
       }
       
-      private function __hardLevelClick(param1:MouseEvent) : void
+      private function __hardLevelClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          sendUpdate();
       }
       
-      private function __roomModeClick(param1:MouseEvent) : void
+      private function __roomModeClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          sendUpdate();
       }
       
-      private function __roomNameClick(param1:MouseEvent) : void
+      private function __roomNameClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          sendUpdate();
       }
       
-      private function __idBtnClick(param1:MouseEvent) : void
+      private function __idBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          sendUpdate();
@@ -479,7 +476,7 @@ package roomList.pvpRoomList
          }
       }
       
-      private function __createBtnClick(param1:MouseEvent) : void
+      private function __createBtnClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(getTimer() - _lastCreatTime > 2000)
@@ -489,10 +486,10 @@ package roomList.pvpRoomList
          }
       }
       
-      protected function __encounterBtnClick(param1:MouseEvent) : void
+      protected function __encounterBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         CheckWeaponManager.instance.setFunction(this,__encounterBtnClick,[param1]);
+         CheckWeaponManager.instance.setFunction(this,__encounterBtnClick,[event]);
          if(CheckWeaponManager.instance.isNoWeapon())
          {
             CheckWeaponManager.instance.showAlert();

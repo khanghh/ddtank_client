@@ -34,7 +34,7 @@ package ddt.view
          _activityIcon.addEventListener("click",__showLevelFundActivityFrame);
       }
       
-      protected function __showLevelFundActivityFrame(param1:MouseEvent) : void
+      protected function __showLevelFundActivityFrame(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          LevelFundManager.instance.show();

@@ -18,9 +18,9 @@ package levelFund
       
       private var _isLoaded:Boolean = false;
       
-      public function LevelFundControl(param1:IEventDispatcher = null)
+      public function LevelFundControl(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : LevelFundControl
@@ -37,7 +37,7 @@ package levelFund
          LevelFundManager.instance.addEventListener("levelFundOpenView",__onOpenView);
       }
       
-      protected function __onOpenView(param1:LevelFundEvent) : void
+      protected function __onOpenView(event:LevelFundEvent) : void
       {
          if(_isLoaded)
          {

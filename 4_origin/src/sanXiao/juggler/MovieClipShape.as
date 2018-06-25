@@ -37,14 +37,14 @@ package sanXiao.juggler
       
       private var _m:Matrix;
       
-      public function MovieClipShape(param1:String, param2:BitmapSheet, param3:Number)
+      public function MovieClipShape(prefix:String, bitmapSheet:BitmapSheet, fps:Number)
       {
          super();
-         _fps = param3;
+         _fps = fps;
          _duration = 1000 / _fps;
          _m = new Matrix();
-         _bmpSheet = param2;
-         _rectangleList = param2.getRegionList(param1);
+         _bmpSheet = bitmapSheet;
+         _rectangleList = bitmapSheet.getRegionList(prefix);
          _totalTime = _duration * _rectangleList.length;
          _totalFrames = _rectangleList.length;
          _pivotX = 0;
@@ -69,13 +69,13 @@ package sanXiao.juggler
          _isPlaying = false;
       }
       
-      public function advance(param1:Number) : void
+      public function advance(duration:Number) : void
       {
          if(!_isPlaying)
          {
             return;
          }
-         _currentTime = _currentTime + param1;
+         _currentTime = _currentTime + duration;
          if(_currentTime < _currentFrame * _duration)
          {
             return;
@@ -108,27 +108,27 @@ package sanXiao.juggler
          return _loop;
       }
       
-      public function set loop(param1:Boolean) : void
+      public function set loop(value:Boolean) : void
       {
-         _loop = param1;
+         _loop = value;
       }
       
-      private function draw(param1:int) : void
+      private function draw(frameNumber:int) : void
       {
-         if(param1 > _totalFrames || param1 < 1)
+         if(frameNumber > _totalFrames || frameNumber < 1)
          {
-            throw "FrameNumber" + param1 + " is out of range, total frames : " + _totalFrames;
+            throw "FrameNumber" + frameNumber + " is out of range, total frames : " + _totalFrames;
          }
-         var _loc2_:Rectangle = _rectangleList[param1 - 1];
+         var r:Rectangle = _rectangleList[frameNumber - 1];
          this.graphics.clear();
          _m.a = 1;
          _m.b = 0;
          _m.c = 0;
          _m.d = 1;
-         _m.tx = -_loc2_.x - _pivotX;
-         _m.ty = -_loc2_.y - _pivotY;
+         _m.tx = -r.x - _pivotX;
+         _m.ty = -r.y - _pivotY;
          this.graphics.beginBitmapFill(_bmpSheet.bitmapData,_m,false,true);
-         this.graphics.drawRect(-_pivotX,-_pivotY,_loc2_.width,_loc2_.height);
+         this.graphics.drawRect(-_pivotX,-_pivotY,r.width,r.height);
          this.graphics.endFill();
       }
       
@@ -137,9 +137,9 @@ package sanXiao.juggler
          return _pivotX;
       }
       
-      public function set pivotX(param1:Number) : void
+      public function set pivotX(value:Number) : void
       {
-         _pivotX = param1;
+         _pivotX = value;
       }
       
       public function get pivotY() : Number
@@ -147,9 +147,9 @@ package sanXiao.juggler
          return _pivotY;
       }
       
-      public function set pivotY(param1:Number) : void
+      public function set pivotY(value:Number) : void
       {
-         _pivotY = param1;
+         _pivotY = value;
       }
       
       public function get isPlaying() : Boolean

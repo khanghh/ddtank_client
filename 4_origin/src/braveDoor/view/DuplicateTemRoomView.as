@@ -48,14 +48,14 @@ package braveDoor.view
       
       private var _control:BraveDoorControl = null;
       
-      public function DuplicateTemRoomView(param1:RoomInfo)
+      public function DuplicateTemRoomView(info:RoomInfo)
       {
-         super(param1);
+         super(info);
       }
       
-      public function set control(param1:BraveDoorControl) : void
+      public function set control($ctr:BraveDoorControl) : void
       {
-         _control = param1;
+         _control = $ctr;
       }
       
       override protected function initView() : void
@@ -78,15 +78,15 @@ package braveDoor.view
          updateButtons();
       }
       
-      private function updateDuplicateName(param1:int) : void
+      private function updateDuplicateName(mapId:int) : void
       {
-         var _loc2_:String = "asset.braveDoor.room.duplicateTitle" + param1;
+         var path:String = "asset.braveDoor.room.duplicateTitle" + mapId;
          if(_duplicateName != null)
          {
             ObjectUtils.disposeObject(_duplicateName);
             _duplicateName = null;
          }
-         _duplicateName = ComponentFactory.Instance.creatBitmap(_loc2_);
+         _duplicateName = ComponentFactory.Instance.creatBitmap(path);
          _duplicateName.x = 712;
          _duplicateName.y = 96;
          addChild(_duplicateName);
@@ -123,8 +123,8 @@ package braveDoor.view
       
       override protected function initPlayerItems() : void
       {
-         var _loc1_:* = null;
-         var _loc3_:int = 0;
+         var player:* = null;
+         var i:int = 0;
          if(_info == null || _info.selfRoomPlayer == null)
          {
             return;
@@ -133,16 +133,15 @@ package braveDoor.view
          {
             _itemList.disposeAllChildren();
          }
-         var _loc2_:int = _info.currentPlayers.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var len:int = _info.currentPlayers.length;
+         for(i = 0; i < len; )
          {
-            _loc1_ = _info.currentPlayers[_loc3_];
+            player = _info.currentPlayers[i];
             _temItemView = new DuplicateTemRoomItemView();
-            _temItemView.info = _loc1_;
+            _temItemView.info = player;
             _itemList.addChild(_temItemView);
-            _playerItems[_loc1_.place] = _temItemView;
-            _loc3_++;
+            _playerItems[player.place] = _temItemView;
+            i++;
          }
       }
       
@@ -162,9 +161,9 @@ package braveDoor.view
          GameControl.Instance.addEventListener("StartLoading",__onStartLoad);
       }
       
-      override protected function __inviteClick(param1:MouseEvent) : void
+      override protected function __inviteClick(evt:MouseEvent) : void
       {
-         super.__inviteClick(param1);
+         super.__inviteClick(evt);
       }
       
       override protected function removeEvents() : void
@@ -185,17 +184,17 @@ package braveDoor.view
          GameControl.Instance.removeEventListener("StartLoading",__onStartLoad);
       }
       
-      protected function __onStartLoad(param1:Event) : void
+      protected function __onStartLoad(event:Event) : void
       {
          ChatManager.Instance.input.faceEnabled = false;
          LayerManager.Instance.clearnGameDynamic();
          StateManager.setState("roomLoading",GameControl.Instance.Current);
       }
       
-      protected function __onMapChanged(param1:RoomEvent) : void
+      protected function __onMapChanged(evt:RoomEvent) : void
       {
-         var _loc2_:int = _info.mapId;
-         updateDuplicateName(_loc2_);
+         var mapId:int = _info.mapId;
+         updateDuplicateName(mapId);
       }
       
       override protected function updateTimer() : void
@@ -210,12 +209,12 @@ package braveDoor.view
          }
       }
       
-      override protected function __updatePlayerItems(param1:RoomEvent) : void
+      override protected function __updatePlayerItems(evt:RoomEvent) : void
       {
          updateButtons();
       }
       
-      override protected function __updateState(param1:RoomEvent) : void
+      override protected function __updateState(evt:RoomEvent) : void
       {
          updateButtons();
          if(_info.selfRoomPlayer.isHost)
@@ -236,33 +235,33 @@ package braveDoor.view
          }
       }
       
-      override protected function __addPlayer(param1:RoomEvent) : void
+      override protected function __addPlayer(evt:RoomEvent) : void
       {
-         var _loc2_:RoomPlayer = param1.params[0] as RoomPlayer;
+         var player:RoomPlayer = evt.params[0] as RoomPlayer;
          _temItemView = new DuplicateTemRoomItemView();
-         _temItemView.info = _loc2_;
+         _temItemView.info = player;
          if(_itemList.contains(_temItemView))
          {
             _itemList.removeChild(_temItemView);
          }
-         _itemList.addChildAt(_temItemView,_loc2_.place);
+         _itemList.addChildAt(_temItemView,player.place);
          _itemList.refreshChildPos();
-         _playerItems[_loc2_.place] = _temItemView;
+         _playerItems[player.place] = _temItemView;
          updateButtons();
       }
       
-      override protected function __removePlayer(param1:RoomEvent) : void
+      override protected function __removePlayer(evt:RoomEvent) : void
       {
-         var _loc2_:RoomPlayer = param1.params[0] as RoomPlayer;
-         _itemList.removeChild(_playerItems[_loc2_.place]);
-         _playerItems[_loc2_.place].info = null;
-         _playerItems[_loc2_.place] = null;
-         _loc2_.dispose();
+         var player:RoomPlayer = evt.params[0] as RoomPlayer;
+         _itemList.removeChild(_playerItems[player.place]);
+         _playerItems[player.place].info = null;
+         _playerItems[player.place] = null;
+         player.dispose();
          _itemList.refreshChildPos();
          updateButtons();
       }
       
-      override protected function __startClick(param1:MouseEvent) : void
+      override protected function __startClick(evt:MouseEvent) : void
       {
          if(_info.mapId > 0)
          {
@@ -270,7 +269,7 @@ package braveDoor.view
             {
                return;
             }
-            super.__startClick(param1);
+            super.__startClick(evt);
          }
          else
          {
@@ -284,31 +283,31 @@ package braveDoor.view
          {
             return true;
          }
-         var _loc2_:int = MapManager.getBraveDoorDuplicateInfo(_info.mapId).LevelLimits;
+         var dupLev:int = MapManager.getBraveDoorDuplicateInfo(_info.mapId).LevelLimits;
          var _loc4_:int = 0;
          var _loc3_:* = _info.currentPlayers;
-         for each(var _loc1_ in _info.currentPlayers)
+         for each(var play in _info.currentPlayers)
          {
-            if(_loc1_.playerInfo.Grade < _loc2_)
+            if(play.playerInfo.Grade < dupLev)
             {
-               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("game.braveDoor.startGame.levCheckTip",_loc2_));
+               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("game.braveDoor.startGame.levCheckTip",dupLev));
                return true;
             }
          }
          return false;
       }
       
-      override protected function __prepareClick(param1:MouseEvent) : void
+      override protected function __prepareClick(evt:MouseEvent) : void
       {
-         super.__prepareClick(param1);
+         super.__prepareClick(evt);
       }
       
-      override protected function __cancelClick(param1:MouseEvent) : void
+      override protected function __cancelClick(evt:MouseEvent) : void
       {
-         super.__cancelClick(param1);
+         super.__cancelClick(evt);
       }
       
-      override protected function __startHandler(param1:RoomEvent) : void
+      override protected function __startHandler(evt:RoomEvent) : void
       {
          updateButtons();
          if(_info.started)
@@ -322,7 +321,7 @@ package braveDoor.view
          }
       }
       
-      protected function __exitClickHandler(param1:MouseEvent) : void
+      protected function __exitClickHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(_control == null)
@@ -355,9 +354,9 @@ package braveDoor.view
          _inviteFrame = null;
          var _loc3_:int = 0;
          var _loc2_:* = _playerItems;
-         for each(var _loc1_ in _playerItems)
+         for each(var item in _playerItems)
          {
-            ObjectUtils.disposeObject(_loc1_);
+            ObjectUtils.disposeObject(item);
          }
          _playerItems = null;
          if(_hostTimer)

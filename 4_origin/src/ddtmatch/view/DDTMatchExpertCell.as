@@ -7,9 +7,9 @@ package ddtmatch.view
    {
        
       
-      public function DDTMatchExpertCell(param1:int, param2:ItemTemplateInfo = null, param3:Boolean = true)
+      public function DDTMatchExpertCell(index:int, info:ItemTemplateInfo = null, showLoading:Boolean = true)
       {
-         super(param1,param2,param3,null,true);
+         super(index,info,showLoading,null,true);
       }
       
       override public function updateCount() : void

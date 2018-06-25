@@ -19,9 +19,9 @@ package condiscount
       
       private var _frame:CondiscountFrame;
       
-      public function CondiscountManager(param1:IEventDispatcher = null)
+      public function CondiscountManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : CondiscountManager

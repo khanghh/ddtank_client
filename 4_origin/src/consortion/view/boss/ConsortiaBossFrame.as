@@ -57,8 +57,8 @@ package consortion.view.boss
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var cell:* = null;
          titleText = LanguageMgr.GetTranslation("ddt.consortia.bossFrame.titleTxt");
          _bg = ComponentFactory.Instance.creatBitmap("asset.consortionBossFrame.bg");
          addToContent(_bg);
@@ -93,16 +93,15 @@ package consortion.view.boss
          PositionUtils.setPos(_levelView,"consortiaBoss.levelViewPos");
          addToContent(_levelView);
          _cellList = new Vector.<BossMemberItem>(11);
-         _loc2_ = 0;
-         while(_loc2_ < 11)
+         for(i = 0; i < 11; )
          {
-            _loc1_ = new BossMemberItem();
-            _loc1_.x = 26;
-            _loc1_.y = 96 + _loc2_ * 35;
-            _loc1_.visible = false;
-            addToContent(_loc1_);
-            _cellList[_loc2_] = _loc1_;
-            _loc2_++;
+            cell = new BossMemberItem();
+            cell.x = 26;
+            cell.y = 96 + i * 35;
+            cell.visible = false;
+            addToContent(cell);
+            _cellList[i] = cell;
+            i++;
          }
          __onChange(null);
       }
@@ -114,7 +113,7 @@ package consortion.view.boss
          _group.selectIndex = 0;
       }
       
-      private function __onChange(param1:Event) : void
+      private function __onChange(e:Event) : void
       {
          _levelView.currentFrame = _group.selectIndex;
          _levelView.reset();
@@ -140,9 +139,9 @@ package consortion.view.boss
          }
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();

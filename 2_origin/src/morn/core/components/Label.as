@@ -1,13 +1,10 @@
 package morn.core.components
 {
-   import flash.display.GradientType;
    import flash.display.Shape;
-   import flash.events.Event;
    import flash.filters.GlowFilter;
    import flash.geom.Matrix;
    import flash.geom.Rectangle;
    import flash.text.TextField;
-   import flash.text.TextFieldAutoSize;
    import flash.text.TextFormat;
    import morn.core.utils.ObjectUtils;
    import morn.core.utils.StringUtils;
@@ -39,12 +36,12 @@ package morn.core.components
       
       protected var _gradientStroke:String;
       
-      public function Label(param1:String = "", param2:String = null)
+      public function Label(text:String = "", skin:String = null)
       {
-         this._margin = Styles.labelMargin;
+         _margin = Styles.labelMargin;
          super();
-         this.text = param1;
-         this.skin = param2;
+         this.text = text;
+         this.skin = skin;
       }
       
       override protected function preinitialize() : void
@@ -54,60 +51,67 @@ package morn.core.components
       
       override protected function createChildren() : void
       {
-         addChild(this._bitmap = new AutoBitmap());
-         addChild(this._textField = new TextField());
+         _bitmap = new AutoBitmap();
+         addChild(new AutoBitmap());
+         _textField = new TextField();
+         addChild(new TextField());
       }
       
       override protected function initialize() : void
       {
-         this._format = this._textField.defaultTextFormat;
-         this._format.font = Styles.fontName;
-         this._format.size = Styles.fontSize;
-         this._format.color = Styles.labelColor;
-         this._textField.selectable = false;
-         this._textField.autoSize = TextFieldAutoSize.LEFT;
-         this._textField.embedFonts = Styles.embedFonts;
-         this._bitmap.sizeGrid = Styles.defaultSizeGrid;
+         _format = _textField.defaultTextFormat;
+         _format.font = Styles.fontName;
+         _format.size = Styles.fontSize;
+         _format.color = Styles.labelColor;
+         _textField.selectable = false;
+         _textField.autoSize = "left";
+         _textField.embedFonts = Styles.embedFonts;
+         _bitmap.sizeGrid = Styles.defaultSizeGrid;
       }
       
       public function get text() : String
       {
-         return this._text;
+         return _text;
       }
       
-      public function set text(param1:String) : void
+      public function set text(value:String) : void
       {
-         if(this._text != param1)
+         if(_text != value)
          {
-            this._text = param1 || "";
-            this._text = this._text.replace(/\\n/g,"\n");
-            this.changeText();
-            sendEvent(Event.CHANGE);
+            _text = value || "";
+            _text = _text.replace(/\\n/g,"\n");
+            changeText();
+            sendEvent("change");
          }
       }
       
       public function get htmlText() : String
       {
-         return this._text;
+         return _text;
       }
       
-      public function set htmlText(param1:String) : void
+      public function set htmlText(value:String) : void
       {
-         this._isHtml = true;
-         this.text = param1;
+         _isHtml = true;
+         text = value;
       }
       
       protected function changeText() : void
       {
-         this._textField.defaultTextFormat = this._format;
-         if(this._isHtml)
+         _textField.defaultTextFormat = _format;
+         if(_isHtml)
          {
-            this._textField.htmlText = App.lang.getLang(this._text);
+            var _loc1_:* = App.lang.getLang(_text);
+            _textField.htmlText = _loc1_;
+            §§push(_loc1_);
          }
          else
          {
-            this._textField.text = App.lang.getLang(this._text);
+            _loc1_ = App.lang.getLang(_text);
+            _textField.text = _loc1_;
+            §§push(_loc1_);
          }
+         §§pop();
          if(_layOutEabled)
          {
             callLater(resetPosition);
@@ -118,419 +122,420 @@ package morn.core.components
       {
          if(!isNaN(_width))
          {
-            this._textField.autoSize = TextFieldAutoSize.NONE;
-            this._textField.width = _width - this._margin[0] - this._margin[2];
-            if(isNaN(_height) && this.wordWrap)
+            _textField.autoSize = "none";
+            _textField.width = _width - _margin[0] - _margin[2];
+            if(isNaN(_height) && wordWrap)
             {
-               this._textField.autoSize = TextFieldAutoSize.LEFT;
+               _textField.autoSize = "left";
             }
             else
             {
                _height = !!isNaN(_height)?18:Number(_height);
-               this._textField.height = _height - this._margin[1] - this._margin[3];
+               _textField.height = _height - _margin[1] - _margin[3];
             }
          }
          else
          {
-            _width = _height = NaN;
-            this._textField.autoSize = TextFieldAutoSize.LEFT;
+            _height = NaN;
+            _width = NaN;
+            _textField.autoSize = "left";
          }
          super.changeSize();
       }
       
       public function get isHtml() : Boolean
       {
-         return this._isHtml;
+         return _isHtml;
       }
       
-      public function set isHtml(param1:Boolean) : void
+      public function set isHtml(value:Boolean) : void
       {
-         if(this._isHtml != param1)
+         if(_isHtml != value)
          {
-            this._isHtml = param1;
-            callLater(this.changeText);
+            _isHtml = value;
+            callLater(changeText);
          }
       }
       
       public function get stroke() : String
       {
-         return this._stroke;
+         return _stroke;
       }
       
-      public function set stroke(param1:String) : void
+      public function set stroke(value:String) : void
       {
-         var _loc2_:Array = null;
-         if(this._stroke != param1)
+         var a:* = null;
+         if(_stroke != value)
          {
-            this._stroke = param1;
-            ObjectUtils.clearFilter(this._textField,GlowFilter);
-            if(Boolean(this._stroke))
+            _stroke = value;
+            ObjectUtils.clearFilter(_textField,GlowFilter);
+            if(_stroke)
             {
-               _loc2_ = StringUtils.fillArray(Styles.labelStroke,this._stroke);
-               ObjectUtils.addFilter(this._textField,new GlowFilter(_loc2_[0],_loc2_[1],_loc2_[2],_loc2_[3],_loc2_[4],_loc2_[5]));
+               a = StringUtils.fillArray(Styles.labelStroke,_stroke);
+               ObjectUtils.addFilter(_textField,new GlowFilter(a[0],a[1],a[2],a[3],a[4],a[5]));
             }
          }
       }
       
       public function get gradientColor() : String
       {
-         return this._gradientColor.join(",");
+         return _gradientColor.join(",");
       }
       
-      public function set gradientColor(param1:String) : void
+      public function set gradientColor(value:String) : void
       {
-         this._gradientColor = param1.split(",");
-         this.updateGradient();
+         _gradientColor = value.split(",");
+         updateGradient();
       }
       
       public function get gradientStroke() : String
       {
-         return this._gradientStroke;
+         return _gradientStroke;
       }
       
-      public function set gradientStroke(param1:String) : void
+      public function set gradientStroke(value:String) : void
       {
-         var _loc2_:Array = null;
-         if(!this._gradientColor)
+         var a:* = null;
+         if(!_gradientColor)
          {
             return;
          }
-         if(this._gradientStroke != param1)
+         if(_gradientStroke != value)
          {
-            this._gradientStroke = param1;
-            this.updateGradient();
-            ObjectUtils.clearFilter(this._gradientSp,GlowFilter);
-            if(Boolean(this._gradientStroke))
+            _gradientStroke = value;
+            updateGradient();
+            ObjectUtils.clearFilter(_gradientSp,GlowFilter);
+            if(_gradientStroke)
             {
-               _loc2_ = StringUtils.fillArray(Styles.labelStroke,this._gradientStroke);
-               ObjectUtils.addFilter(this._gradientSp,new GlowFilter(_loc2_[0],_loc2_[1],_loc2_[2],_loc2_[3],_loc2_[4],_loc2_[5]));
+               a = StringUtils.fillArray(Styles.labelStroke,_gradientStroke);
+               ObjectUtils.addFilter(_gradientSp,new GlowFilter(a[0],a[1],a[2],a[3],a[4],a[5]));
             }
          }
       }
       
       public function updateGradient() : void
       {
-         if(this._gradientSp)
+         if(_gradientSp)
          {
-            if(this._gradientSp.parent)
+            if(_gradientSp.parent)
             {
-               this._gradientSp.parent.removeChild(this._gradientSp);
+               _gradientSp.parent.removeChild(_gradientSp);
             }
-            this._gradientSp = null;
+            _gradientSp = null;
          }
-         this._gradientSp = new Shape();
-         addChild(this._gradientSp);
-         var _loc1_:Matrix = new Matrix();
-         var _loc2_:Rectangle = new Rectangle(0,0,this.width,this.height);
-         _loc1_.createGradientBox(_loc2_.width,_loc2_.height,Math.PI / 2,0,0);
-         this._gradientSp.graphics.beginGradientFill(GradientType.LINEAR,[this._gradientColor[0],this._gradientColor[1]],[1,1],[0,255],_loc1_);
-         this._gradientSp.graphics.drawRect(0,0,_loc2_.width,_loc2_.height);
-         this._gradientSp.graphics.endFill();
-         this._gradientSp.cacheAsBitmap = true;
-         this.textField.cacheAsBitmap = true;
-         this._gradientSp.mask = this.textField;
+         _gradientSp = new Shape();
+         addChild(_gradientSp);
+         var _currentMatrix:Matrix = new Matrix();
+         var rect:Rectangle = new Rectangle(0,0,width,height);
+         _currentMatrix.createGradientBox(rect.width,rect.height,3.14159265358979 / 2,0,0);
+         _gradientSp.graphics.beginGradientFill("linear",[_gradientColor[0],_gradientColor[1]],[1,1],[0,255],_currentMatrix);
+         _gradientSp.graphics.drawRect(0,0,rect.width,rect.height);
+         _gradientSp.graphics.endFill();
+         _gradientSp.cacheAsBitmap = true;
+         textField.cacheAsBitmap = true;
+         _gradientSp.mask = textField;
       }
       
       public function get multiline() : Boolean
       {
-         return this._textField.multiline;
+         return _textField.multiline;
       }
       
-      public function set multiline(param1:Boolean) : void
+      public function set multiline(value:Boolean) : void
       {
-         this._textField.multiline = param1;
+         _textField.multiline = value;
       }
       
       public function get asPassword() : Boolean
       {
-         return this._textField.displayAsPassword;
+         return _textField.displayAsPassword;
       }
       
-      public function set asPassword(param1:Boolean) : void
+      public function set asPassword(value:Boolean) : void
       {
-         this._textField.displayAsPassword = param1;
+         _textField.displayAsPassword = value;
       }
       
       public function get autoSize() : String
       {
-         return this._textField.autoSize;
+         return _textField.autoSize;
       }
       
-      public function set autoSize(param1:String) : void
+      public function set autoSize(value:String) : void
       {
-         this._textField.autoSize = param1;
+         _textField.autoSize = value;
       }
       
       public function get wordWrap() : Boolean
       {
-         return this._textField.wordWrap;
+         return _textField.wordWrap;
       }
       
-      public function set wordWrap(param1:Boolean) : void
+      public function set wordWrap(value:Boolean) : void
       {
-         this._textField.wordWrap = param1;
+         _textField.wordWrap = value;
       }
       
       public function get selectable() : Boolean
       {
-         return this._textField.selectable;
+         return _textField.selectable;
       }
       
-      public function set selectable(param1:Boolean) : void
+      public function set selectable(value:Boolean) : void
       {
-         this._textField.selectable = param1;
-         mouseEnabled = param1;
+         _textField.selectable = value;
+         mouseEnabled = value;
       }
       
       public function get background() : Boolean
       {
-         return this._textField.background;
+         return _textField.background;
       }
       
-      public function set background(param1:Boolean) : void
+      public function set background(value:Boolean) : void
       {
-         this._textField.background = param1;
+         _textField.background = value;
       }
       
       public function get backgroundColor() : uint
       {
-         return this._textField.backgroundColor;
+         return _textField.backgroundColor;
       }
       
-      public function set backgroundColor(param1:uint) : void
+      public function set backgroundColor(value:uint) : void
       {
-         this._textField.backgroundColor = param1;
+         _textField.backgroundColor = value;
       }
       
       public function get color() : Object
       {
-         return this._format.color;
+         return _format.color;
       }
       
-      public function set color(param1:Object) : void
+      public function set color(value:Object) : void
       {
-         this._format.color = param1;
-         callLater(this.changeText);
+         _format.color = value;
+         callLater(changeText);
       }
       
       public function get font() : String
       {
-         return this._format.font;
+         return _format.font;
       }
       
-      public function set font(param1:String) : void
+      public function set font(value:String) : void
       {
-         this._format.font = param1;
-         callLater(this.changeText);
+         _format.font = value;
+         callLater(changeText);
       }
       
       public function get align() : String
       {
-         return this._format.align;
+         return _format.align;
       }
       
-      public function set align(param1:String) : void
+      public function set align(value:String) : void
       {
-         this._format.align = param1;
-         callLater(this.changeText);
+         _format.align = value;
+         callLater(changeText);
       }
       
       public function get bold() : Object
       {
-         return this._format.bold;
+         return _format.bold;
       }
       
-      public function set bold(param1:Object) : void
+      public function set bold(value:Object) : void
       {
-         this._format.bold = param1;
-         callLater(this.changeText);
+         _format.bold = value;
+         callLater(changeText);
       }
       
       public function get leading() : Object
       {
-         return this._format.leading;
+         return _format.leading;
       }
       
-      public function set leading(param1:Object) : void
+      public function set leading(value:Object) : void
       {
-         this._format.leading = param1;
-         callLater(this.changeText);
+         _format.leading = value;
+         callLater(changeText);
       }
       
       public function get indent() : Object
       {
-         return this._format.indent;
+         return _format.indent;
       }
       
-      public function set indent(param1:Object) : void
+      public function set indent(value:Object) : void
       {
-         this._format.indent = param1;
-         callLater(this.changeText);
+         _format.indent = value;
+         callLater(changeText);
       }
       
       public function get size() : Object
       {
-         return this._format.size;
+         return _format.size;
       }
       
-      public function set size(param1:Object) : void
+      public function set size(value:Object) : void
       {
-         this._format.size = param1;
-         callLater(this.changeText);
+         _format.size = value;
+         callLater(changeText);
       }
       
       public function get underline() : Object
       {
-         return this._format.underline;
+         return _format.underline;
       }
       
-      public function set underline(param1:Object) : void
+      public function set underline(value:Object) : void
       {
-         this._format.underline = param1;
-         callLater(this.changeText);
+         _format.underline = value;
+         callLater(changeText);
       }
       
       public function get letterSpacing() : Object
       {
-         return this._format.letterSpacing;
+         return _format.letterSpacing;
       }
       
-      public function set letterSpacing(param1:Object) : void
+      public function set letterSpacing(value:Object) : void
       {
-         this._format.letterSpacing = param1;
-         callLater(this.changeText);
+         _format.letterSpacing = value;
+         callLater(changeText);
       }
       
       public function get margin() : String
       {
-         return this._margin.join(",");
+         return _margin.join(",");
       }
       
-      public function set margin(param1:String) : void
+      public function set margin(value:String) : void
       {
-         this._margin = StringUtils.fillArray(this._margin,param1,int);
-         this._textField.x = this._margin[0];
-         this._textField.y = this._margin[1];
-         callLater(this.changeSize);
+         _margin = StringUtils.fillArray(_margin,value,int);
+         _textField.x = _margin[0];
+         _textField.y = _margin[1];
+         callLater(changeSize);
       }
       
       public function get embedFonts() : Boolean
       {
-         return this._textField.embedFonts;
+         return _textField.embedFonts;
       }
       
-      public function set embedFonts(param1:Boolean) : void
+      public function set embedFonts(value:Boolean) : void
       {
-         this._textField.embedFonts = param1;
+         _textField.embedFonts = value;
       }
       
       public function get format() : TextFormat
       {
-         return this._format;
+         return _format;
       }
       
-      public function set format(param1:TextFormat) : void
+      public function set format(value:TextFormat) : void
       {
-         this._format = param1;
-         callLater(this.changeText);
+         _format = value;
+         callLater(changeText);
       }
       
       public function get textField() : TextField
       {
-         return this._textField;
+         return _textField;
       }
       
-      public function appendText(param1:String) : void
+      public function appendText(newText:String) : void
       {
-         this.text = this.text + param1;
+         text = text + newText;
       }
       
       public function get skin() : String
       {
-         return this._skin;
+         return _skin;
       }
       
-      public function set skin(param1:String) : void
+      public function set skin(value:String) : void
       {
-         if(this._skin != param1)
+         if(_skin != value)
          {
-            this._skin = param1;
-            this._bitmap.bitmapData = App.asset.getBitmapData(this._skin);
-            if(this._bitmap.bitmapData)
+            _skin = value;
+            _bitmap.bitmapData = App.asset.getBitmapData(_skin);
+            if(_bitmap.bitmapData)
             {
-               _contentWidth = this._bitmap.bitmapData.width;
-               _contentHeight = this._bitmap.bitmapData.height;
+               _contentWidth = _bitmap.bitmapData.width;
+               _contentHeight = _bitmap.bitmapData.height;
             }
          }
       }
       
       public function get sizeGrid() : String
       {
-         return this._bitmap.sizeGrid.join(",");
+         return _bitmap.sizeGrid.join(",");
       }
       
-      public function set sizeGrid(param1:String) : void
+      public function set sizeGrid(value:String) : void
       {
-         this._bitmap.sizeGrid = StringUtils.fillArray(Styles.defaultSizeGrid,param1,int);
+         _bitmap.sizeGrid = StringUtils.fillArray(Styles.defaultSizeGrid,value,int);
       }
       
       override public function commitMeasure() : void
       {
-         exeCallLater(this.changeText);
-         exeCallLater(this.changeSize);
+         exeCallLater(changeText);
+         exeCallLater(changeSize);
       }
       
       override public function get width() : Number
       {
-         if(!isNaN(_width) || Boolean(this._skin) || Boolean(this._text))
+         if(!isNaN(_width) || _skin || _text)
          {
             return super.width;
          }
          return 0;
       }
       
-      override public function set width(param1:Number) : void
+      override public function set width(value:Number) : void
       {
-         super.width = param1;
-         this._bitmap.width = param1;
+         .super.width = value;
+         _bitmap.width = value;
       }
       
       override public function get height() : Number
       {
-         if(!isNaN(_height) || Boolean(this._skin) || Boolean(this._text))
+         if(!isNaN(_height) || _skin || _text)
          {
             return super.height;
          }
          return 0;
       }
       
-      override public function set height(param1:Number) : void
+      override public function set height(value:Number) : void
       {
-         super.height = param1;
-         this._bitmap.height = param1;
+         .super.height = value;
+         _bitmap.height = value;
       }
       
-      override public function set dataSource(param1:Object) : void
+      override public function set dataSource(value:Object) : void
       {
-         _dataSource = param1;
-         if(param1 is Number || param1 is String)
+         _dataSource = value;
+         if(value is Number || value is String)
          {
-            this.text = String(param1);
+            text = String(value);
          }
          else
          {
-            super.dataSource = param1;
+            .super.dataSource = value;
          }
       }
       
       override public function dispose() : void
       {
          super.dispose();
-         this._bitmap && this._bitmap.dispose();
-         this._textField = null;
-         this._format = null;
-         this._bitmap = null;
-         this._margin = null;
+         _bitmap && _bitmap.dispose();
+         _textField = null;
+         _format = null;
+         _bitmap = null;
+         _margin = null;
       }
    }
 }

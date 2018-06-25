@@ -128,22 +128,22 @@ package gameCommon.view.smallMap
       
       private var _drawRoute:Sprite;
       
-      public function SmallMapView3D(param1:MapView3D, param2:MissionInfo)
+      public function SmallMapView3D(map:MapView3D, info:MissionInfo)
       {
          _drawMatrix = new Matrix();
          _child = new Dictionary();
          _collideRect = new Rectangle(-45,-30,100,80);
          super();
-         _map = param1;
-         _missionInfo = param2;
+         _map = map;
+         _missionInfo = info;
          _processer = new ThingProcesser();
          initView();
          initEvent();
       }
       
-      public function set locked(param1:Boolean) : void
+      public function set locked(value:Boolean) : void
       {
-         _locked = param1;
+         _locked = value;
       }
       
       public function get locked() : Boolean
@@ -151,9 +151,9 @@ package gameCommon.view.smallMap
          return _locked;
       }
       
-      public function set allowDrag(param1:Boolean) : void
+      public function set allowDrag(value:Boolean) : void
       {
-         _allowDrag = param1;
+         _allowDrag = value;
          if(!_allowDrag)
          {
             __mouseUp(null);
@@ -183,21 +183,21 @@ package gameCommon.view.smallMap
          return _mask.height;
       }
       
-      public function setHardLevel(param1:int, param2:int = 0) : void
+      public function setHardLevel(value:int, type:int = 0) : void
       {
-         if(param2 == 0)
+         if(type == 0)
          {
-            _titleBar.title = HARD_LEVEL[param1];
+            _titleBar.title = HARD_LEVEL[value];
          }
          else
          {
-            _titleBar.title = HARD_LEVEL1[param1];
+            _titleBar.title = HARD_LEVEL1[value];
          }
       }
       
-      public function setBarrier(param1:int, param2:int) : void
+      public function setBarrier(val:int, max:int) : void
       {
-         _titleBar.setBarrier(param1,param2);
+         _titleBar.setBarrier(val,max);
       }
       
       private function initView() : void
@@ -292,25 +292,25 @@ package gameCommon.view.smallMap
       
       private function drawBackground() : void
       {
-         var _loc1_:Graphics = graphics;
+         var g:Graphics = graphics;
          if(!(GameControl.Instance.smallMapBorderEnable() || GameControl.Instance.smallMapShape()))
          {
-            _loc1_.clear();
-            _loc1_.beginBitmapFill(_lineRef);
-            _loc1_.drawRect(0,0,_w,_h);
-            _loc1_.endFill();
+            g.clear();
+            g.beginBitmapFill(_lineRef);
+            g.drawRect(0,0,_w,_h);
+            g.endFill();
          }
          _thingLayer.scrollRect = new Rectangle(0,0,_w,_h);
-         _loc1_ = _thingLayer.graphics;
-         _loc1_.clear();
-         _loc1_.beginFill(0,0);
-         _loc1_.drawRect(0,0,_w,_h);
-         _loc1_.endFill();
+         g = _thingLayer.graphics;
+         g.clear();
+         g.beginFill(0,0);
+         g.drawRect(0,0,_w,_h);
+         g.endFill();
       }
       
       private function drawForeground() : void
       {
-         var _loc1_:* = null;
+         var pen:* = null;
          if(!GameControl.Instance.smallMapBorderEnable())
          {
             if(GameControl.Instance.smallMapGrid())
@@ -319,39 +319,38 @@ package gameCommon.view.smallMap
             }
             else
             {
-               _loc1_ = _foreground.graphics;
-               _loc1_.clear();
-               _loc1_.lineStyle(1,6710886);
-               _loc1_.beginFill(0,0);
-               _loc1_.drawRect(0,0,_w,_h);
-               _loc1_.endFill();
+               pen = _foreground.graphics;
+               pen.clear();
+               pen.lineStyle(1,6710886);
+               pen.beginFill(0,0);
+               pen.drawRect(0,0,_w,_h);
+               pen.endFill();
             }
          }
       }
       
       private function drawRandomForeground() : void
       {
-         var _loc6_:int = 0;
-         var _loc5_:int = 0;
-         var _loc4_:int = _skew;
-         var _loc7_:int = _loc4_ * 2 + _w;
-         var _loc2_:int = _h + _loc4_;
-         _foreground.x = -_loc4_;
-         var _loc1_:Graphics = _foreground.graphics;
-         _loc1_.clear();
-         _loc1_.lineStyle(1,6710886);
-         var _loc3_:int = 15;
-         _loc6_ = 0;
-         while(_loc6_ <= _loc3_)
+         var i:int = 0;
+         var skew:int = 0;
+         var skewWH:int = _skew;
+         var skewW:int = skewWH * 2 + _w;
+         var skewH:int = _h + skewWH;
+         _foreground.x = -skewWH;
+         var pen:Graphics = _foreground.graphics;
+         pen.clear();
+         pen.lineStyle(1,6710886);
+         var c:int = 15;
+         for(i = 0; i <= c; )
          {
-            _loc5_ = Math.random() * 2;
-            _loc1_.moveTo(_loc6_ * (_loc7_ / _loc3_) + _loc5_,-_loc4_);
-            _loc1_.lineTo(_loc6_ * (_loc7_ / _loc3_) + _loc5_,_loc2_);
-            _loc1_.moveTo(0,_loc6_ * (_loc2_ / _loc3_) + _loc5_);
-            _loc1_.lineTo(_loc7_,_loc6_ * (_loc2_ / _loc3_) + _loc5_);
-            _loc6_++;
+            skew = Math.random() * 2;
+            pen.moveTo(i * (skewW / c) + skew,-skewWH);
+            pen.lineTo(i * (skewW / c) + skew,skewH);
+            pen.moveTo(0,i * (skewH / c) + skew);
+            pen.lineTo(skewW,i * (skewH / c) + skew);
+            i++;
          }
-         _loc1_.endFill();
+         pen.endFill();
       }
       
       public function get foreMap() : Sprite
@@ -365,8 +364,8 @@ package gameCommon.view.smallMap
       
       private function updateSpliter() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var round:* = null;
          if(_split == null)
          {
             return;
@@ -376,58 +375,56 @@ package gameCommon.view.smallMap
             _split.removeChildAt(0);
          }
          _texts = [];
-         var _loc1_:Number = _screen.width / 10;
+         var perW:Number = _screen.width / 10;
          _split.graphics.clear();
          _split.graphics.lineStyle(1,16777215,1);
-         _loc3_ = 1;
-         while(_loc3_ < 10)
+         for(i = 1; i < 10; )
          {
-            _split.graphics.moveTo(_loc1_ * _loc3_,0);
-            _split.graphics.lineTo(_loc1_ * _loc3_,_screen.height);
-            _loc2_ = ClassUtils.CreatInstance(NUMBERS_ARR[_loc3_ - 1]);
-            _loc2_.x = _loc1_ * _loc3_;
-            _loc2_.y = (_screen.height - _loc2_.height) / 2;
-            _loc2_.stop();
-            _split.addChild(_loc2_);
-            _texts.push(_loc2_);
-            _loc3_++;
+            _split.graphics.moveTo(perW * i,0);
+            _split.graphics.lineTo(perW * i,_screen.height);
+            round = ClassUtils.CreatInstance(NUMBERS_ARR[i - 1]);
+            round.x = perW * i;
+            round.y = (_screen.height - round.height) / 2;
+            round.stop();
+            _split.addChild(round);
+            _texts.push(round);
+            i++;
          }
          _split.graphics.endFill();
       }
       
-      public function ShineText(param1:int) : void
+      public function ShineText(value:int) : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          large();
          drawMask();
-         _loc2_ = 0;
-         while(_loc2_ < param1)
+         for(i = 0; i < value; )
          {
-            setTimeout(shineText,_loc2_ * 1500,_loc2_);
-            _loc2_++;
+            setTimeout(shineText,i * 1500,i);
+            i++;
          }
       }
       
       private function drawMask() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:* = null;
+         var bounds:* = null;
+         var hole:* = null;
          if(_screenMask == null)
          {
-            _loc1_ = getBounds(parent);
+            bounds = getBounds(parent);
             _screenMask = new Sprite();
             _screenMask.graphics.beginFill(0,0.8);
             _screenMask.graphics.drawRect(0,0,StageReferance.stageWidth,StageReferance.stageHeight);
             _screenMask.graphics.endFill();
             _screenMask.blendMode = "layer";
-            _loc2_ = new Sprite();
-            _loc2_.graphics.beginFill(0,1);
-            _loc2_.graphics.drawRect(0,0,_loc1_.width,_loc1_.height);
-            _loc2_.graphics.endFill();
-            _loc2_.x = this.x;
-            _loc2_.y = _loc1_.top;
-            _loc2_.blendMode = "erase";
-            _screenMask.addChild(_loc2_);
+            hole = new Sprite();
+            hole.graphics.beginFill(0,1);
+            hole.graphics.drawRect(0,0,bounds.width,bounds.height);
+            hole.graphics.endFill();
+            hole.x = this.x;
+            hole.y = bounds.top;
+            hole.blendMode = "erase";
+            _screenMask.addChild(hole);
          }
          LayerManager.Instance.addToLayer(_screenMask,3);
       }
@@ -461,13 +458,13 @@ package gameCommon.view.smallMap
       {
          var _loc3_:int = 0;
          var _loc2_:* = _texts;
-         for each(var _loc1_ in _texts)
+         for each(var round in _texts)
          {
-            _loc1_.gotoAndStop(1);
+            round.gotoAndStop(1);
          }
       }
       
-      private function shineText(param1:int) : void
+      private function shineText(i:int) : void
       {
          restoreText();
          if(_split == null)
@@ -479,13 +476,13 @@ package gameCommon.view.smallMap
             addChild(_split);
             updateSpliter();
          }
-         if(param1 > 4)
+         if(i > 4)
          {
             (_texts[4] as MovieClip).play();
          }
          else
          {
-            (_texts[param1] as MovieClip).play();
+            (_texts[i] as MovieClip).play();
          }
       }
       
@@ -526,22 +523,22 @@ package gameCommon.view.smallMap
          removeEventListener("enterFrame",__onEnterFrame);
       }
       
-      private function __mouseDown(param1:MouseEvent) : void
+      private function __mouseDown(evt:MouseEvent) : void
       {
          _Screen_X = _screen.x;
          _Screen_Y = _screen.y;
          StageReferance.stage.addEventListener("mouseUp",__mouseUp);
          StageReferance.stage.addEventListener("mouseMove",__mouseMove);
          addEventListener("enterFrame",__onEnterFrame);
-         var _loc2_:Rectangle = new Rectangle(0,0,_w,_h);
-         _loc2_.top = 0;
-         _loc2_.right = _loc2_.right - _screen.width;
-         _loc2_.bottom = _loc2_.bottom - _screen.height;
-         _screen.startDrag(false,_loc2_);
+         var dragBounds:Rectangle = new Rectangle(0,0,_w,_h);
+         dragBounds.top = 0;
+         dragBounds.right = dragBounds.right - _screen.width;
+         dragBounds.bottom = dragBounds.bottom - _screen.height;
+         _screen.startDrag(false,dragBounds);
          _startDrag = true;
       }
       
-      private function __mouseUp(param1:MouseEvent) : void
+      private function __mouseUp(evt:MouseEvent) : void
       {
          _startDrag = false;
          StageReferance.stage.removeEventListener("mouseUp",__mouseUp);
@@ -565,19 +562,19 @@ package gameCommon.view.smallMap
          return _Screen_Y;
       }
       
-      private function __mouseMove(param1:MouseEvent) : void
+      private function __mouseMove(evt:MouseEvent) : void
       {
       }
       
-      private function __onEnterFrame(param1:Event) : void
+      private function __onEnterFrame(evt:Event) : void
       {
-         var _loc3_:Number = NaN;
-         var _loc2_:Number = NaN;
+         var tx:Number = NaN;
+         var ty:Number = NaN;
          if(_startDrag)
          {
-            _loc3_ = (_screen.x + _screen.width / 2) / _drawMatrix.a;
-            _loc2_ = (_screen.y + _screen.height / 2) / _drawMatrix.d;
-            _map.animateSet.addAnimation(new DragMapAnimation(_loc3_,_loc2_,true));
+            tx = (_screen.x + _screen.width / 2) / _drawMatrix.a;
+            ty = (_screen.y + _screen.height / 2) / _drawMatrix.d;
+            _map.animateSet.addAnimation(new DragMapAnimation(tx,ty,true));
             if(_split)
             {
                _split.x = _screen.x;
@@ -598,9 +595,9 @@ package gameCommon.view.smallMap
          }
       }
       
-      private function drawDead(param1:Boolean = false) : void
+      private function drawDead(mustDraw:Boolean = false) : void
       {
-         if(!_map.mapChanged && !param1)
+         if(!_map.mapChanged && !mustDraw)
          {
             return;
          }
@@ -608,66 +605,66 @@ package gameCommon.view.smallMap
          {
             return;
          }
-         var _loc2_:Graphics = _beadShape.graphics;
-         _loc2_.clear();
-         _loc2_.beginBitmapFill(_map.stone.bitmapData,_drawMatrix,false,true);
-         _loc2_.drawRect(0,0,_w,_h);
-         _loc2_.endFill();
+         var pen:Graphics = _beadShape.graphics;
+         pen.clear();
+         pen.beginBitmapFill(_map.stone.bitmapData,_drawMatrix,false,true);
+         pen.drawRect(0,0,_w,_h);
+         pen.endFill();
       }
       
-      public function draw(param1:Boolean = false) : void
+      public function draw(mustDraw:Boolean = false) : void
       {
-         if(!_map.mapChanged && !param1)
+         if(!_map.mapChanged && !mustDraw)
          {
             return;
          }
-         var _loc2_:Graphics = _groundShape.graphics;
-         _loc2_.clear();
+         var pen:Graphics = _groundShape.graphics;
+         pen.clear();
          if(!_map.ground)
          {
-            _loc2_.beginFill(0,0);
+            pen.beginFill(0,0);
          }
          else
          {
-            _loc2_.beginBitmapFill(_map.ground.bitmapData,_drawMatrix,false,true);
+            pen.beginBitmapFill(_map.ground.bitmapData,_drawMatrix,false,true);
          }
-         _loc2_.drawRect(0,0,_w,_h);
-         _loc2_.endFill();
+         pen.drawRect(0,0,_w,_h);
+         pen.endFill();
       }
       
-      public function setScreenPos(param1:Number, param2:Number) : void
+      public function setScreenPos(posX:Number, posY:Number) : void
       {
-         var _loc4_:Number = NaN;
-         var _loc5_:Number = NaN;
-         var _loc3_:* = null;
+         var newX:Number = NaN;
+         var newY:Number = NaN;
+         var bounds:* = null;
          if(!_locked && !_startDrag)
          {
-            _loc4_ = Math.abs(param1 * _drawMatrix.a);
-            _loc5_ = Math.abs(param2 * _drawMatrix.d);
-            _loc3_ = _screen.getBounds(this);
-            if(_loc4_ + _screen.width >= _w)
+            newX = Math.abs(posX * _drawMatrix.a);
+            newY = Math.abs(posY * _drawMatrix.d);
+            bounds = _screen.getBounds(this);
+            if(newX + _screen.width >= _w)
             {
                _screen.x = _w - _screen.width;
             }
-            else if(_loc4_ < 0)
+            else if(newX < 0)
             {
                _screen.x = 0;
             }
             else
             {
-               _screen.x = _loc4_;
+               _screen.x = newX;
             }
-            if(_loc5_ + _screen.height >= _h)
+            if(newY + _screen.height >= _h)
             {
                _screen.y = _h - _screen.height;
             }
-            else if(_loc5_ < 0)
+            else if(newY < 0)
             {
                _screen.y = 0;
             }
             else
             {
-               _screen.y = _loc5_;
+               _screen.y = newY;
             }
             if(_split != null)
             {
@@ -677,46 +674,46 @@ package gameCommon.view.smallMap
          }
       }
       
-      public function addObj(param1:SmallObject) : void
+      public function addObj(object:SmallObject) : void
       {
-         if(!param1.onProcess)
+         if(!object.onProcess)
          {
-            addAnimation(param1);
+            addAnimation(object);
          }
-         _thingLayer.addChild(param1);
+         _thingLayer.addChild(object);
       }
       
-      public function removeObj(param1:SmallObject) : void
+      public function removeObj(object:SmallObject) : void
       {
-         if(param1.parent == _thingLayer)
+         if(object.parent == _thingLayer)
          {
-            _thingLayer.removeChild(param1);
-            if(param1.onProcess)
+            _thingLayer.removeChild(object);
+            if(object.onProcess)
             {
-               removeAnimation(param1);
+               removeAnimation(object);
             }
          }
       }
       
-      public function updatePos(param1:SmallObject, param2:Point) : void
+      public function updatePos(object:SmallObject, pos:Point) : void
       {
-         if(param1 == null)
+         if(object == null)
          {
             return;
          }
-         param1.x = param2.x * _drawMatrix.a;
-         param1.y = param2.y * _drawMatrix.d;
-         _thingLayer.addChild(param1);
+         object.x = pos.x * _drawMatrix.a;
+         object.y = pos.y * _drawMatrix.d;
+         _thingLayer.addChild(object);
       }
       
-      public function addAnimation(param1:SmallObject) : void
+      public function addAnimation(object:SmallObject) : void
       {
-         _processer.addThing(param1);
+         _processer.addThing(object);
       }
       
-      public function removeAnimation(param1:SmallObject) : void
+      public function removeAnimation(object:SmallObject) : void
       {
-         _processer.removeThing(param1);
+         _processer.removeThing(object);
       }
       
       public function dispose() : void
@@ -816,63 +813,63 @@ package gameCommon.view.smallMap
          }
       }
       
-      private function __largeMap(param1:MouseEvent) : void
+      private function __largeMap(event:MouseEvent) : void
       {
          _changeScale = 0.2;
-         var _loc2_:Number = _rateX;
-         var _loc3_:Number = _rateY;
+         var oldRateX:Number = _rateX;
+         var oldRateY:Number = _rateY;
          update();
-         updateChildPos(_loc2_,_loc3_);
+         updateChildPos(oldRateX,oldRateY);
          SoundManager.instance.play("008");
       }
       
-      private function __smallMap(param1:MouseEvent) : void
+      private function __smallMap(event:MouseEvent) : void
       {
          _changeScale = -0.2;
-         var _loc2_:Number = _rateX;
-         var _loc3_:Number = _rateY;
+         var oldRateX:Number = _rateX;
+         var oldRateY:Number = _rateY;
          update();
-         updateChildPos(_loc2_,_loc3_);
+         updateChildPos(oldRateX,oldRateY);
          SoundManager.instance.play("008");
       }
       
-      private function updateChildPos(param1:Number, param2:Number) : void
+      private function updateChildPos(oldRateX:Number, oldRateY:Number) : void
       {
          var _loc5_:int = 0;
          var _loc4_:* = _child;
-         for each(var _loc3_ in _child)
+         for each(var c in _child)
          {
-            _loc3_.x = _loc3_.x / param1 * _rateX;
-            _loc3_.y = _loc3_.y / param2 * _rateY;
+            c.x = c.x / oldRateX * _rateX;
+            c.y = c.y / oldRateY * _rateY;
          }
       }
       
-      private function __click(param1:MouseEvent) : void
+      private function __click(event:MouseEvent) : void
       {
          if(!_locked && _allowDrag)
          {
-            _map.animateSet.addAnimation(new DragMapAnimation(param1.localX / _drawMatrix.a,param1.localY / _drawMatrix.d));
+            _map.animateSet.addAnimation(new DragMapAnimation(event.localX / _drawMatrix.a,event.localY / _drawMatrix.d));
          }
       }
       
-      private function __enterFrame(param1:Event) : void
+      private function __enterFrame(event:Event) : void
       {
-         var _loc3_:Number = (_screen.x + _screen.width / 2) / _rateX;
-         var _loc2_:Number = (_screen.y + _screen.height / 2) / _rateY;
+         var tx:Number = (_screen.x + _screen.width / 2) / _rateX;
+         var ty:Number = (_screen.y + _screen.height / 2) / _rateY;
          if(_split != null)
          {
             _split.x = _screen.x;
             _split.y = _screen.y;
          }
-         _map.animateSet.addAnimation(new DragMapAnimation(_loc3_,_loc2_,true));
+         _map.animateSet.addAnimation(new DragMapAnimation(tx,ty,true));
       }
       
       public function moveToPlayer() : void
       {
-         var _loc3_:LocalPlayer = GameControl.Instance.Current.selfGamePlayer;
-         var _loc2_:Number = _loc3_.pos.x;
-         var _loc1_:Number = (_screen.y + _screen.height / 2) / _drawMatrix.d;
-         _map.animateSet.addAnimation(new DragMapAnimation(_loc2_,_loc1_,true));
+         var player:LocalPlayer = GameControl.Instance.Current.selfGamePlayer;
+         var tx:Number = player.pos.x;
+         var ty:Number = (_screen.y + _screen.height / 2) / _drawMatrix.d;
+         _map.animateSet.addAnimation(new DragMapAnimation(tx,ty,true));
       }
       
       public function get titleBar() : SmallMapTitleBar
@@ -880,79 +877,78 @@ package gameCommon.view.smallMap
          return _titleBar;
       }
       
-      public function set enableExit(param1:Boolean) : void
+      public function set enableExit(b:Boolean) : void
       {
-         _titleBar.enableExit = param1;
+         _titleBar.enableExit = b;
       }
       
-      public function drawRouteLine(param1:int) : void
+      public function drawRouteLine(id:int) : void
       {
-         var _loc6_:int = 0;
+         var i:int = 0;
          _drawRoute.graphics.clear();
          var _loc8_:int = 0;
          var _loc7_:* = _allLivings;
-         for each(var _loc5_ in _allLivings)
+         for each(var liv in _allLivings)
          {
-            _loc5_.currentSelectId = param1;
+            liv.currentSelectId = id;
          }
-         if(param1 < 0)
-         {
-            return;
-         }
-         var _loc4_:Living = _allLivings[param1];
-         if(!_loc4_)
+         if(id < 0)
          {
             return;
          }
-         var _loc3_:Vector.<Point> = _loc4_.route;
-         if(!_loc3_ || _loc3_.length == 0)
+         var living:Living = _allLivings[id];
+         if(!living)
          {
             return;
          }
-         _collideRect.x = _loc4_.pos.x * _drawMatrix.a - 50 * _drawMatrix.a;
-         _collideRect.y = _loc4_.pos.y * _drawMatrix.d - 50 * _drawMatrix.d;
+         var data:Vector.<Point> = living.route;
+         if(!data || data.length == 0)
+         {
+            return;
+         }
+         _collideRect.x = living.pos.x * _drawMatrix.a - 50 * _drawMatrix.a;
+         _collideRect.y = living.pos.y * _drawMatrix.d - 50 * _drawMatrix.d;
          _drawRoute.graphics.lineStyle(1,16711680,1);
-         var _loc2_:int = _loc3_.length;
-         _loc6_ = 0;
-         while(_loc6_ < _loc2_ - 1)
+         var length:int = data.length;
+         for(i = 0; i < length - 1; )
          {
-            drawDashed(_drawRoute.graphics,_loc3_[_loc6_],_loc3_[_loc6_ + 1],8,5);
-            _loc6_++;
+            drawDashed(_drawRoute.graphics,data[i],data[i + 1],8,5);
+            i++;
          }
       }
       
-      private function drawDashed(param1:Graphics, param2:Point, param3:Point, param4:Number, param5:Number) : void
+      private function drawDashed(graphics:Graphics, beginPoint:Point, endPoint:Point, width:Number, grap:Number) : void
       {
-         var _loc9_:Number = NaN;
-         var _loc11_:Number = NaN;
-         if(!param1 || !param2 || !param3 || param4 <= 0 || param5 <= 0)
+         var y:Number = NaN;
+         var x:Number = NaN;
+         if(!graphics || !beginPoint || !endPoint || width <= 0 || grap <= 0)
          {
             return;
          }
-         var _loc8_:Number = param2.x * _drawMatrix.a;
-         var _loc10_:Number = param2.y * _drawMatrix.d;
-         var _loc12_:Number = Math.atan2(param3.y * _drawMatrix.d - _loc10_,param3.x * _drawMatrix.a - _loc8_);
-         var _loc7_:* = 0.5;
-         trace("small map :" + _loc7_);
-         var _loc6_:* = 0;
-         while(_loc6_ <= _loc7_)
+         var Ox:Number = beginPoint.x * _drawMatrix.a;
+         var Oy:Number = beginPoint.y * _drawMatrix.d;
+         var radian:Number = Math.atan2(endPoint.y * _drawMatrix.d - Oy,endPoint.x * _drawMatrix.a - Ox);
+         var totalLen:* = 0.5;
+         trace("small map :" + totalLen);
+         var currLen:* = 0;
+         while(currLen <= totalLen)
          {
-            if(_collideRect.contains(_loc11_,_loc9_))
+            if(_collideRect.contains(x,y))
             {
                return;
             }
-            _loc11_ = _loc8_ + Math.cos(_loc12_) * _loc6_;
-            _loc9_ = _loc10_ + Math.sin(_loc12_) * _loc6_;
-            param1.moveTo(_loc11_,_loc9_);
-            _loc6_ = Number(_loc6_ + param4);
-            if(_loc6_ > _loc7_)
+            x = Ox + Math.cos(radian) * currLen;
+            y = Oy + Math.sin(radian) * currLen;
+            graphics.moveTo(x,y);
+            currLen = Number(currLen + width);
+            if(currLen > totalLen)
             {
-               _loc6_ = _loc7_;
+               currLen = totalLen;
             }
-            _loc11_ = _loc8_ + Math.cos(_loc12_) * _loc6_;
-            _loc9_ = _loc10_ + Math.sin(_loc12_) * _loc6_;
-            param1.lineTo(_loc11_,_loc9_);
-            _loc6_ = Number(_loc6_ + param5);
+            x = Ox + Math.cos(radian) * currLen;
+            y = Oy + Math.sin(radian) * currLen;
+            graphics.lineTo(x,y);
+            currLen = Number(currLen + grap);
          }
       }
    }
@@ -979,38 +975,37 @@ class ThingProcesser
       super();
    }
    
-   public function addThing(param1:SmallObject) : void
+   public function addThing(object:SmallObject) : void
    {
-      if(!param1.onProcess)
+      if(!object.onProcess)
       {
-         _objectList.push(param1);
-         param1.onProcess = true;
+         _objectList.push(object);
+         object.onProcess = true;
          startup();
       }
    }
    
-   public function removeThing(param1:SmallObject) : void
+   public function removeThing(object:SmallObject) : void
    {
-      var _loc3_:int = 0;
-      if(!param1.onProcess)
+      var i:int = 0;
+      if(!object.onProcess)
       {
          return;
       }
-      var _loc2_:int = _objectList.length;
-      _loc3_ = 0;
-      while(_loc3_ < _loc2_)
+      var len:int = _objectList.length;
+      for(i = 0; i < len; )
       {
-         if(_objectList[_loc3_] == param1)
+         if(_objectList[i] == object)
          {
-            _objectList.splice(_loc3_,1);
-            param1.onProcess = false;
+            _objectList.splice(i,1);
+            object.onProcess = false;
             if(_objectList.length <= 0)
             {
                shutdown();
             }
             return;
          }
-         _loc3_++;
+         i++;
       }
    }
    
@@ -1024,18 +1019,18 @@ class ThingProcesser
       }
    }
    
-   private function __onFrame(param1:Event) : void
+   private function __onFrame(evt:Event) : void
    {
-      var _loc3_:int = getTimer();
-      var _loc4_:int = _loc3_ - _lastTime;
-      var _loc2_:int = getTimer();
+      var now:int = getTimer();
+      var frameRate:int = now - _lastTime;
+      var testStart:int = getTimer();
       var _loc7_:int = 0;
       var _loc6_:* = _objectList;
-      for each(var _loc5_ in _objectList)
+      for each(var object in _objectList)
       {
-         _loc5_.onFrame(_loc4_);
+         object.onFrame(frameRate);
       }
-      _lastTime = _loc3_;
+      _lastTime = now;
    }
    
    public function shutdown() : void
@@ -1051,11 +1046,11 @@ class ThingProcesser
    public function dispose() : void
    {
       shutdown();
-      var _loc1_:SmallObject = _objectList.shift();
-      while(_loc1_ != null)
+      var object:SmallObject = _objectList.shift();
+      while(object != null)
       {
-         _loc1_.onProcess = false;
-         _loc1_ = _objectList.shift();
+         object.onProcess = false;
+         object = _objectList.shift();
       }
       _objectList = null;
    }

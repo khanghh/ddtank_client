@@ -29,7 +29,7 @@ package times.data
          return _stayTime;
       }
       
-      private function __timerTick(param1:Event) : void
+      private function __timerTick(event:Event) : void
       {
          var _loc2_:* = _controller.currentPointer;
          var _loc3_:* = _stayTime[_loc2_] + 1;

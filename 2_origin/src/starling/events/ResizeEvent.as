@@ -8,9 +8,9 @@ package starling.events
       public static const RESIZE:String = "resize";
        
       
-      public function ResizeEvent(param1:String, param2:int, param3:int, param4:Boolean = false)
+      public function ResizeEvent(type:String, width:int, height:int, bubbles:Boolean = false)
       {
-         super(param1,param4,new Point(param2,param3));
+         super(type,bubbles,new Point(width,height));
       }
       
       public function get width() : int

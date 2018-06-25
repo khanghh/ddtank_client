@@ -70,8 +70,8 @@ package nationDay.view
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var text:* = null;
          _bg = ComponentFactory.Instance.creatBitmap("asset.activity.nationalbg");
          addChild(_bg);
          _closeBtn = ComponentFactory.Instance.creatComponentByStylename("nationDay.closeBtn");
@@ -96,13 +96,12 @@ package nationDay.view
          _vBox = ComponentFactory.Instance.creatComponentByStylename("nationDay.limitTextVBox");
          addChild(_vBox);
          _textList = new Vector.<FilterFrameText>();
-         _loc2_ = 0;
-         while(_loc2_ < 4)
+         for(i = 0; i < 4; )
          {
-            _loc1_ = ComponentFactory.Instance.creatComponentByStylename("nationDay.limitText");
-            _vBox.addChild(_loc1_);
-            _textList.push(_loc1_);
-            _loc2_++;
+            text = ComponentFactory.Instance.creatComponentByStylename("nationDay.limitText");
+            _vBox.addChild(text);
+            _textList.push(text);
+            i++;
          }
       }
       
@@ -113,23 +112,23 @@ package nationDay.view
          SocketManager.Instance.addEventListener(PkgEvent.format(288,3),__onExchangeGoods);
       }
       
-      protected function __onKeyDown(param1:KeyboardEvent) : void
+      protected function __onKeyDown(event:KeyboardEvent) : void
       {
-         if(param1.keyCode == 27)
+         if(event.keyCode == 27)
          {
             SoundManager.instance.playButtonSound();
             NationDayControl.instance.hide();
          }
       }
       
-      protected function __onExchangeGoods(param1:PkgEvent) : void
+      protected function __onExchangeGoods(event:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:Boolean = _loc3_.readBoolean();
-         var _loc4_:int = _loc3_.readInt();
-         if(_loc2_)
+         var pkg:PackageIn = event.pkg;
+         var flag:Boolean = pkg.readBoolean();
+         var type:int = pkg.readInt();
+         if(flag)
          {
-            _exchangeCellVec[_loc4_].playFireworkAnimation();
+            _exchangeCellVec[type].playFireworkAnimation();
             NationDayControl.instance.sendPkg();
          }
       }
@@ -152,150 +151,145 @@ package nationDay.view
       
       private function addAwardAnimation() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _exchangeCellVec.length)
+         var i:int = 0;
+         for(i = 0; i < _exchangeCellVec.length; )
          {
-            if(_exchangeCellVec[_loc1_].getCount() > 0)
+            if(_exchangeCellVec[i].getCount() > 0)
             {
-               _exchangeCellVec[_loc1_].addFireworkAnimation(_loc1_);
-               _exchangeCellVec[_loc1_].addEventListener(ActivityEvent.SEND_GOOD,__seedGood);
+               _exchangeCellVec[i].addFireworkAnimation(i);
+               _exchangeCellVec[i].addEventListener(ActivityEvent.SEND_GOOD,__seedGood);
             }
             else
             {
-               _exchangeCellVec[_loc1_].removeFireworkAnimation();
-               _exchangeCellVec[_loc1_].removeEventListener(ActivityEvent.SEND_GOOD,__seedGood);
+               _exchangeCellVec[i].removeFireworkAnimation();
+               _exchangeCellVec[i].removeEventListener(ActivityEvent.SEND_GOOD,__seedGood);
             }
-            _loc1_++;
+            i++;
          }
       }
       
-      protected function __seedGood(param1:ActivityEvent) : void
+      protected function __seedGood(event:ActivityEvent) : void
       {
-         SocketManager.Instance.out.exchangeNationalGoods(param1.id);
+         SocketManager.Instance.out.exchangeNationalGoods(event.id);
       }
       
       private function updateHaveGoodsBox() : void
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < NationDayManager.WordInfo.length)
+         var j:int = 0;
+         var i:int = 0;
+         var cell:* = null;
+         var index:int = 0;
+         for(j = 0; j < NationDayManager.WordInfo.length; )
          {
-            _loc4_ = 0;
-            while(_loc4_ < NationDayManager.WordInfo[_loc3_].length)
+            for(i = 0; i < NationDayManager.WordInfo[j].length; )
             {
-               if(_haveGoodsBox[_loc3_].numChildren < 4)
+               if(_haveGoodsBox[j].numChildren < 4)
                {
-                  _loc2_ = new NationDayWord(NationDayManager.WordRes[_loc3_][_loc4_],NationDayManager.WordInfo[_loc3_][_loc4_],_nationModel.WordArray[NationDayManager.WordInfo[_loc3_][_loc4_]]);
-                  _haveGoodsBox[_loc3_].addChild(_loc2_);
-                  _wordVec.push(_loc2_);
+                  cell = new NationDayWord(NationDayManager.WordRes[j][i],NationDayManager.WordInfo[j][i],_nationModel.WordArray[NationDayManager.WordInfo[j][i]]);
+                  _haveGoodsBox[j].addChild(cell);
+                  _wordVec.push(cell);
                }
                else
                {
-                  _loc1_++;
-                  _wordVec[_loc1_].updateWordNum(_nationModel.WordArray[NationDayManager.WordInfo[_loc3_][_loc4_]]);
+                  index++;
+                  _wordVec[index].updateWordNum(_nationModel.WordArray[NationDayManager.WordInfo[j][i]]);
                }
-               _loc4_++;
+               i++;
             }
-            _loc3_++;
+            j++;
          }
       }
       
       private function updateExchangeGoodsBox() : void
       {
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
-         _loc3_ = 0;
-         while(_loc3_ < 4)
+         var exchangeInfo:* = null;
+         var i:int = 0;
+         var exchangeCell:* = null;
+         for(i = 0; i < 4; )
          {
             if(_exchangeCellVec.length < 4)
             {
-               _loc2_ = ItemManager.Instance.getTemplateById(1120449 + _loc3_);
-               if(_loc2_)
+               exchangeInfo = ItemManager.Instance.getTemplateById(1120449 + i);
+               if(exchangeInfo)
                {
-                  _loc1_ = new ActivitySeedCell(_loc3_,_loc2_,false);
-                  _loc1_.setCount(getExchangeNum(_loc3_));
-                  _loc1_.BGVisible = false;
-                  addChild(_loc1_);
-                  _exchangeCellVec.push(_loc1_);
-                  PositionUtils.setPos(_loc1_,"nationDay.fireworkPos" + _exchangeCellVec.length);
+                  exchangeCell = new ActivitySeedCell(i,exchangeInfo,false);
+                  exchangeCell.setCount(getExchangeNum(i));
+                  exchangeCell.BGVisible = false;
+                  addChild(exchangeCell);
+                  _exchangeCellVec.push(exchangeCell);
+                  PositionUtils.setPos(exchangeCell,"nationDay.fireworkPos" + _exchangeCellVec.length);
                }
             }
             else
             {
-               _exchangeCellVec[_loc3_].setCount(getExchangeNum(_loc3_));
+               _exchangeCellVec[i].setCount(getExchangeNum(i));
             }
-            _loc3_++;
+            i++;
          }
       }
       
-      private function getExchangeNum(param1:int) : int
+      private function getExchangeNum(index:int) : int
       {
-         var _loc2_:int = 65535;
+         var num:int = 65535;
          var _loc5_:int = 0;
-         var _loc4_:* = NationDayManager.WordInfo[param1];
-         for(var _loc3_ in NationDayManager.WordInfo[param1])
+         var _loc4_:* = NationDayManager.WordInfo[index];
+         for(var i in NationDayManager.WordInfo[index])
          {
-            _loc2_ = Math.min(_loc2_,_nationModel.WordArray[NationDayManager.WordInfo[param1][_loc3_]]);
+            num = Math.min(num,_nationModel.WordArray[NationDayManager.WordInfo[index][i]]);
          }
-         return _loc2_;
+         return num;
       }
       
       private function cleanExchangeCell() : void
       {
          var _loc3_:int = 0;
          var _loc2_:* = _exchangeCellVec;
-         for each(var _loc1_ in _exchangeCellVec)
+         for each(var cell in _exchangeCellVec)
          {
-            _loc1_.removeEventListener(ActivityEvent.SEND_GOOD,__seedGood);
-            ObjectUtils.disposeObject(_loc1_);
-            _loc1_ = null;
+            cell.removeEventListener(ActivityEvent.SEND_GOOD,__seedGood);
+            ObjectUtils.disposeObject(cell);
+            cell = null;
          }
          _exchangeCellVec = new Vector.<ActivitySeedCell>();
       }
       
       private function updateTimeShow() : void
       {
-         var _loc1_:Date = DateUtils.getDateByStr(_nationModel.StartDate);
-         var _loc2_:Date = DateUtils.getDateByStr(_nationModel.EndDate);
-         _activityTime.text = addZero(_loc1_.fullYear) + "." + addZero(_loc1_.month + 1) + "." + addZero(_loc1_.date);
-         _activityTime.text = _activityTime.text + ("-" + addZero(_loc2_.fullYear) + "." + addZero(_loc2_.month + 1) + "." + addZero(_loc2_.date));
+         var startDate:Date = DateUtils.getDateByStr(_nationModel.StartDate);
+         var endDate:Date = DateUtils.getDateByStr(_nationModel.EndDate);
+         _activityTime.text = addZero(startDate.fullYear) + "." + addZero(startDate.month + 1) + "." + addZero(startDate.date);
+         _activityTime.text = _activityTime.text + ("-" + addZero(endDate.fullYear) + "." + addZero(endDate.month + 1) + "." + addZero(endDate.date));
       }
       
       private function updateGetTimes() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:int = 0;
-         var _loc2_:* = null;
-         _loc3_ = 0;
-         while(_loc3_ < 4)
+         var i:int = 0;
+         var times:int = 0;
+         var maxTimes:* = null;
+         for(i = 0; i < 4; )
          {
-            _loc1_ = _nationModel.getTimes[_loc3_];
-            _loc2_ = _nationModel.maxTimes[_loc3_];
-            _textList[_loc3_].text = LanguageMgr.GetTranslation("godCardRaiseExchangeRightCard.countTxtMsg",_loc1_,_loc2_);
-            _loc3_++;
+            times = _nationModel.getTimes[i];
+            maxTimes = _nationModel.maxTimes[i];
+            _textList[i].text = LanguageMgr.GetTranslation("godCardRaiseExchangeRightCard.countTxtMsg",times,maxTimes);
+            i++;
          }
       }
       
-      private function addZero(param1:Number) : String
+      private function addZero(value:Number) : String
       {
-         var _loc2_:* = null;
-         if(param1 < 10)
+         var result:* = null;
+         if(value < 10)
          {
-            _loc2_ = "0" + param1.toString();
+            result = "0" + value.toString();
          }
          else
          {
-            _loc2_ = param1.toString();
+            result = value.toString();
          }
-         return _loc2_;
+         return result;
       }
       
-      private function __onCloseEventHandler(param1:MouseEvent) : void
+      private function __onCloseEventHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          NationDayControl.instance.hide();
@@ -303,7 +297,7 @@ package nationDay.view
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          removeEvent();
          ObjectUtils.disposeObject(_vBox);
          _vBox = null;
@@ -328,12 +322,12 @@ package nationDay.view
             _closeBtn.dispose();
             _closeBtn = null;
          }
-         _loc1_ = 0;
-         while(_loc1_ < _haveGoodsBox.length)
+         i = 0;
+         while(i < _haveGoodsBox.length)
          {
-            _haveGoodsBox[_loc1_].dispose();
-            _haveGoodsBox[_loc1_] = null;
-            _loc1_++;
+            _haveGoodsBox[i].dispose();
+            _haveGoodsBox[i] = null;
+            i++;
          }
          _haveGoodsBox.length = 0;
          _haveGoodsBox = null;

@@ -35,23 +35,23 @@ package tryonSystem
       public function ChooseFrame()
       {
          super();
-         var _loc1_:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("ddt.tryonSystem.title"),"","",true,false);
-         _loc1_.submitLabel = LanguageMgr.GetTranslation("ok");
-         _loc1_.moveEnable = false;
-         info = _loc1_;
+         var alertInfo:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("ddt.tryonSystem.title"),"","",true,false);
+         alertInfo.submitLabel = LanguageMgr.GetTranslation("ok");
+         alertInfo.moveEnable = false;
+         info = alertInfo;
       }
       
-      public function set controller(param1:TryonSystemController) : void
+      public function set controller($control:TryonSystemController) : void
       {
-         _control = param1;
+         _control = $control;
          initView();
       }
       
       private function initView() : void
       {
-         var _loc3_:* = null;
-         var _loc5_:* = null;
-         var _loc2_:* = null;
+         var cell:* = null;
+         var _itemShine:* = null;
+         var animation:* = null;
          _bg = ComponentFactory.Instance.creatComponentByStylename("ChooseFrame.tryon.chooseItemBgAsset.bg");
          addToContent(_bg);
          _list = new SimpleTileList(2);
@@ -62,59 +62,58 @@ package tryonSystem
          _panel.setView(_list);
          addToContent(_panel);
          _cells = [];
-         var _loc1_:AnimationControl = new AnimationControl();
-         _loc1_.addEventListener("complete",_cellLightComplete);
+         var animationControl:AnimationControl = new AnimationControl();
+         animationControl.addEventListener("complete",_cellLightComplete);
          var _loc7_:int = 0;
          var _loc6_:* = _control.getModelByView(this).items;
-         for each(var _loc4_ in _control.getModelByView(this).items)
+         for each(var item in _control.getModelByView(this).items)
          {
-            _loc3_ = new QuestRewardCell();
-            _loc3_.opitional = true;
-            _loc3_.taskType = 1;
-            _loc3_.info = _loc4_;
-            _loc3_.addEventListener("click",__onclick);
-            _loc3_.buttonMode = true;
-            _cells.push(_loc3_);
-            _list.addChild(_loc3_);
-            _loc5_ = ComponentFactory.Instance.creatComponentByStylename("asset.core.itemShinelight");
-            _loc5_.movie.play();
-            _loc3_.addChildAt(_loc5_,1);
-            _loc2_ = new GlowFilterAnimation();
-            _loc2_.start(_loc5_,false,16763955,0,0);
-            _loc2_.addMovie(0,0,19,0);
-            _loc1_.addMovies(_loc2_);
+            cell = new QuestRewardCell();
+            cell.opitional = true;
+            cell.taskType = 1;
+            cell.info = item;
+            cell.addEventListener("click",__onclick);
+            cell.buttonMode = true;
+            _cells.push(cell);
+            _list.addChild(cell);
+            _itemShine = ComponentFactory.Instance.creatComponentByStylename("asset.core.itemShinelight");
+            _itemShine.movie.play();
+            cell.addChildAt(_itemShine,1);
+            animation = new GlowFilterAnimation();
+            animation.start(_itemShine,false,16763955,0,0);
+            animation.addMovie(0,0,19,0);
+            animationControl.addMovies(animation);
          }
-         _loc1_.startMovie();
+         animationControl.startMovie();
       }
       
-      private function _cellLightComplete(param1:Event) : void
+      private function _cellLightComplete(e:Event) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         param1.currentTarget.removeEventListener("complete",_cellLightComplete);
+         var len:int = 0;
+         var i:int = 0;
+         e.currentTarget.removeEventListener("complete",_cellLightComplete);
          if(_cells)
          {
-            _loc2_ = _cells.length;
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_)
+            len = _cells.length;
+            for(i = 0; i < len; )
             {
-               _cells[_loc3_].removeChildAt(1);
-               _loc3_++;
+               _cells[i].removeChildAt(1);
+               i++;
             }
          }
       }
       
-      private function __onclick(param1:MouseEvent) : void
+      private function __onclick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          var _loc4_:int = 0;
          var _loc3_:* = _cells;
-         for each(var _loc2_ in _cells)
+         for each(var cell in _cells)
          {
-            _loc2_.selected = false;
+            cell.selected = false;
          }
-         _control.getModelByView(this).selectedItem = QuestRewardCell(param1.currentTarget).info;
-         QuestRewardCell(param1.currentTarget).selected = true;
+         _control.getModelByView(this).selectedItem = QuestRewardCell(event.currentTarget).info;
+         QuestRewardCell(event.currentTarget).selected = true;
       }
       
       override public function dispose() : void
@@ -122,11 +121,11 @@ package tryonSystem
          _control = null;
          var _loc3_:int = 0;
          var _loc2_:* = _cells;
-         for each(var _loc1_ in _cells)
+         for each(var cell in _cells)
          {
-            _loc1_.removeEventListener("click",__onclick);
-            _loc1_.removeChildAt(1);
-            _loc1_.dispose();
+            cell.removeEventListener("click",__onclick);
+            cell.removeChildAt(1);
+            cell.dispose();
          }
          _cells = null;
          if(_bg)

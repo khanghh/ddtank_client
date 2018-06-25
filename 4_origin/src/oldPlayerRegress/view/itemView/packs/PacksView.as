@@ -56,85 +56,81 @@ package oldPlayerRegress.view.itemView.packs
          SocketManager.Instance.addEventListener(PkgEvent.format(149,0),__getPacksInfo);
       }
       
-      private function __getPacksInfo(param1:PkgEvent) : void
+      private function __getPacksInfo(event:PkgEvent) : void
       {
-         var _loc10_:int = 0;
-         var _loc11_:int = 0;
-         var _loc6_:int = 0;
-         var _loc7_:int = 0;
-         var _loc3_:int = 0;
-         var _loc8_:int = 0;
-         var _loc12_:* = undefined;
-         var _loc9_:int = 0;
-         var _loc2_:* = null;
-         var _loc5_:int = 0;
+         var i:int = 0;
+         var isRecv:int = 0;
+         var len:int = 0;
+         var j:int = 0;
+         var curID:int = 0;
+         var propsNum:int = 0;
+         var giftDataVector:* = undefined;
+         var k:int = 0;
+         var giftData:* = null;
+         var l:int = 0;
          SocketManager.Instance.removeEventListener(PkgEvent.format(149,0),__getPacksInfo);
          removeVariable();
-         var _loc4_:PackageIn = param1.pkg;
-         _dayNum = _loc4_.readInt();
-         var _loc13_:int = _loc4_.readInt();
-         _loc13_ = 6;
-         _pageID = int((_dayNum - 1) / _loc13_);
-         _numID = (_dayNum - 1) % _loc13_;
+         var pkg:PackageIn = event.pkg;
+         _dayNum = pkg.readInt();
+         var length:int = pkg.readInt();
+         length = 6;
+         _pageID = int((_dayNum - 1) / length);
+         _numID = (_dayNum - 1) % length;
          _init();
-         _loc10_ = 0;
-         while(_loc10_ < 15)
+         for(i = 0; i < 15; )
          {
-            _loc11_ = _loc4_.readByte();
-            if(_loc10_ < _pageID * 6)
+            isRecv = pkg.readByte();
+            if(i < _pageID * 6)
             {
-               _loc6_ = _loc4_.readInt();
-               _loc7_ = 0;
-               while(_loc7_ < _loc6_)
+               len = pkg.readInt();
+               for(j = 0; j < len; )
                {
-                  _loc4_.readInt();
-                  _loc4_.readInt();
-                  _loc7_++;
+                  pkg.readInt();
+                  pkg.readInt();
+                  j++;
                }
             }
             else
             {
-               if(_loc11_ != 0)
+               if(isRecv != 0)
                {
-                  _loc3_ = _loc10_ % 6;
-                  _recvArray[_loc3_].visible = true;
-                  _btnArray[_loc3_].removeEventListener("click",__onBtnClick);
-                  (_btnArray[_loc3_] as BaseButton).mouseEnabled = false;
+                  curID = i % 6;
+                  _recvArray[curID].visible = true;
+                  _btnArray[curID].removeEventListener("click",__onBtnClick);
+                  (_btnArray[curID] as BaseButton).mouseEnabled = false;
                }
-               _loc8_ = _loc4_.readInt();
-               _loc12_ = new Vector.<GiftData>();
-               _loc9_ = 0;
-               while(_loc9_ < _loc8_)
+               propsNum = pkg.readInt();
+               giftDataVector = new Vector.<GiftData>();
+               for(k = 0; k < propsNum; )
                {
-                  _loc2_ = new GiftData();
-                  _loc2_.giftID = _loc4_.readInt();
-                  _loc2_.giftCount = _loc4_.readInt();
-                  _loc12_.push(_loc2_);
-                  _loc9_++;
+                  giftData = new GiftData();
+                  giftData.giftID = pkg.readInt();
+                  giftData.giftCount = pkg.readInt();
+                  giftDataVector.push(giftData);
+                  k++;
                }
-               _pakcsGiftData.push(_loc12_);
+               _pakcsGiftData.push(giftDataVector);
             }
-            _loc10_++;
+            i++;
          }
          _packsGiftView = new PacksGiftView();
          PositionUtils.setPos(_packsGiftView,"regress.pakcs.gift.pos");
          addToContent(_packsGiftView);
-         _loc5_ = 0;
-         while(_loc5_ <= _numID)
+         for(l = 0; l <= _numID; )
          {
-            if(_btnArray[_loc5_].mouseEnabled == true)
+            if(_btnArray[l].mouseEnabled == true)
             {
                _packsSelect.visible = true;
-               _packsSelect.x = _btnArray[_loc5_].x;
-               _packsSelect.y = _btnArray[_loc5_].y;
-               _clickID = _pageID * 6 + _loc5_;
+               _packsSelect.x = _btnArray[l].x;
+               _packsSelect.y = _btnArray[l].y;
+               _clickID = _pageID * 6 + l;
                _getAwardBtn.enable = true;
                _packsGiftView.removeGiftChild();
-               _packsGiftView.getGiftData = _pakcsGiftData[_loc5_];
+               _packsGiftView.getGiftData = _pakcsGiftData[l];
                _packsGiftView.setGiftInfo();
                break;
             }
-            if(_loc5_ == _numID)
+            if(l == _numID)
             {
                _getAwardBtn.enable = false;
                _packsGiftView.removeGiftChild();
@@ -148,7 +144,7 @@ package oldPlayerRegress.view.itemView.packs
                   _packsGiftView.setGiftInfo();
                }
             }
-            _loc5_++;
+            l++;
          }
       }
       
@@ -168,7 +164,7 @@ package oldPlayerRegress.view.itemView.packs
       
       private function initView() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _titleBg = ComponentFactory.Instance.creat("asset.regress.titleBg");
          _packTitle = ComponentFactory.Instance.creatComponentByStylename("regress.packTitle");
          _titleBgII = ComponentFactory.Instance.creat("asset.regress.titleBg");
@@ -182,16 +178,16 @@ package oldPlayerRegress.view.itemView.packs
          {
             _btnArray.length = 3;
          }
-         _loc1_ = 0;
-         while(_loc1_ < _btnArray.length)
+         i = 0;
+         while(i < _btnArray.length)
          {
-            _btnArray[_loc1_] = ComponentFactory.Instance.creatComponentByStylename("regress.giftAward" + (String(_loc1_ + 1)));
-            addToContent(_btnArray[_loc1_]);
-            _recvArray[_loc1_] = ComponentFactory.Instance.creatComponentByStylename("regress.packsReceived");
-            _recvArray[_loc1_].x = _btnArray[_loc1_].x + 77;
-            _recvArray[_loc1_].y = _btnArray[_loc1_].y - 4;
-            addToContent(_recvArray[_loc1_]);
-            _loc1_++;
+            _btnArray[i] = ComponentFactory.Instance.creatComponentByStylename("regress.giftAward" + (String(i + 1)));
+            addToContent(_btnArray[i]);
+            _recvArray[i] = ComponentFactory.Instance.creatComponentByStylename("regress.packsReceived");
+            _recvArray[i].x = _btnArray[i].x + 77;
+            _recvArray[i].y = _btnArray[i].y - 4;
+            addToContent(_recvArray[i]);
+            i++;
          }
          _packsSelect = ComponentFactory.Instance.creatComponentByStylename("regress.packsSelected");
          addToContent(_titleBg);
@@ -206,46 +202,44 @@ package oldPlayerRegress.view.itemView.packs
       
       private function initEvent() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _btnArray.length)
+         var i:int = 0;
+         for(i = 0; i < _btnArray.length; )
          {
-            _btnArray[_loc1_].addEventListener("click",__onBtnClick);
-            _loc1_++;
+            _btnArray[i].addEventListener("click",__onBtnClick);
+            i++;
          }
          _getAwardBtn.addEventListener("click",__onGetAwardClick);
       }
       
-      protected function __onGetAwardClick(param1:MouseEvent) : void
+      protected function __onGetAwardClick(event:MouseEvent) : void
       {
          SocketManager.Instance.out.sendRegressGetAwardPkg(_clickID);
          SocketManager.Instance.addEventListener(PkgEvent.format(149,0),__getPacksInfo);
       }
       
-      private function __onBtnClick(param1:MouseEvent) : void
+      private function __onBtnClick(event:MouseEvent) : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          _packsSelect.visible = true;
-         _loc2_ = 0;
-         while(_loc2_ < _btnArray.length)
+         for(i = 0; i < _btnArray.length; )
          {
-            if(_btnArray[_loc2_] == param1.currentTarget)
+            if(_btnArray[i] == event.currentTarget)
             {
                SoundManager.instance.playButtonSound();
-               _clickID = _pageID * 6 + _loc2_;
+               _clickID = _pageID * 6 + i;
                _getAwardBtn.enable = true;
-               if(_recvArray[_loc2_].visible || _loc2_ > _numID)
+               if(_recvArray[i].visible || i > _numID)
                {
                   _getAwardBtn.enable = false;
                }
-               _packsSelect.x = _btnArray[_loc2_].x;
-               _packsSelect.y = _btnArray[_loc2_].y;
+               _packsSelect.x = _btnArray[i].x;
+               _packsSelect.y = _btnArray[i].y;
                _packsGiftView.removeGiftChild();
-               _packsGiftView.getGiftData = _pakcsGiftData[_loc2_];
+               _packsGiftView.getGiftData = _pakcsGiftData[i];
                _packsGiftView.setGiftInfo();
                break;
             }
-            _loc2_++;
+            i++;
          }
       }
       
@@ -256,14 +250,13 @@ package oldPlayerRegress.view.itemView.packs
       
       private function removeEvent() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(_btnArray)
          {
-            _loc1_ = 0;
-            while(_loc1_ < _btnArray.length)
+            for(i = 0; i < _btnArray.length; )
             {
-               _btnArray[_loc1_].removeEventListener("click",__onBtnClick);
-               _loc1_++;
+               _btnArray[i].removeEventListener("click",__onBtnClick);
+               i++;
             }
          }
       }
@@ -277,7 +270,7 @@ package oldPlayerRegress.view.itemView.packs
       
       private function removeVariable() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _clickID = 0;
          _dayNum = 0;
          if(_titleBg)
@@ -325,11 +318,10 @@ package oldPlayerRegress.view.itemView.packs
          }
          if(_pakcsGiftData)
          {
-            _loc1_ = 0;
-            while(_loc1_ < _pakcsGiftData.length)
+            for(i = 0; i < _pakcsGiftData.length; )
             {
-               _pakcsGiftData[_loc1_] = null;
-               _loc1_++;
+               _pakcsGiftData[i] = null;
+               i++;
             }
             _pakcsGiftData.length = 0;
          }
@@ -337,22 +329,21 @@ package oldPlayerRegress.view.itemView.packs
          removeArray(_recvArray);
       }
       
-      private function removeArray(param1:Array) : void
+      private function removeArray(array:Array) : void
       {
-         var _loc2_:int = 0;
-         if(param1)
+         var i:int = 0;
+         if(array)
          {
-            _loc2_ = 0;
-            while(_loc2_ < param1.length)
+            for(i = 0; i < array.length; )
             {
-               if(param1[_loc2_])
+               if(array[i])
                {
-                  param1[_loc2_].dispose();
-                  param1[_loc2_] = null;
+                  array[i].dispose();
+                  array[i] = null;
                }
-               _loc2_++;
+               i++;
             }
-            param1.length = 0;
+            array.length = 0;
          }
       }
    }

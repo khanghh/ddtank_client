@@ -12,12 +12,12 @@ package com.pickgliss.ui.controls.list
       
       private var removedItems:Array;
       
-      public function ListDataEvent(param1:Object, param2:int, param3:int, param4:Array)
+      public function ListDataEvent(source:Object, index0:int, index1:int, removedItems:Array)
       {
-         super(param1);
-         this.index0 = param2;
-         this.index1 = param3;
-         this.removedItems = param4.concat();
+         super(source);
+         this.index0 = index0;
+         this.index1 = index1;
+         this.removedItems = removedItems.concat();
       }
       
       public function getIndex0() : int

@@ -32,11 +32,11 @@ package times.data
       
       public var params:Array;
       
-      public function TimesEvent(param1:String, param2:TimesPicInfo = null, param3:Array = null, param4:Boolean = false, param5:Boolean = false)
+      public function TimesEvent(type:String, $info:TimesPicInfo = null, $params:Array = null, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         info = param2;
-         params = param3;
-         super(param1,param4,param5);
+         info = $info;
+         params = $params;
+         super(type,bubbles,cancelable);
       }
    }
 }

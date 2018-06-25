@@ -79,26 +79,26 @@ package dragonBones.fast.animation
          return _pool.pop();
       }
       
-      static function returnObject(param1:FastSlotTimelineState) : void
+      static function returnObject(timeline:FastSlotTimelineState) : void
       {
-         if(_pool.indexOf(param1) < 0)
+         if(_pool.indexOf(timeline) < 0)
          {
-            _pool[_pool.length] = param1;
+            _pool[_pool.length] = timeline;
          }
-         param1.clear();
+         timeline.clear();
       }
       
       static function clear() : void
       {
-         var _loc1_:int = _pool.length;
+         var i:int = _pool.length;
          while(true)
          {
-            _loc1_--;
-            if(!_loc1_)
+            i--;
+            if(!i)
             {
                break;
             }
-            _pool[_loc1_].clear();
+            _pool[i].clear();
          }
          _pool.length = 0;
       }
@@ -112,14 +112,14 @@ package dragonBones.fast.animation
          _timelineData = null;
       }
       
-      function fadeIn(param1:FastSlot, param2:FastAnimationState, param3:SlotTimeline) : void
+      function fadeIn(slot:FastSlot, animationState:FastAnimationState, timelineData:SlotTimeline) : void
       {
-         _slot = param1;
+         _slot = slot;
          _armature = _slot.armature;
          _animation = _armature.animation as FastAnimation;
-         _animationState = param2;
-         _timelineData = param3;
-         name = param3.name;
+         _animationState = animationState;
+         _timelineData = timelineData;
+         name = timelineData.name;
          _totalTime = _timelineData.duration;
          _isComplete = false;
          _blendEnabled = false;
@@ -138,15 +138,15 @@ package dragonBones.fast.animation
          }
       }
       
-      function updateFade(param1:Number) : void
+      function updateFade(progress:Number) : void
       {
       }
       
-      function update(param1:Number) : void
+      function update(progress:Number) : void
       {
          if(_updateMode == -1)
          {
-            updateMultipleFrame(param1);
+            updateMultipleFrame(progress);
          }
          else if(_updateMode == 1)
          {
@@ -155,67 +155,65 @@ package dragonBones.fast.animation
          }
       }
       
-      private function updateMultipleFrame(param1:Number) : void
+      private function updateMultipleFrame(progress:Number) : void
       {
-         var _loc4_:int = 0;
-         var _loc8_:* = undefined;
-         var _loc3_:* = null;
-         var _loc9_:* = null;
-         var _loc10_:int = 0;
-         var _loc5_:int = 0;
-         var _loc6_:int = 0;
-         param1 = param1 / _timelineData.scale;
-         param1 = param1 + _timelineData.offset;
-         var _loc2_:* = int(_totalTime * param1);
-         var _loc7_:int = _animationState.playTimes;
-         if(_loc7_ == 0)
+         var totalTimes:int = 0;
+         var frameList:* = undefined;
+         var prevFrame:* = null;
+         var currentFrame:* = null;
+         var i:int = 0;
+         var l:int = 0;
+         var currentPlayTimes:int = 0;
+         progress = progress / _timelineData.scale;
+         progress = progress + _timelineData.offset;
+         var currentTime:* = int(_totalTime * progress);
+         var playTimes:int = _animationState.playTimes;
+         if(playTimes == 0)
          {
             _isComplete = false;
-            _loc6_ = Math.ceil(Math.abs(_loc2_) / _totalTime) || 1;
-            _loc2_ = int(_loc2_ - int(_loc2_ / _totalTime) * _totalTime);
-            if(_loc2_ < 0)
+            currentPlayTimes = Math.ceil(Math.abs(currentTime) / _totalTime) || 1;
+            currentTime = int(currentTime - int(currentTime / _totalTime) * _totalTime);
+            if(currentTime < 0)
             {
-               _loc2_ = int(_loc2_ + _totalTime);
+               currentTime = int(currentTime + _totalTime);
             }
          }
          else
          {
-            _loc4_ = _loc7_ * _totalTime;
-            if(_loc2_ >= _loc4_)
+            totalTimes = playTimes * _totalTime;
+            if(currentTime >= totalTimes)
             {
-               _loc2_ = _loc4_;
+               currentTime = totalTimes;
                _isComplete = true;
             }
-            else if(_loc2_ <= -_loc4_)
+            else if(currentTime <= -totalTimes)
             {
-               _loc2_ = int(-_loc4_);
+               currentTime = int(-totalTimes);
                _isComplete = true;
             }
             else
             {
                _isComplete = false;
             }
-            if(_loc2_ < 0)
+            if(currentTime < 0)
             {
-               _loc2_ = int(_loc2_ + _loc4_);
+               currentTime = int(currentTime + totalTimes);
             }
-            _loc6_ = Math.ceil(_loc2_ / _totalTime) || 1;
+            currentPlayTimes = Math.ceil(currentTime / _totalTime) || 1;
             if(_isComplete)
             {
-               _loc2_ = int(_totalTime);
+               currentTime = int(_totalTime);
             }
             else
             {
-               _loc2_ = int(_loc2_ - int(_loc2_ / _totalTime) * _totalTime);
+               currentTime = int(currentTime - int(currentTime / _totalTime) * _totalTime);
             }
          }
-         if(_currentTime != _loc2_)
+         if(_currentTime != currentTime)
          {
-            _currentTime = _loc2_;
-            _loc8_ = _timelineData.frameList;
-            _loc10_ = 0;
-            _loc5_ = _timelineData.frameList.length;
-            while(_loc10_ < _loc5_)
+            _currentTime = currentTime;
+            frameList = _timelineData.frameList;
+            for(i = 0,l = _timelineData.frameList.length; i < l; )
             {
                if(_currentFrameIndex < 0)
                {
@@ -224,7 +222,7 @@ package dragonBones.fast.animation
                else if(_currentTime < _currentFramePosition || _currentTime >= _currentFramePosition + _currentFrameDuration)
                {
                   _currentFrameIndex = Number(_currentFrameIndex) + 1;
-                  if(_currentFrameIndex >= _loc8_.length)
+                  if(_currentFrameIndex >= frameList.length)
                   {
                      if(_isComplete)
                      {
@@ -238,23 +236,23 @@ package dragonBones.fast.animation
                {
                   break;
                }
-               _loc9_ = _loc8_[_currentFrameIndex] as SlotFrame;
-               if(_loc3_)
+               currentFrame = frameList[_currentFrameIndex] as SlotFrame;
+               if(prevFrame)
                {
-                  _slot.arriveAtFrame(_loc3_,_animationState);
+                  _slot.arriveAtFrame(prevFrame,_animationState);
                }
-               _currentFrameDuration = _loc9_.duration;
-               _currentFramePosition = _loc9_.position;
-               _loc3_ = _loc9_;
-               _loc10_++;
+               _currentFrameDuration = currentFrame.duration;
+               _currentFramePosition = currentFrame.position;
+               prevFrame = currentFrame;
+               i++;
             }
-            if(_loc9_)
+            if(currentFrame)
             {
-               _slot.arriveAtFrame(_loc9_,_animationState);
-               _blendEnabled = _loc9_.displayIndex >= 0;
+               _slot.arriveAtFrame(currentFrame,_animationState);
+               _blendEnabled = currentFrame.displayIndex >= 0;
                if(_blendEnabled)
                {
-                  updateToNextFrame(_loc6_);
+                  updateToNextFrame(currentPlayTimes);
                }
                else
                {
@@ -269,38 +267,38 @@ package dragonBones.fast.animation
          }
       }
       
-      private function updateToNextFrame(param1:int) : void
+      private function updateToNextFrame(currentPlayTimes:int) : void
       {
-         var _loc2_:* = null;
-         var _loc4_:Boolean = false;
-         var _loc7_:int = _currentFrameIndex + 1;
-         if(_loc7_ >= _timelineData.frameList.length)
+         var targetColor:* = null;
+         var colorChanged:Boolean = false;
+         var nextFrameIndex:int = _currentFrameIndex + 1;
+         if(nextFrameIndex >= _timelineData.frameList.length)
          {
-            _loc7_ = 0;
+            nextFrameIndex = 0;
          }
-         var _loc6_:SlotFrame = _timelineData.frameList[_currentFrameIndex] as SlotFrame;
-         var _loc3_:SlotFrame = _timelineData.frameList[_loc7_] as SlotFrame;
-         var _loc5_:Boolean = false;
-         if(_loc7_ == 0 && (_animationState.playTimes && _animationState.currentPlayTimes >= _animationState.playTimes && ((_currentFramePosition + _currentFrameDuration) / _totalTime + param1 - _timelineData.offset) * _timelineData.scale > 0.999999))
+         var currentFrame:SlotFrame = _timelineData.frameList[_currentFrameIndex] as SlotFrame;
+         var nextFrame:SlotFrame = _timelineData.frameList[nextFrameIndex] as SlotFrame;
+         var tweenEnabled:Boolean = false;
+         if(nextFrameIndex == 0 && (_animationState.playTimes && _animationState.currentPlayTimes >= _animationState.playTimes && ((_currentFramePosition + _currentFrameDuration) / _totalTime + currentPlayTimes - _timelineData.offset) * _timelineData.scale > 0.999999))
          {
             _tweenEasing = NaN;
-            _loc5_ = false;
+            tweenEnabled = false;
          }
-         else if(_loc6_.displayIndex < 0 || _loc3_.displayIndex < 0)
+         else if(currentFrame.displayIndex < 0 || nextFrame.displayIndex < 0)
          {
             _tweenEasing = NaN;
-            _loc5_ = false;
+            tweenEnabled = false;
          }
          else if(_animationState.autoTween)
          {
             _tweenEasing = _animationState.animationData.tweenEasing;
             if(isNaN(_tweenEasing))
             {
-               _tweenEasing = _loc6_.tweenEasing;
-               _tweenCurve = _loc6_.curve;
+               _tweenEasing = currentFrame.tweenEasing;
+               _tweenCurve = currentFrame.curve;
                if(isNaN(_tweenEasing))
                {
-                  _loc5_ = false;
+                  tweenEnabled = false;
                }
                else
                {
@@ -308,33 +306,33 @@ package dragonBones.fast.animation
                   {
                      _tweenEasing = 0;
                   }
-                  _loc5_ = true;
+                  tweenEnabled = true;
                }
             }
             else
             {
-               _loc5_ = true;
+               tweenEnabled = true;
             }
          }
          else
          {
-            _tweenEasing = _loc6_.tweenEasing;
-            _tweenCurve = _loc6_.curve;
+            _tweenEasing = currentFrame.tweenEasing;
+            _tweenCurve = currentFrame.curve;
             if(isNaN(_tweenEasing) || _tweenEasing == 10)
             {
                _tweenEasing = NaN;
-               _loc5_ = false;
+               tweenEnabled = false;
             }
             else
             {
-               _loc5_ = true;
+               tweenEnabled = true;
             }
          }
-         if(_loc5_)
+         if(tweenEnabled)
          {
-            if(_loc6_.color || _loc3_.color)
+            if(currentFrame.color || nextFrame.color)
             {
-               ColorTransformUtil.minus(_loc3_.color || ColorTransformUtil.originalColor,_loc6_.color || ColorTransformUtil.originalColor,_durationColor);
+               ColorTransformUtil.minus(nextFrame.color || ColorTransformUtil.originalColor,currentFrame.color || ColorTransformUtil.originalColor,_durationColor);
                _tweenColor = _durationColor.alphaOffset || Number(_durationColor.redOffset) || Number(_durationColor.greenOffset) || Number(_durationColor.blueOffset) || Number(_durationColor.alphaMultiplier) || Number(_durationColor.redMultiplier) || Number(_durationColor.greenMultiplier) || Number(_durationColor.blueMultiplier);
             }
             else
@@ -348,21 +346,21 @@ package dragonBones.fast.animation
          }
          if(!_tweenColor)
          {
-            if(_loc6_.colorChanged)
+            if(currentFrame.colorChanged)
             {
-               _loc2_ = _loc6_.color;
-               _loc4_ = true;
+               targetColor = currentFrame.color;
+               colorChanged = true;
             }
             else
             {
-               _loc2_ = ColorTransformUtil.originalColor;
-               _loc4_ = false;
+               targetColor = ColorTransformUtil.originalColor;
+               colorChanged = false;
             }
-            if(_slot._isColorChanged || _loc4_)
+            if(_slot._isColorChanged || colorChanged)
             {
-               if(!ColorTransformUtil.isEqual(_slot._colorTransform,_loc2_))
+               if(!ColorTransformUtil.isEqual(_slot._colorTransform,targetColor))
                {
-                  _slot.updateDisplayColor(_loc2_.alphaOffset,_loc2_.redOffset,_loc2_.greenOffset,_loc2_.blueOffset,_loc2_.alphaMultiplier,_loc2_.redMultiplier,_loc2_.greenMultiplier,_loc2_.blueMultiplier,_loc4_);
+                  _slot.updateDisplayColor(targetColor.alphaOffset,targetColor.redOffset,targetColor.greenOffset,targetColor.blueOffset,targetColor.alphaMultiplier,targetColor.redMultiplier,targetColor.greenMultiplier,targetColor.blueMultiplier,colorChanged);
                }
             }
          }
@@ -370,57 +368,57 @@ package dragonBones.fast.animation
       
       private function updateTween() : void
       {
-         var _loc1_:Number = NaN;
-         var _loc2_:SlotFrame = _timelineData.frameList[_currentFrameIndex] as SlotFrame;
+         var progress:Number = NaN;
+         var currentFrame:SlotFrame = _timelineData.frameList[_currentFrameIndex] as SlotFrame;
          if(_tweenColor)
          {
-            _loc1_ = (_currentTime - _currentFramePosition) / _currentFrameDuration;
+            progress = (_currentTime - _currentFramePosition) / _currentFrameDuration;
             if(_tweenCurve != null)
             {
-               _loc1_ = _tweenCurve.getValueByProgress(_loc1_);
+               progress = _tweenCurve.getValueByProgress(progress);
             }
             if(_tweenEasing)
             {
-               _loc1_ = MathUtil.getEaseValue(_loc1_,_tweenEasing);
+               progress = MathUtil.getEaseValue(progress,_tweenEasing);
             }
-            if(_loc2_.color)
+            if(currentFrame.color)
             {
-               _slot.updateDisplayColor(_loc2_.color.alphaOffset + _durationColor.alphaOffset * _loc1_,_loc2_.color.redOffset + _durationColor.redOffset * _loc1_,_loc2_.color.greenOffset + _durationColor.greenOffset * _loc1_,_loc2_.color.blueOffset + _durationColor.blueOffset * _loc1_,_loc2_.color.alphaMultiplier + _durationColor.alphaMultiplier * _loc1_,_loc2_.color.redMultiplier + _durationColor.redMultiplier * _loc1_,_loc2_.color.greenMultiplier + _durationColor.greenMultiplier * _loc1_,_loc2_.color.blueMultiplier + _durationColor.blueMultiplier * _loc1_,true);
+               _slot.updateDisplayColor(currentFrame.color.alphaOffset + _durationColor.alphaOffset * progress,currentFrame.color.redOffset + _durationColor.redOffset * progress,currentFrame.color.greenOffset + _durationColor.greenOffset * progress,currentFrame.color.blueOffset + _durationColor.blueOffset * progress,currentFrame.color.alphaMultiplier + _durationColor.alphaMultiplier * progress,currentFrame.color.redMultiplier + _durationColor.redMultiplier * progress,currentFrame.color.greenMultiplier + _durationColor.greenMultiplier * progress,currentFrame.color.blueMultiplier + _durationColor.blueMultiplier * progress,true);
             }
             else
             {
-               _slot.updateDisplayColor(_durationColor.alphaOffset * _loc1_,_durationColor.redOffset * _loc1_,_durationColor.greenOffset * _loc1_,_durationColor.blueOffset * _loc1_,_durationColor.alphaMultiplier * _loc1_ + 1,_durationColor.redMultiplier * _loc1_ + 1,_durationColor.greenMultiplier * _loc1_ + 1,_durationColor.blueMultiplier * _loc1_ + 1,true);
+               _slot.updateDisplayColor(_durationColor.alphaOffset * progress,_durationColor.redOffset * progress,_durationColor.greenOffset * progress,_durationColor.blueOffset * progress,_durationColor.alphaMultiplier * progress + 1,_durationColor.redMultiplier * progress + 1,_durationColor.greenMultiplier * progress + 1,_durationColor.blueMultiplier * progress + 1,true);
             }
          }
       }
       
       private function updateSingleFrame() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:Boolean = false;
-         var _loc3_:SlotFrame = _timelineData.frameList[0] as SlotFrame;
-         _slot.arriveAtFrame(_loc3_,_animationState);
+         var targetColor:* = null;
+         var colorChanged:Boolean = false;
+         var currentFrame:SlotFrame = _timelineData.frameList[0] as SlotFrame;
+         _slot.arriveAtFrame(currentFrame,_animationState);
          _isComplete = true;
          _tweenEasing = NaN;
          _tweenColor = false;
-         _blendEnabled = _loc3_.displayIndex >= 0;
+         _blendEnabled = currentFrame.displayIndex >= 0;
          if(_blendEnabled)
          {
-            if(_loc3_.colorChanged)
+            if(currentFrame.colorChanged)
             {
-               _loc1_ = _loc3_.color;
-               _loc2_ = true;
+               targetColor = currentFrame.color;
+               colorChanged = true;
             }
             else
             {
-               _loc1_ = ColorTransformUtil.originalColor;
-               _loc2_ = false;
+               targetColor = ColorTransformUtil.originalColor;
+               colorChanged = false;
             }
-            if(_slot._isColorChanged || _loc2_)
+            if(_slot._isColorChanged || colorChanged)
             {
-               if(!ColorTransformUtil.isEqual(_slot._colorTransform,_loc1_))
+               if(!ColorTransformUtil.isEqual(_slot._colorTransform,targetColor))
                {
-                  _slot.updateDisplayColor(_loc1_.alphaOffset,_loc1_.redOffset,_loc1_.greenOffset,_loc1_.blueOffset,_loc1_.alphaMultiplier,_loc1_.redMultiplier,_loc1_.greenMultiplier,_loc1_.blueMultiplier,_loc2_);
+                  _slot.updateDisplayColor(targetColor.alphaOffset,targetColor.redOffset,targetColor.greenOffset,targetColor.blueOffset,targetColor.alphaMultiplier,targetColor.redMultiplier,targetColor.greenMultiplier,targetColor.blueMultiplier,colorChanged);
                }
             }
          }

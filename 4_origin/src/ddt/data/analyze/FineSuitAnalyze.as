@@ -15,87 +15,86 @@ package ddt.data.analyze
       
       private var _materialIDList:Array;
       
-      public function FineSuitAnalyze(param1:Function)
+      public function FineSuitAnalyze(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc3_:* = null;
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
-         var _loc4_:* = null;
-         var _loc2_:XML = new XML(param1);
+         var xmllist:* = null;
+         var i:int = 0;
+         var info:* = null;
+         var zero:* = null;
+         var xml:XML = new XML(data);
          _list = new DictionaryData();
          _data = new DictionaryData();
          _materialIDList = [];
-         if(_loc2_.@value == "true")
+         if(xml.@value == "true")
          {
-            _loc3_ = _loc2_..SetsBuildTemp;
-            if(_loc3_.length() > 0)
+            xmllist = xml..SetsBuildTemp;
+            if(xmllist.length() > 0)
             {
-               _loc6_ = 0;
-               while(_loc6_ < _loc3_.length())
+               for(i = 0; i < xmllist.length(); )
                {
-                  _loc5_ = new FineSuitVo();
-                  _loc5_.level = _loc3_[_loc6_].@Level;
-                  _loc5_.type = _loc3_[_loc6_].@SetsType;
-                  _loc5_.materialID = _loc3_[_loc6_].@UseItemTemplate;
-                  _loc5_.exp = _loc3_[_loc6_].@Exp;
-                  _loc5_.Defence = _loc3_[_loc6_].@DefenceGrow;
-                  _loc5_.hp = _loc3_[_loc6_].@BloodGrow;
-                  _loc5_.Luck = _loc3_[_loc6_].@LuckGrow;
-                  _loc5_.Agility = _loc3_[_loc6_].@AgilityGrow;
-                  _loc5_.MagicDefence = _loc3_[_loc6_].@MagicDefenceGrow;
-                  _loc5_.Armor = _loc3_[_loc6_].@GuardGrow;
-                  _list.add(_loc5_.level,_loc5_);
-                  if(_loc6_ % 14 == 0)
+                  info = new FineSuitVo();
+                  info.level = xmllist[i].@Level;
+                  info.type = xmllist[i].@SetsType;
+                  info.materialID = xmllist[i].@UseItemTemplate;
+                  info.exp = xmllist[i].@Exp;
+                  info.Defence = xmllist[i].@DefenceGrow;
+                  info.hp = xmllist[i].@BloodGrow;
+                  info.Luck = xmllist[i].@LuckGrow;
+                  info.Agility = xmllist[i].@AgilityGrow;
+                  info.MagicDefence = xmllist[i].@MagicDefenceGrow;
+                  info.Armor = xmllist[i].@GuardGrow;
+                  _list.add(info.level,info);
+                  if(i % 14 == 0)
                   {
-                     _materialIDList.push(_loc5_.materialID);
+                     _materialIDList.push(info.materialID);
                   }
-                  addData(_loc5_);
-                  _loc6_++;
+                  addData(info);
+                  i++;
                }
-               _loc4_ = new FineSuitVo();
-               _loc4_.materialID = _list["1"].materialID;
-               _list.add("0",_loc4_);
+               zero = new FineSuitVo();
+               zero.materialID = _list["1"].materialID;
+               _list.add("0",zero);
                onAnalyzeComplete();
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc2_.@message;
+            message = xml.@message;
             onAnalyzeError();
             onAnalyzeComplete();
          }
       }
       
-      private function addData(param1:FineSuitVo) : void
+      private function addData(info:FineSuitVo) : void
       {
-         var _loc4_:* = null;
-         var _loc2_:int = param1.level % 14 == 0?14:Number(param1.level % 14);
-         var _loc3_:FineSuitVo = new FineSuitVo();
-         if(!_data.hasKey(param1.type))
+         var data:* = null;
+         var level:int = info.level % 14 == 0?14:Number(info.level % 14);
+         var allVo:FineSuitVo = new FineSuitVo();
+         if(!_data.hasKey(info.type))
          {
-            _loc4_ = new DictionaryData();
-            _data.add(param1.type,_loc4_);
-            ObjectUtils.copyProperties(_loc3_,param1);
-            _loc4_.add("all",_loc3_);
+            data = new DictionaryData();
+            _data.add(info.type,data);
+            ObjectUtils.copyProperties(allVo,info);
+            data.add("all",allVo);
          }
          else
          {
-            _loc4_ = _data[param1.type];
-            _loc3_ = _loc4_["all"] as FineSuitVo;
-            _loc3_.Defence = _loc3_.Defence + param1.Defence;
-            _loc3_.hp = _loc3_.hp + param1.hp;
-            _loc3_.Luck = _loc3_.Luck + param1.Luck;
-            _loc3_.Agility = _loc3_.Agility + param1.Agility;
-            _loc3_.MagicDefence = _loc3_.MagicDefence + param1.MagicDefence;
-            _loc3_.Armor = _loc3_.Armor + param1.Armor;
+            data = _data[info.type];
+            allVo = data["all"] as FineSuitVo;
+            allVo.Defence = allVo.Defence + info.Defence;
+            allVo.hp = allVo.hp + info.hp;
+            allVo.Luck = allVo.Luck + info.Luck;
+            allVo.Agility = allVo.Agility + info.Agility;
+            allVo.MagicDefence = allVo.MagicDefence + info.MagicDefence;
+            allVo.Armor = allVo.Armor + info.Armor;
          }
-         _loc4_.add(_loc2_,param1);
+         data.add(level,info);
       }
       
       public function get list() : DictionaryData

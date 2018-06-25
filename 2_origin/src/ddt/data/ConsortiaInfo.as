@@ -133,9 +133,9 @@ package ddt.data
          return _validDate;
       }
       
-      public function set ValidDate(param1:int) : void
+      public function set ValidDate(value:int) : void
       {
-         _validDate = param1;
+         _validDate = value;
       }
       
       public function get BadgeBuyTime() : String
@@ -143,9 +143,9 @@ package ddt.data
          return _badgeBuyTime;
       }
       
-      public function set BadgeBuyTime(param1:String) : void
+      public function set BadgeBuyTime(value:String) : void
       {
-         _badgeBuyTime = param1;
+         _badgeBuyTime = value;
          onPropertiesChanged("badgedate");
       }
       
@@ -154,9 +154,9 @@ package ddt.data
          return _badgeID;
       }
       
-      public function set BadgeID(param1:int) : void
+      public function set BadgeID(value:int) : void
       {
-         _badgeID = param1;
+         _badgeID = value;
          onPropertiesChanged("badgeID");
       }
       
@@ -165,13 +165,13 @@ package ddt.data
          return _consortiaName;
       }
       
-      public function set ConsortiaName(param1:String) : void
+      public function set ConsortiaName(value:String) : void
       {
-         if(_consortiaName == param1)
+         if(_consortiaName == value)
          {
             return;
          }
-         _consortiaName = param1;
+         _consortiaName = value;
          onPropertiesChanged("consortiaName");
       }
       
@@ -180,9 +180,9 @@ package ddt.data
          return _IsVoting;
       }
       
-      public function set IsVoting(param1:Boolean) : void
+      public function set IsVoting(value:Boolean) : void
       {
-         _IsVoting = param1;
+         _IsVoting = value;
          onPropertiesChanged("isVoting");
       }
       
@@ -191,13 +191,13 @@ package ddt.data
          return _chairmanName;
       }
       
-      public function set ChairmanName(param1:String) : void
+      public function set ChairmanName(value:String) : void
       {
-         if(_chairmanName == param1)
+         if(_chairmanName == value)
          {
             return;
          }
-         _chairmanName = param1;
+         _chairmanName = value;
          onPropertiesChanged("chairmanName");
       }
       
@@ -206,13 +206,13 @@ package ddt.data
          return _count;
       }
       
-      public function set Count(param1:int) : void
+      public function set Count(value:int) : void
       {
-         if(_count == param1)
+         if(_count == value)
          {
             return;
          }
-         _count = param1;
+         _count = value;
          onPropertiesChanged("count");
       }
       
@@ -226,13 +226,13 @@ package ddt.data
          return ChairmanTypeVIP > 0;
       }
       
-      public function set PollOpen(param1:Boolean) : void
+      public function set PollOpen(value:Boolean) : void
       {
-         if(_PollOpen == param1)
+         if(_PollOpen == value)
          {
             return;
          }
-         _PollOpen = param1;
+         _PollOpen = value;
          onPropertiesChanged("pollOpen");
       }
       
@@ -241,15 +241,15 @@ package ddt.data
          return _Level;
       }
       
-      public function set Level(param1:int) : void
+      public function set Level(value:int) : void
       {
-         _Level = param1;
+         _Level = value;
          onPropertiesChanged("level");
       }
       
-      public function set StoreLevel(param1:int) : void
+      public function set StoreLevel($level:int) : void
       {
-         _storeLevel = param1;
+         _storeLevel = $level;
          onPropertiesChanged("bankLevel");
       }
       
@@ -263,9 +263,9 @@ package ddt.data
          return _SmithLevel;
       }
       
-      public function set SmithLevel(param1:int) : void
+      public function set SmithLevel(value:int) : void
       {
-         _SmithLevel = param1;
+         _SmithLevel = value;
          onPropertiesChanged("storeLevel");
       }
       
@@ -274,9 +274,9 @@ package ddt.data
          return _ShopLevel;
       }
       
-      public function set ShopLevel(param1:int) : void
+      public function set ShopLevel(value:int) : void
       {
-         _ShopLevel = param1;
+         _ShopLevel = value;
          onPropertiesChanged("shopLevel");
       }
       
@@ -285,15 +285,15 @@ package ddt.data
          return _bufferLevel;
       }
       
-      public function set BufferLevel(param1:int) : void
+      public function set BufferLevel(value:int) : void
       {
-         _bufferLevel = param1;
+         _bufferLevel = value;
          onPropertiesChanged("skillLevel");
       }
       
-      public function set Riches(param1:int) : void
+      public function set Riches(i:int) : void
       {
-         this._riches = param1;
+         this._riches = i;
          onPropertiesChanged("riches");
       }
       
@@ -307,13 +307,13 @@ package ddt.data
          return _description;
       }
       
-      public function set Description(param1:String) : void
+      public function set Description(value:String) : void
       {
-         if(_description == param1)
+         if(_description == value)
          {
             return;
          }
-         _description = param1;
+         _description = value;
          onPropertiesChanged("description");
       }
       
@@ -322,13 +322,13 @@ package ddt.data
          return _placard;
       }
       
-      public function set Placard(param1:String) : void
+      public function set Placard(value:String) : void
       {
-         if(_placard == param1)
+         if(_placard == value)
          {
             return;
          }
-         _placard = param1;
+         _placard = value;
          onPropertiesChanged("placard");
       }
       
@@ -347,11 +347,11 @@ package ddt.data
          }
       }
       
-      protected function onPropertiesChanged(param1:String = null) : void
+      protected function onPropertiesChanged(propName:String = null) : void
       {
-         if(param1 != null)
+         if(propName != null)
          {
-            _changedPropeties[param1] = true;
+            _changedPropeties[propName] = true;
          }
          if(_changeCount <= 0)
          {
@@ -362,9 +362,9 @@ package ddt.data
       
       public function updateProperties() : void
       {
-         var _loc1_:Dictionary = _changedPropeties;
+         var temp:Dictionary = _changedPropeties;
          _changedPropeties = new Dictionary();
-         dispatchEvent(new PlayerPropertyEvent("propertychange",_loc1_));
+         dispatchEvent(new PlayerPropertyEvent("propertychange",temp));
       }
    }
 }

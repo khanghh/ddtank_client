@@ -97,46 +97,44 @@ package pyramid.view
       
       private function initData() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
+         var i:int = 0;
+         var j:int = 0;
          _cards = new Dictionary();
-         _loc2_ = 7;
-         while(_loc2_ >= 1)
+         for(i = 7; i >= 1; )
          {
-            _cards[_loc2_] = new Dictionary();
-            _loc1_ = 8;
-            while(_loc1_ >= _loc2_)
+            _cards[i] = new Dictionary();
+            for(j = 8; j >= i; )
             {
-               createCard(_loc2_,9 - _loc1_);
-               _loc1_--;
+               createCard(i,9 - j);
+               j--;
             }
-            _loc2_--;
+            i--;
          }
          updateSelectItems();
          playShuffleFullMovie();
       }
       
-      private function createCard(param1:int, param2:int) : void
+      private function createCard(i:int, j:int) : void
       {
-         var _loc4_:PyramidCard = new PyramidCard();
-         _loc4_.index = param1 + "_" + param2;
-         var _loc3_:Point = PositionUtils.creatPoint("pyramid.view.cardPos" + _loc4_.index);
-         _loc4_.x = _loc3_.x;
-         _loc4_.y = _loc3_.y;
-         _cards[param1][param2] = _loc4_;
-         _loc4_.addEventListener("click",__cardClickHandler);
-         _loc4_.addEventListener("openAndClose_Movie",__cardOpenMovieHandler);
-         _cardsSprite.addChild(_loc4_);
+         var cardSp:PyramidCard = new PyramidCard();
+         cardSp.index = i + "_" + j;
+         var cardPosition:Point = PositionUtils.creatPoint("pyramid.view.cardPos" + cardSp.index);
+         cardSp.x = cardPosition.x;
+         cardSp.y = cardPosition.y;
+         _cards[i][j] = cardSp;
+         cardSp.addEventListener("click",__cardClickHandler);
+         cardSp.addEventListener("openAndClose_Movie",__cardOpenMovieHandler);
+         _cardsSprite.addChild(cardSp);
       }
       
-      public function topBoxMovieMode(param1:int = 0) : void
+      public function topBoxMovieMode(modeType:int = 0) : void
       {
-         _topBox.topBoxMovieMode(param1);
+         _topBox.topBoxMovieMode(modeType);
       }
       
-      private function __cardClickHandler(param1:MouseEvent) : void
+      private function __cardClickHandler(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var card:* = null;
          SoundManager.instance.play("008");
          if(PyramidControl.instance.clickRateGo)
          {
@@ -150,14 +148,14 @@ package pyramid.view
          {
             return;
          }
-         if(param1.currentTarget == _topBox && _topBox.state == 1)
+         if(event.currentTarget == _topBox && _topBox.state == 1)
          {
             openTopBox();
          }
-         else if(param1.currentTarget is PyramidCard && !PyramidControl.instance.isAutoOpenCard)
+         else if(event.currentTarget is PyramidCard && !PyramidControl.instance.isAutoOpenCard)
          {
-            _loc2_ = PyramidCard(param1.currentTarget);
-            openCurrendCard(_loc2_);
+            card = PyramidCard(event.currentTarget);
+            openCurrendCard(card);
          }
       }
       
@@ -168,9 +166,9 @@ package pyramid.view
          GameInSocketOut.sendPyramidTurnCard(8,1,false);
       }
       
-      private function openCurrendCard(param1:PyramidCard) : void
+      private function openCurrendCard($card:PyramidCard) : void
       {
-         _currentCard = param1;
+         _currentCard = $card;
          if(_currentCard.state != 3)
          {
             return;
@@ -180,8 +178,8 @@ package pyramid.view
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc3_:int = PyramidManager.instance.model.freeCount - PyramidManager.instance.model.currentFreeCount;
-         if(_loc3_ <= 0)
+         var freeCount:int = PyramidManager.instance.model.freeCount - PyramidManager.instance.model.currentFreeCount;
+         if(freeCount <= 0)
          {
             if(PlayerManager.Instance.Self.Money < PyramidManager.instance.model.turnCardPrice)
             {
@@ -190,53 +188,53 @@ package pyramid.view
                return;
             }
          }
-         var _loc2_:Array = _currentCard.index.split("_");
-         if(_loc3_ <= 0 && PyramidControl.instance.isShowBuyFrameSelectedCheck)
+         var arr:Array = _currentCard.index.split("_");
+         if(freeCount <= 0 && PyramidControl.instance.isShowBuyFrameSelectedCheck)
          {
-            PyramidControl.instance.showFrame(5,_loc2_);
+            PyramidControl.instance.showFrame(5,arr);
             return;
          }
          PyramidControl.instance.movieLock = true;
-         GameInSocketOut.sendPyramidTurnCard(_loc2_[0],_loc2_[1],false);
+         GameInSocketOut.sendPyramidTurnCard(arr[0],arr[1],false);
       }
       
       public function playTurnCardMovie() : void
       {
          PyramidControl.instance.movieLock = true;
          _movieCountArr = [1,0];
-         var _loc2_:int = PyramidManager.instance.model.currentLayer;
-         var _loc1_:int = PyramidManager.instance.model.templateID;
-         var _loc3_:PyramidSystemItemsInfo = PyramidManager.instance.model.getLevelCardItem(_loc2_,_loc1_);
-         _currentCard.cardState(2,_loc3_);
+         var level:int = PyramidManager.instance.model.currentLayer;
+         var templateID:int = PyramidManager.instance.model.templateID;
+         var tempItem:PyramidSystemItemsInfo = PyramidManager.instance.model.getLevelCardItem(level,templateID);
+         _currentCard.cardState(2,tempItem);
          checkAutoOpenCard();
       }
       
-      private function __cardOpenMovieHandler(param1:PyramidEvent) : void
+      private function __cardOpenMovieHandler(event:PyramidEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc6_:int = 0;
-         var _loc5_:int = 0;
+         var arr:* = null;
+         var currentLevelNum:int = 0;
+         var repeatCount:int = 0;
          if(!_movieCountArr)
          {
             return;
          }
-         var _loc4_:int = _movieCountArr[0];
-         var _loc3_:int = _movieCountArr[1];
-         _loc3_++;
-         _movieCountArr[1] = _loc3_;
-         if(_loc4_ == _loc3_)
+         var count1:int = _movieCountArr[0];
+         var count2:int = _movieCountArr[1];
+         count2++;
+         _movieCountArr[1] = count2;
+         if(count1 == count2)
          {
             _movieCountArr = null;
             if(_playLevelMovieStep == 1)
             {
-               _loc2_ = PyramidManager.instance.model.getLevelCardItems(_playLevel);
-               _loc6_ = 9 - _playLevel;
-               _loc5_ = _loc2_.length / (9 - _playLevel);
-               if(_loc2_.length % _loc6_ > 0)
+               arr = PyramidManager.instance.model.getLevelCardItems(_playLevel);
+               currentLevelNum = 9 - _playLevel;
+               repeatCount = arr.length / (9 - _playLevel);
+               if(arr.length % currentLevelNum > 0)
                {
-                  _loc5_++;
+                  repeatCount++;
                }
-               _shuffleWaitTimer.repeatCount = _loc5_;
+               _shuffleWaitTimer.repeatCount = repeatCount;
                _timerCurrentCount = 0;
                _shuffleWaitTimer.reset();
                _shuffleWaitTimer.start();
@@ -264,7 +262,7 @@ package pyramid.view
          }
       }
       
-      private function __shuffleWaitTimerHandler(param1:TimerEvent) : void
+      private function __shuffleWaitTimerHandler(event:TimerEvent) : void
       {
          _timerCurrentCount = Number(_timerCurrentCount) + 1;
          if(_timerCurrentCount >= _shuffleWaitTimer.repeatCount)
@@ -309,11 +307,11 @@ package pyramid.view
       
       private function exeAutoOpenCard() : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         var _loc5_:int = 0;
-         var _loc1_:int = 0;
-         var _loc4_:* = null;
+         var tempArr:* = null;
+         var dic1:* = null;
+         var i:int = 0;
+         var tempNum:int = 0;
+         var tempCard:* = null;
          if(PyramidManager.instance.model.isPyramidStart && PyramidControl.instance.isAutoOpenCard)
          {
             if(PyramidManager.instance.model.currentLayer >= 8)
@@ -331,124 +329,121 @@ package pyramid.view
             }
             else
             {
-               _loc2_ = [];
-               _loc3_ = Dictionary(_cards[_playLevel]);
-               _loc5_ = 1;
-               while(_loc5_ <= 9 - _playLevel)
+               tempArr = [];
+               dic1 = Dictionary(_cards[_playLevel]);
+               for(i = 1; i <= 9 - _playLevel; )
                {
-                  if(_loc3_[_loc5_].state == 3)
+                  if(dic1[i].state == 3)
                   {
-                     _loc2_.push(_loc5_);
+                     tempArr.push(i);
                   }
-                  _loc5_++;
+                  i++;
                }
-               if(_loc2_.length > 0)
+               if(tempArr.length > 0)
                {
-                  _loc1_ = Math.random() * _loc2_.length;
-                  _loc4_ = _cards[_playLevel][_loc2_[_loc1_]];
-                  openCurrendCard(_loc4_);
+                  tempNum = Math.random() * tempArr.length;
+                  tempCard = _cards[_playLevel][tempArr[tempNum]];
+                  openCurrendCard(tempCard);
                }
             }
          }
       }
       
-      public function playLevelMovie(param1:int, param2:String) : void
+      public function playLevelMovie(level:int, action:String) : void
       {
-         var _loc9_:* = null;
-         var _loc3_:* = null;
-         var _loc5_:* = null;
-         var _loc8_:int = 0;
-         var _loc4_:* = null;
-         var _loc7_:* = null;
-         _playLevel = param1;
-         if(param2 == "shuffle" || param2 == "bg")
+         var tempMovie:* = null;
+         var arr:* = null;
+         var dic1:* = null;
+         var i:int = 0;
+         var itemInfo:* = null;
+         var dic2:* = null;
+         _playLevel = level;
+         if(action == "shuffle" || action == "bg")
          {
             _shuffleMovie.visible = true;
             _shuffleMovie.gotoAndStop(_playLevel);
-            _loc9_ = MovieClip(_shuffleMovie["level" + _playLevel]);
-            if(_loc9_)
+            tempMovie = MovieClip(_shuffleMovie["level" + _playLevel]);
+            if(tempMovie)
             {
-               if(param2 == "shuffle")
+               if(action == "shuffle")
                {
-                  _loc9_.addFrameScript(_loc9_.totalFrames - 2,shuffleFrameScript);
-                  _loc9_.gotoAndPlay(param2);
+                  tempMovie.addFrameScript(tempMovie.totalFrames - 2,shuffleFrameScript);
+                  tempMovie.gotoAndPlay(action);
                }
                else
                {
-                  _loc9_.gotoAndStop(param2);
+                  tempMovie.gotoAndStop(action);
                }
             }
          }
-         else if(param2 == "open")
+         else if(action == "open")
          {
-            _loc3_ = PyramidManager.instance.model.getLevelCardItems(_playLevel);
-            _loc5_ = Dictionary(_cards[_playLevel]);
-            _loc8_ = 1;
-            while(_loc8_ <= 9 - _playLevel)
+            arr = PyramidManager.instance.model.getLevelCardItems(_playLevel);
+            dic1 = Dictionary(_cards[_playLevel]);
+            for(i = 1; i <= 9 - _playLevel; )
             {
-               _loc4_ = _loc3_[_loc8_ - 1];
-               _loc5_[_loc8_].cardState(2,_loc4_);
-               _loc8_++;
+               itemInfo = arr[i - 1];
+               dic1[i].cardState(2,itemInfo);
+               i++;
             }
             _movieCountArr = [9 - _playLevel,0];
             PyramidControl.instance.movieLock = true;
          }
-         else if(param2 == "close")
+         else if(action == "close")
          {
-            _loc7_ = Dictionary(_cards[_playLevel]);
+            dic2 = Dictionary(_cards[_playLevel]);
             var _loc11_:int = 0;
-            var _loc10_:* = _loc7_;
-            for each(var _loc6_ in _loc7_)
+            var _loc10_:* = dic2;
+            for each(var card2 in dic2)
             {
-               _loc6_.cardState(4);
+               card2.cardState(4);
             }
             _movieCountArr = [9 - _playLevel,0];
             PyramidControl.instance.movieLock = true;
          }
       }
       
-      private function cardLevelVisible(param1:int, param2:Boolean) : void
+      private function cardLevelVisible(level:int, bool:Boolean) : void
       {
-         var _loc3_:Dictionary = Dictionary(_cards[param1]);
+         var dic:Dictionary = Dictionary(_cards[level]);
          var _loc6_:int = 0;
-         var _loc5_:* = _loc3_;
-         for each(var _loc4_ in _loc3_)
+         var _loc5_:* = dic;
+         for each(var card in dic)
          {
-            _loc4_.visible = param2;
+            card.visible = bool;
          }
       }
       
-      private function cardLevelState(param1:int, param2:int) : void
+      private function cardLevelState(level:int, state:int) : void
       {
-         var _loc3_:Dictionary = Dictionary(_cards[param1]);
+         var dic:Dictionary = Dictionary(_cards[level]);
          var _loc6_:int = 0;
-         var _loc5_:* = _loc3_;
-         for each(var _loc4_ in _loc3_)
+         var _loc5_:* = dic;
+         for each(var card in dic)
          {
-            _loc4_.cardState(param2);
+            card.cardState(state);
          }
       }
       
-      private function cardLevelTimerDataUpdate(param1:int, param2:int) : void
+      private function cardLevelTimerDataUpdate(level:int, repeatCount:int) : void
       {
-         var _loc7_:int = 0;
-         var _loc6_:* = null;
-         var _loc3_:int = 0;
-         if(param2 > 0)
+         var i:int = 0;
+         var itemInfo:* = null;
+         var index:int = 0;
+         if(repeatCount > 0)
          {
-            _loc3_ = param2 * (9 - param1);
+            index = repeatCount * (9 - level);
          }
-         var _loc4_:Array = PyramidManager.instance.model.getLevelCardItems(param1);
-         var _loc5_:Dictionary = Dictionary(_cards[param1]);
-         _loc7_ = 1;
-         while(_loc7_ <= 9 - param1)
+         var arr:Array = PyramidManager.instance.model.getLevelCardItems(level);
+         var dic:Dictionary = Dictionary(_cards[level]);
+         for(i = 1; i <= 9 - level; )
          {
-            if(_loc4_.length > _loc3_)
+            if(arr.length > index)
             {
-               _loc6_ = _loc4_[_loc3_];
-               _loc5_[_loc7_].cardState(5,_loc6_);
-               _loc3_++;
-               _loc7_++;
+               itemInfo = arr[index];
+               dic[i].cardState(5,itemInfo);
+               index++;
+               i++;
                continue;
             }
             break;
@@ -457,41 +452,41 @@ package pyramid.view
       
       public function updateSelectItems() : void
       {
-         var _loc6_:* = null;
-         var _loc8_:* = null;
-         var _loc9_:int = 0;
-         var _loc1_:int = 0;
-         var _loc3_:* = null;
-         var _loc7_:* = null;
+         var dic1:* = null;
+         var dic2:* = null;
+         var tempId:int = 0;
+         var level:int = 0;
+         var item:* = null;
+         var dic3:* = null;
          if(PyramidManager.instance.model.isPyramidStart)
          {
-            _loc6_ = PyramidManager.instance.model.selectLayerItems;
+            dic1 = PyramidManager.instance.model.selectLayerItems;
             var _loc13_:int = 0;
-            var _loc12_:* = _loc6_;
-            for(var _loc4_ in _loc6_)
+            var _loc12_:* = dic1;
+            for(var key1 in dic1)
             {
-               _loc8_ = _loc6_[_loc4_];
+               dic2 = dic1[key1];
                var _loc11_:int = 0;
-               var _loc10_:* = _loc8_;
-               for(var _loc2_ in _loc8_)
+               var _loc10_:* = dic2;
+               for(var key2 in dic2)
                {
-                  _loc9_ = _loc8_[_loc2_];
-                  _loc1_ = _loc4_;
-                  _loc3_ = PyramidManager.instance.model.getLevelCardItem(_loc1_,_loc9_);
-                  PyramidCard(_cards[_loc4_][_loc2_]).cardState(1,_loc3_);
+                  tempId = dic2[key2];
+                  level = key1;
+                  item = PyramidManager.instance.model.getLevelCardItem(level,tempId);
+                  PyramidCard(_cards[key1][key2]).cardState(1,item);
                }
             }
             if(!PyramidManager.instance.model.isShuffleMovie && PyramidManager.instance.model.isPyramidStart && PyramidManager.instance.model.currentLayer < 8)
             {
                playLevelMovie(PyramidManager.instance.model.currentLayer,"bg");
-               _loc7_ = Dictionary(_cards[PyramidManager.instance.model.currentLayer]);
+               dic3 = Dictionary(_cards[PyramidManager.instance.model.currentLayer]);
                var _loc15_:int = 0;
-               var _loc14_:* = _loc7_;
-               for each(var _loc5_ in _loc7_)
+               var _loc14_:* = dic3;
+               for each(var card1 in dic3)
                {
-                  if(_loc5_.state == 0)
+                  if(card1.state == 0)
                   {
-                     _loc5_.cardState(3);
+                     card1.cardState(3);
                   }
                }
             }
@@ -509,7 +504,7 @@ package pyramid.view
          }
       }
       
-      private function __delayReset(param1:Event) : void
+      private function __delayReset(event:Event) : void
       {
          if(!PyramidControl.instance.movieLock)
          {
@@ -520,22 +515,22 @@ package pyramid.view
       
       public function upClear() : void
       {
-         var _loc3_:* = null;
+         var dic1:* = null;
          if(!PyramidManager.instance.model.isUp)
          {
             return;
          }
-         var _loc1_:int = PyramidManager.instance.model.currentLayer;
-         if(_loc1_ - 1 > 0)
+         var level:int = PyramidManager.instance.model.currentLayer;
+         if(level - 1 > 0)
          {
-            _loc3_ = Dictionary(_cards[_loc1_ - 1]);
+            dic1 = Dictionary(_cards[level - 1]);
             var _loc5_:int = 0;
-            var _loc4_:* = _loc3_;
-            for each(var _loc2_ in _loc3_)
+            var _loc4_:* = dic1;
+            for each(var card1 in dic1)
             {
-               if(_loc2_.state == 3)
+               if(card1.state == 3)
                {
-                  _loc2_.cardState(0);
+                  card1.cardState(0);
                }
             }
          }
@@ -545,13 +540,13 @@ package pyramid.view
       {
          var _loc6_:int = 0;
          var _loc5_:* = _cards;
-         for each(var _loc1_ in _cards)
+         for each(var obj1 in _cards)
          {
             var _loc4_:int = 0;
-            var _loc3_:* = _loc1_;
-            for each(var _loc2_ in _loc1_)
+            var _loc3_:* = obj1;
+            for each(var obj2 in obj1)
             {
-               _loc2_.reset();
+               obj2.reset();
             }
          }
          _playLevelMovieStep = 0;
@@ -574,15 +569,15 @@ package pyramid.view
          _shuffleWaitTimer = null;
          var _loc6_:int = 0;
          var _loc5_:* = _cards;
-         for each(var _loc1_ in _cards)
+         for each(var obj1 in _cards)
          {
             var _loc4_:int = 0;
-            var _loc3_:* = _loc1_;
-            for each(var _loc2_ in _loc1_)
+            var _loc3_:* = obj1;
+            for each(var obj2 in obj1)
             {
-               _loc2_.removeEventListener("click",__cardClickHandler);
-               _loc2_.removeEventListener("openAndClose_Movie",__cardOpenMovieHandler);
-               _loc2_.dispose();
+               obj2.removeEventListener("click",__cardClickHandler);
+               obj2.removeEventListener("openAndClose_Movie",__cardOpenMovieHandler);
+               obj2.dispose();
             }
          }
          _cards = null;

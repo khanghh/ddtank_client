@@ -96,23 +96,23 @@ package ddt.view.qqTips
          StageReferance.stage.removeEventListener("keyDown",__onKeyDown);
       }
       
-      private function __colseClick(param1:MouseEvent) : void
+      private function __colseClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          ObjectUtils.disposeObject(this);
       }
       
-      private function __CloseView(param1:Event) : void
+      private function __CloseView(e:Event) : void
       {
          ObjectUtils.disposeObject(this);
       }
       
-      private function __onKeyDown(param1:KeyboardEvent) : void
+      private function __onKeyDown(event:KeyboardEvent) : void
       {
-         var _loc2_:DisplayObject = StageReferance.stage.focus as DisplayObject;
-         if(DisplayUtils.isTargetOrContain(_loc2_,this))
+         var focusTarget:DisplayObject = StageReferance.stage.focus as DisplayObject;
+         if(DisplayUtils.isTargetOrContain(focusTarget,this))
          {
-            if(param1.keyCode == 27)
+            if(event.keyCode == 27)
             {
                SoundManager.instance.play("008");
                ObjectUtils.disposeObject(this);
@@ -120,25 +120,25 @@ package ddt.view.qqTips
          }
       }
       
-      protected function __onFrameMoveStart(param1:MouseEvent) : void
+      protected function __onFrameMoveStart(event:MouseEvent) : void
       {
          StageReferance.stage.addEventListener("mouseMove",__onMoveWindow);
          StageReferance.stage.addEventListener("mouseUp",__onFrameMoveStop);
          startDrag();
       }
       
-      protected function __onFrameMoveStop(param1:MouseEvent) : void
+      protected function __onFrameMoveStop(event:MouseEvent) : void
       {
          StageReferance.stage.removeEventListener("mouseUp",__onFrameMoveStop);
          StageReferance.stage.removeEventListener("mouseMove",__onMoveWindow);
          stopDrag();
       }
       
-      protected function __onMoveWindow(param1:MouseEvent) : void
+      protected function __onMoveWindow(event:MouseEvent) : void
       {
-         if(DisplayUtils.isInTheStage(new Point(param1.localX,param1.localY),this))
+         if(DisplayUtils.isInTheStage(new Point(event.localX,event.localY),this))
          {
-            param1.updateAfterEvent();
+            event.updateAfterEvent();
          }
          else
          {
@@ -146,23 +146,23 @@ package ddt.view.qqTips
          }
       }
       
-      public function set qqInfo(param1:QQTipsInfo) : void
+      public function set qqInfo(value:QQTipsInfo) : void
       {
-         _qqInfo = param1;
+         _qqInfo = value;
          _titleTxt.text = _qqInfo.title;
-         var _loc2_:String = "<a href=\"event:clicktype:" + _qqInfo.outInType + "\">" + _qqInfo.content + "</a>";
-         _outUrlTxt.htmlText = _loc2_;
+         var url:String = "<a href=\"event:clicktype:" + _qqInfo.outInType + "\">" + _qqInfo.content + "</a>";
+         _outUrlTxt.htmlText = url;
       }
       
-      private function __onLinkBtnClicked(param1:MouseEvent) : void
+      private function __onLinkBtnClicked(evt:MouseEvent) : void
       {
-         var _loc4_:URLRequest = new URLRequest(PathManager.solveRequestPath("LogClickTip.ashx"));
-         var _loc3_:URLVariables = new URLVariables();
-         _loc3_["title"] = qqInfo.title;
-         _loc4_.data = _loc3_;
-         var _loc2_:URLLoader = new URLLoader(_loc4_);
-         _loc2_.load(_loc4_);
-         _loc2_.addEventListener("ioError",onIOError);
+         var req:URLRequest = new URLRequest(PathManager.solveRequestPath("LogClickTip.ashx"));
+         var toServerData:URLVariables = new URLVariables();
+         toServerData["title"] = qqInfo.title;
+         req.data = toServerData;
+         var loader:URLLoader = new URLLoader(req);
+         loader.load(req);
+         loader.addEventListener("ioError",onIOError);
          if(qqInfo.outInType == 0)
          {
             __playINmoudle();
@@ -175,7 +175,7 @@ package ddt.view.qqTips
          ObjectUtils.disposeObject(this);
       }
       
-      private function onIOError(param1:IOErrorEvent) : void
+      private function onIOError(e:IOErrorEvent) : void
       {
       }
       
@@ -198,17 +198,17 @@ package ddt.view.qqTips
          }
       }
       
-      private function gotoPage(param1:String) : void
+      private function gotoPage(url:String) : void
       {
-         var _loc2_:* = null;
+         var redirictURL:* = null;
          if(ExternalInterface.available && !DesktopManager.Instance.isDesktop)
          {
-            _loc2_ = "function redict () {window.open(\"" + param1 + "\", \"_blank\")}";
-            ExternalInterface.call(_loc2_);
+            redirictURL = "function redict () {window.open(\"" + url + "\", \"_blank\")}";
+            ExternalInterface.call(redirictURL);
          }
          else
          {
-            navigateToURL(new URLRequest(encodeURI(param1)),"_blank");
+            navigateToURL(new URLRequest(encodeURI(url)),"_blank");
          }
       }
       
@@ -223,12 +223,12 @@ package ddt.view.qqTips
          StageReferance.stage.focus = this;
       }
       
-      public function set moveRect(param1:String) : void
+      public function set moveRect(value:String) : void
       {
-         var _loc2_:Array = param1.split(",");
+         var arr:Array = value.split(",");
          _moveRect.graphics.clear();
          _moveRect.graphics.beginFill(0,0);
-         _moveRect.graphics.drawRect(_loc2_[0],_loc2_[1],_loc2_[2],_loc2_[3]);
+         _moveRect.graphics.drawRect(arr[0],arr[1],arr[2],arr[3]);
          _moveRect.graphics.endFill();
       }
       

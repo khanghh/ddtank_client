@@ -9,9 +9,9 @@ package consortiaRoseFlower
       
       public var curFrame:Number;
       
-      public function ConsortiaRose(param1:BitmapData = null, param2:String = "auto", param3:Boolean = true)
+      public function ConsortiaRose(bitmapData:BitmapData = null, pixelSnapping:String = "auto", smoothing:Boolean = true)
       {
-         super(param1,param2,param3);
+         super(bitmapData,pixelSnapping,smoothing);
       }
    }
 }

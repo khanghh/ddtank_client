@@ -94,9 +94,9 @@ package kingDivision.view
          GameControl.Instance.removeEventListener("StartLoading",__onStartLoad);
       }
       
-      protected function __onStartLoad(param1:Event) : void
+      protected function __onStartLoad(event:Event) : void
       {
-         var _loc2_:RoomInfo = RoomManager.Instance.current;
+         var roomInfo:RoomInfo = RoomManager.Instance.current;
          if(GameControl.Instance.Current == null)
          {
             return;
@@ -105,7 +105,7 @@ package kingDivision.view
          StateManager.setState("roomLoading",GameControl.Instance.Current);
       }
       
-      private function __changeHandler(param1:Event) : void
+      private function __changeHandler(e:Event) : void
       {
          defaultShowThisZoneView();
       }
@@ -162,14 +162,14 @@ package kingDivision.view
          }
       }
       
-      private function timeShowView(param1:Array, param2:int) : void
+      private function timeShowView(dateArr:Array, zone:int) : void
       {
-         if(param1 == null)
+         if(dateArr == null)
          {
             return;
          }
-         var _loc3_:Date = TimeManager.Instance.Now();
-         if(param1[0] == _loc3_.date)
+         var dates:Date = TimeManager.Instance.Now();
+         if(dateArr[0] == dates.date)
          {
             if(_quaFrame)
             {
@@ -179,7 +179,7 @@ package kingDivision.view
             _quaFrame = ComponentFactory.Instance.creatCustomObject("kingDivisionFrame.qualificationsFrame");
             addToContent(_quaFrame);
             _quaFrame.progressBarView = _proBar;
-            _quaFrame.setDateStages(param1);
+            _quaFrame.setDateStages(dateArr);
          }
          else
          {
@@ -191,8 +191,8 @@ package kingDivision.view
             _ranFrame = ComponentFactory.Instance.creatCustomObject("kingDivisionFrame.rankingRoundView");
             addToContent(_ranFrame);
             _ranFrame.progressBarView = _proBar;
-            _ranFrame.zone = param2;
-            _ranFrame.setDateStages(param1);
+            _ranFrame.zone = zone;
+            _ranFrame.setDateStages(dateArr);
          }
          if(_titleImg)
          {
@@ -204,19 +204,19 @@ package kingDivision.view
          addToContent(_titleImg);
       }
       
-      protected function __onHelpClick(param1:MouseEvent) : void
+      protected function __onHelpClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:DisplayObject = ComponentFactory.Instance.creat("kingdivision.HelpPrompt");
-         var _loc3_:HelpFrame = ComponentFactory.Instance.creat("kingdivision.HelpFrame");
-         _loc3_.setView(_loc2_);
-         _loc3_.titleText = LanguageMgr.GetTranslation("store.view.HelpButtonText");
-         LayerManager.Instance.addToLayer(_loc3_,1,true,1);
+         var helpBd:DisplayObject = ComponentFactory.Instance.creat("kingdivision.HelpPrompt");
+         var helpPage:HelpFrame = ComponentFactory.Instance.creat("kingdivision.HelpFrame");
+         helpPage.setView(helpBd);
+         helpPage.titleText = LanguageMgr.GetTranslation("store.view.HelpButtonText");
+         LayerManager.Instance.addToLayer(helpPage,1,true,1);
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();

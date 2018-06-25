@@ -109,12 +109,12 @@ package sanXiao.view
          _selectGroup.removeEventListener("change",onSelectGroupChange);
       }
       
-      protected function onBtnClick(param1:MouseEvent) : void
+      protected function onBtnClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }
       
-      protected function onSelectGroupChange(param1:Event) : void
+      protected function onSelectGroupChange(e:Event) : void
       {
          _viewGame.parent && _container.removeChild(_viewGame);
          _viewStore.parent && _container.removeChild(_viewStore);

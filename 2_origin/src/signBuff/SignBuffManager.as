@@ -72,53 +72,52 @@ package signBuff
          SocketManager.Instance.addEventListener("sign_buff",__onMessageHandler);
       }
       
-      private function __onMessageHandler(param1:CrazyTankSocketEvent) : void
+      private function __onMessageHandler(e:CrazyTankSocketEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         loginDays = _loc2_.readInt();
-         wellAddRate = _loc2_.readInt();
+         var pkg:PackageIn = e.pkg;
+         loginDays = pkg.readInt();
+         wellAddRate = pkg.readInt();
          fightPowerArr = [];
-         fightPower1 = _loc2_.readInt();
-         fightPower2 = _loc2_.readInt();
-         fightPower3 = _loc2_.readInt();
-         fightPower4 = _loc2_.readInt();
-         fightPower5 = _loc2_.readInt();
-         fightPower6 = _loc2_.readInt();
+         fightPower1 = pkg.readInt();
+         fightPower2 = pkg.readInt();
+         fightPower3 = pkg.readInt();
+         fightPower4 = pkg.readInt();
+         fightPower5 = pkg.readInt();
+         fightPower6 = pkg.readInt();
          fightPowerArr = [fightPower1,fightPower2,fightPower3,fightPower4,fightPower5,fightPower6];
       }
       
-      public function templateDataSetup(param1:Array) : void
+      public function templateDataSetup(dataList:Array) : void
       {
-         var _loc3_:int = 0;
-         param1.sortOn("Quality",16);
-         var _loc2_:Array = [];
-         _loc3_ = 0;
-         while(_loc3_ < param1.length)
+         var i:int = 0;
+         dataList.sortOn("Quality",16);
+         var arr:Array = [];
+         for(i = 0; i < dataList.length; )
          {
-            if(_loc3_ == 0)
+            if(i == 0)
             {
-               _loc2_.push(param1[_loc3_]);
+               arr.push(dataList[i]);
             }
             else
             {
-               if(_loc3_ == param1.length - 1)
+               if(i == dataList.length - 1)
                {
-                  _loc2_.push(param1[_loc3_]);
-                  itemInfoList.push(_loc2_);
+                  arr.push(dataList[i]);
+                  itemInfoList.push(arr);
                   break;
                }
-               if(param1[_loc3_].Quality == param1[_loc3_ - 1].Quality)
+               if(dataList[i].Quality == dataList[i - 1].Quality)
                {
-                  _loc2_.push(param1[_loc3_]);
+                  arr.push(dataList[i]);
                }
                else
                {
-                  itemInfoList.push(_loc2_);
-                  _loc2_ = [];
-                  _loc2_.push(param1[_loc3_]);
+                  itemInfoList.push(arr);
+                  arr = [];
+                  arr.push(dataList[i]);
                }
             }
-            _loc3_++;
+            i++;
          }
       }
    }

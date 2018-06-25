@@ -30,10 +30,10 @@ package ddt.view.character
       
       private var _isComplete:Boolean;
       
-      public function BaseWingLayer(param1:ItemTemplateInfo, param2:int = 0)
+      public function BaseWingLayer(info:ItemTemplateInfo, showType:int = 0)
       {
-         _info = param1;
-         _showType = param2;
+         _info = info;
+         _showType = showType;
          super();
       }
       
@@ -51,9 +51,9 @@ package ddt.view.character
          }
       }
       
-      protected function __sourceComplete(param1:LoaderEvent = null) : void
+      protected function __sourceComplete(event:LoaderEvent = null) : void
       {
-         var _loc2_:* = null;
+         var WingClass:* = null;
          if(info == null)
          {
             return;
@@ -62,14 +62,14 @@ package ddt.view.character
          {
             _loader.removeEventListener("complete",__sourceComplete);
          }
-         if(param1 != null && !param1.loader.isSuccess)
+         if(event != null && !event.loader.isSuccess)
          {
             _wing = null;
          }
          else
          {
-            _loc2_ = ClassUtils.uiSourceDomain.getDefinition("wing_" + getshowTypeString() + "_" + info.TemplateID) as Class;
-            _wing = new _loc2_();
+            WingClass = ClassUtils.uiSourceDomain.getDefinition("wing_" + getshowTypeString() + "_" + info.TemplateID) as Class;
+            _wing = new WingClass();
          }
          _isComplete = true;
          if(_callBack != null)
@@ -78,7 +78,7 @@ package ddt.view.character
          }
       }
       
-      public function setColor(param1:*) : Boolean
+      public function setColor(color:*) : Boolean
       {
          return false;
       }
@@ -88,9 +88,9 @@ package ddt.view.character
          return _info;
       }
       
-      public function set info(param1:ItemTemplateInfo) : void
+      public function set info(value:ItemTemplateInfo) : void
       {
-         _info = param1;
+         _info = value;
       }
       
       public function getContent() : DisplayObject
@@ -114,9 +114,9 @@ package ddt.view.character
          }
       }
       
-      public function load(param1:Function) : void
+      public function load(callBack:Function) : void
       {
-         _callBack = param1;
+         _callBack = callBack;
          initLoader();
       }
       
@@ -124,7 +124,7 @@ package ddt.view.character
       {
       }
       
-      public function set currentEdit(param1:int) : void
+      public function set currentEdit(n:int) : void
       {
       }
       

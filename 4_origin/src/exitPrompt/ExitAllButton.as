@@ -125,33 +125,32 @@ package exitPrompt
       
       public function get needScorllBar() : Boolean
       {
-         var _loc1_:Boolean = true;
+         var boo:Boolean = true;
          if(_model.list0Arr.length + _model.list1Arr.length == 0)
          {
-            _loc1_ = false;
+            boo = false;
          }
-         return _loc1_;
+         return boo;
       }
       
       private function _order() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 1;
-         while(_loc1_ < _viewArr.length)
+         var i:int = 0;
+         for(i = 1; i < _viewArr.length; )
          {
-            if(_viewArr[_loc1_ - 1].visible == false || _viewArr[_loc1_ - 1].height == 0)
+            if(_viewArr[i - 1].visible == false || _viewArr[i - 1].height == 0)
             {
-               _viewArr[_loc1_].y = _viewArr[_loc1_ - 2].y + _viewArr[_loc1_ - 2].height + interval;
+               _viewArr[i].y = _viewArr[i - 2].y + _viewArr[i - 2].height + interval;
             }
-            else if(_viewArr[_loc1_ - 1] is MissionSprite)
+            else if(_viewArr[i - 1] is MissionSprite)
             {
-               _viewArr[_loc1_].y = _viewArr[_loc1_ - 1].y + _viewArr[_loc1_ - 1].height + -25 + interval;
+               _viewArr[i].y = _viewArr[i - 1].y + _viewArr[i - 1].height + -25 + interval;
             }
             else
             {
-               _viewArr[_loc1_].y = _viewArr[_loc1_ - 1].y + _viewArr[_loc1_ - 1].height + interval;
+               _viewArr[i].y = _viewArr[i - 1].y + _viewArr[i - 1].height + interval;
             }
-            _loc1_++;
+            i++;
          }
          this.dispatchEvent(new Event("change"));
       }
@@ -167,9 +166,9 @@ package exitPrompt
          _actMissionBt.addEventListener("click",_clickActBt);
       }
       
-      private function _clickDayBt(param1:MouseEvent = null) : void
+      private function _clickDayBt(e:MouseEvent = null) : void
       {
-         if(param1 != null)
+         if(e != null)
          {
             SoundManager.instance.play("008");
          }
@@ -190,9 +189,9 @@ package exitPrompt
          _order();
       }
       
-      private function _clickActBt(param1:MouseEvent = null) : void
+      private function _clickActBt(e:MouseEvent = null) : void
       {
-         if(param1 != null)
+         if(e != null)
          {
             SoundManager.instance.play("008");
          }
@@ -213,9 +212,9 @@ package exitPrompt
          _order();
       }
       
-      private function _textAnalyz0(param1:String, param2:int) : String
+      private function _textAnalyz0(str:String, num:int) : String
       {
-         return param1.replace(/r/g," " + String(param2) + " ");
+         return str.replace(/r/g," " + String(num) + " ");
       }
       
       override public function dispose() : void

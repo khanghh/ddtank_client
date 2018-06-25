@@ -29,12 +29,12 @@ package draft.data
          return _total;
       }
       
-      public static function set Total(param1:int) : void
+      public static function set Total(value:int) : void
       {
-         if(param1 > 0)
+         if(value > 0)
          {
-            _total = param1 / 5;
-            if(param1 % 5 > 0)
+            _total = value / 5;
+            if(value % 5 > 0)
             {
                _total = _total + 1;
             }

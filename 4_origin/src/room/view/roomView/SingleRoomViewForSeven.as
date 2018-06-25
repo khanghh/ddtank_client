@@ -174,9 +174,9 @@ package room.view.roomView
          }
       }
       
-      public function initTitle(param1:int = 1) : void
+      public function initTitle(type:int = 1) : void
       {
-         if(param1 == 2)
+         if(type == 2)
          {
             info = new AlertInfo(LanguageMgr.GetTranslation("ddt.battleGroud"));
             _model = ComponentFactory.Instance.creatComponentByStylename("room.view.roomView.SingleRoomView.modelTitle2");
@@ -223,7 +223,7 @@ package room.view.roomView
          _chatBtn.addEventListener("click",__chatClick);
       }
       
-      protected function __chatClick(param1:MouseEvent) : void
+      protected function __chatClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          LayerManager.Instance.addToLayer(ChatManager.Instance.view,3);
@@ -236,15 +236,15 @@ package room.view.roomView
          _chatBtn.removeEventListener("click",__chatClick);
       }
       
-      protected function __onStartLoad(param1:Event) : void
+      protected function __onStartLoad(event:Event) : void
       {
          _isCancelWait = false;
-         var _loc2_:RoomInfo = RoomManager.Instance.current;
+         var roomInfo:RoomInfo = RoomManager.Instance.current;
          if(GameControl.Instance.Current == null)
          {
             return;
          }
-         if(_loc2_.type == 16)
+         if(roomInfo.type == 16)
          {
             StateManager.setState("encounterLoading",GameControl.Instance.Current);
          }
@@ -254,16 +254,16 @@ package room.view.roomView
          }
       }
       
-      protected function __onCancel(param1:MouseEvent) : void
+      protected function __onCancel(event:MouseEvent) : void
       {
          dispatchEvent(new FrameEvent(4));
       }
       
-      protected function __timer(param1:TimerEvent) : void
+      protected function __timer(evt:TimerEvent) : void
       {
-         var _loc2_:uint = _timer.currentCount / 60;
-         var _loc3_:uint = _timer.currentCount % 60;
-         _timerText.text = _loc3_ > 9?_loc3_.toString():"0" + _loc3_;
+         var min:uint = _timer.currentCount / 60;
+         var sec:uint = _timer.currentCount % 60;
+         _timerText.text = sec > 9?sec.toString():"0" + sec;
       }
       
       public function show() : void

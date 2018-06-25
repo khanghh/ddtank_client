@@ -13,10 +13,10 @@ package game.actions
       
       private var _count:int;
       
-      public function PlayerBeatAction(param1:GamePlayer)
+      public function PlayerBeatAction(player:GamePlayer)
       {
          super();
-         _player = param1;
+         _player = player;
          _count = 0;
       }
       

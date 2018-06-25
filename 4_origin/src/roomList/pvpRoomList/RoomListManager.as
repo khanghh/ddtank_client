@@ -35,9 +35,9 @@ package roomList.pvpRoomList
          return _openMatch;
       }
       
-      public function set openMatch(param1:Boolean) : void
+      public function set openMatch(value:Boolean) : void
       {
-         _openMatch = param1;
+         _openMatch = value;
       }
       
       override protected function start() : void

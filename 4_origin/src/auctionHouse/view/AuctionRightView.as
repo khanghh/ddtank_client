@@ -99,24 +99,24 @@ package auctionHouse.view
          super();
       }
       
-      public function setup(param1:String = "") : void
+      public function setup($state:String = "") : void
       {
-         _state = param1;
+         _state = $state;
          initView();
          addEvent();
       }
       
       private function initView() : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
+         var i:int = 0;
+         var j:int = 0;
          _sortBtItems = new Vector.<Sprite>(6);
          _sorttxtItems = new Vector.<FilterFrameText>(6);
          _sortArrowItems = new Vector.<ScaleFrameImage>(4);
-         var _loc3_:ScaleBitmapImage = ComponentFactory.Instance.creatComponentByStylename("auctionHouse.RightBG1");
-         addChild(_loc3_);
-         var _loc1_:Scale9CornerImage = ComponentFactory.Instance.creatComponentByStylename("asset.auctionHouse.Browse.PageCountBg");
-         addChild(_loc1_);
+         var bg1:ScaleBitmapImage = ComponentFactory.Instance.creatComponentByStylename("auctionHouse.RightBG1");
+         addChild(bg1);
+         var PageBg:Scale9CornerImage = ComponentFactory.Instance.creatComponentByStylename("asset.auctionHouse.Browse.PageCountBg");
+         addChild(PageBg);
          help_BG = ComponentFactory.Instance.creatBitmap("asset.auctionHouse.HelpBG");
          addChild(help_BG);
          help_mc = ComponentFactory.Instance.creatBitmap("asset.auctionHouse.Help");
@@ -129,8 +129,8 @@ package auctionHouse.view
          _end_btn = ComponentFactory.Instance.creat("auctionHouse.end_btn");
          page_txt = ComponentFactory.Instance.creat("auctionHouse.RightPageText");
          addChild(page_txt);
-         var _loc6_:MovieImage = ComponentFactory.Instance.creatComponentByStylename("ddtauction.sellItemBG");
-         addChild(_loc6_);
+         var _sellItembg:MovieImage = ComponentFactory.Instance.creatComponentByStylename("ddtauction.sellItemBG");
+         addChild(_sellItembg);
          _nameTxt = ComponentFactory.Instance.creat("ddtauction.nameTxt");
          _nameTxt.text = LanguageMgr.GetTranslation("tank.ddtauctionHouse.text.name");
          _bidNumberTxt = ComponentFactory.Instance.creat("ddtauction.bidNumerTxt");
@@ -146,10 +146,10 @@ package auctionHouse.view
          _bidpriceTxt.text = LanguageMgr.GetTranslation("tank.ddtauctionHouse.text.price");
          _tableline = ComponentFactory.Instance.creatBitmap("asset.ddtauction.tableLine");
          addChild(_tableline);
-         _tableline.x = 264;
+         _tableline.x = 258;
          _tableline1 = ComponentFactory.Instance.creatBitmap("asset.ddtauction.tableLine");
          addChild(_tableline1);
-         _tableline1.x = 314;
+         _tableline1.x = 323;
          _tableline2 = ComponentFactory.Instance.creatBitmap("asset.ddtauction.tableLine");
          addChild(_tableline2);
          _tableline2.x = 426;
@@ -160,7 +160,7 @@ package auctionHouse.view
          addChild(_tableline4);
          GoodsName_btn = new Sprite();
          GoodsName_btn.graphics.beginFill(16777215,1);
-         GoodsName_btn.graphics.drawRect(0,6,190,30);
+         GoodsName_btn.graphics.drawRect(0,6,186,30);
          GoodsName_btn.graphics.endFill();
          GoodsName_btn.alpha = 0;
          GoodsName_btn.buttonMode = true;
@@ -168,12 +168,12 @@ package auctionHouse.view
          GoodsName_btn.x = 74;
          RemainingTime_btn = new Sprite();
          RemainingTime_btn.graphics.beginFill(16777215,1);
-         RemainingTime_btn.graphics.drawRect(0,6,109,30);
+         RemainingTime_btn.graphics.drawRect(0,6,103,30);
          RemainingTime_btn.graphics.endFill();
          RemainingTime_btn.alpha = 0;
          RemainingTime_btn.buttonMode = true;
          addChild(RemainingTime_btn);
-         RemainingTime_btn.x = 317;
+         RemainingTime_btn.x = 323;
          SellPerson_btn = new Sprite();
          SellPerson_btn.graphics.beginFill(16777215,1);
          SellPerson_btn.graphics.drawRect(0,6,88,30);
@@ -203,62 +203,60 @@ package auctionHouse.view
          _sorttxtItems[3] = _SellPersonTxt;
          _sorttxtItems[4] = _bidpriceTxt;
          _sorttxtItems[5] = _BidPersonTxt;
-         _loc5_ = 0;
-         while(_loc5_ < _sorttxtItems.length)
+         for(i = 0; i < _sorttxtItems.length; )
          {
-            if(_loc5_ != 1)
+            if(i != 1)
             {
-               if(_loc5_ == 3)
+               if(i == 3)
                {
                   if(_state == "browse")
                   {
-                     addChild(_sorttxtItems[_loc5_]);
+                     addChild(_sorttxtItems[i]);
                   }
                }
-               else if(_loc5_ == 5)
+               else if(i == 5)
                {
                   if(_state == "sell")
                   {
-                     addChild(_sorttxtItems[_loc5_]);
+                     addChild(_sorttxtItems[i]);
                   }
                }
                else
                {
-                  addChild(_sorttxtItems[_loc5_]);
+                  addChild(_sorttxtItems[i]);
                }
             }
-            _loc5_++;
+            i++;
          }
          _sortBtItems[0] = GoodsName_btn;
          _sortBtItems[2] = RemainingTime_btn;
          _sortBtItems[3] = SellPerson_btn;
          _sortBtItems[4] = BidPrice_btn;
          _sortBtItems[5] = BidPerson_btn;
-         _loc4_ = 0;
-         while(_loc4_ < _sortBtItems.length)
+         for(j = 0; j < _sortBtItems.length; )
          {
-            if(_loc4_ != 1)
+            if(j != 1)
             {
-               if(_loc4_ == 3)
+               if(j == 3)
                {
                   if(_state == "browse")
                   {
-                     addChild(_sortBtItems[_loc4_]);
+                     addChild(_sortBtItems[j]);
                   }
                }
-               else if(_loc4_ == 5)
+               else if(j == 5)
                {
                   if(_state == "sell")
                   {
-                     addChild(_sortBtItems[_loc4_]);
+                     addChild(_sortBtItems[j]);
                   }
                }
                else
                {
-                  addChild(_sortBtItems[_loc4_]);
+                  addChild(_sortBtItems[j]);
                }
             }
-            _loc4_++;
+            j++;
          }
          _sortArrowItems[0] = ComponentFactory.Instance.creat("auctionHouse.ArrowI");
          _sortArrowItems[1] = ComponentFactory.Instance.creat("auctionHouse.ArrowII");
@@ -266,10 +264,10 @@ package auctionHouse.view
          _sortArrowItems[3] = ComponentFactory.Instance.creat("auctionHouse.ArrowV");
          var _loc8_:int = 0;
          var _loc7_:* = _sortArrowItems;
-         for each(var _loc2_ in _sortArrowItems)
+         for each(var img in _sortArrowItems)
          {
-            addChild(_loc2_);
-            _loc2_.visible = false;
+            addChild(img);
+            img.visible = false;
          }
          _stripList = ComponentFactory.Instance.creatComponentByStylename("auctionHouse.rightListII");
          addChild(_stripList);
@@ -289,15 +287,14 @@ package auctionHouse.view
       
       private function addEvent() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _sortBtItems.length)
+         var i:int = 0;
+         for(i = 0; i < _sortBtItems.length; )
          {
-            if(_loc1_ != 1)
+            if(i != 1)
             {
-               _sortBtItems[_loc1_].addEventListener("click",sortHandler);
+               _sortBtItems[i].addEventListener("click",sortHandler);
             }
-            _loc1_++;
+            i++;
          }
       }
       
@@ -310,38 +307,38 @@ package auctionHouse.view
          _hideArrow();
       }
       
-      public function addAuction(param1:AuctionGoodsInfo) : void
+      public function addAuction(info:AuctionGoodsInfo) : void
       {
-         _stripList.vectorListModel.append(param1);
+         _stripList.vectorListModel.append(info);
          _stripList.list.updateListView();
          help_mc.visible = false;
          help_BG.visible = false;
       }
       
-      public function updateAuction(param1:AuctionGoodsInfo) : void
+      public function updateAuction(info:AuctionGoodsInfo) : void
       {
-         var _loc2_:* = null;
+         var targetItem:* = null;
          var _loc5_:int = 0;
          var _loc4_:* = _stripList.vectorListModel.elements;
-         for each(var _loc3_ in _stripList.vectorListModel.elements)
+         for each(var item in _stripList.vectorListModel.elements)
          {
-            if(_loc3_.AuctionID == param1.AuctionID)
+            if(item.AuctionID == info.AuctionID)
             {
-               _loc2_ = _loc3_;
+               targetItem = item;
                break;
             }
          }
-         if(_loc2_ != null)
+         if(targetItem != null)
          {
-            param1.BagItemInfo = _loc2_.BagItemInfo;
+            info.BagItemInfo = targetItem.BagItemInfo;
          }
-         if(_stripList.vectorListModel.indexOf(_loc2_) != -1)
+         if(_stripList.vectorListModel.indexOf(targetItem) != -1)
          {
-            _stripList.vectorListModel.replaceAt(_stripList.vectorListModel.indexOf(_loc2_),param1);
+            _stripList.vectorListModel.replaceAt(_stripList.vectorListModel.indexOf(targetItem),info);
          }
          else
          {
-            _stripList.vectorListModel.append(param1);
+            _stripList.vectorListModel.append(info);
          }
          _stripList.list.updateListView();
       }
@@ -351,22 +348,22 @@ package auctionHouse.view
          return _stripList.vectorListModel.size();
       }
       
-      function setPage(param1:int, param2:int) : void
+      function setPage(start:int, totalCount:int) : void
       {
-         var _loc3_:* = 0;
-         param1 = 1 + AuctionHouseModel.SINGLE_PAGE_NUM * (param1 - 1);
-         if(param1 + AuctionHouseModel.SINGLE_PAGE_NUM - 1 < param2)
+         var end:* = 0;
+         start = 1 + AuctionHouseModel.SINGLE_PAGE_NUM * (start - 1);
+         if(start + AuctionHouseModel.SINGLE_PAGE_NUM - 1 < totalCount)
          {
-            _loc3_ = int(param1 + AuctionHouseModel.SINGLE_PAGE_NUM - 1);
+            end = int(start + AuctionHouseModel.SINGLE_PAGE_NUM - 1);
          }
          else
          {
-            _loc3_ = param2;
+            end = totalCount;
          }
-         _startNum = param1;
-         _endNum = _loc3_;
-         _totalCount = param2;
-         if(param2 == 0)
+         _startNum = start;
+         _endNum = end;
+         _totalCount = totalCount;
+         if(totalCount == 0)
          {
             if(_stripList.vectorListModel.elements.length == 0)
             {
@@ -377,7 +374,7 @@ package auctionHouse.view
          {
             page_txt.text = (int(_startNum / AuctionHouseModel.SINGLE_PAGE_NUM) + 1).toString() + "/" + (int((_totalCount - 1) / AuctionHouseModel.SINGLE_PAGE_NUM) + 1).toString();
          }
-         buttonStatus(param1,_loc3_,param2);
+         buttonStatus(start,end,totalCount);
       }
       
       private function upPageTxt() : void
@@ -406,9 +403,9 @@ package auctionHouse.view
          }
       }
       
-      private function buttonStatus(param1:int, param2:int, param3:int) : void
+      private function buttonStatus(start:int, end:int, totalCount:int) : void
       {
-         if(param1 <= 1)
+         if(start <= 1)
          {
             _prePage_btn.enable = false;
             _first_btn.enable = false;
@@ -418,7 +415,7 @@ package auctionHouse.view
             _prePage_btn.enable = true;
             _first_btn.enable = true;
          }
-         if(param2 < param3)
+         if(end < totalCount)
          {
             _nextPage_btn.enable = true;
             _end_btn.enable = true;
@@ -482,11 +479,11 @@ package auctionHouse.view
       {
          var _loc3_:int = 0;
          var _loc2_:* = _stripList.vectorListModel.elements;
-         for each(var _loc1_ in _stripList.vectorListModel.elements)
+         for each(var info1 in _stripList.vectorListModel.elements)
          {
-            if(_loc1_.AuctioneerID == _selectInfo.AuctioneerID)
+            if(info1.AuctioneerID == _selectInfo.AuctioneerID)
             {
-               _stripList.vectorListModel.remove(_loc1_);
+               _stripList.vectorListModel.remove(info1);
                _selectInfo = null;
                upPageTxt();
                break;
@@ -521,86 +518,85 @@ package auctionHouse.view
          return _currentIsdown;
       }
       
-      private function __itemClick(param1:ListItemEvent) : void
+      private function __itemClick(evt:ListItemEvent) : void
       {
-         var _loc2_:StripView = param1.cell as StripView;
-         _selectStrip = _loc2_;
-         _selectInfo = _loc2_.info;
+         var currentStrip:StripView = evt.cell as StripView;
+         _selectStrip = currentStrip;
+         _selectInfo = currentStrip.info;
          dispatchEvent(new AuctionHouseEvent("selectStrip"));
       }
       
       private function removeEvent() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _sortBtItems.length)
+         var i:int = 0;
+         for(i = 0; i < _sortBtItems.length; )
          {
-            if(_loc1_ != 1)
+            if(i != 1)
             {
-               _sortBtItems[_loc1_].removeEventListener("click",sortHandler);
-               ObjectUtils.disposeObject(_sortBtItems[_loc1_]);
+               _sortBtItems[i].removeEventListener("click",sortHandler);
+               ObjectUtils.disposeObject(_sortBtItems[i]);
             }
-            _loc1_++;
+            i++;
          }
          _sortBtItems = null;
       }
       
-      private function sortHandler(param1:MouseEvent) : void
+      private function sortHandler(e:MouseEvent) : void
       {
          AuctionHouseModel._dimBooble = false;
          SoundManager.instance.play("047");
-         var _loc2_:uint = _sortBtItems.indexOf(param1.target as Sprite);
-         if(_currentButtonIndex == _loc2_)
+         var _index:uint = _sortBtItems.indexOf(e.target as Sprite);
+         if(_currentButtonIndex == _index)
          {
-            changeArrow(_loc2_,!_currentIsdown);
+            changeArrow(_index,!_currentIsdown);
          }
          else
          {
-            changeArrow(_loc2_,true);
+            changeArrow(_index,true);
          }
       }
       
-      private function _showOneArrow(param1:uint) : void
+      private function _showOneArrow(index:uint) : void
       {
          _hideArrow();
-         _sortArrowItems[param1].visible = true;
+         _sortArrowItems[index].visible = true;
       }
       
       private function _hideArrow() : void
       {
          var _loc3_:int = 0;
          var _loc2_:* = _sortArrowItems;
-         for each(var _loc1_ in _sortArrowItems)
+         for each(var img in _sortArrowItems)
          {
-            _loc1_.visible = false;
+            img.visible = false;
          }
       }
       
-      private function changeArrow(param1:uint, param2:Boolean) : void
+      private function changeArrow(index:uint, isdown:Boolean) : void
       {
-         var _loc3_:* = param1;
-         if(param1 == 5)
+         var _index:* = index;
+         if(index == 5)
          {
-            param1 = 3;
+            index = 3;
          }
-         param1 = param1 == 0?0:Number(param1 - 1);
-         _showOneArrow(param1);
-         _currentIsdown = param2;
-         _currentButtonIndex = _loc3_;
+         index = index == 0?0:Number(index - 1);
+         _showOneArrow(index);
+         _currentIsdown = isdown;
+         _currentButtonIndex = _index;
          AuctionHouseModel.searchType = 3;
-         if(param2)
+         if(isdown)
          {
-            _sortArrowItems[param1].setFrame(2);
+            _sortArrowItems[index].setFrame(2);
          }
          else
          {
-            _sortArrowItems[param1].setFrame(1);
+            _sortArrowItems[index].setFrame(1);
          }
          if(_stripList.vectorListModel.elements.length < 1)
          {
             return;
          }
-         if(param2)
+         if(isdown)
          {
             _stripList.vectorListModel.elements.sortOn("Price",16);
          }
@@ -652,9 +648,9 @@ package auctionHouse.view
          page_txt = null;
          var _loc3_:int = 0;
          var _loc2_:* = _sortArrowItems;
-         for each(var _loc1_ in _sortArrowItems)
+         for each(var img in _sortArrowItems)
          {
-            ObjectUtils.disposeObject(_loc1_);
+            ObjectUtils.disposeObject(img);
          }
          _sortArrowItems = null;
          if(_selectStrip)

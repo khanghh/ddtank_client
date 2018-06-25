@@ -44,14 +44,14 @@ package gameCommon.view.prop
       
       private var letters:Array;
       
-      public function PetSkillBar(param1:LocalPlayer)
+      public function PetSkillBar(self:LocalPlayer)
       {
          letters = ["Q","E","T","Y","U"];
          _bg = ComponentFactory.Instance.creatBitmap("asset.game.petSkillBar.back");
          PositionUtils.setPos(_bg,"game.petSikllBar.BGPos");
          addChild(_bg);
          _skillCells = new Vector.<PetSkillCell>();
-         super(param1);
+         super(self);
          updateCellEnable();
          if(GameControl.Instance.Current.selfGamePlayer.currentPet)
          {
@@ -71,11 +71,11 @@ package gameCommon.view.prop
       {
          var _loc3_:int = 0;
          var _loc2_:* = _skillCells;
-         for each(var _loc1_ in _skillCells)
+         for each(var cell in _skillCells)
          {
-            if(_loc1_.isEnabled)
+            if(cell.isEnabled)
             {
-               _loc1_.addEventListener("click",onCellClick);
+               cell.addEventListener("click",onCellClick);
             }
          }
          _self.currentPet.addEventListener("petEnergyChange",__onChange);
@@ -93,10 +93,10 @@ package gameCommon.view.prop
          GameControl.Instance.addEventListener("skillInfoInitGame",skillInfoInit);
       }
       
-      public function set lockState(param1:Boolean) : void
+      public function set lockState(value:Boolean) : void
       {
-         var _loc2_:* = null;
-         var _loc4_:* = param1;
+         var cell:* = null;
+         var _loc4_:* = value;
          if(true !== _loc4_)
          {
             if(false === _loc4_)
@@ -105,11 +105,11 @@ package gameCommon.view.prop
                KeyboardManager.getInstance().removeEventListener("keyDown",__keyDown);
                var _loc6_:int = 0;
                var _loc5_:* = _skillCells;
-               for each(_loc2_ in _skillCells)
+               for each(cell in _skillCells)
                {
-                  if(_loc2_.isEnabled)
+                  if(cell.isEnabled)
                   {
-                     _loc2_.removeEventListener("click",onCellClick);
+                     cell.removeEventListener("click",onCellClick);
                   }
                }
             }
@@ -120,11 +120,11 @@ package gameCommon.view.prop
             KeyboardManager.getInstance().addEventListener("keyDown",__keyDown);
             _loc4_ = 0;
             var _loc3_:* = _skillCells;
-            for each(_loc2_ in _skillCells)
+            for each(cell in _skillCells)
             {
-               if(_loc2_.isEnabled)
+               if(cell.isEnabled)
                {
-                  _loc2_.addEventListener("click",onCellClick);
+                  cell.addEventListener("click",onCellClick);
                }
             }
          }
@@ -134,11 +134,11 @@ package gameCommon.view.prop
       {
          var _loc3_:int = 0;
          var _loc2_:* = _skillCells;
-         for each(var _loc1_ in _skillCells)
+         for each(var cell in _skillCells)
          {
-            if(_loc1_.isEnabled)
+            if(cell.isEnabled)
             {
-               _loc1_.removeEventListener("click",onCellClick);
+               cell.removeEventListener("click",onCellClick);
             }
          }
          KeyboardManager.getInstance().removeEventListener("keyDown",__keyDown);
@@ -156,7 +156,7 @@ package gameCommon.view.prop
          GameControl.Instance.removeEventListener("skillInfoInitGame",skillInfoInit);
       }
       
-      override protected function __keyDown(param1:KeyboardEvent) : void
+      override protected function __keyDown(event:KeyboardEvent) : void
       {
          if(GameControl.Instance.Current.missionInfo && GameControl.Instance.Current.missionInfo.isWorldCupI)
          {
@@ -167,8 +167,8 @@ package gameCommon.view.prop
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.campBattle.onlyFly"));
             return;
          }
-         var _loc2_:int = -1;
-         var _loc5_:* = param1.keyCode;
+         var index:int = -1;
+         var _loc5_:* = event.keyCode;
          if(KeyStroke.VK_Q.getCode() !== _loc5_)
          {
             if(KeyStroke.VK_E.getCode() !== _loc5_)
@@ -179,135 +179,135 @@ package gameCommon.view.prop
                   {
                      if(KeyStroke.VK_U.getCode() === _loc5_)
                      {
-                        _loc2_ = 4;
+                        index = 4;
                      }
                   }
                   else
                   {
-                     _loc2_ = 3;
+                     index = 3;
                   }
                }
                else
                {
-                  _loc2_ = 2;
+                  index = 2;
                }
             }
             else
             {
-               _loc2_ = 1;
+               index = 1;
             }
          }
          else
          {
-            _loc2_ = 0;
+            index = 0;
          }
-         var _loc4_:String = letters[_loc2_];
+         var key:String = letters[index];
          var _loc7_:int = 0;
          var _loc6_:* = _skillCells;
-         for each(var _loc3_ in _skillCells)
+         for each(var skillCell in _skillCells)
          {
-            if(_loc3_.shortcutKey == _loc4_ && _loc3_.skillInfo && _loc3_.skillInfo.isActiveSkill && _loc3_.isEnabled && _loc3_.enabled)
+            if(skillCell.shortcutKey == key && skillCell.skillInfo && skillCell.skillInfo.isActiveSkill && skillCell.isEnabled && skillCell.enabled)
             {
-               _loc3_.useProp();
+               skillCell.useProp();
                break;
             }
          }
       }
       
-      private function __onPetSkillUsedFail(param1:LivingEvent) : void
+      private function __onPetSkillUsedFail(pEvent:LivingEvent) : void
       {
          _usedPetSkill = false;
          _self.deputyWeaponEnabled = true;
          _self.isUsedPetSkillWithNoItem = false;
       }
       
-      private function __onChange(param1:LivingEvent) : void
+      private function __onChange(event:LivingEvent) : void
       {
          updateCellEnable();
       }
       
-      private function skillInfoInit(param1:Event) : void
+      private function skillInfoInit(event:Event) : void
       {
-         var _loc4_:int = 0;
-         var _loc5_:int = 0;
-         var _loc2_:Array = GameControl.Instance.petSkillList;
-         if(_loc2_)
+         var len:int = 0;
+         var i:int = 0;
+         var infoList:Array = GameControl.Instance.petSkillList;
+         if(infoList)
          {
-            _loc4_ = _loc2_.length;
-            while(_loc5_ < _loc4_)
+            len = infoList.length;
+            while(i < len)
             {
                var _loc7_:int = 0;
                var _loc6_:* = _skillCells;
-               for each(var _loc3_ in _skillCells)
+               for each(var cell in _skillCells)
                {
-                  if(_loc3_.skillInfo && _loc3_.skillInfo.ID == _loc2_[_loc5_].id)
+                  if(cell.skillInfo && cell.skillInfo.ID == infoList[i].id)
                   {
-                     _loc3_.turnNum = _loc3_.skillInfo.ColdDown + 1 - _loc2_[_loc5_].cd;
+                     cell.turnNum = cell.skillInfo.ColdDown + 1 - infoList[i].cd;
                      break;
                   }
                }
-               _loc5_++;
+               i++;
             }
             GameControl.Instance.petSkillList = null;
          }
       }
       
-      private function __petSkillCD(param1:CrazyTankSocketEvent) : void
+      private function __petSkillCD(event:CrazyTankSocketEvent) : void
       {
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc4_.readInt();
-         var _loc5_:int = _loc4_.readInt();
+         var pkg:PackageIn = event.pkg;
+         var skillid:int = pkg.readInt();
+         var cd:int = pkg.readInt();
          var _loc7_:int = 0;
          var _loc6_:* = _skillCells;
-         for each(var _loc3_ in _skillCells)
+         for each(var cell in _skillCells)
          {
-            if(_loc3_.skillInfo.ID == _loc2_)
+            if(cell.skillInfo.ID == skillid)
             {
-               _loc3_.turnNum = _loc3_.skillInfo.ColdDown + 1 - _loc5_;
+               cell.turnNum = cell.skillInfo.ColdDown + 1 - cd;
             }
          }
          updateCellEnable();
       }
       
-      private function __usingSpecialKill(param1:LivingEvent) : void
+      private function __usingSpecialKill(event:LivingEvent) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = _skillCells;
-         for each(var _loc2_ in _skillCells)
+         for each(var cell in _skillCells)
          {
-            _loc2_.enabled = false;
+            cell.enabled = false;
          }
          _usedSpecialSkill = true;
       }
       
-      private function __onUseItem(param1:LivingEvent) : void
+      private function __onUseItem(event:LivingEvent) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = _skillCells;
-         for each(var _loc2_ in _skillCells)
+         for each(var cell in _skillCells)
          {
-            if(_loc2_.skillInfo)
+            if(cell.skillInfo)
             {
-               if(_loc2_.skillInfo.BallType == 1 || _loc2_.skillInfo.BallType == 2)
+               if(cell.skillInfo.BallType == 1 || cell.skillInfo.BallType == 2)
                {
-                  _loc2_.enabled = false;
+                  cell.enabled = false;
                }
             }
          }
          _usedItem = true;
       }
       
-      private function __onUsePetSkill(param1:LivingEvent) : void
+      private function __onUsePetSkill(event:LivingEvent) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = _skillCells;
-         for each(var _loc2_ in _skillCells)
+         for each(var cell in _skillCells)
          {
-            if(_loc2_.skillInfo)
+            if(cell.skillInfo)
             {
-               if(_loc2_.skillInfo.ID == param1.value)
+               if(cell.skillInfo.ID == event.value)
                {
-                  _loc2_.turnNum = 0;
+                  cell.turnNum = 0;
                   break;
                }
             }
@@ -315,13 +315,13 @@ package gameCommon.view.prop
          updateCellEnable();
       }
       
-      protected function __onRoundOneEnd(param1:CrazyTankSocketEvent) : void
+      protected function __onRoundOneEnd(event:CrazyTankSocketEvent) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = _skillCells;
-         for each(var _loc2_ in _skillCells)
+         for each(var cell in _skillCells)
          {
-            _loc2_.turnNum = Number(_loc2_.turnNum) + 1;
+            cell.turnNum = Number(cell.turnNum) + 1;
          }
          _usedItem = false;
          _usedSpecialSkill = false;
@@ -330,54 +330,54 @@ package gameCommon.view.prop
          updateCellEnable();
       }
       
-      private function __onAttackingChange(param1:LivingEvent) : void
+      private function __onAttackingChange(event:LivingEvent) : void
       {
          updateCellEnable();
       }
       
       private function updateCellEnable() : void
       {
-         var _loc1_:Boolean = _self.petSkillEnabled;
+         var e:Boolean = _self.petSkillEnabled;
          var _loc4_:int = 0;
          var _loc3_:* = _skillCells;
-         for each(var _loc2_ in _skillCells)
+         for each(var cell in _skillCells)
          {
-            if(_loc2_.skillInfo)
+            if(cell.skillInfo)
             {
-               switch(int(_loc2_.skillInfo.BallType))
+               switch(int(cell.skillInfo.BallType))
                {
                   case 0:
-                     _loc2_.enabled = _loc1_ && _self.isAttacking && !_usedPetSkill && !_usedSpecialSkill && _loc2_.skillInfo.CostMP <= _self.currentPet.MP && _loc2_.turnNum > _loc2_.skillInfo.ColdDown;
+                     cell.enabled = e && _self.isAttacking && !_usedPetSkill && !_usedSpecialSkill && cell.skillInfo.CostMP <= _self.currentPet.MP && cell.turnNum > cell.skillInfo.ColdDown;
                      break;
                   case 1:
-                     _loc2_.enabled = _loc1_ && _self.isAttacking && !_usedPetSkill && !_usedItem && !_usedSpecialSkill && _loc2_.skillInfo.CostMP <= _self.currentPet.MP && _loc2_.turnNum > _loc2_.skillInfo.ColdDown;
+                     cell.enabled = e && _self.isAttacking && !_usedPetSkill && !_usedItem && !_usedSpecialSkill && cell.skillInfo.CostMP <= _self.currentPet.MP && cell.turnNum > cell.skillInfo.ColdDown;
                      break;
                   case 2:
-                     _loc2_.enabled = _loc1_ && _self.isAttacking && !_usedPetSkill && !_usedItem && !_usedSpecialSkill && !_self.iscalcForce && _loc2_.skillInfo.CostMP <= _self.currentPet.MP && _loc2_.turnNum > _loc2_.skillInfo.ColdDown;
+                     cell.enabled = e && _self.isAttacking && !_usedPetSkill && !_usedItem && !_usedSpecialSkill && !_self.iscalcForce && cell.skillInfo.CostMP <= _self.currentPet.MP && cell.turnNum > cell.skillInfo.ColdDown;
                      break;
                   case 3:
-                     _loc2_.enabled = _loc1_ && _self.isAttacking && !_usedPetSkill && !_usedSpecialSkill && _loc2_.skillInfo.CostMP <= _self.currentPet.MP && _loc2_.turnNum > _loc2_.skillInfo.ColdDown;
+                     cell.enabled = e && _self.isAttacking && !_usedPetSkill && !_usedSpecialSkill && cell.skillInfo.CostMP <= _self.currentPet.MP && cell.turnNum > cell.skillInfo.ColdDown;
                }
             }
-            if(PetsBagManager.instance().petModel.petGuildeOptionOnOff[118] > 0 && _loc2_.enabled)
+            if(PetsBagManager.instance().petModel.petGuildeOptionOnOff[118] > 0 && cell.enabled)
             {
                PetsBagManager.instance().showPetFarmGuildArrow(118,0,"farmTrainer.petSkillUseArrowPos","asset.farmTrainer.clickHere","farmTrainer.petSkillUseTipPos",this);
             }
          }
       }
       
-      private function onCellClick(param1:MouseEvent) : void
+      private function onCellClick(event:MouseEvent) : void
       {
          if(_self.isLocked)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.campBattle.onlyFly"));
             return;
          }
-         var _loc2_:PetSkillCell = param1.currentTarget as PetSkillCell;
-         if(_loc2_.enabled && _self.isAttacking)
+         var tgt:PetSkillCell = event.currentTarget as PetSkillCell;
+         if(tgt.enabled && _self.isAttacking)
          {
             SoundManager.instance.play("008");
-            if(_loc2_.skillInfo.BallType == 1 || _loc2_.skillInfo.BallType == 2)
+            if(tgt.skillInfo.BallType == 1 || tgt.skillInfo.BallType == 2)
             {
                if(_self.isUsedItem)
                {
@@ -387,7 +387,7 @@ package gameCommon.view.prop
                _self.deputyWeaponEnabled = false;
                _self.isUsedPetSkillWithNoItem = true;
             }
-            SocketManager.Instance.out.sendPetSkill(_loc2_.skillInfo.ID);
+            SocketManager.Instance.out.sendPetSkill(tgt.skillInfo.ID);
             _usedPetSkill = true;
             if(PetsBagManager.instance().petModel.petGuildeOptionOnOff[118] > 0)
             {
@@ -402,9 +402,9 @@ package gameCommon.view.prop
          removeEvent();
          var _loc3_:int = 0;
          var _loc2_:* = _skillCells;
-         for each(var _loc1_ in _skillCells)
+         for each(var cell in _skillCells)
          {
-            _loc1_.dispose();
+            cell.dispose();
          }
          if(_bg)
          {
@@ -422,48 +422,47 @@ package gameCommon.view.prop
       
       override protected function drawCells() : void
       {
-         var _loc6_:* = null;
-         var _loc1_:int = 0;
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
+         var pos:* = null;
+         var index:int = 0;
+         var i:int = 0;
+         var cellz:* = null;
+         var skillid:int = 0;
+         var skill:* = null;
          if(_self.currentPet)
          {
-            _loc6_ = ComponentFactory.Instance.creatCustomObject("CustomPetPropCellPos");
-            _loc5_ = 0;
-            while(_loc5_ < letters.length)
+            pos = ComponentFactory.Instance.creatCustomObject("CustomPetPropCellPos");
+            for(i = 0; i < letters.length; )
             {
-               _loc4_ = new PetSkillCell(letters[_loc5_],1,false,33,33);
-               _loc3_ = _self.currentPet.equipedSkillIDs[_loc5_];
+               cellz = new PetSkillCell(letters[i],1,false,33,33);
+               skillid = _self.currentPet.equipedSkillIDs[i];
                if(RoomManager.Instance.current.type == 24)
                {
-                  _loc4_.creteSkillCell(null,true);
+                  cellz.creteSkillCell(null,true);
                }
-               else if(_loc3_ > 0)
+               else if(skillid > 0)
                {
-                  _loc2_ = new PetSkill(_loc3_);
+                  skill = new PetSkill(skillid);
                   if(_self.currentMap.info.ID == 70001)
                   {
-                     _loc4_.creteSkillCell(null,true);
+                     cellz.creteSkillCell(null,true);
                   }
                   else
                   {
-                     _loc4_.creteSkillCell(_loc2_,true);
+                     cellz.creteSkillCell(skill,true);
                   }
-                  _skillCells.push(_loc4_);
+                  _skillCells.push(cellz);
                }
-               else if(_loc3_ == 0)
+               else if(skillid == 0)
                {
-                  _loc4_.creteSkillCell(null);
+                  cellz.creteSkillCell(null);
                }
                else
                {
-                  _loc4_.creteSkillCell(null,true);
+                  cellz.creteSkillCell(null,true);
                }
-               _loc4_.setPossiton(_loc6_.x + _loc5_ * 35,_loc6_.y);
-               addChild(_loc4_);
-               _loc5_++;
+               cellz.setPossiton(pos.x + i * 35,pos.y);
+               addChild(cellz);
+               i++;
             }
             drawLayer();
          }

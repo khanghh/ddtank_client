@@ -27,15 +27,15 @@ package org.as3commons.reflect
       
       private var _returnTypeName:String;
       
-      public function Method(param1:String, param2:String, param3:Boolean, param4:Array, param5:String, param6:ApplicationDomain, param7:HashArray = null)
+      public function Method(declaringType:String, name:String, isStatic:Boolean, parameters:Array, returnType:String, applicationDomain:ApplicationDomain, metadata:HashArray = null)
       {
-         super(param7);
-         this.declaringTypeName = param1;
-         this._name = param2;
-         this._isStatic = param3;
-         this._parameters = param4;
-         this._returnTypeName = param5;
-         this.applicationDomain = param6;
+         super(metadata);
+         this.declaringTypeName = declaringType;
+         this._name = name;
+         this._isStatic = isStatic;
+         this._parameters = parameters;
+         this._returnTypeName = returnType;
+         this.applicationDomain = applicationDomain;
       }
       
       public function get declaringType() : Type
@@ -45,9 +45,9 @@ package org.as3commons.reflect
       
       public function get fullName() : String
       {
-         var _loc1_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:BaseParameter = null;
+         var len:int = 0;
+         var i:int = 0;
+         var p:BaseParameter = null;
          if(this.updateFullName)
          {
             this._fullName = "public ";
@@ -56,14 +56,12 @@ package org.as3commons.reflect
                this._fullName = this._fullName + "static ";
             }
             this._fullName = this._fullName + (this.name + "(");
-            _loc1_ = this._parameters.length;
-            _loc2_ = 0;
-            while(_loc2_ < _loc1_)
+            len = this._parameters.length;
+            for(i = 0; i < len; i++)
             {
-               _loc3_ = this._parameters[_loc2_];
-               this._fullName = this._fullName + _loc3_.type.name;
-               this._fullName = this._fullName + (_loc2_ < _loc1_ - 1?", ":"");
-               _loc2_++;
+               p = this._parameters[i];
+               this._fullName = this._fullName + p.type.name;
+               this._fullName = this._fullName + (i < len - 1?", ":"");
             }
             this._fullName = this._fullName + ("):" + this.returnType.name);
             this.updateFullName = false;
@@ -93,17 +91,15 @@ package org.as3commons.reflect
       
       public function get parameters() : Array
       {
-         var _loc4_:BaseParameter = null;
-         var _loc1_:Array = [];
-         var _loc2_:int = this._parameters.length;
-         var _loc3_:int = 0;
-         while(_loc3_ < _loc2_)
+         var param:BaseParameter = null;
+         var result:Array = [];
+         var len:int = this._parameters.length;
+         for(var i:int = 0; i < len; i++)
          {
-            _loc4_ = this._parameters[_loc3_];
-            _loc1_[_loc1_.length] = new Parameter(_loc4_,_loc3_);
-            _loc3_++;
+            param = this._parameters[i];
+            result[result.length] = new Parameter(param,i);
          }
-         return _loc1_;
+         return result;
       }
       
       public function get returnType() : Type
@@ -116,13 +112,13 @@ package org.as3commons.reflect
          return this._returnTypeName;
       }
       
-      public function invoke(param1:*, param2:Array) : *
+      public function invoke(target:*, args:Array) : *
       {
-         var _loc4_:MethodInvoker = new MethodInvoker();
-         _loc4_.target = param1;
-         _loc4_.method = this.name;
-         _loc4_.arguments = param2;
-         return _loc4_.invoke();
+         var invoker:MethodInvoker = new MethodInvoker();
+         invoker.target = target;
+         invoker.method = this.name;
+         invoker.arguments = args;
+         return invoker.invoke();
       }
       
       public function toString() : String
@@ -130,42 +126,42 @@ package org.as3commons.reflect
          return "[Method(name:\'" + this.name + "\', isStatic:" + this.isStatic + ")]";
       }
       
-      as3commons_reflect function setDeclaringType(param1:String) : void
+      as3commons_reflect function setDeclaringType(value:String) : void
       {
-         this.declaringTypeName = param1;
+         this.declaringTypeName = value;
       }
       
-      as3commons_reflect function setFullName(param1:String) : void
+      as3commons_reflect function setFullName(value:String) : void
       {
-         this._fullName = param1;
+         this._fullName = value;
          this.updateFullName = false;
       }
       
-      as3commons_reflect function setIsStatic(param1:Boolean) : void
+      as3commons_reflect function setIsStatic(value:Boolean) : void
       {
-         this._isStatic = param1;
+         this._isStatic = value;
       }
       
-      as3commons_reflect function setName(param1:String) : void
+      as3commons_reflect function setName(value:String) : void
       {
-         this._name = param1;
+         this._name = value;
          this.updateFullName = true;
       }
       
-      as3commons_reflect function setNamespaceURI(param1:String) : void
+      as3commons_reflect function setNamespaceURI(value:String) : void
       {
-         this._namespaceURI = param1;
+         this._namespaceURI = value;
       }
       
-      as3commons_reflect function setParameters(param1:Array) : void
+      as3commons_reflect function setParameters(value:Array) : void
       {
-         this._parameters = param1;
+         this._parameters = value;
          this.updateFullName = true;
       }
       
-      as3commons_reflect function setReturnType(param1:String) : void
+      as3commons_reflect function setReturnType(value:String) : void
       {
-         this._returnTypeName = param1;
+         this._returnTypeName = value;
          this.updateFullName = true;
       }
    }

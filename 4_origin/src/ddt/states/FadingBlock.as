@@ -34,11 +34,11 @@ package ddt.states
       
       public var canDisappear:Boolean = false;
       
-      public function FadingBlock(param1:Function, param2:Function)
+      public function FadingBlock(func:Function, showLoading:Function)
       {
          super();
-         _func = param1;
-         _showLoading = param2;
+         _func = func;
+         _showLoading = showLoading;
          _life = 0;
          _newStart = true;
          _canSave = true;
@@ -64,9 +64,9 @@ package ddt.states
          }
       }
       
-      public function setNextState(param1:BaseStateView) : void
+      public function setNextState(next:BaseStateView) : void
       {
-         _nextView = param1;
+         _nextView = next;
          _canSave = StateManager.currentStateType != "login" && StateManager.currentStateType != "main";
       }
       
@@ -116,15 +116,15 @@ package ddt.states
          dispatchEvent(new Event("complete"));
       }
       
-      public function set executed(param1:Boolean) : void
+      public function set executed(value:Boolean) : void
       {
-         _exected = param1;
+         _exected = value;
       }
       
-      private function __enterFrame(param1:Event) : void
+      private function __enterFrame(event:Event) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:Number = NaN;
+         var tick:int = 0;
+         var time:Number = NaN;
          if(_life < 1)
          {
             _life = _life + 0.16;
@@ -132,14 +132,14 @@ package ddt.states
          }
          else if(_life < 2)
          {
-            _loc2_ = getTimer();
+            tick = getTimer();
             if(_canSave)
             {
                LoaderSavingManager.saveFilesToLocal();
             }
-            _loc2_ = getTimer() - _loc2_;
-            _loc3_ = _loc2_ / 40 * 0.1;
-            _life = _life + (_loc3_ < 0.1?0.1:Number(_loc3_));
+            tick = getTimer() - tick;
+            time = tick / 40 * 0.1;
+            _life = _life + (time < 0.1?0.1:Number(time));
             if(_life > 2)
             {
                _life = 2.01;

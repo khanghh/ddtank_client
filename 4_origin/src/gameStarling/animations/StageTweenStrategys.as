@@ -9,7 +9,7 @@ package gameStarling.animations
          super();
       }
       
-      public static function getTweenClassNameByShortName(param1:String) : String
+      public static function getTweenClassNameByShortName(shortName:String) : String
       {
          StrDefaultTween;
          StrLinearTween;
@@ -17,7 +17,7 @@ package gameStarling.animations
          StrDirectlyTween;
          StrShockingLinearTween;
          StrStayTween;
-         var _loc2_:* = param1;
+         var _loc2_:* = shortName;
          if("default" !== _loc2_)
          {
             if("directly" !== _loc2_)

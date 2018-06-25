@@ -40,9 +40,9 @@ package hotSpring.controller
          super.prepare();
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
-         super.enter(param1,param2);
+         super.enter(prev,data);
          HotSpringManager.instance.removeLoadingEvent();
          _model = HotSpringRoomModel.Instance;
          if(_view)
@@ -83,9 +83,9 @@ package hotSpring.controller
          removeEventListener("click",__activeChange);
       }
       
-      private function __activeChange(param1:Event) : void
+      private function __activeChange(event:Event) : void
       {
-         if(param1.type == "deactivate")
+         if(event.type == "deactivate")
          {
             _isActive = false;
          }
@@ -95,145 +95,144 @@ package hotSpring.controller
          }
       }
       
-      private function roomAddOrUpdate(param1:CrazyTankSocketEvent) : void
+      private function roomAddOrUpdate(event:CrazyTankSocketEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         var _loc3_:HotSpringRoomInfo = new HotSpringRoomInfo();
-         _loc3_.roomNumber = _loc2_.readInt();
-         _loc3_.roomID = _loc2_.readInt();
-         _loc3_.roomName = _loc2_.readUTF();
-         _loc3_.roomPassword = _loc2_.readUTF();
-         _loc3_.effectiveTime = _loc2_.readInt();
-         _loc3_.curCount = _loc2_.readInt();
-         _loc3_.playerID = _loc2_.readInt();
-         _loc3_.playerName = _loc2_.readUTF();
-         _loc3_.startTime = _loc2_.readDate();
-         _loc3_.roomIntroduction = _loc2_.readUTF();
-         _loc3_.roomType = _loc2_.readInt();
-         _loc3_.maxCount = _loc2_.readInt();
-         _loc3_.roomIsPassword = _loc3_.roomPassword != "" && _loc3_.roomPassword.length > 0;
-         if(HotSpringManager.instance.roomCurrently && _loc3_.roomID == HotSpringManager.instance.roomCurrently.roomID)
+         var pkg:PackageIn = event.pkg;
+         var roomVO:HotSpringRoomInfo = new HotSpringRoomInfo();
+         roomVO.roomNumber = pkg.readInt();
+         roomVO.roomID = pkg.readInt();
+         roomVO.roomName = pkg.readUTF();
+         roomVO.roomPassword = pkg.readUTF();
+         roomVO.effectiveTime = pkg.readInt();
+         roomVO.curCount = pkg.readInt();
+         roomVO.playerID = pkg.readInt();
+         roomVO.playerName = pkg.readUTF();
+         roomVO.startTime = pkg.readDate();
+         roomVO.roomIntroduction = pkg.readUTF();
+         roomVO.roomType = pkg.readInt();
+         roomVO.maxCount = pkg.readInt();
+         roomVO.roomIsPassword = roomVO.roomPassword != "" && roomVO.roomPassword.length > 0;
+         if(HotSpringManager.instance.roomCurrently && roomVO.roomID == HotSpringManager.instance.roomCurrently.roomID)
          {
-            HotSpringManager.instance.roomCurrently = _loc3_;
+            HotSpringManager.instance.roomCurrently = roomVO;
          }
       }
       
-      private function roomPlayerAdd(param1:CrazyTankSocketEvent) : void
+      private function roomPlayerAdd(event:CrazyTankSocketEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc4_.readInt();
-         if(_loc2_ == PlayerManager.Instance.Self.ID)
+         var playerVO:* = null;
+         var pkg:PackageIn = event.pkg;
+         var playerID:int = pkg.readInt();
+         if(playerID == PlayerManager.Instance.Self.ID)
          {
-            _loc3_ = _model.selfVO;
+            playerVO = _model.selfVO;
          }
          else
          {
-            _loc3_ = new PlayerVO();
+            playerVO = new PlayerVO();
          }
-         var _loc5_:PlayerInfo = PlayerManager.Instance.findPlayer(_loc2_);
-         _loc5_.beginChanges();
-         _loc5_.Grade = _loc4_.readInt();
-         _loc5_.Hide = _loc4_.readInt();
-         _loc5_.Repute = _loc4_.readInt();
-         _loc5_.NickName = _loc4_.readUTF();
-         _loc5_.typeVIP = _loc4_.readByte();
-         _loc5_.VIPLevel = _loc4_.readInt();
-         _loc5_.Sex = _loc4_.readBoolean();
-         _loc5_.Style = _loc4_.readUTF();
-         _loc5_.Colors = _loc4_.readUTF();
-         _loc5_.Skin = _loc4_.readUTF();
-         var _loc6_:Point = new Point(_loc4_.readInt(),_loc4_.readInt());
-         _loc5_.FightPower = _loc4_.readInt();
-         _loc5_.WinCount = _loc4_.readInt();
-         _loc5_.TotalCount = _loc4_.readInt();
-         _loc3_.playerDirection = _loc4_.readInt();
-         _loc5_.commitChanges();
-         _loc3_.playerInfo = _loc5_;
-         _loc3_.playerPos = _loc6_;
-         if(_loc2_ == PlayerManager.Instance.Self.ID)
+         var playerInfo:PlayerInfo = PlayerManager.Instance.findPlayer(playerID);
+         playerInfo.beginChanges();
+         playerInfo.Grade = pkg.readInt();
+         playerInfo.Hide = pkg.readInt();
+         playerInfo.Repute = pkg.readInt();
+         playerInfo.NickName = pkg.readUTF();
+         playerInfo.typeVIP = pkg.readByte();
+         playerInfo.VIPLevel = pkg.readInt();
+         playerInfo.Sex = pkg.readBoolean();
+         playerInfo.Style = pkg.readUTF();
+         playerInfo.Colors = pkg.readUTF();
+         playerInfo.Skin = pkg.readUTF();
+         var playerPos:Point = new Point(pkg.readInt(),pkg.readInt());
+         playerInfo.FightPower = pkg.readInt();
+         playerInfo.WinCount = pkg.readInt();
+         playerInfo.TotalCount = pkg.readInt();
+         playerVO.playerDirection = pkg.readInt();
+         playerInfo.commitChanges();
+         playerVO.playerInfo = playerInfo;
+         playerVO.playerPos = playerPos;
+         if(playerID == PlayerManager.Instance.Self.ID)
          {
-            _model.selfVO = _loc3_;
+            _model.selfVO = playerVO;
          }
-         _model.roomPlayerAddOrUpdate(_loc3_);
+         _model.roomPlayerAddOrUpdate(playerVO);
       }
       
-      public function roomPlayerRemoveSend(param1:String = "") : void
+      public function roomPlayerRemoveSend(messageTip:String = "") : void
       {
-         HotSpringManager.instance.messageTip = param1;
+         HotSpringManager.instance.messageTip = messageTip;
          SocketManager.Instance.out.sendHotSpringRoomPlayerRemove();
       }
       
-      private function roomPlayerRemoveNotice(param1:CrazyTankSocketEvent) : void
+      private function roomPlayerRemoveNotice(event:CrazyTankSocketEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readInt();
-         _model.roomPlayerRemove(_loc2_);
+         var pkg:PackageIn = event.pkg;
+         var playerID:int = pkg.readInt();
+         _model.roomPlayerRemove(playerID);
       }
       
-      public function roomPlayerTargetPointSend(param1:PlayerVO) : void
+      public function roomPlayerTargetPointSend(playerVO:PlayerVO) : void
       {
-         SocketManager.Instance.out.sendHotSpringRoomPlayerTargetPoint(param1);
+         SocketManager.Instance.out.sendHotSpringRoomPlayerTargetPoint(playerVO);
       }
       
-      private function roomPlayerTargetPoint(param1:CrazyTankSocketEvent) : void
+      private function roomPlayerTargetPoint(event:CrazyTankSocketEvent) : void
       {
-         var _loc11_:* = 0;
-         var _loc7_:* = null;
-         var _loc9_:PackageIn = param1.pkg;
-         var _loc10_:String = _loc9_.readUTF();
-         var _loc4_:int = _loc9_.readInt();
-         var _loc3_:int = _loc9_.readInt();
-         var _loc2_:int = _loc9_.readInt();
-         var _loc5_:Array = _loc10_.split(",");
-         var _loc8_:Array = [];
-         _loc11_ = uint(0);
-         while(_loc11_ < _loc5_.length)
+         var i:* = 0;
+         var p:* = null;
+         var pkg:PackageIn = event.pkg;
+         var pathStr:String = pkg.readUTF();
+         var playerID:int = pkg.readInt();
+         var lastStartX:int = pkg.readInt();
+         var lastStartY:int = pkg.readInt();
+         var arr:Array = pathStr.split(",");
+         var path:Array = [];
+         for(i = uint(0); i < arr.length; )
          {
-            _loc7_ = new Point(_loc5_[_loc11_],_loc5_[_loc11_ + 1]);
-            _loc8_.push(_loc7_);
-            _loc11_ = uint(_loc11_ + 2);
+            p = new Point(arr[i],arr[i + 1]);
+            path.push(p);
+            i = uint(i + 2);
          }
-         var _loc6_:PlayerVO = _model.roomPlayerList[_loc4_] as PlayerVO;
-         if(!_loc6_)
+         var playerVO:PlayerVO = _model.roomPlayerList[playerID] as PlayerVO;
+         if(!playerVO)
          {
             return;
          }
          if(_isActive)
          {
-            _loc6_.currentWalkStartPoint = new Point(_loc3_,_loc2_);
-            _loc6_.walkPath = _loc8_;
-            _model.roomPlayerAddOrUpdate(_loc6_);
+            playerVO.currentWalkStartPoint = new Point(lastStartX,lastStartY);
+            playerVO.walkPath = path;
+            _model.roomPlayerAddOrUpdate(playerVO);
          }
          else
          {
-            _loc6_.playerPos = _loc8_.pop();
+            playerVO.playerPos = path.pop();
          }
       }
       
-      public function roomRenewalFee(param1:HotSpringRoomInfo) : void
+      public function roomRenewalFee(roomVO:HotSpringRoomInfo) : void
       {
-         SocketManager.Instance.out.sendHotSpringRoomRenewalFee(param1.roomID);
+         SocketManager.Instance.out.sendHotSpringRoomRenewalFee(roomVO.roomID);
       }
       
-      public function roomEdit(param1:HotSpringRoomInfo) : void
+      public function roomEdit(roomVO:HotSpringRoomInfo) : void
       {
-         SocketManager.Instance.out.sendHotSpringRoomEdit(param1);
+         SocketManager.Instance.out.sendHotSpringRoomEdit(roomVO);
       }
       
-      public function roomPlayerContinue(param1:Boolean) : void
+      public function roomPlayerContinue(isContinue:Boolean) : void
       {
-         SocketManager.Instance.out.sendHotSpringRoomPlayerContinue(param1);
+         SocketManager.Instance.out.sendHotSpringRoomPlayerContinue(isContinue);
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
          if(!FunnyGamesManager.getInstance().status)
          {
             roomPlayerRemoveSend();
          }
          dispose();
-         super.leaving(param1);
+         super.leaving(next);
       }
       
       override public function getBackType() : String

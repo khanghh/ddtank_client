@@ -10,107 +10,106 @@ package com.gskinner.geom
       private static const LENGTH:Number = IDENTITY_MATRIX.length;
        
       
-      public function ColorMatrix(param1:Array = null)
+      public function ColorMatrix(p_matrix:Array = null)
       {
          super();
-         param1 = fixMatrix(param1);
-         copyMatrix(param1.length == LENGTH?param1:IDENTITY_MATRIX);
+         p_matrix = fixMatrix(p_matrix);
+         copyMatrix(p_matrix.length == LENGTH?p_matrix:IDENTITY_MATRIX);
       }
       
       public function reset() : void
       {
-         var _loc1_:* = 0;
-         _loc1_ = uint(0);
-         while(_loc1_ < LENGTH)
+         var i:* = 0;
+         for(i = uint(0); i < LENGTH; )
          {
-            this[_loc1_] = IDENTITY_MATRIX[_loc1_];
-            _loc1_++;
+            this[i] = IDENTITY_MATRIX[i];
+            i++;
          }
       }
       
-      public function adjustColor(param1:Number, param2:Number, param3:Number, param4:Number) : void
+      public function adjustColor(p_brightness:Number, p_contrast:Number, p_saturation:Number, p_hue:Number) : void
       {
-         adjustHue(param4);
-         adjustContrast(param2);
-         adjustBrightness(param1);
-         adjustSaturation(param3);
+         adjustHue(p_hue);
+         adjustContrast(p_contrast);
+         adjustBrightness(p_brightness);
+         adjustSaturation(p_saturation);
       }
       
-      public function adjustBrightness(param1:Number) : void
+      public function adjustBrightness(p_val:Number) : void
       {
-         param1 = cleanValue(param1,100);
-         if(param1 == 0 || isNaN(param1))
+         p_val = cleanValue(p_val,100);
+         if(p_val == 0 || isNaN(p_val))
          {
             return;
          }
-         multiplyMatrix([1,0,0,0,param1,0,1,0,0,param1,0,0,1,0,param1,0,0,0,1,0,0,0,0,0,1]);
+         multiplyMatrix([1,0,0,0,p_val,0,1,0,0,p_val,0,0,1,0,p_val,0,0,0,1,0,0,0,0,0,1]);
       }
       
-      public function adjustContrast(param1:Number) : void
+      public function adjustContrast(p_val:Number) : void
       {
-         var _loc2_:Number = NaN;
-         param1 = cleanValue(param1,100);
-         if(param1 == 0 || isNaN(param1))
+         var x:Number = NaN;
+         p_val = cleanValue(p_val,100);
+         if(p_val == 0 || isNaN(p_val))
          {
             return;
          }
-         if(param1 < 0)
+         if(p_val < 0)
          {
-            _loc2_ = 127 + param1 / 100 * 127;
+            x = 127 + p_val / 100 * 127;
          }
          else
          {
-            _loc2_ = param1 % 1;
-            if(_loc2_ == 0)
+            x = p_val % 1;
+            if(x == 0)
             {
-               _loc2_ = DELTA_INDEX[param1];
+               x = DELTA_INDEX[p_val];
             }
             else
             {
-               _loc2_ = DELTA_INDEX[param1 << 0] * (1 - _loc2_) + DELTA_INDEX[(param1 << 0) + 1] * _loc2_;
+               x = DELTA_INDEX[p_val << 0] * (1 - x) + DELTA_INDEX[(p_val << 0) + 1] * x;
             }
-            _loc2_ = _loc2_ * 127 + 127;
+            x = x * 127 + 127;
          }
-         multiplyMatrix([_loc2_ / 127,0,0,0,0.5 * (127 - _loc2_),0,_loc2_ / 127,0,0,0.5 * (127 - _loc2_),0,0,_loc2_ / 127,0,0.5 * (127 - _loc2_),0,0,0,1,0,0,0,0,0,1]);
+         multiplyMatrix([x / 127,0,0,0,0.5 * (127 - x),0,x / 127,0,0,0.5 * (127 - x),0,0,x / 127,0,0.5 * (127 - x),0,0,0,1,0,0,0,0,0,1]);
       }
       
-      public function adjustSaturation(param1:Number) : void
+      public function adjustSaturation(p_val:Number) : void
       {
-         param1 = cleanValue(param1,100);
-         if(param1 == 0 || isNaN(param1))
+         p_val = cleanValue(p_val,100);
+         if(p_val == 0 || isNaN(p_val))
          {
             return;
          }
-         var _loc5_:Number = 1 + (param1 > 0?3 * param1 / 100:Number(param1 / 100));
-         var _loc2_:* = 0.3086;
-         var _loc4_:* = 0.6094;
-         var _loc3_:* = 0.082;
-         multiplyMatrix([_loc2_ * (1 - _loc5_) + _loc5_,_loc4_ * (1 - _loc5_),_loc3_ * (1 - _loc5_),0,0,_loc2_ * (1 - _loc5_),_loc4_ * (1 - _loc5_) + _loc5_,_loc3_ * (1 - _loc5_),0,0,_loc2_ * (1 - _loc5_),_loc4_ * (1 - _loc5_),_loc3_ * (1 - _loc5_) + _loc5_,0,0,0,0,0,1,0,0,0,0,0,1]);
+         var x:Number = 1 + (p_val > 0?3 * p_val / 100:Number(p_val / 100));
+         var lumR:* = 0.3086;
+         var lumG:* = 0.6094;
+         var lumB:* = 0.082;
+         multiplyMatrix([lumR * (1 - x) + x,lumG * (1 - x),lumB * (1 - x),0,0,lumR * (1 - x),lumG * (1 - x) + x,lumB * (1 - x),0,0,lumR * (1 - x),lumG * (1 - x),lumB * (1 - x) + x,0,0,0,0,0,1,0,0,0,0,0,1]);
       }
       
-      public function adjustHue(param1:Number) : void
+      public function adjustHue(p_val:Number) : void
       {
-         param1 = cleanValue(param1,180) / 180 * 3.14159265358979;
-         if(param1 == 0 || isNaN(param1))
+         p_val = cleanValue(p_val,180) / 180 * 3.14159265358979;
+         if(p_val == 0 || isNaN(p_val))
          {
             return;
          }
-         var _loc6_:Number = Math.cos(param1);
-         var _loc4_:Number = Math.sin(param1);
-         var _loc2_:* = 0.213;
-         var _loc5_:* = 0.715;
-         var _loc3_:* = 0.072;
-         multiplyMatrix([_loc2_ + _loc6_ * (1 - _loc2_) + _loc4_ * -_loc2_,_loc5_ + _loc6_ * -_loc5_ + _loc4_ * -_loc5_,_loc3_ + _loc6_ * -_loc3_ + _loc4_ * (1 - _loc3_),0,0,_loc2_ + _loc6_ * -_loc2_ + _loc4_ * 0.143,_loc5_ + _loc6_ * (1 - _loc5_) + _loc4_ * 0.14,_loc3_ + _loc6_ * -_loc3_ + _loc4_ * -0.283,0,0,_loc2_ + _loc6_ * -_loc2_ + _loc4_ * -(1 - _loc2_),_loc5_ + _loc6_ * -_loc5_ + _loc4_ * _loc5_,_loc3_ + _loc6_ * (1 - _loc3_) + _loc4_ * _loc3_,0,0,0,0,0,1,0,0,0,0,0,1]);
+         var cosVal:Number = Math.cos(p_val);
+         var sinVal:Number = Math.sin(p_val);
+         var lumR:* = 0.213;
+         var lumG:* = 0.715;
+         var lumB:* = 0.072;
+         multiplyMatrix([lumR + cosVal * (1 - lumR) + sinVal * -lumR,lumG + cosVal * -lumG + sinVal * -lumG,lumB + cosVal * -lumB + sinVal * (1 - lumB),0,0,lumR + cosVal * -lumR + sinVal * 0.143,lumG + cosVal * (1 - lumG) + sinVal * 0.14,lumB + cosVal * -lumB + sinVal * -0.283,0,0,lumR + cosVal * -lumR + sinVal * -(1 - lumR),lumG + cosVal * -lumG + sinVal * lumG,lumB + cosVal * (1 - lumB) + sinVal * lumB,0,0,0,0,0,1,0,0,0,0,0,1]);
       }
       
-      public function concat(param1:Array) : void
+      public function concat(p_matrix:Array) : void
       {
-         param1 = fixMatrix(param1);
-         if(param1.length != LENGTH)
+         p_matrix = fixMatrix(p_matrix);
+         if(p_matrix.length != LENGTH)
          {
             return;
          }
-         multiplyMatrix(param1);
+         multiplyMatrix(p_matrix);
       }
       
       public function clone() : ColorMatrix
@@ -128,75 +127,70 @@ package com.gskinner.geom
          return slice(0,20);
       }
       
-      protected function copyMatrix(param1:Array) : void
+      protected function copyMatrix(p_matrix:Array) : void
       {
-         var _loc3_:* = 0;
-         var _loc2_:Number = LENGTH;
-         _loc3_ = uint(0);
-         while(_loc3_ < _loc2_)
+         var i:* = 0;
+         var l:Number = LENGTH;
+         for(i = uint(0); i < l; )
          {
-            this[_loc3_] = param1[_loc3_];
-            _loc3_++;
+            this[i] = p_matrix[i];
+            i++;
          }
       }
       
-      protected function multiplyMatrix(param1:Array) : void
+      protected function multiplyMatrix(p_matrix:Array) : void
       {
-         var _loc6_:* = 0;
-         var _loc4_:* = 0;
-         var _loc2_:* = NaN;
-         var _loc5_:* = NaN;
-         var _loc3_:Array = [];
-         _loc6_ = uint(0);
-         while(_loc6_ < 5)
+         var i:* = 0;
+         var j:* = 0;
+         var val:* = NaN;
+         var k:* = NaN;
+         var col:Array = [];
+         for(i = uint(0); i < 5; )
          {
-            _loc4_ = uint(0);
-            while(_loc4_ < 5)
+            for(j = uint(0); j < 5; )
             {
-               _loc3_[_loc4_] = this[_loc4_ + _loc6_ * 5];
-               _loc4_++;
+               col[j] = this[j + i * 5];
+               j++;
             }
-            _loc4_ = uint(0);
-            while(_loc4_ < 5)
+            for(j = uint(0); j < 5; )
             {
-               _loc2_ = 0;
-               _loc5_ = 0;
-               while(_loc5_ < 5)
+               val = 0;
+               for(k = 0; k < 5; )
                {
-                  _loc2_ = Number(_loc2_ + param1[_loc4_ + _loc5_ * 5] * _loc3_[_loc5_]);
-                  _loc5_++;
+                  val = Number(val + p_matrix[j + k * 5] * col[k]);
+                  k++;
                }
-               this[_loc4_ + _loc6_ * 5] = _loc2_;
-               _loc4_++;
+               this[j + i * 5] = val;
+               j++;
             }
-            _loc6_++;
+            i++;
          }
       }
       
-      protected function cleanValue(param1:Number, param2:Number) : Number
+      protected function cleanValue(p_val:Number, p_limit:Number) : Number
       {
-         return Math.min(param2,Math.max(-param2,param1));
+         return Math.min(p_limit,Math.max(-p_limit,p_val));
       }
       
-      protected function fixMatrix(param1:Array = null) : Array
+      protected function fixMatrix(p_matrix:Array = null) : Array
       {
-         if(param1 == null)
+         if(p_matrix == null)
          {
             return IDENTITY_MATRIX;
          }
-         if(param1 is ColorMatrix)
+         if(p_matrix is ColorMatrix)
          {
-            param1 = param1.slice(0);
+            p_matrix = p_matrix.slice(0);
          }
-         if(param1.length < LENGTH)
+         if(p_matrix.length < LENGTH)
          {
-            param1 = param1.slice(0,param1.length).concat(IDENTITY_MATRIX.slice(param1.length,LENGTH));
+            p_matrix = p_matrix.slice(0,p_matrix.length).concat(IDENTITY_MATRIX.slice(p_matrix.length,LENGTH));
          }
-         else if(param1.length > LENGTH)
+         else if(p_matrix.length > LENGTH)
          {
-            param1 = param1.slice(0,LENGTH);
+            p_matrix = p_matrix.slice(0,LENGTH);
          }
-         return param1;
+         return p_matrix;
       }
    }
 }

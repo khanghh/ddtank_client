@@ -67,11 +67,11 @@ package happyLittleGame.bombshellGame.view
          _pageleftBtn.removeEventListener("click",__pageLClickHandler);
       }
       
-      private function __pageRClickHandler(param1:MouseEvent) : void
+      private function __pageRClickHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:int = Math.ceil(_currentarr.length / 10);
-         if(_totalPageIndex < _loc2_)
+         var len:int = Math.ceil(_currentarr.length / 10);
+         if(_totalPageIndex < len)
          {
             _totalPageIndex = Number(_totalPageIndex) + 1;
          }
@@ -82,9 +82,9 @@ package happyLittleGame.bombshellGame.view
          showDayRankByPage(_totalPageIndex);
       }
       
-      private function __pageLClickHandler(param1:MouseEvent) : void
+      private function __pageLClickHandler(evt:MouseEvent) : void
       {
-         var _loc2_:int = 0;
+         var len:int = 0;
          SoundManager.instance.play("008");
          if(_totalPageIndex > 1)
          {
@@ -92,40 +92,39 @@ package happyLittleGame.bombshellGame.view
          }
          else
          {
-            _loc2_ = Math.ceil(_currentarr.length / 10);
-            _totalPageIndex = _loc2_;
+            len = Math.ceil(_currentarr.length / 10);
+            _totalPageIndex = len;
          }
          showDayRankByPage(_totalPageIndex);
       }
       
       private function initItem() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < 10)
+         var item:* = null;
+         var i:int = 0;
+         for(i = 0; i < 10; )
          {
-            _loc1_ = new BombRankItemII();
-            _items.push(_loc1_);
-            PositionUtils.setPos(_loc1_,"bombgame.daynewsview.rankitem_" + (_loc2_ + 1));
-            addChild(_loc1_);
-            _loc2_++;
+            item = new BombRankItemII();
+            _items.push(item);
+            PositionUtils.setPos(item,"bombgame.daynewsview.rankitem_" + (i + 1));
+            addChild(item);
+            i++;
          }
       }
       
-      public function set Infos(param1:Vector.<BombRankInfo>) : void
+      public function set Infos(infos:Vector.<BombRankInfo>) : void
       {
          if(_currentarr != null)
          {
             _currentarr = null;
          }
-         _currentarr = param1;
+         _currentarr = infos;
          showDayRankByPage(1);
       }
       
-      public function refreshData(param1:int) : void
+      public function refreshData(rankType:int) : void
       {
-         if(param1 == 2)
+         if(rankType == 2)
          {
             Infos = HappyLittleGameManager.instance.bombManager.model.rankDayRandomInfos;
          }
@@ -135,66 +134,60 @@ package happyLittleGame.bombshellGame.view
          }
       }
       
-      public function showDayRankByPage(param1:int) : void
+      public function showDayRankByPage(page:int) : void
       {
-         var _loc2_:* = 0;
+         var index:* = 0;
          clearItemInfo();
          if(_currentarr.length == 0)
          {
             _pageTxt.text = "0/0";
             return;
          }
-         var _loc6_:int = Math.ceil(_currentarr.length / 10);
-         var _loc3_:int = (param1 - 1) * 10;
-         var _loc5_:int = _loc3_ + 10;
-         var _loc4_:int = 0;
-         _pageTxt.text = param1 + "/" + _loc6_;
-         if(param1 > _loc6_)
+         var len:int = Math.ceil(_currentarr.length / 10);
+         var startIndex:int = (page - 1) * 10;
+         var endIndex:int = startIndex + 10;
+         var infoIndex:int = 0;
+         _pageTxt.text = page + "/" + len;
+         if(page > len)
          {
+            debugTrace("翻页超出");
             return;
-            §§push(debugTrace("翻页超出"));
          }
-         else
+         if(page == len)
          {
-            if(param1 == _loc6_)
+            endIndex = _currentarr.length;
+         }
+         for(index = startIndex; index < endIndex; )
+         {
+            if(index < _currentarr.length)
             {
-               _loc5_ = _currentarr.length;
+               _items[infoIndex].Info = _currentarr[index];
+               infoIndex++;
             }
-            _loc2_ = _loc3_;
-            while(_loc2_ < _loc5_)
-            {
-               if(_loc2_ < _currentarr.length)
-               {
-                  _items[_loc4_].Info = _currentarr[_loc2_];
-                  _loc4_++;
-               }
-               _loc2_++;
-            }
-            return;
+            index++;
          }
       }
       
       public function clearItemInfo() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = _items.length;
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_)
+         var i:int = 0;
+         var len:int = _items.length;
+         for(i = 0; i < len; )
          {
-            _items[_loc2_].clear();
-            _loc2_++;
+            _items[i].clear();
+            i++;
          }
       }
       
       public function dispose() : void
       {
-         var _loc1_:* = null;
+         var obj:* = null;
          removeEvent();
          while(this.numChildren > 0)
          {
-            _loc1_ = removeChildAt(0);
-            ObjectUtils.disposeObject(_loc1_);
-            _loc1_ = null;
+            obj = removeChildAt(0);
+            ObjectUtils.disposeObject(obj);
+            obj = null;
          }
          _items = null;
       }

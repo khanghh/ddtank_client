@@ -61,7 +61,7 @@ package ddt.manager
       
       private var inited:Boolean;
       
-      public function EnthrallManager(param1:SingletonEnfocer)
+      public function EnthrallManager(singleton:SingletonEnfocer)
       {
          super();
          inited = false;
@@ -92,7 +92,7 @@ package ddt.manager
          _timer.start();
       }
       
-      private function __timerHandler(param1:Event) : void
+      private function __timerHandler(evt:Event) : void
       {
          _loadedTime = Number(_loadedTime) + 1;
          TimeManager.Instance.totalGameTime = TimeManager.Instance.totalGameTime + 1;
@@ -148,21 +148,21 @@ package ddt.manager
          }
       }
       
-      private function remind(param1:String) : void
+      private function remind($msg:String) : void
       {
          if(StateManager.currentStateType != "main")
          {
             return;
          }
          SoundManager.instance.playButtonSound();
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),param1,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
-         _loc2_.addEventListener("response",__alertFreeBack);
+         var alertAsk:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),$msg,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
+         alertAsk.addEventListener("response",__alertFreeBack);
       }
       
-      protected function __alertFreeBack(param1:FrameEvent) : void
+      protected function __alertFreeBack(event:FrameEvent) : void
       {
-         param1.currentTarget.removeEventListener("response",__alertFreeBack);
-         ObjectUtils.disposeObject(param1.currentTarget);
+         event.currentTarget.removeEventListener("response",__alertFreeBack);
+         ObjectUtils.disposeObject(event.currentTarget);
       }
       
       public function updateLight() : void
@@ -170,7 +170,7 @@ package ddt.manager
          _view.update();
       }
       
-      private function __timer1Handler(param1:Event) : void
+      private function __timer1Handler(evt:Event) : void
       {
          if(!_popCIDChecker)
          {
@@ -189,14 +189,14 @@ package ddt.manager
          SocketManager.Instance.addEventListener(PkgEvent.format(227),readStates);
       }
       
-      private function changeCIDChecker(param1:PkgEvent) : void
+      private function changeCIDChecker(evt:PkgEvent) : void
       {
          if(!inited)
          {
             init();
          }
-         var _loc2_:PackageIn = param1.pkg;
-         _popCIDChecker = _loc2_.readBoolean();
+         var pkg:PackageIn = evt.pkg;
+         _popCIDChecker = pkg.readBoolean();
          if(_popCIDChecker)
          {
             _timer1.start();
@@ -207,13 +207,13 @@ package ddt.manager
          }
       }
       
-      private function readStates(param1:PkgEvent) : void
+      private function readStates(evt:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _enthrallSwicth = _loc2_.readBoolean();
-         _interfaceID = _loc2_.readInt();
-         _hasApproved = _loc2_.readBoolean();
-         _isMinor = _loc2_.readBoolean();
+         var pkg:PackageIn = evt.pkg;
+         _enthrallSwicth = pkg.readBoolean();
+         _interfaceID = pkg.readInt();
+         _hasApproved = pkg.readBoolean();
+         _isMinor = pkg.readBoolean();
          updateEnthrallView();
       }
       
@@ -300,9 +300,9 @@ package ddt.manager
          }
       }
       
-      public function gameState(param1:Number) : void
+      public function gameState(num:Number) : void
       {
-         _view.x = param1 - 100;
+         _view.x = num - 100;
          _view.y = 15;
       }
       

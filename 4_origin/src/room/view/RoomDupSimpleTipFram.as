@@ -78,7 +78,7 @@ package room.view
          addEventListener("response",_response);
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          dispose();
@@ -86,13 +86,13 @@ package room.view
       
       public function show() : void
       {
-         var _loc1_:AlertInfo = new AlertInfo();
-         _loc1_.title = LanguageMgr.GetTranslation("AlertDialog.Info");
-         _loc1_.submitLabel = LanguageMgr.GetTranslation("ok");
-         _loc1_.data = _view;
-         _loc1_.showCancel = false;
-         _loc1_.moveEnable = false;
-         info = _loc1_;
+         var alertInfo:AlertInfo = new AlertInfo();
+         alertInfo.title = LanguageMgr.GetTranslation("AlertDialog.Info");
+         alertInfo.submitLabel = LanguageMgr.GetTranslation("ok");
+         alertInfo.data = _view;
+         alertInfo.showCancel = false;
+         alertInfo.moveEnable = false;
+         info = alertInfo;
          addToContent(_view);
          LayerManager.Instance.addToLayer(this,3,true,1);
       }

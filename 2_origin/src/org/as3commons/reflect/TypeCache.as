@@ -16,68 +16,68 @@ package org.as3commons.reflect
          this.clear();
       }
       
-      public function clear(param1:ApplicationDomain = null) : void
+      public function clear(applicationDomain:ApplicationDomain = null) : void
       {
-         if(param1 == null)
+         if(applicationDomain == null)
          {
             this.cache = new Dictionary();
          }
          else
          {
-            delete this.cache[param1];
+            delete this.cache[applicationDomain];
          }
       }
       
-      public function contains(param1:String, param2:ApplicationDomain) : Boolean
+      public function contains(key:String, applicationDomain:ApplicationDomain) : Boolean
       {
-         Assert.hasText(param1,"argument \'key\' cannot be empty");
-         var _loc3_:Object = this.cache[param2] as Object;
-         return _loc3_ != null && _loc3_[param1] != null;
+         Assert.hasText(key,"argument \'key\' cannot be empty");
+         var subCache:Object = this.cache[applicationDomain] as Object;
+         return subCache != null && subCache[key] != null;
       }
       
-      public function getKeys(param1:ApplicationDomain) : Array
+      public function getKeys(applicationDomain:ApplicationDomain) : Array
       {
-         var _loc4_:String = null;
-         var _loc2_:Object = this.cache[param1] as Object;
-         var _loc3_:Array = [];
-         if(_loc2_ != null)
+         var key:String = null;
+         var subCache:Object = this.cache[applicationDomain] as Object;
+         var keys:Array = [];
+         if(subCache != null)
          {
-            for(_loc3_[_loc3_.length] in _loc2_)
+            for(keys[keys.length] in subCache)
             {
             }
          }
-         return _loc3_;
+         return keys;
       }
       
-      public function get(param1:String, param2:ApplicationDomain) : Type
+      public function get(key:String, applicationDomain:ApplicationDomain) : Type
       {
-         Assert.hasText(param1,"argument \'key\' cannot be empty");
-         var _loc3_:Object = this.cache[param2] as Object;
-         return _loc3_ != null?_loc3_[param1]:null;
+         Assert.hasText(key,"argument \'key\' cannot be empty");
+         var subCache:Object = this.cache[applicationDomain] as Object;
+         return subCache != null?subCache[key]:null;
       }
       
-      public function put(param1:String, param2:Type, param3:ApplicationDomain) : void
+      public function put(key:String, type:Type, applicationDomain:ApplicationDomain) : void
       {
-         Assert.notNull(param1,"argument \'key\' cannot be null");
-         Assert.hasText(param1,"argument \'key\' cannot be empty");
-         Assert.notNull(param2,"argument \'type\' cannot be null");
-         var _loc4_:Object = this.cache[param3] = this.cache[param3] || {};
-         _loc4_[param1] = param2;
+         Assert.notNull(key,"argument \'key\' cannot be null");
+         Assert.hasText(key,"argument \'key\' cannot be empty");
+         Assert.notNull(type,"argument \'type\' cannot be null");
+         var subCache:Object = this.cache[applicationDomain] = this.cache[applicationDomain] || {};
+         subCache[key] = type;
       }
       
-      public function size(param1:ApplicationDomain) : int
+      public function size(applicationDomain:ApplicationDomain) : int
       {
-         var _loc4_:* = null;
-         var _loc2_:Object = this.cache[param1] as Object;
-         var _loc3_:int = 0;
-         if(_loc2_ != null)
+         var prop:* = null;
+         var subCache:Object = this.cache[applicationDomain] as Object;
+         var index:int = 0;
+         if(subCache != null)
          {
-            for(_loc4_ in _loc2_)
+            for(prop in subCache)
             {
-               _loc3_++;
+               index++;
             }
          }
-         return _loc3_;
+         return index;
       }
    }
 }

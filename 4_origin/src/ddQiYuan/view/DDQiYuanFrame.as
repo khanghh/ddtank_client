@@ -100,9 +100,9 @@ package ddQiYuan.view
       
       private function initView() : void
       {
-         var _loc8_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
+         var goodId:int = 0;
+         var bagCell:* = null;
+         var bagCellBg:* = null;
          _model = DDQiYuanManager.instance.model;
          titleText = LanguageMgr.GetTranslation("ddQiYuan.frame.titleText");
          _bg = ComponentFactory.Instance.creat("ddQiYuan.bg");
@@ -129,20 +129,20 @@ package ddQiYuan.view
          addToContent(_activedBaoZhuNumTf);
          _progressMc = ComponentFactory.Instance.creat("DDQiYuan.mc.Progress1");
          addToContent(_progressMc);
-         var _loc7_:Image = ComponentFactory.Instance.creatComponentByStylename("ddQiYuan.offerProgressUp");
-         addToContent(_loc7_);
+         var offerProgressUp:Image = ComponentFactory.Instance.creatComponentByStylename("ddQiYuan.offerProgressUp");
+         addToContent(offerProgressUp);
          _showGetBtn = ComponentFactory.Instance.creatComponentByStylename("ddQiYuan.showGetBtn");
          addToContent(_showGetBtn);
          _hasGetGoodsList = ComponentFactory.Instance.creatCustomObject("ddQiYuan.HasGetGoodsList");
          addToContent(_hasGetGoodsList);
          _offerProgressTf = ComponentFactory.Instance.creatComponentByStylename("ddQiYuan.offerProgressTf");
          addToContent(_offerProgressTf);
-         var _loc5_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("ddQiYuan.offerInfoTf");
-         addToContent(_loc5_);
-         _loc5_.text = LanguageMgr.GetTranslation("ddQiYuan.frame.offerInfoTfMsg");
-         var _loc9_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("ddQiYuan.openTreasureBoxInfoTf");
-         addToContent(_loc9_);
-         _loc9_.text = LanguageMgr.GetTranslation("ddQiYuan.frame.openTreasureBoxInfoTfMsg");
+         var offerInfoTf:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("ddQiYuan.offerInfoTf");
+         addToContent(offerInfoTf);
+         offerInfoTf.text = LanguageMgr.GetTranslation("ddQiYuan.frame.offerInfoTfMsg");
+         var openTreasureBoxInfoTf:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("ddQiYuan.openTreasureBoxInfoTf");
+         addToContent(openTreasureBoxInfoTf);
+         openTreasureBoxInfoTf.text = LanguageMgr.GetTranslation("ddQiYuan.frame.openTreasureBoxInfoTfMsg");
          _offer1TimeBtn = ComponentFactory.Instance.creatComponentByStylename("ddQiYuan.offer1TimeBtn");
          _offer1TimeBtn.tipData = LanguageMgr.GetTranslation("ddQiYuan.frame.offer1TimeBtnTip");
          addToContent(_offer1TimeBtn);
@@ -158,37 +158,37 @@ package ddQiYuan.view
          _openTreasureBoxBtn.tipData = LanguageMgr.GetTranslation("ddQiYuan.frame.openTreasureBoxBtnTip");
          addToContent(_openTreasureBoxBtn);
          _offerRewardGoodsScrollPanel = ComponentFactory.Instance.creatComponentByStylename("ddQiYuan.offerRewardGoodsScrollPanel");
-         var _loc6_:HBox = new HBox();
-         _loc6_.spacing = 5;
+         var offerRewardGoodsHBox:HBox = new HBox();
+         offerRewardGoodsHBox.spacing = 5;
          var _loc14_:int = 0;
          var _loc13_:* = _model.offer1Or10TimesRewardBoxGoodArr;
-         for each(_loc8_ in _model.offer1Or10TimesRewardBoxGoodArr)
+         for each(goodId in _model.offer1Or10TimesRewardBoxGoodArr)
          {
-            _loc3_ = ComponentFactory.Instance.creatBitmap("DDQiYuan.Pic27");
-            _loc2_ = new BagCell(1,ItemManager.Instance.getTemplateById(_loc8_),true,_loc3_,false);
-            _loc2_.setCountNotVisible();
-            _loc2_.PicPos = new Point(2,2);
-            _loc2_.setContentSize(38,38);
-            _loc6_.addChild(_loc2_);
+            bagCellBg = ComponentFactory.Instance.creatBitmap("DDQiYuan.Pic27");
+            bagCell = new BagCell(1,ItemManager.Instance.getTemplateById(goodId),true,bagCellBg,false);
+            bagCell.setCountNotVisible();
+            bagCell.PicPos = new Point(2,2);
+            bagCell.setContentSize(38,38);
+            offerRewardGoodsHBox.addChild(bagCell);
          }
-         _offerRewardGoodsScrollPanel.setView(_loc6_);
+         _offerRewardGoodsScrollPanel.setView(offerRewardGoodsHBox);
          _offerRewardGoodsScrollPanel.invalidateViewport();
          addToContent(_offerRewardGoodsScrollPanel);
          _treasureBoxGoodsScrollPanel = ComponentFactory.Instance.creatComponentByStylename("ddQiYuan.treasureBoxGoodsScrollPanel");
-         var _loc12_:HBox = new HBox();
-         _loc12_.spacing = 5;
+         var treasureBoxGoodsHBox:HBox = new HBox();
+         treasureBoxGoodsHBox.spacing = 5;
          var _loc16_:int = 0;
          var _loc15_:* = _model.openTreasureBoxGoodArr;
-         for each(_loc8_ in _model.openTreasureBoxGoodArr)
+         for each(goodId in _model.openTreasureBoxGoodArr)
          {
-            _loc3_ = ComponentFactory.Instance.creatBitmap("DDQiYuan.Pic27");
-            _loc2_ = new BagCell(1,ItemManager.Instance.getTemplateById(_loc8_),true,_loc3_,false);
-            _loc2_.setCountNotVisible();
-            _loc2_.PicPos = new Point(2,2);
-            _loc2_.setContentSize(38,38);
-            _loc12_.addChild(_loc2_);
+            bagCellBg = ComponentFactory.Instance.creatBitmap("DDQiYuan.Pic27");
+            bagCell = new BagCell(1,ItemManager.Instance.getTemplateById(goodId),true,bagCellBg,false);
+            bagCell.setCountNotVisible();
+            bagCell.PicPos = new Point(2,2);
+            bagCell.setContentSize(38,38);
+            treasureBoxGoodsHBox.addChild(bagCell);
          }
-         _treasureBoxGoodsScrollPanel.setView(_loc12_);
+         _treasureBoxGoodsScrollPanel.setView(treasureBoxGoodsHBox);
          _treasureBoxGoodsScrollPanel.invalidateViewport();
          addToContent(_treasureBoxGoodsScrollPanel);
          _offerRewardGoodsScrollPanelLeftBtn = ComponentFactory.Instance.creatComponentByStylename("ddQiYuan.offerRewardGoodsScrollPanelLeftBtn");
@@ -203,23 +203,23 @@ package ddQiYuan.view
          addToContent(_rankSp);
          _beliefRewardSp = new BeliefRewardSp();
          addToContent(_beliefRewardSp);
-         var _loc4_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("ddQiYuan.joinRewardInfoTf");
-         _loc4_.text = LanguageMgr.GetTranslation("ddQiYuan.frame.joinRewardInfoTfMsg",_model.joinRewardLeastOfferTimes);
-         addToContent(_loc4_);
+         var joinRewardInfoTf:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("ddQiYuan.joinRewardInfoTf");
+         joinRewardInfoTf.text = LanguageMgr.GetTranslation("ddQiYuan.frame.joinRewardInfoTfMsg",_model.joinRewardLeastOfferTimes);
+         addToContent(joinRewardInfoTf);
          _joinBagCellSp = new JoinBagCellSp();
          PositionUtils.setPos(_joinBagCellSp,"ddQiYuan.joinBagCell1Pos");
          addToContent(_joinBagCellSp);
-         _loc3_ = ComponentFactory.Instance.creatBitmap("DDQiYuan.Pic27");
-         var _loc1_:InventoryItemInfo = DDQiYuanManager.instance.getInventoryItemInfo(_model.joinRewardProbabilityGainGood);
-         var _loc10_:BagCell = new BagCell(1,_loc1_,true,_loc3_,false);
-         _loc10_.PicPos = new Point(2,2);
-         _loc10_.setContentSize(38,38);
-         _loc10_.setCount(_loc1_.Count);
-         PositionUtils.setPos(_loc10_,"ddQiYuan.joinBagCell2Pos");
-         addToContent(_loc10_);
-         var _loc11_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("ddQiYuan.probabilityGainTf");
-         _loc11_.text = LanguageMgr.GetTranslation("ddQiYuan.frame.probabilityGainTfMsg");
-         addToContent(_loc11_);
+         bagCellBg = ComponentFactory.Instance.creatBitmap("DDQiYuan.Pic27");
+         var joinBagCell2Info:InventoryItemInfo = DDQiYuanManager.instance.getInventoryItemInfo(_model.joinRewardProbabilityGainGood);
+         var joinBagCell2:BagCell = new BagCell(1,joinBagCell2Info,true,bagCellBg,false);
+         joinBagCell2.PicPos = new Point(2,2);
+         joinBagCell2.setContentSize(38,38);
+         joinBagCell2.setCount(joinBagCell2Info.Count);
+         PositionUtils.setPos(joinBagCell2,"ddQiYuan.joinBagCell2Pos");
+         addToContent(joinBagCell2);
+         var probabilityGainTf:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("ddQiYuan.probabilityGainTf");
+         probabilityGainTf.text = LanguageMgr.GetTranslation("ddQiYuan.frame.probabilityGainTfMsg");
+         addToContent(probabilityGainTf);
       }
       
       private function initEvent() : void
@@ -262,14 +262,14 @@ package ddQiYuan.view
          _gouYuNumTf.text = LanguageMgr.GetTranslation("ddQiYuan.frame.gouYuNum",PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(12543));
          _treasureKeyNumTf.text = LanguageMgr.GetTranslation("ddQiYuan.frame.treasureKeyNum",PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(12544));
          _treasureBoxNumTf.text = LanguageMgr.GetTranslation("ddQiYuan.frame.treasureBoxNum",int(_model.myAreaOfferTimes / _model.offerTimesPerTreasureBox) - _model.hasGainTreasureBoxNum);
-         var _loc1_:int = Math.min(7,int(_model.myAreaOfferDegree / _model.offerTimesPerBaoZhu));
-         _activedBaoZhuNumTf.text = LanguageMgr.GetTranslation("ddQiYuan.frame.activedBaoZhuNum",_loc1_);
-         _boGuAni.update(_loc1_);
-         var _loc3_:int = _container.getChildIndex(_progressMc);
-         _container.removeChildAt(_loc3_);
-         var _loc2_:int = Math.min(7,_loc1_ + 1);
-         _progressMc = ComponentFactory.Instance.creat("DDQiYuan.mc.Progress" + _loc2_);
-         if(_loc1_ == 7)
+         var activedBaoZhuNum:int = Math.min(7,int(_model.myAreaOfferDegree / _model.offerTimesPerBaoZhu));
+         _activedBaoZhuNumTf.text = LanguageMgr.GetTranslation("ddQiYuan.frame.activedBaoZhuNum",activedBaoZhuNum);
+         _boGuAni.update(activedBaoZhuNum);
+         var childIndex:int = _container.getChildIndex(_progressMc);
+         _container.removeChildAt(childIndex);
+         var progressMcIndex:int = Math.min(7,activedBaoZhuNum + 1);
+         _progressMc = ComponentFactory.Instance.creat("DDQiYuan.mc.Progress" + progressMcIndex);
+         if(activedBaoZhuNum == 7)
          {
             _progressMc.width = 360;
             _offerProgressTf.text = _model.offerTimesPerBaoZhu + "/" + _model.offerTimesPerBaoZhu;
@@ -281,54 +281,54 @@ package ddQiYuan.view
          }
          _progressMc.x = 109;
          _progressMc.y = 318;
-         _container.addChildAt(_progressMc,_loc3_);
+         _container.addChildAt(_progressMc,childIndex);
          ObjectUtils.disposeObject(_progressBgMc);
-         if(_loc2_ > 1)
+         if(progressMcIndex > 1)
          {
-            _progressBgMc = ComponentFactory.Instance.creat("DDQiYuan.mc.Progress" + (_loc2_ - 1));
+            _progressBgMc = ComponentFactory.Instance.creat("DDQiYuan.mc.Progress" + (progressMcIndex - 1));
             _progressBgMc.x = 109;
             _progressBgMc.y = 318;
-            _container.addChildAt(_progressBgMc,_loc3_ - 1);
+            _container.addChildAt(_progressBgMc,childIndex - 1);
          }
          _hasGetGoodsList.update();
          _beliefRewardSp.update();
       }
       
-      private function onBtnClick(param1:MouseEvent) : void
+      private function onBtnClick(evt:MouseEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
+         var currentFrameIndex:int = 0;
+         var currentFrameIndex2:int = 0;
          SoundManager.instance.playButtonSound();
-         var _loc3_:* = param1.target;
-         if(_loc3_ == _towerEnterBtn)
+         var target:* = evt.target;
+         if(target == _towerEnterBtn)
          {
             SocketManager.Instance.out.queryDDQiYuanTowerTask();
          }
-         else if(_loc3_ == _showGetBtn)
+         else if(target == _showGetBtn)
          {
             _hasGetGoodsList.visible = !_hasGetGoodsList.visible;
          }
-         else if(_loc3_ == _offerRewardGoodsScrollPanelLeftBtn)
+         else if(target == _offerRewardGoodsScrollPanelLeftBtn)
          {
             _offerRewardGoodsScrollPanel.hScrollbar.scrollValue = _offerRewardGoodsScrollPanel.hScrollbar.scrollValue - 45;
          }
-         else if(_loc3_ == _offerRewardGoodsScrollPanelRightBtn)
+         else if(target == _offerRewardGoodsScrollPanelRightBtn)
          {
             _offerRewardGoodsScrollPanel.hScrollbar.scrollValue = _offerRewardGoodsScrollPanel.hScrollbar.scrollValue + 45;
          }
-         else if(_loc3_ == _treasureBoxGoodsScrollPanelLeftBtn)
+         else if(target == _treasureBoxGoodsScrollPanelLeftBtn)
          {
             _treasureBoxGoodsScrollPanel.hScrollbar.scrollValue = _treasureBoxGoodsScrollPanel.hScrollbar.scrollValue - 45;
          }
-         else if(_loc3_ == _treasureBoxGoodsScrollPanelRightBtn)
+         else if(target == _treasureBoxGoodsScrollPanelRightBtn)
          {
             _treasureBoxGoodsScrollPanel.hScrollbar.scrollValue = _treasureBoxGoodsScrollPanel.hScrollbar.scrollValue + 45;
          }
-         else if(_loc3_ == _offer1TimeBtn)
+         else if(target == _offer1TimeBtn)
          {
             DDQiYuanManager.instance.useType = 0;
-            _loc2_ = getButtonCurrentFrame(_offer1TimeBtn);
-            if(_loc2_ == 1)
+            currentFrameIndex = getButtonCurrentFrame(_offer1TimeBtn);
+            if(currentFrameIndex == 1)
             {
                DDQiYuanManager.instance.sendOfferTimes(1);
             }
@@ -339,11 +339,11 @@ package ddQiYuan.view
                lockBtns(false);
             }
          }
-         else if(_loc3_ == _offer10TimeBtn)
+         else if(target == _offer10TimeBtn)
          {
             DDQiYuanManager.instance.useType = 0;
-            _loc4_ = getButtonCurrentFrame(_offer10TimeBtn);
-            if(_loc4_ == 1)
+            currentFrameIndex2 = getButtonCurrentFrame(_offer10TimeBtn);
+            if(currentFrameIndex2 == 1)
             {
                DDQiYuanManager.instance.sendOfferTimes(10);
             }
@@ -354,13 +354,13 @@ package ddQiYuan.view
                lockBtns(false);
             }
          }
-         else if(_loc3_ == _openTreasureBoxBtn)
+         else if(target == _openTreasureBoxBtn)
          {
             DDQiYuanManager.instance.sendDDQiYuanOpenTreasureBox();
          }
       }
       
-      private function onChangeTpye(param1:Event) : void
+      private function onChangeTpye(evt:Event) : void
       {
          setButtonFrame(_offer1TimeBtn,1);
          setButtonFrame(_offer10TimeBtn,1);
@@ -368,12 +368,12 @@ package ddQiYuan.view
          lockBtns(false);
       }
       
-      private function lockBtns(param1:Boolean) : void
+      private function lockBtns(lock:Boolean) : void
       {
-         var _loc2_:* = !param1;
+         var _loc2_:* = !lock;
          _offer10TimeBtn.enable = _loc2_;
          _offer1TimeBtn.enable = _loc2_;
-         if(param1)
+         if(lock)
          {
             if(DDQiYuanManager.instance.continueOpen == 1)
             {
@@ -395,7 +395,7 @@ package ddQiYuan.view
          }
       }
       
-      private function onOpStart(param1:Event) : void
+      private function onOpStart(evt:Event) : void
       {
          if(_selectedCheckButton.selected)
          {
@@ -419,9 +419,9 @@ package ddQiYuan.view
          lockBtns(true);
       }
       
-      private function onOpBack(param1:CEvent) : void
+      private function onOpBack(evt:CEvent) : void
       {
-         evt = param1;
+         evt = evt;
          update();
          if(DDQiYuanManager.instance.continueOpen == 0)
          {
@@ -436,30 +436,30 @@ package ddQiYuan.view
          }
       }
       
-      private function responseHandler(param1:FrameEvent) : void
+      private function responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.playButtonSound();
             DDQiYuanController.instance.disposeFrame();
          }
       }
       
-      private function __onselectedCheckButtoClick(param1:MouseEvent) : void
+      private function __onselectedCheckButtoClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
       }
       
-      private function setButtonFrame(param1:BaseButton, param2:int) : void
+      private function setButtonFrame($btn:BaseButton, $frameIndex:int) : void
       {
-         var _loc3_:ScaleFrameImage = param1.backgound as ScaleFrameImage;
-         _loc3_.setFrame(param2);
+         var bg:ScaleFrameImage = $btn.backgound as ScaleFrameImage;
+         bg.setFrame($frameIndex);
       }
       
-      private function getButtonCurrentFrame(param1:BaseButton) : int
+      private function getButtonCurrentFrame($btn:BaseButton) : int
       {
-         var _loc2_:ScaleFrameImage = param1.backgound as ScaleFrameImage;
-         return _loc2_.getFrame;
+         var bg:ScaleFrameImage = $btn.backgound as ScaleFrameImage;
+         return bg.getFrame;
       }
       
       override public function dispose() : void

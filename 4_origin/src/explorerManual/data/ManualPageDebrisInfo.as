@@ -19,43 +19,41 @@ package explorerManual.data
          return _debris;
       }
       
-      public function set debris(param1:Vector.<DebrisInfo>) : void
+      public function set debris(value:Vector.<DebrisInfo>) : void
       {
-         _debris = param1;
+         _debris = value;
       }
       
-      public function getHaveDebrisByPageID(param1:int) : Array
+      public function getHaveDebrisByPageID(pageID:int) : Array
       {
-         var _loc3_:* = null;
-         var _loc6_:int = 0;
-         var _loc7_:int = 0;
-         var _loc4_:Array = [];
-         var _loc2_:Array = ExplorerManualManager.instance.getDebrisByPageID(param1);
-         var _loc5_:Vector.<DebrisInfo> = debris.sort(debrisSort);
-         _loc6_ = 0;
-         while(_loc6_ < _loc5_.length)
+         var debrsInfo:* = null;
+         var j:int = 0;
+         var i:int = 0;
+         var temArr:Array = [];
+         var debrisArr:Array = ExplorerManualManager.instance.getDebrisByPageID(pageID);
+         var newDebris:Vector.<DebrisInfo> = debris.sort(debrisSort);
+         for(j = 0; j < newDebris.length; )
          {
-            _loc7_ = 0;
-            while(_loc7_ < _loc2_.length)
+            for(i = 0; i < debrisArr.length; )
             {
-               if(_loc2_[_loc7_].ID == _loc5_[_loc6_].debrisID)
+               if(debrisArr[i].ID == newDebris[j].debrisID)
                {
-                  _loc4_.push(_loc2_[_loc7_]);
+                  temArr.push(debrisArr[i]);
                }
-               _loc7_++;
+               i++;
             }
-            _loc6_++;
+            j++;
          }
-         return _loc4_;
+         return temArr;
       }
       
-      private function debrisSort(param1:DebrisInfo, param2:DebrisInfo) : Number
+      private function debrisSort(x:DebrisInfo, y:DebrisInfo) : Number
       {
-         if(param1.date.getTime() < param2.date.getTime())
+         if(x.date.getTime() < y.date.getTime())
          {
             return -1;
          }
-         if(param1.date.getTime() > param2.date.getTime())
+         if(x.date.getTime() > y.date.getTime())
          {
             return 1;
          }

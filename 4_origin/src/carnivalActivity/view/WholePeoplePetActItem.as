@@ -51,118 +51,116 @@ package carnivalActivity.view
       
       private var _awardCount:int;
       
-      public function WholePeoplePetActItem(param1:int, param2:GiftBagInfo, param3:int)
+      public function WholePeoplePetActItem(type:int, info:GiftBagInfo, index:int)
       {
-         super(param1,param2,param3);
+         super(type,info,index);
       }
       
       override protected function initItem() : void
       {
-         var _loc4_:int = 0;
-         var _loc5_:int = 0;
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
+         var j:int = 0;
+         var i:int = 0;
+         var temp:int = 0;
+         var selfTemp:int = 0;
          _awardCountTxt = ComponentFactory.Instance.creatComponentByStylename("carnivalAct.countTxt");
          addChild(_awardCountTxt);
-         _loc4_ = 0;
-         while(_loc4_ < _info.giftConditionArr.length)
+         for(j = 0; j < _info.giftConditionArr.length; )
          {
-            if(_info.giftConditionArr[_loc4_].conditionIndex == 4)
+            if(_info.giftConditionArr[j].conditionIndex == 4)
             {
                _selfIsSuperPet = true;
             }
-            else if(_info.giftConditionArr[_loc4_].conditionIndex == 5)
+            else if(_info.giftConditionArr[j].conditionIndex == 5)
             {
                _personIsSuperPet = true;
             }
-            else if(_info.giftConditionArr[_loc4_].conditionIndex == 6)
+            else if(_info.giftConditionArr[j].conditionIndex == 6)
             {
                _addedIsSuperPet = true;
             }
-            _loc4_++;
+            j++;
          }
-         _loc5_ = 0;
-         while(_loc5_ < _info.giftConditionArr.length)
+         for(i = 0; i < _info.giftConditionArr.length; )
          {
-            if(_info.giftConditionArr[_loc5_].conditionIndex == (!!_selfIsSuperPet?4:0))
+            if(_info.giftConditionArr[i].conditionIndex == (!!_selfIsSuperPet?4:0))
             {
-               _selfNeedPetStar = _info.giftConditionArr[_loc5_].conditionValue;
-               _selfNeedPetNum = _info.giftConditionArr[_loc5_].remain1;
+               _selfNeedPetStar = _info.giftConditionArr[i].conditionValue;
+               _selfNeedPetNum = _info.giftConditionArr[i].remain1;
             }
-            else if(_info.giftConditionArr[_loc5_].conditionIndex == (!!_personIsSuperPet?5:1))
+            else if(_info.giftConditionArr[i].conditionIndex == (!!_personIsSuperPet?5:1))
             {
-               _personNeedPetStar = _info.giftConditionArr[_loc5_].conditionValue;
-               _personNeedPetNum = _info.giftConditionArr[_loc5_].remain1;
+               _personNeedPetStar = _info.giftConditionArr[i].conditionValue;
+               _personNeedPetNum = _info.giftConditionArr[i].remain1;
             }
-            else if(_info.giftConditionArr[_loc5_].conditionIndex == (!!_addedIsSuperPet?6:2))
+            else if(_info.giftConditionArr[i].conditionIndex == (!!_addedIsSuperPet?6:2))
             {
-               _addedNeedPetStar = _info.giftConditionArr[_loc5_].conditionValue;
-               _addedNeedPetNum = _info.giftConditionArr[_loc5_].remain1;
+               _addedNeedPetStar = _info.giftConditionArr[i].conditionValue;
+               _addedNeedPetNum = _info.giftConditionArr[i].remain1;
             }
-            else if(_info.giftConditionArr[_loc5_].conditionIndex == 3)
+            else if(_info.giftConditionArr[i].conditionIndex == 3)
             {
-               _getCount = _info.giftConditionArr[_loc5_].conditionValue;
+               _getCount = _info.giftConditionArr[i].conditionValue;
             }
-            _loc5_++;
+            i++;
          }
-         var _loc1_:String = "";
+         var desc:String = "";
          if(_addedNeedPetNum != -1)
          {
-            _loc3_ = !!_addedIsSuperPet?6:3;
-            _loc2_ = !!_selfIsSuperPet?6:3;
-            _loc1_ = LanguageMgr.GetTranslation("wholePeople.pet.descTxt" + _loc3_,_addedNeedPetNum,!!_addedIsSuperPet?_addedNeedPetStar - 10:_addedNeedPetStar);
+            temp = !!_addedIsSuperPet?6:3;
+            selfTemp = !!_selfIsSuperPet?6:3;
+            desc = LanguageMgr.GetTranslation("wholePeople.pet.descTxt" + temp,_addedNeedPetNum,!!_addedIsSuperPet?_addedNeedPetStar - 10:_addedNeedPetStar);
             if(_selfNeedPetNum != -1)
             {
-               _tipStr = LanguageMgr.GetTranslation("wholePeople.pet.tipTxt" + _loc2_,_selfNeedPetNum,!!_selfIsSuperPet?_selfNeedPetStar - 10:_selfNeedPetStar);
+               _tipStr = LanguageMgr.GetTranslation("wholePeople.pet.tipTxt" + selfTemp,_selfNeedPetNum,!!_selfIsSuperPet?_selfNeedPetStar - 10:_selfNeedPetStar);
             }
          }
          else if(_personNeedPetNum != -1)
          {
-            _loc3_ = !!_personIsSuperPet?5:2;
-            _loc2_ = !!_selfIsSuperPet?5:2;
-            _loc1_ = LanguageMgr.GetTranslation("wholePeople.pet.descTxt" + _loc3_,_personNeedPetNum,!!_personIsSuperPet?_personNeedPetStar - 10:_personNeedPetStar);
+            temp = !!_personIsSuperPet?5:2;
+            selfTemp = !!_selfIsSuperPet?5:2;
+            desc = LanguageMgr.GetTranslation("wholePeople.pet.descTxt" + temp,_personNeedPetNum,!!_personIsSuperPet?_personNeedPetStar - 10:_personNeedPetStar);
             if(_selfNeedPetNum != -1)
             {
-               _tipStr = LanguageMgr.GetTranslation("wholePeople.pet.tipTxt" + _loc2_,_selfNeedPetNum,!!_selfIsSuperPet?_selfNeedPetStar - 10:_selfNeedPetStar);
+               _tipStr = LanguageMgr.GetTranslation("wholePeople.pet.tipTxt" + selfTemp,_selfNeedPetNum,!!_selfIsSuperPet?_selfNeedPetStar - 10:_selfNeedPetStar);
             }
          }
          else
          {
-            _loc3_ = !!_selfIsSuperPet?4:1;
-            _loc1_ = LanguageMgr.GetTranslation("wholePeople.pet.descTxt" + _loc3_,_selfNeedPetNum,!!_selfIsSuperPet?_selfNeedPetStar - 10:_selfNeedPetStar);
+            temp = !!_selfIsSuperPet?4:1;
+            desc = LanguageMgr.GetTranslation("wholePeople.pet.descTxt" + temp,_selfNeedPetNum,!!_selfIsSuperPet?_selfNeedPetStar - 10:_selfNeedPetStar);
          }
-         _descTxt.text = _loc1_;
+         _descTxt.text = desc;
       }
       
       override public function updateView() : void
       {
-         var _loc1_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
+         var addedNum:int = 0;
+         var personNum:int = 0;
+         var selfNum:int = 0;
          _giftCurInfo = WonderfulActivityManager.Instance.activityInitData[_info.activityId].giftInfoDic[_info.giftbagId];
          _statusArr = WonderfulActivityManager.Instance.activityInitData[_info.activityId].statusArr;
          var _loc11_:int = 0;
          var _loc10_:* = _statusArr;
-         for each(var _loc9_ in _statusArr)
+         for each(var info in _statusArr)
          {
-            if(_loc9_.statusID >= _selfNeedPetStar + (!!_selfIsSuperPet?200:0) && _loc9_.statusID < 50 + (!!_selfIsSuperPet?200:0))
+            if(info.statusID >= _selfNeedPetStar + (!!_selfIsSuperPet?200:0) && info.statusID < 50 + (!!_selfIsSuperPet?200:0))
             {
-               _loc3_ = _loc3_ + _loc9_.statusValue;
+               selfNum = selfNum + info.statusValue;
             }
-            else if(_loc9_.statusID == _personNeedPetStar + (!!_personIsSuperPet?300:100))
+            else if(info.statusID == _personNeedPetStar + (!!_personIsSuperPet?300:100))
             {
-               _loc2_ = _loc9_.statusValue;
+               personNum = info.statusValue;
             }
-            else if(_loc9_.statusID == _addedNeedPetStar + (!!_addedIsSuperPet?300:100))
+            else if(info.statusID == _addedNeedPetStar + (!!_addedIsSuperPet?300:100))
             {
-               _loc1_ = _loc9_.statusValue;
+               addedNum = info.statusValue;
             }
          }
-         var _loc7_:Boolean = _addedNeedPetNum != -1?int(_loc1_ / _addedNeedPetNum) > _giftCurInfo.times:true;
-         var _loc6_:Boolean = _personNeedPetNum != -1?_loc2_ >= _personNeedPetNum:true;
-         var _loc5_:Boolean = _selfNeedPetNum != -1?_loc3_ >= _selfNeedPetNum:true;
-         var _loc4_:Boolean = _getCount == 0?true:_giftCurInfo.times < _getCount;
-         var _loc8_:Boolean = CarnivalActivityControl.instance.canGetAward() && _loc7_ && _loc6_ && _loc5_ && _loc4_;
+         var addedBoolean:Boolean = _addedNeedPetNum != -1?int(addedNum / _addedNeedPetNum) > _giftCurInfo.times:true;
+         var personBoolean:Boolean = _personNeedPetNum != -1?personNum >= _personNeedPetNum:true;
+         var selfBoolean:Boolean = _selfNeedPetNum != -1?selfNum >= _selfNeedPetNum:true;
+         var timeBoolean:Boolean = _getCount == 0?true:_giftCurInfo.times < _getCount;
+         var canGet:Boolean = CarnivalActivityControl.instance.canGetAward() && addedBoolean && personBoolean && selfBoolean && timeBoolean;
          if(_addedNeedPetNum != -1)
          {
             ObjectUtils.disposeObject(_getBtn);
@@ -171,7 +169,7 @@ package carnivalActivity.view
             _btnTxt = null;
             ObjectUtils.disposeObject(_tipsBtn);
             _tipsBtn = null;
-            if(_loc8_ && int(_loc1_ / _addedNeedPetNum) - _giftCurInfo.times >= 1)
+            if(canGet && int(addedNum / _addedNeedPetNum) - _giftCurInfo.times >= 1)
             {
                _getBtn = ComponentFactory.Instance.creatComponentByStylename("wonderfulactivity.smallGetBtn");
                _btnTxt = ComponentFactory.Instance.creatComponentByStylename("wonderfulactivity.right.btnTxt");
@@ -183,31 +181,31 @@ package carnivalActivity.view
                _tipsBtn.x = _getBtn.x + 45;
                _tipsBtn.y = _getBtn.y - 16;
                addChild(_tipsBtn);
-               _btnTxt.text = "(" + (int(_loc1_ / _addedNeedPetNum) - _giftCurInfo.times) + ")";
-               _awardCount = int(_loc1_ / _addedNeedPetNum) - _giftCurInfo.times;
+               _btnTxt.text = "(" + (int(addedNum / _addedNeedPetNum) - _giftCurInfo.times) + ")";
+               _awardCount = int(addedNum / _addedNeedPetNum) - _giftCurInfo.times;
             }
             else
             {
                _getBtn = ComponentFactory.Instance.creatComponentByStylename("wonderfulactivity.bigGetBtn");
                addChild(_getBtn);
             }
-            _getBtn.enable = _loc8_ && int(_loc1_ / _addedNeedPetNum) - _giftCurInfo.times >= 1;
+            _getBtn.enable = canGet && int(addedNum / _addedNeedPetNum) - _giftCurInfo.times >= 1;
             _getBtn.addEventListener("click",__getAwardHandler);
             PositionUtils.setPos(_getBtn,"carnivalAct.getButtonPos");
-            _awardCountTxt.text = "" + _loc1_;
+            _awardCountTxt.text = "" + addedNum;
          }
          else if(_personNeedPetNum != -1)
          {
-            _awardCountTxt.text = _loc2_ + "/" + _personNeedPetNum;
+            _awardCountTxt.text = personNum + "/" + _personNeedPetNum;
             _alreadyGetBtn.visible = _giftCurInfo.times > 0;
-            _getBtn.enable = _loc8_ && _giftCurInfo.times == 0;
+            _getBtn.enable = canGet && _giftCurInfo.times == 0;
             _getBtn.visible = !_alreadyGetBtn.visible;
          }
          else
          {
-            _awardCountTxt.text = _loc3_ + "/" + _selfNeedPetNum;
+            _awardCountTxt.text = selfNum + "/" + _selfNeedPetNum;
             _alreadyGetBtn.visible = _giftCurInfo.times > 0;
-            _getBtn.enable = _loc8_ && _giftCurInfo.times == 0;
+            _getBtn.enable = canGet && _giftCurInfo.times == 0;
             _getBtn.visible = !_alreadyGetBtn.visible;
          }
          if(_tipStr != "")
@@ -240,7 +238,7 @@ package carnivalActivity.view
          }
       }
       
-      override protected function __getAwardHandler(param1:MouseEvent) : void
+      override protected function __getAwardHandler(event:MouseEvent) : void
       {
          if(getTimer() - CarnivalActivityControl.instance.lastClickTime < 2000)
          {
@@ -249,20 +247,20 @@ package carnivalActivity.view
          }
          CarnivalActivityControl.instance.lastClickTime = getTimer();
          SoundManager.instance.playButtonSound();
-         var _loc2_:Vector.<SendGiftInfo> = new Vector.<SendGiftInfo>();
-         var _loc3_:SendGiftInfo = new SendGiftInfo();
-         _loc3_.activityId = _info.activityId;
-         _loc3_.giftIdArr = [_info.giftbagId];
+         var sendInfoVec:Vector.<SendGiftInfo> = new Vector.<SendGiftInfo>();
+         var info:SendGiftInfo = new SendGiftInfo();
+         info.activityId = _info.activityId;
+         info.giftIdArr = [_info.giftbagId];
          if(_addedNeedPetNum != -1)
          {
-            _loc3_.awardCount = _awardCount;
+            info.awardCount = _awardCount;
          }
          else
          {
-            _loc3_.awardCount = 1;
+            info.awardCount = 1;
          }
-         _loc2_.push(_loc3_);
-         SocketManager.Instance.out.sendWonderfulActivityGetReward(_loc2_);
+         sendInfoVec.push(info);
+         SocketManager.Instance.out.sendWonderfulActivityGetReward(sendInfoVec);
       }
       
       override public function dispose() : void

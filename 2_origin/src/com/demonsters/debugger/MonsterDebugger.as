@@ -19,15 +19,15 @@ package com.demonsters.debugger
          super();
       }
       
-      public static function initialize(param1:Object, param2:String = "127.0.0.1") : void
+      public static function initialize(base:Object, address:String = "127.0.0.1") : void
       {
          if(!_initialized)
          {
             _initialized = true;
-            MonsterDebuggerCore.base = param1;
+            MonsterDebuggerCore.base = base;
             MonsterDebuggerCore.initialize();
             MonsterDebuggerConnection.initialize();
-            MonsterDebuggerConnection.address = param2;
+            MonsterDebuggerConnection.address = address;
             MonsterDebuggerConnection.connect();
          }
       }
@@ -37,105 +37,105 @@ package com.demonsters.debugger
          return _enabled;
       }
       
-      public static function set enabled(param1:Boolean) : void
+      public static function set enabled(value:Boolean) : void
       {
-         _enabled = param1;
+         _enabled = value;
       }
       
-      public static function trace(param1:*, param2:*, param3:String = "", param4:String = "", param5:uint = 0, param6:int = 5) : void
+      public static function trace(caller:*, object:*, person:String = "", label:String = "", color:uint = 0, depth:int = 5) : void
       {
          if(_initialized && _enabled)
          {
-            MonsterDebuggerCore.trace(param1,param2,param3,param4,param5,param6);
+            MonsterDebuggerCore.trace(caller,object,person,label,color,depth);
          }
       }
       
-      public static function log(... rest) : void
+      public static function log(... args) : void
       {
-         var _loc5_:* = null;
-         var _loc7_:* = null;
-         var _loc6_:* = null;
-         var _loc4_:* = null;
-         var _loc3_:int = 0;
-         var _loc2_:* = 0;
+         var target:* = null;
+         var stack:* = null;
+         var lines:* = null;
+         var s:* = null;
+         var bracketIndex:int = 0;
+         var methodIndex:* = 0;
          if(_initialized && _enabled)
          {
-            if(rest.length == 0)
+            if(args.length == 0)
             {
                return;
             }
-            _loc5_ = "Log";
+            target = "Log";
             try
             {
                throw new Error();
             }
             catch(e:Error)
             {
-               _loc7_ = e.getStackTrace();
-               if(_loc7_ != null && _loc7_ != "")
+               stack = e.getStackTrace();
+               if(stack != null && stack != "")
                {
-                  _loc7_ = _loc7_.split("\t").join("");
-                  _loc6_ = _loc7_.split("\n");
-                  if(_loc6_.length > 2)
+                  stack = stack.split("\t").join("");
+                  lines = stack.split("\n");
+                  if(lines.length > 2)
                   {
-                     _loc6_.shift();
-                     _loc6_.shift();
-                     _loc4_ = _loc6_[0];
-                     _loc4_ = _loc4_.substring(3,_loc4_.length);
-                     _loc3_ = _loc4_.indexOf("[");
-                     _loc2_ = int(_loc4_.indexOf("/"));
-                     if(_loc3_ == -1)
+                     lines.shift();
+                     lines.shift();
+                     s = lines[0];
+                     s = s.substring(3,s.length);
+                     bracketIndex = s.indexOf("[");
+                     methodIndex = int(s.indexOf("/"));
+                     if(bracketIndex == -1)
                      {
-                        _loc3_ = _loc4_.length;
+                        bracketIndex = s.length;
                      }
-                     if(_loc2_ == -1)
+                     if(methodIndex == -1)
                      {
-                        _loc2_ = _loc3_;
+                        methodIndex = bracketIndex;
                      }
-                     _loc5_ = MonsterDebuggerUtils.parseType(_loc4_.substring(0,_loc2_));
-                     if(_loc5_ == "<anonymous>")
+                     target = MonsterDebuggerUtils.parseType(s.substring(0,methodIndex));
+                     if(target == "<anonymous>")
                      {
-                        _loc5_ = "";
+                        target = "";
                      }
-                     if(_loc5_ == "")
+                     if(target == "")
                      {
-                        _loc5_ = "Log";
+                        target = "Log";
                      }
                   }
                }
             }
-            if(rest.length == 1)
+            if(args.length == 1)
             {
-               MonsterDebuggerCore.trace(_loc5_,rest[0],"","",0,5);
+               MonsterDebuggerCore.trace(target,args[0],"","",0,5);
             }
             else
             {
-               MonsterDebuggerCore.trace(_loc5_,rest,"","",0,5);
+               MonsterDebuggerCore.trace(target,args,"","",0,5);
             }
          }
       }
       
-      public static function snapshot(param1:*, param2:DisplayObject, param3:String = "", param4:String = "") : void
+      public static function snapshot(caller:*, object:DisplayObject, person:String = "", label:String = "") : void
       {
          if(_initialized && _enabled)
          {
-            MonsterDebuggerCore.snapshot(param1,param2,param3,param4);
+            MonsterDebuggerCore.snapshot(caller,object,person,label);
          }
       }
       
-      public static function breakpoint(param1:*, param2:String = "breakpoint") : void
+      public static function breakpoint(caller:*, id:String = "breakpoint") : void
       {
          if(_initialized && _enabled)
          {
-            MonsterDebuggerCore.breakpoint(param1,param2);
+            MonsterDebuggerCore.breakpoint(caller,id);
          }
       }
       
-      public static function inspect(param1:*) : void
+      public static function inspect(object:*) : void
       {
          if(_initialized && _enabled)
          {
-            MonsterDebuggerCore.inspect(param1);
+            MonsterDebuggerCore.inspect(object);
          }
       }
       

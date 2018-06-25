@@ -43,9 +43,9 @@ package consortionBattle.player
          return _walkPath;
       }
       
-      public function set walkPath(param1:Array) : void
+      public function set walkPath(value:Array) : void
       {
-         _walkPath = param1;
+         _walkPath = value;
       }
    }
 }

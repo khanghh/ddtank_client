@@ -36,15 +36,15 @@ package game.view
       
       private function startLoader() : void
       {
-         var _loc2_:String = PathManager.getWeatherUrl(_mapIndex);
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(_loc2_,4);
-         _loc1_.addEventListener("complete",__onLoadComplete);
-         LoaderManager.Instance.startLoad(_loc1_);
+         var path:String = PathManager.getWeatherUrl(_mapIndex);
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(path,4);
+         loader.addEventListener("complete",__onLoadComplete);
+         LoaderManager.Instance.startLoad(loader);
       }
       
-      private function __onLoadComplete(param1:LoaderEvent) : void
+      private function __onLoadComplete(e:LoaderEvent) : void
       {
-         (param1.currentTarget as BaseLoader).removeEventListener("complete",__onLoadComplete);
+         (e.currentTarget as BaseLoader).removeEventListener("complete",__onLoadComplete);
          createMovie();
       }
       
@@ -58,17 +58,17 @@ package game.view
          addChild(_movie);
       }
       
-      public function update(param1:int, param2:Number) : void
+      public function update(dur:int, value:Number) : void
       {
-         if(param2 > 90)
+         if(value > 90)
          {
-            param2 = 90;
+            value = 90;
          }
-         if(param2 < -90)
+         if(value < -90)
          {
-            param2 = -90;
+            value = -90;
          }
-         _movie.rotation = -1 * param2;
+         _movie.rotation = -1 * value;
       }
       
       public function get movie() : MovieClip

@@ -10,7 +10,7 @@ package GodSyah
       private static var _instance:SyahControl;
        
       
-      public function SyahControl(param1:SyahInstance)
+      public function SyahControl(instance:SyahInstance)
       {
          super();
       }
@@ -30,15 +30,15 @@ package GodSyah
          SyahManager.Instance.addEventListener("hideMainView",__hideMainViewHandler);
       }
       
-      private function __showMainViewHandler(param1:Event) : void
+      private function __showMainViewHandler(e:Event) : void
       {
-         var _loc2_:SyahView = new SyahView();
-         _loc2_.init();
-         _loc2_.x = -227;
-         HallIconManager.instance.showCommonFrame(_loc2_,"wonderfulActivityManager.btnTxt13");
+         var _view:SyahView = new SyahView();
+         _view.init();
+         _view.x = -227;
+         HallIconManager.instance.showCommonFrame(_view,"wonderfulActivityManager.btnTxt13");
       }
       
-      private function __hideMainViewHandler(param1:Event) : void
+      private function __hideMainViewHandler(e:Event) : void
       {
       }
    }

@@ -45,9 +45,9 @@ package flowerGiving.components
       
       private var _baseTip:GoodTipInfo;
       
-      public function FlowerSendFrameItem(param1:GiftBagInfo)
+      public function FlowerSendFrameItem(data:GiftBagInfo)
       {
-         _giftData = param1;
+         _giftData = data;
          super();
          initView();
          initViewWithData();
@@ -59,7 +59,7 @@ package flowerGiving.components
          _selectBtn.addEventListener("click",__clickHandler);
       }
       
-      protected function __clickHandler(param1:MouseEvent) : void
+      protected function __clickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          updateShine();
@@ -95,51 +95,50 @@ package flowerGiving.components
       
       private function initViewWithData() : void
       {
-         var _loc4_:int = 0;
-         var _loc1_:* = null;
-         var _loc3_:* = null;
+         var i:int = 0;
+         var rewardInfo:* = null;
+         var item:* = null;
          _sendNumTxt.text = LanguageMgr.GetTranslation("flowerGiving.flowerSendFrame.sendNumTxt",_giftData.giftConditionArr[0].conditionValue);
          _sendBagCell = createBagCell(FlowerGivingManager.instance.flowerTempleteId);
          addChild(_sendBagCell);
          _sendBagCell.setCountNotVisible();
          PositionUtils.setPos(_sendBagCell,"flowerGiving.flowerSendFrame.sendBagCell");
          _baseTip = new GoodTipInfo();
-         var _loc5_:ItemTemplateInfo = new ItemTemplateInfo();
-         _loc5_.Quality = 4;
-         _loc5_.CategoryID = 11;
-         _loc5_.Name = LanguageMgr.GetTranslation("flowerGiving.flowerSendFrame.getGiftPackName" + (_giftData.giftbagOrder + 1));
-         var _loc2_:String = "";
-         _loc4_ = 0;
-         while(_loc4_ < _giftData.giftRewardArr.length)
+         var info:ItemTemplateInfo = new ItemTemplateInfo();
+         info.Quality = 4;
+         info.CategoryID = 11;
+         info.Name = LanguageMgr.GetTranslation("flowerGiving.flowerSendFrame.getGiftPackName" + (_giftData.giftbagOrder + 1));
+         var content:String = "";
+         for(i = 0; i < _giftData.giftRewardArr.length; )
          {
-            _loc1_ = _giftData.giftRewardArr[_loc4_];
-            _loc3_ = new InventoryItemInfo();
-            _loc3_.TemplateID = _loc1_.templateId;
-            ItemManager.fill(_loc3_);
-            if(_loc2_ != "")
+            rewardInfo = _giftData.giftRewardArr[i];
+            item = new InventoryItemInfo();
+            item.TemplateID = rewardInfo.templateId;
+            ItemManager.fill(item);
+            if(content != "")
             {
-               _loc2_ = _loc2_ + "、";
+               content = content + "、";
             }
-            _loc2_ = _loc2_ + (_loc3_.Name + "x" + _loc1_.count);
-            _loc4_++;
+            content = content + (item.Name + "x" + rewardInfo.count);
+            i++;
          }
-         _loc5_.Description = LanguageMgr.GetTranslation("flowerGiving.flowerSendFrame.getGiftPackContent") + _loc2_;
-         _baseTip.itemInfo = _loc5_;
+         info.Description = LanguageMgr.GetTranslation("flowerGiving.flowerSendFrame.getGiftPackContent") + content;
+         _baseTip.itemInfo = info;
          _getIcon.tipStyle = "core.GoodsTip";
          _getIcon.tipDirctions = "1,3";
          _getIcon.tipData = _baseTip;
       }
       
-      private function createBagCell(param1:int) : BagCell
+      private function createBagCell(templeteId:int) : BagCell
       {
-         var _loc3_:InventoryItemInfo = new InventoryItemInfo();
-         _loc3_.TemplateID = param1;
-         _loc3_ = ItemManager.fill(_loc3_);
-         _loc3_.BindType = 4;
-         var _loc2_:BagCell = new BagCell(0);
-         _loc2_.info = _loc3_;
-         _loc2_.setBgVisible(false);
-         return _loc2_;
+         var info:InventoryItemInfo = new InventoryItemInfo();
+         info.TemplateID = templeteId;
+         info = ItemManager.fill(info);
+         info.BindType = 4;
+         var bagCell:BagCell = new BagCell(0);
+         bagCell.info = info;
+         bagCell.setBgVisible(false);
+         return bagCell;
       }
       
       private function removeEvent() : void
@@ -157,9 +156,9 @@ package flowerGiving.components
          return _selectBtn;
       }
       
-      public function set selectBtn(param1:SelectedCheckButton) : void
+      public function set selectBtn(value:SelectedCheckButton) : void
       {
-         _selectBtn = param1;
+         _selectBtn = value;
       }
       
       public function dispose() : void

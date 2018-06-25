@@ -68,12 +68,12 @@ package catchInsect.player
       
       private var isFollow:Boolean = false;
       
-      public function CatchInsectMonster(param1:InsectInfo, param2:Point)
+      public function CatchInsectMonster(pInsectInfo:InsectInfo, pPos:Point)
       {
          super();
-         _pos = param2.clone();
-         LastPos = param2;
-         _monsterInfo = param1;
+         _pos = pPos.clone();
+         LastPos = pPos;
+         _monsterInfo = pInsectInfo;
          initMovie();
          this.x = _pos.x;
          this.y = _pos.y;
@@ -85,10 +85,10 @@ package catchInsect.player
          this.MonsterState = _monsterInfo.State;
       }
       
-      public function set Pos(param1:Point) : void
+      public function set Pos(value:Point) : void
       {
-         _pos = param1;
-         LastPos = param1;
+         _pos = value;
+         LastPos = value;
       }
       
       private function TimeEx() : Number
@@ -101,9 +101,9 @@ package catchInsect.player
          return _state;
       }
       
-      public function set MonsterState(param1:int) : void
+      public function set MonsterState(value:int) : void
       {
-         _state = param1;
+         _state = value;
          if(_state >= 1)
          {
             this.visible = true;
@@ -149,7 +149,7 @@ package catchInsect.player
          _monsterInfo.removeEventListener("update_monster_state",__onStateChange);
       }
       
-      private function __onMouseOverMonster(param1:MouseEvent) : void
+      private function __onMouseOverMonster(e:MouseEvent) : void
       {
          if(this.MonsterState >= 1)
          {
@@ -161,7 +161,7 @@ package catchInsect.player
          }
       }
       
-      private function __onMouseOutMonster(param1:MouseEvent) : void
+      private function __onMouseOutMonster(e:MouseEvent) : void
       {
          if(this.MonsterState >= 1)
          {
@@ -173,9 +173,9 @@ package catchInsect.player
          }
       }
       
-      private function __onStateChange(param1:InsectEvent) : void
+      private function __onStateChange(pEvent:InsectEvent) : void
       {
-         this.MonsterState = param1.data as int;
+         this.MonsterState = pEvent.data as int;
       }
       
       private function startTimer() : void
@@ -185,10 +185,10 @@ package catchInsect.player
       
       private function initMovie() : void
       {
-         var _loc1_:* = null;
+         var movieClass:* = null;
          if(ModuleLoader.hasDefinition(_monsterInfo.ActionMovieName))
          {
-            _loc1_ = ModuleLoader.getDefinition(_monsterInfo.ActionMovieName) as Class;
+            movieClass = ModuleLoader.getDefinition(_monsterInfo.ActionMovieName) as Class;
             if(_actionMovie)
             {
                _actionMovie.dispose();
@@ -196,7 +196,7 @@ package catchInsect.player
                ObjectUtils.disposeObject(_movieTouch);
                _movieTouch = null;
             }
-            _actionMovie = new _loc1_();
+            _actionMovie = new movieClass();
             addChild(_actionMovie);
             _movieTouch = new Sprite();
             _movieTouch.graphics.beginFill(0,0);
@@ -234,7 +234,7 @@ package catchInsect.player
          }
       }
       
-      private function __walkingNow(param1:Event) : void
+      private function __walkingNow(pEvent:Event) : void
       {
          if(_actionMovie)
          {
@@ -242,7 +242,7 @@ package catchInsect.player
          }
       }
       
-      protected function __checkActionIsReady(param1:Event) : void
+      protected function __checkActionIsReady(event:Event) : void
       {
          if(ModuleLoader.hasDefinition(_monsterInfo.ActionMovieName))
          {
@@ -254,15 +254,15 @@ package catchInsect.player
          }
       }
       
-      private function __onMonsterClick(param1:MouseEvent) : void
+      private function __onMonsterClick(pEvent:MouseEvent) : void
       {
          CatchInsectMonsterManager.Instance.curMonster = this;
       }
       
       public function StartFight() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var alertAsk:* = null;
+         var alertAsk2:* = null;
          if(!CatchInsectMonsterManager.Instance.isFighting && this.MonsterState <= 0)
          {
             CheckWeaponManager.instance.setFunction(this,StartFight);
@@ -273,31 +273,31 @@ package catchInsect.player
             }
             if(PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(10616) <= 0)
             {
-               _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("catchInsect.alertNoNet"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false);
-               _loc2_.addEventListener("response",__reponse);
+               alertAsk = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("catchInsect.alertNoNet"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false);
+               alertAsk.addEventListener("response",__reponse);
                return;
             }
             if(CatchInsectManager.instance.useCakeFlag && PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(10615) <= 0)
             {
-               _loc1_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("catchInsect.alertNoBall"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false);
-               _loc1_.addEventListener("response",__reponse);
+               alertAsk2 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("catchInsect.alertNoBall"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false);
+               alertAsk2.addEventListener("response",__reponse);
                return;
             }
             fight();
          }
       }
       
-      protected function __reponse(param1:FrameEvent) : void
+      protected function __reponse(event:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__reponse);
-         switch(int(param1.responseCode) - 2)
+         var frame:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("response",__reponse);
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
                fight();
          }
-         _loc2_.dispose();
+         frame.dispose();
       }
       
       private function fight() : void
@@ -315,16 +315,16 @@ package catchInsect.player
          CatchInsectMonsterManager.Instance.CurrentMonster = null;
       }
       
-      public function walk(param1:Point = null) : void
+      public function walk(pAimPoint:Point = null) : void
       {
-         var _loc2_:int = 0;
-         if(param1)
+         var dis:int = 0;
+         if(pAimPoint)
          {
-            _loc2_ = Point.distance(param1,new Point(this.x,this.y));
-            if(_loc2_ > 30)
+            dis = Point.distance(pAimPoint,new Point(this.x,this.y));
+            if(dis > 30)
             {
-               aimX = param1.x;
-               aimY = param1.y;
+               aimX = pAimPoint.x;
+               aimY = pAimPoint.y;
                _pos = new Point(aimX,aimY);
                isFollow = true;
                if(aimX >= this.x)
@@ -336,7 +336,7 @@ package catchInsect.player
                   _actionMovie.scaleX = 1;
                }
                _actionMovie.doAction("walk");
-               tween = TweenLite.to(this,_loc2_ * TimeEx(),{
+               tween = TweenLite.to(this,dis * TimeEx(),{
                   "x":aimX,
                   "y":aimY,
                   "onComplete":onTweenComplete
@@ -353,17 +353,17 @@ package catchInsect.player
             aimY = _pos.y;
             if(aimX >= LastPos.x)
             {
-               _loc2_ = aimX - LastPos.x;
+               dis = aimX - LastPos.x;
                _actionMovie.scaleX = -1;
                _actionMovie.doAction("walk");
             }
             else
             {
-               _loc2_ = LastPos.x - aimX;
+               dis = LastPos.x - aimX;
                _actionMovie.scaleX = 1;
                _actionMovie.doAction("walk");
             }
-            tween = TweenLite.to(this,_loc2_ * TimeEx(),{
+            tween = TweenLite.to(this,dis * TimeEx(),{
                "x":aimX,
                "onComplete":onTweenComplete
             });

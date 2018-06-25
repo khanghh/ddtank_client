@@ -28,51 +28,50 @@ package stock.items
          addEventListener("click",overOrOut);
       }
       
-      private function overOrOut(param1:MouseEvent) : void
+      private function overOrOut(event:MouseEvent) : void
       {
-         var _loc3_:int = 0;
+         var i:int = 0;
          validLabel();
-         var _loc2_:Boolean = param1.type == "mouseOver" || param1.type == "click";
-         _loc3_ = 0;
-         while(_loc3_ < _overLabels.length)
+         var isOver:Boolean = event.type == "mouseOver" || event.type == "click";
+         for(i = 0; i < _overLabels.length; )
          {
-            _overLabels[_loc3_].visible = _loc2_;
-            _normalLabels[_loc3_].visible = !_loc2_;
-            _loc3_++;
+            _overLabels[i].visible = isOver;
+            _normalLabels[i].visible = !isOver;
+            i++;
          }
       }
       
-      public function set data(param1:StockData) : void
+      public function set data(value:StockData) : void
       {
-         var _loc3_:int = 0;
-         _data = param1;
-         var _loc2_:* = param1 == null;
-         lablID.text = !!_loc2_?"":param1.StockID.toString();
-         lablIDSelected.text = !!_loc2_?"":param1.StockID.toString();
-         lablName.text = !!_loc2_?"":param1.StockName;
-         lablNameSelected.text = !!_loc2_?"":param1.StockName;
-         var _loc4_:* = !!_loc2_?"":param1.price.toString();
+         var i:int = 0;
+         _data = value;
+         var isNull:* = value == null;
+         lablID.text = !!isNull?"":value.StockID.toString();
+         lablIDSelected.text = !!isNull?"":value.StockID.toString();
+         lablName.text = !!isNull?"":value.StockName;
+         lablNameSelected.text = !!isNull?"":value.StockName;
+         var _loc4_:* = !!isNull?"":value.price.toString();
          lblPriceLO.text = _loc4_;
          _loc4_ = _loc4_;
          lablPriceLN.text = _loc4_;
          _loc4_ = _loc4_;
          lblPriceGO.text = _loc4_;
          lablPriceGN.text = _loc4_;
-         _loc4_ = !!_loc2_?"":param1.changeValue < 0?param1.changeValue.toString():"+" + param1.changeValue;
+         _loc4_ = !!isNull?"":value.changeValue < 0?value.changeValue.toString():"+" + value.changeValue;
          lblChangeLO.text = _loc4_;
          _loc4_ = _loc4_;
          lblChangeLN.text = _loc4_;
          _loc4_ = _loc4_;
          lblChangeGO.text = _loc4_;
          lblChangeGN.text = _loc4_;
-         _loc4_ = !!_loc2_?"":param1.dealNum.toString();
+         _loc4_ = !!isNull?"":value.dealNum.toString();
          lblDealNumLO.text = _loc4_;
          _loc4_ = _loc4_;
          lblDealNumLN.text = _loc4_;
          _loc4_ = _loc4_;
          lblDealNumGO.text = _loc4_;
          lblDealNumGN.text = _loc4_;
-         _loc4_ = !!_loc2_?"":param1.holdNum.toString();
+         _loc4_ = !!isNull?"":value.holdNum.toString();
          lblHoldNumLO.text = _loc4_;
          _loc4_ = _loc4_;
          lblHoldNumLN.text = _loc4_;
@@ -80,11 +79,10 @@ package stock.items
          lblHoldNumGO.text = _loc4_;
          lblHoldNumGN.text = _loc4_;
          validLabel();
-         _loc3_ = 0;
-         while(_loc3_ < _normalLabels.length)
+         for(i = 0; i < _normalLabels.length; )
          {
-            _normalLabels[_loc3_].visible = true;
-            _loc3_++;
+            _normalLabels[i].visible = true;
+            i++;
          }
       }
       

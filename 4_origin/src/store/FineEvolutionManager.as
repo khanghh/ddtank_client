@@ -84,14 +84,14 @@ package store
          return _needPlayMc;
       }
       
-      public function set needPlayMc(param1:Boolean) : void
+      public function set needPlayMc(value:Boolean) : void
       {
-         _needPlayMc = param1;
+         _needPlayMc = value;
       }
       
-      public function EvolutionAnalyzer(param1:EvolutionDataAnalyzer) : void
+      public function EvolutionAnalyzer(data:EvolutionDataAnalyzer) : void
       {
-         _evolutionData = param1.data;
+         _evolutionData = data.data;
       }
       
       public function get EvolutionDatas() : DictionaryData
@@ -99,76 +99,74 @@ package store
          return _evolutionData;
       }
       
-      public function EvolutionDataByLv(param1:int) : EvolutionData
+      public function EvolutionDataByLv(lv:int) : EvolutionData
       {
-         if(_evolutionData && _evolutionData.hasKey(param1))
+         if(_evolutionData && _evolutionData.hasKey(lv))
          {
-            return _evolutionData[param1];
+            return _evolutionData[lv];
          }
          return null;
       }
       
-      public function GetNextEvolutionDataByEXP(param1:int) : EvolutionData
+      public function GetNextEvolutionDataByEXP(exp:int) : EvolutionData
       {
-         var _loc3_:* = null;
-         var _loc4_:int = 0;
-         var _loc2_:Array = _evolutionData.list;
-         _loc4_ = 0;
-         while(_loc4_ < _loc2_.length)
+         var data:* = null;
+         var i:int = 0;
+         var arr:Array = _evolutionData.list;
+         for(i = 0; i < arr.length; )
          {
-            if(_loc2_[_loc4_].Exp > param1)
+            if(arr[i].Exp > exp)
             {
-               _loc3_ = EvolutionDataByLv(_loc2_[_loc4_].Level);
-               _loc3_.isMax = false;
-               return _loc3_;
+               data = EvolutionDataByLv(arr[i].Level);
+               data.isMax = false;
+               return data;
             }
-            if(_loc4_ == _loc2_.length - 1 && _loc2_[_loc4_].Exp == param1)
+            if(i == arr.length - 1 && arr[i].Exp == exp)
             {
-               _loc3_ = EvolutionDataByLv(_loc2_[_loc4_].Level);
-               _loc3_.isMax = true;
-               return _loc3_;
+               data = EvolutionDataByLv(arr[i].Level);
+               data.isMax = true;
+               return data;
             }
-            _loc4_++;
+            i++;
          }
          return null;
       }
       
-      public function GetEvolutionDataByExp(param1:int) : EvolutionData
+      public function GetEvolutionDataByExp(exp:int) : EvolutionData
       {
-         var _loc3_:* = null;
-         var _loc4_:int = 0;
-         var _loc2_:Array = _evolutionData.list;
-         _loc4_ = 0;
-         while(_loc4_ < _loc2_.length)
+         var data:* = null;
+         var i:int = 0;
+         var arr:Array = _evolutionData.list;
+         for(i = 0; i < arr.length; )
          {
-            if(param1 < _loc2_[_loc4_].Exp && param1 > 0)
+            if(exp < arr[i].Exp && exp > 0)
             {
-               _loc3_ = EvolutionDataByLv(_loc2_[_loc4_].Level - 1);
-               return _loc3_;
+               data = EvolutionDataByLv(arr[i].Level - 1);
+               return data;
             }
-            if(param1 == _loc2_[_loc4_].Exp)
+            if(exp == arr[i].Exp)
             {
-               _loc3_ = EvolutionDataByLv(_loc2_[_loc4_].Level);
-               return _loc3_;
+               data = EvolutionDataByLv(arr[i].Level);
+               return data;
             }
-            _loc4_++;
+            i++;
          }
-         return _loc3_;
+         return data;
       }
       
-      public function progress(param1:InventoryItemInfo) : int
+      public function progress(info:InventoryItemInfo) : int
       {
-         var _loc2_:Number = NaN;
-         var _loc3_:* = null;
-         if(param1)
+         var num:Number = NaN;
+         var data:* = null;
+         if(info)
          {
-            _loc3_ = FineEvolutionManager.Instance.GetNextEvolutionDataByEXP(int(param1.curExp));
-            if(_loc3_)
+            data = FineEvolutionManager.Instance.GetNextEvolutionDataByEXP(int(info.curExp));
+            if(data)
             {
-               _loc2_ = param1.curExp / _loc3_.Exp;
+               num = info.curExp / data.Exp;
             }
          }
-         return int(_loc2_ * 100);
+         return int(num * 100);
       }
       
       public function LoadEvolutionData() : void
@@ -186,19 +184,19 @@ package store
          return _canClickBagList;
       }
       
-      public function set canClickBagList(param1:Boolean) : void
+      public function set canClickBagList(value:Boolean) : void
       {
-         _canClickBagList = param1;
+         _canClickBagList = value;
       }
       
-      public function eatBeHaviour(param1:InventoryItemInfo, param2:InventoryItemInfo = null) : void
+      public function eatBeHaviour($info:InventoryItemInfo, $eatenInfo:InventoryItemInfo = null) : void
       {
-         var _loc3_:int = 0;
-         _tagItem = param1;
-         _tagTempleteItem = ItemManager.Instance.getTemplateById(param1.TemplateID);
-         _quickEatInfo = param2;
+         var state:int = 0;
+         _tagItem = $info;
+         _tagTempleteItem = ItemManager.Instance.getTemplateById($info.TemplateID);
+         _quickEatInfo = $eatenInfo;
          _singleNum = 1;
-         if(param2 == null)
+         if($eatenInfo == null)
          {
             _state = "all";
             eat(_state);
@@ -206,22 +204,22 @@ package store
          else
          {
             _state = "quick";
-            if(param2.TemplateID == 12572 && param2.Count >= 1)
+            if($eatenInfo.TemplateID == 12572 && $eatenInfo.Count >= 1)
             {
                showSelectAlert();
             }
-            if(param2.CategoryID == 17)
+            if($eatenInfo.CategoryID == 17)
             {
-               _loc3_ = checkLevel(_quickEatInfo);
-               if(_loc3_ == 0)
+               state = checkLevel(_quickEatInfo);
+               if(state == 0)
                {
                   materialNumSelect(_quickEatInfo.Count);
                }
-               else if(_loc3_ == 1)
+               else if(state == 1)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.evolution.cannotEat"),0,true,1);
                }
-               else if(_loc3_ == 2)
+               else if(state == 2)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.evolution.notStrengthen"));
                }
@@ -240,18 +238,18 @@ package store
          _selectNumView.TitleTxt = LanguageMgr.GetTranslation("store.view.evolution.alter.title");
          _selectNumView.ContentTxt = LanguageMgr.GetTranslation("stor.view.evolution.alter.selectNum");
          _selectNumView.callback = materialNumSelect;
-         var _loc1_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("evolutionAler.content.text");
-         _loc1_.htmlText = LanguageMgr.GetTranslation("store.frame.evolution.band.prompt");
-         _loc1_.x = 62;
-         _loc1_.y = 105;
-         _selectNumView.addChild(_loc1_);
+         var txt:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("evolutionAler.content.text");
+         txt.htmlText = LanguageMgr.GetTranslation("store.frame.evolution.band.prompt");
+         txt.x = 62;
+         txt.y = 105;
+         _selectNumView.addChild(txt);
          _selectNumView.addEventListener("response",responseSelectHandler);
       }
       
-      private function responseSelectHandler(param1:FrameEvent) : void
+      private function responseSelectHandler(evt:FrameEvent) : void
       {
          _selectNumView.removeEventListener("response",responseSelectHandler);
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
@@ -269,133 +267,131 @@ package store
          _selectNumView = null;
       }
       
-      private function materialNumSelect(param1:int) : void
+      private function materialNumSelect(num:int) : void
       {
-         _singleNum = param1;
+         _singleNum = num;
          eat(_state);
       }
       
-      public function eat(param1:String) : void
+      public function eat($state:String) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         expData = getExperienceList(_tagItem,param1);
+         var alert:* = null;
+         var msg:* = null;
+         var txt:* = null;
+         expData = getExperienceList(_tagItem,$state);
          if(expData.length == 0)
          {
             FineEvolutionManager.Instance.canClickBagList = true;
             return;
          }
          FineEvolutionManager.Instance.canClickBagList = false;
-         _loc4_ = ComponentFactory.Instance.creatComponentByStylename("evolutionAler.content.text");
-         if(param1 == "all")
+         txt = ComponentFactory.Instance.creatComponentByStylename("evolutionAler.content.text");
+         if($state == "all")
          {
-            _loc3_ = LanguageMgr.GetTranslation("tank.view.bagII.offhand.evolution.eatAll",_tagItem.Name,_totalExp);
-            PositionUtils.setPos(_loc4_,"storeFine.evolutionAlert.Pos");
+            msg = LanguageMgr.GetTranslation("tank.view.bagII.offhand.evolution.eatAll",_tagItem.Name,_totalExp);
+            PositionUtils.setPos(txt,"storeFine.evolutionAlert.Pos");
          }
-         else if(param1 == "quick")
+         else if($state == "quick")
          {
-            _loc3_ = LanguageMgr.GetTranslation("tank.view.bagII.level1EatAll.alert",_quickEatInfo.Name,_totalExp);
+            msg = LanguageMgr.GetTranslation("tank.view.bagII.level1EatAll.alert",_quickEatInfo.Name,_totalExp);
          }
-         _loc4_.htmlText = LanguageMgr.GetTranslation("store.frame.evolution.band.prompt");
-         _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc3_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2);
-         _loc2_.addChild(_loc4_);
-         _loc2_.addEventListener("response",responseEatHandler);
-         if(_loc2_ && _loc2_.parent == null)
+         txt.htmlText = LanguageMgr.GetTranslation("store.frame.evolution.band.prompt");
+         alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),msg,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2);
+         alert.addChild(txt);
+         alert.addEventListener("response",responseEatHandler);
+         if(alert && alert.parent == null)
          {
-            LayerManager.Instance.addToLayer(_loc2_,2,true,2);
+            LayerManager.Instance.addToLayer(alert,2,true,2);
          }
       }
       
-      private function responseEatHandler(param1:FrameEvent) : void
+      private function responseEatHandler(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",responseEatHandler);
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
+         (evt.currentTarget as BaseAlerFrame).removeEventListener("response",responseEatHandler);
+         var alter:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
          if(CallBack)
          {
             CallBack(false);
          }
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
-               if(_loc2_.parent)
+               if(alter.parent)
                {
-                  _loc2_.parent.removeChild(_loc2_);
+                  alter.parent.removeChild(alter);
                }
-               ObjectUtils.disposeAllChildren(_loc2_);
-               _loc2_ = null;
+               ObjectUtils.disposeAllChildren(alter);
+               alter = null;
                break;
             case 2:
             case 3:
             case 4:
                sendEat();
-               if(_loc2_.parent)
+               if(alter.parent)
                {
-                  _loc2_.parent.removeChild(_loc2_);
+                  alter.parent.removeChild(alter);
                }
-               ObjectUtils.disposeAllChildren(_loc2_);
-               _loc2_ = null;
+               ObjectUtils.disposeAllChildren(alter);
+               alter = null;
          }
       }
       
-      private function getExperienceList(param1:InventoryItemInfo, param2:String) : Array
+      private function getExperienceList(tagItem:InventoryItemInfo, type:String) : Array
       {
-         tagItem = param1;
-         type = param2;
+         tagItem = tagItem;
+         type = type;
          search = function():void
          {
-            var _loc1_:* = null;
-            var _loc6_:int = 0;
-            var _loc4_:int = 0;
-            var _loc2_:Array = PlayerManager.Instance.Self.Bag.findItems(17,false);
-            var _loc5_:Array = PlayerManager.Instance.Self.PropBag.findCellsByTempleteID(12572,false);
-            _loc2_.sortOn("Place",16);
-            _loc5_.sortOn("Place",16);
-            var _loc3_:int = _loc2_.length;
-            _loc6_ = 0;
-            while(_loc6_ < _loc3_)
+            var item:* = null;
+            var i:int = 0;
+            var j:int = 0;
+            var list:Array = PlayerManager.Instance.Self.Bag.findItems(17,false);
+            var material:Array = PlayerManager.Instance.Self.PropBag.findCellsByTempleteID(12572,false);
+            list.sortOn("Place",16);
+            material.sortOn("Place",16);
+            var len:int = list.length;
+            for(i = 0; i < len; )
             {
-               _loc1_ = _loc2_[_loc6_] as InventoryItemInfo;
-               if(_loc1_.cellLocked == false && _loc1_.getRemainDate() > 0 && tagItem.Place != _loc1_.Place)
+               item = list[i] as InventoryItemInfo;
+               if(item.cellLocked == false && item.getRemainDate() > 0 && tagItem.Place != item.Place)
                {
-                  if(!checkLevel(_loc1_))
+                  if(!checkLevel(item))
                   {
                      obj = {};
-                     obj.totalExp = _loc1_.Property2;
-                     obj.bagType = _loc1_.BagType;
-                     obj.place = _loc1_.Place;
-                     obj.count = _loc1_.Count;
-                     if(_loc1_.curExp != 0)
+                     obj.totalExp = item.Property2;
+                     obj.bagType = item.BagType;
+                     obj.place = item.Place;
+                     obj.count = item.Count;
+                     if(item.curExp != 0)
                      {
-                        _totalExp = _totalExp + (_loc1_.curExp + int(_loc1_.Property2)) * _loc1_.Count;
+                        _totalExp = _totalExp + (item.curExp + int(item.Property2)) * item.Count;
                      }
                      else
                      {
-                        _totalExp = _totalExp + int(_loc1_.Property2) * _loc1_.Count;
+                        _totalExp = _totalExp + int(item.Property2) * item.Count;
                      }
                      datas.push(obj);
                   }
                }
-               _loc6_++;
+               i++;
             }
-            _loc3_ = _loc5_.length;
-            _loc4_ = 0;
-            while(_loc4_ < _loc3_)
+            len = material.length;
+            for(j = 0; j < len; )
             {
-               _loc1_ = _loc5_[_loc4_] as InventoryItemInfo;
-               if(_loc1_.cellLocked == false)
+               item = material[j] as InventoryItemInfo;
+               if(item.cellLocked == false)
                {
                   obj = {};
-                  obj.totalExp = _loc1_.curExp;
-                  obj.bagType = _loc1_.BagType;
-                  obj.place = _loc1_.Place;
-                  obj.count = _loc1_.Count;
+                  obj.totalExp = item.curExp;
+                  obj.bagType = item.BagType;
+                  obj.place = item.Place;
+                  obj.count = item.Count;
                   datas.push(obj);
-                  _totalExp = _totalExp + int(_loc1_.Property2) * _loc1_.Count;
+                  _totalExp = _totalExp + int(item.Property2) * item.Count;
                }
-               _loc4_++;
+               j++;
             }
          };
          var tagItemTempleteID:int = tagItem.TemplateID;
@@ -446,22 +442,22 @@ package store
          return datas;
       }
       
-      private function checkLevel(param1:InventoryItemInfo) : int
+      private function checkLevel(value:InventoryItemInfo) : int
       {
-         var _loc2_:int = 0;
-         if(param1.curExp > _tagItem.curExp)
+         var state:int = 0;
+         if(value.curExp > _tagItem.curExp)
          {
-            _loc2_ = 1;
+            state = 1;
          }
-         else if(param1.curExp == 0 && (param1.Property2 == "" || param1.Property2 == "0"))
+         else if(value.curExp == 0 && (value.Property2 == "" || value.Property2 == "0"))
          {
-            _loc2_ = 1;
+            state = 1;
          }
-         else if(param1.StrengthenLevel > 0 || param1.StrengthenExp > 0)
+         else if(value.StrengthenLevel > 0 || value.StrengthenExp > 0)
          {
-            _loc2_ = 2;
+            state = 2;
          }
-         return _loc2_;
+         return state;
       }
       
       private function sendEat() : void

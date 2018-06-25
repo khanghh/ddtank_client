@@ -10,10 +10,10 @@ package littleGame.events
       
       private var _paras:Array;
       
-      public function ScheduleEvent(param1:String, ... rest)
+      public function ScheduleEvent(type:String, ... arg)
       {
-         _paras = rest;
-         super(param1);
+         _paras = arg;
+         super(type);
       }
       
       public function get paras() : Array

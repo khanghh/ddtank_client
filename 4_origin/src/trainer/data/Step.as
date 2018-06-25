@@ -384,17 +384,17 @@ package trainer.data
       
       private var _isKey:Boolean;
       
-      public function Step(param1:int, param2:Function, param3:Function = null, param4:Function = null, param5:int = 0, param6:Boolean = false)
+      public function Step(id:int, exe:Function, pre:Function = null, fin:Function = null, millisecond:int = 0, isKey:Boolean = false)
       {
          super();
-         _id = param1;
-         _execute = param2;
-         _prepare = param3;
-         _finish = param4;
-         _isKey = param6;
-         if(param5 != 0)
+         _id = id;
+         _execute = exe;
+         _prepare = pre;
+         _finish = fin;
+         _isKey = isKey;
+         if(millisecond != 0)
          {
-            delay = param5 / (1000 / 25);
+            delay = millisecond / (1000 / 25);
          }
       }
       

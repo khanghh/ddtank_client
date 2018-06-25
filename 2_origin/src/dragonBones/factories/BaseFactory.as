@@ -30,236 +30,234 @@ package dragonBones.factories
       protected static const _helpMatrix:Matrix = new Matrix();
        
       
-      public function BaseFactory(param1:BaseFactory)
+      public function BaseFactory(self:BaseFactory)
       {
          super(this);
-         if(param1 != this)
+         if(self != this)
          {
             throw new IllegalOperationError("Abstract class can not be instantiated!");
          }
       }
       
-      public function dispose(param1:Boolean = true) : void
+      public function dispose(disposeData:Boolean = true) : void
       {
          throw new Error("骨架 纹理资源都在DDTAssetManager里面。根据模块动态删除了.");
       }
       
-      public function getSkeletonData(param1:String) : DragonBonesData
+      public function getSkeletonData(name:String) : DragonBonesData
       {
-         return dragonBonesDataDic[param1];
+         return dragonBonesDataDic[name];
       }
       
-      public function addSkeletonData(param1:DragonBonesData, param2:String = null) : void
+      public function addSkeletonData(data:DragonBonesData, name:String = null) : void
       {
          throw new Error("添加Skieleton请在DDTAssetManager里面添加");
       }
       
-      public function removeSkeletonData(param1:String) : void
+      public function removeSkeletonData(name:String) : void
       {
       }
       
-      public function getTextureAtlas(param1:String) : Object
+      public function getTextureAtlas(name:String) : Object
       {
-         return textureAtlasDic[param1];
+         return textureAtlasDic[name];
       }
       
-      public function addTextureAtlas(param1:Object, param2:String = null) : void
+      public function addTextureAtlas(textureAtlas:Object, name:String = null) : void
       {
          throw new Error("添加纹理请在DDTAssetManager里面添加");
       }
       
-      public function removeTextureAtlas(param1:String) : void
+      public function removeTextureAtlas(name:String) : void
       {
       }
       
-      public function getTextureDisplay(param1:String, param2:String = null, param3:Number = NaN, param4:Number = NaN) : Object
+      public function getTextureDisplay(textureName:String, textureAtlasName:String = null, pivotX:Number = NaN, pivotY:Number = NaN) : Object
       {
-         var _loc6_:* = null;
-         var _loc5_:* = null;
-         var _loc7_:* = null;
-         if(param2)
+         var targetTextureAtlas:* = null;
+         var data:* = null;
+         var displayData:* = null;
+         if(textureAtlasName)
          {
-            _loc6_ = textureAtlasDic[param2];
+            targetTextureAtlas = textureAtlasDic[textureAtlasName];
          }
          else
          {
             var _loc9_:int = 0;
             var _loc8_:* = textureAtlasDic;
-            for(param2 in textureAtlasDic)
+            for(textureAtlasName in textureAtlasDic)
             {
-               _loc6_ = textureAtlasDic[param2];
-               if(!_loc6_.getRegion(param1))
+               targetTextureAtlas = textureAtlasDic[textureAtlasName];
+               if(targetTextureAtlas.getRegion(textureName))
                {
-                  _loc6_ = null;
-                  continue;
+                  break;
                }
-               break;
+               targetTextureAtlas = null;
             }
          }
-         if(!_loc6_)
+         if(!targetTextureAtlas)
          {
             return null;
          }
-         if(isNaN(param3) || isNaN(param4))
+         if(isNaN(pivotX) || isNaN(pivotY))
          {
-            _loc5_ = dragonBonesDataDic[param2];
-            _loc5_ = !!_loc5_?_loc5_:findFirstDragonBonesData();
-            if(_loc5_)
+            data = dragonBonesDataDic[textureAtlasName];
+            data = !!data?data:findFirstDragonBonesData();
+            if(data)
             {
-               _loc7_ = _loc5_.getDisplayDataByName(param1);
-               if(_loc7_)
+               displayData = data.getDisplayDataByName(textureName);
+               if(displayData)
                {
-                  param3 = _loc7_.pivot.x;
-                  param4 = _loc7_.pivot.y;
+                  pivotX = displayData.pivot.x;
+                  pivotY = displayData.pivot.y;
                }
             }
          }
-         return generateDisplay(_loc6_,param1,param3,param4);
+         return generateDisplay(targetTextureAtlas,textureName,pivotX,pivotY);
       }
       
-      public function buildArmature(param1:String, param2:String = null, param3:String = null, param4:String = null) : Armature
+      public function buildArmature(armatureName:String, fromDragonBonesDataName:String = null, fromTextureAtlasName:String = null, skinName:String = null) : Armature
       {
-         var _loc7_:BuildArmatureDataPackage = new BuildArmatureDataPackage();
-         if(fillBuildArmatureDataPackageArmatureInfo(param1,param2,_loc7_))
+         var buildArmatureDataPackage:BuildArmatureDataPackage = new BuildArmatureDataPackage();
+         if(fillBuildArmatureDataPackageArmatureInfo(armatureName,fromDragonBonesDataName,buildArmatureDataPackage))
          {
-            fillBuildArmatureDataPackageTextureInfo(param3,_loc7_);
+            fillBuildArmatureDataPackageTextureInfo(fromTextureAtlasName,buildArmatureDataPackage);
          }
-         var _loc5_:DragonBonesData = _loc7_.dragonBonesData;
-         var _loc8_:ArmatureData = _loc7_.armatureData;
-         var _loc6_:Object = _loc7_.textureAtlas;
-         if(!_loc8_ || !_loc6_)
-         {
-            return null;
-         }
-         return buildArmatureUsingArmatureDataFromTextureAtlas(_loc5_,_loc8_,_loc6_,param4);
-      }
-      
-      public function buildFastArmature(param1:String, param2:String = null, param3:String = null, param4:String = null) : FastArmature
-      {
-         var _loc7_:BuildArmatureDataPackage = new BuildArmatureDataPackage();
-         if(fillBuildArmatureDataPackageArmatureInfo(param1,param2,_loc7_))
-         {
-            fillBuildArmatureDataPackageTextureInfo(param3,_loc7_);
-         }
-         var _loc5_:DragonBonesData = _loc7_.dragonBonesData;
-         var _loc8_:ArmatureData = _loc7_.armatureData;
-         var _loc6_:Object = _loc7_.textureAtlas;
-         if(!_loc8_ || !_loc6_)
+         var dragonBonesData:DragonBonesData = buildArmatureDataPackage.dragonBonesData;
+         var armatureData:ArmatureData = buildArmatureDataPackage.armatureData;
+         var textureAtlas:Object = buildArmatureDataPackage.textureAtlas;
+         if(!armatureData || !textureAtlas)
          {
             return null;
          }
-         return buildFastArmatureUsingArmatureDataFromTextureAtlas(_loc5_,_loc8_,_loc6_,param4);
+         return buildArmatureUsingArmatureDataFromTextureAtlas(dragonBonesData,armatureData,textureAtlas,skinName);
       }
       
-      protected function buildArmatureUsingArmatureDataFromTextureAtlas(param1:DragonBonesData, param2:ArmatureData, param3:Object, param4:String = null) : Armature
+      public function buildFastArmature(armatureName:String, fromDragonBonesDataName:String = null, fromTextureAtlasName:String = null, skinName:String = null) : FastArmature
       {
-         var _loc5_:Armature = generateArmature();
-         _loc5_.name = param2.name;
-         _loc5_.__dragonBonesData = param1;
-         _loc5_._armatureData = param2;
-         _loc5_.animation.animationDataList = param2.animationDataList;
-         buildBones(_loc5_);
-         buildSlots(_loc5_,param4,param3);
-         _loc5_.advanceTime(0);
-         return _loc5_;
+         var buildArmatureDataPackage:BuildArmatureDataPackage = new BuildArmatureDataPackage();
+         if(fillBuildArmatureDataPackageArmatureInfo(armatureName,fromDragonBonesDataName,buildArmatureDataPackage))
+         {
+            fillBuildArmatureDataPackageTextureInfo(fromTextureAtlasName,buildArmatureDataPackage);
+         }
+         var dragonBonesData:DragonBonesData = buildArmatureDataPackage.dragonBonesData;
+         var armatureData:ArmatureData = buildArmatureDataPackage.armatureData;
+         var textureAtlas:Object = buildArmatureDataPackage.textureAtlas;
+         if(!armatureData || !textureAtlas)
+         {
+            return null;
+         }
+         return buildFastArmatureUsingArmatureDataFromTextureAtlas(dragonBonesData,armatureData,textureAtlas,skinName);
       }
       
-      protected function buildFastArmatureUsingArmatureDataFromTextureAtlas(param1:DragonBonesData, param2:ArmatureData, param3:Object, param4:String = null) : FastArmature
+      protected function buildArmatureUsingArmatureDataFromTextureAtlas(dragonBonesData:DragonBonesData, armatureData:ArmatureData, textureAtlas:Object, skinName:String = null) : Armature
       {
-         var _loc5_:FastArmature = generateFastArmature();
-         _loc5_.name = param2.name;
-         _loc5_.__dragonBonesData = param1;
-         _loc5_._armatureData = param2;
-         _loc5_.animation.animationDataList = param2.animationDataList;
-         buildFastBones(_loc5_);
-         buildFastSlots(_loc5_,param4,param3);
-         _loc5_.advanceTime(0);
-         return _loc5_;
+         var outputArmature:Armature = generateArmature();
+         outputArmature.name = armatureData.name;
+         outputArmature.__dragonBonesData = dragonBonesData;
+         outputArmature._armatureData = armatureData;
+         outputArmature.animation.animationDataList = armatureData.animationDataList;
+         buildBones(outputArmature);
+         buildSlots(outputArmature,skinName,textureAtlas);
+         outputArmature.advanceTime(0);
+         return outputArmature;
       }
       
-      public function copyAnimationsToArmature(param1:Armature, param2:String, param3:String = null, param4:Boolean = true) : Boolean
+      protected function buildFastArmatureUsingArmatureDataFromTextureAtlas(dragonBonesData:DragonBonesData, armatureData:ArmatureData, textureAtlas:Object, skinName:String = null) : FastArmature
       {
-         var _loc5_:* = null;
-         var _loc7_:* = null;
-         var _loc14_:* = null;
-         var _loc13_:* = null;
-         var _loc16_:* = 0;
-         var _loc6_:* = null;
-         var _loc10_:* = null;
-         var _loc11_:int = 0;
-         var _loc12_:BuildArmatureDataPackage = new BuildArmatureDataPackage();
-         if(!fillBuildArmatureDataPackageArmatureInfo(param2,param3,_loc12_))
+         var outputArmature:FastArmature = generateFastArmature();
+         outputArmature.name = armatureData.name;
+         outputArmature.__dragonBonesData = dragonBonesData;
+         outputArmature._armatureData = armatureData;
+         outputArmature.animation.animationDataList = armatureData.animationDataList;
+         buildFastBones(outputArmature);
+         buildFastSlots(outputArmature,skinName,textureAtlas);
+         outputArmature.advanceTime(0);
+         return outputArmature;
+      }
+      
+      public function copyAnimationsToArmature(toArmature:Armature, fromArmatreName:String, fromDragonBonesDataName:String = null, ifRemoveOriginalAnimationList:Boolean = true) : Boolean
+      {
+         var fromSlotData:* = null;
+         var fromDisplayData:* = null;
+         var toSlot:* = null;
+         var toSlotDisplayList:* = null;
+         var toSlotDisplayListLength:* = 0;
+         var toDisplayObject:* = null;
+         var toChildArmature:* = null;
+         var i:int = 0;
+         var buildArmatureDataPackage:BuildArmatureDataPackage = new BuildArmatureDataPackage();
+         if(!fillBuildArmatureDataPackageArmatureInfo(fromArmatreName,fromDragonBonesDataName,buildArmatureDataPackage))
          {
             return false;
          }
-         var _loc15_:ArmatureData = _loc12_.armatureData;
-         param1.animation.animationDataList = _loc15_.animationDataList;
-         var _loc8_:SkinData = _loc15_.getSkinData("");
-         var _loc9_:Vector.<Slot> = param1.getSlots(false);
+         var fromArmatureData:ArmatureData = buildArmatureDataPackage.armatureData;
+         toArmature.animation.animationDataList = fromArmatureData.animationDataList;
+         var fromSkinData:SkinData = fromArmatureData.getSkinData("");
+         var toSlotList:Vector.<Slot> = toArmature.getSlots(false);
          var _loc18_:int = 0;
-         var _loc17_:* = _loc9_;
-         for each(_loc14_ in _loc9_)
+         var _loc17_:* = toSlotList;
+         for each(toSlot in toSlotList)
          {
-            _loc13_ = _loc14_.displayList;
-            _loc16_ = uint(_loc13_.length);
-            _loc11_ = 0;
-            while(_loc11_ < _loc16_)
+            toSlotDisplayList = toSlot.displayList;
+            toSlotDisplayListLength = uint(toSlotDisplayList.length);
+            for(i = 0; i < toSlotDisplayListLength; )
             {
-               _loc6_ = _loc13_[_loc11_];
-               if(_loc6_ is Armature)
+               toDisplayObject = toSlotDisplayList[i];
+               if(toDisplayObject is Armature)
                {
-                  _loc10_ = _loc6_ as Armature;
-                  _loc5_ = _loc8_.getSlotData(_loc14_.name);
-                  _loc7_ = _loc5_.displayDataList[_loc11_];
-                  if(_loc7_.type == "armature")
+                  toChildArmature = toDisplayObject as Armature;
+                  fromSlotData = fromSkinData.getSlotData(toSlot.name);
+                  fromDisplayData = fromSlotData.displayDataList[i];
+                  if(fromDisplayData.type == "armature")
                   {
-                     copyAnimationsToArmature(_loc10_,_loc7_.name,_loc12_.dragonBonesDataName,param4);
+                     copyAnimationsToArmature(toChildArmature,fromDisplayData.name,buildArmatureDataPackage.dragonBonesDataName,ifRemoveOriginalAnimationList);
                   }
                }
-               _loc11_++;
+               i++;
             }
          }
          return true;
       }
       
-      private function fillBuildArmatureDataPackageArmatureInfo(param1:String, param2:String, param3:BuildArmatureDataPackage) : Boolean
+      private function fillBuildArmatureDataPackageArmatureInfo(armatureName:String, dragonBonesDataName:String, outputBuildArmatureDataPackage:BuildArmatureDataPackage) : Boolean
       {
-         if(param2)
+         if(dragonBonesDataName)
          {
-            param3.dragonBonesDataName = param2;
-            param3.dragonBonesData = dragonBonesDataDic[param2];
-            param3.armatureData = param3.dragonBonesData.getArmatureDataByName(param1);
+            outputBuildArmatureDataPackage.dragonBonesDataName = dragonBonesDataName;
+            outputBuildArmatureDataPackage.dragonBonesData = dragonBonesDataDic[dragonBonesDataName];
+            outputBuildArmatureDataPackage.armatureData = outputBuildArmatureDataPackage.dragonBonesData.getArmatureDataByName(armatureName);
             return true;
          }
          var _loc5_:int = 0;
          var _loc4_:* = dragonBonesDataDic;
-         for(param2 in dragonBonesDataDic)
+         for(dragonBonesDataName in dragonBonesDataDic)
          {
-            param3.dragonBonesData = dragonBonesDataDic[param2];
-            param3.armatureData = param3.dragonBonesData.getArmatureDataByName(param1);
-            if(param3.armatureData)
+            outputBuildArmatureDataPackage.dragonBonesData = dragonBonesDataDic[dragonBonesDataName];
+            outputBuildArmatureDataPackage.armatureData = outputBuildArmatureDataPackage.dragonBonesData.getArmatureDataByName(armatureName);
+            if(outputBuildArmatureDataPackage.armatureData)
             {
-               param3.dragonBonesDataName = param2;
+               outputBuildArmatureDataPackage.dragonBonesDataName = dragonBonesDataName;
                return true;
             }
          }
          return false;
       }
       
-      private function fillBuildArmatureDataPackageTextureInfo(param1:String, param2:BuildArmatureDataPackage) : void
+      private function fillBuildArmatureDataPackageTextureInfo(fromTextureAtlasName:String, outputBuildArmatureDataPackage:BuildArmatureDataPackage) : void
       {
-         param2.textureAtlas = textureAtlasDic[!!param1?param1:param2.dragonBonesDataName];
+         outputBuildArmatureDataPackage.textureAtlas = textureAtlasDic[!!fromTextureAtlasName?fromTextureAtlasName:outputBuildArmatureDataPackage.dragonBonesDataName];
       }
       
       protected function findFirstDragonBonesData() : DragonBonesData
       {
          var _loc3_:int = 0;
          var _loc2_:* = dragonBonesDataDic;
-         for each(var _loc1_ in dragonBonesDataDic)
+         for each(var outputDragonBonesData in dragonBonesDataDic)
          {
-            if(_loc1_)
+            if(outputDragonBonesData)
             {
-               return _loc1_;
+               return outputDragonBonesData;
             }
          }
          return null;
@@ -269,117 +267,114 @@ package dragonBones.factories
       {
          var _loc3_:int = 0;
          var _loc2_:* = textureAtlasDic;
-         for each(var _loc1_ in textureAtlasDic)
+         for each(var outputTextureAtlas in textureAtlasDic)
          {
-            if(_loc1_)
+            if(outputTextureAtlas)
             {
-               return _loc1_;
+               return outputTextureAtlas;
             }
          }
          return null;
       }
       
-      protected function buildBones(param1:Armature) : void
+      protected function buildBones(armature:Armature) : void
       {
-         var _loc4_:* = null;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         var _loc6_:int = 0;
-         var _loc5_:Vector.<BoneData> = param1.armatureData.boneDataList;
-         _loc6_ = 0;
-         while(_loc6_ < _loc5_.length)
+         var boneData:* = null;
+         var bone:* = null;
+         var parent:* = null;
+         var i:int = 0;
+         var boneDataList:Vector.<BoneData> = armature.armatureData.boneDataList;
+         for(i = 0; i < boneDataList.length; )
          {
-            _loc4_ = _loc5_[_loc6_];
-            _loc2_ = Bone.initWithBoneData(_loc4_);
-            _loc3_ = _loc4_.parent;
-            if(_loc3_ && param1.armatureData.getBoneData(_loc3_) == null)
+            boneData = boneDataList[i];
+            bone = Bone.initWithBoneData(boneData);
+            parent = boneData.parent;
+            if(parent && armature.armatureData.getBoneData(parent) == null)
             {
-               _loc3_ = null;
+               parent = null;
             }
-            param1.addBone(_loc2_,_loc3_,true);
-            _loc6_++;
+            armature.addBone(bone,parent,true);
+            i++;
          }
-         param1.updateAnimationAfterBoneListChanged();
+         armature.updateAnimationAfterBoneListChanged();
       }
       
-      protected function buildFastBones(param1:FastArmature) : void
+      protected function buildFastBones(armature:FastArmature) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc5_:int = 0;
-         var _loc4_:Vector.<BoneData> = param1.armatureData.boneDataList;
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_.length)
+         var boneData:* = null;
+         var bone:* = null;
+         var i:int = 0;
+         var boneDataList:Vector.<BoneData> = armature.armatureData.boneDataList;
+         for(i = 0; i < boneDataList.length; )
          {
-            _loc3_ = _loc4_[_loc5_];
-            _loc2_ = FastBone.initWithBoneData(_loc3_);
-            param1.addBone(_loc2_,_loc3_.parent);
-            _loc5_++;
+            boneData = boneDataList[i];
+            bone = FastBone.initWithBoneData(boneData);
+            armature.addBone(bone,boneData.parent);
+            i++;
          }
       }
       
-      protected function buildFastSlots(param1:FastArmature, param2:String, param3:Object) : void
+      protected function buildFastSlots(armature:FastArmature, skinName:String, textureAtlas:Object) : void
       {
-         var _loc4_:* = null;
-         var _loc12_:* = null;
-         var _loc8_:int = 0;
-         var _loc6_:int = 0;
-         var _loc13_:* = null;
-         var _loc10_:* = null;
-         var _loc11_:SkinData = param1.armatureData.getSkinData(param2);
-         if(!_loc11_)
+         var slotData:* = null;
+         var slot:* = null;
+         var i:int = 0;
+         var l:int = 0;
+         var displayData:* = null;
+         var childArmature:* = null;
+         var skinData:SkinData = armature.armatureData.getSkinData(skinName);
+         if(!skinData)
          {
             return;
          }
-         param1.armatureData.setSkinData(param2);
-         var _loc5_:Array = [];
-         var _loc9_:Vector.<SlotData> = param1.armatureData.slotDataList;
-         _loc8_ = 0;
-         while(_loc8_ < _loc9_.length)
+         armature.armatureData.setSkinData(skinName);
+         var displayList:Array = [];
+         var slotDataList:Vector.<SlotData> = armature.armatureData.slotDataList;
+         for(i = 0; i < slotDataList.length; )
          {
-            _loc5_.length = 0;
-            _loc4_ = _loc9_[_loc8_];
-            _loc12_ = generateFastSlot();
-            _loc12_.initWithSlotData(_loc4_);
-            _loc6_ = _loc4_.displayDataList.length;
+            displayList.length = 0;
+            slotData = slotDataList[i];
+            slot = generateFastSlot();
+            slot.initWithSlotData(slotData);
+            l = slotData.displayDataList.length;
             while(true)
             {
-               _loc6_--;
-               if(!_loc6_)
+               l--;
+               if(!l)
                {
                   break;
                }
-               _loc13_ = _loc4_.displayDataList[_loc6_];
-               var _loc14_:* = _loc13_.type;
+               displayData = slotData.displayDataList[l];
+               var _loc14_:* = displayData.type;
                if("armature" !== _loc14_)
                {
                   if("image" !== _loc14_)
                   {
                   }
-                  _loc5_[_loc6_] = generateDisplay(param3,_loc13_.name,_loc13_.pivot.x,_loc13_.pivot.y);
+                  displayList[l] = generateDisplay(textureAtlas,displayData.name,displayData.pivot.x,displayData.pivot.y);
                }
                else
                {
-                  _loc10_ = buildFastArmatureUsingArmatureDataFromTextureAtlas(param1.__dragonBonesData,param1.__dragonBonesData.getArmatureDataByName(_loc13_.name),param3,param2);
-                  _loc5_[_loc6_] = _loc10_;
-                  _loc12_.hasChildArmature = true;
+                  childArmature = buildFastArmatureUsingArmatureDataFromTextureAtlas(armature.__dragonBonesData,armature.__dragonBonesData.getArmatureDataByName(displayData.name),textureAtlas,skinName);
+                  displayList[l] = childArmature;
+                  slot.hasChildArmature = true;
                }
             }
             var _loc17_:int = 0;
-            var _loc16_:* = _loc5_;
-            for each(var _loc7_ in _loc5_)
+            var _loc16_:* = displayList;
+            for each(var displayObject in displayList)
             {
-               if(_loc7_)
+               if(displayObject)
                {
-                  if(_loc7_ is FastArmature)
+                  if(displayObject is FastArmature)
                   {
-                     _loc7_ = (_loc7_ as FastArmature).display;
+                     displayObject = (displayObject as FastArmature).display;
                   }
-                  if(_loc7_.hasOwnProperty("name"))
+                  if(displayObject.hasOwnProperty("name"))
                   {
                      try
                      {
-                        _loc7_["name"] = _loc12_.name;
+                        displayObject["name"] = slot.name;
                      }
                      catch(err:Error)
                      {
@@ -388,78 +383,77 @@ package dragonBones.factories
                   }
                }
             }
-            _loc12_.initDisplayList(_loc5_.concat());
-            param1.addSlot(_loc12_,_loc4_.parent);
-            _loc12_.changeDisplayIndex(_loc4_.displayIndex);
-            _loc8_++;
+            slot.initDisplayList(displayList.concat());
+            armature.addSlot(slot,slotData.parent);
+            slot.changeDisplayIndex(slotData.displayIndex);
+            i++;
          }
       }
       
-      protected function buildSlots(param1:Armature, param2:String, param3:Object) : void
+      protected function buildSlots(armature:Armature, skinName:String, textureAtlas:Object) : void
       {
-         var _loc4_:* = null;
-         var _loc14_:* = null;
-         var _loc10_:* = null;
-         var _loc9_:int = 0;
-         var _loc7_:int = 0;
-         var _loc15_:* = null;
-         var _loc12_:* = null;
-         var _loc13_:SkinData = param1.armatureData.getSkinData(param2);
-         if(!_loc13_)
+         var slotData:* = null;
+         var slot:* = null;
+         var bone:* = null;
+         var i:int = 0;
+         var l:int = 0;
+         var displayData:* = null;
+         var childArmature:* = null;
+         var skinData:SkinData = armature.armatureData.getSkinData(skinName);
+         if(!skinData)
          {
             return;
          }
-         param1.armatureData.setSkinData(param2);
-         var _loc6_:Array = [];
-         var _loc11_:Vector.<SlotData> = param1.armatureData.slotDataList;
-         var _loc5_:Object = {};
-         _loc9_ = 0;
-         while(_loc9_ < _loc11_.length)
+         armature.armatureData.setSkinData(skinName);
+         var displayList:Array = [];
+         var slotDataList:Vector.<SlotData> = armature.armatureData.slotDataList;
+         var skinListObject:Object = {};
+         for(i = 0; i < slotDataList.length; )
          {
-            _loc6_.length = 0;
-            _loc4_ = _loc11_[_loc9_];
-            _loc10_ = param1.getBone(_loc4_.parent);
-            if(_loc10_)
+            displayList.length = 0;
+            slotData = slotDataList[i];
+            bone = armature.getBone(slotData.parent);
+            if(bone)
             {
-               _loc14_ = generateSlot();
-               _loc14_.initWithSlotData(_loc4_);
-               _loc10_.addSlot(_loc14_);
-               _loc7_ = _loc4_.displayDataList.length;
+               slot = generateSlot();
+               slot.initWithSlotData(slotData);
+               bone.addSlot(slot);
+               l = slotData.displayDataList.length;
                while(true)
                {
-                  _loc7_--;
-                  if(!_loc7_)
+                  l--;
+                  if(!l)
                   {
                      break;
                   }
-                  _loc15_ = _loc4_.displayDataList[_loc7_];
-                  var _loc16_:* = _loc15_.type;
+                  displayData = slotData.displayDataList[l];
+                  var _loc16_:* = displayData.type;
                   if("armature" !== _loc16_)
                   {
                      if("image" !== _loc16_)
                      {
                      }
-                     _loc6_[_loc7_] = generateDisplay(param3,_loc15_.name,_loc15_.pivot.x,_loc15_.pivot.y);
+                     displayList[l] = generateDisplay(textureAtlas,displayData.name,displayData.pivot.x,displayData.pivot.y);
                   }
                   else
                   {
-                     _loc12_ = buildArmatureUsingArmatureDataFromTextureAtlas(param1.__dragonBonesData,param1.__dragonBonesData.getArmatureDataByName(_loc15_.name),param3,param2);
-                     _loc6_[_loc7_] = _loc12_;
+                     childArmature = buildArmatureUsingArmatureDataFromTextureAtlas(armature.__dragonBonesData,armature.__dragonBonesData.getArmatureDataByName(displayData.name),textureAtlas,skinName);
+                     displayList[l] = childArmature;
                   }
                }
                var _loc19_:int = 0;
-               var _loc18_:* = _loc6_;
-               for each(var _loc8_ in _loc6_)
+               var _loc18_:* = displayList;
+               for each(var displayObject in displayList)
                {
-                  if(_loc8_ && _loc8_ is Armature)
+                  if(displayObject && displayObject is Armature)
                   {
-                     _loc8_ = (_loc8_ as Armature).display;
+                     displayObject = (displayObject as Armature).display;
                   }
-                  if(_loc8_ && _loc8_.hasOwnProperty("name"))
+                  if(displayObject && displayObject.hasOwnProperty("name"))
                   {
                      try
                      {
-                        _loc8_["name"] = _loc14_.name;
+                        displayObject["name"] = slot.name;
                      }
                      catch(err:Error)
                      {
@@ -467,87 +461,86 @@ package dragonBones.factories
                      }
                   }
                }
-               _loc5_[_loc4_.name] = _loc6_.concat();
-               _loc14_.displayList = _loc6_;
-               _loc14_.changeDisplay(_loc4_.displayIndex);
+               skinListObject[slotData.name] = displayList.concat();
+               slot.displayList = displayList;
+               slot.changeDisplay(slotData.displayIndex);
             }
-            _loc9_++;
+            i++;
          }
-         param1.addSkinList(param2,_loc5_);
+         armature.addSkinList(skinName,skinListObject);
       }
       
-      public function addSkinToArmature(param1:Armature, param2:String, param3:String) : void
+      public function addSkinToArmature(armature:Armature, skinName:String, textureAtlasName:String) : void
       {
-         var _loc4_:* = null;
-         var _loc17_:* = null;
-         var _loc12_:* = null;
-         var _loc6_:* = undefined;
-         var _loc9_:int = 0;
-         var _loc7_:int = 0;
-         var _loc16_:* = null;
-         var _loc14_:* = null;
-         var _loc10_:Object = textureAtlasDic[param3];
-         var _loc15_:SkinData = param1.armatureData.getSkinData(param2);
-         if(!_loc15_ || !_loc10_)
+         var slotData:* = null;
+         var slot:* = null;
+         var bone:* = null;
+         var displayDataList:* = undefined;
+         var i:int = 0;
+         var l:int = 0;
+         var displayData:* = null;
+         var childArmature:* = null;
+         var textureAtlas:Object = textureAtlasDic[textureAtlasName];
+         var skinData:SkinData = armature.armatureData.getSkinData(skinName);
+         if(!skinData || !textureAtlas)
          {
             return;
          }
-         var _loc5_:Array = [];
-         var _loc13_:Vector.<SlotData> = param1.armatureData.slotDataList;
-         var _loc11_:Object = {};
-         _loc9_ = 0;
-         while(_loc9_ < _loc13_.length)
+         var displayList:Array = [];
+         var slotDataList:Vector.<SlotData> = armature.armatureData.slotDataList;
+         var skinListData:Object = {};
+         for(i = 0; i < slotDataList.length; )
          {
-            _loc5_.length = 0;
-            _loc4_ = _loc13_[_loc9_];
-            _loc12_ = param1.getBone(_loc4_.parent);
-            if(_loc12_)
+            displayList.length = 0;
+            slotData = slotDataList[i];
+            bone = armature.getBone(slotData.parent);
+            if(bone)
             {
-               _loc7_ = 0;
-               if(_loc9_ >= _loc15_.slotDataList.length)
+               l = 0;
+               if(i >= skinData.slotDataList.length)
                {
-                  _loc7_ = 0;
+                  l = 0;
                }
                else
                {
-                  _loc6_ = _loc15_.slotDataList[_loc9_].displayDataList;
-                  _loc7_ = _loc6_.length;
+                  displayDataList = skinData.slotDataList[i].displayDataList;
+                  l = displayDataList.length;
                }
                while(true)
                {
-                  _loc7_--;
-                  if(!_loc7_)
+                  l--;
+                  if(!l)
                   {
                      break;
                   }
-                  _loc16_ = _loc6_[_loc7_];
-                  var _loc18_:* = _loc16_.type;
+                  displayData = displayDataList[l];
+                  var _loc18_:* = displayData.type;
                   if("armature" !== _loc18_)
                   {
                      if("image" !== _loc18_)
                      {
                      }
-                     _loc5_[_loc7_] = generateDisplay(_loc10_,_loc16_.name,_loc16_.pivot.x,_loc16_.pivot.y);
+                     displayList[l] = generateDisplay(textureAtlas,displayData.name,displayData.pivot.x,displayData.pivot.y);
                   }
                   else
                   {
-                     _loc14_ = buildArmatureUsingArmatureDataFromTextureAtlas(param1.__dragonBonesData,param1.__dragonBonesData.getArmatureDataByName(_loc16_.name),_loc10_,param2);
-                     _loc5_[_loc7_] = _loc14_;
+                     childArmature = buildArmatureUsingArmatureDataFromTextureAtlas(armature.__dragonBonesData,armature.__dragonBonesData.getArmatureDataByName(displayData.name),textureAtlas,skinName);
+                     displayList[l] = childArmature;
                   }
                }
                var _loc21_:int = 0;
-               var _loc20_:* = _loc5_;
-               for each(var _loc8_ in _loc5_)
+               var _loc20_:* = displayList;
+               for each(var displayObject in displayList)
                {
-                  if(_loc8_ is Armature)
+                  if(displayObject is Armature)
                   {
-                     _loc8_ = (_loc8_ as Armature).display;
+                     displayObject = (displayObject as Armature).display;
                   }
-                  if(_loc8_.hasOwnProperty("name"))
+                  if(displayObject.hasOwnProperty("name"))
                   {
                      try
                      {
-                        _loc8_["name"] = _loc17_.name;
+                        displayObject["name"] = slot.name;
                      }
                      catch(err:Error)
                      {
@@ -555,29 +548,29 @@ package dragonBones.factories
                      }
                   }
                }
-               _loc11_[_loc4_.name] = _loc5_.concat();
+               skinListData[slotData.name] = displayList.concat();
             }
-            _loc9_++;
+            i++;
          }
-         param1.addSkinList(param2,_loc11_);
+         armature.addSkinList(skinName,skinListData);
       }
       
-      public function parseData(param1:ByteArray, param2:String = null) : void
+      public function parseData(bytes:ByteArray, dataName:String = null) : void
       {
          throw new Error("屏蔽了parseData()不要用这个!!");
       }
       
-      protected function parseCompleteHandler(param1:Event) : void
+      protected function parseCompleteHandler(event:Event) : void
       {
-         var _loc3_:DecompressedData = param1.target as DecompressedData;
-         _loc3_.removeEventListener("complete",parseCompleteHandler);
-         var _loc2_:Object = generateTextureAtlas(_loc3_.textureAtlas,_loc3_.textureAtlasData);
-         addTextureAtlas(_loc2_,_loc3_.name);
-         _loc3_.dispose();
+         var decompressedData:DecompressedData = event.target as DecompressedData;
+         decompressedData.removeEventListener("complete",parseCompleteHandler);
+         var textureAtlas:Object = generateTextureAtlas(decompressedData.textureAtlas,decompressedData.textureAtlasData);
+         addTextureAtlas(textureAtlas,decompressedData.name);
+         decompressedData.dispose();
          this.dispatchEvent(new Event("complete"));
       }
       
-      protected function generateTextureAtlas(param1:Object, param2:Object) : ITextureAtlas
+      protected function generateTextureAtlas(content:Object, textureAtlasRawData:Object) : ITextureAtlas
       {
          return null;
       }
@@ -602,7 +595,7 @@ package dragonBones.factories
          return null;
       }
       
-      protected function generateDisplay(param1:Object, param2:String, param3:Number, param4:Number) : Object
+      protected function generateDisplay(textureAtlas:Object, fullName:String, pivotX:Number, pivotY:Number) : Object
       {
          return null;
       }

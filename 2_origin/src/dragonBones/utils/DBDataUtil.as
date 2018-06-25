@@ -23,297 +23,295 @@ package dragonBones.utils
          super();
       }
       
-      public static function transformArmatureData(param1:ArmatureData) : void
+      public static function transformArmatureData(armatureData:ArmatureData) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:Vector.<BoneData> = param1.boneDataList;
-         var _loc5_:int = _loc4_.length;
+         var boneData:* = null;
+         var parentBoneData:* = null;
+         var boneDataList:Vector.<BoneData> = armatureData.boneDataList;
+         var i:int = boneDataList.length;
          while(true)
          {
-            _loc5_--;
-            if(!_loc5_)
+            i--;
+            if(!i)
             {
                break;
             }
-            _loc3_ = _loc4_[_loc5_];
-            if(_loc3_.parent)
+            boneData = boneDataList[i];
+            if(boneData.parent)
             {
-               _loc2_ = param1.getBoneData(_loc3_.parent);
-               if(_loc2_)
+               parentBoneData = armatureData.getBoneData(boneData.parent);
+               if(parentBoneData)
                {
-                  _loc3_.transform.copy(_loc3_.global);
-                  _loc3_.transform.divParent(_loc2_.global);
+                  boneData.transform.copy(boneData.global);
+                  boneData.transform.divParent(parentBoneData.global);
                }
             }
          }
       }
       
-      public static function transformArmatureDataAnimations(param1:ArmatureData) : void
+      public static function transformArmatureDataAnimations(armatureData:ArmatureData) : void
       {
-         var _loc2_:Vector.<AnimationData> = param1.animationDataList;
-         var _loc3_:int = _loc2_.length;
+         var animationDataList:Vector.<AnimationData> = armatureData.animationDataList;
+         var i:int = animationDataList.length;
          while(true)
          {
-            _loc3_--;
-            if(!_loc3_)
+            i--;
+            if(!i)
             {
                break;
             }
-            transformAnimationData(_loc2_[_loc3_],param1,false);
+            transformAnimationData(animationDataList[i],armatureData,false);
          }
       }
       
-      public static function transformRelativeAnimationData(param1:AnimationData, param2:ArmatureData) : void
+      public static function transformRelativeAnimationData(animationData:AnimationData, armatureData:ArmatureData) : void
       {
       }
       
-      public static function transformAnimationData(param1:AnimationData, param2:ArmatureData, param3:Boolean) : void
+      public static function transformAnimationData(animationData:AnimationData, armatureData:ArmatureData, isGlobalData:Boolean) : void
       {
-         var _loc19_:* = undefined;
-         var _loc14_:int = 0;
-         var _loc13_:* = null;
-         var _loc9_:* = null;
-         var _loc15_:* = null;
-         var _loc4_:* = null;
-         var _loc21_:* = undefined;
-         var _loc7_:* = undefined;
-         var _loc8_:* = null;
-         var _loc18_:* = null;
-         var _loc17_:* = null;
-         var _loc6_:* = 0;
-         var _loc11_:int = 0;
-         var _loc16_:* = null;
-         var _loc5_:Number = NaN;
-         var _loc10_:* = null;
-         if(!param3)
+         var slotDataList:* = undefined;
+         var i:int = 0;
+         var boneData:* = null;
+         var timeline:* = null;
+         var slotTimeline:* = null;
+         var slotData:* = null;
+         var frameList:* = undefined;
+         var slotFrameList:* = undefined;
+         var originTransform:* = null;
+         var originPivot:* = null;
+         var prevFrame:* = null;
+         var frameListLength:* = 0;
+         var j:int = 0;
+         var frame:* = null;
+         var dLX:Number = NaN;
+         var slotFrame:* = null;
+         if(!isGlobalData)
          {
-            transformRelativeAnimationData(param1,param2);
+            transformRelativeAnimationData(animationData,armatureData);
             return;
          }
-         var _loc20_:SkinData = param2.getSkinData(null);
-         var _loc12_:Vector.<BoneData> = param2.boneDataList;
-         if(_loc20_)
+         var skinData:SkinData = armatureData.getSkinData(null);
+         var boneDataList:Vector.<BoneData> = armatureData.boneDataList;
+         if(skinData)
          {
-            _loc19_ = param2.slotDataList;
+            slotDataList = armatureData.slotDataList;
          }
-         _loc14_ = 0;
-         while(_loc14_ < _loc12_.length)
+         i = 0;
+         while(i < boneDataList.length)
          {
-            _loc13_ = _loc12_[_loc14_];
-            _loc9_ = param1.getTimeline(_loc13_.name);
-            _loc15_ = param1.getSlotTimeline(_loc13_.name);
-            if(!(!_loc9_ && !_loc15_))
+            boneData = boneDataList[i];
+            timeline = animationData.getTimeline(boneData.name);
+            slotTimeline = animationData.getSlotTimeline(boneData.name);
+            if(!(!timeline && !slotTimeline))
             {
-               _loc4_ = null;
-               if(_loc19_)
+               slotData = null;
+               if(slotDataList)
                {
                   var _loc23_:int = 0;
-                  var _loc22_:* = _loc19_;
-                  for each(_loc4_ in _loc19_)
+                  var _loc22_:* = slotDataList;
+                  for each(slotData in slotDataList)
                   {
-                     if(_loc4_.parent != _loc13_.name)
+                     if(slotData.parent != boneData.name)
                      {
                         continue;
                      }
                      break;
                   }
                }
-               _loc21_ = _loc9_.frameList;
-               if(_loc15_)
+               frameList = timeline.frameList;
+               if(slotTimeline)
                {
-                  _loc7_ = _loc15_.frameList;
+                  slotFrameList = slotTimeline.frameList;
                }
-               _loc8_ = null;
-               _loc18_ = null;
-               _loc17_ = null;
-               _loc6_ = uint(_loc21_.length);
-               _loc11_ = 0;
-               while(_loc11_ < _loc6_)
+               originTransform = null;
+               originPivot = null;
+               prevFrame = null;
+               frameListLength = uint(frameList.length);
+               for(j = 0; j < frameListLength; )
                {
-                  _loc16_ = _loc21_[_loc11_] as TransformFrame;
-                  setFrameTransform(param1,param2,_loc13_,_loc16_);
-                  _loc16_.transform.x = _loc16_.transform.x - _loc13_.transform.x;
-                  _loc16_.transform.y = _loc16_.transform.y - _loc13_.transform.y;
-                  _loc16_.transform.skewX = _loc16_.transform.skewX - _loc13_.transform.skewX;
-                  _loc16_.transform.skewY = _loc16_.transform.skewY - _loc13_.transform.skewY;
-                  _loc16_.transform.scaleX = _loc16_.transform.scaleX / _loc13_.transform.scaleX;
-                  _loc16_.transform.scaleY = _loc16_.transform.scaleY / _loc13_.transform.scaleY;
-                  if(_loc17_)
+                  frame = frameList[j] as TransformFrame;
+                  setFrameTransform(animationData,armatureData,boneData,frame);
+                  frame.transform.x = frame.transform.x - boneData.transform.x;
+                  frame.transform.y = frame.transform.y - boneData.transform.y;
+                  frame.transform.skewX = frame.transform.skewX - boneData.transform.skewX;
+                  frame.transform.skewY = frame.transform.skewY - boneData.transform.skewY;
+                  frame.transform.scaleX = frame.transform.scaleX / boneData.transform.scaleX;
+                  frame.transform.scaleY = frame.transform.scaleY / boneData.transform.scaleY;
+                  if(prevFrame)
                   {
-                     _loc5_ = _loc16_.transform.skewX - _loc17_.transform.skewX;
-                     if(_loc17_.tweenRotate)
+                     dLX = frame.transform.skewX - prevFrame.transform.skewX;
+                     if(prevFrame.tweenRotate)
                      {
-                        if(_loc17_.tweenRotate > 0)
+                        if(prevFrame.tweenRotate > 0)
                         {
-                           if(_loc5_ < 0)
+                           if(dLX < 0)
                            {
-                              _loc16_.transform.skewX = _loc16_.transform.skewX + 3.14159265358979 * 2;
-                              _loc16_.transform.skewY = _loc16_.transform.skewY + 3.14159265358979 * 2;
+                              frame.transform.skewX = frame.transform.skewX + 3.14159265358979 * 2;
+                              frame.transform.skewY = frame.transform.skewY + 3.14159265358979 * 2;
                            }
-                           if(_loc17_.tweenRotate > 1)
+                           if(prevFrame.tweenRotate > 1)
                            {
-                              _loc16_.transform.skewX = _loc16_.transform.skewX + 3.14159265358979 * 2 * (_loc17_.tweenRotate - 1);
-                              _loc16_.transform.skewY = _loc16_.transform.skewY + 3.14159265358979 * 2 * (_loc17_.tweenRotate - 1);
+                              frame.transform.skewX = frame.transform.skewX + 3.14159265358979 * 2 * (prevFrame.tweenRotate - 1);
+                              frame.transform.skewY = frame.transform.skewY + 3.14159265358979 * 2 * (prevFrame.tweenRotate - 1);
                            }
                         }
                         else
                         {
-                           if(_loc5_ > 0)
+                           if(dLX > 0)
                            {
-                              _loc16_.transform.skewX = _loc16_.transform.skewX - 3.14159265358979 * 2;
-                              _loc16_.transform.skewY = _loc16_.transform.skewY - 3.14159265358979 * 2;
+                              frame.transform.skewX = frame.transform.skewX - 3.14159265358979 * 2;
+                              frame.transform.skewY = frame.transform.skewY - 3.14159265358979 * 2;
                            }
-                           if(_loc17_.tweenRotate < 1)
+                           if(prevFrame.tweenRotate < 1)
                            {
-                              _loc16_.transform.skewX = _loc16_.transform.skewX + 3.14159265358979 * 2 * (_loc17_.tweenRotate + 1);
-                              _loc16_.transform.skewY = _loc16_.transform.skewY + 3.14159265358979 * 2 * (_loc17_.tweenRotate + 1);
+                              frame.transform.skewX = frame.transform.skewX + 3.14159265358979 * 2 * (prevFrame.tweenRotate + 1);
+                              frame.transform.skewY = frame.transform.skewY + 3.14159265358979 * 2 * (prevFrame.tweenRotate + 1);
                            }
                         }
                      }
                      else
                      {
-                        _loc16_.transform.skewX = _loc17_.transform.skewX + TransformUtil.formatRadian(_loc16_.transform.skewX - _loc17_.transform.skewX);
-                        _loc16_.transform.skewY = _loc17_.transform.skewY + TransformUtil.formatRadian(_loc16_.transform.skewY - _loc17_.transform.skewY);
+                        frame.transform.skewX = prevFrame.transform.skewX + TransformUtil.formatRadian(frame.transform.skewX - prevFrame.transform.skewX);
+                        frame.transform.skewY = prevFrame.transform.skewY + TransformUtil.formatRadian(frame.transform.skewY - prevFrame.transform.skewY);
                      }
                   }
-                  _loc17_ = _loc16_;
-                  _loc11_++;
+                  prevFrame = frame;
+                  j++;
                }
-               if(_loc15_ && _loc7_)
+               if(slotTimeline && slotFrameList)
                {
-                  _loc6_ = uint(_loc7_.length);
-                  _loc11_ = 0;
-                  while(_loc11_ < _loc6_)
+                  frameListLength = uint(slotFrameList.length);
+                  for(j = 0; j < frameListLength; )
                   {
-                     _loc10_ = _loc7_[_loc11_] as SlotFrame;
-                     if(!_loc15_.transformed)
+                     slotFrame = slotFrameList[j] as SlotFrame;
+                     if(!slotTimeline.transformed)
                      {
-                        if(_loc4_)
+                        if(slotData)
                         {
-                           _loc10_.zOrder = _loc10_.zOrder - _loc4_.zOrder;
+                           slotFrame.zOrder = slotFrame.zOrder - slotData.zOrder;
                         }
                      }
-                     _loc11_++;
+                     j++;
                   }
-                  _loc15_.transformed = true;
+                  slotTimeline.transformed = true;
                }
-               _loc9_.transformed = true;
+               timeline.transformed = true;
             }
-            _loc14_++;
+            i++;
          }
       }
       
-      private static function setFrameTransform(param1:AnimationData, param2:ArmatureData, param3:BoneData, param4:TransformFrame) : void
+      private static function setFrameTransform(animationData:AnimationData, armatureData:ArmatureData, boneData:BoneData, frame:TransformFrame) : void
       {
-         var _loc12_:* = null;
-         var _loc7_:* = undefined;
-         var _loc5_:* = undefined;
-         var _loc11_:int = 0;
-         var _loc13_:* = null;
-         var _loc6_:* = null;
-         var _loc10_:* = null;
-         var _loc8_:* = null;
-         param4.transform.copy(param4.global);
-         var _loc9_:BoneData = param2.getBoneData(param3.parent);
-         if(_loc9_)
+         var parentTimeline:* = null;
+         var parentTimelineList:* = undefined;
+         var parentDataList:* = undefined;
+         var i:int = 0;
+         var globalTransform:* = null;
+         var globalTransformMatrix:* = null;
+         var currentTransform:* = null;
+         var currentTransformMatrix:* = null;
+         frame.transform.copy(frame.global);
+         var parentData:BoneData = armatureData.getBoneData(boneData.parent);
+         if(parentData)
          {
-            _loc12_ = param1.getTimeline(_loc9_.name);
-            if(_loc12_)
+            parentTimeline = animationData.getTimeline(parentData.name);
+            if(parentTimeline)
             {
-               _loc7_ = new Vector.<TransformTimeline>();
-               _loc5_ = new Vector.<BoneData>();
-               while(_loc12_)
+               parentTimelineList = new Vector.<TransformTimeline>();
+               parentDataList = new Vector.<BoneData>();
+               while(parentTimeline)
                {
-                  _loc7_.push(_loc12_);
-                  _loc5_.push(_loc9_);
-                  _loc9_ = param2.getBoneData(_loc9_.parent);
-                  if(_loc9_)
+                  parentTimelineList.push(parentTimeline);
+                  parentDataList.push(parentData);
+                  parentData = armatureData.getBoneData(parentData.parent);
+                  if(parentData)
                   {
-                     _loc12_ = param1.getTimeline(_loc9_.name);
+                     parentTimeline = animationData.getTimeline(parentData.name);
                   }
                   else
                   {
-                     _loc12_ = null;
+                     parentTimeline = null;
                   }
                }
-               _loc11_ = _loc7_.length;
-               _loc6_ = new Matrix();
-               _loc10_ = new DBTransform();
-               _loc8_ = new Matrix();
+               i = parentTimelineList.length;
+               globalTransformMatrix = new Matrix();
+               currentTransform = new DBTransform();
+               currentTransformMatrix = new Matrix();
                while(true)
                {
-                  _loc11_--;
-                  if(!_loc11_)
+                  i--;
+                  if(!i)
                   {
                      break;
                   }
-                  _loc12_ = _loc7_[_loc11_];
-                  _loc9_ = _loc5_[_loc11_];
-                  getTimelineTransform(_loc12_,param4.position,_loc10_,!_loc13_);
-                  if(!_loc13_)
+                  parentTimeline = parentTimelineList[i];
+                  parentData = parentDataList[i];
+                  getTimelineTransform(parentTimeline,frame.position,currentTransform,!globalTransform);
+                  if(!globalTransform)
                   {
-                     _loc13_ = new DBTransform();
-                     _loc13_.copy(_loc10_);
+                     globalTransform = new DBTransform();
+                     globalTransform.copy(currentTransform);
                   }
                   else
                   {
-                     _loc10_.x = _loc10_.x + (_loc12_.originTransform.x + _loc9_.transform.x);
-                     _loc10_.y = _loc10_.y + (_loc12_.originTransform.y + _loc9_.transform.y);
-                     _loc10_.skewX = _loc10_.skewX + (_loc12_.originTransform.skewX + _loc9_.transform.skewX);
-                     _loc10_.skewY = _loc10_.skewY + (_loc12_.originTransform.skewY + _loc9_.transform.skewY);
-                     _loc10_.scaleX = _loc10_.scaleX * (_loc12_.originTransform.scaleX * _loc9_.transform.scaleX);
-                     _loc10_.scaleY = _loc10_.scaleY * (_loc12_.originTransform.scaleY * _loc9_.transform.scaleY);
-                     TransformUtil.transformToMatrix(_loc10_,_loc8_);
-                     _loc8_.concat(_loc6_);
-                     TransformUtil.matrixToTransform(_loc8_,_loc13_,_loc10_.scaleX * _loc13_.scaleX >= 0,_loc10_.scaleY * _loc13_.scaleY >= 0);
+                     currentTransform.x = currentTransform.x + (parentTimeline.originTransform.x + parentData.transform.x);
+                     currentTransform.y = currentTransform.y + (parentTimeline.originTransform.y + parentData.transform.y);
+                     currentTransform.skewX = currentTransform.skewX + (parentTimeline.originTransform.skewX + parentData.transform.skewX);
+                     currentTransform.skewY = currentTransform.skewY + (parentTimeline.originTransform.skewY + parentData.transform.skewY);
+                     currentTransform.scaleX = currentTransform.scaleX * (parentTimeline.originTransform.scaleX * parentData.transform.scaleX);
+                     currentTransform.scaleY = currentTransform.scaleY * (parentTimeline.originTransform.scaleY * parentData.transform.scaleY);
+                     TransformUtil.transformToMatrix(currentTransform,currentTransformMatrix);
+                     currentTransformMatrix.concat(globalTransformMatrix);
+                     TransformUtil.matrixToTransform(currentTransformMatrix,globalTransform,currentTransform.scaleX * globalTransform.scaleX >= 0,currentTransform.scaleY * globalTransform.scaleY >= 0);
                   }
-                  TransformUtil.transformToMatrix(_loc13_,_loc6_);
+                  TransformUtil.transformToMatrix(globalTransform,globalTransformMatrix);
                }
-               param4.transform.divParent(_loc13_);
+               frame.transform.divParent(globalTransform);
             }
          }
       }
       
-      private static function getTimelineTransform(param1:TransformTimeline, param2:int, param3:DBTransform, param4:Boolean) : void
+      private static function getTimelineTransform(timeline:TransformTimeline, position:int, retult:DBTransform, isGlobal:Boolean) : void
       {
-         var _loc10_:* = null;
-         var _loc7_:Number = NaN;
-         var _loc5_:Number = NaN;
-         var _loc6_:* = null;
-         var _loc11_:* = null;
-         var _loc8_:* = null;
-         var _loc9_:Vector.<Frame> = param1.frameList;
-         var _loc12_:int = _loc9_.length;
+         var currentFrame:* = null;
+         var tweenEasing:Number = NaN;
+         var progress:Number = NaN;
+         var nextFrame:* = null;
+         var currentTransform:* = null;
+         var nextTransform:* = null;
+         var frameList:Vector.<Frame> = timeline.frameList;
+         var i:int = frameList.length;
          while(true)
          {
-            _loc12_--;
-            if(_loc12_)
+            i--;
+            if(i)
             {
-               _loc10_ = _loc9_[_loc12_] as TransformFrame;
-               if(_loc10_.position <= param2 && _loc10_.position + _loc10_.duration > param2)
+               currentFrame = frameList[i] as TransformFrame;
+               if(currentFrame.position <= position && currentFrame.position + currentFrame.duration > position)
                {
-                  if(_loc12_ == _loc9_.length - 1 || param2 == _loc10_.position)
+                  if(i == frameList.length - 1 || position == currentFrame.position)
                   {
-                     param3.copy(!!param4?_loc10_.global:_loc10_.transform);
+                     retult.copy(!!isGlobal?currentFrame.global:currentFrame.transform);
                   }
                   else
                   {
-                     _loc7_ = _loc10_.tweenEasing;
-                     _loc5_ = (param2 - _loc10_.position) / _loc10_.duration;
-                     if(_loc7_ && _loc7_ != 10)
+                     tweenEasing = currentFrame.tweenEasing;
+                     progress = (position - currentFrame.position) / currentFrame.duration;
+                     if(tweenEasing && tweenEasing != 10)
                      {
-                        _loc5_ = MathUtil.getEaseValue(_loc5_,_loc7_);
+                        progress = MathUtil.getEaseValue(progress,tweenEasing);
                      }
-                     _loc6_ = _loc9_[_loc12_ + 1] as TransformFrame;
-                     _loc11_ = !!param4?_loc10_.global:_loc10_.transform;
-                     _loc8_ = !!param4?_loc6_.global:_loc6_.transform;
-                     param3.x = _loc11_.x + (_loc8_.x - _loc11_.x) * _loc5_;
-                     param3.y = _loc11_.y + (_loc8_.y - _loc11_.y) * _loc5_;
-                     param3.skewX = TransformUtil.formatRadian(_loc11_.skewX + (_loc8_.skewX - _loc11_.skewX) * _loc5_);
-                     param3.skewY = TransformUtil.formatRadian(_loc11_.skewY + (_loc8_.skewY - _loc11_.skewY) * _loc5_);
-                     param3.scaleX = _loc11_.scaleX + (_loc8_.scaleX - _loc11_.scaleX) * _loc5_;
-                     param3.scaleY = _loc11_.scaleY + (_loc8_.scaleY - _loc11_.scaleY) * _loc5_;
+                     nextFrame = frameList[i + 1] as TransformFrame;
+                     currentTransform = !!isGlobal?currentFrame.global:currentFrame.transform;
+                     nextTransform = !!isGlobal?nextFrame.global:nextFrame.transform;
+                     retult.x = currentTransform.x + (nextTransform.x - currentTransform.x) * progress;
+                     retult.y = currentTransform.y + (nextTransform.y - currentTransform.y) * progress;
+                     retult.skewX = TransformUtil.formatRadian(currentTransform.skewX + (nextTransform.skewX - currentTransform.skewX) * progress);
+                     retult.skewY = TransformUtil.formatRadian(currentTransform.skewY + (nextTransform.skewY - currentTransform.skewY) * progress);
+                     retult.scaleX = currentTransform.scaleX + (nextTransform.scaleX - currentTransform.scaleX) * progress;
+                     retult.scaleY = currentTransform.scaleY + (nextTransform.scaleY - currentTransform.scaleY) * progress;
                   }
                   break;
                }
@@ -323,28 +321,28 @@ package dragonBones.utils
          }
       }
       
-      public static function addHideTimeline(param1:AnimationData, param2:ArmatureData) : void
+      public static function addHideTimeline(animationData:AnimationData, armatureData:ArmatureData) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc5_:Vector.<BoneData> = param2.boneDataList;
-         var _loc6_:int = _loc5_.length;
+         var boneData:* = null;
+         var boneName:* = null;
+         var boneDataList:Vector.<BoneData> = armatureData.boneDataList;
+         var i:int = boneDataList.length;
          while(true)
          {
-            _loc6_--;
-            if(!_loc6_)
+            i--;
+            if(!i)
             {
                break;
             }
-            _loc4_ = _loc5_[_loc6_];
-            _loc3_ = _loc4_.name;
-            if(!param1.getTimeline(_loc3_))
+            boneData = boneDataList[i];
+            boneName = boneData.name;
+            if(!animationData.getTimeline(boneName))
             {
-               if(param1.hideTimelineNameMap.indexOf(_loc3_) < 0)
+               if(animationData.hideTimelineNameMap.indexOf(boneName) < 0)
                {
-                  param1.hideTimelineNameMap.fixed = false;
-                  param1.hideTimelineNameMap.push(_loc3_);
-                  param1.hideTimelineNameMap.fixed = true;
+                  animationData.hideTimelineNameMap.fixed = false;
+                  animationData.hideTimelineNameMap.push(boneName);
+                  animationData.hideTimelineNameMap.fixed = true;
                }
             }
          }

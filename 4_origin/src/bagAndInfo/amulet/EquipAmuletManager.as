@@ -64,97 +64,94 @@ package bagAndInfo.amulet
          }
       }
       
-      public function analyzer(param1:EquipAmuletDataAnalyzer) : void
+      public function analyzer(analyzer:EquipAmuletDataAnalyzer) : void
       {
-         _infoData = param1.data;
+         _infoData = analyzer.data;
       }
       
-      public function analyzerActivateGrade(param1:EquipAmuletActivateGradeDataAnalyzer) : void
+      public function analyzerActivateGrade(analyzer:EquipAmuletActivateGradeDataAnalyzer) : void
       {
-         _activateGradeData = param1.data;
+         _activateGradeData = analyzer.data;
       }
       
-      public function analyzerPhase(param1:EquipAmuletPhaseDataAnalyzer) : void
+      public function analyzerPhase(analyzer:EquipAmuletPhaseDataAnalyzer) : void
       {
-         _phaseData = param1.data;
+         _phaseData = analyzer.data;
       }
       
-      public function getAmuletVo(param1:int) : EquipAmuletVo
+      public function getAmuletVo(grade:int) : EquipAmuletVo
       {
-         return _infoData[param1];
+         return _infoData[grade];
       }
       
-      public function getAmuletPhaseVo(param1:int) : EquipAmuletPhaseVo
+      public function getAmuletPhaseVo(phase:int) : EquipAmuletPhaseVo
       {
-         return _phaseData[param1];
+         return _phaseData[phase];
       }
       
-      public function getAmuletPhaseVoByGrade(param1:int) : EquipAmuletPhaseVo
+      public function getAmuletPhaseVoByGrade(grade:int) : EquipAmuletPhaseVo
       {
-         return _phaseData[getAmuletPhaseByGrade(param1)];
+         return _phaseData[getAmuletPhaseByGrade(grade)];
       }
       
-      public function getAmuletActivateGradeVo(param1:int) : EquipAmuletActivateGradeVo
+      public function getAmuletActivateGradeVo(count:int) : EquipAmuletActivateGradeVo
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         _loc3_ = 1;
-         while(_loc3_ <= 10)
+         var i:int = 0;
+         var vo:* = null;
+         for(i = 1; i <= 10; )
          {
-            _loc2_ = _activateGradeData[_loc3_] as EquipAmuletActivateGradeVo;
-            if(param1 < _loc2_.WahsTimes)
+            vo = _activateGradeData[i] as EquipAmuletActivateGradeVo;
+            if(count < vo.WahsTimes)
             {
-               return _activateGradeData[_loc3_ - 1];
+               return _activateGradeData[i - 1];
             }
-            _loc3_++;
+            i++;
          }
          return _activateGradeData[10];
       }
       
-      public function getAmuletActivateNeedCount(param1:int) : int
+      public function getAmuletActivateNeedCount(count:int) : int
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         _loc3_ = 1;
-         while(_loc3_ <= 10)
+         var i:int = 0;
+         var vo:* = null;
+         for(i = 1; i <= 10; )
          {
-            _loc2_ = _activateGradeData[_loc3_] as EquipAmuletActivateGradeVo;
-            if(param1 < _loc2_.WahsTimes)
+            vo = _activateGradeData[i] as EquipAmuletActivateGradeVo;
+            if(count < vo.WahsTimes)
             {
-               return _activateGradeData[_loc3_].WahsTimes;
+               return _activateGradeData[i].WahsTimes;
             }
-            _loc3_++;
+            i++;
          }
          return _activateGradeData[10].WahsTimes;
       }
       
-      public function getAmuletHpByGrade(param1:int) : int
+      public function getAmuletHpByGrade(grade:int) : int
       {
-         param1 = param1 <= 0?1:param1;
-         var _loc2_:EquipAmuletVo = _infoData[param1];
-         return _loc2_.HP;
+         grade = grade <= 0?1:grade;
+         var vo:EquipAmuletVo = _infoData[grade];
+         return vo.HP;
       }
       
-      public function getAmuletPhaseByGrade(param1:int) : int
+      public function getAmuletPhaseByGrade(grade:int) : int
       {
-         param1 = param1 <= 0?1:param1;
-         var _loc2_:EquipAmuletVo = _infoData[param1];
-         return _loc2_.phase;
+         grade = grade <= 0?1:grade;
+         var vo:EquipAmuletVo = _infoData[grade];
+         return vo.phase;
       }
       
-      public function getAmuletPhaseGradeByCount(param1:int) : int
+      public function getAmuletPhaseGradeByCount(count:int) : int
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         _loc3_ = 1;
-         while(_loc3_ <= 10)
+         var i:int = 0;
+         var vo:* = null;
+         for(i = 1; i <= 10; )
          {
-            _loc2_ = _activateGradeData[_loc3_] as EquipAmuletActivateGradeVo;
-            if(param1 < _loc2_.WahsTimes)
+            vo = _activateGradeData[i] as EquipAmuletActivateGradeVo;
+            if(count < vo.WahsTimes)
             {
-               return _loc3_ - 1;
+               return i - 1;
             }
-            _loc3_++;
+            i++;
          }
          return 10;
       }

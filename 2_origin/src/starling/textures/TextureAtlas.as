@@ -16,20 +16,20 @@ package starling.textures
       
       private var mSubTextureNames:Vector.<String>;
       
-      public function TextureAtlas(param1:Texture, param2:XML = null)
+      public function TextureAtlas(texture:Texture, atlasXml:XML = null)
       {
          super();
          mSubTextures = new Dictionary();
-         mAtlasTexture = param1;
-         if(param2)
+         mAtlasTexture = texture;
+         if(atlasXml)
          {
-            parseAtlasXml(param2);
+            parseAtlasXml(atlasXml);
          }
       }
       
-      private static function parseBool(param1:String) : Boolean
+      private static function parseBool(value:String) : Boolean
       {
-         return param1.toLowerCase() == "true";
+         return value.toLowerCase() == "true";
       }
       
       public function dispose() : void
@@ -37,75 +37,75 @@ package starling.textures
          mAtlasTexture.dispose();
       }
       
-      protected function parseAtlasXml(param1:XML) : void
+      protected function parseAtlasXml(atlasXml:XML) : void
       {
-         var _loc7_:* = null;
-         var _loc15_:Number = NaN;
-         var _loc11_:Number = NaN;
-         var _loc4_:Number = NaN;
-         var _loc6_:Number = NaN;
-         var _loc9_:Number = NaN;
-         var _loc10_:Number = NaN;
-         var _loc8_:Number = NaN;
-         var _loc13_:Number = NaN;
-         var _loc12_:Boolean = false;
-         var _loc3_:Number = mAtlasTexture.scale;
-         var _loc2_:Rectangle = new Rectangle();
-         var _loc5_:Rectangle = new Rectangle();
+         var name:* = null;
+         var x:Number = NaN;
+         var y:Number = NaN;
+         var width:Number = NaN;
+         var height:Number = NaN;
+         var frameX:Number = NaN;
+         var frameY:Number = NaN;
+         var frameWidth:Number = NaN;
+         var frameHeight:Number = NaN;
+         var rotated:Boolean = false;
+         var scale:Number = mAtlasTexture.scale;
+         var region:Rectangle = new Rectangle();
+         var frame:Rectangle = new Rectangle();
          var _loc17_:int = 0;
-         var _loc16_:* = param1.SubTexture;
-         for each(var _loc14_ in param1.SubTexture)
+         var _loc16_:* = atlasXml.SubTexture;
+         for each(var subTexture in atlasXml.SubTexture)
          {
-            _loc7_ = cleanMasterString(_loc14_.@name);
-            _loc15_ = parseFloat(_loc14_.@x) / _loc3_;
-            _loc11_ = parseFloat(_loc14_.@y) / _loc3_;
-            _loc4_ = parseFloat(_loc14_.@width) / _loc3_;
-            _loc6_ = parseFloat(_loc14_.@height) / _loc3_;
-            _loc9_ = parseFloat(_loc14_.@frameX) / _loc3_;
-            _loc10_ = parseFloat(_loc14_.@frameY) / _loc3_;
-            _loc8_ = parseFloat(_loc14_.@frameWidth) / _loc3_;
-            _loc13_ = parseFloat(_loc14_.@frameHeight) / _loc3_;
-            _loc12_ = parseBool(_loc14_.@rotated);
-            _loc2_.setTo(_loc15_,_loc11_,_loc4_,_loc6_);
-            _loc5_.setTo(_loc9_,_loc10_,_loc8_,_loc13_);
-            if(_loc8_ > 0 && _loc13_ > 0)
+            name = cleanMasterString(subTexture.@name);
+            x = parseFloat(subTexture.@x) / scale;
+            y = parseFloat(subTexture.@y) / scale;
+            width = parseFloat(subTexture.@width) / scale;
+            height = parseFloat(subTexture.@height) / scale;
+            frameX = parseFloat(subTexture.@frameX) / scale;
+            frameY = parseFloat(subTexture.@frameY) / scale;
+            frameWidth = parseFloat(subTexture.@frameWidth) / scale;
+            frameHeight = parseFloat(subTexture.@frameHeight) / scale;
+            rotated = parseBool(subTexture.@rotated);
+            region.setTo(x,y,width,height);
+            frame.setTo(frameX,frameY,frameWidth,frameHeight);
+            if(frameWidth > 0 && frameHeight > 0)
             {
-               addRegion(_loc7_,_loc2_,_loc5_,_loc12_);
+               addRegion(name,region,frame,rotated);
             }
             else
             {
-               addRegion(_loc7_,_loc2_,null,_loc12_);
+               addRegion(name,region,null,rotated);
             }
          }
       }
       
-      public function getTexture(param1:String) : Texture
+      public function getTexture(name:String) : Texture
       {
-         return mSubTextures[param1];
+         return mSubTextures[name];
       }
       
-      public function getTextures(param1:String = "", param2:Vector.<Texture> = null) : Vector.<Texture>
+      public function getTextures(prefix:String = "", result:Vector.<Texture> = null) : Vector.<Texture>
       {
-         if(param2 == null)
+         if(result == null)
          {
-            param2 = new Vector.<Texture>(0);
+            result = new Vector.<Texture>(0);
          }
          var _loc5_:int = 0;
-         var _loc4_:* = getNames(param1,sNames);
-         for each(var _loc3_ in getNames(param1,sNames))
+         var _loc4_:* = getNames(prefix,sNames);
+         for each(var name in getNames(prefix,sNames))
          {
-            param2[param2.length] = getTexture(_loc3_);
+            result[result.length] = getTexture(name);
          }
          sNames.length = 0;
-         return param2;
+         return result;
       }
       
-      public function getNames(param1:String = "", param2:Vector.<String> = null) : Vector.<String>
+      public function getNames(prefix:String = "", result:Vector.<String> = null) : Vector.<String>
       {
-         var _loc3_:* = null;
-         if(param2 == null)
+         var name:* = null;
+         if(result == null)
          {
-            param2 = new Vector.<String>(0);
+            result = new Vector.<String>(0);
          }
          if(mSubTextureNames == null)
          {
@@ -119,48 +119,48 @@ package starling.textures
          }
          var _loc7_:int = 0;
          var _loc6_:* = mSubTextureNames;
-         for each(_loc3_ in mSubTextureNames)
+         for each(name in mSubTextureNames)
          {
-            if(_loc3_.indexOf(param1) == 0)
+            if(name.indexOf(prefix) == 0)
             {
-               param2[param2.length] = _loc3_;
+               result[result.length] = name;
             }
          }
-         return param2;
+         return result;
       }
       
-      public function getRegion(param1:String) : Rectangle
+      public function getRegion(name:String) : Rectangle
       {
-         var _loc2_:SubTexture = mSubTextures[param1];
-         return !!_loc2_?_loc2_.region:null;
+         var subTexture:SubTexture = mSubTextures[name];
+         return !!subTexture?subTexture.region:null;
       }
       
-      public function getFrame(param1:String) : Rectangle
+      public function getFrame(name:String) : Rectangle
       {
-         var _loc2_:SubTexture = mSubTextures[param1];
-         return !!_loc2_?_loc2_.frame:null;
+         var subTexture:SubTexture = mSubTextures[name];
+         return !!subTexture?subTexture.frame:null;
       }
       
-      public function getRotation(param1:String) : Boolean
+      public function getRotation(name:String) : Boolean
       {
-         var _loc2_:SubTexture = mSubTextures[param1];
-         return !!_loc2_?_loc2_.rotated:false;
+         var subTexture:SubTexture = mSubTextures[name];
+         return !!subTexture?subTexture.rotated:false;
       }
       
-      public function addRegion(param1:String, param2:Rectangle, param3:Rectangle = null, param4:Boolean = false) : void
+      public function addRegion(name:String, region:Rectangle, frame:Rectangle = null, rotated:Boolean = false) : void
       {
-         mSubTextures[param1] = new SubTexture(mAtlasTexture,param2,false,param3,param4);
+         mSubTextures[name] = new SubTexture(mAtlasTexture,region,false,frame,rotated);
          mSubTextureNames = null;
       }
       
-      public function removeRegion(param1:String) : void
+      public function removeRegion(name:String) : void
       {
-         var _loc2_:SubTexture = mSubTextures[param1];
-         if(_loc2_)
+         var subTexture:SubTexture = mSubTextures[name];
+         if(subTexture)
          {
-            _loc2_.dispose();
+            subTexture.dispose();
          }
-         delete mSubTextures[param1];
+         delete mSubTextures[name];
          mSubTextureNames = null;
       }
       

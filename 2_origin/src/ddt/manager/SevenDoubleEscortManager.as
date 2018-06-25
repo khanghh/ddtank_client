@@ -16,9 +16,9 @@ package ddt.manager
       
       private var _tag:int;
       
-      public function SevenDoubleEscortManager(param1:IEventDispatcher = null)
+      public function SevenDoubleEscortManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : SevenDoubleEscortManager
@@ -37,40 +37,40 @@ package ddt.manager
          DDTKingFloatIconManager.instance.setup();
       }
       
-      private function pkgHandler(param1:PkgEvent) : void
+      private function pkgHandler(event:PkgEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc4_.readByte();
-         if(_loc2_ == 1)
+         var tmpTag:int = 0;
+         var pkg:PackageIn = event.pkg;
+         var cmd:int = pkg.readByte();
+         if(cmd == 1)
          {
-            _loc3_ = _loc4_.readInt();
-            if(_loc4_.readBoolean())
+            tmpTag = pkg.readInt();
+            if(pkg.readBoolean())
             {
-               _tag = _loc3_;
+               _tag = tmpTag;
             }
-            _loc4_.position = _loc4_.position - 5;
+            pkg.position = pkg.position - 5;
          }
-         _loc4_.position = _loc4_.position - 1;
+         pkg.position = pkg.position - 1;
          if(_tag == 1)
          {
-            SocketManager.Instance.dispatchEvent(new CrazyTankSocketEvent("seven_double",_loc4_));
+            SocketManager.Instance.dispatchEvent(new CrazyTankSocketEvent("seven_double",pkg));
          }
          else if(_tag == 2)
          {
-            SocketManager.Instance.dispatchEvent(new CrazyTankSocketEvent("escort",_loc4_));
+            SocketManager.Instance.dispatchEvent(new CrazyTankSocketEvent("escort",pkg));
          }
          else if(_tag == 3)
          {
-            SocketManager.Instance.dispatchEvent(new CrazyTankSocketEvent("drgn_baot",_loc4_));
+            SocketManager.Instance.dispatchEvent(new CrazyTankSocketEvent("drgn_baot",pkg));
          }
          else if(_tag == 4)
          {
-            SocketManager.Instance.dispatchEvent(new CrazyTankSocketEvent("float_parade",_loc4_));
+            SocketManager.Instance.dispatchEvent(new CrazyTankSocketEvent("float_parade",pkg));
          }
          else if(_tag == 5)
          {
-            SocketManager.Instance.dispatchEvent(new CrazyTankSocketEvent("ddt_king_float",_loc4_));
+            SocketManager.Instance.dispatchEvent(new CrazyTankSocketEvent("ddt_king_float",pkg));
          }
       }
    }

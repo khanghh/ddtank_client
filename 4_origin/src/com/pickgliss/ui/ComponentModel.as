@@ -60,22 +60,22 @@ package com.pickgliss.ui
          return _componentStyle;
       }
       
-      public function addBitmapSet(param1:String, param2:XML) : void
+      public function addBitmapSet(classpath:String, tagData:XML) : void
       {
-         _bitmapSets[param1] = param2;
+         _bitmapSets[classpath] = tagData;
       }
       
-      public function addComponentSet(param1:XML) : void
+      public function addComponentSet(componentSet:XML) : void
       {
-         if(_loadedComponentSet.indexOf(String(param1.@name)) != -1)
+         if(_loadedComponentSet.indexOf(String(componentSet.@name)) != -1)
          {
             return;
          }
-         _currentComponentSet = param1;
+         _currentComponentSet = componentSet;
          _loadedComponentSet.push(String(_currentComponentSet.@name));
          if(Capabilities.isDebugger)
          {
-            _allComponentSet[param1.@name] = param1;
+            _allComponentSet[componentSet.@name] = componentSet;
          }
          paras();
       }
@@ -85,56 +85,55 @@ package com.pickgliss.ui
          return _allTipStyles;
       }
       
-      public function getBitmapSet(param1:String) : XML
+      public function getBitmapSet(classpath:String) : XML
       {
-         return _bitmapSets[param1];
+         return _bitmapSets[classpath];
       }
       
-      public function getComonentStyle(param1:String) : XML
+      public function getComonentStyle(stylename:String) : XML
       {
-         return _componentStyle[param1];
+         return _componentStyle[stylename];
       }
       
-      public function getCustomObjectStyle(param1:String) : XML
+      public function getCustomObjectStyle(stylename:String) : XML
       {
-         return _customObjectStyle[param1];
+         return _customObjectStyle[stylename];
       }
       
-      public function getSet(param1:String) : *
+      public function getSet(key:String) : *
       {
-         return _styleSets[param1];
+         return _styleSets[key];
       }
       
-      private function __onShaderLoadComplete(param1:LoaderEvent) : void
+      private function __onShaderLoadComplete(event:LoaderEvent) : void
       {
-         var _loc7_:int = 0;
-         var _loc6_:* = null;
-         var _loc4_:Object = findShaderDataByLoader(param1.loader);
-         var _loc2_:Shader = new Shader(_loc4_.loader.content);
-         var _loc3_:ShaderFilter = new ShaderFilter(_loc2_);
-         var _loc5_:Array = ComponentFactory.parasArgs(_loc4_.xml.@paras);
-         _loc7_ = 0;
-         while(_loc7_ < _loc5_.length)
+         var i:int = 0;
+         var para:* = null;
+         var shaderDataObject:Object = findShaderDataByLoader(event.loader);
+         var shader:Shader = new Shader(shaderDataObject.loader.content);
+         var shaderFilter:ShaderFilter = new ShaderFilter(shader);
+         var shaderParas:Array = ComponentFactory.parasArgs(shaderDataObject.xml.@paras);
+         for(i = 0; i < shaderParas.length; )
          {
-            _loc6_ = String(_loc5_[_loc7_]).split(":");
-            if(_loc3_.shader.data.hasOwnProperty(_loc6_[0]))
+            para = String(shaderParas[i]).split(":");
+            if(shaderFilter.shader.data.hasOwnProperty(para[0]))
             {
-               _loc3_.shader.data[_loc6_[0]].value = [int(_loc6_[1])];
+               shaderFilter.shader.data[para[0]].value = [int(para[1])];
             }
-            _loc7_++;
+            i++;
          }
-         _styleSets[_loc4_.xml.@shadername] = _loc3_;
+         _styleSets[shaderDataObject.xml.@shadername] = shaderFilter;
       }
       
-      private function findShaderDataByLoader(param1:BaseLoader) : Object
+      private function findShaderDataByLoader(loader:BaseLoader) : Object
       {
          var _loc4_:int = 0;
          var _loc3_:* = _shaderData;
-         for each(var _loc2_ in _shaderData)
+         for each(var shaderDataObject in _shaderData)
          {
-            if(_loc2_.loader == param1)
+            if(shaderDataObject.loader == loader)
             {
-               return _loc2_;
+               return shaderDataObject;
             }
          }
          return null;
@@ -156,94 +155,88 @@ package com.pickgliss.ui
          parasBitmapSets(_currentComponentSet..bitmap);
       }
       
-      private function parasBitmapDataSets(param1:XMLList) : void
+      private function parasBitmapDataSets(list:XMLList) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < param1.length())
+         var i:int = 0;
+         for(i = 0; i < list.length(); )
          {
-            _bitmapSets[param1[_loc2_].@resourceLink] = param1[_loc2_];
-            _loc2_++;
+            _bitmapSets[list[i].@resourceLink] = list[i];
+            i++;
          }
       }
       
-      private function parasBitmapSets(param1:XMLList) : void
+      private function parasBitmapSets(list:XMLList) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < param1.length())
+         var i:int = 0;
+         for(i = 0; i < list.length(); )
          {
-            _bitmapSets[param1[_loc2_].@resourceLink] = param1[_loc2_];
-            _loc2_++;
+            _bitmapSets[list[i].@resourceLink] = list[i];
+            i++;
          }
       }
       
-      private function parasComponent(param1:XMLList) : void
+      private function parasComponent(list:XMLList) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         _loc3_ = 0;
-         while(_loc3_ < param1.length())
+         var i:int = 0;
+         var error:* = null;
+         for(i = 0; i < list.length(); )
          {
-            if(_componentStyle[param1[_loc3_].@stylename] != null)
+            if(_componentStyle[list[i].@stylename] != null)
             {
-               _loc2_ = new Error("样式重名。。。请注意检查!!!!!!!!" + String(param1[_loc3_].@stylename));
-               throw _loc2_;
+               error = new Error("样式重名。。。请注意检查!!!!!!!!" + String(list[i].@stylename));
+               throw error;
             }
-            param1[_loc3_].@componentModule = _currentComponentSet.@name;
-            _componentStyle[param1[_loc3_].@stylename] = param1[_loc3_];
-            _loc3_++;
+            list[i].@componentModule = _currentComponentSet.@name;
+            _componentStyle[list[i].@stylename] = list[i];
+            i++;
          }
       }
       
-      private function parasCustomObject(param1:XMLList) : void
+      private function parasCustomObject(list:XMLList) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         _loc3_ = 0;
-         while(_loc3_ < param1.length())
+         var i:int = 0;
+         var error:* = null;
+         for(i = 0; i < list.length(); )
          {
-            if(_customObjectStyle[param1[_loc3_].@stylename] != null)
+            if(_customObjectStyle[list[i].@stylename] != null)
             {
-               _loc2_ = new Error("样式重名。。。请注意检查!!!!!!!!" + String(param1[_loc3_].@stylename));
-               throw _loc2_;
+               error = new Error("样式重名。。。请注意检查!!!!!!!!" + String(list[i].@stylename));
+               throw error;
             }
-            _customObjectStyle[param1[_loc3_].@stylename] = param1[_loc3_];
-            _loc3_++;
+            _customObjectStyle[list[i].@stylename] = list[i];
+            i++;
          }
       }
       
-      private function parasSets(param1:XMLList) : void
+      private function parasSets(list:XMLList) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < param1.length())
+         var i:int = 0;
+         for(i = 0; i < list.length(); )
          {
-            if(String(param1[_loc2_].@type) == "flash.filters.ColorMatrixFilter")
+            if(String(list[i].@type) == "flash.filters.ColorMatrixFilter")
             {
-               _styleSets[param1[_loc2_].@stylename] = ClassUtils.CreatInstance(param1[_loc2_].@type,[ComponentFactory.parasArgs(param1[_loc2_].@args)]);
+               _styleSets[list[i].@stylename] = ClassUtils.CreatInstance(list[i].@type,[ComponentFactory.parasArgs(list[i].@args)]);
             }
             else
             {
-               _styleSets[param1[_loc2_].@stylename] = ClassUtils.CreatInstance(param1[_loc2_].@type,ComponentFactory.parasArgs(param1[_loc2_].@args));
+               _styleSets[list[i].@stylename] = ClassUtils.CreatInstance(list[i].@type,ComponentFactory.parasArgs(list[i].@args));
             }
-            ObjectUtils.copyPorpertiesByXML(_styleSets[param1[_loc2_].@stylename],param1[_loc2_]);
-            _loc2_++;
+            ObjectUtils.copyPorpertiesByXML(_styleSets[list[i].@stylename],list[i]);
+            i++;
          }
       }
       
-      private function parasTipStyle(param1:XMLList) : void
+      private function parasTipStyle(styles:XMLList) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:Array = String(param1[0].@alltips).split(",");
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_.length)
+         var i:int = 0;
+         var allStyles:Array = String(styles[0].@alltips).split(",");
+         for(i = 0; i < allStyles.length; )
          {
-            if(_allTipStyles.indexOf(_loc2_[_loc3_]) == -1)
+            if(_allTipStyles.indexOf(allStyles[i]) == -1)
             {
-               _allTipStyles.push(_loc2_[_loc3_]);
+               _allTipStyles.push(allStyles[i]);
             }
-            _loc3_++;
+            i++;
          }
       }
       
@@ -252,9 +245,9 @@ package com.pickgliss.ui
          return _allComponentSet;
       }
       
-      public function set allComponentSet(param1:Dictionary) : void
+      public function set allComponentSet(value:Dictionary) : void
       {
-         _allComponentSet = param1;
+         _allComponentSet = value;
       }
    }
 }

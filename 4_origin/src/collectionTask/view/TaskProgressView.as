@@ -37,8 +37,8 @@ package collectionTask.view
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var progressItem:* = null;
          _bg = ComponentFactory.Instance.creatBitmap("collectionTask.infoBgAsset");
          addChild(_bg);
          _infoBtn = ComponentFactory.Instance.creatComponentByStylename("collectionTask.infoViewButton");
@@ -50,27 +50,25 @@ package collectionTask.view
          _title.text = _info.Title;
          _progressTxtArr = [];
          _progressDescArr = _info.conditionProgress;
-         _loc2_ = 0;
-         while(_loc2_ < _progressDescArr.length)
+         for(i = 0; i < _progressDescArr.length; )
          {
-            _loc1_ = new TaskProgressItem();
-            addChild(_loc1_);
-            _loc1_.x = 27;
-            _loc1_.y = 15 + 29 * (_loc2_ + 1);
-            _progressTxtArr.push(_loc1_);
-            _loc2_++;
+            progressItem = new TaskProgressItem();
+            addChild(progressItem);
+            progressItem.x = 27;
+            progressItem.y = 15 + 29 * (i + 1);
+            _progressTxtArr.push(progressItem);
+            i++;
          }
       }
       
       public function refreshView() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _progressDescArr = _info.conditionProgress;
-         _loc1_ = 0;
-         while(_loc1_ < _progressTxtArr.length)
+         for(i = 0; i < _progressTxtArr.length; )
          {
-            (_progressTxtArr[_loc1_] as TaskProgressItem).refresh(_progressDescArr[_loc1_]);
-            _loc1_++;
+            (_progressTxtArr[i] as TaskProgressItem).refresh(_progressDescArr[i]);
+            i++;
          }
          CollectionTaskManager.Instance.isTaskComplete = _info.isCompleted;
       }
@@ -85,10 +83,10 @@ package collectionTask.view
          _title = null;
          var _loc3_:int = 0;
          var _loc2_:* = _progressTxtArr;
-         for each(var _loc1_ in _progressTxtArr)
+         for each(var item in _progressTxtArr)
          {
-            ObjectUtils.disposeObject(_loc1_);
-            _loc1_ = null;
+            ObjectUtils.disposeObject(item);
+            item = null;
          }
          _progressTxtArr = null;
          if(parent)

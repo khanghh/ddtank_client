@@ -51,8 +51,8 @@ package ddt.view.bossbox
          titleText = LanguageMgr.GetTranslation("tank.timeBox.awardsInfo");
          GoodsBG = ComponentFactory.Instance.creat("bossbox.scale9GoodsImageII");
          addToContent(GoodsBG);
-         var _loc1_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.vip.monyBG");
-         addToContent(_loc1_);
+         var bit:Bitmap = ComponentFactory.Instance.creatBitmap("asset.vip.monyBG");
+         addToContent(bit);
          _timeTypeTxt = ComponentFactory.Instance.creat("bossbox.awardsTitleTxt");
          _timeTypeTxt.text = LanguageMgr.GetTranslation("ddt.vip.awardsTitleTxt");
          addToContent(_timeTypeTxt);
@@ -71,25 +71,25 @@ package ddt.view.bossbox
          _button.addEventListener("click",_click);
       }
       
-      private function _click(param1:MouseEvent) : void
+      private function _click(evt:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var alert:* = null;
          SoundManager.instance.play("008");
-         var _loc3_:int = 0;
+         var vRewardBindBid:int = 0;
          var _loc6_:int = 0;
          var _loc5_:* = _goodsList;
-         for each(var _loc4_ in _goodsList)
+         for each(var boxGoodItem in _goodsList)
          {
-            if(_loc4_.TemplateId == -300)
+            if(boxGoodItem.TemplateId == -300)
             {
-               _loc3_ = _loc4_.ItemCount;
+               vRewardBindBid = boxGoodItem.ItemCount;
                break;
             }
          }
-         if(_loc3_ + PlayerManager.Instance.Self.DDTMoney > ServerConfigManager.instance.getBindBidLimit(PlayerManager.Instance.Self.Grade,PlayerManager.Instance.Self.VIPLevel))
+         if(vRewardBindBid + PlayerManager.Instance.Self.DDTMoney > ServerConfigManager.instance.getBindBidLimit(PlayerManager.Instance.Self.Grade,PlayerManager.Instance.Self.VIPLevel))
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.BindBid.tip"),LanguageMgr.GetTranslation("shop.PresentFrame.OkBtnText"),LanguageMgr.GetTranslation("shop.PresentFrame.CancelBtnText"),false,false,true,1);
-            _loc2_.addEventListener("response",__onResponse);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.BindBid.tip"),LanguageMgr.GetTranslation("shop.PresentFrame.OkBtnText"),LanguageMgr.GetTranslation("shop.PresentFrame.CancelBtnText"),false,false,true,1);
+            alert.addEventListener("response",__onResponse);
          }
          else
          {
@@ -99,21 +99,21 @@ package ddt.view.bossbox
          }
       }
       
-      private function __onResponse(param1:FrameEvent) : void
+      private function __onResponse(pEvent:FrameEvent) : void
       {
-         param1.currentTarget.removeEventListener("response",__onResponse);
-         if(param1.responseCode == 3)
+         pEvent.currentTarget.removeEventListener("response",__onResponse);
+         if(pEvent.responseCode == 3)
          {
             PlayerManager.Instance.Self.canTakeVipReward = false;
             MainButtnController.instance.dispatchEvent(new Event(MainButtnController.ICONCLOSE));
             dispatchEvent(new Event("_haveBtnClick"));
          }
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(pEvent.currentTarget);
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -122,9 +122,9 @@ package ddt.view.bossbox
          }
       }
       
-      public function set boxType(param1:int) : void
+      public function set boxType(value:int) : void
       {
-         _boxType = param1 + 1;
+         _boxType = value + 1;
       }
       
       public function get boxType() : int
@@ -132,25 +132,25 @@ package ddt.view.bossbox
          return _boxType;
       }
       
-      public function set goodsList(param1:Array) : void
+      public function set goodsList(templateIds:Array) : void
       {
-         _goodsList = param1;
+         _goodsList = templateIds;
          list = ComponentFactory.Instance.creatCustomObject("bossbox.AwardsGoodsList");
          list.show(_goodsList);
          addChild(list);
       }
       
-      public function set vipAwardGoodsList(param1:Array) : void
+      public function set vipAwardGoodsList(templateIds:Array) : void
       {
-         _goodsList = param1;
+         _goodsList = templateIds;
          list = ComponentFactory.Instance.creatCustomObject("bossbox.AwardsGoodsList");
          list.showForVipAward(_goodsList);
          addChild(list);
       }
       
-      public function set fightLibAwardGoodList(param1:Array) : void
+      public function set fightLibAwardGoodList(templateids:Array) : void
       {
-         goodsList = param1;
+         goodsList = templateids;
          list = ComponentFactory.Instance.creatCustomObject("bossbox.AwardsGoodsList");
          list.show(_goodsList);
          addChild(list);
@@ -161,37 +161,37 @@ package ddt.view.bossbox
          closeButton.visible = true;
          _button.enable = false;
          _timeTypeTxt.visible = false;
-         var _loc1_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("bossbox.TheNextTimeText");
-         addToContent(_loc1_);
-         _loc1_.text = LanguageMgr.GetTranslation("ddt.view.bossbox.AwardsView.TheNextTimeText",updateTime());
+         var txt:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("bossbox.TheNextTimeText");
+         addToContent(txt);
+         txt.text = LanguageMgr.GetTranslation("ddt.view.bossbox.AwardsView.TheNextTimeText",updateTime());
       }
       
       private function updateTime() : String
       {
-         var _loc5_:Number = BossBoxManager.instance.delaySumTime * 1000 + TimeManager.Instance.Now().time;
-         var _loc4_:Date = new Date(_loc5_);
-         var _loc2_:int = _loc4_.hours;
-         var _loc1_:int = _loc4_.minutes;
-         var _loc3_:String = "";
-         if(_loc2_ < 10)
+         var _timeSum:Number = BossBoxManager.instance.delaySumTime * 1000 + TimeManager.Instance.Now().time;
+         var date:Date = new Date(_timeSum);
+         var _hours:int = date.hours;
+         var _minute:int = date.minutes;
+         var str:String = "";
+         if(_hours < 10)
          {
-            _loc3_ = _loc3_ + ("0" + _loc2_);
+            str = str + ("0" + _hours);
          }
          else
          {
-            _loc3_ = _loc3_ + _loc2_;
+            str = str + _hours;
          }
-         _loc3_ = _loc3_ + "点";
-         if(_loc1_ < 10)
+         str = str + "点";
+         if(_minute < 10)
          {
-            _loc3_ = _loc3_ + ("0" + _loc1_);
+            str = str + ("0" + _minute);
          }
          else
          {
-            _loc3_ = _loc3_ + _loc1_;
+            str = str + _minute;
          }
-         _loc3_ = _loc3_ + "分";
-         return _loc3_;
+         str = str + "分";
+         return str;
       }
       
       override public function dispose() : void

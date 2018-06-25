@@ -35,10 +35,10 @@ package happyLittleGame.rank.items
       
       private var _shine:Scale9CornerImage;
       
-      public function SimpleGameRankItem(param1:uint)
+      public function SimpleGameRankItem(index:uint)
       {
          super();
-         this._index = param1;
+         this._index = index;
          this.initItem();
       }
       
@@ -71,13 +71,13 @@ package happyLittleGame.rank.items
       
       private function createItemCell() : BaseCell
       {
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,30,30);
-         _loc1_.graphics.endFill();
-         var _loc2_:BaseCell = new BaseCell(_loc1_,null,true,true);
-         CellFactory.instance.fillTipProp(_loc2_);
-         return _loc2_;
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(16777215,0);
+         sp.graphics.drawRect(0,0,30,30);
+         sp.graphics.endFill();
+         var cell:BaseCell = new BaseCell(sp,null,true,true);
+         CellFactory.instance.fillTipProp(cell);
+         return cell;
       }
       
       public function dispose() : void
@@ -103,29 +103,29 @@ package happyLittleGame.rank.items
          this._shine.visible = false;
       }
       
-      public function set data(param1:HappyMiniGameRankData) : void
+      public function set data(value:HappyMiniGameRankData) : void
       {
-         if(!param1)
+         if(!value)
          {
             return;
          }
-         this._itemCell.info = param1.itemInfo;
-         if(param1.rank < _topThreeIcon.totalFrames)
+         this._itemCell.info = value.itemInfo;
+         if(value.rank < _topThreeIcon.totalFrames)
          {
             this._topThreeIcon.visible = true;
-            this._topThreeIcon.setFrame(param1.rank + 1);
+            this._topThreeIcon.setFrame(value.rank + 1);
             this._rankTxt.visible = false;
          }
          else
          {
             this._rankTxt.visible = true;
-            this._rankTxt.text = (param1.rank + 1).toString();
+            this._rankTxt.text = (value.rank + 1).toString();
             this._topThreeIcon.visible = false;
          }
-         this._playerNameTxt.text = param1.playerName;
-         this._serverNameTxt.text = param1.serverName;
-         this._scoreTxt.text = param1.score.toString();
-         this._shine.visible = PlayerManager.Instance.Self.NickName == param1.playerName;
+         this._playerNameTxt.text = value.playerName;
+         this._serverNameTxt.text = value.serverName;
+         this._scoreTxt.text = value.score.toString();
+         this._shine.visible = PlayerManager.Instance.Self.NickName == value.playerName;
       }
    }
 }

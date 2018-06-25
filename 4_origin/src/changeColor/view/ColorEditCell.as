@@ -10,13 +10,13 @@ package changeColor.view
    {
        
       
-      public function ColorEditCell(param1:Sprite)
+      public function ColorEditCell(bg:Sprite)
       {
-         super(param1);
+         super(bg);
          .super.DoubleClickEnabled = false;
       }
       
-      override protected function onMouseClick(param1:MouseEvent) : void
+      override protected function onMouseClick(evt:MouseEvent) : void
       {
          if(this.itemInfo != null)
          {
@@ -37,11 +37,11 @@ package changeColor.view
          }
       }
       
-      override protected function onMouseOver(param1:MouseEvent) : void
+      override protected function onMouseOver(evt:MouseEvent) : void
       {
       }
       
-      override protected function onMouseOut(param1:MouseEvent) : void
+      override protected function onMouseOut(evt:MouseEvent) : void
       {
       }
       

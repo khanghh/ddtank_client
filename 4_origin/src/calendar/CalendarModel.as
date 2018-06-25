@@ -52,26 +52,26 @@ package calendar
       
       private var _dayLog:Dictionary;
       
-      public function CalendarModel(param1:Date, param2:int, param3:Dictionary, param4:Array, param5:Array, param6:Array, param7:Array)
+      public function CalendarModel(today:Date, signCount:int, dayLog:Dictionary, signAwards:Array, awardCounts:Array, eventActives:Array, _activeExchange:Array)
       {
          super();
-         _today = param1;
-         _signCount = param2;
-         _dayLog = param3;
-         _awards = param4;
-         _awardCounts = param5;
-         _eventActives = param6;
-         param7 = param7;
+         _today = today;
+         _signCount = signCount;
+         _dayLog = dayLog;
+         _awards = signAwards;
+         _awardCounts = awardCounts;
+         _eventActives = eventActives;
+         _activeExchange = _activeExchange;
       }
       
-      public static function getMonthMaxDay(param1:int, param2:int) : int
+      public static function getMonthMaxDay(month:int, year:int) : int
       {
-         switch(int(param1))
+         switch(int(month))
          {
             case 0:
                return 31;
             case 1:
-               if(param2 % 4 == 0)
+               if(year % 4 == 0)
                {
                   return 29;
                }
@@ -104,13 +104,13 @@ package calendar
          return _luckyNum;
       }
       
-      public function set luckyNum(param1:int) : void
+      public function set luckyNum(value:int) : void
       {
-         if(_luckyNum == param1)
+         if(_luckyNum == value)
          {
             return;
          }
-         _luckyNum = param1;
+         _luckyNum = value;
          dispatchEvent(new CalendarEvent("LuckyNumChanged"));
       }
       
@@ -119,13 +119,13 @@ package calendar
          return _myLuckyNum;
       }
       
-      public function set myLuckyNum(param1:int) : void
+      public function set myLuckyNum(value:int) : void
       {
-         if(_myLuckyNum == param1)
+         if(_myLuckyNum == value)
          {
             return;
          }
-         _myLuckyNum = param1;
+         _myLuckyNum = value;
          dispatchEvent(new CalendarEvent("LuckyNumChanged"));
       }
       
@@ -144,13 +144,13 @@ package calendar
          return _signCount;
       }
       
-      public function set signCount(param1:int) : void
+      public function set signCount(value:int) : void
       {
-         if(_signCount == param1)
+         if(_signCount == value)
          {
             return;
          }
-         _signCount = param1;
+         _signCount = value;
          dispatchEvent(new CalendarEvent("SignCountChanged"));
       }
       
@@ -169,13 +169,13 @@ package calendar
          return _today;
       }
       
-      public function set today(param1:Date) : void
+      public function set today(value:Date) : void
       {
-         if(_today == param1)
+         if(_today == value)
          {
             return;
          }
-         _today = param1;
+         _today = value;
          dispatchEvent(new CalendarEvent("TodayChanged"));
       }
       
@@ -184,29 +184,29 @@ package calendar
          return _dayLog;
       }
       
-      public function set dayLog(param1:Dictionary) : void
+      public function set dayLog(value:Dictionary) : void
       {
-         if(_dayLog == param1)
+         if(_dayLog == value)
          {
             return;
          }
-         _dayLog = param1;
+         _dayLog = value;
          dispatchEvent(new CalendarEvent("DayLogChanged"));
       }
       
-      public function hasSigned(param1:Date) : Boolean
+      public function hasSigned(date:Date) : Boolean
       {
-         return _dayLog && param1.fullYear == _today.fullYear && param1.month == _today.month && _dayLog[param1.date.toString()] == "True";
+         return _dayLog && date.fullYear == _today.fullYear && date.month == _today.month && _dayLog[date.date.toString()] == "True";
       }
       
-      public function hasSignedNew(param1:Date) : Boolean
+      public function hasSignedNew(date:Date) : Boolean
       {
-         return _dayLog[param1.date.toString()] == "True";
+         return _dayLog[date.date.toString()] == "True";
       }
       
-      public function hasRestroSigned(param1:Date) : Boolean
+      public function hasRestroSigned(date:Date) : Boolean
       {
-         return _dayLog && param1.fullYear == _today.fullYear && param1.month == _today.month && param1.date < _today.date && _dayLog[param1.date.toString()] == "2";
+         return _dayLog && date.fullYear == _today.fullYear && date.month == _today.month && date.date < _today.date && _dayLog[date.date.toString()] == "2";
       }
       
       public function get RestroactiveFlag() : Boolean
@@ -214,9 +214,9 @@ package calendar
          return _restroactiveNum > 5;
       }
       
-      public function hasReceived(param1:int) : Boolean
+      public function hasReceived(count:int) : Boolean
       {
-         if(param1 <= _signCount)
+         if(count <= _signCount)
          {
             return true;
          }
@@ -227,9 +227,9 @@ package calendar
       {
       }
       
-      public function set restroactiveNum(param1:int) : void
+      public function set restroactiveNum(value:int) : void
       {
-         _restroactiveNum = param1;
+         _restroactiveNum = value;
       }
       
       public function get restroactiveNum() : int

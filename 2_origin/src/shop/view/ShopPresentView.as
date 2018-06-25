@@ -44,9 +44,9 @@ package shop.view
          super();
       }
       
-      public function setup(param1:ShopController) : void
+      public function setup(controller:ShopController) : void
       {
-         _controller = param1;
+         _controller = controller;
          init();
       }
       
@@ -58,9 +58,9 @@ package shop.view
          _comBtn = ComponentFactory.Instance.creatComponentByStylename("shop.PresentViewCombo");
          _nameTxt = ComponentFactory.Instance.creatComponentByStylename("shop.PresentViewFriendName");
          _textArea = ComponentFactory.Instance.creatComponentByStylename("shop.PresentViewTextArea");
-         var _loc1_:AlertInfo = new AlertInfo("",LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"));
-         _loc1_.moveEnable = false;
-         _frame.info = _loc1_;
+         var ai:AlertInfo = new AlertInfo("",LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"));
+         ai.moveEnable = false;
+         _frame.info = ai;
          PositionUtils.setPos(_friendList,"shop.PresentViewFriendListPos");
          _nameTxt.maxChars = 25;
          _friendList.visible = false;
@@ -76,23 +76,23 @@ package shop.view
          addChild(_frame);
       }
       
-      private function __comBtnClickHandler(param1:MouseEvent) : void
+      private function __comBtnClickHandler(event:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
+         event.stopImmediatePropagation();
          SoundManager.instance.play("008");
          _friendList.visible = true;
          _frame.addToContent(_friendList);
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(e:FrameEvent) : void
       {
-         var _loc2_:* = null;
+         var str:* = null;
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode) - 2)
+         switch(int(e.responseCode) - 2)
          {
             case 0:
             case 1:
-               _loc2_ = FilterWordManager.filterWrod(_textArea.text);
+               str = FilterWordManager.filterWrod(_textArea.text);
                if(_nameTxt.text == "")
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("shop.ShopIIPresentView.give"));
@@ -108,16 +108,16 @@ package shop.view
                   BaglockedManager.Instance.show();
                   return;
                }
-               _controller.presentItems(_controller.model.allItems,_loc2_,_nameTxt.text);
+               _controller.presentItems(_controller.model.allItems,str,_nameTxt.text);
                _controller.model.clearAllitems();
                break;
          }
          dispose();
       }
       
-      private function doSelected(param1:String, param2:Number = 0) : void
+      private function doSelected(nick:String, id:Number = 0) : void
       {
-         _nameTxt.text = param1;
+         _nameTxt.text = nick;
          if(_friendList.parent)
          {
             _friendList.parent.removeChild(_friendList);

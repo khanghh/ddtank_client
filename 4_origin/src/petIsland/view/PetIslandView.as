@@ -191,21 +191,21 @@ package petIsland.view
          _headLoader.load(headLoaderCallBack);
       }
       
-      private function headLoaderCallBack(param1:SceneCharacterLoaderHead, param2:Boolean = true) : void
+      private function headLoaderCallBack(headLoader:SceneCharacterLoaderHead, isAllLoadSucceed:Boolean = true) : void
       {
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         if(param1)
+         var rectangle:* = null;
+         var headBmp:* = null;
+         if(headLoader)
          {
             if(!_headBitmap)
             {
                _headBitmap = new Bitmap();
             }
-            _loc3_ = new Rectangle(0,0,120,103);
-            _loc4_ = new BitmapData(120,103,true,0);
-            _loc4_.copyPixels(param1.getContent()[0] as BitmapData,_loc3_,new Point(0,0));
-            _headBitmap.bitmapData = _loc4_;
-            param1.dispose();
+            rectangle = new Rectangle(0,0,120,103);
+            headBmp = new BitmapData(120,103,true,0);
+            headBmp.copyPixels(headLoader.getContent()[0] as BitmapData,rectangle,new Point(0,0));
+            _headBitmap.bitmapData = headBmp;
+            headLoader.dispose();
             _headBitmap.rotationY = 180;
             _headBitmap.x = 137;
             _headBitmap.y = 80;
@@ -256,28 +256,27 @@ package petIsland.view
       
       private function setSaveLifeCount() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var bloodBit:* = null;
          while(_bloodContain.numChildren > 0)
          {
             _bloodContain.removeChildAt(0);
          }
-         _loc2_ = 0;
-         while(_loc2_ < PetIslandManager.instance.model.saveLifeCount)
+         for(i = 0; i < PetIslandManager.instance.model.saveLifeCount; )
          {
-            _loc1_ = ComponentFactory.Instance.creatBitmap("asset.petIsland.blood");
-            _loc1_.x = 125 + _loc1_.width * _loc2_;
-            _loc1_.y = 90;
-            _bloodContain.addChild(_loc1_);
-            _loc2_++;
+            bloodBit = ComponentFactory.Instance.creatBitmap("asset.petIsland.blood");
+            bloodBit.x = 125 + bloodBit.width * i;
+            bloodBit.y = 90;
+            _bloodContain.addChild(bloodBit);
+            i++;
          }
       }
       
       private function setStep() : void
       {
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
+         var str:* = null;
+         var i:int = 0;
+         var mc:* = null;
          _currentStep = PetIslandManager.instance.model.step;
          while(_roundMc.numChildren > 0)
          {
@@ -285,69 +284,66 @@ package petIsland.view
          }
          if(PetIslandManager.instance.model.currentLevel > ServerConfigManager.instance.petDisappearPlaySoncount.length)
          {
-            _loc2_ = "";
+            str = "";
          }
          else
          {
-            _loc2_ = String(parseInt(ServerConfigManager.instance.petDisappearPlaySoncount[PetIslandManager.instance.model.currentLevel - 1]) - PetIslandManager.instance.model.step);
+            str = String(parseInt(ServerConfigManager.instance.petDisappearPlaySoncount[PetIslandManager.instance.model.currentLevel - 1]) - PetIslandManager.instance.model.step);
          }
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_.length)
+         for(i = 0; i < str.length; )
          {
-            _loc1_ = ComponentFactory.Instance.creat("asset.petIsland.bigMathMc");
-            _loc1_.gotoAndStop(1 + parseInt(_loc2_.substr(_loc3_,1)));
-            if(_loc2_.length > 1)
+            mc = ComponentFactory.Instance.creat("asset.petIsland.bigMathMc");
+            mc.gotoAndStop(1 + parseInt(str.substr(i,1)));
+            if(str.length > 1)
             {
-               _loc1_.x = 35 * _loc3_ - 18;
+               mc.x = 35 * i - 18;
             }
-            _roundMc.addChild(_loc1_);
-            _loc3_++;
+            _roundMc.addChild(mc);
+            i++;
          }
       }
       
       private function setPlayerScore() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var mc:* = null;
          while(_playerMathContain.numChildren > 0)
          {
             _playerMathContain.removeChildAt(0);
          }
-         var _loc2_:String = String(PetIslandManager.instance.model.playerScore);
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_.length)
+         var str:String = String(PetIslandManager.instance.model.playerScore);
+         for(i = 0; i < str.length; )
          {
-            _loc1_ = ComponentFactory.Instance.creat("asset.petIsland.mathMc");
-            _loc1_.gotoAndStop(1 + parseInt(_loc2_.substr(_loc3_,1)));
-            _loc1_.x = 18 * _loc3_;
-            _playerMathContain.addChild(_loc1_);
-            _loc3_++;
+            mc = ComponentFactory.Instance.creat("asset.petIsland.mathMc");
+            mc.gotoAndStop(1 + parseInt(str.substr(i,1)));
+            mc.x = 18 * i;
+            _playerMathContain.addChild(mc);
+            i++;
          }
       }
       
       private function setNpcScore() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var mc:* = null;
          while(_npcMathContain.numChildren > 0)
          {
             _npcMathContain.removeChildAt(0);
          }
-         var _loc2_:String = String(PetIslandManager.instance.model.npcScore);
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_.length)
+         var str:String = String(PetIslandManager.instance.model.npcScore);
+         for(i = 0; i < str.length; )
          {
-            _loc1_ = ComponentFactory.Instance.creat("asset.petIsland.mathMc");
-            _loc1_.gotoAndStop(1 + parseInt(_loc2_.substr(_loc3_,1)));
-            _loc1_.x = 18 * _loc3_;
-            _npcMathContain.addChild(_loc1_);
-            _loc3_++;
+            mc = ComponentFactory.Instance.creat("asset.petIsland.mathMc");
+            mc.gotoAndStop(1 + parseInt(str.substr(i,1)));
+            mc.x = 18 * i;
+            _npcMathContain.addChild(mc);
+            i++;
          }
       }
       
       private function initView() : void
       {
-         var _loc1_:* = null;
+         var cell:* = null;
          _bg = ComponentFactory.Instance.creatBitmap("asset.petIsland.bg");
          addChild(_bg);
          _returnBtn = ComponentFactory.Instance.creat("asset.petIsland.returnMenu");
@@ -358,23 +354,21 @@ package petIsland.view
          _contain.mask = _mask;
          PositionUtils.setPos(_contain,"asset.petIsland.mask.position");
          pList = PetIslandManager.instance.model.pList;
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
+         var i:int = 0;
+         var j:int = 0;
          if(pList.length > 0)
          {
-            _loc3_ = 0;
-            while(_loc3_ < numberArr.length)
+            for(i = 0; i < numberArr.length; )
             {
-               _loc2_ = 0;
-               while(_loc2_ < numberArr[_loc3_].length)
+               for(j = 0; j < numberArr[i].length; )
                {
-                  _loc1_ = pList[_loc3_][_loc2_] as PetIslandCell;
-                  _contain.addChild(_loc1_);
-                  _loc1_.x = _loc2_ * 70;
-                  _loc1_.y = _loc3_ * 70;
-                  _loc2_++;
+                  cell = pList[i][j] as PetIslandCell;
+                  _contain.addChild(cell);
+                  cell.x = j * 70;
+                  cell.y = i * 70;
+                  j++;
                }
-               _loc3_++;
+               i++;
             }
          }
          else
@@ -515,9 +509,9 @@ package petIsland.view
          addChild(fail);
       }
       
-      private function stepChangeHandler(param1:PetIslandEvent) : void
+      private function stepChangeHandler(e:PetIslandEvent) : void
       {
-         if(param1.resultData)
+         if(e.resultData)
          {
             canClickNum = Number(canClickNum) + 1;
             if(canClickNum == 2)
@@ -532,15 +526,15 @@ package petIsland.view
          }
       }
       
-      private function refresh(param1:PetIslandEvent = null) : void
+      private function refresh(e:PetIslandEvent = null) : void
       {
-         var _loc7_:int = 0;
-         var _loc5_:* = null;
-         var _loc6_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:Boolean = false;
-         var _loc4_:* = null;
-         if(param1 != null)
+         var i:int = 0;
+         var arr1:* = null;
+         var j:int = 0;
+         var ran:int = 0;
+         var bol:Boolean = false;
+         var cell1:* = null;
+         if(e != null)
          {
             PetIslandManager.instance.model.infoStr = LanguageMgr.GetTranslation("ddt.petIsland.continue") + "\n" + PetIslandManager.instance.model.infoStr;
             _info.htmlText = PetIslandManager.instance.model.infoStr;
@@ -552,33 +546,28 @@ package petIsland.view
          var _loc8_:* = [];
          PetIslandManager.instance.model.pList = _loc8_;
          pList = _loc8_;
-         _loc7_ = 0;
-         while(_loc7_ < numberArr.length)
+         for(i = 0; i < numberArr.length; )
          {
-            _loc5_ = [];
-            _loc6_ = 0;
-            while(_loc6_ < numberArr[_loc7_].length)
+            arr1 = [];
+            for(j = 0; j < numberArr[i].length; )
             {
-               while(true)
+               do
                {
-                  _loc2_ = randomInt(4);
-                  numberArr[_loc7_][_loc6_] = _loc2_;
-                  _loc3_ = checkArr(_loc7_,_loc6_,numberArr);
-                  if(!_loc3_)
-                  {
-                     continue;
-                  }
-                  break;
+                  ran = randomInt(4);
+                  numberArr[i][j] = ran;
+                  bol = checkArr(i,j,numberArr);
                }
-               _loc4_ = new PetIslandCell(_loc2_,_loc7_,_loc6_);
-               _contain.addChild(_loc4_);
-               _loc5_.push(_loc4_);
-               _loc4_.x = _loc6_ * 70;
-               _loc4_.y = _loc7_ * 70;
-               _loc6_++;
+               while(!bol);
+               
+               cell1 = new PetIslandCell(ran,i,j);
+               _contain.addChild(cell1);
+               arr1.push(cell1);
+               cell1.x = j * 70;
+               cell1.y = i * 70;
+               j++;
             }
-            pList.push(_loc5_);
-            _loc7_++;
+            pList.push(arr1);
+            i++;
          }
       }
       
@@ -609,7 +598,7 @@ package petIsland.view
          fail.addEventListener("com",completeHandler);
       }
       
-      private function __helpBtnClickHandler(param1:MouseEvent) : void
+      private function __helpBtnClickHandler(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(!_helpframe)
@@ -630,53 +619,53 @@ package petIsland.view
          LayerManager.Instance.addToLayer(_helpframe,3,true,2);
       }
       
-      private function __helpFrameRespose(param1:FrameEvent) : void
+      private function __helpFrameRespose(e:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(e.responseCode == 0 || e.responseCode == 1)
          {
             SoundManager.instance.play("008");
             _helpframe.parent.removeChild(_helpframe);
          }
       }
       
-      private function __closeHelpFrame(param1:MouseEvent) : void
+      private function __closeHelpFrame(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _helpframe.parent.removeChild(_helpframe);
       }
       
-      private function completeHandler(param1:Event) : void
+      private function completeHandler(e:Event) : void
       {
          blackBg.visible = false;
       }
       
-      private function __useSkillChange(param1:PetIslandEvent) : void
+      private function __useSkillChange(e:PetIslandEvent) : void
       {
          _skillTimesTxt.text = String(ServerConfigManager.instance.petDisappearSkillMaxTimes - PetIslandManager.instance.model.saveLifeCount);
       }
       
-      private function __useSkillTwoChange(param1:PetIslandEvent) : void
+      private function __useSkillTwoChange(e:PetIslandEvent) : void
       {
          _skillTimesTxt1.text = String(ServerConfigManager.instance.petDisappearSkillTwoMaxTimes - PetIslandManager.instance.model.saveLife2Count);
       }
       
-      private function __saveLifeCountChange(param1:PetIslandEvent) : void
+      private function __saveLifeCountChange(e:PetIslandEvent) : void
       {
-         if(param1.resultData == 1)
+         if(e.resultData == 1)
          {
             checkOneTypeAll();
          }
-         else if(param1.resultData == 2)
+         else if(e.resultData == 2)
          {
             crossDestroy();
          }
       }
       
-      private function __currentLevelChange(param1:PetIslandEvent) : void
+      private function __currentLevelChange(e:PetIslandEvent) : void
       {
          if(PetIslandManager.instance.model.currentLevel <= ServerConfigManager.instance.petDisappearMaxLevel)
          {
-            PetIslandManager.instance.model.infoStr = LanguageMgr.GetTranslation("ddt.petIsland.gamePass",PetIslandManager.instance.model.currentLevel - 1) + "\n" + LanguageMgr.GetTranslation("ddt.petIsland.attackInfo",param1.resultData) + "\n" + PetIslandManager.instance.model.infoStr;
+            PetIslandManager.instance.model.infoStr = LanguageMgr.GetTranslation("ddt.petIsland.gamePass",PetIslandManager.instance.model.currentLevel - 1) + "\n" + LanguageMgr.GetTranslation("ddt.petIsland.attackInfo",e.resultData) + "\n" + PetIslandManager.instance.model.infoStr;
             _info.htmlText = PetIslandManager.instance.model.infoStr;
          }
          setTimeout(doSuccess,1000);
@@ -696,7 +685,7 @@ package petIsland.view
          blackBg.visible = true;
       }
       
-      private function __opentypeChange(param1:PetIslandEvent) : void
+      private function __opentypeChange(e:PetIslandEvent) : void
       {
          if(PetIslandManager.instance.model.openType == 2)
          {
@@ -707,9 +696,9 @@ package petIsland.view
          setBegin();
       }
       
-      private function __playerBloodChange(param1:PetIslandEvent) : void
+      private function __playerBloodChange(e:PetIslandEvent) : void
       {
-         if(param1.resultData > 0)
+         if(e.resultData > 0)
          {
             bloodFlash.x = 6;
             bloodFlash.y = 91;
@@ -719,7 +708,7 @@ package petIsland.view
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.petIsland.nextRound"));
             }
-            PetIslandManager.instance.model.infoStr = LanguageMgr.GetTranslation("ddt.petIsland.defenceInfo",param1.resultData) + "\n" + PetIslandManager.instance.model.infoStr;
+            PetIslandManager.instance.model.infoStr = LanguageMgr.GetTranslation("ddt.petIsland.defenceInfo",e.resultData) + "\n" + PetIslandManager.instance.model.infoStr;
             _info.htmlText = PetIslandManager.instance.model.infoStr;
             if(gameOver)
             {
@@ -740,9 +729,9 @@ package petIsland.view
          }
       }
       
-      private function __npcBloodChange(param1:PetIslandEvent) : void
+      private function __npcBloodChange(e:PetIslandEvent) : void
       {
-         if(param1.resultData > 0)
+         if(e.resultData > 0)
          {
             bloodFlash.x = 992;
             bloodFlash.y = 91;
@@ -752,7 +741,7 @@ package petIsland.view
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.petIsland.nextRound"));
             }
-            PetIslandManager.instance.model.infoStr = LanguageMgr.GetTranslation("ddt.petIsland.attackInfo",param1.resultData) + "\n" + PetIslandManager.instance.model.infoStr;
+            PetIslandManager.instance.model.infoStr = LanguageMgr.GetTranslation("ddt.petIsland.attackInfo",e.resultData) + "\n" + PetIslandManager.instance.model.infoStr;
             _info.htmlText = PetIslandManager.instance.model.infoStr;
             if(gameOver)
             {
@@ -774,17 +763,17 @@ package petIsland.view
          npcMask.x = _npcBlood.x + _npcBlood.width - npcMask.width;
       }
       
-      private function __rewardRecordChange(param1:PetIslandEvent) : void
+      private function __rewardRecordChange(e:PetIslandEvent) : void
       {
          prizeView.setPrizeView();
       }
       
-      private function __stepChange(param1:PetIslandEvent) : void
+      private function __stepChange(e:PetIslandEvent) : void
       {
          setStep();
       }
       
-      private function __currentRoundChange(param1:PetIslandEvent) : void
+      private function __currentRoundChange(e:PetIslandEvent) : void
       {
          if(PetIslandManager.instance.model.currentLevel > ServerConfigManager.instance.petDisappearMaxLevel)
          {
@@ -794,9 +783,9 @@ package petIsland.view
          _roundTxt.text = LanguageMgr.GetTranslation("ddt.petIsland.roundTxt",PetIslandManager.instance.model.round,ServerConfigManager.instance.petDisappearPlaycount[PetIslandManager.instance.model.currentLevel - 1]);
       }
       
-      private function __beginBtnClickHandler(param1:MouseEvent) : void
+      private function __beginBtnClickHandler(e:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var content:* = null;
          SoundManager.instance.play("008");
          switch(int(PetIslandManager.instance.model.openType))
          {
@@ -813,18 +802,18 @@ package petIsland.view
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.petIsland.gameIsPlaying"));
                break;
             case 2:
-               _loc2_ = LanguageMgr.GetTranslation("ddt.petIsland.useMoney",ServerConfigManager.instance.petDisappearRecoverPrice);
-               alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc2_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
+               content = LanguageMgr.GetTranslation("ddt.petIsland.useMoney",ServerConfigManager.instance.petDisappearRecoverPrice);
+               alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),content,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
                alert.addEventListener("response",__onRecoverResponse);
          }
       }
       
-      private function __onRecoverResponse(param1:FrameEvent) : void
+      private function __onRecoverResponse(e:FrameEvent) : void
       {
          SoundManager.instance.playButtonSound();
          alert.removeEventListener("response",__onRecoverResponse);
-         var _loc2_:int = ServerConfigManager.instance.petDisappearRecoverPrice;
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var price:int = ServerConfigManager.instance.petDisappearRecoverPrice;
+         if(e.responseCode == 3 || e.responseCode == 2)
          {
             alert.dispose();
             if(PlayerManager.Instance.Self.bagLocked)
@@ -832,7 +821,7 @@ package petIsland.view
                BaglockedManager.Instance.show();
                return;
             }
-            if(PlayerManager.Instance.Self.Money < _loc2_)
+            if(PlayerManager.Instance.Self.Money < price)
             {
                alart1 = LeavePageManager.showFillFrame();
                return;
@@ -842,12 +831,12 @@ package petIsland.view
          alert.dispose();
       }
       
-      private function __onRecoverResponse1(param1:FrameEvent) : void
+      private function __onRecoverResponse1(e:FrameEvent) : void
       {
          SoundManager.instance.playButtonSound();
          alert.removeEventListener("response",__onRecoverResponse1);
-         var _loc2_:int = useSkillType == 1?ServerConfigManager.instance.petDisappearSkillMoney[PetIslandManager.instance.model.saveLifeCount]:ServerConfigManager.instance.petDisappearSkillTwoMoney[PetIslandManager.instance.model.saveLife2Count];
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var price:int = useSkillType == 1?ServerConfigManager.instance.petDisappearSkillMoney[PetIslandManager.instance.model.saveLifeCount]:ServerConfigManager.instance.petDisappearSkillTwoMoney[PetIslandManager.instance.model.saveLife2Count];
+         if(e.responseCode == 3 || e.responseCode == 2)
          {
             alert.dispose();
             if(PlayerManager.Instance.Self.bagLocked)
@@ -855,7 +844,7 @@ package petIsland.view
                BaglockedManager.Instance.show();
                return;
             }
-            if(PlayerManager.Instance.Self.Money < _loc2_)
+            if(PlayerManager.Instance.Self.Money < price)
             {
                alart1 = LeavePageManager.showFillFrame();
                return;
@@ -870,7 +859,7 @@ package petIsland.view
          alert.dispose();
       }
       
-      private function __buySkillTwoBtnClickHandler(param1:MouseEvent) : void
+      private function __buySkillTwoBtnClickHandler(e:MouseEvent) : void
       {
          if(PetIslandManager.instance.model.openType != 1)
          {
@@ -883,12 +872,12 @@ package petIsland.view
             return;
          }
          useSkillType = 2;
-         var _loc2_:String = LanguageMgr.GetTranslation("ddt.petIsland.useMoney",ServerConfigManager.instance.petDisappearSkillTwoMoney[PetIslandManager.instance.model.saveLife2Count]);
-         alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc2_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
+         var content:String = LanguageMgr.GetTranslation("ddt.petIsland.useMoney",ServerConfigManager.instance.petDisappearSkillTwoMoney[PetIslandManager.instance.model.saveLife2Count]);
+         alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),content,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
          alert.addEventListener("response",__onRecoverResponse1);
       }
       
-      private function __buyBtnClickHandler(param1:MouseEvent) : void
+      private function __buyBtnClickHandler(e:MouseEvent) : void
       {
          if(PetIslandManager.instance.model.openType != 1)
          {
@@ -901,64 +890,62 @@ package petIsland.view
             return;
          }
          useSkillType = 1;
-         var _loc2_:String = LanguageMgr.GetTranslation("ddt.petIsland.useMoney",ServerConfigManager.instance.petDisappearSkillMoney[PetIslandManager.instance.model.saveLifeCount]);
-         alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc2_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
+         var content:String = LanguageMgr.GetTranslation("ddt.petIsland.useMoney",ServerConfigManager.instance.petDisappearSkillMoney[PetIslandManager.instance.model.saveLifeCount]);
+         alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),content,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
          alert.addEventListener("response",__onRecoverResponse1);
       }
       
-      private function _npcScoreChange(param1:PetIslandEvent) : void
+      private function _npcScoreChange(e:PetIslandEvent) : void
       {
          setNpcScore();
       }
       
-      private function _playerScoreChange(param1:PetIslandEvent) : void
+      private function _playerScoreChange(e:PetIslandEvent) : void
       {
          setPlayerScore();
       }
       
-      private function __petClickHandler(param1:PetIslandEvent) : void
+      private function __petClickHandler(e:PetIslandEvent) : void
       {
          if(!canClick)
          {
             return;
          }
          canClick = false;
-         var _loc3_:PetIslandCell = param1.resultData as PetIslandCell;
-         var _loc2_:Array = checkRoundShine(_loc3_._row,_loc3_._col);
+         var cell:PetIslandCell = e.resultData as PetIslandCell;
+         var checkArr:Array = checkRoundShine(cell._row,cell._col);
          clearShine();
-         if(_loc2_.length > 0)
+         if(checkArr.length > 0)
          {
             isMove = true;
             var _loc4_:Boolean = false;
             this.mouseChildren = _loc4_;
             this.mouseEnabled = _loc4_;
-            swap([_loc3_._row,_loc3_._col],_loc2_);
+            swap([cell._row,cell._col],checkArr);
          }
          else
          {
-            pList[_loc3_._row][_loc3_._col].isShine = true;
+            pList[cell._row][cell._col].isShine = true;
             canClick = true;
          }
       }
       
       private function clearShine() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < pList.length)
+         var i:int = 0;
+         var j:int = 0;
+         for(i = 0; i < pList.length; )
          {
-            _loc1_ = 0;
-            while(_loc1_ < pList[_loc2_].length)
+            for(j = 0; j < pList[i].length; )
             {
-               pList[_loc2_][_loc1_].isShine = false;
-               _loc1_++;
+               pList[i][j].isShine = false;
+               j++;
             }
-            _loc2_++;
+            i++;
          }
       }
       
-      private function __onReturn(param1:PetIslandEvent) : void
+      private function __onReturn(event:PetIslandEvent) : void
       {
          SoundManager.instance.play("008");
          StateManager.setState("main");
@@ -966,192 +953,182 @@ package petIsland.view
       
       private function checkOneTypeAll() : void
       {
-         var _loc4_:int = 0;
-         var _loc5_:int = 0;
-         var _loc3_:int = 0;
-         var _loc2_:Array = [0,0,0,0];
-         _loc5_ = 0;
-         while(_loc5_ < pList.length)
+         var type:int = 0;
+         var i:int = 0;
+         var j:int = 0;
+         var arr:Array = [0,0,0,0];
+         for(i = 0; i < pList.length; )
          {
-            _loc3_ = 0;
-            while(_loc3_ < pList[_loc5_].length)
+            for(j = 0; j < pList[i].length; )
             {
-               _loc4_ = pList[_loc5_][_loc3_].type;
-               var _loc6_:* = _loc2_;
-               var _loc7_:* = _loc4_ - 1;
+               type = pList[i][j].type;
+               var _loc6_:* = arr;
+               var _loc7_:* = type - 1;
                var _loc8_:* = Number(_loc6_[_loc7_]) + 1;
                _loc6_[_loc7_] = _loc8_;
-               _loc3_++;
+               j++;
             }
-            _loc5_++;
+            i++;
          }
-         var _loc1_:Number = Math.max(_loc2_[0],_loc2_[1],_loc2_[2],_loc2_[3]);
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_.length)
+         var max:Number = Math.max(arr[0],arr[1],arr[2],arr[3]);
+         for(i = 0; i < arr.length; )
          {
-            if(_loc1_ == _loc2_[_loc5_])
+            if(max == arr[i])
             {
-               _loc4_ = _loc5_ + 1;
+               type = i + 1;
             }
-            _loc5_++;
+            i++;
          }
-         _loc5_ = 0;
-         while(_loc5_ < pList.length)
+         for(i = 0; i < pList.length; )
          {
-            _loc3_ = 0;
-            while(_loc3_ < pList[_loc5_].length)
+            for(j = 0; j < pList[i].length; )
             {
-               if(pList[_loc5_][_loc3_].type == _loc4_)
+               if(pList[i][j].type == type)
                {
                   saveDestroyArr.push({
-                     "row":_loc5_,
-                     "col":_loc3_,
-                     "type":pList[_loc5_][_loc3_].type
+                     "row":i,
+                     "col":j,
+                     "type":pList[i][j].type
                   });
                }
-               _loc3_++;
+               j++;
             }
-            _loc5_++;
+            i++;
          }
          checkAndDestroy();
       }
       
-      private function crossDestroy(param1:int = 3, param2:int = 3) : void
+      private function crossDestroy(desi:int = 3, desj:int = 3) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         _loc4_ = 0;
-         while(_loc4_ < pList.length)
+         var i:int = 0;
+         var j:int = 0;
+         for(i = 0; i < pList.length; )
          {
-            _loc3_ = 0;
-            while(_loc3_ < pList[_loc4_].length)
+            for(j = 0; j < pList[i].length; )
             {
-               if(_loc4_ + 1 == param1 || _loc3_ + 1 == param2)
+               if(i + 1 == desi || j + 1 == desj)
                {
-                  if(_loc4_ + 1 == param1 && _loc3_ + 1 == param2)
+                  if(i + 1 == desi && j + 1 == desj)
                   {
                      saveDestroyArr.unshift({
-                        "row":_loc4_,
-                        "col":_loc3_,
-                        "type":pList[_loc4_][_loc3_].type
+                        "row":i,
+                        "col":j,
+                        "type":pList[i][j].type
                      });
                   }
                   else
                   {
                      saveDestroyArr.push({
-                        "row":_loc4_,
-                        "col":_loc3_,
-                        "type":pList[_loc4_][_loc3_].type
+                        "row":i,
+                        "col":j,
+                        "type":pList[i][j].type
                      });
                   }
                }
-               _loc3_++;
+               j++;
             }
-            _loc4_++;
+            i++;
          }
          checkAndDestroy();
       }
       
       private function checkAndDestroy() : void
       {
-         var _loc6_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:int = 0;
+         var i:int = 0;
+         var j:int = 0;
+         var skillName:* = null;
+         var d:int = 0;
          if(!tweenFlag)
          {
             return;
          }
-         _loc6_ = 0;
-         while(_loc6_ < pList.length)
+         i = 0;
+         while(i < pList.length)
          {
-            _loc4_ = 1;
-            while(_loc4_ < pList[_loc6_].length - 1)
+            for(j = 1; j < pList[i].length - 1; )
             {
-               if(pList[_loc6_][_loc4_].type == pList[_loc6_][_loc4_ - 1].type && pList[_loc6_][_loc4_].type == pList[_loc6_][_loc4_ + 1].type)
+               if(pList[i][j].type == pList[i][j - 1].type && pList[i][j].type == pList[i][j + 1].type)
                {
                   saveDestroyArr.push({
-                     "row":_loc6_,
-                     "col":_loc4_,
-                     "type":pList[_loc6_][_loc4_].type
+                     "row":i,
+                     "col":j,
+                     "type":pList[i][j].type
                   });
                   saveDestroyArr.push({
-                     "row":_loc6_,
-                     "col":_loc4_ - 1,
-                     "type":pList[_loc6_][_loc4_ - 1].type
+                     "row":i,
+                     "col":j - 1,
+                     "type":pList[i][j - 1].type
                   });
                   saveDestroyArr.push({
-                     "row":_loc6_,
-                     "col":_loc4_ + 1,
-                     "type":pList[_loc6_][_loc4_ + 1].type
+                     "row":i,
+                     "col":j + 1,
+                     "type":pList[i][j + 1].type
                   });
                   while(true)
                   {
-                     _loc4_++;
-                     if(_loc4_ < pList[_loc6_].length - 1 && pList[_loc6_][_loc4_].type == pList[_loc6_][_loc4_ + 1].type)
+                     j++;
+                     if(j < pList[i].length - 1 && pList[i][j].type == pList[i][j + 1].type)
                      {
                         saveDestroyArr.push({
-                           "row":_loc6_,
-                           "col":_loc4_ + 1,
-                           "type":pList[_loc6_][_loc4_ + 1].type
+                           "row":i,
+                           "col":j + 1,
+                           "type":pList[i][j + 1].type
                         });
                         continue;
                      }
                      break;
                   }
                }
-               _loc4_++;
+               j++;
             }
-            _loc6_++;
+            i++;
          }
-         _loc4_ = 0;
-         while(_loc4_ < pList[0].length)
+         for(j = 0; j < pList[0].length; )
          {
-            _loc6_ = 1;
-            while(_loc6_ < pList.length - 1)
+            for(i = 1; i < pList.length - 1; )
             {
-               if(pList[_loc6_][_loc4_].type == pList[_loc6_ - 1][_loc4_].type && pList[_loc6_][_loc4_].type == pList[_loc6_ + 1][_loc4_].type)
+               if(pList[i][j].type == pList[i - 1][j].type && pList[i][j].type == pList[i + 1][j].type)
                {
                   saveDestroyArr.push({
-                     "row":_loc6_,
-                     "col":_loc4_,
-                     "type":pList[_loc6_][_loc4_].type
+                     "row":i,
+                     "col":j,
+                     "type":pList[i][j].type
                   });
                   saveDestroyArr.push({
-                     "row":_loc6_ - 1,
-                     "col":_loc4_,
-                     "type":pList[_loc6_ - 1][_loc4_].type
+                     "row":i - 1,
+                     "col":j,
+                     "type":pList[i - 1][j].type
                   });
                   saveDestroyArr.push({
-                     "row":_loc6_ + 1,
-                     "col":_loc4_,
-                     "type":pList[_loc6_ + 1][_loc4_].type
+                     "row":i + 1,
+                     "col":j,
+                     "type":pList[i + 1][j].type
                   });
                   while(true)
                   {
-                     _loc6_++;
-                     if(_loc6_ < pList.length - 1 && pList[_loc6_][_loc4_].type == pList[_loc6_ + 1][_loc4_].type)
+                     i++;
+                     if(i < pList.length - 1 && pList[i][j].type == pList[i + 1][j].type)
                      {
                         saveDestroyArr.push({
-                           "row":_loc6_ + 1,
-                           "col":_loc4_,
-                           "type":pList[_loc6_][_loc4_].type
+                           "row":i + 1,
+                           "col":j,
+                           "type":pList[i][j].type
                         });
                         continue;
                      }
                      break;
                   }
                }
-               _loc6_++;
+               i++;
             }
-            _loc4_++;
+            j++;
          }
          if(saveDestroyArr.length == 0)
          {
             if(useSkillType != 0)
             {
-               _loc2_ = LanguageMgr.GetTranslation("ddt.petIsland.skill").split("|")[useSkillType - 1];
-               PetIslandManager.instance.model.infoStr = LanguageMgr.GetTranslation("ddt.petIsland.useSkillInfo",_loc2_,useSkillScore) + "\n" + PetIslandManager.instance.model.infoStr;
+               skillName = LanguageMgr.GetTranslation("ddt.petIsland.skill").split("|")[useSkillType - 1];
+               PetIslandManager.instance.model.infoStr = LanguageMgr.GetTranslation("ddt.petIsland.useSkillInfo",skillName,useSkillScore) + "\n" + PetIslandManager.instance.model.infoStr;
                _info.htmlText = PetIslandManager.instance.model.infoStr;
                useSkillType = 0;
                useSkillScore = 0;
@@ -1178,22 +1155,21 @@ package petIsland.view
             return;
          }
          nowPoints = 0;
-         var _loc3_:Boolean = false;
-         _loc1_ = 0;
-         while(_loc1_ < saveDestroyArr.length)
+         var fly:Boolean = false;
+         for(d = 0; d < saveDestroyArr.length; )
          {
-            if(pList[saveDestroyArr[_loc1_].row][saveDestroyArr[_loc1_].col] && _contain.contains(pList[saveDestroyArr[_loc1_].row][saveDestroyArr[_loc1_].col]))
+            if(pList[saveDestroyArr[d].row][saveDestroyArr[d].col] && _contain.contains(pList[saveDestroyArr[d].row][saveDestroyArr[d].col]))
             {
-               _contain.setChildIndex(pList[saveDestroyArr[_loc1_].row][saveDestroyArr[_loc1_].col],_contain.numChildren - 1);
-               pList[saveDestroyArr[_loc1_].row][saveDestroyArr[_loc1_].col].destroy();
+               _contain.setChildIndex(pList[saveDestroyArr[d].row][saveDestroyArr[d].col],_contain.numChildren - 1);
+               pList[saveDestroyArr[d].row][saveDestroyArr[d].col].destroy();
                points = Number(points) + 1;
                nowPoints = nowPoints + ServerConfigManager.instance.petDisappearAddScore;
-               if(!_loc3_)
+               if(!fly)
                {
-                  _loc3_ = true;
+                  fly = true;
                   flyFlash.visible = true;
-                  flyFlash.x = pList[saveDestroyArr[_loc1_].row][saveDestroyArr[_loc1_].col].x + _contain.x + pList[saveDestroyArr[_loc1_].row][saveDestroyArr[_loc1_].col].width / 2 - flyFlash.width / 2;
-                  flyFlash.y = pList[saveDestroyArr[_loc1_].row][saveDestroyArr[_loc1_].col].y + _contain.y + pList[saveDestroyArr[_loc1_].row][saveDestroyArr[_loc1_].col].height / 2 - flyFlash.height / 2;
+                  flyFlash.x = pList[saveDestroyArr[d].row][saveDestroyArr[d].col].x + _contain.x + pList[saveDestroyArr[d].row][saveDestroyArr[d].col].width / 2 - flyFlash.width / 2;
+                  flyFlash.y = pList[saveDestroyArr[d].row][saveDestroyArr[d].col].y + _contain.y + pList[saveDestroyArr[d].row][saveDestroyArr[d].col].height / 2 - flyFlash.height / 2;
                   try
                   {
                      TweenLite.to(flyFlash,0.6,{
@@ -1209,7 +1185,7 @@ package petIsland.view
                   }
                }
             }
-            _loc1_++;
+            d++;
          }
          if(isMove)
          {
@@ -1225,16 +1201,16 @@ package petIsland.view
             }
             SocketManager.Instance.out.petIslandPlay(1,nowPoints);
          }
-         var _loc5_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("petIsland.view.pointsPaopao");
-         addChild(_loc5_);
-         _loc5_.text = "+" + String(nowPoints);
+         var txt:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("petIsland.view.pointsPaopao");
+         addChild(txt);
+         txt.text = "+" + String(nowPoints);
          try
          {
-            TweenLite.to(_loc5_,1.8,{
+            TweenLite.to(txt,1.8,{
                "y":110,
                "alpha":0,
                "onComplete":tweenComplete,
-               "onCompleteParams":[_loc5_]
+               "onCompleteParams":[txt]
             });
             saveDestroyArr = [];
             TweenLite.to(_contain,0.4,{"onComplete":dropBlock});
@@ -1254,53 +1230,51 @@ package petIsland.view
          }
       }
       
-      private function __destroyHandler(param1:PetIslandEvent) : void
+      private function __destroyHandler(e:PetIslandEvent) : void
       {
-         var _loc2_:PetIslandCell = param1.resultData as PetIslandCell;
-         _contain.removeChild(pList[_loc2_._row][_loc2_._col]);
-         pList[_loc2_._row][_loc2_._col] = null;
+         var cell:PetIslandCell = e.resultData as PetIslandCell;
+         _contain.removeChild(pList[cell._row][cell._col]);
+         pList[cell._row][cell._col] = null;
       }
       
-      private function tweenComplete(param1:FilterFrameText) : void
+      private function tweenComplete(shape:FilterFrameText) : void
       {
-         if(param1 && param1.parent.contains(param1))
+         if(shape && shape.parent.contains(shape))
          {
-            param1.parent.removeChild(param1);
-            param1 = null;
+            shape.parent.removeChild(shape);
+            shape = null;
          }
       }
       
       private function dropBlock() : void
       {
-         var _loc3_:int = 0;
-         var _loc6_:int = 0;
-         var _loc5_:Boolean = false;
-         var _loc4_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:* = null;
+         var j:int = 0;
+         var i:int = 0;
+         var move:Boolean = false;
+         var k:int = 0;
+         var cell:* = null;
+         var cell0:* = null;
          if(!tweenFlag)
          {
             return;
          }
-         _loc3_ = 0;
-         while(_loc3_ < numberArr[0].length)
+         j = 0;
+         while(j < numberArr[0].length)
          {
-            _loc6_ = numberArr.length - 1;
-            while(_loc6_ >= 0)
+            for(i = numberArr.length - 1; i >= 0; )
             {
-               if(pList[_loc6_][_loc3_] == null && _loc6_ != 0)
+               if(pList[i][j] == null && i != 0)
                {
-                  _loc5_ = false;
-                  _loc4_ = _loc6_ - 1;
-                  while(_loc4_ >= 0)
+                  move = false;
+                  for(k = i - 1; k >= 0; )
                   {
-                     if(pList[_loc4_][_loc3_] != null)
+                     if(pList[k][j] != null)
                      {
                         try
                         {
-                           TweenLite.to(pList[_loc4_][_loc3_],0.5,{
-                              "x":_loc3_ * 70,
-                              "y":_loc6_ * 70,
+                           TweenLite.to(pList[k][j],0.5,{
+                              "x":j * 70,
+                              "y":i * 70,
                               "ease":Elastic.easeOut,
                               "easeParams":[10,10]
                            });
@@ -1309,26 +1283,26 @@ package petIsland.view
                         {
                            return;
                         }
-                        pList[_loc6_][_loc3_] = pList[_loc4_][_loc3_];
-                        pList[_loc6_][_loc3_]._row = _loc6_;
-                        pList[_loc6_][_loc3_]._col = _loc3_;
-                        pList[_loc4_][_loc3_] = null;
-                        _loc5_ = true;
+                        pList[i][j] = pList[k][j];
+                        pList[i][j]._row = i;
+                        pList[i][j]._col = j;
+                        pList[k][j] = null;
+                        move = true;
                         break;
                      }
-                     _loc4_--;
+                     k--;
                   }
-                  if(!_loc5_)
+                  if(!move)
                   {
-                     _loc1_ = new PetIslandCell(randomInt(4),_loc6_,_loc3_);
-                     _contain.addChild(_loc1_);
-                     _loc1_.x = _loc3_ * 70;
-                     _loc1_.y = -70;
+                     cell = new PetIslandCell(randomInt(4),i,j);
+                     _contain.addChild(cell);
+                     cell.x = j * 70;
+                     cell.y = -70;
                      try
                      {
-                        TweenLite.to(_loc1_,0.5,{
-                           "x":_loc3_ * 70,
-                           "y":_loc6_ * 70,
+                        TweenLite.to(cell,0.5,{
+                           "x":j * 70,
+                           "y":i * 70,
                            "ease":Elastic.easeOut,
                            "easeParams":[10,10]
                         });
@@ -1337,21 +1311,21 @@ package petIsland.view
                      {
                         return;
                      }
-                     pList[_loc6_][_loc3_] = _loc1_;
-                     _loc5_ = true;
+                     pList[i][j] = cell;
+                     move = true;
                   }
                }
-               else if(pList[_loc6_][_loc3_] == null && _loc6_ == 0)
+               else if(pList[i][j] == null && i == 0)
                {
-                  _loc2_ = new PetIslandCell(randomInt(4),_loc6_,_loc3_);
-                  _contain.addChild(_loc2_);
-                  _loc2_.x = _loc3_ * 70;
-                  _loc2_.y = -70;
+                  cell0 = new PetIslandCell(randomInt(4),i,j);
+                  _contain.addChild(cell0);
+                  cell0.x = j * 70;
+                  cell0.y = -70;
                   try
                   {
-                     TweenLite.to(_loc2_,0.5,{
-                        "x":_loc3_ * 70,
-                        "y":_loc6_ * 70,
+                     TweenLite.to(cell0,0.5,{
+                        "x":j * 70,
+                        "y":i * 70,
                         "ease":Elastic.easeOut,
                         "easeParams":[10,10]
                      });
@@ -1360,11 +1334,11 @@ package petIsland.view
                   {
                      return;
                   }
-                  pList[_loc6_][_loc3_] = _loc2_;
+                  pList[i][j] = cell0;
                }
-               _loc6_--;
+               i--;
             }
-            _loc3_++;
+            j++;
          }
          try
          {
@@ -1377,21 +1351,21 @@ package petIsland.view
          }
       }
       
-      private function swap(param1:Array, param2:Array) : void
+      private function swap(arr:Array, arr1:Array) : void
       {
-         var _loc8_:int = pList[param1[0]][param1[1]].x;
-         var _loc5_:int = pList[param1[0]][param1[1]].y;
-         var _loc7_:int = pList[param2[0]][param2[1]].x;
-         var _loc6_:int = pList[param2[0]][param2[1]].y;
+         var x1:int = pList[arr[0]][arr[1]].x;
+         var y1:int = pList[arr[0]][arr[1]].y;
+         var x2:int = pList[arr1[0]][arr1[1]].x;
+         var y2:int = pList[arr1[0]][arr1[1]].y;
          try
          {
-            TweenLite.to(pList[param1[0]][param1[1]],0.4,{
-               "x":_loc7_,
-               "y":_loc6_
+            TweenLite.to(pList[arr[0]][arr[1]],0.4,{
+               "x":x2,
+               "y":y2
             });
-            TweenLite.to(pList[param2[0]][param2[1]],0.4,{
-               "x":_loc8_,
-               "y":_loc5_,
+            TweenLite.to(pList[arr1[0]][arr1[1]],0.4,{
+               "x":x1,
+               "y":y1,
                "onComplete":checkAndDestroy
             });
          }
@@ -1399,84 +1373,84 @@ package petIsland.view
          {
             return;
          }
-         pList[param1[0]][param1[1]]._row = param2[0];
-         pList[param1[0]][param1[1]]._col = param2[1];
-         pList[param2[0]][param2[1]]._row = param1[0];
-         pList[param2[0]][param2[1]]._col = param1[1];
-         var _loc4_:PetIslandCell = pList[param1[0]][param1[1]];
-         pList[param1[0]][param1[1]] = pList[param2[0]][param2[1]];
-         pList[param2[0]][param2[1]] = _loc4_;
-         var _loc3_:int = numberArr[param1[0]][param1[1]];
-         numberArr[param1[0]][param1[1]] = numberArr[param2[0]][param2[1]];
-         numberArr[param2[0]][param2[1]] = _loc3_;
+         pList[arr[0]][arr[1]]._row = arr1[0];
+         pList[arr[0]][arr[1]]._col = arr1[1];
+         pList[arr1[0]][arr1[1]]._row = arr[0];
+         pList[arr1[0]][arr1[1]]._col = arr[1];
+         var cell:PetIslandCell = pList[arr[0]][arr[1]];
+         pList[arr[0]][arr[1]] = pList[arr1[0]][arr1[1]];
+         pList[arr1[0]][arr1[1]] = cell;
+         var num:int = numberArr[arr[0]][arr[1]];
+         numberArr[arr[0]][arr[1]] = numberArr[arr1[0]][arr1[1]];
+         numberArr[arr1[0]][arr1[1]] = num;
       }
       
-      private function checkRoundShine(param1:int, param2:int) : Array
+      private function checkRoundShine(row:int, col:int) : Array
       {
-         if(param1 > 0 && pList[param1 - 1][param2] && pList[param1 - 1][param2].isShine)
+         if(row > 0 && pList[row - 1][col] && pList[row - 1][col].isShine)
          {
-            return [param1 - 1,param2];
+            return [row - 1,col];
          }
-         if(param2 > 0 && pList[param1][param2 - 1] && pList[param1][param2 - 1].isShine)
+         if(col > 0 && pList[row][col - 1] && pList[row][col - 1].isShine)
          {
-            return [param1,param2 - 1];
+            return [row,col - 1];
          }
-         if(param1 < pList.length - 1 && pList[param1 + 1][param2] && pList[param1 + 1][param2].isShine)
+         if(row < pList.length - 1 && pList[row + 1][col] && pList[row + 1][col].isShine)
          {
-            return [param1 + 1,param2];
+            return [row + 1,col];
          }
-         if(param2 < pList.length - 1 && pList[param1][param2 + 1] && pList[param1][param2 + 1].isShine)
+         if(col < pList.length - 1 && pList[row][col + 1] && pList[row][col + 1].isShine)
          {
-            return [param1,param2 + 1];
+            return [row,col + 1];
          }
          return [];
       }
       
-      private function randomInt(param1:int) : int
+      private function randomInt(p:int) : int
       {
-         return Math.floor(1 + param1 * Math.random());
+         return Math.floor(1 + p * Math.random());
       }
       
-      private function checkArr(param1:int, param2:int, param3:Array) : Boolean
+      private function checkArr(i:int, j:int, arr:Array) : Boolean
       {
-         if(param3[param1][param2 - 2] && param3[param1][param2 - 1])
+         if(arr[i][j - 2] && arr[i][j - 1])
          {
-            if(param3[param1][param2 - 2] == param3[param1][param2] && param3[param1][param2 - 1] == param3[param1][param2])
+            if(arr[i][j - 2] == arr[i][j] && arr[i][j - 1] == arr[i][j])
             {
                return false;
             }
          }
-         if(param3[param1][param2 - 1] && param3[param1][param2 + 1])
+         if(arr[i][j - 1] && arr[i][j + 1])
          {
-            if(param3[param1][param2 - 1] == param3[param1][param2] && param3[param1][param2] == param3[param1][param2 + 1])
+            if(arr[i][j - 1] == arr[i][j] && arr[i][j] == arr[i][j + 1])
             {
                return false;
             }
          }
-         if(param3[param1][param2 + 1] && param3[param1][param2 + 2])
+         if(arr[i][j + 1] && arr[i][j + 2])
          {
-            if(param3[param1][param2] == param3[param1][param2 + 1] && param3[param1][param2] == param3[param1][param2 + 2])
+            if(arr[i][j] == arr[i][j + 1] && arr[i][j] == arr[i][j + 2])
             {
                return false;
             }
          }
-         if(param1 >= 2)
+         if(i >= 2)
          {
-            if(param3[param1 - 2][param2] == param3[param1][param2] && param3[param1 - 1][param2] == param3[param1][param2])
+            if(arr[i - 2][j] == arr[i][j] && arr[i - 1][j] == arr[i][j])
             {
                return false;
             }
          }
-         if(param1 <= param3.length - 3)
+         if(i <= arr.length - 3)
          {
-            if(param3[param1 + 2][param2] == param3[param1][param2] && param3[param1 + 1][param2] == param3[param1][param2])
+            if(arr[i + 2][j] == arr[i][j] && arr[i + 1][j] == arr[i][j])
             {
                return false;
             }
          }
-         if(param1 > 0 && param1 < param3.length - 1)
+         if(i > 0 && i < arr.length - 1)
          {
-            if(param3[param1 + 1][param2] == param3[param1][param2] && param3[param1 - 1][param2] == param3[param1][param2])
+            if(arr[i + 1][j] == arr[i][j] && arr[i - 1][j] == arr[i][j])
             {
                return false;
             }

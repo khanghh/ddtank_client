@@ -2,8 +2,8 @@ package horse.horsePicCherish
 {
    import com.pickgliss.events.FrameEvent;
    import com.pickgliss.ui.ComponentFactory;
-   import com.pickgliss.ui.controls.Frame;
    import com.pickgliss.ui.controls.SimpleBitmapButton;
+   import com.pickgliss.ui.core.Disposeable;
    import com.pickgliss.ui.image.Scale9CornerImage;
    import com.pickgliss.ui.image.ScaleBitmapImage;
    import com.pickgliss.ui.text.FilterFrameText;
@@ -13,13 +13,14 @@ package horse.horsePicCherish
    import ddt.manager.SoundManager;
    import ddt.utils.PositionUtils;
    import flash.display.Bitmap;
+   import flash.display.Sprite;
    import flash.events.MouseEvent;
    import flash.geom.Point;
    import flash.utils.Dictionary;
    import horse.HorseManager;
    import horse.data.HorsePicCherishVo;
    
-   public class HorsePicCherishFrame extends Frame
+   public class HorsePicCherishFrame extends Sprite implements Disposeable
    {
        
       
@@ -58,8 +59,8 @@ package horse.horsePicCherish
       public function HorsePicCherishFrame()
       {
          _nameStrList = LanguageMgr.GetTranslation("horse.addPropertyNameStr").split(",");
-         _propertyNamePosArr = [new Point(17,356),new Point(127,365),new Point(239,365),new Point(359,365),new Point(474,365)];
-         _propertyValuePosArr = [new Point(78,365),new Point(188,365),new Point(308,365),new Point(428,365),new Point(548,365)];
+         _propertyNamePosArr = [new Point(9,363),new Point(173,363),new Point(318,363),new Point(465,363),new Point(601,363)];
+         _propertyValuePosArr = [new Point(78,364),new Point(224,364),new Point(370,364),new Point(516,364),new Point(662,364)];
          super();
          initView();
          initEvent();
@@ -69,39 +70,37 @@ package horse.horsePicCherish
       
       private function initView() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
-         _titleText = LanguageMgr.GetTranslation("horse.horsePicCherish.frameTitleTxt");
-         _scaleBg = ComponentFactory.Instance.creatComponentByStylename("horse.HorsePicCherish.scale9ImageBg");
-         addToContent(_scaleBg);
+         var i:int = 0;
+         var nameTxt:* = null;
+         var valueTxt:* = null;
          _bg = ComponentFactory.Instance.creat("horse.pic.bg");
-         addToContent(_bg);
+         _bg.x = -2;
+         _bg.y = -6;
+         addChild(_bg);
          _leftBtn = ComponentFactory.Instance.creatComponentByStylename("horse.HorsePicCherish.leftBtn");
-         addToContent(_leftBtn);
+         addChild(_leftBtn);
          _rightBtn = ComponentFactory.Instance.creatComponentByStylename("horse.HorsePicCherish.rightBtn");
-         addToContent(_rightBtn);
+         addChild(_rightBtn);
          _propertyNameArr = [];
          _propertyValueArr = [];
-         _loc3_ = 0;
-         while(_loc3_ < 5)
+         for(i = 0; i < 5; )
          {
-            _loc2_ = ComponentFactory.Instance.creatComponentByStylename("horse.picCHerish.addPorpertyNameTxt");
-            _loc2_.text = _nameStrList[_loc3_];
-            addToContent(_loc2_);
-            PositionUtils.setPos(_loc2_,_propertyNamePosArr[_loc3_]);
-            _propertyNameArr.push(_loc2_);
-            _loc1_ = ComponentFactory.Instance.creatComponentByStylename("horse.picCHerish.addPorpertyValueTxt");
-            _loc1_.text = "0";
-            addToContent(_loc1_);
-            PositionUtils.setPos(_loc1_,_propertyValuePosArr[_loc3_]);
-            _propertyValueArr.push(_loc1_);
-            _loc3_++;
+            nameTxt = ComponentFactory.Instance.creatComponentByStylename("horse.picCHerish.addPorpertyNameTxt");
+            nameTxt.text = _nameStrList[i];
+            addChild(nameTxt);
+            PositionUtils.setPos(nameTxt,_propertyNamePosArr[i]);
+            _propertyNameArr.push(nameTxt);
+            valueTxt = ComponentFactory.Instance.creatComponentByStylename("horse.picCHerish.addPorpertyValueTxt");
+            valueTxt.text = "0";
+            addChild(valueTxt);
+            PositionUtils.setPos(valueTxt,_propertyValuePosArr[i]);
+            _propertyValueArr.push(valueTxt);
+            i++;
          }
          _pageBg = ComponentFactory.Instance.creatComponentByStylename("horsePicCherish.pageBG");
-         addToContent(_pageBg);
+         addChild(_pageBg);
          _pageTxt = ComponentFactory.Instance.creatComponentByStylename("horsePicCherish.pageTxt");
-         addToContent(_pageTxt);
+         addChild(_pageTxt);
       }
       
       private function initEvent() : void
@@ -114,72 +113,75 @@ package horse.horsePicCherish
       
       private function initData() : void
       {
-         var _loc4_:int = 0;
-         var _loc1_:* = null;
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var item:* = null;
+         var j:int = 0;
+         var itemUnKnown:* = null;
          _itemList = new Vector.<HorsePicCherishItem>();
          _horsePicCherishList = HorseManager.instance.getHorsePicCherishData();
-         _loc4_ = 0;
-         while(_loc4_ < _horsePicCherishList.length)
+         for(i = 0; i < _horsePicCherishList.length; )
          {
-            _loc1_ = new HorsePicCherishItem(_horsePicCherishList[_loc4_].ID,_horsePicCherishList[_loc4_]);
-            _loc1_.tipStyle = "horse.horsePicCherish.HorsePicCherishTip";
-            _loc1_.tipDirctions = "2,7,5,1,4,6";
-            _itemList.push(_loc1_);
-            _loc4_++;
+            item = new HorsePicCherishItem(_horsePicCherishList[i].ID,_horsePicCherishList[i]);
+            item.tipStyle = "horse.horsePicCherish.HorsePicCherishTip";
+            item.tipDirctions = int((i + 1) % 5) == 0?"1,7,5":"2,7,5";
+            _itemList.push(item);
+            i++;
          }
-         _loc3_ = 0;
-         while(_loc3_ < 8 - _horsePicCherishList.length % 8)
+         var fillLen:int = _horsePicCherishList.length % 10;
+         if(fillLen != 0)
          {
-            _loc2_ = new HorsePicCherishItem(-1,null);
-            _itemList.push(_loc2_);
-            _loc3_++;
+            fillLen = 10 - fillLen;
          }
-         _sumPage = Math.ceil(_itemList.length / 8);
+         j = 0;
+         while(j < fillLen)
+         {
+            itemUnKnown = new HorsePicCherishItem(-1,null);
+            _itemList.push(itemUnKnown);
+            j++;
+         }
+         _sumPage = Math.ceil(_itemList.length / 10);
       }
       
       private function updateView() : void
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         var _loc8_:int = 0;
-         var _loc9_:int = 0;
-         var _loc7_:int = 0;
-         var _loc11_:int = 0;
-         var _loc2_:Dictionary = PlayerManager.Instance.Self.horsePicCherishDic;
-         var _loc1_:Vector.<HorsePicCherishVo> = HorseManager.instance.getHorsePicCherishData();
+         var hurt:int = 0;
+         var guard:int = 0;
+         var blood:int = 0;
+         var magicAttack:int = 0;
+         var magicDefence:int = 0;
+         var i:int = 0;
+         var dataDic:Dictionary = PlayerManager.Instance.Self.horsePicCherishDic;
+         var dataVec:Vector.<HorsePicCherishVo> = HorseManager.instance.getHorsePicCherishData();
          var _loc15_:int = 0;
-         var _loc14_:* = _loc2_;
-         for(var _loc10_ in _loc2_)
+         var _loc14_:* = dataDic;
+         for(var key in dataDic)
          {
             var _loc13_:int = 0;
-            var _loc12_:* = _loc1_;
-            for each(var _loc5_ in _loc1_)
+            var _loc12_:* = dataVec;
+            for each(var data in dataVec)
             {
-               if(int(_loc10_) == _loc5_.ID)
+               if(int(key) == data.ID)
                {
-                  _loc3_ = _loc3_ + _loc5_.AddHurt;
-                  _loc4_ = _loc4_ + _loc5_.AddGuard;
-                  _loc8_ = _loc8_ + _loc5_.AddBlood;
-                  _loc9_ = _loc9_ + _loc5_.MagicAttack;
-                  _loc7_ = _loc7_ + _loc5_.MagicDefence;
+                  hurt = hurt + data.AddHurt;
+                  guard = guard + data.AddGuard;
+                  blood = blood + data.AddBlood;
+                  magicAttack = magicAttack + data.MagicAttack;
+                  magicDefence = magicDefence + data.MagicDefence;
                   break;
                }
             }
          }
-         var _loc6_:Array = [_loc3_,_loc4_,_loc8_,_loc9_,_loc7_];
-         _loc11_ = 0;
-         while(_loc11_ < _propertyValueArr.length)
+         var temp:Array = [hurt,guard,blood,magicAttack,magicDefence];
+         for(i = 0; i < _propertyValueArr.length; )
          {
-            _propertyValueArr[_loc11_].text = _loc6_[_loc11_];
-            _loc11_++;
+            _propertyValueArr[i].text = temp[i];
+            i++;
          }
       }
       
-      public function set index(param1:int) : void
+      public function set index(value:int) : void
       {
-         _currentIndex = param1;
+         _currentIndex = value;
          _pageTxt.text = _currentIndex + "/" + _sumPage;
          refreshView();
       }
@@ -189,14 +191,14 @@ package horse.horsePicCherish
          if(!_itemListView)
          {
             _itemListView = new HorsePicCherishItemListView(_itemList);
-            _itemListView.x = 8;
-            _itemListView.y = 3;
-            addToContent(_itemListView);
+            _itemListView.x = 6;
+            _itemListView.y = 1;
+            addChild(_itemListView);
          }
          _itemListView.show(_currentIndex);
       }
       
-      protected function __rightHandler(param1:MouseEvent) : void
+      protected function __rightHandler(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(_currentIndex >= _sumPage)
@@ -210,7 +212,7 @@ package horse.horsePicCherish
          index = _currentIndex;
       }
       
-      protected function __leftHandler(param1:MouseEvent) : void
+      protected function __leftHandler(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(_currentIndex <= 1)
@@ -224,9 +226,9 @@ package horse.horsePicCherish
          index = _currentIndex;
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();
@@ -240,15 +242,13 @@ package horse.horsePicCherish
          _rightBtn.removeEventListener("click",__rightHandler);
       }
       
-      override public function dispose() : void
+      public function dispose() : void
       {
          removeEvent();
          HorseManager.instance.isSkipFromBagView = false;
          HorseManager.instance.updateCherishPropertyFunc = null;
          ObjectUtils.disposeObject(_bg);
          _bg = null;
-         ObjectUtils.disposeObject(_scaleBg);
-         _scaleBg = null;
          ObjectUtils.disposeObject(_itemListView);
          _itemListView = null;
          _itemList = null;
@@ -258,18 +258,18 @@ package horse.horsePicCherish
          _rightBtn = null;
          var _loc4_:int = 0;
          var _loc3_:* = _propertyNameArr;
-         for each(var _loc2_ in _propertyNameArr)
+         for each(var txt in _propertyNameArr)
          {
-            ObjectUtils.disposeObject(_loc2_);
-            _loc2_ = null;
+            ObjectUtils.disposeObject(txt);
+            txt = null;
          }
          _propertyNameArr = null;
          var _loc6_:int = 0;
          var _loc5_:* = _propertyValueArr;
-         for each(var _loc1_ in _propertyValueArr)
+         for each(var valueTxt in _propertyValueArr)
          {
-            ObjectUtils.disposeObject(_loc1_);
-            _loc1_ = null;
+            ObjectUtils.disposeObject(valueTxt);
+            valueTxt = null;
          }
          _propertyValueArr = null;
          ObjectUtils.disposeObject(_pageBg);
@@ -280,7 +280,6 @@ package horse.horsePicCherish
          {
             parent.removeChild(this);
          }
-         super.dispose();
       }
    }
 }

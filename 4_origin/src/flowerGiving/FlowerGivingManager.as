@@ -32,7 +32,7 @@ package flowerGiving
       
       public var flowerTempleteId:int;
       
-      public function FlowerGivingManager(param1:inner)
+      public function FlowerGivingManager(single:inner)
       {
          super();
          addEvents();
@@ -67,15 +67,15 @@ package flowerGiving
       public function checkOpen() : void
       {
          isShowIcon = false;
-         var _loc2_:Date = TimeManager.Instance.Now();
-         var _loc1_:Dictionary = WonderfulActivityManager.Instance.activityData;
+         var now:Date = TimeManager.Instance.Now();
+         var activityData:Dictionary = WonderfulActivityManager.Instance.activityData;
          var _loc5_:int = 0;
-         var _loc4_:* = _loc1_;
-         for each(var _loc3_ in _loc1_)
+         var _loc4_:* = activityData;
+         for each(var item in activityData)
          {
-            if(_loc3_.activityType == 11 && _loc2_.time >= Date.parse(_loc3_.beginTime) && _loc2_.time <= Date.parse(_loc3_.endShowTime))
+            if(item.activityType == 11 && now.time >= Date.parse(item.beginTime) && now.time <= Date.parse(item.endShowTime))
             {
-               switch(int(_loc3_.activityChildType))
+               switch(int(item.activityChildType))
                {
                   case 0:
                      flowerTempleteId = 334128;
@@ -95,8 +95,8 @@ package flowerGiving
                   case 5:
                      flowerTempleteId = 334132;
                }
-               actId = _loc3_.activityId;
-               xmlData = _loc1_[actId];
+               actId = item.activityId;
+               xmlData = activityData[actId];
                isShowIcon = true;
             }
          }
@@ -110,20 +110,20 @@ package flowerGiving
          }
       }
       
-      protected function __flowerGivingOpenHandler(param1:PkgEvent) : void
+      protected function __flowerGivingOpenHandler(event:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         var _loc3_:int = _loc2_.readInt();
+         var pkg:PackageIn = event.pkg;
+         var isOpen:int = pkg.readInt();
          checkOpen();
       }
       
-      protected function __flowerFallHandler(param1:PkgEvent) : void
+      protected function __flowerFallHandler(event:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc4_:int = _loc3_.readInt();
-         var _loc2_:int = _loc3_.readInt();
-         var _loc5_:String = StateManager.currentStateType;
-         if(_loc5_ == "main" || _loc5_ == "roomlist" || _loc5_ == "consortia" || _loc5_ == "auction" || _loc5_ == "farm" || _loc5_ == "shop" || _loc5_ == "tofflist" || _loc5_ == "ddtchurchroomlist" || _loc5_ == "consortiaBattleScene" || _loc5_ == "matchRoom" || _loc5_ == "dungeon" || _loc5_ == "dungeonRoom" || _loc5_ == "challengeRoom")
+         var pkg:PackageIn = event.pkg;
+         var from:int = pkg.readInt();
+         var to:int = pkg.readInt();
+         var curState:String = StateManager.currentStateType;
+         if(curState == "main" || curState == "roomlist" || curState == "consortia" || curState == "auction" || curState == "farm" || curState == "shop" || curState == "tofflist" || curState == "ddtchurchroomlist" || curState == "consortiaBattleScene" || curState == "matchRoom" || curState == "dungeon" || curState == "dungeonRoom" || curState == "challengeRoom")
          {
             dispatchEvent(new FlowerGiveEvent("fg_flower_fall"));
          }

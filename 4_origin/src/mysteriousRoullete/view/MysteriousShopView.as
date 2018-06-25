@@ -77,54 +77,50 @@ package mysteriousRoullete.view
       
       private function initData() : void
       {
-         var _loc6_:int = 0;
-         var _loc2_:* = null;
-         var _loc4_:int = 0;
-         var _loc1_:* = null;
-         var _loc5_:Vector.<ShopItemInfo> = ShopManager.Instance.getGoodsByType(96);
-         _loc6_ = 0;
-         while(_loc6_ <= _loc5_.length - 1)
+         var i:int = 0;
+         var item:* = null;
+         var j:int = 0;
+         var item2:* = null;
+         var freeItemArr:Vector.<ShopItemInfo> = ShopManager.Instance.getGoodsByType(96);
+         for(i = 0; i <= freeItemArr.length - 1; )
          {
-            _loc2_ = new MysteriousShopItem(0);
-            _loc2_.shopItemInfo = _loc5_[_loc6_];
-            _freeItemList.addChild(_loc2_);
-            _freeItemArr.push(_loc2_);
-            _loc6_++;
+            item = new MysteriousShopItem(0);
+            item.shopItemInfo = freeItemArr[i];
+            _freeItemList.addChild(item);
+            _freeItemArr.push(item);
+            i++;
          }
-         var _loc3_:Vector.<ShopItemInfo> = ShopManager.Instance.getGoodsByType(97);
-         _loc4_ = 0;
-         while(_loc4_ <= _loc3_.length - 1)
+         var discountItemArr:Vector.<ShopItemInfo> = ShopManager.Instance.getGoodsByType(97);
+         for(j = 0; j <= discountItemArr.length - 1; )
          {
-            _loc1_ = new MysteriousShopItem(1);
-            _loc1_.shopItemInfo = _loc3_[_loc4_];
-            _discountItemList.addChild(_loc1_);
-            _discountItemArr.push(_loc1_);
-            _loc4_++;
+            item2 = new MysteriousShopItem(1);
+            item2.shopItemInfo = discountItemArr[j];
+            _discountItemList.addChild(item2);
+            _discountItemArr.push(item2);
+            j++;
          }
          setTimes();
       }
       
       public function setTimes() : void
       {
-         var _loc6_:int = 0;
-         var _loc5_:int = 0;
-         var _loc2_:int = MysteriousManager.instance.freeGetTimes;
-         var _loc1_:int = MysteriousManager.instance.discountBuyTimes;
-         _freeCount.text = _loc2_.toString();
-         _discountCount.text = _loc1_.toString();
-         var _loc3_:Boolean = _loc2_ == 0?true:false;
-         var _loc4_:Boolean = _loc1_ == 0?true:false;
-         _loc6_ = 0;
-         while(_loc6_ <= _freeItemArr.length - 1)
+         var i:int = 0;
+         var j:int = 0;
+         var freeTimes:int = MysteriousManager.instance.freeGetTimes;
+         var discountTimes:int = MysteriousManager.instance.discountBuyTimes;
+         _freeCount.text = freeTimes.toString();
+         _discountCount.text = discountTimes.toString();
+         var grayFlag1:Boolean = freeTimes == 0?true:false;
+         var grayFlag2:Boolean = discountTimes == 0?true:false;
+         for(i = 0; i <= _freeItemArr.length - 1; )
          {
-            (_freeItemArr[_loc6_] as MysteriousShopItem).turnGray(_loc3_);
-            _loc6_++;
+            (_freeItemArr[i] as MysteriousShopItem).turnGray(grayFlag1);
+            i++;
          }
-         _loc5_ = 0;
-         while(_loc5_ <= _discountItemArr.length - 1)
+         for(j = 0; j <= _discountItemArr.length - 1; )
          {
-            (_discountItemArr[_loc5_] as MysteriousShopItem).turnGray(_loc4_);
-            _loc5_++;
+            (_discountItemArr[j] as MysteriousShopItem).turnGray(grayFlag2);
+            j++;
          }
       }
       

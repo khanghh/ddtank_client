@@ -25,66 +25,66 @@ package ddt.manager
          return _instance;
       }
       
-      public function getPermisitonKey(param1:int, param2:int) : int
+      public function getPermisitonKey(mapid:int, level:int) : int
       {
-         var _loc4_:Array = [String(param1),String(param2)];
-         var _loc3_:String = _loc4_.join("|");
-         return allPermission[_loc3_];
+         var key:Array = [String(mapid),String(level)];
+         var keyString:String = key.join("|");
+         return allPermission[keyString];
       }
       
-      public function getPermission(param1:int, param2:int, param3:String) : Boolean
+      public function getPermission(mapid:int, level:int, mapPermission:String) : Boolean
       {
-         var _loc4_:String = param3.substr(param1 - 1,1).toUpperCase();
-         if(_loc4_ == "")
+         var right:String = mapPermission.substr(mapid - 1,1).toUpperCase();
+         if(right == "")
          {
             return false;
          }
-         if(param2 == 0)
+         if(level == 0)
          {
             return true;
          }
-         if(param2 == 1)
+         if(level == 1)
          {
-            return _loc4_ != "1"?true:false;
+            return right != "1"?true:false;
          }
-         if(param2 == 2)
+         if(level == 2)
          {
-            if(_loc4_ == "F" || _loc4_ == "7")
+            if(right == "F" || right == "7")
             {
                return true;
             }
             return false;
          }
-         if(param2 == 3)
+         if(level == 3)
          {
-            return _loc4_ == "F"?true:false;
+            return right == "F"?true:false;
          }
-         if(param2 == 4)
+         if(level == 4)
          {
-            return _loc4_ == "F"?true:false;
+            return right == "F"?true:false;
          }
          return false;
       }
       
-      public function getPveMapEpicPermission(param1:int, param2:String) : Boolean
+      public function getPveMapEpicPermission(mapId:int, pveEpicPermission:String) : Boolean
       {
-         var _loc4_:* = null;
-         var _loc5_:Boolean = false;
-         if(param2)
+         var arr:* = null;
+         var bool:Boolean = false;
+         if(pveEpicPermission)
          {
-            _loc4_ = param2.split("-");
+            arr = pveEpicPermission.split("-");
             var _loc7_:int = 0;
-            var _loc6_:* = _loc4_;
-            for each(var _loc3_ in _loc4_)
+            var _loc6_:* = arr;
+            for each(var str in arr)
             {
-               if(_loc3_ == String(param1))
+               if(str == String(mapId))
                {
-                  _loc5_ = true;
+                  bool = true;
                   break;
                }
             }
          }
-         return _loc5_;
+         return bool;
       }
    }
 }

@@ -14,31 +14,31 @@ package littleGame.actions
       
       private var _scene:Scenario;
       
-      public function LittleLivingDieAction(param1:Scenario = null, param2:LittleLiving = null, param3:int = 6)
+      public function LittleLivingDieAction(scene:Scenario = null, living:LittleLiving = null, life:int = 6)
       {
-         _living = param2;
+         _living = living;
          if(_living)
          {
             _living.dieing = true;
          }
-         _life = param3;
-         _scene = param1;
+         _life = life;
+         _scene = scene;
          super();
       }
       
-      override public function connect(param1:LittleAction) : Boolean
+      override public function connect(action:LittleAction) : Boolean
       {
          return true;
       }
       
-      override public function parsePackege(param1:Scenario, param2:PackageIn = null) : void
+      override public function parsePackege(scene:Scenario, pkg:PackageIn = null) : void
       {
-         _scene = param1;
-         var _loc3_:int = param2.readInt();
-         var _loc4_:LittleLiving = _scene.findLiving(_loc3_);
-         if(_loc4_ && !_loc4_.dieing)
+         _scene = scene;
+         var id:int = pkg.readInt();
+         var living:LittleLiving = _scene.findLiving(id);
+         if(living && !living.dieing)
          {
-            _living = _loc4_;
+            _living = living;
             _living.stand();
             _living.dieing = true;
             _living.act(this);

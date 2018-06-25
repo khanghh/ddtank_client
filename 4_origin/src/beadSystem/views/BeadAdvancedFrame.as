@@ -67,7 +67,7 @@ package beadSystem.views
          addEventListener("response",_response);
       }
       
-      private function __onBeadBagUpdate(param1:BagEvent) : void
+      private function __onBeadBagUpdate(evt:BagEvent) : void
       {
          update();
       }
@@ -79,32 +79,32 @@ package beadSystem.views
          removeEventListener("response",_response);
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();
          }
       }
       
-      protected function __changeHandler(param1:Event) : void
+      protected function __changeHandler(event:Event) : void
       {
          SoundManager.instance.play("008");
          if(_btnGroup.selectIndex < 0)
          {
             return;
          }
-         var _loc2_:DictionaryData = BeadTemplateManager.Instance.getBeadAdvanceData(_btnGroup.selectIndex + 1);
-         updateViewData(_loc2_,_btnGroup.selectIndex);
+         var info:DictionaryData = BeadTemplateManager.Instance.getBeadAdvanceData(_btnGroup.selectIndex + 1);
+         updateViewData(info,_btnGroup.selectIndex);
       }
       
-      protected function updateViewData(param1:DictionaryData, param2:int) : void
+      protected function updateViewData(info:DictionaryData, tabIndex:int) : void
       {
          if(_view)
          {
-            _view.curPageIndex = param2;
-            _view.update(param1);
+            _view.curPageIndex = tabIndex;
+            _view.update(info);
          }
       }
       

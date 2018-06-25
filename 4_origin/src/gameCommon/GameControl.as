@@ -106,7 +106,7 @@ package gameCommon
       
       public static const SKILL_INFO_INIT_GAME:String = "skillInfoInitGame";
       
-      public static const EXIT_ROOM_TYPE_ARRAY:Array = [10,14,19,20,31,24,40,26,27,52,21,48,150,151];
+      public static const EXIT_ROOM_TYPE_ARRAY:Array = [10,14,19,20,31,24,40,26,27,52,21,48,150,151,70];
       
       public static const EXTI_GAME_MODE_ARRAY:Array = [56,57];
       
@@ -153,6 +153,8 @@ package gameCommon
       
       private var _playerBloodEvtVec:Vector.<CrazyTankSocketEvent>;
       
+      private var _boxPhysicalEvtVec:Vector.<CrazyTankSocketEvent>;
+      
       public var viewCompleteFlag:Boolean;
       
       public var randomSmallLivingShape:int = -1;
@@ -189,24 +191,29 @@ package gameCommon
          _pathInfo = PathManager.getPathInfo();
       }
       
-      public static function isAcademyRoom(param1:GameInfo) : Boolean
+      public static function isAcademyRoom(gameInfo:GameInfo) : Boolean
       {
-         return param1.roomType == 11;
+         return gameInfo.roomType == 11;
       }
       
-      public static function isDungeonRoom(param1:GameInfo) : Boolean
+      public static function isDreamChallengeRoom(gameInfo:GameInfo) : Boolean
       {
-         return param1.roomType == 4 || param1.roomType == 15 || param1.roomType == 23 || param1.roomType == 123;
+         return gameInfo.roomType == 70;
       }
       
-      public static function isFightLib(param1:GameInfo) : Boolean
+      public static function isDungeonRoom(gameInfo:GameInfo) : Boolean
       {
-         return param1.roomType == 5;
+         return gameInfo.roomType == 4 || gameInfo.roomType == 15 || gameInfo.roomType == 23 || gameInfo.roomType == 123;
       }
       
-      public static function isFreshMan(param1:GameInfo) : Boolean
+      public static function isFightLib(gameInfo:GameInfo) : Boolean
       {
-         return param1.roomType == 10;
+         return gameInfo.roomType == 5;
+      }
+      
+      public static function isFreshMan(gameInfo:GameInfo) : Boolean
+      {
+         return gameInfo.roomType == 10;
       }
       
       public static function get Instance() : GameControl
@@ -223,9 +230,9 @@ package gameCommon
          return _current;
       }
       
-      public function set Current(param1:GameInfo) : void
+      public function set Current(value:GameInfo) : void
       {
-         _current = param1;
+         _current = value;
       }
       
       private function initData() : void
@@ -239,6 +246,7 @@ package gameCommon
          _livingActionMappingEvtVec = new Vector.<CrazyTankSocketEvent>();
          _updatePhysicObjectEvtVec = new Vector.<CrazyTankSocketEvent>();
          _playerBloodEvtVec = new Vector.<CrazyTankSocketEvent>();
+         _boxPhysicalEvtVec = new Vector.<CrazyTankSocketEvent>();
       }
       
       public function setup() : void
@@ -272,9 +280,22 @@ package gameCommon
          SocketManager.Instance.addEventListener("actionMapping",__livingActionMapping);
          SocketManager.Instance.addEventListener("updateBoardState",__updatePhysicObject);
          SocketManager.Instance.addEventListener("playerBlood",__playerBlood);
+         SocketManager.Instance.addEventListener("simpleobjectMovePos",__onSimpleOejectMovePos);
       }
       
-      private function __disposeCmd(param1:CrazyTankSocketEvent) : void
+      private function __onSimpleOejectMovePos(evt:CrazyTankSocketEvent) : void
+      {
+         if(!viewCompleteFlag)
+         {
+            _boxPhysicalEvtVec.push(evt);
+         }
+         else
+         {
+            _gameView.boxPhysicalPos(evt);
+         }
+      }
+      
+      private function __disposeCmd(event:CrazyTankSocketEvent) : void
       {
          if(_addLivingEvtVec)
          {
@@ -308,6 +329,10 @@ package gameCommon
          {
             _playerBloodEvtVec.splice(0,_playerBloodEvtVec.length);
          }
+         if(_boxPhysicalEvtVec)
+         {
+            _boxPhysicalEvtVec.splice(0,_boxPhysicalEvtVec.length);
+         }
       }
       
       public function ClearAllCrazyTankSocketEvent() : void
@@ -320,1055 +345,1038 @@ package gameCommon
          _livingActionMappingEvtVec.length = 0;
          _updatePhysicObjectEvtVec.length = 0;
          _playerBloodEvtVec.length = 0;
+         boxPhysicalEvtVec.length = 0;
       }
       
-      protected function __playerBlood(param1:CrazyTankSocketEvent) : void
+      protected function __playerBlood(event:CrazyTankSocketEvent) : void
       {
          if(!viewCompleteFlag)
          {
-            _playerBloodEvtVec.push(param1);
+            _playerBloodEvtVec.push(event);
          }
          else
          {
-            _gameView.playerBlood(param1);
+            _gameView.playerBlood(event);
          }
       }
       
-      protected function __updatePhysicObject(param1:CrazyTankSocketEvent) : void
+      protected function __updatePhysicObject(event:CrazyTankSocketEvent) : void
       {
          if(!viewCompleteFlag)
          {
-            _updatePhysicObjectEvtVec.push(param1);
+            _updatePhysicObjectEvtVec.push(event);
          }
          else
          {
-            _gameView.updatePhysicObject(param1);
+            _gameView.updatePhysicObject(event);
          }
       }
       
-      protected function __livingActionMapping(param1:CrazyTankSocketEvent) : void
+      protected function __livingActionMapping(event:CrazyTankSocketEvent) : void
       {
          if(!viewCompleteFlag)
          {
-            _livingActionMappingEvtVec.push(param1);
+            _livingActionMappingEvtVec.push(event);
          }
          else
          {
-            _gameView.livingActionMapping(param1);
+            _gameView.livingActionMapping(event);
          }
       }
       
-      protected function __addMapThing(param1:CrazyTankSocketEvent) : void
+      protected function __addMapThing(event:CrazyTankSocketEvent) : void
       {
          if(!viewCompleteFlag)
          {
-            _addMapThingEvtVec.push(param1);
+            _addMapThingEvtVec.push(event);
          }
          else
          {
-            _gameView.addMapThing(param1);
+            _gameView.addMapThing(event);
          }
       }
       
-      protected function __addLiving(param1:CrazyTankSocketEvent) : void
+      protected function __addLiving(event:CrazyTankSocketEvent) : void
       {
          if(!viewCompleteFlag)
          {
-            _addLivingEvtVec.push(param1);
+            _addLivingEvtVec.push(event);
          }
          else
          {
-            _gameView.addliving(param1);
+            _gameView.addliving(event);
          }
       }
       
-      protected function __objectSetProperty(param1:CrazyTankSocketEvent) : void
+      protected function __objectSetProperty(event:CrazyTankSocketEvent) : void
       {
          if(!viewCompleteFlag)
          {
-            _setPropertyEvtVec.push(param1);
+            _setPropertyEvtVec.push(event);
          }
          else
          {
-            _gameView.objectSetProperty(param1);
+            _gameView.objectSetProperty(event);
          }
       }
       
-      protected function __livingFalling(param1:CrazyTankSocketEvent) : void
+      protected function __livingFalling(event:CrazyTankSocketEvent) : void
       {
          if(!viewCompleteFlag)
          {
-            _livingFallingEvtVec.push(param1);
+            _livingFallingEvtVec.push(event);
          }
          else
          {
-            _gameView.livingFalling(param1);
+            _gameView.livingFalling(event);
          }
       }
       
-      protected function __livingShowBlood(param1:CrazyTankSocketEvent) : void
+      protected function __livingShowBlood(event:CrazyTankSocketEvent) : void
       {
          if(!viewCompleteFlag)
          {
-            _livingShowBloodEvtVec.push(param1);
+            _livingShowBloodEvtVec.push(event);
          }
          else
          {
-            _gameView.livingShowBlood(param1);
+            _gameView.livingShowBlood(event);
          }
       }
       
-      private function addTerrace(param1:CrazyTankSocketEvent) : void
+      private function addTerrace(event:CrazyTankSocketEvent) : void
       {
-         var _loc9_:int = 0;
-         var _loc7_:int = 0;
-         var _loc8_:* = null;
-         var _loc4_:Boolean = false;
-         var _loc2_:int = 0;
-         var _loc6_:int = 0;
+         var i:int = 0;
+         var livingID:int = 0;
+         var info:* = null;
+         var bool:Boolean = false;
+         var livingX:int = 0;
+         var livingY:int = 0;
          if(!Current || Current.gameMode != 23)
          {
             return;
          }
-         var _loc5_:int = param1.pkg.readInt();
-         var _loc3_:int = 0;
-         _loc9_ = 0;
-         while(_loc9_ < _loc5_)
+         var conut:int = event.pkg.readInt();
+         var falseCount:int = 0;
+         for(i = 0; i < conut; )
          {
-            _loc7_ = param1.pkg.readInt();
-            _loc8_ = Current.findPlayer(_loc7_);
-            _loc4_ = param1.pkg.readBoolean();
-            _loc2_ = param1.pkg.readInt();
-            _loc6_ = param1.pkg.readInt();
-            _loc8_.isLocked = _loc4_;
-            terrceID = _loc7_;
-            if(_loc4_)
+            livingID = event.pkg.readInt();
+            info = Current.findPlayer(livingID);
+            bool = event.pkg.readBoolean();
+            livingX = event.pkg.readInt();
+            livingY = event.pkg.readInt();
+            info.isLocked = bool;
+            terrceID = livingID;
+            if(bool)
             {
                isAddTerrce = true;
-               terrceX = _loc2_;
-               terrceY = _loc6_ + 10;
-               dispatchEvent(new GameEvent("addTerrace",[terrceX,terrceY,_loc7_]));
+               terrceX = livingX;
+               terrceY = livingY + 10;
+               dispatchEvent(new GameEvent("addTerrace",[terrceX,terrceY,livingID]));
             }
             else
             {
                isAddTerrce = false;
-               dispatchEvent(new GameEvent("delTerrace",[_loc7_]));
+               dispatchEvent(new GameEvent("delTerrace",[livingID]));
             }
-            _loc9_++;
+            i++;
          }
       }
       
-      private function addNewPlayerHander(param1:CrazyTankSocketEvent) : void
+      private function addNewPlayerHander(event:CrazyTankSocketEvent) : void
       {
-         var _loc29_:Boolean = false;
-         var _loc41_:int = 0;
-         var _loc4_:* = null;
-         var _loc18_:* = null;
-         var _loc47_:* = null;
-         var _loc56_:int = 0;
-         var _loc53_:* = null;
-         var _loc33_:* = null;
-         var _loc54_:int = 0;
-         var _loc11_:int = 0;
-         var _loc57_:* = null;
-         var _loc23_:int = 0;
-         var _loc38_:int = 0;
-         var _loc55_:int = 0;
-         var _loc24_:int = 0;
-         var _loc46_:int = 0;
-         var _loc49_:int = 0;
-         var _loc48_:int = 0;
-         var _loc13_:int = 0;
-         var _loc27_:int = 0;
-         var _loc36_:int = 0;
-         var _loc26_:* = null;
-         var _loc32_:int = 0;
-         var _loc52_:int = 0;
-         var _loc43_:* = null;
-         var _loc34_:int = 0;
-         var _loc37_:* = null;
-         var _loc14_:* = null;
-         var _loc22_:GameInfo = Current;
-         var _loc17_:PackageIn = param1.pkg;
-         var _loc35_:int = _loc17_.readInt();
-         var _loc20_:String = _loc17_.readUTF();
-         var _loc39_:int = _loc17_.readInt();
-         var _loc15_:PlayerInfo = new PlayerInfo();
-         _loc15_.beginChanges();
-         var _loc12_:RoomPlayer = RoomManager.Instance.current.findPlayerByID(_loc39_,_loc35_);
-         if(_loc12_ == null)
+         var sex:Boolean = false;
+         var Hide:int = 0;
+         var Style:* = null;
+         var Colors:* = null;
+         var Skin:* = null;
+         var r:int = 0;
+         var pic:* = null;
+         var date:* = null;
+         var j:int = 0;
+         var place:int = 0;
+         var p:* = null;
+         var ptd:int = 0;
+         var activedSkillCount:int = 0;
+         var k:int = 0;
+         var splace:int = 0;
+         var sid:int = 0;
+         var n:int = 0;
+         var b:int = 0;
+         var bsSkillId:int = 0;
+         var deputyWeaponCount:int = 0;
+         var t_j:int = 0;
+         var buff:* = null;
+         var data:int = 0;
+         var l:int = 0;
+         var Buff:* = null;
+         var I:int = 0;
+         var K:* = null;
+         var Value:* = null;
+         var gm:GameInfo = Current;
+         var pkg:PackageIn = event.pkg;
+         var zoneID:int = pkg.readInt();
+         var zoneName:String = pkg.readUTF();
+         var id:int = pkg.readInt();
+         var sp:PlayerInfo = new PlayerInfo();
+         sp.beginChanges();
+         var fp:RoomPlayer = RoomManager.Instance.current.findPlayerByID(id,zoneID);
+         if(fp == null)
          {
-            _loc12_ = new RoomPlayer(_loc15_);
+            fp = new RoomPlayer(sp);
          }
-         _loc15_.ID = _loc39_;
-         _loc15_.ZoneID = _loc35_;
-         var _loc9_:String = _loc17_.readUTF();
-         var _loc31_:Boolean = _loc17_.readBoolean();
-         if(_loc31_ && _loc12_.place < 8)
+         sp.ID = id;
+         sp.ZoneID = zoneID;
+         var nickName:String = pkg.readUTF();
+         var isViewer:Boolean = pkg.readBoolean();
+         if(isViewer && fp.place < 8)
          {
-            _loc12_.place = 8;
+            fp.place = 8;
          }
-         _loc15_.NickName = _loc9_;
-         _loc15_.typeVIP = _loc17_.readByte();
-         _loc15_.VIPLevel = _loc17_.readInt();
-         if(PlayerManager.Instance.isChangeStyleTemp(_loc15_.ID))
+         sp.NickName = nickName;
+         sp.typeVIP = pkg.readByte();
+         sp.VIPLevel = pkg.readInt();
+         if(PlayerManager.Instance.isChangeStyleTemp(sp.ID))
          {
-            _loc17_.readBoolean();
-            _loc17_.readInt();
-            _loc17_.readUTF();
-            _loc17_.readUTF();
-            _loc17_.readUTF();
-         }
-         else
-         {
-            _loc29_ = _loc17_.readBoolean();
-            _loc41_ = _loc17_.readInt();
-            _loc4_ = _loc17_.readUTF();
-            _loc18_ = _loc17_.readUTF();
-            _loc47_ = _loc17_.readUTF();
-            _loc15_.Sex = _loc29_;
-            _loc15_.Hide = _loc41_;
-            _loc15_.Style = _loc4_;
-            _loc15_.Colors = _loc18_;
-            _loc15_.Skin = _loc47_;
-         }
-         _loc15_.Grade = _loc17_.readInt();
-         _loc15_.Repute = _loc17_.readInt();
-         _loc15_.WeaponID = _loc17_.readInt();
-         if(_loc15_.WeaponID != 0)
-         {
-            _loc56_ = _loc17_.readInt();
-            _loc53_ = _loc17_.readUTF();
-            _loc33_ = _loc17_.readDateString();
-         }
-         _loc15_.DeputyWeaponID = _loc17_.readInt();
-         _loc15_.pvpBadgeId = _loc17_.readInt();
-         _loc15_.Nimbus = _loc17_.readInt();
-         _loc15_.IsShowConsortia = _loc17_.readBoolean();
-         _loc15_.ConsortiaID = _loc17_.readInt();
-         _loc15_.ConsortiaName = _loc17_.readUTF();
-         _loc15_.badgeID = _loc17_.readInt();
-         var _loc45_:int = _loc17_.readInt();
-         var _loc40_:int = _loc17_.readInt();
-         _loc15_.WinCount = _loc17_.readInt();
-         _loc15_.TotalCount = _loc17_.readInt();
-         _loc15_.FightPower = _loc17_.readInt();
-         _loc15_.apprenticeshipState = _loc17_.readInt();
-         _loc15_.masterID = _loc17_.readInt();
-         _loc15_.setMasterOrApprentices(_loc17_.readUTF());
-         _loc15_.AchievementPoint = _loc17_.readInt();
-         _loc15_.honor = _loc17_.readUTF();
-         _loc15_.Offer = _loc17_.readInt();
-         _loc15_.DailyLeagueFirst = _loc17_.readBoolean();
-         _loc15_.DailyLeagueLastScore = _loc17_.readInt();
-         _loc15_.guardCoreID = _loc17_.readInt();
-         _loc15_.commitChanges();
-         _loc12_.playerInfo.IsMarried = _loc17_.readBoolean();
-         if(_loc12_.playerInfo.IsMarried)
-         {
-            _loc12_.playerInfo.SpouseID = _loc17_.readInt();
-            _loc12_.playerInfo.SpouseName = _loc17_.readUTF();
-         }
-         _loc17_.readInt();
-         _loc17_.readInt();
-         _loc17_.readInt();
-         _loc17_.readInt();
-         _loc17_.readInt();
-         _loc17_.readInt();
-         var _loc3_:int = _loc17_.readInt();
-         _loc12_.team = _loc17_.readInt();
-         _loc22_.addRoomPlayer(_loc12_);
-         var _loc44_:int = _loc17_.readInt();
-         var _loc19_:int = _loc17_.readInt();
-         var _loc6_:Player = new Player(_loc12_.playerInfo,_loc44_,_loc12_.team,_loc19_,_loc3_);
-         var _loc2_:int = _loc17_.readInt();
-         _loc54_ = 0;
-         while(_loc54_ < _loc2_)
-         {
-            _loc11_ = _loc17_.readInt();
-            _loc57_ = _loc15_.pets[_loc11_];
-            _loc23_ = _loc17_.readInt();
-            if(_loc57_ == null)
-            {
-               _loc57_ = new PetInfo();
-               _loc57_.TemplateID = _loc23_;
-               PetInfoManager.fillPetInfo(_loc57_);
-            }
-            _loc57_.ID = _loc17_.readInt();
-            _loc57_.Name = _loc17_.readUTF();
-            _loc57_.UserID = _loc17_.readInt();
-            _loc57_.Level = _loc17_.readInt();
-            _loc57_.IsEquip = true;
-            _loc57_.clearEquipedSkills();
-            _loc38_ = _loc17_.readInt();
-            _loc55_ = 0;
-            while(_loc55_ < _loc38_)
-            {
-               _loc24_ = _loc17_.readInt();
-               _loc46_ = _loc17_.readInt();
-               _loc57_.equipdSkills.add(_loc24_,_loc46_);
-               _loc55_++;
-            }
-            _loc57_.Place = _loc11_;
-            _loc15_.pets.add(_loc57_.Place,_loc57_);
-            _loc54_++;
-         }
-         _loc12_.horseSkillEquipList = [];
-         var _loc5_:int = _loc17_.readInt();
-         _loc49_ = 0;
-         while(_loc49_ < _loc5_)
-         {
-            _loc12_.horseSkillEquipList.push(_loc17_.readInt());
-            _loc49_++;
-         }
-         var _loc58_:int = _loc17_.readInt();
-         _loc48_ = 0;
-         while(_loc48_ < _loc58_)
-         {
-            _loc13_ = _loc17_.readInt();
-            _loc48_++;
-         }
-         _loc6_.IsRobot = _loc17_.readBoolean();
-         _loc6_.zoneName = _loc20_;
-         _loc6_.currentWeapInfo.refineryLevel = _loc56_;
-         _loc6_.ringFlag = _loc17_.readBoolean();
-         _loc6_.loveBuffLevel = _loc17_.readInt();
-         _loc6_.turnCount = _loc17_.readInt();
-         var _loc30_:int = _loc17_.readInt();
-         var _loc63_:int = _loc17_.readInt();
-         var _loc60_:int = _loc17_.readInt();
-         _loc6_.pos = new Point(_loc63_,_loc60_);
-         _loc6_.energy = 1;
-         _loc6_.direction = _loc17_.readInt();
-         var _loc21_:int = _loc17_.readInt();
-         var _loc25_:int = _loc17_.readInt();
-         _loc6_.team = _loc17_.readInt();
-         var _loc28_:int = _loc17_.readInt();
-         if(_loc6_ is LocalPlayer)
-         {
-            (_loc6_ as LocalPlayer).deputyWeaponCount = _loc17_.readInt();
+            pkg.readBoolean();
+            pkg.readInt();
+            pkg.readUTF();
+            pkg.readUTF();
+            pkg.readUTF();
          }
          else
          {
-            _loc27_ = _loc17_.readInt();
+            sex = pkg.readBoolean();
+            Hide = pkg.readInt();
+            Style = pkg.readUTF();
+            Colors = pkg.readUTF();
+            Skin = pkg.readUTF();
+            sp.Sex = sex;
+            sp.Hide = Hide;
+            sp.Style = Style;
+            sp.Colors = Colors;
+            sp.Skin = Skin;
          }
-         _loc6_.powerRatio = _loc17_.readInt();
-         _loc6_.dander = _loc17_.readInt();
-         _loc6_.maxBlood = _loc25_;
-         _loc6_.updateBlood(_loc19_,0,0);
-         _loc6_.wishKingCount = _loc17_.readInt();
-         _loc6_.wishKingEnergy = _loc17_.readInt();
-         _loc6_.currentWeapInfo.refineryLevel = _loc28_;
-         var _loc59_:int = _loc17_.readInt();
-         _loc36_ = 0;
-         while(_loc36_ < _loc59_)
+         sp.Grade = pkg.readInt();
+         sp.Repute = pkg.readInt();
+         sp.WeaponID = pkg.readInt();
+         if(sp.WeaponID != 0)
          {
-            _loc26_ = BuffManager.creatBuff(_loc17_.readInt());
-            _loc32_ = _loc17_.readInt();
-            if(_loc26_)
+            r = pkg.readInt();
+            pic = pkg.readUTF();
+            date = pkg.readDateString();
+         }
+         sp.DeputyWeaponID = pkg.readInt();
+         sp.pvpBadgeId = pkg.readInt();
+         sp.Nimbus = pkg.readInt();
+         sp.IsShowConsortia = pkg.readBoolean();
+         sp.ConsortiaID = pkg.readInt();
+         sp.ConsortiaName = pkg.readUTF();
+         sp.badgeID = pkg.readInt();
+         var unknown1:int = pkg.readInt();
+         var unknown2:int = pkg.readInt();
+         sp.WinCount = pkg.readInt();
+         sp.TotalCount = pkg.readInt();
+         sp.FightPower = pkg.readInt();
+         sp.apprenticeshipState = pkg.readInt();
+         sp.masterID = pkg.readInt();
+         sp.setMasterOrApprentices(pkg.readUTF());
+         sp.AchievementPoint = pkg.readInt();
+         sp.honor = pkg.readUTF();
+         sp.Offer = pkg.readInt();
+         sp.DailyLeagueFirst = pkg.readBoolean();
+         sp.DailyLeagueLastScore = pkg.readInt();
+         sp.guardCoreID = pkg.readInt();
+         sp.commitChanges();
+         fp.playerInfo.IsMarried = pkg.readBoolean();
+         if(fp.playerInfo.IsMarried)
+         {
+            fp.playerInfo.SpouseID = pkg.readInt();
+            fp.playerInfo.SpouseName = pkg.readUTF();
+         }
+         pkg.readInt();
+         pkg.readInt();
+         pkg.readInt();
+         pkg.readInt();
+         pkg.readInt();
+         pkg.readInt();
+         var templeId:int = pkg.readInt();
+         fp.team = pkg.readInt();
+         gm.addRoomPlayer(fp);
+         var livingID:int = pkg.readInt();
+         var blood:int = pkg.readInt();
+         var info:Player = new Player(fp.playerInfo,livingID,fp.team,blood,templeId);
+         var count:int = pkg.readInt();
+         for(j = 0; j < count; )
+         {
+            place = pkg.readInt();
+            p = sp.pets[place];
+            ptd = pkg.readInt();
+            if(p == null)
             {
-               _loc26_.data = _loc32_;
-               _loc6_.addBuff(_loc26_);
+               p = new PetInfo();
+               p.TemplateID = ptd;
+               PetInfoManager.fillPetInfo(p);
             }
-            _loc36_++;
+            p.ID = pkg.readInt();
+            p.Name = pkg.readUTF();
+            p.UserID = pkg.readInt();
+            p.Level = pkg.readInt();
+            p.IsEquip = true;
+            p.clearEquipedSkills();
+            activedSkillCount = pkg.readInt();
+            for(k = 0; k < activedSkillCount; )
+            {
+               splace = pkg.readInt();
+               sid = pkg.readInt();
+               p.equipdSkills.add(splace,sid);
+               k++;
+            }
+            p.Place = place;
+            sp.pets.add(p.Place,p);
+            j++;
          }
-         var _loc50_:int = _loc17_.readInt();
-         var _loc8_:Vector.<FightBuffInfo> = new Vector.<FightBuffInfo>();
-         _loc52_ = 0;
-         while(_loc52_ < _loc50_)
+         fp.horseSkillEquipList = [];
+         var tmpCount:int = pkg.readInt();
+         for(n = 0; n < tmpCount; )
          {
-            _loc43_ = BuffManager.creatBuff(_loc17_.readInt());
-            _loc6_.outTurnBuffs.push(_loc43_);
-            _loc52_++;
+            fp.horseSkillEquipList.push(pkg.readInt());
+            n++;
          }
-         var _loc10_:Boolean = _loc17_.readBoolean();
-         var _loc62_:Boolean = _loc17_.readBoolean();
-         var _loc7_:Boolean = _loc17_.readBoolean();
-         var _loc61_:Boolean = _loc17_.readBoolean();
-         var _loc51_:int = _loc17_.readInt();
-         var _loc42_:Dictionary = new Dictionary();
-         _loc34_ = 0;
-         while(_loc34_ < _loc51_)
+         var bsCount:int = pkg.readInt();
+         for(b = 0; b < bsCount; )
          {
-            _loc37_ = _loc17_.readUTF();
-            _loc14_ = _loc17_.readUTF();
-            _loc42_[_loc37_] = _loc14_;
-            _loc34_++;
+            bsSkillId = pkg.readInt();
+            b++;
          }
-         if(_loc10_)
+         info.IsRobot = pkg.readBoolean();
+         info.zoneName = zoneName;
+         info.currentWeapInfo.refineryLevel = r;
+         info.ringFlag = pkg.readBoolean();
+         info.loveBuffLevel = pkg.readInt();
+         info.turnCount = pkg.readInt();
+         var livingID1:int = pkg.readInt();
+         var x:int = pkg.readInt();
+         var y:int = pkg.readInt();
+         info.pos = new Point(x,y);
+         info.energy = 1;
+         info.direction = pkg.readInt();
+         var blood2:int = pkg.readInt();
+         var maxBlood:int = pkg.readInt();
+         info.team = pkg.readInt();
+         var refineryLevel:int = pkg.readInt();
+         if(info is LocalPlayer)
          {
-            _loc10_ = false;
-         }
-         _loc6_.isFrozen = _loc10_;
-         _loc6_.isHidden = _loc62_;
-         _loc6_.isNoNole = _loc7_;
-         _loc6_.outProperty = _loc42_;
-         if(RoomManager.Instance.current.type != 5 && _loc6_.playerInfo.currentPet)
-         {
-            _loc6_.currentPet = new Pet(_loc6_.playerInfo.currentPet);
-            petResLoad(_loc6_.playerInfo.currentPet);
-         }
-         var _loc16_:Array = [_loc12_];
-         LoadBombManager.Instance.loadFullRoomPlayersBomb(_loc16_);
-         if(!_loc12_.isViewer)
-         {
-            _loc22_.addGamePlayer(_loc6_);
+            (info as LocalPlayer).deputyWeaponCount = pkg.readInt();
          }
          else
          {
-            if(_loc12_.isSelf)
+            deputyWeaponCount = pkg.readInt();
+         }
+         info.powerRatio = pkg.readInt();
+         info.dander = pkg.readInt();
+         info.maxBlood = maxBlood;
+         info.updateBlood(blood,0,0);
+         info.wishKingCount = pkg.readInt();
+         info.wishKingEnergy = pkg.readInt();
+         info.currentWeapInfo.refineryLevel = refineryLevel;
+         var count1:int = pkg.readInt();
+         for(t_j = 0; t_j < count1; )
+         {
+            buff = BuffManager.creatBuff(pkg.readInt());
+            data = pkg.readInt();
+            if(buff)
             {
-               _loc22_.setSelfGamePlayer(_loc6_);
+               buff.data = data;
+               info.addBuff(buff);
             }
-            _loc22_.addGameViewer(_loc6_);
+            t_j++;
+         }
+         var buffCount:int = pkg.readInt();
+         var buffs:Vector.<FightBuffInfo> = new Vector.<FightBuffInfo>();
+         for(l = 0; l < buffCount; )
+         {
+            Buff = BuffManager.creatBuff(pkg.readInt());
+            info.outTurnBuffs.push(Buff);
+            l++;
+         }
+         var isFrost:Boolean = pkg.readBoolean();
+         var isHide:Boolean = pkg.readBoolean();
+         var isNoHole:Boolean = pkg.readBoolean();
+         var isBubble:Boolean = pkg.readBoolean();
+         var sealSatesCount:int = pkg.readInt();
+         var sealSates:Dictionary = new Dictionary();
+         for(I = 0; I < sealSatesCount; )
+         {
+            K = pkg.readUTF();
+            Value = pkg.readUTF();
+            sealSates[K] = Value;
+            I++;
+         }
+         if(isFrost)
+         {
+            isFrost = false;
+         }
+         info.isFrozen = isFrost;
+         info.isHidden = isHide;
+         info.isNoNole = isNoHole;
+         info.outProperty = sealSates;
+         if(RoomManager.Instance.current.type != 5 && info.playerInfo.currentPet)
+         {
+            info.currentPet = new Pet(info.playerInfo.currentPet);
+            petResLoad(info.playerInfo.currentPet);
+         }
+         var arr:Array = [fp];
+         LoadBombManager.Instance.loadFullRoomPlayersBomb(arr);
+         if(!fp.isViewer)
+         {
+            gm.addGamePlayer(info);
+         }
+         else
+         {
+            if(fp.isSelf)
+            {
+               gm.setSelfGamePlayer(info);
+            }
+            gm.addGameViewer(info);
          }
       }
       
-      protected function __selectObject(param1:CrazyTankSocketEvent) : void
+      protected function __selectObject(event:CrazyTankSocketEvent) : void
       {
-         var _loc8_:int = 0;
-         var _loc2_:int = 0;
-         var _loc7_:int = 0;
-         var _loc6_:int = 0;
-         var _loc3_:int = 0;
-         var _loc4_:* = null;
+         var i:int = 0;
+         var id:int = 0;
+         var zoneID:int = 0;
+         var selectID:int = 0;
+         var selectZoneID:int = 0;
+         var obj:* = null;
          selectList = [];
-         var _loc5_:int = param1.pkg.readInt();
-         while(_loc8_ < _loc5_)
+         var len:int = event.pkg.readInt();
+         while(i < len)
          {
-            _loc2_ = param1.pkg.readInt();
-            _loc7_ = param1.pkg.readInt();
-            Current.getRoomPlayerByID(_loc2_,_loc7_).team = param1.pkg.readInt();
-            _loc6_ = param1.pkg.readInt();
-            _loc3_ = param1.pkg.readInt();
-            _loc4_ = {};
-            _loc4_["id"] = _loc2_;
-            _loc4_["zoneID"] = _loc7_;
-            _loc4_["selectID"] = _loc6_;
-            _loc4_["selectZoneID"] = _loc3_;
-            selectList.push(_loc4_);
-            _loc8_++;
+            id = event.pkg.readInt();
+            zoneID = event.pkg.readInt();
+            Current.getRoomPlayerByID(id,zoneID).team = event.pkg.readInt();
+            selectID = event.pkg.readInt();
+            selectZoneID = event.pkg.readInt();
+            obj = {};
+            obj["id"] = id;
+            obj["zoneID"] = zoneID;
+            obj["selectID"] = selectID;
+            obj["selectZoneID"] = selectZoneID;
+            selectList.push(obj);
+            i++;
          }
          dispatchEvent(new GameEvent("selectComplete",null));
       }
       
-      private function petResLoad(param1:PetInfo) : void
+      private function petResLoad(currentPet:PetInfo) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         if(param1)
+         var skill:* = null;
+         var ball:* = null;
+         if(currentPet)
          {
-            LoadResourceManager.Instance.creatAndStartLoad(PathManager.solvePetGameAssetUrl(param1.GameAssetUrl),4);
+            LoadResourceManager.Instance.creatAndStartLoad(PathManager.solvePetGameAssetUrl(currentPet.GameAssetUrl),4);
             var _loc6_:int = 0;
-            var _loc5_:* = param1.equipdSkills;
-            for each(var _loc4_ in param1.equipdSkills)
+            var _loc5_:* = currentPet.equipdSkills;
+            for each(var skillid in currentPet.equipdSkills)
             {
-               if(_loc4_ > 0)
+               if(skillid > 0)
                {
-                  _loc3_ = PetSkillManager.getSkillByID(_loc4_);
-                  if(_loc3_.EffectPic)
+                  skill = PetSkillManager.getSkillByID(skillid);
+                  if(skill.EffectPic)
                   {
-                     LoadResourceManager.Instance.creatAndStartLoad(PathManager.solvePetSkillEffect(_loc3_.EffectPic),4);
+                     LoadResourceManager.Instance.creatAndStartLoad(PathManager.solvePetSkillEffect(skill.EffectPic),4);
                   }
-                  if(_loc3_.NewBallID != -1)
+                  if(skill.NewBallID != -1)
                   {
-                     _loc2_ = BallManager.instance.findBall(_loc3_.NewBallID);
-                     _loc2_.loadBombAsset();
-                     _loc2_.loadCraterBitmap();
+                     ball = BallManager.instance.findBall(skill.NewBallID);
+                     ball.loadBombAsset();
+                     ball.loadCraterBitmap();
                   }
                }
             }
          }
       }
       
-      private function __missionTryAgain(param1:CrazyTankSocketEvent) : void
+      private function __missionTryAgain(e:CrazyTankSocketEvent) : void
       {
-         TryAgain = param1.pkg.readInt();
+         TryAgain = e.pkg.readInt();
          dispatchEvent(new GameEvent("missionAgain",TryAgain));
       }
       
-      private function __updatePlayInfoInGame(param1:CrazyTankSocketEvent) : void
+      private function __updatePlayInfoInGame(e:CrazyTankSocketEvent) : void
       {
-         var _loc4_:* = null;
+         var player:* = null;
          if(RoomManager.Instance.current == null)
          {
             return;
          }
-         var _loc6_:PackageIn = param1.pkg;
-         var _loc9_:int = _loc6_.readInt();
-         var _loc2_:int = _loc6_.readInt();
-         var _loc8_:int = _loc6_.readInt();
-         var _loc5_:int = _loc6_.readInt();
-         var _loc7_:int = _loc6_.readInt();
-         var _loc3_:Boolean = _loc6_.readBoolean();
-         var _loc10_:RoomPlayer = RoomManager.Instance.current.findPlayerByID(_loc2_);
-         if(_loc9_ != PlayerManager.Instance.Self.ZoneID || _loc10_ == null || Current == null)
+         var pkg:PackageIn = e.pkg;
+         var zoneID:int = pkg.readInt();
+         var id:int = pkg.readInt();
+         var team:int = pkg.readInt();
+         var livingid:int = pkg.readInt();
+         var blood:int = pkg.readInt();
+         var isReady:Boolean = pkg.readBoolean();
+         var fp:RoomPlayer = RoomManager.Instance.current.findPlayerByID(id);
+         if(zoneID != PlayerManager.Instance.Self.ZoneID || fp == null || Current == null)
          {
             return;
          }
-         if(_loc10_.isSelf)
+         if(fp.isSelf)
          {
-            _loc4_ = new LocalPlayer(PlayerManager.Instance.Self,_loc5_,_loc8_,_loc7_);
+            player = new LocalPlayer(PlayerManager.Instance.Self,livingid,team,blood);
          }
          else
          {
-            _loc4_ = new Player(_loc10_.playerInfo,_loc5_,_loc8_,_loc7_);
+            player = new Player(fp.playerInfo,livingid,team,blood);
          }
-         _loc4_.isReady = _loc3_;
-         if(_loc4_.movie)
+         player.isReady = isReady;
+         if(player.movie)
          {
-            _loc4_.movie.setDefaultAction(_loc4_.movie.standAction);
+            player.movie.setDefaultAction(player.movie.standAction);
          }
-         Current.addRoomPlayer(_loc10_);
-         if(_loc10_.isViewer)
+         Current.addRoomPlayer(fp);
+         if(fp.isViewer)
          {
-            Current.addGameViewer(_loc4_);
+            Current.addGameViewer(player);
          }
          else
          {
-            Current.addGamePlayer(_loc4_);
+            Current.addGamePlayer(player);
          }
-         if(_loc10_.isSelf && Current.roomType != 20)
+         if(fp.isSelf && Current.roomType != 20)
          {
             StateManager.setState("missionResult");
          }
       }
       
-      private function __missionInviteRoomInfo(param1:CrazyTankSocketEvent) : void
+      private function __missionInviteRoomInfo(e:CrazyTankSocketEvent) : void
       {
-         var _loc7_:* = null;
-         var _loc14_:* = null;
-         var _loc9_:int = 0;
-         var _loc12_:int = 0;
-         var _loc13_:int = 0;
-         var _loc5_:* = null;
-         var _loc20_:* = null;
-         var _loc6_:Boolean = false;
-         var _loc17_:int = 0;
-         var _loc10_:* = null;
-         var _loc11_:* = null;
-         var _loc19_:int = 0;
-         var _loc16_:int = 0;
-         var _loc4_:int = 0;
-         var _loc18_:int = 0;
-         var _loc8_:int = 0;
-         var _loc2_:Boolean = false;
-         var _loc3_:* = null;
-         var _loc15_:* = null;
+         var pkg:* = null;
+         var gm:* = null;
+         var len:int = 0;
+         var i:int = 0;
+         var id:int = 0;
+         var sp:* = null;
+         var fp:* = null;
+         var isViewer:Boolean = false;
+         var r:int = 0;
+         var pic:* = null;
+         var date:* = null;
+         var unknown1:int = 0;
+         var unknown2:int = 0;
+         var templeId:int = 0;
+         var livingID:int = 0;
+         var blood:int = 0;
+         var $isReady:Boolean = false;
+         var player:* = null;
+         var missionInfo:* = null;
          if(RoomManager.Instance.current)
          {
-            _loc7_ = param1.pkg;
-            _loc14_ = new GameInfo();
-            _loc14_.mapIndex = _loc7_.readInt();
-            _loc14_.roomType = _loc7_.readInt();
-            _loc14_.gameMode = _loc7_.readInt();
-            _loc14_.timeType = _loc7_.readInt();
-            RoomManager.Instance.current.timeType = _loc14_.timeType;
-            _loc9_ = _loc7_.readInt();
-            _loc12_ = 0;
-            while(_loc12_ < _loc9_)
+            pkg = e.pkg;
+            gm = new GameInfo();
+            gm.mapIndex = pkg.readInt();
+            gm.roomType = pkg.readInt();
+            gm.gameMode = pkg.readInt();
+            gm.timeType = pkg.readInt();
+            RoomManager.Instance.current.timeType = gm.timeType;
+            len = pkg.readInt();
+            for(i = 0; i < len; )
             {
-               _loc13_ = _loc7_.readInt();
-               _loc5_ = PlayerManager.Instance.findPlayer(_loc13_);
-               _loc5_.beginChanges();
-               _loc20_ = RoomManager.Instance.current.findPlayerByID(_loc13_);
-               if(_loc20_ == null)
+               id = pkg.readInt();
+               sp = PlayerManager.Instance.findPlayer(id);
+               sp.beginChanges();
+               fp = RoomManager.Instance.current.findPlayerByID(id);
+               if(fp == null)
                {
-                  _loc20_ = new RoomPlayer(_loc5_);
-                  _loc5_.ID = _loc13_;
+                  fp = new RoomPlayer(sp);
+                  sp.ID = id;
                }
-               _loc5_.ZoneID = PlayerManager.Instance.Self.ZoneID;
-               _loc5_.NickName = _loc7_.readUTF();
-               _loc6_ = _loc7_.readBoolean();
-               _loc5_.typeVIP = _loc7_.readByte();
-               _loc5_.VIPLevel = _loc7_.readInt();
-               _loc5_.Sex = _loc7_.readBoolean();
-               _loc5_.Hide = _loc7_.readInt();
-               _loc5_.Style = _loc7_.readUTF();
-               _loc5_.Colors = _loc7_.readUTF();
-               _loc5_.Skin = _loc7_.readUTF();
-               _loc5_.Grade = _loc7_.readInt();
-               _loc5_.Repute = _loc7_.readInt();
-               _loc5_.WeaponID = _loc7_.readInt();
-               if(_loc5_.WeaponID > 0)
+               sp.ZoneID = PlayerManager.Instance.Self.ZoneID;
+               sp.NickName = pkg.readUTF();
+               isViewer = pkg.readBoolean();
+               sp.typeVIP = pkg.readByte();
+               sp.VIPLevel = pkg.readInt();
+               sp.Sex = pkg.readBoolean();
+               sp.Hide = pkg.readInt();
+               sp.Style = pkg.readUTF();
+               sp.Colors = pkg.readUTF();
+               sp.Skin = pkg.readUTF();
+               sp.Grade = pkg.readInt();
+               sp.Repute = pkg.readInt();
+               sp.WeaponID = pkg.readInt();
+               if(sp.WeaponID > 0)
                {
-                  _loc17_ = _loc7_.readInt();
-                  _loc10_ = _loc7_.readUTF();
-                  _loc11_ = _loc7_.readDateString();
+                  r = pkg.readInt();
+                  pic = pkg.readUTF();
+                  date = pkg.readDateString();
                }
-               _loc5_.DeputyWeaponID = _loc7_.readInt();
-               _loc5_.ConsortiaID = _loc7_.readInt();
-               _loc5_.ConsortiaName = _loc7_.readUTF();
-               _loc5_.badgeID = _loc7_.readInt();
-               _loc19_ = _loc7_.readInt();
-               _loc16_ = _loc7_.readInt();
-               _loc5_.DailyLeagueFirst = _loc7_.readBoolean();
-               _loc5_.DailyLeagueLastScore = _loc7_.readInt();
-               _loc5_.commitChanges();
-               _loc4_ = _loc7_.readInt();
-               _loc20_.team = _loc7_.readInt();
-               _loc14_.addRoomPlayer(_loc20_);
-               _loc18_ = _loc7_.readInt();
-               _loc8_ = _loc7_.readInt();
-               _loc2_ = _loc7_.readBoolean();
-               if(_loc20_.isSelf)
+               sp.DeputyWeaponID = pkg.readInt();
+               sp.ConsortiaID = pkg.readInt();
+               sp.ConsortiaName = pkg.readUTF();
+               sp.badgeID = pkg.readInt();
+               unknown1 = pkg.readInt();
+               unknown2 = pkg.readInt();
+               sp.DailyLeagueFirst = pkg.readBoolean();
+               sp.DailyLeagueLastScore = pkg.readInt();
+               sp.commitChanges();
+               templeId = pkg.readInt();
+               fp.team = pkg.readInt();
+               gm.addRoomPlayer(fp);
+               livingID = pkg.readInt();
+               blood = pkg.readInt();
+               $isReady = pkg.readBoolean();
+               if(fp.isSelf)
                {
-                  _loc3_ = new LocalPlayer(PlayerManager.Instance.Self,_loc18_,_loc20_.team,_loc8_,_loc4_);
-               }
-               else
-               {
-                  _loc3_ = new Player(_loc20_.playerInfo,_loc18_,_loc20_.team,_loc8_,_loc4_);
-               }
-               _loc3_.isReady = _loc2_;
-               _loc3_.currentWeapInfo.refineryLevel = _loc17_;
-               if(!_loc6_)
-               {
-                  _loc14_.addGamePlayer(_loc3_);
+                  player = new LocalPlayer(PlayerManager.Instance.Self,livingID,fp.team,blood,templeId);
                }
                else
                {
-                  if(_loc20_.isSelf)
+                  player = new Player(fp.playerInfo,livingID,fp.team,blood,templeId);
+               }
+               player.isReady = $isReady;
+               player.currentWeapInfo.refineryLevel = r;
+               if(!isViewer)
+               {
+                  gm.addGamePlayer(player);
+               }
+               else
+               {
+                  if(fp.isSelf)
                   {
-                     _loc14_.setSelfGamePlayer(_loc3_);
+                     gm.setSelfGamePlayer(player);
                   }
-                  _loc14_.addGameViewer(_loc3_);
+                  gm.addGameViewer(player);
                }
-               _loc12_++;
+               i++;
             }
-            Current = _loc14_;
-            _loc15_ = new MissionInfo();
-            _loc15_.name = _loc7_.readUTF();
-            _loc15_.pic = _loc7_.readUTF();
-            _loc15_.success = _loc7_.readUTF();
-            _loc15_.failure = _loc7_.readUTF();
-            _loc15_.description = _loc7_.readUTF();
-            _loc15_.totalMissiton = _loc7_.readInt();
-            _loc15_.missionIndex = _loc7_.readInt();
-            _loc15_.nextMissionIndex = _loc15_.missionIndex + 1;
-            Current.missionInfo = _loc15_;
+            Current = gm;
+            missionInfo = new MissionInfo();
+            missionInfo.name = pkg.readUTF();
+            missionInfo.pic = pkg.readUTF();
+            missionInfo.success = pkg.readUTF();
+            missionInfo.failure = pkg.readUTF();
+            missionInfo.description = pkg.readUTF();
+            missionInfo.totalMissiton = pkg.readInt();
+            missionInfo.missionIndex = pkg.readInt();
+            missionInfo.nextMissionIndex = missionInfo.missionIndex + 1;
+            Current.missionInfo = missionInfo;
             Current.hasNextMission = true;
          }
       }
       
-      private function __createGame(param1:CrazyTankSocketEvent) : void
+      private function __createGame(event:CrazyTankSocketEvent) : void
       {
-         var _loc2_:* = null;
+         var pkg:* = null;
          if(RoomManager.Instance.current)
          {
-            _loc2_ = param1.pkg;
+            pkg = event.pkg;
             __disposeCmd(null);
-            createGameInfo(_loc2_);
+            createGameInfo(pkg);
          }
       }
       
-      private function createGameInfo(param1:PackageIn, param2:Boolean = false) : void
+      private function createGameInfo(pkg:PackageIn, isSingleBattle:Boolean = false) : void
       {
-         var _loc33_:int = 0;
-         var _loc11_:int = 0;
-         var _loc32_:* = null;
-         var _loc13_:int = 0;
-         var _loc23_:* = null;
-         var _loc20_:* = null;
-         var _loc15_:* = null;
-         var _loc6_:Boolean = false;
-         var _loc38_:int = 0;
-         var _loc27_:* = null;
-         var _loc9_:* = null;
-         var _loc8_:Boolean = false;
-         var _loc17_:int = 0;
-         var _loc14_:int = 0;
-         var _loc3_:int = 0;
-         var _loc18_:* = 0;
-         var _loc28_:int = 0;
-         var _loc4_:* = null;
-         var _loc5_:int = 0;
-         var _loc29_:int = 0;
-         var _loc16_:int = 0;
-         var _loc41_:* = null;
-         var _loc35_:int = 0;
-         var _loc12_:int = 0;
-         var _loc31_:int = 0;
-         var _loc37_:int = 0;
-         var _loc21_:int = 0;
-         var _loc10_:int = 0;
-         var _loc25_:int = 0;
-         var _loc40_:int = 0;
-         var _loc22_:int = 0;
-         var _loc19_:int = 0;
-         var _loc30_:int = 0;
-         var _loc34_:int = 0;
-         var _loc39_:* = null;
-         var _loc7_:* = null;
-         var _loc24_:int = 0;
-         var _loc36_:GameInfo = new GameInfo();
-         _loc36_.roomType = param1.readInt();
-         _loc36_.gameMode = param1.readInt();
-         if(_loc36_.gameMode == 20)
+         var i:int = 0;
+         var zoneID:int = 0;
+         var zoneName:* = null;
+         var id:int = 0;
+         var sp:* = null;
+         var fp:* = null;
+         var nickName:* = null;
+         var isViewer:Boolean = false;
+         var r:int = 0;
+         var pic:* = null;
+         var date:* = null;
+         var isHasConsortia:Boolean = false;
+         var unknown1:int = 0;
+         var unknown2:int = 0;
+         var templeId:int = 0;
+         var livingID:* = 0;
+         var blood:int = 0;
+         var player:* = null;
+         var count:int = 0;
+         var j:int = 0;
+         var place:int = 0;
+         var p:* = null;
+         var ptd:int = 0;
+         var activedSkillCount:int = 0;
+         var k:int = 0;
+         var splace:int = 0;
+         var sid:int = 0;
+         var tmpCount:int = 0;
+         var n:int = 0;
+         var bsCount:int = 0;
+         var b:int = 0;
+         var bsSkillId:int = 0;
+         var bombLength:int = 0;
+         var v:int = 0;
+         var bomb:* = null;
+         var enable:* = null;
+         var random:int = 0;
+         var gm:GameInfo = new GameInfo();
+         gm.roomType = pkg.readInt();
+         gm.gameMode = pkg.readInt();
+         if(gm.gameMode == 20)
          {
-            _loc36_.roomType = 18;
+            gm.roomType = 18;
          }
-         if(_loc36_.roomType == 20 || _loc36_.roomType == 24 || _loc36_.roomType == 27 || _loc36_.roomType == 65 || _loc36_.roomType == 66)
+         if(gm.roomType == 20 || gm.roomType == 24 || gm.roomType == 27 || gm.roomType == 65 || gm.roomType == 66)
          {
-            _loc36_.missionInfo = new MissionInfo();
+            gm.missionInfo = new MissionInfo();
          }
-         _loc36_.timeType = param1.readInt();
-         RoomManager.Instance.current.timeType = _loc36_.timeType;
-         var _loc26_:int = param1.readInt();
-         _loc33_ = 0;
-         while(_loc33_ < _loc26_)
+         gm.timeType = pkg.readInt();
+         RoomManager.Instance.current.timeType = gm.timeType;
+         var len:int = pkg.readInt();
+         for(i = 0; i < len; )
          {
-            _loc11_ = param1.readInt();
-            _loc32_ = param1.readUTF();
-            _loc13_ = param1.readInt();
-            _loc23_ = PlayerManager.Instance.findPlayer(_loc13_,_loc11_);
-            _loc23_.beginChanges();
-            _loc20_ = RoomManager.Instance.current.findPlayerByID(_loc13_,_loc11_);
-            if(_loc20_ == null)
+            zoneID = pkg.readInt();
+            zoneName = pkg.readUTF();
+            id = pkg.readInt();
+            sp = PlayerManager.Instance.findPlayer(id,zoneID);
+            sp.beginChanges();
+            fp = RoomManager.Instance.current.findPlayerByID(id,zoneID);
+            if(fp == null)
             {
-               _loc20_ = new RoomPlayer(_loc23_);
+               fp = new RoomPlayer(sp);
             }
-            _loc23_.ID = _loc13_;
-            _loc23_.ZoneID = _loc11_;
-            _loc15_ = param1.readUTF();
-            _loc6_ = param1.readBoolean();
-            if(_loc6_ && _loc20_.place < 8)
+            sp.ID = id;
+            sp.ZoneID = zoneID;
+            nickName = pkg.readUTF();
+            isViewer = pkg.readBoolean();
+            if(isViewer && fp.place < 8)
             {
-               _loc20_.place = 8;
+               fp.place = 8;
             }
-            if(!(_loc20_ is SelfInfo))
+            if(!(fp is SelfInfo))
             {
-               _loc23_.NickName = _loc15_;
+               sp.NickName = nickName;
             }
-            _loc23_.typeVIP = param1.readByte();
-            _loc23_.VIPLevel = param1.readInt();
-            if(PlayerManager.Instance.isChangeStyleTemp(_loc23_.ID))
+            sp.typeVIP = pkg.readByte();
+            sp.VIPLevel = pkg.readInt();
+            if(PlayerManager.Instance.isChangeStyleTemp(sp.ID))
             {
-               param1.readBoolean();
-               param1.readInt();
-               param1.readUTF();
-               param1.readUTF();
-               param1.readUTF();
+               pkg.readBoolean();
+               pkg.readInt();
+               pkg.readUTF();
+               pkg.readUTF();
+               pkg.readUTF();
             }
             else
             {
-               _loc23_.Sex = param1.readBoolean();
-               _loc23_.Hide = param1.readInt();
-               _loc23_.Style = param1.readUTF();
-               _loc23_.Colors = param1.readUTF();
-               _loc23_.Skin = param1.readUTF();
+               sp.Sex = pkg.readBoolean();
+               sp.Hide = pkg.readInt();
+               sp.Style = pkg.readUTF();
+               sp.Colors = pkg.readUTF();
+               sp.Skin = pkg.readUTF();
             }
-            _loc23_.Grade = param1.readInt();
-            _loc23_.Repute = param1.readInt();
-            _loc23_.WeaponID = param1.readInt();
-            if(_loc23_.WeaponID != 0)
+            sp.Grade = pkg.readInt();
+            sp.Repute = pkg.readInt();
+            sp.WeaponID = pkg.readInt();
+            if(sp.WeaponID != 0)
             {
-               _loc38_ = param1.readInt();
-               _loc27_ = param1.readUTF();
-               _loc9_ = param1.readDateString();
+               r = pkg.readInt();
+               pic = pkg.readUTF();
+               date = pkg.readDateString();
             }
-            _loc23_.DeputyWeaponID = param1.readInt();
-            _loc23_.pvpBadgeId = param1.readInt();
-            _loc23_.Nimbus = param1.readInt();
-            _loc8_ = param1.readBoolean();
-            _loc23_.ConsortiaID = param1.readInt();
-            _loc23_.ConsortiaName = param1.readUTF();
-            _loc23_.badgeID = param1.readInt();
-            _loc17_ = param1.readInt();
-            _loc14_ = param1.readInt();
-            _loc23_.WinCount = param1.readInt();
-            _loc23_.TotalCount = param1.readInt();
-            _loc23_.FightPower = param1.readInt();
-            _loc23_.apprenticeshipState = param1.readInt();
-            _loc23_.masterID = param1.readInt();
-            _loc23_.setMasterOrApprentices(param1.readUTF());
-            _loc23_.AchievementPoint = param1.readInt();
-            _loc23_.honor = param1.readUTF();
-            _loc23_.Offer = param1.readInt();
-            _loc23_.DailyLeagueFirst = param1.readBoolean();
-            _loc23_.DailyLeagueLastScore = param1.readInt();
-            _loc23_.guardCoreID = param1.readInt();
-            _loc23_.fightStatus = 0;
-            _loc23_.isTrusteeship = false;
-            _loc23_.commitChanges();
-            _loc20_.playerInfo.IsMarried = param1.readBoolean();
-            if(_loc20_.playerInfo.IsMarried)
+            sp.DeputyWeaponID = pkg.readInt();
+            sp.pvpBadgeId = pkg.readInt();
+            sp.Nimbus = pkg.readInt();
+            isHasConsortia = pkg.readBoolean();
+            sp.ConsortiaID = pkg.readInt();
+            sp.ConsortiaName = pkg.readUTF();
+            sp.badgeID = pkg.readInt();
+            unknown1 = pkg.readInt();
+            unknown2 = pkg.readInt();
+            sp.WinCount = pkg.readInt();
+            sp.TotalCount = pkg.readInt();
+            sp.FightPower = pkg.readInt();
+            sp.apprenticeshipState = pkg.readInt();
+            sp.masterID = pkg.readInt();
+            sp.setMasterOrApprentices(pkg.readUTF());
+            sp.AchievementPoint = pkg.readInt();
+            sp.honor = pkg.readUTF();
+            sp.Offer = pkg.readInt();
+            sp.DailyLeagueFirst = pkg.readBoolean();
+            sp.DailyLeagueLastScore = pkg.readInt();
+            sp.guardCoreID = pkg.readInt();
+            sp.fightStatus = 0;
+            sp.isTrusteeship = false;
+            sp.commitChanges();
+            fp.playerInfo.IsMarried = pkg.readBoolean();
+            if(fp.playerInfo.IsMarried)
             {
-               _loc20_.playerInfo.SpouseID = param1.readInt();
-               _loc20_.playerInfo.SpouseName = param1.readUTF();
+               fp.playerInfo.SpouseID = pkg.readInt();
+               fp.playerInfo.SpouseName = pkg.readUTF();
             }
-            param1.readInt();
-            param1.readInt();
-            param1.readInt();
-            param1.readInt();
-            param1.readInt();
-            param1.readInt();
-            _loc3_ = param1.readInt();
-            _loc20_.team = param1.readInt();
-            _loc36_.addRoomPlayer(_loc20_);
-            _loc18_ = int(param1.readInt());
-            if(param2)
+            pkg.readInt();
+            pkg.readInt();
+            pkg.readInt();
+            pkg.readInt();
+            pkg.readInt();
+            pkg.readInt();
+            templeId = pkg.readInt();
+            fp.team = pkg.readInt();
+            gm.addRoomPlayer(fp);
+            livingID = int(pkg.readInt());
+            if(isSingleBattle)
             {
-               _loc18_ = _loc33_;
+               livingID = i;
             }
-            _loc28_ = param1.readInt();
-            if(_loc28_ <= 0)
+            blood = pkg.readInt();
+            if(blood <= 0)
             {
-               SocketManager.Instance.out.sendErrorMsg(_loc15_ + " 的进入战斗程序鬼混状态！ 血量是: " + _loc28_);
+               SocketManager.Instance.out.sendErrorMsg(nickName + " 的进入战斗程序鬼混状态！ 血量是: " + blood);
             }
-            if(_loc20_.isSelf)
+            if(fp.isSelf)
             {
-               _loc4_ = new LocalPlayer(PlayerManager.Instance.Self,_loc18_,_loc20_.team,_loc28_,_loc3_);
+               player = new LocalPlayer(PlayerManager.Instance.Self,livingID,fp.team,blood,templeId);
             }
             else
             {
-               _loc4_ = new Player(_loc20_.playerInfo,_loc18_,_loc20_.team,_loc28_,_loc3_);
+               player = new Player(fp.playerInfo,livingID,fp.team,blood,templeId);
             }
-            _loc4_.autoOnHook = _loc36_.roomType == 49;
-            _loc5_ = param1.readInt();
-            _loc29_ = 0;
-            while(_loc29_ < _loc5_)
+            player.autoOnHook = gm.roomType == 49;
+            count = pkg.readInt();
+            for(j = 0; j < count; )
             {
-               _loc16_ = param1.readInt();
-               _loc41_ = _loc23_.pets[_loc16_];
-               _loc35_ = param1.readInt();
-               if(_loc41_ == null)
+               place = pkg.readInt();
+               p = sp.pets[place];
+               ptd = pkg.readInt();
+               if(p == null)
                {
-                  _loc41_ = new PetInfo();
-                  _loc41_.TemplateID = _loc35_;
-                  PetInfoManager.fillPetInfo(_loc41_);
+                  p = new PetInfo();
+                  p.TemplateID = ptd;
+                  PetInfoManager.fillPetInfo(p);
                }
-               _loc41_.ID = param1.readInt();
-               _loc41_.Name = param1.readUTF();
-               _loc41_.UserID = param1.readInt();
-               _loc41_.Level = param1.readInt();
-               _loc41_.IsEquip = true;
-               _loc41_.clearEquipedSkills();
-               _loc12_ = param1.readInt();
-               _loc31_ = 0;
-               while(_loc31_ < _loc12_)
+               p.ID = pkg.readInt();
+               p.Name = pkg.readUTF();
+               p.UserID = pkg.readInt();
+               p.Level = pkg.readInt();
+               p.IsEquip = true;
+               p.clearEquipedSkills();
+               activedSkillCount = pkg.readInt();
+               for(k = 0; k < activedSkillCount; )
                {
-                  _loc37_ = param1.readInt();
-                  _loc21_ = param1.readInt();
-                  _loc41_.equipdSkills.add(_loc37_,_loc21_);
-                  _loc31_++;
+                  splace = pkg.readInt();
+                  sid = pkg.readInt();
+                  p.equipdSkills.add(splace,sid);
+                  k++;
                }
-               _loc41_.Place = _loc16_;
-               _loc23_.pets.add(_loc41_.Place,_loc41_);
-               _loc29_++;
+               p.Place = place;
+               sp.pets.add(p.Place,p);
+               j++;
             }
-            _loc20_.horseSkillEquipList = [];
-            _loc10_ = param1.readInt();
-            _loc25_ = 0;
-            while(_loc25_ < _loc10_)
+            fp.horseSkillEquipList = [];
+            tmpCount = pkg.readInt();
+            for(n = 0; n < tmpCount; )
             {
-               _loc20_.horseSkillEquipList.push(param1.readInt());
-               _loc25_++;
+               fp.horseSkillEquipList.push(pkg.readInt());
+               n++;
             }
-            _loc20_.battleSkillEquipList = [];
-            _loc40_ = param1.readInt();
-            _loc22_ = 0;
-            while(_loc22_ < _loc40_)
+            fp.battleSkillEquipList = [];
+            bsCount = pkg.readInt();
+            for(b = 0; b < bsCount; )
             {
-               _loc19_ = param1.readInt();
-               _loc20_.battleSkillEquipList.push(_loc19_);
-               _loc22_++;
+               bsSkillId = pkg.readInt();
+               fp.battleSkillEquipList.push(bsSkillId);
+               b++;
             }
-            _loc4_.IsRobot = param1.readBoolean();
-            _loc4_.ringFlag = param1.readBoolean();
-            _loc4_.loveBuffLevel = param1.readInt();
-            _loc4_.turnCount = param1.readInt();
-            _loc23_.teamID = param1.readInt();
-            _loc23_.teamDivision = param1.readInt();
-            _loc23_.teamName = param1.readUTF();
-            _loc23_.teamTag = param1.readUTF();
-            _loc23_.teamGrade = param1.readInt();
-            _loc23_.teamWinTime = param1.readInt();
-            _loc23_.teamTotalTime = param1.readInt();
-            _loc23_.teamPersonalScore = param1.readInt();
-            _loc4_.zoneName = _loc32_;
-            _loc4_.currentWeapInfo.refineryLevel = _loc38_;
-            if(!_loc20_.isViewer)
+            player.IsRobot = pkg.readBoolean();
+            player.ringFlag = pkg.readBoolean();
+            player.loveBuffLevel = pkg.readInt();
+            player.turnCount = pkg.readInt();
+            sp.teamID = pkg.readInt();
+            sp.teamDivision = pkg.readInt();
+            sp.teamName = pkg.readUTF();
+            sp.teamTag = pkg.readUTF();
+            sp.teamGrade = pkg.readInt();
+            sp.teamWinTime = pkg.readInt();
+            sp.teamTotalTime = pkg.readInt();
+            sp.teamPersonalScore = pkg.readInt();
+            player.zoneName = zoneName;
+            player.currentWeapInfo.refineryLevel = r;
+            if(!fp.isViewer)
             {
-               _loc36_.addGamePlayer(_loc4_);
+               gm.addGamePlayer(player);
             }
             else
             {
-               if(_loc20_.isSelf)
+               if(fp.isSelf)
                {
-                  _loc36_.setSelfGamePlayer(_loc4_);
+                  gm.setSelfGamePlayer(player);
                }
-               _loc36_.addGameViewer(_loc4_);
+               gm.addGameViewer(player);
             }
-            _loc33_++;
+            i++;
          }
-         if(!param2)
+         if(!isSingleBattle)
          {
-            _loc36_.guardCoreEnable = param1.readBoolean();
-            _loc30_ = param1.readInt();
-            _loc34_ = 0;
-            while(_loc34_ < _loc30_)
+            gm.guardCoreEnable = pkg.readBoolean();
+            bombLength = pkg.readInt();
+            for(v = 0; v < bombLength; )
             {
-               _loc39_ = new Bomb();
-               _loc39_.Id = param1.readInt();
-               _loc39_.X = param1.readInt();
-               _loc39_.Y = param1.readInt();
-               _loc36_.outBombs.add(_loc34_,_loc39_);
-               _loc34_++;
+               bomb = new Bomb();
+               bomb.Id = pkg.readInt();
+               bomb.X = pkg.readInt();
+               bomb.Y = pkg.readInt();
+               gm.outBombs.add(v,bomb);
+               v++;
             }
-            _loc7_ = param1.readUTF();
-            _loc24_ = param1.readInt();
-            setSmallMapEnable(_loc7_,_loc24_);
+            enable = pkg.readUTF();
+            random = pkg.readInt();
+            setSmallMapEnable(enable,random);
          }
          if(BombKingManager.instance.Recording)
          {
-            setSelfPlayerInfo(_loc36_);
+            setSelfPlayerInfo(gm);
          }
-         Current = _loc36_;
-         if(!param2)
+         Current = gm;
+         if(!isSingleBattle)
          {
             QueueManager.setLifeTime(0);
          }
-         RingStationManager.instance.RoomType = _loc36_.roomType;
-         CatchBeastManager.instance.RoomType = _loc36_.roomType;
-         CryptBossManager.instance.RoomType = _loc36_.roomType;
+         RingStationManager.instance.RoomType = gm.roomType;
+         CatchBeastManager.instance.RoomType = gm.roomType;
+         CryptBossManager.instance.RoomType = gm.roomType;
          SocketManager.Instance.out.sendGameTrusteeship(false);
       }
       
-      private function setSelfPlayerInfo(param1:GameInfo) : void
+      private function setSelfPlayerInfo(gm:GameInfo) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:SelfInfo = PlayerManager.Instance.Self;
-         if(param1.findPlayerByPlayerID(_loc2_.ID) == null)
+         var selfPlayer:* = null;
+         var selfPlayerInfo:SelfInfo = PlayerManager.Instance.Self;
+         if(gm.findPlayerByPlayerID(selfPlayerInfo.ID) == null)
          {
-            _loc3_ = new LocalPlayer(_loc2_,0,0,0);
-            param1.setSelfGamePlayer(_loc3_);
-            param1.addGameViewer(_loc3_);
+            selfPlayer = new LocalPlayer(selfPlayerInfo,0,0,0);
+            gm.setSelfGamePlayer(selfPlayer);
+            gm.addGameViewer(selfPlayer);
          }
       }
       
-      private function __singleBattleStartMatch(param1:CrazyTankSocketEvent) : void
+      private function __singleBattleStartMatch(event:CrazyTankSocketEvent) : void
       {
-         var _loc2_:* = null;
+         var pkg:* = null;
          if(RoomManager.Instance.current)
          {
-            _loc2_ = param1.pkg;
-            createGameInfo(_loc2_,true);
+            pkg = event.pkg;
+            createGameInfo(pkg,true);
             dispatchEvent(new Event("StartMatch"));
          }
       }
       
-      private function __buffObtain(param1:CrazyTankSocketEvent) : void
+      private function __buffObtain(evt:CrazyTankSocketEvent) : void
       {
-         var _loc7_:* = null;
-         var _loc2_:int = 0;
-         var _loc10_:int = 0;
-         var _loc9_:int = 0;
-         var _loc3_:Boolean = false;
-         var _loc6_:* = null;
-         var _loc4_:int = 0;
-         var _loc5_:int = 0;
-         var _loc8_:* = null;
+         var pkg:* = null;
+         var lth:int = 0;
+         var i:int = 0;
+         var type:int = 0;
+         var isExist:Boolean = false;
+         var beginData:* = null;
+         var validDate:int = 0;
+         var value:int = 0;
+         var buff:* = null;
          if(Current)
          {
-            _loc7_ = param1.pkg;
-            if(_loc7_.extend1 == Current.selfGamePlayer.LivingID)
+            pkg = evt.pkg;
+            if(pkg.extend1 == Current.selfGamePlayer.LivingID)
             {
                return;
             }
-            if(Current.findPlayer(_loc7_.extend1) != null)
+            if(Current.findPlayer(pkg.extend1) != null)
             {
-               _loc2_ = _loc7_.readInt();
-               _loc10_ = 0;
-               while(_loc10_ < _loc2_)
+               lth = pkg.readInt();
+               for(i = 0; i < lth; )
                {
-                  _loc9_ = _loc7_.readInt();
-                  _loc3_ = _loc7_.readBoolean();
-                  _loc6_ = _loc7_.readDate();
-                  _loc4_ = _loc7_.readInt();
-                  _loc5_ = _loc7_.readInt();
-                  _loc8_ = new BuffInfo(_loc9_,_loc3_,_loc6_,_loc4_,_loc5_);
-                  Current.findPlayer(_loc7_.extend1).playerInfo.buffInfo.add(_loc8_.Type,_loc8_);
-                  _loc10_++;
+                  type = pkg.readInt();
+                  isExist = pkg.readBoolean();
+                  beginData = pkg.readDate();
+                  validDate = pkg.readInt();
+                  value = pkg.readInt();
+                  buff = new BuffInfo(type,isExist,beginData,validDate,value);
+                  Current.findPlayer(pkg.extend1).playerInfo.buffInfo.add(buff.Type,buff);
+                  i++;
                }
-               param1.stopImmediatePropagation();
+               evt.stopImmediatePropagation();
             }
          }
       }
       
-      private function __buffUpdate(param1:CrazyTankSocketEvent) : void
+      private function __buffUpdate(evt:CrazyTankSocketEvent) : void
       {
-         var _loc7_:* = null;
-         var _loc8_:int = 0;
-         var _loc2_:int = 0;
-         var _loc9_:Boolean = false;
-         var _loc4_:* = null;
-         var _loc5_:int = 0;
-         var _loc3_:int = 0;
-         var _loc6_:* = null;
+         var pkg:* = null;
+         var len:int = 0;
+         var _type:int = 0;
+         var _isExist:Boolean = false;
+         var _beginData:* = null;
+         var _validDate:int = 0;
+         var _value:int = 0;
+         var _buff:* = null;
          if(Current)
          {
-            _loc7_ = param1.pkg;
-            if(_loc7_.extend1 == Current.selfGamePlayer.LivingID)
+            pkg = evt.pkg;
+            if(pkg.extend1 == Current.selfGamePlayer.LivingID)
             {
                return;
             }
-            if(Current.findPlayer(_loc7_.extend1) != null)
+            if(Current.findPlayer(pkg.extend1) != null)
             {
-               _loc8_ = _loc7_.readInt();
-               _loc2_ = _loc7_.readInt();
-               _loc9_ = _loc7_.readBoolean();
-               _loc4_ = _loc7_.readDate();
-               _loc5_ = _loc7_.readInt();
-               _loc3_ = _loc7_.readInt();
-               _loc6_ = new BuffInfo(_loc2_,_loc9_,_loc4_,_loc5_,_loc3_);
-               if(_loc9_)
+               len = pkg.readInt();
+               _type = pkg.readInt();
+               _isExist = pkg.readBoolean();
+               _beginData = pkg.readDate();
+               _validDate = pkg.readInt();
+               _value = pkg.readInt();
+               _buff = new BuffInfo(_type,_isExist,_beginData,_validDate,_value);
+               if(_isExist)
                {
-                  Current.findPlayer(_loc7_.extend1).playerInfo.buffInfo.add(_loc6_.Type,_loc6_);
+                  Current.findPlayer(pkg.extend1).playerInfo.buffInfo.add(_buff.Type,_buff);
                }
                else
                {
-                  Current.findPlayer(_loc7_.extend1).playerInfo.buffInfo.remove(_loc6_.Type);
+                  Current.findPlayer(pkg.extend1).playerInfo.buffInfo.remove(_buff.Type);
                }
-               param1.stopImmediatePropagation();
+               evt.stopImmediatePropagation();
             }
          }
       }
       
-      private function __beginLoad(param1:CrazyTankSocketEvent) : void
+      private function __beginLoad(event:CrazyTankSocketEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc7_:int = 0;
-         var _loc5_:* = null;
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         var _loc6_:* = null;
+         var count:int = 0;
+         var i:int = 0;
+         var needMovie:* = null;
+         var petSkillCount:int = 0;
+         var j:int = 0;
+         var needPetSkill:* = null;
          StateManager.getInGame_Step_3 = true;
          _recevieLoadSocket = true;
          if(Current)
          {
             StateManager.getInGame_Step_4 = true;
-            Current.maxTime = param1.pkg.readInt();
-            Current.mapIndex = param1.pkg.readInt();
-            _loc2_ = param1.pkg.readInt();
-            _loc7_ = 1;
-            while(_loc7_ <= _loc2_)
+            Current.maxTime = event.pkg.readInt();
+            Current.mapIndex = event.pkg.readInt();
+            count = event.pkg.readInt();
+            for(i = 1; i <= count; )
             {
-               _loc5_ = new GameNeedMovieInfo();
-               _loc5_.type = param1.pkg.readInt();
-               _loc5_.path = param1.pkg.readUTF();
-               _loc5_.classPath = param1.pkg.readUTF();
-               Current.neededMovies.push(_loc5_);
-               _loc7_++;
+               needMovie = new GameNeedMovieInfo();
+               needMovie.type = event.pkg.readInt();
+               needMovie.path = event.pkg.readUTF();
+               needMovie.classPath = event.pkg.readUTF();
+               Current.neededMovies.push(needMovie);
+               i++;
             }
-            _loc3_ = param1.pkg.readInt();
-            _loc4_ = 0;
-            while(_loc4_ < _loc3_)
+            petSkillCount = event.pkg.readInt();
+            for(j = 0; j < petSkillCount; )
             {
-               _loc6_ = new GameNeedPetSkillInfo();
-               _loc6_.pic = param1.pkg.readUTF();
-               _loc6_.effect = param1.pkg.readUTF();
-               Current.neededPetSkillResource.push(_loc6_);
-               _loc4_++;
+               needPetSkill = new GameNeedPetSkillInfo();
+               needPetSkill.pic = event.pkg.readUTF();
+               needPetSkill.effect = event.pkg.readUTF();
+               Current.neededPetSkillResource.push(needPetSkill);
+               j++;
             }
          }
          checkCanToLoader();
@@ -1384,59 +1392,59 @@ package gameCommon
          }
       }
       
-      private function getRoomTypeNeedMissionInfo(param1:int) : Boolean
+      private function getRoomTypeNeedMissionInfo(roomType:int) : Boolean
       {
-         return param1 == 2 || param1 == 3 || param1 == 4 || param1 == 5 || param1 == 8 || param1 == 10 || param1 == 11 || param1 == 14 || param1 == 17 || param1 == 20 || param1 == 21;
+         return roomType == 2 || roomType == 3 || roomType == 4 || roomType == 5 || roomType == 8 || roomType == 10 || roomType == 11 || roomType == 14 || roomType == 17 || roomType == 20 || roomType == 21;
       }
       
-      private function __gameMissionStart(param1:CrazyTankSocketEvent) : void
+      private function __gameMissionStart(evt:CrazyTankSocketEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc4_:Object = {};
-         _loc4_.id = _loc3_.clientId;
-         var _loc2_:Boolean = _loc3_.readBoolean();
+         var pkg:PackageIn = evt.pkg;
+         var obj:Object = {};
+         obj.id = pkg.clientId;
+         var $isReady:Boolean = pkg.readBoolean();
       }
       
-      public function dispatchAllGameReadyState(param1:Array) : void
+      public function dispatchAllGameReadyState(array:Array) : void
       {
-         var _loc6_:* = null;
-         var _loc7_:* = null;
-         var _loc2_:int = 0;
-         var _loc5_:* = null;
-         var _loc4_:* = null;
+         var pkg:* = null;
+         var obj:* = null;
+         var id:int = 0;
+         var player:* = null;
+         var roomPlayer:* = null;
          var _loc9_:int = 0;
-         var _loc8_:* = param1;
-         for each(var _loc3_ in param1)
+         var _loc8_:* = array;
+         for each(var e in array)
          {
-            _loc6_ = _loc3_.pkg;
-            _loc7_ = {};
-            _loc2_ = _loc6_.clientId;
+            pkg = e.pkg;
+            obj = {};
+            id = pkg.clientId;
             if(Current)
             {
-               _loc5_ = Current.findPlayerByPlayerID(_loc2_);
-               _loc5_.isReady = _loc6_.readBoolean();
-               if(!_loc5_.isSelf && _loc5_.isReady)
+               player = Current.findPlayerByPlayerID(id);
+               player.isReady = pkg.readBoolean();
+               if(!player.isSelf && player.isReady)
                {
-                  _loc4_ = RoomManager.Instance.current.findPlayerByID(_loc2_);
-                  _loc4_.isReady = true;
+                  roomPlayer = RoomManager.Instance.current.findPlayerByID(id);
+                  roomPlayer.isReady = true;
                }
             }
-            _loc6_.position = 20;
+            pkg.position = 20;
          }
       }
       
-      private function __gameMissionPrepare(param1:CrazyTankSocketEvent) : void
+      private function __gameMissionPrepare(e:CrazyTankSocketEvent) : void
       {
          if(RoomManager.Instance.current)
          {
-            RoomManager.Instance.current.setPlayerReadyState(param1.pkg.clientId,param1.pkg.readBoolean());
+            RoomManager.Instance.current.setPlayerReadyState(e.pkg.clientId,e.pkg.readBoolean());
          }
       }
       
-      private function __gameMissionInfo(param1:CrazyTankSocketEvent) : void
+      private function __gameMissionInfo(evt:CrazyTankSocketEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var temp:* = null;
+         var missionInfo:* = null;
          if(Current == null)
          {
             return;
@@ -1445,208 +1453,212 @@ package gameCommon
          {
             var _loc4_:* = new MissionInfo();
             Current.missionInfo = _loc4_;
-            _loc2_ = _loc4_;
+            missionInfo = _loc4_;
          }
          else
          {
-            _loc2_ = Current.missionInfo;
+            missionInfo = Current.missionInfo;
          }
-         _loc2_.id = param1.pkg.readInt();
-         _loc2_.name = param1.pkg.readUTF();
-         _loc2_.success = param1.pkg.readUTF();
-         _loc2_.failure = param1.pkg.readUTF();
-         _loc2_.description = param1.pkg.readUTF();
-         _loc3_ = param1.pkg.readUTF();
-         _loc2_.totalMissiton = param1.pkg.readInt();
-         _loc2_.missionIndex = param1.pkg.readInt();
-         _loc2_.totalValue1 = param1.pkg.readInt();
-         _loc2_.totalValue2 = param1.pkg.readInt();
-         _loc2_.totalValue3 = param1.pkg.readInt();
-         _loc2_.totalValue4 = param1.pkg.readInt();
-         _loc2_.nextMissionIndex = _loc2_.missionIndex + 1;
-         _loc2_.parseString(_loc3_);
-         _loc2_.tryagain = param1.pkg.readInt();
-         _loc2_.pic = param1.pkg.readUTF();
+         missionInfo.id = evt.pkg.readInt();
+         missionInfo.name = evt.pkg.readUTF();
+         missionInfo.success = evt.pkg.readUTF();
+         missionInfo.failure = evt.pkg.readUTF();
+         missionInfo.description = evt.pkg.readUTF();
+         temp = evt.pkg.readUTF();
+         missionInfo.totalMissiton = evt.pkg.readInt();
+         missionInfo.missionIndex = evt.pkg.readInt();
+         missionInfo.totalValue1 = evt.pkg.readInt();
+         missionInfo.totalValue2 = evt.pkg.readInt();
+         missionInfo.totalValue3 = evt.pkg.readInt();
+         missionInfo.totalValue4 = evt.pkg.readInt();
+         missionInfo.nextMissionIndex = missionInfo.missionIndex + 1;
+         missionInfo.parseString(temp);
+         missionInfo.tryagain = evt.pkg.readInt();
+         missionInfo.pic = evt.pkg.readUTF();
          checkCanToLoader();
       }
       
-      private function __loadprogress(param1:CrazyTankSocketEvent) : void
+      private function __loadprogress(evt:CrazyTankSocketEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:int = 0;
-         var _loc5_:* = null;
+         var progress:int = 0;
+         var zoneID:int = 0;
+         var id:int = 0;
+         var info:* = null;
          if(Current)
          {
-            _loc3_ = param1.pkg.readInt();
-            _loc4_ = param1.pkg.readInt();
-            _loc2_ = param1.pkg.readInt();
-            _loc5_ = Current.findRoomPlayer(_loc2_,_loc4_);
-            if(_loc5_ && !_loc5_.isSelf)
+            progress = evt.pkg.readInt();
+            zoneID = evt.pkg.readInt();
+            id = evt.pkg.readInt();
+            info = Current.findRoomPlayer(id,zoneID);
+            if(info && !info.isSelf)
             {
-               _loc5_.progress = _loc3_;
+               info.progress = progress;
             }
          }
       }
       
-      private function __gameStart(param1:CrazyTankSocketEvent) : void
+      private function __gameStart(event:CrazyTankSocketEvent) : void
       {
-         var _loc19_:* = null;
-         var _loc24_:int = 0;
-         var _loc28_:int = 0;
-         var _loc14_:int = 0;
-         var _loc8_:* = null;
-         var _loc23_:int = 0;
-         var _loc29_:int = 0;
-         var _loc2_:int = 0;
-         var _loc32_:int = 0;
-         var _loc3_:int = 0;
-         var _loc31_:* = null;
-         var _loc25_:int = 0;
-         var _loc5_:int = 0;
-         var _loc20_:int = 0;
-         var _loc10_:* = undefined;
-         var _loc21_:int = 0;
-         var _loc13_:Boolean = false;
-         var _loc34_:Boolean = false;
-         var _loc11_:Boolean = false;
-         var _loc35_:Boolean = false;
-         var _loc22_:int = 0;
-         var _loc15_:* = null;
-         var _loc7_:int = 0;
-         var _loc9_:* = null;
-         var _loc17_:* = null;
-         var _loc12_:int = 0;
-         var _loc33_:* = null;
-         var _loc27_:int = 0;
-         var _loc26_:int = 0;
-         var _loc30_:* = null;
-         var _loc4_:int = 0;
-         var _loc18_:* = 0;
-         var _loc16_:* = null;
-         var _loc6_:int = 0;
+         var pkg:* = null;
+         var len:int = 0;
+         var i:int = 0;
+         var livingID:int = 0;
+         var info:* = null;
+         var blood:int = 0;
+         var maxBlood:int = 0;
+         var refineryLevel:int = 0;
+         var deputyWeaponCount:int = 0;
+         var count:int = 0;
+         var buff:* = null;
+         var j:int = 0;
+         var data:int = 0;
+         var buffCount:int = 0;
+         var buffs:* = undefined;
+         var l:int = 0;
+         var isFrost:Boolean = false;
+         var isHide:Boolean = false;
+         var isNoHole:Boolean = false;
+         var isBubble:Boolean = false;
+         var sealSatesCount:int = 0;
+         var sealSates:* = null;
+         var I:int = 0;
+         var K:* = null;
+         var Value:* = null;
+         var markMeHideSrcId:int = 0;
+         var srcPlayer:* = null;
+         var exitTimes:int = 0;
+         var exitTimeLimit:int = 0;
+         var bombLength:int = 0;
+         var k:int = 0;
+         var bomb:* = null;
+         var boxCount:int = 0;
+         var b:* = 0;
+         var boxInfo:* = null;
+         var type:int = 0;
          setGameSmallData();
          TryAgain = -1;
          ExpTweenManager.Instance.deleteTweens();
          if(Current)
          {
-            param1.executed = false;
-            _loc19_ = param1.pkg;
-            _loc24_ = _loc19_.readInt();
-            _loc28_ = 1;
-            while(_loc28_ <= _loc24_)
+            event.executed = false;
+            pkg = event.pkg;
+            len = pkg.readInt();
+            for(i = 1; i <= len; )
             {
-               _loc14_ = _loc19_.readInt();
-               _loc8_ = Current.findPlayer(_loc14_);
-               if(_loc8_ != null)
+               livingID = pkg.readInt();
+               info = Current.findPlayer(livingID);
+               if(info != null)
                {
-                  _loc8_.reset();
-                  _loc8_.pos = new Point(_loc19_.readInt(),_loc19_.readInt());
-                  _loc8_.energy = 1;
-                  _loc8_.direction = _loc19_.readInt();
-                  _loc23_ = _loc19_.readInt();
-                  _loc29_ = _loc19_.readInt();
-                  _loc8_.team = _loc19_.readInt();
-                  _loc2_ = _loc19_.readInt();
-                  if(_loc8_ is LocalPlayer)
+                  info.reset();
+                  info.pos = new Point(pkg.readInt(),pkg.readInt());
+                  info.energy = 1;
+                  info.direction = pkg.readInt();
+                  blood = pkg.readInt();
+                  maxBlood = pkg.readInt();
+                  info.team = pkg.readInt();
+                  refineryLevel = pkg.readInt();
+                  if(info is LocalPlayer)
                   {
-                     (_loc8_ as LocalPlayer).deputyWeaponCount = _loc19_.readInt();
+                     (info as LocalPlayer).deputyWeaponCount = pkg.readInt();
                   }
                   else
                   {
-                     _loc32_ = _loc19_.readInt();
+                     deputyWeaponCount = pkg.readInt();
                   }
-                  _loc8_.powerRatio = _loc19_.readInt();
-                  _loc8_.dander = _loc19_.readInt();
-                  _loc8_.maxBlood = _loc29_;
-                  _loc8_.updateBlood(_loc23_,0,0);
-                  _loc8_.wishKingCount = _loc19_.readInt();
-                  _loc8_.wishKingEnergy = _loc19_.readInt();
-                  _loc8_.currentWeapInfo.refineryLevel = _loc2_;
-                  _loc3_ = _loc19_.readInt();
-                  _loc25_ = 0;
-                  while(_loc25_ < _loc3_)
+                  info.powerRatio = pkg.readInt();
+                  info.dander = pkg.readInt();
+                  info.maxBlood = maxBlood;
+                  info.updateBlood(blood,0,0);
+                  info.wishKingCount = pkg.readInt();
+                  info.wishKingEnergy = pkg.readInt();
+                  info.currentWeapInfo.refineryLevel = refineryLevel;
+                  count = pkg.readInt();
+                  for(j = 0; j < count; )
                   {
-                     _loc31_ = BuffManager.creatBuff(_loc19_.readInt());
-                     _loc5_ = _loc19_.readInt();
-                     if(_loc31_)
+                     buff = BuffManager.creatBuff(pkg.readInt());
+                     data = pkg.readInt();
+                     if(buff)
                      {
-                        _loc31_.data = _loc5_;
-                        _loc8_.addBuff(_loc31_);
+                        buff.data = data;
+                        info.addBuff(buff);
                      }
-                     _loc25_++;
+                     j++;
                   }
-                  _loc20_ = _loc19_.readInt();
-                  _loc10_ = new Vector.<FightBuffInfo>();
-                  _loc21_ = 0;
-                  while(_loc21_ < _loc20_)
+                  buffCount = pkg.readInt();
+                  buffs = new Vector.<FightBuffInfo>();
+                  for(l = 0; l < buffCount; )
                   {
-                     _loc31_ = BuffManager.creatBuff(_loc19_.readInt());
-                     _loc8_.addBuff(_loc31_);
-                     _loc21_++;
+                     buff = BuffManager.creatBuff(pkg.readInt());
+                     info.addBuff(buff);
+                     l++;
                   }
-                  _loc13_ = _loc19_.readBoolean();
-                  _loc34_ = _loc19_.readBoolean();
-                  _loc11_ = _loc19_.readBoolean();
-                  _loc35_ = _loc19_.readBoolean();
-                  _loc22_ = _loc19_.readInt();
-                  _loc15_ = new Dictionary();
-                  _loc7_ = 0;
-                  while(_loc7_ < _loc22_)
+                  isFrost = pkg.readBoolean();
+                  isHide = pkg.readBoolean();
+                  isNoHole = pkg.readBoolean();
+                  isBubble = pkg.readBoolean();
+                  sealSatesCount = pkg.readInt();
+                  sealSates = new Dictionary();
+                  for(I = 0; I < sealSatesCount; )
                   {
-                     _loc9_ = _loc19_.readUTF();
-                     _loc17_ = _loc19_.readUTF();
-                     _loc15_[_loc9_] = _loc17_;
-                     _loc7_++;
+                     K = pkg.readUTF();
+                     Value = pkg.readUTF();
+                     sealSates[K] = Value;
+                     I++;
                   }
-                  _loc8_.isFrozen = _loc13_;
-                  _loc8_.isHidden = _loc34_;
-                  _loc8_.isNoNole = _loc11_;
-                  _loc8_.outProperty = _loc15_;
-                  if(RoomManager.Instance.current.type != 5 && _loc8_.playerInfo.currentPet)
+                  info.isFrozen = isFrost;
+                  info.isHidden = isHide;
+                  info.isNoNole = isNoHole;
+                  info.outProperty = sealSates;
+                  if(RoomManager.Instance.current.type != 5 && info.playerInfo.currentPet)
                   {
-                     _loc8_.currentPet = new Pet(_loc8_.playerInfo.currentPet);
+                     info.currentPet = new Pet(info.playerInfo.currentPet);
                   }
-                  _loc12_ = _loc19_.readInt();
-                  _loc33_ = Current.findPlayerByPlayerID(_loc12_);
-                  if(_loc33_)
+                  markMeHideSrcId = pkg.readInt();
+                  srcPlayer = Current.findPlayerByPlayerID(markMeHideSrcId);
+                  if(srcPlayer)
                   {
-                     _loc8_.markMeHide = true;
-                     if(Current.selfGamePlayer == _loc33_)
+                     info.markMeHide = true;
+                     if(Current.selfGamePlayer == srcPlayer)
                      {
-                        _loc8_.markMeHideDest = true;
+                        info.markMeHideDest = true;
                      }
+                  }
+                  exitTimes = pkg.readInt();
+                  exitTimeLimit = pkg.readInt();
+                  if(info.isSelf)
+                  {
+                     Current.exitTimes = exitTimes;
+                     Current.exitTimeLimit = exitTimeLimit * 60000;
                   }
                }
-               _loc28_++;
+               i++;
             }
-            _loc27_ = _loc19_.readInt();
-            _loc26_ = 0;
-            while(_loc26_ < _loc27_)
+            bombLength = pkg.readInt();
+            for(k = 0; k < bombLength; )
             {
-               _loc30_ = new Bomb();
-               _loc30_.Id = _loc19_.readInt();
-               _loc30_.X = _loc19_.readInt();
-               _loc30_.Y = _loc19_.readInt();
-               Current.outBombs.add(_loc26_,_loc30_);
-               _loc26_++;
+               bomb = new Bomb();
+               bomb.Id = pkg.readInt();
+               bomb.X = pkg.readInt();
+               bomb.Y = pkg.readInt();
+               Current.outBombs.add(k,bomb);
+               k++;
             }
-            _loc4_ = _loc19_.readInt();
-            _loc18_ = uint(0);
-            while(_loc18_ < _loc4_)
+            boxCount = pkg.readInt();
+            for(b = uint(0); b < boxCount; )
             {
-               _loc16_ = new SimpleBoxInfo();
-               _loc16_.bid = _loc19_.readInt();
-               _loc16_.bx = _loc19_.readInt();
-               _loc16_.by = _loc19_.readInt();
-               _loc16_.subType = _loc19_.readInt();
-               Current.outBoxs.add(_loc16_.bid,_loc16_);
-               _loc18_++;
+               boxInfo = new SimpleBoxInfo();
+               boxInfo.bid = pkg.readInt();
+               boxInfo.bx = pkg.readInt();
+               boxInfo.by = pkg.readInt();
+               boxInfo.subType = pkg.readInt();
+               boxInfo.model = pkg.readUTF();
+               Current.outBoxs.add(boxInfo.bid,boxInfo);
+               b++;
             }
-            Current.startTime = _loc19_.readDate();
-            MapManager.Instance.curMapCardLabelType = _loc19_.readInt();
-            _loc6_ = RoomManager.Instance.current.type;
-            if(_loc6_ == 5)
+            Current.startTime = pkg.readDate();
+            MapManager.Instance.curMapCardLabelType = pkg.readInt();
+            type = RoomManager.Instance.current.type;
+            if(type == 5)
             {
                StateManager.setState("fightLabGameView",Current);
                if(PathManager.isStatistics)
@@ -1654,7 +1666,7 @@ package gameCommon
                   WeakGuildManager.Instance.statistics(4,TimeManager.Instance.enterFightTime);
                }
             }
-            else if(_loc6_ == 10)
+            else if(type == 10)
             {
                if(StartupResourceLoader.firstEnterHall)
                {
@@ -1669,7 +1681,7 @@ package gameCommon
                   WeakGuildManager.Instance.statistics(4,TimeManager.Instance.enterFightTime);
                }
             }
-            else if(_loc24_ == 0)
+            else if(len == 0)
             {
                if(RoomManager.Instance.current.type == 4)
                {
@@ -1690,7 +1702,7 @@ package gameCommon
                {
                   StateManager.setState("fighting",Current);
                }
-               Current.IsOneOnOne = _loc24_ == 2;
+               Current.IsOneOnOne = len == 2;
                if(PathManager.isStatistics)
                {
                   WeakGuildManager.Instance.statistics(4,TimeManager.Instance.enterFightTime);
@@ -1701,84 +1713,83 @@ package gameCommon
          CampBattleManager.instance.isFighting = true;
       }
       
-      private function __missionAllOver(param1:CrazyTankSocketEvent) : void
+      private function __missionAllOver(event:CrazyTankSocketEvent) : void
       {
-         var _loc10_:int = 0;
-         var _loc7_:* = null;
-         var _loc2_:int = 0;
-         var _loc3_:* = null;
-         var _loc6_:* = null;
-         var _loc8_:int = 0;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc9_:int = _loc4_.readInt();
+         var i:int = 0;
+         var obj:* = null;
+         var id:int = 0;
+         var player:* = null;
+         var self:* = null;
+         var j:int = 0;
+         var pkg:PackageIn = event.pkg;
+         var playerCount:int = pkg.readInt();
          if(Current == null)
          {
             return;
          }
-         while(_loc10_ < _loc9_)
+         while(i < playerCount)
          {
-            _loc2_ = _loc4_.readInt();
-            _loc3_ = Current.findPlayerByPlayerID(_loc2_);
-            if(_loc3_)
+            id = pkg.readInt();
+            player = Current.findPlayerByPlayerID(id);
+            if(player)
             {
-               if(_loc3_.expObj)
+               if(player.expObj)
                {
-                  _loc7_ = _loc3_.expObj;
+                  obj = player.expObj;
                }
                else
                {
-                  _loc7_ = {};
+                  obj = {};
                }
-               _loc7_.killGP = _loc4_.readInt();
-               _loc7_.hertGP = _loc4_.readInt();
-               _loc7_.fightGP = _loc4_.readInt();
-               _loc7_.ghostGP = _loc4_.readInt();
-               _loc7_.gpForVIP = _loc4_.readInt();
-               _loc7_.gpForConsortia = _loc4_.readInt();
-               _loc7_.gpForSpouse = _loc4_.readInt();
-               _loc7_.gpForServer = _loc4_.readInt();
-               _loc7_.gpForApprenticeOnline = _loc4_.readInt();
-               _loc7_.gpForApprenticeTeam = _loc4_.readInt();
-               _loc7_.gpForDoubleCard = _loc4_.readInt();
-               _loc7_.gpForPower = _loc4_.readInt();
-               _loc7_.consortiaSkill = _loc4_.readInt();
-               _loc7_.luckyExp = _loc4_.readInt();
-               _loc7_.gainGP = _loc4_.readInt();
-               _loc7_.gpCSMUser = _loc4_.readInt();
-               _loc7_.gpAddWell = _loc4_.readInt();
-               trace("gpCSMUser:" + _loc7_.gpCSMUser);
-               _loc3_.isWin = _loc4_.readBoolean();
-               _loc3_.expObj = _loc7_;
+               obj.killGP = pkg.readInt();
+               obj.hertGP = pkg.readInt();
+               obj.fightGP = pkg.readInt();
+               obj.ghostGP = pkg.readInt();
+               obj.gpForVIP = pkg.readInt();
+               obj.gpForConsortia = pkg.readInt();
+               obj.gpForSpouse = pkg.readInt();
+               obj.gpForServer = pkg.readInt();
+               obj.gpForApprenticeOnline = pkg.readInt();
+               obj.gpForApprenticeTeam = pkg.readInt();
+               obj.gpForDoubleCard = pkg.readInt();
+               obj.gpForPower = pkg.readInt();
+               obj.consortiaSkill = pkg.readInt();
+               obj.luckyExp = pkg.readInt();
+               obj.gainGP = pkg.readInt();
+               obj.gpCSMUser = pkg.readInt();
+               obj.gpAddWell = pkg.readInt();
+               trace("gpCSMUser:" + obj.gpCSMUser);
+               player.isWin = pkg.readBoolean();
+               player.expObj = obj;
             }
-            _loc10_++;
+            i++;
          }
          if(PathManager.solveExternalInterfaceEnabel() && Current.selfGamePlayer.isWin)
          {
-            _loc6_ = PlayerManager.Instance.Self;
+            self = PlayerManager.Instance.Self;
          }
          Current.missionInfo.missionOverNPCMovies = [];
-         var _loc5_:int = _loc4_.readInt();
-         _loc8_ = 0;
-         while(_loc8_ < _loc5_)
+         var npcMovieCount:int = pkg.readInt();
+         for(j = 0; j < npcMovieCount; )
          {
-            Current.missionInfo.missionOverNPCMovies.push(_loc4_.readUTF());
-            _loc8_++;
+            Current.missionInfo.missionOverNPCMovies.push(pkg.readUTF());
+            j++;
          }
       }
       
-      private function __takeOut(param1:CrazyTankSocketEvent) : void
+      private function __takeOut(event:CrazyTankSocketEvent) : void
       {
          if(Current)
          {
-            Current.resultCard.push(param1);
+            Current.resultCard.push(event);
          }
       }
       
-      private function __showAllCard(param1:CrazyTankSocketEvent) : void
+      private function __showAllCard(event:CrazyTankSocketEvent) : void
       {
          if(Current)
          {
-            Current.showAllCard.push(param1);
+            Current.showAllCard.push(event);
          }
       }
       
@@ -1811,45 +1822,45 @@ package gameCommon
          dispatchEvent(new Event("PlayerClickPay"));
       }
       
-      public function selfGetItemShowAndSound(param1:Dictionary) : Boolean
+      public function selfGetItemShowAndSound(list:Dictionary) : Boolean
       {
-         var _loc4_:* = null;
-         var _loc5_:* = null;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         var _loc7_:Boolean = false;
+         var data:* = null;
+         var msg:* = null;
+         var channelTag:* = null;
+         var goodTag:* = null;
+         var playSound:Boolean = false;
          var _loc9_:int = 0;
-         var _loc8_:* = param1;
-         for each(var _loc6_ in param1)
+         var _loc8_:* = list;
+         for each(var info in list)
          {
-            _loc4_ = new ChatData();
-            _loc4_.channel = 6;
-            _loc5_ = LanguageMgr.GetTranslation("tank.data.player.FightingPlayerInfo.your");
-            _loc2_ = ChatFormats.getTagsByChannel(_loc4_);
-            _loc3_ = ChatFormats.creatGoodTag(_loc6_.Property1 != "31"?"[" + _loc6_.Name + "]":"[" + _loc6_.Name + "-" + BeadTemplateManager.Instance.GetBeadInfobyID(_loc6_.TemplateID).Name + "Lv" + BeadTemplateManager.Instance.GetBeadInfobyID(_loc6_.TemplateID).BaseLevel + "]",2,_loc6_.TemplateID,_loc6_.Quality,_loc6_.IsBinds,_loc4_);
-            _loc4_.htmlMessage = _loc2_[0] + _loc5_ + _loc3_ + _loc2_[1] + "<BR>";
-            ChatManager.Instance.chat(_loc4_,false);
-            if(_loc6_.Quality >= 3)
+            data = new ChatData();
+            data.channel = 6;
+            msg = LanguageMgr.GetTranslation("tank.data.player.FightingPlayerInfo.your");
+            channelTag = ChatFormats.getTagsByChannel(data);
+            goodTag = ChatFormats.creatGoodTag(info.Property1 != "31"?"[" + info.Name + "]":"[" + info.Name + "-" + BeadTemplateManager.Instance.GetBeadInfobyID(info.TemplateID).Name + "Lv" + BeadTemplateManager.Instance.GetBeadInfobyID(info.TemplateID).BaseLevel + "]",2,info.TemplateID,info.Quality,info.IsBinds,data);
+            data.htmlMessage = channelTag[0] + msg + goodTag + channelTag[1] + "<BR>";
+            ChatManager.Instance.chat(data,false);
+            if(info.Quality >= 3)
             {
-               _loc7_ = true;
+               playSound = true;
             }
          }
-         return _loc7_;
+         return playSound;
       }
       
-      public function isIdenticalGame(param1:int = 0) : Boolean
+      public function isIdenticalGame(id:int = 0) : Boolean
       {
-         var _loc2_:DictionaryData = RoomManager.Instance.current.players;
-         var _loc3_:SelfInfo = PlayerManager.Instance.Self;
-         if(param1 == _loc3_.ID)
+         var gamePlayers:DictionaryData = RoomManager.Instance.current.players;
+         var selfInfo:SelfInfo = PlayerManager.Instance.Self;
+         if(id == selfInfo.ID)
          {
             return false;
          }
          var _loc6_:int = 0;
-         var _loc5_:* = _loc2_;
-         for each(var _loc4_ in _loc2_)
+         var _loc5_:* = gamePlayers;
+         for each(var i in gamePlayers)
          {
-            if(_loc4_.playerInfo.ID == param1 && _loc4_.playerInfo.ZoneID == _loc3_.ZoneID)
+            if(i.playerInfo.ID == id && i.playerInfo.ZoneID == selfInfo.ZoneID)
             {
                return true;
             }
@@ -1857,39 +1868,37 @@ package gameCommon
          return false;
       }
       
-      private function __loadResource(param1:CrazyTankSocketEvent) : void
+      private function __loadResource(event:CrazyTankSocketEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
+         var i:int = 0;
+         var needMovie:* = null;
          setLoaderStop();
-         var _loc2_:int = param1.pkg.readInt();
-         _loc4_ = 0;
-         while(_loc4_ < _loc2_)
+         var count:int = event.pkg.readInt();
+         for(i = 0; i < count; )
          {
-            _loc3_ = new GameNeedMovieInfo();
-            _loc3_.type = param1.pkg.readInt();
-            _loc3_.path = param1.pkg.readUTF();
-            _loc3_.classPath = param1.pkg.readUTF();
-            _loc3_.startLoad();
-            _loc4_++;
+            needMovie = new GameNeedMovieInfo();
+            needMovie.type = event.pkg.readInt();
+            needMovie.path = event.pkg.readUTF();
+            needMovie.classPath = event.pkg.readUTF();
+            needMovie.startLoad();
+            i++;
          }
       }
       
       public function setLoaderStop() : void
       {
-         var _loc1_:int = 0;
-         var _loc2_:int = 0;
+         var length:int = 0;
+         var i:int = 0;
          if(_loaderArray != null)
          {
-            _loc1_ = _loaderArray.length;
-            _loc2_ = 0;
-            while(_loc2_ < _loc1_)
+            length = _loaderArray.length;
+            for(i = 0; i < length; )
             {
-               if(!(_loaderArray[_loc2_] as BaseLoader).isComplete)
+               if(!(_loaderArray[i] as BaseLoader).isComplete)
                {
-                  (_loaderArray[_loc2_] as BaseLoader).unload();
+                  (_loaderArray[i] as BaseLoader).unload();
                }
-               _loc2_++;
+               i++;
             }
             _loaderArray.length = 0;
          }
@@ -1900,9 +1909,9 @@ package gameCommon
          return _gameView;
       }
       
-      public function set gameView(param1:IGameView) : void
+      public function set gameView(value:IGameView) : void
       {
-         _gameView = param1;
+         _gameView = value;
       }
       
       public function get addLivingEvtVec() : Vector.<CrazyTankSocketEvent>
@@ -1945,155 +1954,156 @@ package gameCommon
          return _playerBloodEvtVec;
       }
       
-      private function __skillInfoInit(param1:CrazyTankSocketEvent) : void
+      public function get boxPhysicalEvtVec() : Vector.<CrazyTankSocketEvent>
       {
-         var _loc10_:int = 0;
-         var _loc6_:int = 0;
-         var _loc9_:int = 0;
-         var _loc7_:int = 0;
-         var _loc8_:int = 0;
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         var _loc5_:PackageIn = param1.pkg;
+         return _boxPhysicalEvtVec;
+      }
+      
+      private function __skillInfoInit(event:CrazyTankSocketEvent) : void
+      {
+         var i:int = 0;
+         var skillId:int = 0;
+         var cd:int = 0;
+         var j:int = 0;
+         var skillId2:int = 0;
+         var cd2:int = 0;
+         var count2:int = 0;
+         var pkg:PackageIn = event.pkg;
          petSkillList = [];
-         var _loc2_:int = _loc5_.readInt();
-         _loc10_ = 0;
-         while(_loc10_ < _loc2_)
+         var count:int = pkg.readInt();
+         for(i = 0; i < count; )
          {
-            _loc6_ = _loc5_.readInt();
-            _loc9_ = _loc5_.readInt();
+            skillId = pkg.readInt();
+            cd = pkg.readInt();
             petSkillList.push({
-               "id":_loc6_,
-               "cd":_loc9_
+               "id":skillId,
+               "cd":cd
             });
-            _loc5_.readInt();
-            _loc10_++;
+            pkg.readInt();
+            i++;
          }
          horseSkillList = [];
-         _loc2_ = _loc5_.readInt();
-         _loc7_ = 0;
-         while(_loc7_ < _loc2_)
+         count = pkg.readInt();
+         for(j = 0; j < count; )
          {
-            _loc8_ = _loc5_.readInt();
-            _loc3_ = _loc5_.readInt();
-            _loc4_ = _loc5_.readInt();
+            skillId2 = pkg.readInt();
+            cd2 = pkg.readInt();
+            count2 = pkg.readInt();
             horseSkillList.push({
-               "id":_loc8_,
-               "cd":_loc3_,
-               "count":_loc4_
+               "id":skillId2,
+               "cd":cd2,
+               "count":count2
             });
-            _loc7_++;
+            j++;
          }
          dispatchEvent(new Event("skillInfoInitGame"));
       }
       
       private function setGameSmallData() : void
       {
-         var _loc2_:Number = NaN;
+         var color:Number = NaN;
          randomSmallLivingShape = int(Math.random() * 3);
          if(teamColorData)
          {
             teamColorData.clear();
          }
          teamColorData = new DictionaryData();
-         var _loc3_:Array = [];
-         var _loc1_:int = 1;
+         var list:Array = [];
+         var index:int = 1;
          do
          {
-            teamColorData.add(_loc1_,[16777215 * Math.random(),16777215 * Math.random()]);
-            _loc2_ = teamColorData[_loc1_][0];
-            if(_loc3_.indexOf(_loc2_) == -1)
+            teamColorData.add(index,[16777215 * Math.random(),16777215 * Math.random()]);
+            color = teamColorData[index][0];
+            if(list.indexOf(color) == -1)
             {
-               _loc3_[_loc1_] = teamColorData[_loc1_][0];
-               _loc1_++;
+               list[index] = teamColorData[index][0];
+               index++;
             }
          }
-         while(_loc1_ <= 8);
+         while(index <= 8);
          
       }
       
-      private function setSmallMapEnable(param1:String, param2:int) : void
+      private function setSmallMapEnable(value:String, random:int) : void
       {
-         var _loc11_:int = 0;
-         var _loc3_:Boolean = false;
-         var _loc10_:Array = ["0","SMALLMAP_BORDER_ENABLE","SMALLMAP_ALPHA","SMALLMAP_POINT_ENABLE","SMALLMAP_GRID_ENABLE","SMALLMAP_SHAPE_ENABLE"];
-         var _loc9_:int = int(Math.random() * (_loc10_.length - 1)) + 1;
-         var _loc7_:Object = {};
-         _loc7_["SMALLMAP_ENABLE"] = false;
-         _loc11_ = 1;
-         while(_loc11_ < _loc10_.length)
+         var i:int = 0;
+         var enable:Boolean = false;
+         var key:Array = ["0","SMALLMAP_BORDER_ENABLE","SMALLMAP_ALPHA","SMALLMAP_POINT_ENABLE","SMALLMAP_GRID_ENABLE","SMALLMAP_SHAPE_ENABLE"];
+         var enableIndex:int = int(Math.random() * (key.length - 1)) + 1;
+         var bombKingMap:Object = {};
+         bombKingMap["SMALLMAP_ENABLE"] = false;
+         for(i = 1; i < key.length; )
          {
             if(_pathInfo.BOMBKing_KILL_CHEAT)
             {
-               if(_loc11_ == _loc9_)
+               if(i == enableIndex)
                {
-                  _loc7_[_loc10_[_loc11_]] = true;
+                  bombKingMap[key[i]] = true;
                }
                else
                {
-                  _loc7_[_loc10_[_loc11_]] = Math.random() < 0.5?false:true;
+                  bombKingMap[key[i]] = Math.random() < 0.5?false:true;
                }
             }
             else
             {
-               _loc7_[_loc10_[_loc11_]] = false;
+               bombKingMap[key[i]] = false;
             }
-            _loc11_++;
+            i++;
          }
-         _pathInfo.BOMBKing_KILL_CHEAT_MAP = _loc7_;
-         var _loc4_:int = 0;
-         var _loc8_:* = param2;
-         var _loc6_:Array = param1.split(",");
-         var _loc5_:Array = [];
-         _pathInfo.SMALLMAP_ENABLE = Boolean(int(_loc6_[0]));
+         _pathInfo.BOMBKing_KILL_CHEAT_MAP = bombKingMap;
+         var enableCount:int = 0;
+         var maxCount:* = random;
+         var enableList:Array = value.split(",");
+         var openKey:Array = [];
+         _pathInfo.SMALLMAP_ENABLE = Boolean(int(enableList[0]));
          if(_pathInfo.SMALLMAP_ENABLE)
          {
             return;
          }
-         _loc11_ = 1;
-         while(_loc11_ < _loc6_.length)
+         i = 1;
+         while(i < enableList.length)
          {
-            _loc3_ = int(_loc6_[_loc11_]);
-            _pathInfo[_loc10_[_loc11_]] = _loc3_;
-            if(_loc3_)
+            enable = int(enableList[i]);
+            _pathInfo[key[i]] = enable;
+            if(enable)
             {
-               _loc5_.push(_loc10_[_loc11_]);
-               _loc4_++;
+               openKey.push(key[i]);
+               enableCount++;
             }
-            _loc11_++;
+            i++;
          }
-         if(_loc8_ > 0 && _loc4_ >= _loc8_)
+         if(maxCount > 0 && enableCount >= maxCount)
          {
-            setRandomSmallMapEnalbe(_loc5_,_loc4_,_loc8_);
+            setRandomSmallMapEnalbe(openKey,enableCount,maxCount);
          }
       }
       
-      private function setRandomSmallMapEnalbe(param1:Array, param2:int, param3:int) : void
+      private function setRandomSmallMapEnalbe(openKey:Array, enableCount:int, maxCount:int) : void
       {
-         var _loc7_:int = 0;
-         var _loc6_:int = Math.floor(param2 / 2);
-         var _loc5_:int = (param3 - _loc6_) * Math.random() + _loc6_;
-         var _loc4_:int = param1.length;
-         while(_loc4_)
+         var i:int = 0;
+         var minCount:int = Math.floor(enableCount / 2);
+         var randomCount:int = (maxCount - minCount) * Math.random() + minCount;
+         var index:int = openKey.length;
+         while(index)
          {
-            _loc4_--;
-            param1.push(param1.splice(int(Math.random() * _loc4_),1)[0]);
+            index--;
+            openKey.push(openKey.splice(int(Math.random() * index),1)[0]);
          }
-         _loc7_ = 0;
-         while(_loc7_ < param1.length)
+         for(i = 0; i < openKey.length; )
          {
-            if(_loc7_ >= _loc5_)
+            if(i >= randomCount)
             {
-               _pathInfo[param1[_loc7_]] = false;
+               _pathInfo[openKey[i]] = false;
             }
-            _loc7_++;
+            i++;
          }
       }
       
       private function isInBOMBKingGame() : Boolean
       {
-         var _loc1_:int = GameControl.Instance.Current.gameMode;
-         return _loc1_ == 28 || _loc1_ == 29;
+         var gameMode:int = GameControl.Instance.Current.gameMode;
+         return gameMode == 28 || gameMode == 29;
       }
       
       public function smallMapEnable() : Boolean
@@ -2152,12 +2162,12 @@ package gameCommon
       
       public function get is3DGame() : Boolean
       {
-         var _loc1_:Boolean = false;
+         var is3D:Boolean = false;
          if(_current && _current.roomType == 120 || _current.roomType == 123 || RoomManager.Instance.current.type == 1 && RoomManager.Instance.current.dungeonMode == 120)
          {
-            _loc1_ = true;
+            is3D = true;
          }
-         return _loc1_;
+         return is3D;
       }
       
       public function get specialSkillType() : String
@@ -2169,28 +2179,27 @@ package gameCommon
          return _specialSkillType;
       }
       
-      public function setDropData(param1:int, param2:int) : void
+      public function setDropData(itemId:int, count:int) : void
       {
-         var _loc3_:Boolean = false;
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         _loc5_ = 0;
-         while(_loc5_ < dropData.length)
+         var isItem:Boolean = false;
+         var i:int = 0;
+         var obj:* = null;
+         for(i = 0; i < dropData.length; )
          {
-            if(dropData[_loc5_].itemId == param1)
+            if(dropData[i].itemId == itemId)
             {
-               dropData[_loc5_].count = dropData[_loc5_].count + param2;
-               _loc3_ = true;
+               dropData[i].count = dropData[i].count + count;
+               isItem = true;
                break;
             }
-            _loc5_++;
+            i++;
          }
-         if(!_loc3_)
+         if(!isItem)
          {
-            _loc4_ = {};
-            _loc4_.count = param2;
-            _loc4_.itemId = param1;
-            dropData.push(_loc4_);
+            obj = {};
+            obj.count = count;
+            obj.itemId = itemId;
+            dropData.push(obj);
          }
       }
       

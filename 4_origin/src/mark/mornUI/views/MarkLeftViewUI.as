@@ -43,6 +43,8 @@ package mark.mornUI.views
       
       public var lblSuit:Label = null;
       
+      public var btn_save:Button = null;
+      
       public function MarkLeftViewUI()
       {
          super();

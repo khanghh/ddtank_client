@@ -4,9 +4,9 @@ package starling.errors
    {
        
       
-      public function NotSupportedError(param1:* = "", param2:* = 0)
+      public function NotSupportedError(message:* = "", id:* = 0)
       {
-         super(param1,param2);
+         super(message,id);
       }
    }
 }

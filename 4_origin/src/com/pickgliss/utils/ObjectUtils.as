@@ -24,87 +24,87 @@ package com.pickgliss.utils
          super();
       }
       
-      public static function cloneSimpleObject(param1:Object) : Object
+      public static function cloneSimpleObject(obj:Object) : Object
       {
-         var _loc2_:ByteArray = new ByteArray();
-         _loc2_.writeObject(param1);
-         _loc2_.position = 0;
-         return _loc2_.readObject();
+         var temp:ByteArray = new ByteArray();
+         temp.writeObject(obj);
+         temp.position = 0;
+         return temp.readObject();
       }
       
-      public static function copyPorpertiesByXML(param1:Object, param2:XML) : void
+      public static function copyPorpertiesByXML(object:Object, data:XML) : void
       {
-         var _loc3_:* = null;
-         var _loc5_:* = null;
-         var _loc6_:XMLList = param2.attributes();
+         var propname:* = null;
+         var value:* = null;
+         var attr:XMLList = data.attributes();
          var _loc10_:int = 0;
-         var _loc9_:* = _loc6_;
-         for each(var _loc4_ in _loc6_)
+         var _loc9_:* = attr;
+         for each(var item in attr)
          {
-            _loc3_ = _loc4_.name().toString();
-            if(param1.hasOwnProperty(_loc3_))
+            propname = item.name().toString();
+            if(object.hasOwnProperty(propname))
             {
                try
                {
-                  _loc5_ = _loc4_.toString();
-                  if(_loc5_ == "false")
+                  value = item.toString();
+                  if(value == "false")
                   {
-                     param1[_loc3_] = false;
+                     object[propname] = false;
                   }
                   else
                   {
-                     param1[_loc3_] = _loc5_;
+                     object[propname] = value;
                   }
                }
                catch(e:Error)
                {
-                  trace("-----类ObjectUtils报错:",e.message + "\n-----",_loc3_,_loc5_);
+                  trace("-----类ObjectUtils报错:",e.message + "\n-----",propname,value);
                   continue;
                }
             }
          }
       }
       
-      public static function copyProperties(param1:Object, param2:Object) : void
+      public static function copyProperties(dest:Object, orig:Object) : void
       {
-         var _loc10_:* = null;
-         var _loc6_:* = null;
-         var _loc3_:* = null;
-         var _loc7_:* = null;
-         var _loc4_:* = null;
+         var properties:* = null;
+         var propertyType:* = null;
+         var propertyName:* = null;
+         var accessorType:* = null;
+         var accessorName:* = null;
          if(_descriptOjbXMLs == null)
          {
             _descriptOjbXMLs = new Dictionary();
          }
-         var _loc8_:Vector.<String> = getCopyAbleType();
-         var _loc11_:XML = describeTypeSave(param2);
-         _loc10_ = _loc11_.variable;
+         var copyAbleTypes:Vector.<String> = getCopyAbleType();
+         var descriXML:XML = describeTypeSave(orig);
+         properties = descriXML.variable;
          var _loc13_:int = 0;
-         var _loc12_:* = _loc10_;
-         for each(var _loc9_ in _loc10_)
+         var _loc12_:* = properties;
+         for each(var propertyInfo in properties)
          {
-            _loc6_ = _loc9_.@type;
-            if(_loc8_.indexOf(_loc6_) != -1)
+            propertyType = propertyInfo.@type;
+            if(copyAbleTypes.indexOf(propertyType) != -1)
             {
-               _loc3_ = _loc9_.@name;
-               if(param1.hasOwnProperty(_loc3_))
+               propertyName = propertyInfo.@name;
+               if(dest.hasOwnProperty(propertyName))
                {
-                  param1[_loc3_] = param2[_loc3_];
+                  dest[propertyName] = orig[propertyName];
                }
             }
          }
-         _loc10_ = _loc11_.accessor;
+         properties = descriXML.accessor;
          var _loc15_:int = 0;
-         var _loc14_:* = _loc10_;
-         for each(var _loc5_ in _loc10_)
+         var _loc14_:* = properties;
+         for each(var accessorInfo in properties)
          {
-            _loc7_ = _loc5_.@type;
-            if(_loc8_.indexOf(_loc7_) != -1)
+            accessorType = accessorInfo.@type;
+            if(copyAbleTypes.indexOf(accessorType) != -1)
             {
-               _loc4_ = _loc5_.@name;
+               accessorName = accessorInfo.@name;
                try
                {
-                  param1[_loc4_] = param2[_loc4_];
+                  dest[accessorName] = orig[accessorName];
                }
                catch(err:Error)
                {
@@ -114,73 +114,73 @@ package com.pickgliss.utils
          }
       }
       
-      public static function disposeAllChildren(param1:DisplayObjectContainer) : void
+      public static function disposeAllChildren(container:DisplayObjectContainer) : void
       {
-         var _loc2_:* = null;
-         if(param1 == null)
+         var child:* = null;
+         if(container == null)
          {
             return;
          }
-         while(param1.numChildren > 0)
+         while(container.numChildren > 0)
          {
-            _loc2_ = param1.getChildAt(0);
-            ObjectUtils.disposeObject(_loc2_);
+            child = container.getChildAt(0);
+            ObjectUtils.disposeObject(child);
          }
       }
       
-      public static function removeChildAllChildren(param1:DisplayObjectContainer) : void
+      public static function removeChildAllChildren(container:DisplayObjectContainer) : void
       {
-         while(param1.numChildren > 0)
+         while(container.numChildren > 0)
          {
-            param1.removeChildAt(0);
+            container.removeChildAt(0);
          }
       }
       
-      public static function disposeObject(param1:Object) : void
+      public static function disposeObject(target:Object) : void
       {
-         var _loc5_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:* = null;
-         if(param1 == null)
+         var targetDisplay:* = null;
+         var targetBitmap:* = null;
+         var targetBitmapData:* = null;
+         var targetDisplay1:* = null;
+         if(target == null)
          {
             return;
          }
-         if(param1 is Disposeable)
+         if(target is Disposeable)
          {
-            if(param1 is DisplayObject)
+            if(target is DisplayObject)
             {
-               _loc5_ = param1 as DisplayObject;
-               if(_loc5_.parent)
+               targetDisplay = target as DisplayObject;
+               if(targetDisplay.parent)
                {
-                  _loc5_.parent.removeChild(_loc5_);
+                  targetDisplay.parent.removeChild(targetDisplay);
                }
             }
-            Disposeable(param1).dispose();
+            Disposeable(target).dispose();
          }
-         else if(param1 is Bitmap)
+         else if(target is Bitmap)
          {
-            _loc3_ = Bitmap(param1);
-            if(_loc3_.parent)
+            targetBitmap = Bitmap(target);
+            if(targetBitmap.parent)
             {
-               _loc3_.parent.removeChild(_loc3_);
+               targetBitmap.parent.removeChild(targetBitmap);
             }
-            if(_loc3_.bitmapData)
+            if(targetBitmap.bitmapData)
             {
-               _loc3_.bitmapData.dispose();
+               targetBitmap.bitmapData.dispose();
             }
          }
-         else if(param1 is BitmapData)
+         else if(target is BitmapData)
          {
-            _loc2_ = BitmapData(param1);
-            _loc2_.dispose();
+            targetBitmapData = BitmapData(target);
+            targetBitmapData.dispose();
          }
-         else if(param1 is DisplayObject)
+         else if(target is DisplayObject)
          {
-            _loc4_ = DisplayObject(param1);
-            if(_loc4_.parent)
+            targetDisplay1 = DisplayObject(target);
+            if(targetDisplay1.parent)
             {
-               _loc4_.parent.removeChild(_loc4_);
+               targetDisplay1.parent.removeChild(targetDisplay1);
             }
          }
       }
@@ -199,78 +199,77 @@ package com.pickgliss.utils
          return _copyAbleTypes;
       }
       
-      public static function describeTypeSave(param1:Object) : XML
+      public static function describeTypeSave(obj:Object) : XML
       {
-         var _loc2_:* = null;
-         var _loc3_:String = getQualifiedClassName(param1);
-         if(_descriptOjbXMLs[_loc3_] != null)
+         var result:* = null;
+         var classname:String = getQualifiedClassName(obj);
+         if(_descriptOjbXMLs[classname] != null)
          {
-            _loc2_ = _descriptOjbXMLs[_loc3_];
+            result = _descriptOjbXMLs[classname];
          }
          else
          {
-            _loc2_ = describeType(param1);
-            _descriptOjbXMLs[_loc3_] = _loc2_;
+            result = describeType(obj);
+            _descriptOjbXMLs[classname] = result;
          }
-         return _loc2_;
+         return result;
       }
       
-      public static function encode(param1:String, param2:Object) : XML
+      public static function encode(node:String, object:Object) : XML
       {
-         var _loc5_:* = null;
-         var _loc6_:String = "<" + param1 + " ";
-         var _loc4_:XML = describeTypeSave(param2);
-         if(_loc4_.@name.toString() == "Object")
+         var value:* = null;
+         var temp:String = "<" + node + " ";
+         var classInfo:XML = describeTypeSave(object);
+         if(classInfo.@name.toString() == "Object")
          {
             var _loc9_:int = 0;
-            var _loc8_:* = param2;
-            for(var _loc7_ in param2)
+            var _loc8_:* = object;
+            for(var key in object)
             {
-               _loc5_ = param2[_loc7_];
-               if(!(_loc5_ is Function))
+               value = object[key];
+               if(!(value is Function))
                {
-                  _loc6_ = _loc6_ + encodingProperty(_loc7_,_loc5_);
+                  temp = temp + encodingProperty(key,value);
                }
             }
          }
          else
          {
             var _loc13_:int = 0;
-            var _loc10_:* = _loc4_..*;
+            var _loc10_:* = classInfo..*;
             var _loc11_:int = 0;
             _loc8_ = new XMLList("");
-            var _loc12_:* = _loc4_..*.(name() == "variable" || name() == "accessor");
-            for each(var _loc3_ in _loc4_..*.(name() == "variable" || name() == "accessor"))
+            var _loc12_:* = classInfo..*.(name() == "variable" || name() == "accessor");
+            for each(var v in classInfo..*.(name() == "variable" || name() == "accessor"))
             {
-               _loc6_ = _loc6_ + encodingProperty(_loc3_.@name.toString(),param2[_loc3_.@name]);
+               temp = temp + encodingProperty(v.@name.toString(),object[v.@name]);
             }
          }
-         _loc6_ = _loc6_ + "/>";
-         return new XML(_loc6_);
+         temp = temp + "/>";
+         return new XML(temp);
       }
       
-      private static function encodingProperty(param1:String, param2:Object) : String
+      private static function encodingProperty(name:String, value:Object) : String
       {
-         if(param2 is Array)
+         if(value is Array)
          {
             return "";
          }
-         return escapeString(param1) + "=\"" + String(param2) + "\" ";
+         return escapeString(name) + "=\"" + String(value) + "\" ";
       }
       
-      private static function escapeString(param1:String) : String
+      private static function escapeString(str:String) : String
       {
-         var _loc5_:* = null;
-         var _loc7_:int = 0;
-         var _loc3_:* = null;
-         var _loc6_:* = null;
-         var _loc2_:String = "";
-         var _loc4_:Number = param1.length;
-         _loc7_ = 0;
-         while(_loc7_ < _loc4_)
+         var ch:* = null;
+         var i:int = 0;
+         var hexCode:* = null;
+         var zeroPad:* = null;
+         var s:String = "";
+         var len:Number = str.length;
+         for(i = 0; i < len; )
          {
-            _loc5_ = param1.charAt(_loc7_);
-            var _loc8_:* = _loc5_;
+            ch = str.charAt(i);
+            var _loc8_:* = ch;
             if("\"" !== _loc8_)
             {
                if("/" !== _loc8_)
@@ -287,135 +286,130 @@ package com.pickgliss.utils
                               {
                                  if("\t" !== _loc8_)
                                  {
-                                    if(_loc5_ < " ")
+                                    if(ch < " ")
                                     {
-                                       _loc3_ = _loc5_.charCodeAt(0).toString(16);
-                                       _loc6_ = _loc3_.length == 2?"00":"000";
-                                       _loc2_ = _loc2_ + ("\\u" + _loc6_ + _loc3_);
+                                       hexCode = ch.charCodeAt(0).toString(16);
+                                       zeroPad = hexCode.length == 2?"00":"000";
+                                       s = s + ("\\u" + zeroPad + hexCode);
                                     }
                                     else
                                     {
-                                       _loc2_ = _loc2_ + _loc5_;
+                                       s = s + ch;
                                     }
                                  }
                                  else
                                  {
-                                    _loc2_ = _loc2_ + "\\t";
+                                    s = s + "\\t";
                                  }
                               }
                               else
                               {
-                                 _loc2_ = _loc2_ + "\\r";
+                                 s = s + "\\r";
                               }
                            }
                            else
                            {
-                              _loc2_ = _loc2_ + "\\n";
+                              s = s + "\\n";
                            }
                         }
                         else
                         {
-                           _loc2_ = _loc2_ + "\\f";
+                           s = s + "\\f";
                         }
                      }
                      else
                      {
-                        _loc2_ = _loc2_ + "\\b";
+                        s = s + "\\b";
                      }
                   }
                   else
                   {
-                     _loc2_ = _loc2_ + "\\\\";
+                     s = s + "\\\\";
                   }
                }
                else
                {
-                  _loc2_ = _loc2_ + "\\/";
+                  s = s + "\\/";
                }
             }
             else
             {
-               _loc2_ = _loc2_ + "\\\"";
+               s = s + "\\\"";
             }
-            _loc7_++;
+            i++;
          }
-         return _loc2_;
+         return s;
       }
       
-      public static function modifyVisibility(param1:Boolean, ... rest) : void
+      public static function modifyVisibility(value:Boolean, ... args) : void
       {
-         var _loc3_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < rest.length)
+         var i:int = 0;
+         for(i = 0; i < args.length; )
          {
-            (rest[_loc3_] as DisplayObject).visible = param1;
-            _loc3_++;
-         }
-      }
-      
-      public static function copyPropertyByRectangle(param1:DisplayObject, param2:Rectangle) : void
-      {
-         param1.x = param2.x;
-         param1.y = param2.y;
-         if(param2.width != 0)
-         {
-            param1.width = param2.width;
-         }
-         if(param2.height != 0)
-         {
-            param1.height = param2.height;
+            (args[i] as DisplayObject).visible = value;
+            i++;
          }
       }
       
-      public static function combineXML(param1:XML, param2:XML) : void
+      public static function copyPropertyByRectangle(source:DisplayObject, rt:Rectangle) : void
       {
-         var _loc3_:* = null;
-         var _loc5_:* = null;
-         if(param2 == null || param1 == null)
+         source.x = rt.x;
+         source.y = rt.y;
+         if(rt.width != 0)
          {
-            return;
-            §§push(trace("警告！！！！  combineXML 出现问题  请马上解决"));
+            source.width = rt.width;
          }
-         else
+         if(rt.height != 0)
          {
-            var _loc6_:XMLList = param2.attributes();
-            var _loc8_:int = 0;
-            var _loc7_:* = _loc6_;
-            for each(var _loc4_ in _loc6_)
-            {
-               _loc3_ = _loc4_.name().toString();
-               _loc5_ = _loc4_.toString();
-               if(!param1.hasOwnProperty("@" + _loc3_))
-               {
-                  param1["@" + _loc3_] = _loc5_;
-               }
-            }
+            source.height = rt.height;
+         }
+      }
+      
+      public static function combineXML(result:XML, data:XML) : void
+      {
+         var propname:* = null;
+         var value:* = null;
+         if(data == null || result == null)
+         {
+            trace("警告！！！！  combineXML 出现问题  请马上解决");
             return;
          }
+         var attr:XMLList = data.attributes();
+         var _loc8_:int = 0;
+         var _loc7_:* = attr;
+         for each(var item in attr)
+         {
+            propname = item.name().toString();
+            value = item.toString();
+            if(!result.hasOwnProperty("@" + propname))
+            {
+               result["@" + propname] = value;
+            }
+         }
       }
       
-      public static function getDisplayObjectSuperParent(param1:*, param2:Class, param3:*) : *
+      public static function getDisplayObjectSuperParent(dis:*, containterClazz:Class, stage:*) : *
       {
-         while(param1 != null && param1 != param3)
+         while(dis != null && dis != stage)
          {
-            if(param1 is param2)
+            if(dis is containterClazz)
             {
-               return param1;
+               return dis;
             }
-            param1 = param1.parent;
+            dis = dis.parent;
          }
          return null;
       }
       
-      public static function getDisplayObjectSuperParentByName(param1:*, param2:String, param3:*) : *
+      public static function getDisplayObjectSuperParentByName(dis:*, qualifiedClassName:String, stage:*) : *
       {
-         while(param1 != null && param1 != param3)
+         while(dis != null && dis != stage)
          {
-            if(getQualifiedClassName(param1) == param2)
+            if(getQualifiedClassName(dis) == qualifiedClassName)
             {
-               return param1;
+               return dis;
             }
-            param1 = param1.parent;
+            dis = dis.parent;
          }
          return null;
       }

@@ -8,14 +8,14 @@ package ddt.data.analyze
       
       public var result:String;
       
-      public function ActivePullDownAnalyze(param1:Function)
+      public function ActivePullDownAnalyze(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         result = param1;
+         result = data;
          onAnalyzeComplete();
       }
    }

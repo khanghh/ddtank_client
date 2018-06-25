@@ -45,10 +45,10 @@ package ddt.manager
          dispatchEvent(new Event(CHAGNECOLOR_OPENVIEW));
       }
       
-      public function addOneThing(param1:BagCell) : void
+      public function addOneThing(cell:BagCell) : void
       {
          _isOneThing = true;
-         _changeColorModel.setOnlyOneEditableThing(param1.itemInfo);
+         _changeColorModel.setOnlyOneEditableThing(cell.itemInfo);
       }
       
       public function close() : void
@@ -65,9 +65,9 @@ package ddt.manager
          return _isOneThing;
       }
       
-      public function set isOneThing(param1:Boolean) : void
+      public function set isOneThing(value:Boolean) : void
       {
-         _isOneThing = param1;
+         _isOneThing = value;
       }
    }
 }

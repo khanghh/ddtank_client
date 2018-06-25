@@ -36,15 +36,15 @@ package character.action
       
       private var _bindingEventDispatcher:EventDispatcher;
       
-      public function BaseAction(param1:String = "", param2:String = "", param3:uint = 0, param4:Boolean = false)
+      public function BaseAction(name:String = "", nextAction:String = "", priority:uint = 0, endStop:Boolean = false)
       {
          this._bindingEventDispatcher = new EventDispatcher(IEventDispatcher(this));
          super();
          this._type = BASE;
-         this._name = param1;
-         this._nextAction = param2;
-         this._priority = param3;
-         this._endStop = param4;
+         this._name = name;
+         this._nextAction = nextAction;
+         this._priority = priority;
+         this._endStop = endStop;
       }
       
       public function get len() : int
@@ -57,9 +57,9 @@ package character.action
          return true;
       }
       
-      private function set _3373707name(param1:String) : void
+      private function set _3373707name(value:String) : void
       {
-         this._name = param1;
+         this._name = value;
       }
       
       public function get name() : String
@@ -67,9 +67,9 @@ package character.action
          return this._name;
       }
       
-      private function set _1794985207nextAction(param1:String) : void
+      private function set _1794985207nextAction(value:String) : void
       {
-         this._nextAction = param1;
+         this._nextAction = value;
       }
       
       public function get nextAction() : String
@@ -77,9 +77,9 @@ package character.action
          return this._nextAction;
       }
       
-      private function set _1165461084priority(param1:uint) : void
+      private function set _1165461084priority(value:uint) : void
       {
-         this._priority = param1;
+         this._priority = value;
       }
       
       public function get priority() : uint
@@ -103,14 +103,14 @@ package character.action
       
       public function toXml() : XML
       {
-         var _loc1_:XML = <action/>;
-         _loc1_.@type = this._type;
-         _loc1_.@name = this._name;
-         _loc1_.@next = this._nextAction;
-         _loc1_.@priority = this._priority;
-         _loc1_.@endStop = this._endStop;
-         _loc1_.@sound = this._sound;
-         return _loc1_;
+         var result:XML = <action/>;
+         result.@type = this._type;
+         result.@name = this._name;
+         result.@next = this._nextAction;
+         result.@priority = this._priority;
+         result.@endStop = this._endStop;
+         result.@sound = this._sound;
+         return result;
       }
       
       public function get endStop() : Boolean
@@ -118,9 +118,9 @@ package character.action
          return this._endStop;
       }
       
-      private function set _1607262339endStop(param1:Boolean) : void
+      private function set _1607262339endStop(value:Boolean) : void
       {
-         this._endStop = param1;
+         this._endStop = value;
       }
       
       public function get sound() : String
@@ -128,9 +128,9 @@ package character.action
          return this._sound;
       }
       
-      private function set _109627663sound(param1:String) : void
+      private function set _109627663sound(value:String) : void
       {
-         this._sound = param1;
+         this._sound = value;
       }
       
       [Bindable(event="propertyChange")]

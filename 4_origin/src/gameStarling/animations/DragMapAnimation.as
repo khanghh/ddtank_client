@@ -4,9 +4,9 @@ package gameStarling.animations
    {
        
       
-      public function DragMapAnimation(param1:Number, param2:Number, param3:Boolean = false, param4:int = 100)
+      public function DragMapAnimation(cx:Number, cy:Number, directed:Boolean = false, life:int = 100)
       {
-         super(param1,param2,param4,param3,2);
+         super(cx,cy,life,directed,2);
       }
       
       override public function canAct() : Boolean

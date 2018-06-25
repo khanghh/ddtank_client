@@ -39,10 +39,10 @@ package christmas.info
       
       private var _snowNum:int;
       
-      public function ChristmasSystemItemsInfo(param1:int = 0)
+      public function ChristmasSystemItemsInfo($TemplateID:int = 0)
       {
          super();
-         TemplateID = param1;
+         TemplateID = $TemplateID;
       }
       
       public function get TemplateInfo() : ItemTemplateInfo
@@ -59,9 +59,9 @@ package christmas.info
          return _playerDefaultPos;
       }
       
-      public function set playerDefaultPos(param1:Point) : void
+      public function set playerDefaultPos(value:Point) : void
       {
-         _playerDefaultPos = param1;
+         _playerDefaultPos = value;
       }
       
       public function get fightOver() : Boolean
@@ -69,9 +69,9 @@ package christmas.info
          return _fightOver;
       }
       
-      public function set fightOver(param1:Boolean) : void
+      public function set fightOver(value:Boolean) : void
       {
-         _fightOver = param1;
+         _fightOver = value;
       }
       
       public function get roomClose() : Boolean
@@ -79,9 +79,9 @@ package christmas.info
          return _roomClose;
       }
       
-      public function set roomClose(param1:Boolean) : void
+      public function set roomClose(value:Boolean) : void
       {
-         _roomClose = param1;
+         _roomClose = value;
       }
       
       public function get myPlayerVO() : PlayerVO
@@ -89,20 +89,20 @@ package christmas.info
          return _myPlayerVO;
       }
       
-      public function set myPlayerVO(param1:PlayerVO) : void
+      public function set myPlayerVO(value:PlayerVO) : void
       {
-         _myPlayerVO = param1;
+         _myPlayerVO = value;
       }
       
-      public function set current_Blood(param1:Number) : void
+      public function set current_Blood(value:Number) : void
       {
-         if(_current_Blood == param1)
+         if(_current_Blood == value)
          {
             _cutValue = -1;
             return;
          }
-         _cutValue = _current_Blood - param1;
-         _current_Blood = param1;
+         _cutValue = _current_Blood - value;
+         _current_Blood = value;
          dispatchEvent(new Event("change"));
       }
       
@@ -111,9 +111,9 @@ package christmas.info
          return _current_Blood;
       }
       
-      public function set isLiving(param1:Boolean) : void
+      public function set isLiving(value:Boolean) : void
       {
-         _isLiving = param1;
+         _isLiving = value;
          if(!_isLiving)
          {
             current_Blood = 0;
@@ -130,9 +130,9 @@ package christmas.info
          return _snowNum;
       }
       
-      public function set snowNum(param1:int) : void
+      public function set snowNum(value:int) : void
       {
-         _snowNum = param1;
+         _snowNum = value;
       }
    }
 }

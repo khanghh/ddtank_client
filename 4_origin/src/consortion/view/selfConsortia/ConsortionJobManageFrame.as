@@ -81,56 +81,54 @@ package consortion.view.selfConsortia
       
       private function removeEvent() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          removeEventListener("response",__responseHandler);
          _cancel.removeEventListener("click",__cancelHandler);
          ConsortionModelManager.Instance.model.removeEventListener("dutyListChange",__dutyListChange);
-         _loc1_ = 0;
-         while(_loc1_ < 5)
+         for(i = 0; i < 5; )
          {
-            if(_items[_loc1_])
+            if(_items[i])
             {
-               _items[_loc1_].removeEventListener("click",__itemClickHandler);
+               _items[i].removeEventListener("click",__itemClickHandler);
             }
-            _loc1_++;
+            i++;
          }
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(event:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(event.responseCode == 0 || event.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();
          }
       }
       
-      private function __cancelHandler(param1:MouseEvent) : void
+      private function __cancelHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          dispose();
       }
       
-      private function __dutyListChange(param1:ConsortionEvent) : void
+      private function __dutyListChange(event:ConsortionEvent) : void
       {
          setDataList(ConsortionModelManager.Instance.model.dutyList);
       }
       
-      private function setDataList(param1:Vector.<ConsortiaDutyInfo>) : void
+      private function setDataList(list:Vector.<ConsortiaDutyInfo>) : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          clearList();
-         if(param1)
+         if(list)
          {
-            _loc2_ = 0;
-            while(_loc2_ < param1.length)
+            for(i = 0; i < list.length; )
             {
-               _items[_loc2_] = new JobManageItem();
-               _items[_loc2_].dutyInfo = param1[_loc2_];
-               _items[_loc2_].name = String(_loc2_);
-               _items[_loc2_].addEventListener("click",__itemClickHandler);
-               _list.addChild(_items[_loc2_]);
-               _loc2_++;
+               _items[i] = new JobManageItem();
+               _items[i].dutyInfo = list[i];
+               _items[i].name = String(i);
+               _items[i].addEventListener("click",__itemClickHandler);
+               _list.addChild(_items[i]);
+               i++;
             }
          }
          _textArea.text = LanguageMgr.GetTranslation("tank.ConsortionJobManageFrame.limitsText.text");
@@ -138,57 +136,55 @@ package consortion.view.selfConsortia
       
       private function clearList() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _list.disposeAllChildren();
-         _loc1_ = 0;
-         while(_loc1_ < 5)
+         for(i = 0; i < 5; )
          {
-            _items[_loc1_] = null;
-            _loc1_++;
+            _items[i] = null;
+            i++;
          }
       }
       
-      private function __itemClickHandler(param1:MouseEvent) : void
+      private function __itemClickHandler(event:MouseEvent) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < 5)
+         var i:int = 0;
+         for(i = 0; i < 5; )
          {
-            if(param1.currentTarget != _items[_loc2_])
+            if(event.currentTarget != _items[i])
             {
-               _items[_loc2_].selected = false;
-               _items[_loc2_].editable = false;
+               _items[i].selected = false;
+               _items[i].editable = false;
             }
             else
             {
-               _items[_loc2_].selected = true;
-               _textArea.text = setText(_loc2_ + 1);
+               _items[i].selected = true;
+               _textArea.text = setText(i + 1);
             }
-            _loc2_++;
+            i++;
          }
       }
       
-      private function setText(param1:int) : String
+      private function setText(type:int) : String
       {
-         var _loc2_:String = "";
-         switch(int(param1) - 1)
+         var str:String = "";
+         switch(int(type) - 1)
          {
             case 0:
-               _loc2_ = LanguageMgr.GetTranslation("tank.ConsortionJobManageFrame.limitsText.text1");
+               str = LanguageMgr.GetTranslation("tank.ConsortionJobManageFrame.limitsText.text1");
                break;
             case 1:
-               _loc2_ = LanguageMgr.GetTranslation("tank.ConsortionJobManageFrame.limitsText.text2");
+               str = LanguageMgr.GetTranslation("tank.ConsortionJobManageFrame.limitsText.text2");
                break;
             case 2:
-               _loc2_ = LanguageMgr.GetTranslation("tank.ConsortionJobManageFrame.limitsText.text3");
+               str = LanguageMgr.GetTranslation("tank.ConsortionJobManageFrame.limitsText.text3");
                break;
             case 3:
-               _loc2_ = LanguageMgr.GetTranslation("tank.ConsortionJobManageFrame.limitsText.text4");
+               str = LanguageMgr.GetTranslation("tank.ConsortionJobManageFrame.limitsText.text4");
                break;
             case 4:
-               _loc2_ = LanguageMgr.GetTranslation("tank.ConsortionJobManageFrame.limitsText.text4");
+               str = LanguageMgr.GetTranslation("tank.ConsortionJobManageFrame.limitsText.text4");
          }
-         return _loc2_;
+         return str;
       }
       
       override public function dispose() : void

@@ -50,11 +50,11 @@ package ddt.view.tips
          return _tipData;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(data:Object) : void
       {
-         if(param1)
+         if(data)
          {
-            _tipData = param1 as GuildIconTipInfo;
+            _tipData = data as GuildIconTipInfo;
             if(_guildLV)
             {
                ObjectUtils.disposeAllChildren(_guildLV);

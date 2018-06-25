@@ -14,10 +14,10 @@ package com.pickgliss.loader
       
       public var loader:BaseLoader;
       
-      public function LoaderEvent(param1:String, param2:BaseLoader)
+      public function LoaderEvent(type:String, loader:BaseLoader)
       {
-         this.loader = param2;
-         super(param1);
+         this.loader = loader;
+         super(type);
       }
    }
 }

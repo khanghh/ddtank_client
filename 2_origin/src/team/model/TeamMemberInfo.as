@@ -48,24 +48,24 @@ package team.model
          {
             return -2;
          }
-         var _loc4_:int = 0;
-         var _loc3_:Date = LastLoginDate;
-         var _loc2_:Date = TimeManager.Instance.Now();
-         var _loc1_:Number = (_loc2_.valueOf() - _loc3_.valueOf()) / 3600000;
-         _loc4_ = _loc1_ < 1?-1:Number(Math.floor(_loc1_));
-         if(_loc1_ < 1)
+         var totalHours:int = 0;
+         var oldDate:Date = LastLoginDate;
+         var nowDate:Date = TimeManager.Instance.Now();
+         var hours:Number = (nowDate.valueOf() - oldDate.valueOf()) / 3600000;
+         totalHours = hours < 1?-1:Number(Math.floor(hours));
+         if(hours < 1)
          {
-            minute = _loc1_ * 60;
+            minute = hours * 60;
             if(minute <= 0)
             {
                minute = 1;
             }
          }
-         if(_loc1_ > 24 && _loc1_ < 720)
+         if(hours > 24 && hours < 720)
          {
-            day = Math.floor(_loc1_ / 24);
+            day = Math.floor(hours / 24);
          }
-         return _loc4_;
+         return totalHours;
       }
    }
 }

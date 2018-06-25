@@ -61,15 +61,15 @@ package gameCommon.view.prop
       
       private var _isUsed:Boolean;
       
-      public function PropCell(param1:String = null, param2:int = -1, param3:Boolean = false)
+      public function PropCell(shortcutKey:String = null, mode:int = -1, allowDrag:Boolean = false)
       {
          super();
          _bitmapMgr = BitmapManager.getBitmapMgr("GameView");
-         _shortcutKey = param1;
+         _shortcutKey = shortcutKey;
          _grayFilters = ComponentFactory.Instance.creatFilters("grayFilter");
-         _mode = param2;
+         _mode = mode;
          mouseChildren = false;
-         _allowDrag = param3;
+         _allowDrag = allowDrag;
          configUI();
          addEvent();
       }
@@ -84,9 +84,9 @@ package gameCommon.view.prop
          return _isUsed;
       }
       
-      public function set isUsed(param1:Boolean) : void
+      public function set isUsed(value:Boolean) : void
       {
-         _isUsed = param1;
+         _isUsed = value;
       }
       
       public function dragStart() : void
@@ -110,31 +110,31 @@ package gameCommon.view.prop
          filters = _grayFilters;
       }
       
-      public function dragStop(param1:DragEffect) : void
+      public function dragStop(effect:DragEffect) : void
       {
          KeyboardManager.getInstance().isStopDispatching = false;
-         if(param1.target == null || param1.target is PropCell == false)
+         if(effect.target == null || effect.target is PropCell == false)
          {
             info = _info;
          }
-         var _loc3_:PropCell = param1.target as PropCell;
-         var _loc2_:PropInfo = _loc3_.info;
-         var _loc4_:Boolean = _loc3_._enabled;
-         var _loc5_:int = SharedManager.Instance.GameKeySets[_loc3_.shortcutKey];
-         _loc3_.info = info;
-         SharedManager.Instance.GameKeySets[_loc3_.shortcutKey] = SharedManager.Instance.GameKeySets[this.shortcutKey];
-         info = _loc2_;
-         SharedManager.Instance.GameKeySets[this.shortcutKey] = _loc5_;
+         var cell:PropCell = effect.target as PropCell;
+         var tempInfo:PropInfo = cell.info;
+         var tempEnabled:Boolean = cell._enabled;
+         var tempId:int = SharedManager.Instance.GameKeySets[cell.shortcutKey];
+         cell.info = info;
+         SharedManager.Instance.GameKeySets[cell.shortcutKey] = SharedManager.Instance.GameKeySets[this.shortcutKey];
+         info = tempInfo;
+         SharedManager.Instance.GameKeySets[this.shortcutKey] = tempId;
          SharedManager.Instance.save();
-         _loc3_.enabled = enabled;
-         this.enabled = _loc4_;
+         cell.enabled = enabled;
+         this.enabled = tempEnabled;
       }
       
-      public function dragDrop(param1:DragEffect) : void
+      public function dragDrop(effect:DragEffect) : void
       {
          if(_allowDrag)
          {
-            param1.action = "none";
+            effect.action = "none";
             DragManager.acceptDrag(this);
          }
       }
@@ -154,7 +154,7 @@ package gameCommon.view.prop
          return _tipInfo;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(value:Object) : void
       {
       }
       
@@ -163,7 +163,7 @@ package gameCommon.view.prop
          return "5,2,7,1,6,4";
       }
       
-      public function set tipDirctions(param1:String) : void
+      public function set tipDirctions(value:String) : void
       {
       }
       
@@ -172,7 +172,7 @@ package gameCommon.view.prop
          return 20;
       }
       
-      public function set tipGapH(param1:int) : void
+      public function set tipGapH(value:int) : void
       {
       }
       
@@ -181,7 +181,7 @@ package gameCommon.view.prop
          return 20;
       }
       
-      public function set tipGapV(param1:int) : void
+      public function set tipGapV(value:int) : void
       {
       }
       
@@ -190,7 +190,7 @@ package gameCommon.view.prop
          return "core.ToolPropTips";
       }
       
-      public function set tipStyle(param1:String) : void
+      public function set tipStyle(value:String) : void
       {
       }
       
@@ -237,7 +237,7 @@ package gameCommon.view.prop
          addEventListener("mouseOut",__mouseOut);
       }
       
-      protected function __mouseOut(param1:MouseEvent) : void
+      protected function __mouseOut(event:MouseEvent) : void
       {
          x = _x;
          y = _y;
@@ -263,7 +263,7 @@ package gameCommon.view.prop
          }
       }
       
-      protected function __mouseOver(param1:MouseEvent) : void
+      protected function __mouseOver(event:MouseEvent) : void
       {
          if(_info != null)
          {
@@ -313,33 +313,33 @@ package gameCommon.view.prop
          return _info;
       }
       
-      public function setMode(param1:int) : void
+      public function setMode(mode:int) : void
       {
-         _mode = param1;
+         _mode = mode;
          drawLayer();
       }
       
-      public function set info(param1:PropInfo) : void
+      public function set info(val:PropInfo) : void
       {
-         var _loc2_:* = null;
+         var bitmap:* = null;
          ShowTipManager.Instance.removeTip(this);
-         _info = param1;
-         var _loc3_:DisplayObject = _asset;
+         _info = val;
+         var asset:DisplayObject = _asset;
          if(_info != null)
          {
-            _loc2_ = ComponentFactory.Instance.creatBitmap("game.crazyTank.view.Prop" + _info.Template.Pic + "Asset");
-            if(_loc2_)
+            bitmap = ComponentFactory.Instance.creatBitmap("game.crazyTank.view.Prop" + _info.Template.Pic + "Asset");
+            if(bitmap)
             {
-               _loc2_.smoothing = true;
+               bitmap.smoothing = true;
                var _loc4_:int = 1;
-               _loc2_.y = _loc4_;
-               _loc2_.x = _loc4_;
+               bitmap.y = _loc4_;
+               bitmap.x = _loc4_;
                _loc4_ = 35;
-               _loc2_.height = _loc4_;
-               _loc2_.width = _loc4_;
-               addChildAt(_loc2_,getChildIndex(_fore));
+               bitmap.height = _loc4_;
+               bitmap.width = _loc4_;
+               addChildAt(bitmap,getChildIndex(_fore));
             }
-            _asset = _loc2_;
+            _asset = bitmap;
             _tipInfo.info = _info.Template;
             _tipInfo.shortcutKey = _shortcutKey;
             ShowTipManager.Instance.addTip(this);
@@ -349,9 +349,9 @@ package gameCommon.view.prop
          {
             buttonMode = false;
          }
-         if(_loc3_ != null)
+         if(asset != null)
          {
-            ObjectUtils.disposeObject(_loc3_);
+            ObjectUtils.disposeObject(asset);
          }
       }
       
@@ -360,11 +360,11 @@ package gameCommon.view.prop
          return _enabled;
       }
       
-      public function set enabled(param1:Boolean) : void
+      public function set enabled(val:Boolean) : void
       {
-         if(_enabled != param1)
+         if(_enabled != val)
          {
-            _enabled = param1;
+            _enabled = val;
             if(!_enabled)
             {
                filters = _grayFilters;
@@ -381,15 +381,15 @@ package gameCommon.view.prop
          return _isExist;
       }
       
-      public function set isExist(param1:Boolean) : void
+      public function set isExist(val:Boolean) : void
       {
-         _isExist = param1;
+         _isExist = val;
       }
       
-      public function setPossiton(param1:int, param2:int) : void
+      public function setPossiton(x:int, y:int) : void
       {
-         _x = param1;
-         _y = param2;
+         _x = x;
+         _y = y;
          this.x = _x;
          this.y = _y;
       }
@@ -435,17 +435,17 @@ package gameCommon.view.prop
          return _localVisible;
       }
       
-      public function setVisible(param1:Boolean) : void
+      public function setVisible(val:Boolean) : void
       {
-         if(_localVisible != param1)
+         if(_localVisible != val)
          {
-            _localVisible = param1;
+            _localVisible = val;
          }
       }
       
-      public function set back(param1:DisplayObject) : void
+      public function set back(value:DisplayObject) : void
       {
-         _back = param1;
+         _back = value;
       }
    }
 }

@@ -24,11 +24,11 @@ package gameCommon.view.playerThumbnail
       
       private var _rateTxt:FilterFrameText;
       
-      public function BossBloodItem(param1:Number)
+      public function BossBloodItem(totalBlood:Number)
       {
          super();
-         _totalBlood = param1;
-         _bloodNum = param1;
+         _totalBlood = totalBlood;
+         _bloodNum = totalBlood;
          _bg = ComponentFactory.Instance.creatBitmap("asset.game.bossHpStripAsset");
          addChild(_bg);
          _maskShape = new Shape();
@@ -44,28 +44,28 @@ package gameCommon.view.playerThumbnail
          _rateTxt.text = "100%";
       }
       
-      public function set bloodNum(param1:Number) : void
+      public function set bloodNum(value:Number) : void
       {
-         if(param1 < 0)
+         if(value < 0)
          {
-            param1 = 0;
+            value = 0;
          }
-         else if(param1 > _totalBlood)
+         else if(value > _totalBlood)
          {
-            param1 = Number(_totalBlood);
+            value = Number(_totalBlood);
          }
-         _bloodNum = param1;
+         _bloodNum = value;
          updateView();
       }
       
-      public function updateBlood(param1:Number, param2:Number) : void
+      public function updateBlood(current:Number, max:Number) : void
       {
-         _bloodNum = param1;
+         _bloodNum = current;
          if(_bloodNum < 0)
          {
             _bloodNum = 0;
          }
-         _totalBlood = param2;
+         _totalBlood = max;
          if(_totalBlood < _bloodNum)
          {
             _totalBlood = _bloodNum;
@@ -75,20 +75,20 @@ package gameCommon.view.playerThumbnail
       
       private function updateView() : void
       {
-         var _loc1_:int = getRate(_bloodNum,_totalBlood);
-         _rateTxt.text = _loc1_.toString() + "%";
-         _maskShape.width = 120 * (_loc1_ / 100);
+         var rate:int = getRate(_bloodNum,_totalBlood);
+         _rateTxt.text = rate.toString() + "%";
+         _maskShape.width = 120 * (rate / 100);
          _bg.mask = _maskShape;
       }
       
-      private function getRate(param1:Number, param2:Number) : int
+      private function getRate(value1:Number, value2:Number) : int
       {
-         var _loc3_:* = Number(param1 / param2 * 100);
-         if(_loc3_ > 0 && _loc3_ < 1)
+         var rate:* = Number(value1 / value2 * 100);
+         if(rate > 0 && rate < 1)
          {
-            _loc3_ = 1;
+            rate = 1;
          }
-         return int(_loc3_);
+         return int(rate);
       }
       
       public function dispose() : void

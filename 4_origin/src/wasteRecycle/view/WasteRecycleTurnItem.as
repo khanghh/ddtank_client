@@ -50,57 +50,56 @@ package wasteRecycle.view
          addChild(_waggleBg);
          addChild(_shine);
          _waggleBg.visible = false;
-         var _loc1_:Shape = new Shape();
-         _loc1_.graphics.beginFill(0);
-         _loc1_.graphics.drawRect(0,0,95,125);
-         _loc1_.graphics.endFill();
-         addChild(_loc1_);
-         this.mask = _loc1_;
+         var mask:Shape = new Shape();
+         mask.graphics.beginFill(0);
+         mask.graphics.drawRect(0,0,95,125);
+         mask.graphics.endFill();
+         addChild(mask);
+         this.mask = mask;
          createTurn(int(Math.random() * 14) + 1);
       }
       
-      private function createTurn(param1:int) : void
+      private function createTurn(value:int) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:* = null;
+         var i:int = 0;
+         var index:int = 0;
+         var btm:* = null;
          ObjectUtils.disposeAllChildren(_turn);
-         _loc4_ = -2;
-         while(_loc4_ <= 2)
+         for(i = -2; i <= 2; )
          {
-            _loc2_ = param1 + _loc4_;
-            if(_loc2_ == -1)
+            index = value + i;
+            if(index == -1)
             {
-               _loc2_ = 14;
+               index = 14;
             }
-            else if(_loc2_ == 0)
+            else if(index == 0)
             {
-               _loc2_ = 15;
+               index = 15;
             }
-            else if(_loc2_ == 16)
+            else if(index == 16)
             {
-               _loc2_ = 1;
+               index = 1;
             }
-            else if(_loc2_ == 17)
+            else if(index == 17)
             {
-               _loc2_ = 2;
+               index = 2;
             }
-            _loc3_ = ComponentFactory.Instance.creatBitmap("asset.wasteRecycle.lottery" + _loc2_);
-            if(_loc4_ == 0)
+            btm = ComponentFactory.Instance.creatBitmap("asset.wasteRecycle.lottery" + index);
+            if(i == 0)
             {
-               _origin = (95 - _loc3_.height) / 2 - _turn.height;
+               _origin = (95 - btm.height) / 2 - _turn.height;
             }
-            _loc3_.x = (95 - _loc3_.width) / 2;
-            _loc3_.y = _turn.height + 20;
-            _turn.addChild(_loc3_);
-            _loc4_++;
+            btm.x = (95 - btm.width) / 2;
+            btm.y = _turn.height + 20;
+            _turn.addChild(btm);
+            i++;
          }
          _turn.y = _origin;
       }
       
-      public function turn(param1:int) : void
+      public function turn(result:int) : void
       {
-         _result = param1;
+         _result = result;
          _shine.gotoAndStop(1);
          _isPlay = true;
          turnStart();
@@ -113,7 +112,7 @@ package wasteRecycle.view
          _shine.addEventListener("enterFrame",__onEnterFrame);
       }
       
-      private function __onEnterFrame(param1:Event) : void
+      private function __onEnterFrame(e:Event) : void
       {
          if(_shine.currentFrame == _shine.totalFrames)
          {

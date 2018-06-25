@@ -34,17 +34,34 @@ package ddt.command
       
       private var _ennable:Boolean = true;
       
+      private var _times:int = 1;
+      
       public var bg:Image;
       
       public var needFocus:Boolean = true;
       
-      public function NumberSelecter(param1:int = 1, param2:int = 99)
+      public function NumberSelecter(min:int = 1, max:int = 99)
       {
          super();
-         _minNum = param1;
-         _maxNum = param2;
+         _minNum = min;
+         _maxNum = max;
          init();
          initEvents();
+      }
+      
+      public function get times() : int
+      {
+         return _times;
+      }
+      
+      public function set times(value:int) : void
+      {
+         _times = value;
+      }
+      
+      public function setNumberTxt(value:Boolean) : void
+      {
+         numText.mouseEnabled = value;
       }
       
       public function get ennable() : Boolean
@@ -52,9 +69,9 @@ package ddt.command
          return _ennable;
       }
       
-      public function set ennable(param1:Boolean) : void
+      public function set ennable(value:Boolean) : void
       {
-         _ennable = param1;
+         _ennable = value;
          if(!_ennable)
          {
             var _loc2_:* = _ennable;
@@ -98,46 +115,46 @@ package ddt.command
          removeEventListener("addedToStage",addtoStageHandler);
       }
       
-      private function addtoStageHandler(param1:Event) : void
+      private function addtoStageHandler(e:Event) : void
       {
          setFocus();
       }
       
-      private function clickHandler(param1:MouseEvent) : void
+      private function clickHandler(evt:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
+         evt.stopImmediatePropagation();
       }
       
-      private function changeHandler(param1:Event) : void
+      private function changeHandler(evt:Event) : void
       {
          number = int(numText.text);
       }
       
-      private function onKeyDown(param1:KeyboardEvent) : void
+      private function onKeyDown(evt:KeyboardEvent) : void
       {
          SoundManager.instance.play("008");
-         param1.stopImmediatePropagation();
-         if(param1.keyCode == 13)
+         evt.stopImmediatePropagation();
+         if(evt.keyCode == 13)
          {
             number = int(numText.text);
             dispatchEvent(new Event("number_enter",true));
          }
-         if(param1.keyCode == 27)
+         if(evt.keyCode == 27)
          {
             dispatchEvent(new Event("number_close"));
          }
       }
       
-      private function reduceBtnClickHandler(param1:MouseEvent) : void
+      private function reduceBtnClickHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         number = number - 1;
+         number = number - 1 * _times;
       }
       
-      private function addBtnClickHandler(param1:MouseEvent) : void
+      private function addBtnClickHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         number = number + 1;
+         number = number + 1 * _times;
       }
       
       public function setFocus() : void
@@ -154,29 +171,29 @@ package ddt.command
          }
       }
       
-      public function set maximum(param1:int) : void
+      public function set maximum(value:int) : void
       {
-         _maxNum = param1;
+         _maxNum = value;
          number = _num;
       }
       
-      public function set minimum(param1:int) : void
+      public function set minimum(value:int) : void
       {
-         _minNum = param1;
+         _minNum = value;
          number = _num;
       }
       
-      public function set number(param1:int) : void
+      public function set number(value:int) : void
       {
-         if(param1 < _minNum)
+         if(value < _minNum)
          {
-            param1 = _minNum;
+            value = _minNum;
          }
-         else if(param1 > _maxNum)
+         else if(value > _maxNum)
          {
-            param1 = _maxNum;
+            value = _maxNum;
          }
-         _num = param1;
+         _num = value;
          updateView();
          dispatchEvent(new Event("change"));
       }

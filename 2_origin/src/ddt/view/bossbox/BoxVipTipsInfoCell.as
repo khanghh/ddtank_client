@@ -28,9 +28,9 @@ package ddt.view.bossbox
          initView();
       }
       
-      public function set isSelect(param1:Boolean) : void
+      public function set isSelect(value:Boolean) : void
       {
-         _isSelect = param1;
+         _isSelect = value;
          grayFilters = !_isSelect;
          if(_isSelect)
          {
@@ -54,20 +54,20 @@ package ddt.view.bossbox
       {
          _di = ComponentFactory.Instance.creat("Vip.GetAwardsItemBG");
          addChild(_di);
-         var _loc1_:* = ComponentFactory.Instance.creat("Vip.GetAwardsItemCellBG");
-         addChild(_loc1_);
+         var di:* = ComponentFactory.Instance.creat("Vip.GetAwardsItemCellBG");
+         addChild(di);
          _itemName = ComponentFactory.Instance.creat("BoxVipTips.ItemName");
          addChild(_itemName);
       }
       
-      override protected function onMouseClick(param1:MouseEvent) : void
+      override protected function onMouseClick(evt:MouseEvent) : void
       {
          dispatchEvent(new CellEvent("itemclick",this));
       }
       
-      public function set itemName(param1:String) : void
+      public function set itemName(name:String) : void
       {
-         _itemName.text = param1;
+         _itemName.text = name;
       }
       
       override public function dispose() : void

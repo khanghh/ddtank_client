@@ -21,7 +21,7 @@ package trainer.view
          this.addEventListener("click",onClick);
       }
       
-      protected function onClick(param1:MouseEvent) : void
+      protected function onClick(e:MouseEvent) : void
       {
          _clickedTimes = _clickedTimes + 1;
          if(_clickedTimes > 50)
@@ -30,7 +30,7 @@ package trainer.view
          }
       }
       
-      protected function onATS(param1:Event) : void
+      protected function onATS(e:Event) : void
       {
          _clickedTimes = 0;
          graphics.endFill();
@@ -39,7 +39,7 @@ package trainer.view
          graphics.drawRect(0,0,StageReferance.stageWidth,StageReferance.stageHeight);
       }
       
-      protected function onRFS(param1:Event) : void
+      protected function onRFS(e:Event) : void
       {
          _clickedTimes = 0;
          graphics.endFill();
@@ -56,51 +56,51 @@ package trainer.view
          this.removeEventListener("click",onClick);
       }
       
-      public function dig(param1:String, param2:Array) : void
+      public function dig(guideCoverType:String, args:Array) : void
       {
-         var _loc3_:* = param1;
+         var _loc3_:* = guideCoverType;
          if("circle" !== _loc3_)
          {
             if("rect" !== _loc3_)
             {
                if("ellipse" === _loc3_)
                {
-                  digEllipse(param2[0],param2[1],param2[2],param2[3]);
+                  digEllipse(args[0],args[1],args[2],args[3]);
                }
             }
             else
             {
-               digRect(param2[0],param2[1],param2[2],param2[3]);
+               digRect(args[0],args[1],args[2],args[3]);
             }
          }
          else
          {
-            digCircle(param2[0],param2[1],param2[2]);
+            digCircle(args[0],args[1],args[2]);
          }
       }
       
-      public function drawCover(param1:uint, param2:Number) : void
+      public function drawCover($color:uint, $alpha:Number) : void
       {
          graphics.endFill();
          graphics.clear();
-         graphics.beginFill(param1,param2);
+         graphics.beginFill($color,$alpha);
          graphics.drawRect(0,0,StageReferance.stageWidth,StageReferance.stageHeight);
          graphics.endFill();
       }
       
-      public function digCircle(param1:Number, param2:Number, param3:Number) : void
+      public function digCircle($x:Number, $y:Number, $radius:Number) : void
       {
-         graphics.drawCircle(param1,param2,param3);
+         graphics.drawCircle($x,$y,$radius);
       }
       
-      public function digRect(param1:Number, param2:Number, param3:Number, param4:Number) : void
+      public function digRect($x:Number, $y:Number, $width:Number, $height:Number) : void
       {
-         graphics.drawRect(param1,param2,param3,param4);
+         graphics.drawRect($x,$y,$width,$height);
       }
       
-      public function digEllipse(param1:Number, param2:Number, param3:Number, param4:Number) : void
+      public function digEllipse($x:Number, $y:Number, $width:Number, $height:Number) : void
       {
-         graphics.drawEllipse(param1,param2,param3,param4);
+         graphics.drawEllipse($x,$y,$width,$height);
       }
    }
 }

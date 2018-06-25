@@ -20,13 +20,13 @@ package com.pickgliss.ui.image
          super();
       }
       
-      public function set cutWidth(param1:int) : void
+      public function set cutWidth(value:int) : void
       {
-         if(_cutWidth == param1)
+         if(_cutWidth == value)
          {
             return;
          }
-         _cutWidth = param1;
+         _cutWidth = value;
       }
       
       override protected function addChildren() : void
@@ -47,23 +47,23 @@ package com.pickgliss.ui.image
          }
       }
       
-      override public function setFrame(param1:int) : void
+      override public function setFrame(frameIndex:int) : void
       {
-         if(param1 > 10)
+         if(frameIndex > 10)
          {
             return;
          }
-         _currentFrame = param1;
-         if(param1 == 10)
+         _currentFrame = frameIndex;
+         if(frameIndex == 10)
          {
-            param1 = 0;
+            frameIndex = 0;
          }
          ObjectUtils.disposeObject(_image);
-         var _loc3_:BitmapData = (_display as Bitmap).bitmapData;
-         var _loc4_:Rectangle = new Rectangle(_cutWidth * param1,0,_cutWidth,_display.height);
-         var _loc2_:BitmapData = new BitmapData(_cutWidth,_display.height);
-         _loc2_.copyPixels(_loc3_,_loc4_,new Point(0,0));
-         _image = new Bitmap(_loc2_);
+         var data:BitmapData = (_display as Bitmap).bitmapData;
+         var rect:Rectangle = new Rectangle(_cutWidth * frameIndex,0,_cutWidth,_display.height);
+         var myBtmd:BitmapData = new BitmapData(_cutWidth,_display.height);
+         myBtmd.copyPixels(data,rect,new Point(0,0));
+         _image = new Bitmap(myBtmd);
          if(_width != Math.round(_image.width))
          {
             _width = Math.round(_image.width);

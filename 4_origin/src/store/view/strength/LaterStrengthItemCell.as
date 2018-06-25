@@ -11,21 +11,21 @@ package store.view.strength
    {
        
       
-      public function LaterStrengthItemCell(param1:int)
+      public function LaterStrengthItemCell($index:int)
       {
-         var _loc2_:Sprite = new Sprite();
-         var _loc3_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtstore.EquipCellBG");
-         _loc2_.addChild(_loc3_);
-         super(_loc2_,param1);
+         var bg:Sprite = new Sprite();
+         var bgBit:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtstore.EquipCellBG");
+         bg.addChild(bgBit);
+         super(bg,$index);
          setContentSize(68,68);
          this.PicPos = new Point(-4,-2);
       }
       
-      override protected function __clickHandler(param1:InteractiveEvent) : void
+      override protected function __clickHandler(evt:InteractiveEvent) : void
       {
       }
       
-      override protected function __doubleClickHandler(param1:InteractiveEvent) : void
+      override protected function __doubleClickHandler(evt:InteractiveEvent) : void
       {
       }
       

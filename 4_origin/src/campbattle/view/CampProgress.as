@@ -39,7 +39,7 @@ package campbattle.view
          CampBattleControl.instance.addEventListener("capture_over",captureHander);
       }
       
-      protected function captureHander(param1:MapEvent) : void
+      protected function captureHander(event:MapEvent) : void
       {
          _mc.visible = CampBattleControl.instance.model.isCapture;
          if(!CampBattleControl.instance.model.isCapture)
@@ -58,7 +58,7 @@ package campbattle.view
          _mc.gotoAndStop(4);
       }
       
-      protected function captureStartHander(param1:MapEvent) : void
+      protected function captureStartHander(event:MapEvent) : void
       {
          _index = 1;
          _timer.reset();
@@ -69,7 +69,7 @@ package campbattle.view
          _mc.gotoAndStop(1);
       }
       
-      private function timerCompeteHander(param1:Event) : void
+      private function timerCompeteHander(event:Event) : void
       {
          _timer.removeEventListener("timer",timerHander);
          _timer.removeEventListener("timerComplete",timerCompeteHander);
@@ -77,7 +77,7 @@ package campbattle.view
          setCapture();
       }
       
-      private function timerHander(param1:Event) : void
+      private function timerHander(event:Event) : void
       {
          _index = Number(_index) + 1;
          _mc.gotoAndStop(_index);

@@ -45,44 +45,44 @@ package happyLittleGame
       
       private function initCardView() : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc1_:Array = ServerConfigManager.instance.HappyLittleGameOpenList.split(",");
-         var _loc4_:int = _loc1_.length;
-         var _loc5_:int = 0;
-         _loc5_;
-         while(_loc5_ < _loc4_)
+         var temp:* = null;
+         var card:* = null;
+         var games:Array = ServerConfigManager.instance.HappyLittleGameOpenList.split(",");
+         var len:int = games.length;
+         var i:int = 0;
+         i;
+         while(i < len)
          {
-            _loc3_ = _loc1_[_loc5_].split("|");
-            if(_loc3_[1] == 1)
+            temp = games[i].split("|");
+            if(temp[1] == 1)
             {
-               gametypes.push(_loc3_[0]);
+               gametypes.push(temp[0]);
             }
-            _loc5_++;
+            i++;
          }
-         _loc4_ = gametypes.length;
-         _loc5_ = 0;
-         _loc5_;
-         while(_loc5_ < _loc4_)
+         len = gametypes.length;
+         i = 0;
+         i;
+         while(i < len)
          {
-            _loc2_ = new GameCard();
-            PositionUtils.setPos(_loc2_,"happygame.card.pos" + (_loc5_ + 1));
-            _loc2_.gameType = gametypes[_loc5_];
-            _loc2_.addEventListener("click",__clickHandler);
-            cards.push(_loc2_);
-            addChild(_loc2_);
-            _loc5_++;
+            card = new GameCard();
+            PositionUtils.setPos(card,"happygame.card.pos" + (i + 1));
+            card.gameType = gametypes[i];
+            card.addEventListener("click",__clickHandler);
+            cards.push(card);
+            addChild(card);
+            i++;
          }
       }
       
-      private function __clickHandler(param1:MouseEvent) : void
+      private function __clickHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:GameCard = param1.currentTarget as GameCard;
-         _loc2_.select = true;
+         var card:GameCard = evt.currentTarget as GameCard;
+         card.select = true;
          if(_currentCard != null)
          {
-            if(_loc2_ == _currentCard)
+            if(card == _currentCard)
             {
                return;
             }
@@ -90,33 +90,33 @@ package happyLittleGame
             _currentCard.x = _currentCard.x - 4;
             _currentCard.y = _currentCard.y + 4;
          }
-         _currentCard = _loc2_;
-         _loc2_.x = _loc2_.x + 4;
-         _loc2_.y = _loc2_.y - 4;
-         HappyLittleGameManager.instance.currentGameType = _loc2_.gameType;
+         _currentCard = card;
+         card.x = card.x + 4;
+         card.y = card.y - 4;
+         HappyLittleGameManager.instance.currentGameType = card.gameType;
          switch(int(HappyLittleGameManager.instance.currentGameType) - 1)
          {
             case 0:
             case 1:
-               if(_loc2_.gameType == 2 && HappyLittleGameManager.instance.fixed_refresh)
+               if(card.gameType == 2 && HappyLittleGameManager.instance.fixed_refresh)
                {
                   HappyLittleGameManager.instance.startTimerByType(2);
-                  HappyLittleGameManager.instance.bombManager.clearRankDataByType(_loc2_.gameType);
+                  HappyLittleGameManager.instance.bombManager.clearRankDataByType(card.gameType);
                   SocketManager.Instance.out.sendBombEnterRoom(HappyLittleGameManager.instance.currentGameType);
                   FunnyGamesManager.getInstance().requestRankInfo(2,2);
                   FunnyGamesManager.getInstance().requestRankInfo(2,1);
                }
-               if(_loc2_.gameType == 1 && HappyLittleGameManager.instance.random_refresh)
+               if(card.gameType == 1 && HappyLittleGameManager.instance.random_refresh)
                {
                   HappyLittleGameManager.instance.startTimerByType(1);
-                  HappyLittleGameManager.instance.bombManager.clearRankDataByType(_loc2_.gameType);
+                  HappyLittleGameManager.instance.bombManager.clearRankDataByType(card.gameType);
                   SocketManager.Instance.out.sendBombEnterRoom(HappyLittleGameManager.instance.currentGameType);
                   FunnyGamesManager.getInstance().requestRankInfo(1,2);
                   FunnyGamesManager.getInstance().requestRankInfo(1,1);
                }
                break;
             case 2:
-               HappyLittleGameManager.instance.bombManager.clearRankDataByType(_loc2_.gameType);
+               HappyLittleGameManager.instance.bombManager.clearRankDataByType(card.gameType);
                SocketManager.Instance.out.sendBombEnterRoom(HappyLittleGameManager.instance.currentGameType);
                FunnyGamesManager.getInstance().requestRankInfo(3,2);
                FunnyGamesManager.getInstance().requestRankInfo(3,1);
@@ -129,20 +129,19 @@ package happyLittleGame
       
       public function dispose() : void
       {
-         var _loc1_:* = null;
-         var _loc3_:int = 0;
-         var _loc2_:int = cards.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var card:* = null;
+         var i:int = 0;
+         var len:int = cards.length;
+         for(i = 0; i < len; )
          {
-            _loc1_ = cards[_loc3_];
+            card = cards[i];
             if(cards)
             {
-               _loc1_.removeEventListener("click",__clickHandler);
-               ObjectUtils.disposeObject(_loc1_);
-               _loc1_ = null;
+               card.removeEventListener("click",__clickHandler);
+               ObjectUtils.disposeObject(card);
+               card = null;
             }
-            _loc3_++;
+            i++;
          }
          cards = null;
          ObjectUtils.disposeObject(_rightBtn);

@@ -62,12 +62,12 @@ package carnivalActivity.view
       
       protected var _statusArr:Array;
       
-      public function CarnivalActivityItem(param1:int, param2:GiftBagInfo, param3:int)
+      public function CarnivalActivityItem(type:int, info:GiftBagInfo, index:int)
       {
          super();
-         _type = param1;
-         _info = param2;
-         _index = param3;
+         _type = type;
+         _info = info;
+         _index = index;
          initData();
          initView();
          initItem();
@@ -76,27 +76,26 @@ package carnivalActivity.view
       
       protected function initData() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _info.giftConditionArr.length)
+         var i:int = 0;
+         for(i = 0; i < _info.giftConditionArr.length; )
          {
-            if(_info.giftConditionArr[_loc1_].conditionIndex == 0)
+            if(_info.giftConditionArr[i].conditionIndex == 0)
             {
-               _condtion = _info.giftConditionArr[_loc1_].conditionValue;
+               _condtion = _info.giftConditionArr[i].conditionValue;
             }
-            else if(_info.giftConditionArr[_loc1_].conditionIndex == 100)
+            else if(_info.giftConditionArr[i].conditionIndex == 100)
             {
-               _sumCount = _info.giftConditionArr[_loc1_].conditionValue;
+               _sumCount = _info.giftConditionArr[i].conditionValue;
             }
-            _loc1_++;
+            i++;
          }
       }
       
       protected function initView() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var bagCell:* = null;
+         var back:* = null;
          _bg = ComponentFactory.Instance.creat("carnicalAct.listItem" + _index);
          addChild(_bg);
          _descTxt = ComponentFactory.Instance.creatComponentByStylename("carnivalAct.condtionTxt");
@@ -113,17 +112,16 @@ package carnivalActivity.view
          PositionUtils.setPos(_alreadyGetBtn,"carnivalAct.getButtonPos");
          _goodContent = new Sprite();
          addChild(_goodContent);
-         _loc3_ = 0;
-         while(_loc3_ < _info.giftRewardArr.length)
+         for(i = 0; i < _info.giftRewardArr.length; )
          {
-            _loc1_ = createBagCell(0,_info.giftRewardArr[_loc3_]);
-            _loc2_ = ComponentFactory.Instance.creat("wonderfulactivity.goods.back");
-            _loc2_.x = (_loc2_.width + 5) * _loc3_;
-            _loc1_.x = _loc2_.width / 2 - _loc1_.width / 2 + _loc2_.x + 2;
-            _loc1_.y = _loc2_.height / 2 - _loc1_.height / 2 + 1;
-            _goodContent.addChild(_loc2_);
-            _goodContent.addChild(_loc1_);
-            _loc3_++;
+            bagCell = createBagCell(0,_info.giftRewardArr[i]);
+            back = ComponentFactory.Instance.creat("wonderfulactivity.goods.back");
+            back.x = (back.width + 5) * i;
+            bagCell.x = back.width / 2 - bagCell.width / 2 + back.x + 2;
+            bagCell.y = back.height / 2 - bagCell.height / 2 + 1;
+            _goodContent.addChild(back);
+            _goodContent.addChild(bagCell);
+            i++;
          }
          _goodContent.x = 142;
          _goodContent.y = 7;
@@ -131,8 +129,8 @@ package carnivalActivity.view
       
       protected function initItem() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
+         var horseGrade:int = 0;
+         var horseStar:int = 0;
          if(_sumCount != 0)
          {
             _awardCountTxt = ComponentFactory.Instance.creatComponentByStylename("carnivalAct.countTxt");
@@ -144,9 +142,9 @@ package carnivalActivity.view
          }
          if(CarnivalActivityControl.instance.currentChildType == 10)
          {
-            _loc2_ = int(_condtion / 10) + 1;
-            _loc1_ = _condtion % 10;
-            _descTxt.text = LanguageMgr.GetTranslation("carnival.descTxt" + CarnivalActivityControl.instance.currentChildType,_loc2_,_loc1_);
+            horseGrade = int(_condtion / 10) + 1;
+            horseStar = _condtion % 10;
+            _descTxt.text = LanguageMgr.GetTranslation("carnival.descTxt" + CarnivalActivityControl.instance.currentChildType,horseGrade,horseStar);
          }
          else if(CarnivalActivityControl.instance.currentChildType != 4)
          {
@@ -154,35 +152,35 @@ package carnivalActivity.view
          }
       }
       
-      protected function createBagCell(param1:int, param2:GiftRewardInfo) : BagCell
+      protected function createBagCell(order:int, gift:GiftRewardInfo) : BagCell
       {
-         var _loc5_:InventoryItemInfo = new InventoryItemInfo();
-         _loc5_.TemplateID = param2.templateId;
-         _loc5_ = ItemManager.fill(_loc5_);
-         _loc5_.IsBinds = param2.isBind;
-         _loc5_.ValidDate = param2.validDate;
-         var _loc4_:Array = param2.property.split(",");
-         _loc5_.StrengthenLevel = parseInt(_loc4_[0]);
-         _loc5_.AttackCompose = parseInt(_loc4_[1]);
-         _loc5_.DefendCompose = parseInt(_loc4_[2]);
-         _loc5_.AgilityCompose = parseInt(_loc4_[3]);
-         _loc5_.LuckCompose = parseInt(_loc4_[4]);
-         if(EquipType.isMagicStone(_loc5_.CategoryID))
+         var info:InventoryItemInfo = new InventoryItemInfo();
+         info.TemplateID = gift.templateId;
+         info = ItemManager.fill(info);
+         info.IsBinds = gift.isBind;
+         info.ValidDate = gift.validDate;
+         var attrArr:Array = gift.property.split(",");
+         info.StrengthenLevel = parseInt(attrArr[0]);
+         info.AttackCompose = parseInt(attrArr[1]);
+         info.DefendCompose = parseInt(attrArr[2]);
+         info.AgilityCompose = parseInt(attrArr[3]);
+         info.LuckCompose = parseInt(attrArr[4]);
+         if(EquipType.isMagicStone(info.CategoryID))
          {
-            _loc5_.Level = _loc5_.StrengthenLevel;
-            _loc5_.Attack = _loc5_.AttackCompose;
-            _loc5_.Defence = _loc5_.DefendCompose;
-            _loc5_.Agility = _loc5_.AgilityCompose;
-            _loc5_.Luck = _loc5_.LuckCompose;
-            _loc5_.MagicAttack = parseInt(_loc4_[6]);
-            _loc5_.MagicDefence = parseInt(_loc4_[7]);
-            _loc5_.StrengthenExp = parseInt(_loc4_[8]);
+            info.Level = info.StrengthenLevel;
+            info.Attack = info.AttackCompose;
+            info.Defence = info.DefendCompose;
+            info.Agility = info.AgilityCompose;
+            info.Luck = info.LuckCompose;
+            info.MagicAttack = parseInt(attrArr[6]);
+            info.MagicDefence = parseInt(attrArr[7]);
+            info.StrengthenExp = parseInt(attrArr[8]);
          }
-         var _loc3_:BagCell = new BagCell(param1);
-         _loc3_.info = _loc5_;
-         _loc3_.setCount(param2.count);
-         _loc3_.setBgVisible(false);
-         return _loc3_;
+         var bagCell:BagCell = new BagCell(order);
+         bagCell.info = info;
+         bagCell.setCount(gift.count);
+         bagCell.setBgVisible(false);
+         return bagCell;
       }
       
       public function updateView() : void
@@ -192,24 +190,24 @@ package carnivalActivity.view
          _playerAlreadyGetCount = _giftCurInfo.times;
          _allGiftAlreadyGetCount = _giftCurInfo.allGiftGetTimes;
          _currentCondtion = _statusArr[0].statusValue;
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
+         var grade:int = 0;
+         var currentGrade:int = 0;
          if(CarnivalActivityControl.instance.currentChildType == 10)
          {
             var _loc5_:int = 0;
             var _loc4_:* = _statusArr;
-            for each(var _loc3_ in _statusArr)
+            for each(var info in _statusArr)
             {
-               if(_loc3_.statusID == 0)
+               if(info.statusID == 0)
                {
-                  _loc2_ = _loc3_.statusValue;
+                  grade = info.statusValue;
                }
-               else if(_loc3_.statusID == 1)
+               else if(info.statusID == 1)
                {
-                  _loc1_ = _loc3_.statusValue;
+                  currentGrade = info.statusValue;
                }
             }
-            _getBtn.enable = CarnivalActivityControl.instance.canGetAward() && _playerAlreadyGetCount == 0 && _condtion > _loc2_ && _condtion <= _loc1_ && (_sumCount == 0 || _sumCount - _allGiftAlreadyGetCount > 0);
+            _getBtn.enable = CarnivalActivityControl.instance.canGetAward() && _playerAlreadyGetCount == 0 && _condtion > grade && _condtion <= currentGrade && (_sumCount == 0 || _sumCount - _allGiftAlreadyGetCount > 0);
          }
          else
          {
@@ -228,7 +226,7 @@ package carnivalActivity.view
          _getBtn.addEventListener("click",__getAwardHandler);
       }
       
-      protected function __getAwardHandler(param1:MouseEvent) : void
+      protected function __getAwardHandler(event:MouseEvent) : void
       {
          if(getTimer() - CarnivalActivityControl.instance.lastClickTime < 2000)
          {
@@ -237,13 +235,13 @@ package carnivalActivity.view
          }
          CarnivalActivityControl.instance.lastClickTime = getTimer();
          SoundManager.instance.playButtonSound();
-         var _loc2_:Vector.<SendGiftInfo> = new Vector.<SendGiftInfo>();
-         var _loc3_:SendGiftInfo = new SendGiftInfo();
-         _loc3_.activityId = _info.activityId;
-         _loc3_.giftIdArr = [_info.giftbagId];
-         _loc3_.awardCount = 1 - _playerAlreadyGetCount;
-         _loc2_.push(_loc3_);
-         SocketManager.Instance.out.sendWonderfulActivityGetReward(_loc2_);
+         var sendInfoVec:Vector.<SendGiftInfo> = new Vector.<SendGiftInfo>();
+         var info:SendGiftInfo = new SendGiftInfo();
+         info.activityId = _info.activityId;
+         info.giftIdArr = [_info.giftbagId];
+         info.awardCount = 1 - _playerAlreadyGetCount;
+         sendInfoVec.push(info);
+         SocketManager.Instance.out.sendWonderfulActivityGetReward(sendInfoVec);
       }
       
       protected function removeEvent() : void

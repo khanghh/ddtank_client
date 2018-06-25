@@ -19,9 +19,9 @@ package farm.viewx
          super();
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, playerId:Object = null) : void
       {
-         super.enter(param1,param2);
+         super.enter(prev,playerId);
          ObjectUtils.disposeObject(_farmMainView);
          _farmMainView = new FarmMainView();
          addChild(_farmMainView);
@@ -33,7 +33,7 @@ package farm.viewx
          FarmModelController.instance.creatSuperPetFoodPriceList();
       }
       
-      private function __updatePetFarmGuilde(param1:UpdatePetFarmGuildeEvent) : void
+      private function __updatePetFarmGuilde(e:UpdatePetFarmGuildeEvent) : void
       {
          PetsBagManager.instance().finishTask();
          petFarmGuilde();
@@ -47,12 +47,12 @@ package farm.viewx
          }
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
          PetsBagManager.instance().removeEventListener("finish",__updatePetFarmGuilde);
          ObjectUtils.disposeObject(_farmMainView);
          _farmMainView = null;
-         super.leaving(param1);
+         super.leaving(next);
          FarmModelController.instance.stopTimer();
          MainToolBar.Instance.hide();
          dispose();

@@ -66,11 +66,11 @@ package store.view.shortcutBuy
       
       private var _bandMoneyTxt:FilterFrameText;
       
-      public function ShortCutBuyView(param1:Array, param2:Boolean)
+      public function ShortCutBuyView(templateItemIDList:Array, showRadioBtn:Boolean)
       {
          super();
-         _templateItemIDList = param1;
-         _showRadioBtn = param2;
+         _templateItemIDList = templateItemIDList;
+         _showRadioBtn = showRadioBtn;
          init();
          initEvents();
       }
@@ -116,16 +116,16 @@ package store.view.shortcutBuy
          _list = ComponentFactory.Instance.creatCustomObject("ddtstore.ShortcutBuyList");
          _list.setup(_templateItemIDList);
          _memoryItemID = SharedManager.Instance.StoreBuyInfo[PlayerManager.Instance.Self.ID.toString()];
-         var _loc1_:ShopItemInfo = ShopManager.Instance.getShopItemByGoodsID(_memoryItemID);
-         if(_loc1_ && _templateItemIDList.indexOf(_loc1_.TemplateID) > -1)
+         var item:ShopItemInfo = ShopManager.Instance.getShopItemByGoodsID(_memoryItemID);
+         if(item && _templateItemIDList.indexOf(item.TemplateID) > -1)
          {
-            _list.selectedItemID = _loc1_.TemplateID;
+            _list.selectedItemID = item.TemplateID;
          }
          else
          {
             _list.selectedItemID = _templateItemIDList[0];
          }
-         if(_loc1_ && _loc1_.getItemPrice(1).IsBandDDTMoneyType && _templateItemIDList.indexOf(_loc1_.TemplateID) > -1)
+         if(item && item.getItemPrice(1).IsBandDDTMoneyType && _templateItemIDList.indexOf(item.TemplateID) > -1)
          {
             _btnGroup.selectIndex = 1;
          }
@@ -145,7 +145,7 @@ package store.view.shortcutBuy
          updateCost();
       }
       
-      protected function selectedBandHander(param1:MouseEvent) : void
+      protected function selectedBandHander(event:MouseEvent) : void
       {
          if(_selecetBandMoney.selected)
          {
@@ -161,7 +161,7 @@ package store.view.shortcutBuy
          updateCost();
       }
       
-      protected function selecetedHander(param1:MouseEvent) : void
+      protected function selecetedHander(event:MouseEvent) : void
       {
          if(_selecetMoney.selected)
          {
@@ -202,12 +202,12 @@ package store.view.shortcutBuy
          return _isBand;
       }
       
-      private function _numberClose(param1:Event) : void
+      private function _numberClose(e:Event) : void
       {
-         dispatchEvent(param1);
+         dispatchEvent(e);
       }
       
-      private function clickHandlerDian(param1:MouseEvent) : void
+      private function clickHandlerDian(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_isBand)
@@ -222,7 +222,7 @@ package store.view.shortcutBuy
          updateCost();
       }
       
-      private function clickHandlerLi(param1:MouseEvent) : void
+      private function clickHandlerLi(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          priceStr = "0" + LanguageMgr.GetTranslation("tank.gameover.takecard.gifttoken");
@@ -230,9 +230,9 @@ package store.view.shortcutBuy
          updateCost();
       }
       
-      private function selectHandler(param1:Event) : void
+      private function selectHandler(evt:Event) : void
       {
-         param1.stopImmediatePropagation();
+         evt.stopImmediatePropagation();
          updateCost();
          dispatchEvent(new Event("change"));
       }
@@ -257,16 +257,16 @@ package store.view.shortcutBuy
       
       public function get currentShopItem() : ShopItemInfo
       {
-         var _loc1_:* = null;
+         var resultShopItem:* = null;
          if(_moneySelectBtn.selected)
          {
-            _loc1_ = ShopManager.Instance.getMoneyShopItemByTemplateID(_list.selectedItemID);
+            resultShopItem = ShopManager.Instance.getMoneyShopItemByTemplateID(_list.selectedItemID);
          }
          else
          {
-            _loc1_ = ShopManager.Instance.getGiftShopItemByTemplateID(_list.selectedItemID);
+            resultShopItem = ShopManager.Instance.getGiftShopItemByTemplateID(_list.selectedItemID);
          }
-         return _loc1_;
+         return resultShopItem;
       }
       
       public function get currentNum() : int
@@ -276,12 +276,12 @@ package store.view.shortcutBuy
       
       public function get totalPrice() : ItemPrice
       {
-         var _loc1_:ItemPrice = new ItemPrice(null,null,null);
+         var price:ItemPrice = new ItemPrice(null,null,null);
          if(currentShopItem && _num.currentValue > 0)
          {
-            _loc1_ = currentShopItem.getItemPrice(1).multiply(_num.currentValue);
+            price = currentShopItem.getItemPrice(1).multiply(_num.currentValue);
          }
-         return _loc1_;
+         return price;
       }
       
       public function get totalMoney() : int

@@ -45,9 +45,9 @@ package explorerManual.view.chapter
          PositionUtils.setPos(_boost,"explorerManual.boostPos");
       }
       
-      public function set info(param1:ManualLevelProInfo) : void
+      public function set info(info:ManualLevelProInfo) : void
       {
-         _proInfo = param1;
+         _proInfo = info;
          update();
       }
       

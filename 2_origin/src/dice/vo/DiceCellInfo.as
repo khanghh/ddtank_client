@@ -31,11 +31,11 @@ package dice.vo
          return _centerPosition;
       }
       
-      public function set centerPosition(param1:String) : void
+      public function set centerPosition(value:String) : void
       {
-         var _loc2_:Array = param1.split(",");
-         _centerPosition.x = int(_loc2_[0]);
-         _centerPosition.y = int(_loc2_[1]);
+         var arr:Array = value.split(",");
+         _centerPosition.x = int(arr[0]);
+         _centerPosition.y = int(arr[1]);
       }
       
       public function get Position() : Point
@@ -43,22 +43,22 @@ package dice.vo
          return _position;
       }
       
-      public function set position(param1:String) : void
+      public function set position(value:String) : void
       {
-         var _loc2_:Array = param1.split(",");
-         _position.x = int(_loc2_[0]);
-         _position.y = int(_loc2_[1]);
+         var arr:Array = value.split(",");
+         _position.x = int(arr[0]);
+         _position.y = int(arr[1]);
       }
       
-      public function set verticesString(param1:String) : void
+      public function set verticesString(value:String) : void
       {
-         var _loc2_:Array = param1.split(",");
-         _vertices1.x = _loc2_[0] == null?0:Number(_loc2_[0]);
-         _vertices1.y = _loc2_[1] == null?0:Number(_loc2_[1]);
-         _vertices2.x = _loc2_[2] == null?0:Number(_loc2_[2]);
-         _vertices2.y = _loc2_[3] == null?0:Number(_loc2_[3]);
-         _vertices3.x = _loc2_[4] == null?0:Number(_loc2_[4]);
-         _vertices3.y = _loc2_[5] == null?0:Number(_loc2_[5]);
+         var arr:Array = value.split(",");
+         _vertices1.x = arr[0] == null?0:Number(arr[0]);
+         _vertices1.y = arr[1] == null?0:Number(arr[1]);
+         _vertices2.x = arr[2] == null?0:Number(arr[2]);
+         _vertices2.y = arr[3] == null?0:Number(arr[3]);
+         _vertices3.x = arr[4] == null?0:Number(arr[4]);
+         _vertices3.y = arr[5] == null?0:Number(arr[5]);
       }
       
       public function get vertices1() : Point

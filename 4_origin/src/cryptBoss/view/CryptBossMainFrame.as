@@ -49,26 +49,26 @@ package cryptBoss.view
       
       public function updateView() : void
       {
-         var _loc1_:* = null;
+         var bossItem:* = null;
          if(_itemVec != null)
          {
             var _loc5_:int = 0;
             var _loc4_:* = _itemVec;
-            for each(var _loc2_ in _itemVec)
+            for each(var item in _itemVec)
             {
-               ObjectUtils.disposeObject(_loc2_);
-               _loc2_ = null;
+               ObjectUtils.disposeObject(item);
+               item = null;
             }
             _itemVec = null;
          }
          _itemVec = new Vector.<CryptBossItem>();
          var _loc7_:int = 0;
          var _loc6_:* = CryptBossManager.instance.openWeekDaysDic;
-         for each(var _loc3_ in CryptBossManager.instance.openWeekDaysDic)
+         for each(var itemInfo in CryptBossManager.instance.openWeekDaysDic)
          {
-            _loc1_ = new CryptBossItem(_loc3_);
-            _itemVec.push(_loc1_);
-            addToContent(_loc1_);
+            bossItem = new CryptBossItem(itemInfo);
+            _itemVec.push(bossItem);
+            addToContent(bossItem);
          }
       }
       
@@ -80,14 +80,14 @@ package cryptBoss.view
       
       private function checkTask() : void
       {
-         var _loc1_:QuestInfo = TaskManager.instance.getQuestByID(1277);
-         if(_loc1_ && _loc1_.data != null && _loc1_.isCompleted == false)
+         var questInfo:QuestInfo = TaskManager.instance.getQuestByID(1277);
+         if(questInfo && questInfo.data != null && questInfo.isCompleted == false)
          {
             SocketManager.Instance.out.sendQuestCheck(1277,1,0);
          }
       }
       
-      private function __startLoading(param1:Event) : void
+      private function __startLoading(e:Event) : void
       {
          StateManager.getInGame_Step_6 = true;
          ChatManager.Instance.input.faceEnabled = false;
@@ -96,9 +96,9 @@ package cryptBoss.view
          StateManager.getInGame_Step_7 = true;
       }
       
-      protected function __responseHandler(param1:FrameEvent) : void
+      protected function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
             CryptBossManager.instance.RoomType = 0;

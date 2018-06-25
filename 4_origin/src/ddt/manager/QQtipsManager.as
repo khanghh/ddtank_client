@@ -26,9 +26,9 @@ package ddt.manager
       
       public var indexCurrentShop:int;
       
-      public function QQtipsManager(param1:IEventDispatcher = null)
+      public function QQtipsManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : QQtipsManager
@@ -51,35 +51,35 @@ package ddt.manager
          SocketManager.Instance.addEventListener(PkgEvent.format(99),__getInfo);
       }
       
-      private function __keyDown(param1:KeyboardEvent) : void
+      private function __keyDown(e:KeyboardEvent) : void
       {
       }
       
-      private function __getInfo(param1:PkgEvent) : void
+      private function __getInfo(e:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         var _loc3_:QQTipsInfo = new QQTipsInfo();
-         _loc3_.title = _loc2_.readUTF();
-         _loc3_.content = _loc2_.readUTF();
-         _loc3_.maxLevel = _loc2_.readInt();
-         _loc3_.minLevel = _loc2_.readInt();
-         _loc3_.outInType = _loc2_.readInt();
-         if(_loc3_.outInType == 0)
+         var pkg:PackageIn = e.pkg;
+         var info:QQTipsInfo = new QQTipsInfo();
+         info.title = pkg.readUTF();
+         info.content = pkg.readUTF();
+         info.maxLevel = pkg.readInt();
+         info.minLevel = pkg.readInt();
+         info.outInType = pkg.readInt();
+         if(info.outInType == 0)
          {
-            _loc3_.moduleType = _loc2_.readInt();
-            _loc3_.inItemID = _loc2_.readInt();
+            info.moduleType = pkg.readInt();
+            info.inItemID = pkg.readInt();
          }
          else
          {
-            _loc3_.url = _loc2_.readUTF();
+            info.url = pkg.readUTF();
          }
-         if(_loc3_.minLevel <= PlayerManager.Instance.Self.Grade && PlayerManager.Instance.Self.Grade <= _loc3_.maxLevel)
+         if(info.minLevel <= PlayerManager.Instance.Self.Grade && PlayerManager.Instance.Self.Grade <= info.maxLevel)
          {
             if(_qqInfoList.length > 0)
             {
                _qqInfoList.splice(0,_qqInfoList.length);
             }
-            _qqInfoList.push(_loc3_);
+            _qqInfoList.push(info);
          }
          checkState();
       }
@@ -96,17 +96,17 @@ package ddt.manager
          }
       }
       
-      public function checkStateView(param1:String) : void
+      public function checkStateView(type:String) : void
       {
-         if(_qqInfoList && _qqInfoList.length > 0 && getStateAble(param1))
+         if(_qqInfoList && _qqInfoList.length > 0 && getStateAble(type))
          {
             __showQQTips();
          }
       }
       
-      private function getStateAble(param1:String) : Boolean
+      private function getStateAble(type:String) : Boolean
       {
-         if(param1 == "main" || param1 == "auction" || param1 == "ddtchurchroomlist" || param1 == "roomlist" || param1 == "consortia" || param1 == "dungeon" || param1 == "hotSpringRoomList" || param1 == "fightLib" || param1 == "academyRegistration" || param1 == "civil" || param1 == "tofflist")
+         if(type == "main" || type == "auction" || type == "ddtchurchroomlist" || type == "roomlist" || type == "consortia" || type == "dungeon" || type == "hotSpringRoomList" || type == "fightLib" || type == "academyRegistration" || type == "civil" || type == "tofflist")
          {
             return true;
          }
@@ -115,15 +115,15 @@ package ddt.manager
       
       private function __showQQTips() : void
       {
-         var _loc1_:QQTipsView = ComponentFactory.Instance.creatCustomObject("coreIconQQ.QQTipsView");
-         _loc1_.qqInfo = _qqInfoList.shift();
-         _loc1_.show();
+         var frame:QQTipsView = ComponentFactory.Instance.creatCustomObject("coreIconQQ.QQTipsView");
+         frame.qqInfo = _qqInfoList.shift();
+         frame.show();
          isShowTipNow = true;
       }
       
-      public function set isShowTipNow(param1:Boolean) : void
+      public function set isShowTipNow(value:Boolean) : void
       {
-         _isShowTipNow = param1;
+         _isShowTipNow = value;
       }
       
       public function get isShowTipNow() : Boolean
@@ -131,14 +131,14 @@ package ddt.manager
          return _isShowTipNow;
       }
       
-      public function gotoShop(param1:int) : void
+      public function gotoShop(index:int) : void
       {
-         if(param1 > 3)
+         if(index > 3)
          {
             return;
          }
          isGotoShop = true;
-         indexCurrentShop = param1;
+         indexCurrentShop = index;
          StateManager.setState("shop");
       }
    }

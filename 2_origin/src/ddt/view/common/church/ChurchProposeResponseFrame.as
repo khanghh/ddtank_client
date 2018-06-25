@@ -74,9 +74,9 @@ package ddt.view.common.church
          addEventListener("response",onFrameResponse);
       }
       
-      private function onFrameResponse(param1:FrameEvent) : void
+      private function onFrameResponse(evt:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
@@ -99,9 +99,9 @@ package ddt.view.common.church
          return _answerId;
       }
       
-      public function set answerId(param1:int) : void
+      public function set answerId(value:int) : void
       {
-         _answerId = param1;
+         _answerId = value;
       }
       
       public function get love() : String
@@ -109,9 +109,9 @@ package ddt.view.common.church
          return _love;
       }
       
-      public function set love(param1:String) : void
+      public function set love(value:String) : void
       {
-         _love = param1;
+         _love = value;
          _loveTxt.text = !!_love?_love:"";
       }
       
@@ -120,9 +120,9 @@ package ddt.view.common.church
          return _spouseName;
       }
       
-      public function set spouseName(param1:String) : void
+      public function set spouseName(value:String) : void
       {
-         _spouseName = param1;
+         _spouseName = value;
          _nameText.text = _spouseName + "，";
          _name_txt.text = LanguageMgr.GetTranslation("ddt.view.common.church.ProposeResponse");
       }
@@ -132,12 +132,12 @@ package ddt.view.common.church
          return _spouseID;
       }
       
-      public function set spouseID(param1:int) : void
+      public function set spouseID(value:int) : void
       {
-         _spouseID = param1;
+         _spouseID = value;
       }
       
-      private function __lookEquip(param1:MouseEvent) : void
+      private function __lookEquip(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          PlayerInfoViewControl.viewByID(spouseID);
@@ -152,8 +152,8 @@ package ddt.view.common.church
       private function __cancel() : void
       {
          SocketManager.Instance.out.sendProposeRespose(false,spouseID,answerId);
-         var _loc1_:String = StringHelper.rePlaceHtmlTextField(LanguageMgr.GetTranslation("tank.view.common.church.ProposeResponseFrame.msg",spouseName));
-         ChatManager.Instance.sysChatRed(_loc1_);
+         var msg:String = StringHelper.rePlaceHtmlTextField(LanguageMgr.GetTranslation("tank.view.common.church.ProposeResponseFrame.msg",spouseName));
+         ChatManager.Instance.sysChatRed(msg);
          dispose();
       }
       

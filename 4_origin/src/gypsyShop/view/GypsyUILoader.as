@@ -27,51 +27,46 @@ package gypsyShop.view
          super();
       }
       
-      public function loadUIModule(param1:String, param2:Array, param3:Function) : void
+      public function loadUIModule(loadListID:String, list:Array, update:Function) : void
       {
-         var _loc4_:int = 0;
-         var _loc5_:int = 0;
-         if(_loadedDic[param1] != null)
+         var len:int = 0;
+         var i:int = 0;
+         if(_loadedDic[loadListID] != null)
          {
+            update();
             return;
-            §§push(param3());
+         }
+         _loadListID = loadListID;
+         _list = list;
+         _update = update;
+         if(!_UILoadComplete)
+         {
+            UIModuleSmallLoading.Instance.progress = 0;
+            UIModuleSmallLoading.Instance.show();
+            UIModuleSmallLoading.Instance.addEventListener("close",__onClose);
+            UIModuleLoader.Instance.addEventListener("uiModuleComplete",__onUIModuleComplete);
+            UIModuleLoader.Instance.addEventListener("uiMoudleProgress",__onProgress);
+            len = list.length;
+            for(i = 0; i < len; )
+            {
+               UIModuleLoader.Instance.addUIModuleImp(list[i]);
+               i++;
+            }
          }
          else
          {
-            _loadListID = param1;
-            _list = param2;
-            _update = param3;
-            if(!_UILoadComplete)
-            {
-               UIModuleSmallLoading.Instance.progress = 0;
-               UIModuleSmallLoading.Instance.show();
-               UIModuleSmallLoading.Instance.addEventListener("close",__onClose);
-               UIModuleLoader.Instance.addEventListener("uiModuleComplete",__onUIModuleComplete);
-               UIModuleLoader.Instance.addEventListener("uiMoudleProgress",__onProgress);
-               _loc4_ = param2.length;
-               _loc5_ = 0;
-               while(_loc5_ < _loc4_)
-               {
-                  UIModuleLoader.Instance.addUIModuleImp(param2[_loc5_]);
-                  _loc5_++;
-               }
-            }
-            else
-            {
-               _update();
-            }
-            return;
+            _update();
          }
       }
       
-      protected function __onProgress(param1:UIModuleEvent) : void
+      protected function __onProgress(event:UIModuleEvent) : void
       {
-         UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+         UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
       }
       
-      protected function __onUIModuleComplete(param1:UIModuleEvent) : void
+      protected function __onUIModuleComplete(event:UIModuleEvent) : void
       {
-         checkComplete(param1.module);
+         checkComplete(event.module);
          if(_UILoadComplete)
          {
             _loadedDic[_loadListID] = 1;
@@ -83,13 +78,13 @@ package gypsyShop.view
          }
       }
       
-      private function checkComplete(param1:String) : void
+      private function checkComplete(moduleName:String) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = _list;
-         for each(var _loc2_ in _list)
+         for each(var n in _list)
          {
-            if(_loc2_ == param1)
+            if(n == moduleName)
             {
                _loadProgress = Number(_loadProgress) + 1;
                if(_loadProgress >= _list.length)
@@ -100,7 +95,7 @@ package gypsyShop.view
          }
       }
       
-      protected function __onClose(param1:Event) : void
+      protected function __onClose(event:Event) : void
       {
          UIModuleSmallLoading.Instance.hide();
          UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);

@@ -36,10 +36,10 @@ package quest
       
       private var _info:InventoryItemInfo;
       
-      public function QuestRewardCell(param1:Boolean = true)
+      public function QuestRewardCell(isShowBg:Boolean = true)
       {
          super();
-         if(param1)
+         if(isShowBg)
          {
             bgStyle = ComponentFactory.Instance.creatComponentByStylename("rewardCell.BGStyle1");
             addChild(bgStyle);
@@ -47,11 +47,11 @@ package quest
             shine.visible = false;
             addChild(shine);
          }
-         var _loc2_:Sprite = new Sprite();
-         _loc2_.graphics.beginFill(16777215,0);
-         _loc2_.graphics.drawRect(0,0,43,43);
-         _loc2_.graphics.endFill();
-         item = CellFactory.instance.createShopItemCell(_loc2_,null,true,true) as ShopItemCell;
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(16777215,0);
+         sp.graphics.drawRect(0,0,43,43);
+         sp.graphics.endFill();
+         item = CellFactory.instance.createShopItemCell(sp,null,true,true) as ShopItemCell;
          item.cellSize = 40;
          item.x = -1;
          item.y = -1;
@@ -60,7 +60,7 @@ package quest
          quantityTxt.x = 38;
          quantityTxt.y = 29;
          addChild(quantityTxt);
-         if(param1)
+         if(isShowBg)
          {
             nameTxt = ComponentFactory.Instance.creat("core.quest.QuestItemRewardName");
             addChild(nameTxt);
@@ -74,7 +74,7 @@ package quest
          return shine;
       }
       
-      private function __overHandler(param1:MouseEvent) : void
+      private function __overHandler(event:MouseEvent) : void
       {
          TweenLite.to(item,0.25,{
             "x":-13,
@@ -89,7 +89,7 @@ package quest
          });
       }
       
-      private function __outHandler(param1:MouseEvent) : void
+      private function __outHandler(event:MouseEvent) : void
       {
          TweenLite.to(item,0.25,{
             "x":-1,
@@ -104,41 +104,41 @@ package quest
          });
       }
       
-      public function set taskType(param1:int) : void
+      public function set taskType(type:int) : void
       {
       }
       
-      public function set opitional(param1:Boolean) : void
+      public function set opitional(value:Boolean) : void
       {
          if(bgStyle.visible)
          {
-            bgStyle.setFrame(!!param1?2:1);
+            bgStyle.setFrame(!!value?2:1);
          }
       }
       
-      public function set info(param1:InventoryItemInfo) : void
+      public function set info(info:InventoryItemInfo) : void
       {
-         if(param1 == null)
+         if(info == null)
          {
             return;
          }
-         item.info = param1;
-         if(param1.Count > 1)
+         item.info = info;
+         if(info.Count > 1)
          {
-            quantityTxt.text = param1.Count.toString();
+            quantityTxt.text = info.Count.toString();
          }
          else
          {
             quantityTxt.text = "";
          }
-         _info = param1;
-         if(EquipType.isBead(int(param1.Property1)))
+         _info = info;
+         if(EquipType.isBead(int(info.Property1)))
          {
-            itemName = beadSystemManager.Instance.getBeadName(param1);
+            itemName = beadSystemManager.Instance.getBeadName(info);
          }
          else
          {
-            itemName = param1.Name;
+            itemName = info.Name;
          }
       }
       
@@ -147,7 +147,7 @@ package quest
          return _info;
       }
       
-      public function __setItemName(param1:Event) : void
+      public function __setItemName(e:Event) : void
       {
          if(EquipType.isBead(int(info.Property1)))
          {
@@ -159,22 +159,22 @@ package quest
          }
       }
       
-      public function set itemName(param1:String) : void
+      public function set itemName(name:String) : void
       {
          if(nameTxt)
          {
-            nameTxt.text = param1;
+            nameTxt.text = name;
             nameTxt.y = (44 - nameTxt.textHeight) / 2;
          }
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         if(!shine.visible && param1)
+         if(!shine.visible && value)
          {
             SoundManager.instance.play("008");
          }
-         shine.visible = param1;
+         shine.visible = value;
          TaskManager.itemAwardSelected = this.info.TemplateID;
       }
       
@@ -195,7 +195,7 @@ package quest
          addEventListener("click",__selected);
       }
       
-      private function __selected(param1:MouseEvent) : void
+      private function __selected(evt:MouseEvent) : void
       {
          dispatchEvent(new RewardSelectedEvent(this));
       }

@@ -47,7 +47,7 @@ package stock
          StockMgr.inst.addEventListener("account_update",accountUpdate);
       }
       
-      private function accountUpdate(param1:StockEvent = null) : void
+      private function accountUpdate(evt:StockEvent = null) : void
       {
          lablFund.text = StringHelper.parseMoneyFormat(StockMgr.inst.model.stockAccoutData.fund);
          lablLoan.text = StringHelper.parseMoneyFormat(StockMgr.inst.model.stockAccoutData.validLoan);
@@ -58,37 +58,37 @@ package stock
          StockMgr.inst.removeEventListener("account_update",accountUpdate);
       }
       
-      private function select(param1:int) : void
+      private function select(index:int) : void
       {
-         var _loc3_:int = param1 + 1;
-         var _loc5_:Component = _views[_loc3_];
-         spFundLoan.visible = _loc3_ != 3;
-         var _loc4_:Array = ["","stock.marketView","stock.accountView","stock.shopView","stock.awardView"];
-         if(!_loc5_)
+         var operationType:int = index + 1;
+         var view:Component = _views[operationType];
+         spFundLoan.visible = operationType != 3;
+         var viewCfg:Array = ["","stock.marketView","stock.accountView","stock.shopView","stock.awardView"];
+         if(!view)
          {
-            _loc5_ = ComponentFactory.Instance.creatCustomObject(_loc4_[_loc3_]);
-            _views[_loc3_] = _loc5_;
-            addChild(_loc5_);
+            view = ComponentFactory.Instance.creatCustomObject(viewCfg[operationType]);
+            _views[operationType] = view;
+            addChild(view);
          }
          var _loc7_:int = 0;
          var _loc6_:* = _views;
-         for each(var _loc2_ in _views)
+         for each(var v in _views)
          {
-            if(_loc2_ && _loc2_ != _loc5_)
+            if(v && v != view)
             {
-               _loc2_.visible = false;
+               v.visible = false;
             }
          }
-         if(_loc5_)
+         if(view)
          {
-            _loc5_.visible = true;
+            view.visible = true;
          }
-         StockMgr.inst.chooseOperation(_loc3_);
-         if(_loc3_ == 3)
+         StockMgr.inst.chooseOperation(operationType);
+         if(operationType == 3)
          {
             SocketManager.Instance.out.sendPersonalLimitShop(117);
          }
-         else if(_loc3_ == 4)
+         else if(operationType == 4)
          {
             StockMgr.inst.parseStockScoreAward();
          }
@@ -96,8 +96,8 @@ package stock
       
       private function help() : void
       {
-         var _loc1_:StockHelpFrame = ComponentFactory.Instance.creatCustomObject("stock.helpFrame");
-         LayerManager.Instance.addToLayer(_loc1_,3,false,1);
+         var frame:StockHelpFrame = ComponentFactory.Instance.creatCustomObject("stock.helpFrame");
+         LayerManager.Instance.addToLayer(frame,3,false,1);
       }
       
       private function close() : void
@@ -109,13 +109,13 @@ package stock
       {
          StockMgr.inst.chooseOperation(0);
          removeEvent();
-         var _loc1_:Component = null;
+         var view:Component = null;
          while(_views.length > 0)
          {
-            _loc1_ = _views.pop();
-            if(_loc1_)
+            view = _views.pop();
+            if(view)
             {
-               _loc1_.dispose();
+               view.dispose();
             }
          }
          _views = null;

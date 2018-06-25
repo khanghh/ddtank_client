@@ -23,9 +23,9 @@ package newTitle
       
       private var _titleFrame:NewTitleFrame;
       
-      public function NewTitleControl(param1:IEventDispatcher = null)
+      public function NewTitleControl(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : NewTitleControl
@@ -42,7 +42,7 @@ package newTitle
          NewTitleManager.instance.addEventListener("newTitleOpenView",__onOpenView);
       }
       
-      protected function __onOpenView(param1:NewTitleEvent) : void
+      protected function __onOpenView(event:NewTitleEvent) : void
       {
          show();
       }
@@ -64,9 +64,9 @@ package newTitle
          }
       }
       
-      private function __complainShow(param1:UIModuleEvent) : void
+      private function __complainShow(event:UIModuleEvent) : void
       {
-         if(param1.module == "newTitle")
+         if(event.module == "newTitle")
          {
             UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);
             UIModuleLoader.Instance.removeEventListener("uiMoudleProgress",__progressShow);
@@ -78,15 +78,15 @@ package newTitle
          }
       }
       
-      private function __progressShow(param1:UIModuleEvent) : void
+      private function __progressShow(event:UIModuleEvent) : void
       {
-         if(param1.module == "newTitle")
+         if(event.module == "newTitle")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
       
-      protected function __onClose(param1:Event) : void
+      protected function __onClose(event:Event) : void
       {
          UIModuleSmallLoading.Instance.hide();
          UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);

@@ -57,25 +57,25 @@ package consortion.view.selfConsortia
       
       private var _showTip:Boolean;
       
-      public function Badge(param1:String = "small")
+      public function Badge(size:String = "small")
       {
          super();
-         _size = param1;
+         _size = size;
          graphics.beginFill(16777215,0);
-         var _loc2_:int = 0;
+         var s:int = 0;
          if(_size == "large")
          {
-            _loc2_ = 78;
+            s = 78;
          }
          else if(_size == "normal")
          {
-            _loc2_ = 48;
+            s = 48;
          }
          else if(_size == "small")
          {
-            _loc2_ = 28;
+            s = 28;
          }
-         graphics.drawRect(0,0,_loc2_,_loc2_);
+         graphics.drawRect(0,0,s,s);
          graphics.endFill();
          _tipGapV = 5;
          _tipGapH = 5;
@@ -95,9 +95,9 @@ package consortion.view.selfConsortia
          return _showTip;
       }
       
-      public function set showTip(param1:Boolean) : void
+      public function set showTip(value:Boolean) : void
       {
-         _showTip = param1;
+         _showTip = value;
          if(_showTip)
          {
             ShowTipManager.Instance.addTip(this);
@@ -113,13 +113,13 @@ package consortion.view.selfConsortia
          return _clickEnale;
       }
       
-      public function set clickEnale(param1:Boolean) : void
+      public function set clickEnale(value:Boolean) : void
       {
-         if(param1 == _clickEnale)
+         if(value == _clickEnale)
          {
             return;
          }
-         _clickEnale = param1;
+         _clickEnale = value;
          if(_clickEnale)
          {
             addEventListener("click",onClick);
@@ -130,10 +130,10 @@ package consortion.view.selfConsortia
          }
       }
       
-      private function onClick(param1:MouseEvent) : void
+      private function onClick(event:MouseEvent) : void
       {
-         var _loc2_:BadgeShopFrame = ComponentFactory.Instance.creatComponentByStylename("consortion.badgeShopFrame");
-         LayerManager.Instance.addToLayer(_loc2_,3,true);
+         var shopFrame:BadgeShopFrame = ComponentFactory.Instance.creatComponentByStylename("consortion.badgeShopFrame");
+         LayerManager.Instance.addToLayer(shopFrame,3,true);
       }
       
       public function get buyDate() : Date
@@ -141,9 +141,9 @@ package consortion.view.selfConsortia
          return _buyDate;
       }
       
-      public function set buyDate(param1:Date) : void
+      public function set buyDate(value:Date) : void
       {
-         _buyDate = param1;
+         _buyDate = value;
       }
       
       public function get badgeID() : int
@@ -151,13 +151,13 @@ package consortion.view.selfConsortia
          return _badgeID;
       }
       
-      public function set badgeID(param1:int) : void
+      public function set badgeID(value:int) : void
       {
-         if(param1 == _badgeID)
+         if(value == _badgeID)
          {
             return;
          }
-         _badgeID = param1;
+         _badgeID = value;
          getTipInfo();
          updateView();
       }
@@ -165,12 +165,12 @@ package consortion.view.selfConsortia
       private function getTipInfo() : void
       {
          _tipInfo = {};
-         var _loc1_:BadgeInfo = BadgeInfoManager.instance.getBadgeInfoByID(_badgeID);
-         if(_loc1_)
+         var badgeinfo:BadgeInfo = BadgeInfoManager.instance.getBadgeInfoByID(_badgeID);
+         if(badgeinfo)
          {
-            _tipInfo.name = _loc1_.BadgeName;
-            _tipInfo.LimitLevel = _loc1_.LimitLevel;
-            _tipInfo.ValidDate = _loc1_.ValidDate;
+            _tipInfo.name = badgeinfo.BadgeName;
+            _tipInfo.LimitLevel = badgeinfo.LimitLevel;
+            _tipInfo.ValidDate = badgeinfo.ValidDate;
             if(_buyDate)
             {
                _tipInfo.buyDate = _buyDate;
@@ -200,7 +200,7 @@ package consortion.view.selfConsortia
          }
       }
       
-      private function onComplete(param1:LoaderEvent) : void
+      private function onComplete(event:LoaderEvent) : void
       {
          _loader.removeEventListener("complete",onComplete);
          _loader.removeEventListener("loadError",onError);
@@ -230,7 +230,7 @@ package consortion.view.selfConsortia
          }
       }
       
-      private function onError(param1:LoaderEvent) : void
+      private function onError(event:LoaderEvent) : void
       {
          _loader.removeEventListener("complete",onComplete);
          _loader.removeEventListener("loadError",onError);
@@ -246,9 +246,9 @@ package consortion.view.selfConsortia
          return _tipInfo;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(value:Object) : void
       {
-         _tipInfo = param1;
+         _tipInfo = value;
       }
       
       public function get tipDirctions() : String
@@ -256,9 +256,9 @@ package consortion.view.selfConsortia
          return _tipDirctions;
       }
       
-      public function set tipDirctions(param1:String) : void
+      public function set tipDirctions(value:String) : void
       {
-         _tipDirctions = param1;
+         _tipDirctions = value;
       }
       
       public function get tipGapH() : int
@@ -266,9 +266,9 @@ package consortion.view.selfConsortia
          return _tipGapH;
       }
       
-      public function set tipGapH(param1:int) : void
+      public function set tipGapH(value:int) : void
       {
-         _tipGapH = param1;
+         _tipGapH = value;
       }
       
       public function get tipGapV() : int
@@ -276,9 +276,9 @@ package consortion.view.selfConsortia
          return _tipGapV;
       }
       
-      public function set tipGapV(param1:int) : void
+      public function set tipGapV(value:int) : void
       {
-         _tipGapV = param1;
+         _tipGapV = value;
       }
       
       public function get tipStyle() : String
@@ -286,9 +286,9 @@ package consortion.view.selfConsortia
          return _tipStyle;
       }
       
-      public function set tipStyle(param1:String) : void
+      public function set tipStyle(value:String) : void
       {
-         _tipStyle = param1;
+         _tipStyle = value;
       }
       
       public function dispose() : void

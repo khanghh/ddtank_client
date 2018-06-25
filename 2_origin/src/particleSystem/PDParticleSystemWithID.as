@@ -14,12 +14,12 @@ package particleSystem
       
       public var mbitmapdata:BitmapData;
       
-      public function PDParticleSystemWithID(param1:String, param2:XML, param3:BitmapData)
+      public function PDParticleSystemWithID(id:String, config:XML, $mbitmapdata:BitmapData)
       {
-         ID = param1;
-         mconfig = param2;
-         mbitmapdata = param3;
-         super(param2,Texture.fromBitmapData(mbitmapdata));
+         ID = id;
+         mconfig = config;
+         mbitmapdata = $mbitmapdata;
+         super(config,Texture.fromBitmapData(mbitmapdata));
       }
       
       override public function dispose() : void

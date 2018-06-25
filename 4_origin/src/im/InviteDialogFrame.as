@@ -56,7 +56,7 @@ package im
          _inputText.addEventListener("change",__inputChange);
       }
       
-      protected function __inputChange(param1:Event) : void
+      protected function __inputChange(event:Event) : void
       {
          if(_inputText.text.length > 0)
          {
@@ -68,69 +68,69 @@ package im
          }
       }
       
-      public function setInfo(param1:String) : void
+      public function setInfo(value:String) : void
       {
-         _userName = param1;
+         _userName = value;
       }
       
-      public function setText(param1:String = "") : void
+      public function setText(value:String = "") : void
       {
-         _inputText.text = param1;
-         _text = param1;
-         _initText = param1;
+         _inputText.text = value;
+         _text = value;
+         _initText = value;
          _inputText.setSelection(_inputText.text.length,_inputText.text.length);
       }
       
-      override protected function __fieldKeyDown(param1:KeyboardEvent) : void
+      override protected function __fieldKeyDown(event:KeyboardEvent) : void
       {
-         if(param1.keyCode == 13)
+         if(event.keyCode == 13)
          {
             submit();
             SoundManager.instance.play("008");
          }
-         else if(param1.keyCode == 27)
+         else if(event.keyCode == 27)
          {
             hide();
             SoundManager.instance.play("008");
          }
-         param1.stopImmediatePropagation();
-         param1.stopPropagation();
+         event.stopImmediatePropagation();
+         event.stopPropagation();
       }
       
       override protected function submit() : void
       {
-         var _loc6_:* = null;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc5_:* = null;
-         var _loc1_:* = null;
+         var req:* = null;
+         var data:* = null;
+         var loader:* = null;
+         var req1:* = null;
+         var toServerData:* = null;
+         var loader1:* = null;
          if(!StringHelper.isNullOrEmpty(PathManager.CommunityInvite()))
          {
             if(!FilterWordManager.isGotForbiddenWords(_text))
             {
-               _loc6_ = new URLRequest(PathManager.CommunityInvite());
-               _loc4_ = new URLVariables();
-               _loc4_["fuid"] = String(PlayerManager.Instance.Self.LoginName);
-               _loc4_["fnick"] = PlayerManager.Instance.Self.NickName;
-               _loc4_["tuid"] = _userName;
-               _loc4_["inviteCaption"] = _text;
-               _loc4_["rid"] = PlayerManager.Instance.Self.ID;
-               _loc4_["serverid"] = String(ServerManager.Instance.AgentID);
-               _loc4_["rnd"] = Math.random();
-               _loc6_.data = _loc4_;
-               _loc3_ = new URLLoader(_loc6_);
-               _loc3_.load(_loc6_);
+               req = new URLRequest(PathManager.CommunityInvite());
+               data = new URLVariables();
+               data["fuid"] = String(PlayerManager.Instance.Self.LoginName);
+               data["fnick"] = PlayerManager.Instance.Self.NickName;
+               data["tuid"] = _userName;
+               data["inviteCaption"] = _text;
+               data["rid"] = PlayerManager.Instance.Self.ID;
+               data["serverid"] = String(ServerManager.Instance.AgentID);
+               data["rnd"] = Math.random();
+               req.data = data;
+               loader = new URLLoader(req);
+               loader.load(req);
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("im.IMView.inviteInfo"));
-               _loc2_ = new URLRequest(PathManager.solveRequestPath("LogInviteFriends.ashx"));
-               _loc5_ = new URLVariables();
-               _loc5_["Username"] = PlayerManager.Instance.Self.NickName;
-               _loc5_["InviteUsername"] = _userName;
-               _loc5_["IsSucceed"] = false;
-               _loc2_.data = _loc5_;
-               _loc1_ = new URLLoader(_loc2_);
-               _loc1_.load(_loc2_);
-               _loc1_.addEventListener("ioError",onIOError);
+               req1 = new URLRequest(PathManager.solveRequestPath("LogInviteFriends.ashx"));
+               toServerData = new URLVariables();
+               toServerData["Username"] = PlayerManager.Instance.Self.NickName;
+               toServerData["InviteUsername"] = _userName;
+               toServerData["IsSucceed"] = false;
+               req1.data = toServerData;
+               loader1 = new URLLoader(req1);
+               loader1.load(req1);
+               loader1.addEventListener("ioError",onIOError);
                dispose();
             }
             else
@@ -140,7 +140,7 @@ package im
          }
       }
       
-      private function onIOError(param1:IOErrorEvent) : void
+      private function onIOError(e:IOErrorEvent) : void
       {
       }
       

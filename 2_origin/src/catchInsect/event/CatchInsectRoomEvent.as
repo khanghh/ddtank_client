@@ -34,11 +34,11 @@ package catchInsect.event
       
       public var playerid:int;
       
-      public function CatchInsectRoomEvent(param1:String, param2:Object = null, param3:int = 0)
+      public function CatchInsectRoomEvent(type:String, data:Object = null, playerid:int = 0)
       {
-         this.data = param2;
-         this.playerid = param3;
-         super(param1,bubbles,cancelable);
+         this.data = data;
+         this.playerid = playerid;
+         super(type,bubbles,cancelable);
       }
    }
 }

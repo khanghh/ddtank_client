@@ -112,7 +112,7 @@ package vip.view
          }
       }
       
-      private function __upPayNum(param1:Event) : void
+      private function __upPayNum(e:Event) : void
       {
          SoundManager.instance.play("008");
          upPayMoneyText();
@@ -138,7 +138,7 @@ package vip.view
          }
       }
       
-      private function __openVipBtnClickHandler(param1:MouseEvent) : void
+      private function __openVipBtnClickHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -146,16 +146,16 @@ package vip.view
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:String = LanguageMgr.GetTranslation("ddt.vip.vipView.confirmforSelf",time,payNum);
-         _confirmFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("ddt.vip.vipFrame.ConfirmTitle"),_loc2_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,1,null,"SimpleAlert",30,true);
+         var msg:String = LanguageMgr.GetTranslation("ddt.vip.vipView.confirmforSelf",time,payNum);
+         _confirmFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("ddt.vip.vipFrame.ConfirmTitle"),msg,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,1,null,"SimpleAlert",30,true);
          _confirmFrame.moveEnable = false;
          _confirmFrame.addEventListener("response",__confirm);
       }
       
-      private function __confirm(param1:FrameEvent) : void
+      private function __confirm(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode) - 2)
+         switch(int(evt.responseCode) - 2)
          {
             case 0:
             case 1:
@@ -197,10 +197,10 @@ package vip.view
          VipController.instance.sendOpenVip(PlayerManager.Instance.Self.NickName,days,_confirmFrame.isBand);
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:

@@ -33,11 +33,11 @@ package hotSpring.view
       
       private var _returnBtn:SimpleBitmapButton;
       
-      public function RoomMenuView(param1:HotSpringRoomManager, param2:HotSpringRoomModel)
+      public function RoomMenuView(controller:HotSpringRoomManager, model:HotSpringRoomModel)
       {
          super();
-         _controller = param1;
-         _model = param2;
+         _controller = controller;
+         _model = model;
          initialize();
       }
       
@@ -61,13 +61,13 @@ package hotSpring.view
          _closeBtn.addEventListener("click",switchMenu);
       }
       
-      private function backRoomList(param1:MouseEvent) : void
+      private function backRoomList(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          StateManager.setState("hotSpringRoomList");
       }
       
-      private function switchMenu(param1:MouseEvent) : void
+      private function switchMenu(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_menuIsOpen)
@@ -81,7 +81,7 @@ package hotSpring.view
          addEventListener("enterFrame",menuShowOrHide);
       }
       
-      private function menuShowOrHide(param1:Event) : void
+      private function menuShowOrHide(evt:Event) : void
       {
          if(_menuIsOpen)
          {

@@ -27,7 +27,7 @@ package gameCommon
       
       private var _isSetup:Boolean;
       
-      public function MirariEffectIconManager(param1:SingletonEnforce)
+      public function MirariEffectIconManager(enforce:SingletonEnforce)
       {
          super();
          initialize();
@@ -93,19 +93,19 @@ package gameCommon
          }
       }
       
-      public function createEffectIcon(param1:int) : BaseMirariEffectIcon
+      public function createEffectIcon(type:int) : BaseMirariEffectIcon
       {
          if(!_isSetup)
          {
             setup();
          }
-         var _loc3_:Class = _effecticons[param1] as Class;
-         if(_loc3_ == null)
+         var cls:Class = _effecticons[type] as Class;
+         if(cls == null)
          {
             return null;
          }
-         var _loc2_:BaseMirariEffectIcon = new _loc3_() as BaseMirariEffectIcon;
-         return _loc2_;
+         var bmei:BaseMirariEffectIcon = new cls() as BaseMirariEffectIcon;
+         return bmei;
       }
    }
 }

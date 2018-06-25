@@ -101,7 +101,7 @@ package cardSystem.view.achievement
          _getBtn.addEventListener("click",__onClickGet);
       }
       
-      public function setListCellStatus(param1:List, param2:Boolean, param3:int) : void
+      public function setListCellStatus(list:List, isSelected:Boolean, index:int) : void
       {
       }
       
@@ -110,14 +110,14 @@ package cardSystem.view.achievement
          return _info;
       }
       
-      public function setCellValue(param1:*) : void
+      public function setCellValue(value:*) : void
       {
-         var _loc2_:CardAchievementInfo = param1 as CardAchievementInfo;
-         if(_info && _info.AchievementID == _loc2_.AchievementID)
+         var info:CardAchievementInfo = value as CardAchievementInfo;
+         if(_info && _info.AchievementID == info.AchievementID)
          {
             return;
          }
-         _info = _loc2_;
+         _info = info;
          update();
       }
       
@@ -140,9 +140,9 @@ package cardSystem.view.achievement
       
       private function updateProgress() : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         var _loc1_:int = 0;
+         var num:int = 0;
+         var count:int = 0;
+         var progress:int = 0;
          if(CardManager.Instance.cardAchievementGet(_info.AchievementID))
          {
             _completeIcon.visible = true;
@@ -170,32 +170,32 @@ package cardSystem.view.achievement
             _progressLabel.visible = true;
             _progressText.visible = true;
             _progress.visible = true;
-            _loc2_ = 0;
-            _loc3_ = 0;
+            num = 0;
+            count = 0;
             if(_info.RequireNum > 0)
             {
-               _loc2_ = _info.RequireNum;
-               _loc3_ = PlayerManager.Instance.Self.getCardNumByType(_info.RequireType);
+               num = _info.RequireNum;
+               count = PlayerManager.Instance.Self.getCardNumByType(_info.RequireType);
             }
             else if(_info.RequireGroupid > 0)
             {
-               _loc2_ = CardManager.Instance.getCardSuitByID(_info.RequireGroupid).cardIdVec.length;
-               _loc3_ = PlayerManager.Instance.Self.getCurrentCardSetsNum(_info.RequireGroupid,_info.RequireType);
+               num = CardManager.Instance.getCardSuitByID(_info.RequireGroupid).cardIdVec.length;
+               count = PlayerManager.Instance.Self.getCurrentCardSetsNum(_info.RequireGroupid,_info.RequireType);
             }
             else if(_info.RequireGroupNum > 0)
             {
-               _loc2_ = _info.RequireGroupNum;
-               _loc3_ = PlayerManager.Instance.Self.gainCardSetsNum(_info.RequireType);
+               num = _info.RequireGroupNum;
+               count = PlayerManager.Instance.Self.gainCardSetsNum(_info.RequireType);
             }
-            _progressText.text = _loc3_ + "/" + _loc2_;
-            _loc1_ = _loc3_ / _loc2_ * 100;
-            _progress.gotoAndStop(_loc1_);
+            _progressText.text = count + "/" + num;
+            progress = count / num * 100;
+            _progress.gotoAndStop(progress);
          }
       }
       
       private function updateTitle() : void
       {
-         var _loc1_:* = null;
+         var titleModel:* = null;
          if(_info.Honor_id == 0)
          {
             if(_titleImage)
@@ -211,11 +211,11 @@ package cardSystem.view.achievement
          else
          {
             _newTitleBg.visible = true;
-            _loc1_ = NewTitleManager.instance.titleInfo[_info.Honor_id];
-            if(_loc1_ && _loc1_.Pic && _loc1_.Pic != "0")
+            titleModel = NewTitleManager.instance.titleInfo[_info.Honor_id];
+            if(titleModel && titleModel.Pic && titleModel.Pic != "0")
             {
                ObjectUtils.disposeObject(_titleImage);
-               _titleImage = DDTAssetManager.instance.nativeAsset.getBitmap("image_title_" + _loc1_.Pic);
+               _titleImage = DDTAssetManager.instance.nativeAsset.getBitmap("image_title_" + titleModel.Pic);
                _titleImage.x = 381;
                _titleImage.y = 110 - _titleImage.height;
                addChild(_titleImage);
@@ -244,52 +244,50 @@ package cardSystem.view.achievement
       
       private function updateProperty() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:Array = getCurrentProperty();
-         _loc2_ = 0;
-         while(_loc2_ < _propertyTextList.length)
+         var i:int = 0;
+         var property:Array = getCurrentProperty();
+         for(i = 0; i < _propertyTextList.length; )
          {
-            if(_loc2_ < _loc1_.length)
+            if(i < property.length)
             {
-               if(_propertyTextList[_loc2_] == null)
+               if(_propertyTextList[i] == null)
                {
-                  _propertyTextList[_loc2_] = new CardAchievementItemProperty();
+                  _propertyTextList[i] = new CardAchievementItemProperty();
                }
-               _propertyTextList[_loc2_].x = 90 * _loc2_;
-               _propertyTextList[_loc2_].updateProperty(_loc1_[_loc2_].type,_loc1_[_loc2_].value);
-               _propertyTextList[_loc2_].visible = true;
-               addChild(_propertyTextList[_loc2_]);
+               _propertyTextList[i].x = 90 * i;
+               _propertyTextList[i].updateProperty(property[i].type,property[i].value);
+               _propertyTextList[i].visible = true;
+               addChild(_propertyTextList[i]);
             }
-            else if(_propertyTextList[_loc2_])
+            else if(_propertyTextList[i])
             {
-               _propertyTextList[_loc2_].visible = false;
+               _propertyTextList[i].visible = false;
             }
-            _loc2_++;
+            i++;
          }
       }
       
       private function getCurrentProperty() : Array
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:Array = [];
-         _loc3_ = 0;
-         while(_loc3_ < propertyValue.length)
+         var i:int = 0;
+         var object:* = null;
+         var list:Array = [];
+         for(i = 0; i < propertyValue.length; )
          {
-            if(_info.hasOwnProperty(propertyValue[_loc3_]) && _info[propertyValue[_loc3_]] > 0)
+            if(_info.hasOwnProperty(propertyValue[i]) && _info[propertyValue[i]] > 0)
             {
-               _loc2_ = {
-                  "type":propertyValue[_loc3_],
-                  "value":_info[propertyValue[_loc3_]]
+               object = {
+                  "type":propertyValue[i],
+                  "value":_info[propertyValue[i]]
                };
-               _loc1_.push(_loc2_);
+               list.push(object);
             }
-            _loc3_++;
+            i++;
          }
-         return _loc1_;
+         return list;
       }
       
-      private function __onClickGet(param1:MouseEvent) : void
+      private function __onClickGet(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          _getBtn.mouseEnabled = false;
@@ -367,10 +365,10 @@ class CardAchievementItemProperty extends Sprite implements Disposeable
       addChild(_propertyValue);
    }
    
-   public function updateProperty(param1:String, param2:String) : void
+   public function updateProperty(type:String, value:String) : void
    {
-      _propertyText.text = LanguageMgr.GetTranslation(param1);
-      _propertyValue.text = "+" + param2;
+      _propertyText.text = LanguageMgr.GetTranslation(type);
+      _propertyValue.text = "+" + value;
       _propertyValue.x = _propertyText.width + 60;
    }
    

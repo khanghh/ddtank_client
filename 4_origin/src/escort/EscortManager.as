@@ -68,24 +68,24 @@ package escort
       {
       }
       
-      private function pkgHandler(param1:CrazyTankSocketEvent) : void
+      private function pkgHandler(event:CrazyTankSocketEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc4_:uint = _loc3_.position;
-         var _loc2_:int = _loc3_.readByte();
-         var _loc5_:* = _loc2_;
+         var pkg:PackageIn = event.pkg;
+         var currentPosition:uint = pkg.position;
+         var cmd:int = pkg.readByte();
+         var _loc5_:* = cmd;
          if(1 !== _loc5_)
          {
             if(7 !== _loc5_)
             {
                if(35 !== _loc5_)
                {
-                  _loc3_.position = _loc4_;
-                  dispatchEvent(new CrazyTankSocketEvent("escort",_loc3_));
+                  pkg.position = currentPosition;
+                  dispatchEvent(new CrazyTankSocketEvent("escort",pkg));
                }
                else
                {
-                  canEnterHandler(_loc3_);
+                  canEnterHandler(pkg);
                }
             }
             else
@@ -95,18 +95,18 @@ package escort
          }
          else
          {
-            openOrCloseHandler(_loc3_);
+            openOrCloseHandler(pkg);
          }
       }
       
-      private function openOrCloseHandler(param1:PackageIn) : void
+      private function openOrCloseHandler(pkg:PackageIn) : void
       {
-         param1.readInt();
-         _isStart = param1.readBoolean();
+         pkg.readInt();
+         _isStart = pkg.readBoolean();
          if(_isStart)
          {
-            _isInGame = param1.readBoolean();
-            pkgs["show_frame"] = param1;
+            _isInGame = pkg.readBoolean();
+            pkgs["show_frame"] = pkg;
          }
          else
          {
@@ -115,9 +115,9 @@ package escort
          }
       }
       
-      private function canEnterHandler(param1:PackageIn) : void
+      private function canEnterHandler(pkg:PackageIn) : void
       {
-         _isInGame = param1.readBoolean();
+         _isInGame = pkg.readBoolean();
          if(_isInGame)
          {
             dispatchEvent(new Event("escortCanEnter"));
@@ -142,9 +142,9 @@ package escort
          return _isInGame;
       }
       
-      public function set isInGame(param1:Boolean) : void
+      public function set isInGame(value:Boolean) : void
       {
-         _isInGame = param1;
+         _isInGame = value;
       }
       
       override protected function start() : void
@@ -157,30 +157,30 @@ package escort
          dispatchEvent(new Event("show_frame"));
       }
       
-      public function getPlayerResUrl(param1:Boolean, param2:int) : String
+      public function getPlayerResUrl(isSelf:Boolean, carType:int) : String
       {
-         var _loc3_:* = null;
-         if(param1)
+         var tmpStr:* = null;
+         if(isSelf)
          {
-            _loc3_ = "self";
+            tmpStr = "self";
          }
          else
          {
-            _loc3_ = "other";
+            tmpStr = "other";
          }
-         return PathManager.SITE_MAIN + "image/escort/" + "escort" + _loc3_ + param2 + ".swf";
+         return PathManager.SITE_MAIN + "image/escort/" + "escort" + tmpStr + carType + ".swf";
       }
       
       public function loadSound() : void
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.SITE_MAIN + "image/escort/escortAudio.swf",4);
-         _loc1_.addEventListener("complete",loadSoundCompleteHandler);
-         LoadResourceManager.Instance.startLoad(_loc1_);
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.SITE_MAIN + "image/escort/escortAudio.swf",4);
+         loader.addEventListener("complete",loadSoundCompleteHandler);
+         LoadResourceManager.Instance.startLoad(loader);
       }
       
-      private function loadSoundCompleteHandler(param1:LoaderEvent) : void
+      private function loadSoundCompleteHandler(event:LoaderEvent) : void
       {
-         param1.loader.removeEventListener("complete",loadSoundCompleteHandler);
+         event.loader.removeEventListener("complete",loadSoundCompleteHandler);
          SoundManager.instance.initEscortSound();
       }
    }

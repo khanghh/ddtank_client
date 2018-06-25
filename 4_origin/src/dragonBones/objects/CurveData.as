@@ -18,68 +18,66 @@ package dragonBones.objects
       
       public function CurveData()
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _pointList = [];
          sampling = new Vector.<Point>(20);
          super();
-         _loc1_ = 0;
-         while(_loc1_ < 20 - 1)
+         for(i = 0; i < 20 - 1; )
          {
-            sampling[_loc1_] = new Point();
-            _loc1_++;
+            sampling[i] = new Point();
+            i++;
          }
          sampling.fixed = true;
       }
       
-      public function getValueByProgress(param1:Number) : Number
+      public function getValueByProgress(progress:Number) : Number
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
+         var i:int = 0;
+         var point:* = null;
+         var prevPoint:* = null;
          if(_dataChanged)
          {
             refreshSampling();
          }
-         _loc4_ = 0;
-         while(_loc4_ < 20 - 1)
+         i = 0;
+         while(i < 20 - 1)
          {
-            _loc2_ = sampling[_loc4_];
-            if(_loc2_.x >= param1)
+            point = sampling[i];
+            if(point.x >= progress)
             {
-               if(_loc4_ == 0)
+               if(i == 0)
                {
-                  return _loc2_.y * param1 / _loc2_.x;
+                  return point.y * progress / point.x;
                }
-               _loc3_ = sampling[_loc4_ - 1];
-               return _loc3_.y + (_loc2_.y - _loc3_.y) * (param1 - _loc3_.x) / (_loc2_.x - _loc3_.x);
+               prevPoint = sampling[i - 1];
+               return prevPoint.y + (point.y - prevPoint.y) * (progress - prevPoint.x) / (point.x - prevPoint.x);
             }
-            _loc4_++;
+            i++;
          }
-         return _loc2_.y + (1 - _loc2_.y) * (param1 - _loc2_.x) / (1 - _loc2_.x);
+         return point.y + (1 - point.y) * (progress - point.x) / (1 - point.x);
       }
       
       public function refreshSampling() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < 20 - 1)
+         var i:int = 0;
+         for(i = 0; i < 20 - 1; )
          {
-            bezierCurve(0.05 * (_loc1_ + 1),sampling[_loc1_]);
-            _loc1_++;
+            bezierCurve(0.05 * (i + 1),sampling[i]);
+            i++;
          }
          _dataChanged = false;
       }
       
-      private function bezierCurve(param1:Number, param2:Point) : void
+      private function bezierCurve(t:Number, outputPoint:Point) : void
       {
-         var _loc3_:Number = 1 - param1;
-         param2.x = 3 * point1.x * param1 * _loc3_ * _loc3_ + 3 * point2.x * param1 * param1 * _loc3_ + Math.pow(param1,3);
-         param2.y = 3 * point1.y * param1 * _loc3_ * _loc3_ + 3 * point2.y * param1 * param1 * _loc3_ + Math.pow(param1,3);
+         var l_t:Number = 1 - t;
+         outputPoint.x = 3 * point1.x * t * l_t * l_t + 3 * point2.x * t * t * l_t + Math.pow(t,3);
+         outputPoint.y = 3 * point1.y * t * l_t * l_t + 3 * point2.y * t * t * l_t + Math.pow(t,3);
       }
       
-      public function set pointList(param1:Array) : void
+      public function set pointList(value:Array) : void
       {
-         _pointList = param1;
+         _pointList = value;
          _dataChanged = true;
       }
       

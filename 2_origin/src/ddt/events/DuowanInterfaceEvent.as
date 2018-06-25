@@ -16,10 +16,10 @@ package ddt.events
       
       public var data:Object;
       
-      public function DuowanInterfaceEvent(param1:String, param2:Object = null)
+      public function DuowanInterfaceEvent(type:String, $data:Object = null)
       {
-         super(param1);
-         data = param2;
+         super(type);
+         data = $data;
       }
    }
 }

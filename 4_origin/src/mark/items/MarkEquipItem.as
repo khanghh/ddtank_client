@@ -19,22 +19,22 @@ package mark.items
       
       override protected function initialize() : void
       {
-         var _loc1_:Shape = new Shape();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,56,56);
-         _loc1_.graphics.endFill();
-         _item = new BaseCell(_loc1_);
+         var cellBG:Shape = new Shape();
+         cellBG.graphics.beginFill(16777215,0);
+         cellBG.graphics.drawRect(0,0,56,56);
+         cellBG.graphics.endFill();
+         _item = new BaseCell(cellBG);
          _item.setContentSize(56,56);
          PositionUtils.setPos(_item,{
-            "x":6,
-            "y":11
+            "x":-1,
+            "y":0
          });
          addChild(_item);
       }
       
-      public function set data(param1:ItemTemplateInfo) : void
+      public function set data(value:ItemTemplateInfo) : void
       {
-         _item.info = param1;
+         _item.info = value;
       }
    }
 }

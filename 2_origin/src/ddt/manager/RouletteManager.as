@@ -72,10 +72,10 @@ package ddt.manager
       
       private var limdataList:Vector.<Object>;
       
-      public function RouletteManager(param1:IEventDispatcher = null)
+      public function RouletteManager(target:IEventDispatcher = null)
       {
          _numList = [0,0,0,4,4,4,3,3,3,2];
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : RouletteManager
@@ -106,121 +106,118 @@ package ddt.manager
          SocketManager.Instance.addEventListener(PkgEvent.format(97),luckStoneRankLimit);
       }
       
-      protected function luckStoneRankLimit(param1:PkgEvent) : void
+      protected function luckStoneRankLimit(event:PkgEvent) : void
       {
-         var _loc13_:* = null;
-         var _loc3_:* = null;
-         var _loc12_:int = 0;
-         var _loc8_:int = 0;
-         var _loc11_:int = 0;
-         var _loc5_:* = null;
-         var _loc10_:int = 0;
-         var _loc6_:int = 0;
+         var obj:* = null;
+         var events:* = null;
+         var count1:int = 0;
+         var j:int = 0;
+         var num:int = 0;
+         var lastTime:* = null;
+         var i:int = 0;
+         var n:int = 0;
          limdataList = new Vector.<Object>();
-         var _loc7_:PackageIn = param1.pkg;
-         var _loc4_:Boolean = _loc7_.readBoolean();
-         if(_loc4_)
+         var pkg:PackageIn = event.pkg;
+         var isStart:Boolean = pkg.readBoolean();
+         if(isStart)
          {
-            _loc12_ = _loc7_.readInt();
-            _loc8_ = 0;
-            while(_loc8_ < _loc12_)
+            count1 = pkg.readInt();
+            for(j = 0; j < count1; )
             {
-               _loc13_ = {};
-               _loc11_ = _loc7_.readInt();
-               if(_loc11_ == 2)
+               obj = {};
+               num = pkg.readInt();
+               if(num == 2)
                {
-                  _loc13_.TemplateID1 = _loc7_.readInt();
+                  obj.TemplateID1 = pkg.readInt();
                }
-               _loc13_.TemplateID = _loc7_.readInt();
-               _loc13_.count = _numList[_loc8_];
-               limdataList.push(_loc13_);
-               _loc8_++;
+               obj.TemplateID = pkg.readInt();
+               obj.count = _numList[j];
+               limdataList.push(obj);
+               j++;
             }
-            _loc3_ = new CaddyEvent("luckstone_rank_limit");
-            _loc3_.lastTime = _loc5_;
-            _loc3_.dataList = limdataList;
-            dispatchEvent(_loc3_);
+            events = new CaddyEvent("luckstone_rank_limit");
+            events.lastTime = lastTime;
+            events.dataList = limdataList;
+            dispatchEvent(events);
             return;
          }
-         _loc5_ = _loc7_.readUTF();
-         var _loc9_:Boolean = _loc7_.readBoolean();
-         var _loc2_:int = _loc7_.readInt();
-         _loc10_ = 0;
-         while(_loc10_ < _loc2_)
+         lastTime = pkg.readUTF();
+         var isOpen:Boolean = pkg.readBoolean();
+         var count:int = pkg.readInt();
+         for(i = 0; i < count; )
          {
-            _loc13_ = {};
-            _loc13_["Rank"] = _loc7_.readInt();
-            _loc13_["UserID"] = _loc7_.readInt();
-            _loc13_["LuckStone"] = _loc7_.readInt();
-            _loc6_ = _loc7_.readInt();
-            if(_loc6_ == 2)
+            obj = {};
+            obj["Rank"] = pkg.readInt();
+            obj["UserID"] = pkg.readInt();
+            obj["LuckStone"] = pkg.readInt();
+            n = pkg.readInt();
+            if(n == 2)
             {
-               _loc13_["TemplateID1"] = _loc7_.readInt();
+               obj["TemplateID1"] = pkg.readInt();
             }
-            _loc13_["TemplateID"] = _loc7_.readInt();
-            _loc13_["Nickname"] = _loc7_.readUTF();
-            _loc13_["count"] = _numList[_loc10_];
-            limdataList.push(_loc13_);
-            _loc10_++;
+            obj["TemplateID"] = pkg.readInt();
+            obj["Nickname"] = pkg.readUTF();
+            obj["count"] = _numList[i];
+            limdataList.push(obj);
+            i++;
          }
-         _loc3_ = new CaddyEvent("luckstone_rank_limit");
-         _loc3_.lastTime = _loc5_;
-         _loc3_.dataList = limdataList;
-         dispatchEvent(_loc3_);
+         events = new CaddyEvent("luckstone_rank_limit");
+         events.lastTime = lastTime;
+         events.dataList = limdataList;
+         dispatchEvent(events);
       }
       
-      private function _showBox(param1:PkgEvent) : void
+      private function _showBox(evt:PkgEvent) : void
       {
          switch(int(_boxType) - 1)
          {
             case 0:
-               _showRoultteView(param1);
+               _showRoultteView(evt);
             default:
-               _showRoultteView(param1);
+               _showRoultteView(evt);
          }
       }
       
-      private function _showRoultteView(param1:CrazyTankSocketEvent) : void
+      private function _showRoultteView(evt:CrazyTankSocketEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc2_:PackageIn = param1.pkg;
-         _loc4_ = 0;
-         while(_loc4_ < 18)
+         var i:int = 0;
+         var info:* = null;
+         var pkg:PackageIn = evt.pkg;
+         for(i = 0; i < 18; )
          {
             try
             {
-               _loc3_ = new BoxGoodsTempInfo();
-               _loc3_.TemplateId = _loc2_.readInt();
-               _loc3_.IsBind = _loc2_.readBoolean();
-               _loc3_.ItemCount = _loc2_.readByte();
-               _loc3_.ItemValid = _loc2_.readByte();
-               _templateIDList.push(_loc3_);
+               info = new BoxGoodsTempInfo();
+               info.TemplateId = pkg.readInt();
+               info.IsBind = pkg.readBoolean();
+               info.ItemCount = pkg.readByte();
+               info.ItemValid = pkg.readByte();
+               _templateIDList.push(info);
             }
             catch(e:Error)
             {
             }
-            _loc4_++;
+            i++;
          }
          _randomTemplateID();
          showRouletteView();
          _boxType = 0;
       }
       
-      public function useVipBox(param1:BagCell) : void
+      public function useVipBox(cell:BagCell) : void
       {
-         _goodsInfo = param1.info;
-         var _loc2_:VipBoxFrame = ComponentFactory.Instance.creatCustomObject("caddyII.VipFrame",[13,_goodsInfo]);
-         _loc2_.setCardType(param1.info.TemplateID,param1.place);
-         _loc2_.show();
+         _goodsInfo = cell.info;
+         var panel:VipBoxFrame = ComponentFactory.Instance.creatCustomObject("caddyII.VipFrame",[13,_goodsInfo]);
+         panel.setCardType(cell.info.TemplateID,cell.place);
+         panel.show();
          _boxType = 0;
       }
       
-      public function useRouletteBox(param1:BagCell) : void
+      public function useRouletteBox(cell:BagCell) : void
       {
          _rouletteBoxkeyCount = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(112109);
-         _bagType = param1.itemInfo.BagType;
-         _place = param1.itemInfo.Place;
+         _bagType = cell.itemInfo.BagType;
+         _place = cell.itemInfo.Place;
          _boxType = 1;
          SocketManager.Instance.out.sendRouletteBox(_bagType,_place);
       }
@@ -244,27 +241,27 @@ package ddt.manager
       
       public function showRouletteView() : void
       {
-         var _loc1_:RouletteBoxPanel = ComponentFactory.Instance.creat("roulette.RoulettePanelAsset");
-         _loc1_.templateIDList = _templateIDList;
-         _loc1_.keyCount = _rouletteBoxkeyCount;
-         _loc1_.show();
-         LayerManager.Instance.addToLayer(_loc1_,3,true,1);
+         var panel:RouletteBoxPanel = ComponentFactory.Instance.creat("roulette.RoulettePanelAsset");
+         panel.templateIDList = _templateIDList;
+         panel.keyCount = _rouletteBoxkeyCount;
+         panel.show();
+         LayerManager.Instance.addToLayer(panel,3,true,1);
       }
       
-      public function showBuyRouletteKey(param1:int) : void
+      public function showBuyRouletteKey(needKeyCount:int) : void
       {
-         var _loc2_:QuickBuyFrame = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
-         _loc2_.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
-         _loc2_.itemID = 112109;
-         _loc2_.stoneNumber = param1;
-         LayerManager.Instance.addToLayer(_loc2_,2,true,1);
-         _loc2_.addEventListener("response",_response);
+         var _quick:QuickBuyFrame = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
+         _quick.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
+         _quick.itemID = 112109;
+         _quick.stoneNumber = needKeyCount;
+         LayerManager.Instance.addToLayer(_quick,2,true,1);
+         _quick.addEventListener("response",_response);
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(evt:FrameEvent) : void
       {
-         (param1.currentTarget as QuickBuyFrame).removeEventListener("response",_response);
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         (evt.currentTarget as QuickBuyFrame).removeEventListener("response",_response);
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             _closeFun();
          }
@@ -277,64 +274,62 @@ package ddt.manager
       
       private function _randomTemplateID() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         var _loc1_:BoxGoodsTempInfo = null;
-         _loc3_ = 0;
-         while(_loc3_ < _templateIDList.length)
+         var i:int = 0;
+         var ran:int = 0;
+         var itemID:BoxGoodsTempInfo = null;
+         for(i = 0; i < _templateIDList.length; )
          {
-            _loc2_ = Math.floor(Math.random() * _templateIDList.length);
-            _loc1_ = _templateIDList[_loc3_] as BoxGoodsTempInfo;
-            _templateIDList[_loc3_] = _templateIDList[_loc2_];
-            _templateIDList[_loc2_] = _loc1_;
-            _loc3_++;
+            ran = Math.floor(Math.random() * _templateIDList.length);
+            itemID = _templateIDList[i] as BoxGoodsTempInfo;
+            _templateIDList[i] = _templateIDList[ran];
+            _templateIDList[ran] = itemID;
+            i++;
          }
       }
       
-      private function _bagUpdate(param1:BagEvent) : void
+      private function _bagUpdate(e:BagEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:int = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(112109);
-         if(_rouletteBoxkeyCount != _loc3_)
+         var evt:* = null;
+         var number:int = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(112109);
+         if(_rouletteBoxkeyCount != number)
          {
-            _loc2_ = new RouletteEvent("roulette_key_count_update");
-            _rouletteBoxkeyCount = _loc3_;
-            _loc2_.keyCount = _loc3_;
-            dispatchEvent(_loc2_);
+            evt = new RouletteEvent("roulette_key_count_update");
+            _rouletteBoxkeyCount = number;
+            evt.keyCount = number;
+            dispatchEvent(evt);
             updateState();
          }
       }
       
-      private function __getBadLuckHandler(param1:PkgEvent) : void
+      private function __getBadLuckHandler(e:PkgEvent) : void
       {
-         var _loc7_:int = 0;
-         var _loc6_:* = null;
-         var _loc3_:* = null;
+         var i:int = 0;
+         var obj:* = null;
+         var events:* = null;
          dataList = new Vector.<Object>();
-         var _loc5_:PackageIn = param1.pkg;
-         var _loc4_:String = _loc5_.readUTF();
-         var _loc8_:Boolean = _loc5_.readBoolean();
-         var _loc2_:int = _loc5_.readInt();
-         _loc7_ = 0;
-         while(_loc7_ < _loc2_)
+         var pkg:PackageIn = e.pkg;
+         var lastTime:String = pkg.readUTF();
+         var isOpen:Boolean = pkg.readBoolean();
+         var count:int = pkg.readInt();
+         for(i = 0; i < count; )
          {
-            _loc6_ = {};
-            _loc6_["Rank"] = _loc5_.readInt();
-            _loc6_["UserID"] = _loc5_.readInt();
-            _loc6_["Count"] = _loc5_.readInt();
-            _loc6_["TemplateID"] = _loc5_.readInt();
-            _loc6_["Nickname"] = _loc5_.readUTF();
-            dataList.push(_loc6_);
-            _loc7_++;
+            obj = {};
+            obj["Rank"] = pkg.readInt();
+            obj["UserID"] = pkg.readInt();
+            obj["Count"] = pkg.readInt();
+            obj["TemplateID"] = pkg.readInt();
+            obj["Nickname"] = pkg.readUTF();
+            dataList.push(obj);
+            i++;
          }
-         if(_loc2_ == 0 || dataList[0].TemplateID == 0)
+         if(count == 0 || dataList[0].TemplateID == 0)
          {
-            _loc3_ = new CaddyEvent("update_badLuck");
-            _loc3_.lastTime = _loc4_;
-            _loc3_.dataList = dataList;
-            dispatchEvent(_loc3_);
+            events = new CaddyEvent("update_badLuck");
+            events.lastTime = lastTime;
+            events.dataList = dataList;
+            dispatchEvent(events);
          }
-         else if(_loc8_)
+         else if(isOpen)
          {
             if(getStateAble(StateManager.currentStateType))
             {
@@ -349,22 +344,22 @@ package ddt.manager
       
       private function __showBadLuckEndFrame() : void
       {
-         var _loc1_:CaddyAwardListFrame = ComponentFactory.Instance.creatComponentByStylename("caddyAwardListFrame");
-         LayerManager.Instance.addToLayer(_loc1_,2,true,0);
+         var _listView:CaddyAwardListFrame = ComponentFactory.Instance.creatComponentByStylename("caddyAwardListFrame");
+         LayerManager.Instance.addToLayer(_listView,2,true,0);
       }
       
-      private function getStateAble(param1:String) : Boolean
+      private function getStateAble(type:String) : Boolean
       {
-         if(param1 == "main" || param1 == "auction" || param1 == "ddtchurchroomlist" || param1 == "roomlist" || param1 == "consortia" || param1 == "dungeon" || param1 == "hotSpringRoomList" || param1 == "fightLib" || param1 == "academyRegistration" || param1 == "civil" || param1 == "tofflist")
+         if(type == "main" || type == "auction" || type == "ddtchurchroomlist" || type == "roomlist" || type == "consortia" || type == "dungeon" || type == "hotSpringRoomList" || type == "fightLib" || type == "academyRegistration" || type == "civil" || type == "tofflist")
          {
             return true;
          }
          return false;
       }
       
-      public function useCaddy(param1:BagCell) : void
+      public function useCaddy(cell:BagCell) : void
       {
-         _goodsInfo = param1.info;
+         _goodsInfo = cell.info;
          try
          {
             _creatCaddy();
@@ -379,20 +374,20 @@ package ddt.manager
       
       private function _creatCaddy() : void
       {
-         var _loc1_:CaddyFrame = ComponentFactory.Instance.creatCustomObject("caddyII.CaddyFrame",[1,_goodsInfo]);
-         _loc1_.show();
+         var panel:CaddyFrame = ComponentFactory.Instance.creatCustomObject("caddyII.CaddyFrame",[1,_goodsInfo]);
+         panel.show();
          _boxType = 0;
       }
       
-      public function useBless(param1:BagCell = null) : void
+      public function useBless(cell:BagCell = null) : void
       {
-         if(!param1)
+         if(!cell)
          {
             _goodsInfo = ItemManager.Instance.getTemplateById(112222);
          }
          else
          {
-            _goodsInfo = param1.info;
+            _goodsInfo = cell.info;
          }
          try
          {
@@ -408,68 +403,68 @@ package ddt.manager
       
       private function _creatBless() : void
       {
-         var _loc1_:CaddyFrame = ComponentFactory.Instance.creatCustomObject("caddyII.CaddyFrame",[10,_goodsInfo]);
-         _loc1_.show();
+         var panel:CaddyFrame = ComponentFactory.Instance.creatCustomObject("caddyII.CaddyFrame",[10,_goodsInfo]);
+         panel.show();
       }
       
       public function useCelebrationBox() : void
       {
-         var _loc1_:CaddyFrame = ComponentFactory.Instance.creatCustomObject("caddyII.CaddyFrame",[12]);
-         _loc1_.show();
+         var panel:CaddyFrame = ComponentFactory.Instance.creatCustomObject("caddyII.CaddyFrame",[12]);
+         panel.show();
       }
       
-      public function useBead(param1:int) : void
+      public function useBead(templateID:int) : void
       {
-         var _loc2_:* = null;
-         if(param1 == 112150)
+         var panel:* = null;
+         if(templateID == 112150)
          {
-            _loc2_ = ComponentFactory.Instance.creatCustomObject("caddyII.CaddyFrame",[8]);
+            panel = ComponentFactory.Instance.creatCustomObject("caddyII.CaddyFrame",[8]);
          }
-         else if(param1 == 112108)
+         else if(templateID == 112108)
          {
-            _loc2_ = ComponentFactory.Instance.creatCustomObject("caddyIII.CardBoxFrame",[9]);
+            panel = ComponentFactory.Instance.creatCustomObject("caddyIII.CardBoxFrame",[9]);
          }
          else
          {
-            _loc2_ = ComponentFactory.Instance.creatCustomObject("caddyII.CaddyFrame",[2]);
+            panel = ComponentFactory.Instance.creatCustomObject("caddyII.CaddyFrame",[2]);
          }
-         _loc2_.setBeadType(param1);
-         _loc2_.show();
+         panel.setBeadType(templateID);
+         panel.show();
       }
       
-      public function useOfferPack(param1:BagCell) : void
+      public function useOfferPack(cell:BagCell) : void
       {
-         CaddyModel.instance.offerType = param1.info.TemplateID;
-         var _loc2_:CaddyFrame = ComponentFactory.Instance.creatCustomObject("caddyII.CaddyFrame",[3]);
-         _loc2_.setOfferType(param1.info.TemplateID);
-         _loc2_.show();
+         CaddyModel.instance.offerType = cell.info.TemplateID;
+         var panel:CaddyFrame = ComponentFactory.Instance.creatCustomObject("caddyII.CaddyFrame",[3]);
+         panel.setOfferType(cell.info.TemplateID);
+         panel.show();
       }
       
-      public function useCard(param1:BagCell) : void
+      public function useCard(cell:BagCell) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         if(param1.info.TemplateID == 112108)
+         var panel:* = null;
+         var panel2:* = null;
+         if(cell.info.TemplateID == 112108)
          {
-            _loc3_ = ComponentFactory.Instance.creatCustomObject("caddy.CardFrame",[9]);
+            panel = ComponentFactory.Instance.creatCustomObject("caddy.CardFrame",[9]);
          }
-         else if(param1.info.TemplateID == 112150)
+         else if(cell.info.TemplateID == 112150)
          {
-            _loc3_ = ComponentFactory.Instance.creatCustomObject("caddy.CardFrame",[8]);
+            panel = ComponentFactory.Instance.creatCustomObject("caddy.CardFrame",[8]);
          }
          else
          {
-            if(param1.info.TemplateID == 20150)
+            if(cell.info.TemplateID == 20150)
             {
-               _loc2_ = ComponentFactory.Instance.creatCustomObject("caddy.CardSoulBoxFrame",[6]);
-               _loc2_.setCardType(param1.info.TemplateID,param1.place);
-               _loc2_.show();
+               panel2 = ComponentFactory.Instance.creatCustomObject("caddy.CardSoulBoxFrame",[6]);
+               panel2.setCardType(cell.info.TemplateID,cell.place);
+               panel2.show();
                return;
             }
-            _loc3_ = ComponentFactory.Instance.creatCustomObject("caddy.CardFrame",[6]);
+            panel = ComponentFactory.Instance.creatCustomObject("caddy.CardFrame",[6]);
          }
-         _loc3_.setCardType(param1.info.TemplateID,param1.place);
-         _loc3_.show();
+         panel.setCardType(cell.info.TemplateID,cell.place);
+         panel.show();
       }
       
       private function _loadSWF() : void
@@ -492,9 +487,9 @@ package ddt.manager
          UIModuleLoader.Instance.addUIModuleImp("caddy");
       }
       
-      private function __onUIComplete(param1:UIModuleEvent) : void
+      private function __onUIComplete(e:UIModuleEvent) : void
       {
-         if(param1.module == "caddy")
+         if(e.module == "caddy")
          {
             UIModuleSmallLoading.Instance.removeEventListener("close",__onSmallLoadingClose);
             UIModuleLoader.Instance.removeEventListener("uiModuleComplete",__onUIComplete);
@@ -504,9 +499,9 @@ package ddt.manager
          }
       }
       
-      private function __onUICompleteOne(param1:UIModuleEvent) : void
+      private function __onUICompleteOne(e:UIModuleEvent) : void
       {
-         if(param1.module == "caddy")
+         if(e.module == "caddy")
          {
             UIModuleSmallLoading.Instance.removeEventListener("close",__onSmallLoadingClose);
             UIModuleLoader.Instance.removeEventListener("uiModuleComplete",__onUIComplete);
@@ -516,7 +511,7 @@ package ddt.manager
          }
       }
       
-      private function __onSmallLoadingClose(param1:Event) : void
+      private function __onSmallLoadingClose(e:Event) : void
       {
          UIModuleSmallLoading.Instance.hide();
          UIModuleSmallLoading.Instance.removeEventListener("close",__onSmallLoadingClose);
@@ -524,11 +519,11 @@ package ddt.manager
          UIModuleLoader.Instance.removeEventListener("uiMoudleProgress",__onUIProgress);
       }
       
-      private function __onUIProgress(param1:UIModuleEvent) : void
+      private function __onUIProgress(e:UIModuleEvent) : void
       {
-         if(param1.module == "caddy")
+         if(e.module == "caddy")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = e.loader.progress * 100;
          }
       }
    }

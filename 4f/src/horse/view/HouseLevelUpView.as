@@ -1,0 +1,5 @@
+package horse.view{   import com.pickgliss.ui.ComponentFactory;   import com.pickgliss.ui.core.Disposeable;   import com.pickgliss.utils.ObjectUtils;   import ddt.utils.PositionUtils;   import flash.display.Bitmap;   import flash.display.Sprite;   import trainer.view.NewHandContainer;      public class HouseLevelUpView extends Sprite implements Disposeable   {                   private var _bg:Bitmap;            private var _leftTopView:HorseFrameLeftTopView;            private var _rightTopView:HorseFrameRightTopView;            private var _leftBottomView:HorseFrameLeftBottomView;            private var _rightBottomView:HorseFrameRightBottomView;            public function HouseLevelUpView() { super(); }
+            private function initView() : void { }
+            public function resetSecondPro() : void { }
+            public function dispose() : void { }
+   }}

@@ -28,95 +28,94 @@ package par.enginees
       
       public var cachable:Boolean = true;
       
-      public function ParticleEnginee(param1:IParticleRenderer)
+      public function ParticleEnginee(render:IParticleRenderer)
       {
          super();
-         _render = param1;
+         _render = render;
          _maxCount = 200;
          spareParticles = new Dictionary();
          particles = new Vector.<Particle>();
          _emitters = new Dictionary();
       }
       
-      public function setMaxCount(param1:Number) : void
+      public function setMaxCount(value:Number) : void
       {
-         _maxCount = param1;
+         _maxCount = value;
       }
       
-      public function addEmitter(param1:Emitter) : void
+      public function addEmitter(emitter:Emitter) : void
       {
-         _emitters[param1] = param1;
-         param1.setEnginee(this);
+         _emitters[emitter] = emitter;
+         emitter.setEnginee(this);
       }
       
-      public function removeEmitter(param1:Emitter) : void
+      public function removeEmitter(emitter:Emitter) : void
       {
-         delete _emitters[param1];
-         param1.setEnginee(null);
+         delete _emitters[emitter];
+         emitter.setEnginee(null);
       }
       
-      public function addParticle(param1:Particle) : void
+      public function addParticle(particle:Particle) : void
       {
-         particles.push(param1);
-         _render.addParticle(param1);
+         particles.push(particle);
+         _render.addParticle(particle);
       }
       
-      private function __enterFrame(param1:Event) : void
+      private function __enterFrame(event:Event) : void
       {
          update();
       }
       
       public function update() : void
       {
-         var _loc2_:* = null;
-         var _loc4_:int = 0;
+         var p:* = null;
+         var i:int = 0;
          while(particles.length > _maxCount)
          {
-            _loc2_ = particles.shift();
-            _render.removeParticle(_loc2_);
-            cacheParticle(_loc2_);
+            p = particles.shift();
+            _render.removeParticle(p);
+            cacheParticle(p);
          }
-         var _loc1_:* = 0.04;
+         var time:* = 0.04;
          var _loc6_:int = 0;
          var _loc5_:* = _emitters;
-         for each(var _loc3_ in _emitters)
+         for each(var emitter in _emitters)
          {
-            _loc3_.execute(_loc1_);
+            emitter.execute(time);
          }
-         _loc4_ = 0;
-         while(_loc4_ < particles.length)
+         for(i = 0; i < particles.length; )
          {
-            _loc2_ = particles[_loc4_];
-            _loc2_.age = _loc2_.age + _loc1_;
-            if(_loc2_.age >= _loc2_.life)
+            p = particles[i];
+            p.age = p.age + time;
+            if(p.age >= p.life)
             {
-               particles.splice(_loc4_,1);
-               _render.removeParticle(_loc2_);
-               cacheParticle(_loc2_);
-               _loc4_--;
+               particles.splice(i,1);
+               _render.removeParticle(p);
+               cacheParticle(p);
+               i--;
             }
             else
             {
-               _loc2_.update(_loc1_);
+               p.update(time);
             }
-            _loc4_++;
+            i++;
          }
          _render.renderParticles(particles);
       }
       
-      protected function cacheParticle(param1:Particle) : void
+      protected function cacheParticle(particle:Particle) : void
       {
-         param1.initialize();
-         var _loc3_:uint = param1.info.displayCreator;
-         var _loc2_:Array = spareParticles[_loc3_];
-         if(_loc2_ == null)
+         particle.initialize();
+         var cls:uint = particle.info.displayCreator;
+         var cached:Array = spareParticles[cls];
+         if(cached == null)
          {
-            _loc2_ = [];
-            spareParticles[_loc3_] = [];
+            cached = [];
+            spareParticles[cls] = [];
          }
-         if(_loc2_.length < 15)
+         if(cached.length < 15)
          {
-            _loc2_.push(param1);
+            cached.push(particle);
          }
       }
       
@@ -128,13 +127,13 @@ package par.enginees
          _render.reset();
       }
       
-      public function createParticle(param1:ParticleInfo) : Particle
+      public function createParticle(info:ParticleInfo) : Particle
       {
-         if(spareParticles[param1.displayCreator] && spareParticles[param1.displayCreator].length > 0)
+         if(spareParticles[info.displayCreator] && spareParticles[info.displayCreator].length > 0)
          {
-            return spareParticles[param1.displayCreator].shift();
+            return spareParticles[info.displayCreator].shift();
          }
-         return new Particle(param1);
+         return new Particle(info);
       }
       
       public function dispose() : void

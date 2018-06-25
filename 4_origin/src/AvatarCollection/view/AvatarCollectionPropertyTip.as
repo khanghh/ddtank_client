@@ -25,9 +25,9 @@ package AvatarCollection.view
       
       public function AvatarCollectionPropertyTip()
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var nameTxt:* = null;
+         var valueTxt:* = null;
          super();
          _bg = ComponentFactory.Instance.creatComponentByStylename("core.GoodsTipBg");
          _bg.width = 230;
@@ -42,35 +42,34 @@ package AvatarCollection.view
          _titleTxt = ComponentFactory.Instance.creatComponentByStylename("avatarColl.propertyTip.titleTxt");
          addChild(_titleTxt);
          _valueTxtList = new Vector.<FilterFrameText>();
-         var _loc4_:Array = LanguageMgr.GetTranslation("avatarCollection.propertyNameTxt").split(",");
-         _loc3_ = 0;
-         while(_loc3_ < 7)
+         var nameStrList:Array = LanguageMgr.GetTranslation("avatarCollection.propertyNameTxt").split(",");
+         for(i = 0; i < 7; )
          {
-            _loc2_ = ComponentFactory.Instance.creatComponentByStylename("avatarColl.propertyTip.nameTxt");
-            _loc2_.text = _loc4_[_loc3_] + "：";
-            _loc2_.x = 15;
-            _loc2_.y = _loc3_ * 20 + 46;
-            addChild(_loc2_);
-            _loc1_ = ComponentFactory.Instance.creatComponentByStylename("avatarColl.propertyTip.valueTxt");
-            _loc1_.text = "0";
-            _loc1_.x = 103;
-            _loc1_.y = _loc3_ * 20 + 46;
-            addChild(_loc1_);
-            _valueTxtList.push(_loc1_);
-            _loc3_++;
+            nameTxt = ComponentFactory.Instance.creatComponentByStylename("avatarColl.propertyTip.nameTxt");
+            nameTxt.text = nameStrList[i] + "：";
+            nameTxt.x = 15;
+            nameTxt.y = i * 20 + 46;
+            addChild(nameTxt);
+            valueTxt = ComponentFactory.Instance.creatComponentByStylename("avatarColl.propertyTip.valueTxt");
+            valueTxt.text = "0";
+            valueTxt.x = 103;
+            valueTxt.y = i * 20 + 46;
+            addChild(valueTxt);
+            _valueTxtList.push(valueTxt);
+            i++;
          }
       }
       
-      public function refreshView(param1:AvatarCollectionUnitVo, param2:int) : void
+      public function refreshView(data:AvatarCollectionUnitVo, completeStatus:int) : void
       {
-         _valueTxtList[0].text = (param1.Attack * param2).toString();
-         _valueTxtList[1].text = (param1.Defence * param2).toString();
-         _valueTxtList[2].text = (param1.Agility * param2).toString();
-         _valueTxtList[3].text = (param1.Luck * param2).toString();
-         _valueTxtList[4].text = (param1.Damage * param2).toString();
-         _valueTxtList[5].text = (param1.Guard * param2).toString();
-         _valueTxtList[6].text = (param1.Blood * param2).toString();
-         _titleTxt.text = _titleStrList[param2 - 1];
+         _valueTxtList[0].text = (data.Attack * completeStatus).toString();
+         _valueTxtList[1].text = (data.Defence * completeStatus).toString();
+         _valueTxtList[2].text = (data.Agility * completeStatus).toString();
+         _valueTxtList[3].text = (data.Luck * completeStatus).toString();
+         _valueTxtList[4].text = (data.Damage * completeStatus).toString();
+         _valueTxtList[5].text = (data.Guard * completeStatus).toString();
+         _valueTxtList[6].text = (data.Blood * completeStatus).toString();
+         _titleTxt.text = _titleStrList[completeStatus - 1];
       }
       
       public function dispose() : void

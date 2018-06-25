@@ -47,7 +47,7 @@ package store.forge.wishBead
          _timer.addEventListener("timerComplete",__timerComplete);
       }
       
-      private function createTween(param1:Function = null, param2:Array = null) : void
+      private function createTween(onComplete:Function = null, completeParam:Array = null) : void
       {
          MessageTipManager.getInstance().kill();
          TweenMax.killTweensOf(_moveSprite);
@@ -59,12 +59,12 @@ package store.forge.wishBead
             "delay":1.4,
             "y":130 * -1,
             "alpha":0,
-            "onComplete":(param1 == null?removeTips:param1),
-            "onCompleteParams":param2
+            "onComplete":(onComplete == null?removeTips:onComplete),
+            "onCompleteParams":completeParam
          });
       }
       
-      public function showSuccess(param1:Function) : void
+      public function showSuccess(callback:Function) : void
       {
          removeTips();
          if(isDisplayerTip)
@@ -75,7 +75,7 @@ package store.forge.wishBead
                addChild(_moveSprite);
             }
             _moveSprite.addChild(_successBit);
-            createTween(param1);
+            createTween(callback);
          }
          SoundManager.instance.pauseMusic();
          SoundManager.instance.play("063",false,false);
@@ -83,16 +83,16 @@ package store.forge.wishBead
          ChatManager.Instance.sysChatYellow(LanguageMgr.GetTranslation("wishBead.result"));
       }
       
-      private function strengthTweenComplete(param1:String) : void
+      private function strengthTweenComplete(content:String) : void
       {
-         if(param1)
+         if(content)
          {
-            MessageTipManager.getInstance().show(param1);
+            MessageTipManager.getInstance().show(content);
          }
          removeTips();
       }
       
-      public function showFail(param1:Function) : void
+      public function showFail(callback:Function) : void
       {
          removeTips();
          if(isDisplayerTip)
@@ -103,14 +103,14 @@ package store.forge.wishBead
                addChild(_moveSprite);
             }
             _moveSprite.addChild(_failBit);
-            createTween(param1);
+            createTween(callback);
          }
          SoundManager.instance.pauseMusic();
          SoundManager.instance.play("064",false,false);
          _timer.start();
       }
       
-      private function __timerComplete(param1:TimerEvent) : void
+      private function __timerComplete(evt:TimerEvent) : void
       {
          _timer.reset();
          SoundManager.instance.resumeMusic();

@@ -32,29 +32,28 @@ package godCardRaise.view
          super();
       }
       
-      public function loadCards(param1:Array, param2:Function = null) : void
+      public function loadCards($cards:Array, $backFun:Function = null) : void
       {
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         _backFun = param2;
-         _loaderCount = param1.length;
-         _loc5_ = 0;
-         while(_loc5_ < param1.length)
+         var i:int = 0;
+         var cardInfo:* = null;
+         var loaderPic:* = null;
+         _backFun = $backFun;
+         _loaderCount = $cards.length;
+         for(i = 0; i < $cards.length; )
          {
-            if(_displayCards.hasOwnProperty(param1[_loc5_]))
+            if(_displayCards.hasOwnProperty($cards[i]))
             {
                _loaderCount = _loaderCount - 1;
             }
             else
             {
-               _loc3_ = GodCardRaiseManager.Instance.godCardListInfoList[param1[_loc5_]];
-               _loc4_ = LoadResourceManager.Instance.createLoader(PathManager.solveGodCardRaisePath(_loc3_.Pic),0);
-               _loc4_.addEventListener("complete",__picComplete);
-               LoadResourceManager.Instance.startLoad(_loc4_);
-               _loaderDic[_loc4_] = param1[_loc5_];
+               cardInfo = GodCardRaiseManager.Instance.godCardListInfoList[$cards[i]];
+               loaderPic = LoadResourceManager.Instance.createLoader(PathManager.solveGodCardRaisePath(cardInfo.Pic),0);
+               loaderPic.addEventListener("complete",__picComplete);
+               LoadResourceManager.Instance.startLoad(loaderPic);
+               _loaderDic[loaderPic] = $cards[i];
             }
-            _loc5_++;
+            i++;
          }
          if(_loaderCount <= 0)
          {
@@ -66,16 +65,16 @@ package godCardRaise.view
          }
       }
       
-      private function __picComplete(param1:LoaderEvent) : void
+      private function __picComplete(evt:LoaderEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:int = 0;
-         param1.loader.removeEventListener("complete",__picComplete);
-         if(param1.loader.isSuccess)
+         var _picBmp:* = null;
+         var cardId:int = 0;
+         evt.loader.removeEventListener("complete",__picComplete);
+         if(evt.loader.isSuccess)
          {
-            _loc3_ = param1.loader.content as Bitmap;
-            _loc2_ = _loaderDic[param1.loader];
-            _displayCards[_loc2_] = _loc3_;
+            _picBmp = evt.loader.content as Bitmap;
+            cardId = _loaderDic[evt.loader];
+            _displayCards[cardId] = _picBmp;
          }
          _loaderCount = _loaderCount - 1;
          if(_loaderCount - 1 <= 0)
@@ -99,9 +98,9 @@ package godCardRaise.view
          {
             var _loc3_:int = 0;
             var _loc2_:* = _displayCards;
-            for each(var _loc1_ in _displayCards)
+            for each(var bmp in _displayCards)
             {
-               ObjectUtils.disposeObject(_loc1_);
+               ObjectUtils.disposeObject(bmp);
             }
          }
          _displayCards = null;

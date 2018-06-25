@@ -29,20 +29,19 @@ package happyLittleGame.cubesGame
       
       private function initView() : void
       {
-         var _loc3_:* = 0;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
-         _loc3_ = uint(0);
-         while(_loc3_ < CubeGameManager.getInstance().gameInfo.column)
+         var i:* = 0;
+         var scoreFloatEffect:* = null;
+         var startPos:* = null;
+         for(i = uint(0); i < CubeGameManager.getInstance().gameInfo.column; )
          {
-            _loc2_ = new ScoreFloatEffect();
-            _loc1_ = ComponentFactory.Instance.creatCustomObject("cubeGame.cubeContainer.scoreStartPos");
-            _loc1_.x = _loc3_ * 41 + 41 / 2;
-            _loc2_.x = _loc1_.x;
-            _loc2_.y = _loc1_.y;
-            _loc2_.startPosition = _loc1_;
-            _scoreFloatEffects.push(_loc2_);
-            _loc3_++;
+            scoreFloatEffect = new ScoreFloatEffect();
+            startPos = ComponentFactory.Instance.creatCustomObject("cubeGame.cubeContainer.scoreStartPos");
+            startPos.x = i * 41 + 41 / 2;
+            scoreFloatEffect.x = startPos.x;
+            scoreFloatEffect.y = startPos.y;
+            scoreFloatEffect.startPosition = startPos;
+            _scoreFloatEffects.push(scoreFloatEffect);
+            i++;
          }
       }
       
@@ -68,9 +67,9 @@ package happyLittleGame.cubesGame
          CubeGameManager.getInstance().removeEventListener("gameResult",__onGameResult);
       }
       
-      private function __onGameResult(param1:CubeGameEvent) : void
+      private function __onGameResult(evt:CubeGameEvent) : void
       {
-         if(!param1 || !param1.data)
+         if(!evt || !evt.data)
          {
             return;
          }
@@ -79,195 +78,190 @@ package happyLittleGame.cubesGame
       
       private function showScoreFloatEffect() : void
       {
-         var _loc2_:* = 0;
-         var _loc1_:* = null;
-         _loc2_ = uint(0);
-         while(_loc2_ < _scoreFloatEffects.length)
+         var i:* = 0;
+         var scoreFloatEffect:* = null;
+         for(i = uint(0); i < _scoreFloatEffects.length; )
          {
-            _loc1_ = _scoreFloatEffects[_loc2_];
-            if(checkCondition(_loc1_.x))
+            scoreFloatEffect = _scoreFloatEffects[i];
+            if(checkCondition(scoreFloatEffect.x))
             {
-               addChild(_loc1_);
-               _loc1_.show();
+               addChild(scoreFloatEffect);
+               scoreFloatEffect.show();
             }
-            _loc2_++;
+            i++;
          }
       }
       
-      private function checkCondition(param1:int) : Boolean
+      private function checkCondition(x:int) : Boolean
       {
-         var _loc3_:* = 0;
-         var _loc2_:* = null;
-         _loc3_ = uint(0);
-         while(_loc3_ < _cubeColumns.length)
+         var i:* = 0;
+         var cubeColumn:* = null;
+         for(i = uint(0); i < _cubeColumns.length; )
          {
-            _loc2_ = _cubeColumns[_loc3_];
-            if(!_loc2_.empty && _loc2_.x < param1 && param1 < _loc2_.x + 41)
+            cubeColumn = _cubeColumns[i];
+            if(!cubeColumn.empty && cubeColumn.x < x && x < cubeColumn.x + 41)
             {
                return false;
             }
-            _loc3_++;
+            i++;
          }
          return true;
       }
       
-      private function __onStartGame(param1:CubeGameEvent) : void
+      private function __onStartGame(evt:CubeGameEvent) : void
       {
-         var _loc3_:* = 0;
-         var _loc2_:* = null;
-         _loc3_ = uint(0);
-         while(_loc3_ < _scoreFloatEffects.length)
+         var i:* = 0;
+         var scoreFloatEffect:* = null;
+         for(i = uint(0); i < _scoreFloatEffects.length; )
          {
-            _loc2_ = _scoreFloatEffects[_loc3_];
-            if(_loc2_.parent)
+            scoreFloatEffect = _scoreFloatEffects[i];
+            if(scoreFloatEffect.parent)
             {
-               _loc2_.parent.removeChild(_loc2_);
+               scoreFloatEffect.parent.removeChild(scoreFloatEffect);
             }
-            _loc3_++;
+            i++;
          }
          clear();
-         addCubeColumn(param1.data as Vector.<CubeData>);
+         addCubeColumn(evt.data as Vector.<CubeData>);
       }
       
-      private function __onGenerateColumn(param1:CubeGameEvent) : void
+      private function __onGenerateColumn(evt:CubeGameEvent) : void
       {
-         addCubeColumn(param1.data as Vector.<CubeData>);
+         addCubeColumn(evt.data as Vector.<CubeData>);
       }
       
-      private function addCubeColumn(param1:Vector.<CubeData>) : void
+      private function addCubeColumn(cubeDataList:Vector.<CubeData>) : void
       {
-         if(!param1 || param1.length == 0)
+         if(!cubeDataList || cubeDataList.length == 0)
          {
             return;
          }
-         var _loc2_:CubeColumn = new CubeColumn();
-         _loc2_.data = param1;
-         _loc2_.x = -41;
-         _cubeColumns.push(_loc2_);
-         addChild(_loc2_);
+         var cubeColumn:CubeColumn = new CubeColumn();
+         cubeColumn.data = cubeDataList;
+         cubeColumn.x = -41;
+         _cubeColumns.push(cubeColumn);
+         addChild(cubeColumn);
          moveCubeColumns();
       }
       
-      private function __onRandomCube(param1:CubeGameEvent) : void
+      private function __onRandomCube(evt:CubeGameEvent) : void
       {
-         var _loc3_:CubeData = param1.data.cubeData as CubeData;
-         var _loc2_:uint = param1.data.column as uint;
-         if(_loc2_ >= _cubeColumns.length)
+         var cubeData:CubeData = evt.data.cubeData as CubeData;
+         var column:uint = evt.data.column as uint;
+         if(column >= _cubeColumns.length)
          {
             return;
          }
-         var _loc4_:CubeColumn = _cubeColumns[_loc2_];
-         if(!_loc4_)
+         var cubeColumn:CubeColumn = _cubeColumns[column];
+         if(!cubeColumn)
          {
             return;
          }
-         _loc4_.addCube(_loc3_);
+         cubeColumn.addCube(cubeData);
       }
       
       private function moveCubeColumns() : void
       {
-         var _loc4_:* = 0;
-         var _loc2_:* = null;
-         var _loc1_:Boolean = false;
-         var _loc3_:* = 0;
+         var i:* = 0;
+         var curCubeColumn:* = null;
+         var hasEmptyColumn:Boolean = false;
+         var j:* = 0;
          SoundManager.instance.play("220");
-         _loc4_ = uint(0);
-         while(_loc4_ < _cubeColumns.length)
+         for(i = uint(0); i < _cubeColumns.length; )
          {
-            _loc2_ = _cubeColumns[_loc4_];
-            if(_loc2_)
+            curCubeColumn = _cubeColumns[i];
+            if(curCubeColumn)
             {
-               _loc1_ = false;
-               _loc3_ = uint(_loc4_ + 1);
-               while(_loc3_ < _cubeColumns.length)
+               hasEmptyColumn = false;
+               for(j = uint(i + 1); j < _cubeColumns.length; )
                {
-                  if(_cubeColumns[_loc3_].empty)
+                  if(_cubeColumns[j].empty)
                   {
-                     _loc1_ = true;
+                     hasEmptyColumn = true;
                      break;
                   }
-                  _loc3_++;
+                  j++;
                }
-               if(!_loc1_)
+               if(!hasEmptyColumn)
                {
-                  if(_loc2_.empty)
+                  if(curCubeColumn.empty)
                   {
-                     _cubeColumns.splice(_loc4_,1);
-                     _loc4_--;
-                     if(_loc2_.parent)
+                     _cubeColumns.splice(i,1);
+                     i--;
+                     if(curCubeColumn.parent)
                      {
-                        _loc2_.parent.removeChild(_loc2_);
+                        curCubeColumn.parent.removeChild(curCubeColumn);
                      }
                   }
                   else
                   {
-                     _loc2_.move();
+                     curCubeColumn.move();
                   }
                }
             }
-            _loc4_++;
+            i++;
          }
       }
       
-      private function __onDestroy(param1:CubeGameEvent) : void
+      private function __onDestroy(evt:CubeGameEvent) : void
       {
-         CubeGameManager.getInstance().resquestDeleteCube(param1.data as int);
+         CubeGameManager.getInstance().resquestDeleteCube(evt.data as int);
       }
       
-      private function __onDeath(param1:CubeGameEvent) : void
+      private function __onDeath(evt:CubeGameEvent) : void
       {
-         var _loc4_:* = 0;
-         var _loc3_:* = null;
-         var _loc2_:Vector.<Object> = param1.data as Vector.<Object>;
-         if(!_loc2_ || _loc2_.length == 0)
+         var i:* = 0;
+         var cubeColumn:* = null;
+         var ids:Vector.<Object> = evt.data as Vector.<Object>;
+         if(!ids || ids.length == 0)
          {
             return;
          }
-         _loc4_ = uint(0);
-         while(_loc4_ < _cubeColumns.length)
+         i = uint(0);
+         while(i < _cubeColumns.length)
          {
-            _loc3_ = _cubeColumns[_loc4_];
-            if(_loc3_)
+            cubeColumn = _cubeColumns[i];
+            if(cubeColumn)
             {
-               _loc3_.deleteCubes(_loc2_);
+               cubeColumn.deleteCubes(ids);
             }
-            _loc4_++;
+            i++;
          }
       }
       
-      private function __onClearMap(param1:CubeGameEvent) : void
+      private function __onClearMap(evt:CubeGameEvent) : void
       {
          clear();
       }
       
       private function clear() : void
       {
-         var _loc1_:* = null;
+         var cubeColumn:* = null;
          while(_cubeColumns.length > 0)
          {
-            _loc1_ = _cubeColumns.pop();
-            if(_loc1_)
+            cubeColumn = _cubeColumns.pop();
+            if(cubeColumn)
             {
-               _loc1_.clear();
-               if(_loc1_.parent)
+               cubeColumn.clear();
+               if(cubeColumn.parent)
                {
-                  _loc1_.parent.removeChild(_loc1_);
+                  cubeColumn.parent.removeChild(cubeColumn);
                }
-               ObjectUtils.disposeAllChildren(_loc1_);
+               ObjectUtils.disposeAllChildren(cubeColumn);
             }
          }
       }
       
       public function dispose() : void
       {
-         var _loc1_:* = null;
+         var scoreFloatEffect:* = null;
          removeListeners();
          clear();
          _cubeColumns = null;
          while(_scoreFloatEffects.length > 0)
          {
-            _loc1_ = _scoreFloatEffects.pop();
-            ObjectUtils.disposeObject(_loc1_);
+            scoreFloatEffect = _scoreFloatEffects.pop();
+            ObjectUtils.disposeObject(scoreFloatEffect);
          }
          ObjectUtils.disposeAllChildren(this);
       }
@@ -295,59 +289,57 @@ class CubeColumn extends Sprite implements Disposeable
       super();
    }
    
-   public function set data(param1:Vector.<CubeData>) : void
+   public function set data(value:Vector.<CubeData>) : void
    {
-      var _loc4_:int = 0;
-      var _loc2_:* = null;
-      var _loc3_:* = null;
-      _loc4_ = param1.length - 1;
-      while(_loc4_ >= 0)
+      var i:int = 0;
+      var cubeData:* = null;
+      var cube:* = null;
+      for(i = value.length - 1; i >= 0; )
       {
-         _loc2_ = param1[_loc4_];
-         if(_loc2_)
+         cubeData = value[i];
+         if(cubeData)
          {
-            _loc3_ = new Cube(_loc2_.id,_loc2_.type);
-            _loc3_.y = 42 * _loc4_;
-            _loc3_.yPos = _loc3_.y;
-            _cubes.push(_loc3_);
-            addChild(_loc3_);
+            cube = new Cube(cubeData.id,cubeData.type);
+            cube.y = 42 * i;
+            cube.yPos = cube.y;
+            _cubes.push(cube);
+            addChild(cube);
          }
-         _loc4_--;
+         i--;
       }
    }
    
    public function clear() : void
    {
-      var _loc1_:* = null;
+      var cube:* = null;
       while(_cubes.length > 0)
       {
-         _loc1_ = _cubes.pop();
-         if(_loc1_)
+         cube = _cubes.pop();
+         if(cube)
          {
-            _loc1_.dispose();
-            if(_loc1_.parent)
+            cube.dispose();
+            if(cube.parent)
             {
-               _loc1_.parent.removeChild(_loc1_);
+               cube.parent.removeChild(cube);
             }
          }
       }
    }
    
-   public function addCube(param1:CubeData) : void
+   public function addCube(cubeData:CubeData) : void
    {
-      var _loc2_:Cube = new Cube(param1.id,param1.type);
-      addChild(_loc2_);
-      _loc2_.yPos = (CubeGameManager.getInstance().gameInfo.row - _cubes.length - 1) * 42;
-      _loc2_.fall();
-      _cubes.push(_loc2_);
+      var cube:Cube = new Cube(cubeData.id,cubeData.type);
+      addChild(cube);
+      cube.yPos = (CubeGameManager.getInstance().gameInfo.row - _cubes.length - 1) * 42;
+      cube.fall();
+      _cubes.push(cube);
    }
    
-   public function deleteCubes(param1:Vector.<Object>) : void
+   public function deleteCubes(ids:Vector.<Object>) : void
    {
-      ids = param1;
+      ids = ids;
       var deathCubes:Vector.<Cube> = new Vector.<Cube>();
-      var i:uint = 0;
-      while(i < ids.length)
+      for(var i:uint = 0; i < ids.length; )
       {
          var cube:Cube = getCube(ids[i].id);
          if(cube)
@@ -361,24 +353,22 @@ class CubeColumn extends Sprite implements Disposeable
       {
          return;
       }
-      deathCubes = deathCubes.sort(function(param1:Cube, param2:Cube):int
+      deathCubes = deathCubes.sort(function(left:Cube, right:Cube):int
       {
-         if(param1.y < param2.y)
+         if(left.y < right.y)
          {
             return 1;
          }
-         if(param1.y > param2.y)
+         if(left.y > right.y)
          {
             return -1;
          }
          return 0;
       });
-      var j:uint = 0;
-      while(j < deathCubes.length)
+      for(var j:uint = 0; j < deathCubes.length; )
       {
          var deathCube:Cube = deathCubes[j];
-         var k:uint = 0;
-         while(k < _cubes.length)
+         for(var k:uint = 0; k < _cubes.length; )
          {
             var curCube:Cube = _cubes[k];
             if(!(!curCube || curCube.y >= deathCube.y))
@@ -393,37 +383,35 @@ class CubeColumn extends Sprite implements Disposeable
       }
    }
    
-   private function deleteCube(param1:int) : void
+   private function deleteCube(id:int) : void
    {
-      var _loc3_:* = 0;
-      var _loc2_:* = null;
-      _loc3_ = uint(0);
-      while(_loc3_ < _cubes.length)
+      var i:* = 0;
+      var deathCube:* = null;
+      for(i = uint(0); i < _cubes.length; )
       {
-         _loc2_ = _cubes[_loc3_];
-         if(_loc2_.id == param1)
+         deathCube = _cubes[i];
+         if(deathCube.id == id)
          {
-            _cubes.splice(_loc3_,1);
-            _loc2_.die();
+            _cubes.splice(i,1);
+            deathCube.die();
             break;
          }
-         _loc3_++;
+         i++;
       }
    }
    
-   private function getCube(param1:int) : Cube
+   private function getCube(id:int) : Cube
    {
-      var _loc3_:* = 0;
-      var _loc2_:* = null;
-      _loc3_ = uint(0);
-      while(_loc3_ < _cubes.length)
+      var i:* = 0;
+      var cube:* = null;
+      for(i = uint(0); i < _cubes.length; )
       {
-         _loc2_ = _cubes[_loc3_];
-         if(_loc2_ && _loc2_.id == param1)
+         cube = _cubes[i];
+         if(cube && cube.id == id)
          {
-            return _loc2_;
+            return cube;
          }
-         _loc3_++;
+         i++;
       }
       return null;
    }
@@ -472,10 +460,10 @@ class ScoreFloatEffect extends Sprite implements Disposeable
    
    private function initView() : void
    {
-      var _loc1_:NumberImage = ComponentFactory.Instance.creatComponentByStylename("cubeMapView.numbers");
-      addChild(_loc1_);
-      _loc1_.space = -4;
-      _loc1_.count = CubeGameManager.getInstance().gameInfo.emptyColumnScore;
+      var numImg:NumberImage = ComponentFactory.Instance.creatComponentByStylename("cubeMapView.numbers");
+      addChild(numImg);
+      numImg.space = -4;
+      numImg.count = CubeGameManager.getInstance().gameInfo.emptyColumnScore;
    }
    
    public function show() : void
@@ -488,9 +476,9 @@ class ScoreFloatEffect extends Sprite implements Disposeable
          "y":y - 100,
          "alpha":1,
          "onCompleteParams":[this],
-         "onComplete":function(param1:DisplayObject):void
+         "onComplete":function(target:DisplayObject):void
          {
-            target = param1;
+            target = target;
             TweenLite.killTweensOf(this,false);
             TweenLite.to(target,1,{
                "x":endPos.x,
@@ -499,19 +487,19 @@ class ScoreFloatEffect extends Sprite implements Disposeable
                "ease":Sine.easeIn,
                "delay":1,
                "onCompleteParams":[target],
-               "onComplete":function(param1:DisplayObject):void
+               "onComplete":function(target:DisplayObject):void
                {
-                  param1.x = _startPos.x;
-                  param1.y = _startPos.y;
+                  target.x = _startPos.x;
+                  target.y = _startPos.y;
                }
             });
          }
       });
    }
    
-   public function set startPosition(param1:Point) : void
+   public function set startPosition(value:Point) : void
    {
-      _startPos = param1;
+      _startPos = value;
    }
    
    public function dispose() : void

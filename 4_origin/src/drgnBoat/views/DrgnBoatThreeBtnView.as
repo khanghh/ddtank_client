@@ -57,8 +57,8 @@ package drgnBoat.views
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var tmp:* = null;
          _bg = ComponentFactory.Instance.creatBitmap("drgnBoat.threeBtnBg");
          _leapBtn = ComponentFactory.Instance.creatComponentByStylename("drgnBoat.leapBtn");
          _leapBtn.tipData = LanguageMgr.GetTranslation("drgnBoat.game.leapBtnTipTxt");
@@ -74,17 +74,16 @@ package drgnBoat.views
          addChild(_cleanBtn);
          addChild(_missileBtn);
          _freeTipList = new Vector.<MovieClip>();
-         _loc2_ = 0;
-         while(_loc2_ < 4)
+         for(i = 0; i < 4; )
          {
-            _loc1_ = ComponentFactory.Instance.creat("drgnBoat.freeTipMc") as MovieClip;
-            _loc1_.x = -36;
-            _loc1_.y = -14 + 44 * _loc2_;
-            _loc1_.mouseEnabled = false;
-            _loc1_.mouseChildren = false;
-            addChild(_loc1_);
-            _freeTipList.push(_loc1_);
-            _loc2_++;
+            tmp = ComponentFactory.Instance.creat("drgnBoat.freeTipMc") as MovieClip;
+            tmp.x = -36;
+            tmp.y = -14 + 44 * i;
+            tmp.mouseEnabled = false;
+            tmp.mouseChildren = false;
+            addChild(tmp);
+            _freeTipList.push(tmp);
+            i++;
          }
          refreshFreeCount(null);
       }
@@ -100,80 +99,79 @@ package drgnBoat.views
          DrgnBoatManager.instance.addEventListener("drgnBoatRefreshItemCount",refreshFreeCount);
       }
       
-      private function refreshFreeCount(param1:Event) : void
+      private function refreshFreeCount(event:Event) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:Array = DrgnBoatManager.instance.itemFreeCountList;
-         _loc3_ = 0;
-         while(_loc3_ < 4)
+         var i:int = 0;
+         var tmp:Array = DrgnBoatManager.instance.itemFreeCountList;
+         for(i = 0; i < 4; )
          {
-            if(_loc2_[_loc3_] > 0)
+            if(tmp[i] > 0)
             {
-               _freeTipList[_loc3_].tf.text = _loc2_[_loc3_].toString();
-               _freeTipList[_loc3_].visible = true;
+               _freeTipList[i].tf.text = tmp[i].toString();
+               _freeTipList[i].visible = true;
             }
             else
             {
-               _freeTipList[_loc3_].visible = false;
+               _freeTipList[i].visible = false;
             }
-            _loc3_++;
+            i++;
          }
       }
       
-      private function outHandler(param1:MouseEvent) : void
+      private function outHandler(event:MouseEvent) : void
       {
-         var _loc2_:DrgnBoatEvent = new DrgnBoatEvent("drgnBoatLeapPromptShowHide");
-         _loc2_.data = {"isShow":false};
-         DrgnBoatManager.instance.dispatchEvent(_loc2_);
+         var tmp:DrgnBoatEvent = new DrgnBoatEvent("drgnBoatLeapPromptShowHide");
+         tmp.data = {"isShow":false};
+         DrgnBoatManager.instance.dispatchEvent(tmp);
       }
       
-      private function overHandler(param1:MouseEvent) : void
+      private function overHandler(event:MouseEvent) : void
       {
-         var _loc2_:DrgnBoatEvent = new DrgnBoatEvent("drgnBoatLeapPromptShowHide");
-         _loc2_.data = {"isShow":true};
-         DrgnBoatManager.instance.dispatchEvent(_loc2_);
+         var tmp:DrgnBoatEvent = new DrgnBoatEvent("drgnBoatLeapPromptShowHide");
+         tmp.data = {"isShow":true};
+         DrgnBoatManager.instance.dispatchEvent(tmp);
       }
       
-      private function enableBtn(param1:SimpleBitmapButton) : void
+      private function enableBtn(btn:SimpleBitmapButton) : void
       {
-         param1.enable = true;
+         btn.enable = true;
       }
       
-      private function unEnableBtn(param1:int) : void
+      private function unEnableBtn(tag:int) : void
       {
-         var _loc2_:* = null;
-         switch(int(param1))
+         var target:* = null;
+         switch(int(tag))
          {
             case 0:
-               _loc2_ = _leapBtn;
+               target = _leapBtn;
                break;
             case 1:
-               _loc2_ = _invisibilityBtn;
+               target = _invisibilityBtn;
                break;
             case 2:
-               _loc2_ = _cleanBtn;
+               target = _cleanBtn;
                break;
             case 3:
-               _loc2_ = _missileBtn;
+               target = _missileBtn;
          }
-         if(_loc2_)
+         if(target)
          {
-            _loc2_.enable = false;
-            setTimeout(enableBtn,5000,_loc2_);
+            target.enable = false;
+            setTimeout(enableBtn,5000,target);
          }
       }
       
-      private function clickHandler(param1:MouseEvent) : void
+      private function clickHandler(event:MouseEvent) : void
       {
-         var _loc3_:* = null;
+         var missileFrame:* = null;
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:SimpleBitmapButton = param1.target as SimpleBitmapButton;
-         var _loc4_:* = _loc2_;
+         var target:SimpleBitmapButton = event.target as SimpleBitmapButton;
+         var _loc4_:* = target;
          if(_leapBtn !== _loc4_)
          {
             if(_invisibilityBtn !== _loc4_)
@@ -183,9 +181,9 @@ package drgnBoat.views
                   if(_missileBtn === _loc4_)
                   {
                      _recordClickTag = 3;
-                     _loc3_ = ComponentFactory.Instance.creatComponentByStylename("drgnBoat.missileFrame.frame");
-                     LayerManager.Instance.addToLayer(_loc3_,3,true,1);
-                     _loc3_.setThreeBtnView(this);
+                     missileFrame = ComponentFactory.Instance.creatComponentByStylename("drgnBoat.missileFrame.frame");
+                     LayerManager.Instance.addToLayer(missileFrame,3,true,1);
+                     missileFrame.setThreeBtnView(this);
                      return;
                   }
                }
@@ -214,76 +212,76 @@ package drgnBoat.views
             unEnableBtn(_recordClickTag);
             return;
          }
-         var _loc2_:Object = DrgnBoatManager.instance.getBuyRecordStatus(_recordClickTag + 2);
-         var _loc1_:int = DrgnBoatManager.instance.dataInfo.useSkillNeedMoney[_recordClickTag];
-         if(_loc2_.isNoPrompt)
+         var tmpObj:Object = DrgnBoatManager.instance.getBuyRecordStatus(_recordClickTag + 2);
+         var needMoney:int = DrgnBoatManager.instance.dataInfo.useSkillNeedMoney[_recordClickTag];
+         if(tmpObj.isNoPrompt)
          {
-            if(_loc2_.isBand && PlayerManager.Instance.Self.BandMoney < _loc1_)
+            if(tmpObj.isBand && PlayerManager.Instance.Self.BandMoney < needMoney)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("bindMoneyPoorNote"));
-               _loc2_.isNoPrompt = false;
+               tmpObj.isNoPrompt = false;
             }
-            else if(!_loc2_.isBand && PlayerManager.Instance.Self.Money < _loc1_)
+            else if(!tmpObj.isBand && PlayerManager.Instance.Self.Money < needMoney)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("moneyPoorNote"));
-               _loc2_.isNoPrompt = false;
+               tmpObj.isNoPrompt = false;
             }
             else
             {
-               sendUseSkillSocket(_recordClickTag,_loc2_.isBand,_freeTipList[_recordClickTag].visible,targetId,targetZone);
+               sendUseSkillSocket(_recordClickTag,tmpObj.isBand,_freeTipList[_recordClickTag].visible,targetId,targetZone);
                unEnableBtn(_recordClickTag);
                return;
             }
          }
-         var _loc3_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("drgnBoat.frame.useSkillConfirmTxt" + _recordClickTag,_loc1_),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"DrgnBoatBuyConfirmView1",30,true,0);
-         _loc3_.moveEnable = false;
-         _loc3_.addEventListener("response",useSkillConfirm,false,0,true);
+         var confirmFrame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("drgnBoat.frame.useSkillConfirmTxt" + _recordClickTag,needMoney),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"DrgnBoatBuyConfirmView1",30,true,0);
+         confirmFrame.moveEnable = false;
+         confirmFrame.addEventListener("response",useSkillConfirm,false,0,true);
       }
       
-      private function useSkillConfirm(param1:FrameEvent) : void
+      private function useSkillConfirm(evt:FrameEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:* = null;
+         var needMoney:int = 0;
+         var confirmFrame2:* = null;
+         var tmpObj:* = null;
          SoundManager.instance.play("008");
-         var _loc5_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc5_.removeEventListener("response",useSkillConfirm);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",useSkillConfirm);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
-            _loc2_ = DrgnBoatManager.instance.dataInfo.useSkillNeedMoney[_recordClickTag];
-            if(_loc5_.isBand && PlayerManager.Instance.Self.BandMoney < _loc2_)
+            needMoney = DrgnBoatManager.instance.dataInfo.useSkillNeedMoney[_recordClickTag];
+            if(confirmFrame.isBand && PlayerManager.Instance.Self.BandMoney < needMoney)
             {
-               _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("escort.game.useSkillNoEnoughReConfirm"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
-               _loc3_.moveEnable = false;
-               _loc3_.addEventListener("response",useSkillReConfirm,false,0,true);
+               confirmFrame2 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("escort.game.useSkillNoEnoughReConfirm"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
+               confirmFrame2.moveEnable = false;
+               confirmFrame2.addEventListener("response",useSkillReConfirm,false,0,true);
                return;
             }
-            if(!_loc5_.isBand && PlayerManager.Instance.Self.Money < _loc2_)
+            if(!confirmFrame.isBand && PlayerManager.Instance.Self.Money < needMoney)
             {
                LeavePageManager.showFillFrame();
                return;
             }
-            if((_loc5_ as DrgnBoatBuyConfirmView).isNoPrompt)
+            if((confirmFrame as DrgnBoatBuyConfirmView).isNoPrompt)
             {
-               _loc4_ = DrgnBoatManager.instance.getBuyRecordStatus(_recordClickTag + 2);
-               _loc4_.isNoPrompt = true;
-               _loc4_.isBand = _loc5_.isBand;
+               tmpObj = DrgnBoatManager.instance.getBuyRecordStatus(_recordClickTag + 2);
+               tmpObj.isNoPrompt = true;
+               tmpObj.isBand = confirmFrame.isBand;
             }
-            sendUseSkillSocket(_recordClickTag,_loc5_.isBand,_freeTipList[_recordClickTag].visible,targetId,targetZone);
+            sendUseSkillSocket(_recordClickTag,confirmFrame.isBand,_freeTipList[_recordClickTag].visible,targetId,targetZone);
             unEnableBtn(_recordClickTag);
          }
       }
       
-      private function useSkillReConfirm(param1:FrameEvent) : void
+      private function useSkillReConfirm(evt:FrameEvent) : void
       {
-         var _loc2_:int = 0;
+         var needMoney:int = 0;
          SoundManager.instance.play("008");
-         var _loc3_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc3_.removeEventListener("response",useSkillConfirm);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",useSkillConfirm);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
-            _loc2_ = DrgnBoatManager.instance.dataInfo.useSkillNeedMoney[_recordClickTag];
-            if(PlayerManager.Instance.Self.Money < _loc2_)
+            needMoney = DrgnBoatManager.instance.dataInfo.useSkillNeedMoney[_recordClickTag];
+            if(PlayerManager.Instance.Self.Money < needMoney)
             {
                LeavePageManager.showFillFrame();
                return;
@@ -293,22 +291,22 @@ package drgnBoat.views
          }
       }
       
-      private function sendUseSkillSocket(param1:int, param2:Boolean, param3:Boolean, param4:int = 0, param5:int = -1) : void
+      private function sendUseSkillSocket(type:int, isBand:Boolean, isFree:Boolean, otherId:int = 0, otherZone:int = -1) : void
       {
-         var _loc6_:* = null;
-         if(param1 != 3)
+         var arr:* = null;
+         if(type != 3)
          {
-            SocketManager.Instance.out.sendEscortUseSkill(param1,param2,param3,param4,param5);
+            SocketManager.Instance.out.sendEscortUseSkill(type,isBand,isFree,otherId,otherZone);
          }
          else
          {
-            _loc6_ = [];
-            _loc6_.push(param1);
-            _loc6_.push(param2);
-            _loc6_.push(param3);
-            _loc6_.push(param4);
-            _loc6_.push(param5);
-            DrgnBoatManager.instance.missileArgArr = _loc6_;
+            arr = [];
+            arr.push(type);
+            arr.push(isBand);
+            arr.push(isFree);
+            arr.push(otherId);
+            arr.push(otherZone);
+            DrgnBoatManager.instance.missileArgArr = arr;
             SocketManager.Instance.out.broadcastMissileMC();
          }
       }

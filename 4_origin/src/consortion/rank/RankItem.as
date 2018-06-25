@@ -35,10 +35,10 @@ package consortion.rank
       
       private var _light:Bitmap;
       
-      public function RankItem(param1:RankData)
+      public function RankItem(data:RankData)
       {
          super();
-         _data = param1;
+         _data = data;
          initView();
       }
       
@@ -70,11 +70,11 @@ package consortion.rank
          initRank();
       }
       
-      public function setCampBattleStlye(param1:Boolean) : void
+      public function setCampBattleStlye(bool:Boolean) : void
       {
-         _back1.visible = param1;
-         _back2.visible = param1;
-         _zoneTxt.visible = !param1;
+         _back1.visible = bool;
+         _back2.visible = bool;
+         _zoneTxt.visible = !bool;
          _zoneTxt.x = 217;
          _nameTxt.autoSize = "center";
          _nameTxt.x = 54;
@@ -109,9 +109,9 @@ package consortion.rank
          }
       }
       
-      public function setView(param1:int) : void
+      public function setView(num:int) : void
       {
-         if(param1 % 2)
+         if(num % 2)
          {
             _back1.visible = true;
          }

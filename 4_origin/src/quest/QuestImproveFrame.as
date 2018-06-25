@@ -52,25 +52,25 @@ package quest
       public function QuestImproveFrame()
       {
          super();
-         var _loc1_:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("tank.view.task.TaskCatalogContentView.tip"));
-         _loc1_.submitLabel = LanguageMgr.GetTranslation("ok");
-         _loc1_.moveEnable = false;
-         info = _loc1_;
+         var alertInfo:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("tank.view.task.TaskCatalogContentView.tip"));
+         alertInfo.submitLabel = LanguageMgr.GetTranslation("ok");
+         alertInfo.moveEnable = false;
+         info = alertInfo;
          _first = true;
          _items = new Vector.<QuestRewardCell>();
          addEventListener("response",__confirmResponse);
          initView();
       }
       
-      public function set spand(param1:int) : void
+      public function set spand(value:int) : void
       {
-         _spand = param1;
+         _spand = value;
          _textField.htmlText = LanguageMgr.GetTranslation("tank.manager.TaskManager.improveText",_spand);
       }
       
-      public function set isOptional(param1:Boolean) : void
+      public function set isOptional(value:Boolean) : void
       {
-         _isOptional = param1;
+         _isOptional = value;
       }
       
       private function initView() : void
@@ -98,58 +98,58 @@ package quest
          addToContent(_selectItem);
       }
       
-      public function set questInfo(param1:QuestInfo) : void
+      public function set questInfo(value:QuestInfo) : void
       {
-         var _loc6_:* = null;
-         var _loc3_:int = 0;
-         var _loc4_:* = null;
-         _questInfo = param1;
+         var tinfo:* = null;
+         var level:int = 0;
+         var item:* = null;
+         _questInfo = value;
          var _loc8_:int = 0;
          var _loc7_:* = _questInfo.itemRewards;
-         for each(var _loc5_ in _questInfo.itemRewards)
+         for each(var temp in _questInfo.itemRewards)
          {
-            _loc6_ = new InventoryItemInfo();
-            _loc6_.TemplateID = _loc5_.itemID;
-            ItemManager.fill(_loc6_);
-            _loc6_.ValidDate = _loc5_.ValidateTime;
-            _loc6_.IsJudge = true;
-            _loc6_.IsBinds = _loc5_.isBind;
-            _loc6_.AttackCompose = _loc5_.AttackCompose;
-            _loc6_.DefendCompose = _loc5_.DefendCompose;
-            _loc6_.AgilityCompose = _loc5_.AgilityCompose;
-            _loc6_.LuckCompose = _loc5_.LuckCompose;
-            _loc6_.StrengthenLevel = _loc5_.StrengthenLevel;
-            if(EquipType.isMagicStone(_loc6_.CategoryID))
+            tinfo = new InventoryItemInfo();
+            tinfo.TemplateID = temp.itemID;
+            ItemManager.fill(tinfo);
+            tinfo.ValidDate = temp.ValidateTime;
+            tinfo.IsJudge = true;
+            tinfo.IsBinds = temp.isBind;
+            tinfo.AttackCompose = temp.AttackCompose;
+            tinfo.DefendCompose = temp.DefendCompose;
+            tinfo.AgilityCompose = temp.AgilityCompose;
+            tinfo.LuckCompose = temp.LuckCompose;
+            tinfo.StrengthenLevel = temp.StrengthenLevel;
+            if(EquipType.isMagicStone(tinfo.CategoryID))
             {
-               _loc6_.Level = _loc6_.StrengthenLevel;
-               _loc6_.Attack = _loc6_.AttackCompose;
-               _loc6_.Defence = _loc6_.DefendCompose;
-               _loc6_.Agility = _loc6_.AgilityCompose;
-               _loc6_.Luck = _loc6_.LuckCompose;
-               _loc6_.MagicAttack = _loc5_.MagicAttack;
-               _loc6_.MagicDefence = _loc5_.MagicDefence;
+               tinfo.Level = tinfo.StrengthenLevel;
+               tinfo.Attack = tinfo.AttackCompose;
+               tinfo.Defence = tinfo.DefendCompose;
+               tinfo.Agility = tinfo.AgilityCompose;
+               tinfo.Luck = tinfo.LuckCompose;
+               tinfo.MagicAttack = temp.MagicAttack;
+               tinfo.MagicDefence = temp.MagicDefence;
             }
             if(_questInfo.QuestLevel > 4)
             {
-               _loc3_ = 4;
+               level = 4;
             }
             else
             {
-               _loc3_ = _questInfo.QuestLevel;
+               level = _questInfo.QuestLevel;
             }
-            _loc6_.Count = _loc5_.count[_loc3_];
-            if(!(0 != _loc6_.NeedSex && getSexByInt(PlayerManager.Instance.Self.Sex) != _loc6_.NeedSex))
+            tinfo.Count = temp.count[level];
+            if(!(0 != tinfo.NeedSex && getSexByInt(PlayerManager.Instance.Self.Sex) != tinfo.NeedSex))
             {
-               if(_loc5_.isOptional == _isOptional)
+               if(temp.isOptional == _isOptional)
                {
-                  _loc4_ = new QuestRewardCell();
-                  _loc4_.info = _loc6_;
-                  if(_loc5_.isOptional)
+                  item = new QuestRewardCell();
+                  item.info = tinfo;
+                  if(temp.isOptional)
                   {
-                     _loc4_.canBeSelected();
+                     item.canBeSelected();
                   }
-                  _list.addChild(_loc4_);
-                  _items.push(_loc4_);
+                  _list.addChild(item);
+                  _items.push(item);
                }
             }
          }
@@ -161,41 +161,41 @@ package quest
          {
             _list.y = 5;
          }
-         var _loc2_:int = 0;
+         var index:int = 0;
          if(_questInfo.RewardGP > 0)
          {
-            addReward("exp",_questInfo.RewardGP,_loc2_);
-            _loc2_++;
+            addReward("exp",_questInfo.RewardGP,index);
+            index++;
          }
          if(_questInfo.RewardGold > 0)
          {
-            addReward("gold",_questInfo.RewardGold,_loc2_);
-            _loc2_++;
+            addReward("gold",_questInfo.RewardGold,index);
+            index++;
          }
          if(_questInfo.RewardMoney > 0)
          {
-            addReward("coin",_questInfo.RewardMoney,_loc2_);
-            _loc2_++;
+            addReward("coin",_questInfo.RewardMoney,index);
+            index++;
          }
          if(_questInfo.RewardOffer > 0)
          {
-            addReward("honor",_questInfo.RewardOffer,_loc2_);
-            _loc2_++;
+            addReward("honor",_questInfo.RewardOffer,index);
+            index++;
          }
          if(_questInfo.RewardRiches > 0)
          {
-            addReward("rich",_questInfo.RewardRiches,_loc2_);
-            _loc2_++;
+            addReward("rich",_questInfo.RewardRiches,index);
+            index++;
          }
          if(_questInfo.RewardBindMoney > 0)
          {
-            addReward("gift",_questInfo.RewardBindMoney,_loc2_);
-            _loc2_++;
+            addReward("gift",_questInfo.RewardBindMoney,index);
+            index++;
          }
          if(_questInfo.Rank != "")
          {
-            addReward("rank",0,_loc2_,true,_questInfo.Rank);
-            _loc2_++;
+            addReward("rank",0,index,true,_questInfo.Rank);
+            index++;
          }
          _textField.x = (_contian.width - _textField.width) / 2;
          _bg.height = _contian.height + 12;
@@ -203,25 +203,25 @@ package quest
          _selectItem.y = _contian.y + 15 + _contian.height;
       }
       
-      private function getSexByInt(param1:Boolean) : int
+      private function getSexByInt(Sex:Boolean) : int
       {
-         return !!param1?1:2;
+         return !!Sex?1:2;
       }
       
-      private function addReward(param1:String, param2:int, param3:int, param4:Boolean = false, param5:String = "") : void
+      private function addReward(reward:String, count:int, index:int, isRank:Boolean = false, rank:String = "") : void
       {
-         var _loc7_:FilterFrameText = ComponentFactory.Instance.creat("core.quest.MCQuestRewardImprove");
-         if(param3 > 2)
+         var rewardMC:FilterFrameText = ComponentFactory.Instance.creat("core.quest.MCQuestRewardImprove");
+         if(index > 2)
          {
-            _loc7_.y = _loc7_.y + 20;
+            rewardMC.y = rewardMC.y + 20;
             if(_first)
             {
                _list.y = _list.y + 20;
                _first = false;
             }
          }
-         var _loc6_:FilterFrameText = ComponentFactory.Instance.creat("core.quest.QuestItemRewardQuantity");
-         var _loc8_:* = param1;
+         var quantityTxt:FilterFrameText = ComponentFactory.Instance.creat("core.quest.QuestItemRewardQuantity");
+         var _loc8_:* = reward;
          if("exp" !== _loc8_)
          {
             if("gold" !== _loc8_)
@@ -238,74 +238,74 @@ package quest
                            {
                               if("rank" === _loc8_)
                               {
-                                 _loc7_.text = LanguageMgr.GetTranslation("tank.view.effort.EffortRigthItemView.honorNameII");
+                                 rewardMC.text = LanguageMgr.GetTranslation("tank.view.effort.EffortRigthItemView.honorNameII");
                               }
                            }
                            else
                            {
-                              _loc7_.text = LanguageMgr.GetTranslation("consortion.skillFrame.richesText3");
+                              rewardMC.text = LanguageMgr.GetTranslation("consortion.skillFrame.richesText3");
                            }
                         }
                         else
                         {
-                           _loc7_.text = LanguageMgr.GetTranslation("medalMoney");
+                           rewardMC.text = LanguageMgr.GetTranslation("medalMoney");
                         }
                      }
                      else
                      {
-                        _loc7_.text = StringUtils.trim(LanguageMgr.GetTranslation("gongxun"));
+                        rewardMC.text = StringUtils.trim(LanguageMgr.GetTranslation("gongxun"));
                      }
                   }
                   else
                   {
-                     _loc7_.text = LanguageMgr.GetTranslation("consortia.Money");
+                     rewardMC.text = LanguageMgr.GetTranslation("consortia.Money");
                   }
                }
                else
                {
-                  _loc7_.text = LanguageMgr.GetTranslation("money");
+                  rewardMC.text = LanguageMgr.GetTranslation("money");
                }
             }
             else
             {
-               _loc7_.text = LanguageMgr.GetTranslation("gold");
+               rewardMC.text = LanguageMgr.GetTranslation("gold");
             }
          }
          else
          {
-            _loc7_.text = LanguageMgr.GetTranslation("exp");
+            rewardMC.text = LanguageMgr.GetTranslation("exp");
          }
-         if(param3 == 0)
+         if(index == 0)
          {
-            _loc7_.x = 5;
+            rewardMC.x = 5;
          }
-         else if(param3 == 1)
+         else if(index == 1)
          {
-            _loc7_.x = param3 % 3 * 127 + 18;
+            rewardMC.x = index % 3 * 127 + 18;
          }
          else
          {
-            _loc7_.x = param3 % 3 * 100 + 18;
+            rewardMC.x = index % 3 * 100 + 18;
          }
-         _loc6_.x = _loc7_.x + _loc7_.textWidth + 5;
-         _loc6_.y = _loc7_.y;
-         if(param4)
+         quantityTxt.x = rewardMC.x + rewardMC.textWidth + 5;
+         quantityTxt.y = rewardMC.y;
+         if(isRank)
          {
-            _loc6_.text = param5;
+            quantityTxt.text = rank;
          }
          else
          {
-            _loc6_.text = String(param2);
+            quantityTxt.text = String(count);
          }
-         _contian.addChild(_loc7_);
-         _contian.addChild(_loc6_);
+         _contian.addChild(rewardMC);
+         _contian.addChild(quantityTxt);
          _selectItem.y = _contian.y + 7 + _bg.height;
       }
       
-      private function __confirmResponse(param1:FrameEvent) : void
+      private function __confirmResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:

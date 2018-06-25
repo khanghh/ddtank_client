@@ -112,12 +112,12 @@ package dayActivity
       
       private var _updateOnlineSecTimer:Timer;
       
-      public function DayActivityManager(param1:IEventDispatcher = null)
+      public function DayActivityManager(target:IEventDispatcher = null)
       {
          bossDataDic = new Dictionary();
          findBackDic = new Dictionary();
          speedActArr = [];
-         super(param1);
+         super(target);
          overList = new Vector.<ActivityData>();
          noOverList = new Vector.<ActivityData>();
          acitivityList = new Vector.<ActivityData>();
@@ -138,9 +138,9 @@ package dayActivity
          return _activityValue;
       }
       
-      public function set activityValue(param1:int) : void
+      public function set activityValue(value:int) : void
       {
-         _activityValue = param1;
+         _activityValue = value;
          dispatchEvent(new Event("daily_activity_value_change"));
       }
       
@@ -158,12 +158,12 @@ package dayActivity
          SocketManager.Instance.addEventListener(PkgEvent.format(353,4),onPackOpenClose);
       }
       
-      private function onPackInfo(param1:PkgEvent) : void
+      private function onPackInfo(evt:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         onlineRewardModel.serverDate = _loc2_.readDate();
-         onlineRewardModel.onlineSec = _loc2_.readInt();
-         onlineRewardModel.hasGetBoxId = _loc2_.readInt();
+         var pkg:PackageIn = evt.pkg;
+         onlineRewardModel.serverDate = pkg.readDate();
+         onlineRewardModel.onlineSec = pkg.readInt();
+         onlineRewardModel.hasGetBoxId = pkg.readInt();
          onlineRewardModel.canGetBox = canGetOnlineReward();
          dispatchEvent(new Event("online_reward_status_change"));
          if(onlineRewardModel.isOpen)
@@ -178,7 +178,7 @@ package dayActivity
          }
       }
       
-      private function onUpdateOnlineSecTimer(param1:TimerEvent) : void
+      private function onUpdateOnlineSecTimer(evt:TimerEvent) : void
       {
          onlineRewardModel.onlineSec++;
          if(!onlineRewardModel.isOpen)
@@ -190,85 +190,83 @@ package dayActivity
          {
             onlineRewardModel.isOpen = false;
          }
-         var _loc2_:Boolean = canGetOnlineReward();
-         if(!onlineRewardModel.canGetBox && _loc2_)
+         var canGet:Boolean = canGetOnlineReward();
+         if(!onlineRewardModel.canGetBox && canGet)
          {
-            onlineRewardModel.canGetBox = _loc2_;
+            onlineRewardModel.canGetBox = canGet;
             dispatchEvent(new Event("online_reward_status_change"));
          }
       }
       
-      private function onPackGet(param1:PkgEvent) : void
+      private function onPackGet(evt:PkgEvent) : void
       {
-         var _loc10_:int = 0;
-         var _loc8_:int = 0;
-         var _loc5_:* = null;
-         var _loc4_:* = null;
-         var _loc6_:PackageIn = param1.pkg;
-         var _loc9_:Date = _loc6_.readDate();
-         onlineRewardModel.hasGetBoxId = _loc6_.readInt();
-         var _loc3_:Array = [];
-         var _loc2_:int = _loc6_.readInt();
-         _loc10_ = 0;
-         while(_loc10_ < _loc2_)
+         var i:int = 0;
+         var hasGetBoxId:int = 0;
+         var templeteInfo:* = null;
+         var inventoryItemInfo:* = null;
+         var pkg:PackageIn = evt.pkg;
+         var date:Date = pkg.readDate();
+         onlineRewardModel.hasGetBoxId = pkg.readInt();
+         var receiveGoodsArr:Array = [];
+         var receiveGoodsArrLength:int = pkg.readInt();
+         for(i = 0; i < receiveGoodsArrLength; )
          {
-            _loc8_ = _loc6_.readInt();
-            _loc5_ = ItemManager.Instance.getTemplateById(_loc6_.readInt());
-            _loc4_ = new InventoryItemInfo();
-            ObjectUtils.copyProperties(_loc4_,_loc5_);
-            _loc4_.Count = _loc6_.readInt();
-            _loc4_.IsBinds = _loc6_.readBoolean();
-            _loc4_.ValidDate = _loc6_.readInt();
-            _loc6_.readInt();
-            _loc6_.readInt();
-            _loc6_.readInt();
-            _loc6_.readInt();
-            _loc6_.readInt();
-            _loc6_.readInt();
-            _loc6_.readInt();
-            _loc3_[_loc8_ - 1] = _loc4_;
-            _loc10_++;
+            hasGetBoxId = pkg.readInt();
+            templeteInfo = ItemManager.Instance.getTemplateById(pkg.readInt());
+            inventoryItemInfo = new InventoryItemInfo();
+            ObjectUtils.copyProperties(inventoryItemInfo,templeteInfo);
+            inventoryItemInfo.Count = pkg.readInt();
+            inventoryItemInfo.IsBinds = pkg.readBoolean();
+            inventoryItemInfo.ValidDate = pkg.readInt();
+            pkg.readInt();
+            pkg.readInt();
+            pkg.readInt();
+            pkg.readInt();
+            pkg.readInt();
+            pkg.readInt();
+            pkg.readInt();
+            receiveGoodsArr[hasGetBoxId - 1] = inventoryItemInfo;
+            i++;
          }
-         onlineRewardModel.receiveGoodsArr = _loc3_;
-         var _loc7_:Boolean = canGetOnlineReward();
-         if(onlineRewardModel.canGetBox && !_loc7_)
+         onlineRewardModel.receiveGoodsArr = receiveGoodsArr;
+         var canGet:Boolean = canGetOnlineReward();
+         if(onlineRewardModel.canGetBox && !canGet)
          {
-            onlineRewardModel.canGetBox = _loc7_;
+            onlineRewardModel.canGetBox = canGet;
             dispatchEvent(new Event("online_reward_status_change"));
          }
          dispatchEvent(new Event("event_online_reward_op_back_get"));
       }
       
-      private function onPackBoxConfig(param1:PkgEvent) : void
+      private function onPackBoxConfig(evt:PkgEvent) : void
       {
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc4_.readInt();
-         var _loc3_:Array = [];
-         _loc6_ = 0;
-         while(_loc6_ < _loc2_)
+         var i:int = 0;
+         var box:* = null;
+         var pkg:PackageIn = evt.pkg;
+         var boxArrLength:int = pkg.readInt();
+         var boxArr:Array = [];
+         for(i = 0; i < boxArrLength; )
          {
-            _loc5_ = {
-               "boxId":_loc4_.readInt(),
-               "sec":_loc4_.readInt() * 60,
-               "boxName":_loc4_.readUTF(),
-               "worthMoney":_loc4_.readInt(),
-               "isBind":_loc4_.readBoolean(),
-               "valid":_loc4_.readInt()
+            box = {
+               "boxId":pkg.readInt(),
+               "sec":pkg.readInt() * 60,
+               "boxName":pkg.readUTF(),
+               "worthMoney":pkg.readInt(),
+               "isBind":pkg.readBoolean(),
+               "valid":pkg.readInt()
             };
-            _loc3_.push(_loc5_);
-            _loc6_++;
+            boxArr.push(box);
+            i++;
          }
-         onlineRewardModel.boxNum = _loc2_;
-         onlineRewardModel.boxConfigArr = _loc3_;
+         onlineRewardModel.boxNum = boxArrLength;
+         onlineRewardModel.boxConfigArr = boxArr;
       }
       
-      private function onPackOpenClose(param1:PkgEvent) : void
+      private function onPackOpenClose(evt:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         onlineRewardModel.isOpen = _loc2_.readBoolean();
-         onlineRewardModel.endDate = _loc2_.readDate();
+         var pkg:PackageIn = evt.pkg;
+         onlineRewardModel.isOpen = pkg.readBoolean();
+         onlineRewardModel.endDate = pkg.readDate();
          if(onlineRewardModel.isOpen)
          {
             if(onlineRewardModel.boxConfigArr == null)
@@ -286,15 +284,15 @@ package dayActivity
       
       public function canGetOnlineReward() : Boolean
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(!onlineRewardModel.isOpen || !onlineRewardModel.serverDate)
          {
             return false;
          }
-         _loc1_ = onlineRewardModel.hasGetBoxId;
-         if(_loc1_ < onlineRewardModel.boxNum)
+         i = onlineRewardModel.hasGetBoxId;
+         if(i < onlineRewardModel.boxNum)
          {
-            if(onlineRewardModel.boxConfigArr[_loc1_]["sec"] <= onlineRewardModel.onlineSec)
+            if(onlineRewardModel.boxConfigArr[i]["sec"] <= onlineRewardModel.onlineSec)
             {
                return true;
             }
@@ -309,88 +307,87 @@ package dayActivity
       
       private function creatActiveLoader() : void
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.creatAndStartLoad(PathManager.solveRequestPath("EveryDayActivePointTemplateInfoList.xml"),5);
-         _loc1_.analyzer = new ActivityAnalyzer(everyDayActive);
+         var loader:BaseLoader = LoadResourceManager.Instance.creatAndStartLoad(PathManager.solveRequestPath("EveryDayActivePointTemplateInfoList.xml"),5);
+         loader.analyzer = new ActivityAnalyzer(everyDayActive);
       }
       
       private function creatActivePointLoader() : void
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.creatAndStartLoad(PathManager.solveRequestPath("EveryDayActiveProgressInfoList.xml"),5);
-         _loc1_.analyzer = new ActivePointAnalzer(everyDayActivePoint);
+         var loader:BaseLoader = LoadResourceManager.Instance.creatAndStartLoad(PathManager.solveRequestPath("EveryDayActiveProgressInfoList.xml"),5);
+         loader.analyzer = new ActivePointAnalzer(everyDayActivePoint);
       }
       
       private function creatRewardLoader() : void
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.creatAndStartLoad(PathManager.solveRequestPath("EveryDayActiveRewardTemplateInfoList.xml"),5);
-         _loc1_.analyzer = new ActivityRewardAnalyzer(activityRewardComp);
+         var loader:BaseLoader = LoadResourceManager.Instance.creatAndStartLoad(PathManager.solveRequestPath("EveryDayActiveRewardTemplateInfoList.xml"),5);
+         loader.analyzer = new ActivityRewardAnalyzer(activityRewardComp);
       }
       
-      public function activityRewardComp(param1:ActivityRewardAnalyzer) : void
+      public function activityRewardComp(data:ActivityRewardAnalyzer) : void
       {
-         reweadDataList = param1.itemList;
+         reweadDataList = data.itemList;
       }
       
-      public function everyDayActivePoint(param1:ActivePointAnalzer) : void
+      public function everyDayActivePoint(analy:ActivePointAnalzer) : void
       {
-         acitiveDataList = param1.itemList;
-         DdtActivityIconManager.Instance.timerList = param1.itemList;
+         acitiveDataList = analy.itemList;
+         DdtActivityIconManager.Instance.timerList = analy.itemList;
          setActionTime();
       }
       
       private function setActionTime() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = acitiveDataList.length;
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_)
+         var i:int = 0;
+         var len:int = acitiveDataList.length;
+         for(i = 0; i < len; )
          {
-            switch(int(acitiveDataList[_loc2_].JumpType) - 1)
+            switch(int(int(acitiveDataList[i].JumpType)) - 1)
             {
                case 0:
-                  ZHANCHANG = acitiveDataList[_loc2_].ActiveTime;
+                  ZHANCHANG = acitiveDataList[i].ActiveTime;
                   break;
                case 1:
-                  Entertainment = acitiveDataList[_loc2_].ActiveTime;
+                  Entertainment = acitiveDataList[i].ActiveTime;
                   break;
                case 2:
-                  LanternRiddles = acitiveDataList[_loc2_].ActiveTime;
+                  LanternRiddles = acitiveDataList[i].ActiveTime;
                   break;
                case 3:
-                  YUANGUJULONG = acitiveDataList[_loc2_].ActiveTime;
-                  YUANGUJULONG_DAYOFWEEK = acitiveDataList[_loc2_].DayOfWeek;
+                  YUANGUJULONG = acitiveDataList[i].ActiveTime;
+                  YUANGUJULONG_DAYOFWEEK = acitiveDataList[i].DayOfWeek;
                   break;
                case 4:
-                  Rescue = acitiveDataList[_loc2_].ActiveTime;
+                  Rescue = acitiveDataList[i].ActiveTime;
                   break;
                case 5:
-                  HorseRace = acitiveDataList[_loc2_].ActiveTime;
+                  HorseRace = acitiveDataList[i].ActiveTime;
                   break;
                case 6:
-                  SevenDouble = acitiveDataList[_loc2_].ActiveTime;
+                  SevenDouble = acitiveDataList[i].ActiveTime;
                   break;
                case 7:
-                  CatchBeast = acitiveDataList[_loc2_].ActiveTime;
+                  CatchBeast = acitiveDataList[i].ActiveTime;
                   break;
                case 8:
-                  ZHENYINGZHAN = acitiveDataList[_loc2_].ActiveTime;
+                  ZHENYINGZHAN = acitiveDataList[i].ActiveTime;
                   break;
                case 9:
-                  LIANSAI = acitiveDataList[_loc2_].ActiveTime;
+                  LIANSAI = acitiveDataList[i].ActiveTime;
                   break;
                case 10:
-                  ZUQIUBOSS = acitiveDataList[_loc2_].ActiveTime;
-                  ZUQIUBOSS_DAYOFWEEK = acitiveDataList[_loc2_].DayOfWeek;
+                  ZUQIUBOSS = acitiveDataList[i].ActiveTime;
+                  ZUQIUBOSS_DAYOFWEEK = acitiveDataList[i].DayOfWeek;
                   break;
                case 11:
-                  GONGHUIZHAN = acitiveDataList[_loc2_].ActiveTime;
+                  GONGHUIZHAN = acitiveDataList[i].ActiveTime;
             }
-            _loc2_++;
+            i++;
          }
       }
       
-      public function everyDayActive(param1:ActivityAnalyzer) : void
+      public function everyDayActive(analy:ActivityAnalyzer) : void
       {
-         acitivityDataList = param1.itemList;
+         acitivityDataList = analy.itemList;
          noOverList = copyArr(acitivityDataList);
       }
       
@@ -423,173 +420,171 @@ package dayActivity
          return false;
       }
       
-      public function deleNoOverListItem(param1:int) : void
+      public function deleNoOverListItem(type:int) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = noOverList.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var i:int = 0;
+         var len:int = noOverList.length;
+         for(i = 0; i < len; )
          {
-            if(param1 == noOverList[_loc3_].ActivityType)
+            if(type == noOverList[i].ActivityType)
             {
-               noOverList.splice(_loc3_,1);
+               noOverList.splice(i,1);
                break;
             }
-            _loc3_++;
+            i++;
          }
       }
       
-      public function initActivityList(param1:PkgEvent) : void
+      public function initActivityList(event:PkgEvent) : void
       {
-         var _loc14_:int = 0;
-         var _loc20_:* = null;
-         var _loc10_:int = 0;
-         var _loc21_:int = 0;
-         var _loc2_:int = 0;
-         var _loc6_:int = 0;
-         var _loc7_:int = 0;
-         var _loc11_:int = 0;
-         var _loc19_:* = null;
-         var _loc12_:int = 0;
-         var _loc8_:int = 0;
-         var _loc13_:int = 0;
-         var _loc15_:int = 0;
-         var _loc22_:int = 0;
-         var _loc16_:int = 0;
-         var _loc3_:int = 0;
-         var _loc5_:* = null;
-         var _loc18_:int = param1.pkg.readInt();
+         var i:int = 0;
+         var arr1:* = null;
+         var tmpIndex:int = 0;
+         var tmpValue:int = 0;
+         var tmpLen:int = 0;
+         var n:int = 0;
+         var arr3:* = null;
+         var conut:int = 0;
+         var t_i:int = 0;
+         var id:int = 0;
+         var overCount:int = 0;
+         var bType:int = 0;
+         var arr:* = null;
+         var bType1:int = 0;
+         var arr2:* = null;
+         var count1:int = event.pkg.readInt();
          overList.length = 0;
          noOverList.length = 0;
          noOverList = copyArr(acitivityDataList);
          rezArray = [];
-         _loc14_ = 0;
-         while(_loc14_ < _loc18_)
+         for(i = 0; i < count1; )
          {
-            _loc20_ = [];
-            _loc20_[0] = param1.pkg.readInt();
-            _loc20_[1] = param1.pkg.readInt();
-            if(_loc20_[0] == 4 || _loc20_[0] == 5 || _loc20_[0] == 6 || _loc20_[0] == 18 || _loc20_[0] == 19)
+            arr1 = [];
+            arr1[0] = event.pkg.readInt();
+            arr1[1] = event.pkg.readInt();
+            if(arr1[0] == 4 || arr1[0] == 5 || arr1[0] == 6 || arr1[0] == 18 || arr1[0] == 19)
             {
-               bossDataDic[_loc20_[0]] = _loc20_[1];
+               bossDataDic[arr1[0]] = arr1[1];
             }
-            rezArray.push(_loc20_);
-            _loc14_++;
+            rezArray.push(arr1);
+            i++;
          }
          btnArr = [[1,0],[2,0],[3,0],[4,0],[5,0]];
-         var _loc17_:int = param1.pkg.readInt();
-         _loc10_ = 0;
-         while(_loc10_ < _loc17_)
+         var count2:int = event.pkg.readInt();
+         for(i = 0; i < count2; )
          {
-            _loc21_ = param1.pkg.readInt();
-            _loc2_ = param1.pkg.readInt();
-            _loc6_ = btnArr.length;
-            _loc7_ = 0;
-            while(_loc7_ < _loc6_)
+            tmpIndex = event.pkg.readInt();
+            tmpValue = event.pkg.readInt();
+            tmpLen = btnArr.length;
+            for(n = 0; n < tmpLen; )
             {
-               if(btnArr[_loc7_][0] == _loc21_)
+               if(btnArr[n][0] == tmpIndex)
                {
-                  btnArr[_loc7_][1] = _loc2_;
+                  btnArr[n][1] = tmpValue;
                   break;
                }
-               _loc7_++;
+               n++;
             }
-            _loc10_++;
+            i++;
          }
          sessionArr = [];
-         var _loc24_:int = param1.pkg.readInt();
-         _loc11_ = 0;
-         while(_loc11_ < _loc24_)
+         var count3:int = event.pkg.readInt();
+         for(i = 0; i < count3; )
          {
-            _loc19_ = [];
-            _loc19_[0] = param1.pkg.readInt();
-            _loc19_[1] = param1.pkg.readInt();
-            sessionArr.push(_loc19_);
-            _loc11_++;
+            arr3 = [];
+            arr3[0] = event.pkg.readInt();
+            arr3[1] = event.pkg.readInt();
+            sessionArr.push(arr3);
+            i++;
          }
-         activityValue = param1.pkg.readInt();
+         activityValue = event.pkg.readInt();
          initSession();
-         var _loc9_:int = rezArray.length;
-         _loc12_ = 0;
-         while(_loc12_ < _loc9_)
+         var len:int = rezArray.length;
+         for(i = 0; i < len; )
          {
-            _loc8_ = noOverList.length;
-            _loc13_ = 0;
-            while(_loc13_ < _loc8_)
+            conut = noOverList.length;
+            for(t_i = 0; t_i < conut; )
             {
-               _loc15_ = rezArray[_loc12_][0];
-               _loc22_ = rezArray[_loc12_][1];
-               if(noOverList[_loc13_].ActivityType == _loc15_)
+               id = rezArray[i][0];
+               overCount = rezArray[i][1];
+               if(noOverList[t_i].ActivityType == id)
                {
-                  noOverList[_loc13_].OverCount = _loc22_;
-                  if(noOverList[_loc13_].OverCount >= noOverList[_loc13_].Count)
+                  noOverList[t_i].OverCount = overCount;
+                  if(noOverList[t_i].OverCount >= noOverList[t_i].Count)
                   {
-                     overList.push(noOverList[_loc13_]);
-                     deleNoOverListItem(_loc15_);
+                     overList.push(noOverList[t_i]);
+                     deleNoOverListItem(id);
                   }
                   break;
                }
-               _loc13_++;
+               t_i++;
             }
-            _loc12_++;
+            i++;
          }
-         var _loc23_:int = param1.pkg.readInt();
-         _loc16_ = 0;
-         while(_loc16_ < _loc23_)
+         var count4:int = event.pkg.readInt();
+         for(i = 0; i < count4; )
          {
-            _loc3_ = param1.pkg.readInt();
-            _loc5_ = [];
-            _loc5_[0] = param1.pkg.readBoolean();
-            _loc5_[1] = param1.pkg.readBoolean();
-            findBackDic[_loc3_] = _loc5_;
-            _loc16_++;
+            bType = event.pkg.readInt();
+            arr = [];
+            arr[0] = event.pkg.readBoolean();
+            arr[1] = event.pkg.readBoolean();
+            findBackDic[bType] = arr;
+            i++;
          }
-         var _loc4_:String = param1.pkg.readUTF();
-         speedActArr = _loc4_.split("|");
+         var wantstrongBoolStr:String = event.pkg.readUTF();
+         speedActArr = wantstrongBoolStr.split("|");
+         WantStrongManager.Instance.bossFlag = event.pkg.readInt();
+         var count5:int = event.pkg.readByte();
+         for(i = 0; i < count5; )
+         {
+            bType1 = event.pkg.readByte();
+            arr2 = [];
+            arr2[0] = event.pkg.readBoolean();
+            arr2[1] = event.pkg.readBoolean();
+            findBackDic[bType1] = arr2;
+            i++;
+         }
          WantStrongManager.Instance.findBackDic = findBackDic;
       }
       
-      private function copyArr(param1:Vector.<ActivityData>) : Vector.<ActivityData>
+      private function copyArr(arr:Vector.<ActivityData>) : Vector.<ActivityData>
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:Vector.<ActivityData> = new Vector.<ActivityData>();
-         if(!param1)
+         var i:int = 0;
+         var data:* = null;
+         var vet:Vector.<ActivityData> = new Vector.<ActivityData>();
+         if(!arr)
          {
-            return _loc3_;
+            return vet;
          }
-         _loc4_ = 0;
-         while(_loc4_ < param1.length)
+         for(i = 0; i < arr.length; )
          {
-            param1[_loc4_].resetOverCount();
-            _loc2_ = param1[_loc4_];
-            _loc3_.push(_loc2_);
-            _loc4_++;
+            arr[i].resetOverCount();
+            data = arr[i];
+            vet.push(data);
+            i++;
          }
-         return _loc3_;
+         return vet;
       }
       
       private function initSession() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < sessionArr.length)
+         var i:int = 0;
+         var j:int = 0;
+         for(i = 0; i < sessionArr.length; )
          {
-            _loc1_ = 0;
-            while(_loc1_ < acitiveDataList.length)
+            for(j = 0; j < acitiveDataList.length; )
             {
-               if(sessionArr[_loc2_])
+               if(sessionArr[i])
                {
-                  if(sessionArr[_loc2_][0] == acitiveDataList[_loc1_].ActivityTypeID)
+                  if(sessionArr[i][0] == acitiveDataList[j].ActivityTypeID)
                   {
-                     acitiveDataList[_loc1_].TotalCount = sessionArr[_loc2_][1];
+                     acitiveDataList[j].TotalCount = sessionArr[i][1];
                      break;
                   }
                }
-               _loc1_++;
+               j++;
             }
-            _loc2_++;
+            i++;
          }
       }
       

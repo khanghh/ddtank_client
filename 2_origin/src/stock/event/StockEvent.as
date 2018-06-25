@@ -28,10 +28,10 @@ package stock.event
       
       private var _data = null;
       
-      public function StockEvent(param1:String, param2:* = null, param3:Boolean = false, param4:Boolean = false)
+      public function StockEvent(type:String, data:* = null, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         super(param1,param3,param4);
-         _data = param2;
+         super(type,bubbles,cancelable);
+         _data = data;
       }
       
       public function get data() : *

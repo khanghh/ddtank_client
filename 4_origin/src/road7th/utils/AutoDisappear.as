@@ -18,29 +18,29 @@ package road7th.utils
       
       private var _last:Number;
       
-      public function AutoDisappear(param1:DisplayObject, param2:Number = -1)
+      public function AutoDisappear(movie:DisplayObject, life:Number = -1)
       {
          super();
-         if(param2 == -1 && param1 is MovieClip)
+         if(life == -1 && movie is MovieClip)
          {
-            _life = MovieClip(param1).totalFrames * 40;
+            _life = MovieClip(movie).totalFrames * 40;
          }
          else
          {
-            _life = param2 * 1000;
+            _life = life * 1000;
          }
          _age = 0;
-         addChild(param1);
+         addChild(movie);
          addEventListener("addedToStage",__addToStage);
       }
       
-      private function __addToStage(param1:Event) : void
+      private function __addToStage(event:Event) : void
       {
          _last = getTimer();
          addEventListener("enterFrame",__enterFrame);
       }
       
-      private function __enterFrame(param1:Event) : void
+      private function __enterFrame(event:Event) : void
       {
          if(parent)
          {

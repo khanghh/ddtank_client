@@ -177,23 +177,23 @@ package game.objects
       
       private var _onSmallMap:Boolean = true;
       
-      public function GameLiving(param1:Living)
+      public function GameLiving(info:Living)
       {
          _buffEffect = new DictionaryData();
          _noRemoveEffect = [20090];
          _attackEffectPos = new Point(0,5);
          _moviePool = {};
-         _info = param1;
+         _info = info;
          initView();
          initListener();
          initInfoChange();
-         super(param1.LivingID);
+         super(info.LivingID);
       }
       
-      public static function getAttackEffectAssetByID(param1:int) : MovieClip
+      public static function getAttackEffectAssetByID(id:int) : MovieClip
       {
-         var _loc2_:MovieClip = ClassUtils.CreatInstance("asset.game.AttackEffect" + param1.toString()) as MovieClip;
-         return _loc2_;
+         var mc:MovieClip = ClassUtils.CreatInstance("asset.game.AttackEffect" + id.toString()) as MovieClip;
+         return mc;
       }
       
       public function get stepX() : int
@@ -247,7 +247,7 @@ package game.objects
          return _map as MapView;
       }
       
-      private function __fightPowerChanged(param1:LivingEvent) : void
+      private function __fightPowerChanged(event:LivingEvent) : void
       {
          if(_info.fightPower > 0 && _info.fightPower <= 100)
          {
@@ -283,12 +283,12 @@ package game.objects
          }
       }
       
-      public function setFightPower(param1:int) : void
+      public function setFightPower(fightPower:int) : void
       {
-         if(param1 > 0 && param1 <= 100)
+         if(fightPower > 0 && fightPower <= 100)
          {
             fightPowerVisible = true;
-            _fightPower.text = LanguageMgr.GetTranslation("ddt.games.powerText",param1);
+            _fightPower.text = LanguageMgr.GetTranslation("ddt.games.powerText",fightPower);
          }
          else
          {
@@ -296,9 +296,9 @@ package game.objects
          }
       }
       
-      public function set fightPowerVisible(param1:Boolean) : void
+      public function set fightPowerVisible(value:Boolean) : void
       {
-         _fightPower.visible = param1;
+         _fightPower.visible = value;
       }
       
       protected function initView() : void
@@ -406,13 +406,13 @@ package game.objects
       
       protected function initSmallMapObject() : void
       {
-         var _loc1_:* = null;
+         var smallPlayer:* = null;
          if(_info.isShowSmallMapPoint)
          {
             if(_info.isPlayer())
             {
-               _loc1_ = new SmallPlayer();
-               _smallView = _loc1_;
+               smallPlayer = new SmallPlayer();
+               _smallView = smallPlayer;
             }
             else
             {
@@ -431,13 +431,13 @@ package game.objects
          _effRect = new Rectangle(0,24,200,200);
       }
       
-      public function addChildrenByPack(param1:IDisplayPack) : void
+      public function addChildrenByPack(pack:IDisplayPack) : void
       {
          var _loc4_:int = 0;
-         var _loc3_:* = param1.content;
-         for each(var _loc2_ in param1.content)
+         var _loc3_:* = pack.content;
+         for each(var someDO in pack.content)
          {
-            addChild(_loc2_);
+            addChild(someDO);
          }
       }
       
@@ -494,7 +494,7 @@ package game.objects
          }
       }
       
-      protected function __markMeHideDest(param1:LivingEvent) : void
+      protected function __markMeHideDest(event:LivingEvent) : void
       {
          if(_info.markMeHideDest)
          {
@@ -514,17 +514,17 @@ package game.objects
       
       public function replaceMovie() : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var labelMap:* = null;
+         var currentAction:* = null;
+         var movieClass:* = null;
          if(_actionMovie && _actionMovie.shouldReplace && info && ModuleLoader.hasDefinition(info.actionMovieName))
          {
-            _loc3_ = _actionMovie.labelMapping;
-            _loc2_ = _actionMovie.currentAction;
+            labelMap = _actionMovie.labelMapping;
+            currentAction = _actionMovie.currentAction;
             removeChild(_actionMovie);
             _actionMovie = null;
-            _loc1_ = ModuleLoader.getDefinition(info.actionMovieName) as Class;
-            _actionMovie = new _loc1_();
+            movieClass = ModuleLoader.getDefinition(info.actionMovieName) as Class;
+            _actionMovie = new movieClass();
             _info.actionMovieBitmap = new Bitmap(getBodyBitmapData("show2"));
             _info.thumbnail = getBodyBitmapData("show");
             _actionMovie.scaleX = -_info.direction;
@@ -532,30 +532,30 @@ package game.objects
             _actionMovie.mouseChildren = false;
             _actionMovie.scrollRect = null;
             _actionMovie.shouldReplace = false;
-            _actionMovie.labelMapping = _loc3_;
-            _actionMovie.doAction(_loc2_);
+            _actionMovie.labelMapping = labelMap;
+            _actionMovie.doAction(currentAction);
             addChild(_actionMovie);
          }
       }
       
-      protected function __addToState(param1:Event) : void
+      protected function __addToState(event:Event) : void
       {
          initInfoChange();
       }
       
-      protected function __removeContinuousEffect(param1:LivingEvent) : void
+      protected function __removeContinuousEffect(event:LivingEvent) : void
       {
-         removeBuffEffect(int(param1.paras[0]));
+         removeBuffEffect(int(event.paras[0]));
       }
       
-      protected function __playContinuousEffect(param1:LivingEvent) : void
+      protected function __playContinuousEffect(event:LivingEvent) : void
       {
-         showBuffEffect(param1.paras[0],int(param1.paras[1]));
+         showBuffEffect(event.paras[0],int(event.paras[1]));
       }
       
-      protected function __buffChanged(param1:LivingEvent) : void
+      protected function __buffChanged(event:LivingEvent) : void
       {
-         if((param1.paras[0] == 0 || param1.paras[0] == 6) && _info && _info.isLiving)
+         if((event.paras[0] == 0 || event.paras[0] == 6) && _info && _info.isLiving)
          {
             if(_buffBar)
             {
@@ -578,26 +578,26 @@ package game.objects
          }
       }
       
-      protected function __removeSkillMovie(param1:LivingEvent) : void
+      protected function __removeSkillMovie(event:LivingEvent) : void
       {
       }
       
-      protected function __applySkill(param1:LivingEvent) : void
+      protected function __applySkill(event:LivingEvent) : void
       {
       }
       
-      protected function __playSkillMovie(param1:LivingEvent) : void
+      protected function __playSkillMovie(event:LivingEvent) : void
       {
-         showEffect(param1.paras[0]);
+         showEffect(event.paras[0]);
       }
       
-      protected function __skillMovieComplete(param1:Event) : void
+      protected function __skillMovieComplete(event:Event) : void
       {
-         var _loc2_:MovieClipWrapper = param1.currentTarget as MovieClipWrapper;
-         _loc2_.removeEventListener("complete",__skillMovieComplete);
+         var movie:MovieClipWrapper = event.currentTarget as MovieClipWrapper;
+         movie.removeEventListener("complete",__skillMovieComplete);
       }
       
-      protected function __bombed(param1:LivingEvent) : void
+      protected function __bombed(event:LivingEvent) : void
       {
       }
       
@@ -658,15 +658,15 @@ package game.objects
          }
       }
       
-      protected function __shockMap(param1:ActionEvent) : void
+      protected function __shockMap(evt:ActionEvent) : void
       {
          if(map)
          {
-            map.animateSet.addAnimation(new ShockMapAnimation(this,param1.param as int,20));
+            map.animateSet.addAnimation(new ShockMapAnimation(this,evt.param as int,20));
          }
       }
       
-      protected function __shockMap2(param1:Event) : void
+      protected function __shockMap2(evt:Event) : void
       {
          if(map)
          {
@@ -674,17 +674,17 @@ package game.objects
          }
       }
       
-      protected function __renew(param1:Event) : void
+      protected function __renew(evt:Event) : void
       {
          this._info.showAttackEffect(2);
       }
       
-      protected function __startBlank(param1:Event) : void
+      protected function __startBlank(evt:Event) : void
       {
          addEventListener("enterFrame",drawBlank);
       }
       
-      protected function drawBlank(param1:Event) : void
+      protected function drawBlank(evt:Event) : void
       {
          if(counter <= 15)
          {
@@ -715,52 +715,52 @@ package game.objects
          counter = Number(counter) + 1;
       }
       
-      protected function __showDefence(param1:Event) : void
+      protected function __showDefence(evt:Event) : void
       {
-         var _loc2_:ShowEffect = new ShowEffect(ShowEffect.GUARD);
-         _loc2_.x = x + offset();
-         _loc2_.y = y - 50 + offset(25);
-         _map.addChild(_loc2_);
+         var show:ShowEffect = new ShowEffect(ShowEffect.GUARD);
+         show.x = x + offset();
+         show.y = y - 50 + offset(25);
+         _map.addChild(show);
       }
       
-      protected function __addEffectHandler(param1:DictionaryEvent) : void
+      protected function __addEffectHandler(e:DictionaryEvent) : void
       {
-         var _loc2_:BaseMirariEffectIcon = param1.data as BaseMirariEffectIcon;
-         EffectIcon.handleEffect(_loc2_.mirariType,_loc2_.getEffectIcon());
+         var baseeffect:BaseMirariEffectIcon = e.data as BaseMirariEffectIcon;
+         EffectIcon.handleEffect(baseeffect.mirariType,baseeffect.getEffectIcon());
       }
       
-      protected function __removeEffectHandler(param1:DictionaryEvent) : void
+      protected function __removeEffectHandler(e:DictionaryEvent) : void
       {
-         var _loc2_:BaseMirariEffectIcon = param1.data as BaseMirariEffectIcon;
-         EffectIcon.removeEffect(_loc2_.mirariType);
+         var baseeffect:BaseMirariEffectIcon = e.data as BaseMirariEffectIcon;
+         EffectIcon.removeEffect(baseeffect.mirariType);
       }
       
-      protected function __clearEffectHandler(param1:DictionaryEvent) : void
+      protected function __clearEffectHandler(e:DictionaryEvent) : void
       {
          EffectIcon.clearEffectIcon();
       }
       
-      protected function __sizeChangeHandler(param1:Event) : void
+      protected function __sizeChangeHandler(e:Event) : void
       {
          EffectIcon.x = 5 - EffectIcon.width / 2;
          EffectIcon.y = bodyHeight * -1 - EffectIcon.height;
       }
       
-      protected function __changeState(param1:LivingEvent) : void
+      protected function __changeState(evt:LivingEvent) : void
       {
       }
       
       protected function initMovie() : void
       {
-         var _loc1_:* = null;
+         var movieClass:* = null;
          if(!info)
          {
             return;
          }
          if(ModuleLoader.hasDefinition(info.actionMovieName))
          {
-            _loc1_ = ModuleLoader.getDefinition(info.actionMovieName) as Class;
-            _actionMovie = new _loc1_();
+            movieClass = ModuleLoader.getDefinition(info.actionMovieName) as Class;
+            _actionMovie = new movieClass();
             _info.actionMovieBitmap = new Bitmap(getBodyBitmapData("show2"));
             _info.thumbnail = getBodyBitmapData("show");
             _actionMovie.mouseEnabled = false;
@@ -775,13 +775,13 @@ package game.objects
          {
             if(info.typeLiving != 4 && info.typeLiving != 5 && info.typeLiving != 6 && info.typeLiving != 12)
             {
-               _loc1_ = ModuleLoader.getDefinition("game.living.defaultSmallEnemyLiving") as Class;
+               movieClass = ModuleLoader.getDefinition("game.living.defaultSmallEnemyLiving") as Class;
             }
             else
             {
-               _loc1_ = ModuleLoader.getDefinition("game.living.defaultSimpleBossLiving") as Class;
+               movieClass = ModuleLoader.getDefinition("game.living.defaultSimpleBossLiving") as Class;
             }
-            _actionMovie = new _loc1_();
+            _actionMovie = new movieClass();
             _info.actionMovieBitmap = new Bitmap(getBodyBitmapData("show2"));
             _info.thumbnail = getBodyBitmapData("show");
             _actionMovie.mouseEnabled = false;
@@ -803,21 +803,21 @@ package game.objects
          addChild(_chatballview);
       }
       
-      protected function __startMoving(param1:LivingEvent) : void
+      protected function __startMoving(event:LivingEvent) : void
       {
          if(_map == null)
          {
             return;
          }
-         var _loc2_:Point = _map.findYLineNotEmptyPointDown(x,y,_map.height);
-         if(_loc2_ == null)
+         var pos:Point = _map.findYLineNotEmptyPointDown(x,y,_map.height);
+         if(pos == null)
          {
-            _loc2_ = new Point(x,_map.height + 1);
+            pos = new Point(x,_map.height + 1);
          }
-         _info.fallTo(_loc2_,20);
+         _info.fallTo(pos,20);
       }
       
-      protected function __say(param1:LivingEvent) : void
+      protected function __say(event:LivingEvent) : void
       {
          if(_info.isHidden)
          {
@@ -826,13 +826,13 @@ package game.objects
          _chatballview.x = 0;
          _chatballview.y = 0;
          addChild(_chatballview);
-         var _loc2_:String = param1.paras[0] as String;
-         var _loc3_:int = 0;
-         if(param1.paras[1])
+         var data:String = event.paras[0] as String;
+         var type:int = 0;
+         if(event.paras[1])
          {
-            _loc3_ = param1.paras[1];
+            type = event.paras[1];
          }
-         _chatballview.setText(_loc2_,_loc3_);
+         _chatballview.setText(data,type);
          fitChatBallPos();
       }
       
@@ -865,93 +865,92 @@ package game.objects
          return popPos;
       }
       
-      override public function collidedByObject(param1:PhysicalObj) : void
+      override public function collidedByObject(obj:PhysicalObj) : void
       {
       }
       
-      protected function __beat(param1:LivingEvent) : void
+      protected function __beat(event:LivingEvent) : void
       {
          if(_isLiving)
          {
-            targetAttackEffect = param1.paras[0][0].attackEffect;
-            _actionMovie.doAction(param1.paras[0][0].action,updateTargetsBlood,param1.paras);
+            targetAttackEffect = event.paras[0][0].attackEffect;
+            _actionMovie.doAction(event.paras[0][0].action,updateTargetsBlood,event.paras);
          }
       }
       
-      protected function updateTargetsBlood(param1:Array) : void
+      protected function updateTargetsBlood(arg:Array) : void
       {
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
-         if(param1 == null)
+         var i:int = 0;
+         var living:* = null;
+         if(arg == null)
          {
             return;
          }
-         var _loc4_:Array = [];
-         var _loc2_:Boolean = false;
-         _loc5_ = 0;
-         while(_loc5_ < param1.length)
+         var deadEffectLivings:Array = [];
+         var selfFocus:Boolean = false;
+         for(i = 0; i < arg.length; )
          {
-            trace("arg_target:" + param1[_loc5_].target + ",targetID:" + param1[_loc5_].target.LivingID + ",targetState:" + param1[_loc5_].target.isLiving);
-            if(param1[_loc5_] && param1[_loc5_].target && param1[_loc5_].target.isLiving)
+            trace("arg_target:" + arg[i].target + ",targetID:" + arg[i].target.LivingID + ",targetState:" + arg[i].target.isLiving);
+            if(arg[i] && arg[i].target && arg[i].target.isLiving)
             {
-               _loc3_ = param1[_loc5_].target;
-               _loc3_.isHidden = false;
-               if(param1[_loc5_].deadEffect != "")
+               living = arg[i].target;
+               living.isHidden = false;
+               if(arg[i].deadEffect != "")
                {
-                  _loc4_.push(param1[_loc5_]);
+                  deadEffectLivings.push(arg[i]);
                }
                else
                {
-                  trace("arg_targetID:" + _loc3_.LivingID + ",blood:" + param1[_loc5_].targetBlood);
-                  _loc3_.showAttackEffect(param1[_loc5_].attackEffect);
-                  _loc3_.updateBlood(param1[_loc5_].targetBlood,param1[_loc5_].type,param1[_loc5_].damage);
+                  trace("arg_targetID:" + living.LivingID + ",blood:" + arg[i].targetBlood);
+                  living.showAttackEffect(arg[i].attackEffect);
+                  living.updateBlood(arg[i].targetBlood,arg[i].type,arg[i].damage);
                }
-               if(!_loc2_)
+               if(!selfFocus)
                {
-                  map.setCenter(_loc3_.pos.x,_loc3_.pos.y - 150,true);
+                  map.setCenter(living.pos.x,living.pos.y - 150,true);
                }
-               if(_loc3_.isSelf)
+               if(living.isSelf)
                {
-                  _loc2_ = true;
+                  selfFocus = true;
                }
             }
-            _loc5_++;
+            i++;
          }
-         if(_loc4_.length > 0)
+         if(deadEffectLivings.length > 0)
          {
-            map.act(new LivingDeadEffectAction(_loc4_));
+            map.act(new LivingDeadEffectAction(deadEffectLivings));
          }
       }
       
-      protected function __beginNewTurn(param1:LivingEvent) : void
+      protected function __beginNewTurn(event:LivingEvent) : void
       {
       }
       
-      protected function __playMovie(param1:LivingEvent) : void
+      protected function __playMovie(event:LivingEvent) : void
       {
          if(_actionMovie)
          {
-            _actionMovie.doAction(param1.paras[0],param1.paras[1],param1.paras[2]);
+            _actionMovie.doAction(event.paras[0],event.paras[1],event.paras[2]);
          }
       }
       
-      protected function __turnRotation(param1:LivingEvent) : void
+      protected function __turnRotation(event:LivingEvent) : void
       {
-         act(new LivingTurnAction(this,param1.paras[0],param1.paras[1],param1.paras[2]));
+         act(new LivingTurnAction(this,event.paras[0],event.paras[1],event.paras[2]));
       }
       
-      protected function __bloodChanged(param1:LivingEvent) : void
+      protected function __bloodChanged(event:LivingEvent) : void
       {
-         var _loc4_:* = null;
-         var _loc2_:int = 0;
-         var _loc5_:int = 0;
+         var movie:* = null;
+         var index:int = 0;
+         var showBlood:int = 0;
          if(!isExist || !_map)
          {
             return;
          }
-         var _loc3_:Number = param1.value - param1.old;
-         var _loc6_:int = param1.paras[0];
-         var _loc7_:* = _loc6_;
+         var diff:Number = event.value - event.old;
+         var type:int = event.paras[0];
+         var _loc7_:* = type;
          if(0 !== _loc7_)
          {
             if(90 !== _loc7_)
@@ -962,32 +961,32 @@ package game.objects
                   {
                      if(11 !== _loc7_)
                      {
-                        _loc5_ = param1.paras[1];
-                        if(_loc5_ < 0)
+                        showBlood = event.paras[1];
+                        if(showBlood < 0)
                         {
-                           _loc3_ = _loc5_;
+                           diff = showBlood;
                         }
-                        if(_loc3_ != 0)
+                        if(diff != 0)
                         {
-                           _loc4_ = new ShootPercentView(Math.abs(_loc3_),param1.paras[0],false);
-                           _loc4_.x = x + offset();
-                           _loc4_.y = y - 50 + offset(25);
+                           movie = new ShootPercentView(Math.abs(diff),event.paras[0],false);
+                           movie.x = x + offset();
+                           movie.y = y - 50 + offset(25);
                            _loc7_ = 0.8 + Math.random() * 0.4;
-                           _loc4_.scaleY = _loc7_;
-                           _loc4_.scaleX = _loc7_;
-                           _map.addToPhyLayer(_loc4_);
+                           movie.scaleY = _loc7_;
+                           movie.scaleX = _loc7_;
+                           _map.addToPhyLayer(movie);
                            if(GameControl.Instance.Current.roomType != 120)
                            {
                               if(_info.isHidden)
                               {
                                  if(_info.team == GameControl.Instance.Current.selfGamePlayer.team)
                                  {
-                                    _loc4_.alpha == 0.5;
+                                    movie.alpha == 0.5;
                                  }
                                  else
                                  {
                                     visible = false;
-                                    _loc4_.alpha = 0;
+                                    movie.alpha = 0;
                                  }
                               }
                            }
@@ -995,73 +994,73 @@ package game.objects
                      }
                      else
                      {
-                        _loc5_ = param1.paras[1];
-                        if(_loc5_ < 0)
+                        showBlood = event.paras[1];
+                        if(showBlood < 0)
                         {
-                           _loc3_ = _loc5_;
+                           diff = showBlood;
                         }
-                        if(_loc3_ != 0)
+                        if(diff != 0)
                         {
-                           _loc4_ = new ShootPercentView(Math.abs(_loc3_),param1.paras[0],false);
-                           _loc4_.x = x - 70;
-                           _loc4_.y = y - 80;
+                           movie = new ShootPercentView(Math.abs(diff),event.paras[0],false);
+                           movie.x = x - 70;
+                           movie.y = y - 80;
                            _loc7_ = 0.8 + Math.random() * 0.4;
-                           _loc4_.scaleY = _loc7_;
-                           _loc4_.scaleX = _loc7_;
-                           _map.addToPhyLayer(_loc4_);
+                           movie.scaleY = _loc7_;
+                           movie.scaleX = _loc7_;
+                           _map.addToPhyLayer(movie);
                         }
                      }
                   }
                   else
                   {
-                     _loc5_ = param1.paras[1];
-                     _loc3_ = _loc5_;
-                     if(_loc3_ != 0)
+                     showBlood = event.paras[1];
+                     diff = showBlood;
+                     if(diff != 0)
                      {
-                        _loc4_ = new ShootPercentView(Math.abs(_loc3_),1,false);
-                        _loc4_.x = x + offset();
-                        _loc4_.y = y - 50 + offset(25);
+                        movie = new ShootPercentView(Math.abs(diff),1,false);
+                        movie.x = x + offset();
+                        movie.y = y - 50 + offset(25);
                         _loc7_ = 0.8 + Math.random() * 0.4;
-                        _loc4_.scaleY = _loc7_;
-                        _loc4_.scaleX = _loc7_;
-                        _map.addToPhyLayer(_loc4_);
+                        movie.scaleY = _loc7_;
+                        movie.scaleX = _loc7_;
+                        _map.addToPhyLayer(movie);
                      }
                   }
                }
             }
             else
             {
-               _loc4_ = new ShootPercentView(0,2);
-               _loc4_.x = x + offset();
-               _loc4_.y = y - 50 + offset(25);
+               movie = new ShootPercentView(0,2);
+               movie.x = x + offset();
+               movie.y = y - 50 + offset(25);
                _loc7_ = 0.8 + Math.random() * 0.4;
-               _loc4_.scaleY = _loc7_;
-               _loc4_.scaleX = _loc7_;
-               _map.addToPhyLayer(_loc4_);
+               movie.scaleY = _loc7_;
+               movie.scaleX = _loc7_;
+               _map.addToPhyLayer(movie);
             }
          }
          else
          {
-            _loc3_ = param1.paras[1];
-            if(_loc3_ != 0 && _info.blood != 0)
+            diff = event.paras[1];
+            if(diff != 0 && _info.blood != 0)
             {
-               _loc4_ = new ShootPercentView(Math.abs(_loc3_),1,true);
-               _loc4_.x = x + offset();
-               _loc4_.y = y - 50 + offset(25);
+               movie = new ShootPercentView(Math.abs(diff),1,true);
+               movie.x = x + offset();
+               movie.y = y - 50 + offset(25);
                _loc7_ = 0.8 + Math.random() * 0.4;
-               _loc4_.scaleY = _loc7_;
-               _loc4_.scaleX = _loc7_;
-               _map.addToPhyLayer(_loc4_);
+               movie.scaleY = _loc7_;
+               movie.scaleX = _loc7_;
+               _map.addToPhyLayer(movie);
                if(_info.isHidden)
                {
                   if(_info.team == GameControl.Instance.Current.selfGamePlayer.team)
                   {
-                     _loc4_.alpha == 0.5;
+                     movie.alpha == 0.5;
                   }
                   else
                   {
                      visible = false;
-                     _loc4_.alpha = 0;
+                     movie.alpha = 0;
                   }
                }
             }
@@ -1069,7 +1068,7 @@ package game.objects
          updateBloodStrip();
       }
       
-      protected function __maxHpChanged(param1:LivingEvent) : void
+      protected function __maxHpChanged(event:LivingEvent) : void
       {
          updateBloodStrip();
       }
@@ -1086,17 +1085,17 @@ package game.objects
          }
       }
       
-      private function offset(param1:int = 30) : int
+      private function offset(off:int = 30) : int
       {
-         var _loc2_:int = Math.random() * 10;
-         if(_loc2_ % 2 == 0)
+         var i:int = Math.random() * 10;
+         if(i % 2 == 0)
          {
-            return -(int(Math.random() * param1));
+            return -(int(Math.random() * off));
          }
-         return int(Math.random() * param1);
+         return int(Math.random() * off);
       }
       
-      protected function __die(param1:LivingEvent) : void
+      protected function __die(event:LivingEvent) : void
       {
          if(_isLiving)
          {
@@ -1157,7 +1156,7 @@ package game.objects
          _buffBar.x = -(_buffBar.width / 2);
       }
       
-      protected function __dirChanged(param1:LivingEvent) : void
+      protected function __dirChanged(event:LivingEvent) : void
       {
          if((_info is SmallEnemy || _info is SimpleBoss) && _actionMovie && _actionMovie.shouldReplace)
          {
@@ -1174,7 +1173,7 @@ package game.objects
          }
       }
       
-      protected function __forzenChanged(param1:LivingEvent) : void
+      protected function __forzenChanged(event:LivingEvent) : void
       {
          if(_info.isFrozen)
          {
@@ -1190,7 +1189,7 @@ package game.objects
          }
       }
       
-      protected function __lockStateChanged(param1:LivingEvent) : void
+      protected function __lockStateChanged(evt:LivingEvent) : void
       {
          if(_info.LockState)
          {
@@ -1198,7 +1197,7 @@ package game.objects
             lock.x = 10;
             lock.y = 5;
             addChild(lock);
-            if(param1.paras[0] == 2)
+            if(evt.paras[0] == 2)
             {
                lock.y = lock.y + 50;
                var _loc2_:* = 0.8;
@@ -1215,7 +1214,7 @@ package game.objects
          }
       }
       
-      protected function _solidIceStateChanged(param1:LivingEvent) : void
+      protected function _solidIceStateChanged(event:LivingEvent) : void
       {
          if(_info.showSolidIce)
          {
@@ -1230,49 +1229,49 @@ package game.objects
          }
       }
       
-      protected function _targetStealthStateChanged(param1:LivingEvent) : void
+      protected function _targetStealthStateChanged(event:LivingEvent) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = map.gameInfo.livings;
-         for each(var _loc2_ in map.gameInfo.livings)
+         for each(var player in map.gameInfo.livings)
          {
-            if(_loc2_.isPlayer() && _loc2_.team != _info.team && !_loc2_.isSelf)
+            if(player.isPlayer() && player.team != _info.team && !player.isSelf)
             {
                if(_info.isRemoveStealth)
                {
-                  if(_loc2_.isHidden)
+                  if(player.isHidden)
                   {
-                     _loc2_.removeStealth = true;
+                     player.removeStealth = true;
                   }
                }
-               else if(_loc2_.removeStealth)
+               else if(player.removeStealth)
                {
-                  _loc2_.removeStealth = false;
+                  player.removeStealth = false;
                }
             }
          }
       }
       
-      protected function _enableSpellSkill(param1:LivingEvent) : void
+      protected function _enableSpellSkill(evt:LivingEvent) : void
       {
          GameControl.Instance.Current.selfGamePlayer.lockSpellKill = _info.noUseCritical;
       }
       
-      protected function _addSkillBuffBar_Handler(param1:LivingEvent) : void
+      protected function _addSkillBuffBar_Handler(evt:LivingEvent) : void
       {
-         var _loc2_:Boolean = false;
-         var _loc3_:int = 0;
-         var _loc4_:Array = param1.paras;
-         if(_skillBuffBar && _loc4_.length >= 2)
+         var isAdd:Boolean = false;
+         var iconId:int = 0;
+         var paras:Array = evt.paras;
+         if(_skillBuffBar && paras.length >= 2)
          {
-            _loc2_ = _loc4_[1];
-            _loc3_ = _loc4_[0];
-            !!_loc2_?_skillBuffBar.addIcon(_loc3_):_skillBuffBar.removeIcon(_loc3_);
+            isAdd = paras[1];
+            iconId = paras[0];
+            !!isAdd?_skillBuffBar.addIcon(iconId):_skillBuffBar.removeIcon(iconId);
             _skillBuffBar.x = -(_skillBuffBar.width / 2);
          }
       }
       
-      protected function __hiddenChanged(param1:LivingEvent) : void
+      protected function __hiddenChanged(event:LivingEvent) : void
       {
          if(_info.isHidden)
          {
@@ -1311,89 +1310,90 @@ package game.objects
          }
       }
       
-      protected function __posChanged(param1:LivingEvent) : void
+      protected function __posChanged(event:LivingEvent) : void
       {
-         var _loc2_:Number = NaN;
+         var angle:Number = NaN;
          pos = _info.pos;
          if(_isLiving)
          {
-            _loc2_ = calcObjectAngle(16);
-            _info.playerAngle = _loc2_;
+            angle = calcObjectAngle(16);
+            _info.playerAngle = angle;
          }
          if(map)
          {
             map.smallMap.updatePos(smallView,pos);
+            map.updateObjectPos(this,pos);
          }
       }
       
-      protected function __jump(param1:LivingEvent) : void
+      protected function __jump(event:LivingEvent) : void
       {
-         doAction(param1.paras[2]);
-         act(new LivingJumpAction(this,param1.paras[0],param1.paras[1],param1.paras[3]));
+         doAction(event.paras[2]);
+         act(new LivingJumpAction(this,event.paras[0],event.paras[1],event.paras[3]));
       }
       
-      protected function __moveTo(param1:LivingEvent) : void
+      protected function __moveTo(event:LivingEvent) : void
       {
-         var _loc13_:* = null;
-         var _loc10_:String = param1.paras[4];
-         doAction(_loc10_);
-         var _loc3_:int = param1.paras[5];
-         if(_loc3_ == 0)
+         var offset:* = null;
+         var action:String = event.paras[4];
+         doAction(action);
+         var speed:int = event.paras[5];
+         if(speed == 0)
          {
-            _loc3_ = 7;
+            speed = 7;
          }
-         var _loc11_:Point = param1.paras[1] as Point;
-         var _loc8_:int = param1.paras[2];
-         var _loc6_:String = param1.paras[6];
-         if(x == _loc11_.x && y == _loc11_.y)
+         var pt:Point = event.paras[1] as Point;
+         var dir:int = event.paras[2];
+         var endAction:String = event.paras[6];
+         if(x == pt.x && y == pt.y)
          {
             return;
          }
-         var _loc12_:Array = [];
-         var _loc7_:int = x;
-         var _loc5_:int = y;
-         var _loc2_:Point = new Point(x,y);
-         var _loc4_:int = _loc11_.x > _loc7_?1:-1;
-         var _loc9_:Point = new Point(x,y);
-         if(_loc10_.substr(0,3) == "fly")
+         var path:Array = [];
+         var tx:int = x;
+         var ty:int = y;
+         var thisPos:Point = new Point(x,y);
+         var direction:int = pt.x > tx?1:-1;
+         var p:Point = new Point(x,y);
+         if(action.substr(0,3) == "fly")
          {
-            _loc13_ = new Point(_loc11_.x - _loc9_.x,_loc11_.y - _loc9_.y);
-            while(_loc13_.length > _loc3_)
+            offset = new Point(pt.x - p.x,pt.y - p.y);
+            while(offset.length > speed)
             {
-               _loc13_.normalize(_loc3_);
-               _loc9_ = new Point(_loc9_.x + _loc13_.x,_loc9_.y + _loc13_.y);
-               _loc13_ = new Point(_loc11_.x - _loc9_.x,_loc11_.y - _loc9_.y);
-               if(_loc9_)
+               offset.normalize(speed);
+               p = new Point(p.x + offset.x,p.y + offset.y);
+               offset = new Point(pt.x - p.x,pt.y - p.y);
+               if(p)
                {
-                  _loc12_.push(_loc9_);
+                  path.push(p);
                   continue;
                }
-               _loc12_.push(_loc11_);
+               path.push(pt);
                break;
             }
          }
          else
          {
-            while((_loc11_.x - _loc7_) * _loc4_ > 0)
+            while((pt.x - tx) * direction > 0)
             {
-               _loc9_ = _map.findNextWalkPoint(_loc7_,_loc5_,_loc4_,_loc3_ * 1,_loc3_ * 3);
-               if(_loc9_)
+               p = _map.findNextWalkPoint(tx,ty,direction,speed * 1,speed * 3);
+               if(p)
                {
-                  _loc12_.push(_loc9_);
-                  _loc7_ = _loc9_.x;
-                  _loc5_ = _loc9_.y;
+                  path.push(p);
+                  tx = p.x;
+                  ty = p.y;
                   continue;
                }
                break;
             }
          }
-         if(_loc12_.length > 0)
+         if(path.length > 0)
          {
-            _info.act(new LivingMoveAction(this,_loc12_,_loc8_,_loc6_));
+            _info.act(new LivingMoveAction(this,path,dir,endAction));
          }
-         else if(_loc6_ != "")
+         else if(endAction != "")
          {
-            doAction(_loc6_);
+            doAction(endAction);
          }
          else
          {
@@ -1401,66 +1401,66 @@ package game.objects
          }
       }
       
-      public function canMoveDirection(param1:Number) : Boolean
+      public function canMoveDirection(dir:Number) : Boolean
       {
-         return !map.IsOutMap(x + (15 + Player.MOVE_SPEED) * param1,y);
+         return !map.IsOutMap(x + (15 + Player.MOVE_SPEED) * dir,y);
       }
       
-      public function canStand(param1:int, param2:int) : Boolean
+      public function canStand(x:int, y:int) : Boolean
       {
-         return !map.IsEmpty(param1 - 1,param2) || !map.IsEmpty(param1 + 1,param2);
+         return !map.IsEmpty(x - 1,y) || !map.IsEmpty(x + 1,y);
       }
       
-      public function getNextWalkPoint(param1:int) : Point
+      public function getNextWalkPoint(dir:int) : Point
       {
-         if(canMoveDirection(param1))
+         if(canMoveDirection(dir))
          {
-            return _map.findNextWalkPoint(x,y,param1,stepX,stepY);
+            return _map.findNextWalkPoint(x,y,dir,stepX,stepY);
          }
          return null;
       }
       
-      private function __needFocus(param1:ActionMovieEvent) : void
+      private function __needFocus(evt:ActionMovieEvent) : void
       {
-         if(param1.data)
+         if(evt.data)
          {
-            needFocus(param1.data.x,param1.data.y,param1.data);
+            needFocus(evt.data.x,evt.data.y,evt.data);
          }
       }
       
-      protected function __playEffect(param1:ActionMovieEvent) : void
+      protected function __playEffect(evt:ActionMovieEvent) : void
       {
       }
       
-      protected function __playerEffect(param1:ActionMovieEvent) : void
+      protected function __playerEffect(evt:ActionMovieEvent) : void
       {
       }
       
-      public function needFocus(param1:int = 0, param2:int = 0, param3:Object = null, param4:GameLiving = null) : void
+      public function needFocus(offsetX:int = 0, offsetY:int = 0, data:Object = null, player:GameLiving = null) : void
       {
          if(map)
          {
-            map.livingSetCenter(x + param1,y + param2 - 150,true,2,param3,param4);
+            map.livingSetCenter(x + offsetX,y + offsetY - 150,true,2,data,player);
          }
       }
       
-      private function __attackCompleteFocus(param1:ActionMovieEvent) : void
+      private function __attackCompleteFocus(event:ActionMovieEvent) : void
       {
-         map.setSelfCenter(true,2,param1.data);
+         map.setSelfCenter(true,2,event.data);
       }
       
-      protected function __shoot(param1:LivingEvent) : void
+      protected function __shoot(event:LivingEvent) : void
       {
       }
       
-      protected function __transmit(param1:LivingEvent) : void
+      protected function __transmit(event:LivingEvent) : void
       {
-         info.pos = param1.paras[0];
+         info.pos = event.paras[0];
       }
       
-      protected function __fall(param1:LivingEvent) : void
+      protected function __fall(event:LivingEvent) : void
       {
-         _info.act(new LivingFallingAction(this,param1.paras[0],param1.paras[1],param1.paras[3]));
+         _info.act(new LivingFallingAction(this,event.paras[0],event.paras[1],event.paras[3]));
       }
       
       public function get actionMovie() : ActionMovie
@@ -1473,69 +1473,69 @@ package game.objects
          return _actionMovie;
       }
       
-      public function doAction(param1:*) : void
+      public function doAction(actionType:*) : void
       {
          if(_actionMovie != null)
          {
-            _actionMovie.doAction(param1);
+            _actionMovie.doAction(actionType);
          }
       }
       
-      public function showEffect(param1:String) : void
+      public function showEffect(classLink:String) : void
       {
-         var _loc2_:* = null;
-         if(param1 && ModuleLoader.hasDefinition(param1))
+         var mc:* = null;
+         if(classLink && ModuleLoader.hasDefinition(classLink))
          {
-            _loc2_ = new AutoDisappear(ClassUtils.CreatInstance(param1));
-            addChild(_loc2_);
+            mc = new AutoDisappear(ClassUtils.CreatInstance(classLink));
+            addChild(mc);
          }
       }
       
-      public function showBuffEffect(param1:String, param2:int) : void
+      public function showBuffEffect(classLink:String, buffId:int) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         if(param1 && ModuleLoader.hasDefinition(param1))
+         var mc:* = null;
+         var effMC:* = null;
+         if(classLink && ModuleLoader.hasDefinition(classLink))
          {
             if(!_buffEffect)
             {
                return;
             }
-            if(_buffEffect && _buffEffect.hasKey(param2))
+            if(_buffEffect && _buffEffect.hasKey(buffId))
             {
-               removeBuffEffect(param2);
+               removeBuffEffect(buffId);
             }
-            _loc4_ = ClassUtils.CreatInstance(param1) as DisplayObject;
-            if(_noRemoveEffect.indexOf(param2) != -1)
+            mc = ClassUtils.CreatInstance(classLink) as DisplayObject;
+            if(_noRemoveEffect.indexOf(buffId) != -1)
             {
-               _loc3_ = new MovieClipWrapper(_loc4_ as MovieClip,true,true);
-               addChild(_loc3_.movie);
+               effMC = new MovieClipWrapper(mc as MovieClip,true,true);
+               addChild(effMC.movie);
             }
             else
             {
-               addChild(_loc4_);
-               _buffEffect.add(param2,_loc4_);
+               addChild(mc);
+               _buffEffect.add(buffId,mc);
             }
          }
       }
       
-      public function removeBuffEffect(param1:int) : void
+      public function removeBuffEffect(buffId:int) : void
       {
-         var _loc2_:* = null;
-         if(_buffEffect && _buffEffect.hasKey(param1))
+         var mc:* = null;
+         if(_buffEffect && _buffEffect.hasKey(buffId))
          {
-            _loc2_ = _buffEffect[param1] as DisplayObject;
-            if(_loc2_ && _loc2_.parent)
+            mc = _buffEffect[buffId] as DisplayObject;
+            if(mc && mc.parent)
             {
-               removeChild(_loc2_);
+               removeChild(mc);
             }
-            _buffEffect.remove(param1);
+            _buffEffect.remove(buffId);
          }
       }
       
-      public function act(param1:BaseAction) : void
+      public function act(action:BaseAction) : void
       {
-         _info.act(param1);
+         _info.act(action);
       }
       
       public function traceCurrentAction() : void
@@ -1543,44 +1543,44 @@ package game.objects
          _info.traceCurrentAction();
       }
       
-      override public function update(param1:Number) : void
+      override public function update(dt:Number) : void
       {
          if(_isDie)
          {
             return;
          }
-         super.update(param1);
+         super.update(dt);
          _info.update();
       }
       
-      protected function getBodyBmpData(param1:String = "") : BitmapData
+      protected function getBodyBmpData(action:String = "") : BitmapData
       {
-         return getBodyBitmapData(param1);
+         return getBodyBitmapData(action);
       }
       
-      private function getBodyBitmapData(param1:String = "") : BitmapData
+      private function getBodyBitmapData(action:String = "") : BitmapData
       {
-         var _loc5_:Number = _actionMovie.width;
-         var _loc3_:Sprite = new Sprite();
+         var oldWidth:Number = _actionMovie.width;
+         var container:Sprite = new Sprite();
          bodyWidth = _actionMovie.width;
          bodyHeight = _actionMovie.height;
-         _actionMovie.gotoAndStop(param1);
-         var _loc6_:Boolean = false;
+         _actionMovie.gotoAndStop(action);
+         var hasChangedSize:Boolean = false;
          if(120 < _actionMovie.width)
          {
             _actionMovie.width = 120;
             _actionMovie.scaleY = _actionMovie.scaleX;
-            _loc6_ = true;
+            hasChangedSize = true;
          }
-         _loc3_.addChild(_actionMovie);
-         var _loc4_:Rectangle = _actionMovie.getBounds(_actionMovie);
-         _actionMovie.x = -_loc4_.x * _actionMovie.scaleX;
-         _actionMovie.y = -_loc4_.y * _actionMovie.scaleX;
-         var _loc2_:BitmapData = new BitmapData(_loc3_.width,_loc3_.height,true,0);
-         _loc2_.draw(_loc3_);
-         if(_loc6_)
+         container.addChild(_actionMovie);
+         var clipRect:Rectangle = _actionMovie.getBounds(_actionMovie);
+         _actionMovie.x = -clipRect.x * _actionMovie.scaleX;
+         _actionMovie.y = -clipRect.y * _actionMovie.scaleX;
+         var bitmapdata:BitmapData = new BitmapData(container.width,container.height,true,0);
+         bitmapdata.draw(container);
+         if(hasChangedSize)
          {
-            _actionMovie.width = _loc5_;
+            _actionMovie.width = oldWidth;
             var _loc7_:int = 1;
             _actionMovie.scaleX = _loc7_;
             _actionMovie.scaleY = _loc7_;
@@ -1589,8 +1589,8 @@ package game.objects
          _loc7_ = 0;
          _actionMovie.y = _loc7_;
          _actionMovie.x = _loc7_;
-         _loc3_.removeChild(_actionMovie);
-         return _loc2_;
+         container.removeChild(_actionMovie);
+         return bitmapdata;
       }
       
       protected function deleteSmallView() : void
@@ -1634,9 +1634,9 @@ package game.objects
          {
             var _loc3_:int = 0;
             var _loc2_:* = _buffEffect.list;
-            for each(var _loc1_ in _buffEffect.list)
+            for each(var buf in _buffEffect.list)
             {
-               ObjectUtils.disposeObject(_loc1_);
+               ObjectUtils.disposeObject(buf);
             }
             _buffEffect = null;
          }
@@ -1706,9 +1706,9 @@ package game.objects
          {
             var _loc3_:int = 0;
             var _loc2_:* = _propArray;
-            for each(var _loc1_ in _propArray)
+            for each(var o in _propArray)
             {
-               ObjectUtils.disposeObject(_loc1_);
+               ObjectUtils.disposeObject(o);
             }
          }
          _propArray = null;
@@ -1724,7 +1724,7 @@ package game.objects
          return _smallView;
       }
       
-      protected function __showAttackEffect(param1:LivingEvent) : void
+      protected function __showAttackEffect(event:LivingEvent) : void
       {
          if(_attackEffectPlaying)
          {
@@ -1735,34 +1735,34 @@ package game.objects
             return;
          }
          _attackEffectPlaying = true;
-         var _loc5_:int = param1.paras[0];
-         var _loc2_:MovieClip = creatAttackEffectAssetByID(_loc5_);
-         _loc2_.scaleX = -1 * _info.direction;
-         var _loc3_:MovieClipWrapper = new MovieClipWrapper(_loc2_,true,true);
-         _loc3_.addEventListener("complete",__playComplete);
-         _loc3_.gotoAndPlay(1);
+         var effectID:int = event.paras[0];
+         var effect:MovieClip = creatAttackEffectAssetByID(effectID);
+         effect.scaleX = -1 * _info.direction;
+         var warpper:MovieClipWrapper = new MovieClipWrapper(effect,true,true);
+         warpper.addEventListener("complete",__playComplete);
+         warpper.gotoAndPlay(1);
          _attackEffectPlayer = new PhysicalObj(-1);
-         _attackEffectPlayer.addChild(_loc3_.movie);
-         var _loc4_:Point = _map.globalToLocal(movie.localToGlobal(_attackEffectPos));
-         _attackEffectPlayer.x = _loc4_.x;
-         _attackEffectPlayer.y = _loc4_.y;
+         _attackEffectPlayer.addChild(warpper.movie);
+         var pos:Point = _map.globalToLocal(movie.localToGlobal(_attackEffectPos));
+         _attackEffectPlayer.x = pos.x;
+         _attackEffectPlayer.y = pos.y;
          _map.addPhysical(_attackEffectPlayer);
       }
       
-      protected function __playDeadEffect(param1:LivingEvent) : void
+      protected function __playDeadEffect(event:LivingEvent) : void
       {
-         var _loc2_:Function = param1.paras[2] as Function;
-         if(_loc2_ != null)
+         var backFun:Function = event.paras[2] as Function;
+         if(backFun != null)
          {
-            _loc2_(param1.paras[3]);
+            backFun(event.paras[3]);
          }
       }
       
-      private function __playComplete(param1:Event) : void
+      private function __playComplete(event:Event) : void
       {
-         if(param1.currentTarget)
+         if(event.currentTarget)
          {
-            param1.currentTarget.removeEventListener("complete",__playComplete);
+            event.currentTarget.removeEventListener("complete",__playComplete);
          }
          if(_map)
          {
@@ -1776,65 +1776,65 @@ package game.objects
          _attackEffectPlayer = null;
       }
       
-      protected function hasMovie(param1:String) : Boolean
+      protected function hasMovie(name:String) : Boolean
       {
-         return _moviePool.hasOwnProperty(param1);
+         return _moviePool.hasOwnProperty(name);
       }
       
-      protected function creatAttackEffectAssetByID(param1:int) : MovieClip
+      protected function creatAttackEffectAssetByID(id:int) : MovieClip
       {
-         var _loc2_:* = null;
-         var _loc3_:String = "asset.game.AttackEffect" + param1;
-         if(hasMovie(_loc3_))
+         var mc:* = null;
+         var name:String = "asset.game.AttackEffect" + id;
+         if(hasMovie(name))
          {
-            return _moviePool[_loc3_] as MovieClip;
+            return _moviePool[name] as MovieClip;
          }
-         _loc2_ = ClassUtils.CreatInstance("asset.game.AttackEffect" + param1.toString()) as MovieClip;
-         _moviePool[_loc3_] = _loc2_;
-         return _loc2_;
+         mc = ClassUtils.CreatInstance("asset.game.AttackEffect" + id.toString()) as MovieClip;
+         _moviePool[name] = mc;
+         return mc;
       }
       
       private function cleanMovies() : void
       {
-         var _loc1_:* = null;
+         var movie:* = null;
          var _loc4_:int = 0;
          var _loc3_:* = _moviePool;
-         for(var _loc2_ in _moviePool)
+         for(var key in _moviePool)
          {
-            _loc1_ = _moviePool[_loc2_];
-            _loc1_.stop();
-            ObjectUtils.disposeObject(_loc1_);
-            delete _moviePool[_loc2_];
+            movie = _moviePool[key];
+            movie.stop();
+            ObjectUtils.disposeObject(movie);
+            delete _moviePool[key];
          }
       }
       
-      public function showBlood(param1:Boolean) : void
+      public function showBlood(value:Boolean) : void
       {
-         var _loc2_:* = param1;
+         var _loc2_:* = value;
          _HPStrip.visible = _loc2_;
          _bloodStripBg.visible = _loc2_;
-         _nickName.visible = param1;
+         _nickName.visible = value;
       }
       
-      override public function setActionMapping(param1:String, param2:String) : void
+      override public function setActionMapping(source:String, target:String) : void
       {
-         _actionMovie.setActionMapping(param1,param2);
+         _actionMovie.setActionMapping(source,target);
       }
       
-      override public function set visible(param1:Boolean) : void
+      override public function set visible(value:Boolean) : void
       {
          if(hiddenByServer)
          {
             return;
          }
-         .super.visible = param1;
+         .super.visible = value;
          if(_onSmallMap == false)
          {
             return;
          }
          if(_smallView)
          {
-            _smallView.visible = param1;
+            _smallView.visible = value;
          }
       }
       
@@ -1843,9 +1843,9 @@ package game.objects
          return _hiddenByServer;
       }
       
-      private function set hiddenByServer(param1:Boolean) : void
+      private function set hiddenByServer(value:Boolean) : void
       {
-         if(param1)
+         if(value)
          {
             .super.visible = false;
          }
@@ -1853,17 +1853,17 @@ package game.objects
          {
             .super.visible = true;
          }
-         _hiddenByServer = param1;
+         _hiddenByServer = value;
       }
       
-      protected function __onLivingCommand(param1:LivingCommandEvent) : void
+      protected function __onLivingCommand(evt:LivingCommandEvent) : void
       {
-         var _loc2_:* = param1.commandType;
+         var _loc2_:* = evt.commandType;
          if("focusSelf" !== _loc2_)
          {
             if("focus" === _loc2_)
             {
-               needFocus(param1.object.x,param1.object.y);
+               needFocus(evt.object.x,evt.object.y);
                return;
             }
          }
@@ -1873,7 +1873,7 @@ package game.objects
          }
       }
       
-      protected function onChatBallComplete(param1:Event) : void
+      protected function onChatBallComplete(evt:Event) : void
       {
          if(_chatballview && _chatballview.parent)
          {
@@ -1885,49 +1885,49 @@ package game.objects
          }
       }
       
-      protected function doUseItemAnimation(param1:Boolean = false) : void
+      protected function doUseItemAnimation(skip:Boolean = false) : void
       {
-         var _loc2_:MovieClipWrapper = new MovieClipWrapper(MovieClip(ClassUtils.CreatInstance("asset.game.ghostPcikPropAsset")),true,true);
-         _loc2_.addFrameScriptAt(12,headPropEffect);
+         var using:MovieClipWrapper = new MovieClipWrapper(MovieClip(ClassUtils.CreatInstance("asset.game.ghostPcikPropAsset")),true,true);
+         using.addFrameScriptAt(12,headPropEffect);
          SoundManager.instance.play("039");
-         _loc2_.movie.x = 0;
-         _loc2_.movie.y = -10;
-         if(!param1)
+         using.movie.x = 0;
+         using.movie.y = -10;
+         if(!skip)
          {
-            addChild(_loc2_.movie);
+            addChild(using.movie);
          }
       }
       
       protected function headPropEffect() : void
       {
-         var _loc1_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var movie:* = null;
+         var head:* = null;
+         var pic:* = null;
          if(_propArray && _propArray.length > 0)
          {
             if(_propArray[0] is String)
             {
-               _loc2_ = _propArray.shift();
-               if(_loc2_ == "-1")
+               pic = _propArray.shift();
+               if(pic == "-1")
                {
-                  _loc1_ = ComponentFactory.Instance.creatBitmap("game.crazyTank.view.specialKillAsset");
+                  movie = ComponentFactory.Instance.creatBitmap("game.crazyTank.view.specialKillAsset");
                }
                else
                {
-                  _loc1_ = PropItemView.createView(_loc2_,60,60);
+                  movie = PropItemView.createView(pic,60,60);
                }
-               _loc3_ = new AutoPropEffect(_loc1_);
-               _loc3_.x = -5;
-               _loc3_.y = -140;
+               head = new AutoPropEffect(movie);
+               head.x = -5;
+               head.y = -140;
             }
             else
             {
-               _loc1_ = _propArray.shift() as DisplayObject;
-               _loc3_ = new AutoPropEffect(_loc1_);
-               _loc3_.x = 5;
-               _loc3_.y = -140;
+               movie = _propArray.shift() as DisplayObject;
+               head = new AutoPropEffect(movie);
+               head.x = 5;
+               head.y = -140;
             }
-            addChild(_loc3_);
+            addChild(head);
          }
       }
       
@@ -1949,10 +1949,10 @@ package game.objects
          }
       }
       
-      public function setProperty(param1:String, param2:String) : void
+      public function setProperty(property:String, value:String) : void
       {
-         var _loc3_:StringObject = new StringObject(param2);
-         var _loc4_:* = param1;
+         var vo:StringObject = new StringObject(value);
+         var _loc4_:* = property;
          if("visible" !== _loc4_)
          {
             if("offsetX" !== _loc4_)
@@ -1967,20 +1967,20 @@ package game.objects
                         {
                            if("speedMult" !== _loc4_)
                            {
-                              info.setProperty(param1,param2);
+                              info.setProperty(property,value);
                            }
                            else
                            {
-                              speedMult = _loc3_.getInt();
+                              speedMult = vo.getInt();
                            }
                         }
                         else
                         {
                            if(smallView)
                            {
-                              smallView.visible = _loc3_.getBoolean();
+                              smallView.visible = vo.getBoolean();
                            }
-                           _onSmallMap = _loc3_.getBoolean();
+                           _onSmallMap = vo.getBoolean();
                            if(_onSmallMap && _smallView)
                            {
                               _smallView.info = _info;
@@ -1989,24 +1989,26 @@ package game.objects
                      }
                      else
                      {
-                        speedMult = _loc3_.getInt() / _speedY;
+                        speedMult = vo.getInt() / _speedY;
                      }
                   }
                   else
                   {
-                     speedMult = _loc3_.getInt() / _speedX;
+                     speedMult = vo.getInt() / _speedX;
                   }
                   return;
                }
-               _offsetY = _loc3_.getInt();
+               _offsetY = vo.getInt();
                map.smallMap.updatePos(_smallView,new Point(x,y));
+               map.updateObjectPos(this,new Point(x,y));
                return;
             }
-            _offsetX = _loc3_.getInt();
+            _offsetX = vo.getInt();
             map.smallMap.updatePos(_smallView,new Point(x,y));
+            map.updateObjectPos(this,new Point(x,y));
             return;
          }
-         hiddenByServer = !_loc3_.getBoolean();
+         hiddenByServer = !vo.getBoolean();
       }
       
       public function modifyPlayerColor() : void
@@ -2028,39 +2030,39 @@ package game.objects
          }
       }
       
-      public function playerMoveTo(param1:Array) : void
+      public function playerMoveTo(params:Array) : void
       {
-         var _loc2_:int = param1[0];
-         switch(int(_loc2_))
+         var type:int = params[0];
+         switch(int(type))
          {
             case 0:
-               act(new PlayerWalkAction(this,param1[1],param1[2],getAction("walk"),param1[5]));
+               act(new PlayerWalkAction(this,params[1],params[2],getAction("walk"),params[5]));
                break;
             case 1:
-               act(new PlayerFallingAction(this,param1[1],param1[3],false,param1[5]));
+               act(new PlayerFallingAction(this,params[1],params[3],false,params[5]));
                break;
             default:
-               act(new PlayerFallingAction(this,param1[1],param1[3],false,param1[5]));
+               act(new PlayerFallingAction(this,params[1],params[3],false,params[5]));
                break;
             case 3:
-               act(new PlayerFallingAction(this,param1[1],param1[3],true,param1[5]));
+               act(new PlayerFallingAction(this,params[1],params[3],true,params[5]));
                break;
             case 4:
-               act(new PlayerWalkAction(this,param1[1],param1[2],getAction("stand"),param1[5]));
+               act(new PlayerWalkAction(this,params[1],params[2],getAction("stand"),params[5]));
          }
       }
       
-      public function getAction(param1:String) : *
+      public function getAction(type:String) : *
       {
-         return param1;
+         return type;
       }
       
-      public function changeSmallViewColor(param1:int) : void
+      public function changeSmallViewColor(index:int) : void
       {
          if(_smallView)
          {
             _smallView.alpha = 1;
-            _smallView.setColor(param1);
+            _smallView.setColor(index);
          }
       }
    }

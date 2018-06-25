@@ -128,9 +128,9 @@ package baglocked
          BaglockedManager.Instance.addEventListener("bagloackedOnShow",__onOnShow);
       }
       
-      public function set bagLockedInfo(param1:BagLockedInfo) : void
+      public function set bagLockedInfo(value:BagLockedInfo) : void
       {
-         _bagLockedInfo = param1;
+         _bagLockedInfo = value;
       }
       
       public function get bagLockedInfo() : BagLockedInfo
@@ -142,9 +142,9 @@ package baglocked
          return _bagLockedInfo;
       }
       
-      private function loadUi(param1:Function) : void
+      private function loadUi(fn:Function) : void
       {
-         _currentFn = param1;
+         _currentFn = fn;
          UIModuleSmallLoading.Instance.progress = 0;
          UIModuleSmallLoading.Instance.show();
          UIModuleSmallLoading.Instance.addEventListener("close",__onClose);
@@ -153,7 +153,7 @@ package baglocked
          UIModuleLoader.Instance.addUIModuleImp("ddtbaglocked");
       }
       
-      private function __onClose(param1:Event) : void
+      private function __onClose(event:Event) : void
       {
          UIModuleSmallLoading.Instance.hide();
          UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);
@@ -161,21 +161,21 @@ package baglocked
          UIModuleLoader.Instance.removeEventListener("uiModuleComplete",__uiComplete);
       }
       
-      private function __uiProgress(param1:UIModuleEvent) : void
+      private function __uiProgress(event:UIModuleEvent) : void
       {
-         if(param1.module == "ddtbaglocked")
+         if(event.module == "ddtbaglocked")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
       
-      private function __uiComplete(param1:UIModuleEvent) : void
+      private function __uiComplete(event:UIModuleEvent) : void
       {
-         if(param1.module == "ddtbaglocked")
+         if(event.module == "ddtbaglocked")
          {
             UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);
             UIModuleLoader.Instance.removeEventListener("uiMoudleProgress",__uiProgress);
-            param1.currentTarget.removeEventListener("uiModuleComplete",__uiComplete);
+            event.currentTarget.removeEventListener("uiModuleComplete",__uiComplete);
             UIModuleSmallLoading.Instance.hide();
             if(_currentFn != null)
             {
@@ -185,7 +185,7 @@ package baglocked
          }
       }
       
-      protected function __onOnShow(param1:SetPassEvent) : void
+      protected function __onOnShow(event:SetPassEvent) : void
       {
          loadUi(onShow);
       }
@@ -288,7 +288,7 @@ package baglocked
          _bagLockedInfo = null;
       }
       
-      protected function __onOpenView(param1:SetPassEvent) : void
+      protected function __onOpenView(event:SetPassEvent) : void
       {
          loadUi(onOpenBagLockedGetFrame);
       }
@@ -583,10 +583,10 @@ package baglocked
          return _explainFrame2;
       }
       
-      public function requestConfirm(param1:int, param2:String = "") : void
+      public function requestConfirm(type:int, code:String = "") : void
       {
-         var _loc3_:BaseLoader = requestMsnConfirm(param1,param2);
-         LoadResourceManager.Instance.startLoad(_loc3_);
+         var loader:BaseLoader = requestMsnConfirm(type,code);
+         LoadResourceManager.Instance.startLoad(loader);
       }
       
       public function addLockPwdEvent() : void
@@ -594,15 +594,15 @@ package baglocked
          SocketManager.Instance.addEventListener(PkgEvent.format(403),__getBackLockPwdHandler);
       }
       
-      protected function __getBackLockPwdHandler(param1:PkgEvent) : void
+      protected function __getBackLockPwdHandler(event:PkgEvent) : void
       {
-         var _loc3_:Boolean = false;
-         var _loc4_:int = 0;
-         var _loc5_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc5_.readByte();
-         if(_loc2_ == 5)
+         var flag:Boolean = false;
+         var count:int = 0;
+         var pkg:PackageIn = event.pkg;
+         var cmd:int = pkg.readByte();
+         if(cmd == 5)
          {
-            isPhoneBind = _loc5_.readBoolean();
+            isPhoneBind = pkg.readBoolean();
             switch(int(checkBindCase))
             {
                case 0:
@@ -622,23 +622,24 @@ package baglocked
                      }
                      closeExplainFrame();
                      removeLockPwdEvent();
-                     break;
                   }
-                  openBindPhoneFrame();
-                  closeExplainFrame();
-                  break;
+                  else
+                  {
+                     openBindPhoneFrame();
+                     closeExplainFrame();
+                  }
             }
             return;
          }
-         var _loc6_:int = _loc5_.readInt();
-         switch(int(_loc2_) - 1)
+         var step:int = pkg.readInt();
+         switch(int(cmd) - 1)
          {
             case 0:
-               switch(int(_loc6_))
+               switch(int(step))
                {
                   case 0:
-                     _loc3_ = _loc5_.readBoolean();
-                     if(_loc3_)
+                     flag = pkg.readBoolean();
+                     if(flag)
                      {
                         close();
                         openChangePhoneFrame1();
@@ -666,29 +667,29 @@ package baglocked
                }
                break;
             case 1:
-               switch(int(_loc6_))
+               switch(int(step))
                {
                   case 0:
-                     _loc3_ = _loc5_.readBoolean();
-                     if(_loc3_)
+                     flag = pkg.readBoolean();
+                     if(flag)
                      {
-                        _loc4_ = _loc5_.readInt();
+                        count = pkg.readInt();
                         close();
                         openQuestionConfirmFrame1();
-                        questionConfirmFrame1.setRestTimes(_loc4_);
+                        questionConfirmFrame1.setRestTimes(count);
                      }
                      break;
                   case 1:
-                     _loc3_ = _loc5_.readBoolean();
-                     if(_loc3_)
+                     flag = pkg.readBoolean();
+                     if(flag)
                      {
                         close();
                         openQuestionConfirmFrame2();
                      }
                      else
                      {
-                        _loc4_ = _loc5_.readInt();
-                        questionConfirmFrame1.setRestTimes(_loc4_);
+                        count = pkg.readInt();
+                        questionConfirmFrame1.setRestTimes(count);
                      }
                      break;
                   case 2:
@@ -703,11 +704,11 @@ package baglocked
                }
                break;
             case 2:
-               switch(int(_loc6_))
+               switch(int(step))
                {
                   case 0:
-                     _loc3_ = _loc5_.readBoolean();
-                     if(_loc3_)
+                     flag = pkg.readBoolean();
+                     if(flag)
                      {
                         close();
                         openDeleteQuestionFrame1();
@@ -730,11 +731,11 @@ package baglocked
                }
                break;
             case 3:
-               switch(int(_loc6_))
+               switch(int(step))
                {
                   case 0:
-                     _loc3_ = _loc5_.readBoolean();
-                     if(_loc3_)
+                     flag = pkg.readBoolean();
+                     if(flag)
                      {
                         close();
                         openDeletePwdByphoneFrame1();
@@ -761,43 +762,43 @@ package baglocked
          SocketManager.Instance.removeEventListener(PkgEvent.format(403),__getBackLockPwdHandler);
       }
       
-      public function requestMsnConfirm(param1:int, param2:String = "") : BaseLoader
+      public function requestMsnConfirm(type:int, code:String = "") : BaseLoader
       {
-         var _loc4_:URLVariables = new URLVariables();
-         _loc4_["uid"] = PlayerManager.Instance.Self.ID;
-         _loc4_["type"] = param1;
-         _loc4_["code"] = param2;
-         _loc4_["rnd"] = Math.random();
-         var _loc3_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ResetPassword4399.ashx"),6,_loc4_);
-         _loc3_.analyzer = new MsnConfirmAnalyzer(msnConfirmAnalyeComplete);
-         return _loc3_;
+         var args:URLVariables = new URLVariables();
+         args["uid"] = PlayerManager.Instance.Self.ID;
+         args["type"] = type;
+         args["code"] = code;
+         args["rnd"] = Math.random();
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ResetPassword4399.ashx"),6,args);
+         loader.analyzer = new MsnConfirmAnalyzer(msnConfirmAnalyeComplete);
+         return loader;
       }
       
-      public function msnConfirmAnalyeComplete(param1:MsnConfirmAnalyzer) : void
+      public function msnConfirmAnalyeComplete(analyzer:MsnConfirmAnalyzer) : void
       {
-         switch(int(param1.type) - 1)
+         switch(int(analyzer.type) - 1)
          {
             case 0:
-               if(param1.value)
+               if(analyzer.value)
                {
                   close();
                   openConfirmNum4399Frame();
                }
                else
                {
-                  MessageTipManager.getInstance().show(param1.alertMessage);
+                  MessageTipManager.getInstance().show(analyzer.alertMessage);
                }
                break;
             case 1:
-               if(param1.value)
+               if(analyzer.value)
                {
                   close();
                }
-               MessageTipManager.getInstance().show(param1.alertMessage);
+               MessageTipManager.getInstance().show(analyzer.alertMessage);
          }
       }
       
-      protected function __delQuestionHandler(param1:PkgEvent) : void
+      protected function __delQuestionHandler(event:PkgEvent) : void
       {
          PlayerManager.Instance.Self.bagPwdState = false;
          PlayerManager.Instance.Self.bagLocked = false;

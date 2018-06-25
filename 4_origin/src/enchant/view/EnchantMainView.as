@@ -95,17 +95,17 @@ package enchant.view
          UIModuleLoader.Instance.addUIModuleImp("enchant");
       }
       
-      protected function _enchantProgress(param1:UIModuleEvent) : void
+      protected function _enchantProgress(event:UIModuleEvent) : void
       {
-         if(param1.module == "enchant")
+         if(event.module == "enchant")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
       
-      protected function _enchantCompHander(param1:UIModuleEvent) : void
+      protected function _enchantCompHander(event:UIModuleEvent) : void
       {
-         if(param1.module == "enchant")
+         if(event.module == "enchant")
          {
             UIModuleSmallLoading.Instance.hide();
             UIModuleLoader.Instance.removeEventListener("uiModuleComplete",_enchantCompHander);
@@ -132,8 +132,8 @@ package enchant.view
          _enchantDesc.text = LanguageMgr.GetTranslation("enchant.descTxt");
          _enchantBtn = ComponentFactory.Instance.creatComponentByStylename("enchant.enchantBtn");
          addChild(_enchantBtn);
-         var _loc1_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(EnchantManager.instance.soulStoneId);
-         _bagCell = new BagCell(0,_loc1_);
+         var info:ItemTemplateInfo = ItemManager.Instance.getTemplateById(EnchantManager.instance.soulStoneId);
+         _bagCell = new BagCell(0,info);
          PositionUtils.setPos(_bagCell,"enchant.bagCellPos");
          addChild(_bagCell);
          _buyBtn = ComponentFactory.Instance.creatComponentByStylename("enchant.buyBtn");
@@ -178,47 +178,47 @@ package enchant.view
          PlayerManager.Instance.Self.StoreBag.addEventListener("update",__updateStoreBag);
       }
       
-      private function initProgress(param1:Boolean) : void
+      private function initProgress(isUpdate:Boolean) : void
       {
          if(!_equipCell || !_equipCell.info)
          {
             _expBar.initPercentAndTip();
             return;
          }
-         var _loc5_:int = (_equipCell.info as InventoryItemInfo).MagicLevel;
-         var _loc4_:* = _loc5_ >= EnchantManager.instance.infoVec.length;
-         var _loc6_:Number = EnchantManager.instance.getEnchantInfoByLevel(_loc5_).Exp;
-         var _loc2_:Number = !!_loc4_?0:Number((_equipCell.info as InventoryItemInfo).MagicExp - _loc6_);
-         var _loc3_:Number = !!_loc4_?0:Number(EnchantManager.instance.getEnchantInfoByLevel(_loc5_ + 1).Exp - _loc6_);
-         if(param1)
+         var curLevel:int = (_equipCell.info as InventoryItemInfo).MagicLevel;
+         var isFull:* = curLevel >= EnchantManager.instance.infoVec.length;
+         var curExp:Number = EnchantManager.instance.getEnchantInfoByLevel(curLevel).Exp;
+         var exp:Number = !!isFull?0:Number((_equipCell.info as InventoryItemInfo).MagicExp - curExp);
+         var sumExp:Number = !!isFull?0:Number(EnchantManager.instance.getEnchantInfoByLevel(curLevel + 1).Exp - curExp);
+         if(isUpdate)
          {
             _enchantBtn.enable = EnchantManager.instance.isUpGrade == false;
-            _expBar.updateProgress(_loc2_,_loc3_,EnchantManager.instance.isUpGrade);
+            _expBar.updateProgress(exp,sumExp,EnchantManager.instance.isUpGrade);
          }
          else
          {
-            _expBar.initProgress(_loc2_,_loc3_);
+            _expBar.initProgress(exp,sumExp);
          }
       }
       
-      protected function __updateStoreBag(param1:BagEvent) : void
+      protected function __updateStoreBag(event:BagEvent) : void
       {
-         var _loc2_:* = 0;
-         var _loc4_:* = null;
+         var itemPlace:* = 0;
+         var info:* = null;
          var _loc6_:int = 0;
-         var _loc5_:* = param1.changedSlots;
-         for(_loc2_ in param1.changedSlots)
+         var _loc5_:* = event.changedSlots;
+         for(itemPlace in event.changedSlots)
          {
-            _loc4_ = PlayerManager.Instance.Self.StoreBag.items[_loc2_];
-            if(_loc2_ == 0)
+            info = PlayerManager.Instance.Self.StoreBag.items[itemPlace];
+            if(itemPlace == 0)
             {
-               _itemCell.info = _loc4_;
+               _itemCell.info = info;
             }
-            else if(_loc2_ == 1)
+            else if(itemPlace == 1)
             {
                if(_leftDrapSprite.equipCellActionState)
                {
-                  _equipCell.info = _loc4_;
+                  _equipCell.info = info;
                   initProgress(false);
                   _leftDrapSprite.equipCellActionState = false;
                }
@@ -226,12 +226,12 @@ package enchant.view
                {
                   if(EnchantManager.instance.isUpGrade)
                   {
-                     updateEquipCellInfo = _loc4_;
+                     updateEquipCellInfo = info;
                      updateEquipCellFunc = updateEquipCell;
                   }
                   else
                   {
-                     _equipCell.info = _loc4_;
+                     _equipCell.info = info;
                   }
                   initProgress(true);
                }
@@ -244,38 +244,38 @@ package enchant.view
          _equipCell.info = updateEquipCellInfo;
       }
       
-      private function cellClickHandler(param1:CellEvent) : void
+      private function cellClickHandler(event:CellEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BagCell = param1.data as BagCell;
-         _loc2_.dragStart();
+         var cell:BagCell = event.data as BagCell;
+         cell.dragStart();
       }
       
-      protected function __cellDoubleClick(param1:CellEvent) : void
+      protected function __cellDoubleClick(evt:CellEvent) : void
       {
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:InventoryItemInfo = (param1.data as BagCell).info as InventoryItemInfo;
-         if(_loc2_.MagicLevel >= EnchantManager.instance.infoVec.length)
+         var info:InventoryItemInfo = (evt.data as BagCell).info as InventoryItemInfo;
+         if(info.MagicLevel >= EnchantManager.instance.infoVec.length)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("enchant.cannotUp"));
             return;
          }
-         if(param1.target == _propListView)
+         if(evt.target == _propListView)
          {
-            SocketManager.Instance.out.sendMoveGoods(_loc2_.BagType,_loc2_.Place,12,0,_loc2_.Count,true);
+            SocketManager.Instance.out.sendMoveGoods(info.BagType,info.Place,12,0,info.Count,true);
          }
          else
          {
             _leftDrapSprite.equipCellActionState = true;
-            SocketManager.Instance.out.sendMoveGoods(_loc2_.BagType,_loc2_.Place,12,1,1);
+            SocketManager.Instance.out.sendMoveGoods(info.BagType,info.Place,12,1,1);
          }
       }
       
-      protected function __buySoulStoneHander(param1:MouseEvent) : void
+      protected function __buySoulStoneHander(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -283,18 +283,18 @@ package enchant.view
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:ShopItemInfo = ShopManager.Instance.getShopItemByGoodsID(EnchantManager.instance.soulStoneGoodsId);
-         ShopBuyManager.Instance.buy(_loc2_.GoodsID,_loc2_.isDiscount,_loc2_.getItemPrice(1).PriceType);
+         var _shopItemInfo:ShopItemInfo = ShopManager.Instance.getShopItemByGoodsID(EnchantManager.instance.soulStoneGoodsId);
+         ShopBuyManager.Instance.buy(_shopItemInfo.GoodsID,_shopItemInfo.isDiscount,_shopItemInfo.getItemPrice(1).PriceType);
       }
       
-      private function removeFromStageHandler(param1:Event) : void
+      private function removeFromStageHandler(event:Event) : void
       {
          BagStore.instance.reduceTipPanelNumber();
       }
       
-      private function __shortCutBuyHandler(param1:ShortcutBuyEvent) : void
+      private function __shortCutBuyHandler(evt:ShortcutBuyEvent) : void
       {
-         param1.stopImmediatePropagation();
+         evt.stopImmediatePropagation();
       }
       
       private function createAcceptDragSprite() : void
@@ -309,14 +309,14 @@ package enchant.view
          addChild(_leftDrapSprite);
       }
       
-      protected function __enchantHandler(param1:MouseEvent) : void
+      protected function __enchantHandler(event:MouseEvent) : void
       {
-         var _loc3_:* = null;
+         var alert:* = null;
          SoundManager.instance.playButtonSound();
-         var _loc2_:int = getTimer();
-         if(_loc2_ - _lastExaltTime > 1400)
+         var time:int = getTimer();
+         if(time - _lastExaltTime > 1400)
          {
-            _lastExaltTime = _loc2_;
+            _lastExaltTime = time;
             if(PlayerManager.Instance.Self.bagLocked)
             {
                BaglockedManager.Instance.show();
@@ -339,8 +339,8 @@ package enchant.view
             }
             if(!_equipCell.itemInfo.IsBinds && _itemCell.itemInfo.IsBinds)
             {
-               _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("store.StoreIIComposeBG.use"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
-               _loc3_.addEventListener("response",_responseI);
+               alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("store.StoreIIComposeBG.use"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
+               alert.addEventListener("response",_responseI);
             }
             else
             {
@@ -354,17 +354,17 @@ package enchant.view
          }
       }
       
-      private function _responseI(param1:FrameEvent) : void
+      private function _responseI(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = BaseAlerFrame(param1.currentTarget);
-         _loc2_.removeEventListener("response",_responseI);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var alert:BaseAlerFrame = BaseAlerFrame(e.currentTarget);
+         alert.removeEventListener("response",_responseI);
+         if(e.responseCode == 3 || e.responseCode == 2)
          {
             showEnchantMovie();
             SocketManager.Instance.out.sendEnchant(_upGradeBtn.selected);
          }
-         ObjectUtils.disposeObject(param1.target);
+         ObjectUtils.disposeObject(e.target);
       }
       
       private function showEnchantMovie() : void
@@ -405,10 +405,10 @@ package enchant.view
          _successMc.addFrameScript(_successMc.totalFrames - 1,disposeSuccessMovie);
       }
       
-      override public function set visible(param1:Boolean) : void
+      override public function set visible(value:Boolean) : void
       {
-         .super.visible = param1;
-         if(param1)
+         .super.visible = value;
+         if(value)
          {
             refreshBagList();
             addUpdateStoreEvent();

@@ -60,9 +60,9 @@ package welfareCenter.callBackLotteryDraw
       
       private var _luckeyLotteryDrawIcon:LuckeyLotteryDrawIcon;
       
-      public function CallBackLotteryDrawManager(param1:IEventDispatcher = null)
+      public function CallBackLotteryDrawManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
          _instance = this;
          callBackLotteryDrawModel = new LotteryDrawModel();
          luckeyLotteryDrawModel = new LotteryDrawModel();
@@ -92,20 +92,20 @@ package welfareCenter.callBackLotteryDraw
          });
       }
       
-      public function queryLotteryGoods(param1:int) : void
+      public function queryLotteryGoods($type:int) : void
       {
-         type = param1;
+         type = $type;
          SocketManager.Instance.out.refreshCallLotteryDrawInfo(type);
          SocketManager.Instance.out.queryCallLotteryDrawGoods(type);
       }
       
-      private function onPackTypeInfo(param1:PkgEvent) : void
+      private function onPackTypeInfo(evt:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         initModel(callBackLotteryDrawModel,_loc2_);
-         initModel(luckeyLotteryDrawModel,_loc2_);
-         var _loc3_:Boolean = _loc2_.readBoolean();
-         if(_loc3_)
+         var pkg:PackageIn = evt.pkg;
+         initModel(callBackLotteryDrawModel,pkg);
+         initModel(luckeyLotteryDrawModel,pkg);
+         var isZeroFresh:Boolean = pkg.readBoolean();
+         if(isZeroFresh)
          {
             dispatchEvent(new Event("event_zero_fresh"));
          }
@@ -158,7 +158,7 @@ package welfareCenter.callBackLotteryDraw
          }
       }
       
-      private function onTimerTick(param1:TimerEvent) : void
+      private function onTimerTick(evt:TimerEvent) : void
       {
          _firstEnterCdSec = CallBackLotteryDrawManager.instance.getLuckeyLeftSec();
          _firstEnterCdSec = Number(_firstEnterCdSec) - 1;
@@ -173,10 +173,10 @@ package welfareCenter.callBackLotteryDraw
       
       private function updateLeftTimeTf() : void
       {
-         var _loc1_:Array = TimeManager.getHHMMSSArr(_firstEnterCdSec);
-         if(_loc1_)
+         var timeArr:Array = TimeManager.getHHMMSSArr(_firstEnterCdSec);
+         if(timeArr)
          {
-            HallIconManager.instance.updateSwitchHandler("luckLotteryDraw",luckeyLotteryDrawModel.isOpen,_loc1_.join(":"));
+            HallIconManager.instance.updateSwitchHandler("luckLotteryDraw",luckeyLotteryDrawModel.isOpen,timeArr.join(":"));
          }
          else
          {
@@ -184,7 +184,7 @@ package welfareCenter.callBackLotteryDraw
          }
       }
       
-      private function onCheckOpenCallBackTimer(param1:TimerEvent) : void
+      private function onCheckOpenCallBackTimer(evt:TimerEvent) : void
       {
          checkCallBackActiveOpen();
          if(!callBackLotteryDrawModel.isOpen)
@@ -195,7 +195,7 @@ package welfareCenter.callBackLotteryDraw
          }
       }
       
-      private function onCheckOpenLuckeyTimer(param1:TimerEvent) : void
+      private function onCheckOpenLuckeyTimer(evt:TimerEvent) : void
       {
          checkLuckeyActiveOpen();
          if(!luckeyLotteryDrawModel.isOpen)
@@ -210,8 +210,8 @@ package welfareCenter.callBackLotteryDraw
       {
          WelfareCenterManager.instance.checkShineIcon();
          callBackLotteryDrawModel.isOpen = false;
-         var _loc1_:Number = TimeManager.Instance.NowTime();
-         if(_loc1_ >= callBackLotteryDrawModel.startTime.time && _loc1_ <= callBackLotteryDrawModel.endTime.time && PlayerManager.Instance.Self.isOld2)
+         var nowDateTime:Number = TimeManager.Instance.NowTime();
+         if(nowDateTime >= callBackLotteryDrawModel.startTime.time && nowDateTime <= callBackLotteryDrawModel.endTime.time && PlayerManager.Instance.Self.isOld2)
          {
             if(callBackLotteryDrawModel.phase < callBackLotteryDrawModel.phaseEndTimeArr.length - 1 || callBackLotteryDrawModel.phase >= callBackLotteryDrawModel.phaseEndTimeArr.length - 1 && callBackLotteryDrawModel.currPhaseHasGetCount < 5)
             {
@@ -223,8 +223,8 @@ package welfareCenter.callBackLotteryDraw
       public function checkLuckeyActiveOpen() : void
       {
          luckeyLotteryDrawModel.isOpen = false;
-         var _loc1_:Number = TimeManager.Instance.NowTime();
-         if(_loc1_ >= luckeyLotteryDrawModel.startTime.time && _loc1_ <= luckeyLotteryDrawModel.endTime.time)
+         var nowDateTime:Number = TimeManager.Instance.NowTime();
+         if(nowDateTime >= luckeyLotteryDrawModel.startTime.time && nowDateTime <= luckeyLotteryDrawModel.endTime.time)
          {
             if(luckeyLotteryDrawModel.phase < luckeyLotteryDrawModel.phaseEndTimeArr.length - 1 || luckeyLotteryDrawModel.phase >= luckeyLotteryDrawModel.phaseEndTimeArr.length - 1 && luckeyLotteryDrawModel.currPhaseHasGetCount < 5)
             {
@@ -233,79 +233,77 @@ package welfareCenter.callBackLotteryDraw
          }
       }
       
-      private function initModel(param1:LotteryDrawModel, param2:PackageIn) : void
+      private function initModel(model:LotteryDrawModel, pkg:PackageIn) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         param1.startTime = param2.readDate();
-         param1.endTime = param2.readDate();
-         param1.phase = param2.readInt();
-         param1.currPhaseHasGetCount = param2.readInt();
-         param1.lastRefreshTime = param2.readDate();
-         param1.phaseEndTimeArr = [];
-         var _loc3_:int = param2.readInt();
-         _loc5_ = 0;
-         while(_loc5_ < _loc3_)
+         var i:int = 0;
+         var phaseEndTime:* = null;
+         model.startTime = pkg.readDate();
+         model.endTime = pkg.readDate();
+         model.phase = pkg.readInt();
+         model.currPhaseHasGetCount = pkg.readInt();
+         model.lastRefreshTime = pkg.readDate();
+         model.phaseEndTimeArr = [];
+         var phaseEndTimeArrLength:int = pkg.readInt();
+         for(i = 0; i < phaseEndTimeArrLength; )
          {
-            _loc4_ = {
-               "Order":param2.readInt(),
-               "Time":param2.readInt()
+            phaseEndTime = {
+               "Order":pkg.readInt(),
+               "Time":pkg.readInt()
             };
-            param1.phaseEndTimeArr.push(_loc4_);
-            _loc5_++;
+            model.phaseEndTimeArr.push(phaseEndTime);
+            i++;
          }
-         if(_loc3_ > 0)
+         if(phaseEndTimeArrLength > 0)
          {
-            param1.phaseEndTimeArr.sortOn("Order",16);
+            model.phaseEndTimeArr.sortOn("Order",16);
          }
       }
       
-      private function onPackTypeGoods(param1:PkgEvent) : void
+      private function onPackTypeGoods(evt:PkgEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc11_:int = 0;
-         var _loc2_:int = 0;
-         var _loc6_:* = null;
-         var _loc5_:* = null;
-         var _loc4_:* = null;
-         var _loc7_:PackageIn = param1.pkg;
-         var _loc9_:int = _loc7_.readInt();
-         if(_loc9_ == 0)
+         var model:* = null;
+         var i:int = 0;
+         var index:int = 0;
+         var award:* = null;
+         var templeteInfo:* = null;
+         var inventoryItemInfo:* = null;
+         var pkg:PackageIn = evt.pkg;
+         var type:int = pkg.readInt();
+         if(type == 0)
          {
-            _loc3_ = callBackLotteryDrawModel;
+            model = callBackLotteryDrawModel;
          }
          else
          {
-            _loc3_ = luckeyLotteryDrawModel;
+            model = luckeyLotteryDrawModel;
          }
-         var _loc8_:Array = [];
-         var _loc10_:int = _loc7_.readInt();
-         _loc11_ = 0;
-         while(_loc11_ < _loc10_)
+         var awardArr:Array = [];
+         var awardArrLength:int = pkg.readInt();
+         for(i = 0; i < awardArrLength; )
          {
-            _loc2_ = _loc7_.readInt();
-            _loc7_.readInt();
-            _loc6_ = {
-               "Index":_loc2_,
-               "LimitCount":_loc7_.readInt(),
-               "TemplateID":_loc7_.readInt(),
-               "Count":_loc7_.readInt(),
-               "VaildDate":_loc7_.readInt(),
-               "Cost":_loc7_.readInt(),
-               "IsCanGet":_loc7_.readBoolean()
+            index = pkg.readInt();
+            pkg.readInt();
+            award = {
+               "Index":index,
+               "LimitCount":pkg.readInt(),
+               "TemplateID":pkg.readInt(),
+               "Count":pkg.readInt(),
+               "VaildDate":pkg.readInt(),
+               "Cost":pkg.readInt(),
+               "IsCanGet":pkg.readBoolean()
             };
-            _loc5_ = ItemManager.Instance.getTemplateById(_loc6_["TemplateID"]);
-            _loc4_ = new InventoryItemInfo();
-            ObjectUtils.copyProperties(_loc4_,_loc5_);
-            _loc4_.ValidDate = _loc6_["ValidDate"];
-            _loc4_.Count = _loc6_["Count"];
-            _loc4_.IsBinds = true;
-            _loc6_["InventoryItemInfo"] = _loc4_;
-            _loc8_.push(_loc6_);
-            _loc11_++;
+            templeteInfo = ItemManager.Instance.getTemplateById(award["TemplateID"]);
+            inventoryItemInfo = new InventoryItemInfo();
+            ObjectUtils.copyProperties(inventoryItemInfo,templeteInfo);
+            inventoryItemInfo.ValidDate = award["ValidDate"];
+            inventoryItemInfo.Count = award["Count"];
+            inventoryItemInfo.IsBinds = true;
+            award["InventoryItemInfo"] = inventoryItemInfo;
+            awardArr.push(award);
+            i++;
          }
-         _loc3_.awardArr = _loc8_;
-         if(_loc3_.isOpen)
+         model.awardArr = awardArr;
+         if(model.isOpen)
          {
             dispatchEvent(new Event("event_open_frame"));
          }
@@ -337,40 +335,40 @@ package welfareCenter.callBackLotteryDraw
          return 0;
       }
       
-      public function onPackTypeBuy(param1:PkgEvent) : void
+      public function onPackTypeBuy(evt:PkgEvent) : void
       {
-         var _loc5_:PackageIn = param1.pkg;
-         var _loc7_:int = _loc5_.readInt();
-         var _loc3_:int = _loc5_.readInt();
-         var _loc6_:Boolean = _loc5_.readBoolean();
-         var _loc2_:* = !_loc6_;
-         var _loc4_:Object = {
-            "index":_loc3_,
-            "res":_loc2_
+         var pkg:PackageIn = evt.pkg;
+         var type:int = pkg.readInt();
+         var index:int = pkg.readInt();
+         var IsCanGet:Boolean = pkg.readBoolean();
+         var res:* = !IsCanGet;
+         var data:Object = {
+            "index":index,
+            "res":res
          };
-         if(_loc7_ == 0)
+         if(type == 0)
          {
-            if(_loc2_)
+            if(res)
             {
-               callBackLotteryDrawModel.awardArr[_loc3_]["IsCanGet"] = false;
+               callBackLotteryDrawModel.awardArr[index]["IsCanGet"] = false;
                if(callBackLotteryDrawModel.currPhaseHasGetCount > 1)
                {
                   callBackLotteryDrawModel.currPhaseHasGetCount++;
                }
             }
          }
-         else if(_loc7_ == 1)
+         else if(type == 1)
          {
-            if(_loc2_)
+            if(res)
             {
-               luckeyLotteryDrawModel.awardArr[_loc3_]["IsCanGet"] = false;
+               luckeyLotteryDrawModel.awardArr[index]["IsCanGet"] = false;
                if(luckeyLotteryDrawModel.currPhaseHasGetCount > 1)
                {
                   luckeyLotteryDrawModel.currPhaseHasGetCount++;
                }
             }
          }
-         dispatchEvent(new CEvent("event_op_back_buy",_loc4_));
+         dispatchEvent(new CEvent("event_op_back_buy",data));
       }
    }
 }

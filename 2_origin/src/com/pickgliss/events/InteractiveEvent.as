@@ -14,9 +14,9 @@ package com.pickgliss.events
       
       public var ctrlKey:Boolean;
       
-      public function InteractiveEvent(param1:String)
+      public function InteractiveEvent(type:String)
       {
-         super(param1);
+         super(type);
       }
    }
 }

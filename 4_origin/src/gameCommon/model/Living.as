@@ -158,6 +158,10 @@ package gameCommon.model
       
       private var _isFog:Boolean;
       
+      private var _backEffFog:Boolean;
+      
+      private var _backEffRadius:Number = -1;
+      
       private var _isRedSkull:Boolean;
       
       private var _isNoNole:Boolean;
@@ -236,7 +240,7 @@ package gameCommon.model
       
       public var autoOnHook:Boolean = false;
       
-      public function Living(param1:int, param2:int, param3:int, param4:int = 0)
+      public function Living(id:int, team:int, maxBlood:int, templeId:int = 0)
       {
          _localBuffs = new Vector.<FightBuffInfo>();
          _turnBuffs = new Vector.<FightBuffInfo>();
@@ -246,12 +250,12 @@ package gameCommon.model
          _noPicPetBuff = new DictionaryData();
          _pos = new Point(0,0);
          super();
-         _livingID = param1;
-         _team = param2;
-         _maxBlood = param3;
+         _livingID = id;
+         _team = team;
+         _maxBlood = maxBlood;
          _actionManager = new ActionManager();
          _mirariEffects = new DictionaryData();
-         _templeId = param4;
+         _templeId = templeId;
          reset();
       }
       
@@ -265,9 +269,9 @@ package gameCommon.model
          return _fightPower;
       }
       
-      public function set fightPower(param1:Number) : void
+      public function set fightPower(value:Number) : void
       {
-         _fightPower = param1;
+         _fightPower = value;
          dispatchEvent(new LivingEvent("fightPowerChange"));
       }
       
@@ -276,9 +280,9 @@ package gameCommon.model
          return _currentSelectId;
       }
       
-      public function set currentSelectId(param1:int) : void
+      public function set currentSelectId(value:int) : void
       {
-         _currentSelectId = param1;
+         _currentSelectId = value;
          dispatchEvent(new LivingEvent("wishSelectChange"));
       }
       
@@ -329,9 +333,9 @@ package gameCommon.model
          _mirariEffects.clear();
       }
       
-      public function set isLockFly(param1:Boolean) : void
+      public function set isLockFly(val:Boolean) : void
       {
-         _isLockFly = param1;
+         _isLockFly = val;
          dispatchEvent(new LivingEvent("lockFlyChanged",0,0,_isLockFly));
       }
       
@@ -345,29 +349,29 @@ package gameCommon.model
          return _isLockAngle;
       }
       
-      public function set isLockAngle(param1:Boolean) : void
+      public function set isLockAngle(val:Boolean) : void
       {
-         if(_isLockAngle == param1)
+         if(_isLockAngle == val)
          {
             return;
          }
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
+         var oldValue:int = 0;
+         var newValue:int = 0;
          if(_isLockAngle)
          {
-            _loc3_ = 1;
+            oldValue = 1;
          }
-         if(param1)
+         if(val)
          {
-            _loc2_ = 1;
+            newValue = 1;
          }
-         _isLockAngle = param1;
-         dispatchEvent(new LivingEvent("lockAngleChange",_loc2_,_loc3_));
+         _isLockAngle = val;
+         dispatchEvent(new LivingEvent("lockAngleChange",newValue,oldValue));
       }
       
-      public function hasEffect(param1:BaseMirariEffectIcon) : Boolean
+      public function hasEffect(effecicon:BaseMirariEffectIcon) : Boolean
       {
-         return _mirariEffects[param1.mirariType] != null;
+         return _mirariEffects[effecicon.mirariType] != null;
       }
       
       public function get localBuffs() : Vector.<FightBuffInfo>
@@ -380,9 +384,9 @@ package gameCommon.model
          return _turnBuffs;
       }
       
-      public function set turnBuffs(param1:Vector.<FightBuffInfo>) : void
+      public function set turnBuffs(buffs:Vector.<FightBuffInfo>) : void
       {
-         _turnBuffs = param1;
+         _turnBuffs = buffs;
       }
       
       public function get petBuffs() : Vector.<FightBuffInfo>
@@ -395,170 +399,169 @@ package gameCommon.model
          return _barBuffs;
       }
       
-      private function addPayBuff(param1:FightBuffInfo) : void
+      private function addPayBuff(buff:FightBuffInfo) : void
       {
          if(_payBuff == null)
          {
             _payBuff = new FightContainerBuff(-1);
             _localBuffs.unshift(_payBuff);
          }
-         _payBuff.addFightBuff(param1);
+         _payBuff.addFightBuff(buff);
       }
       
-      private function addConsortiaBuff(param1:FightBuffInfo) : void
+      private function addConsortiaBuff(buff:FightBuffInfo) : void
       {
          if(_consortiaBuff == null)
          {
             _consortiaBuff = new FightContainerBuff(-1,3);
             _localBuffs.unshift(_consortiaBuff);
          }
-         _consortiaBuff.addFightBuff(param1);
+         _consortiaBuff.addFightBuff(buff);
       }
       
-      private function addCardBuff(param1:FightBuffInfo) : void
+      private function addCardBuff(buff:FightBuffInfo) : void
       {
          if(_cardBuff == null)
          {
             _cardBuff = new FightContainerBuff(-1,4);
             _localBuffs.unshift(_cardBuff);
          }
-         _cardBuff.addFightBuff(param1);
+         _cardBuff.addFightBuff(buff);
       }
       
-      public function updateBuff(param1:FightBuffInfo, param2:Vector.<FightBuffInfo>) : void
+      public function updateBuff(buffInfo:FightBuffInfo, list:Vector.<FightBuffInfo>) : void
       {
          var _loc5_:int = 0;
-         var _loc4_:* = param2;
-         for each(var _loc3_ in param2)
+         var _loc4_:* = list;
+         for each(var b in list)
          {
-            if(_loc3_.id == param1.id)
+            if(b.id == buffInfo.id)
             {
-               _loc3_.Count = param1.Count;
+               b.Count = buffInfo.Count;
                return;
             }
          }
       }
       
-      public function addBuff(param1:FightBuffInfo) : void
+      public function addBuff(buff:FightBuffInfo) : void
       {
-         param1.isSelf = isSelf;
-         if(BuffType.isPayBuff(param1.id))
+         buff.isSelf = isSelf;
+         if(BuffType.isPayBuff(buff.id))
          {
-            addPayBuff(param1);
+            addPayBuff(buff);
             return;
          }
-         if(BuffManager.isConsortiaBuff(param1))
+         if(BuffManager.isConsortiaBuff(buff))
          {
-            addConsortiaBuff(param1);
+            addConsortiaBuff(buff);
             return;
          }
-         if(BuffManager.isCardBuff(param1))
+         if(BuffManager.isCardBuff(buff))
          {
-            addCardBuff(param1);
+            addCardBuff(buff);
             return;
          }
-         if(param1.type == 1)
+         if(buff.type == 1)
          {
-            _localBuffs.push(param1);
+            _localBuffs.push(buff);
          }
-         else if(param1.type == 6)
+         else if(buff.type == 6)
          {
-            if(BuffManager.buffTemplateData.hasKey(param1.id))
+            if(BuffManager.buffTemplateData.hasKey(buff.id))
             {
-               if(param1.showType == 1)
+               if(buff.showType == 1)
                {
-                  if(hasBuff(param1,_barBuffs))
+                  if(hasBuff(buff,_barBuffs))
                   {
-                     updateBuff(param1,_barBuffs);
+                     updateBuff(buff,_barBuffs);
                   }
                   else
                   {
-                     _barBuffs.push(param1);
+                     _barBuffs.push(buff);
                   }
                }
                else
                {
-                  if(hasBuff(param1,_turnBuffs))
+                  if(hasBuff(buff,_turnBuffs))
                   {
                      return;
                   }
-                  _turnBuffs.push(param1);
+                  _turnBuffs.push(buff);
                }
             }
          }
          else
          {
-            if(hasBuff(param1,_turnBuffs))
+            if(hasBuff(buff,_turnBuffs))
             {
                return;
             }
-            _turnBuffs.push(param1);
+            _turnBuffs.push(buff);
          }
-         param1.execute(this);
-         dispatchEvent(new LivingEvent("buffChanged",0,0,param1.type,param1));
+         buff.execute(this);
+         dispatchEvent(new LivingEvent("buffChanged",0,0,buff.type,buff));
       }
       
-      public function addPetBuff(param1:FightBuffInfo) : void
+      public function addPetBuff(buff:FightBuffInfo) : void
       {
-         var _loc3_:Boolean = false;
-         if(param1.buffPic != "-1")
+         var hasBuff:Boolean = false;
+         if(buff.buffPic != "-1")
          {
-            _loc3_ = false;
+            hasBuff = false;
             var _loc5_:int = 0;
             var _loc4_:* = _petBuffs;
-            for each(var _loc2_ in _petBuffs)
+            for each(var b in _petBuffs)
             {
-               if(_loc2_.id == param1.id)
+               if(b.id == buff.id)
                {
-                  _loc2_.Count = Number(_loc2_.Count) + 1;
-                  _loc3_ = true;
+                  b.Count = Number(b.Count) + 1;
+                  hasBuff = true;
                   break;
                }
             }
-            if(!_loc3_)
+            if(!hasBuff)
             {
-               _petBuffs.push(param1);
+               _petBuffs.push(buff);
             }
          }
          else
          {
-            _noPicPetBuff.add(param1.id,true);
+            _noPicPetBuff.add(buff.id,true);
          }
-         param1.execute(this);
-         dispatchEvent(new LivingEvent("buffChanged",0,0,param1.type,param1));
+         buff.execute(this);
+         dispatchEvent(new LivingEvent("buffChanged",0,0,buff.type,buff));
       }
       
-      public function removePetBuff(param1:FightBuffInfo) : void
+      public function removePetBuff(buff:FightBuffInfo) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = _petBuffs.length;
-         var _loc2_:int = param1.id;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var i:int = 0;
+         var len:int = _petBuffs.length;
+         var buffid:int = buff.id;
+         for(i = 0; i < len; )
          {
-            if(_petBuffs[_loc4_].id == _loc2_)
+            if(_petBuffs[i].id == buffid)
             {
-               _petBuffs[_loc4_].unExecute(this);
-               _petBuffs.splice(_loc4_,1);
-               dispatchEvent(new LivingEvent("buffChanged",0,0,param1.type,param1));
+               _petBuffs[i].unExecute(this);
+               _petBuffs.splice(i,1);
+               dispatchEvent(new LivingEvent("buffChanged",0,0,buff.type,buff));
                break;
             }
-            _loc4_++;
+            i++;
          }
-         if(param1.buffPic == "-1" && _noPicPetBuff[param1.id])
+         if(buff.buffPic == "-1" && _noPicPetBuff[buff.id])
          {
-            _noPicPetBuff.remove(param1.id);
-            param1.unExecute(this);
+            _noPicPetBuff.remove(buff.id);
+            buff.unExecute(this);
          }
       }
       
-      private function hasBuff(param1:FightBuffInfo, param2:Vector.<FightBuffInfo>) : Boolean
+      private function hasBuff(buff:FightBuffInfo, list:Vector.<FightBuffInfo>) : Boolean
       {
          var _loc5_:int = 0;
-         var _loc4_:* = param2;
-         for each(var _loc3_ in param2)
+         var _loc4_:* = list;
+         for each(var b in list)
          {
-            if(_loc3_.id == param1.id)
+            if(b.id == buff.id)
             {
                return true;
             }
@@ -566,84 +569,83 @@ package gameCommon.model
          return false;
       }
       
-      public function getBuffByID(param1:int) : FightBuffInfo
+      public function getBuffByID(buffId:int) : FightBuffInfo
       {
-         var _loc2_:* = null;
+         var buffInfo:* = null;
          var _loc4_:int = 0;
          var _loc3_:* = _petBuffs;
-         for each(_loc2_ in _petBuffs)
+         for each(buffInfo in _petBuffs)
          {
-            if(_loc2_.id == param1)
+            if(buffInfo.id == buffId)
             {
-               return _loc2_;
+               return buffInfo;
             }
          }
          var _loc6_:int = 0;
          var _loc5_:* = _localBuffs;
-         for each(_loc2_ in _localBuffs)
+         for each(buffInfo in _localBuffs)
          {
-            if(_loc2_.id == param1)
+            if(buffInfo.id == buffId)
             {
-               return _loc2_;
+               return buffInfo;
             }
          }
          var _loc8_:int = 0;
          var _loc7_:* = _turnBuffs;
-         for each(_loc2_ in _turnBuffs)
+         for each(buffInfo in _turnBuffs)
          {
-            if(_loc2_.id == param1)
+            if(buffInfo.id == buffId)
             {
-               return _loc2_;
+               return buffInfo;
             }
          }
          return null;
       }
       
-      public function removeBuff(param1:int) : void
+      public function removeBuff(buffid:int) : void
       {
-         var _loc2_:* = undefined;
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
-         var _loc7_:int = 0;
-         var _loc3_:* = null;
-         if(BuffManager.buffTemplateData.hasKey(param1))
+         var buffs:* = undefined;
+         var buffType:int = 0;
+         var gameBuffInfo:* = null;
+         var i:int = 0;
+         var buff:* = null;
+         if(BuffManager.buffTemplateData.hasKey(buffid))
          {
-            _loc5_ = BuffManager.buffTemplateData[param1] as GameBuffInfo;
-            if(_loc5_.ShowType == 0)
+            gameBuffInfo = BuffManager.buffTemplateData[buffid] as GameBuffInfo;
+            if(gameBuffInfo.ShowType == 0)
             {
-               _loc2_ = _turnBuffs;
+               buffs = _turnBuffs;
             }
             else
             {
-               _loc2_ = _barBuffs;
+               buffs = _barBuffs;
             }
-            _loc6_ = _loc5_.Type;
+            buffType = gameBuffInfo.Type;
          }
-         else if(BuffType.isLocalBuffByID(param1))
+         else if(BuffType.isLocalBuffByID(buffid))
          {
-            _loc2_ = _localBuffs;
-            _loc6_ = 1;
+            buffs = _localBuffs;
+            buffType = 1;
          }
          else
          {
-            _loc2_ = _turnBuffs;
-            _loc6_ = 0;
+            buffs = _turnBuffs;
+            buffType = 0;
          }
-         var _loc4_:int = _loc2_.length;
-         _loc7_ = 0;
-         while(_loc7_ < _loc4_)
+         var len:int = buffs.length;
+         for(i = 0; i < len; )
          {
-            if(_loc2_[_loc7_].id == param1)
+            if(buffs[i].id == buffid)
             {
-               _loc3_ = _loc2_[_loc7_];
-               _loc3_.Count = 0;
-               _loc2_[_loc7_].unExecute(this);
-               _loc2_.splice(_loc7_,1);
-               if(_loc6_ == 1)
+               buff = buffs[i];
+               buff.Count = 0;
+               buffs[i].unExecute(this);
+               buffs.splice(i,1);
+               if(buffType == 1)
                {
                   _localBuffs = _localBuffs.sort(buffCompare);
                }
-               else if(_loc6_ == 6)
+               else if(buffType == 6)
                {
                   _barBuffs = _barBuffs.sort(buffCompare);
                }
@@ -651,47 +653,47 @@ package gameCommon.model
                {
                   _turnBuffs = _turnBuffs.sort(buffCompare);
                }
-               dispatchEvent(new LivingEvent("buffChanged",0,0,_loc6_,_loc3_));
+               dispatchEvent(new LivingEvent("buffChanged",0,0,buffType,buff));
                break;
             }
-            _loc7_++;
+            i++;
          }
       }
       
-      protected function buffCompare(param1:FightBuffInfo, param2:FightBuffInfo) : Number
+      protected function buffCompare(a:FightBuffInfo, b:FightBuffInfo) : Number
       {
-         if(param1.priority == param2.priority)
+         if(a.priority == b.priority)
          {
             return 0;
          }
-         if(param1.priority < param2.priority)
+         if(a.priority < b.priority)
          {
             return 1;
          }
          return -1;
       }
       
-      public function handleMirariEffect(param1:BaseMirariEffectIcon) : void
+      public function handleMirariEffect(effecicon:BaseMirariEffectIcon) : void
       {
-         if(param1.single)
+         if(effecicon.single)
          {
-            if(!hasEffect(param1))
+            if(!hasEffect(effecicon))
             {
-               _mirariEffects.add(param1.mirariType,param1);
+               _mirariEffects.add(effecicon.mirariType,effecicon);
             }
          }
          else
          {
-            _mirariEffects.add(param1.mirariType,param1);
+            _mirariEffects.add(effecicon.mirariType,effecicon);
          }
-         param1.excuteEffect(this);
+         effecicon.excuteEffect(this);
       }
       
-      public function removeMirariEffect(param1:BaseMirariEffectIcon) : void
+      public function removeMirariEffect(effecicon:BaseMirariEffectIcon) : void
       {
-         param1.dispose();
-         _mirariEffects.remove(param1.mirariType);
-         param1.unExcuteEffect(this);
+         effecicon.dispose();
+         _mirariEffects.remove(effecicon.mirariType);
+         effecicon.unExcuteEffect(this);
       }
       
       public function dispose() : void
@@ -725,9 +727,9 @@ package gameCommon.model
          _currentShootList = null;
       }
       
-      public function set name(param1:String) : void
+      public function set name(value:String) : void
       {
-         _name = param1;
+         _name = value;
       }
       
       public function get name() : String
@@ -745,12 +747,12 @@ package gameCommon.model
          return _team;
       }
       
-      public function set team(param1:int) : void
+      public function set team(value:int) : void
       {
-         _team = param1;
+         _team = value;
       }
       
-      public function set fallingType(param1:int) : void
+      public function set fallingType(i:int) : void
       {
          _fallingType = 0;
       }
@@ -765,9 +767,9 @@ package gameCommon.model
          return _onChange;
       }
       
-      public function set onChange(param1:Boolean) : void
+      public function set onChange(value:Boolean) : void
       {
-         _onChange = param1;
+         _onChange = value;
       }
       
       public function get pos() : Point
@@ -775,15 +777,15 @@ package gameCommon.model
          return _pos;
       }
       
-      public function set pos(param1:Point) : void
+      public function set pos(value:Point) : void
       {
-         if(!param1)
+         if(!value)
          {
             return;
          }
-         if(_pos.equals(param1) == false)
+         if(_pos.equals(value) == false)
          {
-            _pos = param1;
+            _pos = value;
             dispatchEvent(new LivingEvent("posChanged"));
          }
       }
@@ -793,9 +795,9 @@ package gameCommon.model
          return _isShowBlood;
       }
       
-      public function set isShowBlood(param1:Boolean) : void
+      public function set isShowBlood(value:Boolean) : void
       {
-         _isShowBlood = param1;
+         _isShowBlood = value;
       }
       
       public function get isShowSmallMapPoint() : Boolean
@@ -803,9 +805,9 @@ package gameCommon.model
          return _isShowSmallMapPoint;
       }
       
-      public function set isShowSmallMapPoint(param1:Boolean) : void
+      public function set isShowSmallMapPoint(value:Boolean) : void
       {
-         _isShowSmallMapPoint = param1;
+         _isShowSmallMapPoint = value;
       }
       
       public function get direction() : int
@@ -813,13 +815,13 @@ package gameCommon.model
          return _direction;
       }
       
-      public function set direction(param1:int) : void
+      public function set direction(value:int) : void
       {
-         if(_direction == param1)
+         if(_direction == value)
          {
             return;
          }
-         _direction = param1;
+         _direction = value;
          sendCommand("changeDir");
          dispatchEvent(new LivingEvent("dirChanged"));
       }
@@ -829,9 +831,9 @@ package gameCommon.model
          return _maxBlood;
       }
       
-      public function set maxBlood(param1:int) : void
+      public function set maxBlood(value:int) : void
       {
-         _maxBlood = param1;
+         _maxBlood = value;
          dispatchEvent(new LivingEvent("maxHpChanged"));
       }
       
@@ -840,15 +842,15 @@ package gameCommon.model
          return _blood;
       }
       
-      public function set blood(param1:Number) : void
+      public function set blood(value:Number) : void
       {
-         _blood = param1 > maxBlood?maxBlood:param1;
+         _blood = value > maxBlood?maxBlood:value;
       }
       
-      public function initBlood(param1:int) : void
+      public function initBlood(value:int) : void
       {
-         blood = param1;
-         dispatchEvent(new LivingEvent("bloodChanged",param1,0,5));
+         blood = value;
+         dispatchEvent(new LivingEvent("bloodChanged",value,0,5));
       }
       
       public function get isFrozen() : Boolean
@@ -856,13 +858,13 @@ package gameCommon.model
          return _isFrozen;
       }
       
-      public function set isFrozen(param1:Boolean) : void
+      public function set isFrozen(value:Boolean) : void
       {
-         if(_isFrozen == param1)
+         if(_isFrozen == value)
          {
             return;
          }
-         _isFrozen = param1;
+         _isFrozen = value;
          dispatchEvent(new LivingEvent("forzenChanged"));
       }
       
@@ -871,11 +873,11 @@ package gameCommon.model
          return _isGemGlow;
       }
       
-      public function set isGemGlow(param1:Boolean) : void
+      public function set isGemGlow(i:Boolean) : void
       {
-         if(_isGemGlow != param1)
+         if(_isGemGlow != i)
          {
-            _isGemGlow = param1;
+            _isGemGlow = i;
             dispatchEvent(new LivingEvent("gemGlowChanged"));
          }
       }
@@ -885,13 +887,13 @@ package gameCommon.model
          return _gemDefense;
       }
       
-      public function set gemDefense(param1:Boolean) : void
+      public function set gemDefense(value:Boolean) : void
       {
-         if(_gemDefense == param1)
+         if(_gemDefense == value)
          {
             return;
          }
-         _gemDefense = param1;
+         _gemDefense = value;
          dispatchEvent(new LivingEvent("gemDefenseChanged"));
       }
       
@@ -908,13 +910,13 @@ package gameCommon.model
          return _isHidden;
       }
       
-      public function set isHidden(param1:Boolean) : void
+      public function set isHidden(value:Boolean) : void
       {
-         if(param1 == _isHidden)
+         if(value == _isHidden)
          {
             return;
          }
-         _isHidden = param1;
+         _isHidden = value;
          dispatchEvent(new LivingEvent("hiddenChanged"));
       }
       
@@ -923,13 +925,13 @@ package gameCommon.model
          return _removeStealth;
       }
       
-      public function set removeStealth(param1:Boolean) : void
+      public function set removeStealth(value:Boolean) : void
       {
-         if(_removeStealth == param1)
+         if(_removeStealth == value)
          {
             return;
          }
-         _removeStealth = param1;
+         _removeStealth = value;
          dispatchEvent(new LivingEvent("hiddenChanged"));
       }
       
@@ -938,14 +940,34 @@ package gameCommon.model
          return _isFog;
       }
       
-      public function set isFog(param1:Boolean) : void
+      public function set isFog(value:Boolean) : void
       {
-         if(param1 == _isFog)
+         if(value == _isFog)
          {
             return;
          }
-         _isFog = param1;
+         _isFog = value;
          dispatchEvent(new LivingEvent("hiddenChanged"));
+      }
+      
+      public function get backEffFog() : Boolean
+      {
+         return _backEffRadius > 0;
+      }
+      
+      public function set updateBackFog(value:Number) : void
+      {
+         if(_backEffRadius == value)
+         {
+            return;
+         }
+         _backEffRadius = value;
+         dispatchEvent(new LivingEvent("backEffectChange",_backEffRadius));
+      }
+      
+      public function get backEffRadius() : Number
+      {
+         return _backEffRadius;
       }
       
       public function get isRedSkull() : Boolean
@@ -953,13 +975,13 @@ package gameCommon.model
          return _isRedSkull;
       }
       
-      public function set isRedSkull(param1:Boolean) : void
+      public function set isRedSkull(value:Boolean) : void
       {
-         if(param1 == _isRedSkull)
+         if(value == _isRedSkull)
          {
             return;
          }
-         _isRedSkull = param1;
+         _isRedSkull = value;
          dispatchEvent(new LivingEvent("isRedSkullChange"));
       }
       
@@ -968,11 +990,11 @@ package gameCommon.model
          return _isNoNole;
       }
       
-      public function set isNoNole(param1:Boolean) : void
+      public function set isNoNole(val:Boolean) : void
       {
-         if(_isNoNole != param1)
+         if(_isNoNole != val)
          {
-            _isNoNole = param1;
+            _isNoNole = val;
             if(_isNoNole)
             {
                addBuff(BuffManager.creatBuff(5));
@@ -984,11 +1006,11 @@ package gameCommon.model
          }
       }
       
-      public function set LockState(param1:Boolean) : void
+      public function set LockState(val:Boolean) : void
       {
-         if(_lockState != param1)
+         if(_lockState != val)
          {
-            _lockState = param1;
+            _lockState = val;
             if(_lockState)
             {
                if(LockType == 1 || LockType == 2 || LockType == 3)
@@ -1008,9 +1030,9 @@ package gameCommon.model
          return _lockState;
       }
       
-      public function set LockType(param1:int) : void
+      public function set LockType(value:int) : void
       {
-         _lockType = param1;
+         _lockType = value;
       }
       
       public function get LockType() : int
@@ -1023,12 +1045,12 @@ package gameCommon.model
          return _isLiving;
       }
       
-      public function die(param1:Boolean = true) : void
+      public function die(withAction:Boolean = true) : void
       {
          if(_isLiving)
          {
             _isLiving = false;
-            dispatchEvent(new LivingEvent("die",0,0,param1));
+            dispatchEvent(new LivingEvent("die",0,0,withAction));
             _turnBuffs = new Vector.<FightBuffInfo>();
             dispatchEvent(new LivingEvent("buffChanged",0,0,0,null));
          }
@@ -1049,9 +1071,9 @@ package gameCommon.model
          return _playerAngle;
       }
       
-      public function set playerAngle(param1:Number) : void
+      public function set playerAngle(value:Number) : void
       {
-         _playerAngle = param1;
+         _playerAngle = value;
          dispatchEvent(new LivingEvent("angleChanged"));
       }
       
@@ -1060,9 +1082,9 @@ package gameCommon.model
          return _actionMovieName;
       }
       
-      public function set actionMovieName(param1:String) : void
+      public function set actionMovieName(value:String) : void
       {
-         _actionMovieName = param1;
+         _actionMovieName = value;
          _actionBonesMovieName = _actionMovieName.replace(/\./g,"_");
       }
       
@@ -1076,73 +1098,73 @@ package gameCommon.model
          return _isMoving;
       }
       
-      public function set isMoving(param1:Boolean) : void
+      public function set isMoving(value:Boolean) : void
       {
-         _isMoving = param1;
+         _isMoving = value;
       }
       
-      public function updateBlood(param1:Number, param2:int, param3:int = 0) : void
+      public function updateBlood(value:Number, type:int, addVlaue:int = 0) : void
       {
-         var _loc6_:Number = NaN;
-         var _loc5_:* = null;
-         var _loc4_:int = 0;
-         trace("actionMovieName:" + actionMovieName + ",ID:" + LivingID + ",type:" + param2 + ",value:" + param1 + ",addVlaue:" + param3);
+         var oldBlood:Number = NaN;
+         var buff:* = null;
+         var old:int = 0;
+         trace("actionMovieName:" + actionMovieName + ",ID:" + LivingID + ",type:" + type + ",value:" + value + ",addVlaue:" + addVlaue);
          LogManager.getInstance().sendLog(this.actionMovieName);
          if(!isLiving)
          {
             return;
          }
-         if(param2 == 3)
+         if(type == 3)
          {
-            _blood = param1;
-            dispatchEvent(new LivingEvent("bloodChanged",param1,_blood,param2,param3));
+            _blood = value;
+            dispatchEvent(new LivingEvent("bloodChanged",value,_blood,type,addVlaue));
          }
-         else if(param2 == 7)
+         else if(type == 7)
          {
-            _loc6_ = _blood;
-            _blood = _blood - param3;
-            dispatchEvent(new LivingEvent("bloodChanged",_blood,_loc6_,param2,param3));
+            oldBlood = _blood;
+            _blood = _blood - addVlaue;
+            dispatchEvent(new LivingEvent("bloodChanged",_blood,oldBlood,type,addVlaue));
          }
          else
          {
-            if(param2 == 12)
+            if(type == 12)
             {
-               param2 = 0;
+               type = 0;
                if(ModuleLoader.hasDefinition("asset.game.skill.effect.effect082"))
                {
                   showBuffEffect("asset.game.skill.effect.effect082",408);
                }
-               _loc5_ = getBuffByID(1435);
-               if(_loc5_ == null)
+               buff = getBuffByID(1435);
+               if(buff == null)
                {
-                  _loc5_ = getBuffByID(1514);
+                  buff = getBuffByID(1514);
                }
-               if(_loc5_ && param3 > 0)
+               if(buff && addVlaue > 0)
                {
-                  var _loc7_:* = _loc5_.Count - 1;
-                  _loc5_.Count = _loc7_;
-                  _loc5_.Count = Math.max(0,_loc7_);
-                  dispatchEvent(new LivingEvent("buffChanged",0,0,_loc5_.type,_loc5_));
-               }
-            }
-            if(_blood != param1 || GameControl.Instance.Current.gameMode == 17)
-            {
-               _loc4_ = _blood;
-               blood = param1;
-               if(param2 != 6 && _isLiving)
-               {
-                  dispatchEvent(new LivingEvent("bloodChanged",param1,_loc4_,param2,param3));
+                  var _loc7_:* = buff.Count - 1;
+                  buff.Count = _loc7_;
+                  buff.Count = Math.max(0,_loc7_);
+                  dispatchEvent(new LivingEvent("buffChanged",0,0,buff.type,buff));
                }
             }
-            else if(param2 == 0 && param1 >= _blood)
+            if(_blood != value || GameControl.Instance.Current.gameMode == 17)
             {
-               dispatchEvent(new LivingEvent("bloodChanged",param1,_blood,param2,param3));
+               old = _blood;
+               blood = value;
+               if(type != 6 && _isLiving)
+               {
+                  dispatchEvent(new LivingEvent("bloodChanged",value,old,type,addVlaue));
+               }
+            }
+            else if(type == 0 && value >= _blood)
+            {
+               dispatchEvent(new LivingEvent("bloodChanged",value,_blood,type,addVlaue));
             }
          }
          if(_blood <= 0)
          {
             _blood = 0;
-            die(param2 != 6);
+            die(type != 6);
          }
       }
       
@@ -1160,9 +1182,9 @@ package gameCommon.model
          _actionManager.traceAllRemainAction();
       }
       
-      public function act(param1:BaseAction) : void
+      public function act(action:BaseAction) : void
       {
-         _actionManager.act(param1);
+         _actionManager.act(action);
       }
       
       public function update() : void
@@ -1184,9 +1206,9 @@ package gameCommon.model
          _actionManager.clear();
       }
       
-      public function set actionMovieBitmap(param1:Bitmap) : void
+      public function set actionMovieBitmap(value:Bitmap) : void
       {
-         _actionMovie = param1;
+         _actionMovie = value;
       }
       
       public function get actionMovieBitmap() : Bitmap
@@ -1224,63 +1246,63 @@ package gameCommon.model
          return _currentShootList;
       }
       
-      public function shoot(param1:Array, param2:CrazyTankSocketEvent) : void
+      public function shoot(list:Array, event:CrazyTankSocketEvent) : void
       {
-         _currentShootList = param1;
-         dispatchEvent(new LivingEvent("shoot",0,0,param1,param2));
+         _currentShootList = list;
+         dispatchEvent(new LivingEvent("shoot",0,0,list,event));
       }
       
-      public function beat(param1:Array) : void
+      public function beat(arg:Array) : void
       {
-         dispatchEvent(new LivingEvent("beat",0,0,param1));
+         dispatchEvent(new LivingEvent("beat",0,0,arg));
       }
       
-      public function beatenBy(param1:Living) : void
+      public function beatenBy(attacker:Living) : void
       {
-         param1.addEventListener("beat",__beatenBy);
+         attacker.addEventListener("beat",__beatenBy);
       }
       
-      private function __beatenBy(param1:LivingEvent) : void
+      private function __beatenBy(evt:LivingEvent) : void
       {
-         var _loc5_:Living = param1.paras[1];
-         var _loc4_:int = param1.paras[2];
-         var _loc3_:int = param1.value;
-         var _loc2_:int = param1.paras[3];
+         var target:Living = evt.paras[1];
+         var damage:int = evt.paras[2];
+         var targetBlood:int = evt.value;
+         var targetAttackEffect:int = evt.paras[3];
          if(isLiving)
          {
             isHidden = false;
-            showAttackEffect(_loc2_);
-            updateBlood(_loc3_,3,_loc4_);
+            showAttackEffect(targetAttackEffect);
+            updateBlood(targetBlood,3,damage);
          }
       }
       
-      public function transmit(param1:Point) : void
+      public function transmit(pos:Point) : void
       {
-         if(_pos.equals(param1) == false)
+         if(_pos.equals(pos) == false)
          {
-            _pos = param1;
+            _pos = pos;
             dispatchEvent(new LivingEvent("posChanged"));
          }
       }
       
-      public function showAttackEffect(param1:int) : void
+      public function showAttackEffect(effectID:int) : void
       {
-         if(param1 > 0)
+         if(effectID > 0)
          {
-            dispatchEvent(new LivingEvent("showAttackEffect",0,0,param1));
+            dispatchEvent(new LivingEvent("showAttackEffect",0,0,effectID));
          }
       }
       
-      public function showDeadEffect(param1:String, param2:Function, param3:Object) : void
+      public function showDeadEffect(deadEffect:String, backFun:Function, argObj:Object) : void
       {
-         dispatchEvent(new LivingEvent("playDeadEffect",0,0,0,param1,param2,param3));
+         dispatchEvent(new LivingEvent("playDeadEffect",0,0,0,deadEffect,backFun,argObj));
       }
       
-      public function moveTo(param1:Number, param2:Point, param3:Number, param4:Boolean, param5:String = "", param6:int = 3, param7:String = "") : void
+      public function moveTo(type:Number, target:Point, dir:Number, isLiving:Boolean, action:String = "", speed:int = 3, endAction:String = "") : void
       {
          if(isPlayer() || _isLiving)
          {
-            if(param2.x > _pos.x)
+            if(target.x > _pos.x)
             {
                direction = 1;
             }
@@ -1288,32 +1310,32 @@ package gameCommon.model
             {
                direction = -1;
             }
-            dispatchEvent(new LivingEvent("moveTo",0,0,param1,param2,param3,param4,param5,param6,param7));
+            dispatchEvent(new LivingEvent("moveTo",0,0,type,target,dir,isLiving,action,speed,endAction));
          }
       }
       
-      public function changePos(param1:Point, param2:String = "") : void
+      public function changePos(target:Point, action:String = "") : void
       {
-         dispatchEvent(new LivingEvent("changePosition",0,0,param1));
+         dispatchEvent(new LivingEvent("changePosition",0,0,target));
       }
       
-      public function fallTo(param1:Point, param2:int, param3:String = "", param4:int = 0) : void
+      public function fallTo(pos:Point, speed:int, action:String = "", fallType:int = 0) : void
       {
-         dispatchEvent(new LivingEvent("fall",0,0,param1,param2,param3,param4));
+         dispatchEvent(new LivingEvent("fall",0,0,pos,speed,action,fallType));
       }
       
-      public function jumpTo(param1:Point, param2:int, param3:String = "", param4:int = 0) : void
+      public function jumpTo(pos:Point, speed:int, action:String = "", type:int = 0) : void
       {
-         dispatchEvent(new LivingEvent("jump",0,0,param1,param2,param3,param4));
+         dispatchEvent(new LivingEvent("jump",0,0,pos,speed,action,type));
       }
       
-      public function set State(param1:int) : void
+      public function set State(state:int) : void
       {
-         if(_state == param1)
+         if(_state == state)
          {
             return;
          }
-         _state = param1;
+         _state = state;
          dispatchEvent(new LivingEvent("changeState"));
       }
       
@@ -1322,24 +1344,24 @@ package gameCommon.model
          return _state;
       }
       
-      public function say(param1:String, param2:int = 0) : void
+      public function say(msg:String, type:int = 0) : void
       {
-         dispatchEvent(new LivingEvent("say",0,0,param1,param2));
+         dispatchEvent(new LivingEvent("say",0,0,msg,type));
       }
       
-      public function playMovie(param1:String, param2:Function = null, param3:Array = null) : void
+      public function playMovie(type:String, fun:Function = null, args:Array = null) : void
       {
-         dispatchEvent(new LivingEvent("playmovie",0,0,param1,param2,param3));
+         dispatchEvent(new LivingEvent("playmovie",0,0,type,fun,args));
       }
       
-      public function turnRotation(param1:int, param2:int, param3:String) : void
+      public function turnRotation(rota:int, speed:int, endPlay:String) : void
       {
-         dispatchEvent(new LivingEvent("turnrotation",0,0,param1,param2,param3));
+         dispatchEvent(new LivingEvent("turnrotation",0,0,rota,speed,endPlay));
       }
       
-      public function set defaultAction(param1:String) : void
+      public function set defaultAction(action:String) : void
       {
-         _defaultAction = param1;
+         _defaultAction = action;
          dispatchEvent(new LivingEvent("defaultActionChanged"));
       }
       
@@ -1353,12 +1375,12 @@ package gameCommon.model
          playMovie(_defaultAction);
       }
       
-      public function pick(param1:Object) : void
+      public function pick(box:Object) : void
       {
-         dispatchEvent(new LivingEvent("boxPick",0,0,param1));
+         dispatchEvent(new LivingEvent("boxPick",0,0,box));
       }
       
-      private function cmdX(param1:int) : void
+      private function cmdX(value:int) : void
       {
       }
       
@@ -1377,42 +1399,42 @@ package gameCommon.model
          _cmdList["x"] = cmdX;
       }
       
-      public function command(param1:String, param2:*) : Boolean
+      public function command(command:String, value:*) : Boolean
       {
-         if(commandList[param1])
+         if(commandList[command])
          {
-            commandList[param1](param2);
+            commandList[command](value);
          }
          return true;
       }
       
-      public function sendCommand(param1:String, param2:Object = null) : void
+      public function sendCommand(type:String, data:Object = null) : void
       {
          dispatchEvent(new LivingCommandEvent("someCommand"));
       }
       
-      public function setProperty(param1:String, param2:String) : void
+      public function setProperty(property:String, value:String) : void
       {
-         var _loc3_:StringObject = new StringObject(param2);
-         var _loc6_:* = param1;
+         var vo:StringObject = new StringObject(value);
+         var _loc6_:* = property;
          try
          {
-            if(_headTopAddIcon != null && _headTopAddIcon.hasKey(param1))
+            if(_headTopAddIcon != null && _headTopAddIcon.hasKey(property))
             {
-               this["skillEffectPic"] = new StringObject(_headTopAddIcon[param1] + "|" + _loc3_.getBoolean());
+               this["skillEffectPic"] = new StringObject(_headTopAddIcon[property] + "|" + vo.getBoolean());
                return;
             }
-            if(_loc3_.isBoolean)
+            if(vo.isBoolean)
             {
-               this[param1] = _loc3_.getBoolean();
+               this[property] = vo.getBoolean();
                return;
             }
-            if(_loc3_.isInt)
+            if(vo.isInt)
             {
-               this[param1] = _loc3_.getInt();
+               this[property] = vo.getInt();
                return;
             }
-            this[param1] = _loc3_;
+            this[property] = vo;
          }
          catch(e:Error)
          {
@@ -1420,10 +1442,10 @@ package gameCommon.model
          }
       }
       
-      public function set markMeHide(param1:Boolean) : void
+      public function set markMeHide(value:Boolean) : void
       {
-         this._markMeHide = param1;
-         dispatchEvent(new LivingEvent("addSkillBuffBar",0,0,21590,param1));
+         this._markMeHide = value;
+         dispatchEvent(new LivingEvent("addSkillBuffBar",0,0,21590,value));
       }
       
       public function get markMeHide() : Boolean
@@ -1431,9 +1453,9 @@ package gameCommon.model
          return this._markMeHide;
       }
       
-      public function set markMeHideDest(param1:Boolean) : void
+      public function set markMeHideDest(value:Boolean) : void
       {
-         this._markMeHideDest = param1;
+         this._markMeHideDest = value;
          dispatchEvent(new LivingEvent("mark_me_hide_dest"));
       }
       
@@ -1447,50 +1469,50 @@ package gameCommon.model
          dispatchEvent(new LivingEvent("bombed"));
       }
       
-      public function showEffect(param1:String) : void
+      public function showEffect(name:String) : void
       {
-         dispatchEvent(new LivingEvent("playskillMovie",0,0,param1));
+         dispatchEvent(new LivingEvent("playskillMovie",0,0,name));
       }
       
-      public function showBuffEffect(param1:String, param2:int) : void
+      public function showBuffEffect(name:String, id:int) : void
       {
-         dispatchEvent(new LivingEvent("playContinuousEffect",0,0,param1,param2));
+         dispatchEvent(new LivingEvent("playContinuousEffect",0,0,name,id));
       }
       
-      public function removeBuffEffect(param1:int) : void
+      public function removeBuffEffect(id:int) : void
       {
-         dispatchEvent(new LivingEvent("removeContinuousEffect",0,0,param1));
+         dispatchEvent(new LivingEvent("removeContinuousEffect",0,0,id));
       }
       
-      public function removeSkillMovie(param1:int) : void
+      public function removeSkillMovie(id:int) : void
       {
-         dispatchEvent(new LivingEvent("removeSkillMovie",0,0,param1));
+         dispatchEvent(new LivingEvent("removeSkillMovie",0,0,id));
       }
       
-      public function applySkill(param1:int, ... rest) : void
+      public function applySkill(skill:int, ... args) : void
       {
-         var _loc3_:* = null;
-         if(rest == null || rest.length == 0)
+         var evt:* = null;
+         if(args == null || args.length == 0)
          {
-            _loc3_ = new LivingEvent("applySkill",0,0,param1);
+            evt = new LivingEvent("applySkill",0,0,skill);
          }
-         else if(rest.length == 1)
+         else if(args.length == 1)
          {
-            _loc3_ = new LivingEvent("applySkill",0,0,param1,rest[0]);
+            evt = new LivingEvent("applySkill",0,0,skill,args[0]);
          }
-         else if(rest.length == 2)
+         else if(args.length == 2)
          {
-            _loc3_ = new LivingEvent("applySkill",0,0,param1,rest[0],rest[1]);
+            evt = new LivingEvent("applySkill",0,0,skill,args[0],args[1]);
          }
-         else if(rest.length == 3)
+         else if(args.length == 3)
          {
-            _loc3_ = new LivingEvent("applySkill",0,0,param1,rest[0],rest[1],rest[2]);
+            evt = new LivingEvent("applySkill",0,0,skill,args[0],args[1],args[2]);
          }
-         else if(rest.length == 4)
+         else if(args.length == 4)
          {
-            _loc3_ = new LivingEvent("applySkill",0,0,param1,rest[0],rest[1],rest[2],rest[3]);
+            evt = new LivingEvent("applySkill",0,0,skill,args[0],args[1],args[2],args[3]);
          }
-         dispatchEvent(_loc3_);
+         dispatchEvent(evt);
       }
       
       public function get shootInterval() : int
@@ -1498,9 +1520,9 @@ package gameCommon.model
          return _shootInterval;
       }
       
-      public function set shootInterval(param1:int) : void
+      public function set shootInterval(value:int) : void
       {
-         _shootInterval = param1;
+         _shootInterval = value;
       }
       
       public function get maxPsychic() : int
@@ -1513,11 +1535,11 @@ package gameCommon.model
          return _psychic >= 0?_psychic:0;
       }
       
-      public function set psychic(param1:int) : void
+      public function set psychic(val:int) : void
       {
-         if(_psychic != param1 && param1 <= maxPsychic)
+         if(_psychic != val && val <= maxPsychic)
          {
-            _psychic = param1;
+            _psychic = val;
             dispatchEvent(new LivingEvent("psychicChanged"));
          }
       }
@@ -1527,11 +1549,11 @@ package gameCommon.model
          return _energy;
       }
       
-      public function set energy(param1:Number) : void
+      public function set energy(value:Number) : void
       {
-         if(param1 != _energy && param1 <= maxEnergy)
+         if(value != _energy && value <= maxEnergy)
          {
-            _energy = param1 >= 0?param1:0;
+            _energy = value >= 0?value:0;
             dispatchEvent(new LivingEvent("energyChanged"));
          }
       }
@@ -1541,9 +1563,9 @@ package gameCommon.model
          return _forbidMoving;
       }
       
-      public function set forbidMoving(param1:Boolean) : void
+      public function set forbidMoving(value:Boolean) : void
       {
-         _forbidMoving = param1;
+         _forbidMoving = value;
       }
       
       public function get thumbnail() : BitmapData
@@ -1551,18 +1573,18 @@ package gameCommon.model
          return _thumbnail;
       }
       
-      public function set thumbnail(param1:BitmapData) : void
+      public function set thumbnail(value:BitmapData) : void
       {
          if(_thumbnail != null)
          {
             _thumbnail.dispose();
          }
-         _thumbnail = param1;
+         _thumbnail = value;
       }
       
-      public function set currentAction(param1:String) : void
+      public function set currentAction(value:String) : void
       {
-         _currentAction = param1;
+         _currentAction = value;
       }
       
       public function get currentAction() : String
@@ -1575,9 +1597,9 @@ package gameCommon.model
          return _damageNum;
       }
       
-      public function set damageNum(param1:int) : void
+      public function set damageNum(value:int) : void
       {
-         _damageNum = param1;
+         _damageNum = value;
       }
       
       public function get templeId() : int
@@ -1590,30 +1612,30 @@ package gameCommon.model
          return _turnCount;
       }
       
-      public function set turnCount(param1:int) : void
+      public function set turnCount(value:int) : void
       {
-         if(_turnCount == param1)
+         if(_turnCount == value)
          {
             return;
          }
-         _turnCount = param1;
+         _turnCount = value;
       }
       
-      public function set skillEffectPic(param1:StringObject) : void
+      public function set skillEffectPic(value:StringObject) : void
       {
-         var _loc2_:Array = param1.getData.split("|");
-         _skillBuffIcon = _loc2_[0];
-         _iconState = _loc2_[1] == "true";
+         var data:Array = value.getData.split("|");
+         _skillBuffIcon = data[0];
+         _iconState = data[1] == "true";
          dispatchEvent(new LivingEvent("addSkillBuffBar",0,0,_skillBuffIcon,_iconState));
       }
       
-      public function set showSolidIce(param1:Boolean) : void
+      public function set showSolidIce(value:Boolean) : void
       {
-         if(_showSolidIce == param1)
+         if(_showSolidIce == value)
          {
             return;
          }
-         _showSolidIce = param1;
+         _showSolidIce = value;
          dispatchEvent(new LivingEvent("solidiceStateChanged"));
       }
       
@@ -1622,14 +1644,14 @@ package gameCommon.model
          return _showSolidIce;
       }
       
-      public function set isDamageAverageState(param1:Boolean) : void
+      public function set isDamageAverageState(value:Boolean) : void
       {
-         if(_isDamageAverageState == param1)
+         if(_isDamageAverageState == value)
          {
             return;
          }
-         _isDamageAverageState = param1;
-         dispatchEvent(new LivingEvent("addSkillBuffBar",0,0,_damageId,param1));
+         _isDamageAverageState = value;
+         dispatchEvent(new LivingEvent("addSkillBuffBar",0,0,_damageId,value));
       }
       
       public function get isDamageAverageState() : Boolean
@@ -1637,14 +1659,14 @@ package gameCommon.model
          return _isDamageAverageState;
       }
       
-      public function set isNotSkillHeathState(param1:Boolean) : void
+      public function set isNotSkillHeathState(value:Boolean) : void
       {
-         if(_isNotSkillHeathState == param1)
+         if(_isNotSkillHeathState == value)
          {
             return;
          }
-         _isNotSkillHeathState = param1;
-         dispatchEvent(new LivingEvent("addSkillBuffBar",0,0,_despairId,param1));
+         _isNotSkillHeathState = value;
+         dispatchEvent(new LivingEvent("addSkillBuffBar",0,0,_despairId,value));
       }
       
       public function get isNotSkillHeathState() : Boolean
@@ -1652,16 +1674,16 @@ package gameCommon.model
          return _isNotSkillHeathState;
       }
       
-      public function set isRemoveStealth(param1:Boolean) : void
+      public function set isRemoveStealth(value:Boolean) : void
       {
-         dispatchEvent(new LivingEvent("addSkillBuffBar",0,0,_eyeId,param1));
+         dispatchEvent(new LivingEvent("addSkillBuffBar",0,0,_eyeId,value));
          if(this.isSelf)
          {
-            if(_isRemoveStealth == param1)
+            if(_isRemoveStealth == value)
             {
                return;
             }
-            _isRemoveStealth = param1;
+            _isRemoveStealth = value;
             dispatchEvent(new LivingEvent("targetStealthStateChanged"));
          }
       }
@@ -1671,12 +1693,12 @@ package gameCommon.model
          return _isRemoveStealth;
       }
       
-      public function set showDisturb(param1:Boolean) : void
+      public function set showDisturb(value:Boolean) : void
       {
-         dispatchEvent(new LivingEvent("addSkillBuffBar",0,0,20500,param1));
+         dispatchEvent(new LivingEvent("addSkillBuffBar",0,0,20500,value));
          if(isSelf)
          {
-            _showDisturb = param1;
+            _showDisturb = value;
             dispatchEvent(new LivingEvent("DisturbStateChanged"));
          }
       }
@@ -1686,14 +1708,14 @@ package gameCommon.model
          return _showDisturb;
       }
       
-      public function set notHasFairBattleSkill(param1:Boolean) : void
+      public function set notHasFairBattleSkill(value:Boolean) : void
       {
          if(isLiving)
          {
-            dispatchEvent(new LivingEvent("addSkillBuffBar",0,0,5,param1));
+            dispatchEvent(new LivingEvent("addSkillBuffBar",0,0,5,value));
             if(isSelf)
             {
-               _notHasFairBattleSkill = param1;
+               _notHasFairBattleSkill = value;
                dispatchEvent(new LivingEvent("notUseBattleSkill"));
             }
          }
@@ -1704,14 +1726,14 @@ package gameCommon.model
          return _notHasFairBattleSkill;
       }
       
-      public function set noUseCritical(param1:Boolean) : void
+      public function set noUseCritical(value:Boolean) : void
       {
          if(isLiving)
          {
-            dispatchEvent(new LivingEvent("addSkillBuffBar",0,0,21580,param1));
+            dispatchEvent(new LivingEvent("addSkillBuffBar",0,0,21580,value));
             if(isSelf)
             {
-               _noUseCritical = param1;
+               _noUseCritical = value;
                dispatchEvent(new LivingEvent("enableSpellKill"));
             }
          }

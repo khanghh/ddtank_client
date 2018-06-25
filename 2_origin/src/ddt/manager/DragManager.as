@@ -62,31 +62,31 @@ package ddt.manager
          return _isDraging;
       }
       
-      public static function startDrag(param1:IDragable, param2:Object, param3:DisplayObject, param4:int, param5:int, param6:String = "none", param7:Boolean = true, param8:Boolean = false, param9:Boolean = false, param10:Boolean = false, param11:Boolean = false, param12:DisplayObject = null, param13:int = 0, param14:Boolean = false) : Boolean
+      public static function startDrag(source:IDragable, data:Object, image:DisplayObject, stageX:int, stageY:int, action:String = "none", mouseMask:Boolean = true, mouseDown:Boolean = false, throughAll:Boolean = false, passSelf:Boolean = false, isUpDrag:Boolean = false, responseRetangle:DisplayObject = null, responseRange:int = 0, isContinue:Boolean = false) : Boolean
       {
-         if(!_isDraging && param3)
+         if(!_isDraging && image)
          {
-            _responseRectangle = param12;
-            _responseRange = param13;
-            _isContinue = param14;
-            _passSelf = param10;
-            _isUpDrag = param11;
+            _responseRectangle = responseRetangle;
+            _responseRange = responseRange;
+            _isContinue = isContinue;
+            _passSelf = passSelf;
+            _isUpDrag = isUpDrag;
             _isDraging = true;
             _proxy = new Sprite();
-            param3.x = -param3.width / 2;
-            param3.y = -param3.height / 2;
-            _proxy.addChild(param3);
+            image.x = -image.width / 2;
+            image.y = -image.height / 2;
+            _proxy.addChild(image);
             InGameCursor.hide();
-            _proxy.x = param4;
-            _proxy.y = param5;
-            _proxy.mouseEnabled = param7;
+            _proxy.x = stageX;
+            _proxy.y = stageY;
+            _proxy.mouseEnabled = mouseMask;
             _proxy.mouseChildren = false;
             _proxy.startDrag();
-            _throughAll = param9;
-            _dragEffect = new DragEffect(param1.getSource(),param2,param6);
-            _source = param1;
+            _throughAll = throughAll;
+            _dragEffect = new DragEffect(source.getSource(),data,action);
+            _source = source;
             LayerManager.Instance.addToLayer(_proxy,1);
-            if(param7)
+            if(mouseMask)
             {
                _proxy.addEventListener("click",__stopDrag);
                _proxy.addEventListener("mouseUp",__upDrag);
@@ -94,7 +94,7 @@ package ddt.manager
             }
             else
             {
-               if(!param8)
+               if(!mouseDown)
                {
                   _proxy.stage.addEventListener("mouseDown",__stageMouseDown,true);
                }
@@ -112,24 +112,24 @@ package ddt.manager
          return false;
       }
       
-      protected static function __checkResponse(param1:Event) : void
+      protected static function __checkResponse(event:Event) : void
       {
-         var _loc4_:Boolean = _proxy.stage.mouseY > _responseRectangle.y && _proxy.stage.mouseY < _responseRectangle.y + _responseRange;
-         var _loc2_:Boolean = _proxy.stage.mouseY > _responseRectangle.y + _responseRectangle.height - _responseRange && _proxy.stage.mouseY < _responseRectangle.y + _responseRectangle.height;
-         var _loc3_:Boolean = _proxy.stage.mouseX > _responseRectangle.x && _proxy.stage.mouseX < _responseRectangle.x + _responseRectangle.width;
-         if(_loc4_ && _loc3_)
+         var top:Boolean = _proxy.stage.mouseY > _responseRectangle.y && _proxy.stage.mouseY < _responseRectangle.y + _responseRange;
+         var bottom:Boolean = _proxy.stage.mouseY > _responseRectangle.y + _responseRectangle.height - _responseRange && _proxy.stage.mouseY < _responseRectangle.y + _responseRectangle.height;
+         var bx:Boolean = _proxy.stage.mouseX > _responseRectangle.x && _proxy.stage.mouseX < _responseRectangle.x + _responseRectangle.width;
+         if(top && bx)
          {
             _responseRectangle.dispatchEvent(new Event("dragInRangeTop"));
          }
-         else if(_loc2_ && _loc3_)
+         else if(bottom && bx)
          {
             _responseRectangle.dispatchEvent(new Event("dragOutRangeButtom"));
          }
       }
       
-      public static function ListenWheelEvent(param1:Function) : void
+      public static function ListenWheelEvent(Fun:Function) : void
       {
-         _wheelFun = param1;
+         _wheelFun = Fun;
       }
       
       public static function removeListenWheelEvent() : void
@@ -138,29 +138,29 @@ package ddt.manager
          _changCardStateFun = null;
       }
       
-      private static function __dispatchWheel(param1:MouseEvent) : void
+      private static function __dispatchWheel(event:MouseEvent) : void
       {
          if(_passSelf && _wheelFun != null)
          {
-            _wheelFun(param1);
+            _wheelFun(event);
          }
       }
       
-      public static function changeCardState(param1:Function) : void
+      public static function changeCardState(Fun:Function) : void
       {
-         _changCardStateFun = param1;
+         _changCardStateFun = Fun;
       }
       
-      private static function __stageMouseDown(param1:Event) : void
+      private static function __stageMouseDown(e:Event) : void
       {
-         param1.stopImmediatePropagation();
+         e.stopImmediatePropagation();
          if(_proxy.stage)
          {
             _proxy.stage.removeEventListener("mouseDown",__stageMouseDown,true);
          }
       }
       
-      private static function __removeFromStage(param1:Event) : void
+      private static function __removeFromStage(event:Event) : void
       {
          _proxy.removeEventListener("click",__stopDrag);
          _proxy.removeEventListener("mouseUp",__upDrag);
@@ -175,37 +175,37 @@ package ddt.manager
          acceptDrag(null);
       }
       
-      public static function __upDrag(param1:MouseEvent) : void
+      public static function __upDrag(event:MouseEvent) : void
       {
          if(_isUpDrag)
          {
-            __stopDrag(param1);
+            __stopDrag(event);
          }
       }
       
-      private static function __stopDrag(param1:MouseEvent) : void
+      private static function __stopDrag(evt:MouseEvent) : void
       {
-         var _loc6_:* = null;
-         var _loc7_:* = null;
-         var _loc2_:Boolean = false;
-         var _loc9_:Boolean = false;
-         var _loc5_:* = null;
-         var _loc3_:Boolean = false;
-         var _loc4_:* = null;
+         var list:* = null;
+         var _stage:* = null;
+         var ex:Boolean = false;
+         var isDragdrop:Boolean = false;
+         var temp:* = null;
+         var flag:Boolean = false;
+         var ad:* = null;
          try
          {
             if(_passSelf && _changCardStateFun != null)
             {
                _changCardStateFun();
             }
-            _loc6_ = _proxy.stage.getObjectsUnderPoint(new Point(param1.stageX,param1.stageY));
-            _loc7_ = _proxy.stage;
-            _loc2_ = true;
+            list = _proxy.stage.getObjectsUnderPoint(new Point(evt.stageX,evt.stageY));
+            _stage = _proxy.stage;
+            ex = true;
             InGameCursor.show();
-            if(_loc7_)
+            if(_stage)
             {
-               _loc7_.removeEventListener("click",__stopDrag);
-               _loc7_.removeEventListener("mouseUp",__upDrag);
+               _stage.removeEventListener("click",__stopDrag);
+               _stage.removeEventListener("mouseUp",__upDrag);
             }
             _proxy.removeEventListener("click",__stopDrag);
             _proxy.removeEventListener("mouseUp",__upDrag);
@@ -215,57 +215,57 @@ package ddt.manager
             {
                _proxy.removeEventListener("enterFrame",__checkResponse);
             }
-            param1.stopImmediatePropagation();
+            evt.stopImmediatePropagation();
             if(_proxy.parent)
             {
                _proxy.parent.removeChild(_proxy);
             }
-            _loc6_ = _loc6_.reverse();
-            _loc9_ = false;
+            list = list.reverse();
+            isDragdrop = false;
             var _loc12_:int = 0;
-            var _loc11_:* = _loc6_;
-            for each(var _loc8_ in _loc6_)
+            var _loc11_:* = list;
+            for each(var ds in list)
             {
-               if(!_proxy.contains(_loc8_))
+               if(!_proxy.contains(ds))
                {
-                  _loc5_ = _loc8_;
-                  _loc3_ = false;
-                  while(_loc5_ && _loc5_ != _loc7_)
+                  temp = ds;
+                  flag = false;
+                  while(temp && temp != _stage)
                   {
-                     if(!_passSelf && _loc5_ == _source)
+                     if(!_passSelf && temp == _source)
                      {
                         _dragEffect.action = "none";
-                        _loc3_ = true;
+                        flag = true;
                         break;
                      }
-                     _loc4_ = _loc5_ as IAcceptDrag;
-                     if(_loc4_)
+                     ad = temp as IAcceptDrag;
+                     if(ad)
                      {
-                        if(_loc2_)
+                        if(ex)
                         {
-                           _loc4_.dragDrop(_dragEffect);
-                           _loc9_ = true;
+                           ad.dragDrop(_dragEffect);
+                           isDragdrop = true;
                            if(_throughAll == false)
                            {
-                              _loc2_ = false;
+                              ex = false;
                            }
                         }
                         if(!_isDraging)
                         {
-                           _loc3_ = true;
+                           flag = true;
                            break;
                         }
                      }
-                     _loc5_ = _loc5_.parent;
+                     temp = temp.parent;
                   }
-                  if(!_loc3_)
+                  if(!flag)
                   {
                      continue;
                   }
                   break;
                }
             }
-            if(!_isContinue || !_loc9_)
+            if(!_isContinue || !isDragdrop)
             {
                ObjectUtils.disposeAllChildren(_proxy);
             }
@@ -279,19 +279,19 @@ package ddt.manager
          }
       }
       
-      public static function acceptDrag(param1:IAcceptDrag, param2:String = null) : void
+      public static function acceptDrag(target:IAcceptDrag, action:String = null) : void
       {
          _isDraging = false;
-         var _loc4_:IDragable = _source;
-         var _loc3_:DragEffect = _dragEffect;
+         var source:IDragable = _source;
+         var effect:DragEffect = _dragEffect;
          try
          {
-            _loc3_.target = param1;
-            if(param2)
+            effect.target = target;
+            if(action)
             {
-               _loc3_.action = param2;
+               effect.action = action;
             }
-            _loc4_.dragStop(_loc3_);
+            source.dragStop(effect);
          }
          catch(e:Error)
          {

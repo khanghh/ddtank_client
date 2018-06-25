@@ -34,13 +34,13 @@ package com.pickgliss.ui.controls
          super();
       }
       
-      public function set backgoundInnerRectString(param1:String) : void
+      public function set backgoundInnerRectString(value:String) : void
       {
-         if(_backgoundInnerRectString == param1)
+         if(_backgoundInnerRectString == value)
          {
             return;
          }
-         _backgoundInnerRectString = param1;
+         _backgoundInnerRectString = value;
          _backgoundInnerRect = ClassUtils.CreatInstance("com.pickgliss.geom.InnerRectangle",ComponentFactory.parasArgs(_backgoundInnerRectString));
          onPropertiesChanged("backOuterRect");
       }
@@ -60,13 +60,13 @@ package com.pickgliss.ui.controls
          return _text;
       }
       
-      public function set text(param1:String) : void
+      public function set text(value:String) : void
       {
-         if(_text == param1)
+         if(_text == value)
          {
             return;
          }
-         _text = param1;
+         _text = value;
          onPropertiesChanged("text");
       }
       
@@ -75,24 +75,24 @@ package com.pickgliss.ui.controls
          return _textField;
       }
       
-      public function set textField(param1:TextField) : void
+      public function set textField(f:TextField) : void
       {
-         if(_textField == param1)
+         if(_textField == f)
          {
             return;
          }
          ObjectUtils.disposeObject(_textField);
-         _textField = param1;
+         _textField = f;
          onPropertiesChanged("textField");
       }
       
-      public function set textStyle(param1:String) : void
+      public function set textStyle(stylename:String) : void
       {
-         if(_textStyle == param1)
+         if(_textStyle == stylename)
          {
             return;
          }
-         _textStyle = param1;
+         _textStyle = stylename;
          textField = ComponentFactory.Instance.creat(_textStyle);
       }
       
@@ -107,7 +107,7 @@ package com.pickgliss.ui.controls
       
       override protected function onProppertiesUpdate() : void
       {
-         var _loc1_:* = null;
+         var rectangle:* = null;
          super.onProppertiesUpdate();
          if(_textField == null)
          {
@@ -116,11 +116,11 @@ package com.pickgliss.ui.controls
          _textField.text = _text;
          if(_autoSizeAble)
          {
-            _loc1_ = _backgoundInnerRect.getInnerRect(_textField.textWidth,_textField.textHeight);
-            var _loc2_:* = _loc1_.width;
+            rectangle = _backgoundInnerRect.getInnerRect(_textField.textWidth,_textField.textHeight);
+            var _loc2_:* = rectangle.width;
             _back.width = _loc2_;
             _width = _loc2_;
-            _loc2_ = _loc1_.height;
+            _loc2_ = rectangle.height;
             _back.height = _loc2_;
             _height = _loc2_;
             _textField.x = _backgoundInnerRect.para1;
@@ -135,10 +135,10 @@ package com.pickgliss.ui.controls
          }
       }
       
-      override public function setFrame(param1:int) : void
+      override public function setFrame(frameIndex:int) : void
       {
-         super.setFrame(param1);
-         DisplayUtils.setFrame(_textField,param1);
+         super.setFrame(frameIndex);
+         DisplayUtils.setFrame(_textField,frameIndex);
       }
    }
 }

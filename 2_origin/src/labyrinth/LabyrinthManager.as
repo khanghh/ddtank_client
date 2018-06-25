@@ -25,9 +25,9 @@ package labyrinth
       
       private var _model:LabyrinthModel;
       
-      public function LabyrinthManager(param1:IEventDispatcher = null)
+      public function LabyrinthManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
          _model = new LabyrinthModel();
          initEvent();
       }
@@ -48,62 +48,61 @@ package labyrinth
          SocketManager.Instance.addEventListener(PkgEvent.format(131,3),__onRemainCleanOutTime);
       }
       
-      protected function __onRemainCleanOutTime(param1:PkgEvent) : void
+      protected function __onRemainCleanOutTime(event:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readInt();
-         _model.sType = _loc2_;
-         _model.remainTime = _loc3_.readInt();
-         _model.currentRemainTime = _loc3_.readInt();
+         var pkg:PackageIn = event.pkg;
+         var selectedType:int = pkg.readInt();
+         _model.sType = selectedType;
+         _model.remainTime = pkg.readInt();
+         _model.currentRemainTime = pkg.readInt();
          dispatchEvent(new Event("updateRemainTime"));
       }
       
-      protected function __onUpdataCleanOutInfo(param1:PkgEvent) : void
+      protected function __onUpdataCleanOutInfo(event:PkgEvent) : void
       {
-         var _loc6_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readInt();
-         var _loc7_:CleanOutInfo = new CleanOutInfo();
-         _loc7_.FamRaidLevel = _loc3_.readInt();
-         _loc7_.exp = _loc3_.readInt();
-         var _loc5_:int = _loc3_.readInt();
-         _loc6_ = 0;
-         while(_loc6_ < _loc5_)
+         var i:int = 0;
+         var obj:* = null;
+         var pkg:PackageIn = event.pkg;
+         var selectedType:int = pkg.readInt();
+         var info:CleanOutInfo = new CleanOutInfo();
+         info.FamRaidLevel = pkg.readInt();
+         info.exp = pkg.readInt();
+         var len:int = pkg.readInt();
+         for(i = 0; i < len; )
          {
-            _loc4_ = {};
-            _loc4_["TemplateID"] = _loc3_.readInt();
-            _loc4_["num"] = _loc3_.readInt();
-            _loc7_.TemplateIDs.push(_loc4_);
-            _loc6_++;
+            obj = {};
+            obj["TemplateID"] = pkg.readInt();
+            obj["num"] = pkg.readInt();
+            info.TemplateIDs.push(obj);
+            i++;
          }
-         _loc7_.HardCurrency = _loc3_.readInt();
-         if(_model.cleanOutInfos[_loc7_.FamRaidLevel])
+         info.HardCurrency = pkg.readInt();
+         if(_model.cleanOutInfos[info.FamRaidLevel])
          {
-            _model.cleanOutInfos.remove(_loc7_.FamRaidLevel);
-            delete _model.cleanOutInfos[_loc7_.FamRaidLevel];
+            _model.cleanOutInfos.remove(info.FamRaidLevel);
+            delete _model.cleanOutInfos[info.FamRaidLevel];
          }
-         _model.sType = _loc2_;
-         _model.cleanOutInfos.add(_loc7_.FamRaidLevel,_loc7_);
+         _model.sType = selectedType;
+         _model.cleanOutInfos.add(info.FamRaidLevel,info);
       }
       
-      protected function __onUpdataInfo(param1:PkgEvent) : void
+      protected function __onUpdataInfo(event:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readInt();
-         _model.sType = _loc2_;
-         _model.myProgress = _loc3_.readInt();
-         _model.currentFloor = _loc3_.readInt();
-         _model.completeChallenge = _loc3_.readBoolean();
-         _model.remainTime = _loc3_.readInt();
-         _model.accumulateExp = _loc3_.readInt();
-         _model.cleanOutAllTime = _loc3_.readInt();
-         _model.cleanOutGold = _loc3_.readInt();
-         _model.myRanking = _loc3_.readInt();
-         _model.isDoubleAward = _loc3_.readBoolean();
-         _model.isInGame = _loc3_.readBoolean();
-         _model.isCleanOut = _loc3_.readBoolean();
-         _model.serverMultiplyingPower = _loc3_.readBoolean();
+         var pkg:PackageIn = event.pkg;
+         var selectedType:int = pkg.readInt();
+         _model.sType = selectedType;
+         _model.myProgress = pkg.readInt();
+         _model.currentFloor = pkg.readInt();
+         _model.completeChallenge = pkg.readBoolean();
+         _model.remainTime = pkg.readInt();
+         _model.accumulateExp = pkg.readInt();
+         _model.cleanOutAllTime = pkg.readInt();
+         _model.cleanOutGold = pkg.readInt();
+         _model.myRanking = pkg.readInt();
+         _model.isDoubleAward = pkg.readBoolean();
+         _model.isInGame = pkg.readBoolean();
+         _model.isCleanOut = pkg.readBoolean();
+         _model.serverMultiplyingPower = pkg.readBoolean();
          dispatchEvent(new Event("updateInfo"));
       }
       
@@ -122,9 +121,9 @@ package labyrinth
          return _model;
       }
       
-      public function set model(param1:LabyrinthModel) : void
+      public function set model(value:LabyrinthModel) : void
       {
-         _model = param1;
+         _model = value;
       }
       
       public function chat() : void

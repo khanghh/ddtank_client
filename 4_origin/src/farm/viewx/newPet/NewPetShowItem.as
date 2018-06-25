@@ -8,9 +8,9 @@ package farm.viewx.newPet
    {
        
       
-      public function NewPetShowItem(param1:PetInfo)
+      public function NewPetShowItem(info:PetInfo)
       {
-         super(param1);
+         super(info);
       }
       
       override protected function initView() : void

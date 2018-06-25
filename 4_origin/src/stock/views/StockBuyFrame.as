@@ -16,10 +16,10 @@ package stock.views
       
       private var _cnt:int = 0;
       
-      public function StockBuyFrame(param1:int)
+      public function StockBuyFrame(stockID:int)
       {
          super();
-         data = StockMgr.inst.model.stocks[param1];
+         data = StockMgr.inst.model.stocks[stockID];
          radioGroup.selectedIndex = 0;
       }
       
@@ -39,7 +39,7 @@ package stock.views
          btnBuy.clickHandler = new Handler(buy);
       }
       
-      private function select(param1:int) : void
+      private function select(index:int) : void
       {
          numStep.maxValue = Math.min(_data.maxBuyNum,Math.floor((radioGroup.selectedIndex == 0?StockMgr.inst.model.stockAccoutData.validLoan:int(StockMgr.inst.model.stockAccoutData.fund)) / _data.price));
          updateCost();
@@ -61,35 +61,35 @@ package stock.views
          super.dispose();
       }
       
-      private function change(param1:int) : void
+      private function change(value:int) : void
       {
-         _cnt = param1;
+         _cnt = value;
          updateCost();
       }
       
       private function updateCost() : void
       {
-         var _loc1_:int = _cnt * _data.price;
+         var cost:int = _cnt * _data.price;
          if(radioGroup.selectedIndex == 0)
          {
-            lablLoan.text = _loc1_.toString();
+            lablLoan.text = cost.toString();
             lablFund.text = "0";
          }
          else
          {
-            lablFund.text = _loc1_.toString();
+            lablFund.text = cost.toString();
             lablLoan.text = "0";
          }
       }
       
-      public function set data(param1:StockData) : void
+      public function set data(value:StockData) : void
       {
-         if(!param1)
+         if(!value)
          {
             return;
          }
-         _data = param1;
-         numStep.maxValue = Math.min(param1.maxBuyNum,Math.floor((radioGroup.selectedIndex == 0?StockMgr.inst.model.stockAccoutData.validLoan:int(StockMgr.inst.model.stockAccoutData.fund)) / param1.price));
+         _data = value;
+         numStep.maxValue = Math.min(value.maxBuyNum,Math.floor((radioGroup.selectedIndex == 0?StockMgr.inst.model.stockAccoutData.validLoan:int(StockMgr.inst.model.stockAccoutData.fund)) / value.price));
          numStep.numValue = 1;
          lablID.text = _data.StockID.toString();
          lablName.text = _data.StockName;

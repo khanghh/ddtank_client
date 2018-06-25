@@ -57,11 +57,11 @@ package beadSystem.views
          }
       }
       
-      public function update(param1:DictionaryData) : void
+      public function update(info:DictionaryData) : void
       {
          if(_leftView)
          {
-            _leftView.beadInfos = param1;
+            _leftView.beadInfos = info;
          }
       }
       
@@ -70,9 +70,9 @@ package beadSystem.views
          _rightView.refresh();
       }
       
-      public function set curPageIndex(param1:int) : void
+      public function set curPageIndex(value:int) : void
       {
-         _curPageIndex = param1;
+         _curPageIndex = value;
       }
       
       public function get curPageIndex() : int
@@ -80,10 +80,10 @@ package beadSystem.views
          return _curPageIndex;
       }
       
-      public function selectChangeHandler(param1:CEvent) : void
+      public function selectChangeHandler(evt:CEvent) : void
       {
-         var _loc2_:AdvanceBeadInfo = param1.data as AdvanceBeadInfo;
-         _rightView.update(_loc2_,curPageIndex);
+         var info:AdvanceBeadInfo = evt.data as AdvanceBeadInfo;
+         _rightView.update(info,curPageIndex);
       }
       
       public function dispose() : void

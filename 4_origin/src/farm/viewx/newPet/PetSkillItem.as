@@ -11,9 +11,9 @@ package farm.viewx.newPet
    {
        
       
-      public function PetSkillItem(param1:PetSkillTemplateInfo, param2:int)
+      public function PetSkillItem(info:PetSkillTemplateInfo, $index:int)
       {
-         super(param1,param2,false,false);
+         super(info,$index,false,false);
       }
       
       override protected function initView() : void

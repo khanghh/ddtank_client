@@ -44,9 +44,9 @@ package bagAndInfo.bag
          super();
          cancelButtonStyle = "core.simplebt";
          submitButtonStyle = "core.simplebt";
-         var _loc1_:AlertInfo = new AlertInfo();
-         _loc1_.title = LanguageMgr.GetTranslation("tank.view.bagII.BreakGoodsView.split");
-         info = _loc1_;
+         var _alertInfo:AlertInfo = new AlertInfo();
+         _alertInfo.title = LanguageMgr.GetTranslation("tank.view.bagII.BreakGoodsView.split");
+         info = _alertInfo;
          _input = ComponentFactory.Instance.creatComponentByStylename("breakGoodsInput");
          _input.text = "1";
          _inputBG = ComponentFactory.Instance.creatComponentByStylename("breakInputbg");
@@ -78,33 +78,33 @@ package bagAndInfo.bag
          _downBtn.addEventListener("click",__onDownBtn);
       }
       
-      private function __onUpBtn(param1:Event) : void
+      private function __onUpBtn(e:Event) : void
       {
-         var _loc2_:int = _input.text;
-         _loc2_++;
-         _input.text = String(_loc2_);
+         var tempInt:int = _input.text;
+         tempInt++;
+         _input.text = String(tempInt);
          downBtnEnable();
       }
       
-      private function __onDownBtn(param1:Event) : void
+      private function __onDownBtn(e:Event) : void
       {
-         var _loc2_:int = _input.text;
-         if(_loc2_ == 0)
+         var tempInt:int = _input.text;
+         if(tempInt == 0)
          {
             return;
          }
-         _loc2_--;
-         _input.text = String(_loc2_);
+         tempInt--;
+         _input.text = String(tempInt);
          downBtnEnable();
       }
       
-      private function __onToStage(param1:Event) : void
+      private function __onToStage(evt:Event) : void
       {
       }
       
-      private function __onInputKeyUp(param1:KeyboardEvent) : void
+      private function __onInputKeyUp(evt:KeyboardEvent) : void
       {
-         switch(int(param1.keyCode) - 13)
+         switch(int(evt.keyCode) - 13)
          {
             case 0:
                okFun();
@@ -153,7 +153,7 @@ package bagAndInfo.bag
          }
       }
       
-      private function __getFocus(param1:Event) : void
+      private function __getFocus(event:Event) : void
       {
          _input.setFocus();
       }
@@ -171,7 +171,7 @@ package bagAndInfo.bag
          removeEventListener("click",__onDownBtn);
       }
       
-      private function __input(param1:Event) : void
+      private function __input(e:Event) : void
       {
          submitButtonEnable = _input.text != "";
          downBtnEnable();
@@ -194,14 +194,14 @@ package bagAndInfo.bag
          LayerManager.Instance.addToLayer(this,2,true,1);
       }
       
-      private function __okClickCall(param1:ComponentEvent) : void
+      private function __okClickCall(e:ComponentEvent) : void
       {
          okFun();
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
@@ -225,13 +225,13 @@ package bagAndInfo.bag
       private function okFun() : void
       {
          SoundManager.instance.play("008");
-         var _loc1_:int = _input.text;
-         if(_loc1_ > 0 && _loc1_ < _cell.itemInfo.Count)
+         var n:int = _input.text;
+         if(n > 0 && n < _cell.itemInfo.Count)
          {
-            _cell.dragCountStart(_loc1_);
+            _cell.dragCountStart(n);
             dispose();
          }
-         else if(_loc1_ == 0)
+         else if(n == 0)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.bagII.BreakGoodsView.wrong2"));
             _input.text = "";
@@ -278,9 +278,9 @@ package bagAndInfo.bag
          return _cell;
       }
       
-      public function set cell(param1:BagCell) : void
+      public function set cell(value:BagCell) : void
       {
-         _cell = param1;
+         _cell = value;
       }
    }
 }

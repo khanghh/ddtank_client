@@ -6,14 +6,14 @@ package gameCommon.motions
       private static var D:int = 10;
        
       
-      public function ExplosionMotionFunc(param1:Object)
+      public function ExplosionMotionFunc(paramsObject:Object)
       {
-         super(param1);
+         super(paramsObject);
       }
       
-      override public function getVectorByTime(param1:int) : Object
+      override public function getVectorByTime(t:int) : Object
       {
-         var _loc2_:* = param1 % 4;
+         var _loc2_:* = t % 4;
          if(0 !== _loc2_)
          {
             if(1 !== _loc2_)

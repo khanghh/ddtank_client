@@ -16,58 +16,57 @@ package game.objects
       
       private var _tempMap:Map;
       
-      public function TowBomb(param1:Bomb, param2:Living, param3:int = 0, param4:Boolean = false)
+      public function TowBomb(info:Bomb, owner:Living, refineryLevel:int = 0, isPhantom:Boolean = false)
       {
-         initData(param1);
-         super(param1,param2,param3,param4);
+         initData(info);
+         super(info,owner,refineryLevel,isPhantom);
       }
       
-      private function initData(param1:Bomb) : void
+      private function initData(info:Bomb) : void
       {
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
-         var _loc4_:Array = [];
-         var _loc3_:Array = [];
-         _loc5_ = 0;
-         while(_loc5_ < param1.Actions.length)
+         var i:int = 0;
+         var tempAction:* = null;
+         var arr1:Array = [];
+         var arr2:Array = [];
+         for(i = 0; i < info.Actions.length; )
          {
-            _loc2_ = param1.Actions[_loc5_] as BombAction;
-            if(_loc2_.type == 25 || _loc2_.type == 26 || _loc2_.type == 5 || _loc2_.type == 29)
+            tempAction = info.Actions[i] as BombAction;
+            if(tempAction.type == 25 || tempAction.type == 26 || tempAction.type == 5 || tempAction.type == 29)
             {
-               _loc4_.push(_loc2_);
+               arr1.push(tempAction);
             }
             else
             {
-               _loc3_.push(param1.Actions[_loc5_]);
+               arr2.push(info.Actions[i]);
             }
-            _loc5_++;
+            i++;
          }
-         _loc4_.sort(actionSort);
-         _tempAction = _loc4_;
-         param1.Actions = _loc3_;
+         arr1.sort(actionSort);
+         _tempAction = arr1;
+         info.Actions = arr2;
       }
       
-      private function actionSort(param1:BombAction, param2:BombAction) : int
+      private function actionSort(a:BombAction, b:BombAction) : int
       {
-         if(param1.time < param2.time)
+         if(a.time < b.time)
          {
             return -1;
          }
-         if(param1.time == param2.time)
+         if(a.time == b.time)
          {
-            if(param1.type == 23)
+            if(a.type == 23)
             {
                return -1;
             }
-            if(param1.type == 5)
+            if(a.type == 5)
             {
                return 1;
             }
-            if(param1.type == 25 || param1.type == 26 || param1.type == 5 || param1.type == 29)
+            if(a.type == 25 || a.type == 26 || a.type == 5 || a.type == 29)
             {
-               if(param2.type == 26 || param2.type == 25 || param2.type == 5 || param1.type == 29)
+               if(b.type == 26 || b.type == 25 || b.type == 5 || a.type == 29)
                {
-                  if(param1.param4 > param2.param4)
+                  if(a.param4 > b.param4)
                   {
                      return 1;
                   }
@@ -79,10 +78,10 @@ package game.objects
          return 1;
       }
       
-      override public function setMap(param1:Map) : void
+      override public function setMap(map:Map) : void
       {
-         super.setMap(param1);
-         _tempMap = param1;
+         super.setMap(map);
+         _tempMap = map;
       }
       
       override protected function isPillarCollide() : Boolean

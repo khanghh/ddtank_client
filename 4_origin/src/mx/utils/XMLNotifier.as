@@ -13,7 +13,7 @@ package mx.utils
       private static var instance:XMLNotifier;
        
       
-      public function XMLNotifier(param1:XMLNotifierSingleton)
+      public function XMLNotifier(x:XMLNotifierSingleton)
       {
          super();
       }
@@ -29,84 +29,84 @@ package mx.utils
       
       mx_internal static function initializeXMLForNotification() : Function
       {
-         var notificationFunction:Function = function(param1:Object, param2:String, param3:Object, param4:Object, param5:Object):void
+         var notificationFunction:Function = function(currentTarget:Object, ty:String, tar:Object, value:Object, detail:Object):void
          {
-            var _loc8_:* = null;
-            var _loc7_:Dictionary = arguments.callee.watched;
-            if(_loc7_ != null)
+            var notifiable:* = null;
+            var xmlWatchers:Dictionary = arguments.callee.watched;
+            if(xmlWatchers != null)
             {
-               for(_loc8_ in _loc7_)
+               for(notifiable in xmlWatchers)
                {
-                  IXMLNotifiable(_loc8_).xmlNotification(param1,param2,param3,param4,param5);
+                  IXMLNotifiable(notifiable).xmlNotification(currentTarget,ty,tar,value,detail);
                }
             }
          };
          return notificationFunction;
       }
       
-      public function watchXML(param1:Object, param2:IXMLNotifiable, param3:String = null) : void
+      public function watchXML(xml:Object, notifiable:IXMLNotifiable, uid:String = null) : void
       {
-         var _loc4_:Object = null;
-         var _loc5_:XML = null;
-         var _loc6_:Object = null;
-         var _loc7_:Dictionary = null;
-         if(param1 is XMLList && param1.length() > 1)
+         var item:Object = null;
+         var xmlItem:XML = null;
+         var watcherFunction:Object = null;
+         var xmlWatchers:Dictionary = null;
+         if(xml is XMLList && xml.length() > 1)
          {
-            for each(_loc4_ in param1)
+            for each(item in xml)
             {
-               this.watchXML(_loc4_,param2,param3);
+               this.watchXML(item,notifiable,uid);
             }
          }
          else
          {
-            _loc5_ = XML(param1);
-            _loc6_ = _loc5_.notification();
-            if(!(_loc6_ is Function))
+            xmlItem = XML(xml);
+            watcherFunction = xmlItem.notification();
+            if(!(watcherFunction is Function))
             {
-               _loc6_ = initializeXMLForNotification();
-               _loc5_.setNotification(_loc6_ as Function);
-               if(param3 && _loc6_["uid"] == null)
+               watcherFunction = initializeXMLForNotification();
+               xmlItem.setNotification(watcherFunction as Function);
+               if(uid && watcherFunction["uid"] == null)
                {
-                  _loc6_["uid"] = param3;
+                  watcherFunction["uid"] = uid;
                }
             }
-            if(_loc6_["watched"] == undefined)
+            if(watcherFunction["watched"] == undefined)
             {
-               _loc6_["watched"] = _loc7_ = new Dictionary(true);
+               watcherFunction["watched"] = xmlWatchers = new Dictionary(true);
             }
             else
             {
-               _loc7_ = _loc6_["watched"];
+               xmlWatchers = watcherFunction["watched"];
             }
-            _loc7_[param2] = true;
+            xmlWatchers[notifiable] = true;
          }
       }
       
-      public function unwatchXML(param1:Object, param2:IXMLNotifiable) : void
+      public function unwatchXML(xml:Object, notifiable:IXMLNotifiable) : void
       {
-         var _loc3_:Object = null;
-         var _loc4_:XML = null;
-         var _loc5_:Object = null;
-         var _loc6_:Dictionary = null;
-         if(param1 is XMLList && param1.length() > 1)
+         var item:Object = null;
+         var xmlItem:XML = null;
+         var watcherFunction:Object = null;
+         var xmlWatchers:Dictionary = null;
+         if(xml is XMLList && xml.length() > 1)
          {
-            for each(_loc3_ in param1)
+            for each(item in xml)
             {
-               this.unwatchXML(_loc3_,param2);
+               this.unwatchXML(item,notifiable);
             }
          }
          else
          {
-            _loc4_ = XML(param1);
-            _loc5_ = _loc4_.notification();
-            if(!(_loc5_ is Function))
+            xmlItem = XML(xml);
+            watcherFunction = xmlItem.notification();
+            if(!(watcherFunction is Function))
             {
                return;
             }
-            if(_loc5_["watched"] != undefined)
+            if(watcherFunction["watched"] != undefined)
             {
-               _loc6_ = _loc5_["watched"];
-               delete _loc6_[param2];
+               xmlWatchers = watcherFunction["watched"];
+               delete xmlWatchers[notifiable];
             }
          }
       }

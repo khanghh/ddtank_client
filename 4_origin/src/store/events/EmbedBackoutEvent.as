@@ -18,11 +18,11 @@ package store.events
       
       private var _templateID:int;
       
-      public function EmbedBackoutEvent(param1:String, param2:int, param3:int, param4:Boolean = false, param5:Boolean = false)
+      public function EmbedBackoutEvent(type:String, cellID:int, templateID:int, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         super(param1,param4,param5);
-         _cellID = param2;
-         _templateID = param3;
+         super(type,bubbles,cancelable);
+         _cellID = cellID;
+         _templateID = templateID;
       }
       
       public function get CellID() : int

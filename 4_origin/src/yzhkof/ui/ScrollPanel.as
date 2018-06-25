@@ -43,28 +43,28 @@ package yzhkof.ui
          this.vScrollBar.addEventListener(ComponentEvent.DRAW_COMPLETE,this.__scrollBarUpdate);
       }
       
-      private function __scrollChange(param1:Event) : void
+      private function __scrollChange(e:Event) : void
       {
          this.viewRectangle.y = this._scrollV = this.vScrollBar.scrollV;
          this.rectContaner.scrollRect = this.viewRectangle;
       }
       
-      private function __scrollBarUpdate(param1:Event) : void
+      private function __scrollBarUpdate(e:Event) : void
       {
          commitChage();
       }
       
       private function updateScrollByContent() : void
       {
-         var _loc1_:Number = NaN;
-         _loc1_ = this._scrollV == 0?0:Number(this._scrollV / this._maxScrollV);
+         var percent:Number = NaN;
+         percent = this._scrollV == 0?0:Number(this._scrollV / this._maxScrollV);
          this._maxScrollV = this.contentContainer.height - height;
          if(this._maxScrollV < 0)
          {
             this._maxScrollV = 0;
          }
          this.vScrollBar.maxScrollV = this._maxScrollV;
-         this._scrollV = this._maxScrollV * _loc1_;
+         this._scrollV = this._maxScrollV * percent;
          if(this._scrollV > this._maxScrollV)
          {
             this._scrollV = this._maxScrollV;
@@ -72,15 +72,15 @@ package yzhkof.ui
          this.vScrollBar.scrollV = this._scrollV;
       }
       
-      override public function set height(param1:Number) : void
+      override public function set height(value:Number) : void
       {
-         super.height = param1;
+         super.height = value;
          this.vScrollBar.height = height;
       }
       
-      override public function set width(param1:Number) : void
+      override public function set width(value:Number) : void
       {
-         super.width = param1;
+         super.width = value;
          this.vScrollBar.x = width - this.vScrollBar.width;
       }
       
@@ -101,12 +101,12 @@ package yzhkof.ui
          return this._scrollV;
       }
       
-      public function set scrollV(param1:Number) : void
+      public function set scrollV(value:Number) : void
       {
-         this._scrollV = param1;
+         this._scrollV = value;
       }
       
-      private function __childSizeChange(param1:Event) : void
+      private function __childSizeChange(e:Event) : void
       {
          this.updateScrollByContent();
       }
@@ -116,9 +116,9 @@ package yzhkof.ui
          return this._source;
       }
       
-      public function set source(param1:DisplayObject) : void
+      public function set source(value:DisplayObject) : void
       {
-         if(this._source == param1)
+         if(this._source == value)
          {
             return;
          }
@@ -126,7 +126,7 @@ package yzhkof.ui
          {
             this.contentContainer.removeChildAt(0);
          }
-         this._source = param1;
+         this._source = value;
          if(this._source)
          {
             this.contentContainer.addChild(this._source);

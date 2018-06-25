@@ -13,10 +13,10 @@ package bagAndInfo.cell
          super();
       }
       
-      override public function loadSync(param1:Function) : void
+      override public function loadSync(callBack:Function) : void
       {
-         var _loc2_:* = null;
-         _callBack = param1;
+         var color:* = null;
+         _callBack = callBack;
          if(_info.CategoryID == 10)
          {
             _timer = TimerManager.getInstance().addTimerJuggler(100,1);
@@ -27,8 +27,8 @@ package bagAndInfo.cell
          {
             if(_info is InventoryItemInfo)
             {
-               _loc2_ = EquipType.isEditable(_info) && InventoryItemInfo(_info).Color != null?InventoryItemInfo(_info).Color:"";
-               _loader = _factory.createLayer(_info,_info.NeedSex == 1,_loc2_,"movie_clip_effect");
+               color = EquipType.isEditable(_info) && InventoryItemInfo(_info).Color != null?InventoryItemInfo(_info).Color:"";
+               _loader = _factory.createLayer(_info,_info.NeedSex == 1,color,"movie_clip_effect");
             }
             else
             {

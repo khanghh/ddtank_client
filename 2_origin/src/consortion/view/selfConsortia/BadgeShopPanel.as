@@ -65,7 +65,7 @@ package consortion.view.selfConsortia
          _btnGroup.addEventListener("change",onSelectChange);
       }
       
-      private function onSelectChange(param1:Event) : void
+      private function onSelectChange(event:Event) : void
       {
          switch(int(_btnGroup.selectIndex))
          {

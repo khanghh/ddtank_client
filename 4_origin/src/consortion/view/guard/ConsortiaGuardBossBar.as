@@ -38,10 +38,10 @@ package consortion.view.guard
       
       private var _type:int = 0;
       
-      public function ConsortiaGuardBossBar(param1:int)
+      public function ConsortiaGuardBossBar(type:int)
       {
          super();
-         _type = param1;
+         _type = type;
          init();
       }
       
@@ -73,23 +73,23 @@ package consortion.view.guard
          ConsortiaGuardControl.Instance.addEventListener("updateBossState",__onUpdateBossState);
       }
       
-      private function __onOutHead(param1:MouseEvent) : void
+      private function __onOutHead(event:MouseEvent) : void
       {
          _headIconBtn.filters = null;
       }
       
-      private function __onOverHead(param1:MouseEvent) : void
+      private function __onOverHead(event:MouseEvent) : void
       {
          _headIconBtn.filters = SceneCharacterPlayerBase.MOUSE_ON_GLOW_FILTER;
       }
       
-      private function __onClickRank(param1:MouseEvent) : void
+      private function __onClickRank(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:int = _type + 1;
+         var type:int = _type + 1;
          if(!_isShowRank)
          {
-            SocketManager.Instance.out.sendConsortiaGuradBossRank(_loc2_);
+            SocketManager.Instance.out.sendConsortiaGuradBossRank(type);
          }
          else
          {
@@ -97,7 +97,7 @@ package consortion.view.guard
          }
       }
       
-      private function __onUpdateBossState(param1:ConsortiaGuardEvent) : void
+      private function __onUpdateBossState(e:ConsortiaGuardEvent) : void
       {
          update();
       }
@@ -106,8 +106,8 @@ package consortion.view.guard
       {
          _barUI.maxProgress = ConsortiaGuardControl.Instance.model.getBossMaxHp(_type);
          _barUI.progress = ConsortiaGuardControl.Instance.model.getBossHp(_type);
-         var _loc1_:* = ConsortiaGuardControl.Instance.model.getBossState(_type) == 2;
-         if(_loc1_)
+         var isRage:* = ConsortiaGuardControl.Instance.model.getBossState(_type) == 2;
+         if(isRage)
          {
             if(_light == null)
             {
@@ -126,9 +126,9 @@ package consortion.view.guard
          }
       }
       
-      public function set type(param1:int) : void
+      public function set type(value:int) : void
       {
-         _type = param1;
+         _type = value;
       }
       
       private function removeEvent() : void
@@ -140,7 +140,7 @@ package consortion.view.guard
          ConsortiaGuardControl.Instance.removeEventListener("updateBossState",__onUpdateBossState);
       }
       
-      protected function __onclickBoosIcon(param1:MouseEvent) : void
+      protected function __onclickBoosIcon(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          ConsortiaGuardControl.Instance.bossLocation(_location);
@@ -159,9 +159,9 @@ package consortion.view.guard
          _text = null;
       }
       
-      public function set isShowRank(param1:Boolean) : void
+      public function set isShowRank(value:Boolean) : void
       {
-         _isShowRank = param1;
+         _isShowRank = value;
       }
    }
 }

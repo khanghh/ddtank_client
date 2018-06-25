@@ -122,8 +122,8 @@ package store.view.strength
       
       private function init() : void
       {
-         var _loc6_:int = 0;
-         var _loc3_:* = null;
+         var i:int = 0;
+         var item:* = null;
          _vipDiscountBg = ComponentFactory.Instance.creatComponentByStylename("ddtstore.StoreIIStrengthBg.VipDiscountBg");
          _vipDiscountTxt = ComponentFactory.Instance.creatComponentByStylename("ddtstore.StoreIIStrengthBg.VipDiscountTxt");
          _vipDiscountTxt.text = LanguageMgr.GetTranslation("store.Strength.VipDiscountDesc");
@@ -166,23 +166,22 @@ package store.view.strength
          addChild(_progressLevel);
          _progressLevel.addEventListener("weaponUpgradesPlay",weaponUpgradesPlay);
          getCellsPoint();
-         _loc6_ = 0;
-         while(_loc6_ < _pointArray.length)
+         for(i = 0; i < _pointArray.length; )
          {
-            switch(int(_loc6_))
+            switch(int(i))
             {
                case 0:
-                  _loc3_ = new StrengthStone(["2","35"],_loc6_);
+                  item = new StrengthStone(["2","35"],i);
                   break;
                case 1:
-                  _loc3_ = new StreangthItemCell(_loc6_);
+                  item = new StreangthItemCell(i);
             }
-            _loc3_.addEventListener("change",__itemInfoChange);
-            _items[_loc6_] = _loc3_;
-            _loc3_.x = _pointArray[_loc6_].x;
-            _loc3_.y = _pointArray[_loc6_].y;
-            addChild(_loc3_);
-            _loc6_++;
+            item.addEventListener("change",__itemInfoChange);
+            _items[i] = item;
+            item.x = _pointArray[i].x;
+            item.y = _pointArray[i].y;
+            addChild(item);
+            i++;
          }
          _consortiaSmith = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreIIStrengthBG.MySmithLevel");
          addChild(_consortiaSmith);
@@ -196,20 +195,20 @@ package store.view.strength
          hideArr();
          _showSuccessExp = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreIIStrengthBG.ShowSuccessExp");
          _showSuccessExp.showVIPRate();
-         var _loc4_:String = LanguageMgr.GetTranslation("store.StoreIIComposeBG.StrengthenStonStripExp");
-         var _loc1_:String = LanguageMgr.GetTranslation("store.StoreIIComposeBG.ConsortiaAddStripExp");
-         var _loc2_:String = LanguageMgr.GetTranslation("store.StoreIIComposeBG.VIPAddStripExp");
-         var _loc5_:String = LanguageMgr.GetTranslation("store.StoreIIComposeBG.AllNumStrip");
+         var strI:String = LanguageMgr.GetTranslation("store.StoreIIComposeBG.StrengthenStonStripExp");
+         var strIII:String = LanguageMgr.GetTranslation("store.StoreIIComposeBG.ConsortiaAddStripExp");
+         var strVIP:String = LanguageMgr.GetTranslation("store.StoreIIComposeBG.VIPAddStripExp");
+         var strIV:String = LanguageMgr.GetTranslation("store.StoreIIComposeBG.AllNumStrip");
          if(PlayerManager.Instance.Self.ConsortiaID == 0)
          {
-            _loc1_ = LanguageMgr.GetTranslation("tank.view.store.consortiaRateI");
+            strIII = LanguageMgr.GetTranslation("tank.view.store.consortiaRateI");
          }
          if(!PlayerManager.Instance.Self.IsVIP)
          {
-            _loc2_ = LanguageMgr.GetTranslation("store.StoreIIComposeBG.NoVIPAddStrip");
+            strVIP = LanguageMgr.GetTranslation("store.StoreIIComposeBG.NoVIPAddStrip");
          }
-         _showSuccessExp.showAllTips(_loc4_,_loc1_,_loc5_);
-         _showSuccessExp.showVIPTip(_loc2_);
+         _showSuccessExp.showAllTips(strI,strIII,strIV);
+         _showSuccessExp.showVIPTip(strVIP);
          addChild(_showSuccessExp);
       }
       
@@ -296,10 +295,10 @@ package store.view.strength
       private function getCellsPoint() : void
       {
          _pointArray = new Vector.<Point>();
-         var _loc1_:Point = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreIIStrengthBG.Strengthpoint0");
-         _pointArray.push(_loc1_);
-         var _loc2_:Point = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreIIStrengthBG.Strengthpoint1");
-         _pointArray.push(_loc2_);
+         var point:Point = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreIIStrengthBG.Strengthpoint0");
+         _pointArray.push(point);
+         var point2:Point = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreIIStrengthBG.Strengthpoint1");
+         _pointArray.push(point2);
       }
       
       public function get isAutoStrength() : Boolean
@@ -307,11 +306,11 @@ package store.view.strength
          return _isInjectSelect.selected;
       }
       
-      private function __onAlertResponse(param1:FrameEvent) : void
+      private function __onAlertResponse(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         param1.currentTarget.addEventListener("response",__onAlertResponse);
-         ObjectUtils.disposeObject(param1.currentTarget);
+         event.currentTarget.addEventListener("response",__onAlertResponse);
+         ObjectUtils.disposeObject(event.currentTarget);
       }
       
       public function get area() : Array
@@ -319,18 +318,18 @@ package store.view.strength
          return _items;
       }
       
-      private function updateProgress(param1:InventoryItemInfo) : void
+      private function updateProgress(info:InventoryItemInfo) : void
       {
-         if(param1)
+         if(info)
          {
             if(StoreEquipExperience.expericence)
             {
-               _progressLevel.setProgress(param1);
+               _progressLevel.setProgress(info);
             }
          }
       }
       
-      private function isAdaptToItem(param1:InventoryItemInfo) : Boolean
+      private function isAdaptToItem(info:InventoryItemInfo) : Boolean
       {
          if(_items[1].info == null)
          {
@@ -338,31 +337,31 @@ package store.view.strength
          }
          if(_items[1].info.RefineryLevel > 0)
          {
-            if(param1.Property1 == "35")
+            if(info.Property1 == "35")
             {
                return true;
             }
             return false;
          }
-         if(param1.Property1 == "35")
+         if(info.Property1 == "35")
          {
             return false;
          }
          return true;
       }
       
-      private function isAdaptToStone(param1:InventoryItemInfo) : Boolean
+      private function isAdaptToStone(info:InventoryItemInfo) : Boolean
       {
-         if(_items[0].info != null && _items[0].info.Property1 != param1.Property1)
+         if(_items[0].info != null && _items[0].info.Property1 != info.Property1)
          {
             return false;
          }
          return true;
       }
       
-      private function itemIsAdaptToStone(param1:InventoryItemInfo) : Boolean
+      private function itemIsAdaptToStone(info:InventoryItemInfo) : Boolean
       {
-         if(param1.RefineryLevel > 0)
+         if(info.RefineryLevel > 0)
          {
             if(_items[0].info != null && _items[0].info.Property1 != "35")
             {
@@ -377,18 +376,18 @@ package store.view.strength
          return true;
       }
       
-      private function showNumAlert(param1:InventoryItemInfo, param2:int) : void
+      private function showNumAlert(info:InventoryItemInfo, index:int) : void
       {
          _aler = ComponentFactory.Instance.creat("ddtstore.StrengthSelectNumAlertFrame");
          _aler.addExeFunction(sellFunction,notSellFunction);
-         _aler.goodsinfo = param1;
-         _aler.index = param2;
-         _aler.show(param1.Count);
+         _aler.goodsinfo = info;
+         _aler.index = index;
+         _aler.show(info.Count);
       }
       
-      private function sellFunction(param1:int, param2:InventoryItemInfo, param3:int) : void
+      private function sellFunction(_nowNum:int, goodsinfo:InventoryItemInfo, index:int) : void
       {
-         SocketManager.Instance.out.sendMoveGoods(param2.BagType,param2.Place,12,param3,param1,true);
+         SocketManager.Instance.out.sendMoveGoods(goodsinfo.BagType,goodsinfo.Place,12,index,_nowNum,true);
          if(_aler)
          {
             _aler.dispose();
@@ -413,62 +412,62 @@ package store.view.strength
          _aler = null;
       }
       
-      public function dragDrop(param1:BagCell) : void
+      public function dragDrop(source:BagCell) : void
       {
-         var _loc2_:* = null;
-         if(param1 == null)
+         var ds:* = null;
+         if(source == null)
          {
             return;
          }
-         var _loc3_:InventoryItemInfo = param1.info as InventoryItemInfo;
+         var info:InventoryItemInfo = source.info as InventoryItemInfo;
          var _loc5_:int = 0;
          var _loc4_:* = _items;
-         for each(_loc2_ in _items)
+         for each(ds in _items)
          {
-            if(_loc2_.info == _loc3_)
+            if(ds.info == info)
             {
-               _loc2_.info = null;
-               param1.locked = false;
+               ds.info = null;
+               source.locked = false;
                return;
             }
          }
          var _loc7_:int = 0;
          var _loc6_:* = _items;
-         for each(_loc2_ in _items)
+         for each(ds in _items)
          {
-            if(_loc2_)
+            if(ds)
             {
-               if(_loc2_ is StoneCell)
+               if(ds is StoneCell)
                {
-                  if(_loc2_.info == null)
+                  if(ds.info == null)
                   {
-                     if((_loc2_ as StoneCell).types.indexOf(_loc3_.Property1) > -1 && _loc3_.CategoryID == 11)
+                     if((ds as StoneCell).types.indexOf(info.Property1) > -1 && info.CategoryID == 11)
                      {
-                        if(isAdaptToStone(_loc3_))
+                        if(isAdaptToStone(info))
                         {
-                           SocketManager.Instance.out.sendMoveGoods(_loc3_.BagType,_loc3_.Place,12,_loc2_.index,_loc3_.Count,true);
+                           SocketManager.Instance.out.sendMoveGoods(info.BagType,info.Place,12,ds.index,info.Count,true);
                            return;
                         }
                         MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.view.strength.typeUnpare"));
                      }
                   }
                }
-               else if(_loc2_ is StreangthItemCell)
+               else if(ds is StreangthItemCell)
                {
-                  if(_loc3_.getRemainDate() <= 0)
+                  if(info.getRemainDate() <= 0)
                   {
                      MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.view.fusion.AccessoryDragInArea.overdue"));
                   }
                   else
                   {
-                     if(_loc3_.StrengthenLevel >= PathManager.solveStrengthMax())
+                     if(info.StrengthenLevel >= PathManager.solveStrengthMax())
                      {
                         MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.StrengthItemCell.up"));
                         return;
                      }
-                     if(param1.info.CanStrengthen)
+                     if(source.info.CanStrengthen)
                      {
-                        SocketManager.Instance.out.sendMoveGoods(_loc3_.BagType,_loc3_.Place,12,_loc2_.index,1);
+                        SocketManager.Instance.out.sendMoveGoods(info.BagType,info.Place,12,ds.index,1);
                         StreangthItemCell(_items[1]).actionState = true;
                         return;
                      }
@@ -476,17 +475,17 @@ package store.view.strength
                }
             }
          }
-         if(EquipType.isStrengthStone(_loc3_))
+         if(EquipType.isStrengthStone(info))
          {
             var _loc9_:int = 0;
             var _loc8_:* = _items;
-            for each(_loc2_ in _items)
+            for each(ds in _items)
             {
-               if(_loc2_ is StoneCell && (_loc2_ as StoneCell).types.indexOf(_loc3_.Property1) > -1 && _loc3_.CategoryID == 11)
+               if(ds is StoneCell && (ds as StoneCell).types.indexOf(info.Property1) > -1 && info.CategoryID == 11)
                {
-                  if(isAdaptToStone(_loc3_))
+                  if(isAdaptToStone(info))
                   {
-                     SocketManager.Instance.out.sendMoveGoods(_loc3_.BagType,_loc3_.Place,12,_loc2_.index,_loc3_.Count,true);
+                     SocketManager.Instance.out.sendMoveGoods(info.BagType,info.Place,12,ds.index,info.Count,true);
                      return;
                   }
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.view.strength.typeUnpare"));
@@ -495,11 +494,11 @@ package store.view.strength
          }
       }
       
-      private function _responseII(param1:FrameEvent) : void
+      private function _responseII(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         param1.currentTarget.removeEventListener("response",_responseII);
-         ObjectUtils.disposeObject(param1.currentTarget);
+         evt.currentTarget.removeEventListener("response",_responseII);
+         ObjectUtils.disposeObject(evt.currentTarget);
       }
       
       private function showArr() : void
@@ -514,16 +513,16 @@ package store.view.strength
          _strength_btn_shineEffect.stop();
       }
       
-      public function refreshData(param1:Dictionary) : void
+      public function refreshData(items:Dictionary) : void
       {
-         var _loc2_:* = 0;
+         var itemPlace:* = 0;
          var _loc5_:int = 0;
-         var _loc4_:* = param1;
-         for(_loc2_ in param1)
+         var _loc4_:* = items;
+         for(itemPlace in items)
          {
-            if(_items.hasOwnProperty(_loc2_))
+            if(_items.hasOwnProperty(itemPlace))
             {
-               _items[_loc2_].info = PlayerManager.Instance.Self.StoreBag.items[_loc2_];
+               _items[itemPlace].info = PlayerManager.Instance.Self.StoreBag.items[itemPlace];
             }
          }
       }
@@ -548,11 +547,11 @@ package store.view.strength
          }
       }
       
-      public function startShine(param1:int) : void
+      public function startShine(cellId:int) : void
       {
-         if(param1 < 2)
+         if(cellId < 2)
          {
-            _items[param1].startShine();
+            _items[cellId].startShine();
          }
       }
       
@@ -590,16 +589,16 @@ package store.view.strength
          }
       }
       
-      private function __isInjectSelectClick(param1:MouseEvent) : void
+      private function __isInjectSelectClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }
       
-      private function __strengthClick(param1:MouseEvent) : void
+      private function __strengthClick(evt:MouseEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         param1.stopImmediatePropagation();
+         var alert:* = null;
+         var alert1:* = null;
+         evt.stopImmediatePropagation();
          SoundManager.instance.play("008");
          if(_showDontClickTip())
          {
@@ -615,11 +614,11 @@ package store.view.strength
          }
          if(checkTipBindType())
          {
-            _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("store.StoreIIStrengthBG.use"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
-            _loc3_.moveEnable = false;
-            _loc3_.info.enableHtml = true;
-            _loc3_.info.mutiline = true;
-            _loc3_.addEventListener("response",_bingResponse);
+            alert1 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("store.StoreIIStrengthBG.use"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
+            alert1.moveEnable = false;
+            alert1.info.enableHtml = true;
+            alert1.info.mutiline = true;
+            alert1.addEventListener("response",_bingResponse);
          }
          else if(!_progressLevel.getStarVisible())
          {
@@ -627,72 +626,72 @@ package store.view.strength
          }
       }
       
-      private function _responseV(param1:FrameEvent) : void
+      private function _responseV(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",_responseV);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         (evt.currentTarget as BaseAlerFrame).removeEventListener("response",_responseV);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             okFastPurchaseGold();
          }
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(evt.currentTarget);
       }
       
       private function okFastPurchaseGold() : void
       {
-         var _loc1_:QuickBuyFrame = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
-         _loc1_.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
-         _loc1_.itemID = 11233;
-         LayerManager.Instance.addToLayer(_loc1_,2,true,1);
+         var _quick:QuickBuyFrame = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
+         _quick.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
+         _quick.itemID = 11233;
+         LayerManager.Instance.addToLayer(_quick,2,true,1);
       }
       
-      private function _bingResponse(param1:FrameEvent) : void
+      private function _bingResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",_bingResponse);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var alert:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",_bingResponse);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             sendSocket();
          }
-         ObjectUtils.disposeObject(param1.target);
+         ObjectUtils.disposeObject(evt.target);
       }
       
       private function sendSocket() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var allBuildInfo:* = null;
+         var eachBuildInfo:* = null;
          if(!checkLevel())
          {
             return;
          }
-         var _loc5_:Boolean = false;
-         var _loc4_:int = ConsortiaRateManager.instance.rate;
-         if(PlayerManager.Instance.Self.ConsortiaID != 0 && _loc4_ > 0)
+         var consortiaState:Boolean = false;
+         var rate:int = ConsortiaRateManager.instance.rate;
+         if(PlayerManager.Instance.Self.ConsortiaID != 0 && rate > 0)
          {
-            _loc5_ = true;
+            consortiaState = true;
          }
          if(ConsortiaDomainManager.instance.activeState == 1)
          {
-            _loc5_ = false;
+            consortiaState = false;
          }
          else if(ConsortiaDomainManager.instance.activeState == 0 || ConsortiaDomainManager.instance.activeState == 100)
          {
-            _loc2_ = ConsortiaDomainManager.instance.model.allBuildInfo;
-            if(_loc2_)
+            allBuildInfo = ConsortiaDomainManager.instance.model.allBuildInfo;
+            if(allBuildInfo)
             {
-               _loc1_ = _loc2_[4];
+               eachBuildInfo = allBuildInfo[4];
             }
-            if(_loc1_ && _loc1_.Repair > 0)
+            if(eachBuildInfo && eachBuildInfo.Repair > 0)
             {
-               _loc5_ = false;
+               consortiaState = false;
             }
          }
-         var _loc3_:int = getTimer();
-         if(_loc3_ - _lastStrengthTime > 1200)
+         var time:int = getTimer();
+         if(time - _lastStrengthTime > 1200)
          {
-            SocketManager.Instance.out.sendItemStrength(_loc5_,_isInjectSelect.selected);
-            _lastStrengthTime = _loc3_;
+            SocketManager.Instance.out.sendItemStrength(consortiaState,_isInjectSelect.selected);
+            _lastStrengthTime = time;
             if(!PlayerManager.Instance.Self.IsWeakGuildFinish(72))
             {
                NoviceDataManager.instance.saveNoviceData(700,PathManager.userName(),PathManager.solveRequestPath());
@@ -720,9 +719,9 @@ package store.view.strength
       
       private function checkLevel() : Boolean
       {
-         var _loc1_:StreangthItemCell = _items[1] as StreangthItemCell;
-         var _loc2_:InventoryItemInfo = _loc1_.info as InventoryItemInfo;
-         if(_loc2_ && _loc2_.StrengthenLevel >= PathManager.solveStrengthMax())
+         var item:StreangthItemCell = _items[1] as StreangthItemCell;
+         var info:InventoryItemInfo = item.info as InventoryItemInfo;
+         if(info && info.StrengthenLevel >= PathManager.solveStrengthMax())
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.StrengthItemCell.up"));
             return false;
@@ -730,19 +729,19 @@ package store.view.strength
          return true;
       }
       
-      private function __itemInfoChange(param1:Event) : void
+      private function __itemInfoChange(evt:Event) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         if(param1.currentTarget is StreangthItemCell)
+         var itemCell:* = null;
+         var info:* = null;
+         if(evt.currentTarget is StreangthItemCell)
          {
-            _loc2_ = param1.currentTarget as StreangthItemCell;
-            _loc3_ = _loc2_.info as InventoryItemInfo;
-            if(_loc3_)
+            itemCell = evt.currentTarget as StreangthItemCell;
+            info = itemCell.info as InventoryItemInfo;
+            if(info)
             {
                if(StreangthItemCell(_items[1]).actionState)
                {
-                  _progressLevel.initProgress(_loc3_);
+                  _progressLevel.initProgress(info);
                   StreangthItemCell(_items[1]).actionState = false;
                   if(_starMovie)
                   {
@@ -755,7 +754,7 @@ package store.view.strength
                }
                else
                {
-                  updateProgress(_loc3_);
+                  updateProgress(info);
                }
             }
             else
@@ -811,24 +810,24 @@ package store.view.strength
       
       private function getCountExpI() : void
       {
-         var _loc2_:* = 0;
-         var _loc4_:* = 0;
-         var _loc3_:* = 0;
-         var _loc1_:* = 0;
+         var tempExpI:* = 0;
+         var tempExpIII:* = 0;
+         var tempExpIV:* = 0;
+         var tempExpVip:* = 0;
          if(_items[0].info != null)
          {
-            _loc2_ = Number(_loc2_ + _items[0].info.Property2);
+            tempExpI = Number(tempExpI + _items[0].info.Property2);
          }
          if(ConsortiaRateManager.instance.rate > 0)
          {
-            _loc4_ = Number(ConsortiaRateManager.instance.getConsortiaStrengthenEx(PlayerManager.Instance.Self.consortiaInfo.SmithLevel) / 100 * _loc2_);
+            tempExpIII = Number(ConsortiaRateManager.instance.getConsortiaStrengthenEx(PlayerManager.Instance.Self.consortiaInfo.SmithLevel) / 100 * tempExpI);
          }
          if(PlayerManager.Instance.Self.IsVIP)
          {
-            _loc1_ = Number(VipController.instance.getVIPStrengthenEx(PlayerManager.Instance.Self.VIPLevel) / 100 * _loc2_);
+            tempExpVip = Number(VipController.instance.getVIPStrengthenEx(PlayerManager.Instance.Self.VIPLevel) / 100 * tempExpI);
          }
-         _loc3_ = Number(_loc2_ + _loc4_ + _loc1_);
-         _showSuccessExp.showAllNum(_loc2_,_loc4_,_loc1_,_loc3_);
+         tempExpIV = Number(tempExpI + tempExpIII + tempExpVip);
+         _showSuccessExp.showAllNum(tempExpI,tempExpIII,tempExpVip,tempExpIV);
       }
       
       public function consortiaRate() : void
@@ -836,7 +835,7 @@ package store.view.strength
          ConsortiaRateManager.instance.reset();
       }
       
-      private function _consortiaLoadComplete(param1:Event) : void
+      private function _consortiaLoadComplete(e:Event) : void
       {
          getCountExpI();
       }
@@ -858,7 +857,7 @@ package store.view.strength
          addChild(_starMovie);
       }
       
-      private function __starMovieFrame(param1:Event) : void
+      private function __starMovieFrame(e:Event) : void
       {
          if(_starMovie)
          {
@@ -881,7 +880,7 @@ package store.view.strength
          }
       }
       
-      private function weaponUpgradesPlay(param1:Event) : void
+      private function weaponUpgradesPlay(e:Event) : void
       {
          if(!_weaponUpgrades)
          {
@@ -894,7 +893,7 @@ package store.view.strength
          this.dispatchEvent(new Event("weaponUpgradesPlay"));
       }
       
-      private function __weaponUpgradesFrame(param1:Event) : void
+      private function __weaponUpgradesFrame(e:Event) : void
       {
          if(_weaponUpgrades)
          {
@@ -928,9 +927,9 @@ package store.view.strength
          _area = null;
          var _loc3_:int = 0;
          var _loc2_:* = _items;
-         for each(var _loc1_ in _items)
+         for each(var item in _items)
          {
-            _loc1_.dispose();
+            item.dispose();
          }
          _items = null;
          EffectManager.Instance.removeEffect(_strength_btn_shineEffect);

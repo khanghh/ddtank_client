@@ -117,28 +117,28 @@ package christmas.view.playingSnowman
       
       protected var reference:ChristmasRoomPlayer;
       
-      public function ChristmasScneneMap(param1:ChristmasRoomModel, param2:SceneScene, param3:DictionaryData, param4:DictionaryData, param5:Sprite, param6:Sprite, param7:Sprite = null, param8:Sprite = null, param9:Sprite = null, param10:Sprite = null)
+      public function ChristmasScneneMap(model:ChristmasRoomModel, sceneScene:SceneScene, data:DictionaryData, objData:DictionaryData, bg:Sprite, mesh:Sprite, acticle:Sprite = null, sky:Sprite = null, decoration:Sprite = null, snow:Sprite = null)
       {
          endPoint = new Point();
          super();
-         _model = param1;
-         this.sceneScene = param2;
-         this._data = param3;
-         this._mapObjs = param4;
-         if(param5 == null)
+         _model = model;
+         this.sceneScene = sceneScene;
+         this._data = data;
+         this._mapObjs = objData;
+         if(bg == null)
          {
             this.bgLayer = new Sprite();
          }
          else
          {
-            this.bgLayer = param5;
+            this.bgLayer = bg;
          }
-         this.meshLayer = param6 == null?new Sprite():param6;
+         this.meshLayer = mesh == null?new Sprite():mesh;
          this.meshLayer.alpha = 0;
-         this.articleLayer = param7 == null?new Sprite():param7;
-         this.decorationLayer = param9 == null?new Sprite():param9;
-         this.skyLayer = param8 == null?new Sprite():param8;
-         this.snowLayer = param10 == null?new Sprite():param10;
+         this.articleLayer = acticle == null?new Sprite():acticle;
+         this.decorationLayer = decoration == null?new Sprite():decoration;
+         this.skyLayer = sky == null?new Sprite():sky;
+         this.snowLayer = snow == null?new Sprite():snow;
          var _loc11_:Boolean = false;
          this.decorationLayer.mouseEnabled = _loc11_;
          this.decorationLayer.mouseChildren = _loc11_;
@@ -171,19 +171,19 @@ package christmas.view.playingSnowman
          }
       }
       
-      private function __onMouseOver(param1:MouseEvent) : void
+      private function __onMouseOver(e:MouseEvent) : void
       {
          _snowCenterMc.visible = true;
          _snowCenterMc.gotoAndPlay(1);
       }
       
-      private function __onMouseOut(param1:MouseEvent) : void
+      private function __onMouseOut(e:MouseEvent) : void
       {
          _snowCenterMc.visible = false;
          _snowCenterMc.gotoAndStop(1);
       }
       
-      private function _enterSnowNPC(param1:MouseEvent) : void
+      private function _enterSnowNPC(e:MouseEvent) : void
       {
          if(!isAwradActOpen())
          {
@@ -195,43 +195,43 @@ package christmas.view.playingSnowman
       
       private function isAwradActOpen() : Boolean
       {
-         var _loc2_:int = ServerConfigManager.instance.getChristmasGiftsGetTime()[0];
-         var _loc1_:int = ServerConfigManager.instance.getChristmasGiftsGetTime()[1];
-         if(TimeManager.Instance.Now().hours < _loc2_)
+         var hour:int = ServerConfigManager.instance.getChristmasGiftsGetTime()[0];
+         var minute:int = ServerConfigManager.instance.getChristmasGiftsGetTime()[1];
+         if(TimeManager.Instance.Now().hours < hour)
          {
             return false;
          }
-         if(TimeManager.Instance.Now().hours == _loc2_ && TimeManager.Instance.Now().minutes < _loc1_)
+         if(TimeManager.Instance.Now().hours == hour && TimeManager.Instance.Now().minutes < minute)
          {
             return false;
          }
          return true;
       }
       
-      private function isPacksComplete(param1:int = 1) : void
+      private function isPacksComplete(num:int = 1) : void
       {
          SocketManager.Instance.out.getPacksToPlayer(1);
       }
       
       private function checkDistance() : Boolean
       {
-         var _loc3_:Number = NaN;
-         var _loc2_:Number = selfPlayer.x - armyPos.x;
-         var _loc1_:Number = selfPlayer.y - armyPos.y;
-         if(Math.pow(_loc2_,2) + Math.pow(_loc1_,2) > Math.pow(r,2))
+         var k:Number = NaN;
+         var disX:Number = selfPlayer.x - armyPos.x;
+         var disY:Number = selfPlayer.y - armyPos.y;
+         if(Math.pow(disX,2) + Math.pow(disY,2) > Math.pow(r,2))
          {
-            _loc3_ = Math.atan2(_loc1_,_loc2_);
+            k = Math.atan2(disY,disX);
             auto = new Point(armyPos.x,armyPos.y);
-            auto.x = auto.x + (_loc2_ > 0?1:-1) * Math.abs(Math.cos(_loc3_) * r);
-            auto.y = auto.y + (_loc1_ > 0?1:-1) * Math.abs(Math.sin(_loc3_) * r);
+            auto.x = auto.x + (disX > 0?1:-1) * Math.abs(Math.cos(k) * r);
+            auto.y = auto.y + (disY > 0?1:-1) * Math.abs(Math.sin(k) * r);
             return false;
          }
          return true;
       }
       
-      public function set enterIng(param1:Boolean) : void
+      public function set enterIng(value:Boolean) : void
       {
-         _entering = param1;
+         _entering = value;
       }
       
       public function get sceneMapVO() : SceneMapVO
@@ -239,17 +239,17 @@ package christmas.view.playingSnowman
          return _sceneMapVO;
       }
       
-      public function set sceneMapVO(param1:SceneMapVO) : void
+      public function set sceneMapVO(value:SceneMapVO) : void
       {
-         _sceneMapVO = param1;
+         _sceneMapVO = value;
       }
       
       protected function init() : void
       {
          _characters = new DictionaryData(true);
          _monsters = new DictionaryData(true);
-         var _loc1_:Class = ClassUtils.uiSourceDomain.getDefinition("asset.christmas.room.MouseClickMovie") as Class;
-         _mouseMovie = new _loc1_() as MovieClip;
+         var mvClass:Class = ClassUtils.uiSourceDomain.getDefinition("asset.christmas.room.MouseClickMovie") as Class;
+         _mouseMovie = new mvClass() as MovieClip;
          _mouseMovie.mouseChildren = false;
          _mouseMovie.mouseEnabled = false;
          _mouseMovie.stop();
@@ -270,7 +270,7 @@ package christmas.view.playingSnowman
          _speakTimer.start();
       }
       
-      private function __santaSpeakTimer(param1:TimerEvent) : void
+      private function __santaSpeakTimer(e:TimerEvent) : void
       {
          _timeFive = new Timer(1000,5);
          _timeFive.addEventListener("timer",__santaSpeakFiveSeconds);
@@ -278,7 +278,7 @@ package christmas.view.playingSnowman
          _timeFive.start();
       }
       
-      private function __santaSpeakFiveSeconds(param1:TimerEvent) : void
+      private function __santaSpeakFiveSeconds(e:TimerEvent) : void
       {
          if(selectSpeek % 2 == 0)
          {
@@ -309,11 +309,11 @@ package christmas.view.playingSnowman
          }
       }
       
-      private function __santaSpeakFiveSecondsComplete(param1:TimerEvent) : void
+      private function __santaSpeakFiveSecondsComplete(e:TimerEvent) : void
       {
-         (param1.target as Timer).removeEventListener("timer",__santaSpeakFiveSeconds);
-         (param1.target as Timer).removeEventListener("timerComplete",__santaSpeakFiveSecondsComplete);
-         (param1.target as Timer).stop();
+         (e.target as Timer).removeEventListener("timer",__santaSpeakFiveSeconds);
+         (e.target as Timer).removeEventListener("timerComplete",__santaSpeakFiveSecondsComplete);
+         (e.target as Timer).stop();
          _snowSpeakPng.visible = false;
          _snowSpeak.visible = false;
       }
@@ -333,66 +333,66 @@ package christmas.view.playingSnowman
          ChristmasCoreManager.instance.addEventListener("christmas_room_speak",__snowSpeak);
       }
       
-      private function __getPacks(param1:CrazyTankSocketEvent) : void
+      private function __getPacks(event:CrazyTankSocketEvent) : void
       {
-         var _loc8_:PackageIn = param1.pkg;
-         var _loc7_:Boolean = _loc8_.readBoolean();
-         var _loc6_:int = _loc8_.readInt();
-         var _loc5_:int = _loc8_.readInt();
-         var _loc4_:int = _loc8_.readInt();
-         var _loc2_:int = _loc5_ - _loc4_;
-         if(_loc6_ >= 2)
+         var pkg:PackageIn = event.pkg;
+         var packsCount:Boolean = pkg.readBoolean();
+         var indexPacks:int = pkg.readInt();
+         var totalCount:int = pkg.readInt();
+         var count:int = pkg.readInt();
+         var poorCount:int = totalCount - count;
+         if(indexPacks >= 2)
          {
             ChristmasCoreController.instance.showTransactionFrame(LanguageMgr.GetTranslation("christmas.snowPacks.full"),null,null,this,false);
             return;
          }
-         var _loc3_:Array = ChristmasCoreManager.instance.model.serverTime();
-         if(_loc3_[0] < ServerConfigManager.instance.getChristmasGiftsGetTime()[0] || _loc3_[0] == ServerConfigManager.instance.getChristmasGiftsGetTime()[0] && _loc3_[1] < ServerConfigManager.instance.getChristmasGiftsGetTime()[1])
+         var serTime:Array = ChristmasCoreManager.instance.model.serverTime();
+         if(serTime[0] < ServerConfigManager.instance.getChristmasGiftsGetTime()[0] || serTime[0] == ServerConfigManager.instance.getChristmasGiftsGetTime()[0] && serTime[1] < ServerConfigManager.instance.getChristmasGiftsGetTime()[1])
          {
             ChristmasCoreController.instance.showTransactionFrame(LanguageMgr.GetTranslation("christmas.snowPacks.unfinished2",String(ServerConfigManager.instance.getChristmasGiftsGetTime()[0]) + ":" + String(ServerConfigManager.instance.getChristmasGiftsGetTime()[1])),null,null,this,false);
             return;
          }
-         if(_loc4_ < _loc5_ && _loc7_ && (_loc3_[0] > ServerConfigManager.instance.getChristmasGiftsGetTime()[0] || _loc3_[0] == ServerConfigManager.instance.getChristmasGiftsGetTime()[0] && _loc3_[1] >= ServerConfigManager.instance.getChristmasGiftsGetTime()[1]))
+         if(count < totalCount && packsCount && (serTime[0] > ServerConfigManager.instance.getChristmasGiftsGetTime()[0] || serTime[0] == ServerConfigManager.instance.getChristmasGiftsGetTime()[0] && serTime[1] >= ServerConfigManager.instance.getChristmasGiftsGetTime()[1]))
          {
             ChristmasCoreController.instance.showTransactionFrame(LanguageMgr.GetTranslation("christmas.snowPacks.unfinished",packsNum < 0?0:packsNum),null,null,this,false);
             return;
          }
-         if(!_loc7_)
+         if(!packsCount)
          {
             ChristmasCoreController.instance.showTransactionFrame(LanguageMgr.GetTranslation("christmas.room.packs.isFull"),null,null,this,false);
             return;
          }
-         if(_loc4_ >= _loc5_ && _loc7_ && (_loc3_[0] > ServerConfigManager.instance.getChristmasGiftsGetTime()[0] || _loc3_[0] == ServerConfigManager.instance.getChristmasGiftsGetTime()[0] && _loc3_[1] >= ServerConfigManager.instance.getChristmasGiftsGetTime()[1]))
+         if(count >= totalCount && packsCount && (serTime[0] > ServerConfigManager.instance.getChristmasGiftsGetTime()[0] || serTime[0] == ServerConfigManager.instance.getChristmasGiftsGetTime()[0] && serTime[1] >= ServerConfigManager.instance.getChristmasGiftsGetTime()[1]))
          {
             packsNum = Number(packsNum) - 1;
-            ChristmasCoreController.instance.showTransactionFrame(LanguageMgr.GetTranslation("christmas.snowPacks.complete",_loc2_.toString()),isPacksComplete,null,this,false);
+            ChristmasCoreController.instance.showTransactionFrame(LanguageMgr.GetTranslation("christmas.snowPacks.complete",poorCount.toString()),isPacksComplete,null,this,false);
             return;
          }
       }
       
-      private function __addMonster(param1:DictionaryEvent) : void
+      private function __addMonster(pEvent:DictionaryEvent) : void
       {
-         var _loc2_:MonsterInfo = param1.data as MonsterInfo;
-         var _loc3_:ChristmasMonster = new ChristmasMonster(_loc2_,_loc2_.MonsterPos);
-         _monsters.add(_loc2_.ID,_loc3_);
-         articleLayer.addChild(_loc3_);
+         var monster:MonsterInfo = pEvent.data as MonsterInfo;
+         var cMonster:ChristmasMonster = new ChristmasMonster(monster,monster.MonsterPos);
+         _monsters.add(monster.ID,cMonster);
+         articleLayer.addChild(cMonster);
       }
       
-      private function __removeMonster(param1:DictionaryEvent) : void
+      private function __removeMonster(pEvent:DictionaryEvent) : void
       {
-         var _loc3_:MonsterInfo = param1.data as MonsterInfo;
-         var _loc2_:ChristmasMonster = _monsters[_loc3_.ID] as ChristmasMonster;
-         _monsters.remove(_loc3_.ID);
-         _loc2_.dispose();
+         var monsterInfo:MonsterInfo = pEvent.data as MonsterInfo;
+         var monster:ChristmasMonster = _monsters[monsterInfo.ID] as ChristmasMonster;
+         _monsters.remove(monsterInfo.ID);
+         monster.dispose();
       }
       
-      private function __onMonsterUpdate(param1:DictionaryEvent) : void
+      private function __onMonsterUpdate(pEvent:DictionaryEvent) : void
       {
-         var _loc3_:MonsterInfo = param1.data as MonsterInfo;
-         var _loc2_:ChristmasMonster = _monsters[_loc3_.ID] as ChristmasMonster;
+         var monsterInfo:MonsterInfo = pEvent.data as MonsterInfo;
+         var monster:ChristmasMonster = _monsters[monsterInfo.ID] as ChristmasMonster;
       }
       
-      private function __snowSpeak(param1:CrazyTankSocketEvent) : void
+      private function __snowSpeak(event:CrazyTankSocketEvent) : void
       {
          _timer = new Timer(1000,10);
          _timer.addEventListener("timer",__timeShowSnowSpeak);
@@ -400,14 +400,14 @@ package christmas.view.playingSnowman
          _timer.start();
       }
       
-      private function __timeShowSnowSpeak(param1:TimerEvent) : void
+      private function __timeShowSnowSpeak(event:TimerEvent) : void
       {
          _snowSpeak.text = LanguageMgr.GetTranslation("christmas.room.snowSpeakText");
          _snowSpeakPng.visible = true;
          _snowSpeak.visible = true;
       }
       
-      private function __timeSnowSpeakComplete(param1:TimerEvent) : void
+      private function __timeSnowSpeakComplete(event:TimerEvent) : void
       {
          _timer.removeEventListener("timer",__timeShowSnowSpeak);
          _timer.removeEventListener("timerComplete",__timeSnowSpeakComplete);
@@ -416,9 +416,9 @@ package christmas.view.playingSnowman
          _snowSpeak.visible = false;
       }
       
-      private function menuChange(param1:ChristmasRoomEvent) : void
+      private function menuChange(evt:ChristmasRoomEvent) : void
       {
-         var _loc2_:* = param1.type;
+         var _loc2_:* = evt.type;
          if("playerNameVisible" === _loc2_)
          {
             nameVisible();
@@ -429,13 +429,13 @@ package christmas.view.playingSnowman
       {
          var _loc3_:int = 0;
          var _loc2_:* = _characters;
-         for each(var _loc1_ in _characters)
+         for each(var christmasRoomPlayer in _characters)
          {
-            _loc1_.isShowName = _model.playerNameVisible;
+            christmasRoomPlayer.isShowName = _model.playerNameVisible;
          }
       }
       
-      protected function updateMap(param1:Event) : void
+      protected function updateMap(event:Event) : void
       {
          if(!_characters || _characters.length <= 0)
          {
@@ -443,112 +443,112 @@ package christmas.view.playingSnowman
          }
          var _loc4_:int = 0;
          var _loc3_:* = _characters;
-         for each(var _loc2_ in _characters)
+         for each(var player in _characters)
          {
-            _loc2_.updatePlayer();
-            _loc2_.isShowName = _model.playerNameVisible;
+            player.updatePlayer();
+            player.isShowName = _model.playerNameVisible;
          }
          BuildEntityDepth();
       }
       
-      protected function __click(param1:MouseEvent) : void
+      protected function __click(event:MouseEvent) : void
       {
          if(!selfPlayer || selfPlayer.playerVO.playerStauts != 0 || !selfPlayer.getCanAction())
          {
             return;
          }
-         var _loc2_:Point = this.globalToLocal(new Point(param1.stageX,param1.stageY));
+         var targetPoint:Point = this.globalToLocal(new Point(event.stageX,event.stageY));
          autoMove = false;
          if(getTimer() - _lastClick > _clickInterval)
          {
             _lastClick = getTimer();
-            if(!sceneScene.hit(_loc2_))
+            if(!sceneScene.hit(targetPoint))
             {
-               selfPlayer.playerVO.walkPath = sceneScene.searchPath(selfPlayer.playerPoint,_loc2_);
+               selfPlayer.playerVO.walkPath = sceneScene.searchPath(selfPlayer.playerPoint,targetPoint);
                selfPlayer.playerVO.walkPath.shift();
                selfPlayer.playerVO.scenePlayerDirection = SceneCharacterDirection.getDirection(selfPlayer.playerPoint,selfPlayer.playerVO.walkPath[0]);
                selfPlayer.playerVO.currentWalkStartPoint = selfPlayer.currentWalkStartPoint;
                sendMyPosition(selfPlayer.playerVO.walkPath.concat());
-               _mouseMovie.x = _loc2_.x;
-               _mouseMovie.y = _loc2_.y;
+               _mouseMovie.x = targetPoint.x;
+               _mouseMovie.y = targetPoint.y;
                _mouseMovie.play();
             }
          }
       }
       
-      public function sendMyPosition(param1:Array) : void
+      public function sendMyPosition(p:Array) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:Array = [];
-         while(_loc4_ < param1.length)
+         var i:int = 0;
+         var arr:Array = [];
+         while(i < p.length)
          {
-            _loc2_.push(int(param1[_loc4_].x),int(param1[_loc4_].y));
-            _loc4_++;
+            arr.push(int(p[i].x),int(p[i].y));
+            i++;
          }
-         var _loc3_:String = _loc2_.toString();
-         SocketManager.Instance.out.sendChristmasRoomMove(param1[param1.length - 1].x,param1[param1.length - 1].y,_loc3_);
+         var pathStr:String = arr.toString();
+         SocketManager.Instance.out.sendChristmasRoomMove(p[p.length - 1].x,p[p.length - 1].y,pathStr);
       }
       
-      public function movePlayer(param1:int, param2:Array) : void
+      public function movePlayer(id:int, p:Array) : void
       {
-         var _loc3_:* = null;
-         if(_characters[param1])
+         var christmasRoomPlayer:* = null;
+         if(_characters[id])
          {
-            _loc3_ = _characters[param1] as ChristmasRoomPlayer;
-            if(!_loc3_.getCanAction())
+            christmasRoomPlayer = _characters[id] as ChristmasRoomPlayer;
+            if(!christmasRoomPlayer.getCanAction())
             {
-               _loc3_.playerVO.playerStauts = 0;
-               _loc3_.setStatus();
+               christmasRoomPlayer.playerVO.playerStauts = 0;
+               christmasRoomPlayer.setStatus();
             }
-            _loc3_.playerVO.walkPath = param2;
-            _loc3_.playerWalk(param2);
+            christmasRoomPlayer.playerVO.walkPath = p;
+            christmasRoomPlayer.playerWalk(p);
          }
       }
       
-      public function updatePlayersStauts(param1:int, param2:int, param3:Point) : void
+      public function updatePlayersStauts(id:int, stauts:int, point:Point) : void
       {
-         var _loc4_:* = null;
-         if(_characters[param1])
+         var christmasRoomPlayer:* = null;
+         if(_characters[id])
          {
-            _loc4_ = _characters[param1] as ChristmasRoomPlayer;
-            if(param2 == 0)
+            christmasRoomPlayer = _characters[id] as ChristmasRoomPlayer;
+            if(stauts == 0)
             {
-               _loc4_.playerVO.playerStauts = param2;
-               _loc4_.playerVO.playerPos = param3;
-               _loc4_.setStatus();
+               christmasRoomPlayer.playerVO.playerStauts = stauts;
+               christmasRoomPlayer.playerVO.playerPos = point;
+               christmasRoomPlayer.setStatus();
             }
-            else if(param2 == 1)
+            else if(stauts == 1)
             {
-               if(!_loc4_.getCanAction())
+               if(!christmasRoomPlayer.getCanAction())
                {
-                  _loc4_.playerVO.playerStauts = 0;
-                  _loc4_.setStatus();
+                  christmasRoomPlayer.playerVO.playerStauts = 0;
+                  christmasRoomPlayer.setStatus();
                }
-               _loc4_.playerVO.playerStauts = param2;
-               _loc4_.isReadyFight = true;
-               _loc4_.addEventListener("readyFight",__otherPlayrStartFight);
-               _loc4_.playerVO.walkPath = [param3];
-               _loc4_.playerWalk([param3]);
+               christmasRoomPlayer.playerVO.playerStauts = stauts;
+               christmasRoomPlayer.isReadyFight = true;
+               christmasRoomPlayer.addEventListener("readyFight",__otherPlayrStartFight);
+               christmasRoomPlayer.playerVO.walkPath = [point];
+               christmasRoomPlayer.playerWalk([point]);
             }
             else
             {
-               _loc4_.playerVO.playerStauts = param2;
-               _loc4_.setStatus();
+               christmasRoomPlayer.playerVO.playerStauts = stauts;
+               christmasRoomPlayer.setStatus();
             }
          }
       }
       
-      public function __otherPlayrStartFight(param1:ChristmasRoomEvent) : void
+      public function __otherPlayrStartFight(evt:ChristmasRoomEvent) : void
       {
-         var _loc2_:ChristmasRoomPlayer = param1.currentTarget as ChristmasRoomPlayer;
-         _loc2_.removeEventListener("readyFight",__otherPlayrStartFight);
-         _loc2_.sceneCharacterDirection = SceneCharacterDirection.getDirection(_loc2_.playerPoint,armyPos);
-         _loc2_.dispatchEvent(new SceneCharacterEvent("characterDirectionChange",false));
-         _loc2_.isReadyFight = false;
-         _loc2_.setStatus();
+         var christmasRoomPlayer:ChristmasRoomPlayer = evt.currentTarget as ChristmasRoomPlayer;
+         christmasRoomPlayer.removeEventListener("readyFight",__otherPlayrStartFight);
+         christmasRoomPlayer.sceneCharacterDirection = SceneCharacterDirection.getDirection(christmasRoomPlayer.playerPoint,armyPos);
+         christmasRoomPlayer.dispatchEvent(new SceneCharacterEvent("characterDirectionChange",false));
+         christmasRoomPlayer.isReadyFight = false;
+         christmasRoomPlayer.setStatus();
       }
       
-      public function updateSelfStatus(param1:int) : void
+      public function updateSelfStatus(value:int) : void
       {
          if(selfPlayer)
          {
@@ -559,7 +559,7 @@ package christmas.view.playingSnowman
                setCenter();
                _entering = false;
             }
-            selfPlayer.playerVO.playerStauts = param1;
+            selfPlayer.playerVO.playerStauts = value;
             selfPlayer.setStatus();
          }
       }
@@ -569,66 +569,66 @@ package christmas.view.playingSnowman
          return selfPlayer.playerVO.playerStauts;
       }
       
-      public function playerRevive(param1:int) : void
+      public function playerRevive(id:int) : void
       {
-         var _loc2_:* = null;
-         if(_characters[param1])
+         var christmasRoomPlayer:* = null;
+         if(_characters[id])
          {
-            _loc2_ = _characters[param1] as ChristmasRoomPlayer;
-            _loc2_.revive();
+            christmasRoomPlayer = _characters[id] as ChristmasRoomPlayer;
+            christmasRoomPlayer.revive();
             selfPlayer.playerVO.playerStauts = 0;
             _entering = false;
          }
       }
       
-      public function setCenter(param1:SceneCharacterEvent = null) : void
+      public function setCenter(event:SceneCharacterEvent = null) : void
       {
-         var _loc3_:* = NaN;
-         var _loc2_:* = NaN;
+         var xf:* = NaN;
+         var yf:* = NaN;
          if(reference)
          {
-            _loc3_ = Number(-(reference.x - 1000 / 2));
-            _loc2_ = Number(-(reference.y - 600 / 2) + 50);
+            xf = Number(-(reference.x - 1000 / 2));
+            yf = Number(-(reference.y - 600 / 2) + 50);
          }
          else
          {
-            _loc3_ = Number(-(ChristmasCoreController.instance.christmasInfo.playerDefaultPos.x - 1000 / 2));
-            _loc2_ = Number(-(ChristmasCoreController.instance.christmasInfo.playerDefaultPos.y - 600 / 2) + 50);
+            xf = Number(-(ChristmasCoreController.instance.christmasInfo.playerDefaultPos.x - 1000 / 2));
+            yf = Number(-(ChristmasCoreController.instance.christmasInfo.playerDefaultPos.y - 600 / 2) + 50);
          }
-         if(_loc3_ > 0)
+         if(xf > 0)
          {
-            _loc3_ = 0;
+            xf = 0;
          }
-         if(_loc3_ < 1000 - _sceneMapVO.mapW)
+         if(xf < 1000 - _sceneMapVO.mapW)
          {
-            _loc3_ = Number(1000 - _sceneMapVO.mapW);
+            xf = Number(1000 - _sceneMapVO.mapW);
          }
-         if(_loc2_ > 0)
+         if(yf > 0)
          {
-            _loc2_ = 0;
+            yf = 0;
          }
-         if(_loc2_ < 600 - _sceneMapVO.mapH)
+         if(yf < 600 - _sceneMapVO.mapH)
          {
-            _loc2_ = Number(600 - _sceneMapVO.mapH);
+            yf = Number(600 - _sceneMapVO.mapH);
          }
-         x = _loc3_;
-         y = _loc2_;
+         x = xf;
+         y = yf;
       }
       
       public function addSelfPlayer() : void
       {
-         var _loc1_:* = null;
+         var selfPlayerVO:* = null;
          if(!selfPlayer)
          {
-            _loc1_ = ChristmasCoreController.instance.christmasInfo.myPlayerVO;
-            _loc1_.playerInfo = PlayerManager.Instance.Self;
-            _currentLoadingPlayer = new ChristmasRoomPlayer(_loc1_,addPlayerCallBack);
+            selfPlayerVO = ChristmasCoreController.instance.christmasInfo.myPlayerVO;
+            selfPlayerVO.playerInfo = PlayerManager.Instance.Self;
+            _currentLoadingPlayer = new ChristmasRoomPlayer(selfPlayerVO,addPlayerCallBack);
          }
       }
       
-      protected function ajustScreen(param1:ChristmasRoomPlayer) : void
+      protected function ajustScreen(christmasRoomPlayer:ChristmasRoomPlayer) : void
       {
-         if(param1 == null)
+         if(christmasRoomPlayer == null)
          {
             if(reference)
             {
@@ -641,33 +641,33 @@ package christmas.view.playingSnowman
          {
             reference.removeEventListener("characterMovement",setCenter);
          }
-         reference = param1;
+         reference = christmasRoomPlayer;
          reference.addEventListener("characterMovement",setCenter);
       }
       
-      protected function __addPlayer(param1:DictionaryEvent) : void
+      protected function __addPlayer(event:DictionaryEvent) : void
       {
-         var _loc2_:PlayerVO = param1.data as PlayerVO;
-         _currentLoadingPlayer = new ChristmasRoomPlayer(_loc2_,addPlayerCallBack);
+         var playerVO:PlayerVO = event.data as PlayerVO;
+         _currentLoadingPlayer = new ChristmasRoomPlayer(playerVO,addPlayerCallBack);
       }
       
-      private function addPlayerCallBack(param1:ChristmasRoomPlayer, param2:Boolean, param3:int) : void
+      private function addPlayerCallBack(christmasRoomPlayer:ChristmasRoomPlayer, isLoadSucceed:Boolean, vFlag:int) : void
       {
-         if(param3 == 0)
+         if(vFlag == 0)
          {
-            if(!articleLayer || !param1)
+            if(!articleLayer || !christmasRoomPlayer)
             {
                return;
             }
             _currentLoadingPlayer = null;
-            param1.sceneScene = sceneScene;
-            var _loc4_:* = param1.playerVO.scenePlayerDirection;
-            param1.sceneCharacterDirection = _loc4_;
-            param1.setSceneCharacterDirectionDefault = _loc4_;
-            if(!selfPlayer && param1.playerVO.playerInfo.ID == PlayerManager.Instance.Self.ID)
+            christmasRoomPlayer.sceneScene = sceneScene;
+            var _loc4_:* = christmasRoomPlayer.playerVO.scenePlayerDirection;
+            christmasRoomPlayer.sceneCharacterDirection = _loc4_;
+            christmasRoomPlayer.setSceneCharacterDirectionDefault = _loc4_;
+            if(!selfPlayer && christmasRoomPlayer.playerVO.playerInfo.ID == PlayerManager.Instance.Self.ID)
             {
-               param1.playerVO.playerPos = param1.playerVO.playerPos;
-               selfPlayer = param1;
+               christmasRoomPlayer.playerVO.playerPos = christmasRoomPlayer.playerVO.playerPos;
+               selfPlayer = christmasRoomPlayer;
                articleLayer.addChild(selfPlayer);
                ajustScreen(selfPlayer);
                setCenter();
@@ -676,93 +676,91 @@ package christmas.view.playingSnowman
             }
             else
             {
-               articleLayer.addChild(param1);
+               articleLayer.addChild(christmasRoomPlayer);
             }
-            param1.playerPoint = param1.playerVO.playerPos;
-            param1.sceneCharacterStateType = "natural";
-            _characters.add(param1.playerVO.playerInfo.ID,param1);
-            param1.isShowName = _model.playerNameVisible;
+            christmasRoomPlayer.playerPoint = christmasRoomPlayer.playerVO.playerPos;
+            christmasRoomPlayer.sceneCharacterStateType = "natural";
+            _characters.add(christmasRoomPlayer.playerVO.playerInfo.ID,christmasRoomPlayer);
+            christmasRoomPlayer.isShowName = _model.playerNameVisible;
          }
       }
       
-      private function playerActionChange(param1:SceneCharacterEvent) : void
+      private function playerActionChange(evt:SceneCharacterEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc4_:* = null;
-         var _loc3_:String = param1.data.toString();
-         if(_loc3_ == "naturalStandFront" || _loc3_ == "naturalStandBack")
+         var mon:* = null;
+         var pos:* = null;
+         var type:String = evt.data.toString();
+         if(type == "naturalStandFront" || type == "naturalStandBack")
          {
             _mouseMovie.gotoAndStop(1);
-            _loc2_ = ChristmasMonsterManager.Instance.curMonster;
-            if(_loc2_ && _loc2_.MonsterState <= 0)
+            mon = ChristmasMonsterManager.Instance.curMonster;
+            if(mon && mon.MonsterState <= 0)
             {
-               _loc4_ = this.localToGlobal(new Point(selfPlayer.playerPoint.x,selfPlayer.playerPoint.y + 50));
-               if(_loc2_.hitTestPoint(_loc4_.x,_loc4_.y) || _loc2_.hitTestObject(selfPlayer))
+               pos = this.localToGlobal(new Point(selfPlayer.playerPoint.x,selfPlayer.playerPoint.y + 50));
+               if(mon.hitTestPoint(pos.x,pos.y) || mon.hitTestObject(selfPlayer))
                {
-                  _loc2_.StartFight();
+                  mon.StartFight();
                }
             }
          }
       }
       
-      protected function __removePlayer(param1:DictionaryEvent) : void
+      protected function __removePlayer(event:DictionaryEvent) : void
       {
-         var _loc2_:int = (param1.data as PlayerVO).playerInfo.ID;
-         var _loc3_:ChristmasRoomPlayer = _characters[_loc2_] as ChristmasRoomPlayer;
-         _characters.remove(_loc2_);
-         if(_loc3_)
+         var id:int = (event.data as PlayerVO).playerInfo.ID;
+         var player:ChristmasRoomPlayer = _characters[id] as ChristmasRoomPlayer;
+         _characters.remove(id);
+         if(player)
          {
-            if(_loc3_.parent)
+            if(player.parent)
             {
-               _loc3_.parent.removeChild(_loc3_);
+               player.parent.removeChild(player);
             }
-            _loc3_.removeEventListener("characterMovement",setCenter);
-            _loc3_.removeEventListener("characterActionChange",playerActionChange);
-            _loc3_.dispose();
+            player.removeEventListener("characterMovement",setCenter);
+            player.removeEventListener("characterActionChange",playerActionChange);
+            player.dispose();
          }
-         _loc3_ = null;
+         player = null;
       }
       
       protected function BuildEntityDepth() : void
       {
-         var _loc9_:int = 0;
-         var _loc4_:* = null;
-         var _loc8_:Number = NaN;
-         var _loc7_:* = 0;
-         var _loc5_:* = NaN;
-         var _loc6_:int = 0;
-         var _loc3_:* = null;
-         var _loc1_:Number = NaN;
-         var _loc2_:int = articleLayer.numChildren;
-         _loc9_ = 0;
-         while(_loc9_ < _loc2_ - 1)
+         var i:int = 0;
+         var obj:* = null;
+         var depth:Number = NaN;
+         var minIndex:* = 0;
+         var minDepth:* = NaN;
+         var j:int = 0;
+         var temp:* = null;
+         var tempDepth:Number = NaN;
+         var count:int = articleLayer.numChildren;
+         for(i = 0; i < count - 1; )
          {
-            _loc4_ = articleLayer.getChildAt(_loc9_);
-            _loc8_ = this.getPointDepth(_loc4_.x,_loc4_.y);
-            _loc5_ = 1.79769313486232e308;
-            _loc6_ = _loc9_ + 1;
-            while(_loc6_ < _loc2_)
+            obj = articleLayer.getChildAt(i);
+            depth = this.getPointDepth(obj.x,obj.y);
+            minDepth = 1.79769313486232e308;
+            for(j = i + 1; j < count; )
             {
-               _loc3_ = articleLayer.getChildAt(_loc6_);
-               _loc1_ = this.getPointDepth(_loc3_.x,_loc3_.y);
-               if(_loc1_ < _loc5_)
+               temp = articleLayer.getChildAt(j);
+               tempDepth = this.getPointDepth(temp.x,temp.y);
+               if(tempDepth < minDepth)
                {
-                  _loc7_ = _loc6_;
-                  _loc5_ = _loc1_;
+                  minIndex = j;
+                  minDepth = tempDepth;
                }
-               _loc6_++;
+               j++;
             }
-            if(_loc8_ > _loc5_)
+            if(depth > minDepth)
             {
-               articleLayer.swapChildrenAt(_loc9_,_loc7_);
+               articleLayer.swapChildrenAt(i,minIndex);
             }
-            _loc9_++;
+            i++;
          }
       }
       
-      protected function getPointDepth(param1:Number, param2:Number) : Number
+      protected function getPointDepth(x:Number, y:Number) : Number
       {
-         return sceneMapVO.mapW * param2 + param1;
+         return sceneMapVO.mapW * y + x;
       }
       
       protected function removeEvent() : void
@@ -791,8 +789,8 @@ package christmas.view.playingSnowman
       
       public function dispose() : void
       {
-         var _loc4_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var player:* = null;
          removeEvent();
          if(_mapObjs)
          {
@@ -807,45 +805,44 @@ package christmas.view.playingSnowman
          _sceneMapVO = null;
          var _loc6_:int = 0;
          var _loc5_:* = _characters;
-         for each(var _loc2_ in _characters)
+         for each(var p in _characters)
          {
-            if(_loc2_.parent)
+            if(p.parent)
             {
-               _loc2_.parent.removeChild(_loc2_);
+               p.parent.removeChild(p);
             }
-            _loc2_.removeEventListener("characterMovement",setCenter);
-            _loc2_.removeEventListener("characterActionChange",playerActionChange);
-            _loc2_.dispose();
-            _loc2_ = null;
+            p.removeEventListener("characterMovement",setCenter);
+            p.removeEventListener("characterActionChange",playerActionChange);
+            p.dispose();
+            p = null;
          }
          _characters.clear();
          _characters = null;
          if(articleLayer)
          {
-            _loc4_ = articleLayer.numChildren;
-            while(_loc4_ > 0)
+            for(i = articleLayer.numChildren; i > 0; )
             {
-               _loc1_ = articleLayer.getChildAt(_loc4_ - 1) as ChristmasRoomPlayer;
-               if(_loc1_)
+               player = articleLayer.getChildAt(i - 1) as ChristmasRoomPlayer;
+               if(player)
                {
-                  _loc1_.removeEventListener("characterMovement",setCenter);
-                  _loc1_.removeEventListener("characterActionChange",playerActionChange);
-                  if(_loc1_.parent)
+                  player.removeEventListener("characterMovement",setCenter);
+                  player.removeEventListener("characterActionChange",playerActionChange);
+                  if(player.parent)
                   {
-                     _loc1_.parent.removeChild(_loc1_);
+                     player.parent.removeChild(player);
                   }
-                  _loc1_.dispose();
+                  player.dispose();
                }
-               _loc1_ = null;
+               player = null;
                try
                {
-                  articleLayer.removeChildAt(_loc4_ - 1);
+                  articleLayer.removeChildAt(i - 1);
                }
                catch(e:RangeError)
                {
                   trace(e);
                }
-               _loc4_--;
+               i--;
             }
             if(articleLayer && articleLayer.parent)
             {
@@ -873,10 +870,10 @@ package christmas.view.playingSnowman
          _currentLoadingPlayer = null;
          var _loc8_:int = 0;
          var _loc7_:* = _monsters;
-         for each(var _loc3_ in _monsters)
+         for each(var o in _monsters)
          {
-            _loc3_.dispose();
-            _loc3_ = null;
+            o.dispose();
+            o = null;
          }
          _monsters.clear();
          if(_mouseMovie && _mouseMovie.parent)

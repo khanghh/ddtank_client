@@ -101,17 +101,17 @@ package littleGame
          _soundButton.addEventListener("click",__soundClick);
       }
       
-      private function __kickPlaye(param1:LittleGameSocketEvent) : void
+      private function __kickPlaye(event:LittleGameSocketEvent) : void
       {
-         LittleGameManager.Instance.kickPlayer(param1.pkg);
+         LittleGameManager.Instance.kickPlayer(event.pkg);
       }
       
-      private function __invokeObject(param1:LittleGameSocketEvent) : void
+      private function __invokeObject(event:LittleGameSocketEvent) : void
       {
-         LittleGameManager.Instance.invokeObject(_game,param1.pkg);
+         LittleGameManager.Instance.invokeObject(_game,event.pkg);
       }
       
-      private function __soundClick(param1:MouseEvent) : void
+      private function __soundClick(event:MouseEvent) : void
       {
          if(SharedManager.Instance.allowMusic || SharedManager.Instance.allowSound)
          {
@@ -127,7 +127,7 @@ package littleGame
          }
       }
       
-      private function __inhaledChanged(param1:Event) : void
+      private function __inhaledChanged(event:Event) : void
       {
          if(_game.selfInhaled)
          {
@@ -140,70 +140,70 @@ package littleGame
          }
       }
       
-      private function __netDelay(param1:LittleGameSocketEvent) : void
+      private function __netDelay(event:LittleGameSocketEvent) : void
       {
-         LittleGameManager.Instance.setNetDelay(_game,param1.pkg);
+         LittleGameManager.Instance.setNetDelay(_game,event.pkg);
       }
       
-      private function __pong(param1:LittleGameSocketEvent) : void
+      private function __pong(event:LittleGameSocketEvent) : void
       {
-         LittleGameManager.Instance.pong(_game,param1.pkg);
+         LittleGameManager.Instance.pong(_game,event.pkg);
       }
       
-      private function __setClock(param1:LittleGameSocketEvent) : void
+      private function __setClock(event:LittleGameSocketEvent) : void
       {
-         LittleGameManager.Instance.setClock(_game,param1.pkg);
+         LittleGameManager.Instance.setClock(_game,event.pkg);
       }
       
-      private function __selfGetScore(param1:LittleGameSocketEvent) : void
+      private function __selfGetScore(event:LittleGameSocketEvent) : void
       {
-         LittleGameManager.Instance.getScore(_game,param1.pkg);
+         LittleGameManager.Instance.getScore(_game,event.pkg);
       }
       
-      private function __doAction(param1:LittleGameSocketEvent) : void
+      private function __doAction(event:LittleGameSocketEvent) : void
       {
-         LittleGameManager.Instance.doAction(_game,param1.pkg);
+         LittleGameManager.Instance.doAction(_game,event.pkg);
       }
       
-      private function __doMovie(param1:LittleGameSocketEvent) : void
+      private function __doMovie(event:LittleGameSocketEvent) : void
       {
-         LittleGameManager.Instance.doMovie(_game,param1.pkg);
+         LittleGameManager.Instance.doMovie(_game,event.pkg);
       }
       
-      private function __removeObject(param1:LittleGameSocketEvent) : void
+      private function __removeObject(event:LittleGameSocketEvent) : void
       {
-         LittleGameManager.Instance.removeObject(_game,param1.pkg);
+         LittleGameManager.Instance.removeObject(_game,event.pkg);
       }
       
-      private function __addObject(param1:LittleGameSocketEvent) : void
+      private function __addObject(event:LittleGameSocketEvent) : void
       {
-         var _loc2_:String = param1.pkg.readUTF();
-         LittleGameManager.Instance.addObject(_game,_loc2_,param1.pkg);
+         var type:String = event.pkg.readUTF();
+         LittleGameManager.Instance.addObject(_game,type,event.pkg);
       }
       
-      private function __updateLivingProperty(param1:LittleGameSocketEvent) : void
+      private function __updateLivingProperty(event:LittleGameSocketEvent) : void
       {
-         LittleGameManager.Instance.updateLivingProperty(_game,param1.pkg);
+         LittleGameManager.Instance.updateLivingProperty(_game,event.pkg);
       }
       
-      private function __updatePos(param1:LittleGameSocketEvent) : void
+      private function __updatePos(event:LittleGameSocketEvent) : void
       {
-         LittleGameManager.Instance.updatePos(_game,param1.pkg);
+         LittleGameManager.Instance.updatePos(_game,event.pkg);
       }
       
-      private function __livingMove(param1:LittleGameSocketEvent) : void
+      private function __livingMove(event:LittleGameSocketEvent) : void
       {
-         var _loc2_:LittleLiving = LittleGameManager.Instance.livingMove(_game,param1.pkg);
+         var living:LittleLiving = LittleGameManager.Instance.livingMove(_game,event.pkg);
       }
       
-      private function __addSprite(param1:LittleGameSocketEvent) : void
+      private function __addSprite(event:LittleGameSocketEvent) : void
       {
-         LittleGameManager.Instance.addLiving(_game,param1.pkg);
+         LittleGameManager.Instance.addLiving(_game,event.pkg);
       }
       
-      private function __removeSprite(param1:LittleGameSocketEvent) : void
+      private function __removeSprite(event:LittleGameSocketEvent) : void
       {
-         LittleGameManager.Instance.removeLiving(_game,param1.pkg);
+         LittleGameManager.Instance.removeLiving(_game,event.pkg);
       }
       
       private function removeEvent() : void
@@ -226,17 +226,17 @@ package littleGame
          _soundButton.removeEventListener("click",__soundClick);
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
          InviteManager.Instance.enabled = false;
          CacheSysManager.lock("alertInFight");
-         _game = param2 as Scenario;
+         _game = data as Scenario;
          KeyboardShortcutsManager.Instance.forbiddenFull();
          LittleGameManager.Instance.setMainStage(this);
          configUI();
          LittleGameManager.Instance.setGameScene(_scene);
          addEvent();
-         super.enter(param1,param2);
+         super.enter(prev,data);
          _game.startup();
          SoundManager.instance.playMusic(_game.music);
       }
@@ -246,7 +246,7 @@ package littleGame
          return "littleGame";
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
          InviteManager.Instance.enabled = true;
          CacheSysManager.unlock("alertInFight");
@@ -271,7 +271,7 @@ package littleGame
          CharacterSoundManager.instance.allowSound = _loc2_;
          CharacterSoundManager.instance.allowMusic = _loc2_;
          CharacterFactory.Instance.releaseResource();
-         super.leaving(param1);
+         super.leaving(next);
       }
    }
 }

@@ -31,10 +31,10 @@ package auctionHouse.view
       {
          _view = new Sprite();
          titleText = LanguageMgr.GetTranslation("ddt.auctionHouse.notesTitle");
-         var _loc2_:Scale9CornerImage = ComponentFactory.Instance.creatComponentByStylename("ddtauction.HelpFrame.FrameBg");
-         _view.addChild(_loc2_);
-         var _loc1_:MovieImage = ComponentFactory.Instance.creatComponentByStylename("asset.ddtauctionHouse.NotesContent");
-         _view.addChild(_loc1_);
+         var bg:Scale9CornerImage = ComponentFactory.Instance.creatComponentByStylename("ddtauction.HelpFrame.FrameBg");
+         _view.addChild(bg);
+         var textBitmap:MovieImage = ComponentFactory.Instance.creatComponentByStylename("asset.ddtauctionHouse.NotesContent");
+         _view.addChild(textBitmap);
          _submitButton = ComponentFactory.Instance.creat("auctionHouse.NotesFrameEnter");
          _submitButton.text = LanguageMgr.GetTranslation("ok");
          _view.addChild(_submitButton);
@@ -49,16 +49,16 @@ package auctionHouse.view
          _submitButton.addEventListener("click",_submit);
       }
       
-      private function _submit(param1:MouseEvent) : void
+      private function _submit(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          close();
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.responseCode == 0 || param1.responseCode == 1 || param1.responseCode == 2)
+         if(e.responseCode == 0 || e.responseCode == 1 || e.responseCode == 2)
          {
             close();
          }

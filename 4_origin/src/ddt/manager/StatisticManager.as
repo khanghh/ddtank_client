@@ -92,15 +92,15 @@ package ddt.manager
          return _instance;
       }
       
-      public function startAction(param1:String, param2:String) : void
+      public function startAction(type:String, status:String) : void
       {
-         var _loc3_:* = null;
+         var data:* = null;
          if(isStatistic)
          {
-            _loc3_ = {};
-            _loc3_.appid = "1";
-            _loc3_.style = param1 + "_" + param2;
-            _loc3_.subid = ServerManager.Instance.AgentID;
+            data = {};
+            data.appid = "1";
+            data.style = type + "_" + status;
+            data.subid = ServerManager.Instance.AgentID;
          }
       }
       

@@ -72,12 +72,12 @@ package littleGame.view
       
       private var dt:Number = 0;
       
-      public function GameScene(param1:Scenario)
+      public function GameScene(game:Scenario)
       {
          selfPos = new Point();
          otherPos = new Point();
          super();
-         _game = param1;
+         _game = game;
          _cameraRect = new Rectangle(300,250,300,150);
          _left = StageReferance.stageWidth - _game.grid.width;
          _right = 0;
@@ -107,94 +107,92 @@ package littleGame.view
       
       private function drawLivings() : void
       {
-         var _loc1_:Dictionary = _game.livings;
-         var _loc3_:int = 1;
+         var livings:Dictionary = _game.livings;
+         var i:int = 1;
          var _loc5_:int = 0;
-         var _loc4_:* = _loc1_;
-         for each(var _loc2_ in _loc1_)
+         var _loc4_:* = livings;
+         for each(var living in livings)
          {
-            if(_loc2_.isSelf || !_loc2_.isPlayer)
+            if(living.isSelf || !living.isPlayer)
             {
-               drawLiving(_loc2_);
+               drawLiving(living);
             }
             else
             {
-               _loc3_++;
-               setTimeout(drawLiving,150 * _loc3_,_loc2_);
+               i++;
+               setTimeout(drawLiving,150 * i,living);
             }
          }
       }
       
-      private function drawLiving(param1:LittleLiving) : GameLittleLiving
+      private function drawLiving(living:LittleLiving) : GameLittleLiving
       {
-         var _loc2_:* = null;
-         if(_game == null || _game.livings == null || _game.livings[param1.id] != param1)
+         var gameLiving:* = null;
+         if(_game == null || _game.livings == null || _game.livings[living.id] != living)
          {
             return null;
          }
-         if(param1.isSelf)
+         if(living.isSelf)
          {
-            _loc2_ = new GameLittleSelf(param1 as LittleSelf);
-            selfGameLiving = _loc2_ as GameLittleSelf;
-            param1.addEventListener("posChanged",__selfPosChanged);
-            focusSelf(param1);
+            gameLiving = new GameLittleSelf(living as LittleSelf);
+            selfGameLiving = gameLiving as GameLittleSelf;
+            living.addEventListener("posChanged",__selfPosChanged);
+            focusSelf(living);
          }
-         else if(param1.isPlayer)
+         else if(living.isPlayer)
          {
-            _loc2_ = new GameLittlePlayer(param1 as LittlePlayer);
+            gameLiving = new GameLittlePlayer(living as LittlePlayer);
          }
          else
          {
-            _loc2_ = new GameLittleLiving(param1);
+            gameLiving = new GameLittleLiving(living);
          }
-         _backLivingLayer.addChild(_loc2_);
-         if(_gameLivings[param1.id])
+         _backLivingLayer.addChild(gameLiving);
+         if(_gameLivings[living.id])
          {
             trace("::::");
          }
-         _gameLivings[param1.id] = _loc2_;
-         sortLiving(_loc2_);
-         return _loc2_;
+         _gameLivings[living.id] = gameLiving;
+         sortLiving(gameLiving);
+         return gameLiving;
       }
       
-      private function onLivingClicked(param1:MouseEvent) : void
+      private function onLivingClicked(event:MouseEvent) : void
       {
-         param1.stopPropagation();
-         var _loc6_:LittleSelf = _game.selfPlayer;
-         var _loc5_:GameLittleLiving = param1.currentTarget as GameLittleLiving;
-         var _loc2_:int = _loc5_.living.pos.x * _loc5_.living.speed / _game.grid.cellSize;
-         var _loc3_:int = _loc5_.living.pos.y * _loc5_.living.speed / _game.grid.cellSize;
-         var _loc4_:Array = LittleGameManager.Instance.fillPath(_loc6_,_game.grid,_loc6_.pos.x,_loc6_.pos.y,_loc2_,_loc3_);
-         if(!_loc4_)
+         event.stopPropagation();
+         var self:LittleSelf = _game.selfPlayer;
+         var gameliving:GameLittleLiving = event.currentTarget as GameLittleLiving;
+         var dx:int = gameliving.living.pos.x * gameliving.living.speed / _game.grid.cellSize;
+         var dy:int = gameliving.living.pos.y * gameliving.living.speed / _game.grid.cellSize;
+         var path:Array = LittleGameManager.Instance.fillPath(self,_game.grid,self.pos.x,self.pos.y,dx,dy);
+         if(!path)
          {
          }
       }
       
       private function drawGrid() : void
       {
-         var _loc6_:int = 0;
-         var _loc1_:int = 0;
-         var _loc5_:int = 0;
-         var _loc4_:Grid = _game.grid;
-         var _loc2_:BitmapData = new BitmapData(_loc4_.width,_loc4_.height,true,0);
-         var _loc3_:Array = _loc4_.nodes;
-         var _loc7_:int = _loc3_.length;
-         _loc6_ = 0;
-         while(_loc6_ < _loc7_)
+         var i:int = 0;
+         var cols:int = 0;
+         var j:int = 0;
+         var grid:Grid = _game.grid;
+         var bitmapData:BitmapData = new BitmapData(grid.width,grid.height,true,0);
+         var nodes:Array = grid.nodes;
+         var rows:int = nodes.length;
+         for(i = 0; i < rows; )
          {
-            _loc1_ = _loc3_[_loc6_].length;
-            _loc5_ = 0;
-            while(_loc5_ < _loc1_)
+            cols = nodes[i].length;
+            for(j = 0; j < cols; )
             {
-               if(!_loc3_[_loc6_][_loc5_].walkable)
+               if(!nodes[i][j].walkable)
                {
-                  _loc2_.fillRect(new Rectangle(_loc5_ * _loc4_.cellSize,_loc6_ * _loc4_.cellSize,_loc4_.cellSize,_loc4_.cellSize),2583625728);
+                  bitmapData.fillRect(new Rectangle(j * grid.cellSize,i * grid.cellSize,grid.cellSize,grid.cellSize),2583625728);
                }
-               _loc5_++;
+               j++;
             }
-            _loc6_++;
+            i++;
          }
-         addChild(new Bitmap(_loc2_));
+         addChild(new Bitmap(bitmapData));
       }
       
       private function drawScene() : void
@@ -219,31 +217,31 @@ package littleGame.view
          addEventListener("click",__click);
       }
       
-      private function __mouseDown(param1:MouseEvent) : void
+      private function __mouseDown(event:MouseEvent) : void
       {
          startDrag();
          StageReferance.stage.addEventListener("mouseUp",__mouseUp);
       }
       
-      private function __mouseUp(param1:MouseEvent) : void
+      private function __mouseUp(event:MouseEvent) : void
       {
          StageReferance.stage.removeEventListener("mouseUp",__mouseUp);
          stopDrag();
       }
       
-      private function __removeLiving(param1:LittleGameEvent) : void
+      private function __removeLiving(event:LittleGameEvent) : void
       {
-         var _loc3_:LittleLiving = param1.paras[0] as LittleLiving;
-         var _loc2_:GameLittleLiving = _gameLivings[_loc3_.id];
-         if(_loc2_)
+         var living:LittleLiving = event.paras[0] as LittleLiving;
+         var gameLiving:GameLittleLiving = _gameLivings[living.id];
+         if(gameLiving)
          {
-            _loc2_.removeEventListener("click",onLivingClicked);
-            ObjectUtils.disposeObject(_loc2_);
-            delete _gameLivings[_loc3_.id];
+            gameLiving.removeEventListener("click",onLivingClicked);
+            ObjectUtils.disposeObject(gameLiving);
+            delete _gameLivings[living.id];
          }
       }
       
-      private function __update(param1:LittleGameEvent) : void
+      private function __update(event:LittleGameEvent) : void
       {
          updateLivingVisible();
          sortDepth();
@@ -251,30 +249,28 @@ package littleGame.view
       
       private function sortDepth() : void
       {
-         var _loc4_:int = 0;
-         var _loc1_:* = null;
-         var _loc3_:int = 0;
-         var _loc2_:Array = [];
-         _loc4_ = 0;
-         while(_loc4_ < _backLivingLayer.numChildren)
+         var i:int = 0;
+         var child:* = null;
+         var j:int = 0;
+         var arr:Array = [];
+         for(i = 0; i < _backLivingLayer.numChildren; )
          {
-            _loc1_ = _backLivingLayer.getChildAt(_loc4_);
-            if(_loc1_ is GameLittleLiving && !GameLittleLiving(_loc1_).lock)
+            child = _backLivingLayer.getChildAt(i);
+            if(child is GameLittleLiving && !GameLittleLiving(child).lock)
             {
-               _loc2_.push(_loc1_);
+               arr.push(child);
             }
             else
             {
-               _loc2_.push(_loc1_);
+               arr.push(child);
             }
-            _loc4_++;
+            i++;
          }
-         _loc2_.sortOn(["y"],[16]);
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_.length)
+         arr.sortOn(["y"],[16]);
+         for(j = 0; j < arr.length; )
          {
-            _backLivingLayer.setChildIndex(_loc2_[_loc3_],_loc3_);
-            _loc3_++;
+            _backLivingLayer.setChildIndex(arr[j],j);
+            j++;
          }
       }
       
@@ -286,161 +282,160 @@ package littleGame.view
             selfPos.y = selfGameLiving.y;
             var _loc3_:int = 0;
             var _loc2_:* = _gameLivings;
-            for each(var _loc1_ in _gameLivings)
+            for each(var gameLiving in _gameLivings)
             {
-               otherPos.x = _loc1_.x;
-               otherPos.y = _loc1_.y;
+               otherPos.x = gameLiving.x;
+               otherPos.y = gameLiving.y;
                shouldRender = Point.distance(selfPos,otherPos) < CONST_DISTANCE;
-               if(shouldRender || _loc1_.lock)
+               if(shouldRender || gameLiving.lock)
                {
-                  _loc1_.realRender = true;
-                  if(!_loc1_.lock)
+                  gameLiving.realRender = true;
+                  if(!gameLiving.lock)
                   {
-                     _backLivingLayer.addChild(_loc1_);
+                     _backLivingLayer.addChild(gameLiving);
                   }
                }
                else
                {
-                  _loc1_.realRender = false;
-                  if(_backLivingLayer.contains(_loc1_))
+                  gameLiving.realRender = false;
+                  if(_backLivingLayer.contains(gameLiving))
                   {
-                     _backLivingLayer.removeChild(_loc1_);
+                     _backLivingLayer.removeChild(gameLiving);
                   }
                }
             }
          }
       }
       
-      private function sortLiving(param1:GameLittleLiving) : void
+      private function sortLiving(gameLiving:GameLittleLiving) : void
       {
-         var _loc2_:Rectangle = param1.getBounds(this);
-         var _loc4_:Vector.<Rectangle> = _game.stones;
+         var bounds:Rectangle = gameLiving.getBounds(this);
+         var stones:Vector.<Rectangle> = _game.stones;
          var _loc6_:int = 0;
-         var _loc5_:* = _loc4_;
-         for each(var _loc3_ in _loc4_)
+         var _loc5_:* = stones;
+         for each(var stone in stones)
          {
-            if(_loc3_.intersects(_loc2_))
+            if(stone.intersects(bounds))
             {
-               if(_loc2_.bottom <= _loc3_.bottom)
+               if(bounds.bottom <= stone.bottom)
                {
-                  _backLivingLayer.addChild(param1);
+                  _backLivingLayer.addChild(gameLiving);
                }
                else
                {
-                  _foreLivingLayer.addChild(param1);
+                  _foreLivingLayer.addChild(gameLiving);
                }
             }
          }
       }
       
-      private function __selfPosChanged(param1:LittleLivingEvent) : void
+      private function __selfPosChanged(event:LittleLivingEvent) : void
       {
-         var _loc4_:LittleLiving = param1.currentTarget as LittleLiving;
-         var _loc3_:Point = new Point(param1.paras[0].x * _loc4_.speed,param1.paras[0].y * _loc4_.speed);
-         var _loc2_:Point = new Point(_loc4_.pos.x * _loc4_.speed,_loc4_.pos.y * _loc4_.speed);
-         var _loc5_:Point = localToGlobal(_loc2_);
-         if(_loc2_.y > _loc3_.y && _loc5_.y > _cameraRect.bottom)
+         var self:LittleLiving = event.currentTarget as LittleLiving;
+         var oldPos:Point = new Point(event.paras[0].x * self.speed,event.paras[0].y * self.speed);
+         var newPos:Point = new Point(self.pos.x * self.speed,self.pos.y * self.speed);
+         var globalPos:Point = localToGlobal(newPos);
+         if(newPos.y > oldPos.y && globalPos.y > _cameraRect.bottom)
          {
-            y = y + (_loc3_.y - _loc2_.y);
+            y = y + (oldPos.y - newPos.y);
          }
-         else if(_loc2_.y < _loc3_.y && _loc5_.y < _cameraRect.top)
+         else if(newPos.y < oldPos.y && globalPos.y < _cameraRect.top)
          {
-            y = y + (_loc3_.y - _loc2_.y);
+            y = y + (oldPos.y - newPos.y);
          }
-         if(_loc2_.x > _loc3_.x && _loc5_.x > _cameraRect.right)
+         if(newPos.x > oldPos.x && globalPos.x > _cameraRect.right)
          {
-            x = x + (_loc3_.x - _loc2_.x);
+            x = x + (oldPos.x - newPos.x);
          }
-         else if(_loc2_.x < _loc3_.x && _loc5_.x < _cameraRect.left)
+         else if(newPos.x < oldPos.x && globalPos.x < _cameraRect.left)
          {
-            x = x + (_loc3_.x - _loc2_.x);
+            x = x + (oldPos.x - newPos.x);
          }
       }
       
-      public function drawServPath(param1:LittleLiving) : void
+      public function drawServPath(living:LittleLiving) : void
       {
-         var _loc6_:int = 0;
-         var _loc4_:Array = param1.servPath;
-         var _loc2_:Graphics = _foreLivingLayer.graphics;
-         _loc2_.clear();
-         var _loc3_:Node = _loc4_[0];
-         _loc2_.lineStyle(2,255);
-         _loc2_.moveTo(_loc3_.x * _game.grid.cellSize,_loc3_.y * _game.grid.cellSize);
-         var _loc5_:int = _loc4_.length;
-         ChatManager.Instance.sysChatYellow("drawServPath:" + _loc5_);
-         _loc6_ = 1;
-         while(_loc6_ < _loc5_)
+         var i:int = 0;
+         var path:Array = living.servPath;
+         var g:Graphics = _foreLivingLayer.graphics;
+         g.clear();
+         var node:Node = path[0];
+         g.lineStyle(2,255);
+         g.moveTo(node.x * _game.grid.cellSize,node.y * _game.grid.cellSize);
+         var len:int = path.length;
+         ChatManager.Instance.sysChatYellow("drawServPath:" + len);
+         for(i = 1; i < len; )
          {
-            _loc2_.lineTo(_loc4_[_loc6_].x * _game.grid.cellSize,_loc4_[_loc6_].y * _game.grid.cellSize);
-            _loc6_++;
+            g.lineTo(path[i].x * _game.grid.cellSize,path[i].y * _game.grid.cellSize);
+            i++;
          }
-         _loc2_.endFill();
+         g.endFill();
       }
       
-      override public function set x(param1:Number) : void
+      override public function set x(value:Number) : void
       {
-         if(param1 >= _left && param1 <= _right)
+         if(value >= _left && value <= _right)
          {
-            .super.x = param1;
-         }
-      }
-      
-      override public function set y(param1:Number) : void
-      {
-         if(param1 >= _top && param1 <= _bottom)
-         {
-            .super.y = param1;
+            .super.x = value;
          }
       }
       
-      private function __click(param1:MouseEvent) : void
+      override public function set y(value:Number) : void
       {
-         var _loc2_:* = null;
-         var _loc6_:LittleSelf = _game.selfPlayer;
-         var _loc3_:int = mouseX / _game.grid.cellSize;
-         var _loc4_:int = mouseY / _game.grid.cellSize;
-         var _loc5_:Array = LittleGameManager.Instance.fillPath(_loc6_,_game.grid,_loc6_.pos.x,_loc6_.pos.y,_loc3_,_loc4_);
-         if(_loc5_)
+         if(value >= _top && value <= _bottom)
          {
-            LittleGameManager.Instance.selfMoveTo(_game,_loc6_,_loc6_.pos.x,_loc6_.pos.y,_loc3_,_loc4_,_game.clock.time,_loc5_);
-            _loc2_ = new MovieClipWrapper(ClassUtils.CreatInstance("asset.hotSpring.MouseClickMovie"),true,true);
+            .super.y = value;
+         }
+      }
+      
+      private function __click(event:MouseEvent) : void
+      {
+         var mc:* = null;
+         var self:LittleSelf = _game.selfPlayer;
+         var dx:int = mouseX / _game.grid.cellSize;
+         var dy:int = mouseY / _game.grid.cellSize;
+         var path:Array = LittleGameManager.Instance.fillPath(self,_game.grid,self.pos.x,self.pos.y,dx,dy);
+         if(path)
+         {
+            LittleGameManager.Instance.selfMoveTo(_game,self,self.pos.x,self.pos.y,dx,dy,_game.clock.time,path);
+            mc = new MovieClipWrapper(ClassUtils.CreatInstance("asset.hotSpring.MouseClickMovie"),true,true);
             var _loc7_:Boolean = false;
-            _loc2_.movie.mouseEnabled = _loc7_;
-            _loc2_.movie.mouseChildren = _loc7_;
-            _loc2_.x = mouseX;
-            _loc2_.y = mouseY;
-            addChild(_loc2_.movie);
+            mc.movie.mouseEnabled = _loc7_;
+            mc.movie.mouseChildren = _loc7_;
+            mc.x = mouseX;
+            mc.y = mouseY;
+            addChild(mc.movie);
          }
       }
       
-      public function findGameLiving(param1:int) : GameLittleLiving
+      public function findGameLiving(id:int) : GameLittleLiving
       {
-         return _gameLivings[param1];
+         return _gameLivings[id];
       }
       
-      public function __addLiving(param1:LittleGameEvent) : void
+      public function __addLiving(event:LittleGameEvent) : void
       {
-         var _loc2_:GameLittleLiving = drawLiving(param1.paras[0]);
-         if(!_loc2_.living.isPlayer)
+         var gameLiving:GameLittleLiving = drawLiving(event.paras[0]);
+         if(!gameLiving.living.isPlayer)
          {
-            _loc2_.living.act(new LittleLivingBornAction(_loc2_.living));
+            gameLiving.living.act(new LittleLivingBornAction(gameLiving.living));
          }
       }
       
-      private function focusSelf(param1:LittleLiving) : void
+      private function focusSelf(self:LittleLiving) : void
       {
-         var _loc2_:Point = localToGlobal(new Point(param1.pos.x * param1.speed,param1.pos.y * param1.speed));
-         x = (StageReferance.stageWidth >> 1) - _loc2_.x;
-         y = (StageReferance.stageWidth >> 1) - _loc2_.y;
+         var global:Point = localToGlobal(new Point(self.pos.x * self.speed,self.pos.y * self.speed));
+         x = (StageReferance.stageWidth >> 1) - global.x;
+         y = (StageReferance.stageWidth >> 1) - global.y;
       }
       
       private function removeEvent() : void
       {
          var _loc3_:int = 0;
          var _loc2_:* = _gameLivings;
-         for each(var _loc1_ in _gameLivings)
+         for each(var gameliving in _gameLivings)
          {
-            _loc1_.removeEventListener("click",onLivingClicked);
+            gameliving.removeEventListener("click",onLivingClicked);
          }
          _game.removeEventListener("addLiving",__addLiving);
          _game.removeEventListener("update",__update);
@@ -448,18 +443,18 @@ package littleGame.view
          removeEventListener("click",__click);
       }
       
-      public function addToLayer(param1:DisplayObject, param2:int) : void
+      public function addToLayer(object:DisplayObject, layer:int) : void
       {
-         var _loc3_:DisplayObjectContainer = getLayer(param2);
-         if(_loc3_)
+         var container:DisplayObjectContainer = getLayer(layer);
+         if(container)
          {
-            _loc3_.addChild(param1);
+            container.addChild(object);
          }
       }
       
-      public function getLayer(param1:int) : DisplayObjectContainer
+      public function getLayer(layer:int) : DisplayObjectContainer
       {
-         switch(int(param1))
+         switch(int(layer))
          {
             case 0:
                return _backLivingLayer;
@@ -470,7 +465,7 @@ package littleGame.view
       
       public function dispose() : void
       {
-         var _loc1_:* = null;
+         var gameLiving:* = null;
          removeEvent();
          if(parent)
          {
@@ -478,11 +473,11 @@ package littleGame.view
          }
          var _loc4_:int = 0;
          var _loc3_:* = _gameLivings;
-         for(var _loc2_ in _gameLivings)
+         for(var key in _gameLivings)
          {
-            _loc1_ = _gameLivings[_loc2_];
-            ObjectUtils.disposeObject(_loc1_);
-            delete _gameLivings[_loc2_];
+            gameLiving = _gameLivings[key];
+            ObjectUtils.disposeObject(gameLiving);
+            delete _gameLivings[key];
          }
          _game = null;
          ObjectUtils.disposeObject(_background);

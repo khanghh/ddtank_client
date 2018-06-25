@@ -35,20 +35,19 @@ package mines.view
       
       override protected function initialize() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          itemList = new Vector.<EquipmentItem>();
-         _loc2_ = 0;
-         while(_loc2_ < 4)
+         for(i = 0; i < 4; )
          {
-            _loc1_ = new EquipmentItem(_loc2_ + 1);
-            _loc1_.setData();
-            _loc1_.x = 30 + 309 * (_loc2_ % 2);
-            _loc1_.y = 14 + 184 * Math.floor(_loc2_ / 2);
-            _loc1_.addEventListener("click",clickHandler);
-            box.addChild(_loc1_);
-            itemList.push(_loc1_);
-            _loc2_++;
+            item = new EquipmentItem(i + 1);
+            item.setData();
+            item.x = 30 + 309 * (i % 2);
+            item.y = 14 + 184 * Math.floor(i / 2);
+            item.addEventListener("click",clickHandler);
+            box.addChild(item);
+            itemList.push(item);
+            i++;
          }
          levelUpBtn.clickHandler = new Handler(levelUpHandler);
          cell = new MinesCell(new Sprite(),0);
@@ -62,23 +61,22 @@ package mines.view
          MinesManager.instance.addEventListener(MinesManager.LEVEL_UP_ARM,levelUpArm);
       }
       
-      private function levelUpArm(param1:Event) : void
+      private function levelUpArm(e:Event) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         _loc4_ = 0;
-         while(_loc4_ < itemList.length)
+         var i:int = 0;
+         var item:* = null;
+         for(i = 0; i < itemList.length; )
          {
-            _loc2_ = itemList[_loc4_] as EquipmentItem;
-            _loc2_.setData();
-            _loc4_++;
+            item = itemList[i] as EquipmentItem;
+            item.setData();
+            i++;
          }
          setProgress();
-         var _loc3_:InventoryItemInfo = PlayerManager.Instance.Self.getBag(52).getItemAt(place) as InventoryItemInfo;
-         if(_loc3_)
+         var info:InventoryItemInfo = PlayerManager.Instance.Self.getBag(52).getItemAt(place) as InventoryItemInfo;
+         if(info)
          {
-            cell.setCount(_loc3_.Count);
-            cell.info = _loc3_;
+            cell.setCount(info.Count);
+            cell.info = info;
          }
          else
          {
@@ -142,13 +140,13 @@ package mines.view
          }
       }
       
-      public function cellChange(param1:BagCell) : void
+      public function cellChange(value:BagCell) : void
       {
-         if(param1)
+         if(value)
          {
-            cell.info = param1.info;
-            cell.setCount(param1.getCount());
-            place = param1.place;
+            cell.info = value.info;
+            cell.setCount(value.getCount());
+            place = value.place;
          }
          else
          {
@@ -157,77 +155,76 @@ package mines.view
          }
       }
       
-      private function clickHandler(param1:MouseEvent) : void
+      private function clickHandler(e:MouseEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         _loc3_ = 0;
-         while(_loc3_ < itemList.length)
+         var i:int = 0;
+         var item:* = null;
+         for(i = 0; i < itemList.length; )
          {
-            _loc2_ = itemList[_loc3_] as EquipmentItem;
-            _loc2_.selectedPic.visible = false;
-            _loc3_++;
+            item = itemList[i] as EquipmentItem;
+            item.selectedPic.visible = false;
+            i++;
          }
-         (param1.currentTarget as EquipmentItem).selectedPic.visible = true;
-         chooseType = (param1.currentTarget as EquipmentItem).type;
+         (e.currentTarget as EquipmentItem).selectedPic.visible = true;
+         chooseType = (e.currentTarget as EquipmentItem).type;
          setProgress();
       }
       
       private function setProgress() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = 0;
+         var current:int = 0;
+         var total:* = 0;
          switch(int(chooseType) - 1)
          {
             case 0:
                if(MinesManager.instance.model.headLevel < MinesManager.instance.model.equipList.length)
                {
-                  _loc2_ = MinesManager.instance.model.headExp - MinesManager.instance.model.equipList[MinesManager.instance.model.headLevel - 1].headExp;
-                  _loc1_ = int(MinesManager.instance.model.equipList[MinesManager.instance.model.headLevel].headExp - MinesManager.instance.model.equipList[MinesManager.instance.model.headLevel - 1].headExp);
+                  current = MinesManager.instance.model.headExp - MinesManager.instance.model.equipList[MinesManager.instance.model.headLevel - 1].headExp;
+                  total = int(MinesManager.instance.model.equipList[MinesManager.instance.model.headLevel].headExp - MinesManager.instance.model.equipList[MinesManager.instance.model.headLevel - 1].headExp);
                }
                else
                {
-                  _loc2_ = MinesManager.instance.model.headExp - MinesManager.instance.model.equipList[MinesManager.instance.model.headLevel - 2].headExp;
-                  _loc1_ = _loc2_;
+                  current = MinesManager.instance.model.headExp - MinesManager.instance.model.equipList[MinesManager.instance.model.headLevel - 2].headExp;
+                  total = current;
                }
                break;
             case 1:
                if(MinesManager.instance.model.clothLevel < MinesManager.instance.model.equipList.length)
                {
-                  _loc2_ = MinesManager.instance.model.clothExp - MinesManager.instance.model.equipList[MinesManager.instance.model.clothLevel - 1].clothExp;
-                  _loc1_ = int(MinesManager.instance.model.equipList[MinesManager.instance.model.clothLevel].clothExp - MinesManager.instance.model.equipList[MinesManager.instance.model.clothLevel - 1].clothExp);
+                  current = MinesManager.instance.model.clothExp - MinesManager.instance.model.equipList[MinesManager.instance.model.clothLevel - 1].clothExp;
+                  total = int(MinesManager.instance.model.equipList[MinesManager.instance.model.clothLevel].clothExp - MinesManager.instance.model.equipList[MinesManager.instance.model.clothLevel - 1].clothExp);
                }
                else
                {
-                  _loc2_ = MinesManager.instance.model.clothExp - MinesManager.instance.model.equipList[MinesManager.instance.model.clothLevel - 2].clothExp;
-                  _loc1_ = _loc2_;
+                  current = MinesManager.instance.model.clothExp - MinesManager.instance.model.equipList[MinesManager.instance.model.clothLevel - 2].clothExp;
+                  total = current;
                }
                break;
             case 2:
                if(MinesManager.instance.model.weaponLevel < MinesManager.instance.model.equipList.length)
                {
-                  _loc2_ = MinesManager.instance.model.weaponExp - MinesManager.instance.model.equipList[MinesManager.instance.model.weaponLevel - 1].swordExp;
-                  _loc1_ = int(MinesManager.instance.model.equipList[MinesManager.instance.model.weaponLevel].swordExp - MinesManager.instance.model.equipList[MinesManager.instance.model.weaponLevel - 1].swordExp);
+                  current = MinesManager.instance.model.weaponExp - MinesManager.instance.model.equipList[MinesManager.instance.model.weaponLevel - 1].swordExp;
+                  total = int(MinesManager.instance.model.equipList[MinesManager.instance.model.weaponLevel].swordExp - MinesManager.instance.model.equipList[MinesManager.instance.model.weaponLevel - 1].swordExp);
                }
                else
                {
-                  _loc2_ = MinesManager.instance.model.weaponExp - MinesManager.instance.model.equipList[MinesManager.instance.model.weaponLevel - 2].swordExp;
-                  _loc1_ = _loc2_;
+                  current = MinesManager.instance.model.weaponExp - MinesManager.instance.model.equipList[MinesManager.instance.model.weaponLevel - 2].swordExp;
+                  total = current;
                }
                break;
             case 3:
                if(MinesManager.instance.model.shieldLevel < MinesManager.instance.model.equipList.length)
                {
-                  _loc2_ = MinesManager.instance.model.shieldExp - MinesManager.instance.model.equipList[MinesManager.instance.model.shieldLevel - 1].shieldExp;
-                  _loc1_ = int(MinesManager.instance.model.equipList[MinesManager.instance.model.shieldLevel].shieldExp - MinesManager.instance.model.equipList[MinesManager.instance.model.shieldLevel - 1].shieldExp);
+                  current = MinesManager.instance.model.shieldExp - MinesManager.instance.model.equipList[MinesManager.instance.model.shieldLevel - 1].shieldExp;
+                  total = int(MinesManager.instance.model.equipList[MinesManager.instance.model.shieldLevel].shieldExp - MinesManager.instance.model.equipList[MinesManager.instance.model.shieldLevel - 1].shieldExp);
                   break;
                }
-               _loc2_ = MinesManager.instance.model.shieldExp - MinesManager.instance.model.equipList[MinesManager.instance.model.shieldLevel - 2].shieldExp;
-               _loc1_ = _loc2_;
+               current = MinesManager.instance.model.shieldExp - MinesManager.instance.model.equipList[MinesManager.instance.model.shieldLevel - 2].shieldExp;
+               total = current;
                break;
          }
-         progress.value = _loc2_ / _loc1_;
-         proLabel.text = String(_loc2_) + "/" + String(_loc1_);
+         progress.value = current / total;
+         proLabel.text = String(current) + "/" + String(total);
       }
       
       override public function dispose() : void

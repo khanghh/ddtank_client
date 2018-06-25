@@ -12,9 +12,9 @@ package armShell
       private static var _instance:ArmShellManager;
        
       
-      public function ArmShellManager(param1:IEventDispatcher = null)
+      public function ArmShellManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : ArmShellManager

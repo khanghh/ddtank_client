@@ -71,26 +71,24 @@ package sanXiao.game
       
       private function init() : void
       {
-         var _loc6_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
+         var i:int = 0;
+         var j:int = 0;
+         var k:int = 0;
          this.buttonMode = true;
          this.useHandCursor = true;
          _model = SanXiaoGameMediator.getInstance().model;
          _itemList = new Vector.<Vector.<SXCellItem>>();
-         var _loc4_:Number = _model.ROW_COUNT;
-         var _loc1_:Number = _model.COLUMN_COUNT;
-         _loc6_ = 0;
-         while(_loc6_ < _loc4_)
+         var _row:Number = _model.ROW_COUNT;
+         var _column:Number = _model.COLUMN_COUNT;
+         for(i = 0; i < _row; )
          {
-            _itemList[_loc6_] = new Vector.<SXCellItem>();
-            _loc2_ = 0;
-            while(_loc2_ < _loc1_)
+            _itemList[i] = new Vector.<SXCellItem>();
+            for(j = 0; j < _column; )
             {
-               _itemList[_loc6_][_loc2_] = new SXCellItem();
-               _loc2_++;
+               _itemList[i][j] = new SXCellItem();
+               j++;
             }
-            _loc6_++;
+            i++;
          }
          _tipsList = [];
          _wordsHitsEffect = ComponentFactory.Instance.creat("ast.sanxiao.wrodsMovie");
@@ -103,25 +101,23 @@ package sanXiao.game
          addChild(_wordsHitsEffect);
          _conWordsHitsEffect = _wordsHitsEffect.getChildByName("con") as MovieClip;
          _listOfWords = new Vector.<Bitmap>();
-         _loc3_ = 0;
-         while(_loc3_ < 6)
+         for(k = 0; k < 6; )
          {
-            _listOfWords[_loc3_] = ComponentFactory.Instance.creatBitmap("ast.sanxiao.word" + _loc3_.toString());
-            _loc3_++;
+            _listOfWords[k] = ComponentFactory.Instance.creatBitmap("ast.sanxiao.word" + k.toString());
+            k++;
          }
-         _listOfWords[_loc3_] = ComponentFactory.Instance.creatBitmap("ast.sanxiao.dieMap");
-         _listOfWords[_loc3_].x = -100;
+         _listOfWords[k] = ComponentFactory.Instance.creatBitmap("ast.sanxiao.dieMap");
+         _listOfWords[k].x = -100;
          _bmpNum = new N_BitmapDataNumber();
-         _bmpNum.rect = new Rectangle(0,0,160,43);
+         _bmpNum.rect = new Rectangle(0,0,170,43);
          _bmpNum.gap = -1;
-         var _loc5_:Vector.<BitmapData> = new Vector.<BitmapData>();
-         _loc6_ = 0;
-         while(_loc6_ < 10)
+         var numList:Vector.<BitmapData> = new Vector.<BitmapData>();
+         for(i = 0; i < 10; )
          {
-            _loc5_.push(ComponentFactory.Instance.creatBitmapData("ast.sanxiao.n" + _loc6_.toString()));
-            _loc6_++;
+            numList.push(ComponentFactory.Instance.creatBitmapData("ast.sanxiao.n" + i.toString()));
+            i++;
          }
-         _bmpNum.numList = _loc5_;
+         _bmpNum.numList = numList;
          _bmpNum.dot = ComponentFactory.Instance.creatBitmapData("ast.sanxiao.hits");
          _hitsTip = new Bitmap(_bmpNum.getNumber("0"));
          _timerCheckDie = TimerManager.getInstance().addTimerJuggler(5000);
@@ -129,10 +125,10 @@ package sanXiao.game
          StageReferance.stage.addEventListener("click",onClick);
       }
       
-      protected function onTimerCheckDieFunc(param1:Event) : void
+      protected function onTimerCheckDieFunc(e:Event) : void
       {
-         var _loc2_:Boolean = _model.isDieMap();
-         if(_loc2_)
+         var isDieMap:Boolean = _model.isDieMap();
+         if(isDieMap)
          {
             _tipsList.unshift(_listOfWords[_listOfWords.length - 1]);
             playNextTips();
@@ -143,28 +139,26 @@ package sanXiao.game
       
       function resetGame() : void
       {
-         var _loc5_:int = 0;
-         var _loc3_:int = 0;
+         var i:int = 0;
+         var j:int = 0;
          tweenMax && tweenMax.kill();
-         var _loc2_:Vector.<Vector.<SXCellData>> = _model.map();
-         var _loc4_:Number = _model.ROW_COUNT;
-         var _loc1_:Number = _model.COLUMN_COUNT;
+         var map:Vector.<Vector.<SXCellData>> = _model.map();
+         var _row:Number = _model.ROW_COUNT;
+         var _column:Number = _model.COLUMN_COUNT;
          resetedCount = 0;
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         for(i = 0; i < _row; )
          {
-            _loc3_ = 0;
-            while(_loc3_ < _loc1_)
+            for(j = 0; j < _column; )
             {
-               _itemList[_loc5_][_loc3_].mouseEnabled = false;
-               _itemList[_loc5_][_loc3_].killBoom();
-               _itemList[_loc5_][_loc3_].type = _loc2_[_loc5_][_loc3_].type;
-               _itemList[_loc5_][_loc3_].curPos = new Pos(_loc5_ - _loc4_,_loc3_);
-               _itemList[_loc5_][_loc3_].moveTo(new Pos(_loc5_,_loc3_),"tween",onResetComplete);
-               addChildAt(_itemList[_loc5_][_loc3_],0);
-               _loc3_++;
+               _itemList[i][j].mouseEnabled = false;
+               _itemList[i][j].killBoom();
+               _itemList[i][j].type = map[i][j].type;
+               _itemList[i][j].curPos = new Pos(i - _row,j);
+               _itemList[i][j].moveTo(new Pos(i,j),"tween",onResetComplete);
+               addChildAt(_itemList[i][j],0);
+               j++;
             }
-            _loc5_++;
+            i++;
          }
          _timerCheckDie.reset();
          _timerCheckDie.start();
@@ -172,59 +166,57 @@ package sanXiao.game
       
       private function onResetComplete() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
+         var i:int = 0;
+         var j:int = 0;
          resetedCount = resetedCount + 1;
          if(resetedCount == _model.ROW_COUNT * _model.COLUMN_COUNT)
          {
-            _loc2_ = 0;
-            while(_loc2_ < _model.ROW_COUNT)
+            for(i = 0; i < _model.ROW_COUNT; )
             {
-               _loc1_ = 0;
-               while(_loc1_ < _model.COLUMN_COUNT)
+               for(j = 0; j < _model.COLUMN_COUNT; )
                {
-                  _itemList[_loc2_][_loc1_].mouseEnabled = true;
-                  _loc1_++;
+                  _itemList[i][j].mouseEnabled = true;
+                  j++;
                }
-               _loc2_++;
+               i++;
             }
          }
          SanXiaoGameMediator.getInstance().stopAnimation();
       }
       
-      protected function onClick(param1:MouseEvent) : void
+      protected function onClick(e:MouseEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:Boolean = false;
-         if(param1.target is SXCellItem)
+         var item:* = null;
+         var suc:Boolean = false;
+         if(e.target is SXCellItem)
          {
             if(SanXiaoGameMediator.getInstance().stepRemain <= 0)
             {
                return;
             }
-            _loc3_ = param1.target as SXCellItem;
+            item = e.target as SXCellItem;
             switch(int(step))
             {
                case 0:
                   _curProp = _model.curProp;
                   if(!int(_curProp))
                   {
-                     _selectedA = _loc3_;
+                     _selectedA = item;
                      _selectedA.selected = true;
                      step = 1;
                   }
                   else
                   {
                      step = 2;
-                     SanXiaoGameMediator.getInstance().checkProp(_loc3_.curPos);
+                     SanXiaoGameMediator.getInstance().checkProp(item.curPos);
                   }
                   break;
                case 1:
                   step = 2;
-                  _selectedB = _loc3_;
+                  _selectedB = item;
                   _selectedB.selected = true;
-                  _loc2_ = _model.cellTypeExchange(_selectedA.curPos,_selectedA.type,_selectedB.curPos,_selectedB.type);
-                  if(_loc2_)
+                  suc = _model.cellTypeExchange(_selectedA.curPos,_selectedA.type,_selectedB.curPos,_selectedB.type);
+                  if(suc)
                   {
                      SanXiaoGameMediator.getInstance().startAnimation();
                      _movedNum = 0;
@@ -237,10 +229,10 @@ package sanXiao.game
                   }
                default:
                   step = 2;
-                  _selectedB = _loc3_;
+                  _selectedB = item;
                   _selectedB.selected = true;
-                  _loc2_ = _model.cellTypeExchange(_selectedA.curPos,_selectedA.type,_selectedB.curPos,_selectedB.type);
-                  if(_loc2_)
+                  suc = _model.cellTypeExchange(_selectedA.curPos,_selectedA.type,_selectedB.curPos,_selectedB.type);
+                  if(suc)
                   {
                      SanXiaoGameMediator.getInstance().startAnimation();
                      _movedNum = 0;
@@ -259,25 +251,25 @@ package sanXiao.game
          }
       }
       
-      function checkProp(param1:Pos) : void
+      function checkProp($curPos:Pos) : void
       {
          switch(int(_curProp) - 1)
          {
             case 0:
                SanXiaoGameMediator.getInstance().startAnimation();
-               usePropCrossBomb(param1);
+               usePropCrossBomb($curPos);
                break;
             case 1:
                SanXiaoGameMediator.getInstance().startAnimation();
-               usePropSquareBomb(param1);
+               usePropSquareBomb($curPos);
                break;
             case 2:
                SanXiaoGameMediator.getInstance().startAnimation();
-               usePropClearColor(param1);
+               usePropClearColor($curPos);
                break;
             case 3:
                SanXiaoGameMediator.getInstance().startAnimation();
-               usePropChangeColor(param1);
+               usePropChangeColor($curPos);
          }
       }
       
@@ -294,24 +286,24 @@ package sanXiao.game
       
       private function checkBoom() : void
       {
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
-         var _loc6_:int = 0;
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
-         var _loc1_:Vector.<SXCellData> = _model.canBoomCellsList([_selectedA,_selectedB]);
-         if(_loc1_.length > 0)
+         var aR:int = 0;
+         var aC:int = 0;
+         var bR:int = 0;
+         var bC:int = 0;
+         var temp:* = null;
+         var boomList:Vector.<SXCellData> = _model.canBoomCellsList([_selectedA,_selectedB]);
+         if(boomList.length > 0)
          {
-            SanXiaoGameMediator.getInstance().sendBoomList(_selectedA,_selectedB,_loc1_);
-            _loc2_ = _selectedA.curPos.row;
-            _loc4_ = _selectedA.curPos.column;
-            _loc6_ = _selectedB.curPos.row;
-            _loc5_ = _selectedB.curPos.column;
-            _loc3_ = _itemList[_loc2_][_loc4_];
-            _itemList[_loc2_][_loc4_] = _itemList[_loc6_][_loc5_];
-            _itemList[_loc6_][_loc5_] = _loc3_;
+            SanXiaoGameMediator.getInstance().sendBoomList(_selectedA,_selectedB,boomList);
+            aR = _selectedA.curPos.row;
+            aC = _selectedA.curPos.column;
+            bR = _selectedB.curPos.row;
+            bC = _selectedB.curPos.column;
+            temp = _itemList[aR][aC];
+            _itemList[aR][aC] = _itemList[bR][bC];
+            _itemList[bR][bC] = temp;
             boomHitsTips();
-            boom(_loc1_);
+            boom(boomList);
          }
          else
          {
@@ -325,20 +317,20 @@ package sanXiao.game
       
       private function playNextTips() : void
       {
-         var _loc1_:* = null;
+         var tipBmp:* = null;
          if(_tipsList.length > 0 && _wordsHitsEffect.currentFrame == _wordsHitsEffect.totalFrames)
          {
-            _loc1_ = _tipsList.pop() as Bitmap;
+            tipBmp = _tipsList.pop() as Bitmap;
             if(_conWordsHitsEffect.numChildren > 0)
             {
                _conWordsHitsEffect.removeChildAt(0);
             }
-            _conWordsHitsEffect.addChild(_loc1_);
+            _conWordsHitsEffect.addChild(tipBmp);
             _wordsHitsEffect.gotoAndPlay(1);
          }
       }
       
-      protected function onTipsEnd(param1:Event) : void
+      protected function onTipsEnd(e:Event) : void
       {
          playNextTips();
       }
@@ -386,9 +378,9 @@ package sanXiao.game
          step = 0;
       }
       
-      private function boom(param1:Vector.<SXCellData>) : void
+      private function boom($boomList:Vector.<SXCellData>) : void
       {
-         $boomList = param1;
+         $boomList = $boomList;
          onBoom = function():void
          {
             onFall = function():void
@@ -401,11 +393,11 @@ package sanXiao.game
             };
             checkHits = function():void
             {
-               var _loc1_:Vector.<SXCellData> = _model.canBoomCellsList(movedList);
-               if(_loc1_.length > 0)
+               var nextBoomList:Vector.<SXCellData> = _model.canBoomCellsList(movedList);
+               if(nextBoomList.length > 0)
                {
-                  SanXiaoGameMediator.getInstance().sendBoomList(null,null,_loc1_);
-                  boom(_loc1_);
+                  SanXiaoGameMediator.getInstance().sendBoomList(null,null,nextBoomList);
+                  boom(nextBoomList);
                }
                else
                {
@@ -420,12 +412,10 @@ package sanXiao.game
             {
                return;
             }
-            var j:int = 0;
-            while(j < _model.COLUMN_COUNT)
+            for(var j:int = 0; j < _model.COLUMN_COUNT; )
             {
                var emptyCellNum:int = 0;
-               var i:int = _model.ROW_COUNT - 1;
-               while(i >= 0)
+               for(var i:int = _model.ROW_COUNT - 1; i >= 0; )
                {
                   if(_itemList[i][j].type == 0)
                   {
@@ -443,16 +433,14 @@ package sanXiao.game
             }
             var fillList:Vector.<SXCellData> = _model.boomAndFall($boomList);
             var rowDic:Dictionary = new Dictionary();
-            var c:int = 0;
-            while(c < _model.COLUMN_COUNT)
+            for(var c:int = 0; c < _model.COLUMN_COUNT; )
             {
                rowDic[c] = 0;
                c = Number(c) + 1;
             }
             var falled:int = 0;
             var lenFall:int = fillList.length;
-            var k:int = 0;
-            while(k < lenFall)
+            for(var k:int = 0; k < lenFall; )
             {
                var _loc2_:* = fillList[k].column;
                var _loc3_:* = rowDic[_loc2_] - 1;
@@ -485,71 +473,70 @@ package sanXiao.game
          tweenMax = TweenMax.delayedCall(1,onBoom);
       }
       
-      private function usePropCrossBomb(param1:Pos) : void
+      private function usePropCrossBomb(pos:Pos) : void
       {
-         var _loc2_:Vector.<SXCellData> = _model.cellPropCrossBomb(param1);
+         var boomList:Vector.<SXCellData> = _model.cellPropCrossBomb(pos);
          SanXiaoGameMediator.getInstance().sendUseCrossBomb();
-         SanXiaoGameMediator.getInstance().sendBoomList(null,null,_loc2_);
+         SanXiaoGameMediator.getInstance().sendBoomList(null,null,boomList);
          _hits = 0;
-         boom(_loc2_);
+         boom(boomList);
       }
       
-      private function usePropSquareBomb(param1:Pos) : void
+      private function usePropSquareBomb(pos:Pos) : void
       {
-         var _loc2_:Vector.<SXCellData> = _model.cellPropSquareBomb(param1);
+         var boomList:Vector.<SXCellData> = _model.cellPropSquareBomb(pos);
          SanXiaoGameMediator.getInstance().sendUseSquareBomb();
-         SanXiaoGameMediator.getInstance().sendBoomList(null,null,_loc2_);
+         SanXiaoGameMediator.getInstance().sendBoomList(null,null,boomList);
          _hits = 0;
-         boom(_loc2_);
+         boom(boomList);
       }
       
-      private function usePropClearColor(param1:Pos) : void
+      private function usePropClearColor(pos:Pos) : void
       {
-         var _loc2_:Vector.<SXCellData> = _model.cellPropClearColor(param1);
+         var boomList:Vector.<SXCellData> = _model.cellPropClearColor(pos);
          SanXiaoGameMediator.getInstance().sendUseClearColor();
-         SanXiaoGameMediator.getInstance().sendBoomList(null,null,_loc2_);
+         SanXiaoGameMediator.getInstance().sendBoomList(null,null,boomList);
          _hits = 0;
-         boom(_loc2_);
+         boom(boomList);
       }
       
-      private function usePropChangeColor(param1:Pos) : void
+      private function usePropChangeColor(pos:Pos) : void
       {
-         var _loc3_:int = _itemList[param1.row][param1.column].type;
-         var _loc2_:Vector.<SXCellData> = _model.cellPropChangeColor(param1);
-         SanXiaoGameMediator.getInstance().sendUseChangeColor(_loc3_,_loc2_[0].type);
-         changeColor(_loc2_);
-         TweenLite.delayedCall(0.5,checkBoomChangeColor,[_loc2_]);
+         var originalType:int = _itemList[pos.row][pos.column].type;
+         var boomList:Vector.<SXCellData> = _model.cellPropChangeColor(pos);
+         SanXiaoGameMediator.getInstance().sendUseChangeColor(originalType,boomList[0].type);
+         changeColor(boomList);
+         TweenLite.delayedCall(0.5,checkBoomChangeColor,[boomList]);
       }
       
-      private function changeColor(param1:Vector.<SXCellData>) : void
+      private function changeColor(changeList:Vector.<SXCellData>) : void
       {
          var _loc4_:int = 0;
-         var _loc3_:* = param1;
-         for each(var _loc2_ in param1)
+         var _loc3_:* = changeList;
+         for each(var v in changeList)
          {
-            _itemList[_loc2_.row][_loc2_.column].type = _loc2_.type;
+            _itemList[v.row][v.column].type = v.type;
          }
       }
       
-      private function checkBoomChangeColor(param1:Vector.<SXCellData>) : void
+      private function checkBoomChangeColor(checkList:Vector.<SXCellData>) : void
       {
-         var _loc4_:* = null;
-         var _loc6_:int = 0;
+         var data:* = null;
+         var i:int = 0;
          _hits = 0;
-         var _loc2_:Array = [];
-         var _loc5_:int = param1.length;
-         _loc6_ = 0;
-         while(_loc6_ < _loc5_)
+         var checkArr:Array = [];
+         var len:int = checkList.length;
+         for(i = 0; i < len; )
          {
-            _loc4_ = param1[_loc6_];
-            _loc2_.push(_itemList[_loc4_.row][_loc4_.column]);
-            _loc6_++;
+            data = checkList[i];
+            checkArr.push(_itemList[data.row][data.column]);
+            i++;
          }
-         var _loc3_:Vector.<SXCellData> = _model.canBoomCellsList(_loc2_);
-         if(_loc3_.length > 0)
+         var boomList:Vector.<SXCellData> = _model.canBoomCellsList(checkArr);
+         if(boomList.length > 0)
          {
-            SanXiaoGameMediator.getInstance().sendBoomList(null,null,_loc3_);
-            boom(_loc3_);
+            SanXiaoGameMediator.getInstance().sendBoomList(null,null,boomList);
+            boom(boomList);
          }
          else
          {
@@ -559,29 +546,27 @@ package sanXiao.game
       
       public function dispose() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:int = 0;
+         var _row:int = 0;
+         var _column:int = 0;
+         var i:int = 0;
+         var j:int = 0;
          StageReferance.stage.removeEventListener("click",onClick);
          TweenLite.killDelayedCallsTo(tween);
          TweenMax.killDelayedCallsTo(tweenMax);
          if(_itemList != null)
          {
-            _loc3_ = _model.ROW_COUNT;
-            _loc1_ = _model.COLUMN_COUNT;
-            _loc4_ = 0;
-            while(_loc4_ < _loc3_)
+            _row = _model.ROW_COUNT;
+            _column = _model.COLUMN_COUNT;
+            for(i = 0; i < _row; )
             {
-               _loc2_ = 0;
-               while(_loc2_ < _loc1_)
+               for(j = 0; j < _column; )
                {
-                  TweenMax.killTweensOf(_itemList[_loc4_][_loc2_]);
-                  ObjectUtils.disposeObject(_itemList[_loc4_][_loc2_]);
-                  _loc2_++;
+                  TweenMax.killTweensOf(_itemList[i][j]);
+                  ObjectUtils.disposeObject(_itemList[i][j]);
+                  j++;
                }
-               _itemList[_loc4_].length = 0;
-               _loc4_++;
+               _itemList[i].length = 0;
+               i++;
             }
             _itemList.length = 0;
             _itemList = null;

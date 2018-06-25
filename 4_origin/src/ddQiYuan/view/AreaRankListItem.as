@@ -55,8 +55,8 @@ package ddQiYuan.view
          _rankTf = ComponentFactory.Instance.creatComponentByStylename("ddQiYuan.areaRankItemRankTf");
          addChild(_rankTf);
          _rankTf.visible = false;
-         var _loc1_:Bitmap = ComponentFactory.Instance.creatBitmap("DDQiYuan.Pic27");
-         _bagCell = new BagCell(1,null,true,_loc1_,false);
+         var bagCellBg:Bitmap = ComponentFactory.Instance.creatBitmap("DDQiYuan.Pic27");
+         _bagCell = new BagCell(1,null,true,bagCellBg,false);
          _bagCell.PicPos = new Point(2,2);
          _bagCell.setContentSize(38,38);
          _bagCell.x = 67;
@@ -70,24 +70,24 @@ package ddQiYuan.view
          addChild(_areaRankOfferValueTf);
       }
       
-      public function setData(param1:int, param2:int) : void
+      public function setData(selectIndex:int, index:int) : void
       {
-         var _loc4_:* = null;
-         if(param1 == 0)
+         var good:* = null;
+         if(selectIndex == 0)
          {
-            _data = _model.myAreaRankArr[param2];
-            _loc4_ = _model.myAreaRankConfigArr[param2];
+            _data = _model.myAreaRankArr[index];
+            good = _model.myAreaRankConfigArr[index];
             _playerNameSP.mouseEnabled = false;
             _playerNameSP.tipData = "";
          }
          else
          {
-            _data = _model.allAreaRankArr[param2];
-            _loc4_ = _model.allAreaRankConfigArr[param2];
+            _data = _model.allAreaRankArr[index];
+            good = _model.allAreaRankConfigArr[index];
             _playerNameSP.mouseEnabled = true;
             _playerNameSP.tipData = _data["areaName"];
          }
-         _index = param2;
+         _index = index;
          _bgImage.setFrame(_index % 2 + 1);
          if(_data["rank"] <= 3)
          {
@@ -101,9 +101,9 @@ package ddQiYuan.view
             _rankTf.visible = true;
             _rankTf.text = _data["rank"] + "th";
          }
-         var _loc3_:InventoryItemInfo = DDQiYuanManager.instance.getInventoryItemInfo(_loc4_);
-         _bagCell.info = _loc3_;
-         _bagCell.setCount(_loc3_.Count);
+         var inventoryItemInfo:InventoryItemInfo = DDQiYuanManager.instance.getInventoryItemInfo(good);
+         _bagCell.info = inventoryItemInfo;
+         _bagCell.setCount(inventoryItemInfo.Count);
          _playerNameTf.text = _data["nickName"];
          _areaRankOfferValueTf.text = _data["offerTimes"];
       }

@@ -45,9 +45,9 @@ package fightLib
          super.dispose();
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
-         super.enter(param1,param2);
+         super.enter(prev,data);
          ParticleManager.initPartical(PathManager.FLASHSITE);
          GameControl.Instance.addEventListener("StartLoading",__startLoading);
          _container = new Shape();
@@ -59,7 +59,7 @@ package fightLib
          GameInSocketOut.sendGameStart();
       }
       
-      private function __startLoading(param1:Event) : void
+      private function __startLoading(evt:Event) : void
       {
          ChatManager.Instance.input.faceEnabled = false;
          ChatManager.Instance.state = 9;
@@ -84,7 +84,7 @@ package fightLib
          return "fightLib";
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
          GameControl.Instance.removeEventListener("StartLoading",__startLoading);
          PlayerManager.Instance.Self.isUpGradeInGame = false;
@@ -95,7 +95,7 @@ package fightLib
             ObjectUtils.disposeObject(_roomLoading);
             _roomLoading = null;
          }
-         if(param1.getType() != "fightLabGameView")
+         if(next.getType() != "fightLabGameView")
          {
             GameInSocketOut.sendGamePlayerExit();
             RoomManager.Instance.reset();

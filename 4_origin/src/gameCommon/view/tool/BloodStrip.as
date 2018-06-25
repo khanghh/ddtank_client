@@ -114,12 +114,12 @@ package gameCommon.view.tool
          }
       }
       
-      private function __update(param1:LivingEvent) : void
+      private function __update(evt:LivingEvent) : void
       {
          if(GameControl.Instance.Current.selfGamePlayer.isLiving)
          {
             update(GameControl.Instance.Current.selfGamePlayer.blood,GameControl.Instance.Current.selfGamePlayer.maxBlood);
-            if(param1 && param1.paras[0] == 2)
+            if(evt && evt.paras[0] == 2)
             {
                _hurtedMask.gotoAndPlay(2);
             }
@@ -130,28 +130,28 @@ package gameCommon.view.tool
          }
       }
       
-      private function update(param1:int, param2:int) : void
+      private function update(blood:int, maxBlood:int) : void
       {
          if(_info)
          {
-            if(_info.current > param1)
+            if(_info.current > blood)
             {
             }
-            _info.current = param1 < 0?0:param1;
-            _info.total = param2;
+            _info.current = blood < 0?0:blood;
+            _info.total = maxBlood;
             tipData = _info;
          }
-         if(param1 < 0)
+         if(blood < 0)
          {
-            param1 = 0;
+            blood = 0;
          }
-         else if(param1 > param2)
+         else if(blood > maxBlood)
          {
-            param1 = param2;
+            blood = maxBlood;
          }
-         _mask.width = _HPStrip.width * (param1 / param2);
+         _mask.width = _HPStrip.width * (blood / maxBlood);
          _mask.x = _HPStrip.width - _mask.width;
-         _HPTxt.text = String(param1);
+         _HPTxt.text = String(blood);
       }
       
       public function get tipStyle() : String
@@ -179,29 +179,29 @@ package gameCommon.view.tool
          return _tipGapH;
       }
       
-      public function set tipStyle(param1:String) : void
+      public function set tipStyle(value:String) : void
       {
-         _tipStyle = param1;
+         _tipStyle = value;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(value:Object) : void
       {
-         _tipData = param1;
+         _tipData = value;
       }
       
-      public function set tipDirctions(param1:String) : void
+      public function set tipDirctions(value:String) : void
       {
-         _tipDirctions = param1;
+         _tipDirctions = value;
       }
       
-      public function set tipGapV(param1:int) : void
+      public function set tipGapV(value:int) : void
       {
-         _tipGapV = param1;
+         _tipGapV = value;
       }
       
-      public function set tipGapH(param1:int) : void
+      public function set tipGapH(value:int) : void
       {
-         _tipGapH = param1;
+         _tipGapH = value;
       }
       
       public function asDisplayObject() : DisplayObject

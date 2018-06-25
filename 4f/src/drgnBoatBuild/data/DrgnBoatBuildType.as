@@ -1,9 +1,2 @@
-package drgnBoatBuild.data
-{
-   public class DrgnBoatBuildType
-   {
-       
-      
-      public function DrgnBoatBuildType(){super();}
-   }
-}
+package drgnBoatBuild.data{   public class DrgnBoatBuildType   {                   public function DrgnBoatBuildType() { super(); }
+   }}

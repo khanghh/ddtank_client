@@ -62,31 +62,30 @@ package farm.viewx
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var field:* = null;
          _fields = new Vector.<FarmFieldBlock>(16);
-         _loc2_ = 0;
-         while(_loc2_ < 16)
+         for(i = 0; i < 16; )
          {
-            _loc1_ = new FarmFieldBlock(_loc2_);
-            PositionUtils.setPos(_loc1_,"farm.fieldsView.fieldPos" + _loc2_);
-            _loc1_.addEventListener("killcropshow",__showComfigKillCrop);
-            addChild(_loc1_);
-            _fields[_loc2_] = _loc1_;
-            _loc2_++;
+            field = new FarmFieldBlock(i);
+            PositionUtils.setPos(field,"farm.fieldsView.fieldPos" + i);
+            field.addEventListener("killcropshow",__showComfigKillCrop);
+            addChild(field);
+            _fields[i] = field;
+            i++;
          }
          __fieldInfoReady(null);
       }
       
-      private function __setFields(param1:FarmEvent) : void
+      private function __setFields(event:FarmEvent) : void
       {
          setFieldByHelper();
       }
       
       public function setFieldByHelper() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
+         var m:int = 0;
+         var nowDate:int = 0;
          if(PlayerManager.Instance.Self.ID != FarmModelController.instance.model.currentFarmerId)
          {
             return;
@@ -95,47 +94,45 @@ package farm.viewx
          {
             return;
          }
-         var _loc1_:Vector.<FieldVO> = FarmModelController.instance.model.fieldsInfo;
-         _loc3_ = 0;
-         while(_loc3_ < FarmModelController.instance.model.fieldsInfo.length)
+         var fieldsInfo:Vector.<FieldVO> = FarmModelController.instance.model.fieldsInfo;
+         for(m = 0; m < FarmModelController.instance.model.fieldsInfo.length; )
          {
-            _loc2_ = (new Date().getTime() - _loc1_[_loc3_].payTime.getTime()) / 3600000;
-            if(_loc1_[_loc3_].fieldValidDate > _loc2_ || _loc1_[_loc3_].fieldValidDate == -1)
+            nowDate = (new Date().getTime() - fieldsInfo[m].payTime.getTime()) / 3600000;
+            if(fieldsInfo[m].fieldValidDate > nowDate || fieldsInfo[m].fieldValidDate == -1)
             {
-               _fields[_loc3_].setBeginHelper(FarmModelController.instance.model.helperArray[1]);
+               _fields[m].setBeginHelper(FarmModelController.instance.model.helperArray[1]);
             }
-            _loc3_++;
+            m++;
          }
       }
       
-      protected function __fieldInfoReady(param1:FarmEvent) : void
+      protected function __fieldInfoReady(event:FarmEvent) : void
       {
          upFields();
          upFlagPlace();
          setFieldByHelper();
       }
       
-      private function __hasSeeding(param1:FarmEvent) : void
+      private function __hasSeeding(event:FarmEvent) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < 16)
+         var i:int = 0;
+         for(i = 0; i < 16; )
          {
-            if(_fields[_loc2_].info.fieldID == FarmModelController.instance.model.seedingFieldInfo.fieldID)
+            if(_fields[i].info.fieldID == FarmModelController.instance.model.seedingFieldInfo.fieldID)
             {
-               _fields[_loc2_].info = FarmModelController.instance.model.seedingFieldInfo;
+               _fields[i].info = FarmModelController.instance.model.seedingFieldInfo;
                if(PetsBagManager.instance().haveTaskOrderByID(369))
                {
                   PetsBagManager.instance().clearCurrentPetFarmGuildeArrow(103);
                }
                break;
             }
-            _loc2_++;
+            i++;
          }
          autoHelperHandler(FarmModelController.instance.model.seedingFieldInfo);
       }
       
-      private function __frushField(param1:FarmEvent) : void
+      private function __frushField(event:FarmEvent) : void
       {
          if(FarmModelController.instance.model.currentFarmerId == PlayerManager.Instance.Self.ID)
          {
@@ -145,159 +142,151 @@ package farm.viewx
          }
       }
       
-      private function __gainField(param1:FarmEvent) : void
+      private function __gainField(event:FarmEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:FieldVO = FarmModelController.instance.model.getfieldInfoById(FarmModelController.instance.model.gainFieldId);
-         _loc3_ = 0;
-         while(_loc3_ < 16)
+         var i:int = 0;
+         var field:FieldVO = FarmModelController.instance.model.getfieldInfoById(FarmModelController.instance.model.gainFieldId);
+         for(i = 0; i < 16; )
          {
-            if(_fields[_loc3_].info.fieldID == FarmModelController.instance.model.gainFieldId)
+            if(_fields[i].info.fieldID == FarmModelController.instance.model.gainFieldId)
             {
-               _fields[_loc3_].info = _loc2_;
+               _fields[i].info = field;
                upFlagPlace();
                break;
             }
-            _loc3_++;
+            i++;
          }
-         if(_loc2_.isAutomatic)
+         if(field.isAutomatic)
          {
-            autoHelperHandler(_loc2_);
+            autoHelperHandler(field);
          }
       }
       
-      private function __accelerateField(param1:FarmEvent) : void
+      private function __accelerateField(event:FarmEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:FieldVO = FarmModelController.instance.model.getfieldInfoById(FarmModelController.instance.model.matureId);
-         _loc3_ = 0;
-         while(_loc3_ < 16)
+         var i:int = 0;
+         var field:FieldVO = FarmModelController.instance.model.getfieldInfoById(FarmModelController.instance.model.matureId);
+         for(i = 0; i < 16; )
          {
-            if(_fields[_loc3_].info.fieldID == FarmModelController.instance.model.matureId)
+            if(_fields[i].info.fieldID == FarmModelController.instance.model.matureId)
             {
-               _fields[_loc3_].info = _loc2_;
+               _fields[i].info = field;
                break;
             }
-            _loc3_++;
+            i++;
          }
-         autoHelperHandler(_loc2_);
+         autoHelperHandler(field);
       }
       
-      private function __helperSwitchHandler(param1:FarmEvent) : void
+      private function __helperSwitchHandler(event:FarmEvent) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < 16)
+         var i:int = 0;
+         for(i = 0; i < 16; )
          {
-            if(_fields[_loc2_].info.fieldID == FarmModelController.instance.model.isAutoId)
+            if(_fields[i].info.fieldID == FarmModelController.instance.model.isAutoId)
             {
-               _fields[_loc2_].info = FarmModelController.instance.model.getfieldInfoById(FarmModelController.instance.model.isAutoId);
+               _fields[i].info = FarmModelController.instance.model.getfieldInfoById(FarmModelController.instance.model.isAutoId);
                return;
             }
-            _loc2_++;
+            i++;
          }
       }
       
-      private function __helperKeyHandler(param1:FarmEvent) : void
+      private function __helperKeyHandler(event:FarmEvent) : void
       {
-         var _loc2_:Array = FarmModelController.instance.model.batchFieldIDArray;
+         var arr:Array = FarmModelController.instance.model.batchFieldIDArray;
          var _loc5_:int = 0;
-         var _loc4_:* = _loc2_;
-         for each(var _loc3_ in _loc2_)
+         var _loc4_:* = arr;
+         for each(var fieldId in arr)
          {
-            _fields[_loc3_].info = FarmModelController.instance.model.getfieldInfoById(_loc3_);
+            _fields[fieldId].info = FarmModelController.instance.model.getfieldInfoById(fieldId);
          }
       }
       
-      private function __onKillcropField(param1:FarmEvent) : void
+      private function __onKillcropField(event:FarmEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:FieldVO = FarmModelController.instance.model.getfieldInfoById(FarmModelController.instance.model.killCropId);
-         _loc3_ = 0;
-         while(_loc3_ < 16)
+         var i:int = 0;
+         var field:FieldVO = FarmModelController.instance.model.getfieldInfoById(FarmModelController.instance.model.killCropId);
+         for(i = 0; i < 16; )
          {
-            if(_fields[_loc3_].info.fieldID == FarmModelController.instance.model.killCropId)
+            if(_fields[i].info.fieldID == FarmModelController.instance.model.killCropId)
             {
-               _fields[_loc3_].info = _loc2_;
+               _fields[i].info = field;
                return;
             }
-            _loc3_++;
+            i++;
          }
       }
       
       private function upFields() : void
       {
-         var _loc5_:int = 0;
-         var _loc1_:int = 0;
-         var _loc3_:int = 0;
-         var _loc4_:Array = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
-         var _loc2_:Vector.<FieldVO> = FarmModelController.instance.model.fieldsInfo;
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_.length)
+         var i:int = 0;
+         var id:int = 0;
+         var n:int = 0;
+         var placeArr:Array = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
+         var fieldsInfo:Vector.<FieldVO> = FarmModelController.instance.model.fieldsInfo;
+         for(i = 0; i < fieldsInfo.length; )
          {
-            _loc1_ = _loc2_[_loc5_].fieldID;
-            if(_fields[_loc1_])
+            id = fieldsInfo[i].fieldID;
+            if(_fields[id])
             {
-               _fields[_loc1_].info = _loc2_[_loc5_];
-               autoHelperHandler(_fields[_loc1_].info);
-               _loc4_.splice(_loc4_.indexOf(_loc1_),1);
+               _fields[id].info = fieldsInfo[i];
+               autoHelperHandler(_fields[id].info);
+               placeArr.splice(placeArr.indexOf(id),1);
             }
-            _loc5_++;
+            i++;
          }
-         _loc3_ = 0;
-         while(_loc3_ < _loc4_.length)
+         for(n = 0; n < placeArr.length; )
          {
-            _fields[_loc4_[_loc3_]].info = null;
-            _loc3_++;
+            _fields[placeArr[n]].info = null;
+            n++;
          }
       }
       
       private function upFlagPlace() : void
       {
-         var _loc1_:* = undefined;
-         var _loc5_:int = 0;
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:Array = [8,9,10,11,12,13,14,15];
+         var fieldsInfo:* = undefined;
+         var i:int = 0;
+         var n:int = 0;
+         var j:int = 0;
+         var placeArr:Array = [8,9,10,11,12,13,14,15];
          if(FarmModelController.instance.model.currentFarmerId == PlayerManager.Instance.Self.ID)
          {
-            _loc1_ = FarmModelController.instance.model.fieldsInfo;
-            _loc5_ = 0;
-            while(_loc5_ < _loc1_.length)
+            fieldsInfo = FarmModelController.instance.model.fieldsInfo;
+            for(i = 0; i < fieldsInfo.length; )
             {
-               if(_loc1_[_loc5_].fieldID >= 8 && (_loc1_[_loc5_].isDig || _loc1_[_loc5_].seedID != 0))
+               if(fieldsInfo[i].fieldID >= 8 && (fieldsInfo[i].isDig || fieldsInfo[i].seedID != 0))
                {
-                  _loc3_.splice(_loc3_.indexOf(_loc1_[_loc5_].fieldID),1);
-                  _fields[_loc1_[_loc5_].fieldID].flag = false;
+                  placeArr.splice(placeArr.indexOf(fieldsInfo[i].fieldID),1);
+                  _fields[fieldsInfo[i].fieldID].flag = false;
                }
-               _loc5_++;
+               i++;
             }
-            _loc2_ = 0;
-            while(_loc2_ < _loc3_.length)
+            for(n = 0; n < placeArr.length; )
             {
-               if(_loc2_ == 0)
+               if(n == 0)
                {
-                  _fields[_loc3_[_loc2_]].flag = true;
+                  _fields[placeArr[n]].flag = true;
                }
                else
                {
-                  _fields[_loc3_[_loc2_]].flag = false;
+                  _fields[placeArr[n]].flag = false;
                }
-               _loc2_++;
+               n++;
             }
          }
          else
          {
-            _loc4_ = 0;
-            while(_loc4_ < _loc3_.length)
+            j = 0;
+            while(j < placeArr.length)
             {
-               _fields[_loc3_[_loc4_]].flag = false;
-               _loc4_++;
+               _fields[placeArr[j]].flag = false;
+               j++;
             }
          }
       }
       
-      private function __showComfigKillCrop(param1:SelectComposeItemEvent) : void
+      private function __showComfigKillCrop(e:SelectComposeItemEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -305,20 +294,20 @@ package farm.viewx
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:FieldVO = param1.data as FieldVO;
+         var field:FieldVO = e.data as FieldVO;
          _configmPnl = ComponentFactory.Instance.creatComponentByStylename("farm.confirmKillCropAlertFrame");
-         _configmPnl.cropName(ItemManager.Instance.getTemplateById(_loc2_.seedID).Name,_loc2_.isAutomatic);
-         _configmPnl.fieldId = _loc2_.fieldID;
+         _configmPnl.cropName(ItemManager.Instance.getTemplateById(field.seedID).Name,field.isAutomatic);
+         _configmPnl.fieldId = field.fieldID;
          _configmPnl.addEventListener("killcropClick",__killCropClick);
          LayerManager.Instance.addToLayer(_configmPnl,3,true,1);
       }
       
-      private function __killCropClick(param1:SelectComposeItemEvent) : void
+      private function __killCropClick(e:SelectComposeItemEvent) : void
       {
-         var _loc2_:int = param1.data as int;
-         if(_loc2_ != -1)
+         var fieldID:int = e.data as int;
+         if(fieldID != -1)
          {
-            FarmModelController.instance.killCrop(_loc2_);
+            FarmModelController.instance.killCrop(fieldID);
          }
          if(_configmPnl)
          {
@@ -327,63 +316,62 @@ package farm.viewx
          this.dispatchEvent(new SelectComposeItemEvent("killcropIcon"));
       }
       
-      public function autoHelperHandler(param1:FieldVO) : void
+      public function autoHelperHandler(_info:FieldVO) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         if(FarmModelController.instance.model.currentFarmerId == PlayerManager.Instance.Self.ID && param1 && param1.isAutomatic)
+         var seedInfo:* = null;
+         var type:int = 0;
+         var fertilizerInfo:* = null;
+         if(FarmModelController.instance.model.currentFarmerId == PlayerManager.Instance.Self.ID && _info && _info.isAutomatic)
          {
-            if(param1.seedID == 0 && param1.isDig && param1.autoSeedID != 0)
+            if(_info.seedID == 0 && _info.isDig && _info.autoSeedID != 0)
             {
-               _loc4_ = FarmModelController.instance.model.findItemInfo(32,param1.autoSeedID);
-               if(_loc4_)
+               seedInfo = FarmModelController.instance.model.findItemInfo(32,_info.autoSeedID);
+               if(seedInfo)
                {
-                  if(_loc4_.CategoryID == 32 && _loc4_.Count > 0)
+                  if(seedInfo.CategoryID == 32 && seedInfo.Count > 0)
                   {
-                     if(_loc4_.Count == 1)
+                     if(seedInfo.Count == 1)
                      {
                         return;
                      }
                   }
                }
             }
-            if(param1.seedID != 0 && param1.autoFertilizerID != 0 && param1.AccelerateTime == 0)
+            if(_info.seedID != 0 && _info.autoFertilizerID != 0 && _info.AccelerateTime == 0)
             {
-               _loc3_ = 1;
-               _loc2_ = FarmModelController.instance.model.findItemInfo(33,param1.autoFertilizerID);
-               if(_loc2_)
+               type = 1;
+               fertilizerInfo = FarmModelController.instance.model.findItemInfo(33,_info.autoFertilizerID);
+               if(fertilizerInfo)
                {
-                  if(_loc2_.CategoryID == 33 && _loc2_.Count > 0)
+                  if(fertilizerInfo.CategoryID == 33 && fertilizerInfo.Count > 0)
                   {
-                     FarmModelController.instance.accelerateField(_loc3_,param1.fieldID,param1.autoFertilizerID);
-                     if(_loc2_.Count == 1)
+                     FarmModelController.instance.accelerateField(type,_info.fieldID,_info.autoFertilizerID);
+                     if(fertilizerInfo.Count == 1)
                      {
                         return;
                      }
                   }
                }
             }
-            if(param1.plantGrownPhase == 2)
+            if(_info.plantGrownPhase == 2)
             {
-               FarmModelController.instance.getHarvest(param1.fieldID);
+               FarmModelController.instance.getHarvest(_info.fieldID);
             }
          }
       }
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < 16)
+         var i:int = 0;
+         for(i = 0; i < 16; )
          {
-            if(_fields[_loc1_])
+            if(_fields[i])
             {
-               _fields[_loc1_].removeEventListener("killcropshow",__showComfigKillCrop);
-               ObjectUtils.disposeObject(_fields[_loc1_]);
-               _fields[_loc1_] = null;
+               _fields[i].removeEventListener("killcropshow",__showComfigKillCrop);
+               ObjectUtils.disposeObject(_fields[i]);
+               _fields[i] = null;
             }
-            _loc1_++;
+            i++;
          }
          remvoeEvent();
          _fields = null;

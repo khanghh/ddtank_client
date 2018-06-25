@@ -28,17 +28,17 @@ package org.as3commons.reflect
       
       private var _name:String;
       
-      public function AccessorAccess(param1:String)
+      public function AccessorAccess(name:String)
       {
          super();
          Assert.state(!_enumCreated,"AccessorAccess enum was already created");
-         this._name = param1;
+         this._name = name;
          _lookup[this._name] = this;
       }
       
-      public static function fromString(param1:String) : AccessorAccess
+      public static function fromString(access:String) : AccessorAccess
       {
-         return _lookup[param1] as AccessorAccess;
+         return _lookup[access] as AccessorAccess;
       }
       
       public function get name() : String

@@ -37,13 +37,13 @@ package com.pickgliss.ui.controls
          }
       }
       
-      public function set minimizeRectString(param1:String) : void
+      public function set minimizeRectString(value:String) : void
       {
-         if(_minimizeRectString == param1)
+         if(_minimizeRectString == value)
          {
             return;
          }
-         _minimizeRectString = param1;
+         _minimizeRectString = value;
          _minimizeInnerRect = ClassUtils.CreatInstance("com.pickgliss.geom.InnerRectangle",ComponentFactory.parasArgs(_minimizeRectString));
          onPropertiesChanged("closeInnerRect");
       }
@@ -53,9 +53,9 @@ package com.pickgliss.ui.controls
          return _minimizeButton;
       }
       
-      public function set minimizeButton(param1:BaseButton) : void
+      public function set minimizeButton(button:BaseButton) : void
       {
-         if(_minimizeButton == param1)
+         if(_minimizeButton == button)
          {
             return;
          }
@@ -64,17 +64,17 @@ package com.pickgliss.ui.controls
             _minimizeButton.removeEventListener("click",__onMinimizeClick);
             ObjectUtils.disposeObject(_minimizeButton);
          }
-         _minimizeButton = param1;
+         _minimizeButton = button;
          onPropertiesChanged("minimizeButton");
       }
       
-      public function set minimizeStyle(param1:String) : void
+      public function set minimizeStyle(stylename:String) : void
       {
-         if(_minimizeStyle == param1)
+         if(_minimizeStyle == stylename)
          {
             return;
          }
-         _minimizeStyle = param1;
+         _minimizeStyle = stylename;
          minimizeButton = ComponentFactory.Instance.creat(_minimizeStyle);
       }
       
@@ -99,7 +99,7 @@ package com.pickgliss.ui.controls
          }
       }
       
-      protected function __onMinimizeClick(param1:MouseEvent) : void
+      protected function __onMinimizeClick(event:MouseEvent) : void
       {
          onResponse(5);
       }

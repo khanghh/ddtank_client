@@ -80,10 +80,10 @@ package farm.viewx
       
       private var _bandMoneyTxt:FilterFrameText;
       
-      public function FarmBuyFieldView(param1:int)
+      public function FarmBuyFieldView(fieldid:int)
       {
          super();
-         _fieldId = param1;
+         _fieldId = fieldid;
          initView();
          addEvent();
       }
@@ -168,7 +168,7 @@ package farm.viewx
          upMoney();
       }
       
-      protected function selectedBandHander(param1:MouseEvent) : void
+      protected function selectedBandHander(event:MouseEvent) : void
       {
          if(_selectedBandBtn.selected)
          {
@@ -184,7 +184,7 @@ package farm.viewx
          upMoney();
       }
       
-      protected function seletedHander(param1:MouseEvent) : void
+      protected function seletedHander(event:MouseEvent) : void
       {
          if(_selectedBtn.selected)
          {
@@ -220,19 +220,19 @@ package farm.viewx
          StageReferance.stage.removeEventListener("keyDown",__onKeyDown);
       }
       
-      protected function __onKeyDown(param1:KeyboardEvent) : void
+      protected function __onKeyDown(event:KeyboardEvent) : void
       {
-         if(param1.keyCode == 27)
+         if(event.keyCode == 27)
          {
             SoundManager.instance.play("008");
             dispose();
-            param1.stopImmediatePropagation();
+            event.stopImmediatePropagation();
          }
       }
       
       private function upMoney() : void
       {
-         var _loc1_:* = null;
+         var str:* = null;
          if(_all.selected)
          {
             _moneyNum = _group.selectIndex == 0?getallField().length * FarmModelController.instance.model.payFieldMoneyToWeek:Number(getallField().length * FarmModelController.instance.model.payFieldMoneyToMonth);
@@ -243,28 +243,28 @@ package farm.viewx
          }
          if(_selectedBandBtn.selected)
          {
-            _loc1_ = "ddtMoney";
+            str = "ddtMoney";
          }
          else
          {
-            _loc1_ = "money";
+            str = "money";
          }
-         _money.text = _moneyNum + LanguageMgr.GetTranslation(_loc1_);
+         _money.text = _moneyNum + LanguageMgr.GetTranslation(str);
       }
       
-      protected function __all(param1:Event) : void
+      protected function __all(event:Event) : void
       {
          SoundManager.instance.play("008");
          upMoney();
       }
       
-      private function __changeHandler(param1:Event) : void
+      private function __changeHandler(event:Event) : void
       {
          SoundManager.instance.play("008");
          upMoney();
       }
       
-      protected function __ok(param1:MouseEvent) : void
+      protected function __ok(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          CheckMoneyUtils.instance.checkMoney(_isBand,_moneyNum,onCheckComplete);
@@ -272,26 +272,26 @@ package farm.viewx
       
       protected function onCheckComplete() : void
       {
-         var _loc1_:Array = [];
+         var arr:Array = [];
          if(_all.selected)
          {
-            _loc1_ = getallField();
+            arr = getallField();
          }
          else
          {
-            _loc1_.push(_fieldId);
+            arr.push(_fieldId);
          }
-         var _loc2_:int = _group.selectIndex == 0?FarmModelController.instance.model.payFieldTimeToWeek:int(FarmModelController.instance.model.payFieldTimeToMonth);
-         FarmModelController.instance.payField(_loc1_,_loc2_,_isBand);
+         var paytime:int = _group.selectIndex == 0?FarmModelController.instance.model.payFieldTimeToWeek:int(FarmModelController.instance.model.payFieldTimeToMonth);
+         FarmModelController.instance.payField(arr,paytime,_isBand);
          dispose();
       }
       
-      private function __moneyConfirmHandler(param1:FrameEvent) : void
+      private function __moneyConfirmHandler(evt:FrameEvent) : void
       {
          _moneyConfirm.removeEventListener("response",__moneyConfirmHandler);
          _moneyConfirm.dispose();
          _moneyConfirm = null;
-         switch(int(param1.responseCode) - 2)
+         switch(int(evt.responseCode) - 2)
          {
             case 0:
             case 1:
@@ -301,23 +301,22 @@ package farm.viewx
       
       private function getallField() : Array
       {
-         var _loc1_:* = null;
-         var _loc2_:int = 0;
-         _loc1_ = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
-         _loc1_ = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
-         _loc2_ = 0;
-         while(_loc2_ < FarmModelController.instance.model.fieldsInfo.length)
+         var arr:* = null;
+         var i:int = 0;
+         arr = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
+         arr = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
+         for(i = 0; i < FarmModelController.instance.model.fieldsInfo.length; )
          {
-            if(FarmModelController.instance.model.fieldsInfo[_loc2_].isDig)
+            if(FarmModelController.instance.model.fieldsInfo[i].isDig)
             {
-               _loc1_.splice(_loc1_.indexOf(_loc2_),1);
+               arr.splice(arr.indexOf(i),1);
             }
-            _loc2_++;
+            i++;
          }
-         return _loc1_;
+         return arr;
       }
       
-      protected function __close(param1:MouseEvent) : void
+      protected function __close(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          dispose();

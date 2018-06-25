@@ -1,25 +1,4 @@
-package rewardTask
-{
-   import flash.events.Event;
-   import flash.events.EventDispatcher;
-   
-   public class RewardTaskManager extends EventDispatcher
-   {
-      
-      private static var _instance:RewardTaskManager;
-       
-      
-      public function RewardTaskManager(param1:inner){super(null);}
-      
-      public static function get instance() : RewardTaskManager{return null;}
-      
-      public function show() : void{}
-   }
-}
-
-class inner
-{
-    
-   
-   function inner(){super();}
-}
+package rewardTask{   import ddt.CoreManager;      public class RewardTaskManager extends CoreManager   {            private static var _instance:RewardTaskManager;                   public function RewardTaskManager($inner:inner) { super(null); }
+            public static function get instance() : RewardTaskManager { return null; }
+   }}class inner{          function inner() { super(); }
+}

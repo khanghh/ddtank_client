@@ -133,8 +133,8 @@ package starling.scene.hall
          addChild(_playerSprite);
          _mouseClickLayer = new flash.display.Sprite();
          drawMouseClickLayer();
-         var _loc1_:SpriteLayer = LayerManager.Instance.getLayerByType(5);
-         _loc1_.addChild(_mouseClickLayer);
+         var senceLayer:SpriteLayer = LayerManager.Instance.getLayerByType(5);
+         senceLayer.addChild(_mouseClickLayer);
          mapID = PlayerManager.Instance.Self.Grade >= 10?0:1;
          initEvent();
          sendPkg();
@@ -165,37 +165,36 @@ package starling.scene.hall
          SocketManager.Instance.addEventListener(PkgEvent.format(262,7),__onPlayerHid);
       }
       
-      private function onStageResize(param1:ResizeEvent) : void
+      private function onStageResize(evt:ResizeEvent) : void
       {
          drawMouseClickLayer();
       }
       
-      protected function __onShowPets(param1:NewHallEvent) : void
+      protected function __onShowPets(event:NewHallEvent) : void
       {
          if(!_selfPlayer)
          {
          }
       }
       
-      protected function __onFriendPlayerInfo(param1:PkgEvent) : void
+      protected function __onFriendPlayerInfo(event:PkgEvent) : void
       {
-         var _loc6_:int = 0;
-         var _loc3_:* = null;
-         var _loc5_:PackageIn = param1.pkg;
-         _loc5_.readInt();
-         _loc5_.readInt();
-         var _loc2_:int = _loc5_.readInt();
-         _loadPkg = _loc5_;
+         var i:int = 0;
+         var playerVo:* = null;
+         var pkg:PackageIn = event.pkg;
+         pkg.readInt();
+         pkg.readInt();
+         var playerNum:int = pkg.readInt();
+         _loadPkg = pkg;
          _loadPlayerDic = new Dictionary();
          _unLoadPlayerDic = new Dictionary();
          removePlayerByID();
-         var _loc4_:int = _loc5_.position;
-         _loc6_ = 0;
-         while(_loc6_ < _loc2_)
+         var bytePos:int = pkg.position;
+         for(i = 0; i < playerNum; )
          {
-            _loc3_ = readPlayerInfoPkg(_loadPkg);
-            _unLoadPlayerDic[_loc3_.playerInfo.ID] = _loc3_;
-            _loc6_++;
+            playerVo = readPlayerInfoPkg(_loadPkg);
+            _unLoadPlayerDic[playerVo.playerInfo.ID] = playerVo;
+            i++;
          }
          if(!_selfPlayer)
          {
@@ -207,9 +206,9 @@ package starling.scene.hall
          }
       }
       
-      private function startLoadOtherPlayer(param1:Boolean = true) : void
+      private function startLoadOtherPlayer(flag:Boolean = true) : void
       {
-         if(param1 && !this.hasEventListener("enterFrame"))
+         if(flag && !this.hasEventListener("enterFrame"))
          {
             addEventListener("enterFrame",__updateFrame);
          }
@@ -219,63 +218,63 @@ package starling.scene.hall
          }
       }
       
-      private function judgePlayerShow(param1:int) : Boolean
+      private function judgePlayerShow(playerX:int) : Boolean
       {
          _judgePos = PositionUtils.creatPoint("hall.playerInfoPos");
-         var _loc2_:int = param1 + this.x;
-         if(_loc2_ > _judgePos.x && _loc2_ < _judgePos.y)
+         var offX:int = playerX + this.x;
+         if(offX > _judgePos.x && offX < _judgePos.y)
          {
             return true;
          }
          return false;
       }
       
-      protected function __onloadPlayerRes(param1:TimerEvent) : void
+      protected function __onloadPlayerRes(event:TimerEvent) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = _loadPlayerDic;
-         for(var _loc2_ in _loadPlayerDic)
+         for(var id in _loadPlayerDic)
          {
-            if(_loadPlayerDic[_loc2_])
+            if(_loadPlayerDic[id])
             {
-               setPlayerInfo(_loadPlayerDic[_loc2_]);
-               delete _loadPlayerDic[_loc2_];
+               setPlayerInfo(_loadPlayerDic[id]);
+               delete _loadPlayerDic[id];
             }
          }
-         if(_loc2_ == null)
+         if(id == null)
          {
             _loadTimer.stop();
             _loadTimer.reset();
          }
       }
       
-      private function getRandNum(param1:int, param2:int) : int
+      private function getRandNum(a:int, b:int) : int
       {
-         var _loc3_:int = param1 + (param2 - param1) * Math.random();
-         return _loc3_;
+         var ranNum:int = a + (b - a) * Math.random();
+         return ranNum;
       }
       
-      protected function __onPlayerHid(param1:PkgEvent) : void
+      protected function __onPlayerHid(event:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = 2;
-         _hidFlag = _loc3_.readBoolean();
+         var pkg:PackageIn = event.pkg;
+         var frameID:int = 2;
+         _hidFlag = pkg.readBoolean();
          if(_hidFlag)
          {
             removePlayerByID();
             _loadPlayerDic = new Dictionary();
             _unLoadPlayerDic = new Dictionary();
-            _loc2_ = 1;
+            frameID = 1;
             if(_loadTimer != null)
             {
                _loadTimer.stop();
                _loadTimer.reset();
             }
          }
-         DailyButtunBar.Insance.setEyeBtnFrame(_loc2_);
+         DailyButtunBar.Insance.setEyeBtnFrame(frameID);
       }
       
-      protected function __updateTitle(param1:NewHallEvent) : void
+      protected function __updateTitle(event:NewHallEvent) : void
       {
          if(_selfPlayer)
          {
@@ -290,7 +289,7 @@ package starling.scene.hall
          }
       }
       
-      protected function __updatePlayerDressInfo(param1:PlayerDressEvent) : void
+      protected function __updatePlayerDressInfo(event:PlayerDressEvent) : void
       {
       }
       
@@ -304,9 +303,9 @@ package starling.scene.hall
             _mouseMovie.visible = false;
             addChild(_mouseMovie);
          }
-         var _loc1_:PlayerVO = new PlayerVO();
-         _loc1_.playerInfo = PlayerManager.Instance.Self;
-         _selfPlayer = new HallPlayer(_loc1_);
+         var selfPlayerVO:PlayerVO = new PlayerVO();
+         selfPlayerVO.playerInfo = PlayerManager.Instance.Self;
+         _selfPlayer = new HallPlayer(selfPlayerVO);
          _selfPlayer.playerPoint = _playerPos;
          if(NewTitleManager.instance.ShowTitle)
          {
@@ -326,149 +325,147 @@ package starling.scene.hall
          _playerArray.push(_selfPlayer);
       }
       
-      private function readPlayerInfoPkg(param1:PackageIn) : PlayerVO
+      private function readPlayerInfoPkg(pkg:PackageIn) : PlayerVO
       {
-         var _loc2_:PlayerVO = new PlayerVO();
-         _loc2_.playerInfo = new PlayerInfo();
-         _loc2_.playerInfo.ID = param1.readInt();
-         _loc2_.playerInfo.NickName = param1.readUTF();
-         _loc2_.playerInfo.VIPLevel = param1.readInt();
-         _loc2_.playerInfo.typeVIP = param1.readInt();
-         _loc2_.playerInfo.Sex = param1.readBoolean();
-         _loc2_.playerInfo.Style = param1.readUTF();
-         _loc2_.playerInfo.Colors = param1.readUTF();
-         _loc2_.playerInfo.MountsType = param1.readInt();
-         _loc2_.playerInfo.PetsID = param1.readInt();
-         initFriendVo(_loc2_);
-         param1.position = param1.position + 8;
-         _loc2_.playerInfo.ConsortiaID = param1.readInt();
-         _loc2_.playerInfo.badgeID = param1.readInt();
-         _loc2_.playerInfo.ConsortiaName = param1.readUTF();
-         _loc2_.playerInfo.honor = param1.readUTF();
-         _loc2_.playerInfo.honorId = param1.readInt();
-         _loc2_.playerInfo.isAttest = param1.readBoolean();
-         _loc2_.playerInfo.ImagePath = param1.readUTF();
-         _loc2_.playerInfo.IsShow = param1.readBoolean();
-         return _loc2_;
+         var friendVo:PlayerVO = new PlayerVO();
+         friendVo.playerInfo = new PlayerInfo();
+         friendVo.playerInfo.ID = pkg.readInt();
+         friendVo.playerInfo.NickName = pkg.readUTF();
+         friendVo.playerInfo.VIPLevel = pkg.readInt();
+         friendVo.playerInfo.typeVIP = pkg.readInt();
+         friendVo.playerInfo.Sex = pkg.readBoolean();
+         friendVo.playerInfo.Style = pkg.readUTF();
+         friendVo.playerInfo.Colors = pkg.readUTF();
+         friendVo.playerInfo.MountsType = pkg.readInt();
+         friendVo.playerInfo.PetsID = pkg.readInt();
+         initFriendVo(friendVo);
+         pkg.position = pkg.position + 8;
+         friendVo.playerInfo.ConsortiaID = pkg.readInt();
+         friendVo.playerInfo.badgeID = pkg.readInt();
+         friendVo.playerInfo.ConsortiaName = pkg.readUTF();
+         friendVo.playerInfo.honor = pkg.readUTF();
+         friendVo.playerInfo.honorId = pkg.readInt();
+         friendVo.playerInfo.isAttest = pkg.readBoolean();
+         friendVo.playerInfo.ImagePath = pkg.readUTF();
+         friendVo.playerInfo.IsShow = pkg.readBoolean();
+         return friendVo;
       }
       
-      private function initFriendVo(param1:PlayerVO) : void
+      private function initFriendVo(friendVo:PlayerVO) : void
       {
-         var _loc4_:int = 4 * 3 * Math.random();
-         var _loc3_:int = getEndPointIndex(_loc4_);
-         param1.randomStartPointIndex = _loc4_;
-         param1.randomEndPointIndex = _loc3_;
-         var _loc2_:Array = getPointPath(_loc4_,_loc3_);
-         param1.currentWalkStartPoint = _loc2_[0];
-         _loc2_.unshift();
-         param1.walkPath = _loc2_;
+         var startPointIndex:int = 4 * 3 * Math.random();
+         var endPointIndex:int = getEndPointIndex(startPointIndex);
+         friendVo.randomStartPointIndex = startPointIndex;
+         friendVo.randomEndPointIndex = endPointIndex;
+         var walkPath:Array = getPointPath(startPointIndex,endPointIndex);
+         friendVo.currentWalkStartPoint = walkPath[0];
+         walkPath.unshift();
+         friendVo.walkPath = walkPath;
       }
       
-      private function getEndPointIndex(param1:int) : int
+      private function getEndPointIndex(startPointIndex:int) : int
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = param1 / 3;
-         if(_loc2_ == 4 - 1)
+         var dir:int = 0;
+         var col:int = startPointIndex / 3;
+         if(col == 4 - 1)
          {
-            _loc3_ = -1;
+            dir = -1;
          }
-         else if(_loc2_ == 0)
+         else if(col == 0)
          {
-            _loc3_ = 1;
+            dir = 1;
          }
          else
          {
-            _loc3_ = Math.random() > 0.5?1:-1;
+            dir = Math.random() > 0.5?1:-1;
          }
-         var _loc4_:int = (_loc2_ + _loc3_) * 3 + int(Math.random() * 3);
-         return _loc4_;
+         var newEndPointIndex:int = (col + dir) * 3 + int(Math.random() * 3);
+         return newEndPointIndex;
       }
       
-      private function getPointPath(param1:int, param2:int) : Array
+      private function getPointPath(newStartPointIndex:int, newEndPointIndex:int) : Array
       {
-         var _loc4_:* = null;
-         var _loc5_:int = 0;
-         var _loc3_:Array = [];
-         if(param1 < param2)
+         var path:* = null;
+         var i:int = 0;
+         var pointPath:Array = [];
+         if(newStartPointIndex < newEndPointIndex)
          {
-            _loc4_ = randomPathMap[param1 + "_" + param2];
-            _loc5_ = 0;
-            while(_loc5_ < _loc4_.length / 2)
+            path = randomPathMap[newStartPointIndex + "_" + newEndPointIndex];
+            for(i = 0; i < path.length / 2; )
             {
-               _loc3_.push(new Point(_loc4_[_loc5_ * 2],_loc4_[_loc5_ * 2 + 1]));
-               _loc5_++;
+               pointPath.push(new Point(path[i * 2],path[i * 2 + 1]));
+               i++;
             }
          }
          else
          {
-            _loc4_ = randomPathMap[param2 + "_" + param1];
-            _loc5_ = _loc4_.length / 2 - 1;
-            while(_loc5_ > -1)
+            path = randomPathMap[newEndPointIndex + "_" + newStartPointIndex];
+            for(i = path.length / 2 - 1; i > -1; )
             {
-               _loc3_.push(new Point(_loc4_[_loc5_ * 2],_loc4_[_loc5_ * 2 + 1]));
-               _loc5_--;
+               pointPath.push(new Point(path[i * 2],path[i * 2 + 1]));
+               i--;
             }
          }
-         return _loc3_;
+         return pointPath;
       }
       
-      private function setPlayerInfo(param1:PlayerVO, param2:Boolean = false) : void
+      private function setPlayerInfo(friendVo:PlayerVO, deleteFlag:Boolean = false) : void
       {
-         if(param2)
+         if(deleteFlag)
          {
-            removePlayerByID(param1.playerInfo.ID);
+            removePlayerByID(friendVo.playerInfo.ID);
          }
-         var _loc3_:HallPlayer = new HallPlayer(param1);
-         _loc3_.playerPoint = _loc3_.playerVO.currentWalkStartPoint;
+         var friendPlayer:HallPlayer = new HallPlayer(friendVo);
+         friendPlayer.playerPoint = friendPlayer.playerVO.currentWalkStartPoint;
          if(!_hidFlag)
          {
-            _loc3_.startRandomWalk(4,3,randomPathMap);
+            friendPlayer.startRandomWalk(4,3,randomPathMap);
          }
-         if(getPlayerIndexById(_loc3_.playerVO.playerInfo.ID) == -1)
+         if(getPlayerIndexById(friendPlayer.playerVO.playerInfo.ID) == -1)
          {
-            _playerSprite.addChild(_loc3_);
-            _playerArray.push(_loc3_);
+            _playerSprite.addChild(friendPlayer);
+            _playerArray.push(friendPlayer);
          }
-         _loc3_.isHideTitle = true;
-         _friendPlayerDic[_loc3_.playerVO.playerInfo.ID] = _loc3_;
+         friendPlayer.isHideTitle = true;
+         _friendPlayerDic[friendPlayer.playerVO.playerInfo.ID] = friendPlayer;
       }
       
-      private function removePlayerByID(param1:int = 0) : void
+      private function removePlayerByID(id:int = 0) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:int = 0;
-         if(param1 != 0)
+         var hallPlayer:* = null;
+         var index:int = 0;
+         if(id != 0)
          {
-            if(_friendPlayerDic[param1])
+            if(_friendPlayerDic[id])
             {
-               _loc3_ = _friendPlayerDic[param1];
-               if(_playerSprite.contains(_loc3_))
+               hallPlayer = _friendPlayerDic[id];
+               if(_playerSprite.contains(hallPlayer))
                {
-                  _playerSprite.removeChild(_loc3_);
+                  _playerSprite.removeChild(hallPlayer);
                }
-               _loc2_ = getPlayerIndexById(_loc3_.playerVO.playerInfo.ID);
-               if(_loc2_ != -1)
+               index = getPlayerIndexById(hallPlayer.playerVO.playerInfo.ID);
+               if(index != -1)
                {
-                  _playerArray.splice(_loc2_,1);
+                  _playerArray.splice(index,1);
                }
-               delete _friendPlayerDic[param1];
-               _loc3_.dispose();
-               _loc3_ = null;
+               delete _friendPlayerDic[id];
+               hallPlayer.dispose();
+               hallPlayer = null;
             }
          }
          else
          {
             var _loc6_:int = 0;
             var _loc5_:* = _friendPlayerDic;
-            for(var _loc4_ in _friendPlayerDic)
+            for(var key in _friendPlayerDic)
             {
-               _loc3_ = _friendPlayerDic[_loc4_];
-               if(_playerSprite.contains(_loc3_))
+               hallPlayer = _friendPlayerDic[key];
+               if(_playerSprite.contains(hallPlayer))
                {
-                  _playerSprite.removeChild(_loc3_);
+                  _playerSprite.removeChild(hallPlayer);
                }
-               StarlingObjectUtils.disposeObject(_loc3_);
-               _loc3_ = null;
+               StarlingObjectUtils.disposeObject(hallPlayer);
+               hallPlayer = null;
             }
             _playerArray.splice(0,_playerArray.length);
             if(_selfPlayer)
@@ -479,23 +476,23 @@ package starling.scene.hall
          }
       }
       
-      private function addPlayerCallBack(param1:HallPlayer) : void
+      private function addPlayerCallBack(hallPlayer:HallPlayer) : void
       {
-         if(!param1)
+         if(!hallPlayer)
          {
             return;
          }
-         if(param1.playerVO.playerInfo.ID == PlayerManager.Instance.Self.ID)
+         if(hallPlayer.playerVO.playerInfo.ID == PlayerManager.Instance.Self.ID)
          {
-            _selfPlayer = param1;
+            _selfPlayer = hallPlayer;
             _selfPlayer.playerPoint = _playerPos;
             if(NewTitleManager.instance.ShowTitle)
             {
-               param1.isHideTitle = true;
+               hallPlayer.isHideTitle = true;
             }
             else
             {
-               param1.isHideTitle = false;
+               hallPlayer.isHideTitle = false;
             }
             _playerSprite.addChild(_selfPlayer);
             ajustScreen();
@@ -505,59 +502,58 @@ package starling.scene.hall
          }
       }
       
-      public function set type(param1:String) : void
+      public function set type(value:String) : void
       {
-         _selfPlayer.sceneCharacterActionState = param1;
+         _selfPlayer.sceneCharacterActionState = value;
       }
       
-      private function playerActionChange(param1:SceneCharacterEvent) : void
+      private function playerActionChange(evt:SceneCharacterEvent) : void
       {
-         var _loc2_:String = param1.data.toString();
-         if(_loc2_ == "standFront" || _loc2_ == "standBack")
+         var type:String = evt.data.toString();
+         if(type == "standFront" || type == "standBack")
          {
          }
       }
       
-      protected function __updateFrame(param1:Event) : void
+      protected function __updateFrame(event:Event) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:Number = NaN;
+         var i:int = 0;
+         var dis:Number = NaN;
          if(!_playerArray)
          {
             removeEventListener("enterFrame",__updateFrame);
             return;
          }
          _playerArray.sortOn("playerY",16);
-         _loc3_ = 0;
-         while(_loc3_ < _playerArray.length)
+         for(i = 0; i < _playerArray.length; )
          {
-            if(_playerArray[_loc3_])
+            if(_playerArray[i])
             {
-               if(_playerArray[_loc3_].parent == null)
+               if(_playerArray[i].parent == null)
                {
-                  _playerSprite.addChild(_playerArray[_loc3_]);
+                  _playerSprite.addChild(_playerArray[i]);
                }
-               _playerSprite.setChildIndex(_playerArray[_loc3_],_loc3_);
-               _playerArray[_loc3_].updatePlayer();
-               _playerArray[_loc3_].visible = judgePlayerShow(_playerArray[_loc3_].playerPoint.x);
-               _loc2_ = Point.distance(_selfPlayer.playerPoint,_playerArray[_loc3_].playerPoint);
-               if(_playerArray[_loc3_].playerY > _selfPlayer.playerY && _loc2_ < 100)
+               _playerSprite.setChildIndex(_playerArray[i],i);
+               _playerArray[i].updatePlayer();
+               _playerArray[i].visible = judgePlayerShow(_playerArray[i].playerPoint.x);
+               dis = Point.distance(_selfPlayer.playerPoint,_playerArray[i].playerPoint);
+               if(_playerArray[i].playerY > _selfPlayer.playerY && dis < 100)
                {
-                  _playerArray[_loc3_].alpha = 0.5;
+                  _playerArray[i].alpha = 0.5;
                }
                else
                {
-                  _playerArray[_loc3_].alpha = 1;
+                  _playerArray[i].alpha = 1;
                }
             }
-            _loc3_++;
+            i++;
          }
       }
       
-      protected function __onPlayerClick(param1:MouseEvent) : void
+      protected function __onPlayerClick(event:MouseEvent) : void
       {
-         var _loc3_:Number = NaN;
-         var _loc2_:* = null;
+         var clickInterval:Number = NaN;
+         var targetPoint:* = null;
          if(!this.touchable)
          {
             return;
@@ -565,12 +561,12 @@ package starling.scene.hall
          PlayerManager.Instance.dispatchEvent(new NewHallEvent("newhallsetplayertippos",[null]));
          if(_selfPlayer)
          {
-            _loc3_ = 200;
-            _loc2_ = this.globalToLocal(new Point(param1.stageX,param1.stageY));
-            if(getTimer() - _lastClick > _loc3_)
+            clickInterval = 200;
+            targetPoint = this.globalToLocal(new Point(event.stageX,event.stageY));
+            if(getTimer() - _lastClick > clickInterval)
             {
                _lastClick = getTimer();
-               if(setSelfPlayerPos(_loc2_))
+               if(setSelfPlayerPos(targetPoint))
                {
                   MapClickFlag = true;
                }
@@ -578,88 +574,88 @@ package starling.scene.hall
          }
       }
       
-      protected function __onSetSelfPlayerPos(param1:NewHallEvent) : void
+      protected function __onSetSelfPlayerPos(event:NewHallEvent) : void
       {
          PlayerManager.Instance.dispatchEvent(new NewHallEvent("newhallsetplayertippos",[null]));
-         var _loc2_:Point = this.globalToLocal(new Point(param1.data[0].stageX,param1.data[0].stageY));
-         if(setSelfPlayerPos(_loc2_,true))
+         var targetPoint:Point = this.globalToLocal(new Point(event.data[0].stageX,event.data[0].stageY));
+         if(setSelfPlayerPos(targetPoint,true))
          {
             MapClickFlag = true;
          }
       }
       
-      public function setSelfPlayerPos(param1:Point, param2:Boolean = true, param3:Boolean = false) : Boolean
+      public function setSelfPlayerPos(pos:Point, mouseFlag:Boolean = true, isNpcPos:Boolean = false) : Boolean
       {
-         if(_mouseMovie && _aStarPathFinder && !_aStarPathFinder.hit(param1))
+         if(_mouseMovie && _aStarPathFinder && !_aStarPathFinder.hit(pos))
          {
-            param1 = setPlayerBorderPos(param1);
-            _mouseMovie.visible = param2;
-            _mouseMovie.x = param1.x;
-            _mouseMovie.y = param1.y;
+            pos = setPlayerBorderPos(pos);
+            _mouseMovie.visible = mouseFlag;
+            _mouseMovie.x = pos.x;
+            _mouseMovie.y = pos.y;
             _mouseMovie.play("stand");
-            if(param3 && _selfPlayer.playerPoint && Point.distance(param1,_selfPlayer.playerPoint) < 50)
+            if(isNpcPos && _selfPlayer.playerPoint && Point.distance(pos,_selfPlayer.playerPoint) < 50)
             {
                _selfPlayer.dispatchEvent(new NewHallEventStarling("newhallbtnclick"));
                return true;
             }
-            _playerPos = param1;
-            _selfPlayer.playerVO.walkPath = _aStarPathFinder.searchPath(_selfPlayer.playerPoint,param1);
+            _playerPos = pos;
+            _selfPlayer.playerVO.walkPath = _aStarPathFinder.searchPath(_selfPlayer.playerPoint,pos);
             _selfPlayer.playerVO.currentWalkStartPoint = _selfPlayer.currentWalkStartPoint;
             return true;
          }
          return false;
       }
       
-      public function setPlayerBorderPos(param1:Point) : Point
+      public function setPlayerBorderPos(pos:Point) : Point
       {
          if(_mapID == 1 && _selfPlayer.playerVO.playerInfo.Grade <= 10)
          {
-            if(param1.x < 1039)
+            if(pos.x < 1039)
             {
-               param1.x = 1039;
+               pos.x = 1039;
             }
-            if(param1.x > 2292)
+            if(pos.x > 2292)
             {
-               param1.x = 2292;
+               pos.x = 2292;
             }
          }
          else
          {
-            if(param1.x < 73)
+            if(pos.x < 73)
             {
-               param1.x = 73;
+               pos.x = 73;
             }
-            if(param1.x > _sceneMapGridData.bgImageW - 73)
+            if(pos.x > _sceneMapGridData.bgImageW - 73)
             {
-               param1.x = _sceneMapGridData.bgImageW - 73;
+               pos.x = _sceneMapGridData.bgImageW - 73;
             }
          }
-         return param1;
+         return pos;
       }
       
-      protected function __onFishWalk(param1:NewHallEventStarling) : void
+      protected function __onFishWalk(event:NewHallEventStarling) : void
       {
-         var _loc2_:* = null;
+         var hallStateView:* = null;
          _mouseMovie.stop();
          _mouseMovie.visible = false;
          if(!MapClickFlag)
          {
-            _loc2_ = StateManager.getState("main") as HallStateView;
-            _loc2_.__onBtnClick();
+            hallStateView = StateManager.getState("main") as HallStateView;
+            hallStateView.__onBtnClick();
          }
          MapClickFlag = false;
       }
       
-      public function sendMyPosition(param1:Array) : void
+      public function sendMyPosition(p:Array) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:Array = [];
-         while(_loc3_ < param1.length)
+         var i:int = 0;
+         var arr:Array = [];
+         while(i < p.length)
          {
-            _loc2_.push(int(param1[_loc3_].x),int(param1[_loc3_].y));
-            _loc3_++;
+            arr.push(int(p[i].x),int(p[i].y));
+            i++;
          }
-         SocketManager.Instance.out.sendPlayerPos(param1[param1.length - 1].x,param1[param1.length - 1].y);
+         SocketManager.Instance.out.sendPlayerPos(p[p.length - 1].x,p[p.length - 1].y);
       }
       
       protected function ajustScreen() : void
@@ -667,86 +663,82 @@ package starling.scene.hall
          _selfPlayer.addEventListener("characterMovement",setCenter);
       }
       
-      public function setCenter(param1:SceneCharacterEvent = null) : void
+      public function setCenter(event:SceneCharacterEvent = null) : void
       {
-         var _loc7_:int = 0;
-         var _loc3_:int = 0;
-         var _loc8_:HallStateView = StateManager.getState("main") as HallStateView;
-         var _loc6_:int = StageReferance.stageWidth;
-         var _loc2_:int = StageReferance.defaultHeight;
+         var xf:int = 0;
+         var yf:int = 0;
+         var hallStateView:HallStateView = StateManager.getState("main") as HallStateView;
+         var width:int = StageReferance.stageWidth;
+         var height:int = StageReferance.defaultHeight;
          if(_selfPlayer)
          {
-            _loc7_ = -(_selfPlayer.x - _loc6_ / 2);
-            _loc3_ = -(_selfPlayer.y - _loc2_ / 2) + 50;
+            xf = -(_selfPlayer.x - width / 2);
+            yf = -(_selfPlayer.y - height / 2) + 50;
          }
-         if(_loc7_ > 0)
+         if(xf > 0)
          {
-            _loc7_ = 0;
+            xf = 0;
          }
-         if(_loc7_ < _loc6_ - _sceneMapGridData.bgImageW)
+         if(xf < width - _sceneMapGridData.bgImageW)
          {
-            _loc7_ = _loc6_ - _sceneMapGridData.bgImageW;
+            xf = width - _sceneMapGridData.bgImageW;
          }
-         if(_loc3_ > 0)
+         if(yf > 0)
          {
-            _loc3_ = 0;
+            yf = 0;
          }
-         if(_loc3_ < _loc2_ - _sceneMapGridData.bgImageH)
+         if(yf < height - _sceneMapGridData.bgImageH)
          {
-            _loc3_ = _loc2_ - _sceneMapGridData.bgImageH;
+            yf = height - _sceneMapGridData.bgImageH;
          }
          if(_mapID == 1)
          {
-            if(_loc7_ > -956)
+            if(xf > -956)
             {
-               _loc7_ = -956;
+               xf = -956;
             }
-            else if(_loc7_ < -1350)
+            else if(xf < -1350)
             {
-               _loc7_ = -1350;
+               xf = -1350;
             }
-            this.x = _loc7_;
+            this.x = xf;
+            hallStateView && hallStateView.setBgSpriteCenter(this.x,this.y);
             return;
-            §§push(_loc8_ && _loc8_.setBgSpriteCenter(this.x,this.y));
          }
-         else
+         this.x = xf;
+         this.y = yf;
+         hallStateView && hallStateView.setBgSpriteCenter(this.x,this.y);
+         _staticLayer.checkAndPlay(-this.x,-this.x + width);
+         if(!_hidFlag)
          {
-            this.x = _loc7_;
-            this.y = _loc3_;
-            _loc8_ && _loc8_.setBgSpriteCenter(this.x,this.y);
-            _staticLayer.checkAndPlay(-this.x,-this.x + _loc6_);
-            if(!_hidFlag)
+            var _loc10_:int = 0;
+            var _loc9_:* = _unLoadPlayerDic;
+            for(var id1 in _unLoadPlayerDic)
             {
-               var _loc10_:int = 0;
-               var _loc9_:* = _unLoadPlayerDic;
-               for(var _loc5_ in _unLoadPlayerDic)
+               if(_unLoadPlayerDic[id1] && _unLoadPlayerDic[id1].currentWalkStartPoint && judgePlayerShow(_unLoadPlayerDic[id1].currentWalkStartPoint.x))
                {
-                  if(_unLoadPlayerDic[_loc5_] && _unLoadPlayerDic[_loc5_].currentWalkStartPoint && judgePlayerShow(_unLoadPlayerDic[_loc5_].currentWalkStartPoint.x))
-                  {
-                     _loadPlayerDic[_unLoadPlayerDic[_loc5_].playerInfo.ID] = _unLoadPlayerDic[_loc5_];
-                     delete _unLoadPlayerDic[_loc5_];
-                  }
+                  _loadPlayerDic[_unLoadPlayerDic[id1].playerInfo.ID] = _unLoadPlayerDic[id1];
+                  delete _unLoadPlayerDic[id1];
                }
             }
-            var _loc12_:int = 0;
-            var _loc11_:* = _loadPlayerDic;
-            for(var _loc4_ in _loadPlayerDic)
+         }
+         var _loc12_:int = 0;
+         var _loc11_:* = _loadPlayerDic;
+         for(var id2 in _loadPlayerDic)
+         {
+            if(_loadPlayerDic[id2])
             {
-               if(_loadPlayerDic[_loc4_])
-               {
-                  startLoadOtherPlayer(false);
-                  break;
-               }
+               startLoadOtherPlayer(false);
+               break;
             }
-            return;
          }
       }
       
-      public function moveBgToTargetPos(param1:Number, param2:Number, param3:Number) : void
+      public function moveBgToTargetPos(posX:Number, posY:Number, delay:Number) : void
       {
-         TweenLite.to(this,param3,{
-            "x":param1,
-            "y":param2,
+         TweenLite.to(this,delay,{
+            "x":posX,
+            "y":posY,
             "ease":Linear.easeNone,
             "onUpdate":onMoveBgToTargetPosUpdate
          });
@@ -754,7 +746,7 @@ package starling.scene.hall
       
       private function onMoveBgToTargetPosUpdate() : void
       {
-         var _loc1_:HallStateView = StateManager.getState("main") as HallStateView;
+         var hallStateView:HallStateView = StateManager.getState("main") as HallStateView;
       }
       
       public function getSelfPlayerPos() : Point
@@ -766,21 +758,20 @@ package starling.scene.hall
          return new Point(_playerPos.x,_playerPos.y);
       }
       
-      private function getPlayerIndexById(param1:int) : int
+      private function getPlayerIndexById(id:int) : int
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = -1;
-         _loc3_ = 0;
-         while(_loc3_ < _playerArray.length)
+         var i:int = 0;
+         var index:* = -1;
+         for(i = 0; i < _playerArray.length; )
          {
-            if(_playerArray[_loc3_].playerVO.playerInfo.ID == param1)
+            if(_playerArray[i].playerVO.playerInfo.ID == id)
             {
-               _loc2_ = _loc3_;
+               index = i;
                break;
             }
-            _loc3_++;
+            i++;
          }
-         return _loc2_;
+         return index;
       }
       
       private function removeEvent() : void
@@ -837,9 +828,9 @@ package starling.scene.hall
          super.dispose();
       }
       
-      public function set mapID(param1:int) : void
+      public function set mapID(value:int) : void
       {
-         _mapID = param1;
+         _mapID = value;
          if(_mapID == 1)
          {
             setCenter();

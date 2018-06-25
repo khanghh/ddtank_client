@@ -41,9 +41,9 @@ package BraveDoor
       
       private var _clickNum:Number = 0;
       
-      public function BraveDoorManager(param1:IEventDispatcher = null)
+      public function BraveDoorManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : BraveDoorManager
@@ -60,16 +60,16 @@ package BraveDoor
          SocketManager.Instance.addEventListener(PkgEvent.format(315),_isOpen);
       }
       
-      public function initHall(param1:HallStateView) : void
+      public function initHall(hall:HallStateView) : void
       {
-         _hall = param1;
+         _hall = hall;
          checkIcon();
       }
       
-      protected function _isOpen(param1:PkgEvent) : void
+      protected function _isOpen(evt:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _showFlag = _loc2_.readBoolean();
+         var pkg:PackageIn = evt.pkg;
+         _showFlag = pkg.readBoolean();
          if(_showFlag && PlayerManager.Instance.Self.Grade >= 20)
          {
             ChatManager.Instance.sysChatAmaranth(LanguageMgr.GetTranslation("game.braveDoor.openMsg"));
@@ -85,13 +85,13 @@ package BraveDoor
       public function openView_Handler() : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc1_:Number = new Date().time;
-         if(_loc1_ - _clickNum < 1000)
+         var nowTime:Number = new Date().time;
+         if(nowTime - _clickNum < 1000)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.storeIIStrength.startStrengthClickTimerMsg"));
             return;
          }
-         _clickNum = _loc1_;
+         _clickNum = nowTime;
          show();
       }
       
@@ -110,9 +110,9 @@ package BraveDoor
          }
       }
       
-      public function setupDuplicateTemplate(param1:BraveDoorDuplicateAnalyzer) : void
+      public function setupDuplicateTemplate(infos:BraveDoorDuplicateAnalyzer) : void
       {
-         _duplicates = param1.list;
+         _duplicates = infos.list;
       }
       
       public function openView() : void
@@ -139,9 +139,9 @@ package BraveDoor
          return _currentPage;
       }
       
-      public function set currentPage(param1:int) : void
+      public function set currentPage(value:int) : void
       {
-         _currentPage = param1;
+         _currentPage = value;
       }
       
       public function get moduleIsShow() : Boolean
@@ -149,9 +149,9 @@ package BraveDoor
          return _isShow;
       }
       
-      public function set moduleIsShow(param1:Boolean) : void
+      public function set moduleIsShow(value:Boolean) : void
       {
-         _isShow = param1;
+         _isShow = value;
       }
    }
 }

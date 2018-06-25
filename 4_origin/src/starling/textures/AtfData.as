@@ -18,25 +18,25 @@ package starling.textures
       
       private var mData:ByteArray;
       
-      public function AtfData(param1:ByteArray)
+      public function AtfData(data:ByteArray)
       {
-         var _loc3_:* = false;
-         var _loc2_:* = 0;
+         var emptyMipmaps:* = false;
+         var numTextures:* = 0;
          super();
-         if(!isAtfData(param1))
+         if(!isAtfData(data))
          {
             throw new ArgumentError("Invalid ATF data");
          }
-         if(param1[6] == 255)
+         if(data[6] == 255)
          {
-            param1.position = 12;
+            data.position = 12;
          }
          else
          {
-            param1.position = 6;
+            data.position = 6;
          }
-         var _loc4_:uint = param1.readUnsignedByte();
-         switch(_loc4_ & 127)
+         var format:uint = data.readUnsignedByte();
+         switch(int(format & 127))
          {
             case 0:
             case 1:
@@ -60,28 +60,28 @@ package starling.textures
             case 13:
                throw new Error("Invalid ATF format");
          }
-         mWidth = Math.pow(2,param1.readUnsignedByte());
-         mHeight = Math.pow(2,param1.readUnsignedByte());
-         mNumTextures = param1.readUnsignedByte();
-         mIsCubeMap = (_loc4_ & 128) != 0;
-         mData = param1;
-         if(param1[5] != 0 && param1[6] == 255)
+         mWidth = Math.pow(2,data.readUnsignedByte());
+         mHeight = Math.pow(2,data.readUnsignedByte());
+         mNumTextures = data.readUnsignedByte();
+         mIsCubeMap = (format & 128) != 0;
+         mData = data;
+         if(data[5] != 0 && data[6] == 255)
          {
-            _loc3_ = (param1[5] & 1) == 1;
-            _loc2_ = param1[5] >> 1 & 127;
-            mNumTextures = !!_loc3_?1:_loc2_;
+            emptyMipmaps = (data[5] & 1) == 1;
+            numTextures = data[5] >> 1 & 127;
+            mNumTextures = !!emptyMipmaps?1:numTextures;
          }
       }
       
-      public static function isAtfData(param1:ByteArray) : Boolean
+      public static function isAtfData(data:ByteArray) : Boolean
       {
-         var _loc2_:* = null;
-         if(param1.length < 3)
+         var signature:* = null;
+         if(data.length < 3)
          {
             return false;
          }
-         _loc2_ = String.fromCharCode(param1[0],param1[1],param1[2]);
-         return _loc2_ == "ATF";
+         signature = String.fromCharCode(data[0],data[1],data[2]);
+         return signature == "ATF";
       }
       
       public function get format() : String

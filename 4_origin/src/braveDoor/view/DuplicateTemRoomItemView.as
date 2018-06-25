@@ -46,7 +46,7 @@ package braveDoor.view
       
       private var _place:int;
       
-      public function DuplicateTemRoomItemView(param1:int = 0)
+      public function DuplicateTemRoomItemView(place:int = 0)
       {
          super();
          initView();
@@ -74,7 +74,7 @@ package braveDoor.view
          addChild(_playerInfoBtn);
       }
       
-      public function set info(param1:RoomPlayer) : void
+      public function set info(info:RoomPlayer) : void
       {
          if(_info)
          {
@@ -82,7 +82,7 @@ package braveDoor.view
             _info.removeEventListener("isHostChange",__infoStateChange);
             _info = null;
          }
-         _info = param1;
+         _info = info;
          if(_info)
          {
             _info.addEventListener("readyChange",__infoStateChange);
@@ -98,16 +98,16 @@ package braveDoor.view
       
       private function updateView() : void
       {
-         var _loc1_:* = null;
+         var info:* = null;
          if(_info != null)
          {
-            _loc1_ = _info.playerInfo;
+            info = _info.playerInfo;
             if(_levelIcon != null)
             {
-               _levelIcon.setInfo(_loc1_.Grade,_loc1_.ddtKingGrade,_loc1_.Repute,_loc1_.WinCount,_loc1_.TotalCount,_loc1_.FightPower,_loc1_.Offer,true,false);
+               _levelIcon.setInfo(info.Grade,info.ddtKingGrade,info.Repute,info.WinCount,info.TotalCount,info.FightPower,info.Offer,true,false);
             }
-            _fightTxt.text = _loc1_.FightPower.toString();
-            _nameTxt.text = _loc1_.NickName;
+            _fightTxt.text = info.FightPower.toString();
+            _nameTxt.text = info.NickName;
          }
          updateButtons();
          updatePlayerState();
@@ -198,32 +198,32 @@ package braveDoor.view
          _levelIcon.setInfo(_info.playerInfo.Grade,_info.playerInfo.ddtKingGrade,_info.playerInfo.Repute,_info.playerInfo.WinCount,_info.playerInfo.TotalCount,_info.playerInfo.FightPower,_info.playerInfo.Offer,true,false);
       }
       
-      private function __infoStateChange(param1:RoomPlayerEvent) : void
+      private function __infoStateChange(evt:RoomPlayerEvent) : void
       {
          updatePlayerState();
          updateButtons();
       }
       
-      private function __addFriendHandler(param1:MouseEvent) : void
+      private function __addFriendHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         param1.stopImmediatePropagation();
+         evt.stopImmediatePropagation();
          IMManager.Instance.addFriend(_info.playerInfo.NickName);
       }
       
-      private function __kickOutHandler(param1:MouseEvent) : void
+      private function __kickOutHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         param1.stopImmediatePropagation();
+         evt.stopImmediatePropagation();
          GameInSocketOut.sendGameRoomKick(info.place);
       }
       
-      private function __startHandler(param1:RoomEvent) : void
+      private function __startHandler(evt:RoomEvent) : void
       {
          updateButtons();
       }
       
-      private function __updateButton(param1:RoomPlayerEvent) : void
+      private function __updateButton(evt:RoomPlayerEvent) : void
       {
          updateButtons();
       }
@@ -251,7 +251,7 @@ package braveDoor.view
          }
       }
       
-      private function __playerInfoClickHandler(param1:MouseEvent) : void
+      private function __playerInfoClickHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          PlayerInfoViewControl.viewByID(_info.playerInfo.ID,-1,true,false);

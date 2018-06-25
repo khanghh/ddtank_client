@@ -41,11 +41,11 @@ package flowerGiving.components
       
       public var num:int;
       
-      public function FlowerSendRewardItem(param1:int)
+      public function FlowerSendRewardItem(index:int)
       {
          super();
-         this.index = param1;
-         _itemIndex = param1 % 2 == 0?2:1;
+         this.index = index;
+         _itemIndex = index % 2 == 0?2:1;
          initView();
          addEvent();
       }
@@ -76,69 +76,68 @@ package flowerGiving.components
          _getBtn.addEventListener("click",__clickHanlder);
       }
       
-      protected function __clickHanlder(param1:MouseEvent) : void
+      protected function __clickHanlder(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          SocketManager.Instance.out.sendGetFlowerReward(2,index);
       }
       
-      protected function __onOutHandler(param1:MouseEvent) : void
+      protected function __onOutHandler(event:MouseEvent) : void
       {
          _backOverBit.visible = false;
       }
       
-      protected function __onOverHanlder(param1:MouseEvent) : void
+      protected function __onOverHanlder(event:MouseEvent) : void
       {
          _backOverBit.visible = true;
       }
       
-      public function set info(param1:GiftBagInfo) : void
+      public function set info(info:GiftBagInfo) : void
       {
-         var _loc6_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         var _loc5_:* = null;
-         var _loc2_:* = null;
-         num = param1.giftConditionArr[0].conditionValue;
+         var i:int = 0;
+         var reward:* = null;
+         var item:* = null;
+         var attrArr:* = null;
+         var bagCell:* = null;
+         num = info.giftConditionArr[0].conditionValue;
          _contentTxt.text = LanguageMgr.GetTranslation("flowerGiving.flowerSendRewardView.desc",num);
-         _loc6_ = 0;
-         while(_loc6_ <= param1.giftRewardArr.length - 1)
+         for(i = 0; i <= info.giftRewardArr.length - 1; )
          {
-            _loc3_ = param1.giftRewardArr[_loc6_];
-            _loc4_ = new InventoryItemInfo();
-            _loc4_.TemplateID = _loc3_.templateId;
-            ItemManager.fill(_loc4_);
-            _loc4_.IsBinds = _loc3_.isBind;
-            _loc4_.ValidDate = _loc3_.validDate;
-            _loc5_ = _loc3_.property.split(",");
-            _loc4_.StrengthenLevel = parseInt(_loc5_[0]);
-            _loc4_.AttackCompose = parseInt(_loc5_[1]);
-            _loc4_.DefendCompose = parseInt(_loc5_[2]);
-            _loc4_.AgilityCompose = parseInt(_loc5_[3]);
-            _loc4_.LuckCompose = parseInt(_loc5_[4]);
-            if(EquipType.isMagicStone(_loc4_.CategoryID))
+            reward = info.giftRewardArr[i];
+            item = new InventoryItemInfo();
+            item.TemplateID = reward.templateId;
+            ItemManager.fill(item);
+            item.IsBinds = reward.isBind;
+            item.ValidDate = reward.validDate;
+            attrArr = reward.property.split(",");
+            item.StrengthenLevel = parseInt(attrArr[0]);
+            item.AttackCompose = parseInt(attrArr[1]);
+            item.DefendCompose = parseInt(attrArr[2]);
+            item.AgilityCompose = parseInt(attrArr[3]);
+            item.LuckCompose = parseInt(attrArr[4]);
+            if(EquipType.isMagicStone(item.CategoryID))
             {
-               _loc4_.Level = _loc4_.StrengthenLevel;
-               _loc4_.Attack = _loc4_.AttackCompose;
-               _loc4_.Defence = _loc4_.DefendCompose;
-               _loc4_.Agility = _loc4_.AgilityCompose;
-               _loc4_.Luck = _loc4_.LuckCompose;
-               _loc4_.MagicAttack = parseInt(_loc5_[6]);
-               _loc4_.MagicDefence = parseInt(_loc5_[7]);
-               _loc4_.StrengthenExp = parseInt(_loc5_[8]);
+               item.Level = item.StrengthenLevel;
+               item.Attack = item.AttackCompose;
+               item.Defence = item.DefendCompose;
+               item.Agility = item.AgilityCompose;
+               item.Luck = item.LuckCompose;
+               item.MagicAttack = parseInt(attrArr[6]);
+               item.MagicDefence = parseInt(attrArr[7]);
+               item.StrengthenExp = parseInt(attrArr[8]);
             }
-            _loc2_ = new BagCell(0);
-            _loc2_.info = _loc4_;
-            _loc2_.setCount(_loc3_.count);
-            _loc2_.setBgVisible(false);
-            _hBox.addChild(_loc2_);
-            _loc6_++;
+            bagCell = new BagCell(0);
+            bagCell.info = item;
+            bagCell.setCount(reward.count);
+            bagCell.setBgVisible(false);
+            _hBox.addChild(bagCell);
+            i++;
          }
       }
       
-      public function setBtnEnable(param1:int) : void
+      public function setBtnEnable(type:int) : void
       {
-         switch(int(param1))
+         switch(int(type))
          {
             case 0:
                _getBtn.enable = false;

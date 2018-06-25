@@ -20,112 +20,112 @@ package starling.utils
          throw new AbstractClassError();
       }
       
-      public static function convertTo3D(param1:Matrix, param2:Matrix3D = null) : Matrix3D
+      public static function convertTo3D(matrix:Matrix, resultMatrix:Matrix3D = null) : Matrix3D
       {
-         if(param2 == null)
+         if(resultMatrix == null)
          {
-            param2 = new Matrix3D();
+            resultMatrix = new Matrix3D();
          }
-         sRawData[0] = param1.a;
-         sRawData[1] = param1.b;
-         sRawData[4] = param1.c;
-         sRawData[5] = param1.d;
-         sRawData[12] = param1.tx;
-         sRawData[13] = param1.ty;
-         param2.copyRawDataFrom(sRawData);
-         return param2;
+         sRawData[0] = matrix.a;
+         sRawData[1] = matrix.b;
+         sRawData[4] = matrix.c;
+         sRawData[5] = matrix.d;
+         sRawData[12] = matrix.tx;
+         sRawData[13] = matrix.ty;
+         resultMatrix.copyRawDataFrom(sRawData);
+         return resultMatrix;
       }
       
-      public static function convertTo2D(param1:Matrix3D, param2:Matrix = null) : Matrix
+      public static function convertTo2D(matrix3D:Matrix3D, resultMatrix:Matrix = null) : Matrix
       {
-         if(param2 == null)
+         if(resultMatrix == null)
          {
-            param2 = new Matrix();
+            resultMatrix = new Matrix();
          }
-         param1.copyRawDataTo(sRawData2);
-         param2.a = sRawData2[0];
-         param2.b = sRawData2[1];
-         param2.c = sRawData2[4];
-         param2.d = sRawData2[5];
-         param2.tx = sRawData2[12];
-         param2.ty = sRawData2[13];
-         return param2;
+         matrix3D.copyRawDataTo(sRawData2);
+         resultMatrix.a = sRawData2[0];
+         resultMatrix.b = sRawData2[1];
+         resultMatrix.c = sRawData2[4];
+         resultMatrix.d = sRawData2[5];
+         resultMatrix.tx = sRawData2[12];
+         resultMatrix.ty = sRawData2[13];
+         return resultMatrix;
       }
       
-      public static function transformPoint(param1:Matrix, param2:Point, param3:Point = null) : Point
+      public static function transformPoint(matrix:Matrix, point:Point, resultPoint:Point = null) : Point
       {
-         return transformCoords(param1,param2.x,param2.y,param3);
+         return transformCoords(matrix,point.x,point.y,resultPoint);
       }
       
-      public static function transformPoint3D(param1:Matrix3D, param2:Vector3D, param3:Vector3D = null) : Vector3D
+      public static function transformPoint3D(matrix:Matrix3D, point:Vector3D, resultPoint:Vector3D = null) : Vector3D
       {
-         return transformCoords3D(param1,param2.x,param2.y,param2.z,param3);
+         return transformCoords3D(matrix,point.x,point.y,point.z,resultPoint);
       }
       
-      public static function transformCoords(param1:Matrix, param2:Number, param3:Number, param4:Point = null) : Point
+      public static function transformCoords(matrix:Matrix, x:Number, y:Number, resultPoint:Point = null) : Point
       {
-         if(param4 == null)
+         if(resultPoint == null)
          {
-            param4 = new Point();
+            resultPoint = new Point();
          }
-         param4.x = param1.a * param2 + param1.c * param3 + param1.tx;
-         param4.y = param1.d * param3 + param1.b * param2 + param1.ty;
-         return param4;
+         resultPoint.x = matrix.a * x + matrix.c * y + matrix.tx;
+         resultPoint.y = matrix.d * y + matrix.b * x + matrix.ty;
+         return resultPoint;
       }
       
-      public static function transformCoords3D(param1:Matrix3D, param2:Number, param3:Number, param4:Number, param5:Vector3D = null) : Vector3D
+      public static function transformCoords3D(matrix:Matrix3D, x:Number, y:Number, z:Number, resultPoint:Vector3D = null) : Vector3D
       {
-         if(param5 == null)
+         if(resultPoint == null)
          {
-            param5 = new Vector3D();
+            resultPoint = new Vector3D();
          }
-         param1.copyRawDataTo(sRawData2);
-         param5.x = param2 * sRawData2[0] + param3 * sRawData2[4] + param4 * sRawData2[8] + sRawData2[12];
-         param5.y = param2 * sRawData2[1] + param3 * sRawData2[5] + param4 * sRawData2[9] + sRawData2[13];
-         param5.z = param2 * sRawData2[2] + param3 * sRawData2[6] + param4 * sRawData2[10] + sRawData2[14];
-         param5.w = param2 * sRawData2[3] + param3 * sRawData2[7] + param4 * sRawData2[11] + sRawData2[15];
-         return param5;
+         matrix.copyRawDataTo(sRawData2);
+         resultPoint.x = x * sRawData2[0] + y * sRawData2[4] + z * sRawData2[8] + sRawData2[12];
+         resultPoint.y = x * sRawData2[1] + y * sRawData2[5] + z * sRawData2[9] + sRawData2[13];
+         resultPoint.z = x * sRawData2[2] + y * sRawData2[6] + z * sRawData2[10] + sRawData2[14];
+         resultPoint.w = x * sRawData2[3] + y * sRawData2[7] + z * sRawData2[11] + sRawData2[15];
+         return resultPoint;
       }
       
-      public static function skew(param1:Matrix, param2:Number, param3:Number) : void
+      public static function skew(matrix:Matrix, skewX:Number, skewY:Number) : void
       {
-         var _loc6_:Number = Math.sin(param2);
-         var _loc5_:Number = Math.cos(param2);
-         var _loc7_:Number = Math.sin(param3);
-         var _loc4_:Number = Math.cos(param3);
-         param1.setTo(param1.a * _loc4_ - param1.b * _loc6_,param1.a * _loc7_ + param1.b * _loc5_,param1.c * _loc4_ - param1.d * _loc6_,param1.c * _loc7_ + param1.d * _loc5_,param1.tx * _loc4_ - param1.ty * _loc6_,param1.tx * _loc7_ + param1.ty * _loc5_);
+         var sinX:Number = Math.sin(skewX);
+         var cosX:Number = Math.cos(skewX);
+         var sinY:Number = Math.sin(skewY);
+         var cosY:Number = Math.cos(skewY);
+         matrix.setTo(matrix.a * cosY - matrix.b * sinX,matrix.a * sinY + matrix.b * cosX,matrix.c * cosY - matrix.d * sinX,matrix.c * sinY + matrix.d * cosX,matrix.tx * cosY - matrix.ty * sinX,matrix.tx * sinY + matrix.ty * cosX);
       }
       
-      public static function prependMatrix(param1:Matrix, param2:Matrix) : void
+      public static function prependMatrix(base:Matrix, prep:Matrix) : void
       {
-         param1.setTo(param1.a * param2.a + param1.c * param2.b,param1.b * param2.a + param1.d * param2.b,param1.a * param2.c + param1.c * param2.d,param1.b * param2.c + param1.d * param2.d,param1.tx + param1.a * param2.tx + param1.c * param2.ty,param1.ty + param1.b * param2.tx + param1.d * param2.ty);
+         base.setTo(base.a * prep.a + base.c * prep.b,base.b * prep.a + base.d * prep.b,base.a * prep.c + base.c * prep.d,base.b * prep.c + base.d * prep.d,base.tx + base.a * prep.tx + base.c * prep.ty,base.ty + base.b * prep.tx + base.d * prep.ty);
       }
       
-      public static function prependTranslation(param1:Matrix, param2:Number, param3:Number) : void
+      public static function prependTranslation(matrix:Matrix, tx:Number, ty:Number) : void
       {
-         param1.tx = param1.tx + (param1.a * param2 + param1.c * param3);
-         param1.ty = param1.ty + (param1.b * param2 + param1.d * param3);
+         matrix.tx = matrix.tx + (matrix.a * tx + matrix.c * ty);
+         matrix.ty = matrix.ty + (matrix.b * tx + matrix.d * ty);
       }
       
-      public static function prependScale(param1:Matrix, param2:Number, param3:Number) : void
+      public static function prependScale(matrix:Matrix, sx:Number, sy:Number) : void
       {
-         param1.setTo(param1.a * param2,param1.b * param2,param1.c * param3,param1.d * param3,param1.tx,param1.ty);
+         matrix.setTo(matrix.a * sx,matrix.b * sx,matrix.c * sy,matrix.d * sy,matrix.tx,matrix.ty);
       }
       
-      public static function prependRotation(param1:Matrix, param2:Number) : void
+      public static function prependRotation(matrix:Matrix, angle:Number) : void
       {
-         var _loc4_:Number = Math.sin(param2);
-         var _loc3_:Number = Math.cos(param2);
-         param1.setTo(param1.a * _loc3_ + param1.c * _loc4_,param1.b * _loc3_ + param1.d * _loc4_,param1.c * _loc3_ - param1.a * _loc4_,param1.d * _loc3_ - param1.b * _loc4_,param1.tx,param1.ty);
+         var sin:Number = Math.sin(angle);
+         var cos:Number = Math.cos(angle);
+         matrix.setTo(matrix.a * cos + matrix.c * sin,matrix.b * cos + matrix.d * sin,matrix.c * cos - matrix.a * sin,matrix.d * cos - matrix.b * sin,matrix.tx,matrix.ty);
       }
       
-      public static function prependSkew(param1:Matrix, param2:Number, param3:Number) : void
+      public static function prependSkew(matrix:Matrix, skewX:Number, skewY:Number) : void
       {
-         var _loc6_:Number = Math.sin(param2);
-         var _loc5_:Number = Math.cos(param2);
-         var _loc7_:Number = Math.sin(param3);
-         var _loc4_:Number = Math.cos(param3);
-         param1.setTo(param1.a * _loc4_ + param1.c * _loc7_,param1.b * _loc4_ + param1.d * _loc7_,param1.c * _loc5_ - param1.a * _loc6_,param1.d * _loc5_ - param1.b * _loc6_,param1.tx,param1.ty);
+         var sinX:Number = Math.sin(skewX);
+         var cosX:Number = Math.cos(skewX);
+         var sinY:Number = Math.sin(skewY);
+         var cosY:Number = Math.cos(skewY);
+         matrix.setTo(matrix.a * cosY + matrix.c * sinY,matrix.b * cosY + matrix.d * sinY,matrix.c * cosX - matrix.a * sinX,matrix.d * cosX - matrix.b * sinX,matrix.tx,matrix.ty);
       }
    }
 }

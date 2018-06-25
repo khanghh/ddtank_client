@@ -42,9 +42,9 @@ package com.pickgliss.ui.controls
          super.dispose();
       }
       
-      override public function set selected(param1:Boolean) : void
+      override public function set selected(value:Boolean) : void
       {
-         _selected = param1;
+         _selected = value;
          if(_selectedButton)
          {
             _selectedButton.visible = _selected;
@@ -65,67 +65,67 @@ package com.pickgliss.ui.controls
          drawHitArea();
       }
       
-      public function set selectedIcon(param1:DisplayObject) : void
+      public function set selectedIcon(display:DisplayObject) : void
       {
-         if(_selectedIcon == param1)
+         if(_selectedIcon == display)
          {
             return;
          }
          ObjectUtils.disposeObject(_selectedIcon);
-         _selectedIcon = param1;
+         _selectedIcon = display;
          onPropertiesChanged("icon");
       }
       
-      public function set selectedIconInnerRectString(param1:String) : void
+      public function set selectedIconInnerRectString(value:String) : void
       {
-         if(_selectedIconInnerRectString == param1)
+         if(_selectedIconInnerRectString == value)
          {
             return;
          }
-         _selectedIconInnerRectString = param1;
+         _selectedIconInnerRectString = value;
          _selectedIconInnerRect = ClassUtils.CreatInstance("com.pickgliss.geom.InnerRectangle",ComponentFactory.parasArgs(_selectedIconInnerRectString));
          onPropertiesChanged("iconInnerRect");
       }
       
-      public function set selectedIconStyle(param1:String) : void
+      public function set selectedIconStyle(stylename:String) : void
       {
-         if(_selectedIconStyle == param1)
+         if(_selectedIconStyle == stylename)
          {
             return;
          }
-         _selectedIconStyle = param1;
+         _selectedIconStyle = stylename;
          _selectedIcon = ComponentFactory.Instance.creat(_selectedIconStyle);
       }
       
-      public function set unselectedIcon(param1:DisplayObject) : void
+      public function set unselectedIcon(display:DisplayObject) : void
       {
-         if(_unselectedIcon == param1)
+         if(_unselectedIcon == display)
          {
             return;
          }
          ObjectUtils.disposeObject(_unselectedIcon);
-         _unselectedIcon = param1;
+         _unselectedIcon = display;
          onPropertiesChanged("icon");
       }
       
-      public function set unselectedIconInnerRectString(param1:String) : void
+      public function set unselectedIconInnerRectString(value:String) : void
       {
-         if(_unselectedIconInnerRectString == param1)
+         if(_unselectedIconInnerRectString == value)
          {
             return;
          }
-         _unselectedIconInnerRectString = param1;
+         _unselectedIconInnerRectString = value;
          _unselectedIconInnerRect = ClassUtils.CreatInstance("com.pickgliss.geom.InnerRectangle",ComponentFactory.parasArgs(_unselectedIconInnerRectString));
          onPropertiesChanged("iconInnerRect");
       }
       
-      public function set unselectedIconStyle(param1:String) : void
+      public function set unselectedIconStyle(stylename:String) : void
       {
-         if(_unselectedIconStyle == param1)
+         if(_unselectedIconStyle == stylename)
          {
             return;
          }
-         _unselectedIconStyle = param1;
+         _unselectedIconStyle = stylename;
          _unselectedIcon = ComponentFactory.Instance.creat(_unselectedIconStyle);
       }
       
@@ -151,11 +151,11 @@ package com.pickgliss.ui.controls
          }
       }
       
-      override public function setFrame(param1:int) : void
+      override public function setFrame(frameIndex:int) : void
       {
-         super.setFrame(param1);
-         DisplayUtils.setFrame(_selectedIcon,param1);
-         DisplayUtils.setFrame(_unselectedIcon,param1);
+         super.setFrame(frameIndex);
+         DisplayUtils.setFrame(_selectedIcon,frameIndex);
+         DisplayUtils.setFrame(_unselectedIcon,frameIndex);
       }
       
       protected function updateIconPos() : void

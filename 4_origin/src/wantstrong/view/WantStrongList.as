@@ -14,10 +14,10 @@ package wantstrong.view
       
       private var _model:WantStrongModel;
       
-      public function WantStrongList(param1:WantStrongModel)
+      public function WantStrongList(model:WantStrongModel)
       {
          super();
-         _model = param1;
+         _model = model;
          createUI();
       }
       

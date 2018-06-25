@@ -15,19 +15,19 @@ package store.data
          super();
       }
       
-      public function set explist(param1:String) : void
+      public function set explist(val:String) : void
       {
-         _expList = param1.split("|");
+         _expList = val.split("|");
       }
       
-      public function set maxLv(param1:String) : void
+      public function set maxLv(lv:String) : void
       {
-         _maxLv = int(param1);
+         _maxLv = int(lv);
       }
       
-      public function set oprationLv(param1:String) : void
+      public function set oprationLv(lv:String) : void
       {
-         _maxOpLv = int(param1);
+         _maxOpLv = int(lv);
       }
       
       public function getMaxLv() : int
@@ -40,12 +40,12 @@ package store.data
          return _maxOpLv;
       }
       
-      public function getExpByLevel(param1:int) : int
+      public function getExpByLevel(lv:int) : int
       {
-         var _loc2_:int = _expList[param1];
-         if(_loc2_ >= 0)
+         var exp:int = _expList[lv];
+         if(exp >= 0)
          {
-            return _loc2_;
+            return exp;
          }
          return -1;
       }

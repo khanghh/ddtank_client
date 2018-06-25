@@ -95,19 +95,18 @@ package store
       
       private function setIndex() : void
       {
-         var _loc1_:* = null;
-         var _loc3_:int = 0;
-         var _loc2_:int = _tabSelectedButtonGroup.length();
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var item:* = null;
+         var i:int = 0;
+         var len:int = _tabSelectedButtonGroup.length();
+         for(i = 0; i < len; )
          {
-            _loc1_ = _tabSelectedButtonGroup.getItemByIndex(_loc3_) as ITipedDisplay;
-            if(HelpBtnEnable.getInstance().isForbidden(_loc1_) == false)
+            item = _tabSelectedButtonGroup.getItemByIndex(i) as ITipedDisplay;
+            if(HelpBtnEnable.getInstance().isForbidden(item) == false)
             {
-               _tabSelectedButtonGroup.selectIndex = _loc3_;
+               _tabSelectedButtonGroup.selectIndex = i;
                break;
             }
-            _loc3_++;
+            i++;
          }
       }
       
@@ -185,7 +184,7 @@ package store
          _strengthPanel.addEventListener("change",changeHandler);
       }
       
-      protected function __exaltBtnClick(param1:MouseEvent) : void
+      protected function __exaltBtnClick(event:MouseEvent) : void
       {
          if(currentPanelIndex == 1)
          {
@@ -195,7 +194,7 @@ package store
          changeToTab(currentPanelIndex);
       }
       
-      protected function __groupChangeHandler(param1:Event) : void
+      protected function __groupChangeHandler(event:Event) : void
       {
          _tabSelectedButtonContainer.arrange();
       }
@@ -211,19 +210,19 @@ package store
          _exaltBtn.removeEventListener("click",__exaltBtnClick);
       }
       
-      private function changeHandler(param1:Event) : void
+      private function changeHandler(evt:Event) : void
       {
          _embedBtn_shine.movie.gotoAndStop(1);
       }
       
-      private function __updateStoreBag(param1:BagEvent) : void
+      private function __updateStoreBag(evt:BagEvent) : void
       {
-         currentPanel.refreshData(param1.changedSlots);
+         currentPanel.refreshData(evt.changedSlots);
       }
       
-      public function set currentPanelIndex(param1:int) : void
+      public function set currentPanelIndex(cp:int) : void
       {
-         _currentPanelIndex = param1;
+         _currentPanelIndex = cp;
          dispatchEvent(new ChoosePanelEvnet(_currentPanelIndex));
       }
       
@@ -260,14 +259,14 @@ package store
          return _strengthPanel;
       }
       
-      private function __strengthClick(param1:MouseEvent) : void
+      private function __strengthClick(evt:MouseEvent) : void
       {
          if(currentPanelIndex == 0)
          {
             return;
          }
          currentPanelIndex = 0;
-         if(param1 == null)
+         if(evt == null)
          {
             changeToTab(currentPanelIndex,false);
          }
@@ -277,7 +276,7 @@ package store
          }
       }
       
-      private function __composeClick(param1:MouseEvent) : void
+      private function __composeClick(evt:MouseEvent) : void
       {
          if(currentPanelIndex == 2)
          {
@@ -287,14 +286,14 @@ package store
          changeToTab(currentPanelIndex);
       }
       
-      public function skipFromWantStrong(param1:int) : void
+      public function skipFromWantStrong(skipType:int) : void
       {
-         currentPanelIndex = param1;
-         _tabSelectedButtonGroup.selectIndex = param1;
+         currentPanelIndex = skipType;
+         _tabSelectedButtonGroup.selectIndex = skipType;
          changeToTab(currentPanelIndex);
       }
       
-      private function __fusionClick(param1:MouseEvent) : void
+      private function __fusionClick(evt:MouseEvent) : void
       {
          if(currentPanelIndex == 4)
          {
@@ -305,55 +304,53 @@ package store
          SocketManager.Instance.out.sendPetFormInfo();
       }
       
-      protected function __onGetPetsFormInfo(param1:PkgEvent) : void
+      protected function __onGetPetsFormInfo(event:PkgEvent) : void
       {
-         var _loc7_:int = 0;
-         var _loc6_:int = 0;
-         var _loc2_:int = 0;
-         var _loc4_:* = null;
+         var i:int = 0;
+         var tempId:int = 0;
+         var index:int = 0;
+         var validDate:* = null;
          SocketManager.Instance.removeEventListener(PkgEvent.format(68,24),__onGetPetsFormInfo);
-         var _loc5_:PackageIn = param1.pkg;
-         var _loc3_:int = _loc5_.readInt();
-         _loc7_ = 0;
-         while(_loc7_ < _loc3_)
+         var pkg:PackageIn = event.pkg;
+         var num:int = pkg.readInt();
+         for(i = 0; i < num; )
          {
-            _loc6_ = _loc5_.readInt();
-            _loc2_ = PetsAdvancedManager.Instance.getFormDataIndexByTempId(_loc6_);
-            PetsAdvancedManager.Instance.formDataList[_loc2_].State = 1;
-            PetsAdvancedManager.Instance.formDataList[_loc2_].ShowBtn = 1;
-            PetsAdvancedManager.Instance.formDataList[_loc2_].valid = null;
-            _loc7_++;
+            tempId = pkg.readInt();
+            index = PetsAdvancedManager.Instance.getFormDataIndexByTempId(tempId);
+            PetsAdvancedManager.Instance.formDataList[index].State = 1;
+            PetsAdvancedManager.Instance.formDataList[index].ShowBtn = 1;
+            PetsAdvancedManager.Instance.formDataList[index].valid = null;
+            i++;
          }
-         _loc3_ = _loc5_.readInt();
-         _loc7_ = 0;
-         while(_loc7_ < _loc3_)
+         num = pkg.readInt();
+         for(i = 0; i < num; )
          {
-            _loc6_ = _loc5_.readInt();
-            _loc4_ = _loc5_.readDate();
-            if(_loc4_.getTime() < TimeManager.Instance.Now().getTime())
+            tempId = pkg.readInt();
+            validDate = pkg.readDate();
+            if(validDate.getTime() < TimeManager.Instance.Now().getTime())
             {
-               _loc2_ = PetsAdvancedManager.Instance.getFormDataIndexByTempId(_loc6_);
-               PetsAdvancedManager.Instance.formDataList[_loc2_].State = 0;
-               PetsAdvancedManager.Instance.formDataList[_loc2_].ShowBtn = 3;
-               PetsAdvancedManager.Instance.formDataList[_loc2_].valid = null;
+               index = PetsAdvancedManager.Instance.getFormDataIndexByTempId(tempId);
+               PetsAdvancedManager.Instance.formDataList[index].State = 0;
+               PetsAdvancedManager.Instance.formDataList[index].ShowBtn = 3;
+               PetsAdvancedManager.Instance.formDataList[index].valid = null;
             }
             else
             {
-               _loc2_ = PetsAdvancedManager.Instance.getFormDataIndexByTempId(_loc6_);
-               PetsAdvancedManager.Instance.formDataList[_loc2_].State = 1;
-               PetsAdvancedManager.Instance.formDataList[_loc2_].ShowBtn = 1;
-               PetsAdvancedManager.Instance.formDataList[_loc2_].valid = _loc4_;
+               index = PetsAdvancedManager.Instance.getFormDataIndexByTempId(tempId);
+               PetsAdvancedManager.Instance.formDataList[index].State = 1;
+               PetsAdvancedManager.Instance.formDataList[index].ShowBtn = 1;
+               PetsAdvancedManager.Instance.formDataList[index].valid = validDate;
             }
-            _loc7_++;
+            i++;
          }
          changeToTab(currentPanelIndex);
       }
       
-      private function __lianhuaClick(param1:MouseEvent) : void
+      private function __lianhuaClick(evt:MouseEvent) : void
       {
       }
       
-      private function __transferClick(param1:MouseEvent) : void
+      private function __transferClick(evt:MouseEvent) : void
       {
          if(currentPanelIndex == 3)
          {
@@ -363,7 +360,7 @@ package store
          changeToTab(currentPanelIndex);
       }
       
-      private function changeToTab(param1:int, param2:Boolean = true) : void
+      private function changeToTab(panelIndex:int, playMusic:Boolean = true) : void
       {
          SocketManager.Instance.out.sendClearStoreBag();
          SoundManager.instance.play("008");
@@ -379,7 +376,7 @@ package store
          {
             currentPanel.show();
          }
-         bg.setFrame(param1 + 1);
+         bg.setFrame(panelIndex + 1);
          _embedBtn_shine.movie.gotoAndStop(1);
          judgePointComposeArrow();
          judgePointTransfArrow();
@@ -387,13 +384,13 @@ package store
       
       private function judgePointComposeArrow() : void
       {
-         var _loc1_:* = null;
+         var tmpInfo:* = null;
          if(currentPanelIndex != 2)
          {
             if(!PlayerManager.Instance.Self.IsWeakGuildFinish(75))
             {
-               _loc1_ = TaskManager.instance.getQuestByID(566);
-               if(TaskManager.instance.isAvailableQuest(_loc1_,true) && !_loc1_.isCompleted)
+               tmpInfo = TaskManager.instance.getQuestByID(566);
+               if(TaskManager.instance.isAvailableQuest(tmpInfo,true) && !tmpInfo.isCompleted)
                {
                   NewHandContainer.Instance.showArrow(13,270,new Point(57,348),"","",LayerManager.Instance.getLayerByType(2));
                }
@@ -404,13 +401,13 @@ package store
       
       private function judgePointTransfArrow() : void
       {
-         var _loc1_:* = null;
+         var tmpInfo:* = null;
          if(currentPanelIndex != 3)
          {
             if(!PlayerManager.Instance.Self.IsWeakGuildFinish(88))
             {
-               _loc1_ = TaskManager.instance.getQuestByID(351);
-               if(TaskManager.instance.isAvailableQuest(_loc1_,true) && !_loc1_.isCompleted)
+               tmpInfo = TaskManager.instance.getQuestByID(351);
+               if(TaskManager.instance.isAvailableQuest(tmpInfo,true) && !tmpInfo.isCompleted)
                {
                   NewHandContainer.Instance.showArrow(13,270,new Point(57,348),"","",LayerManager.Instance.getLayerByType(2));
                }
@@ -418,7 +415,7 @@ package store
          }
       }
       
-      private function __openAssetManager(param1:MouseEvent) : void
+      private function __openAssetManager(evt:MouseEvent) : void
       {
       }
       
@@ -437,7 +434,7 @@ package store
          _embedBtn_shine.movie.play();
       }
       
-      private function embedInfoChangeHandler(param1:StoreIIEvent) : void
+      private function embedInfoChangeHandler(event:StoreIIEvent) : void
       {
          dispatchEvent(new StoreIIEvent("embedInfoChange"));
       }

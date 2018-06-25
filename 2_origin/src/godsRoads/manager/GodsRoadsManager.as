@@ -49,7 +49,7 @@ package godsRoads.manager
       
       public var level:int;
       
-      public function GodsRoadsManager(param1:PrivateClass)
+      public function GodsRoadsManager(privateClass:PrivateClass)
       {
          _funcParams = [];
          super();
@@ -70,10 +70,10 @@ package godsRoads.manager
          SocketManager.Instance.addEventListener("gods_roads",pkgHandler);
       }
       
-      public function loadGodsRoadsModule(param1:Function = null, param2:Array = null) : void
+      public function loadGodsRoadsModule(complete:Function = null, completeParams:Array = null) : void
       {
-         _func = param1;
-         _funcParams = param2;
+         _func = complete;
+         _funcParams = completeParams;
          UIModuleSmallLoading.Instance.progress = 0;
          UIModuleSmallLoading.Instance.show();
          UIModuleLoader.Instance.addEventListener("uiModuleComplete",loadCompleteHandler);
@@ -81,9 +81,9 @@ package godsRoads.manager
          UIModuleLoader.Instance.addUIModuleImp("godsroads");
       }
       
-      private function loadCompleteHandler(param1:UIModuleEvent) : void
+      private function loadCompleteHandler(event:UIModuleEvent) : void
       {
-         if(param1.module == "godsroads")
+         if(event.module == "godsroads")
          {
             UIModuleSmallLoading.Instance.hide();
             UIModuleLoader.Instance.removeEventListener("uiModuleComplete",loadCompleteHandler);
@@ -97,23 +97,23 @@ package godsRoads.manager
          }
       }
       
-      private function onUimoduleLoadProgress(param1:UIModuleEvent) : void
+      private function onUimoduleLoadProgress(event:UIModuleEvent) : void
       {
-         if(param1.module == "godsroads")
+         if(event.module == "godsroads")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
       
-      private function pkgHandler(param1:CrazyTankSocketEvent) : void
+      private function pkgHandler(e:CrazyTankSocketEvent) : void
       {
-         var _loc3_:Boolean = false;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:int = param1._cmd;
-         switch(int(_loc2_) - 86)
+         var flag:Boolean = false;
+         var pkg:PackageIn = e.pkg;
+         var cmd:int = e._cmd;
+         switch(int(cmd) - 86)
          {
             case 0:
-               _isOpen = _loc4_.readBoolean();
+               _isOpen = pkg.readBoolean();
                if(_isOpen)
                {
                   showGodsRoads();
@@ -124,11 +124,11 @@ package godsRoads.manager
                }
                break;
             case 1:
-               doOpenGodsRoads(_loc4_);
+               doOpenGodsRoads(pkg);
                break;
             case 2:
-               _loc3_ = _loc4_.readBoolean();
-               if(_loc3_)
+               flag = pkg.readBoolean();
+               if(flag)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.godsRoads.getawards"));
                }
@@ -136,17 +136,17 @@ package godsRoads.manager
          }
       }
       
-      public function changeSteps(param1:int) : void
+      public function changeSteps(lv:int) : void
       {
-         level = param1;
+         level = lv;
          dispatchEvent(new Event("godsroadschangesteps"));
       }
       
-      public function templateDataSetup(param1:DataAnalyzer) : void
+      public function templateDataSetup(analyzer:DataAnalyzer) : void
       {
-         if(param1 is GodsRoadsDataAnalyzer)
+         if(analyzer is GodsRoadsDataAnalyzer)
          {
-            _model.missionInfo = GodsRoadsDataAnalyzer(param1).dataList;
+            _model.missionInfo = GodsRoadsDataAnalyzer(analyzer).dataList;
          }
          dispatchEvent(new Event("XMLdata_Complete"));
       }
@@ -169,7 +169,7 @@ package godsRoads.manager
          HallIconManager.instance.executeCacheRightIconLevelLimit("godsRoads",false);
       }
       
-      public function openGodsRoads(param1:MouseEvent) : void
+      public function openGodsRoads(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.Grade < 10)
@@ -185,91 +185,87 @@ package godsRoads.manager
          SocketManager.Instance.out.enterGodsRoads();
       }
       
-      private function doOpenGodsRoads(param1:PackageIn) : void
+      private function doOpenGodsRoads(pkg:PackageIn) : void
       {
-         var _loc9_:int = 0;
-         var _loc4_:* = null;
-         var _loc2_:int = 0;
-         var _loc11_:* = null;
-         var _loc5_:int = 0;
-         var _loc10_:int = 0;
-         var _loc13_:* = null;
-         var _loc7_:* = null;
-         var _loc6_:int = 0;
-         var _loc12_:int = 0;
-         var _loc3_:* = null;
-         var _loc14_:* = null;
+         var i:int = 0;
+         var sVo:* = null;
+         var ii:int = 0;
+         var mVo:* = null;
+         var j:int = 0;
+         var id:int = 0;
+         var item:* = null;
+         var aVo:* = null;
+         var k:int = 0;
+         var idd:int = 0;
+         var itemm:* = null;
+         var aaVo:* = null;
          _model.godsRoadsData = new GodsRoadsVo();
-         var _loc8_:GodsRoadsVo = _model.godsRoadsData;
-         _loc8_.Level = param1.readInt();
-         _loc8_.currentLevel = param1.readInt();
-         _loc8_.steps = new Vector.<GodsRoadsStepVo>();
-         _loc9_ = 0;
-         while(_loc9_ < _loc8_.Level)
+         var vo:GodsRoadsVo = _model.godsRoadsData;
+         vo.Level = pkg.readInt();
+         vo.currentLevel = pkg.readInt();
+         vo.steps = new Vector.<GodsRoadsStepVo>();
+         for(i = 0; i < vo.Level; )
          {
-            _loc4_ = new GodsRoadsStepVo();
-            _loc4_.isGetAwards = param1.readBoolean();
-            _loc4_.missionsNum = param1.readInt();
-            _loc4_.currentStep = _loc9_ + 1;
-            _loc4_.awards = [];
-            _loc4_.missionVos = [];
-            _loc2_ = 0;
-            while(_loc2_ < _loc4_.missionsNum)
+            sVo = new GodsRoadsStepVo();
+            sVo.isGetAwards = pkg.readBoolean();
+            sVo.missionsNum = pkg.readInt();
+            sVo.currentStep = i + 1;
+            sVo.awards = [];
+            sVo.missionVos = [];
+            for(ii = 0; ii < sVo.missionsNum; )
             {
-               _loc11_ = new GodsRoadsMissionVo();
-               _loc11_.ID = param1.readInt();
-               _loc11_.isFinished = param1.readBoolean();
-               _loc11_.condition1 = param1.readInt();
-               _loc11_.condition2 = param1.readInt();
-               _loc11_.condition3 = param1.readInt();
-               _loc11_.condition4 = param1.readInt();
-               _loc11_.isGetAwards = param1.readBoolean();
-               _loc11_.awardsNum = param1.readInt();
-               _loc11_.awards = [];
-               _loc5_ = 0;
-               while(_loc5_ < _loc11_.awardsNum)
+               mVo = new GodsRoadsMissionVo();
+               mVo.ID = pkg.readInt();
+               mVo.isFinished = pkg.readBoolean();
+               mVo.condition1 = pkg.readInt();
+               mVo.condition2 = pkg.readInt();
+               mVo.condition3 = pkg.readInt();
+               mVo.condition4 = pkg.readInt();
+               mVo.isGetAwards = pkg.readBoolean();
+               mVo.awardsNum = pkg.readInt();
+               mVo.awards = [];
+               for(j = 0; j < mVo.awardsNum; )
                {
-                  _loc10_ = param1.readInt();
-                  _loc13_ = ItemManager.Instance.getTemplateById(_loc10_);
-                  _loc7_ = new InventoryItemInfo();
-                  ObjectUtils.copyProperties(_loc7_,_loc13_);
-                  _loc7_.TemplateID = _loc10_;
-                  _loc7_.StrengthenLevel = param1.readInt();
-                  _loc7_.Count = param1.readInt();
-                  _loc7_.ValidDate = param1.readInt();
-                  _loc7_.AttackCompose = param1.readInt();
-                  _loc7_.DefendCompose = param1.readInt();
-                  _loc7_.AgilityCompose = param1.readInt();
-                  _loc7_.LuckCompose = param1.readInt();
-                  _loc7_.IsBinds = param1.readBoolean();
-                  _loc11_.awards.push(_loc7_);
-                  _loc5_++;
+                  id = pkg.readInt();
+                  item = ItemManager.Instance.getTemplateById(id);
+                  aVo = new InventoryItemInfo();
+                  ObjectUtils.copyProperties(aVo,item);
+                  aVo.TemplateID = id;
+                  aVo.StrengthenLevel = pkg.readInt();
+                  aVo.Count = pkg.readInt();
+                  aVo.ValidDate = pkg.readInt();
+                  aVo.AttackCompose = pkg.readInt();
+                  aVo.DefendCompose = pkg.readInt();
+                  aVo.AgilityCompose = pkg.readInt();
+                  aVo.LuckCompose = pkg.readInt();
+                  aVo.IsBinds = pkg.readBoolean();
+                  mVo.awards.push(aVo);
+                  j++;
                }
-               _loc4_.missionVos.push(_loc11_);
-               _loc2_++;
+               sVo.missionVos.push(mVo);
+               ii++;
             }
-            _loc8_.steps.push(_loc4_);
-            _loc4_.awadsNum = param1.readInt();
-            _loc6_ = 0;
-            while(_loc6_ < _loc4_.awadsNum)
+            vo.steps.push(sVo);
+            sVo.awadsNum = pkg.readInt();
+            for(k = 0; k < sVo.awadsNum; )
             {
-               _loc12_ = param1.readInt();
-               _loc3_ = ItemManager.Instance.getTemplateById(_loc12_);
-               _loc14_ = new InventoryItemInfo();
-               ObjectUtils.copyProperties(_loc14_,_loc3_);
-               _loc14_.TemplateID = _loc12_;
-               _loc14_.StrengthenLevel = param1.readInt();
-               _loc14_.Count = param1.readInt();
-               _loc14_.ValidDate = param1.readInt();
-               _loc14_.AttackCompose = param1.readInt();
-               _loc14_.DefendCompose = param1.readInt();
-               _loc14_.AgilityCompose = param1.readInt();
-               _loc14_.LuckCompose = param1.readInt();
-               _loc14_.IsBinds = param1.readBoolean();
-               _loc4_.awards.push(_loc14_);
-               _loc6_++;
+               idd = pkg.readInt();
+               itemm = ItemManager.Instance.getTemplateById(idd);
+               aaVo = new InventoryItemInfo();
+               ObjectUtils.copyProperties(aaVo,itemm);
+               aaVo.TemplateID = idd;
+               aaVo.StrengthenLevel = pkg.readInt();
+               aaVo.Count = pkg.readInt();
+               aaVo.ValidDate = pkg.readInt();
+               aaVo.AttackCompose = pkg.readInt();
+               aaVo.DefendCompose = pkg.readInt();
+               aaVo.AgilityCompose = pkg.readInt();
+               aaVo.LuckCompose = pkg.readInt();
+               aaVo.IsBinds = pkg.readBoolean();
+               sVo.awards.push(aaVo);
+               k++;
             }
-            _loc9_++;
+            i++;
          }
          dispatchEvent(new Event("godsroadsopenframe"));
       }
@@ -284,9 +280,9 @@ package godsRoads.manager
          return _xml;
       }
       
-      public function set XMLData(param1:XML) : void
+      public function set XMLData(val:XML) : void
       {
-         _xml = param1;
+         _xml = val;
       }
    }
 }

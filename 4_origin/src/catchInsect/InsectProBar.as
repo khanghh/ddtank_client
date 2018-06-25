@@ -48,11 +48,11 @@ package catchInsect
       
       private var _netTips:Bitmap;
       
-      public function InsectProBar(param1:LocalPlayer, param2:int)
+      public function InsectProBar(self:LocalPlayer, type:int)
       {
-         _selfInfo = param1.playerInfo as SelfInfo;
-         _type = param2;
-         super(param1);
+         _selfInfo = self.playerInfo as SelfInfo;
+         _type = type;
+         super(self);
       }
       
       override protected function addEvent() : void
@@ -60,24 +60,24 @@ package catchInsect
          _selfInfo.PropBag.addEventListener("update",__updateProp);
          var _loc3_:int = 0;
          var _loc2_:* = _cells;
-         for each(var _loc1_ in _cells)
+         for each(var cell in _cells)
          {
-            _loc1_.addEventListener("use",__useProp);
+            cell.addEventListener("use",__useProp);
          }
          KeyboardManager.getInstance().addEventListener("keyDown",__keyDown);
       }
       
-      private function __updateProp(param1:BagEvent) : void
+      private function __updateProp(event:BagEvent) : void
       {
-         var _loc4_:Dictionary = param1.changedSlots;
-         var _loc2_:int = _selfInfo.PropBag.getItemCountByTemplateId(10615);
-         (_cells[0] as CustomPropCell).setCount(_loc2_);
-         _lock0 = _loc2_ <= 0;
+         var changes:Dictionary = event.changedSlots;
+         var count:int = _selfInfo.PropBag.getItemCountByTemplateId(10615);
+         (_cells[0] as CustomPropCell).setCount(count);
+         _lock0 = count <= 0;
          _cells[0].enabled = true;
          _cells[0].enabled = !_lock0;
-         var _loc3_:int = _selfInfo.PropBag.getItemCountByTemplateId(10616);
-         (_cells[1] as CustomPropCell).setCount(_loc3_);
-         _lock1 = _loc3_ <= 0;
+         var count2:int = _selfInfo.PropBag.getItemCountByTemplateId(10616);
+         (_cells[1] as CustomPropCell).setCount(count2);
+         _lock1 = count2 <= 0;
          _cells[1].enabled = true;
          _cells[1].enabled = !_lock1;
       }
@@ -87,37 +87,37 @@ package catchInsect
          _selfInfo.PropBag.removeEventListener("update",__updateProp);
          var _loc3_:int = 0;
          var _loc2_:* = _cells;
-         for each(var _loc1_ in _cells)
+         for each(var cell in _cells)
          {
-            _loc1_.removeEventListener("use",__useProp);
+            cell.removeEventListener("use",__useProp);
          }
          super.removeEvent();
       }
       
       override protected function drawCells() : void
       {
-         var _loc4_:* = null;
-         var _loc3_:CustomPropCell = new CustomPropCell("z",_mode,_type);
-         _loc4_ = ComponentFactory.Instance.creatCustomObject("CustomPropCellPosz");
-         _loc3_.setPossiton(_loc4_.x,_loc4_.y);
-         addChild(_loc3_);
-         var _loc2_:CustomPropCell = new CustomPropCell("x",_mode,_type);
-         _loc4_ = ComponentFactory.Instance.creatCustomObject("CustomPropCellPosx");
-         _loc2_.setPossiton(_loc4_.x,_loc4_.y);
-         addChild(_loc2_);
-         var _loc1_:CustomPropCell = new CustomPropCell("c",_mode,_type);
-         _loc4_ = ComponentFactory.Instance.creatCustomObject("CustomPropCellPosc");
-         _loc1_.setPossiton(_loc4_.x,_loc4_.y);
-         addChild(_loc1_);
-         _cells.push(_loc3_);
-         _cells.push(_loc2_);
-         _cells.push(_loc1_);
+         var pos:* = null;
+         var cellz:CustomPropCell = new CustomPropCell("z",_mode,_type);
+         pos = ComponentFactory.Instance.creatCustomObject("CustomPropCellPosz");
+         cellz.setPossiton(pos.x,pos.y);
+         addChild(cellz);
+         var cellx:CustomPropCell = new CustomPropCell("x",_mode,_type);
+         pos = ComponentFactory.Instance.creatCustomObject("CustomPropCellPosx");
+         cellx.setPossiton(pos.x,pos.y);
+         addChild(cellx);
+         var cellc:CustomPropCell = new CustomPropCell("c",_mode,_type);
+         pos = ComponentFactory.Instance.creatCustomObject("CustomPropCellPosc");
+         cellc.setPossiton(pos.x,pos.y);
+         addChild(cellc);
+         _cells.push(cellz);
+         _cells.push(cellx);
+         _cells.push(cellc);
          drawLayer();
       }
       
-      override protected function __keyDown(param1:KeyboardEvent) : void
+      override protected function __keyDown(event:KeyboardEvent) : void
       {
-         var _loc2_:* = param1.keyCode;
+         var _loc2_:* = event.keyCode;
          if(KeyStroke.VK_Z.getCode() !== _loc2_)
          {
             if(KeyStroke.VK_X.getCode() !== _loc2_)
@@ -138,30 +138,30 @@ package catchInsect
          }
       }
       
-      private function __useProp(param1:FightPropEevnt) : void
+      private function __useProp(event:FightPropEevnt) : void
       {
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         var _loc2_:* = null;
-         var _loc5_:* = null;
-         if(_enabled && _localVisible && PropCell(param1.currentTarget).enabled)
+         var prop:* = null;
+         var temp:* = null;
+         var result:* = null;
+         var propAnimationName:* = null;
+         if(_enabled && _localVisible && PropCell(event.currentTarget).enabled)
          {
-            _loc3_ = PropCell(param1.currentTarget).info;
-            _loc4_ = _selfInfo.FightBag.getItemByTemplateId(_loc3_.Template.TemplateID);
-            if(!_loc4_)
+            prop = PropCell(event.currentTarget).info;
+            temp = _selfInfo.FightBag.getItemByTemplateId(prop.Template.TemplateID);
+            if(!temp)
             {
                return;
             }
-            _loc3_.Place = _loc4_.Place;
-            _loc2_ = _self.useProp(_loc3_,2);
-            if(_loc2_ == "-1")
+            prop.Place = temp.Place;
+            result = _self.useProp(prop,2);
+            if(result == "-1")
             {
-               if(PropCell(param1.currentTarget) == _cells[0])
+               if(PropCell(event.currentTarget) == _cells[0])
                {
                   ObjectUtils.disposeObject(_ballTips);
                   _ballTips = null;
                }
-               else if(PropCell(param1.currentTarget) == _cells[1])
+               else if(PropCell(event.currentTarget) == _cells[1])
                {
                   if(!PlayerManager.Instance.Self.isCatchInsectGuideFinish(128))
                   {
@@ -177,48 +177,48 @@ package catchInsect
                }
                dispatchEvent(new InsectEvent("useProp"));
                enabled = false;
-               _loc5_ = EquipType.hasPropAnimation(_loc3_.Template);
-               if(_loc5_ != null)
+               propAnimationName = EquipType.hasPropAnimation(prop.Template);
+               if(propAnimationName != null)
                {
-                  _self.showEffect(_loc5_);
+                  _self.showEffect(propAnimationName);
                }
             }
-            else if(_loc2_ != "-1" && _loc2_ != "0")
+            else if(result != "-1" && result != "0")
             {
-               PropCell(param1.currentTarget).isUsed = false;
-               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.game.prop." + _loc2_));
+               PropCell(event.currentTarget).isUsed = false;
+               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.game.prop." + result));
             }
          }
          if(!_enabled)
          {
-            PropCell(param1.currentTarget).isUsed = false;
+            PropCell(event.currentTarget).isUsed = false;
          }
       }
       
       override public function enter() : void
       {
-         var _loc8_:InventoryItemInfo = new InventoryItemInfo();
-         _loc8_.TemplateID = 10615;
-         ItemManager.fill(_loc8_);
-         var _loc4_:ItemTemplateInfo = _loc8_ as ItemTemplateInfo;
-         var _loc6_:PropInfo = new PropInfo(_loc4_);
-         _loc6_.Place = 0;
-         var _loc3_:int = _selfInfo.PropBag.getItemCountByTemplateId(10615);
-         _cells[0].info = _loc6_;
-         (_cells[0] as CustomPropCell).setCount(_loc3_);
-         _lock0 = _loc3_ <= 0;
+         var info:InventoryItemInfo = new InventoryItemInfo();
+         info.TemplateID = 10615;
+         ItemManager.fill(info);
+         var item:ItemTemplateInfo = info as ItemTemplateInfo;
+         var prop:PropInfo = new PropInfo(item);
+         prop.Place = 0;
+         var count:int = _selfInfo.PropBag.getItemCountByTemplateId(10615);
+         _cells[0].info = prop;
+         (_cells[0] as CustomPropCell).setCount(count);
+         _lock0 = count <= 0;
          _cells[0].enabled = true;
          _cells[0].enabled = !_lock0;
-         var _loc7_:InventoryItemInfo = new InventoryItemInfo();
-         _loc7_.TemplateID = 10616;
-         ItemManager.fill(_loc7_);
-         var _loc1_:ItemTemplateInfo = _loc7_ as ItemTemplateInfo;
-         var _loc2_:PropInfo = new PropInfo(_loc1_);
-         _loc2_.Place = 1;
-         var _loc5_:int = _selfInfo.PropBag.getItemCountByTemplateId(10616);
-         _cells[1].info = _loc2_;
-         (_cells[1] as CustomPropCell).setCount(_loc5_);
-         _lock1 = _loc5_ <= 0;
+         var info2:InventoryItemInfo = new InventoryItemInfo();
+         info2.TemplateID = 10616;
+         ItemManager.fill(info2);
+         var item2:ItemTemplateInfo = info2 as ItemTemplateInfo;
+         var prop2:PropInfo = new PropInfo(item2);
+         prop2.Place = 1;
+         var count2:int = _selfInfo.PropBag.getItemCountByTemplateId(10616);
+         _cells[1].info = prop2;
+         (_cells[1] as CustomPropCell).setCount(count2);
+         _lock1 = count2 <= 0;
          _cells[1].enabled = true;
          _cells[1].enabled = !_lock1;
          if(!PlayerManager.Instance.Self.isCatchInsectGuideFinish(128))
@@ -238,30 +238,30 @@ package catchInsect
          super.leaving();
       }
       
-      public function set backStyle(param1:String) : void
+      public function set backStyle(val:String) : void
       {
-         var _loc2_:* = null;
-         if(_backStyle != param1)
+         var back:* = null;
+         if(_backStyle != val)
          {
-            _backStyle = param1;
-            _loc2_ = _background;
+            _backStyle = val;
+            back = _background;
             _background = ComponentFactory.Instance.creat(_backStyle);
             addChildAt(_background,0);
-            ObjectUtils.disposeObject(_loc2_);
+            ObjectUtils.disposeObject(back);
          }
       }
       
-      public function setVisible(param1:Boolean) : void
+      public function setVisible(val:Boolean) : void
       {
-         if(_localVisible != param1)
+         if(_localVisible != val)
          {
-            _localVisible = param1;
+            _localVisible = val;
          }
       }
       
-      public function setEnable(param1:Boolean) : void
+      public function setEnable(value:Boolean) : void
       {
-         enabled = param1;
+         enabled = value;
          if(_lock0)
          {
             _cells[0].enabled = false;

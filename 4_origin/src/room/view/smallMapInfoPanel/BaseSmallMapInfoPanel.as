@@ -71,7 +71,7 @@ package room.view.smallMapInfoPanel
          return PathManager.SITE_MAIN + "image/map/" + "10000" + "/samll_map.png";
       }
       
-      protected function __completeHandler(param1:LoaderEvent) : void
+      protected function __completeHandler(evt:LoaderEvent) : void
       {
          if(_loader)
          {
@@ -86,16 +86,16 @@ package room.view.smallMapInfoPanel
          }
       }
       
-      public function set info(param1:RoomInfo) : void
+      public function set info(value:RoomInfo) : void
       {
-         _info = param1;
+         _info = value;
          _info.addEventListener("mapChanged",__update);
          _info.addEventListener("mapTimeChanged",__update);
          _info.addEventListener("hardLevelChanged",__update);
          updateView();
       }
       
-      private function __update(param1:Event) : void
+      private function __update(evt:Event) : void
       {
          updateView();
       }

@@ -25,9 +25,9 @@ package explorerManual.view.page
       
       private var _dirTitleTxt:FilterFrameText;
       
-      public function ExplorerPageDirectoryView(param1:int, param2:ExplorerManualInfo, param3:ExplorerManualController)
+      public function ExplorerPageDirectoryView(chapterID:int, model:ExplorerManualInfo, ctrl:ExplorerManualController)
       {
-         super(param1,param2,param3);
+         super(chapterID,model,ctrl);
       }
       
       override protected function initView() : void
@@ -41,72 +41,71 @@ package explorerManual.view.page
          _piecesPregress.visible = false;
       }
       
-      override protected function __modelUpdateHandler(param1:Event) : void
+      override protected function __modelUpdateHandler(evt:Event) : void
       {
       }
       
-      override public function set pageInfo(param1:ManualPageItemInfo) : void
+      override public function set pageInfo(info:ManualPageItemInfo) : void
       {
-         _pageInfo = param1;
+         _pageInfo = info;
       }
       
-      public function parentView(param1:ExplorerPageView) : void
+      public function parentView(view:ExplorerPageView) : void
       {
       }
       
-      public function initDirectory(param1:Array) : void
+      public function initDirectory(chapter:Array) : void
       {
-         _curAllPage = param1;
+         _curAllPage = chapter;
          clearVBox();
          createDic();
       }
       
       private function clearVBox() : void
       {
-         var _loc1_:* = null;
+         var temItem:* = null;
          if(_itemVbox)
          {
             while(_itemVbox.numChildren > 0)
             {
-               _loc1_ = _itemVbox.getChildAt(0) as ExplorerPageDirectorItemView;
-               _loc1_.removeEventListener("directorItemClick",itemClick_Handler);
+               temItem = _itemVbox.getChildAt(0) as ExplorerPageDirectorItemView;
+               temItem.removeEventListener("directorItemClick",itemClick_Handler);
                ObjectUtils.disposeObject(_itemVbox.getChildAt(0));
             }
          }
       }
       
-      private function itemLinkClick_Handler(param1:TextEvent) : void
+      private function itemLinkClick_Handler(evt:TextEvent) : void
       {
       }
       
       private function createDic() : void
       {
-         var _loc4_:* = null;
-         var _loc2_:* = null;
-         var _loc1_:int = 0;
+         var info:* = null;
+         var _itemView:* = null;
+         var item:int = 0;
          if(_curAllPage == null || _curAllPage.length <= 0)
          {
             return;
          }
-         var _loc3_:int = _curAllPage.length;
-         _loc1_ = 0;
-         while(_loc1_ < _loc3_)
+         var itemCount:int = _curAllPage.length;
+         for(item = 0; item < itemCount; )
          {
-            _loc4_ = _curAllPage[_loc1_];
-            if(_loc4_.Sort != 0)
+            info = _curAllPage[item];
+            if(info.Sort != 0)
             {
-               _loc2_ = new ExplorerPageDirectorItemView(_loc1_,_model);
-               _loc2_.info = _curAllPage[_loc1_];
-               _loc2_.addEventListener("directorItemClick",itemClick_Handler);
-               _itemVbox.addChild(_loc2_);
+               _itemView = new ExplorerPageDirectorItemView(item,_model);
+               _itemView.info = _curAllPage[item];
+               _itemView.addEventListener("directorItemClick",itemClick_Handler);
+               _itemVbox.addChild(_itemView);
             }
-            _loc1_++;
+            item++;
          }
       }
       
-      private function itemClick_Handler(param1:CEvent) : void
+      private function itemClick_Handler(evt:CEvent) : void
       {
-         this.dispatchEvent(new CEvent("directionryTurn",param1.data));
+         this.dispatchEvent(new CEvent("directionryTurn",evt.data));
       }
       
       override public function dispose() : void

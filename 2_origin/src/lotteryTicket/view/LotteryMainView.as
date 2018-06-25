@@ -96,15 +96,15 @@ package lotteryTicket.view
       
       private function initView() : void
       {
-         var _loc12_:int = 0;
-         var _loc4_:* = null;
-         var _loc6_:* = null;
-         var _loc1_:* = null;
-         var _loc10_:int = 0;
-         var _loc11_:* = null;
-         var _loc5_:* = null;
-         var _loc2_:* = null;
-         var _loc8_:* = null;
+         var i:int = 0;
+         var select:* = null;
+         var itemInfo:* = null;
+         var tInfo:* = null;
+         var j:int = 0;
+         var info:* = null;
+         var cell:* = null;
+         var ticket:* = null;
+         var question:* = null;
          _bg = ComponentFactory.Instance.creatBitmap("asset.lotteryTicket.bg");
          addChild(_bg);
          _prizeMoney = ComponentFactory.Instance.creatNumberSprite(LotteryManager.instance.model.poolCount,"asset.lotteryTicket.num",-3);
@@ -129,17 +129,16 @@ package lotteryTicket.view
             _prizeListBtn.enable = false;
          }
          selectArr = [];
-         _loc12_ = 0;
-         while(_loc12_ < count)
+         for(i = 0; i < count; )
          {
-            _loc4_ = ClassUtils.CreatInstance("asset.lotteryTicket.select");
-            _loc4_.pos = _loc12_;
-            PositionUtils.setPos(_loc4_,"asset.lotteryTicket.select.pos" + String(_loc12_));
-            _loc4_.gotoAndStop(1);
-            addChild(_loc4_);
-            _loc4_.addEventListener("click",selectHandler);
-            selectArr.push(_loc4_);
-            _loc12_++;
+            select = ClassUtils.CreatInstance("asset.lotteryTicket.select");
+            select.pos = i;
+            PositionUtils.setPos(select,"asset.lotteryTicket.select.pos" + String(i));
+            select.gotoAndStop(1);
+            addChild(select);
+            select.addEventListener("click",selectHandler);
+            selectArr.push(select);
+            i++;
          }
          ticketArr = [];
          firstTicket = ClassUtils.CreatInstance("asset.lotteryTicket.ticket");
@@ -163,71 +162,69 @@ package lotteryTicket.view
          addChild(_list);
          prizeBox = new Sprite();
          addChild(prizeBox);
-         var _loc3_:int = 0;
-         var _loc7_:int = 0;
-         var _loc9_:int = 0;
-         _loc10_ = 0;
-         while(_loc10_ < LotteryManager.instance.model.itemInfoList.length)
+         var index1:int = 0;
+         var index2:int = 0;
+         var index3:int = 0;
+         for(j = 0; j < LotteryManager.instance.model.itemInfoList.length; )
          {
-            _loc11_ = LotteryManager.instance.model.itemInfoList[_loc10_] as LotteryRewardInfo;
-            _loc1_ = new InventoryItemInfo();
-            _loc1_.TemplateID = _loc11_.TemplateID;
-            _loc1_ = ItemManager.fill(_loc1_);
-            _loc1_.IsBinds = _loc11_.IsBind;
-            _loc1_.ValidDate = _loc11_.ValidDate;
-            _loc1_.StrengthenLevel = _loc11_.StrengthLevel;
-            _loc1_.AttackCompose = _loc11_.AttackCompose;
-            _loc1_.DefendCompose = _loc11_.DefendCompose;
-            _loc1_.AgilityCompose = _loc11_.AgilityCompose;
-            _loc1_.LuckCompose = _loc11_.LuckCompose;
-            _loc1_.Count = _loc11_.Count;
-            _loc5_ = new BagCell(0,_loc1_,false,ComponentFactory.Instance.creatBitmap("asset.lotteryTicket.prize.bg"));
-            _loc5_.BGVisible = true;
-            _loc5_.setContentSize(40,40);
-            if(_loc11_.Quality == 1)
+            info = LotteryManager.instance.model.itemInfoList[j] as LotteryRewardInfo;
+            tInfo = new InventoryItemInfo();
+            tInfo.TemplateID = info.TemplateID;
+            tInfo = ItemManager.fill(tInfo);
+            tInfo.IsBinds = info.IsBind;
+            tInfo.ValidDate = info.ValidDate;
+            tInfo.StrengthenLevel = info.StrengthLevel;
+            tInfo.AttackCompose = info.AttackCompose;
+            tInfo.DefendCompose = info.DefendCompose;
+            tInfo.AgilityCompose = info.AgilityCompose;
+            tInfo.LuckCompose = info.LuckCompose;
+            tInfo.Count = info.Count;
+            cell = new BagCell(0,tInfo,false,ComponentFactory.Instance.creatBitmap("asset.lotteryTicket.prize.bg"));
+            cell.BGVisible = true;
+            cell.setContentSize(40,40);
+            if(info.Quality == 1)
             {
-               _loc5_.x = _loc3_ * 50 + 595;
-               _loc5_.y = 313;
-               _loc3_++;
+               cell.x = index1 * 50 + 595;
+               cell.y = 313;
+               index1++;
             }
-            else if(_loc11_.Quality == 2)
+            else if(info.Quality == 2)
             {
-               _loc5_.x = _loc7_ * 50 + 595;
-               _loc5_.y = 394;
-               _loc7_++;
+               cell.x = index2 * 50 + 595;
+               cell.y = 394;
+               index2++;
             }
-            else if(_loc11_.Quality == 3)
+            else if(info.Quality == 3)
             {
-               _loc5_.x = _loc9_ * 50 + 595;
-               _loc5_.y = 471;
-               _loc9_++;
+               cell.x = index3 * 50 + 595;
+               cell.y = 471;
+               index3++;
             }
-            prizeBox.addChild(_loc5_);
-            _loc10_++;
+            prizeBox.addChild(cell);
+            j++;
          }
          if(LotteryManager.instance.model.displayResults.length > 0)
          {
-            _loc10_ = 0;
-            while(_loc10_ < LotteryManager.instance.model.displayResults.length)
+            for(j = 0; j < LotteryManager.instance.model.displayResults.length; )
             {
-               _loc2_ = ClassUtils.CreatInstance("asset.lotteryTicket.ticket");
-               addChild(_loc2_);
-               _loc2_.x = 602 + _loc10_ * 63;
-               _loc2_.y = 167;
-               _loc2_.gotoAndStop(parseInt(LotteryManager.instance.model.displayResults.substr(_loc10_,1),16) + 1);
-               _loc10_++;
+               ticket = ClassUtils.CreatInstance("asset.lotteryTicket.ticket");
+               addChild(ticket);
+               ticket.x = 602 + j * 63;
+               ticket.y = 167;
+               ticket.gotoAndStop(parseInt(LotteryManager.instance.model.displayResults.substr(j,1),16) + 1);
+               j++;
             }
          }
          else
          {
-            _loc10_ = 0;
-            while(_loc10_ < 4)
+            j = 0;
+            while(j < 4)
             {
-               _loc8_ = ComponentFactory.Instance.creatBitmap("asset.lotteryTicket.question");
-               addChild(_loc8_);
-               _loc8_.x = 613 + _loc10_ * 63;
-               _loc8_.y = 169;
-               _loc10_++;
+               question = ComponentFactory.Instance.creatBitmap("asset.lotteryTicket.question");
+               addChild(question);
+               question.x = 613 + j * 63;
+               question.y = 169;
+               j++;
             }
          }
          closeBtn = ComponentFactory.Instance.creatComponentByStylename("lotteryTicket.closeBtn");
@@ -243,13 +240,13 @@ package lotteryTicket.view
          _list.list.updateListView();
       }
       
-      private function ticketHandler(param1:MouseEvent) : void
+      private function ticketHandler(e:MouseEvent) : void
       {
-         if(param1.currentTarget.currentFrame == count + 1)
+         if(e.currentTarget.currentFrame == count + 1)
          {
             return;
          }
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = e.currentTarget;
          if(firstTicket !== _loc2_)
          {
             if(secondTicket !== _loc2_)
@@ -275,31 +272,30 @@ package lotteryTicket.view
          {
             isFour[0] = 0;
          }
-         selectArr[param1.currentTarget.currentFrame - 1].gotoAndStop(1);
-         param1.currentTarget.gotoAndStop(count + 1);
+         selectArr[e.currentTarget.currentFrame - 1].gotoAndStop(1);
+         e.currentTarget.gotoAndStop(count + 1);
       }
       
       private function cleanAllSelect() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < selectArr.length)
+         var i:int = 0;
+         for(i = 0; i < selectArr.length; )
          {
-            selectArr[_loc1_].gotoAndStop(1);
-            _loc1_++;
+            selectArr[i].gotoAndStop(1);
+            i++;
          }
       }
       
-      private function selectHandler(param1:MouseEvent) : void
+      private function selectHandler(e:MouseEvent) : void
       {
-         var _loc2_:int = isFour.indexOf(0);
-         if(_loc2_ == -1 || param1.currentTarget.currentFrame == 2)
+         var index:int = isFour.indexOf(0);
+         if(index == -1 || e.currentTarget.currentFrame == 2)
          {
             return;
          }
-         isFour[_loc2_] = param1.currentTarget.pos + 1;
-         ticketArr[_loc2_].gotoAndStop(param1.currentTarget.pos + 1);
-         param1.currentTarget.gotoAndStop(2);
+         isFour[index] = e.currentTarget.pos + 1;
+         ticketArr[index].gotoAndStop(e.currentTarget.pos + 1);
+         e.currentTarget.gotoAndStop(2);
       }
       
       private function initEvent() : void
@@ -317,15 +313,15 @@ package lotteryTicket.view
          LotteryManager.instance.addEventListener("deleteCell",deleteHandler);
       }
       
-      private function closeHandler(param1:MouseEvent) : void
+      private function closeHandler(e:MouseEvent) : void
       {
          LotteryManager.instance.closeFrame();
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode) - 1)
+         switch(int(event.responseCode) - 1)
          {
             case 0:
                LotteryManager.instance.closeFrame();
@@ -340,32 +336,31 @@ package lotteryTicket.view
          }
       }
       
-      private function randomBtnHander(param1:MouseEvent) : void
+      private function randomBtnHander(e:MouseEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
+         var i:int = 0;
+         var randomNum:int = 0;
          cleanAllSelect();
-         _loc3_ = 0;
-         while(_loc3_ < 4)
+         for(i = 0; i < 4; )
          {
-            _loc2_ = Math.floor(16 * Math.random());
-            if(isFour.indexOf(_loc2_ + 1) != -1)
+            randomNum = Math.floor(16 * Math.random());
+            if(isFour.indexOf(randomNum + 1) != -1)
             {
-               _loc3_--;
+               i--;
             }
             else
             {
-               isFour[_loc3_] = _loc2_ + 1;
-               ticketArr[_loc3_].gotoAndStop(_loc2_ + 1);
-               selectArr[_loc2_].gotoAndStop(2);
+               isFour[i] = randomNum + 1;
+               ticketArr[i].gotoAndStop(randomNum + 1);
+               selectArr[randomNum].gotoAndStop(2);
             }
-            _loc3_++;
+            i++;
          }
       }
       
-      private function okBtnHander(param1:MouseEvent) : void
+      private function okBtnHander(e:MouseEvent) : void
       {
-         var _loc3_:int = 0;
+         var i:int = 0;
          if(!LotteryManager.instance.model.isCanBuyBall)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("asset.lotteryTicket.joinFail3"));
@@ -376,38 +371,36 @@ package lotteryTicket.view
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("asset.lotteryTicket.joinFail2"));
             return;
          }
-         var _loc2_:int = isFour.indexOf(0);
-         if(_loc2_ != -1)
+         var index:int = isFour.indexOf(0);
+         if(index != -1)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("asset.lotteryTicket.joinFail1"));
             return;
          }
-         var _loc4_:LotteryTicketInfo = new LotteryTicketInfo();
-         _loc3_ = 0;
-         while(_loc3_ < 4)
+         var info:LotteryTicketInfo = new LotteryTicketInfo();
+         for(i = 0; i < 4; )
          {
-            _loc4_.ticketArr[_loc3_] = (isFour[_loc3_] - 1).toString(16);
-            _loc3_++;
+            info.ticketArr[i] = (isFour[i] - 1).toString(16);
+            i++;
          }
-         _loc4_.ifBuy = false;
-         LotteryManager.instance.model.dataList.push(_loc4_);
+         info.ifBuy = false;
+         LotteryManager.instance.model.dataList.push(info);
          initData();
       }
       
-      private function buyBtnHander(param1:MouseEvent) : void
+      private function buyBtnHander(e:MouseEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
+         var i:int = 0;
+         var info:* = null;
          canBuyArr = [];
-         _loc4_ = 0;
-         while(_loc4_ < LotteryManager.instance.model.dataList.length)
+         for(i = 0; i < LotteryManager.instance.model.dataList.length; )
          {
-            _loc3_ = LotteryManager.instance.model.dataList[_loc4_];
-            if(!_loc3_.ifBuy)
+            info = LotteryManager.instance.model.dataList[i];
+            if(!info.ifBuy)
             {
-               canBuyArr.push(_loc3_);
+               canBuyArr.push(info);
             }
-            _loc4_++;
+            i++;
          }
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -419,16 +412,16 @@ package lotteryTicket.view
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("asset.lotteryTicket.joinFail4"));
             return;
          }
-         var _loc2_:String = LanguageMgr.GetTranslation("asset.lotteryTicket.howmuchmoney",100 * canBuyArr.length,canBuyArr.length);
-         _confirmFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("ddt.vip.vipFrame.ConfirmTitle"),_loc2_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,1,null,"SimpleAlert",30,true,0);
+         var msg:String = LanguageMgr.GetTranslation("asset.lotteryTicket.howmuchmoney",100 * canBuyArr.length,canBuyArr.length);
+         _confirmFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("ddt.vip.vipFrame.ConfirmTitle"),msg,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,1,null,"SimpleAlert",30,true,0);
          _confirmFrame.moveEnable = false;
          _confirmFrame.addEventListener("response",__confirm);
       }
       
-      private function __confirm(param1:FrameEvent) : void
+      private function __confirm(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode) - 2)
+         switch(int(evt.responseCode) - 2)
          {
             case 0:
             case 1:
@@ -447,14 +440,14 @@ package lotteryTicket.view
          SocketManager.Instance.out.buyLotteryTicket(LotteryManager.instance.model.gameIndex,canBuyArr);
       }
       
-      private function prizeListBtnHander(param1:MouseEvent) : void
+      private function prizeListBtnHander(e:MouseEvent) : void
       {
          _frame = ComponentFactory.Instance.creatCustomObject("Lottery.lotteryPrizeView");
          _frame.titleText = LanguageMgr.GetTranslation("asset.lotteryTicket.prizeList");
          LayerManager.Instance.addToLayer(_frame,3,true,1);
       }
       
-      private function deleteHandler(param1:LotteryTicketEvent) : void
+      private function deleteHandler(e:LotteryTicketEvent) : void
       {
          initData();
       }
@@ -476,7 +469,7 @@ package lotteryTicket.view
       
       override public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          LotteryManager.instance.isClick = false;
          removeEvent();
          if(_bg)
@@ -549,12 +542,11 @@ package lotteryTicket.view
             ObjectUtils.disposeObject(_help);
          }
          _help = null;
-         _loc1_ = 0;
-         while(_loc1_ < selectArr.length)
+         for(i = 0; i < selectArr.length; )
          {
-            selectArr[_loc1_].removeEventListener("click",selectHandler);
-            ObjectUtils.disposeObject(selectArr[_loc1_]);
-            _loc1_++;
+            selectArr[i].removeEventListener("click",selectHandler);
+            ObjectUtils.disposeObject(selectArr[i]);
+            i++;
          }
          dispatchEvent(new KeyboardEvent("keyDown",true,false,27));
          super.dispose();

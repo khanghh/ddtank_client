@@ -9,31 +9,31 @@ package ddt.data.analyze
       
       public var info:Dictionary;
       
-      public function LoadPlayerWebsiteInfoAnalyze(param1:Function)
+      public function LoadPlayerWebsiteInfoAnalyze(onCompleteCall:Function)
       {
          info = new Dictionary(true);
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc2_:XML = new XML(param1);
-         if(_loc2_)
+         var xml:XML = new XML(data);
+         if(xml)
          {
-            info["uid"] = _loc2_.uid.toString();
-            info["name"] = _loc2_.name.toString();
-            info["gender"] = _loc2_.gender.toString();
-            info["userName"] = _loc2_.userName.toString();
-            info["university"] = _loc2_.university.toString();
-            info["city"] = _loc2_.city.toString();
-            info["tinyHeadUrl"] = _loc2_.tinyHeadUrl.toString();
-            info["largeHeadUrl"] = _loc2_.largeHeadUrl.toString();
-            info["personWeb"] = _loc2_.personWeb.toString();
+            info["uid"] = xml.uid.toString();
+            info["name"] = xml.name.toString();
+            info["gender"] = xml.gender.toString();
+            info["userName"] = xml.userName.toString();
+            info["university"] = xml.university.toString();
+            info["city"] = xml.city.toString();
+            info["tinyHeadUrl"] = xml.tinyHeadUrl.toString();
+            info["largeHeadUrl"] = xml.largeHeadUrl.toString();
+            info["personWeb"] = xml.personWeb.toString();
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc2_.@message;
+            message = xml.@message;
             onAnalyzeError();
             onAnalyzeComplete();
          }

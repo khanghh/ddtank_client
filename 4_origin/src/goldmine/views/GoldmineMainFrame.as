@@ -137,26 +137,26 @@ package goldmine.views
             _model = GoldmineManager.Instance.model;
          }
          _lightPos = new Vector.<Point>();
-         var _loc7_:Point = ComponentFactory.Instance.creat("goldmineMainFrame.lightPos1");
-         var _loc6_:Point = ComponentFactory.Instance.creat("goldmineMainFrame.lightPos2");
-         var _loc5_:Point = ComponentFactory.Instance.creat("goldmineMainFrame.lightPos3");
-         _lightPos.push(_loc7_);
-         _lightPos.push(_loc6_);
-         _lightPos.push(_loc5_);
+         var lightPos1:Point = ComponentFactory.Instance.creat("goldmineMainFrame.lightPos1");
+         var lightPos2:Point = ComponentFactory.Instance.creat("goldmineMainFrame.lightPos2");
+         var lightPos3:Point = ComponentFactory.Instance.creat("goldmineMainFrame.lightPos3");
+         _lightPos.push(lightPos1);
+         _lightPos.push(lightPos2);
+         _lightPos.push(lightPos3);
          _btmPos = new Vector.<Point>();
-         var _loc8_:Point = ComponentFactory.Instance.creat("goldmineMainFrame.btmMcPos1");
-         var _loc9_:Point = ComponentFactory.Instance.creat("goldmineMainFrame.btmMcPos2");
-         var _loc2_:Point = ComponentFactory.Instance.creat("goldmineMainFrame.btmMcPos3");
-         _btmPos.push(_loc8_);
-         _btmPos.push(_loc9_);
-         _btmPos.push(_loc2_);
+         var btmMcPos1:Point = ComponentFactory.Instance.creat("goldmineMainFrame.btmMcPos1");
+         var btmMcPos2:Point = ComponentFactory.Instance.creat("goldmineMainFrame.btmMcPos2");
+         var btmMcPos3:Point = ComponentFactory.Instance.creat("goldmineMainFrame.btmMcPos3");
+         _btmPos.push(btmMcPos1);
+         _btmPos.push(btmMcPos2);
+         _btmPos.push(btmMcPos3);
          _shinePos = new Vector.<Point>();
-         var _loc4_:Point = ComponentFactory.Instance.creat("goldmineMainFrame.shinePos1");
-         var _loc3_:Point = ComponentFactory.Instance.creat("goldmineMainFrame.shinePos2");
-         var _loc1_:Point = ComponentFactory.Instance.creat("goldmineMainFrame.shinePos3");
-         _shinePos.push(_loc4_);
-         _shinePos.push(_loc3_);
-         _shinePos.push(_loc1_);
+         var shinePos1:Point = ComponentFactory.Instance.creat("goldmineMainFrame.shinePos1");
+         var shinePos2:Point = ComponentFactory.Instance.creat("goldmineMainFrame.shinePos2");
+         var shinePos3:Point = ComponentFactory.Instance.creat("goldmineMainFrame.shinePos3");
+         _shinePos.push(shinePos1);
+         _shinePos.push(shinePos2);
+         _shinePos.push(shinePos3);
       }
       
       private function initView() : void
@@ -172,12 +172,12 @@ package goldmine.views
          addToContent(_dateStartDay1);
          _dateStartDay2 = ComponentFactory.Instance.creatComponentByStylename("goldmineMainFrame.dateStartDayNum2");
          addToContent(_dateStartDay2);
-         var _loc4_:int = GoldmineManager.Instance.dateStart.month + 1;
-         _dateStartMonth1.count = _loc4_ < 10?0:1;
-         _dateStartMonth2.count = _loc4_ % 10;
-         var _loc2_:int = GoldmineManager.Instance.dateStart.date;
-         _dateStartDay1.count = _loc2_ < 10?0:int(_loc2_ / 10);
-         _dateStartDay2.count = _loc2_ % 10;
+         var monthStart:int = GoldmineManager.Instance.dateStart.month + 1;
+         _dateStartMonth1.count = monthStart < 10?0:1;
+         _dateStartMonth2.count = monthStart % 10;
+         var dayStart:int = GoldmineManager.Instance.dateStart.date;
+         _dateStartDay1.count = dayStart < 10?0:int(dayStart / 10);
+         _dateStartDay2.count = dayStart % 10;
          _dateIcon = ComponentFactory.Instance.creatBitmap("asset.goldmine.numTo");
          addToContent(_dateIcon);
          _dateEndMonth1 = ComponentFactory.Instance.creatComponentByStylename("goldmineMainFrame.dateEndMonthNum1");
@@ -191,12 +191,12 @@ package goldmine.views
          addToContent(_dateEndDay1);
          _dateEndDay2 = ComponentFactory.Instance.creatComponentByStylename("goldmineMainFrame.dateEndDayNum2");
          addToContent(_dateEndDay2);
-         var _loc3_:int = GoldmineManager.Instance.dateEnd.month + 1;
-         _dateEndMonth1.count = _loc3_ < 10?0:1;
-         _dateEndMonth2.count = _loc3_ % 10;
-         var _loc1_:int = GoldmineManager.Instance.dateEnd.date;
-         _dateEndDay1.count = _loc1_ < 10?0:int(_loc1_ / 10);
-         _dateEndDay2.count = _loc1_ % 10;
+         var monthEnd:int = GoldmineManager.Instance.dateEnd.month + 1;
+         _dateEndMonth1.count = monthEnd < 10?0:1;
+         _dateEndMonth2.count = monthEnd % 10;
+         var dayEnd:int = GoldmineManager.Instance.dateEnd.date;
+         _dateEndDay1.count = dayEnd < 10?0:int(dayEnd / 10);
+         _dateEndDay2.count = dayEnd % 10;
          _infoText = ComponentFactory.Instance.creatBitmap("asset.goldmineInfoImg");
          addToContent(_infoText);
          _infoWord = ComponentFactory.Instance.creatComponentByStylename("GoldmineInfoWord");
@@ -288,18 +288,18 @@ package goldmine.views
          this.addEventListener("response",__response);
       }
       
-      private function __onClickMineBtn(param1:MouseEvent) : void
+      private function __onClickMineBtn(e:MouseEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var mineAlert:* = null;
+         var noTimesalert:* = null;
          SoundManager.instance.playButtonSound();
-         var _loc4_:Number = new Date().time;
-         if(_loc4_ - _clickNum < 1000)
+         var nowTime:Number = new Date().time;
+         if(nowTime - _clickNum < 1000)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.storeIIStrength.startStrengthClickTimerMsg"));
             return;
          }
-         _clickNum = _loc4_;
+         _clickNum = nowTime;
          if(_model.usedTimes >= _model.maxTimes)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("goldmine.emptyTxt"));
@@ -311,25 +311,25 @@ package goldmine.views
                BaglockedManager.Instance.show();
                return;
             }
-            _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("goldmine.comfirmTxt",_model.goldNeedArr[_model.usedTimes]),LanguageMgr.GetTranslation("shop.PresentFrame.OkBtnText"),LanguageMgr.GetTranslation("shop.PresentFrame.CancelBtnText"),false,true,false,2);
-            _loc3_.moveEnable = false;
-            _loc3_.addEventListener("response",__onMineResponse);
+            mineAlert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("goldmine.comfirmTxt",_model.goldNeedArr[_model.usedTimes]),LanguageMgr.GetTranslation("shop.PresentFrame.OkBtnText"),LanguageMgr.GetTranslation("shop.PresentFrame.CancelBtnText"),false,true,false,2);
+            mineAlert.moveEnable = false;
+            mineAlert.addEventListener("response",__onMineResponse);
          }
          else
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("goldmine.noTimesTxt"),LanguageMgr.GetTranslation("tank.view.common.BellowStripViewII.supply"),LanguageMgr.GetTranslation("shop.PresentFrame.CancelBtnText"),false,true,false,2);
-            _loc2_.moveEnable = false;
-            _loc2_.addEventListener("response",__poorManResponse);
+            noTimesalert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("goldmine.noTimesTxt"),LanguageMgr.GetTranslation("tank.view.common.BellowStripViewII.supply"),LanguageMgr.GetTranslation("shop.PresentFrame.CancelBtnText"),false,true,false,2);
+            noTimesalert.moveEnable = false;
+            noTimesalert.addEventListener("response",__poorManResponse);
          }
       }
       
-      private function __onMineResponse(param1:FrameEvent) : void
+      private function __onMineResponse(e:FrameEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onMineResponse);
-         _loc2_.dispose();
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var alert1:* = null;
+         var alert:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",__onMineResponse);
+         alert.dispose();
+         if(e.responseCode == 2 || e.responseCode == 3)
          {
             if(PlayerManager.Instance.Self.Money >= _model.goldNeedArr[_model.usedTimes])
             {
@@ -337,14 +337,14 @@ package goldmine.views
             }
             else
             {
-               _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("store.view.transfer.StoreIITransferBG.point"),LanguageMgr.GetTranslation("tank.view.common.BellowStripViewII.supply"),LanguageMgr.GetTranslation("shop.PresentFrame.CancelBtnText"),false,true,false,2);
-               _loc3_.moveEnable = false;
-               _loc3_.addEventListener("response",__poorManResponse);
+               alert1 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("store.view.transfer.StoreIITransferBG.point"),LanguageMgr.GetTranslation("tank.view.common.BellowStripViewII.supply"),LanguageMgr.GetTranslation("shop.PresentFrame.CancelBtnText"),false,true,false,2);
+               alert1.moveEnable = false;
+               alert1.addEventListener("response",__poorManResponse);
             }
          }
       }
       
-      private function __timeRemainHandler(param1:Event) : void
+      private function __timeRemainHandler(e:Event) : void
       {
          if(_index < 0)
          {
@@ -356,7 +356,7 @@ package goldmine.views
          currentIndex = (currentIndex + 1) % _lightPos.length;
       }
       
-      private function __timeComHandler(param1:Event) : void
+      private function __timeComHandler(e:Event) : void
       {
          if(_index < 0)
          {
@@ -374,10 +374,10 @@ package goldmine.views
          _mineMc[_index].gotoAndPlay(1);
       }
       
-      private function __onMineHandler(param1:Event) : void
+      private function __onMineHandler(e:Event) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
+         var mc:* = null;
+         var mcw:* = null;
          if(_index < 0)
          {
             return;
@@ -395,18 +395,18 @@ package goldmine.views
             _shineMc.x = _shinePos[1].x;
             _shineMc.y = _shinePos[1].y;
             _shineMc.play();
-            _loc2_ = ClassUtils.CreatInstance("asset.goldmine.mineAction" + _index);
-            _loc3_ = new MovieClipWrapper(_loc2_,true,true);
-            _loc3_.addEventListener("complete",__onPlayActionComplete);
-            addChild(_loc3_.movie);
-            PositionUtils.setPos(_loc3_.movie,_mineMc[1]);
+            mc = ClassUtils.CreatInstance("asset.goldmine.mineAction" + _index);
+            mcw = new MovieClipWrapper(mc,true,true);
+            mcw.addEventListener("complete",__onPlayActionComplete);
+            addChild(mcw.movie);
+            PositionUtils.setPos(mcw.movie,_mineMc[1]);
          }
       }
       
-      private function __onPlayActionComplete(param1:Event) : void
+      private function __onPlayActionComplete(e:Event) : void
       {
-         var _loc2_:MovieClipWrapper = param1.currentTarget as MovieClipWrapper;
-         _loc2_.removeEventListener("complete",__onPlayActionComplete);
+         var mcw:MovieClipWrapper = e.currentTarget as MovieClipWrapper;
+         mcw.removeEventListener("complete",__onPlayActionComplete);
          _mineMc[_index].alpha = 1;
          _mineTextList[_index].alpha = 1;
          _shineMc.gotoAndStop(1);
@@ -422,30 +422,30 @@ package goldmine.views
          updateView();
       }
       
-      private function __poorManResponse(param1:FrameEvent) : void
+      private function __poorManResponse(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__poorManResponse);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var alert:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",__poorManResponse);
+         if(e.responseCode == 2 || e.responseCode == 3)
          {
             LeavePageManager.leaveToFillPath();
          }
-         ObjectUtils.disposeObject(_loc2_);
+         ObjectUtils.disposeObject(alert);
       }
       
-      private function __onMouseRollout(param1:MouseEvent) : void
+      private function __onMouseRollout(event:MouseEvent) : void
       {
-         var _loc2_:Sprite = param1.currentTarget as Sprite;
-         _loc2_.filters = null;
+         var mc:Sprite = event.currentTarget as Sprite;
+         mc.filters = null;
       }
       
-      private function __onMouseRollover(param1:MouseEvent) : void
+      private function __onMouseRollover(event:MouseEvent) : void
       {
-         var _loc2_:Sprite = param1.currentTarget as Sprite;
-         if(_loc2_.filters != _filter)
+         var mc:Sprite = event.currentTarget as Sprite;
+         if(mc.filters != _filter)
          {
-            _loc2_.filters = _filter;
+            mc.filters = _filter;
          }
       }
       
@@ -465,22 +465,22 @@ package goldmine.views
          }
       }
       
-      private function __onUseGoldmine(param1:CEvent) : void
+      private function __onUseGoldmine(e:CEvent) : void
       {
-         var _loc2_:Object = param1.data;
-         if(_loc2_ is Array)
+         var data:Object = e.data;
+         if(data is Array)
          {
-            if(_loc2_[0] < 0)
+            if(data[0] < 0)
             {
                MessageTipManager.getInstance().show("数据异常");
                return;
             }
-            _index = int(_loc2_[0]);
+            _index = int(data[0]);
             if(_index < 0)
             {
                return;
             }
-            _lastScore = int(_loc2_[1]);
+            _lastScore = int(data[1]);
             this.mouseEnabled = false;
             this.mouseChildren = false;
             _timeRemainTimer = TimerManager.getInstance().addTimerJuggler(200,_lightPos.length * 2 + _index + 1);
@@ -490,12 +490,12 @@ package goldmine.views
          }
       }
       
-      private function __response(param1:FrameEvent) : void
+      private function __response(e:FrameEvent) : void
       {
          SoundManager.instance.playButtonSound();
       }
       
-      override protected function onResponse(param1:int) : void
+      override protected function onResponse(type:int) : void
       {
          GoldmineManager.Instance.dispatchEvent(new CEvent("goldmine_closeview"));
       }

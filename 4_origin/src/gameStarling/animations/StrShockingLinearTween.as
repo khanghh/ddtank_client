@@ -15,9 +15,9 @@ package gameStarling.animations
       
       protected var life:uint;
       
-      public function StrShockingLinearTween(param1:TweenObject = null)
+      public function StrShockingLinearTween(data:TweenObject = null)
       {
-         super(param1);
+         super(data);
          life = 0;
       }
       
@@ -26,43 +26,43 @@ package gameStarling.animations
          return "StrShockingLinearTween";
       }
       
-      override public function copyPropertyFromData(param1:TweenObject) : void
+      override public function copyPropertyFromData(data:TweenObject) : void
       {
-         shockingX = param1.shockingX;
-         shockingY = param1.shockingY;
-         duration = param1.duration;
-         target = param1.target;
-         speed = param1.speed;
+         shockingX = data.shockingX;
+         shockingY = data.shockingY;
+         duration = data.duration;
+         target = data.target;
+         speed = data.speed;
       }
       
-      override public function update(param1:DisplayObject) : Point
+      override public function update(movie:DisplayObject) : Point
       {
-         var _loc2_:Point = super.update(param1);
-         if(!_loc2_)
+         var result:Point = super.update(movie);
+         if(!result)
          {
             return null;
          }
          if(life == duration)
          {
             _isFinished = true;
-            return _loc2_;
+            return result;
          }
          if(life == 0)
          {
-            _loc2_.x = _loc2_.x + shockingX;
+            result.x = result.x + shockingX;
             shockingX = -shockingX;
-            _loc2_.y = _loc2_.y + shockingY;
+            result.y = result.y + shockingY;
             shockingY = -shockingY;
          }
          life = Number(life) + 1;
          if(life % shockingFreq == 0)
          {
-            _loc2_.x = _loc2_.x + shockingX * 2;
+            result.x = result.x + shockingX * 2;
             shockingX = -shockingX;
-            _loc2_.y = _loc2_.y + shockingY * 2;
+            result.y = result.y + shockingY * 2;
             shockingY = -shockingY;
          }
-         return _loc2_;
+         return result;
       }
       
       override protected function get propertysNeed() : Array

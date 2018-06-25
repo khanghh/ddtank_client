@@ -78,34 +78,34 @@ package mysteriousRoullete.components
          glintArr.push(_greenGlint);
       }
       
-      public function select(param1:int) : void
+      public function select(index:int) : void
       {
-         glintArr[param1].visible = true;
-         glintArr[param1].gotoAndStop(9);
+         glintArr[index].visible = true;
+         glintArr[index].gotoAndStop(9);
       }
       
-      public function run(param1:int) : void
+      public function run(result:int) : void
       {
-         selectedIndex = param1;
+         selectedIndex = result;
          glintTimer.addEventListener("timer",onGlintTimer);
          glintTimer.start();
       }
       
-      protected function onGlintTimer(param1:TimerEvent) : void
+      protected function onGlintTimer(event:TimerEvent) : void
       {
-         var _loc2_:int = currentIndex;
-         glintArr[_loc2_].visible = true;
-         glintArr[_loc2_].gotoAndStop(1);
-         glintArr[_loc2_].addEventListener("enterFrame",onEnterFrame);
-         glintArr[_loc2_].play();
+         var i:int = currentIndex;
+         glintArr[i].visible = true;
+         glintArr[i].gotoAndStop(1);
+         glintArr[i].addEventListener("enterFrame",onEnterFrame);
+         glintArr[i].play();
          _sound.playOneStep();
-         if(glintTimer.currentCount > 20 && _loc2_ == selectedIndex)
+         if(glintTimer.currentCount > 20 && i == selectedIndex)
          {
             lastGlintTimer.addEventListener("timer",onLastGlintTimer);
             lastGlintTimer.start();
             glintTimer.stop();
          }
-         else if(_loc2_ >= 4)
+         else if(i >= 4)
          {
             currentIndex = 0;
          }
@@ -115,7 +115,7 @@ package mysteriousRoullete.components
          }
       }
       
-      protected function onLastGlintTimer(param1:TimerEvent) : void
+      protected function onLastGlintTimer(event:TimerEvent) : void
       {
          glintArr[selectedIndex].visible = true;
          glintArr[selectedIndex].play();
@@ -128,14 +128,14 @@ package mysteriousRoullete.components
          }
       }
       
-      protected function onEnterFrame(param1:Event) : void
+      protected function onEnterFrame(event:Event) : void
       {
-         if((param1.target as MovieClip).currentFrame == (param1.target as MovieClip).totalFrames)
+         if((event.target as MovieClip).currentFrame == (event.target as MovieClip).totalFrames)
          {
-            (param1.target as MovieClip).stop();
-            (param1.target as MovieClip).visible = false;
-            (param1.target as MovieClip).gotoAndStop(1);
-            (param1.target as MovieClip).removeEventListener("enterFrame",onEnterFrame);
+            (event.target as MovieClip).stop();
+            (event.target as MovieClip).visible = false;
+            (event.target as MovieClip).gotoAndStop(1);
+            (event.target as MovieClip).removeEventListener("enterFrame",onEnterFrame);
          }
       }
       

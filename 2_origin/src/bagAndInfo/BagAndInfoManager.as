@@ -57,7 +57,7 @@ package bagAndInfo
       
       private var bagtype:int = 0;
       
-      public function BagAndInfoManager(param1:SingletonForce)
+      public function BagAndInfoManager(sinle:SingletonForce)
       {
          super();
          _observerDictionary = new Dictionary();
@@ -93,222 +93,219 @@ package bagAndInfo
          SocketManager.Instance.addEventListener("trailElite",_trailEliteHanlder);
       }
       
-      public function registerOnPreviewFrameCloseHandler(param1:String, param2:Function) : void
+      public function registerOnPreviewFrameCloseHandler($id:String, $func:Function) : void
       {
-         if(_observerDictionary[param1] != null)
+         if(_observerDictionary[$id] != null)
          {
             return;
          }
-         _observerDictionary[param1] = param2;
+         _observerDictionary[$id] = $func;
       }
       
-      public function unregisterOnPreviewFrameCloseHandler(param1:String) : void
+      public function unregisterOnPreviewFrameCloseHandler($id:String) : void
       {
-         if(_observerDictionary[param1] != null)
+         if(_observerDictionary[$id] != null)
          {
-            delete _observerDictionary[param1];
+            delete _observerDictionary[$id];
          }
       }
       
-      private function _trailEliteHanlder(param1:CrazyTankSocketEvent) : void
+      private function _trailEliteHanlder(e:CrazyTankSocketEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readInt();
-         switch(int(_loc2_) - 1)
+         var pkg:PackageIn = e.pkg;
+         var cmd:int = pkg.readInt();
+         switch(int(cmd) - 1)
          {
             case 0:
             case 1:
-               trialEliteModel.isOpen = _loc3_.readBoolean();
-               trialEliteModel.battleRank = _loc3_.readInt();
+               trialEliteModel.isOpen = pkg.readBoolean();
+               trialEliteModel.battleRank = pkg.readInt();
                PlayerManager.Instance.Self.trailEliteLevel = trialEliteModel.battleRank;
-               trialEliteModel.battleScore = _loc3_.readInt();
-               trialEliteModel.totalCount = _loc3_.readInt();
-               trialEliteModel.totalWin = _loc3_.readInt();
-               trialEliteModel.rankUpCount = _loc3_.readInt();
-               trialEliteModel.rankUpWin = _loc3_.readInt();
-               trialEliteModel.isRankUp = _loc3_.readInt();
-               trialEliteModel.lastDays = _loc3_.readInt();
+               trialEliteModel.battleScore = pkg.readInt();
+               trialEliteModel.totalCount = pkg.readInt();
+               trialEliteModel.totalWin = pkg.readInt();
+               trialEliteModel.rankUpCount = pkg.readInt();
+               trialEliteModel.rankUpWin = pkg.readInt();
+               trialEliteModel.isRankUp = pkg.readInt();
+               trialEliteModel.lastDays = pkg.readInt();
                break;
             case 2:
-               trialEliteModel.isOpen = _loc3_.readBoolean();
-               trialEliteModel.lastDays = _loc3_.readInt();
+               trialEliteModel.isOpen = pkg.readBoolean();
+               trialEliteModel.lastDays = pkg.readInt();
          }
       }
       
-      protected function __openPreviewListFrame(param1:PkgEvent) : void
+      protected function __openPreviewListFrame(evt:PkgEvent) : void
       {
-         var _loc11_:int = 0;
-         var _loc10_:* = null;
-         var _loc4_:int = 0;
-         var _loc8_:PackageIn = param1.pkg;
-         _loc8_.position = 20;
-         var _loc2_:String = _loc8_.readUTF();
-         var _loc5_:int = _loc8_.readInt();
+         var i:int = 0;
+         var info:* = null;
+         var count:int = 0;
+         var pkg:PackageIn = evt.pkg;
+         pkg.position = 20;
+         var itemName:String = pkg.readUTF();
+         var cnt:int = pkg.readInt();
          infos = [];
-         _loc11_ = 0;
-         while(_loc11_ < _loc5_)
+         for(i = 0; i < cnt; )
          {
-            _loc10_ = new InventoryItemInfo();
-            _loc10_.TemplateID = _loc8_.readInt();
-            _loc10_ = ItemManager.fill(_loc10_);
-            _loc10_.Count = _loc8_.readInt();
-            _loc10_.IsBinds = _loc8_.readBoolean();
-            _loc10_.ValidDate = _loc8_.readInt();
-            _loc10_.StrengthenLevel = _loc8_.readInt();
-            _loc10_.AttackCompose = _loc8_.readInt();
-            _loc10_.DefendCompose = _loc8_.readInt();
-            _loc10_.AgilityCompose = _loc8_.readInt();
-            _loc10_.LuckCompose = _loc8_.readInt();
-            if(EquipType.isMagicStone(_loc10_.CategoryID))
+            info = new InventoryItemInfo();
+            info.TemplateID = pkg.readInt();
+            info = ItemManager.fill(info);
+            info.Count = pkg.readInt();
+            info.IsBinds = pkg.readBoolean();
+            info.ValidDate = pkg.readInt();
+            info.StrengthenLevel = pkg.readInt();
+            info.AttackCompose = pkg.readInt();
+            info.DefendCompose = pkg.readInt();
+            info.AgilityCompose = pkg.readInt();
+            info.LuckCompose = pkg.readInt();
+            if(EquipType.isMagicStone(info.CategoryID))
             {
-               _loc10_.Level = _loc10_.StrengthenLevel;
-               _loc10_.Attack = _loc10_.AttackCompose;
-               _loc10_.Defence = _loc10_.DefendCompose;
-               _loc10_.Agility = _loc10_.AgilityCompose;
-               _loc10_.Luck = _loc10_.LuckCompose;
-               _loc10_.Level = _loc10_.StrengthenLevel;
-               _loc10_.MagicAttack = _loc8_.readInt();
-               _loc10_.MagicDefence = _loc8_.readInt();
+               info.Level = info.StrengthenLevel;
+               info.Attack = info.AttackCompose;
+               info.Defence = info.DefendCompose;
+               info.Agility = info.AgilityCompose;
+               info.Luck = info.LuckCompose;
+               info.Level = info.StrengthenLevel;
+               info.MagicAttack = pkg.readInt();
+               info.MagicDefence = pkg.readInt();
             }
             else
             {
-               _loc8_.readInt();
-               _loc8_.readInt();
+               pkg.readInt();
+               pkg.readInt();
             }
-            _loc10_.Hole1 = _loc8_.readInt();
-            _loc10_.ItemID = _loc8_.readInt();
-            infos.push(_loc10_);
-            _loc11_++;
+            info.Hole1 = pkg.readInt();
+            info.ItemID = pkg.readInt();
+            infos.push(info);
+            i++;
          }
-         var _loc6_:int = _loc8_.readInt();
-         var _loc9_:int = _loc8_.readInt();
-         var _loc7_:int = _loc8_.readInt();
-         var _loc3_:Array = [];
-         _loc4_ = 0;
-         while(_loc4_ < _loc7_)
+         var openCount:int = pkg.readInt();
+         var openType:int = pkg.readInt();
+         var belongChapterCount:int = pkg.readInt();
+         var chapterArr:Array = [];
+         for(count = 0; count < belongChapterCount; )
          {
-            _loc3_.push(_loc8_.readInt());
-            _loc4_++;
+            chapterArr.push(pkg.readInt());
+            count++;
          }
-         if(_loc3_.length > 0)
+         if(chapterArr.length > 0)
          {
-            ExplorerManualManager.instance.cachNewChapter = _loc3_;
+            ExplorerManualManager.instance.cachNewChapter = chapterArr;
          }
-         if(_loc9_ == 72 || _loc9_ == 71)
+         if(openType == 72 || openType == 71)
          {
-            explorerManualPrompt(_loc6_,_loc2_);
+            explorerManualPrompt(openCount,itemName);
          }
          else
          {
             infos = mergeInfos(infos);
-            showPreviewFrame(_loc2_,infos);
+            showPreviewFrame(itemName,infos);
          }
       }
       
-      private function explorerManualPrompt(param1:int, param2:String) : void
+      private function explorerManualPrompt(count:int, name:String) : void
       {
-         var _loc3_:String = LanguageMgr.GetTranslation("explorerManual.manualOpen.goodPrompt",param1,param2);
-         MessageTipManager.getInstance().show(_loc3_,0,true);
+         var str:String = LanguageMgr.GetTranslation("explorerManual.manualOpen.goodPrompt",count,name);
+         MessageTipManager.getInstance().show(str,0,true);
       }
       
-      private function mergeInfos(param1:Array) : Array
+      private function mergeInfos($infos:Array) : Array
       {
-         var _loc8_:int = 0;
-         var _loc6_:* = null;
-         var _loc3_:Dictionary = new Dictionary();
-         var _loc5_:Array = [];
-         var _loc7_:int = infos.length;
-         _loc8_ = 0;
-         while(_loc8_ < _loc7_)
+         var i:int = 0;
+         var value:* = null;
+         var infoDic:Dictionary = new Dictionary();
+         var extra:Array = [];
+         var len:int = infos.length;
+         for(i = 0; i < len; )
          {
-            _loc6_ = infos[_loc8_];
-            if(_loc6_.CategoryID == 69)
+            value = infos[i];
+            if(value.CategoryID == 69)
             {
-               _loc5_.push(_loc6_);
+               extra.push(value);
             }
-            else if(_loc3_[_loc6_.TemplateID] == null)
+            else if(infoDic[value.TemplateID] == null)
             {
-               _loc3_[_loc6_.TemplateID] = infos[_loc8_];
+               infoDic[value.TemplateID] = infos[i];
             }
             else
             {
-               _loc3_[_loc6_.TemplateID].Count = _loc3_[_loc6_.TemplateID].Count + infos[_loc8_].Count;
+               infoDic[value.TemplateID].Count = infoDic[value.TemplateID].Count + infos[i].Count;
             }
-            _loc8_++;
+            i++;
          }
-         param1.length = 0;
-         param1 = null;
-         var _loc4_:Array = [];
+         $infos.length = 0;
+         $infos = null;
+         var newInfos:Array = [];
          var _loc10_:int = 0;
-         var _loc9_:* = _loc3_;
-         for each(var _loc2_ in _loc3_)
+         var _loc9_:* = infoDic;
+         for each(var v in infoDic)
          {
-            _loc4_.push(_loc2_);
+            newInfos.push(v);
          }
-         return _loc4_.concat(_loc5_);
+         return newInfos.concat(extra);
       }
       
-      public function showPreviewFrame(param1:String, param2:Array) : BaseAlerFrame
+      public function showPreviewFrame(itemName:String, infos:Array) : BaseAlerFrame
       {
-         var _loc5_:AwardsView = new AwardsView();
-         _loc5_.goodsList = param2;
-         _loc5_.boxType = 4;
-         var _loc4_:FilterFrameText = ComponentFactory.Instance.creat("wtm.awardsFFT");
+         var aView:AwardsView = new AwardsView();
+         aView.goodsList = infos;
+         aView.boxType = 4;
+         var title:FilterFrameText = ComponentFactory.Instance.creat("wtm.awardsFFT");
          if(isUpgradePack)
          {
             isUpgradePack = false;
-            _loc4_.text = LanguageMgr.GetTranslation("ddt.bagandinfo.awardsTitle2");
-            _loc4_.x = 30;
+            title.text = LanguageMgr.GetTranslation("ddt.bagandinfo.awardsTitle2");
+            title.x = 30;
          }
          else
          {
-            _loc4_.text = LanguageMgr.GetTranslation("ddt.bagandinfo.awardsTitle");
-            _loc4_.x = 81;
+            title.text = LanguageMgr.GetTranslation("ddt.bagandinfo.awardsTitle");
+            title.x = 81;
          }
          _frame = ComponentFactory.Instance.creatComponentByStylename("wtm.ItemPreviewListFrame");
-         var _loc3_:AlertInfo = new AlertInfo(param1);
-         _loc3_.showCancel = false;
-         _loc3_.moveEnable = false;
-         _frame.info = _loc3_;
-         _frame.addToContent(_loc5_);
-         _frame.addToContent(_loc4_);
+         var ai:AlertInfo = new AlertInfo(itemName);
+         ai.showCancel = false;
+         ai.moveEnable = false;
+         _frame.info = ai;
+         _frame.addToContent(aView);
+         _frame.addToContent(title);
          _frame.addEventListener("response",__frameClose);
          LayerManager.Instance.addToLayer(_frame,3,true,1);
          return _frame;
       }
       
-      private function __frameClose(param1:FrameEvent) : void
+      private function __frameClose(event:FrameEvent) : void
       {
-         var _loc4_:* = null;
-         var _loc2_:* = null;
-         switch(int(param1.responseCode) - 2)
+         var bAFrame:* = null;
+         var itemList:* = null;
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
                SoundManager.instance.play("008");
-               _loc4_ = param1.currentTarget as BaseAlerFrame;
-               _loc4_.removeEventListener("response",__frameClose);
-               _loc2_ = infos;
-               _loc4_.dispose();
+               bAFrame = event.currentTarget as BaseAlerFrame;
+               bAFrame.removeEventListener("response",__frameClose);
+               itemList = infos;
+               bAFrame.dispose();
                SocketManager.Instance.out.sendClearStoreBag();
                var _loc6_:int = 0;
                var _loc5_:* = _observerDictionary;
-               for each(var _loc3_ in _observerDictionary)
+               for each(var func in _observerDictionary)
                {
-                  _loc3_(_loc2_);
+                  func(itemList);
                }
                infos = null;
          }
       }
       
-      public function showBagAndInfo(param1:int = 0, param2:String = "", param3:int = 0) : void
+      public function showBagAndInfo(type:int = 0, name:String = "", bagtype:int = 0) : void
       {
-         _type = param1;
-         this.name = param2;
-         this.bagtype = param3;
+         _type = type;
+         this.name = name;
+         this.bagtype = bagtype;
          if(_bagAndGiftFrame)
          {
-            _bagAndGiftFrame.show(param1);
+            _bagAndGiftFrame.show(type);
             dispatchEvent(new Event("open"));
          }
          else
@@ -357,63 +354,61 @@ package bagAndInfo
          dispatchEvent(new Event("close"));
       }
       
-      public function loadRingSystemInfo(param1:RingDataAnalyzer) : void
+      public function loadRingSystemInfo(data:RingDataAnalyzer) : void
       {
-         RingData = param1.data;
+         RingData = data.data;
       }
       
       public function getCurrentRingData() : RingSystemData
       {
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
-         var _loc1_:int = PlayerManager.Instance.Self.RingExp;
-         _loc3_ = 1;
-         while(_loc3_ <= RingSystemData.TotalLevel)
+         var data:* = null;
+         var i:int = 0;
+         var selfExp:int = PlayerManager.Instance.Self.RingExp;
+         for(i = 1; i <= RingSystemData.TotalLevel; )
          {
-            if(_loc1_ <= 0)
+            if(selfExp <= 0)
             {
-               _loc2_ = RingData[1];
+               data = RingData[1];
                break;
             }
-            if(_loc1_ < RingData[_loc3_].Exp)
+            if(selfExp < RingData[i].Exp)
             {
-               _loc2_ = RingData[_loc3_ - 1];
+               data = RingData[i - 1];
                break;
             }
-            if(_loc3_ == RingSystemData.TotalLevel && _loc1_ >= RingData[_loc3_].Exp)
+            if(i == RingSystemData.TotalLevel && selfExp >= RingData[i].Exp)
             {
-               _loc2_ = RingData[_loc3_];
+               data = RingData[i];
             }
-            _loc3_++;
+            i++;
          }
-         return _loc2_;
+         return data;
       }
       
-      public function getRingData(param1:int) : RingSystemData
+      public function getRingData(RingExp:int) : RingSystemData
       {
-         var _loc3_:* = null;
-         var _loc4_:int = 0;
-         var _loc2_:* = param1;
-         _loc4_ = 1;
-         while(_loc4_ <= RingSystemData.TotalLevel)
+         var data:* = null;
+         var i:int = 0;
+         var playerExp:* = RingExp;
+         for(i = 1; i <= RingSystemData.TotalLevel; )
          {
-            if(_loc2_ <= 0)
+            if(playerExp <= 0)
             {
-               _loc3_ = RingData[1];
+               data = RingData[1];
                break;
             }
-            if(_loc2_ < RingData[_loc4_].Exp)
+            if(playerExp < RingData[i].Exp)
             {
-               _loc3_ = RingData[_loc4_ - 1];
+               data = RingData[i - 1];
                break;
             }
-            if(_loc4_ == RingSystemData.TotalLevel && _loc2_ >= RingData[_loc4_].Exp)
+            if(i == RingSystemData.TotalLevel && playerExp >= RingData[i].Exp)
             {
-               _loc3_ = RingData[_loc4_];
+               data = RingData[i];
             }
-            _loc4_++;
+            i++;
          }
-         return _loc3_;
+         return data;
       }
    }
 }
@@ -436,10 +431,10 @@ class _DataOnClickOKButton
    
    public var func:Function;
    
-   function _DataOnClickOKButton(param1:String, param2:Function)
+   function _DataOnClickOKButton($id:String, $func:Function)
    {
       super();
-      id = param1;
-      func = param2;
+      id = $id;
+      func = $func;
    }
 }

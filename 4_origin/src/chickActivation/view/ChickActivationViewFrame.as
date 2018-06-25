@@ -116,8 +116,8 @@ package chickActivation.view
       
       private function initView() : void
       {
-         var _loc1_:int = 0;
-         var _loc2_:* = null;
+         var k:int = 0;
+         var promptMovie:* = null;
          _mainBg = ComponentFactory.Instance.creatBitmap("assets.chickActivation.mainBg");
          addToContent(_mainBg);
          _mainTitle = ComponentFactory.Instance.creatBitmap("assets.chickActivation.mainTitle");
@@ -158,17 +158,16 @@ package chickActivation.view
          _groupTwo.addSelectItem(_selectLevelPacks);
          _groupTwo.selectIndex = 0;
          _promptMovies = [];
-         _loc1_ = 0;
-         while(_loc1_ < 4)
+         for(k = 0; k < 4; )
          {
-            _loc2_ = ClassUtils.CreatInstance("assets.chickActivation.promptMovie");
-            PositionUtils.setPos(_loc2_,"chickActivation.promptMoviePos" + _loc1_);
-            _loc2_.mouseChildren = false;
-            _loc2_.mouseEnabled = false;
-            _loc2_.visible = false;
-            addToContent(_loc2_);
-            _promptMovies.push(_loc2_);
-            _loc1_++;
+            promptMovie = ClassUtils.CreatInstance("assets.chickActivation.promptMovie");
+            PositionUtils.setPos(promptMovie,"chickActivation.promptMoviePos" + k);
+            promptMovie.mouseChildren = false;
+            promptMovie.mouseEnabled = false;
+            promptMovie.visible = false;
+            addToContent(promptMovie);
+            _promptMovies.push(promptMovie);
+            k++;
          }
          _priceBitmap = ComponentFactory.Instance.creatBitmap("assets.chickActivation.priceBitmap");
          addToContent(_priceBitmap);
@@ -212,21 +211,21 @@ package chickActivation.view
          ChickActivationManager.instance.model.addEventListener("getReward",__getRewardHandler);
       }
       
-      private function __updateDataHandler(param1:ChickActivationEvent) : void
+      private function __updateDataHandler(evt:ChickActivationEvent) : void
       {
          updateView();
       }
       
       private function updateView() : void
       {
-         var _loc1_:ChickActivationModel = ChickActivationManager.instance.model;
-         var _loc2_:int = ChickActivationManager.instance.model.getRemainingDay();
-         if(PlayerManager.Instance.Self.Grade > 15 && _loc1_.keyOpenedType != 1 || _loc1_.keyOpenedType == 1 && _loc2_ <= 0)
+         var model:ChickActivationModel = ChickActivationManager.instance.model;
+         var day:int = ChickActivationManager.instance.model.getRemainingDay();
+         if(PlayerManager.Instance.Self.Grade > 15 && model.keyOpenedType != 1 || model.keyOpenedType == 1 && day <= 0)
          {
             _selectBtn1.enable = false;
             _group.selectIndex = 1;
          }
-         _remainingTimeTxt.htmlText = LanguageMgr.GetTranslation("tank.chickActivationFrame.remainingTimeTxtMsg",_loc2_);
+         _remainingTimeTxt.htmlText = LanguageMgr.GetTranslation("tank.chickActivationFrame.remainingTimeTxtMsg",day);
          updateShine();
          updateGetBtn();
          _levelPacks.update();
@@ -235,88 +234,87 @@ package chickActivation.view
       
       private function updateShine() : void
       {
-         var _loc1_:int = 0;
-         var _loc12_:Boolean = false;
-         var _loc14_:int = 0;
-         var _loc6_:int = 0;
-         var _loc10_:Boolean = false;
-         var _loc11_:Boolean = false;
-         var _loc7_:int = 0;
-         var _loc15_:* = 0;
-         var _loc13_:int = 0;
-         var _loc8_:int = 0;
-         var _loc5_:int = 0;
-         var _loc4_:Boolean = false;
-         var _loc2_:int = 0;
-         var _loc3_:Array = ChickActivationManager.instance.model.gainArr;
-         var _loc9_:int = ChickActivationManager.instance.model.getRemainingDay();
-         if(ChickActivationManager.instance.model.isKeyOpened > 0 && ChickActivationManager.instance.model.keyOpenedType == _group.selectIndex + 1 && _loc9_ > 0)
+         var tempIndex:int = 0;
+         var temp3:Boolean = false;
+         var day:int = 0;
+         var value1:int = 0;
+         var temp1:Boolean = false;
+         var temp2:Boolean = false;
+         var value2:int = 0;
+         var levelIndex:* = 0;
+         var grade:int = 0;
+         var i:int = 0;
+         var j:int = 0;
+         var value3:Boolean = false;
+         var a:int = 0;
+         var gainArr:Array = ChickActivationManager.instance.model.gainArr;
+         var remainingDay:int = ChickActivationManager.instance.model.getRemainingDay();
+         if(ChickActivationManager.instance.model.isKeyOpened > 0 && ChickActivationManager.instance.model.keyOpenedType == _group.selectIndex + 1 && remainingDay > 0)
          {
-            if(_loc3_ && _loc3_.length > 0)
+            if(gainArr && gainArr.length > 0)
             {
-               _loc14_ = TimeManager.Instance.Now().day;
-               if(_loc14_ == 0)
+               day = TimeManager.Instance.Now().day;
+               if(day == 0)
                {
-                  _loc14_ = 7;
+                  day = 7;
                }
-               _loc1_ = _loc14_ - 1;
-               _loc6_ = _loc3_[_loc1_];
-               if(_loc6_ <= 0)
+               tempIndex = day - 1;
+               value1 = gainArr[tempIndex];
+               if(value1 <= 0)
                {
-                  _loc10_ = true;
+                  temp1 = true;
                }
-               MovieClip(_promptMovies[0]).visible = _loc10_;
-               MovieClip(_promptMovies[1]).visible = _loc3_[10] <= 0;
-               if(_loc14_ == 5)
+               MovieClip(_promptMovies[0]).visible = temp1;
+               MovieClip(_promptMovies[1]).visible = gainArr[10] <= 0;
+               if(day == 5)
                {
-                  _loc1_ = 7;
+                  tempIndex = 7;
                }
-               else if(_loc14_ == 6)
+               else if(day == 6)
                {
-                  _loc1_ = 8;
+                  tempIndex = 8;
                }
-               else if(_loc14_ == 7)
+               else if(day == 7)
                {
-                  _loc1_ = 9;
+                  tempIndex = 9;
                }
-               if(_loc1_ > 6)
+               if(tempIndex > 6)
                {
-                  _loc7_ = _loc3_[_loc1_];
-                  if(_loc7_ <= 0)
+                  value2 = gainArr[tempIndex];
+                  if(value2 <= 0)
                   {
-                     _loc11_ = true;
+                     temp2 = true;
                   }
                }
-               MovieClip(_promptMovies[2]).visible = _loc11_;
+               MovieClip(_promptMovies[2]).visible = temp2;
                if(_group.selectIndex == 0)
                {
-                  _loc15_ = -1;
-                  _loc13_ = PlayerManager.Instance.Self.Grade;
-                  _loc8_ = 0;
-                  while(_loc8_ < _levelPacks.packsLevelArr.length)
+                  levelIndex = -1;
+                  grade = PlayerManager.Instance.Self.Grade;
+                  for(i = 0; i < _levelPacks.packsLevelArr.length; )
                   {
-                     if(_levelPacks.packsLevelArr[_loc8_].level <= _loc13_)
+                     if(_levelPacks.packsLevelArr[i].level <= grade)
                      {
-                        _loc15_ = _loc8_;
+                        levelIndex = i;
                      }
-                     _loc8_++;
+                     i++;
                   }
-                  if(_loc15_ == -1)
+                  if(levelIndex == -1)
                   {
                      MovieClip(_promptMovies[3]).visible = false;
                   }
-                  _loc5_ = 0;
-                  while(_loc5_ <= _loc15_)
+                  j = 0;
+                  while(j <= levelIndex)
                   {
-                     _loc4_ = ChickActivationManager.instance.model.getGainLevel(_loc5_ + 1);
-                     if(!_loc4_)
+                     value3 = ChickActivationManager.instance.model.getGainLevel(j + 1);
+                     if(!value3)
                      {
-                        _loc12_ = true;
+                        temp3 = true;
                         break;
                      }
-                     _loc5_++;
+                     j++;
                   }
-                  MovieClip(_promptMovies[3]).visible = _loc12_;
+                  MovieClip(_promptMovies[3]).visible = temp3;
                }
                else
                {
@@ -326,29 +324,29 @@ package chickActivation.view
          }
          else
          {
-            _loc2_ = 0;
-            while(_loc2_ < _promptMovies.length)
+            a = 0;
+            while(a < _promptMovies.length)
             {
-               MovieClip(_promptMovies[_loc2_]).visible = false;
-               _loc2_++;
+               MovieClip(_promptMovies[a]).visible = false;
+               a++;
             }
          }
       }
       
       private function updateGetBtn() : void
       {
-         var _loc3_:* = null;
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
-         var _loc1_:int = ChickActivationManager.instance.model.getRemainingDay();
-         if(ChickActivationManager.instance.model.isKeyOpened > 0 && ChickActivationManager.instance.model.keyOpenedType == _group.selectIndex + 1 && _loc1_ > 0)
+         var gainArr:* = null;
+         var tempIndex:int = 0;
+         var temp:int = 0;
+         var remainingDay:int = ChickActivationManager.instance.model.getRemainingDay();
+         if(ChickActivationManager.instance.model.isKeyOpened > 0 && ChickActivationManager.instance.model.keyOpenedType == _group.selectIndex + 1 && remainingDay > 0)
          {
-            _loc3_ = ChickActivationManager.instance.model.gainArr;
-            _loc2_ = getNowGainArrIndex();
-            if(_loc3_.hasOwnProperty(_loc2_))
+            gainArr = ChickActivationManager.instance.model.gainArr;
+            tempIndex = getNowGainArrIndex();
+            if(gainArr.hasOwnProperty(tempIndex))
             {
-               _loc4_ = _loc3_[_loc2_];
-               if(_loc4_ > 0)
+               temp = gainArr[tempIndex];
+               if(temp > 0)
                {
                   _receiveBtn.enable = false;
                }
@@ -370,68 +368,68 @@ package chickActivation.view
       
       private function getNowGainArrIndex() : int
       {
-         var _loc2_:int = TimeManager.Instance.Now().day;
-         var _loc1_:int = -1;
-         if(_loc2_ == 0)
+         var day:int = TimeManager.Instance.Now().day;
+         var tempIndex:int = -1;
+         if(day == 0)
          {
-            _loc2_ = 7;
+            day = 7;
          }
          if(_groupTwo.selectIndex == 0)
          {
-            _loc1_ = _loc2_ - 1;
+            tempIndex = day - 1;
          }
          else if(_groupTwo.selectIndex == 2)
          {
-            if(_loc2_ == 5)
+            if(day == 5)
             {
-               _loc1_ = 7;
+               tempIndex = 7;
             }
-            else if(_loc2_ == 6)
+            else if(day == 6)
             {
-               _loc1_ = 8;
+               tempIndex = 8;
             }
-            else if(_loc2_ == 7)
+            else if(day == 7)
             {
-               _loc1_ = 9;
+               tempIndex = 9;
             }
          }
          else if(_groupTwo.selectIndex == 1)
          {
-            _loc1_ = 10;
+            tempIndex = 10;
          }
-         return _loc1_;
+         return tempIndex;
       }
       
-      private function __getRewardHandler(param1:ChickActivationEvent) : void
+      private function __getRewardHandler(evt:ChickActivationEvent) : void
       {
-         var _loc5_:int = param1.resultData as int;
-         if(_loc5_ == 11)
+         var value:int = evt.resultData as int;
+         if(value == 11)
          {
             return;
          }
-         var _loc3_:String = "" + (ChickActivationManager.instance.model.keyOpenedType - 1);
-         var _loc2_:int = ChickActivationManager.instance.model.keyOpenedType;
-         if(_loc5_ < 7)
+         var qualityKey:String = "" + (ChickActivationManager.instance.model.keyOpenedType - 1);
+         var keyOpenedType:int = ChickActivationManager.instance.model.keyOpenedType;
+         if(value < 7)
          {
-            _loc3_ = _loc3_ + ",0,1";
+            qualityKey = qualityKey + ",0,1";
          }
-         else if(_loc5_ < 10)
+         else if(value < 10)
          {
-            _loc3_ = _loc3_ + ",2,5";
+            qualityKey = qualityKey + ",2,5";
          }
-         else if(_loc5_ < 11)
+         else if(value < 11)
          {
-            _loc3_ = _loc3_ + ",1";
+            qualityKey = qualityKey + ",1";
          }
-         var _loc6_:int = ChickActivationManager.instance.model.qualityDic[_loc3_];
-         var _loc4_:Array = ChickActivationManager.instance.model.itemInfoList[_loc6_];
-         if(_loc4_)
+         var qualityValue:int = ChickActivationManager.instance.model.qualityDic[qualityKey];
+         var arr:Array = ChickActivationManager.instance.model.itemInfoList[qualityValue];
+         if(arr)
          {
-            playDropGoodsMovie(_loc4_);
+            playDropGoodsMovie(arr);
          }
       }
       
-      private function __selectBtnHandler(param1:Event) : void
+      private function __selectBtnHandler(evt:Event) : void
       {
          SoundManager.instance.play("008");
          _groupTwo.selectIndex = 0;
@@ -440,7 +438,7 @@ package chickActivation.view
          showBottomActivationButton();
       }
       
-      private function __selectBtnTwoHandler(param1:Event) : void
+      private function __selectBtnTwoHandler(evt:Event) : void
       {
          SoundManager.instance.play("008");
          tabHandler();
@@ -453,26 +451,26 @@ package chickActivation.view
          showBottomPriceAndButton(true);
          updateGetBtn();
          _selectLevelPacks.visible = _group.selectIndex == 0;
-         var _loc1_:int = _groupTwo.selectIndex;
-         if(_loc1_ == 0)
+         var index:int = _groupTwo.selectIndex;
+         if(index == 0)
          {
             findDataUpdateActivationItems();
             updatePriceView();
             _ativationItems.visible = true;
          }
-         else if(_loc1_ == 1)
+         else if(index == 1)
          {
             findDataUpdateActivationItems();
             updatePriceView();
             _ativationItems.visible = true;
          }
-         else if(_loc1_ == 2)
+         else if(index == 2)
          {
             findDataUpdateActivationItems();
             updatePriceView();
             _ativationItems.visible = true;
          }
-         else if(_loc1_ == 3)
+         else if(index == 3)
          {
             _levelPacks.update();
             _levelPacks.visible = true;
@@ -482,38 +480,37 @@ package chickActivation.view
       
       private function updatePriceView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:int = ChickActivationManager.instance.model.findQualityValue(getQualityKey());
-         if(ChickActivationManager.instance.model.itemInfoList.hasOwnProperty(_loc3_))
+         var price:int = 0;
+         var dataArr:* = null;
+         var i:int = 0;
+         var info:* = null;
+         var qualityValue:int = ChickActivationManager.instance.model.findQualityValue(getQualityKey());
+         if(ChickActivationManager.instance.model.itemInfoList.hasOwnProperty(qualityValue))
          {
-            _loc1_ = ChickActivationManager.instance.model.itemInfoList[_loc3_];
-            _loc5_ = 0;
-            while(_loc5_ < _loc1_.length)
+            dataArr = ChickActivationManager.instance.model.itemInfoList[qualityValue];
+            for(i = 0; i < dataArr.length; )
             {
-               _loc4_ = ChickActivationInfo(_loc1_[_loc5_]);
-               _loc2_ = _loc2_ + _loc4_.Probability;
-               _loc5_++;
+               info = ChickActivationInfo(dataArr[i]);
+               price = price + info.Probability;
+               i++;
             }
          }
          if(_priceView)
          {
-            _priceView.count = _loc2_;
+            _priceView.count = price;
          }
       }
       
       private function findDataUpdateActivationItems() : void
       {
-         var _loc2_:* = null;
-         var _loc3_:Array = ChickActivationManager.instance.model.itemInfoList;
-         var _loc1_:Dictionary = ChickActivationManager.instance.model.qualityDic;
-         var _loc4_:int = ChickActivationManager.instance.model.findQualityValue(getQualityKey());
-         if(_loc3_.hasOwnProperty(_loc4_))
+         var dataArr:* = null;
+         var itemInfoList:Array = ChickActivationManager.instance.model.itemInfoList;
+         var qualityDic:Dictionary = ChickActivationManager.instance.model.qualityDic;
+         var qualityValue:int = ChickActivationManager.instance.model.findQualityValue(getQualityKey());
+         if(itemInfoList.hasOwnProperty(qualityValue))
          {
-            _loc2_ = _loc3_[_loc4_];
-            _ativationItems.update(_loc2_);
+            dataArr = itemInfoList[qualityValue];
+            _ativationItems.update(dataArr);
          }
          else
          {
@@ -521,58 +518,58 @@ package chickActivation.view
          }
       }
       
-      private function showBottomPriceAndButton(param1:Boolean) : void
+      private function showBottomPriceAndButton($isBool:Boolean) : void
       {
-         _priceBitmap.visible = param1;
-         _moneyIcon.visible = param1;
-         _lineBitmap1.visible = param1;
-         _priceView.visible = param1;
-         _lineBitmap2.visible = param1;
-         _receiveBtn.visible = param1;
+         _priceBitmap.visible = $isBool;
+         _moneyIcon.visible = $isBool;
+         _lineBitmap1.visible = $isBool;
+         _priceView.visible = $isBool;
+         _lineBitmap2.visible = $isBool;
+         _receiveBtn.visible = $isBool;
       }
       
       private function showBottomActivationButton() : void
       {
-         var _loc3_:Boolean = false;
-         var _loc2_:ChickActivationModel = ChickActivationManager.instance.model;
-         var _loc1_:int = ChickActivationManager.instance.model.getRemainingDay();
+         var isBool:Boolean = false;
+         var model:ChickActivationModel = ChickActivationManager.instance.model;
+         var remainingDay:int = ChickActivationManager.instance.model.getRemainingDay();
          if(_group.selectIndex == 0)
          {
-            if(_loc2_.keyOpenedType == 0 && PlayerManager.Instance.Self.Grade <= 15 || _loc2_.keyOpenedType == 1 && _loc1_ <= 0)
+            if(model.keyOpenedType == 0 && PlayerManager.Instance.Self.Grade <= 15 || model.keyOpenedType == 1 && remainingDay <= 0)
             {
-               _loc3_ = true;
+               isBool = true;
             }
             else
             {
-               _loc3_ = false;
+               isBool = false;
             }
          }
          else if(_group.selectIndex == 1)
          {
-            if(_loc2_.keyOpenedType == 0 && PlayerManager.Instance.Self.Grade > 15 || _loc2_.keyOpenedType == 2 && _loc1_ <= 0)
+            if(model.keyOpenedType == 0 && PlayerManager.Instance.Self.Grade > 15 || model.keyOpenedType == 2 && remainingDay <= 0)
             {
-               _loc3_ = true;
+               isBool = true;
             }
             else
             {
-               _loc3_ = false;
+               isBool = false;
             }
          }
-         _inputBg.visible = _loc3_;
-         _inputTxt.visible = _loc3_;
-         _activationBtn.visible = _loc3_;
+         _inputBg.visible = isBool;
+         _inputTxt.visible = isBool;
+         _activationBtn.visible = isBool;
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();
          }
       }
       
-      private function __inputTxtHandler(param1:MouseEvent) : void
+      private function __inputTxtHandler(evt:MouseEvent) : void
       {
          if(_inputTxt.text == LanguageMgr.GetTranslation("tank.chickActivation.inputTxtMsg"))
          {
@@ -580,9 +577,9 @@ package chickActivation.view
          }
       }
       
-      private function __activationBtnHandler(param1:MouseEvent) : void
+      private function __activationBtnHandler(evt:MouseEvent) : void
       {
-         var _loc2_:String = _inputTxt.text;
+         var strKey:String = _inputTxt.text;
          if(_inputTxt.text == "" || _inputTxt.text == LanguageMgr.GetTranslation("tank.chickActivation.inputTxtMsg"))
          {
             showBuyFrame();
@@ -597,52 +594,52 @@ package chickActivation.view
          {
             return;
          }
-         SocketManager.Instance.out.sendChickActivationOpenKey(_loc2_);
+         SocketManager.Instance.out.sendChickActivationOpenKey(strKey);
       }
       
       private function showBuyFrame() : void
       {
-         var _loc5_:* = null;
-         var _loc4_:* = null;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         var _loc1_:* = null;
+         var moneyStr:* = null;
+         var buyChickActivationFrame:* = null;
+         var ai:* = null;
+         var buyContentTxt:* = null;
+         var _cell:* = null;
          buyItemInfo = ShopManager.Instance.getMoneyShopItemByTemplateID(CHICKACTIVATION_CARDID);
          if(buyItemInfo)
          {
-            _loc5_ = buyItemInfo.getItemPrice(1).toString();
-            _loc4_ = ComponentFactory.Instance.creatComponentByStylename("chickActivationFrame.buyChickActivationFrame");
-            _loc4_.titleText = LanguageMgr.GetTranslation("tips");
-            _loc2_ = new AlertInfo(LanguageMgr.GetTranslation("cancel"),LanguageMgr.GetTranslation("ok"));
-            _loc4_.info = _loc2_;
-            _loc3_ = ComponentFactory.Instance.creatComponentByStylename("chickActivationFrame.contentTxt");
-            _loc3_.text = LanguageMgr.GetTranslation("tank.chickActivation.inputTxtMsg3",_loc5_);
-            _loc4_.addToContent(_loc3_);
-            _loc1_ = CellFactory.instance.createShopCartItemCell() as ShopPlayerCell;
-            _loc1_.info = buyItemInfo.TemplateInfo;
-            PositionUtils.setPos(_loc1_,"chickActivationFrame.ShopPlayerCellPos");
-            _loc4_.addToContent(_loc1_);
-            _loc4_.addEventListener("response",__buyFrameResponse);
-            LayerManager.Instance.addToLayer(_loc4_,3,true,1);
+            moneyStr = buyItemInfo.getItemPrice(1).toString();
+            buyChickActivationFrame = ComponentFactory.Instance.creatComponentByStylename("chickActivationFrame.buyChickActivationFrame");
+            buyChickActivationFrame.titleText = LanguageMgr.GetTranslation("tips");
+            ai = new AlertInfo(LanguageMgr.GetTranslation("cancel"),LanguageMgr.GetTranslation("ok"));
+            buyChickActivationFrame.info = ai;
+            buyContentTxt = ComponentFactory.Instance.creatComponentByStylename("chickActivationFrame.contentTxt");
+            buyContentTxt.text = LanguageMgr.GetTranslation("tank.chickActivation.inputTxtMsg3",moneyStr);
+            buyChickActivationFrame.addToContent(buyContentTxt);
+            _cell = CellFactory.instance.createShopCartItemCell() as ShopPlayerCell;
+            _cell.info = buyItemInfo.TemplateInfo;
+            PositionUtils.setPos(_cell,"chickActivationFrame.ShopPlayerCellPos");
+            buyChickActivationFrame.addToContent(_cell);
+            buyChickActivationFrame.addEventListener("response",__buyFrameResponse);
+            LayerManager.Instance.addToLayer(buyChickActivationFrame,3,true,1);
          }
       }
       
-      private function __buyFrameResponse(param1:FrameEvent) : void
+      private function __buyFrameResponse(evt:FrameEvent) : void
       {
-         var _loc2_:int = 0;
+         var moneyValue:int = 0;
          SoundManager.instance.play("008");
-         param1.currentTarget.removeEventListener("response",__buyFrameResponse);
-         ObjectUtils.disposeAllChildren(param1.currentTarget as DisplayObjectContainer);
-         ObjectUtils.disposeObject(param1.currentTarget);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         evt.currentTarget.removeEventListener("response",__buyFrameResponse);
+         ObjectUtils.disposeAllChildren(evt.currentTarget as DisplayObjectContainer);
+         ObjectUtils.disposeObject(evt.currentTarget);
+         if(evt.responseCode == 2 || evt.responseCode == 3)
          {
             if(PlayerManager.Instance.Self.bagLocked)
             {
                BaglockedManager.Instance.show();
                return;
             }
-            _loc2_ = buyItemInfo.getItemPrice(1).bothMoneyValue;
-            if(PlayerManager.Instance.Self.Money < _loc2_)
+            moneyValue = buyItemInfo.getItemPrice(1).bothMoneyValue;
+            if(PlayerManager.Instance.Self.Money < moneyValue)
             {
                LeavePageManager.showFillFrame();
                return;
@@ -653,17 +650,17 @@ package chickActivation.view
       
       public function clickRateGo() : Boolean
       {
-         var _loc1_:Number = new Date().time;
-         if(_loc1_ - _clickRate > 1000)
+         var temp:Number = new Date().time;
+         if(temp - _clickRate > 1000)
          {
-            _clickRate = _loc1_;
+            _clickRate = temp;
             return false;
          }
          MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.chickActivation.clickRateMsg"));
          return true;
       }
       
-      private function __receiveBtnHandler(param1:MouseEvent) : void
+      private function __receiveBtnHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -680,53 +677,52 @@ package chickActivation.view
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.chickActivation.receiveBtnMsg"));
             return;
          }
-         var _loc2_:int = getNowGainArrIndex() + 1;
-         SocketManager.Instance.out.sendChickActivationGetAward(_loc2_,0);
+         var gainId:int = getNowGainArrIndex() + 1;
+         SocketManager.Instance.out.sendChickActivationGetAward(gainId,0);
       }
       
-      private function playDropGoodsMovie(param1:Array) : void
+      private function playDropGoodsMovie(arr:Array) : void
       {
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
-         var _loc4_:Point = ComponentFactory.Instance.creatCustomObject("chickActivation.dropGoodsBeginPos");
-         var _loc2_:Point = ComponentFactory.Instance.creatCustomObject("chickActivation.dropGoodsEndPos");
-         var _loc3_:Array = [];
-         _loc6_ = 0;
-         while(_loc6_ < _ativationItems.arrData.length)
+         var i:int = 0;
+         var itemInfo:* = null;
+         var beginPoint:Point = ComponentFactory.Instance.creatCustomObject("chickActivation.dropGoodsBeginPos");
+         var endPoint:Point = ComponentFactory.Instance.creatCustomObject("chickActivation.dropGoodsEndPos");
+         var tempArr:Array = [];
+         for(i = 0; i < _ativationItems.arrData.length; )
          {
-            _loc5_ = ChickActivationManager.instance.model.getInventoryItemInfo(_ativationItems.arrData[_loc6_]);
-            if(_loc5_)
+            itemInfo = ChickActivationManager.instance.model.getInventoryItemInfo(_ativationItems.arrData[i]);
+            if(itemInfo)
             {
-               _loc3_.push(_loc5_);
+               tempArr.push(itemInfo);
             }
-            _loc6_++;
+            i++;
          }
-         DropGoodsManager.play(_loc3_,_loc4_,_loc2_,true);
+         DropGoodsManager.play(tempArr,beginPoint,endPoint,true);
       }
       
       private function getQualityKey() : String
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = _group.selectIndex;
-         var _loc1_:int = _groupTwo.selectIndex;
-         var _loc2_:String = _loc3_ + "," + _loc1_;
-         if(_loc1_ == 0)
+         var day:int = 0;
+         var mainIndex:int = _group.selectIndex;
+         var index:int = _groupTwo.selectIndex;
+         var qualityKey:String = mainIndex + "," + index;
+         if(index == 0)
          {
-            _loc4_ = 1;
-            _loc2_ = _loc2_ + ("," + _loc4_);
+            day = 1;
+            qualityKey = qualityKey + ("," + day);
          }
-         else if(_loc1_ == 2)
+         else if(index == 2)
          {
-            _loc4_ = 5;
-            _loc2_ = _loc2_ + ("," + _loc4_);
+            day = 5;
+            qualityKey = qualityKey + ("," + day);
          }
-         return _loc2_;
+         return qualityKey;
       }
       
-      private function __clickLevelPacksHandler(param1:ChickActivationEvent) : void
+      private function __clickLevelPacksHandler(evt:ChickActivationEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
+         var tempNum:int = 0;
+         var totalPrestige:int = 0;
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -737,19 +733,19 @@ package chickActivation.view
          {
             return;
          }
-         var _loc5_:int = param1.resultData;
-         var _loc2_:Array = ServerConfigManager.instance.chickenActiveKeyLvAwardNeedPrestige;
-         if(_loc2_ && _loc2_.length > 0)
+         var levelIndex:int = evt.resultData;
+         var arr:Array = ServerConfigManager.instance.chickenActiveKeyLvAwardNeedPrestige;
+         if(arr && arr.length > 0)
          {
-            _loc3_ = _loc2_[_loc5_ - 1];
-            _loc4_ = BattleGroudControl.Instance.orderdata.totalPrestige;
-            if(_loc4_ < _loc3_)
+            tempNum = arr[levelIndex - 1];
+            totalPrestige = BattleGroudControl.Instance.orderdata.totalPrestige;
+            if(totalPrestige < tempNum)
             {
-               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.chickActivation.totalPrestigeMsg",_loc3_));
+               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.chickActivation.totalPrestigeMsg",tempNum));
                return;
             }
          }
-         SocketManager.Instance.out.sendChickActivationGetAward(12,_loc5_);
+         SocketManager.Instance.out.sendChickActivationGetAward(12,levelIndex);
       }
       
       private function removeEvent() : void
@@ -767,7 +763,7 @@ package chickActivation.view
       
       override public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var k:int = 0;
          super.dispose();
          removeEvent();
          ObjectUtils.disposeObject(_mainBg);
@@ -820,12 +816,11 @@ package chickActivation.view
          _levelPacks = null;
          if(_promptMovies)
          {
-            _loc1_ = 0;
-            while(_loc1_ < _promptMovies.length)
+            for(k = 0; k < _promptMovies.length; )
             {
-               _promptMovies[_loc1_].stop();
-               ObjectUtils.disposeObject(_promptMovies[_loc1_]);
-               _loc1_++;
+               _promptMovies[k].stop();
+               ObjectUtils.disposeObject(_promptMovies[k]);
+               k++;
             }
             _promptMovies = null;
          }

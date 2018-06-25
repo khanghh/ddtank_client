@@ -19,14 +19,14 @@ package wonderfulActivity.items
          super();
       }
       
-      public function setState(param1:int, param2:int) : void
+      public function setState(type:int, id:int) : void
       {
       }
       
       public function init() : void
       {
-         var _loc1_:Bitmap = ComponentFactory.Instance.creat("wonderfulactivity.zhuanpan.back");
-         addChild(_loc1_);
+         var back:Bitmap = ComponentFactory.Instance.creat("wonderfulactivity.zhuanpan.back");
+         addChild(back);
          LeftGunRouletteManager.instance.createFrame(this);
       }
       

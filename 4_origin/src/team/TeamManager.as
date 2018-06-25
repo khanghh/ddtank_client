@@ -7,6 +7,7 @@ package team
    import com.pickgliss.ui.LayerManager;
    import com.pickgliss.ui.controls.BaseButton;
    import com.pickgliss.ui.controls.Frame;
+   import com.pickgliss.utils.ObjectUtils;
    import ddt.CoreManager;
    import ddt.events.PkgEvent;
    import ddt.loader.LoaderCreate;
@@ -15,10 +16,12 @@ package team
    import ddt.manager.MessageTipManager;
    import ddt.manager.PlayerManager;
    import ddt.manager.SocketManager;
+   import ddt.manager.StateManager;
    import ddt.utils.AssetModuleLoader;
    import flash.events.EventDispatcher;
    import hall.HallStateView;
    import hallIcon.HallIconManager;
+   import invite.InviteManager;
    import team.analyze.TeamActiveAnalyze;
    import team.analyze.TeamBattleSeasonAnalyzer;
    import team.analyze.TeamBattleSegmentAnalyzer;
@@ -51,6 +54,8 @@ package team
       
       private var _hall:HallStateView;
       
+      private var _frame:Frame;
+      
       public function TeamManager()
       {
          super();
@@ -78,11 +83,20 @@ package team
          SocketManager.Instance.addEventListener(PkgEvent.format(390,16),__onGetSelfActive);
          SocketManager.Instance.addEventListener(PkgEvent.format(390,3),__onInviteFrame);
          SocketManager.Instance.addEventListener(PkgEvent.format(390,14),__showOrHideIcon);
+         SocketManager.Instance.addEventListener(PkgEvent.format(390,34),__onCaptainTransfer);
       }
       
-      private function __showOrHideIcon(param1:PkgEvent) : void
+      private function __onCaptainTransfer(e:PkgEvent) : void
       {
-         _isOpen = param1.pkg.readBoolean();
+         AssetModuleLoader.addRequestLoader(LoaderCreate.Instance.createTeamMemeberLoader(),true);
+         AssetModuleLoader.addRequestLoader(LoaderCreate.Instance.creatFriendListLoader(),true);
+         AssetModuleLoader.startLoader(null);
+         SocketManager.Instance.out.sendTeamGetInfo(PlayerManager.Instance.Self.teamID);
+      }
+      
+      private function __showOrHideIcon(e:PkgEvent) : void
+      {
+         _isOpen = e.pkg.readBoolean();
          checkIcon();
       }
       
@@ -108,194 +122,190 @@ package team
          GameInSocketOut.sendCreateRoom(LanguageMgr.GetTranslation("teamBattle.roomName"),58,2);
       }
       
-      private function __onUpdateTeamInfo(param1:PkgEvent) : void
+      private function __onUpdateTeamInfo(e:PkgEvent) : void
       {
-         var _loc3_:TeamInfo = new TeamInfo();
-         _loc3_.division = param1.pkg.readInt();
-         _loc3_.teamID = param1.pkg.readInt();
-         _loc3_.name = param1.pkg.readUTF();
-         _loc3_.tag = param1.pkg.readUTF();
-         _loc3_.grade = param1.pkg.readInt();
-         _loc3_.totalActive = param1.pkg.readInt();
-         _loc3_.active = param1.pkg.readInt();
-         _loc3_.maxActive = param1.pkg.readInt();
-         _loc3_.winTime = param1.pkg.readInt();
-         _loc3_.totalTime = param1.pkg.readInt();
-         _loc3_.createDate = param1.pkg.readDate();
-         _loc3_.socre = param1.pkg.readInt();
-         _loc3_.member = param1.pkg.readInt();
-         _loc3_.totalMember = param1.pkg.readInt();
-         _loc3_.season = param1.pkg.readInt();
-         var _loc2_:String = param1.pkg.readUTF();
-         if(_loc2_ == "")
+         var teamInfo:TeamInfo = new TeamInfo();
+         teamInfo.division = e.pkg.readInt();
+         teamInfo.teamID = e.pkg.readInt();
+         teamInfo.name = e.pkg.readUTF();
+         teamInfo.tag = e.pkg.readUTF();
+         teamInfo.grade = e.pkg.readInt();
+         teamInfo.totalActive = e.pkg.readInt();
+         teamInfo.active = e.pkg.readInt();
+         teamInfo.maxActive = e.pkg.readInt();
+         teamInfo.winTime = e.pkg.readInt();
+         teamInfo.totalTime = e.pkg.readInt();
+         teamInfo.createDate = e.pkg.readDate();
+         teamInfo.socre = e.pkg.readInt();
+         teamInfo.member = e.pkg.readInt();
+         teamInfo.totalMember = e.pkg.readInt();
+         teamInfo.season = e.pkg.readInt();
+         var seasonInfo:String = e.pkg.readUTF();
+         if(seasonInfo == "")
          {
-            _loc3_.seasonInfo = [];
+            teamInfo.seasonInfo = [];
          }
          else
          {
-            _loc3_.seasonInfo = _loc2_.split("|");
+            teamInfo.seasonInfo = seasonInfo.split("|");
          }
-         var _loc4_:int = param1.pkg.readInt();
-         if(_loc3_.teamID == PlayerManager.Instance.Self.teamID)
+         var duty:int = e.pkg.readInt();
+         if(teamInfo.teamID == PlayerManager.Instance.Self.teamID)
          {
-            PlayerManager.Instance.Self.teamDuty = _loc4_;
+            PlayerManager.Instance.Self.teamDuty = duty;
          }
-         var _loc5_:Date = param1.pkg.readDate();
-         if(_loc3_.teamID == PlayerManager.Instance.Self.teamID)
+         var loginDate:Date = e.pkg.readDate();
+         if(teamInfo.teamID == PlayerManager.Instance.Self.teamID)
          {
-            PlayerManager.Instance.Self.teamLoginDate = _loc5_;
+            PlayerManager.Instance.Self.teamLoginDate = loginDate;
          }
-         _model.addTeamInfo(_loc3_.teamID,_loc3_);
-         dispatchEvent(new TeamEvent("updateteaminfo",_loc3_.teamID));
+         _model.addTeamInfo(teamInfo.teamID,teamInfo);
+         dispatchEvent(new TeamEvent("updateteaminfo",teamInfo.teamID));
       }
       
-      private function __onTeamMember(param1:PkgEvent) : void
+      private function __onTeamMember(e:PkgEvent) : void
       {
          LoadResourceManager.Instance.startLoad(LoaderCreate.Instance.createTeamMemeberLoader());
       }
       
-      private function __onGetInviteList(param1:PkgEvent) : void
+      private function __onGetInviteList(e:PkgEvent) : void
       {
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
-         var _loc2_:int = 0;
-         var _loc3_:Array = [];
-         var _loc4_:int = param1.pkg.readInt();
-         _loc6_ = 0;
-         while(_loc6_ < _loc4_)
+         var i:int = 0;
+         var info:* = null;
+         var vipType:int = 0;
+         var list:Array = [];
+         var len:int = e.pkg.readInt();
+         for(i = 0; i < len; )
          {
-            _loc5_ = new TeamInvitedMemberInfo();
-            _loc5_.id = param1.pkg.readInt();
-            _loc5_.name = param1.pkg.readUTF();
-            _loc5_.date = param1.pkg.readDate();
-            _loc2_ = param1.pkg.readInt();
-            _loc5_.isVip = _loc2_ >= 1;
-            _loc3_.push(_loc5_);
-            _loc6_++;
+            info = new TeamInvitedMemberInfo();
+            info.id = e.pkg.readInt();
+            info.name = e.pkg.readUTF();
+            info.date = e.pkg.readDate();
+            vipType = e.pkg.readInt();
+            info.isVip = vipType >= 1;
+            list.push(info);
+            i++;
          }
-         _model.addTeamInviteList(PlayerManager.Instance.Self.teamID,_loc3_);
+         _model.addTeamInviteList(PlayerManager.Instance.Self.teamID,list);
          dispatchEvent(new TeamEvent("updateinvitelist"));
       }
       
-      private function __onGetRecord(param1:PkgEvent) : void
+      private function __onGetRecord(e:PkgEvent) : void
       {
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
-         var _loc3_:Array = [];
-         var _loc2_:int = param1.pkg.readInt();
-         var _loc4_:int = param1.pkg.readInt();
-         _loc6_ = 0;
-         while(_loc6_ < _loc4_)
+         var i:int = 0;
+         var info:* = null;
+         var list:Array = [];
+         var teamid:int = e.pkg.readInt();
+         var len:int = e.pkg.readInt();
+         for(i = 0; i < len; )
          {
-            _loc5_ = new TeamRecordInfo();
-            _loc5_.isWin = param1.pkg.readBoolean();
-            _loc5_.active = param1.pkg.readInt();
-            _loc5_.date = param1.pkg.readDate();
-            _loc5_.teamName = param1.pkg.readUTF();
-            _loc5_.teamZone = param1.pkg.readUTF();
-            _loc5_.teamKill = param1.pkg.readInt();
-            _loc5_.teamSurvival = param1.pkg.readInt();
-            _loc5_.teamMemberInfo = param1.pkg.readUTF();
-            _loc5_.enemyName = param1.pkg.readUTF();
-            _loc5_.enemyZone = param1.pkg.readUTF();
-            _loc5_.enemyKill = param1.pkg.readInt();
-            _loc5_.enemySurvival = param1.pkg.readInt();
-            _loc5_.enemyMemberInfo = param1.pkg.readUTF();
-            _loc3_.push(_loc5_);
-            _loc6_++;
+            info = new TeamRecordInfo();
+            info.isWin = e.pkg.readBoolean();
+            info.active = e.pkg.readInt();
+            info.date = e.pkg.readDate();
+            info.teamName = e.pkg.readUTF();
+            info.teamZone = e.pkg.readUTF();
+            info.teamKill = e.pkg.readInt();
+            info.teamSurvival = e.pkg.readInt();
+            info.teamMemberInfo = e.pkg.readUTF();
+            info.enemyName = e.pkg.readUTF();
+            info.enemyZone = e.pkg.readUTF();
+            info.enemyKill = e.pkg.readInt();
+            info.enemySurvival = e.pkg.readInt();
+            info.enemyMemberInfo = e.pkg.readUTF();
+            list.push(info);
+            i++;
          }
-         _loc3_.reverse();
-         _model.addTeamRecordList(_loc2_,_loc3_);
-         dispatchEvent(new TeamEvent("updatercordlist",_loc2_));
+         list.reverse();
+         _model.addTeamRecordList(teamid,list);
+         dispatchEvent(new TeamEvent("updatercordlist",teamid));
       }
       
-      private function __onInviteRepeal(param1:PkgEvent) : void
+      private function __onInviteRepeal(e:PkgEvent) : void
       {
-         var _loc2_:int = param1.pkg.readInt();
-         _model.removeTeamInviteList(PlayerManager.Instance.Self.teamID,_loc2_);
+         var userid:int = e.pkg.readInt();
+         _model.removeTeamInviteList(PlayerManager.Instance.Self.teamID,userid);
          dispatchEvent(new TeamEvent("updateinvitelist"));
       }
       
-      private function __onGetTeamActive(param1:PkgEvent) : void
+      private function __onGetTeamActive(e:PkgEvent) : void
       {
-         var _loc8_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:int = 0;
-         var _loc7_:int = 0;
-         var _loc2_:* = null;
-         var _loc5_:Array = [];
-         var _loc6_:int = param1.pkg.readInt();
-         _loc8_ = 0;
-         while(_loc8_ < _loc6_)
+         var i:int = 0;
+         var name:* = null;
+         var score:int = 0;
+         var type:int = 0;
+         var str:* = null;
+         var list:Array = [];
+         var len:int = e.pkg.readInt();
+         for(i = 0; i < len; )
          {
-            _loc3_ = param1.pkg.readUTF();
-            _loc4_ = param1.pkg.readInt();
-            _loc7_ = param1.pkg.readInt();
-            _loc2_ = LanguageMgr.GetTranslation("team.active.record" + _loc7_,_loc3_,_loc4_);
-            _loc5_.push(_loc2_);
-            _loc8_++;
+            name = e.pkg.readUTF();
+            score = e.pkg.readInt();
+            type = e.pkg.readInt();
+            str = LanguageMgr.GetTranslation("team.active.record" + type,name,score);
+            list.push(str);
+            i++;
          }
-         _model.addTeamActiveList(PlayerManager.Instance.Self.teamID,_loc5_);
+         _model.addTeamActiveList(PlayerManager.Instance.Self.teamID,list);
          dispatchEvent(new TeamEvent("updateactivelist"));
       }
       
-      private function __onGetSelfActive(param1:PkgEvent) : void
+      private function __onGetSelfActive(e:PkgEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         var _loc2_:int = param1.pkg.readInt();
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_)
+         var i:int = 0;
+         var type:int = 0;
+         var haveScore:int = 0;
+         var len:int = e.pkg.readInt();
+         for(i = 0; i < len; )
          {
-            _loc4_ = param1.pkg.readInt();
-            _loc3_ = param1.pkg.readInt();
-            if(_model.activeList.hasKey(_loc4_))
+            type = e.pkg.readInt();
+            haveScore = e.pkg.readInt();
+            if(_model.activeList.hasKey(type))
             {
-               _model.activeList[_loc4_].haveScore = _loc3_;
+               _model.activeList[type].haveScore = haveScore;
             }
             else
             {
                trace("战队活跃个人活跃信息出错");
             }
-            _loc5_++;
+            i++;
          }
          dispatchEvent(new TeamEvent("updateselfactive"));
       }
       
-      private function __onUpdateDayActive(param1:PkgEvent) : void
+      private function __onUpdateDayActive(e:PkgEvent) : void
       {
-         _model.selfScore = param1.pkg.readInt();
-         _model.selfActive = param1.pkg.readInt();
-         _model.selfAllActive = param1.pkg.readInt();
+         _model.selfScore = e.pkg.readInt();
+         _model.selfActive = e.pkg.readInt();
+         _model.selfAllActive = e.pkg.readInt();
          dispatchEvent(new TeamEvent("updateselfinfo"));
       }
       
-      private function __onInviteFrame(param1:PkgEvent) : void
+      private function __onInviteFrame(e:PkgEvent) : void
       {
-         var _loc5_:* = null;
-         var _loc3_:* = null;
-         var _loc4_:int = param1.pkg.readInt();
-         var _loc7_:int = param1.pkg.readInt();
-         var _loc6_:String = param1.pkg.readUTF();
-         var _loc2_:String = param1.pkg.readUTF();
-         if(TeamInviteFrame.hasAlert(_loc7_))
+         var data:* = null;
+         var frame:* = null;
+         var playerID:int = e.pkg.readInt();
+         var teamID:int = e.pkg.readInt();
+         var userName:String = e.pkg.readUTF();
+         var teamName:String = e.pkg.readUTF();
+         if(TeamInviteFrame.hasAlert(teamID))
          {
-            _loc5_ = {
-               "TeamID":_loc7_,
-               "PlayerID":_loc4_,
-               "UserName":_loc6_,
-               "TeamName":_loc2_
+            data = {
+               "TeamID":teamID,
+               "PlayerID":playerID,
+               "UserName":userName,
+               "TeamName":teamName
             };
-            _loc3_ = ComponentFactory.Instance.creatComponentByStylename("team.invite.alertFrame");
-            _loc3_.setupData(_loc5_);
+            frame = ComponentFactory.Instance.creatComponentByStylename("team.invite.alertFrame");
+            frame.setupData(data);
             if(CacheSysManager.isLock("alertInFight"))
             {
-               CacheSysManager.getInstance().cache("alertInFight",new AlertAction(_loc3_,3,1,"018",true));
+               CacheSysManager.getInstance().cache("alertInFight",new AlertAction(frame,3,1,"018",true));
             }
             else
             {
-               LayerManager.Instance.addToLayer(_loc3_,3,true,1);
+               LayerManager.Instance.addToLayer(frame,3,true,1);
             }
          }
       }
@@ -321,9 +331,9 @@ package team
       
       private function createTeamFrame() : void
       {
-         var _loc1_:Frame = ComponentFactory.Instance.creatComponentByStylename("team.create.mainFrame");
-         _loc1_.titleText = LanguageMgr.GetTranslation("team.create.title");
-         LayerManager.Instance.addToLayer(_loc1_,3,true,1);
+         var frame:Frame = ComponentFactory.Instance.creatComponentByStylename("team.create.mainFrame");
+         frame.titleText = LanguageMgr.GetTranslation("team.create.title");
+         LayerManager.Instance.addToLayer(frame,3,true,1);
       }
       
       public function showTeamMainFrame() : void
@@ -341,9 +351,26 @@ package team
       private function teamMainFrame() : void
       {
          SocketManager.Instance.out.sendTeamGetInfo(PlayerManager.Instance.Self.teamID);
-         var _loc1_:Frame = ComponentFactory.Instance.creatComponentByStylename("team.mainFrame");
-         _loc1_.titleText = LanguageMgr.GetTranslation("team.main.title");
-         LayerManager.Instance.addToLayer(_loc1_,3,true,1);
+         _frame = ComponentFactory.Instance.creatComponentByStylename("team.mainFrame");
+         _frame.titleText = LanguageMgr.GetTranslation("team.main.title");
+         LayerManager.Instance.addToLayer(_frame,3,true,1);
+         if(StateManager.currentStateType == "main")
+         {
+            InviteManager.Instance.enabled = false;
+         }
+      }
+      
+      public function disposeTeamMainFrame() : void
+      {
+         if(_frame)
+         {
+            ObjectUtils.disposeObject(_frame);
+         }
+         _frame = null;
+         if(StateManager.currentStateType == "main")
+         {
+            InviteManager.Instance.enabled = true;
+         }
       }
       
       public function showTeamBattleFrame() : void
@@ -357,8 +384,8 @@ package team
       
       private function teamBattleFrame() : void
       {
-         var _loc1_:* = ComponentFactory.Instance.creatCustomObject("teamBattle.mainFrame");
-         LayerManager.Instance.addToLayer(_loc1_,3,true,1);
+         var frame:* = ComponentFactory.Instance.creatCustomObject("teamBattle.mainFrame");
+         LayerManager.Instance.addToLayer(frame,3,true,1);
       }
       
       public function showTeamRankFrame() : void
@@ -372,72 +399,71 @@ package team
       
       private function teamRankFrame() : void
       {
-         var _loc1_:* = null;
+         var frame:* = null;
          if(model.rankList.length > 1 && model.rankList[0].length > 0)
          {
-            _loc1_ = ComponentFactory.Instance.creatComponentByStylename("team.rankFrame");
-            _loc1_.titleText = LanguageMgr.GetTranslation("team.rank.title");
-            LayerManager.Instance.addToLayer(_loc1_,3,true,1);
+            frame = ComponentFactory.Instance.creatComponentByStylename("team.rankFrame");
+            frame.titleText = LanguageMgr.GetTranslation("team.rank.title");
+            LayerManager.Instance.addToLayer(frame,3,true,1);
             return;
          }
          MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.team.noServerTeamRank"));
       }
       
-      public function refreshRank(param1:int) : void
+      public function refreshRank(type:int) : void
       {
-         dispatchEvent(new TeamEvent("updateteamrank",param1));
+         dispatchEvent(new TeamEvent("updateteamrank",type));
       }
       
-      public function analyzeMemberList(param1:TeamMemberAnalyze) : void
+      public function analyzeMemberList(e:TeamMemberAnalyze) : void
       {
-         _model.addTeamMemberInfo(param1.id,param1.list);
+         _model.addTeamMemberInfo(e.id,e.list);
          dispatchEvent(new TeamEvent("updateteammember"));
       }
       
-      public function analyzeShopList(param1:TeamShopAnalyze) : void
+      public function analyzeShopList(e:TeamShopAnalyze) : void
       {
-         _model.shopList = param1.data;
-         _model.buyLimitLv = param1.buyLimitLv;
+         _model.shopList = e.data;
+         _model.buyLimitLv = e.buyLimitLv;
       }
       
-      public function analzeActiveList(param1:TeamActiveAnalyze) : void
+      public function analzeActiveList(e:TeamActiveAnalyze) : void
       {
-         _model.activeList = param1.data;
+         _model.activeList = e.data;
       }
       
-      public function analyzeRankList(param1:TeamRankAnalyze) : void
+      public function analyzeRankList(e:TeamRankAnalyze) : void
       {
-         _model.rankList.push(param1.data.list);
+         _model.rankList.push(e.data.list);
       }
       
-      public function analyzeLevelList(param1:TeamLevelAnalyze) : void
+      public function analyzeLevelList(e:TeamLevelAnalyze) : void
       {
-         _model.teamLevelList = param1.data;
+         _model.teamLevelList = e.data;
       }
       
-      public function analyzeSeasonList(param1:TeamBattleSeasonAnalyzer) : void
+      public function analyzeSeasonList(e:TeamBattleSeasonAnalyzer) : void
       {
-         _model.teamBattleSeasonList = param1.data;
+         _model.teamBattleSeasonList = e.data;
       }
       
-      public function analyzeSegmentList(param1:TeamBattleSegmentAnalyzer) : void
+      public function analyzeSegmentList(e:TeamBattleSegmentAnalyzer) : void
       {
-         _model.teamBattleSegmentList = param1.data;
+         _model.teamBattleSegmentList = e.data;
       }
       
-      public function hasTeamInvitePlayer(param1:int) : Boolean
+      public function hasTeamInvitePlayer(userid:int) : Boolean
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         _loc3_ = 0;
-         while(_loc3_ < _model.selfTeamInviteList.length)
+         var i:int = 0;
+         var item:* = null;
+         for(i = 0; i < _model.selfTeamInviteList.length; )
          {
-            _loc2_ = _model.selfTeamInviteList[_loc3_] as TeamInvitedMemberInfo;
-            if(_loc2_.id == param1)
+            item = _model.selfTeamInviteList[i] as TeamInvitedMemberInfo;
+            if(item.id == userid)
             {
                return true;
             }
-            _loc3_++;
+            i++;
          }
          return false;
       }

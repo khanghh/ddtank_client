@@ -19,10 +19,10 @@ package game
       
       private var _bitmaps:Array;
       
-      public function GameDecorateManager(param1:IEventDispatcher = null)
+      public function GameDecorateManager(target:IEventDispatcher = null)
       {
          _bitmaps = [];
-         super(param1);
+         super(target);
       }
       
       public static function get Instance() : GameDecorateManager
@@ -34,63 +34,63 @@ package game
          return _instance;
       }
       
-      public function createBitmapUI(param1:Sprite, param2:String) : *
+      public function createBitmapUI(parent:Sprite, classname:String) : *
       {
          if(isOpen && !isGameBattle)
          {
-            return getBitmapUI(param1,param2);
+            return getBitmapUI(parent,classname);
          }
          if(isGameBattle)
          {
-            return getBitmapUI(param1,param2.replace("asset.gameDecorate","asset.battle.gameDecorate"));
+            return getBitmapUI(parent,classname.replace("asset.gameDecorate","asset.battle.gameDecorate"));
          }
          return null;
       }
       
-      private function getBitmapUI(param1:Sprite, param2:String) : *
+      private function getBitmapUI(parent:Sprite, classname:String) : *
       {
-         var _loc3_:* = null;
-         if(ClassUtils.uiSourceDomain.hasDefinition(param2))
+         var bitmap:* = null;
+         if(ClassUtils.uiSourceDomain.hasDefinition(classname))
          {
-            _loc3_ = ComponentFactory.Instance.creatBitmap(param2);
-            if(param1 != null)
+            bitmap = ComponentFactory.Instance.creatBitmap(classname);
+            if(parent != null)
             {
-               param1.addChild(_loc3_);
+               parent.addChild(bitmap);
             }
-            _bitmaps.push(_loc3_);
-            return _loc3_;
+            _bitmaps.push(bitmap);
+            return bitmap;
          }
-         trace("GameDecorateManager:createBitmapUI-创建UI失败：" + param2);
+         trace("GameDecorateManager:createBitmapUI-创建UI失败：" + classname);
          return null;
       }
       
-      public function createBlurSprite(param1:Sprite, param2:Number, param3:Number, param4:int = 8070436, param5:Number = 0.5, param6:Number = 20, param7:Number = 20) : Sprite
+      public function createBlurSprite(parent:Sprite, w:Number, h:Number, color:int = 8070436, alpha:Number = 0.5, blurX:Number = 20, blurY:Number = 20) : Sprite
       {
-         var _loc8_:Sprite = new Sprite();
-         _loc8_.alpha = param5;
-         _loc8_.graphics.beginFill(param4);
-         _loc8_.graphics.drawRoundRect(0,0,param2,param3,param6,param7);
-         _loc8_.graphics.endFill();
-         var _loc9_:BlurFilter = new BlurFilter();
-         _loc9_.blurX = param6;
-         _loc9_.blurY = param7;
-         _loc9_.quality = 2;
-         _loc8_.filters = [_loc9_];
-         _bitmaps.push(_loc8_);
-         if(param1 != null)
+         var sp:Sprite = new Sprite();
+         sp.alpha = alpha;
+         sp.graphics.beginFill(color);
+         sp.graphics.drawRoundRect(0,0,w,h,blurX,blurY);
+         sp.graphics.endFill();
+         var blur:BlurFilter = new BlurFilter();
+         blur.blurX = blurX;
+         blur.blurY = blurY;
+         blur.quality = 2;
+         sp.filters = [blur];
+         _bitmaps.push(sp);
+         if(parent != null)
          {
-            param1.addChild(_loc8_);
+            parent.addChild(sp);
          }
-         return _loc8_;
+         return sp;
       }
       
       public function disposeBitmapUI() : void
       {
-         var _loc1_:* = undefined;
+         var obj:* = undefined;
          if(_bitmaps.length > 0)
          {
-            _loc1_ = _bitmaps.shift();
-            ObjectUtils.disposeObject(_loc1_);
+            obj = _bitmaps.shift();
+            ObjectUtils.disposeObject(obj);
             disposeBitmapUI();
          }
       }

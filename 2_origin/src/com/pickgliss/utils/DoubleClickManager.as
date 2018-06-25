@@ -35,14 +35,14 @@ package com.pickgliss.utils
          return _instance;
       }
       
-      public function enableDoubleClick(param1:InteractiveObject) : void
+      public function enableDoubleClick(target:InteractiveObject) : void
       {
-         param1.addEventListener("mouseDown",__mouseDownHandler);
+         target.addEventListener("mouseDown",__mouseDownHandler);
       }
       
-      public function disableDoubleClick(param1:InteractiveObject) : void
+      public function disableDoubleClick(target:InteractiveObject) : void
       {
-         param1.removeEventListener("mouseDown",__mouseDownHandler);
+         target.removeEventListener("mouseDown",__mouseDownHandler);
       }
       
       private function init() : void
@@ -51,36 +51,36 @@ package com.pickgliss.utils
          _timer.addEventListener("timerComplete",__timerCompleteHandler);
       }
       
-      private function getEvent(param1:String) : InteractiveEvent
+      private function getEvent(type:String) : InteractiveEvent
       {
-         var _loc2_:InteractiveEvent = new InteractiveEvent(param1);
-         _loc2_.ctrlKey = _ctrlKey;
-         return _loc2_;
+         var interactiveEvent:InteractiveEvent = new InteractiveEvent(type);
+         interactiveEvent.ctrlKey = _ctrlKey;
+         return interactiveEvent;
       }
       
-      private function __timerCompleteHandler(param1:TimerEvent) : void
+      private function __timerCompleteHandler(evt:TimerEvent) : void
       {
          _currentTarget.dispatchEvent(getEvent("interactive_click"));
       }
       
-      private function __mouseDownHandler(param1:MouseEvent) : void
+      private function __mouseDownHandler(evt:MouseEvent) : void
       {
-         _ctrlKey = param1.ctrlKey;
+         _ctrlKey = evt.ctrlKey;
          if(_timer.running)
          {
             _timer.stop();
-            if(_currentTarget != param1.currentTarget)
+            if(_currentTarget != evt.currentTarget)
             {
                return;
             }
-            param1.stopImmediatePropagation();
+            evt.stopImmediatePropagation();
             _currentTarget.dispatchEvent(getEvent("interactive_double_click"));
          }
          else
          {
             _timer.reset();
             _timer.start();
-            _currentTarget = param1.currentTarget as InteractiveObject;
+            _currentTarget = evt.currentTarget as InteractiveObject;
          }
       }
       

@@ -2,9 +2,11 @@ package bagAndInfo.info
 {
    import armShell.ArmShellManager;
    import bagAndInfo.BagAndInfoManager;
+   import bagAndInfo.PlayerProValueAddManager;
    import bagAndInfo.amulet.EquipAmuletManager;
    import bagAndInfo.bag.NecklacePtetrochemicalView;
    import bagAndInfo.bag.ring.RingSystemView;
+   import bagAndInfo.bag.ring.data.RingSystemData;
    import bagAndInfo.bag.trailelite.TrailEliteView;
    import bagAndInfo.cell.CellFactory;
    import bagAndInfo.cell.PersonalInfoCell;
@@ -289,13 +291,13 @@ package bagAndInfo.info
       
       private function cardGuide1() : void
       {
-         var _loc1_:* = null;
+         var data:* = null;
          if(!PlayerManager.Instance.Self.isNewOnceFinish(125))
          {
             if(PlayerManager.Instance.Self.Grade == 14 && TaskManager.instance.isAchieved(TaskManager.instance.getQuestByID(25)))
             {
-               _loc1_ = PlayerManager.Instance.Self.cardBagDic;
-               if(_loc1_.length > 0)
+               data = PlayerManager.Instance.Self.cardBagDic;
+               if(data.length > 0)
                {
                   cardGuide2(null);
                }
@@ -308,7 +310,7 @@ package bagAndInfo.info
          }
       }
       
-      private function cardGuide2(param1:DictionaryEvent) : void
+      private function cardGuide2(event:DictionaryEvent) : void
       {
          PlayerManager.Instance.Self.cardBagDic.removeEventListener("add",cardGuide2);
          NewHandContainer.Instance.showArrow(141,180,new Point(294,157),"","",LayerManager.Instance.getLayerByType(2),0,true);
@@ -324,19 +326,19 @@ package bagAndInfo.info
       
       public function checkGuide() : void
       {
-         var _loc1_:int = 0;
+         var grade:int = 0;
          if(_showSelfOperation && _info && _info.isSelf)
          {
-            _loc1_ = PlayerManager.Instance.Self.Grade;
-            if(_loc1_ >= 50 && !PlayerManager.Instance.Self.isNewOnceFinish(140))
+            grade = PlayerManager.Instance.Self.Grade;
+            if(grade >= 50 && !PlayerManager.Instance.Self.isNewOnceFinish(140))
             {
                NewHandContainer.Instance.showArrow(150,180,new Point(308,249),"","",this,0,true);
             }
-            else if(_loc1_ >= 70 && !PlayerManager.Instance.Self.isNewOnceFinish(160))
+            else if(grade >= 70 && !PlayerManager.Instance.Self.isNewOnceFinish(160))
             {
                NewHandContainer.Instance.showArrow(151,180,new Point(310,169),"","",this,0,true);
             }
-            else if(_loc1_ >= 32 && !PlayerManager.Instance.Self.isNewOnceFinish(161))
+            else if(grade >= 32 && !PlayerManager.Instance.Self.isNewOnceFinish(161))
             {
                NewHandContainer.Instance.showArrow(152,180,new Point(156,169),"","",this,0,true);
             }
@@ -396,7 +398,7 @@ package bagAndInfo.info
          _attackButton = ComponentFactory.Instance.creatCustomObject("bagAndInfo.info.AttackButton");
          _attackButton.property = LanguageMgr.GetTranslation("tank.view.personalinfoII.attact");
          _attackButton.detail = LanguageMgr.GetTranslation("tank.view.personalinfoII.attactDetail");
-         _attackButton.propertySource = LanguageMgr.GetTranslation("tank.view.personalinfoII.propertySourceTxt",0,0,0,0,0,0,0,0);
+         _attackButton.propertySource = LanguageMgr.GetTranslation("tank.view.personalinfoII.propertySourceTxtNew",0,0,0,0,0,0,0,0);
          ShowTipManager.Instance.addTip(_attackButton);
          addChild(_attackButton);
          _agilityTxt = ComponentFactory.Instance.creatComponentByStylename("personInfoViewAgilityText");
@@ -404,7 +406,7 @@ package bagAndInfo.info
          _agilityButton = ComponentFactory.Instance.creatCustomObject("bagAndInfo.info.AgilityButton");
          _agilityButton.property = LanguageMgr.GetTranslation("tank.view.personalinfoII.agility");
          _agilityButton.detail = LanguageMgr.GetTranslation("tank.view.personalinfoII.agilityDetail");
-         _agilityButton.propertySource = LanguageMgr.GetTranslation("tank.view.personalinfoII.propertySourceTxt",0,0,0,0,0,0,0,0,0);
+         _agilityButton.propertySource = LanguageMgr.GetTranslation("tank.view.personalinfoII.propertySourceTxtNew",0,0,0,0,0,0,0,0,0);
          ShowTipManager.Instance.addTip(_agilityButton);
          addChild(_agilityButton);
          _defenceTxt = ComponentFactory.Instance.creatComponentByStylename("personInfoViewDefenceText");
@@ -412,7 +414,7 @@ package bagAndInfo.info
          _defenceButton = ComponentFactory.Instance.creatCustomObject("bagAndInfo.info.DefenceButton");
          _defenceButton.property = LanguageMgr.GetTranslation("tank.view.personalinfoII.defense");
          _defenceButton.detail = LanguageMgr.GetTranslation("tank.view.personalinfoII.defenseDetail");
-         _defenceButton.propertySource = LanguageMgr.GetTranslation("tank.view.personalinfoII.propertySourceTxt",0,0,0,0,0,0,0,0);
+         _defenceButton.propertySource = LanguageMgr.GetTranslation("tank.view.personalinfoII.propertySourceTxtNew",0,0,0,0,0,0,0,0);
          ShowTipManager.Instance.addTip(_defenceButton);
          addChild(_defenceButton);
          _luckTxt = ComponentFactory.Instance.creatComponentByStylename("personInfoViewLuckText");
@@ -420,7 +422,7 @@ package bagAndInfo.info
          _luckButton = ComponentFactory.Instance.creatCustomObject("bagAndInfo.info.LuckButton");
          _luckButton.property = LanguageMgr.GetTranslation("tank.view.personalinfoII.luck");
          _luckButton.detail = LanguageMgr.GetTranslation("tank.view.personalinfoII.luckDetail");
-         _luckButton.propertySource = LanguageMgr.GetTranslation("tank.view.personalinfoII.propertySourceTxt",0,0,0,0,0,0,0,0);
+         _luckButton.propertySource = LanguageMgr.GetTranslation("tank.view.personalinfoII.propertySourceTxtNew",0,0,0,0,0,0,0,0);
          ShowTipManager.Instance.addTip(_luckButton);
          addChild(_luckButton);
          _magicAttackTxt = ComponentFactory.Instance.creatComponentByStylename("personInfoViewMagicAttackText");
@@ -428,7 +430,7 @@ package bagAndInfo.info
          _magicAttackButton = ComponentFactory.Instance.creatCustomObject("bagAndInfo.info.MagicAttackButton");
          _magicAttackButton.property = LanguageMgr.GetTranslation("tank.view.personalinfoII.magicAttack");
          _magicAttackButton.detail = LanguageMgr.GetTranslation("tank.view.personalinfoII.magicAttackDetail");
-         _magicAttackButton.propertySource = LanguageMgr.GetTranslation("tank.view.personalinfoII.magicAttackDefencePropertySourceTxt",0);
+         _magicAttackButton.propertySource = LanguageMgr.GetTranslation("tank.view.personalinfoII.magicPropertySourceTxtNew",0);
          ShowTipManager.Instance.addTip(_magicAttackButton);
          addChild(_magicAttackButton);
          _magicDefenceTxt = ComponentFactory.Instance.creatComponentByStylename("personInfoViewMagicDefenceText");
@@ -436,7 +438,7 @@ package bagAndInfo.info
          _magicDefenceButton = ComponentFactory.Instance.creatCustomObject("bagAndInfo.info.MagicDefenceButton");
          _magicDefenceButton.property = LanguageMgr.GetTranslation("tank.view.personalinfoII.magicDefence");
          _magicDefenceButton.detail = LanguageMgr.GetTranslation("tank.view.personalinfoII.magicDefenceDetail");
-         _magicDefenceButton.propertySource = LanguageMgr.GetTranslation("tank.view.personalinfoII.magicAttackDefencePropertySourceTxt",0);
+         _magicDefenceButton.propertySource = LanguageMgr.GetTranslation("tank.view.personalinfoII.magicPropertySourceTxtNew",0);
          ShowTipManager.Instance.addTip(_magicDefenceButton);
          addChild(_magicDefenceButton);
          _damageTxt = ComponentFactory.Instance.creatComponentByStylename("personInfoViewDamageText");
@@ -444,7 +446,7 @@ package bagAndInfo.info
          _damageButton = ComponentFactory.Instance.creatCustomObject("bagAndInfo.info.DamageButton");
          _damageButton.property = LanguageMgr.GetTranslation("tank.view.personalinfoII.damage");
          _damageButton.detail = LanguageMgr.GetTranslation("tank.view.personalinfoII.damageDetail");
-         (_damageButton as GlowPropButton).propertySource = LanguageMgr.GetTranslation("tank.view.personalinfoII.damagePropertySourceTxt",0,0,0);
+         (_damageButton as GlowPropButton).propertySource = LanguageMgr.GetTranslation("tank.view.personalinfoII.damagePropertySourceTxtNew",0,0,0);
          ShowTipManager.Instance.addTip(_damageButton);
          addChild(_damageButton);
          _armorTxt = ComponentFactory.Instance.creatComponentByStylename("personInfoViewArmorText");
@@ -452,7 +454,7 @@ package bagAndInfo.info
          _armorButton = ComponentFactory.Instance.creatCustomObject("bagAndInfo.info.ArmorButton");
          _armorButton.property = LanguageMgr.GetTranslation("tank.view.personalinfoII.recovery");
          _armorButton.detail = LanguageMgr.GetTranslation("tank.view.personalinfoII.recoveryDetail");
-         (_armorButton as GlowPropButton).propertySource = LanguageMgr.GetTranslation("tank.view.personalinfoII.recoveryPropertySourceTxt",0,0,0);
+         (_armorButton as GlowPropButton).propertySource = LanguageMgr.GetTranslation("tank.view.personalinfoII.recoveryPropertySourceTxtNew",0,0,0);
          ShowTipManager.Instance.addTip(_armorButton);
          addChild(_armorButton);
          _HPText = ComponentFactory.Instance.creatComponentByStylename("personInfoViewHPText");
@@ -460,7 +462,7 @@ package bagAndInfo.info
          _hpButton = ComponentFactory.Instance.creatCustomObject("bagAndInfo.info.HPButton");
          _hpButton.property = LanguageMgr.GetTranslation("tank.view.personalinfoII.hp");
          _hpButton.detail = LanguageMgr.GetTranslation("tank.view.personalinfoII.hpDetail");
-         (_hpButton as GlowPropButton).propertySource = LanguageMgr.GetTranslation("tank.view.personalinfoII.hpPropertySourceTxt",0,0,0,0,0,0,0,0,0,0);
+         (_hpButton as GlowPropButton).propertySource = LanguageMgr.GetTranslation("tank.view.personalinfoII.hpPropertySourceTxtNew",0,0,0,0,0,0,0,0,0,0);
          ShowTipManager.Instance.addTip(_hpButton);
          addChild(_hpButton);
          _vitality = ComponentFactory.Instance.creatComponentByStylename("personInfoViewVitalityText");
@@ -578,21 +580,21 @@ package bagAndInfo.info
          }
       }
       
-      protected function __armShellBitmapBtnClickHandler(param1:MouseEvent) : void
+      protected function __armShellBitmapBtnClickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          ArmShellManager.instance.showArmShellFrame();
       }
       
-      private function removeFromStageHandler(param1:Event) : void
+      private function removeFromStageHandler(event:Event) : void
       {
          BagStore.instance.reduceTipPanelNumber();
       }
       
-      private function __shortCutBuyHandler(param1:ShortcutBuyEvent) : void
+      private function __shortCutBuyHandler(evt:ShortcutBuyEvent) : void
       {
-         param1.stopImmediatePropagation();
-         dispatchEvent(new ShortcutBuyEvent(param1.ItemID,param1.ItemNum));
+         evt.stopImmediatePropagation();
+         dispatchEvent(new ShortcutBuyEvent(evt.ItemID,evt.ItemNum));
       }
       
       private function createCardEquip() : void
@@ -604,9 +606,9 @@ package bagAndInfo.info
          }
       }
       
-      protected function __cardViewComplete(param1:CardSystemEvent) : void
+      protected function __cardViewComplete(event:CardSystemEvent) : void
       {
-         _cardEquipView = param1.info;
+         _cardEquipView = event.info;
          _showCard.addChild(_cardEquipView);
          if(_info)
          {
@@ -617,69 +619,69 @@ package bagAndInfo.info
          SocketManager.Instance.out.getPlayerCardInfo(_info.ID);
       }
       
-      public function switchShow(param1:Boolean) : void
+      public function switchShow(value:Boolean) : void
       {
-         _isTextTips = param1;
-         _showEquip.visible = !param1;
-         _showCard.visible = param1;
-         _bg.visible = !param1;
-         _bg1.visible = !param1;
+         _isTextTips = value;
+         _showEquip.visible = !value;
+         _showCard.visible = value;
+         _bg.visible = !value;
+         _bg1.visible = !value;
          _bg2.visible = _showSelfOperation;
-         _nickNameTxt.visible = !param1;
-         _consortiaTxt.visible = !param1;
-         _dutyField.visible = !param1;
-         _reputeField.visible = !param1;
-         _damageTxt.visible = !param1;
-         _damageButton.visible = !param1;
-         _armorTxt.visible = !param1;
-         _armorButton.visible = !param1;
-         _HPText.visible = !param1;
-         _hpButton.visible = !param1;
-         _vitality.visible = !param1;
-         _vitalityBuntton.visible = !param1;
+         _nickNameTxt.visible = !value;
+         _consortiaTxt.visible = !value;
+         _dutyField.visible = !value;
+         _reputeField.visible = !value;
+         _damageTxt.visible = !value;
+         _damageButton.visible = !value;
+         _armorTxt.visible = !value;
+         _armorButton.visible = !value;
+         _HPText.visible = !value;
+         _hpButton.visible = !value;
+         _vitality.visible = !value;
+         _vitalityBuntton.visible = !value;
          if(_vipName != null)
          {
-            _vipName.visible = !param1;
-            _isVisible = !param1;
+            _vipName.visible = !value;
+            _isVisible = !value;
          }
-         _textBg1.visible = !param1;
-         _textBg2.visible = !param1;
-         _textBg3.visible = !param1;
-         _textBg4.visible = !param1;
-         _textBg5.visible = !param1;
-         _textBg6.visible = !param1;
-         _attackTxt.visible = !param1;
-         _attackButton.visible = !param1;
-         _agilityTxt.visible = !param1;
-         _agilityButton.visible = !param1;
-         _defenceTxt.visible = !param1;
-         _defenceButton.visible = !param1;
-         _luckTxt.visible = !param1;
-         _luckButton.visible = !param1;
-         _magicAttackTxt.visible = !param1;
-         _magicAttackButton.visible = !param1;
-         _magicDefenceTxt.visible = !param1;
-         _magicDefenceButton.visible = !param1;
-         _attackTxt1.visible = param1;
-         _agilityTxt1.visible = param1;
-         _defenceTxt1.visible = param1;
-         _luckTxt1.visible = param1;
+         _textBg1.visible = !value;
+         _textBg2.visible = !value;
+         _textBg3.visible = !value;
+         _textBg4.visible = !value;
+         _textBg5.visible = !value;
+         _textBg6.visible = !value;
+         _attackTxt.visible = !value;
+         _attackButton.visible = !value;
+         _agilityTxt.visible = !value;
+         _agilityButton.visible = !value;
+         _defenceTxt.visible = !value;
+         _defenceButton.visible = !value;
+         _luckTxt.visible = !value;
+         _luckButton.visible = !value;
+         _magicAttackTxt.visible = !value;
+         _magicAttackButton.visible = !value;
+         _magicDefenceTxt.visible = !value;
+         _magicDefenceButton.visible = !value;
+         _attackTxt1.visible = value;
+         _agilityTxt1.visible = value;
+         _defenceTxt1.visible = value;
+         _luckTxt1.visible = value;
          __onUpdatePlayerProperty(null);
-         if(param1 && _cardEquipView == null)
+         if(value && _cardEquipView == null)
          {
             createCardEquip();
          }
          _openNecklacePtetrochemicalView.visible = _showSelfOperation && _showEquip.visible;
          if(_armShellBitmapBtn)
          {
-            _armShellBitmapBtn.visible = !param1;
+            _armShellBitmapBtn.visible = !value;
          }
-         _trailEliteBtn.visible = _showSelfOperation && !param1;
+         _trailEliteBtn.visible = _showSelfOperation && !value;
       }
       
-      public function cardEquipShine(param1:CardInfo) : void
+      public function cardEquipShine(info:CardInfo) : void
       {
-         if(param1.templateInfo.Property8 == "1")
+         if(info.templateInfo.Property8 == "1")
          {
             _cardEquipView["shineMain"]();
          }
@@ -689,15 +691,15 @@ package bagAndInfo.info
          }
       }
       
-      public function switchShowII(param1:Boolean) : void
+      public function switchShowII(value:Boolean) : void
       {
-         _switchShowII = !param1;
-         switchShow(param1);
+         _switchShowII = !value;
+         switchShow(value);
          if(_cardEquipView)
          {
             _cardEquipView["clickEnable"] = _showSelfOperation;
          }
-         _addFriendBtn.visible = !param1;
+         _addFriendBtn.visible = !value;
          if(_info.ID == PlayerManager.Instance.Self.ID)
          {
             _addFriendBtn.visible = false;
@@ -740,7 +742,7 @@ package bagAndInfo.info
          }
       }
       
-      private function __onClickTeam(param1:MouseEvent) : void
+      private function __onClickTeam(e:MouseEvent) : void
       {
          if(_info && _info.isSelf && _showSelfOperation)
          {
@@ -755,7 +757,7 @@ package bagAndInfo.info
          }
       }
       
-      private function __openExplorerHandler(param1:MouseEvent) : void
+      private function __openExplorerHandler(evt:MouseEvent) : void
       {
          if(_info is SelfInfo)
          {
@@ -769,7 +771,7 @@ package bagAndInfo.info
          }
       }
       
-      protected function __openRingSystemView(param1:MouseEvent) : void
+      protected function __openRingSystemView(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          _ringSystemView = ComponentFactory.Instance.creatComponentByStylename("bagAndInfo.bag.ringSystemView");
@@ -777,7 +779,7 @@ package bagAndInfo.info
          _ringSystemView.addEventListener("response",__onRingSystemClose);
       }
       
-      private function _openTrailEliteView(param1:MouseEvent) : void
+      private function _openTrailEliteView(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(BagAndInfoManager.Instance.trialEliteModel.isOpen)
@@ -788,9 +790,9 @@ package bagAndInfo.info
          }
       }
       
-      protected function __onRingSystemClose(param1:FrameEvent) : void
+      protected function __onRingSystemClose(event:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1 || param1.responseCode == 4)
+         if(event.responseCode == 0 || event.responseCode == 1 || event.responseCode == 4)
          {
             SoundManager.instance.playButtonSound();
             _ringSystemView.removeEventListener("response",__onRingSystemClose);
@@ -799,9 +801,9 @@ package bagAndInfo.info
          }
       }
       
-      protected function __onTrailEliteSystemClose(param1:FrameEvent) : void
+      protected function __onTrailEliteSystemClose(event:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1 || param1.responseCode == 4)
+         if(event.responseCode == 0 || event.responseCode == 1 || event.responseCode == 4)
          {
             SoundManager.instance.playButtonSound();
             _trailEliteView.removeEventListener("response",__onTrailEliteSystemClose);
@@ -810,7 +812,7 @@ package bagAndInfo.info
          }
       }
       
-      protected function __openNecklacePtetrochemicalView(param1:MouseEvent) : void
+      protected function __openNecklacePtetrochemicalView(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          _necklacePtetrochemicalView = ComponentFactory.Instance.creatComponentByStylename("bagAndInfo.bag.necklacePtetrochemicalView");
@@ -818,9 +820,9 @@ package bagAndInfo.info
          _necklacePtetrochemicalView.addEventListener("response",__onNecklacePtetrochemicalClose);
       }
       
-      protected function __onNecklacePtetrochemicalClose(param1:FrameEvent) : void
+      protected function __onNecklacePtetrochemicalClose(event:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1 || param1.responseCode == 4)
+         if(event.responseCode == 0 || event.responseCode == 1 || event.responseCode == 4)
          {
             SoundManager.instance.playButtonSound();
             _necklacePtetrochemicalView.removeEventListener("response",__onNecklacePtetrochemicalClose);
@@ -829,7 +831,7 @@ package bagAndInfo.info
          }
       }
       
-      private function __onClickAmulet(param1:MouseEvent) : void
+      private function __onClickAmulet(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.Bag.items[18] == null)
@@ -840,110 +842,159 @@ package bagAndInfo.info
          EquipAmuletManager.Instance.show();
       }
       
-      protected function __onUpdatePlayerProperty(param1:Event) : void
+      private function formatMarking(value:int) : String
       {
-         var _loc7_:* = null;
-         var _loc8_:* = null;
+         return value * 0.1 + "%";
+      }
+      
+      private function get baseHpAddValue() : int
+      {
+         var lev:int = _info.Grade;
+         return Experience.getBasicHP(lev);
+      }
+      
+      private function equipAddProValue(proName:String) : int
+      {
+         if(_info == null)
+         {
+            return 0;
+         }
+         var equipAddValue:int = PlayerProValueAddManager.equipAddProValue(proName,_info);
+         equipAddValue = equipAddValue + ringAddProValue(proName);
+         return equipAddValue;
+      }
+      
+      private function ringAddProValue(proName:String) : int
+      {
+         var data:* = null;
+         if(_info == null)
+         {
+            return 0;
+         }
+         var proValue:int = 0;
+         var ringInfo:InventoryItemInfo = _info.Bag.getItemAt(16);
+         if(ringInfo && EquipType.isWeddingRing(ringInfo))
+         {
+            data = BagAndInfoManager.Instance.getRingData(_info.RingExp);
+            if(data && ringInfo.hasOwnProperty(proName) && data.hasOwnProperty(proName))
+            {
+               proValue = ringInfo[proName] * data[proName] * 0.01;
+            }
+         }
+         return proValue;
+      }
+      
+      private function get equipAddHPValue() : int
+      {
+         if(_info == null)
+         {
+            return 0;
+         }
+         return PlayerProValueAddManager.equipAddHPValue(_info);
+      }
+      
+      private function manualAddProValue(proName:String) : int
+      {
+         if(_info == null)
+         {
+            return 0;
+         }
+         if(proName == "Attack")
+         {
+            proName = "pro_Attack";
+         }
+         else if(proName == "Defence")
+         {
+            proName = "pro_Defense";
+         }
+         else if(proName == "Agility")
+         {
+            proName = "pro_Agile";
+         }
+         else if(proName == "Luck")
+         {
+            proName = "pro_Lucky";
+         }
+         return PlayerProValueAddManager.manualAddProValue(proName,_info);
+      }
+      
+      private function marKingAddProValue(proName:String) : String
+      {
+         if(_info == null)
+         {
+            return "0%";
+         }
+         var marKingDic:DictionaryData = _info.getPropertyAdditionByType("marKing");
+         if(marKingDic.hasKey(proName))
+         {
+            return Number(marKingDic[proName] / 10) + "%";
+         }
+         return "0%";
+      }
+      
+      protected function __onUpdatePlayerProperty(event:Event) : void
+      {
+         var dic:* = null;
+         var addEquipProValue:int = 0;
+         var propPropertySource:* = null;
          if(_info.propertyAddition == null)
          {
             return;
          }
-         var _loc4_:Vector.<GlowPropButton> = Vector.<GlowPropButton>([_attackButton,_defenceButton,_agilityButton,_luckButton]);
-         var _loc12_:Array = ["Attack","Defence","Agility","Luck"];
-         var _loc9_:int = 0;
-         var _loc23_:String = LanguageMgr.GetTranslation("tank.data.EquipType.suit");
-         var _loc5_:String = LanguageMgr.GetTranslation("tank.data.EquipType.gem");
-         var _loc25_:int = 0;
-         var _loc24_:* = _loc12_;
-         for each(var _loc6_ in _loc12_)
-         {
-            _loc7_ = _info.getPropertyAdditionByType(_loc6_);
-            if(_loc7_)
-            {
-               _loc8_ = LanguageMgr.GetTranslation("tank.view.personalinfoII.propertySourceTxt",_loc7_["Texp"],_loc7_["Card"],_loc7_["Pet"],_loc7_["Totem"],_loc7_["gem"],_loc7_["Bead"],_loc7_["Avatar"],_loc7_["MagicStone"],_loc7_["Temple"],_loc7_["mark"]);
-               if(!PathManager.solveGemstoneSwitch)
-               {
-                  _loc8_ = LanguageMgr.GetTranslation("tank.view.personalinfoII.propertySourceTxt.noGemstone",_loc7_["Texp"],_loc7_["Card"],_loc7_["Pet"],_loc7_["Totem"],_loc7_["Bead"],_loc7_["Avatar"],_loc7_["MagicStone"],_loc7_["Temple"]);
-               }
-               if(PathManager.suitEnable)
-               {
-                  _loc8_ = _loc8_ + ("\n" + _loc23_ + "+" + _loc7_["Suit"]);
-               }
-               _loc4_[_loc9_].propertySource = _loc8_;
-            }
-            if(_loc9_ < 4)
-            {
-               _loc9_++;
-               continue;
-            }
-            break;
-         }
-         var _loc21_:DictionaryData = _info.getPropertyAdditionByType("MagicAttack");
-         if(_loc21_)
-         {
-            GlowPropButton(_magicAttackButton).propertySource = LanguageMgr.GetTranslation("tank.view.personalinfoII.magicAttackDefencePropertySourceTxt",_loc21_["MagicStone"],_loc21_["Horse"],_loc21_["HorsePicCherish"],_loc21_["Enchant"],_loc21_["Suit"],_loc21_["Texp"],_loc21_["Card"],_loc21_["mark"]);
-         }
-         var _loc19_:DictionaryData = _info.getPropertyAdditionByType("MagicDefence");
-         if(_loc19_)
-         {
-            GlowPropButton(_magicDefenceButton).propertySource = LanguageMgr.GetTranslation("tank.view.personalinfoII.magicDefencePropertySourceTxt",_loc19_["MagicStone"],_loc19_["Horse"],_loc19_["HorsePicCherish"],_loc19_["Enchant"],_loc19_["Suit"],_loc19_["Texp"],_loc19_["Temple"],_loc19_["Card"],_loc19_["mark"]);
-         }
-         var _loc2_:DictionaryData = _info.getPropertyAdditionByType("HP");
-         if(_loc2_)
-         {
-            GlowPropButton(_hpButton).propertySource = LanguageMgr.GetTranslation("tank.view.personalinfoII.hpPropertySourceTxt",_loc2_["Texp"],_loc2_["Pet"],_loc2_["Totem"],_loc2_["Bead"],_loc2_["Avatar"],_loc2_["Horse"],_loc2_["HorsePicCherish"],_loc2_["Temple"],_info.horseAmuletHp,_loc2_["mark"]);
-            if(PathManager.solveGemstoneSwitch)
-            {
-               GlowPropButton(_hpButton).propertySource = GlowPropButton(_hpButton).propertySource + ("\n" + _loc5_ + "+" + _loc2_["gem"]);
-            }
-            if(PathManager.suitEnable && _loc2_)
-            {
-               GlowPropButton(_hpButton).propertySource = GlowPropButton(_hpButton).propertySource + ("\n" + _loc23_ + "+" + _loc2_["Suit"]);
-            }
-         }
-         var _loc15_:DictionaryData = _info.getPropertyAdditionByType("Armor");
-         var _loc22_:int = 0;
-         var _loc14_:int = 0;
+         var arr:Vector.<GlowPropButton> = Vector.<GlowPropButton>([_attackButton,_defenceButton,_agilityButton,_luckButton]);
+         var propArr:Array = ["Attack","Defence","Agility","Luck"];
+         var i:int = 0;
+         var suitString:String = LanguageMgr.GetTranslation("tank.data.EquipType.suit");
+         var gemString:String = LanguageMgr.GetTranslation("tank.data.EquipType.gem");
          var _loc17_:int = 0;
-         var _loc16_:int = 0;
-         var _loc20_:int = 0;
-         var _loc18_:int = 0;
-         var _loc13_:int = 0;
-         var _loc11_:int = 0;
-         if(_loc15_)
+         var _loc16_:* = propArr;
+         for each(var prop in propArr)
          {
-            _loc22_ = _loc15_["Totem"];
-            _loc14_ = _loc15_["Bead"];
-            _loc17_ = _loc15_["Avatar"];
-            _loc16_ = _loc15_["Horse"];
-            _loc20_ = _loc15_["HorsePicCherish"];
-            _loc18_ = _loc15_["Pet"];
-            _loc13_ = _loc15_["Temple"];
-            _loc11_ = _loc15_["mark"];
+            dic = _info.getPropertyAdditionByType(prop);
+            if(dic)
+            {
+               addEquipProValue = 0;
+               if(i == 1)
+               {
+                  addEquipProValue = equipAddProValue(propArr[i]) + equipAddProValue("DefendCompose");
+               }
+               else
+               {
+                  addEquipProValue = equipAddProValue(propArr[i]);
+               }
+               propPropertySource = LanguageMgr.GetTranslation("tank.view.personalinfoII.propertySourceTxtNew",addEquipProValue,dic["Card"],dic["Pet"],dic["Totem"],dic["gem"],dic["Bead"],dic["Avatar"],dic["MagicStone"],dic["Temple"],dic["mark"],dic["Suit"],manualAddProValue(propArr[i]),dic["Texp"],formatMarking(dic["marKing"]),dic["FineSuit"],dic["titleAdd"],dic["dig"]);
+               arr[i].propertySource = propPropertySource;
+            }
+            if(i >= 4)
+            {
+               break;
+            }
+            i++;
          }
-         var _loc3_:DictionaryData = _info.getPropertyAdditionByType("Guard");
-         GlowPropButton(_armorButton).propertySource = LanguageMgr.GetTranslation("tank.view.personalinfoII.recoveryPropertySourceTxt",StaticFormula.getCardRecoveryAddition(_info),_loc22_,_loc14_,_loc17_,_loc16_,_loc20_,_loc18_,_loc13_,_loc11_);
-         if(PathManager.suitEnable && _loc3_)
+         var magicAttackDic:DictionaryData = _info.getPropertyAdditionByType("MagicAttack");
+         if(magicAttackDic)
          {
-            GlowPropButton(_armorButton).propertySource = GlowPropButton(_armorButton).propertySource + ("\n" + _loc23_ + "+" + _loc3_["Suit"]);
+            GlowPropButton(_magicAttackButton).propertySource = LanguageMgr.GetTranslation("tank.view.personalinfoII.magicPropertySourceTxtNew",equipAddProValue("MagicAttack"),magicAttackDic["Horse"],magicAttackDic["HorsePicCherish"],magicAttackDic["Enchant"],magicAttackDic["Suit"],magicAttackDic["Texp"],magicAttackDic["Card"],magicAttackDic["mark"],formatMarking(magicAttackDic["magicHouse"]),manualAddProValue("pro_MagicAttack"),magicAttackDic["FineSuit"],formatMarking(magicAttackDic["marKing"]),magicAttackDic["Temple"],magicAttackDic["MagicStone"],magicAttackDic["dig"]);
          }
-         var _loc10_:DictionaryData = _info.getPropertyAdditionByType("Damage");
-         _loc22_ = 0;
-         _loc14_ = 0;
-         _loc17_ = 0;
-         if(_loc10_)
+         var magicDefenceDic:DictionaryData = _info.getPropertyAdditionByType("MagicDefence");
+         if(magicDefenceDic)
          {
-            _loc22_ = _loc10_["Totem"];
-            _loc14_ = _loc10_["Bead"];
-            _loc17_ = _loc10_["Avatar"];
-            _loc16_ = _loc10_["Horse"];
-            _loc20_ = _loc10_["HorsePicCherish"];
-            _loc18_ = _loc10_["mark"];
+            GlowPropButton(_magicDefenceButton).propertySource = LanguageMgr.GetTranslation("tank.view.personalinfoII.magicPropertySourceTxtNew",equipAddProValue("MagicDefence"),magicDefenceDic["Horse"],magicDefenceDic["HorsePicCherish"],magicDefenceDic["Enchant"],magicDefenceDic["Suit"],magicDefenceDic["Texp"],magicDefenceDic["Card"],magicDefenceDic["mark"],formatMarking(magicDefenceDic["magicHouse"]),manualAddProValue("pro_MagicResistance"),magicDefenceDic["FineSuit"],formatMarking(magicDefenceDic["marKing"]),magicDefenceDic["Temple"],magicDefenceDic["MagicStone"],magicDefenceDic["dig"]);
          }
-         GlowPropButton(_damageButton).propertySource = LanguageMgr.GetTranslation("tank.view.personalinfoII.damagePropertySourceTxt",StaticFormula.getCardDamageAddition(_info),_loc22_,_loc14_,_loc17_,_loc16_,_loc20_,_loc18_);
-         if(PathManager.suitEnable && _loc10_)
+         var hpDic:DictionaryData = _info.getPropertyAdditionByType("HP");
+         if(hpDic)
          {
-            GlowPropButton(_damageButton).propertySource = GlowPropButton(_damageButton).propertySource + ("\n" + _loc23_ + "+" + _loc10_["Suit"]);
+            GlowPropButton(_hpButton).propertySource = LanguageMgr.GetTranslation("tank.view.personalinfoII.hpPropertySourceTxtNew",baseHpAddValue,equipAddHPValue,manualAddProValue("pro_HP"),hpDic["mark"],hpDic["Texp"],hpDic["Pet"],hpDic["Totem"],hpDic["Bead"],hpDic["Avatar"],hpDic["Horse"],hpDic["HorsePicCherish"],hpDic["Suit"],hpDic["Temple"],_info.cardAchievementHp,_info.horseAmuletHp,hpDic["gem"],hpDic["FineSuit"]);
+         }
+         var armorDic:DictionaryData = _info.getPropertyAdditionByType("Armor");
+         if(armorDic)
+         {
+            GlowPropButton(_armorButton).propertySource = LanguageMgr.GetTranslation("tank.view.personalinfoII.recoveryPropertySourceTxtNew",equipAddProValue("Arm"),manualAddProValue("pro_Armor"),armorDic["mark"],StaticFormula.getCardRecoveryAddition(_info),armorDic["Totem"],armorDic["Bead"],armorDic["Avatar"],armorDic["Horse"],armorDic["HorsePicCherish"],armorDic["FineSuit"],armorDic["Temple"],armorDic["Texp"],armorDic["Pet"],armorDic["Suit"]);
+         }
+         var damageDic:DictionaryData = _info.getPropertyAdditionByType("Damage");
+         if(damageDic)
+         {
+            GlowPropButton(_damageButton).propertySource = LanguageMgr.GetTranslation("tank.view.personalinfoII.damagePropertySourceTxtNew",equipAddProValue("AddDamage"),manualAddProValue("pro_Damage"),damageDic["mark"],StaticFormula.getCardDamageAddition(_info),damageDic["Totem"],damageDic["Bead"],damageDic["Avatar"],damageDic["Horse"],damageDic["HorsePicCherish"],damageDic["Suit"],damageDic["Texp"]);
          }
          if(PlayerManager.Instance.Self.Bag.items[12])
          {
@@ -961,13 +1012,13 @@ package bagAndInfo.info
       
       private function showHideSmallBtn() : void
       {
-         var _loc2_:* = null;
+         var info:* = null;
          _ringSystemBtn.visible = _showSelfOperation && _showEquip.visible?PlayerManager.Instance.Self.Bag.items[16]:false;
-         var _loc1_:Boolean = _showSelfOperation && _showEquip.visible?PlayerManager.Instance.Self.Bag.items[18]:false;
-         if(_loc1_)
+         var isFull:Boolean = _showSelfOperation && _showEquip.visible?PlayerManager.Instance.Self.Bag.items[18]:false;
+         if(isFull)
          {
-            _loc2_ = PlayerManager.Instance.Self.Bag.items[18] as InventoryItemInfo;
-            if(_loc2_.CategoryID != 19)
+            info = PlayerManager.Instance.Self.Bag.items[18] as InventoryItemInfo;
+            if(info.CategoryID != 19)
             {
                _amuletBtn.visible = true;
             }
@@ -1015,7 +1066,7 @@ package bagAndInfo.info
          CardManager.Instance.removeEventListener("bagEquipViewComplete",__cardViewComplete);
       }
       
-      private function __storeBtnClickHandler(param1:MouseEvent) : void
+      private function __storeBtnClickHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.Grade < 5)
@@ -1027,37 +1078,37 @@ package bagAndInfo.info
          BagStore.instance.openStore();
       }
       
-      private function __addFriendClickHandler(param1:MouseEvent) : void
+      private function __addFriendClickHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          IMManager.Instance.addFriend(_info.NickName);
       }
       
-      private function __buyAvatarClickHandler(param1:MouseEvent) : void
+      private function __buyAvatarClickHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          ShopBuyManager.Instance.buyAvatar(_info);
       }
       
-      private function __hideGlassClickHandler(param1:MouseEvent) : void
+      private function __hideGlassClickHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          SocketManager.Instance.out.sendHideLayer(2,_hideGlassBtn.selected);
       }
       
-      private function __hideHatClickHandler(param1:Event) : void
+      private function __hideHatClickHandler(evt:Event) : void
       {
          SoundManager.instance.play("008");
          SocketManager.Instance.out.sendHideLayer(1,_hideHatBtn.selected);
       }
       
-      private function __hideSuitClickHandler(param1:MouseEvent) : void
+      private function __hideSuitClickHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          SocketManager.Instance.out.sendHideLayer(13,_hideSuitBtn.selected);
       }
       
-      private function __hideWingClickHandler(param1:MouseEvent) : void
+      private function __hideWingClickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          SocketManager.Instance.out.sendHideLayer(15,_hideWingBtn.selected);
@@ -1065,14 +1116,13 @@ package bagAndInfo.info
       
       private function creatCells() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var cell:* = null;
          _cells = new Vector.<PersonalInfoCell>();
-         _loc2_ = 0;
-         while(_loc2_ < 19)
+         for(i = 0; i < 19; )
          {
-            _loc1_ = CellFactory.instance.createPersonalInfoCell(_loc2_) as PersonalInfoCell;
-            switch(int(_loc2_))
+            cell = CellFactory.instance.createPersonalInfoCell(i) as PersonalInfoCell;
+            switch(int(i))
             {
                case 0:
                case 1:
@@ -1089,54 +1139,53 @@ package bagAndInfo.info
                case 11:
                default:
                case 13:
-                  _loc1_.addEventListener("itemclick",__cellClickHandler);
-                  _loc1_.addEventListener("doubleclick",__cellDoubleClickHandler);
+                  cell.addEventListener("itemclick",__cellClickHandler);
+                  cell.addEventListener("doubleclick",__cellDoubleClickHandler);
             }
-            _loc1_.x = _cellPos[_loc2_].x;
-            _loc1_.y = _cellPos[_loc2_].y;
-            _cellContent.addChild(_loc1_);
-            _cells.push(_loc1_);
-            _loc2_++;
+            cell.x = _cellPos[i].x;
+            cell.y = _cellPos[i].y;
+            _cellContent.addChild(cell);
+            _cells.push(cell);
+            i++;
          }
       }
       
       private function clearCells() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _cells.length)
+         var i:int = 0;
+         for(i = 0; i < _cells.length; )
          {
-            if(_cells[_loc1_])
+            if(_cells[i])
             {
-               if(_cells[_loc1_].hasEventListener("itemclick"))
+               if(_cells[i].hasEventListener("itemclick"))
                {
-                  _cells[_loc1_].removeEventListener("itemclick",__cellClickHandler);
+                  _cells[i].removeEventListener("itemclick",__cellClickHandler);
                }
-               if(_cells[_loc1_].hasEventListener("doubleclick"))
+               if(_cells[i].hasEventListener("doubleclick"))
                {
-                  _cells[_loc1_].removeEventListener("doubleclick",__cellDoubleClickHandler);
+                  _cells[i].removeEventListener("doubleclick",__cellDoubleClickHandler);
                }
-               if(_cells[_loc1_].parent)
+               if(_cells[i].parent)
                {
-                  _cells[_loc1_].parent.removeChild(_cells[_loc1_] as PersonalInfoCell);
+                  _cells[i].parent.removeChild(_cells[i] as PersonalInfoCell);
                }
-               _cells[_loc1_].dispose();
-               _cells[_loc1_] = null;
+               _cells[i].dispose();
+               _cells[i] = null;
             }
-            _loc1_++;
+            i++;
          }
       }
       
-      public function set info(param1:*) : void
+      public function set info(value:*) : void
       {
-         PlayerInfoViewControl.currentPlayer = param1;
-         if(_info == param1)
+         PlayerInfoViewControl.currentPlayer = value;
+         if(_info == value)
          {
             return;
          }
          if(PlayerInfoViewControl._isBattle)
          {
-            _info = param1;
+            _info = value;
             updateView(PlayerInfoViewControl._isBattle);
             return;
          }
@@ -1152,7 +1201,7 @@ package bagAndInfo.info
             }
             _info = null;
          }
-         _info = param1;
+         _info = value;
          if(_info)
          {
             _info.addEventListener("propertychange",__changeHandler);
@@ -1170,12 +1219,12 @@ package bagAndInfo.info
          updateView();
       }
       
-      protected function __onBeadBagUpdate(param1:Event) : void
+      protected function __onBeadBagUpdate(event:Event) : void
       {
          updatePersonInfo();
       }
       
-      private function __changeHandler(param1:PlayerPropertyEvent) : void
+      private function __changeHandler(evt:PlayerPropertyEvent) : void
       {
          updatePersonInfo();
          updateHide();
@@ -1187,41 +1236,41 @@ package bagAndInfo.info
          }
       }
       
-      private function __upVip(param1:Event) : void
+      private function __upVip(evt:Event) : void
       {
          __changeHandler(null);
       }
       
-      private function __updateCells(param1:BagEvent) : void
+      private function __updateCells(evt:BagEvent) : void
       {
-         var _loc2_:* = 0;
+         var p:* = 0;
          var _loc5_:int = 0;
-         var _loc4_:* = param1.changedSlots;
-         for(_loc2_ in param1.changedSlots)
+         var _loc4_:* = evt.changedSlots;
+         for(p in evt.changedSlots)
          {
-            if(_loc2_ <= 30 && _loc2_ != 20)
+            if(p <= 30 && p != 20)
             {
-               _cells[_loc2_].info = _info.Bag.getItemAt(_loc2_);
+               _cells[p].info = _info.Bag.getItemAt(p);
             }
-            if(GemstoneManager.Instance.getByPlayerInfoList(_loc2_,_info.ID))
+            if(GemstoneManager.Instance.getByPlayerInfoList(p,_info.ID))
             {
-               if(_cells[_loc2_].info)
+               if(_cells[p].info)
                {
-                  (_cells[_loc2_].info as InventoryItemInfo).gemstoneList = GemstoneManager.Instance.getByPlayerInfoList(_loc2_,_info.ID);
+                  (_cells[p].info as InventoryItemInfo).gemstoneList = GemstoneManager.Instance.getByPlayerInfoList(p,_info.ID);
                }
             }
          }
          updateCells();
       }
       
-      private function __equipMagicStone(param1:BagEvent) : void
+      private function __equipMagicStone(event:BagEvent) : void
       {
-         var _loc2_:* = 0;
+         var p:* = 0;
          var _loc5_:int = 0;
-         var _loc4_:* = param1.changedSlots;
-         for(_loc2_ in param1.changedSlots)
+         var _loc4_:* = event.changedSlots;
+         for(p in event.changedSlots)
          {
-            if(_loc2_ <= 30)
+            if(p <= 30)
             {
                updateCells();
                break;
@@ -1229,20 +1278,20 @@ package bagAndInfo.info
          }
       }
       
-      private function __cellClickHandler(param1:CellEvent) : void
+      private function __cellClickHandler(evt:CellEvent) : void
       {
-         var _loc2_:* = null;
+         var cell:* = null;
          if(_showSelfOperation)
          {
-            _loc2_ = param1.data as PersonalInfoCell;
-            _loc2_.dragStart();
+            cell = evt.data as PersonalInfoCell;
+            cell.dragStart();
          }
       }
       
-      private function __cellDoubleClickHandler(param1:CellEvent) : void
+      private function __cellDoubleClickHandler(evt:CellEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
+         var cell:* = null;
+         var info:* = null;
          if(_info && _info.ID != PlayerManager.Instance.Self.ID)
          {
             return;
@@ -1254,18 +1303,18 @@ package bagAndInfo.info
          }
          if(_showSelfOperation)
          {
-            _loc2_ = param1.data as PersonalInfoCell;
-            if(_loc2_ && _loc2_.info)
+            cell = evt.data as PersonalInfoCell;
+            if(cell && cell.info)
             {
-               _loc3_ = _loc2_.info as InventoryItemInfo;
-               SocketManager.Instance.out.sendMoveGoods(0,_loc3_.Place,0,-1,_loc3_.Count);
+               info = cell.info as InventoryItemInfo;
+               SocketManager.Instance.out.sendMoveGoods(0,info.Place,0,-1,info.Count);
             }
          }
       }
       
-      private function updateView(param1:Boolean = false) : void
+      private function updateView(bool:Boolean = false) : void
       {
-         if(param1)
+         if(bool)
          {
             updatePersonInfo();
             updateCharacter();
@@ -1327,40 +1376,40 @@ package bagAndInfo.info
       
       private function updateCells() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:* = null;
-         var _loc4_:* = null;
+         var item:* = null;
+         var mgStone:* = null;
+         var attr:* = null;
          var _loc6_:int = 0;
          var _loc5_:* = _cells;
-         for each(var _loc3_ in _cells)
+         for each(var cell in _cells)
          {
             if(_info)
             {
-               _loc2_ = _info.Bag.getItemAt(_loc3_.place);
-               _loc3_.info = _loc2_;
-               if(_loc2_)
+               item = _info.Bag.getItemAt(cell.place);
+               cell.info = item;
+               if(item)
                {
-                  _loc2_.gemstoneList = GemstoneManager.Instance.getByPlayerInfoList(_loc3_.place,_info.ID);
+                  item.gemstoneList = GemstoneManager.Instance.getByPlayerInfoList(cell.place,_info.ID);
                   if(_info == PlayerManager.Instance.Self)
                   {
-                     _loc1_ = PlayerManager.Instance.Self.magicStoneBag.getItemAt(_loc3_.place);
-                     if(!_loc1_)
+                     mgStone = PlayerManager.Instance.Self.magicStoneBag.getItemAt(cell.place);
+                     if(!mgStone)
                      {
-                        _loc2_.magicStoneAttr = null;
+                        item.magicStoneAttr = null;
                      }
                      else
                      {
-                        _loc4_ = new MagicStoneInfo();
-                        _loc4_.templateId = _loc1_.TemplateID;
-                        _loc4_.level = _loc1_.StrengthenLevel;
-                        _loc4_.attack = _loc1_.AttackCompose;
-                        _loc4_.defence = _loc1_.DefendCompose;
-                        _loc4_.agility = _loc1_.AgilityCompose;
-                        _loc4_.luck = _loc1_.LuckCompose;
-                        _loc4_.magicAttack = _loc1_.MagicAttack;
-                        _loc4_.magicDefence = _loc1_.MagicDefence;
-                        _loc2_.magicStoneAttr = _loc4_;
-                        _loc2_.RingExp = _info.RingExp;
+                        attr = new MagicStoneInfo();
+                        attr.templateId = mgStone.TemplateID;
+                        attr.level = mgStone.StrengthenLevel;
+                        attr.attack = mgStone.AttackCompose;
+                        attr.defence = mgStone.DefendCompose;
+                        attr.agility = mgStone.AgilityCompose;
+                        attr.luck = mgStone.LuckCompose;
+                        attr.magicAttack = mgStone.MagicAttack;
+                        attr.magicDefence = mgStone.MagicDefence;
+                        item.magicStoneAttr = attr;
+                        item.RingExp = _info.RingExp;
                      }
                   }
                }
@@ -1382,20 +1431,19 @@ package bagAndInfo.info
          showHideSmallBtn();
       }
       
-      private function getList(param1:int) : Vector.<GemstListInfo>
+      private function getList(p:int) : Vector.<GemstListInfo>
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < 5)
+         var i:int = 0;
+         for(i = 0; i < 5; )
          {
-            if(PlayerManager.Instance.gemstoneInfoList[_loc2_])
+            if(PlayerManager.Instance.gemstoneInfoList[i])
             {
-               if(param1 == PlayerManager.Instance.gemstoneInfoList[_loc2_].equipPlace)
+               if(p == PlayerManager.Instance.gemstoneInfoList[i].equipPlace)
                {
-                  return PlayerManager.Instance.gemstoneInfoList[_loc2_].list;
+                  return PlayerManager.Instance.gemstoneInfoList[i].list;
                }
             }
-            _loc2_++;
+            i++;
          }
          return null;
       }
@@ -1410,11 +1458,11 @@ package bagAndInfo.info
       
       private function updateIcons() : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:* = undefined;
-         var _loc5_:* = null;
-         var _loc4_:int = 0;
-         var _loc1_:int = 0;
+         var teamIndex:int = 0;
+         var gameControl:* = undefined;
+         var curVo:* = null;
+         var type:int = 0;
+         var lev:int = 0;
          if(_info)
          {
             if(_levelIcon == null)
@@ -1426,16 +1474,16 @@ package bagAndInfo.info
                }
             }
             _levelIcon.setSize(0);
-            _loc2_ = 1;
+            teamIndex = 1;
             if(StateManager.currentStateType == "fighting" || StateManager.currentStateType == "fighting3d" || StateManager.currentStateType == "trainer1" || StateManager.currentStateType == "trainer2" || StateManager.currentStateType == "fightLabGameView")
             {
-               _loc3_ = getDefinitionByName("gameCommon.GameControl");
-               if(_loc3_)
+               gameControl = getDefinitionByName("gameCommon.GameControl");
+               if(gameControl)
                {
-                  _loc2_ = _loc3_.Instance.Current.findLivingByPlayerID(_info.ID,_info.ZoneID) == null?-1:_loc3_.Instance.Current.findLivingByPlayerID(_info.ID,_info.ZoneID).team;
+                  teamIndex = gameControl.Instance.Current.findLivingByPlayerID(_info.ID,_info.ZoneID) == null?-1:gameControl.Instance.Current.findLivingByPlayerID(_info.ID,_info.ZoneID).team;
                }
             }
-            _levelIcon.setInfo(_info.Grade,_info.ddtKingGrade,_info.Repute,_info.WinCount,_info.TotalCount,_info.FightPower,_info.Offer,true,false,_loc2_);
+            _levelIcon.setInfo(_info.Grade,_info.ddtKingGrade,_info.Repute,_info.WinCount,_info.TotalCount,_info.FightPower,_info.Offer,true,false,teamIndex);
             _showEquip.addChild(_levelIcon);
             if(_info.SpouseID > 0)
             {
@@ -1474,16 +1522,16 @@ package bagAndInfo.info
             if(_fineSuitIcon)
             {
                _fineSuitIcon.tipData = _info.fineSuitExp;
-               _loc5_ = FineSuitManager.Instance.getSuitVoByExp(_info.fineSuitExp);
-               _loc4_ = _loc5_.level / 14;
-               _fineSuitIcon.setFrame(Math.min(_loc4_ + 1,5));
+               curVo = FineSuitManager.Instance.getSuitVoByExp(_info.fineSuitExp);
+               type = curVo.level / 14;
+               _fineSuitIcon.setFrame(Math.min(type + 1,5));
             }
             if(_explorerIcon && PlayerManager.Instance.Self.Grade >= 32)
             {
                _explorerIcon.visible = true;
                _explorerIcon.tipData = _info.manualProInfo;
-               _loc1_ = _info.manualProInfo.manual_Level;
-               _explorerIcon.setFrame(Math.min(int((_loc1_ - 1) / 5) + 1,4));
+               lev = _info.manualProInfo.manual_Level;
+               _explorerIcon.setFrame(Math.min(int((lev - 1) / 5) + 1,4));
             }
             else
             {
@@ -1534,10 +1582,10 @@ package bagAndInfo.info
       
       private function updatePersonInfo() : void
       {
-         var _loc2_:* = undefined;
-         var _loc3_:int = 0;
-         var _loc1_:int = 0;
-         var _loc4_:int = 0;
+         var gameControl:* = undefined;
+         var widthDuty:int = 0;
+         var Denominator:int = 0;
+         var Molecular:int = 0;
          if(_info == null)
          {
             return;
@@ -1584,8 +1632,8 @@ package bagAndInfo.info
          {
             _dutyField.autoSize = "none";
             _dutyField.isAutoFitLength = true;
-            _loc3_ = 260 - _dutyField.x;
-            _dutyField.width = _loc3_;
+            widthDuty = 260 - _dutyField.x;
+            _dutyField.width = widthDuty;
          }
          if(_info.ID == PlayerManager.Instance.Self.ID)
          {
@@ -1628,10 +1676,10 @@ package bagAndInfo.info
             }
             else if(StateManager.currentStateType == "fighting" || StateManager.currentStateType == "fighting3d" || StateManager.currentStateType == "trainer1" || StateManager.currentStateType == "trainer2" || StateManager.currentStateType == "fightLabGameView")
             {
-               _loc2_ = getDefinitionByName("gameCommon.GameControl");
-               if(_loc2_)
+               gameControl = getDefinitionByName("gameCommon.GameControl");
+               if(gameControl)
                {
-                  if(_loc2_.Instance.Current.findLivingByPlayerID(_info.ID,_info.ZoneID) != null && _loc2_.Instance.Current.findLivingByPlayerID(_info.ID,_info.ZoneID).team == _loc2_.Instance.Current.selfGamePlayer.team)
+                  if(gameControl.Instance.Current.findLivingByPlayerID(_info.ID,_info.ZoneID) != null && gameControl.Instance.Current.findLivingByPlayerID(_info.ID,_info.ZoneID).team == gameControl.Instance.Current.selfGamePlayer.team)
                   {
                      _battle.htmlText = getHtmlTextByString(_info == null?"":_info.FightPower.toString(),2);
                   }
@@ -1656,10 +1704,10 @@ package bagAndInfo.info
                }
                else
                {
-                  _loc2_ = getDefinitionByName("gameCommon.GameControl");
-                  if(_loc2_)
+                  gameControl = getDefinitionByName("gameCommon.GameControl");
+                  if(gameControl)
                   {
-                     if(_loc2_.Instance.Current.findLivingByPlayerID(_info.ID,_info.ZoneID) != null && _loc2_.Instance.Current.findLivingByPlayerID(_info.ID,_info.ZoneID).team == _loc2_.Instance.Current.selfGamePlayer.team)
+                     if(gameControl.Instance.Current.findLivingByPlayerID(_info.ID,_info.ZoneID) != null && gameControl.Instance.Current.findLivingByPlayerID(_info.ID,_info.ZoneID).team == gameControl.Instance.Current.selfGamePlayer.team)
                      {
                         _battle.htmlText = getHtmlTextByString(_info == null?"":_info.FightPower.toString(),2);
                      }
@@ -1688,27 +1736,27 @@ package bagAndInfo.info
          if(_info)
          {
             _progressLevel.setProgress(Experience.getExpPercent(_info.Grade,_info.GP) * 100,100);
-            _loc1_ = Experience.expericence[_info.Grade] - Experience.expericence[_info.Grade - 1];
-            _loc4_ = _info.GP - Experience.expericence[_info.Grade - 1];
+            Denominator = Experience.expericence[_info.Grade] - Experience.expericence[_info.Grade - 1];
+            Molecular = _info.GP - Experience.expericence[_info.Grade - 1];
             if(_info.Grade < Experience.expericence.length)
             {
-               _loc4_ = _loc4_ > _loc1_?_loc1_:int(_loc4_);
+               Molecular = Molecular > Denominator?Denominator:int(Molecular);
             }
             if((StateManager.currentStateType == "fighting" || StateManager.currentStateType == "fighting3d") && _info.ZoneID != 0 && _info.ZoneID != PlayerManager.Instance.Self.ZoneID)
             {
-               _progressLevel.tipData = "0/" + _loc1_;
+               _progressLevel.tipData = "0/" + Denominator;
             }
-            else if(_loc4_ > 0 && _info.Grade < Experience.expericence.length)
+            else if(Molecular > 0 && _info.Grade < Experience.expericence.length)
             {
-               _progressLevel.tipData = _loc4_ + "/" + _loc1_;
+               _progressLevel.tipData = Molecular + "/" + Denominator;
             }
             else if(_info.Grade == Experience.expericence.length)
             {
-               _progressLevel.tipData = _loc4_ + "/0";
+               _progressLevel.tipData = Molecular + "/0";
             }
             else
             {
-               _progressLevel.tipData = "0/" + _loc1_;
+               _progressLevel.tipData = "0/" + Denominator;
             }
          }
          if(_info && _info.ID == PlayerManager.Instance.Self.ID)
@@ -1720,39 +1768,39 @@ package bagAndInfo.info
       
       private function setTexpViewProTxt() : void
       {
-         var _loc4_:DictionaryData = _info.getPropertyAdditionByType("Attack");
-         var _loc3_:DictionaryData = _info.getPropertyAdditionByType("Defence");
-         var _loc1_:DictionaryData = _info.getPropertyAdditionByType("Agility");
-         var _loc2_:DictionaryData = _info.getPropertyAdditionByType("Luck");
-         if(!_loc1_)
+         var dicAttack:DictionaryData = _info.getPropertyAdditionByType("Attack");
+         var dicDefence:DictionaryData = _info.getPropertyAdditionByType("Defence");
+         var dicAgility:DictionaryData = _info.getPropertyAdditionByType("Agility");
+         var dicLuck:DictionaryData = _info.getPropertyAdditionByType("Luck");
+         if(!dicAgility)
          {
             return;
          }
-         _attackTxt1.htmlText = _info == null?"":getHtmlTextByString(String(_loc4_["Card"] < 0?0:_loc4_["Card"]),0);
-         _agilityTxt1.htmlText = _info == null?"":getHtmlTextByString(String(_loc1_["Card"] < 0?0:_loc1_["Card"]),0);
-         _defenceTxt1.htmlText = _info == null?"":getHtmlTextByString(String(_loc3_["Card"] < 0?0:_loc3_["Card"]),0);
-         _luckTxt1.htmlText = _info == null?"":getHtmlTextByString(String(_loc2_["Card"] < 0?0:_loc2_["Card"]),0);
+         _attackTxt1.htmlText = _info == null?"":getHtmlTextByString(String(dicAttack["Card"] < 0?0:dicAttack["Card"]),0);
+         _agilityTxt1.htmlText = _info == null?"":getHtmlTextByString(String(dicAgility["Card"] < 0?0:dicAgility["Card"]),0);
+         _defenceTxt1.htmlText = _info == null?"":getHtmlTextByString(String(dicDefence["Card"] < 0?0:dicDefence["Card"]),0);
+         _luckTxt1.htmlText = _info == null?"":getHtmlTextByString(String(dicLuck["Card"] < 0?0:dicLuck["Card"]),0);
       }
       
-      private function getHtmlTextByString(param1:String, param2:int) : String
+      private function getHtmlTextByString(value:String, choiceHtmlText:int) : String
       {
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         switch(int(param2))
+         var sourceBegin:* = null;
+         var sourceEnding:* = null;
+         switch(int(choiceHtmlText))
          {
             case 0:
-               _loc4_ = "<TEXTFORMAT LEADING=\'-1\'><P ALIGN=\'CENTER\'><FONT FACE=\'Arial\' SIZE=\'14\' COLOR=\'#FFF6C9\' ><B>";
-               _loc3_ = "</B></FONT></P></TEXTFORMAT>";
+               sourceBegin = "<TEXTFORMAT LEADING=\'-1\'><P ALIGN=\'CENTER\'><FONT FACE=\'Arial\' SIZE=\'14\' COLOR=\'#FFF6C9\' ><B>";
+               sourceEnding = "</B></FONT></P></TEXTFORMAT>";
                break;
             case 1:
-               _loc4_ = "<TEXTFORMAT LEADING=\'-1\'><P ALIGN=\'CENTER\'><FONT FACE=\'Arial\' SIZE=\'14\' COLOR=\'#FFF6C9\' LETTERSPACING=\'0\' KERNING=\'1\'><B>";
-               _loc3_ = "</B></FONT></P></TEXTFORMAT>";
+               sourceBegin = "<TEXTFORMAT LEADING=\'-1\'><P ALIGN=\'CENTER\'><FONT FACE=\'Arial\' SIZE=\'14\' COLOR=\'#FFF6C9\' LETTERSPACING=\'0\' KERNING=\'1\'><B>";
+               sourceEnding = "</B></FONT></P></TEXTFORMAT>";
                break;
             case 2:
-               _loc4_ = "<TEXTFORMAT LEADING=\'-1\'><P ALIGN=\'CENTER\'><FONT FACE=\'Arial\' SIZE=\'14\' COLOR=\'#FFF6C9\' LETTERSPACING=\'0\' KERNING=\'1\'><B>";
-               _loc3_ = "</B></FONT></P></TEXTFORMAT>";
+               sourceBegin = "<TEXTFORMAT LEADING=\'-1\'><P ALIGN=\'CENTER\'><FONT FACE=\'Arial\' SIZE=\'14\' COLOR=\'#FFF6C9\' LETTERSPACING=\'0\' KERNING=\'1\'><B>";
+               sourceEnding = "</B></FONT></P></TEXTFORMAT>";
          }
-         return _loc4_ + param1 + _loc3_;
+         return sourceBegin + value + sourceEnding;
       }
       
       public function dispose() : void
@@ -1952,21 +2000,20 @@ package bagAndInfo.info
          _energyData = null;
       }
       
-      public function startShine(param1:ItemTemplateInfo) : void
+      public function startShine(info:ItemTemplateInfo) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
-         if(param1.NeedSex == 0 || param1.NeedSex == (!!PlayerManager.Instance.Self.Sex?1:2))
+         var shineIndex:* = null;
+         var i:int = 0;
+         if(info.NeedSex == 0 || info.NeedSex == (!!PlayerManager.Instance.Self.Sex?1:2))
          {
-            _loc2_ = getCellIndex(param1).split(",");
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_.length)
+            shineIndex = getCellIndex(info).split(",");
+            for(i = 0; i < shineIndex.length; )
             {
-               if(int(_loc2_[_loc3_]) >= 0)
+               if(int(shineIndex[i]) >= 0)
                {
-                  (_cells[int(_loc2_[_loc3_])] as PersonalInfoCell).shine();
+                  (_cells[int(shineIndex[i])] as PersonalInfoCell).shine();
                }
-               _loc3_++;
+               i++;
             }
          }
       }
@@ -1975,9 +2022,9 @@ package bagAndInfo.info
       {
          var _loc3_:int = 0;
          var _loc2_:* = _cells;
-         for each(var _loc1_ in _cells)
+         for each(var ds in _cells)
          {
-            (_loc1_ as PersonalInfoCell).stopShine();
+            (ds as PersonalInfoCell).stopShine();
          }
          if(_cardEquipView)
          {
@@ -1985,13 +2032,13 @@ package bagAndInfo.info
          }
       }
       
-      private function getCellIndex(param1:ItemTemplateInfo) : String
+      private function getCellIndex(info:ItemTemplateInfo) : String
       {
-         if(EquipType.isWeddingRing(param1))
+         if(EquipType.isWeddingRing(info))
          {
             return "9,10,16";
          }
-         var _loc2_:* = param1.CategoryID;
+         var _loc2_:* = info.CategoryID;
          if(1 !== _loc2_)
          {
             if(2 !== _loc2_)
@@ -2077,9 +2124,9 @@ package bagAndInfo.info
          return _showSelfOperation;
       }
       
-      public function set showSelfOperation(param1:Boolean) : void
+      public function set showSelfOperation(value:Boolean) : void
       {
-         _showSelfOperation = param1;
+         _showSelfOperation = value;
          updateShowOperation();
       }
       
@@ -2238,20 +2285,20 @@ package bagAndInfo.info
          return false;
       }
       
-      public function setAchvEnable(param1:Boolean) : void
+      public function setAchvEnable(val:Boolean) : void
       {
-         _achvEnable = param1;
+         _achvEnable = val;
          updateShowOperation();
       }
       
-      private function _definitionGroupChange(param1:Event = null) : void
+      private function _definitionGroupChange(e:Event = null) : void
       {
-         if(param1 != null)
+         if(e != null)
          {
             SoundManager.instance.play("008");
          }
-         var _loc2_:Array = EffortManager.Instance.getHonorArray();
-         if(_loc2_.length < 1 && !_info.ConsortiaName)
+         var arr:Array = EffortManager.Instance.getHonorArray();
+         if(arr.length < 1 && !_info.ConsortiaName)
          {
             _bagDefinitionBtnI.visible = false;
             _bagDefinitionBtnII.visible = false;
@@ -2259,15 +2306,15 @@ package bagAndInfo.info
          }
          if(_bagDefinitionGroup.selectIndex == 0)
          {
-            if(_loc2_.length < 1)
+            if(arr.length < 1)
             {
-               if(param1)
+               if(e)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.bagInfo.notDesignation"));
                }
                _bagDefinitionGroup.selectIndex = 1;
             }
-            else if(param1)
+            else if(e)
             {
                PlayerManager.Instance.Self.IsShowConsortia = false;
                SocketManager.Instance.dispatchEvent(new NewHallEvent("newhallupdatetitle"));
@@ -2275,18 +2322,18 @@ package bagAndInfo.info
          }
          else if(!_info.ConsortiaName)
          {
-            if(param1)
+            if(e)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.bagInfo.notSociaty"));
             }
             _bagDefinitionGroup.selectIndex = 0;
          }
-         else if(param1)
+         else if(e)
          {
             PlayerManager.Instance.Self.IsShowConsortia = true;
             SocketManager.Instance.dispatchEvent(new NewHallEvent("newhallupdatetitle"));
          }
-         if(param1)
+         if(e)
          {
             SocketManager.Instance.out.sendChangeDesignation(PlayerManager.Instance.Self.IsShowConsortia);
          }
@@ -2297,9 +2344,9 @@ package bagAndInfo.info
          return _openNecklacePtetrochemicalView;
       }
       
-      public function set openNecklacePtetrochemicalView(param1:SimpleBitmapButton) : void
+      public function set openNecklacePtetrochemicalView(value:SimpleBitmapButton) : void
       {
-         _openNecklacePtetrochemicalView = param1;
+         _openNecklacePtetrochemicalView = value;
       }
    }
 }

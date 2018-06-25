@@ -36,22 +36,22 @@ package yzhkof.logicdata
          return this._loader;
       }
       
-      public function set loader(param1:Loader) : void
+      public function set loader(value:Loader) : void
       {
          if(this._loader)
          {
             return;
          }
-         this._loader = param1;
+         this._loader = value;
          addEventListener(Event.COMPLETE,this.__loaderComplete);
       }
       
-      public function set result(param1:*) : void
+      public function set result(value:*) : void
       {
-         dispatchEvent(new ScriptEvent(ScriptEvent.RESULT,param1));
+         dispatchEvent(new ScriptEvent(ScriptEvent.RESULT,value));
       }
       
-      private function __loaderComplete(param1:Event) : void
+      private function __loaderComplete(e:Event) : void
       {
          if(ScriptRuner.global.run && ScriptRuner.global.run is Function)
          {

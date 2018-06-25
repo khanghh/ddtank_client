@@ -4,9 +4,9 @@ package starling.errors
    {
        
       
-      public function MissingContextError(param1:* = "Starling context is missing", param2:* = 0)
+      public function MissingContextError(message:* = "Starling context is missing", id:* = 0)
       {
-         super(param1,param2);
+         super(message,id);
       }
    }
 }

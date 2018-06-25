@@ -60,72 +60,72 @@ package starling.animation
       
       private var mCurrentCycle:int;
       
-      public function Tween(param1:Object, param2:Number, param3:Object = "linear")
+      public function Tween(target:Object, time:Number, transition:Object = "linear")
       {
          super();
-         reset(param1,param2,param3);
+         reset(target,time,transition);
       }
       
-      static function getPropertyHint(param1:String) : String
+      static function getPropertyHint(property:String) : String
       {
-         if(param1.indexOf("color") != -1 || param1.indexOf("Color") != -1)
+         if(property.indexOf("color") != -1 || property.indexOf("Color") != -1)
          {
             return "rgb";
          }
-         var _loc2_:int = param1.indexOf("#");
-         if(_loc2_ != -1)
+         var hintMarkerIndex:int = property.indexOf("#");
+         if(hintMarkerIndex != -1)
          {
-            return param1.substr(_loc2_ + 1);
+            return property.substr(hintMarkerIndex + 1);
          }
          return null;
       }
       
-      static function getPropertyName(param1:String) : String
+      static function getPropertyName(property:String) : String
       {
-         var _loc2_:int = param1.indexOf("#");
-         if(_loc2_ != -1)
+         var hintMarkerIndex:int = property.indexOf("#");
+         if(hintMarkerIndex != -1)
          {
-            return param1.substring(0,_loc2_);
+            return property.substring(0,hintMarkerIndex);
          }
-         return param1;
+         return property;
       }
       
-      static function fromPool(param1:Object, param2:Number, param3:Object = "linear") : Tween
+      static function fromPool(target:Object, time:Number, transition:Object = "linear") : Tween
       {
          if(sTweenPool.length)
          {
-            return sTweenPool.pop().reset(param1,param2,param3);
+            return sTweenPool.pop().reset(target,time,transition);
          }
-         return new Tween(param1,param2,param3);
+         return new Tween(target,time,transition);
       }
       
-      static function toPool(param1:Tween) : void
+      static function toPool(tween:Tween) : void
       {
          var _loc2_:* = null;
-         param1.mOnComplete = _loc2_;
+         tween.mOnComplete = _loc2_;
          _loc2_ = _loc2_;
-         param1.mOnRepeat = _loc2_;
+         tween.mOnRepeat = _loc2_;
          _loc2_ = _loc2_;
-         param1.mOnUpdate = _loc2_;
-         param1.mOnStart = _loc2_;
+         tween.mOnUpdate = _loc2_;
+         tween.mOnStart = _loc2_;
          _loc2_ = null;
-         param1.mOnCompleteArgs = _loc2_;
+         tween.mOnCompleteArgs = _loc2_;
          _loc2_ = _loc2_;
-         param1.mOnRepeatArgs = _loc2_;
+         tween.mOnRepeatArgs = _loc2_;
          _loc2_ = _loc2_;
-         param1.mOnUpdateArgs = _loc2_;
-         param1.mOnStartArgs = _loc2_;
-         param1.mTarget = null;
-         param1.mTransitionFunc = null;
-         param1.removeEventListeners();
-         sTweenPool.push(param1);
+         tween.mOnUpdateArgs = _loc2_;
+         tween.mOnStartArgs = _loc2_;
+         tween.mTarget = null;
+         tween.mTransitionFunc = null;
+         tween.removeEventListeners();
+         sTweenPool.push(tween);
       }
       
-      public function reset(param1:Object, param2:Number, param3:Object = "linear") : Tween
+      public function reset(target:Object, time:Number, transition:Object = "linear") : Tween
       {
-         mTarget = param1;
+         mTarget = target;
          mCurrentTime = 0;
-         mTotalTime = Math.max(0.0001,param2);
+         mTotalTime = Math.max(0.0001,time);
          mProgress = 0;
          mRepeatDelay = 0;
          mDelay = 0;
@@ -142,13 +142,13 @@ package starling.animation
          mRepeatCount = 1;
          mCurrentCycle = -1;
          mNextTween = null;
-         if(param3 is String)
+         if(transition is String)
          {
-            this.transition = param3 as String;
+            this.transition = transition as String;
          }
-         else if(param3 is Function)
+         else if(transition is Function)
          {
-            this.transitionFunc = param3 as Function;
+            this.transitionFunc = transition as Function;
          }
          else
          {
@@ -189,56 +189,56 @@ package starling.animation
          return this;
       }
       
-      public function animate(param1:String, param2:Number) : void
+      public function animate(property:String, endValue:Number) : void
       {
          if(mTarget == null)
          {
             return;
          }
-         var _loc4_:int = mProperties.length;
-         var _loc3_:Function = getUpdateFuncFromProperty(param1);
-         mProperties[_loc4_] = getPropertyName(param1);
-         mStartValues[_loc4_] = NaN;
-         mEndValues[_loc4_] = param2;
-         mUpdateFuncs[_loc4_] = _loc3_;
+         var pos:int = mProperties.length;
+         var updateFunc:Function = getUpdateFuncFromProperty(property);
+         mProperties[pos] = getPropertyName(property);
+         mStartValues[pos] = NaN;
+         mEndValues[pos] = endValue;
+         mUpdateFuncs[pos] = updateFunc;
       }
       
-      public function scaleTo(param1:Number) : void
+      public function scaleTo(factor:Number) : void
       {
-         animate("scaleX",param1);
-         animate("scaleY",param1);
+         animate("scaleX",factor);
+         animate("scaleY",factor);
       }
       
-      public function moveTo(param1:Number, param2:Number) : void
+      public function moveTo(x:Number, y:Number) : void
       {
-         animate("x",param1);
-         animate("y",param2);
+         animate("x",x);
+         animate("y",y);
       }
       
-      public function fadeTo(param1:Number) : void
+      public function fadeTo(alpha:Number) : void
       {
-         animate("alpha",param1);
+         animate("alpha",alpha);
       }
       
-      public function rotateTo(param1:Number, param2:String = "rad") : void
+      public function rotateTo(angle:Number, type:String = "rad") : void
       {
-         animate("rotation#" + param2,param1);
+         animate("rotation#" + type,angle);
       }
       
-      public function advanceTime(param1:Number) : void
+      public function advanceTime(time:Number) : void
       {
-         var _loc11_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc9_:* = null;
-         if(param1 == 0 || mRepeatCount == 1 && mCurrentTime == mTotalTime)
+         var i:int = 0;
+         var updateFunc:* = null;
+         var onComplete:* = null;
+         var onCompleteArgs:* = null;
+         if(time == 0 || mRepeatCount == 1 && mCurrentTime == mTotalTime)
          {
             return;
          }
-         var _loc8_:Number = mCurrentTime;
-         var _loc6_:Number = mTotalTime - mCurrentTime;
-         var _loc5_:Number = param1 > _loc6_?param1 - _loc6_:0;
-         mCurrentTime = mCurrentTime + param1;
+         var previousTime:Number = mCurrentTime;
+         var restTime:Number = mTotalTime - mCurrentTime;
+         var carryOverTime:Number = time > restTime?time - restTime:0;
+         mCurrentTime = mCurrentTime + time;
          if(mCurrentTime <= 0)
          {
             return;
@@ -247,7 +247,7 @@ package starling.animation
          {
             mCurrentTime = mTotalTime;
          }
-         if(mCurrentCycle < 0 && _loc8_ <= 0 && mCurrentTime > 0)
+         if(mCurrentCycle < 0 && previousTime <= 0 && mCurrentTime > 0)
          {
             mCurrentCycle = Number(mCurrentCycle) + 1;
             if(mOnStart != null)
@@ -255,26 +255,25 @@ package starling.animation
                mOnStart.apply(this,mOnStartArgs);
             }
          }
-         var _loc2_:Number = mCurrentTime / mTotalTime;
-         var _loc7_:Boolean = mReverse && mCurrentCycle % 2 == 1;
-         var _loc10_:int = mStartValues.length;
-         mProgress = !!_loc7_?mTransitionFunc(1 - _loc2_):mTransitionFunc(_loc2_);
-         _loc11_ = 0;
-         while(_loc11_ < _loc10_)
+         var ratio:Number = mCurrentTime / mTotalTime;
+         var reversed:Boolean = mReverse && mCurrentCycle % 2 == 1;
+         var numProperties:int = mStartValues.length;
+         mProgress = !!reversed?mTransitionFunc(1 - ratio):mTransitionFunc(ratio);
+         for(i = 0; i < numProperties; )
          {
-            if(mStartValues[_loc11_] != mStartValues[_loc11_])
+            if(mStartValues[i] != mStartValues[i])
             {
-               mStartValues[_loc11_] = mTarget[mProperties[_loc11_]] as Number;
+               mStartValues[i] = mTarget[mProperties[i]] as Number;
             }
-            _loc4_ = mUpdateFuncs[_loc11_] as Function;
-            _loc4_(mProperties[_loc11_],mStartValues[_loc11_],mEndValues[_loc11_]);
-            _loc11_++;
+            updateFunc = mUpdateFuncs[i] as Function;
+            updateFunc(mProperties[i],mStartValues[i],mEndValues[i]);
+            i++;
          }
          if(mOnUpdate != null)
          {
             mOnUpdate.apply(this,mOnUpdateArgs);
          }
-         if(_loc8_ < mTotalTime && mCurrentTime >= mTotalTime)
+         if(previousTime < mTotalTime && mCurrentTime >= mTotalTime)
          {
             if(mRepeatCount == 0 || mRepeatCount > 1)
             {
@@ -291,26 +290,26 @@ package starling.animation
             }
             else
             {
-               _loc3_ = mOnComplete;
-               _loc9_ = mOnCompleteArgs;
+               onComplete = mOnComplete;
+               onCompleteArgs = mOnCompleteArgs;
                dispatchEventWith("removeFromJuggler");
-               if(_loc3_ != null)
+               if(onComplete != null)
                {
-                  _loc3_.apply(this,_loc9_);
+                  onComplete.apply(this,onCompleteArgs);
                }
             }
          }
-         if(_loc5_)
+         if(carryOverTime)
          {
-            advanceTime(_loc5_);
+            advanceTime(carryOverTime);
          }
       }
       
-      private function getUpdateFuncFromProperty(param1:String) : Function
+      private function getUpdateFuncFromProperty(property:String) : Function
       {
-         var _loc2_:* = null;
-         var _loc3_:String = getPropertyHint(param1);
-         var _loc4_:* = _loc3_;
+         var updateFunc:* = null;
+         var hint:String = getPropertyHint(property);
+         var _loc4_:* = hint;
          if(null !== _loc4_)
          {
             if("rgb" !== _loc4_)
@@ -319,94 +318,94 @@ package starling.animation
                {
                   if("deg" !== _loc4_)
                   {
-                     trace("[Starling] Ignoring unknown property hint:",_loc3_);
-                     _loc2_ = updateStandard;
+                     trace("[Starling] Ignoring unknown property hint:",hint);
+                     updateFunc = updateStandard;
                   }
                   else
                   {
-                     _loc2_ = updateDeg;
+                     updateFunc = updateDeg;
                   }
                }
                else
                {
-                  _loc2_ = updateRad;
+                  updateFunc = updateRad;
                }
             }
             else
             {
-               _loc2_ = updateRgb;
+               updateFunc = updateRgb;
             }
          }
          else
          {
-            _loc2_ = updateStandard;
+            updateFunc = updateStandard;
          }
-         return _loc2_;
+         return updateFunc;
       }
       
-      private function updateStandard(param1:String, param2:Number, param3:Number) : void
+      private function updateStandard(property:String, startValue:Number, endValue:Number) : void
       {
-         var _loc4_:Number = param2 + mProgress * (param3 - param2);
+         var newValue:Number = startValue + mProgress * (endValue - startValue);
          if(mRoundToInt)
          {
-            _loc4_ = Math.round(_loc4_);
+            newValue = Math.round(newValue);
          }
-         mTarget[param1] = _loc4_;
+         mTarget[property] = newValue;
       }
       
-      private function updateRgb(param1:String, param2:Number, param3:Number) : void
+      private function updateRgb(property:String, startValue:Number, endValue:Number) : void
       {
-         var _loc13_:uint = param2;
-         var _loc15_:uint = param3;
-         var _loc14_:uint = _loc13_ >> 24 & 255;
-         var _loc10_:uint = _loc13_ >> 16 & 255;
-         var _loc4_:uint = _loc13_ >> 8 & 255;
-         var _loc6_:uint = _loc13_ & 255;
-         var _loc16_:uint = _loc15_ >> 24 & 255;
-         var _loc7_:uint = _loc15_ >> 16 & 255;
-         var _loc11_:uint = _loc15_ >> 8 & 255;
-         var _loc17_:uint = _loc15_ & 255;
-         var _loc8_:uint = _loc14_ + (_loc16_ - _loc14_) * mProgress;
-         var _loc5_:uint = _loc10_ + (_loc7_ - _loc10_) * mProgress;
-         var _loc12_:uint = _loc4_ + (_loc11_ - _loc4_) * mProgress;
-         var _loc9_:uint = _loc6_ + (_loc17_ - _loc6_) * mProgress;
-         mTarget[param1] = _loc8_ << 24 | _loc5_ << 16 | _loc12_ << 8 | _loc9_;
+         var startColor:uint = startValue;
+         var endColor:uint = endValue;
+         var startA:uint = startColor >> 24 & 255;
+         var startR:uint = startColor >> 16 & 255;
+         var startG:uint = startColor >> 8 & 255;
+         var startB:uint = startColor & 255;
+         var endA:uint = endColor >> 24 & 255;
+         var endR:uint = endColor >> 16 & 255;
+         var endG:uint = endColor >> 8 & 255;
+         var endB:uint = endColor & 255;
+         var newA:uint = startA + (endA - startA) * mProgress;
+         var newR:uint = startR + (endR - startR) * mProgress;
+         var newG:uint = startG + (endG - startG) * mProgress;
+         var newB:uint = startB + (endB - startB) * mProgress;
+         mTarget[property] = newA << 24 | newR << 16 | newG << 8 | newB;
       }
       
-      private function updateRad(param1:String, param2:Number, param3:Number) : void
+      private function updateRad(property:String, startValue:Number, endValue:Number) : void
       {
-         updateAngle(3.14159265358979,param1,param2,param3);
+         updateAngle(3.14159265358979,property,startValue,endValue);
       }
       
-      private function updateDeg(param1:String, param2:Number, param3:Number) : void
+      private function updateDeg(property:String, startValue:Number, endValue:Number) : void
       {
-         updateAngle(180,param1,param2,param3);
+         updateAngle(180,property,startValue,endValue);
       }
       
-      private function updateAngle(param1:Number, param2:String, param3:Number, param4:Number) : void
+      private function updateAngle(pi:Number, property:String, startValue:Number, endValue:Number) : void
       {
-         while(Math.abs(param4 - param3) > param1)
+         while(Math.abs(endValue - startValue) > pi)
          {
-            if(param3 < param4)
+            if(startValue < endValue)
             {
-               param4 = param4 - 2 * param1;
+               endValue = endValue - 2 * pi;
             }
             else
             {
-               param4 = param4 + 2 * param1;
+               endValue = endValue + 2 * pi;
             }
          }
-         updateStandard(param2,param3,param4);
+         updateStandard(property,startValue,endValue);
       }
       
-      public function getEndValue(param1:String) : Number
+      public function getEndValue(property:String) : Number
       {
-         var _loc2_:int = mProperties.indexOf(param1);
-         if(_loc2_ == -1)
+         var index:int = mProperties.indexOf(property);
+         if(index == -1)
          {
-            throw new ArgumentError("The property \'" + param1 + "\' is not animated");
+            throw new ArgumentError("The property \'" + property + "\' is not animated");
          }
-         return mEndValues[_loc2_] as Number;
+         return mEndValues[index] as Number;
       }
       
       public function get isComplete() : Boolean
@@ -424,13 +423,13 @@ package starling.animation
          return mTransitionName;
       }
       
-      public function set transition(param1:String) : void
+      public function set transition(value:String) : void
       {
-         mTransitionName = param1;
-         mTransitionFunc = Transitions.getTransition(param1);
+         mTransitionName = value;
+         mTransitionFunc = Transitions.getTransition(value);
          if(mTransitionFunc == null)
          {
-            throw new ArgumentError("Invalid transiton: " + param1);
+            throw new ArgumentError("Invalid transiton: " + value);
          }
       }
       
@@ -439,10 +438,10 @@ package starling.animation
          return mTransitionFunc;
       }
       
-      public function set transitionFunc(param1:Function) : void
+      public function set transitionFunc(value:Function) : void
       {
          mTransitionName = "custom";
-         mTransitionFunc = param1;
+         mTransitionFunc = value;
       }
       
       public function get totalTime() : Number
@@ -465,10 +464,10 @@ package starling.animation
          return mDelay;
       }
       
-      public function set delay(param1:Number) : void
+      public function set delay(value:Number) : void
       {
-         mCurrentTime = mCurrentTime + mDelay - param1;
-         mDelay = param1;
+         mCurrentTime = mCurrentTime + mDelay - value;
+         mDelay = value;
       }
       
       public function get repeatCount() : int
@@ -476,9 +475,9 @@ package starling.animation
          return mRepeatCount;
       }
       
-      public function set repeatCount(param1:int) : void
+      public function set repeatCount(value:int) : void
       {
-         mRepeatCount = param1;
+         mRepeatCount = value;
       }
       
       public function get repeatDelay() : Number
@@ -486,9 +485,9 @@ package starling.animation
          return mRepeatDelay;
       }
       
-      public function set repeatDelay(param1:Number) : void
+      public function set repeatDelay(value:Number) : void
       {
-         mRepeatDelay = param1;
+         mRepeatDelay = value;
       }
       
       public function get reverse() : Boolean
@@ -496,9 +495,9 @@ package starling.animation
          return mReverse;
       }
       
-      public function set reverse(param1:Boolean) : void
+      public function set reverse(value:Boolean) : void
       {
-         mReverse = param1;
+         mReverse = value;
       }
       
       public function get roundToInt() : Boolean
@@ -506,9 +505,9 @@ package starling.animation
          return mRoundToInt;
       }
       
-      public function set roundToInt(param1:Boolean) : void
+      public function set roundToInt(value:Boolean) : void
       {
-         mRoundToInt = param1;
+         mRoundToInt = value;
       }
       
       public function get onStart() : Function
@@ -516,9 +515,9 @@ package starling.animation
          return mOnStart;
       }
       
-      public function set onStart(param1:Function) : void
+      public function set onStart(value:Function) : void
       {
-         mOnStart = param1;
+         mOnStart = value;
       }
       
       public function get onUpdate() : Function
@@ -526,9 +525,9 @@ package starling.animation
          return mOnUpdate;
       }
       
-      public function set onUpdate(param1:Function) : void
+      public function set onUpdate(value:Function) : void
       {
-         mOnUpdate = param1;
+         mOnUpdate = value;
       }
       
       public function get onRepeat() : Function
@@ -536,9 +535,9 @@ package starling.animation
          return mOnRepeat;
       }
       
-      public function set onRepeat(param1:Function) : void
+      public function set onRepeat(value:Function) : void
       {
-         mOnRepeat = param1;
+         mOnRepeat = value;
       }
       
       public function get onComplete() : Function
@@ -546,9 +545,9 @@ package starling.animation
          return mOnComplete;
       }
       
-      public function set onComplete(param1:Function) : void
+      public function set onComplete(value:Function) : void
       {
-         mOnComplete = param1;
+         mOnComplete = value;
       }
       
       public function get onStartArgs() : Array
@@ -556,9 +555,9 @@ package starling.animation
          return mOnStartArgs;
       }
       
-      public function set onStartArgs(param1:Array) : void
+      public function set onStartArgs(value:Array) : void
       {
-         mOnStartArgs = param1;
+         mOnStartArgs = value;
       }
       
       public function get onUpdateArgs() : Array
@@ -566,9 +565,9 @@ package starling.animation
          return mOnUpdateArgs;
       }
       
-      public function set onUpdateArgs(param1:Array) : void
+      public function set onUpdateArgs(value:Array) : void
       {
-         mOnUpdateArgs = param1;
+         mOnUpdateArgs = value;
       }
       
       public function get onRepeatArgs() : Array
@@ -576,9 +575,9 @@ package starling.animation
          return mOnRepeatArgs;
       }
       
-      public function set onRepeatArgs(param1:Array) : void
+      public function set onRepeatArgs(value:Array) : void
       {
-         mOnRepeatArgs = param1;
+         mOnRepeatArgs = value;
       }
       
       public function get onCompleteArgs() : Array
@@ -586,9 +585,9 @@ package starling.animation
          return mOnCompleteArgs;
       }
       
-      public function set onCompleteArgs(param1:Array) : void
+      public function set onCompleteArgs(value:Array) : void
       {
-         mOnCompleteArgs = param1;
+         mOnCompleteArgs = value;
       }
       
       public function get nextTween() : Tween
@@ -596,9 +595,9 @@ package starling.animation
          return mNextTween;
       }
       
-      public function set nextTween(param1:Tween) : void
+      public function set nextTween(value:Tween) : void
       {
-         mNextTween = param1;
+         mNextTween = value;
       }
    }
 }

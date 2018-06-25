@@ -28,47 +28,47 @@ package gradeBuy.view
       
       private var _itemInfo:ItemTemplateInfo;
       
-      public function GradeBuyTypeItem(param1:Object)
+      public function GradeBuyTypeItem($data:Object)
       {
          super();
-         data = param1;
+         data = $data;
          this.buttonMode = true;
          this.useHandCursor = true;
-         _itemInfo = ItemManager.Instance.getTemplateById(param1["id"]);
-         var _loc4_:Shape = new Shape();
-         _loc4_.graphics.beginFill(0,0);
-         _loc4_.graphics.drawRect(0,0,10,10);
-         _loc4_.graphics.endFill();
-         _itemCell = new ShopItemCell(_loc4_,_itemInfo);
+         _itemInfo = ItemManager.Instance.getTemplateById($data["id"]);
+         var bg:Shape = new Shape();
+         bg.graphics.beginFill(0,0);
+         bg.graphics.drawRect(0,0,10,10);
+         bg.graphics.endFill();
+         _itemCell = new ShopItemCell(bg,_itemInfo);
          addChild(_itemCell);
          _dateRemainTxt = ComponentFactory.Instance.creat("gradeBuy.typeItem.timeRemainTxt");
          addChild(_dateRemainTxt);
-         var _loc2_:Number = data["date"];
-         var _loc3_:Number = _loc2_ - TimeManager.Instance.Now().time;
-         if(_loc3_ <= 0)
+         var dateStop:Number = data["date"];
+         var time:Number = dateStop - TimeManager.Instance.Now().time;
+         if(time <= 0)
          {
             _dateRemainTxt.text = "00:00:00";
             GradeBuyManager.getInstance().unRegister(this.name);
          }
          else
          {
-            _dateRemainTxt.text = Helpers.getTimeString(_loc3_);
+            _dateRemainTxt.text = Helpers.getTimeString(time);
             GradeBuyManager.getInstance().register(this.name,this);
          }
          this.mouseChildren = false;
          this.addEventListener("click",onClick);
       }
       
-      protected function onClick(param1:MouseEvent) : void
+      protected function onClick(e:MouseEvent) : void
       {
          GradeBuyController.getInstance().showItemListView(_itemInfo,data);
       }
       
       public function update() : void
       {
-         var _loc1_:Number = data["date"];
-         var _loc2_:Number = _loc1_ - TimeManager.Instance.Now().time;
-         if(_loc2_ <= 0)
+         var dateStop:Number = data["date"];
+         var time:Number = dateStop - TimeManager.Instance.Now().time;
+         if(time <= 0)
          {
             _dateRemainTxt.text = "00:00:00";
             ObjectUtils.disposeObject(this);
@@ -76,7 +76,7 @@ package gradeBuy.view
          }
          else
          {
-            _dateRemainTxt.text = Helpers.getTimeString(_loc2_);
+            _dateRemainTxt.text = Helpers.getTimeString(time);
          }
       }
       

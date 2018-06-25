@@ -15,14 +15,14 @@ package groupPurchase.view
       
       override protected function refreshNumText() : void
       {
-         var _loc1_:int = GroupPurchaseManager.instance.price;
+         var price:int = GroupPurchaseManager.instance.price;
          if(_isBand)
          {
-            totalText.text = String(_stoneNumber * _loc1_) + " " + LanguageMgr.GetTranslation("tank.auctionHouse.view.AuctionBrowseView.bandStipple");
+            totalText.text = String(_stoneNumber * price) + " " + LanguageMgr.GetTranslation("tank.auctionHouse.view.AuctionBrowseView.bandStipple");
          }
          else
          {
-            totalText.text = String(_stoneNumber * _loc1_) + " " + LanguageMgr.GetTranslation("tank.auctionHouse.view.AuctionBrowseView.stipple");
+            totalText.text = String(_stoneNumber * price) + " " + LanguageMgr.GetTranslation("tank.auctionHouse.view.AuctionBrowseView.stipple");
          }
       }
    }

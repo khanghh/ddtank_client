@@ -131,23 +131,23 @@ package ddt.data
          super();
       }
       
-      public static function isPayBuff(param1:int) : Boolean
+      public static function isPayBuff(id:int) : Boolean
       {
-         return param1 >= 50 && param1 <= 79;
+         return id >= 50 && id <= 79;
       }
       
-      public static function isLuckyBuff(param1:int) : Boolean
+      public static function isLuckyBuff(id:int) : Boolean
       {
-         return param1 >= 40 && param1 <= 49;
+         return id >= 40 && id <= 49;
       }
       
-      public static function isLocalBuffByID(param1:int) : Boolean
+      public static function isLocalBuffByID(id:int) : Boolean
       {
-         if(isLuckyBuff(param1))
+         if(isLuckyBuff(id))
          {
             return true;
          }
-         var _loc2_:* = param1;
+         var _loc2_:* = id;
          if(11 !== _loc2_)
          {
             if(12 !== _loc2_)
@@ -203,79 +203,79 @@ package ddt.data
                                                                                        return false;
                                                                                     }
                                                                                  }
-                                                                                 addr36:
+                                                                                 addr42:
                                                                                  return true;
                                                                               }
-                                                                              addr35:
-                                                                              §§goto(addr36);
+                                                                              addr41:
+                                                                              §§goto(addr42);
                                                                            }
-                                                                           addr34:
-                                                                           §§goto(addr35);
+                                                                           addr40:
+                                                                           §§goto(addr41);
                                                                         }
-                                                                        addr33:
-                                                                        §§goto(addr34);
+                                                                        addr39:
+                                                                        §§goto(addr40);
                                                                      }
-                                                                     addr32:
-                                                                     §§goto(addr33);
+                                                                     addr38:
+                                                                     §§goto(addr39);
                                                                   }
-                                                                  addr31:
-                                                                  §§goto(addr32);
+                                                                  addr37:
+                                                                  §§goto(addr38);
                                                                }
-                                                               addr30:
-                                                               §§goto(addr31);
+                                                               addr36:
+                                                               §§goto(addr37);
                                                             }
-                                                            addr29:
-                                                            §§goto(addr30);
+                                                            addr35:
+                                                            §§goto(addr36);
                                                          }
-                                                         addr28:
-                                                         §§goto(addr29);
+                                                         addr34:
+                                                         §§goto(addr35);
                                                       }
-                                                      addr27:
-                                                      §§goto(addr28);
+                                                      addr33:
+                                                      §§goto(addr34);
                                                    }
-                                                   addr26:
-                                                   §§goto(addr27);
+                                                   addr32:
+                                                   §§goto(addr33);
                                                 }
-                                                addr25:
-                                                §§goto(addr26);
+                                                addr31:
+                                                §§goto(addr32);
                                              }
-                                             addr24:
-                                             §§goto(addr25);
+                                             addr30:
+                                             §§goto(addr31);
                                           }
-                                          addr23:
-                                          §§goto(addr24);
+                                          addr29:
+                                          §§goto(addr30);
                                        }
-                                       addr22:
-                                       §§goto(addr23);
+                                       addr28:
+                                       §§goto(addr29);
                                     }
-                                    addr21:
-                                    §§goto(addr22);
+                                    addr27:
+                                    §§goto(addr28);
                                  }
-                                 addr20:
-                                 §§goto(addr21);
+                                 addr26:
+                                 §§goto(addr27);
                               }
-                              addr19:
-                              §§goto(addr20);
+                              addr25:
+                              §§goto(addr26);
                            }
-                           addr18:
-                           §§goto(addr19);
+                           addr24:
+                           §§goto(addr25);
                         }
-                        addr17:
-                        §§goto(addr18);
+                        addr23:
+                        §§goto(addr24);
                      }
-                     addr16:
-                     §§goto(addr17);
+                     addr22:
+                     §§goto(addr23);
                   }
-                  addr15:
-                  §§goto(addr16);
+                  addr21:
+                  §§goto(addr22);
                }
-               addr14:
-               §§goto(addr15);
+               addr20:
+               §§goto(addr21);
             }
-            addr13:
-            §§goto(addr14);
+            addr19:
+            §§goto(addr20);
          }
-         §§goto(addr13);
+         §§goto(addr19);
       }
    }
 }

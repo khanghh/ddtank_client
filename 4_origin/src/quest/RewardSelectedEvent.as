@@ -10,10 +10,10 @@ package quest
       
       private var _itemCell:QuestRewardCell;
       
-      public function RewardSelectedEvent(param1:QuestRewardCell, param2:String = "ItemSelected", param3:Boolean = false, param4:Boolean = false)
+      public function RewardSelectedEvent(itemCell:QuestRewardCell, type:String = "ItemSelected", bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         super(param2,param3,param4);
-         _itemCell = param1;
+         super(type,bubbles,cancelable);
+         _itemCell = itemCell;
       }
       
       public function get itemCell() : QuestRewardCell

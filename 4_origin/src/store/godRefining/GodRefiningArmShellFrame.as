@@ -45,28 +45,27 @@ package store.godRefining
       
       private function initView() : void
       {
-         var _loc1_:int = 0;
+         var a:int = 0;
          _bg = ComponentFactory.Instance.creatBitmap("asset.ddtcorei.armShellFrameBg");
          addToContent(_bg);
          _unloadBtn = ComponentFactory.Instance.creatComponentByStylename("core.godRefining.armShellUnloadBtn");
          addToContent(_unloadBtn);
          _damageTitleTextArr = new Vector.<FilterFrameText>();
          _damageContentTextArr = new Vector.<FilterFrameText>();
-         _loc1_ = 0;
-         while(_loc1_ < 2)
+         for(a = 0; a < 2; )
          {
-            _damageTitleTextArr[_loc1_] = ComponentFactory.Instance.creatComponentByStylename("core.godRefining.damageTitleText");
-            _damageTitleTextArr[_loc1_].text = LanguageMgr.GetTranslation("store.godRefiningResetView.damageTitleTextMsg","普通武器");
-            addToContent(_damageTitleTextArr[_loc1_]);
-            _damageContentTextArr[_loc1_] = ComponentFactory.Instance.creatComponentByStylename("core.godRefining.damageContentText");
-            _damageContentTextArr[_loc1_].text = "+20%";
-            addToContent(_damageContentTextArr[_loc1_]);
-            if(_loc1_ == 1)
+            _damageTitleTextArr[a] = ComponentFactory.Instance.creatComponentByStylename("core.godRefining.damageTitleText");
+            _damageTitleTextArr[a].text = LanguageMgr.GetTranslation("store.godRefiningResetView.damageTitleTextMsg","普通武器");
+            addToContent(_damageTitleTextArr[a]);
+            _damageContentTextArr[a] = ComponentFactory.Instance.creatComponentByStylename("core.godRefining.damageContentText");
+            _damageContentTextArr[a].text = "+20%";
+            addToContent(_damageContentTextArr[a]);
+            if(a == 1)
             {
-               _damageTitleTextArr[_loc1_].y = _damageTitleTextArr[_loc1_].y + 30;
-               _damageContentTextArr[_loc1_].y = _damageContentTextArr[_loc1_].y + 30;
+               _damageTitleTextArr[a].y = _damageTitleTextArr[a].y + 30;
+               _damageContentTextArr[a].y = _damageContentTextArr[a].y + 30;
             }
-            _loc1_++;
+            a++;
          }
          _levelText = ComponentFactory.Instance.creatComponentByStylename("core.godRefining.levelText");
          _levelText.text = LanguageMgr.GetTranslation("store.godRefiningResetView.levelTextMsg",5);
@@ -82,12 +81,12 @@ package store.godRefining
          _unloadBtn.addEventListener("click",__unloadBtnHandler);
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(event:FrameEvent) : void
       {
          SoundManager.instance.playButtonSound();
       }
       
-      private function __unloadBtnHandler(param1:MouseEvent) : void
+      private function __unloadBtnHandler(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
       }

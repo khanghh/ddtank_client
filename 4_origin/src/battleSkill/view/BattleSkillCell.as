@@ -41,12 +41,12 @@ package battleSkill.view
       
       private var _id:int;
       
-      public function BattleSkillCell(param1:int = 0, param2:Boolean = true, param3:Boolean = false)
+      public function BattleSkillCell(index:int = 0, showBg:Boolean = true, isLock:Boolean = false)
       {
          super();
-         _index = param1;
-         _showBg = param2;
-         _isLock = param3;
+         _index = index;
+         _showBg = showBg;
+         _isLock = isLock;
          initView();
       }
       
@@ -70,9 +70,9 @@ package battleSkill.view
          }
       }
       
-      public function set info(param1:BattleSkillSkillInfo) : void
+      public function set info(data:BattleSkillSkillInfo) : void
       {
-         if(param1 == null)
+         if(data == null)
          {
             if(_isLock)
             {
@@ -80,7 +80,7 @@ package battleSkill.view
             }
             return;
          }
-         if(_data && _data.SkillID == param1.SkillID)
+         if(_data && _data.SkillID == data.SkillID)
          {
             return;
          }
@@ -88,7 +88,7 @@ package battleSkill.view
          {
             ShowTipManager.Instance.addTip(this);
          }
-         _data = param1;
+         _data = data;
          initIcon();
       }
       
@@ -122,7 +122,7 @@ package battleSkill.view
          return !!_skillInfo?_skillInfo:new HorseSkillVo();
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(value:Object) : void
       {
       }
       
@@ -131,7 +131,7 @@ package battleSkill.view
          return "5,2,7,1,6,4";
       }
       
-      public function set tipDirctions(param1:String) : void
+      public function set tipDirctions(value:String) : void
       {
       }
       
@@ -140,7 +140,7 @@ package battleSkill.view
          return 5;
       }
       
-      public function set tipGapH(param1:int) : void
+      public function set tipGapH(value:int) : void
       {
       }
       
@@ -149,7 +149,7 @@ package battleSkill.view
          return 5;
       }
       
-      public function set tipGapV(param1:int) : void
+      public function set tipGapV(value:int) : void
       {
       }
       
@@ -158,7 +158,7 @@ package battleSkill.view
          return "horse.view.HorseSkillCellTip";
       }
       
-      public function set tipStyle(param1:String) : void
+      public function set tipStyle(value:String) : void
       {
       }
       
@@ -167,7 +167,7 @@ package battleSkill.view
          return this;
       }
       
-      public function set id(param1:int) : void
+      public function set id(value:int) : void
       {
          _id = id;
       }

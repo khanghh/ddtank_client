@@ -1,9 +1,1 @@
-package morn.core.components
-{
-   public interface IItem
-   {
-       
-      
-      function initItems() : void;
-   }
-}
+package morn.core.components{   public interface IItem   {                   function initItems() : void;   }}

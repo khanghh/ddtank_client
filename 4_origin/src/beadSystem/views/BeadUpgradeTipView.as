@@ -107,13 +107,13 @@ package beadSystem.views
          return _tipData;
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         if(param1)
+         if(data)
          {
-            if(param1 is GoodTipInfo)
+            if(data is GoodTipInfo)
             {
-               _tipData = param1 as GoodTipInfo;
+               _tipData = data as GoodTipInfo;
                showTip(_tipData.itemInfo,_tipData.typeIsSecond);
             }
             visible = true;
@@ -125,14 +125,14 @@ package beadSystem.views
          }
       }
       
-      public function showTip(param1:ItemTemplateInfo, param2:Boolean = false) : void
+      public function showTip(info:ItemTemplateInfo, typeIsSecond:Boolean = false) : void
       {
          _displayIdx = 0;
          _displayList = new Vector.<DisplayObject>();
          _lineIdx = 0;
          _isReAdd = false;
          _maxWidth = 0;
-         _info = param1;
+         _info = info;
          updateView();
       }
       
@@ -155,39 +155,38 @@ package beadSystem.views
       
       private function clear() : void
       {
-         var _loc1_:* = null;
+         var display:* = null;
          while(numChildren > 0)
          {
-            _loc1_ = getChildAt(0) as DisplayObject;
-            if(_loc1_.parent)
+            display = getChildAt(0) as DisplayObject;
+            if(display.parent)
             {
-               _loc1_.parent.removeChild(_loc1_);
+               display.parent.removeChild(display);
             }
          }
       }
       
       override protected function addChildren() : void
       {
-         var _loc1_:* = null;
-         var _loc4_:int = 0;
-         var _loc2_:int = _displayList.length;
-         var _loc6_:Point = new Point(4,4);
-         var _loc3_:int = 6;
-         var _loc5_:int = _maxWidth;
-         _loc4_ = 0;
-         while(_loc4_ < _loc2_)
+         var item:* = null;
+         var i:int = 0;
+         var len:int = _displayList.length;
+         var pos:Point = new Point(4,4);
+         var offset:int = 6;
+         var tempMaxWidth:int = _maxWidth;
+         for(i = 0; i < len; )
          {
-            _loc1_ = _displayList[_loc4_] as DisplayObject;
-            if(_lines.indexOf(_loc1_ as Image) < 0 && _loc1_ != _descriptionTxt)
+            item = _displayList[i] as DisplayObject;
+            if(_lines.indexOf(item as Image) < 0 && item != _descriptionTxt)
             {
-               _loc5_ = Math.max(_loc1_.width,_loc5_);
+               tempMaxWidth = Math.max(item.width,tempMaxWidth);
             }
-            PositionUtils.setPos(_loc1_,_loc6_);
-            addChild(_loc1_);
-            _loc6_.y = _loc1_.y + _loc1_.height + _loc3_;
-            _loc4_++;
+            PositionUtils.setPos(item,pos);
+            addChild(item);
+            pos.y = item.y + item.height + offset;
+            i++;
          }
-         _maxWidth = Math.max(_minWidth,_loc5_);
+         _maxWidth = Math.max(_minWidth,tempMaxWidth);
          _maxWidth = _maxWidth - 20;
          if(_descriptionTxt.width != _maxWidth)
          {
@@ -198,17 +197,16 @@ package beadSystem.views
          }
          if(!_isReAdd)
          {
-            _loc4_ = 0;
-            while(_loc4_ < _lines.length)
+            for(i = 0; i < _lines.length; )
             {
-               _lines[_loc4_].width = _maxWidth;
-               if(_loc4_ + 1 < _lines.length && _lines[_loc4_ + 1].parent != null && Math.abs(_lines[_loc4_ + 1].y - _lines[_loc4_].y) <= 10)
+               _lines[i].width = _maxWidth;
+               if(i + 1 < _lines.length && _lines[i + 1].parent != null && Math.abs(_lines[i + 1].y - _lines[i].y) <= 10)
                {
-                  _displayList.splice(_displayList.indexOf(_lines[_loc4_ + 1]),1);
-                  _lines[_loc4_ + 1].parent.removeChild(_lines[_loc4_ + 1]);
+                  _displayList.splice(_displayList.indexOf(_lines[i + 1]),1);
+                  _lines[i + 1].parent.removeChild(_lines[i + 1]);
                   _isReAdd = true;
                }
-               _loc4_++;
+               i++;
             }
             if(_isReAdd)
             {
@@ -220,13 +218,13 @@ package beadSystem.views
          {
             addChildAt(_rightArrows,0);
          }
-         if(_loc2_ > 0)
+         if(len > 0)
          {
             _tipbackgound.y = -5;
             var _loc7_:* = _maxWidth + 35;
             _tipbackgound.width = _loc7_;
             _width = _loc7_;
-            _loc7_ = _loc1_.y + _loc1_.height + 18;
+            _loc7_ = item.y + item.height + 18;
             _tipbackgound.height = _loc7_;
             _height = _loc7_;
          }
@@ -254,12 +252,12 @@ package beadSystem.views
       
       private function careteEXP() : void
       {
-         var _loc1_:FilterFrameText = _expItem.foreItems[0] as FilterFrameText;
+         var fft:FilterFrameText = _expItem.foreItems[0] as FilterFrameText;
          if(EquipType.isBead(int(_info.Property1)))
          {
             _exp = ServerConfigManager.instance.getBeadUpgradeExp()[(_info as InventoryItemInfo).Hole1];
             _UpExp = ServerConfigManager.instance.getBeadUpgradeExp()[(_info as InventoryItemInfo).Hole1 + 1];
-            _loc1_.text = _exp + "/" + _UpExp;
+            fft.text = _exp + "/" + _UpExp;
             _displayIdx = Number(_displayIdx) + 1;
             _displayList[Number(_displayIdx)] = _expItem;
          }
@@ -267,7 +265,7 @@ package beadSystem.views
       
       private function createCategoryItem() : void
       {
-         var _loc1_:FilterFrameText = _typeItem.foreItems[0] as FilterFrameText;
+         var fft:FilterFrameText = _typeItem.foreItems[0] as FilterFrameText;
          var _loc2_:* = _info.Property2;
          if("1" !== _loc2_)
          {
@@ -275,127 +273,127 @@ package beadSystem.views
             {
                if("3" === _loc2_)
                {
-                  _loc1_.text = LanguageMgr.GetTranslation("tank.data.EquipType.attribute");
+                  fft.text = LanguageMgr.GetTranslation("tank.data.EquipType.attribute");
                }
             }
             else
             {
-               _loc1_.text = LanguageMgr.GetTranslation("tank.data.EquipType.defent");
+               fft.text = LanguageMgr.GetTranslation("tank.data.EquipType.defent");
             }
          }
          else
          {
-            _loc1_.text = LanguageMgr.GetTranslation("tank.data.EquipType.atacckt");
+            fft.text = LanguageMgr.GetTranslation("tank.data.EquipType.atacckt");
          }
-         _loc1_.textColor = 65406;
+         fft.textColor = 65406;
          _displayIdx = Number(_displayIdx) + 1;
          _displayList[Number(_displayIdx)] = _typeItem;
       }
       
-      private function setPurpleHtmlTxt(param1:String, param2:int, param3:String) : String
+      private function setPurpleHtmlTxt(title:String, value:int, add:String) : String
       {
-         return LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.setPurpleHtmlTxt",param1,param2,param3);
+         return LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.setPurpleHtmlTxt",title,value,add);
       }
       
       private function createDescript() : void
       {
-         var _loc2_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(_info.TemplateID);
+         var infoTemplate:ItemTemplateInfo = ItemManager.Instance.getTemplateById(_info.TemplateID);
          if(_info.Description == "")
          {
             return;
          }
-         _info.Description = _loc2_.Description;
-         var _loc1_:InventoryItemInfo = _info as InventoryItemInfo;
-         var _loc3_:BeadInfo = BeadTemplateManager.Instance.GetBeadInfobyID(_info.TemplateID);
-         if(_loc3_.Attribute1 == "0" && _loc3_.Attribute2 == "0")
+         _info.Description = infoTemplate.Description;
+         var infoItem:InventoryItemInfo = _info as InventoryItemInfo;
+         var beadInfo:BeadInfo = BeadTemplateManager.Instance.GetBeadInfobyID(_info.TemplateID);
+         if(beadInfo.Attribute1 == "0" && beadInfo.Attribute2 == "0")
          {
             _descriptionTxt.text = StringHelper.format(_info.Description);
          }
-         else if(_loc3_.Attribute1 == "0" && _loc3_.Attribute2 != "0")
+         else if(beadInfo.Attribute1 == "0" && beadInfo.Attribute2 != "0")
          {
-            if(_loc3_.Att2.length > 1)
+            if(beadInfo.Att2.length > 1)
             {
-               if(_loc1_ && _loc1_.Hole1 > _loc3_.BaseLevel)
+               if(infoItem && infoItem.Hole1 > beadInfo.BaseLevel)
                {
-                  _descriptionTxt.text = StringHelper.format(_info.Description,_loc3_.Att2[1]);
+                  _descriptionTxt.text = StringHelper.format(_info.Description,beadInfo.Att2[1]);
                }
                else
                {
-                  _descriptionTxt.text = StringHelper.format(_info.Description,_loc3_.Att2[0]);
+                  _descriptionTxt.text = StringHelper.format(_info.Description,beadInfo.Att2[0]);
                }
             }
             else
             {
-               _descriptionTxt.text = StringHelper.format(_info.Description,_loc3_.Attribute2);
+               _descriptionTxt.text = StringHelper.format(_info.Description,beadInfo.Attribute2);
             }
          }
-         else if(_loc3_.Attribute1 != "0" && _loc3_.Attribute2 == "0")
+         else if(beadInfo.Attribute1 != "0" && beadInfo.Attribute2 == "0")
          {
-            if(_loc3_.Att1.length > 1)
+            if(beadInfo.Att1.length > 1)
             {
-               if(_loc1_ && _loc1_.Hole1 > _loc3_.BaseLevel)
+               if(infoItem && infoItem.Hole1 > beadInfo.BaseLevel)
                {
-                  _descriptionTxt.text = StringHelper.format(_info.Description,_loc3_.Att1[1]);
+                  _descriptionTxt.text = StringHelper.format(_info.Description,beadInfo.Att1[1]);
                }
                else
                {
-                  _descriptionTxt.text = StringHelper.format(_info.Description,_loc3_.Att1[0]);
+                  _descriptionTxt.text = StringHelper.format(_info.Description,beadInfo.Att1[0]);
                }
             }
             else
             {
-               _descriptionTxt.text = StringHelper.format(_info.Description,_loc3_.Attribute1);
+               _descriptionTxt.text = StringHelper.format(_info.Description,beadInfo.Attribute1);
             }
          }
-         else if(_loc3_.Attribute1 != "0" && _loc3_.Attribute2 != "0" && _loc3_.Attribute3 == "0")
+         else if(beadInfo.Attribute1 != "0" && beadInfo.Attribute2 != "0" && beadInfo.Attribute3 == "0")
          {
-            if(_loc3_.Att1.length > 1 && _loc3_.Att2.length == 1)
+            if(beadInfo.Att1.length > 1 && beadInfo.Att2.length == 1)
             {
-               if(_loc1_ && _loc1_.Hole1 > _loc3_.BaseLevel)
+               if(infoItem && infoItem.Hole1 > beadInfo.BaseLevel)
                {
-                  _descriptionTxt.text = StringHelper.format(_info.Description,_loc3_.Att1[1],_loc3_.Attribute2);
+                  _descriptionTxt.text = StringHelper.format(_info.Description,beadInfo.Att1[1],beadInfo.Attribute2);
                }
                else
                {
-                  _descriptionTxt.text = StringHelper.format(_info.Description,_loc3_.Att1[0],_loc3_.Attribute2);
+                  _descriptionTxt.text = StringHelper.format(_info.Description,beadInfo.Att1[0],beadInfo.Attribute2);
                }
             }
-            else if(_loc3_.Att1.length == 1 && _loc3_.Att2.length > 1)
+            else if(beadInfo.Att1.length == 1 && beadInfo.Att2.length > 1)
             {
-               if(_loc1_ && _loc1_.Hole1 > _loc3_.BaseLevel)
+               if(infoItem && infoItem.Hole1 > beadInfo.BaseLevel)
                {
-                  _descriptionTxt.text = StringHelper.format(_info.Description,_loc3_.Attribute1,_loc3_.Att2[1]);
+                  _descriptionTxt.text = StringHelper.format(_info.Description,beadInfo.Attribute1,beadInfo.Att2[1]);
                }
                else
                {
-                  _descriptionTxt.text = StringHelper.format(_info.Description,_loc3_.Attribute1,_loc3_.Att2[0]);
+                  _descriptionTxt.text = StringHelper.format(_info.Description,beadInfo.Attribute1,beadInfo.Att2[0]);
                }
             }
-            else if(_loc1_ && _loc1_.Hole1 > _loc3_.BaseLevel)
+            else if(infoItem && infoItem.Hole1 > beadInfo.BaseLevel)
             {
-               _descriptionTxt.text = StringHelper.format(_info.Description,_loc3_.Att1[1],_loc3_.Att2[1]);
+               _descriptionTxt.text = StringHelper.format(_info.Description,beadInfo.Att1[1],beadInfo.Att2[1]);
             }
             else
             {
-               _descriptionTxt.text = StringHelper.format(_info.Description,_loc3_.Att1[0],_loc3_.Att2[0]);
+               _descriptionTxt.text = StringHelper.format(_info.Description,beadInfo.Att1[0],beadInfo.Att2[0]);
             }
          }
-         else if(_loc3_.Attribute1 != "0" && _loc3_.Attribute2 != "0" && _loc3_.Attribute3 != "0")
+         else if(beadInfo.Attribute1 != "0" && beadInfo.Attribute2 != "0" && beadInfo.Attribute3 != "0")
          {
-            if(_loc3_.Att1.length != 1)
+            if(beadInfo.Att1.length != 1)
             {
-               if(_loc1_ && _loc1_.Hole1 > _loc3_.BaseLevel)
+               if(infoItem && infoItem.Hole1 > beadInfo.BaseLevel)
                {
-                  _descriptionTxt.text = StringHelper.format(_info.Description,_loc3_.Att1[1],_loc3_.Att2[1],_loc3_.Att3[1]);
+                  _descriptionTxt.text = StringHelper.format(_info.Description,beadInfo.Att1[1],beadInfo.Att2[1],beadInfo.Att3[1]);
                }
                else
                {
-                  _descriptionTxt.text = StringHelper.format(_info.Description,_loc3_.Att1[0],_loc3_.Att2[0],_loc3_.Att3[0]);
+                  _descriptionTxt.text = StringHelper.format(_info.Description,beadInfo.Att1[0],beadInfo.Att2[0],beadInfo.Att3[0]);
                }
             }
             else
             {
-               _descriptionTxt.text = StringHelper.format(_info.Description,_loc3_.Att1[0],_loc3_.Att2[0],_loc3_.Att3[0]);
+               _descriptionTxt.text = StringHelper.format(_info.Description,beadInfo.Att1[0],beadInfo.Att2[0],beadInfo.Att3[0]);
             }
          }
          _descriptionTxt.height = _descriptionTxt.textHeight + 10;
@@ -403,22 +401,22 @@ package beadSystem.views
          _displayList[Number(_displayIdx)] = _descriptionTxt;
       }
       
-      private function ShowBound(param1:InventoryItemInfo) : Boolean
+      private function ShowBound(info:InventoryItemInfo) : Boolean
       {
-         return param1.CategoryID != 32 && param1.CategoryID != 33 && param1.CategoryID != 36;
+         return info.CategoryID != 32 && info.CategoryID != 33 && info.CategoryID != 36;
       }
       
       private function createBindType() : void
       {
-         var _loc1_:InventoryItemInfo = _info as InventoryItemInfo;
-         if(_loc1_ && ShowBound(_loc1_))
+         var tempInfo:InventoryItemInfo = _info as InventoryItemInfo;
+         if(tempInfo && ShowBound(tempInfo))
          {
-            _boundImage.setFrame(!!_loc1_.IsBinds?1:uint(2));
+            _boundImage.setFrame(!!tempInfo.IsBinds?1:uint(2));
             PositionUtils.setPos(_boundImage,_bindImageOriginalPos);
             addChild(_boundImage);
-            if(!_loc1_.IsBinds)
+            if(!tempInfo.IsBinds)
             {
-               if(_loc1_.BindType == 3)
+               if(tempInfo.BindType == 3)
                {
                   _bindTypeTxt.text = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.bangding");
                   _bindTypeTxt.textColor = 16777215;
@@ -449,73 +447,73 @@ package beadSystem.views
       
       private function createRemainTime() : void
       {
-         var _loc4_:Number = NaN;
-         var _loc3_:* = null;
-         var _loc2_:Number = NaN;
-         var _loc5_:Number = NaN;
-         var _loc1_:* = null;
-         var _loc6_:* = NaN;
+         var tempReman:Number = NaN;
+         var tempInfo:* = null;
+         var remain:Number = NaN;
+         var colorDate:Number = NaN;
+         var str:* = null;
+         var hour:* = NaN;
          if(_remainTimeBg.parent)
          {
             _remainTimeBg.parent.removeChild(_remainTimeBg);
          }
          if(_info is InventoryItemInfo)
          {
-            _loc3_ = _info as InventoryItemInfo;
-            _loc2_ = _loc3_.getRemainDate();
-            _loc5_ = _loc3_.getColorValidDate();
-            _loc1_ = _loc3_.CategoryID == 7?LanguageMgr.GetTranslation("bag.changeColor.tips.armName"):"";
-            if(_loc5_ > 0 && _loc5_ != 2147483647)
+            tempInfo = _info as InventoryItemInfo;
+            remain = tempInfo.getRemainDate();
+            colorDate = tempInfo.getColorValidDate();
+            str = tempInfo.CategoryID == 7?LanguageMgr.GetTranslation("bag.changeColor.tips.armName"):"";
+            if(colorDate > 0 && colorDate != 2147483647)
             {
-               if(_loc5_ >= 1)
+               if(colorDate >= 1)
                {
-                  _remainTimeTxt.text = (!!_loc3_.IsUsed?LanguageMgr.GetTranslation("bag.changeColor.tips.name") + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.less"):LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.time")) + Math.ceil(_loc5_) + LanguageMgr.GetTranslation("shop.ShopIIShoppingCarItem.day");
+                  _remainTimeTxt.text = (!!tempInfo.IsUsed?LanguageMgr.GetTranslation("bag.changeColor.tips.name") + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.less"):LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.time")) + Math.ceil(colorDate) + LanguageMgr.GetTranslation("shop.ShopIIShoppingCarItem.day");
                   _remainTimeTxt.textColor = 16777215;
                   _displayIdx = Number(_displayIdx) + 1;
                   _displayList[Number(_displayIdx)] = _remainTimeTxt;
                }
                else
                {
-                  _loc6_ = Number(Math.floor(_loc5_ * 24));
-                  if(_loc6_ < 1)
+                  hour = Number(Math.floor(colorDate * 24));
+                  if(hour < 1)
                   {
-                     _loc6_ = 1;
+                     hour = 1;
                   }
-                  _remainTimeTxt.text = (!!_loc3_.IsUsed?LanguageMgr.GetTranslation("bag.changeColor.tips.name") + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.less"):LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.time")) + _loc6_ + LanguageMgr.GetTranslation("hours");
+                  _remainTimeTxt.text = (!!tempInfo.IsUsed?LanguageMgr.GetTranslation("bag.changeColor.tips.name") + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.less"):LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.time")) + hour + LanguageMgr.GetTranslation("hours");
                   _remainTimeTxt.textColor = 16777215;
                   _displayIdx = Number(_displayIdx) + 1;
                   _displayList[Number(_displayIdx)] = _remainTimeTxt;
                }
             }
-            if(_loc2_ == 2147483647)
+            if(remain == 2147483647)
             {
                _remainTimeTxt.text = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.use");
                _remainTimeTxt.textColor = 16776960;
                _displayIdx = Number(_displayIdx) + 1;
                _displayList[Number(_displayIdx)] = _remainTimeTxt;
             }
-            else if(_loc2_ > 0)
+            else if(remain > 0)
             {
-               if(_loc2_ >= 1)
+               if(remain >= 1)
                {
-                  _loc4_ = Math.ceil(_loc2_);
-                  _remainTimeTxt.text = (!!_loc3_.IsUsed?_loc1_ + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.less"):LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.time")) + _loc4_ + LanguageMgr.GetTranslation("shop.ShopIIShoppingCarItem.day");
+                  tempReman = Math.ceil(remain);
+                  _remainTimeTxt.text = (!!tempInfo.IsUsed?str + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.less"):LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.time")) + tempReman + LanguageMgr.GetTranslation("shop.ShopIIShoppingCarItem.day");
                   _remainTimeTxt.textColor = 16777215;
                   _displayIdx = Number(_displayIdx) + 1;
                   _displayList[Number(_displayIdx)] = _remainTimeTxt;
                }
                else
                {
-                  _loc4_ = Math.floor(_loc2_ * 24);
-                  _loc4_ = _loc4_ < 1?1:Number(_loc4_);
-                  _remainTimeTxt.text = (!!_loc3_.IsUsed?_loc1_ + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.less"):LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.time")) + _loc4_ + LanguageMgr.GetTranslation("hours");
+                  tempReman = Math.floor(remain * 24);
+                  tempReman = tempReman < 1?1:Number(tempReman);
+                  _remainTimeTxt.text = (!!tempInfo.IsUsed?str + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.less"):LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.time")) + tempReman + LanguageMgr.GetTranslation("hours");
                   _remainTimeTxt.textColor = 16777215;
                   _displayIdx = Number(_displayIdx) + 1;
                   _displayList[Number(_displayIdx)] = _remainTimeTxt;
                }
                addChild(_remainTimeBg);
             }
-            else if(!isNaN(_loc2_))
+            else if(!isNaN(remain))
             {
                _remainTimeTxt.text = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.over");
                _remainTimeTxt.textColor = 16711680;
@@ -527,12 +525,12 @@ package beadSystem.views
       
       private function seperateLine() : void
       {
-         var _loc1_:* = null;
+         var prop:* = null;
          _lineIdx = Number(_lineIdx) + 1;
          if(_lines.length < _lineIdx)
          {
-            _loc1_ = ComponentFactory.Instance.creatComponentByStylename("HRuleAsset");
-            _lines.push(_loc1_);
+            prop = ComponentFactory.Instance.creatComponentByStylename("HRuleAsset");
+            _lines.push(prop);
          }
          _displayIdx = Number(_displayIdx) + 1;
          _displayList[Number(_displayIdx)] = _lines[_lineIdx - 1];

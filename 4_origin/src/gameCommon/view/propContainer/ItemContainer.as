@@ -29,34 +29,33 @@ package gameCommon.view.propContainer
       
       private var _clickAble:Boolean;
       
-      public function ItemContainer(param1:Number, param2:Number = 1, param3:Boolean = true, param4:Boolean = false, param5:Boolean = false, param6:String = "")
+      public function ItemContainer(count:Number, column:Number = 1, bgvisible:Boolean = true, ordinal:Boolean = false, clickable:Boolean = false, EffectType:String = "")
       {
-         var _loc8_:int = 0;
-         var _loc7_:* = null;
-         super(param2);
+         var i:int = 0;
+         var item:* = null;
+         super(column);
          vSpace = 4;
          hSpace = 6;
          list = [];
-         _loc8_ = 0;
-         while(_loc8_ < param1)
+         for(i = 0; i < count; )
          {
-            _loc7_ = new ItemCellView(_loc8_,null,false,param6);
-            _loc7_.addEventListener("itemClick",__itemClick);
-            _loc7_.addEventListener("itemOver",__itemOver);
-            _loc7_.addEventListener("itemOut",__itemOut);
-            _loc7_.addEventListener("itemMove",__itemMove);
-            addChild(_loc7_);
-            list.push(_loc7_);
-            _loc8_++;
+            item = new ItemCellView(i,null,false,EffectType);
+            item.addEventListener("itemClick",__itemClick);
+            item.addEventListener("itemOver",__itemOver);
+            item.addEventListener("itemOut",__itemOut);
+            item.addEventListener("itemMove",__itemMove);
+            addChild(item);
+            list.push(item);
+            i++;
          }
-         _clickAble = param5;
-         _ordinal = param4;
+         _clickAble = clickable;
+         _ordinal = ordinal;
       }
       
-      public function setState(param1:Boolean, param2:Boolean) : void
+      public function setState(clickable:Boolean, isGray:Boolean) : void
       {
-         _clickAble = param1;
-         setItemState(param1,param2);
+         _clickAble = clickable;
+         setItemState(clickable,isGray);
       }
       
       public function get clickAble() : Boolean
@@ -64,15 +63,15 @@ package gameCommon.view.propContainer
          return _clickAble;
       }
       
-      public function appendItem(param1:DisplayObject) : void
+      public function appendItem(item:DisplayObject) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = list;
-         for each(var _loc2_ in list)
+         for each(var cell in list)
          {
-            if(_loc2_.item == null)
+            if(cell.item == null)
             {
-               _loc2_.setItem(param1,false);
+               cell.setItem(item,false);
                return;
             }
          }
@@ -80,94 +79,92 @@ package gameCommon.view.propContainer
       
       public function get blankItems() : Array
       {
-         var _loc3_:Array = [];
-         var _loc1_:int = 0;
+         var ar:Array = [];
+         var index:int = 0;
          var _loc5_:int = 0;
          var _loc4_:* = list;
-         for each(var _loc2_ in list)
+         for each(var cell in list)
          {
-            if(_loc2_.item == null)
+            if(cell.item == null)
             {
-               _loc3_.push(_loc1_);
+               ar.push(index);
             }
-            _loc1_++;
+            index++;
          }
-         return _loc3_;
+         return ar;
       }
       
-      public function mouseClickAt(param1:int) : void
+      public function mouseClickAt(index:int) : void
       {
-         list[param1].mouseClick();
+         list[index].mouseClick();
       }
       
-      private function __itemClick(param1:ItemEvent) : void
+      private function __itemClick(event:ItemEvent) : void
       {
-         this.dispatchEvent(new ItemEvent("itemClick",param1.item,param1.index));
+         this.dispatchEvent(new ItemEvent("itemClick",event.item,event.index));
       }
       
-      private function __itemOver(param1:ItemEvent) : void
+      private function __itemOver(event:ItemEvent) : void
       {
-         this.dispatchEvent(new ItemEvent("itemOver",param1.item,param1.index));
+         this.dispatchEvent(new ItemEvent("itemOver",event.item,event.index));
       }
       
-      private function __itemOut(param1:ItemEvent) : void
+      private function __itemOut(event:ItemEvent) : void
       {
-         this.dispatchEvent(new ItemEvent("itemOut",param1.item,param1.index));
+         this.dispatchEvent(new ItemEvent("itemOut",event.item,event.index));
       }
       
-      private function __itemMove(param1:ItemEvent) : void
+      private function __itemMove(event:ItemEvent) : void
       {
-         this.dispatchEvent(new ItemEvent("itemMove",param1.item,param1.index));
+         this.dispatchEvent(new ItemEvent("itemMove",event.item,event.index));
       }
       
-      public function appendItemAt(param1:DisplayObject, param2:int) : void
+      public function appendItemAt(item:DisplayObject, index:int) : void
       {
-         var _loc3_:* = null;
-         var _loc4_:* = 0;
+         var cell:* = null;
+         var i:* = 0;
          if(_ordinal)
          {
-            _loc3_ = list[list.length - 1] as ItemCellView;
-            _loc4_ = param2;
-            while(_loc4_ < list.length - 1)
+            cell = list[list.length - 1] as ItemCellView;
+            for(i = index; i < list.length - 1; )
             {
-               list[_loc4_ + 1] = list[_loc4_];
-               _loc4_++;
+               list[i + 1] = list[i];
+               i++;
             }
-            list[param2] = _loc3_;
-            _loc3_.setItem(param1,false);
+            list[index] = cell;
+            cell.setItem(item,false);
          }
          else
          {
-            _loc3_ = list[param2];
-            _loc3_.setItem(param1,false);
+            cell = list[index];
+            cell.setItem(item,false);
          }
       }
       
-      public function removeItem(param1:DisplayObject) : void
+      public function removeItem(item:DisplayObject) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         _loc3_ = 0;
-         while(_loc3_ < list.length)
+         var i:int = 0;
+         var cell:* = null;
+         for(i = 0; i < list.length; )
          {
-            _loc2_ = list[_loc3_];
-            if(_loc2_.item == param1)
+            cell = list[i];
+            if(cell.item == item)
             {
-               removeChild(_loc2_);
+               removeChild(cell);
             }
-            _loc3_++;
+            i++;
          }
       }
       
-      public function removeItemAt(param1:int) : void
+      public function removeItemAt(index:int) : void
       {
-         var _loc2_:ItemCellView = list[param1];
-         _loc2_.setItem(null,false);
+         var cell:ItemCellView = list[index];
+         cell.setItem(null,false);
          if(_ordinal)
          {
-            list.splice(param1,1);
-            removeChild(_loc2_);
-            list.push(_loc2_);
+            list.splice(index,1);
+            removeChild(cell);
+            list.push(cell);
          }
       }
       
@@ -175,39 +172,39 @@ package gameCommon.view.propContainer
       {
          var _loc3_:int = 0;
          var _loc2_:* = list;
-         for each(var _loc1_ in list)
+         for each(var cell in list)
          {
-            _loc1_.setItem(null,false);
+            cell.setItem(null,false);
          }
       }
       
-      public function setItemClickAt(param1:int, param2:Boolean, param3:Boolean) : void
+      public function setItemClickAt(index:int, isClick:Boolean, isGray:Boolean) : void
       {
-         list[param1].setClick(param2,param3,false);
+         list[index].setClick(isClick,isGray,false);
       }
       
-      public function disableCellIndex(param1:int) : void
+      public function disableCellIndex(index:int) : void
       {
-         list[param1].disable();
+         list[index].disable();
       }
       
-      public function disableSelfProp(param1:int) : void
+      public function disableSelfProp(value:int) : void
       {
-         var _loc3_:* = null;
+         var info:* = null;
          var _loc5_:int = 0;
          var _loc4_:* = list;
-         for each(var _loc2_ in list)
+         for each(var cell in list)
          {
-            if(_loc2_.item)
+            if(cell.item)
             {
-               _loc3_ = PropItemView(_loc2_.item).info;
-               if(_loc3_.Template.TemplateID == 10016 && (param1 == 1 || param1 == 3))
+               info = PropItemView(cell.item).info;
+               if(info.Template.TemplateID == 10016 && (value == 1 || value == 3))
                {
-                  _loc2_.disable();
+                  cell.disable();
                }
-               else if(_loc3_.Template.TemplateID == 10003 && (param1 == 2 || param1 == 3))
+               else if(info.Template.TemplateID == 10003 && (value == 2 || value == 3))
                {
-                  _loc2_.disable();
+                  cell.disable();
                }
             }
          }
@@ -217,67 +214,67 @@ package gameCommon.view.propContainer
       {
          var _loc3_:int = 0;
          var _loc2_:* = list;
-         for each(var _loc1_ in list)
+         for each(var cell in list)
          {
-            _loc1_.disable();
+            cell.disable();
          }
       }
       
-      public function setNoClickAt(param1:int) : void
+      public function setNoClickAt(index:int) : void
       {
-         list[param1].setNoEnergyAsset();
+         list[index].setNoEnergyAsset();
       }
       
-      private function setItemState(param1:Boolean, param2:Boolean) : void
+      private function setItemState(isClick:Boolean, isGray:Boolean) : void
       {
-         var _loc3_:Boolean = false;
+         var isExist:Boolean = false;
          var _loc6_:int = 0;
          var _loc5_:* = list;
-         for each(var _loc4_ in list)
+         for each(var cell in list)
          {
-            _loc3_ = false;
-            if(PropItemView(_loc4_.item) != null)
+            isExist = false;
+            if(PropItemView(cell.item) != null)
             {
-               _loc3_ = PropItemView(_loc4_.item).isExist;
+               isExist = PropItemView(cell.item).isExist;
             }
-            _loc4_.setClick(param1,param2,_loc3_);
+            cell.setClick(isClick,isGray,isExist);
          }
       }
       
-      public function setClickByEnergy(param1:int) : void
+      public function setClickByEnergy(energy:int) : void
       {
-         var _loc3_:* = null;
+         var info:* = null;
          var _loc5_:int = 0;
          var _loc4_:* = list;
-         for each(var _loc2_ in list)
+         for each(var cell in list)
          {
-            if(_loc2_.item)
+            if(cell.item)
             {
-               _loc3_ = PropItemView(_loc2_.item).info;
-               if(_loc3_)
+               info = PropItemView(cell.item).info;
+               if(info)
                {
-                  if(param1 < _loc3_.needEnergy)
+                  if(energy < info.needEnergy)
                   {
-                     _loc2_.setClick(true,true,PropItemView(_loc2_.item).isExist);
+                     cell.setClick(true,true,PropItemView(cell.item).isExist);
                   }
                }
             }
          }
       }
       
-      public function setVisible(param1:int, param2:Boolean) : void
+      public function setVisible(index:int, v:Boolean) : void
       {
-         list[param1].visible = param2;
+         list[index].visible = v;
       }
       
       override public function dispose() : void
       {
-         var _loc1_:* = null;
+         var item:* = null;
          super.dispose();
          while(list.length > 0)
          {
-            _loc1_ = list.shift() as ItemCellView;
-            _loc1_.dispose();
+            item = list.shift() as ItemCellView;
+            item.dispose();
          }
          list = null;
          if(parent)

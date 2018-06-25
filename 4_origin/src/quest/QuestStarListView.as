@@ -27,55 +27,53 @@ package quest
       
       private function initView() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _starContainer = new HBox();
          addChild(_starContainer);
          _starImg = new Vector.<ScaleFrameImage>(5);
-         _loc1_ = 0;
-         while(_loc1_ < 5)
+         for(i = 0; i < 5; )
          {
-            _starImg[_loc1_] = ComponentFactory.Instance.creatComponentByStylename("quest.complete.star");
-            _loc1_++;
+            _starImg[i] = ComponentFactory.Instance.creatComponentByStylename("quest.complete.star");
+            i++;
          }
          _lightMovie = ComponentFactory.Instance.creat("asset.core.improveEffect");
       }
       
-      public function level(param1:int, param2:Boolean = false) : void
+      public function level(value:int, improve:Boolean = false) : void
       {
-         var _loc3_:int = 0;
-         if(param1 > 5 || param1 < 0)
+         var i:int = 0;
+         if(value > 5 || value < 0)
          {
             return;
          }
-         _level = param1;
-         _loc3_ = 0;
-         while(_loc3_ < 5)
+         _level = value;
+         for(i = 0; i < 5; )
          {
-            if(_level > _loc3_)
+            if(_level > i)
             {
-               if(param2 && _level - 1 == _loc3_)
+               if(improve && _level - 1 == i)
                {
                   _starContainer.addChild(_lightMovie);
                   _lightMovie.play();
                }
                else
                {
-                  _starContainer.addChild(_starImg[_loc3_]);
-                  _starImg[_loc3_].setFrame(2);
+                  _starContainer.addChild(_starImg[i]);
+                  _starImg[i].setFrame(2);
                }
             }
             else
             {
-               _starContainer.addChild(_starImg[_loc3_]);
-               _starImg[_loc3_].setFrame(1);
+               _starContainer.addChild(_starImg[i]);
+               _starImg[i].setFrame(1);
             }
-            _loc3_++;
+            i++;
          }
       }
       
       override public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          super.dispose();
          if(_starContainer)
          {
@@ -89,15 +87,14 @@ package quest
          _lightMovie = null;
          if(_starImg)
          {
-            _loc1_ = 0;
-            while(_loc1_ < 5)
+            for(i = 0; i < 5; )
             {
-               if(_starImg[_loc1_])
+               if(_starImg[i])
                {
-                  ObjectUtils.disposeObject(_starImg[_loc1_]);
+                  ObjectUtils.disposeObject(_starImg[i]);
                }
-               _starImg[_loc1_] = null;
-               _loc1_++;
+               _starImg[i] = null;
+               i++;
             }
          }
          if(_starImg)

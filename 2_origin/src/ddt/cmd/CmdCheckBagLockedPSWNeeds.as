@@ -12,10 +12,10 @@ package ddt.cmd
          super();
       }
       
-      public function excute(param1:Object) : *
+      public function excute(data:Object) : *
       {
-         var _loc2_:int = param1;
-         if(PlayerManager.Instance.Self.bagLocked && PlayerManager.Instance.isBagLockedPSWNeeded(_loc2_))
+         var type:int = data;
+         if(PlayerManager.Instance.Self.bagLocked && PlayerManager.Instance.isBagLockedPSWNeeded(type))
          {
             BaglockedManager.Instance.show();
             return true;

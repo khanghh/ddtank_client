@@ -12,10 +12,10 @@ package ddt.data
       
       public var Count:int;
       
-      public function PropInfo(param1:ItemTemplateInfo)
+      public function PropInfo(info:ItemTemplateInfo)
       {
          super();
-         _template = param1;
+         _template = info;
       }
       
       public function get Template() : ItemTemplateInfo
@@ -33,9 +33,9 @@ package ddt.data
          return int(_template.Property7);
       }
       
-      public function equal(param1:PropInfo) : Boolean
+      public function equal(info:PropInfo) : Boolean
       {
-         return param1.Template == this.Template && param1.Place == this.Place;
+         return info.Template == this.Template && info.Place == this.Place;
       }
       
       public function get TemplateID() : int

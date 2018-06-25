@@ -134,12 +134,12 @@ package consortion.view.selfConsortia
          PlayerManager.Instance.Self.PropBag.addEventListener("update",__onUpdateBag);
       }
       
-      protected function __useChangeHandler(param1:Event) : void
+      protected function __useChangeHandler(event:Event) : void
       {
          showLevel(_btnGroup.selectIndex + 1);
       }
       
-      private function __onUpdateBag(param1:BagEvent) : void
+      private function __onUpdateBag(e:BagEvent) : void
       {
          _gold.text = String(PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(12567));
       }
@@ -153,53 +153,53 @@ package consortion.view.selfConsortia
          PlayerManager.Instance.Self.PropBag.removeEventListener("update",__onUpdateBag);
       }
       
-      private function __propChangeHandler(param1:PlayerPropertyEvent) : void
+      private function __propChangeHandler(event:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["Offer"])
+         if(event.changedProperties["Offer"])
          {
             _offer.text = String(PlayerManager.Instance.Self.Offer);
          }
-         if(param1.changedProperties["Money"])
+         if(event.changedProperties["Money"])
          {
             _money.text = String(PlayerManager.Instance.Self.Money);
          }
-         if(!param1.changedProperties["BandMoney"])
+         if(!event.changedProperties["BandMoney"])
          {
          }
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(event:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(event.responseCode == 0 || event.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();
          }
       }
       
-      private function __groupChange(param1:Event) : void
+      private function __groupChange(event:Event) : void
       {
          SoundManager.instance.play("008");
          showLevel(_btnGroup.selectIndex + 1);
       }
       
-      private function showLevel(param1:int) : void
+      private function showLevel(index:int) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:Boolean = PlayerManager.Instance.Self.consortiaInfo.ShopLevel >= param1?true:false;
-         var _loc4_:Vector.<ConsortiaAssetLevelOffer> = ConsortionModelManager.Instance.model.useConditionList;
-         if(_loc4_ == null || _loc4_.length == 0)
+         var rich:int = 0;
+         var b:Boolean = PlayerManager.Instance.Self.consortiaInfo.ShopLevel >= index?true:false;
+         var uselist:Vector.<ConsortiaAssetLevelOffer> = ConsortionModelManager.Instance.model.useConditionList;
+         if(uselist == null || uselist.length == 0)
          {
-            _loc3_ = 100;
+            rich = 100;
          }
          else
          {
-            _loc3_ = ConsortionModelManager.Instance.model.useConditionList[param1 - 1].Riches;
+            rich = ConsortionModelManager.Instance.model.useConditionList[index - 1].Riches;
          }
-         _list.list(ShopManager.Instance.consortiaShopLevelTemplates(param1),param1,_loc3_,_loc2_);
+         _list.list(ShopManager.Instance.consortiaShopLevelTemplates(index),index,rich,b);
       }
       
-      private function __managerClickHandler(param1:MouseEvent) : void
+      private function __managerClickHandler(event:MouseEvent) : void
       {
          ConsortionModelManager.Instance.alertManagerFrame();
       }

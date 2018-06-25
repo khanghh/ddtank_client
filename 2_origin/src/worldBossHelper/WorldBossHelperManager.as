@@ -79,7 +79,7 @@ package worldBossHelper
          WorldBossAssistantTimeInfo3 = ServerConfigManager.instance.findInfoByName("WorldBossAssistantFastTime");
       }
       
-      protected function __bossOpenHandler(param1:WorldBossHelperEvent) : void
+      protected function __bossOpenHandler(event:WorldBossHelperEvent) : void
       {
          dispatchEvent(new CEvent("wldboss_boss_open"));
       }

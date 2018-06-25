@@ -54,9 +54,9 @@ package pet.data
          return _ballType;
       }
       
-      public function set BallType(param1:int) : void
+      public function set BallType(value:int) : void
       {
-         _ballType = param1;
+         _ballType = value;
       }
       
       public function get EffectPic() : String
@@ -69,9 +69,9 @@ package pet.data
          return "asset.game.skill.effect." + _effectPic;
       }
       
-      public function set EffectPic(param1:String) : void
+      public function set EffectPic(value:String) : void
       {
-         _effectPic = param1;
+         _effectPic = value;
       }
       
       public function get isActiveSkill() : Boolean
@@ -84,9 +84,9 @@ package pet.data
          return _exclusiveID;
       }
       
-      public function set exclusiveID(param1:int) : void
+      public function set exclusiveID(value:int) : void
       {
-         _exclusiveID = param1;
+         _exclusiveID = value;
       }
    }
 }

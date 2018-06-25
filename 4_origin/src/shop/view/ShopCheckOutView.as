@@ -228,14 +228,14 @@ package shop.view
       
       private function clearList() : void
       {
-         var _loc1_:* = null;
+         var item:* = null;
          while(_castList2.numChildren > 0)
          {
-            _loc1_ = _castList2.getChildAt(_castList2.numChildren - 1) as ShopCartItem;
-            removeItemEvent(_loc1_);
-            _castList2.removeChild(_loc1_);
-            _loc1_.dispose();
-            _loc1_ = null;
+            item = _castList2.getChildAt(_castList2.numChildren - 1) as ShopCartItem;
+            removeItemEvent(item);
+            _castList2.removeChild(item);
+            item.dispose();
+            item = null;
          }
       }
       
@@ -250,12 +250,12 @@ package shop.view
          _askBtn.addEventListener("click",__purchaseConfirmationBtnClick);
       }
       
-      protected function __purchaseConfirmationBtnClick(param1:MouseEvent = null) : void
+      protected function __purchaseConfirmationBtnClick(event:MouseEvent = null) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:int = _commodityPricesText1.text;
-         var _loc4_:int = _commodityPricesText2.text;
-         var _loc3_:int = _commodityPricesText3.text;
+         var money:int = _commodityPricesText1.text;
+         var bandMoney:int = _commodityPricesText2.text;
+         var orderMoney:int = _commodityPricesText3.text;
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
@@ -267,17 +267,17 @@ package shop.view
          }
          else if(_type == 3)
          {
-            if(_loc4_ > PlayerManager.Instance.Self.BandMoney)
+            if(bandMoney > PlayerManager.Instance.Self.BandMoney)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.view.transfer.StoreIITransferBG.lijinbuzu"));
                return;
             }
-            if(_loc2_ > PlayerManager.Instance.Self.Money)
+            if(money > PlayerManager.Instance.Self.Money)
             {
                LeavePageManager.showFillFrame();
                return;
             }
-            if(_loc3_ > PlayerManager.Instance.Self.DDTMoney)
+            if(orderMoney > PlayerManager.Instance.Self.DDTMoney)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("shop.view.madelLack"));
                return;
@@ -286,17 +286,17 @@ package shop.view
          }
          else if(_type == 1)
          {
-            if(_loc4_ > PlayerManager.Instance.Self.BandMoney)
+            if(bandMoney > PlayerManager.Instance.Self.BandMoney)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.view.transfer.StoreIITransferBG.lijinbuzu"));
                return;
             }
-            if(_loc2_ > PlayerManager.Instance.Self.Money)
+            if(money > PlayerManager.Instance.Self.Money)
             {
                LeavePageManager.showFillFrame();
                return;
             }
-            if(_loc3_ > PlayerManager.Instance.Self.DDTMoney)
+            if(orderMoney > PlayerManager.Instance.Self.DDTMoney)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("shop.view.madelLack"));
                return;
@@ -305,7 +305,7 @@ package shop.view
          }
          else if(_type == 2)
          {
-            if(_loc2_ > PlayerManager.Instance.Self.Money)
+            if(money > PlayerManager.Instance.Self.Money)
             {
                LeavePageManager.showFillFrame();
                dispose();
@@ -323,8 +323,8 @@ package shop.view
             _shopPresentClearingFrame.dispose();
             _shopPresentClearingFrame = null;
          }
-         var _loc1_:Array = _model.allItems;
-         if(_loc1_.length > 0)
+         var askArray:Array = _model.allItems;
+         if(askArray.length > 0)
          {
             _shopPresentClearingFrame = ComponentFactory.Instance.creatComponentByStylename("core.ddtshop.ShopPresentClearingFrame");
             _shopPresentClearingFrame.show();
@@ -339,77 +339,76 @@ package shop.view
          }
       }
       
-      private function seleBand(param1:int, param2:int, param3:Boolean) : void
+      private function seleBand(id:int, num:int, bool:Boolean) : void
       {
-         _model.isBandList[param1] = param3;
+         _model.isBandList[id] = bool;
          updateTxt();
       }
       
-      protected function addItemEvent(param1:ShopCartItem) : void
+      protected function addItemEvent(item:ShopCartItem) : void
       {
-         param1.addEventListener("deleteitem",__deleteItem);
-         param1.addEventListener("add_length",addLength);
-         param1.addEventListener("conditionchange",__conditionChange);
+         item.addEventListener("deleteitem",__deleteItem);
+         item.addEventListener("add_length",addLength);
+         item.addEventListener("conditionchange",__conditionChange);
       }
       
-      protected function addLength(param1:Event) : void
+      protected function addLength(event:Event) : void
       {
-         var _loc2_:ShopCartItem = param1.currentTarget as ShopCartItem;
-         ShopBuyManager.crrItemId = _loc2_.id;
-         setList(_tempList,_loc2_.id);
+         var items:ShopCartItem = event.currentTarget as ShopCartItem;
+         ShopBuyManager.crrItemId = items.id;
+         setList(_tempList,items.id);
       }
       
-      protected function removeItemEvent(param1:ShopCartItem) : void
+      protected function removeItemEvent(item:ShopCartItem) : void
       {
-         param1.removeEventListener("deleteitem",__deleteItem);
-         param1.removeEventListener("conditionchange",__conditionChange);
+         item.removeEventListener("deleteitem",__deleteItem);
+         item.removeEventListener("conditionchange",__conditionChange);
       }
       
-      public function setList(param1:Array, param2:int = 0, param3:Boolean = false) : void
+      public function setList(arr:Array, id:int = 0, isfst:Boolean = false) : void
       {
-         var _loc6_:int = 0;
-         var _loc4_:* = null;
+         var i:int = 0;
+         var cItem:* = null;
          clearList();
          _cartItemList = new Vector.<ShopCartItem>();
-         _list = param1;
-         if(param3)
+         _list = arr;
+         if(isfst)
          {
             _model.isBandList = [];
          }
-         var _loc5_:int = param1.length;
-         _loc6_ = 0;
-         while(_loc6_ < _loc5_)
+         var len:int = arr.length;
+         for(i = 0; i < len; )
          {
-            _loc4_ = createShopItem();
-            _loc4_.id = _loc6_;
+            cItem = createShopItem();
+            cItem.id = i;
             if(_type == 2 || _type == 4)
             {
-               _loc4_.setShopItemInfo(param1[_loc6_]);
-               _loc4_.type = 2;
+               cItem.setShopItemInfo(arr[i]);
+               cItem.type = 2;
             }
             else if(ShopBuyManager.crrItemId != 0)
             {
-               _loc4_.setShopItemInfo(param1[_loc6_],ShopBuyManager.crrItemId,_model.isBandList[_loc6_]);
+               cItem.setShopItemInfo(arr[i],ShopBuyManager.crrItemId,_model.isBandList[i]);
             }
             else
             {
-               _loc4_.setShopItemInfo(param1[_loc6_],param2,_model.isBandList[_loc6_]);
+               cItem.setShopItemInfo(arr[i],id,_model.isBandList[i]);
             }
-            _loc4_.seleBand = seleBand;
-            _loc4_.upDataBtnState = upDataBtnState;
-            _loc4_.setColor(param1[_loc6_].Color);
-            _castList2.addChild(_loc4_);
-            if(param3)
+            cItem.seleBand = seleBand;
+            cItem.upDataBtnState = upDataBtnState;
+            cItem.setColor(arr[i].Color);
+            _castList2.addChild(cItem);
+            if(isfst)
             {
-               _model.isBandList.push(_loc4_.isBand);
+               _model.isBandList.push(cItem.isBand);
             }
             else
             {
-               _loc4_.setDianquanType(_model.isBandList[_loc6_]);
+               cItem.setDianquanType(_model.isBandList[i]);
             }
-            _cartItemList.push(_loc4_);
-            addItemEvent(_loc4_);
-            _loc6_++;
+            _cartItemList.push(cItem);
+            addItemEvent(cItem);
+            i++;
          }
          updateList();
          _cartScroll.invalidateViewport();
@@ -423,21 +422,20 @@ package shop.view
       
       private function updateList() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = _cartItemList.length;
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_)
+         var i:int = 0;
+         var len:int = _cartItemList.length;
+         for(i = 0; i < len; )
          {
-            _cartItemList[_loc2_].id = _loc2_;
-            if(_loc2_ > 0)
+            _cartItemList[i].id = i;
+            if(i > 0)
             {
-               _cartItemList[_loc2_].y = _cartItemList[_loc2_ - 1].y + _cartItemList[_loc2_ - 1].height;
+               _cartItemList[i].y = _cartItemList[i - 1].y + _cartItemList[i - 1].height;
             }
             else
             {
-               _cartItemList[_loc2_].y = 0;
+               _cartItemList[i].y = 0;
             }
-            _loc2_++;
+            i++;
          }
       }
       
@@ -446,35 +444,34 @@ package shop.view
          return new ShopCartItem();
       }
       
-      public function setup(param1:ShopController, param2:ShopModel, param3:Array, param4:int) : void
+      public function setup(controller:ShopController, model:ShopModel, list:Array, type:int) : void
       {
-         _controller = param1;
-         _model = param2;
-         _tempList = param3;
-         _type = param4;
+         _controller = controller;
+         _model = model;
+         _tempList = list;
+         _type = type;
          _isDisposed = false;
          this.visible = true;
          init();
          initEvent();
       }
       
-      private function __conditionChange(param1:Event) : void
+      private function __conditionChange(evt:Event) : void
       {
          updateTxt();
       }
       
-      private function upDataListInfo(param1:int) : void
+      private function upDataListInfo(id:int) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = _cartItemList.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var i:int = 0;
+         var len:int = _cartItemList.length;
+         for(i = 0; i < len; )
          {
-            if(param1 == _cartItemList[_loc3_].id)
+            if(id == _cartItemList[i].id)
             {
-               _cartItemList.splice(_loc3_,1);
-               _tempList.splice(_loc3_,1);
-               if(param1 == ShopBuyManager.crrItemId)
+               _cartItemList.splice(i,1);
+               _tempList.splice(i,1);
+               if(id == ShopBuyManager.crrItemId)
                {
                   ShopBuyManager.crrItemId = 0;
                   if(_cartItemList.length > 0 && _type != 2)
@@ -484,26 +481,26 @@ package shop.view
                }
                break;
             }
-            _loc3_++;
+            i++;
          }
       }
       
-      private function __deleteItem(param1:Event) : void
+      private function __deleteItem(evt:Event) : void
       {
-         var _loc2_:ShopCartItem = param1.currentTarget as ShopCartItem;
-         var _loc3_:ShopCarItemInfo = _loc2_.shopItemInfo;
-         _loc2_.removeEventListener("deleteitem",__deleteItem);
-         _loc2_.removeEventListener("conditionchange",__conditionChange);
-         _model.isBandList.splice(_loc2_.id,1);
-         _castList2.removeChild(_loc2_);
-         if(ShopBuyManager.crrItemId > _loc2_.id)
+         var item:ShopCartItem = evt.currentTarget as ShopCartItem;
+         var shopItemInfo:ShopCarItemInfo = item.shopItemInfo;
+         item.removeEventListener("deleteitem",__deleteItem);
+         item.removeEventListener("conditionchange",__conditionChange);
+         _model.isBandList.splice(item.id,1);
+         _castList2.removeChild(item);
+         if(ShopBuyManager.crrItemId > item.id)
          {
             ShopBuyManager.crrItemId--;
          }
-         _loc2_.dispose();
+         item.dispose();
          if(_type == 3)
          {
-            _controller.removeTempEquip(_loc3_);
+            _controller.removeTempEquip(shopItemInfo);
             updateTxt();
             updateList();
             _cartScroll.invalidateViewport();
@@ -514,8 +511,8 @@ package shop.view
          }
          if(_type == 1 || _type == 4)
          {
-            _controller.removeFromCar(_loc3_);
-            upDataListInfo(_loc2_.id);
+            _controller.removeFromCar(shopItemInfo);
+            upDataListInfo(item.id);
             updateTxt();
             updateList();
             _cartScroll.invalidateViewport();
@@ -526,8 +523,8 @@ package shop.view
          }
          if(_type == 2)
          {
-            _controller.removeFromCar(_loc3_);
-            upDataListInfo(_loc2_.id);
+            _controller.removeFromCar(shopItemInfo);
+            upDataListInfo(item.id);
             updateTxt();
             updateList();
             _cartScroll.invalidateViewport();
@@ -538,9 +535,9 @@ package shop.view
          }
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(evt:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
@@ -564,42 +561,42 @@ package shop.view
          _giftsBtn.removeEventListener("click",__purchaseConfirmationBtnClick);
       }
       
-      private function __dispatchFrameEvent(param1:MouseEvent) : void
+      private function __dispatchFrameEvent(e:MouseEvent) : void
       {
          _frame.dispatchEvent(new FrameEvent(3));
       }
       
-      private function isMoneyGoods(param1:*, param2:int, param3:Array) : Boolean
+      private function isMoneyGoods(item:*, index:int, array:Array) : Boolean
       {
-         if(param1 is ShopItemInfo)
+         if(item is ShopItemInfo)
          {
-            return ShopItemInfo(param1).getItemPrice(1).IsBothMoneyType;
+            return ShopItemInfo(item).getItemPrice(1).IsBothMoneyType;
          }
          return false;
       }
       
       private function notPresentGoods() : Array
       {
-         var _loc1_:Array = [];
+         var notPresent:Array = [];
          var _loc4_:int = 0;
          var _loc3_:* = _tempList;
-         for each(var _loc2_ in _tempList)
+         for each(var item in _tempList)
          {
-            if(_giveArray.indexOf(_loc2_) == -1)
+            if(_giveArray.indexOf(item) == -1)
             {
-               _loc1_.push(_loc2_);
+               notPresent.push(item);
             }
          }
-         return _loc1_;
+         return notPresent;
       }
       
-      private function onBuyedGoods(param1:PkgEvent) : void
+      private function onBuyedGoods(event:PkgEvent) : void
       {
-         var _loc3_:int = 0;
-         param1.pkg.position = 20;
-         var _loc5_:int = param1.pkg.readInt();
-         var _loc4_:Boolean = false;
-         if(_loc5_ != 0)
+         var j:int = 0;
+         event.pkg.position = 20;
+         var success:int = event.pkg.readInt();
+         var isDispose:Boolean = false;
+         if(success != 0)
          {
             if(_type == 3)
             {
@@ -615,54 +612,52 @@ package shop.view
             _model.clearCurrentTempList(!!_model.fittingSex?1:2);
             var _loc7_:int = 0;
             var _loc6_:* = _model.currentLeftList;
-            for each(var _loc2_ in _model.currentLeftList)
+            for each(var item in _model.currentLeftList)
             {
-               _model.addTempEquip(_loc2_);
+               _model.addTempEquip(item);
             }
             setList(_model.currentTempList);
             if(_model.currentTempList.length < 1)
             {
-               _loc4_ = true;
+               isDispose = true;
             }
          }
          else if(_type == 1)
          {
-            _loc3_ = 0;
-            while(_loc3_ < _buyArray.length)
+            for(j = 0; j < _buyArray.length; )
             {
-               _model.removeFromShoppingCar(_buyArray[_loc3_] as ShopCarItemInfo);
-               _loc3_++;
+               _model.removeFromShoppingCar(_buyArray[j] as ShopCarItemInfo);
+               j++;
             }
             setList(_model.allItems);
             if(_model.allItems.length < 1)
             {
-               _loc4_ = true;
+               isDispose = true;
             }
          }
-         if(_loc5_ != 0)
+         if(success != 0)
          {
             dispose();
          }
-         else if(_loc4_)
+         else if(isDispose)
          {
             dispose();
          }
       }
       
-      private function onPresent(param1:PkgEvent) : void
+      private function onPresent(event:PkgEvent) : void
       {
-         var _loc3_:int = 0;
+         var k:int = 0;
          _shopPresentClearingFrame.presentBtn.enable = true;
          _shopPresentClearingFrame.dispose();
          _shopPresentClearingFrame = null;
          this.visible = true;
-         var _loc2_:Boolean = param1.pkg.readBoolean();
-         _loc3_ = 0;
-         while(_loc3_ < _giveArray.length)
+         var boo:Boolean = event.pkg.readBoolean();
+         for(k = 0; k < _giveArray.length; )
          {
-            _model.removeFromShoppingCar(_giveArray[_loc3_] as ShopCarItemInfo);
-            _tempList.splice(_tempList.indexOf(_giveArray[_loc3_] as ShopCarItemInfo),1);
-            _loc3_++;
+            _model.removeFromShoppingCar(_giveArray[k] as ShopCarItemInfo);
+            _tempList.splice(_tempList.indexOf(_giveArray[k] as ShopCarItemInfo),1);
+            k++;
          }
          if(_tempList.length == 0)
          {
@@ -699,25 +694,25 @@ package shop.view
          }
       }
       
-      private function __shopPresentClearingFrameResponseHandler(param1:FrameEvent) : void
+      private function __shopPresentClearingFrameResponseHandler(event:FrameEvent) : void
       {
          _shopPresentClearingFrame.removeEventListener("response",__shopPresentClearingFrameResponseHandler);
-         if(param1.responseCode == 0 || param1.responseCode == 1 || param1.responseCode == 4)
+         if(event.responseCode == 0 || event.responseCode == 1 || event.responseCode == 4)
          {
             StageReferance.stage.focus = _frame;
             this.visible = true;
          }
       }
       
-      protected function __presentBtnClick(param1:MouseEvent) : void
+      protected function __presentBtnClick(event:MouseEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc6_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc7_:* = null;
-         var _loc8_:int = 0;
+         var len:int = 0;
+         var goodsIDs:* = null;
+         var types:* = null;
+         var goodsTypes:* = null;
+         var colors:* = null;
+         var skins:* = null;
+         var i:int = 0;
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -738,23 +733,22 @@ package shop.view
          {
             _shopPresentClearingFrame.presentBtn.removeEventListener("click",__presentBtnClick);
             _shopPresentClearingFrame.removeEventListener("response",__shopPresentClearingFrameResponseHandler);
-            _loc5_ = _cartItemList.length;
-            _loc4_ = [];
-            _loc6_ = [];
-            _loc3_ = [];
-            _loc2_ = [];
-            _loc7_ = [];
-            _loc8_ = 0;
-            while(_loc8_ < _loc5_)
+            len = _cartItemList.length;
+            goodsIDs = [];
+            types = [];
+            goodsTypes = [];
+            colors = [];
+            skins = [];
+            for(i = 0; i < len; )
             {
-               _loc4_.push(_cartItemList[_loc8_].shopItemInfo.GoodsID);
-               _loc6_.push(_cartItemList[_loc8_].shopItemInfo.currentBuyType);
-               _loc3_.push(_cartItemList[_loc8_].shopItemInfo.isDiscount);
-               _loc2_.push(_cartItemList[_loc8_].shopItemInfo.Color);
-               _loc7_.push(_cartItemList[_loc8_].shopItemInfo.skin);
-               _loc8_++;
+               goodsIDs.push(_cartItemList[i].shopItemInfo.GoodsID);
+               types.push(_cartItemList[i].shopItemInfo.currentBuyType);
+               goodsTypes.push(_cartItemList[i].shopItemInfo.isDiscount);
+               colors.push(_cartItemList[i].shopItemInfo.Color);
+               skins.push(_cartItemList[i].shopItemInfo.skin);
+               i++;
             }
-            SocketManager.Instance.out.requestShopPay(_loc4_,_loc6_,_loc3_,_loc2_,_loc7_,_shopPresentClearingFrame.Name);
+            SocketManager.Instance.out.requestShopPay(goodsIDs,types,goodsTypes,colors,skins,_shopPresentClearingFrame.Name);
          }
          else
          {
@@ -780,23 +774,23 @@ package shop.view
       
       protected function updateTxt() : void
       {
-         var _loc1_:Array = _type == 3?_model.currentTempList:_model.allItems;
+         var tempArray:Array = _type == 3?_model.currentTempList:_model.allItems;
          if(_type == 2)
          {
-            _loc1_ = _tempList;
+            tempArray = _tempList;
          }
-         var _loc2_:Array = _model.calcPrices(_loc1_,_model.isBandList);
-         var _loc3_:* = LanguageMgr.GetTranslation("shop.CheckOutView.CommodityNumberTip",_loc1_.length);
+         var prices:Array = _model.calcPrices(tempArray,_model.isBandList);
+         var _loc3_:* = LanguageMgr.GetTranslation("shop.CheckOutView.CommodityNumberTip",tempArray.length);
          _commodityNumberTip.htmlText = _loc3_;
          _commodityNumberTip.htmlText = _loc3_;
-         _commodityPricesText1.text = String(_loc2_[0 + 1]);
-         _commodityPricesText2.text = String(_loc2_[2 + 1]);
-         _commodityPricesText3.text = String(_loc2_[1 + 1]);
+         _commodityPricesText1.text = String(prices[0 + 1]);
+         _commodityPricesText2.text = String(prices[2 + 1]);
+         _commodityPricesText3.text = String(prices[1 + 1]);
       }
       
       public function dispose() : void
       {
-         var _loc1_:* = null;
+         var item:* = null;
          if(_shopPresentClearingFrame)
          {
             if(_shopPresentClearingFrame.presentBtn)
@@ -814,11 +808,11 @@ package shop.view
             ObjectUtils.disposeAllChildren(this);
             while(_cartList.numChildren > 0)
             {
-               _loc1_ = _cartList.getChildAt(_cartList.numChildren - 1) as ShopCartItem;
-               removeItemEvent(_loc1_);
-               _cartList.removeChild(_loc1_);
-               _loc1_.dispose();
-               _loc1_ = null;
+               item = _cartList.getChildAt(_cartList.numChildren - 1) as ShopCartItem;
+               removeItemEvent(item);
+               _cartList.removeChild(item);
+               item.dispose();
+               item = null;
             }
             ObjectUtils.disposeObject(_needToPayTip);
             _needToPayTip = null;

@@ -20,11 +20,11 @@ package roulette
       
       private var _arr:Array;
       
-      public function RouletteFrameEvent(param1:String, param2:String = null, param3:Array = null, param4:Boolean = false, param5:Boolean = false)
+      public function RouletteFrameEvent(type:String, reward:String = null, arr:Array = null, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         super(param1);
-         _reward = param2;
-         _arr = param3;
+         super(type);
+         _reward = reward;
+         _arr = arr;
       }
       
       public function get reward() : String

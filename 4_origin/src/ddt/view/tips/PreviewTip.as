@@ -22,7 +22,7 @@ package ddt.view.tips
          return width;
       }
       
-      public function set tipWidth(param1:int) : void
+      public function set tipWidth(w:int) : void
       {
       }
       
@@ -31,7 +31,7 @@ package ddt.view.tips
          return height;
       }
       
-      public function set tipHeight(param1:int) : void
+      public function set tipHeight(h:int) : void
       {
       }
       
@@ -40,17 +40,17 @@ package ddt.view.tips
          return _tipData;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(data:Object) : void
       {
-         if(!param1 || param1 is DisplayObject == false)
+         if(!data || data is DisplayObject == false)
          {
             return;
          }
-         if(param1 == _tipData)
+         if(data == _tipData)
          {
             return;
          }
-         _tipData = param1;
+         _tipData = data;
          ObjectUtils.disposeAllChildren(this);
          addChild(_tipData as DisplayObject);
       }

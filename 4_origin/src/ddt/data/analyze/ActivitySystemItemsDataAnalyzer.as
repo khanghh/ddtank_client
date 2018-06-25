@@ -56,47 +56,47 @@ package ddt.data.analyze
       
       public var defendislandDataList:Array;
       
-      public function ActivitySystemItemsDataAnalyzer(param1:Function)
+      public function ActivitySystemItemsDataAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc2_:* = null;
-         var _loc13_:int = 0;
-         var _loc9_:* = null;
-         var _loc29_:* = null;
-         var _loc10_:* = null;
-         var _loc26_:* = null;
-         var _loc7_:* = null;
-         var _loc25_:* = undefined;
-         var _loc8_:* = null;
-         var _loc23_:* = null;
-         var _loc5_:* = null;
-         var _loc36_:* = null;
-         var _loc6_:* = null;
-         var _loc34_:* = null;
-         var _loc3_:* = null;
-         var _loc32_:* = null;
-         var _loc4_:* = null;
-         var _loc31_:* = null;
-         var _loc12_:* = null;
-         var _loc17_:* = null;
-         var _loc21_:* = null;
-         var _loc27_:* = null;
-         var _loc20_:* = null;
-         var _loc28_:* = null;
-         var _loc19_:* = null;
-         var _loc22_:* = null;
-         var _loc18_:* = null;
-         var _loc24_:* = null;
-         var _loc16_:* = null;
-         var _loc33_:* = null;
-         var _loc15_:* = null;
-         var _loc35_:* = null;
-         var _loc14_:* = null;
-         var _loc30_:* = null;
+         var xmllist:* = null;
+         var i:int = 0;
+         var itemInfo1:* = null;
+         var arr1:* = null;
+         var itemInfo2:* = null;
+         var arr2:* = null;
+         var itemInfo3:* = null;
+         var arr3:* = undefined;
+         var itemInfo4:* = null;
+         var arr4:* = null;
+         var itemInfo5:* = null;
+         var arr5:* = null;
+         var itemInfo6:* = null;
+         var arr6:* = null;
+         var itemInfo7:* = null;
+         var arr7:* = null;
+         var itemInfo8:* = null;
+         var arr8:* = null;
+         var itemInfo9:* = null;
+         var arr9:* = null;
+         var itemInfo10:* = null;
+         var arr10:* = null;
+         var itemInfo11:* = null;
+         var arr11:* = null;
+         var itemInfo12:* = null;
+         var arr12:* = null;
+         var itemInfo13:* = null;
+         var arr13:* = null;
+         var itemInfo14:* = null;
+         var arr14:* = null;
+         var itemInfo15:* = null;
+         var arr15:* = null;
+         var itemInfo16:* = null;
+         var arr16:* = null;
          pyramidSystemDataList = [];
          guildMemberWeekDataList = [];
          growthPackageDataList = [];
@@ -113,215 +113,214 @@ package ddt.data.analyze
          signBuffDataList = [];
          lotteryDataList = [];
          defendislandDataList = [];
-         var _loc11_:XML = new XML(param1);
-         if(_loc11_.@value == "true")
+         var xml:XML = new XML(data);
+         if(xml.@value == "true")
          {
-            _loc2_ = _loc11_..Item;
-            _loc13_ = 0;
-            while(_loc13_ < _loc2_.length())
+            xmllist = xml..Item;
+            for(i = 0; i < xmllist.length(); )
             {
-               if(_loc2_[_loc13_].@ActivityType == "8")
+               if(xmllist[i].@ActivityType == "8")
                {
-                  _loc9_ = new PyramidSystemItemsInfo();
-                  ObjectUtils.copyPorpertiesByXML(_loc9_,_loc2_[_loc13_]);
-                  _loc29_ = pyramidSystemDataList[_loc9_.Quality - 1];
-                  if(!_loc29_)
+                  itemInfo1 = new PyramidSystemItemsInfo();
+                  ObjectUtils.copyPorpertiesByXML(itemInfo1,xmllist[i]);
+                  arr1 = pyramidSystemDataList[itemInfo1.Quality - 1];
+                  if(!arr1)
                   {
-                     _loc29_ = [];
+                     arr1 = [];
                   }
-                  _loc29_.push(_loc9_);
-                  pyramidSystemDataList[_loc9_.Quality - 1] = _loc29_;
+                  arr1.push(itemInfo1);
+                  pyramidSystemDataList[itemInfo1.Quality - 1] = arr1;
                }
-               else if(_loc2_[_loc13_].@ActivityType == String(GuildMemberWeekManager.instance.getGiftType))
+               else if(xmllist[i].@ActivityType == String(GuildMemberWeekManager.instance.getGiftType))
                {
-                  _loc10_ = new GuildMemberWeekItemsInfo();
-                  ObjectUtils.copyPorpertiesByXML(_loc10_,_loc2_[_loc13_]);
-                  _loc26_ = guildMemberWeekDataList[_loc10_.Quality - 1];
-                  if(!_loc26_)
+                  itemInfo2 = new GuildMemberWeekItemsInfo();
+                  ObjectUtils.copyPorpertiesByXML(itemInfo2,xmllist[i]);
+                  arr2 = guildMemberWeekDataList[itemInfo2.Quality - 1];
+                  if(!arr2)
                   {
-                     _loc26_ = [];
+                     arr2 = [];
                   }
-                  _loc26_.push(_loc10_);
-                  guildMemberWeekDataList[_loc10_.Quality - 1] = _loc26_;
+                  arr2.push(itemInfo2);
+                  guildMemberWeekDataList[itemInfo2.Quality - 1] = arr2;
                }
-               else if(_loc2_[_loc13_].@ActivityType == "20")
+               else if(xmllist[i].@ActivityType == "20")
                {
-                  _loc7_ = new GrowthPackageInfo();
-                  ObjectUtils.copyPorpertiesByXML(_loc7_,_loc2_[_loc13_]);
-                  _loc25_ = growthPackageDataList[_loc7_.Quality];
-                  if(!_loc25_)
+                  itemInfo3 = new GrowthPackageInfo();
+                  ObjectUtils.copyPorpertiesByXML(itemInfo3,xmllist[i]);
+                  arr3 = growthPackageDataList[itemInfo3.Quality];
+                  if(!arr3)
                   {
-                     _loc25_ = new Vector.<GrowthPackageInfo>();
+                     arr3 = new Vector.<GrowthPackageInfo>();
                   }
-                  _loc25_.push(_loc7_);
-                  growthPackageDataList[_loc7_.Quality] = _loc25_;
+                  arr3.push(itemInfo3);
+                  growthPackageDataList[itemInfo3.Quality] = arr3;
                }
-               if(_loc2_[_loc13_].@ActivityType == "30")
+               if(xmllist[i].@ActivityType == "30")
                {
-                  _loc8_ = new KingDivisionGoodsInfo();
-                  ObjectUtils.copyPorpertiesByXML(_loc8_,_loc2_[_loc13_]);
-                  _loc23_ = kingDivisionDataList[_loc8_.Quality - 1];
-                  if(!_loc23_)
+                  itemInfo4 = new KingDivisionGoodsInfo();
+                  ObjectUtils.copyPorpertiesByXML(itemInfo4,xmllist[i]);
+                  arr4 = kingDivisionDataList[itemInfo4.Quality - 1];
+                  if(!arr4)
                   {
-                     _loc23_ = [];
+                     arr4 = [];
                   }
-                  _loc23_.push(_loc8_);
-                  kingDivisionDataList[_loc8_.Quality - 1] = _loc23_;
+                  arr4.push(itemInfo4);
+                  kingDivisionDataList[itemInfo4.Quality - 1] = arr4;
                }
-               else if(_loc2_[_loc13_].@ActivityType == "40")
+               else if(xmllist[i].@ActivityType == "40")
                {
-                  _loc5_ = new ChickActivationInfo();
-                  ObjectUtils.copyPorpertiesByXML(_loc5_,_loc2_[_loc13_]);
-                  if(_loc5_.Quality >= 10001 && _loc5_.Quality <= 10012)
+                  itemInfo5 = new ChickActivationInfo();
+                  ObjectUtils.copyPorpertiesByXML(itemInfo5,xmllist[i]);
+                  if(itemInfo5.Quality >= 10001 && itemInfo5.Quality <= 10012)
                   {
-                     _loc36_ = chickActivationDataList[12];
-                     if(!_loc36_)
+                     arr5 = chickActivationDataList[12];
+                     if(!arr5)
                      {
-                        _loc36_ = [];
+                        arr5 = [];
                      }
-                     _loc36_.push(_loc5_);
-                     _loc36_.sortOn("Quality",16);
-                     chickActivationDataList[12] = _loc36_;
+                     arr5.push(itemInfo5);
+                     arr5.sortOn("Quality",16);
+                     chickActivationDataList[12] = arr5;
                   }
                   else
                   {
-                     _loc36_ = chickActivationDataList[_loc5_.Quality];
-                     if(!_loc36_)
+                     arr5 = chickActivationDataList[itemInfo5.Quality];
+                     if(!arr5)
                      {
-                        _loc36_ = [];
+                        arr5 = [];
                      }
-                     _loc36_.push(_loc5_);
-                     chickActivationDataList[_loc5_.Quality] = _loc36_;
+                     arr5.push(itemInfo5);
+                     chickActivationDataList[itemInfo5.Quality] = arr5;
                   }
                }
-               else if(_loc2_[_loc13_].@ActivityType == "49")
+               else if(xmllist[i].@ActivityType == "49")
                {
-                  _loc6_ = new WitchBlessingPackageInfo();
-                  ObjectUtils.copyPorpertiesByXML(_loc6_,_loc2_[_loc13_]);
-                  if(!_loc34_)
+                  itemInfo6 = new WitchBlessingPackageInfo();
+                  ObjectUtils.copyPorpertiesByXML(itemInfo6,xmllist[i]);
+                  if(!arr6)
                   {
-                     _loc34_ = [];
+                     arr6 = [];
                   }
-                  _loc34_.push(_loc6_);
-                  witchBlessingDataList = _loc34_;
+                  arr6.push(itemInfo6);
+                  witchBlessingDataList = arr6;
                }
-               else if(_loc2_[_loc13_].@ActivityType == "99")
+               else if(xmllist[i].@ActivityType == "99")
                {
-                  _loc3_ = new NewYearRiceInfo();
-                  ObjectUtils.copyPorpertiesByXML(_loc3_,_loc2_[_loc13_]);
-                  if(!_loc32_)
+                  itemInfo7 = new NewYearRiceInfo();
+                  ObjectUtils.copyPorpertiesByXML(itemInfo7,xmllist[i]);
+                  if(!arr7)
                   {
-                     _loc32_ = [];
+                     arr7 = [];
                   }
-                  _loc32_.push(_loc3_);
-                  newYearRiceDataList = _loc32_;
+                  arr7.push(itemInfo7);
+                  newYearRiceDataList = arr7;
                }
-               else if(_loc2_[_loc13_].@ActivityType == "60")
+               else if(xmllist[i].@ActivityType == "60")
                {
-                  _loc4_ = new HorseRaceInfo();
-                  ObjectUtils.copyPorpertiesByXML(_loc4_,_loc2_[_loc13_]);
-                  if(!_loc31_)
+                  itemInfo8 = new HorseRaceInfo();
+                  ObjectUtils.copyPorpertiesByXML(itemInfo8,xmllist[i]);
+                  if(!arr8)
                   {
-                     _loc31_ = [];
+                     arr8 = [];
                   }
-                  _loc31_.push(_loc4_);
-                  horseRaceDataList = _loc31_;
+                  arr8.push(itemInfo8);
+                  horseRaceDataList = arr8;
                }
-               else if(_loc2_[_loc13_].@ActivityType == "100")
+               else if(xmllist[i].@ActivityType == "100")
                {
-                  _loc12_ = new HappyBuyBuyBuyInfo();
-                  ObjectUtils.copyPorpertiesByXML(_loc12_,_loc2_[_loc13_]);
-                  if(!_loc17_)
+                  itemInfo9 = new HappyBuyBuyBuyInfo();
+                  ObjectUtils.copyPorpertiesByXML(itemInfo9,xmllist[i]);
+                  if(!arr9)
                   {
-                     _loc17_ = [];
+                     arr9 = [];
                   }
-                  _loc17_.push(_loc12_);
-                  happyBuyBbyBuyDataList = _loc17_;
+                  arr9.push(itemInfo9);
+                  happyBuyBbyBuyDataList = arr9;
                }
-               else if(_loc2_[_loc13_].@ActivityType == "62")
+               else if(xmllist[i].@ActivityType == "62")
                {
-                  _loc21_ = new DDTMatchFightKingInfo();
-                  ObjectUtils.copyPorpertiesByXML(_loc21_,_loc2_[_loc13_]);
-                  if(!_loc27_)
+                  itemInfo10 = new DDTMatchFightKingInfo();
+                  ObjectUtils.copyPorpertiesByXML(itemInfo10,xmllist[i]);
+                  if(!arr10)
                   {
-                     _loc27_ = [];
+                     arr10 = [];
                   }
-                  _loc27_.push(_loc21_);
-                  fightKingDataList = _loc27_;
+                  arr10.push(itemInfo10);
+                  fightKingDataList = arr10;
                }
-               else if(_loc2_[_loc13_].@ActivityType == "108")
+               else if(xmllist[i].@ActivityType == "108")
                {
-                  _loc20_ = new RedEnvelopeInfo();
-                  ObjectUtils.copyPorpertiesByXML(_loc20_,_loc2_[_loc13_]);
-                  if(!_loc28_)
+                  itemInfo11 = new RedEnvelopeInfo();
+                  ObjectUtils.copyPorpertiesByXML(itemInfo11,xmllist[i]);
+                  if(!arr11)
                   {
-                     _loc28_ = [];
+                     arr11 = [];
                   }
-                  _loc28_.push(_loc20_);
-                  redEnvelopeDataList = _loc28_;
+                  arr11.push(itemInfo11);
+                  redEnvelopeDataList = arr11;
                }
-               else if(_loc2_[_loc13_].@ActivityType == "110")
+               else if(xmllist[i].@ActivityType == "110")
                {
-                  _loc19_ = new LoginDeviceRewardInfo();
-                  ObjectUtils.copyPorpertiesByXML(_loc19_,_loc2_[_loc13_]);
-                  if(!_loc22_)
+                  itemInfo12 = new LoginDeviceRewardInfo();
+                  ObjectUtils.copyPorpertiesByXML(itemInfo12,xmllist[i]);
+                  if(!arr12)
                   {
-                     _loc22_ = [];
+                     arr12 = [];
                   }
-                  _loc22_.push(_loc19_);
-                  loginDeviceDataList = _loc22_;
+                  arr12.push(itemInfo12);
+                  loginDeviceDataList = arr12;
                }
-               else if(_loc2_[_loc13_].@ActivityType == "111")
+               else if(xmllist[i].@ActivityType == "111")
                {
-                  _loc18_ = new CallBackFundRewardInfo();
-                  ObjectUtils.copyPorpertiesByXML(_loc18_,_loc2_[_loc13_]);
-                  if(!_loc24_)
+                  itemInfo13 = new CallBackFundRewardInfo();
+                  ObjectUtils.copyPorpertiesByXML(itemInfo13,xmllist[i]);
+                  if(!arr13)
                   {
-                     _loc24_ = [];
+                     arr13 = [];
                   }
-                  _loc24_.push(_loc18_);
-                  callbackDataList = _loc24_;
+                  arr13.push(itemInfo13);
+                  callbackDataList = arr13;
                }
-               else if(_loc2_[_loc13_].@ActivityType == "112")
+               else if(xmllist[i].@ActivityType == "112")
                {
-                  _loc16_ = new SignBuffInfo();
-                  ObjectUtils.copyPorpertiesByXML(_loc16_,_loc2_[_loc13_]);
-                  if(!_loc33_)
+                  itemInfo14 = new SignBuffInfo();
+                  ObjectUtils.copyPorpertiesByXML(itemInfo14,xmllist[i]);
+                  if(!arr14)
                   {
-                     _loc33_ = [];
+                     arr14 = [];
                   }
-                  _loc33_.push(_loc16_);
-                  signBuffDataList = _loc33_;
+                  arr14.push(itemInfo14);
+                  signBuffDataList = arr14;
                }
-               else if(_loc2_[_loc13_].@ActivityType == "114")
+               else if(xmllist[i].@ActivityType == "114")
                {
-                  _loc15_ = new LotteryRewardInfo();
-                  ObjectUtils.copyPorpertiesByXML(_loc15_,_loc2_[_loc13_]);
-                  if(!_loc35_)
+                  itemInfo15 = new LotteryRewardInfo();
+                  ObjectUtils.copyPorpertiesByXML(itemInfo15,xmllist[i]);
+                  if(!arr15)
                   {
-                     _loc35_ = [];
+                     arr15 = [];
                   }
-                  _loc35_.push(_loc15_);
-                  lotteryDataList = _loc35_;
+                  arr15.push(itemInfo15);
+                  lotteryDataList = arr15;
                }
-               else if(_loc2_[_loc13_].@ActivityType == "155")
+               else if(xmllist[i].@ActivityType == "155")
                {
-                  _loc14_ = new DefendislandRewardInfo();
-                  ObjectUtils.copyPorpertiesByXML(_loc14_,_loc2_[_loc13_]);
-                  if(!_loc30_)
+                  itemInfo16 = new DefendislandRewardInfo();
+                  ObjectUtils.copyPorpertiesByXML(itemInfo16,xmllist[i]);
+                  if(!arr16)
                   {
-                     _loc30_ = [];
+                     arr16 = [];
                   }
-                  _loc30_.push(_loc14_);
-                  defendislandDataList = _loc30_;
+                  arr16.push(itemInfo16);
+                  defendislandDataList = arr16;
                }
-               _loc13_++;
+               i++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc11_.@message;
+            message = xml.@message;
             onAnalyzeError();
          }
       }

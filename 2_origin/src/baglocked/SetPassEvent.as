@@ -16,10 +16,10 @@ package baglocked
       
       public var data:Object;
       
-      public function SetPassEvent(param1:String, param2:Object = null, param3:Boolean = false, param4:Boolean = false)
+      public function SetPassEvent(type:String, $data:Object = null, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         super(param1,param3,param4);
-         data = param2;
+         super(type,bubbles,cancelable);
+         data = $data;
       }
    }
 }

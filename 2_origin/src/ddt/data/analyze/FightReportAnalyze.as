@@ -11,27 +11,26 @@ package ddt.data.analyze
       
       private var _pkgVec:Vector.<PackageIn>;
       
-      public function FightReportAnalyze(param1:Function)
+      public function FightReportAnalyze(onCompleteCall:Function)
       {
          _pkgVec = new Vector.<PackageIn>();
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc6_:int = 0;
-         var _loc2_:* = null;
-         var _loc4_:* = null;
-         var _loc5_:XML = XML(param1);
-         var _loc3_:int = _loc5_.Item.length();
-         _loc6_ = 0;
-         while(_loc6_ < _loc3_)
+         var i:int = 0;
+         var byte:* = null;
+         var pkg:* = null;
+         var xml:XML = XML(data);
+         var length:int = xml.Item.length();
+         for(i = 0; i < length; )
          {
-            _loc2_ = Base64.decodeToByteArray(_loc5_.Item[_loc6_].@Buffer);
-            _loc4_ = new PackageIn();
-            _loc4_.loadFightByteInfo(_loc5_.Item[_loc6_].@Parameter1,_loc5_.Item[_loc6_].@Parameter2,_loc5_.Item[_loc6_].@Length,_loc2_,0);
-            _pkgVec.push(_loc4_);
-            _loc6_++;
+            byte = Base64.decodeToByteArray(xml.Item[i].@Buffer);
+            pkg = new PackageIn();
+            pkg.loadFightByteInfo(xml.Item[i].@Parameter1,xml.Item[i].@Parameter2,xml.Item[i].@Length,byte,0);
+            _pkgVec.push(pkg);
+            i++;
          }
          onAnalyzeComplete();
       }

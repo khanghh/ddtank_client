@@ -71,7 +71,7 @@ package mines.view
          addChild(mc);
       }
       
-      private function changeHandler(param1:int) : void
+      private function changeHandler(index:int) : void
       {
          if(combox.selectedIndex > MinesManager.instance.model.toolLevel - 1)
          {
@@ -93,7 +93,7 @@ package mines.view
          timer.removeEventListener("timer",timerHandler);
       }
       
-      private function levelUpTool(param1:Event) : void
+      private function levelUpTool(e:Event) : void
       {
          if(_currentLevel == MinesManager.instance.model.toolLevel)
          {
@@ -125,7 +125,7 @@ package mines.view
          mc.play();
       }
       
-      private function timerHandler(param1:TimerEvent) : void
+      private function timerHandler(e:TimerEvent) : void
       {
          if(MinesManager.instance.model.isFull)
          {
@@ -137,45 +137,44 @@ package mines.view
             return;
          }
          SocketManager.Instance.out.sendDigHandler(combox.selectedIndex + 1);
-         param1.updateAfterEvent();
+         e.updateAfterEvent();
       }
       
-      public function changeInfoLabel(param1:Event) : void
+      public function changeInfoLabel(e:Event) : void
       {
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         var _loc2_:String = "";
-         _loc5_ = 0;
-         while(_loc5_ < MinesManager.instance.model.digShowList.length)
+         var i:int = 0;
+         var name:* = null;
+         var something:* = null;
+         var str:String = "";
+         for(i = 0; i < MinesManager.instance.model.digShowList.length; )
          {
-            _loc3_ = "";
-            if(MinesManager.instance.model.digShowList[_loc5_][1] == 0)
+            name = "";
+            if(MinesManager.instance.model.digShowList[i][1] == 0)
             {
                if(PlayerManager.Instance.Self.energy < ServerConfigManager.instance.getOnlineArmCostEnergy)
                {
-                  _loc3_ = _loc3_ + LanguageMgr.GetTranslation("ddt.mines.digView.poweroff");
+                  name = name + LanguageMgr.GetTranslation("ddt.mines.digView.poweroff");
                }
                else
                {
-                  _loc3_ = _loc3_ + LanguageMgr.GetTranslation("ddt.mines.digView.bagFull");
+                  name = name + LanguageMgr.GetTranslation("ddt.mines.digView.bagFull");
                }
             }
             else
             {
-               _loc4_ = MinesManager.instance.model.digShowList[_loc5_][0] + "*" + MinesManager.instance.model.digShowList[_loc5_][1];
-               _loc3_ = _loc3_ + LanguageMgr.GetTranslation("ddt.mines.digView.dig.something",_loc4_);
+               something = MinesManager.instance.model.digShowList[i][0] + "*" + MinesManager.instance.model.digShowList[i][1];
+               name = name + LanguageMgr.GetTranslation("ddt.mines.digView.dig.something",something);
             }
-            _loc3_ = _loc3_ + "\n";
-            _loc2_ = _loc2_ + _loc3_;
-            _loc5_++;
+            name = name + "\n";
+            str = str + name;
+            i++;
          }
-         infoLabel.htmlText = _loc2_;
+         infoLabel.htmlText = str;
       }
       
-      protected function __onUpdateGrade(param1:PlayerPropertyEvent) : void
+      protected function __onUpdateGrade(event:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["Energy"])
+         if(event.changedProperties["Energy"])
          {
             progress.value = PlayerManager.Instance.Self.energy / 1500;
             proLabel.text = String(PlayerManager.Instance.Self.energy) + "/1500";

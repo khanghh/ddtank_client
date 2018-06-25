@@ -73,9 +73,9 @@ package farm
       
       private var _priceList:Vector.<SuperPetFoodPriceInfo>;
       
-      public function FarmModel(param1:IEventDispatcher = null)
+      public function FarmModel(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public function get prosperityCostList() : Dictionary
@@ -83,9 +83,9 @@ package farm
          return _prosperityCostList;
       }
       
-      public function set prosperityCostList(param1:Dictionary) : void
+      public function set prosperityCostList(value:Dictionary) : void
       {
-         _prosperityCostList = param1;
+         _prosperityCostList = value;
       }
       
       public function get payFieldDiscount() : int
@@ -142,9 +142,9 @@ package farm
          return _isArrange;
       }
       
-      public function set isArrange(param1:Boolean) : void
+      public function set isArrange(value:Boolean) : void
       {
-         _isArrange = param1;
+         _isArrange = value;
       }
       
       public function get isHelperMay() : Boolean
@@ -155,8 +155,8 @@ package farm
       public function get stopTime() : Date
       {
          _stopTime = new Date();
-         var _loc1_:Number = autoPayTime.time + autoValidDate * 60 * 60 * 1000;
-         _stopTime.setTime(_loc1_);
+         var time:Number = autoPayTime.time + autoValidDate * 60 * 60 * 1000;
+         _stopTime.setTime(time);
          return _stopTime;
       }
       
@@ -165,20 +165,20 @@ package farm
          return _currentFarmerId;
       }
       
-      public function set currentFarmerId(param1:int) : void
+      public function set currentFarmerId(value:int) : void
       {
-         _currentFarmerId = param1;
+         _currentFarmerId = value;
       }
       
-      public function getfieldInfoById(param1:int) : FieldVO
+      public function getfieldInfoById(fieldId:int) : FieldVO
       {
          var _loc4_:int = 0;
          var _loc3_:* = fieldsInfo;
-         for each(var _loc2_ in fieldsInfo)
+         for each(var field in fieldsInfo)
          {
-            if(_loc2_.fieldID == param1)
+            if(field.fieldID == fieldId)
             {
-               return _loc2_;
+               return field;
             }
          }
          return null;
@@ -193,9 +193,9 @@ package farm
          return _friendStateList;
       }
       
-      public function set friendStateList(param1:DictionaryData) : void
+      public function set friendStateList(value:DictionaryData) : void
       {
-         _friendStateList = param1;
+         _friendStateList = value;
       }
       
       public function get friendStateListStolenInfo() : DictionaryData
@@ -207,42 +207,42 @@ package farm
          return _friendStateListStolenInfo;
       }
       
-      public function set friendStateListStolenInfo(param1:DictionaryData) : void
+      public function set friendStateListStolenInfo(value:DictionaryData) : void
       {
-         _friendStateListStolenInfo = param1;
+         _friendStateListStolenInfo = value;
       }
       
-      public function findItemInfo(param1:int, param2:int) : InventoryItemInfo
+      public function findItemInfo(equipType:int, templateID:int) : InventoryItemInfo
       {
-         var _loc5_:* = null;
-         var _loc3_:Array = PlayerManager.Instance.Self.getBag(13).findItems(param1);
+         var itemInfo:* = null;
+         var arr:Array = PlayerManager.Instance.Self.getBag(13).findItems(equipType);
          var _loc7_:int = 0;
-         var _loc6_:* = _loc3_;
-         for each(var _loc4_ in _loc3_)
+         var _loc6_:* = arr;
+         for each(var item in arr)
          {
-            if(_loc4_.TemplateID == param2)
+            if(item.TemplateID == templateID)
             {
-               _loc5_ = _loc4_;
+               itemInfo = item;
                break;
             }
          }
-         return _loc5_;
+         return itemInfo;
       }
       
-      public function getSeedCountByID(param1:int) : int
+      public function getSeedCountByID(templateID:int) : int
       {
-         var _loc2_:int = 0;
-         var _loc3_:Array = PlayerManager.Instance.Self.getBag(13).findItems(32);
+         var allCount:int = 0;
+         var arr:Array = PlayerManager.Instance.Self.getBag(13).findItems(32);
          var _loc6_:int = 0;
-         var _loc5_:* = _loc3_;
-         for each(var _loc4_ in _loc3_)
+         var _loc5_:* = arr;
+         for each(var item in arr)
          {
-            if(_loc4_.TemplateID == param1)
+            if(item.TemplateID == templateID)
             {
-               _loc2_ = _loc2_ + _loc4_.Count;
+               allCount = allCount + item.Count;
             }
          }
-         return _loc2_;
+         return allCount;
       }
       
       public function get buyExpRemainNum() : int
@@ -250,9 +250,9 @@ package farm
          return _buyExpRemainNum;
       }
       
-      public function set buyExpRemainNum(param1:int) : void
+      public function set buyExpRemainNum(value:int) : void
       {
-         _buyExpRemainNum = param1;
+         _buyExpRemainNum = value;
       }
       
       public function get priceList() : Vector.<SuperPetFoodPriceInfo>
@@ -260,9 +260,9 @@ package farm
          return _priceList;
       }
       
-      public function set priceList(param1:Vector.<SuperPetFoodPriceInfo>) : void
+      public function set priceList(value:Vector.<SuperPetFoodPriceInfo>) : void
       {
-         _priceList = param1;
+         _priceList = value;
       }
    }
 }

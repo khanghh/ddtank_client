@@ -59,7 +59,7 @@ package demonChiYou.view
          SocketManager.Instance.out.getDemonChiYouShopInfo();
       }
       
-      private function onShopInfoBack(param1:Event) : void
+      private function onShopInfoBack(evt:Event) : void
       {
          if(_model.leftSelectSec > 0)
          {
@@ -80,60 +80,57 @@ package demonChiYou.view
       
       private function initView() : void
       {
-         var _loc5_:* = null;
-         var _loc2_:* = null;
-         var _loc7_:int = 0;
-         var _loc1_:* = null;
-         var _loc3_:* = null;
+         var rewardBox:* = null;
+         var bagCell:* = null;
+         var i:int = 0;
+         var rankItem:* = null;
+         var item:* = null;
          _btnHelp = HelpFrameUtils.Instance.simpleHelpButton(this,"core.helpButtonCircle",{
             "x":647,
             "y":36
          },LanguageMgr.GetTranslation("store.view.HelpButtonText"),"Demonchiyou.help",438,550);
-         _loc7_ = 1;
-         while(_loc7_ < 5)
+         for(i = 1; i < 5; )
          {
-            _loc5_ = UICreatShortcut.creatAndAdd("demonChiYou.rewardBox" + _loc7_,_container);
-            _loc2_ = new BagCell(1);
-            _loc2_.alpha = 0;
-            _loc2_.setContentSize(70,70);
-            _loc2_.info = ItemManager.Instance.getTemplateById(_model.rewardBoxIDArr[_loc7_ - 1]);
-            PositionUtils.setPos(_loc2_,_loc5_);
-            _container.addChild(_loc2_);
-            _loc7_++;
+            rewardBox = UICreatShortcut.creatAndAdd("demonChiYou.rewardBox" + i,_container);
+            bagCell = new BagCell(1);
+            bagCell.alpha = 0;
+            bagCell.setContentSize(70,70);
+            bagCell.info = ItemManager.Instance.getTemplateById(_model.rewardBoxIDArr[i - 1]);
+            PositionUtils.setPos(bagCell,rewardBox);
+            _container.addChild(bagCell);
+            i++;
          }
-         var _loc6_:Array = _model.rankInfo.rankArr;
-         var _loc4_:Array = [];
-         _loc7_ = 0;
-         while(_loc7_ < 3)
+         var rankArr:Array = _model.rankInfo.rankArr;
+         var consortiaNameArr:Array = [];
+         for(i = 0; i < 3; )
          {
-            if(_loc7_ < _loc6_.length)
+            if(i < rankArr.length)
             {
-               _loc1_ = _loc6_[_loc7_];
-               _loc4_[_loc7_] = _loc1_["Name"];
+               rankItem = rankArr[i];
+               consortiaNameArr[i] = rankItem["Name"];
             }
             else
             {
-               _loc4_[_loc7_] = LanguageMgr.GetTranslation("tank.room.RoomIIPlayerItem.new");
+               consortiaNameArr[i] = LanguageMgr.GetTranslation("tank.room.RoomIIPlayerItem.new");
             }
-            _loc7_++;
+            i++;
          }
-         _consortiaNameTf1 = UICreatShortcut.creatTextAndAdd("demonChiYou.consortiaNameTf1",_loc4_[0],_container);
-         _consortiaNameTf2 = UICreatShortcut.creatTextAndAdd("demonChiYou.consortiaNameTf2",_loc4_[1],_container);
-         _consortiaNameTf3 = UICreatShortcut.creatTextAndAdd("demonChiYou.consortiaNameTf3",_loc4_[2],_container);
+         _consortiaNameTf1 = UICreatShortcut.creatTextAndAdd("demonChiYou.consortiaNameTf1",consortiaNameArr[0],_container);
+         _consortiaNameTf2 = UICreatShortcut.creatTextAndAdd("demonChiYou.consortiaNameTf2",consortiaNameArr[1],_container);
+         _consortiaNameTf3 = UICreatShortcut.creatTextAndAdd("demonChiYou.consortiaNameTf3",consortiaNameArr[2],_container);
          _leftTimeImage = UICreatShortcut.creatAndAdd("demonChiYou.leftTimeImage",_container);
          _leftTimeImageW = _leftTimeImage.width;
          _leftTimeTf = UICreatShortcut.creatTextAndAdd("demonChiYou.leftTimeTf","30" + LanguageMgr.GetTranslation("second"),_container);
          UICreatShortcut.creatTextAndAdd("demonChiYou.rollTipTf",LanguageMgr.GetTranslation("demonChiYou.rollTip"),_container);
          _itemArr = [];
-         _loc7_ = 0;
-         while(_loc7_ < 9)
+         for(i = 0; i < 9; )
          {
-            _loc3_ = new RewardSelectItem(_loc7_);
-            _loc3_.x = 24 + 221 * (_loc7_ % 3);
-            _loc3_.y = 235 + 83 * (int(_loc7_ / 3));
-            _itemArr.push(_loc3_);
-            _container.addChild(_loc3_);
-            _loc7_++;
+            item = new RewardSelectItem(i);
+            item.x = 24 + 221 * (i % 3);
+            item.y = 235 + 83 * (int(i / 3));
+            _itemArr.push(item);
+            _container.addChild(item);
+            i++;
          }
       }
       
@@ -149,23 +146,23 @@ package demonChiYou.view
          DemonChiYouManager.instance.removeEventListener("event_shop_info_back",onShopInfoBack);
       }
       
-      private function onUpdateLeftTime(param1:TimerEvent) : void
+      private function onUpdateLeftTime(evt:TimerEvent) : void
       {
-         var _loc2_:int = _leftSec - _leftSec * _leftTimeTimer.currentCount / _leftTimeTimer.repeatCount;
-         _leftTimeImage.width = _leftTimeImageW * _loc2_ / 30;
-         _leftTimeTf.text = _loc2_ + LanguageMgr.GetTranslation("second");
-         _model.leftSelectSec = _loc2_;
+         var leftTimeSec:int = _leftSec - _leftSec * _leftTimeTimer.currentCount / _leftTimeTimer.repeatCount;
+         _leftTimeImage.width = _leftTimeImageW * leftTimeSec / 30;
+         _leftTimeTf.text = leftTimeSec + LanguageMgr.GetTranslation("second");
+         _model.leftSelectSec = leftTimeSec;
       }
       
-      private function onCompleteLeftTime(param1:TimerEvent) : void
+      private function onCompleteLeftTime(evt:TimerEvent) : void
       {
          _leftTimeTimer.stop();
          DemonChiYouController.instance.disposeRewardSelectFrame();
       }
       
-      private function responseHandler(param1:FrameEvent) : void
+      private function responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.playButtonSound();
             DemonChiYouController.instance.disposeRewardSelectFrame();

@@ -10,10 +10,10 @@ package road7th.comm
       
       private var _data:PackageIn;
       
-      public function SocketEvent(param1:String, param2:PackageIn)
+      public function SocketEvent(type:String, data:PackageIn)
       {
-         super(param1);
-         _data = param2;
+         super(type);
+         _data = data;
       }
       
       public function get data() : PackageIn

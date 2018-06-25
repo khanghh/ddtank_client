@@ -48,14 +48,14 @@ package wonderfulActivity.items
       
       private var _activityInfo:ActiveEventsInfo;
       
-      public function LimitActContent(param1:ActiveEventsInfo)
+      public function LimitActContent(info:ActiveEventsInfo)
       {
          super();
-         _activityInfo = param1;
-         initView(param1);
+         _activityInfo = info;
+         initView(info);
       }
       
-      private function initView(param1:ActiveEventsInfo) : void
+      private function initView(info:ActiveEventsInfo) : void
       {
          _getButton = ComponentFactory.Instance.creatComponentByStylename("wonderful.ActivityState.GetButton");
          _getButton.visible = false;
@@ -66,11 +66,11 @@ package wonderfulActivity.items
          _back = ComponentFactory.Instance.creat("wonderful.ActivityStateBg");
          addChild(_back);
          _titleField = ComponentFactory.Instance.creatComponentByStylename("wonderful.ActivityStateTitleField");
-         _titleField.text = param1.Title;
+         _titleField.text = info.Title;
          addChild(_titleField);
          _scrollList = ComponentFactory.Instance.creatComponentByStylename("wonderful.ActivityDetailList");
          addChild(_scrollList);
-         _limitView = new LimitActView(param1);
+         _limitView = new LimitActView(info);
          addChild(_limitView);
          _scrollList.setView(_limitView);
          showBtn();
@@ -128,10 +128,10 @@ package wonderfulActivity.items
          }
       }
       
-      private function __getAward(param1:MouseEvent) : void
+      private function __getAward(event:MouseEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var alert:* = null;
+         var loader:* = null;
          SoundManager.instance.play("008");
          if(_activityInfo.ActiveType == 0)
          {
@@ -141,13 +141,13 @@ package wonderfulActivity.items
             }
             if(_limitView.getInputField().text == "" && (_activityInfo.HasKey == 1 || _activityInfo.HasKey == 7 || _activityInfo.HasKey == 8))
             {
-               _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.movement.MovementRightView.pass"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,false,false,2);
-               _loc3_.info.showCancel = false;
+               alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.movement.MovementRightView.pass"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,false,false,2);
+               alert.info.showCancel = false;
                return;
             }
-            _loc2_ = CalendarControl.getInstance().reciveActivityAward(_activityInfo,_limitView.getInputField().text);
-            _loc2_.addEventListener("loadError",__onLoadError);
-            _loc2_.addEventListener("complete",__activityLoadComplete);
+            loader = CalendarControl.getInstance().reciveActivityAward(_activityInfo,_limitView.getInputField().text);
+            loader.addEventListener("loadError",__onLoadError);
+            loader.addEventListener("complete",__activityLoadComplete);
             _limitView.getInputField().text = "";
             if(_activityInfo.HasKey == 1)
             {
@@ -160,15 +160,15 @@ package wonderfulActivity.items
          }
       }
       
-      private function __onLoadError(param1:LoaderEvent) : void
+      private function __onLoadError(event:LoaderEvent) : void
       {
-         var _loc2_:BaseLoader = param1.currentTarget as BaseLoader;
-         _loc2_.removeEventListener("loadError",__onLoadError);
-         _loc2_.removeEventListener("complete",__activityLoadComplete);
+         var loader:BaseLoader = event.currentTarget as BaseLoader;
+         loader.removeEventListener("loadError",__onLoadError);
+         loader.removeEventListener("complete",__activityLoadComplete);
          _getButton.enable = !_activityInfo.isAttend;
       }
       
-      private function __exchange(param1:MouseEvent) : void
+      private function __exchange(event:MouseEvent) : void
       {
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -178,9 +178,9 @@ package wonderfulActivity.items
          SoundManager.instance.playButtonSound();
       }
       
-      private function __activityLoadComplete(param1:LoaderEvent) : void
+      private function __activityLoadComplete(event:LoaderEvent) : void
       {
-         var _loc2_:BaseLoader = param1.currentTarget as BaseLoader;
+         var loader:BaseLoader = event.currentTarget as BaseLoader;
          if(_activityInfo.HasKey == 1)
          {
             _getButton.enable = true;
@@ -191,7 +191,7 @@ package wonderfulActivity.items
          }
       }
       
-      protected function __piccHandler(param1:MouseEvent) : void
+      protected function __piccHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -199,17 +199,17 @@ package wonderfulActivity.items
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ActivityState.confirm.content",10000),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
-         _loc2_.moveEnable = false;
-         _loc2_.addEventListener("response",__responseHandler);
+         var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ActivityState.confirm.content",10000),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
+         alert.moveEnable = false;
+         alert.addEventListener("response",__responseHandler);
       }
       
-      protected function __responseHandler(param1:FrameEvent) : void
+      protected function __responseHandler(event:FrameEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__responseHandler);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var alert2:* = null;
+         var alert:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",__responseHandler);
+         if(event.responseCode == 2 || event.responseCode == 3)
          {
             if(PlayerManager.Instance.Self.Money >= 10000)
             {
@@ -217,23 +217,23 @@ package wonderfulActivity.items
             }
             else
             {
-               _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("poorNote"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
-               _loc3_.moveEnable = false;
-               _loc3_.addEventListener("response",__poorManResponse);
+               alert2 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("poorNote"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
+               alert2.moveEnable = false;
+               alert2.addEventListener("response",__poorManResponse);
             }
          }
-         ObjectUtils.disposeObject(_loc2_);
+         ObjectUtils.disposeObject(alert);
       }
       
-      private function __poorManResponse(param1:FrameEvent) : void
+      private function __poorManResponse(event:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__poorManResponse);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var alert:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",__poorManResponse);
+         if(event.responseCode == 2 || event.responseCode == 3)
          {
             LeavePageManager.leaveToFillPath();
          }
-         ObjectUtils.disposeObject(_loc2_);
+         ObjectUtils.disposeObject(alert);
       }
       
       public function dispose() : void

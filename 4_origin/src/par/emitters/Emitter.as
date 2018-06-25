@@ -34,9 +34,9 @@ package par.emitters
          _interval = 0;
       }
       
-      public function setEnginee(param1:ParticleEnginee) : void
+      public function setEnginee(enginee:ParticleEnginee) : void
       {
-         _enginee = param1;
+         _enginee = enginee;
       }
       
       public function restart() : void
@@ -49,20 +49,20 @@ package par.emitters
          return _info;
       }
       
-      public function set info(param1:EmitterInfo) : void
+      public function set info(value:EmitterInfo) : void
       {
-         _info = param1;
+         _info = value;
          _interval = _info.interval;
       }
       
-      public function execute(param1:Number) : void
+      public function execute(time:Number) : void
       {
          if(_enginee && info)
          {
-            _age = _age + param1;
+            _age = _age + time;
             if(info.life <= 0 || _age < info.life)
             {
-               _interval = _interval + param1;
+               _interval = _interval + time;
                if(_interval > info.interval)
                {
                   _interval = 0;
@@ -88,34 +88,33 @@ package par.emitters
       
       protected function emit() : void
       {
-         var _loc1_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
+         var count:int = 0;
+         var i:int = 0;
+         var p:* = null;
          var _loc6_:int = 0;
          var _loc5_:* = info.particales;
-         for each(var _loc3_ in info.particales)
+         for each(var pi in info.particales)
          {
-            if(_loc3_.beginTime < _age && _loc3_.endTime > _age)
+            if(pi.beginTime < _age && pi.endTime > _age)
             {
-               _loc1_ = _loc3_.countOrient + int(randRange(0,_loc3_.countSize));
-               _loc4_ = 0;
-               while(_loc4_ < _loc1_)
+               count = pi.countOrient + int(randRange(0,pi.countSize));
+               for(i = 0; i < count; )
                {
-                  _loc2_ = _enginee.createParticle(_loc3_);
-                  _loc2_.life = _loc3_.lifeOrient + randRange(0,_loc3_.lifeSize);
-                  _loc2_.size = _loc3_.sizeOrient + randRange(0,_loc3_.sizeSize);
-                  _loc2_.v = _loc3_.vOrient + randRange(0,_loc3_.vSize);
-                  _loc2_.angle = angle + randRange(info.beginAngle,info.endAngle);
-                  _loc2_.motionV = _loc3_.motionVOrient + randRange(0,_loc3_.motionVOrient);
-                  _loc2_.weight = _loc3_.weightOrient + randRange(0,_loc3_.weightSize);
-                  _loc2_.spin = _loc3_.spinOrient + randRange(0,_loc3_.spinSize);
-                  _loc2_.rotation = _loc3_.rotation + angle;
-                  _loc2_.x = x;
-                  _loc2_.y = y;
-                  _loc2_.color = _loc3_.colorOrient;
-                  _loc2_.alpha = _loc3_.alphaOrient;
-                  _enginee.addParticle(_loc2_);
-                  _loc4_++;
+                  p = _enginee.createParticle(pi);
+                  p.life = pi.lifeOrient + randRange(0,pi.lifeSize);
+                  p.size = pi.sizeOrient + randRange(0,pi.sizeSize);
+                  p.v = pi.vOrient + randRange(0,pi.vSize);
+                  p.angle = angle + randRange(info.beginAngle,info.endAngle);
+                  p.motionV = pi.motionVOrient + randRange(0,pi.motionVOrient);
+                  p.weight = pi.weightOrient + randRange(0,pi.weightSize);
+                  p.spin = pi.spinOrient + randRange(0,pi.spinSize);
+                  p.rotation = pi.rotation + angle;
+                  p.x = x;
+                  p.y = y;
+                  p.color = pi.colorOrient;
+                  p.alpha = pi.alphaOrient;
+                  _enginee.addParticle(p);
+                  i++;
                }
                continue;
             }

@@ -16,7 +16,7 @@ package angelInvestment
       
       private var _model:AngelInvestmentModel;
       
-      public function AngelInvestmentManager(param1:inner)
+      public function AngelInvestmentManager($inner:inner)
       {
          super(null);
          _model = new AngelInvestmentModel();
@@ -31,9 +31,9 @@ package angelInvestment
          return _instance;
       }
       
-      public function initHall(param1:Boolean) : void
+      public function initHall($isOpen:Boolean) : void
       {
-         HallIconManager.instance.updateSwitchHandler("angelInvestment",param1);
+         HallIconManager.instance.updateSwitchHandler("angelInvestment",$isOpen);
       }
       
       public function onClickIcon() : void
@@ -48,9 +48,9 @@ package angelInvestment
          dispatchEvent(new Event("complete"));
       }
       
-      public function onDataComplete(param1:AngelInvestmentDataAnalyzer) : void
+      public function onDataComplete(analyzer:AngelInvestmentDataAnalyzer) : void
       {
-         _model.data = param1.data;
+         _model.data = analyzer.data;
       }
       
       public function get model() : AngelInvestmentModel

@@ -68,11 +68,11 @@ package hall.player
       
       private var _randomPathMap:Object;
       
-      public function HallPlayer(param1:PlayerVO, param2:Function = null)
+      public function HallPlayer(playerVO:PlayerVO, callBack:Function = null)
       {
-         _playerVO = param1;
+         _playerVO = playerVO;
          _currentWalkStartPoint = _playerVO.playerPos;
-         super(param1.playerInfo,param2);
+         super(playerVO.playerInfo,callBack);
          setPlayerWalkSpeed();
       }
       
@@ -88,14 +88,14 @@ package hall.player
          }
       }
       
-      public function showPlayerInfo(param1:int) : void
+      public function showPlayerInfo(petsDis:int) : void
       {
          showVipName();
       }
       
       public function showVipName() : void
       {
-         var _loc1_:String = playerVO && playerVO.playerInfo && playerVO.playerInfo.NickName?playerVO.playerInfo.NickName:"";
+         var name:String = playerVO && playerVO.playerInfo && playerVO.playerInfo.NickName?playerVO.playerInfo.NickName:"";
          moveSpeed = _playerVO.playerMoveSpeed;
          if(!_spName)
          {
@@ -108,7 +108,7 @@ package hall.player
             {
                _vipName = VipController.instance.getVipNameTxt(-1,playerVO.playerInfo.typeVIP);
                _vipName.textSize = 16;
-               _vipName.text = _loc1_;
+               _vipName.text = name;
             }
             _spName.addChild(_vipName);
             DisplayUtils.removeDisplay(_lblName);
@@ -130,16 +130,16 @@ package hall.player
             {
                _lblName = ComponentFactory.Instance.creat("asset.hall.playerInfo.lblName");
                _lblName.mouseEnabled = false;
-               _lblName.text = _loc1_;
+               _lblName.text = name;
             }
             _spName.addChild(_lblName);
             DisplayUtils.removeDisplay(_vipName);
          }
-         var _loc2_:int = !!_vipIcon?_vipName.width + _vipIcon.width + 8:Number(_lblName.textWidth + 8);
+         var spWidth:int = !!_vipIcon?_vipName.width + _vipIcon.width + 8:Number(_lblName.textWidth + 8);
          _spName.graphics.beginFill(0,0.5);
-         _spName.graphics.drawRoundRect(-4,0,_loc2_,22,5,5);
+         _spName.graphics.drawRoundRect(-4,0,spWidth,22,5,5);
          _spName.graphics.endFill();
-         _spName.x = -_loc2_ / 2;
+         _spName.x = -spWidth / 2;
          _spName.y = -playerHeight;
          creatAttestBtn();
       }
@@ -166,7 +166,7 @@ package hall.player
       
       public function showPlayerTitle() : void
       {
-         var _loc1_:* = null;
+         var titleModel:* = null;
          removePlayerTitle();
          if(_playerVO.playerInfo.IsShowConsortia && _playerVO.playerInfo.ConsortiaID > 0)
          {
@@ -196,28 +196,28 @@ package hall.player
          }
          else if(_playerVO.playerInfo.honor.length > 0)
          {
-            _loc1_ = NewTitleManager.instance.titleInfo[_playerVO.playerInfo.honorId];
-            if(_loc1_ && _loc1_.Show != "0" && _loc1_.Pic != "0")
+            titleModel = NewTitleManager.instance.titleInfo[_playerVO.playerInfo.honorId];
+            if(titleModel && titleModel.Show != "0" && titleModel.Pic != "0")
             {
-               loadIcon(_loc1_.Pic);
+               loadIcon(titleModel.Pic);
             }
          }
       }
       
-      private function loadIcon(param1:String) : void
+      private function loadIcon(pic:String) : void
       {
-         var _loc2_:BitmapData = DDTAssetManager.instance.nativeAsset.getBitmapData("image_title_" + param1);
-         setTitleSprite(_loc2_);
+         var bmd:BitmapData = DDTAssetManager.instance.nativeAsset.getBitmapData("image_title_" + pic);
+         setTitleSprite(bmd);
       }
       
-      private function setTitleSprite(param1:BitmapData) : void
+      private function setTitleSprite(bitmapdata:BitmapData) : void
       {
          if(_spName)
          {
             _titleSprite = new Sprite();
-            if(param1)
+            if(bitmapdata)
             {
-               _title = new Bitmap(param1);
+               _title = new Bitmap(bitmapdata);
                _titleSprite.addChild(_title);
             }
             _titleSprite.x = -_titleSprite.width / 2;
@@ -244,10 +244,10 @@ package hall.player
          }
       }
       
-      override protected function __onMouseClick(param1:MouseEvent) : void
+      override protected function __onMouseClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         param1.stopPropagation();
+         event.stopPropagation();
          if(!_playerVO.playerInfo.isSelf)
          {
             _playerVO.opposePos = this.parent.localToGlobal(new Point(this.x,this.y));
@@ -255,10 +255,10 @@ package hall.player
          }
       }
       
-      private function characterDirectionChange(param1:Boolean) : void
+      private function characterDirectionChange(actionFlag:Boolean) : void
       {
          _playerVO.scenePlayerDirection = sceneCharacterDirection;
-         if(param1)
+         if(actionFlag)
          {
             if(sceneCharacterDirection == SceneCharacterDirection.LT || sceneCharacterDirection == SceneCharacterDirection.RT)
             {
@@ -318,7 +318,7 @@ package hall.player
       
       private function characterMirror() : void
       {
-         var _loc1_:int = playerHeight;
+         var height:int = playerHeight;
          if(!isDefaultCharacter)
          {
             this.character.scaleX = !!sceneCharacterDirection.isMirror?-1:1;
@@ -332,9 +332,9 @@ package hall.player
             this.character.x = -60;
             this.playerHitArea.scaleX = 1;
             this.playerHitArea.x = this.character.x;
-            _loc1_ = 175;
+            height = 175;
          }
-         this.character.y = -_loc1_ + 12;
+         this.character.y = -height + 12;
          this.playerHitArea.y = this.character.y;
       }
       
@@ -351,10 +351,10 @@ package hall.player
          playerWalk(_playerVO.walkPath);
       }
       
-      override public function playerWalk(param1:Array) : void
+      override public function playerWalk(walkPath:Array) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:Number = NaN;
+         var dirction:* = null;
+         var dis:Number = NaN;
          if(_walkPath != null && _tween.isPlaying && _walkPath == _playerVO.walkPath)
          {
             return;
@@ -363,14 +363,14 @@ package hall.player
          if(_walkPath && _walkPath.length > 0)
          {
             _currentWalkStartPoint = _walkPath[0];
-            _loc2_ = setPlayerDirection();
-            if(_loc2_ != sceneCharacterDirection)
+            dirction = setPlayerDirection();
+            if(dirction != sceneCharacterDirection)
             {
-               sceneCharacterDirection = _loc2_;
+               sceneCharacterDirection = dirction;
             }
             characterDirectionChange(true);
-            _loc3_ = Point.distance(_currentWalkStartPoint,playerPoint);
-            _tween.start(_loc3_ / _walkSpeed,"x",_currentWalkStartPoint.x,"y",_currentWalkStartPoint.y);
+            dis = Point.distance(_currentWalkStartPoint,playerPoint);
+            _tween.start(dis / _walkSpeed,"x",_currentWalkStartPoint.x,"y",_currentWalkStartPoint.y);
             _walkPath.shift();
          }
          else
@@ -381,32 +381,32 @@ package hall.player
       
       private function setPlayerDirection() : SceneCharacterDirection
       {
-         var _loc1_:* = null;
-         _loc1_ = SceneCharacterDirection.getDirection(playerPoint,_currentWalkStartPoint);
+         var direction:* = null;
+         direction = SceneCharacterDirection.getDirection(playerPoint,_currentWalkStartPoint);
          if(_playerVO.playerInfo.IsMounts)
          {
-            if(_loc1_ == SceneCharacterDirection.LT)
+            if(direction == SceneCharacterDirection.LT)
             {
-               _loc1_ = SceneCharacterDirection.LB;
+               direction = SceneCharacterDirection.LB;
             }
-            else if(_loc1_ == SceneCharacterDirection.RT)
+            else if(direction == SceneCharacterDirection.RT)
             {
-               _loc1_ = SceneCharacterDirection.RB;
+               direction = SceneCharacterDirection.RB;
             }
          }
-         return _loc1_;
+         return direction;
       }
       
-      public function set setSceneCharacterDirectionDefault(param1:SceneCharacterDirection) : void
+      public function set setSceneCharacterDirectionDefault(value:SceneCharacterDirection) : void
       {
-         if(param1 == SceneCharacterDirection.LT || param1 == SceneCharacterDirection.RT)
+         if(value == SceneCharacterDirection.LT || value == SceneCharacterDirection.RT)
          {
             if(sceneCharacterStateType == "natural")
             {
                sceneCharacterActionType = "naturalStandBack";
             }
          }
-         else if(param1 == SceneCharacterDirection.LB || param1 == SceneCharacterDirection.RB)
+         else if(value == SceneCharacterDirection.LB || value == SceneCharacterDirection.RB)
          {
             if(sceneCharacterStateType == "natural")
             {
@@ -417,27 +417,26 @@ package hall.player
       
       private function fixPlayerPath() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var lastPath:* = null;
          if(_playerVO.currentWalkStartPoint == null)
          {
             return;
          }
-         var _loc2_:* = -1;
-         _loc3_ = 0;
-         while(_loc3_ < _walkPath.length)
+         var startPointIndex:* = -1;
+         for(i = 0; i < _walkPath.length; )
          {
-            if(_walkPath[_loc3_].x == _playerVO.currentWalkStartPoint.x && _walkPath[_loc3_].y == _playerVO.currentWalkStartPoint.y)
+            if(_walkPath[i].x == _playerVO.currentWalkStartPoint.x && _walkPath[i].y == _playerVO.currentWalkStartPoint.y)
             {
-               _loc2_ = _loc3_;
+               startPointIndex = i;
                break;
             }
-            _loc3_++;
+            i++;
          }
-         if(_loc2_ > 0)
+         if(startPointIndex > 0)
          {
-            _loc1_ = _walkPath.slice(0,_loc2_);
-            _playerVO.walkPath = _loc1_.concat(_playerVO.walkPath);
+            lastPath = _walkPath.slice(0,startPointIndex);
+            _playerVO.walkPath = lastPath.concat(_playerVO.walkPath);
          }
       }
       
@@ -451,9 +450,9 @@ package hall.player
          return _playerVO;
       }
       
-      public function set playerVO(param1:PlayerVO) : void
+      public function set playerVO(value:PlayerVO) : void
       {
-         _playerVO = param1;
+         _playerVO = value;
       }
       
       public function get sceneScene() : SceneScene
@@ -461,14 +460,14 @@ package hall.player
          return _sceneScene;
       }
       
-      public function set sceneScene(param1:SceneScene) : void
+      public function set sceneScene(value:SceneScene) : void
       {
-         _sceneScene = param1;
+         _sceneScene = value;
       }
       
-      public function hideTitle(param1:Boolean) : void
+      public function hideTitle(value:Boolean) : void
       {
-         isHiedTitle = param1;
+         isHiedTitle = value;
          if(_spName)
          {
             _spName.visible = !isHiedTitle;
@@ -507,34 +506,34 @@ package hall.player
          }
       }
       
-      public function startRandomWalk(param1:int, param2:int, param3:Object) : void
+      public function startRandomWalk(randomPathX:int, randomPathY:int, randomPathMap:Object) : void
       {
-         _randomPathMap = param3;
-         _randomPathX = param1;
-         _randomPathY = param2;
+         _randomPathMap = randomPathMap;
+         _randomPathX = randomPathX;
+         _randomPathY = randomPathY;
          _posTimer = new Timer(getRandomDelayTime(),1);
          _posTimer.addEventListener("timerComplete",onControlWalk);
          _posTimer.start();
       }
       
-      private function onControlWalk(param1:TimerEvent) : void
+      private function onControlWalk(evt:TimerEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
+         var newStartPointIndex:int = 0;
+         var newEndPointIndex:int = 0;
+         var walkPath:* = null;
          if(_tween.isPlaying)
          {
             stopWalk();
          }
          else if(_walkPath == null || _walkPath.length == 0)
          {
-            _loc3_ = playerVO.randomEndPointIndex;
-            _loc4_ = getEndPointIndex(_loc3_);
-            playerVO.randomStartPointIndex = _loc3_;
-            playerVO.randomEndPointIndex = _loc4_;
-            _loc2_ = getPointPath(_loc3_,_loc4_);
-            _loc2_.unshift();
-            playerVO.walkPath = _loc2_;
+            newStartPointIndex = playerVO.randomEndPointIndex;
+            newEndPointIndex = getEndPointIndex(newStartPointIndex);
+            playerVO.randomStartPointIndex = newStartPointIndex;
+            playerVO.randomEndPointIndex = newEndPointIndex;
+            walkPath = getPointPath(newStartPointIndex,newEndPointIndex);
+            walkPath.unshift();
+            playerVO.walkPath = walkPath;
             playerVO.currentWalkStartPoint = _currentWalkStartPoint;
          }
          _posTimer.reset();
@@ -548,52 +547,50 @@ package hall.player
          return 2000 + Math.random() * 2000;
       }
       
-      private function getEndPointIndex(param1:int) : int
+      private function getEndPointIndex(startPointIndex:int) : int
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = param1 / _randomPathY;
-         if(_loc2_ == _randomPathX - 1)
+         var dir:int = 0;
+         var col:int = startPointIndex / _randomPathY;
+         if(col == _randomPathX - 1)
          {
-            _loc3_ = -1;
+            dir = -1;
          }
-         else if(_loc2_ == 0)
+         else if(col == 0)
          {
-            _loc3_ = 1;
+            dir = 1;
          }
          else
          {
-            _loc3_ = Math.random() > 0.5?1:-1;
+            dir = Math.random() > 0.5?1:-1;
          }
-         var _loc4_:int = (_loc2_ + _loc3_) * _randomPathY + int(Math.random() * _randomPathY);
-         return _loc4_;
+         var newEndPointIndex:int = (col + dir) * _randomPathY + int(Math.random() * _randomPathY);
+         return newEndPointIndex;
       }
       
-      private function getPointPath(param1:int, param2:int) : Array
+      private function getPointPath(newStartPointIndex:int, newEndPointIndex:int) : Array
       {
-         var _loc4_:* = null;
-         var _loc5_:int = 0;
-         var _loc3_:Array = [];
-         if(param1 < param2)
+         var path:* = null;
+         var i:int = 0;
+         var pointPath:Array = [];
+         if(newStartPointIndex < newEndPointIndex)
          {
-            _loc4_ = _randomPathMap[param1 + "_" + param2];
-            _loc5_ = 0;
-            while(_loc5_ < _loc4_.length / 2)
+            path = _randomPathMap[newStartPointIndex + "_" + newEndPointIndex];
+            for(i = 0; i < path.length / 2; )
             {
-               _loc3_.push(new Point(_loc4_[_loc5_ * 2],_loc4_[_loc5_ * 2 + 1]));
-               _loc5_++;
+               pointPath.push(new Point(path[i * 2],path[i * 2 + 1]));
+               i++;
             }
          }
          else
          {
-            _loc4_ = _randomPathMap[param2 + "_" + param1];
-            _loc5_ = _loc4_.length / 2 - 1;
-            while(_loc5_ > -1)
+            path = _randomPathMap[newEndPointIndex + "_" + newStartPointIndex];
+            for(i = path.length / 2 - 1; i > -1; )
             {
-               _loc3_.push(new Point(_loc4_[_loc5_ * 2],_loc4_[_loc5_ * 2 + 1]));
-               _loc5_--;
+               pointPath.push(new Point(path[i * 2],path[i * 2 + 1]));
+               i--;
             }
          }
-         return _loc3_;
+         return pointPath;
       }
       
       public function stopWalk() : void
@@ -668,9 +665,9 @@ package hall.player
          super.dispose();
       }
       
-      public function set walkSpeed(param1:Number) : void
+      public function set walkSpeed(value:Number) : void
       {
-         _walkSpeed = param1;
+         _walkSpeed = value;
       }
       
       public function get walkSpeed() : Number

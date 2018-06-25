@@ -24,10 +24,10 @@ package welfareCenter.icon
       
       protected var _filter:Array;
       
-      public function WelfareCenterItem(param1:int)
+      public function WelfareCenterItem($type:int)
       {
          super();
-         _type = param1;
+         _type = $type;
          init();
       }
       
@@ -54,12 +54,12 @@ package welfareCenter.icon
          return _type;
       }
       
-      public function set isShine(param1:Boolean) : void
+      public function set isShine(value:Boolean) : void
       {
-         _shine.visible = param1;
+         _shine.visible = value;
       }
       
-      public function set autoSelect(param1:Boolean) : void
+      public function set autoSelect(value:Boolean) : void
       {
       }
       
@@ -68,13 +68,13 @@ package welfareCenter.icon
          return _selected;
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         if(_selected == param1)
+         if(_selected == value)
          {
             return;
          }
-         _selected = param1;
+         _selected = value;
          this.filters = !!_selected?[]:_filter;
       }
       

@@ -24,10 +24,10 @@ package hall.event
       
       private var _data:Array;
       
-      public function NewHallEvent(param1:String, param2:Array = null)
+      public function NewHallEvent(type:String, data:Array = null)
       {
-         super(param1,bubbles,cancelable);
-         _data = param2;
+         super(type,bubbles,cancelable);
+         _data = data;
       }
       
       public function get data() : Array

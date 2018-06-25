@@ -177,15 +177,15 @@ package newYearRice.view
          NewYearRiceManager.instance.removeEventListener("yearFoodEnter",__yearFoodEnter);
       }
       
-      private function __yearFoodCook(param1:CrazyTankSocketEvent) : void
+      private function __yearFoodCook(event:CrazyTankSocketEvent) : void
       {
          SocketManager.Instance.out.sendCheckMakeNewYearFood();
       }
       
-      private function __yearFoodEnter(param1:CrazyTankSocketEvent) : void
+      private function __yearFoodEnter(event:CrazyTankSocketEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _roomType = _loc2_.readInt();
+         var pkg:PackageIn = event.pkg;
+         _roomType = pkg.readInt();
          _openFrameView = ComponentFactory.Instance.creatComponentByStylename("NewYearRiceMainView.NewYearRiceOpenView");
          _openFrameView.setViewFrame(_roomType);
          _openFrameView.roomPlayerItem(PlayerManager.Instance.Self.ID);
@@ -193,15 +193,15 @@ package newYearRice.view
          dispose();
       }
       
-      private function __changeHandler(param1:Event) : void
+      private function __changeHandler(e:Event) : void
       {
          updateView(_btnGroup.selectIndex);
       }
       
-      private function updateView(param1:int = 0) : void
+      private function updateView($selectIndex:int = 0) : void
       {
          _currentNum = upDatafitCount(ServerConfigManager.instance.localYearFoodItems);
-         switch(int(param1))
+         switch(int($selectIndex))
          {
             case 0:
                showDinnerView();
@@ -241,11 +241,11 @@ package newYearRice.view
          updateMaterialsText(_currentNum,_maxNum);
       }
       
-      private function __makeBtnHandler(param1:MouseEvent) : void
+      private function __makeBtnHandler(evt:MouseEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:int = 0;
+         var str:* = null;
+         var priceArr:* = null;
+         var i:int = 0;
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
@@ -253,12 +253,11 @@ package newYearRice.view
          }
          if(_materialsArr.length > 0)
          {
-            _loc3_ = "";
-            _loc2_ = ServerConfigManager.instance.localYearFoodItemsPrices;
-            _loc4_ = 0;
-            while(_loc4_ < _materialsArr.length)
+            str = "";
+            priceArr = ServerConfigManager.instance.localYearFoodItemsPrices;
+            for(i = 0; i < _materialsArr.length; )
             {
-               var _loc5_:* = _materialsArr[_loc4_].id;
+               var _loc5_:* = _materialsArr[i].id;
                if(0 !== _loc5_)
                {
                   if(1 !== _loc5_)
@@ -267,30 +266,30 @@ package newYearRice.view
                      {
                         if(3 === _loc5_)
                         {
-                           _loc3_ = _loc3_ + ("Hải Sản x" + _materialsArr[_loc4_].number + "  ");
-                           _price = _price + int(_loc2_[_loc4_]) * int(_materialsArr[_loc4_].number);
+                           str = str + ("Bột x" + _materialsArr[i].number + "  ");
+                           _price = _price + int(priceArr[i]) * int(_materialsArr[i].number);
                         }
                      }
                      else
                      {
-                        _loc3_ = _loc3_ + ("Rượu Nước x" + _materialsArr[_loc4_].number + "  ");
-                        _price = _price + int(_loc2_[_loc4_]) * int(_materialsArr[_loc4_].number);
+                        str = str + ("Trứng x" + _materialsArr[i].number + "  ");
+                        _price = _price + int(priceArr[i]) * int(_materialsArr[i].number);
                      }
                   }
                   else
                   {
-                     _loc3_ = _loc3_ + ("Thịt x" + _materialsArr[_loc4_].number + "  ");
-                     _price = _price + int(_loc2_[_loc4_]) * int(_materialsArr[_loc4_].number);
+                     str = str + ("Bơ x" + _materialsArr[i].number + "  ");
+                     _price = _price + int(priceArr[i]) * int(_materialsArr[i].number);
                   }
                }
                else
                {
-                  _loc3_ = _loc3_ + ("Rau Cải x" + _materialsArr[_loc4_].number + "  ");
-                  _price = _price + int(_loc2_[_loc4_]) * int(_materialsArr[_loc4_].number);
+                  str = str + ("Nến x" + _materialsArr[i].number + "  ");
+                  _price = _price + int(priceArr[i]) * int(_materialsArr[i].number);
                }
-               _loc4_++;
+               i++;
             }
-            _alert1 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("NewYearRiceMainView.view.money",_loc3_,_price),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
+            _alert1 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("NewYearRiceMainView.view.money",str,_price),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
             _alert1.addEventListener("response",__makeNewYearRice);
          }
          else
@@ -299,15 +298,15 @@ package newYearRice.view
          }
       }
       
-      private function __makeNewYearRice(param1:FrameEvent) : void
+      private function __makeNewYearRice(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__makeNewYearRice);
-         _loc2_.disposeChildren = true;
-         _loc2_.dispose();
-         _loc2_ = null;
-         if(param1.responseCode == 3)
+         var alert:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",__makeNewYearRice);
+         alert.disposeChildren = true;
+         alert.dispose();
+         alert = null;
+         if(e.responseCode == 3)
          {
             if(PlayerManager.Instance.Self.Money < _price)
             {
@@ -321,19 +320,19 @@ package newYearRice.view
          _price = 0;
       }
       
-      private function _responseI(param1:FrameEvent) : void
+      private function _responseI(e:FrameEvent) : void
       {
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",_responseI);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         (e.currentTarget as BaseAlerFrame).removeEventListener("response",_responseI);
+         if(e.responseCode == 3 || e.responseCode == 2)
          {
             LeavePageManager.leaveToFillPath();
          }
-         ObjectUtils.disposeObject(param1.target);
+         ObjectUtils.disposeObject(e.target);
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();
@@ -342,158 +341,153 @@ package newYearRice.view
       
       private function showMaterials() : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
-         var _loc3_:* = null;
-         _loc4_ = 0;
-         while(_loc4_ < 4)
+         var i:int = 0;
+         var sprite:* = null;
+         var materialsBg:* = null;
+         var materialsNum:* = null;
+         for(i = 0; i < 4; )
          {
-            _loc2_ = new Sprite();
-            _loc1_ = ComponentFactory.Instance.creatBitmap("asset.newYearRice.MaterialsBG" + _loc4_);
-            _loc3_ = ComponentFactory.Instance.creatBitmap("asset.newYearRice.MaterialsNumFrame");
-            _loc2_.addChild(_loc3_);
-            _loc2_.addChild(_loc1_);
-            addToContent(_loc2_);
-            PositionUtils.setPos(_loc2_,"NewYearRiceMainView.Materials" + _loc4_);
-            _loc4_++;
+            sprite = new Sprite();
+            materialsBg = ComponentFactory.Instance.creatBitmap("asset.newYearRice.MaterialsBG" + i);
+            materialsNum = ComponentFactory.Instance.creatBitmap("asset.newYearRice.MaterialsNumFrame");
+            sprite.addChild(materialsNum);
+            sprite.addChild(materialsBg);
+            addToContent(sprite);
+            PositionUtils.setPos(sprite,"NewYearRiceMainView.Materials" + i);
+            i++;
          }
       }
       
-      private function updateMaterialsText(param1:Array, param2:Array) : void
+      private function updateMaterialsText($currentArr:Array, $maxArr:Array) : void
       {
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
+         var i:int = 0;
+         var obj:* = null;
          _materialsArr = [];
-         var _loc4_:int = 0;
-         _materialsNum_1.text = param1[0] + "/" + param2[0];
-         _materialsNum_2.text = param1[1] + "/" + param2[1];
-         _materialsNum_3.text = param1[2] + "/" + param2[2];
-         _materialsNum_4.text = param1[3] + "/" + param2[3];
-         _loc5_ = 0;
-         while(_loc5_ < param2.length)
+         var k:int = 0;
+         _materialsNum_1.text = $currentArr[0] + "/" + $maxArr[0];
+         _materialsNum_2.text = $currentArr[1] + "/" + $maxArr[1];
+         _materialsNum_3.text = $currentArr[2] + "/" + $maxArr[2];
+         _materialsNum_4.text = $currentArr[3] + "/" + $maxArr[3];
+         for(i = 0; i < $maxArr.length; )
          {
-            if(param1[_loc5_] >= param2[_loc5_])
+            if($currentArr[i] >= $maxArr[i])
             {
-               switch(int(_loc5_))
+               switch(int(i))
                {
                   case 0:
-                     _materialsNum_1.text = param1[0] + "/" + param2[0];
+                     _materialsNum_1.text = $currentArr[0] + "/" + $maxArr[0];
                      setTFStyle(_materialsNum_1);
                      break;
                   case 1:
-                     _materialsNum_2.text = param1[1] + "/" + param2[1];
+                     _materialsNum_2.text = $currentArr[1] + "/" + $maxArr[1];
                      setTFStyle(_materialsNum_2);
                      break;
                   case 2:
-                     _materialsNum_3.text = param1[2] + "/" + param2[2];
+                     _materialsNum_3.text = $currentArr[2] + "/" + $maxArr[2];
                      setTFStyle(_materialsNum_3);
                      break;
                   case 3:
-                     _materialsNum_4.text = param1[3] + "/" + param2[3];
+                     _materialsNum_4.text = $currentArr[3] + "/" + $maxArr[3];
                      setTFStyle(_materialsNum_4);
                }
             }
             else
             {
-               _loc3_ = {};
-               _loc3_.number = param2[_loc5_] - param1[_loc5_];
-               _loc3_.id = _loc5_;
-               _materialsArr[_loc4_] = _loc3_;
-               _loc4_++;
+               obj = {};
+               obj.number = $maxArr[i] - $currentArr[i];
+               obj.id = i;
+               _materialsArr[k] = obj;
+               k++;
             }
-            _loc5_++;
+            i++;
          }
       }
       
-      public function upDatafitCount(param1:Array) : Array
+      public function upDatafitCount(id:Array) : Array
       {
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:Array = [];
-         var _loc2_:BagInfo = _selfInfo.getBag(1);
-         _loc5_ = 0;
-         while(_loc5_ < param1.length)
+         var i:int = 0;
+         var conut:int = 0;
+         var arr:Array = [];
+         var bagInfo:BagInfo = _selfInfo.getBag(1);
+         for(i = 0; i < id.length; )
          {
-            _loc4_ = _loc2_.getItemCountByTemplateId(param1[_loc5_]);
-            _loc3_.push(_loc4_);
-            _loc5_++;
+            conut = bagInfo.getItemCountByTemplateId(id[i]);
+            arr.push(conut);
+            i++;
          }
-         return _loc3_;
+         return arr;
       }
       
-      private function getMaterialsPrice(param1:Array) : Array
+      private function getMaterialsPrice(id:Array) : Array
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc2_:Array = [];
-         _loc4_ = 0;
-         while(_loc4_ < param1.length)
+         var i:int = 0;
+         var itemInfo:* = null;
+         var arr:Array = [];
+         for(i = 0; i < id.length; )
          {
-            _loc3_ = ItemManager.Instance.getTemplateById(param1[_loc4_]) as ItemTemplateInfo;
-            _loc2_.push(_loc3_.Property3);
-            _loc4_++;
+            itemInfo = ItemManager.Instance.getTemplateById(id[i]) as ItemTemplateInfo;
+            arr.push(itemInfo.Property3);
+            i++;
          }
-         return _loc2_;
+         return arr;
       }
       
-      private function setTFStyle(param1:FilterFrameText) : void
+      private function setTFStyle($txt:FilterFrameText) : void
       {
-         var _loc2_:TextFormat = new TextFormat();
-         _loc2_.color = [16374016];
-         param1.setTextFormat(_loc2_,0,param1.length);
+         var mytf:TextFormat = new TextFormat();
+         mytf.color = [16374016];
+         $txt.setTextFormat(mytf,0,$txt.length);
       }
       
-      private function showGoods(param1:Array) : void
+      private function showGoods(idArr:Array) : void
       {
-         var _loc9_:int = 0;
-         var _loc8_:* = null;
-         var _loc4_:Number = NaN;
-         var _loc7_:* = null;
-         var _loc3_:* = null;
-         var _loc5_:* = null;
-         var _loc2_:int = 0;
-         var _loc6_:int = 0;
-         _loc9_ = 0;
-         while(_loc9_ < param1.length)
+         var i:int = 0;
+         var bg:* = null;
+         var dx:Number = NaN;
+         var itemInfo:* = null;
+         var tInfo:* = null;
+         var cell:* = null;
+         var index:int = 0;
+         var length:int = 0;
+         for(i = 0; i < idArr.length; )
          {
-            _loc8_ = ComponentFactory.Instance.creatBitmap("asset.newYearRice.GoodsFrame");
-            _loc4_ = _loc8_.width + 15;
-            _loc4_ = _loc4_ * (int(_loc6_ % 6));
-            _loc8_.x = _loc4_;
-            _loc8_.y = 243;
-            _loc7_ = ItemManager.Instance.getTemplateById(param1[_loc2_].TemplateID) as ItemTemplateInfo;
-            if(param1[_loc2_].Quality != _btnGroup.selectIndex + 1)
+            bg = ComponentFactory.Instance.creatBitmap("asset.newYearRice.GoodsFrame");
+            dx = bg.width + 15;
+            dx = dx * (int(length % 6));
+            bg.x = dx;
+            bg.y = 243;
+            itemInfo = ItemManager.Instance.getTemplateById(idArr[index].TemplateID) as ItemTemplateInfo;
+            if(idArr[index].Quality != _btnGroup.selectIndex + 1)
             {
-               _loc2_++;
+               index++;
             }
             else
             {
-               _loc3_ = new InventoryItemInfo();
-               ObjectUtils.copyProperties(_loc3_,_loc7_);
-               _loc3_.ValidDate = param1[_loc2_].ValidDate;
-               _loc3_.StrengthenLevel = param1[_loc2_].StrengthLevel;
-               _loc3_.AttackCompose = param1[_loc2_].AttackCompose;
-               _loc3_.DefendCompose = param1[_loc2_].DefendCompose;
-               _loc3_.LuckCompose = param1[_loc2_].LuckCompose;
-               _loc3_.AgilityCompose = param1[_loc2_].AgilityCompose;
-               _loc3_.IsBinds = param1[_loc2_].IsBind;
-               _loc3_.Count = param1[_loc2_].Count;
-               _loc5_ = new BagCell(0,_loc3_,false);
-               _loc5_.x = _loc4_ + 6;
-               _loc5_.y = 249;
-               _loc5_.setBgVisible(false);
-               _goodItemContainerAll.addChild(_loc8_);
-               _goodItemContainerAll.addChild(_loc5_);
-               _loc2_++;
-               _loc6_++;
+               tInfo = new InventoryItemInfo();
+               ObjectUtils.copyProperties(tInfo,itemInfo);
+               tInfo.ValidDate = idArr[index].ValidDate;
+               tInfo.StrengthenLevel = idArr[index].StrengthLevel;
+               tInfo.AttackCompose = idArr[index].AttackCompose;
+               tInfo.DefendCompose = idArr[index].DefendCompose;
+               tInfo.LuckCompose = idArr[index].LuckCompose;
+               tInfo.AgilityCompose = idArr[index].AgilityCompose;
+               tInfo.IsBinds = idArr[index].IsBind;
+               tInfo.Count = idArr[index].Count;
+               cell = new BagCell(0,tInfo,false);
+               cell.x = dx + 6;
+               cell.y = 249;
+               cell.setBgVisible(false);
+               _goodItemContainerAll.addChild(bg);
+               _goodItemContainerAll.addChild(cell);
+               index++;
+               length++;
             }
-            _loc9_++;
+            i++;
          }
          addToContent(_goodItemContainerAll);
       }
       
-      private function __helpBtnHandler(param1:MouseEvent) : void
+      private function __helpBtnHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(!_helpFrame)
@@ -513,16 +507,16 @@ package newYearRice.view
          LayerManager.Instance.addToLayer(_helpFrame,3,true,2);
       }
       
-      private function __helpFrameRespose(param1:FrameEvent) : void
+      private function __helpFrameRespose(event:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(event.responseCode == 0 || event.responseCode == 1)
          {
             SoundManager.instance.playButtonSound();
             _helpFrame.parent.removeChild(_helpFrame);
          }
       }
       
-      private function __closeHelpFrame(param1:MouseEvent) : void
+      private function __closeHelpFrame(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          _helpFrame.parent.removeChild(_helpFrame);

@@ -68,24 +68,24 @@ package AvatarCollection.view
       
       public function reset() : void
       {
-         var _loc1_:* = null;
+         var property:* = null;
          if(_canBuySCB.selected)
          {
             _canBuySCB.selected = false;
-            _loc1_ = "isBuyFilter";
+            property = "isBuyFilter";
          }
          else if(_canActivitySCB.selected)
          {
             _canActivitySCB.selected = false;
-            _loc1_ = "isFilter";
+            property = "isFilter";
          }
-         if(_loc1_ != null)
+         if(property != null)
          {
-            _leftView.reset(_loc1_);
+            _leftView.reset(property);
          }
       }
       
-      private function canBuyChangeHandler(param1:MouseEvent) : void
+      private function canBuyChangeHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _leftView.canBuyChange(_canBuySCB.selected);
@@ -101,7 +101,7 @@ package AvatarCollection.view
          }
       }
       
-      private function canActivityChangeHandler(param1:MouseEvent) : void
+      private function canActivityChangeHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _leftView.canActivityChange(_canActivitySCB.selected);

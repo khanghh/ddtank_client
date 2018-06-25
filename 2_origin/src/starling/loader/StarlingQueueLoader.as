@@ -34,145 +34,145 @@ package starling.loader
          super();
       }
       
-      public function load(param1:Array, param2:Function, param3:String = "none") : void
+      public function load(assetArr:Array, onComplete:Function, module:String = "none") : void
       {
-         var _loc6_:* = null;
-         var _loc4_:* = null;
-         var _loc5_:int = 0;
-         var _loc8_:* = null;
-         _assetArr = param1.concat();
-         _onComplete = param2;
-         _module = param3;
+         var matches:* = null;
+         var extension:* = null;
+         var loaderType:int = 0;
+         var loader:* = null;
+         _assetArr = assetArr.concat();
+         _onComplete = onComplete;
+         _module = module;
          _queueLoader = new QueueLoader();
          var _loc10_:int = 0;
          var _loc9_:* = _assetArr;
-         for each(var _loc7_ in _assetArr)
+         for each(var assetInfo in _assetArr)
          {
-            _loc6_ = NAME_REGEX.exec(_loc7_.url);
-            if(_loc6_.length < 3)
+            matches = NAME_REGEX.exec(assetInfo.url);
+            if(matches.length < 3)
             {
-               throw new Error("scene asset url error:" + _loc7_.url);
+               throw new Error("scene asset url error:" + assetInfo.url);
             }
-            _loc7_.name = _loc6_[1];
-            _loc4_ = _loc6_[2];
-            _loc7_.extension = _loc4_;
-            if(_loc4_ == "png")
+            assetInfo.name = matches[1];
+            extension = matches[2];
+            assetInfo.extension = extension;
+            if(extension == "png")
             {
-               _loc5_ = 0;
+               loaderType = 0;
             }
-            else if(_loc4_ == "json" || _loc4_ == "xml")
+            else if(extension == "json" || extension == "xml")
             {
-               _loc5_ = 2;
+               loaderType = 2;
             }
-            else if(_loc4_ == "swf")
+            else if(extension == "swf")
             {
-               _loc5_ = 3;
+               loaderType = 3;
             }
-            _loc7_.loaderType = _loc5_;
-            _loc8_ = LoadResourceManager.Instance.createLoader(_loc7_.url,_loc5_);
-            _loc7_.loader = _loc8_;
-            _queueLoader.addLoader(_loc8_);
+            assetInfo.loaderType = loaderType;
+            loader = LoadResourceManager.Instance.createLoader(assetInfo.url,loaderType);
+            assetInfo.loader = loader;
+            _queueLoader.addLoader(loader);
          }
          _queueLoader.addEventListener("complete",onQueueLoaderComplete);
          _queueLoader.start();
       }
       
-      private function onQueueLoaderComplete(param1:Event) : void
+      private function onQueueLoaderComplete(evt:Event) : void
       {
-         var _loc6_:* = null;
-         var _loc2_:* = null;
-         var _loc7_:* = null;
-         var _loc5_:* = null;
-         var _loc3_:* = null;
-         var _loc10_:* = null;
-         var _loc11_:* = null;
-         var _loc9_:* = null;
-         var _loc4_:* = null;
-         var _loc8_:* = null;
+         var assetInfo:* = null;
+         var extension:* = null;
+         var texture:* = null;
+         var module:* = null;
+         var bitmapLoader:* = null;
+         var bytesLoader:* = null;
+         var xmlLoader:* = null;
+         var xml:* = null;
+         var xmlName:* = null;
+         var btmd:* = null;
          var _loc13_:int = 0;
          var _loc12_:* = _assetArr;
-         for each(_loc6_ in _assetArr)
+         for each(assetInfo in _assetArr)
          {
-            _loc2_ = _loc6_.extension;
-            if(_loc6_.hasOwnProperty("loader"))
+            extension = assetInfo.extension;
+            if(assetInfo.hasOwnProperty("loader"))
             {
-               if(_loc2_ == "png")
+               if(extension == "png")
                {
-                  _loc3_ = BitmapLoader(_loc6_.loader);
-                  _loc5_ = !!_loc6_.hasOwnProperty("module")?_loc6_.module:_module;
-                  if(!DDTAssetManager.instance.getTexture(_loc6_.name))
+                  bitmapLoader = BitmapLoader(assetInfo.loader);
+                  module = !!assetInfo.hasOwnProperty("module")?assetInfo.module:_module;
+                  if(!DDTAssetManager.instance.getTexture(assetInfo.name))
                   {
-                     _loc7_ = Texture.fromBitmapData(_loc3_.bitmapData,false);
-                     addTexture(_loc6_,_loc7_);
-                     DDTAssetManager.instance.addTexture(_loc6_.name,_loc7_,_loc5_);
+                     texture = Texture.fromBitmapData(bitmapLoader.bitmapData,false);
+                     addTexture(assetInfo,texture);
+                     DDTAssetManager.instance.addTexture(assetInfo.name,texture,module);
                   }
-                  if(_loc6_.hasOwnProperty("useType") && !DDTAssetManager.instance.getBitmapData(_loc6_.name))
+                  if(assetInfo.hasOwnProperty("useType") && !DDTAssetManager.instance.getBitmapData(assetInfo.name))
                   {
-                     DDTAssetManager.instance.addBitmapData(_loc6_.name,_loc3_.bitmapData.clone(),_loc5_);
+                     DDTAssetManager.instance.addBitmapData(assetInfo.name,bitmapLoader.bitmapData.clone(),module);
                   }
-                  _loc3_.bitmapData.dispose();
+                  bitmapLoader.bitmapData.dispose();
                }
-               else if(_loc2_ == "swf")
+               else if(extension == "swf")
                {
-                  _loc10_ = BaseLoader(_loc6_.loader);
-                  _loc5_ = !!_loc6_.hasOwnProperty("module")?_loc6_.module:_module;
-                  if(!DDTAssetManager.instance.getTexture(_loc6_.name))
+                  bytesLoader = BaseLoader(assetInfo.loader);
+                  module = !!assetInfo.hasOwnProperty("module")?assetInfo.module:_module;
+                  if(!DDTAssetManager.instance.getTexture(assetInfo.name))
                   {
-                     _loc7_ = Texture.fromData(_loc10_.content);
-                     addAtfTexture(_loc6_,_loc7_);
-                     DDTAssetManager.instance.addTexture(_loc6_.name,_loc7_,_loc5_);
+                     texture = Texture.fromData(bytesLoader.content);
+                     addAtfTexture(assetInfo,texture);
+                     DDTAssetManager.instance.addTexture(assetInfo.name,texture,module);
                   }
                }
             }
          }
          var _loc15_:int = 0;
          var _loc14_:* = _assetArr;
-         for each(_loc6_ in _assetArr)
+         for each(assetInfo in _assetArr)
          {
-            _loc2_ = _loc6_.extension;
-            _loc5_ = !!_loc6_.hasOwnProperty("module")?_loc6_.module:_module;
-            if(_loc6_.hasOwnProperty("loader") && _loc2_ == "xml")
+            extension = assetInfo.extension;
+            module = !!assetInfo.hasOwnProperty("module")?assetInfo.module:_module;
+            if(assetInfo.hasOwnProperty("loader") && extension == "xml")
             {
-               _loc11_ = TextLoader(_loc6_.loader);
-               _loc9_ = new XML(_loc11_.content);
-               if(_loc9_.localName() == "TextureAtlas")
+               xmlLoader = TextLoader(assetInfo.loader);
+               xml = new XML(xmlLoader.content);
+               if(xml.localName() == "TextureAtlas")
                {
-                  _loc4_ = _loc6_.name;
-                  _loc7_ = DDTAssetManager.instance.getTexture(_loc4_);
-                  if(_loc7_)
+                  xmlName = assetInfo.name;
+                  texture = DDTAssetManager.instance.getTexture(xmlName);
+                  if(texture)
                   {
-                     DDTAssetManager.instance.addTextureAtlas(_loc4_,new TextureAtlas(_loc7_,_loc9_),_loc5_);
-                     DDTAssetManager.instance.removeTexture(_loc4_,false);
+                     DDTAssetManager.instance.addTextureAtlas(xmlName,new TextureAtlas(texture,xml),module);
+                     DDTAssetManager.instance.removeTexture(xmlName,false);
                   }
-                  if(_loc6_.hasOwnProperty("useType"))
+                  if(assetInfo.hasOwnProperty("useType"))
                   {
-                     _loc8_ = DDTAssetManager.instance.getBitmapData(_loc6_.name);
-                     if(_loc8_)
+                     btmd = DDTAssetManager.instance.getBitmapData(assetInfo.name);
+                     if(btmd)
                      {
-                        DDTAssetManager.instance.addBitmapDataAtlas(_loc4_,new NativeTextureAtlas(_loc8_,_loc9_),_loc5_);
-                        DDTAssetManager.instance.removeBitmapData(_loc4_);
+                        DDTAssetManager.instance.addBitmapDataAtlas(xmlName,new NativeTextureAtlas(btmd,xml),module);
+                        DDTAssetManager.instance.removeBitmapData(xmlName);
                      }
                   }
-                  System.disposeXML(_loc9_);
+                  System.disposeXML(xml);
                }
             }
          }
       }
       
-      private function addTexture(param1:Object, param2:Texture) : void
+      private function addTexture(assetInfo:Object, texture:Texture) : void
       {
-         assetInfo = param1;
-         texture = param2;
+         assetInfo = assetInfo;
+         texture = texture;
          if(Starling.handleLostContext)
          {
             texture.root.onRestore = function():void
             {
-               onLoadComplete = function(param1:LoaderEvent):void
+               onLoadComplete = function(evt:LoaderEvent):void
                {
                   loader.removeEventListener("complete",onLoadComplete);
-                  var _loc2_:BitmapData = loader.bitmapData;
-                  texture.root.uploadBitmapData(_loc2_);
-                  _loc2_.dispose();
+                  var bitmapData:BitmapData = loader.bitmapData;
+                  texture.root.uploadBitmapData(bitmapData);
+                  bitmapData.dispose();
                };
                var loader:BitmapLoader = LoadResourceManager.Instance.createLoader(assetInfo.url,0);
                loader.isComplete = false;
@@ -182,15 +182,15 @@ package starling.loader
          }
       }
       
-      private function addAtfTexture(param1:Object, param2:Texture) : void
+      private function addAtfTexture(assetInfo:Object, texture:Texture) : void
       {
-         assetInfo = param1;
-         texture = param2;
+         assetInfo = assetInfo;
+         texture = texture;
          if(Starling.handleLostContext)
          {
             texture.root.onRestore = function():void
             {
-               onLoadComplete = function(param1:LoaderEvent):void
+               onLoadComplete = function(evt:LoaderEvent):void
                {
                   loader.removeEventListener("complete",onLoadComplete);
                   texture.root.uploadAtfData(loader.content);

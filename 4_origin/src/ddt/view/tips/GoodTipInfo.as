@@ -38,9 +38,9 @@ package ddt.view.tips
          return _itemInfo;
       }
       
-      public function set itemInfo(param1:ItemTemplateInfo) : void
+      public function set itemInfo(value:ItemTemplateInfo) : void
       {
-         _itemInfo = param1;
+         _itemInfo = value;
       }
    }
 }

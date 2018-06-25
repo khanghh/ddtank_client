@@ -46,14 +46,24 @@ package mark.event
       public static const UPDATA_MARKBAG:String = "updata_markbag";
       
       public static const SHOW_MARKTIP:String = "show_marktip";
+      
+      public static const CUR_SCHEME_CHANGE:String = "curSchemeChange";
+      
+      public static const CUR_SCHEME_CHANGE_DEF:String = "curSchemeChangeDEF";
+      
+      public static const ADD_SCHEME:String = "addScheme";
+      
+      public static const SAVE_SCHEME:String = "saveScheme";
+      
+      public static const PUT_CHIP_COMPLETE:String = "putChipComplete";
        
       
       private var _data = null;
       
-      public function MarkEvent(param1:String, param2:* = null, param3:Boolean = false, param4:Boolean = false)
+      public function MarkEvent(type:String, data:* = null, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         super(param1,param3,param4);
-         _data = param2;
+         super(type,bubbles,cancelable);
+         _data = data;
       }
       
       public function get data() : *

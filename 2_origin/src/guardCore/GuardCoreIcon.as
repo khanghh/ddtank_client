@@ -29,17 +29,17 @@ package guardCore
          super();
       }
       
-      public function setup(param1:PlayerInfo, param2:Boolean = true) : void
+      public function setup(player:PlayerInfo, isClick:Boolean = true) : void
       {
          if(_player)
          {
             _player.removeEventListener("propertychange",__onGuardChange);
             this.removeEventListener("click",__onClick);
          }
-         _player = param1;
+         _player = player;
          _player.addEventListener("propertychange",__onGuardChange);
          _info = GuardCoreManager.instance.getGuardCoreInfoByID(_player.guardCoreID);
-         if(_player.isSelf && param2)
+         if(_player.isSelf && isClick)
          {
             this.buttonMode = true;
             this.addEventListener("click",__onClick);
@@ -51,7 +51,7 @@ package guardCore
          updateIcon();
       }
       
-      private function __onClick(param1:MouseEvent) : void
+      private function __onClick(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          GuardCoreManager.instance.show();
@@ -67,11 +67,11 @@ package guardCore
          }
       }
       
-      private function __onGuardChange(param1:PlayerPropertyEvent) : void
+      private function __onGuardChange(e:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["GuardCoreID"])
+         if(e.changedProperties["GuardCoreID"])
          {
-            _info = GuardCoreManager.instance.getGuardCoreInfoByID(param1.target.guardCoreID);
+            _info = GuardCoreManager.instance.getGuardCoreInfoByID(e.target.guardCoreID);
             updateIcon();
          }
       }

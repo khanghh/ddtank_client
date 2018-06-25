@@ -14,7 +14,7 @@ package prayIndiana
       
       private var _pray:PrayIndianaFrame;
       
-      public function PrayIndianaController(param1:PrivateClass)
+      public function PrayIndianaController(pct:PrivateClass)
       {
          super();
       }
@@ -36,7 +36,7 @@ package prayIndiana
          PrayIndianaManager.Instance.addEventListener("prayindianaDispose",__onPrayIndianaDispose);
       }
       
-      private function __onPrayIndianaDispose(param1:Event) : void
+      private function __onPrayIndianaDispose(evt:Event) : void
       {
          if(_pray != null && PrayIndianaManager.Instance.model.isOpen)
          {
@@ -45,7 +45,7 @@ package prayIndiana
          }
       }
       
-      private function __onUpdateLottery(param1:Event) : void
+      private function __onUpdateLottery(evt:Event) : void
       {
          if(_pray != null)
          {
@@ -54,7 +54,7 @@ package prayIndiana
          }
       }
       
-      private function __onUpdateLotteryNumber(param1:Event) : void
+      private function __onUpdateLotteryNumber(evt:Event) : void
       {
          if(_pray != null)
          {
@@ -62,7 +62,7 @@ package prayIndiana
          }
       }
       
-      private function __onPrayIndianaOpenFrame(param1:Event) : void
+      private function __onPrayIndianaOpenFrame(evt:Event) : void
       {
          if(_pray != null)
          {

@@ -52,26 +52,25 @@ package gameStarling.view
       {
          var _loc3_:int = 0;
          var _loc2_:* = _spList;
-         for each(var _loc1_ in _spList)
+         for each(var sp in _spList)
          {
-            removeChild(_loc1_);
+            removeChild(sp);
          }
          _spList = [];
       }
       
-      private function drawIcons(param1:Array) : void
+      private function drawIcons(iconArr:Array) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         _loc3_ = 0;
-         while(_loc3_ < param1.length)
+         var i:int = 0;
+         var icon:* = null;
+         for(i = 0; i < iconArr.length; )
          {
-            _loc2_ = _data.list[_loc3_];
-            _loc2_.x = (_loc3_ & 3) * 21;
-            _loc2_.y = (_loc3_ >> 2) * 21;
-            _spList.push(_loc2_);
-            addChild(_loc2_);
-            _loc3_++;
+            icon = _data.list[i];
+            icon.x = (i & 3) * 21;
+            icon.y = (i >> 2) * 21;
+            _spList.push(icon);
+            addChild(icon);
+            i++;
          }
       }
       
@@ -90,9 +89,9 @@ package gameStarling.view
          }
       }
       
-      private function __changeEffectHandler(param1:DictionaryEvent) : void
+      private function __changeEffectHandler(e:DictionaryEvent) : void
       {
-         var _loc2_:Sprite = param1.data as Sprite;
+         var sp:Sprite = e.data as Sprite;
          _updateList();
       }
       
@@ -113,17 +112,17 @@ package gameStarling.view
          return (Math.floor(_spList.length / 5) + 1) * 21;
       }
       
-      public function handleEffect(param1:int, param2:DisplayObject) : void
+      public function handleEffect(type:int, view:DisplayObject) : void
       {
-         if(param2)
+         if(view)
          {
-            _data.add(param1,param2);
+            _data.add(type,view);
          }
       }
       
-      public function removeEffect(param1:int) : void
+      public function removeEffect(type:int) : void
       {
-         _data.remove(param1);
+         _data.remove(type);
       }
       
       public function clearEffectIcon() : void

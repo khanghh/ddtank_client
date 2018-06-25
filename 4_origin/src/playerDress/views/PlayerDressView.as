@@ -125,15 +125,14 @@ package playerDress.views
       
       private function initData() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _currentIndex = PlayerDressManager.instance.currentIndex;
          _currentModel = new DressModel();
          _dressCells = new Vector.<BagCell>();
-         _loc1_ = 1;
-         while(_loc1_ <= PlayerDressManager.instance.currentModelNum)
+         for(i = 1; i <= PlayerDressManager.instance.currentModelNum; )
          {
-            _comboBoxArr.push(LanguageMgr.GetTranslation("playerDress.model" + _loc1_));
-            _loc1_++;
+            _comboBoxArr.push(LanguageMgr.GetTranslation("playerDress.model" + i));
+            i++;
          }
          if(PlayerDressManager.instance.currentModelNum < 6)
          {
@@ -144,8 +143,8 @@ package playerDress.views
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var cell:* = null;
          _BG = ComponentFactory.Instance.creatComponentByStylename("playerDress.bg");
          addChild(_BG);
          _hidePanel = ComponentFactory.Instance.creatComponentByStylename("bagAndInfo.view.ddtbg");
@@ -180,17 +179,16 @@ package playerDress.views
          _hideWingBtn = ComponentFactory.Instance.creatComponentByStylename("playerDress.hideWingCheckBox");
          _hideSprite.addChild(_hideWingBtn);
          _helpBtn = HelpFrameUtils.Instance.simpleHelpButton(this,"playerDress.helpBtn",null,LanguageMgr.GetTranslation("playerDress.dressReadMe"),"playerDress.readMe",404,484);
-         _loc2_ = 0;
-         while(_loc2_ <= 8 - 1)
+         for(i = 0; i <= 8 - 1; )
          {
-            _loc1_ = new DressCell();
-            CellFactory.instance.fillTipProp(_loc1_);
-            _loc1_.doubleClickEnabled = true;
-            _loc1_.addEventListener("doubleclick",__cellDoubleClick);
-            PositionUtils.setPos(_loc1_,"playerDress.cellPos" + _loc2_);
-            _dressCells.push(_loc1_);
-            addChild(_loc1_);
-            _loc2_++;
+            cell = new DressCell();
+            CellFactory.instance.fillTipProp(cell);
+            cell.doubleClickEnabled = true;
+            cell.addEventListener("doubleclick",__cellDoubleClick);
+            PositionUtils.setPos(cell,"playerDress.cellPos" + i);
+            _dressCells.push(cell);
+            addChild(cell);
+            i++;
          }
          updateComboBox(_comboBoxArr[_currentIndex]);
          updateModel();
@@ -226,12 +224,12 @@ package playerDress.views
       
       public function updateModel() : void
       {
-         var _loc4_:* = null;
-         var _loc2_:* = null;
-         var _loc8_:int = 0;
-         var _loc1_:int = 0;
-         var _loc5_:int = 0;
-         var _loc7_:int = 0;
+         var sItem:* = null;
+         var tItem:* = null;
+         var i:int = 0;
+         var templateId:int = 0;
+         var itemId:int = 0;
+         var key:int = 0;
          _self = PlayerManager.Instance.Self;
          if(_self.Sex)
          {
@@ -242,39 +240,38 @@ package playerDress.views
             _currentModel.model.updateStyle(_self.Sex,_self.Hide,DressModel.DEFAULT_WOMAN_STYLE,",,,,,,","");
          }
          _bodyThings = new DictionaryData();
-         var _loc6_:Array = PlayerDressManager.instance.modelArr[_currentIndex];
-         var _loc3_:Boolean = false;
-         if(_loc6_)
+         var dressArr:Array = PlayerDressManager.instance.modelArr[_currentIndex];
+         var reSave:Boolean = false;
+         if(dressArr)
          {
-            _loc8_ = 0;
-            while(_loc8_ <= _loc6_.length - 1)
+            for(i = 0; i <= dressArr.length - 1; )
             {
-               _loc1_ = (_loc6_[_loc8_] as DressVo).templateId;
-               _loc5_ = (_loc6_[_loc8_] as DressVo).itemId;
-               _loc2_ = new InventoryItemInfo();
-               _loc4_ = _self.Bag.getItemByItemId(_loc5_);
-               if(!_loc4_)
+               templateId = (dressArr[i] as DressVo).templateId;
+               itemId = (dressArr[i] as DressVo).itemId;
+               tItem = new InventoryItemInfo();
+               sItem = _self.Bag.getItemByItemId(itemId);
+               if(!sItem)
                {
-                  _loc4_ = _self.Bag.getItemByTemplateId(_loc1_);
-                  _loc3_ = true;
+                  sItem = _self.Bag.getItemByTemplateId(templateId);
+                  reSave = true;
                }
-               if(_loc4_)
+               if(sItem)
                {
-                  _loc2_.setIsUsed(_loc4_.IsUsed);
-                  ObjectUtils.copyProperties(_loc2_,_loc4_);
-                  _loc7_ = DressUtils.findItemPlace(_loc2_);
-                  _bodyThings.add(_loc7_,_loc2_);
-                  if(_loc2_.CategoryID == 6)
+                  tItem.setIsUsed(sItem.IsUsed);
+                  ObjectUtils.copyProperties(tItem,sItem);
+                  key = DressUtils.findItemPlace(tItem);
+                  _bodyThings.add(key,tItem);
+                  if(tItem.CategoryID == 6)
                   {
-                     _currentModel.model.Skin = _loc2_.Skin;
+                     _currentModel.model.Skin = tItem.Skin;
                   }
-                  _currentModel.model.setPartStyle(_loc2_.CategoryID,_loc2_.NeedSex,_loc2_.TemplateID,_loc2_.Color);
+                  _currentModel.model.setPartStyle(tItem.CategoryID,tItem.NeedSex,tItem.TemplateID,tItem.Color);
                }
-               _loc8_++;
+               i++;
             }
          }
          _currentModel.model.Bag.items = _bodyThings;
-         if(_loc3_)
+         if(reSave)
          {
             saveModel();
          }
@@ -283,18 +280,18 @@ package playerDress.views
          updateHideCheckBox();
       }
       
-      public function putOnDress(param1:InventoryItemInfo) : void
+      public function putOnDress(item:InventoryItemInfo) : void
       {
-         var _loc2_:InventoryItemInfo = new InventoryItemInfo();
-         _loc2_.setIsUsed(param1.IsUsed);
-         ObjectUtils.copyProperties(_loc2_,param1);
-         var _loc3_:int = DressUtils.findItemPlace(_loc2_);
-         _currentModel.model.Bag.items.add(_loc3_,_loc2_);
-         if(_loc2_.CategoryID == 6)
+         var tItem:InventoryItemInfo = new InventoryItemInfo();
+         tItem.setIsUsed(item.IsUsed);
+         ObjectUtils.copyProperties(tItem,item);
+         var key:int = DressUtils.findItemPlace(tItem);
+         _currentModel.model.Bag.items.add(key,tItem);
+         if(tItem.CategoryID == 6)
          {
-            _currentModel.model.Skin = _loc2_.Skin;
+            _currentModel.model.Skin = tItem.Skin;
          }
-         _currentModel.model.setPartStyle(_loc2_.CategoryID,_loc2_.NeedSex,_loc2_.TemplateID,_loc2_.Color);
+         _currentModel.model.setPartStyle(tItem.CategoryID,tItem.NeedSex,tItem.TemplateID,tItem.Color);
          updateCharacter();
          setBtnsStatus();
       }
@@ -313,15 +310,15 @@ package playerDress.views
          SocketManager.Instance.addEventListener(PkgEvent.format(237,8),__onAddIsSuccess);
       }
       
-      private function __onAddIsSuccess(param1:PkgEvent) : void
+      private function __onAddIsSuccess(e:PkgEvent) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readInt();
-         if(_loc2_)
+         var msg:* = null;
+         var pkg:PackageIn = e.pkg;
+         var result:int = pkg.readInt();
+         if(result)
          {
-            _loc4_ = LanguageMgr.GetTranslation("playerDress.add.success");
-            MessageTipManager.getInstance().show(_loc4_,0,true,1);
+            msg = LanguageMgr.GetTranslation("playerDress.add.success");
+            MessageTipManager.getInstance().show(msg,0,true,1);
             PlayerDressManager.instance.currentModelNum = PlayerDressManager.instance.currentModelNum + 1;
             _comboBoxArr.splice(PlayerDressManager.instance.currentModelNum - 1,PlayerDressManager.instance.currentModelNum == 6?1:0,LanguageMgr.GetTranslation("playerDress.model" + PlayerDressManager.instance.currentModelNum));
             _selectedBox.textField.text = _comboBoxArr[_currentIndex];
@@ -330,9 +327,9 @@ package playerDress.views
          }
       }
       
-      protected function __onUpLoadClick(param1:MouseEvent) : void
+      protected function __onUpLoadClick(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var frame:* = null;
          SoundManager.instance.playButtonSound();
          _currentModel.model.setSuiteHide(true);
          _currentModel.model.wingHide = true;
@@ -348,20 +345,20 @@ package playerDress.views
                return;
             }
             _stylePrice = 2000 * Math.pow(2,DraftModel.UploadNum - 1);
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("draftView.uploadStyle.info",DraftModel.UploadNum,_stylePrice),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2,null,"SimpleAlert",60,false);
-            _loc2_.addEventListener("response",onBuyConfirmResponse);
+            frame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("draftView.uploadStyle.info",DraftModel.UploadNum,_stylePrice),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2,null,"SimpleAlert",60,false);
+            frame.addEventListener("response",onBuyConfirmResponse);
          }
       }
       
-      private function onBuyConfirmResponse(param1:FrameEvent) : void
+      private function onBuyConfirmResponse(e:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",onBuyConfirmResponse);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var frame:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("response",onBuyConfirmResponse);
+         if(e.responseCode == 2 || e.responseCode == 3)
          {
-            CheckMoneyUtils.instance.checkMoney(_loc2_.isBand,_stylePrice,onCheckComplete);
+            CheckMoneyUtils.instance.checkMoney(frame.isBand,_stylePrice,onCheckComplete);
          }
-         _loc2_.dispose();
+         frame.dispose();
       }
       
       protected function onCheckComplete() : void
@@ -369,37 +366,37 @@ package playerDress.views
          SocketManager.Instance.out.uploadDraftStyle(_currentModel.model.Style,_currentModel.model.Colors + "#" + _currentModel.model.Skin);
       }
       
-      protected function __updateGoods(param1:BagEvent) : void
+      protected function __updateGoods(event:BagEvent) : void
       {
-         var _loc5_:* = null;
-         var _loc6_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:int = 0;
-         var _loc4_:Dictionary = param1.changedSlots;
+         var item:* = null;
+         var changeItem:* = null;
+         var tItem:* = null;
+         var index:int = 0;
+         var changeSlots:Dictionary = event.changedSlots;
          var _loc12_:int = 0;
          var _loc11_:* = _currentModel.model.Bag.items;
-         for(var _loc8_ in _currentModel.model.Bag.items)
+         for(var key in _currentModel.model.Bag.items)
          {
-            _loc5_ = _currentModel.model.Bag.items[_loc8_];
-            if(_loc5_)
+            item = _currentModel.model.Bag.items[key];
+            if(item)
             {
                var _loc10_:int = 0;
-               var _loc9_:* = _loc4_;
-               for(var _loc7_ in _loc4_)
+               var _loc9_:* = changeSlots;
+               for(var slot in changeSlots)
                {
-                  _loc6_ = _loc4_[_loc7_];
-                  if(_self.Bag.items[_loc7_])
+                  changeItem = changeSlots[slot];
+                  if(_self.Bag.items[slot])
                   {
-                     if(_loc5_.ItemID != 0 && _loc5_.ItemID == _loc6_.ItemID || _loc5_.ItemID == 0 && _loc5_.TemplateID == _loc6_.TemplateID)
+                     if(item.ItemID != 0 && item.ItemID == changeItem.ItemID || item.ItemID == 0 && item.TemplateID == changeItem.TemplateID)
                      {
-                        _loc3_ = new InventoryItemInfo();
-                        _loc3_.setIsUsed(_loc6_.IsUsed);
-                        ObjectUtils.copyProperties(_loc3_,_loc6_);
-                        _currentModel.model.Bag.items[_loc8_] = _loc3_;
-                        _loc2_ = DressUtils.getBagItems(int(_loc8_),true);
-                        if(_dressCells[_loc2_])
+                        tItem = new InventoryItemInfo();
+                        tItem.setIsUsed(changeItem.IsUsed);
+                        ObjectUtils.copyProperties(tItem,changeItem);
+                        _currentModel.model.Bag.items[key] = tItem;
+                        index = DressUtils.getBagItems(int(key),true);
+                        if(_dressCells[index])
                         {
-                           _dressCells[_loc2_].info = _loc3_;
+                           _dressCells[index].info = tItem;
                         }
                      }
                   }
@@ -410,38 +407,37 @@ package playerDress.views
          setBtnsStatus();
       }
       
-      protected function __cellDoubleClick(param1:CellEvent) : void
+      protected function __cellDoubleClick(event:CellEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc3_:int = 0;
-         var _loc4_:* = null;
-         var _loc2_:int = 0;
-         _loc5_ = 0;
-         while(_loc5_ <= 8 - 1)
+         var i:int = 0;
+         var index:int = 0;
+         var item:* = null;
+         var sex:int = 0;
+         for(i = 0; i <= 8 - 1; )
          {
-            if(_dressCells[_loc5_] == param1.target)
+            if(_dressCells[i] == event.target)
             {
-               _loc3_ = DressUtils.getBagItems(_loc5_);
-               _loc4_ = _currentModel.model.Bag.items[_loc3_];
-               _loc2_ = !!_self.Sex?1:2;
-               _currentModel.model.setPartStyle(_loc4_.CategoryID,_loc2_);
-               if(_loc4_.CategoryID == 6)
+               index = DressUtils.getBagItems(i);
+               item = _currentModel.model.Bag.items[index];
+               sex = !!_self.Sex?1:2;
+               _currentModel.model.setPartStyle(item.CategoryID,sex);
+               if(item.CategoryID == 6)
                {
                   _currentModel.model.Skin = "";
                }
-               _currentModel.model.Bag.items[_loc3_] = null;
-               _dressCells[_loc5_].info = null;
+               _currentModel.model.Bag.items[index] = null;
+               _dressCells[i].info = null;
             }
-            _loc5_++;
+            i++;
          }
          setBtnsStatus();
       }
       
-      protected function __okBtnClick(param1:MouseEvent) : void
+      protected function __okBtnClick(event:MouseEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var j:int = 0;
+         var cell:* = null;
+         var alert:* = null;
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -450,17 +446,16 @@ package playerDress.views
          }
          enableOKBtn(false);
          saveBtnClick = false;
-         _loc4_ = 0;
-         while(_loc4_ <= 8 - 1)
+         for(j = 0; j <= 8 - 1; )
          {
-            _loc3_ = _dressCells[_loc4_] as BagCell;
-            if(_loc3_.info && (_loc3_.info.BindType == 1 || _loc3_.info.BindType == 2 || _loc3_.info.BindType == 3) && _loc3_.itemInfo.IsBinds == false)
+            cell = _dressCells[j] as BagCell;
+            if(cell.info && (cell.info.BindType == 1 || cell.info.BindType == 2 || cell.info.BindType == 3) && cell.itemInfo.IsBinds == false)
             {
-               _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.bagII.BagIIView.BindsInfo"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2);
-               _loc2_.addEventListener("response",__onResponse);
+               alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.bagII.BagIIView.BindsInfo"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2);
+               alert.addEventListener("response",__onResponse);
                return;
             }
-            _loc4_++;
+            j++;
          }
          save();
          exchangeProperty();
@@ -468,60 +463,59 @@ package playerDress.views
       
       private function exchangeProperty() : void
       {
-         var _loc8_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc1_:* = null;
-         var _loc6_:int = 0;
-         var _loc7_:int = 0;
+         var i:int = 0;
+         var index:int = 0;
+         var sourceItem:* = null;
+         var targetItem:* = null;
+         var sourcePlace:int = 0;
+         var targetPlace:int = 0;
          PlayerDressControl.instance.lockDressBag();
-         var _loc5_:BagInfo = PlayerManager.Instance.Self.Bag;
-         var _loc2_:Boolean = false;
-         _loc8_ = 0;
-         while(_loc8_ <= 8 - 1)
+         var equipBag:BagInfo = PlayerManager.Instance.Self.Bag;
+         var goldNotEnough:Boolean = false;
+         for(i = 0; i <= 8 - 1; )
          {
-            _loc4_ = DressUtils.getBagItems(_loc8_);
-            _loc3_ = _currentModel.model.Bag.items[_loc4_];
-            _loc1_ = _self.Bag.items[_loc4_];
-            if(_loc3_ && checkOverDue(_loc3_))
+            index = DressUtils.getBagItems(i);
+            sourceItem = _currentModel.model.Bag.items[index];
+            targetItem = _self.Bag.items[index];
+            if(sourceItem && checkOverDue(sourceItem))
             {
-               _loc3_ = null;
+               sourceItem = null;
             }
-            if(_loc3_ && _loc1_)
+            if(sourceItem && targetItem)
             {
-               _loc6_ = _loc3_.Place;
-               _loc7_ = _loc1_.Place;
-               if(_loc6_ != _loc7_)
+               sourcePlace = sourceItem.Place;
+               targetPlace = targetItem.Place;
+               if(sourcePlace != targetPlace)
                {
-                  if(DressUtils.hasNoAddition(_loc1_))
+                  if(DressUtils.hasNoAddition(targetItem))
                   {
-                     SocketManager.Instance.out.sendMoveGoods(0,_loc6_,0,_loc7_,1,true);
+                     SocketManager.Instance.out.sendMoveGoods(0,sourcePlace,0,targetPlace,1,true);
                   }
                   else if(PlayerManager.Instance.Self.Gold < 5000)
                   {
-                     _loc2_ = true;
-                     SocketManager.Instance.out.sendMoveGoods(0,_loc6_,0,_loc7_,1,true);
+                     goldNotEnough = true;
+                     SocketManager.Instance.out.sendMoveGoods(0,sourcePlace,0,targetPlace,1,true);
                   }
                   else
                   {
-                     SocketManager.Instance.out.sendItemTransfer(true,true,0,_loc6_,0,_loc7_);
-                     SocketManager.Instance.out.sendMoveGoods(0,_loc6_,0,_loc7_,1,true);
+                     SocketManager.Instance.out.sendItemTransfer(true,true,0,sourcePlace,0,targetPlace);
+                     SocketManager.Instance.out.sendMoveGoods(0,sourcePlace,0,targetPlace,1,true);
                   }
                }
             }
-            else if(!_loc3_ && _loc1_)
+            else if(!sourceItem && targetItem)
             {
-               SocketManager.Instance.out.sendMoveGoods(0,_loc1_.Place,0,-1,1,true);
+               SocketManager.Instance.out.sendMoveGoods(0,targetItem.Place,0,-1,1,true);
             }
-            else if(_loc3_ && !_loc1_)
+            else if(sourceItem && !targetItem)
             {
-               SocketManager.Instance.out.sendMoveGoods(0,_loc3_.Place,0,_loc4_,1,true);
+               SocketManager.Instance.out.sendMoveGoods(0,sourceItem.Place,0,index,1,true);
             }
-            _loc8_++;
+            i++;
          }
          SocketManager.Instance.out.setCurrentModel(_currentIndex);
          SocketManager.Instance.out.lockDressBag();
-         if(_loc2_)
+         if(goldNotEnough)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("playerDress.goldNotEnough"));
          }
@@ -533,11 +527,11 @@ package playerDress.views
          MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("playerDress.changeDressSuccess"));
       }
       
-      protected function __saveBtnClick(param1:MouseEvent) : void
+      protected function __saveBtnClick(event:MouseEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var cell:* = null;
+         var alert:* = null;
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -545,28 +539,27 @@ package playerDress.views
             return;
          }
          saveBtnClick = true;
-         _loc4_ = 0;
-         while(_loc4_ <= 8 - 1)
+         for(i = 0; i <= 8 - 1; )
          {
-            _loc3_ = _dressCells[_loc4_] as BagCell;
-            if(_loc3_.info && (_loc3_.info.BindType == 1 || _loc3_.info.BindType == 2 || _loc3_.info.BindType == 3) && _loc3_.itemInfo.IsBinds == false)
+            cell = _dressCells[i] as BagCell;
+            if(cell.info && (cell.info.BindType == 1 || cell.info.BindType == 2 || cell.info.BindType == 3) && cell.itemInfo.IsBinds == false)
             {
-               _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.bagII.BagIIView.BindsInfo"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2);
-               _loc2_.addEventListener("response",__onResponse);
+               alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.bagII.BagIIView.BindsInfo"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2);
+               alert.addEventListener("response",__onResponse);
                return;
             }
-            _loc4_++;
+            i++;
          }
          save();
       }
       
-      private function __onResponse(param1:FrameEvent) : void
+      private function __onResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.target as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onResponse);
-         _loc2_.dispose();
-         switch(int(param1.responseCode))
+         var alert:BaseAlerFrame = evt.target as BaseAlerFrame;
+         alert.removeEventListener("response",__onResponse);
+         alert.dispose();
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
@@ -595,33 +588,32 @@ package playerDress.views
       
       private function saveModel() : void
       {
-         var _loc4_:int = 0;
-         var _loc1_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:Array = [];
-         _loc4_ = 0;
-         while(_loc4_ <= 8 - 1)
+         var i:int = 0;
+         var index:int = 0;
+         var item:* = null;
+         var dressPlaceArr:Array = [];
+         for(i = 0; i <= 8 - 1; )
          {
-            _loc1_ = DressUtils.getBagItems(_loc4_);
-            _loc2_ = _currentModel.model.Bag.items[_loc1_];
-            if(_loc2_)
+            index = DressUtils.getBagItems(i);
+            item = _currentModel.model.Bag.items[index];
+            if(item)
             {
-               _loc3_.push(_loc2_.Place);
+               dressPlaceArr.push(item.Place);
             }
-            _loc4_++;
+            i++;
          }
-         SocketManager.Instance.out.saveDressModel(_currentIndex,_loc3_);
+         SocketManager.Instance.out.saveDressModel(_currentIndex,dressPlaceArr);
       }
       
-      protected function __onListClick(param1:ListItemEvent) : void
+      protected function __onListClick(event:ListItemEvent) : void
       {
-         var _loc2_:* = null;
+         var alertAsk:* = null;
          SoundManager.instance.play("008");
-         if(_currentIndex == _comboBoxArr.indexOf(param1.cellValue))
+         if(_currentIndex == _comboBoxArr.indexOf(event.cellValue))
          {
             return;
          }
-         if(param1.cellValue == LanguageMgr.GetTranslation("playerDress.add"))
+         if(event.cellValue == LanguageMgr.GetTranslation("playerDress.add"))
          {
             _selectedBox.textField.text = _comboBoxArr[_currentIndex];
             if(PlayerManager.Instance.Self.bagLocked)
@@ -630,36 +622,36 @@ package playerDress.views
                return;
             }
             _money = PlayerDressManager.instance.additionModel[_comboBoxArr.length - 3];
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("tank.game.GameView.gypsyRMBTicketConfirm",_money),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false,0);
-            _loc2_.addEventListener("response",__alertAllBack);
+            alertAsk = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("tank.game.GameView.gypsyRMBTicketConfirm",_money),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false,0);
+            alertAsk.addEventListener("response",__alertAllBack);
             return;
          }
-         _currentIndex = _comboBoxArr.indexOf(param1.cellValue);
+         _currentIndex = _comboBoxArr.indexOf(event.cellValue);
          PlayerDressManager.instance.currentIndex = _currentIndex;
          updateModel();
-         updateComboBox(param1.cellValue);
+         updateComboBox(event.cellValue);
       }
       
-      private function __alertAllBack(param1:FrameEvent) : void
+      private function __alertAllBack(event:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__alertAllBack);
+         var frame:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("response",__alertAllBack);
          SoundManager.instance.playButtonSound();
-         switch(int(param1.responseCode) - 2)
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
-               CheckMoneyUtils.instance.checkMoney(_loc2_.isBand,_money,SocketManager.Instance.out.addPlayerDressPay);
+               CheckMoneyUtils.instance.checkMoney(frame.isBand,_money,SocketManager.Instance.out.addPlayerDressPay);
          }
-         _loc2_.dispose();
+         frame.dispose();
       }
       
-      private function updateComboBox(param1:*) : void
+      private function updateComboBox(obj:*) : void
       {
-         var _loc2_:VectorListModel = _selectedBox.listPanel.vectorListModel;
-         _loc2_.clear();
-         _loc2_.appendAll(_comboBoxArr);
-         _loc2_.remove(param1);
+         var comboxModel:VectorListModel = _selectedBox.listPanel.vectorListModel;
+         comboxModel.clear();
+         comboxModel.appendAll(_comboBoxArr);
+         comboxModel.remove(obj);
       }
       
       private function updateHideCheckBox() : void
@@ -672,8 +664,8 @@ package playerDress.views
       
       private function updateCharacter() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
+         var i:int = 0;
+         var itemId:int = 0;
          if(_currentModel.model)
          {
             if(!_character)
@@ -685,19 +677,19 @@ package playerDress.views
                addChild(_character);
             }
          }
-         _loc2_ = 0;
-         while(_loc2_ < _dressCells.length)
+         i = 0;
+         while(i < _dressCells.length)
          {
-            _loc1_ = DressUtils.getBagItems(_loc2_);
-            if(_currentModel.model.Bag.items[_loc1_])
+            itemId = DressUtils.getBagItems(i);
+            if(_currentModel.model.Bag.items[itemId])
             {
-               _dressCells[_loc2_].info = _currentModel.model.Bag.items[_loc1_];
+               _dressCells[i].info = _currentModel.model.Bag.items[itemId];
             }
             else
             {
-               _dressCells[_loc2_].info = null;
+               _dressCells[i].info = null;
             }
-            _loc2_++;
+            i++;
          }
       }
       
@@ -707,23 +699,23 @@ package playerDress.views
          {
             _saveBtn.enable = canSaveBtnClick();
          }
-         var _loc1_:Boolean = canOKBtnClick();
+         var enable:Boolean = canOKBtnClick();
          if(_okBtn)
          {
-            enableOKBtn(_loc1_);
+            enableOKBtn(enable);
          }
       }
       
       private function canSaveBtnClick() : Boolean
       {
-         var _loc8_:int = 0;
-         var _loc2_:int = 0;
-         var _loc4_:* = null;
-         var _loc1_:Boolean = false;
-         var _loc5_:int = 0;
-         var _loc7_:* = null;
-         var _loc6_:Array = PlayerDressManager.instance.modelArr[_currentIndex];
-         if(!_loc6_)
+         var i:int = 0;
+         var c:int = 0;
+         var item:* = null;
+         var flag:Boolean = false;
+         var j:int = 0;
+         var vo:* = null;
+         var dressArr:Array = PlayerDressManager.instance.modelArr[_currentIndex];
+         if(!dressArr)
          {
             if(_currentModel.model.Bag.items.length == 0)
             {
@@ -731,58 +723,56 @@ package playerDress.views
             }
             return true;
          }
-         var _loc3_:Array = _loc6_.concat();
-         _loc8_ = 0;
+         var arr:Array = dressArr.concat();
+         i = 0;
          while(true)
          {
-            if(_loc8_ > 8 - 1)
+            if(i > 8 - 1)
             {
-               if(_loc3_.length == 0)
+               if(arr.length == 0)
                {
                   return false;
                }
                return true;
             }
-            _loc2_ = DressUtils.getBagItems(_loc8_);
-            _loc4_ = _currentModel.model.Bag.items[_loc2_];
-            if(_loc4_)
+            c = DressUtils.getBagItems(i);
+            item = _currentModel.model.Bag.items[c];
+            if(item)
             {
-               _loc1_ = true;
-               _loc5_ = 0;
-               while(_loc5_ <= _loc3_.length - 1)
+               flag = true;
+               for(j = 0; j <= arr.length - 1; )
                {
-                  _loc7_ = _loc3_[_loc5_];
-                  if(_loc4_.ItemID == _loc7_.itemId)
+                  vo = arr[j];
+                  if(item.ItemID == vo.itemId)
                   {
-                     _loc3_.splice(_loc5_,1);
-                     _loc1_ = false;
+                     arr.splice(j,1);
+                     flag = false;
                      break;
                   }
-                  _loc5_++;
+                  j++;
                }
-               if(_loc1_)
+               if(flag)
                {
                   break;
                }
             }
-            _loc8_++;
+            i++;
          }
          return true;
       }
       
       private function canOKBtnClick() : Boolean
       {
-         var _loc4_:int = 0;
-         var _loc1_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         _loc4_ = 0;
-         while(_loc4_ <= 8 - 1)
+         var i:int = 0;
+         var index:int = 0;
+         var modelItem:* = null;
+         var bodyItem:* = null;
+         for(i = 0; i <= 8 - 1; )
          {
-            _loc1_ = DressUtils.getBagItems(_loc4_);
-            _loc2_ = _currentModel.model.Bag.items[_loc1_];
-            _loc3_ = _self.Bag.items[_loc1_];
-            if(_loc2_ && !_loc3_ && !checkOverDue(_loc2_) || !_loc2_ && _loc3_ || _loc2_ && _loc3_ && _loc2_.ItemID != _loc3_.ItemID)
+            index = DressUtils.getBagItems(i);
+            modelItem = _currentModel.model.Bag.items[index];
+            bodyItem = _self.Bag.items[index];
+            if(modelItem && !bodyItem && !checkOverDue(modelItem) || !modelItem && bodyItem || modelItem && bodyItem && modelItem.ItemID != bodyItem.ItemID)
             {
                if(PlayerManager.Instance.Self.Grade >= 3 && !PlayerManager.Instance.Self.IsWeakGuildFinish(107))
                {
@@ -790,52 +780,52 @@ package playerDress.views
                }
                return true;
             }
-            _loc4_++;
+            i++;
          }
          return false;
       }
       
-      private function checkOverDue(param1:InventoryItemInfo) : Boolean
+      private function checkOverDue(item:InventoryItemInfo) : Boolean
       {
-         var _loc2_:* = 0;
-         var _loc4_:Date = TimeManager.Instance.Now();
-         var _loc5_:Date = DateUtils.getDateByStr(param1.BeginDate);
-         var _loc3_:Number = Math.round((_loc4_.getTime() - _loc5_.getTime()) / 1000);
-         if(_loc3_ >= 0)
+         var d:* = 0;
+         var nowDate:Date = TimeManager.Instance.Now();
+         var begin:Date = DateUtils.getDateByStr(item.BeginDate);
+         var diff:Number = Math.round((nowDate.getTime() - begin.getTime()) / 1000);
+         if(diff >= 0)
          {
-            _loc2_ = uint(Math.floor(_loc3_ / 60 / 60 / 24));
+            d = uint(Math.floor(diff / 60 / 60 / 24));
          }
-         if(_loc3_ < 0 || param1.IsUsed == true && param1.ValidDate > 0 && _loc2_ >= param1.ValidDate)
+         if(diff < 0 || item.IsUsed == true && item.ValidDate > 0 && d >= item.ValidDate)
          {
             return true;
          }
          return false;
       }
       
-      private function __hideWingClickHandler(param1:Event) : void
+      private function __hideWingClickHandler(event:Event) : void
       {
          _currentModel.model.wingHide = _hideWingBtn.selected;
       }
       
-      private function __hideSuitesChange(param1:Event) : void
+      private function __hideSuitesChange(event:Event) : void
       {
          _currentModel.model.setSuiteHide(_hideSuitBtn.selected);
       }
       
-      private function __hideGlassChange(param1:Event) : void
+      private function __hideGlassChange(event:Event) : void
       {
          _currentModel.model.setGlassHide(_hideGlassBtn.selected);
       }
       
-      private function __hideHatChange(param1:Event) : void
+      private function __hideHatChange(event:Event) : void
       {
          _currentModel.model.setHatHide(_hideHatBtn.selected);
       }
       
-      private function enableOKBtn(param1:Boolean) : void
+      private function enableOKBtn(enable:Boolean) : void
       {
-         _okBtn.enable = param1;
-         if(param1)
+         _okBtn.enable = enable;
+         if(enable)
          {
             if(_okBtnSprite)
             {
@@ -862,16 +852,16 @@ package playerDress.views
          }
       }
       
-      protected function __okBtnOverHandler(param1:MouseEvent) : void
+      protected function __okBtnOverHandler(event:MouseEvent) : void
       {
          _okBtnTip.visible = true;
          LayerManager.Instance.addToLayer(_okBtnTip,2);
-         var _loc2_:Point = _okBtn.localToGlobal(new Point(0,0));
-         _okBtnTip.x = _loc2_.x - 64;
-         _okBtnTip.y = _loc2_.y + _okBtn.height;
+         var pos:Point = _okBtn.localToGlobal(new Point(0,0));
+         _okBtnTip.x = pos.x - 64;
+         _okBtnTip.y = pos.y + _okBtn.height;
       }
       
-      protected function __okBtnOutHandler(param1:MouseEvent) : void
+      protected function __okBtnOutHandler(event:MouseEvent) : void
       {
          _okBtnTip.visible = false;
       }
@@ -897,7 +887,7 @@ package playerDress.views
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          removeEvent();
          ComponentSetting.COMBOX_LIST_LAYER = LayerManager.Instance.getLayerByType(0);
          NewHandContainer.Instance.clearArrowByID(122);
@@ -931,13 +921,12 @@ package playerDress.views
          _character = null;
          ObjectUtils.disposeObject(_helpBtn);
          _helpBtn = null;
-         _loc1_ = 0;
-         while(_loc1_ <= 8 - 1)
+         for(i = 0; i <= 8 - 1; )
          {
-            _dressCells[_loc1_].removeEventListener("doubleclick",__cellDoubleClick);
-            ObjectUtils.disposeObject(_dressCells[_loc1_]);
-            _dressCells[_loc1_] = null;
-            _loc1_++;
+            _dressCells[i].removeEventListener("doubleclick",__cellDoubleClick);
+            ObjectUtils.disposeObject(_dressCells[i]);
+            _dressCells[i] = null;
+            i++;
          }
       }
    }

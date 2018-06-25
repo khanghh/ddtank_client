@@ -16,13 +16,13 @@ package ddt.manager
          super();
       }
       
-      public static function show(param1:BasePlayer, param2:int = -1) : void
+      public static function show(info:BasePlayer, yOffset:int = -1) : void
       {
-         if(param1 == null)
+         if(info == null)
          {
             return;
          }
-         if(param1.ID == PlayerManager.Instance.Self.ID)
+         if(info.ID == PlayerManager.Instance.Self.ID)
          {
             instance.setSelfDisable(true);
          }
@@ -34,8 +34,8 @@ package ddt.manager
                instance.proposeEnable(false);
             }
          }
-         instance.playerInfo = param1;
-         instance.show(param2);
+         instance.playerInfo = info;
+         instance.show(yOffset);
       }
       
       public static function get instance() : PlayerTip

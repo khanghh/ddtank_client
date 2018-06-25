@@ -58,22 +58,22 @@ package ddt.view.bossbox
          addChild(_openBox);
          _downBox = ComponentFactory.Instance.creatComponentByStylename("CSMBox.downBox");
          addChild(_downBox);
-         var _loc1_:Point = PositionUtils.creatPoint("CSMBoxViewPos");
-         _downBox.x = _downBox.x - _loc1_.x;
-         _downBox.y = _downBox.y - _loc1_.y;
+         var pos:Point = PositionUtils.creatPoint("CSMBoxViewPos");
+         _downBox.x = _downBox.x - pos.x;
+         _downBox.y = _downBox.y - pos.y;
          _downBox.buttonMode = true;
          _openBox.visible = false;
          _closeSprite.visible = false;
          _downBox.visible = false;
       }
       
-      public function showBox(param1:int = 0) : void
+      public function showBox($type:int = 0) : void
       {
-         if(_showType == param1)
+         if(_showType == $type)
          {
             return;
          }
-         _showType = param1;
+         _showType = $type;
          if(!_openBox || !_closeSprite || !_downBox)
          {
             return;
@@ -92,36 +92,36 @@ package ddt.view.bossbox
          }
       }
       
-      public function updateTime(param1:int) : void
+      public function updateTime(second:int) : void
       {
-         var _loc5_:* = 0;
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
+         var _timeSum:* = 0;
+         var _minute:int = 0;
+         var _second:int = 0;
+         var str:* = null;
          if(_timeText)
          {
-            _loc5_ = param1;
-            _loc2_ = _loc5_ / 60;
-            _loc4_ = _loc5_ % 60;
-            _loc3_ = "";
-            if(_loc2_ < 10)
+            _timeSum = second;
+            _minute = _timeSum / 60;
+            _second = _timeSum % 60;
+            str = "";
+            if(_minute < 10)
             {
-               _loc3_ = _loc3_ + ("0" + _loc2_);
+               str = str + ("0" + _minute);
             }
             else
             {
-               _loc3_ = _loc3_ + _loc2_;
+               str = str + _minute;
             }
-            _loc3_ = _loc3_ + ":";
-            if(_loc4_ < 10)
+            str = str + ":";
+            if(_second < 10)
             {
-               _loc3_ = _loc3_ + ("0" + _loc4_);
+               str = str + ("0" + _second);
             }
             else
             {
-               _loc3_ = _loc3_ + _loc4_;
+               str = str + _second;
             }
-            _timeText.text = _loc3_;
+            _timeText.text = str;
          }
       }
       
@@ -132,14 +132,14 @@ package ddt.view.bossbox
          _downBox.addEventListener("click",_boxClick);
       }
       
-      private function _boxClick(param1:MouseEvent) : void
+      private function _boxClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.currentTarget == _closeBox)
+         if(e.currentTarget == _closeBox)
          {
             CSMBoxManager.instance.showAwards();
          }
-         else if(param1.currentTarget == _openBox)
+         else if(e.currentTarget == _openBox)
          {
             _openBox.visible = false;
             _closeSprite.visible = false;
@@ -147,7 +147,7 @@ package ddt.view.bossbox
             _downBox.movie.stop();
             _downBox.movie.gotoAndPlay(1);
          }
-         else if(param1.currentTarget == _downBox)
+         else if(e.currentTarget == _downBox)
          {
             SocketManager.Instance.out.sendGetCSMTimeBox();
             dispose();

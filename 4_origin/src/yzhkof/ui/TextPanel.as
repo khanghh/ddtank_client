@@ -9,10 +9,10 @@ package yzhkof.ui
       
       private var textfield:TextField;
       
-      public function TextPanel(param1:uint = 16777215)
+      public function TextPanel(color:uint = 16777215)
       {
          this.textfield = new TextField();
-         super(param1);
+         super(color);
          addChild(this.textfield);
          this.textfield.autoSize = TextFieldAutoSize.LEFT;
          this.textfield.selectable = false;
@@ -20,13 +20,13 @@ package yzhkof.ui
          buttonMode = true;
       }
       
-      public function set text(param1:String) : void
+      public function set text(value:String) : void
       {
-         if(this.text == param1)
+         if(this.text == value)
          {
             return;
          }
-         this.textfield.text = param1 || "";
+         this.textfield.text = value || "";
          commitChage("text");
       }
       

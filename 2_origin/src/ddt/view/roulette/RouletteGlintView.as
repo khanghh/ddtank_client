@@ -25,12 +25,12 @@ package ddt.view.roulette
       
       private var _glintArray:Vector.<MovieClip>;
       
-      public function RouletteGlintView(param1:Array)
+      public function RouletteGlintView(pointArray:Array)
       {
          super();
          init();
          initEvent();
-         _pointArray = param1;
+         _pointArray = pointArray;
       }
       
       private function init() : void
@@ -47,55 +47,54 @@ package ddt.view.roulette
          _timer.addEventListener("timerComplete",_timerComplete);
       }
       
-      private function _timerComplete(param1:Event) : void
+      private function _timerComplete(e:Event) : void
       {
          _timer.stop();
          _clearGlint();
       }
       
-      private function _restartTimer(param1:int) : void
+      private function _restartTimer(time:int) : void
       {
-         _timer.delay = param1;
+         _timer.delay = time;
          _timer.reset();
          _timer.start();
       }
       
-      public function showOneCell(param1:int, param2:int) : void
+      public function showOneCell(value:int, time:int) : void
       {
-         var _loc3_:* = null;
+         var glintSp:* = null;
          glintType = 1;
-         if(param1 >= 0 && param1 <= 17)
+         if(value >= 0 && value <= 17)
          {
-            _loc3_ = ComponentFactory.Instance.creat("asset.awardSystem.roulette.GlintAsset");
-            _loc3_.x = _pointArray[param1].x + 2;
-            _loc3_.y = _pointArray[param1].y + 14;
-            addChild(_loc3_);
-            _glintArray.push(_loc3_);
-            _restartTimer(param2);
+            glintSp = ComponentFactory.Instance.creat("asset.awardSystem.roulette.GlintAsset");
+            glintSp.x = _pointArray[value].x + 2;
+            glintSp.y = _pointArray[value].y + 14;
+            addChild(glintSp);
+            _glintArray.push(glintSp);
+            _restartTimer(time);
          }
       }
       
-      public function showTwoStep(param1:int) : void
+      public function showTwoStep(time:int) : void
       {
          glintType = 2;
          showAllCell();
          showBigGlint();
-         _restartTimer(param1);
+         _restartTimer(time);
       }
       
       public function showAllCell() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         _loc2_ = 0;
-         while(_loc2_ <= 17)
+         var i:int = 0;
+         var glintSp:* = null;
+         for(i = 0; i <= 17; )
          {
-            _loc1_ = ComponentFactory.Instance.creat("asset.awardSystem.roulette.GlintAsset");
-            _loc1_.x = _pointArray[_loc2_].x + 2;
-            _loc1_.y = _pointArray[_loc2_].y + 14;
-            addChild(_loc1_);
-            _glintArray.push(_loc1_);
-            _loc2_++;
+            glintSp = ComponentFactory.Instance.creat("asset.awardSystem.roulette.GlintAsset");
+            glintSp.x = _pointArray[i].x + 2;
+            glintSp.y = _pointArray[i].y + 14;
+            addChild(glintSp);
+            _glintArray.push(glintSp);
+            i++;
          }
       }
       
@@ -107,14 +106,13 @@ package ddt.view.roulette
       
       private function _clearGlint() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         _loc2_ = 0;
-         while(_loc2_ < _glintArray.length)
+         var i:int = 0;
+         var glintSp:* = null;
+         for(i = 0; i < _glintArray.length; )
          {
-            _loc1_ = _glintArray[_loc2_] as MovieClip;
-            removeChild(_loc1_);
-            _loc2_++;
+            glintSp = _glintArray[i] as MovieClip;
+            removeChild(glintSp);
+            i++;
          }
          if(_bigGlintSprite)
          {
@@ -128,9 +126,9 @@ package ddt.view.roulette
          }
       }
       
-      public function set glintType(param1:int) : void
+      public function set glintType(value:int) : void
       {
-         _glintType = param1;
+         _glintType = value;
       }
       
       public function get glintType() : int
@@ -140,7 +138,7 @@ package ddt.view.roulette
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(_timer)
          {
             _timer.stop();
@@ -152,11 +150,10 @@ package ddt.view.roulette
             ObjectUtils.disposeObject(_bigGlintSprite);
          }
          _bigGlintSprite = null;
-         _loc1_ = 0;
-         while(_loc1_ < _glintArray.length)
+         for(i = 0; i < _glintArray.length; )
          {
-            ObjectUtils.disposeObject(_glintArray[_loc1_]);
-            _loc1_++;
+            ObjectUtils.disposeObject(_glintArray[i]);
+            i++;
          }
          _glintArray.splice(0,_glintArray.length);
       }

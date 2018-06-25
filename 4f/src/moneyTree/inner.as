@@ -1,9 +1,2 @@
-package moneyTree
-{
-   class inner
-   {
-       
-      
-      function inner(){super();}
-   }
-}
+package moneyTree{   class inner   {                   function inner() { super(); }
+   }}

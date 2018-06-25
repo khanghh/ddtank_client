@@ -37,9 +37,9 @@ package campbattle.view
          return _isHide;
       }
       
-      private function mouseClickHander(param1:MouseEvent) : void
+      private function mouseClickHander(e:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
+         e.stopImmediatePropagation();
          if(!_isHide)
          {
             _isHide = true;

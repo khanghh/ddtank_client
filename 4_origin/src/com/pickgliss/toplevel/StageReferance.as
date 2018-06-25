@@ -23,20 +23,20 @@ package com.pickgliss.toplevel
          super();
       }
       
-      public static function setup(param1:Stage) : void
+      public static function setup($stage:Stage) : void
       {
          if(_stage != null)
          {
             return;
          }
-         _stage = param1;
+         _stage = $stage;
          _stage.addEventListener("exitFrame",__onNextFrame);
          _stage.addEventListener("resize",__onResize);
          _stage.stageFocusRect = false;
          StageResizeUtils.Instance.setup();
       }
       
-      private static function __onNextFrame(param1:Event) : void
+      private static function __onNextFrame(event:Event) : void
       {
          if(_stage.stageWidth > 0)
          {
@@ -46,7 +46,7 @@ package com.pickgliss.toplevel
          }
       }
       
-      private static function __onResize(param1:Event) : void
+      private static function __onResize(event:Event) : void
       {
          stageWidth = _stage.stageWidth;
          stageHeight = _stage.stageHeight;

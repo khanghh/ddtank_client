@@ -10,9 +10,9 @@ package game.gametrainer.objects
       
       private var _bannerAsset:MovieClip;
       
-      public function TrainerArrowTip(param1:int, param2:int = 1, param3:Number = 1, param4:Number = 1, param5:Number = 1, param6:Number = 1)
+      public function TrainerArrowTip(id:int, layerType:int = 1, mass:Number = 1, gravityFactor:Number = 1, windFactor:Number = 1, airResitFactor:Number = 1)
       {
-         super(param1,param2,param3,param4,param5,param6);
+         super(id,layerType,mass,gravityFactor,windFactor,airResitFactor);
          init();
       }
       
@@ -22,11 +22,11 @@ package game.gametrainer.objects
          this.addChild(_bannerAsset);
       }
       
-      public function gotoAndStopII(param1:int) : void
+      public function gotoAndStopII(I:int) : void
       {
          if(_bannerAsset)
          {
-            _bannerAsset.gotoAndStop(param1);
+            _bannerAsset.gotoAndStop(I);
          }
       }
       

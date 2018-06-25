@@ -23,23 +23,23 @@ package armShell
          panel.vScrollProxy = 0;
       }
       
-      override protected function __clickHandler(param1:InteractiveEvent) : void
+      override protected function __clickHandler(e:InteractiveEvent) : void
       {
       }
       
-      override protected function createCell(param1:int) : void
+      override protected function createCell(index:int) : void
       {
-         var _loc2_:StoreBagCell = new StoreBagCell(param1);
-         _loc2_.allowDrag = false;
-         _loc2_.bagType = _bagType;
-         _loc2_.tipDirctions = "7,5,2,6,4,1";
-         _loc2_.addEventListener("interactive_click",__clickHandler);
-         _loc2_.addEventListener("interactive_double_click",__doubleClickHandler);
-         DoubleClickManager.Instance.enableDoubleClick(_loc2_);
-         _loc2_.addEventListener("click",__cellClick);
-         _loc2_.addEventListener("lockChanged",__cellChanged);
-         _cells.add(_loc2_.place,_loc2_);
-         _list.addChild(_loc2_);
+         var cell:StoreBagCell = new StoreBagCell(index);
+         cell.allowDrag = false;
+         cell.bagType = _bagType;
+         cell.tipDirctions = "7,5,2,6,4,1";
+         cell.addEventListener("interactive_click",__clickHandler);
+         cell.addEventListener("interactive_double_click",__doubleClickHandler);
+         DoubleClickManager.Instance.enableDoubleClick(cell);
+         cell.addEventListener("click",__cellClick);
+         cell.addEventListener("lockChanged",__cellChanged);
+         _cells.add(cell.place,cell);
+         _list.addChild(cell);
       }
    }
 }

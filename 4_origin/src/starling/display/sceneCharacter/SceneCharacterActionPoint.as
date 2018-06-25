@@ -10,16 +10,16 @@ package starling.display.sceneCharacter
       
       public var frames:Array;
       
-      public function SceneCharacterActionPoint(param1:Point, param2:Array)
+      public function SceneCharacterActionPoint($point:Point, $frames:Array)
       {
          super();
-         point = param1;
-         frames = param2;
+         point = $point;
+         frames = $frames;
       }
       
-      public function isFrame(param1:int) : Boolean
+      public function isFrame(index:int) : Boolean
       {
-         return frames && frames.indexOf(param1) != -1;
+         return frames && frames.indexOf(index) != -1;
       }
    }
 }

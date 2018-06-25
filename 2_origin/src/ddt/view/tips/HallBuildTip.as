@@ -53,11 +53,11 @@ package ddt.view.tips
          return _data;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(data:Object) : void
       {
-         if(param1 != null)
+         if(data != null)
          {
-            _data = param1;
+            _data = data;
             _title.text = _data["title"];
             _contentTxt.text = _data["content"];
             update();
@@ -76,9 +76,9 @@ package ddt.view.tips
          return _tipWidth;
       }
       
-      public function set tipWidth(param1:int) : void
+      public function set tipWidth(w:int) : void
       {
-         _tipWidth = param1;
+         _tipWidth = w;
       }
       
       public function get tipHeight() : int
@@ -86,7 +86,7 @@ package ddt.view.tips
          return _bg.height;
       }
       
-      public function set tipHeight(param1:int) : void
+      public function set tipHeight(h:int) : void
       {
       }
       

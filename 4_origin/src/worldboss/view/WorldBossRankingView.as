@@ -28,23 +28,23 @@ package worldboss.view
          addChild(_container);
       }
       
-      public function set rankingInfos(param1:Vector.<RankingPersonInfo>) : void
+      public function set rankingInfos(val:Vector.<RankingPersonInfo>) : void
       {
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         if(param1 == null)
+         var item:* = null;
+         var size:* = null;
+         if(val == null)
          {
             return;
          }
-         var _loc2_:int = 1;
+         var no:int = 1;
          var _loc7_:int = 0;
-         var _loc6_:* = param1;
-         for each(var _loc5_ in param1)
+         var _loc6_:* = val;
+         for each(var info in val)
          {
-            _loc2_++;
-            _loc3_ = new RankingPersonInfoItem(_loc2_,_loc5_,true);
-            _loc4_ = ComponentFactory.Instance.creatCustomObject("worldbossAward.rankingItemSize");
-            _container.addChild(_loc3_);
+            no++;
+            item = new RankingPersonInfoItem(no,info,true);
+            size = ComponentFactory.Instance.creatCustomObject("worldbossAward.rankingItemSize");
+            _container.addChild(item);
          }
       }
       

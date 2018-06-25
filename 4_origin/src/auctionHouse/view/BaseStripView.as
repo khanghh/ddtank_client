@@ -99,9 +99,9 @@ package auctionHouse.view
          return _info;
       }
       
-      function set info(param1:AuctionGoodsInfo) : void
+      function set info(value:AuctionGoodsInfo) : void
       {
-         _info = param1;
+         _info = value;
          update();
          updateInfo();
       }
@@ -111,9 +111,9 @@ package auctionHouse.view
          return _isSelect;
       }
       
-      function set isSelect(param1:Boolean) : void
+      function set isSelect(value:Boolean) : void
       {
-         _isSelect = param1;
+         _isSelect = value;
          if(_state != 1)
          {
             update();
@@ -169,11 +169,11 @@ package auctionHouse.view
          addEvent();
       }
       
-      override public function set height(param1:Number) : void
+      override public function set height(value:Number) : void
       {
       }
       
-      private function __over(param1:MouseEvent) : void
+      private function __over(event:MouseEvent) : void
       {
          if(_isSelect)
          {
@@ -182,7 +182,7 @@ package auctionHouse.view
          stripSelect_bit.visible = true;
       }
       
-      private function __out(param1:MouseEvent) : void
+      private function __out(event:MouseEvent) : void
       {
          if(_isSelect)
          {
@@ -191,7 +191,7 @@ package auctionHouse.view
          stripSelect_bit.visible = false;
       }
       
-      private function __click(param1:MouseEvent) : void
+      private function __click(event:MouseEvent) : void
       {
          if(!_isSelect)
          {

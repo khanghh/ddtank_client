@@ -9,10 +9,10 @@ package littleGame.model
       
       private var _playerInfo:PlayerInfo;
       
-      public function LittlePlayer(param1:PlayerInfo, param2:int, param3:int, param4:int, param5:int)
+      public function LittlePlayer(playerInfo:PlayerInfo, id:int, x:int, y:int, type:int)
       {
-         _playerInfo = param1;
-         super(param2,param3,param4,param5);
+         _playerInfo = playerInfo;
+         super(id,x,y,type);
       }
       
       public function get playerInfo() : PlayerInfo
@@ -30,9 +30,9 @@ package littleGame.model
          return "LittlePlayer_" + _playerInfo.NickName;
       }
       
-      public function set headType(param1:int) : void
+      public function set headType($type:int) : void
       {
-         dispatchEvent(new LittleLivingEvent("headChanged",param1));
+         dispatchEvent(new LittleLivingEvent("headChanged",$type));
       }
    }
 }

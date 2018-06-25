@@ -23,18 +23,18 @@ package com.greensock.plugins
          this.overwriteProps = ["visible"];
       }
       
-      override public function onInitTween(param1:Object, param2:*, param3:TweenLite) : Boolean
+      override public function onInitTween(target:Object, value:*, tween:TweenLite) : Boolean
       {
-         _target = param1;
-         _tween = param3;
+         _target = target;
+         _tween = tween;
          _initVal = _target.visible;
-         _visible = Boolean(param2);
+         _visible = Boolean(value);
          return true;
       }
       
-      override public function set changeFactor(param1:Number) : void
+      override public function set changeFactor(n:Number) : void
       {
-         if(param1 == 1 && (_tween.cachedDuration == _tween.cachedTime || _tween.cachedTime == 0))
+         if(n == 1 && (_tween.cachedDuration == _tween.cachedTime || _tween.cachedTime == 0))
          {
             _target.visible = _visible;
          }

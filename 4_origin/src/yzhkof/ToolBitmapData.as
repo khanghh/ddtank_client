@@ -31,23 +31,23 @@ package yzhkof
          return instance;
       }
       
-      public function drawDisplayObject(param1:DisplayObject = null) : BitmapData
+      public function drawDisplayObject(obj:DisplayObject = null) : BitmapData
       {
-         var _loc3_:Rectangle = null;
-         var _loc4_:BitmapData = null;
-         var _loc5_:Matrix = null;
-         var _loc2_:Rectangle = param1.getBounds(param1);
-         if(param1 is Stage || _loc2_.width != 0 && _loc2_.height != 0)
+         var bimap_rect:Rectangle = null;
+         var bitmapdata:BitmapData = null;
+         var matrix:Matrix = null;
+         var rect:Rectangle = obj.getBounds(obj);
+         if(obj is Stage || rect.width != 0 && rect.height != 0)
          {
-            _loc3_ = new Rectangle(0,0,Math.abs(_loc2_.width),Math.abs(_loc2_.height));
-            _loc3_.width = _loc3_.width > 2880?Number(2880):Number(_loc3_.width);
-            _loc3_.height = _loc3_.height > 2880?Number(2880):Number(_loc3_.height);
-            _loc4_ = new BitmapData(_loc3_.width,_loc3_.height,true,0);
-            _loc5_ = new Matrix();
-            _loc5_.translate(-_loc2_.x,-_loc2_.y);
-            _loc4_.draw(param1,_loc5_);
+            bimap_rect = new Rectangle(0,0,Math.abs(rect.width),Math.abs(rect.height));
+            bimap_rect.width = bimap_rect.width > 2880?Number(2880):Number(bimap_rect.width);
+            bimap_rect.height = bimap_rect.height > 2880?Number(2880):Number(bimap_rect.height);
+            bitmapdata = new BitmapData(bimap_rect.width,bimap_rect.height,true,0);
+            matrix = new Matrix();
+            matrix.translate(-rect.x,-rect.y);
+            bitmapdata.draw(obj,matrix);
          }
-         return _loc4_;
+         return bitmapdata;
       }
    }
 }

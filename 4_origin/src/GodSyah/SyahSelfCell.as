@@ -20,9 +20,9 @@ package GodSyah
          super(ComponentFactory.Instance.creatBitmap("wonderfulactivity.GodSyah.syahView.0aphacell"));
       }
       
-      override public function set info(param1:ItemTemplateInfo) : void
+      override public function set info(value:ItemTemplateInfo) : void
       {
-         .super.info = param1;
+         .super.info = value;
          if(_shineEnable)
          {
             if(_pic)
@@ -48,9 +48,9 @@ package GodSyah
          return _shineEnable;
       }
       
-      public function set shineEnable(param1:Boolean) : void
+      public function set shineEnable(value:Boolean) : void
       {
-         _shineEnable = param1;
+         _shineEnable = value;
       }
       
       override public function dispose() : void

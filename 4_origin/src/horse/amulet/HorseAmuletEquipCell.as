@@ -26,10 +26,10 @@ package horse.amulet
       
       private var _lockBg:Bitmap;
       
-      public function HorseAmuletEquipCell(param1:int, param2:ItemTemplateInfo = null)
+      public function HorseAmuletEquipCell(index:int, info:ItemTemplateInfo = null)
       {
-         var _loc3_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.horseAmulet.equipCellBg");
-         super(param1,param2,_loc3_);
+         var bg:Bitmap = ComponentFactory.Instance.creatBitmap("asset.horseAmulet.equipCellBg");
+         super(index,info,bg);
       }
       
       override protected function initEvent() : void
@@ -40,10 +40,10 @@ package horse.amulet
          DoubleClickManager.Instance.enableDoubleClick(this);
       }
       
-      protected function __doubleClickHandler(param1:InteractiveEvent) : void
+      protected function __doubleClickHandler(evt:InteractiveEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var info:* = null;
          if(_info)
          {
             SoundManager.instance.playButtonSound();
@@ -52,24 +52,24 @@ package horse.amulet
                BaglockedManager.Instance.show();
                return;
             }
-            _loc3_ = 20;
-            while(_loc3_ < 167)
+            i = 20;
+            while(i < 167)
             {
-               _loc2_ = PlayerManager.Instance.Self.horseAmuletBag.getItemAt(_loc3_);
-               if(_loc2_ == null)
+               info = PlayerManager.Instance.Self.horseAmuletBag.getItemAt(i);
+               if(info == null)
                {
-                  SocketManager.Instance.out.sendAmuletMove(this.place,_loc3_);
+                  SocketManager.Instance.out.sendAmuletMove(this.place,i);
                   return;
                }
-               _loc3_++;
+               i++;
             }
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.horseAmulet.amuletBagTips"));
          }
       }
       
-      public function set openLevel(param1:int) : void
+      public function set openLevel(value:int) : void
       {
-         _openLevel = param1;
+         _openLevel = value;
          if(isOpen == false)
          {
             if(_lockBg == null)
@@ -97,32 +97,32 @@ package horse.amulet
          return _openLevel <= HorseManager.instance.curLevel;
       }
       
-      override public function dragDrop(param1:DragEffect) : void
+      override public function dragDrop(effect:DragEffect) : void
       {
-         var _loc4_:* = null;
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
+         var info:* = null;
+         var type1:int = 0;
+         var type2:int = 0;
          if(isOpen)
          {
-            _loc4_ = param1.data as InventoryItemInfo;
-            if(!HorseAmuletManager.instance.getHorseAmuletVo(_loc4_.TemplateID).IsCanWash)
+            info = effect.data as InventoryItemInfo;
+            if(!HorseAmuletManager.instance.getHorseAmuletVo(info.TemplateID).IsCanWash)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.horseAmulet.notEquip"));
                return;
             }
-            if(param1 && param1.action == "move" && param1.source is HorseAmuletCell && !(param1.source is HorseAmuletEquipCell))
+            if(effect && effect.action == "move" && effect.source is HorseAmuletCell && !(effect.source is HorseAmuletEquipCell))
             {
-               _loc2_ = HorseAmuletManager.instance.getHorseAmuletVo(_loc4_.TemplateID).ExtendType1;
-               _loc3_ = !!this.info?HorseAmuletManager.instance.getHorseAmuletVo(this.info.TemplateID).ExtendType1:-1;
-               if(_loc2_ != _loc3_ && !HorseAmuletManager.instance.canEquipAmulet(_loc4_.TemplateID))
+               type1 = HorseAmuletManager.instance.getHorseAmuletVo(info.TemplateID).ExtendType1;
+               type2 = !!this.info?HorseAmuletManager.instance.getHorseAmuletVo(this.info.TemplateID).ExtendType1:-1;
+               if(type1 != type2 && !HorseAmuletManager.instance.canEquipAmulet(info.TemplateID))
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.horseAmulet.typeTips"));
                   return;
                }
             }
-            if(param1.source is HorseAmuletCell || param1.source is HorseAmuletEquipCell)
+            if(effect.source is HorseAmuletCell || effect.source is HorseAmuletEquipCell)
             {
-               SocketManager.Instance.out.sendAmuletMove((param1.source as HorseAmuletCell).place,this.place);
+               SocketManager.Instance.out.sendAmuletMove((effect.source as HorseAmuletCell).place,this.place);
             }
             DragManager.acceptDrag(this,"move");
          }
@@ -132,7 +132,7 @@ package horse.amulet
          }
       }
       
-      private function __onMouseClick(param1:InteractiveEvent) : void
+      private function __onMouseClick(e:InteractiveEvent) : void
       {
          if(isOpen)
          {

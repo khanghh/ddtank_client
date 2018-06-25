@@ -75,97 +75,97 @@ package battleSkill.view
       
       public function initBringSkillCellGroup() : void
       {
-         var _loc1_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:Dictionary = BattleSkillManager.instance.getBringSkillList();
+         var skillId:int = 0;
+         var skillInfo:* = null;
+         var bringSkills:Dictionary = BattleSkillManager.instance.getBringSkillList();
          var _loc6_:int = 0;
-         var _loc5_:* = _loc4_;
-         for(var _loc2_ in _loc4_)
+         var _loc5_:* = bringSkills;
+         for(var place in bringSkills)
          {
-            _loc1_ = _loc4_[_loc2_];
-            if(_loc1_ != 0)
+            skillId = bringSkills[place];
+            if(skillId != 0)
             {
                if(RoomManager.Instance.current && 123 == RoomManager.Instance.current.type)
                {
-                  _loc3_ = HorseManager.instance.getHorseSkillInfoById(_loc1_);
-                  if(_loc3_ && _loc3_.GameType != 0)
+                  skillInfo = HorseManager.instance.getHorseSkillInfoById(skillId);
+                  if(skillInfo && skillInfo.GameType != 0)
                   {
                      continue;
                   }
                }
-               createSkillCell(_loc1_,int(_loc2_));
+               createSkillCell(skillId,int(place));
             }
          }
       }
       
-      public function updateBringSkill(param1:Array) : void
+      public function updateBringSkill(skillArr:Array) : void
       {
-         var _loc5_:int = param1[0];
-         var _loc6_:int = param1[1];
-         var _loc2_:Boolean = true;
-         var _loc4_:* = null;
+         var skillId:int = skillArr[0];
+         var place:int = skillArr[1];
+         var isBring:Boolean = true;
+         var temCell:* = null;
          var _loc8_:int = 0;
          var _loc7_:* = _allCells;
-         for each(var _loc3_ in _allCells)
+         for each(var cell in _allCells)
          {
-            if(_loc3_.info.SkillID == _loc5_ && _loc6_ == 0)
+            if(cell.info.SkillID == skillId && place == 0)
             {
-               _loc2_ = false;
-               _loc4_ = _loc3_;
+               isBring = false;
+               temCell = cell;
                break;
             }
          }
-         if(_loc2_)
+         if(isBring)
          {
-            createSkillCell(_loc5_,_loc6_);
+            createSkillCell(skillId,place);
          }
          else
          {
-            delete _allCells[_loc4_.info.SkillID];
-            if(_initiativeSpri.contains(_loc4_))
+            delete _allCells[temCell.info.SkillID];
+            if(_initiativeSpri.contains(temCell))
             {
-               _initiativeSpri.removeChild(_loc4_);
+               _initiativeSpri.removeChild(temCell);
             }
-            if(_passiveSpri.contains(_loc4_))
+            if(_passiveSpri.contains(temCell))
             {
-               _passiveSpri.removeChild(_loc4_);
+               _passiveSpri.removeChild(temCell);
             }
-            ObjectUtils.disposeObject(_loc4_);
-            _loc4_ = null;
+            ObjectUtils.disposeObject(temCell);
+            temCell = null;
          }
       }
       
-      private function createSkillCell(param1:int, param2:int) : void
+      private function createSkillCell(skillId:int, place:int) : void
       {
-         if(_allCells && _allCells[param1])
+         if(_allCells && _allCells[skillId])
          {
             return;
          }
-         info = BattleSkillManager.instance.getBattleSKillInfoBySkillID(param1);
+         info = BattleSkillManager.instance.getBattleSKillInfoBySkillID(skillId);
          cell = new BattleSkillCell();
          cell.info = info;
-         cell.x = (int(param2 - 1)) % 3 * 46 + (param2 - 1) % 3 * 15;
+         cell.x = (int(place - 1)) % 3 * 46 + (place - 1) % 3 * 15;
          cell.addEventListener("click",cellMouseClick_Handler);
          if(_initiativeSpri != null && _passiveSpri != null)
          {
-            param2 <= 3?_initiativeSpri.addChild(cell):_passiveSpri.addChild(cell);
+            place <= 3?_initiativeSpri.addChild(cell):_passiveSpri.addChild(cell);
          }
          _allCells[info.SkillID] = cell;
       }
       
-      private function cellMouseClick_Handler(param1:MouseEvent) : void
+      private function cellMouseClick_Handler(evt:MouseEvent) : void
       {
-         var _loc2_:int = 0;
+         var skillId:int = 0;
          SoundManager.instance.playButtonSound();
-         if(param1.target is BattleSkillCell)
+         if(evt.target is BattleSkillCell)
          {
-            _loc2_ = (param1.target as BattleSkillCell).info.SkillID;
+            skillId = (evt.target as BattleSkillCell).info.SkillID;
          }
-         else if(param1.target.parent is BattleSkillCell)
+         else if(evt.target.parent is BattleSkillCell)
          {
-            _loc2_ = (param1.target.parent as BattleSkillCell).info.SkillID;
+            skillId = (evt.target.parent as BattleSkillCell).info.SkillID;
          }
-         this.dispatchEvent(new BattleSkillEvent(BattleSkillEvent.SKILLCELL_CLICK,_loc2_));
+         this.dispatchEvent(new BattleSkillEvent(BattleSkillEvent.SKILLCELL_CLICK,skillId));
       }
       
       public function dispose() : void

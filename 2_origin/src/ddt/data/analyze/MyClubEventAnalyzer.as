@@ -8,9 +8,9 @@ package ddt.data.analyze
       
       public var list:Array;
       
-      public function MyClubEventAnalyzer(param1:Function)
+      public function MyClubEventAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
    }
 }

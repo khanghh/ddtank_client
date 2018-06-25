@@ -33,30 +33,30 @@ package ddt.manager
          return _ins || new ProcessManager();
       }
       
-      public function addObject(param1:IProcessObject) : IProcessObject
+      public function addObject(object:IProcessObject) : IProcessObject
       {
-         if(!param1.onProcess)
+         if(!object.onProcess)
          {
-            param1.onProcess = true;
-            _objects.push(param1);
+            object.onProcess = true;
+            _objects.push(object);
             startup();
          }
-         return param1;
+         return object;
       }
       
-      public function removeObject(param1:IProcessObject) : IProcessObject
+      public function removeObject(object:IProcessObject) : IProcessObject
       {
-         var _loc2_:int = 0;
-         if(param1.onProcess)
+         var idx:int = 0;
+         if(object.onProcess)
          {
-            param1.onProcess = false;
-            _loc2_ = _objects.indexOf(param1);
-            if(_loc2_ >= 0)
+            object.onProcess = false;
+            idx = _objects.indexOf(object);
+            if(idx >= 0)
             {
-               _objects.splice(_loc2_,1);
+               _objects.splice(idx,1);
             }
          }
-         return param1;
+         return object;
       }
       
       public function startup() : void
@@ -69,17 +69,17 @@ package ddt.manager
          }
       }
       
-      private function __enterFrame(param1:Event) : void
+      private function __enterFrame(event:Event) : void
       {
-         var _loc3_:int = getTimer();
-         var _loc2_:Number = _loc3_ - _elapsed;
+         var now:int = getTimer();
+         var rate:Number = now - _elapsed;
          var _loc6_:int = 0;
          var _loc5_:* = _objects;
-         for each(var _loc4_ in _objects)
+         for each(var object in _objects)
          {
-            _loc4_.process(_loc2_);
+            object.process(rate);
          }
-         _elapsed = _loc3_;
+         _elapsed = now;
       }
       
       public function shutdown() : void

@@ -1,11 +1,9 @@
 package morn.core.components
 {
-   import com.pickgliss.loader.BaseLoader;
    import com.pickgliss.loader.BitmapLoader;
    import com.pickgliss.loader.LoadResourceManager;
    import com.pickgliss.loader.LoaderEvent;
    import flash.display.BitmapData;
-   import morn.core.events.UIEvent;
    import morn.core.utils.StringUtils;
    
    [Event(name="imageLoaded",type="morn.core.events.UIEvent")]
@@ -19,197 +17,198 @@ package morn.core.components
       
       protected var _bitmapLoader:BitmapLoader;
       
-      public function Image(param1:String = null)
+      public function Image(url:String = null)
       {
          super();
-         this.url = param1;
+         this.url = url;
       }
       
       override protected function createChildren() : void
       {
-         addChild(this._bitmap = new AutoBitmap());
+         _bitmap = new AutoBitmap();
+         addChild(new AutoBitmap());
       }
       
       public function get url() : String
       {
-         return this._url;
+         return _url;
       }
       
-      public function set url(param1:String) : void
+      public function set url(value:String) : void
       {
-         if(this._url != param1)
+         if(_url != value)
          {
-            this._url = param1;
-            if(Boolean(param1))
+            _url = value;
+            if(value)
             {
-               if(App.asset.hasClass(this._url))
+               if(App.asset.hasClass(_url))
                {
-                  this.bitmapData = App.asset.getBitmapData(this._url);
+                  bitmapData = App.asset.getBitmapData(_url);
                }
                else
                {
-                  this._bitmapLoader = LoadResourceManager.Instance.createLoader(this._url,BaseLoader.BITMAP_LOADER);
-                  this._bitmapLoader.addEventListener(LoaderEvent.COMPLETE,this.__onLoaderComplete);
-                  this._bitmapLoader.addEventListener(LoaderEvent.LOAD_ERROR,this.__onLoaderError);
-                  LoadResourceManager.Instance.startLoad(this._bitmapLoader);
+                  _bitmapLoader = LoadResourceManager.Instance.createLoader(_url,0);
+                  _bitmapLoader.addEventListener("complete",__onLoaderComplete);
+                  _bitmapLoader.addEventListener("loadError",__onLoaderError);
+                  LoadResourceManager.Instance.startLoad(_bitmapLoader);
                }
             }
             else
             {
-               this.bitmapData = null;
+               bitmapData = null;
             }
          }
       }
       
-      private function __onLoaderComplete(param1:LoaderEvent) : void
+      private function __onLoaderComplete(e:LoaderEvent) : void
       {
-         this.setBitmapData(this._url,this._bitmapLoader.bitmapData);
-         this.clearBitmapLoader();
+         setBitmapData(_url,_bitmapLoader.bitmapData);
+         clearBitmapLoader();
       }
       
-      private function __onLoaderError(param1:LoaderEvent) : void
+      private function __onLoaderError(e:LoaderEvent) : void
       {
-         this.clearBitmapLoader();
+         clearBitmapLoader();
       }
       
       private function clearBitmapLoader() : void
       {
-         if(this._bitmapLoader)
+         if(_bitmapLoader)
          {
-            this._bitmapLoader.removeEventListener(LoaderEvent.COMPLETE,this.__onLoaderComplete);
-            this._bitmapLoader.removeEventListener(LoaderEvent.LOAD_ERROR,this.__onLoaderError);
+            _bitmapLoader.removeEventListener("complete",__onLoaderComplete);
+            _bitmapLoader.removeEventListener("loadError",__onLoaderError);
          }
-         this._bitmapLoader = null;
+         _bitmapLoader = null;
       }
       
       public function get skin() : String
       {
-         return this._url;
+         return _url;
       }
       
-      public function set skin(param1:String) : void
+      public function set skin(value:String) : void
       {
-         this.url = param1;
+         url = value;
       }
       
       public function get bitmapData() : BitmapData
       {
-         return this._bitmap.bitmapData;
+         return _bitmap.bitmapData;
       }
       
-      public function set bitmapData(param1:BitmapData) : void
+      public function set bitmapData(value:BitmapData) : void
       {
-         if(param1)
+         if(value)
          {
-            _contentWidth = param1.width;
-            _contentHeight = param1.height;
+            _contentWidth = value.width;
+            _contentHeight = value.height;
          }
-         this._bitmap.bitmapData = param1;
-         sendEvent(UIEvent.IMAGE_LOADED);
+         _bitmap.bitmapData = value;
+         sendEvent("imageLoaded");
       }
       
-      protected function setBitmapData(param1:String, param2:BitmapData) : void
+      protected function setBitmapData(url:String, bmd:BitmapData) : void
       {
-         if(param1 == this._url)
+         if(url == _url)
          {
-            this.bitmapData = param2;
-         }
-      }
-      
-      protected function setBitmapDataError(param1:String) : void
-      {
-         if(param1 == this._url)
-         {
-            this.bitmapData = null;
+            bitmapData = bmd;
          }
       }
       
-      override public function set width(param1:Number) : void
+      protected function setBitmapDataError(url:String) : void
       {
-         super.width = param1;
-         this._bitmap.width = width;
+         if(url == _url)
+         {
+            bitmapData = null;
+         }
       }
       
-      override public function set height(param1:Number) : void
+      override public function set width(value:Number) : void
       {
-         super.height = param1;
-         this._bitmap.height = height;
+         .super.width = value;
+         _bitmap.width = width;
+      }
+      
+      override public function set height(value:Number) : void
+      {
+         .super.height = value;
+         _bitmap.height = height;
       }
       
       public function get sizeGrid() : String
       {
-         if(this._bitmap.sizeGrid)
+         if(_bitmap.sizeGrid)
          {
-            return this._bitmap.sizeGrid.join(",");
+            return _bitmap.sizeGrid.join(",");
          }
          return null;
       }
       
-      public function set sizeGrid(param1:String) : void
+      public function set sizeGrid(value:String) : void
       {
-         this._bitmap.sizeGrid = StringUtils.fillArray(Styles.defaultSizeGrid,param1);
+         _bitmap.sizeGrid = StringUtils.fillArray(Styles.defaultSizeGrid,value);
       }
       
       public function get bitmap() : AutoBitmap
       {
-         return this._bitmap;
+         return _bitmap;
       }
       
       public function get smoothing() : Boolean
       {
-         return this._bitmap.smoothing;
+         return _bitmap.smoothing;
       }
       
-      public function set smoothing(param1:Boolean) : void
+      public function set smoothing(value:Boolean) : void
       {
-         this._bitmap.smoothing = param1;
+         _bitmap.smoothing = value;
       }
       
       public function get anchorX() : Number
       {
-         return this._bitmap.anchorX;
+         return _bitmap.anchorX;
       }
       
-      public function set anchorX(param1:Number) : void
+      public function set anchorX(value:Number) : void
       {
-         this._bitmap.anchorX = param1;
+         _bitmap.anchorX = value;
       }
       
       public function get anchorY() : Number
       {
-         return this._bitmap.anchorY;
+         return _bitmap.anchorY;
       }
       
-      public function set anchorY(param1:Number) : void
+      public function set anchorY(value:Number) : void
       {
-         this._bitmap.anchorY = param1;
+         _bitmap.anchorY = value;
       }
       
-      override public function set dataSource(param1:Object) : void
+      override public function set dataSource(value:Object) : void
       {
-         _dataSource = param1;
-         if(param1 is String)
+         _dataSource = value;
+         if(value is String)
          {
-            this.url = String(param1);
+            url = String(value);
          }
          else
          {
-            super.dataSource = param1;
+            .super.dataSource = value;
          }
       }
       
       override public function dispose() : void
       {
          super.dispose();
-         this.clearBitmapLoader();
-         this._bitmap && this._bitmap.dispose();
-         this._bitmap = null;
+         clearBitmapLoader();
+         _bitmap && _bitmap.dispose();
+         _bitmap = null;
       }
       
-      public function destroy(param1:Boolean = false) : void
+      public function destroy(clearFromLoader:Boolean = false) : void
       {
-         this._bitmap.bitmapData = null;
-         App.asset.disposeBitmapData(this._url);
+         _bitmap.bitmapData = null;
+         App.asset.disposeBitmapData(_url);
       }
    }
 }

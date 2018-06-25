@@ -62,14 +62,14 @@ package roomList.pvpRoomList
          addEventListener("click",itemClick);
       }
       
-      private function itemClick(param1:MouseEvent) : void
+      private function itemClick(event:MouseEvent) : void
       {
          PlayerTipManager.show(_info,localToGlobal(new Point(0,0)).y);
       }
       
-      public function setListCellStatus(param1:List, param2:Boolean, param3:int) : void
+      public function setListCellStatus(list:List, isSelected:Boolean, index:int) : void
       {
-         _isSelected = param2;
+         _isSelected = isSelected;
          if(_BG)
          {
             _BG.visible = _isSelected;
@@ -81,9 +81,9 @@ package roomList.pvpRoomList
          return _info;
       }
       
-      public function setCellValue(param1:*) : void
+      public function setCellValue(value:*) : void
       {
-         _info = param1;
+         _info = value;
          update();
       }
       

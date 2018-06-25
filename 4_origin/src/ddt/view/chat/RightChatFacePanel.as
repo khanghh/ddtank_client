@@ -6,9 +6,9 @@ package ddt.view.chat
    {
        
       
-      public function RightChatFacePanel(param1:Boolean = false)
+      public function RightChatFacePanel(inGame:Boolean = false)
       {
-         super(param1);
+         super(inGame);
       }
       
       override protected function createBg() : void

@@ -41,10 +41,10 @@ package sevenDouble
       
       private var _isInGame:Boolean;
       
-      public function SevenDoubleManager(param1:IEventDispatcher = null)
+      public function SevenDoubleManager(target:IEventDispatcher = null)
       {
          pkgs = {};
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : SevenDoubleManager
@@ -61,9 +61,9 @@ package sevenDouble
          return _isInGame;
       }
       
-      public function set isInGame(param1:Boolean) : void
+      public function set isInGame(value:Boolean) : void
       {
-         _isInGame = param1;
+         _isInGame = value;
       }
       
       public function get isStart() : Boolean
@@ -81,33 +81,33 @@ package sevenDouble
          SocketManager.Instance.addEventListener("seven_double",pkgHandler);
       }
       
-      private function pkgHandler(param1:CrazyTankSocketEvent) : void
+      private function pkgHandler(event:CrazyTankSocketEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc4_:uint = _loc3_.position;
-         var _loc2_:int = _loc3_.readByte();
-         var _loc5_:* = _loc2_;
+         var pkg:PackageIn = event.pkg;
+         var currentPosition:uint = pkg.position;
+         var cmd:int = pkg.readByte();
+         var _loc5_:* = cmd;
          if(1 !== _loc5_)
          {
             if(35 !== _loc5_)
             {
-               _loc3_.position = _loc4_;
-               dispatchEvent(new CrazyTankSocketEvent("seven_double",_loc3_));
+               pkg.position = currentPosition;
+               dispatchEvent(new CrazyTankSocketEvent("seven_double",pkg));
             }
             else
             {
-               canEnterHandler(_loc3_);
+               canEnterHandler(pkg);
             }
          }
          else
          {
-            openOrCloseHandler(_loc3_);
+            openOrCloseHandler(pkg);
          }
       }
       
-      private function canEnterHandler(param1:PackageIn) : void
+      private function canEnterHandler(pkg:PackageIn) : void
       {
-         _isInGame = param1.readBoolean();
+         _isInGame = pkg.readBoolean();
          if(_isInGame)
          {
             dispatchEvent(new Event("sevenDoubleCanEnter"));
@@ -118,14 +118,14 @@ package sevenDouble
          }
       }
       
-      private function openOrCloseHandler(param1:PackageIn) : void
+      private function openOrCloseHandler(pkg:PackageIn) : void
       {
-         param1.readInt();
-         _isStart = param1.readBoolean();
+         pkg.readInt();
+         _isStart = pkg.readBoolean();
          if(_isStart)
          {
-            _isInGame = param1.readBoolean();
-            pkgs["showFrame"] = param1;
+            _isInGame = pkg.readBoolean();
+            pkgs["showFrame"] = pkg;
             loadIcon();
          }
          else
@@ -150,9 +150,9 @@ package sevenDouble
          UIModuleLoader.Instance.addUIModuleImp("sevendoubleicon");
       }
       
-      private function loadIconCompleteHandler(param1:UIModuleEvent) : void
+      private function loadIconCompleteHandler(event:UIModuleEvent) : void
       {
-         event = param1;
+         event = event;
          if(event.module == "sevendoubleicon")
          {
             UIModuleLoader.Instance.removeEventListener("uiModuleComplete",loadIconCompleteHandler);
@@ -174,30 +174,30 @@ package sevenDouble
          dispatchEvent(new Event("showFrame"));
       }
       
-      public function getPlayerResUrl(param1:Boolean, param2:int) : String
+      public function getPlayerResUrl(isSelf:Boolean, carType:int) : String
       {
-         var _loc3_:* = null;
-         if(param1)
+         var tmpStr:* = null;
+         if(isSelf)
          {
-            _loc3_ = "self";
+            tmpStr = "self";
          }
          else
          {
-            _loc3_ = "other";
+            tmpStr = "other";
          }
-         return PathManager.SITE_MAIN + "image/sevendouble/" + "sevendouble" + _loc3_ + param2 + ".swf";
+         return PathManager.SITE_MAIN + "image/sevendouble/" + "sevendouble" + tmpStr + carType + ".swf";
       }
       
       public function loadSound() : void
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.SITE_MAIN + "image/sevendouble/sevenDoubleAudio.swf",4);
-         _loc1_.addEventListener("complete",loadSoundCompleteHandler);
-         LoadResourceManager.Instance.startLoad(_loc1_);
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.SITE_MAIN + "image/sevendouble/sevenDoubleAudio.swf",4);
+         loader.addEventListener("complete",loadSoundCompleteHandler);
+         LoadResourceManager.Instance.startLoad(loader);
       }
       
-      private function loadSoundCompleteHandler(param1:LoaderEvent) : void
+      private function loadSoundCompleteHandler(event:LoaderEvent) : void
       {
-         param1.loader.removeEventListener("complete",loadSoundCompleteHandler);
+         event.loader.removeEventListener("complete",loadSoundCompleteHandler);
          SoundManager.instance.initSevenDoubleSound();
       }
    }

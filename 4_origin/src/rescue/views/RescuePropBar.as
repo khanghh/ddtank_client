@@ -36,21 +36,21 @@ package rescue.views
       
       private function initView() : void
       {
-         var _loc2_:* = null;
+         var pos:* = null;
          _background = ComponentFactory.Instance.creatBitmap("asset.game.prop.WeaponBack");
          addChild(_background);
          _cellf = new WeaponPropCell("f",2);
-         _loc2_ = ComponentFactory.Instance.creatCustomObject("WeaponPropCellPosf");
-         _cellf.setPossiton(_loc2_.x,_loc2_.y);
+         pos = ComponentFactory.Instance.creatCustomObject("WeaponPropCellPosf");
+         _cellf.setPossiton(pos.x,pos.y);
          addChild(_cellf);
          _cellr = new WeaponPropCell("r",2);
-         _loc2_ = ComponentFactory.Instance.creatCustomObject("WeaponPropCellPosr");
-         _cellr.setPossiton(_loc2_.x,_loc2_.y);
+         pos = ComponentFactory.Instance.creatCustomObject("WeaponPropCellPosr");
+         _cellr.setPossiton(pos.x,pos.y);
          addChild(_cellr);
-         var _loc1_:InventoryItemInfo = new InventoryItemInfo();
-         _loc1_.TemplateID = 17200;
-         ItemManager.fill(_loc1_);
-         _cellr.info = new PropInfo(_loc1_);
+         var info:InventoryItemInfo = new InventoryItemInfo();
+         info.TemplateID = 17200;
+         ItemManager.fill(info);
+         _cellr.info = new PropInfo(info);
          _cellr.setCount(0);
          _cellr.enabled = true;
       }
@@ -61,7 +61,7 @@ package rescue.views
          _cellr.addEventListener("click",__cellrClick);
       }
       
-      protected function __cellrClick(param1:MouseEvent) : void
+      protected function __cellrClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_cellr.enabled)
@@ -71,9 +71,9 @@ package rescue.views
          }
       }
       
-      protected function __keyDown(param1:KeyboardEvent) : void
+      protected function __keyDown(event:KeyboardEvent) : void
       {
-         var _loc2_:* = param1.keyCode;
+         var _loc2_:* = event.keyCode;
          if(KeyStroke.VK_F.getCode() !== _loc2_)
          {
             if(KeyStroke.VK_R.getCode() === _loc2_)
@@ -100,9 +100,9 @@ package rescue.views
          _cellr.enabled = true;
       }
       
-      public function setKingBlessCount(param1:int) : void
+      public function setKingBlessCount(count:int) : void
       {
-         _cellr.setCount(param1);
+         _cellr.setCount(count);
       }
       
       private function removeEvents() : void

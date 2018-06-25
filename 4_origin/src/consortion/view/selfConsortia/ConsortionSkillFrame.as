@@ -116,10 +116,10 @@ package consortion.view.selfConsortia
          showContent(_btnGroup.selectIndex + 1);
       }
       
-      private function cmGroupVisible(param1:Boolean) : void
+      private function cmGroupVisible(value:Boolean) : void
       {
-         _metal.visible = param1;
-         _contribute.visible = param1;
+         _metal.visible = value;
+         _contribute.visible = value;
       }
       
       private function initEvent() : void
@@ -144,63 +144,63 @@ package consortion.view.selfConsortia
          PlayerManager.Instance.Self.removeEventListener("propertychange",__selfRichChangeHandler);
       }
       
-      protected function __cmChangeHandler(param1:Event) : void
+      protected function __cmChangeHandler(event:Event) : void
       {
          SoundManager.instance.play("008");
          showContent(_cmGroup.selectIndex + 2);
       }
       
-      private function __richChangeHandler(param1:PlayerPropertyEvent) : void
+      private function __richChangeHandler(event:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["riches"] && _btnGroup.selectIndex == 0)
+         if(event.changedProperties["riches"] && _btnGroup.selectIndex == 0)
          {
             _riches.text = String(PlayerManager.Instance.Self.consortiaInfo.Riches);
          }
       }
       
-      private function __selfRichChangeHandler(param1:PlayerPropertyEvent) : void
+      private function __selfRichChangeHandler(event:PlayerPropertyEvent) : void
       {
-         if((param1.changedProperties["RichesRob"] || param1.changedProperties["RichesOffer"]) && _btnGroup.selectIndex == 1)
+         if((event.changedProperties["RichesRob"] || event.changedProperties["RichesOffer"]) && _btnGroup.selectIndex == 1)
          {
             _riches.text = String(PlayerManager.Instance.Self.Riches);
          }
       }
       
-      private function __stateChange(param1:ConsortionEvent) : void
+      private function __stateChange(event:ConsortionEvent) : void
       {
          showContent(_oldType);
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(event:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(event.responseCode == 0 || event.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();
          }
       }
       
-      private function __manageHandler(param1:MouseEvent) : void
+      private function __manageHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          ConsortionModelManager.Instance.alertManagerFrame();
       }
       
-      private function __changeHandler(param1:Event) : void
+      private function __changeHandler(event:Event) : void
       {
          SoundManager.instance.play("008");
          showContent(_btnGroup.selectIndex + 1);
       }
       
-      private function showContent(param1:int) : void
+      private function showContent(type:int) : void
       {
-         var _loc6_:int = 0;
-         var _loc2_:Boolean = false;
-         var _loc3_:Boolean = false;
-         var _loc4_:* = null;
-         var _loc5_:int = 0;
-         _oldType = param1;
-         if(param1 == 1)
+         var i:int = 0;
+         var b:Boolean = false;
+         var isMetal:Boolean = false;
+         var item:* = null;
+         var temp:int = 0;
+         _oldType = type;
+         if(type == 1)
          {
             _scrollbg.height = 426;
             _scrollbg.y = 96;
@@ -216,7 +216,7 @@ package consortion.view.selfConsortia
             _panel.height = 383;
             _panel.y = 136;
             cmGroupVisible(true);
-            if(param1 == 2)
+            if(type == 2)
             {
                _richesTxt.text = LanguageMgr.GetTranslation("consortion.skillFrame.richesText2");
                _cmGroup.selectIndex = 0;
@@ -228,34 +228,32 @@ package consortion.view.selfConsortia
             }
          }
          clearItem();
-         _richbg.setFrame(param1);
-         _riches.text = param1 == 1?String(PlayerManager.Instance.Self.consortiaInfo.Riches):param1 == 2?String(PlayerManager.Instance.Self.Riches):String(PlayerManager.Instance.Self.DDTMoney);
-         _loc6_ = 0;
-         while(_loc6_ < 10)
+         _richbg.setFrame(type);
+         _riches.text = type == 1?String(PlayerManager.Instance.Self.consortiaInfo.Riches):type == 2?String(PlayerManager.Instance.Self.Riches):String(PlayerManager.Instance.Self.DDTMoney);
+         for(i = 0; i < 10; )
          {
-            _loc2_ = _loc6_ + 1 > PlayerManager.Instance.Self.consortiaInfo.BufferLevel?false:true;
-            _loc3_ = param1 == 3?true:false;
-            _loc4_ = new ConsortionSkillItem(_loc6_ + 1,_loc2_,_loc3_);
-            _loc5_ = param1 == 3?2:param1;
-            _loc4_.data = ConsortionModelManager.Instance.model.getskillInfoWithTypeAndLevel(_loc5_,_loc6_ + 1);
-            _vbox.addChild(_loc4_);
-            _items.push(_loc4_);
-            _loc6_++;
+            b = i + 1 > PlayerManager.Instance.Self.consortiaInfo.BufferLevel?false:true;
+            isMetal = type == 3?true:false;
+            item = new ConsortionSkillItem(i + 1,b,isMetal);
+            temp = type == 3?2:type;
+            item.data = ConsortionModelManager.Instance.model.getskillInfoWithTypeAndLevel(temp,i + 1);
+            _vbox.addChild(item);
+            _items.push(item);
+            i++;
          }
          _panel.invalidateViewport();
       }
       
       private function clearItem() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(_items)
          {
-            _loc1_ = 0;
-            while(_loc1_ < _items.length)
+            for(i = 0; i < _items.length; )
             {
-               _items[_loc1_].dispose();
-               _items[_loc1_] = null;
-               _loc1_++;
+               _items[i].dispose();
+               _items[i] = null;
+               i++;
             }
          }
          _items = new Vector.<ConsortionSkillItem>();

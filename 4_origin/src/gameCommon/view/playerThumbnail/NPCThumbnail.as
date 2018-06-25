@@ -26,10 +26,10 @@ package gameCommon.view.playerThumbnail
       
       private var lightingFilter:BitmapFilter;
       
-      public function NPCThumbnail(param1:Living)
+      public function NPCThumbnail(living:Living)
       {
          super();
-         _living = param1;
+         _living = living;
          init();
          initEvents();
       }
@@ -60,14 +60,14 @@ package gameCommon.view.playerThumbnail
       
       public function initName() : void
       {
-         var _loc1_:int = 0;
+         var tempIndex:int = 0;
          _name.autoSize = "left";
          _name.wordWrap = false;
          _name.text = _living.name;
          if(_name.width > 65)
          {
-            _loc1_ = _name.getCharIndexAtPoint(50,5);
-            _name.text = _name.text.substring(0,_loc1_) + "...";
+            tempIndex = _name.getCharIndexAtPoint(50,5);
+            _name.text = _name.text.substring(0,tempIndex) + "...";
          }
          _name.mouseEnabled = false;
          addChild(_name);
@@ -85,12 +85,12 @@ package gameCommon.view.playerThumbnail
          }
       }
       
-      public function __updateBlood(param1:LivingEvent) : void
+      public function __updateBlood(evt:LivingEvent) : void
       {
          _blood.bloodNum = _living.blood;
       }
       
-      public function __die(param1:LivingEvent) : void
+      public function __die(evt:LivingEvent) : void
       {
          if(_headFigure)
          {
@@ -102,12 +102,12 @@ package gameCommon.view.playerThumbnail
          }
       }
       
-      private function __shineChange(param1:LivingEvent) : void
+      private function __shineChange(evt:LivingEvent) : void
       {
-         var _loc2_:SimpleBoss = _living as SimpleBoss;
+         var boss:SimpleBoss = _living as SimpleBoss;
       }
       
-      protected function overHandler(param1:MouseEvent) : void
+      protected function overHandler(evt:MouseEvent) : void
       {
          if(lightingFilter)
          {
@@ -115,19 +115,19 @@ package gameCommon.view.playerThumbnail
          }
       }
       
-      protected function outHandler(param1:MouseEvent) : void
+      protected function outHandler(evt:MouseEvent) : void
       {
          this.filters = null;
       }
       
       public function setUpLintingFilter() : void
       {
-         var _loc1_:Array = [];
-         _loc1_ = _loc1_.concat([1,0,0,0,25]);
-         _loc1_ = _loc1_.concat([0,1,0,0,25]);
-         _loc1_ = _loc1_.concat([0,0,1,0,25]);
-         _loc1_ = _loc1_.concat([0,0,0,1,0]);
-         lightingFilter = new ColorMatrixFilter(_loc1_);
+         var matrix:Array = [];
+         matrix = matrix.concat([1,0,0,0,25]);
+         matrix = matrix.concat([0,1,0,0,25]);
+         matrix = matrix.concat([0,0,1,0,25]);
+         matrix = matrix.concat([0,0,0,1,0]);
+         lightingFilter = new ColorMatrixFilter(matrix);
       }
       
       public function removeEvents() : void
@@ -163,13 +163,13 @@ package gameCommon.view.playerThumbnail
          }
       }
       
-      public function set info(param1:Living) : void
+      public function set info(value:Living) : void
       {
-         if(!param1)
+         if(!value)
          {
             removeEvents();
          }
-         _living = param1;
+         _living = value;
          updateView();
       }
       

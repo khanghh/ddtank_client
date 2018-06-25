@@ -46,13 +46,13 @@ package gameStarling.actions
       
       private var _event:CrazyTankSocketEvent;
       
-      public function ShootBombAction(param1:GamePlayer3D, param2:Array, param3:CrazyTankSocketEvent, param4:int)
+      public function ShootBombAction(player:GamePlayer3D, bombs:Array, event:CrazyTankSocketEvent, interval:int)
       {
          super();
-         _player = param1;
-         _bombs = param2;
-         _event = param3;
-         _shootInterval = param4;
+         _player = player;
+         _bombs = bombs;
+         _event = event;
+         _shootInterval = interval;
          _event.executed = false;
       }
       
@@ -154,90 +154,88 @@ package gameStarling.actions
          setSelfShootFinish();
       }
       
-      private function executeImp(param1:Boolean) : void
+      private function executeImp(fastModel:Boolean) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
+         var i:int = 0;
+         var j:int = 0;
+         var bomb:* = null;
          if(!_isShoot)
          {
             _isShoot = true;
             SoundManager.instance.play(_info.ShootSound);
-            _loc5_ = 0;
-            while(_loc5_ < _bombs.length)
+            for(i = 0; i < _bombs.length; )
             {
-               _loc4_ = 0;
-               while(_loc4_ < _bombs[_loc5_].Actions.length)
+               for(j = 0; j < _bombs[i].Actions.length; )
                {
-                  if(_bombs[_loc5_].Actions[_loc4_].type == 5)
+                  if(_bombs[i].Actions[j].type == 5)
                   {
-                     _bombs.unshift(_bombs.splice(_loc5_,1)[0]);
+                     _bombs.unshift(_bombs.splice(i,1)[0]);
                      break;
                   }
-                  _loc4_++;
+                  j++;
                }
-               _loc5_++;
+               i++;
             }
             var _loc7_:int = 0;
             var _loc6_:* = _bombs;
-            for each(var _loc2_ in _bombs)
+            for each(var b in _bombs)
             {
-               if(_loc2_.Template.BombType == 4)
+               if(b.Template.BombType == 4)
                {
-                  _loc3_ = new SkillBomb3D(_loc2_,_player.info);
+                  bomb = new SkillBomb3D(b,_player.info);
                }
-               else if(_loc2_.Template.BombType == 17)
+               else if(b.Template.BombType == 17)
                {
-                  _loc3_ = new PhantomBomb3D(_loc2_,_player.info,_player.player.currentWeapInfo.refineryLevel);
+                  bomb = new PhantomBomb3D(b,_player.info,_player.player.currentWeapInfo.refineryLevel);
                }
-               else if(_loc2_.Template.BombType == 18)
+               else if(b.Template.BombType == 18)
                {
-                  _loc3_ = new FenShenBomb3D(_loc2_,_player.info,_player.player.currentWeapInfo.refineryLevel);
+                  bomb = new FenShenBomb3D(b,_player.info,_player.player.currentWeapInfo.refineryLevel);
                }
-               else if(_loc2_.Template.BombType == 19)
+               else if(b.Template.BombType == 19)
                {
-                  _loc3_ = new SpringTimerBomb3D(_loc2_,_player.info,_player.player.currentWeapInfo.refineryLevel);
+                  bomb = new SpringTimerBomb3D(b,_player.info,_player.player.currentWeapInfo.refineryLevel);
                }
-               else if(_loc2_.Template.BombType == 20)
+               else if(b.Template.BombType == 20)
                {
-                  _loc3_ = new ThroughWallBomb3D(_loc2_,_player.info,_player.player.currentWeapInfo.refineryLevel);
+                  bomb = new ThroughWallBomb3D(b,_player.info,_player.player.currentWeapInfo.refineryLevel);
                }
-               else if(_loc2_.Template.BombType == 22)
+               else if(b.Template.BombType == 22)
                {
-                  _loc3_ = new VerticalBomb3D(_loc2_,_player.info,_player.player.currentWeapInfo.refineryLevel);
+                  bomb = new VerticalBomb3D(b,_player.info,_player.player.currentWeapInfo.refineryLevel);
                }
-               else if(_loc2_.Template.BombType == 23)
+               else if(b.Template.BombType == 23)
                {
-                  _loc3_ = new WalkBomb3D(_loc2_,_player.info,_player.player.currentWeapInfo.refineryLevel);
+                  bomb = new WalkBomb3D(b,_player.info,_player.player.currentWeapInfo.refineryLevel);
                }
-               else if(_loc2_.Template.BombType == 24)
+               else if(b.Template.BombType == 24)
                {
-                  _loc3_ = new TowBomb3D(_loc2_,_player.info,_player.player.currentWeapInfo.refineryLevel);
+                  bomb = new TowBomb3D(b,_player.info,_player.player.currentWeapInfo.refineryLevel);
                }
-               else if(_loc2_.Template.BombType == 26)
+               else if(b.Template.BombType == 26)
                {
-                  _loc3_ = new SpiderBomb13D(_loc2_,_player.info,_player.player.currentWeapInfo.refineryLevel);
+                  bomb = new SpiderBomb13D(b,_player.info,_player.player.currentWeapInfo.refineryLevel);
                }
-               else if(_loc2_.Template.BombType == 27)
+               else if(b.Template.BombType == 27)
                {
-                  _loc3_ = new SpiderBomb23D(_loc2_,_player.info,_player.player.currentWeapInfo.refineryLevel);
+                  bomb = new SpiderBomb23D(b,_player.info,_player.player.currentWeapInfo.refineryLevel);
                }
-               else if(_loc2_.Template.BombType == 28)
+               else if(b.Template.BombType == 28)
                {
-                  _loc3_ = new BurrowBomb3D(_loc2_,_player.info,_player.player.currentWeapInfo.refineryLevel);
+                  bomb = new BurrowBomb3D(b,_player.info,_player.player.currentWeapInfo.refineryLevel);
                }
-               else if(_loc2_.Template.BombType == 29)
+               else if(b.Template.BombType == 29)
                {
-                  _loc3_ = new TotemBall3D(_loc2_,_player.info,_player.player.currentWeapInfo.refineryLevel);
+                  bomb = new TotemBall3D(b,_player.info,_player.player.currentWeapInfo.refineryLevel);
                }
                else
                {
-                  _loc3_ = new SimpleBomb3D(_loc2_,_player.info,_player.player.currentWeapInfo.refineryLevel);
+                  bomb = new SimpleBomb3D(b,_player.info,_player.player.currentWeapInfo.refineryLevel);
                }
-               _player.map.addPhysical(_loc3_);
-               if(param1)
+               _player.map.addPhysical(bomb);
+               if(fastModel)
                {
-                  _loc3_.bombAtOnce();
+                  bomb.bombAtOnce();
                }
             }
          }

@@ -74,7 +74,7 @@ package flowerGiving.views
          _btnGroup.addEventListener("change",__changeHandler);
       }
       
-      protected function __changeHandler(param1:Event) : void
+      protected function __changeHandler(event:Event) : void
       {
          if(_btnGroup.selectIndex == currentIndex)
          {
@@ -113,9 +113,9 @@ package flowerGiving.views
          _btnGroup.removeEventListener("change",__changeHandler);
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();

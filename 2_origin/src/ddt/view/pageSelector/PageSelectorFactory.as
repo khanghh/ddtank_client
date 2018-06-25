@@ -8,7 +8,7 @@ package ddt.view.pageSelector
       private static var instance:PageSelectorFactory;
        
       
-      public function PageSelectorFactory(param1:inner)
+      public function PageSelectorFactory(single:inner)
       {
          super();
       }
@@ -22,20 +22,20 @@ package ddt.view.pageSelector
          return instance;
       }
       
-      public function getPageSelector(param1:String) : PageSelector
+      public function getPageSelector(type:String) : PageSelector
       {
-         var _loc2_:* = null;
-         var _loc3_:* = param1;
+         var _normal:* = null;
+         var _loc3_:* = type;
          if("normal" !== _loc3_)
          {
             return null;
          }
-         _loc2_ = new PageSelector();
-         _loc2_.setLeftBtn("ddt.pageSelector.leftBtn");
-         _loc2_.setRightBtn("ddt.pageSelector.rightBtn");
-         _loc2_.setNumBG("asset.pageSelector.numBG");
-         _loc2_.setPageNumber("ddt.pageSelector.numberTxt");
-         return _loc2_;
+         _normal = new PageSelector();
+         _normal.setLeftBtn("ddt.pageSelector.leftBtn");
+         _normal.setRightBtn("ddt.pageSelector.rightBtn");
+         _normal.setNumBG("asset.pageSelector.numBG");
+         _normal.setPageNumber("ddt.pageSelector.numberTxt");
+         return _normal;
       }
    }
 }

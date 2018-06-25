@@ -9,39 +9,38 @@ package bagAndInfo.energyData
       
       private var _data:Object;
       
-      public function EnergyDataAnalyzer(param1:Function)
+      public function EnergyDataAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc5_:* = null;
-         var _loc6_:int = 0;
-         var _loc3_:* = null;
-         var _loc2_:int = 0;
-         var _loc4_:XML = new XML(param1);
+         var xmllist:* = null;
+         var i:int = 0;
+         var energyData:* = null;
+         var count:int = 0;
+         var xml:XML = new XML(data);
          _data = {};
-         if(_loc4_.@value == "true")
+         if(xml.@value == "true")
          {
-            _loc5_ = _loc4_..Item;
-            _loc6_ = 0;
-            while(_loc6_ < _loc5_.length())
+            xmllist = xml..Item;
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc3_ = new EnergyData();
-               ObjectUtils.copyPorpertiesByXML(_loc3_,_loc5_[_loc6_]);
-               _loc2_ = _loc5_[_loc6_].@Count;
-               if(!_data[_loc2_])
+               energyData = new EnergyData();
+               ObjectUtils.copyPorpertiesByXML(energyData,xmllist[i]);
+               count = xmllist[i].@Count;
+               if(!_data[count])
                {
-                  _data[_loc2_] = _loc3_;
+                  _data[count] = energyData;
                }
-               _loc6_++;
+               i++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc4_.@message;
+            message = xml.@message;
             onAnalyzeError();
          }
       }

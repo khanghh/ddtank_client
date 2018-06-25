@@ -47,8 +47,8 @@ package sevenDouble.view
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var tmpCell:* = null;
          _bg = ComponentFactory.Instance.creatBitmap("asset.sevenDouble.rankViewBg");
          _moveOutBtn = ComponentFactory.Instance.creatComponentByStylename("sevenDouble.rankViewMoveOutBtn");
          _moveInBtn = ComponentFactory.Instance.creatComponentByStylename("sevenDouble.rankViewMoveInBtn");
@@ -71,15 +71,14 @@ package sevenDouble.view
          addChild(_rateTxt);
          addChild(_sprintTxt);
          _rankCellList = new Vector.<SevenDoubleRankCell>();
-         _loc2_ = 0;
-         while(_loc2_ < 5)
+         for(i = 0; i < 5; )
          {
-            _loc1_ = new SevenDoubleRankCell(_loc2_);
-            _loc1_.x = 17;
-            _loc1_.y = 63 + _loc2_ * 28;
-            addChild(_loc1_);
-            _rankCellList.push(_loc1_);
-            _loc2_++;
+            tmpCell = new SevenDoubleRankCell(i);
+            tmpCell.x = 17;
+            tmpCell.y = 63 + i * 28;
+            addChild(tmpCell);
+            _rankCellList.push(tmpCell);
+            i++;
          }
       }
       
@@ -90,36 +89,35 @@ package sevenDouble.view
          SevenDoubleManager.instance.addEventListener("sevenDoubleRankList",refreshRankList);
       }
       
-      private function outHandler(param1:MouseEvent) : void
+      private function outHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          setInOutVisible(false);
          TweenLite.to(this,0.5,{"x":1000});
       }
       
-      private function setInOutVisible(param1:Boolean) : void
+      private function setInOutVisible(isOut:Boolean) : void
       {
-         _moveOutBtn.visible = param1;
-         _moveInBtn.visible = !param1;
+         _moveOutBtn.visible = isOut;
+         _moveInBtn.visible = !isOut;
       }
       
-      private function inHandler(param1:MouseEvent) : void
+      private function inHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          setInOutVisible(true);
          TweenLite.to(this,0.5,{"x":787});
       }
       
-      private function refreshRankList(param1:SevenDoubleEvent) : void
+      private function refreshRankList(event:SevenDoubleEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:Array = param1.data as Array;
-         var _loc3_:int = _loc2_.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var i:int = 0;
+         var rankInfoList:Array = event.data as Array;
+         var len:int = rankInfoList.length;
+         for(i = 0; i < len; )
          {
-            _rankCellList[_loc4_].setName(_loc2_[_loc4_].name,_loc2_[_loc4_].carType);
-            _loc4_++;
+            _rankCellList[i].setName(rankInfoList[i].name,rankInfoList[i].carType);
+            i++;
          }
       }
       

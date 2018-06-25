@@ -75,16 +75,16 @@ package ddt.manager
          PlayerManager.Instance.Self.removeEventListener("propertychange",__GradeExalt);
       }
       
-      private function __GradeExalt(param1:PlayerPropertyEvent) : void
+      private function __GradeExalt(e:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["Grade"] && PlayerManager.Instance.Self.IsUpGrade && PlayerManager.Instance.Self.Grade > 28)
+         if(e.changedProperties["Grade"] && PlayerManager.Instance.Self.IsUpGrade && PlayerManager.Instance.Self.Grade > 28)
          {
             DuowanInterfaceManage.Instance.dispatchEvent(new DuowanInterfaceEvent("upGrade"));
-            if(param1.target.Grade == _grade)
+            if(e.target.Grade == _grade)
             {
                return;
             }
-            _grade = param1.target.Grade;
+            _grade = e.target.Grade;
             if(StateManager.currentStateType != "fighting")
             {
                show(2);
@@ -92,15 +92,15 @@ package ddt.manager
          }
       }
       
-      public function show(param1:int) : void
+      public function show(type:int) : void
       {
          CacheSysManager.lock("alertInMovie");
          hide();
          _asset = ComponentFactory.Instance.creat("asset.core.upgradeClewMcOne");
          _asset.addEventListener("enterFrame",__cartoonFrameHandler);
          _asset.gotoAndPlay(1);
-         var _loc2_:int = PlayerManager.Instance.Self.Grade;
-         _increBlood = _loc2_ == 1?"100":(Experience.getBasicHP(_loc2_) - Experience.getBasicHP(_loc2_ - 1)).toString();
+         var grade:int = PlayerManager.Instance.Self.Grade;
+         _increBlood = grade == 1?"100":(Experience.getBasicHP(grade) - Experience.getBasicHP(grade - 1)).toString();
          _bloodMovie = creatNumberMovie();
          PositionUtils.setPos(_bloodMovie,"core.upgradeMoive.pos");
          _asset.leftMC.addChild(_bloodMovie);
@@ -117,7 +117,7 @@ package ddt.manager
          _loc4_ = _loc4_;
          _asset.mouseChildren = _loc4_;
          _asset.buttonMode = _loc4_;
-         if(param1 == 1)
+         if(type == 1)
          {
             LayerManager.Instance.addToLayer(_asset,0,false);
          }
@@ -125,26 +125,25 @@ package ddt.manager
          {
             LayerManager.Instance.addToLayer(_asset,0,false,1);
          }
-         var _loc3_:ChatData = new ChatData();
-         _loc3_.msg = LanguageMgr.GetTranslation("tank.manager.GradeExaltClewManager");
-         _loc3_.channel = 6;
-         ChatManager.Instance.chat(_loc3_);
+         var chatMsg:ChatData = new ChatData();
+         chatMsg.msg = LanguageMgr.GetTranslation("tank.manager.GradeExaltClewManager");
+         chatMsg.channel = 6;
+         ChatManager.Instance.chat(chatMsg);
       }
       
       private function creatNumberMovie() : Sprite
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:Sprite = new Sprite();
-         _loc3_ = 0;
-         while(_loc3_ < _increBlood.length)
+         var i:int = 0;
+         var number:* = null;
+         var sprite:Sprite = new Sprite();
+         for(i = 0; i < _increBlood.length; )
          {
-            _loc2_ = ComponentFactory.Instance.creat("asset.core.upgradeNum_" + _increBlood.charAt(_loc3_));
-            _loc2_.x = _loc2_.x + _loc3_ * 20;
-            _loc1_.addChild(_loc2_);
-            _loc3_++;
+            number = ComponentFactory.Instance.creat("asset.core.upgradeNum_" + _increBlood.charAt(i));
+            number.x = number.x + i * 20;
+            sprite.addChild(number);
+            i++;
          }
-         return _loc1_;
+         return sprite;
       }
       
       private function end() : void
@@ -153,7 +152,7 @@ package ddt.manager
          hide();
       }
       
-      private function __cartoonFrameHandler(param1:Event) : void
+      private function __cartoonFrameHandler(event:Event) : void
       {
          if(_asset == null)
          {

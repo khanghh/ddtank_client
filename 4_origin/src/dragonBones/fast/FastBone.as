@@ -31,24 +31,24 @@ package dragonBones.fast
          _needUpdate = 2;
       }
       
-      public static function initWithBoneData(param1:BoneData) : FastBone
+      public static function initWithBoneData(boneData:BoneData) : FastBone
       {
-         var _loc2_:FastBone = new FastBone();
-         _loc2_.name = param1.name;
-         _loc2_.inheritRotation = param1.inheritRotation;
-         _loc2_.inheritScale = param1.inheritScale;
-         _loc2_.origin.copy(param1.transform);
-         return _loc2_;
+         var outputBone:FastBone = new FastBone();
+         outputBone.name = boneData.name;
+         outputBone.inheritRotation = boneData.inheritRotation;
+         outputBone.inheritScale = boneData.inheritScale;
+         outputBone.origin.copy(boneData.transform);
+         return outputBone;
       }
       
-      public function getBones(param1:Boolean = true) : Vector.<FastBone>
+      public function getBones(returnCopy:Boolean = true) : Vector.<FastBone>
       {
-         return !!param1?boneList.concat():boneList;
+         return !!returnCopy?boneList.concat():boneList;
       }
       
-      public function getSlots(param1:Boolean = true) : Vector.<FastSlot>
+      public function getSlots(returnCopy:Boolean = true) : Vector.<FastSlot>
       {
-         return !!param1?slotList.concat():slotList;
+         return !!returnCopy?slotList.concat():slotList;
       }
       
       override public function dispose() : void
@@ -78,10 +78,10 @@ package dragonBones.fast
          _globalTransformMatrix = _frameCache.globalTransformMatrix;
       }
       
-      function update(param1:Boolean = false) : void
+      function update(needUpdate:Boolean = false) : void
       {
          _needUpdate = Number(_needUpdate) - 1;
-         if(param1 || _needUpdate > 0 || this._parent && this._parent._needUpdate > 0)
+         if(needUpdate || _needUpdate > 0 || this._parent && this._parent._needUpdate > 0)
          {
             _needUpdate = 1;
             updateGlobal();
@@ -89,61 +89,61 @@ package dragonBones.fast
          }
       }
       
-      function arriveAtFrame(param1:Frame, param2:FastAnimationState) : void
+      function arriveAtFrame(frame:Frame, animationState:FastAnimationState) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         if(param1.event && this.armature.hasEventListener("boneFrameEvent"))
+         var childSlot:* = null;
+         var frameEvent:* = null;
+         if(frame.event && this.armature.hasEventListener("boneFrameEvent"))
          {
-            _loc3_ = new FrameEvent("boneFrameEvent");
-            _loc3_.bone = this;
-            _loc3_.animationState = param2;
-            _loc3_.frameLabel = param1.event;
-            this.armature.addEvent(_loc3_);
+            frameEvent = new FrameEvent("boneFrameEvent");
+            frameEvent.bone = this;
+            frameEvent.animationState = animationState;
+            frameEvent.frameLabel = frame.event;
+            this.armature.addEvent(frameEvent);
          }
       }
       
       public function get childArmature() : Object
       {
-         var _loc1_:FastSlot = slot;
-         if(_loc1_)
+         var s:FastSlot = slot;
+         if(s)
          {
-            return _loc1_.childArmature;
+            return s.childArmature;
          }
          return null;
       }
       
       public function get display() : Object
       {
-         var _loc1_:FastSlot = slot;
-         if(_loc1_)
+         var s:FastSlot = slot;
+         if(s)
          {
-            return _loc1_.display;
+            return s.display;
          }
          return null;
       }
       
-      public function set display(param1:Object) : void
+      public function set display(value:Object) : void
       {
-         var _loc2_:FastSlot = slot;
-         if(_loc2_)
+         var s:FastSlot = slot;
+         if(s)
          {
-            _loc2_.display = param1;
+            s.display = value;
          }
       }
       
-      override public function set visible(param1:Boolean) : void
+      override public function set visible(value:Boolean) : void
       {
-         if(this._visible != param1)
+         if(this._visible != value)
          {
-            this._visible = param1;
+            this._visible = value;
             var _loc4_:int = 0;
             var _loc3_:* = armature.slotList;
-            for each(var _loc2_ in armature.slotList)
+            for each(var childSlot in armature.slotList)
             {
-               if(_loc2_.parent == this)
+               if(childSlot.parent == this)
                {
-                  _loc2_.updateDisplayVisible(this._visible);
+                  childSlot.updateDisplayVisible(this._visible);
                }
             }
          }

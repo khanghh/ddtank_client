@@ -79,7 +79,7 @@ package church.view.weddingRoom.frame
          addEventListener("click",itemClick);
       }
       
-      private function itemClick(param1:MouseEvent) : void
+      private function itemClick(event:MouseEvent) : void
       {
          if(_playerInfo.ID == ChurchManager.instance.currentRoom.brideID || _playerInfo.ID == ChurchManager.instance.currentRoom.groomID)
          {
@@ -88,9 +88,9 @@ package church.view.weddingRoom.frame
          MenuView.show(_playerInfo);
       }
       
-      public function setListCellStatus(param1:List, param2:Boolean, param3:int) : void
+      public function setListCellStatus(list:List, isSelected:Boolean, index:int) : void
       {
-         _isSelected = param2;
+         _isSelected = isSelected;
       }
       
       public function getCellValue() : *
@@ -98,11 +98,11 @@ package church.view.weddingRoom.frame
          return _data;
       }
       
-      public function setCellValue(param1:*) : void
+      public function setCellValue(value:*) : void
       {
-         _data = param1;
-         _playerInfo = param1.playerInfo;
-         _index = param1.index;
+         _data = value;
+         _playerInfo = value.playerInfo;
+         _index = value.index;
          update();
       }
       

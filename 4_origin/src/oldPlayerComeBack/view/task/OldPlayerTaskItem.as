@@ -99,13 +99,13 @@ package oldPlayerComeBack.view.task
          _getBtn.removeEventListener("click",__getBtnClickHandler);
       }
       
-      private function __gotoBtnClickHandler(param1:MouseEvent) : void
+      private function __gotoBtnClickHandler(evt:MouseEvent) : void
       {
          LayerManager.Instance.clearnGameDynamic();
          jumpTo();
       }
       
-      private function __getBtnClickHandler(param1:MouseEvent) : void
+      private function __getBtnClickHandler(evt:MouseEvent) : void
       {
          TaskManager.instance.sendQuestFinish(_questInfo.QuestID);
       }
@@ -123,13 +123,13 @@ package oldPlayerComeBack.view.task
          return 3;
       }
       
-      public function set info(param1:QuestInfo) : void
+      public function set info(data:QuestInfo) : void
       {
-         _questInfo = param1;
-         _awardTxt.text = param1.Detail;
+         _questInfo = data;
+         _awardTxt.text = data.Detail;
          _completeCount.text = initCompleteCount();
          _progress.text = initProgress();
-         _awardValue.text = (param1.itemRewards[0] as QuestItemReward).count[0] + "个";
+         _awardValue.text = (data.itemRewards[0] as QuestItemReward).count[0] + "个";
          updateGuideState();
       }
       
@@ -149,13 +149,13 @@ package oldPlayerComeBack.view.task
       
       private function jumpTo() : void
       {
-         var _loc1_:int = 0;
+         var limitLev:int = 0;
          if(_questInfo.MapID > 0)
          {
             TaskManager.instance.jumpToQuestByID(_questInfo.QuestID);
             return;
          }
-         var _loc2_:Dictionary = HallTaskTrackManager.instance.btnIndexMap;
+         var idxMap:Dictionary = HallTaskTrackManager.instance.btnIndexMap;
          var _loc3_:* = _questInfo.ConditionTurn;
          if(-1 !== _loc3_)
          {
@@ -207,10 +207,10 @@ package oldPlayerComeBack.view.task
                                                                }
                                                                else
                                                                {
-                                                                  _loc1_ = ServerConfigManager.instance.trialBattleLevelLimit;
-                                                                  if(PlayerManager.Instance.Self.Grade < _loc1_)
+                                                                  limitLev = ServerConfigManager.instance.trialBattleLevelLimit;
+                                                                  if(PlayerManager.Instance.Self.Grade < limitLev)
                                                                   {
-                                                                     MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.functionLimitTip",_loc1_));
+                                                                     MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.functionLimitTip",limitLev));
                                                                      return;
                                                                   }
                                                                   BattleGroudManager.Instance.onShow();
@@ -223,7 +223,7 @@ package oldPlayerComeBack.view.task
                                                          }
                                                          else
                                                          {
-                                                            (HallTaskTrackManager.instance.btnList[_loc2_["ringStation"]] as BaseButton).dispatchEvent(new MouseEvent("click"));
+                                                            (HallTaskTrackManager.instance.btnList[idxMap["ringStation"]] as BaseButton).dispatchEvent(new MouseEvent("click"));
                                                          }
                                                       }
                                                       else
@@ -233,7 +233,7 @@ package oldPlayerComeBack.view.task
                                                    }
                                                    else
                                                    {
-                                                      (HallTaskTrackManager.instance.btnList[_loc2_["labyrinth"]] as BaseButton).dispatchEvent(new MouseEvent("click"));
+                                                      (HallTaskTrackManager.instance.btnList[idxMap["labyrinth"]] as BaseButton).dispatchEvent(new MouseEvent("click"));
                                                    }
                                                 }
                                                 else
@@ -248,12 +248,12 @@ package oldPlayerComeBack.view.task
                                           }
                                           else
                                           {
-                                             (HallTaskTrackManager.instance.btnList[_loc2_["cryptBoss"]] as BaseButton).dispatchEvent(new MouseEvent("click"));
+                                             (HallTaskTrackManager.instance.btnList[idxMap["cryptBoss"]] as BaseButton).dispatchEvent(new MouseEvent("click"));
                                           }
                                        }
                                        else
                                        {
-                                          (HallTaskTrackManager.instance.btnList[_loc2_["home"]] as BaseButton).dispatchEvent(new MouseEvent("click"));
+                                          (HallTaskTrackManager.instance.btnList[idxMap["home"]] as BaseButton).dispatchEvent(new MouseEvent("click"));
                                        }
                                     }
                                  }
@@ -270,12 +270,12 @@ package oldPlayerComeBack.view.task
                         }
                         else
                         {
-                           (HallTaskTrackManager.instance.btnList[_loc2_["roomList"]] as BaseButton).dispatchEvent(new MouseEvent("click"));
+                           (HallTaskTrackManager.instance.btnList[idxMap["roomList"]] as BaseButton).dispatchEvent(new MouseEvent("click"));
                         }
                      }
                      else
                      {
-                        (HallTaskTrackManager.instance.btnList[_loc2_["dungeon"]] as BaseButton).dispatchEvent(new MouseEvent("click"));
+                        (HallTaskTrackManager.instance.btnList[idxMap["dungeon"]] as BaseButton).dispatchEvent(new MouseEvent("click"));
                      }
                   }
                   else
@@ -285,12 +285,12 @@ package oldPlayerComeBack.view.task
                }
                else
                {
-                  (HallTaskTrackManager.instance.btnList[_loc2_["constrion"]] as BaseButton).dispatchEvent(new MouseEvent("click"));
+                  (HallTaskTrackManager.instance.btnList[idxMap["constrion"]] as BaseButton).dispatchEvent(new MouseEvent("click"));
                }
             }
             else
             {
-               (HallTaskTrackManager.instance.btnList[_loc2_["store"]] as BaseButton).dispatchEvent(new MouseEvent("click"));
+               (HallTaskTrackManager.instance.btnList[idxMap["store"]] as BaseButton).dispatchEvent(new MouseEvent("click"));
             }
          }
          else
@@ -301,67 +301,67 @@ package oldPlayerComeBack.view.task
       
       private function initCompleteCount() : String
       {
-         var _loc1_:* = null;
+         var temStr:* = null;
          if(_questInfo.CanRepeat)
          {
             if(_questInfo.RepeatInterval == 1)
             {
-               _loc1_ = "每日";
+               temStr = "每日";
             }
             else
             {
-               _loc1_ = "每" + _questInfo.RepeatInterval + "天";
+               temStr = "每" + _questInfo.RepeatInterval + "天";
             }
             if(_questInfo.RepeatMax == 999)
             {
-               _loc1_ = "不限";
+               temStr = "不限";
             }
             else
             {
-               _loc1_ = _loc1_ + (_questInfo.RepeatMax + "次");
+               temStr = temStr + (_questInfo.RepeatMax + "次");
             }
          }
          else
          {
-            _loc1_ = _questInfo.RepeatMax + "次";
+            temStr = _questInfo.RepeatMax + "次";
          }
-         return _loc1_;
+         return temStr;
       }
       
       private function initProgress() : String
       {
-         var _loc1_:* = null;
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
+         var tmpText:* = null;
+         var i:int = 0;
+         var cond:* = null;
          if(_questInfo.data == null)
          {
-            _loc1_ = LanguageMgr.GetTranslation("tank.view.task.TaskCatalogContentView.over");
+            tmpText = LanguageMgr.GetTranslation("tank.view.task.TaskCatalogContentView.over");
          }
          else
          {
-            _loc3_ = 0;
-            while(_questInfo.conditions[_loc3_])
+            i = 0;
+            while(_questInfo.conditions[i])
             {
-               _loc2_ = _questInfo.conditions[_loc3_];
-               if(_loc2_.type == 90)
+               cond = _questInfo.conditions[i];
+               if(cond.type == 90)
                {
-                  if(_questInfo.data && _questInfo.data.progress[_loc3_] <= 0)
+                  if(_questInfo.data && _questInfo.data.progress[i] <= 0)
                   {
-                     _loc1_ = "(0/1)";
+                     tmpText = "(0/1)";
                   }
-                  else if(_questInfo.data && _questInfo.data.progress[_loc3_] > 0 && _questInfo.data.progress[_loc3_] <= _loc2_.param2)
+                  else if(_questInfo.data && _questInfo.data.progress[i] > 0 && _questInfo.data.progress[i] <= cond.param2)
                   {
-                     _loc1_ = LanguageMgr.GetTranslation("tank.view.task.TaskCatalogContentView.over");
+                     tmpText = LanguageMgr.GetTranslation("tank.view.task.TaskCatalogContentView.over");
                   }
                }
                else
                {
-                  _loc1_ = _questInfo.conditionStatus[_loc3_];
+                  tmpText = _questInfo.conditionStatus[i];
                }
-               _loc3_++;
+               i++;
             }
          }
-         return _loc1_;
+         return tmpText;
       }
       
       public function dispose() : void

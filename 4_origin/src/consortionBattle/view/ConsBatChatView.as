@@ -30,81 +30,80 @@ package consortionBattle.view
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var cell:* = null;
          _cellList = [];
-         _loc2_ = 0;
-         while(_loc2_ < 3)
+         for(i = 0; i < 3; )
          {
-            _loc1_ = new ConsBatChatViewCell();
-            _loc1_.index = _loc2_;
-            _loc1_.addEventListener("ConsBatChatViewCell_Guard_Complete",guardCompleteHandler,false,0,true);
-            _loc1_.addEventListener("ConsBatChatViewCell_Disappear_Complete",disappearCompleteHandler,false,0,true);
-            addChild(_loc1_);
-            _cellList.push(_loc1_);
-            _loc2_++;
+            cell = new ConsBatChatViewCell();
+            cell.index = i;
+            cell.addEventListener("ConsBatChatViewCell_Guard_Complete",guardCompleteHandler,false,0,true);
+            cell.addEventListener("ConsBatChatViewCell_Disappear_Complete",disappearCompleteHandler,false,0,true);
+            addChild(cell);
+            _cellList.push(cell);
+            i++;
          }
       }
       
-      private function guardCompleteHandler(param1:Event) : void
+      private function guardCompleteHandler(event:Event) : void
       {
          if(!_dataList || _dataList.length <= 0)
          {
             return;
          }
-         var _loc2_:ConsBatChatViewCell = param1.target as ConsBatChatViewCell;
-         changeCellIndex(_loc2_);
-         _loc2_.setText(getTxtStr(_dataList.splice(0,1)[0]));
+         var cell:ConsBatChatViewCell = event.target as ConsBatChatViewCell;
+         changeCellIndex(cell);
+         cell.setText(getTxtStr(_dataList.splice(0,1)[0]));
       }
       
-      private function disappearCompleteHandler(param1:Event) : void
+      private function disappearCompleteHandler(event:Event) : void
       {
-         var _loc2_:ConsBatChatViewCell = param1.target as ConsBatChatViewCell;
-         changeCellIndex(_loc2_);
+         var cell:ConsBatChatViewCell = event.target as ConsBatChatViewCell;
+         changeCellIndex(cell);
          if(_dataList && _dataList.length > 0)
          {
-            _loc2_.setText(getTxtStr(_dataList.splice(0,1)[0]));
+            cell.setText(getTxtStr(_dataList.splice(0,1)[0]));
          }
       }
       
-      private function changeCellIndex(param1:ConsBatChatViewCell) : void
+      private function changeCellIndex(cell:ConsBatChatViewCell) : void
       {
-         if(param1.index == 0)
+         if(cell.index == 0)
          {
             (_cellList[1] as ConsBatChatViewCell).index = 0;
             (_cellList[2] as ConsBatChatViewCell).index = 1;
          }
-         else if(param1.index == 1)
+         else if(cell.index == 1)
          {
             (_cellList[2] as ConsBatChatViewCell).index = 1;
          }
-         param1.index = 2;
+         cell.index = 2;
          _cellList.sortOn("index",16);
       }
       
-      private function getTxtStr(param1:Object) : String
+      private function getTxtStr(data:Object) : String
       {
-         var _loc2_:* = null;
-         if(param1.type == 1)
+         var tmp:* = null;
+         if(data.type == 1)
          {
-            if(param1.winningStreak == 3)
+            if(data.winningStreak == 3)
             {
-               _loc2_ = LanguageMgr.GetTranslation("ddt.consortiaBattle.chatPrompt.threeWinningStreakTxt",param1.winner);
+               tmp = LanguageMgr.GetTranslation("ddt.consortiaBattle.chatPrompt.threeWinningStreakTxt",data.winner);
             }
-            else if(param1.winningStreak == 6)
+            else if(data.winningStreak == 6)
             {
-               _loc2_ = LanguageMgr.GetTranslation("ddt.consortiaBattle.chatPrompt.sixWinningStreakTxt",param1.winner);
+               tmp = LanguageMgr.GetTranslation("ddt.consortiaBattle.chatPrompt.sixWinningStreakTxt",data.winner);
             }
-            else if(param1.winningStreak >= 10)
+            else if(data.winningStreak >= 10)
             {
-               _loc2_ = LanguageMgr.GetTranslation("ddt.consortiaBattle.chatPrompt.tenWinningStreakTxt",param1.winner);
+               tmp = LanguageMgr.GetTranslation("ddt.consortiaBattle.chatPrompt.tenWinningStreakTxt",data.winner);
             }
          }
          else
          {
-            _loc2_ = LanguageMgr.GetTranslation("ddt.consortiaBattle.chatPrompt.terminatorTxt",param1.winner,param1.loser,param1.winningStreak);
+            tmp = LanguageMgr.GetTranslation("ddt.consortiaBattle.chatPrompt.terminatorTxt",data.winner,data.loser,data.winningStreak);
          }
-         return _loc2_;
+         return tmp;
       }
       
       private function initEvent() : void
@@ -112,41 +111,41 @@ package consortionBattle.view
          ConsortiaBattleManager.instance.addEventListener("consortiaBattleBroadcast",getMessageHandler);
       }
       
-      private function getMessageHandler(param1:ConsBatEvent) : void
+      private function getMessageHandler(event:ConsBatEvent) : void
       {
-         var _loc3_:PackageIn = param1.data as PackageIn;
-         var _loc2_:Object = {};
-         _loc2_.type = _loc3_.readByte();
-         if(_loc2_.type == 1)
+         var pkg:PackageIn = event.data as PackageIn;
+         var tmpData:Object = {};
+         tmpData.type = pkg.readByte();
+         if(tmpData.type == 1)
          {
-            _loc2_.winningStreak = _loc3_.readInt();
-            _loc2_.winner = _loc3_.readUTF();
+            tmpData.winningStreak = pkg.readInt();
+            tmpData.winner = pkg.readUTF();
          }
          else
          {
-            _loc2_.winningStreak = _loc3_.readInt();
-            _loc2_.loser = _loc3_.readUTF();
-            _loc2_.winner = _loc3_.readUTF();
+            tmpData.winningStreak = pkg.readInt();
+            tmpData.loser = pkg.readUTF();
+            tmpData.winner = pkg.readUTF();
          }
-         _dataList.push(_loc2_);
+         _dataList.push(tmpData);
          setCellTxt();
       }
       
       private function setCellTxt() : void
       {
-         var _loc1_:int = _cellList.length;
-         var _loc2_:int = 0;
-         _loc2_;
-         while(_loc2_ < _loc1_)
+         var len:int = _cellList.length;
+         var i:int = 0;
+         i;
+         while(i < len)
          {
-            if(!(_cellList[_loc2_] as ConsBatChatViewCell).isActive)
+            if(!(_cellList[i] as ConsBatChatViewCell).isActive)
             {
-               _cellList[_loc2_].setText(getTxtStr(_dataList.splice(0,1)[0]));
+               _cellList[i].setText(getTxtStr(_dataList.splice(0,1)[0]));
                break;
             }
-            _loc2_++;
+            i++;
          }
-         if(_loc2_ >= _loc1_)
+         if(i >= len)
          {
             if(!(_cellList[0] as ConsBatChatViewCell).isGuard)
             {
@@ -158,14 +157,13 @@ package consortionBattle.view
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          ConsortiaBattleManager.instance.removeEventListener("consortiaBattleBroadcast",getMessageHandler);
-         _loc1_ = 0;
-         while(_loc1_ < 3)
+         for(i = 0; i < 3; )
          {
-            _cellList[_loc1_].removeEventListener("ConsBatChatViewCell_Guard_Complete",guardCompleteHandler);
-            _cellList[_loc1_].removeEventListener("ConsBatChatViewCell_Disappear_Complete",disappearCompleteHandler);
-            _loc1_++;
+            _cellList[i].removeEventListener("ConsBatChatViewCell_Guard_Complete",guardCompleteHandler);
+            _cellList[i].removeEventListener("ConsBatChatViewCell_Disappear_Complete",disappearCompleteHandler);
+            i++;
          }
          ObjectUtils.disposeAllChildren(this);
          _cellList = null;

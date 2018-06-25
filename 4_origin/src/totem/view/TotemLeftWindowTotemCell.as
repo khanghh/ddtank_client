@@ -25,15 +25,15 @@ package totem.view
       
       private var _ligthCross:MovieClip;
       
-      public function TotemLeftWindowTotemCell(param1:Bitmap, param2:Bitmap)
+      public function TotemLeftWindowTotemCell(bg:Bitmap, icon:Bitmap)
       {
          super();
          this.mouseEnabled = false;
          _bgIconSprite = new Sprite();
-         param2.x = param1.x + 22;
-         param2.y = param1.y + 3;
-         _bgIconSprite.addChild(param1);
-         _bgIconSprite.addChild(param2);
+         icon.x = bg.x + 22;
+         icon.y = bg.y + 3;
+         _bgIconSprite.addChild(bg);
+         _bgIconSprite.addChild(icon);
          addChild(_bgIconSprite);
          _halo = ComponentFactory.Instance.creat("asset.totem.totemPointHalo");
          _halo.gotoAndStop(1);
@@ -79,9 +79,9 @@ package totem.view
          return _bgIconSprite.width;
       }
       
-      public function setBgIconSpriteFilter(param1:Array) : void
+      public function setBgIconSpriteFilter(filter:Array) : void
       {
-         _bgIconSprite.filters = param1;
+         _bgIconSprite.filters = filter;
       }
       
       public function dimOutHalo() : void

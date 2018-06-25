@@ -1,7 +1,7 @@
 package yzhkof.debug
 {
-   public function debugObjectTrace(param1:Object) : void
+   public function debugObjectTrace(obj:Object) : void
    {
-      debugTrace(TextUtil.objToTextTrace(param1));
+      debugTrace(TextUtil.objToTextTrace(obj));
    }
 }

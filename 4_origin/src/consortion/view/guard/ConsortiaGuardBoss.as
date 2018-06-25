@@ -16,24 +16,24 @@ package consortion.view.guard
       
       private var _location:Point;
       
-      public function ConsortiaGuardBoss(param1:int)
+      public function ConsortiaGuardBoss(index:int)
       {
          super();
-         _index = param1;
+         _index = index;
          init();
       }
       
       private function init() : void
       {
-         var _loc1_:Rectangle = ComponentFactory.Instance.creatCustomObject("consortiaGuard.bossRect" + _index);
-         var _loc2_:Shape = new Shape();
-         _loc2_.graphics.beginFill(16711680,0);
-         _loc2_.graphics.drawRect(0,0,_loc1_.width,_loc1_.height);
-         _loc2_.graphics.endFill();
+         var rect:Rectangle = ComponentFactory.Instance.creatCustomObject("consortiaGuard.bossRect" + _index);
+         var spr:Shape = new Shape();
+         spr.graphics.beginFill(16711680,0);
+         spr.graphics.drawRect(0,0,rect.width,rect.height);
+         spr.graphics.endFill();
          this.buttonMode = true;
-         this.x = _loc1_.x;
-         this.y = _loc1_.y;
-         addChild(_loc2_);
+         this.x = rect.x;
+         this.y = rect.y;
+         addChild(spr);
          _location = ComponentFactory.Instance.creatCustomObject("consortiaGuard.bossLocationPos" + _index);
       }
       

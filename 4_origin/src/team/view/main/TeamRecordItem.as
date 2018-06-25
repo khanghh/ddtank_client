@@ -16,9 +16,9 @@ package team.view.main
          super();
       }
       
-      public function set info(param1:TeamRecordInfo) : void
+      public function set info(value:TeamRecordInfo) : void
       {
-         _info = param1;
+         _info = value;
          if(_info)
          {
             clip_icon.index = !!_info.isWin?0:1;

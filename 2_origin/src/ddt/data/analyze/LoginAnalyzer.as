@@ -13,24 +13,24 @@ package ddt.data.analyze
       
       public var tempPassword:String;
       
-      public function LoginAnalyzer(param1:Function)
+      public function LoginAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc3_:XML = new XML(param1);
-         var _loc2_:String = _loc3_.@value;
-         message = _loc3_.@message;
-         if(_loc2_ == "true")
+         var xml:XML = new XML(data);
+         var result:String = xml.@value;
+         message = xml.@message;
+         if(result == "true")
          {
             PlayerManager.Instance.isReportGameProfile = false;
             PlayerManager.Instance.Self.beginChanges();
-            ObjectUtils.copyPorpertiesByXML(PlayerManager.Instance.Self,_loc3_..Item[0]);
+            ObjectUtils.copyPorpertiesByXML(PlayerManager.Instance.Self,xml..Item[0]);
             PlayerManager.Instance.Self.commitChanges();
             PlayerManager.Instance.Account.Password = tempPassword;
-            ChurchManager.instance.selfRoom = _loc3_..Item[0].@IsCreatedMarryRoom == "false"?null:new ChurchRoomInfo();
+            ChurchManager.instance.selfRoom = xml..Item[0].@IsCreatedMarryRoom == "false"?null:new ChurchRoomInfo();
             PlayerManager.Instance.isReportGameProfile = true;
             onAnalyzeComplete();
             IMManager.Instance.setupRecentContactsList();

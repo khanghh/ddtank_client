@@ -74,9 +74,9 @@ package activeEvents.data
          return _StartDate;
       }
       
-      public function set StartDate(param1:String) : void
+      public function set StartDate(val:String) : void
       {
-         _StartDate = param1;
+         _StartDate = val;
          _start = DateUtils.getDateByStr(_StartDate);
       }
       
@@ -90,9 +90,9 @@ package activeEvents.data
          return _EndDate;
       }
       
-      public function set EndDate(param1:String) : void
+      public function set EndDate(val:String) : void
       {
-         _EndDate = param1;
+         _EndDate = val;
          _end = DateUtils.getDateByStr(_EndDate);
       }
       
@@ -103,59 +103,59 @@ package activeEvents.data
       
       public function activeTime() : String
       {
-         var _loc1_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var result:* = null;
+         var begin:* = null;
+         var end:* = null;
          if(ActionTimeContent)
          {
-            _loc1_ = ActionTimeContent;
+            result = ActionTimeContent;
          }
          else if(EndDate)
          {
-            _loc3_ = DateUtils.getDateByStr(StartDate);
-            _loc2_ = DateUtils.getDateByStr(EndDate);
-            _loc1_ = getActiveString(_loc3_) + "-" + getActiveString(_loc2_);
+            begin = DateUtils.getDateByStr(StartDate);
+            end = DateUtils.getDateByStr(EndDate);
+            result = getActiveString(begin) + "-" + getActiveString(end);
          }
          else
          {
-            _loc1_ = LanguageMgr.GetTranslation("tank.data.MovementInfo.begin",getActiveString(_loc3_));
+            result = LanguageMgr.GetTranslation("tank.data.MovementInfo.begin",getActiveString(begin));
          }
-         return _loc1_;
+         return result;
       }
       
-      private function getActiveString(param1:Date) : String
+      private function getActiveString(date:Date) : String
       {
-         return LanguageMgr.GetTranslation("tank.data.MovementInfo.date",addZero(param1.getFullYear()),addZero(param1.getMonth() + 1),addZero(param1.getDate()));
+         return LanguageMgr.GetTranslation("tank.data.MovementInfo.date",addZero(date.getFullYear()),addZero(date.getMonth() + 1),addZero(date.getDate()));
       }
       
-      private function addZero(param1:Number) : String
+      private function addZero(value:Number) : String
       {
-         var _loc2_:* = null;
-         if(param1 < 10)
+         var result:* = null;
+         if(value < 10)
          {
-            _loc2_ = "0" + param1.toString();
+            result = "0" + value.toString();
          }
          else
          {
-            _loc2_ = param1.toString();
+            result = value.toString();
          }
-         return _loc2_;
+         return result;
       }
       
       public function overdue() : Boolean
       {
-         var _loc3_:* = null;
-         var _loc2_:Date = TimeManager.Instance.Now();
-         var _loc1_:Number = _loc2_.time;
-         var _loc4_:Date = DateUtils.getDateByStr(StartDate);
-         if(_loc1_ < _loc4_.getTime())
+         var end:* = null;
+         var now:Date = TimeManager.Instance.Now();
+         var time:Number = now.time;
+         var begin:Date = DateUtils.getDateByStr(StartDate);
+         if(time < begin.getTime())
          {
             return true;
          }
          if(EndDate)
          {
-            _loc3_ = DateUtils.getDateByStr(EndDate);
-            if(_loc1_ > _loc3_.getTime())
+            end = DateUtils.getDateByStr(EndDate);
+            if(time > end.getTime())
             {
                return true;
             }

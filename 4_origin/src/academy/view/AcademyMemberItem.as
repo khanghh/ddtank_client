@@ -48,9 +48,9 @@ package academy.view
       
       private var _index:int;
       
-      public function AcademyMemberItem(param1:int)
+      public function AcademyMemberItem(index:int)
       {
-         _index = param1;
+         _index = index;
          super();
          init();
          initEvent();
@@ -88,7 +88,7 @@ package academy.view
          addEventListener("mouseOut",__onMouseClick);
       }
       
-      private function __onMouseClick(param1:MouseEvent) : void
+      private function __onMouseClick(event:MouseEvent) : void
       {
          if(!_selected)
          {
@@ -96,7 +96,7 @@ package academy.view
          }
       }
       
-      private function __onMouseOver(param1:MouseEvent) : void
+      private function __onMouseOver(event:MouseEvent) : void
       {
          if(!_selected)
          {
@@ -104,11 +104,11 @@ package academy.view
          }
       }
       
-      public function set isSelect(param1:Boolean) : void
+      public function set isSelect(value:Boolean) : void
       {
-         if(_selected != param1)
+         if(_selected != value)
          {
-            _selected = param1;
+            _selected = value;
             _itemEffect.visible = _selected;
          }
       }
@@ -134,11 +134,11 @@ package academy.view
       
       private function updateInfo() : void
       {
-         var _loc1_:PlayerInfo = info.info;
-         _nameTxt.text = _loc1_.NickName;
-         _fightPowerTxt.text = String(_loc1_.FightPower);
-         _levelIcon.setInfo(_loc1_.Grade,_loc1_.ddtKingGrade,_loc1_.Repute,_loc1_.WinCount,_loc1_.TotalCount,_loc1_.FightPower,_loc1_.Offer,true,false);
-         if(_loc1_.playerState.StateID != 0)
+         var player:PlayerInfo = info.info;
+         _nameTxt.text = player.NickName;
+         _fightPowerTxt.text = String(player.FightPower);
+         _levelIcon.setInfo(player.Grade,player.ddtKingGrade,player.Repute,player.WinCount,player.TotalCount,player.FightPower,player.Offer,true,false);
+         if(player.playerState.StateID != 0)
          {
             _OnlineIcon.setFrame(1);
          }
@@ -146,16 +146,16 @@ package academy.view
          {
             _OnlineIcon.setFrame(2);
          }
-         if(_loc1_.IsVIP)
+         if(player.IsVIP)
          {
             ObjectUtils.disposeObject(_vipName);
-            _vipName = VipController.instance.getVipNameTxt(115,_loc1_.typeVIP);
+            _vipName = VipController.instance.getVipNameTxt(115,player.typeVIP);
             _vipName.x = _nameTxt.x;
             _vipName.y = _nameTxt.y;
             _vipName.text = _nameTxt.text;
             addChild(_vipName);
             addChild(_nameTxt);
-            PositionUtils.adaptNameStyle(_loc1_,_nameTxt,_vipName);
+            PositionUtils.adaptNameStyle(player,_nameTxt,_vipName);
          }
          else
          {
@@ -193,9 +193,9 @@ package academy.view
          }
       }
       
-      public function set info(param1:AcademyPlayerInfo) : void
+      public function set info(info:AcademyPlayerInfo) : void
       {
-         _info = param1;
+         _info = info;
          updateInfo();
          updateComponentPos();
       }

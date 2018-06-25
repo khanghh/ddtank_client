@@ -50,20 +50,20 @@ package consumeRank
          SocketManager.Instance.addEventListener(PkgEvent.format(259),__updateInfo);
       }
       
-      protected function __updateInfo(param1:PkgEvent) : void
+      protected function __updateInfo(event:PkgEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc7_:int = 0;
-         var _loc6_:* = null;
-         var _loc4_:PackageIn = param1.pkg;
-         actId = _loc4_.readUTF();
-         var _loc8_:Boolean = _loc4_.readBoolean();
-         var _loc2_:Dictionary = WonderfulActivityManager.Instance.activityData;
-         var _loc5_:Dictionary = WonderfulActivityManager.Instance.leftViewInfoDic;
-         if(_loc8_)
+         var count:int = 0;
+         var i:int = 0;
+         var vo:* = null;
+         var pkg:PackageIn = event.pkg;
+         actId = pkg.readUTF();
+         var isOpen:Boolean = pkg.readBoolean();
+         var activityData:Dictionary = WonderfulActivityManager.Instance.activityData;
+         var leftViewInfoDic:Dictionary = WonderfulActivityManager.Instance.leftViewInfoDic;
+         if(isOpen)
          {
-            status = _loc4_.readInt();
-            xmlData = _loc2_[actId];
+            status = pkg.readInt();
+            xmlData = activityData[actId];
             if(!xmlData)
             {
                requestCount = Number(requestCount) + 1;
@@ -75,23 +75,22 @@ package consumeRank
             }
             if(WonderfulActivityManager.Instance.actList.indexOf(actId) == -1)
             {
-               _loc5_[actId] = new LeftViewInfoVo(23,"· " + xmlData.activityName,xmlData.icon);
+               leftViewInfoDic[actId] = new LeftViewInfoVo(23,"· " + xmlData.activityName,xmlData.icon);
                WonderfulActivityManager.Instance.addElement(actId);
             }
             rankList = [];
-            _loc3_ = _loc4_.readInt();
-            _loc7_ = 0;
-            while(_loc7_ <= _loc3_ - 1)
+            count = pkg.readInt();
+            for(i = 0; i <= count - 1; )
             {
-               _loc6_ = new ConsumeRankVo();
-               _loc6_.userId = _loc4_.readInt();
-               _loc6_.name = _loc4_.readUTF();
-               _loc6_.vipLvl = _loc4_.readByte();
-               _loc6_.consume = _loc4_.readInt();
-               rankList.push(_loc6_);
-               _loc7_++;
+               vo = new ConsumeRankVo();
+               vo.userId = pkg.readInt();
+               vo.name = pkg.readUTF();
+               vo.vipLvl = pkg.readByte();
+               vo.consume = pkg.readInt();
+               rankList.push(vo);
+               i++;
             }
-            myConsume = _loc4_.readInt();
+            myConsume = pkg.readInt();
             dispatchEvent(new Event("consumeUpdateView"));
          }
          else

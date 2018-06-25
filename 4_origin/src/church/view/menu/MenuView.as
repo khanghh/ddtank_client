@@ -13,9 +13,9 @@ package church.view.menu
          super();
       }
       
-      public static function show(param1:PlayerInfo) : void
+      public static function show(info:PlayerInfo) : void
       {
-         if(param1 == null)
+         if(info == null)
          {
             return;
          }
@@ -23,7 +23,7 @@ package church.view.menu
          {
             _menu = new MenuPanel();
          }
-         _menu.playerInfo = param1;
+         _menu.playerInfo = info;
          _menu.show();
       }
       

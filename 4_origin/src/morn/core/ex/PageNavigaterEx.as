@@ -2,7 +2,6 @@ package morn.core.ex
 {
    import flash.events.MouseEvent;
    import flash.text.TextFormat;
-   import flash.text.TextFormatAlign;
    import morn.core.components.Box;
    import morn.core.components.Button;
    import morn.core.components.Component;
@@ -95,355 +94,385 @@ package morn.core.ex
       override protected function createChildren() : void
       {
          super.createChildren();
-         addChild(this._hBox = new HBox());
-         this._hBox.addChild(this._firstBtn = this.createButton(FIRSTBUTTON_STYLE,FIRSTBTN_NAME));
-         this._hBox.addChild(this._prevBtn = this.createButton(PREVBUTTON_STYLE,PREVBTN_NAME));
-         this._hBox.addChild(this._pageSpri = new Box());
-         this._pageSpri.addChild(this._pageNumBg = new Image(PAGEIMG_STYLE));
-         this._pageSpri.addChild(this._pageNumText = new Label());
-         this._hBox.addChild(this._nextBtn = this.createButton(NEXTBUTTON_STYLE,NEXTBTN_NAME));
-         this._hBox.addChild(this._lastBtn = this.createButton(LASTBUTTON_STYLE,LASTBTN_NAME));
+         _hBox = new HBox();
+         addChild(new HBox());
+         _firstBtn = createButton("asset.ui.pageNavBtn.first2","firstBtn");
+         _hBox.addChild(createButton("asset.ui.pageNavBtn.first2","firstBtn"));
+         _prevBtn = createButton("asset.ui.pageNavBtn.pre2","prevBtn");
+         _hBox.addChild(createButton("asset.ui.pageNavBtn.pre2","prevBtn"));
+         _pageSpri = new Box();
+         _hBox.addChild(new Box());
+         _pageNumBg = new Image("asset.ui.combox.inputBg1");
+         _pageSpri.addChild(new Image("asset.ui.combox.inputBg1"));
+         _pageNumText = new Label();
+         _pageSpri.addChild(new Label());
+         _nextBtn = createButton("asset.ui.pageNavBtn.next2","nextBtn");
+         _hBox.addChild(createButton("asset.ui.pageNavBtn.next2","nextBtn"));
+         _lastBtn = createButton("asset.ui.pageNavBtn.last2","lastBtn");
+         _hBox.addChild(createButton("asset.ui.pageNavBtn.last2","lastBtn"));
       }
       
       override protected function initialize() : void
       {
          super.initialize();
-         this._pageNumBg.smoothing = true;
-         this._hBox.align = HBox.TOP;
-         this.pageNumBgSizeGrid = PAGENUM_BGGRID;
-         this.pageNumSize = PAGENUM_BGSIZE;
-         this.updatePageNumStyle("");
-         this._pageNumText.stroke = PAGENUM_STROKE;
-         callLater(this.updatePage);
+         _pageNumBg.smoothing = true;
+         _hBox.align = "top";
+         pageNumBgSizeGrid = "5,5,10,10,0";
+         pageNumSize = "80,25";
+         updatePageNumStyle("");
+         _pageNumText.stroke = "0x000000,1,4,4,10";
+         callLater(updatePage);
       }
       
-      protected function __onClick(param1:MouseEvent) : void
+      protected function __onClick(evt:MouseEvent) : void
       {
-         switch(param1.target.name)
+         var _loc2_:* = evt.target.name;
+         if("firstBtn" !== _loc2_)
          {
-            case FIRSTBTN_NAME:
-               if(this.currentPage == this.MIN_PAGE)
+            if("prevBtn" !== _loc2_)
+            {
+               if("nextBtn" !== _loc2_)
                {
-                  return;
-               }
-               this.currentPage = this.MIN_PAGE;
-               break;
-            case PREVBTN_NAME:
-               if(this.currentPage - 1 < this.MIN_PAGE)
-               {
-                  if(this.isLoop)
+                  if("lastBtn" === _loc2_)
                   {
-                     this.currentPage = this.maxPage;
+                     if(currentPage != maxPage)
+                     {
+                        currentPage = maxPage;
+                     }
+                  }
+               }
+               else if(currentPage + 1 > maxPage)
+               {
+                  if(isLoop)
+                  {
+                     currentPage = 1;
                   }
                   else
                   {
-                     this._currentPage = this.MIN_PAGE;
+                     _currentPage = maxPage;
                   }
-                  return;
                }
-               this.currentPage = this.currentPage - 1;
-               break;
-            case NEXTBTN_NAME:
-               if(this.currentPage + 1 > this.maxPage)
+               else
                {
-                  if(this.isLoop)
+                  currentPage = currentPage + 1;
+               }
+            }
+            else
+            {
+               if(currentPage - 1 < 1)
+               {
+                  if(isLoop)
                   {
-                     this.currentPage = this.MIN_PAGE;
+                     currentPage = maxPage;
                   }
                   else
                   {
-                     this._currentPage = this.maxPage;
+                     _currentPage = 1;
                   }
-                  break;
+                  return;
                }
-               this.currentPage = this.currentPage + 1;
-               break;
-            case LASTBTN_NAME:
-               if(this.currentPage != this.maxPage)
-               {
-                  this.currentPage = this.maxPage;
-                  break;
-               }
+               currentPage = currentPage - 1;
+            }
+         }
+         else
+         {
+            if(currentPage == 1)
+            {
+               return;
+            }
+            currentPage = 1;
          }
       }
       
       protected function checkBtnState() : void
       {
-         var _loc1_:* = false;
-         var _loc2_:* = false;
-         if(!this.isLoop)
+         var isFirst:* = false;
+         var isLast:* = false;
+         if(!isLoop)
          {
-            _loc1_ = this.currentPage == this.MIN_PAGE;
-            _loc2_ = this.currentPage == this.maxPage;
-            if(_loc1_ || this._prevBtn.disabled)
+            isFirst = currentPage == 1;
+            isLast = currentPage == maxPage;
+            if(isFirst || _prevBtn.disabled)
             {
-               this._firstBtn.disabled = this._prevBtn.disabled = _loc1_;
+               var _loc3_:* = isFirst;
+               _prevBtn.disabled = _loc3_;
+               _firstBtn.disabled = _loc3_;
             }
-            if(_loc2_ || this._nextBtn.disabled)
+            if(isLast || _nextBtn.disabled)
             {
-               this._lastBtn.disabled = this._nextBtn.disabled = _loc2_;
+               _loc3_ = isLast;
+               _nextBtn.disabled = _loc3_;
+               _lastBtn.disabled = _loc3_;
             }
          }
       }
       
       protected function updatePage() : void
       {
-         this._pageNumText.text = this.getCurrentPageViewToString();
-         this.checkBtnState();
-         this.updatePageNum();
-         if(this._selectHandler != null)
+         _pageNumText.text = getCurrentPageViewToString();
+         checkBtnState();
+         updatePageNum();
+         if(_selectHandler != null)
          {
-            this._selectHandler.executeWith([this.currentPage]);
+            _selectHandler.executeWith([currentPage]);
          }
       }
       
       protected function getCurrentPageViewToString() : String
       {
-         var _loc1_:int = Math.max(this.currentPage,1);
-         var _loc2_:int = Math.max(this._maxPage,1);
-         var _loc3_:String = _loc1_ + "/" + _loc2_;
-         return _loc3_;
+         var current:int = Math.max(currentPage,1);
+         var max:int = Math.max(_maxPage,1);
+         var str:String = current + "/" + max;
+         return str;
       }
       
-      protected function createButton(param1:String, param2:String) : Button
+      protected function createButton(style:String, name:String) : Button
       {
-         var _loc3_:Button = new Button(param1);
-         _loc3_.name = param2;
-         _loc3_.stateNum = 1;
-         _loc3_.addEventListener(MouseEvent.CLICK,this.__onClick);
-         return _loc3_;
+         var btn:Button = new Button(style);
+         btn.name = name;
+         btn.stateNum = 1;
+         btn.addEventListener("click",__onClick);
+         return btn;
       }
       
       protected function updatePageNum() : void
       {
-         var _loc1_:* = 0;
-         this._pageNumText.y = this._pageNumBg.height - this._pageNumText.height >> 1;
-         switch(this._pageNumAlign)
+         var temX:* = 0;
+         _pageNumText.y = _pageNumBg.height - _pageNumText.height >> 1;
+         var _loc2_:* = _pageNumAlign;
+         if("left" !== _loc2_)
          {
-            case TextFormatAlign.LEFT:
-               this._pageNumText.x = this._pageNumXOffset;
-               break;
-            case TextFormatAlign.CENTER:
-               _loc1_ = this._pageNumBg.width - this._pageNumText.width >> 1;
-               this._pageNumText.x = _loc1_ + this._pageNumXOffset;
-               break;
-            case TextFormatAlign.RIGHT:
-               _loc1_ = int(this._pageNumBg.width - this._pageNumText.width);
-               this._pageNumText.x = _loc1_ + this._pageNumXOffset;
-               break;
-            default:
-               this._pageNumText.x = this._pageNumXOffset;
+            if("center" !== _loc2_)
+            {
+               if("right" !== _loc2_)
+               {
+                  _pageNumText.x = _pageNumXOffset;
+               }
+               else
+               {
+                  temX = int(_pageNumBg.width - _pageNumText.width);
+                  _pageNumText.x = temX + _pageNumXOffset;
+               }
+            }
+            else
+            {
+               temX = _pageNumBg.width - _pageNumText.width >> 1;
+               _pageNumText.x = temX + _pageNumXOffset;
+            }
+         }
+         else
+         {
+            _pageNumText.x = _pageNumXOffset;
          }
       }
       
       public function get maxPage() : int
       {
-         return this._maxPage;
+         return _maxPage;
       }
       
-      public function set maxPage(param1:int) : void
+      public function set maxPage(value:int) : void
       {
-         if(this._maxPage == param1)
+         if(_maxPage == value)
          {
             return;
          }
-         this._maxPage = param1;
-         callLater(this.updatePage);
+         _maxPage = value;
+         callLater(updatePage);
       }
       
-      public function set currentPage(param1:int) : void
+      public function set currentPage(value:int) : void
       {
-         this._currentPage = param1;
-         callLater(this.updatePage);
+         _currentPage = value;
+         callLater(updatePage);
       }
       
       public function get currentPage() : int
       {
-         return this._currentPage;
+         return _currentPage;
       }
       
       public function get isLoop() : Boolean
       {
-         return this._isLoop;
+         return _isLoop;
       }
       
-      public function set isLoop(param1:Boolean) : void
+      public function set isLoop(value:Boolean) : void
       {
-         if(this._isLoop == param1)
+         if(_isLoop == value)
          {
             return;
          }
-         this._isLoop = param1;
+         _isLoop = value;
       }
       
       public function get spacing() : int
       {
-         return this._spacing;
+         return _spacing;
       }
       
-      public function set spacing(param1:int) : void
+      public function set spacing(value:int) : void
       {
-         if(this._spacing == param1)
+         if(_spacing == value)
          {
             return;
          }
-         this._spacing = param1;
-         this._hBox.space = this.spacing;
+         _spacing = value;
+         _hBox.space = spacing;
       }
       
-      public function set pageNumBgStyle(param1:String) : void
+      public function set pageNumBgStyle(value:String) : void
       {
-         this._pageNumBg.skin = param1;
+         _pageNumBg.skin = value;
       }
       
-      public function set firstButtonStyle(param1:String) : void
+      public function set firstButtonStyle(value:String) : void
       {
-         this.changeButton(FIRSTBTN_NAME,param1);
+         changeButton("firstBtn",value);
       }
       
-      public function set prevButtonStyle(param1:String) : void
+      public function set prevButtonStyle(value:String) : void
       {
-         this.changeButton(PREVBTN_NAME,param1);
+         changeButton("prevBtn",value);
       }
       
-      public function set nextButtonStyle(param1:String) : void
+      public function set nextButtonStyle(value:String) : void
       {
-         this.changeButton(NEXTBTN_NAME,param1);
+         changeButton("nextBtn",value);
       }
       
-      public function set lastButtonStyle(param1:String) : void
+      public function set lastButtonStyle(value:String) : void
       {
-         this.changeButton(LASTBTN_NAME,param1);
+         changeButton("lastBtn",value);
       }
       
-      protected function changeButton(param1:String, param2:String) : void
+      protected function changeButton(name:String, style:String) : void
       {
-         var _loc3_:Button = this._hBox.getChildByName(param1) as Button;
-         if(_loc3_.skin != param2)
+         var btn:Button = _hBox.getChildByName(name) as Button;
+         if(btn.skin != style)
          {
-            _loc3_.skin = param2;
-            callLater(this._hBox.refresh);
+            btn.skin = style;
+            callLater(_hBox.refresh);
          }
       }
       
-      public function set pageNumBgSizeGrid(param1:String) : void
+      public function set pageNumBgSizeGrid(value:String) : void
       {
-         this._pageNumBg.sizeGrid = param1;
+         _pageNumBg.sizeGrid = value;
       }
       
-      public function set pageNumSize(param1:String) : void
+      public function set pageNumSize(value:String) : void
       {
-         var _loc2_:Array = param1.split(",");
-         if(_loc2_ == null || _loc2_.length <= 1)
+         var temArr:Array = value.split(",");
+         if(temArr == null || temArr.length <= 1)
          {
             return;
          }
-         var _loc3_:int = int(_loc2_[0]);
-         var _loc4_:int = int(_loc2_[1]);
-         this._pageNumBg.width = _loc3_;
-         this._pageNumBg.height = _loc4_;
-         callLater(this.updatePageNum);
+         var w:int = temArr[0];
+         var h:int = temArr[1];
+         _pageNumBg.width = w;
+         _pageNumBg.height = h;
+         callLater(updatePageNum);
       }
       
-      public function set pageNumAlign(param1:String) : void
+      public function set pageNumAlign(value:String) : void
       {
-         this._pageNumAlign = param1;
-         callLater(this.updatePageNum);
+         _pageNumAlign = value;
+         callLater(updatePageNum);
       }
       
-      public function set pageNumXOffset(param1:int) : void
+      public function set pageNumXOffset(value:int) : void
       {
-         this._pageNumXOffset = param1;
-         callLater(this.updatePageNum);
+         _pageNumXOffset = value;
+         callLater(updatePageNum);
       }
       
       public function get selectHandler() : Handler
       {
-         return this._selectHandler;
+         return _selectHandler;
       }
       
-      public function set selectHandler(param1:Handler) : void
+      public function set selectHandler(value:Handler) : void
       {
-         this._selectHandler = param1;
+         _selectHandler = value;
       }
       
-      public function set pageNumStroke(param1:String) : void
+      public function set pageNumStroke(value:String) : void
       {
-         this._pageNumText.stroke = param1;
-         callLater(this.updatePageNum);
+         _pageNumText.stroke = value;
+         callLater(updatePageNum);
       }
       
-      public function set pageNumStyle(param1:String) : void
+      public function set pageNumStyle(value:String) : void
       {
-         this.updatePageNumStyle(param1);
-         callLater(this.updatePageNum);
+         updatePageNumStyle(value);
+         callLater(updatePageNum);
       }
       
-      protected function updatePageNumStyle(param1:String) : void
+      protected function updatePageNumStyle(value:String) : void
       {
-         var _loc2_:Array = StringUtils.fillArray(lableStyle,param1);
-         this._pageNumText.format = new TextFormat(_loc2_[0],_loc2_[1],_loc2_[2],_loc2_[3]);
-         this._pageNumText.letterSpacing = _loc2_[4];
+         var temAr:Array = StringUtils.fillArray(lableStyle,value);
+         _pageNumText.format = new TextFormat(temAr[0],temAr[1],temAr[2],temAr[3]);
+         _pageNumText.letterSpacing = temAr[4];
       }
       
       public function get type() : String
       {
-         return this._type;
+         return _type;
       }
       
-      public function set type(param1:String) : void
+      public function set type(value:String) : void
       {
-         if(this._type == param1)
+         if(_type == value)
          {
             return;
          }
-         this._type = param1;
-         this.updateComponent();
+         _type = value;
+         updateComponent();
       }
       
       protected function updateComponent() : void
       {
-         if(this._hBox == null)
+         if(_hBox == null)
          {
             return;
          }
-         switch(this.type)
+         var _loc1_:* = type;
+         if("simple" !== _loc1_)
          {
-            case SIMPLE:
-               if(this._hBox.numChildren > 3)
+            if("complexity" === _loc1_)
+            {
+               if(_hBox.numChildren < 5)
                {
-                  this._hBox.removeChild(this._firstBtn);
-                  this._hBox.removeChild(this._lastBtn);
-                  break;
+                  _hBox.addChildAt(_firstBtn,0);
+                  _hBox.addChildAt(_lastBtn,_hBox.numChildren - 1);
                }
-               break;
-            case COMPLEXITY:
-               if(this._hBox.numChildren < 5)
-               {
-                  this._hBox.addChildAt(this._firstBtn,0);
-                  this._hBox.addChildAt(this._lastBtn,this._hBox.numChildren - 1);
-                  break;
-               }
+            }
+         }
+         else if(_hBox.numChildren > 3)
+         {
+            _hBox.removeChild(_firstBtn);
+            _hBox.removeChild(_lastBtn);
          }
       }
       
       override public function dispose() : void
       {
-         this._firstBtn && this._firstBtn.dispose();
-         this._prevBtn && this._prevBtn.dispose();
-         this._nextBtn && this._nextBtn.dispose();
-         this._lastBtn && this._lastBtn.dispose();
-         this._pageNumBg && this._pageNumBg.dispose();
-         this._pageNumText && this._pageNumText.dispose();
-         this._hBox && this._hBox.removeChildren();
-         this._pageSpri = null;
-         this._firstBtn = null;
-         this._prevBtn = null;
-         this._nextBtn = null;
-         this._lastBtn = null;
-         this._pageNumBg = null;
-         this._pageNumText = null;
-         this._hBox = null;
+         _firstBtn && _firstBtn.dispose();
+         _prevBtn && _prevBtn.dispose();
+         _nextBtn && _nextBtn.dispose();
+         _lastBtn && _lastBtn.dispose();
+         _pageNumBg && _pageNumBg.dispose();
+         _pageNumText && _pageNumText.dispose();
+         _hBox && _hBox.removeChildren();
+         _pageSpri = null;
+         _firstBtn = null;
+         _prevBtn = null;
+         _nextBtn = null;
+         _lastBtn = null;
+         _pageNumBg = null;
+         _pageNumText = null;
+         _hBox = null;
          super.dispose();
       }
    }

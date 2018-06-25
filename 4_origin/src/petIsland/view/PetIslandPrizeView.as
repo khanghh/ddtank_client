@@ -52,8 +52,8 @@ package petIsland.view
       
       public function PetIslandPrizeView()
       {
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var bagCellInfo:* = null;
+         var bagCell:* = null;
          lineArr = [];
          prizeArr = [];
          super();
@@ -124,26 +124,26 @@ package petIsland.view
          PositionUtils.setPos(_contain3,"asset.petIsland.prize3.position");
          PositionUtils.setPos(_contain4,"asset.petIsland.prize4.position");
          PositionUtils.setPos(_contain5,"asset.petIsland.prize5.position");
-         _loc2_ = ItemManager.Instance.getTemplateById(201623);
-         _loc1_ = new BagCell(0,_loc2_);
+         bagCellInfo = ItemManager.Instance.getTemplateById(201623);
+         bagCell = new BagCell(0,bagCellInfo);
          _contain1.buttonMode = true;
-         _contain1.tipData = _loc1_.tipData;
-         _loc2_ = ItemManager.Instance.getTemplateById(201624);
-         _loc1_ = new BagCell(0,_loc2_);
+         _contain1.tipData = bagCell.tipData;
+         bagCellInfo = ItemManager.Instance.getTemplateById(201624);
+         bagCell = new BagCell(0,bagCellInfo);
          _contain2.buttonMode = true;
-         _contain2.tipData = _loc1_.tipData;
-         _loc2_ = ItemManager.Instance.getTemplateById(201625);
-         _loc1_ = new BagCell(0,_loc2_);
+         _contain2.tipData = bagCell.tipData;
+         bagCellInfo = ItemManager.Instance.getTemplateById(201625);
+         bagCell = new BagCell(0,bagCellInfo);
          _contain3.buttonMode = true;
-         _contain3.tipData = _loc1_.tipData;
-         _loc2_ = ItemManager.Instance.getTemplateById(201626);
-         _loc1_ = new BagCell(0,_loc2_);
+         _contain3.tipData = bagCell.tipData;
+         bagCellInfo = ItemManager.Instance.getTemplateById(201626);
+         bagCell = new BagCell(0,bagCellInfo);
          _contain4.buttonMode = true;
-         _contain4.tipData = _loc1_.tipData;
-         _loc2_ = ItemManager.Instance.getTemplateById(201627);
-         _loc1_ = new BagCell(0,_loc2_);
+         _contain4.tipData = bagCell.tipData;
+         bagCellInfo = ItemManager.Instance.getTemplateById(201627);
+         bagCell = new BagCell(0,bagCellInfo);
          _contain5.buttonMode = true;
-         _contain5.tipData = _loc1_.tipData;
+         _contain5.tipData = bagCell.tipData;
          addChild(_contain1);
          addChild(_contain2);
          addChild(_contain3);
@@ -151,10 +151,10 @@ package petIsland.view
          addChild(_contain5);
       }
       
-      private function clickHandler(param1:MouseEvent) : void
+      private function clickHandler(e:MouseEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:* = param1.currentTarget;
+         var type:int = 0;
+         var _loc3_:* = e.currentTarget;
          if(_prize1 !== _loc3_)
          {
             if(_prize2 !== _loc3_)
@@ -165,51 +165,50 @@ package petIsland.view
                   {
                      if(_prize5 === _loc3_)
                      {
-                        _loc2_ = 5;
+                        type = 5;
                      }
                   }
                   else
                   {
-                     _loc2_ = 4;
+                     type = 4;
                   }
                }
                else
                {
-                  _loc2_ = 3;
+                  type = 3;
                }
             }
             else
             {
-               _loc2_ = 2;
+               type = 2;
             }
          }
          else
          {
-            _loc2_ = 1;
+            type = 1;
          }
-         if(_loc2_ >= PetIslandManager.instance.model.currentLevel)
+         if(type >= PetIslandManager.instance.model.currentLevel)
          {
             return;
          }
-         SocketManager.Instance.out.petIslandPrize(_loc2_);
+         SocketManager.Instance.out.petIslandPrize(type);
       }
       
       public function setPrizeView() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         var _loc1_:Array = PetIslandManager.instance.model.rewardRecord.split("|");
-         _loc3_ = 0;
-         while(_loc3_ < PetIslandManager.instance.model.currentLevel)
+         var i:int = 0;
+         var j:int = 0;
+         var arr:Array = PetIslandManager.instance.model.rewardRecord.split("|");
+         for(i = 0; i < PetIslandManager.instance.model.currentLevel; )
          {
-            if(_loc3_ != ServerConfigManager.instance.petDisappearMaxLevel)
+            if(i != ServerConfigManager.instance.petDisappearMaxLevel)
             {
-               if(_loc3_ != 0)
+               if(i != 0)
                {
-                  lineArr[_loc3_ - 1].alpha = 1;
+                  lineArr[i - 1].alpha = 1;
                }
-               prizeArr[_loc3_].filters = null;
-               _loc3_++;
+               prizeArr[i].filters = null;
+               i++;
                continue;
             }
             break;
@@ -218,25 +217,25 @@ package petIsland.view
          {
             prizeArr[PetIslandManager.instance.model.currentLevel - 1]["round"].visible = true;
          }
-         _loc2_ = 1;
-         while(_loc2_ <= prizeArr.length)
+         j = 1;
+         while(j <= prizeArr.length)
          {
-            if(_loc1_.indexOf(String(_loc2_)) == -1)
+            if(arr.indexOf(String(j)) == -1)
             {
-               if(_loc2_ < PetIslandManager.instance.model.currentLevel)
+               if(j < PetIslandManager.instance.model.currentLevel)
                {
-                  prizeArr[_loc2_ - 1].gotoAndStop(2);
+                  prizeArr[j - 1].gotoAndStop(2);
                }
                else
                {
-                  prizeArr[_loc2_ - 1].gotoAndStop(1);
+                  prizeArr[j - 1].gotoAndStop(1);
                }
             }
             else
             {
-               prizeArr[_loc2_ - 1].gotoAndStop(3);
+               prizeArr[j - 1].gotoAndStop(3);
             }
-            _loc2_++;
+            j++;
          }
       }
    }

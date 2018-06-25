@@ -14,27 +14,27 @@ package auctionHouse.view
       
       private var _cells:Vector.<AuctionCellView>;
       
-      public function AuctionDragInArea(param1:Vector.<AuctionCellView>)
+      public function AuctionDragInArea(cells:Vector.<AuctionCellView>)
       {
          super();
-         _cells = param1;
+         _cells = cells;
          graphics.beginFill(0,0);
          graphics.drawRect(-100,-10,1000,370);
          graphics.endFill();
       }
       
-      public function dragDrop(param1:DragEffect) : void
+      public function dragDrop(effect:DragEffect) : void
       {
-         var _loc2_:InventoryItemInfo = param1.data as InventoryItemInfo;
-         if(_loc2_ && param1.action != "split")
+         var info:InventoryItemInfo = effect.data as InventoryItemInfo;
+         if(info && effect.action != "split")
          {
-            param1.action = "none";
-            if(_loc2_.getRemainDate() <= 0)
+            effect.action = "none";
+            if(info.getRemainDate() <= 0)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.auctionHouse.view.AuctionDragInArea.this"));
                DragManager.acceptDrag(this);
             }
-            else if(param1.target == null)
+            else if(effect.target == null)
             {
                DragManager.acceptDrag(this);
             }

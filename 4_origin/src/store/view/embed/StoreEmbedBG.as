@@ -119,15 +119,15 @@ package store.view.embed
          initEvents();
       }
       
-      public function holeLvUp(param1:int) : void
+      public function holeLvUp(hole:int) : void
       {
-         _stoneCells[param1].holeLvUp();
+         _stoneCells[hole].holeLvUp();
       }
       
       private function init() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var stoneCell:* = null;
          _embedTxt = ComponentFactory.Instance.creatBitmap("asset.ddtstore.embedTxt");
          PositionUtils.setPos(_embedTxt,"asset.ddtstore.embedTxtPos");
          addChild(_embedTxt);
@@ -168,21 +168,20 @@ package store.view.embed
          _items.push(_embedItemCell);
          _area = new StoreDragInArea(_items);
          addChildAt(_area,0);
-         _loc2_ = 1;
-         while(_loc2_ < 7)
+         for(i = 1; i < 7; )
          {
-            _loc1_ = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[_loc2_,-1]);
-            _loc1_.x = _pointArray[_loc2_].x;
-            _loc1_.y = _pointArray[_loc2_].y;
-            addChild(_loc1_);
-            _loc1_.mouseChildren = false;
-            _loc1_.addEventListener("embed",__embed);
-            _loc1_.addEventListener("embedBackout",__EmbedBackout);
-            _loc1_.addEventListener("embedBackoutDownItemOver",__EmbedBackoutDownItemOver);
-            _loc1_.addEventListener("embedBackoutDownItemOut",__EmbedBackoutDownItemOut);
-            _loc1_.addEventListener("embedBackoutDownItemDown",__EmbedBackoutDownItemDown);
-            _stoneCells.push(_loc1_);
-            _loc2_++;
+            stoneCell = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[i,-1]);
+            stoneCell.x = _pointArray[i].x;
+            stoneCell.y = _pointArray[i].y;
+            addChild(stoneCell);
+            stoneCell.mouseChildren = false;
+            stoneCell.addEventListener("embed",__embed);
+            stoneCell.addEventListener("embedBackout",__EmbedBackout);
+            stoneCell.addEventListener("embedBackoutDownItemOver",__EmbedBackoutDownItemOver);
+            stoneCell.addEventListener("embedBackoutDownItemOut",__EmbedBackoutDownItemOut);
+            stoneCell.addEventListener("embedBackoutDownItemDown",__EmbedBackoutDownItemDown);
+            _stoneCells.push(stoneCell);
+            i++;
          }
          hide();
       }
@@ -196,7 +195,7 @@ package store.view.embed
          _openSixHoleBtn.addEventListener("click",_openSixHoleClick);
       }
       
-      private function __itemChange(param1:StoreEmbedEvent) : void
+      private function __itemChange(evt:StoreEmbedEvent) : void
       {
          if(!_stoneCells[5 - 1].hasDrill())
          {
@@ -208,40 +207,38 @@ package store.view.embed
       
       private function getCellsPoint() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var point:* = null;
          _pointArray = new Vector.<Point>();
-         _loc2_ = 0;
-         while(_loc2_ < 7)
+         for(i = 0; i < 7; )
          {
-            _loc1_ = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.Embedpoint" + _loc2_);
-            _pointArray.push(_loc1_);
-            _loc2_++;
+            point = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.Embedpoint" + i);
+            _pointArray.push(point);
+            i++;
          }
       }
       
-      private function __embedBackoutBtnClick(param1:MouseEvent) : void
+      private function __embedBackoutBtnClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         param1.stopImmediatePropagation();
+         evt.stopImmediatePropagation();
          _embedBackoutBtn.mouseEnabled = false;
          _embedBackoutBtn.isAction = true;
          _embedBackoutMouseIcon = ComponentFactory.Instance.creatComponentByStylename("ddttore.StoreEmbedBG.embedBackoutMouseIcon");
          _embedBackoutMouseIcon.setFrame(1);
-         DragManager.startDrag(_embedBackoutBtn,_embedBackoutBtn,_embedBackoutMouseIcon,param1.stageX,param1.stageY,"move",false,true);
+         DragManager.startDrag(_embedBackoutBtn,_embedBackoutBtn,_embedBackoutMouseIcon,evt.stageX,evt.stageY,"move",false,true);
       }
       
-      private function __itemInfoChange(param1:Event) : void
+      private function __itemInfoChange(evt:Event) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _stoneCells.length)
+         var i:int = 0;
+         for(i = 0; i < _stoneCells.length; )
          {
-            _stoneCells[_loc2_].close();
+            _stoneCells[i].close();
             var _loc3_:Boolean = false;
             _openSixHoleBtn.visible = _loc3_;
             _openFiveHoleBtn.visible = _loc3_;
-            _loc2_++;
+            i++;
          }
          if(_embedItemCell.info != null)
          {
@@ -253,79 +250,77 @@ package store.view.embed
       
       private function initHoleType() : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:InventoryItemInfo = _embedItemCell.itemInfo;
-         var _loc1_:Array = _loc3_.Hole.split("|");
-         _loc2_ = 0;
-         while(_loc2_ < _stoneCells.length)
+         var j:int = 0;
+         var info:InventoryItemInfo = _embedItemCell.itemInfo;
+         var arr:Array = info.Hole.split("|");
+         for(j = 0; j < _stoneCells.length; )
          {
-            _stoneCells[_loc2_].StoneType = _loc1_[_loc2_].split(",")[1];
-            _loc2_++;
+            _stoneCells[j].StoneType = arr[j].split(",")[1];
+            j++;
          }
       }
       
       private function updateHoles() : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:InventoryItemInfo = _embedItemCell.itemInfo;
-         var _loc1_:Array = _loc3_.Hole.split("|");
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_.length)
+         var i:int = 0;
+         var info:InventoryItemInfo = _embedItemCell.itemInfo;
+         var tmpArr:Array = info.Hole.split("|");
+         for(i = 0; i < tmpArr.length; )
          {
-            if((_loc3_.StrengthenLevel >= int(String(_loc1_[_loc2_]).split(",")[0]) || _loc3_["Hole" + (_loc2_ + 1)] >= 0) && _loc2_ < 4)
+            if((info.StrengthenLevel >= int(String(tmpArr[i]).split(",")[0]) || info["Hole" + (i + 1)] >= 0) && i < 4)
             {
-               _stoneCells[_loc2_].open();
-               _stoneCells[_loc2_].tipDerial = true;
-               if(_loc3_["Hole" + (_loc2_ + 1)] != 0)
+               _stoneCells[i].open();
+               _stoneCells[i].tipDerial = true;
+               if(info["Hole" + (i + 1)] != 0)
                {
-                  _stoneCells[_loc2_].info = ItemManager.Instance.getTemplateById(_loc3_["Hole" + (_loc2_ + 1)]);
-                  _stoneCells[_loc2_].tipDerial = false;
+                  _stoneCells[i].info = ItemManager.Instance.getTemplateById(info["Hole" + (i + 1)]);
+                  _stoneCells[i].tipDerial = false;
                }
             }
             else
             {
-               _stoneCells[_loc2_].close();
-               _stoneCells[_loc2_].tipDerial = false;
+               _stoneCells[i].close();
+               _stoneCells[i].tipDerial = false;
             }
-            _loc2_++;
+            i++;
          }
          updateOpenFiveSixHole();
       }
       
       private function updateOpenFiveSixHole() : void
       {
-         var _loc2_:InventoryItemInfo = _embedItemCell.itemInfo;
-         var _loc1_:Array = _loc2_.Hole.split("|");
-         if(_loc2_.Hole5Level > 0 || _loc2_.Hole5 > 0)
+         var info:InventoryItemInfo = _embedItemCell.itemInfo;
+         var arr:Array = info.Hole.split("|");
+         if(info.Hole5Level > 0 || info.Hole5 > 0)
          {
             _stoneCells[5 - 1].open();
-            _stoneCells[5 - 1].info = ItemManager.Instance.getTemplateById(_loc2_.Hole5);
+            _stoneCells[5 - 1].info = ItemManager.Instance.getTemplateById(info.Hole5);
          }
-         if(_loc2_.Hole6Level > 0 || _loc2_.Hole6 > 0)
+         if(info.Hole6Level > 0 || info.Hole6 > 0)
          {
             _stoneCells[6 - 1].open();
-            _stoneCells[6 - 1].info = ItemManager.Instance.getTemplateById(_loc2_.Hole6);
+            _stoneCells[6 - 1].info = ItemManager.Instance.getTemplateById(info.Hole6);
          }
-         var _loc3_:* = _loc2_.Hole5Level < StoreModel.getHoleMaxOpLv() && _embedItemCell.info != null;
+         var _loc3_:* = info.Hole5Level < StoreModel.getHoleMaxOpLv() && _embedItemCell.info != null;
          _openFiveHoleBtn.visible = _loc3_;
          _hole5ExpBar.visible = _loc3_;
-         _loc3_ = _loc2_.Hole6Level < StoreModel.getHoleMaxOpLv() && _embedItemCell.info != null;
+         _loc3_ = info.Hole6Level < StoreModel.getHoleMaxOpLv() && _embedItemCell.info != null;
          _openSixHoleBtn.visible = _loc3_;
          _hole6ExpBar.visible = _loc3_;
       }
       
       private function confirmIsBindWhenOpenHole() : void
       {
-         var _loc1_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.bagII.BagIIView.BindsInfo"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2);
-         _loc1_.addEventListener("response",__confireIsBindWhenOpenHoleResponse);
+         var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.bagII.BagIIView.BindsInfo"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2);
+         alert.addEventListener("response",__confireIsBindWhenOpenHoleResponse);
       }
       
-      private function __confireIsBindWhenOpenHoleResponse(param1:FrameEvent) : void
+      private function __confireIsBindWhenOpenHoleResponse(event:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__confireIsBindWhenOpenHoleResponse);
-         _loc2_.dispose();
-         switch(int(param1.responseCode))
+         var alert:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",__confireIsBindWhenOpenHoleResponse);
+         alert.dispose();
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -337,26 +332,26 @@ package store.view.embed
          }
       }
       
-      private function getDrillByLevel(param1:int) : InventoryItemInfo
+      private function getDrillByLevel(level:int) : InventoryItemInfo
       {
-         var _loc2_:DictionaryData = PlayerManager.Instance.Self.PropBag.items;
+         var items:DictionaryData = PlayerManager.Instance.Self.PropBag.items;
          var _loc5_:int = 0;
-         var _loc4_:* = _loc2_;
-         for each(var _loc3_ in _loc2_)
+         var _loc4_:* = items;
+         for each(var item in items)
          {
-            if(EquipType.isDrill(_loc3_) && _loc3_.Level == param1 + 1)
+            if(EquipType.isDrill(item) && item.Level == level + 1)
             {
-               return _loc3_;
+               return item;
             }
          }
          return null;
       }
       
-      private function _openFiveHoleClick(param1:MouseEvent) : void
+      private function _openFiveHoleClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:InventoryItemInfo = InventoryItemInfo(_embedItemCell.info);
-         if(_loc2_.Hole5Level >= StoreModel.getHoleMaxOpLv())
+         var item:InventoryItemInfo = InventoryItemInfo(_embedItemCell.info);
+         if(item.Hole5Level >= StoreModel.getHoleMaxOpLv())
          {
             return;
          }
@@ -368,7 +363,7 @@ package store.view.embed
          else
          {
             _openHoleNumber = 5;
-            if(!_loc2_.IsBinds && _drill.IsBinds)
+            if(!item.IsBinds && _drill.IsBinds)
             {
                confirmIsBindWhenOpenHole();
             }
@@ -379,11 +374,11 @@ package store.view.embed
          }
       }
       
-      private function _openSixHoleClick(param1:MouseEvent) : void
+      private function _openSixHoleClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:InventoryItemInfo = InventoryItemInfo(_embedItemCell.info);
-         if(_loc2_.Hole6Level >= StoreModel.getHoleMaxOpLv())
+         var item:InventoryItemInfo = InventoryItemInfo(_embedItemCell.info);
+         if(item.Hole6Level >= StoreModel.getHoleMaxOpLv())
          {
             return;
          }
@@ -395,7 +390,7 @@ package store.view.embed
          else
          {
             _openHoleNumber = 6;
-            if(!_loc2_.IsBinds && _drill.IsBinds)
+            if(!item.IsBinds && _drill.IsBinds)
             {
                confirmIsBindWhenOpenHole();
             }
@@ -406,89 +401,88 @@ package store.view.embed
          }
       }
       
-      public function openHoleSucces(param1:int, param2:int, param3:int) : void
+      public function openHoleSucces(place:int, stoneBag:int, count:int) : void
       {
-         SocketManager.Instance.out.sendMoveGoods(12,param1,param2,-1,param3,true);
+         SocketManager.Instance.out.sendMoveGoods(12,place,stoneBag,-1,count,true);
       }
       
       private function _showAlert() : void
       {
-         var _loc1_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("store.StoreIIComposeBG.use"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
-         _loc1_.addEventListener("response",_responseVI);
+         var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("store.StoreIIComposeBG.use"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
+         alert.addEventListener("response",_responseVI);
       }
       
-      private function sendOpenHole(param1:int, param2:int, param3:int) : void
+      private function sendOpenHole(itemPlace:int, number:int, drill:int) : void
       {
-         SocketManager.Instance.out.sendItemOpenFiveSixHole(param1,param2,param3);
+         SocketManager.Instance.out.sendItemOpenFiveSixHole(itemPlace,number,drill);
          _drill = null;
       }
       
       private function getOpenHoleStone() : InventoryItemInfo
       {
-         var _loc1_:InventoryItemInfo = PlayerManager.Instance.Self.PropBag.findFistItemByTemplateId(11036);
-         var _loc2_:InventoryItemInfo = PlayerManager.Instance.Self.PropBag.findFistItemByTemplateId(11035);
-         return _loc1_ != null?_loc1_:_loc2_;
+         var skyInfo:InventoryItemInfo = PlayerManager.Instance.Self.PropBag.findFistItemByTemplateId(11036);
+         var gndInfo:InventoryItemInfo = PlayerManager.Instance.Self.PropBag.findFistItemByTemplateId(11035);
+         return skyInfo != null?skyInfo:gndInfo;
       }
       
-      private function _responseVI(param1:FrameEvent) : void
+      private function _responseVI(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",_responseVI);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         (evt.currentTarget as BaseAlerFrame).removeEventListener("response",_responseVI);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
          }
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(evt.currentTarget);
       }
       
-      public function dragDrop(param1:BagCell) : void
+      public function dragDrop(source:BagCell) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
-         if(param1 == null)
+         var ds:* = null;
+         var i:int = 0;
+         if(source == null)
          {
             return;
          }
-         var _loc4_:InventoryItemInfo = param1.info as InventoryItemInfo;
+         var info:InventoryItemInfo = source.info as InventoryItemInfo;
          var _loc6_:int = 0;
          var _loc5_:* = _items;
-         for each(_loc2_ in _items)
+         for each(ds in _items)
          {
-            if(_loc2_.info == _loc4_)
+            if(ds.info == info)
             {
-               _loc2_.info = null;
-               param1.locked = false;
+               ds.info = null;
+               source.locked = false;
                return;
             }
          }
          var _loc8_:int = 0;
          var _loc7_:* = _items;
-         for each(_loc2_ in _items)
+         for each(ds in _items)
          {
-            if(_loc2_)
+            if(ds)
             {
-               if(_loc2_ is StoneCell)
+               if(ds is StoneCell)
                {
-                  if(_loc2_.info == null)
+                  if(ds.info == null)
                   {
-                     if((_loc2_ as StoneCell).types.indexOf(_loc4_.Property1) > -1 && _loc4_.CategoryID == 11)
+                     if((ds as StoneCell).types.indexOf(info.Property1) > -1 && info.CategoryID == 11)
                      {
-                        SocketManager.Instance.out.sendMoveGoods(_loc4_.BagType,_loc4_.Place,12,_loc2_.index,1);
+                        SocketManager.Instance.out.sendMoveGoods(info.BagType,info.Place,12,ds.index,1);
                         return;
                      }
                   }
                }
-               else if(_loc2_ is EmbedItemCell)
+               else if(ds is EmbedItemCell)
                {
-                  _loc3_ = 1;
-                  while(_loc3_ < 7)
+                  for(i = 1; i < 7; )
                   {
-                     if(_loc4_.CategoryID == 1 || _loc4_.CategoryID == 5 || _loc4_.CategoryID == 7)
+                     if(info.CategoryID == 1 || info.CategoryID == 5 || info.CategoryID == 7)
                      {
                         __itemChange(null);
-                        SocketManager.Instance.out.sendMoveGoods(_loc4_.BagType,_loc4_.Place,12,_loc2_.index,1);
+                        SocketManager.Instance.out.sendMoveGoods(info.BagType,info.Place,12,ds.index,1);
                         return;
                      }
-                     _loc3_++;
+                     i++;
                   }
                   continue;
                }
@@ -497,15 +491,15 @@ package store.view.embed
          }
       }
       
-      private function __embed(param1:EmbedEvent) : void
+      private function __embed(evt:EmbedEvent) : void
       {
-         var _loc2_:* = null;
-         param1.stopImmediatePropagation();
-         _currentHolePlace = param1.CellID;
+         var alert:* = null;
+         evt.stopImmediatePropagation();
+         _currentHolePlace = evt.CellID;
          if(!_embedItemCell.itemInfo.IsBinds && _stoneCells[_currentHolePlace - 1].itemInfo.IsBinds)
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("store.StoreIIComposeBG.use"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
-            _loc2_.addEventListener("response",_responseIII);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("store.StoreIIComposeBG.use"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
+            alert.addEventListener("response",_responseIII);
          }
          else
          {
@@ -513,12 +507,12 @@ package store.view.embed
          }
       }
       
-      private function _responseIII(param1:FrameEvent) : void
+      private function _responseIII(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",_responseIII);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var frame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("response",_responseIII);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             sendEmbed();
          }
@@ -526,7 +520,7 @@ package store.view.embed
          {
             cancelEmbed1();
          }
-         ObjectUtils.disposeObject(param1.target);
+         ObjectUtils.disposeObject(evt.target);
       }
       
       private function cancelEmbed1() : void
@@ -539,17 +533,17 @@ package store.view.embed
          if(_embedItemCell.itemInfo["Hole" + _currentHolePlace] != 0)
          {
          }
-         var _loc1_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("store.Embed.EmbedAlertFrame.EmbedTipText"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,1);
-         _loc1_.addEventListener("response",_responseII);
+         var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("store.Embed.EmbedAlertFrame.EmbedTipText"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,1);
+         alert.addEventListener("response",_responseII);
       }
       
-      private function _responseII(param1:FrameEvent) : void
+      private function _responseII(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",_responseII);
-         ObjectUtils.disposeObject(param1.currentTarget);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var frame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("response",_responseII);
+         ObjectUtils.disposeObject(evt.currentTarget);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             sendEmbed();
          }
@@ -559,23 +553,23 @@ package store.view.embed
          }
       }
       
-      private function __EmbedBackout(param1:EmbedBackoutEvent) : void
+      private function __EmbedBackout(evt:EmbedBackoutEvent) : void
       {
-         _currentHolePlace = param1.CellID;
-         _templateID = param1.TemplateID;
-         __EmbedBackoutFrame(param1);
+         _currentHolePlace = evt.CellID;
+         _templateID = evt.TemplateID;
+         __EmbedBackoutFrame(evt);
       }
       
-      private function __EmbedBackoutFrame(param1:Event) : void
+      private function __EmbedBackoutFrame(evt:Event) : void
       {
          SoundManager.instance.play("008");
-         param1.stopImmediatePropagation();
-         if(_embedStoneCell && param1.type == "click")
+         evt.stopImmediatePropagation();
+         if(_embedStoneCell && evt.type == "click")
          {
-            _embedStoneCell.closeTip(param1 as MouseEvent);
+            _embedStoneCell.closeTip(evt as MouseEvent);
          }
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("store.Embed.EmbedAlertFrame.TipText",500),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,1);
-         _loc2_.addEventListener("response",_response);
+         var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("store.Embed.EmbedAlertFrame.TipText",500),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,1);
+         alert.addEventListener("response",_response);
          if(_embedBackoutMouseIcon)
          {
             ObjectUtils.disposeObject(_embedBackoutMouseIcon);
@@ -583,13 +577,13 @@ package store.view.embed
          }
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",_response);
-         ObjectUtils.disposeObject(param1.target);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var frame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("response",_response);
+         ObjectUtils.disposeObject(evt.target);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             sendEmbedBackout();
          }
@@ -600,16 +594,16 @@ package store.view.embed
          }
       }
       
-      private function __EmbedBackoutDownItemOver(param1:EmbedBackoutEvent) : void
+      private function __EmbedBackoutDownItemOver(evt:EmbedBackoutEvent) : void
       {
-         param1.stopImmediatePropagation();
-         _currentHolePlace = param1.CellID;
-         _templateID = param1.TemplateID;
+         evt.stopImmediatePropagation();
+         _currentHolePlace = evt.CellID;
+         _templateID = evt.TemplateID;
          if(!_embedBackoutBtn.isAction && !contains(_embedBackoutDownItem))
          {
-            _embedStoneCell = param1.target as EmbedStoneCell;
-            _embedBackoutDownItem.x = param1.target.x;
-            _embedBackoutDownItem.y = param1.target.y + param1.target.height + 8;
+            _embedStoneCell = evt.target as EmbedStoneCell;
+            _embedBackoutDownItem.x = evt.target.x;
+            _embedBackoutDownItem.y = evt.target.y + evt.target.height + 8;
             addChild(_embedBackoutDownItem);
             _embedBackoutDownItem.addEventListener("click",__EmbedBackoutFrame);
             _embedBackoutDownItem.addEventListener("mouseOver",__EmbedShowTip);
@@ -617,15 +611,15 @@ package store.view.embed
          }
       }
       
-      private function __EmbedShowTip(param1:MouseEvent) : void
+      private function __EmbedShowTip(evt:MouseEvent) : void
       {
          if(_embedStoneCell)
          {
-            _embedStoneCell.showTip(param1);
+            _embedStoneCell.showTip(evt);
          }
       }
       
-      private function __EmbedBackoutDownItemDown(param1:EmbedBackoutEvent) : void
+      private function __EmbedBackoutDownItemDown(evt:EmbedBackoutEvent) : void
       {
          if(_embedBackoutMouseIcon)
          {
@@ -633,22 +627,22 @@ package store.view.embed
          }
       }
       
-      private function __EmbedBackoutDownItemOut(param1:EmbedBackoutEvent) : void
+      private function __EmbedBackoutDownItemOut(evt:EmbedBackoutEvent) : void
       {
          if(_embedBackoutDownItem && (mouseY >= _embedBackoutDownItem.y && mouseY <= _embedBackoutDownItem.y + _embedBackoutDownItem.height && (mouseX >= _embedBackoutDownItem.x && mouseX <= _embedBackoutDownItem.x + _embedBackoutDownItem.width)))
          {
             return;
          }
-         __EmbedBackoutDownItemOutGo(param1);
+         __EmbedBackoutDownItemOutGo(evt);
       }
       
-      private function __EmbedBackoutDownItemOutGo(param1:Event) : void
+      private function __EmbedBackoutDownItemOutGo(evt:Event) : void
       {
          if(_embedBackoutBtn != null && !_embedBackoutBtn.isAction && _embedBackoutDownItem && contains(_embedBackoutDownItem))
          {
-            if(_embedStoneCell && param1 != null && param1.type == "mouseOut")
+            if(_embedStoneCell && evt != null && evt.type == "mouseOut")
             {
-               _embedStoneCell.closeTip(param1 as MouseEvent);
+               _embedStoneCell.closeTip(evt as MouseEvent);
             }
             _embedBackoutDownItem.removeEventListener("mouseOver",__EmbedShowTip);
             _embedBackoutDownItem.removeEventListener("click",__EmbedBackoutFrame);
@@ -657,7 +651,7 @@ package store.view.embed
          }
       }
       
-      public function refreshData(param1:Dictionary) : void
+      public function refreshData(items:Dictionary) : void
       {
          _stoneCells[5 - 1].close();
          _stoneCells[6 - 1].close();
@@ -672,21 +666,21 @@ package store.view.embed
       
       public function sendEmbed() : void
       {
-         var _loc1_:* = null;
+         var alert:* = null;
          if(PlayerManager.Instance.Self.Gold < 2000)
          {
-            _loc1_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.title"),LanguageMgr.GetTranslation("tank.view.GoldInadequate"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
-            _loc1_.moveEnable = false;
-            _loc1_.addEventListener("response",_responseV);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.title"),LanguageMgr.GetTranslation("tank.view.GoldInadequate"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
+            alert.moveEnable = false;
+            alert.addEventListener("response",_responseV);
             return;
          }
       }
       
-      private function _responseV(param1:FrameEvent) : void
+      private function _responseV(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",_responseV);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         (evt.currentTarget as BaseAlerFrame).removeEventListener("response",_responseV);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             okFastPurchaseGold();
          }
@@ -694,7 +688,7 @@ package store.view.embed
          {
             cancelFastPurchaseGold();
          }
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(evt.currentTarget);
       }
       
       private function okFastPurchaseGold() : void
@@ -714,26 +708,26 @@ package store.view.embed
          updateHoles();
       }
       
-      private function removeFromStageHandler(param1:Event) : void
+      private function removeFromStageHandler(event:Event) : void
       {
          BagStore.instance.reduceTipPanelNumber();
       }
       
-      private function __shortCutBuyHandler(param1:ShortcutBuyEvent) : void
+      private function __shortCutBuyHandler(evt:ShortcutBuyEvent) : void
       {
-         param1.stopImmediatePropagation();
+         evt.stopImmediatePropagation();
          __embed2();
       }
       
-      private function __shortCutBuyMoneyOkHandler(param1:ShortcutBuyEvent) : void
+      private function __shortCutBuyMoneyOkHandler(evt:ShortcutBuyEvent) : void
       {
-         param1.stopImmediatePropagation();
+         evt.stopImmediatePropagation();
          updateHoles();
       }
       
-      private function __shortCutBuyMoneyCancelHandler(param1:ShortcutBuyEvent) : void
+      private function __shortCutBuyMoneyCancelHandler(evt:ShortcutBuyEvent) : void
       {
-         param1.stopImmediatePropagation();
+         evt.stopImmediatePropagation();
          updateHoles();
       }
       
@@ -744,27 +738,27 @@ package store.view.embed
       
       public function sendEmbedBackout() : void
       {
-         var _loc1_:* = null;
+         var alert:* = null;
          if(PlayerManager.Instance.Self.Money < 500)
          {
-            _loc1_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.comon.lack"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"));
-            _loc1_.addEventListener("response",_responseIV);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.comon.lack"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"));
+            alert.addEventListener("response",_responseIV);
             return;
          }
          __EmbedBackoutDownItemOutGo(null);
          SocketManager.Instance.out.sendItemEmbedBackout(_currentHolePlace,_templateID);
       }
       
-      private function _responseIV(param1:FrameEvent) : void
+      private function _responseIV(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",_responseIV);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         (evt.currentTarget as BaseAlerFrame).removeEventListener("response",_responseIV);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             LeavePageManager.leaveToFillPath();
          }
          cancelEmbed1();
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(evt.currentTarget);
       }
       
       private function cancelEmbedBackout() : void
@@ -773,16 +767,15 @@ package store.view.embed
       
       private function removeEvents() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 1;
-         while(_loc1_ < 7)
+         var i:int = 0;
+         for(i = 1; i < 7; )
          {
-            _stoneCells[_loc1_ - 1].removeEventListener("embed",__embed);
-            _stoneCells[_loc1_ - 1].removeEventListener("embedBackout",__EmbedBackout);
-            _stoneCells[_loc1_ - 1].removeEventListener("embedBackoutDownItemOver",__EmbedBackoutDownItemOver);
-            _stoneCells[_loc1_ - 1].removeEventListener("embedBackoutDownItemOut",__EmbedBackoutDownItemOut);
-            _stoneCells[_loc1_ - 1].removeEventListener("embedBackoutDownItemDown",__EmbedBackoutDownItemDown);
-            _loc1_++;
+            _stoneCells[i - 1].removeEventListener("embed",__embed);
+            _stoneCells[i - 1].removeEventListener("embedBackout",__EmbedBackout);
+            _stoneCells[i - 1].removeEventListener("embedBackoutDownItemOver",__EmbedBackoutDownItemOver);
+            _stoneCells[i - 1].removeEventListener("embedBackoutDownItemOut",__EmbedBackoutDownItemOut);
+            _stoneCells[i - 1].removeEventListener("embedBackoutDownItemDown",__EmbedBackoutDownItemDown);
+            i++;
          }
          _embedItemCell.removeEventListener("change",__itemInfoChange);
          _embedItemCell.removeEventListener("itemChange",__itemChange);
@@ -805,36 +798,35 @@ package store.view.embed
          _embedItemCell.startShine();
       }
       
-      public function stoneStartShine(param1:int, param2:InventoryItemInfo) : void
+      public function stoneStartShine(type:int, target:InventoryItemInfo) : void
       {
-         var _loc7_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc5_:* = null;
+         var i:int = 0;
+         var holeState:int = 0;
+         var str:* = null;
+         var tmpArr:* = null;
          if(PlayerManager.Instance.Self.StoreBag.items[0] == null)
          {
             return;
          }
-         var _loc8_:InventoryItemInfo = _embedItemCell.itemInfo;
-         var _loc6_:Array = _loc8_.Hole.split("|");
-         _loc7_ = 0;
-         while(_loc7_ < _stoneCells.length)
+         var info:InventoryItemInfo = _embedItemCell.itemInfo;
+         var strHoleList:Array = info.Hole.split("|");
+         for(i = 0; i < _stoneCells.length; )
          {
-            _loc4_ = _loc8_["Hole" + (_loc7_ + 1)];
-            if(_loc7_ < 4)
+            holeState = info["Hole" + (i + 1)];
+            if(i < 4)
             {
-               _loc3_ = String(_loc6_[_loc7_]);
-               _loc5_ = _loc3_.split(",");
-               if(_loc8_["Hole" + (_loc7_ + 1)] >= 0 && (_stoneCells[_loc7_] as EmbedStoneCell).StoneType == param1)
+               str = String(strHoleList[i]);
+               tmpArr = str.split(",");
+               if(info["Hole" + (i + 1)] >= 0 && (_stoneCells[i] as EmbedStoneCell).StoneType == type)
                {
-                  _stoneCells[_loc7_].startShine();
+                  _stoneCells[i].startShine();
                }
             }
-            else if((_stoneCells[_loc7_] as EmbedStoneCell).StoneType == param1 && _loc8_["Hole" + (_loc7_ + 1) + "Level"] > 0)
+            else if((_stoneCells[i] as EmbedStoneCell).StoneType == type && info["Hole" + (i + 1) + "Level"] > 0)
             {
-               _stoneCells[_loc7_].startShine();
+               _stoneCells[i].startShine();
             }
-            _loc7_++;
+            i++;
          }
       }
       
@@ -843,9 +835,9 @@ package store.view.embed
          _embedItemCell.stopShine();
          var _loc3_:int = 0;
          var _loc2_:* = _stoneCells;
-         for each(var _loc1_ in _stoneCells)
+         for each(var item in _stoneCells)
          {
-            _loc1_.stopShine();
+            item.stopShine();
          }
       }
       
@@ -857,19 +849,18 @@ package store.view.embed
       
       public function hide() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          this.visible = false;
-         _loc1_ = 1;
-         while(_loc1_ < 7)
+         for(i = 1; i < 7; )
          {
-            _stoneCells[_loc1_ - 1].close();
-            _loc1_++;
+            _stoneCells[i - 1].close();
+            i++;
          }
       }
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          removeEvents();
          _items = null;
          _embedStoneCell = null;
@@ -936,12 +927,11 @@ package store.view.embed
             ObjectUtils.disposeObject(_embedBackoutMouseIcon);
          }
          _embedBackoutMouseIcon = null;
-         _loc1_ = 1;
-         while(_loc1_ < 7)
+         for(i = 1; i < 7; )
          {
-            ObjectUtils.disposeObject(_stoneCells[_loc1_ - 1]);
-            _stoneCells[_loc1_ - 1] = null;
-            _loc1_++;
+            ObjectUtils.disposeObject(_stoneCells[i - 1]);
+            _stoneCells[i - 1] = null;
+            i++;
          }
          _stoneCells = null;
          _pointArray = null;

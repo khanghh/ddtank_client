@@ -20,21 +20,21 @@ package starling.display.graphics
       
       private var strokePoints:Vector.<Number>;
       
-      public function RoundedRectangle(param1:Number = 100, param2:Number = 100, param3:Number = 10, param4:Number = 10, param5:Number = 10, param6:Number = 10)
+      public function RoundedRectangle(width:Number = 100, height:Number = 100, topLeftRadius:Number = 10, topRightRadius:Number = 10, bottomLeftRadius:Number = 10, bottomRightRadius:Number = 10)
       {
          super();
-         this.width = param1;
-         this.height = param2;
-         this.topLeftRadius = param3;
-         this.topRightRadius = param4;
-         this.bottomLeftRadius = param5;
-         this.bottomRightRadius = param6;
+         this.width = width;
+         this.height = height;
+         this.topLeftRadius = topLeftRadius;
+         this.topRightRadius = topRightRadius;
+         this.bottomLeftRadius = bottomLeftRadius;
+         this.bottomRightRadius = bottomRightRadius;
       }
       
-      override public function set width(param1:Number) : void
+      override public function set width(value:Number) : void
       {
-         param1 = param1 < 0?0:Number(param1);
-         _width = param1;
+         value = value < 0?0:Number(value);
+         _width = value;
          maxBounds.x = _width;
          setGeometryInvalid();
       }
@@ -44,10 +44,10 @@ package starling.display.graphics
          return _height;
       }
       
-      override public function set height(param1:Number) : void
+      override public function set height(value:Number) : void
       {
-         param1 = param1 < 0?0:Number(param1);
-         _height = param1;
+         value = value < 0?0:Number(value);
+         _height = value;
          maxBounds.y = _height;
          setGeometryInvalid();
       }
@@ -57,13 +57,13 @@ package starling.display.graphics
          return _topLeftRadius;
       }
       
-      public function set cornerRadius(param1:Number) : void
+      public function set cornerRadius(value:Number) : void
       {
-         param1 = param1 < 0?0:Number(param1);
-         _bottomRightRadius = param1;
-         _bottomLeftRadius = param1;
-         _topRightRadius = param1;
-         _topLeftRadius = param1;
+         value = value < 0?0:Number(value);
+         _bottomRightRadius = value;
+         _bottomLeftRadius = value;
+         _topRightRadius = value;
+         _topLeftRadius = value;
          setGeometryInvalid();
       }
       
@@ -72,10 +72,10 @@ package starling.display.graphics
          return _topLeftRadius;
       }
       
-      public function set topLeftRadius(param1:Number) : void
+      public function set topLeftRadius(value:Number) : void
       {
-         param1 = param1 < 0?0:Number(param1);
-         _topLeftRadius = param1;
+         value = value < 0?0:Number(value);
+         _topLeftRadius = value;
          setGeometryInvalid();
       }
       
@@ -84,10 +84,10 @@ package starling.display.graphics
          return _topRightRadius;
       }
       
-      public function set topRightRadius(param1:Number) : void
+      public function set topRightRadius(value:Number) : void
       {
-         param1 = param1 < 0?0:Number(param1);
-         _topRightRadius = param1;
+         value = value < 0?0:Number(value);
+         _topRightRadius = value;
          setGeometryInvalid();
       }
       
@@ -96,10 +96,10 @@ package starling.display.graphics
          return _bottomLeftRadius;
       }
       
-      public function set bottomLeftRadius(param1:Number) : void
+      public function set bottomLeftRadius(value:Number) : void
       {
-         param1 = param1 < 0?0:Number(param1);
-         _bottomLeftRadius = param1;
+         value = value < 0?0:Number(value);
+         _bottomLeftRadius = value;
          setGeometryInvalid();
       }
       
@@ -108,10 +108,10 @@ package starling.display.graphics
          return _bottomRightRadius;
       }
       
-      public function set bottomRightRadius(param1:Number) : void
+      public function set bottomRightRadius(value:Number) : void
       {
-         param1 = param1 < 0?0:Number(param1);
-         _bottomRightRadius = param1;
+         value = value < 0?0:Number(value);
+         _bottomRightRadius = value;
          setGeometryInvalid();
       }
       
@@ -123,168 +123,164 @@ package starling.display.graphics
       
       override protected function buildGeometry() : void
       {
-         var _loc9_:int = 0;
-         var _loc6_:int = 0;
-         var _loc1_:Number = NaN;
-         var _loc10_:Number = NaN;
-         var _loc2_:Number = NaN;
-         var _loc14_:Number = NaN;
-         var _loc13_:Number = NaN;
+         var numSides:int = 0;
+         var i:int = 0;
+         var radians:Number = NaN;
+         var sin:Number = NaN;
+         var cos:Number = NaN;
+         var x:Number = NaN;
+         var y:Number = NaN;
          strokePoints = new Vector.<Number>();
          vertices = new Vector.<Number>();
          indices = new Vector.<uint>();
-         var _loc12_:Number = _width * 0.5;
-         var _loc11_:Number = _height * 0.5;
-         var _loc3_:Number = Math.min(_loc12_,_loc11_,_topLeftRadius);
-         var _loc7_:Number = Math.min(_loc12_,_loc11_,_topRightRadius);
-         var _loc8_:Number = Math.min(_loc12_,_loc11_,_bottomLeftRadius);
-         var _loc4_:Number = Math.min(_loc12_,_loc11_,_bottomRightRadius);
-         vertices.push(_loc3_,0,0,1,1,1,1,_loc3_ / _width,0);
-         vertices.push(_loc3_,_loc3_,0,1,1,1,1,_loc3_ / _width,_loc3_ / _height);
-         vertices.push(0,_loc3_,0,1,1,1,1,0,_loc3_ / _height);
-         vertices.push(_width - _loc7_,0,0,1,1,1,1,(_width - _loc7_) / _width,0);
-         vertices.push(_width - _loc7_,_loc7_,0,1,1,1,1,(_width - _loc7_) / _width,_loc7_ / _height);
-         vertices.push(_width,_loc7_,0,1,1,1,1,1,_loc7_ / _height);
-         vertices.push(_loc8_,_height,0,1,1,1,1,_loc8_ / _width,1);
-         vertices.push(_loc8_,_height - _loc8_,0,1,1,1,1,_loc8_ / _width,(_height - _loc8_) / _height);
-         vertices.push(0,_height - _loc8_,0,1,1,1,1,0,(_height - _loc8_) / _height);
-         vertices.push(_width - _loc4_,_height,0,1,1,1,1,(_width - _loc4_) / _width,1);
-         vertices.push(_width - _loc4_,_height - _loc4_,0,1,1,1,1,(_width - _loc4_) / _width,(_height - _loc4_) / _height);
-         vertices.push(_width,_height - _loc4_,0,1,1,1,1,1,(_height - _loc4_) / _height);
-         var _loc5_:int = 12;
+         var halfWidth:Number = _width * 0.5;
+         var halfHeight:Number = _height * 0.5;
+         var tlr:Number = Math.min(halfWidth,halfHeight,_topLeftRadius);
+         var trr:Number = Math.min(halfWidth,halfHeight,_topRightRadius);
+         var blr:Number = Math.min(halfWidth,halfHeight,_bottomLeftRadius);
+         var brr:Number = Math.min(halfWidth,halfHeight,_bottomRightRadius);
+         vertices.push(tlr,0,0,1,1,1,1,tlr / _width,0);
+         vertices.push(tlr,tlr,0,1,1,1,1,tlr / _width,tlr / _height);
+         vertices.push(0,tlr,0,1,1,1,1,0,tlr / _height);
+         vertices.push(_width - trr,0,0,1,1,1,1,(_width - trr) / _width,0);
+         vertices.push(_width - trr,trr,0,1,1,1,1,(_width - trr) / _width,trr / _height);
+         vertices.push(_width,trr,0,1,1,1,1,1,trr / _height);
+         vertices.push(blr,_height,0,1,1,1,1,blr / _width,1);
+         vertices.push(blr,_height - blr,0,1,1,1,1,blr / _width,(_height - blr) / _height);
+         vertices.push(0,_height - blr,0,1,1,1,1,0,(_height - blr) / _height);
+         vertices.push(_width - brr,_height,0,1,1,1,1,(_width - brr) / _width,1);
+         vertices.push(_width - brr,_height - brr,0,1,1,1,1,(_width - brr) / _width,(_height - brr) / _height);
+         vertices.push(_width,_height - brr,0,1,1,1,1,1,(_height - brr) / _height);
+         var numVertices:int = 12;
          indices.push(0,3,1,1,3,4,2,1,8,8,1,7,7,1,4,7,4,10,10,4,5,10,5,11,6,7,10,6,10,9);
-         strokePoints.push(0,_loc3_);
-         if(_loc3_ > 0)
+         strokePoints.push(0,tlr);
+         if(tlr > 0)
          {
-            _loc9_ = _loc3_ * 0.25;
-            _loc9_ = _loc9_ < 1?1:_loc9_;
-            _loc6_ = 0;
-            while(_loc6_ < _loc9_)
+            numSides = tlr * 0.25;
+            numSides = numSides < 1?1:numSides;
+            for(i = 0; i < numSides; )
             {
-               _loc1_ = (_loc6_ + 1) / (_loc9_ + 1) * 3.14159265358979 * 0.5;
-               _loc1_ = _loc1_ + 3.14159265358979 * 1.5;
-               _loc10_ = Math.sin(_loc1_);
-               _loc2_ = Math.cos(_loc1_);
-               _loc14_ = _loc3_ + _loc10_ * _loc3_;
-               _loc13_ = _loc3_ - _loc2_ * _loc3_;
-               vertices.push(_loc14_,_loc13_,0,1,1,1,1,_loc14_ / _width,_loc13_ / _height);
-               strokePoints.push(_loc14_,_loc13_);
-               _loc5_++;
-               if(_loc6_ == 0)
+               radians = (i + 1) / (numSides + 1) * 3.14159265358979 * 0.5;
+               radians = radians + 3.14159265358979 * 1.5;
+               sin = Math.sin(radians);
+               cos = Math.cos(radians);
+               x = tlr + sin * tlr;
+               y = tlr - cos * tlr;
+               vertices.push(x,y,0,1,1,1,1,x / _width,y / _height);
+               strokePoints.push(x,y);
+               numVertices++;
+               if(i == 0)
                {
-                  indices.push(1,2,_loc5_ - 1);
+                  indices.push(1,2,numVertices - 1);
                }
                else
                {
-                  indices.push(1,_loc5_ - 2,_loc5_ - 1);
+                  indices.push(1,numVertices - 2,numVertices - 1);
                }
-               if(_loc6_ == _loc9_ - 1)
+               if(i == numSides - 1)
                {
-                  indices.push(1,_loc5_ - 1,0);
+                  indices.push(1,numVertices - 1,0);
                }
-               _loc6_++;
+               i++;
             }
          }
-         strokePoints.push(_loc3_,0);
-         strokePoints.push(_width - _loc7_,0);
-         if(_loc7_ > 0)
+         strokePoints.push(tlr,0);
+         strokePoints.push(_width - trr,0);
+         if(trr > 0)
          {
-            _loc9_ = _loc7_ * 0.25;
-            _loc9_ = _loc9_ < 1?1:_loc9_;
-            _loc6_ = 0;
-            while(_loc6_ < _loc9_)
+            numSides = trr * 0.25;
+            numSides = numSides < 1?1:numSides;
+            for(i = 0; i < numSides; )
             {
-               _loc1_ = (_loc6_ + 1) / (_loc9_ + 1) * 3.14159265358979 * 0.5;
-               _loc10_ = Math.sin(_loc1_);
-               _loc2_ = Math.cos(_loc1_);
-               _loc14_ = _width - _loc7_ + _loc10_ * _loc7_;
-               _loc13_ = _loc7_ - _loc2_ * _loc7_;
-               vertices.push(_loc14_,_loc13_,0,1,1,1,1,_loc14_ / _width,_loc13_ / _height);
-               strokePoints.push(_loc14_,_loc13_);
-               _loc5_++;
-               if(_loc6_ == 0)
+               radians = (i + 1) / (numSides + 1) * 3.14159265358979 * 0.5;
+               sin = Math.sin(radians);
+               cos = Math.cos(radians);
+               x = _width - trr + sin * trr;
+               y = trr - cos * trr;
+               vertices.push(x,y,0,1,1,1,1,x / _width,y / _height);
+               strokePoints.push(x,y);
+               numVertices++;
+               if(i == 0)
                {
-                  indices.push(4,3,_loc5_ - 1);
+                  indices.push(4,3,numVertices - 1);
                }
                else
                {
-                  indices.push(4,_loc5_ - 2,_loc5_ - 1);
+                  indices.push(4,numVertices - 2,numVertices - 1);
                }
-               if(_loc6_ == _loc9_ - 1)
+               if(i == numSides - 1)
                {
-                  indices.push(4,_loc5_ - 1,5);
+                  indices.push(4,numVertices - 1,5);
                }
-               _loc6_++;
+               i++;
             }
          }
-         strokePoints.push(_width,_loc7_);
-         strokePoints.push(_width,_height - _loc4_);
-         if(_loc4_ > 0)
+         strokePoints.push(_width,trr);
+         strokePoints.push(_width,_height - brr);
+         if(brr > 0)
          {
-            _loc9_ = _loc4_ * 0.25;
-            _loc9_ = _loc9_ < 1?1:_loc9_;
-            _loc6_ = 0;
-            while(_loc6_ < _loc9_)
+            numSides = brr * 0.25;
+            numSides = numSides < 1?1:numSides;
+            for(i = 0; i < numSides; )
             {
-               _loc1_ = (_loc6_ + 1) / (_loc9_ + 1) * 3.14159265358979 * 0.5;
-               _loc1_ = _loc1_ + 3.14159265358979 * 0.5;
-               _loc10_ = Math.sin(_loc1_);
-               _loc2_ = Math.cos(_loc1_);
-               _loc14_ = _width - _loc4_ + _loc10_ * _loc4_;
-               _loc13_ = _height - _loc4_ - _loc2_ * _loc4_;
-               vertices.push(_loc14_,_loc13_,0,1,1,1,1,_loc14_ / _width,_loc13_ / _height);
-               strokePoints.push(_loc14_,_loc13_);
-               _loc5_++;
-               if(_loc6_ == 0)
+               radians = (i + 1) / (numSides + 1) * 3.14159265358979 * 0.5;
+               radians = radians + 3.14159265358979 * 0.5;
+               sin = Math.sin(radians);
+               cos = Math.cos(radians);
+               x = _width - brr + sin * brr;
+               y = _height - brr - cos * brr;
+               vertices.push(x,y,0,1,1,1,1,x / _width,y / _height);
+               strokePoints.push(x,y);
+               numVertices++;
+               if(i == 0)
                {
-                  indices.push(10,11,_loc5_ - 1);
+                  indices.push(10,11,numVertices - 1);
                }
                else
                {
-                  indices.push(10,_loc5_ - 2,_loc5_ - 1);
+                  indices.push(10,numVertices - 2,numVertices - 1);
                }
-               if(_loc6_ == _loc9_ - 1)
+               if(i == numSides - 1)
                {
-                  indices.push(10,_loc5_ - 1,9);
+                  indices.push(10,numVertices - 1,9);
                }
-               _loc6_++;
+               i++;
             }
          }
-         strokePoints.push(_width - _loc4_,_height);
-         strokePoints.push(_loc8_,_height);
-         if(_loc8_ > 0)
+         strokePoints.push(_width - brr,_height);
+         strokePoints.push(blr,_height);
+         if(blr > 0)
          {
-            _loc9_ = _loc8_ * 0.25;
-            _loc9_ = _loc9_ < 1?1:_loc9_;
-            _loc6_ = 0;
-            while(_loc6_ < _loc9_)
+            numSides = blr * 0.25;
+            numSides = numSides < 1?1:numSides;
+            for(i = 0; i < numSides; )
             {
-               _loc1_ = (_loc6_ + 1) / (_loc9_ + 1) * 3.14159265358979 * 0.5;
-               _loc1_ = _loc1_ + 3.14159265358979;
-               _loc10_ = Math.sin(_loc1_);
-               _loc2_ = Math.cos(_loc1_);
-               _loc14_ = _loc8_ + _loc10_ * _loc8_;
-               _loc13_ = _height - _loc8_ - _loc2_ * _loc8_;
-               vertices.push(_loc14_,_loc13_,0,1,1,1,1,_loc14_ / _width,_loc13_ / _height);
-               strokePoints.push(_loc14_,_loc13_);
-               _loc5_++;
-               if(_loc6_ == 0)
+               radians = (i + 1) / (numSides + 1) * 3.14159265358979 * 0.5;
+               radians = radians + 3.14159265358979;
+               sin = Math.sin(radians);
+               cos = Math.cos(radians);
+               x = blr + sin * blr;
+               y = _height - blr - cos * blr;
+               vertices.push(x,y,0,1,1,1,1,x / _width,y / _height);
+               strokePoints.push(x,y);
+               numVertices++;
+               if(i == 0)
                {
-                  indices.push(7,6,_loc5_ - 1);
+                  indices.push(7,6,numVertices - 1);
                }
                else
                {
-                  indices.push(7,_loc5_ - 2,_loc5_ - 1);
+                  indices.push(7,numVertices - 2,numVertices - 1);
                }
-               if(_loc6_ == _loc9_ - 1)
+               if(i == numSides - 1)
                {
-                  indices.push(7,_loc5_ - 1,8);
+                  indices.push(7,numVertices - 1,8);
                }
-               _loc6_++;
+               i++;
             }
          }
-         strokePoints.push(0,_height - _loc8_);
-         strokePoints.push(0,_loc3_);
+         strokePoints.push(0,_height - blr);
+         strokePoints.push(0,tlr);
       }
    }
 }

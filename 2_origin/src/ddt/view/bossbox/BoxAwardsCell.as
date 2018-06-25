@@ -36,9 +36,9 @@ package ddt.view.bossbox
       protected function initII() : void
       {
          di = ComponentFactory.Instance.creat("Vip.GetAwardsItemBG");
-         var _loc1_:* = ComponentFactory.Instance.creat("Vip.GetAwardsItemCellBG");
+         var di2:* = ComponentFactory.Instance.creat("Vip.GetAwardsItemCellBG");
          addChild(di);
-         addChild(_loc1_);
+         addChild(di2);
          _itemName = ComponentFactory.Instance.creat("roulette.GoodsCellName");
          _itemName.mouseEnabled = false;
          _itemName.multiline = true;
@@ -48,7 +48,7 @@ package ddt.view.bossbox
          addChild(count_txt);
       }
       
-      public function setListCellStatus(param1:List, param2:Boolean, param3:int) : void
+      public function setListCellStatus(list:List, isSelected:Boolean, index:int) : void
       {
       }
       
@@ -56,7 +56,7 @@ package ddt.view.bossbox
       {
       }
       
-      public function setCellValue(param1:*) : void
+      public function setCellValue(value:*) : void
       {
       }
       
@@ -65,26 +65,26 @@ package ddt.view.bossbox
          addEventListener("change",__setItemName);
       }
       
-      public function set count(param1:int) : void
+      public function set count(n:int) : void
       {
          count_txt.parent.removeChild(count_txt);
          addChild(count_txt);
-         if(param1 <= 1)
+         if(n <= 1)
          {
             count_txt.text = "";
             return;
          }
-         count_txt.text = String(param1);
+         count_txt.text = String(n);
       }
       
-      public function __setItemName(param1:Event) : void
+      public function __setItemName(e:Event) : void
       {
          itemName = _info.Name;
       }
       
-      public function set itemName(param1:String) : void
+      public function set itemName(name:String) : void
       {
-         _itemName.text = param1;
+         _itemName.text = name;
          _itemName.y = (44 - _itemName.textHeight) / 2 + 5;
       }
       

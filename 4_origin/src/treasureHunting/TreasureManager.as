@@ -65,9 +65,9 @@ package treasureHunting
          return _needShowLimted;
       }
       
-      public function set needShowLimted(param1:Boolean) : void
+      public function set needShowLimted(value:Boolean) : void
       {
-         _needShowLimted = param1;
+         _needShowLimted = value;
       }
       
       public function get bindMoneyReachLimted() : Boolean
@@ -83,9 +83,9 @@ package treasureHunting
          SocketManager.Instance.out.sendInitTreasueHunting();
       }
       
-      protected function __onShowTreasureIcon(param1:PkgEvent) : void
+      protected function __onShowTreasureIcon(event:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
+         var pkg:PackageIn = event.pkg;
       }
       
       private function showTreasureIcon() : void
@@ -96,7 +96,7 @@ package treasureHunting
          }
       }
       
-      public function initTreasureIcon(param1:HallStateView) : void
+      public function initTreasureIcon(hall:HallStateView) : void
       {
          if(isActivityOpen)
          {
@@ -113,7 +113,7 @@ package treasureHunting
          }
       }
       
-      protected function __onTreasureClick(param1:MouseEvent) : void
+      protected function __onTreasureClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          show();
@@ -134,18 +134,18 @@ package treasureHunting
          }
       }
       
-      private function __onInitTreasure(param1:PkgEvent) : void
+      private function __onInitTreasure(event:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:Boolean = _loc3_.readBoolean();
-         isActivityOpen = _loc3_.readBoolean();
+         var pkg:PackageIn = event.pkg;
+         var isShowTip:Boolean = pkg.readBoolean();
+         isActivityOpen = pkg.readBoolean();
          if(isActivityOpen)
          {
-            startDate = _loc3_.readDate();
-            endDate = _loc3_.readDate();
-            needMoney = _loc3_.readInt();
+            startDate = pkg.readDate();
+            endDate = pkg.readDate();
+            needMoney = pkg.readInt();
             showIcon();
-            if(_loc2_)
+            if(isShowTip)
             {
                ChatManager.Instance.sysChatAmaranth(LanguageMgr.GetTranslation("treasureHunting.start"));
             }
@@ -156,7 +156,7 @@ package treasureHunting
             {
                HallIconManager.instance.updateSwitchHandler("treasureHunting",false);
             }
-            if(_loc2_)
+            if(isShowTip)
             {
                ChatManager.Instance.sysChatAmaranth(LanguageMgr.GetTranslation("treasureHunting.end"));
             }
@@ -168,10 +168,10 @@ package treasureHunting
          HallIconManager.instance.updateSwitchHandler("treasureHunting",true);
       }
       
-      private function __getBindMoneyLimted(param1:PkgEvent) : void
+      private function __getBindMoneyLimted(e:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _bindMoneyReachLimted = _loc2_.readBoolean();
+         var pkg:PackageIn = e.pkg;
+         _bindMoneyReachLimted = pkg.readBoolean();
          _needShowLimted = true;
       }
       
@@ -180,7 +180,7 @@ package treasureHunting
          dispatchEvent(new Event("treasureshowframe"));
       }
       
-      private function onMaskClick(param1:MouseEvent) : void
+      private function onMaskClick(event:MouseEvent) : void
       {
          MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("treasureHunting.huntingNow"));
       }

@@ -21,21 +21,21 @@ package com.greensock.plugins
          this.round = true;
       }
       
-      override public function onInitTween(param1:Object, param2:*, param3:TweenLite) : Boolean
+      override public function onInitTween(target:Object, value:*, tween:TweenLite) : Boolean
       {
-         if(!(param1 is MovieClip) || isNaN(param2))
+         if(!(target is MovieClip) || isNaN(value))
          {
             return false;
          }
-         _target = param1 as MovieClip;
+         _target = target as MovieClip;
          this.frame = _target.currentFrame;
-         addTween(this,"frame",this.frame,param2,"frame");
+         addTween(this,"frame",this.frame,value,"frame");
          return true;
       }
       
-      override public function set changeFactor(param1:Number) : void
+      override public function set changeFactor(n:Number) : void
       {
-         updateTweens(param1);
+         updateTweens(n);
          _target.gotoAndStop(this.frame);
       }
    }

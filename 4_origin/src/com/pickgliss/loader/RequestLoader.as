@@ -6,9 +6,9 @@ package com.pickgliss.loader
    {
        
       
-      public function RequestLoader(param1:int, param2:String, param3:URLVariables = null, param4:String = "GET")
+      public function RequestLoader(id:int, url:String, args:URLVariables = null, requestMethod:String = "GET")
       {
-         super(param1,param2,param3,param4);
+         super(id,url,args,requestMethod);
       }
       
       override public function get type() : int

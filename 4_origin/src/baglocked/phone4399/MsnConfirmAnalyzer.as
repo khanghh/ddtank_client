@@ -16,20 +16,20 @@ package baglocked.phone4399
       
       private var _count:int;
       
-      public function MsnConfirmAnalyzer(param1:Function)
+      public function MsnConfirmAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc2_:XML = new XML(param1);
-         if(_loc2_.@type != undefined)
+         var xml:XML = new XML(data);
+         if(xml.@type != undefined)
          {
-            _type = _loc2_.@type;
-            _value = _loc2_.@value != "false";
-            _alertMessage = _loc2_.@message;
-            _count = _loc2_.@count;
+            _type = xml.@type;
+            _value = xml.@value != "false";
+            _alertMessage = xml.@message;
+            _count = xml.@count;
             onAnalyzeComplete();
          }
          else

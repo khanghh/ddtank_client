@@ -44,9 +44,9 @@ package ddt.data.auctionHouse
          super();
       }
       
-      public function set BeginDate(param1:String) : void
+      public function set BeginDate(value:String) : void
       {
-         _BeginDate = param1;
+         _BeginDate = value;
       }
       
       public function get BeginDate() : String
@@ -59,63 +59,63 @@ package ddt.data.auctionHouse
          return _beginDateObj == null?DateUtils.getDateByStr(BeginDate):_beginDateObj;
       }
       
-      public function set beginDateObj(param1:Date) : void
+      public function set beginDateObj(date:Date) : void
       {
-         _beginDateObj = param1;
+         _beginDateObj = date;
       }
       
       public function getTimeDescription() : String
       {
-         var _loc1_:String = "";
-         var _loc3_:Date = new Date();
-         _loc3_.setTime(beginDateObj.getTime());
-         _loc3_.hours = ValidDate + _loc3_.hours;
-         var _loc2_:int = Math.abs(TimeManager.Instance.TotalHoursToNow(_loc3_));
-         if(_loc2_ <= 1.5)
+         var result:String = "";
+         var offDate:Date = new Date();
+         offDate.setTime(beginDateObj.getTime());
+         offDate.hours = ValidDate + offDate.hours;
+         var diff:int = Math.abs(TimeManager.Instance.TotalHoursToNow(offDate));
+         if(diff <= 1.5)
          {
-            _loc1_ = LanguageMgr.GetTranslation("tank.data.auctionHouse.AuctionGoodsInfo.short");
+            result = LanguageMgr.GetTranslation("tank.data.auctionHouse.AuctionGoodsInfo.short");
          }
-         else if(_loc2_ <= 3)
+         else if(diff <= 3)
          {
-            _loc1_ = LanguageMgr.GetTranslation("tank.data.auctionHouse.AuctionGoodsInfo.middle");
+            result = LanguageMgr.GetTranslation("tank.data.auctionHouse.AuctionGoodsInfo.middle");
          }
-         else if(_loc2_ <= 13)
+         else if(diff <= 13)
          {
-            _loc1_ = LanguageMgr.GetTranslation("tank.data.auctionHouse.AuctionGoodsInfo.long");
+            result = LanguageMgr.GetTranslation("tank.data.auctionHouse.AuctionGoodsInfo.long");
          }
          else
          {
-            _loc1_ = LanguageMgr.GetTranslation("tank.data.auctionHouse.AuctionGoodsInfo.very");
+            result = LanguageMgr.GetTranslation("tank.data.auctionHouse.AuctionGoodsInfo.very");
          }
-         _loc3_ = null;
-         return _loc1_;
+         offDate = null;
+         return result;
       }
       
       public function getSithTimeDescription() : String
       {
-         var _loc1_:String = "";
-         var _loc3_:Date = new Date();
-         _loc3_.setTime(beginDateObj.getTime());
-         _loc3_.hours = ValidDate + _loc3_.hours;
-         var _loc2_:int = Math.abs(TimeManager.Instance.TotalHoursToNow(_loc3_));
-         if(_loc2_ <= 1.5)
+         var result:String = "";
+         var offDate:Date = new Date();
+         offDate.setTime(beginDateObj.getTime());
+         offDate.hours = ValidDate + offDate.hours;
+         var diff:int = Math.abs(TimeManager.Instance.TotalHoursToNow(offDate));
+         if(diff <= 1.5)
          {
-            _loc1_ = LanguageMgr.GetTranslation("tank.data.auctionHouse.AuctionGoodsInfo.tshort");
+            result = LanguageMgr.GetTranslation("tank.data.auctionHouse.AuctionGoodsInfo.tshort");
          }
-         else if(_loc2_ <= 3)
+         else if(diff <= 3)
          {
-            _loc1_ = LanguageMgr.GetTranslation("tank.data.auctionHouse.AuctionGoodsInfo.tmiddle");
+            result = LanguageMgr.GetTranslation("tank.data.auctionHouse.AuctionGoodsInfo.tmiddle");
          }
-         else if(_loc2_ <= 13)
+         else if(diff <= 13)
          {
-            _loc1_ = LanguageMgr.GetTranslation("tank.data.auctionHouse.AuctionGoodsInfo.tlong");
+            result = LanguageMgr.GetTranslation("tank.data.auctionHouse.AuctionGoodsInfo.tlong");
          }
          else
          {
-            _loc1_ = LanguageMgr.GetTranslation("tank.data.auctionHouse.AuctionGoodsInfo.tvery");
+            result = LanguageMgr.GetTranslation("tank.data.auctionHouse.AuctionGoodsInfo.tvery");
          }
-         _loc3_ = null;
-         return _loc1_;
+         offDate = null;
+         return result;
       }
    }
 }

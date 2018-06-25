@@ -65,10 +65,10 @@ package ddt.view.characterStarling
       
       private var _disposed:Boolean;
       
-      public function BaseCharacter3D(param1:PlayerInfo, param2:Boolean)
+      public function BaseCharacter3D(info:PlayerInfo, lifeUpdate:Boolean)
       {
-         _info = param1;
-         _lifeUpdate = param2;
+         _info = info;
+         _lifeUpdate = lifeUpdate;
          super();
          init();
          initEvent();
@@ -111,7 +111,7 @@ package ddt.view.characterStarling
          addEventListener("removedFromStage",__removeFromStage);
       }
       
-      private function __addToStage(param1:Event) : void
+      private function __addToStage(event:Event) : void
       {
          if(_lifeUpdate)
          {
@@ -119,12 +119,12 @@ package ddt.view.characterStarling
          }
       }
       
-      private function __removeFromStage(param1:Event) : void
+      private function __removeFromStage(event:Event) : void
       {
          removeEventListener("enterFrame",__enterFrame);
       }
       
-      private function __enterFrame(param1:Event) : void
+      private function __enterFrame(event:Event) : void
       {
          update();
       }
@@ -133,13 +133,13 @@ package ddt.view.characterStarling
       {
       }
       
-      private function __propertyChange(param1:PlayerPropertyEvent) : void
+      private function __propertyChange(evt:PlayerPropertyEvent) : void
       {
          if(_disposed)
          {
             return;
          }
-         if(param1.changedProperties["Style"] || param1.changedProperties["Colors"])
+         if(evt.changedProperties["Style"] || evt.changedProperties["Colors"])
          {
             if(_loader == null || _loader is GameCharacterLoader)
             {
@@ -158,19 +158,19 @@ package ddt.view.characterStarling
          }
       }
       
-      protected function setCharacterSize(param1:Number, param2:Number) : void
+      protected function setCharacterSize(w:Number, h:Number) : void
       {
-         _characterWidth = param1;
-         _characterHeight = param2;
+         _characterWidth = w;
+         _characterHeight = h;
       }
       
-      protected function setPicNum(param1:int, param2:int) : void
+      protected function setPicNum(lines:int, perline:int) : void
       {
-         _picLines = param1;
-         _picsPerLine = param2;
+         _picLines = lines;
+         _picsPerLine = perline;
       }
       
-      public function setColor(param1:*) : Boolean
+      public function setColor(color:*) : Boolean
       {
          return false;
       }
@@ -185,13 +185,13 @@ package ddt.view.characterStarling
          return _currentframe;
       }
       
-      public function set characterBitmapdata(param1:BitmapData) : void
+      public function set characterBitmapdata(value:BitmapData) : void
       {
-         if(param1 == _characterBitmapdata)
+         if(value == _characterBitmapdata)
          {
             return;
          }
-         _characterBitmapdata = param1;
+         _characterBitmapdata = value;
          _bitmapChanged = true;
       }
       
@@ -214,19 +214,19 @@ package ddt.view.characterStarling
          return "not ShowCharacterLoader";
       }
       
-      public function doAction(param1:*) : void
+      public function doAction(actionType:*) : void
       {
       }
       
-      public function setDefaultAction(param1:*) : void
+      public function setDefaultAction(actionType:*) : void
       {
       }
       
-      public function show(param1:Boolean = true, param2:int = 1, param3:Boolean = true) : void
+      public function show(clearLoader:Boolean = true, dir:int = 1, small:Boolean = true) : void
       {
-         _dir = param2 > 0?1:-1;
+         _dir = dir > 0?1:-1;
          scaleX = _dir;
-         _autoClearLoader = param1;
+         _autoClearLoader = clearLoader;
          if(!_loadCompleted)
          {
             if(_loader == null)
@@ -237,7 +237,7 @@ package ddt.view.characterStarling
          }
       }
       
-      protected function __loadComplete(param1:ICharacterLoader) : void
+      protected function __loadComplete(loader:ICharacterLoader) : void
       {
          _loadCompleted = true;
          setContent();
@@ -262,9 +262,9 @@ package ddt.view.characterStarling
          drawFrame(_currentframe);
       }
       
-      public function setFactory(param1:ICharacterLoaderFactory) : void
+      public function setFactory(factory:ICharacterLoaderFactory) : void
       {
-         _factory = param1;
+         _factory = factory;
       }
       
       protected function initLoader() : void
@@ -272,18 +272,18 @@ package ddt.view.characterStarling
          _loader = _factory.createLoader(_info,"show");
       }
       
-      public function drawFrame(param1:int, param2:int = 0, param3:Boolean = true) : void
+      public function drawFrame(frame:int, type:int = 0, clearOld:Boolean = true) : void
       {
          if(_characterBitmapdata != null)
          {
-            if(param1 < 0 || param1 >= _frames.length)
+            if(frame < 0 || frame >= _frames.length)
             {
-               param1 = 0;
+               frame = 0;
             }
-            if(param1 != _currentframe || _bitmapChanged)
+            if(frame != _currentframe || _bitmapChanged)
             {
                _bitmapChanged = false;
-               _currentframe = param1;
+               _currentframe = frame;
                _body.bitmapData.copyPixels(_characterBitmapdata,_frames[_currentframe],new Point(0,0));
                _bodyImage.texture.dispose();
                _bodyImage.texture = Texture.fromBitmap(_body,false);
@@ -293,38 +293,36 @@ package ddt.view.characterStarling
       
       protected function createFrames() : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
+         var j:int = 0;
+         var i:int = 0;
+         var m:* = null;
          _frames = [];
-         _loc2_ = 0;
-         while(_loc2_ < _picLines)
+         for(j = 0; j < _picLines; )
          {
-            _loc3_ = 0;
-            while(_loc3_ < _picsPerLine)
+            for(i = 0; i < _picsPerLine; )
             {
-               _loc1_ = new Rectangle(_loc3_ * _characterWidth,_loc2_ * _characterHeight,_characterWidth,_characterHeight);
-               _frames.push(_loc1_);
-               _loc3_++;
+               m = new Rectangle(i * _characterWidth,j * _characterHeight,_characterWidth,_characterHeight);
+               _frames.push(m);
+               i++;
             }
-            _loc2_++;
+            j++;
          }
       }
       
-      public function set smoothing(param1:Boolean) : void
+      public function set smoothing(value:Boolean) : void
       {
-         _body.smoothing = param1;
+         _body.smoothing = value;
       }
       
-      public function set showGun(param1:Boolean) : void
-      {
-      }
-      
-      public function set showWing(param1:Boolean) : void
+      public function set showGun(value:Boolean) : void
       {
       }
       
-      public function setShowLight(param1:Boolean, param2:Point = null) : void
+      public function set showWing(value:Boolean) : void
+      {
+      }
+      
+      public function setShowLight(b:Boolean, p:Point = null) : void
       {
       }
       
@@ -338,7 +336,7 @@ package ddt.view.characterStarling
          return false;
       }
       
-      public function showWithSize(param1:Boolean = true, param2:int = 1, param3:Number = 120, param4:Number = 165) : void
+      public function showWithSize(clearLoader:Boolean = true, dir:int = 1, width:Number = 120, height:Number = 165) : void
       {
       }
       

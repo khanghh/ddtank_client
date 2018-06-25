@@ -10,7 +10,7 @@ package bagAndInfo.tips
    {
        
       
-      private var _propertySourceTxt:FilterFrameText;
+      protected var _propertySourceTxt:FilterFrameText;
       
       private var _vbox:VBox;
       
@@ -36,13 +36,13 @@ package bagAndInfo.tips
          _propertySourceTxt = ComponentFactory.Instance.creatComponentByStylename("core.PropertySourceTxt");
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         .super.tipData = param1;
-         this.propertySourceText(param1.propertySource);
+         .super.tipData = data;
+         this.propertySourceText(data.propertySource);
       }
       
-      override protected function updateWH(param1:Boolean = false) : void
+      override protected function updateWH(bool:Boolean = false) : void
       {
          if(!_propertySourceTxt)
          {
@@ -59,9 +59,9 @@ package bagAndInfo.tips
          _propertySourceTxt = null;
       }
       
-      private function propertySourceText(param1:String) : void
+      protected function propertySourceText(value:String) : void
       {
-         _propertySourceTxt.text = param1;
+         _propertySourceTxt.text = value;
          updateWH();
       }
    }

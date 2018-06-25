@@ -6,9 +6,9 @@ package gameStarling.animations
    {
        
       
-      public function LaserFocusAnimation(param1:PhysicalObj3D, param2:int = 100, param3:int = 0)
+      public function LaserFocusAnimation(phy:PhysicalObj3D, life:int = 100, offsetY:int = 0)
       {
-         super(param1,param2,param3);
+         super(phy,life,offsetY);
       }
    }
 }

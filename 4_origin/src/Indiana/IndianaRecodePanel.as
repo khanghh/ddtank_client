@@ -32,7 +32,7 @@ package Indiana
          IndianaDataManager.instance.addEventListener("recodeiteminfo",__recodeUpdata);
       }
       
-      private function __recodeUpdata(param1:Event) : void
+      private function __recodeUpdata(e:Event) : void
       {
          setItem();
       }
@@ -51,41 +51,39 @@ package Indiana
       
       private function setItem() : void
       {
-         var _loc1_:* = null;
-         var _loc3_:int = 0;
-         var _loc2_:int = IndianaDataManager.instance.currentIndianInfo.length;
+         var item:* = null;
+         var i:int = 0;
+         var len:int = IndianaDataManager.instance.currentIndianInfo.length;
          clearItem();
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         for(i = 0; i < len; )
          {
-            _loc1_ = new IndianaRecodeItem();
-            _loc1_.info = IndianaDataManager.instance.currentIndianInfo[_loc3_];
-            _vbox.addChild(_loc1_);
-            _loc3_++;
+            item = new IndianaRecodeItem();
+            item.info = IndianaDataManager.instance.currentIndianInfo[i];
+            _vbox.addChild(item);
+            i++;
          }
-         _loc1_ = new IndianaRecodeItem();
-         _loc1_.visible = false;
-         _vbox.addChild(_loc1_);
+         item = new IndianaRecodeItem();
+         item.visible = false;
+         _vbox.addChild(item);
          _scroller.invalidateViewport();
       }
       
       public function clearItem() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          _vbox.clearAllChild();
-         var _loc2_:int = _vbox.numChildren;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var len:int = _vbox.numChildren;
+         for(i = 0; i < len; )
          {
-            if(_vbox.getChildAt(_loc3_) is IndianaRecodeItem)
+            if(_vbox.getChildAt(i) is IndianaRecodeItem)
             {
-               _loc1_ = _vbox.getChildAt(_loc3_) as IndianaRecodeItem;
-               ObjectUtils.disposeObject(_loc1_);
-               _loc1_ = null;
-               _loc3_--;
+               item = _vbox.getChildAt(i) as IndianaRecodeItem;
+               ObjectUtils.disposeObject(item);
+               item = null;
+               i--;
             }
-            _loc3_++;
+            i++;
          }
       }
       

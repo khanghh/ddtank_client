@@ -11,9 +11,9 @@ package carnivalActivity.view.activityItem
    {
        
       
-      public function UseUpEnergyItem(param1:int, param2:GiftBagInfo, param3:int)
+      public function UseUpEnergyItem(type:int, info:GiftBagInfo, index:int)
       {
-         super(param1,param2,param3);
+         super(type,info,index);
       }
       
       override protected function initItem() : void
@@ -32,11 +32,11 @@ package carnivalActivity.view.activityItem
       
       override public function updateView() : void
       {
-         var _loc1_:Object = WonderfulActivityManager.Instance.activityInitData[_info.activityId];
-         if(_loc1_)
+         var infoDic:Object = WonderfulActivityManager.Instance.activityInitData[_info.activityId];
+         if(infoDic)
          {
-            _giftCurInfo = _loc1_.giftInfoDic[_info.giftbagId];
-            _statusArr = _loc1_.statusArr;
+            _giftCurInfo = infoDic.giftInfoDic[_info.giftbagId];
+            _statusArr = infoDic.statusArr;
             _currentCondtion = _statusArr[0].statusValue;
             _playerAlreadyGetCount = _giftCurInfo.times;
             _getBtn.enable = CarnivalActivityControl.instance.canGetAward() && _playerAlreadyGetCount == 0 && _currentCondtion >= _condtion;

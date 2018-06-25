@@ -7,9 +7,9 @@ package game.animations
    {
        
       
-      public function StrStayTween(param1:TweenObject = null)
+      public function StrStayTween(data:TweenObject = null)
       {
-         super(param1);
+         super(data);
       }
       
       override public function get type() : String
@@ -22,14 +22,14 @@ package game.animations
          return true;
       }
       
-      override public function update(param1:DisplayObject) : Point
+      override public function update(movie:DisplayObject) : Point
       {
          if(!_prepared)
          {
             return null;
          }
-         var _loc2_:Point = new Point(param1.x,param1.y);
-         return _loc2_;
+         var result:Point = new Point(movie.x,movie.y);
+         return result;
       }
    }
 }

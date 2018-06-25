@@ -105,21 +105,21 @@ package gameCommon.view.experience
       
       private var _survivalArr:Vector.<ExpSurvivalItem>;
       
-      public function ExpView(param1:Bitmap = null)
+      public function ExpView(bg:Bitmap = null)
       {
          super();
          MotionBlurPlugin;
-         _bg = param1;
+         _bg = bg;
       }
       
       public function show() : void
       {
-         var _loc2_:* = null;
+         var obj:* = null;
          _gameInfo = GameControl.Instance.Current;
-         var _loc3_:SelfInfo = PlayerManager.Instance.Self;
+         var selfInfo:SelfInfo = PlayerManager.Instance.Self;
          _cardController = new TakeOutCardController();
-         var _loc1_:Player = _gameInfo.findPlayerByPlayerID(_loc3_.ID);
-         if(RoomManager.Instance.current.selfRoomPlayer.isViewer || !_loc1_)
+         var player:Player = _gameInfo.findPlayerByPlayerID(selfInfo.ID);
+         if(RoomManager.Instance.current.selfRoomPlayer.isViewer || !player)
          {
             onAllComplete();
             return;
@@ -135,16 +135,16 @@ package gameCommon.view.experience
          else
          {
             _expObj = _gameInfo.selfGamePlayer.expObj;
-            _loc2_ = _gameInfo.selfGamePlayer.expObj;
-            if(_loc2_ && _loc2_.hasOwnProperty("luckyExp") && _loc2_.luckyExp > 0)
+            obj = _gameInfo.selfGamePlayer.expObj;
+            if(obj && obj.hasOwnProperty("luckyExp") && obj.luckyExp > 0)
             {
                _luckyExp = true;
             }
-            if(_loc2_ && _loc2_.hasOwnProperty("luckyOffer") && _loc2_.luckyOffer > 0)
+            if(obj && obj.hasOwnProperty("luckyOffer") && obj.luckyOffer > 0)
             {
                _luckyOffer = true;
             }
-            var _loc4_:* = _loc2_.gameOverType;
+            var _loc4_:* = obj.gameOverType;
             if(0 !== _loc4_)
             {
                if(1 !== _loc4_)
@@ -159,9 +159,9 @@ package gameCommon.view.experience
                            {
                               if(6 === _loc4_)
                               {
-                                 _fightNums = [_loc2_.killGP,_loc2_.hertGP,_loc2_.fightGP,_loc2_.ghostGP];
+                                 _fightNums = [obj.killGP,obj.hertGP,obj.fightGP,obj.ghostGP];
                                  SoundManager.instance.play(!!_gameInfo.selfGamePlayer.isWin?"063":"064");
-                                 _attatchNums = [_loc2_.gpForVIP,_loc2_.gpForSpouse,_loc2_.gpForServer,_loc2_.gpForApprenticeOnline,_loc2_.gpForApprenticeTeam,_loc2_.gpForDoubleCard,_loc2_.consortiaSkill];
+                                 _attatchNums = [obj.gpForVIP,obj.gpForSpouse,obj.gpForServer,obj.gpForApprenticeOnline,obj.gpForApprenticeTeam,obj.gpForDoubleCard,obj.consortiaSkill];
                               }
                            }
                            else
@@ -173,15 +173,15 @@ package gameCommon.view.experience
                               }
                               _isNoCardView = true;
                               SoundManager.instance.play(!!_gameInfo.selfGamePlayer.isWin?"063":"064");
-                              _fightNums = [_loc2_.killGP,_loc2_.hertGP,_loc2_.fightGP,_loc2_.ghostGP];
-                              _attatchNums = [_loc2_.gpForVIP,_loc2_.gpForSpouse,_loc2_.gpForServer,_loc2_.gpForApprenticeOnline,_loc2_.gpForApprenticeTeam,_loc2_.gpForDoubleCard,_loc2_.consortiaSkill];
+                              _fightNums = [obj.killGP,obj.hertGP,obj.fightGP,obj.ghostGP];
+                              _attatchNums = [obj.gpForVIP,obj.gpForSpouse,obj.gpForServer,obj.gpForApprenticeOnline,obj.gpForApprenticeTeam,obj.gpForDoubleCard,obj.consortiaSkill];
                            }
                         }
                         else
                         {
                            SoundManager.instance.play(!!_gameInfo.selfGamePlayer.isWin?"063":"064");
-                           _fightNums = [_loc2_.killGP,_loc2_.hertGP,_loc2_.fightGP,_loc2_.ghostGP];
-                           _attatchNums = [_loc2_.gpForVIP,_loc2_.gpForSpouse,_loc2_.gpForServer,_loc2_.gpForApprenticeOnline,_loc2_.gpForApprenticeTeam,_loc2_.gpForDoubleCard,_loc2_.consortiaSkill];
+                           _fightNums = [obj.killGP,obj.hertGP,obj.fightGP,obj.ghostGP];
+                           _attatchNums = [obj.gpForVIP,obj.gpForSpouse,obj.gpForServer,obj.gpForApprenticeOnline,obj.gpForApprenticeTeam,obj.gpForDoubleCard,obj.consortiaSkill];
                         }
                      }
                      else
@@ -205,9 +205,9 @@ package gameCommon.view.experience
                else
                {
                   SoundManager.instance.play(!!_gameInfo.selfGamePlayer.isWin?"063":"064");
-                  _fightNums = [_loc2_.killGP,_loc2_.hertGP,_loc2_.fightGP,_loc2_.ghostGP];
-                  _attatchNums = [_loc2_.gpForVIP,_loc2_.gpForConsortia,_loc2_.gpForSpouse,_loc2_.gpForServer,_loc2_.gpForApprenticeOnline,_loc2_.gpForApprenticeTeam,_loc2_.gpForDoubleCard,_loc2_.gpForPower,_loc2_.consortiaSkill];
-                  _exploitNums = [_loc2_.offerFight,_loc2_.offerDoubleCard,_loc2_.offerVIP,_loc2_.offerService,_loc2_.offerBuff,_loc2_.offerConsortia];
+                  _fightNums = [obj.killGP,obj.hertGP,obj.fightGP,obj.ghostGP];
+                  _attatchNums = [obj.gpForVIP,obj.gpForConsortia,obj.gpForSpouse,obj.gpForServer,obj.gpForApprenticeOnline,obj.gpForApprenticeTeam,obj.gpForDoubleCard,obj.gpForPower,obj.consortiaSkill];
+                  _exploitNums = [obj.offerFight,obj.offerDoubleCard,obj.offerVIP,obj.offerService,obj.offerBuff,obj.offerConsortia];
                   setDefyInfo();
                }
                validateData(_fightNums);
@@ -254,53 +254,52 @@ package gameCommon.view.experience
       
       private function creatExpSurvivalView() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var survivalItem:* = null;
          _survivalArr = new Vector.<ExpSurvivalItem>();
          _survivalBg = ComponentFactory.Instance.creat("asset.core.survival.clearing.bg");
          addChild(_survivalBg);
-         var _loc2_:Array = sortGameInfoByKillNum();
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_.length)
+         var playerArr:Array = sortGameInfoByKillNum();
+         for(i = 0; i < playerArr.length; )
          {
-            _loc1_ = new ExpSurvivalItem();
-            _loc1_.x = 7;
-            _loc1_.y = 244 + _loc3_ * _loc1_.height;
-            addChild(_loc1_);
-            _loc1_.setItemInfo(_loc3_ + 1,_loc2_[_loc3_]);
-            _survivalArr.push(_loc1_);
-            _loc3_++;
+            survivalItem = new ExpSurvivalItem();
+            survivalItem.x = 7;
+            survivalItem.y = 244 + i * survivalItem.height;
+            addChild(survivalItem);
+            survivalItem.setItemInfo(i + 1,playerArr[i]);
+            _survivalArr.push(survivalItem);
+            i++;
          }
       }
       
       private function sortGameInfoByKillNum() : Array
       {
-         var _loc2_:Array = [];
+         var playerArr:Array = [];
          var _loc4_:int = 0;
          var _loc3_:* = _gameInfo.livings;
-         for(var _loc1_ in _gameInfo.livings)
+         for(var id in _gameInfo.livings)
          {
-            _loc2_.push(_gameInfo.livings[_loc1_]);
+            playerArr.push(_gameInfo.livings[id]);
          }
-         _loc2_.sortOn("killNum",2);
-         return _loc2_;
+         playerArr.sortOn("killNum",2);
+         return playerArr;
       }
       
-      private function validateData(param1:Array) : void
+      private function validateData(arr:Array) : void
       {
-         var _loc2_:int = 0;
-         if(param1 == null)
+         var i:int = 0;
+         if(arr == null)
          {
             return;
          }
-         _loc2_ = 0;
-         while(_loc2_ < param1.length)
+         i = 0;
+         while(i < arr.length)
          {
-            if(isNaN(param1[_loc2_]))
+            if(isNaN(arr[i]))
             {
-               param1[_loc2_] = 0;
+               arr[i] = 0;
             }
-            _loc2_++;
+            i++;
          }
       }
       
@@ -334,8 +333,8 @@ package gameCommon.view.experience
       
       private function resultSealView() : void
       {
-         var _loc1_:String = !!_gameInfo.selfGamePlayer.isWin?"win":"lose";
-         _resultSeal = new ExpResultSeal(_loc1_,_luckyExp,_luckyOffer);
+         var result:String = !!_gameInfo.selfGamePlayer.isWin?"win":"lose";
+         _resultSeal = new ExpResultSeal(result,_luckyExp,_luckyOffer);
          _rightView.addChild(_resultSeal);
          ExpTweenManager.Instance.appendTween(TweenMax.from(_resultSeal,0.5,{
             "x":1000,
@@ -417,7 +416,7 @@ package gameCommon.view.experience
       {
          checkZero = function():void
          {
-            var _loc1_:Number = NaN;
+            var temV:Number = NaN;
             if(_gameInfo.roomType != 120)
             {
                if(_exploitNums.every(equalsZero))
@@ -427,8 +426,8 @@ package gameCommon.view.experience
             }
             else
             {
-               _loc1_ = _gameInfo.selfGamePlayer.expObj.prestige;
-               _totalView.updateTotalExploit(_loc1_);
+               temV = _gameInfo.selfGamePlayer.expObj.prestige;
+               _totalView.updateTotalExploit(temV);
             }
          };
          if(!_exploitNums || _exploitNums.length == 0)
@@ -451,31 +450,31 @@ package gameCommon.view.experience
          _rightView.addChild(_exploitView);
       }
       
-      private function __updateTotalExp(param1:Event) : void
+      private function __updateTotalExp(event:Event) : void
       {
-         var _loc2_:int = GameControl.Instance.Current.selfGamePlayer.expObj.gainGP;
-         _totalView.updateTotalExp(_loc2_);
+         var gainGP:int = GameControl.Instance.Current.selfGamePlayer.expObj.gainGP;
+         _totalView.updateTotalExp(gainGP);
       }
       
-      private function equalsZero(param1:*, param2:int, param3:Array) : Boolean
+      private function equalsZero(element:*, index:int, arr:Array) : Boolean
       {
-         return param1 == 0;
+         return element == 0;
       }
       
-      private function __updateTotalExploit(param1:Event) : void
+      private function __updateTotalExploit(event:Event) : void
       {
          if(_gameInfo.roomType == 120)
          {
             return;
          }
-         _totalExploit = _totalExploit + param1.currentTarget.targetValue;
+         _totalExploit = _totalExploit + event.currentTarget.targetValue;
          if(_expObj && _expObj.hasOwnProperty("luckyOffer"))
          {
-            _totalView.updateTotalExploit(param1.currentTarget.targetValue + _expObj.luckyOffer);
+            _totalView.updateTotalExploit(event.currentTarget.targetValue + _expObj.luckyOffer);
          }
          else
          {
-            _totalView.updateTotalExploit(param1.currentTarget.targetValue);
+            _totalView.updateTotalExploit(event.currentTarget.targetValue);
          }
       }
       
@@ -500,9 +499,9 @@ package gameCommon.view.experience
          dispatchEvent(new GameEvent("expshowed",null));
       }
       
-      private function showSmallCardView(param1:DisplayObject) : void
+      private function showSmallCardView(view:DisplayObject) : void
       {
-         view = param1;
+         view = view;
          addCardView = function():void
          {
             TweenMax.killTweensOf(_rightView);
@@ -522,9 +521,9 @@ package gameCommon.view.experience
          }
       }
       
-      private function showLargeCardView(param1:DisplayObject) : void
+      private function showLargeCardView(view:DisplayObject) : void
       {
-         view = param1;
+         view = view;
          addCardView = function():void
          {
             TweenMax.killTweensOf(_rightView);
@@ -552,7 +551,7 @@ package gameCommon.view.experience
          }
       }
       
-      private function blurTween(param1:Event = null) : void
+      private function blurTween(e:Event = null) : void
       {
          if(_blurStep == 0)
          {
@@ -581,31 +580,31 @@ package gameCommon.view.experience
       
       private function setDefyInfo() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:Array = [];
-         var _loc3_:Array = [];
-         var _loc4_:Array = [];
+         var player:* = null;
+         var winDefy:Array = [];
+         var failDefy:Array = [];
+         var defy:Array = [];
          var _loc7_:int = 0;
          var _loc6_:* = _gameInfo.livings;
-         for each(var _loc5_ in _gameInfo.livings)
+         for each(var i in _gameInfo.livings)
          {
-            _loc2_ = _loc5_ as Player;
-            if(_loc2_ == null)
+            player = i as Player;
+            if(player == null)
             {
                return;
             }
-            if(_loc2_.isWin)
+            if(player.isWin)
             {
-               _loc1_.unshift(_loc2_.playerInfo.NickName);
+               winDefy.unshift(player.playerInfo.NickName);
             }
             else
             {
-               _loc3_.unshift(_loc2_.playerInfo.NickName);
+               failDefy.unshift(player.playerInfo.NickName);
             }
          }
-         _loc4_[0] = _loc1_;
-         _loc4_[1] = _loc3_;
-         RoomManager.Instance.setRoomDefyInfo(_loc4_);
+         defy[0] = winDefy;
+         defy[1] = failDefy;
+         RoomManager.Instance.setRoomDefyInfo(defy);
       }
       
       public function dispose() : void

@@ -57,9 +57,9 @@ package texpSystem.view
          return _tipWidth;
       }
       
-      public function set tipWidth(param1:int) : void
+      public function set tipWidth(w:int) : void
       {
-         _tipWidth = param1;
+         _tipWidth = w;
       }
       
       public function get tipHeight() : int
@@ -67,9 +67,9 @@ package texpSystem.view
          return _tipHeight;
       }
       
-      public function set tipHeight(param1:int) : void
+      public function set tipHeight(h:int) : void
       {
-         _tipHeight = param1;
+         _tipHeight = h;
       }
       
       public function get tipData() : Object
@@ -77,14 +77,14 @@ package texpSystem.view
          return _tipData;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(data:Object) : void
       {
-         var _loc2_:PlayerInfo = param1 as PlayerInfo;
-         if(!_loc2_)
+         var info:PlayerInfo = data as PlayerInfo;
+         if(!info)
          {
             return;
          }
-         _tipData = _loc2_;
+         _tipData = info;
          _txtContent.htmlText = getHtmlText(TexpManager.Instance.getInfo(1,_tipData.attTexpExp)) + "\n" + getHtmlText(TexpManager.Instance.getInfo(2,_tipData.defTexpExp)) + "\n" + getHtmlText(TexpManager.Instance.getInfo(3,_tipData.spdTexpExp)) + "\n" + getHtmlText(TexpManager.Instance.getInfo(4,_tipData.lukTexpExp)) + "\n" + getHtmlText(TexpManager.Instance.getInfo(5,_tipData.magicAtkTexpExp)) + "\n" + getHtmlText(TexpManager.Instance.getInfo(6,_tipData.magicDefTexpExp)) + "\n" + getHtmlText(TexpManager.Instance.getInfo(0,_tipData.hpTexpExp));
       }
       
@@ -93,9 +93,9 @@ package texpSystem.view
          return this;
       }
       
-      private function getHtmlText(param1:TexpInfo) : String
+      private function getHtmlText(texp:TexpInfo) : String
       {
-         return LanguageMgr.GetTranslation("texpSystem.view.TexpInfoTip.content",NAME_COLOR[param1.type],TexpManager.Instance.getName(param1.type),param1.currEffect,param1.lv);
+         return LanguageMgr.GetTranslation("texpSystem.view.TexpInfoTip.content",NAME_COLOR[texp.type],TexpManager.Instance.getName(texp.type),texp.currEffect,texp.lv);
       }
       
       public function dispose() : void

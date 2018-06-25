@@ -22,11 +22,11 @@ package explorerManual.view.chapter
       
       private var _ctrl:ExplorerManualController;
       
-      public function ExplorerChapterView(param1:ExplorerManualInfo, param2:ExplorerManualController)
+      public function ExplorerChapterView(model:ExplorerManualInfo, ctrl:ExplorerManualController)
       {
          super();
-         _model = param1;
-         _ctrl = param2;
+         _model = model;
+         _ctrl = ctrl;
          initView();
       }
       

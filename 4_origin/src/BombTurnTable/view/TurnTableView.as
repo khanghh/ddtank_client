@@ -22,15 +22,15 @@ package BombTurnTable.view
       
       private var _control:BombTurnTableControls;
       
-      public function TurnTableView(param1:BombTurnTableControls)
+      public function TurnTableView(control:BombTurnTableControls)
       {
-         _control = param1;
+         _control = control;
          super();
       }
       
-      public function updateView(param1:BombTurnTableInfo) : void
+      public function updateView(data:BombTurnTableInfo) : void
       {
-         _curData = param1;
+         _curData = data;
          if(_curData == null)
          {
             return;
@@ -65,30 +65,30 @@ package BombTurnTable.view
          _curTurnTable.updateAwardGood(_curData);
       }
       
-      public function updateLotteryTicket(param1:int) : void
+      public function updateLotteryTicket(value:int) : void
       {
-         _curTurnTable.updateLotteryTicket(param1);
+         _curTurnTable.updateLotteryTicket(value);
       }
       
-      protected function clickLottery_Handler(param1:TurnTableEvent) : void
+      protected function clickLottery_Handler(evt:TurnTableEvent) : void
       {
-         this.dispatchEvent(new TurnTableEvent("ClickLottery",param1.data));
+         this.dispatchEvent(new TurnTableEvent("ClickLottery",evt.data));
       }
       
-      public function startLottery(param1:int) : void
+      public function startLottery(id:int) : void
       {
          if(_curTurnTable)
          {
-            _curTurnTable.startLottery(param1);
+            _curTurnTable.startLottery(id);
          }
       }
       
-      public function updateTurnTableBtnStatus(param1:Boolean) : void
+      public function updateTurnTableBtnStatus(isContinuons:Boolean) : void
       {
-         _curTurnTable.lotteryBtn.updateBtnStatus(param1);
+         _curTurnTable.lotteryBtn.updateBtnStatus(isContinuons);
       }
       
-      public function lotteryComplate_Handler(param1:TurnTableEvent) : void
+      public function lotteryComplate_Handler(evt:TurnTableEvent) : void
       {
          this.dispatchEvent(new TurnTableEvent("lotteryComplate",null));
       }

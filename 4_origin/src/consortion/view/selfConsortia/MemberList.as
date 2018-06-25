@@ -132,11 +132,11 @@ package consortion.view.selfConsortia
          setListData();
       }
       
-      private function setTip(param1:BaseButton, param2:String) : void
+      private function setTip(btn:BaseButton, value:String) : void
       {
-         param1.tipStyle = "ddt.view.tips.OneLineTip";
-         param1.tipDirctions = "0";
-         param1.tipData = param2;
+         btn.tipStyle = "ddt.view.tips.OneLineTip";
+         btn.tipDirctions = "0";
+         btn.tipData = value;
       }
       
       private function initEvent() : void
@@ -199,53 +199,52 @@ package consortion.view.selfConsortia
          }
       }
       
-      public function __updataMemberHandler(param1:ConsortionEvent) : void
+      public function __updataMemberHandler(event:ConsortionEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc2_:ConsortiaPlayerInfo = param1.data as ConsortiaPlayerInfo;
-         var _loc3_:int = _list.vectorListModel.elements.length;
-         _loc5_ = 0;
-         while(_loc5_ < _loc3_)
+         var i:int = 0;
+         var info:* = null;
+         var target:ConsortiaPlayerInfo = event.data as ConsortiaPlayerInfo;
+         var len:int = _list.vectorListModel.elements.length;
+         for(i = 0; i < len; )
          {
-            _loc4_ = _list.vectorListModel.elements[_loc5_] as ConsortiaPlayerInfo;
-            if(_loc4_.ID == _loc2_.ID)
+            info = _list.vectorListModel.elements[i] as ConsortiaPlayerInfo;
+            if(info.ID == target.ID)
             {
-               _loc4_ = _loc2_;
+               info = target;
                break;
             }
-            _loc5_++;
+            i++;
          }
          _list.list.updateListView();
       }
       
-      public function __addMemberHandler(param1:ConsortionEvent) : void
+      public function __addMemberHandler(event:ConsortionEvent) : void
       {
-         var _loc2_:int = ConsortionModelManager.Instance.model.memberList.length;
-         _list.vectorListModel.append(param1.data as ConsortiaPlayerInfo,_loc2_ - 1);
-         if(_loc2_ <= 6)
+         var len:int = ConsortionModelManager.Instance.model.memberList.length;
+         _list.vectorListModel.append(event.data as ConsortiaPlayerInfo,len - 1);
+         if(len <= 6)
          {
             _list.vectorListModel.removeElementAt(_list.vectorListModel.elements.length - 1);
          }
          _list.list.updateListView();
       }
       
-      public function __removeMemberHandler(param1:ConsortionEvent) : void
+      public function __removeMemberHandler(event:ConsortionEvent) : void
       {
-         _list.vectorListModel.remove(param1.data as ConsortiaPlayerInfo);
-         var _loc2_:int = ConsortionModelManager.Instance.model.memberList.length;
-         if(_loc2_ < 6)
+         _list.vectorListModel.remove(event.data as ConsortiaPlayerInfo);
+         var len:int = ConsortionModelManager.Instance.model.memberList.length;
+         if(len < 6)
          {
             setListData();
          }
          _list.list.updateListView();
       }
       
-      private function __btnClick(param1:MouseEvent) : void
+      private function __btnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _isDes = !!_isDes?false:true;
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = event.currentTarget;
          if(_name !== _loc2_)
          {
             if(_job !== _loc2_)
@@ -295,12 +294,12 @@ package consortion.view.selfConsortia
          sortOnItem(_lastSort,_isDes);
       }
       
-      private function __listLoadCompleteHandler(param1:ConsortionEvent) : void
+      private function __listLoadCompleteHandler(event:ConsortionEvent) : void
       {
          setListData();
       }
       
-      private function __showSearchFrame(param1:MouseEvent) : void
+      private function __showSearchFrame(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_searchMemberFrame && _searchMemberFrame.parent)
@@ -313,10 +312,10 @@ package consortion.view.selfConsortia
          _searchMemberFrame.setFocus();
       }
       
-      private function __onFrameEvent(param1:FrameEvent) : void
+      private function __onFrameEvent(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -332,64 +331,63 @@ package consortion.view.selfConsortia
          }
       }
       
-      private function search(param1:String) : Boolean
+      private function search($searchText:String) : Boolean
       {
-         var _loc8_:int = 0;
-         var _loc7_:* = null;
-         if(FilterWordManager.isGotForbiddenWords(param1))
+         var i:int = 0;
+         var playerInfo:* = null;
+         if(FilterWordManager.isGotForbiddenWords($searchText))
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("consortion.view.selfConsortia.SearchMemberFrame.warningII"));
             return false;
          }
-         if(param1 == LanguageMgr.GetTranslation("consortion.view.selfConsortia.SearchMemberFrame.default") || param1 == "")
+         if($searchText == LanguageMgr.GetTranslation("consortion.view.selfConsortia.SearchMemberFrame.default") || $searchText == "")
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("consortion.view.selfConsortia.SearchMemberFrame.default"));
             return false;
          }
-         if(StringHelper.getIsBiggerMaxCHchar(param1,7))
+         if(StringHelper.getIsBiggerMaxCHchar($searchText,7))
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("consortion.view.selfConsortia.SearchMemberFrame.warningII"));
             return false;
          }
-         var _loc4_:* = param1;
-         var _loc3_:Array = ConsortionModelManager.Instance.model.memberList.list;
-         var _loc5_:Array = [];
-         var _loc2_:Boolean = false;
-         _loc8_ = 0;
-         while(_loc8_ < _loc3_.length)
+         var searchText:* = $searchText;
+         var players:Array = ConsortionModelManager.Instance.model.memberList.list;
+         var searchOutcome:Array = [];
+         var searchComplete:Boolean = false;
+         for(i = 0; i < players.length; )
          {
-            _loc7_ = _loc3_[_loc8_];
-            if(_loc7_.NickName.indexOf(_loc4_) != -1)
+            playerInfo = players[i];
+            if(playerInfo.NickName.indexOf(searchText) != -1)
             {
-               _loc5_.unshift(_loc7_);
-               _loc2_ = true;
+               searchOutcome.unshift(playerInfo);
+               searchComplete = true;
             }
             else
             {
-               _loc5_.push(_loc7_);
+               searchOutcome.push(playerInfo);
             }
-            _loc8_++;
+            i++;
          }
-         if(_loc4_ == LanguageMgr.GetTranslation("consortion.view.selfConsortia.SearchMemberFrame.warningII"))
+         if(searchText == LanguageMgr.GetTranslation("consortion.view.selfConsortia.SearchMemberFrame.warningII"))
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("consortion.view.selfConsortia.SearchMemberFrame.default"));
             return false;
          }
-         if(!_loc2_)
+         if(!searchComplete)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("consortion.view.selfConsortia.SearchMemberFrame.warningII"));
             return false;
          }
          _list.vectorListModel.clear();
-         _list.vectorListModel.appendAll(_loc5_);
-         var _loc6_:int = _loc5_.length;
-         if(_loc6_ < 6)
+         _list.vectorListModel.appendAll(searchOutcome);
+         var len:int = searchOutcome.length;
+         if(len < 6)
          {
-            _loc6_;
-            while(_loc6_ < 6)
+            len;
+            while(len < 6)
             {
-               _list.vectorListModel.append(null,_loc6_);
-               _loc6_++;
+               _list.vectorListModel.append(null,len);
+               len++;
             }
          }
          _list.list.updateListView();
@@ -408,19 +406,19 @@ package consortion.view.selfConsortia
       
       private function setListData() : void
       {
-         var _loc1_:int = 0;
+         var len:int = 0;
          if(ConsortionModelManager.Instance.model.memberList.length > 0)
          {
             _list.vectorListModel.clear();
             _list.vectorListModel.appendAll(ConsortionModelManager.Instance.model.memberList.list);
-            _loc1_ = ConsortionModelManager.Instance.model.memberList.length;
-            if(_loc1_ < 6)
+            len = ConsortionModelManager.Instance.model.memberList.length;
+            if(len < 6)
             {
-               _loc1_;
-               while(_loc1_ < 6)
+               len;
+               while(len < 6)
                {
-                  _list.vectorListModel.append(null,_loc1_);
-                  _loc1_++;
+                  _list.vectorListModel.append(null,len);
+                  len++;
                }
             }
             if(_lastSort == "")
@@ -432,43 +430,42 @@ package consortion.view.selfConsortia
          }
       }
       
-      private function sortOnItem(param1:String, param2:Boolean = false) : void
+      private function sortOnItem(field:String, des:Boolean = false) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = ConsortionModelManager.Instance.model.memberList.length;
-         if(_loc3_ < 6)
+         var i:int = 0;
+         var len:int = ConsortionModelManager.Instance.model.memberList.length;
+         if(len < 6)
          {
-            _list.vectorListModel.elements.splice(_loc3_,6 - _loc3_ + 1);
+            _list.vectorListModel.elements.splice(len,6 - len + 1);
          }
-         if(param1 == "Init")
+         if(field == "Init")
          {
             _list.vectorListModel.elements.sortOn("Grade",19);
-            _loc4_ = 0;
-            while(_loc4_ < _list.vectorListModel.elements.length)
+            for(i = 0; i < _list.vectorListModel.elements.length; )
             {
-               if(_list.vectorListModel.elements[_loc4_] && _list.vectorListModel.elements[_loc4_].ID == PlayerManager.Instance.Self.ID)
+               if(_list.vectorListModel.elements[i] && _list.vectorListModel.elements[i].ID == PlayerManager.Instance.Self.ID)
                {
-                  _list.vectorListModel.elements.unshift(_list.vectorListModel.elements[_loc4_]);
-                  _list.vectorListModel.elements.splice(_loc4_ + 1,1);
+                  _list.vectorListModel.elements.unshift(_list.vectorListModel.elements[i]);
+                  _list.vectorListModel.elements.splice(i + 1,1);
                }
-               _loc4_++;
+               i++;
             }
          }
          else
          {
-            _list.vectorListModel.elements.sortOn(param1,19);
+            _list.vectorListModel.elements.sortOn(field,19);
          }
-         if(param2)
+         if(des)
          {
             _list.vectorListModel.elements.reverse();
          }
-         if(_loc3_ < 6)
+         if(len < 6)
          {
-            _loc3_;
-            while(_loc3_ < 6)
+            len;
+            while(len < 6)
             {
-               _list.vectorListModel.append(null,_loc3_);
-               _loc3_++;
+               _list.vectorListModel.append(null,len);
+               len++;
             }
          }
          _list.list.updateListView();

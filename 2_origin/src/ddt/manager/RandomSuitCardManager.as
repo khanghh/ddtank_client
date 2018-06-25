@@ -22,7 +22,7 @@ package ddt.manager
       
       private var _endTime:Number;
       
-      public function RandomSuitCardManager(param1:inner)
+      public function RandomSuitCardManager(single:inner)
       {
          super();
       }
@@ -41,47 +41,47 @@ package ddt.manager
          SocketManager.Instance.addEventListener(PkgEvent.format(337),onRandomSuit);
       }
       
-      protected function onRandomSuit(param1:PkgEvent) : void
+      protected function onRandomSuit(e:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _beginDate = _loc2_.readDate();
-         _validTime = _loc2_.readInt();
+         var pkg:PackageIn = e.pkg;
+         _beginDate = pkg.readDate();
+         _validTime = pkg.readInt();
          _validTime = _validTime * 60 * 24;
          _beginTime = _beginDate.time;
          _endTime = _beginTime + _validTime * 60000;
          PlayerManager.Instance.Self.addBuff(new BuffInfo(18,isExist(),_beginDate,_validTime,0,0,11966));
       }
       
-      public function quickUse(param1:Boolean) : void
+      public function quickUse(isBind:Boolean) : void
       {
-         SocketManager.Instance.out.sendRandomSuitUse(-1,param1);
+         SocketManager.Instance.out.sendRandomSuitUse(-1,isBind);
       }
       
-      public function useCard(param1:int) : void
+      public function useCard(place:int) : void
       {
-         SocketManager.Instance.out.sendRandomSuitUse(param1,false);
+         SocketManager.Instance.out.sendRandomSuitUse(place,false);
       }
       
       public function remainTime() : String
       {
-         var _loc1_:Number = _endTime - TimeManager.Instance.Now().time;
-         _loc1_ = Math.max(0,_loc1_);
-         if(_loc1_ == 0)
+         var timeRemain:Number = _endTime - TimeManager.Instance.Now().time;
+         timeRemain = Math.max(0,timeRemain);
+         if(timeRemain == 0)
          {
             return "0";
          }
-         return Helpers.getTimeString(_loc1_,"cn");
+         return Helpers.getTimeString(timeRemain,"cn");
       }
       
       public function isExist() : Boolean
       {
-         var _loc1_:Number = NaN;
+         var nowTime:Number = NaN;
          if(_beginDate == null)
          {
             return false;
          }
-         _loc1_ = TimeManager.Instance.Now().time;
-         return _loc1_ < _endTime;
+         nowTime = TimeManager.Instance.Now().time;
+         return nowTime < _endTime;
       }
    }
 }

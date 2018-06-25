@@ -15,11 +15,11 @@ package com.pickgliss.action
       
       private var _delayTimer:Timer;
       
-      public function TickOrderQueueAction(param1:Array, param2:uint = 100, param3:uint = 0, param4:uint = 0)
+      public function TickOrderQueueAction(actList:Array, interval:uint = 100, delay:uint = 0, timeOut:uint = 0)
       {
-         _interval = param2;
-         _delay = param3;
-         super(param1,param4);
+         _interval = interval;
+         _delay = delay;
+         super(actList,timeOut);
       }
       
       override public function act() : void
@@ -36,7 +36,7 @@ package com.pickgliss.action
          }
       }
       
-      private function onDelayTimerComplete(param1:TimerEvent) : void
+      private function onDelayTimerComplete(event:TimerEvent) : void
       {
          removeDelayTimer();
          super.act();
@@ -54,9 +54,9 @@ package com.pickgliss.action
       
       override protected function actOne() : void
       {
-         var _loc1_:IAction = _actList[_count] as IAction;
+         var action:IAction = _actList[_count] as IAction;
          startTickTimer();
-         _loc1_.act();
+         action.act();
       }
       
       private function startTickTimer() : void
@@ -66,7 +66,7 @@ package com.pickgliss.action
          _tickTimer.start();
       }
       
-      private function onTickTimerComplete(param1:TimerEvent) : void
+      private function onTickTimerComplete(event:TimerEvent) : void
       {
          removeTickTimer();
          actNext();
@@ -82,10 +82,10 @@ package com.pickgliss.action
          }
       }
       
-      override protected function onLimitTimerComplete(param1:TimerEvent) : void
+      override protected function onLimitTimerComplete(event:TimerEvent) : void
       {
          removeTickTimer();
-         super.onLimitTimerComplete(param1);
+         super.onLimitTimerComplete(event);
       }
       
       override public function cancel() : void

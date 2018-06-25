@@ -148,7 +148,7 @@ package store.view.strength
       
       override protected function init() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _lines = new Vector.<Image>();
          _displayList = new Vector.<DisplayObject>();
          _rightArrows = ComponentFactory.Instance.creatBitmap("asset.ddtstore.rightArrows");
@@ -174,11 +174,10 @@ package store.view.strength
          _enchantAttackPencentTxt = ComponentFactory.Instance.creatComponentByStylename("core.GoodsTipItemTxt");
          _enchantDefencePencentTxt = ComponentFactory.Instance.creatComponentByStylename("core.GoodsTipItemTxt");
          _holes = new Vector.<FilterFrameText>();
-         _loc1_ = 0;
-         while(_loc1_ < 6)
+         for(i = 0; i < 6; )
          {
             _holes.push(ComponentFactory.Instance.creatComponentByStylename("core.GoodsTipItemTxt"));
-            _loc1_++;
+            i++;
          }
          _needLevelTxt = ComponentFactory.Instance.creatComponentByStylename("core.GoodsTipItemTxt");
          _needSexTxt = ComponentFactory.Instance.creatComponentByStylename("core.GoodsTipItemTxt");
@@ -199,18 +198,18 @@ package store.view.strength
          return _tipData;
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         if(param1)
+         if(data)
          {
-            if(param1 is GoodTipInfo)
+            if(data is GoodTipInfo)
             {
-               _tipData = param1 as GoodTipInfo;
+               _tipData = data as GoodTipInfo;
                showTip(_tipData.itemInfo,_tipData.typeIsSecond);
             }
-            else if(param1 is ShopItemInfo)
+            else if(data is ShopItemInfo)
             {
-               _tipData = param1 as ShopItemInfo;
+               _tipData = data as ShopItemInfo;
                showTip(_tipData.TemplateInfo);
             }
             visible = true;
@@ -222,7 +221,7 @@ package store.view.strength
          }
       }
       
-      public function showTip(param1:ItemTemplateInfo, param2:Boolean = false) : void
+      public function showTip(info:ItemTemplateInfo, typeIsSecond:Boolean = false) : void
       {
          _displayIdx = 0;
          _displayList = new Vector.<DisplayObject>();
@@ -230,7 +229,7 @@ package store.view.strength
          _isReAdd = false;
          _maxWidth = 0;
          _autoGhostWidth = 0;
-         _info = param1;
+         _info = info;
          updateView();
       }
       
@@ -270,37 +269,37 @@ package store.view.strength
       
       private function createGhostSkillitem() : void
       {
-         var _loc4_:* = null;
-         var _loc5_:* = null;
-         var _loc3_:InventoryItemInfo = _info as InventoryItemInfo;
-         var _loc7_:Boolean = _loc3_ != null && (_loc3_.BagType == 0 && _loc3_.Place <= 30 || EquipGhostManager.getInstance().isEquipGhosting());
-         if(!_loc7_)
+         var player:* = null;
+         var equipGhostData:* = null;
+         var ivenInfo:InventoryItemInfo = _info as InventoryItemInfo;
+         var needShow:Boolean = ivenInfo != null && (ivenInfo.BagType == 0 && ivenInfo.Place <= 30 || EquipGhostManager.getInstance().isEquipGhosting());
+         if(!needShow)
          {
             return;
          }
-         var _loc1_:int = -1;
-         var _loc2_:GoodTipInfo = _tipData as GoodTipInfo;
-         var _loc6_:GhostData = null;
-         if(_loc2_ && _loc2_.ghostLv > 0)
+         var ghostLv:int = -1;
+         var tipInfo:GoodTipInfo = _tipData as GoodTipInfo;
+         var ghostData:GhostData = null;
+         if(tipInfo && tipInfo.ghostLv > 0)
          {
-            _loc6_ = EquipGhostManager.getInstance().model.getGhostData(_loc2_.itemInfo.CategoryID,_loc2_.ghostLv);
-            if(_loc6_)
+            ghostData = EquipGhostManager.getInstance().model.getGhostData(tipInfo.itemInfo.CategoryID,tipInfo.ghostLv);
+            if(ghostData)
             {
-               _ghostSkillDesc.text = StringHelper.format(PetSkillManager.getSkillByID(_loc6_.skillId).Description);
+               _ghostSkillDesc.text = StringHelper.format(PetSkillManager.getSkillByID(ghostData.skillId).Description);
                _displayIdx = Number(_displayIdx) + 1;
                _displayList[Number(_displayIdx)] = _ghostSkillDesc;
             }
          }
          else
          {
-            _loc4_ = !!PlayerInfoViewControl.currentPlayer?PlayerInfoViewControl.currentPlayer:PlayerManager.Instance.Self;
-            _loc5_ = _loc4_.getGhostDataByCategoryID(_info.CategoryID);
-            if(_loc5_)
+            player = !!PlayerInfoViewControl.currentPlayer?PlayerInfoViewControl.currentPlayer:PlayerManager.Instance.Self;
+            equipGhostData = player.getGhostDataByCategoryID(_info.CategoryID);
+            if(equipGhostData)
             {
-               _loc6_ = EquipGhostManager.getInstance().model.getGhostData(_info.CategoryID,_loc5_.level);
-               if(_loc6_)
+               ghostData = EquipGhostManager.getInstance().model.getGhostData(_info.CategoryID,equipGhostData.level);
+               if(ghostData)
                {
-                  _ghostSkillDesc.text = StringHelper.format(PetSkillManager.getSkillByID(_loc6_.skillId).Description);
+                  _ghostSkillDesc.text = StringHelper.format(PetSkillManager.getSkillByID(ghostData.skillId).Description);
                   _displayIdx = Number(_displayIdx) + 1;
                   _displayList[Number(_displayIdx)] = _ghostSkillDesc;
                }
@@ -310,33 +309,33 @@ package store.view.strength
       
       private function createEnchantProperties() : void
       {
-         var _loc4_:InventoryItemInfo = _info as InventoryItemInfo;
-         if(!_loc4_ || _loc4_.MagicLevel <= 0)
+         var info:InventoryItemInfo = _info as InventoryItemInfo;
+         if(!info || info.MagicLevel <= 0)
          {
             return;
          }
-         var _loc1_:EnchantInfo = EnchantManager.instance.getEnchantInfoByLevel(_loc4_.MagicLevel);
-         if(!_loc1_)
+         var enchantInfo:EnchantInfo = EnchantManager.instance.getEnchantInfoByLevel(info.MagicLevel);
+         if(!enchantInfo)
          {
             return;
          }
-         _enchantLevelTxt.text = LanguageMgr.GetTranslation("enchant.levelTxt",int(_loc1_.Lv / 10) + 1,_loc1_.Lv % 10);
-         _enchantAttackTxt.text = LanguageMgr.GetTranslation("enchant.addMagicAttackTxt") + _loc1_.MagicAttack;
-         _enchantDefenceTxt.text = LanguageMgr.GetTranslation("enchant.addMagicDenfenceTxt") + _loc1_.MagicDefence;
+         _enchantLevelTxt.text = LanguageMgr.GetTranslation("enchant.levelTxt",int(enchantInfo.Lv / 10) + 1,enchantInfo.Lv % 10);
+         _enchantAttackTxt.text = LanguageMgr.GetTranslation("enchant.addMagicAttackTxt") + enchantInfo.MagicAttack;
+         _enchantDefenceTxt.text = LanguageMgr.GetTranslation("enchant.addMagicDenfenceTxt") + enchantInfo.MagicDefence;
          _enchantLevelTxt.textColor = 13971455;
          _enchantAttackTxt.textColor = 13971455;
          _enchantDefenceTxt.textColor = 13971455;
-         var _loc2_:TextFormat = ComponentFactory.Instance.model.getSet("ddt.store.view.exalt.LaterEquipmentViewTextTF");
-         _enchantAttackTxt.setTextFormat(_loc2_,3,_enchantAttackTxt.text.length);
-         _enchantDefenceTxt.setTextFormat(_loc2_,3,_enchantAttackTxt.text.length);
+         var tf:TextFormat = ComponentFactory.Instance.model.getSet("ddt.store.view.exalt.LaterEquipmentViewTextTF");
+         _enchantAttackTxt.setTextFormat(tf,3,_enchantAttackTxt.text.length);
+         _enchantDefenceTxt.setTextFormat(tf,3,_enchantAttackTxt.text.length);
          _displayIdx = Number(_displayIdx) + 1;
          _displayList[Number(_displayIdx)] = _enchantLevelTxt;
          _displayIdx = Number(_displayIdx) + 1;
          _displayList[Number(_displayIdx)] = _enchantAttackTxt;
          _displayIdx = Number(_displayIdx) + 1;
          _displayList[Number(_displayIdx)] = _enchantDefenceTxt;
-         var _loc3_:int = _loc4_.Property1;
-         switch(int(_loc3_))
+         var _level:int = info.Property1;
+         switch(int(_level))
          {
             case 0:
             case 1:
@@ -365,39 +364,38 @@ package store.view.strength
       
       private function clear() : void
       {
-         var _loc1_:* = null;
+         var display:* = null;
          while(numChildren > 0)
          {
-            _loc1_ = getChildAt(0) as DisplayObject;
-            if(_loc1_.parent)
+            display = getChildAt(0) as DisplayObject;
+            if(display.parent)
             {
-               _loc1_.parent.removeChild(_loc1_);
+               display.parent.removeChild(display);
             }
          }
       }
       
       override protected function addChildren() : void
       {
-         var _loc1_:* = null;
-         var _loc4_:int = 0;
-         var _loc2_:int = _displayList.length;
-         var _loc6_:Point = new Point(4,4);
-         var _loc3_:int = 6;
-         var _loc5_:int = _maxWidth;
-         _loc4_ = 0;
-         while(_loc4_ < _loc2_)
+         var item:* = null;
+         var i:int = 0;
+         var len:int = _displayList.length;
+         var pos:Point = new Point(4,4);
+         var offset:int = 6;
+         var tempMaxWidth:int = _maxWidth;
+         for(i = 0; i < len; )
          {
-            _loc1_ = _displayList[_loc4_] as DisplayObject;
-            if(_lines.indexOf(_loc1_ as Image) < 0 && _loc1_ != _descriptionTxt && _loc1_ != _ghostSkillDesc)
+            item = _displayList[i] as DisplayObject;
+            if(_lines.indexOf(item as Image) < 0 && item != _descriptionTxt && item != _ghostSkillDesc)
             {
-               _loc5_ = Math.max(_loc1_.width,_loc5_);
+               tempMaxWidth = Math.max(item.width,tempMaxWidth);
             }
-            PositionUtils.setPos(_loc1_,_loc6_);
-            addChild(_loc1_);
-            _loc6_.y = _loc1_.y + _loc1_.height + _loc3_;
-            _loc4_++;
+            PositionUtils.setPos(item,pos);
+            addChild(item);
+            pos.y = item.y + item.height + offset;
+            i++;
          }
-         _maxWidth = Math.max(_minWidth,_loc5_);
+         _maxWidth = Math.max(_minWidth,tempMaxWidth);
          if(_autoGhostWidth > _maxWidth)
          {
             _maxWidth = _autoGhostWidth;
@@ -418,17 +416,16 @@ package store.view.strength
          }
          if(!_isReAdd)
          {
-            _loc4_ = 0;
-            while(_loc4_ < _lines.length)
+            for(i = 0; i < _lines.length; )
             {
-               _lines[_loc4_].width = _maxWidth;
-               if(_loc4_ + 1 < _lines.length && _lines[_loc4_ + 1].parent != null && Math.abs(_lines[_loc4_ + 1].y - _lines[_loc4_].y) <= 10)
+               _lines[i].width = _maxWidth;
+               if(i + 1 < _lines.length && _lines[i + 1].parent != null && Math.abs(_lines[i + 1].y - _lines[i].y) <= 10)
                {
-                  _displayList.splice(_displayList.indexOf(_lines[_loc4_ + 1]),1);
-                  _lines[_loc4_ + 1].parent.removeChild(_lines[_loc4_ + 1]);
+                  _displayList.splice(_displayList.indexOf(_lines[i + 1]),1);
+                  _lines[i + 1].parent.removeChild(_lines[i + 1]);
                   _isReAdd = true;
                }
-               _loc4_++;
+               i++;
             }
             if(_isReAdd)
             {
@@ -440,13 +437,13 @@ package store.view.strength
          {
             addChildAt(_rightArrows,0);
          }
-         if(_loc2_ > 0)
+         if(len > 0)
          {
             _tipbackgound.y = -5;
             var _loc7_:* = _maxWidth + 8;
             _tipbackgound.width = _loc7_;
             _width = _loc7_;
-            _loc7_ = _loc1_.y + _loc1_.height + 18;
+            _loc7_ = item.y + item.height + 18;
             _tipbackgound.height = _loc7_;
             _height = _loc7_;
          }
@@ -484,24 +481,23 @@ package store.view.strength
       
       private function createLatentEnergy() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:* = null;
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
+         var tmpItemInfo:* = null;
+         var valueArray:* = null;
+         var i:int = 0;
+         var tipItem:* = null;
          if(_info is InventoryItemInfo)
          {
-            _loc2_ = _info as InventoryItemInfo;
-            if(_loc2_.isHasLatentEnergy)
+            tmpItemInfo = _info as InventoryItemInfo;
+            if(tmpItemInfo.isHasLatentEnergy)
             {
-               _loc1_ = _loc2_.latentEnergyCurList;
-               _loc4_ = 0;
-               while(_loc4_ < 4)
+               valueArray = tmpItemInfo.latentEnergyCurList;
+               for(i = 0; i < 4; )
                {
-                  _loc3_ = new LatentEnergyTipItem();
-                  _loc3_.setView(_loc4_,_loc1_[_loc4_]);
+                  tipItem = new LatentEnergyTipItem();
+                  tipItem.setView(i,valueArray[i]);
                   _displayIdx = Number(_displayIdx) + 1;
-                  _displayList[Number(_displayIdx)] = _loc3_;
-                  _loc4_++;
+                  _displayList[Number(_displayIdx)] = tipItem;
+                  i++;
                }
             }
          }
@@ -509,36 +505,36 @@ package store.view.strength
       
       private function createItemName() : void
       {
-         var _loc2_:* = null;
+         var format:* = null;
          _nameTxt.text = String(_info.Name);
-         var _loc1_:InventoryItemInfo = _info as InventoryItemInfo;
-         if(_loc1_ && _loc1_.StrengthenLevel > 0)
+         var tempInfo:InventoryItemInfo = _info as InventoryItemInfo;
+         if(tempInfo && tempInfo.StrengthenLevel > 0)
          {
-            if(_loc1_.isGold)
+            if(tempInfo.isGold)
             {
-               if(_loc1_.StrengthenLevel > PathManager.solveStrengthMax())
+               if(tempInfo.StrengthenLevel > PathManager.solveStrengthMax())
                {
-                  _nameTxt.text = _nameTxt.text + LanguageMgr.GetTranslation("store.view.exalt.goodTips",_loc1_.StrengthenLevel - 12);
+                  _nameTxt.text = _nameTxt.text + LanguageMgr.GetTranslation("store.view.exalt.goodTips",tempInfo.StrengthenLevel - 12);
                }
                else
                {
                   _nameTxt.text = _nameTxt.text + LanguageMgr.GetTranslation("wishBead.StrengthenLevel");
                }
             }
-            else if(_loc1_.StrengthenLevel <= PathManager.solveStrengthMax())
+            else if(tempInfo.StrengthenLevel <= PathManager.solveStrengthMax())
             {
                _nameTxt.text = _nameTxt.text + ("(+" + (_info as InventoryItemInfo).StrengthenLevel + ")");
             }
-            else if(_loc1_.StrengthenLevel > PathManager.solveStrengthMax())
+            else if(tempInfo.StrengthenLevel > PathManager.solveStrengthMax())
             {
-               _nameTxt.text = _nameTxt.text + LanguageMgr.GetTranslation("store.view.exalt.goodTips",_loc1_.StrengthenLevel - 12);
+               _nameTxt.text = _nameTxt.text + LanguageMgr.GetTranslation("store.view.exalt.goodTips",tempInfo.StrengthenLevel - 12);
             }
          }
-         var _loc3_:int = _nameTxt.text.indexOf("+");
-         if(_loc3_ > 0)
+         var len:int = _nameTxt.text.indexOf("+");
+         if(len > 0)
          {
-            _loc2_ = ComponentFactory.Instance.model.getSet("core.goodTip.ItemNameNumTxtFormat");
-            _nameTxt.setTextFormat(_loc2_,_loc3_,_loc3_ + 1);
+            format = ComponentFactory.Instance.model.getSet("core.goodTip.ItemNameNumTxtFormat");
+            _nameTxt.setTextFormat(format,len,len + 1);
          }
          _nameTxt.textColor = QualityType.QUALITY_COLOR[_info.Quality];
          _displayIdx = Number(_displayIdx) + 1;
@@ -547,104 +543,104 @@ package store.view.strength
       
       private function createQualityItem() : void
       {
-         var _loc1_:FilterFrameText = _qualityItem.foreItems[0] as FilterFrameText;
-         _loc1_.text = QualityType.QUALITY_STRING[_info.Quality];
-         _loc1_.textColor = QualityType.QUALITY_COLOR[_info.Quality];
+         var fft:FilterFrameText = _qualityItem.foreItems[0] as FilterFrameText;
+         fft.text = QualityType.QUALITY_STRING[_info.Quality];
+         fft.textColor = QualityType.QUALITY_COLOR[_info.Quality];
          _displayIdx = Number(_displayIdx) + 1;
          _displayList[Number(_displayIdx)] = _qualityItem;
       }
       
       private function createCategoryItem() : void
       {
-         var _loc1_:FilterFrameText = _typeItem.foreItems[0] as FilterFrameText;
-         var _loc2_:Array = EquipType.PARTNAME;
-         _loc1_.text = !EquipType.PARTNAME[_info.CategoryID]?"":EquipType.PARTNAME[_info.CategoryID];
+         var fft:FilterFrameText = _typeItem.foreItems[0] as FilterFrameText;
+         var arr:Array = EquipType.PARTNAME;
+         fft.text = !EquipType.PARTNAME[_info.CategoryID]?"":EquipType.PARTNAME[_info.CategoryID];
          _displayIdx = Number(_displayIdx) + 1;
          _displayList[Number(_displayIdx)] = _typeItem;
       }
       
       private function createMainProperty() : void
       {
-         var _loc12_:* = NaN;
-         var _loc10_:* = NaN;
-         var _loc7_:* = null;
-         var _loc4_:int = 0;
-         var _loc8_:int = 0;
-         var _loc13_:String = "";
-         var _loc2_:String = "";
-         var _loc6_:int = 0;
-         var _loc1_:FilterFrameText = _mainPropertyItem.foreItems[0] as FilterFrameText;
-         var _loc9_:ScaleFrameImage = _mainPropertyItem.backItem as ScaleFrameImage;
-         var _loc14_:InventoryItemInfo = _info as InventoryItemInfo;
+         var strenGold:* = NaN;
+         var armValue:* = NaN;
+         var tf:* = null;
+         var beginIndex:int = 0;
+         var endIndex:int = 0;
+         var attachedMainPropertyStr:String = "";
+         var strengthenedStr:String = "";
+         var strengthenLevel:int = 0;
+         var fft:FilterFrameText = _mainPropertyItem.foreItems[0] as FilterFrameText;
+         var type:ScaleFrameImage = _mainPropertyItem.backItem as ScaleFrameImage;
+         var ivenInfo:InventoryItemInfo = _info as InventoryItemInfo;
          GhostStarContainer(_mainPropertyItem.foreItems[1]).visible = false;
          GhostStarContainer(_armAngleItem.foreItems[1]).visible = false;
          _autoGhostWidth = 0;
-         var _loc11_:uint = 0;
-         var _loc3_:PlayerInfo = PlayerInfoViewControl.currentPlayer || PlayerManager.Instance.Self;
-         var _loc15_:GhostPropertyData = _loc14_ == null || _loc14_.Place > 30 || !EquipGhostManager.getInstance().isEquipGhosting()?null:EquipGhostManager.getInstance().getPorpertyData(_loc14_,PlayerInfoViewControl.currentPlayer);
-         var _loc5_:GoodTipInfo = _tipData as GoodTipInfo;
-         if(_loc5_ && EquipGhostManager.getInstance().isEquipGhosting())
+         var attachedMainProperty:uint = 0;
+         var player:PlayerInfo = PlayerInfoViewControl.currentPlayer || PlayerManager.Instance.Self;
+         var ghostPropertyData:GhostPropertyData = ivenInfo == null || ivenInfo.Place > 30 || !EquipGhostManager.getInstance().isEquipGhosting()?null:EquipGhostManager.getInstance().getPorpertyData(ivenInfo,PlayerInfoViewControl.currentPlayer);
+         var goodTipInfo:GoodTipInfo = _tipData as GoodTipInfo;
+         if(goodTipInfo && EquipGhostManager.getInstance().isEquipGhosting())
          {
-            if(_loc5_.ghostLv > 0 && _loc14_ && _loc14_.Place <= 30)
+            if(goodTipInfo.ghostLv > 0 && ivenInfo && ivenInfo.Place <= 30)
             {
-               _loc15_ = EquipGhostManager.getInstance().getPropertyDataByLv(_loc14_,_loc5_.ghostLv);
+               ghostPropertyData = EquipGhostManager.getInstance().getPropertyDataByLv(ivenInfo,goodTipInfo.ghostLv);
             }
          }
          if(EquipType.isArm(_info))
          {
-            _loc12_ = 0;
-            if(_loc14_ && _loc14_.StrengthenLevel > 0)
+            strenGold = 0;
+            if(ivenInfo && ivenInfo.StrengthenLevel > 0)
             {
-               _loc6_ = !!_loc14_.isGold?_loc14_.StrengthenLevel + 1:_loc14_.StrengthenLevel;
-               _loc12_ = Number(StaticFormula.getHertAddition(int(_loc14_.Property7),_loc6_));
+               strengthenLevel = !!ivenInfo.isGold?ivenInfo.StrengthenLevel + 1:ivenInfo.StrengthenLevel;
+               strenGold = Number(StaticFormula.getHertAddition(int(ivenInfo.Property7),strengthenLevel));
             }
-            _loc9_.setFrame(1);
-            _loc11_ = _loc12_ + (!!_loc15_?_loc15_.mainProperty:0);
-            _loc13_ = _loc11_ > 0?"(+" + _loc11_ + ")":"";
-            _loc1_.text = " " + _info.Property7.toString() + _loc13_;
+            type.setFrame(1);
+            attachedMainProperty = strenGold + (!!ghostPropertyData?ghostPropertyData.mainProperty:0);
+            attachedMainPropertyStr = attachedMainProperty > 0?"(+" + attachedMainProperty + ")":"";
+            fft.text = " " + _info.Property7.toString() + attachedMainPropertyStr;
             FilterFrameText(_armAngleItem.foreItems[0]).text = " " + _info.Property5 + "°~" + _info.Property6 + "°";
             _displayIdx = Number(_displayIdx) + 1;
             _displayList[Number(_displayIdx)] = _mainPropertyItem;
             _displayIdx = Number(_displayIdx) + 1;
             _displayList[Number(_displayIdx)] = _armAngleItem;
-            if(_loc15_ != null)
+            if(ghostPropertyData != null)
             {
                _ghostStartsContainer = _armAngleItem.foreItems[1] as GhostStarContainer;
                _ghostStartsContainer.x = _armAngleItem.foreItems[0].width + _armAngleItem.foreItems[0].x;
                _ghostStartsContainer.y = _armAngleItem.foreItems[0].y + 8;
                _ghostStartsContainer.maxLv = EquipGhostManager.getInstance().model.topLvDic[_info.CategoryID];
-               _ghostStartsContainer.level = _loc5_.ghostLv;
+               _ghostStartsContainer.level = goodTipInfo.ghostLv;
                _ghostStartsContainer.visible = true;
                _autoGhostWidth = _ghostStartsContainer.x + _ghostStartsContainer.width;
             }
          }
          else if(EquipType.isHead(_info) || EquipType.isCloth(_info))
          {
-            _loc10_ = 0;
-            if(_loc14_ && _loc14_.StrengthenLevel > 0)
+            armValue = 0;
+            if(ivenInfo && ivenInfo.StrengthenLevel > 0)
             {
-               _loc6_ = !!_loc14_.isGold?_loc14_.StrengthenLevel + 1:_loc14_.StrengthenLevel;
-               _loc10_ = Number(StaticFormula.getDefenseAddition(int(_loc14_.Property7),_loc6_));
+               strengthenLevel = !!ivenInfo.isGold?ivenInfo.StrengthenLevel + 1:ivenInfo.StrengthenLevel;
+               armValue = Number(StaticFormula.getDefenseAddition(int(ivenInfo.Property7),strengthenLevel));
             }
-            _loc9_.setFrame(2);
-            _loc11_ = _loc10_ + (_loc15_ != null?_loc15_.mainProperty:0);
-            _loc13_ = _loc11_ > 0?"(+" + _loc11_ + ")":"";
-            _loc1_.text = " " + _info.Property7.toString() + _loc13_;
+            type.setFrame(2);
+            attachedMainProperty = armValue + (ghostPropertyData != null?ghostPropertyData.mainProperty:0);
+            attachedMainPropertyStr = attachedMainProperty > 0?"(+" + attachedMainProperty + ")":"";
+            fft.text = " " + _info.Property7.toString() + attachedMainPropertyStr;
             _displayIdx = Number(_displayIdx) + 1;
             _displayList[Number(_displayIdx)] = _mainPropertyItem;
-            if(_loc14_ && _loc14_.isGold)
+            if(ivenInfo && ivenInfo.isGold)
             {
-               FilterFrameText(_otherHp.foreItems[0]).text = _loc14_.Boold.toString();
+               FilterFrameText(_otherHp.foreItems[0]).text = ivenInfo.Boold.toString();
                _displayIdx = Number(_displayIdx) + 1;
                _displayList[Number(_displayIdx)] = _otherHp;
             }
-            if(_loc15_ != null)
+            if(ghostPropertyData != null)
             {
                _ghostStartsContainer = _mainPropertyItem.foreItems[1] as GhostStarContainer;
                _ghostStartsContainer.maxLv = EquipGhostManager.getInstance().model.topLvDic[_info.CategoryID];
                _ghostStartsContainer.x = _mainPropertyItem.foreItems[0].width + _mainPropertyItem.foreItems[0].x;
                _ghostStartsContainer.y = _mainPropertyItem.foreItems[0].y + 8;
-               _ghostStartsContainer.level = _loc5_.ghostLv;
+               _ghostStartsContainer.level = goodTipInfo.ghostLv;
                _ghostStartsContainer.visible = true;
                _autoGhostWidth = _ghostStartsContainer.x + _ghostStartsContainer.width;
             }
@@ -653,34 +649,45 @@ package store.view.strength
          {
             if(_info.Property3 == "32")
             {
-               if(_loc14_ && _loc14_.StrengthenLevel > 0)
+               if(ivenInfo && ivenInfo.StrengthenLevel > 0)
                {
-                  _loc6_ = !!_loc14_.isGold?_loc14_.StrengthenLevel + 1:_loc14_.StrengthenLevel;
-                  _loc2_ = "(+" + StaticFormula.getRecoverHPAddition(int(_loc14_.Property7),_loc6_) + ")";
+                  strengthenLevel = !!ivenInfo.isGold?ivenInfo.StrengthenLevel + 1:ivenInfo.StrengthenLevel;
+                  strengthenedStr = "(+" + StaticFormula.getRecoverHPAddition(int(ivenInfo.Property7),strengthenLevel) + ")";
                }
-               _loc9_.setFrame(3);
+               type.setFrame(3);
+               fft.text = " " + _info.Property7.toString() + strengthenedStr;
+            }
+            else if(_info.Property3 == "132")
+            {
+               if(ivenInfo && ivenInfo.StrengthenLevel > 0)
+               {
+                  strengthenLevel = !!ivenInfo.isGold?ivenInfo.StrengthenLevel + 1:ivenInfo.StrengthenLevel;
+                  strengthenedStr = "(+" + int(StaticFormula.getRecoverHPAddition(int(ivenInfo.Property7),strengthenLevel) / 2) + ")";
+               }
+               type.setFrame(5);
+               fft.text = " " + (int(_info.Property7) / 2).toString() + strengthenedStr;
             }
             else
             {
-               if(_loc14_ && _loc14_.StrengthenLevel > 0)
+               if(ivenInfo && ivenInfo.StrengthenLevel > 0)
                {
-                  _loc6_ = !!_loc14_.isGold?_loc14_.StrengthenLevel + 1:_loc14_.StrengthenLevel;
-                  _loc2_ = "(+" + StaticFormula.getDefenseAddition(int(_loc14_.Property7),_loc6_) + ")";
+                  strengthenLevel = !!ivenInfo.isGold?ivenInfo.StrengthenLevel + 1:ivenInfo.StrengthenLevel;
+                  strengthenedStr = "(+" + StaticFormula.getDefenseAddition(int(ivenInfo.Property7),strengthenLevel) + ")";
                }
-               _loc9_.setFrame(4);
+               type.setFrame(4);
+               fft.text = " " + _info.Property7.toString() + strengthenedStr;
             }
-            _loc1_.text = " " + _info.Property7.toString() + _loc2_;
             _displayIdx = Number(_displayIdx) + 1;
             _displayList[Number(_displayIdx)] = _mainPropertyItem;
          }
-         if(_loc1_ && _loc1_.text != "")
+         if(fft && fft.text != "")
          {
-            _loc7_ = ComponentFactory.Instance.model.getSet("ddt.store.view.exalt.LaterEquipmentViewTextTF");
-            _loc4_ = _loc1_.text.indexOf("(");
-            _loc8_ = _loc1_.text.indexOf(")") + 1;
-            if(_loc4_ > -1)
+            tf = ComponentFactory.Instance.model.getSet("ddt.store.view.exalt.LaterEquipmentViewTextTF");
+            beginIndex = fft.text.indexOf("(");
+            endIndex = fft.text.indexOf(")") + 1;
+            if(beginIndex > -1)
             {
-               _loc1_.setTextFormat(_loc7_,_loc4_,_loc8_);
+               fft.setTextFormat(tf,beginIndex,endIndex);
             }
          }
       }
@@ -699,92 +706,92 @@ package store.view.strength
          }
       }
       
-      private function setPurpleHtmlTxt(param1:String, param2:int, param3:String) : String
+      private function setPurpleHtmlTxt(title:String, value:int, add:String) : String
       {
-         return LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.setPurpleHtmlTxt",param1,param2,param3);
+         return LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.setPurpleHtmlTxt",title,value,add);
       }
       
       private function createProperties() : void
       {
-         var _loc2_:* = null;
-         var _loc8_:String = "";
-         var _loc12_:String = "";
-         var _loc6_:String = "";
-         var _loc11_:String = "";
-         var _loc3_:String = "";
-         var _loc10_:String = "";
-         var _loc5_:String = "";
-         var _loc9_:String = "";
+         var t:* = null;
+         var tat:String = "";
+         var tde:String = "";
+         var tag:String = "";
+         var tlu:String = "";
+         var gat:String = "";
+         var gde:String = "";
+         var gag:String = "";
+         var glu:String = "";
          if(_info is InventoryItemInfo && !EquipType.isMagicStone(_info.CategoryID))
          {
-            _loc2_ = _info as InventoryItemInfo;
-            if(_loc2_.AttackCompose > 0)
+            t = _info as InventoryItemInfo;
+            if(t.AttackCompose > 0)
             {
-               _loc8_ = "(+" + String(_loc2_.AttackCompose) + ")";
+               tat = "(+" + String(t.AttackCompose) + ")";
             }
-            if(_loc2_.DefendCompose > 0)
+            if(t.DefendCompose > 0)
             {
-               _loc12_ = "(+" + String(_loc2_.DefendCompose) + ")";
+               tde = "(+" + String(t.DefendCompose) + ")";
             }
-            if(_loc2_.AgilityCompose > 0)
+            if(t.AgilityCompose > 0)
             {
-               _loc6_ = "(+" + String(_loc2_.AgilityCompose) + ")";
+               tag = "(+" + String(t.AgilityCompose) + ")";
             }
-            if(_loc2_.LuckCompose > 0)
+            if(t.LuckCompose > 0)
             {
-               _loc11_ = "(+" + String(_loc2_.LuckCompose) + ")";
-            }
-         }
-         var _loc1_:InventoryItemInfo = _info as InventoryItemInfo;
-         var _loc4_:GhostPropertyData = _loc1_ == null || _loc1_.Place > 30 || !EquipGhostManager.getInstance().isEquipGhosting()?null:EquipGhostManager.getInstance().getPorpertyData(_loc1_,PlayerInfoViewControl.currentPlayer);
-         var _loc7_:GoodTipInfo = _tipData as GoodTipInfo;
-         if(_loc7_)
-         {
-            if(_loc7_.ghostLv > 0 && (_loc1_ != null && _loc1_.Place <= 30) && EquipGhostManager.getInstance().isEquipGhosting())
-            {
-               _loc4_ = EquipGhostManager.getInstance().getPropertyDataByLv(_loc1_,_loc7_.ghostLv);
+               tlu = "(+" + String(t.LuckCompose) + ")";
             }
          }
-         if(_loc4_ != null)
+         var ivenInfo:InventoryItemInfo = _info as InventoryItemInfo;
+         var ghostPropertyData:GhostPropertyData = ivenInfo == null || ivenInfo.Place > 30 || !EquipGhostManager.getInstance().isEquipGhosting()?null:EquipGhostManager.getInstance().getPorpertyData(ivenInfo,PlayerInfoViewControl.currentPlayer);
+         var goodTipInfo:GoodTipInfo = _tipData as GoodTipInfo;
+         if(goodTipInfo)
          {
-            if(_loc4_.attack > 0)
+            if(goodTipInfo.ghostLv > 0 && (ivenInfo != null && ivenInfo.Place <= 30) && EquipGhostManager.getInstance().isEquipGhosting())
             {
-               _loc3_ = LanguageMgr.GetTranslation("equipGhost.tip",_loc4_.attack);
+               ghostPropertyData = EquipGhostManager.getInstance().getPropertyDataByLv(ivenInfo,goodTipInfo.ghostLv);
             }
-            if(_loc4_.defend > 0)
+         }
+         if(ghostPropertyData != null)
+         {
+            if(ghostPropertyData.attack > 0)
             {
-               _loc10_ = LanguageMgr.GetTranslation("equipGhost.tip",_loc4_.defend);
+               gat = LanguageMgr.GetTranslation("equipGhost.tip",ghostPropertyData.attack);
             }
-            if(_loc4_.lucky > 0)
+            if(ghostPropertyData.defend > 0)
             {
-               _loc9_ = LanguageMgr.GetTranslation("equipGhost.tip",_loc4_.lucky);
+               gde = LanguageMgr.GetTranslation("equipGhost.tip",ghostPropertyData.defend);
             }
-            if(_loc4_.agility > 0)
+            if(ghostPropertyData.lucky > 0)
             {
-               _loc5_ = LanguageMgr.GetTranslation("equipGhost.tip",_loc4_.agility);
+               glu = LanguageMgr.GetTranslation("equipGhost.tip",ghostPropertyData.lucky);
+            }
+            if(ghostPropertyData.agility > 0)
+            {
+               gag = LanguageMgr.GetTranslation("equipGhost.tip",ghostPropertyData.agility);
             }
          }
          if(_info.Attack != 0)
          {
-            _attackTxt.htmlText = LanguageMgr.GetTranslation("goodTip.propertyStr",LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.fire") + ":" + String(_info.Attack) + _loc8_) + _loc3_;
+            _attackTxt.htmlText = LanguageMgr.GetTranslation("goodTip.propertyStr",LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.fire") + ":" + String(_info.Attack) + tat) + gat;
             _displayIdx = Number(_displayIdx) + 1;
             _displayList[Number(_displayIdx)] = _attackTxt;
          }
          if(_info.Defence != 0)
          {
-            _defenseTxt.htmlText = LanguageMgr.GetTranslation("goodTip.propertyStr",LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.recovery") + ":" + String(_info.Defence) + _loc12_) + _loc10_;
+            _defenseTxt.htmlText = LanguageMgr.GetTranslation("goodTip.propertyStr",LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.recovery") + ":" + String(_info.Defence) + tde) + gde;
             _displayIdx = Number(_displayIdx) + 1;
             _displayList[Number(_displayIdx)] = _defenseTxt;
          }
          if(_info.Agility != 0)
          {
-            _agilityTxt.htmlText = LanguageMgr.GetTranslation("goodTip.propertyStr",LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.agility") + ":" + String(_info.Agility) + _loc6_) + _loc5_;
+            _agilityTxt.htmlText = LanguageMgr.GetTranslation("goodTip.propertyStr",LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.agility") + ":" + String(_info.Agility) + tag) + gag;
             _displayIdx = Number(_displayIdx) + 1;
             _displayList[Number(_displayIdx)] = _agilityTxt;
          }
          if(_info.Luck != 0)
          {
-            _luckTxt.htmlText = LanguageMgr.GetTranslation("goodTip.propertyStr",LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.lucky") + ":" + String(_info.Luck) + _loc11_) + _loc9_;
+            _luckTxt.htmlText = LanguageMgr.GetTranslation("goodTip.propertyStr",LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.lucky") + ":" + String(_info.Luck) + tlu) + glu;
             _displayIdx = Number(_displayIdx) + 1;
             _displayList[Number(_displayIdx)] = _luckTxt;
          }
@@ -792,118 +799,118 @@ package store.view.strength
       
       private function createHoleItem() : void
       {
-         var _loc6_:* = null;
-         var _loc7_:* = null;
-         var _loc1_:* = null;
-         var _loc8_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         var _loc5_:* = null;
-         var _loc4_:int = 0;
+         var holeList:* = null;
+         var strHoleList:* = null;
+         var inventoryInfo:* = null;
+         var i:int = 0;
+         var str:* = null;
+         var tmpArr:* = null;
+         var simpleItem:* = null;
+         var requireStrengthenLevel:int = 0;
          if(!StringHelper.isNullOrEmpty(_info.Hole))
          {
-            _loc6_ = [];
-            _loc7_ = _info.Hole.split("|");
-            _loc1_ = _info as InventoryItemInfo;
-            if(_loc7_.length > 0 && String(_loc7_[0]) != "" && _loc1_ != null)
+            holeList = [];
+            strHoleList = _info.Hole.split("|");
+            inventoryInfo = _info as InventoryItemInfo;
+            if(strHoleList.length > 0 && String(strHoleList[0]) != "" && inventoryInfo != null)
             {
-               _loc8_ = 0;
-               while(_loc8_ < _loc7_.length)
+               i = 0;
+               while(i < strHoleList.length)
                {
-                  _loc2_ = String(_loc7_[_loc8_]);
-                  _loc3_ = _loc2_.split(",");
-                  if(_loc8_ < 4)
+                  str = String(strHoleList[i]);
+                  tmpArr = str.split(",");
+                  if(i < 4)
                   {
-                     if(int(_loc3_[0]) > 0 && int(_loc3_[0]) - _loc1_.StrengthenLevel <= 3 || getHole(_loc1_,_loc8_ + 1) >= 0)
+                     if(int(tmpArr[0]) > 0 && int(tmpArr[0]) - inventoryInfo.StrengthenLevel <= 3 || getHole(inventoryInfo,i + 1) >= 0)
                      {
-                        _loc4_ = _loc3_[0];
-                        _loc5_ = createSingleHole(_loc1_,_loc8_,_loc4_,_loc3_[1]);
+                        requireStrengthenLevel = tmpArr[0];
+                        simpleItem = createSingleHole(inventoryInfo,i,requireStrengthenLevel,tmpArr[1]);
                         _displayIdx = Number(_displayIdx) + 1;
-                        _displayList[Number(_displayIdx)] = _loc5_;
+                        _displayList[Number(_displayIdx)] = simpleItem;
                      }
                   }
-                  else if(_loc1_["Hole" + (_loc8_ + 1) + "Level"] >= 1 || _loc1_["Hole" + (_loc8_ + 1)] > 0)
+                  else if(inventoryInfo["Hole" + (i + 1) + "Level"] >= 1 || inventoryInfo["Hole" + (i + 1)] > 0)
                   {
-                     _loc5_ = createSingleHole(_loc1_,_loc8_,2147483647,_loc3_[1]);
+                     simpleItem = createSingleHole(inventoryInfo,i,2147483647,tmpArr[1]);
                      _displayIdx = Number(_displayIdx) + 1;
-                     _displayList[Number(_displayIdx)] = _loc5_;
+                     _displayList[Number(_displayIdx)] = simpleItem;
                   }
-                  _loc8_++;
+                  i++;
                }
             }
          }
       }
       
-      private function createSingleHole(param1:InventoryItemInfo, param2:int, param3:int, param4:int) : FilterFrameText
+      private function createSingleHole(inventoryInfo:InventoryItemInfo, index:int, strengthLevel:int, holeType:int) : FilterFrameText
       {
-         var _loc6_:* = null;
-         var _loc8_:int = 0;
-         var _loc7_:FilterFrameText = _holes[param2];
-         var _loc5_:int = getHole(param1,param2 + 1);
-         if(param1.StrengthenLevel >= param3)
+         var goodsTemplateInfos:* = null;
+         var holeLv:int = 0;
+         var item:FilterFrameText = _holes[index];
+         var holeState:int = getHole(inventoryInfo,index + 1);
+         if(inventoryInfo.StrengthenLevel >= strengthLevel)
          {
-            if(_loc5_ <= 0)
+            if(holeState <= 0)
             {
-               _loc7_.text = getHoleType(param4) + ":" + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.holeenable");
-               _loc7_.textColor = 16777215;
+               item.text = getHoleType(holeType) + ":" + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.holeenable");
+               item.textColor = 16777215;
             }
             else
             {
-               _loc6_ = ItemManager.Instance.getTemplateById(_loc5_);
-               if(_loc6_)
+               goodsTemplateInfos = ItemManager.Instance.getTemplateById(holeState);
+               if(goodsTemplateInfos)
                {
-                  _loc7_.text = _loc6_.Data;
-                  _loc7_.textColor = 16776960;
+                  item.text = goodsTemplateInfos.Data;
+                  item.textColor = 16776960;
                }
             }
          }
-         else if(param2 >= 4)
+         else if(index >= 4)
          {
-            _loc8_ = param1["Hole" + (param2 + 1) + "Level"];
-            if(_loc5_ > 0)
+            holeLv = inventoryInfo["Hole" + (index + 1) + "Level"];
+            if(holeState > 0)
             {
-               _loc6_ = ItemManager.Instance.getTemplateById(_loc5_);
-               _loc7_.text = _loc6_.Data + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.holeLv",param1["Hole" + (param2 + 1) + "Level"]);
-               if(Math.floor(_loc6_.Level + 1 >> 1) <= _loc8_)
+               goodsTemplateInfos = ItemManager.Instance.getTemplateById(holeState);
+               item.text = goodsTemplateInfos.Data + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.holeLv",inventoryInfo["Hole" + (index + 1) + "Level"]);
+               if(Math.floor(goodsTemplateInfos.Level + 1 >> 1) <= holeLv)
                {
-                  _loc7_.textColor = 16776960;
+                  item.textColor = 16776960;
                }
                else
                {
-                  _loc7_.textColor = 6710886;
+                  item.textColor = 6710886;
                }
             }
             else
             {
-               _loc7_.text = getHoleType(param4) + StringHelper.format(LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.holeLv",param1["Hole" + (param2 + 1) + "Level"]));
-               _loc7_.textColor = 16777215;
+               item.text = getHoleType(holeType) + StringHelper.format(LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.holeLv",inventoryInfo["Hole" + (index + 1) + "Level"]));
+               item.textColor = 16777215;
             }
          }
-         else if(_loc5_ <= 0)
+         else if(holeState <= 0)
          {
-            _loc7_.text = getHoleType(param4) + StringHelper.format(LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.holerequire"),param3.toString());
-            _loc7_.textColor = 6710886;
+            item.text = getHoleType(holeType) + StringHelper.format(LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.holerequire"),strengthLevel.toString());
+            item.textColor = 6710886;
          }
          else
          {
-            _loc6_ = ItemManager.Instance.getTemplateById(_loc5_);
-            if(_loc6_)
+            goodsTemplateInfos = ItemManager.Instance.getTemplateById(holeState);
+            if(goodsTemplateInfos)
             {
-               _loc7_.text = _loc6_.Data + StringHelper.format(LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.holerequire"),param3.toString());
-               _loc7_.textColor = 6710886;
+               item.text = goodsTemplateInfos.Data + StringHelper.format(LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.holerequire"),strengthLevel.toString());
+               item.textColor = 6710886;
             }
          }
-         return _loc7_;
+         return item;
       }
       
-      public function getHole(param1:InventoryItemInfo, param2:int) : int
+      public function getHole(inventoryInfo:InventoryItemInfo, index:int) : int
       {
-         return int(param1["Hole" + param2.toString()]);
+         return int(inventoryInfo["Hole" + index.toString()]);
       }
       
-      private function getHoleType(param1:int) : String
+      private function getHoleType(type:int) : String
       {
-         switch(int(param1) - 1)
+         switch(int(type) - 1)
          {
             case 0:
                return LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.trianglehole");
@@ -916,19 +923,19 @@ package store.view.strength
       
       private function createOperationItem() : void
       {
-         var _loc1_:int = 0;
+         var tc:int = 0;
          if(_info.NeedLevel > 1)
          {
             if(PlayerManager.Instance.Self.Grade >= _info.NeedLevel)
             {
-               _loc1_ = 13421772;
+               tc = 13421772;
             }
             else
             {
-               _loc1_ = 16711680;
+               tc = 16711680;
             }
             _needLevelTxt.text = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.need") + ":" + String(_info.NeedLevel);
-            _needLevelTxt.textColor = _loc1_;
+            _needLevelTxt.textColor = tc;
             _displayIdx = Number(_displayIdx) + 1;
             _displayList[Number(_displayIdx)] = _needLevelTxt;
          }
@@ -946,47 +953,47 @@ package store.view.strength
             _displayIdx = Number(_displayIdx) + 1;
             _displayList[Number(_displayIdx)] = _needSexTxt;
          }
-         var _loc2_:String = "";
+         var tipSmith:String = "";
          if(_info.CanStrengthen && _info.CanCompose)
          {
-            _loc2_ = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.may");
+            tipSmith = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.may");
             if(EquipType.isRongLing(_info))
             {
-               _loc2_ = _loc2_ + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.melting");
+               tipSmith = tipSmith + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.melting");
             }
-            _upgradeType.text = _loc2_;
+            _upgradeType.text = tipSmith;
             _upgradeType.textColor = 10092339;
             _displayIdx = Number(_displayIdx) + 1;
             _displayList[Number(_displayIdx)] = _upgradeType;
          }
          else if(_info.CanCompose)
          {
-            _loc2_ = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.compose");
+            tipSmith = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.compose");
             if(EquipType.isRongLing(_info))
             {
-               _loc2_ = _loc2_ + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.melting");
+               tipSmith = tipSmith + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.melting");
             }
-            _upgradeType.text = _loc2_;
+            _upgradeType.text = tipSmith;
             _upgradeType.textColor = 10092339;
             _displayIdx = Number(_displayIdx) + 1;
             _displayList[Number(_displayIdx)] = _upgradeType;
          }
          else if(_info.CanStrengthen)
          {
-            _loc2_ = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.strong");
+            tipSmith = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.strong");
             if(EquipType.isRongLing(_info))
             {
-               _loc2_ = _loc2_ + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.melting");
+               tipSmith = tipSmith + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.melting");
             }
-            _upgradeType.text = _loc2_;
+            _upgradeType.text = tipSmith;
             _upgradeType.textColor = 10092339;
             _displayIdx = Number(_displayIdx) + 1;
             _displayList[Number(_displayIdx)] = _upgradeType;
          }
          else if(EquipType.isRongLing(_info))
          {
-            _loc2_ = _loc2_ + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.canmelting");
-            _upgradeType.text = _loc2_;
+            tipSmith = tipSmith + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.canmelting");
+            _upgradeType.text = tipSmith;
             _upgradeType.textColor = 10092339;
             _displayIdx = Number(_displayIdx) + 1;
             _displayList[Number(_displayIdx)] = _upgradeType;
@@ -1005,32 +1012,32 @@ package store.view.strength
          _displayList[Number(_displayIdx)] = _descriptionTxt;
       }
       
-      private function createShopItemLimitGrade(param1:ShopItemInfo) : void
+      private function createShopItemLimitGrade(itemInfo:ShopItemInfo) : void
       {
-         if(param1 && param1.LimitGrade > PlayerManager.Instance.Self.Grade)
+         if(itemInfo && itemInfo.LimitGrade > PlayerManager.Instance.Self.Grade)
          {
-            _limitGradeTxt.text = LanguageMgr.GetTranslation("ddt.shop.LimitGradeBuy",param1.LimitGrade);
+            _limitGradeTxt.text = LanguageMgr.GetTranslation("ddt.shop.LimitGradeBuy",itemInfo.LimitGrade);
             _displayIdx = Number(_displayIdx) + 1;
             _displayList[Number(_displayIdx)] = _limitGradeTxt;
          }
       }
       
-      private function ShowBound(param1:InventoryItemInfo) : Boolean
+      private function ShowBound(info:InventoryItemInfo) : Boolean
       {
-         return param1.CategoryID != 32 && param1.CategoryID != 33 && param1.CategoryID != 36;
+         return info.CategoryID != 32 && info.CategoryID != 33 && info.CategoryID != 36;
       }
       
       private function createBindType() : void
       {
-         var _loc1_:InventoryItemInfo = _info as InventoryItemInfo;
-         if(_loc1_ && ShowBound(_loc1_))
+         var tempInfo:InventoryItemInfo = _info as InventoryItemInfo;
+         if(tempInfo && ShowBound(tempInfo))
          {
-            _boundImage.setFrame(!!_loc1_.IsBinds?1:uint(2));
+            _boundImage.setFrame(!!tempInfo.IsBinds?1:uint(2));
             PositionUtils.setPos(_boundImage,_bindImageOriginalPos);
             addChild(_boundImage);
-            if(!_loc1_.IsBinds)
+            if(!tempInfo.IsBinds)
             {
-               if(_loc1_.BindType == 3)
+               if(tempInfo.BindType == 3)
                {
                   _bindTypeTxt.text = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.bangding");
                   _bindTypeTxt.textColor = 16777215;
@@ -1061,123 +1068,123 @@ package store.view.strength
       
       private function createRemainTime() : void
       {
-         var _loc7_:Number = NaN;
-         var _loc6_:* = null;
-         var _loc4_:Number = NaN;
-         var _loc8_:Number = NaN;
-         var _loc3_:* = null;
-         var _loc9_:* = NaN;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
-         var _loc5_:* = 0;
+         var tempReman:Number = NaN;
+         var tempInfo:* = null;
+         var remain:Number = NaN;
+         var colorDate:Number = NaN;
+         var str:* = null;
+         var hour:* = NaN;
+         var latentEnergyRemainStr:* = null;
+         var tmpStr:* = null;
+         var tmpTxtColor:* = 0;
          if(_remainTimeBg.parent)
          {
             _remainTimeBg.parent.removeChild(_remainTimeBg);
          }
          if(_info is InventoryItemInfo)
          {
-            _loc6_ = _info as InventoryItemInfo;
-            _loc4_ = _loc6_.getRemainDate();
-            _loc8_ = _loc6_.getColorValidDate();
-            _loc3_ = _loc6_.CategoryID == 7?LanguageMgr.GetTranslation("bag.changeColor.tips.armName"):"";
-            if(_loc8_ > 0 && _loc8_ != 2147483647)
+            tempInfo = _info as InventoryItemInfo;
+            remain = tempInfo.getRemainDate();
+            colorDate = tempInfo.getColorValidDate();
+            str = tempInfo.CategoryID == 7?LanguageMgr.GetTranslation("bag.changeColor.tips.armName"):"";
+            if(colorDate > 0 && colorDate != 2147483647)
             {
-               if(_loc8_ >= 1)
+               if(colorDate >= 1)
                {
-                  _remainTimeTxt.text = (!!_loc6_.IsUsed?LanguageMgr.GetTranslation("bag.changeColor.tips.name") + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.less"):LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.time")) + Math.ceil(_loc8_) + LanguageMgr.GetTranslation("shop.ShopIIShoppingCarItem.day");
+                  _remainTimeTxt.text = (!!tempInfo.IsUsed?LanguageMgr.GetTranslation("bag.changeColor.tips.name") + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.less"):LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.time")) + Math.ceil(colorDate) + LanguageMgr.GetTranslation("shop.ShopIIShoppingCarItem.day");
                   _remainTimeTxt.textColor = 16777215;
                   _displayIdx = Number(_displayIdx) + 1;
                   _displayList[Number(_displayIdx)] = _remainTimeTxt;
                }
                else
                {
-                  _loc9_ = Number(Math.floor(_loc8_ * 24));
-                  if(_loc9_ < 1)
+                  hour = Number(Math.floor(colorDate * 24));
+                  if(hour < 1)
                   {
-                     _loc9_ = 1;
+                     hour = 1;
                   }
-                  _remainTimeTxt.text = (!!_loc6_.IsUsed?LanguageMgr.GetTranslation("bag.changeColor.tips.name") + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.less"):LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.time")) + _loc9_ + LanguageMgr.GetTranslation("hours");
+                  _remainTimeTxt.text = (!!tempInfo.IsUsed?LanguageMgr.GetTranslation("bag.changeColor.tips.name") + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.less"):LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.time")) + hour + LanguageMgr.GetTranslation("hours");
                   _remainTimeTxt.textColor = 16777215;
                   _displayIdx = Number(_displayIdx) + 1;
                   _displayList[Number(_displayIdx)] = _remainTimeTxt;
                }
             }
-            if(_loc4_ == 2147483647)
+            if(remain == 2147483647)
             {
                _remainTimeTxt.text = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.use");
                _remainTimeTxt.textColor = 16776960;
                _displayIdx = Number(_displayIdx) + 1;
                _displayList[Number(_displayIdx)] = _remainTimeTxt;
             }
-            else if(_loc4_ > 0)
+            else if(remain > 0)
             {
-               if(_loc4_ >= 1)
+               if(remain >= 1)
                {
-                  _loc7_ = Math.ceil(_loc4_);
-                  _remainTimeTxt.text = (!!_loc6_.IsUsed?_loc3_ + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.less"):LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.time")) + _loc7_ + LanguageMgr.GetTranslation("shop.ShopIIShoppingCarItem.day");
+                  tempReman = Math.ceil(remain);
+                  _remainTimeTxt.text = (!!tempInfo.IsUsed?str + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.less"):LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.time")) + tempReman + LanguageMgr.GetTranslation("shop.ShopIIShoppingCarItem.day");
                   _remainTimeTxt.textColor = 16777215;
                   _displayIdx = Number(_displayIdx) + 1;
                   _displayList[Number(_displayIdx)] = _remainTimeTxt;
                }
                else
                {
-                  _loc7_ = Math.floor(_loc4_ * 24);
-                  _loc7_ = _loc7_ < 1?1:Number(_loc7_);
-                  _remainTimeTxt.text = (!!_loc6_.IsUsed?_loc3_ + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.less"):LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.time")) + _loc7_ + LanguageMgr.GetTranslation("hours");
+                  tempReman = Math.floor(remain * 24);
+                  tempReman = tempReman < 1?1:Number(tempReman);
+                  _remainTimeTxt.text = (!!tempInfo.IsUsed?str + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.less"):LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.time")) + tempReman + LanguageMgr.GetTranslation("hours");
                   _remainTimeTxt.textColor = 16777215;
                   _displayIdx = Number(_displayIdx) + 1;
                   _displayList[Number(_displayIdx)] = _remainTimeTxt;
                }
                addChild(_remainTimeBg);
             }
-            else if(!isNaN(_loc4_))
+            else if(!isNaN(remain))
             {
                _remainTimeTxt.text = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.over");
                _remainTimeTxt.textColor = 16711680;
                _displayIdx = Number(_displayIdx) + 1;
                _displayList[Number(_displayIdx)] = _remainTimeTxt;
             }
-            if(_loc6_.isHasLatentEnergy)
+            if(tempInfo.isHasLatentEnergy)
             {
-               _loc2_ = TimeManager.Instance.getMaxRemainDateStr(_loc6_.latentEnergyEndTime,2);
-               _loc1_ = _remainTimeTxt.text;
-               _loc1_ = _loc1_ + LanguageMgr.GetTranslation("ddt.latentEnergy.tipRemainDateTxt",_loc2_);
-               _loc5_ = uint(_remainTimeTxt.textColor);
-               _remainTimeTxt.text = _loc1_;
-               _remainTimeTxt.textColor = _loc5_;
+               latentEnergyRemainStr = TimeManager.Instance.getMaxRemainDateStr(tempInfo.latentEnergyEndTime,2);
+               tmpStr = _remainTimeTxt.text;
+               tmpStr = tmpStr + LanguageMgr.GetTranslation("ddt.latentEnergy.tipRemainDateTxt",latentEnergyRemainStr);
+               tmpTxtColor = uint(_remainTimeTxt.textColor);
+               _remainTimeTxt.text = tmpStr;
+               _remainTimeTxt.textColor = tmpTxtColor;
             }
          }
       }
       
       private function createGoldRemainTime() : void
       {
-         var _loc4_:Number = NaN;
-         var _loc3_:* = null;
-         var _loc5_:Number = NaN;
-         var _loc1_:Number = NaN;
-         var _loc2_:* = null;
+         var goldTempReman:Number = NaN;
+         var tempInfo:* = null;
+         var goldRemain:Number = NaN;
+         var goldValidDate:Number = NaN;
+         var goldBeginTime:* = null;
          if(_remainTimeBg.parent)
          {
             _remainTimeBg.parent.removeChild(_remainTimeBg);
          }
          if(_info is InventoryItemInfo)
          {
-            _loc3_ = _info as InventoryItemInfo;
-            _loc5_ = _loc3_.getGoldRemainDate();
-            _loc1_ = _loc3_.goldValidDate;
-            _loc2_ = _loc3_.goldBeginTime;
+            tempInfo = _info as InventoryItemInfo;
+            goldRemain = tempInfo.getGoldRemainDate();
+            goldValidDate = tempInfo.goldValidDate;
+            goldBeginTime = tempInfo.goldBeginTime;
             if((_info as InventoryItemInfo).isGold)
             {
-               if(_loc5_ >= 1)
+               if(goldRemain >= 1)
                {
-                  _loc4_ = Math.ceil(_loc5_);
-                  _goldRemainTimeTxt.text = LanguageMgr.GetTranslation("wishBead.GoodsTipPanel.txt1") + _loc4_ + LanguageMgr.GetTranslation("wishBead.GoodsTipPanel.txt2");
+                  goldTempReman = Math.ceil(goldRemain);
+                  _goldRemainTimeTxt.text = LanguageMgr.GetTranslation("wishBead.GoodsTipPanel.txt1") + goldTempReman + LanguageMgr.GetTranslation("wishBead.GoodsTipPanel.txt2");
                }
                else
                {
-                  _loc4_ = Math.floor(_loc5_ * 24);
-                  _loc4_ = _loc4_ < 1?1:Number(_loc4_);
-                  _goldRemainTimeTxt.text = LanguageMgr.GetTranslation("wishBead.GoodsTipPanel.txt1") + _loc4_ + LanguageMgr.GetTranslation("wishBead.GoodsTipPanel.txt3");
+                  goldTempReman = Math.floor(goldRemain * 24);
+                  goldTempReman = goldTempReman < 1?1:Number(goldTempReman);
+                  _goldRemainTimeTxt.text = LanguageMgr.GetTranslation("wishBead.GoodsTipPanel.txt1") + goldTempReman + LanguageMgr.GetTranslation("wishBead.GoodsTipPanel.txt3");
                }
                addChild(_remainTimeBg);
                _goldRemainTimeTxt.textColor = 16777215;
@@ -1200,20 +1207,20 @@ package store.view.strength
       
       private function createBoxTimeItem() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
+         var bg:* = null;
+         var leftTime:int = 0;
+         var h:int = 0;
+         var m:int = 0;
          if(EquipType.isTimeBox(_info))
          {
-            _loc2_ = DateUtils.getDateByStr((_info as InventoryItemInfo).BeginDate);
-            _loc1_ = int(_info.Property3) * 60 - (TimeManager.Instance.Now().getTime() - _loc2_.getTime()) / 1000;
-            if(_loc1_ > 0)
+            bg = DateUtils.getDateByStr((_info as InventoryItemInfo).BeginDate);
+            leftTime = int(_info.Property3) * 60 - (TimeManager.Instance.Now().getTime() - bg.getTime()) / 1000;
+            if(leftTime > 0)
             {
-               _loc4_ = _loc1_ / 3600;
-               _loc3_ = _loc1_ % 3600 / 60;
-               _loc3_ = _loc3_ > 0?_loc3_:1;
-               _boxTimeTxt.text = LanguageMgr.GetTranslation("ddt.userGuild.boxTip",_loc4_,_loc3_);
+               h = leftTime / 3600;
+               m = leftTime % 3600 / 60;
+               m = m > 0?m:1;
+               _boxTimeTxt.text = LanguageMgr.GetTranslation("ddt.userGuild.boxTip",h,m);
                _boxTimeTxt.textColor = 16777215;
                _displayIdx = Number(_displayIdx) + 1;
                _displayList[Number(_displayIdx)] = _boxTimeTxt;
@@ -1223,16 +1230,16 @@ package store.view.strength
       
       private function createStrenthLevel() : void
       {
-         var _loc1_:InventoryItemInfo = _info as InventoryItemInfo;
-         if(_loc1_ && _loc1_.StrengthenLevel > 0)
+         var tempInfo:InventoryItemInfo = _info as InventoryItemInfo;
+         if(tempInfo && tempInfo.StrengthenLevel > 0)
          {
-            if(_loc1_.isGold)
+            if(tempInfo.isGold)
             {
                _strengthenLevelImage.setFrame(16);
             }
             else
             {
-               _strengthenLevelImage.setFrame(_loc1_.StrengthenLevel);
+               _strengthenLevelImage.setFrame(tempInfo.StrengthenLevel);
             }
             addChild(_strengthenLevelImage);
             if(_boundImage.parent)
@@ -1254,12 +1261,12 @@ package store.view.strength
       
       private function seperateLine() : void
       {
-         var _loc1_:* = null;
+         var prop:* = null;
          _lineIdx = Number(_lineIdx) + 1;
          if(_lines.length < _lineIdx)
          {
-            _loc1_ = ComponentFactory.Instance.creatComponentByStylename("HRuleAsset");
-            _lines.push(_loc1_);
+            prop = ComponentFactory.Instance.creatComponentByStylename("HRuleAsset");
+            _lines.push(prop);
          }
          _displayIdx = Number(_displayIdx) + 1;
          _displayList[Number(_displayIdx)] = _lines[_lineIdx - 1];

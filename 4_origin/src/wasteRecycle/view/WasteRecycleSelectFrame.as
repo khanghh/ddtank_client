@@ -30,8 +30,8 @@ package wasteRecycle.view
       public function WasteRecycleSelectFrame()
       {
          super();
-         var _loc1_:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("ddt.wasteRecycle.inputFrameTitle"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"));
-         info = _loc1_;
+         var alertInfo:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("ddt.wasteRecycle.inputFrameTitle"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"));
+         info = alertInfo;
       }
       
       override protected function init() : void
@@ -62,29 +62,29 @@ package wasteRecycle.view
          }
       }
       
-      override protected function onResponse(param1:int) : void
+      override protected function onResponse(type:int) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
+         var count:int = 0;
+         var goodsInfo:* = null;
+         var socre:int = 0;
          SoundManager.instance.playButtonSound();
-         if(param1 == 2 || param1 == 3)
+         if(type == 2 || type == 3)
          {
-            _loc4_ = _numberSelect.currentValue;
-            if(_loc4_ > _cell.itemInfo.Count)
+            count = _numberSelect.currentValue;
+            if(count > _cell.itemInfo.Count)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.wasteRecycle.inputCountTips"));
                return;
             }
-            _loc2_ = WasteRecycleController.instance.model.data[_cell.itemInfo.TemplateID];
-            _loc3_ = WasteRecycleController.instance.model.lotteryDonateScore + _loc4_ * _loc2_.Integral;
-            if(_loc3_ >= WasteRecycleController.instance.model.lotteryLimitScore + _loc2_.Integral)
+            goodsInfo = WasteRecycleController.instance.model.data[_cell.itemInfo.TemplateID];
+            socre = WasteRecycleController.instance.model.lotteryDonateScore + count * goodsInfo.Integral;
+            if(socre >= WasteRecycleController.instance.model.lotteryLimitScore + goodsInfo.Integral)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.wasteRecycle.limitScoreTips"));
                return;
             }
             SocketManager.Instance.out.sendClearStoreBag();
-            SocketManager.Instance.out.sendMoveGoods(_cell.itemInfo.BagType,_cell.itemInfo.Place,12,0,_loc4_,true);
+            SocketManager.Instance.out.sendMoveGoods(_cell.itemInfo.BagType,_cell.itemInfo.Place,12,0,count,true);
          }
          else
          {
@@ -93,15 +93,15 @@ package wasteRecycle.view
          dispose();
       }
       
-      public function show(param1:WasteRecycleCell) : void
+      public function show(cell:WasteRecycleCell) : void
       {
-         _cell = param1;
+         _cell = cell;
          _numberSelect.valueLimit = "1," + _cell.itemInfo.Count;
          updateTips();
          LayerManager.Instance.addToLayer(this,3,true,1);
       }
       
-      private function __onSelectedChange(param1:Event) : void
+      private function __onSelectedChange(event:Event) : void
       {
          SoundManager.instance.playButtonSound();
          updateTips();
@@ -109,19 +109,19 @@ package wasteRecycle.view
       
       private function updateTips() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:int = 0;
+         var goodsInfo:* = null;
+         var score:int = 0;
          if(_cell && WasteRecycleController.instance.model.data[_cell.itemInfo.TemplateID])
          {
-            _loc1_ = WasteRecycleController.instance.model.data[_cell.itemInfo.TemplateID];
-            _loc2_ = _loc1_.Integral * _numberSelect.currentValue;
-            if(_loc2_ + WasteRecycleController.instance.model.lotteryDonateScore > WasteRecycleController.instance.model.lotteryLimitScore)
+            goodsInfo = WasteRecycleController.instance.model.data[_cell.itemInfo.TemplateID];
+            score = goodsInfo.Integral * _numberSelect.currentValue;
+            if(score + WasteRecycleController.instance.model.lotteryDonateScore > WasteRecycleController.instance.model.lotteryLimitScore)
             {
-               _loc2_ = WasteRecycleController.instance.model.lotteryLimitScore - WasteRecycleController.instance.model.lotteryDonateScore;
+               score = WasteRecycleController.instance.model.lotteryLimitScore - WasteRecycleController.instance.model.lotteryDonateScore;
             }
-            if(_loc2_ > 0)
+            if(score > 0)
             {
-               _scoreText.htmlText = LanguageMgr.GetTranslation("ddt.wasteRecycle.recycleTips",_loc2_);
+               _scoreText.htmlText = LanguageMgr.GetTranslation("ddt.wasteRecycle.recycleTips",score);
             }
             return;
          }

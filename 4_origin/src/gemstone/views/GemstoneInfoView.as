@@ -129,7 +129,7 @@ package gemstone.views
          addChild(_effDesc);
       }
       
-      public function initGemstone(param1:Vector.<GemstoneInfo>) : void
+      public function initGemstone(arr:Vector.<GemstoneInfo>) : void
       {
       }
       

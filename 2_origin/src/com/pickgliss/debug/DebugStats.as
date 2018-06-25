@@ -112,14 +112,14 @@ package com.pickgliss.debug
       
       private var _minimized:Boolean;
       
-      public function DebugStats(param1:Boolean = false, param2:Boolean = false, param3:uint = 0, param4:Boolean = true, param5:Boolean = true)
+      public function DebugStats(minimized:Boolean = false, transparent:Boolean = false, meanDataLength:uint = 0, enableClickToReset:Boolean = true, enableModifyFrameRate:Boolean = true)
       {
          super();
-         _minimized = param1;
-         _transparent = param2;
-         _enable_reset = param4;
-         _enable_mod_fr = param5;
-         _mean_data_length = param3;
+         _minimized = minimized;
+         _transparent = transparent;
+         _enable_reset = enableClickToReset;
+         _enable_mod_fr = enableModifyFrameRate;
+         _mean_data_length = meanDataLength;
          if(_INSTANCE)
          {
             trace("Creating several statistics windows in one project. Is this intentional?");
@@ -160,7 +160,7 @@ package com.pickgliss.debug
       
       private function _initMisc() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _timer = new Timer(200,0);
          _timer.addEventListener("timer",_onTimer);
          _label_format = new TextFormat("_sans",9,16777215,true);
@@ -168,81 +168,80 @@ package com.pickgliss.debug
          if(_mean_data_length > 0)
          {
             _mean_data = [];
-            _loc1_ = 0;
-            while(_loc1_ < _mean_data_length)
+            for(i = 0; i < _mean_data_length; )
             {
-               _mean_data[_loc1_] = 0;
-               _loc1_++;
+               _mean_data[i] = 0;
+               i++;
             }
          }
       }
       
       private function _initTopBar() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
+         var logo:* = null;
+         var markers:* = null;
+         var fps_label_tf:* = null;
+         var afps_label_tf:* = null;
          _top_bar = new Sprite();
          _top_bar.graphics.beginFill(0,0);
          _top_bar.graphics.drawRect(0,0,125,20);
          addChild(_top_bar);
-         _loc1_ = new Shape();
-         _loc1_.x = 9;
-         _loc1_.y = 7.5;
-         _loc1_.scaleX = 0.6;
-         _loc1_.scaleY = 0.6;
-         _loc1_.graphics.beginFill(16777215,1);
-         _loc1_.graphics.moveTo(-0.5,-7);
-         _loc1_.graphics.curveTo(-0.5,-7.7,-1,-7);
-         _loc1_.graphics.lineTo(-9,5);
-         _loc1_.graphics.curveTo(-9.3,5.5,-8,5);
-         _loc1_.graphics.curveTo(-1,1,-0.5,-7);
-         _loc1_.graphics.moveTo(0.5,-7);
-         _loc1_.graphics.curveTo(0.5,-7.7,1,-7);
-         _loc1_.graphics.lineTo(9,5);
-         _loc1_.graphics.curveTo(9.3,5.5,8,5);
-         _loc1_.graphics.curveTo(1,1,0.5,-7);
-         _loc1_.graphics.moveTo(-8,7);
-         _loc1_.graphics.curveTo(-8.3,6.7,-7.5,6.3);
-         _loc1_.graphics.curveTo(0,2,7.5,6.3);
-         _loc1_.graphics.curveTo(8.3,6.7,8,7);
-         _loc1_.graphics.lineTo(-8,7);
-         _top_bar.addChild(_loc1_);
-         _loc2_ = new Shape();
-         _loc2_.graphics.beginFill(16777215);
-         _loc2_.graphics.drawRect(20,7,4,4);
-         _loc2_.graphics.beginFill(3377373);
-         _loc2_.graphics.drawRect(77,7,4,4);
-         _top_bar.addChild(_loc2_);
-         _loc4_ = new TextField();
-         _loc4_.defaultTextFormat = _label_format;
-         _loc4_.autoSize = "left";
-         _loc4_.text = "FR:";
-         _loc4_.x = 24;
-         _loc4_.y = 2;
-         _loc4_.selectable = false;
-         _top_bar.addChild(_loc4_);
+         logo = new Shape();
+         logo.x = 9;
+         logo.y = 7.5;
+         logo.scaleX = 0.6;
+         logo.scaleY = 0.6;
+         logo.graphics.beginFill(16777215,1);
+         logo.graphics.moveTo(-0.5,-7);
+         logo.graphics.curveTo(-0.5,-7.7,-1,-7);
+         logo.graphics.lineTo(-9,5);
+         logo.graphics.curveTo(-9.3,5.5,-8,5);
+         logo.graphics.curveTo(-1,1,-0.5,-7);
+         logo.graphics.moveTo(0.5,-7);
+         logo.graphics.curveTo(0.5,-7.7,1,-7);
+         logo.graphics.lineTo(9,5);
+         logo.graphics.curveTo(9.3,5.5,8,5);
+         logo.graphics.curveTo(1,1,0.5,-7);
+         logo.graphics.moveTo(-8,7);
+         logo.graphics.curveTo(-8.3,6.7,-7.5,6.3);
+         logo.graphics.curveTo(0,2,7.5,6.3);
+         logo.graphics.curveTo(8.3,6.7,8,7);
+         logo.graphics.lineTo(-8,7);
+         _top_bar.addChild(logo);
+         markers = new Shape();
+         markers.graphics.beginFill(16777215);
+         markers.graphics.drawRect(20,7,4,4);
+         markers.graphics.beginFill(3377373);
+         markers.graphics.drawRect(77,7,4,4);
+         _top_bar.addChild(markers);
+         fps_label_tf = new TextField();
+         fps_label_tf.defaultTextFormat = _label_format;
+         fps_label_tf.autoSize = "left";
+         fps_label_tf.text = "FR:";
+         fps_label_tf.x = 24;
+         fps_label_tf.y = 2;
+         fps_label_tf.selectable = false;
+         _top_bar.addChild(fps_label_tf);
          _fps_tf = new TextField();
          _fps_tf.defaultTextFormat = _data_format;
          _fps_tf.autoSize = "left";
-         _fps_tf.x = _loc4_.x + 16;
-         _fps_tf.y = _loc4_.y;
+         _fps_tf.x = fps_label_tf.x + 16;
+         _fps_tf.y = fps_label_tf.y;
          _fps_tf.selectable = false;
          _top_bar.addChild(_fps_tf);
-         _loc3_ = new TextField();
-         _loc3_.defaultTextFormat = _label_format;
-         _loc3_.autoSize = "left";
-         _loc3_.text = "A:";
-         _loc3_.x = 81;
-         _loc3_.y = 2;
-         _loc3_.selectable = false;
-         _top_bar.addChild(_loc3_);
+         afps_label_tf = new TextField();
+         afps_label_tf.defaultTextFormat = _label_format;
+         afps_label_tf.autoSize = "left";
+         afps_label_tf.text = "A:";
+         afps_label_tf.x = 81;
+         afps_label_tf.y = 2;
+         afps_label_tf.selectable = false;
+         _top_bar.addChild(afps_label_tf);
          _afps_tf = new TextField();
          _afps_tf.defaultTextFormat = _data_format;
          _afps_tf.autoSize = "left";
-         _afps_tf.x = _loc3_.x + 12;
-         _afps_tf.y = _loc3_.y;
+         _afps_tf.x = afps_label_tf.x + 12;
+         _afps_tf.y = afps_label_tf.y;
          _afps_tf.selectable = false;
          _top_bar.addChild(_afps_tf);
          _min_max_btn = new Sprite();
@@ -260,9 +259,9 @@ package com.pickgliss.debug
       
       private function _initBottomBar() : void
       {
-         var _loc3_:* = null;
-         var _loc1_:* = null;
-         var _loc2_:* = null;
+         var markers:* = null;
+         var ram_label_tf:* = null;
+         var poly_label_tf:* = null;
          _btm_bar = new Sprite();
          _btm_bar.graphics.beginFill(0,0.2);
          _btm_bar.graphics.drawRect(0,0,125,21);
@@ -271,43 +270,43 @@ package com.pickgliss.debug
          _btm_bar_hit.graphics.beginFill(16763904,0);
          _btm_bar_hit.graphics.drawRect(0,1,125,20);
          addChild(_btm_bar_hit);
-         _loc3_ = new Shape();
-         _loc3_.graphics.beginFill(16711884);
-         _loc3_.graphics.drawRect(5,4,4,4);
-         _loc3_.graphics.beginFill(16763904);
-         _loc3_.graphics.drawRect(5,14,4,4);
-         _btm_bar.addChild(_loc3_);
-         _loc1_ = new TextField();
-         _loc1_.defaultTextFormat = _label_format;
-         _loc1_.autoSize = "left";
-         _loc1_.text = "RAM:";
-         _loc1_.x = 10;
-         _loc1_.y = -1;
-         _loc1_.selectable = false;
-         _loc1_.mouseEnabled = false;
-         _btm_bar.addChild(_loc1_);
+         markers = new Shape();
+         markers.graphics.beginFill(16711884);
+         markers.graphics.drawRect(5,4,4,4);
+         markers.graphics.beginFill(16763904);
+         markers.graphics.drawRect(5,14,4,4);
+         _btm_bar.addChild(markers);
+         ram_label_tf = new TextField();
+         ram_label_tf.defaultTextFormat = _label_format;
+         ram_label_tf.autoSize = "left";
+         ram_label_tf.text = "RAM:";
+         ram_label_tf.x = 10;
+         ram_label_tf.y = -1;
+         ram_label_tf.selectable = false;
+         ram_label_tf.mouseEnabled = false;
+         _btm_bar.addChild(ram_label_tf);
          _ram_tf = new TextField();
          _ram_tf.defaultTextFormat = _data_format;
          _ram_tf.autoSize = "left";
-         _ram_tf.x = _loc1_.x + 31;
-         _ram_tf.y = _loc1_.y;
+         _ram_tf.x = ram_label_tf.x + 31;
+         _ram_tf.y = ram_label_tf.y;
          _ram_tf.selectable = false;
          _ram_tf.mouseEnabled = false;
          _btm_bar.addChild(_ram_tf);
-         _loc2_ = new TextField();
-         _loc2_.defaultTextFormat = _label_format;
-         _loc2_.autoSize = "left";
-         _loc2_.text = "POLY:";
-         _loc2_.x = 10;
-         _loc2_.y = 9;
-         _loc2_.selectable = false;
-         _loc2_.mouseEnabled = false;
-         _btm_bar.addChild(_loc2_);
+         poly_label_tf = new TextField();
+         poly_label_tf.defaultTextFormat = _label_format;
+         poly_label_tf.autoSize = "left";
+         poly_label_tf.text = "POLY:";
+         poly_label_tf.x = 10;
+         poly_label_tf.y = 9;
+         poly_label_tf.selectable = false;
+         poly_label_tf.mouseEnabled = false;
+         _btm_bar.addChild(poly_label_tf);
          _poly_tf = new TextField();
          _poly_tf.defaultTextFormat = _data_format;
          _poly_tf.autoSize = "left";
-         _poly_tf.x = _loc2_.x + 31;
-         _poly_tf.y = _loc2_.y;
+         _poly_tf.x = poly_label_tf.x + 31;
+         _poly_tf.y = poly_label_tf.y;
          _poly_tf.selectable = false;
          _poly_tf.mouseEnabled = false;
          _btm_bar.addChild(_poly_tf);
@@ -371,16 +370,16 @@ package com.pickgliss.debug
       
       private function _redrawWindow() : void
       {
-         var _loc1_:Number = NaN;
-         _loc1_ = !!_minimized?41:75;
+         var plate_height:Number = NaN;
+         plate_height = !!_minimized?41:75;
          if(!_transparent)
          {
             this.graphics.clear();
             this.graphics.beginFill(0,0.6);
-            this.graphics.drawRect(0,0,125,_loc1_);
+            this.graphics.drawRect(0,0,125,plate_height);
          }
          _min_max_btn.rotation = !!_minimized?180:0;
-         _btm_bar.y = _loc1_ - 21;
+         _btm_bar.y = plate_height - 21;
          _btm_bar_hit.y = _btm_bar.y;
          _diagram.visible = !_minimized;
          _mem_graph.visible = !_minimized;
@@ -396,16 +395,16 @@ package com.pickgliss.debug
       
       private function _redrawStats() : void
       {
-         var _loc1_:int = 0;
+         var dia_y:int = 0;
          _fps_tf.text = _fps.toString().concat("/",stage.frameRate);
          _afps_tf.text = Math.round(_avg_fps).toString();
          _ram_tf.text = _getRamString(_ram).concat(" / ",_getRamString(_max_ram));
          _dia_bmp.scroll(1,0);
          _poly_tf.text = "n/a (no view)";
-         _loc1_ = _dia_bmp.height - Math.floor(_fps / stage.frameRate * _dia_bmp.height);
-         _dia_bmp.setPixel32(1,_loc1_,4294967295);
-         _loc1_ = _dia_bmp.height - Math.floor(_avg_fps / stage.frameRate * _dia_bmp.height);
-         _dia_bmp.setPixel32(1,_loc1_,4281580543);
+         dia_y = _dia_bmp.height - Math.floor(_fps / stage.frameRate * _dia_bmp.height);
+         _dia_bmp.setPixel32(1,dia_y,4294967295);
+         dia_y = _dia_bmp.height - Math.floor(_avg_fps / stage.frameRate * _dia_bmp.height);
+         _dia_bmp.setPixel32(1,dia_y,4281580543);
          if(_minimized)
          {
             _fps_bar.scaleX = Math.min(1,_fps / stage.frameRate);
@@ -423,53 +422,52 @@ package com.pickgliss.debug
       
       private function _redrawMemGraph() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:* = 0;
+         var i:int = 0;
+         var g:* = null;
+         var max_val:* = 0;
          _mem_graph.scaleY = 1;
-         _loc1_ = _mem_graph.graphics;
-         _loc1_.clear();
-         _loc1_.lineStyle(0.5,16711884,1,true,"none");
-         _loc1_.moveTo(5 * (_mem_points.length - 1),-_mem_points[_mem_points.length - 1]);
-         _loc3_ = _mem_points.length - 1;
-         while(_loc3_ >= 0)
+         g = _mem_graph.graphics;
+         g.clear();
+         g.lineStyle(0.5,16711884,1,true,"none");
+         g.moveTo(5 * (_mem_points.length - 1),-_mem_points[_mem_points.length - 1]);
+         for(i = _mem_points.length - 1; i >= 0; )
          {
-            if(_mem_points[_loc3_ + 1] == 0 || _mem_points[_loc3_] == 0)
+            if(_mem_points[i + 1] == 0 || _mem_points[i] == 0)
             {
-               _loc1_.moveTo(_loc3_ * 5,-_mem_points[_loc3_]);
+               g.moveTo(i * 5,-_mem_points[i]);
             }
             else
             {
-               _loc1_.lineTo(_loc3_ * 5,-_mem_points[_loc3_]);
-               if(_mem_points[_loc3_] > _loc2_)
+               g.lineTo(i * 5,-_mem_points[i]);
+               if(_mem_points[i] > max_val)
                {
-                  _loc2_ = Number(_mem_points[_loc3_]);
+                  max_val = Number(_mem_points[i]);
                }
             }
-            _loc3_--;
+            i--;
          }
-         _mem_graph.scaleY = _dia_bmp.height / _loc2_;
+         _mem_graph.scaleY = _dia_bmp.height / max_val;
       }
       
-      private function _getRamString(param1:Number) : String
+      private function _getRamString(ram:Number) : String
       {
-         var _loc2_:String = "B";
-         if(param1 > 1048576)
+         var ram_unit:String = "B";
+         if(ram > 1048576)
          {
-            param1 = param1 / 1048576;
-            _loc2_ = "M";
+            ram = ram / 1048576;
+            ram_unit = "M";
          }
-         else if(param1 > 1024)
+         else if(ram > 1024)
          {
-            param1 = param1 / 1024;
-            _loc2_ = "K";
+            ram = ram / 1024;
+            ram_unit = "K";
          }
-         return param1.toFixed(1) + _loc2_;
+         return ram.toFixed(1) + ram_unit;
       }
       
       private function _reset() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _updates = 0;
          _num_frames = 0;
          _min_fps = 2147483647;
@@ -477,19 +475,17 @@ package com.pickgliss.debug
          _avg_fps = 0;
          _fps_sum = 0;
          _max_ram = 0;
-         _loc1_ = 0;
-         while(_loc1_ < 125 / 5)
+         for(i = 0; i < 125 / 5; )
          {
-            _mem_points[_loc1_] = 0;
-            _loc1_++;
+            _mem_points[i] = 0;
+            i++;
          }
          if(_mean_data)
          {
-            _loc1_ = 0;
-            while(_loc1_ < _mean_data.length)
+            for(i = 0; i < _mean_data.length; )
             {
-               _mean_data[_loc1_] = 0;
-               _loc1_++;
+               _mean_data[i] = 0;
+               i++;
             }
          }
          _mem_graph.graphics.clear();
@@ -522,19 +518,19 @@ package com.pickgliss.debug
          stage.removeEventListener("mouseMove",_onMouseMove);
       }
       
-      private function _onAddedToStage(param1:Event) : void
+      private function _onAddedToStage(ev:Event) : void
       {
          _timer.start();
          addEventListener("enterFrame",_onEnterFrame);
       }
       
-      private function _onRemovedFromStage(param1:Event) : void
+      private function _onRemovedFromStage(ev:Event) : void
       {
          _timer.stop();
          removeEventListener("enterFrame",_onTimer);
       }
       
-      private function _onTimer(param1:Event) : void
+      private function _onTimer(ev:Event) : void
       {
          _ram = System.totalMemory;
          if(_ram > _max_ram)
@@ -549,10 +545,10 @@ package com.pickgliss.debug
          _redrawStats();
       }
       
-      private function _onEnterFrame(param1:Event) : void
+      private function _onEnterFrame(ev:Event) : void
       {
-         var _loc2_:Number = getTimer() - _last_frame_timestamp;
-         _fps = Math.floor(1000 / _loc2_);
+         var time:Number = getTimer() - _last_frame_timestamp;
+         _fps = Math.floor(1000 / time);
          _fps_sum = _fps_sum + _fps;
          if(_fps > _max_fps)
          {
@@ -576,42 +572,41 @@ package com.pickgliss.debug
          _last_frame_timestamp = getTimer();
       }
       
-      private function _onDiagramClick(param1:MouseEvent) : void
+      private function _onDiagramClick(ev:MouseEvent) : void
       {
          stage.frameRate = stage.frameRate - Math.floor((_diagram.mouseY - _dia_bmp.height / 2) / 5);
       }
       
-      private function _onAverageFpsClick_reset(param1:MouseEvent) : void
+      private function _onAverageFpsClick_reset(ev:MouseEvent) : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          if(!_dragging)
          {
             _num_frames = 0;
             _fps_sum = 0;
             if(_mean_data)
             {
-               _loc2_ = 0;
-               while(_loc2_ < _mean_data.length)
+               for(i = 0; i < _mean_data.length; )
                {
-                  _mean_data[_loc2_] = 0;
-                  _loc2_++;
+                  _mean_data[i] = 0;
+                  i++;
                }
             }
          }
       }
       
-      private function _onCountersClick_reset(param1:MouseEvent) : void
+      private function _onCountersClick_reset(ev:MouseEvent) : void
       {
          _reset();
       }
       
-      private function _onMinMaxBtnClick(param1:MouseEvent) : void
+      private function _onMinMaxBtnClick(ev:MouseEvent) : void
       {
          _minimized = !_minimized;
          _redrawWindow();
       }
       
-      private function _onTopBarMouseDown(param1:MouseEvent) : void
+      private function _onTopBarMouseDown(ev:MouseEvent) : void
       {
          _drag_dx = this.mouseX;
          _drag_dy = this.mouseY;
@@ -620,14 +615,14 @@ package com.pickgliss.debug
          stage.addEventListener("mouseLeave",_onMouseUpOrLeave);
       }
       
-      private function _onMouseMove(param1:MouseEvent) : void
+      private function _onMouseMove(ev:MouseEvent) : void
       {
          _dragging = true;
          this.x = stage.mouseX - _drag_dx;
          this.y = stage.mouseY - _drag_dy;
       }
       
-      private function _onMouseUpOrLeave(param1:Event) : void
+      private function _onMouseUpOrLeave(ev:Event) : void
       {
          _endDrag();
       }

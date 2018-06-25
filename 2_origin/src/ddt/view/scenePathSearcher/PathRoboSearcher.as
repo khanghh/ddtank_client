@@ -19,301 +19,297 @@ package ddt.view.scenePathSearcher
       
       private var stepTurnNum:Number;
       
-      public function PathRoboSearcher(param1:Number, param2:Number, param3:Number = 4)
+      public function PathRoboSearcher(step:Number, maxDistance:Number, num:Number = 4)
       {
          super();
-         this.step = param1;
-         this.maxDistance = param2;
-         maxCount = Math.ceil(param2 / param1) * 2;
-         stepTurnNum = param3;
+         this.step = step;
+         this.maxDistance = maxDistance;
+         maxCount = Math.ceil(maxDistance / step) * 2;
+         stepTurnNum = num;
       }
       
-      public function setStepTurnNum(param1:Number) : void
+      public function setStepTurnNum(num:Number) : void
       {
-         stepTurnNum = param1;
+         stepTurnNum = num;
       }
       
-      public function search(param1:Point, param2:Point, param3:PathIHitTester) : Array
+      public function search(from:Point, end:Point, hittest:PathIHitTester) : Array
       {
-         var _loc6_:Array = [param1,param1];
-         if(param1.equals(param2))
+         var notGoPath:Array = [from,from];
+         if(from.equals(end))
          {
-            return _loc6_;
+            return notGoPath;
          }
-         var _loc4_:Array = [];
-         var _loc5_:Array = [];
-         var _loc7_:Boolean = searchWithWish(param1,param2,param3,LEFT,_loc4_);
-         var _loc8_:Boolean = searchWithWish(param1,param2,param3,RIGHT,_loc5_);
-         if(_loc7_ && _loc8_)
+         var leftPath:Array = [];
+         var rightPath:Array = [];
+         var left:Boolean = searchWithWish(from,end,hittest,LEFT,leftPath);
+         var right:Boolean = searchWithWish(from,end,hittest,RIGHT,rightPath);
+         if(left && right)
          {
-            if(_loc4_.length < _loc5_.length)
+            if(leftPath.length < rightPath.length)
             {
-               return _loc4_;
+               return leftPath;
             }
-            return _loc5_;
+            return rightPath;
          }
-         if(_loc7_)
+         if(left)
          {
-            return _loc4_;
+            return leftPath;
          }
-         if(_loc8_)
+         if(right)
          {
-            return _loc5_;
+            return rightPath;
          }
-         return _loc6_;
+         return notGoPath;
       }
       
-      private function searchWithWish(param1:Point, param2:Point, param3:PathIHitTester, param4:Number, param5:Array) : Boolean
+      private function searchWithWish(from:Point, tto:Point, tester:PathIHitTester, wish:Number, nodes:Array) : Boolean
       {
-         var _loc12_:* = null;
-         var _loc7_:Boolean = false;
-         var _loc10_:* = null;
-         var _loc14_:Boolean = false;
-         var _loc9_:* = null;
-         var _loc13_:Number = NaN;
-         var _loc11_:* = NaN;
-         var _loc6_:* = null;
-         if(param3.isHit(param2))
+         var midTo:* = null;
+         var midSearch:Boolean = false;
+         var reverseNodes:* = null;
+         var success:Boolean = false;
+         var lastZhuanze:* = null;
+         var minReplaceD:Number = NaN;
+         var i:* = NaN;
+         var rp:* = null;
+         if(tester.isHit(tto))
          {
-            param2 = findReversseNearestBlankPoint(param1,param2,param3);
-            if(param2 == null)
+            tto = findReversseNearestBlankPoint(from,tto,tester);
+            if(tto == null)
             {
                return false;
             }
-            if(param3.isHit(param1))
+            if(tester.isHit(from))
             {
-               param5.push(param1);
-               param5.push(param2);
+               nodes.push(from);
+               nodes.push(tto);
                return true;
             }
          }
-         else if(param3.isHit(param1))
+         else if(tester.isHit(from))
          {
-            _loc12_ = findReversseNearestBlankPoint(param2,param1,param3);
-            if(_loc12_ == null)
+            midTo = findReversseNearestBlankPoint(tto,from,tester);
+            if(midTo == null)
             {
                return false;
             }
-            _loc7_ = searchWithWish(_loc12_,param2,param3,param4,param5);
-            if(_loc7_)
+            midSearch = searchWithWish(midTo,tto,tester,wish,nodes);
+            if(midSearch)
             {
-               param5.splice(0,0,param1);
+               nodes.splice(0,0,from);
                return true;
             }
             return false;
          }
-         if(Point.distance(param1,param2) > maxDistance)
+         if(Point.distance(from,tto) > maxDistance)
          {
-            param5.push(param1);
-            param2 = findFarestBlankPoint(param1,param2,param3);
-            if(param2 == null)
+            nodes.push(from);
+            tto = findFarestBlankPoint(from,tto,tester);
+            if(tto == null)
             {
                return false;
             }
-            param5.push(param2);
+            nodes.push(tto);
             return true;
          }
-         var _loc8_:Boolean = doSearchWithWish(param1,param2,param3,param4,param5);
-         if(!_loc8_)
+         var aheadSearch:Boolean = doSearchWithWish(from,tto,tester,wish,nodes);
+         if(!aheadSearch)
          {
             return false;
          }
-         if(param5.length > 4)
+         if(nodes.length > 4)
          {
-            _loc10_ = [];
-            _loc14_ = doSearchWithWish(param2,param5[0],param3,0 - param4,_loc10_);
-            if(_loc14_)
+            reverseNodes = [];
+            success = doSearchWithWish(tto,nodes[0],tester,0 - wish,reverseNodes);
+            if(success)
             {
-               _loc9_ = Point(_loc10_[_loc10_.length - 2]);
-               _loc13_ = step;
-               _loc11_ = 1;
-               while(_loc11_ < param5.length - 1)
+               lastZhuanze = Point(reverseNodes[reverseNodes.length - 2]);
+               minReplaceD = step;
+               for(i = 1; i < nodes.length - 1; )
                {
-                  _loc6_ = Point(param5[_loc11_]);
-                  if(Point.distance(_loc6_,_loc9_) < _loc13_)
+                  rp = Point(nodes[i]);
+                  if(Point.distance(rp,lastZhuanze) < minReplaceD)
                   {
-                     param5.splice(1,_loc11_,_loc9_);
+                     nodes.splice(1,i,lastZhuanze);
                      return true;
                   }
-                  _loc11_++;
+                  i++;
                }
             }
          }
          return true;
       }
       
-      private function findFarestBlankPoint(param1:Point, param2:Point, param3:PathIHitTester) : Point
+      private function findFarestBlankPoint(from:Point, tto:Point, t:PathIHitTester) : Point
       {
-         var _loc8_:* = NaN;
-         var _loc5_:* = null;
-         if(param3.isHit(param1))
+         var i:* = NaN;
+         var tp:* = null;
+         if(t.isHit(from))
          {
-            return findReversseNearestBlankPoint(param2,param1,param3);
+            return findReversseNearestBlankPoint(tto,from,t);
          }
-         var _loc7_:Number = countHeading(param1,param2);
-         var _loc10_:Number = Point.distance(param1,param2);
-         var _loc9_:* = param1;
-         while(!param3.isHit(param1))
+         var heading:Number = countHeading(from,tto);
+         var dist:Number = Point.distance(from,tto);
+         var lastFrom:* = from;
+         while(!t.isHit(from))
          {
-            _loc9_ = param1;
-            param1 = Geometry.nextPoint(param1,_loc7_,step);
-            _loc10_ = _loc10_ - step;
-            if(_loc10_ <= 0)
+            lastFrom = from;
+            from = Geometry.nextPoint(from,heading,step);
+            dist = dist - step;
+            if(dist <= 0)
             {
                return null;
             }
          }
-         param1 = _loc9_;
-         var _loc6_:* = 8;
-         var _loc4_:Number = 3.14159265358979 / _loc6_;
-         _loc8_ = 1;
-         while(_loc8_ < _loc6_)
+         from = lastFrom;
+         var n:* = 8;
+         var turn:Number = 3.14159265358979 / n;
+         for(i = 1; i < n; )
          {
-            _loc5_ = Geometry.nextPoint(param1,_loc7_ + _loc8_ * _loc4_,step * 2);
-            if(!param3.isHit(_loc5_))
+            tp = Geometry.nextPoint(from,heading + i * turn,step * 2);
+            if(!t.isHit(tp))
             {
-               return _loc5_;
+               return tp;
             }
-            _loc5_ = Geometry.nextPoint(param1,_loc7_ - _loc8_ * _loc4_,step * 2);
-            if(!param3.isHit(_loc5_))
+            tp = Geometry.nextPoint(from,heading - i * turn,step * 2);
+            if(!t.isHit(tp))
             {
-               return _loc5_;
+               return tp;
             }
-            _loc8_++;
+            i++;
          }
-         return param1;
+         return from;
       }
       
-      private function findReversseNearestBlankPoint(param1:Point, param2:Point, param3:PathIHitTester) : Point
+      private function findReversseNearestBlankPoint(from:Point, tto:Point, t:PathIHitTester) : Point
       {
-         var _loc8_:* = NaN;
-         var _loc5_:* = null;
-         var _loc7_:Number = countHeading(param2,param1);
-         var _loc9_:Number = Point.distance(param2,param1);
-         while(param3.isHit(param2))
+         var i:* = NaN;
+         var tp:* = null;
+         var heading:Number = countHeading(tto,from);
+         var dist:Number = Point.distance(tto,from);
+         while(t.isHit(tto))
          {
-            param2 = Geometry.nextPoint(param2,_loc7_,step);
-            _loc9_ = _loc9_ - step;
-            if(_loc9_ <= 0)
+            tto = Geometry.nextPoint(tto,heading,step);
+            dist = dist - step;
+            if(dist <= 0)
             {
                return null;
             }
          }
-         var _loc6_:* = 12;
-         var _loc4_:Number = 3.14159265358979 / _loc6_;
-         _loc7_ = _loc7_ + 3.14159265358979;
-         _loc8_ = 1;
-         while(_loc8_ < _loc6_)
+         var n:* = 12;
+         var turn:Number = 3.14159265358979 / n;
+         heading = heading + 3.14159265358979;
+         for(i = 1; i < n; )
          {
-            _loc5_ = Geometry.nextPoint(param2,_loc7_ + _loc8_ * _loc4_,step * 2);
-            if(!param3.isHit(_loc5_))
+            tp = Geometry.nextPoint(tto,heading + i * turn,step * 2);
+            if(!t.isHit(tp))
             {
-               return _loc5_;
+               return tp;
             }
-            _loc5_ = Geometry.nextPoint(param2,_loc7_ - _loc8_ * _loc4_,step * 2);
-            if(!param3.isHit(_loc5_))
+            tp = Geometry.nextPoint(tto,heading - i * turn,step * 2);
+            if(!t.isHit(tp))
             {
-               return _loc5_;
+               return tp;
             }
-            _loc8_++;
+            i++;
          }
-         return param2;
+         return tto;
       }
       
-      private function doSearchWithWish(param1:Point, param2:Point, param3:PathIHitTester, param4:Number, param5:Array) : Boolean
+      private function doSearchWithWish(from:Point, tto:Point, tester:PathIHitTester, wish:Number, nodes:Array) : Boolean
       {
-         var _loc8_:Number = NaN;
-         var _loc16_:* = NaN;
-         var _loc18_:Number = NaN;
-         var _loc7_:* = null;
-         var _loc12_:* = null;
-         var _loc15_:Number = NaN;
-         var _loc13_:Boolean = false;
-         var _loc11_:* = NaN;
-         param5.push(param1);
-         var _loc9_:Number = param4 * 3.14159265358979 / stepTurnNum;
-         var _loc10_:Number = param4 * 3.14159265358979 / 2;
-         var _loc6_:* = 1;
-         var _loc14_:Number = step;
-         var _loc19_:* = Number(countHeading(param1,param2));
-         var _loc17_:* = Number(Point.distance(param1,param2));
+         var headingToEnd:Number = NaN;
+         var dir:* = NaN;
+         var bb:Number = NaN;
+         var tp:* = null;
+         var lastFrom:* = null;
+         var distanceToEnd:Number = NaN;
+         var finded:Boolean = false;
+         var i:* = NaN;
+         nodes.push(from);
+         var angle:Number = wish * 3.14159265358979 / stepTurnNum;
+         var startDelta:Number = wish * 3.14159265358979 / 2;
+         var count:* = 1;
+         var maxDistance:Number = step;
+         var heading:* = Number(countHeading(from,tto));
+         var lastDistanceToEnd:* = Number(Point.distance(from,tto));
          while(true)
          {
-            if(!(_loc17_ > _loc14_ && _loc6_ < maxCount))
+            if(!(lastDistanceToEnd > maxDistance && count < maxCount))
             {
-               if(_loc6_ <= maxCount)
+               if(count <= maxCount)
                {
-                  param5.push(param2);
+                  nodes.push(tto);
                   return true;
                }
                return false;
             }
-            _loc8_ = countHeading(param1,param2);
-            _loc16_ = Number(_loc19_ - _loc10_);
-            _loc18_ = bearing(_loc8_,_loc16_);
-            if(param4 > 0 && _loc18_ < 0 || param4 < 0 && _loc18_ > 0)
+            headingToEnd = countHeading(from,tto);
+            dir = Number(heading - startDelta);
+            bb = bearing(headingToEnd,dir);
+            if(wish > 0 && bb < 0 || wish < 0 && bb > 0)
             {
-               _loc16_ = _loc8_;
+               dir = headingToEnd;
             }
-            _loc7_ = Geometry.nextPoint(param1,_loc16_,step);
-            _loc12_ = param1;
-            if(param3.isHit(_loc7_))
+            tp = Geometry.nextPoint(from,dir,step);
+            lastFrom = from;
+            if(tester.isHit(tp))
             {
-               _loc13_ = false;
-               _loc11_ = 2;
-               while(_loc11_ < stepTurnNum * 2)
+               finded = false;
+               for(i = 2; i < stepTurnNum * 2; )
                {
-                  _loc16_ = Number(_loc16_ + _loc9_);
-                  _loc7_ = Geometry.nextPoint(param1,_loc16_,step);
-                  if(!param3.isHit(_loc7_))
+                  dir = Number(dir + angle);
+                  tp = Geometry.nextPoint(from,dir,step);
+                  if(!tester.isHit(tp))
                   {
-                     param1 = _loc7_;
-                     _loc15_ = Point.distance(param1,param2);
-                     _loc13_ = true;
+                     from = tp;
+                     distanceToEnd = Point.distance(from,tto);
+                     finded = true;
                      break;
                   }
-                  _loc11_++;
+                  i++;
                }
-               if(!_loc13_)
+               if(!finded)
                {
                   break;
                }
             }
             else
             {
-               param1 = _loc7_;
-               _loc15_ = Point.distance(param1,param2);
+               from = tp;
+               distanceToEnd = Point.distance(from,tto);
             }
-            if(Math.abs(bearing(_loc19_,_loc16_)) > 0.01)
+            if(Math.abs(bearing(heading,dir)) > 0.01)
             {
-               param5.push(_loc12_);
-               _loc19_ = _loc16_;
+               nodes.push(lastFrom);
+               heading = dir;
             }
-            _loc17_ = _loc15_;
+            lastDistanceToEnd = distanceToEnd;
          }
          trace("cant find one");
-         param5.splice(0);
+         nodes.splice(0);
          return false;
       }
       
-      private function countHeading(param1:Point, param2:Point) : Number
+      private function countHeading(p1:Point, p2:Point) : Number
       {
-         return Math.atan2(param2.y - param1.y,param2.x - param1.x);
+         return Math.atan2(p2.y - p1.y,p2.x - p1.x);
       }
       
-      private function bearing(param1:Number, param2:Number) : Number
+      private function bearing(base:Number, heading:Number) : Number
       {
-         var _loc3_:Number = param2 - param1;
-         _loc3_ = (_loc3_ + 3.14159265358979 * 4) % (3.14159265358979 * 2);
-         if(_loc3_ < -3.14159265358979)
+         var b:Number = heading - base;
+         b = (b + 3.14159265358979 * 4) % (3.14159265358979 * 2);
+         if(b < -3.14159265358979)
          {
-            _loc3_ = _loc3_ + 3.14159265358979 * 2;
+            b = b + 3.14159265358979 * 2;
          }
-         else if(_loc3_ > 3.14159265358979)
+         else if(b > 3.14159265358979)
          {
-            _loc3_ = _loc3_ - 3.14159265358979 * 2;
+            b = b - 3.14159265358979 * 2;
          }
-         return _loc3_;
+         return b;
       }
    }
 }

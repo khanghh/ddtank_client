@@ -29,30 +29,30 @@ package quest
       {
       }
       
-      public function set dataProvider(param1:Array) : void
+      public function set dataProvider(value:Array) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         if(param1.length == 0)
+         var i:int = 0;
+         var item:* = null;
+         if(value.length == 0)
          {
             return;
          }
          this.height = 0;
          clear();
          _content = new VBox();
-         var _loc3_:Boolean = false;
-         if(param1.length > QuestCateListView.MAX_LIST_LENGTH)
+         var needScrollBar:Boolean = false;
+         if(value.length > QuestCateListView.MAX_LIST_LENGTH)
          {
-            _loc3_ = true;
+            needScrollBar = true;
          }
-         _loc4_ = 0;
-         while(param1[_loc4_])
+         i = 0;
+         while(value[i])
          {
-            _loc2_ = new TaskPannelStripView(param1[_loc4_]);
-            _loc2_.addEventListener("click",__onStripClicked);
-            _content.addChild(_loc2_);
-            _stripArr.push(_loc2_);
-            _loc4_++;
+            item = new TaskPannelStripView(value[i]);
+            item.addEventListener("click",__onStripClicked);
+            _content.addChild(item);
+            _stripArr.push(item);
+            i++;
          }
          setView(_content);
          dispatchEvent(new Event("change"));
@@ -62,12 +62,12 @@ package quest
       {
          var _loc3_:int = 0;
          var _loc2_:* = _stripArr;
-         for each(var _loc1_ in _stripArr)
+         for each(var strip in _stripArr)
          {
-            if(_loc1_.info == TaskManager.instance.selectedQuest)
+            if(strip.info == TaskManager.instance.selectedQuest)
             {
-               gotoStrip(_loc1_);
-               _loc1_.active();
+               gotoStrip(strip);
+               strip.active();
                return;
             }
          }
@@ -79,9 +79,9 @@ package quest
          }
       }
       
-      private function gotoStrip(param1:TaskPannelStripView) : void
+      private function gotoStrip(strip:TaskPannelStripView) : void
       {
-         if(_currentStrip == param1)
+         if(_currentStrip == strip)
          {
             return;
          }
@@ -89,14 +89,14 @@ package quest
          {
             _currentStrip.deactive();
          }
-         _currentStrip = param1;
+         _currentStrip = strip;
          TaskManager.instance.jumpToQuest(_currentStrip.info);
          dispatchEvent(new Event("change"));
       }
       
-      private function __onStripClicked(param1:MouseEvent) : void
+      private function __onStripClicked(e:MouseEvent) : void
       {
-         gotoStrip(param1.target as TaskPannelStripView);
+         gotoStrip(e.target as TaskPannelStripView);
       }
       
       private function clear() : void
@@ -108,10 +108,10 @@ package quest
          }
          var _loc3_:int = 0;
          var _loc2_:* = _stripArr;
-         for each(var _loc1_ in _stripArr)
+         for each(var strip in _stripArr)
          {
-            _loc1_.removeEventListener("click",__onStripClicked);
-            _loc1_.dispose();
+            strip.removeEventListener("click",__onStripClicked);
+            strip.dispose();
             _stripArr = [];
          }
       }

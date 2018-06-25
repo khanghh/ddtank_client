@@ -32,9 +32,9 @@ package giftSystem.element
          initEvent();
       }
       
-      public function set number(param1:int) : void
+      public function set number(value:int) : void
       {
-         _number = param1;
+         _number = value;
          _numShow.text = _number.toString();
          dispatchEvent(new Event("numberIsChange"));
       }
@@ -61,12 +61,12 @@ package giftSystem.element
       
       private function drawSprit() : Sprite
       {
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(0,0);
-         _loc1_.graphics.drawRect(0,0,28,28);
-         _loc1_.graphics.endFill();
-         _loc1_.buttonMode = true;
-         return _loc1_;
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(0,0);
+         sp.graphics.drawRect(0,0,28,28);
+         sp.graphics.endFill();
+         sp.buttonMode = true;
+         return sp;
       }
       
       private function initEvent() : void
@@ -76,7 +76,7 @@ package giftSystem.element
          _numShow.addEventListener("change",__numberChange);
       }
       
-      private function __rightClick(param1:MouseEvent) : void
+      private function __rightClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(number == 9999)
@@ -86,7 +86,7 @@ package giftSystem.element
          number = Number(number) + 1;
       }
       
-      private function __leftClick(param1:MouseEvent) : void
+      private function __leftClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(number == 1)
@@ -116,7 +116,7 @@ package giftSystem.element
          }
       }
       
-      protected function __numberChange(param1:Event) : void
+      protected function __numberChange(event:Event) : void
       {
          if(_numShow.text == "" || parseInt(_numShow.text) == 0)
          {

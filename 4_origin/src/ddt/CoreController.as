@@ -11,55 +11,51 @@ package ddt
          super();
       }
       
-      protected final function removeEvents(param1:Array, param2:CoreManager) : void
+      protected final function removeEvents($evtList:Array, $manager:CoreManager) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = param1.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var i:int = 0;
+         var len:int = $evtList.length;
+         for(i = 0; i < len; )
          {
-            param2.removeEventListener(param1[_loc4_],eventsHandler);
-            _loc4_++;
+            $manager.removeEventListener($evtList[i],eventsHandler);
+            i++;
          }
       }
       
-      protected final function addEvents(param1:Array, param2:CoreManager) : void
+      protected final function addEvents($evtList:Array, $manager:CoreManager) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = param1.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var i:int = 0;
+         var len:int = $evtList.length;
+         for(i = 0; i < len; )
          {
-            param2.addEventListener(param1[_loc4_],eventsHandler);
-            _loc4_++;
+            $manager.addEventListener($evtList[i],eventsHandler);
+            i++;
          }
       }
       
-      protected function eventsHandler(param1:CEvent) : void
+      protected function eventsHandler(e:CEvent) : void
       {
       }
       
-      protected final function addEventsMap(param1:Array, param2:CoreManager) : void
+      protected final function addEventsMap($evtAndHandlerList:Array, $manager:CoreManager) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = param1.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var i:int = 0;
+         var len:int = $evtAndHandlerList.length;
+         for(i = 0; i < len; )
          {
-            param2.addEventListener(param1[_loc4_][0],param1[_loc4_][1]);
-            _loc4_++;
+            $manager.addEventListener($evtAndHandlerList[i][0],$evtAndHandlerList[i][1]);
+            i++;
          }
       }
       
-      protected final function removeEventsMap(param1:Array, param2:CoreManager) : void
+      protected final function removeEventsMap($evtAndHandlerList:Array, $manager:CoreManager) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = param1.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var i:int = 0;
+         var len:int = $evtAndHandlerList.length;
+         for(i = 0; i < len; )
          {
-            param2.removeEventListener(param1[_loc4_][0],param1[_loc4_][1]);
-            _loc4_++;
+            $manager.removeEventListener($evtAndHandlerList[i][0],$evtAndHandlerList[i][1]);
+            i++;
          }
       }
    }

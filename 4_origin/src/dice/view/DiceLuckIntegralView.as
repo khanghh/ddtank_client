@@ -125,7 +125,7 @@ package dice.view
          DiceController.Instance.removeEventListener("dice_luckintegral_changed",__onLuckIntegralChanged);
       }
       
-      private function __onLevelRollOver(param1:MouseEvent) : void
+      private function __onLevelRollOver(event:MouseEvent) : void
       {
          if(_tip.parent == null)
          {
@@ -134,7 +134,7 @@ package dice.view
          }
       }
       
-      private function __onLevelRollOut(param1:MouseEvent) : void
+      private function __onLevelRollOut(event:MouseEvent) : void
       {
          if(_tip.parent)
          {
@@ -142,37 +142,37 @@ package dice.view
          }
       }
       
-      private function __onLuckIntegralChanged(param1:DiceEvent) : void
+      private function __onLuckIntegralChanged(event:DiceEvent) : void
       {
          setIntegral = DiceController.Instance.LuckIntegral;
       }
       
-      private function __onLuckIntegralLevelChanged(param1:DiceEvent) : void
+      private function __onLuckIntegralLevelChanged(event:DiceEvent) : void
       {
          setIntegralLevel = DiceController.Instance.LuckIntegralLevel;
       }
       
-      public function resetLuckBar(param1:int, param2:int) : void
+      public function resetLuckBar(preIntegral:int, maxIntegral:int) : void
       {
-         _maxIntegral = param2;
-         setIntegral = param1;
+         _maxIntegral = maxIntegral;
+         setIntegral = preIntegral;
       }
       
-      public function set setIntegral(param1:int) : void
+      public function set setIntegral(integral:int) : void
       {
-         var _loc2_:Number = NaN;
-         var _loc3_:Number = NaN;
-         _currentIntegral = param1;
-         _loc3_ = _currentIntegral - (DiceController.Instance.AwardLevelInfo[DiceController.Instance.LuckIntegralLevel - 1] as DiceAwardInfo != null?(DiceController.Instance.AwardLevelInfo[DiceController.Instance.LuckIntegralLevel - 1] as DiceAwardInfo).integral:0);
-         _luckIntegral.text = String(_loc3_) + " / " + String(_maxIntegral);
-         _loc2_ = _loc3_ / _maxIntegral;
-         _loc2_ = _luckBar.width * _loc2_;
+         var rate:Number = NaN;
+         var current:Number = NaN;
+         _currentIntegral = integral;
+         current = _currentIntegral - (DiceController.Instance.AwardLevelInfo[DiceController.Instance.LuckIntegralLevel - 1] as DiceAwardInfo != null?(DiceController.Instance.AwardLevelInfo[DiceController.Instance.LuckIntegralLevel - 1] as DiceAwardInfo).integral:0);
+         _luckIntegral.text = String(current) + " / " + String(_maxIntegral);
+         rate = current / _maxIntegral;
+         rate = _luckBar.width * rate;
          TweenLite.killTweensOf(_shape);
          TweenLite.to(_shape,1,{
-            "x":_luckBar.x - _luckBar.width + _loc2_,
+            "x":_luckBar.x - _luckBar.width + rate,
             "onUpdate":onMoveEffect
          });
-         _shape.x = _luckBar.x - _luckBar.width + _loc2_;
+         _shape.x = _luckBar.x - _luckBar.width + rate;
       }
       
       private function onMoveEffect() : void
@@ -183,13 +183,13 @@ package dice.view
          }
       }
       
-      public function set setIntegralLevel(param1:int) : void
+      public function set setIntegralLevel(level:int) : void
       {
-         if(param1 >= 0 && param1 < 5)
+         if(level >= 0 && level < 5)
          {
-            _bg.setFrame(param1 + 1);
-            _level.setFrame(param1 + 1);
-            _maxIntegral = (DiceController.Instance.AwardLevelInfo[param1] as DiceAwardInfo).integral - (DiceController.Instance.AwardLevelInfo[param1 - 1] as DiceAwardInfo != null?(DiceController.Instance.AwardLevelInfo[param1 - 1] as DiceAwardInfo).integral:0);
+            _bg.setFrame(level + 1);
+            _level.setFrame(level + 1);
+            _maxIntegral = (DiceController.Instance.AwardLevelInfo[level] as DiceAwardInfo).integral - (DiceController.Instance.AwardLevelInfo[level - 1] as DiceAwardInfo != null?(DiceController.Instance.AwardLevelInfo[level - 1] as DiceAwardInfo).integral:0);
          }
       }
       

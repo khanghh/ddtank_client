@@ -116,14 +116,14 @@ package im
          StageReferance.stage.addEventListener("click",__stageClick);
       }
       
-      private function __inputClick(param1:MouseEvent) : void
+      private function __inputClick(event:MouseEvent) : void
       {
          strTest();
       }
       
-      private function __stageClick(param1:MouseEvent) : void
+      private function __stageClick(event:MouseEvent) : void
       {
-         if(DisplayUtils.isTargetOrContain(param1.target as DisplayObject,_inputText) || param1.target is ScaleFrameImage || param1.target is PlayerTip || param1.target is SimpleBitmapButton)
+         if(DisplayUtils.isTargetOrContain(event.target as DisplayObject,_inputText) || event.target is ScaleFrameImage || event.target is PlayerTip || event.target is SimpleBitmapButton)
          {
             return;
          }
@@ -139,20 +139,20 @@ package im
          _lookBtn.visible = true;
       }
       
-      private function __stopEvent(param1:KeyboardEvent) : void
+      private function __stopEvent(event:KeyboardEvent) : void
       {
-         param1.stopImmediatePropagation();
-         param1.stopPropagation();
+         event.stopImmediatePropagation();
+         event.stopPropagation();
       }
       
-      private function __cleanUpClick(param1:MouseEvent) : void
+      private function __cleanUpClick(event:MouseEvent) : void
       {
          _inputText.text = "";
          strTest();
          SoundManager.instance.play("008");
       }
       
-      private function __updateList(param1:Event) : void
+      private function __updateList(event:Event) : void
       {
          if(_list && _list.visible)
          {
@@ -160,7 +160,7 @@ package im
          }
       }
       
-      private function __textInput(param1:Event) : void
+      private function __textInput(event:Event) : void
       {
          strTest();
       }
@@ -182,109 +182,107 @@ package im
       
       private function friendStrTest() : void
       {
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
-         _loc5_ = 0;
-         while(_loc5_ < _currentList.length)
+         var i:int = 0;
+         var name:* = null;
+         var temp:* = null;
+         var item:* = null;
+         var itemI:* = null;
+         for(i = 0; i < _currentList.length; )
          {
             if(_itemArray.length >= 8)
             {
                setFlexBg();
                return;
             }
-            _loc3_ = "";
-            _loc4_ = "";
-            if(_currentList[_loc5_] is PlayerInfo)
+            name = "";
+            temp = "";
+            if(_currentList[i] is PlayerInfo)
             {
-               _loc3_ = (_currentList[_loc5_] as PlayerInfo).NickName;
-               _loc4_ = _inputText.text;
+               name = (_currentList[i] as PlayerInfo).NickName;
+               temp = _inputText.text;
             }
-            else if(_currentList[_loc5_] is ConsortiaPlayerInfo)
+            else if(_currentList[i] is ConsortiaPlayerInfo)
             {
-               _loc3_ = (_currentList[_loc5_] as ConsortiaPlayerInfo).NickName;
-               _loc4_ = _inputText.text;
+               name = (_currentList[i] as ConsortiaPlayerInfo).NickName;
+               temp = _inputText.text;
             }
-            if(_loc4_ == "")
+            if(temp == "")
             {
                setFlexBg();
                return;
             }
-            if(!_loc3_)
+            if(!name)
             {
                setFlexBg();
                return;
             }
-            if(_loc3_.indexOf(_inputText.text) != -1)
+            if(name.indexOf(_inputText.text) != -1)
             {
-               if(_currentList[_loc5_] is PlayerInfo)
+               if(_currentList[i] is PlayerInfo)
                {
-                  _loc2_ = new IMLookupItem(_currentList[_loc5_] as PlayerInfo);
-                  _loc2_.addEventListener("click",__clickHandler);
-                  _list.addChild(_loc2_);
-                  _itemArray.push(_loc2_);
+                  item = new IMLookupItem(_currentList[i] as PlayerInfo);
+                  item.addEventListener("click",__clickHandler);
+                  _list.addChild(item);
+                  _itemArray.push(item);
                }
-               else if(_currentList[_loc5_] is ConsortiaPlayerInfo)
+               else if(_currentList[i] is ConsortiaPlayerInfo)
                {
-                  if(testAlikeName((_currentList[_loc5_] as ConsortiaPlayerInfo).NickName))
+                  if(testAlikeName((_currentList[i] as ConsortiaPlayerInfo).NickName))
                   {
-                     _loc1_ = new IMLookupItem(_currentList[_loc5_] as ConsortiaPlayerInfo);
-                     _loc1_.addEventListener("click",__clickHandler);
-                     _list.addChild(_loc1_);
-                     _itemArray.push(_loc1_);
+                     itemI = new IMLookupItem(_currentList[i] as ConsortiaPlayerInfo);
+                     itemI.addEventListener("click",__clickHandler);
+                     _list.addChild(itemI);
+                     _itemArray.push(itemI);
                   }
                }
             }
-            _loc5_++;
+            i++;
          }
       }
       
-      private function __doubleClickHandler(param1:InteractiveEvent) : void
+      private function __doubleClickHandler(event:InteractiveEvent) : void
       {
-         ChatManager.Instance.privateChatTo((param1.currentTarget as IMLookupItem).info.NickName,(param1.currentTarget as IMLookupItem).info.ID);
+         ChatManager.Instance.privateChatTo((event.currentTarget as IMLookupItem).info.NickName,(event.currentTarget as IMLookupItem).info.ID);
       }
       
-      private function __clickHandler(param1:MouseEvent) : void
+      private function __clickHandler(event:MouseEvent) : void
       {
-         _currentItemInfo = (param1.currentTarget as IMLookupItem).info;
+         _currentItemInfo = (event.currentTarget as IMLookupItem).info;
          dispatchEvent(new Event("change"));
       }
       
       private function CMFriendStrTest() : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc1_:* = null;
-         var _loc2_:* = null;
-         _loc4_ = 0;
-         while(_loc4_ < _currentList.length)
+         var j:int = 0;
+         var name:* = null;
+         var tempII:* = null;
+         var item:* = null;
+         for(j = 0; j < _currentList.length; )
          {
             if(_itemArray.length >= 8)
             {
                setFlexBg();
                return;
             }
-            _loc3_ = (_currentList[_loc4_] as CMFriendInfo).NickName;
-            if(_loc3_ == "")
+            name = (_currentList[j] as CMFriendInfo).NickName;
+            if(name == "")
             {
-               _loc3_ = (_currentList[_loc4_] as CMFriendInfo).OtherName;
+               name = (_currentList[j] as CMFriendInfo).OtherName;
             }
-            _loc1_ = _inputText.text;
-            if(_loc1_ == "")
+            tempII = _inputText.text;
+            if(tempII == "")
             {
                setFlexBg();
                return;
             }
-            if(_loc3_.indexOf(_inputText.text) != -1)
+            if(name.indexOf(_inputText.text) != -1)
             {
-               _loc2_ = new IMLookupItem(_currentList[_loc4_] as CMFriendInfo);
-               _loc2_.addEventListener("click",__clickHandler);
-               _list.addChild(_loc2_);
-               _itemArray.push(_loc2_);
+               item = new IMLookupItem(_currentList[j] as CMFriendInfo);
+               item.addEventListener("click",__clickHandler);
+               _list.addChild(item);
+               _itemArray.push(item);
             }
-            _loc4_++;
+            j++;
          }
       }
       
@@ -322,15 +320,14 @@ package im
       
       private function disposeItems() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(_itemArray)
          {
-            _loc1_ = 0;
-            while(_loc1_ < _itemArray.length)
+            for(i = 0; i < _itemArray.length; )
             {
-               (_itemArray[_loc1_] as IMLookupItem).removeEventListener("click",__clickHandler);
-               (_itemArray[_loc1_] as IMLookupItem).dispose();
-               _loc1_++;
+               (_itemArray[i] as IMLookupItem).removeEventListener("click",__clickHandler);
+               (_itemArray[i] as IMLookupItem).dispose();
+               i++;
             }
          }
          _list.disposeAllChildren();
@@ -364,27 +361,26 @@ package im
          }
       }
       
-      private function testAlikeName(param1:String) : Boolean
+      private function testAlikeName(name:String) : Boolean
       {
-         var _loc3_:int = 0;
-         var _loc2_:Array = [];
-         _loc2_ = PlayerManager.Instance.friendList.list;
-         _loc2_ = _loc2_.concat(PlayerManager.Instance.blackList.list);
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_.length)
+         var i:int = 0;
+         var temList:Array = [];
+         temList = PlayerManager.Instance.friendList.list;
+         temList = temList.concat(PlayerManager.Instance.blackList.list);
+         for(i = 0; i < temList.length; )
          {
-            if((_loc2_[_loc3_] as FriendListPlayer).NickName == param1)
+            if((temList[i] as FriendListPlayer).NickName == name)
             {
                return false;
             }
-            _loc3_++;
+            i++;
          }
          return true;
       }
       
-      public function set listType(param1:int) : void
+      public function set listType(value:int) : void
       {
-         _listType = param1;
+         _listType = value;
          updateList();
       }
       

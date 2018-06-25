@@ -37,8 +37,8 @@ package memoryGame.view
       
       private function init() : void
       {
-         var _loc4_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          _bg = ComponentFactory.Instance.creatBitmap("asset.memoryGame.shop.bg");
          addChild(_bg);
          _timeText = ComponentFactory.Instance.creatComponentByStylename("memoryGame.dayText");
@@ -55,14 +55,13 @@ package memoryGame.view
          _scrollPanel = ComponentFactory.Instance.creatComponentByStylename("memoryGame.scroolPanel");
          addChild(_scrollPanel);
          _vBox = ComponentFactory.Instance.creatComponentByStylename("memoryGame.MemoryGameFrame.shop.vBox");
-         var _loc2_:Vector.<MemoryGameGoodsInfo> = MemoryGameManager.instance.goodsList();
-         var _loc3_:int = _loc2_.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var list:Vector.<MemoryGameGoodsInfo> = MemoryGameManager.instance.goodsList();
+         var len:int = list.length;
+         for(i = 0; i < len; )
          {
-            _loc1_ = new MemoryGameShopItem(_loc2_[_loc4_]);
-            _vBox.addChild(_loc1_);
-            _loc4_++;
+            item = new MemoryGameShopItem(list[i]);
+            _vBox.addChild(item);
+            i++;
          }
          _vBox.arrange();
          _scrollPanel.setView(_vBox);
@@ -70,13 +69,12 @@ package memoryGame.view
       
       public function update() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _scoreText.text = MemoryGameManager.instance.score.toString();
-         _loc1_ = 0;
-         while(_loc1_ < _vBox.numChildren)
+         for(i = 0; i < _vBox.numChildren; )
          {
-            (_vBox.getChildAt(_loc1_) as MemoryGameShopItem).updateState();
-            _loc1_++;
+            (_vBox.getChildAt(i) as MemoryGameShopItem).updateState();
+            i++;
          }
       }
       

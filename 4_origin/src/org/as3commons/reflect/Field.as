@@ -7,18 +7,18 @@ package org.as3commons.reflect
    {
        
       
-      public function Field(param1:String, param2:String, param3:String, param4:Boolean, param5:ApplicationDomain, param6:HashArray = null)
+      public function Field(name:String, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metadata:HashArray = null)
       {
-         super(param1,param2,param3,param4,param5,param6);
+         super(name,type,declaringType,isStatic,applicationDomain,metadata);
       }
       
-      public function getValue(param1:* = null) : *
+      public function getValue(target:* = null) : *
       {
-         if(!param1)
+         if(!target)
          {
-            param1 = declaringType.clazz;
+            target = declaringType.clazz;
          }
-         return param1[name];
+         return target[name];
       }
    }
 }

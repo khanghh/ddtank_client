@@ -84,7 +84,7 @@ package treasureHunting
          TreasureManager.instance.addEventListener("teasureRemoveMask",__onRemoveMask);
       }
       
-      protected function __onOpenView(param1:Event) : void
+      protected function __onOpenView(event:Event) : void
       {
          loadTreasureHuntingModule(addTreasureFrame);
       }
@@ -96,21 +96,21 @@ package treasureHunting
             LoadResourceManager.Instance.startLoad(LoaderCreate.Instance.creatRouletteTempleteLoader(loadComplete));
             return;
          }
-         var _loc1_:TreasureHuntingFrame = ComponentFactory.Instance.creatComponentByStylename("treasureHunting.TreasureHuntingFrame");
-         LayerManager.Instance.addToLayer(_loc1_,3,false,1,false);
+         var treasureFrame:TreasureHuntingFrame = ComponentFactory.Instance.creatComponentByStylename("treasureHunting.TreasureHuntingFrame");
+         LayerManager.Instance.addToLayer(treasureFrame,3,false,1,false);
       }
       
-      private function loadComplete(param1:InventoryItemAnalyzer) : void
+      private function loadComplete(analyze:InventoryItemAnalyzer) : void
       {
-         RouletteManager.instance.goodList = param1.list;
-         var _loc2_:TreasureHuntingFrame = ComponentFactory.Instance.creatComponentByStylename("treasureHunting.TreasureHuntingFrame");
-         LayerManager.Instance.addToLayer(_loc2_,3,false,1,false);
+         RouletteManager.instance.goodList = analyze.list;
+         var treasureFrame:TreasureHuntingFrame = ComponentFactory.Instance.creatComponentByStylename("treasureHunting.TreasureHuntingFrame");
+         LayerManager.Instance.addToLayer(treasureFrame,3,false,1,false);
       }
       
-      public function loadTreasureHuntingModule(param1:Function = null, param2:Array = null) : void
+      public function loadTreasureHuntingModule(complete:Function = null, completeParams:Array = null) : void
       {
-         _func = param1;
-         _funcParams = param2;
+         _func = complete;
+         _funcParams = completeParams;
          UIModuleSmallLoading.Instance.progress = 0;
          UIModuleSmallLoading.Instance.show();
          UIModuleLoader.Instance.addEventListener("uiModuleComplete",loadCompleteHandler);
@@ -118,17 +118,17 @@ package treasureHunting
          UIModuleLoader.Instance.addUIModuleImp("treasureHunting");
       }
       
-      private function onUimoduleLoadProgress(param1:UIModuleEvent) : void
+      private function onUimoduleLoadProgress(event:UIModuleEvent) : void
       {
-         if(param1.module == "treasureHunting")
+         if(event.module == "treasureHunting")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
       
-      private function loadCompleteHandler(param1:UIModuleEvent) : void
+      private function loadCompleteHandler(event:UIModuleEvent) : void
       {
-         if(param1.module == "treasureHunting")
+         if(event.module == "treasureHunting")
          {
             UIModuleSmallLoading.Instance.hide();
             UIModuleLoader.Instance.removeEventListener("uiModuleComplete",loadCompleteHandler);
@@ -142,61 +142,60 @@ package treasureHunting
          }
       }
       
-      private function _update(param1:BagEvent) : void
+      private function _update(event:BagEvent) : void
       {
-         var _loc2_:Dictionary = param1.changedSlots;
+         var tmpData:Dictionary = event.changedSlots;
          if(_treasureFrame && _treasureFrame.bagView)
          {
-            _treasureFrame.bagView.updateData(_loc2_);
+            _treasureFrame.bagView.updateData(tmpData);
          }
          var _loc5_:int = 0;
-         var _loc4_:* = _loc2_;
-         for(var _loc3_ in _loc2_)
+         var _loc4_:* = tmpData;
+         for(var key in tmpData)
          {
-            _bagData[_loc3_] = _loc2_[_loc3_];
+            _bagData[key] = tmpData[key];
          }
       }
       
-      private function onPayForHunting(param1:PkgEvent) : void
+      private function onPayForHunting(event:PkgEvent) : void
       {
-         var _loc6_:int = 0;
-         var _loc2_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:int = 0;
-         var _loc9_:int = 0;
+         var templeteId:int = 0;
+         var categoryIndex:int = 0;
+         var str:* = null;
+         var count:int = 0;
+         var i:int = 0;
          lightIndexArr = [];
          msgStr = LanguageMgr.GetTranslation("treasureHunting.msg");
-         var _loc5_:PackageIn = param1.pkg;
-         TreasureManager.instance.isActivityOpen = _loc5_.readBoolean();
-         var _loc7_:int = _loc5_.readInt();
-         if(TreasureManager.instance.isActivityOpen == false || _loc7_ <= 0)
+         var pkg:PackageIn = event.pkg;
+         TreasureManager.instance.isActivityOpen = pkg.readBoolean();
+         var len:int = pkg.readInt();
+         if(TreasureManager.instance.isActivityOpen == false || len <= 0)
          {
             _treasureFrame.huntingBtn.enable = true;
             isMovieComplete = true;
             removeMask();
             return;
          }
-         countMsg = LanguageMgr.GetTranslation("treasureHunting.count",_loc7_);
-         _loc9_ = 0;
-         while(_loc9_ <= _loc7_ - 1)
+         countMsg = LanguageMgr.GetTranslation("treasureHunting.count",len);
+         for(i = 0; i <= len - 1; )
          {
-            _loc6_ = _loc5_.readInt();
-            _loc2_ = _loc5_.readInt();
-            _loc4_ = _loc5_.readUTF();
-            _loc3_ = _loc5_.readInt();
-            msgStr = msgStr + (_loc4_ + "x" + _loc3_ + "  ");
-            lightIndexArr.push(_loc2_ - 1);
-            _loc9_++;
+            templeteId = pkg.readInt();
+            categoryIndex = pkg.readInt();
+            str = pkg.readUTF();
+            count = pkg.readInt();
+            msgStr = msgStr + (str + "x" + count + "  ");
+            lightIndexArr.push(categoryIndex - 1);
+            i++;
          }
-         _treasureFrame.creatMoveCell(_loc6_);
-         var _loc8_:int = _loc5_.readInt();
-         if(_loc8_ > 0)
+         _treasureFrame.creatMoveCell(templeteId);
+         var lukStoneCount:int = pkg.readInt();
+         if(lukStoneCount > 0)
          {
-            msgStr = msgStr + ("幸运彩石x" + _loc8_);
+            msgStr = msgStr + ("幸运彩石x" + lukStoneCount);
             _treasureFrame.creatMoveCell(11550);
             SocketManager.Instance.out.sendQequestBadLuck();
          }
-         if(_loc7_ == 1)
+         if(len == 1)
          {
             _treasureFrame.startTimer();
          }
@@ -224,7 +223,7 @@ package treasureHunting
          LayerManager.Instance.addToLayer(_listView,2,true,0);
       }
       
-      private function onshowPrizeDispose(param1:ComponentEvent) : void
+      private function onshowPrizeDispose(event:ComponentEvent) : void
       {
          _showPrize.removeEventListener("dispose",onshowPrizeDispose);
          ObjectUtils.disposeObject(_showPrize);
@@ -244,7 +243,7 @@ package treasureHunting
          LayerManager.Instance.addToLayer(_mask,3,false,2);
       }
       
-      protected function __onRemoveMask(param1:TreasureEvent) : void
+      protected function __onRemoveMask(event:TreasureEvent) : void
       {
          removeMask();
       }
@@ -259,20 +258,20 @@ package treasureHunting
          }
       }
       
-      private function onMaskClick(param1:MouseEvent) : void
+      private function onMaskClick(event:MouseEvent) : void
       {
          MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("treasureHunting.huntingNow"));
       }
       
       public function checkBag() : Boolean
       {
-         var _loc1_:* = null;
+         var cellInfo:* = null;
          var _loc4_:int = 0;
          var _loc3_:* = _bagData;
-         for(var _loc2_ in _bagData)
+         for(var i in _bagData)
          {
-            _loc1_ = PlayerManager.Instance.Self.CaddyBag.getItemAt(int(_loc2_));
-            if(_loc1_ != null)
+            cellInfo = PlayerManager.Instance.Self.CaddyBag.getItemAt(int(i));
+            if(cellInfo != null)
             {
                return true;
             }
@@ -306,9 +305,9 @@ package treasureHunting
          _mask = null;
       }
       
-      public function setFrame(param1:TreasureHuntingFrame) : void
+      public function setFrame(frame:TreasureHuntingFrame) : void
       {
-         _treasureFrame = param1;
+         _treasureFrame = frame;
       }
    }
 }

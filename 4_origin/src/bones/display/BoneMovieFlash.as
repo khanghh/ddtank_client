@@ -42,17 +42,17 @@ package bones.display
       
       private var _callBack:Function;
       
-      public function BoneMovieFlash(param1:String = "")
+      public function BoneMovieFlash(styleName:String = "")
       {
          super();
-         _styleName = param1;
+         _styleName = styleName;
       }
       
-      public function setArmature(param1:Armature, param2:ArmatureData = null) : IBoneMovie
+      public function setArmature(armature:Armature, data:ArmatureData = null) : IBoneMovie
       {
          clearArmature();
-         _armature = param1;
-         _armatureData = param2 || param1.armatureData;
+         _armature = armature;
+         _armatureData = data || armature.armatureData;
          if(_argsData)
          {
             _argsData.clear();
@@ -60,10 +60,10 @@ package bones.display
          _argsData = BoneMovieFactory.instance.analysisFrameArgs(this);
          _movie = _armature.display as DisplayObject;
          addChildAt(_movie,0);
-         var _loc3_:AnimationData = _armatureData.animationDataList[0];
+         var animationData:AnimationData = _armatureData.animationDataList[0];
          if(_defaultBoneActionType == null || _defaultBoneActionType == "")
          {
-            _defaultBoneActionType = _loc3_.name;
+            _defaultBoneActionType = animationData.name;
          }
          gotoAndPlay(_defaultBoneActionType);
          startClock();
@@ -73,8 +73,8 @@ package bones.display
       public function loadWait() : void
       {
          _loadComplete = false;
-         var _loc1_:String = BoneMovieFactory.instance.model.getBonesStyle(_styleName).boneType;
-         if(_loc1_ != "none")
+         var type:String = BoneMovieFactory.instance.model.getBonesStyle(_styleName).boneType;
+         if(type != "none")
          {
             _deafultImage.x = -60;
             _deafultImage.y = -100;
@@ -83,18 +83,18 @@ package bones.display
          BonesLoaderManager.instance.addEventListener("complete",__onLoaderComplete);
       }
       
-      public function gotoAndPlay(param1:String, param2:Number = -1, param3:Number = -1, param4:Number = NaN, param5:int = 0, param6:String = null, param7:String = "sameLayerAndGroup", param8:Boolean = true, param9:Boolean = true) : AnimationState
+      public function gotoAndPlay(animationName:String, fadeInTime:Number = -1, duration:Number = -1, playTimes:Number = NaN, layer:int = 0, group:String = null, fadeOutMode:String = "sameLayerAndGroup", pauseFadeOut:Boolean = true, pauseFadeIn:Boolean = true) : AnimationState
       {
-         return _armature.animation.gotoAndPlay(param1,param2,param3,param4,param5,param6,param7,param8,param9);
+         return _armature.animation.gotoAndPlay(animationName,fadeInTime,duration,playTimes,layer,group,fadeOutMode,pauseFadeOut,pauseFadeIn);
       }
       
-      public function play(param1:String = "") : void
+      public function play(action:String = "") : void
       {
          if(_armature)
          {
-            gotoAndPlay(param1 == ""?_defaultBoneActionType:param1);
+            gotoAndPlay(action == ""?_defaultBoneActionType:action);
          }
-         _defaultBoneActionType = param1;
+         _defaultBoneActionType = action;
       }
       
       public function stop() : void
@@ -105,37 +105,37 @@ package bones.display
          }
       }
       
-      public function changeBone(param1:String, param2:Bone) : void
+      public function changeBone(boneName:String, bone:Bone) : void
       {
-         var _loc4_:String = null;
-         var _loc3_:Bone = null;
+         var parentName:String = null;
+         var changeBone:Bone = null;
          if(_armature != null && _armature.animation != null)
          {
-            _loc3_ = _armature.getBone(param1);
-            if(_loc3_.parent != null)
+            changeBone = _armature.getBone(boneName);
+            if(changeBone.parent != null)
             {
-               _loc4_ = _loc3_.parent.name;
+               parentName = changeBone.parent.name;
             }
-            _armature.addBone(param2,_loc4_);
-            _armature.removeBone(_loc3_);
+            _armature.addBone(bone,parentName);
+            _armature.removeBone(changeBone);
          }
       }
       
-      public function getBoneByName(param1:String) : Bone
+      public function getBoneByName(boneName:String) : Bone
       {
-         var _loc2_:Bone = _armature.getBone(param1);
-         return _loc2_;
+         var bone:Bone = _armature.getBone(boneName);
+         return bone;
       }
       
-      public function getBoneDataByName(param1:String) : BoneData
+      public function getBoneDataByName(boneName:String) : BoneData
       {
-         var _loc2_:BoneData = null;
+         var boneData:BoneData = null;
          if(_armatureData != null)
          {
-            _loc2_ = _armatureData.getBoneData(name);
-            if(_loc2_ != null)
+            boneData = _armatureData.getBoneData(name);
+            if(boneData != null)
             {
-               return _loc2_;
+               return boneData;
             }
          }
          return null;
@@ -173,13 +173,13 @@ package bones.display
          return _armature;
       }
       
-      public function set direction(param1:int) : void
+      public function set direction(value:int) : void
       {
-         if(_direction == param1)
+         if(_direction == value)
          {
             return;
          }
-         _direction = param1;
+         _direction = value;
          this.scaleX = _direction;
       }
       
@@ -230,9 +230,9 @@ package bones.display
          return _loadComplete;
       }
       
-      private function __onLoaderComplete(param1:BonesLoaderEvent) : void
+      private function __onLoaderComplete(e:BonesLoaderEvent) : void
       {
-         if(_styleName == param1.vo.styleName)
+         if(_styleName == e.vo.styleName)
          {
             _loadComplete = true;
             BonesLoaderManager.instance.removeEventListener("complete",__onLoaderComplete);
@@ -245,14 +245,14 @@ package bones.display
          }
       }
       
-      public function set onLoadComplete(param1:Function) : void
+      public function set onLoadComplete(value:Function) : void
       {
-         _callBack = param1;
+         _callBack = value;
       }
       
-      public function getValueByAttribute(param1:String) : String
+      public function getValueByAttribute(attribute:String) : String
       {
-         return _argsData[param1];
+         return _argsData[attribute];
       }
       
       public function dispose() : void

@@ -24,41 +24,41 @@ package gameCommon.view.experience
       
       private var _attestBtn:ScaleFrameImage;
       
-      public function ExpFriendItem(param1:Player)
+      public function ExpFriendItem(player:Player)
       {
          super();
-         init(param1);
+         init(player);
       }
       
-      private function init(param1:Player) : void
+      private function init(player:Player) : void
       {
-         var _loc2_:int = 0;
-         _head = new HeadFigure(28,28,param1);
+         var tempIndex:int = 0;
+         _head = new HeadFigure(28,28,player);
          _nameTxt = ComponentFactory.Instance.creatComponentByStylename("experience.LeftViewNameTxt");
          _expTxt = ComponentFactory.Instance.creatComponentByStylename("experience.LeftViewScoreTxt");
          _exploitTxt = ComponentFactory.Instance.creatComponentByStylename("experience.LeftViewScoreTxt");
          PositionUtils.setPos(_exploitTxt,"experience.FriendItemTxtPos_3");
          PositionUtils.setPos(_head,"experience.FriendItemHeadPos");
-         _nameTxt.text = param1.playerInfo.NickName;
+         _nameTxt.text = player.playerInfo.NickName;
          if(_nameTxt.width > 85)
          {
-            _loc2_ = _nameTxt.getCharIndexAtPoint(85,5);
-            _nameTxt.text = _nameTxt.text.substring(0,_loc2_) + "...";
+            tempIndex = _nameTxt.getCharIndexAtPoint(85,5);
+            _nameTxt.text = _nameTxt.text.substring(0,tempIndex) + "...";
          }
-         _expTxt.text = "+" + param1.expObj.gainGP;
+         _expTxt.text = "+" + player.expObj.gainGP;
          if(GameControl.Instance.Current.roomType == 120)
          {
-            _exploitTxt.text = "+" + param1.expObj.prestige.toString();
+            _exploitTxt.text = "+" + player.expObj.prestige.toString();
          }
-         else if(param1.expObj.gainOffer)
+         else if(player.expObj.gainOffer)
          {
-            if(param1.GainOffer < 0)
+            if(player.GainOffer < 0)
             {
-               _exploitTxt.text = param1.GainOffer.toString();
+               _exploitTxt.text = player.GainOffer.toString();
             }
             else
             {
-               _exploitTxt.text = "+" + param1.GainOffer.toString();
+               _exploitTxt.text = "+" + player.GainOffer.toString();
             }
          }
          else
@@ -69,7 +69,7 @@ package gameCommon.view.experience
          addChild(_nameTxt);
          addChild(_expTxt);
          addChild(_exploitTxt);
-         if(param1.playerInfo.isAttest)
+         if(player.playerInfo.isAttest)
          {
             _attestBtn = ComponentFactory.Instance.creatComponentByStylename("hall.playerInfo.attest");
             PositionUtils.setPos(_attestBtn,"experience.ItemAttestPos");

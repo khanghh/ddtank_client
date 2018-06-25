@@ -71,26 +71,26 @@ package times.view
          addChild(_currentEditionTxt);
       }
       
-      private function formatEdition(param1:int) : String
+      private function formatEdition(edition:int) : String
       {
-         if(param1 > 99)
+         if(edition > 99)
          {
-            return String(param1);
+            return String(edition);
          }
-         if(param1 > 9)
+         if(edition > 9)
          {
-            return "0" + String(param1);
+            return "0" + String(edition);
          }
-         return "00" + String(param1);
+         return "00" + String(edition);
       }
       
-      private function formatDate(param1:Number) : String
+      private function formatDate(date:Number) : String
       {
-         if(param1 > 9)
+         if(date > 9)
          {
-            return String(param1);
+            return String(date);
          }
-         return "0" + String(param1);
+         return "0" + String(date);
       }
       
       public function dispose() : void

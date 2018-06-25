@@ -33,10 +33,10 @@ package gameCommon.view.playerThumbnail
       
       private var lightingFilter:BitmapFilter;
       
-      public function BossThumbnail(param1:Living)
+      public function BossThumbnail(living:Living)
       {
          super();
-         _living = param1;
+         _living = living;
          init();
          initEvents();
       }
@@ -61,9 +61,9 @@ package gameCommon.view.playerThumbnail
             __updateBlood(null);
          }
          addChild(_blood);
-         var _loc1_:Point = ComponentFactory.Instance.creatCustomObject("room.bossThumbnailHPPos");
-         _blood.x = _loc1_.x;
-         _blood.y = _loc1_.y;
+         var p:Point = ComponentFactory.Instance.creatCustomObject("room.bossThumbnailHPPos");
+         _blood.x = p.x;
+         _blood.y = p.y;
          _name = ComponentFactory.Instance.creatComponentByStylename("asset.game.bossThumbnailNameTxt");
          addChild(_name);
          _name.text = _living.name;
@@ -78,7 +78,7 @@ package gameCommon.view.playerThumbnail
          }
       }
       
-      public function __updateBlood(param1:LivingEvent) : void
+      public function __updateBlood(evt:LivingEvent) : void
       {
          if(RoomManager.Instance.current.type != 14)
          {
@@ -93,7 +93,7 @@ package gameCommon.view.playerThumbnail
          }
       }
       
-      public function __die(param1:LivingEvent) : void
+      public function __die(evt:LivingEvent) : void
       {
          if(_headFigure)
          {
@@ -105,22 +105,22 @@ package gameCommon.view.playerThumbnail
          }
       }
       
-      private function __shineChange(param1:LivingEvent) : void
+      private function __shineChange(evt:LivingEvent) : void
       {
-         var _loc2_:SimpleBoss = _living as SimpleBoss;
-         if(_loc2_ && _loc2_.isAttacking)
+         var boss:SimpleBoss = _living as SimpleBoss;
+         if(boss && boss.isAttacking)
          {
          }
       }
       
       public function setUpLintingFilter() : void
       {
-         var _loc1_:Array = [];
-         _loc1_ = _loc1_.concat([1,0,0,0,25]);
-         _loc1_ = _loc1_.concat([0,1,0,0,25]);
-         _loc1_ = _loc1_.concat([0,0,1,0,25]);
-         _loc1_ = _loc1_.concat([0,0,0,1,0]);
-         lightingFilter = new ColorMatrixFilter(_loc1_);
+         var matrix:Array = [];
+         matrix = matrix.concat([1,0,0,0,25]);
+         matrix = matrix.concat([0,1,0,0,25]);
+         matrix = matrix.concat([0,0,1,0,25]);
+         matrix = matrix.concat([0,0,0,1,0]);
+         lightingFilter = new ColorMatrixFilter(matrix);
       }
       
       public function removeEvents() : void
@@ -153,13 +153,13 @@ package gameCommon.view.playerThumbnail
          }
       }
       
-      public function set info(param1:Living) : void
+      public function set info(value:Living) : void
       {
-         if(!param1)
+         if(!value)
          {
             removeEvents();
          }
-         _living = param1;
+         _living = value;
          updateView();
       }
       
@@ -172,7 +172,7 @@ package gameCommon.view.playerThumbnail
          return _living.LivingID;
       }
       
-      private function __showCutHp(param1:WorldBossRoomEvent) : void
+      private function __showCutHp(e:WorldBossRoomEvent) : void
       {
          if(WorldBossManager.Instance.bossInfo.cutValue <= 0)
          {
@@ -182,19 +182,19 @@ package gameCommon.view.playerThumbnail
          {
             _blood.updateBlood(WorldBossManager.Instance.bossInfo.current_Blood,WorldBossManager.Instance.bossInfo.total_Blood);
          }
-         var _loc2_:WorldBossCutHpMC = new WorldBossCutHpMC(WorldBossManager.Instance.bossInfo.cutValue);
-         PositionUtils.setPos(_loc2_,"fightBoss.numMC.pos");
-         addChildAt(_loc2_,0);
+         var numMC:WorldBossCutHpMC = new WorldBossCutHpMC(WorldBossManager.Instance.bossInfo.cutValue);
+         PositionUtils.setPos(numMC,"fightBoss.numMC.pos");
+         addChildAt(numMC,0);
       }
       
-      private function offset(param1:int = 30) : int
+      private function offset(off:int = 30) : int
       {
-         var _loc2_:int = Math.random() * 10;
-         if(_loc2_ % 2 == 0)
+         var i:int = Math.random() * 10;
+         if(i % 2 == 0)
          {
-            return -(int(Math.random() * param1));
+            return -(int(Math.random() * off));
          }
-         return int(Math.random() * param1);
+         return int(Math.random() * off);
       }
       
       public function dispose() : void

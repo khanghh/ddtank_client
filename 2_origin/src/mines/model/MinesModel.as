@@ -61,20 +61,19 @@ package mines.model
          return _toolExp;
       }
       
-      public function set toolExp(param1:int) : void
+      public function set toolExp(value:int) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         _toolExp = param1;
-         _loc3_ = 0;
-         while(_loc3_ < toolList.length)
+         var i:int = 0;
+         var info:* = null;
+         _toolExp = value;
+         for(i = 0; i < toolList.length; )
          {
-            _loc2_ = toolList[_loc3_] as ToolLevelInfo;
-            if(_toolExp >= _loc2_.exp)
+            info = toolList[i] as ToolLevelInfo;
+            if(_toolExp >= info.exp)
             {
-               toolLevel = _loc2_.level;
+               toolLevel = info.level;
             }
-            _loc3_++;
+            i++;
          }
       }
       
@@ -83,20 +82,19 @@ package mines.model
          return _headExp;
       }
       
-      public function set headExp(param1:int) : void
+      public function set headExp(value:int) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         _headExp = param1;
-         _loc3_ = 0;
-         while(_loc3_ < equipList.length)
+         var i:int = 0;
+         var info:* = null;
+         _headExp = value;
+         for(i = 0; i < equipList.length; )
          {
-            _loc2_ = equipList[_loc3_] as EquipmentInfo;
-            if(_headExp >= _loc2_.headExp)
+            info = equipList[i] as EquipmentInfo;
+            if(_headExp >= info.headExp)
             {
-               headLevel = _loc2_.level;
+               headLevel = info.level;
             }
-            _loc3_++;
+            i++;
          }
       }
       
@@ -105,9 +103,9 @@ package mines.model
          return _clothExp;
       }
       
-      public function set clothExp(param1:int) : void
+      public function set clothExp(value:int) : void
       {
-         _clothExp = param1;
+         _clothExp = value;
       }
       
       public function get weaponExp() : int
@@ -115,9 +113,9 @@ package mines.model
          return _weaponExp;
       }
       
-      public function set weaponExp(param1:int) : void
+      public function set weaponExp(value:int) : void
       {
-         _weaponExp = param1;
+         _weaponExp = value;
       }
       
       public function get shieldExp() : int
@@ -125,36 +123,35 @@ package mines.model
          return _shieldExp;
       }
       
-      public function set shieldExp(param1:int) : void
+      public function set shieldExp(value:int) : void
       {
-         _shieldExp = param1;
+         _shieldExp = value;
       }
       
       public function setEquipLevel() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         _loc2_ = 0;
-         while(_loc2_ < equipList.length)
+         var i:int = 0;
+         var info:* = null;
+         for(i = 0; i < equipList.length; )
          {
-            _loc1_ = equipList[_loc2_] as EquipmentInfo;
-            if(_headExp >= _loc1_.headExp)
+            info = equipList[i] as EquipmentInfo;
+            if(_headExp >= info.headExp)
             {
-               headLevel = _loc1_.level;
+               headLevel = info.level;
             }
-            if(_clothExp >= _loc1_.clothExp)
+            if(_clothExp >= info.clothExp)
             {
-               clothLevel = _loc1_.level;
+               clothLevel = info.level;
             }
-            if(_weaponExp >= _loc1_.swordExp)
+            if(_weaponExp >= info.swordExp)
             {
-               weaponLevel = _loc1_.level;
+               weaponLevel = info.level;
             }
-            if(_shieldExp >= _loc1_.shieldExp)
+            if(_shieldExp >= info.shieldExp)
             {
-               shieldLevel = _loc1_.level;
+               shieldLevel = info.level;
             }
-            _loc2_++;
+            i++;
          }
       }
    }

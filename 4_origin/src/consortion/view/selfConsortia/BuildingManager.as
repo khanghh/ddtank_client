@@ -68,8 +68,8 @@ package consortion.view.selfConsortia
          _redPackage = ComponentFactory.Instance.creatComponentByStylename("buildingManager.redPackage");
          _store = ComponentFactory.Instance.creatComponentByStylename("buildingManager.store");
          _boss = ComponentFactory.Instance.creatComponentByStylename("buildingManager.boss");
-         var _loc1_:int = ConsortionModelManager.Instance.bossCallCondition;
-         _boss.tipData = LanguageMgr.GetTranslation("ddt.consortia.bossFrame.conditionTxt",_loc1_);
+         var tmpGrade:int = ConsortionModelManager.Instance.bossCallCondition;
+         _boss.tipData = LanguageMgr.GetTranslation("ddt.consortia.bossFrame.conditionTxt",tmpGrade);
          _chairmanChanel = ComponentFactory.Instance.creatComponentByStylename("buildingManager.chairmanChanel");
          _chairmanChanel.text = LanguageMgr.GetTranslation("consortia.BuildingManager.BtnText1");
          _manager = ComponentFactory.Instance.creatComponentByStylename("buildingManager.manager");
@@ -93,10 +93,10 @@ package consortion.view.selfConsortia
       
       private function initRight() : void
       {
-         var _loc1_:int = PlayerManager.Instance.Self.Right;
-         _exit.enable = ConsortiaDutyManager.GetRight(_loc1_,4096);
-         _takeIn.enable = ConsortiaDutyManager.GetRight(_loc1_,1);
-         _chairmanChanel.enable = ConsortiaDutyManager.GetRight(_loc1_,512);
+         var right:int = PlayerManager.Instance.Self.Right;
+         _exit.enable = ConsortiaDutyManager.GetRight(right,4096);
+         _takeIn.enable = ConsortiaDutyManager.GetRight(right,1);
+         _chairmanChanel.enable = ConsortiaDutyManager.GetRight(right,512);
       }
       
       private function initEvent() : void
@@ -162,19 +162,19 @@ package consortion.view.selfConsortia
          PlayerManager.Instance.Self.removeEventListener("propertychange",__propChange);
       }
       
-      private function __propChange(param1:PlayerPropertyEvent) : void
+      private function __propChange(event:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["Right"])
+         if(event.changedProperties["Right"])
          {
             initRight();
          }
       }
       
-      private function __onClickHandler(param1:MouseEvent) : void
+      private function __onClickHandler(event:MouseEvent) : void
       {
-         var _loc2_:int = 0;
+         var tmpGrade:int = 0;
          SoundManager.instance.play("008");
-         var _loc3_:* = param1.currentTarget;
+         var _loc3_:* = event.currentTarget;
          if(_establishment !== _loc3_)
          {
             if(_redPackage !== _loc3_)
@@ -208,15 +208,15 @@ package consortion.view.selfConsortia
                         }
                         else
                         {
-                           showChairmanChannel(param1);
+                           showChairmanChannel(event);
                         }
                      }
                      else
                      {
-                        _loc2_ = ConsortionModelManager.Instance.bossCallCondition;
-                        if(PlayerManager.Instance.Self.consortiaInfo.Level < _loc2_)
+                        tmpGrade = ConsortionModelManager.Instance.bossCallCondition;
+                        if(PlayerManager.Instance.Self.consortiaInfo.Level < tmpGrade)
                         {
-                           MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.consortia.bossFrame.conditionTxt2",_loc2_));
+                           MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.consortia.bossFrame.conditionTxt2",tmpGrade));
                         }
                         else
                         {
@@ -245,11 +245,11 @@ package consortion.view.selfConsortia
          }
       }
       
-      private function showChairmanChannel(param1:MouseEvent) : void
+      private function showChairmanChannel(evt:MouseEvent) : void
       {
          if(_chairChannelShow)
          {
-            param1.stopImmediatePropagation();
+            evt.stopImmediatePropagation();
             if(!_chairChannel)
             {
                _chairChannel = ComponentFactory.Instance.creatCustomObject("chairmanChannelPanel");
@@ -266,9 +266,9 @@ package consortion.view.selfConsortia
          _chairChannelShow = !!_chairChannelShow?false:true;
       }
       
-      private function __closeChairChnnel(param1:MouseEvent) : void
+      private function __closeChairChnnel(e:MouseEvent) : void
       {
-         if(param1.target != _chairChannel)
+         if(e.target != _chairChannel)
          {
             stage.removeEventListener("click",__closeChairChnnel);
             if(_chairChannel)

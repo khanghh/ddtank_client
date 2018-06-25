@@ -21,7 +21,7 @@ package luckStar
       
       private var _frame:LuckStarFrame;
       
-      public function LuckStarController(param1:PrivateClass)
+      public function LuckStarController(pct:PrivateClass)
       {
          super();
       }
@@ -44,12 +44,12 @@ package luckStar
          LuckStarManager.Instance.addEventListener("loaderluckstaricon",__onLoaderLuckStarIcon);
       }
       
-      private function __onLoaderLuckStarIcon(param1:Event) : void
+      private function __onLoaderLuckStarIcon(evt:Event) : void
       {
          LoadingLuckStarUI.Instance.startLoad();
       }
       
-      private function __onOpenLuckStarFrame(param1:Event) : void
+      private function __onOpenLuckStarFrame(evt:Event) : void
       {
          if(_frame == null)
          {
@@ -62,10 +62,10 @@ package luckStar
          LoadingLuckStarUI.Instance.RequestActivityRank();
       }
       
-      private function __onFrameClose(param1:FrameEvent) : void
+      private function __onFrameClose(e:FrameEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(e.responseCode == 0 || e.responseCode == 1)
          {
             if(_frame.isTurn)
             {
@@ -81,32 +81,32 @@ package luckStar
          }
       }
       
-      private function _onLuckyStarEvent(param1:LuckStarEvent) : void
+      private function _onLuckyStarEvent(e:LuckStarEvent) : void
       {
          if(_frame)
          {
-            if(param1.code == 0)
+            if(e.code == 0)
             {
                _frame.updateCellInfo();
                _frame.updateMinUseNum();
             }
-            else if(param1.code == 1)
+            else if(e.code == 1)
             {
                _frame.updateLuckyStarCoins();
             }
-            else if(param1.code == 2)
+            else if(e.code == 2)
             {
                _frame.updatePlayActionList();
             }
          }
       }
       
-      private function __onUpdateReward(param1:Event) : void
+      private function __onUpdateReward(evt:Event) : void
       {
          _frame.updateNewAwardList(LuckStarManager.Instance.rewardMsg.name,LuckStarManager.Instance.rewardMsg.goodsID,LuckStarManager.Instance.rewardMsg.count);
       }
       
-      private function __onTurnGoodsInfo(param1:Event) : void
+      private function __onTurnGoodsInfo(evt:Event) : void
       {
          if(LuckStarManager.Instance.iteminfo == null)
          {
@@ -115,7 +115,7 @@ package luckStar
          _frame.getAwardGoods(LuckStarManager.Instance.iteminfo);
       }
       
-      private function __onAllGoodsInfo(param1:Event) : void
+      private function __onAllGoodsInfo(evt:Event) : void
       {
          if(_frame)
          {
@@ -123,7 +123,7 @@ package luckStar
          }
       }
       
-      public function updateLuckyStarRank(param1:Object) : void
+      public function updateLuckyStarRank(value:Object) : void
       {
          if(_frame)
          {

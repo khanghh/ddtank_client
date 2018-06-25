@@ -47,15 +47,15 @@ package guildMemberWeek.items
          super();
       }
       
-      public function GetTemplateInfo(param1:int) : ItemTemplateInfo
+      public function GetTemplateInfo(TemplateID:int) : ItemTemplateInfo
       {
-         return ItemManager.Instance.getTemplateById(param1);
+         return ItemManager.Instance.getTemplateById(TemplateID);
       }
       
-      public function initView(param1:int) : void
+      public function initView(Ranking:int) : void
       {
          _RankingText = ComponentFactory.Instance.creatComponentByStylename("guildmemberweek.MainFrame.left.ShowGuildMemberDataItem.RankingTxt");
-         _RankingText.text = param1 + "th";
+         _RankingText.text = Ranking + "th";
          _MemberNameText = ComponentFactory.Instance.creatComponentByStylename("guildmemberweek.MainFrame.left.ShowGuildMemberDataItem.MemberNameTxt");
          _MemberContributeText = ComponentFactory.Instance.creatComponentByStylename("guildmemberweek.MainFrame.left.ShowGuildMemberDataItem.MemberContributeTxt");
          _AddRankingText = ComponentFactory.Instance.creatComponentByStylename("guildmemberweek.MainFrame.left.ShowGuildMemberDataItem.AddRankingTxt");
@@ -67,11 +67,11 @@ package guildMemberWeek.items
          _AddRankingBtn.y = 5;
          _AddRankingBtn.x = 465;
          _AddRankingBtn.buttonMode = false;
-         if(param1 <= 3)
+         if(Ranking <= 3)
          {
             _RankingText.visible = false;
             _RankingBitmp = ComponentFactory.Instance.creat("toffilist.guildMemberWeektopThreeRink");
-            _RankingBitmp.setFrame(param1);
+            _RankingBitmp.setFrame(Ranking);
          }
          else
          {
@@ -90,86 +90,84 @@ package guildMemberWeek.items
       
       protected function creatItemCell() : BaseCell
       {
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,30,30);
-         _loc1_.graphics.endFill();
-         var _loc2_:BaseCell = new BaseCell(_loc1_,null,true,true);
-         _loc2_.tipDirctions = "7,6,2,1,5,4,0,3,6";
-         _loc2_.tipGapV = 10;
-         _loc2_.tipGapH = 10;
-         _loc2_.tipStyle = "core.GoodsTip";
-         return _loc2_;
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(16777215,0);
+         sp.graphics.drawRect(0,0,30,30);
+         sp.graphics.endFill();
+         var cell:BaseCell = new BaseCell(sp,null,true,true);
+         cell.tipDirctions = "7,6,2,1,5,4,0,3,6";
+         cell.tipGapV = 10;
+         cell.tipGapH = 10;
+         cell.tipStyle = "core.GoodsTip";
+         return cell;
       }
       
-      public function initMember(param1:String, param2:String) : void
+      public function initMember(MemberName:String, MemberContribute:String) : void
       {
-         _MemberNameText.text = param1;
-         _MemberContributeText.text = param2;
+         _MemberNameText.text = MemberName;
+         _MemberContributeText.text = MemberContribute;
       }
       
-      public function initAddPointBook(param1:int) : void
+      public function initAddPointBook(AddRanking:int) : void
       {
-         _AddRankingText.text = String(param1);
+         _AddRankingText.text = String(AddRanking);
          _AddRankingBtn.tipData = LanguageMgr.GetTranslation("guildMemberWeek.MainDataLabel.CanGetPointBook") + _AddRankingText.text;
          _AddRankingBtn.tipGapH = 520;
       }
       
-      public function initItemCell(param1:String) : void
+      public function initItemCell(GiftMessage:String) : void
       {
-         var _loc9_:* = null;
-         var _loc5_:* = null;
+         var itemCell:* = null;
+         var tempNumberShow:* = null;
          _itemCells = [];
-         var _loc4_:Array = param1.split(",");
-         var _loc10_:int = 0;
-         var _loc7_:int = _loc4_.length;
-         var _loc8_:Point = PositionUtils.creatPoint("guildMemberWeek.ShowGift.cellPos");
-         var _loc3_:int = _loc8_.x;
-         var _loc2_:int = _loc8_.y;
-         var _loc6_:int = 0;
-         _loc10_ = 0;
-         while(_loc10_ < _loc7_)
+         var Tgift:Array = GiftMessage.split(",");
+         var i:int = 0;
+         var L:int = Tgift.length;
+         var Tpoint:Point = PositionUtils.creatPoint("guildMemberWeek.ShowGift.cellPos");
+         var StartX:int = Tpoint.x;
+         var StartY:int = Tpoint.y;
+         var C:int = 0;
+         for(i = 0; i < L; )
          {
-            _loc9_ = creatItemCell();
-            _loc9_.buttonMode = true;
-            _loc9_.width = 30;
-            _loc9_.height = 30;
-            _loc9_.info = GetTemplateInfo(int(_loc4_[_loc10_]));
-            _loc9_.buttonMode = true;
-            _loc9_.x = _loc3_ + _loc6_ * 35;
-            _loc9_.y = _loc2_;
-            _loc5_ = ComponentFactory.Instance.creatComponentByStylename("guildmemberweek.mainFrame.left.giftNumberShowTxt");
-            _loc5_.text = "";
-            if(_loc4_[_loc10_ + 1] != undefined)
+            itemCell = creatItemCell();
+            itemCell.buttonMode = true;
+            itemCell.width = 30;
+            itemCell.height = 30;
+            itemCell.info = GetTemplateInfo(int(Tgift[i]));
+            itemCell.buttonMode = true;
+            itemCell.x = StartX + C * 35;
+            itemCell.y = StartY;
+            tempNumberShow = ComponentFactory.Instance.creatComponentByStylename("guildmemberweek.mainFrame.left.giftNumberShowTxt");
+            tempNumberShow.text = "";
+            if(Tgift[i + 1] != undefined)
             {
-               _loc5_.text = _loc4_[_loc10_ + 1];
+               tempNumberShow.text = Tgift[i + 1];
             }
-            _loc9_.addChild(_loc5_);
-            _itemCells.push([_loc9_,_loc5_,int(_loc4_[_loc10_ + 1])]);
-            addChild(_loc9_);
-            _loc6_++;
-            _loc10_ = _loc10_ + 2;
+            itemCell.addChild(tempNumberShow);
+            _itemCells.push([itemCell,tempNumberShow,int(Tgift[i + 1])]);
+            addChild(itemCell);
+            C++;
+            i = i + 2;
          }
       }
       
       private function disposeItemCell() : void
       {
-         var _loc1_:int = 0;
-         var _loc2_:int = 0;
+         var L:int = 0;
+         var i:int = 0;
          if(_itemCells)
          {
-            _loc1_ = _itemCells.length;
-            _loc2_ = 0;
-            _loc2_ = 0;
-            while(_loc2_ < _loc1_)
+            L = _itemCells.length;
+            i = 0;
+            for(i = 0; i < L; )
             {
-               ObjectUtils.disposeObject(_itemCells[_loc2_][1]);
-               ObjectUtils.disposeObject(_itemCells[_loc2_][0]);
-               _itemCells[_loc2_][0] = null;
-               _itemCells[_loc2_][1] = null;
-               _itemCells[_loc2_][2] = null;
-               _itemCells[_loc2_] = null;
-               _loc2_++;
+               ObjectUtils.disposeObject(_itemCells[i][1]);
+               ObjectUtils.disposeObject(_itemCells[i][0]);
+               _itemCells[i][0] = null;
+               _itemCells[i][1] = null;
+               _itemCells[i][2] = null;
+               _itemCells[i] = null;
+               i++;
             }
             _itemCells = null;
          }

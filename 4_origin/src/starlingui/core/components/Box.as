@@ -17,87 +17,84 @@ package starlingui.core.components
          touchable = false;
       }
       
-      public function addElement(param1:DisplayObject, param2:Number = 0, param3:Number = 0) : void
+      public function addElement(element:DisplayObject, x:Number = 0, y:Number = 0) : void
       {
-         param1.x = param2;
-         param1.y = param3;
-         addChild(param1);
+         element.x = x;
+         element.y = y;
+         addChild(element);
       }
       
-      public function addElementAt(param1:DisplayObject, param2:int, param3:Number = 0, param4:Number = 0) : void
+      public function addElementAt(element:DisplayObject, index:int, x:Number = 0, y:Number = 0) : void
       {
-         param1.x = param3;
-         param1.y = param4;
-         addChildAt(param1,param2);
+         element.x = x;
+         element.y = y;
+         addChildAt(element,index);
       }
       
-      public function addElements(param1:Array) : void
+      public function addElements(elements:Array) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         _loc4_ = 0;
-         _loc3_ = param1.length;
-         while(_loc4_ < _loc3_)
+         var i:int = 0;
+         var n:int = 0;
+         var item:* = null;
+         for(i = 0,n = elements.length; i < n; )
          {
-            _loc2_ = param1[_loc4_];
-            addChild(_loc2_);
-            _loc4_++;
+            item = elements[i];
+            addChild(item);
+            i++;
          }
       }
       
-      public function removeElement(param1:DisplayObject, param2:Boolean = false) : void
+      public function removeElement(element:DisplayObject, dispose:Boolean = false) : void
       {
-         if(param1 && contains(param1))
+         if(element && contains(element))
          {
-            removeChild(param1,param2);
+            removeChild(element,dispose);
          }
       }
       
-      public function removeAllChild(param1:DisplayObject = null, param2:Boolean = false) : void
+      public function removeAllChild(except:DisplayObject = null, dispose:Boolean = false) : void
       {
-         var _loc3_:int = 0;
-         _loc3_ = numChildren - 1;
-         while(_loc3_ > -1)
+         var i:int = 0;
+         for(i = numChildren - 1; i > -1; )
          {
-            if(param1 != getChildAt(_loc3_))
+            if(except != getChildAt(i))
             {
-               removeChildAt(_loc3_,param2);
+               removeChildAt(i,dispose);
             }
-            _loc3_--;
+            i--;
          }
       }
       
-      public function insertAbove(param1:DisplayObject, param2:DisplayObject) : void
+      public function insertAbove(element:DisplayObject, compare:DisplayObject) : void
       {
-         removeElement(param1);
-         var _loc3_:int = getChildIndex(param2);
-         addChildAt(param1,Math.min(_loc3_ + 1,numChildren));
+         removeElement(element);
+         var index:int = getChildIndex(compare);
+         addChildAt(element,Math.min(index + 1,numChildren));
       }
       
-      public function insertBelow(param1:DisplayObject, param2:DisplayObject) : void
+      public function insertBelow(element:DisplayObject, compare:DisplayObject) : void
       {
-         removeElement(param1);
-         var _loc3_:int = getChildIndex(param2);
-         addChildAt(param1,Math.max(_loc3_,0));
+         removeElement(element);
+         var index:int = getChildIndex(compare);
+         addChildAt(element,Math.max(index,0));
       }
       
-      override public function set dataSource(param1:Object) : void
+      override public function set dataSource(value:Object) : void
       {
-         var _loc2_:* = null;
-         _dataSource = param1;
+         var comp:* = null;
+         _dataSource = value;
          var _loc5_:int = 0;
-         var _loc4_:* = param1;
-         for(var _loc3_ in param1)
+         var _loc4_:* = value;
+         for(var name in value)
          {
-            _loc2_ = getChildByName(_loc3_) as Component;
-            if(_loc2_)
+            comp = getChildByName(name) as Component;
+            if(comp)
             {
-               _loc2_.dataSource = param1[_loc3_];
+               comp.dataSource = value[name];
             }
-            else if(hasOwnProperty(_loc3_))
+            else if(hasOwnProperty(name))
             {
-               this[_loc3_] = param1[_loc3_];
+               this[name] = value[name];
             }
          }
       }

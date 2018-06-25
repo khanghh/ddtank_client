@@ -96,9 +96,9 @@ package luckStar.view
       
       private function init() : void
       {
-         var _loc6_:int = 0;
-         var _loc1_:* = null;
-         var _loc5_:* = null;
+         var i:int = 0;
+         var rankItem:* = null;
+         var awardItem:* = null;
          _rankBG = ComponentFactory.Instance.creat("luckyStar.view.RankBG");
          _awardListBG = ComponentFactory.Instance.creat("luckyStar.view.NewAwardListBG");
          _awardBtn = ComponentFactory.Instance.creat("luckyStar.view.AwardBtn");
@@ -142,31 +142,29 @@ package luckStar.view
          addChild(_awardNmae);
          addChild(_awardListText);
          addChild(_helpText);
-         var _loc3_:int = 87;
-         var _loc2_:int = 35;
-         var _loc4_:int = 24;
+         var itemY:int = 87;
+         var addNum:int = 35;
+         var itemX:int = 24;
          _rankInfo = new Vector.<LuckStarRankItem>();
-         _loc6_ = 0;
-         while(_loc6_ < 5)
+         for(i = 0; i < 5; )
          {
-            _loc1_ = new LuckStarRankItem();
-            _loc1_.x = _loc4_;
-            _loc1_.y = _loc3_;
-            _loc3_ = _loc3_ + _loc2_;
-            addChild(_loc1_);
-            _rankInfo.push(_loc1_);
-            _loc6_++;
+            rankItem = new LuckStarRankItem();
+            rankItem.x = itemX;
+            rankItem.y = itemY;
+            itemY = itemY + addNum;
+            addChild(rankItem);
+            _rankInfo.push(rankItem);
+            i++;
          }
          _newAwardList = new Vector.<LuckStarNewAwardItem>();
-         _loc6_ = 0;
-         while(_loc6_ < 3)
+         for(i = 0; i < 3; )
          {
-            _loc5_ = new LuckStarNewAwardItem();
-            _textHeight = _loc5_.height;
-            _loc5_.y = _textHeight * _loc6_;
-            _newAward.addChild(_loc5_);
-            _newAwardList.push(_loc5_);
-            _loc6_++;
+            awardItem = new LuckStarNewAwardItem();
+            _textHeight = awardItem.height;
+            awardItem.y = _textHeight * i;
+            _newAward.addChild(awardItem);
+            _newAwardList.push(awardItem);
+            i++;
          }
          _awardBtn.addEventListener("click",__onAwardClick);
          _preBtn.addEventListener("click",__onPreClick);
@@ -186,13 +184,13 @@ package luckStar.view
          moreItemPlay();
       }
       
-      public function insertNewAwardItem(param1:String, param2:int, param3:int) : void
+      public function insertNewAwardItem(name:String, award:int, count:int) : void
       {
-         var _loc4_:LuckStarNewAwardItem = new LuckStarNewAwardItem();
-         _loc4_.setText(param1,param2,param3);
-         _loc4_.y = _newAwardList[_newAwardList.length - 1].y + _textHeight;
-         _newAward.addChild(_loc4_);
-         _newAwardList.push(_loc4_);
+         var awardItem:LuckStarNewAwardItem = new LuckStarNewAwardItem();
+         awardItem.setText(name,award,count);
+         awardItem.y = _newAwardList[_newAwardList.length - 1].y + _textHeight;
+         _newAward.addChild(awardItem);
+         _newAwardList.push(awardItem);
          if(_newAwardList.length > 3)
          {
             if(!_isMove)
@@ -203,19 +201,18 @@ package luckStar.view
          }
       }
       
-      private function __onMove(param1:Event) : void
+      private function __onMove(e:Event) : void
       {
-         var _loc3_:int = 0;
+         var i:int = 0;
          if(!_isMove)
          {
             return;
          }
-         var _loc2_:int = _newAwardList.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var len:int = _newAwardList.length;
+         for(i = 0; i < len; )
          {
-            _newAwardList[_loc3_].y = _newAwardList[_loc3_].y - 1;
-            _loc3_++;
+            _newAwardList[i].y = _newAwardList[i].y - 1;
+            i++;
          }
          check();
       }
@@ -253,29 +250,29 @@ package luckStar.view
          }
       }
       
-      private function __onPreClick(param1:MouseEvent) : void
+      private function __onPreClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:int = _currentPage - 1;
-         if(_loc2_ < 1)
+         var index:int = _currentPage - 1;
+         if(index < 1)
          {
-            _loc2_ = _maxPage;
+            index = _maxPage;
          }
-         currentPage = _loc2_;
+         currentPage = index;
       }
       
-      private function __onNextClick(param1:MouseEvent) : void
+      private function __onNextClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:int = _currentPage + 1;
-         if(_loc2_ > _maxPage)
+         var index:int = _currentPage + 1;
+         if(index > _maxPage)
          {
-            _loc2_ = 1;
+            index = 1;
          }
-         currentPage = _loc2_;
+         currentPage = index;
       }
       
-      private function __onAwardClick(param1:MouseEvent) : void
+      private function __onAwardClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_awardView == null)
@@ -288,35 +285,34 @@ package luckStar.view
          }
       }
       
-      private function set currentPage(param1:int) : void
+      private function set currentPage(value:int) : void
       {
-         if(_currentPage == param1)
+         if(_currentPage == value)
          {
             return;
          }
-         _currentPage = param1;
+         _currentPage = value;
          updateRankInfo();
       }
       
       public function updateRankInfo() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(LuckStarManager.Instance.model.rank == null || LuckStarManager.Instance.model.rank.length == 0)
          {
             return;
          }
          _maxPage = LuckStarManager.Instance.model.rank.length;
          _pageText.text = _currentPage.toString() + "/" + _maxPage.toString();
-         var _loc2_:Vector.<LuckStarPlayerInfo> = LuckStarManager.Instance.model.rank[_currentPage - 1] as Vector.<LuckStarPlayerInfo>;
-         _loc1_ = 0;
-         while(_loc1_ < 5)
+         var info:Vector.<LuckStarPlayerInfo> = LuckStarManager.Instance.model.rank[_currentPage - 1] as Vector.<LuckStarPlayerInfo>;
+         for(i = 0; i < 5; )
          {
-            _rankInfo[_loc1_].resetItem();
-            if(_loc1_ < _loc2_.length && _loc2_[_loc1_] != null)
+            _rankInfo[i].resetItem();
+            if(i < info.length && info[i] != null)
             {
-               _rankInfo[_loc1_].info = _loc2_[_loc1_];
+               _rankInfo[i].info = info[i];
             }
-            _loc1_++;
+            i++;
          }
       }
       
@@ -327,11 +323,11 @@ package luckStar.view
       
       public function updateSelfInfo() : void
       {
-         var _loc1_:LuckStarPlayerInfo = LuckStarManager.Instance.model.selfInfo;
-         if(_loc1_)
+         var info:LuckStarPlayerInfo = LuckStarManager.Instance.model.selfInfo;
+         if(info)
          {
-            _myRankText.text = _loc1_.rank.toString();
-            _luckyStarNumText.text = _loc1_.starNum.toString();
+            _myRankText.text = info.rank.toString();
+            _luckyStarNumText.text = info.starNum.toString();
          }
       }
       
@@ -342,22 +338,22 @@ package luckStar.view
       
       public function updateActivityDate() : void
       {
-         var _loc3_:* = null;
-         var _loc5_:* = null;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
-         var _loc4_:Array = LuckStarManager.Instance.model.activityDate;
-         if(_loc4_)
+         var start:* = null;
+         var end:* = null;
+         var str1:* = null;
+         var str2:* = null;
+         var arr:Array = LuckStarManager.Instance.model.activityDate;
+         if(arr)
          {
-            _loc3_ = _loc4_[0] as Date;
-            _loc5_ = _loc4_[1] as Date;
-            _loc2_ = LanguageMgr.GetTranslation("ddt.luckStar.fullDate",_loc3_.getFullYear(),_loc3_.getMonth() + 1,_loc3_.getDate());
-            _loc1_ = LanguageMgr.GetTranslation("ddt.luckStar.fullDate",_loc5_.getFullYear(),_loc5_.getMonth() + 1,_loc5_.getDate());
-            _timeText.text = LanguageMgr.GetTranslation("ddt.luckStar.activityTime",_loc2_,_loc1_);
+            start = arr[0] as Date;
+            end = arr[1] as Date;
+            str1 = LanguageMgr.GetTranslation("ddt.luckStar.fullDate",start.getFullYear(),start.getMonth() + 1,start.getDate());
+            str2 = LanguageMgr.GetTranslation("ddt.luckStar.fullDate",end.getFullYear(),end.getMonth() + 1,end.getDate());
+            _timeText.text = LanguageMgr.GetTranslation("ddt.luckStar.activityTime",str1,str2);
          }
       }
       
-      private function __onTimer(param1:TimerEvent) : void
+      private function __onTimer(e:TimerEvent) : void
       {
          LoadingLuckStarUI.Instance.RequestActivityRank();
          _time.reset();

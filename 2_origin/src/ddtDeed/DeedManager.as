@@ -48,9 +48,9 @@ package ddtDeed
       
       private var _confirmFrame:BaseAlerFrame;
       
-      public function DeedManager(param1:IEventDispatcher = null)
+      public function DeedManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : DeedManager
@@ -72,40 +72,40 @@ package ddtDeed
       
       public function getRemainTimeTxt() : Object
       {
-         var _loc4_:* = null;
-         var _loc7_:* = null;
-         var _loc6_:* = null;
-         var _loc8_:* = null;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
-         var _loc3_:* = null;
+         var obj:* = null;
+         var stateTipStr:* = null;
+         var petGrantTipStr:* = null;
+         var petStarStr:* = null;
+         var horseLightTipStr:* = null;
+         var horseAngerTipStr:* = null;
+         var bottomStr:* = null;
          if(isOpen)
          {
-            _loc7_ = LanguageMgr.GetTranslation("ddt.deedFrame.awardNameStateTxt") + "\r";
-            _loc6_ = LanguageMgr.GetTranslation("ddt.deedFrame.awardNameTxt1",getOneBuffData(10)) + "\r";
-            _loc8_ = LanguageMgr.GetTranslation("ddt.deedFrame.awardNameTxt2",getOneBuffData(11)) + "\r";
-            _loc2_ = LanguageMgr.GetTranslation("ddt.deedFrame.awardNameTxt3",getOneBuffData(12)) + "\r";
-            _loc1_ = LanguageMgr.GetTranslation("ddt.deedFrame.awardNameTxt4",getOneBuffData(13)) + "\r";
-            _loc3_ = LanguageMgr.GetTranslation("ddt.deedFrame.remainTimeTxt") + deedTimeStr;
+            stateTipStr = LanguageMgr.GetTranslation("ddt.deedFrame.awardNameStateTxt") + "\r";
+            petGrantTipStr = LanguageMgr.GetTranslation("ddt.deedFrame.awardNameTxt1",getOneBuffData(10)) + "\r";
+            petStarStr = LanguageMgr.GetTranslation("ddt.deedFrame.awardNameTxt2",getOneBuffData(11)) + "\r";
+            horseLightTipStr = LanguageMgr.GetTranslation("ddt.deedFrame.awardNameTxt3",getOneBuffData(12)) + "\r";
+            horseAngerTipStr = LanguageMgr.GetTranslation("ddt.deedFrame.awardNameTxt4",getOneBuffData(13)) + "\r";
+            bottomStr = LanguageMgr.GetTranslation("ddt.deedFrame.remainTimeTxt") + deedTimeStr;
          }
          else
          {
-            _loc7_ = LanguageMgr.GetTranslation("ddt.deedFrame.awardNameStateTxt2") + "\r";
-            _loc6_ = LanguageMgr.GetTranslation("ddt.deedFrame.awardNameTxt1",1) + "\r";
-            _loc8_ = LanguageMgr.GetTranslation("ddt.deedFrame.awardNameTxt2",1) + "\r";
-            _loc2_ = LanguageMgr.GetTranslation("ddt.deedFrame.awardNameTxt3",1) + "\r";
-            _loc1_ = LanguageMgr.GetTranslation("ddt.deedFrame.awardNameTxt4",1) + "\r";
-            _loc3_ = LanguageMgr.GetTranslation("ddt.deedFrame.remainTimeTxt") + 7 + LanguageMgr.GetTranslation("day");
+            stateTipStr = LanguageMgr.GetTranslation("ddt.deedFrame.awardNameStateTxt2") + "\r";
+            petGrantTipStr = LanguageMgr.GetTranslation("ddt.deedFrame.awardNameTxt1",1) + "\r";
+            petStarStr = LanguageMgr.GetTranslation("ddt.deedFrame.awardNameTxt2",1) + "\r";
+            horseLightTipStr = LanguageMgr.GetTranslation("ddt.deedFrame.awardNameTxt3",1) + "\r";
+            horseAngerTipStr = LanguageMgr.GetTranslation("ddt.deedFrame.awardNameTxt4",1) + "\r";
+            bottomStr = LanguageMgr.GetTranslation("ddt.deedFrame.remainTimeTxt") + 7 + LanguageMgr.GetTranslation("day");
          }
-         var _loc5_:String = _loc6_ + _loc8_ + _loc2_ + _loc1_;
-         _loc4_ = {};
+         var sumStr:String = petGrantTipStr + petStarStr + horseLightTipStr + horseAngerTipStr;
+         obj = {};
          var _loc9_:Boolean = true;
-         _loc4_.isOpen = _loc9_;
-         _loc4_.isSelf = _loc9_;
-         _loc4_.title = _loc7_;
-         _loc4_.content = _loc5_;
-         _loc4_.bottom = _loc3_;
-         return _loc4_;
+         obj.isOpen = _loc9_;
+         obj.isSelf = _loc9_;
+         obj.title = stateTipStr;
+         obj.content = sumStr;
+         obj.bottom = bottomStr;
+         return obj;
       }
       
       public function get isOpen() : Boolean
@@ -114,8 +114,8 @@ package ddtDeed
          {
             _endTime = TimeManager.Instance.Now();
          }
-         var _loc1_:Number = _endTime.getTime() - TimeManager.Instance.Now().getTime();
-         if(_openType == 0 || _loc1_ < 1000)
+         var differ:Number = _endTime.getTime() - TimeManager.Instance.Now().getTime();
+         if(_openType == 0 || differ < 1000)
          {
             return false;
          }
@@ -124,59 +124,59 @@ package ddtDeed
       
       public function get deedTimeStr() : String
       {
-         var _loc5_:* = null;
+         var timeTxtStr:* = null;
          if(_endTime == null)
          {
             _endTime = TimeManager.Instance.Now();
          }
-         var _loc4_:Number = _endTime.getTime();
-         var _loc3_:Number = TimeManager.Instance.Now().getTime();
-         var _loc1_:Number = _loc4_ - _loc3_;
-         var _loc2_:int = 0;
-         if(_loc1_ / 86400000 > 1)
+         var endTimestamp:Number = _endTime.getTime();
+         var nowTimestamp:Number = TimeManager.Instance.Now().getTime();
+         var differ:Number = endTimestamp - nowTimestamp;
+         var count:int = 0;
+         if(differ / 86400000 > 1)
          {
-            _loc2_ = _loc1_ / 86400000;
-            if(_loc2_ < 0)
+            count = differ / 86400000;
+            if(count < 0)
             {
-               _loc2_ = 0;
+               count = 0;
             }
-            _loc5_ = _loc2_ + LanguageMgr.GetTranslation("day");
+            timeTxtStr = count + LanguageMgr.GetTranslation("day");
          }
-         else if(_loc1_ / 3600000 > 1)
+         else if(differ / 3600000 > 1)
          {
-            _loc2_ = _loc1_ / 3600000;
-            if(_loc2_ < 0)
+            count = differ / 3600000;
+            if(count < 0)
             {
-               _loc2_ = 0;
+               count = 0;
             }
-            _loc5_ = _loc2_ + LanguageMgr.GetTranslation("hour");
+            timeTxtStr = count + LanguageMgr.GetTranslation("hour");
          }
-         else if(_loc1_ / 60000 > 1)
+         else if(differ / 60000 > 1)
          {
-            _loc2_ = _loc1_ / 60000;
-            if(_loc2_ < 0)
+            count = differ / 60000;
+            if(count < 0)
             {
-               _loc2_ = 0;
+               count = 0;
             }
-            _loc5_ = _loc2_ + LanguageMgr.GetTranslation("minute");
+            timeTxtStr = count + LanguageMgr.GetTranslation("minute");
          }
          else
          {
-            _loc2_ = _loc1_ / 1000;
-            if(_loc2_ < 0)
+            count = differ / 1000;
+            if(count < 0)
             {
-               _loc2_ = 0;
+               count = 0;
             }
-            _loc5_ = _loc2_ + LanguageMgr.GetTranslation("second");
+            timeTxtStr = count + LanguageMgr.GetTranslation("second");
          }
-         return _loc5_;
+         return timeTxtStr;
       }
       
-      public function getOneBuffData(param1:int) : int
+      public function getOneBuffData(type:int) : int
       {
          if(_openType > 0 && _buffData)
          {
-            return _buffData[param1];
+            return _buffData[type];
          }
          return 0;
       }
@@ -186,24 +186,23 @@ package ddtDeed
          return _openType;
       }
       
-      private function updateAllData(param1:CrazyTankSocketEvent) : void
+      private function updateAllData(event:CrazyTankSocketEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:PackageIn = param1.pkg;
-         _openType = _loc3_.readInt();
-         _endTime = _loc3_.readDate();
+         var count:int = 0;
+         var i:int = 0;
+         var tmpkey:int = 0;
+         var pkg:PackageIn = event.pkg;
+         _openType = pkg.readInt();
+         _endTime = pkg.readDate();
          if(_openType > 0)
          {
-            _loc2_ = _loc3_.readInt();
+            count = pkg.readInt();
             _buffData = {};
-            _loc5_ = 0;
-            while(_loc5_ < _loc2_)
+            for(i = 0; i < count; )
             {
-               _loc4_ = _loc3_.readInt();
-               _buffData[_loc4_] = _loc3_.readInt();
-               _loc5_++;
+               tmpkey = pkg.readInt();
+               _buffData[tmpkey] = pkg.readInt();
+               i++;
             }
             _count = int((_endTime.getTime() - TimeManager.Instance.Now().getTime()) / 1000);
             if(_count > 0)
@@ -219,15 +218,15 @@ package ddtDeed
          dispatchEvent(new Event("update_main_event"));
       }
       
-      private function updateBuffData(param1:CrazyTankSocketEvent) : void
+      private function updateBuffData(event:CrazyTankSocketEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         var _loc3_:int = _loc2_.readInt();
-         _buffData[_loc3_] = _loc2_.readInt();
+         var pkg:PackageIn = event.pkg;
+         var tmpkey:int = pkg.readInt();
+         _buffData[tmpkey] = pkg.readInt();
          dispatchEvent(new Event("update_buff_data_event"));
       }
       
-      private function timerHandler(param1:TimerEvent) : void
+      private function timerHandler(event:TimerEvent) : void
       {
          _count = Number(_count) - 1;
          if(_count <= 0)

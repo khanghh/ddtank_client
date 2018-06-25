@@ -14,14 +14,14 @@ package starling.display.sceneCharacter
       
       public var total:int;
       
-      public function SceneCharacterActionItem(param1:String, param2:String, param3:Array, param4:Boolean, param5:int = 0)
+      public function SceneCharacterActionItem(state:String, type:String, frames:Array, repeat:Boolean, total:int = 0)
       {
          super();
-         this.state = param1;
-         this.type = param2;
-         this.frames = param3;
-         this.repeat = param4;
-         this.total = param5 || param3.length;
+         this.state = state;
+         this.type = type;
+         this.frames = frames;
+         this.repeat = repeat;
+         this.total = total || frames.length;
       }
       
       public function dispose() : void

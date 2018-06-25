@@ -33,7 +33,7 @@ package quest
          QuestBubbleManager.Instance.addEventListener("QuestBubbleHide",__questBubbleHideHandler);
       }
       
-      private function __questBubbleShowHandler(param1:Event) : void
+      private function __questBubbleShowHandler(event:Event) : void
       {
          if(_view)
          {
@@ -51,7 +51,7 @@ package quest
          _view.show();
       }
       
-      private function __questBubbleHideHandler(param1:Event) : void
+      private function __questBubbleHideHandler(event:Event) : void
       {
          ObjectUtils.disposeObject(_view);
          _view = null;

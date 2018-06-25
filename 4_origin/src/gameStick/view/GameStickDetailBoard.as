@@ -26,7 +26,7 @@ package gameStick.view
          addChild(_btnOK);
       }
       
-      protected function onOK(param1:MouseEvent) : void
+      protected function onOK(e:MouseEvent) : void
       {
          ObjectUtils.disposeObject(this);
          GameStickManager.getInstance().startGame();

@@ -58,10 +58,10 @@ package calendar.view
       
       private var alertFrame:BaseAlerFrame;
       
-      public function CalendarFrame(param1:CalendarModel)
+      public function CalendarFrame(model:CalendarModel)
       {
          super();
-         _model = param1;
+         _model = model;
          configUI();
          addEvent();
       }
@@ -75,8 +75,8 @@ package calendar.view
          _recentbitmap = ComponentFactory.Instance.creatBitmap("asset.ddtcalendar.ActivityRecent");
          addToContent(_recentbitmap);
          _dateCombox = ComponentFactory.Instance.creatComponentByStylename("dateSelect.combox");
-         var _loc1_:Rectangle = ComponentFactory.Instance.creatCustomObject("dateSelect.comboxRec");
-         ObjectUtils.copyPropertyByRectangle(_dateCombox,_loc1_);
+         var rec:Rectangle = ComponentFactory.Instance.creatCustomObject("dateSelect.comboxRec");
+         ObjectUtils.copyPropertyByRectangle(_dateCombox,rec);
          _dateCombox.beginChanges();
          _dateCombox.selctedPropName = "text";
          _dateCombox.listPanel.vectorListModel.append(LanguageMgr.GetTranslation("ddt.today"));
@@ -91,28 +91,28 @@ package calendar.view
          addToContent(_dateCombox);
       }
       
-      public function lookActivity(param1:Date) : void
+      public function lookActivity(date:Date) : void
       {
       }
       
-      private function getWeek(param1:int) : String
+      private function getWeek(add:int) : String
       {
-         var _loc5_:* = null;
-         var _loc2_:Boolean = false;
-         var _loc3_:Date = _model.today;
-         var _loc4_:Date = new Date(_loc3_.fullYearUTC,_loc3_.monthUTC,_loc3_.dateUTC + param1);
-         if(_loc3_.day > _loc4_.day)
+         var week:* = null;
+         var isNext:Boolean = false;
+         var today:Date = _model.today;
+         var date:Date = new Date(today.fullYearUTC,today.monthUTC,today.dateUTC + add);
+         if(today.day > date.day)
          {
-            if(_loc4_.day == 0)
+            if(date.day == 0)
             {
-               _loc2_ = false;
+               isNext = false;
             }
             else
             {
-               _loc2_ = true;
+               isNext = true;
             }
          }
-         var _loc6_:* = _loc4_.day;
+         var _loc6_:* = date.day;
          if(0 !== _loc6_)
          {
             if(1 !== _loc6_)
@@ -127,70 +127,70 @@ package calendar.view
                         {
                            if(6 === _loc6_)
                            {
-                              if(_loc2_)
+                              if(isNext)
                               {
-                                 _loc5_ = LanguageMgr.GetTranslation("ddt.weekNextSaturday");
+                                 week = LanguageMgr.GetTranslation("ddt.weekNextSaturday");
                               }
                               else
                               {
-                                 _loc5_ = LanguageMgr.GetTranslation("ddt.weekSaturday");
+                                 week = LanguageMgr.GetTranslation("ddt.weekSaturday");
                               }
                            }
                         }
-                        else if(_loc2_)
+                        else if(isNext)
                         {
-                           _loc5_ = LanguageMgr.GetTranslation("ddt.weekNextFriday");
+                           week = LanguageMgr.GetTranslation("ddt.weekNextFriday");
                         }
                         else
                         {
-                           _loc5_ = LanguageMgr.GetTranslation("ddt.weekFriday");
+                           week = LanguageMgr.GetTranslation("ddt.weekFriday");
                         }
                      }
-                     else if(_loc2_)
+                     else if(isNext)
                      {
-                        _loc5_ = LanguageMgr.GetTranslation("ddt.weekNextThursday");
+                        week = LanguageMgr.GetTranslation("ddt.weekNextThursday");
                      }
                      else
                      {
-                        _loc5_ = LanguageMgr.GetTranslation("ddt.weekThursday");
+                        week = LanguageMgr.GetTranslation("ddt.weekThursday");
                      }
                   }
-                  else if(_loc2_)
+                  else if(isNext)
                   {
-                     _loc5_ = LanguageMgr.GetTranslation("ddt.weekNextWednesday");
+                     week = LanguageMgr.GetTranslation("ddt.weekNextWednesday");
                   }
                   else
                   {
-                     _loc5_ = LanguageMgr.GetTranslation("ddt.weekWednesday");
+                     week = LanguageMgr.GetTranslation("ddt.weekWednesday");
                   }
                }
-               else if(_loc2_)
+               else if(isNext)
                {
-                  _loc5_ = LanguageMgr.GetTranslation("ddt.weekNextTuesday");
+                  week = LanguageMgr.GetTranslation("ddt.weekNextTuesday");
                }
                else
                {
-                  _loc5_ = LanguageMgr.GetTranslation("ddt.weekTuesday");
+                  week = LanguageMgr.GetTranslation("ddt.weekTuesday");
                }
             }
-            else if(_loc2_)
+            else if(isNext)
             {
-               _loc5_ = LanguageMgr.GetTranslation("ddt.weekNextMonday");
+               week = LanguageMgr.GetTranslation("ddt.weekNextMonday");
             }
             else
             {
-               _loc5_ = LanguageMgr.GetTranslation("ddt.weekMonday");
+               week = LanguageMgr.GetTranslation("ddt.weekMonday");
             }
          }
-         else if(_loc2_)
+         else if(isNext)
          {
-            _loc5_ = LanguageMgr.GetTranslation("ddt.weekNextSunday");
+            week = LanguageMgr.GetTranslation("ddt.weekNextSunday");
          }
          else
          {
-            _loc5_ = LanguageMgr.GetTranslation("ddt.weekSunday");
+            week = LanguageMgr.GetTranslation("ddt.weekSunday");
          }
-         return _loc5_;
+         return week;
       }
       
       public function get activityList() : ActivityList
@@ -205,22 +205,22 @@ package calendar.view
          _dateCombox.addEventListener("stateChange",__dateComboxChanged);
       }
       
-      private function __dateComboxChanged(param1:Event) : void
+      private function __dateComboxChanged(e:Event) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:int = _dateCombox.currentSelectedIndex;
-         var _loc3_:Date = TimeManager.Instance.Now();
-         var _loc4_:Date = new Date(_loc3_.fullYearUTC,_loc3_.monthUTC,_loc3_.dateUTC + _loc2_,_loc3_.hours,_loc3_.minutes,_loc3_.seconds);
-         CalendarControl.getInstance().lookActivity(_loc4_);
+         var index:int = _dateCombox.currentSelectedIndex;
+         var today:Date = TimeManager.Instance.Now();
+         var date:Date = new Date(today.fullYearUTC,today.monthUTC,today.dateUTC + index,today.hours,today.minutes,today.seconds);
+         CalendarControl.getInstance().lookActivity(date);
       }
       
-      private function __getAward(param1:MouseEvent) : void
+      private function __getAward(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          CalendarControl.getInstance().reciveDayAward();
       }
       
-      private function __vipOpen(param1:MouseEvent) : void
+      private function __vipOpen(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          showVipPackage();
@@ -250,7 +250,7 @@ package calendar.view
          }
       }
       
-      private function __alertHandler(param1:FrameEvent) : void
+      private function __alertHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          alertFrame.removeEventListener("response",__alertHandler);
@@ -265,11 +265,11 @@ package calendar.view
          alertFrame = null;
       }
       
-      private function __responseVipInfoTipHandler(param1:FrameEvent) : void
+      private function __responseVipInfoTipHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          _vipInfoTipBox.removeEventListener("response",__responseHandler);
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -285,11 +285,11 @@ package calendar.view
          }
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          awards.removeEventListener("response",__responseHandler);
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -298,7 +298,7 @@ package calendar.view
          }
       }
       
-      private function showAwards(param1:ItemTemplateInfo) : void
+      private function showAwards(para:ItemTemplateInfo) : void
       {
          awards = ComponentFactory.Instance.creat("vip.awardFrame");
          awards.escEnable = true;
@@ -309,7 +309,7 @@ package calendar.view
          LayerManager.Instance.addToLayer(awards,3,true,1);
       }
       
-      private function __sendReward(param1:Event) : void
+      private function __sendReward(event:Event) : void
       {
          SoundManager.instance.play("008");
          SocketManager.Instance.out.sendDailyAward(3);
@@ -318,29 +318,29 @@ package calendar.view
          PlayerManager.Instance.Self.canTakeVipReward = false;
       }
       
-      private function getVIPInfoTip(param1:DictionaryData) : Array
+      private function getVIPInfoTip(dic:DictionaryData) : Array
       {
-         var _loc2_:* = null;
-         _loc2_ = PlayerManager.Instance.Self.VIPLevel == 12?[ItemManager.Instance.getTemplateById(int(VipViewFrame._vipChestsArr[PlayerManager.Instance.Self.VIPLevel - 2])),ItemManager.Instance.getTemplateById(int(VipViewFrame._vipChestsArr[PlayerManager.Instance.Self.VIPLevel - 1]))]:[ItemManager.Instance.getTemplateById(int(VipViewFrame._vipChestsArr[PlayerManager.Instance.Self.VIPLevel - 1])),ItemManager.Instance.getTemplateById(int(VipViewFrame._vipChestsArr[PlayerManager.Instance.Self.VIPLevel]))];
-         return _loc2_;
+         var resultGoodsArray:* = null;
+         resultGoodsArray = PlayerManager.Instance.Self.VIPLevel == 12?[ItemManager.Instance.getTemplateById(int(VipViewFrame._vipChestsArr[PlayerManager.Instance.Self.VIPLevel - 2])),ItemManager.Instance.getTemplateById(int(VipViewFrame._vipChestsArr[PlayerManager.Instance.Self.VIPLevel - 1]))]:[ItemManager.Instance.getTemplateById(int(VipViewFrame._vipChestsArr[PlayerManager.Instance.Self.VIPLevel - 1])),ItemManager.Instance.getTemplateById(int(VipViewFrame._vipChestsArr[PlayerManager.Instance.Self.VIPLevel]))];
+         return resultGoodsArray;
       }
       
-      private function _getStrArr(param1:DictionaryData) : Array
+      private function _getStrArr(dic:DictionaryData) : Array
       {
-         var _loc2_:Array = param1[VipViewFrame._vipChestsArr[PlayerManager.Instance.Self.VIPLevel - 1]];
-         return _loc2_;
+         var goodsArr:Array = dic[VipViewFrame._vipChestsArr[PlayerManager.Instance.Self.VIPLevel - 1]];
+         return goodsArr;
       }
       
-      private function __getFocus(param1:Event) : void
+      private function __getFocus(evt:Event) : void
       {
          removeEventListener("addedToStage",__getFocus);
          StageReferance.stage.focus = this;
       }
       
-      private function __response(param1:FrameEvent) : void
+      private function __response(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -356,7 +356,7 @@ package calendar.view
          }
       }
       
-      private function __signCountChanged(param1:Event) : void
+      private function __signCountChanged(event:Event) : void
       {
       }
       
@@ -366,11 +366,11 @@ package calendar.view
          removeEventListener("addedToStage",__getFocus);
       }
       
-      public function setState(param1:* = null) : void
+      public function setState(data:* = null) : void
       {
-         if(_state != param1)
+         if(_state != data)
          {
-            _state = param1;
+            _state = data;
             ObjectUtils.disposeObject(_currentState);
             _currentState = null;
             _currentState = ComponentFactory.Instance.creatCustomObject("ddtcalendar.ActivityState",[_model]);
@@ -378,13 +378,13 @@ package calendar.view
          }
          if(_currentState)
          {
-            _currentState.setData(param1);
+            _currentState.setData(data);
          }
       }
       
-      public function showByQQ(param1:int) : void
+      public function showByQQ(activeID:int) : void
       {
-         _activityList.showByQQ(param1);
+         _activityList.showByQQ(activeID);
       }
       
       override public function dispose() : void

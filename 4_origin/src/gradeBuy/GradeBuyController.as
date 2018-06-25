@@ -26,7 +26,7 @@ package gradeBuy
       
       private var _typeView:GradeBuyRewardTypeView;
       
-      public function GradeBuyController(param1:inner)
+      public function GradeBuyController(single:inner)
       {
          super();
       }
@@ -46,7 +46,7 @@ package gradeBuy
          addEventsMap([["gb_show",onShowHandler]],_manager);
       }
       
-      protected function onShowHandler(param1:CEvent) : void
+      protected function onShowHandler(e:CEvent) : void
       {
          new HelperUIModuleLoad().loadUIModule(["gradeBuy"],onUILoaded);
       }
@@ -67,24 +67,24 @@ package gradeBuy
          TweenLite.delayedCall(0.75,addClickListener);
       }
       
-      private function onStageClick(param1:MouseEvent) : void
+      private function onStageClick(e:MouseEvent) : void
       {
          StageReferance.stage.removeEventListener("click",onStageClick);
          _manager.viewClosed();
          ObjectUtils.disposeObject(_typeView);
          _typeView = null;
-         if(param1.target is BagCell == false && param1.target is GradeBuyTypeItem == false)
+         if(e.target is BagCell == false && e.target is GradeBuyTypeItem == false)
          {
             _manager.stopTimer();
             ShowTipManager.Instance.setup();
          }
       }
       
-      public function showItemListView(param1:ItemTemplateInfo, param2:Object) : void
+      public function showItemListView($info:ItemTemplateInfo, data:Object) : void
       {
-         var _loc3_:GradeBuyItemsListView = ComponentFactory.Instance.creatComponentByStylename("gradeBuy.itemListframe");
-         LayerManager.Instance.addToLayer(_loc3_,3,true,1);
-         _loc3_.setData(param1,param2);
+         var itemListView:GradeBuyItemsListView = ComponentFactory.Instance.creatComponentByStylename("gradeBuy.itemListframe");
+         LayerManager.Instance.addToLayer(itemListView,3,true,1);
+         itemListView.setData($info,data);
       }
       
       public function arrage() : void

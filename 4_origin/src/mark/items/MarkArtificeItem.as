@@ -15,9 +15,9 @@ package mark.items
          maxTxt.visible = false;
       }
       
-      public function set data(param1:MarkProData) : void
+      public function set data(value:MarkProData) : void
       {
-         if(param1 == null)
+         if(value == null)
          {
             imgWhat.visible = true;
             clipBg.index = 0;
@@ -28,8 +28,8 @@ package mark.items
          {
             lblPro.visible = true;
             imgWhat.visible = false;
-            lblPro.text = LanguageMgr.GetTranslation("mark.property",LanguageMgr.GetTranslation("mark.pro" + param1.type),param1.value + param1.attachValue);
-            maxTxt.visible = MarkMgr.inst.model.proIsMax(param1);
+            lblPro.text = LanguageMgr.GetTranslation("mark.property",LanguageMgr.GetTranslation("mark.pro" + value.type),value.value + value.attachValue);
+            maxTxt.visible = MarkMgr.inst.model.proIsMax(value);
          }
       }
    }

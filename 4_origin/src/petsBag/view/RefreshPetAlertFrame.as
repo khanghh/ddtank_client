@@ -33,12 +33,12 @@ package petsBag.view
       public function RefreshPetAlertFrame()
       {
          super();
-         var _loc1_:AlertInfo = new AlertInfo();
-         _loc1_.title = LanguageMgr.GetTranslation("ddt.farms.refreshPetsAlert");
-         _loc1_.bottomGap = 37;
-         _loc1_.buttonGape = 65;
-         _loc1_.customPos = ComponentFactory.Instance.creat("farm.refreshPetAlertBtnPos");
-         this.info = _loc1_;
+         var alertInfo:AlertInfo = new AlertInfo();
+         alertInfo.title = LanguageMgr.GetTranslation("ddt.farms.refreshPetsAlert");
+         alertInfo.bottomGap = 37;
+         alertInfo.buttonGape = 65;
+         alertInfo.customPos = ComponentFactory.Instance.creat("farm.refreshPetAlertBtnPos");
+         this.info = alertInfo;
          initView();
          initEvent();
       }
@@ -74,18 +74,18 @@ package petsBag.view
          _refreshSelBtn.addEventListener("select",__noAlertTip);
       }
       
-      private function __noAlertTip(param1:Event) : void
+      private function __noAlertTip(e:Event) : void
       {
          SoundManager.instance.play("008");
          SharedManager.Instance.isRefreshPet = _refreshSelBtn.selected;
          SharedManager.Instance.isRefreshBand = _selecedItem.isBind;
       }
       
-      protected function __framePesponse(param1:FrameEvent) : void
+      protected function __framePesponse(event:FrameEvent) : void
       {
          removeEventListener("response",__framePesponse);
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:

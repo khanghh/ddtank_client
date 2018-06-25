@@ -30,11 +30,11 @@ package littleGame.data
       
       private var _floydPath:Array;
       
-      public function AStar(param1:Grid)
+      public function AStar(grid:Grid)
       {
          TwoOneTwoZero = 2 * Math.cos(3.14159265358979 / 3);
          super();
-         _grid = param1;
+         _grid = grid;
          heuristic = euclidian2;
       }
       
@@ -48,49 +48,49 @@ package littleGame.data
          _path = null;
       }
       
-      private function justMin(param1:Node, param2:Node) : Boolean
+      private function justMin(node1:Node, node2:Node) : Boolean
       {
-         return param1.f < param2.f;
+         return node1.f < node2.f;
       }
       
-      public function manhattan(param1:Node) : Number
+      public function manhattan(node:Node) : Number
       {
-         return Math.abs(param1.x - this._endNode.x) + Math.abs(param1.y - this._endNode.y);
+         return Math.abs(node.x - this._endNode.x) + Math.abs(node.y - this._endNode.y);
       }
       
-      public function manhattan2(param1:Node) : Number
+      public function manhattan2(node:Node) : Number
       {
-         var _loc2_:Number = Math.abs(param1.x - this._endNode.x);
-         var _loc3_:Number = Math.abs(param1.y - this._endNode.y);
-         return _loc2_ + _loc3_ + Math.abs(_loc2_ - _loc3_) / 1000;
+         var dx:Number = Math.abs(node.x - this._endNode.x);
+         var dy:Number = Math.abs(node.y - this._endNode.y);
+         return dx + dy + Math.abs(dx - dy) / 1000;
       }
       
-      public function euclidian(param1:Node) : Number
+      public function euclidian(node:Node) : Number
       {
-         var _loc2_:Number = param1.x - this._endNode.x;
-         var _loc3_:Number = param1.y - this._endNode.y;
-         return Math.sqrt(_loc2_ * _loc2_ + _loc3_ * _loc3_);
+         var dx:Number = node.x - this._endNode.x;
+         var dy:Number = node.y - this._endNode.y;
+         return Math.sqrt(dx * dx + dy * dy);
       }
       
-      public function chineseCheckersEuclidian2(param1:Node) : Number
+      public function chineseCheckersEuclidian2(node:Node) : Number
       {
-         var _loc5_:Number = param1.y / TwoOneTwoZero;
-         var _loc4_:Number = param1.x + param1.y / 2;
-         var _loc2_:Number = _loc4_ - _endNode.x - _endNode.y / 2;
-         var _loc3_:Number = _loc5_ - _endNode.y / TwoOneTwoZero;
-         return this.sqrt(_loc2_ * _loc2_ + _loc3_ * _loc3_);
+         var x:Number = node.y / TwoOneTwoZero;
+         var y:Number = node.x + node.y / 2;
+         var dx:Number = y - _endNode.x - _endNode.y / 2;
+         var dy:Number = x - _endNode.y / TwoOneTwoZero;
+         return this.sqrt(dx * dx + dy * dy);
       }
       
-      private function sqrt(param1:Number) : Number
+      private function sqrt(x:Number) : Number
       {
-         return Math.sqrt(param1);
+         return Math.sqrt(x);
       }
       
-      public function euclidian2(param1:Node) : Number
+      public function euclidian2(node:Node) : Number
       {
-         var _loc2_:Number = param1.x - _endNode.x;
-         var _loc3_:Number = param1.y - _endNode.y;
-         return _loc2_ * _loc2_ + _loc3_ * _loc3_;
+         var dx:Number = node.x - _endNode.x;
+         var dy:Number = node.y - _endNode.y;
+         return dx * dx + dy * dy;
       }
       
       public function fillPath() : Boolean
@@ -100,66 +100,65 @@ package littleGame.data
          nowversion = Number(nowversion) + 1;
          _open = new BinaryHeap(justMin);
          _startNode.g = 0;
-         var _loc2_:int = getTimer();
-         var _loc1_:Boolean = search();
-         return _loc1_;
+         var time:int = getTimer();
+         var resutl:Boolean = search();
+         return resutl;
       }
       
       public function search() : Boolean
       {
-         var _loc5_:int = 0;
-         var _loc8_:int = 0;
-         var _loc4_:* = null;
-         var _loc6_:* = NaN;
-         var _loc2_:Number = NaN;
-         var _loc7_:Number = NaN;
-         var _loc1_:Number = NaN;
-         var _loc3_:Node = _startNode;
-         _loc3_.version = nowversion;
-         while(_loc3_ != _endNode)
+         var len:int = 0;
+         var i:int = 0;
+         var test:* = null;
+         var cost:* = NaN;
+         var g:Number = NaN;
+         var h:Number = NaN;
+         var f:Number = NaN;
+         var node:Node = _startNode;
+         node.version = nowversion;
+         while(node != _endNode)
          {
-            _loc5_ = _loc3_.links.length;
-            _loc8_ = 0;
-            while(_loc8_ < _loc5_)
+            len = node.links.length;
+            for(i = 0; i < len; )
             {
-               _loc4_ = _loc3_.links[_loc8_];
-               if(!(_loc3_.x == _loc4_.x || _loc3_.y == _loc4_.y))
+               test = node.links[i];
+               if(!(node.x == test.x || node.y == test.y))
                {
-                  _loc6_ = 1.41421;
+                  cost = 1.41421;
                }
                else
                {
-                  _loc6_ = 1;
+                  cost = 1;
                }
-               _loc2_ = _loc3_.g + _loc6_;
-               _loc7_ = heuristic(_loc4_);
-               _loc1_ = _loc2_ + _loc7_;
-               if(_loc4_.version == nowversion)
+               g = node.g + cost;
+               h = heuristic(test);
+               f = g + h;
+               if(test.version == nowversion)
                {
-                  if(_loc4_.f > _loc1_)
+                  if(test.f > f)
                   {
-                     _loc4_.f = _loc1_;
-                     _loc4_.g = _loc2_;
-                     _loc4_.h = _loc7_;
-                     _loc4_.parent = _loc3_;
+                     test.f = f;
+                     test.g = g;
+                     test.h = h;
+                     test.parent = node;
                   }
                }
                else
                {
-                  _loc4_.f = _loc1_;
-                  _loc4_.g = _loc2_;
-                  _loc4_.h = _loc7_;
-                  _loc4_.parent = _loc3_;
-                  _open.ins(_loc4_);
-                  _loc4_.version = nowversion;
+                  test.f = f;
+                  test.g = g;
+                  test.h = h;
+                  test.parent = node;
+                  _open.ins(test);
+                  test.version = nowversion;
                }
-               _loc8_++;
+               i++;
             }
             if(_open.a.length == 1)
             {
                return false;
             }
-            _loc3_ = _open.pop() as Node;
+            node = _open.pop() as Node;
          }
          buildPath();
          return true;
@@ -168,12 +167,12 @@ package littleGame.data
       private function buildPath() : void
       {
          _path = [];
-         var _loc1_:Node = _endNode;
-         _path.push(_loc1_);
-         while(_loc1_ != _startNode)
+         var current:Node = _endNode;
+         _path.push(current);
+         while(current != _startNode)
          {
-            _loc1_ = _loc1_.parent;
-            this._path.unshift(_loc1_);
+            current = current.parent;
+            this._path.unshift(current);
          }
       }
       
@@ -184,149 +183,144 @@ package littleGame.data
       
       public function floyd() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:* = null;
-         var _loc6_:* = 0;
-         var _loc4_:int = 0;
-         var _loc5_:int = 0;
+         var vector:* = null;
+         var tempVector:* = null;
+         var i:* = 0;
+         var j:int = 0;
+         var k:int = 0;
          if(path == null)
          {
             return;
          }
          _floydPath = path.concat();
-         var _loc3_:int = _floydPath.length;
-         if(_loc3_ > 2)
+         var len:int = _floydPath.length;
+         if(len > 2)
          {
-            _loc2_ = new Node(0,0);
-            _loc1_ = new Node(0,0);
-            floydVector(_loc2_,_floydPath[_loc3_ - 1],_floydPath[_loc3_ - 2]);
-            _loc6_ = int(_floydPath.length - 3);
-            while(_loc6_ >= 0)
+            vector = new Node(0,0);
+            tempVector = new Node(0,0);
+            floydVector(vector,_floydPath[len - 1],_floydPath[len - 2]);
+            for(i = int(_floydPath.length - 3); i >= 0; )
             {
-               floydVector(_loc1_,_floydPath[_loc6_ + 1],_floydPath[_loc6_]);
-               if(_loc2_.x == _loc1_.x && _loc2_.y == _loc1_.y)
+               floydVector(tempVector,_floydPath[i + 1],_floydPath[i]);
+               if(vector.x == tempVector.x && vector.y == tempVector.y)
                {
-                  _floydPath.splice(_loc6_ + 1,1);
+                  _floydPath.splice(i + 1,1);
                }
                else
                {
-                  _loc2_.x = _loc1_.x;
-                  _loc2_.y = _loc1_.y;
+                  vector.x = tempVector.x;
+                  vector.y = tempVector.y;
                }
-               _loc6_--;
+               i--;
             }
          }
-         _loc3_ = _floydPath.length;
-         _loc6_ = int(_loc3_ - 1);
-         while(_loc6_ >= 0)
+         len = _floydPath.length;
+         for(i = int(len - 1); i >= 0; )
          {
-            _loc4_ = 0;
-            while(_loc4_ <= _loc6_ - 2)
+            for(j = 0; j <= i - 2; )
             {
-               if(floydCrossAble(_floydPath[_loc6_],_floydPath[_loc4_]))
+               if(floydCrossAble(_floydPath[i],_floydPath[j]))
                {
-                  _loc5_ = _loc6_ - 1;
-                  while(_loc5_ > _loc4_)
+                  for(k = i - 1; k > j; )
                   {
-                     _floydPath.splice(_loc5_,1);
-                     _loc5_--;
+                     _floydPath.splice(k,1);
+                     k--;
                   }
-                  _loc6_ = _loc4_;
-                  _loc3_ = _floydPath.length;
+                  i = j;
+                  len = _floydPath.length;
                   break;
                }
-               _loc4_++;
+               j++;
             }
-            _loc6_--;
+            i--;
          }
       }
       
-      private function floydCrossAble(param1:Node, param2:Node) : Boolean
+      private function floydCrossAble(n1:Node, n2:Node) : Boolean
       {
-         var _loc3_:int = 0;
-         var _loc4_:Array = bresenhamNodes(new Point(param1.x,param1.y),new Point(param2.x,param2.y));
-         _loc3_ = _loc4_.length - 2;
-         while(_loc3_ > 0)
+         var i:int = 0;
+         var ps:Array = bresenhamNodes(new Point(n1.x,n1.y),new Point(n2.x,n2.y));
+         for(i = ps.length - 2; i > 0; )
          {
-            if(!_grid.getNode(_loc4_[_loc3_].x,_loc4_[_loc3_].y).walkable)
+            if(!_grid.getNode(ps[i].x,ps[i].y).walkable)
             {
                return false;
             }
-            _loc3_--;
+            i--;
          }
          return true;
       }
       
-      private function floydVector(param1:Node, param2:Node, param3:Node) : void
+      private function floydVector(target:Node, n1:Node, n2:Node) : void
       {
-         param1.x = param2.x - param3.x;
-         param1.y = param2.y - param3.y;
+         target.x = n1.x - n2.x;
+         target.y = n1.y - n2.y;
       }
       
-      private function bresenhamNodes(param1:Point, param2:Point) : Array
+      private function bresenhamNodes(p1:Point, p2:Point) : Array
       {
-         var _loc9_:int = 0;
-         var _loc6_:int = 0;
-         var _loc8_:int = 0;
-         var _loc7_:* = Math.abs(param2.y - param1.y) > Math.abs(param2.x - param1.x);
-         if(_loc7_)
+         var temp:int = 0;
+         var fy:int = 0;
+         var cy:int = 0;
+         var steep:* = Math.abs(p2.y - p1.y) > Math.abs(p2.x - p1.x);
+         if(steep)
          {
-            _loc9_ = param1.x;
-            param1.x = param1.y;
-            param1.y = _loc9_;
-            _loc9_ = param2.x;
-            param2.x = param2.y;
-            param2.y = _loc9_;
+            temp = p1.x;
+            p1.x = p1.y;
+            p1.y = temp;
+            temp = p2.x;
+            p2.x = p2.y;
+            p2.y = temp;
          }
-         var _loc4_:int = param2.x > param1.x?1:Number(param2.x < param1.x?-1:0);
-         var _loc5_:int = param2.y > param1.y?1:Number(param2.y < param1.y?-1:0);
-         var _loc12_:Number = (param2.y - param1.y) / Math.abs(param2.x - param1.x);
-         var _loc3_:Array = [];
-         var _loc11_:Number = param1.x + _loc4_;
-         var _loc10_:Number = param1.y + _loc12_;
-         if(_loc7_)
+         var stepX:int = p2.x > p1.x?1:Number(p2.x < p1.x?-1:0);
+         var stepY:int = p2.y > p1.y?1:Number(p2.y < p1.y?-1:0);
+         var deltay:Number = (p2.y - p1.y) / Math.abs(p2.x - p1.x);
+         var ret:Array = [];
+         var nowX:Number = p1.x + stepX;
+         var nowY:Number = p1.y + deltay;
+         if(steep)
          {
-            _loc3_.push(new Point(param1.y,param1.x));
+            ret.push(new Point(p1.y,p1.x));
          }
          else
          {
-            _loc3_.push(new Point(param1.x,param1.y));
+            ret.push(new Point(p1.x,p1.y));
          }
-         while(_loc11_ != param2.x)
+         while(nowX != p2.x)
          {
-            _loc6_ = Math.floor(_loc10_);
-            _loc8_ = Math.ceil(_loc10_);
-            if(_loc7_)
+            fy = Math.floor(nowY);
+            cy = Math.ceil(nowY);
+            if(steep)
             {
-               _loc3_.push(new Point(_loc6_,_loc11_));
+               ret.push(new Point(fy,nowX));
             }
             else
             {
-               _loc3_.push(new Point(_loc11_,_loc6_));
+               ret.push(new Point(nowX,fy));
             }
-            if(_loc6_ != _loc8_)
+            if(fy != cy)
             {
-               if(_loc7_)
+               if(steep)
                {
-                  _loc3_.push(new Point(_loc8_,_loc11_));
+                  ret.push(new Point(cy,nowX));
                }
                else
                {
-                  _loc3_.push(new Point(_loc11_,_loc8_));
+                  ret.push(new Point(nowX,cy));
                }
             }
-            _loc11_ = _loc11_ + _loc4_;
-            _loc10_ = _loc10_ + _loc12_;
+            nowX = nowX + stepX;
+            nowY = nowY + deltay;
          }
-         if(_loc7_)
+         if(steep)
          {
-            _loc3_.push(new Point(param2.y,param2.x));
+            ret.push(new Point(p2.y,p2.x));
          }
          else
          {
-            _loc3_.push(new Point(param2.x,param2.y));
+            ret.push(new Point(p2.x,p2.y));
          }
-         return _loc3_;
+         return ret;
       }
       
       public function get floydPath() : Array

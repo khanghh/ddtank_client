@@ -19,11 +19,11 @@ package flashP2P.event
       
       public var eventType:String;
       
-      public function StreamEvent(param1:String, param2:String = "", param3:ByteArray = null, param4:Boolean = false, param5:Boolean = false)
+      public function StreamEvent(type:String, $eventType:String = "", $readByteArray:ByteArray = null, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         eventType = param2;
-         readByteArray = param3;
-         super(param1,param4,param5);
+         eventType = $eventType;
+         readByteArray = $readByteArray;
+         super(type,bubbles,cancelable);
       }
    }
 }

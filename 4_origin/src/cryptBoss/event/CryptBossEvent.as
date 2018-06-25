@@ -16,9 +16,9 @@ package cryptBoss.event
       public static const CRYPTBOSS_UPDATEVIEW:String = "cryptBossUpdateView";
        
       
-      public function CryptBossEvent(param1:String)
+      public function CryptBossEvent(type:String)
       {
-         super(param1,bubbles,cancelable);
+         super(type,bubbles,cancelable);
       }
    }
 }

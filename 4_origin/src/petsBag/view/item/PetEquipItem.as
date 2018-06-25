@@ -25,15 +25,15 @@ package petsBag.view.item
       
       private var _shiner:ShineObject;
       
-      public function PetEquipItem(param1:int)
+      public function PetEquipItem(type:int)
       {
          super();
-         initView(param1);
+         initView(type);
       }
       
-      private function initView(param1:int) : void
+      private function initView(type:int) : void
       {
-         _back = ComponentFactory.Instance.creat("assets.petsBag.equip" + String(param1));
+         _back = ComponentFactory.Instance.creat("assets.petsBag.equip" + String(type));
          addChild(_back);
          addEventListener("interactive_double_click",onDoubleClick);
          addEventListener("interactive_click",onClick);
@@ -59,7 +59,7 @@ package petsBag.view.item
          _shiner.stopShine();
       }
       
-      private function onClick(param1:InteractiveEvent) : void
+      private function onClick(e:InteractiveEvent) : void
       {
          if(_cell)
          {
@@ -67,7 +67,7 @@ package petsBag.view.item
          }
       }
       
-      protected function onDoubleClick(param1:InteractiveEvent) : void
+      protected function onDoubleClick(event:InteractiveEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(_cell)
@@ -76,11 +76,11 @@ package petsBag.view.item
          }
       }
       
-      public function initBagCell(param1:InventoryItemInfo) : void
+      public function initBagCell(data:InventoryItemInfo) : void
       {
          clearBagCell();
          ShowPet.isPetEquip = true;
-         _cell = new BagCell(0,param1);
+         _cell = new BagCell(0,data);
          _cell.allowDrag = true;
          addChild(_cell);
       }

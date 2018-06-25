@@ -49,12 +49,12 @@ package consortionBattle.player
       
       private var _loadComplete:Boolean = false;
       
-      public function ConsortiaBattlePlayerBase(param1:ConsortiaBattlePlayerInfo, param2:Function = null)
+      public function ConsortiaBattlePlayerBase(playerData:ConsortiaBattlePlayerInfo, callBack:Function = null)
       {
          _rectangle = new Rectangle();
-         super(param2);
-         _playerData = param1;
-         _callBack = param2;
+         super(callBack);
+         _playerData = playerData;
+         _callBack = callBack;
          initialize();
       }
       
@@ -80,7 +80,7 @@ package consortionBattle.player
       
       private function showDefaultCharacter() : void
       {
-         var _loc5_:* = null;
+         var actionBmp:* = null;
          _defaultSceneCharacterSetNatural = new SceneCharacterSet();
          if(!_rectangle)
          {
@@ -90,32 +90,32 @@ package consortionBattle.player
          _rectangle.y = 0;
          _rectangle.width = playerWidth;
          _rectangle.height = playerHeight;
-         _loc5_ = new BitmapData(playerWidth,playerHeight,true,0);
-         _loc5_.copyPixels(_headBitmapData,_rectangle,new Point(25,20));
-         _defaultSceneCharacterSetNatural.push(new SceneCharacterItem("NaturalFrontHead","NaturalFrontAction",_loc5_,1,1,playerWidth,playerHeight,1));
-         var _loc4_:SceneCharacterActionItem = new SceneCharacterActionItem("naturalStandFront",[0],false);
-         _defaultSceneCharacterActionSetNatural.push(_loc4_);
-         var _loc3_:SceneCharacterActionItem = new SceneCharacterActionItem("naturalStandBack",[0],false);
-         _defaultSceneCharacterActionSetNatural.push(_loc3_);
-         var _loc2_:SceneCharacterActionItem = new SceneCharacterActionItem("naturalWalkFront",[0],false);
-         _defaultSceneCharacterActionSetNatural.push(_loc2_);
-         var _loc1_:SceneCharacterActionItem = new SceneCharacterActionItem("naturalWalkBack",[0],false);
-         _defaultSceneCharacterActionSetNatural.push(_loc1_);
-         var _loc6_:SceneCharacterStateItem = new SceneCharacterStateItem("natural",_defaultSceneCharacterSetNatural,_defaultSceneCharacterActionSetNatural);
-         _defaultSceneCharacterStateSet.push(_loc6_);
+         actionBmp = new BitmapData(playerWidth,playerHeight,true,0);
+         actionBmp.copyPixels(_headBitmapData,_rectangle,new Point(25,20));
+         _defaultSceneCharacterSetNatural.push(new SceneCharacterItem("NaturalFrontHead","NaturalFrontAction",actionBmp,1,1,playerWidth,playerHeight,1));
+         var sceneCharacterActionItem1:SceneCharacterActionItem = new SceneCharacterActionItem("naturalStandFront",[0],false);
+         _defaultSceneCharacterActionSetNatural.push(sceneCharacterActionItem1);
+         var sceneCharacterActionItem2:SceneCharacterActionItem = new SceneCharacterActionItem("naturalStandBack",[0],false);
+         _defaultSceneCharacterActionSetNatural.push(sceneCharacterActionItem2);
+         var sceneCharacterActionItem3:SceneCharacterActionItem = new SceneCharacterActionItem("naturalWalkFront",[0],false);
+         _defaultSceneCharacterActionSetNatural.push(sceneCharacterActionItem3);
+         var sceneCharacterActionItem4:SceneCharacterActionItem = new SceneCharacterActionItem("naturalWalkBack",[0],false);
+         _defaultSceneCharacterActionSetNatural.push(sceneCharacterActionItem4);
+         var _sceneCharacterStateItemNatural:SceneCharacterStateItem = new SceneCharacterStateItem("natural",_defaultSceneCharacterSetNatural,_defaultSceneCharacterActionSetNatural);
+         _defaultSceneCharacterStateSet.push(_sceneCharacterStateItemNatural);
          .super.loadComplete = false;
          .super.isDefaultCharacter = true;
          .super.sceneCharacterStateSet = _defaultSceneCharacterStateSet;
       }
       
-      private function sceneCharacterLoaderHeadCallBack(param1:ConsBatLoaderHeadOrBody, param2:Boolean = true) : void
+      private function sceneCharacterLoaderHeadCallBack(sceneCharacterLoaderHead:ConsBatLoaderHeadOrBody, isAllLoadSucceed:Boolean = true) : void
       {
-         _headBitmapData = param1.getContent()[0] as BitmapData;
-         if(param1)
+         _headBitmapData = sceneCharacterLoaderHead.getContent()[0] as BitmapData;
+         if(sceneCharacterLoaderHead)
          {
-            param1.dispose();
+            sceneCharacterLoaderHead.dispose();
          }
-         if(!param2 || !_headBitmapData)
+         if(!isAllLoadSucceed || !_headBitmapData)
          {
             if(_callBack != null)
             {
@@ -128,16 +128,16 @@ package consortionBattle.player
       
       private function sceneCharacterStateNatural() : void
       {
-         var _loc1_:* = null;
+         var actionBmp:* = null;
          _sceneCharacterSetNatural = new SceneCharacterSet();
-         var _loc2_:Vector.<Point> = new Vector.<Point>();
-         _loc2_.push(new Point(0,0));
-         _loc2_.push(new Point(0,0));
-         _loc2_.push(new Point(0,-1));
-         _loc2_.push(new Point(0,2));
-         _loc2_.push(new Point(0,0));
-         _loc2_.push(new Point(0,-1));
-         _loc2_.push(new Point(0,2));
+         var points:Vector.<Point> = new Vector.<Point>();
+         points.push(new Point(0,0));
+         points.push(new Point(0,0));
+         points.push(new Point(0,-1));
+         points.push(new Point(0,2));
+         points.push(new Point(0,0));
+         points.push(new Point(0,-1));
+         points.push(new Point(0,2));
          if(!_rectangle)
          {
             _rectangle = new Rectangle();
@@ -146,23 +146,23 @@ package consortionBattle.player
          _rectangle.y = 0;
          _rectangle.width = playerWidth;
          _rectangle.height = playerHeight;
-         _loc1_ = new BitmapData(playerWidth,playerHeight,true,0);
-         _loc1_.copyPixels(_headBitmapData,_rectangle,new Point(0,0));
-         _sceneCharacterSetNatural.push(new SceneCharacterItem("NaturalFrontHead","NaturalFrontAction",_loc1_,1,1,playerWidth,playerHeight,1,_loc2_,true,7));
+         actionBmp = new BitmapData(playerWidth,playerHeight,true,0);
+         actionBmp.copyPixels(_headBitmapData,_rectangle,new Point(0,0));
+         _sceneCharacterSetNatural.push(new SceneCharacterItem("NaturalFrontHead","NaturalFrontAction",actionBmp,1,1,playerWidth,playerHeight,1,points,true,7));
          _rectangle.x = playerWidth;
          _rectangle.y = 0;
          _rectangle.width = playerWidth;
          _rectangle.height = playerHeight;
-         _loc1_ = new BitmapData(playerWidth,playerHeight,true,0);
-         _loc1_.copyPixels(_headBitmapData,_rectangle,new Point(0,0));
-         _sceneCharacterSetNatural.push(new SceneCharacterItem("NaturalFrontEyesCloseHead","NaturalFrontEyesCloseAction",_loc1_,1,1,playerWidth,playerHeight,2));
+         actionBmp = new BitmapData(playerWidth,playerHeight,true,0);
+         actionBmp.copyPixels(_headBitmapData,_rectangle,new Point(0,0));
+         _sceneCharacterSetNatural.push(new SceneCharacterItem("NaturalFrontEyesCloseHead","NaturalFrontEyesCloseAction",actionBmp,1,1,playerWidth,playerHeight,2));
          _rectangle.x = playerWidth * 2;
          _rectangle.y = 0;
          _rectangle.width = playerWidth;
          _rectangle.height = playerHeight;
-         _loc1_ = new BitmapData(playerWidth,playerHeight * 2,true,0);
-         _loc1_.copyPixels(_headBitmapData,_rectangle,new Point(0,0));
-         _sceneCharacterSetNatural.push(new SceneCharacterItem("NaturalBackHead","NaturalBackAction",_loc1_,1,1,playerWidth,playerHeight,6,_loc2_,true,7));
+         actionBmp = new BitmapData(playerWidth,playerHeight * 2,true,0);
+         actionBmp.copyPixels(_headBitmapData,_rectangle,new Point(0,0));
+         _sceneCharacterSetNatural.push(new SceneCharacterItem("NaturalBackHead","NaturalBackAction",actionBmp,1,1,playerWidth,playerHeight,6,points,true,7));
          sceneCharacterLoadBodyNatural();
       }
       
@@ -172,20 +172,20 @@ package consortionBattle.player
          _sceneCharacterLoaderBody.load(sceneCharacterLoaderBodyNaturalCallBack);
       }
       
-      private function sceneCharacterLoaderBodyNaturalCallBack(param1:ConsBatLoaderHeadOrBody, param2:Boolean = true) : void
+      private function sceneCharacterLoaderBodyNaturalCallBack(sceneCharacterLoaderBody:ConsBatLoaderHeadOrBody, isAllLoadSucceed:Boolean = true) : void
       {
-         var _loc7_:* = null;
+         var actionBmp:* = null;
          _loadComplete = true;
          if(!_sceneCharacterSetNatural)
          {
             return;
          }
-         _bodyBitmapData = param1.getContent()[0] as BitmapData;
-         if(param1)
+         _bodyBitmapData = sceneCharacterLoaderBody.getContent()[0] as BitmapData;
+         if(sceneCharacterLoaderBody)
          {
-            param1.dispose();
+            sceneCharacterLoaderBody.dispose();
          }
-         if(!param2 || !_bodyBitmapData)
+         if(!isAllLoadSucceed || !_bodyBitmapData)
          {
             if(_callBack != null)
             {
@@ -201,33 +201,33 @@ package consortionBattle.player
          _rectangle.y = 0;
          _rectangle.width = _bodyBitmapData.width;
          _rectangle.height = playerHeight;
-         _loc7_ = new BitmapData(_bodyBitmapData.width,playerHeight,true,0);
-         _loc7_.copyPixels(_bodyBitmapData,_rectangle,new Point(0,0));
-         _sceneCharacterSetNatural.push(new SceneCharacterItem("NaturalFrontBody","NaturalFrontAction",_loc7_,1,7,playerWidth,playerHeight,3));
+         actionBmp = new BitmapData(_bodyBitmapData.width,playerHeight,true,0);
+         actionBmp.copyPixels(_bodyBitmapData,_rectangle,new Point(0,0));
+         _sceneCharacterSetNatural.push(new SceneCharacterItem("NaturalFrontBody","NaturalFrontAction",actionBmp,1,7,playerWidth,playerHeight,3));
          _rectangle.x = 0;
          _rectangle.y = 0;
          _rectangle.width = playerWidth;
          _rectangle.height = playerHeight;
-         _loc7_ = new BitmapData(playerWidth,playerHeight,true,0);
-         _loc7_.copyPixels(_bodyBitmapData,_rectangle,new Point(0,0));
-         _sceneCharacterSetNatural.push(new SceneCharacterItem("NaturalFrontEyesCloseBody","NaturalFrontEyesCloseAction",_loc7_,1,1,playerWidth,playerHeight,4));
+         actionBmp = new BitmapData(playerWidth,playerHeight,true,0);
+         actionBmp.copyPixels(_bodyBitmapData,_rectangle,new Point(0,0));
+         _sceneCharacterSetNatural.push(new SceneCharacterItem("NaturalFrontEyesCloseBody","NaturalFrontEyesCloseAction",actionBmp,1,1,playerWidth,playerHeight,4));
          _rectangle.x = 0;
          _rectangle.y = playerHeight;
          _rectangle.width = _bodyBitmapData.width;
          _rectangle.height = playerHeight;
-         _loc7_ = new BitmapData(_bodyBitmapData.width,playerHeight,true,0);
-         _loc7_.copyPixels(_bodyBitmapData,_rectangle,new Point(0,0));
-         _sceneCharacterSetNatural.push(new SceneCharacterItem("NaturalBackBody","NaturalBackAction",_loc7_,1,7,playerWidth,playerHeight,5));
-         var _loc6_:SceneCharacterActionItem = new SceneCharacterActionItem("naturalStandFront",[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,7,7],true);
-         _sceneCharacterActionSetNatural.push(_loc6_);
-         var _loc5_:SceneCharacterActionItem = new SceneCharacterActionItem("naturalStandBack",[8],false);
-         _sceneCharacterActionSetNatural.push(_loc5_);
-         var _loc4_:SceneCharacterActionItem = new SceneCharacterActionItem("naturalWalkFront",[1,1,1,2,2,2,3,3,3,4,4,4,5,5,5,6,6,6],true);
-         _sceneCharacterActionSetNatural.push(_loc4_);
-         var _loc3_:SceneCharacterActionItem = new SceneCharacterActionItem("naturalWalkBack",[9,9,9,10,10,10,11,11,11,12,12,12,13,13,13,14,14,14],true);
-         _sceneCharacterActionSetNatural.push(_loc3_);
-         var _loc8_:SceneCharacterStateItem = new SceneCharacterStateItem("natural",_sceneCharacterSetNatural,_sceneCharacterActionSetNatural);
-         _sceneCharacterStateSet.push(_loc8_);
+         actionBmp = new BitmapData(_bodyBitmapData.width,playerHeight,true,0);
+         actionBmp.copyPixels(_bodyBitmapData,_rectangle,new Point(0,0));
+         _sceneCharacterSetNatural.push(new SceneCharacterItem("NaturalBackBody","NaturalBackAction",actionBmp,1,7,playerWidth,playerHeight,5));
+         var sceneCharacterActionItem1:SceneCharacterActionItem = new SceneCharacterActionItem("naturalStandFront",[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,7,7],true);
+         _sceneCharacterActionSetNatural.push(sceneCharacterActionItem1);
+         var sceneCharacterActionItem2:SceneCharacterActionItem = new SceneCharacterActionItem("naturalStandBack",[8],false);
+         _sceneCharacterActionSetNatural.push(sceneCharacterActionItem2);
+         var sceneCharacterActionItem3:SceneCharacterActionItem = new SceneCharacterActionItem("naturalWalkFront",[1,1,1,2,2,2,3,3,3,4,4,4,5,5,5,6,6,6],true);
+         _sceneCharacterActionSetNatural.push(sceneCharacterActionItem3);
+         var sceneCharacterActionItem4:SceneCharacterActionItem = new SceneCharacterActionItem("naturalWalkBack",[9,9,9,10,10,10,11,11,11,12,12,12,13,13,13,14,14,14],true);
+         _sceneCharacterActionSetNatural.push(sceneCharacterActionItem4);
+         var _sceneCharacterStateItemNatural:SceneCharacterStateItem = new SceneCharacterStateItem("natural",_sceneCharacterSetNatural,_sceneCharacterActionSetNatural);
+         _sceneCharacterStateSet.push(_sceneCharacterStateItemNatural);
          .super.loadComplete = true;
          .super.isDefaultCharacter = false;
          .super.sceneCharacterStateSet = _sceneCharacterStateSet;

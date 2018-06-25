@@ -58,7 +58,7 @@ package ddt.view.chat
          return _info;
       }
       
-      private function __mouseClick(param1:MouseEvent) : void
+      private function __mouseClick(evt:MouseEvent) : void
       {
          if(_fun != null)
          {
@@ -67,12 +67,12 @@ package ddt.view.chat
          }
       }
       
-      private function __mouseOut(param1:MouseEvent) : void
+      private function __mouseOut(evt:MouseEvent) : void
       {
          _bg.alpha = 0;
       }
       
-      private function __mouseOver(param1:MouseEvent) : void
+      private function __mouseOver(evt:MouseEvent) : void
       {
          _bg.alpha = 1;
       }
@@ -101,7 +101,7 @@ package ddt.view.chat
          _contentTxt.text = _info.NickName;
       }
       
-      public function setListCellStatus(param1:List, param2:Boolean, param3:int) : void
+      public function setListCellStatus(list:List, isSelected:Boolean, index:int) : void
       {
       }
       
@@ -110,9 +110,9 @@ package ddt.view.chat
          return _info;
       }
       
-      public function setCellValue(param1:*) : void
+      public function setCellValue(value:*) : void
       {
-         _info = param1;
+         _info = value;
          updateItem();
       }
       

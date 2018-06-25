@@ -20,19 +20,19 @@ package starling.scene.hall
       
       private function showCells() : void
       {
-         var _loc4_:* = null;
-         var _loc3_:Vector.<Texture> = DDTAssetManager.instance.starlingAsset.getTextures("hall_scene_bg_");
+         var image:* = null;
+         var textures:Vector.<Texture> = DDTAssetManager.instance.starlingAsset.getTextures("hall_scene_bg_");
          _imageArr = [];
-         var _loc2_:int = 0;
+         var offsetX:int = 0;
          var _loc6_:int = 0;
-         var _loc5_:* = _loc3_;
-         for each(var _loc1_ in _loc3_)
+         var _loc5_:* = textures;
+         for each(var texture in textures)
          {
-            _loc4_ = new Image(_loc1_);
-            _loc4_.x = _loc2_;
-            addChild(_loc4_);
-            _imageArr.push(_loc4_);
-            _loc2_ = _loc2_ + SubTexture(_loc1_).region.width;
+            image = new Image(texture);
+            image.x = offsetX;
+            addChild(image);
+            _imageArr.push(image);
+            offsetX = offsetX + SubTexture(texture).region.width;
          }
       }
       

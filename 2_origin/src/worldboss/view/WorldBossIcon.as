@@ -28,12 +28,12 @@ package worldboss.view
       
       private function init() : void
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(WorldBossManager.Instance.iconEnterPath,4);
-         _loc1_.addEventListener("complete",onIconLoadedComplete);
-         LoadResourceManager.Instance.startLoad(_loc1_);
+         var iconLoader:BaseLoader = LoadResourceManager.Instance.createLoader(WorldBossManager.Instance.iconEnterPath,4);
+         iconLoader.addEventListener("complete",onIconLoadedComplete);
+         LoadResourceManager.Instance.startLoad(iconLoader);
       }
       
-      private function onIconLoadedComplete(param1:Event) : void
+      private function onIconLoadedComplete(e:Event) : void
       {
          _dragon = ComponentFactory.Instance.creat("asset.hall.worldBossEntrance-" + WorldBossManager.Instance.BossResourceId);
          _dragon.buttonMode = true;
@@ -54,44 +54,44 @@ package worldboss.view
          }
       }
       
-      private function stopAllMc(param1:MovieClip) : void
+      private function stopAllMc($mc:MovieClip) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
-         while(param1.numChildren - _loc3_)
+         var cMc:* = null;
+         var index:int = 0;
+         while($mc.numChildren - index)
          {
-            if(param1.getChildAt(_loc3_) is MovieClip)
+            if($mc.getChildAt(index) is MovieClip)
             {
-               _loc2_ = param1.getChildAt(_loc3_) as MovieClip;
-               _loc2_.stop();
-               stopAllMc(_loc2_);
+               cMc = $mc.getChildAt(index) as MovieClip;
+               cMc.stop();
+               stopAllMc(cMc);
             }
-            _loc3_++;
+            index++;
          }
       }
       
-      private function playAllMc(param1:MovieClip) : void
+      private function playAllMc($mc:MovieClip) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
-         while(param1.numChildren - _loc3_)
+         var cMc:* = null;
+         var index:int = 0;
+         while($mc.numChildren - index)
          {
-            if(param1.getChildAt(_loc3_) is MovieClip)
+            if($mc.getChildAt(index) is MovieClip)
             {
-               _loc2_ = param1.getChildAt(_loc3_) as MovieClip;
-               _loc2_.play();
-               playAllMc(_loc2_);
+               cMc = $mc.getChildAt(index) as MovieClip;
+               cMc.play();
+               playAllMc(cMc);
             }
-            _loc3_++;
+            index++;
          }
       }
       
-      public function set enble(param1:Boolean) : void
+      public function set enble(bool:Boolean) : void
       {
-         _isOpen = param1;
-         mouseEnabled = param1;
-         mouseChildren = param1;
-         if(!param1)
+         _isOpen = bool;
+         mouseEnabled = bool;
+         mouseChildren = bool;
+         if(!bool)
          {
             BuriedManager.Instance.applyGray(this);
          }
@@ -118,17 +118,17 @@ package worldboss.view
          }
       }
       
-      private function __enterBossRoom(param1:MouseEvent) : void
+      private function __enterBossRoom(e:MouseEvent) : void
       {
          SoundManager.instance.play("003");
          WorldBossManager.Instance.show();
       }
       
-      public function setFrame(param1:int) : void
+      public function setFrame(value:int) : void
       {
          if(_dragon)
          {
-            _dragon.gotoAndStop(param1);
+            _dragon.gotoAndStop(value);
          }
       }
       

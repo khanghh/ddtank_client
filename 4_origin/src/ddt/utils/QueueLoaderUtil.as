@@ -25,14 +25,14 @@ package ddt.utils
          _loaders = new Vector.<BaseLoader>();
       }
       
-      public function addLoader(param1:BaseLoader) : void
+      public function addLoader(loader:BaseLoader) : void
       {
-         _loaders.push(param1);
+         _loaders.push(loader);
       }
       
-      public function start(param1:Boolean = true) : void
+      public function start(isSmallLoading:Boolean = true) : void
       {
-         _isSmallLoading = param1;
+         _isSmallLoading = isSmallLoading;
          if(_isSmallLoading)
          {
             UIModuleSmallLoading.Instance.progress = 0;
@@ -56,63 +56,59 @@ package ddt.utils
       
       public function removeEvent() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _loaders.length)
+         var i:int = 0;
+         for(i = 0; i < _loaders.length; )
          {
-            _loaders[_loc1_].removeEventListener("complete",__loadNext);
+            _loaders[i].removeEventListener("complete",__loadNext);
             if(_isSmallLoading)
             {
-               _loaders[_loc1_].removeEventListener("progress",__progress);
+               _loaders[i].removeEventListener("progress",__progress);
             }
-            _loc1_++;
+            i++;
          }
       }
       
       public function isAllComplete() : Boolean
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _loaders.length)
+         var i:int = 0;
+         for(i = 0; i < _loaders.length; )
          {
-            if(!_loaders[_loc1_].isComplete)
+            if(!_loaders[i].isComplete)
             {
                return false;
             }
-            _loc1_++;
+            i++;
          }
          return true;
       }
       
       public function isLoading() : Boolean
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _loaders.length)
+         var i:int = 0;
+         for(i = 0; i < _loaders.length; )
          {
-            if(_loaders[_loc1_].isLoading)
+            if(_loaders[i].isLoading)
             {
                return true;
             }
-            _loc1_++;
+            i++;
          }
          return false;
       }
       
       public function get completeCount() : int
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _loaders.length)
+         var i:int = 0;
+         var result:int = 0;
+         for(i = 0; i < _loaders.length; )
          {
-            if(_loaders[_loc2_].isComplete)
+            if(_loaders[i].isComplete)
             {
-               _loc1_++;
+               result++;
             }
-            _loc2_++;
+            i++;
          }
-         return _loc1_;
+         return result;
       }
       
       public function get length() : int
@@ -125,25 +121,25 @@ package ddt.utils
          return _loaders;
       }
       
-      private function __loadNext(param1:LoaderEvent) : void
+      private function __loadNext(event:LoaderEvent) : void
       {
-         var _loc2_:BaseLoader = param1.loader as BaseLoader;
-         _loc2_.removeEventListener("complete",__loadNext);
+         var loader:BaseLoader = event.loader as BaseLoader;
+         loader.removeEventListener("complete",__loadNext);
          if(_isSmallLoading)
          {
-            _loc2_.removeEventListener("progress",__progress);
+            loader.removeEventListener("progress",__progress);
          }
          dispatchEvent(new Event("change"));
          tryLoadNext();
       }
       
-      private function __progress(param1:LoaderEvent) : void
+      private function __progress(event:LoaderEvent) : void
       {
-         var _loc3_:int = _loaders.length;
-         var _loc4_:int = completeCount;
-         var _loc2_:Number = (_loc4_ / _loc3_ + 1 / _loc3_ * param1.loader.progress) * 100;
-         UIModuleSmallLoading.Instance.progress = _loc2_;
-         if(!UIModuleSmallLoading.Instance.isShow && _loc2_ < 100)
+         var total:int = _loaders.length;
+         var completeTotal:int = completeCount;
+         var progress:Number = (completeTotal / total + 1 / total * event.loader.progress) * 100;
+         UIModuleSmallLoading.Instance.progress = progress;
+         if(!UIModuleSmallLoading.Instance.isShow && progress < 100)
          {
             UIModuleSmallLoading.Instance.show();
          }
@@ -151,22 +147,21 @@ package ddt.utils
       
       private function tryLoadNext() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = _loaders.length;
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_)
+         var i:int = 0;
+         var loaderCount:int = _loaders.length;
+         for(i = 0; i < loaderCount; )
          {
-            if(!_loaders[_loc2_].isComplete)
+            if(!_loaders[i].isComplete)
             {
-               _loaders[_loc2_].addEventListener("complete",__loadNext);
+               _loaders[i].addEventListener("complete",__loadNext);
                if(_isSmallLoading)
                {
-                  _loaders[_loc2_].addEventListener("progress",__progress);
+                  _loaders[i].addEventListener("progress",__progress);
                }
-               LoadResourceManager.Instance.startLoad(_loaders[_loc2_]);
+               LoadResourceManager.Instance.startLoad(_loaders[i]);
                return;
             }
-            _loc2_++;
+            i++;
          }
          reset();
          dispatchEvent(new Event("complete"));
@@ -174,7 +169,7 @@ package ddt.utils
          UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);
       }
       
-      private function __onClose(param1:Event) : void
+      private function __onClose(event:Event) : void
       {
          reset();
          UIModuleSmallLoading.Instance.hide();

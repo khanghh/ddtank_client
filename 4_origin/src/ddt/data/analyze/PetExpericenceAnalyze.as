@@ -8,31 +8,30 @@ package ddt.data.analyze
       
       public var expericence:Array;
       
-      public function PetExpericenceAnalyze(param1:Function)
+      public function PetExpericenceAnalyze(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc3_:* = null;
-         var _loc4_:int = 0;
-         var _loc2_:XML = new XML(param1);
+         var xmllist:* = null;
+         var i:int = 0;
+         var xml:XML = new XML(data);
          expericence = [];
-         if(_loc2_.@value == "true")
+         if(xml.@value == "true")
          {
-            _loc3_ = _loc2_..item;
-            _loc4_ = 0;
-            while(_loc4_ < _loc3_.length())
+            xmllist = xml..item;
+            for(i = 0; i < xmllist.length(); )
             {
-               expericence.push(int(_loc3_[_loc4_].@GP));
-               _loc4_++;
+               expericence.push(int(xmllist[i].@GP));
+               i++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc2_.@message;
+            message = xml.@message;
             onAnalyzeError();
             onAnalyzeComplete();
          }

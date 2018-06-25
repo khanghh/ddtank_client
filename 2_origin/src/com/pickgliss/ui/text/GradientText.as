@@ -59,37 +59,36 @@ package com.pickgliss.ui.text
          super();
       }
       
-      public function set gradientRotation(param1:Number) : void
+      public function set gradientRotation(value:Number) : void
       {
-         _gradientRotation = param1;
+         _gradientRotation = value;
       }
       
-      public function set colors(param1:String) : void
+      public function set colors(color:String) : void
       {
-         var _loc3_:int = 0;
-         if(param1 == _colorStyle)
+         var i:int = 0;
+         if(color == _colorStyle)
          {
             return;
          }
-         _colorStyle = param1;
+         _colorStyle = color;
          _colors = [];
-         var _loc2_:Array = _colorStyle.split("|");
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_.length)
+         var arr:Array = _colorStyle.split("|");
+         for(i = 0; i < arr.length; )
          {
-            _colors.push(_loc2_[_loc3_].split(","));
-            _loc3_++;
+            _colors.push(arr[i].split(","));
+            i++;
          }
          onPropertiesChanged("color");
       }
       
-      public function set alphas(param1:String) : void
+      public function set alphas(value:String) : void
       {
-         if(param1 == _alphaStyle)
+         if(value == _alphaStyle)
          {
             return;
          }
-         _alphaStyle = param1;
+         _alphaStyle = value;
          if(_alphas)
          {
             _alphas = [];
@@ -98,13 +97,13 @@ package com.pickgliss.ui.text
          onPropertiesChanged("alpha");
       }
       
-      public function set ratios(param1:String) : void
+      public function set ratios(value:String) : void
       {
-         if(param1 == _ratioStyle)
+         if(value == _ratioStyle)
          {
             return;
          }
-         _ratioStyle = param1;
+         _ratioStyle = value;
          if(_ratios)
          {
             _ratios = [];
@@ -113,29 +112,29 @@ package com.pickgliss.ui.text
          onPropertiesChanged("ratio");
       }
       
-      public function set filterString(param1:String) : void
+      public function set filterString(value:String) : void
       {
-         if(_filterString == param1)
+         if(_filterString == value)
          {
             return;
          }
-         _filterString = param1;
+         _filterString = value;
          frameFilters = ComponentFactory.Instance.creatFrameFilters(_filterString);
       }
       
-      public function set frameFilters(param1:Array) : void
+      public function set frameFilters(filter:Array) : void
       {
-         if(_frameFilter == param1)
+         if(_frameFilter == filter)
          {
             return;
          }
-         _frameFilter = param1;
+         _frameFilter = filter;
          onPropertiesChanged("frameFilters");
       }
       
-      public function set text(param1:String) : void
+      public function set text(value:String) : void
       {
-         _textField.text = param1;
+         _textField.text = value;
          refreshBox();
       }
       
@@ -144,9 +143,9 @@ package com.pickgliss.ui.text
          return _textField.text;
       }
       
-      public function set htmlText(param1:String) : void
+      public function set htmlText(value:String) : void
       {
-         _textField.htmlText = param1;
+         _textField.htmlText = value;
          refreshBox();
       }
       
@@ -155,13 +154,13 @@ package com.pickgliss.ui.text
          return _textField.htmlText;
       }
       
-      public function set textSize(param1:int) : void
+      public function set textSize(value:int) : void
       {
-         if(_textSize == param1)
+         if(_textSize == value)
          {
             return;
          }
-         _textSize = param1;
+         _textSize = value;
          onPropertiesChanged("textSize");
       }
       
@@ -175,24 +174,24 @@ package com.pickgliss.ui.text
          return _textField;
       }
       
-      public function set textField(param1:TextField) : void
+      public function set textField(tf:TextField) : void
       {
-         if(_textField == param1)
+         if(_textField == tf)
          {
             return;
          }
-         _textField = param1;
+         _textField = tf;
          _textSize = int(_textField.defaultTextFormat.size);
          onPropertiesChanged("textField");
       }
       
-      public function set textFieldStyle(param1:String) : void
+      public function set textFieldStyle(stylename:String) : void
       {
-         if(param1 == _textFieldStyle)
+         if(stylename == _textFieldStyle)
          {
             return;
          }
-         _textFieldStyle = param1;
+         _textFieldStyle = stylename;
          textField = ComponentFactory.Instance.creat(_textFieldStyle);
       }
       
@@ -223,20 +222,20 @@ package com.pickgliss.ui.text
          return _textField.textWidth;
       }
       
-      public function getCharIndexAtPoint(param1:Number, param2:Number) : int
+      public function getCharIndexAtPoint(x:Number, y:Number) : int
       {
-         return _textField.getCharIndexAtPoint(param1,param2);
+         return _textField.getCharIndexAtPoint(x,y);
       }
       
-      public function setFrame(param1:int) : void
+      public function setFrame(frameIndex:int) : void
       {
-         if(_currentFrame == param1)
+         if(_currentFrame == frameIndex)
          {
             return;
          }
-         _currentFrame = param1;
+         _currentFrame = frameIndex;
          refreshBox();
-         filters = _frameFilter[param1 - 1];
+         filters = _frameFilter[frameIndex - 1];
       }
       
       override protected function onProppertiesUpdate() : void
@@ -269,9 +268,9 @@ package com.pickgliss.ui.text
       
       private function refreshBox() : void
       {
-         var _loc1_:TextFormat = _textField.getTextFormat();
-         _loc1_.size = _textSize;
-         _textField.setTextFormat(_loc1_);
+         var textFormat:TextFormat = _textField.getTextFormat();
+         textFormat.size = _textSize;
+         _textField.setTextFormat(textFormat);
          if(_textField.textWidth > _textField.width)
          {
             var _loc2_:* = _textField.textWidth + 8;

@@ -89,9 +89,9 @@ package im
          addChild(_levelIcon);
          _levelIcon.setInfo(15,0,20,20,20,20,20,false);
          _sexIcon = new SexIcon();
-         var _loc1_:Point = ComponentFactory.Instance.creatCustomObject("IM.CMFriendListItem.sexIconPos");
-         _sexIcon.x = _loc1_.x;
-         _sexIcon.y = _loc1_.y;
+         var pos:Point = ComponentFactory.Instance.creatCustomObject("IM.CMFriendListItem.sexIconPos");
+         _sexIcon.x = pos.x;
+         _sexIcon.y = pos.y;
          addChild(_sexIcon);
          _loaderContext = new LoaderContext(true);
          _CMNameText = ComponentFactory.Instance.creatComponentByStylename("IM.CMFriendListItem.name");
@@ -124,11 +124,11 @@ package im
          _load.contentLoaderInfo.addEventListener("ioError",__loadIoErrorHandler);
       }
       
-      private function __loadIoErrorHandler(param1:IOErrorEvent) : void
+      private function __loadIoErrorHandler(event:IOErrorEvent) : void
       {
       }
       
-      private function __loadCompleteHandler(param1:Event) : void
+      private function __loadCompleteHandler(event:Event) : void
       {
          ObjectUtils.disposeObject(_icon);
          if(!_load.content)
@@ -146,18 +146,18 @@ package im
       
       protected function loadIcon() : void
       {
-         var _loc1_:URLRequest = new URLRequest(_info.Photo);
-         _load.load(_loc1_,_loaderContext);
+         var url:URLRequest = new URLRequest(_info.Photo);
+         _load.load(url,_loaderContext);
       }
       
-      private function __complete(param1:LoaderEvent) : void
+      private function __complete(event:LoaderEvent) : void
       {
          _loader.removeEventListener("complete",__complete);
-         var _loc2_:DisplayLoader = param1.target as DisplayLoader;
+         var loader:DisplayLoader = event.target as DisplayLoader;
          ObjectUtils.disposeObject(_icon);
-         if(_loc2_.isSuccess)
+         if(loader.isSuccess)
          {
-            _icon = _loc2_.content as Bitmap;
+            _icon = loader.content as Bitmap;
             _icon.scaleX = 35 / _icon.width;
             _icon.scaleY = 35 / _icon.height;
             _icon.x = _iconBg.x;
@@ -178,27 +178,27 @@ package im
          }
       }
       
-      private function __invite(param1:MouseEvent) : void
+      private function __invite(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:InviteDialogFrame = ComponentFactory.Instance.creatComponentByStylename("InviteDialogFrame");
-         _loc2_.setInfo(_info.UserName);
-         _loc2_.show();
+         var frame:InviteDialogFrame = ComponentFactory.Instance.creatComponentByStylename("InviteDialogFrame");
+         frame.setInfo(_info.UserName);
+         frame.show();
       }
       
-      private function __addFriend(param1:MouseEvent) : void
+      private function __addFriend(event:MouseEvent) : void
       {
          IMManager.Instance.addFriend(_info.NickName);
       }
       
-      private function __privateChat(param1:MouseEvent) : void
+      private function __privateChat(event:MouseEvent) : void
       {
          ChatManager.Instance.privateChatTo(_info.NickName);
       }
       
-      private function _iconClick(param1:MouseEvent) : void
+      private function _iconClick(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var redirictURL:* = null;
          if(!(PathManager.CommnuntyMicroBlog() && PathManager.CommnuntySinaSecondMicroBlog()))
          {
             return;
@@ -211,8 +211,8 @@ package im
          }
          if(ExternalInterface.available && !DesktopManager.Instance.isDesktop)
          {
-            _loc2_ = "function redict () {window.open(\"" + _info.PersonWeb + "\", \"_blank\")}";
-            ExternalInterface.call(_loc2_);
+            redirictURL = "function redict () {window.open(\"" + _info.PersonWeb + "\", \"_blank\")}";
+            ExternalInterface.call(redirictURL);
          }
          else
          {
@@ -220,7 +220,7 @@ package im
          }
       }
       
-      private function __itemOver(param1:MouseEvent) : void
+      private function __itemOver(event:MouseEvent) : void
       {
          _bg.setFrame(2);
          if(_info && _info.IsExist)
@@ -244,7 +244,7 @@ package im
          }
       }
       
-      private function __itemOut(param1:MouseEvent) : void
+      private function __itemOut(event:MouseEvent) : void
       {
          if(_info && !_info.isSelected)
          {
@@ -328,9 +328,9 @@ package im
          }
       }
       
-      public function set info(param1:CMFriendInfo) : void
+      public function set info(value:CMFriendInfo) : void
       {
-         _info = param1;
+         _info = value;
          update();
       }
       

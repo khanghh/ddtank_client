@@ -29,12 +29,12 @@ package farm.viewx
       public function confirmStopHelperFrame()
       {
          super();
-         var _loc1_:AlertInfo = new AlertInfo();
-         _loc1_.title = LanguageMgr.GetTranslation("ddt.farms.stopHelperComfirm");
-         _loc1_.bottomGap = 37;
-         _loc1_.buttonGape = 65;
-         _loc1_.customPos = ComponentFactory.Instance.creat("farm.confirmStopHelperFramePos");
-         this.info = _loc1_;
+         var alertInfo:AlertInfo = new AlertInfo();
+         alertInfo.title = LanguageMgr.GetTranslation("ddt.farms.stopHelperComfirm");
+         alertInfo.bottomGap = 37;
+         alertInfo.buttonGape = 65;
+         alertInfo.customPos = ComponentFactory.Instance.creat("farm.confirmStopHelperFramePos");
+         this.info = alertInfo;
          intView();
          initEvent();
       }
@@ -54,11 +54,11 @@ package farm.viewx
          addEventListener("response",__framePesponse);
       }
       
-      protected function __framePesponse(param1:FrameEvent) : void
+      protected function __framePesponse(event:FrameEvent) : void
       {
          removeEventListener("response",__framePesponse);
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
                break;

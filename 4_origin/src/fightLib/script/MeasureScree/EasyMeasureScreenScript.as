@@ -18,40 +18,40 @@ package fightLib.script.MeasureScree
       
       private var _arrow:MovieClip;
       
-      public function EasyMeasureScreenScript(param1:Object)
+      public function EasyMeasureScreenScript(fightView:Object)
       {
-         super(param1);
+         super(fightView);
       }
       
       override protected function initializeScript() : void
       {
-         var _loc2_:BaseFightLibCommand = new PopUpFrameWaitCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.EasyMeasureScreenScript.command2"),clearMaskAndArrow,null,null,null,null,false,false);
-         _loc2_.excuteFunArr.push(drawMaskAndWait);
-         var _loc5_:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.EasyMeasureScreenScript.command2"));
-         var _loc6_:BaseFightLibCommand = new ImmediateCommand();
-         _loc6_.excuteFunArr.push(_host.splitSmallMapDrager as Function);
-         var _loc3_:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.EasyMeasureScreenScript.command5"));
-         var _loc1_:BaseFightLibCommand = new TimeCommand(11000);
-         _loc1_.excuteFunArr.push(_host.shineText as Function);
-         var _loc4_:CreateMonsterCommand = new CreateMonsterCommand();
-         _loc4_.excuteFunArr.push(_host.blockSmallMap as Function);
-         var _loc8_:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.EasyMeasureScreenScript.command7"));
-         var _loc9_:BaseFightLibCommand = new TimeCommand(7500);
-         _loc9_.excuteFunArr.push(_host.shineText2 as Function);
-         var _loc7_:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.EasyMeasureScreenScript.command9"),LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.understood"),null,LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.watchAgain"),restart,true,true);
-         _loc7_.completeFunArr.push(_host.activeSmallMap as Function);
-         _loc7_.undoFunArr.push(_host.restoreText as Function);
-         _loc7_.undoFunArr.push(_host.hideSmallMapSplit as Function);
-         _loc7_.undoFunArr.push(_host.activeSmallMap as Function);
-         _commonds.push(_loc2_);
-         _commonds.push(_loc5_);
-         _commonds.push(_loc6_);
-         _commonds.push(_loc4_);
-         _commonds.push(_loc3_);
-         _commonds.push(_loc1_);
-         _commonds.push(_loc8_);
-         _commonds.push(_loc9_);
-         _commonds.push(_loc7_);
+         var command2:BaseFightLibCommand = new PopUpFrameWaitCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.EasyMeasureScreenScript.command2"),clearMaskAndArrow,null,null,null,null,false,false);
+         command2.excuteFunArr.push(drawMaskAndWait);
+         var command3:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.EasyMeasureScreenScript.command2"));
+         var command4:BaseFightLibCommand = new ImmediateCommand();
+         command4.excuteFunArr.push(_host.splitSmallMapDrager as Function);
+         var command5:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.EasyMeasureScreenScript.command5"));
+         var command1:BaseFightLibCommand = new TimeCommand(11000);
+         command1.excuteFunArr.push(_host.shineText as Function);
+         var command6:CreateMonsterCommand = new CreateMonsterCommand();
+         command6.excuteFunArr.push(_host.blockSmallMap as Function);
+         var command7:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.EasyMeasureScreenScript.command7"));
+         var command8:BaseFightLibCommand = new TimeCommand(7500);
+         command8.excuteFunArr.push(_host.shineText2 as Function);
+         var command9:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.EasyMeasureScreenScript.command9"),LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.understood"),null,LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.watchAgain"),restart,true,true);
+         command9.completeFunArr.push(_host.activeSmallMap as Function);
+         command9.undoFunArr.push(_host.restoreText as Function);
+         command9.undoFunArr.push(_host.hideSmallMapSplit as Function);
+         command9.undoFunArr.push(_host.activeSmallMap as Function);
+         _commonds.push(command2);
+         _commonds.push(command3);
+         _commonds.push(command4);
+         _commonds.push(command6);
+         _commonds.push(command5);
+         _commonds.push(command1);
+         _commonds.push(command7);
+         _commonds.push(command8);
+         _commonds.push(command9);
          super.initializeScript();
       }
       

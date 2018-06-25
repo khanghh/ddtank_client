@@ -62,10 +62,10 @@ package ddt.events
       
       private var _params:Array;
       
-      public function RoomEvent(param1:String, ... rest)
+      public function RoomEvent(type:String, ... arg)
       {
-         super(param1);
-         _params = rest;
+         super(type);
+         _params = arg;
       }
       
       public function get params() : Array

@@ -58,9 +58,9 @@ package pyramid
       
       private var _text:FilterFrameText;
       
-      public function PyramidControl(param1:IEventDispatcher = null)
+      public function PyramidControl(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : PyramidControl
@@ -72,9 +72,9 @@ package pyramid
          return _instance;
       }
       
-      public function set movieLock(param1:Boolean) : void
+      public function set movieLock(value:Boolean) : void
       {
-         this._movieLock = param1;
+         this._movieLock = value;
          dispatchEvent(new PyramidEvent("movie_lock"));
       }
       
@@ -88,11 +88,11 @@ package pyramid
          return _isAutoOpenCard;
       }
       
-      public function set isAutoOpenCard(param1:Boolean) : void
+      public function set isAutoOpenCard(value:Boolean) : void
       {
-         if(_isAutoOpenCard != param1)
+         if(_isAutoOpenCard != value)
          {
-            _isAutoOpenCard = param1;
+            _isAutoOpenCard = value;
             dispatchEvent(new PyramidEvent("auto_openCard"));
             if(_isAutoOpenCard)
             {
@@ -107,10 +107,10 @@ package pyramid
       
       public function get clickRateGo() : Boolean
       {
-         var _loc1_:Number = new Date().time;
-         if(_loc1_ - _clickRate > 500)
+         var temp:Number = new Date().time;
+         if(temp - _clickRate > 500)
          {
-            _clickRate = _loc1_;
+            _clickRate = temp;
             return false;
          }
          return true;
@@ -129,85 +129,85 @@ package pyramid
          PyramidManager.instance.addEventListener("score_convert",__onScoreConvert);
       }
       
-      private function __onStartOrStop(param1:PyramidEvent) : void
+      private function __onStartOrStop(event:PyramidEvent) : void
       {
-         var _loc3_:PackageIn = param1.Pkg;
-         var _loc2_:PyramidModel = PyramidManager.instance.model;
-         _loc2_.isPyramidStart = _loc3_.readBoolean();
-         if(!_loc2_.isPyramidStart)
+         var pkg:PackageIn = event.Pkg;
+         var model:PyramidModel = PyramidManager.instance.model;
+         model.isPyramidStart = pkg.readBoolean();
+         if(!model.isPyramidStart)
          {
-            _loc2_.totalPoint = _loc3_.readInt();
-            _loc2_.turnPoint = _loc3_.readInt();
-            _loc2_.pointRatio = _loc3_.readInt();
-            _loc2_.currentLayer = _loc3_.readInt();
-            _loc2_.currentReviveCount = 0;
+            model.totalPoint = pkg.readInt();
+            model.turnPoint = pkg.readInt();
+            model.pointRatio = pkg.readInt();
+            model.currentLayer = pkg.readInt();
+            model.currentReviveCount = 0;
          }
-         _loc2_.selectLayerItems = new Dictionary();
-         _loc2_.dataChange("start_or_stop");
+         model.selectLayerItems = new Dictionary();
+         model.dataChange("start_or_stop");
          clearFrame();
-         if(autoCount > 0 && _loc2_.isPyramidStart == false && isAutoOpenCard)
+         if(autoCount > 0 && model.isPyramidStart == false && isAutoOpenCard)
          {
             GameInSocketOut.sendPyramidStartOrstop(true);
             return;
          }
-         if(!_loc2_.isPyramidStart)
+         if(!model.isPyramidStart)
          {
             isAutoOpenCard = false;
          }
       }
       
-      private function __onCardResult(param1:PyramidEvent) : void
+      private function __onCardResult(event:PyramidEvent) : void
       {
-         var _loc4_:PackageIn = param1.Pkg;
-         var _loc2_:PyramidModel = PyramidManager.instance.model;
-         _loc2_.templateID = _loc4_.readInt();
-         _loc2_.position = _loc4_.readInt();
-         _loc2_.isPyramidDie = _loc4_.readBoolean();
-         _loc2_.isUp = _loc4_.readBoolean();
-         _loc2_.currentLayer = _loc4_.readInt();
-         _loc2_.maxLayer = _loc4_.readInt();
-         _loc2_.totalPoint = _loc4_.readInt();
-         _loc2_.turnPoint = _loc4_.readInt();
-         _loc2_.pointRatio = _loc4_.readInt();
-         _loc2_.currentFreeCount = _loc4_.readInt();
-         var _loc5_:int = _loc2_.currentLayer;
-         if(_loc2_.isUp)
+         var pkg:PackageIn = event.Pkg;
+         var model:PyramidModel = PyramidManager.instance.model;
+         model.templateID = pkg.readInt();
+         model.position = pkg.readInt();
+         model.isPyramidDie = pkg.readBoolean();
+         model.isUp = pkg.readBoolean();
+         model.currentLayer = pkg.readInt();
+         model.maxLayer = pkg.readInt();
+         model.totalPoint = pkg.readInt();
+         model.turnPoint = pkg.readInt();
+         model.pointRatio = pkg.readInt();
+         model.currentFreeCount = pkg.readInt();
+         var tempLayer:int = model.currentLayer;
+         if(model.isUp)
          {
-            _loc5_--;
+            tempLayer--;
          }
-         var _loc3_:Dictionary = _loc2_.selectLayerItems[_loc5_];
-         if(!_loc3_)
+         var dic:Dictionary = model.selectLayerItems[tempLayer];
+         if(!dic)
          {
-            _loc3_ = new Dictionary();
+            dic = new Dictionary();
          }
-         _loc3_[_loc2_.position] = _loc2_.templateID;
-         _loc2_.selectLayerItems[_loc5_] = _loc3_;
-         _loc2_.dataChange("card_result");
+         dic[model.position] = model.templateID;
+         model.selectLayerItems[tempLayer] = dic;
+         model.dataChange("card_result");
       }
       
-      private function __onDieEvent(param1:PyramidEvent) : void
+      private function __onDieEvent(event:PyramidEvent) : void
       {
-         var _loc3_:PackageIn = param1.Pkg;
-         var _loc2_:PyramidModel = PyramidManager.instance.model;
-         _loc2_.isPyramidStart = _loc3_.readBoolean();
-         _loc2_.currentLayer = _loc3_.readInt();
-         _loc2_.totalPoint = _loc3_.readInt();
-         _loc2_.turnPoint = _loc3_.readInt();
-         _loc2_.pointRatio = _loc3_.readInt();
-         _loc2_.currentReviveCount = _loc3_.readInt();
-         _loc2_.dataChange("die_event");
+         var pkg:PackageIn = event.Pkg;
+         var model:PyramidModel = PyramidManager.instance.model;
+         model.isPyramidStart = pkg.readBoolean();
+         model.currentLayer = pkg.readInt();
+         model.totalPoint = pkg.readInt();
+         model.turnPoint = pkg.readInt();
+         model.pointRatio = pkg.readInt();
+         model.currentReviveCount = pkg.readInt();
+         model.dataChange("die_event");
          clearFrame();
       }
       
-      private function __onScoreConvert(param1:PyramidEvent) : void
+      private function __onScoreConvert(event:PyramidEvent) : void
       {
-         var _loc3_:PackageIn = param1.Pkg;
-         var _loc2_:PyramidModel = PyramidManager.instance.model;
-         _loc2_.totalPoint = _loc3_.readInt();
-         _loc2_.dataChange("score_convert");
+         var pkg:PackageIn = event.Pkg;
+         var model:PyramidModel = PyramidManager.instance.model;
+         model.totalPoint = pkg.readInt();
+         model.dataChange("score_convert");
       }
       
-      public function onClickPyramidIcon(param1:MouseEvent) : void
+      public function onClickPyramidIcon(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          GameInSocketOut.sendRequestEnterPyramidSystem();
@@ -217,21 +217,21 @@ package pyramid
          }
       }
       
-      public function showFrame(param1:int, param2:Object = null) : void
+      public function showFrame(_type:int, dataObj:Object = null) : void
       {
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
-         var _loc6_:* = null;
-         var _loc4_:PyramidModel = PyramidManager.instance.model;
-         _tipsType = param1;
+         var revieMoney:int = 0;
+         var _cardFrameReviveCount:* = null;
+         var tipText:* = null;
+         var model:PyramidModel = PyramidManager.instance.model;
+         _tipsType = _type;
          switch(int(_tipsType) - 1)
          {
             case 0:
-               _loc5_ = _loc4_.revivePrice[_loc4_.currentReviveCount];
-               _tipsframe = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("ddt.pyramid.cardFrameReviveTitle"),LanguageMgr.GetTranslation("ddt.pyramid.cardFrameReviveContent",_loc5_),"",LanguageMgr.GetTranslation("cancel"),true,true,false,2);
-               _loc3_ = ComponentFactory.Instance.creatComponentByStylename("pyramid.view.cardFrameReviveCount");
-               _loc3_.text = LanguageMgr.GetTranslation("ddt.pyramid.cardFrameReviveCount",_loc4_.revivePrice.length - _loc4_.currentReviveCount,_loc4_.revivePrice.length);
-               _tipsframe.addToContent(_loc3_);
+               revieMoney = model.revivePrice[model.currentReviveCount];
+               _tipsframe = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("ddt.pyramid.cardFrameReviveTitle"),LanguageMgr.GetTranslation("ddt.pyramid.cardFrameReviveContent",revieMoney),"",LanguageMgr.GetTranslation("cancel"),true,true,false,2);
+               _cardFrameReviveCount = ComponentFactory.Instance.creatComponentByStylename("pyramid.view.cardFrameReviveCount");
+               _cardFrameReviveCount.text = LanguageMgr.GetTranslation("ddt.pyramid.cardFrameReviveCount",model.revivePrice.length - model.currentReviveCount,model.revivePrice.length);
+               _tipsframe.addToContent(_cardFrameReviveCount);
                break;
             case 1:
                _tipsframe = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.pyramid.cardFrameReviveEndContent"),"","",true,false,false,2,null,"SimpleAlert",50,true,0);
@@ -243,8 +243,8 @@ package pyramid
                _tipsframe = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.pyramid.scoreConvertMsg"),"","",true,false,false,2);
                break;
             case 4:
-               _tipsData = param2;
-               _tipsframe = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.pyramid.turnCardMoneyMsg",_loc4_.turnCardPrice),"",LanguageMgr.GetTranslation("cancel"),true,true,false,2,null,"pyramid.SimpleAlert1");
+               _tipsData = dataObj;
+               _tipsframe = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.pyramid.turnCardMoneyMsg",model.turnCardPrice),"",LanguageMgr.GetTranslation("cancel"),true,true,false,2,null,"pyramid.SimpleAlert1");
                _selectedCheckButton = ComponentFactory.Instance.creatComponentByStylename("pyramid.buyFrameSelectedCheckButton");
                _selectedCheckButton.text = LanguageMgr.GetTranslation("ddt.pyramid.buyFrameSelectedCheckButtonTextMsg");
                _selectedCheckButton.addEventListener("click",__onselectedCheckButtoClick);
@@ -264,22 +264,22 @@ package pyramid
                _numberSelecter = ComponentFactory.Instance.creatComponentByStylename("core.ddtshop.NumberSelecter");
                _numberSelecter.addEventListener("change",__seleterChange);
                PositionUtils.setPos(_numberSelecter,"pyramid.view.autoCountPos");
-               _loc6_ = ComponentFactory.Instance.creatComponentByStylename("pyramid.TipTxt");
-               _loc6_.text = LanguageMgr.GetTranslation("ddt.pyramid.tipText.content");
+               tipText = ComponentFactory.Instance.creatComponentByStylename("pyramid.TipTxt");
+               tipText.text = LanguageMgr.GetTranslation("ddt.pyramid.tipText.content");
                _tipsframe.addToContent(_numberSelecter);
                _tipsframe.addToContent(_text);
-               _tipsframe.addToContent(_loc6_);
+               _tipsframe.addToContent(tipText);
                _numberSelecter.valueLimit = "1,50";
          }
          _tipsframe.addEventListener("response",__onResponse);
       }
       
-      private function __seleterChange(param1:Event) : void
+      private function __seleterChange(event:Event) : void
       {
          SoundManager.instance.play("008");
       }
       
-      private function __onResponse(param1:FrameEvent) : void
+      private function __onResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          switch(int(_tipsType) - -1)
@@ -289,7 +289,7 @@ package pyramid
             default:
                break;
             case 2:
-               if(param1.responseCode == 2 || param1.responseCode == 3)
+               if(evt.responseCode == 2 || evt.responseCode == 3)
                {
                   GameInSocketOut.sendPyramidRevive(true,false);
                }
@@ -302,7 +302,7 @@ package pyramid
                GameInSocketOut.sendPyramidRevive(false,false);
                break;
             case 4:
-               if(param1.responseCode == 2 || param1.responseCode == 3)
+               if(evt.responseCode == 2 || evt.responseCode == 3)
                {
                   GameInSocketOut.sendPyramidStartOrstop(false);
                }
@@ -310,7 +310,7 @@ package pyramid
             case 5:
                break;
             case 6:
-               if(param1.responseCode == 2 || param1.responseCode == 3)
+               if(evt.responseCode == 2 || evt.responseCode == 3)
                {
                   GameInSocketOut.sendPyramidTurnCard(_tipsData[0],_tipsData[1],false);
                }
@@ -322,7 +322,7 @@ package pyramid
                GameInSocketOut.sendPyramidRevive(false,false);
                break;
             case 9:
-               if(param1.responseCode == 2 || param1.responseCode == 3)
+               if(evt.responseCode == 2 || evt.responseCode == 3)
                {
                   isShowBuyFrameSelectedCheck = false;
                   isAutoOpenCard = true;
@@ -335,7 +335,7 @@ package pyramid
          tipsDispose();
       }
       
-      private function __onselectedCheckButtoClick(param1:MouseEvent) : void
+      private function __onselectedCheckButtoClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          isShowBuyFrameSelectedCheck = !_selectedCheckButton.selected;

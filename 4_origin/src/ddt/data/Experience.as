@@ -18,57 +18,56 @@ package ddt.data
          super();
       }
       
-      public static function getExpPercent(param1:int, param2:int) : Number
+      public static function getExpPercent(level:int, gp:int) : Number
       {
-         if(param1 == MAX_LEVEL)
+         if(level == MAX_LEVEL)
          {
             return 0;
          }
-         if(param1 == 1)
+         if(level == 1)
          {
-            param2--;
+            gp--;
          }
-         return (param2 - expericence[param1 - 1]) / (expericence[param1] - expericence[param1 - 1]);
+         return (gp - expericence[level - 1]) / (expericence[level] - expericence[level - 1]);
       }
       
-      public static function getGrade(param1:Number) : int
+      public static function getGrade(exp:Number) : int
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = int(PlayerManager.Instance.Self.Grade);
-         _loc3_ = 0;
-         while(_loc3_ < expericence.length)
+         var i:int = 0;
+         var result:* = int(PlayerManager.Instance.Self.Grade);
+         for(i = 0; i < expericence.length; )
          {
-            if(param1 >= expericence[MAX_LEVEL - 1])
+            if(exp >= expericence[MAX_LEVEL - 1])
             {
-               _loc2_ = int(MAX_LEVEL);
+               result = int(MAX_LEVEL);
                break;
             }
-            if(param1 < expericence[_loc3_])
+            if(exp < expericence[i])
             {
-               _loc2_ = _loc3_;
+               result = i;
                break;
             }
-            if(param1 <= 0)
+            if(exp <= 0)
             {
-               _loc2_ = 0;
+               result = 0;
                break;
             }
-            _loc3_++;
+            i++;
          }
-         return _loc2_;
+         return result;
       }
       
-      public static function getBasicHP(param1:int) : int
+      public static function getBasicHP(level:int) : int
       {
-         param1 = param1 >= MAX_LEVEL?MAX_LEVEL:param1 <= 1?1:param1;
-         return HP[param1 - 1];
+         level = level >= MAX_LEVEL?MAX_LEVEL:level <= 1?1:level;
+         return HP[level - 1];
       }
       
-      public static function setup(param1:ExpericenceAnalyze) : void
+      public static function setup(analyzer:ExpericenceAnalyze) : void
       {
-         expericence = param1.expericence;
-         HP = param1.HP;
-         MAX_LEVEL = param1.expericence.length;
+         expericence = analyzer.expericence;
+         HP = analyzer.HP;
+         MAX_LEVEL = analyzer.expericence.length;
       }
    }
 }

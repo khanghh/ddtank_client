@@ -98,52 +98,49 @@ package consortionBattle.view
          ConsortiaBattleManager.instance.addEventListener("consortiaBattleUpdateScore",updateScore);
       }
       
-      private function updateScore(param1:ConsBatEvent) : void
+      private function updateScore(event:ConsBatEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc10_:int = 0;
-         var _loc5_:* = null;
-         var _loc9_:int = 0;
-         var _loc4_:int = 0;
-         var _loc7_:int = 0;
-         var _loc2_:* = null;
-         var _loc6_:PackageIn = param1.data as PackageIn;
-         var _loc8_:int = _loc6_.readByte();
-         if(_loc8_ == 1)
+         var count:int = 0;
+         var i:int = 0;
+         var tmp:* = null;
+         var k:int = 0;
+         var count2:int = 0;
+         var j:int = 0;
+         var tmp2:* = null;
+         var pkg:PackageIn = event.data as PackageIn;
+         var type:int = pkg.readByte();
+         if(type == 1)
          {
             _consortiaScoreList = [];
-            _loc3_ = _loc6_.readInt();
-            _loc10_ = 0;
-            while(_loc10_ < _loc3_)
+            count = pkg.readInt();
+            for(i = 0; i < count; )
             {
-               _loc5_ = {};
-               _loc5_.name = _loc6_.readUTF();
-               _loc5_.rank = _loc6_.readInt();
-               _loc5_.score = _loc6_.readInt();
-               _consortiaScoreList.push(_loc5_);
-               _loc10_++;
+               tmp = {};
+               tmp.name = pkg.readUTF();
+               tmp.rank = pkg.readInt();
+               tmp.score = pkg.readInt();
+               _consortiaScoreList.push(tmp);
+               i++;
             }
             _consortiaScoreList.sortOn("score",16 | 2);
-            _loc9_ = 0;
-            while(_loc9_ < _loc3_)
+            for(k = 0; k < count; )
             {
-               _consortiaScoreList[_loc9_].rank = _loc9_ + 1;
-               _loc9_++;
+               _consortiaScoreList[k].rank = k + 1;
+               k++;
             }
          }
          else
          {
             _playerScoreList = [];
-            _loc4_ = _loc6_.readInt();
-            _loc7_ = 0;
-            while(_loc7_ < _loc4_)
+            count2 = pkg.readInt();
+            for(j = 0; j < count2; )
             {
-               _loc2_ = {};
-               _loc2_.name = _loc6_.readUTF();
-               _loc2_.rank = _loc6_.readInt();
-               _loc2_.score = _loc6_.readInt();
-               _playerScoreList.push(_loc2_);
-               _loc7_++;
+               tmp2 = {};
+               tmp2.name = pkg.readUTF();
+               tmp2.rank = pkg.readInt();
+               tmp2.score = pkg.readInt();
+               _playerScoreList.push(tmp2);
+               j++;
             }
             _playerScoreList.sortOn("rank",16);
          }
@@ -161,7 +158,7 @@ package consortionBattle.view
          }
       }
       
-      private function __changeHandler(param1:Event) : void
+      private function __changeHandler(event:Event) : void
       {
          switch(int(_btnGroup.selectIndex))
          {
@@ -199,39 +196,39 @@ package consortionBattle.view
          }
       }
       
-      private function timerHandler(param1:Event) : void
+      private function timerHandler(event:Event) : void
       {
-         var _loc2_:int = 0;
+         var tmp:int = 0;
          if(_btnGroup.selectIndex == 0)
          {
-            _loc2_ = 1;
+            tmp = 1;
          }
          else
          {
-            _loc2_ = 2;
+            tmp = 2;
          }
-         SocketManager.Instance.out.sendConsBatUpdateScore(_loc2_);
+         SocketManager.Instance.out.sendConsBatUpdateScore(tmp);
       }
       
-      private function __soundPlay(param1:MouseEvent) : void
+      private function __soundPlay(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }
       
-      private function outHandler(param1:MouseEvent) : void
+      private function outHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          setInOutVisible(false);
          TweenLite.to(this,0.5,{"x":999});
       }
       
-      private function setInOutVisible(param1:Boolean) : void
+      private function setInOutVisible(isOut:Boolean) : void
       {
-         _moveOutBtn.visible = param1;
-         _moveInBtn.visible = !param1;
+         _moveOutBtn.visible = isOut;
+         _moveInBtn.visible = !isOut;
       }
       
-      private function inHandler(param1:MouseEvent) : void
+      private function inHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          setInOutVisible(true);

@@ -23,22 +23,22 @@ package store.view.storeBag
          addChild(bg);
       }
       
-      public function dragDrop(param1:DragEffect) : void
+      public function dragDrop(effect:DragEffect) : void
       {
-         var _loc2_:* = null;
+         var info:* = null;
          if(PlayerManager.Instance.Self.bagLocked)
          {
             return;
          }
-         if(param1.data is InventoryItemInfo)
+         if(effect.data is InventoryItemInfo)
          {
-            _loc2_ = param1.data as InventoryItemInfo;
-            param1.action = "none";
+            info = effect.data as InventoryItemInfo;
+            effect.action = "none";
             DragManager.acceptDrag(this);
          }
       }
       
-      public function dragStop(param1:DragEffect) : void
+      public function dragStop(effect:DragEffect) : void
       {
       }
       

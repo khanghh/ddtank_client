@@ -19,79 +19,78 @@ package dayActivity.items
       
       private var _expriedNum:int;
       
-      public function DayActivityLeftList(param1:String, param2:Vector.<ActivityData>, param3:Boolean)
+      public function DayActivityLeftList(str:String, list:Vector.<ActivityData>, bool:Boolean)
       {
          super();
-         _num = param2.length;
+         _num = list.length;
          _expriedNum = 0;
-         initView(param1,param2,param3);
+         initView(str,list,bool);
       }
       
-      private function initView(param1:String, param2:Vector.<ActivityData>, param3:Boolean) : void
+      private function initView(str:String, list:Vector.<ActivityData>, bool:Boolean) : void
       {
-         var _loc7_:int = 0;
-         var _loc5_:* = null;
+         var i:int = 0;
+         var item:* = null;
          _expriedNum = 0;
-         _tilte = new DayActivityLeftTitleItem(param1,_num);
+         _tilte = new DayActivityLeftTitleItem(str,_num);
          addChild(_tilte);
-         var _loc4_:Vector.<DayActiveData> = DayActivityManager.Instance.acitiveDataList;
-         var _loc6_:int = TimeManager.Instance.serverDate.day;
-         _loc7_ = 0;
-         for(; _loc7_ < _num; _loc7_++)
+         var acitiveDataList:Vector.<DayActiveData> = DayActivityManager.Instance.acitiveDataList;
+         var today:int = TimeManager.Instance.serverDate.day;
+         for(i = 0; i < _num; i++)
          {
-            if(param2[_loc7_].ActivityType == 6)
+            if(list[i].ActivityType == 6)
             {
-               if(!compareDay(_loc6_,DayActivityManager.Instance.YUANGUJULONG_DAYOFWEEK))
+               if(!compareDay(today,DayActivityManager.Instance.YUANGUJULONG_DAYOFWEEK))
                {
                   _expriedNum = Number(_expriedNum) + 1;
                   continue;
                }
             }
-            if(param2[_loc7_].ActivityType == 18)
+            if(list[i].ActivityType == 18)
             {
-               if(!compareDay(_loc6_,DayActivityManager.Instance.ANYEBOJUE_DAYOFWEEK))
+               if(!compareDay(today,DayActivityManager.Instance.ANYEBOJUE_DAYOFWEEK))
                {
                   _expriedNum = Number(_expriedNum) + 1;
                   continue;
                }
             }
-            if(param2[_loc7_].ActivityType == 19)
+            if(list[i].ActivityType == 19)
             {
-               if(!compareDay(_loc6_,DayActivityManager.Instance.ZUQIUBOSS_DAYOFWEEK))
+               if(!compareDay(today,DayActivityManager.Instance.ZUQIUBOSS_DAYOFWEEK))
                {
                   _expriedNum = Number(_expriedNum) + 1;
                   continue;
                }
             }
-            _loc5_ = new DayActivityLeftListItem(param3,param2[_loc7_]);
-            _loc5_.setTxt2(param2[_loc7_].OverCount);
-            if(param2[_loc7_].JumpType > 0)
+            item = new DayActivityLeftListItem(bool,list[i]);
+            item.setTxt2(list[i].OverCount);
+            if(list[i].JumpType > 0)
             {
-               _loc5_.tipData = LanguageMgr.GetTranslation("ddt.battleGroud.itemTips",param2[_loc7_].ActivePoint,param2[_loc7_].Description);
+               item.tipData = LanguageMgr.GetTranslation("ddt.battleGroud.itemTips",list[i].ActivePoint,list[i].Description);
             }
             else
             {
-               _loc5_.tipData = LanguageMgr.GetTranslation("ddt.battleGroud.btnTip",param2[_loc7_].ActivePoint);
+               item.tipData = LanguageMgr.GetTranslation("ddt.battleGroud.btnTip",list[i].ActivePoint);
             }
-            _loc5_.x = 2;
-            _loc5_.y = 30 + 25 * (_loc7_ - _expriedNum);
-            addChild(_loc5_);
+            item.x = 2;
+            item.y = 30 + 25 * (i - _expriedNum);
+            addChild(item);
          }
       }
       
-      private function compareDay(param1:int, param2:String) : Boolean
+      private function compareDay(day:int, activeDays:String) : Boolean
       {
-         var _loc3_:Array = param2.split(",");
-         if(_loc3_.indexOf("" + param1) == -1)
+         var dayArr:Array = activeDays.split(",");
+         if(dayArr.indexOf("" + day) == -1)
          {
             return false;
          }
          return true;
       }
       
-      public function setTxt(param1:String) : void
+      public function setTxt(str:String) : void
       {
-         _tilte.setTxt(LanguageMgr.GetTranslation(param1,_num - _expriedNum));
+         _tilte.setTxt(LanguageMgr.GetTranslation(str,_num - _expriedNum));
       }
       
       public function dispose() : void

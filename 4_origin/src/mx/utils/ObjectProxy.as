@@ -37,21 +37,21 @@ package mx.utils
       
       private var _id:String;
       
-      public function ObjectProxy(param1:Object = null, param2:String = null, param3:int = -1)
+      public function ObjectProxy(item:Object = null, uid:String = null, proxyDepth:int = -1)
       {
          this.proxyClass = ObjectProxy;
          super();
-         if(!param1)
+         if(!item)
          {
-            param1 = {};
+            item = {};
          }
-         this._item = param1;
-         this._proxyLevel = param3;
+         this._item = item;
+         this._proxyLevel = proxyDepth;
          this.notifiers = {};
          this.dispatcher = new EventDispatcher(this);
-         if(param2)
+         if(uid)
          {
-            this._id = param2;
+            this._id = uid;
          }
       }
       
@@ -65,9 +65,9 @@ package mx.utils
          return this._type;
       }
       
-      object_proxy function set type(param1:QName) : void
+      object_proxy function set type(value:QName) : void
       {
-         this._type = param1;
+         this._type = value;
       }
       
       public function get uid() : String
@@ -79,180 +79,180 @@ package mx.utils
          return this._id;
       }
       
-      public function set uid(param1:String) : void
+      public function set uid(value:String) : void
       {
-         this._id = param1;
+         this._id = value;
       }
       
-      override flash_proxy function getProperty(param1:*) : *
+      override flash_proxy function getProperty(name:*) : *
       {
-         var _loc2_:* = undefined;
-         if(this.notifiers[param1.toString()])
+         var result:* = undefined;
+         if(this.notifiers[name.toString()])
          {
-            return this.notifiers[param1];
+            return this.notifiers[name];
          }
-         _loc2_ = this._item[param1];
-         if(_loc2_)
+         result = this._item[name];
+         if(result)
          {
-            if(this._proxyLevel == 0 || ObjectUtil.isSimple(_loc2_))
+            if(this._proxyLevel == 0 || ObjectUtil.isSimple(result))
             {
-               return _loc2_;
+               return result;
             }
-            _loc2_ = this.getComplexProperty(param1,_loc2_);
+            result = this.getComplexProperty(name,result);
          }
-         return _loc2_;
+         return result;
       }
       
-      override flash_proxy function callProperty(param1:*, ... rest) : *
+      override flash_proxy function callProperty(name:*, ... rest) : *
       {
-         return this._item[param1].apply(this._item,rest);
+         return this._item[name].apply(this._item,rest);
       }
       
-      override flash_proxy function deleteProperty(param1:*) : Boolean
+      override flash_proxy function deleteProperty(name:*) : Boolean
       {
-         var _loc5_:PropertyChangeEvent = null;
-         var _loc2_:IPropertyChangeNotifier = IPropertyChangeNotifier(this.notifiers[param1]);
-         if(_loc2_)
+         var event:PropertyChangeEvent = null;
+         var notifier:IPropertyChangeNotifier = IPropertyChangeNotifier(this.notifiers[name]);
+         if(notifier)
          {
-            _loc2_.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE,this.propertyChangeHandler);
-            delete this.notifiers[param1];
+            notifier.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE,this.propertyChangeHandler);
+            delete this.notifiers[name];
          }
-         var _loc3_:* = this._item[param1];
-         var _loc4_:* = delete this._item[param1];
+         var oldVal:* = this._item[name];
+         var deleted:* = delete this._item[name];
          if(this.dispatcher.hasEventListener(PropertyChangeEvent.PROPERTY_CHANGE))
          {
-            _loc5_ = new PropertyChangeEvent(PropertyChangeEvent.PROPERTY_CHANGE);
-            _loc5_.kind = PropertyChangeEventKind.DELETE;
-            _loc5_.property = param1;
-            _loc5_.oldValue = _loc3_;
-            _loc5_.source = this;
-            this.dispatcher.dispatchEvent(_loc5_);
+            event = new PropertyChangeEvent(PropertyChangeEvent.PROPERTY_CHANGE);
+            event.kind = PropertyChangeEventKind.DELETE;
+            event.property = name;
+            event.oldValue = oldVal;
+            event.source = this;
+            this.dispatcher.dispatchEvent(event);
          }
-         return _loc4_;
+         return deleted;
       }
       
-      override flash_proxy function hasProperty(param1:*) : Boolean
+      override flash_proxy function hasProperty(name:*) : Boolean
       {
-         return param1 in this._item;
+         return name in this._item;
       }
       
-      override flash_proxy function nextName(param1:int) : String
+      override flash_proxy function nextName(index:int) : String
       {
-         return this.propertyList[param1 - 1];
+         return this.propertyList[index - 1];
       }
       
-      override flash_proxy function nextNameIndex(param1:int) : int
+      override flash_proxy function nextNameIndex(index:int) : int
       {
-         if(param1 == 0)
+         if(index == 0)
          {
             this.setupPropertyList();
          }
-         if(param1 < this.propertyList.length)
+         if(index < this.propertyList.length)
          {
-            return param1 + 1;
+            return index + 1;
          }
          return 0;
       }
       
-      override flash_proxy function nextValue(param1:int) : *
+      override flash_proxy function nextValue(index:int) : *
       {
-         return this._item[this.propertyList[param1 - 1]];
+         return this._item[this.propertyList[index - 1]];
       }
       
-      override flash_proxy function setProperty(param1:*, param2:*) : void
+      override flash_proxy function setProperty(name:*, value:*) : void
       {
-         var _loc4_:IPropertyChangeNotifier = null;
-         var _loc5_:PropertyChangeEvent = null;
-         var _loc3_:* = this._item[param1];
-         if(_loc3_ !== param2)
+         var notifier:IPropertyChangeNotifier = null;
+         var event:PropertyChangeEvent = null;
+         var oldVal:* = this._item[name];
+         if(oldVal !== value)
          {
-            this._item[param1] = param2;
-            _loc4_ = IPropertyChangeNotifier(this.notifiers[param1]);
-            if(_loc4_)
+            this._item[name] = value;
+            notifier = IPropertyChangeNotifier(this.notifiers[name]);
+            if(notifier)
             {
-               _loc4_.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE,this.propertyChangeHandler);
-               delete this.notifiers[param1];
+               notifier.removeEventListener(PropertyChangeEvent.PROPERTY_CHANGE,this.propertyChangeHandler);
+               delete this.notifiers[name];
             }
             if(this.dispatcher.hasEventListener(PropertyChangeEvent.PROPERTY_CHANGE))
             {
-               if(param1 is QName)
+               if(name is QName)
                {
-                  param1 = QName(param1).localName;
+                  name = QName(name).localName;
                }
-               _loc5_ = PropertyChangeEvent.createUpdateEvent(this,param1.toString(),_loc3_,param2);
-               this.dispatcher.dispatchEvent(_loc5_);
+               event = PropertyChangeEvent.createUpdateEvent(this,name.toString(),oldVal,value);
+               this.dispatcher.dispatchEvent(event);
             }
          }
       }
       
-      object_proxy function getComplexProperty(param1:*, param2:*) : *
+      object_proxy function getComplexProperty(name:*, value:*) : *
       {
-         if(param2 is IPropertyChangeNotifier)
+         if(value is IPropertyChangeNotifier)
          {
-            param2.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE,this.propertyChangeHandler);
-            this.notifiers[param1] = param2;
-            return param2;
+            value.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE,this.propertyChangeHandler);
+            this.notifiers[name] = value;
+            return value;
          }
-         if(getQualifiedClassName(param2) == "Object")
+         if(getQualifiedClassName(value) == "Object")
          {
-            param2 = new this.proxyClass(this._item[param1],null,this._proxyLevel > 0?this._proxyLevel - 1:this._proxyLevel);
-            param2.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE,this.propertyChangeHandler);
-            this.notifiers[param1] = param2;
-            return param2;
+            value = new this.proxyClass(this._item[name],null,this._proxyLevel > 0?this._proxyLevel - 1:this._proxyLevel);
+            value.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE,this.propertyChangeHandler);
+            this.notifiers[name] = value;
+            return value;
          }
-         return param2;
+         return value;
       }
       
-      public function readExternal(param1:IDataInput) : void
+      public function readExternal(input:IDataInput) : void
       {
-         var _loc2_:Object = param1.readObject();
-         this._item = _loc2_;
+         var value:Object = input.readObject();
+         this._item = value;
       }
       
-      public function writeExternal(param1:IDataOutput) : void
+      public function writeExternal(output:IDataOutput) : void
       {
-         param1.writeObject(this._item);
+         output.writeObject(this._item);
       }
       
-      public function addEventListener(param1:String, param2:Function, param3:Boolean = false, param4:int = 0, param5:Boolean = false) : void
+      public function addEventListener(type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false) : void
       {
-         this.dispatcher.addEventListener(param1,param2,param3,param4,param5);
+         this.dispatcher.addEventListener(type,listener,useCapture,priority,useWeakReference);
       }
       
-      public function removeEventListener(param1:String, param2:Function, param3:Boolean = false) : void
+      public function removeEventListener(type:String, listener:Function, useCapture:Boolean = false) : void
       {
-         this.dispatcher.removeEventListener(param1,param2,param3);
+         this.dispatcher.removeEventListener(type,listener,useCapture);
       }
       
-      public function dispatchEvent(param1:Event) : Boolean
+      public function dispatchEvent(event:Event) : Boolean
       {
-         return this.dispatcher.dispatchEvent(param1);
+         return this.dispatcher.dispatchEvent(event);
       }
       
-      public function hasEventListener(param1:String) : Boolean
+      public function hasEventListener(type:String) : Boolean
       {
-         return this.dispatcher.hasEventListener(param1);
+         return this.dispatcher.hasEventListener(type);
       }
       
-      public function willTrigger(param1:String) : Boolean
+      public function willTrigger(type:String) : Boolean
       {
-         return this.dispatcher.willTrigger(param1);
+         return this.dispatcher.willTrigger(type);
       }
       
-      public function propertyChangeHandler(param1:PropertyChangeEvent) : void
+      public function propertyChangeHandler(event:PropertyChangeEvent) : void
       {
-         this.dispatcher.dispatchEvent(param1);
+         this.dispatcher.dispatchEvent(event);
       }
       
       protected function setupPropertyList() : void
       {
-         var _loc1_:* = null;
+         var prop:* = null;
          if(getQualifiedClassName(this._item) == "Object")
          {
             this.propertyList = [];
-            for(_loc1_ in this._item)
+            for(prop in this._item)
             {
-               this.propertyList.push(_loc1_);
+               this.propertyList.push(prop);
             }
          }
          else

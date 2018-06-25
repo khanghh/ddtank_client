@@ -35,9 +35,9 @@ package ddt.view.enthrall
          super();
       }
       
-      public function set manager(param1:EnthrallManager) : void
+      public function set manager(manager:EnthrallManager) : void
       {
-         _manager = param1;
+         _manager = manager;
          initUI();
       }
       
@@ -66,7 +66,7 @@ package ddt.view.enthrall
          _approveBtn.addEventListener("click",popFrame);
       }
       
-      private function popFrame(param1:MouseEvent) : void
+      private function popFrame(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _manager.showCIDCheckerFrame();
@@ -77,7 +77,7 @@ package ddt.view.enthrall
          upGameTimeStatus();
       }
       
-      private function __changeHandler(param1:Event) : void
+      private function __changeHandler(evt:Event) : void
       {
          if(this.parent == null || this.visible == false)
          {
@@ -86,7 +86,7 @@ package ddt.view.enthrall
          upGameTimeStatus();
       }
       
-      private function __mouseOverHandler(param1:MouseEvent) : void
+      private function __mouseOverHandler(evt:MouseEvent) : void
       {
          upGameTimeStatus();
          _info.visible = true;
@@ -94,61 +94,61 @@ package ddt.view.enthrall
       
       private function upGameTimeStatus() : void
       {
-         var _loc1_:Number = TimeManager.Instance.totalGameTime;
-         _info.info_txt.text = getTimeTxt(_loc1_);
-         setViewState(_loc1_);
+         var time:Number = TimeManager.Instance.totalGameTime;
+         _info.info_txt.text = getTimeTxt(time);
+         setViewState(time);
       }
       
-      private function getTimeTxt(param1:Number) : String
+      private function getTimeTxt(time:Number) : String
       {
-         var _loc4_:Number = Math.floor(param1 / 60);
-         var _loc2_:Number = Math.floor(param1 % 60);
-         var _loc3_:String = (_loc2_ < 10?_loc4_ + ":0" + _loc2_:_loc4_ + ":" + _loc2_) + " / 5:00";
-         return _loc3_;
+         var hours:Number = Math.floor(time / 60);
+         var min:Number = Math.floor(time % 60);
+         var str:String = (min < 10?hours + ":0" + min:hours + ":" + min) + " / 5:00";
+         return str;
       }
       
-      private function __mouseOutHandler(param1:MouseEvent) : void
+      private function __mouseOutHandler(evt:MouseEvent) : void
       {
          _info.info_txt.text = "";
          setViewState(TimeManager.Instance.totalGameTime);
          _info.visible = false;
       }
       
-      private function setViewState(param1:Number) : void
+      private function setViewState(time:Number) : void
       {
-         var _loc2_:Number = Math.floor(param1);
-         if(_loc2_ < 180)
+         var minute:Number = Math.floor(time);
+         if(minute < 180)
          {
             _enthrall.setFrame(1);
             _enthrallBall.setFrame(1);
          }
-         else if(_loc2_ < 300)
+         else if(minute < 300)
          {
             _enthrall.setFrame(2);
             _enthrallBall.setFrame(2);
          }
-         else if(_loc2_ > 300)
+         else if(minute > 300)
          {
             _enthrall.setFrame(3);
             _enthrallBall.setFrame(3);
          }
       }
       
-      public function show(param1:EnthrallView) : void
+      public function show(view:EnthrallView) : void
       {
          setViewState(TimeManager.Instance.totalGameTime);
       }
       
-      public function changeBtn(param1:Boolean) : void
+      public function changeBtn(showBtn:Boolean) : void
       {
-         _approveBtn.visible = param1;
+         _approveBtn.visible = showBtn;
       }
       
-      public function changeToGameState(param1:Boolean) : void
+      public function changeToGameState(flag:Boolean) : void
       {
-         _enthrallBall.visible = param1;
-         _enthrall.visible = !param1;
-         _approveBtn.visible = !param1;
+         _enthrallBall.visible = flag;
+         _enthrall.visible = !flag;
+         _approveBtn.visible = !flag;
       }
       
       private function removeEvent() : void

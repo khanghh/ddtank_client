@@ -48,7 +48,7 @@ package ddtBuried.views
          _taskBtn.addEventListener("click",__textClickHandle);
       }
       
-      protected function __textClickHandle(param1:MouseEvent) : void
+      protected function __textClickHandle(event:MouseEvent) : void
       {
          if(func != null)
          {
@@ -101,9 +101,9 @@ package ddtBuried.views
          return _taskTitle;
       }
       
-      public function set taskTitle(param1:FilterFrameText) : void
+      public function set taskTitle(value:FilterFrameText) : void
       {
-         _taskTitle = param1;
+         _taskTitle = value;
       }
       
       public function get taskInfo() : FilterFrameText
@@ -111,14 +111,14 @@ package ddtBuried.views
          return _taskInfo;
       }
       
-      public function set taskInfo(param1:FilterFrameText) : void
+      public function set taskInfo(value:FilterFrameText) : void
       {
-         _taskInfo = param1;
+         _taskInfo = value;
       }
       
-      public function set info(param1:QuestInfo) : void
+      public function set info(value:QuestInfo) : void
       {
-         _info = param1;
+         _info = value;
       }
       
       public function get info() : QuestInfo
@@ -131,9 +131,9 @@ package ddtBuried.views
          return _func;
       }
       
-      public function set func(param1:Function) : void
+      public function set func(value:Function) : void
       {
-         _func = param1;
+         _func = value;
       }
    }
 }

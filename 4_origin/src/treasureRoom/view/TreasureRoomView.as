@@ -101,7 +101,7 @@ package treasureRoom.view
          _time.start();
       }
       
-      protected function __onUpdateCountDown(param1:TimerEvent) : void
+      protected function __onUpdateCountDown(event:TimerEvent) : void
       {
          _freeTimeNum = Number(_freeTimeNum) - 1;
          if(_freeTimeNum >= 0)
@@ -118,11 +118,11 @@ package treasureRoom.view
          }
       }
       
-      private function transSecond(param1:Number) : String
+      private function transSecond(num:Number) : String
       {
-         var _loc2_:int = param1 / 3600;
-         param1 = param1 - _loc2_ * 3600;
-         return String((String("0" + Math.floor(param1 / 60))).substr(-2) + ":" + (String("0" + Math.floor(param1 % 60))).substr(-2));
+         var hour:int = num / 3600;
+         num = num - hour * 3600;
+         return String((String("0" + Math.floor(num / 60))).substr(-2) + ":" + (String("0" + Math.floor(num % 60))).substr(-2));
       }
       
       private function addEvent() : void
@@ -134,9 +134,9 @@ package treasureRoom.view
          MarkMgr.inst.addEventListener("vaultsReward",showRewardViewHandler);
       }
       
-      private function showRewardViewHandler(param1:MarkEvent) : void
+      private function showRewardViewHandler(evt:MarkEvent) : void
       {
-         _index = param1.data;
+         _index = evt.data;
          _mask.visible = true;
          if(_index == 0)
          {
@@ -150,7 +150,7 @@ package treasureRoom.view
          _fireballEgg.addEventListener("enterFrame",__onMovieFrame);
       }
       
-      protected function __onMovieFrame(param1:Event) : void
+      protected function __onMovieFrame(event:Event) : void
       {
          if(_fireballEgg.currentFrame == _fireballEgg.totalFrames)
          {
@@ -169,7 +169,7 @@ package treasureRoom.view
          }
       }
       
-      protected function __rewardClose(param1:Event) : void
+      protected function __rewardClose(event:Event) : void
       {
          if(_rewardView)
          {
@@ -180,9 +180,9 @@ package treasureRoom.view
          }
       }
       
-      private function updateTimerHandler(param1:MarkEvent) : void
+      private function updateTimerHandler(evt:MarkEvent) : void
       {
-         _freeArr = param1.data as Array;
+         _freeArr = evt.data as Array;
          _freeTimeNum = _freeArr[0];
          if(_freeArr[1] > 0)
          {
@@ -205,12 +205,12 @@ package treasureRoom.view
          }
       }
       
-      protected function __onClickHandler(param1:MouseEvent) : void
+      protected function __onClickHandler(event:MouseEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var alertAsk:* = null;
+         var alertAsk2:* = null;
          SoundManager.instance.playButtonSound();
-         if(param1.target == oneTreasureBtn)
+         if(event.target == oneTreasureBtn)
          {
             if(PlayerManager.Instance.Self.bagLocked)
             {
@@ -224,11 +224,11 @@ package treasureRoom.view
             }
             else
             {
-               _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("tank.game.GameView.TreasureRoomViewConfirm1",_configArr[0][1],_configArr[0][0],_configArr[0][2]),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2,null,"SimpleAlert",60,false,1);
-               _loc3_.addEventListener("response",__alertAllBack);
+               alertAsk = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("tank.game.GameView.TreasureRoomViewConfirm1",_configArr[0][1],_configArr[0][0],_configArr[0][2]),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2,null,"SimpleAlert",60,false,1);
+               alertAsk.addEventListener("response",__alertAllBack);
             }
          }
-         else if(param1.target == tenTreasureBtn)
+         else if(event.target == tenTreasureBtn)
          {
             if(PlayerManager.Instance.Self.bagLocked)
             {
@@ -236,19 +236,19 @@ package treasureRoom.view
                return;
             }
             __rewardClose(null);
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("tank.game.GameView.TreasureRoomViewConfirm2",_configArr[1][1],_configArr[1][0],_configArr[1][2]),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2,null,"SimpleAlert",60,0);
-            _loc2_.addEventListener("response",__alertAllBack2);
+            alertAsk2 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("tank.game.GameView.TreasureRoomViewConfirm2",_configArr[1][1],_configArr[1][0],_configArr[1][2]),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2,null,"SimpleAlert",60,0);
+            alertAsk2.addEventListener("response",__alertAllBack2);
          }
-         else if(param1.target == markBtn)
+         else if(event.target == markBtn)
          {
             __rewardClose(null);
             MarkMgr.inst.showMark();
          }
       }
       
-      private function __alertAllBack(param1:FrameEvent) : void
+      private function __alertAllBack(event:FrameEvent) : void
       {
-         event = param1;
+         event = event;
          var frame:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
          frame.removeEventListener("response",__alertAllBack);
          SoundManager.instance.playButtonSound();
@@ -264,9 +264,9 @@ package treasureRoom.view
          frame.dispose();
       }
       
-      private function __alertAllBack2(param1:FrameEvent) : void
+      private function __alertAllBack2(event:FrameEvent) : void
       {
-         event = param1;
+         event = event;
          var frame:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
          frame.removeEventListener("response",__alertAllBack);
          SoundManager.instance.playButtonSound();
@@ -291,7 +291,7 @@ package treasureRoom.view
          MarkMgr.inst.removeEventListener("vaultsReward",showRewardViewHandler);
       }
       
-      protected function disposeView(param1:Event) : void
+      protected function disposeView(event:Event) : void
       {
          dispose();
       }

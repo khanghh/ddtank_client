@@ -91,7 +91,7 @@ package condiscount.view
          addChild(arrow);
       }
       
-      private function clickHandler(param1:MouseEvent) : void
+      private function clickHandler(event:MouseEvent) : void
       {
          if(_info.giftConditionArr[0].remain2 == "-1")
          {
@@ -112,10 +112,10 @@ package condiscount.view
          }
       }
       
-      private function onBuyConfirmResponse(param1:FrameEvent) : void
+      private function onBuyConfirmResponse(e:FrameEvent) : void
       {
          frame.removeEventListener("response",onBuyConfirmResponse);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         if(e.responseCode == 2 || e.responseCode == 3)
          {
             if(_info.giftConditionArr[0].remain2 == "-1")
             {
@@ -138,51 +138,50 @@ package condiscount.view
       
       protected function onCheckComplete() : void
       {
-         var _loc4_:Vector.<SendGiftInfo> = new Vector.<SendGiftInfo>();
-         var _loc2_:SendGiftInfo = new SendGiftInfo();
-         _loc2_.activityId = CondiscountManager.instance.model.actId;
-         var _loc3_:Array = [];
-         var _loc1_:GiftChildInfo = new GiftChildInfo();
-         _loc1_.giftId = _info.giftbagId;
+         var sendInfoVec:Vector.<SendGiftInfo> = new Vector.<SendGiftInfo>();
+         var sendInfo:SendGiftInfo = new SendGiftInfo();
+         sendInfo.activityId = CondiscountManager.instance.model.actId;
+         var temp:Array = [];
+         var childInfo:GiftChildInfo = new GiftChildInfo();
+         childInfo.giftId = _info.giftbagId;
          if(_info.giftConditionArr[0].remain2 == "-1")
          {
-            _loc1_.index = !!CheckMoneyUtils.instance.isBind?-9:-8;
+            childInfo.index = !!CheckMoneyUtils.instance.isBind?-9:-8;
          }
          else
          {
-            _loc1_.index = !!frame.isBand?-9:-8;
+            childInfo.index = !!frame.isBand?-9:-8;
          }
-         _loc3_.push(_loc1_);
-         _loc2_.giftIdArr = _loc3_;
-         _loc4_.push(_loc2_);
-         SocketManager.Instance.out.sendWonderfulActivityGetReward(_loc4_);
+         temp.push(childInfo);
+         sendInfo.giftIdArr = temp;
+         sendInfoVec.push(sendInfo);
+         SocketManager.Instance.out.sendWonderfulActivityGetReward(sendInfoVec);
       }
       
-      public function setInfo(param1:GiftBagInfo) : void
+      public function setInfo(value:GiftBagInfo) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc2_:* = null;
-         _info = param1;
+         var i:int = 0;
+         var name:* = null;
+         var count:* = null;
+         _info = value;
          _goodsIcon.gotoAndStop(_info.rewardMark + 1);
-         var _loc3_:String = "";
-         _loc5_ = 0;
-         while(_loc5_ < _info.giftRewardArr.length)
+         var str:String = "";
+         for(i = 0; i < _info.giftRewardArr.length; )
          {
-            _loc4_ = ItemManager.Instance.getTemplateById(_info.giftRewardArr[_loc5_].templateId).Name;
-            _loc2_ = "*" + String(_info.giftRewardArr[_loc5_].count);
-            _loc3_ = _loc3_ + (_loc4_ + _loc2_ + "\n");
-            _loc5_++;
+            name = ItemManager.Instance.getTemplateById(_info.giftRewardArr[i].templateId).Name;
+            count = "*" + String(_info.giftRewardArr[i].count);
+            str = str + (name + count + "\n");
+            i++;
          }
-         icon.tipData = _loc3_;
+         icon.tipData = str;
          _normalPriceTxt.text = LanguageMgr.GetTranslation("ddt.condiscount.item.normalPrice",_info.giftConditionArr[0].remain1);
          _disCountPriceTxt.text = LanguageMgr.GetTranslation("ddt.condiscount.item.discountPrice",_info.giftConditionArr[0].conditionValue);
       }
       
-      public function changeData(param1:int) : void
+      public function changeData(buyType:int) : void
       {
-         buyBtn.enable = param1 == 2;
-         if(param1 == 0)
+         buyBtn.enable = buyType == 2;
+         if(buyType == 0)
          {
             arrow.gotoAndStop(1);
             buyIcon.visible = true;

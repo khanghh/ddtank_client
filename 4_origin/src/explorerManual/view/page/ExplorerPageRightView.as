@@ -51,9 +51,9 @@ package explorerManual.view.page
       
       private var _loaderPic:DisplayLoader;
       
-      public function ExplorerPageRightView(param1:int, param2:ExplorerManualInfo, param3:ExplorerManualController)
+      public function ExplorerPageRightView(chapterID:int, model:ExplorerManualInfo, ctrl:ExplorerManualController)
       {
-         super(param1,param2,param3);
+         super(chapterID,model,ctrl);
       }
       
       override protected function initView() : void
@@ -127,10 +127,10 @@ package explorerManual.view.page
          }
       }
       
-      private function __akeyMuzzleHandler(param1:CEvent) : void
+      private function __akeyMuzzleHandler(evt:CEvent) : void
       {
-         var _loc2_:Boolean = param1.data;
-         if(_loc2_)
+         var result:Boolean = evt.data;
+         if(result)
          {
             _puzzleView.akey();
             _aKeyBtn.enable = false;
@@ -141,17 +141,17 @@ package explorerManual.view.page
          }
       }
       
-      private function __puzzleSucceedHandler(param1:CEvent) : void
+      private function __puzzleSucceedHandler(evt:CEvent) : void
       {
-         var _loc2_:Boolean = param1.data;
-         _activeBtn.visible = _loc2_;
-         var _loc3_:* = _loc2_;
+         var canPuzzle:Boolean = evt.data;
+         _activeBtn.visible = canPuzzle;
+         var _loc3_:* = canPuzzle;
          _activeBtn.enable = _loc3_;
          _aKeyBtn.enable = _loc3_;
          _ctrl.puzzleState = true;
       }
       
-      private function __aKeyBtnClickHandler(param1:MouseEvent) : void
+      private function __aKeyBtnClickHandler(evt:MouseEvent) : void
       {
          if(_pageInfo == null)
          {
@@ -177,12 +177,12 @@ package explorerManual.view.page
          _confirmFrame.addEventListener("response",__confirmBuy);
       }
       
-      private function __confirmBuy(param1:FrameEvent) : void
+      private function __confirmBuy(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          _confirmFrame.removeEventListener("response",__confirmBuy);
          _confirmFrame = null;
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             if(_ctrl)
             {
@@ -192,7 +192,7 @@ package explorerManual.view.page
          }
       }
       
-      private function __activeBtnClickHandler(param1:MouseEvent) : void
+      private function __activeBtnClickHandler(evt:MouseEvent) : void
       {
          if(_ctrl)
          {
@@ -203,16 +203,16 @@ package explorerManual.view.page
          }
       }
       
-      private function getPregressValue(param1:int, param2:int) : String
+      private function getPregressValue(curValue:int, maxValue:int) : String
       {
-         var _loc3_:* = null;
-         _loc3_ = "<FONT FACE=\'Arial\' SIZE=\'14\' COLOR=\'#FF0000\' ><B>" + param1 + "</B></FONT>" + "/" + param2;
-         return _loc3_;
+         var result:* = null;
+         result = "<FONT FACE=\'Arial\' SIZE=\'14\' COLOR=\'#FF0000\' ><B>" + curValue + "</B></FONT>" + "/" + maxValue;
+         return result;
       }
       
-      override public function set pageInfo(param1:ManualPageItemInfo) : void
+      override public function set pageInfo(info:ManualPageItemInfo) : void
       {
-         .super.pageInfo = param1;
+         .super.pageInfo = info;
          _payMoney.text = _pageInfo.ActivateCurrency.toString();
       }
       
@@ -249,11 +249,11 @@ package explorerManual.view.page
          LoadResourceManager.Instance.startLoad(_loaderPic);
       }
       
-      private function __picCompleteHandler(param1:LoaderEvent) : void
+      private function __picCompleteHandler(evt:LoaderEvent) : void
       {
-         if(param1.loader.isSuccess)
+         if(evt.loader.isSuccess)
          {
-            _activeIconSpri.addChild(param1.loader.content as Bitmap);
+            _activeIconSpri.addChild(evt.loader.content as Bitmap);
          }
          clearLoader();
       }
@@ -279,12 +279,12 @@ package explorerManual.view.page
       
       private function updatePuzzle() : void
       {
-         var _loc1_:* = null;
+         var haveDebris:* = null;
          if(_puzzleView)
          {
             _puzzleView.totalDebrisCount = _pageInfo.DebrisCount;
-            _loc1_ = _model.debrisInfo.getHaveDebrisByPageID(_pageInfo.ID);
-            _puzzleView.debrisInfo = _loc1_;
+            haveDebris = _model.debrisInfo.getHaveDebrisByPageID(_pageInfo.ID);
+            _puzzleView.debrisInfo = haveDebris;
          }
       }
       

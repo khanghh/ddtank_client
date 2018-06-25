@@ -4,15 +4,15 @@ package morn.core.components
    {
        
       
-      public function HScrollBar(param1:String = null)
+      public function HScrollBar(skin:String = null)
       {
-         super(param1);
+         super(skin);
       }
       
       override protected function initialize() : void
       {
          super.initialize();
-         _slider.direction = HORIZONTAL;
+         _slider.direction = "horizontal";
       }
    }
 }

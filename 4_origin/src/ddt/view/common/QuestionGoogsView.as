@@ -78,25 +78,24 @@ package ddt.view.common
       
       private function initItem() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          _itemArray = [];
-         _loc2_ = 0;
-         while(_loc2_ < 4)
+         for(i = 0; i < 4; )
          {
-            _loc1_ = new QuestionItemView();
-            _loc1_.addEventListener("click",__itemClick);
-            _loc1_.visible = false;
-            _list.addChild(_loc1_);
-            _itemArray.push(_loc1_);
-            _loc2_++;
+            item = new QuestionItemView();
+            item.addEventListener("click",__itemClick);
+            item.visible = false;
+            _list.addChild(item);
+            _itemArray.push(item);
+            i++;
          }
       }
       
-      private function __itemClick(param1:MouseEvent) : void
+      private function __itemClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         QuestionInfoMannager.Instance.sendRespond((param1.target as QuestionItemView).index);
+         QuestionInfoMannager.Instance.sendRespond((event.target as QuestionItemView).index);
       }
       
       private function update() : void
@@ -146,18 +145,18 @@ package ddt.view.common
          }
       }
       
-      public function setQuestionInfo(param1:QuestionInfo, param2:int, param3:int, param4:int) : void
+      public function setQuestionInfo(info:QuestionInfo, questionTotal:int, questionCurrentNum:int, correctQuestionNum:int) : void
       {
-         _currentQuestion = param1;
-         _questionTotal = param2;
-         _questionCurrentNum = param3;
-         _correctQuestionNum = param4;
+         _currentQuestion = info;
+         _questionTotal = questionTotal;
+         _questionCurrentNum = questionCurrentNum;
+         _correctQuestionNum = correctQuestionNum;
          update();
       }
       
-      private function getPerKeyStr(param1:int) : String
+      private function getPerKeyStr(value:int) : String
       {
-         switch(int(param1) - 1)
+         switch(int(value) - 1)
          {
             case 0:
                return "A";
@@ -172,13 +171,12 @@ package ddt.view.common
       
       private function cleanItem() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _itemArray.length)
+         var i:int = 0;
+         for(i = 0; i < _itemArray.length; )
          {
-            (_itemArray[_loc1_] as QuestionItemView).removeEventListener("click",__itemClick);
-            (_itemArray[_loc1_] as QuestionItemView).dispose();
-            _loc1_++;
+            (_itemArray[i] as QuestionItemView).removeEventListener("click",__itemClick);
+            (_itemArray[i] as QuestionItemView).dispose();
+            i++;
          }
          _list.disposeAllChildren();
          _itemArray = [];

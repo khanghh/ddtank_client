@@ -40,14 +40,14 @@ package trainer.view
       {
          _bg = ComponentFactory.Instance.creatComponentByStylename("asset.core.levelRewardBg");
          addToContent(_bg);
-         var _loc2_:SelfInfo = PlayerManager.Instance.Self;
-         var _loc1_:Point = ComponentFactory.Instance.creatCustomObject("core.levelReward.posPlayer");
-         _playerView = CharactoryFactory.createCharacter(_loc2_,"show",true) as ShowCharacter;
+         var self:SelfInfo = PlayerManager.Instance.Self;
+         var p:Point = ComponentFactory.Instance.creatCustomObject("core.levelReward.posPlayer");
+         _playerView = CharactoryFactory.createCharacter(self,"show",true) as ShowCharacter;
          _playerView.doAction("win");
          _playerView.show(true,1,true);
-         _playerView.x = _loc1_.x;
-         _playerView.y = _loc1_.y;
-         if(!_loc2_.getSuitesHide() && _loc2_.getSuitsType() == 1)
+         _playerView.x = p.x;
+         _playerView.y = p.y;
+         if(!self.getSuitesHide() && self.getSuitsType() == 1)
          {
             var _loc3_:* = 1.3;
             _playerView.scaleY = _loc3_;
@@ -64,31 +64,30 @@ package trainer.view
          addToContent(_up);
       }
       
-      private function showLv(param1:int) : void
+      private function showLv(lv:int) : void
       {
-         var _loc6_:int = 0;
-         var _loc2_:* = null;
-         var _loc5_:Array = param1.toString().split("");
-         var _loc4_:int = _up.x + (_loc5_.length > 1?252:Number(266));
-         var _loc3_:int = _up.y - 49;
-         _loc6_ = 0;
-         while(_loc6_ < _loc5_.length)
+         var i:int = 0;
+         var bmp:* = null;
+         var arr:Array = lv.toString().split("");
+         var posX:int = _up.x + (arr.length > 1?252:Number(266));
+         var posY:int = _up.y - 49;
+         for(i = 0; i < arr.length; )
          {
-            _loc2_ = ComponentFactory.Instance.creatBitmap("asset.core.levelRewardRed_" + _loc5_[_loc6_]);
-            _loc2_.x = _loc4_ + _loc6_ * 25;
-            _loc2_.y = _loc3_;
-            addToContent(_loc2_);
-            _loc6_++;
+            bmp = ComponentFactory.Instance.creatBitmap("asset.core.levelRewardRed_" + arr[i]);
+            bmp.x = posX + i * 25;
+            bmp.y = posY;
+            addToContent(bmp);
+            i++;
          }
       }
       
-      public function show(param1:int) : void
+      public function show($level:int) : void
       {
-         if(param1 > 15)
+         if($level > 15)
          {
             return;
          }
-         level = param1;
+         level = $level;
          LayerManager.Instance.addToLayer(this,2,true,2);
       }
       
@@ -102,16 +101,16 @@ package trainer.view
          }
       }
       
-      public function set level(param1:int) : void
+      public function set level(value:int) : void
       {
-         if(param1 > 15)
+         if(value > 15)
          {
             return;
          }
          _item1 = ComponentFactory.Instance.creatCustomObject("core.levelRewardItem1");
-         _item1.setStyle(param1);
+         _item1.setStyle(value);
          addToContent(_item1);
-         showLv(param1);
+         showLv(value);
       }
       
       override public function dispose() : void

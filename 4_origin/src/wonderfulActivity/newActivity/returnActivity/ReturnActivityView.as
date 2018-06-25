@@ -62,10 +62,10 @@ package wonderfulActivity.newActivity.returnActivity
       
       private var _canSelect:Boolean;
       
-      public function ReturnActivityView(param1:int, param2:String)
+      public function ReturnActivityView(type:int, actId:String)
       {
-         _type = param1;
-         this.actId = param2;
+         _type = type;
+         this.actId = actId;
          super();
       }
       
@@ -143,37 +143,36 @@ package wonderfulActivity.newActivity.returnActivity
       
       private function initItem() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var item:* = null;
          if(!_xmlData)
          {
             return;
          }
-         var _loc1_:Array = _xmlData.giftbagArray;
-         _loc3_ = 0;
-         while(_loc3_ <= _loc1_.length - 1)
+         var arr:Array = _xmlData.giftbagArray;
+         for(i = 0; i <= arr.length - 1; )
          {
-            _loc2_ = new ReturnListItem(_type,_loc3_ % 2,actId);
-            _loc2_.setData(_xmlData.desc,_loc1_[_loc3_],_canSelect);
-            _rightItemList.push(_loc2_);
-            _vbox.addChild(_loc2_);
-            _loc3_++;
+            item = new ReturnListItem(_type,i % 2,actId);
+            item.setData(_xmlData.desc,arr[i],_canSelect);
+            _rightItemList.push(item);
+            _vbox.addChild(item);
+            i++;
          }
          _scrollPanel.invalidateViewport();
          refresh();
       }
       
-      private function checkReward(param1:Array) : Boolean
+      private function checkReward(giftBagArr:Array) : Boolean
       {
          var _loc7_:int = 0;
-         var _loc6_:* = param1;
-         for each(var _loc2_ in param1)
+         var _loc6_:* = giftBagArr;
+         for each(var giftInfo in giftBagArr)
          {
             var _loc5_:int = 0;
-            var _loc4_:* = _loc2_.giftRewardArr;
-            for each(var _loc3_ in _loc2_.giftRewardArr)
+            var _loc4_:* = giftInfo.giftRewardArr;
+            for each(var info in giftInfo.giftRewardArr)
             {
-               if(_loc3_.rewardType != 0)
+               if(info.rewardType != 0)
                {
                   return true;
                }
@@ -184,12 +183,11 @@ package wonderfulActivity.newActivity.returnActivity
       
       public function refresh() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ <= _rightItemList.length - 1)
+         var i:int = 0;
+         for(i = 0; i <= _rightItemList.length - 1; )
          {
-            (_rightItemList[_loc1_] as ReturnListItem).setStatus(_statusArr,_giftInfoDic);
-            _loc1_++;
+            (_rightItemList[i] as ReturnListItem).setStatus(_statusArr,_giftInfoDic);
+            i++;
          }
       }
       
@@ -207,12 +205,12 @@ package wonderfulActivity.newActivity.returnActivity
       private function returnTimerHander() : void
       {
          nowDate = TimeManager.Instance.Now();
-         var _loc1_:String = WonderfulActivityManager.Instance.getTimeDiff(endDate,nowDate);
+         var str:String = WonderfulActivityManager.Instance.getTimeDiff(endDate,nowDate);
          if(_timerTxt)
          {
-            _timerTxt.text = _loc1_;
+            _timerTxt.text = str;
          }
-         if(_loc1_ == "0")
+         if(str == "0")
          {
             dispose();
             WonderfulActivityManager.Instance.delTimerFun("returnActivity");
@@ -250,7 +248,7 @@ package wonderfulActivity.newActivity.returnActivity
          return this;
       }
       
-      public function setState(param1:int, param2:int) : void
+      public function setState(type:int, id:int) : void
       {
       }
       

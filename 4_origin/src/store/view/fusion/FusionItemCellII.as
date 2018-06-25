@@ -19,13 +19,13 @@ package store.view.fusion
       
       private var _cellBg:StoneCellFrame;
       
-      public function FusionItemCellII(param1:int)
+      public function FusionItemCellII($index:int)
       {
-         var _loc2_:Sprite = new Sprite();
+         var bg:Sprite = new Sprite();
          _cellBg = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreIIFusionBG.EquipmentCell");
          _cellBg.label = LanguageMgr.GetTranslation("store.Fusion.FusionCellText");
-         _loc2_.addChild(_cellBg);
-         super(_loc2_,param1);
+         bg.addChild(_cellBg);
+         super(bg,$index);
          setContentSize(77,77);
          PicPos = new Point(25,25);
       }
@@ -42,31 +42,31 @@ package store.view.fusion
          addChild(_tbxCount);
       }
       
-      override public function dragDrop(param1:DragEffect) : void
+      override public function dragDrop(effect:DragEffect) : void
       {
       }
       
-      override protected function updateSize(param1:Sprite) : void
+      override protected function updateSize(sp:Sprite) : void
       {
-         if(param1)
+         if(sp)
          {
-            param1.width = _contentWidth - 18;
-            param1.height = _contentHeight - 18;
+            sp.width = _contentWidth - 18;
+            sp.height = _contentHeight - 18;
             if(_picPos != null)
             {
-               param1.x = _picPos.x;
+               sp.x = _picPos.x;
             }
             else
             {
-               param1.x = Math.abs(param1.width - _contentWidth) / 2;
+               sp.x = Math.abs(sp.width - _contentWidth) / 2;
             }
             if(_picPos != null)
             {
-               param1.y = _picPos.y;
+               sp.y = _picPos.y;
             }
             else
             {
-               param1.y = Math.abs(param1.height - _contentHeight) / 2;
+               sp.y = Math.abs(sp.height - _contentHeight) / 2;
             }
          }
       }

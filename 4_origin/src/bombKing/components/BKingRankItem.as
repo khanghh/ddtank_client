@@ -73,19 +73,19 @@ package bombKing.components
          addEventListener("rollOut",__onOutHandler);
       }
       
-      protected function __onOutHandler(param1:MouseEvent) : void
+      protected function __onOutHandler(event:MouseEvent) : void
       {
          _backOverImg.visible = false;
       }
       
-      protected function __onOverHanlder(param1:MouseEvent) : void
+      protected function __onOverHanlder(event:MouseEvent) : void
       {
          _backOverImg.visible = true;
       }
       
-      public function set info(param1:BKingRankInfo) : void
+      public function set info(info:BKingRankInfo) : void
       {
-         _info = param1;
+         _info = info;
          setRankNum(_info.place);
          addNickName();
          _areaName.text = _info.areaName;
@@ -94,7 +94,7 @@ package bombKing.components
       
       private function addNickName() : void
       {
-         var _loc1_:* = null;
+         var textFormat:* = null;
          if(_vipName)
          {
             _vipName.dispose();
@@ -104,10 +104,10 @@ package bombKing.components
          if(_info.isVIP)
          {
             _vipName = VipController.instance.getVipNameTxt(1,1);
-            _loc1_ = new TextFormat();
-            _loc1_.align = "center";
-            _loc1_.bold = true;
-            _vipName.textField.defaultTextFormat = _loc1_;
+            textFormat = new TextFormat();
+            textFormat.align = "center";
+            textFormat.bold = true;
+            _vipName.textField.defaultTextFormat = textFormat;
             _vipName.textSize = 16;
             _vipName.textField.width = _nameTxt.width;
             _vipName.x = _nameTxt.x;
@@ -121,19 +121,19 @@ package bombKing.components
          }
       }
       
-      private function setRankNum(param1:int) : void
+      private function setRankNum(num:int) : void
       {
-         if(param1 <= 3)
+         if(num <= 3)
          {
             _placeTxt.visible = false;
             _topThreeIcon.visible = true;
-            _topThreeIcon.setFrame(param1);
+            _topThreeIcon.setFrame(num);
          }
          else
          {
             _placeTxt.visible = true;
             _topThreeIcon.visible = false;
-            _placeTxt.text = param1 + "th";
+            _placeTxt.text = num + "th";
          }
       }
       

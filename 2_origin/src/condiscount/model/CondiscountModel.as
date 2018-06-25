@@ -17,9 +17,9 @@ package condiscount.model
       
       public var isOpen:Boolean;
       
-      public function CondiscountModel(param1:IEventDispatcher = null)
+      public function CondiscountModel(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
    }
 }

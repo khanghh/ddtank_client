@@ -10,9 +10,9 @@ package fightLib.script
    {
        
       
-      public function FightLibGuideScripit(param1:Object)
+      public function FightLibGuideScripit(host:Object)
       {
-         super(param1);
+         super(host);
       }
       
       private function firstEnterFrameClose() : void
@@ -25,17 +25,17 @@ package fightLib.script
       
       override protected function initializeScript() : void
       {
-         var _loc1_:PopupHFrameCommand = new PopupHFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.FightLibGuideScripit.welcome"),LanguageMgr.GetTranslation("ok"),firstEnterFrameClose);
-         _commonds.push(_loc1_);
-         var _loc2_:WaittingCommand = new WaittingCommand(null);
-         _loc2_.excuteFunArr.push(_host.showGuide1 as Function);
-         var _loc3_:WaittingCommand = new WaittingCommand(null);
-         _loc3_.excuteFunArr.push(_host.showGuide2 as Function);
-         var _loc4_:ImmediateCommand = new ImmediateCommand();
-         _loc4_.excuteFunArr.push(_host.hideGuide as Function);
-         _commonds.push(_loc2_);
-         _commonds.push(_loc3_);
-         _commonds.push(_loc4_);
+         var command1:PopupHFrameCommand = new PopupHFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.FightLibGuideScripit.welcome"),LanguageMgr.GetTranslation("ok"),firstEnterFrameClose);
+         _commonds.push(command1);
+         var command2:WaittingCommand = new WaittingCommand(null);
+         command2.excuteFunArr.push(_host.showGuide1 as Function);
+         var command3:WaittingCommand = new WaittingCommand(null);
+         command3.excuteFunArr.push(_host.showGuide2 as Function);
+         var command4:ImmediateCommand = new ImmediateCommand();
+         command4.excuteFunArr.push(_host.hideGuide as Function);
+         _commonds.push(command2);
+         _commonds.push(command3);
+         _commonds.push(command4);
          super.initializeScript();
       }
    }

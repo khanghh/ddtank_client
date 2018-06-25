@@ -12,21 +12,21 @@ package com.pickgliss.loader
       
       public var className:String;
       
-      public function CodeModuleLoader(param1:int, param2:String, param3:ApplicationDomain)
+      public function CodeModuleLoader(id:int, url:String, domain:ApplicationDomain)
       {
-         super(param1,param2,param3);
+         super(id,url,domain);
       }
       
       override protected function fireCompleteEvent() : void
       {
-         var _loc1_:* = undefined;
+         var code:* = undefined;
          if(!LoadClassName.hasKey(className))
          {
-            _loc1_ = ClassUtils.CreatInstance(className);
-            if(_loc1_)
+            code = ClassUtils.CreatInstance(className);
+            if(code)
             {
                CodeLoader.addLoadURL("4.png");
-               _loc1_["setup"]();
+               code["setup"]();
                LoadClassName.add(className,true);
             }
             else

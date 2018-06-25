@@ -105,51 +105,51 @@ package uiUtils
          }
       }
       
-      public function set maxPage(param1:int) : void
+      public function set maxPage(value:int) : void
       {
-         _maxPage = param1;
+         _maxPage = value;
          _pageText.text = getCurrentPageViewToString();
       }
       
-      public function set firstButtonStyle(param1:String) : void
+      public function set firstButtonStyle(value:String) : void
       {
-         _firstBtnStyle = param1;
+         _firstBtnStyle = value;
          onPropertiesChanged("firstBtn");
       }
       
-      public function set prevButtonStyle(param1:String) : void
+      public function set prevButtonStyle(value:String) : void
       {
-         _prevBtnStyle = param1;
+         _prevBtnStyle = value;
          onPropertiesChanged("prevBtn");
       }
       
-      public function set nextButtonStyle(param1:String) : void
+      public function set nextButtonStyle(value:String) : void
       {
-         _nextBtnStyle = param1;
+         _nextBtnStyle = value;
          onPropertiesChanged("nextBtn");
       }
       
-      public function set lastButtonStyle(param1:String) : void
+      public function set lastButtonStyle(value:String) : void
       {
-         _lastBtnStyle = param1;
+         _lastBtnStyle = value;
          onPropertiesChanged("lastBtn");
       }
       
-      public function set pageTextStyle(param1:String) : void
+      public function set pageTextStyle(value:String) : void
       {
-         _pageTextStyle = param1;
+         _pageTextStyle = value;
          onPropertiesChanged("pageText");
       }
       
-      public function set pageImageStyle(param1:String) : void
+      public function set pageImageStyle(value:String) : void
       {
-         _pageImageStyle = param1;
+         _pageImageStyle = value;
          onPropertiesChanged("pageImage");
       }
       
-      public function set spacing(param1:int) : void
+      public function set spacing(value:int) : void
       {
-         _spacing = param1;
+         _spacing = value;
          onPropertiesChanged("spacing");
       }
       
@@ -158,10 +158,10 @@ package uiUtils
          return _spacing;
       }
       
-      private function __onClick(param1:MouseEvent) : void
+      private function __onClick(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = e.currentTarget;
          if(_firstBtn !== _loc2_)
          {
             if(_prevBtn !== _loc2_)
@@ -302,23 +302,23 @@ package uiUtils
       
       public function arrange() : void
       {
-         var _loc1_:int = 0;
+         var xpos:int = 0;
          if(_spacing > 0)
          {
             if(_firstBtn)
             {
                _firstBtn.x = 0;
-               _loc1_ = _loc1_ + _firstBtn.width + spacing;
+               xpos = xpos + _firstBtn.width + spacing;
             }
             if(_prevBtn)
             {
-               _prevBtn.x = _loc1_;
-               _loc1_ = _loc1_ + _prevBtn.width + spacing;
+               _prevBtn.x = xpos;
+               xpos = xpos + _prevBtn.width + spacing;
             }
             if(_pageImage)
             {
-               _pageImage.x = _loc1_;
-               _loc1_ = _loc1_ + _pageImage.width + spacing;
+               _pageImage.x = xpos;
+               xpos = xpos + _pageImage.width + spacing;
             }
             if(_pageText)
             {
@@ -328,25 +328,25 @@ package uiUtils
                }
                else
                {
-                  _pageText.x = _loc1_;
-                  _loc1_ = _loc1_ + _pageText.width + spacing;
+                  _pageText.x = xpos;
+                  xpos = xpos + _pageText.width + spacing;
                }
             }
             if(_nextBtn)
             {
-               _nextBtn.x = _loc1_;
-               _loc1_ = _loc1_ + _nextBtn.width + spacing;
+               _nextBtn.x = xpos;
+               xpos = xpos + _nextBtn.width + spacing;
             }
             if(_lastBtn)
             {
-               _lastBtn.x = _loc1_;
+               _lastBtn.x = xpos;
             }
          }
       }
       
-      public function set currentPage(param1:int) : void
+      public function set currentPage(value:int) : void
       {
-         _currentPage = param1;
+         _currentPage = value;
          _pageText.text = getCurrentPageViewToString();
       }
       
@@ -360,14 +360,14 @@ package uiUtils
          return _isLoop;
       }
       
-      public function set isLoop(param1:Boolean) : void
+      public function set isLoop(value:Boolean) : void
       {
-         _isLoop = param1;
+         _isLoop = value;
       }
       
-      public function set isSimple(param1:Boolean) : void
+      public function set isSimple(value:Boolean) : void
       {
-         if(param1)
+         if(value)
          {
             _firstBtnStyle = "";
             _lastBtnStyle = "";
@@ -376,9 +376,9 @@ package uiUtils
          }
       }
       
-      public function set isDefault(param1:Boolean) : void
+      public function set isDefault(value:Boolean) : void
       {
-         if(param1)
+         if(value)
          {
             beginChanges();
             firstButtonStyle = _firstBtnStyle;
@@ -393,10 +393,10 @@ package uiUtils
       
       private function getCurrentPageViewToString() : String
       {
-         var _loc3_:int = _currentPage == 0?1:_currentPage;
-         var _loc1_:int = _maxPage == 0?1:_maxPage;
-         var _loc2_:String = _loc3_ + "/" + _loc1_;
-         return _loc2_;
+         var current:int = _currentPage == 0?1:_currentPage;
+         var max:int = _maxPage == 0?1:_maxPage;
+         var str:String = current + "/" + max;
+         return str;
       }
       
       public function get firstBtn() : SimpleBitmapButton

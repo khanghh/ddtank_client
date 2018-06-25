@@ -12,9 +12,9 @@ package flashP2P.stream
       
       private var _playerID:int;
       
-      public function SendStream(param1:NetConnection, param2:String = "connectToFMS")
+      public function SendStream(connection:NetConnection, peerID:String = "connectToFMS")
       {
-         super(param1,param2);
+         super(connection,peerID);
          addEventListener("netStatus",__onStreamHandler);
          init();
       }
@@ -24,9 +24,9 @@ package flashP2P.stream
          publish("DDT-P2P-PUBLISH-NAME");
       }
       
-      protected function __onStreamHandler(param1:NetStatusEvent) : void
+      protected function __onStreamHandler(event:NetStatusEvent) : void
       {
-         var _loc2_:* = param1.info.code;
+         var _loc2_:* = event.info.code;
          if("NetStream.Publish.Start" !== _loc2_)
          {
          }

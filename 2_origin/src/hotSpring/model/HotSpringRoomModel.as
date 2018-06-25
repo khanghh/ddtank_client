@@ -48,9 +48,9 @@ package hotSpring.model
          return _roomSelf;
       }
       
-      public function set roomSelf(param1:HotSpringRoomInfo) : void
+      public function set roomSelf(value:HotSpringRoomInfo) : void
       {
-         _roomSelf = param1;
+         _roomSelf = value;
          dispatchEvent(new HotSpringRoomListEvent("roomCreate",_roomSelf));
       }
       
@@ -59,41 +59,41 @@ package hotSpring.model
          return _roomPlayerList;
       }
       
-      public function set roomPlayerList(param1:DictionaryData) : void
+      public function set roomPlayerList(value:DictionaryData) : void
       {
-         _roomPlayerList = param1;
+         _roomPlayerList = value;
       }
       
-      public function roomPlayerAddOrUpdate(param1:PlayerVO) : void
+      public function roomPlayerAddOrUpdate(playerVO:PlayerVO) : void
       {
-         if(param1.playerInfo.ID == PlayerManager.Instance.Self.ID)
+         if(playerVO.playerInfo.ID == PlayerManager.Instance.Self.ID)
          {
-            _selfVO = param1;
+            _selfVO = playerVO;
          }
-         if(_roomPlayerList[param1.playerInfo.ID])
+         if(_roomPlayerList[playerVO.playerInfo.ID])
          {
-            _roomPlayerList.add(param1.playerInfo.ID,param1);
-            dispatchEvent(new HotSpringRoomEvent("roomPlayerUpdate",param1));
+            _roomPlayerList.add(playerVO.playerInfo.ID,playerVO);
+            dispatchEvent(new HotSpringRoomEvent("roomPlayerUpdate",playerVO));
          }
          else
          {
-            _roomPlayerList.add(param1.playerInfo.ID,param1);
-            dispatchEvent(new HotSpringRoomEvent("roomPlayerAdd",param1));
+            _roomPlayerList.add(playerVO.playerInfo.ID,playerVO);
+            dispatchEvent(new HotSpringRoomEvent("roomPlayerAdd",playerVO));
          }
       }
       
-      public function roomPlayerRemove(param1:int) : void
+      public function roomPlayerRemove(playerID:int) : void
       {
          if(_roomPlayerList)
          {
-            _roomPlayerList.remove(param1);
+            _roomPlayerList.remove(playerID);
          }
-         dispatchEvent(new HotSpringRoomEvent("roomPlayerRemove",param1));
+         dispatchEvent(new HotSpringRoomEvent("roomPlayerRemove",playerID));
       }
       
-      public function set mapVO(param1:MapVO) : void
+      public function set mapVO(value:MapVO) : void
       {
-         _mapVO = param1;
+         _mapVO = value;
       }
       
       public function get mapVO() : MapVO
@@ -106,19 +106,19 @@ package hotSpring.model
          return _selfVO;
       }
       
-      public function set selfVO(param1:PlayerVO) : void
+      public function set selfVO(value:PlayerVO) : void
       {
-         _selfVO = param1;
+         _selfVO = value;
       }
       
-      public function getExpUpValue(param1:int, param2:int, param3:int = 0) : int
+      public function getExpUpValue(roomType:int, playerLevel:int, vipLevel:int = 0) : int
       {
-         var _loc4_:int = 0;
-         if(!(int(param1) - 1))
+         var hourValue:int = 0;
+         if(!(int(roomType) - 1))
          {
-            _loc4_ = ServerConfigManager.instance.HotSpringExp[param2];
+            hourValue = ServerConfigManager.instance.HotSpringExp[playerLevel];
          }
-         return Math.round(_loc4_ / 60 * (1 + param3 * 0.1));
+         return Math.round(hourValue / 60 * (1 + vipLevel * 0.1));
       }
       
       public function dispose() : void

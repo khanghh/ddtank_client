@@ -190,13 +190,13 @@ package cloudBuyLottery.view
          CloudBuyLotteryManager.Instance.removeEventListener("frmeupdate",__frmeUpdateInfo);
       }
       
-      override public function set width(param1:Number) : void
+      override public function set width(w:Number) : void
       {
-         .super.width = param1;
-         _infoWidth = param1;
+         .super.width = w;
+         _infoWidth = w;
       }
       
-      private function __updateInfo(param1:Event) : void
+      private function __updateInfo(e:Event) : void
       {
          timesNum();
          luckGoodsCell(CloudBuyLotteryManager.Instance.model.templateId);
@@ -205,25 +205,25 @@ package cloudBuyLottery.view
          _chanceTxt.text = CloudBuyLotteryManager.Instance.model.luckCount + "/" + CloudBuyLotteryManager.Instance.model.maxNum;
          _luckNumTxt.text = CloudBuyLotteryManager.Instance.model.luckCount.toString();
          _numberKTxt.text = CloudBuyLotteryManager.Instance.model.remainTimes.toString();
-         var _loc2_:int = CloudBuyLotteryManager.Instance.model.maxNum - CloudBuyLotteryManager.Instance.model.currentNum;
-         CloudBuyLotteryManager.Instance.expBar.initBar(_loc2_,CloudBuyLotteryManager.Instance.model.maxNum);
+         var num:int = CloudBuyLotteryManager.Instance.model.maxNum - CloudBuyLotteryManager.Instance.model.currentNum;
+         CloudBuyLotteryManager.Instance.expBar.initBar(num,CloudBuyLotteryManager.Instance.model.maxNum);
       }
       
-      private function __frmeUpdateInfo(param1:Event) : void
+      private function __frmeUpdateInfo(e:Event) : void
       {
          _numberKTxt.text = CloudBuyLotteryManager.Instance.model.remainTimes.toString();
       }
       
-      private function __onLogClick(param1:MouseEvent) : void
+      private function __onLogClick(evt:MouseEvent) : void
       {
-         var _loc2_:int = 0;
+         var totalWidth:int = 0;
          if(!logFrameFlag)
          {
             winningLogFrame = ComponentFactory.Instance.creatComponentByStylename("winningLogFrame.frame");
             winningLogFrame.addEventListener("response",__onclose);
             addChildAt(winningLogFrame,0);
-            _loc2_ = _infoWidth + winningLogFrame.width;
-            TweenLite.to(this,0.8,{"x":(StageReferance.stage.stageWidth - _loc2_) / 2});
+            totalWidth = _infoWidth + winningLogFrame.width;
+            TweenLite.to(this,0.8,{"x":(StageReferance.stage.stageWidth - totalWidth) / 2});
             TweenLite.to(winningLogFrame,0.8,{"x":_infoWidth});
             logFrameFlag = true;
          }
@@ -247,20 +247,20 @@ package cloudBuyLottery.view
          }
       }
       
-      private function releaseRight(param1:Frame) : void
+      private function releaseRight(frame:Frame) : void
       {
          logFrameFlag = false;
-         if(param1)
+         if(frame)
          {
-            param1.removeEventListener("response",__onclose);
+            frame.removeEventListener("response",__onclose);
          }
-         ObjectUtils.disposeObject(param1);
+         ObjectUtils.disposeObject(frame);
       }
       
-      protected function __onclose(param1:FrameEvent) : void
+      protected function __onclose(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -273,7 +273,7 @@ package cloudBuyLottery.view
          }
       }
       
-      private function __onBuyClick(param1:MouseEvent) : void
+      private function __onBuyClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(!CloudBuyLotteryManager.Instance.model.isGame)
@@ -316,22 +316,22 @@ package cloudBuyLottery.view
          showMoneyNum();
       }
       
-      private function changeMaxHandler(param1:MouseEvent) : void
+      private function changeMaxHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _inputText.text = _buyNumTxt.text;
          showMoneyNum();
       }
       
-      private function inputTextChangeHandler(param1:Event) : void
+      private function inputTextChangeHandler(event:Event) : void
       {
-         var _loc3_:int = _buyNumTxt.text;
-         var _loc2_:int = _inputText.text;
-         if(_loc2_ > _loc3_)
+         var maxNum:int = _buyNumTxt.text;
+         var num:int = _inputText.text;
+         if(num > maxNum)
          {
-            _inputText.text = _loc3_.toString();
+            _inputText.text = maxNum.toString();
          }
-         else if(_loc2_ < 1)
+         else if(num < 1)
          {
             _inputText.text = "1";
          }
@@ -340,17 +340,17 @@ package cloudBuyLottery.view
       
       private function showMoneyNum() : void
       {
-         var _loc1_:int = int(_inputText.text) * CloudBuyLotteryManager.Instance.model.buyMoney;
-         _moneyNumText.htmlText = LanguageMgr.GetTranslation("CloudBuyLotteryFrame.moneyNumText.LG",_loc1_);
+         var money:int = int(_inputText.text) * CloudBuyLotteryManager.Instance.model.buyMoney;
+         _moneyNumText.htmlText = LanguageMgr.GetTranslation("CloudBuyLotteryFrame.moneyNumText.LG",money);
       }
       
-      private function __onResponse(param1:FrameEvent) : void
+      private function __onResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:int = _inputText.text;
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var currentValue:int = _inputText.text;
+         if(evt.responseCode == 2 || evt.responseCode == 3)
          {
-            SocketManager.Instance.out.sendYGBuyGoods(_loc2_);
+            SocketManager.Instance.out.sendYGBuyGoods(currentValue);
          }
          if(_tipsframe)
          {
@@ -361,7 +361,7 @@ package cloudBuyLottery.view
          }
       }
       
-      private function __onJuBaoClick(param1:MouseEvent) : void
+      private function __onJuBaoClick(evt:MouseEvent) : void
       {
          if(luckLooteryFrame != null)
          {
@@ -375,24 +375,24 @@ package cloudBuyLottery.view
          }
       }
       
-      private function luckGoodsCell(param1:int) : void
+      private function luckGoodsCell(id:int) : void
       {
-         var _loc3_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(param1) as ItemTemplateInfo;
-         var _loc2_:InventoryItemInfo = new InventoryItemInfo();
-         ObjectUtils.copyProperties(_loc2_,_loc3_);
-         _loc2_.ValidDate = CloudBuyLotteryManager.Instance.model.validDate;
-         _loc2_.StrengthenLevel = CloudBuyLotteryManager.Instance.model.property[0];
-         _loc2_.AttackCompose = CloudBuyLotteryManager.Instance.model.property[1];
-         _loc2_.DefendCompose = CloudBuyLotteryManager.Instance.model.property[2];
-         _loc2_.LuckCompose = CloudBuyLotteryManager.Instance.model.property[3];
-         _loc2_.AgilityCompose = CloudBuyLotteryManager.Instance.model.property[4];
-         _loc2_.IsBinds = true;
+         var itemInfo:ItemTemplateInfo = ItemManager.Instance.getTemplateById(id) as ItemTemplateInfo;
+         var tInfo:InventoryItemInfo = new InventoryItemInfo();
+         ObjectUtils.copyProperties(tInfo,itemInfo);
+         tInfo.ValidDate = CloudBuyLotteryManager.Instance.model.validDate;
+         tInfo.StrengthenLevel = CloudBuyLotteryManager.Instance.model.property[0];
+         tInfo.AttackCompose = CloudBuyLotteryManager.Instance.model.property[1];
+         tInfo.DefendCompose = CloudBuyLotteryManager.Instance.model.property[2];
+         tInfo.LuckCompose = CloudBuyLotteryManager.Instance.model.property[3];
+         tInfo.AgilityCompose = CloudBuyLotteryManager.Instance.model.property[4];
+         tInfo.IsBinds = true;
          if(_cell != null)
          {
             ObjectUtils.disposeObject(_cell);
             _cell = null;
          }
-         _cell = new BagCell(0,_loc2_);
+         _cell = new BagCell(0,tInfo);
          PositionUtils.setPos(_cell,"CloudBuyLotteryFrame.cellPos");
          _cell.setContentSize(78,78);
          _cell.setCount(CloudBuyLotteryManager.Instance.model.templatedIdCount);
@@ -400,59 +400,58 @@ package cloudBuyLottery.view
          addToContent(_cell);
       }
       
-      private function buyGoodsCell(param1:Array) : void
+      private function buyGoodsCell(id:Array) : void
       {
-         var _loc7_:int = 0;
-         var _loc5_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:int = 0;
-         var _loc6_:String = "";
-         _loc7_ = 0;
-         while(_loc7_ < param1.length)
+         var i:int = 0;
+         var itemInfo:* = null;
+         var tInfo:* = null;
+         var count:int = 0;
+         var goodsName:String = "";
+         for(i = 0; i < id.length; )
          {
-            _loc5_ = ItemManager.Instance.getTemplateById(param1[_loc7_]) as ItemTemplateInfo;
-            _loc3_ = new InventoryItemInfo();
-            ObjectUtils.copyProperties(_loc3_,_loc5_);
-            _loc2_ = CloudBuyLotteryManager.Instance.model.buyGoodsCountArray[_loc7_];
-            _loc6_ = _loc6_ + LanguageMgr.GetTranslation("cloudBuyLotteryFrame.buyGoodsTip",_loc3_.Name,_loc2_);
-            _loc7_++;
+            itemInfo = ItemManager.Instance.getTemplateById(id[i]) as ItemTemplateInfo;
+            tInfo = new InventoryItemInfo();
+            ObjectUtils.copyProperties(tInfo,itemInfo);
+            count = CloudBuyLotteryManager.Instance.model.buyGoodsCountArray[i];
+            goodsName = goodsName + LanguageMgr.GetTranslation("cloudBuyLotteryFrame.buyGoodsTip",tInfo.Name,count);
+            i++;
          }
          _buyGoodsSprite = ComponentFactory.Instance.creatComponentByStylename("cloudBuyLotteryFrame.tipData");
-         _buyGoodsSprite.tipData = _loc6_.substring(0,_loc6_.length - 1);
+         _buyGoodsSprite.tipData = goodsName.substring(0,goodsName.length - 1);
          _buyGoodsSprite.buttonMode = true;
-         var _loc4_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.IndividualLottery.goods");
-         _buyGoodsSprite.addChild(_loc4_);
+         var _goodsImg:Bitmap = ComponentFactory.Instance.creatBitmap("asset.IndividualLottery.goods");
+         _buyGoodsSprite.addChild(_goodsImg);
          addToContent(_buyGoodsSprite);
       }
       
-      private function __updateTimes(param1:TimerEvent) : void
+      private function __updateTimes(evt:TimerEvent) : void
       {
          timesNum();
       }
       
       private function timesNum() : void
       {
-         var _loc3_:int = 0;
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         var _loc1_:int = 0;
-         var _loc6_:int = 0;
-         var _loc2_:int = 0;
+         var hoursTen:int = 0;
+         var hoursBit:int = 0;
+         var minutesTen:int = 0;
+         var minutesBit:int = 0;
+         var secondsTen:int = 0;
+         var secondsBit:int = 0;
          if(CloudBuyLotteryManager.Instance.model.isGame)
          {
             timeArray = CloudBuyLotteryManager.Instance.refreshTimePlayTxt().split(":");
-            _loc3_ = CloudBuyLotteryManager.Instance.returnTen(timeArray[0]);
-            _loc5_ = CloudBuyLotteryManager.Instance.returnABit(timeArray[0]);
-            _loc4_ = CloudBuyLotteryManager.Instance.returnTen(timeArray[1]);
-            _loc1_ = CloudBuyLotteryManager.Instance.returnABit(timeArray[1]);
-            _loc6_ = CloudBuyLotteryManager.Instance.returnTen(timeArray[2]);
-            _loc2_ = CloudBuyLotteryManager.Instance.returnABit(timeArray[2]);
-            showTimes.hourTen.gotoAndStop(_loc3_);
-            showTimes.hourBit.gotoAndStop(_loc5_);
-            showTimes.minutesTen.gotoAndStop(_loc4_);
-            showTimes.minutesBit.gotoAndStop(_loc1_);
-            showTimes.secondsTen.gotoAndStop(_loc6_);
-            showTimes.secondsBit.gotoAndStop(_loc2_);
+            hoursTen = CloudBuyLotteryManager.Instance.returnTen(timeArray[0]);
+            hoursBit = CloudBuyLotteryManager.Instance.returnABit(timeArray[0]);
+            minutesTen = CloudBuyLotteryManager.Instance.returnTen(timeArray[1]);
+            minutesBit = CloudBuyLotteryManager.Instance.returnABit(timeArray[1]);
+            secondsTen = CloudBuyLotteryManager.Instance.returnTen(timeArray[2]);
+            secondsBit = CloudBuyLotteryManager.Instance.returnABit(timeArray[2]);
+            showTimes.hourTen.gotoAndStop(hoursTen);
+            showTimes.hourBit.gotoAndStop(hoursBit);
+            showTimes.minutesTen.gotoAndStop(minutesTen);
+            showTimes.minutesBit.gotoAndStop(minutesBit);
+            showTimes.secondsTen.gotoAndStop(secondsTen);
+            showTimes.secondsBit.gotoAndStop(secondsBit);
          }
          else
          {
@@ -471,19 +470,19 @@ package cloudBuyLottery.view
          }
       }
       
-      protected function __onHelpClick(param1:MouseEvent) : void
+      protected function __onHelpClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:DisplayObject = ComponentFactory.Instance.creat("CloudBuyLotteryFrame.HelpPrompt");
-         var _loc3_:HelpFrame = ComponentFactory.Instance.creat("CloudBuyLotteryFrame.HelpFrame");
-         _loc3_.setView(_loc2_);
-         _loc3_.titleText = LanguageMgr.GetTranslation("store.view.HelpButtonText");
-         LayerManager.Instance.addToLayer(_loc3_,1,true,1);
+         var helpBd:DisplayObject = ComponentFactory.Instance.creat("CloudBuyLotteryFrame.HelpPrompt");
+         var helpPage:HelpFrame = ComponentFactory.Instance.creat("CloudBuyLotteryFrame.HelpFrame");
+         helpPage.setView(helpBd);
+         helpPage.titleText = LanguageMgr.GetTranslation("store.view.HelpButtonText");
+         LayerManager.Instance.addToLayer(helpPage,1,true,1);
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();

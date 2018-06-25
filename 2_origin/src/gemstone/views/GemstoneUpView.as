@@ -121,10 +121,10 @@ package gemstone.views
       
       private var _btnContent:Sprite;
       
-      public function GemstoneUpView(param1:SelfInfo)
+      public function GemstoneUpView(_info:SelfInfo)
       {
          _dataList = new Vector.<InventoryItemInfo>();
-         _selfInfo = param1;
+         _selfInfo = _info;
          super();
          initView();
       }
@@ -141,12 +141,12 @@ package gemstone.views
          _gemstoneInfoView.x = 376;
          _gemstoneInfoView.y = 15;
          addChild(_gemstoneInfoView);
-         var _loc3_:InventoryItemInfo = _selfInfo == null?null:_selfInfo.Bag.getItemAt(2);
+         var info:InventoryItemInfo = _selfInfo == null?null:_selfInfo.Bag.getItemAt(2);
          _gemstoneCriView = new GemstoneCriView();
          _gemstoneCriView.x = 232;
          _gemstoneCriView.y = 209;
          _gemstoneCriView.staticDataList = GemstoneManager.Instance.redInfoList;
-         _gemstoneCriView.upDataIcon(_loc3_);
+         _gemstoneCriView.upDataIcon(info);
          _gemstoneCriView.initFigSkin("gemstone.attckBig");
          addChild(_gemstoneCriView);
          _gemstoneCriView.resetGemstoneList(GemstoneManager.Instance.hariList);
@@ -220,9 +220,9 @@ package gemstone.views
          addChild(_selectBtn);
          visibleGroup1(false);
          visibleGroup2(true);
-         var _loc2_:Sprite = new Sprite();
-         var _loc1_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(100100);
-         _bagitem = new BagCell(0,_loc1_);
+         var bg:Sprite = new Sprite();
+         var stoneInfo:ItemTemplateInfo = ItemManager.Instance.getTemplateById(100100);
+         _bagitem = new BagCell(0,stoneInfo);
          _bagitem.x = 32;
          _bagitem.y = 280;
          addChild(_bagitem);
@@ -239,7 +239,7 @@ package gemstone.views
          _btnContent.addChild(_seletedBitMap);
       }
       
-      protected function updateCount(param1:BagEvent) : void
+      protected function updateCount(event:BagEvent) : void
       {
          upDatafitCount();
       }
@@ -250,27 +250,27 @@ package gemstone.views
          {
             return;
          }
-         var _loc1_:BagInfo = _selfInfo.getBag(1);
-         var _loc2_:int = _loc1_.getItemCountByTemplateId(100100);
-         _loc2_ = _loc2_ + _loc1_.getItemCountByTemplateId(201264);
-         _bagitem.setCount(_loc2_);
+         var bagInfo:BagInfo = _selfInfo.getBag(1);
+         var conut:int = bagInfo.getItemCountByTemplateId(100100);
+         conut = conut + bagInfo.getItemCountByTemplateId(201264);
+         _bagitem.setCount(conut);
       }
       
-      private function visibleGroup1(param1:Boolean) : void
+      private function visibleGroup1(bool:Boolean) : void
       {
-         _mouseClick.visible = param1;
-         _selectTxt.visible = param1;
-         _gemstoneInfoView.visible = param1;
+         _mouseClick.visible = bool;
+         _selectTxt.visible = bool;
+         _gemstoneInfoView.visible = bool;
       }
       
-      private function visibleGroup2(param1:Boolean) : void
+      private function visibleGroup2(bool:Boolean) : void
       {
-         _txt1.visible = param1;
-         _txt2.visible = param1;
-         _txt4.visible = param1;
-         _expBar.visible = param1;
-         _selectBtn.visible = param1;
-         _gemstoneInfoView.visible = param1;
+         _txt1.visible = bool;
+         _txt2.visible = bool;
+         _txt4.visible = bool;
+         _expBar.visible = bool;
+         _selectBtn.visible = bool;
+         _gemstoneInfoView.visible = bool;
       }
       
       public function get expBar() : ExpBar
@@ -278,7 +278,7 @@ package gemstone.views
          return _expBar;
       }
       
-      protected function selectHander(param1:MouseEvent) : void
+      protected function selectHander(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_selectBtn.selected)
@@ -291,89 +291,89 @@ package gemstone.views
          }
       }
       
-      protected function btnClickHander(param1:MouseEvent) : void
+      protected function btnClickHander(event:MouseEvent) : void
       {
-         var _loc6_:* = null;
-         var _loc3_:* = null;
-         var _loc5_:* = undefined;
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
+         var info:* = null;
+         var data:* = null;
+         var gemstoneList:* = undefined;
+         var place:int = 0;
+         var str:* = null;
          SoundManager.instance.play("008");
          visibleGroup1(false);
          visibleGroup2(true);
-         if(param1.currentTarget.id == 1)
+         if(event.currentTarget.id == 1)
          {
-            _loc6_ = _selfInfo == null?null:_selfInfo.Bag.getItemAt(2);
+            info = _selfInfo == null?null:_selfInfo.Bag.getItemAt(2);
             if(GemstoneManager.Instance.hariList.length > 0)
             {
-               _loc5_ = GemstoneManager.Instance.hariList;
+               gemstoneList = GemstoneManager.Instance.hariList;
                _fightSpiritId = GemstoneManager.Instance.hariList[0].fightSpiritId;
             }
             _equipPlayce = 2;
-            _loc2_ = "gemstone.attckBig";
+            str = "gemstone.attckBig";
             GemstoneManager.Instance.curstatiDataList = GemstoneManager.Instance.redInfoList;
          }
-         else if(param1.currentTarget.id == 2)
+         else if(event.currentTarget.id == 2)
          {
-            _loc6_ = _selfInfo == null?null:_selfInfo.Bag.getItemAt(3);
+            info = _selfInfo == null?null:_selfInfo.Bag.getItemAt(3);
             if(GemstoneManager.Instance.faceList.length > 0)
             {
-               _loc5_ = GemstoneManager.Instance.faceList;
+               gemstoneList = GemstoneManager.Instance.faceList;
                _fightSpiritId = GemstoneManager.Instance.faceList[0].fightSpiritId;
             }
             _equipPlayce = 3;
-            _loc2_ = "gemstone.luckyBig";
+            str = "gemstone.luckyBig";
             GemstoneManager.Instance.curstatiDataList = GemstoneManager.Instance.yelInfoList;
          }
-         else if(param1.currentTarget.id == 3)
+         else if(event.currentTarget.id == 3)
          {
-            _loc6_ = _selfInfo == null?null:_selfInfo.Bag.getItemAt(5);
+            info = _selfInfo == null?null:_selfInfo.Bag.getItemAt(5);
             if(GemstoneManager.Instance.glassList.length > 0)
             {
-               _loc5_ = GemstoneManager.Instance.glassList;
+               gemstoneList = GemstoneManager.Instance.glassList;
                _fightSpiritId = GemstoneManager.Instance.glassList[0].fightSpiritId;
             }
             _equipPlayce = 5;
-            _loc2_ = "gemstone.agileBig";
+            str = "gemstone.agileBig";
             GemstoneManager.Instance.curstatiDataList = GemstoneManager.Instance.greInfoList;
          }
-         else if(param1.currentTarget.id == 4)
+         else if(event.currentTarget.id == 4)
          {
-            _loc6_ = _selfInfo == null?null:_selfInfo.Bag.getItemAt(11);
+            info = _selfInfo == null?null:_selfInfo.Bag.getItemAt(11);
             if(GemstoneManager.Instance.suitList.length > 0)
             {
-               _loc5_ = GemstoneManager.Instance.suitList;
+               gemstoneList = GemstoneManager.Instance.suitList;
                _fightSpiritId = GemstoneManager.Instance.suitList[0].fightSpiritId;
             }
             _equipPlayce = 11;
-            _loc2_ = "gemstone.defenseBig";
+            str = "gemstone.defenseBig";
             GemstoneManager.Instance.curstatiDataList = GemstoneManager.Instance.bluInfoList;
          }
-         else if(param1.currentTarget.id == 5)
+         else if(event.currentTarget.id == 5)
          {
-            _loc6_ = _selfInfo == null?null:_selfInfo.Bag.getItemAt(13);
+            info = _selfInfo == null?null:_selfInfo.Bag.getItemAt(13);
             if(GemstoneManager.Instance.decorationList.length > 0)
             {
-               _loc5_ = GemstoneManager.Instance.decorationList;
+               gemstoneList = GemstoneManager.Instance.decorationList;
                _fightSpiritId = GemstoneManager.Instance.decorationList[0].fightSpiritId;
             }
             _equipPlayce = 13;
-            _loc2_ = "gemstone.hpBig";
+            str = "gemstone.hpBig";
             GemstoneManager.Instance.curstatiDataList = GemstoneManager.Instance.purpleInfoList;
          }
          _gemstoneCriView.place = _equipPlayce;
          _gemstoneCriView.staticDataList = GemstoneManager.Instance.curstatiDataList;
-         _gemstoneCriView.initFigSkin(_loc2_);
-         _gemstoneCriView.upDataIcon(_loc6_);
-         if(_loc5_)
+         _gemstoneCriView.initFigSkin(str);
+         _gemstoneCriView.upDataIcon(info);
+         if(gemstoneList)
          {
-            _gemstoneCriView.resetGemstoneList(_loc5_);
+            _gemstoneCriView.resetGemstoneList(gemstoneList);
          }
-         _seletedBitMap.x = param1.currentTarget.x - 2;
-         _seletedBitMap.y = param1.currentTarget.y - 2;
-         _seletedBitMap.width = param1.currentTarget.width + 3;
+         _seletedBitMap.x = event.currentTarget.x - 2;
+         _seletedBitMap.y = event.currentTarget.y - 2;
+         _seletedBitMap.width = event.currentTarget.width + 3;
          updateContentBG();
-         updateUpButton(_loc5_);
+         updateUpButton(gemstoneList);
       }
       
       public function updateContentBG() : void
@@ -381,20 +381,20 @@ package gemstone.views
          _gemstoneCriView.updateContentBG();
       }
       
-      public function updateUpButton(param1:Vector.<GemstListInfo>) : void
+      public function updateUpButton(list:Vector.<GemstListInfo>) : void
       {
-         var _loc2_:Boolean = true;
+         var isgolden:Boolean = true;
          var _loc5_:int = 0;
-         var _loc4_:* = param1;
-         for each(var _loc3_ in param1)
+         var _loc4_:* = list;
+         for each(var info in list)
          {
-            if(_loc3_.level < 6 - 1)
+            if(info.level < 6 - 1)
             {
-               _loc2_ = false;
+               isgolden = false;
                break;
             }
          }
-         if(_loc2_)
+         if(isgolden)
          {
             _upgradeBtn.parent && removeChild(_upgradeBtn);
             addChild(_upghostBtn);
@@ -406,7 +406,7 @@ package gemstone.views
          }
       }
       
-      private function mouseClickHander(param1:MouseEvent) : void
+      private function mouseClickHander(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -414,49 +414,49 @@ package gemstone.views
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:int = 10010001;
-         var _loc4_:int = 201264;
-         var _loc3_:BagInfo = _selfInfo.getBag(1);
-         var _loc5_:int = _loc3_.getItemCountByTemplateId(_loc4_);
-         if(_loc5_ > 0)
+         var goodsId:int = 10010001;
+         var templeteId:int = 201264;
+         var bagInfo:BagInfo = _selfInfo.getBag(1);
+         var infoCount:int = bagInfo.getItemCountByTemplateId(templeteId);
+         if(infoCount > 0)
          {
-            sendFigSpiritUpGrade(_loc2_,_loc4_);
+            sendFigSpiritUpGrade(goodsId,templeteId);
          }
          else
          {
-            _loc2_ = 10010001;
-            _loc4_ = 100100;
-            _loc5_ = _loc5_ + _loc3_.getItemCountByTemplateId(_loc4_);
-            if(_loc5_ > 0)
+            goodsId = 10010001;
+            templeteId = 100100;
+            infoCount = infoCount + bagInfo.getItemCountByTemplateId(templeteId);
+            if(infoCount > 0)
             {
-               sendFigSpiritUpGrade(_loc2_,_loc4_);
+               sendFigSpiritUpGrade(goodsId,templeteId);
             }
          }
       }
       
-      private function sendFigSpiritUpGrade(param1:int, param2:int) : void
+      private function sendFigSpiritUpGrade($goodsId:int, $templeteId:int) : void
       {
          GemstoneManager.Instance.gemstoneFrame.getMaskMc().visible = true;
          KeyboardManager.getInstance().isStopDispatching = true;
          SoundManager.instance.play("170");
-         var _loc3_:GemstnoeSendInfo = new GemstnoeSendInfo();
-         _loc3_.autoBuyId = _isAutoSele;
-         _loc3_.goodsId = param1;
-         _loc3_.type = 1;
-         _loc3_.templeteId = param2;
-         _loc3_.fightSpiritId = _fightSpiritId;
-         _loc3_.equipPlayce = _equipPlayce;
-         _loc3_.place = 2;
-         _loc3_.count = 1;
-         SocketManager.Instance.out.figSpiritUpGrade(_loc3_);
+         var sendInfo:GemstnoeSendInfo = new GemstnoeSendInfo();
+         sendInfo.autoBuyId = _isAutoSele;
+         sendInfo.goodsId = $goodsId;
+         sendInfo.type = 1;
+         sendInfo.templeteId = $templeteId;
+         sendInfo.fightSpiritId = _fightSpiritId;
+         sendInfo.equipPlayce = _equipPlayce;
+         sendInfo.place = 2;
+         sendInfo.count = 1;
+         SocketManager.Instance.out.figSpiritUpGrade(sendInfo);
       }
       
-      public function gemstoneAction(param1:GemstoneUpGradeInfo) : void
+      public function gemstoneAction(info:GemstoneUpGradeInfo) : void
       {
-         _gemstoneCriView.upGradeAction(param1);
+         _gemstoneCriView.upGradeAction(info);
       }
       
-      public function upDataCur(param1:Object) : void
+      public function upDataCur(obj:Object) : void
       {
       }
       

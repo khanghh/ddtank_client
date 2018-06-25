@@ -330,6 +330,10 @@ package starling.display.sceneCharacter
       public static const POINT_MOUNT_140:SceneCharacterActionPointItem = new SceneCharacterActionPointItem("mount",1,[ActionPoint(new Point(-212,-56),[0])]);
       
       public static const POINT_MOUNT_141:SceneCharacterActionPointItem = new SceneCharacterActionPointItem("mount",1,[ActionPoint(new Point(-204,-58),[0])]);
+      
+      public static const POINT_MOUNT_142:SceneCharacterActionPointItem = new SceneCharacterActionPointItem("mount",1,[ActionPoint(new Point(-200,-65),[0])]);
+      
+      public static const POINT_MOUNT_142_HEAD:SceneCharacterActionPointItem = new SceneCharacterActionPointItem("head",18,[ActionPoint(new Point(-1,1),[0,1,2]),ActionPoint(new Point(-1,0),[3,4,5,9,10,11]),ActionPoint(new Point(0,1),[12,13,24]),ActionPoint(new Point(0,2),[15,16,17])]);
        
       
       public function SceneCharacterActionType()
@@ -337,24 +341,24 @@ package starling.display.sceneCharacter
          super();
       }
       
-      public static function getCopyActionItem(param1:SceneCharacterActionItem, param2:String = "", param3:int = 0, param4:Boolean = false) : SceneCharacterActionItem
+      public static function getCopyActionItem($item:SceneCharacterActionItem, $state:String = "", $total:int = 0, $clone:Boolean = false) : SceneCharacterActionItem
       {
-         var _loc7_:String = param2 == ""?param1.state:param2;
-         var _loc6_:Array = !!param4?param1.frames.concat():param1.frames;
-         var _loc5_:int = param3 == 0?param1.total:int(param3);
-         return new SceneCharacterActionItem(_loc7_,param1.type,_loc6_,param1.repeat,_loc5_);
+         var state:String = $state == ""?$item.state:$state;
+         var frames:Array = !!$clone?$item.frames.concat():$item.frames;
+         var total:int = $total == 0?$item.total:int($total);
+         return new SceneCharacterActionItem(state,$item.type,frames,$item.repeat,total);
       }
       
-      public static function getCopyActionPointItem(param1:SceneCharacterActionPointItem, param2:String = "", param3:Boolean = false) : SceneCharacterActionPointItem
+      public static function getCopyActionPointItem($item:SceneCharacterActionPointItem, $type:String = "", $clone:Boolean = false) : SceneCharacterActionPointItem
       {
-         var _loc5_:String = param2 == ""?param1.type:param2;
-         var _loc4_:Array = !!param3?param1.points.concat():param1.points;
-         return new SceneCharacterActionPointItem(_loc5_,param1.amount,_loc4_);
+         var type:String = $type == ""?$item.type:$type;
+         var points:Array = !!$clone?$item.points.concat():$item.points;
+         return new SceneCharacterActionPointItem(type,$item.amount,points);
       }
       
-      public static function ActionPoint(param1:Point, param2:Array) : SceneCharacterActionPoint
+      public static function ActionPoint($point:Point, $frames:Array) : SceneCharacterActionPoint
       {
-         return new SceneCharacterActionPoint(param1,param2);
+         return new SceneCharacterActionPoint($point,$frames);
       }
    }
 }

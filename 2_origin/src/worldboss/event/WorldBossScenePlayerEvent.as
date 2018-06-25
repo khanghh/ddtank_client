@@ -12,10 +12,10 @@ package worldboss.event
       
       public var playerid:int;
       
-      public function WorldBossScenePlayerEvent(param1:String, param2:int)
+      public function WorldBossScenePlayerEvent(type:String, playerid:int)
       {
-         this.playerid = param2;
-         super(param1);
+         this.playerid = playerid;
+         super(type);
       }
    }
 }

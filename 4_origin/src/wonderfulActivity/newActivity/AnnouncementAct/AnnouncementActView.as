@@ -32,10 +32,10 @@ package wonderfulActivity.newActivity.AnnouncementAct
       
       private var _content:VBox;
       
-      public function AnnouncementActView(param1:String)
+      public function AnnouncementActView(id:String)
       {
          super();
-         _actId = param1;
+         _actId = id;
       }
       
       public function init() : void
@@ -82,7 +82,7 @@ package wonderfulActivity.newActivity.AnnouncementAct
          _activityInfo = WonderfulActivityManager.Instance.activityData[_actId];
       }
       
-      public function setState(param1:int, param2:int) : void
+      public function setState(type:int, id:int) : void
       {
       }
       

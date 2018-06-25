@@ -11,24 +11,24 @@ package ddt.data.analyze
       
       public var list:Dictionary;
       
-      public function PetSkillAnalyzer(param1:Function)
+      public function PetSkillAnalyzer(onCompleteCall:Function)
       {
          list = new Dictionary();
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc2_:* = null;
-         var _loc5_:XML = XML(param1);
-         var _loc3_:XMLList = _loc5_..item;
+         var skill:* = null;
+         var xml:XML = XML(data);
+         var items:XMLList = xml..item;
          var _loc7_:int = 0;
-         var _loc6_:* = _loc3_;
-         for each(var _loc4_ in _loc3_)
+         var _loc6_:* = items;
+         for each(var item in items)
          {
-            _loc2_ = new PetSkillTemplateInfo();
-            ObjectUtils.copyPorpertiesByXML(_loc2_,_loc4_);
-            list[_loc2_.ID] = _loc2_;
+            skill = new PetSkillTemplateInfo();
+            ObjectUtils.copyPorpertiesByXML(skill,item);
+            list[skill.ID] = skill;
          }
          onAnalyzeComplete();
       }

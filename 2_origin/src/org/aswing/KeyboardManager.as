@@ -49,80 +49,79 @@ package org.aswing
          return instance;
       }
       
-      public static function isDown(param1:uint) : Boolean
+      public static function isDown(keyCode:uint) : Boolean
       {
-         return getInstance().isKeyDown(param1);
+         return getInstance().isKeyDown(keyCode);
       }
       
-      public function customDispatchEvent(param1:Event) : Boolean
+      public function customDispatchEvent(event:Event) : Boolean
       {
-         return super.dispatchEvent(param1);
+         return super.dispatchEvent(event);
       }
       
-      public function init(param1:Stage) : void
+      public function init(stage:Stage) : void
       {
          if(!inited)
          {
             inited = true;
-            param1.addEventListener("keyDown",__onKeyDown,false,0,true);
-            param1.addEventListener("keyUp",__onKeyUp,false,0,true);
-            param1.addEventListener("deactivate",__deactived,false,0,true);
+            stage.addEventListener("keyDown",__onKeyDown,false,0,true);
+            stage.addEventListener("keyUp",__onKeyUp,false,0,true);
+            stage.addEventListener("deactivate",__deactived,false,0,true);
          }
       }
       
-      override public function dispatchEvent(param1:Event) : Boolean
+      override public function dispatchEvent(event:Event) : Boolean
       {
          if(isStopDispatching)
          {
             return false;
          }
-         return super.dispatchEvent(param1);
+         return super.dispatchEvent(event);
       }
       
-      public function registerKeyMap(param1:KeyMap) : void
+      public function registerKeyMap(keyMap:KeyMap) : void
       {
-         if(!keymaps.contains(param1))
+         if(!keymaps.contains(keyMap))
          {
-            keymaps.append(param1);
+            keymaps.append(keyMap);
          }
       }
       
-      public function unregisterKeyMap(param1:KeyMap) : void
+      public function unregisterKeyMap(keyMap:KeyMap) : void
       {
-         keymaps.remove(param1);
+         keymaps.remove(keyMap);
       }
       
-      public function registerKeyAction(param1:KeyType, param2:Function) : void
+      public function registerKeyAction(key:KeyType, action:Function) : void
       {
-         selfKeyMap.registerKeyAction(param1,param2);
+         selfKeyMap.registerKeyAction(key,action);
       }
       
-      public function unregisterKeyAction(param1:KeyType, param2:Function) : void
+      public function unregisterKeyAction(key:KeyType, action:Function) : void
       {
-         selfKeyMap.unregisterKeyAction(param1,param2);
+         selfKeyMap.unregisterKeyAction(key,action);
       }
       
-      public function isKeyDown(param1:uint) : Boolean
+      public function isKeyDown(keyCode:uint) : Boolean
       {
-         return keySequence.contains(param1);
+         return keySequence.contains(keyCode);
       }
       
-      public function setMnemonicModifier(param1:Array) : void
+      public function setMnemonicModifier(keyCodes:Array) : void
       {
-         mnemonicModifier = param1.concat();
+         mnemonicModifier = keyCodes.concat();
       }
       
       public function isMnemonicModifierDown() : Boolean
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < mnemonicModifier.length)
+         var i:int = 0;
+         for(i = 0; i < mnemonicModifier.length; )
          {
-            if(!isKeyDown(mnemonicModifier[_loc1_]))
+            if(!isKeyDown(mnemonicModifier[i]))
             {
                return false;
             }
-            _loc1_++;
+            i++;
          }
          return mnemonicModifier.length > 0;
       }
@@ -132,46 +131,45 @@ package org.aswing
          return keyJustActed;
       }
       
-      private function __onKeyDown(param1:KeyboardEvent) : void
+      private function __onKeyDown(e:KeyboardEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
-         dispatchEvent(param1);
-         var _loc4_:uint = param1.keyCode;
-         if(!keySequence.contains(_loc4_) && _loc4_ < 139)
+         var i:int = 0;
+         var keymap:* = null;
+         dispatchEvent(e);
+         var code:uint = e.keyCode;
+         if(!keySequence.contains(code) && code < 139)
          {
-            keySequence.append(_loc4_);
+            keySequence.append(code);
          }
          keyJustActed = false;
-         var _loc3_:int = keymaps.size();
-         _loc5_ = 0;
-         while(_loc5_ < _loc3_)
+         var n:int = keymaps.size();
+         for(i = 0; i < n; )
          {
-            _loc2_ = KeyMap(keymaps.get(_loc5_));
-            if(_loc2_.fireKeyAction(keySequence.toArray()))
+            keymap = KeyMap(keymaps.get(i));
+            if(keymap.fireKeyAction(keySequence.toArray()))
             {
                keyJustActed = true;
             }
-            _loc5_++;
+            i++;
          }
       }
       
-      private function __onKeyUp(param1:KeyboardEvent) : void
+      private function __onKeyUp(e:KeyboardEvent) : void
       {
-         dispatchEvent(param1);
-         var _loc2_:uint = param1.keyCode;
-         keySequence.remove(_loc2_);
-         if(!param1.ctrlKey)
+         dispatchEvent(e);
+         var code:uint = e.keyCode;
+         keySequence.remove(code);
+         if(!e.ctrlKey)
          {
             keySequence.remove(17);
          }
-         if(!param1.shiftKey)
+         if(!e.shiftKey)
          {
             keySequence.remove(16);
          }
       }
       
-      private function __deactived(param1:Event) : void
+      private function __deactived(e:Event) : void
       {
          keySequence.clear();
       }
@@ -186,9 +184,9 @@ package org.aswing
          return _isStopDispatching;
       }
       
-      public function set isStopDispatching(param1:Boolean) : void
+      public function set isStopDispatching(value:Boolean) : void
       {
-         _isStopDispatching = param1;
+         _isStopDispatching = value;
       }
    }
 }

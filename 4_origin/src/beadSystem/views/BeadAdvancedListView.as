@@ -39,27 +39,27 @@ package beadSystem.views
          addChild(_panel);
       }
       
-      public function set beadInfos(param1:DictionaryData) : void
+      public function set beadInfos(infos:DictionaryData) : void
       {
-         var _loc3_:* = null;
-         _infos = param1;
+         var item:* = null;
+         _infos = infos;
          if(_infos == null || _beadItemContainerAll == null)
          {
             return;
          }
          _beadItemContainerAll.removeAllChild();
-         var _loc2_:int = 0;
+         var index:int = 0;
          _itemArray = [];
          var _loc6_:int = 0;
          var _loc5_:* = _infos.list;
-         for each(var _loc4_ in _infos.list)
+         for each(var info in _infos.list)
          {
-            _loc2_++;
-            _loc3_ = new BeadAdvancedItem(_loc2_);
-            _loc3_.addEventListener("click",itemClickHandler);
-            _loc3_.info = _loc4_;
-            _beadItemContainerAll.addChild(_loc3_);
-            _itemArray.push(_loc3_);
+            index++;
+            item = new BeadAdvancedItem(index);
+            item.addEventListener("click",itemClickHandler);
+            item.info = info;
+            _beadItemContainerAll.addChild(item);
+            _itemArray.push(item);
          }
          _panel.invalidateViewport();
          if(_itemArray.length > 0)
@@ -68,27 +68,27 @@ package beadSystem.views
          }
       }
       
-      private function itemClickHandler(param1:MouseEvent) : void
+      private function itemClickHandler(evt:MouseEvent) : void
       {
-         var _loc3_:* = null;
-         if(param1.target is BeadAdvancedItem)
+         var temItem:* = null;
+         if(evt.target is BeadAdvancedItem)
          {
-            _loc3_ = param1.target as BeadAdvancedItem;
-            if(_loc3_.isSelect)
+            temItem = evt.target as BeadAdvancedItem;
+            if(temItem.isSelect)
             {
                return;
             }
             var _loc5_:int = 0;
             var _loc4_:* = _itemArray;
-            for each(var _loc2_ in _itemArray)
+            for each(var item in _itemArray)
             {
-               if(_loc2_.isSelect)
+               if(item.isSelect)
                {
-                  _loc2_.isSelect = false;
+                  item.isSelect = false;
                }
             }
-            _loc3_.isSelect = true;
-            this.dispatchEvent(new CEvent("beadSelectChange",_loc3_.info));
+            temItem.isSelect = true;
+            this.dispatchEvent(new CEvent("beadSelectChange",temItem.info));
          }
       }
       

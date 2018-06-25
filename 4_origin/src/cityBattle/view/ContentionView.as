@@ -96,7 +96,7 @@ package cityBattle.view
          SocketManager.Instance.out.cityBattleScore();
       }
       
-      private function _scoreChange(param1:CityBattleEvent) : void
+      private function _scoreChange(e:CityBattleEvent) : void
       {
          _currentSocreTxt.text = String(CityBattleManager.instance.myRankScore);
          _currentRankTxt.text = CityBattleManager.instance.myRank == -1?LanguageMgr.GetTranslation("ddt.cityBattle.noHaveRank"):String(CityBattleManager.instance.myRank);
@@ -104,10 +104,10 @@ package cityBattle.view
          _redTotalScore.text = String(CityBattleManager.instance.redTotalScore);
       }
       
-      private function _inspireBtnHandler(param1:MouseEvent) : void
+      private function _inspireBtnHandler(e:MouseEvent) : void
       {
-         var _loc2_:ContentionInspireFrame = ComponentFactory.Instance.creatComponentByStylename("contention.inspireFrame");
-         LayerManager.Instance.addToLayer(_loc2_,3,true,2);
+         var frame:ContentionInspireFrame = ComponentFactory.Instance.creatComponentByStylename("contention.inspireFrame");
+         LayerManager.Instance.addToLayer(frame,3,true,2);
       }
       
       public function dispose() : void

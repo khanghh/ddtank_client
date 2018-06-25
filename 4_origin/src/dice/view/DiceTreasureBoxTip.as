@@ -61,24 +61,23 @@ package dice.view
       
       private function addAwardList() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:Vector.<DiceAwardCell> = (DiceController.Instance.AwardLevelInfo[DiceController.Instance.LuckIntegralLevel] as DiceAwardInfo).templateInfo;
-         var _loc2_:int = 0;
-         if(_loc1_ != null)
+         var i:int = 0;
+         var list:Vector.<DiceAwardCell> = (DiceController.Instance.AwardLevelInfo[DiceController.Instance.LuckIntegralLevel] as DiceAwardInfo).templateInfo;
+         var j:int = 0;
+         if(list != null)
          {
-            _loc3_ = 0;
-            while(_loc3_ < _loc1_.length)
+            for(i = 0; i < list.length; )
             {
-               if(_loc1_[_loc3_])
+               if(list[i])
                {
-                  _loc2_++;
-                  _loc1_[_loc3_].x = 10;
-                  _loc1_[_loc3_].y = _loc2_ * 47 + 11;
-                  addChild(_loc1_[_loc3_]);
+                  j++;
+                  list[i].x = 10;
+                  list[i].y = j * 47 + 11;
+                  addChild(list[i]);
                }
-               _loc3_++;
+               i++;
             }
-            _bg.height = _loc1_[_loc3_ - 1].y + 55;
+            _bg.height = list[i - 1].y + 55;
          }
       }
       

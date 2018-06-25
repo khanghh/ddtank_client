@@ -8,10 +8,10 @@ package questionAward.data
       
       private var _position:int = 0;
       
-      public function QuestionAwardIterator(param1:Vector.<QuestionDataBaseInfo>)
+      public function QuestionAwardIterator(questionList:Vector.<QuestionDataBaseInfo>)
       {
          super();
-         _questionVec = param1;
+         _questionVec = questionList;
       }
       
       public function hasNext() : Boolean
@@ -25,9 +25,9 @@ package questionAward.data
       
       public function Next() : Object
       {
-         var _loc1_:QuestionDataBaseInfo = _questionVec[_position] as QuestionDataBaseInfo;
+         var dataBaseInfo:QuestionDataBaseInfo = _questionVec[_position] as QuestionDataBaseInfo;
          _position = _position + 1;
-         return _loc1_;
+         return dataBaseInfo;
       }
    }
 }

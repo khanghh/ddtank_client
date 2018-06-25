@@ -12,25 +12,25 @@ package farm.analyzer
       
       public var list:Vector.<SuperPetFoodPriceInfo>;
       
-      public function SuperPetFoodPriceAnalyzer(param1:Function)
+      public function SuperPetFoodPriceAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc2_:int = 0;
-         var _loc6_:* = null;
-         var _loc5_:XML = XML(param1);
-         var _loc3_:XMLList = _loc5_..Item;
+         var tmpFoodID:int = 0;
+         var info:* = null;
+         var xml:XML = XML(data);
+         var items:XMLList = xml..Item;
          list = new Vector.<SuperPetFoodPriceInfo>();
          var _loc8_:int = 0;
-         var _loc7_:* = _loc3_;
-         for each(var _loc4_ in _loc3_)
+         var _loc7_:* = items;
+         for each(var item in items)
          {
-            _loc6_ = new SuperPetFoodPriceInfo();
-            ObjectUtils.copyPorpertiesByXML(_loc6_,_loc4_);
-            list.push(_loc6_);
+            info = new SuperPetFoodPriceInfo();
+            ObjectUtils.copyPorpertiesByXML(info,item);
+            list.push(info);
          }
          onAnalyzeComplete();
       }

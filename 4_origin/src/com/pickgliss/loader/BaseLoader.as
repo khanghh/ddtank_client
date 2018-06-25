@@ -79,25 +79,25 @@ package com.pickgliss.loader
       
       public var domain:ApplicationDomain;
       
-      public function BaseLoader(param1:int, param2:String, param3:URLVariables = null, param4:String = "GET")
+      public function BaseLoader(id:int, url:String, args:URLVariables = null, requestMethod:String = "GET")
       {
          super();
-         checkUrl(param2);
-         _args = param3;
-         _id = param1;
+         checkUrl(url);
+         _args = args;
+         _id = id;
          _loader = new URLLoader();
-         _requestMethod = param4;
+         _requestMethod = requestMethod;
       }
       
-      private function checkUrl(param1:String) : void
+      private function checkUrl(url:String) : void
       {
-         var _loc2_:String = LoaderManager.NEGLECT_URL;
-         var _loc3_:* = param1;
-         if(_loc2_ != "" && param1.indexOf(_loc2_) != -1)
+         var neglect:String = LoaderManager.NEGLECT_URL;
+         var realUrl:* = url;
+         if(neglect != "" && url.indexOf(neglect) != -1)
          {
-            _loc3_ = param1.toLocaleLowerCase();
+            realUrl = url.toLocaleLowerCase();
          }
-         _url = _loc3_;
+         _url = realUrl;
       }
       
       public function get args() : URLVariables
@@ -125,9 +125,9 @@ package com.pickgliss.loader
          return _isComplete;
       }
       
-      public function set isComplete(param1:Boolean) : void
+      public function set isComplete(value:Boolean) : void
       {
-         _isComplete = param1;
+         _isComplete = value;
       }
       
       public function get isSuccess() : Boolean
@@ -135,12 +135,12 @@ package com.pickgliss.loader
          return _isSuccess;
       }
       
-      public function loadFromExternal(param1:String) : void
+      public function loadFromExternal(path:String) : void
       {
-         startLoad(param1);
+         startLoad(path);
       }
       
-      public function loadFromBytes(param1:ByteArray) : void
+      public function loadFromBytes(data:ByteArray) : void
       {
          _starTime = getTimer();
       }
@@ -165,9 +165,9 @@ package com.pickgliss.loader
          return _url;
       }
       
-      public function set url(param1:String) : void
+      public function set url(value:String) : void
       {
-         _url = param1;
+         _url = value;
       }
       
       public function get isLoading() : Boolean
@@ -175,12 +175,12 @@ package com.pickgliss.loader
          return _isLoading;
       }
       
-      public function set isLoading(param1:Boolean) : void
+      public function set isLoading(value:Boolean) : void
       {
-         _isLoading = param1;
+         _isLoading = value;
       }
       
-      protected function __onDataLoadComplete(param1:Event) : void
+      protected function __onDataLoadComplete(event:Event) : void
       {
          removeEvent();
          _loader.close();
@@ -198,15 +198,15 @@ package com.pickgliss.loader
          dispatchEvent(new LoaderEvent("complete",this));
       }
       
-      protected function __onIOError(param1:IOErrorEvent) : void
+      protected function __onIOError(event:IOErrorEvent) : void
       {
-         LoadInterfaceManager.traceMsg("微端加载资源错误：" + param1.text + " " + _currentLoadPath);
+         LoadInterfaceManager.traceMsg("微端加载资源错误：" + event.text + " " + _currentLoadPath);
          onLoadError();
       }
       
-      protected function __onProgress(param1:ProgressEvent) : void
+      protected function __onProgress(event:ProgressEvent) : void
       {
-         _progress = param1.bytesLoaded / param1.bytesTotal;
+         _progress = event.bytesLoaded / event.bytesTotal;
          if(loadProgressMessage)
          {
             loadProgressMessage = loadProgressMessage.replace("{progress}",String(Math.round(_progress * 100)));
@@ -214,9 +214,9 @@ package com.pickgliss.loader
          dispatchEvent(new LoaderEvent("progress",this));
       }
       
-      protected function __onStatus(param1:HTTPStatusEvent) : void
+      protected function __onStatus(event:HTTPStatusEvent) : void
       {
-         if(param1.status > 399)
+         if(event.status > 399)
          {
          }
       }
@@ -269,20 +269,20 @@ package com.pickgliss.loader
          _loader.removeEventListener("ioError",__onIOError);
       }
       
-      protected function startLoad(param1:String) : void
+      protected function startLoad(path:String) : void
       {
          if(_isLoading)
          {
             return;
          }
          addEvent();
-         _currentLoadPath = param1.toLocaleLowerCase();
+         _currentLoadPath = path.toLocaleLowerCase();
          _loader.dataFormat = getLoadDataFormat();
-         var _loc2_:URLRequest = new URLRequest(_currentLoadPath);
-         _loc2_.method = _requestMethod;
-         _loc2_.data = _args;
+         var _request:URLRequest = new URLRequest(_currentLoadPath);
+         _request.method = _requestMethod;
+         _request.data = _args;
          _isLoading = true;
-         _loader.load(_loc2_);
+         _loader.load(_request);
          _starTime = getTimer();
       }
       

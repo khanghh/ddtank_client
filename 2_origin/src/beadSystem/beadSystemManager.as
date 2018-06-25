@@ -56,22 +56,22 @@ package beadSystem
          SocketManager.Instance.addEventListener(PkgEvent.format(121,6),__onOpenHole);
       }
       
-      private function __onOpenPackage(param1:PkgEvent) : void
+      private function __onOpenPackage(pEvent:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg as PackageIn;
-         var _loc2_:int = _loc3_.readInt();
-         dispatchEvent(new BeadEvent("lightButton",_loc2_));
-         BeadModel.beadRequestBtnIndex = _loc2_;
+         var pkg:PackageIn = pEvent.pkg as PackageIn;
+         var index:int = pkg.readInt();
+         dispatchEvent(new BeadEvent("lightButton",index));
+         BeadModel.beadRequestBtnIndex = index;
       }
       
-      private function __onOpenHole(param1:PkgEvent) : void
+      private function __onOpenHole(pEvent:PkgEvent) : void
       {
          dispatchEvent(new BeadEvent("openBeadHole",0));
       }
       
-      public function showFrame(param1:String) : void
+      public function showFrame($type:String) : void
       {
-         cevent = new CEvent("openview",{"type":param1});
+         cevent = new CEvent("openview",{"type":$type});
          AssetModuleLoader.addModelLoader("ddtbead",6);
          AssetModuleLoader.addModelLoader("ddtstore",6);
          AssetModuleLoader.startCodeLoader(show);
@@ -82,15 +82,15 @@ package beadSystem
          dispatchEvent(cevent);
       }
       
-      public function getEquipPlace(param1:InventoryItemInfo) : int
+      public function getEquipPlace(pInfo:InventoryItemInfo) : int
       {
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         if(param1.Property1 == "31" && param1.Property2 == "1")
+         var all:int = 0;
+         var i:int = 0;
+         if(pInfo.Property1 == "31" && pInfo.Property2 == "1")
          {
             return 1;
          }
-         if(param1.Property1 == "31" && param1.Property2 == "2")
+         if(pInfo.Property1 == "31" && pInfo.Property2 == "2")
          {
             if(PlayerManager.Instance.Self.BeadBag.getItemAt(2))
             {
@@ -102,63 +102,63 @@ package beadSystem
             }
             return 2;
          }
-         if(param1.Property1 == "31" && param1.Property2 == "3")
+         if(pInfo.Property1 == "31" && pInfo.Property2 == "3")
          {
-            _loc2_ = 5;
+            all = 5;
             if(PlayerManager.Instance.Self.Grade >= 15)
             {
-               _loc2_ = 6;
+               all = 6;
             }
             if(PlayerManager.Instance.Self.Grade >= 18)
             {
-               _loc2_ = 7;
+               all = 7;
             }
             if(PlayerManager.Instance.Self.Grade >= 21)
             {
-               _loc2_ = 8;
+               all = 8;
             }
             if(PlayerManager.Instance.Self.Grade >= 24)
             {
-               _loc2_ = 9;
+               all = 9;
             }
             if(PlayerManager.Instance.Self.Grade >= 27)
             {
-               _loc2_ = 10;
+               all = 10;
             }
             if(PlayerManager.Instance.Self.Grade >= 30)
             {
-               _loc2_ = 11;
+               all = 11;
             }
             if(PlayerManager.Instance.Self.Grade >= 33)
             {
-               _loc2_ = 12;
+               all = 12;
             }
-            _loc3_ = 4;
-            while(_loc3_ <= _loc2_)
+            i = 4;
+            while(i <= all)
             {
-               if(!PlayerManager.Instance.Self.BeadBag.getItemAt(_loc3_))
+               if(!PlayerManager.Instance.Self.BeadBag.getItemAt(i))
                {
-                  return _loc3_;
+                  return i;
                }
-               _loc3_++;
+               i++;
             }
             return 4;
          }
          return -1;
       }
       
-      public function getBeadNameTextFormatStyle(param1:int) : String
+      public function getBeadNameTextFormatStyle(pLv:int) : String
       {
-         var _loc2_:* = null;
-         switch(int(param1) - 1)
+         var vResultStr:* = null;
+         switch(int(pLv) - 1)
          {
             case 0:
             case 1:
-               _loc2_ = "beadSystem.beadCell.name.tf2";
+               vResultStr = "beadSystem.beadCell.name.tf2";
                break;
             case 2:
             case 3:
-               _loc2_ = "beadSystem.beadCell.name.tf3";
+               vResultStr = "beadSystem.beadCell.name.tf3";
                break;
             case 4:
             case 5:
@@ -173,41 +173,41 @@ package beadSystem
             case 14:
             case 15:
             case 16:
-               _loc2_ = "beadSystem.beadCell.name.tf4";
+               vResultStr = "beadSystem.beadCell.name.tf4";
          }
-         return _loc2_;
+         return vResultStr;
       }
       
-      public function judgeLevel(param1:int, param2:int) : Boolean
+      public function judgeLevel(beadLevel:int, holeLevel:int) : Boolean
       {
-         switch(int(param2) - 1)
+         switch(int(holeLevel) - 1)
          {
             case 0:
-               if(1 <= param1 && param1 <= 4)
+               if(1 <= beadLevel && beadLevel <= 4)
                {
                   return true;
                }
                break;
             case 1:
-               if(1 <= param1 && param1 <= 8)
+               if(1 <= beadLevel && beadLevel <= 8)
                {
                   return true;
                }
                break;
             case 2:
-               if(1 <= param1 && param1 <= 12)
+               if(1 <= beadLevel && beadLevel <= 12)
                {
                   return true;
                }
                break;
             case 3:
-               if(1 <= param1 && param1 <= 16)
+               if(1 <= beadLevel && beadLevel <= 16)
                {
                   return true;
                }
                break;
             case 4:
-               if(1 <= param1 && param1 <= 19)
+               if(1 <= beadLevel && beadLevel <= 19)
                {
                   return true;
                }
@@ -218,65 +218,65 @@ package beadSystem
          return false;
       }
       
-      public function getBeadMcIndex(param1:int) : int
+      public function getBeadMcIndex(pLv:int) : int
       {
-         var _loc2_:int = 0;
-         switch(int(param1) - 1)
+         var vResult:int = 0;
+         switch(int(pLv) - 1)
          {
             case 0:
             case 1:
-               _loc2_ = 2;
+               vResult = 2;
                break;
             case 2:
             case 3:
-               _loc2_ = 3;
+               vResult = 3;
                break;
             case 4:
             case 5:
-               _loc2_ = 4;
+               vResult = 4;
                break;
             case 6:
             case 7:
-               _loc2_ = 7;
+               vResult = 7;
                break;
             case 8:
             case 9:
-               _loc2_ = 8;
+               vResult = 8;
                break;
             case 10:
             case 11:
-               _loc2_ = 9;
+               vResult = 9;
                break;
             case 12:
             case 13:
-               _loc2_ = 10;
+               vResult = 10;
                break;
             case 14:
             case 15:
-               _loc2_ = 11;
+               vResult = 11;
                break;
             case 16:
-               _loc2_ = 12;
+               vResult = 12;
          }
-         return _loc2_;
+         return vResult;
       }
       
-      public function getBeadName(param1:InventoryItemInfo) : String
+      public function getBeadName(item:InventoryItemInfo) : String
       {
-         var _loc2_:String = "";
-         if(!param1 || !EquipType.isBead(int(param1.Property1)))
+         var res:String = "";
+         if(!item || !EquipType.isBead(int(item.Property1)))
          {
             return "";
          }
-         if(param1.Hole2 > 0)
+         if(item.Hole2 > 0)
          {
-            _loc2_ = BeadTemplateManager.Instance.GetBeadInfobyID(param1.TemplateID).Name + "Lv" + param1.Hole1;
+            res = BeadTemplateManager.Instance.GetBeadInfobyID(item.TemplateID).Name + "Lv" + item.Hole1;
          }
          else
          {
-            _loc2_ = BeadTemplateManager.Instance.GetBeadInfobyID(param1.TemplateID).Name + "Lv" + BeadTemplateManager.Instance.GetBeadInfobyID(param1.TemplateID).BaseLevel;
+            res = BeadTemplateManager.Instance.GetBeadInfobyID(item.TemplateID).Name + "Lv" + BeadTemplateManager.Instance.GetBeadInfobyID(item.TemplateID).BaseLevel;
          }
-         return _loc2_;
+         return res;
       }
    }
 }

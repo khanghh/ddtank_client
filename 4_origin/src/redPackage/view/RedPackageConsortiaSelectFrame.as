@@ -57,9 +57,9 @@ package redPackage.view
          removeEventListener("response",_response);
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             close();
          }
@@ -71,9 +71,9 @@ package redPackage.view
          ObjectUtils.disposeObject(this);
       }
       
-      protected function onClick(param1:MouseEvent) : void
+      protected function onClick(e:MouseEvent) : void
       {
-         var _loc2_:* = param1.target;
+         var _loc2_:* = e.target;
          if(_btnSendPkg !== _loc2_)
          {
             if(_btnGainPkg === _loc2_)

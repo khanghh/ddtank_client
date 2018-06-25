@@ -42,9 +42,9 @@ package treasure.model
          return _logoinDays;
       }
       
-      public function set logoinDays(param1:int) : void
+      public function set logoinDays(value:int) : void
       {
-         _logoinDays = param1;
+         _logoinDays = value;
       }
       
       public function get leftTimes() : int
@@ -52,9 +52,9 @@ package treasure.model
          return _leftTimes;
       }
       
-      public function set leftTimes(param1:int) : void
+      public function set leftTimes(value:int) : void
       {
-         _leftTimes = param1;
+         _leftTimes = value;
       }
       
       public function get friendHelpTimes() : int
@@ -62,9 +62,9 @@ package treasure.model
          return _friendHelpTimes;
       }
       
-      public function set friendHelpTimes(param1:int) : void
+      public function set friendHelpTimes(value:int) : void
       {
-         _friendHelpTimes = param1;
+         _friendHelpTimes = value;
       }
       
       public function get itemList() : Vector.<TreasureTempInfo>
@@ -72,9 +72,9 @@ package treasure.model
          return _itemList;
       }
       
-      public function set itemList(param1:Vector.<TreasureTempInfo>) : void
+      public function set itemList(value:Vector.<TreasureTempInfo>) : void
       {
-         _itemList = param1;
+         _itemList = value;
       }
       
       public function get isEndTreasure() : Boolean
@@ -82,9 +82,9 @@ package treasure.model
          return _isEndTreasure;
       }
       
-      public function set isEndTreasure(param1:Boolean) : void
+      public function set isEndTreasure(value:Boolean) : void
       {
-         _isEndTreasure = param1;
+         _isEndTreasure = value;
       }
       
       public function get isBeginTreasure() : Boolean
@@ -92,9 +92,9 @@ package treasure.model
          return _isBeginTreasure;
       }
       
-      public function set isBeginTreasure(param1:Boolean) : void
+      public function set isBeginTreasure(value:Boolean) : void
       {
-         _isBeginTreasure = param1;
+         _isBeginTreasure = value;
       }
    }
 }

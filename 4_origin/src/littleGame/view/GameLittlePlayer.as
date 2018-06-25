@@ -21,9 +21,9 @@ package littleGame.view
       
       private var _defaultBody:Bitmap;
       
-      public function GameLittlePlayer(param1:LittlePlayer)
+      public function GameLittlePlayer(player:LittlePlayer)
       {
-         super(param1);
+         super(player);
          mouseChildren = false;
          mouseEnabled = false;
       }
@@ -54,20 +54,20 @@ package littleGame.view
          _facecontainer = null;
       }
       
-      private function __getFace(param1:ChatEvent) : void
+      private function __getFace(evt:ChatEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:Object = param1.data;
-         if(_loc3_["playerid"] == player.playerInfo.ID)
+         var id:int = 0;
+         var delay:int = 0;
+         var data:Object = evt.data;
+         if(data["playerid"] == player.playerInfo.ID)
          {
-            _loc2_ = _loc3_["faceid"];
-            _loc4_ = _loc3_["delay"];
-            showFace(_loc2_);
+            id = data["faceid"];
+            delay = data["delay"];
+            showFace(id);
          }
       }
       
-      private function onFaceComplete(param1:Event) : void
+      private function onFaceComplete(event:Event) : void
       {
          if(_facecontainer && contains(_facecontainer))
          {
@@ -75,7 +75,7 @@ package littleGame.view
          }
       }
       
-      private function showFace(param1:int) : void
+      private function showFace(id:int) : void
       {
          if(_facecontainer == null)
          {
@@ -85,7 +85,7 @@ package littleGame.view
          }
          addChild(_facecontainer);
          _facecontainer.scaleX = 1;
-         _facecontainer.setFace(param1);
+         _facecontainer.setFace(id);
       }
       
       override protected function configUI() : void
@@ -98,11 +98,11 @@ package littleGame.view
       
       override protected function createBody() : void
       {
-         var _loc1_:LittleGameCharacter = new LittleGameCharacter(player.playerInfo);
-         _loc1_.soundEnabled = false;
-         _loc1_.addEventListener("complete",onComplete);
-         _body = addChild(_loc1_);
-         if(!_loc1_.isComplete)
+         var ch:LittleGameCharacter = new LittleGameCharacter(player.playerInfo);
+         ch.soundEnabled = false;
+         ch.addEventListener("complete",onComplete);
+         _body = addChild(ch);
+         if(!ch.isComplete)
          {
             _defaultBody = ComponentFactory.Instance.creatBitmap("game.player.defaultPlayerCharacter");
             _defaultBody.x = -33;
@@ -120,12 +120,12 @@ package littleGame.view
          }
       }
       
-      private function onComplete(param1:Event) : void
+      private function onComplete(event:Event) : void
       {
-         var _loc2_:LittleGameCharacter = param1.currentTarget as LittleGameCharacter;
-         _loc2_.removeEventListener("complete",onComplete);
-         _loc2_.x = -_loc2_.registerPoint.x;
-         _loc2_.y = -_loc2_.registerPoint.y;
+         var ch:LittleGameCharacter = event.currentTarget as LittleGameCharacter;
+         ch.removeEventListener("complete",onComplete);
+         ch.x = -ch.registerPoint.x;
+         ch.y = -ch.registerPoint.y;
          _defaultBody.parent.removeChild(_defaultBody);
          _defaultBody.bitmapData.dispose();
          _defaultBody = null;
@@ -134,14 +134,14 @@ package littleGame.view
       
       override protected function centerBody() : void
       {
-         var _loc1_:LittleGameCharacter = _body as LittleGameCharacter;
-         if(_body && _loc1_)
+         var ch:LittleGameCharacter = _body as LittleGameCharacter;
+         if(_body && ch)
          {
-            _body.x = _body.scaleX == 1?-_loc1_.registerPoint.x:Number(_loc1_.registerPoint.x);
+            _body.x = _body.scaleX == 1?-ch.registerPoint.x:Number(ch.registerPoint.x);
          }
       }
       
-      override protected function __doAction(param1:LittleLivingEvent) : void
+      override protected function __doAction(event:LittleLivingEvent) : void
       {
          if(_body)
          {
@@ -149,9 +149,9 @@ package littleGame.view
          }
       }
       
-      protected function __headChanged(param1:LittleLivingEvent) : void
+      protected function __headChanged(event:LittleLivingEvent) : void
       {
-         LittleGameCharacter(_body).setFunnyHead(int(param1.paras[0]));
+         LittleGameCharacter(_body).setFunnyHead(int(event.paras[0]));
       }
       
       protected function get player() : LittlePlayer

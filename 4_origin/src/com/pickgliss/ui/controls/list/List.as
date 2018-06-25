@@ -94,9 +94,9 @@ package com.pickgliss.ui.controls.list
          super();
       }
       
-      public function addStateListener(param1:Function, param2:int = 0, param3:Boolean = false) : void
+      public function addStateListener(listener:Function, priority:int = 0, useWeakReference:Boolean = false) : void
       {
-         addEventListener("stateChange",param1,false,param2);
+         addEventListener("stateChange",listener,false,priority);
       }
       
       public function get cellFactory() : IListCellFactory
@@ -104,19 +104,19 @@ package com.pickgliss.ui.controls.list
          return _factory;
       }
       
-      public function set cellFactory(param1:IListCellFactory) : void
+      public function set cellFactory(factory:IListCellFactory) : void
       {
-         if(_factory == param1)
+         if(_factory == factory)
          {
             return;
          }
-         _factory = param1;
+         _factory = factory;
          onPropertiesChanged("cellFactory");
       }
       
-      public function contentsChanged(param1:ListDataEvent) : void
+      public function contentsChanged(event:ListDataEvent) : void
       {
-         if(param1.getIndex0() >= _firstVisibleIndex && param1.getIndex0() <= _lastVisibleIndex || param1.getIndex1() >= _firstVisibleIndex && param1.getIndex1() <= _lastVisibleIndex || _lastVisibleIndex == -1)
+         if(event.getIndex0() >= _firstVisibleIndex && event.getIndex0() <= _lastVisibleIndex || event.getIndex1() >= _firstVisibleIndex && event.getIndex1() <= _lastVisibleIndex || _lastVisibleIndex == -1)
          {
             updateListView();
          }
@@ -158,13 +158,13 @@ package com.pickgliss.ui.controls.list
          return _horizontalBlockIncrement;
       }
       
-      public function set horizontalBlockIncrement(param1:int) : void
+      public function set horizontalBlockIncrement(increment:int) : void
       {
-         if(_horizontalBlockIncrement == param1)
+         if(_horizontalBlockIncrement == increment)
          {
             return;
          }
-         _horizontalBlockIncrement = param1;
+         _horizontalBlockIncrement = increment;
          onPropertiesChanged("horizontalBlockIncrement");
       }
       
@@ -173,43 +173,43 @@ package com.pickgliss.ui.controls.list
          return _horizontalUnitIncrement;
       }
       
-      public function set horizontalUnitIncrement(param1:int) : void
+      public function set horizontalUnitIncrement(increment:int) : void
       {
-         if(_horizontalUnitIncrement == param1)
+         if(_horizontalUnitIncrement == increment)
          {
             return;
          }
-         _horizontalUnitIncrement = param1;
+         _horizontalUnitIncrement = increment;
          onPropertiesChanged("horizontalUnitIncrement");
       }
       
-      public function intervalAdded(param1:ListDataEvent) : void
+      public function intervalAdded(event:ListDataEvent) : void
       {
          refreshViewSize();
          onPropertiesChanged("viewSize");
-         var _loc2_:int = _factory.getCellHeight();
-         var _loc3_:int = Math.floor(_height / _loc2_);
-         if(param1.getIndex1() <= _lastVisibleIndex || _lastVisibleIndex == -1 || viewHeight < _height || _lastVisibleIndex <= _loc3_)
+         var ih:int = _factory.getCellHeight();
+         var needNum:int = Math.floor(_height / ih);
+         if(event.getIndex1() <= _lastVisibleIndex || _lastVisibleIndex == -1 || viewHeight < _height || _lastVisibleIndex <= needNum)
          {
             updateListView();
          }
       }
       
-      public function intervalRemoved(param1:ListDataEvent) : void
+      public function intervalRemoved(event:ListDataEvent) : void
       {
          refreshViewSize();
          onPropertiesChanged("viewSize");
-         var _loc2_:int = _factory.getCellHeight();
-         var _loc3_:int = Math.floor(_height / _loc2_);
-         if(param1.getIndex1() <= _lastVisibleIndex || _lastVisibleIndex == -1 || viewHeight < _height || _lastVisibleIndex <= _loc3_)
+         var ih:int = _factory.getCellHeight();
+         var needNum:int = Math.floor(_height / ih);
+         if(event.getIndex1() <= _lastVisibleIndex || _lastVisibleIndex == -1 || viewHeight < _height || _lastVisibleIndex <= needNum)
          {
             updateListView();
          }
       }
       
-      public function isSelectedIndex(param1:int) : Boolean
+      public function isSelectedIndex(index:int) : Boolean
       {
-         return _currentSelectedIndex == param1;
+         return _currentSelectedIndex == index;
       }
       
       public function get model() : IListModel
@@ -217,37 +217,37 @@ package com.pickgliss.ui.controls.list
          return _model;
       }
       
-      public function set model(param1:IListModel) : void
+      public function set model(m:IListModel) : void
       {
-         if(param1 != model)
+         if(m != model)
          {
             if(_model)
             {
                _model.removeListDataListener(this);
             }
-            _model = param1;
+            _model = m;
             _model.addListDataListener(this);
             onPropertiesChanged("model");
          }
       }
       
-      public function removeStateListener(param1:Function) : void
+      public function removeStateListener(listener:Function) : void
       {
-         removeEventListener("stateChange",param1);
+         removeEventListener("stateChange",listener);
       }
       
-      public function scrollRectToVisible(param1:IntRectangle) : void
+      public function scrollRectToVisible(contentRect:IntRectangle) : void
       {
-         viewPosition = new IntPoint(param1.x,param1.y);
+         viewPosition = new IntPoint(contentRect.x,contentRect.y);
       }
       
-      public function setListData(param1:Array) : void
+      public function setListData(ld:Array) : void
       {
-         var _loc2_:IListModel = new VectorListModel(param1);
-         model = _loc2_;
+         var m:IListModel = new VectorListModel(ld);
+         model = m;
       }
       
-      public function setViewportTestSize(param1:IntDimension) : void
+      public function setViewportTestSize(s:IntDimension) : void
       {
       }
       
@@ -267,13 +267,13 @@ package com.pickgliss.ui.controls.list
          return _verticalBlockIncrement;
       }
       
-      public function set verticalBlockIncrement(param1:int) : void
+      public function set verticalBlockIncrement(increment:int) : void
       {
-         if(_verticalBlockIncrement == param1)
+         if(_verticalBlockIncrement == increment)
          {
             return;
          }
-         _verticalBlockIncrement = param1;
+         _verticalBlockIncrement = increment;
          onPropertiesChanged("verticalBlockIncrement");
       }
       
@@ -282,13 +282,13 @@ package com.pickgliss.ui.controls.list
          return _verticalUnitIncrement;
       }
       
-      public function set verticalUnitIncrement(param1:int) : void
+      public function set verticalUnitIncrement(increment:int) : void
       {
-         if(_verticalUnitIncrement == param1)
+         if(_verticalUnitIncrement == increment)
          {
             return;
          }
-         _verticalUnitIncrement = param1;
+         _verticalUnitIncrement = increment;
          onPropertiesChanged("verticalUnitIncrement");
       }
       
@@ -297,22 +297,22 @@ package com.pickgliss.ui.controls.list
          return _viewPosition;
       }
       
-      public function set viewPosition(param1:IntPoint) : void
+      public function set viewPosition(p:IntPoint) : void
       {
-         if(_viewPosition.equals(restrictionViewPos(param1)))
+         if(_viewPosition.equals(restrictionViewPos(p)))
          {
             return;
          }
-         _viewPosition.setLocation(param1);
+         _viewPosition.setLocation(p);
          onPropertiesChanged("viewPosition");
       }
       
-      protected function __onItemInteractive(param1:MouseEvent) : void
+      protected function __onItemInteractive(event:MouseEvent) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:IListCell = param1.currentTarget as IListCell;
-         var _loc2_:int = _model.indexOf(_loc3_.getCellValue());
-         var _loc5_:* = param1.type;
+         var type:* = null;
+         var target:IListCell = event.currentTarget as IListCell;
+         var index:int = _model.indexOf(target.getCellValue());
+         var _loc5_:* = event.type;
          if("click" !== _loc5_)
          {
             if("doubleClick" !== _loc5_)
@@ -325,41 +325,41 @@ package com.pickgliss.ui.controls.list
                      {
                         if("rollOut" === _loc5_)
                         {
-                           _loc4_ = "listItemRollOut";
+                           type = "listItemRollOut";
                         }
                      }
                      else
                      {
-                        _loc4_ = "listItemRollOver";
+                        type = "listItemRollOver";
                      }
                   }
                   else
                   {
-                     _loc4_ = "listItemMouseUp";
+                     type = "listItemMouseUp";
                   }
                }
                else
                {
-                  _loc4_ = "listItemMouseDown";
+                  type = "listItemMouseDown";
                }
             }
             else
             {
-               _loc4_ = "listItemDoubleclick";
+               type = "listItemDoubleclick";
             }
          }
          else
          {
-            _loc4_ = "listItemClick";
-            _currentSelectedIndex = _loc2_;
+            type = "listItemClick";
+            _currentSelectedIndex = index;
             updateListView();
          }
-         dispatchEvent(new ListItemEvent(_loc3_,_loc3_.getCellValue(),_loc4_,_loc2_));
+         dispatchEvent(new ListItemEvent(target,target.getCellValue(),type,index));
       }
       
-      public function getCellAt(param1:int) : IListCell
+      public function getCellAt(val:int) : IListCell
       {
-         return _cells[param1];
+         return _cells[val];
       }
       
       public function getAllCells() : Vector.<IListCell>
@@ -372,40 +372,40 @@ package com.pickgliss.ui.controls.list
          return _currentSelectedIndex;
       }
       
-      public function set currentSelectedIndex(param1:int) : void
+      public function set currentSelectedIndex(val:int) : void
       {
-         var _loc2_:* = null;
-         var _loc4_:* = _model.getElementAt(param1);
-         if(_loc4_)
+         var targetCell:* = null;
+         var tmp:* = _model.getElementAt(val);
+         if(tmp)
          {
-            _currentSelectedIndex = param1;
+            _currentSelectedIndex = val;
             updateListView();
             var _loc6_:int = 0;
             var _loc5_:* = _cells;
-            for each(var _loc3_ in _cells)
+            for each(var tmpIListCell in _cells)
             {
-               if(_loc3_.getCellValue() == _loc4_)
+               if(tmpIListCell.getCellValue() == tmp)
                {
-                  _loc2_ = _loc3_;
+                  targetCell = tmpIListCell;
                   break;
                }
             }
-            if(_loc2_)
+            if(targetCell)
             {
-               dispatchEvent(new ListItemEvent(_loc2_,_loc2_.getCellValue(),"listItemClick",_currentSelectedIndex));
+               dispatchEvent(new ListItemEvent(targetCell,targetCell.getCellValue(),"listItemClick",_currentSelectedIndex));
             }
          }
       }
       
-      protected function addCellToContainer(param1:IListCell) : void
+      protected function addCellToContainer(cell:IListCell) : void
       {
-         param1.addEventListener("click",__onItemInteractive);
-         param1.addEventListener("mouseDown",__onItemInteractive);
-         param1.addEventListener("mouseUp",__onItemInteractive);
-         param1.addEventListener("rollOver",__onItemInteractive);
-         param1.addEventListener("rollOut",__onItemInteractive);
-         param1.addEventListener("doubleClick",__onItemInteractive);
-         _cells.push(_cellsContainer.addChild(param1.asDisplayObject()));
+         cell.addEventListener("click",__onItemInteractive);
+         cell.addEventListener("mouseDown",__onItemInteractive);
+         cell.addEventListener("mouseUp",__onItemInteractive);
+         cell.addEventListener("rollOver",__onItemInteractive);
+         cell.addEventListener("rollOut",__onItemInteractive);
+         cell.addEventListener("doubleClick",__onItemInteractive);
+         _cells.push(_cellsContainer.addChild(cell.asDisplayObject()));
       }
       
       override protected function addChildren() : void
@@ -446,40 +446,38 @@ package com.pickgliss.ui.controls.list
       
       protected function createCellsWhenShareCells() : void
       {
-         var _loc8_:int = 0;
-         var _loc4_:* = null;
-         var _loc6_:int = 0;
-         var _loc1_:int = 0;
-         var _loc3_:* = 0;
-         var _loc5_:* = undefined;
-         var _loc2_:int = _factory.getCellHeight();
-         var _loc7_:int = Math.floor(_height / _loc2_) + 2;
+         var i:int = 0;
+         var cell:* = null;
+         var maxCellWidth:int = 0;
+         var addNum:int = 0;
+         var removeIndex:* = 0;
+         var removed:* = undefined;
+         var ih:int = _factory.getCellHeight();
+         var needNum:int = Math.floor(_height / ih) + 2;
          _viewWidth = _factory.getViewWidthNoCount();
-         if(_cells.length == _loc7_)
+         if(_cells.length == needNum)
          {
             return;
          }
-         if(_cells.length < _loc7_)
+         if(_cells.length < needNum)
          {
-            _loc1_ = _loc7_ - _cells.length;
-            _loc8_ = 0;
-            while(_loc8_ < _loc1_)
+            addNum = needNum - _cells.length;
+            for(i = 0; i < addNum; )
             {
-               _loc4_ = createNewCell();
-               _loc6_ = Math.max(_loc4_.width,_loc6_);
-               addCellToContainer(_loc4_);
-               _loc8_++;
+               cell = createNewCell();
+               maxCellWidth = Math.max(cell.width,maxCellWidth);
+               addCellToContainer(cell);
+               i++;
             }
          }
-         else if(_cells.length > _loc7_)
+         else if(_cells.length > needNum)
          {
-            _loc3_ = _loc7_;
-            _loc5_ = _cells.splice(_loc3_,_cells.length - _loc3_);
-            _loc8_ = 0;
-            while(_loc8_ < _loc5_.length)
+            removeIndex = needNum;
+            removed = _cells.splice(removeIndex,_cells.length - removeIndex);
+            for(i = 0; i < removed.length; )
             {
-               removeCellFromContainer(_loc5_[_loc8_]);
-               _loc8_++;
+               removeCellFromContainer(removed[i]);
+               i++;
             }
          }
       }
@@ -493,30 +491,30 @@ package com.pickgliss.ui.controls.list
          return _factory.createNewCell();
       }
       
-      protected function fireStateChanged(param1:Boolean = true) : void
+      protected function fireStateChanged(programmatic:Boolean = true) : void
       {
          dispatchEvent(new InteractiveEvent("stateChange"));
       }
       
-      protected function getListCellModelHeight(param1:int) : int
+      protected function getListCellModelHeight(index:int) : int
       {
          return 0;
       }
       
       protected function getViewMaxPos() : IntPoint
       {
-         var _loc3_:IntDimension = getExtentSize();
-         var _loc1_:IntDimension = getViewSize();
-         var _loc2_:IntPoint = new IntPoint(_loc1_.width - _loc3_.width,_loc1_.height - _loc3_.height);
-         if(_loc2_.x < 0)
+         var showSize:IntDimension = getExtentSize();
+         var viewSize:IntDimension = getViewSize();
+         var p:IntPoint = new IntPoint(viewSize.width - showSize.width,viewSize.height - showSize.height);
+         if(p.x < 0)
          {
-            _loc2_.x = 0;
+            p.x = 0;
          }
-         if(_loc2_.y < 0)
+         if(p.y < 0)
          {
-            _loc2_.y = 0;
+            p.y = 0;
          }
-         return _loc2_;
+         return p;
       }
       
       override protected function init() : void
@@ -539,100 +537,98 @@ package com.pickgliss.ui.controls.list
       
       protected function layoutWhenShareCellsHasNotSameHeight() : void
       {
-         var _loc8_:int = 0;
-         var _loc3_:* = null;
-         var _loc2_:int = 0;
+         var i:int = 0;
+         var cell:* = null;
+         var ldIndex:int = 0;
          createCellsWhenShareCells();
          restrictionViewPos(_viewPosition);
-         var _loc9_:int = _viewPosition.x;
-         var _loc7_:int = _viewPosition.y;
-         var _loc1_:int = _model.getStartIndexByPosY(_loc7_);
-         var _loc6_:int = _model.getSize();
-         var _loc5_:int = -_loc9_;
-         var _loc4_:int = _height;
-         if(_loc6_ < 0)
+         var x:int = _viewPosition.x;
+         var y:int = _viewPosition.y;
+         var startIndex:int = _model.getStartIndexByPosY(y);
+         var listSize:int = _model.getSize();
+         var cx:int = -x;
+         var maxY:int = _height;
+         if(listSize < 0)
          {
             _lastVisibleIndex = -1;
          }
-         _loc8_ = 0;
-         while(_loc8_ < _cells.length)
+         for(i = 0; i < _cells.length; )
          {
-            _loc3_ = _cells[_loc8_];
-            _loc2_ = _loc1_ + _loc8_;
-            if(_loc2_ < _loc6_)
+            cell = _cells[i];
+            ldIndex = startIndex + i;
+            if(ldIndex < listSize)
             {
-               _loc3_.setCellValue(_model.getElementAt(_loc2_));
-               _loc3_.setListCellStatus(this,isSelectedIndex(_loc2_),_loc2_);
-               _loc3_.visible = true;
-               _loc3_.x = _loc5_;
-               _loc3_.y = _model.getCellPosFromIndex(_loc2_) - _loc7_;
-               if(_loc3_.y < _loc4_)
+               cell.setCellValue(_model.getElementAt(ldIndex));
+               cell.setListCellStatus(this,isSelectedIndex(ldIndex),ldIndex);
+               cell.visible = true;
+               cell.x = cx;
+               cell.y = _model.getCellPosFromIndex(ldIndex) - y;
+               if(cell.y < maxY)
                {
-                  _lastVisibleIndex = _loc2_;
+                  _lastVisibleIndex = ldIndex;
                }
             }
             else
             {
-               _loc3_.visible = false;
+               cell.visible = false;
             }
-            _loc8_++;
+            i++;
          }
          refreshViewSize();
-         _firstVisibleIndex = _loc1_;
+         _firstVisibleIndex = startIndex;
       }
       
       protected function layoutWhenShareCellsHasSameHeight() : void
       {
-         var _loc11_:int = 0;
-         var _loc5_:* = null;
-         var _loc4_:int = 0;
+         var i:int = 0;
+         var cell:* = null;
+         var ldIndex:int = 0;
          createCellsWhenShareCells();
          restrictionViewPos(_viewPosition);
-         var _loc12_:int = _viewPosition.x;
-         var _loc10_:int = _viewPosition.y;
-         var _loc3_:int = _factory.getCellHeight();
-         var _loc2_:int = Math.floor(_loc10_ / _loc3_);
-         var _loc1_:int = _loc2_ * _loc3_ - _loc10_;
-         var _loc9_:int = _model.getSize();
-         var _loc8_:int = -_loc12_;
-         var _loc6_:* = _loc1_;
-         var _loc7_:int = _height;
-         if(_loc9_ < 0)
+         var x:int = _viewPosition.x;
+         var y:int = _viewPosition.y;
+         var ih:int = _factory.getCellHeight();
+         var startIndex:int = Math.floor(y / ih);
+         var startY:int = startIndex * ih - y;
+         var listSize:int = _model.getSize();
+         var cx:int = -x;
+         var cy:* = startY;
+         var maxY:int = _height;
+         if(listSize < 0)
          {
             _lastVisibleIndex = -1;
          }
-         _loc11_ = 0;
-         while(_loc11_ < _cells.length)
+         for(i = 0; i < _cells.length; )
          {
-            _loc5_ = _cells[_loc11_];
-            _loc4_ = _loc2_ + _loc11_;
-            if(_loc4_ < _loc9_)
+            cell = _cells[i];
+            ldIndex = startIndex + i;
+            if(ldIndex < listSize)
             {
-               _loc5_.setCellValue(_model.getElementAt(_loc4_));
-               _loc5_.setListCellStatus(this,isSelectedIndex(_loc4_),_loc4_);
-               _loc5_.visible = true;
-               _loc5_.x = _loc8_;
-               _loc5_.y = _loc6_;
-               if(_loc6_ < _loc7_)
+               cell.setCellValue(_model.getElementAt(ldIndex));
+               cell.setListCellStatus(this,isSelectedIndex(ldIndex),ldIndex);
+               cell.visible = true;
+               cell.x = cx;
+               cell.y = cy;
+               if(cy < maxY)
                {
-                  _lastVisibleIndex = _loc4_;
+                  _lastVisibleIndex = ldIndex;
                }
-               _loc6_ = int(_loc6_ + _loc3_);
+               cy = int(cy + ih);
             }
             else
             {
-               _loc5_.visible = false;
+               cell.visible = false;
             }
-            _loc11_++;
+            i++;
          }
          refreshViewSize();
-         _firstVisibleIndex = _loc2_;
+         _firstVisibleIndex = startIndex;
       }
       
       override protected function onProppertiesUpdate() : void
       {
          super.onProppertiesUpdate();
-         var _loc1_:Boolean = false;
+         var mustUpdateListView:Boolean = false;
          _cellsContainer.mask = _maskShape;
          if(_changedPropeties["model"] || _changedPropeties["cellFactory"] || _changedPropeties["viewPosition"] || _changedPropeties["width"] || _changedPropeties["height"])
          {
@@ -640,9 +636,9 @@ package com.pickgliss.ui.controls.list
             {
                removeAllCell();
             }
-            _loc1_ = true;
+            mustUpdateListView = true;
          }
-         if(_loc1_)
+         if(mustUpdateListView)
          {
             updateListView();
          }
@@ -673,13 +669,13 @@ package com.pickgliss.ui.controls.list
          return _viewHeight;
       }
       
-      public function set viewHeight(param1:Number) : void
+      public function set viewHeight(value:Number) : void
       {
-         if(_viewHeight == param1)
+         if(_viewHeight == value)
          {
             return;
          }
-         _viewHeight = param1;
+         _viewHeight = value;
          onPropertiesChanged("viewSize");
       }
       
@@ -688,13 +684,13 @@ package com.pickgliss.ui.controls.list
          return _viewWidth;
       }
       
-      public function set viewWidth(param1:Number) : void
+      public function set viewWidth(value:Number) : void
       {
-         if(_viewWidth == param1)
+         if(_viewWidth == value)
          {
             return;
          }
-         _viewWidth = param1;
+         _viewWidth = value;
          onPropertiesChanged("viewSize");
       }
       
@@ -706,33 +702,32 @@ package com.pickgliss.ui.controls.list
       
       protected function removeAllCell() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _cells.length)
+         var i:int = 0;
+         for(i = 0; i < _cells.length; )
          {
-            removeCellFromContainer(_cells[_loc1_]);
-            _loc1_++;
+            removeCellFromContainer(_cells[i]);
+            i++;
          }
          _cells = new Vector.<IListCell>();
       }
       
-      protected function removeCellFromContainer(param1:IListCell) : void
+      protected function removeCellFromContainer(cell:IListCell) : void
       {
-         param1.removeEventListener("click",__onItemInteractive);
-         param1.removeEventListener("mouseDown",__onItemInteractive);
-         param1.removeEventListener("mouseUp",__onItemInteractive);
-         param1.removeEventListener("rollOver",__onItemInteractive);
-         param1.removeEventListener("rollOut",__onItemInteractive);
-         param1.removeEventListener("doubleClick",__onItemInteractive);
-         ObjectUtils.disposeObject(param1);
+         cell.removeEventListener("click",__onItemInteractive);
+         cell.removeEventListener("mouseDown",__onItemInteractive);
+         cell.removeEventListener("mouseUp",__onItemInteractive);
+         cell.removeEventListener("rollOver",__onItemInteractive);
+         cell.removeEventListener("rollOut",__onItemInteractive);
+         cell.removeEventListener("doubleClick",__onItemInteractive);
+         ObjectUtils.disposeObject(cell);
       }
       
-      protected function restrictionViewPos(param1:IntPoint) : IntPoint
+      protected function restrictionViewPos(p:IntPoint) : IntPoint
       {
-         var _loc2_:IntPoint = getViewMaxPos();
-         param1.x = Math.max(0,Math.min(_loc2_.x,param1.x));
-         param1.y = Math.max(0,Math.min(_loc2_.y,param1.y));
-         return param1;
+         var maxPos:IntPoint = getViewMaxPos();
+         p.x = Math.max(0,Math.min(maxPos.x,p.x));
+         p.y = Math.max(0,Math.min(maxPos.y,p.y));
+         return p;
       }
       
       protected function updatePos() : void

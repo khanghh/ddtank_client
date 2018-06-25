@@ -50,21 +50,21 @@ package guildMemberWeek.view
          _submitButton.removeEventListener("click",_submit);
       }
       
-      public function setView(param1:DisplayObject) : void
+      public function setView(view:DisplayObject) : void
       {
-         _view.addChild(param1);
+         _view.addChild(view);
       }
       
-      private function _submit(param1:MouseEvent) : void
+      private function _submit(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          close();
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.responseCode == 0 || param1.responseCode == 1 || param1.responseCode == 2)
+         if(e.responseCode == 0 || e.responseCode == 1 || e.responseCode == 2)
          {
             close();
          }

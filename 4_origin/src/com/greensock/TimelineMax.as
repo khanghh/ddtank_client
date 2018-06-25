@@ -24,9 +24,9 @@ package com.greensock
       
       public var yoyo:Boolean;
       
-      public function TimelineMax(param1:Object = null)
+      public function TimelineMax(vars:Object = null)
       {
-         super(param1);
+         super(vars);
          _repeat = !!this.vars.repeat?Number(this.vars.repeat):0;
          _repeatDelay = !!this.vars.repeatDelay?Number(this.vars.repeatDelay):0;
          _cyclesComplete = 0;
@@ -38,114 +38,114 @@ package com.greensock
          }
       }
       
-      private static function onInitTweenTo(param1:TweenLite, param2:TimelineMax, param3:Number) : void
+      private static function onInitTweenTo(tween:TweenLite, timeline:TimelineMax, fromTime:Number) : void
       {
-         param2.paused = true;
-         if(!isNaN(param3))
+         timeline.paused = true;
+         if(!isNaN(fromTime))
          {
-            param2.currentTime = param3;
+            timeline.currentTime = fromTime;
          }
-         if(param1.vars.currentTime != param2.currentTime)
+         if(tween.vars.currentTime != timeline.currentTime)
          {
-            param1.duration = Math.abs(param1.vars.currentTime - param2.currentTime) / param2.cachedTimeScale;
+            tween.duration = Math.abs(tween.vars.currentTime - timeline.currentTime) / timeline.cachedTimeScale;
          }
       }
       
-      private static function easeNone(param1:Number, param2:Number, param3:Number, param4:Number) : Number
+      private static function easeNone(t:Number, b:Number, c:Number, d:Number) : Number
       {
-         return param1 / param4;
+         return t / d;
       }
       
-      public function addCallback(param1:Function, param2:*, param3:Array = null) : TweenLite
+      public function addCallback(callback:Function, timeOrLabel:*, params:Array = null) : TweenLite
       {
-         var _loc4_:TweenLite = new TweenLite(param1,0,{
-            "onComplete":param1,
-            "onCompleteParams":param3,
+         var cb:TweenLite = new TweenLite(callback,0,{
+            "onComplete":callback,
+            "onCompleteParams":params,
             "overwrite":0,
             "immediateRender":false
          });
-         insert(_loc4_,param2);
-         return _loc4_;
+         insert(cb,timeOrLabel);
+         return cb;
       }
       
-      public function removeCallback(param1:Function, param2:* = null) : Boolean
+      public function removeCallback(callback:Function, timeOrLabel:* = null) : Boolean
       {
-         var _loc4_:Boolean = false;
-         var _loc3_:* = null;
-         var _loc5_:int = 0;
-         if(param2 == null)
+         var success:Boolean = false;
+         var a:* = null;
+         var i:int = 0;
+         if(timeOrLabel == null)
          {
-            return killTweensOf(param1,false);
+            return killTweensOf(callback,false);
          }
-         if(typeof param2 == "string")
+         if(typeof timeOrLabel == "string")
          {
-            if(!(param2 in _labels))
+            if(!(timeOrLabel in _labels))
             {
                return false;
             }
-            param2 = _labels[param2];
+            timeOrLabel = _labels[timeOrLabel];
          }
-         _loc3_ = getTweensOf(param1,false);
-         _loc5_ = _loc3_.length;
+         a = getTweensOf(callback,false);
+         i = a.length;
          while(true)
          {
-            _loc5_--;
-            if(_loc5_ <= -1)
+            i--;
+            if(i <= -1)
             {
                break;
             }
-            if(_loc3_[_loc5_].cachedStartTime == param2)
+            if(a[i].cachedStartTime == timeOrLabel)
             {
-               remove(_loc3_[_loc5_] as TweenCore);
-               _loc4_ = true;
+               remove(a[i] as TweenCore);
+               success = true;
             }
          }
-         return _loc4_;
+         return success;
       }
       
-      public function tweenTo(param1:*, param2:Object = null) : TweenLite
+      public function tweenTo(timeOrLabel:*, vars:Object = null) : TweenLite
       {
-         var _loc5_:Object = {
+         var varsCopy:Object = {
             "ease":easeNone,
             "overwrite":2,
             "useFrames":this.useFrames,
             "immediateRender":false
          };
          var _loc7_:int = 0;
-         var _loc6_:* = param2;
-         for(var _loc4_ in param2)
+         var _loc6_:* = vars;
+         for(var p in vars)
          {
-            _loc5_[_loc4_] = param2[_loc4_];
+            varsCopy[p] = vars[p];
          }
-         _loc5_.onInit = onInitTweenTo;
-         _loc5_.onInitParams = [null,this,NaN];
-         _loc5_.currentTime = parseTimeOrLabel(param1);
-         var _loc3_:TweenLite = new TweenLite(this,Math.abs(_loc5_.currentTime - this.cachedTime) / this.cachedTimeScale || 0.001,_loc5_);
-         _loc3_.vars.onInitParams[0] = _loc3_;
-         return _loc3_;
+         varsCopy.onInit = onInitTweenTo;
+         varsCopy.onInitParams = [null,this,NaN];
+         varsCopy.currentTime = parseTimeOrLabel(timeOrLabel);
+         var tl:TweenLite = new TweenLite(this,Math.abs(varsCopy.currentTime - this.cachedTime) / this.cachedTimeScale || 0.001,varsCopy);
+         tl.vars.onInitParams[0] = tl;
+         return tl;
       }
       
-      public function tweenFromTo(param1:*, param2:*, param3:Object = null) : TweenLite
+      public function tweenFromTo(fromTimeOrLabel:*, toTimeOrLabel:*, vars:Object = null) : TweenLite
       {
-         var _loc4_:TweenLite = tweenTo(param2,param3);
-         _loc4_.vars.onInitParams[2] = parseTimeOrLabel(param1);
-         _loc4_.duration = Math.abs(_loc4_.vars.currentTime - _loc4_.vars.onInitParams[2]) / this.cachedTimeScale;
-         return _loc4_;
+         var tl:TweenLite = tweenTo(toTimeOrLabel,vars);
+         tl.vars.onInitParams[2] = parseTimeOrLabel(fromTimeOrLabel);
+         tl.duration = Math.abs(tl.vars.currentTime - tl.vars.onInitParams[2]) / this.cachedTimeScale;
+         return tl;
       }
       
-      override public function renderTime(param1:Number, param2:Boolean = false, param3:Boolean = false) : void
+      override public function renderTime(time:Number, suppressEvents:Boolean = false, force:Boolean = false) : void
       {
-         var _loc6_:* = null;
-         var _loc5_:* = false;
-         var _loc11_:Boolean = false;
-         var _loc13_:Boolean = false;
-         var _loc7_:* = null;
-         var _loc14_:Number = NaN;
-         var _loc18_:Number = NaN;
-         var _loc9_:int = 0;
-         var _loc15_:Boolean = false;
-         var _loc17_:* = false;
-         var _loc4_:* = false;
+         var tween:* = null;
+         var isComplete:* = false;
+         var rendered:Boolean = false;
+         var repeated:Boolean = false;
+         var next:* = null;
+         var dur:Number = NaN;
+         var cycleDuration:Number = NaN;
+         var prevCycles:int = 0;
+         var forward:Boolean = false;
+         var prevForward:* = false;
+         var wrap:* = false;
          if(this.gc)
          {
             this.setEnabled(true,false);
@@ -154,91 +154,91 @@ package com.greensock
          {
             this.active = true;
          }
-         var _loc10_:Number = !!this.cacheIsDirty?this.totalDuration:Number(this.cachedTotalDuration);
-         var _loc19_:Number = this.cachedTime;
-         var _loc16_:Number = this.cachedStartTime;
-         var _loc8_:Number = this.cachedTimeScale;
-         var _loc12_:Boolean = this.cachedPaused;
-         if(param1 >= _loc10_)
+         var totalDur:Number = !!this.cacheIsDirty?this.totalDuration:Number(this.cachedTotalDuration);
+         var prevTime:Number = this.cachedTime;
+         var prevStart:Number = this.cachedStartTime;
+         var prevTimeScale:Number = this.cachedTimeScale;
+         var prevPaused:Boolean = this.cachedPaused;
+         if(time >= totalDur)
          {
-            if(_rawPrevTime <= _loc10_ && _rawPrevTime != param1)
+            if(_rawPrevTime <= totalDur && _rawPrevTime != time)
             {
                if(!this.cachedReversed && this.yoyo && _repeat % 2 != 0)
                {
-                  forceChildrenToBeginning(0,param2);
+                  forceChildrenToBeginning(0,suppressEvents);
                   this.cachedTime = 0;
                }
                else
                {
-                  forceChildrenToEnd(this.cachedDuration,param2);
+                  forceChildrenToEnd(this.cachedDuration,suppressEvents);
                   this.cachedTime = this.cachedDuration;
                }
-               this.cachedTotalTime = _loc10_;
-               _loc5_ = !this.hasPausedChild();
-               _loc11_ = true;
-               if(this.cachedDuration == 0 && _loc5_ && (param1 == 0 || _rawPrevTime < 0))
+               this.cachedTotalTime = totalDur;
+               isComplete = !this.hasPausedChild();
+               rendered = true;
+               if(this.cachedDuration == 0 && isComplete && (time == 0 || _rawPrevTime < 0))
                {
-                  param3 = true;
+                  force = true;
                }
             }
          }
-         else if(param1 <= 0)
+         else if(time <= 0)
          {
-            if(param1 < 0)
+            if(time < 0)
             {
                this.active = false;
                if(this.cachedDuration == 0 && _rawPrevTime >= 0)
                {
-                  param3 = true;
-                  _loc5_ = true;
+                  force = true;
+                  isComplete = true;
                }
             }
-            else if(param1 == 0 && !this.initted)
+            else if(time == 0 && !this.initted)
             {
-               param3 = true;
+               force = true;
             }
-            if(_rawPrevTime >= 0 && _rawPrevTime != param1)
+            if(_rawPrevTime >= 0 && _rawPrevTime != time)
             {
                this.cachedTotalTime = 0;
-               forceChildrenToBeginning(0,param2);
+               forceChildrenToBeginning(0,suppressEvents);
                this.cachedTime = 0;
-               _loc11_ = true;
+               rendered = true;
                if(this.cachedReversed)
                {
-                  _loc5_ = true;
+                  isComplete = true;
                }
             }
          }
          else
          {
-            var _loc20_:* = param1;
+            var _loc20_:* = time;
             this.cachedTime = _loc20_;
             this.cachedTotalTime = _loc20_;
          }
-         _rawPrevTime = param1;
+         _rawPrevTime = time;
          if(_repeat != 0)
          {
-            _loc18_ = this.cachedDuration + _repeatDelay;
-            _loc9_ = _cyclesComplete;
-            if(_loc5_)
+            cycleDuration = this.cachedDuration + _repeatDelay;
+            prevCycles = _cyclesComplete;
+            if(isComplete)
             {
                if(this.yoyo && _repeat % 2)
                {
                   this.cachedTime = 0;
                }
             }
-            else if(param1 > 0)
+            else if(time > 0)
             {
-               _cyclesComplete = this.cachedTotalTime / _loc18_ >> 0;
-               if(_cyclesComplete == this.cachedTotalTime / _loc18_)
+               _cyclesComplete = this.cachedTotalTime / cycleDuration >> 0;
+               if(_cyclesComplete == this.cachedTotalTime / cycleDuration)
                {
                   _cyclesComplete = Number(_cyclesComplete) - 1;
                }
-               if(_loc9_ != _cyclesComplete)
+               if(prevCycles != _cyclesComplete)
                {
-                  _loc13_ = true;
+                  repeated = true;
                }
-               this.cachedTime = (this.cachedTotalTime / _loc18_ - _cyclesComplete) * _loc18_;
+               this.cachedTime = (this.cachedTotalTime / cycleDuration - _cyclesComplete) * cycleDuration;
                if(this.yoyo && _cyclesComplete % 2)
                {
                   this.cachedTime = this.cachedDuration - this.cachedTime;
@@ -256,35 +256,35 @@ package com.greensock
             {
                _cyclesComplete = 0;
             }
-            if(_loc13_ && !_loc5_ && (this.cachedTime != _loc19_ || param3))
+            if(repeated && !isComplete && (this.cachedTime != prevTime || force))
             {
-               _loc15_ = !this.yoyo || _cyclesComplete % 2 == 0;
-               _loc17_ = Boolean(!this.yoyo || _loc9_ % 2 == 0);
-               _loc4_ = _loc15_ == _loc17_;
-               if(_loc9_ > _cyclesComplete)
+               forward = !this.yoyo || _cyclesComplete % 2 == 0;
+               prevForward = Boolean(!this.yoyo || prevCycles % 2 == 0);
+               wrap = forward == prevForward;
+               if(prevCycles > _cyclesComplete)
                {
-                  _loc17_ = !_loc17_;
+                  prevForward = !prevForward;
                }
-               if(_loc17_)
+               if(prevForward)
                {
-                  _loc19_ = forceChildrenToEnd(this.cachedDuration,param2);
-                  if(_loc4_)
+                  prevTime = forceChildrenToEnd(this.cachedDuration,suppressEvents);
+                  if(wrap)
                   {
-                     _loc19_ = forceChildrenToBeginning(0,true);
+                     prevTime = forceChildrenToBeginning(0,true);
                   }
                }
                else
                {
-                  _loc19_ = forceChildrenToBeginning(0,param2);
-                  if(_loc4_)
+                  prevTime = forceChildrenToBeginning(0,suppressEvents);
+                  if(wrap)
                   {
-                     _loc19_ = forceChildrenToEnd(this.cachedDuration,true);
+                     prevTime = forceChildrenToEnd(this.cachedDuration,true);
                   }
                }
-               _loc11_ = false;
+               rendered = false;
             }
          }
-         if(this.cachedTime == _loc19_ && !param3)
+         if(this.cachedTime == prevTime && !force)
          {
             return;
          }
@@ -292,7 +292,7 @@ package com.greensock
          {
             this.initted = true;
          }
-         if(_loc19_ == 0 && this.cachedTotalTime != 0 && !param2)
+         if(prevTime == 0 && this.cachedTotalTime != 0 && !suppressEvents)
          {
             if(this.vars.onStart)
             {
@@ -303,29 +303,29 @@ package com.greensock
                _dispatcher.dispatchEvent(new TweenEvent("start"));
             }
          }
-         if(!_loc11_)
+         if(!rendered)
          {
-            if(this.cachedTime - _loc19_ > 0)
+            if(this.cachedTime - prevTime > 0)
             {
-               _loc6_ = _firstChild;
-               while(_loc6_)
+               tween = _firstChild;
+               while(tween)
                {
-                  _loc7_ = _loc6_.nextNode;
-                  if(!(this.cachedPaused && !_loc12_))
+                  next = tween.nextNode;
+                  if(!(this.cachedPaused && !prevPaused))
                   {
-                     if(_loc6_.active || !_loc6_.cachedPaused && _loc6_.cachedStartTime <= this.cachedTime && !_loc6_.gc)
+                     if(tween.active || !tween.cachedPaused && tween.cachedStartTime <= this.cachedTime && !tween.gc)
                      {
-                        if(!_loc6_.cachedReversed)
+                        if(!tween.cachedReversed)
                         {
-                           _loc6_.renderTime((this.cachedTime - _loc6_.cachedStartTime) * _loc6_.cachedTimeScale,param2,false);
+                           tween.renderTime((this.cachedTime - tween.cachedStartTime) * tween.cachedTimeScale,suppressEvents,false);
                         }
                         else
                         {
-                           _loc14_ = !!_loc6_.cacheIsDirty?_loc6_.totalDuration:Number(_loc6_.cachedTotalDuration);
-                           _loc6_.renderTime(_loc14_ - (this.cachedTime - _loc6_.cachedStartTime) * _loc6_.cachedTimeScale,param2,false);
+                           dur = !!tween.cacheIsDirty?tween.totalDuration:Number(tween.cachedTotalDuration);
+                           tween.renderTime(dur - (this.cachedTime - tween.cachedStartTime) * tween.cachedTimeScale,suppressEvents,false);
                         }
                      }
-                     _loc6_ = _loc7_;
+                     tween = next;
                      continue;
                   }
                   break;
@@ -333,44 +333,44 @@ package com.greensock
             }
             else
             {
-               _loc6_ = _lastChild;
-               while(_loc6_)
+               tween = _lastChild;
+               while(tween)
                {
-                  _loc7_ = _loc6_.prevNode;
-                  if(!(this.cachedPaused && !_loc12_))
+                  next = tween.prevNode;
+                  if(!(this.cachedPaused && !prevPaused))
                   {
-                     if(_loc6_.active || !_loc6_.cachedPaused && _loc6_.cachedStartTime <= _loc19_ && !_loc6_.gc)
+                     if(tween.active || !tween.cachedPaused && tween.cachedStartTime <= prevTime && !tween.gc)
                      {
-                        if(!_loc6_.cachedReversed)
+                        if(!tween.cachedReversed)
                         {
-                           _loc6_.renderTime((this.cachedTime - _loc6_.cachedStartTime) * _loc6_.cachedTimeScale,param2,false);
+                           tween.renderTime((this.cachedTime - tween.cachedStartTime) * tween.cachedTimeScale,suppressEvents,false);
                         }
                         else
                         {
-                           _loc14_ = !!_loc6_.cacheIsDirty?_loc6_.totalDuration:Number(_loc6_.cachedTotalDuration);
-                           _loc6_.renderTime(_loc14_ - (this.cachedTime - _loc6_.cachedStartTime) * _loc6_.cachedTimeScale,param2,false);
+                           dur = !!tween.cacheIsDirty?tween.totalDuration:Number(tween.cachedTotalDuration);
+                           tween.renderTime(dur - (this.cachedTime - tween.cachedStartTime) * tween.cachedTimeScale,suppressEvents,false);
                         }
                      }
-                     _loc6_ = _loc7_;
+                     tween = next;
                      continue;
                   }
                   break;
                }
             }
          }
-         if(_hasUpdate && !param2)
+         if(_hasUpdate && !suppressEvents)
          {
             this.vars.onUpdate.apply(null,this.vars.onUpdateParams);
          }
-         if(_hasUpdateListener && !param2)
+         if(_hasUpdateListener && !suppressEvents)
          {
             _dispatcher.dispatchEvent(new TweenEvent("change"));
          }
-         if(_loc5_ && (_loc16_ == this.cachedStartTime || _loc8_ != this.cachedTimeScale) && (_loc10_ >= this.totalDuration || this.cachedTime == 0))
+         if(isComplete && (prevStart == this.cachedStartTime || prevTimeScale != this.cachedTimeScale) && (totalDur >= this.totalDuration || this.cachedTime == 0))
          {
-            complete(true,param2);
+            complete(true,suppressEvents);
          }
-         else if(_loc13_ && !param2)
+         else if(repeated && !suppressEvents)
          {
             if(this.vars.onRepeat)
             {
@@ -383,10 +383,10 @@ package com.greensock
          }
       }
       
-      override public function complete(param1:Boolean = false, param2:Boolean = false) : void
+      override public function complete(skipRender:Boolean = false, suppressEvents:Boolean = false) : void
       {
-         super.complete(param1,param2);
-         if(_dispatcher && !param2)
+         super.complete(skipRender,suppressEvents);
+         if(_dispatcher && !suppressEvents)
          {
             if(this.cachedReversed && this.cachedTotalTime == 0 && this.cachedDuration != 0)
             {
@@ -399,24 +399,23 @@ package com.greensock
          }
       }
       
-      public function getActive(param1:Boolean = true, param2:Boolean = true, param3:Boolean = false) : Array
+      public function getActive(nested:Boolean = true, tweens:Boolean = true, timelines:Boolean = false) : Array
       {
-         var _loc8_:int = 0;
-         var _loc5_:Array = [];
-         var _loc7_:Array = getChildren(param1,param2,param3);
-         var _loc6_:int = _loc7_.length;
-         var _loc4_:int = 0;
-         _loc8_ = 0;
-         while(_loc8_ < _loc6_)
+         var i:int = 0;
+         var a:Array = [];
+         var all:Array = getChildren(nested,tweens,timelines);
+         var l:int = all.length;
+         var cnt:int = 0;
+         for(i = 0; i < l; )
          {
-            if(TweenCore(_loc7_[_loc8_]).active)
+            if(TweenCore(all[i]).active)
             {
-               _loc4_++;
-               _loc5_[_loc4_] = _loc7_[_loc8_];
+               cnt++;
+               a[cnt] = all[i];
             }
-            _loc8_ = _loc8_ + 1;
+            i = i + 1;
          }
-         return _loc5_;
+         return a;
       }
       
       override public function invalidate() : void
@@ -432,45 +431,44 @@ package com.greensock
          super.invalidate();
       }
       
-      public function getLabelAfter(param1:Number = NaN) : String
+      public function getLabelAfter(time:Number = NaN) : String
       {
-         var _loc4_:int = 0;
-         if(!param1 && param1 != 0)
+         var i:int = 0;
+         if(!time && time != 0)
          {
-            param1 = this.cachedTime;
+            time = this.cachedTime;
          }
-         var _loc2_:Array = getLabelsArray();
-         var _loc3_:int = _loc2_.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var labels:Array = getLabelsArray();
+         var l:int = labels.length;
+         for(i = 0; i < l; )
          {
-            if(_loc2_[_loc4_].time > param1)
+            if(labels[i].time > time)
             {
-               return _loc2_[_loc4_].name;
+               return labels[i].name;
             }
-            _loc4_ = _loc4_ + 1;
+            i = i + 1;
          }
          return null;
       }
       
-      public function getLabelBefore(param1:Number = NaN) : String
+      public function getLabelBefore(time:Number = NaN) : String
       {
-         if(!param1 && param1 != 0)
+         if(!time && time != 0)
          {
-            param1 = this.cachedTime;
+            time = this.cachedTime;
          }
-         var _loc2_:Array = getLabelsArray();
-         var _loc3_:int = _loc2_.length;
+         var labels:Array = getLabelsArray();
+         var i:int = labels.length;
          while(true)
          {
-            _loc3_--;
-            if(_loc3_ <= -1)
+            i--;
+            if(i <= -1)
             {
                break;
             }
-            if(_loc2_[_loc3_].time < param1)
+            if(labels[i].time < time)
             {
-               return _loc2_[_loc3_].name;
+               return labels[i].name;
             }
          }
          return null;
@@ -478,18 +476,18 @@ package com.greensock
       
       protected function getLabelsArray() : Array
       {
-         var _loc2_:Array = [];
+         var a:Array = [];
          var _loc4_:int = 0;
          var _loc3_:* = _labels;
-         for(var _loc1_ in _labels)
+         for(var p in _labels)
          {
-            _loc2_[_loc2_.length] = {
-               "time":_labels[_loc1_],
-               "name":_loc1_
+            a[a.length] = {
+               "time":_labels[p],
+               "name":p
             };
          }
-         _loc2_.sortOn("time",16);
-         return _loc2_;
+         a.sortOn("time",16);
+         return a;
       }
       
       protected function initDispatcher() : void
@@ -521,40 +519,40 @@ package com.greensock
          }
       }
       
-      public function addEventListener(param1:String, param2:Function, param3:Boolean = false, param4:int = 0, param5:Boolean = false) : void
+      public function addEventListener(type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false) : void
       {
          if(_dispatcher == null)
          {
             initDispatcher();
          }
-         if(param1 == "change")
+         if(type == "change")
          {
             _hasUpdateListener = true;
          }
-         _dispatcher.addEventListener(param1,param2,param3,param4,param5);
+         _dispatcher.addEventListener(type,listener,useCapture,priority,useWeakReference);
       }
       
-      public function removeEventListener(param1:String, param2:Function, param3:Boolean = false) : void
+      public function removeEventListener(type:String, listener:Function, useCapture:Boolean = false) : void
       {
          if(_dispatcher != null)
          {
-            _dispatcher.removeEventListener(param1,param2,param3);
+            _dispatcher.removeEventListener(type,listener,useCapture);
          }
       }
       
-      public function hasEventListener(param1:String) : Boolean
+      public function hasEventListener(type:String) : Boolean
       {
-         return _dispatcher == null?false:Boolean(_dispatcher.hasEventListener(param1));
+         return _dispatcher == null?false:Boolean(_dispatcher.hasEventListener(type));
       }
       
-      public function willTrigger(param1:String) : Boolean
+      public function willTrigger(type:String) : Boolean
       {
-         return _dispatcher == null?false:Boolean(_dispatcher.willTrigger(param1));
+         return _dispatcher == null?false:Boolean(_dispatcher.willTrigger(type));
       }
       
-      public function dispatchEvent(param1:Event) : Boolean
+      public function dispatchEvent(e:Event) : Boolean
       {
-         return _dispatcher == null?false:Boolean(_dispatcher.dispatchEvent(param1));
+         return _dispatcher == null?false:Boolean(_dispatcher.dispatchEvent(e));
       }
       
       public function get totalProgress() : Number
@@ -562,35 +560,35 @@ package com.greensock
          return this.cachedTotalTime / this.totalDuration;
       }
       
-      public function set totalProgress(param1:Number) : void
+      public function set totalProgress(n:Number) : void
       {
-         setTotalTime(this.totalDuration * param1,false);
+         setTotalTime(this.totalDuration * n,false);
       }
       
       override public function get totalDuration() : Number
       {
-         var _loc1_:Number = NaN;
+         var temp:Number = NaN;
          if(this.cacheIsDirty)
          {
-            _loc1_ = super.totalDuration;
+            temp = super.totalDuration;
             this.cachedTotalDuration = _repeat == -1?999999999999:Number(this.cachedDuration * (_repeat + 1) + _repeatDelay * _repeat);
          }
          return this.cachedTotalDuration;
       }
       
-      override public function set currentTime(param1:Number) : void
+      override public function set currentTime(n:Number) : void
       {
          if(_cyclesComplete == 0)
          {
-            setTotalTime(param1,false);
+            setTotalTime(n,false);
          }
          else if(this.yoyo && _cyclesComplete % 2 == 1)
          {
-            setTotalTime(this.duration - param1 + _cyclesComplete * (this.cachedDuration + _repeatDelay),false);
+            setTotalTime(this.duration - n + _cyclesComplete * (this.cachedDuration + _repeatDelay),false);
          }
          else
          {
-            setTotalTime(param1 + _cyclesComplete * (this.duration + _repeatDelay),false);
+            setTotalTime(n + _cyclesComplete * (this.duration + _repeatDelay),false);
          }
       }
       
@@ -599,9 +597,9 @@ package com.greensock
          return _repeat;
       }
       
-      public function set repeat(param1:int) : void
+      public function set repeat(n:int) : void
       {
-         _repeat = param1;
+         _repeat = n;
          setDirtyCache(true);
       }
       
@@ -610,9 +608,9 @@ package com.greensock
          return _repeatDelay;
       }
       
-      public function set repeatDelay(param1:Number) : void
+      public function set repeatDelay(n:Number) : void
       {
-         _repeatDelay = param1;
+         _repeatDelay = n;
          setDirtyCache(true);
       }
       

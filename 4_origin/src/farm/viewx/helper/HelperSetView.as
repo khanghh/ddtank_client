@@ -175,59 +175,57 @@ package farm.viewx.helper
          _fertilizerSetBg = ComponentFactory.Instance.creatBitmap("asset.farmHelper.SetBg");
          _seedList = new SeedSelect();
          _fertilizerList = new FertilizerSelect();
-         var _loc2_:Sprite = new Sprite();
-         _loc2_.graphics.beginFill(16777215,0);
-         _loc2_.graphics.drawRect(0,0,50,50);
-         _loc2_.graphics.endFill();
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,50,50);
-         _loc1_.graphics.endFill();
-         _result = new ShopItemCell(_loc2_,null,false,true);
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(16777215,0);
+         sp.graphics.drawRect(0,0,50,50);
+         sp.graphics.endFill();
+         var sp1:Sprite = new Sprite();
+         sp1.graphics.beginFill(16777215,0);
+         sp1.graphics.drawRect(0,0,50,50);
+         sp1.graphics.endFill();
+         _result = new ShopItemCell(sp,null,false,true);
          _result.cellSize = 50;
          PositionUtils.setPos(_result,"farm.helper.cellPos");
          _seedBtn.addChild(_result);
          _seedBtn.mouseChildren = true;
-         _fertiliresult = new ShopItemCell(_loc1_);
+         _fertiliresult = new ShopItemCell(sp1);
          _fertiliresult.cellSize = 50;
          PositionUtils.setPos(_fertiliresult,"farm.helper.cellPos");
          _FertilizerBtn.addChild(_fertiliresult);
          _FertilizerBtn.mouseChildren = true;
       }
       
-      public function set helperSetViewSelectResult(param1:Function) : void
+      public function set helperSetViewSelectResult(value:Function) : void
       {
-         _helperSetViewSelectResult = param1;
+         _helperSetViewSelectResult = value;
       }
       
-      public function update(param1:FilterFrameText, param2:FilterFrameText, param3:FilterFrameText, param4:FilterFrameText) : void
+      public function update(seedName:FilterFrameText, seednum:FilterFrameText, ferName:FilterFrameText, ferNum:FilterFrameText) : void
       {
-         var _loc11_:int = 0;
-         var _loc7_:* = null;
-         var _loc10_:int = 0;
-         var _loc6_:* = null;
-         var _loc5_:Vector.<ShopItemInfo> = ShopManager.Instance.getValidGoodByType(88);
-         var _loc9_:Dictionary = new Dictionary();
-         var _loc12_:Dictionary = new Dictionary();
-         _loc11_ = 0;
-         while(_loc11_ < _loc5_.length)
+         var i:int = 0;
+         var itemInfo:* = null;
+         var k:int = 0;
+         var itemInfo1:* = null;
+         var arr:Vector.<ShopItemInfo> = ShopManager.Instance.getValidGoodByType(88);
+         var _seedInfos:Dictionary = new Dictionary();
+         var _fertilizerInfos:Dictionary = new Dictionary();
+         for(i = 0; i < arr.length; )
          {
-            _loc7_ = _loc5_[_loc11_];
-            _loc9_[_loc7_.TemplateInfo.Name] = _loc7_.TemplateInfo.TemplateID;
-            _loc11_++;
+            itemInfo = arr[i];
+            _seedInfos[itemInfo.TemplateInfo.Name] = itemInfo.TemplateInfo.TemplateID;
+            i++;
          }
-         var _loc14_:Vector.<ShopItemInfo> = ShopManager.Instance.getValidGoodByType(89);
-         _loc10_ = 0;
-         while(_loc10_ < _loc14_.length)
+         var arr1:Vector.<ShopItemInfo> = ShopManager.Instance.getValidGoodByType(89);
+         for(k = 0; k < arr1.length; )
          {
-            _loc6_ = _loc14_[_loc10_];
-            _loc12_[_loc6_.TemplateInfo.Name] = _loc6_.TemplateInfo.TemplateID;
-            _loc10_++;
+            itemInfo1 = arr1[k];
+            _fertilizerInfos[itemInfo1.TemplateInfo.Name] = itemInfo1.TemplateInfo.TemplateID;
+            k++;
          }
-         var _loc13_:int = _loc9_[param1.text];
-         var _loc8_:int = _loc12_[param3.text];
-         _result.info = ItemManager.Instance.getTemplateById(_loc13_);
-         _fertiliresult.info = ItemManager.Instance.getTemplateById(_loc8_);
+         var SeedId:int = _seedInfos[seedName.text];
+         var fertilizerId:int = _fertilizerInfos[ferName.text];
+         _result.info = ItemManager.Instance.getTemplateById(SeedId);
+         _fertiliresult.info = ItemManager.Instance.getTemplateById(fertilizerId);
          if(_result.info == null)
          {
             _AddBtn.enable = false;
@@ -248,10 +246,10 @@ package farm.viewx.helper
             _AddBtn1.enable = true;
             _MinusBtn1.enable = true;
          }
-         _setNumTxt.text = param2.text;
-         _setNum = int(param2.text);
-         _setNumTxt1.text = param4.text;
-         _setFertilizerNum = int(param4.text);
+         _setNumTxt.text = seednum.text;
+         _setNum = int(seednum.text);
+         _setNumTxt1.text = ferNum.text;
+         _setFertilizerNum = int(ferNum.text);
       }
       
       private function addEvent() : void
@@ -288,22 +286,22 @@ package farm.viewx.helper
          _fertilizerList.removeEventListener("selectFertilizer",__setfertilizer);
       }
       
-      private function __txtchange(param1:Event) : void
+      private function __txtchange(event:Event) : void
       {
          _setNum = parseInt(_setNumTxt.text);
          checkInput();
       }
       
-      private function __txtchange1(param1:Event) : void
+      private function __txtchange1(event:Event) : void
       {
          _setFertilizerNum = parseInt(_setNumTxt1.text);
          checkInputOne();
       }
       
-      private function __selectNum(param1:MouseEvent) : void
+      private function __selectNum(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = event.currentTarget;
          if(_AddBtn !== _loc2_)
          {
             if(_AddBtn1 !== _loc2_)
@@ -349,7 +347,7 @@ package farm.viewx.helper
          }
       }
       
-      private function __resetHandler(param1:MouseEvent) : void
+      private function __resetHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _setNumTxt.text = "0";
@@ -370,28 +368,28 @@ package farm.viewx.helper
          _MinusBtn1.enable = false;
       }
       
-      private function __okHandler(param1:MouseEvent) : void
+      private function __okHandler(evnet:MouseEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
+         var seedId:* = null;
+         var manureId:* = null;
          SoundManager.instance.play("008");
          seednum = int(_setNumTxt.text);
          manure = int(_setNumTxt1.text);
-         var _loc7_:Boolean = false;
-         var _loc5_:Boolean = false;
-         var _loc8_:InventoryItemInfo = null;
-         var _loc4_:InventoryItemInfo = null;
+         var isSetSeed:Boolean = false;
+         var isSetManure:Boolean = false;
+         var seedinfo:InventoryItemInfo = null;
+         var fertilizerinfo:InventoryItemInfo = null;
          if(_result.info)
          {
-            _loc8_ = FarmModelController.instance.model.findItemInfo(32,_result.info.TemplateID);
+            seedinfo = FarmModelController.instance.model.findItemInfo(32,_result.info.TemplateID);
          }
          if(_fertiliresult.info)
          {
-            _loc4_ = FarmModelController.instance.model.findItemInfo(33,_fertiliresult.info.TemplateID);
+            fertilizerinfo = FarmModelController.instance.model.findItemInfo(33,_fertiliresult.info.TemplateID);
          }
-         if(_loc8_)
+         if(seedinfo)
          {
-            if(_loc8_.CategoryID == 32 && _loc8_.Count < seednum)
+            if(seedinfo.CategoryID == 32 && seedinfo.Count < seednum)
             {
                buyAlert();
                return;
@@ -402,19 +400,19 @@ package farm.viewx.helper
                return;
             }
          }
-         if(_loc8_ == null && seednum > 0)
+         if(seedinfo == null && seednum > 0)
          {
             buyAlert();
             return;
          }
-         if(_loc4_ == null && manure > 0)
+         if(fertilizerinfo == null && manure > 0)
          {
             buyAlert();
             return;
          }
-         if(_loc4_)
+         if(fertilizerinfo)
          {
-            if(_loc4_.CategoryID == 33 && _loc4_.Count < manure)
+            if(fertilizerinfo.CategoryID == 33 && fertilizerinfo.Count < manure)
             {
                buyAlert();
                return;
@@ -425,34 +423,34 @@ package farm.viewx.helper
                return;
             }
          }
-         var _loc6_:Object = {};
+         var obj:Object = {};
          if(_result.info)
          {
-            _loc7_ = true;
-            _loc6_.seedId = _result.info.TemplateID;
-            _loc6_.seedNum = seednum;
+            isSetSeed = true;
+            obj.seedId = _result.info.TemplateID;
+            obj.seedNum = seednum;
          }
          if(_fertiliresult.info)
          {
-            _loc5_ = true;
-            _loc6_.manureId = _fertiliresult.info.TemplateID;
-            _loc6_.manureNum = manure;
+            isSetManure = true;
+            obj.manureId = _fertiliresult.info.TemplateID;
+            obj.manureNum = manure;
          }
-         _loc6_.isSeed = _loc7_;
-         _loc6_.isManure = _loc5_;
+         obj.isSeed = isSetSeed;
+         obj.isManure = isSetManure;
          if(_findNumState != null)
          {
-            _loc2_ = _loc6_.seedId;
-            if(!_loc2_)
+            seedId = obj.seedId;
+            if(!seedId)
             {
-               _loc2_ = 0;
+               seedId = 0;
             }
-            _loc3_ = _loc6_.manureId;
-            if(!_loc3_)
+            manureId = obj.manureId;
+            if(!manureId)
             {
-               _loc3_ = 0;
+               manureId = 0;
             }
-            if(_findNumState.call(this,_loc2_,_loc3_) > 0)
+            if(_findNumState.call(this,seedId,manureId) > 0)
             {
                buyAlert();
                return;
@@ -460,7 +458,7 @@ package farm.viewx.helper
          }
          if(_helperSetViewSelectResult != null)
          {
-            _helperSetViewSelectResult.call(this,_loc6_);
+            _helperSetViewSelectResult.call(this,obj);
          }
          dispose();
       }
@@ -472,12 +470,12 @@ package farm.viewx.helper
          _buyFrame.addEventListener("response",__onBuyResponse);
       }
       
-      private function __onBuyResponse(param1:FrameEvent) : void
+      private function __onBuyResponse(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          _buyFrame.removeEventListener("response",__onBuyResponse);
          _buyFrame.dispose();
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         if(event.responseCode == 2 || event.responseCode == 3)
          {
             _farmShop = ComponentFactory.Instance.creatComponentByStylename("farm.farmShopView.shop");
             _farmShop.addEventListener("response",__closeFarmShop);
@@ -486,11 +484,11 @@ package farm.viewx.helper
          }
       }
       
-      private function __closeFarmShop(param1:FrameEvent) : void
+      private function __closeFarmShop(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          _farmShop.removeEventListener("response",__closeFarmShop);
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -511,22 +509,22 @@ package farm.viewx.helper
       
       public function get getTxtId1() : int
       {
-         var _loc1_:int = 0;
+         var id:int = 0;
          if(_result && _result.info)
          {
-            _loc1_ = _result.info.TemplateID;
+            id = _result.info.TemplateID;
          }
-         return _loc1_;
+         return id;
       }
       
       public function get getTxtId2() : int
       {
-         var _loc1_:int = 0;
+         var id:int = 0;
          if(_fertiliresult && _fertiliresult.info)
          {
-            _loc1_ = _fertiliresult.info.TemplateID;
+            id = _fertiliresult.info.TemplateID;
          }
-         return _loc1_;
+         return id;
       }
       
       private function checkInput() : void
@@ -555,10 +553,10 @@ package farm.viewx.helper
          _setNumTxt1.text = _setFertilizerNum.toString();
       }
       
-      private function __frameHandler(param1:FrameEvent) : void
+      private function __frameHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -566,36 +564,36 @@ package farm.viewx.helper
          }
       }
       
-      private function __seedHandler(param1:MouseEvent) : void
+      private function __seedHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:Point = _seedBtn.localToGlobal(new Point(-100,-60));
-         _seedList.x = _loc2_.x;
-         _seedList.y = _loc2_.y;
+         var pos:Point = _seedBtn.localToGlobal(new Point(-100,-60));
+         _seedList.x = pos.x;
+         _seedList.y = pos.y;
          _seedList.setVisible = true;
       }
       
-      private function __fertiliHandler(param1:MouseEvent) : void
+      private function __fertiliHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:Point = _FertilizerBtn.localToGlobal(new Point(-100,60));
-         _fertilizerList.x = _loc2_.x;
-         _fertilizerList.y = _loc2_.y;
+         var pos:Point = _FertilizerBtn.localToGlobal(new Point(-100,60));
+         _fertilizerList.x = pos.x;
+         _fertilizerList.y = pos.y;
          _fertilizerList.setVisible = true;
       }
       
-      private function __setseed(param1:SelectComposeItemEvent) : void
+      private function __setseed(event:SelectComposeItemEvent) : void
       {
-         var _loc2_:int = param1.data.id;
-         _result.info = ItemManager.Instance.getTemplateById(_loc2_);
+         var templateId:int = event.data.id;
+         _result.info = ItemManager.Instance.getTemplateById(templateId);
          _AddBtn.enable = true;
          _MinusBtn.enable = true;
       }
       
-      private function __setfertilizer(param1:SelectComposeItemEvent) : void
+      private function __setfertilizer(event:SelectComposeItemEvent) : void
       {
-         var _loc2_:int = param1.data.id;
-         _fertiliresult.info = ItemManager.Instance.getTemplateById(_loc2_);
+         var templateId:int = event.data.id;
+         _fertiliresult.info = ItemManager.Instance.getTemplateById(templateId);
          _AddBtn1.enable = true;
          _MinusBtn1.enable = true;
       }
@@ -605,9 +603,9 @@ package farm.viewx.helper
          LayerManager.Instance.addToLayer(this,3,true,1);
       }
       
-      public function set findNumState(param1:Function) : void
+      public function set findNumState(value:Function) : void
       {
-         _findNumState = param1;
+         _findNumState = value;
       }
       
       override public function dispose() : void

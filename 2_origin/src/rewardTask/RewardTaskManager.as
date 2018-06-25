@@ -1,15 +1,14 @@
 package rewardTask
 {
-   import flash.events.Event;
-   import flash.events.EventDispatcher;
+   import ddt.CoreManager;
    
-   public class RewardTaskManager extends EventDispatcher
+   public class RewardTaskManager extends CoreManager
    {
       
       private static var _instance:RewardTaskManager;
        
       
-      public function RewardTaskManager(param1:inner)
+      public function RewardTaskManager($inner:inner)
       {
          super(null);
       }
@@ -21,11 +20,6 @@ package rewardTask
             _instance = new RewardTaskManager(new inner());
          }
          return _instance;
-      }
-      
-      public function show() : void
-      {
-         dispatchEvent(new Event("complete"));
       }
    }
 }

@@ -53,24 +53,23 @@ package vipIntegralShop
          VipIntegralShopManager.Instance.addEventListener("vipintgralOpenView",__onOpenView);
       }
       
-      protected function __onUpdateShopView(param1:PkgEvent) : void
+      protected function __onUpdateShopView(event:PkgEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readInt();
-         if(_loc2_ > 0)
+         var i:int = 0;
+         var pkg:PackageIn = event.pkg;
+         var count:int = pkg.readInt();
+         if(count > 0)
          {
-            _loc4_ = 0;
-            while(_loc4_ < _loc2_)
+            for(i = 0; i < count; )
             {
-               limitDic[_loc3_.readInt()] = _loc3_.readInt();
-               _loc4_++;
+               limitDic[pkg.readInt()] = pkg.readInt();
+               i++;
             }
          }
          _integralShopView.refreshView();
       }
       
-      private function __onOpenView(param1:Event) : void
+      private function __onOpenView(event:Event) : void
       {
          initData();
       }
@@ -78,21 +77,21 @@ package vipIntegralShop
       private function initData() : void
       {
          _limitDic = new Dictionary();
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("VipStoreList.xml"),5);
-         _loc1_.analyzer = new VipIntegralShopDataAnalyzer(getGoodsInfoList);
-         _loc1_.addEventListener("complete",__onComplete);
-         LoadResourceManager.Instance.startLoad(_loc1_);
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("VipStoreList.xml"),5);
+         loader.analyzer = new VipIntegralShopDataAnalyzer(getGoodsInfoList);
+         loader.addEventListener("complete",__onComplete);
+         LoadResourceManager.Instance.startLoad(loader);
       }
       
-      protected function __onComplete(param1:LoaderEvent) : void
+      protected function __onComplete(event:LoaderEvent) : void
       {
-         param1.loader.removeEventListener("complete",__onComplete);
+         event.loader.removeEventListener("complete",__onComplete);
          show();
       }
       
-      private function getGoodsInfoList(param1:VipIntegralShopDataAnalyzer) : void
+      private function getGoodsInfoList(analyzer:VipIntegralShopDataAnalyzer) : void
       {
-         _goodsInfoList = param1.shopInfoVec;
+         _goodsInfoList = analyzer.shopInfoVec;
       }
       
       public function show() : void

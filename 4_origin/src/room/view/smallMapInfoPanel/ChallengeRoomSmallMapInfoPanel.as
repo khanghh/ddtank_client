@@ -42,9 +42,9 @@ package room.view.smallMapInfoPanel
          }
       }
       
-      override public function set info(param1:RoomInfo) : void
+      override public function set info(value:RoomInfo) : void
       {
-         .super.info = param1;
+         .super.info = value;
          if(_info)
          {
             _info.selfRoomPlayer.addEventListener("isHostChange",__update);
@@ -80,14 +80,14 @@ package room.view.smallMapInfoPanel
          buttonMode = true;
       }
       
-      override protected function __onClick(param1:MouseEvent) : void
+      override protected function __onClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("045");
-         var _loc2_:ChallengeChooseMapView = new ChallengeChooseMapView();
-         _loc2_.show();
+         var mapChooser:ChallengeChooseMapView = new ChallengeChooseMapView();
+         mapChooser.show();
       }
       
-      private function __update(param1:RoomPlayerEvent = null) : void
+      private function __update(evt:RoomPlayerEvent = null) : void
       {
          if(_info.selfRoomPlayer.isHost)
          {
@@ -113,13 +113,13 @@ package room.view.smallMapInfoPanel
          LoadResourceManager.Instance.startLoad(_titleLoader);
       }
       
-      private function __titleCompleteHandler(param1:LoaderEvent) : void
+      private function __titleCompleteHandler(evt:LoaderEvent) : void
       {
          ObjectUtils.disposeAllChildren(_titleIconContainer);
-         if(param1.loader.isSuccess)
+         if(evt.loader.isSuccess)
          {
-            param1.loader.removeEventListener("complete",__titleCompleteHandler);
-            _titleIconContainer.addChild(param1.loader.content as Bitmap);
+            evt.loader.removeEventListener("complete",__titleCompleteHandler);
+            _titleIconContainer.addChild(evt.loader.content as Bitmap);
          }
       }
       

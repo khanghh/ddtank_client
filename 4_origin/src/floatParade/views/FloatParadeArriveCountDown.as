@@ -35,17 +35,17 @@ package floatParade.views
          addChild(_txt);
       }
       
-      public function refreshView(param1:int, param2:int) : void
+      public function refreshView(posX:int, carSpeed:int) : void
       {
-         var _loc5_:int = 33600 + 280 - param1;
-         _loc5_ = _loc5_ < 0?0:_loc5_;
-         var _loc4_:Number = _loc5_ / param2 / 25;
-         _loc4_ = _loc4_ < 0?0:Number(_loc4_);
-         var _loc3_:int = _loc4_ / 60;
-         var _loc6_:int = _loc4_ % 60;
-         var _loc7_:String = _loc3_ < 10?"0" + _loc3_:_loc3_.toString();
-         var _loc8_:String = _loc6_ < 10?"0" + _loc6_:_loc6_.toString();
-         _txt.text = _recordTxt + _loc7_ + ":" + _loc8_;
+         var tmpDis:int = 33600 + 280 - posX;
+         tmpDis = tmpDis < 0?0:tmpDis;
+         var differ:Number = tmpDis / carSpeed / 25;
+         differ = differ < 0?0:Number(differ);
+         var minute:int = differ / 60;
+         var second:int = differ % 60;
+         var minStr:String = minute < 10?"0" + minute:minute.toString();
+         var secStr:String = second < 10?"0" + second:second.toString();
+         _txt.text = _recordTxt + minStr + ":" + secStr;
       }
       
       public function dispose() : void

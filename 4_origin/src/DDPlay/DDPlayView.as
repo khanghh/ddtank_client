@@ -293,24 +293,24 @@ package DDPlay
          PlayerManager.Instance.Self.PropBag.removeEventListener("update",_bagUpdate);
       }
       
-      private function __updateScore(param1:CrazyTankSocketEvent) : void
+      private function __updateScore(e:CrazyTankSocketEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         DDPlayManaer.Instance.DDPlayScore = _loc2_.readInt();
+         var pkg:PackageIn = e.pkg;
+         DDPlayManaer.Instance.DDPlayScore = pkg.readInt();
          _scoreTxt.text = DDPlayManaer.Instance.DDPlayScore.toString();
          _coinsTxt.text = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(201310).toString();
          DDPlayManaer.Instance.dispatchEvent(new Event("update_score"));
       }
       
-      private function __start(param1:CrazyTankSocketEvent) : void
+      private function __start(e:CrazyTankSocketEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _multiple = _loc2_.readInt();
-         DDPlayManaer.Instance.DDPlayScore = _loc2_.readInt();
+         var pkg:PackageIn = e.pkg;
+         _multiple = pkg.readInt();
+         DDPlayManaer.Instance.DDPlayScore = pkg.readInt();
          refreshShow();
       }
       
-      private function _timerHandler(param1:TimerEvent) : void
+      private function _timerHandler(e:TimerEvent) : void
       {
          if(DDPlayManaer.Instance.isOpen == false)
          {
@@ -331,9 +331,9 @@ package DDPlay
          SocketManager.Instance.out.DDPlayStart();
       }
       
-      private function __response(param1:FrameEvent) : void
+      private function __response(e:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(e.responseCode == 0 || e.responseCode == 1)
          {
             SoundManager.instance.play("008");
             if(_upBtn.enable == false)
@@ -345,12 +345,12 @@ package DDPlay
          }
       }
       
-      private function _bagUpdate(param1:BagEvent) : void
+      private function _bagUpdate(e:BagEvent) : void
       {
          _coinsTxt.text = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(201310).toString();
       }
       
-      private function __scoreExchange(param1:MouseEvent) : void
+      private function __scoreExchange(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(DDPlayManaer.Instance.isOpen == false)
@@ -366,9 +366,9 @@ package DDPlay
          LayerManager.Instance.addToLayer(_exchangeFrame,3,true,1);
       }
       
-      private function doUpHonor(param1:MouseEvent) : void
+      private function doUpHonor(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var quick:* = null;
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -382,8 +382,8 @@ package DDPlay
          }
          if(PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(201310) < 1)
          {
-            _loc2_ = ComponentFactory.Instance.creatCustomObject("DDPlay.quickBuyCoins.frame");
-            _loc2_.show(0);
+            quick = ComponentFactory.Instance.creatCustomObject("DDPlay.quickBuyCoins.frame");
+            quick.show(0);
             return;
          }
          if(_selectedTxt.selected)
@@ -398,7 +398,7 @@ package DDPlay
          SocketManager.Instance.out.DDPlayStart();
       }
       
-      private function stopDoUpHonor(param1:MouseEvent) : void
+      private function stopDoUpHonor(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          timer.stop();
@@ -410,119 +410,122 @@ package DDPlay
          }
       }
       
-      private function __checkBoxClick(param1:MouseEvent) : void
+      private function __checkBoxClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }
       
       private function refreshShow() : void
       {
-         var _loc1_:int = 0;
-         var _loc4_:* = 0;
-         var _loc6_:int = 0;
-         var _loc7_:int = 0;
-         var _loc2_:int = 0;
-         var _loc5_:int = 0;
-         var _loc3_:int = 0;
-         _loc1_ = _multiple;
-         switch(int(_loc1_) - 2)
+         var lm:int = 0;
+         var a1:* = 0;
+         var a2:int = 0;
+         var a3:int = 0;
+         var b1:int = 0;
+         var b2:int = 0;
+         var b3:int = 0;
+         if(1)
          {
-            case 0:
-               _loc4_ = int(Math.ceil(Math.random() * 3));
-               _loc6_ = Math.ceil(Math.random() * 3);
-               _loc7_ = Math.ceil(Math.random() * 3);
-               if(_loc4_ == _loc6_ && _loc6_ == _loc7_)
-               {
-                  if(_loc6_ == 1)
+            lm = _multiple;
+            switch(int(lm) - 2)
+            {
+               case 0:
+                  a1 = int(Math.ceil(Math.random() * 3));
+                  a2 = Math.ceil(Math.random() * 3);
+                  a3 = Math.ceil(Math.random() * 3);
+                  if(a1 == a2 && a2 == a3)
                   {
-                     _loc6_ = 2;
+                     if(a2 == 1)
+                     {
+                        a2 = 2;
+                     }
+                     else if(a2 == 2)
+                     {
+                        a2 = 3;
+                     }
+                     else
+                     {
+                        a2 = 1;
+                     }
                   }
-                  else if(_loc6_ == 2)
+                  if(a1 != a2 && a1 != a3 && a2 != a3)
                   {
-                     _loc6_ = 3;
+                     a1 = a2;
                   }
-                  else
+                  startLottery(a1,a2,a3);
+                  break;
+               case 1:
+                  startLottery(1,1,1);
+                  break;
+               default:
+                  b1 = Math.ceil(Math.random() * 3);
+                  b2 = Math.ceil(Math.random() * 3);
+                  b3 = Math.ceil(Math.random() * 3);
+                  if(b1 == b2)
                   {
-                     _loc6_ = 1;
+                     if(b2 == 1)
+                     {
+                        b2 = 2;
+                     }
+                     else if(b2 == 2)
+                     {
+                        b2 = 3;
+                     }
+                     else
+                     {
+                        b2 = 1;
+                     }
                   }
-               }
-               if(_loc4_ != _loc6_ && _loc4_ != _loc7_ && _loc6_ != _loc7_)
-               {
-                  _loc4_ = _loc6_;
-               }
-               startLottery(_loc4_,_loc6_,_loc7_);
-               break;
-            case 1:
-               startLottery(1,1,1);
-               break;
-            default:
-               _loc2_ = Math.ceil(Math.random() * 3);
-               _loc5_ = Math.ceil(Math.random() * 3);
-               _loc3_ = Math.ceil(Math.random() * 3);
-               if(_loc2_ == _loc5_)
-               {
-                  if(_loc5_ == 1)
+                  if(b3 == b2 || b3 == b1)
                   {
-                     _loc5_ = 2;
+                     if(b1 + b2 == 3)
+                     {
+                        b3 = 3;
+                     }
+                     else if(b1 + b2 == 4)
+                     {
+                        b3 = 2;
+                     }
+                     else
+                     {
+                        b3 = 1;
+                     }
                   }
-                  else if(_loc5_ == 2)
-                  {
-                     _loc5_ = 3;
-                  }
-                  else
-                  {
-                     _loc5_ = 1;
-                  }
-               }
-               if(_loc3_ == _loc5_ || _loc3_ == _loc2_)
-               {
-                  if(_loc2_ + _loc5_ == 3)
-                  {
-                     _loc3_ = 3;
-                  }
-                  else if(_loc2_ + _loc5_ == 4)
-                  {
-                     _loc3_ = 2;
-                  }
-                  else
-                  {
-                     _loc3_ = 1;
-                  }
-               }
-               startLottery(_loc2_,_loc5_,_loc3_);
-               break;
-            case 3:
-            default:
-            default:
-            default:
-            default:
-               startLottery(2,2,2);
-               break;
-            case 8:
-               startLottery(3,3,3);
+                  startLottery(b1,b2,b3);
+                  break;
+               case 3:
+               default:
+               default:
+               default:
+               default:
+                  startLottery(2,2,2);
+                  break;
+               case 8:
+                  startLottery(3,3,3);
+            }
          }
       }
       
-      private function startLottery(param1:int = 1, param2:int = 2, param3:int = 3) : void
+      private function startLottery(bg1:int = 1, bg2:int = 2, bg3:int = 3) : void
       {
          reSetBogu();
          tw1 = TweenLite.to(_sixBogu1,(_sixBogu1.y - _boguTypePoints[2].y) / 375,{
             "y":_boguTypePoints[2].y,
             "ease":Linear.easeNone,
             "onComplete":_sixBogu1Com,
-            "onCompleteParams":[param1]
+            "onCompleteParams":[bg1]
          });
          tw2 = TweenLite.to(_sixBogu2,(_sixBogu2.y - _boguTypePoints[2].y) / 375,{
             "y":_boguTypePoints[2].y,
             "ease":Linear.easeNone,
             "onComplete":_sixBogu2Com,
-            "onCompleteParams":[param2]
+            "onCompleteParams":[bg2]
          });
          tw3 = TweenLite.to(_sixBogu3,(_sixBogu3.y - _boguTypePoints[2].y) / 375,{
             "y":_boguTypePoints[2].y,
             "ease":Linear.easeNone,
             "onComplete":_sixBogu3Com,
-            "onCompleteParams":[param3]
+            "onCompleteParams":[bg3]
          });
       }
       
@@ -554,7 +557,7 @@ package DDPlay
          _shine3.gotoAndStop(1);
       }
       
-      private function _sixBogu1Com(param1:int) : void
+      private function _sixBogu1Com(bg:int) : void
       {
          tw1.kill();
          _sixBogu1.y = _boguTypePoints[0].y;
@@ -577,7 +580,7 @@ package DDPlay
          if(fastestLast1 == 0 && tSpeed1 == 0.4)
          {
             tw1 = TweenLite.to(_sixBogu1,tSpeed1 + 0.1,{
-               "y":_boguTypePoints[param1].y,
+               "y":_boguTypePoints[bg].y,
                "ease":Back.easeOut
             });
          }
@@ -587,12 +590,12 @@ package DDPlay
                "y":_boguTypePoints[2].y,
                "ease":Linear.easeNone,
                "onComplete":_sixBogu1Com,
-               "onCompleteParams":[param1]
+               "onCompleteParams":[bg]
             });
          }
       }
       
-      private function _sixBogu2Com(param1:int) : void
+      private function _sixBogu2Com(bg:int) : void
       {
          tw2.kill();
          _sixBogu2.y = _boguTypePoints[0].y;
@@ -615,7 +618,7 @@ package DDPlay
          if(fastestLast2 == 0 && tSpeed2 == 0.4)
          {
             tw2 = TweenLite.to(_sixBogu2,tSpeed2 + 0.1,{
-               "y":_boguTypePoints[param1].y,
+               "y":_boguTypePoints[bg].y,
                "ease":Back.easeOut
             });
          }
@@ -625,12 +628,12 @@ package DDPlay
                "y":_boguTypePoints[2].y,
                "ease":Linear.easeNone,
                "onComplete":_sixBogu2Com,
-               "onCompleteParams":[param1]
+               "onCompleteParams":[bg]
             });
          }
       }
       
-      private function _sixBogu3Com(param1:int) : void
+      private function _sixBogu3Com(bg:int) : void
       {
          tw3.kill();
          _sixBogu3.y = _boguTypePoints[0].y;
@@ -653,7 +656,7 @@ package DDPlay
          if(fastestLast3 == 0 && tSpeed3 == 0.4)
          {
             tw3 = TweenLite.to(_sixBogu3,tSpeed3 + 0.1,{
-               "y":_boguTypePoints[param1].y,
+               "y":_boguTypePoints[bg].y,
                "ease":Back.easeOut,
                "onComplete":__lotteryCom
             });
@@ -664,7 +667,7 @@ package DDPlay
                "y":_boguTypePoints[2].y,
                "ease":Linear.easeNone,
                "onComplete":_sixBogu3Com,
-               "onCompleteParams":[param1]
+               "onCompleteParams":[bg]
             });
          }
       }
@@ -696,13 +699,13 @@ package DDPlay
             _shine2.gotoAndPlay(1);
             _shine3.gotoAndPlay(1);
          }
-         var _loc1_:int = _multiple;
-         if(_loc1_ > 1)
+         var lm:int = _multiple;
+         if(lm > 1)
          {
-            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.ddPlay.view.getMoney",_loc1_));
-            ChatManager.Instance.sysChatLinkYellow(LanguageMgr.GetTranslation("tank.ddPlay.view.getMoney",_loc1_));
+            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.ddPlay.view.getMoney",lm));
+            ChatManager.Instance.sysChatLinkYellow(LanguageMgr.GetTranslation("tank.ddPlay.view.getMoney",lm));
          }
-         switch(int(_loc1_) - 3)
+         switch(int(lm) - 3)
          {
             case 0:
                _tripleMc.visible = true;

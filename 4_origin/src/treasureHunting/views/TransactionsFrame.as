@@ -40,15 +40,15 @@ package treasureHunting.views
          initEvents();
       }
       
-      public function set target(param1:Sprite) : void
+      public function set target($target:Sprite) : void
       {
-         _target = param1;
+         _target = $target;
       }
       
       private function initView() : void
       {
-         var _loc1_:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("shop.PresentFrame.OkBtnText"),LanguageMgr.GetTranslation("shop.PresentFrame.CancelBtnText"));
-         info = _loc1_;
+         var alerInfo:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("shop.PresentFrame.OkBtnText"),LanguageMgr.GetTranslation("shop.PresentFrame.CancelBtnText"));
+         info = alerInfo;
          _selecedItem = new DoubleSelectedItem();
          _selecedItem.x = 193;
          _selecedItem.y = 108;
@@ -69,7 +69,7 @@ package treasureHunting.views
          _selectedCheckButton.addEventListener("click",mouseClickHander);
       }
       
-      private function mouseClickHander(param1:MouseEvent) : void
+      private function mouseClickHander(e:MouseEvent) : void
       {
          if(clickFunction != null)
          {
@@ -83,10 +83,10 @@ package treasureHunting.views
          removeEventListener("response",responseHander);
       }
       
-      private function responseHander(param1:FrameEvent) : void
+      private function responseHander(e:FrameEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         if(e.responseCode == 3 || e.responseCode == 2)
          {
             TreasureManager.instance.needShowLimted = false;
             if(buyFunction != null)
@@ -98,7 +98,7 @@ package treasureHunting.views
                dispose();
             }
          }
-         else if(param1.responseCode == 0 || param1.responseCode == 1 || param1.responseCode == 4)
+         else if(e.responseCode == 0 || e.responseCode == 1 || e.responseCode == 4)
          {
             if(_target)
             {
@@ -116,9 +116,9 @@ package treasureHunting.views
          return _selecedItem.isBind;
       }
       
-      public function setTxt(param1:String) : void
+      public function setTxt(str:String) : void
       {
-         _txt.text = param1;
+         _txt.text = str;
       }
       
       override public function dispose() : void

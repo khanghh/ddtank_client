@@ -19,15 +19,15 @@ package com.pickgliss.effect
       
       private var _data:Array;
       
-      public function AddMovieEffect(param1:int)
+      public function AddMovieEffect($id:int)
       {
-         super(param1);
+         super($id);
       }
       
-      override public function initEffect(param1:DisplayObject, param2:Array) : void
+      override public function initEffect(target:DisplayObject, data:Array) : void
       {
-         super.initEffect(param1,param2);
-         _data = param2;
+         super.initEffect(target,data);
+         _data = data;
          creatMovie();
       }
       
@@ -38,115 +38,109 @@ package com.pickgliss.effect
       
       override public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          super.dispose();
-         _loc1_ = 0;
-         while(_loc1_ < _movies.length)
+         for(i = 0; i < _movies.length; )
          {
-            if(_movies[_loc1_] is MovieClip)
+            if(_movies[i] is MovieClip)
             {
-               MovieClip(_movies[_loc1_]).stop();
+               MovieClip(_movies[i]).stop();
             }
-            if(_movies[_loc1_])
+            if(_movies[i])
             {
-               ObjectUtils.disposeObject(_movies[_loc1_]);
+               ObjectUtils.disposeObject(_movies[i]);
             }
-            _loc1_++;
+            i++;
          }
          _movies = null;
       }
       
       override public function play() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          super.play();
-         _loc1_ = 0;
-         while(_loc1_ < _movies.length)
+         for(i = 0; i < _movies.length; )
          {
-            if(_movies[_loc1_] is MovieClip)
+            if(_movies[i] is MovieClip)
             {
-               MovieClip(_movies[_loc1_]).play();
+               MovieClip(_movies[i]).play();
             }
             if(_target.parent)
             {
-               _target.parent.addChild(_movies[_loc1_]);
+               _target.parent.addChild(_movies[i]);
             }
-            _movies[_loc1_].x = _target.x;
-            _movies[_loc1_].y = _target.y;
-            if(_rectangles.length - 1 >= _loc1_)
+            _movies[i].x = _target.x;
+            _movies[i].y = _target.y;
+            if(_rectangles.length - 1 >= i)
             {
-               _movies[_loc1_].x = _movies[_loc1_].x + _rectangles[_loc1_].x;
-               _movies[_loc1_].y = _movies[_loc1_].y + _rectangles[_loc1_].y;
+               _movies[i].x = _movies[i].x + _rectangles[i].x;
+               _movies[i].y = _movies[i].y + _rectangles[i].y;
             }
-            _loc1_++;
+            i++;
          }
       }
       
       override public function stop() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          super.stop();
-         _loc1_ = 0;
-         while(_loc1_ < _movies.length)
+         for(i = 0; i < _movies.length; )
          {
-            if(_movies[_loc1_] is MovieClip)
+            if(_movies[i] is MovieClip)
             {
-               MovieClip(_movies[_loc1_]).stop();
+               MovieClip(_movies[i]).stop();
             }
-            if(_movies[_loc1_].parent)
+            if(_movies[i].parent)
             {
-               _movies[_loc1_].parent.removeChild(_movies[_loc1_]);
+               _movies[i].parent.removeChild(_movies[i]);
             }
-            _loc1_++;
+            i++;
          }
       }
       
       private function creatMovie() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:int = 0;
-         var _loc2_:int = 0;
+         var i:int = 0;
+         var j:int = 0;
+         var k:int = 0;
          _movies = new Vector.<DisplayObject>();
          _rectangles = new Vector.<Rectangle>();
-         _loc3_ = 0;
-         while(_loc3_ < _data.length)
+         for(i = 0; i < _data.length; )
          {
-            if(_data[_loc3_] is DisplayObject)
+            if(_data[i] is DisplayObject)
             {
-               _movies.push(_data[_loc3_]);
+               _movies.push(_data[i]);
             }
-            else if(_data[_loc3_] is String)
+            else if(_data[i] is String)
             {
-               _movies.push(ComponentFactory.Instance.creat(_data[_loc3_]));
+               _movies.push(ComponentFactory.Instance.creat(_data[i]));
             }
-            _loc3_++;
+            i++;
          }
-         _loc1_ = 0;
-         while(_loc1_ < _data.length)
+         for(j = 0; j < _data.length; )
          {
-            if(_data[_loc1_] is Point)
+            if(_data[j] is Point)
             {
-               _rectangles.push(new Rectangle(_data[_loc1_].x,_data[_loc1_].y,0,0));
+               _rectangles.push(new Rectangle(_data[j].x,_data[j].y,0,0));
             }
-            else if(_data[_loc1_] is Rectangle)
+            else if(_data[j] is Rectangle)
             {
-               _rectangles.push(_data[_loc1_]);
+               _rectangles.push(_data[j]);
             }
-            _loc1_++;
+            j++;
          }
-         _loc2_ = 0;
-         while(_loc2_ < _movies.length)
+         for(k = 0; k < _movies.length; )
          {
-            if(_movies[_loc2_] is InteractiveObject)
+            if(_movies[k] is InteractiveObject)
             {
-               InteractiveObject(_movies[_loc2_]).mouseEnabled = false;
+               InteractiveObject(_movies[k]).mouseEnabled = false;
             }
-            if(_movies[_loc2_] is DisplayObjectContainer)
+            if(_movies[k] is DisplayObjectContainer)
             {
-               DisplayObjectContainer(_movies[_loc2_]).mouseChildren = false;
-               DisplayObjectContainer(_movies[_loc2_]).mouseEnabled = false;
+               DisplayObjectContainer(_movies[k]).mouseChildren = false;
+               DisplayObjectContainer(_movies[k]).mouseEnabled = false;
             }
-            _loc2_++;
+            k++;
          }
       }
    }

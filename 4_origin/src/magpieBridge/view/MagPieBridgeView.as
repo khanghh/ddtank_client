@@ -105,9 +105,9 @@ package magpieBridge.view
          super();
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
-         super.enter(param1,param2);
+         super.enter(prev,data);
          initView();
          initEvent();
       }
@@ -170,18 +170,18 @@ package magpieBridge.view
          StateManager.setState("main");
       }
       
-      protected function __onHelpBtnClick(param1:MouseEvent) : void
+      protected function __onHelpBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:MagpieHelpView = ComponentFactory.Instance.creatComponentByStylename("magpie.view.helpView");
-         _loc2_.addEventListener("response",frameEvent);
-         LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+         var helpframe:MagpieHelpView = ComponentFactory.Instance.creatComponentByStylename("magpie.view.helpView");
+         helpframe.addEventListener("response",frameEvent);
+         LayerManager.Instance.addToLayer(helpframe,3,true,1);
       }
       
-      private function frameEvent(param1:FrameEvent) : void
+      private function frameEvent(event:FrameEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         param1.currentTarget.dispose();
+         event.currentTarget.dispose();
       }
       
       override public function refresh() : void
@@ -199,11 +199,11 @@ package magpieBridge.view
          super.refresh();
       }
       
-      protected function __onMagpieNum(param1:PkgEvent) : void
+      protected function __onMagpieNum(event:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readInt();
-         MagpieBridgeManager.instance.magpieModel.MagpieNum = _loc2_;
+         var pkg:PackageIn = event.pkg;
+         var num:int = pkg.readInt();
+         MagpieBridgeManager.instance.magpieModel.MagpieNum = num;
          _addMagpieFlag = true;
       }
       
@@ -215,8 +215,8 @@ package magpieBridge.view
             _addMagpie0 = ComponentFactory.Instance.creat("asset.magpieBridge.magpie0");
             _addMagpie0.addFrameScript(_addMagpie0.totalFrames - 1,playMagpieAnimation);
          }
-         var _loc1_:Point = new Point(_magpieMap.mapVec[_magpiePos].x - 5,_magpieMap.mapVec[_magpiePos].y - 10);
-         PositionUtils.setPos(_addMagpie0,_loc1_);
+         var point:Point = new Point(_magpieMap.mapVec[_magpiePos].x - 5,_magpieMap.mapVec[_magpiePos].y - 10);
+         PositionUtils.setPos(_addMagpie0,point);
          _addMagpie0.gotoAndPlay(1);
          _magpieMap.addChild(_addMagpie0);
       }
@@ -226,11 +226,11 @@ package magpieBridge.view
          _addMagpie0.stop();
          _addMagpie1 = ComponentFactory.Instance.creat("asset.magpieBridge.magpie1");
          PositionUtils.setPos(_addMagpie1,_magpieMap.localToGlobal(new Point(_magpieMap.mapVec[_magpiePos].x,_magpieMap.mapVec[_magpiePos].y)));
-         var _loc1_:Point = _magpieView.localToGlobal(_magpieView.getCurrentMagpiePos(true));
+         var point:Point = _magpieView.localToGlobal(_magpieView.getCurrentMagpiePos(true));
          addChild(_addMagpie1);
          TweenLite.to(_addMagpie1,0.5,{
-            "x":_loc1_.x,
-            "y":_loc1_.y,
+            "x":point.x,
+            "y":point.y,
             "onComplete":setMagpieNum
          });
       }
@@ -242,18 +242,18 @@ package magpieBridge.view
          _magpieView.showMagpie();
       }
       
-      protected function __onGetAward(param1:PkgEvent) : void
+      protected function __onGetAward(event:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         MagpieBridgeManager.instance.magpieModel.CurrentTempId = _loc2_.readInt();
+         var pkg:PackageIn = event.pkg;
+         MagpieBridgeManager.instance.magpieModel.CurrentTempId = pkg.readInt();
          _getAwardFlag = true;
       }
       
       private function flyGoods() : void
       {
-         var _loc1_:int = MagpieBridgeManager.instance.magpieModel.CurrentTempId;
-         var _loc2_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(_loc1_);
-         _awardCell = new BagCell(0,_loc2_);
+         var id:int = MagpieBridgeManager.instance.magpieModel.CurrentTempId;
+         var info:ItemTemplateInfo = ItemManager.Instance.getTemplateById(id);
+         _awardCell = new BagCell(0,info);
          PositionUtils.setPos(_awardCell,_selfPlayer);
          addChild(_awardCell);
          TweenMax.to(_awardCell,1,{
@@ -277,28 +277,28 @@ package magpieBridge.view
          setBtnEnable(true);
       }
       
-      protected function __onUpdatePlayerPos(param1:PkgEvent) : void
+      protected function __onUpdatePlayerPos(event:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _desPos = _loc2_.readInt();
+         var pkg:PackageIn = event.pkg;
+         _desPos = pkg.readInt();
          _stepFlag = true;
       }
       
-      protected function __onWalkOver(param1:MagpieBridgeEvent) : void
+      protected function __onWalkOver(event:MagpieBridgeEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
+         var nowPos:int = 0;
+         var offPos:int = 0;
          setBtnEnable(true);
          if(_stepFlag)
          {
             setBtnEnable(false);
             _stepFlag = false;
             _magpieMap.closeIcon();
-            _loc3_ = MagpieBridgeManager.instance.magpieModel.NowPosition;
-            _loc2_ = _desPos - _loc3_;
-            showPromptInfo(_loc2_);
+            nowPos = MagpieBridgeManager.instance.magpieModel.NowPosition;
+            offPos = _desPos - nowPos;
+            showPromptInfo(offPos);
             setPlayerWalk(_desPos);
-            if(_loc2_ < -1)
+            if(offPos < -1)
             {
                _selfPlayer.sceneCharacterDirection = SceneCharacterDirection.LB;
                PositionUtils.setPos(_selfPlayer,_walkArray.pop());
@@ -341,58 +341,58 @@ package magpieBridge.view
          }
       }
       
-      private function showPromptInfo(param1:int) : void
+      private function showPromptInfo(offPos:int) : void
       {
-         if(param1 == 1)
+         if(offPos == 1)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("buried.alertInfo.toGo"));
          }
-         else if(param1 == -1)
+         else if(offPos == -1)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("buried.alertInfo.toBack"));
          }
-         else if(param1 > 1)
+         else if(offPos > 1)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("buried.alertInfo.toEnd"));
          }
-         else if(param1 < -1)
+         else if(offPos < -1)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("buried.alertInfo.toStart"));
          }
       }
       
-      private function __onBoxMovieOver(param1:BuriedEvent) : void
+      private function __onBoxMovieOver(event:BuriedEvent) : void
       {
          setBtnEnable(true);
          ObjectUtils.disposeObject(_awardBox);
          _awardBox = null;
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("buried.alertInfo.mapover"),LanguageMgr.GetTranslation("ok"),"",true,true,true,2,null,"SimpleAlert",60,false);
-         _loc2_.addEventListener("response",onMapOverResponse);
+         var frame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("buried.alertInfo.mapover"),LanguageMgr.GetTranslation("ok"),"",true,true,true,2,null,"SimpleAlert",60,false);
+         frame.addEventListener("response",onMapOverResponse);
       }
       
-      private function onMapOverResponse(param1:FrameEvent) : void
+      private function onMapOverResponse(e:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",onMapOverResponse);
-         if(param1.responseCode == 1 || param1.responseCode == 2 || param1.responseCode == 3 || param1.responseCode == 0)
+         var frame:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("response",onMapOverResponse);
+         if(e.responseCode == 1 || e.responseCode == 2 || e.responseCode == 3 || e.responseCode == 0)
          {
             SocketManager.Instance.out.refreshMagpieView();
          }
-         _loc2_.dispose();
+         frame.dispose();
       }
       
-      protected function __onCloseIcon(param1:PkgEvent) : void
+      protected function __onCloseIcon(event:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc4_:int = _loc3_.readInt();
-         var _loc2_:int = _loc3_.readInt();
-         if(_loc2_ == 0)
+         var pkg:PackageIn = event.pkg;
+         var type:int = pkg.readInt();
+         var value:int = pkg.readInt();
+         if(value == 0)
          {
             _closeIconFlag = true;
          }
       }
       
-      protected function __onBuyCountClick(param1:MouseEvent) : void
+      protected function __onBuyCountClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.bagLocked)
@@ -400,26 +400,26 @@ package magpieBridge.view
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:MagpieBuyCountsView = ComponentFactory.Instance.creat("magpieBridge.buyCountsView");
-         _loc2_.price = ServerConfigManager.instance.magpieBridgeCountPrice;
-         _loc2_.show();
+         var buyView:MagpieBuyCountsView = ComponentFactory.Instance.creat("magpieBridge.buyCountsView");
+         buyView.price = ServerConfigManager.instance.magpieBridgeCountPrice;
+         buyView.show();
       }
       
-      protected function __onBuyCount(param1:PkgEvent) : void
+      protected function __onBuyCount(event:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         var _loc3_:int = _loc2_.readInt();
-         _lastNum.text = _loc3_.toString();
-         MagpieBridgeManager.instance.magpieModel.LastNum = _loc3_;
+         var pkg:PackageIn = event.pkg;
+         var lastNum:int = pkg.readInt();
+         _lastNum.text = lastNum.toString();
+         MagpieBridgeManager.instance.magpieModel.LastNum = lastNum;
       }
       
-      protected function __onSetCount(param1:PkgEvent) : void
+      protected function __onSetCount(event:PkgEvent) : void
       {
          MagpieBridgeManager.instance.magpieModel.LastNum++;
          _addCountFlag = true;
       }
       
-      protected function __onSetBtnEnable(param1:MagpieBridgeEvent) : void
+      protected function __onSetBtnEnable(event:MagpieBridgeEvent) : void
       {
          if(_endFlag)
          {
@@ -446,14 +446,14 @@ package magpieBridge.view
          }
       }
       
-      private function setBtnEnable(param1:Boolean) : void
+      private function setBtnEnable(flag:Boolean) : void
       {
-         _duckBtn.enable = param1;
-         _returnBtn.mouseEnabled = param1;
-         _returnBtn.mouseChildren = param1;
+         _duckBtn.enable = flag;
+         _returnBtn.mouseEnabled = flag;
+         _returnBtn.mouseChildren = flag;
       }
       
-      protected function __onDuckClick(param1:MouseEvent) : void
+      protected function __onDuckClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.bagLocked)
@@ -468,21 +468,21 @@ package magpieBridge.view
          }
       }
       
-      protected function __onRollDice(param1:PkgEvent) : void
+      protected function __onRollDice(event:PkgEvent) : void
       {
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc5_:int = _loc4_.readInt();
-         var _loc2_:int = _loc4_.readInt();
-         var _loc3_:int = _loc4_.readInt();
-         _lastNum.text = _loc5_.toString();
-         MagpieBridgeManager.instance.magpieModel.LastNum = _loc5_;
-         setPlayerWalk(_loc3_);
-         _diceRoll.setCrFrame(_diceArray[_loc2_ - 1]);
+         var pkg:PackageIn = event.pkg;
+         var lastNum:int = pkg.readInt();
+         var diceNum:int = pkg.readInt();
+         var desPos:int = pkg.readInt();
+         _lastNum.text = lastNum.toString();
+         MagpieBridgeManager.instance.magpieModel.LastNum = lastNum;
+         setPlayerWalk(desPos);
+         _diceRoll.setCrFrame(_diceArray[diceNum - 1]);
          _diceRoll.resetFrame();
          _diceRoll.play();
       }
       
-      protected function __onDiceOver(param1:BuriedEvent) : void
+      protected function __onDiceOver(event:BuriedEvent) : void
       {
          if(_walkArray.length > 0)
          {
@@ -490,29 +490,29 @@ package magpieBridge.view
          }
       }
       
-      private function setPlayerWalk(param1:int) : void
+      private function setPlayerWalk(desNum:int) : void
       {
-         var _loc4_:Array = _playerPosArray[MagpieBridgeManager.instance.magpieModel.MapId];
+         var posArray:Array = _playerPosArray[MagpieBridgeManager.instance.magpieModel.MapId];
          _walkArray = [];
-         var _loc2_:int = MagpieBridgeManager.instance.magpieModel.NowPosition;
-         var _loc3_:int = param1 < _loc2_?-1:1;
-         while(_loc2_ != param1)
+         var nowPos:int = MagpieBridgeManager.instance.magpieModel.NowPosition;
+         var flag:int = desNum < nowPos?-1:1;
+         while(nowPos != desNum)
          {
-            _loc2_ = _loc2_ + _loc3_;
-            _walkArray.push(_loc4_[_loc2_]);
+            nowPos = nowPos + flag;
+            _walkArray.push(posArray[nowPos]);
          }
-         MagpieBridgeManager.instance.magpieModel.NowPosition = _loc2_;
+         MagpieBridgeManager.instance.magpieModel.NowPosition = nowPos;
       }
       
-      private function roleCallback(param1:MagpiePlayer, param2:Boolean, param3:int) : void
+      private function roleCallback(role:MagpiePlayer, isLoadSucceed:Boolean, vFlag:int) : void
       {
-         if(param3 == 0)
+         if(vFlag == 0)
          {
-            if(!param1)
+            if(!role)
             {
                return;
             }
-            _selfPlayer = param1;
+            _selfPlayer = role;
             _selfPlayer.sceneCharacterStateType = "natural";
             _selfPlayer.update();
             PositionUtils.setPos(_selfPlayer,_playerPosArray[MagpieBridgeManager.instance.magpieModel.MapId][MagpieBridgeManager.instance.magpieModel.NowPosition]);
@@ -549,7 +549,7 @@ package magpieBridge.view
          SocketManager.Instance.removeEventListener(PkgEvent.format(276,13),__onSetCount);
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
          removeEvent();
          ObjectUtils.disposeObject(_bg);

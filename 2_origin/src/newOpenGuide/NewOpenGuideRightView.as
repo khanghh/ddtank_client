@@ -49,17 +49,17 @@ package newOpenGuide
          {
             return;
          }
-         var _loc1_:Array = NewOpenGuideManager.instance.getTitleStrIndexByLevel(PlayerManager.Instance.Self.Grade + 1);
-         if(_loc1_[0] == 19)
+         var tmpArray:Array = NewOpenGuideManager.instance.getTitleStrIndexByLevel(PlayerManager.Instance.Self.Grade + 1);
+         if(tmpArray[0] == 19)
          {
-            _loc1_ = NewOpenGuideManager.instance.getTitleStrIndexByLevel(PlayerManager.Instance.Self.Grade + 2);
+            tmpArray = NewOpenGuideManager.instance.getTitleStrIndexByLevel(PlayerManager.Instance.Self.Grade + 2);
          }
-         if(_loc1_[0] > 0)
+         if(tmpArray[0] > 0)
          {
             this.visible = true;
-            _titleTxt.text = _loc1_[1];
-            _promptTxt.text = LanguageMgr.GetTranslation("newOpenGuide.openPromptStr",_loc1_[2]);
-            _iconMc.gotoAndStop(_loc1_[0]);
+            _titleTxt.text = tmpArray[1];
+            _promptTxt.text = LanguageMgr.GetTranslation("newOpenGuide.openPromptStr",tmpArray[2]);
+            _iconMc.gotoAndStop(tmpArray[0]);
          }
          else
          {

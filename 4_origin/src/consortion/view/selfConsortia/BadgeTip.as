@@ -59,11 +59,11 @@ package consortion.view.selfConsortia
          return _tipdata;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(data:Object) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:Number = NaN;
-         _tipdata = param1;
+         var buyDate:* = null;
+         var leftTime:Number = NaN;
+         _tipdata = data;
          _nameTxt.text = _tipdata.name;
          _nameTxt.textColor = QualityType.QUALITY_COLOR[4];
          _desTxt.text = LanguageMgr.GetTranslation("core.badgeTip.description",_tipdata.LimitLevel);
@@ -75,9 +75,9 @@ package consortion.view.selfConsortia
             _bg.height = 115;
             if(_tipdata.buyDate)
             {
-               _loc3_ = _tipdata.buyDate;
-               _loc2_ = _loc3_.time + _tipdata.ValidDate * 24 * 60 * 60 * 1000 - TimeManager.Instance.Now().time;
-               _validDateTxt.text = LanguageMgr.GetTranslation("tank.view.emailII.EmailIIStripView.validity") + Math.ceil(_loc2_ / 86400000).toString() + LanguageMgr.GetTranslation("shop.ShopIIShoppingCarItem.day");
+               buyDate = _tipdata.buyDate;
+               leftTime = buyDate.time + _tipdata.ValidDate * 24 * 60 * 60 * 1000 - TimeManager.Instance.Now().time;
+               _validDateTxt.text = LanguageMgr.GetTranslation("tank.view.emailII.EmailIIStripView.validity") + Math.ceil(leftTime / 86400000).toString() + LanguageMgr.GetTranslation("shop.ShopIIShoppingCarItem.day");
             }
             else
             {

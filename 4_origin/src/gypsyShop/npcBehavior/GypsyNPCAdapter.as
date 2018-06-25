@@ -8,7 +8,7 @@ package gypsyShop.npcBehavior
    {
        
       
-      public function GypsyNPCAdapter(param1:Sprite)
+      public function GypsyNPCAdapter(container:Sprite)
       {
          super();
       }
@@ -25,15 +25,15 @@ package gypsyShop.npcBehavior
       {
       }
       
-      public function set container(param1:Sprite) : void
+      public function set container(value:Sprite) : void
       {
       }
       
-      public function set hotArea(param1:InteractiveObject) : void
+      public function set hotArea(value:InteractiveObject) : void
       {
       }
       
-      public function set hallView(param1:HallStateView) : void
+      public function set hallView(value:HallStateView) : void
       {
       }
    }

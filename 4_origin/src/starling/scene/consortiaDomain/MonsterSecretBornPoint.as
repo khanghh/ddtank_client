@@ -26,12 +26,12 @@ package starling.scene.consortiaDomain
       
       private var _buildImageScale:Number;
       
-      public function MonsterSecretBornPoint(param1:int, param2:String, param3:Number)
+      public function MonsterSecretBornPoint(id:int, textureName:String, buildImageScale:Number)
       {
          super();
-         this.id = param1;
-         _buildImageScale = param3;
-         _build = StarlingMain.instance.createImage(param2);
+         this.id = id;
+         _buildImageScale = buildImageScale;
+         _build = StarlingMain.instance.createImage(textureName);
          var _loc4_:* = _buildImageScale;
          _build.scaleY = _loc4_;
          _build.scaleX = _loc4_;
@@ -41,13 +41,13 @@ package starling.scene.consortiaDomain
          ConsortiaDomainManager.instance.addEventListener("event_monster_born",onMonsterBorn);
       }
       
-      public function setXY(param1:int, param2:int) : void
+      public function setXY(posX:int, posY:int) : void
       {
-         this.x = param1;
-         this.y = param2;
+         this.x = posX;
+         this.y = posY;
       }
       
-      private function onMonsterBorn(param1:Event) : void
+      private function onMonsterBorn(evt:Event) : void
       {
          monsterBornBuildState = 2;
          Starling.juggler.removeTweens(buildStateClose);
@@ -64,11 +64,11 @@ package starling.scene.consortiaDomain
          return _monsterBornBuildState;
       }
       
-      public function set monsterBornBuildState(param1:int) : void
+      public function set monsterBornBuildState(value:int) : void
       {
-         if(_monsterBornBuildState != param1)
+         if(_monsterBornBuildState != value)
          {
-            _monsterBornBuildState = param1;
+            _monsterBornBuildState = value;
             if(_monsterBornBuildState == 1)
             {
                _closeDoorImage = StarlingMain.instance.createImage("consortiaDomainMonsterBornPoint2Door");

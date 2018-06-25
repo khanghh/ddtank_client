@@ -18,27 +18,26 @@ package gameStarling.objects
       
       private var _tweenVec:Array;
       
-      public function PhantomBomb3D(param1:Bomb, param2:Living, param3:int = 0)
+      public function PhantomBomb3D(info:Bomb, owner:Living, refineryLevel:int = 0)
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
+         var i:int = 0;
+         var bombAction:* = null;
          _tweenVec = [];
-         super(param1,param2,param3);
+         super(info,owner,refineryLevel);
          _currentBombActions = [];
-         _loc5_ = 0;
-         while(_loc5_ < _info.Actions.length)
+         for(i = 0; i < _info.Actions.length; )
          {
-            _loc4_ = _info.Actions[_loc5_] as BombAction3D;
-            if(_loc4_.type == 2 || _loc4_.type == 4)
+            bombAction = _info.Actions[i] as BombAction3D;
+            if(bombAction.type == 2 || bombAction.type == 4)
             {
-               _maxTime = _loc4_.time;
-               _currentBombActions.push(_loc4_);
+               _maxTime = bombAction.time;
+               _currentBombActions.push(bombAction);
             }
-            else if(_loc4_.type == 23)
+            else if(bombAction.type == 23)
             {
-               _currentBombActions.push(_loc4_);
+               _currentBombActions.push(bombAction);
             }
-            _loc5_++;
+            i++;
          }
          if(_maxTime > 0)
          {
@@ -46,49 +45,48 @@ package gameStarling.objects
          }
       }
       
-      override public function moveTo(param1:Point) : void
+      override public function moveTo(p:Point) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         super.moveTo(param1);
+         var newInfo:* = null;
+         var simpleBomb:* = null;
+         super.moveTo(p);
          if(_lifeTime % 80 == 0)
          {
             if(_phantomCount > 0)
             {
-               _loc2_ = new Bomb();
-               ObjectUtils.copyProperties(_loc2_,_info);
-               _loc2_.Template = _info.Template;
-               _loc2_.Actions = _currentBombActions.concat();
-               _loc3_ = new SimpleBomb3D(_loc2_,_owner,_refineryLevel,true);
-               _loc3_.alpha = 0.2;
-               this.map.addPhysical(_loc3_);
+               newInfo = new Bomb();
+               ObjectUtils.copyProperties(newInfo,_info);
+               newInfo.Template = _info.Template;
+               newInfo.Actions = _currentBombActions.concat();
+               simpleBomb = new SimpleBomb3D(newInfo,_owner,_refineryLevel,true);
+               simpleBomb.alpha = 0.2;
+               this.map.addPhysical(simpleBomb);
                if(fastModel)
                {
-                  _loc3_.bombAtOnce();
+                  simpleBomb.bombAtOnce();
                }
-               changeAlphaPlay(_loc3_,_maxTime);
+               changeAlphaPlay(simpleBomb,_maxTime);
             }
             _phantomCount = Number(_phantomCount) - 1;
          }
       }
       
-      private function changeAlphaPlay(param1:SimpleBomb3D, param2:Number) : void
+      private function changeAlphaPlay(bomb:SimpleBomb3D, duration:Number) : void
       {
-         TweenLite.to(param1,param2 / 1000,{"alpha":0.9});
-         _tweenVec.push(param1);
+         TweenLite.to(bomb,duration / 1000,{"alpha":0.9});
+         _tweenVec.push(bomb);
       }
       
       override public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          super.dispose();
          if(_tweenVec)
          {
-            _loc1_ = 0;
-            while(_loc1_ < _tweenVec.length)
+            for(i = 0; i < _tweenVec.length; )
             {
-               TweenLite.killTweensOf(_tweenVec[_loc1_]);
-               _loc1_++;
+               TweenLite.killTweensOf(_tweenVec[i]);
+               i++;
             }
             _tweenVec = null;
          }

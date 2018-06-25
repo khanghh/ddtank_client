@@ -10,10 +10,10 @@ package yzhkof.debug
       
       public var result;
       
-      public function ScriptEvent(param1:String, param2:*, param3:Boolean = false, param4:Boolean = false)
+      public function ScriptEvent(type:String, result:*, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         super(param1,param3,param4);
-         this.result = param2;
+         super(type,bubbles,cancelable);
+         this.result = result;
       }
    }
 }

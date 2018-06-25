@@ -16,48 +16,47 @@ package tofflist.analyze
       
       private var _xml:XML;
       
-      public function TofflistListAnalyzer(param1:Function)
+      public function TofflistListAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc7_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:* = null;
-         var _loc9_:int = 0;
-         var _loc8_:* = null;
-         var _loc6_:* = null;
-         var _loc3_:* = null;
-         _xml = new XML(param1);
-         var _loc5_:Array = [];
+         var xmllist:* = null;
+         var _tempInfo:* = null;
+         var _xmlInfo:* = null;
+         var i:int = 0;
+         var info:* = null;
+         var tcInfo:* = null;
+         var p:* = null;
+         _xml = new XML(data);
+         var list:Array = [];
          this.data = new TofflistListData();
          this.data.lastUpdateTime = _xml.@date;
          if(_xml.@value == "true")
          {
-            _loc7_ = XML(_xml)..Item;
-            _loc2_ = new TofflistPlayerInfo();
-            _loc4_ = describeType(_loc2_);
-            _loc9_ = 0;
-            while(_loc9_ < _loc7_.length())
+            xmllist = XML(_xml)..Item;
+            _tempInfo = new TofflistPlayerInfo();
+            _xmlInfo = describeType(_tempInfo);
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc8_ = new TofflistConsortiaData();
-               _loc6_ = new TofflistConsortiaInfo();
-               ObjectUtils.copyPorpertiesByXML(_loc6_,_loc7_[_loc9_]);
-               _loc8_.consortiaInfo = _loc6_;
-               if(_loc7_[_loc9_].children().length() > 0)
+               info = new TofflistConsortiaData();
+               tcInfo = new TofflistConsortiaInfo();
+               ObjectUtils.copyPorpertiesByXML(tcInfo,xmllist[i]);
+               info.consortiaInfo = tcInfo;
+               if(xmllist[i].children().length() > 0)
                {
-                  _loc3_ = new TofflistPlayerInfo();
-                  _loc3_.beginChanges();
-                  ObjectUtils.copyPorpertiesByXML(_loc3_,_loc7_[_loc9_].Item[0]);
-                  _loc3_.commitChanges();
-                  _loc8_.playerInfo = _loc3_;
-                  _loc5_.push(_loc8_);
+                  p = new TofflistPlayerInfo();
+                  p.beginChanges();
+                  ObjectUtils.copyPorpertiesByXML(p,xmllist[i].Item[0]);
+                  p.commitChanges();
+                  info.playerInfo = p;
+                  list.push(info);
                }
-               _loc9_++;
+               i++;
             }
-            this.data.list = _loc5_;
+            this.data.list = list;
             onAnalyzeComplete();
          }
          else

@@ -41,21 +41,21 @@ package totem
          return _dataList;
       }
       
-      private function updateUpCount(param1:PkgEvent) : void
+      private function updateUpCount(event:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readInt();
-         if(upCount != -1 && upCount != _loc2_)
+         var pkg:PackageIn = event.pkg;
+         var tmp:int = pkg.readInt();
+         if(upCount != -1 && upCount != tmp)
          {
-            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.totem.honorUp.success",dataList[_loc2_ - 1].honor),0,true);
+            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.totem.honorUp.success",dataList[tmp - 1].honor),0,true);
          }
-         upCount = _loc2_;
+         upCount = tmp;
          dispatchEvent(new Event("up_count_update"));
       }
       
-      public function setup(param1:HonorUpDataAnalyz) : void
+      public function setup(analyzer:HonorUpDataAnalyz) : void
       {
-         _dataList = param1.dataList;
+         _dataList = analyzer.dataList;
       }
    }
 }

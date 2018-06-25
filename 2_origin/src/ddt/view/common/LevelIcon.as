@@ -74,7 +74,7 @@ package ddt.view.common
          ShowTipManager.Instance.addTip(this);
       }
       
-      private function __click(param1:MouseEvent) : void
+      private function __click(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_level >= 70)
@@ -95,17 +95,17 @@ package ddt.view.common
       
       public function dispose() : void
       {
-         var _loc1_:* = null;
+         var bm:* = null;
          _bmContainer.removeEventListener("click",__click);
          ShowTipManager.Instance.removeTip(this);
          clearnDisplay();
          var _loc4_:int = 0;
          var _loc3_:* = _levelBitmaps;
-         for(var _loc2_ in _levelBitmaps)
+         for(var key in _levelBitmaps)
          {
-            _loc1_ = _levelBitmaps[_loc2_];
-            _loc1_.bitmapData.dispose();
-            delete _levelBitmaps[_loc2_];
+            bm = _levelBitmaps[key];
+            bm.bitmapData.dispose();
+            delete _levelBitmaps[key];
          }
          _levelBitmaps = null;
          _levelEffects = null;
@@ -115,29 +115,29 @@ package ddt.view.common
          }
       }
       
-      public function setInfo(param1:int, param2:int, param3:int, param4:int, param5:int, param6:int, param7:int, param8:Boolean = true, param9:Boolean = true, param10:int = 1) : void
+      public function setInfo(level:int, ddtKingGraed:int, reputeCount:int, win:int, total:int, battle:int, exploit:int, enableTip:Boolean = true, isBitmap:Boolean = true, team:int = 1) : void
       {
-         var _loc11_:* = _level != param1;
-         _level = MathUtils.getValueInRange(param1,1,70);
-         _isBitmap = param9;
+         var changeLevel:* = _level != level;
+         _level = MathUtils.getValueInRange(level,1,70);
+         _isBitmap = isBitmap;
          _levelTipInfo.Level = _level;
-         _levelTipInfo.Battle = param6;
-         _levelTipInfo.Win = param4;
-         _levelTipInfo.Repute = param3;
-         _levelTipInfo.Total = param5;
-         _levelTipInfo.exploit = param7;
-         _levelTipInfo.enableTip = param8;
-         _levelTipInfo.team = param10;
-         _levelTipInfo.ddtKingGraed = param2;
-         if(_loc11_)
+         _levelTipInfo.Battle = battle;
+         _levelTipInfo.Win = win;
+         _levelTipInfo.Repute = reputeCount;
+         _levelTipInfo.Total = total;
+         _levelTipInfo.exploit = exploit;
+         _levelTipInfo.enableTip = enableTip;
+         _levelTipInfo.team = team;
+         _levelTipInfo.ddtKingGraed = ddtKingGraed;
+         if(changeLevel)
          {
             updateView();
          }
       }
       
-      public function setSize(param1:int) : void
+      public function setSize(size:int) : void
       {
-         _size = param1;
+         _size = size;
          updateSize();
       }
       
@@ -146,9 +146,9 @@ package ddt.view.common
          return _levelTipInfo;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(value:Object) : void
       {
-         _levelTipInfo = param1 as LevelTipInfo;
+         _levelTipInfo = value as LevelTipInfo;
       }
       
       public function get tipDirctions() : String
@@ -156,9 +156,9 @@ package ddt.view.common
          return _tipDirctions;
       }
       
-      public function set tipDirctions(param1:String) : void
+      public function set tipDirctions(value:String) : void
       {
-         _tipDirctions = param1;
+         _tipDirctions = value;
       }
       
       public function get tipGapH() : int
@@ -166,9 +166,9 @@ package ddt.view.common
          return _tipGapH;
       }
       
-      public function set tipGapH(param1:int) : void
+      public function set tipGapH(value:int) : void
       {
-         _tipGapH = param1;
+         _tipGapH = value;
       }
       
       public function get tipGapV() : int
@@ -176,9 +176,9 @@ package ddt.view.common
          return _tipGapV;
       }
       
-      public function set tipGapV(param1:int) : void
+      public function set tipGapV(value:int) : void
       {
-         _tipGapV = param1;
+         _tipGapV = value;
       }
       
       public function get tipStyle() : String
@@ -186,9 +186,9 @@ package ddt.view.common
          return _tipStyle;
       }
       
-      public function set tipStyle(param1:String) : void
+      public function set tipStyle(value:String) : void
       {
-         _tipStyle = param1;
+         _tipStyle = value;
       }
       
       public function allowClick() : void
@@ -208,90 +208,90 @@ package ddt.view.common
          {
             return;
          }
-         var _loc1_:MovieClip = creatLevelEffect(_level);
-         if(_loc1_)
+         var effect:MovieClip = creatLevelEffect(_level);
+         if(effect)
          {
             var _loc2_:Boolean = false;
-            _loc1_.mouseEnabled = _loc2_;
-            _loc1_.mouseChildren = _loc2_;
-            _loc1_.play();
+            effect.mouseEnabled = _loc2_;
+            effect.mouseChildren = _loc2_;
+            effect.play();
             if(_level > 40)
             {
-               _loc1_.blendMode = "add";
+               effect.blendMode = "add";
             }
-            addChild(_loc1_);
+            addChild(effect);
          }
       }
       
       private function clearnDisplay() : void
       {
-         var _loc1_:* = null;
+         var mc:* = null;
          while(_bmContainer.numChildren > 0)
          {
             _bmContainer.removeChildAt(0);
          }
          while(numChildren > 0)
          {
-            _loc1_ = getChildAt(0) as MovieClip;
-            if(_loc1_)
+            mc = getChildAt(0) as MovieClip;
+            if(mc)
             {
-               _loc1_.stop();
+               mc.stop();
             }
             removeChildAt(0);
          }
       }
       
-      private function creatLevelBitmap(param1:int) : Bitmap
+      private function creatLevelBitmap(level:int) : Bitmap
       {
-         if(_levelBitmaps[param1])
+         if(_levelBitmaps[level])
          {
-            return _levelBitmaps[param1];
+            return _levelBitmaps[level];
          }
-         var _loc2_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.LevelIcon.Level_" + param1.toString());
-         _loc2_.smoothing = true;
-         _levelBitmaps[param1] = _loc2_;
-         return _loc2_;
+         var iconBitmap:Bitmap = ComponentFactory.Instance.creatBitmap("asset.LevelIcon.Level_" + level.toString());
+         iconBitmap.smoothing = true;
+         _levelBitmaps[level] = iconBitmap;
+         return iconBitmap;
       }
       
-      private function creatLevelEffect(param1:int) : MovieClip
+      private function creatLevelEffect(level:int) : MovieClip
       {
-         var _loc3_:int = 0;
-         if(MathUtils.isInRange(param1,11,20))
+         var effectLevel:int = 0;
+         if(MathUtils.isInRange(level,11,20))
          {
-            _loc3_ = 1;
+            effectLevel = 1;
          }
-         else if(MathUtils.isInRange(param1,21,30))
+         else if(MathUtils.isInRange(level,21,30))
          {
-            _loc3_ = 2;
+            effectLevel = 2;
          }
-         else if(MathUtils.isInRange(param1,31,40))
+         else if(MathUtils.isInRange(level,31,40))
          {
-            _loc3_ = 3;
+            effectLevel = 3;
          }
-         else if(MathUtils.isInRange(param1,41,50))
+         else if(MathUtils.isInRange(level,41,50))
          {
-            _loc3_ = 4;
+            effectLevel = 4;
          }
-         else if(MathUtils.isInRange(param1,51,60))
+         else if(MathUtils.isInRange(level,51,60))
          {
-            _loc3_ = 5;
+            effectLevel = 5;
          }
-         else if(MathUtils.isInRange(param1,61,70))
+         else if(MathUtils.isInRange(level,61,70))
          {
-            _loc3_ = 6;
+            effectLevel = 6;
          }
-         if(_loc3_ == 0)
+         if(effectLevel == 0)
          {
             return null;
          }
-         if(_levelEffects[_loc3_])
+         if(_levelEffects[effectLevel])
          {
-            return _levelEffects[_loc3_];
+            return _levelEffects[effectLevel];
          }
-         var _loc2_:MovieClip = ComponentFactory.Instance.creat("asset.LevelIcon.LevelEffect_" + _loc3_.toString());
-         _loc2_.stop();
-         _levelEffects[_loc3_] = _loc2_;
-         return _loc2_;
+         var levelEffect:MovieClip = ComponentFactory.Instance.creat("asset.LevelIcon.LevelEffect_" + effectLevel.toString());
+         levelEffect.stop();
+         _levelEffects[effectLevel] = levelEffect;
+         return levelEffect;
       }
       
       private function updateView() : void

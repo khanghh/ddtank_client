@@ -29,12 +29,12 @@ package demonChiYou.view
       
       private var _longBg:Boolean;
       
-      public function RankingPersonInfoItem(param1:int, param2:RankingPersonInfo, param3:Boolean = false)
+      public function RankingPersonInfoItem(ranking:int, personInfo:RankingPersonInfo, longBg:Boolean = false)
       {
          super();
-         _num = param1;
-         _personInfo = param2;
-         _longBg = param3;
+         _num = ranking;
+         _personInfo = personInfo;
+         _longBg = longBg;
          _init();
       }
       

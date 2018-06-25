@@ -15,7 +15,7 @@ package sanXiao.juggler
       
       private var _duration:Number;
       
-      public function JugglerNative(param1:int)
+      public function JugglerNative(frameRate:int)
       {
          super();
          if(_inited)
@@ -24,37 +24,36 @@ package sanXiao.juggler
          }
          _inited = true;
          _movieClipBitmap = new Vector.<MovieClipShape>();
-         _duration = 1000 / param1;
+         _duration = 1000 / frameRate;
          trace("duration of JugglerNative is (ms)" + _duration);
          _timer = new Timer(_duration);
       }
       
-      public function set duration(param1:int) : void
+      public function set duration(frameRate:int) : void
       {
-         _duration = 1000 / param1;
+         _duration = 1000 / frameRate;
          _timer.delay = _duration;
          _timer.reset();
          _timer.start();
       }
       
-      public function add(param1:MovieClipShape) : void
+      public function add(movieClipBitmap:MovieClipShape) : void
       {
-         _movieClipBitmap.push(param1);
+         _movieClipBitmap.push(movieClipBitmap);
       }
       
-      public function remove(param1:MovieClipShape) : void
+      public function remove(bitmapClip:MovieClipShape) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = _movieClipBitmap.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var i:int = 0;
+         var len:int = _movieClipBitmap.length;
+         for(i = 0; i < len; )
          {
-            if(_movieClipBitmap[_loc3_] == param1)
+            if(_movieClipBitmap[i] == bitmapClip)
             {
-               _movieClipBitmap.splice(_loc3_,1);
+               _movieClipBitmap.splice(i,1);
                break;
             }
-            _loc3_++;
+            i++;
          }
       }
       
@@ -62,21 +61,21 @@ package sanXiao.juggler
       {
          var _loc3_:int = 0;
          var _loc2_:* = _movieClipBitmap;
-         for each(var _loc1_ in _movieClipBitmap)
+         for each(var bit in _movieClipBitmap)
          {
-            _loc1_.parent && _loc1_.parent.removeChild(_loc1_);
-            _loc1_.reset();
-            _loc1_.dispose();
+            bit.parent && bit.parent.removeChild(bit);
+            bit.reset();
+            bit.dispose();
          }
       }
       
-      public function hasAdded(param1:MovieClipShape) : Boolean
+      public function hasAdded(mcs:MovieClipShape) : Boolean
       {
          var _loc4_:int = 0;
          var _loc3_:* = _movieClipBitmap;
-         for each(var _loc2_ in _movieClipBitmap)
+         for each(var bit in _movieClipBitmap)
          {
-            if(param1 === _loc2_)
+            if(mcs === bit)
             {
                return true;
             }
@@ -114,15 +113,14 @@ package sanXiao.juggler
          _timer.start();
       }
       
-      protected function onTimer(param1:TimerEvent) : void
+      protected function onTimer(event:TimerEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = _movieClipBitmap.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var i:int = 0;
+         var l:int = _movieClipBitmap.length;
+         for(i = 0; i < l; )
          {
-            _loc3_ < _movieClipBitmap.length && _movieClipBitmap[_loc3_].advance(_duration);
-            _loc3_++;
+            i < _movieClipBitmap.length && _movieClipBitmap[i].advance(_duration);
+            i++;
          }
       }
    }

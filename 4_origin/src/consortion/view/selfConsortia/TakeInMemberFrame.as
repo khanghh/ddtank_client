@@ -184,22 +184,22 @@ package consortion.view.selfConsortia
          SocketManager.Instance.removeEventListener(PkgEvent.format(129,7),__consortiaApplyStatusResult);
       }
       
-      private function __pageChangeHandler(param1:Event) : void
+      private function __pageChangeHandler(event:Event) : void
       {
          setList(ConsortionModelManager.Instance.model.getapplyListWithPage(_turnPage.present,_pageCount));
       }
       
-      private function __consortiaApplyStatusResult(param1:PkgEvent) : void
+      private function __consortiaApplyStatusResult(evt:PkgEvent) : void
       {
-         var _loc2_:Boolean = param1.pkg.readBoolean();
-         var _loc3_:Boolean = param1.pkg.readBoolean();
-         var _loc4_:String = param1.pkg.readUTF();
-         MessageTipManager.getInstance().show(_loc4_);
-         _setRefuse.selected = !_loc2_;
-         PlayerManager.Instance.Self.consortiaInfo.OpenApply = Boolean(_loc2_);
+         var status:Boolean = evt.pkg.readBoolean();
+         var isSuccess:Boolean = evt.pkg.readBoolean();
+         var msg:String = evt.pkg.readUTF();
+         MessageTipManager.getInstance().show(msg);
+         _setRefuse.selected = !status;
+         PlayerManager.Instance.Self.consortiaInfo.OpenApply = Boolean(status);
       }
       
-      private function __refishListHandler(param1:ConsortionEvent) : void
+      private function __refishListHandler(event:ConsortionEvent) : void
       {
          _lastSort = "";
          _turnPage.sum = Math.ceil(ConsortionModelManager.Instance.model.myApplyList.length / _pageCount);
@@ -208,35 +208,33 @@ package consortion.view.selfConsortia
       
       private function clearList() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _list.disposeAllChildren();
          if(_items)
          {
-            _loc1_ = 0;
-            while(_loc1_ < _items.length)
+            for(i = 0; i < _items.length; )
             {
-               _items[_loc1_] = null;
-               _loc1_++;
+               _items[i] = null;
+               i++;
             }
             _items = null;
          }
          _items = [];
       }
       
-      private function setList(param1:Vector.<ConsortiaApplyInfo>) : void
+      private function setList(value:Vector.<ConsortiaApplyInfo>) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var item:* = null;
          clearList();
-         var _loc3_:int = param1.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var len:int = value.length;
+         for(i = 0; i < len; )
          {
-            _loc2_ = new TakeInMemberItem();
-            _loc2_.info = param1[_loc4_];
-            _list.addChild(_loc2_);
-            _items.push(_loc2_);
-            _loc4_++;
+            item = new TakeInMemberItem();
+            item.info = value[i];
+            _list.addChild(item);
+            _items.push(item);
+            i++;
          }
          if(_lastSort != "")
          {
@@ -244,43 +242,41 @@ package consortion.view.selfConsortia
          }
       }
       
-      private function sort(param1:String) : void
+      private function sort(field:String) : void
       {
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         _loc5_ = 0;
-         while(_loc5_ < _items.length)
+         var i:int = 0;
+         var item:* = null;
+         var j:int = 0;
+         var item2:* = null;
+         for(i = 0; i < _items.length; )
          {
-            _loc3_ = _items[_loc5_] as TakeInMemberItem;
-            _list.removeChild(_loc3_);
-            _loc5_++;
+            item = _items[i] as TakeInMemberItem;
+            _list.removeChild(item);
+            i++;
          }
-         _items.sortOn(param1,2 | 16);
-         _loc4_ = 0;
-         while(_loc4_ < _items.length)
+         _items.sortOn(field,2 | 16);
+         for(j = 0; j < _items.length; )
          {
-            _loc2_ = _items[_loc4_] as TakeInMemberItem;
-            _list.addChild(_loc2_);
-            _loc4_++;
+            item2 = _items[j] as TakeInMemberItem;
+            _list.addChild(item2);
+            j++;
          }
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(event:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(event.responseCode == 0 || event.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();
          }
       }
       
-      private function __clickHandler(param1:MouseEvent) : void
+      private function __clickHandler(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var wantTakeIn:* = null;
          SoundManager.instance.play("008");
-         var _loc3_:* = param1.currentTarget;
+         var _loc3_:* = event.currentTarget;
          if(_levelBtn !== _loc3_)
          {
             if(_powerBtn !== _loc3_)
@@ -302,8 +298,8 @@ package consortion.view.selfConsortia
                            }
                            else
                            {
-                              _loc2_ = ComponentFactory.Instance.creatComponentByStylename("wantTakeInFrame");
-                              LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+                              wantTakeIn = ComponentFactory.Instance.creatComponentByStylename("wantTakeInFrame");
+                              LayerManager.Instance.addToLayer(wantTakeIn,3,true,1);
                            }
                         }
                         else
@@ -341,69 +337,66 @@ package consortion.view.selfConsortia
       
       private function selectAll() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
+         var i:int = 0;
+         var j:int = 0;
          if(allHasSelected())
          {
-            _loc2_ = 0;
-            while(_loc2_ < _items.length)
+            for(i = 0; i < _items.length; )
             {
-               if(_items[_loc2_])
+               if(_items[i])
                {
-                  (_items[_loc2_] as TakeInMemberItem).selected = false;
+                  (_items[i] as TakeInMemberItem).selected = false;
                }
-               _loc2_++;
+               i++;
             }
          }
          else
          {
-            _loc1_ = 0;
-            while(_loc1_ < _items.length)
+            j = 0;
+            while(j < _items.length)
             {
-               if(_items[_loc1_])
+               if(_items[j])
                {
-                  (_items[_loc1_] as TakeInMemberItem).selected = true;
+                  (_items[j] as TakeInMemberItem).selected = true;
                }
-               _loc1_++;
+               j++;
             }
          }
       }
       
       private function allHasSelected() : Boolean
       {
-         var _loc1_:* = 0;
-         _loc1_ = uint(0);
-         while(_loc1_ < _items.length)
+         var i:* = 0;
+         for(i = uint(0); i < _items.length; )
          {
-            if(!(_items[_loc1_] as TakeInMemberItem).selected)
+            if(!(_items[i] as TakeInMemberItem).selected)
             {
                return false;
             }
-            _loc1_++;
+            i++;
          }
          return true;
       }
       
       private function agree() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:Boolean = true;
-         _loc3_ = 0;
-         while(_loc3_ < _items.length)
+         var i:int = 0;
+         var item:* = null;
+         var noChoice:Boolean = true;
+         for(i = 0; i < _items.length; )
          {
-            _loc2_ = _items[_loc3_] as TakeInMemberItem;
-            if(_loc2_)
+            item = _items[i] as TakeInMemberItem;
+            if(item)
             {
-               if(_loc2_.selected)
+               if(item.selected)
                {
-                  SocketManager.Instance.out.sendConsortiaTryinPass(_loc2_.info.ID);
-                  _loc1_ = false;
+                  SocketManager.Instance.out.sendConsortiaTryinPass(item.info.ID);
+                  noChoice = false;
                }
             }
-            _loc3_++;
+            i++;
          }
-         if(_loc1_)
+         if(noChoice)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.consortia.myconsortia.AtLeastChoose"));
          }
@@ -411,24 +404,23 @@ package consortion.view.selfConsortia
       
       private function refuse() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:Boolean = true;
-         _loc3_ = 0;
-         while(_loc3_ < _items.length)
+         var i:int = 0;
+         var item:* = null;
+         var noChoice:Boolean = true;
+         for(i = 0; i < _items.length; )
          {
-            _loc2_ = _items[_loc3_] as TakeInMemberItem;
-            if(_loc2_)
+            item = _items[i] as TakeInMemberItem;
+            if(item)
             {
-               if((_items[_loc3_] as TakeInMemberItem).selected)
+               if((_items[i] as TakeInMemberItem).selected)
                {
-                  SocketManager.Instance.out.sendConsortiaTryinDelete(_loc2_.info.ID);
-                  _loc1_ = false;
+                  SocketManager.Instance.out.sendConsortiaTryinDelete(item.info.ID);
+                  noChoice = false;
                }
             }
-            _loc3_++;
+            i++;
          }
-         if(_loc1_)
+         if(noChoice)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.consortia.myconsortia.AtLeastChoose"));
          }

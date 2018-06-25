@@ -36,9 +36,9 @@ package foodActivity.view
          height = _box.height + 2;
       }
       
-      public function play(param1:int) : void
+      public function play(frame:int) : void
       {
-         _box.gotoAndStop(param1);
+         _box.gotoAndStop(frame);
       }
       
       override public function dispose() : void

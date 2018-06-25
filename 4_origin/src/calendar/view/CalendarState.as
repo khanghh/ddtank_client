@@ -15,10 +15,10 @@ package calendar.view
       
       private var _model:CalendarModel;
       
-      public function CalendarState(param1:CalendarModel)
+      public function CalendarState(model:CalendarModel)
       {
          super();
-         _model = param1;
+         _model = model;
          configUI();
       }
       
@@ -30,7 +30,7 @@ package calendar.view
          addChild(_awardBar);
       }
       
-      public function setData(param1:* = null) : void
+      public function setData(val:* = null) : void
       {
       }
       

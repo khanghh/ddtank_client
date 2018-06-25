@@ -34,12 +34,12 @@ package ddQiYuan.view
       {
          super();
          _model = DDQiYuanManager.instance.model;
-         var _loc1_:Bitmap = ComponentFactory.Instance.creatBitmap("DDQiYuan.Pic27");
-         var _loc2_:InventoryItemInfo = DDQiYuanManager.instance.getInventoryItemInfo(_model.joinRewardGood);
-         _joinBagCell1 = new BagCell(1,_loc2_,true,_loc1_,false);
+         var bagCellBg:Bitmap = ComponentFactory.Instance.creatBitmap("DDQiYuan.Pic27");
+         var inventoryItemInfo:InventoryItemInfo = DDQiYuanManager.instance.getInventoryItemInfo(_model.joinRewardGood);
+         _joinBagCell1 = new BagCell(1,inventoryItemInfo,true,bagCellBg,false);
          _joinBagCell1.PicPos = new Point(2,2);
          _joinBagCell1.setContentSize(38,38);
-         _joinBagCell1.setCount(_loc2_.Count);
+         _joinBagCell1.setCount(inventoryItemInfo.Count);
          addChild(_joinBagCell1);
          _canGainImage = ComponentFactory.Instance.creat("ddQiYuan.canGainJoinReward");
          _canGainImage.visible = false;
@@ -49,14 +49,14 @@ package ddQiYuan.view
          update(null);
       }
       
-      private function update(param1:Event) : void
+      private function update(evt:Event) : void
       {
-         var _loc2_:int = 0;
+         var totalCount:int = 0;
          if(_model.myOfferTimes >= _model.joinRewardLeastOfferTimes)
          {
-            _loc2_ = Math.min(7,int(_model.myAreaOfferDegree / _model.offerTimesPerBaoZhu));
+            totalCount = Math.min(7,int(_model.myAreaOfferDegree / _model.offerTimesPerBaoZhu));
          }
-         _leftCount = _loc2_ - _model.hasGainJoinRewardCount;
+         _leftCount = totalCount - _model.hasGainJoinRewardCount;
          if(_leftCount > 0)
          {
             this.filters = null;
@@ -75,20 +75,20 @@ package ddQiYuan.view
          }
       }
       
-      private function onMouseHandler(param1:MouseEvent) : void
+      private function onMouseHandler(evt:MouseEvent) : void
       {
-         var _loc2_:String = param1.type;
-         if(_loc2_ == "mouseDown")
+         var type:String = evt.type;
+         if(type == "mouseDown")
          {
             this.x = this.x + 1;
             this.y = this.y + 1;
             _isPressDown = true;
          }
-         else if(_loc2_ == "click")
+         else if(type == "click")
          {
             SocketManager.Instance.out.getDDQiYuanJoinReward();
          }
-         else if(_loc2_ == "mouseUp")
+         else if(type == "mouseUp")
          {
             if(_isPressDown)
             {

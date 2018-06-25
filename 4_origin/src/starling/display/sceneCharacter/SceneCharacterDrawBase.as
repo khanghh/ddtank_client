@@ -59,118 +59,117 @@ package starling.display.sceneCharacter
          _isUpdate = true;
       }
       
-      public function setup(param1:SceneCharacterSynthesisBase, param2:SceneCharacterActionSet, param3:SceneCharacterActionPointSet) : void
+      public function setup(synthesis:SceneCharacterSynthesisBase, actionSet:SceneCharacterActionSet, actionPointSet:SceneCharacterActionPointSet) : void
       {
          _isUpdate = false;
-         _synthesis = param1;
-         _actionSet = param2;
-         _actionPointSet = param3;
+         _synthesis = synthesis;
+         _actionSet = actionSet;
+         _actionPointSet = actionPointSet;
          initialize();
       }
       
       public function update() : void
       {
-         var _loc9_:int = 0;
-         var _loc5_:* = null;
-         var _loc2_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc8_:* = null;
-         var _loc1_:* = null;
-         var _loc6_:int = 0;
+         var i:int = 0;
+         var type:* = null;
+         var index:int = 0;
+         var data:* = null;
+         var texture:* = null;
+         var pos:* = null;
+         var pointItem:* = null;
+         var posIndex:int = 0;
          if(!_isUpdate)
          {
             return;
          }
          _headImage.visible = false;
          _bodyImage.visible = false;
-         var _loc7_:Vector.<SceneCharacterActionItem> = _actionSet.getItems(_state);
-         _loc9_ = 0;
-         while(_loc9_ < _loc7_.length)
+         var actionList:Vector.<SceneCharacterActionItem> = _actionSet.getItems(_state);
+         for(i = 0; i < actionList.length; )
          {
-            _loc5_ = _loc7_[_loc9_].type;
-            _loc2_ = _frames[_loc5_];
-            if(_loc2_ >= _loc7_[_loc9_].total)
+            type = actionList[i].type;
+            index = _frames[type];
+            if(index >= actionList[i].total)
             {
-               if(_loc7_[_loc9_].repeat)
+               if(actionList[i].repeat)
                {
-                  _loc2_ = 0;
+                  index = 0;
                }
                else
                {
-                  _loc2_ = _loc7_[_loc9_].total - 1;
+                  index = actionList[i].total - 1;
                }
             }
-            _loc4_ = _synthesis.getFramesObject(_loc5_);
-            if(_loc2_ >= _loc7_[_loc9_].frames.length)
+            data = _synthesis.getFramesObject(type);
+            if(index >= actionList[i].frames.length)
             {
-               _loc3_ = _loc4_.frams[_loc7_[_loc9_].frames[_loc7_[_loc9_].frames.length - 1]];
+               texture = data.frams[actionList[i].frames[actionList[i].frames.length - 1]];
             }
             else
             {
-               _loc3_ = _loc4_.frams[_loc7_[_loc9_].frames[_loc2_]];
+               texture = data.frams[actionList[i].frames[index]];
             }
-            _loc1_ = _actionPointSet.getItem(_loc5_);
-            if(_loc1_)
+            pointItem = _actionPointSet.getItem(type);
+            if(pointItem)
             {
-               _loc6_ = _loc2_ % _loc1_.amount;
-               _loc8_ = _loc1_.getPoint(_loc6_);
+               posIndex = index % pointItem.amount;
+               pos = pointItem.getPoint(posIndex);
             }
-            _frames[_loc5_] = _loc2_ + 1;
-            drawCharacterItem(_loc4_.sortOrder,_loc3_,_loc4_.w,_loc4_.h,_loc8_);
-            _loc9_++;
+            _frames[type] = index + 1;
+            drawCharacterItem(data.sortOrder,texture,data.w,data.h,pos);
+            i++;
          }
       }
       
-      protected function drawCharacterItem(param1:int, param2:Texture, param3:Number, param4:Number, param5:Point = null) : void
+      protected function drawCharacterItem(sortOrder:int, texture:Texture, w:Number, h:Number, $pos:Point = null) : void
       {
-         var _loc7_:Point = param5 || new Point();
-         var _loc6_:Image = getCharacterItem(param1);
-         if(_loc6_ == null)
+         var pos:Point = $pos || new Point();
+         var image:Image = getCharacterItem(sortOrder);
+         if(image == null)
          {
             return;
          }
-         _loc6_.texture = param2;
-         _loc6_.readjustSize();
-         PositionUtils.setPos(_loc6_,_loc7_);
-         _loc6_.visible = true;
+         image.texture = texture;
+         image.readjustSize();
+         PositionUtils.setPos(image,pos);
+         image.visible = true;
       }
       
-      protected function getCharacterItem(param1:int) : Image
+      protected function getCharacterItem(sortOrder:int) : Image
       {
-         if(param1 == 0)
+         if(sortOrder == 0)
          {
             return _headImage;
          }
-         if(param1 == 4)
+         if(sortOrder == 4)
          {
             return _bodyImage;
          }
          return null;
       }
       
-      protected function sortOn(param1:Object, param2:Object) : Number
+      protected function sortOn(a:Object, b:Object) : Number
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = 1;
+         var result:int = 0;
+         var dic:int = 1;
          if(_state == "standBack" || _state == "walkBack")
          {
-            _loc4_ = -1;
+            dic = -1;
          }
-         if(param1.sortOrder < param2.sortOrder)
+         if(a.sortOrder < b.sortOrder)
          {
-            _loc3_ = -1;
+            result = -1;
          }
-         else if(param1.sortOrder > param2.sortOrder)
+         else if(a.sortOrder > b.sortOrder)
          {
-            _loc3_ = 1;
+            result = 1;
          }
-         return _loc3_ * _loc4_;
+         return result * dic;
       }
       
-      public function set state(param1:String) : void
+      public function set state(value:String) : void
       {
-         _state = param1;
+         _state = value;
          reset();
       }
       

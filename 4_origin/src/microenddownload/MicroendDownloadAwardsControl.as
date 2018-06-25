@@ -23,7 +23,7 @@ package microenddownload
       
       private var _frameConfirm:MicroendDownload;
       
-      public function MicroendDownloadAwardsControl(param1:inner)
+      public function MicroendDownloadAwardsControl(single:inner)
       {
          super();
       }
@@ -42,7 +42,7 @@ package microenddownload
          MicroendDownloadAwardsManager.getInstance().addEventListener("microendDownloadOpenView",__onOpenView);
       }
       
-      protected function __onOpenView(param1:Event) : void
+      protected function __onOpenView(event:Event) : void
       {
          if(!_frameConfirm)
          {

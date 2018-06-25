@@ -9,36 +9,36 @@ package mines.analyzer
       
       public var list:Vector.<DropItemInfo>;
       
-      public function MinesDropAnalyzer(param1:Function)
+      public function MinesDropAnalyzer(onCompleteCall:Function)
       {
          list = new Vector.<DropItemInfo>();
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc4_:* = null;
-         var _loc5_:* = null;
-         var _loc3_:XML = new XML(param1);
-         if(_loc3_.@value == "true")
+         var xmllist:* = null;
+         var info:* = null;
+         var xml:XML = new XML(data);
+         if(xml.@value == "true")
          {
-            _loc4_ = _loc3_..Item;
+            xmllist = xml..Item;
             var _loc7_:int = 0;
-            var _loc6_:* = _loc4_;
-            for each(var _loc2_ in _loc4_)
+            var _loc6_:* = xmllist;
+            for each(var item in xmllist)
             {
-               if(_loc2_.@PickAxeLevel == "5")
+               if(item.@PickAxeLevel == "5")
                {
-                  _loc5_ = new DropItemInfo();
-                  ObjectUtils.copyPorpertiesByXML(_loc5_,_loc2_);
-                  list.push(_loc5_);
+                  info = new DropItemInfo();
+                  ObjectUtils.copyPorpertiesByXML(info,item);
+                  list.push(info);
                }
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc3_.@message;
+            message = xml.@message;
             onAnalyzeError();
          }
       }

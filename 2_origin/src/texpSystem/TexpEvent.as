@@ -18,11 +18,21 @@ package texpSystem
       public static const TEXP_MAGIC_ATK:String = "texpMagicAtk";
       
       public static const TEXP_MAGIC_DEF:String = "texpMagicDef";
+      
+      public static const TEXP_PROPERTY:String = "texpproperty";
        
       
-      public function TexpEvent(param1:String)
+      private var _data:Object;
+      
+      public function TexpEvent(type:String, data:Object = null)
       {
-         super(param1);
+         _data = data;
+         super(type);
+      }
+      
+      public function get data() : Object
+      {
+         return _data;
       }
    }
 }

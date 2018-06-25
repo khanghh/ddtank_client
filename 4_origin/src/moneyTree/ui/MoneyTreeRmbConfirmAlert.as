@@ -55,10 +55,10 @@ package moneyTree.ui
          return _selectGroup.selectIndex;
       }
       
-      override public function set info(param1:AlertInfo) : void
+      override public function set info(value:AlertInfo) : void
       {
-         msg = param1.data as String;
-         .super.info = param1;
+         msg = value.data as String;
+         .super.info = value;
          _selectGroup = new SelectedButtonGroup();
          radio1Times = ComponentFactory.Instance.creatComponentByStylename("moneytree.CartItemSelectBtn");
          radio1Times.addEventListener("click",__radioClick);
@@ -87,10 +87,10 @@ package moneyTree.ui
          _textField.y = 68;
       }
       
-      protected function __radioClick(param1:MouseEvent) : void
+      protected function __radioClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:* = param1.target;
+         var _loc2_:* = event.target;
          if(radio1Times !== _loc2_)
          {
             if(radioToGrown === _loc2_)

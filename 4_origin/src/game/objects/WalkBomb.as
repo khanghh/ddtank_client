@@ -29,40 +29,40 @@ package game.objects
       
       private var _maxScale:Number = 1.2;
       
-      public function WalkBomb(param1:Bomb, param2:Living, param3:int = 0, param4:Boolean = false)
+      public function WalkBomb(info:Bomb, owner:Living, refineryLevel:int = 0, isPhantom:Boolean = false)
       {
          _path = [];
          var _loc5_:* = _minScale;
          this.scaleY = _loc5_;
          this.scaleX = _loc5_;
-         param1.Actions.sort(actionSort);
-         super(param1,param2,param3,param4);
+         info.Actions.sort(actionSort);
+         super(info,owner,refineryLevel,isPhantom);
          doDefaultAction();
       }
       
-      private function actionSort(param1:BombAction, param2:BombAction) : int
+      private function actionSort(a:BombAction, b:BombAction) : int
       {
-         if(param1.time < param2.time)
+         if(a.time < b.time)
          {
             return -1;
          }
-         if(param1.time == param2.time)
+         if(a.time == b.time)
          {
-            if(param1.type == 23)
+            if(a.type == 23)
             {
                return -1;
             }
-            if(param1.type == 22)
+            if(a.type == 22)
             {
-               if(param2.type == 23)
+               if(b.type == 23)
                {
                   return 1;
                }
                return -1;
             }
-            if(param1.type == 24)
+            if(a.type == 24)
             {
-               if(param2.type == 23 || param2.type == 22)
+               if(b.type == 23 || b.type == 22)
                {
                   return 1;
                }
@@ -72,19 +72,19 @@ package game.objects
          return 1;
       }
       
-      override public function moveTo(param1:Point) : void
+      override public function moveTo(p:Point) : void
       {
-         var _loc2_:* = null;
-         var _loc5_:* = null;
-         var _loc4_:* = null;
-         var _loc6_:Point = new Point(pos.x,pos.y);
+         var currentAction:* = null;
+         var rect:* = null;
+         var phyObj:* = null;
+         var prePos:Point = new Point(pos.x,pos.y);
          while(_info.Actions.length > 0)
          {
             if(_info.Actions[0].time <= _lifeTime)
             {
-               _loc2_ = _info.Actions.shift();
-               _info.UsedActions.push(_loc2_);
-               _loc2_.execute(this,_game);
+               currentAction = _info.Actions.shift();
+               _info.UsedActions.push(currentAction);
+               currentAction.execute(this,_game);
                if(!_isLiving)
                {
                   return;
@@ -96,36 +96,37 @@ package game.objects
          startWalkMovie();
          checkWalkBallDown();
          checkWalkBall();
-         if(!_isWalk && !isCurrentActionDown(_loc2_))
+         if(!_isWalk && !isCurrentActionDown(currentAction))
          {
-            if(_map.IsOutMap(param1.x,param1.y))
+            if(_map.IsOutMap(p.x,p.y))
             {
                die();
             }
             else
             {
                map.smallMap.updatePos(_smallBall,pos);
+               map.updateObjectPos(this,pos);
                var _loc8_:int = 0;
                var _loc7_:* = _emitters;
-               for each(var _loc3_ in _emitters)
+               for each(var e in _emitters)
                {
-                  _loc3_.x = x;
-                  _loc3_.y = y;
-                  _loc3_.angle = motionAngle;
+                  e.x = x;
+                  e.y = y;
+                  e.angle = motionAngle;
                }
-               pos = param1;
+               pos = p;
             }
          }
          if(_isLiving)
          {
-            _loc5_ = getCollideRect();
-            _loc5_.offset(pos.x,pos.y);
+            rect = getCollideRect();
+            rect.offset(pos.x,pos.y);
             if(isPillarCollide())
             {
-               _loc4_ = _map.getSceneEffectPhysicalObject(_loc5_,this,_loc6_);
-               if(_loc4_ && _loc4_ is GameSceneEffect)
+               phyObj = _map.getSceneEffectPhysicalObject(rect,this,prePos);
+               if(phyObj && phyObj is GameSceneEffect)
                {
-                  sceneEffectCollideId = _loc4_.Id;
+                  sceneEffectCollideId = phyObj.Id;
                }
                checkCreateBombSceneEffect();
             }
@@ -136,16 +137,16 @@ package game.objects
          }
       }
       
-      private function isCurrentActionDown(param1:BombAction) : Boolean
+      private function isCurrentActionDown(act:BombAction) : Boolean
       {
-         if(param1 && param1.type == 22)
+         if(act && act.type == 22)
          {
             return true;
          }
          return false;
       }
       
-      override protected function computeFallNextXY(param1:Number) : Point
+      override protected function computeFallNextXY(dt:Number) : Point
       {
          if(_isDown)
          {
@@ -153,8 +154,8 @@ package game.objects
          }
          else
          {
-            _vx.ComputeOneEulerStep(_mass,_arf,_wf + _ef.x,param1);
-            _vy.ComputeOneEulerStep(_mass,_arf,_gf + _ef.y,param1);
+            _vx.ComputeOneEulerStep(_mass,_arf,_wf + _ef.x,dt);
+            _vy.ComputeOneEulerStep(_mass,_arf,_gf + _ef.y,dt);
          }
          return new Point(_vx.x0,_vy.x0);
       }
@@ -178,13 +179,13 @@ package game.objects
       
       private function checkWalkBallDown() : void
       {
-         var _loc1_:* = null;
+         var currentAction:* = null;
          if(_isLiving && _info)
          {
             if(_info.UsedActions.length > 0)
             {
-               _loc1_ = _info.UsedActions[_info.UsedActions.length - 1];
-               if(_loc1_.type == 22)
+               currentAction = _info.UsedActions[_info.UsedActions.length - 1];
+               if(currentAction.type == 22)
                {
                   _isStartWalk = true;
                   _isDown = true;
@@ -200,14 +201,14 @@ package game.objects
       
       private function checkWalkBall() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var currentAction:* = null;
+         var lastAction:* = null;
          if(_isLiving && _info)
          {
             if(_info.UsedActions.length > 0)
             {
-               _loc2_ = _info.UsedActions[_info.UsedActions.length - 1];
-               if(_loc2_.type == 24)
+               currentAction = _info.UsedActions[_info.UsedActions.length - 1];
+               if(currentAction.type == 24)
                {
                   if(_isWalk)
                   {
@@ -227,24 +228,24 @@ package game.objects
                      _isWalk = true;
                      var _loc6_:int = 0;
                      var _loc5_:* = _emitters;
-                     for each(var _loc3_ in _emitters)
+                     for each(var e in _emitters)
                      {
-                        _map.particleEnginee.removeEmitter(_loc3_);
+                        _map.particleEnginee.removeEmitter(e);
                      }
                      _emitters = [];
                      this.canCollided = true;
                      var _loc8_:int = 0;
                      var _loc7_:* = _info.Actions;
-                     for each(var _loc4_ in _info.Actions)
+                     for each(var act in _info.Actions)
                      {
-                        if(_loc4_.type == 2 || _loc4_.type == 22)
+                        if(act.type == 2 || act.type == 22)
                         {
-                           _loc1_ = _loc4_;
+                           lastAction = act;
                            break;
                         }
                      }
                      _currentPathIndex = 0;
-                     walk(new Point(_loc1_.param1,_loc1_.param2));
+                     walk(new Point(lastAction.param1,lastAction.param2));
                   }
                }
                else
@@ -255,29 +256,29 @@ package game.objects
          }
       }
       
-      protected function walk(param1:Point) : void
+      protected function walk(endPos:Point) : void
       {
-         var _loc8_:* = param1;
-         var _loc5_:int = param1.x > pos.x?1:-1;
-         if(x == _loc8_.x && y == _loc8_.y)
+         var pt:* = endPos;
+         var dir:int = endPos.x > pos.x?1:-1;
+         if(x == pt.x && y == pt.y)
          {
             doDefaultAction();
             return;
          }
-         var _loc4_:int = x;
-         var _loc3_:int = y;
-         var _loc2_:Point = new Point(x,y);
-         var _loc6_:int = _loc8_.x > _loc4_?1:-1;
-         var _loc7_:Point = new Point(x,y);
+         var tx:int = x;
+         var ty:int = y;
+         var thisPos:Point = new Point(x,y);
+         var direction:int = pt.x > tx?1:-1;
+         var p:Point = new Point(x,y);
          _path = [];
-         while((_loc8_.x - _loc4_) * _loc6_ > 0)
+         while((pt.x - tx) * direction > 0)
          {
-            _loc7_ = _map.findNextWalkPoint(_loc4_,_loc3_,_loc6_,5,15);
-            if(_loc7_)
+            p = _map.findNextWalkPoint(tx,ty,direction,5,15);
+            if(p)
             {
-               _path.push(_loc7_);
-               _loc4_ = _loc7_.x;
-               _loc3_ = _loc7_.y;
+               _path.push(p);
+               tx = p.x;
+               ty = p.y;
                continue;
             }
             break;
@@ -294,19 +295,19 @@ package game.objects
       
       private function startWalkMovie() : void
       {
-         var _loc3_:* = null;
-         var _loc1_:* = null;
-         var _loc2_:int = 0;
+         var currentAction:* = null;
+         var lastAction:* = null;
+         var time:int = 0;
          if(!_isStartWalk && _isLiving && _info)
          {
             if(_info.UsedActions.length > 0)
             {
-               _loc3_ = _info.UsedActions[_info.UsedActions.length - 1];
-               _loc1_ = _info.Actions[_info.Actions.length - 1];
-               if((_loc3_.type == 24 || _loc3_.type == 22) && _loc1_.type == 2)
+               currentAction = _info.UsedActions[_info.UsedActions.length - 1];
+               lastAction = _info.Actions[_info.Actions.length - 1];
+               if((currentAction.type == 24 || currentAction.type == 22) && lastAction.type == 2)
                {
-                  _loc2_ = _loc1_.time - _loc3_.time;
-                  TweenLite.to(this,_loc2_ / 1000,{
+                  time = lastAction.time - currentAction.time;
+                  TweenLite.to(this,time / 1000,{
                      "scaleX":_maxScale,
                      "scaleY":_maxScale
                   });
@@ -315,11 +316,11 @@ package game.objects
          }
       }
       
-      public function doAction(param1:String) : void
+      public function doAction(type:String) : void
       {
          if(_movie)
          {
-            MovieClip(_movie).gotoAndPlay(param1);
+            MovieClip(_movie).gotoAndPlay(type);
          }
       }
       

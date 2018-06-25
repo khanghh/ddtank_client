@@ -31,9 +31,9 @@ package draft
       
       private var _draftView:DraftView;
       
-      public function DraftControl(param1:IEventDispatcher = null)
+      public function DraftControl(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : DraftControl
@@ -51,11 +51,11 @@ package draft
          SocketManager.Instance.addEventListener(PkgEvent.format(310),__onUploadStyle);
       }
       
-      protected function __onUploadStyle(param1:PkgEvent) : void
+      protected function __onUploadStyle(event:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:Boolean = _loc3_.readBoolean();
-         if(_loc2_)
+         var pkg:PackageIn = event.pkg;
+         var flag:Boolean = pkg.readBoolean();
+         if(flag)
          {
             DraftModel.UploadNum++;
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("draftView.vote.uploadSuccessText"));
@@ -66,7 +66,7 @@ package draft
          }
       }
       
-      protected function __onOpenView(param1:Event) : void
+      protected function __onOpenView(event:Event) : void
       {
          show();
       }
@@ -98,9 +98,9 @@ package draft
          DraftManager.instance.showDraft = false;
       }
       
-      private function __complainShow(param1:UIModuleEvent) : void
+      private function __complainShow(event:UIModuleEvent) : void
       {
-         if(param1.module == "draft")
+         if(event.module == "draft")
          {
             UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);
             UIModuleLoader.Instance.removeEventListener("uiMoudleProgress",__progressShow);
@@ -112,15 +112,15 @@ package draft
          }
       }
       
-      private function __progressShow(param1:UIModuleEvent) : void
+      private function __progressShow(event:UIModuleEvent) : void
       {
-         if(param1.module == "draft")
+         if(event.module == "draft")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
       
-      protected function __onClose(param1:Event) : void
+      protected function __onClose(event:Event) : void
       {
          UIModuleSmallLoading.Instance.hide();
          UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);

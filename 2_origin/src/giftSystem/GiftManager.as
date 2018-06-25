@@ -38,9 +38,9 @@ package giftSystem
       
       private var _inChurch:Boolean;
       
-      public function GiftManager(param1:IEventDispatcher = null)
+      public function GiftManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
          initEvent();
       }
       
@@ -58,9 +58,9 @@ package giftSystem
          return _canActive;
       }
       
-      public function set canActive(param1:Boolean) : void
+      public function set canActive(value:Boolean) : void
       {
-         _canActive = param1;
+         _canActive = value;
       }
       
       public function get inChurch() : Boolean
@@ -68,9 +68,9 @@ package giftSystem
          return _inChurch;
       }
       
-      public function set inChurch(param1:Boolean) : void
+      public function set inChurch(value:Boolean) : void
       {
-         _inChurch = param1;
+         _inChurch = value;
       }
       
       private function initEvent() : void
@@ -78,15 +78,15 @@ package giftSystem
          BagAndInfoManager.Instance.addEventListener("close",__bagCloseHandler);
       }
       
-      public function loadRecord(param1:String, param2:int) : void
+      public function loadRecord(path:String, userID:int) : void
       {
-         _path = param1;
-         var _loc4_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         _loc4_["userID"] = param2;
-         var _loc3_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath(param1),7,_loc4_);
-         _loc3_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.giftSystem.loadRecord.error");
-         _loc3_.analyzer = new RecordAnalyzer(__setupRecord);
-         LoadResourceManager.Instance.startLoad(_loc3_);
+         _path = path;
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         args["userID"] = userID;
+         var record:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath(path),7,args);
+         record.loadErrorMessage = LanguageMgr.GetTranslation("ddt.giftSystem.loadRecord.error");
+         record.analyzer = new RecordAnalyzer(__setupRecord);
+         LoadResourceManager.Instance.startLoad(record);
       }
       
       public function get recordInfo() : RecordInfo
@@ -94,9 +94,9 @@ package giftSystem
          return _recordInfo;
       }
       
-      private function __setupRecord(param1:RecordAnalyzer) : void
+      private function __setupRecord(analyzer:RecordAnalyzer) : void
       {
-         _recordInfo = param1.info;
+         _recordInfo = analyzer.info;
          dispatchEvent(new GiftEvent("loadRecordComplete",_path));
       }
       
@@ -105,23 +105,23 @@ package giftSystem
          return _rebackName;
       }
       
-      public function set rebackName(param1:String) : void
+      public function set rebackName(value:String) : void
       {
-         if(_rebackName == param1)
+         if(_rebackName == value)
          {
             return;
          }
-         _rebackName = param1;
+         _rebackName = value;
       }
       
-      public function RebackClick(param1:String) : void
+      public function RebackClick(value:String) : void
       {
-         rebackName = param1;
+         rebackName = value;
          _alertFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.giftSystem.RebackMenu.alert",rebackName),LanguageMgr.GetTranslation("ok"),"",false,true,false,2);
          _alertFrame.addEventListener("response",__responsehandler);
       }
       
-      private function __responsehandler(param1:FrameEvent) : void
+      private function __responsehandler(event:FrameEvent) : void
       {
          if(_alertFrame)
          {
@@ -137,7 +137,7 @@ package giftSystem
          dispatchEvent(new GiftEvent("giftOpenView"));
       }
       
-      protected function __bagCloseHandler(param1:Event) : void
+      protected function __bagCloseHandler(event:Event) : void
       {
          if(_alertFrame)
          {

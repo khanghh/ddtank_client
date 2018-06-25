@@ -11,72 +11,68 @@ package ddt.utils
          super();
       }
       
-      public function setBit(param1:uint, param2:Boolean) : Boolean
+      public function setBit(position:uint, value:Boolean) : Boolean
       {
-         var _loc3_:uint = param1 >> 3;
-         var _loc5_:uint = param1 & 7;
-         var _loc4_:uint = this[_loc3_];
-         _loc4_ = _loc4_ | 1 << _loc5_;
-         this[_loc3_] = _loc4_;
+         var index:uint = position >> 3;
+         var offset:uint = position & 7;
+         var tempByte:uint = this[index];
+         tempByte = tempByte | 1 << offset;
+         this[index] = tempByte;
          return true;
       }
       
-      public function getBit(param1:uint) : Boolean
+      public function getBit(position:uint) : Boolean
       {
-         var _loc3_:* = param1 >> 3;
-         var _loc5_:* = param1 & 7;
-         var _loc4_:int = this[_loc3_];
-         var _loc2_:uint = _loc4_ & 1 << _loc5_;
-         if(_loc2_)
+         var index:* = position >> 3;
+         var offset:* = position & 7;
+         var tempByte:int = this[index];
+         var result:uint = tempByte & 1 << offset;
+         if(result)
          {
             return true;
          }
          return false;
       }
       
-      public function loadBinary(param1:String) : void
+      public function loadBinary(str:String) : void
       {
-         var _loc2_:* = NaN;
-         _loc2_ = 0;
-         while(_loc2_ < param1.length * 32)
+         var i:* = NaN;
+         for(i = 0; i < str.length * 32; setBit(i,str && 1 >> i),i++)
          {
-            setBit(_loc2_,param1 && 1 >> _loc2_);
-            _loc2_++;
          }
       }
       
-      public function traceBinary(param1:uint) : String
+      public function traceBinary(position:uint) : String
       {
-         var _loc6_:* = 0;
-         var _loc3_:uint = param1 >> 3;
-         var _loc5_:* = param1 & 7;
-         var _loc4_:int = this[_loc3_];
-         var _loc2_:String = "";
-         _loc6_ = uint(0);
-         while(_loc6_ < 8)
+         var i:* = 0;
+         var index:uint = position >> 3;
+         var offset:* = position & 7;
+         var tempByte:int = this[index];
+         var tempStr:String = "";
+         for(i = uint(0); i < 8; )
          {
-            if(_loc6_ == _loc5_)
+            if(i == offset)
             {
-               if(_loc4_ & 1 << _loc6_)
+               if(tempByte & 1 << i)
                {
-                  _loc2_ = _loc2_ + "[1]";
+                  tempStr = tempStr + "[1]";
                }
                else
                {
-                  _loc2_ = _loc2_ + "[0]";
+                  tempStr = tempStr + "[0]";
                }
             }
-            else if(_loc4_ & 1 << _loc6_)
+            else if(tempByte & 1 << i)
             {
-               _loc2_ = _loc2_ + " 1 ";
+               tempStr = tempStr + " 1 ";
             }
             else
             {
-               _loc2_ = _loc2_ + " 0 ";
+               tempStr = tempStr + " 0 ";
             }
-            _loc6_++;
+            i++;
          }
-         return _loc2_;
+         return tempStr;
       }
    }
 }

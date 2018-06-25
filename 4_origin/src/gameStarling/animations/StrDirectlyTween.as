@@ -7,9 +7,9 @@ package gameStarling.animations
    {
        
       
-      public function StrDirectlyTween(param1:TweenObject = null)
+      public function StrDirectlyTween(data:TweenObject = null)
       {
-         super(param1);
+         super(data);
       }
       
       override public function get type() : String
@@ -17,7 +17,7 @@ package gameStarling.animations
          return "StrDirectlyTween";
       }
       
-      override public function update(param1:DisplayObject) : Point
+      override public function update(movie:DisplayObject) : Point
       {
          _isFinished = true;
          return target;

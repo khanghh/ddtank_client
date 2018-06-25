@@ -37,47 +37,46 @@ package road7th.utils
       
       private var _centerDir:String;
       
-      public function BoneMovieVSplice(param1:BoneMovieStarling, param2:int = 1, param3:Number = 0, param4:Function = null, param5:Rectangle = null, param6:String = "center_bottom", param7:Boolean = true, param8:Boolean = false, param9:Boolean = true)
+      public function BoneMovieVSplice(movie:BoneMovieStarling, createNum:int = 1, spacing:Number = 0, createMovieFun:Function = null, rect:Rectangle = null, centerDir:String = "center_bottom", autoplay:Boolean = true, autodisappear:Boolean = false, repeat:Boolean = true)
       {
-         var _loc12_:int = 0;
-         var _loc11_:* = null;
+         var i:int = 0;
+         var newMovie:* = null;
          super();
-         _movie = new BoneMovieWrapper(param1);
-         this.repeat = param9;
-         this.autoDisappear = param8;
-         _centerDir = param6;
-         _rect = param5;
+         _movie = new BoneMovieWrapper(movie);
+         this.repeat = repeat;
+         this.autoDisappear = autodisappear;
+         _centerDir = centerDir;
+         _rect = rect;
          if(_rect == null)
          {
             _movie.playAction();
-            _rect = new Rectangle(0,0,param1.width,param1.height);
+            _rect = new Rectangle(0,0,movie.width,movie.height);
          }
          _movieSp = new Sprite();
          _movies = [];
          className = _movie.movie.styleName;
          _movies.push(_movie);
          _movieSp.addChild(_movie.asDisplay);
-         var _loc10_:int = param2 - _movies.length;
-         _loc12_ = 0;
-         while(_loc12_ < _loc10_)
+         var remainNum:int = createNum - _movies.length;
+         for(i = 0; i < remainNum; )
          {
-            if(param4 != null)
+            if(createMovieFun != null)
             {
-               _loc11_ = new BoneMovieWrapper(param4());
+               newMovie = new BoneMovieWrapper(createMovieFun());
             }
             else
             {
-               _loc11_ = new BoneMovieWrapper(className);
+               newMovie = new BoneMovieWrapper(className);
             }
             if(_centerDir == "center_bottom")
             {
-               BoneMovieStarling(_loc11_.movie).y = (_loc12_ + 1) * (_rect.height + param3);
+               BoneMovieStarling(newMovie.movie).y = (i + 1) * (_rect.height + spacing);
             }
-            _movies.push(_loc11_);
-            _movieSp.addChild(_loc11_.movie as BoneMovieStarling);
-            _loc12_++;
+            _movies.push(newMovie);
+            _movieSp.addChild(newMovie.movie as BoneMovieStarling);
+            i++;
          }
-         if(!param7)
+         if(!autoplay)
          {
             exeMovieFun("stop");
             boneMovie.addEventListener("addedToStage",__onAddStage);
@@ -88,66 +87,65 @@ package road7th.utils
          }
       }
       
-      public function exeMovieFun(param1:String, param2:Array = null, param3:int = 0, param4:int = 0) : void
+      public function exeMovieFun(funStr:String, params:Array = null, startIndex:int = 0, endLength:int = 0) : void
       {
-         var _loc5_:* = 0;
-         if(param4 == 0)
+         var i:* = 0;
+         if(endLength == 0)
          {
-            param4 = !!_movies?_movies.length:-1;
+            endLength = !!_movies?_movies.length:-1;
          }
-         if(!_isDispose && param4 >= 0)
+         if(!_isDispose && endLength >= 0)
          {
-            _loc5_ = param3;
-            while(_loc5_ < param4)
+            for(i = startIndex; i < endLength; )
             {
-               if(param2)
+               if(params)
                {
-                  if(param2.length == 1)
+                  if(params.length == 1)
                   {
-                     _movies[_loc5_][param1](param2[0]);
+                     _movies[i][funStr](params[0]);
                   }
-                  else if(param2.length == 2)
+                  else if(params.length == 2)
                   {
-                     _movies[_loc5_][param1](param2[0],param2[1]);
+                     _movies[i][funStr](params[0],params[1]);
                   }
-                  else if(param2.length == 3)
+                  else if(params.length == 3)
                   {
-                     _movies[_loc5_][param1](param2[0],param2[1],param2[2]);
+                     _movies[i][funStr](params[0],params[1],params[2]);
                   }
                }
                else
                {
-                  _movies[_loc5_][param1]();
+                  _movies[i][funStr]();
                }
-               _loc5_++;
+               i++;
             }
          }
-         else if(param2.length >= 2)
+         else if(params.length >= 2)
          {
-            param2[1]();
+            params[1]();
          }
       }
       
-      private function __onAddStage(param1:Event) : void
+      private function __onAddStage(event:Event) : void
       {
          exeMovieFun("playAction");
       }
       
-      public function set x(param1:int) : void
+      public function set x(val:int) : void
       {
-         _x = param1;
+         _x = val;
          if(_movieSp)
          {
-            _movieSp.x = param1;
+            _movieSp.x = val;
          }
       }
       
-      public function set y(param1:int) : void
+      public function set y(val:int) : void
       {
-         _y = param1;
+         _y = val;
          if(_movieSp)
          {
-            _movieSp.y = param1;
+            _movieSp.y = val;
          }
       }
       
@@ -161,26 +159,26 @@ package road7th.utils
          return _y;
       }
       
-      public function gotoAndPlay(param1:Object) : void
+      public function gotoAndPlay(frame:Object) : void
       {
-         exeMovieFun("gotoAndPlay",[param1]);
+         exeMovieFun("gotoAndPlay",[frame]);
       }
       
-      public function gotoAndStop(param1:Object) : void
+      public function gotoAndStop(frame:Object) : void
       {
-         exeMovieFun("gotoAndStop",[param1]);
+         exeMovieFun("gotoAndStop",[frame]);
       }
       
-      public function playAction(param1:String, param2:Function = null, param3:Array = null) : void
+      public function playAction(type:String, callBack:Function = null, args:Array = null) : void
       {
-         type = param1;
-         callBack = param2;
-         args = param3;
-         var currentCall:Function = function(param1:Array = null):void
+         type = type;
+         callBack = callBack;
+         args = args;
+         var currentCall:Function = function($args:Array = null):void
          {
             if(callBack != null)
             {
-               callFun(callBack,param1);
+               callFun(callBack,$args);
             }
          };
          if(_movies && _movies.length > 1)
@@ -190,33 +188,33 @@ package road7th.utils
          exeMovieFun("playAction",[type,currentCall,args],0,1);
       }
       
-      private function callFun(param1:Function, param2:Array) : void
+      private function callFun(fun:Function, args:Array) : void
       {
-         if(param2 == null || param2.length == 0)
+         if(args == null || args.length == 0)
          {
-            param1();
+            fun();
          }
-         else if(param2.length == 1)
+         else if(args.length == 1)
          {
-            param1(param2[0]);
+            fun(args[0]);
          }
-         else if(param2.length == 2)
+         else if(args.length == 2)
          {
-            param1(param2[0],param2[1]);
+            fun(args[0],args[1]);
          }
-         else if(param2.length == 3)
+         else if(args.length == 3)
          {
-            param1(param2[0],param2[1],param2[2]);
+            fun(args[0],args[1],args[2]);
          }
-         else if(param2.length == 4)
+         else if(args.length == 4)
          {
-            param1(param2[0],param2[1],param2[2],param2[3]);
+            fun(args[0],args[1],args[2],args[3]);
          }
       }
       
-      public function play(param1:String = "") : void
+      public function play(action:String = "") : void
       {
-         exeMovieFun("playAction",[param1,stop]);
+         exeMovieFun("playAction",[action,stop]);
       }
       
       public function stop() : void

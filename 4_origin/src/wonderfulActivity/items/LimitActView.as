@@ -57,9 +57,9 @@ package wonderfulActivity.items
       
       private var _contentWidth:int;
       
-      public function LimitActView(param1:ActiveEventsInfo)
+      public function LimitActView(info:ActiveEventsInfo)
       {
-         _info = param1;
+         _info = info;
          super();
          initView();
       }

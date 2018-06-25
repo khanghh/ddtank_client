@@ -15,9 +15,9 @@ package wonderfulActivity.items
          super();
       }
       
-      public function set back(param1:DisplayObject) : void
+      public function set back(back:DisplayObject) : void
       {
-         _back = param1;
+         _back = back;
          _back.alpha = 0;
          _width = _back.width;
          _height = _back.height;

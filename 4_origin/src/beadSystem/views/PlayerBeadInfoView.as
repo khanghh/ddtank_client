@@ -35,118 +35,116 @@ package beadSystem.views
       
       private function initView() : void
       {
-         var _loc10_:int = 0;
-         var _loc7_:* = null;
+         var i:int = 0;
+         var stoneCell:* = null;
          _bg = ComponentFactory.Instance.creatBitmap("beadSystem.playerBeadInfo.bg");
          addChild(_bg);
-         var _loc8_:EmbedStoneCell = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[1,1]);
-         _loc8_.x = Point(ComponentFactory.Instance.creatCustomObject("bead.PlayerEmbedpoint1")).x;
-         _loc8_.y = Point(ComponentFactory.Instance.creatCustomObject("bead.PlayerEmbedpoint1")).y;
-         _loc8_.StoneType = 1;
-         addChild(_loc8_);
-         _beadCells.add(1,_loc8_);
-         var _loc11_:EmbedStoneCell = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[2,2]);
-         _loc11_.x = Point(ComponentFactory.Instance.creatCustomObject("bead.PlayerEmbedpoint2")).x;
-         _loc11_.y = Point(ComponentFactory.Instance.creatCustomObject("bead.PlayerEmbedpoint2")).y;
-         _loc11_.StoneType = 2;
-         addChild(_loc11_);
-         _beadCells.add(2,_loc11_);
-         var _loc9_:EmbedStoneCell = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[3,2]);
-         _loc9_.x = Point(ComponentFactory.Instance.creatCustomObject("bead.PlayerEmbedpoint3")).x;
-         _loc9_.y = Point(ComponentFactory.Instance.creatCustomObject("bead.PlayerEmbedpoint3")).y;
-         _loc9_.StoneType = 2;
-         addChild(_loc9_);
-         _beadCells.add(3,_loc9_);
-         _loc10_ = 4;
-         while(_loc10_ <= 12)
+         var stoneAttackCell:EmbedStoneCell = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[1,1]);
+         stoneAttackCell.x = Point(ComponentFactory.Instance.creatCustomObject("bead.PlayerEmbedpoint1")).x;
+         stoneAttackCell.y = Point(ComponentFactory.Instance.creatCustomObject("bead.PlayerEmbedpoint1")).y;
+         stoneAttackCell.StoneType = 1;
+         addChild(stoneAttackCell);
+         _beadCells.add(1,stoneAttackCell);
+         var stoneDefanceCell1:EmbedStoneCell = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[2,2]);
+         stoneDefanceCell1.x = Point(ComponentFactory.Instance.creatCustomObject("bead.PlayerEmbedpoint2")).x;
+         stoneDefanceCell1.y = Point(ComponentFactory.Instance.creatCustomObject("bead.PlayerEmbedpoint2")).y;
+         stoneDefanceCell1.StoneType = 2;
+         addChild(stoneDefanceCell1);
+         _beadCells.add(2,stoneDefanceCell1);
+         var stoneDefanceCell2:EmbedStoneCell = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[3,2]);
+         stoneDefanceCell2.x = Point(ComponentFactory.Instance.creatCustomObject("bead.PlayerEmbedpoint3")).x;
+         stoneDefanceCell2.y = Point(ComponentFactory.Instance.creatCustomObject("bead.PlayerEmbedpoint3")).y;
+         stoneDefanceCell2.StoneType = 2;
+         addChild(stoneDefanceCell2);
+         _beadCells.add(3,stoneDefanceCell2);
+         for(i = 4; i <= 12; )
          {
-            _loc7_ = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[_loc10_,3]);
-            _loc7_.StoneType = 3;
-            _loc7_.x = _pointArray[_loc10_ - 1].x;
-            _loc7_.y = _pointArray[_loc10_ - 1].y;
-            addChild(_loc7_);
-            _beadCells.add(_loc10_,_loc7_);
-            _loc10_++;
+            stoneCell = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[i,3]);
+            stoneCell.StoneType = 3;
+            stoneCell.x = _pointArray[i - 1].x;
+            stoneCell.y = _pointArray[i - 1].y;
+            addChild(stoneCell);
+            _beadCells.add(i,stoneCell);
+            i++;
          }
-         var _loc3_:EmbedStoneCell = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[13,3]);
-         _loc3_.x = Point(ComponentFactory.Instance.creatCustomObject("bead.PlayerEmbedpoint13")).x;
-         _loc3_.y = Point(ComponentFactory.Instance.creatCustomObject("bead.PlayerEmbedpoint13")).y;
-         _loc3_.StoneType = 3;
-         addChild(_loc3_);
-         _beadCells.add(13,_loc3_);
-         _HoleOpen.add(13,_loc3_);
-         var _loc4_:EmbedStoneCell = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[14,3]);
-         _loc4_.x = Point(ComponentFactory.Instance.creatCustomObject("bead.PlayerEmbedpoint14")).x;
-         _loc4_.y = Point(ComponentFactory.Instance.creatCustomObject("bead.PlayerEmbedpoint14")).y;
-         _loc4_.StoneType = 3;
-         addChild(_loc4_);
-         _beadCells.add(14,_loc4_);
-         _HoleOpen.add(14,_loc4_);
-         var _loc1_:EmbedStoneCell = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[15,3]);
-         _loc1_.x = Point(ComponentFactory.Instance.creatCustomObject("bead.PlayerEmbedpoint15")).x;
-         _loc1_.y = Point(ComponentFactory.Instance.creatCustomObject("bead.PlayerEmbedpoint15")).y;
-         _loc1_.StoneType = 3;
-         addChild(_loc1_);
-         _beadCells.add(15,_loc1_);
-         _HoleOpen.add(15,_loc1_);
-         var _loc2_:EmbedStoneCell = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[16,3]);
-         _loc2_.x = Point(ComponentFactory.Instance.creatCustomObject("bead.PlayerEmbedpoint16")).x;
-         _loc2_.y = Point(ComponentFactory.Instance.creatCustomObject("bead.PlayerEmbedpoint16")).y;
-         _loc2_.StoneType = 3;
-         addChild(_loc2_);
-         _beadCells.add(16,_loc2_);
-         _HoleOpen.add(16,_loc2_);
-         var _loc6_:EmbedStoneCell = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[17,3]);
-         _loc6_.x = Point(ComponentFactory.Instance.creatCustomObject("bead.PlayerEmbedpoint17")).x;
-         _loc6_.y = Point(ComponentFactory.Instance.creatCustomObject("bead.PlayerEmbedpoint17")).y;
-         _loc6_.StoneType = 3;
-         addChild(_loc6_);
-         _beadCells.add(17,_loc6_);
-         _HoleOpen.add(17,_loc6_);
-         var _loc5_:EmbedStoneCell = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[18,3]);
-         _loc5_.x = Point(ComponentFactory.Instance.creatCustomObject("bead.PlayerEmbedpoint18")).x;
-         _loc5_.y = Point(ComponentFactory.Instance.creatCustomObject("bead.PlayerEmbedpoint18")).y;
-         _loc5_.StoneType = 3;
-         addChild(_loc5_);
-         _beadCells.add(18,_loc5_);
-         _HoleOpen.add(18,_loc5_);
+         var stoneNeedOpen1:EmbedStoneCell = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[13,3]);
+         stoneNeedOpen1.x = Point(ComponentFactory.Instance.creatCustomObject("bead.PlayerEmbedpoint13")).x;
+         stoneNeedOpen1.y = Point(ComponentFactory.Instance.creatCustomObject("bead.PlayerEmbedpoint13")).y;
+         stoneNeedOpen1.StoneType = 3;
+         addChild(stoneNeedOpen1);
+         _beadCells.add(13,stoneNeedOpen1);
+         _HoleOpen.add(13,stoneNeedOpen1);
+         var stoneNeedOpen2:EmbedStoneCell = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[14,3]);
+         stoneNeedOpen2.x = Point(ComponentFactory.Instance.creatCustomObject("bead.PlayerEmbedpoint14")).x;
+         stoneNeedOpen2.y = Point(ComponentFactory.Instance.creatCustomObject("bead.PlayerEmbedpoint14")).y;
+         stoneNeedOpen2.StoneType = 3;
+         addChild(stoneNeedOpen2);
+         _beadCells.add(14,stoneNeedOpen2);
+         _HoleOpen.add(14,stoneNeedOpen2);
+         var stoneNeedOpen3:EmbedStoneCell = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[15,3]);
+         stoneNeedOpen3.x = Point(ComponentFactory.Instance.creatCustomObject("bead.PlayerEmbedpoint15")).x;
+         stoneNeedOpen3.y = Point(ComponentFactory.Instance.creatCustomObject("bead.PlayerEmbedpoint15")).y;
+         stoneNeedOpen3.StoneType = 3;
+         addChild(stoneNeedOpen3);
+         _beadCells.add(15,stoneNeedOpen3);
+         _HoleOpen.add(15,stoneNeedOpen3);
+         var stoneNeedOpen4:EmbedStoneCell = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[16,3]);
+         stoneNeedOpen4.x = Point(ComponentFactory.Instance.creatCustomObject("bead.PlayerEmbedpoint16")).x;
+         stoneNeedOpen4.y = Point(ComponentFactory.Instance.creatCustomObject("bead.PlayerEmbedpoint16")).y;
+         stoneNeedOpen4.StoneType = 3;
+         addChild(stoneNeedOpen4);
+         _beadCells.add(16,stoneNeedOpen4);
+         _HoleOpen.add(16,stoneNeedOpen4);
+         var stoneNeedOpen5:EmbedStoneCell = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[17,3]);
+         stoneNeedOpen5.x = Point(ComponentFactory.Instance.creatCustomObject("bead.PlayerEmbedpoint17")).x;
+         stoneNeedOpen5.y = Point(ComponentFactory.Instance.creatCustomObject("bead.PlayerEmbedpoint17")).y;
+         stoneNeedOpen5.StoneType = 3;
+         addChild(stoneNeedOpen5);
+         _beadCells.add(17,stoneNeedOpen5);
+         _HoleOpen.add(17,stoneNeedOpen5);
+         var stoneNeedOpen6:EmbedStoneCell = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[18,3]);
+         stoneNeedOpen6.x = Point(ComponentFactory.Instance.creatCustomObject("bead.PlayerEmbedpoint18")).x;
+         stoneNeedOpen6.y = Point(ComponentFactory.Instance.creatCustomObject("bead.PlayerEmbedpoint18")).y;
+         stoneNeedOpen6.StoneType = 3;
+         addChild(stoneNeedOpen6);
+         _beadCells.add(18,stoneNeedOpen6);
+         _HoleOpen.add(18,stoneNeedOpen6);
       }
       
       private function getCellsPoint() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var point:* = null;
          _pointArray = new Vector.<Point>();
-         _loc2_ = 1;
-         while(_loc2_ <= 18)
+         for(i = 1; i <= 18; )
          {
-            _loc1_ = ComponentFactory.Instance.creatCustomObject("bead.PlayerEmbedpoint" + _loc2_);
-            _pointArray.push(_loc1_);
-            _loc2_++;
+            point = ComponentFactory.Instance.creatCustomObject("bead.PlayerEmbedpoint" + i);
+            _pointArray.push(point);
+            i++;
          }
       }
       
-      public function set playerInfo(param1:PlayerInfo) : void
+      public function set playerInfo(value:PlayerInfo) : void
       {
-         _playerInfo = param1;
-         if(param1)
+         _playerInfo = value;
+         if(value)
          {
             var _loc5_:int = 0;
             var _loc4_:* = _beadCells;
-            for each(var _loc3_ in _beadCells)
+            for each(var o in _beadCells)
             {
-               _loc3_.info = null;
+               o.info = null;
             }
             var _loc7_:int = 0;
             var _loc6_:* = _beadCells;
-            for each(var _loc2_ in _beadCells)
+            for each(var e in _beadCells)
             {
-               _loc2_.otherPlayer = param1;
-               _loc2_.itemInfo = param1.BeadBag.getItemAt(_loc2_.ID);
-               _loc2_.info = param1.BeadBag.getItemAt(_loc2_.ID);
-               if(_loc2_.ID >= 13 && param1.BeadBag.getItemAt(_loc2_.ID))
+               e.otherPlayer = value;
+               e.itemInfo = value.BeadBag.getItemAt(e.ID);
+               e.info = value.BeadBag.getItemAt(e.ID);
+               if(e.ID >= 13 && value.BeadBag.getItemAt(e.ID))
                {
-                  _loc2_.open();
+                  e.open();
                }
             }
          }
@@ -161,9 +159,9 @@ package beadSystem.views
          _bg = null;
          var _loc3_:int = 0;
          var _loc2_:* = _beadCells;
-         for each(var _loc1_ in _beadCells)
+         for each(var o in _beadCells)
          {
-            ObjectUtils.disposeObject(_loc1_);
+            ObjectUtils.disposeObject(o);
          }
          if(parent)
          {

@@ -55,16 +55,16 @@ package mysteriousRoullete.view
          addChild(_content);
       }
       
-      private function changeViewHandler(param1:MysteriousEvent) : void
+      private function changeViewHandler(event:MysteriousEvent) : void
       {
-         if(!_view || type == param1.viewType)
+         if(!_view || type == event.viewType)
          {
             return;
          }
          _view.removeEventListener("changeView",changeViewHandler);
          ObjectUtils.disposeObject(_view);
          _view = null;
-         type = param1.viewType;
+         type = event.viewType;
          switch(int(type))
          {
             case 0:
@@ -78,7 +78,7 @@ package mysteriousRoullete.view
          _content.addChild(_view);
       }
       
-      protected function __onSetTime(param1:MysteriousEvent) : void
+      protected function __onSetTime(event:MysteriousEvent) : void
       {
          if(_view && type == 1)
          {
@@ -121,7 +121,7 @@ package mysteriousRoullete.view
          return this;
       }
       
-      public function setState(param1:int, param2:int) : void
+      public function setState(type:int, id:int) : void
       {
       }
       

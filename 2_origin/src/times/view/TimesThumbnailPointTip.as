@@ -46,18 +46,18 @@ package times.view
          return null;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(data:Object) : void
       {
-         if(!param1)
+         if(!data)
          {
             return;
          }
-         _bitmapDatas = param1.bitmapDatas;
-         if(_bitmapDatas && _bitmapDatas[param1.category] && _bitmapDatas[param1.category][param1.page])
+         _bitmapDatas = data.bitmapDatas;
+         if(_bitmapDatas && _bitmapDatas[data.category] && _bitmapDatas[data.category][data.page])
          {
             this.visible = true;
-            _bitmap = new Bitmap(_bitmapDatas[param1.category][param1.page].bitmapData);
-            _isRevertTip = param1.isRevertTip;
+            _bitmap = new Bitmap(_bitmapDatas[data.category][data.page].bitmapData);
+            _isRevertTip = data.isRevertTip;
             _bitmap.x = 11;
             _bitmap.y = 8;
             if(_bg)
@@ -69,7 +69,7 @@ package times.view
          this.visible = false;
       }
       
-      private function __configPos(param1:Event = null) : void
+      private function __configPos(event:Event = null) : void
       {
          _bg.x = 0;
          if(_isRevertTip)
@@ -94,7 +94,7 @@ package times.view
          }
       }
       
-      private function __removeBitmap(param1:Event) : void
+      private function __removeBitmap(event:Event) : void
       {
          if(_bitmap && _bitmap.parent)
          {

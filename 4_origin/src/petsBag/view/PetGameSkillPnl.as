@@ -32,62 +32,59 @@ package petsBag.view
       
       private var _pet:PetInfo;
       
-      public function PetGameSkillPnl(param1:PetInfo = null)
+      public function PetGameSkillPnl($pet:PetInfo = null)
       {
          super();
          _items = new Vector.<SkillItem>();
          initView();
          initEvent();
-         pet = param1;
+         pet = $pet;
       }
       
       private function initView() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
+         var point:* = null;
          _bg = ComponentFactory.Instance.creat("assets.petsBag.gameSkillPnl");
          addChild(_bg);
-         _loc3_ = 0;
-         while(_loc3_ < 5)
+         for(i = 0; i < 5; )
          {
-            _loc2_ = new SkillItem(null,_loc3_,false);
-            _loc1_ = ComponentFactory.Instance.creatCustomObject("petsBag.gameSkillPnl.point" + _loc3_);
-            _loc2_.x = _loc1_.x;
-            _loc2_.y = _loc1_.y;
-            _loc2_.McType = 2;
-            _loc2_.setExclusiveSkillMc();
-            addChild(_loc2_);
-            _items.push(_loc2_);
-            _loc3_++;
+            item = new SkillItem(null,i,false);
+            point = ComponentFactory.Instance.creatCustomObject("petsBag.gameSkillPnl.point" + i);
+            item.x = point.x;
+            item.y = point.y;
+            item.McType = 2;
+            item.setExclusiveSkillMc();
+            addChild(item);
+            _items.push(item);
+            i++;
          }
       }
       
       private function initEvent() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _items.length)
+         var index:int = 0;
+         for(index = 0; index < _items.length; )
          {
-            _items[_loc1_].addEventListener("click",__skillItemClick);
-            _loc1_++;
+            _items[index].addEventListener("click",__skillItemClick);
+            index++;
          }
          PetsBagManager.instance().petModel.addEventListener("change",__onChange);
       }
       
-      private function __onChange(param1:Event) : void
+      private function __onChange(event:Event) : void
       {
          pet = PetsBagManager.instance().petModel.currentPetInfo;
       }
       
       private function removeEvent() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _items.length)
+         var index:int = 0;
+         for(index = 0; index < _items.length; )
          {
-            _items[_loc1_].removeEventListener("itemclick",__skillItemClick);
-            _loc1_++;
+            _items[index].removeEventListener("itemclick",__skillItemClick);
+            index++;
          }
          PetsBagManager.instance().petModel.removeEventListener("change",__onChange);
          if(_pet)
@@ -96,30 +93,30 @@ package petsBag.view
          }
       }
       
-      private function __skillItemClick(param1:MouseEvent) : void
+      private function __skillItemClick(e:MouseEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         var _loc2_:SkillItem = param1.currentTarget as SkillItem;
-         if(_loc2_)
+         var alert:* = null;
+         var showStr:* = null;
+         var currentSkillItem:SkillItem = e.currentTarget as SkillItem;
+         if(currentSkillItem)
          {
-            if(_loc2_.skillID == -1)
+            if(currentSkillItem.skillID == -1)
             {
-               if(_loc2_.index != 4)
+               if(currentSkillItem.index != 4)
                {
-                  _loc4_ = "";
-                  switch(int(_loc2_.index) - 1)
+                  showStr = "";
+                  switch(int(currentSkillItem.index) - 1)
                   {
                      case 0:
-                        _loc4_ = PetconfigAnalyzer.PetCofnig.skillOpenLevel[0];
+                        showStr = PetconfigAnalyzer.PetCofnig.skillOpenLevel[0];
                         break;
                      case 1:
-                        _loc4_ = PetconfigAnalyzer.PetCofnig.skillOpenLevel[1];
+                        showStr = PetconfigAnalyzer.PetCofnig.skillOpenLevel[1];
                         break;
                      case 2:
-                        _loc4_ = PetconfigAnalyzer.PetCofnig.skillOpenLevel[2];
+                        showStr = PetconfigAnalyzer.PetCofnig.skillOpenLevel[2];
                   }
-                  MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.petsBag.LevAction",_loc4_));
+                  MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.petsBag.LevAction",showStr));
                }
                else
                {
@@ -127,16 +124,16 @@ package petsBag.view
                }
                return;
             }
-            SocketManager.Instance.out.sendEquipPetSkill(PetsBagManager.instance().petModel.currentPetInfo.Place,0,_loc2_.index);
+            SocketManager.Instance.out.sendEquipPetSkill(PetsBagManager.instance().petModel.currentPetInfo.Place,0,currentSkillItem.index);
          }
       }
       
-      protected function __onAlertResponse(param1:FrameEvent) : void
+      protected function __onAlertResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onAlertResponse);
-         switch(int(param1.responseCode) - 2)
+         var alert:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",__onAlertResponse);
+         switch(int(evt.responseCode) - 2)
          {
             case 0:
             case 1:
@@ -146,68 +143,66 @@ package petsBag.view
                   break;
                }
          }
-         _loc2_.dispose();
+         alert.dispose();
       }
       
-      public function set pet(param1:PetInfo) : void
+      public function set pet(value:PetInfo) : void
       {
-         var _loc3_:int = 0;
-         _pet = param1;
+         var i:int = 0;
+         _pet = value;
          var _loc5_:int = 0;
          var _loc4_:* = _items;
-         for each(var _loc2_ in _items)
+         for each(var item in _items)
          {
-            _loc2_.skillID = -1;
+            item.skillID = -1;
          }
          if(_pet)
          {
-            _loc3_ = 0;
-            while(_loc3_ < _pet.equipdSkills.length)
+            for(i = 0; i < _pet.equipdSkills.length; )
             {
-               _items[_loc3_].skillID = _pet.equipdSkills[_loc3_];
-               _loc3_++;
+               _items[i].skillID = _pet.equipdSkills[i];
+               i++;
             }
          }
       }
       
-      private function __onUpdate(param1:DictionaryEvent) : void
+      private function __onUpdate(event:DictionaryEvent) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _pet.equipdSkills.length)
+         var i:int = 0;
+         for(i = 0; i < _pet.equipdSkills.length; )
          {
-            _items[_loc2_].skillID = _pet.equipdSkills[_loc2_];
-            _loc2_++;
+            _items[i].skillID = _pet.equipdSkills[i];
+            i++;
          }
       }
       
-      private function lockByIndex(param1:int) : void
+      private function lockByIndex(index:int) : void
       {
-         if(param1 < 1 || param1 > 5)
+         if(index < 1 || index > 5)
          {
             return;
          }
-         _items[param1 - 1].isLock = true;
+         _items[index - 1].isLock = true;
          if(PetsBagManager.instance().petModel.currentPetInfo && PetsBagManager.instance().petModel.currentPetInfo.PaySkillCount > 0)
          {
-            _items[param1 - 1].isLock = false;
+            _items[index - 1].isLock = false;
          }
       }
       
       public function get UnLockItemIndex() : int
       {
-         var _loc1_:Boolean = true;
+         var flag:Boolean = true;
          var _loc4_:int = 0;
          var _loc3_:* = _items;
-         for each(var _loc2_ in _items)
+         for each(var item in _items)
          {
-            if(!_loc2_.isLock && !_loc2_.info)
+            if(!item.isLock && !item.info)
             {
-               _loc1_ = false;
-               return _loc2_.index;
+               flag = false;
+               return item.index;
             }
          }
-         if(_loc1_)
+         if(flag)
          {
             return 0;
          }
@@ -219,12 +214,12 @@ package petsBag.view
          removeEvent();
          var _loc3_:int = 0;
          var _loc2_:* = _items;
-         for each(var _loc1_ in _items)
+         for each(var item in _items)
          {
-            if(_loc1_)
+            if(item)
             {
-               ObjectUtils.disposeObject(_loc1_);
-               _loc1_ = null;
+               ObjectUtils.disposeObject(item);
+               item = null;
             }
          }
          if(_bg)

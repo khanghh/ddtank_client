@@ -40,9 +40,9 @@ package worldboss.view
       public function WorldBossBuyBuffConfirmFrame()
       {
          super();
-         var _loc1_:AlertInfo = new AlertInfo();
-         _loc1_.title = LanguageMgr.GetTranslation("worldboss.buyBuff.confirmFrame.title");
-         this.info = _loc1_;
+         var alertInfo:AlertInfo = new AlertInfo();
+         alertInfo.title = LanguageMgr.GetTranslation("worldboss.buyBuff.confirmFrame.title");
+         this.info = alertInfo;
          initView();
          initEvent();
       }
@@ -61,23 +61,23 @@ package worldboss.view
          _buyBtn.text = LanguageMgr.GetTranslation("worldboss.buyBuff.confirmFrame.noAlert");
       }
       
-      public function show(param1:int = 1) : void
+      public function show(tag:int = 1) : void
       {
-         _type = param1;
-         var _loc2_:int = WorldBossManager.Instance.bossInfo.addInjureBuffMoney;
-         var _loc3_:int = WorldBossManager.Instance.bossInfo.addInjureValue;
+         _type = tag;
+         var addInjureBuffMoney:int = WorldBossManager.Instance.bossInfo.addInjureBuffMoney;
+         var addInjureValue:int = WorldBossManager.Instance.bossInfo.addInjureValue;
          _promptSCB = ComponentFactory.Instance.creatComponentByStylename("worldBoss.buffBuffFrame.selectCheckButton");
          _promptSCB2 = ComponentFactory.Instance.creatComponentByStylename("worldBoss.buffBuffFrame.selectCheckButton");
          PositionUtils.setPos(_promptSCB2,"worldBoss.buffBuffFrame.selectCheckButtonPos");
-         if(param1 == 1)
+         if(tag == 1)
          {
-            _promptSCB.text = LanguageMgr.GetTranslation("worldboss.buyBuff.confirmFrame.desc3",_loc2_,_loc3_);
-            _promptSCB2.text = LanguageMgr.GetTranslation("worldboss.buyBuff.confirmFrame.desc4",_loc2_);
+            _promptSCB.text = LanguageMgr.GetTranslation("worldboss.buyBuff.confirmFrame.desc3",addInjureBuffMoney,addInjureValue);
+            _promptSCB2.text = LanguageMgr.GetTranslation("worldboss.buyBuff.confirmFrame.desc4",addInjureBuffMoney);
          }
          else
          {
-            _promptSCB.text = LanguageMgr.GetTranslation("worldboss.buyBuff.confirmFrame.desc5",_loc2_,_loc3_);
-            _promptSCB2.text = LanguageMgr.GetTranslation("worldboss.buyBuff.confirmFrame.desc6",_loc2_);
+            _promptSCB.text = LanguageMgr.GetTranslation("worldboss.buyBuff.confirmFrame.desc5",addInjureBuffMoney,addInjureValue);
+            _promptSCB2.text = LanguageMgr.GetTranslation("worldboss.buyBuff.confirmFrame.desc6",addInjureBuffMoney);
          }
          _promptSCBGroup = new SelectedButtonGroup();
          _promptSCBGroup.addSelectItem(_promptSCB);
@@ -103,7 +103,7 @@ package worldboss.view
          _buyBtn.addEventListener("select",__noAlertTip);
       }
       
-      protected function __noAlertTip(param1:Event) : void
+      protected function __noAlertTip(e:Event) : void
       {
          SoundManager.instance.play("008");
          if(_type == 1)
@@ -119,11 +119,11 @@ package worldboss.view
          SharedManager.Instance.save();
       }
       
-      protected function __framePesponse(param1:FrameEvent) : void
+      protected function __framePesponse(event:FrameEvent) : void
       {
          removeEventListener("response",__framePesponse);
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:

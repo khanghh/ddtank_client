@@ -22,11 +22,11 @@ package ddt.view.chat
       
       private var _deleteBtn:SimpleBitmapButton;
       
-      public function ChatFastReplyItem(param1:String, param2:Boolean = false)
+      public function ChatFastReplyItem(str:String, isCustom:Boolean = false)
       {
          super();
-         _itemText = param1;
-         _isCustom = param2;
+         _itemText = str;
+         _isCustom = isCustom;
          init();
          initEvent();
       }
@@ -49,14 +49,14 @@ package ddt.view.chat
          return _itemText;
       }
       
-      private function __mouseOut(param1:MouseEvent) : void
+      private function __mouseOut(evt:MouseEvent) : void
       {
          var _loc2_:int = 0;
          _deleteBtn.alpha = _loc2_;
          _bg.alpha = _loc2_;
       }
       
-      private function __mouseOver(param1:MouseEvent) : void
+      private function __mouseOver(evt:MouseEvent) : void
       {
          var _loc2_:int = 1;
          _deleteBtn.alpha = _loc2_;
@@ -75,8 +75,8 @@ package ddt.view.chat
          _contentTxt.height = _bg.height;
          _contentTxt.width = _bg.width;
          _contentTxt.mouseEnabled = false;
-         var _loc1_:TextFormat = new TextFormat("Arial",12,16777215);
-         _contentTxt.setTextFormat(_loc1_);
+         var tf:TextFormat = new TextFormat("Arial",12,16777215);
+         _contentTxt.setTextFormat(tf);
          addChild(_bg);
          addChild(_contentTxt);
          if(_isCustom)
@@ -105,7 +105,7 @@ package ddt.view.chat
          _deleteBtn.removeEventListener("click",__delete);
       }
       
-      private function __delete(param1:MouseEvent) : void
+      private function __delete(event:MouseEvent) : void
       {
          dispatchEvent(new ChatEvent("delete",this));
       }

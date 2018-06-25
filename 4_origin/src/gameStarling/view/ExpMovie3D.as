@@ -31,9 +31,9 @@ package gameStarling.view
          _expUpAsset.alpha = 0;
       }
       
-      public function set exp(param1:int) : void
+      public function set exp(value:int) : void
       {
-         _expText.text = param1.toString();
+         _expText.text = value.toString();
       }
       
       public function play() : void

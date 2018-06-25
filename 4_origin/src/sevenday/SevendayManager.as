@@ -4,7 +4,6 @@ package sevenday
    import com.pickgliss.utils.ObjectUtils;
    import ddt.data.quest.QuestInfo;
    import ddt.loader.LoaderCreate;
-   import ddt.loader.StartupResourceLoader;
    import ddt.manager.GameSocketOut;
    import ddt.manager.PlayerManager;
    import ddt.manager.TimeManager;
@@ -32,11 +31,11 @@ package sevenday
       
       private var _hour:int;
       
-      private var _autoOpenViewState:int = 1;
+      private var _autoOpenViewState:int = 2;
       
       private var _frame:SevendayMainFrame;
       
-      public function SevendayManager(param1:inner)
+      public function SevendayManager($inner:inner)
       {
          super(null);
       }
@@ -76,33 +75,32 @@ package sevenday
          }
       }
       
-      public function isNotAllAchieved(param1:int = 0) : Boolean
+      public function isNotAllAchieved(id:int = 0) : Boolean
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc2_:Array = [];
-         _loc2_ = SevendayManager.QUEST_LIST_1.concat(SevendayManager.QUEST_LIST_2);
-         _loc4_ = 0;
-         while(_loc4_ < _loc2_.length)
+         var i:int = 0;
+         var questInfo:* = null;
+         var taskArr:Array = [];
+         taskArr = SevendayManager.QUEST_LIST_1.concat(SevendayManager.QUEST_LIST_2);
+         for(i = 0; i < taskArr.length; )
          {
-            _loc3_ = TaskManager.instance.getQuestByID(_loc2_[_loc4_]);
-            if((_loc3_.data || _loc3_.isAchieved && !_loc3_.isAvailable) && param1 != _loc2_[_loc4_])
+            questInfo = TaskManager.instance.getQuestByID(taskArr[i]);
+            if((questInfo.data || questInfo.isAchieved && !questInfo.isAvailable) && id != taskArr[i])
             {
                return true;
             }
-            _loc4_++;
+            i++;
          }
          return false;
       }
       
       private function updateTime() : void
       {
-         var _loc3_:Boolean = false;
-         var _loc2_:Date = TimeManager.Instance.Now();
-         var _loc4_:Date = PlayerManager.Instance.Self.createPlayerDate;
-         var _loc1_:Number = _loc2_.time - _loc4_.time;
-         _day = _loc1_ / 86400000;
-         _hour = 24 - _loc1_ % 86400000 / (86400000 / 24);
+         var bool:Boolean = false;
+         var currentDate:Date = TimeManager.Instance.Now();
+         var createDate:Date = PlayerManager.Instance.Self.createPlayerDate;
+         var time:Number = currentDate.time - createDate.time;
+         _day = time / 86400000;
+         _hour = 24 - time % 86400000 / (86400000 / 24);
       }
       
       public function get isSevenday() : Boolean
@@ -120,41 +118,24 @@ package sevenday
          return _hour;
       }
       
-      public function getQuestComplete() : Boolean
-      {
-         return true;
-      }
-      
-      public function setup() : void
-      {
-         if(_autoOpenViewState == 0)
-         {
-            return;
-         }
-         _autoOpenViewState = 0;
-         if(StartupResourceLoader.firstEnterHall || PlayerManager.Instance.Self.LastDate.day != TimeManager.Instance.Now().day)
-         {
-            _autoOpenViewState = 2;
-         }
-      }
-      
       public function checkAutoShow() : void
       {
          if(SevendayManager.instance.isSevenday && PlayerManager.Instance.Self.Grade >= 11)
          {
-            _autoOpenViewState = 2;
+            show();
          }
       }
       
       public function checkIcon() : void
       {
          updateTime();
-         var _loc1_:Boolean = isNotAllAchieved();
-         if(isSevenday && _loc1_)
+         var isShow:Boolean = isNotAllAchieved();
+         if(isSevenday && isShow)
          {
             HallIconManager.instance.updateSwitchHandler("sevenday",true);
-            if(_autoOpenViewState == 2)
+            if(_autoOpenViewState == 2 && PlayerManager.Instance.Self.Grade <= 11)
             {
+               _autoOpenViewState = 0;
                show();
             }
          }

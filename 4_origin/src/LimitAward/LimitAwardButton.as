@@ -55,14 +55,14 @@ package LimitAward
       
       private var _taskShineEffect:IEffect;
       
-      public function LimitAwardButton(param1:int)
+      public function LimitAwardButton(type:int)
       {
          super();
-         initView(param1);
+         initView(type);
          initEvent();
       }
       
-      private function initView(param1:int) : void
+      private function initView(type:int) : void
       {
          _getPoint();
          timeDiff = (CalendarManager.getInstance().getShowActiveInfo().end.getTime() - TimeManager.Instance.Now().getTime()) / 1000;
@@ -72,10 +72,10 @@ package LimitAward
          _openLimitAward.graphics.drawRect(75,78,115,70);
          _openLimitAward.graphics.endFill();
          _LimitAwardButton = ComponentFactory.Instance.creat("asset.timeBox.LimitAwardButton");
-         var _loc2_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.timeBox.timeBGAsset");
+         var timeBG:Bitmap = ComponentFactory.Instance.creatBitmap("asset.timeBox.timeBGAsset");
          timeText = ComponentFactory.Instance.creat("LimitAward.TimeBoxStyle");
          addChild(_LimitAwardButton);
-         _delayText.addChild(_loc2_);
+         _delayText.addChild(timeBG);
          _delayText.addChild(timeText);
          _timeSprite = ComponentFactory.Instance.creat("LimitAwardBox.TimeTipTwo");
          _timeSprite.tipData = LanguageMgr.GetTranslation("tanl.timebox.LimitAwardTip");
@@ -84,14 +84,14 @@ package LimitAward
          addChild(_timeSprite);
          _timer = new Timer(1000,int(timeDiff));
          _timer.start();
-         if((param1 == 3 || param1 == 1) && timeDiff > -1)
+         if((type == 3 || type == 1) && timeDiff > -1)
          {
             _LimitAwardButton.y = 26;
             _delayText.x = 79;
             _delayText.y = -29;
             _delayText.width = 130;
          }
-         else if((param1 == 2 || param1 == 4) && timeDiff > -1)
+         else if((type == 2 || type == 4) && timeDiff > -1)
          {
             _LimitAwardButton.x = 3;
             _LimitAwardButton.y = 15;
@@ -99,7 +99,7 @@ package LimitAward
             _delayText.y = 20;
             _delayText.width = 115;
          }
-         else if(param1 == 0 && timeDiff > -1)
+         else if(type == 0 && timeDiff > -1)
          {
             _LimitAwardButton.x = 3;
             _LimitAwardButton.y = 15;
@@ -107,8 +107,8 @@ package LimitAward
             _delayText.y = 32;
             _delayText.width = 115;
          }
-         x = _pointArray[param1].x;
-         y = _pointArray[param1].y;
+         x = _pointArray[type].x;
+         y = _pointArray[type].y;
       }
       
       private function initEvent() : void
@@ -121,55 +121,54 @@ package LimitAward
          _timer.addEventListener("timerComplete",__complete);
       }
       
-      private function timerHandler(param1:TimerEvent) : void
+      private function timerHandler(evnet:TimerEvent) : void
       {
          timeText.text = getTimeDiff(timeDiff);
          _timeSprite.tipData = getTimeDiff(timeDiff);
          timeDiff = Number(timeDiff) - 1;
       }
       
-      private function __complete(param1:TimerEvent) : void
+      private function __complete(e:TimerEvent) : void
       {
          ObjectUtils.disposeObject(this);
       }
       
-      private function getTimeDiff(param1:int) : String
+      private function getTimeDiff(diff:int) : String
       {
-         var _loc2_:* = 0;
-         var _loc4_:* = 0;
-         var _loc3_:* = 0;
-         if(param1 >= 0)
+         var d:* = 0;
+         var h:* = 0;
+         var m:* = 0;
+         if(diff >= 0)
          {
-            _loc2_ = uint(Math.floor(param1 / 60 / 60 / 24));
-            param1 = param1 % 86400;
-            _loc4_ = uint(Math.floor(param1 / 60 / 60));
-            param1 = param1 % 3600;
-            _loc3_ = uint(Math.floor(param1 / 60));
+            d = uint(Math.floor(diff / 60 / 60 / 24));
+            diff = diff % 86400;
+            h = uint(Math.floor(diff / 60 / 60));
+            diff = diff % 3600;
+            m = uint(Math.floor(diff / 60));
          }
-         return _loc2_ + LanguageMgr.GetTranslation("day") + fixZero(_loc4_) + LanguageMgr.GetTranslation("church.weddingRoom.frame.AddWeddingRoomFrame.hour") + fixZero(_loc3_) + LanguageMgr.GetTranslation("church.weddingRoom.frame.AddWeddingRoomFrame.minute");
+         return d + LanguageMgr.GetTranslation("day") + fixZero(h) + LanguageMgr.GetTranslation("church.weddingRoom.frame.AddWeddingRoomFrame.hour") + fixZero(m) + LanguageMgr.GetTranslation("church.weddingRoom.frame.AddWeddingRoomFrame.minute");
       }
       
-      private function fixZero(param1:uint) : String
+      private function fixZero(num:uint) : String
       {
-         return param1 < 10?"0" + String(param1):String(param1);
+         return num < 10?"0" + String(num):String(num);
       }
       
-      private function onClick(param1:MouseEvent) : void
+      private function onClick(event:MouseEvent) : void
       {
          CalendarManager.getInstance().qqOpen(CalendarManager.getInstance().getShowActiveInfo().ActiveID);
       }
       
       private function _getPoint() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var point:* = null;
          _pointArray = new Vector.<Point>();
-         _loc2_ = 0;
-         while(_loc2_ < 5)
+         for(i = 0; i < 5; )
          {
-            _loc1_ = ComponentFactory.Instance.creatCustomObject("limitAwardButton.point" + _loc2_);
-            _pointArray.push(_loc1_);
-            _loc2_++;
+            point = ComponentFactory.Instance.creatCustomObject("limitAwardButton.point" + i);
+            _pointArray.push(point);
+            i++;
          }
       }
       

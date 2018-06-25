@@ -97,9 +97,9 @@ package labyrinth.view
       override protected function init() : void
       {
          super.init();
-         var _loc1_:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("ddt.labyrinth.CleanOutFrame.title"));
-         _loc1_.moveEnable = false;
-         info = _loc1_;
+         var alerInfo:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("ddt.labyrinth.CleanOutFrame.title"));
+         alerInfo.moveEnable = false;
+         info = alerInfo;
          _bg = ComponentFactory.Instance.creatComponentByStylename("ddt.view.CleanOutFrame.ScaleBG");
          addToContent(_bg);
          _rightBG = ComponentFactory.Instance.creatBitmap("ddt.labyrinth.CleanOutFrame.rightBG");
@@ -158,19 +158,19 @@ package labyrinth.view
          LabyrinthManager.Instance.addEventListener("updateInfo",__updateInfo);
       }
       
-      protected function __chatClick(param1:MouseEvent) : void
+      protected function __chatClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          LabyrinthManager.Instance.chat();
       }
       
-      protected function __updateInfo(param1:Event) : void
+      protected function __updateInfo(event:Event) : void
       {
          updateTextVlaue();
          updateButton();
       }
       
-      protected function __updateRemainTime(param1:Event) : void
+      protected function __updateRemainTime(event:Event) : void
       {
          if(_timer)
          {
@@ -200,21 +200,21 @@ package labyrinth.view
       
       private function updateRightValueI() : void
       {
-         var _loc3_:int = 0;
+         var remainTime:int = 0;
          if(_btnState == 0 || _btnState == 2)
          {
-            _loc3_ = LabyrinthManager.Instance.model.cleanOutAllTime;
+            remainTime = LabyrinthManager.Instance.model.cleanOutAllTime;
          }
          else
          {
-            _loc3_ = _remainTime;
+            remainTime = _remainTime;
          }
-         var _loc1_:String = _loc3_ / 60 >= 10?String(Math.floor(_loc3_ / 60)):"0" + String(Math.floor(_loc3_ / 60));
-         var _loc2_:String = _loc3_ % 60 >= 10?String(Math.floor(_loc3_ % 60)):"0" + String(Math.floor(_loc3_ % 60));
-         _rightValueI.text = "00 : " + _loc1_ + " : " + _loc2_;
+         var minute:String = remainTime / 60 >= 10?String(Math.floor(remainTime / 60)):"0" + String(Math.floor(remainTime / 60));
+         var second:String = remainTime % 60 >= 10?String(Math.floor(remainTime % 60)):"0" + String(Math.floor(remainTime % 60));
+         _rightValueI.text = "00 : " + minute + " : " + second;
       }
       
-      protected function __updateTimer(param1:TimerEvent) : void
+      protected function __updateTimer(event:TimerEvent) : void
       {
          if(_remainTime != 0)
          {
@@ -231,10 +231,10 @@ package labyrinth.view
          }
       }
       
-      protected function __addInfo(param1:DictionaryEvent) : void
+      protected function __addInfo(event:DictionaryEvent) : void
       {
          _list.vectorListModel.removeAt(_list.vectorListModel.elements.length - 1);
-         _list.vectorListModel.append(param1.data as CleanOutInfo);
+         _list.vectorListModel.append(event.data as CleanOutInfo);
          _currentFloor = Number(_currentFloor) + 1;
          if(_currentFloor != LabyrinthManager.Instance.model.myProgress + 1)
          {
@@ -242,7 +242,7 @@ package labyrinth.view
          }
       }
       
-      protected function __cancel(param1:MouseEvent) : void
+      protected function __cancel(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          btnState = 0;
@@ -258,53 +258,53 @@ package labyrinth.view
          onResponse(0);
       }
       
-      protected function __speededUp(param1:MouseEvent) : void
+      protected function __speededUp(event:MouseEvent) : void
       {
-         var _loc5_:* = null;
-         var _loc3_:int = 0;
+         var msg:* = null;
+         var money:int = 0;
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:int = KingBlessManager.instance.getOneBuffData(7);
-         if(_loc2_ > 0)
+         var timeDeityCount:int = KingBlessManager.instance.getOneBuffData(7);
+         if(timeDeityCount > 0)
          {
-            _loc5_ = LanguageMgr.GetTranslation("ddt.labyrinth.CleanOutFrame.warning2");
+            msg = LanguageMgr.GetTranslation("ddt.labyrinth.CleanOutFrame.warning2");
          }
          else
          {
-            _loc3_ = Math.ceil(LabyrinthManager.Instance.model.remainTime / 60) * ServerConfigManager.instance.WarriorFamRaidPricePerMin;
+            money = Math.ceil(LabyrinthManager.Instance.model.remainTime / 60) * ServerConfigManager.instance.WarriorFamRaidPricePerMin;
             if(PlayerManager.Instance.Self.IsVIP && PlayerManager.Instance.Self.VIPLevel >= 6)
             {
-               _loc3_ = Math.ceil(_loc3_ / 2);
-               _loc5_ = LanguageMgr.GetTranslation("ddt.labyrinth.CleanOutFrame.warning",_loc3_);
+               money = Math.ceil(money / 2);
+               msg = LanguageMgr.GetTranslation("ddt.labyrinth.CleanOutFrame.warning",money);
             }
             else
             {
-               _loc5_ = LanguageMgr.GetTranslation("ddt.labyrinth.CleanOutFrame.warning",_loc3_);
+               msg = LanguageMgr.GetTranslation("ddt.labyrinth.CleanOutFrame.warning",money);
             }
          }
-         var _loc4_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc5_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"labyrinth.cleanOutConfirmView",30,true,1);
-         _loc4_.moveEnable = false;
-         _loc4_.addEventListener("response",__onFrameEvent);
+         var confirmFrame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),msg,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"labyrinth.cleanOutConfirmView",30,true,1);
+         confirmFrame.moveEnable = false;
+         confirmFrame.addEventListener("response",__onFrameEvent);
       }
       
-      protected function __onFrameEvent(param1:FrameEvent) : void
+      protected function __onFrameEvent(event:FrameEvent) : void
       {
-         var _loc2_:int = 0;
+         var timeDeityCount:int = 0;
          SoundManager.instance.playButtonSound();
-         var _loc3_:BaseAlerFrame = BaseAlerFrame(param1.currentTarget);
-         ObjectUtils.disposeObject(param1.target);
-         var _loc4_:int = Math.ceil(LabyrinthManager.Instance.model.remainTime / 60) * ServerConfigManager.instance.WarriorFamRaidPricePerMin;
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var alert:BaseAlerFrame = BaseAlerFrame(event.currentTarget);
+         ObjectUtils.disposeObject(event.target);
+         var money:int = Math.ceil(LabyrinthManager.Instance.model.remainTime / 60) * ServerConfigManager.instance.WarriorFamRaidPricePerMin;
+         if(event.responseCode == 2 || event.responseCode == 3)
          {
-            _loc2_ = KingBlessManager.instance.getOneBuffData(7);
-            CheckMoneyUtils.instance.checkMoney(_loc3_.isBand,_loc2_,onCheckComplete);
+            timeDeityCount = KingBlessManager.instance.getOneBuffData(7);
+            CheckMoneyUtils.instance.checkMoney(alert.isBand,timeDeityCount,onCheckComplete);
          }
-         _loc3_.removeEventListener("response",__onFrameEvent);
-         _loc3_ = null;
+         alert.removeEventListener("response",__onFrameEvent);
+         alert = null;
       }
       
       private function onCheckComplete() : void
@@ -325,7 +325,7 @@ package labyrinth.view
          _rightValueI.text = "00 : 00 : 00";
       }
       
-      protected function __startCleanOut(param1:MouseEvent) : void
+      protected function __startCleanOut(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.bagLocked)
@@ -347,9 +347,9 @@ package labyrinth.view
          SocketManager.Instance.out.labyrinthCleanOut(LabyrinthManager.Instance.model.sType);
       }
       
-      private function set btnState(param1:int) : void
+      private function set btnState(value:int) : void
       {
-         switch(int(param1))
+         switch(int(value))
          {
             case 0:
                _btnState = 0;
@@ -380,21 +380,21 @@ package labyrinth.view
       
       private function updateTextVlaue() : void
       {
-         var _loc2_:int = LabyrinthManager.Instance.model.myProgress;
-         var _loc3_:int = LabyrinthManager.Instance.model.currentFloor - 1;
-         var _loc1_:int = LabyrinthManager.Instance.model.cleanOutGold;
+         var myProgress:int = LabyrinthManager.Instance.model.myProgress;
+         var currentFloor:int = LabyrinthManager.Instance.model.currentFloor - 1;
+         var cleanOutGold:int = LabyrinthManager.Instance.model.cleanOutGold;
          _remainTime = LabyrinthManager.Instance.model.remainTime;
          if(_btnState == 0 || _btnState == 2)
          {
             _rightLabel.text = LanguageMgr.GetTranslation("ddt.labyrinth.CleanOutFrame.rightLabelText");
             _rightLabelI.text = LanguageMgr.GetTranslation("ddt.labyrinth.CleanOutFrame.rightLabelTextI");
             _rightLabelII.text = LanguageMgr.GetTranslation("ddt.labyrinth.CleanOutFrame.rightLabelTextII");
-            _rightValue.text = LanguageMgr.GetTranslation("ddt.labyrinth.CleanOutFrame.rightValueTextII",_loc2_);
+            _rightValue.text = LanguageMgr.GetTranslation("ddt.labyrinth.CleanOutFrame.rightValueTextII",myProgress);
             _rightValue.setTextFormat(_textFormat,11,_rightValue.text.length);
-            _rightValueII.text = String(_loc1_);
+            _rightValueII.text = String(cleanOutGold);
             if(_btnState == 2)
             {
-               _rightValue.text = LanguageMgr.GetTranslation("ddt.labyrinth.CleanOutFrame.rightValueText",_loc2_);
+               _rightValue.text = LanguageMgr.GetTranslation("ddt.labyrinth.CleanOutFrame.rightValueText",myProgress);
                _rightValue.setTextFormat(_textFormat,11,_rightValue.text.length);
                _rightLabelII.text = LanguageMgr.GetTranslation("ddt.labyrinth.CleanOutFrame.rightLabelTextIIII");
                _rightValueII.text = LabyrinthManager.Instance.model.accumulateExp.toString();
@@ -405,7 +405,7 @@ package labyrinth.view
             _rightLabel.text = LanguageMgr.GetTranslation("ddt.labyrinth.CleanOutFrame.rightLabelText");
             _rightLabelI.text = LanguageMgr.GetTranslation("ddt.labyrinth.CleanOutFrame.rightLabelTextIII");
             _rightLabelII.text = LanguageMgr.GetTranslation("ddt.labyrinth.CleanOutFrame.rightLabelTextIIII");
-            _rightValue.text = LanguageMgr.GetTranslation("ddt.labyrinth.CleanOutFrame.rightValueText",_loc3_);
+            _rightValue.text = LanguageMgr.GetTranslation("ddt.labyrinth.CleanOutFrame.rightValueText",currentFloor);
             _rightValue.setTextFormat(_textFormat,10,_rightValue.text.length);
             _rightValueII.text = LabyrinthManager.Instance.model.accumulateExp.toString();
          }
@@ -415,8 +415,8 @@ package labyrinth.view
       
       private function updateButton() : void
       {
-         var _loc1_:* = LabyrinthManager.Instance.model.currentFloor == LabyrinthManager.Instance.model.myProgress + 1;
-         if(!LabyrinthManager.Instance.model.completeChallenge || _loc1_)
+         var value:* = LabyrinthManager.Instance.model.currentFloor == LabyrinthManager.Instance.model.myProgress + 1;
+         if(!LabyrinthManager.Instance.model.completeChallenge || value)
          {
             _startCleanOutBtn.enable = false;
             _speededUpBtn.enable = false;

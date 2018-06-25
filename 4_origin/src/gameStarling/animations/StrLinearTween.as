@@ -11,9 +11,9 @@ package gameStarling.animations
       
       private var _duration:int = 0;
       
-      public function StrLinearTween(param1:TweenObject = null)
+      public function StrLinearTween(data:TweenObject = null)
       {
-         super(param1);
+         super(data);
       }
       
       override public function get type() : String
@@ -21,30 +21,30 @@ package gameStarling.animations
          return "StrLinearTween";
       }
       
-      override public function update(param1:DisplayObject) : Point
+      override public function update(movie:DisplayObject) : Point
       {
          if(!_prepared)
          {
             return null;
          }
-         var _loc2_:Point = new Point(param1.x,param1.y);
-         var _loc3_:Point = new Point(target.x - param1.x,target.y - param1.y);
-         if(_loc3_.length >= speed)
+         var result:Point = new Point(movie.x,movie.y);
+         var p:Point = new Point(target.x - movie.x,target.y - movie.y);
+         if(p.length >= speed)
          {
-            _loc3_.normalize(speed);
-            _loc2_.x = _loc2_.x + _loc3_.x;
-            _loc2_.y = _loc2_.y + _loc3_.y;
+            p.normalize(speed);
+            result.x = result.x + p.x;
+            result.y = result.y + p.y;
          }
          else
          {
-            _loc2_ = target;
+            result = target;
          }
-         return _loc2_;
+         return result;
       }
       
-      public function set speed(param1:int) : void
+      public function set speed(value:int) : void
       {
-         _speed = param1;
+         _speed = value;
       }
       
       public function get speed() : int
@@ -52,9 +52,9 @@ package gameStarling.animations
          return _speed;
       }
       
-      public function set duration(param1:int) : void
+      public function set duration(value:int) : void
       {
-         _duration = param1;
+         _duration = value;
       }
       
       public function get duration() : int

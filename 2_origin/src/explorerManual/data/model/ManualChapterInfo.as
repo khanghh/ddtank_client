@@ -22,9 +22,9 @@ package explorerManual.data.model
          return _sort;
       }
       
-      public function set Sort(param1:int) : void
+      public function set Sort(value:int) : void
       {
-         _sort = param1;
+         _sort = value;
       }
       
       public function get Describe() : String
@@ -32,9 +32,9 @@ package explorerManual.data.model
          return _describe;
       }
       
-      public function set Describe(param1:String) : void
+      public function set Describe(value:String) : void
       {
-         _describe = param1;
+         _describe = value;
       }
       
       public function get Name() : String
@@ -42,9 +42,9 @@ package explorerManual.data.model
          return _name;
       }
       
-      public function set Name(param1:String) : void
+      public function set Name(value:String) : void
       {
-         _name = param1;
+         _name = value;
       }
       
       public function get ID() : int
@@ -52,9 +52,9 @@ package explorerManual.data.model
          return _ID;
       }
       
-      public function set ID(param1:int) : void
+      public function set ID(value:int) : void
       {
-         _ID = param1;
+         _ID = value;
       }
    }
 }

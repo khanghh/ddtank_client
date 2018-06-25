@@ -110,61 +110,61 @@ package ddt.loader
          return _instance;
       }
       
-      private function __reloadXML(param1:PkgEvent) : void
+      private function __reloadXML(event:PkgEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:PackageIn = param1.pkg;
-         _loc2_ = _loc4_.readInt();
-         switch(int(_loc2_) - 1)
+         var num:int = 0;
+         var loader:* = null;
+         var pkg:PackageIn = event.pkg;
+         num = pkg.readInt();
+         switch(int(num) - 1)
          {
             case 0:
-               _loc3_ = LoaderCreate.Instance.creatItemTempleteReload();
+               loader = LoaderCreate.Instance.creatItemTempleteReload();
                break;
             case 1:
-               _loc3_ = LoaderCreate.Instance.creatQuestTempleteReload();
+               loader = LoaderCreate.Instance.creatQuestTempleteReload();
          }
-         if(_loc3_)
+         if(loader)
          {
-            LoadResourceManager.Instance.startLoad(_loc3_);
+            LoadResourceManager.Instance.startLoad(loader);
          }
       }
       
-      private function __onUIModuleLoadError(param1:UIModuleEvent) : void
+      private function __onUIModuleLoadError(event:UIModuleEvent) : void
       {
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("alert"),LanguageMgr.GetTranslation("ddt.StartupResourceLoader.Error.LoadModuleError",param1.module),LanguageMgr.GetTranslation("tank.room.RoomIIView2.affirm"));
-         _loc2_.addEventListener("response",__onAlertResponse);
+         var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("alert"),LanguageMgr.GetTranslation("ddt.StartupResourceLoader.Error.LoadModuleError",event.module),LanguageMgr.GetTranslation("tank.room.RoomIIView2.affirm"));
+         alert.addEventListener("response",__onAlertResponse);
       }
       
-      private function __onAlertResponse(param1:FrameEvent) : void
+      private function __onAlertResponse(event:FrameEvent) : void
       {
-         param1.currentTarget.removeEventListener("response",__onAlertResponse);
-         ObjectUtils.disposeObject(param1.currentTarget);
+         event.currentTarget.removeEventListener("response",__onAlertResponse);
+         ObjectUtils.disposeObject(event.currentTarget);
          LeavePageManager.leaveToLoginPath();
       }
       
       public function get progress() : int
       {
-         var _loc2_:int = 0;
+         var starlingProgress:int = 0;
          if(_starlingQueueLoader)
          {
-            _loc2_ = _starlingQueueLoader.getCompletePrecent() * 10;
+            starlingProgress = _starlingQueueLoader.getCompletePrecent() * 10;
          }
          if(_loaderQueue == null)
          {
-            return _loc2_ + int(_uimoduleProgress * 35) + 40;
+            return starlingProgress + int(_uimoduleProgress * 35) + 40;
          }
          if(_queueIsComplete)
          {
             return 99;
          }
-         var _loc1_:int = _loc2_ + _uimoduleProgress * 35 + _requestCompleted / _loaderQueue.length * 15 + 40;
-         return _loc1_ > 99?99:_loc1_;
+         var percent:int = starlingProgress + _uimoduleProgress * 35 + _requestCompleted / _loaderQueue.length * 15 + 40;
+         return percent > 99?99:percent;
       }
       
-      public function start(param1:int) : void
+      public function start(mode:int) : void
       {
-         _currentMode = param1;
+         _currentMode = mode;
          if(starlingPre)
          {
             return;
@@ -181,30 +181,30 @@ package ddt.loader
          LoadResourceManager.Instance.startLoad(_languageLoader);
       }
       
-      private function __onLoadLanZipComplete(param1:LoaderEvent) : void
+      private function __onLoadLanZipComplete(event:LoaderEvent) : void
       {
-         var _loc2_:ByteArray = param1.loader.content;
-         analyMd5(_loc2_);
+         var temp:ByteArray = event.loader.content;
+         analyMd5(temp);
       }
       
-      private function zipLoad(param1:ByteArray) : void
+      private function zipLoad(content:ByteArray) : void
       {
-         var _loc2_:FZip = new FZip();
-         _loc2_.addEventListener("complete",__onZipParaComplete);
-         _loc2_.loadBytes(param1);
+         var zip:FZip = new FZip();
+         zip.addEventListener("complete",__onZipParaComplete);
+         zip.loadBytes(content);
       }
       
-      private function analyMd5(param1:ByteArray) : void
+      private function analyMd5(content:ByteArray) : void
       {
-         var _loc2_:* = null;
-         if(ComponentSetting.USEMD5 && (ComponentSetting.md5Dic["language.png"] || hasHead(param1)))
+         var temp:* = null;
+         if(ComponentSetting.USEMD5 && (ComponentSetting.md5Dic["language.png"] || hasHead(content)))
          {
-            if(compareMD5(param1))
+            if(compareMD5(content))
             {
-               _loc2_ = new ByteArray();
-               param1.position = 37;
-               param1.readBytes(_loc2_);
-               zipLoad(_loc2_);
+               temp = new ByteArray();
+               content.position = 37;
+               content.readBytes(temp);
+               zipLoad(temp);
             }
             else
             {
@@ -227,23 +227,23 @@ package ddt.loader
          }
          else
          {
-            zipLoad(param1);
+            zipLoad(content);
          }
       }
       
-      private function hasHead(param1:ByteArray) : Boolean
+      private function hasHead(temp:ByteArray) : Boolean
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:ByteArray = new ByteArray();
-         _loc2_.writeUTFBytes(ComponentSetting.swf_head);
-         _loc2_.position = 0;
-         param1.position = 0;
-         while(_loc2_.bytesAvailable > 0)
+         var source:int = 0;
+         var target:int = 0;
+         var road7Byte:ByteArray = new ByteArray();
+         road7Byte.writeUTFBytes(ComponentSetting.swf_head);
+         road7Byte.position = 0;
+         temp.position = 0;
+         while(road7Byte.bytesAvailable > 0)
          {
-            _loc3_ = _loc2_.readByte();
-            _loc4_ = param1.readByte();
-            if(_loc3_ != _loc4_)
+            source = road7Byte.readByte();
+            target = temp.readByte();
+            if(source != target)
             {
                return false;
             }
@@ -251,19 +251,19 @@ package ddt.loader
          return true;
       }
       
-      private function compareMD5(param1:ByteArray) : Boolean
+      private function compareMD5(temp:ByteArray) : Boolean
       {
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         var _loc4_:ByteArray = new ByteArray();
-         _loc4_.writeUTFBytes(ComponentSetting.md5Dic["language.png"]);
-         _loc4_.position = 0;
-         param1.position = 5;
-         while(_loc4_.bytesAvailable > 0)
+         var source:int = 0;
+         var target:int = 0;
+         var md5Bytes:ByteArray = new ByteArray();
+         md5Bytes.writeUTFBytes(ComponentSetting.md5Dic["language.png"]);
+         md5Bytes.position = 0;
+         temp.position = 5;
+         while(md5Bytes.bytesAvailable > 0)
          {
-            _loc2_ = _loc4_.readByte();
-            _loc3_ = param1.readByte();
-            if(_loc2_ != _loc3_)
+            source = md5Bytes.readByte();
+            target = temp.readByte();
+            if(source != target)
             {
                return false;
             }
@@ -271,35 +271,35 @@ package ddt.loader
          return true;
       }
       
-      private function __onZipParaComplete(param1:Event) : void
+      private function __onZipParaComplete(event:Event) : void
       {
          if(_languageLoader)
          {
             _languageLoader.removeEventListener("complete",__onLoadLanZipComplete);
          }
-         var _loc3_:FZip = param1.currentTarget as FZip;
-         _loc3_.removeEventListener("complete",__onZipParaComplete);
-         var _loc4_:FZipFile = _loc3_.getFileAt(0);
-         var _loc2_:String = _loc4_.content.toString();
-         LanguageMgr.setup(_loc2_);
+         var zip:FZip = event.currentTarget as FZip;
+         zip.removeEventListener("complete",__onZipParaComplete);
+         var file:FZipFile = zip.getFileAt(0);
+         var content:String = file.content.toString();
+         LanguageMgr.setup(content);
          BonesLoaderManager.instance.addEventListener("bonesstylecompelete",__onLoaderBonesComplete);
          BonesLoaderManager.instance.loadBonesStyle("bones",PathManager.getBonesPath("bones"));
          BonesLoaderManager.instance.loadBonesStyle("gamebones",PathManager.getBonesPath("gamebones"));
       }
       
-      private function __onLoaderBonesComplete(param1:BonesLoaderEvent) : void
+      private function __onLoaderBonesComplete(e:BonesLoaderEvent) : void
       {
-         var _loc2_:* = null;
-         if(param1.data as String == "bones")
+         var loaderQueue:* = null;
+         if(e.data as String == "bones")
          {
             BonesLoaderManager.instance.removeEventListener("bonesstylecompelete",__onLoaderBonesComplete);
             BoneMovieFactory.instance.setup();
             if(_currentMode > 0)
             {
-               _loc2_ = new QueueLoader();
-               _loc2_.addLoader(LoaderCreate.Instance.creatZhanLoader());
-               _loc2_.addEventListener("complete",__onLoadLanguageComplete);
-               _loc2_.start();
+               loaderQueue = new QueueLoader();
+               loaderQueue.addLoader(LoaderCreate.Instance.creatZhanLoader());
+               loaderQueue.addEventListener("complete",__onLoadLanguageComplete);
+               loaderQueue.start();
             }
             else
             {
@@ -308,22 +308,22 @@ package ddt.loader
          }
       }
       
-      private function __onLoadLanguageComplete(param1:Event) : void
+      private function __onLoadLanguageComplete(event:Event) : void
       {
-         var _loc2_:QueueLoader = param1.currentTarget as QueueLoader;
-         _loc2_.removeEventListener("complete",__onLoadLanguageComplete);
+         var loaderQueue:QueueLoader = event.currentTarget as QueueLoader;
+         loaderQueue.removeEventListener("complete",__onLoadLanguageComplete);
          _starlingQueueLoader = new StarlingQueueLoader();
-         var _loc4_:String = PathManager.getUIPath();
-         var _loc3_:String = PathManager.SITE_MAIN;
-         _starlingQueueLoader.load([{"url":_loc4_ + "/starling/hall_scene/hall_scene.png"},{"url":_loc4_ + "/starling/hall_scene/hall_scene.xml"},{
-            "url":_loc3_ + "image/title/title.png",
+         var path:String = PathManager.getUIPath();
+         var imagePath:String = PathManager.SITE_MAIN;
+         _starlingQueueLoader.load([{"url":path + "/starling/hall_scene/hall_scene.png"},{"url":path + "/starling/hall_scene/hall_scene.xml"},{
+            "url":imagePath + "image/title/title.png",
             "useType":2,
             "module":"none"
          },{
-            "url":_loc3_ + "image/title/title.xml",
+            "url":imagePath + "image/title/title.xml",
             "useType":2,
             "module":"none"
-         },{"url":_loc4_ + "/starling/default/default_resource.png"},{"url":_loc4_ + "/starling/default/default_resource.xml"}],onStarlingQueueComplete);
+         },{"url":path + "/starling/default/default_resource.png"},{"url":path + "/starling/default/default_resource.xml"}],onStarlingQueueComplete);
       }
       
       private function onStarlingQueueComplete() : void
@@ -339,102 +339,101 @@ package ddt.loader
          _setStageRightMouse();
       }
       
-      private function __onUIModuleProgress(param1:UIModuleEvent) : void
+      private function __onUIModuleProgress(event:UIModuleEvent) : void
       {
-         var _loc7_:* = 0;
-         var _loc6_:* = null;
-         var _loc4_:BaseLoader = param1.loader;
-         var _loc5_:int = 35;
-         if(param1.module == "roadcomponent")
+         var i:* = 0;
+         var uiType:* = null;
+         var loader:BaseLoader = event.loader;
+         var loaderNumTotal:int = 35;
+         if(event.module == "roadcomponent")
          {
-            setLoaderProgressArr(param1.module,_loc4_.progress);
+            setLoaderProgressArr(event.module,loader.progress);
          }
-         if(param1.module == "coreiconandtip")
+         if(event.module == "coreiconandtip")
          {
-            setLoaderProgressArr(param1.module,_loc4_.progress);
+            setLoaderProgressArr(event.module,loader.progress);
          }
-         if(param1.module == "ddtcorescalebitmap")
+         if(event.module == "ddtcorescalebitmap")
          {
-            setLoaderProgressArr(param1.module,_loc4_.progress);
+            setLoaderProgressArr(event.module,loader.progress);
          }
-         if(param1.module == "chat")
+         if(event.module == "chat")
          {
-            setLoaderProgressArr(param1.module,_loc4_.progress);
+            setLoaderProgressArr(event.module,loader.progress);
          }
-         if(param1.module == "chatii")
+         if(event.module == "chatii")
          {
-            setLoaderProgressArr(param1.module,_loc4_.progress);
+            setLoaderProgressArr(event.module,loader.progress);
          }
-         if(param1.module == "playertip")
+         if(event.module == "playertip")
          {
-            setLoaderProgressArr(param1.module,_loc4_.progress);
+            setLoaderProgressArr(event.module,loader.progress);
          }
-         if(param1.module == "enthrall")
+         if(event.module == "enthrall")
          {
-            setLoaderProgressArr(param1.module,_loc4_.progress);
+            setLoaderProgressArr(event.module,loader.progress);
          }
-         if(param1.module == "trainer")
+         if(event.module == "trainer")
          {
-            setLoaderProgressArr(param1.module,_loc4_.progress);
+            setLoaderProgressArr(event.module,loader.progress);
          }
-         if(param1.module == "trainerui")
+         if(event.module == "trainerui")
          {
-            setLoaderProgressArr(param1.module,_loc4_.progress);
+            setLoaderProgressArr(event.module,loader.progress);
          }
-         if(param1.module == "ddthall")
+         if(event.module == "ddthall")
          {
-            setLoaderProgressArr(param1.module,_loc4_.progress);
+            setLoaderProgressArr(event.module,loader.progress);
          }
-         if(param1.module == "ddthallmain")
+         if(event.module == "ddthallmain")
          {
-            setLoaderProgressArr(param1.module,_loc4_.progress);
+            setLoaderProgressArr(event.module,loader.progress);
          }
-         if(param1.module == "ddthallIcon")
+         if(event.module == "ddthallIcon")
          {
-            setLoaderProgressArr(param1.module,_loc4_.progress);
+            setLoaderProgressArr(event.module,loader.progress);
          }
-         if(param1.module == "toolbar")
+         if(event.module == "toolbar")
          {
-            setLoaderProgressArr(param1.module,_loc4_.progress);
+            setLoaderProgressArr(event.module,loader.progress);
          }
-         if(param1.module == "ddtawardsystem")
+         if(event.module == "ddtawardsystem")
          {
-            setLoaderProgressArr(param1.module,_loc4_.progress);
+            setLoaderProgressArr(event.module,loader.progress);
          }
-         if(param1.module == "uigeneral")
+         if(event.module == "uigeneral")
          {
-            setLoaderProgressArr(param1.module,_loc4_.progress);
+            setLoaderProgressArr(event.module,loader.progress);
          }
          if(!_progressArr)
          {
             return;
          }
-         var _loc3_:* = 0;
-         var _loc2_:uint = _progressArr.length;
-         _loc7_ = uint(0);
-         while(_loc7_ < _loc2_)
+         var num:* = 0;
+         var total:uint = _progressArr.length;
+         for(i = uint(0); i < total; )
          {
-            _loc6_ = _progressArr[_loc7_];
-            _loc3_ = Number(_loc3_ + _progressArr[_loc6_]);
-            _loc7_++;
+            uiType = _progressArr[i];
+            num = Number(num + _progressArr[uiType]);
+            i++;
          }
-         _uimoduleProgress = _loc3_ / _loc2_;
+         _uimoduleProgress = num / total;
       }
       
-      private function setLoaderProgressArr(param1:String, param2:Number = 0) : void
+      private function setLoaderProgressArr($name:String, num:Number = 0) : void
       {
          if(!_progressArr)
          {
             _progressArr = [];
          }
-         if(_progressArr.indexOf(param1) < 0)
+         if(_progressArr.indexOf($name) < 0)
          {
-            _progressArr.push(param1);
-            _progressArr[param1] = param2;
+            _progressArr.push($name);
+            _progressArr[$name] = num;
          }
          else
          {
-            _progressArr[param1] = param2;
+            _progressArr[$name] = num;
          }
       }
       
@@ -455,48 +454,48 @@ package ddt.loader
       
       public function startLoadRelatedInfo() : void
       {
-         var _loc1_:QueueLoader = new QueueLoader();
-         _loc1_.addLoader(LoaderCreate.Instance.creatVoteSubmit());
+         var loaderQueue:QueueLoader = new QueueLoader();
+         loaderQueue.addLoader(LoaderCreate.Instance.creatVoteSubmit());
          SendVersion();
-         _loc1_.addLoader(LoaderCreate.Instance.creatBallInfoLoader());
-         _loc1_.addLoader(LoaderCreate.Instance.creatParticlesLoader());
-         _loc1_.addLoader(LoaderCreate.Instance.creatFriendListLoader());
-         _loc1_.addLoader(LoaderCreate.Instance.creatMyacademyPlayerListLoader());
-         _loc1_.addLoader(LoaderCreate.Instance.getMyConsortiaData());
-         _loc1_.addLoader(LoaderCreate.Instance.createCalendarRequest());
-         _loc1_.addLoader(MailManager.Instance.getAllEmailLoader());
-         _loc1_.addLoader(MailManager.Instance.getSendedEmailLoader());
-         _loc1_.addLoader(ConsortionModelManager.Instance.getLevelUpInfo());
-         _loc1_.addLoader(LoaderCreate.Instance.creatFeedbackInfoLoader());
-         _loc1_.addLoader(LoaderCreate.Instance.createConsortiaLoader());
-         _loc1_.addLoader(LoaderCreate.Instance.creatItemTempleteReload());
-         _loc1_.start();
+         loaderQueue.addLoader(LoaderCreate.Instance.creatBallInfoLoader());
+         loaderQueue.addLoader(LoaderCreate.Instance.creatParticlesLoader());
+         loaderQueue.addLoader(LoaderCreate.Instance.creatFriendListLoader());
+         loaderQueue.addLoader(LoaderCreate.Instance.creatMyacademyPlayerListLoader());
+         loaderQueue.addLoader(LoaderCreate.Instance.getMyConsortiaData());
+         loaderQueue.addLoader(LoaderCreate.Instance.createCalendarRequest());
+         loaderQueue.addLoader(MailManager.Instance.getAllEmailLoader());
+         loaderQueue.addLoader(MailManager.Instance.getSendedEmailLoader());
+         loaderQueue.addLoader(ConsortionModelManager.Instance.getLevelUpInfo());
+         loaderQueue.addLoader(LoaderCreate.Instance.creatFeedbackInfoLoader());
+         loaderQueue.addLoader(LoaderCreate.Instance.createConsortiaLoader());
+         loaderQueue.addLoader(LoaderCreate.Instance.creatItemTempleteReload());
+         loaderQueue.start();
       }
       
-      private function __onSetupSourceLoadComplete(param1:Event) : void
+      private function __onSetupSourceLoadComplete(event:Event) : void
       {
-         var _loc2_:QueueLoader = param1.currentTarget as QueueLoader;
-         _loc2_.removeEventListener("complete",__onSetupSourceLoadComplete);
-         _loc2_.removeEventListener("change",__onSetupSourceLoadChange);
-         _loc2_.dispose();
-         _loc2_ = null;
+         var queue:QueueLoader = event.currentTarget as QueueLoader;
+         queue.removeEventListener("complete",__onSetupSourceLoadComplete);
+         queue.removeEventListener("change",__onSetupSourceLoadChange);
+         queue.dispose();
+         queue = null;
          _queueIsComplete = true;
          dispatchEvent(new StartupEvent("coreSetupLoadComplete"));
       }
       
-      private function __onUIMoudleComplete(param1:UIModuleEvent) : void
+      private function __onUIMoudleComplete(event:UIModuleEvent) : void
       {
-         if(param1.module == "trainer" || param1.module == "trainerui" || param1.module == "trainerfirstgame")
+         if(event.module == "trainer" || event.module == "trainerui" || event.module == "trainerfirstgame")
          {
-            if(param1.module == "trainer")
+            if(event.module == "trainer")
             {
                _trainerComplete = true;
             }
-            if(param1.module == "trainerui")
+            if(event.module == "trainerui")
             {
                _trainerUIComplete = true;
             }
-            if(param1.module == "trainerfirstgame")
+            if(event.module == "trainerfirstgame")
             {
                _trainerFristComplete = true;
             }
@@ -505,7 +504,7 @@ package ddt.loader
                dispatchEvent(new Event("userGuildResourceComplete"));
             }
          }
-         if(param1.module == "ddtawardsystem")
+         if(event.module == "ddtawardsystem")
          {
             LoaderSavingManager.saveFilesToLocal();
             dispatchEvent(new StartupEvent("coreUILoadComplete"));
@@ -568,6 +567,7 @@ package ddt.loader
             addLoader(LoaderCreate.Instance.creatGuardCoreTemplate());
             addLoader(LoaderCreate.Instance.createLoadPetMoePropertyLoader());
             addLoader(LoaderCreate.Instance.accumulativeLoginLoader());
+            addLoader(LoaderCreate.Instance.createTotemUpGradeTemplateLoader());
             addLoader(LoaderCreate.Instance.createCaddyAwardsLoader());
             addLoader(LoaderCreate.Instance.createConsortiaBossTemplateLoader());
             addLoader(LoaderCreate.Instance.createMagicBoxDataLoader());
@@ -602,7 +602,7 @@ package ddt.loader
             addLoader(LoaderCreate.Instance.createMarkSetLoader());
             _loaderQueue.start();
          }
-         if(param1.module == "newopenguide")
+         if(event.module == "newopenguide")
          {
             dispatchEvent(new Event("RegisterUIModuleComplete"));
          }
@@ -678,14 +678,14 @@ package ddt.loader
          _loaderQueue.start();
       }
       
-      private function addLoader(param1:BaseLoader) : void
+      private function addLoader(loader:BaseLoader) : void
       {
-         _loaderQueue.addLoader(param1);
+         _loaderQueue.addLoader(loader);
       }
       
-      private function __onSetupSourceLoadChange(param1:Event) : void
+      private function __onSetupSourceLoadChange(event:Event) : void
       {
-         _requestCompleted = (param1.currentTarget as QueueLoader).completeCount;
+         _requestCompleted = (event.currentTarget as QueueLoader).completeCount;
       }
       
       public function addRegisterUIModule() : void
@@ -814,9 +814,9 @@ package ddt.loader
       {
       }
       
-      private function addUIModlue(param1:String) : void
+      private function addUIModlue(ui:String) : void
       {
-         UIModuleLoader.Instance.addUIModlue(param1);
+         UIModuleLoader.Instance.addUIModlue(ui);
       }
       
       private function _setStageRightMouse() : void
@@ -830,24 +830,24 @@ package ddt.loader
       
       private function creatRightMenu() : ContextMenu
       {
-         var _loc4_:ContextMenu = new ContextMenu();
-         _loc4_.hideBuiltInItems();
-         var _loc3_:ContextMenuItem = new ContextMenuItem(LanguageMgr.GetTranslation("Crazytank.share"));
-         _loc3_.separatorBefore = true;
-         _loc4_.customItems.push(_loc3_);
-         _loc3_.addEventListener("menuItemSelect",onQQMSNClick);
-         var _loc2_:ContextMenuItem = new ContextMenuItem(LanguageMgr.GetTranslation("Crazytank.collection"));
-         _loc2_.separatorBefore = true;
-         _loc4_.customItems.push(_loc2_);
-         _loc2_.addEventListener("menuItemSelect",addFavClick);
-         var _loc1_:ContextMenuItem = new ContextMenuItem(LanguageMgr.GetTranslation("Crazytank.supply"));
-         _loc1_.addEventListener("menuItemSelect",goPayClick);
-         _loc4_.customItems.push(_loc1_);
-         _loc4_.builtInItems.zoom = true;
-         return _loc4_;
+         var myContextMenu:ContextMenu = new ContextMenu();
+         myContextMenu.hideBuiltInItems();
+         var item:ContextMenuItem = new ContextMenuItem(LanguageMgr.GetTranslation("Crazytank.share"));
+         item.separatorBefore = true;
+         myContextMenu.customItems.push(item);
+         item.addEventListener("menuItemSelect",onQQMSNClick);
+         var item1:ContextMenuItem = new ContextMenuItem(LanguageMgr.GetTranslation("Crazytank.collection"));
+         item1.separatorBefore = true;
+         myContextMenu.customItems.push(item1);
+         item1.addEventListener("menuItemSelect",addFavClick);
+         var item2:ContextMenuItem = new ContextMenuItem(LanguageMgr.GetTranslation("Crazytank.supply"));
+         item2.addEventListener("menuItemSelect",goPayClick);
+         myContextMenu.customItems.push(item2);
+         myContextMenu.builtInItems.zoom = true;
+         return myContextMenu;
       }
       
-      private function onQQMSNClick(param1:ContextMenuEvent) : void
+      private function onQQMSNClick(e:ContextMenuEvent) : void
       {
          if(ExternalInterface.available && !DesktopManager.Instance.isDesktop)
          {
@@ -855,27 +855,27 @@ package ddt.loader
          }
       }
       
-      public function receivedFromJavaScript(param1:String) : void
+      public function receivedFromJavaScript(str:String) : void
       {
-         _receivedFromJavaScriptII(param1);
+         _receivedFromJavaScriptII(str);
       }
       
-      private function _receivedFromJavaScriptII(param1:String) : void
+      private function _receivedFromJavaScriptII(str:String) : void
       {
-         System.setClipboard(param1);
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("crazytank.copyOK"),"","",false,false,false,2);
-         _loc2_.addEventListener("response",_response);
+         System.setClipboard(str);
+         var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("crazytank.copyOK"),"","",false,false,false,2);
+         alert.addEventListener("response",_response);
       }
       
       private function SendVersion() : void
       {
-         var _loc3_:URLVariables = new URLVariables();
-         var _loc1_:URLLoader = new URLLoader();
-         _loc3_.version = Capabilities.version.split(" ")[1];
-         var _loc2_:URLRequest = new URLRequest(PathManager.solveRequestPath("UpdateVersion.ashx"));
-         _loc2_.method = "POST";
-         _loc2_.data = _loc3_;
-         _loc1_.load(_loc2_);
+         var varialbes:URLVariables = new URLVariables();
+         var urlLoader:URLLoader = new URLLoader();
+         varialbes.version = Capabilities.version.split(" ")[1];
+         var request:URLRequest = new URLRequest(PathManager.solveRequestPath("UpdateVersion.ashx"));
+         request.method = "POST";
+         request.data = varialbes;
+         urlLoader.load(request);
          if(PathManager.isSendRecordUserVersion)
          {
             sendRecordUserVersion();
@@ -888,15 +888,15 @@ package ddt.loader
       
       private function sendRecordUserVersion() : void
       {
-         var _loc3_:URLVariables = new URLVariables();
-         var _loc1_:URLLoader = new URLLoader();
-         _loc3_.Version = Capabilities.version.split(" ")[1];
-         _loc3_.Sys = Capabilities.os;
-         _loc3_.UserName = PlayerManager.Instance.Account.Account;
-         var _loc2_:URLRequest = new URLRequest(PathManager.solveRequestPath("RecordUserVersion.ashx"));
-         _loc2_.method = "POST";
-         _loc2_.data = _loc3_;
-         _loc1_.load(_loc2_);
+         var varialbes:URLVariables = new URLVariables();
+         var urlLoader:URLLoader = new URLLoader();
+         varialbes.Version = Capabilities.version.split(" ")[1];
+         varialbes.Sys = Capabilities.os;
+         varialbes.UserName = PlayerManager.Instance.Account.Account;
+         var request:URLRequest = new URLRequest(PathManager.solveRequestPath("RecordUserVersion.ashx"));
+         request.method = "POST";
+         request.data = varialbes;
+         urlLoader.load(request);
       }
       
       private function sendUserVersion() : void
@@ -904,7 +904,7 @@ package ddt.loader
          SendRecordManager.Instance.setUp();
       }
       
-      private function addFavClick(param1:ContextMenuEvent) : void
+      private function addFavClick(e:ContextMenuEvent) : void
       {
          if(ExternalInterface.available && !DesktopManager.Instance.isDesktop)
          {
@@ -912,30 +912,30 @@ package ddt.loader
          }
       }
       
-      private function goPayClick(param1:ContextMenuEvent) : void
+      private function goPayClick(e:ContextMenuEvent) : void
       {
          LeavePageManager.leaveToFillPath();
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = BaseAlerFrame(param1.currentTarget);
-         _loc2_.removeEventListener("response",_response);
-         ObjectUtils.disposeObject(param1.target);
+         var alert:BaseAlerFrame = BaseAlerFrame(evt.currentTarget);
+         alert.removeEventListener("response",_response);
+         ObjectUtils.disposeObject(evt.target);
       }
       
-      public function reloadGodSyah(param1:PackageIn) : void
+      public function reloadGodSyah(pkg:PackageIn) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:int = param1.readInt();
-         SyahManager.Instance.isOpen = param1.readBoolean();
+         var loader:* = null;
+         var type:int = pkg.readInt();
+         SyahManager.Instance.isOpen = pkg.readBoolean();
          if(SyahManager.Instance.isOpen)
          {
-            _loc2_ = LoaderCreate.Instance.creatGodSyahLoader(_loc3_);
-            if(_loc2_)
+            loader = LoaderCreate.Instance.creatGodSyahLoader(type);
+            if(loader)
             {
-               LoaderManager.Instance.startLoad(_loc2_);
+               LoaderManager.Instance.startLoad(loader);
             }
          }
          else

@@ -33,12 +33,12 @@ package explorerManual.view.shop
       
       override protected function refreshNumText() : void
       {
-         var _loc1_:String = String(_number.number * _perPrice);
-         var _loc2_:String = LanguageMgr.GetTranslation("explorerManual.shop.point");
-         totalText.text = _loc1_ + " " + _loc2_;
+         var priceStr:String = String(_number.number * _perPrice);
+         var tmp:String = LanguageMgr.GetTranslation("explorerManual.shop.point");
+         totalText.text = priceStr + " " + tmp;
       }
       
-      override protected function __buy(param1:MouseEvent) : void
+      override protected function __buy(event:MouseEvent) : void
       {
          if(checkJampsCurreny(_number.number * _perPrice))
          {
@@ -47,9 +47,9 @@ package explorerManual.view.shop
          dispose();
       }
       
-      private function checkJampsCurreny(param1:int) : Boolean
+      private function checkJampsCurreny(needMoney:int) : Boolean
       {
-         if(PlayerManager.Instance.Self.jampsCurrency < param1)
+         if(PlayerManager.Instance.Self.jampsCurrency < needMoney)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("explorerManual.explorerPoint.deficiency"));
             return false;

@@ -31,19 +31,19 @@ package starling.scene.consortiaDomain
       
       private var _debugBuildNameTf:TextField;
       
-      public function MonsterBone(param1:EachMonsterInfo)
+      public function MonsterBone(eachInfo:EachMonsterInfo)
       {
          super();
-         _eachMonsterInfo = param1;
-         var _loc2_:String = param1.Type == 0?"consortia_domain_bone_living007":"consortia_domain_bone_living191";
-         _bone = BoneMovieFactory.instance.creatBoneMovie(_loc2_);
+         _eachMonsterInfo = eachInfo;
+         var styleName:String = eachInfo.Type == 0?"consortia_domain_bone_living007":"consortia_domain_bone_living191";
+         _bone = BoneMovieFactory.instance.creatBoneMovie(styleName);
          addChild(_bone);
          _walkPlugin = new WalkPlugin(this,ConsortiaDomainManager.instance.consortiaLandMonsterSpeed);
          setTouchEnable();
          _bone.addEventListener("complete",onBoneComplete);
       }
       
-      private function onBoneComplete(param1:Event) : void
+      private function onBoneComplete(evt:Event) : void
       {
          setTouchEnable();
       }
@@ -60,19 +60,19 @@ package starling.scene.consortiaDomain
          }
       }
       
-      public function set moveEntityState(param1:int) : void
+      public function set moveEntityState(value:int) : void
       {
-         if(param1 == 3)
+         if(value == 3)
          {
             _walkPlugin.walk();
             showFightState(false);
             _bone.play("walk");
-            _moveEntityState = param1;
+            _moveEntityState = value;
             setTouchEnable();
          }
-         if(_moveEntityState != param1)
+         if(_moveEntityState != value)
          {
-            if(param1 == 1)
+            if(value == 1)
             {
                _walkPlugin.stop();
                showFightState(false);
@@ -81,13 +81,13 @@ package starling.scene.consortiaDomain
                Starling.juggler.tween(this,1,{"alpha":1});
                _bone.play("stand");
             }
-            else if(param1 == 4 || param1 == 5)
+            else if(value == 4 || value == 5)
             {
                _walkPlugin.stop();
                showFightState(true);
                _bone.play("stand");
             }
-            else if(param1 == 6)
+            else if(value == 6)
             {
                _walkPlugin.stop();
                showFightState(false);
@@ -95,7 +95,7 @@ package starling.scene.consortiaDomain
                Starling.juggler.removeTweens(onMonsterDieComplete);
                Starling.juggler.delayCall(onMonsterDieComplete,1);
             }
-            _moveEntityState = param1;
+            _moveEntityState = value;
             setTouchEnable();
          }
       }
@@ -105,9 +105,9 @@ package starling.scene.consortiaDomain
          ConsortiaDomainManager.instance.dispatchEvent(new CEvent("event_remove_child_monster",this));
       }
       
-      private function showFightState(param1:Boolean) : void
+      private function showFightState(isFight:Boolean) : void
       {
-         if(param1)
+         if(isFight)
          {
             if(!_fight)
             {
@@ -131,9 +131,9 @@ package starling.scene.consortiaDomain
          return _walkPlugin.pathArr;
       }
       
-      public function set pathArr(param1:Array) : void
+      public function set pathArr(value:Array) : void
       {
-         _walkPlugin.pathArr = param1;
+         _walkPlugin.pathArr = value;
       }
       
       public function get moveEntityState() : int
@@ -146,9 +146,9 @@ package starling.scene.consortiaDomain
          return _eachMonsterInfo;
       }
       
-      public function set eachMonsterInfo(param1:EachMonsterInfo) : void
+      public function set eachMonsterInfo(value:EachMonsterInfo) : void
       {
-         _eachMonsterInfo = param1;
+         _eachMonsterInfo = value;
       }
       
       public function get direction() : int
@@ -156,9 +156,9 @@ package starling.scene.consortiaDomain
          return _direction;
       }
       
-      public function set direction(param1:int) : void
+      public function set direction(value:int) : void
       {
-         _direction = param1;
+         _direction = value;
          if(_direction == 4 || _direction == 2)
          {
             _bone.scaleX = 1;

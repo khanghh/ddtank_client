@@ -117,9 +117,9 @@ package labyrinth.view
       override protected function init() : void
       {
          super.init();
-         var _loc1_:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("ddt.labyrinth.LabyrinthFrame.title"));
-         _loc1_.moveEnable = false;
-         info = _loc1_;
+         var alerInfo:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("ddt.labyrinth.LabyrinthFrame.title"));
+         alerInfo.moveEnable = false;
+         info = alerInfo;
          _warriorBtn = ComponentFactory.Instance.creatComponentByStylename("labyrinth.warriorBtn");
          addToContent(_warriorBtn);
          _nightmareBtn = ComponentFactory.Instance.creatComponentByStylename("labyrinth.nightmareBtn");
@@ -246,18 +246,17 @@ package labyrinth.view
       
       private function creatBox() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         _loc2_ = 0;
-         while(_loc2_ < 10)
+         var i:int = 0;
+         var box:* = null;
+         for(i = 0; i < 10; )
          {
-            _loc1_ = new LabyrinthBoxIcon(_loc2_ + 1);
-            _titleList.addChild(_loc1_);
-            _loc2_++;
+            box = new LabyrinthBoxIcon(i + 1);
+            _titleList.addChild(box);
+            i++;
          }
       }
       
-      protected function __updateInfo(param1:Event) : void
+      protected function __updateInfo(event:Event) : void
       {
          _myProgressText.text = LabyrinthManager.Instance.model.myProgress.toString();
          _myRankingText.text = LabyrinthManager.Instance.model.myRanking.toString();
@@ -275,10 +274,10 @@ package labyrinth.view
       
       private function updataState() : void
       {
-         var _loc1_:LabyrinthModel = LabyrinthManager.Instance.model;
-         _isDoubleAward = _loc1_.isDoubleAward;
+         var model:LabyrinthModel = LabyrinthManager.Instance.model;
+         _isDoubleAward = model.isDoubleAward;
          _doubleAward.selected = _isDoubleAward;
-         if(!_loc1_.isInGame && !_loc1_.isCleanOut)
+         if(!model.isInGame && !model.isCleanOut)
          {
             btnState = true;
          }
@@ -286,13 +285,13 @@ package labyrinth.view
          {
             btnState = false;
          }
-         if(_loc1_.currentFloor == _loc1_.myProgress + 1)
+         if(model.currentFloor == model.myProgress + 1)
          {
             var _loc2_:Boolean = false;
             _continueCleanOutBtn.enable = _loc2_;
             _cleanOutBtn.enable = _loc2_;
          }
-         else if(_loc1_.currentFloor >= LabyrinthManager.Instance.model.getMaxLevel())
+         else if(model.currentFloor >= LabyrinthManager.Instance.model.getMaxLevel())
          {
             _loc2_ = false;
             _continueCleanOutBtn.enable = _loc2_;
@@ -308,46 +307,46 @@ package labyrinth.view
       
       protected function openShop() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var frame2:* = null;
+         var frame:* = null;
          if(isNightmare())
          {
-            _loc2_ = ComponentFactory.Instance.creatCustomObject("labyrinth.view.labyrinthNightmareShopFrame");
-            _loc2_.addEventListener("response",__frameEvent);
-            _loc2_.show();
+            frame2 = ComponentFactory.Instance.creatCustomObject("labyrinth.view.labyrinthNightmareShopFrame");
+            frame2.addEventListener("response",__frameEvent);
+            frame2.show();
          }
          else
          {
-            _loc1_ = ComponentFactory.Instance.creatCustomObject("labyrinth.view.labyrinthShopFrame");
-            _loc1_.addEventListener("response",__frameEvent);
-            _loc1_.show();
+            frame = ComponentFactory.Instance.creatCustomObject("labyrinth.view.labyrinthShopFrame");
+            frame.addEventListener("response",__frameEvent);
+            frame.show();
          }
       }
       
       protected function openRanking() : void
       {
-         var _loc1_:RankingListFrame = ComponentFactory.Instance.creatCustomObject("labyrinth.rankingListFrame",[_btnGroup.selectIndex]);
-         _loc1_.addEventListener("response",__frameEvent);
-         _loc1_.show();
+         var frame:RankingListFrame = ComponentFactory.Instance.creatCustomObject("labyrinth.rankingListFrame",[_btnGroup.selectIndex]);
+         frame.addEventListener("response",__frameEvent);
+         frame.show();
       }
       
-      protected function __frameEvent(param1:FrameEvent) : void
+      protected function __frameEvent(event:FrameEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:Disposeable = param1.target as Disposeable;
-         _loc2_.dispose();
-         _loc2_ = null;
+         var frame:Disposeable = event.target as Disposeable;
+         frame.dispose();
+         frame = null;
       }
       
-      protected function set btnState(param1:Boolean) : void
+      protected function set btnState(value:Boolean) : void
       {
-         _startGameBtn.visible = param1;
-         _cleanOutBtn.visible = param1;
-         _continueBtn.visible = !param1;
-         _continueCleanOutBtn.visible = !param1;
-         _resetBtn.visible = !param1;
-         _startContainer.visible = param1;
-         _cleanOutContainer.visible = !param1;
+         _startGameBtn.visible = value;
+         _cleanOutBtn.visible = value;
+         _continueBtn.visible = !value;
+         _continueCleanOutBtn.visible = !value;
+         _resetBtn.visible = !value;
+         _startContainer.visible = value;
+         _cleanOutContainer.visible = !value;
       }
       
       protected function startGame() : void
@@ -393,8 +392,8 @@ package labyrinth.view
       
       private function openCleanOutFrame() : void
       {
-         var _loc1_:LabyrinthModel = LabyrinthManager.Instance.model;
-         if(!_loc1_.isCleanOut)
+         var model:LabyrinthModel = LabyrinthManager.Instance.model;
+         if(!model.isCleanOut)
          {
             cleanOut();
          }
@@ -406,7 +405,7 @@ package labyrinth.view
       
       protected function cleanOut() : void
       {
-         var _loc1_:LabyrinthModel = LabyrinthManager.Instance.model;
+         var model:LabyrinthModel = LabyrinthManager.Instance.model;
          if(!LabyrinthManager.Instance.model.completeChallenge)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.labyrinth.CleanOutFrame.warningI"));
@@ -414,22 +413,22 @@ package labyrinth.view
          }
          if(isNightmare())
          {
-            if(PlayerManager.Instance.Self.getBag(1).getItemByTemplateId(11178) == null && _doubleAward.selected && !_loc1_.isInGame && !_loc1_.isCleanOut)
+            if(PlayerManager.Instance.Self.getBag(1).getItemByTemplateId(11178) == null && _doubleAward.selected && !model.isInGame && !model.isCleanOut)
             {
                buy();
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.labyrinth.LabyrinthFrame.warningIII"));
                return;
             }
          }
-         else if(PlayerManager.Instance.Self.getBag(1).getItemByTemplateId(11916) == null && _doubleAward.selected && !_loc1_.isInGame && !_loc1_.isCleanOut)
+         else if(PlayerManager.Instance.Self.getBag(1).getItemByTemplateId(11916) == null && _doubleAward.selected && !model.isInGame && !model.isCleanOut)
          {
             buy();
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.labyrinth.LabyrinthFrame.warningII"));
             return;
          }
-         var _loc2_:CleanOutFrame = ComponentFactory.Instance.creatCustomObject("labyrinth.view.cleanOutFrame");
-         _loc2_.addEventListener("response",__frameEvent);
-         _loc2_.show();
+         var frame:CleanOutFrame = ComponentFactory.Instance.creatCustomObject("labyrinth.view.cleanOutFrame");
+         frame.addEventListener("response",__frameEvent);
+         frame.show();
       }
       
       protected function continueCleanOut() : void
@@ -439,10 +438,10 @@ package labyrinth.view
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.labyrinth.CleanOutFrame.warningI"));
             return;
          }
-         var _loc1_:CleanOutFrame = ComponentFactory.Instance.creatCustomObject("labyrinth.view.cleanOutFrame");
-         _loc1_.continueCleanOut();
-         _loc1_.addEventListener("response",__frameEvent);
-         _loc1_.show();
+         var frame:CleanOutFrame = ComponentFactory.Instance.creatCustomObject("labyrinth.view.cleanOutFrame");
+         frame.continueCleanOut();
+         frame.addEventListener("response",__frameEvent);
+         frame.show();
       }
       
       protected function doubleChange() : void
@@ -466,25 +465,25 @@ package labyrinth.view
       
       protected function reset() : void
       {
-         var _loc1_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("dt.labyrinth.LabyrinthFrame.text6"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,false,false,2);
-         _loc1_.addEventListener("response",__onAlertResponse);
+         var frame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("dt.labyrinth.LabyrinthFrame.text6"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,false,false,2);
+         frame.addEventListener("response",__onAlertResponse);
       }
       
-      protected function __onAlertResponse(param1:FrameEvent) : void
+      protected function __onAlertResponse(event:FrameEvent) : void
       {
-         param1.currentTarget.removeEventListener("response",__onAlertResponse);
-         ObjectUtils.disposeObject(param1.currentTarget);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         event.currentTarget.removeEventListener("response",__onAlertResponse);
+         ObjectUtils.disposeObject(event.currentTarget);
+         if(event.responseCode == 3 || event.responseCode == 2)
          {
             SocketManager.Instance.out.labyrinthReset(LabyrinthManager.Instance.model.sType);
          }
       }
       
-      protected function __onBtnClick(param1:MouseEvent) : void
+      protected function __onBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          BuriedManager.Instance.isOpening = false;
-         var _loc2_:* = param1.target;
+         var _loc2_:* = event.target;
          if(_startGameBtn !== _loc2_)
          {
             if(_continueBtn !== _loc2_)
@@ -552,7 +551,7 @@ package labyrinth.view
          LayerManager.Instance.addToLayer(this,3,true,2);
       }
       
-      private function __changeHandler(param1:Event) : void
+      private function __changeHandler(event:Event) : void
       {
          SocketManager.Instance.out.labyrinthRequestUpdate(_btnGroup.selectIndex);
          switch(int(_btnGroup.selectIndex))
@@ -578,7 +577,7 @@ package labyrinth.view
          return false;
       }
       
-      private function __helpClick(param1:MouseEvent) : void
+      private function __helpClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(isNightmare())

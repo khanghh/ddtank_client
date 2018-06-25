@@ -142,16 +142,16 @@ package bagAndInfo.ReworkName
          removeEventListener("addedToStage",__onToStage);
       }
       
-      private function __onToStage(param1:Event) : void
+      private function __onToStage(evt:Event) : void
       {
          removeEventListener("addedToStage",__onToStage);
          StageReferance.stage.focus = _nicknameInput;
       }
       
-      private function __onResponse(param1:FrameEvent) : void
+      private function __onResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
@@ -168,7 +168,7 @@ package bagAndInfo.ReworkName
          }
       }
       
-      protected function __onInputChange(param1:Event) : void
+      protected function __onInputChange(evt:Event) : void
       {
          state = "input";
          if(state != "input")
@@ -187,9 +187,9 @@ package bagAndInfo.ReworkName
          }
       }
       
-      protected function __onCheckClick(param1:MouseEvent) : void
+      protected function __onCheckClick(evt:MouseEvent) : void
       {
-         var _loc2_:int = 0;
+         var tempState:int = 0;
          if(complete)
          {
             SoundManager.instance.play("008");
@@ -197,8 +197,8 @@ package bagAndInfo.ReworkName
             if(nameInputCheck())
             {
                checkCallBack = checkNameCallBack;
-               _loc2_ = checkShieldNickName();
-               if(_loc2_ == 1)
+               tempState = checkShieldNickName();
+               if(tempState == 1)
                {
                   createCheckLoader(checkNameCallBack);
                }
@@ -216,9 +216,9 @@ package bagAndInfo.ReworkName
          _resultField.text = _nicknameDetail;
       }
       
-      private function __onSubmitClick(param1:MouseEvent) : void
+      private function __onSubmitClick(evt:MouseEvent) : void
       {
-         var _loc2_:int = 0;
+         var tempState:int = 0;
          if(complete)
          {
             SoundManager.instance.play("008");
@@ -230,8 +230,8 @@ package bagAndInfo.ReworkName
             if(nameInputCheck())
             {
                checkCallBack = submitCheckCallBack;
-               _loc2_ = checkShieldNickName();
-               if(_loc2_ == 1)
+               tempState = checkShieldNickName();
+               if(tempState == 1)
                {
                   createCheckLoader(submitCheckCallBack);
                }
@@ -244,9 +244,9 @@ package bagAndInfo.ReworkName
          }
       }
       
-      protected function setCheckTxt(param1:String) : void
+      protected function setCheckTxt(m:String) : void
       {
-         if(param1 == LanguageMgr.GetTranslation("choosecharacter.ChooseCharacterView.setCheckTxt"))
+         if(m == LanguageMgr.GetTranslation("choosecharacter.ChooseCharacterView.setCheckTxt"))
          {
             state = "aviable";
             _isCanRework = true;
@@ -255,121 +255,121 @@ package bagAndInfo.ReworkName
          {
             state = "unaviable";
          }
-         _resultField.text = param1;
+         _resultField.text = m;
       }
       
-      private function __onLoadError(param1:LoaderEvent) : void
+      private function __onLoadError(evt:LoaderEvent) : void
       {
          complete = true;
          state = "unaviable";
-         param1.loader.removeEventListener("loadError",__onLoadError);
+         evt.loader.removeEventListener("loadError",__onLoadError);
       }
       
-      protected function createCheckLoader(param1:Function) : BaseLoader
+      protected function createCheckLoader(callBack:Function) : BaseLoader
       {
-         var _loc3_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         _loc3_["id"] = PlayerManager.Instance.Self.ID;
-         _loc3_["bagType"] = _bagType;
-         _loc3_["place"] = _place;
-         _loc3_["NickName"] = _nicknameInput.text;
-         var _loc2_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath(_path),6,_loc3_);
-         _loc2_.loadErrorMessage = LanguageMgr.GetTranslation("choosecharacter.LoadCheckName.m");
-         _loc2_.analyzer = new ReworkNameAnalyzer(param1);
-         _loc2_.addEventListener("loadError",__onLoadError);
-         LoadResourceManager.Instance.startLoad(_loc2_);
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         args["id"] = PlayerManager.Instance.Self.ID;
+         args["bagType"] = _bagType;
+         args["place"] = _place;
+         args["NickName"] = _nicknameInput.text;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath(_path),6,args);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("choosecharacter.LoadCheckName.m");
+         loader.analyzer = new ReworkNameAnalyzer(callBack);
+         loader.addEventListener("loadError",__onLoadError);
+         LoadResourceManager.Instance.startLoad(loader);
          complete = false;
-         return _loc2_;
+         return loader;
       }
       
-      protected function checkNameCallBack(param1:ReworkNameAnalyzer) : void
+      protected function checkNameCallBack(analyzer:ReworkNameAnalyzer) : void
       {
          complete = true;
-         var _loc2_:XML = param1.result;
-         setCheckTxt(_loc2_.@message);
+         var result:XML = analyzer.result;
+         setCheckTxt(result.@message);
       }
       
       protected function reworkNameComplete() : void
       {
          complete = true;
          SoundManager.instance.play("047");
-         var _loc1_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.ReworkNameView.reworkNameComplete"),LanguageMgr.GetTranslation("ok"));
-         _loc1_.addEventListener("response",__onAlertResponse);
+         var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.ReworkNameView.reworkNameComplete"),LanguageMgr.GetTranslation("ok"));
+         alert.addEventListener("response",__onAlertResponse);
          close();
       }
       
-      protected function __onAlertResponse(param1:FrameEvent) : void
+      protected function __onAlertResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onAlertResponse);
-         switch(int(param1.responseCode))
+         var alert:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",__onAlertResponse);
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
             case 2:
             case 3:
             case 4:
-               _loc2_.dispose();
+               alert.dispose();
          }
          StageReferance.stage.focus = _nicknameInput;
       }
       
-      protected function submitCheckCallBack(param1:ReworkNameAnalyzer) : void
+      protected function submitCheckCallBack(analyzer:ReworkNameAnalyzer) : void
       {
-         var _loc3_:* = null;
+         var newName:* = null;
          complete = true;
-         var _loc2_:XML = param1.result;
-         setCheckTxt(_loc2_.@message);
+         var result:XML = analyzer.result;
+         setCheckTxt(result.@message);
          if(nameInputCheck() && _isCanRework)
          {
-            _loc3_ = _nicknameInput.text;
-            SocketManager.Instance.out.sendUseReworkName(_bagType,_place,_loc3_);
+            newName = _nicknameInput.text;
+            SocketManager.Instance.out.sendUseReworkName(_bagType,_place,newName);
             reworkNameComplete();
          }
       }
       
-      protected function __onFrameResponse(param1:FrameEvent) : void
+      protected function __onFrameResponse(evt:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onFrameResponse);
-         _loc2_.dispose();
+         var alert:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",__onFrameResponse);
+         alert.dispose();
          state = "input";
       }
       
       protected function nameInputCheck() : Boolean
       {
-         var _loc1_:* = null;
+         var alert:* = null;
          if(_nicknameInput.text != "")
          {
             if(FilterWordManager.isGotForbiddenWords(_nicknameInput.text,"name"))
             {
-               _loc1_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("choosecharacter.ChooseCharacterView.name"),LanguageMgr.GetTranslation("ok"),"",false,false,false,2);
-               _loc1_.addEventListener("response",__onAlertResponse);
+               alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("choosecharacter.ChooseCharacterView.name"),LanguageMgr.GetTranslation("ok"),"",false,false,false,2);
+               alert.addEventListener("response",__onAlertResponse);
                return false;
             }
             if(FilterWordManager.IsNullorEmpty(_nicknameInput.text))
             {
-               _loc1_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("choosecharacter.ChooseCharacterView.space"),LanguageMgr.GetTranslation("ok"),"",false,false,false,2);
-               _loc1_.addEventListener("response",__onAlertResponse);
+               alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("choosecharacter.ChooseCharacterView.space"),LanguageMgr.GetTranslation("ok"),"",false,false,false,2);
+               alert.addEventListener("response",__onAlertResponse);
                return false;
             }
             if(FilterWordManager.containUnableChar(_nicknameInput.text))
             {
-               _loc1_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("choosecharacter.ChooseCharacterView.string"),LanguageMgr.GetTranslation("ok"),"",false,false,false,2);
-               _loc1_.addEventListener("response",__onAlertResponse);
+               alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("choosecharacter.ChooseCharacterView.string"),LanguageMgr.GetTranslation("ok"),"",false,false,false,2);
+               alert.addEventListener("response",__onAlertResponse);
                return false;
             }
             return true;
          }
-         _loc1_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("choosecharacter.ChooseCharacterView.input"),LanguageMgr.GetTranslation("ok"),"",false,false,false,2);
-         _loc1_.addEventListener("response",__onAlertResponse);
+         alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("choosecharacter.ChooseCharacterView.input"),LanguageMgr.GetTranslation("ok"),"",false,false,false,2);
+         alert.addEventListener("response",__onAlertResponse);
          return false;
       }
       
-      public function initialize(param1:int, param2:int) : void
+      public function initialize(bagType:int, place:int) : void
       {
-         _bagType = param1;
-         _place = param2;
+         _bagType = bagType;
+         _place = place;
       }
       
       public function get state() : String
@@ -377,11 +377,11 @@ package bagAndInfo.ReworkName
          return _state;
       }
       
-      public function set state(param1:String) : void
+      public function set state(val:String) : void
       {
-         if(_state != param1)
+         if(_state != val)
          {
-            _state = param1;
+            _state = val;
             if(_state == "aviable")
             {
                _resultField.defaultTextFormat = _avialableFormat;
@@ -407,11 +407,11 @@ package bagAndInfo.ReworkName
          return _complete;
       }
       
-      public function set complete(param1:Boolean) : void
+      public function set complete(val:Boolean) : void
       {
-         if(_complete != param1)
+         if(_complete != val)
          {
-            _complete = param1;
+            _complete = val;
             if(_complete)
             {
                if(!_nicknameInput.text || _nicknameInput.text == "")
@@ -435,28 +435,28 @@ package bagAndInfo.ReworkName
       
       private function checkShieldNickName() : int
       {
-         var _loc2_:* = null;
-         var _loc4_:int = 0;
-         var _loc5_:int = 0;
-         var _loc1_:int = 0;
-         var _loc3_:* = null;
+         var nickname:* = null;
+         var findNum:int = 0;
+         var i:int = 0;
+         var index:int = 0;
+         var alert:* = null;
          if(nickNameShield)
          {
-            _loc2_ = _nicknameInput.text;
-            _loc4_ = 0;
-            while(_loc5_ < _loc2_.length)
+            nickname = _nicknameInput.text;
+            findNum = 0;
+            while(i < nickname.length)
             {
-               _loc1_ = nickNameShield.indexOf(_loc2_.charAt(_loc5_));
-               if(_loc1_ != -1)
+               index = nickNameShield.indexOf(nickname.charAt(i));
+               if(index != -1)
                {
-                  _loc4_++;
+                  findNum++;
                }
-               _loc5_++;
+               i++;
             }
-            if(_loc4_ >= 7)
+            if(findNum >= 7)
             {
-               _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("choosecharacter.ChooseCharacterView.string"),LanguageMgr.GetTranslation("ok"),"",false,false,false,2);
-               _loc3_.addEventListener("response",__onAlertResponse);
+               alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("choosecharacter.ChooseCharacterView.string"),LanguageMgr.GetTranslation("ok"),"",false,false,false,2);
+               alert.addEventListener("response",__onAlertResponse);
                return 0;
             }
             return 1;
@@ -467,30 +467,30 @@ package bagAndInfo.ReworkName
       
       private function loadNickNameShieldTxt() : void
       {
-         var _loc2_:URLRequest = new URLRequest(PathManager.FLASHSITE + "registerNickNameShield.txt");
-         var _loc1_:URLLoader = new URLLoader();
-         _loc1_.addEventListener("complete",__onLoadNickNameShieldTxtComplete);
-         _loc1_.addEventListener("ioError",__onLoadNickNameShieldTxtError);
-         _loc1_.load(_loc2_);
+         var request:URLRequest = new URLRequest(PathManager.FLASHSITE + "registerNickNameShield.txt");
+         var loader:URLLoader = new URLLoader();
+         loader.addEventListener("complete",__onLoadNickNameShieldTxtComplete);
+         loader.addEventListener("ioError",__onLoadNickNameShieldTxtError);
+         loader.load(request);
       }
       
-      private function __onLoadNickNameShieldTxtComplete(param1:Event) : void
+      private function __onLoadNickNameShieldTxtComplete(event:Event) : void
       {
-         param1.target.removeEventListener("complete",__onLoadNickNameShieldTxtComplete);
-         param1.target.removeEventListener("ioError",__onLoadNickNameShieldTxtError);
-         nickNameShield = param1.target.data;
-         var _loc2_:int = checkShieldNickName();
-         if(_loc2_ == 1)
+         event.target.removeEventListener("complete",__onLoadNickNameShieldTxtComplete);
+         event.target.removeEventListener("ioError",__onLoadNickNameShieldTxtError);
+         nickNameShield = event.target.data;
+         var tempState:int = checkShieldNickName();
+         if(tempState == 1)
          {
             createCheckLoader(checkCallBack);
          }
       }
       
-      private function __onLoadNickNameShieldTxtError(param1:ErrorEvent) : void
+      private function __onLoadNickNameShieldTxtError(event:ErrorEvent) : void
       {
-         param1.target.removeEventListener("complete",__onLoadNickNameShieldTxtComplete);
-         param1.target.removeEventListener("ioError",__onLoadNickNameShieldTxtError);
-         trace("onLoadNickNameShieldTxtError:" + param1.text);
+         event.target.removeEventListener("complete",__onLoadNickNameShieldTxtComplete);
+         event.target.removeEventListener("ioError",__onLoadNickNameShieldTxtError);
+         trace("onLoadNickNameShieldTxtError:" + event.text);
          createCheckLoader(checkCallBack);
       }
       

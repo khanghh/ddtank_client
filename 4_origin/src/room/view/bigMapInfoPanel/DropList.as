@@ -51,35 +51,35 @@ package room.view.bigMapInfoPanel
          _scrollPanel.addEventListener("rollOut",__outHandler);
       }
       
-      public function set info(param1:Array) : void
+      public function set info(value:Array) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc5_:* = null;
+         var cell:* = null;
+         var item:* = null;
+         var cell1:* = null;
          while(_cells.length > 0)
          {
-            _loc4_ = _cells.shift();
-            _loc4_.dispose();
+            cell = _cells.shift();
+            cell.dispose();
          }
-         var _loc6_:Rectangle = ComponentFactory.Instance.creatCustomObject("asset.ddtroom.dropList.cellRect");
+         var rect:Rectangle = ComponentFactory.Instance.creatCustomObject("asset.ddtroom.dropList.cellRect");
          var _loc8_:int = 0;
-         var _loc7_:* = param1;
-         for each(var _loc2_ in param1)
+         var _loc7_:* = value;
+         for each(var id in value)
          {
-            _loc3_ = ItemManager.Instance.getTemplateById(_loc2_);
-            _loc5_ = new BaseCell(ComponentFactory.Instance.creatBitmap("asset.ddtroom.dropCellBgAsset"),_loc3_);
-            _loc5_.overBg = ComponentFactory.Instance.creatBitmap("asset.ddtroom.dropCellOverBgAsset");
-            _loc5_.setContentSize(_loc6_.width,_loc6_.height);
-            _loc5_.PicPos = new Point(_loc6_.x,_loc6_.y);
-            _list.addChild(_loc5_);
-            _cells.push(_loc5_);
+            item = ItemManager.Instance.getTemplateById(id);
+            cell1 = new BaseCell(ComponentFactory.Instance.creatBitmap("asset.ddtroom.dropCellBgAsset"),item);
+            cell1.overBg = ComponentFactory.Instance.creatBitmap("asset.ddtroom.dropCellOverBgAsset");
+            cell1.setContentSize(rect.width,rect.height);
+            cell1.PicPos = new Point(rect.x,rect.y);
+            _list.addChild(cell1);
+            _cells.push(cell1);
          }
          _scrollPanel.setView(_list);
          _scrollPanel.height = _scrollPanelRect.width;
          _scrollPanel.invalidateViewport();
       }
       
-      private function __overHandler(param1:MouseEvent) : void
+      private function __overHandler(event:MouseEvent) : void
       {
          _bg.height = _scrollPanelRect.x;
          _scrollPanel.height = _scrollPanelRect.height;
@@ -88,7 +88,7 @@ package room.view.bigMapInfoPanel
          dispatchEvent(new Event("large"));
       }
       
-      private function __outHandler(param1:MouseEvent) : void
+      private function __outHandler(event:MouseEvent) : void
       {
          _bg.height = _scrollPanelRect.y;
          _scrollPanel.height = _scrollPanelRect.width;

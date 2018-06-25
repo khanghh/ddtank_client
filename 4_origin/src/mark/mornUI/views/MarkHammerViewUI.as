@@ -57,6 +57,8 @@ package mark.mornUI.views
       
       public var imgTopLv:Image = null;
       
+      public var hammerRateLabel:Label = null;
+      
       public function MarkHammerViewUI()
       {
          super();

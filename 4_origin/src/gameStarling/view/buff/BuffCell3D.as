@@ -62,12 +62,12 @@ package gameStarling.view.buff
          _info = null;
       }
       
-      public function setInfo(param1:FightBuffInfo) : void
+      public function setInfo(val:FightBuffInfo) : void
       {
-         var _loc2_:Number = NaN;
-         var _loc3_:Number = NaN;
+         var imageScale:Number = NaN;
+         var textWidth:Number = NaN;
          clearSelf();
-         _info = param1;
+         _info = val;
          _tipData.property = _info.buffName;
          _tipData.detail = _info.description;
          if(isContainerBuff(_info))
@@ -85,11 +85,11 @@ package gameStarling.view.buff
                _image = StarlingMain.instance.createImage("game_buff_card");
             }
          }
-         else if(param1.type == 5)
+         else if(val.type == 5)
          {
-            _image = StarlingMain.instance.createImage("game_buff_pet" + param1.buffPic);
-            _loc2_ = 32 / this.scaleX;
-            var _loc4_:* = _loc2_;
+            _image = StarlingMain.instance.createImage("game_buff_pet" + val.buffPic);
+            imageScale = 32 / this.scaleX;
+            var _loc4_:* = imageScale;
             _image.height = _loc4_;
             _image.width = _loc4_;
          }
@@ -111,8 +111,8 @@ package gameStarling.view.buff
          }
          if(_info.Count > 1)
          {
-            _loc3_ = FilterFrameText.getStringWidthByTextField(_info.Count.toString(),15);
-            _txt = new TextField(_loc3_,20,_info.Count.toString(),"Arial",14,6155281,true);
+            textWidth = FilterFrameText.getStringWidthByTextField(_info.Count.toString(),15);
+            _txt = new TextField(textWidth,20,_info.Count.toString(),"Arial",14,6155281,true);
             addChild(_txt);
          }
          else
@@ -131,17 +131,17 @@ package gameStarling.view.buff
          return _tipData;
       }
       
-      private function isContainerBuff(param1:FightBuffInfo) : Boolean
+      private function isContainerBuff(buff:FightBuffInfo) : Boolean
       {
-         return param1.type == 2 || param1.type == 3 || param1.type == 4;
+         return buff.type == 2 || buff.type == 3 || buff.type == 4;
       }
       
-      private function isActivityDunBuff(param1:FightBuffInfo) : Boolean
+      private function isActivityDunBuff(buff:FightBuffInfo) : Boolean
       {
-         return param1.displayid == 114 || param1.displayid == 115;
+         return buff.displayid == 114 || buff.displayid == 115;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(value:Object) : void
       {
       }
       
@@ -150,7 +150,7 @@ package gameStarling.view.buff
          return "7,6,5,1,6,4";
       }
       
-      public function set tipDirctions(param1:String) : void
+      public function set tipDirctions(value:String) : void
       {
       }
       
@@ -159,7 +159,7 @@ package gameStarling.view.buff
          return 6;
       }
       
-      public function set tipGapH(param1:int) : void
+      public function set tipGapH(value:int) : void
       {
       }
       
@@ -168,7 +168,7 @@ package gameStarling.view.buff
          return 6;
       }
       
-      public function set tipGapV(param1:int) : void
+      public function set tipGapV(value:int) : void
       {
       }
       
@@ -181,7 +181,7 @@ package gameStarling.view.buff
          return "core.FightBuffTip";
       }
       
-      public function set tipStyle(param1:String) : void
+      public function set tipStyle(value:String) : void
       {
       }
    }

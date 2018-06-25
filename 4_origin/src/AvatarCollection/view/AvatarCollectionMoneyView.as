@@ -63,9 +63,9 @@ package AvatarCollection.view
          PlayerManager.Instance.Self.addEventListener("propertychange",__propertyChange);
       }
       
-      private function __propertyChange(param1:PlayerPropertyEvent) : void
+      private function __propertyChange(evt:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["Gold"] || param1.changedProperties["myHonor"])
+         if(evt.changedProperties["Gold"] || evt.changedProperties["myHonor"])
          {
             refreshView();
          }

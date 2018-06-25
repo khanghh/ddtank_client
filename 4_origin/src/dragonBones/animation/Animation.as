@@ -42,10 +42,10 @@ package dragonBones.animation
       
       var _animationStateCount:int;
       
-      public function Animation(param1:Armature)
+      public function Animation(armature:Armature)
       {
          super();
-         _armature = param1;
+         _armature = armature;
          _animationList = new Vector.<String>();
          _animationStateList = new Vector.<AnimationState>();
          _timeScale = 1;
@@ -69,64 +69,64 @@ package dragonBones.animation
       
       function resetAnimationStateList() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:int = _animationStateList.length;
+         var animationState:* = null;
+         var i:int = _animationStateList.length;
          while(true)
          {
-            _loc2_--;
-            if(!_loc2_)
+            i--;
+            if(!i)
             {
                break;
             }
-            _loc1_ = _animationStateList[_loc2_];
-            _loc1_.resetTimelineStateList();
-            AnimationState.returnObject(_loc1_);
+            animationState = _animationStateList[i];
+            animationState.resetTimelineStateList();
+            AnimationState.returnObject(animationState);
          }
          _animationStateList.length = 0;
       }
       
-      public function gotoAndPlay(param1:String, param2:Number = -1, param3:Number = -1, param4:Number = NaN, param5:int = 0, param6:String = null, param7:String = "sameLayerAndGroup", param8:Boolean = true, param9:Boolean = true) : AnimationState
+      public function gotoAndPlay(animationName:String, fadeInTime:Number = -1, duration:Number = -1, playTimes:Number = NaN, layer:int = 0, group:String = null, fadeOutMode:String = "sameLayerAndGroup", pauseFadeOut:Boolean = true, pauseFadeIn:Boolean = true) : AnimationState
       {
-         var _loc11_:* = null;
-         var _loc12_:Number = NaN;
-         var _loc10_:* = null;
-         var _loc15_:* = null;
+         var animationData:* = null;
+         var durationScale:Number = NaN;
+         var animationState:* = null;
+         var slot:* = null;
          if(!_animationDataList)
          {
             return null;
          }
-         var _loc13_:int = _animationDataList.length;
+         var i:int = _animationDataList.length;
          while(true)
          {
-            _loc13_--;
-            if(_loc13_)
+            i--;
+            if(i)
             {
-               if(_animationDataList[_loc13_].name == param1)
+               if(_animationDataList[i].name == animationName)
                {
-                  _loc11_ = _animationDataList[_loc13_];
+                  animationData = _animationDataList[i];
                   break;
                }
                continue;
             }
             break;
          }
-         if(!_loc11_)
+         if(!animationData)
          {
             return null;
          }
          _isPlaying = true;
          _isFading = true;
-         param2 = param2 < 0?_loc11_.fadeTime < 0?0.3:Number(_loc11_.fadeTime):Number(param2);
-         if(param3 < 0)
+         fadeInTime = fadeInTime < 0?animationData.fadeTime < 0?0.3:Number(animationData.fadeTime):Number(fadeInTime);
+         if(duration < 0)
          {
-            _loc12_ = _loc11_.scale < 0?1:Number(_loc11_.scale);
+            durationScale = animationData.scale < 0?1:Number(animationData.scale);
          }
          else
          {
-            _loc12_ = param3 * 1000 / _loc11_.duration;
+            durationScale = duration * 1000 / animationData.duration;
          }
-         param4 = !!isNaN(param4)?_loc11_.playTimes:param4;
-         var _loc16_:* = param7;
+         playTimes = !!isNaN(playTimes)?animationData.playTimes:playTimes;
+         var _loc16_:* = fadeOutMode;
          if("none" !== _loc16_)
          {
             if("sameLayer" !== _loc16_)
@@ -138,113 +138,113 @@ package dragonBones.animation
                      if("sameLayerAndGroup" !== _loc16_)
                      {
                      }
-                     _loc13_ = _animationStateList.length;
+                     i = _animationStateList.length;
                      while(true)
                      {
-                        _loc13_--;
-                        if(!_loc13_)
+                        i--;
+                        if(!i)
                         {
                            break;
                         }
-                        _loc10_ = _animationStateList[_loc13_];
-                        if(_loc10_.layer == param5 && _loc10_.group == param6)
+                        animationState = _animationStateList[i];
+                        if(animationState.layer == layer && animationState.group == group)
                         {
-                           _loc10_.fadeOut(param2,param8);
+                           animationState.fadeOut(fadeInTime,pauseFadeOut);
                         }
                      }
                   }
                   else
                   {
-                     _loc13_ = _animationStateList.length;
+                     i = _animationStateList.length;
                      while(true)
                      {
-                        _loc13_--;
-                        if(!_loc13_)
+                        i--;
+                        if(!i)
                         {
                            break;
                         }
-                        _loc10_ = _animationStateList[_loc13_];
-                        _loc10_.fadeOut(param2,param8);
+                        animationState = _animationStateList[i];
+                        animationState.fadeOut(fadeInTime,pauseFadeOut);
                      }
                   }
                }
                else
                {
-                  _loc13_ = _animationStateList.length;
+                  i = _animationStateList.length;
                   while(true)
                   {
-                     _loc13_--;
-                     if(!_loc13_)
+                     i--;
+                     if(!i)
                      {
                         break;
                      }
-                     _loc10_ = _animationStateList[_loc13_];
-                     if(_loc10_.group == param6)
+                     animationState = _animationStateList[i];
+                     if(animationState.group == group)
                      {
-                        _loc10_.fadeOut(param2,param8);
+                        animationState.fadeOut(fadeInTime,pauseFadeOut);
                      }
                   }
                }
             }
             else
             {
-               _loc13_ = _animationStateList.length;
+               i = _animationStateList.length;
                while(true)
                {
-                  _loc13_--;
-                  if(!_loc13_)
+                  i--;
+                  if(!i)
                   {
                      break;
                   }
-                  _loc10_ = _animationStateList[_loc13_];
-                  if(_loc10_.layer == param5)
+                  animationState = _animationStateList[i];
+                  if(animationState.layer == layer)
                   {
-                     _loc10_.fadeOut(param2,param8);
+                     animationState.fadeOut(fadeInTime,pauseFadeOut);
                   }
                }
             }
          }
          _lastAnimationState = AnimationState.borrowObject();
-         _lastAnimationState._layer = param5;
-         _lastAnimationState._group = param6;
+         _lastAnimationState._layer = layer;
+         _lastAnimationState._group = group;
          _lastAnimationState.autoTween = tweenEnabled;
-         _lastAnimationState.fadeIn(_armature,_loc11_,param2,1 / _loc12_,param4,param9);
+         _lastAnimationState.fadeIn(_armature,animationData,fadeInTime,1 / durationScale,playTimes,pauseFadeIn);
          addState(_lastAnimationState);
-         var _loc14_:Vector.<Slot> = _armature.getSlots(false);
-         _loc13_ = _loc14_.length;
+         var slotList:Vector.<Slot> = _armature.getSlots(false);
+         i = slotList.length;
          while(true)
          {
-            _loc13_--;
-            if(!_loc13_)
+            i--;
+            if(!i)
             {
                break;
             }
-            _loc15_ = _loc14_[_loc13_];
-            if(_loc15_.childArmature)
+            slot = slotList[i];
+            if(slot.childArmature)
             {
-               _loc15_.childArmature.animation.gotoAndPlay(param1,param2);
+               slot.childArmature.animation.gotoAndPlay(animationName,fadeInTime);
             }
          }
          return _lastAnimationState;
       }
       
-      public function gotoAndStop(param1:String, param2:Number, param3:Number = -1, param4:Number = 0, param5:Number = -1, param6:int = 0, param7:String = null, param8:String = "all") : AnimationState
+      public function gotoAndStop(animationName:String, time:Number, normalizedTime:Number = -1, fadeInTime:Number = 0, duration:Number = -1, layer:int = 0, group:String = null, fadeOutMode:String = "all") : AnimationState
       {
-         var _loc9_:AnimationState = getState(param1,param6);
-         if(!_loc9_)
+         var animationState:AnimationState = getState(animationName,layer);
+         if(!animationState)
          {
-            _loc9_ = gotoAndPlay(param1,param4,param5,NaN,param6,param7,param8);
+            animationState = gotoAndPlay(animationName,fadeInTime,duration,NaN,layer,group,fadeOutMode);
          }
-         if(param3 >= 0)
+         if(normalizedTime >= 0)
          {
-            _loc9_.setCurrentTime(_loc9_.totalTime * param3);
+            animationState.setCurrentTime(animationState.totalTime * normalizedTime);
          }
          else
          {
-            _loc9_.setCurrentTime(param2);
+            animationState.setCurrentTime(time);
          }
-         _loc9_.stop();
-         return _loc9_;
+         animationState.stop();
+         return animationState;
       }
       
       public function play() : void
@@ -272,37 +272,37 @@ package dragonBones.animation
          _isPlaying = false;
       }
       
-      public function getState(param1:String, param2:int = 0) : AnimationState
+      public function getState(name:String, layer:int = 0) : AnimationState
       {
-         var _loc3_:* = null;
-         var _loc4_:int = _animationStateList.length;
+         var animationState:* = null;
+         var i:int = _animationStateList.length;
          while(true)
          {
-            _loc4_--;
-            if(!_loc4_)
+            i--;
+            if(!i)
             {
                break;
             }
-            _loc3_ = _animationStateList[_loc4_];
-            if(_loc3_.name == param1 && _loc3_.layer == param2)
+            animationState = _animationStateList[i];
+            if(animationState.name == name && animationState.layer == layer)
             {
-               return _loc3_;
+               return animationState;
             }
          }
          return null;
       }
       
-      public function hasAnimation(param1:String) : Boolean
+      public function hasAnimation(animationName:String) : Boolean
       {
-         var _loc2_:int = _animationDataList.length;
+         var i:int = _animationDataList.length;
          while(true)
          {
-            _loc2_--;
-            if(!_loc2_)
+            i--;
+            if(!i)
             {
                break;
             }
-            if(_animationDataList[_loc2_].name == param1)
+            if(_animationDataList[i].name == animationName)
             {
                return true;
             }
@@ -310,67 +310,67 @@ package dragonBones.animation
          return false;
       }
       
-      function advanceTime(param1:Number) : void
+      function advanceTime(passedTime:Number) : void
       {
-         var _loc2_:* = null;
+         var animationState:* = null;
          if(!_isPlaying)
          {
             return;
          }
-         var _loc3_:Boolean = false;
-         param1 = param1 * _timeScale;
-         var _loc4_:int = _animationStateList.length;
+         var isFading:Boolean = false;
+         passedTime = passedTime * _timeScale;
+         var i:int = _animationStateList.length;
          while(true)
          {
-            _loc4_--;
-            if(!_loc4_)
+            i--;
+            if(!i)
             {
                break;
             }
-            _loc2_ = _animationStateList[_loc4_];
-            if(_loc2_.advanceTime(param1))
+            animationState = _animationStateList[i];
+            if(animationState.advanceTime(passedTime))
             {
-               removeState(_loc2_);
+               removeState(animationState);
             }
-            else if(_loc2_.fadeState != 1)
+            else if(animationState.fadeState != 1)
             {
-               _loc3_ = true;
+               isFading = true;
             }
          }
-         _isFading = _loc3_;
+         _isFading = isFading;
       }
       
       function updateAnimationStates() : void
       {
-         var _loc1_:int = _animationStateList.length;
+         var i:int = _animationStateList.length;
          while(true)
          {
-            _loc1_--;
-            if(!_loc1_)
+            i--;
+            if(!i)
             {
                break;
             }
-            _animationStateList[_loc1_].updateTimelineStates();
+            _animationStateList[i].updateTimelineStates();
          }
       }
       
-      private function addState(param1:AnimationState) : void
+      private function addState(animationState:AnimationState) : void
       {
-         if(_animationStateList.indexOf(param1) < 0)
+         if(_animationStateList.indexOf(animationState) < 0)
          {
-            _animationStateList.unshift(param1);
+            _animationStateList.unshift(animationState);
             _animationStateCount = _animationStateList.length;
          }
       }
       
-      private function removeState(param1:AnimationState) : void
+      private function removeState(animationState:AnimationState) : void
       {
-         var _loc2_:int = _animationStateList.indexOf(param1);
-         if(_loc2_ >= 0)
+         var index:int = _animationStateList.indexOf(animationState);
+         if(index >= 0)
          {
-            _animationStateList.splice(_loc2_,1);
-            AnimationState.returnObject(param1);
-            if(_lastAnimationState == param1)
+            _animationStateList.splice(index,1);
+            AnimationState.returnObject(animationState);
+            if(_lastAnimationState == animationState)
             {
                if(_animationStateList.length > 0)
                {
@@ -417,22 +417,22 @@ package dragonBones.animation
       
       public function get isComplete() : Boolean
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(_lastAnimationState)
          {
             if(!_lastAnimationState.isComplete)
             {
                return false;
             }
-            _loc1_ = _animationStateList.length;
+            i = _animationStateList.length;
             while(true)
             {
-               _loc1_--;
-               if(!_loc1_)
+               i--;
+               if(!i)
                {
                   break;
                }
-               if(!_animationStateList[_loc1_].isComplete)
+               if(!_animationStateList[i].isComplete)
                {
                   return false;
                }
@@ -447,13 +447,13 @@ package dragonBones.animation
          return _timeScale;
       }
       
-      public function set timeScale(param1:Number) : void
+      public function set timeScale(value:Number) : void
       {
-         if(isNaN(param1) || param1 < 0)
+         if(isNaN(value) || value < 0)
          {
-            param1 = 1;
+            value = 1;
          }
-         _timeScale = param1;
+         _timeScale = value;
       }
       
       public function get animationDataList() : Vector.<AnimationData>
@@ -461,15 +461,15 @@ package dragonBones.animation
          return _animationDataList;
       }
       
-      public function set animationDataList(param1:Vector.<AnimationData>) : void
+      public function set animationDataList(value:Vector.<AnimationData>) : void
       {
-         _animationDataList = param1;
+         _animationDataList = value;
          _animationList.length = 0;
          var _loc4_:int = 0;
          var _loc3_:* = _animationDataList;
-         for each(var _loc2_ in _animationDataList)
+         for each(var animationData in _animationDataList)
          {
-            _animationList[_animationList.length] = _loc2_.name;
+            _animationList[_animationList.length] = animationData.name;
          }
       }
    }

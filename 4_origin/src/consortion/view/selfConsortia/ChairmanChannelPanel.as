@@ -99,15 +99,15 @@ package consortion.view.selfConsortia
          }
       }
       
-      private function __clickHandler(param1:MouseEvent) : void
+      private function __clickHandler(event:MouseEvent) : void
       {
-         var _loc6_:* = null;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc5_:* = null;
-         var _loc2_:* = null;
+         var upGradeFrame:* = null;
+         var transferFrame:* = null;
+         var jobManage:* = null;
+         var declareFrame:* = null;
+         var mailFrame:* = null;
          SoundManager.instance.play("008");
-         var _loc7_:* = param1.currentTarget;
+         var _loc7_:* = event.currentTarget;
          if(_upGrade !== _loc7_)
          {
             if(_transfer !== _loc7_)
@@ -125,33 +125,33 @@ package consortion.view.selfConsortia
                      }
                      else
                      {
-                        _loc2_ = ComponentFactory.Instance.creatComponentByStylename("consortionMailFrame");
-                        LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+                        mailFrame = ComponentFactory.Instance.creatComponentByStylename("consortionMailFrame");
+                        LayerManager.Instance.addToLayer(mailFrame,3,true,1);
                      }
                   }
                   else
                   {
-                     _loc5_ = ComponentFactory.Instance.creatComponentByStylename("consortionDeclareFrame");
-                     LayerManager.Instance.addToLayer(_loc5_,3,true,1);
+                     declareFrame = ComponentFactory.Instance.creatComponentByStylename("consortionDeclareFrame");
+                     LayerManager.Instance.addToLayer(declareFrame,3,true,1);
                   }
                }
                else
                {
-                  _loc3_ = ComponentFactory.Instance.creatComponentByStylename("consortionJobManageFrame");
-                  LayerManager.Instance.addToLayer(_loc3_,3,true,1);
+                  jobManage = ComponentFactory.Instance.creatComponentByStylename("consortionJobManageFrame");
+                  LayerManager.Instance.addToLayer(jobManage,3,true,1);
                   ConsortionModelManager.Instance.loadDutyList(ConsortionModelManager.Instance.dutyListComplete,PlayerManager.Instance.Self.ConsortiaID);
                }
             }
             else
             {
-               _loc4_ = ComponentFactory.Instance.creatComponentByStylename("consortionTrasferFrame");
-               LayerManager.Instance.addToLayer(_loc4_,3,true,1);
+               transferFrame = ComponentFactory.Instance.creatComponentByStylename("consortionTrasferFrame");
+               LayerManager.Instance.addToLayer(transferFrame,3,true,1);
             }
          }
          else
          {
-            _loc6_ = ComponentFactory.Instance.creatComponentByStylename("consortionUpGradeFrame");
-            LayerManager.Instance.addToLayer(_loc6_,3,true,1);
+            upGradeFrame = ComponentFactory.Instance.creatComponentByStylename("consortionUpGradeFrame");
+            LayerManager.Instance.addToLayer(upGradeFrame,3,true,1);
          }
       }
       

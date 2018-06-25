@@ -13,15 +13,12 @@ package yzhkof
          throw new Error("无法被实例化!");
       }
       
-      public static function delayExcuteAfterAddToStage(param1:DisplayObject, param2:Function, param3:Boolean = true) : void
+      public static function delayExcuteAfterAddToStage(obj:DisplayObject, add_to_stage_function:Function, remove_after_excute:Boolean = true) : void
       {
          var new_function:Function = null;
-         var obj:DisplayObject = param1;
-         var add_to_stage_function:Function = param2;
-         var remove_after_excute:Boolean = param3;
          if(obj.stage == null)
          {
-            new_function = function(param1:Event):void
+            new_function = function(e:Event):void
             {
                add_to_stage_function();
                obj.removeEventListener(Event.ADDED_TO_STAGE,new_function);
@@ -37,11 +34,8 @@ package yzhkof
          }
       }
       
-      public static function setObjToMiddleOfStage(param1:DisplayObject, param2:Number = 0, param3:Number = 0) : void
+      public static function setObjToMiddleOfStage(obj:DisplayObject, offset_x:Number = 0, offset_y:Number = 0) : void
       {
-         var obj:DisplayObject = param1;
-         var offset_x:Number = param2;
-         var offset_y:Number = param3;
          var fun:Function = function():void
          {
             obj.x = (obj.stage.stageWidth - obj.width) / 2 + offset_x;

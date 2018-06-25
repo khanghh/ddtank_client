@@ -125,12 +125,12 @@ package rescue.views
       
       private function initView() : void
       {
-         var _loc6_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:int = 0;
-         var _loc1_:* = null;
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var item:* = null;
+         var j:int = 0;
+         var item2:* = null;
+         var k:int = 0;
+         var item3:* = null;
          titleText = LanguageMgr.GetTranslation("rescue.title");
          _bg = ComponentFactory.Instance.creat("rescue.bg");
          addToContent(_bg);
@@ -161,35 +161,32 @@ package rescue.views
          _pageTxt.text = "1/2";
          _tileList = ComponentFactory.Instance.creat("rescue.tileList",[3]);
          addToContent(_tileList);
-         _loc6_ = 1;
-         while(_loc6_ <= 6)
+         for(i = 1; i <= 6; )
          {
-            _loc3_ = new RescueSceneItem();
-            _tileList.addChild(_loc3_);
-            _sceneArr.push(_loc3_);
-            _loc3_.setData(false);
-            _loc6_++;
+            item = new RescueSceneItem();
+            _tileList.addChild(item);
+            _sceneArr.push(item);
+            item.setData(false);
+            i++;
          }
          _curIndex = 0;
          _sceneArr[0].setSelected(true);
          _shopVBox = ComponentFactory.Instance.creatComponentByStylename("rescue.shopVBox");
          addToContent(_shopVBox);
-         _loc4_ = 0;
-         while(_loc4_ <= 2)
+         for(j = 0; j <= 2; )
          {
-            _loc1_ = new RescueShopItem(_loc4_);
-            _shopVBox.addChild(_loc1_);
-            _loc4_++;
+            item2 = new RescueShopItem(j);
+            _shopVBox.addChild(item2);
+            j++;
          }
          _prizeHBox = ComponentFactory.Instance.creatComponentByStylename("rescue.prizeHBox");
          addToContent(_prizeHBox);
-         _loc5_ = 0;
-         while(_loc5_ <= 2)
+         for(k = 0; k <= 2; )
          {
-            _loc2_ = new RescuePrizeItem(_loc5_);
-            _prizeHBox.addChild(_loc2_);
-            _prizeArr.push(_loc2_);
-            _loc5_++;
+            item3 = new RescuePrizeItem(k);
+            _prizeHBox.addChild(item3);
+            _prizeArr.push(item3);
+            k++;
          }
          _CDTimeBg = ComponentFactory.Instance.creatComponentByStylename("rescue.cdTimeBg");
          _CDTimeTxt = ComponentFactory.Instance.creatComponentByStylename("core.commonTipText");
@@ -219,7 +216,7 @@ package rescue.views
          _nextBtn.addEventListener("click",__nextBtnClick);
       }
       
-      protected function __prevBtnClick(param1:MouseEvent) : void
+      protected function __prevBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_curPage > 1)
@@ -229,7 +226,7 @@ package rescue.views
          }
       }
       
-      protected function __nextBtnClick(param1:MouseEvent) : void
+      protected function __nextBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_curPage < _totalPage)
@@ -239,32 +236,32 @@ package rescue.views
          }
       }
       
-      private function __startLoading(param1:Event) : void
+      private function __startLoading(e:Event) : void
       {
          StateManager.getInGame_Step_6 = true;
          StateManager.setState("roomLoading",GameControl.Instance.Current);
          StateManager.getInGame_Step_7 = true;
       }
       
-      protected function __updateItem(param1:PkgEvent) : void
+      protected function __updateItem(event:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _arrowTxt.text = _loc2_.readInt().toString();
-         _bloodPackTxt.text = _loc2_.readInt().toString();
-         _kingBlessTxt.text = _loc2_.readInt().toString();
+         var pkg:PackageIn = event.pkg;
+         _arrowTxt.text = pkg.readInt().toString();
+         _bloodPackTxt.text = pkg.readInt().toString();
+         _kingBlessTxt.text = pkg.readInt().toString();
       }
       
-      protected function __buyItem(param1:PkgEvent) : void
+      protected function __buyItem(event:PkgEvent) : void
       {
          SocketManager.Instance.out.requestRescueItemInfo();
       }
       
-      protected function __cleanCD(param1:PkgEvent) : void
+      protected function __cleanCD(event:PkgEvent) : void
       {
          SocketManager.Instance.out.requestRescueFrameInfo(_sceneArr[_curIndex].sceneId);
       }
       
-      protected function __accelerateBtnClick(param1:MouseEvent) : void
+      protected function __accelerateBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -272,15 +269,15 @@ package rescue.views
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:int = getNeedMoney();
+         var tmpNeedMoney:int = getNeedMoney();
          if(RescueControl.instance.isNoPrompt)
          {
-            if(RescueControl.instance.isBand && PlayerManager.Instance.Self.BandMoney < _loc2_)
+            if(RescueControl.instance.isBand && PlayerManager.Instance.Self.BandMoney < tmpNeedMoney)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("bindMoneyPoorNote"));
                RescueControl.instance.isNoPrompt = false;
             }
-            else if(!RescueControl.instance.isBand && PlayerManager.Instance.Self.Money < _loc2_)
+            else if(!RescueControl.instance.isBand && PlayerManager.Instance.Self.Money < tmpNeedMoney)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("moneyPoorNote"));
                RescueControl.instance.isNoPrompt = false;
@@ -291,102 +288,100 @@ package rescue.views
                return;
             }
          }
-         var _loc3_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("rescue.cleanCDtxt",getNeedMoney()),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"rescue.confirmView",30,true,1);
-         _loc3_.moveEnable = false;
-         _loc3_.addEventListener("response",comfirmHandler,false,0,true);
+         var confirmFrame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("rescue.cleanCDtxt",getNeedMoney()),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"rescue.confirmView",30,true,1);
+         confirmFrame.moveEnable = false;
+         confirmFrame.addEventListener("response",comfirmHandler,false,0,true);
       }
       
-      private function comfirmHandler(param1:FrameEvent) : void
+      private function comfirmHandler(event:FrameEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
+         var tmpNeedMoney:int = 0;
+         var confirmFrame2:* = null;
          SoundManager.instance.play("008");
-         var _loc4_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc4_.removeEventListener("response",comfirmHandler);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",comfirmHandler);
+         if(event.responseCode == 3 || event.responseCode == 2)
          {
-            _loc3_ = getNeedMoney();
-            if(_loc4_.isBand && PlayerManager.Instance.Self.BandMoney < _loc3_)
+            tmpNeedMoney = getNeedMoney();
+            if(confirmFrame.isBand && PlayerManager.Instance.Self.BandMoney < tmpNeedMoney)
             {
-               _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("sevenDouble.game.useSkillNoEnoughReConfirm"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
-               _loc2_.moveEnable = false;
-               _loc2_.addEventListener("response",reConfirmHandler,false,0,true);
+               confirmFrame2 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("sevenDouble.game.useSkillNoEnoughReConfirm"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
+               confirmFrame2.moveEnable = false;
+               confirmFrame2.addEventListener("response",reConfirmHandler,false,0,true);
                return;
             }
-            if(!_loc4_.isBand && PlayerManager.Instance.Self.Money < _loc3_)
+            if(!confirmFrame.isBand && PlayerManager.Instance.Self.Money < tmpNeedMoney)
             {
                LeavePageManager.showFillFrame();
                return;
             }
-            if((_loc4_ as RescueConfirmView).isNoPrompt)
+            if((confirmFrame as RescueConfirmView).isNoPrompt)
             {
                RescueControl.instance.isNoPrompt = true;
-               RescueControl.instance.isBand = _loc4_.isBand;
+               RescueControl.instance.isBand = confirmFrame.isBand;
             }
-            SocketManager.Instance.out.sendRescueCleanCD(_loc4_.isBand,_sceneArr[_curIndex].sceneId);
+            SocketManager.Instance.out.sendRescueCleanCD(confirmFrame.isBand,_sceneArr[_curIndex].sceneId);
          }
       }
       
-      private function reConfirmHandler(param1:FrameEvent) : void
+      private function reConfirmHandler(evt:FrameEvent) : void
       {
-         var _loc2_:int = 0;
+         var needMoney:int = 0;
          SoundManager.instance.play("008");
-         var _loc3_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc3_.removeEventListener("response",reConfirmHandler);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",reConfirmHandler);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
-            _loc2_ = getNeedMoney();
-            if(PlayerManager.Instance.Self.Money < _loc2_)
+            needMoney = getNeedMoney();
+            if(PlayerManager.Instance.Self.Money < needMoney)
             {
                LeavePageManager.showFillFrame();
                return;
             }
-            SocketManager.Instance.out.sendRescueCleanCD(_loc3_.isBand,_sceneArr[_curIndex].sceneId);
+            SocketManager.Instance.out.sendRescueCleanCD(confirmFrame.isBand,_sceneArr[_curIndex].sceneId);
          }
       }
       
       private function getNeedMoney() : int
       {
-         var _loc4_:int = 0;
-         var _loc1_:Array = ServerConfigManager.instance.rescueCleanCDPrice;
-         var _loc2_:int = parseInt(_loc1_[0]);
-         var _loc3_:int = parseInt(_loc1_[1]);
+         var i:int = 0;
+         var arr:Array = ServerConfigManager.instance.rescueCleanCDPrice;
+         var base:int = parseInt(arr[0]);
+         var increase:int = parseInt(arr[1]);
          _cleanCDcount = 0;
-         _loc4_ = 0;
-         while(_loc4_ <= _sceneArr.length - 1)
+         for(i = 0; i <= _sceneArr.length - 1; )
          {
-            _cleanCDcount = _cleanCDcount + _sceneArr[_loc4_].info.cleanCDcount;
-            _loc4_++;
+            _cleanCDcount = _cleanCDcount + _sceneArr[i].info.cleanCDcount;
+            i++;
          }
-         return _loc2_ + _cleanCDcount * _loc3_;
+         return base + _cleanCDcount * increase;
       }
       
-      protected function __challengeBtnClick(param1:MouseEvent) : void
+      protected function __challengeBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          SocketManager.Instance.out.sendRescueChallenge(_sceneArr[_curIndex].sceneId);
       }
       
-      protected function __updateView(param1:PkgEvent) : void
+      protected function __updateView(event:PkgEvent) : void
       {
-         var _loc6_:int = 0;
-         var _loc2_:int = 0;
-         var _loc5_:* = null;
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc4_:int = _loc3_.readInt();
-         _loc6_ = 0;
-         while(_loc6_ <= _loc4_ - 1)
+         var i:int = 0;
+         var sceneId:int = 0;
+         var info:* = null;
+         var pkg:PackageIn = event.pkg;
+         var len:int = pkg.readInt();
+         for(i = 0; i <= len - 1; )
          {
-            _loc2_ = _loc3_.readInt();
-            _loc5_ = new RescueSceneInfo();
-            _loc5_.starCount = _loc3_.readInt();
-            _loc5_.rewardStatus = _loc3_.readInt();
-            _loc5_.freeCount = _loc3_.readInt();
-            _loc5_.remainSecond = _loc3_.readInt();
-            _loc5_.cleanCDcount = _loc3_.readInt();
-            _infoDic[_loc2_] = _loc5_;
-            updateSceneItem(_loc2_,_loc5_);
-            _loc6_++;
+            sceneId = pkg.readInt();
+            info = new RescueSceneInfo();
+            info.starCount = pkg.readInt();
+            info.rewardStatus = pkg.readInt();
+            info.freeCount = pkg.readInt();
+            info.remainSecond = pkg.readInt();
+            info.cleanCDcount = pkg.readInt();
+            _infoDic[sceneId] = info;
+            updateSceneItem(sceneId,info);
+            i++;
          }
          _remainSecond = _sceneArr[_curIndex].info.remainSecond;
          _CDTimeTxt.text = parseDate(_remainSecond);
@@ -401,35 +396,34 @@ package rescue.views
       
       private function getTotalPage() : int
       {
-         var _loc2_:int = 0;
+         var total:int = 0;
          var _loc4_:int = 0;
          var _loc3_:* = _infoDic;
-         for(var _loc1_ in _infoDic)
+         for(var id in _infoDic)
          {
-            _loc2_++;
+            total++;
          }
-         return (_loc2_ - 1) / 6 + 1;
+         return (total - 1) / 6 + 1;
       }
       
       private function pageChange() : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          _curIndex = 0;
-         _loc2_ = 0;
-         while(_loc2_ <= _sceneArr.length - 1)
+         for(i = 0; i <= _sceneArr.length - 1; )
          {
-            _sceneArr[_loc2_].removeEventListener("click",__itemClick);
-            _sceneArr[_loc2_].buttonMode = false;
-            _sceneArr[_loc2_].setData(false);
-            _sceneArr[_loc2_].setSelected(false);
-            _loc2_++;
+            _sceneArr[i].removeEventListener("click",__itemClick);
+            _sceneArr[i].buttonMode = false;
+            _sceneArr[i].setData(false);
+            _sceneArr[i].setSelected(false);
+            i++;
          }
          _sceneArr[_curIndex].setSelected(true);
          var _loc4_:int = 0;
          var _loc3_:* = _infoDic;
-         for(var _loc1_ in _infoDic)
+         for(var sceneId in _infoDic)
          {
-            updateSceneItem(parseInt(_loc1_),_infoDic[_loc1_]);
+            updateSceneItem(parseInt(sceneId),_infoDic[sceneId]);
          }
          RescueControl.instance.curSceneId = _sceneArr[_curIndex].sceneId;
          _remainSecond = _sceneArr[_curIndex].info.remainSecond;
@@ -442,21 +436,21 @@ package rescue.views
          _pageTxt.text = _curPage + "/" + _totalPage;
       }
       
-      private function updateSceneItem(param1:int, param2:RescueSceneInfo) : void
+      private function updateSceneItem(sceneId:int, info:RescueSceneInfo) : void
       {
-         var _loc3_:int = 0;
-         _loc3_ = param1 - 1;
-         _loc3_ = _loc3_ - (_curPage - 1) * 6;
-         if(_loc3_ >= 0 && _loc3_ < 6)
+         var idx:int = 0;
+         idx = sceneId - 1;
+         idx = idx - (_curPage - 1) * 6;
+         if(idx >= 0 && idx < 6)
          {
-            _sceneArr[_loc3_].removeEventListener("click",__itemClick);
-            _sceneArr[_loc3_].buttonMode = true;
-            _sceneArr[_loc3_].setData(true,param1,param2);
-            _sceneArr[_loc3_].addEventListener("click",__itemClick);
+            _sceneArr[idx].removeEventListener("click",__itemClick);
+            _sceneArr[idx].buttonMode = true;
+            _sceneArr[idx].setData(true,sceneId,info);
+            _sceneArr[idx].addEventListener("click",__itemClick);
          }
       }
       
-      protected function __onCDTimer(param1:TimerEvent) : void
+      protected function __onCDTimer(event:TimerEvent) : void
       {
          if(_remainSecond < 0)
          {
@@ -468,58 +462,57 @@ package rescue.views
          _remainSecond = Number(_remainSecond) - 1;
       }
       
-      private function parseDate(param1:int) : String
+      private function parseDate(remain:int) : String
       {
-         var _loc3_:int = param1 % 60;
-         param1 = Math.floor(param1 / 60);
-         var _loc6_:int = param1 % 60;
-         param1 = Math.floor(param1 / 60);
-         var _loc7_:int = param1 % 60;
-         var _loc5_:String = _loc3_ >= 10?_loc3_.toString():"0" + _loc3_;
-         var _loc2_:String = _loc6_ >= 10?_loc6_.toString():"0" + _loc6_;
-         var _loc4_:String = _loc7_ >= 10?_loc7_.toString():"0" + _loc7_;
-         return _loc4_ + ":" + _loc2_ + ":" + _loc5_;
+         var s:int = remain % 60;
+         remain = Math.floor(remain / 60);
+         var m:int = remain % 60;
+         remain = Math.floor(remain / 60);
+         var h:int = remain % 60;
+         var ss:String = s >= 10?s.toString():"0" + s;
+         var mm:String = m >= 10?m.toString():"0" + m;
+         var hh:String = h >= 10?h.toString():"0" + h;
+         return hh + ":" + mm + ":" + ss;
       }
       
-      protected function __itemClick(param1:MouseEvent) : void
+      protected function __itemClick(event:MouseEvent) : void
       {
-         var _loc3_:int = 0;
+         var i:int = 0;
          SoundManager.instance.play("008");
-         var _loc2_:RescueSceneItem = param1.currentTarget as RescueSceneItem;
-         _loc3_ = 0;
-         while(_loc3_ <= _sceneArr.length - 1)
+         var item:RescueSceneItem = event.currentTarget as RescueSceneItem;
+         for(i = 0; i <= _sceneArr.length - 1; )
          {
-            if(_loc2_ == _sceneArr[_loc3_])
+            if(item == _sceneArr[i])
             {
-               _curIndex = _loc3_;
+               _curIndex = i;
             }
-            _sceneArr[_loc3_].setSelected(false);
-            _loc3_++;
+            _sceneArr[i].setSelected(false);
+            i++;
          }
-         _loc2_.setSelected(true);
+         item.setSelected(true);
          RescueControl.instance.curSceneId = _sceneArr[_curIndex].sceneId;
          SocketManager.Instance.out.requestRescueFrameInfo(_sceneArr[_curIndex].sceneId);
       }
       
       private function updatePrize() : void
       {
-         var _loc3_:int = 0;
+         var i:int = 0;
          var _loc5_:int = 0;
          var _loc4_:* = RescueManager.instance.rewardArr;
-         for each(var _loc1_ in RescueManager.instance.rewardArr)
+         for each(var rewardInfo in RescueManager.instance.rewardArr)
          {
-            if(_loc1_.MissionID == _sceneArr[_curIndex].sceneId)
+            if(rewardInfo.MissionID == _sceneArr[_curIndex].sceneId)
             {
-               switch(int(_loc1_.Star) - 11)
+               switch(int(rewardInfo.Star) - 11)
                {
                   case 0:
-                     _prizeArr[0].setData(_loc1_);
+                     _prizeArr[0].setData(rewardInfo);
                      continue;
                   case 1:
-                     _prizeArr[1].setData(_loc1_);
+                     _prizeArr[1].setData(rewardInfo);
                      continue;
                   case 2:
-                     _prizeArr[2].setData(_loc1_);
+                     _prizeArr[2].setData(rewardInfo);
                      continue;
                }
             }
@@ -528,13 +521,12 @@ package rescue.views
                continue;
             }
          }
-         var _loc2_:* = int(_sceneArr[_curIndex].info.rewardStatus);
-         _loc3_ = 0;
-         while(_loc3_ <= _prizeArr.length - 1)
+         var status:* = int(_sceneArr[_curIndex].info.rewardStatus);
+         for(i = 0; i <= _prizeArr.length - 1; )
          {
-            _prizeArr[_loc3_].setStatus(_loc2_ & 3);
-            _loc2_ = _loc2_ >> 2;
-            _loc3_++;
+            _prizeArr[i].setStatus(status & 3);
+            status = status >> 2;
+            i++;
          }
          if(_sceneArr[_curIndex].info.freeCount > 0)
          {
@@ -555,10 +547,10 @@ package rescue.views
          }
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -584,22 +576,20 @@ package rescue.views
       
       override public function dispose() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
+         var i:int = 0;
+         var j:int = 0;
          removeEvents();
-         _loc2_ = 0;
-         while(_loc2_ <= _sceneArr.length - 1)
+         for(i = 0; i <= _sceneArr.length - 1; )
          {
-            ObjectUtils.disposeObject(_sceneArr[_loc2_]);
-            _sceneArr[_loc2_] = null;
-            _loc2_++;
+            ObjectUtils.disposeObject(_sceneArr[i]);
+            _sceneArr[i] = null;
+            i++;
          }
-         _loc1_ = 0;
-         while(_loc1_ <= _prizeArr.length - 1)
+         for(j = 0; j <= _prizeArr.length - 1; )
          {
-            ObjectUtils.disposeObject(_prizeArr[_loc1_]);
-            _prizeArr[_loc1_] = null;
-            _loc1_++;
+            ObjectUtils.disposeObject(_prizeArr[j]);
+            _prizeArr[j] = null;
+            j++;
          }
          ObjectUtils.disposeObject(_bg);
          _bg = null;

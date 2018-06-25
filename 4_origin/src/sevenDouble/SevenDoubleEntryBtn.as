@@ -27,7 +27,7 @@ package sevenDouble
          addEventListener("click",clickHandler,false,0,true);
       }
       
-      private function clickHandler(param1:MouseEvent) : void
+      private function clickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(SevenDoubleManager.instance.isInGame)
@@ -41,7 +41,7 @@ package sevenDouble
          }
       }
       
-      private function canEnterHandler(param1:Event) : void
+      private function canEnterHandler(event:Event) : void
       {
          SevenDoubleManager.instance.removeEventListener("sevenDoubleCanEnter",canEnterHandler);
          StateManager.setState("sevenDoubleScene");

@@ -16,13 +16,13 @@ package ddt.view.academyCommon.data
       
       public var type:int;
       
-      public function SimpleMessger(param1:int, param2:String, param3:String, param4:int)
+      public function SimpleMessger($id:int, $name:String, $messger:String, $type:int)
       {
          super();
-         id = param1;
-         name = param2;
-         messger = param3;
-         type = param4;
+         id = $id;
+         name = $name;
+         messger = $messger;
+         type = $type;
       }
    }
 }

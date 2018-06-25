@@ -45,13 +45,13 @@ package hall.hallInfo.playerInfo
          addChild(_energyTxt);
       }
       
-      public function showProgressBar(param1:int, param2:int) : void
+      public function showProgressBar(energyNum:int, allNum:int) : void
       {
-         _energyTxt.text = param1 + "/" + param2;
+         _energyTxt.text = energyNum + "/" + allNum;
          _rectangle.x = 0;
          _rectangle.y = 0;
          _rectangle.height = _pBar.height;
-         _rectangle.width = Math.ceil(param1 / param2 * _pBar.width);
+         _rectangle.width = Math.ceil(energyNum / allNum * _pBar.width);
          if(_rectangle.height <= 0)
          {
             _rectangle.height = 1;

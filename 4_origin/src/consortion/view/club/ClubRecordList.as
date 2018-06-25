@@ -37,26 +37,25 @@ package consortion.view.club
          addChild(_panel);
       }
       
-      public function setData(param1:Object, param2:int) : void
+      public function setData(data:Object, type:int) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         if(_data == param1)
+         var i:int = 0;
+         var item:* = null;
+         if(_data == data)
          {
             return;
          }
          clearItem();
          _items = new Vector.<ClubRecordItem>();
-         if(param1 && param1.length > 0)
+         if(data && data.length > 0)
          {
-            _loc4_ = 0;
-            while(_loc4_ < param1.length)
+            for(i = 0; i < data.length; )
             {
-               _loc3_ = new ClubRecordItem(param2);
-               _loc3_.info = param1[_loc4_];
-               _items.push(_loc3_);
-               _vbox.addChild(_loc3_);
-               _loc4_++;
+               item = new ClubRecordItem(type);
+               item.info = data[i];
+               _items.push(item);
+               _vbox.addChild(item);
+               i++;
             }
          }
          _panel.invalidateViewport();
@@ -64,17 +63,16 @@ package consortion.view.club
       
       private function clearItem() : void
       {
-         var _loc1_:int = 0;
-         var _loc2_:int = 0;
+         var len:int = 0;
+         var i:int = 0;
          if(_items && _items.length > 0)
          {
-            _loc1_ = _items.length;
-            _loc2_ = 0;
-            while(_loc2_ < _loc1_)
+            len = _items.length;
+            for(i = 0; i < len; )
             {
-               _items[_loc2_].dispose();
-               _items[_loc2_] = null;
-               _loc2_++;
+               _items[i].dispose();
+               _items[i] = null;
+               i++;
             }
          }
          _items = null;

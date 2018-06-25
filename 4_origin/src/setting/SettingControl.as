@@ -38,7 +38,7 @@ package setting
          SettingController.Instance.addEventListener("closeview",__onCloseView);
       }
       
-      private function __onOpenView(param1:CEvent) : void
+      private function __onOpenView(e:CEvent) : void
       {
          new HelperUIModuleLoad().loadUIModule(["ddtsetting"],loadComplete);
       }
@@ -61,7 +61,7 @@ package setting
          LayerManager.Instance.addToLayer(_settingView,3,false,2);
       }
       
-      protected function onViewRemove(param1:Event) : void
+      protected function onViewRemove(e:Event) : void
       {
          if(_settingView)
          {
@@ -70,14 +70,14 @@ package setting
          _settingView = null;
       }
       
-      private function __onCloseView(param1:CEvent) : void
+      private function __onCloseView(e:CEvent) : void
       {
          hide();
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:

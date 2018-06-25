@@ -39,15 +39,15 @@ package gameCommon.view.card
       
       private var _disposeFunc:Function;
       
-      public function TakeOutCardController(param1:IEventDispatcher = null)
+      public function TakeOutCardController(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
-      public function setup(param1:GameInfo, param2:RoomInfo) : void
+      public function setup(gameInfo:GameInfo, roomInfo:RoomInfo) : void
       {
-         _gameInfo = param1;
-         _roomInfo = param2;
+         _gameInfo = gameInfo;
+         _roomInfo = roomInfo;
          initEvent();
          if(_gameInfo.selfGamePlayer.hasGardGet)
          {
@@ -59,19 +59,19 @@ package gameCommon.view.card
       {
       }
       
-      public function set disposeFunc(param1:Function) : void
+      public function set disposeFunc(func:Function) : void
       {
-         _disposeFunc = param1;
+         _disposeFunc = func;
       }
       
-      public function set showSmallCardView(param1:Function) : void
+      public function set showSmallCardView(func:Function) : void
       {
-         _showSmallCardView = param1;
+         _showSmallCardView = func;
       }
       
-      public function set showLargeCardView(param1:Function) : void
+      public function set showLargeCardView(func:Function) : void
       {
-         _showLargeCardView = param1;
+         _showLargeCardView = func;
       }
       
       private function initEvent() : void
@@ -86,10 +86,10 @@ package gameCommon.view.card
          }
       }
       
-      private function __removePlayer(param1:DictionaryEvent) : void
+      private function __removePlayer(event:DictionaryEvent) : void
       {
-         var _loc2_:Player = param1.data as Player;
-         if(_loc2_ && _loc2_.isSelf)
+         var info:Player = event.data as Player;
+         if(info && info.isSelf)
          {
             if(_roomInfo.type == 0 || _roomInfo.type == 1 || _gameInfo.roomType == 16)
             {
@@ -102,10 +102,10 @@ package gameCommon.view.card
          }
       }
       
-      private function __removeRoomPlayer(param1:RoomEvent) : void
+      private function __removeRoomPlayer(event:RoomEvent) : void
       {
-         var _loc2_:RoomPlayer = param1.params[0] as RoomPlayer;
-         if(_loc2_ && _loc2_.isSelf)
+         var info:RoomPlayer = event.params[0] as RoomPlayer;
+         if(info && info.isSelf)
          {
             _isKicked = true;
          }
@@ -133,45 +133,41 @@ package gameCommon.view.card
             _cardView = new SurvivalCardsView();
             _cardView.addEventListener("complete",__onCardViewComplete);
             PositionUtils.setPos(_cardView,"takeoutCard.LargeCardViewPos");
+            _showLargeCardView(_cardView);
             return;
-            §§push(_showLargeCardView(_cardView));
          }
-         else
+         if(_gameInfo.selfGamePlayer.isWin)
          {
-            if(_gameInfo.selfGamePlayer.isWin)
+            if(PlayerManager.Instance.Self.Grade < 2)
             {
-               if(PlayerManager.Instance.Self.Grade < 2)
-               {
-                  _gameInfo.missionInfo.tackCardType = 0;
-               }
-               if(_gameInfo.missionInfo && _gameInfo.missionInfo.tackCardType == 1)
-               {
-                  _cardView = new SmallCardsView();
-                  PositionUtils.setPos(_cardView,"takeoutCard.SmallCardViewPos");
-                  _cardView.addEventListener("complete",__onCardViewComplete);
-                  _showSmallCardView(_cardView);
-               }
-               else if(_gameInfo.missionInfo && _gameInfo.missionInfo.tackCardType == 2)
-               {
-                  _cardView = new LargeCardsView();
-                  _cardView.addEventListener("complete",__onCardViewComplete);
-                  PositionUtils.setPos(_cardView,"takeoutCard.LargeCardViewPos");
-                  _showLargeCardView(_cardView);
-               }
-               else
-               {
-                  __onCardViewComplete();
-               }
+               _gameInfo.missionInfo.tackCardType = 0;
+            }
+            if(_gameInfo.missionInfo && _gameInfo.missionInfo.tackCardType == 1)
+            {
+               _cardView = new SmallCardsView();
+               PositionUtils.setPos(_cardView,"takeoutCard.SmallCardViewPos");
+               _cardView.addEventListener("complete",__onCardViewComplete);
+               _showSmallCardView(_cardView);
+            }
+            else if(_gameInfo.missionInfo && _gameInfo.missionInfo.tackCardType == 2)
+            {
+               _cardView = new LargeCardsView();
+               _cardView.addEventListener("complete",__onCardViewComplete);
+               PositionUtils.setPos(_cardView,"takeoutCard.LargeCardViewPos");
+               _showLargeCardView(_cardView);
             }
             else
             {
-               setState();
+               __onCardViewComplete();
             }
-            return;
+         }
+         else
+         {
+            setState();
          }
       }
       
-      private function __onCardViewComplete(param1:Event = null) : void
+      private function __onCardViewComplete(event:Event = null) : void
       {
          if(_cardView)
          {
@@ -208,123 +204,127 @@ package gameCommon.view.card
       
       public function setState() : void
       {
-         var _loc3_:int = 0;
+         var bossState:int = 0;
          _disposeFunc();
-         var _loc1_:String = "";
-         var _loc2_:Function = null;
+         var nextState:String = "";
+         var callBack:Function = null;
          if(_isKicked)
          {
             if(_roomInfo.type == 0 || _roomInfo.type == 1)
             {
-               _loc1_ = "roomlist";
+               nextState = "roomlist";
             }
             else
             {
-               _loc1_ = "dungeon";
+               nextState = "dungeon";
             }
          }
          else if(_roomInfo.type == 68 || _roomInfo.type == 0 || _roomInfo.type == 12)
          {
-            _loc1_ = "matchRoom";
+            nextState = "matchRoom";
          }
          else if(_roomInfo.type == 58)
          {
-            _loc1_ = "teamRoom";
+            nextState = "teamRoom";
          }
          else if(_roomInfo.type == 13)
          {
-            _loc1_ = "roomlist";
+            nextState = "roomlist";
          }
          else if(_roomInfo.type == 1)
          {
-            _loc1_ = "challengeRoom";
+            nextState = "challengeRoom";
          }
          else if(_roomInfo.type == 10)
          {
-            _loc1_ = "main";
+            nextState = "main";
          }
          else if((_roomInfo.type == 4 || _roomInfo.type == 23 || _roomInfo.type == 11 || _roomInfo.type == 123) && _gameInfo.hasNextMission)
          {
-            _loc1_ = "missionResult";
+            nextState = "missionResult";
          }
          else if(_roomInfo.type == 5)
          {
-            _loc1_ = "main";
+            nextState = "main";
          }
          else if(_roomInfo.type == -100)
          {
-            _loc1_ = "roomlist";
+            nextState = "roomlist";
          }
          else if(_roomInfo.type == 14)
          {
-            _loc1_ = "worldboss";
+            nextState = "worldboss";
          }
          else if(_roomInfo.type == 15)
          {
-            _loc2_ = LabyrinthManager.Instance.show;
-            _loc1_ = "main";
+            callBack = LabyrinthManager.Instance.show;
+            nextState = "main";
          }
          else if(_roomInfo.type == 17)
          {
-            _loc1_ = "consortia";
-            _loc2_ = ConsortionModelManager.Instance.openBossFrame;
+            nextState = "consortia";
+            callBack = ConsortionModelManager.Instance.openBossFrame;
          }
          else if(_roomInfo.type == 19)
          {
-            _loc1_ = "consortiaBattleScene";
+            nextState = "consortiaBattleScene";
          }
          else if(_roomInfo.type == 18 || _roomInfo.type == 121)
          {
-            _loc1_ = "main";
+            nextState = "main";
          }
          else if(_roomInfo.type == 16 || _roomInfo.type == 25)
          {
-            _loc1_ = "roomlist";
+            nextState = "roomlist";
          }
          else if(_roomInfo.type == 4 || _roomInfo.type == 23 || _roomInfo.type == 123)
          {
-            _loc1_ = "dungeonRoom";
+            nextState = "dungeonRoom";
          }
          else if(_roomInfo.type == 120)
          {
-            _loc1_ = "battleRoom";
+            nextState = "battleRoom";
+         }
+         else if(_roomInfo.type == 70)
+         {
+            nextState = "dreamLandRoom";
          }
          else if(_roomInfo.type == 150)
          {
-            _loc1_ = "consortia_domain";
+            nextState = "consortia_domain";
          }
          else if(_roomInfo.type == 48)
          {
-            _loc3_ = DemonChiYouManager.instance.model.bossState;
-            if(_loc3_ == 2)
+            bossState = DemonChiYouManager.instance.model.bossState;
+            if(bossState == 2)
             {
-               _loc1_ = "demon_chi_you";
+               nextState = "demon_chi_you";
             }
             else
             {
-               _loc1_ = "main";
+               nextState = "main";
             }
          }
          else if(_roomInfo.type == 151)
          {
             if(PlayerManager.Instance.Self.ConsortiaID > 0)
             {
-               _loc1_ = "consortiaGuard";
+               nextState = "consortiaGuard";
             }
             else
             {
-               _loc1_ = "main";
+               nextState = "main";
             }
          }
          else
          {
-            _loc1_ = "dungeon";
+            nextState = "dungeon";
          }
          if(PlayerManager.Instance.Self.Grade == 3)
          {
-            _loc1_ = "main";
+            nextState = "main";
          }
-         StateManager.setState(_loc1_,_loc2_);
+         StateManager.setState(nextState,callBack);
          dispose();
       }
    }

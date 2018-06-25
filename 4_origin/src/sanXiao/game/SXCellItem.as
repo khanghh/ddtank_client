@@ -80,10 +80,10 @@ package sanXiao.game
          return _curPos;
       }
       
-      public function set curPos(param1:Pos) : void
+      public function set curPos(value:Pos) : void
       {
-         _curPos.column = param1.column;
-         _curPos.row = param1.row;
+         _curPos.column = value.column;
+         _curPos.row = value.row;
          x = _curPos.column * cellWidth;
          y = _curPos.row * cellHeight;
       }
@@ -93,17 +93,17 @@ package sanXiao.game
          return _tagPos;
       }
       
-      public function set tagPos(param1:Pos) : void
+      public function set tagPos(value:Pos) : void
       {
-         _tagPos.column = param1.column;
-         _tagPos.row = param1.row;
+         _tagPos.column = value.column;
+         _tagPos.row = value.row;
          _tagX = _tagPos.column * cellWidth;
          _tagY = _tagPos.row * cellHeight;
       }
       
-      public function set type(param1:int) : void
+      public function set type(value:int) : void
       {
-         _icon.setFrame(param1 == 0?6:param1);
+         _icon.setFrame(value == 0?6:value);
       }
       
       public function get type() : int
@@ -130,25 +130,25 @@ package sanXiao.game
          §§push(_boomEffect.hasEventListener("effect_end") && _boomEffect.removeEventListener("effect_end",onEffectEnd));
       }
       
-      protected function onEffectEnd(param1:Event) : void
+      protected function onEffectEnd(e:Event) : void
       {
          _boomEffect.removeEventListener("effect_end",onEffectEnd);
       }
       
-      public function moveTo(param1:Pos, param2:String = "tween", param3:Function = null) : void
+      public function moveTo(pos:Pos, type:String = "tween", callBack:Function = null) : void
       {
-         var _loc6_:Number = NaN;
-         var _loc4_:Number = NaN;
-         var _loc5_:Number = NaN;
-         _callBack = param3;
+         var __time:Number = NaN;
+         var __oX:Number = NaN;
+         var __oY:Number = NaN;
+         _callBack = callBack;
          selected = false;
-         var _loc7_:* = param2;
+         var _loc7_:* = type;
          if("tween" !== _loc7_)
          {
             if("immediately" === _loc7_)
             {
-               curPos.column = param1.column;
-               curPos.row = param1.row;
+               curPos.column = pos.column;
+               curPos.row = pos.row;
                this.x = curPos.column * cellWidth;
                this.y = curPos.row * cellHeight;
                _callBack && _callBack();
@@ -157,18 +157,18 @@ package sanXiao.game
          }
          else
          {
-            tagPos = param1;
-            _loc4_ = Math.abs(tagPos.column - curPos.column);
-            _loc5_ = Math.abs(tagPos.row - curPos.row);
-            if(_loc4_ > _loc5_)
+            tagPos = pos;
+            __oX = Math.abs(tagPos.column - curPos.column);
+            __oY = Math.abs(tagPos.row - curPos.row);
+            if(__oX > __oY)
             {
-               _loc6_ = _loc4_ * 0.3;
+               __time = __oX * 0.3;
                _columnDirection = tagPos.column < curPos.column;
                SanXiaoGameMediator.getInstance().addTween(this,TweenX);
             }
             else
             {
-               _loc6_ = _loc5_ * 0.3;
+               __time = __oY * 0.3;
                _rowDrection = tagPos.row < curPos.row;
                SanXiaoGameMediator.getInstance().addTween(this,TweenY);
             }
@@ -231,9 +231,9 @@ package sanXiao.game
          _callBack = null;
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         if(param1)
+         if(value)
          {
             addChild(_lightBorder);
          }

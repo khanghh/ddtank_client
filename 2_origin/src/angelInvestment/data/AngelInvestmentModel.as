@@ -18,9 +18,9 @@ package angelInvestment.data
          return _data;
       }
       
-      public function set data(param1:DictionaryData) : void
+      public function set data(value:DictionaryData) : void
       {
-         _data = param1;
+         _data = value;
       }
    }
 }

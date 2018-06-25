@@ -46,9 +46,9 @@ package feedback
          _manager.addEventListener("openFeedbackSubmit",onEventsHandler);
       }
       
-      private function onEventsHandler(param1:CEvent) : void
+      private function onEventsHandler(e:CEvent) : void
       {
-         var _loc2_:* = param1.type;
+         var _loc2_:* = e.type;
          if("openFeedbackReply" !== _loc2_)
          {
             if("openFeedbackSubmit" !== _loc2_)

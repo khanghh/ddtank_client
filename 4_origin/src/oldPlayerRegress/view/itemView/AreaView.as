@@ -31,7 +31,7 @@ package oldPlayerRegress.view.itemView
       
       private var _areaInfoItem:FilterFrameText;
       
-      private var _caption:FilterFrameText;
+      private var _getMoney:FilterFrameText;
       
       private var _applyBtn:SimpleBitmapButton;
       
@@ -58,8 +58,9 @@ package oldPlayerRegress.view.itemView
          _areaInfoItem = ComponentFactory.Instance.creatComponentByStylename("regress.Description");
          _areaInfoItem.htmlText = LanguageMgr.GetTranslation("ddt.regress.areaView.areaInfoItem");
          PositionUtils.setPos(_areaInfoItem,"regress.area.areaInfoItem.pos");
-         _caption = ComponentFactory.Instance.creatComponentByStylename("regress.areaCaption");
-         _caption.text = LanguageMgr.GetTranslation("ddt.regress.areaView.caption");
+         _getMoney = ComponentFactory.Instance.creatComponentByStylename("regress.getDemand");
+         _getMoney.text = "0";
+         PositionUtils.setPos(_getMoney,"regress.area.getMoney.pos");
          _applyBtn = ComponentFactory.Instance.creatComponentByStylename("regress.applyBtn");
          _applyBtn.enable = false;
          if(RegressManager.isApplyEnable)
@@ -71,7 +72,7 @@ package oldPlayerRegress.view.itemView
          addToContent(_titleImg);
          addToContent(_areaInfo);
          addToContent(_areaInfoItem);
-         addToContent(_caption);
+         addToContent(_getMoney);
          addToContent(_applyBtn);
       }
       
@@ -85,22 +86,23 @@ package oldPlayerRegress.view.itemView
          _applyBtn.addEventListener("click",__onMouseClickApply);
          SocketManager.Instance.addEventListener(PkgEvent.format(149,3),__onApplyPacks);
          SocketManager.Instance.addEventListener(PkgEvent.format(149,6),__onApplyEnable);
+         SocketManager.Instance.addEventListener(PkgEvent.format(149,17),__getNewAreaMoney);
       }
       
-      protected function __onMouseClickApply(param1:MouseEvent) : void
+      protected function __onMouseClickApply(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          SocketManager.Instance.out.sendRegressApllyPacks();
       }
       
-      protected function __onApplyPacks(param1:CrazyTankSocketEvent) : void
+      protected function __onApplyPacks(event:CrazyTankSocketEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:PackageIn = param1.pkg;
-         if(_loc3_.bytesAvailable > 0)
+         var num:int = 0;
+         var pkg:PackageIn = event.pkg;
+         if(pkg.bytesAvailable > 0)
          {
-            _loc2_ = _loc3_.readInt();
-            if(_loc2_ == 1)
+            num = pkg.readInt();
+            if(num == 1)
             {
                RegressManager.isApplyEnable = false;
                _applyBtn.enable = false;
@@ -108,14 +110,20 @@ package oldPlayerRegress.view.itemView
          }
       }
       
-      protected function __onApplyEnable(param1:CrazyTankSocketEvent) : void
+      protected function __getNewAreaMoney(event:PkgEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:PackageIn = param1.pkg;
-         if(_loc3_.bytesAvailable > 0)
+         var pkg:PackageIn = event.pkg;
+         _getMoney.text = String(pkg.readInt()) + LanguageMgr.GetTranslation("tank.oldPlayer.bindMoney");
+      }
+      
+      protected function __onApplyEnable(event:CrazyTankSocketEvent) : void
+      {
+         var num:int = 0;
+         var pkg:PackageIn = event.pkg;
+         if(pkg.bytesAvailable > 0)
          {
-            _loc2_ = _loc3_.readInt();
-            if(_loc2_ == 1)
+            num = pkg.readInt();
+            if(num == 1)
             {
                RegressManager.isApplyEnable = false;
                _applyBtn.enable = false;
@@ -133,6 +141,7 @@ package oldPlayerRegress.view.itemView
          _applyBtn.removeEventListener("click",__onMouseClickApply);
          SocketManager.Instance.removeEventListener(PkgEvent.format(149,3),__onApplyPacks);
          SocketManager.Instance.removeEventListener(PkgEvent.format(149,6),__onApplyEnable);
+         SocketManager.Instance.removeEventListener(PkgEvent.format(149,17),__getNewAreaMoney);
       }
       
       override public function dispose() : void
@@ -163,10 +172,10 @@ package oldPlayerRegress.view.itemView
             _areaInfoItem.dispose();
             _areaInfoItem = null;
          }
-         if(_caption)
+         if(_getMoney)
          {
-            _caption.dispose();
-            _caption = null;
+            _getMoney.dispose();
+            _getMoney = null;
          }
          if(_applyBtn)
          {

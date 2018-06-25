@@ -53,17 +53,17 @@ package gameCommon.view.effects
          return _iconImage;
       }
       
-      public function excuteEffect(param1:Living) : void
+      public function excuteEffect(live:Living) : void
       {
-         excuteEffectImp(param1);
+         excuteEffectImp(live);
       }
       
-      protected function excuteEffectImp(param1:Living) : void
+      protected function excuteEffectImp(live:Living) : void
       {
          _executed = true;
       }
       
-      public function unExcuteEffect(param1:Living) : void
+      public function unExcuteEffect(live:Living) : void
       {
       }
       

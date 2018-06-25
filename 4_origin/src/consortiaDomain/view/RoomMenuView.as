@@ -59,13 +59,13 @@ package consortiaDomain.view
          _closeBtn.removeEventListener("click",switchMenu);
       }
       
-      private function backRoomList(param1:MouseEvent) : void
+      private function backRoomList(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          ConsortiaDomainManager.instance.leaveScene();
       }
       
-      private function switchMenu(param1:MouseEvent) : void
+      private function switchMenu(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_menuIsOpen)
@@ -79,7 +79,7 @@ package consortiaDomain.view
          addEventListener("enterFrame",menuShowOrHide);
       }
       
-      private function menuShowOrHide(param1:Event) : void
+      private function menuShowOrHide(evt:Event) : void
       {
          if(_menuIsOpen)
          {

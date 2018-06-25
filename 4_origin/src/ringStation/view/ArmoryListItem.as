@@ -50,10 +50,10 @@ package ringStation.view
          addChild(_levelIcon);
       }
       
-      public function setListCellStatus(param1:List, param2:Boolean, param3:int) : void
+      public function setListCellStatus(list:List, isSelected:Boolean, index:int) : void
       {
-         _ranking.text = (param3 + 1).toString();
-         if(param3 % 2 != 0)
+         _ranking.text = (index + 1).toString();
+         if(index % 2 != 0)
          {
             _itemBG.setFrame(2);
          }
@@ -68,9 +68,9 @@ package ringStation.view
          return _info;
       }
       
-      public function setCellValue(param1:*) : void
+      public function setCellValue(value:*) : void
       {
-         _info = param1 as RankingInfo;
+         _info = value as RankingInfo;
          _name.text = _info.PlayerName.toString();
          _levelIcon.setInfo(_info.FamLevel,0,0,0,0,0,0,false,false);
          _fighting.text = _info.Fighting.toString();

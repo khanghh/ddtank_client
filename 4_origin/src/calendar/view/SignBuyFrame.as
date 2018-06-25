@@ -33,8 +33,8 @@ package calendar.view
       
       private function initView() : void
       {
-         var _loc1_:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("tank.view.task.dayCell.tip"),LanguageMgr.GetTranslation("shop.PresentFrame.OkBtnText"),LanguageMgr.GetTranslation("shop.PresentFrame.CancelBtnText"));
-         info = _loc1_;
+         var alerInfo:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("tank.view.task.dayCell.tip"),LanguageMgr.GetTranslation("shop.PresentFrame.OkBtnText"),LanguageMgr.GetTranslation("shop.PresentFrame.CancelBtnText"));
+         info = alerInfo;
          _txt = ComponentFactory.Instance.creatComponentByStylename("dayCell.alert.txt");
          _txt.text = LanguageMgr.GetTranslation("dayCell.alert.text",CalendarManager.getInstance().price,5 - CalendarManager.getInstance().times);
          addToContent(_txt);
@@ -50,10 +50,10 @@ package calendar.view
          removeEventListener("response",responseHander);
       }
       
-      private function responseHander(param1:FrameEvent) : void
+      private function responseHander(e:FrameEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         if(e.responseCode == 3 || e.responseCode == 2)
          {
             if(PlayerManager.Instance.Self.Money < CalendarManager.getInstance().price)
             {
@@ -68,20 +68,20 @@ package calendar.view
             }
             dispose();
          }
-         else if(param1.responseCode == 0 || param1.responseCode == 1 || param1.responseCode == 4)
+         else if(e.responseCode == 0 || e.responseCode == 1 || e.responseCode == 4)
          {
             dispose();
          }
       }
       
-      public function set date(param1:Date) : void
+      public function set date(date:Date) : void
       {
-         _date = param1;
+         _date = date;
       }
       
-      public function set dayCellClass(param1:DayCell) : void
+      public function set dayCellClass(cell:DayCell) : void
       {
-         _dayCell = param1;
+         _dayCell = cell;
       }
       
       override public function dispose() : void

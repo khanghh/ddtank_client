@@ -76,9 +76,9 @@ package treasureHunting.views
          TreasureControl.instance.addEventListener("movieComplete",onMovieComplete);
       }
       
-      public function updateData(param1:Dictionary) : void
+      public function updateData(data:Dictionary) : void
       {
-         _bagData = param1;
+         _bagData = data;
          isBagUpdate = true;
          if(TreasureControl.instance.isMovieComplete)
          {
@@ -86,7 +86,7 @@ package treasureHunting.views
          }
       }
       
-      private function onMovieComplete(param1:TreasureEvent) : void
+      private function onMovieComplete(event:TreasureEvent) : void
       {
          if(isBagUpdate)
          {
@@ -96,33 +96,33 @@ package treasureHunting.views
       
       private function updateBagFrame() : void
       {
-         var _loc1_:* = null;
+         var cellInfo:* = null;
          var _loc4_:int = 0;
          var _loc3_:* = _bagData;
-         for(var _loc2_ in _bagData)
+         for(var i in _bagData)
          {
-            _loc1_ = PlayerManager.Instance.Self.CaddyBag.getItemAt(int(_loc2_));
+            cellInfo = PlayerManager.Instance.Self.CaddyBag.getItemAt(int(i));
             if(_baglist != null)
             {
-               _baglist.setCellInfo(int(_loc2_),_loc1_);
+               _baglist.setCellInfo(int(i),cellInfo);
             }
          }
          isBagUpdate = false;
       }
       
-      private function onItemClick(param1:CellEvent) : void
+      private function onItemClick(event:CellEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc4_:BagCell = param1.data as BagCell;
-         var _loc3_:int = (_loc4_.info as InventoryItemInfo).Count;
-         var _loc2_:int = _getBagType(_loc4_.info as InventoryItemInfo);
-         SocketManager.Instance.out.sendMoveGoods(5,_loc4_.place,_loc2_,-1,_loc3_);
+         var item:BagCell = event.data as BagCell;
+         var count:int = (item.info as InventoryItemInfo).Count;
+         var bagType:int = _getBagType(item.info as InventoryItemInfo);
+         SocketManager.Instance.out.sendMoveGoods(5,item.place,bagType,-1,count);
       }
       
-      private function _getBagType(param1:InventoryItemInfo) : int
+      private function _getBagType(info:InventoryItemInfo) : int
       {
-         var _loc2_:int = 0;
-         var _loc3_:* = param1.CategoryID;
+         var type:int = 0;
+         var _loc3_:* = info.CategoryID;
          if(11 !== _loc3_)
          {
             if(10 !== _loc3_)
@@ -149,71 +149,71 @@ package treasureHunting.views
                                           {
                                              if(33 !== _loc3_)
                                              {
-                                                _loc2_ = 0;
+                                                type = 0;
                                              }
                                           }
-                                          _loc2_ = 13;
+                                          type = 13;
                                        }
                                     }
-                                    addr28:
-                                    _loc2_ = 1;
+                                    addr38:
+                                    type = 1;
                                  }
-                                 addr27:
-                                 §§goto(addr28);
+                                 addr37:
+                                 §§goto(addr38);
                               }
-                              addr26:
-                              §§goto(addr27);
+                              addr36:
+                              §§goto(addr37);
                            }
-                           addr25:
-                           §§goto(addr26);
+                           addr35:
+                           §§goto(addr36);
                         }
-                        addr24:
-                        §§goto(addr25);
+                        addr34:
+                        §§goto(addr35);
                      }
-                     addr23:
-                     §§goto(addr24);
+                     addr33:
+                     §§goto(addr34);
                   }
-                  addr22:
-                  §§goto(addr23);
+                  addr32:
+                  §§goto(addr33);
                }
-               addr21:
-               §§goto(addr22);
+               addr31:
+               §§goto(addr32);
             }
-            §§goto(addr21);
+            §§goto(addr31);
          }
-         else if(param1.Property1 == "31")
+         else if(info.Property1 == "31")
          {
-            _loc2_ = 21;
+            type = 21;
          }
          else
          {
-            _loc2_ = 1;
+            type = 1;
          }
-         return _loc2_;
+         return type;
       }
       
-      private function onGetAllBtnClick(param1:MouseEvent) : void
+      private function onGetAllBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          SocketManager.Instance.out.getAllTreasure();
       }
       
-      private function onConvertBtnClick(param1:MouseEvent) : void
+      private function onConvertBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          SocketManager.Instance.out.sendConvertScore(false);
          TreasureControl.instance.isAlert = true;
       }
       
-      private function onAlertResponse(param1:FrameEvent) : void
+      private function onAlertResponse(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",onAlertResponse);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         (event.currentTarget as BaseAlerFrame).removeEventListener("response",onAlertResponse);
+         if(event.responseCode == 2 || event.responseCode == 3)
          {
             SocketManager.Instance.out.sendSellAll();
          }
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(event.currentTarget);
       }
       
       private function removeEvents() : void

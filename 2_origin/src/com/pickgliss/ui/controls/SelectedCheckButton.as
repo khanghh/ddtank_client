@@ -43,54 +43,54 @@ package com.pickgliss.ui.controls
          super.dispose();
       }
       
-      public function set fieldX(param1:Number) : void
+      public function set fieldX(value:Number) : void
       {
-         if(_fieldX == param1)
+         if(_fieldX == value)
          {
             return;
          }
-         _fieldX = param1;
+         _fieldX = value;
          onPropertiesChanged("fieldX");
       }
       
-      public function set fieldY(param1:Number) : void
+      public function set fieldY(value:Number) : void
       {
-         if(_fieldY == param1)
+         if(_fieldY == value)
          {
             return;
          }
-         _fieldY = param1;
+         _fieldY = value;
          onPropertiesChanged("fieldY");
       }
       
-      public function set text(param1:String) : void
+      public function set text(value:String) : void
       {
-         if(_text == param1)
+         if(_text == value)
          {
             return;
          }
-         _text = param1;
+         _text = value;
          onPropertiesChanged("text");
       }
       
-      public function set textField(param1:DisplayObject) : void
+      public function set textField(field:DisplayObject) : void
       {
-         if(_field == param1)
+         if(_field == field)
          {
             return;
          }
          ObjectUtils.disposeObject(_field);
-         _field = param1;
+         _field = field;
          onPropertiesChanged("textField");
       }
       
-      public function set textStyle(param1:String) : void
+      public function set textStyle(stylename:String) : void
       {
-         if(_textStyle == param1)
+         if(_textStyle == stylename)
          {
             return;
          }
-         _textStyle = param1;
+         _textStyle = stylename;
          textField = ComponentFactory.Instance.creat(_textStyle);
       }
       

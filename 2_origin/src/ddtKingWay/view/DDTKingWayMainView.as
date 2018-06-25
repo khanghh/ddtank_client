@@ -52,8 +52,8 @@ package ddtKingWay.view
       
       override protected function init() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          super.init();
          _bgItem = ComponentFactory.Instance.creatComponentByStylename("ddtKingWay.bgItem");
          _bg = ComponentFactory.Instance.creatComponentByStylename("asset.ddtKingWay.MainBg");
@@ -73,12 +73,12 @@ package ddtKingWay.view
             _maxIndex = _index + 2;
          }
          _list = new Vector.<ScaleFrameImage>();
-         _loc2_ = 0;
-         while(_loc2_ <= _maxIndex && _loc2_ < DDTKingWayManager.QUEST_LIST.length)
+         i = 0;
+         while(i <= _maxIndex && i < DDTKingWayManager.QUEST_LIST.length)
          {
-            _loc1_ = ComponentFactory.Instance.creatComponentByStylename("asset.ddtKingWay.levelItemBg" + (_loc2_ + 3));
-            _list[_loc2_] = _loc1_;
-            _loc2_++;
+            item = ComponentFactory.Instance.creatComponentByStylename("asset.ddtKingWay.levelItemBg" + (i + 3));
+            _list[i] = item;
+            i++;
          }
          _nextBtn = ComponentFactory.Instance.creatComponentByStylename("ddtKingWay.nextBtn");
          _prevBtn = ComponentFactory.Instance.creatComponentByStylename("ddtKingWay.prevBtn");
@@ -88,14 +88,14 @@ package ddtKingWay.view
          updateView();
       }
       
-      private function __onClickNext(param1:MouseEvent) : void
+      private function __onClickNext(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _index = _index + 1;
          updateView();
       }
       
-      private function __onClickPrev(param1:MouseEvent) : void
+      private function __onClickPrev(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _index = _index - 1;
@@ -104,8 +104,8 @@ package ddtKingWay.view
       
       private function updateView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          _prevBtn.enable = true;
          _nextBtn.enable = true;
          if(_index == 0)
@@ -117,23 +117,23 @@ package ddtKingWay.view
             _nextBtn.enable = false;
          }
          _HBox.removeAllChild();
-         _loc2_ = 0;
-         while(_loc2_ <= _maxIndex && _loc2_ < DDTKingWayManager.QUEST_LIST.length)
+         i = 0;
+         while(i <= _maxIndex && i < DDTKingWayManager.QUEST_LIST.length)
          {
-            if(Math.abs(_loc2_ - _index) <= 1)
+            if(Math.abs(i - _index) <= 1)
             {
-               _loc1_ = _list[_loc2_];
-               if(_loc2_ == _index)
+               item = _list[i];
+               if(i == _index)
                {
-                  _loc1_.setFrame(2);
+                  item.setFrame(2);
                }
                else
                {
-                  _loc1_.setFrame(1);
+                  item.setFrame(1);
                }
-               _HBox.addChild(_loc1_);
+               _HBox.addChild(item);
             }
-            _loc2_++;
+            i++;
          }
          _HBox.arrange();
          if(_index == 0)
@@ -195,16 +195,15 @@ package ddtKingWay.view
       
       override public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          InviteManager.Instance.enabled = true;
          _nextBtn.removeEventListener("click",__onClickNext);
          _prevBtn.removeEventListener("click",__onClickPrev);
          ObjectUtils.disposeObject(_btnHelp);
-         _loc1_ = 0;
-         while(_loc1_ < _list.length)
+         for(i = 0; i < _list.length; )
          {
-            _list[_loc1_].dispose();
-            _loc1_++;
+            _list[i].dispose();
+            i++;
          }
          if(_HBox)
          {

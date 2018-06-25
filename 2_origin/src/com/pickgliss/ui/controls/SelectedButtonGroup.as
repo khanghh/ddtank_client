@@ -20,26 +20,25 @@ package com.pickgliss.ui.controls
       
       private var _mutiSelectCount:int;
       
-      public function SelectedButtonGroup(param1:Boolean = false, param2:int = 1)
+      public function SelectedButtonGroup(canUnSelect:Boolean = false, mutiSelectCount:int = 1)
       {
          super();
-         _mutiSelectCount = param2;
-         _canUnSelect = param1;
+         _mutiSelectCount = mutiSelectCount;
+         _canUnSelect = canUnSelect;
          _items = new Vector.<ISelectable>();
       }
       
-      public function addSelectItem(param1:ISelectable) : void
+      public function addSelectItem(item:ISelectable) : void
       {
-         param1.addEventListener("click",__onItemClicked);
-         param1.autoSelect = false;
-         _items.push(param1);
+         item.addEventListener("click",__onItemClicked);
+         item.autoSelect = false;
+         _items.push(item);
       }
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _items.length)
+         var i:int = 0;
+         for(i = 0; i < _items.length; )
          {
             removeItemByIndex(0);
          }
@@ -52,30 +51,30 @@ package com.pickgliss.ui.controls
          return _items.length;
       }
       
-      public function getSelectIndexByItem(param1:ISelectable) : int
+      public function getSelectIndexByItem(item:ISelectable) : int
       {
-         return _items.indexOf(param1);
+         return _items.indexOf(item);
       }
       
-      public function getItemByIndex(param1:int) : ISelectable
+      public function getItemByIndex($index:int) : ISelectable
       {
-         return _items[param1];
+         return _items[$index];
       }
       
-      public function removeItemByIndex(param1:int) : void
+      public function removeItemByIndex(index:int) : void
       {
-         if(param1 != -1)
+         if(index != -1)
          {
-            _items[param1].removeEventListener("click",__onItemClicked);
-            ObjectUtils.disposeObject(_items[param1]);
-            _items.splice(param1,1);
+            _items[index].removeEventListener("click",__onItemClicked);
+            ObjectUtils.disposeObject(_items[index]);
+            _items.splice(index,1);
          }
       }
       
-      public function removeSelectItem(param1:ISelectable) : void
+      public function removeSelectItem(item:ISelectable) : void
       {
-         var _loc2_:int = _items.indexOf(param1);
-         removeItemByIndex(_loc2_);
+         var index:int = _items.indexOf(item);
+         removeItemByIndex(index);
       }
       
       public function get selectIndex() : int
@@ -83,36 +82,36 @@ package com.pickgliss.ui.controls
          return _items.indexOf(_lastSelectedButton);
       }
       
-      public function set selectIndex(param1:int) : void
+      public function set selectIndex(index:int) : void
       {
-         if(param1 == -1)
+         if(index == -1)
          {
-            _currentSelecetdIndex = param1;
+            _currentSelecetdIndex = index;
             var _loc6_:int = 0;
             var _loc5_:* = _items;
-            for each(var _loc2_ in _items)
+            for each(var item in _items)
             {
-               _loc2_.selected = false;
+               item.selected = false;
             }
             return;
          }
-         var _loc4_:* = _currentSelecetdIndex != param1;
-         var _loc3_:ISelectable = _items[param1];
-         if(!_loc3_.selected)
+         var changed:* = _currentSelecetdIndex != index;
+         var target:ISelectable = _items[index];
+         if(!target.selected)
          {
             if(_lastSelectedButton && selectedCount == _mutiSelectCount)
             {
                _lastSelectedButton.selected = false;
             }
-            _loc3_.selected = true;
-            _currentSelecetdIndex = param1;
-            _lastSelectedButton = _loc3_;
+            target.selected = true;
+            _currentSelecetdIndex = index;
+            _lastSelectedButton = target;
          }
          else if(_canUnSelect)
          {
-            _loc3_.selected = false;
+            target.selected = false;
          }
-         if(_loc4_)
+         if(changed)
          {
             dispatchEvent(new Event("change"));
          }
@@ -120,29 +119,28 @@ package com.pickgliss.ui.controls
       
       public function get selectedCount() : int
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _items.length)
+         var i:int = 0;
+         var result:int = 0;
+         for(i = 0; i < _items.length; )
          {
-            if(_items[_loc2_].selected)
+            if(_items[i].selected)
             {
-               _loc1_++;
+               result++;
             }
-            _loc2_++;
+            i++;
          }
-         return _loc1_;
+         return result;
       }
       
-      public function set selectedCount(param1:int) : void
+      public function set selectedCount(value:int) : void
       {
-         _mutiSelectCount = param1;
+         _mutiSelectCount = value;
       }
       
-      private function __onItemClicked(param1:MouseEvent) : void
+      private function __onItemClicked(event:MouseEvent) : void
       {
-         var _loc2_:ISelectable = param1.currentTarget as ISelectable;
-         selectIndex = _items.indexOf(_loc2_);
+         var target:ISelectable = event.currentTarget as ISelectable;
+         selectIndex = _items.indexOf(target);
       }
    }
 }

@@ -15,7 +15,7 @@ package levelFund.model
       
       public var dataArr:Array;
       
-      public function LevelFundModel(param1:IEventDispatcher = null)
+      public function LevelFundModel(target:IEventDispatcher = null)
       {
          dataArr = [{
             "level":25,
@@ -46,20 +46,19 @@ package levelFund.model
             "money":1500,
             "state":0
          }];
-         super(param1);
+         super(target);
       }
       
       public function isGetComplete() : Boolean
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < dataArr.length)
+         var i:int = 0;
+         for(i = 0; i < dataArr.length; )
          {
-            if(dataArr[_loc1_].state == 0)
+            if(dataArr[i].state == 0)
             {
                return false;
             }
-            _loc1_++;
+            i++;
          }
          return true;
       }

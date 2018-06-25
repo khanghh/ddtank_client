@@ -4,15 +4,15 @@ package morn.core.components
    {
        
       
-      public function HSlider(param1:String = null)
+      public function HSlider(skin:String = null)
       {
-         super(param1);
+         super(skin);
       }
       
       override protected function preinitialize() : void
       {
          super.preinitialize();
-         direction = HORIZONTAL;
+         direction = "horizontal";
       }
    }
 }

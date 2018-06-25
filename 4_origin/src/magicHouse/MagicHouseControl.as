@@ -26,7 +26,7 @@ package magicHouse
       
       private var _magicHouseMainView:MagicHouseMainView;
       
-      public function MagicHouseControl(param1:MagicHouseInstance)
+      public function MagicHouseControl($instance:MagicHouseInstance)
       {
          super();
       }
@@ -48,7 +48,7 @@ package magicHouse
          MagicHouseManager.instance.addEventListener("chargebox_return",__chargeBoxReturnHandler);
       }
       
-      private function __showHandler(param1:Event) : void
+      private function __showHandler(e:Event) : void
       {
          if(PlayerManager.Instance.Self.Grade >= 17)
          {
@@ -61,7 +61,7 @@ package magicHouse
          }
       }
       
-      private function __hideHandler(param1:Event) : void
+      private function __hideHandler(e:Event) : void
       {
          if(_magicHouseMainView)
          {
@@ -69,58 +69,58 @@ package magicHouse
          }
       }
       
-      private function __freeBoxReturnHandler(param1:Event) : void
+      private function __freeBoxReturnHandler(e:Event) : void
       {
-         var _loc6_:* = null;
-         var _loc5_:AwardsView = new AwardsView();
-         _loc5_.goodsList = MagicHouseModel.instance.freeBoxGoodListInfos;
-         _loc5_.boxType = 4;
-         var _loc4_:FilterFrameText = ComponentFactory.Instance.creat("magichouse.collectionView.boxGetAwards");
-         _loc4_.text = LanguageMgr.GetTranslation("ddt.bagandinfo.awardsTitle");
-         _loc4_.x = 80;
-         _loc6_ = ComponentFactory.Instance.creatComponentByStylename("magichouse.ItemPreviewListFrame");
-         var _loc3_:String = LanguageMgr.GetTranslation("magichouse.collectionView.freeBoxItemName");
-         var _loc2_:AlertInfo = new AlertInfo(_loc3_);
-         _loc2_.showCancel = false;
-         _loc2_.moveEnable = false;
-         _loc6_.info = _loc2_;
-         _loc6_.addToContent(_loc5_);
-         _loc6_.addToContent(_loc4_);
-         _loc6_.addEventListener("response",__frameClose);
-         LayerManager.Instance.addToLayer(_loc6_,3,true,1);
+         var _frame:* = null;
+         var aView:AwardsView = new AwardsView();
+         aView.goodsList = MagicHouseModel.instance.freeBoxGoodListInfos;
+         aView.boxType = 4;
+         var title:FilterFrameText = ComponentFactory.Instance.creat("magichouse.collectionView.boxGetAwards");
+         title.text = LanguageMgr.GetTranslation("ddt.bagandinfo.awardsTitle");
+         title.x = 80;
+         _frame = ComponentFactory.Instance.creatComponentByStylename("magichouse.ItemPreviewListFrame");
+         var itemName:String = LanguageMgr.GetTranslation("magichouse.collectionView.freeBoxItemName");
+         var ai:AlertInfo = new AlertInfo(itemName);
+         ai.showCancel = false;
+         ai.moveEnable = false;
+         _frame.info = ai;
+         _frame.addToContent(aView);
+         _frame.addToContent(title);
+         _frame.addEventListener("response",__frameClose);
+         LayerManager.Instance.addToLayer(_frame,3,true,1);
       }
       
-      private function __chargeBoxReturnHandler(param1:Event) : void
+      private function __chargeBoxReturnHandler(e:Event) : void
       {
-         var _loc6_:* = null;
-         var _loc5_:AwardsView = new AwardsView();
-         _loc5_.goodsList = MagicHouseModel.instance.chargeBoxGoodListInfos;
-         _loc5_.boxType = 4;
-         var _loc4_:FilterFrameText = ComponentFactory.Instance.creat("magichouse.collectionView.boxGetAwards");
-         _loc4_.text = LanguageMgr.GetTranslation("ddt.bagandinfo.awardsTitle");
-         _loc4_.x = 80;
-         _loc6_ = ComponentFactory.Instance.creatComponentByStylename("magichouse.ItemPreviewListFrame");
-         var _loc3_:String = LanguageMgr.GetTranslation("magichouse.collectionView.chargeBoxItemName");
-         var _loc2_:AlertInfo = new AlertInfo(_loc3_);
-         _loc2_.showCancel = false;
-         _loc2_.moveEnable = false;
-         _loc6_.info = _loc2_;
-         _loc6_.addToContent(_loc5_);
-         _loc6_.addToContent(_loc4_);
-         _loc6_.addEventListener("response",__frameClose);
-         LayerManager.Instance.addToLayer(_loc6_,3,true,1);
+         var _frame:* = null;
+         var aView:AwardsView = new AwardsView();
+         aView.goodsList = MagicHouseModel.instance.chargeBoxGoodListInfos;
+         aView.boxType = 4;
+         var title:FilterFrameText = ComponentFactory.Instance.creat("magichouse.collectionView.boxGetAwards");
+         title.text = LanguageMgr.GetTranslation("ddt.bagandinfo.awardsTitle");
+         title.x = 80;
+         _frame = ComponentFactory.Instance.creatComponentByStylename("magichouse.ItemPreviewListFrame");
+         var itemName:String = LanguageMgr.GetTranslation("magichouse.collectionView.chargeBoxItemName");
+         var ai:AlertInfo = new AlertInfo(itemName);
+         ai.showCancel = false;
+         ai.moveEnable = false;
+         _frame.info = ai;
+         _frame.addToContent(aView);
+         _frame.addToContent(title);
+         _frame.addEventListener("response",__frameClose);
+         LayerManager.Instance.addToLayer(_frame,3,true,1);
       }
       
-      private function __frameClose(param1:FrameEvent) : void
+      private function __frameClose(e:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         switch(int(param1.responseCode) - 2)
+         var frame:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         switch(int(e.responseCode) - 2)
          {
             case 0:
             case 1:
                SoundManager.instance.play("008");
-               _loc2_.removeEventListener("response",__frameClose);
-               _loc2_.dispose();
+               frame.removeEventListener("response",__frameClose);
+               frame.dispose();
                SocketManager.Instance.out.sendClearStoreBag();
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("magichouse.collectionView.getBoxAwardMessage"));
          }
@@ -142,108 +142,102 @@ package magicHouse
       
       public function selectEquipFromBag() : void
       {
-         var _loc6_:int = 0;
-         var _loc1_:Boolean = false;
-         var _loc9_:* = null;
-         var _loc11_:int = 0;
-         var _loc14_:* = null;
-         var _loc5_:int = 0;
-         var _loc10_:* = null;
-         var _loc15_:int = 0;
-         var _loc13_:* = null;
-         var _loc2_:int = 0;
-         var _loc8_:* = null;
-         var _loc7_:int = 0;
-         var _loc12_:* = null;
-         var _loc3_:int = 0;
-         var _loc4_:BagInfo = PlayerManager.Instance.Self.Bag;
+         var i:int = 0;
+         var f:Boolean = false;
+         var jarr:* = null;
+         var ji:int = 0;
+         var arr1:* = null;
+         var jm:int = 0;
+         var marr:* = null;
+         var mi:int = 0;
+         var arr2:* = null;
+         var mm:int = 0;
+         var sarr:* = null;
+         var si:int = 0;
+         var arr3:* = null;
+         var sm:int = 0;
+         var bag:BagInfo = PlayerManager.Instance.Self.Bag;
          if(MagicHouseModel.instance.equipOpenList == null)
          {
             MagicHouseModel.instance.equipOpenList = [];
          }
-         _loc6_ = 0;
-         while(_loc6_ < 9)
+         i = 0;
+         while(i < 9)
          {
-            _loc1_ = false;
-            if(_loc6_ < 3)
+            f = false;
+            if(i < 3)
             {
-               _loc9_ = MagicHouseModel.instance.juniorWeaponList[_loc6_].split(",");
-               _loc11_ = 0;
-               while(_loc11_ < _loc9_.length)
+               jarr = MagicHouseModel.instance.juniorWeaponList[i].split(",");
+               for(ji = 0; ji < jarr.length; )
                {
-                  _loc14_ = _loc4_.findItemsByTempleteID(_loc9_[_loc11_]);
-                  _loc5_ = 0;
-                  while(_loc5_ < _loc14_.length)
+                  arr1 = bag.findItemsByTempleteID(jarr[ji]);
+                  for(jm = 0; jm < arr1.length; )
                   {
-                     if(_loc14_[_loc5_] != null && _loc14_[_loc5_].getRemainDate() > 0)
+                     if(arr1[jm] != null && arr1[jm].getRemainDate() > 0)
                      {
-                        _loc1_ = true;
+                        f = true;
                         break;
                      }
-                     _loc5_++;
+                     jm++;
                   }
-                  if(!_loc1_)
+                  if(!f)
                   {
-                     _loc11_++;
+                     ji++;
                      continue;
                   }
                   break;
                }
-               MagicHouseModel.instance.equipOpenList[_loc6_] = _loc1_;
+               MagicHouseModel.instance.equipOpenList[i] = f;
             }
-            else if(_loc6_ < 6)
+            else if(i < 6)
             {
-               _loc10_ = MagicHouseModel.instance.midWeaponList[_loc6_ - 3].split(",");
-               _loc15_ = 0;
-               while(_loc15_ < _loc10_.length)
+               marr = MagicHouseModel.instance.midWeaponList[i - 3].split(",");
+               for(mi = 0; mi < marr.length; )
                {
-                  _loc13_ = _loc4_.findItemsByTempleteID(_loc10_[_loc15_]);
-                  _loc2_ = 0;
-                  while(_loc2_ < _loc13_.length)
+                  arr2 = bag.findItemsByTempleteID(marr[mi]);
+                  for(mm = 0; mm < arr2.length; )
                   {
-                     if(_loc13_[_loc2_] != null && _loc13_[_loc2_].getRemainDate() > 0)
+                     if(arr2[mm] != null && arr2[mm].getRemainDate() > 0)
                      {
-                        _loc1_ = true;
+                        f = true;
                         break;
                      }
-                     _loc2_++;
+                     mm++;
                   }
-                  if(!_loc1_)
+                  if(!f)
                   {
-                     _loc15_++;
+                     mi++;
                      continue;
                   }
                   break;
                }
-               MagicHouseModel.instance.equipOpenList[_loc6_] = _loc1_;
+               MagicHouseModel.instance.equipOpenList[i] = f;
             }
             else
             {
-               _loc8_ = MagicHouseModel.instance.seniorWeapinList[_loc6_ - 6].split(",");
-               _loc7_ = 0;
-               while(_loc7_ < _loc8_.length)
+               sarr = MagicHouseModel.instance.seniorWeapinList[i - 6].split(",");
+               for(si = 0; si < sarr.length; )
                {
-                  _loc12_ = _loc4_.findItemsByTempleteID(_loc8_[_loc7_]);
-                  _loc3_ = 0;
-                  while(_loc3_ < _loc12_.length)
+                  arr3 = bag.findItemsByTempleteID(sarr[si]);
+                  for(sm = 0; sm < arr3.length; )
                   {
-                     if(_loc12_[_loc3_] != null && _loc12_[_loc3_].getRemainDate() > 0)
+                     if(arr3[sm] != null && arr3[sm].getRemainDate() > 0)
                      {
-                        _loc1_ = true;
+                        f = true;
                         break;
                      }
-                     _loc3_++;
+                     sm++;
                   }
-                  if(!_loc1_)
+                  if(!f)
                   {
-                     _loc7_++;
+                     si++;
                      continue;
                   }
                   break;
                }
-               MagicHouseModel.instance.equipOpenList[_loc6_] = _loc1_;
+               MagicHouseModel.instance.equipOpenList[i] = f;
             }
-            _loc6_++;
+            i++;
          }
       }
       

@@ -34,14 +34,14 @@ package gameCommon.view.propContainer
          setPropCloseVisible(2,false);
       }
       
-      public function setPropCloseVisible(param1:uint, param2:Boolean) : void
+      public function setPropCloseVisible(index:uint, b:Boolean) : void
       {
-         this["_btn" + param1.toString()].alpha = !!param2?1:0;
+         this["_btn" + index.toString()].alpha = !!b?1:0;
       }
       
-      public function setPropCloseEnabled(param1:uint, param2:Boolean) : void
+      public function setPropCloseEnabled(index:uint, b:Boolean) : void
       {
-         this["_btn" + param1.toString()].mouseEnabled = param2;
+         this["_btn" + index.toString()].mouseEnabled = b;
       }
       
       private function addEvent() : void
@@ -70,13 +70,13 @@ package gameCommon.view.propContainer
          _btn2.removeEventListener("mouseOut",__out);
       }
       
-      private function __throw(param1:MouseEvent) : void
+      private function __throw(event:MouseEvent) : void
       {
-         if((param1.target as SimpleBitmapButton).alpha == 0)
+         if((event.target as SimpleBitmapButton).alpha == 0)
          {
             return;
          }
-         var _loc2_:* = param1.target;
+         var _loc2_:* = event.target;
          if(_btn0 !== _loc2_)
          {
             if(_btn1 !== _loc2_)
@@ -106,14 +106,14 @@ package gameCommon.view.propContainer
          stage.focus = null;
       }
       
-      private function __over(param1:MouseEvent) : void
+      private function __over(event:MouseEvent) : void
       {
-         (param1.target as SimpleBitmapButton).alpha = 1;
+         (event.target as SimpleBitmapButton).alpha = 1;
       }
       
-      private function __out(param1:MouseEvent) : void
+      private function __out(event:MouseEvent) : void
       {
-         (param1.target as SimpleBitmapButton).alpha = 0;
+         (event.target as SimpleBitmapButton).alpha = 0;
       }
       
       public function dispose() : void

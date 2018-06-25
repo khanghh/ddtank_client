@@ -7,9 +7,9 @@ package giftSystem
    {
        
       
-      public function GiftModel(param1:IEventDispatcher = null)
+      public function GiftModel(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
          init();
       }
       

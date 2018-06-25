@@ -82,12 +82,12 @@ package happyLittleGame.cubesGame
          PositionUtils.setPos(_alert,"cubeGame.effectContainer.alertPos");
          addChild(_alert);
          _alert.visible = false;
-         var _loc1_:ScaleBitmapImage = ComponentFactory.Instance.creatComponentByStylename("cubeEffectContinaer.alertBg");
-         _alert.addChild(_loc1_);
-         var _loc2_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("cubeEffectContinaer.msgTxt");
-         _loc2_.text = LanguageMgr.GetTranslation("ddt.funnyGame.cubeGame.msgTxt");
-         PositionUtils.setPos(_loc2_,"cubeGame.effectContainer.msgTxtPos");
-         _alert.addChild(_loc2_);
+         var alertBg:ScaleBitmapImage = ComponentFactory.Instance.creatComponentByStylename("cubeEffectContinaer.alertBg");
+         _alert.addChild(alertBg);
+         var msgTxt:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("cubeEffectContinaer.msgTxt");
+         msgTxt.text = LanguageMgr.GetTranslation("ddt.funnyGame.cubeGame.msgTxt");
+         PositionUtils.setPos(msgTxt,"cubeGame.effectContainer.msgTxtPos");
+         _alert.addChild(msgTxt);
          _nextBtn = ComponentFactory.Instance.creatComponentByStylename("core.simplebt");
          _nextBtn.text = LanguageMgr.GetTranslation("ddt.funnyGame.cubeGame.nextLevel");
          PositionUtils.setPos(_nextBtn,"cubeGame.effectContainer.nextBtnPos");
@@ -116,20 +116,20 @@ package happyLittleGame.cubesGame
          CubeGameManager.getInstance().addEventListener("cubeDeath",__showExtraDestroy);
       }
       
-      private function __showExtraDestroy(param1:CubeGameEvent) : void
+      private function __showExtraDestroy(evt:CubeGameEvent) : void
       {
-         var _loc2_:Vector.<Object> = param1.data as Vector.<Object>;
-         if(_loc2_.length > CubeGameManager.getInstance().gameInfo.extraDestroyCnt)
+         var cubes:Vector.<Object> = evt.data as Vector.<Object>;
+         if(cubes.length > CubeGameManager.getInstance().gameInfo.extraDestroyCnt)
          {
             _extraEffect.show();
          }
-         else if(_loc2_.length > CubeGameManager.getInstance().gameInfo.strongDestroyCnt)
+         else if(cubes.length > CubeGameManager.getInstance().gameInfo.strongDestroyCnt)
          {
             _destroyEffect.show();
          }
       }
       
-      private function __onCooldown(param1:CubeGameEvent) : void
+      private function __onCooldown(evt:CubeGameEvent) : void
       {
          if(!_talkTimer)
          {
@@ -153,7 +153,7 @@ package happyLittleGame.cubesGame
          _againBtn.visible = false;
       }
       
-      private function onHeroTalk(param1:TimerEvent) : void
+      private function onHeroTalk(evt:TimerEvent) : void
       {
          _heroDialog.talk();
          _talkTimer.stop();
@@ -161,7 +161,7 @@ package happyLittleGame.cubesGame
          _talkTimer = null;
       }
       
-      private function cooldownBegin(param1:Event = null) : void
+      private function cooldownBegin(evt:Event = null) : void
       {
          _cooldown.setFrame(7 - _cooldownTimer.currentCount);
          if(_cooldownTimer.currentCount == 7)
@@ -189,15 +189,15 @@ package happyLittleGame.cubesGame
          }
       }
       
-      private function __onClick(param1:MouseEvent) : void
+      private function __onClick(evt:MouseEvent) : void
       {
-         if(param1.currentTarget == _againBtn)
+         if(evt.currentTarget == _againBtn)
          {
             _overEffect.visible = false;
             _againBtn.visible = false;
             CubeGameManager.getInstance().requestRestartGame();
          }
-         else if(param1.currentTarget == _nextBtn)
+         else if(evt.currentTarget == _nextBtn)
          {
             _alert.visible = false;
             CubeGameManager.getInstance().requestStartCubeGame();
@@ -228,39 +228,39 @@ package happyLittleGame.cubesGame
          }
       }
       
-      private function __onGameResult(param1:CubeGameEvent) : void
+      private function __onGameResult(evt:CubeGameEvent) : void
       {
-         var _loc2_:Boolean = param1.data as Boolean;
-         _passEffect.visible = _loc2_;
-         _overEffect.visible = !_loc2_;
+         var isWin:Boolean = evt.data as Boolean;
+         _passEffect.visible = isWin;
+         _overEffect.visible = !isWin;
          _againBtn.visible = false;
-         var _loc5_:String = !!_loc2_?"cubeGame.effectContainer.passEffectFromPos":"cubeGame.effectContainer.overEffectFromPos";
-         var _loc4_:Point = ComponentFactory.Instance.creatCustomObject(_loc5_);
-         var _loc6_:Bitmap = !!_loc2_?_passEffect:_overEffect;
-         var _loc3_:String = !!_loc2_?"cubeGame.effectContainer.passEffectPos":"cubeGame.effectContainer.overEffectPos";
-         PositionUtils.setPos(_loc6_,_loc3_);
+         var fromPosObjName:String = !!isWin?"cubeGame.effectContainer.passEffectFromPos":"cubeGame.effectContainer.overEffectFromPos";
+         var fromPos:Point = ComponentFactory.Instance.creatCustomObject(fromPosObjName);
+         var target:Bitmap = !!isWin?_passEffect:_overEffect;
+         var posObjName:String = !!isWin?"cubeGame.effectContainer.passEffectPos":"cubeGame.effectContainer.overEffectPos";
+         PositionUtils.setPos(target,posObjName);
          var _loc7_:int = 1;
-         _loc6_.scaleY = _loc7_;
-         _loc6_.scaleX = _loc7_;
-         _loc6_.alpha = 1;
-         TweenLite.from(_loc6_,1,{
-            "x":_loc4_.x,
-            "y":_loc4_.y,
+         target.scaleY = _loc7_;
+         target.scaleX = _loc7_;
+         target.alpha = 1;
+         TweenLite.from(target,1,{
+            "x":fromPos.x,
+            "y":fromPos.y,
             "alpha":0.5,
             "scaleX":0,
             "scaleY":0,
             "onComplete":onEnd,
-            "onCompleteParams":[_loc6_]
+            "onCompleteParams":[target]
          });
       }
       
-      private function onEnd(param1:Object) : void
+      private function onEnd(target:Object) : void
       {
-         if(param1 == _overEffect)
+         if(target == _overEffect)
          {
             _againBtn.visible = true;
          }
-         else if(param1 == _passEffect)
+         else if(target == _passEffect)
          {
             if(!_timer)
             {
@@ -271,14 +271,14 @@ package happyLittleGame.cubesGame
          }
       }
       
-      private function delayHandler(param1:Event) : void
+      private function delayHandler(evt:Event) : void
       {
          _passEffect.visible = false;
          TimerManager.getInstance().removeTimer1000ms(_timer);
          _alert.visible = true;
       }
       
-      private function __onGameStart(param1:CubeGameEvent) : void
+      private function __onGameStart(evt:CubeGameEvent) : void
       {
          _overEffect.visible = false;
          _againBtn.visible = false;
@@ -345,9 +345,9 @@ class DialogWindow extends Sprite implements Disposeable
       addChild(_txt);
    }
    
-   public function talk(param1:Boolean = false) : void
+   public function talk(isPrincess:Boolean = false) : void
    {
-      isPrincess = param1;
+      isPrincess = isPrincess;
       var bgSizeName:String = !!isPrincess?"cubeGame.effectContainer.princessDialogBgSize":"cubeGame.effectContainer.heroDialogBgSize";
       var bgSize:Point = ComponentFactory.Instance.creatCustomObject(bgSizeName);
       _bg.width = bgSize.x;
@@ -371,9 +371,9 @@ class DialogWindow extends Sprite implements Disposeable
       });
    }
    
-   private function __onCompleteTimer(param1:TimerEvent) : void
+   private function __onCompleteTimer(evt:TimerEvent) : void
    {
-      evt = param1;
+      evt = evt;
       TweenLite.killTweensOf(this,false);
       TweenLite.to(this,1,{
          "alpha":0,
@@ -395,7 +395,7 @@ class DialogWindow extends Sprite implements Disposeable
       }
    }
    
-   private function __onTimer(param1:TimerEvent) : void
+   private function __onTimer(evt:TimerEvent) : void
    {
       if(_txt)
       {
@@ -439,10 +439,10 @@ class ExtraDestroyEffect extends Sprite implements Disposeable
    
    private var _numsImg:NumberImage;
    
-   function ExtraDestroyEffect(param1:Boolean = false)
+   function ExtraDestroyEffect(isExtra:Boolean = false)
    {
       super();
-      _isExtra = param1;
+      _isExtra = isExtra;
       initView();
       this.visible = false;
       this.alpha = 0;
@@ -450,16 +450,16 @@ class ExtraDestroyEffect extends Sprite implements Disposeable
    
    private function initView() : void
    {
-      var _loc1_:String = !!_isExtra?"asset.cubeGameEffectView.extraDestroyImg":"asset.cubeGameEffectView.bigDestroyImg";
-      var _loc3_:Bitmap = ComponentFactory.Instance.creatBitmap(_loc1_);
-      addChild(_loc3_);
-      var _loc2_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.cubeEffectViewr.add");
-      var _loc4_:String = !!_isExtra?"cubeGame.effectContainer.extraAddEffectPos":"cubeGame.effectContainer.destroyAddEffectPos";
-      PositionUtils.setPos(_loc2_,_loc4_);
-      addChild(_loc2_);
+      var bgName:String = !!_isExtra?"asset.cubeGameEffectView.extraDestroyImg":"asset.cubeGameEffectView.bigDestroyImg";
+      var bg:Bitmap = ComponentFactory.Instance.creatBitmap(bgName);
+      addChild(bg);
+      var addImg:Bitmap = ComponentFactory.Instance.creatBitmap("asset.cubeEffectViewr.add");
+      var posName:String = !!_isExtra?"cubeGame.effectContainer.extraAddEffectPos":"cubeGame.effectContainer.destroyAddEffectPos";
+      PositionUtils.setPos(addImg,posName);
+      addChild(addImg);
       _numsImg = ComponentFactory.Instance.creatComponentByStylename("cubeEffectContinaer.numbers");
-      _numsImg.y = _loc2_.y;
-      _numsImg.x = _loc2_.x + _loc2_.width;
+      _numsImg.y = addImg.y;
+      _numsImg.x = addImg.x + addImg.width;
       addChild(_numsImg);
    }
    
@@ -475,9 +475,9 @@ class ExtraDestroyEffect extends Sprite implements Disposeable
          "y":endPos.y,
          "ease":Sine.easeIn,
          "onCompleteParams":[this],
-         "onComplete":function(param1:DisplayObject):void
+         "onComplete":function(target:DisplayObject):void
          {
-            target = param1;
+            target = target;
             TweenLite.killTweensOf(target,true);
             TweenLite.to(target,1,{
                "alpha":0,

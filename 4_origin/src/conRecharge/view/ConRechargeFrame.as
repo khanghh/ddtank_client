@@ -52,12 +52,12 @@ package conRecharge.view
       
       private function initView() : void
       {
-         var _loc6_:int = 0;
-         var _loc9_:int = 0;
-         var _loc7_:int = 0;
-         var _loc8_:* = null;
-         var _loc3_:* = null;
-         var _loc1_:* = null;
+         var reMoney:int = 0;
+         var i:int = 0;
+         var j:int = 0;
+         var info:* = null;
+         var whatDate:* = null;
+         var str:* = null;
          _time = new TimeCountDown(1000);
          _topBg = ComponentFactory.Instance.creatBitmap("asset.conRecharge.topBg");
          addToContent(_topBg);
@@ -73,37 +73,35 @@ package conRecharge.view
          PositionUtils.setPos(_rightView,"conRecharge.rightView.pos");
          _activityTime = ComponentFactory.Instance.creatComponentByStylename("conRecharge.activityTime.txt");
          addToContent(_activityTime);
-         var _loc2_:Array = WonderfulActivityManager.Instance.getActivityInitDataById(ConRechargeManager.instance.actId).statusArr;
-         _loc9_ = 0;
-         while(_loc9_ < _loc2_.length)
+         var arr:Array = WonderfulActivityManager.Instance.getActivityInitDataById(ConRechargeManager.instance.actId).statusArr;
+         for(i = 0; i < arr.length; )
          {
-            if(_loc2_[_loc9_].statusID == 0)
+            if(arr[i].statusID == 0)
             {
-               _loc6_ = _loc2_[_loc9_].statusValue;
+               reMoney = arr[i].statusValue;
                break;
             }
-            _loc9_++;
+            i++;
          }
          _totalRechargeTxt = ComponentFactory.Instance.creatComponentByStylename("conRecharge.totalRecharge.txt");
          addToContent(_totalRechargeTxt);
-         _totalRechargeTxt.text = LanguageMgr.GetTranslation("ddt.conRecharge.totalRecharge",_loc6_);
+         _totalRechargeTxt.text = LanguageMgr.GetTranslation("ddt.conRecharge.totalRecharge",reMoney);
          _rechargeBtn = ComponentFactory.Instance.creatComponentByStylename("conRecharge.rechargeBtn");
          addToContent(_rechargeBtn);
-         var _loc5_:String = LanguageMgr.GetTranslation("ddt.conRecharge.chargeTip");
-         var _loc4_:Array = WonderfulActivityManager.Instance.getActivityInitDataById(ConRechargeManager.instance.actId).statusArr;
-         _loc7_ = 0;
-         while(_loc7_ < _loc4_.length)
+         var tipStr:String = LanguageMgr.GetTranslation("ddt.conRecharge.chargeTip");
+         var arr1:Array = WonderfulActivityManager.Instance.getActivityInitDataById(ConRechargeManager.instance.actId).statusArr;
+         for(j = 0; j < arr1.length; )
          {
-            _loc8_ = _loc4_[_loc7_];
-            if(_loc8_.statusID != 0)
+            info = arr1[j];
+            if(info.statusID != 0)
             {
-               _loc3_ = String(_loc8_.statusID);
-               _loc1_ = _loc3_.substr(0,4) + "/" + _loc3_.substr(4,2) + "/" + _loc3_.substr(6,2);
-               _loc5_ = _loc5_ + ("\n" + LanguageMgr.GetTranslation("ddt.conRecharge.moneyTxt",_loc1_ + "--" + String(_loc8_.statusValue)));
+               whatDate = String(info.statusID);
+               str = whatDate.substr(0,4) + "/" + whatDate.substr(4,2) + "/" + whatDate.substr(6,2);
+               tipStr = tipStr + ("\n" + LanguageMgr.GetTranslation("ddt.conRecharge.moneyTxt",str + "--" + String(info.statusValue)));
             }
-            _loc7_++;
+            j++;
          }
-         _rechargeBtn.tipData = _loc5_;
+         _rechargeBtn.tipData = tipStr;
       }
       
       private function addEvent() : void
@@ -111,25 +109,25 @@ package conRecharge.view
          addEventListener("response",_responseHandle);
          _time.addEventListener("TIME_countdown_complete",_timeOver);
          _time.addEventListener("countdown_one",_timeOne);
-         var _loc1_:int = DateUtils.getHourDifference(DateUtils.getDateByStr(ConRechargeManager.instance.beginTime).valueOf(),DateUtils.getDateByStr(ConRechargeManager.instance.endTime).valueOf());
-         _time.setTimeOnMinute(_loc1_ * 60);
+         var hour:int = DateUtils.getHourDifference(DateUtils.getDateByStr(ConRechargeManager.instance.beginTime).valueOf(),DateUtils.getDateByStr(ConRechargeManager.instance.endTime).valueOf());
+         _time.setTimeOnMinute(hour * 60);
          _rechargeBtn.addEventListener("click",__onSupplyClick);
       }
       
-      private function __onSupplyClick(param1:MouseEvent) : void
+      private function __onSupplyClick(evnet:MouseEvent) : void
       {
          LeavePageManager.leaveToFillPath();
       }
       
-      private function _timeOver(param1:Event) : void
+      private function _timeOver(e:Event) : void
       {
       }
       
-      private function _timeOne(param1:Event) : void
+      private function _timeOne(e:Event) : void
       {
-         var _loc3_:Date = DateUtils.getDateByStr(ConRechargeManager.instance.endTime);
-         var _loc2_:String = TimeManager.Instance.getMaxRemainDateStr(_loc3_);
-         _activityTime.text = LanguageMgr.GetTranslation("ddt.conRecharge.activityTime",_loc2_);
+         var end:Date = DateUtils.getDateByStr(ConRechargeManager.instance.endTime);
+         var str:String = TimeManager.Instance.getMaxRemainDateStr(end);
+         _activityTime.text = LanguageMgr.GetTranslation("ddt.conRecharge.activityTime",str);
       }
       
       private function removeEvent() : void
@@ -141,10 +139,10 @@ package conRecharge.view
          _rechargeBtn.removeEventListener("click",__onSupplyClick);
       }
       
-      protected function _responseHandle(param1:FrameEvent) : void
+      protected function _responseHandle(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:

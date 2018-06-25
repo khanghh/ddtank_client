@@ -42,38 +42,37 @@ package par
          return _ready;
       }
       
-      public static function addEmitterInfo(param1:EmitterInfo) : void
+      public static function addEmitterInfo(info:EmitterInfo) : void
       {
-         list.push(param1);
+         list.push(info);
       }
       
-      public static function removeEmitterInfo(param1:EmitterInfo) : void
+      public static function removeEmitterInfo(info:EmitterInfo) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < list.length)
+         var i:int = 0;
+         for(i = 0; i < list.length; )
          {
-            if(list[_loc2_] == param1)
+            if(list[i] == info)
             {
-               list.splice(_loc2_,1);
+               list.splice(i,1);
                return;
             }
-            _loc2_++;
+            i++;
          }
       }
       
-      public static function creatEmitter(param1:Number) : Emitter
+      public static function creatEmitter(id:Number) : Emitter
       {
-         var _loc2_:* = null;
+         var emitter:* = null;
          var _loc5_:int = 0;
          var _loc4_:* = list;
-         for each(var _loc3_ in list)
+         for each(var info in list)
          {
-            if(_loc3_.id == param1)
+            if(info.id == id)
             {
-               _loc2_ = new Emitter();
-               _loc2_.info = _loc3_;
-               return _loc2_;
+               emitter = new Emitter();
+               emitter.info = info;
+               return emitter;
             }
          }
          return null;
@@ -85,85 +84,85 @@ package par
          _ready = false;
       }
       
-      private static function load(param1:XML) : void
+      private static function load(xml:XML) : void
       {
-         var _loc7_:* = null;
-         var _loc9_:* = null;
-         var _loc10_:* = null;
-         var _loc4_:* = null;
-         var _loc5_:* = null;
-         var _loc8_:XMLList = param1..emitter;
-         var _loc2_:XML = describeType(new ParticleInfo());
-         var _loc11_:XML = describeType(new EmitterInfo());
+         var ei:* = null;
+         var xml_pars:* = null;
+         var po:* = null;
+         var easing:* = null;
+         var lifeEasing:* = null;
+         var xml_emitter:XMLList = xml..emitter;
+         var pcInfo:XML = describeType(new ParticleInfo());
+         var ecInfo:XML = describeType(new EmitterInfo());
          var _loc18_:int = 0;
-         var _loc17_:* = _loc8_;
-         for each(var _loc12_ in _loc8_)
+         var _loc17_:* = xml_emitter;
+         for each(var x in xml_emitter)
          {
-            _loc7_ = new EmitterInfo();
-            ObjectUtils.copyPorpertiesByXML(_loc7_,_loc12_);
-            _loc9_ = _loc12_.particle;
+            ei = new EmitterInfo();
+            ObjectUtils.copyPorpertiesByXML(ei,x);
+            xml_pars = x.particle;
             var _loc16_:int = 0;
-            var _loc15_:* = _loc9_;
-            for each(var _loc6_ in _loc9_)
+            var _loc15_:* = xml_pars;
+            for each(var p in xml_pars)
             {
-               _loc10_ = new ParticleInfo();
-               ObjectUtils.copyPorpertiesByXML(_loc10_,_loc6_);
-               _loc4_ = _loc6_.easing;
-               _loc5_ = new AbstractLifeEasing();
+               po = new ParticleInfo();
+               ObjectUtils.copyPorpertiesByXML(po,p);
+               easing = p.easing;
+               lifeEasing = new AbstractLifeEasing();
                var _loc14_:int = 0;
-               var _loc13_:* = _loc4_;
-               for each(var _loc3_ in _loc4_)
+               var _loc13_:* = easing;
+               for each(var e in easing)
                {
-                  if(_loc3_.@name != "colorLine")
+                  if(e.@name != "colorLine")
                   {
-                     _loc5_[_loc3_.@name].line = XLine.parse(_loc3_.@value);
+                     lifeEasing[e.@name].line = XLine.parse(e.@value);
                   }
                   else
                   {
-                     _loc5_.colorLine = new ColorLine();
-                     _loc5_.colorLine.line = XLine.parse(_loc3_.@value);
+                     lifeEasing.colorLine = new ColorLine();
+                     lifeEasing.colorLine.line = XLine.parse(e.@value);
                   }
                }
-               _loc10_.lifeEasing = _loc5_;
-               _loc7_.particales.push(_loc10_);
+               po.lifeEasing = lifeEasing;
+               ei.particales.push(po);
             }
-            list.push(_loc7_);
+            list.push(ei);
          }
          _ready = true;
       }
       
-      public static function initPartical(param1:String, param2:String = null) : void
+      public static function initPartical(FLASHSITE:String, mode:String = null) : void
       {
-         var _loc6_:* = null;
-         var _loc3_:* = null;
-         var _loc5_:* = null;
-         var _loc4_:* = null;
-         if(!_ready && param1 != null)
+         var particalPath:* = null;
+         var shapePath:* = null;
+         var particalXMLLoader:* = null;
+         var shapeLoader:* = null;
+         if(!_ready && FLASHSITE != null)
          {
             Domain = new ApplicationDomain();
-            _loc6_ = param1 + (param2 == "lite"?"particallite.xml":"partical.xml");
-            _loc3_ = param1 + (param2 == "lite"?"shapelite.swf":"shape.swf");
-            _loc5_ = LoadResourceManager.Instance.createLoader(_loc6_,2);
-            _loc5_.addEventListener("complete",__loadComplete);
-            LoadResourceManager.Instance.startLoad(_loc5_);
-            _loc4_ = LoadResourceManager.Instance.createLoader(_loc3_,4,null,"GET",Domain);
-            _loc4_.addEventListener("complete",__onShapeLoadComplete);
-            LoadResourceManager.Instance.startLoad(_loc4_);
+            particalPath = FLASHSITE + (mode == "lite"?"particallite.xml":"partical.xml");
+            shapePath = FLASHSITE + (mode == "lite"?"shapelite.swf":"shape.swf");
+            particalXMLLoader = LoadResourceManager.Instance.createLoader(particalPath,2);
+            particalXMLLoader.addEventListener("complete",__loadComplete);
+            LoadResourceManager.Instance.startLoad(particalXMLLoader);
+            shapeLoader = LoadResourceManager.Instance.createLoader(shapePath,4,null,"GET",Domain);
+            shapeLoader.addEventListener("complete",__onShapeLoadComplete);
+            LoadResourceManager.Instance.startLoad(shapeLoader);
          }
       }
       
-      private static function __onShapeLoadComplete(param1:LoaderEvent) : void
+      private static function __onShapeLoadComplete(event:LoaderEvent) : void
       {
-         param1.loader.removeEventListener("complete",__onShapeLoadComplete);
+         event.loader.removeEventListener("complete",__onShapeLoadComplete);
          ShapeManager.setup();
       }
       
-      private static function __loadComplete(param1:LoaderEvent) : void
+      private static function __loadComplete(event:LoaderEvent) : void
       {
-         param1.loader.removeEventListener("complete",__loadComplete);
+         event.loader.removeEventListener("complete",__loadComplete);
          try
          {
-            load(new XML(param1.loader.content));
+            load(new XML(event.loader.content));
             return;
          }
          catch(err:Error)
@@ -174,39 +173,39 @@ package par
       
       private static function save() : XML
       {
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:XML = <list></list>;
+         var exml:* = null;
+         var xpi:* = null;
+         var doc:XML = <list></list>;
          var _loc9_:int = 0;
          var _loc8_:* = list;
-         for each(var _loc1_ in list)
+         for each(var ei in list)
          {
-            _loc4_ = ObjectUtils.encode("emitter",_loc1_);
+            exml = ObjectUtils.encode("emitter",ei);
             var _loc7_:int = 0;
-            var _loc6_:* = _loc1_.particales;
-            for each(var _loc5_ in _loc1_.particales)
+            var _loc6_:* = ei.particales;
+            for each(var pi in ei.particales)
             {
-               _loc3_ = ObjectUtils.encode("particle",_loc5_);
-               _loc3_.appendChild(encodeXLine("vLine",_loc5_.lifeEasing.vLine));
-               _loc3_.appendChild(encodeXLine("rvLine",_loc5_.lifeEasing.rvLine));
-               _loc3_.appendChild(encodeXLine("spLine",_loc5_.lifeEasing.spLine));
-               _loc3_.appendChild(encodeXLine("sizeLine",_loc5_.lifeEasing.sizeLine));
-               _loc3_.appendChild(encodeXLine("weightLine",_loc5_.lifeEasing.weightLine));
-               _loc3_.appendChild(encodeXLine("alphaLine",_loc5_.lifeEasing.alphaLine));
-               if(_loc5_.lifeEasing.colorLine)
+               xpi = ObjectUtils.encode("particle",pi);
+               xpi.appendChild(encodeXLine("vLine",pi.lifeEasing.vLine));
+               xpi.appendChild(encodeXLine("rvLine",pi.lifeEasing.rvLine));
+               xpi.appendChild(encodeXLine("spLine",pi.lifeEasing.spLine));
+               xpi.appendChild(encodeXLine("sizeLine",pi.lifeEasing.sizeLine));
+               xpi.appendChild(encodeXLine("weightLine",pi.lifeEasing.weightLine));
+               xpi.appendChild(encodeXLine("alphaLine",pi.lifeEasing.alphaLine));
+               if(pi.lifeEasing.colorLine)
                {
-                  _loc3_.appendChild(encodeXLine("colorLine",_loc5_.lifeEasing.colorLine));
+                  xpi.appendChild(encodeXLine("colorLine",pi.lifeEasing.colorLine));
                }
-               _loc4_.appendChild(_loc3_);
+               exml.appendChild(xpi);
             }
-            _loc2_.appendChild(_loc4_);
+            doc.appendChild(exml);
          }
-         return _loc2_;
+         return doc;
       }
       
-      private static function encodeXLine(param1:String, param2:XLine) : XML
+      private static function encodeXLine(name:String, value:XLine) : XML
       {
-         return new XML("<easing name=\"" + param1 + "\" value=\"" + XLine.ToString(param2.line) + "\" />");
+         return new XML("<easing name=\"" + name + "\" value=\"" + XLine.ToString(value.line) + "\" />");
       }
    }
 }

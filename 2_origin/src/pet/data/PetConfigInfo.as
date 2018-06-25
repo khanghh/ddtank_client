@@ -29,9 +29,9 @@ package pet.data
       
       public var NewPetDescribe:String;
       
-      public function PetConfigInfo(param1:IEventDispatcher = null)
+      public function PetConfigInfo(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public function get skillOpenLevel() : Array

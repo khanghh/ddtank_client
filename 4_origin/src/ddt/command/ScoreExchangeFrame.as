@@ -54,28 +54,28 @@ package ddt.command
       {
          cancelButtonStyle = "core.simplebt";
          submitButtonStyle = "core.simplebt";
-         var _loc1_:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("ddt.dragonBoat.shopBuyFrame.titleTxt"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"));
-         _loc1_.moveEnable = false;
-         _loc1_.autoDispose = false;
-         _loc1_.sound = "008";
-         info = _loc1_;
+         var _alertInfo:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("ddt.dragonBoat.shopBuyFrame.titleTxt"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"));
+         _alertInfo.moveEnable = false;
+         _alertInfo.autoDispose = false;
+         _alertInfo.sound = "008";
+         info = _alertInfo;
          _sprite = new Sprite();
          PositionUtils.setPos(_sprite,"scoreExchangeFrame.contentPos");
          addToContent(_sprite);
-         var _loc2_:Image = ComponentFactory.Instance.creatComponentByStylename("ddtcore.CellBg");
-         _sprite.addChild(_loc2_);
+         var bg:Image = ComponentFactory.Instance.creatComponentByStylename("ddtcore.CellBg");
+         _sprite.addChild(bg);
          _number = ComponentFactory.Instance.creatCustomObject("ddtcore.numberSelecter");
          _sprite.addChild(_number);
-         var _loc3_:Sprite = new Sprite();
-         _loc3_.addChild(ComponentFactory.Instance.creatBitmap("asset.ddtcore.EquipCellBG"));
+         var cellBG:Sprite = new Sprite();
+         cellBG.addChild(ComponentFactory.Instance.creatBitmap("asset.ddtcore.EquipCellBG"));
          _totalTipText = ComponentFactory.Instance.creatComponentByStylename("ddtcore.TotalTipsText");
          _totalTipText.text = LanguageMgr.GetTranslation("ddt.QuickFrame.TotalTipText");
          _sprite.addChild(_totalTipText);
          totalText = ComponentFactory.Instance.creatComponentByStylename("ddtcore.TotalText");
          _sprite.addChild(totalText);
-         _cell = new BaseCell(_loc3_);
-         _cell.x = _loc2_.x + 4;
-         _cell.y = _loc2_.y + 4;
+         _cell = new BaseCell(cellBG);
+         _cell.x = bg.x + 4;
+         _cell.y = bg.y + 4;
          _cell.tipDirctions = "7,0";
          _sprite.addChild(_cell);
       }
@@ -88,20 +88,20 @@ package ddt.command
          _number.addEventListener("number_enter",_numberEnter);
       }
       
-      private function _numberEnter(param1:Event) : void
+      private function _numberEnter(e:Event) : void
       {
          doBuy();
          dispose();
       }
       
-      private function _numberClose(param1:Event) : void
+      private function _numberClose(e:Event) : void
       {
          dispose();
       }
       
-      private function responseHandler(param1:FrameEvent) : void
+      private function responseHandler(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -117,37 +117,36 @@ package ddt.command
       
       private function doBuy() : void
       {
-         var _loc2_:* = null;
-         var _loc6_:* = null;
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         var _loc7_:* = null;
-         var _loc5_:* = null;
-         var _loc1_:* = null;
-         var _loc8_:int = 0;
+         var items:* = null;
+         var types:* = null;
+         var colors:* = null;
+         var dresses:* = null;
+         var skins:* = null;
+         var places:* = null;
+         var bands:* = null;
+         var i:int = 0;
          switch(int(type))
          {
             case 0:
-               _loc2_ = [];
-               _loc6_ = [];
-               _loc3_ = [];
-               _loc4_ = [];
-               _loc7_ = [];
-               _loc5_ = [];
-               _loc1_ = [];
-               _loc8_ = 0;
-               while(_loc8_ < _stoneNumber)
+               items = [];
+               types = [];
+               colors = [];
+               dresses = [];
+               skins = [];
+               places = [];
+               bands = [];
+               for(i = 0; i < _stoneNumber; )
                {
-                  _loc2_.push(_shopItem.GoodsID);
-                  _loc6_.push(1);
-                  _loc3_.push("");
-                  _loc4_.push(false);
-                  _loc7_.push("");
-                  _loc5_.push(-1);
-                  _loc1_.push(false);
-                  _loc8_++;
+                  items.push(_shopItem.GoodsID);
+                  types.push(1);
+                  colors.push("");
+                  dresses.push(false);
+                  skins.push("");
+                  places.push(-1);
+                  bands.push(false);
+                  i++;
                }
-               SocketManager.Instance.out.sendBuyGoods(_loc2_,_loc6_,_loc3_,_loc5_,_loc4_,_loc7_,0,null,_loc1_);
+               SocketManager.Instance.out.sendBuyGoods(items,types,colors,places,dresses,skins,0,null,bands);
                break;
             case 1:
             case 2:
@@ -155,15 +154,15 @@ package ddt.command
          }
       }
       
-      private function selectHandler(param1:Event) : void
+      private function selectHandler(e:Event) : void
       {
          _stoneNumber = _number.number;
          refreshNumText();
       }
       
-      public function set shopItem(param1:ShopItemInfo) : void
+      public function set shopItem(value:ShopItemInfo) : void
       {
-         _shopItem = param1;
+         _shopItem = value;
          _cell.info = ItemManager.Instance.getTemplateById(_shopItem.TemplateID);
          switch(int(type))
          {

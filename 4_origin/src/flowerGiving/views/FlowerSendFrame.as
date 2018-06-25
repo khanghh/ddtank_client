@@ -140,101 +140,98 @@ package flowerGiving.views
       
       private function initViewWithData() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var flowerItem:* = null;
          _dataArr = FlowerGivingController.instance.getDataByRewardMark(5);
-         _loc3_ = 0;
-         while(_loc3_ < _dataArr.length)
+         for(i = 0; i < _dataArr.length; )
          {
-            _loc2_ = new FlowerSendFrameItem(_dataArr[_loc3_]);
-            PositionUtils.setPos(_loc2_,"flowerGiving.flowerSendFrame.itemPos" + (_loc3_ + 1));
-            addToContent(_loc2_);
-            _selectBtnGroup.addSelectItem(_loc2_.selectBtn);
-            _itemArr.push(_loc2_);
-            _loc3_++;
+            flowerItem = new FlowerSendFrameItem(_dataArr[i]);
+            PositionUtils.setPos(flowerItem,"flowerGiving.flowerSendFrame.itemPos" + (i + 1));
+            addToContent(flowerItem);
+            _selectBtnGroup.addSelectItem(flowerItem.selectBtn);
+            _itemArr.push(flowerItem);
+            i++;
          }
          _selectBtnGroup.selectIndex = 0;
-         var _loc1_:BagInfo = PlayerManager.Instance.Self.getBag(1);
-         _maxNum = _loc1_.getItemCountByTemplateId(FlowerGivingManager.instance.flowerTempleteId);
+         var bagInfo:BagInfo = PlayerManager.Instance.Self.getBag(1);
+         _maxNum = bagInfo.getItemCountByTemplateId(FlowerGivingManager.instance.flowerTempleteId);
          _myFlowerBagCell = createBagCell(FlowerGivingManager.instance.flowerTempleteId);
          _myFlowerBagCell.setCount(_maxNum);
          addToContent(_myFlowerBagCell);
          PositionUtils.setPos(_myFlowerBagCell,"flowerGiving.flowerSendFrame.myFlowerBagCell");
       }
       
-      private function createBagCell(param1:int) : BagCell
+      private function createBagCell(templeteId:int) : BagCell
       {
-         var _loc3_:InventoryItemInfo = new InventoryItemInfo();
-         _loc3_.TemplateID = param1;
-         _loc3_ = ItemManager.fill(_loc3_);
-         _loc3_.IsBinds = true;
-         var _loc2_:BagCell = new BagCell(0);
-         _loc2_.info = _loc3_;
-         _loc2_.setBgVisible(false);
-         return _loc2_;
+         var info:InventoryItemInfo = new InventoryItemInfo();
+         info.TemplateID = templeteId;
+         info = ItemManager.fill(info);
+         info.IsBinds = true;
+         var bagCell:BagCell = new BagCell(0);
+         bagCell.info = info;
+         bagCell.setBgVisible(false);
+         return bagCell;
       }
       
-      protected function __onReceiverChange(param1:Event) : void
+      protected function __onReceiverChange(event:Event) : void
       {
          if(_nameInput.text == "")
          {
             _dropList.dataList = null;
             return;
          }
-         var _loc2_:Array = PlayerManager.Instance.onlineFriendList.concat(PlayerManager.Instance.offlineFriendList).concat(ConsortionModelManager.Instance.model.onlineConsortiaMemberList).concat(ConsortionModelManager.Instance.model.offlineConsortiaMemberList);
-         _dropList.dataList = filterSearch(filterRepeatInArray(_loc2_),_nameInput.text);
+         var list:Array = PlayerManager.Instance.onlineFriendList.concat(PlayerManager.Instance.offlineFriendList).concat(ConsortionModelManager.Instance.model.onlineConsortiaMemberList).concat(ConsortionModelManager.Instance.model.offlineConsortiaMemberList);
+         _dropList.dataList = filterSearch(filterRepeatInArray(list),_nameInput.text);
       }
       
-      private function filterRepeatInArray(param1:Array) : Array
+      private function filterRepeatInArray(filterArr:Array) : Array
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         var _loc2_:Array = [];
-         _loc4_ = 0;
-         while(_loc4_ < param1.length)
+         var i:int = 0;
+         var j:int = 0;
+         var arr:Array = [];
+         for(i = 0; i < filterArr.length; )
          {
-            if(_loc4_ == 0)
+            if(i == 0)
             {
-               _loc2_.push(param1[_loc4_]);
+               arr.push(filterArr[i]);
             }
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_.length)
+            j = 0;
+            while(j < arr.length)
             {
-               if(_loc2_[_loc3_].NickName != param1[_loc4_].NickName)
+               if(arr[j].NickName != filterArr[i].NickName)
                {
-                  if(_loc3_ == _loc2_.length - 1)
+                  if(j == arr.length - 1)
                   {
-                     _loc2_.push(param1[_loc4_]);
+                     arr.push(filterArr[i]);
                   }
-                  _loc3_++;
+                  j++;
                   continue;
                }
                break;
             }
-            _loc4_++;
+            i++;
          }
-         return _loc2_;
+         return arr;
       }
       
-      private function filterSearch(param1:Array, param2:String) : Array
+      private function filterSearch(list:Array, targetStr:String) : Array
       {
-         var _loc4_:int = 0;
-         var _loc3_:Array = [];
-         _loc4_ = 0;
-         while(_loc4_ < param1.length)
+         var i:int = 0;
+         var result:Array = [];
+         for(i = 0; i < list.length; )
          {
-            if(param1[_loc4_].NickName.indexOf(param2) != -1)
+            if(list[i].NickName.indexOf(targetStr) != -1)
             {
-               _loc3_.push(param1[_loc4_]);
+               result.push(list[i]);
             }
-            _loc4_++;
+            i++;
          }
-         return _loc3_;
+         return result;
       }
       
-      protected function __hideDropList(param1:Event) : void
+      protected function __hideDropList(event:Event) : void
       {
-         if(param1.target is FilterFrameText && param1.target != _numTxt && param1.target != _sendToOtherTxt)
+         if(event.target is FilterFrameText && event.target != _numTxt && event.target != _sendToOtherTxt)
          {
             return;
          }
@@ -278,25 +275,25 @@ package flowerGiving.views
          FlowerGivingController.instance.addEventListener("huiKuiFlower",_huiKuiHandler);
       }
       
-      protected function _huiKuiHandler(param1:FlowerSendRecordEvent) : void
+      protected function _huiKuiHandler(event:FlowerSendRecordEvent) : void
       {
-         _nameInput.text = param1.nickName;
+         _nameInput.text = event.nickName;
          if(_sendRecordFrame)
          {
             _sendRecordFrame.dispose();
          }
       }
       
-      protected function __flowerBuyHandler(param1:PkgEvent) : void
+      protected function __flowerBuyHandler(event:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         _loc3_.position = 20;
-         var _loc2_:int = _loc3_.readInt();
-         var _loc4_:int = _loc3_.readInt();
+         var pkg:PackageIn = event.pkg;
+         pkg.position = 20;
+         var successType:int = pkg.readInt();
+         var buyFrom:int = pkg.readInt();
          updateFlowerNum();
       }
       
-      protected function __buyHandler(param1:MouseEvent) : void
+      protected function __buyHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -304,96 +301,95 @@ package flowerGiving.views
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:ShopItemInfo = ShopManager.Instance.getMoneyShopItemByTemplateID(FlowerGivingManager.instance.flowerTempleteId);
-         ShopBuyManager.Instance.buy(_loc2_.GoodsID,_loc2_.isDiscount,_loc2_.getItemPrice(1).PriceType);
+         var _shopItemInfo:ShopItemInfo = ShopManager.Instance.getMoneyShopItemByTemplateID(FlowerGivingManager.instance.flowerTempleteId);
+         ShopBuyManager.Instance.buy(_shopItemInfo.GoodsID,_shopItemInfo.isDiscount,_shopItemInfo.getItemPrice(1).PriceType);
       }
       
-      protected function __getRecordHandler(param1:PkgEvent) : void
+      protected function __getRecordHandler(event:PkgEvent) : void
       {
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
-         var _loc3_:Array = [];
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc4_.readInt();
-         _loc6_ = 0;
-         while(_loc6_ < _loc2_)
+         var i:int = 0;
+         var info:* = null;
+         var arr:Array = [];
+         var pkg:PackageIn = event.pkg;
+         var count:int = pkg.readInt();
+         for(i = 0; i < count; )
          {
-            _loc5_ = new FlowerSendRecordInfo();
-            _loc5_.date = _loc4_.readUTF();
-            _loc5_.selfId = _loc4_.readInt();
-            _loc5_.playerId = _loc4_.readInt();
-            _loc5_.nickName = _loc4_.readUTF();
-            _loc5_.flag = _loc4_.readBoolean();
-            _loc5_.num = _loc4_.readInt();
-            _loc3_.push(_loc5_);
-            _loc6_++;
+            info = new FlowerSendRecordInfo();
+            info.date = pkg.readUTF();
+            info.selfId = pkg.readInt();
+            info.playerId = pkg.readInt();
+            info.nickName = pkg.readUTF();
+            info.flag = pkg.readBoolean();
+            info.num = pkg.readInt();
+            arr.push(info);
+            i++;
          }
-         _sendRecordFrame = ComponentFactory.Instance.creatCustomObject("flowerGiving.FlowerSendRecordFrame",[_loc3_]);
+         _sendRecordFrame = ComponentFactory.Instance.creatCustomObject("flowerGiving.FlowerSendRecordFrame",[arr]);
          _sendRecordFrame.titleText = LanguageMgr.GetTranslation("flowerGiving.flowerSendRecordFrame.title");
          LayerManager.Instance.addToLayer(_sendRecordFrame,3,true,1);
       }
       
-      protected function __giveHandler(param1:PkgEvent) : void
+      protected function __giveHandler(event:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         var _loc3_:Boolean = _loc2_.readBoolean();
+         var pkg:PackageIn = event.pkg;
+         var isSuccess:Boolean = pkg.readBoolean();
          updateFlowerNum();
       }
       
       private function updateFlowerNum() : void
       {
-         var _loc1_:BagInfo = PlayerManager.Instance.Self.getBag(1);
-         _maxNum = _loc1_.getItemCountByTemplateId(FlowerGivingManager.instance.flowerTempleteId);
+         var bagInfo:BagInfo = PlayerManager.Instance.Self.getBag(1);
+         _maxNum = bagInfo.getItemCountByTemplateId(FlowerGivingManager.instance.flowerTempleteId);
          _myFlowerBagCell.setCount(_maxNum);
       }
       
-      protected function __sendHandler(param1:MouseEvent) : void
+      protected function __sendHandler(event:MouseEvent) : void
       {
-         var _loc3_:int = 0;
+         var num:int = 0;
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc4_:String = _nameInput.text;
-         if(_loc4_ == "")
+         var playerName:String = _nameInput.text;
+         if(playerName == "")
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("flowerGiving.flowerSendFrame.nameInputTxt"));
             return;
          }
          if(_selectBtnGroup.selectIndex != 0)
          {
-            _loc3_ = _dataArr[_selectBtnGroup.selectIndex - 1].giftConditionArr[0].conditionValue;
+            num = _dataArr[_selectBtnGroup.selectIndex - 1].giftConditionArr[0].conditionValue;
          }
          else
          {
-            _loc3_ = _numTxt.text;
+            num = _numTxt.text;
          }
-         if(_loc3_ > _maxNum)
+         if(num > _maxNum)
          {
             __buyHandler(null);
             return;
          }
-         var _loc2_:String = _sendToOtherTxt.text;
-         _loc2_ = StringHelper.trim(_loc2_);
-         _loc2_ = FilterWordManager.filterWrod(_loc2_);
-         _loc2_ = StringHelper.rePlaceHtmlTextField(_loc2_);
-         SocketManager.Instance.out.sendFlower(_loc4_,_loc3_,_loc2_);
+         var text:String = _sendToOtherTxt.text;
+         text = StringHelper.trim(text);
+         text = FilterWordManager.filterWrod(text);
+         text = StringHelper.rePlaceHtmlTextField(text);
+         SocketManager.Instance.out.sendFlower(playerName,num,text);
       }
       
-      protected function __changeHandler(param1:Event) : void
+      protected function __changeHandler(event:Event) : void
       {
          SoundManager.instance.play("008");
          var _loc4_:int = 0;
          var _loc3_:* = _itemArr;
-         for each(var _loc2_ in _itemArr)
+         for each(var item in _itemArr)
          {
-            _loc2_.updateShine();
+            item.updateShine();
          }
       }
       
-      protected function __inputHandler(param1:Event) : void
+      protected function __inputHandler(event:Event) : void
       {
          if(int(_numTxt.text) < 1)
          {
@@ -405,23 +401,23 @@ package flowerGiving.views
          }
       }
       
-      protected function __maxHandler(param1:MouseEvent) : void
+      protected function __maxHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _maxNum = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(FlowerGivingManager.instance.flowerTempleteId);
          _numTxt.text = _maxNum > 0?"" + _maxNum:"1";
       }
       
-      protected function __recordHandler(param1:MouseEvent) : void
+      protected function __recordHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          SocketManager.Instance.out.sendFlowerRecord();
       }
       
-      protected function _responseHandle(param1:FrameEvent) : void
+      protected function _responseHandle(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -443,10 +439,10 @@ package flowerGiving.views
          removeEvent();
          var _loc3_:int = 0;
          var _loc2_:* = _itemArr;
-         for each(var _loc1_ in _itemArr)
+         for each(var item in _itemArr)
          {
-            ObjectUtils.disposeObject(_loc1_);
-            _loc1_ = null;
+            ObjectUtils.disposeObject(item);
+            item = null;
          }
          _itemArr = null;
          if(_bg)

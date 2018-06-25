@@ -28,10 +28,10 @@ package roomLoading.view
       
       private var _survival:Bitmap;
       
-      public function RoomLoadingVersusItem(param1:int)
+      public function RoomLoadingVersusItem($gameMode:int)
       {
          super();
-         _gameMode = param1;
+         _gameMode = $gameMode;
          init();
       }
       
@@ -130,132 +130,137 @@ package roomLoading.view
                                     {
                                        if(48 !== _loc1_)
                                        {
-                                          if(8 !== _loc1_)
+                                          if(70 !== _loc1_)
                                           {
-                                             if(12 !== _loc1_)
+                                             if(8 !== _loc1_)
                                              {
-                                                if(13 !== _loc1_)
+                                                if(12 !== _loc1_)
                                                 {
-                                                   if(15 !== _loc1_)
+                                                   if(13 !== _loc1_)
                                                    {
-                                                      if(16 !== _loc1_)
+                                                      if(15 !== _loc1_)
                                                       {
-                                                         if(17 !== _loc1_)
+                                                         if(16 !== _loc1_)
                                                          {
-                                                            if(21 !== _loc1_)
+                                                            if(17 !== _loc1_)
                                                             {
-                                                               if(120 !== _loc1_)
+                                                               if(21 !== _loc1_)
                                                                {
-                                                                  if(24 !== _loc1_)
+                                                                  if(120 !== _loc1_)
                                                                   {
-                                                                     if(23 !== _loc1_)
+                                                                     if(24 !== _loc1_)
                                                                      {
-                                                                        if(25 !== _loc1_)
+                                                                        if(23 !== _loc1_)
                                                                         {
-                                                                           if(26 !== _loc1_)
+                                                                           if(25 !== _loc1_)
                                                                            {
-                                                                              if(40 !== _loc1_)
+                                                                              if(26 !== _loc1_)
                                                                               {
-                                                                                 if(28 !== _loc1_)
+                                                                                 if(40 !== _loc1_)
                                                                                  {
-                                                                                    if(29 !== _loc1_)
+                                                                                    if(28 !== _loc1_)
                                                                                     {
-                                                                                       if(31 !== _loc1_)
+                                                                                       if(29 !== _loc1_)
                                                                                        {
-                                                                                          if(42 !== _loc1_)
+                                                                                          if(31 !== _loc1_)
                                                                                           {
-                                                                                             if(68 !== _loc1_)
+                                                                                             if(42 !== _loc1_)
                                                                                              {
-                                                                                                if(43 !== _loc1_)
+                                                                                                if(68 !== _loc1_)
                                                                                                 {
-                                                                                                   if(47 !== _loc1_)
+                                                                                                   if(43 !== _loc1_)
                                                                                                    {
-                                                                                                      _gameType = ComponentFactory.Instance.creatBitmap("asset.roomLoading.GameMode_0");
+                                                                                                      if(47 !== _loc1_)
+                                                                                                      {
+                                                                                                         _gameType = ComponentFactory.Instance.creatBitmap("asset.roomLoading.GameMode_0");
+                                                                                                      }
+                                                                                                      else
+                                                                                                      {
+                                                                                                         _gameType = null;
+                                                                                                      }
                                                                                                    }
                                                                                                    else
                                                                                                    {
-                                                                                                      _gameType = null;
+                                                                                                      _gameType = ComponentFactory.Instance.creatBitmap("asset.roomLoading.GameMode_43");
                                                                                                    }
                                                                                                 }
                                                                                                 else
                                                                                                 {
-                                                                                                   _gameType = ComponentFactory.Instance.creatBitmap("asset.roomLoading.GameMode_43");
+                                                                                                   _gameType = ComponentFactory.Instance.creatBitmap("asset.roomLoading.GameMode_44");
                                                                                                 }
                                                                                              }
                                                                                              else
                                                                                              {
-                                                                                                _gameType = ComponentFactory.Instance.creatBitmap("asset.roomLoading.GameMode_44");
+                                                                                                _gameType = ComponentFactory.Instance.creatBitmap("asset.roomLoading.GameMode_42");
                                                                                              }
                                                                                           }
                                                                                           else
                                                                                           {
-                                                                                             _gameType = ComponentFactory.Instance.creatBitmap("asset.roomLoading.GameMode_42");
+                                                                                             _gameType = ComponentFactory.Instance.creatBitmap("asset.roomLoading.GameMode_43");
                                                                                           }
                                                                                        }
-                                                                                       else
-                                                                                       {
-                                                                                          _gameType = ComponentFactory.Instance.creatBitmap("asset.roomLoading.GameMode_43");
-                                                                                       }
                                                                                     }
+                                                                                    _gameType = ComponentFactory.Instance.creatBitmap("asset.roomLoading.GameMode_3");
                                                                                  }
-                                                                                 _gameType = ComponentFactory.Instance.creatBitmap("asset.roomLoading.GameMode_3");
+                                                                                 else
+                                                                                 {
+                                                                                    _gameType = ComponentFactory.Instance.creatBitmap("asset.roomLoading.GameMode_40");
+                                                                                 }
                                                                               }
                                                                               else
                                                                               {
-                                                                                 _gameType = ComponentFactory.Instance.creatBitmap("asset.roomLoading.GameMode_40");
+                                                                                 _gameType = ComponentFactory.Instance.creatBitmap("asset.roomLoading.GameMode_26");
                                                                               }
                                                                            }
                                                                            else
                                                                            {
-                                                                              _gameType = ComponentFactory.Instance.creatBitmap("asset.roomLoading.GameMode_26");
+                                                                              _gameType = ComponentFactory.Instance.creatBitmap("asset.roomLoading.GameMode_7");
                                                                            }
                                                                         }
-                                                                        else
-                                                                        {
-                                                                           _gameType = ComponentFactory.Instance.creatBitmap("asset.roomLoading.GameMode_7");
-                                                                        }
                                                                      }
+                                                                     _gameType = ComponentFactory.Instance.creatBitmap("asset.roomLoading.GameMode_22");
                                                                   }
-                                                                  _gameType = ComponentFactory.Instance.creatBitmap("asset.roomLoading.GameMode_22");
-                                                               }
-                                                               else if(RoomManager.Instance.current.type == 1)
-                                                               {
-                                                                  _gameType = ComponentFactory.Instance.creatBitmap("asset.roomLoading.GameMode_2");
+                                                                  else if(RoomManager.Instance.current.type == 1)
+                                                                  {
+                                                                     _gameType = ComponentFactory.Instance.creatBitmap("asset.roomLoading.GameMode_2");
+                                                                  }
+                                                                  else
+                                                                  {
+                                                                     _gameType = ComponentFactory.Instance.creatBitmap("asset.roomLoading.TrialGameModel_47");
+                                                                  }
                                                                }
                                                                else
                                                                {
-                                                                  _gameType = ComponentFactory.Instance.creatBitmap("asset.roomLoading.TrialGameModel_47");
+                                                                  _gameType = ComponentFactory.Instance.creatBitmap("asset.roomLoading.GameMode_21");
                                                                }
                                                             }
                                                             else
                                                             {
-                                                               _gameType = ComponentFactory.Instance.creatBitmap("asset.roomLoading.GameMode_21");
+                                                               _gameType = ComponentFactory.Instance.creatBitmap("asset.roomLoading.GameMode_17");
                                                             }
                                                          }
-                                                         else
-                                                         {
-                                                            _gameType = ComponentFactory.Instance.creatBitmap("asset.roomLoading.GameMode_17");
-                                                         }
                                                       }
+                                                      _gameType = ComponentFactory.Instance.creatBitmap("asset.roomLoading.GameMode_14");
                                                    }
-                                                   _gameType = ComponentFactory.Instance.creatBitmap("asset.roomLoading.GameMode_14");
                                                 }
+                                                _gameType = ComponentFactory.Instance.creatBitmap("asset.roomLoading.GameMode_12");
                                              }
-                                             _gameType = ComponentFactory.Instance.creatBitmap("asset.roomLoading.GameMode_12");
-                                          }
-                                          else
-                                          {
-                                             _gameType = ComponentFactory.Instance.creatBitmap("asset.roomLoading.GameMode_8");
+                                             else
+                                             {
+                                                _gameType = ComponentFactory.Instance.creatBitmap("asset.roomLoading.GameMode_8");
+                                             }
                                           }
                                        }
+                                       addr72:
+                                       _gameType = ComponentFactory.Instance.creatBitmap("asset.roomLoading.GameMode_7");
                                     }
-                                    addr56:
-                                    _gameType = ComponentFactory.Instance.creatBitmap("asset.roomLoading.GameMode_7");
+                                    addr71:
+                                    §§goto(addr72);
                                  }
-                                 addr55:
-                                 §§goto(addr56);
+                                 addr70:
+                                 §§goto(addr71);
                               }
-                              §§goto(addr55);
+                              §§goto(addr70);
                            }
                            else
                            {
@@ -268,13 +273,13 @@ package roomLoading.view
                         }
                      }
                   }
-                  addr26:
+                  addr38:
                   _gameType = ComponentFactory.Instance.creatBitmap("asset.roomLoading.GameMode_0");
                }
-               addr25:
-               §§goto(addr26);
+               addr37:
+               §§goto(addr38);
             }
-            §§goto(addr25);
+            §§goto(addr37);
          }
          if(_gameType)
          {

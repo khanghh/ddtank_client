@@ -15,16 +15,16 @@ package store.view.strength.manager
          super();
       }
       
-      public static function setup(param1:ItemStrengthenGoodsInfoAnalyzer) : void
+      public static function setup(analyzer:ItemStrengthenGoodsInfoAnalyzer) : void
       {
-         _lists = param1.list;
+         _lists = analyzer.list;
       }
       
-      public static function findItemStrengthenGoodsInfo(param1:int, param2:int) : ItemStrengthenGoodsInfo
+      public static function findItemStrengthenGoodsInfo(CurrentEquip:int, level:int) : ItemStrengthenGoodsInfo
       {
          if(_lists)
          {
-            return _lists[param1 + "," + param2];
+            return _lists[CurrentEquip + "," + level];
          }
          return null;
       }

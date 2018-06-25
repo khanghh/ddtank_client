@@ -77,11 +77,11 @@ package exitPrompt
          StageReferance.stage.focus = this;
       }
       
-      public function setList(param1:Array) : void
+      public function setList(arr:Array) : void
       {
       }
       
-      public function _menuChange(param1:Event) : void
+      public function _menuChange(e:Event) : void
       {
          if(_listScroll)
          {
@@ -119,10 +119,10 @@ package exitPrompt
          removeEventListener("response",onFrameResponse);
       }
       
-      private function onFrameResponse(param1:FrameEvent) : void
+      private function onFrameResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:

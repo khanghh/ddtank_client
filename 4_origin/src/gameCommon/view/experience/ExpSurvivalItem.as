@@ -61,44 +61,44 @@ package gameCommon.view.experience
          addChild(_twoflops);
       }
       
-      public function setItemInfo(param1:int, param2:Player) : void
+      public function setItemInfo(rank:int, player:Player) : void
       {
-         var _loc3_:* = null;
-         if(param1 <= 3)
+         var textFormat1:* = null;
+         if(rank <= 3)
          {
-            _rankImage.setFrame(param1);
+            _rankImage.setFrame(rank);
             _rankText.visible = false;
          }
          else
          {
             _rankImage.visible = false;
-            _rankText.text = param1.toString() + "th";
+            _rankText.text = rank.toString() + "th";
          }
-         if(param2.playerInfo.IsVIP)
+         if(player.playerInfo.IsVIP)
          {
             _nickName.visible = false;
             if(_vipName)
             {
                ObjectUtils.disposeObject(_vipName);
             }
-            _vipName = VipController.instance.getVipNameTxt(110,param2.playerInfo.typeVIP);
-            _loc3_ = new TextFormat();
-            _loc3_.align = "left";
-            _loc3_.bold = true;
-            _vipName.textField.defaultTextFormat = _loc3_;
+            _vipName = VipController.instance.getVipNameTxt(110,player.playerInfo.typeVIP);
+            textFormat1 = new TextFormat();
+            textFormat1.align = "left";
+            textFormat1.bold = true;
+            _vipName.textField.defaultTextFormat = textFormat1;
             _vipName.textSize = 16;
             _vipName.x = _nickName.x;
             _vipName.y = _nickName.y;
-            _vipName.text = param2.playerInfo.NickName;
+            _vipName.text = player.playerInfo.NickName;
             addChild(_vipName);
          }
          else
          {
-            _nickName.text = param2.playerInfo.NickName;
+            _nickName.text = player.playerInfo.NickName;
          }
-         _killNum.text = param2.killNum.toString();
-         _flopNum.text = param2.expObj.canTakeOut;
-         var _loc4_:* = param2.isWin;
+         _killNum.text = player.killNum.toString();
+         _flopNum.text = player.expObj.canTakeOut;
+         var _loc4_:* = player.isWin;
          _twoflops.visible = _loc4_;
          _luckyBitmap.visible = _loc4_;
          addChild(_luckyBitmap);

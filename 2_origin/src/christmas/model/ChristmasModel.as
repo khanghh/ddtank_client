@@ -56,24 +56,24 @@ package christmas.model
       
       public function get activityTime() : String
       {
-         var _loc2_:* = null;
-         var _loc1_:* = null;
-         var _loc3_:String = "";
+         var minutes1:* = null;
+         var minutes2:* = null;
+         var dateString:String = "";
          beginTime = ChristmasCoreManager.instance.model.beginTime;
          endTime = ChristmasCoreManager.instance.model.endTime;
          if(beginTime && endTime)
          {
-            _loc2_ = beginTime.minutes > 9?beginTime.minutes + "":"0" + beginTime.minutes;
-            _loc1_ = endTime.minutes > 9?endTime.minutes + "":"0" + endTime.minutes;
-            _loc3_ = beginTime.fullYear + "." + (beginTime.month + 1) + "." + beginTime.date + " - " + endTime.fullYear + "." + (endTime.month + 1) + "." + endTime.date;
+            minutes1 = beginTime.minutes > 9?beginTime.minutes + "":"0" + beginTime.minutes;
+            minutes2 = endTime.minutes > 9?endTime.minutes + "":"0" + endTime.minutes;
+            dateString = beginTime.fullYear + "." + (beginTime.month + 1) + "." + beginTime.date + " - " + endTime.fullYear + "." + (endTime.month + 1) + "." + endTime.date;
          }
-         return _loc3_;
+         return dateString;
       }
       
       public function serverTime() : Array
       {
-         var _loc1_:Date = TimeManager.Instance.Now();
-         return [_loc1_.hours,_loc1_.minutes];
+         var dat:Date = TimeManager.Instance.Now();
+         return [dat.hours,dat.minutes];
       }
    }
 }

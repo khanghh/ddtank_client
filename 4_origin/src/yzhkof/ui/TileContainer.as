@@ -27,11 +27,11 @@ package yzhkof.ui
       
       private var layoutMap:Dictionary;
       
-      public function TileContainer(param1:Boolean = true)
+      public function TileContainer(childBoundsSize:Boolean = true)
       {
          this.layoutMap = new Dictionary(true);
          super();
-         this.childBoundsSize = param1;
+         this.childBoundsSize = childBoundsSize;
          this.init();
       }
       
@@ -42,46 +42,42 @@ package yzhkof.ui
       
       public function removeAllChildren() : void
       {
-         var _loc1_:int = 0;
-         var _loc2_:int = numChildren;
-         _loc1_ = 0;
-         while(_loc1_ < _loc2_)
+         var i:int = 0;
+         var length:int = numChildren;
+         for(i = 0; i < length; i++)
          {
             removeChildAt(0);
-            _loc1_++;
          }
       }
       
       override protected function onDraw() : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:DisplayObject = null;
-         var _loc6_:DisplayObject = null;
-         var _loc7_:Object = null;
-         var _loc1_:Point = new Point();
-         var _loc4_:uint = 0;
-         var _loc5_:uint = 0;
-         _loc2_ = 0;
-         while(_loc2_ < numChildren)
+         var i:int = 0;
+         var current_dobj:DisplayObject = null;
+         var t_obj:DisplayObject = null;
+         var layout:Object = null;
+         var position:Point = new Point();
+         var t_column:uint = 0;
+         var t_row:uint = 0;
+         for(i = 0; i < numChildren; i++)
          {
-            _loc6_ = getChildAt(_loc2_);
-            _loc7_ = this.getItemLayout(_loc6_);
-            _loc3_ = _loc6_;
-            _loc3_.x = _loc1_.x;
-            _loc3_.y = _loc1_.y;
-            _loc1_.x = _loc1_.x + (_loc7_.width + _loc7_.paddingH);
-            _loc4_++;
-            if(_loc2_ + 1 < numChildren)
+            t_obj = getChildAt(i);
+            layout = this.getItemLayout(t_obj);
+            current_dobj = t_obj;
+            current_dobj.x = position.x;
+            current_dobj.y = position.y;
+            position.x = position.x + (layout.width + layout.paddingH);
+            t_column++;
+            if(i + 1 < numChildren)
             {
-               if(this.getItemLayout(getChildAt(_loc2_ + 1)).width + _loc7_.paddingH + _loc1_.x > width || _loc4_ >= this._columnCount)
+               if(this.getItemLayout(getChildAt(i + 1)).width + layout.paddingH + position.x > width || t_column >= this._columnCount)
                {
-                  _loc1_.y = _loc1_.y + (_loc7_.height + _loc7_.paddingV);
-                  _loc1_.x = 0;
-                  _loc4_ = 0;
-                  _loc5_++;
+                  position.y = position.y + (layout.height + layout.paddingV);
+                  position.x = 0;
+                  t_column = 0;
+                  t_row++;
                }
             }
-            _loc2_++;
          }
       }
       
@@ -90,9 +86,9 @@ package yzhkof.ui
          return this._columnCount;
       }
       
-      public function set columnCount(param1:uint) : void
+      public function set columnCount(value:uint) : void
       {
-         this._columnCount = param1;
+         this._columnCount = value;
       }
       
       public function get rowCount() : uint
@@ -100,58 +96,59 @@ package yzhkof.ui
          return this._rowCount;
       }
       
-      public function set rowCount(param1:uint) : void
+      public function set rowCount(value:uint) : void
       {
-         this._rowCount = param1;
+         this._rowCount = value;
       }
       
-      override public function addChild(param1:DisplayObject) : DisplayObject
+      override public function addChild(child:DisplayObject) : DisplayObject
       {
          throw new Error("use appendItem method!");
       }
       
-      override public function removeChild(param1:DisplayObject) : DisplayObject
+      override public function removeChild(child:DisplayObject) : DisplayObject
       {
          throw new Error("use removeItem method!");
       }
       
-      public function removeItem(param1:DisplayObject) : void
+      public function removeItem(child:DisplayObject) : void
       {
-         super.removeChild(param1);
+         super.removeChild(child);
+         delete this.layoutMap[child];
       }
       
-      public function appendItem(param1:DisplayObject, param2:Object = null) : void
+      public function appendItem(child:DisplayObject, itemLayout:Object = null) : void
       {
-         if(param2)
+         if(itemLayout)
          {
-            this.layoutMap[param1] = param2;
+            this.layoutMap[child] = itemLayout;
          }
          else
          {
-            this.layoutMap[param1] = new Object();
+            this.layoutMap[child] = new Object();
          }
-         super.addChild(param1);
+         super.addChild(child);
       }
       
-      private function getItemLayout(param1:DisplayObject) : Object
+      private function getItemLayout(child:DisplayObject) : Object
       {
-         var _loc4_:Rectangle = null;
-         var _loc2_:Object = new Object();
-         var _loc3_:Object = this.layoutMap[param1];
+         var bound_child:Rectangle = null;
+         var re_lo:Object = new Object();
+         var lo:Object = this.layoutMap[child];
          if(this.childBoundsSize)
          {
-            _loc4_ = param1.getBounds(this);
-            _loc2_.width = _loc3_.width || _loc4_.width;
-            _loc2_.height = _loc3_.height || _loc4_.height;
+            bound_child = child.getBounds(this);
+            re_lo.width = lo.width || bound_child.width;
+            re_lo.height = lo.height || bound_child.height;
          }
          else
          {
-            _loc2_.width = _loc3_.width || param1.width;
-            _loc2_.height = _loc3_.height || param1.height;
+            re_lo.width = lo.width || child.width;
+            re_lo.height = lo.height || child.height;
          }
-         _loc2_.paddingV = _loc3_.paddingV || this.paddingV;
-         _loc2_.paddingH = _loc3_.paddingH || this.paddingH;
-         return _loc2_;
+         re_lo.paddingV = lo.paddingV || this.paddingV;
+         re_lo.paddingH = lo.paddingH || this.paddingH;
+         return re_lo;
       }
       
       override public function get height() : Number
@@ -168,9 +165,9 @@ package yzhkof.ui
          return this._paddingH;
       }
       
-      public function set paddingH(param1:Number) : void
+      public function set paddingH(value:Number) : void
       {
-         this._paddingH = param1;
+         this._paddingH = value;
       }
       
       public function get paddingV() : Number
@@ -178,9 +175,9 @@ package yzhkof.ui
          return this._paddingV;
       }
       
-      public function set paddingV(param1:Number) : void
+      public function set paddingV(value:Number) : void
       {
-         this._paddingV = param1;
+         this._paddingV = value;
       }
       
       public function get autoVSize() : Boolean
@@ -188,13 +185,13 @@ package yzhkof.ui
          return this._autoVSize;
       }
       
-      public function set autoVSize(param1:Boolean) : void
+      public function set autoVSize(value:Boolean) : void
       {
-         if(this._autoVSize == param1)
+         if(this._autoVSize == value)
          {
             return;
          }
-         this._autoVSize = param1;
+         this._autoVSize = value;
          commitChage("autoVSize");
       }
    }

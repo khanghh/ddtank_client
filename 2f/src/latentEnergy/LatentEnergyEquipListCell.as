@@ -1,13 +1,2 @@
-package latentEnergy
-{
-   import bagAndInfo.cell.BagCell;
-   import ddt.data.goods.ItemTemplateInfo;
-   import flash.display.DisplayObject;
-   
-   public class LatentEnergyEquipListCell extends BagCell
-   {
-       
-      
-      public function LatentEnergyEquipListCell(param1:int, param2:ItemTemplateInfo = null, param3:Boolean = true, param4:DisplayObject = null, param5:Boolean = true){super(null,null,null,null,null);}
-   }
-}
+package latentEnergy{   import bagAndInfo.cell.BagCell;   import ddt.data.goods.ItemTemplateInfo;   import flash.display.DisplayObject;      public class LatentEnergyEquipListCell extends BagCell   {                   public function LatentEnergyEquipListCell(index:int, info:ItemTemplateInfo = null, showLoading:Boolean = true, bg:DisplayObject = null, mouseOverEffBoolean:Boolean = true) { super(null,null,null,null,null); }
+   }}

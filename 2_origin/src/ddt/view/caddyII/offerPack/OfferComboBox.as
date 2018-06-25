@@ -25,23 +25,23 @@ package ddt.view.caddyII.offerPack
          super();
       }
       
-      public function set offerItemStyle(param1:String) : void
+      public function set offerItemStyle(value:String) : void
       {
-         if(_offerItemStyle == param1)
+         if(_offerItemStyle == value)
          {
             return;
          }
-         _offerItemStyle = param1;
+         _offerItemStyle = value;
          _offerItem = ComponentFactory.Instance.creat(_offerItemStyle);
       }
       
-      public function set offerItem(param1:OfferItem) : void
+      public function set offerItem(value:OfferItem) : void
       {
-         if(_offerItem == param1)
+         if(_offerItem == value)
          {
             return;
          }
-         _offerItem = param1;
+         _offerItem = value;
          onPropertiesChanged("textField");
       }
       
@@ -50,14 +50,14 @@ package ddt.view.caddyII.offerPack
          return _offerItem;
       }
       
-      override protected function __onItemChanged(param1:ListItemEvent) : void
+      override protected function __onItemChanged(event:ListItemEvent) : void
       {
-         _currentSelectedItem = param1.cell;
-         _currentSelectedCellValue = param1.cellValue;
-         _currentSelectedIndex = param1.index;
+         _currentSelectedItem = event.cell;
+         _currentSelectedCellValue = event.cellValue;
+         _currentSelectedIndex = event.index;
          if(_selctedPropName != null)
          {
-            _offerItem.info = param1.cell[_selctedPropName];
+            _offerItem.info = event.cell[_selctedPropName];
          }
          dispatchEvent(new InteractiveEvent("stateChange"));
       }
@@ -81,14 +81,14 @@ package ddt.view.caddyII.offerPack
          super.dispose();
       }
       
-      override protected function __onStageClick(param1:MouseEvent) : void
+      override protected function __onStageClick(event:MouseEvent) : void
       {
-         var _loc2_:DisplayObject = param1.target as DisplayObject;
-         if(!DisplayUtils.isTargetOrContain(_loc2_,this) && !DisplayUtils.isTargetOrContain(_loc2_,_listPanel))
+         var target:DisplayObject = event.target as DisplayObject;
+         if(!DisplayUtils.isTargetOrContain(target,this) && !DisplayUtils.isTargetOrContain(target,_listPanel))
          {
             return;
          }
-         if(DisplayUtils.isTargetOrContain(_loc2_,_button) || DisplayUtils.isTargetOrContain(_loc2_,_listPanel.list) || DisplayUtils.isTargetOrContain(_loc2_,_offerItem))
+         if(DisplayUtils.isTargetOrContain(target,_button) || DisplayUtils.isTargetOrContain(target,_listPanel.list) || DisplayUtils.isTargetOrContain(target,_offerItem))
          {
             if(_state == ComboBox.HIDE)
             {

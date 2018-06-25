@@ -18,214 +18,211 @@ package starling.animation
          mObjects = new Vector.<IAnimatable>(0);
       }
       
-      public function add(param1:IAnimatable) : void
+      public function add(object:IAnimatable) : void
       {
-         var _loc2_:* = null;
-         if(param1 && mObjects.indexOf(param1) == -1)
+         var dispatcher:* = null;
+         if(object && mObjects.indexOf(object) == -1)
          {
-            mObjects[mObjects.length] = param1;
-            _loc2_ = param1 as EventDispatcher;
-            if(_loc2_)
+            mObjects[mObjects.length] = object;
+            dispatcher = object as EventDispatcher;
+            if(dispatcher)
             {
-               _loc2_.addEventListener("removeFromJuggler",onRemove);
+               dispatcher.addEventListener("removeFromJuggler",onRemove);
             }
          }
       }
       
-      public function contains(param1:IAnimatable) : Boolean
+      public function contains(object:IAnimatable) : Boolean
       {
-         return mObjects.indexOf(param1) != -1;
+         return mObjects.indexOf(object) != -1;
       }
       
-      public function remove(param1:IAnimatable) : void
+      public function remove(object:IAnimatable) : void
       {
-         if(param1 == null)
+         if(object == null)
          {
             return;
          }
-         var _loc3_:EventDispatcher = param1 as EventDispatcher;
-         if(_loc3_)
+         var dispatcher:EventDispatcher = object as EventDispatcher;
+         if(dispatcher)
          {
-            _loc3_.removeEventListener("removeFromJuggler",onRemove);
+            dispatcher.removeEventListener("removeFromJuggler",onRemove);
          }
-         var _loc2_:int = mObjects.indexOf(param1);
-         if(_loc2_ != -1)
+         var index:int = mObjects.indexOf(object);
+         if(index != -1)
          {
-            mObjects[_loc2_] = null;
+            mObjects[index] = null;
          }
       }
       
-      public function removeTweens(param1:Object) : void
+      public function removeTweens(target:Object) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         if(param1 == null)
+         var i:int = 0;
+         var tween:* = null;
+         if(target == null)
          {
             return;
          }
-         _loc3_ = mObjects.length - 1;
-         while(_loc3_ >= 0)
+         for(i = mObjects.length - 1; i >= 0; )
          {
-            _loc2_ = mObjects[_loc3_] as Tween;
-            if(_loc2_ && _loc2_.target == param1)
+            tween = mObjects[i] as Tween;
+            if(tween && tween.target == target)
             {
-               _loc2_.removeEventListener("removeFromJuggler",onRemove);
-               mObjects[_loc3_] = null;
+               tween.removeEventListener("removeFromJuggler",onRemove);
+               mObjects[i] = null;
             }
-            _loc3_--;
+            i--;
          }
       }
       
-      public function containsTweens(param1:Object) : Boolean
+      public function containsTweens(target:Object) : Boolean
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         if(param1 == null)
+         var i:int = 0;
+         var tween:* = null;
+         if(target == null)
          {
             return false;
          }
-         _loc3_ = mObjects.length - 1;
-         while(_loc3_ >= 0)
+         for(i = mObjects.length - 1; i >= 0; )
          {
-            _loc2_ = mObjects[_loc3_] as Tween;
-            if(_loc2_ && _loc2_.target == param1)
+            tween = mObjects[i] as Tween;
+            if(tween && tween.target == target)
             {
                return true;
             }
-            _loc3_--;
+            i--;
          }
          return false;
       }
       
       public function purge() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         _loc2_ = mObjects.length - 1;
-         while(_loc2_ >= 0)
+         var i:int = 0;
+         var dispatcher:* = null;
+         for(i = mObjects.length - 1; i >= 0; )
          {
-            _loc1_ = mObjects[_loc2_] as EventDispatcher;
-            if(_loc1_)
+            dispatcher = mObjects[i] as EventDispatcher;
+            if(dispatcher)
             {
-               _loc1_.removeEventListener("removeFromJuggler",onRemove);
+               dispatcher.removeEventListener("removeFromJuggler",onRemove);
             }
-            mObjects[_loc2_] = null;
-            _loc2_--;
+            mObjects[i] = null;
+            i--;
          }
       }
       
-      public function delayCall(param1:Function, param2:Number, ... rest) : IAnimatable
+      public function delayCall(call:Function, delay:Number, ... args) : IAnimatable
       {
-         if(param1 == null)
+         if(call == null)
          {
             return null;
          }
-         var _loc4_:DelayedCall = DelayedCall.fromPool(param1,param2,rest);
-         _loc4_.addEventListener("removeFromJuggler",onPooledDelayedCallComplete);
-         add(_loc4_);
-         return _loc4_;
+         var delayedCall:DelayedCall = DelayedCall.fromPool(call,delay,args);
+         delayedCall.addEventListener("removeFromJuggler",onPooledDelayedCallComplete);
+         add(delayedCall);
+         return delayedCall;
       }
       
-      public function repeatCall(param1:Function, param2:Number, param3:int = 0, ... rest) : IAnimatable
+      public function repeatCall(call:Function, interval:Number, repeatCount:int = 0, ... args) : IAnimatable
       {
-         if(param1 == null)
+         if(call == null)
          {
             return null;
          }
-         var _loc5_:DelayedCall = DelayedCall.fromPool(param1,param2,rest);
-         _loc5_.repeatCount = param3;
-         _loc5_.addEventListener("removeFromJuggler",onPooledDelayedCallComplete);
-         add(_loc5_);
-         return _loc5_;
+         var delayedCall:DelayedCall = DelayedCall.fromPool(call,interval,args);
+         delayedCall.repeatCount = repeatCount;
+         delayedCall.addEventListener("removeFromJuggler",onPooledDelayedCallComplete);
+         add(delayedCall);
+         return delayedCall;
       }
       
-      private function onPooledDelayedCallComplete(param1:Event) : void
+      private function onPooledDelayedCallComplete(event:Event) : void
       {
-         DelayedCall.toPool(param1.target as DelayedCall);
+         DelayedCall.toPool(event.target as DelayedCall);
       }
       
-      public function tween(param1:Object, param2:Number, param3:Object) : IAnimatable
+      public function tween(target:Object, time:Number, properties:Object) : IAnimatable
       {
-         var _loc5_:* = null;
-         if(param1 == null)
+         var value:* = null;
+         if(target == null)
          {
             throw new ArgumentError("target must not be null");
          }
-         var _loc4_:Tween = Tween.fromPool(param1,param2);
+         var tween:Tween = Tween.fromPool(target,time);
          var _loc8_:int = 0;
-         var _loc7_:* = param3;
-         for(var _loc6_ in param3)
+         var _loc7_:* = properties;
+         for(var property in properties)
          {
-            _loc5_ = param3[_loc6_];
-            if(_loc4_.hasOwnProperty(_loc6_))
+            value = properties[property];
+            if(tween.hasOwnProperty(property))
             {
-               _loc4_[_loc6_] = _loc5_;
+               tween[property] = value;
                continue;
             }
-            if(param1.hasOwnProperty(Tween.getPropertyName(_loc6_)))
+            if(target.hasOwnProperty(Tween.getPropertyName(property)))
             {
-               _loc4_.animate(_loc6_,_loc5_ as Number);
+               tween.animate(property,value as Number);
                continue;
             }
-            throw new ArgumentError("Invalid property: " + _loc6_);
+            throw new ArgumentError("Invalid property: " + property);
          }
-         _loc4_.addEventListener("removeFromJuggler",onPooledTweenComplete);
-         add(_loc4_);
-         return _loc4_;
+         tween.addEventListener("removeFromJuggler",onPooledTweenComplete);
+         add(tween);
+         return tween;
       }
       
-      private function onPooledTweenComplete(param1:Event) : void
+      private function onPooledTweenComplete(event:Event) : void
       {
-         Tween.toPool(param1.target as Tween);
+         Tween.toPool(event.target as Tween);
       }
       
-      public function advanceTime(param1:Number) : void
+      public function advanceTime(time:Number) : void
       {
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:int = mObjects.length;
-         var _loc2_:int = 0;
-         mElapsedTime = mElapsedTime + param1;
-         if(_loc4_ == 0)
+         var i:int = 0;
+         var object:* = null;
+         var numObjects:int = mObjects.length;
+         var currentIndex:int = 0;
+         mElapsedTime = mElapsedTime + time;
+         if(numObjects == 0)
          {
             return;
          }
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         i = 0;
+         while(i < numObjects)
          {
-            _loc3_ = mObjects[_loc5_];
-            if(_loc3_)
+            object = mObjects[i];
+            if(object)
             {
-               if(_loc2_ != _loc5_)
+               if(currentIndex != i)
                {
-                  mObjects[_loc2_] = _loc3_;
-                  mObjects[_loc5_] = null;
+                  mObjects[currentIndex] = object;
+                  mObjects[i] = null;
                }
-               _loc3_.advanceTime(param1);
-               _loc2_++;
+               object.advanceTime(time);
+               currentIndex++;
             }
-            _loc5_++;
+            i++;
          }
-         if(_loc2_ != _loc5_)
+         if(currentIndex != i)
          {
-            _loc4_ = mObjects.length;
-            while(_loc5_ < _loc4_)
+            numObjects = mObjects.length;
+            while(i < numObjects)
             {
-               _loc2_++;
-               _loc5_++;
-               mObjects[int(_loc2_)] = mObjects[int(_loc5_)];
+               currentIndex++;
+               i++;
+               mObjects[int(currentIndex)] = mObjects[int(i)];
             }
-            mObjects.length = _loc2_;
+            mObjects.length = currentIndex;
          }
       }
       
-      private function onRemove(param1:Event) : void
+      private function onRemove(event:Event) : void
       {
-         remove(param1.target as IAnimatable);
-         var _loc2_:Tween = param1.target as Tween;
-         if(_loc2_ && _loc2_.isComplete)
+         remove(event.target as IAnimatable);
+         var tween:Tween = event.target as Tween;
+         if(tween && tween.isComplete)
          {
-            add(_loc2_.nextTween);
+            add(tween.nextTween);
          }
       }
       

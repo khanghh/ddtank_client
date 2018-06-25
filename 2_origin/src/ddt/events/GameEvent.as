@@ -46,10 +46,10 @@ package ddt.events
       
       public var data;
       
-      public function GameEvent(param1:String, param2:*)
+      public function GameEvent(type:String, value:*)
       {
-         data = param2;
-         super(param1);
+         data = value;
+         super(type);
       }
    }
 }

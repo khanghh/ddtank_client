@@ -37,14 +37,14 @@ package wishingTree.components
          addChild(_wishFail);
       }
       
-      public function show(param1:Boolean, param2:String = "", param3:Number = 0) : void
+      public function show(isSuccess:Boolean, itemTxt:String = "", delay:Number = 0) : void
       {
-         if(param1)
+         if(isSuccess)
          {
             _wishSuccess.visible = true;
             _successTxt.visible = true;
             _wishFail.visible = false;
-            _successTxt.text = LanguageMgr.GetTranslation("wishingTree.successTxt",param2);
+            _successTxt.text = LanguageMgr.GetTranslation("wishingTree.successTxt",itemTxt);
          }
          else
          {
@@ -57,7 +57,7 @@ package wishingTree.components
          TweenLite.to(this,0.3,{
             "y":120,
             "alpha":1,
-            "delay":param3,
+            "delay":delay,
             "ease":Sine.easeInOut,
             "onComplete":alertComplete
          });

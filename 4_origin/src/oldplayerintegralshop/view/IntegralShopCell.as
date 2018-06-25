@@ -57,11 +57,11 @@ package oldplayerintegralshop.view
          addChild(_nameTxt);
          _needMoneyTxt = ComponentFactory.Instance.creatComponentByStylename("integralShopView.needMoneyTxt");
          addChild(_needMoneyTxt);
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,70,70);
-         _loc1_.graphics.endFill();
-         _itemCell = CellFactory.instance.createShopItemCell(_loc1_,null,true,true) as ShopItemCell;
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(16777215,0);
+         sp.graphics.drawRect(0,0,70,70);
+         sp.graphics.endFill();
+         _itemCell = CellFactory.instance.createShopItemCell(sp,null,true,true) as ShopItemCell;
          PositionUtils.setPos(_itemCell,"integralShopView.itemCell.pos");
          addChild(_itemCell);
          _integral = ComponentFactory.Instance.creatComponentByStylename("integralShopView.integral");
@@ -70,7 +70,7 @@ package oldplayerintegralshop.view
          _buyBtn.addEventListener("click",buyHandler,false,0,true);
       }
       
-      private function buyHandler(param1:MouseEvent) : void
+      private function buyHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -88,33 +88,33 @@ package oldplayerintegralshop.view
          _confirmFrame.addEventListener("response",__confirmBuy);
       }
       
-      private function __confirmBuy(param1:FrameEvent) : void
+      private function __confirmBuy(evt:FrameEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc7_:* = null;
-         var _loc4_:* = null;
-         var _loc6_:* = null;
-         var _loc5_:* = null;
-         var _loc3_:* = null;
+         var items:* = null;
+         var types:* = null;
+         var colors:* = null;
+         var places:* = null;
+         var dresses:* = null;
+         var goodsTypes:* = null;
          SoundManager.instance.play("008");
          _confirmFrame.removeEventListener("response",__confirmBuy);
          _confirmFrame = null;
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
-            _loc2_ = [_shopItemInfo.GoodsID];
-            _loc7_ = [1];
-            _loc4_ = [""];
-            _loc6_ = [""];
-            _loc5_ = [""];
-            _loc3_ = [_shopItemInfo.isDiscount];
+            items = [_shopItemInfo.GoodsID];
+            types = [1];
+            colors = [""];
+            places = [""];
+            dresses = [""];
+            goodsTypes = [_shopItemInfo.isDiscount];
             SocketManager.Instance.out.sendBuyRegressIntegralGoods(_shopItemInfo.GoodsID,1);
          }
       }
       
-      public function refreshShow(param1:ShopItemInfo) : void
+      public function refreshShow(value:ShopItemInfo) : void
       {
-         var _loc2_:* = null;
-         _shopItemInfo = param1;
+         var tmpBattleData:* = null;
+         _shopItemInfo = value;
          _itemCell.info = _shopItemInfo.TemplateInfo;
          _itemCell.tipInfo = _shopItemInfo;
          _nameTxt.text = _itemCell.info.Name;
@@ -125,7 +125,7 @@ package oldplayerintegralshop.view
          }
          if(_shopItemInfo.LimitGrade > LeagueControl.instance.militaryRank)
          {
-            _loc2_ = BattleGroudControl.Instance.getBattleDataByLevel(_shopItemInfo.LimitGrade);
+            tmpBattleData = BattleGroudControl.Instance.getBattleDataByLevel(_shopItemInfo.LimitGrade);
             _itemCell.filters = [ComponentFactory.Instance.model.getSet("grayFilter")];
          }
          else

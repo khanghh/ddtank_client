@@ -36,34 +36,34 @@ package starling.scene.hall.player
       
       private var _image:Bitmap;
       
-      public function HallSceneMountsLayer(param1:int)
+      public function HallSceneMountsLayer(mountsType:int)
       {
          super();
-         _mountsType = param1;
+         _mountsType = mountsType;
       }
       
-      public function load(param1:Function) : void
+      public function load(callBack:Function) : void
       {
-         _callBack = param1;
-         var _loc3_:String = PathManager.SITE_MAIN + "image/mounts/horse/" + _mountsType + "/horse.png";
-         var _loc2_:BaseLoader = LoadResourceManager.Instance.createLoader(_loc3_,3);
-         _loc2_.addEventListener("complete",__onLoadComplete);
-         _loc2_.addEventListener("loadError",__onLoadError);
-         LoadResourceManager.Instance.startLoad(_loc2_);
+         _callBack = callBack;
+         var url:String = PathManager.SITE_MAIN + "image/mounts/horse/" + _mountsType + "/horse.png";
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(url,3);
+         loader.addEventListener("complete",__onLoadComplete);
+         loader.addEventListener("loadError",__onLoadError);
+         LoadResourceManager.Instance.startLoad(loader);
       }
       
-      private function __onLoadComplete(param1:LoaderEvent) : void
+      private function __onLoadComplete(e:LoaderEvent) : void
       {
-         param1.loader.removeEventListener("complete",__onLoadComplete);
-         param1.loader.removeEventListener("loadError",__onLoadError);
+         e.loader.removeEventListener("complete",__onLoadComplete);
+         e.loader.removeEventListener("loadError",__onLoadError);
          _isComplete = true;
-         var _loc2_:ByteArray = NewCrypto.decry(param1.loader.content);
+         var byteArray:ByteArray = NewCrypto.decry(e.loader.content);
          _fzip = new FZip();
          _fzip.addEventListener("complete",__onZipParaComplete);
-         _fzip.loadBytes(_loc2_);
+         _fzip.loadBytes(byteArray);
       }
       
-      private function __onZipParaComplete(param1:Event) : void
+      private function __onZipParaComplete(e:Event) : void
       {
          _fzip.removeEventListener("complete",__onZipParaComplete);
          _xml = new XML(_fzip.getFileByName("horse.xml").content.toString());
@@ -72,7 +72,7 @@ package starling.scene.hall.player
          _loader.loadBytes(_fzip.getFileByName("horse.png").content);
       }
       
-      private function __onLoadBitmapComplete(param1:Event) : void
+      private function __onLoadBitmapComplete(e:Event) : void
       {
          _loader.contentLoaderInfo.removeEventListener("complete",__onLoadBitmapComplete);
          _image = _loader.content as Bitmap;
@@ -81,10 +81,10 @@ package starling.scene.hall.player
          loaderComplete();
       }
       
-      private function __onLoadError(param1:LoaderEvent) : void
+      private function __onLoadError(e:LoaderEvent) : void
       {
-         param1.loader.removeEventListener("complete",__onLoadComplete);
-         param1.loader.removeEventListener("loadError",__onLoadError);
+         e.loader.removeEventListener("complete",__onLoadComplete);
+         e.loader.removeEventListener("loadError",__onLoadError);
          _isComplete = false;
       }
       
@@ -130,11 +130,11 @@ package starling.scene.hall.player
          return null;
       }
       
-      public function set info(param1:ItemTemplateInfo) : void
+      public function set info(value:ItemTemplateInfo) : void
       {
       }
       
-      public function set currentEdit(param1:int) : void
+      public function set currentEdit(n:int) : void
       {
       }
       
@@ -153,7 +153,7 @@ package starling.scene.hall.player
          return 0;
       }
       
-      public function setColor(param1:*) : Boolean
+      public function setColor(color:*) : Boolean
       {
          return false;
       }

@@ -12,12 +12,12 @@ package labyrinth.view
    {
        
       
-      public function LabyrinthTryAgain(param1:MissionAgainInfo, param2:Boolean = true)
+      public function LabyrinthTryAgain(info:MissionAgainInfo, isShowNum:Boolean = true)
       {
-         super(param1,param2);
+         super(info,isShowNum);
       }
       
-      override protected function __tryagainClick(param1:MouseEvent) : void
+      override protected function __tryagainClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)

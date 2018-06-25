@@ -75,44 +75,44 @@ package ddt.data.email
       
       public function getAnnexs() : Array
       {
-         var _loc1_:Array = [];
+         var result:Array = [];
          if(Annex1)
          {
-            _loc1_.push(Annex1);
+            result.push(Annex1);
          }
          if(Annex2)
          {
-            _loc1_.push(Annex2);
+            result.push(Annex2);
          }
          if(Annex3)
          {
-            _loc1_.push(Annex3);
+            result.push(Annex3);
          }
          if(Annex4)
          {
-            _loc1_.push(Annex4);
+            result.push(Annex4);
          }
          if(Annex5)
          {
-            _loc1_.push(Annex5);
+            result.push(Annex5);
          }
          if(Gold != 0)
          {
-            _loc1_.push("gold");
+            result.push("gold");
          }
          if(Money != 0)
          {
-            _loc1_.push("money");
+            result.push("money");
          }
          if(BindMoney != 0)
          {
-            _loc1_.push("bindMoney");
+            result.push("bindMoney");
          }
          if(Medal > 0)
          {
-            _loc1_.push("medal");
+            result.push("medal");
          }
-         return _loc1_;
+         return result;
       }
       
       public function get canReply() : Boolean
@@ -141,36 +141,36 @@ package ddt.data.email
                                  return false;
                               }
                            }
-                           addr20:
+                           addr26:
                            return true;
                         }
-                        addr19:
-                        §§goto(addr20);
+                        addr25:
+                        §§goto(addr26);
                      }
-                     addr18:
-                     §§goto(addr19);
+                     addr24:
+                     §§goto(addr25);
                   }
-                  addr17:
-                  §§goto(addr18);
+                  addr23:
+                  §§goto(addr24);
                }
-               addr16:
-               §§goto(addr17);
+               addr22:
+               §§goto(addr23);
             }
-            addr15:
-            §§goto(addr16);
+            addr21:
+            §§goto(addr22);
          }
-         §§goto(addr15);
+         §§goto(addr21);
       }
       
-      public function getAnnexByIndex(param1:int) : *
+      public function getAnnexByIndex(index:int) : *
       {
-         var _loc3_:* = undefined;
-         var _loc2_:Array = getAnnexs();
-         if(param1 > -1)
+         var result:* = undefined;
+         var annexs:Array = getAnnexs();
+         if(index > -1)
          {
-            _loc3_ = _loc2_[param1];
+            result = annexs[index];
          }
-         return _loc3_;
+         return result;
       }
       
       public function hasAnnexs() : Boolean

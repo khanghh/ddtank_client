@@ -29,13 +29,13 @@ package store.view
          super();
       }
       
-      public function set label(param1:String) : void
+      public function set label(value:String) : void
       {
          if(_textField == null)
          {
             return;
          }
-         _text = param1;
+         _text = value;
          _textField.text = _text;
          _textField.x = textFieldX;
          _textField.y = textFieldY;
@@ -66,13 +66,13 @@ package store.view
          return _textStyle;
       }
       
-      public function set textStyle(param1:String) : void
+      public function set textStyle(value:String) : void
       {
-         if(param1 == null || param1.length == 0)
+         if(value == null || value.length == 0)
          {
             return;
          }
-         _textStyle = param1;
+         _textStyle = value;
          _textField = ComponentFactory.Instance.creatComponentByStylename(_textStyle);
          addChild(_textField);
       }
@@ -82,13 +82,13 @@ package store.view
          return _backStyle;
       }
       
-      public function set backStyle(param1:String) : void
+      public function set backStyle(value:String) : void
       {
-         if(param1 == null || param1.length == 0)
+         if(value == null || value.length == 0)
          {
             return;
          }
-         _backStyle = param1;
+         _backStyle = value;
          _bg = ComponentFactory.Instance.creatBitmap(_backStyle);
          addChild(_bg);
       }
@@ -98,9 +98,9 @@ package store.view
          return _textFieldX;
       }
       
-      public function set textFieldX(param1:Number) : void
+      public function set textFieldX(value:Number) : void
       {
-         _textFieldX = param1;
+         _textFieldX = value;
       }
       
       public function get textFieldY() : Number
@@ -108,9 +108,9 @@ package store.view
          return _textFieldY;
       }
       
-      public function set textFieldY(param1:Number) : void
+      public function set textFieldY(value:Number) : void
       {
-         _textFieldY = param1;
+         _textFieldY = value;
       }
    }
 }

@@ -11,10 +11,10 @@ package com.pickgliss.ui.controls
          super();
       }
       
-      override public function set selected(param1:Boolean) : void
+      override public function set selected(value:Boolean) : void
       {
-         _selected = param1;
-         if(param1 == true)
+         _selected = value;
+         if(value == true)
          {
             if(_selectedButton)
             {

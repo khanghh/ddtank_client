@@ -15,10 +15,10 @@ package bones.loader
       
       private var _data:Object;
       
-      public function BonesLoaderEvent(param1:String, param2:Object = null)
+      public function BonesLoaderEvent($type:String, data:Object = null)
       {
-         _data = param2;
-         super(param1);
+         _data = data;
+         super($type);
       }
       
       public function get vo() : BoneVo

@@ -25,42 +25,39 @@ package bagAndInfo.bag.ring
       
       private function initView() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _addition.length)
+         var i:int = 0;
+         for(i = 0; i < _addition.length; )
          {
-            _ringBitmap[_loc1_] = ComponentFactory.Instance.creat("asset.bagAndInfo.bag.RingSystem.tipIcon");
-            addChild(_ringBitmap[_loc1_]);
-            _addition[_loc1_] = ComponentFactory.Instance.creatComponentByStylename("bagAndInfo.bag.RingSystemView.tipData");
-            addChild(_addition[_loc1_]);
-            _loc1_++;
+            _ringBitmap[i] = ComponentFactory.Instance.creat("asset.bagAndInfo.bag.RingSystem.tipIcon");
+            addChild(_ringBitmap[i]);
+            _addition[i] = ComponentFactory.Instance.creatComponentByStylename("bagAndInfo.bag.RingSystemView.tipData");
+            addChild(_addition[i]);
+            i++;
          }
       }
       
-      public function setAdditiontext(param1:Array) : void
+      public function setAdditiontext(arr:Array) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = 0;
-         _loc3_ = 0;
-         while(_loc3_ < _addition.length)
+         var i:int = 0;
+         var addNum:* = 0;
+         for(i = 0; i < _addition.length; )
          {
-            _loc2_ = Number(param1[_loc3_] * 0.01);
-            _addition[_loc3_].text = "+" + int(_loc2_);
-            _addition[_loc3_].y = _loc3_ * 26 - 3;
-            _ringBitmap[_loc3_].y = _loc3_ * 26;
-            _loc3_++;
+            addNum = Number(arr[i] * 0.01);
+            _addition[i].text = "+" + int(addNum);
+            _addition[i].y = i * 26 - 3;
+            _ringBitmap[i].y = i * 26;
+            i++;
          }
       }
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _addition.length)
+         var i:int = 0;
+         for(i = 0; i < _addition.length; )
          {
-            ObjectUtils.disposeObject(_addition[_loc1_]);
-            _addition[_loc1_] = null;
-            _loc1_++;
+            ObjectUtils.disposeObject(_addition[i]);
+            _addition[i] = null;
+            i++;
          }
       }
    }

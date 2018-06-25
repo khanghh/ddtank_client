@@ -12,15 +12,15 @@ package gameStarling.gametrainer.objects
       
       private var _equip:BoneMovieStarling;
       
-      public function TrainerEquip3D(param1:int, param2:int = 1, param3:Number = 1, param4:Number = 1, param5:Number = 1, param6:Number = 1)
+      public function TrainerEquip3D(id:int, layerType:int = 1, mass:Number = 1, gravityFactor:Number = 1, windFactor:Number = 1, airResitFactor:Number = 1)
       {
-         super(param1,param2,param3,param4,param5,param6);
+         super(id,layerType,mass,gravityFactor,windFactor,airResitFactor);
          init();
       }
       
       private function init() : void
       {
-         var _loc1_:String = !!PlayerManager.Instance.Self.Sex?"asset.trainer.TrainerManEquipAsset":"asset.trainer.TrainerWomanEquipAsset";
+         var str:String = !!PlayerManager.Instance.Self.Sex?"asset.trainer.TrainerManEquipAsset":"asset.trainer.TrainerWomanEquipAsset";
          _equip = BoneMovieFactory.instance.creatBoneMovie("TrainerEquip3D.as 23行");
          addChild(_equip);
       }

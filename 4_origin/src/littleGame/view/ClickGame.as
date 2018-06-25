@@ -36,24 +36,24 @@ package littleGame.view
       
       private function configUI() : void
       {
-         var _loc1_:Graphics = graphics;
-         _loc1_.beginFill(0,0);
-         _loc1_.drawRect(0,0,StageReferance.stageWidth,StageReferance.stageHeight);
-         _loc1_.endFill();
-         var _loc2_:TextField = new TextField();
-         _loc2_.defaultTextFormat = new TextFormat("Arial",20,65280,true);
-         _loc2_.autoSize = "left";
-         _loc2_.text = "Click Screen!!!";
-         _loc2_.mouseEnabled = false;
-         _loc2_.x = StageReferance.stageWidth - _loc2_.width >> 1;
-         addChild(_loc2_);
+         var pen:Graphics = graphics;
+         pen.beginFill(0,0);
+         pen.drawRect(0,0,StageReferance.stageWidth,StageReferance.stageHeight);
+         pen.endFill();
+         var text:TextField = new TextField();
+         text.defaultTextFormat = new TextFormat("Arial",20,65280,true);
+         text.autoSize = "left";
+         text.text = "Click Screen!!!";
+         text.mouseEnabled = false;
+         text.x = StageReferance.stageWidth - text.width >> 1;
+         addChild(text);
          _clickTextField = new TextField();
          _clickTextField.defaultTextFormat = new TextFormat("Arial",20,16711680,true);
          _clickTextField.autoSize = "left";
          _clickTextField.mouseEnabled = false;
          addChild(_clickTextField);
-         var _loc3_:Class = getDefinitionByName("littlegame.object.normalBoguInhaled") as Class;
-         _asset = new _loc3_() as MovieClip;
+         var cls:Class = getDefinitionByName("littlegame.object.normalBoguInhaled") as Class;
+         _asset = new cls() as MovieClip;
          addChild(_asset);
       }
       
@@ -61,13 +61,13 @@ package littleGame.view
       {
       }
       
-      private function __shutdown(param1:Event) : void
+      private function __shutdown(event:Event) : void
       {
          dispatchEvent(new Event("complete"));
          dispose();
       }
       
-      private function __startup(param1:Event) : void
+      private function __startup(event:Event) : void
       {
          _startTime = getTimer();
          addEventListener("click",__clicked);
@@ -78,9 +78,9 @@ package littleGame.view
          removeEventListener("click",__clicked);
       }
       
-      private function __clicked(param1:MouseEvent) : void
+      private function __clicked(event:MouseEvent) : void
       {
-         var _loc2_:int = getTimer();
+         var now:int = getTimer();
          _clickCount = Number(_clickCount) + 1;
          _clickTextField.text = "click:" + _clickCount;
          _clickTextField.x = StageReferance.stageWidth - _clickTextField.width >> 1;

@@ -53,15 +53,15 @@ package cardSystem.view
          setEvent();
       }
       
-      public function set place(param1:int) : void
+      public function set place(vaule:int) : void
       {
-         _place = param1;
+         _place = vaule;
          _needSoulText.text = String(getNeedSoul());
-         var _loc3_:int = PlayerManager.Instance.Self.CardSoul;
-         var _loc2_:int = getNeedSoul();
-         if(_loc2_ > _loc3_)
+         var total:int = PlayerManager.Instance.Self.CardSoul;
+         var need:int = getNeedSoul();
+         if(need > total)
          {
-            _InputTxt.text = String(_loc3_);
+            _InputTxt.text = String(total);
          }
          else
          {
@@ -69,9 +69,9 @@ package cardSystem.view
          }
       }
       
-      public function set cardtype(param1:int) : void
+      public function set cardtype(value:int) : void
       {
-         _cardtype = param1;
+         _cardtype = value;
       }
       
       private function setView() : void
@@ -102,18 +102,18 @@ package cardSystem.view
          addToContent(_InputTxt);
       }
       
-      private function getNeedSoul(param1:String = null) : int
+      private function getNeedSoul(level:String = null) : int
       {
-         if(param1 == null)
+         if(level == null)
          {
-            param1 = String(CardManager.Instance.model.GrooveInfoVector[_place].Level + 1);
+            level = String(CardManager.Instance.model.GrooveInfoVector[_place].Level + 1);
          }
-         var _loc5_:GrooveInfo = CardManager.Instance.model.GrooveInfoVector[_place];
-         var _loc6_:CardGrooveInfo = GrooveInfoManager.instance.getInfoByLevel(param1,String(_loc5_.Type));
-         var _loc4_:int = _loc5_.GP;
-         var _loc3_:int = _loc6_.Exp;
-         var _loc2_:int = _loc3_ - _loc4_;
-         return _loc2_;
+         var _cardGrooveInfo:GrooveInfo = CardManager.Instance.model.GrooveInfoVector[_place];
+         var _grooveInfo:CardGrooveInfo = GrooveInfoManager.instance.getInfoByLevel(level,String(_cardGrooveInfo.Type));
+         var GP:int = _cardGrooveInfo.GP;
+         var Exp:int = _grooveInfo.Exp;
+         var needSoul:int = Exp - GP;
+         return needSoul;
       }
       
       private function setEvent() : void
@@ -132,63 +132,63 @@ package cardSystem.view
          _InputTxt.removeEventListener("change",_change);
       }
       
-      private function _change(param1:Event) : void
+      private function _change(event:Event) : void
       {
-         var _loc5_:String = "40";
-         var _loc6_:int = _InputTxt.text;
-         var _loc3_:int = PlayerManager.Instance.Self.CardSoul;
-         var _loc4_:String = _InputTxt.text.toString();
-         var _loc2_:int = getNeedSoul(_loc5_);
-         if(_loc6_ > _loc3_)
+         var level:String = "40";
+         var current:int = _InputTxt.text;
+         var total:int = PlayerManager.Instance.Self.CardSoul;
+         var num:String = _InputTxt.text.toString();
+         var needSoul:int = getNeedSoul(level);
+         if(current > total)
          {
             _InputTxt.text = PlayerManager.Instance.Self.CardSoul.toString();
          }
-         else if(_loc4_ == "00")
+         else if(num == "00")
          {
             _InputTxt.text = "0";
          }
-         else if(_loc4_ == "01")
+         else if(num == "01")
          {
             _InputTxt.text = "1";
          }
-         else if(_loc4_ == "02")
+         else if(num == "02")
          {
             _InputTxt.text = "2";
          }
-         else if(_loc4_ == "03")
+         else if(num == "03")
          {
             _InputTxt.text = "3";
          }
-         else if(_loc4_ == "04")
+         else if(num == "04")
          {
             _InputTxt.text = "4";
          }
-         else if(_loc4_ == "05")
+         else if(num == "05")
          {
             _InputTxt.text = "5";
          }
-         else if(_loc4_ == "06")
+         else if(num == "06")
          {
             _InputTxt.text = "6";
          }
-         else if(_loc4_ == "07")
+         else if(num == "07")
          {
             _InputTxt.text = "7";
          }
-         else if(_loc4_ == "08")
+         else if(num == "08")
          {
             _InputTxt.text = "8";
          }
-         else if(_loc4_ == "09")
+         else if(num == "09")
          {
             _InputTxt.text = "9";
          }
       }
       
-      private function __Response(param1:FrameEvent) : void
+      private function __Response(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -203,21 +203,21 @@ package cardSystem.view
       
       private function confirmSubmit() : void
       {
-         var _loc3_:String = "45";
-         var _loc2_:int = PlayerManager.Instance.Self.CardSoul;
-         var _loc4_:int = _InputTxt.text;
-         var _loc1_:int = getNeedSoul(_loc3_);
-         if(_loc4_ == 0)
+         var level:String = "45";
+         var total:int = PlayerManager.Instance.Self.CardSoul;
+         var current:int = _InputTxt.text;
+         var needSoul:int = getNeedSoul(level);
+         if(current == 0)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.cardSystem.CardSell.SellText2"));
          }
-         else if(_loc4_ > _loc2_)
+         else if(current > total)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.cardSystem.CardSell.SellText3"));
          }
-         else if(_loc4_ > _loc1_)
+         else if(current > needSoul)
          {
-            _InputTxt.text = _loc1_.toString();
+            _InputTxt.text = needSoul.toString();
             SocketManager.Instance.out.sendUpdateSLOT(_place,int(_InputTxt.text));
             CardManager.Instance.model.inputSoul = int(_InputTxt.text);
             dispose();
@@ -232,26 +232,26 @@ package cardSystem.view
       
       private function checkSoul() : void
       {
-         var _loc1_:int = PlayerManager.Instance.Self.CardSoul;
-         var _loc2_:* = int(_InputTxt.text);
-         if(_loc2_ >= _loc1_)
+         var total:int = PlayerManager.Instance.Self.CardSoul;
+         var current:* = int(_InputTxt.text);
+         if(current >= total)
          {
-            _loc2_ = _loc1_;
+            current = total;
          }
-         _InputTxt.text = String(_loc2_);
+         _InputTxt.text = String(current);
       }
       
-      private function __keyDown(param1:KeyboardEvent) : void
+      private function __keyDown(event:KeyboardEvent) : void
       {
-         if(param1.keyCode == 13)
+         if(event.keyCode == 13)
          {
-            param1.stopImmediatePropagation();
+            event.stopImmediatePropagation();
             SoundManager.instance.play("008");
             confirmSubmit();
          }
       }
       
-      private function __focusOut(param1:FocusEvent) : void
+      private function __focusOut(event:FocusEvent) : void
       {
       }
       

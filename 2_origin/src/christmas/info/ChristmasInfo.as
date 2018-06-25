@@ -21,9 +21,9 @@ package christmas.info
          super();
       }
       
-      public function set myPlayerVO(param1:PlayerVO) : void
+      public function set myPlayerVO(value:PlayerVO) : void
       {
-         _myPlayerVO = param1;
+         _myPlayerVO = value;
       }
       
       public function get myPlayerVO() : PlayerVO
@@ -31,9 +31,9 @@ package christmas.info
          return _myPlayerVO;
       }
       
-      public function set playerDefaultPos(param1:Point) : void
+      public function set playerDefaultPos(value:Point) : void
       {
-         _playerDefaultPos = param1;
+         _playerDefaultPos = value;
       }
       
       public function get playerDefaultPos() : Point

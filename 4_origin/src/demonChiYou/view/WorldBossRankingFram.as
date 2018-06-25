@@ -51,9 +51,9 @@ package demonChiYou.view
          }
       }
       
-      private function __onCoreiLoaded(param1:UIModuleEvent) : void
+      private function __onCoreiLoaded(pEvent:UIModuleEvent) : void
       {
-         if(param1.module == "ddtcorei")
+         if(pEvent.module == "ddtcorei")
          {
             UIModuleLoader.Instance.removeEventListener("uiModuleComplete",__onCoreiLoaded);
             _init();
@@ -84,50 +84,49 @@ package demonChiYou.view
          addEventListener("response",__frameEventHandler);
       }
       
-      public function addPersonRanking(param1:RankingPersonInfo) : void
+      public function addPersonRanking(personInfo:RankingPersonInfo) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:Boolean = false;
+         var i:int = 0;
+         var temp:Boolean = false;
          if(_rankingPersons.length == 0)
          {
-            _rankingPersons.push(param1);
+            _rankingPersons.push(personInfo);
          }
          else
          {
-            _loc3_ = 0;
-            while(_loc3_ < _rankingPersons.length)
+            i = 0;
+            while(i < _rankingPersons.length)
             {
-               if((_rankingPersons[_loc3_] as RankingPersonInfo).damage < param1.damage)
+               if((_rankingPersons[i] as RankingPersonInfo).damage < personInfo.damage)
                {
-                  _rankingPersons.splice(_loc3_,0,param1);
+                  _rankingPersons.splice(i,0,personInfo);
                   return;
                }
-               _loc3_++;
+               i++;
             }
-            _rankingPersons.push(param1);
+            _rankingPersons.push(personInfo);
          }
       }
       
       public function show() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         var _loc3_:Point = ComponentFactory.Instance.creat("worldBoss.ranking.itemPos");
-         _loc2_ = 0;
-         while(_loc2_ < _rankingPersons.length)
+         var i:int = 0;
+         var item:* = null;
+         var pos:Point = ComponentFactory.Instance.creat("worldBoss.ranking.itemPos");
+         for(i = 0; i < _rankingPersons.length; )
          {
-            _loc1_ = new RankingPersonInfoItem(_loc2_ + 1,_rankingPersons[_loc2_] as RankingPersonInfo);
-            _loc1_.x = _loc3_.x;
-            _loc1_.y = _loc3_.y * (_loc2_ + 1) + 50;
-            addChild(_loc1_);
-            _loc2_++;
+            item = new RankingPersonInfoItem(i + 1,_rankingPersons[i] as RankingPersonInfo);
+            item.x = pos.x;
+            item.y = pos.y * (i + 1) + 50;
+            addChild(item);
+            i++;
          }
          LayerManager.Instance.addToLayer(this,1,true,1);
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -136,7 +135,7 @@ package demonChiYou.view
          }
       }
       
-      private function __sureBtnClick(param1:MouseEvent) : void
+      private function __sureBtnClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          dispose();
@@ -144,10 +143,9 @@ package demonChiYou.view
       
       override public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          super.dispose();
-         _loc1_ = 0;
-         while(_loc1_ < _rankingPersons.length)
+         for(i = 0; i < _rankingPersons.length; )
          {
             _rankingPersons.shift();
          }

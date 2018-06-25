@@ -60,9 +60,9 @@ package labyrinth
       
       private var _callback:Function;
       
-      public function LabyrinthControl(param1:IEventDispatcher = null)
+      public function LabyrinthControl(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
          CleanOutConfirmView;
          CleanOutContentItem;
          LabyrinthBoxIconTips;
@@ -87,13 +87,13 @@ package labyrinth
          LabyrinthManager.Instance.addEventListener("LabyrinthOpenView",__onOpenView);
       }
       
-      protected function __onTryAgain(param1:PkgEvent) : void
+      protected function __onTryAgain(event:PkgEvent) : void
       {
-         var _loc2_:MissionAgainInfo = new MissionAgainInfo();
-         againSelectType = param1.pkg.readInt();
-         _loc2_.value = param1.pkg.readInt();
-         _loc2_.host = PlayerManager.Instance.Self.NickName;
-         tryagain = new LabyrinthTryAgain(_loc2_,false);
+         var missionAgain:MissionAgainInfo = new MissionAgainInfo();
+         againSelectType = event.pkg.readInt();
+         missionAgain.value = event.pkg.readInt();
+         missionAgain.host = PlayerManager.Instance.Self.NickName;
+         tryagain = new LabyrinthTryAgain(missionAgain,false);
          PositionUtils.setPos(tryagain,"dt.labyrinth.LabyrinthFrame.TryAgainPos");
          tryagain.addEventListener("tryagain",__tryAgain);
          tryagain.addEventListener("giveup",__giveup);
@@ -101,16 +101,16 @@ package labyrinth
          hideLabyrinthFrame();
       }
       
-      protected function __giveup(param1:GameEvent) : void
+      protected function __giveup(event:GameEvent) : void
       {
-         SocketManager.Instance.out.labyrinthTryAgain(againSelectType,false,param1.data);
+         SocketManager.Instance.out.labyrinthTryAgain(againSelectType,false,event.data);
          disposeTryAgain();
          _manager.model.tryAgainComplete = false;
       }
       
-      protected function __tryAgain(param1:GameEvent) : void
+      protected function __tryAgain(event:GameEvent) : void
       {
-         SocketManager.Instance.out.labyrinthTryAgain(againSelectType,true,param1.data);
+         SocketManager.Instance.out.labyrinthTryAgain(againSelectType,true,event.data);
          disposeTryAgain();
          _manager.model.tryAgainComplete = true;
       }
@@ -126,14 +126,14 @@ package labyrinth
          }
       }
       
-      protected function __sendStart(param1:Event) : void
+      protected function __sendStart(event:Event) : void
       {
          GameInSocketOut.sendGameStart();
       }
       
-      protected function __startLoading(param1:Event) : void
+      protected function __startLoading(e:Event) : void
       {
-         if(RoomManager.Instance.current && RoomManager.Instance.current.type == 15)
+         if(RoomManager.Instance.current && (RoomManager.Instance.current.type == 15 || RoomManager.Instance.current.type == 70))
          {
             StateManager.getInGame_Step_6 = true;
             if(GameControl.Instance.Current == null)
@@ -146,7 +146,7 @@ package labyrinth
          }
       }
       
-      protected function __onOpenView(param1:Event) : void
+      protected function __onOpenView(event:Event) : void
       {
          show();
       }
@@ -166,10 +166,10 @@ package labyrinth
          }
       }
       
-      protected function __labyrinthFrameEvent(param1:FrameEvent) : void
+      protected function __labyrinthFrameEvent(event:FrameEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         if(param1.responseCode == 1 || param1.responseCode == 0 || param1.responseCode == 4)
+         if(event.responseCode == 1 || event.responseCode == 0 || event.responseCode == 4)
          {
             hideLabyrinthFrame();
          }
@@ -185,24 +185,24 @@ package labyrinth
          }
       }
       
-      public function loadRankingList(param1:int = 0) : void
+      public function loadRankingList(selectType:int = 0) : void
       {
-         var _loc3_:URLVariables = new URLVariables();
-         _loc3_["id"] = PlayerManager.Instance.Self.ID;
-         _loc3_["rnd"] = Math.random();
-         var _loc4_:String = "WarriorFamRankList.xml";
-         if(param1 == 1)
+         var args:URLVariables = new URLVariables();
+         args["id"] = PlayerManager.Instance.Self.ID;
+         args["rnd"] = Math.random();
+         var requestName:String = "WarriorFamRankList.xml";
+         if(selectType == 1)
          {
-            _loc4_ = "WarriorHighFamRankList.xml";
+            requestName = "WarriorHighFamRankList.xml";
          }
-         var _loc2_:BaseLoader = LoadResourceManager.Instance.creatAndStartLoad(PathManager.solveRequestPath(_loc4_),2,_loc3_);
-         _loc2_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingWarriorFamRankListFailure");
-         _loc2_.analyzer = new RankingAnalyzer(openRankingFrame);
+         var loader:BaseLoader = LoadResourceManager.Instance.creatAndStartLoad(PathManager.solveRequestPath(requestName),2,args);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingWarriorFamRankListFailure");
+         loader.analyzer = new RankingAnalyzer(openRankingFrame);
       }
       
-      private function openRankingFrame(param1:RankingAnalyzer) : void
+      private function openRankingFrame(action:RankingAnalyzer) : void
       {
-         _manager.model.rankingList = param1.list;
+         _manager.model.rankingList = action.list;
          dispatchEvent(new Event("rankingLoadComplete"));
       }
       
@@ -220,14 +220,14 @@ package labyrinth
          }
       }
       
-      protected function __onProgress(param1:UIModuleEvent) : void
+      protected function __onProgress(event:UIModuleEvent) : void
       {
-         UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+         UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
       }
       
-      protected function __onUIModuleComplete(param1:UIModuleEvent) : void
+      protected function __onUIModuleComplete(event:UIModuleEvent) : void
       {
-         if(param1.module == "labyrinth" || param1.module == "ddtshop")
+         if(event.module == "labyrinth" || event.module == "ddtshop")
          {
             _loadProgress = Number(_loadProgress) + 1;
             if(_loadProgress >= 2)
@@ -254,7 +254,7 @@ package labyrinth
          return _UILoadComplete;
       }
       
-      protected function __onClose(param1:Event) : void
+      protected function __onClose(event:Event) : void
       {
          UIModuleSmallLoading.Instance.hide();
          UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);

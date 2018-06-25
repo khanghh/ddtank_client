@@ -31,57 +31,57 @@ package chickActivation.model
       
       public var gainArr:Array;
       
-      public function ChickActivationModel(param1:IEventDispatcher = null)
+      public function ChickActivationModel(target:IEventDispatcher = null)
       {
          gainArr = [];
-         super(param1);
+         super(target);
       }
       
-      public function getInventoryItemInfo(param1:ChickActivationInfo) : InventoryItemInfo
+      public function getInventoryItemInfo(info:ChickActivationInfo) : InventoryItemInfo
       {
-         var _loc3_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(param1.TemplateID);
-         var _loc2_:InventoryItemInfo = new InventoryItemInfo();
-         ObjectUtils.copyProperties(_loc2_,_loc3_);
-         _loc2_.LuckCompose = param1.TemplateID;
-         _loc2_.ValidDate = param1.ValidDate;
-         _loc2_.Count = param1.Count;
-         _loc2_.IsBinds = param1.IsBind;
-         _loc2_.StrengthenLevel = param1.StrengthLevel;
-         _loc2_.AttackCompose = param1.AttackCompose;
-         _loc2_.DefendCompose = param1.DefendCompose;
-         _loc2_.AgilityCompose = param1.AgilityCompose;
-         _loc2_.LuckCompose = param1.LuckCompose;
-         return _loc2_;
+         var tempInfo:ItemTemplateInfo = ItemManager.Instance.getTemplateById(info.TemplateID);
+         var tInfo:InventoryItemInfo = new InventoryItemInfo();
+         ObjectUtils.copyProperties(tInfo,tempInfo);
+         tInfo.LuckCompose = info.TemplateID;
+         tInfo.ValidDate = info.ValidDate;
+         tInfo.Count = info.Count;
+         tInfo.IsBinds = info.IsBind;
+         tInfo.StrengthenLevel = info.StrengthLevel;
+         tInfo.AttackCompose = info.AttackCompose;
+         tInfo.DefendCompose = info.DefendCompose;
+         tInfo.AgilityCompose = info.AgilityCompose;
+         tInfo.LuckCompose = info.LuckCompose;
+         return tInfo;
       }
       
-      public function findQualityValue(param1:String) : int
+      public function findQualityValue(qualityKey:String) : int
       {
-         var _loc2_:int = 0;
-         if(qualityDic.hasOwnProperty(param1))
+         var qualityValue:int = 0;
+         if(qualityDic.hasOwnProperty(qualityKey))
          {
-            _loc2_ = qualityDic[param1];
+            qualityValue = qualityDic[qualityKey];
          }
-         return _loc2_;
+         return qualityValue;
       }
       
       public function getRemainingDay() : int
       {
-         var _loc1_:* = 86400000;
-         var _loc2_:int = 0;
+         var temp:* = 86400000;
+         var day:int = 0;
          if(isKeyOpened && keyOpenedTime)
          {
-            _loc2_ = Math.ceil((60 * _loc1_ - (TimeManager.Instance.Now().time - keyOpenedTime.time)) / _loc1_);
-            if(_loc2_ > 60)
+            day = Math.ceil((60 * temp - (TimeManager.Instance.Now().time - keyOpenedTime.time)) / temp);
+            if(day > 60)
             {
-               _loc2_ = 60;
+               day = 60;
             }
          }
-         return _loc2_;
+         return day;
       }
       
-      public function getGainLevel(param1:int) : Boolean
+      public function getGainLevel(level:int) : Boolean
       {
-         return (gainArr[11] & 1 << param1 - 1) > 0;
+         return (gainArr[11] & 1 << level - 1) > 0;
       }
       
       public function get itemInfoList() : Array
@@ -89,14 +89,14 @@ package chickActivation.model
          return _itemInfoList;
       }
       
-      public function set itemInfoList(param1:Array) : void
+      public function set itemInfoList(value:Array) : void
       {
-         _itemInfoList = param1;
+         _itemInfoList = value;
       }
       
-      public function dataChange(param1:String, param2:Object = null) : void
+      public function dataChange(_eventType:String, _resultData:Object = null) : void
       {
-         dispatchEvent(new ChickActivationEvent(param1,param2));
+         dispatchEvent(new ChickActivationEvent(_eventType,_resultData));
       }
    }
 }

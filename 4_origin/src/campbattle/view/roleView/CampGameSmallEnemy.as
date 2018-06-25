@@ -46,12 +46,12 @@ package campbattle.view.roleView
       
       private var _fighting:MovieClip;
       
-      public function CampGameSmallEnemy(param1:SmallEnemy)
+      public function CampGameSmallEnemy(info:SmallEnemy)
       {
-         super(param1);
+         super(info);
          _actContent = new Sprite();
          initEvents();
-         loadGameLiving(param1);
+         loadGameLiving(info);
          _timer = TimerManager.getInstance().addTimerJuggler(10000);
          _timer.addEventListener("timer",__onTimerHander);
          _timer.start();
@@ -74,13 +74,13 @@ package campbattle.view.roleView
          _sword.visible = false;
       }
       
-      private function loadGameLiving(param1:SmallEnemy) : void
+      private function loadGameLiving(info:SmallEnemy) : void
       {
          _gameLiving = new GameNeedMovieInfo();
          _gameLiving.type = 2;
-         _gameLiving.path = "image/game/living/" + param1.actionMovieName + ".swf";
-         param1.actionMovieName = "game.living." + param1.actionMovieName;
-         _gameLiving.classPath = param1.actionMovieName;
+         _gameLiving.path = "image/game/living/" + info.actionMovieName + ".swf";
+         info.actionMovieName = "game.living." + info.actionMovieName;
+         _gameLiving.classPath = info.actionMovieName;
          _gameLiving.addEventListener("complete",__onLoadGameLivingComplete);
          _gameLiving.startLoad();
       }
@@ -90,16 +90,16 @@ package campbattle.view.roleView
          return info.LivingID;
       }
       
-      public function setStateType(param1:int) : void
+      public function setStateType(type:int) : void
       {
          _fighting.visible = false;
-         if(param1 == 2)
+         if(type == 2)
          {
             _fighting.visible = true;
             _timer.stop();
             _timer.removeEventListener("timer",__onTimerHander);
          }
-         else if(param1 == 1)
+         else if(type == 1)
          {
             _timer.reset();
             _timer.start();
@@ -114,7 +114,7 @@ package campbattle.view.roleView
          _actContent.addEventListener("mouseOut",__onMouseOut);
       }
       
-      protected function __onMouseMove(param1:MouseEvent) : void
+      protected function __onMouseMove(event:MouseEvent) : void
       {
          if(_sword.visible)
          {
@@ -123,7 +123,7 @@ package campbattle.view.roleView
          }
       }
       
-      protected function __onMouseOut(param1:MouseEvent) : void
+      protected function __onMouseOut(event:MouseEvent) : void
       {
          if(_sword)
          {
@@ -134,7 +134,7 @@ package campbattle.view.roleView
          _actContent.removeEventListener("mouseMove",__onMouseMove);
       }
       
-      protected function __onMouseOver(param1:MouseEvent) : void
+      protected function __onMouseOver(event:MouseEvent) : void
       {
          if(_sword)
          {
@@ -145,18 +145,18 @@ package campbattle.view.roleView
          _actContent.addEventListener("mouseMove",__onMouseMove);
       }
       
-      protected function setCharacterFilter(param1:Boolean) : void
+      protected function setCharacterFilter(value:Boolean) : void
       {
          if(_actionMovie)
          {
-            _actionMovie.filters = !!param1?MOUSE_ON_GLOW_FILTER:null;
+            _actionMovie.filters = !!value?MOUSE_ON_GLOW_FILTER:null;
          }
       }
       
-      private function __onMouseClick(param1:MouseEvent) : void
+      private function __onMouseClick(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         param1.stopImmediatePropagation();
+         e.stopImmediatePropagation();
          CampBattleControl.instance.dispatchEvent(new MapEvent("enter_fight",[x,y,_info.LivingID]));
       }
       
@@ -179,7 +179,7 @@ package campbattle.view.roleView
          }
       }
       
-      protected function __onTimerHander(param1:Event) : void
+      protected function __onTimerHander(event:Event) : void
       {
          if(!_isChange)
          {
@@ -203,10 +203,10 @@ package campbattle.view.roleView
          }
       }
       
-      private function livingMove(param1:int) : void
+      private function livingMove(dix:int) : void
       {
          TweenMax.to(this,1,{
-            "x":param1,
+            "x":dix,
             "onComplete":walkOver
          });
       }
@@ -223,26 +223,26 @@ package campbattle.view.roleView
          }
       }
       
-      private function hasThisAction(param1:String) : Boolean
+      private function hasThisAction(type:String) : Boolean
       {
-         var _loc2_:Boolean = false;
+         var result:Boolean = false;
          if(actionMovie)
          {
             var _loc5_:int = 0;
             var _loc4_:* = actionMovie.currentLabels;
-            for each(var _loc3_ in actionMovie.currentLabels)
+            for each(var i in actionMovie.currentLabels)
             {
-               if(_loc3_.name == param1)
+               if(i.name == type)
                {
-                  _loc2_ = true;
+                  result = true;
                   break;
                }
             }
          }
-         return _loc2_;
+         return result;
       }
       
-      protected function __onLoadGameLivingComplete(param1:LoaderEvent) : void
+      protected function __onLoadGameLivingComplete(event:LoaderEvent) : void
       {
          replaceMovie();
          _sword.y = _actionMovie.y - (_actionMovie.height / 2 - _sword.height / 2);

@@ -23,11 +23,11 @@ package invite.view
          return _selected;
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(val:Boolean) : void
       {
-         if(_selected != param1)
+         if(_selected != val)
          {
-            _selected = param1;
+            _selected = val;
             if(_selected)
             {
                setFrame(2);

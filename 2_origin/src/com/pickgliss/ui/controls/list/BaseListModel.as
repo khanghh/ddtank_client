@@ -14,55 +14,52 @@ package com.pickgliss.ui.controls.list
          listeners = [];
       }
       
-      public function addListDataListener(param1:ListDataListener) : void
+      public function addListDataListener(l:ListDataListener) : void
       {
-         listeners.push(param1);
+         listeners.push(l);
       }
       
-      public function removeListDataListener(param1:ListDataListener) : void
+      public function removeListDataListener(l:ListDataListener) : void
       {
-         ArrayUtils.removeFromArray(listeners,param1);
+         ArrayUtils.removeFromArray(listeners,l);
       }
       
-      protected function fireContentsChanged(param1:Object, param2:int, param3:int, param4:Array) : void
+      protected function fireContentsChanged(target:Object, index0:int, index1:int, removedItems:Array) : void
       {
-         var _loc7_:int = 0;
-         var _loc5_:* = null;
-         var _loc6_:ListDataEvent = new ListDataEvent(param1,param2,param3,param4);
-         _loc7_ = listeners.length - 1;
-         while(_loc7_ >= 0)
+         var i:int = 0;
+         var lis:* = null;
+         var e:ListDataEvent = new ListDataEvent(target,index0,index1,removedItems);
+         for(i = listeners.length - 1; i >= 0; )
          {
-            _loc5_ = ListDataListener(listeners[_loc7_]);
-            _loc5_.contentsChanged(_loc6_);
-            _loc7_--;
+            lis = ListDataListener(listeners[i]);
+            lis.contentsChanged(e);
+            i--;
          }
       }
       
-      protected function fireIntervalAdded(param1:Object, param2:int, param3:int) : void
+      protected function fireIntervalAdded(target:Object, index0:int, index1:int) : void
       {
-         var _loc6_:int = 0;
-         var _loc4_:* = null;
-         var _loc5_:ListDataEvent = new ListDataEvent(param1,param2,param3,[]);
-         _loc6_ = listeners.length - 1;
-         while(_loc6_ >= 0)
+         var i:int = 0;
+         var lis:* = null;
+         var e:ListDataEvent = new ListDataEvent(target,index0,index1,[]);
+         for(i = listeners.length - 1; i >= 0; )
          {
-            _loc4_ = ListDataListener(listeners[_loc6_]);
-            _loc4_.intervalAdded(_loc5_);
-            _loc6_--;
+            lis = ListDataListener(listeners[i]);
+            lis.intervalAdded(e);
+            i--;
          }
       }
       
-      protected function fireIntervalRemoved(param1:Object, param2:int, param3:int, param4:Array) : void
+      protected function fireIntervalRemoved(target:Object, index0:int, index1:int, removedItems:Array) : void
       {
-         var _loc7_:int = 0;
-         var _loc5_:* = null;
-         var _loc6_:ListDataEvent = new ListDataEvent(param1,param2,param3,param4);
-         _loc7_ = listeners.length - 1;
-         while(_loc7_ >= 0)
+         var i:int = 0;
+         var lis:* = null;
+         var e:ListDataEvent = new ListDataEvent(target,index0,index1,removedItems);
+         for(i = listeners.length - 1; i >= 0; )
          {
-            _loc5_ = ListDataListener(listeners[_loc7_]);
-            _loc5_.intervalRemoved(_loc6_);
-            _loc7_--;
+            lis = ListDataListener(listeners[i]);
+            lis.intervalRemoved(e);
+            i--;
          }
       }
    }

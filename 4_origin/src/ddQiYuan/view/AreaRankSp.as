@@ -65,12 +65,12 @@ package ddQiYuan.view
          _panel = ComponentFactory.Instance.creatComponentByStylename("ddQiYuan.areaRankScrollPanel");
          _panel.setView(_list);
          addChild(_panel);
-         var _loc1_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("ddQiYuan.rankRewardConTipsTf");
-         _loc1_.text = LanguageMgr.GetTranslation("ddQiYuan.frame.rankRewardConTips",_model.rankRewardLeastOfferTimes);
-         addChild(_loc1_);
+         var rankRewardConTipsTf:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("ddQiYuan.rankRewardConTipsTf");
+         rankRewardConTipsTf.text = LanguageMgr.GetTranslation("ddQiYuan.frame.rankRewardConTips",_model.rankRewardLeastOfferTimes);
+         addChild(rankRewardConTipsTf);
       }
       
-      private function changeView(param1:Event) : void
+      private function changeView(evt:Event) : void
       {
          if(_areaRankBtnGroup.selectIndex == 0)
          {
@@ -84,27 +84,26 @@ package ddQiYuan.view
       
       private function updateList() : void
       {
-         var _loc1_:* = null;
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
+         var arr:* = null;
+         var i:int = 0;
+         var item:* = null;
          _list.removeAllChild();
          if(_areaRankBtnGroup.selectIndex == 0)
          {
-            _loc1_ = _model.myAreaRankArr;
+            arr = _model.myAreaRankArr;
          }
          else
          {
-            _loc1_ = _model.allAreaRankArr;
+            arr = _model.allAreaRankArr;
          }
-         if(_loc1_)
+         if(arr)
          {
-            _loc3_ = 0;
-            while(_loc3_ < _loc1_.length)
+            for(i = 0; i < arr.length; )
             {
-               _loc2_ = new AreaRankListItem();
-               _loc2_.setData(_areaRankBtnGroup.selectIndex,_loc3_);
-               _list.addChild(_loc2_);
-               _loc3_++;
+               item = new AreaRankListItem();
+               item.setData(_areaRankBtnGroup.selectIndex,i);
+               _list.addChild(item);
+               i++;
             }
          }
          _panel.invalidateViewport();
@@ -126,28 +125,28 @@ package ddQiYuan.view
          DDQiYuanManager.instance.removeEventListener("event_query_area_rank_back",onQueryAreaRankBack);
       }
       
-      private function onClickBtn(param1:MouseEvent) : void
+      private function onClickBtn(evt:MouseEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:SelectedButton = param1.target as SelectedButton;
-         if(_areaRankBtnGroup.getItemByIndex(_areaRankBtnGroup.selectIndex) != _loc2_)
+         var clickTime:int = 0;
+         var targetBtn:SelectedButton = evt.target as SelectedButton;
+         if(_areaRankBtnGroup.getItemByIndex(_areaRankBtnGroup.selectIndex) != targetBtn)
          {
-            _loc3_ = getTimer();
-            if(_loc3_ - _lastClickTime > 1000)
+            clickTime = getTimer();
+            if(clickTime - _lastClickTime > 1000)
             {
-               _lastClickTime = _loc3_;
+               _lastClickTime = clickTime;
             }
             else
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.common.clickTooOften"));
-               param1.stopImmediatePropagation();
+               evt.stopImmediatePropagation();
             }
          }
       }
       
-      private function onQueryAreaRankBack(param1:CEvent) : void
+      private function onQueryAreaRankBack(evt:CEvent) : void
       {
-         var _loc2_:int = param1.data as int;
+         var type:int = evt.data as int;
          updateList();
       }
       

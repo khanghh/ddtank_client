@@ -72,9 +72,9 @@ package ddt.data.player
          return _IsVote;
       }
       
-      public function set IsVote(param1:Boolean) : void
+      public function set IsVote(value:Boolean) : void
       {
-         _IsVote = param1;
+         _IsVote = value;
       }
       
       public function get OffLineHour() : int
@@ -83,37 +83,37 @@ package ddt.data.player
          {
             return -2;
          }
-         var _loc4_:int = 0;
-         var _loc3_:Date = DateUtils.dealWithStringDate(LastDate);
-         var _loc2_:Date = DateUtils.dealWithStringDate(ConsortionModelManager.Instance.model.systemDate);
-         var _loc1_:Number = (_loc2_.valueOf() - _loc3_.valueOf()) / 3600000;
-         _loc4_ = _loc1_ < 1?-1:Number(Math.floor(_loc1_));
-         if(_loc1_ < 1)
+         var totalHours:int = 0;
+         var oldDate:Date = DateUtils.dealWithStringDate(LastDate);
+         var nowDate:Date = DateUtils.dealWithStringDate(ConsortionModelManager.Instance.model.systemDate);
+         var hours:Number = (nowDate.valueOf() - oldDate.valueOf()) / 3600000;
+         totalHours = hours < 1?-1:Number(Math.floor(hours));
+         if(hours < 1)
          {
-            minute = _loc1_ * 60;
+            minute = hours * 60;
             if(minute <= 0)
             {
                minute = 1;
             }
          }
-         if(_loc1_ > 24 && _loc1_ < 720)
+         if(hours > 24 && hours < 720)
          {
-            day = Math.floor(_loc1_ / 24);
+            day = Math.floor(hours / 24);
          }
-         return _loc4_;
+         return totalHours;
       }
       
-      override public function set Grade(param1:int) : void
+      override public function set Grade(value:int) : void
       {
-         if(_grade == param1 || param1 <= 0)
+         if(_grade == value || value <= 0)
          {
             return;
          }
-         if(_grade != 0 && _grade < param1)
+         if(_grade != 0 && _grade < value)
          {
             IsUpGrade = true;
          }
-         _grade = param1;
+         _grade = value;
          onPropertiesChanged("Grade");
       }
    }

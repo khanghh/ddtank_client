@@ -12,31 +12,31 @@ package org.as3commons.reflect
       
       private var _value:String;
       
-      public function MetadataArgument(param1:String, param2:String)
+      public function MetadataArgument(key:String, value:String)
       {
          super();
-         this._key = param1;
-         this._value = param2;
+         this._key = key;
+         this._value = value;
       }
       
-      public static function newInstance(param1:String, param2:String) : MetadataArgument
+      public static function newInstance(name:String, value:String) : MetadataArgument
       {
-         var _loc3_:String = getCacheKeyByNameAndValue(param1,param2);
-         if(!_cache[_loc3_])
+         var cacheKey:String = getCacheKeyByNameAndValue(name,value);
+         if(!_cache[cacheKey])
          {
-            _cache[_loc3_] = new MetadataArgument(param1,param2);
+            _cache[cacheKey] = new MetadataArgument(name,value);
          }
-         return _cache[_loc3_];
+         return _cache[cacheKey];
       }
       
-      public static function getCacheKey(param1:MetadataArgument) : String
+      public static function getCacheKey(arg:MetadataArgument) : String
       {
-         return getCacheKeyByNameAndValue(param1.key,param1.value);
+         return getCacheKeyByNameAndValue(arg.key,arg.value);
       }
       
-      public static function getCacheKeyByNameAndValue(param1:String, param2:String) : String
+      public static function getCacheKeyByNameAndValue(key:String, value:String) : String
       {
-         return param1 + ":" + param2;
+         return key + ":" + value;
       }
       
       public function get key() : String
@@ -49,18 +49,18 @@ package org.as3commons.reflect
          return this._value;
       }
       
-      public function equals(param1:Object) : Boolean
+      public function equals(other:Object) : Boolean
       {
-         if(this === param1)
+         if(this === other)
          {
             return true;
          }
-         if(!(param1 is MetadataArgument))
+         if(!(other is MetadataArgument))
          {
             return false;
          }
-         var _loc2_:MetadataArgument = MetadataArgument(param1);
-         return _loc2_.key === this.key && _loc2_.value === this.value;
+         var that:MetadataArgument = MetadataArgument(other);
+         return that.key === this.key && that.value === this.value;
       }
    }
 }

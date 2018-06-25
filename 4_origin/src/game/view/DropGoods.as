@@ -69,87 +69,87 @@ package game.view
       
       private var timeline:TimelineLite;
       
-      public function DropGoods(param1:DisplayObjectContainer, param2:DisplayObject, param3:Point, param4:Point, param5:int)
+      public function DropGoods(_container:DisplayObjectContainer, _goods:DisplayObject, _beginPoint:Point, _endPoint:Point, _goldNum:int)
       {
          super();
-         container = param1;
-         goods = param2;
-         beginPoint = param3;
-         endPoint = param4;
-         goldNum = param5;
+         container = _container;
+         goods = _goods;
+         beginPoint = _beginPoint;
+         endPoint = _endPoint;
+         goldNum = _goldNum;
       }
       
-      public function start(param1:int = 1) : void
+      public function start(type:int = 1) : void
       {
          if(goods == null || beginPoint == null)
          {
             return;
          }
-         _type = param1;
+         _type = type;
          goods.x = beginPoint.x;
          goods.y = beginPoint.y;
          container.addChild(goods);
          midPoint = getLinePoint(beginPoint);
-         var _loc2_:Point = new Point(beginPoint.x - (beginPoint.x - midPoint.x) / 2,beginPoint.y - 200);
-         goDown(midPoint,_loc2_);
+         var p:Point = new Point(beginPoint.x - (beginPoint.x - midPoint.x) / 2,beginPoint.y - 200);
+         goDown(midPoint,p);
          isOver = false;
       }
       
-      private function getLinePoint(param1:Point) : Point
+      private function getLinePoint(pot:Point) : Point
       {
-         var _loc4_:int = 0;
-         var _loc2_:Point = new Point();
-         var _loc3_:* = 45;
+         var k:int = 0;
+         var point:Point = new Point();
+         var space:* = 45;
          _goodsId = count;
          if(_type == 1)
          {
-            _loc4_ = 3;
-            _loc2_.y = param1.y - 30;
+            k = 3;
+            point.y = pot.y - 30;
          }
          else if(_type == 2)
          {
-            _loc4_ = 2;
-            _loc2_.y = param1.y + Math.random() * 90 + 10;
+            k = 2;
+            point.y = pot.y + Math.random() * 90 + 10;
          }
-         if(count % 2 == 0 && param1.x - _loc3_ * count / _loc4_ > param1.x - 350)
+         if(count % 2 == 0 && pot.x - space * count / k > pot.x - 350)
          {
-            _loc2_.x = param1.x - _loc3_ * count / _loc4_;
+            point.x = pot.x - space * count / k;
          }
-         else if(count % 2 == 1 && param1.x + _loc3_ * count / _loc4_ < param1.x + 300)
+         else if(count % 2 == 1 && pot.x + space * count / k < pot.x + 300)
          {
-            _loc2_.x = param1.x + _loc3_ * count / _loc4_;
+            point.x = pot.x + space * count / k;
          }
          else
          {
-            _loc2_.x = !!(count % 2)?param1.x + _loc3_ * Math.random() * (count / _loc4_):Number(param1.x - _loc3_ * Math.random() * (count / _loc4_));
+            point.x = !!(count % 2)?pot.x + space * Math.random() * (count / k):Number(pot.x - space * Math.random() * (count / k));
          }
-         if(container.localToGlobal(_loc2_).x < 100)
+         if(container.localToGlobal(point).x < 100)
          {
-            _loc2_.x = param1.x + _loc3_ * count / _loc4_;
+            point.x = pot.x + space * count / k;
          }
-         if(container.localToGlobal(_loc2_).x > 900)
+         if(container.localToGlobal(point).x > 900)
          {
-            _loc2_.x = param1.x - _loc3_ * count / _loc4_;
+            point.x = pot.x - space * count / k;
          }
          count = Number(count) + 1;
-         return _loc2_;
+         return point;
       }
       
-      private function goDown(param1:Point, param2:Point) : void
+      private function goDown(p1:Point, p2:Point) : void
       {
          SoundManager.instance.play("170");
          if(_type == 1)
          {
             tweenDown = TweenMax.to(goods,1.2 + _goodsId / 10,{
                "bezier":[{
-                  "x":param2.x,
-                  "y":param2.y
+                  "x":p2.x,
+                  "y":p2.y
                },{
-                  "x":param1.x,
-                  "y":param1.y
+                  "x":p1.x,
+                  "y":p1.y
                },{
-                  "x":param1.x,
-                  "y":param1.y
+                  "x":p1.x,
+                  "y":p1.y
                }],
                "scaleX":1,
                "scaleY":1,
@@ -161,14 +161,14 @@ package game.view
          {
             tweenDown = TweenMax.to(goods,1.2 + _goodsId / 10,{
                "bezier":[{
-                  "x":param2.x,
-                  "y":param2.y
+                  "x":p2.x,
+                  "y":p2.y
                },{
-                  "x":param1.x,
+                  "x":p1.x,
                   "y":beginPoint.y - 10
                },{
-                  "x":param1.x,
-                  "y":param1.y
+                  "x":p1.x,
+                  "y":p1.y
                }],
                "scaleX":1,
                "scaleY":1,
@@ -180,7 +180,7 @@ package game.view
       
       private function __onCompleteGodown() : void
       {
-         var _loc1_:* = null;
+         var p:* = null;
          tweenDown.kill();
          tweenDown = null;
          if(goods == null)
@@ -189,15 +189,15 @@ package game.view
          }
          if(_type == 1)
          {
-            _loc1_ = new Point(midPoint.x - (midPoint.x - endPoint.x) / 2,midPoint.y - 100);
+            p = new Point(midPoint.x - (midPoint.x - endPoint.x) / 2,midPoint.y - 100);
             goodBox = ClassUtils.CreatInstance("asset.game.GoodFlashBox") as MovieClip;
-            timeOutId = setTimeout(goPackUp,500 + _goodsId * 50,endPoint,_loc1_);
+            timeOutId = setTimeout(goPackUp,500 + _goodsId * 50,endPoint,p);
          }
          else if(_type == 2)
          {
-            _loc1_ = new Point(midPoint.x - (midPoint.x - endPoint.x) / 2,midPoint.y - 100);
+            p = new Point(midPoint.x - (midPoint.x - endPoint.x) / 2,midPoint.y - 100);
             goodBox = ClassUtils.CreatInstance("asset.game.FlashLight") as MovieClip;
-            timeOutId = setTimeout(goPackUp,600 + _goodsId * 100,endPoint,_loc1_);
+            timeOutId = setTimeout(goPackUp,600 + _goodsId * 100,endPoint,p);
          }
          goodBox.x = goods.x;
          goodBox.y = goods.y;
@@ -209,10 +209,10 @@ package game.view
          SoundManager.instance.play("172");
       }
       
-      private function goPackUp(param1:Point, param2:Point) : void
+      private function goPackUp(p1:Point, p2:Point) : void
       {
-         p1 = param1;
-         p2 = param2;
+         p1 = p1;
+         p2 = p2;
          clearTimeout(timeOutId);
          if(goods == null)
          {
@@ -287,7 +287,7 @@ package game.view
       
       private function onCompletePackUp() : void
       {
-         var _loc1_:* = null;
+         var sp:* = null;
          tweenUp.kill();
          tweenUp = null;
          if(goods == null)
@@ -303,11 +303,11 @@ package game.view
             timeline = new TimelineLite();
             if(goods is BaseCell)
             {
-               _loc1_ = (goods as BaseCell).getContent();
-               if(_loc1_)
+               sp = (goods as BaseCell).getContent();
+               if(sp)
                {
-                  _loc1_.x = _loc1_.x - _loc1_.width / 2;
-                  _loc1_.y = _loc1_.y - _loc1_.height / 2;
+                  sp.x = sp.x - sp.width / 2;
+                  sp.y = sp.y - sp.height / 2;
                }
             }
             headGlow = ClassUtils.CreatInstance("asset.game.HeadGlow") as MovieClip;
@@ -364,12 +364,12 @@ package game.view
       
       private function getBagAniam() : MovieClipWrapper
       {
-         var _loc1_:MovieClip = ClassUtils.CreatInstance("asset.game.bagAniam") as MovieClip;
-         var _loc2_:Point = ComponentFactory.Instance.creatCustomObject("dropGoods.bagPoint");
-         _loc1_.x = _loc2_.x;
-         _loc1_.y = _loc2_.y;
-         var _loc3_:MovieClipWrapper = new MovieClipWrapper(_loc1_,true,true);
-         return _loc3_;
+         var mc:MovieClip = ClassUtils.CreatInstance("asset.game.bagAniam") as MovieClip;
+         var pt:Point = ComponentFactory.Instance.creatCustomObject("dropGoods.bagPoint");
+         mc.x = pt.x;
+         mc.y = pt.y;
+         var bagmc:MovieClipWrapper = new MovieClipWrapper(mc,true,true);
+         return bagmc;
       }
       
       public function dispose() : void

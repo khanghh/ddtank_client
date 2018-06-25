@@ -10,10 +10,10 @@ package fightLib.command
       
       private var _frame:FightLibAlertView;
       
-      public function PopUpFrameWaitCommand(param1:String, param2:Function, param3:String = "", param4:Function = null, param5:String = "", param6:Function = null, param7:Boolean = true, param8:Boolean = false)
+      public function PopUpFrameWaitCommand(infoString:String, $finishFun:Function, okLabel:String = "", okFun:Function = null, cancelLabel:String = "", cancelFun:Function = null, showOkBtn:Boolean = true, showCancelBtn:Boolean = false)
       {
-         super(param2);
-         _frame = ComponentFactory.Instance.creatCustomObject("fightLib.view.FightLibAlertView",[param1,param3,finish,param5,param6,param7,param8]);
+         super($finishFun);
+         _frame = ComponentFactory.Instance.creatCustomObject("fightLib.view.FightLibAlertView",[infoString,okLabel,finish,cancelLabel,cancelFun,showOkBtn,showCancelBtn]);
       }
       
       override public function excute() : void

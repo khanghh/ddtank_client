@@ -46,9 +46,9 @@ package growthPackage
       
       private var _funcParams:Array;
       
-      public function GrowthPackageManager(param1:IEventDispatcher = null)
+      public function GrowthPackageManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : GrowthPackageManager
@@ -77,50 +77,49 @@ package growthPackage
          model.addEventListener("icon_close",__iconCloseHandler);
       }
       
-      private function __growthPackageHandler(param1:CrazyTankSocketEvent) : void
+      private function __growthPackageHandler(event:CrazyTankSocketEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readInt();
-         switch(int(_loc2_) - 1)
+         var pkg:PackageIn = event.pkg;
+         var cmd:int = pkg.readInt();
+         switch(int(cmd) - 1)
          {
             case 0:
-               updateData(_loc3_);
+               updateData(pkg);
                break;
             case 1:
-               updateData(_loc3_);
+               updateData(pkg);
                break;
             case 2:
-               isOpenHandler(_loc3_);
+               isOpenHandler(pkg);
          }
       }
       
-      private function updateData(param1:PackageIn) : void
+      private function updateData(pkg:PackageIn) : void
       {
-         var _loc3_:int = 0;
-         model.isBuy = param1.readInt();
-         var _loc2_:Array = [];
-         _loc3_ = 0;
-         while(_loc3_ < indexMax)
+         var i:int = 0;
+         model.isBuy = pkg.readInt();
+         var arr:Array = [];
+         for(i = 0; i < indexMax; )
          {
-            _loc2_.push(param1.readInt());
-            _loc3_++;
+            arr.push(pkg.readInt());
+            i++;
          }
-         model.isCompleteList = _loc2_;
+         model.isCompleteList = arr;
          model.dataChange("dataChange");
       }
       
-      private function isOpenHandler(param1:PackageIn) : void
+      private function isOpenHandler(pkg:PackageIn) : void
       {
-         growthPackageIsOpen = param1.readBoolean();
+         growthPackageIsOpen = pkg.readBoolean();
          showEnterIcon();
       }
       
-      public function templateDataSetup(param1:Array) : void
+      public function templateDataSetup(dataList:Array) : void
       {
-         model.itemInfoList = param1;
+         model.itemInfoList = dataList;
       }
       
-      private function __iconCloseHandler(param1:GrowthPackageEvent) : void
+      private function __iconCloseHandler(evt:GrowthPackageEvent) : void
       {
          disposeEnterIcon();
       }
@@ -142,25 +141,25 @@ package growthPackage
          HallIconManager.instance.updateSwitchHandler("growthPackage",false);
       }
       
-      public function onClickIcon(param1:MouseEvent) : void
+      public function onClickIcon(e:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var loader:* = null;
          if(model.itemInfoList)
          {
             loadUIModule(showFrame);
          }
          else
          {
-            _loc2_ = LoaderCreate.Instance.createActivitySystemItemsLoader();
-            _loc2_.addEventListener("complete",__dataLoaderCompleteHandler);
-            LoadResourceManager.Instance.startLoad(_loc2_);
+            loader = LoaderCreate.Instance.createActivitySystemItemsLoader();
+            loader.addEventListener("complete",__dataLoaderCompleteHandler);
+            LoadResourceManager.Instance.startLoad(loader);
          }
       }
       
-      private function __dataLoaderCompleteHandler(param1:LoaderEvent) : void
+      private function __dataLoaderCompleteHandler(event:LoaderEvent) : void
       {
-         var _loc2_:BaseLoader = param1.loader;
-         _loc2_.removeEventListener("complete",__dataLoaderCompleteHandler);
+         var loader:BaseLoader = event.loader;
+         loader.removeEventListener("complete",__dataLoaderCompleteHandler);
          loadUIModule(showFrame);
       }
       
@@ -171,27 +170,27 @@ package growthPackage
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc1_:Number = ServerConfigManager.instance.growthPackagePrice;
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.growthPackage.buyPriceMsg",_loc1_),"",LanguageMgr.GetTranslation("cancel"),true,true,false,2,null,"SimpleAlert",30,true,1);
-         _loc2_.addEventListener("response",__onBuyFrameResponse);
+         var buyPrice:Number = ServerConfigManager.instance.growthPackagePrice;
+         var _buyFrame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.growthPackage.buyPriceMsg",buyPrice),"",LanguageMgr.GetTranslation("cancel"),true,true,false,2,null,"SimpleAlert",30,true,1);
+         _buyFrame.addEventListener("response",__onBuyFrameResponse);
       }
       
-      private function __onBuyFrameResponse(param1:FrameEvent) : void
+      private function __onBuyFrameResponse(evt:FrameEvent) : void
       {
-         var _loc3_:Number = NaN;
+         var buyPrice:Number = NaN;
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         switch(int(param1.responseCode) - 2)
+         var frame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         switch(int(evt.responseCode) - 2)
          {
             case 0:
             case 1:
-               _loc3_ = ServerConfigManager.instance.growthPackagePrice;
-               CheckMoneyUtils.instance.checkMoney(_loc2_.isBand,_loc3_,onCompleteHandler);
+               buyPrice = ServerConfigManager.instance.growthPackagePrice;
+               CheckMoneyUtils.instance.checkMoney(frame.isBand,buyPrice,onCompleteHandler);
          }
-         _loc2_.removeEventListener("response",__onBuyFrameResponse);
-         ObjectUtils.disposeAllChildren(_loc2_);
-         ObjectUtils.disposeObject(_loc2_);
-         _loc2_ = null;
+         frame.removeEventListener("response",__onBuyFrameResponse);
+         ObjectUtils.disposeAllChildren(frame);
+         ObjectUtils.disposeObject(frame);
+         frame = null;
       }
       
       private function onCompleteHandler() : void
@@ -201,14 +200,14 @@ package growthPackage
       
       public function showFrame() : void
       {
-         var _loc1_:GrowthPackageFrame = ComponentFactory.Instance.creatComponentByStylename("GrowthPackageFrame");
-         LayerManager.Instance.addToLayer(_loc1_,3,true,1);
+         var frame:GrowthPackageFrame = ComponentFactory.Instance.creatComponentByStylename("GrowthPackageFrame");
+         LayerManager.Instance.addToLayer(frame,3,true,1);
       }
       
-      public function loadUIModule(param1:Function = null, param2:Array = null) : void
+      public function loadUIModule(complete:Function = null, completeParams:Array = null) : void
       {
-         _func = param1;
-         _funcParams = param2;
+         _func = complete;
+         _funcParams = completeParams;
          UIModuleSmallLoading.Instance.progress = 0;
          UIModuleSmallLoading.Instance.show();
          UIModuleLoader.Instance.addEventListener("uiModuleComplete",loadCompleteHandler);
@@ -216,17 +215,17 @@ package growthPackage
          UIModuleLoader.Instance.addUIModuleImp("growthPackage");
       }
       
-      private function onUimoduleLoadProgress(param1:UIModuleEvent) : void
+      private function onUimoduleLoadProgress(event:UIModuleEvent) : void
       {
-         if(param1.module == "growthPackage")
+         if(event.module == "growthPackage")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
       
-      private function loadCompleteHandler(param1:UIModuleEvent) : void
+      private function loadCompleteHandler(event:UIModuleEvent) : void
       {
-         if(param1.module == "growthPackage")
+         if(event.module == "growthPackage")
          {
             UIModuleSmallLoading.Instance.hide();
             UIModuleLoader.Instance.removeEventListener("uiModuleComplete",loadCompleteHandler);

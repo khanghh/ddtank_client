@@ -20,36 +20,36 @@ package gameCommon.view
          super();
       }
       
-      public function setColor(param1:int) : void
+      public function setColor(color:int) : void
       {
-         _color = param1;
+         _color = color;
          draw();
       }
       
       private function draw() : void
       {
-         var _loc1_:Graphics = graphics;
-         _loc1_.clear();
-         _loc1_.beginGradientFill("radial",[_color,_color],_alphas,_ratios);
-         _loc1_.drawCircle(0,0,_radius);
-         _loc1_.endFill();
+         var pen:Graphics = graphics;
+         pen.clear();
+         pen.beginGradientFill("radial",[_color,_color],_alphas,_ratios);
+         pen.drawCircle(0,0,_radius);
+         pen.endFill();
       }
       
-      public function set radius(param1:int) : void
+      public function set radius(val:int) : void
       {
-         _radius = param1;
+         _radius = val;
          draw();
       }
       
-      public function set alphas(param1:String) : void
+      public function set alphas(val:String) : void
       {
-         _alphas = param1.split(",");
+         _alphas = val.split(",");
          draw();
       }
       
-      public function set ratios(param1:String) : void
+      public function set ratios(val:String) : void
       {
-         _ratios = param1.split(",");
+         _ratios = val.split(",");
          draw();
       }
    }

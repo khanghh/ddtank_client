@@ -177,20 +177,20 @@ package consortion.view.selfConsortia
          _skillTxt.text = LanguageMgr.GetTranslation("hundred");
       }
       
-      private function inputText(param1:TextInput) : void
+      private function inputText(txt:TextInput) : void
       {
-         param1.textField.restrict = "0-9";
-         param1.textField.maxChars = 8;
-         param1.mouseChildren = true;
-         param1.mouseEnabled = true;
-         param1.textField.selectable = true;
+         txt.textField.restrict = "0-9";
+         txt.textField.maxChars = 8;
+         txt.mouseChildren = true;
+         txt.mouseEnabled = true;
+         txt.textField.selectable = true;
       }
       
-      private function DynamicText(param1:TextInput) : void
+      private function DynamicText(txt:TextInput) : void
       {
-         param1.textField.selectable = false;
-         param1.mouseEnabled = false;
-         param1.mouseChildren = false;
+         txt.textField.selectable = false;
+         txt.mouseEnabled = false;
+         txt.mouseChildren = false;
       }
       
       private function initEvent() : void
@@ -211,18 +211,18 @@ package consortion.view.selfConsortia
          ConsortionModelManager.Instance.model.removeEventListener("useConditionChange",__conditionChangeHandler);
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(event:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(event.responseCode == 0 || event.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();
          }
       }
       
-      private function __okHandler(param1:MouseEvent) : void
+      private function __okHandler(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var alert:* = null;
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked && checkChange())
          {
@@ -231,8 +231,8 @@ package consortion.view.selfConsortia
          }
          if(PlayerManager.Instance.Self.DutyLevel == 1)
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.ConsortiaAssetManagerFrame.okFunction"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
-            _loc2_.addEventListener("response",__alertResponse);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.ConsortiaAssetManagerFrame.okFunction"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
+            alert.addEventListener("response",__alertResponse);
          }
          else
          {
@@ -242,127 +242,125 @@ package consortion.view.selfConsortia
       
       private function checkChange() : Boolean
       {
-         var _loc10_:int = 0;
-         var _loc7_:int = checkInputValue(_shopLevelTxt1);
-         var _loc2_:int = checkInputValue(_shopLevelTxt2);
-         var _loc1_:int = checkInputValue(_shopLevelTxt3);
-         var _loc5_:int = checkInputValue(_shopLevelTxt4);
-         var _loc4_:int = checkInputValue(_shopLevelTxt5);
-         var _loc9_:int = checkInputValue(_smithTxt);
-         var _loc3_:int = checkInputValue(_skillTxt);
-         var _loc6_:Array = [_loc7_,_loc2_,_loc1_,_loc5_,_loc4_,_loc9_,_loc3_];
-         var _loc8_:Boolean = false;
-         _loc10_ = 0;
-         while(_loc10_ < 7)
+         var i:int = 0;
+         var shopLevel1:int = checkInputValue(_shopLevelTxt1);
+         var shopLevel2:int = checkInputValue(_shopLevelTxt2);
+         var shopLevel3:int = checkInputValue(_shopLevelTxt3);
+         var shopLevel4:int = checkInputValue(_shopLevelTxt4);
+         var shopLevel5:int = checkInputValue(_shopLevelTxt5);
+         var smithLevel:int = checkInputValue(_smithTxt);
+         var skillLevel:int = checkInputValue(_skillTxt);
+         var arr:Array = [shopLevel1,shopLevel2,shopLevel3,shopLevel4,shopLevel5,smithLevel,skillLevel];
+         var bool:Boolean = false;
+         for(i = 0; i < 7; )
          {
-            if(_valueArray[_loc10_] != _loc6_[_loc10_])
+            if(_valueArray[i] != arr[i])
             {
-               _loc8_ = true;
+               bool = true;
             }
-            _loc10_++;
+            i++;
          }
-         return _loc8_;
+         return bool;
       }
       
-      private function __alertResponse(param1:FrameEvent) : void
+      private function __alertResponse(evt:FrameEvent) : void
       {
-         var _loc8_:int = 0;
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         var _loc6_:int = 0;
-         var _loc5_:int = 0;
-         var _loc9_:int = 0;
-         var _loc4_:int = 0;
-         var _loc7_:* = null;
+         var shopLevel1:int = 0;
+         var shopLevel2:int = 0;
+         var shopLevel3:int = 0;
+         var shopLevel4:int = 0;
+         var shopLevel5:int = 0;
+         var smithLevel:int = 0;
+         var skillLevel:int = 0;
+         var arr:* = null;
          SoundManager.instance.play("008");
-         param1.currentTarget.removeEventListener("response",__alertResponse);
-         ObjectUtils.disposeObject(param1.currentTarget);
-         if((param1.responseCode == 3 || param1.responseCode == 2) && checkChange())
+         evt.currentTarget.removeEventListener("response",__alertResponse);
+         ObjectUtils.disposeObject(evt.currentTarget);
+         if((evt.responseCode == 3 || evt.responseCode == 2) && checkChange())
          {
-            _loc8_ = checkInputValue(_shopLevelTxt1);
-            _loc3_ = checkInputValue(_shopLevelTxt2);
-            _loc2_ = checkInputValue(_shopLevelTxt3);
-            _loc6_ = checkInputValue(_shopLevelTxt4);
-            _loc5_ = checkInputValue(_shopLevelTxt5);
-            _loc9_ = checkInputValue(_smithTxt);
-            _loc4_ = checkInputValue(_skillTxt);
-            _loc7_ = [_loc8_,_loc3_,_loc2_,_loc6_,_loc5_,_loc9_,_loc4_];
-            SocketManager.Instance.out.sendConsortiaEquipConstrol(_loc7_);
+            shopLevel1 = checkInputValue(_shopLevelTxt1);
+            shopLevel2 = checkInputValue(_shopLevelTxt2);
+            shopLevel3 = checkInputValue(_shopLevelTxt3);
+            shopLevel4 = checkInputValue(_shopLevelTxt4);
+            shopLevel5 = checkInputValue(_shopLevelTxt5);
+            smithLevel = checkInputValue(_smithTxt);
+            skillLevel = checkInputValue(_skillTxt);
+            arr = [shopLevel1,shopLevel2,shopLevel3,shopLevel4,shopLevel5,smithLevel,skillLevel];
+            SocketManager.Instance.out.sendConsortiaEquipConstrol(arr);
          }
       }
       
-      private function checkInputValue(param1:TextInput) : int
+      private function checkInputValue(txt:TextInput) : int
       {
-         if(param1.text == "")
+         if(txt.text == "")
          {
             return 0;
          }
-         return int(param1.text);
+         return int(txt.text);
       }
       
-      private function __cancelHandler(param1:MouseEvent) : void
+      private function __cancelHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          dispose();
       }
       
-      private function __taxHandler(param1:MouseEvent) : void
+      private function __taxHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          ConsortionModelManager.Instance.alertTaxFrame();
       }
       
-      private function __conditionChangeHandler(param1:ConsortionEvent) : void
+      private function __conditionChangeHandler(event:ConsortionEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:Vector.<ConsortiaAssetLevelOffer> = ConsortionModelManager.Instance.model.useConditionList;
-         var _loc3_:int = _loc2_.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var i:int = 0;
+         var list:Vector.<ConsortiaAssetLevelOffer> = ConsortionModelManager.Instance.model.useConditionList;
+         var len:int = list.length;
+         for(i = 0; i < len; )
          {
-            if(_loc2_[_loc4_].Type == 1)
+            if(list[i].Type == 1)
             {
-               switch(int(_loc2_[_loc4_].Level) - 1)
+               switch(int(list[i].Level) - 1)
                {
                   case 0:
-                     var _loc5_:String = _loc2_[_loc4_].Riches;
+                     var _loc5_:String = list[i].Riches;
                      _valueArray[0] = _loc5_;
                      _shopLevelTxt1.text = _loc5_;
                      break;
                   case 1:
-                     _loc5_ = _loc2_[_loc4_].Riches;
+                     _loc5_ = list[i].Riches;
                      _valueArray[1] = _loc5_;
                      _shopLevelTxt2.text = _loc5_;
                      break;
                   case 2:
-                     _loc5_ = _loc2_[_loc4_].Riches;
+                     _loc5_ = list[i].Riches;
                      _valueArray[2] = _loc5_;
                      _shopLevelTxt3.text = _loc5_;
                      break;
                   case 3:
-                     _loc5_ = _loc2_[_loc4_].Riches;
+                     _loc5_ = list[i].Riches;
                      _valueArray[3] = _loc5_;
                      _shopLevelTxt4.text = _loc5_;
                      break;
                   case 4:
-                     _loc5_ = _loc2_[_loc4_].Riches;
+                     _loc5_ = list[i].Riches;
                      _valueArray[4] = _loc5_;
                      _shopLevelTxt5.text = _loc5_;
                }
             }
-            else if(_loc2_[_loc4_].Type == 2)
+            else if(list[i].Type == 2)
             {
-               _loc5_ = _loc2_[_loc4_].Riches;
+               _loc5_ = list[i].Riches;
                _valueArray[5] = _loc5_;
                _smithTxt.text = _loc5_;
             }
-            else if(_loc2_[_loc4_].Type == 3)
+            else if(list[i].Type == 3)
             {
-               _loc5_ = _loc2_[_loc4_].Riches;
+               _loc5_ = list[i].Riches;
                _valueArray[6] = _loc5_;
                _skillTxt.text = _loc5_;
             }
-            _loc4_++;
+            i++;
          }
       }
       

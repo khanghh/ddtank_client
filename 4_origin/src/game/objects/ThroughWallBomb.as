@@ -12,9 +12,9 @@ package game.objects
    {
        
       
-      public function ThroughWallBomb(param1:Bomb, param2:Living, param3:int = 0, param4:Boolean = false)
+      public function ThroughWallBomb(info:Bomb, owner:Living, refineryLevel:int = 0, isPhantom:Boolean = false)
       {
-         super(param1,param2,param3,param4);
+         super(info,owner,refineryLevel,isPhantom);
       }
       
       override public function bomb() : void
@@ -32,9 +32,9 @@ package game.objects
          blastOutEffect.movie.y = y;
          _map.addToPhyLayer(blastOutEffect.movie);
          blastOutEffect.movie.visible = true;
-         blastOutEffect.addEventListener("complete",function(param1:Event):void
+         blastOutEffect.addEventListener("complete",function(evt:Event):void
          {
-            param1.currentTarget.removeEventListener("complete",arguments.callee);
+            evt.currentTarget.removeEventListener("complete",arguments.callee);
             ObjectUtils.disposeObject(blastOutEffect);
          });
          blastOutEffect.play();

@@ -51,17 +51,16 @@ package GodSyah
       
       private function _createItem() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var item:* = null;
          _vbox = ComponentFactory.Instance.creatComponentByStylename("godsyah.syahview.syahitemVbox");
-         var _loc1_:Vector.<InventoryItemInfo> = SyahManager.Instance.cellItems;
-         _loc3_ = 0;
-         while(_loc3_ < _loc1_.length)
+         var infos:Vector.<InventoryItemInfo> = SyahManager.Instance.cellItems;
+         for(i = 0; i < infos.length; )
          {
-            _loc2_ = ComponentFactory.Instance.creatCustomObject("godsyah.syahview.syahitem");
-            _loc2_.setSyahItemInfo(_loc1_[_loc3_]);
-            _vbox.addChild(_loc2_);
-            _loc3_++;
+            item = ComponentFactory.Instance.creatCustomObject("godsyah.syahview.syahitem");
+            item.setSyahItemInfo(infos[i]);
+            _vbox.addChild(item);
+            i++;
          }
          _scrollpanel = ComponentFactory.Instance.creatComponentByStylename("godsyah.syahview.syahitemList");
          _scrollpanel.setView(_vbox);
@@ -78,7 +77,7 @@ package GodSyah
          return this;
       }
       
-      public function setState(param1:int, param2:int) : void
+      public function setState(type:int, id:int) : void
       {
       }
       

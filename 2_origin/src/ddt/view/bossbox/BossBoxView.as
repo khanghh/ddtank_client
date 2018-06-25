@@ -53,15 +53,15 @@ package ddt.view.bossbox
       
       private var _winTime:uint;
       
-      public function BossBoxView(param1:int, param2:int, param3:Array, param4:int = -1, param5:int = -1)
+      public function BossBoxView(t:int, id:int, itemArr:Array, fightLibType:int = -1, fightLibLevel:int = -1)
       {
          super();
          buttonMode = true;
-         _templateIds = param3;
-         boxType = param1;
-         boxID = param2;
-         _fightLibType = param4;
-         _fightLibLevel = param5;
+         _templateIds = itemArr;
+         boxType = t;
+         boxID = id;
+         _fightLibType = fightLibType;
+         _fightLibLevel = fightLibLevel;
          init();
          initEvent();
       }
@@ -100,7 +100,7 @@ package ddt.view.bossbox
          removeEventListener("click",_boxClick);
       }
       
-      private function _boxClick(param1:MouseEvent) : void
+      private function _boxClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          removeEvent();
@@ -109,9 +109,9 @@ package ddt.view.bossbox
          _time.addEventListener("timerComplete",_time_complete);
       }
       
-      private function _time_complete(param1:Event) : void
+      private function _time_complete(e:Event) : void
       {
-         var _loc2_:* = null;
+         var ai:* = null;
          if(boxType == 3)
          {
             _frame = ComponentFactory.Instance.creatComponentByStylename("bossbox.AwardsFrame");
@@ -122,12 +122,12 @@ package ddt.view.bossbox
             _alertTitle = ComponentFactory.Instance.creatComponentByStylename("bossbox.alert.alertTextStyle");
             _alertTitle.text = LanguageMgr.GetTranslation("tank.timeBox.awardsTitle");
             _frame.addToContent(_alertTitle);
-            _loc2_ = new AlertInfo();
-            _loc2_.title = LanguageMgr.GetTranslation("tank.timeBox.awardsInfo");
-            _loc2_.showCancel = false;
-            _loc2_.moveEnable = false;
-            _loc2_.submitLabel = LanguageMgr.GetTranslation("tank.timeBox.awardsBtn");
-            _frame.info = _loc2_;
+            ai = new AlertInfo();
+            ai.title = LanguageMgr.GetTranslation("tank.timeBox.awardsInfo");
+            ai.showCancel = false;
+            ai.moveEnable = false;
+            ai.submitLabel = LanguageMgr.GetTranslation("tank.timeBox.awardsBtn");
+            _frame.info = ai;
             _frame.submitButtonStyle = "bossbox.getAwardBtn";
             _frame.addEventListener("response",_close);
             LayerManager.Instance.addToLayer(_frame,3,true,1);
@@ -152,7 +152,7 @@ package ddt.view.bossbox
          _time = null;
       }
       
-      private function _close(param1:Event) : void
+      private function _close(e:Event) : void
       {
          switch(int(boxType))
          {

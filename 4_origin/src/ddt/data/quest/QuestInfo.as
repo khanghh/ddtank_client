@@ -14,6 +14,7 @@ package ddt.data.quest
    import ddt.manager.TimeManager;
    import hall.gameVIP.Game360VIP;
    import horse.HorseManager;
+   import newOldPlayer.NewOldPlayerManager;
    import pet.data.PetInfo;
    import petsBag.PetsBagManager;
    import quest.TaskManager;
@@ -145,69 +146,68 @@ package ddt.data.quest
          super();
       }
       
-      public static function createFromXML(param1:XML) : QuestInfo
+      public static function createFromXML(xml:XML) : QuestInfo
       {
-         var _loc11_:int = 0;
-         var _loc7_:* = null;
-         var _loc5_:* = null;
-         var _loc9_:int = 0;
-         var _loc4_:* = null;
-         var _loc2_:* = null;
-         var _loc10_:* = null;
-         var _loc6_:QuestInfo = new QuestInfo();
-         _loc6_.QuestID = param1.@ID;
-         _loc6_.Type = param1.@QuestID;
-         _loc6_.Detail = param1.@Detail;
-         _loc6_.Title = param1.@Title;
-         _loc6_.Objective = param1.@Objective;
-         _loc6_.StarLev = param1.@StarLev;
-         _loc6_.QuestLevel = param1.@QuestLevel;
-         _loc6_.NeedMinLevel = param1.@NeedMinLevel;
-         _loc6_.NeedMaxLevel = param1.@NeedMaxLevel;
-         _loc6_.PreQuestID = param1.@PreQuestID;
-         _loc6_.NextQuestID = param1.@NextQuestID;
-         _loc6_.CanRepeat = param1.@CanRepeat == "true"?true:false;
-         _loc6_.RepeatInterval = param1.@RepeatInterval;
-         _loc6_.RepeatMax = param1.@RepeatMax;
-         _loc6_.RewardGold = param1.@RewardGold;
-         _loc6_.RewardGP = param1.@RewardGP;
-         _loc6_.RewardMoney = param1.@RewardMoney;
-         _loc6_.OneKeyFinishNeedMoney = param1.@OneKeyFinishNeedMoney;
-         _loc6_.TrusteeshipCost = param1.@CollocationCost;
-         _loc6_.TrusteeshipNeedTime = param1.@CollocationColdTime;
-         _loc6_.Rank = param1.@Rank;
-         _loc6_.RewardOffer = param1.@RewardOffer;
-         _loc6_.RewardRiches = param1.@RewardRiches;
-         _loc6_.RewardBindMoney = param1.@RewardBindMoney;
-         _loc6_.TimeLimit = param1.@TimeMode;
-         _loc6_.RewardBuffID = param1.@RewardBuffID;
-         _loc6_.RewardBuffDate = param1.@RewardBuffDate;
-         _loc6_.Level2NeedMoney = param1.@Level2NeedMoney;
-         _loc6_.Level3NeedMoney = param1.@Level3NeedMoney;
-         _loc6_.Level4NeedMoney = param1.@Level4NeedMoney;
-         _loc6_.Level5NeedMoney = param1.@Level5NeedMoney;
-         _loc6_.otherCondition = param1.@IsOther;
-         _loc6_.StartDate = DateUtils.decodeDated(String(param1.@StartDate));
-         _loc6_.EndDate = DateUtils.decodeDated(String(param1.@EndDate));
-         _loc6_.MapID = param1.@MapID;
-         _loc6_.AutoEquip = StringUtils.converBoolean(param1.@AutoEquip);
-         _loc6_.optionalConditionNeed = param1.@NotMustCount;
-         _loc6_.isManuGet = param1.@IsAccept == "true"?true:false;
-         var _loc3_:XMLList = param1..Item_Condiction;
-         _loc11_ = 0;
-         for(; _loc11_ < _loc3_.length(); _loc6_.addCondition(_loc5_),_loc11_++)
+         var i:int = 0;
+         var tempCondXML:* = null;
+         var tempCondition:* = null;
+         var j:int = 0;
+         var tempItemXML:* = null;
+         var countAryy:* = null;
+         var tempReward:* = null;
+         var q:QuestInfo = new QuestInfo();
+         q.QuestID = xml.@ID;
+         q.Type = xml.@QuestID;
+         q.Detail = xml.@Detail;
+         q.Title = xml.@Title;
+         q.Objective = xml.@Objective;
+         q.StarLev = xml.@StarLev;
+         q.QuestLevel = xml.@QuestLevel;
+         q.NeedMinLevel = xml.@NeedMinLevel;
+         q.NeedMaxLevel = xml.@NeedMaxLevel;
+         q.PreQuestID = xml.@PreQuestID;
+         q.NextQuestID = xml.@NextQuestID;
+         q.CanRepeat = xml.@CanRepeat == "true"?true:false;
+         q.RepeatInterval = xml.@RepeatInterval;
+         q.RepeatMax = xml.@RepeatMax;
+         q.RewardGold = xml.@RewardGold;
+         q.RewardGP = xml.@RewardGP;
+         q.RewardMoney = xml.@RewardMoney;
+         q.OneKeyFinishNeedMoney = xml.@OneKeyFinishNeedMoney;
+         q.TrusteeshipCost = xml.@CollocationCost;
+         q.TrusteeshipNeedTime = xml.@CollocationColdTime;
+         q.Rank = xml.@Rank;
+         q.RewardOffer = xml.@RewardOffer;
+         q.RewardRiches = xml.@RewardRiches;
+         q.RewardBindMoney = xml.@RewardBindMoney;
+         q.TimeLimit = xml.@TimeMode;
+         q.RewardBuffID = xml.@RewardBuffID;
+         q.RewardBuffDate = xml.@RewardBuffDate;
+         q.Level2NeedMoney = xml.@Level2NeedMoney;
+         q.Level3NeedMoney = xml.@Level3NeedMoney;
+         q.Level4NeedMoney = xml.@Level4NeedMoney;
+         q.Level5NeedMoney = xml.@Level5NeedMoney;
+         q.otherCondition = xml.@IsOther;
+         q.StartDate = DateUtils.decodeDated(String(xml.@StartDate));
+         q.EndDate = DateUtils.decodeDated(String(xml.@EndDate));
+         q.MapID = xml.@MapID;
+         q.AutoEquip = StringUtils.converBoolean(xml.@AutoEquip);
+         q.optionalConditionNeed = xml.@NotMustCount;
+         q.isManuGet = xml.@IsAccept == "true"?true:false;
+         var conditions:XMLList = xml..Item_Condiction;
+         for(i = 0; i < conditions.length(); q.addCondition(tempCondition),i++)
          {
-            _loc7_ = _loc3_[_loc11_];
-            _loc5_ = new QuestCondition(_loc6_.QuestID,_loc7_.@CondictionID,_loc7_.@CondictionType,_loc7_.@CondictionTitle,_loc7_.@Para1,_loc7_.@Para2,_loc7_.@Turn);
-            if(_loc7_.@isOpitional == "true")
+            tempCondXML = conditions[i];
+            tempCondition = new QuestCondition(q.QuestID,tempCondXML.@CondictionID,tempCondXML.@CondictionType,tempCondXML.@CondictionTitle,tempCondXML.@Para1,tempCondXML.@Para2,tempCondXML.@Turn);
+            if(tempCondXML.@isOpitional == "true")
             {
-               _loc5_.isOpitional = true;
+               tempCondition.isOpitional = true;
             }
             else
             {
-               _loc5_.isOpitional = false;
+               tempCondition.isOpitional = false;
             }
-            var _loc12_:* = _loc5_.type;
+            var _loc12_:* = tempCondition.type;
             if(1 !== _loc12_)
             {
                if(2 !== _loc12_)
@@ -222,35 +222,35 @@ package ddt.data.quest
                            {
                               if(20 === _loc12_)
                               {
-                                 switch(int(_loc5_.param) - 1)
+                                 switch(int(tempCondition.param) - 1)
                                  {
                                     case 0:
-                                       if(!_loc6_.isTimeOut())
+                                       if(!q.isTimeOut())
                                        {
-                                          TaskManager.instance.addDesktopListener(_loc5_);
+                                          TaskManager.instance.addDesktopListener(tempCondition);
                                        }
                                        break;
                                     case 1:
-                                       TaskManager.instance.addAnnexListener(_loc5_);
+                                       TaskManager.instance.addAnnexListener(tempCondition);
                                        break;
                                     case 2:
-                                       TaskManager.instance.addFriendListener(_loc5_);
+                                       TaskManager.instance.addFriendListener(tempCondition);
                                     default:
-                                       TaskManager.instance.addFriendListener(_loc5_);
+                                       TaskManager.instance.addFriendListener(tempCondition);
                                  }
                               }
                            }
                            continue;
                         }
                      }
-                     addr244:
-                     TaskManager.instance.addItemListener(_loc5_.param);
+                     addr307:
+                     TaskManager.instance.addItemListener(tempCondition.param);
                      continue;
                   }
-                  addr243:
-                  §§goto(addr244);
+                  addr306:
+                  §§goto(addr307);
                }
-               §§goto(addr243);
+               §§goto(addr306);
             }
             else
             {
@@ -258,27 +258,26 @@ package ddt.data.quest
                continue;
             }
          }
-         _loc6_.checkIsPhoneTask();
-         var _loc8_:XMLList = param1..Item_Good;
-         _loc9_ = 0;
-         while(_loc9_ < _loc8_.length())
+         q.checkIsPhoneTask();
+         var rewards:XMLList = xml..Item_Good;
+         for(j = 0; j < rewards.length(); )
          {
-            _loc4_ = _loc8_[_loc9_];
-            _loc2_ = new Array(int(_loc4_.@RewardItemCount1),int(_loc4_.@RewardItemCount2),int(_loc4_.@RewardItemCount3),int(_loc4_.@RewardItemCount4),int(_loc4_.@RewardItemCount5));
-            _loc10_ = new QuestItemReward(_loc4_.@RewardItemID,_loc2_,_loc4_.@IsSelect,_loc4_.@IsBind);
-            _loc10_.time = _loc4_.@RewardItemValid;
-            _loc10_.AttackCompose = _loc4_.@AttackCompose;
-            _loc10_.DefendCompose = _loc4_.@DefendCompose;
-            _loc10_.AgilityCompose = _loc4_.@AgilityCompose;
-            _loc10_.LuckCompose = _loc4_.@LuckCompose;
-            _loc10_.StrengthenLevel = _loc4_.@StrengthenLevel;
-            _loc10_.IsCount = _loc4_.@IsCount;
-            _loc10_.MagicAttack = _loc4_.@MagicAttack;
-            _loc10_.MagicDefence = _loc4_.@MagicDefence;
-            _loc6_.addReward(_loc10_);
-            _loc9_++;
+            tempItemXML = rewards[j];
+            countAryy = new Array(int(tempItemXML.@RewardItemCount1),int(tempItemXML.@RewardItemCount2),int(tempItemXML.@RewardItemCount3),int(tempItemXML.@RewardItemCount4),int(tempItemXML.@RewardItemCount5));
+            tempReward = new QuestItemReward(tempItemXML.@RewardItemID,countAryy,tempItemXML.@IsSelect,tempItemXML.@IsBind);
+            tempReward.time = tempItemXML.@RewardItemValid;
+            tempReward.AttackCompose = tempItemXML.@AttackCompose;
+            tempReward.DefendCompose = tempItemXML.@DefendCompose;
+            tempReward.AgilityCompose = tempItemXML.@AgilityCompose;
+            tempReward.LuckCompose = tempItemXML.@LuckCompose;
+            tempReward.StrengthenLevel = tempItemXML.@StrengthenLevel;
+            tempReward.IsCount = tempItemXML.@IsCount;
+            tempReward.MagicAttack = tempItemXML.@MagicAttack;
+            tempReward.MagicDefence = tempItemXML.@MagicDefence;
+            q.addReward(tempReward);
+            j++;
          }
-         return _loc6_;
+         return q;
       }
       
       public function get QuestLevel() : int
@@ -286,17 +285,17 @@ package ddt.data.quest
          return _questLevel;
       }
       
-      public function set QuestLevel(param1:int) : void
+      public function set QuestLevel(value:int) : void
       {
-         if(param1 < 1)
+         if(value < 1)
          {
-            param1 = 1;
+            value = 1;
          }
-         if(param1 > 5)
+         if(value > 5)
          {
-            param1 = 5;
+            value = 5;
          }
-         _questLevel = param1;
+         _questLevel = value;
       }
       
       public function get RewardItemCount() : int
@@ -328,11 +327,11 @@ package ddt.data.quest
          return false;
       }
       
-      public function set hadChecked(param1:Boolean) : void
+      public function set hadChecked(value:Boolean) : void
       {
          if(data)
          {
-            data.hadChecked = param1;
+            data.hadChecked = value;
          }
       }
       
@@ -341,22 +340,22 @@ package ddt.data.quest
          return ItemManager.Instance.getTemplateById(this.BuffID).Name;
       }
       
-      public function addCondition(param1:QuestCondition) : void
+      public function addCondition(condition:QuestCondition) : void
       {
          if(!conditions)
          {
             conditions = [];
          }
-         conditions.push(param1);
+         conditions.push(condition);
       }
       
-      public function addReward(param1:QuestItemReward) : void
+      public function addReward(reward:QuestItemReward) : void
       {
          if(!_itemRewards)
          {
             _itemRewards = [];
          }
-         _itemRewards.push(param1);
+         _itemRewards.push(reward);
       }
       
       public function texpTaskIsTimeOut() : Boolean
@@ -374,11 +373,11 @@ package ddt.data.quest
          {
             return true;
          }
-         var _loc3_:Date = TimeManager.Instance.Now();
-         var _loc2_:Date = new Date(1990,1,1,_loc3_.getHours(),_loc3_.getMinutes(),_loc3_.getSeconds());
-         var _loc1_:Date = new Date(1990,1,1,StartDate.getHours(),StartDate.getMinutes(),StartDate.getSeconds());
-         var _loc4_:Date = new Date(1990,1,1,EndDate.getHours(),EndDate.getMinutes(),EndDate.getSeconds());
-         if(_loc3_.time > EndDate.time || _loc3_.time < StartDate.time)
+         var now:Date = TimeManager.Instance.Now();
+         var nt:Date = new Date(1990,1,1,now.getHours(),now.getMinutes(),now.getSeconds());
+         var startTime:Date = new Date(1990,1,1,StartDate.getHours(),StartDate.getMinutes(),StartDate.getSeconds());
+         var endTime:Date = new Date(1990,1,1,EndDate.getHours(),EndDate.getMinutes(),EndDate.getSeconds());
+         if(now.time > EndDate.time || now.time < StartDate.time)
          {
             return true;
          }
@@ -410,7 +409,7 @@ package ddt.data.quest
          return _itemRewards[0].time;
       }
       
-      public function isAvailableFor(param1:SelfInfo) : Boolean
+      public function isAvailableFor(self:SelfInfo) : Boolean
       {
          return false;
       }
@@ -437,6 +436,10 @@ package ddt.data.quest
       
       public function get isAchieved() : Boolean
       {
+         if(NewOldPlayerManager.instance.isQuestFinished(id))
+         {
+            return true;
+         }
          if(!data || !data.isAchieved)
          {
             return false;
@@ -444,45 +447,45 @@ package ddt.data.quest
          return true;
       }
       
-      private function getProgressById(param1:uint) : uint
+      private function getProgressById(id:uint) : uint
       {
-         var _loc5_:* = null;
-         var _loc4_:* = null;
-         var _loc29_:* = null;
-         var _loc24_:int = 0;
-         var _loc22_:int = 0;
-         var _loc17_:int = 0;
-         var _loc28_:int = 0;
-         var _loc25_:int = 0;
-         var _loc23_:int = 0;
-         var _loc30_:int = 0;
-         var _loc18_:int = 0;
-         var _loc2_:* = null;
-         var _loc26_:* = null;
-         var _loc27_:int = 0;
-         var _loc12_:int = 0;
-         var _loc14_:int = 0;
-         var _loc15_:int = 0;
-         var _loc16_:int = 0;
-         var _loc11_:int = 0;
-         var _loc7_:* = null;
-         var _loc13_:Boolean = getIsAutoComplete(param1);
-         if(_loc13_)
+         var tempItem:* = null;
+         var equips:* = null;
+         var storeBag:* = null;
+         var count1:int = 0;
+         var count2:int = 0;
+         var maxGrade:int = 0;
+         var needGrade:int = 0;
+         var Count3:int = 0;
+         var Count4:int = 0;
+         var curLv:int = 0;
+         var j:int = 0;
+         var equips3:* = null;
+         var storeBag3:* = null;
+         var magicCount1:int = 0;
+         var magicCount2:int = 0;
+         var magicCount3:int = 0;
+         var magicCount4:int = 0;
+         var magicCount5:int = 0;
+         var magicCount6:int = 0;
+         var dd:* = null;
+         var autoComplete:Boolean = getIsAutoComplete(id);
+         if(autoComplete)
          {
             return 0;
          }
-         var _loc3_:SelfInfo = PlayerManager.Instance.Self;
-         var _loc6_:QuestCondition = getConditionById(param1);
-         var _loc9_:* = 0;
-         if(data == null || data.progress[param1] == null)
+         var self:SelfInfo = PlayerManager.Instance.Self;
+         var cond:QuestCondition = getConditionById(id);
+         var prog:* = 0;
+         if(data == null || data.progress[id] == null)
          {
-            _loc9_ = 0;
+            prog = 0;
          }
          else
          {
-            _loc9_ = int(data.progress[param1]);
+            prog = int(data.progress[id]);
          }
-         var _loc32_:* = _loc6_.type;
+         var _loc32_:* = cond.type;
          if(1 !== _loc32_)
          {
             if(2 !== _loc32_)
@@ -525,136 +528,135 @@ package ddt.data.quest
                                                                   {
                                                                      if(208 !== _loc32_)
                                                                      {
-                                                                        if(data == null || data.progress[param1] == null)
+                                                                        if(data == null || data.progress[id] == null)
                                                                         {
-                                                                           _loc9_ = 0;
+                                                                           prog = 0;
                                                                         }
                                                                         else
                                                                         {
-                                                                           _loc9_ = int(data.progress[param1]);
+                                                                           prog = int(data.progress[id]);
                                                                         }
                                                                      }
                                                                      else
                                                                      {
-                                                                        _loc9_ = 0;
-                                                                        _loc9_ = int(_loc6_.target - 1);
-                                                                        if(data && data.progress[param1] <= _loc6_.target && data.progress[param1] > 0)
+                                                                        prog = 0;
+                                                                        prog = int(cond.target - 1);
+                                                                        if(data && data.progress[id] <= cond.target && data.progress[id] > 0)
                                                                         {
-                                                                           _loc9_ = int(_loc6_.target);
+                                                                           prog = int(cond.target);
                                                                         }
                                                                      }
                                                                   }
                                                                   else
                                                                   {
-                                                                     _loc7_ = PlayerManager.Instance.Self.pets;
+                                                                     dd = PlayerManager.Instance.Self.pets;
                                                                      var _loc40_:int = 0;
-                                                                     var _loc39_:* = _loc7_;
-                                                                     for each(var _loc19_ in _loc7_)
+                                                                     var _loc39_:* = dd;
+                                                                     for each(var pInfo2 in dd)
                                                                      {
-                                                                        if(_loc19_.StarLevel >= _loc6_.param)
+                                                                        if(pInfo2.StarLevel >= cond.param)
                                                                         {
-                                                                           _loc9_ = int(_loc6_.target);
+                                                                           prog = int(cond.target);
                                                                            break;
                                                                         }
                                                                      }
                                                                   }
                                                                }
-                                                               else if(_loc6_.param == 0)
+                                                               else if(cond.param == 0)
                                                                {
-                                                                  _loc27_ = _loc3_.getBag(41).getItemCountByTemplateId(100901,false);
-                                                                  _loc12_ = _loc3_.getBag(41).getItemCountByTemplateId(100902,false);
-                                                                  _loc14_ = _loc3_.getBag(41).getItemCountByTemplateId(100903,false);
-                                                                  _loc15_ = _loc3_.getBag(41).getItemCountByTemplateId(100904,false);
-                                                                  _loc16_ = _loc3_.getBag(41).getItemCountByTemplateId(100905,false);
-                                                                  _loc11_ = _loc3_.getBag(41).getItemCountByTemplateId(100906,false);
-                                                                  _loc9_ = int(_loc27_ + _loc12_ + _loc14_ + _loc15_ + _loc16_ + _loc11_);
+                                                                  magicCount1 = self.getBag(41).getItemCountByTemplateId(100901,false);
+                                                                  magicCount2 = self.getBag(41).getItemCountByTemplateId(100902,false);
+                                                                  magicCount3 = self.getBag(41).getItemCountByTemplateId(100903,false);
+                                                                  magicCount4 = self.getBag(41).getItemCountByTemplateId(100904,false);
+                                                                  magicCount5 = self.getBag(41).getItemCountByTemplateId(100905,false);
+                                                                  magicCount6 = self.getBag(41).getItemCountByTemplateId(100906,false);
+                                                                  prog = int(magicCount1 + magicCount2 + magicCount3 + magicCount4 + magicCount5 + magicCount6);
                                                                }
                                                             }
-                                                            else if(_loc6_.param == 0)
+                                                            else if(cond.param == 0)
                                                             {
-                                                               _loc9_ = int(_loc3_.evolutionGrade);
+                                                               prog = int(self.evolutionGrade);
                                                             }
                                                          }
-                                                         else if(_loc6_.param == 0)
+                                                         else if(cond.param == 0)
                                                          {
-                                                            _loc18_ = 8;
-                                                            while(_loc18_ < 10)
+                                                            for(j = 8; j < 10; )
                                                             {
-                                                               _loc2_ = _loc3_.getBag(0).findItems(_loc18_);
-                                                               _loc26_ = _loc3_.getBag(12).findItems(_loc18_);
+                                                               equips3 = self.getBag(0).findItems(j);
+                                                               storeBag3 = self.getBag(12).findItems(j);
                                                                var _loc36_:int = 0;
-                                                               var _loc35_:* = _loc2_;
-                                                               for each(var _loc20_ in _loc2_)
+                                                               var _loc35_:* = equips3;
+                                                               for each(var item3 in equips3)
                                                                {
-                                                                  if(_loc20_.MagicLevel >= _loc6_.target)
+                                                                  if(item3.MagicLevel >= cond.target)
                                                                   {
-                                                                     _loc9_ = int(_loc6_.target);
+                                                                     prog = int(cond.target);
                                                                      break;
                                                                   }
                                                                }
                                                                var _loc38_:int = 0;
-                                                               var _loc37_:* = _loc26_;
-                                                               for each(var _loc10_ in _loc26_)
+                                                               var _loc37_:* = storeBag3;
+                                                               for each(var storeItem3 in storeBag3)
                                                                {
-                                                                  if(_loc10_.MagicLevel >= _loc6_.target)
+                                                                  if(storeItem3.MagicLevel >= cond.target)
                                                                   {
-                                                                     _loc9_ = int(_loc6_.target);
+                                                                     prog = int(cond.target);
                                                                      break;
                                                                   }
                                                                }
-                                                               _loc18_++;
+                                                               j++;
                                                             }
                                                          }
                                                       }
-                                                      else if(data && _loc6_.param == 0)
+                                                      else if(data && cond.param == 0)
                                                       {
-                                                         _loc30_ = TotemManager.instance.getTotemPointLevel(PlayerManager.Instance.Self.totemId);
-                                                         _loc9_ = _loc30_;
+                                                         curLv = TotemManager.instance.getTotemPointLevel(PlayerManager.Instance.Self.totemId);
+                                                         prog = curLv;
                                                       }
                                                    }
-                                                   else if(_loc6_.param == 0)
+                                                   else if(cond.param == 0)
                                                    {
-                                                      _loc9_ = int(FineSuitManager.Instance.getNextSuitVoByExp(PlayerManager.Instance.Self.fineSuitExp).level - 1);
+                                                      prog = int(FineSuitManager.Instance.getNextSuitVoByExp(PlayerManager.Instance.Self.fineSuitExp).level - 1);
                                                    }
                                                 }
                                                 else
                                                 {
-                                                   _loc25_ = _loc3_.getBag(0).getBagItemCountByTemplateId(_loc6_.param,false);
-                                                   _loc23_ = _loc3_.getBag(1).getBagItemCountByTemplateId(_loc6_.param,false);
-                                                   _loc9_ = int(_loc25_ + _loc23_);
+                                                   Count3 = self.getBag(0).getBagItemCountByTemplateId(cond.param,false);
+                                                   Count4 = self.getBag(1).getBagItemCountByTemplateId(cond.param,false);
+                                                   prog = int(Count3 + Count4);
                                                 }
                                              }
                                              else
                                              {
-                                                _loc17_ = PetsBagManager.instance().curMaxBreakGrade();
-                                                _loc28_ = _loc6_.param;
-                                                _loc9_ = int(_loc17_ >= _loc28_?0:-1);
+                                                maxGrade = PetsBagManager.instance().curMaxBreakGrade();
+                                                needGrade = cond.param;
+                                                prog = int(maxGrade >= needGrade?0:-1);
                                              }
                                           }
-                                          else if(DayActivityManager.Instance.activityValue >= _loc6_.target)
+                                          else if(DayActivityManager.Instance.activityValue >= cond.target)
                                           {
-                                             _loc9_ = int(_loc6_.target);
+                                             prog = int(cond.target);
                                           }
                                           else
                                           {
-                                             _loc9_ = int(DayActivityManager.Instance.activityValue);
+                                             prog = int(DayActivityManager.Instance.activityValue);
                                           }
                                        }
-                                       else if(HorseManager.instance.curLevel >= _loc6_.param)
+                                       else if(HorseManager.instance.curLevel >= cond.param)
                                        {
-                                          _loc9_ = 0;
+                                          prog = 0;
                                        }
                                        else
                                        {
-                                          _loc9_ = int(_loc6_.target - 1);
+                                          prog = int(cond.target - 1);
                                        }
                                     }
                                     else
                                     {
-                                       _loc9_ = int(_loc6_.target - 1);
-                                       if(data && data.progress[param1] < _loc6_.target && data.progress[param1] >= 0)
+                                       prog = int(cond.target - 1);
+                                       if(data && data.progress[id] < cond.target && data.progress[id] >= 0)
                                        {
-                                          _loc9_ = int(_loc6_.target);
+                                          prog = int(cond.target);
                                        }
                                     }
                                  }
@@ -662,46 +664,46 @@ package ddt.data.quest
                                  {
                                     if(data)
                                     {
-                                       _loc9_ = int(_loc6_.target - data.progress[param1]);
+                                       prog = int(cond.target - data.progress[id]);
                                     }
-                                    if(_loc6_.param == 3)
+                                    if(cond.param == 3)
                                     {
-                                       _loc9_ = int(PlayerManager.Instance.friendList.length);
+                                       prog = int(PlayerManager.Instance.friendList.length);
                                     }
                                  }
                               }
                               else
                               {
-                                 switch(int(_loc6_.param))
+                                 switch(int(cond.param))
                                  {
                                     case 0:
                                        if(ConsortionModelManager.Instance.model.memberList.length > 0)
                                        {
-                                          _loc9_ = int(ConsortionModelManager.Instance.model.memberList.length);
+                                          prog = int(ConsortionModelManager.Instance.model.memberList.length);
                                        }
                                        break;
                                     case 1:
                                        if(PlayerManager.Instance.Self.UseOffer)
                                        {
-                                          _loc9_ = int(PlayerManager.Instance.Self.UseOffer);
+                                          prog = int(PlayerManager.Instance.Self.UseOffer);
                                        }
                                        break;
                                     case 2:
                                        if(PlayerManager.Instance.Self.consortiaInfo.SmithLevel)
                                        {
-                                          _loc9_ = int(PlayerManager.Instance.Self.consortiaInfo.SmithLevel);
+                                          prog = int(PlayerManager.Instance.Self.consortiaInfo.SmithLevel);
                                        }
                                        break;
                                     case 3:
                                        if(PlayerManager.Instance.Self.consortiaInfo.ShopLevel)
                                        {
-                                          _loc9_ = int(PlayerManager.Instance.Self.consortiaInfo.ShopLevel);
+                                          prog = int(PlayerManager.Instance.Self.consortiaInfo.ShopLevel);
                                        }
                                        break;
                                     case 4:
                                        if(PlayerManager.Instance.Self.consortiaInfo.StoreLevel)
                                        {
-                                          _loc9_ = int(PlayerManager.Instance.Self.consortiaInfo.StoreLevel);
+                                          prog = int(PlayerManager.Instance.Self.consortiaInfo.StoreLevel);
                                           break;
                                        }
                                  }
@@ -709,44 +711,44 @@ package ddt.data.quest
                            }
                            else
                            {
-                              _loc9_ = int(!!_loc3_.IsMarried?1:0);
+                              prog = int(!!self.IsMarried?1:0);
                            }
                         }
                         else
                         {
-                           _loc9_ = 1;
+                           prog = 1;
                         }
                      }
                   }
-                  if(_loc9_ < _loc6_.target)
+                  if(prog < cond.target)
                   {
-                     _loc24_ = _loc3_.getBag(0).getItemCountByTemplateId(_loc6_.param,false);
-                     _loc22_ = _loc3_.getBag(1).getItemCountByTemplateId(_loc6_.param,false);
-                     _loc9_ = int(_loc24_ + _loc22_);
+                     count1 = self.getBag(0).getItemCountByTemplateId(cond.param,false);
+                     count2 = self.getBag(1).getItemCountByTemplateId(cond.param,false);
+                     prog = int(count1 + count2);
                   }
                }
                else
                {
-                  _loc9_ = 0;
-                  _loc4_ = _loc3_.getBag(0).findItemsForEach(_loc6_.param);
-                  _loc29_ = _loc3_.getBag(12).findItemsForEach(_loc6_.param);
+                  prog = 0;
+                  equips = self.getBag(0).findItemsForEach(cond.param);
+                  storeBag = self.getBag(12).findItemsForEach(cond.param);
                   _loc32_ = 0;
-                  var _loc31_:* = _loc4_;
-                  for each(var _loc21_ in _loc4_)
+                  var _loc31_:* = equips;
+                  for each(var item in equips)
                   {
-                     if(_loc21_.StrengthenLevel >= _loc6_.target)
+                     if(item.StrengthenLevel >= cond.target)
                      {
-                        _loc9_ = int(_loc6_.target);
+                        prog = int(cond.target);
                         break;
                      }
                   }
                   var _loc34_:int = 0;
-                  var _loc33_:* = _loc29_;
-                  for each(var _loc8_ in _loc29_)
+                  var _loc33_:* = storeBag;
+                  for each(var storeItem in storeBag)
                   {
-                     if(_loc8_.StrengthenLevel >= _loc6_.target)
+                     if(storeItem.StrengthenLevel >= cond.target)
                      {
-                        _loc9_ = int(_loc6_.target);
+                        prog = int(cond.target);
                         break;
                      }
                   }
@@ -754,175 +756,175 @@ package ddt.data.quest
             }
             else
             {
-               _loc9_ = 0;
-               _loc5_ = _loc3_.getBag(0).findEquipedItemByTemplateId(_loc6_.param,false);
-               if(_loc5_ && _loc5_.Place <= 30)
+               prog = 0;
+               tempItem = self.getBag(0).findEquipedItemByTemplateId(cond.param,false);
+               if(tempItem && tempItem.Place <= 30)
                {
-                  _loc9_ = 1;
+                  prog = 1;
                }
             }
          }
          else
          {
-            _loc9_ = int(_loc3_.Grade);
+            prog = int(self.Grade);
          }
-         if(_loc9_ > _loc6_.target)
+         if(prog > cond.target)
          {
             return 0;
          }
-         return _loc6_.target - _loc9_;
+         return cond.target - prog;
       }
       
       public function get progress() : Array
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          if(!conditions)
          {
             conditions = [];
          }
-         var _loc1_:Array = [];
-         _loc2_ = 0;
-         while(conditions[_loc2_])
+         var tempArr:Array = [];
+         i = 0;
+         while(conditions[i])
          {
-            _loc1_[_loc2_] = getProgressById(_loc2_);
-            _loc2_++;
+            tempArr[i] = getProgressById(i);
+            i++;
          }
-         return _loc1_;
+         return tempArr;
       }
       
       public function get conditionStatusBoolean() : Array
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
+         var i:int = 0;
+         var pro:int = 0;
          if(!conditions)
          {
             conditions = [];
          }
-         var _loc1_:Array = [];
-         _loc3_ = 0;
-         while(conditions[_loc3_])
+         var tempArr:Array = [];
+         i = 0;
+         while(conditions[i])
          {
-            _loc2_ = progress[_loc3_];
-            if(_loc2_ <= 0 || isCompleted)
+            pro = progress[i];
+            if(pro <= 0 || isCompleted)
             {
-               _loc1_[_loc3_] = true;
+               tempArr[i] = true;
             }
             else
             {
-               _loc1_[_loc3_] = false;
+               tempArr[i] = false;
             }
-            _loc3_++;
+            i++;
          }
-         return _loc1_;
+         return tempArr;
       }
       
       public function get conditionStatus() : Array
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
+         var i:int = 0;
+         var pro:int = 0;
          if(!conditions)
          {
             conditions = [];
          }
-         var _loc1_:Array = [];
-         _loc3_ = 0;
-         while(conditions[_loc3_])
+         var tempArr:Array = [];
+         i = 0;
+         while(conditions[i])
          {
-            _loc2_ = progress[_loc3_];
+            pro = progress[i];
             if(id == 1277)
             {
                if(data != null && data.progress[0] == 0)
                {
-                  _loc1_[_loc3_] = LanguageMgr.GetTranslation("tank.view.task.TaskCatalogContentView.over");
+                  tempArr[i] = LanguageMgr.GetTranslation("tank.view.task.TaskCatalogContentView.over");
                }
                else
                {
-                  _loc1_[_loc3_] = LanguageMgr.GetTranslation("tank.view.task.Taskstatus.onProgress");
+                  tempArr[i] = LanguageMgr.GetTranslation("tank.view.task.Taskstatus.onProgress");
                }
             }
-            else if(_loc2_ <= 0 || isCompleted)
+            else if(pro <= 0 || isCompleted)
             {
-               _loc1_[_loc3_] = LanguageMgr.GetTranslation("tank.view.task.TaskCatalogContentView.over");
+               tempArr[i] = LanguageMgr.GetTranslation("tank.view.task.TaskCatalogContentView.over");
             }
-            else if(conditions[_loc3_].type == 9 || conditions[_loc3_].type == 12 || conditions[_loc3_].type == 17 || conditions[_loc3_].type == 21 || conditions[_loc3_].type == 50 || conditions[_loc3_].type == 69 || conditions[_loc3_].type == 79 || conditions[_loc3_].type == 105 || conditions[_loc3_].type == 112 || conditions[_loc3_].type == 113 || conditions[_loc3_].type == 114 || conditions[_loc3_].type == 115)
+            else if(conditions[i].type == 9 || conditions[i].type == 12 || conditions[i].type == 17 || conditions[i].type == 21 || conditions[i].type == 50 || conditions[i].type == 69 || conditions[i].type == 79 || conditions[i].type == 105 || conditions[i].type == 112 || conditions[i].type == 113 || conditions[i].type == 114 || conditions[i].type == 115)
             {
-               _loc1_[_loc3_] = LanguageMgr.GetTranslation("tank.view.task.Taskstatus.onProgress");
+               tempArr[i] = LanguageMgr.GetTranslation("tank.view.task.Taskstatus.onProgress");
             }
-            else if(conditions[_loc3_].type == 20 && conditions[_loc3_].param == 2)
+            else if(conditions[i].type == 20 && conditions[i].param == 2)
             {
-               _loc1_[_loc3_] = LanguageMgr.GetTranslation("tank.view.task.Taskstatus.onProgress");
+               tempArr[i] = LanguageMgr.GetTranslation("tank.view.task.Taskstatus.onProgress");
             }
             else
             {
-               _loc1_[_loc3_] = "(" + (String(conditions[_loc3_].target - _loc2_)) + "/" + String(conditions[_loc3_].target) + ")";
+               tempArr[i] = "(" + (String(conditions[i].target - pro)) + "/" + String(conditions[i].target) + ")";
             }
-            _loc3_++;
+            i++;
          }
-         return _loc1_;
+         return tempArr;
       }
       
       public function get conditionDescription() : Array
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
+         var i:int = 0;
+         var pro:int = 0;
          if(!conditions)
          {
             conditions = [];
          }
-         var _loc1_:Array = [];
-         _loc3_ = 0;
-         while(conditions[_loc3_])
+         var tempArr:Array = [];
+         i = 0;
+         while(conditions[i])
          {
-            _loc2_ = progress[_loc3_];
-            if(_loc2_ <= 0 || isCompleted)
+            pro = progress[i];
+            if(pro <= 0 || isCompleted)
             {
-               _loc1_[_loc3_] = conditions[_loc3_].description + LanguageMgr.GetTranslation("tank.view.task.TaskCatalogContentView.over");
+               tempArr[i] = conditions[i].description + LanguageMgr.GetTranslation("tank.view.task.TaskCatalogContentView.over");
             }
-            else if(conditions[_loc3_].type == 9 || conditions[_loc3_].type == 12 || conditions[_loc3_].type == 21 || conditions[_loc3_].type == 79)
+            else if(conditions[i].type == 9 || conditions[i].type == 12 || conditions[i].type == 21 || conditions[i].type == 79)
             {
-               _loc1_[_loc3_] = conditions[_loc3_].description + LanguageMgr.GetTranslation("tank.view.task.Taskstatus.onProgress");
+               tempArr[i] = conditions[i].description + LanguageMgr.GetTranslation("tank.view.task.Taskstatus.onProgress");
             }
-            else if(conditions[_loc3_].type == 20 && conditions[_loc3_].param == 2)
+            else if(conditions[i].type == 20 && conditions[i].param == 2)
             {
-               _loc1_[_loc3_] = conditions[_loc3_].description + LanguageMgr.GetTranslation("tank.view.task.Taskstatus.onProgress");
+               tempArr[i] = conditions[i].description + LanguageMgr.GetTranslation("tank.view.task.Taskstatus.onProgress");
             }
             else
             {
-               _loc1_[_loc3_] = conditions[_loc3_].description + "(" + (String(conditions[_loc3_].target - _loc2_)) + "/" + String(conditions[_loc3_].target) + ")";
+               tempArr[i] = conditions[i].description + "(" + (String(conditions[i].target - pro)) + "/" + String(conditions[i].target) + ")";
             }
-            _loc3_++;
+            i++;
          }
-         return _loc1_;
+         return tempArr;
       }
       
       public function get conditionProgress() : Array
       {
-         var _loc3_:int = 0;
-         var _loc1_:int = 0;
-         var _loc2_:Array = [];
-         _loc3_ = 0;
-         while(conditions[_loc3_])
+         var i:int = 0;
+         var pro:int = 0;
+         var temp:Array = [];
+         i = 0;
+         while(conditions[i])
          {
-            _loc1_ = progress[_loc3_];
-            _loc2_.push(ItemManager.Instance.getTemplateById(conditions[_loc3_].param).Name + "," + (String(conditions[_loc3_].target - _loc1_)) + "/" + String(conditions[_loc3_].target));
-            _loc3_++;
+            pro = progress[i];
+            temp.push(ItemManager.Instance.getTemplateById(conditions[i].param).Name + "," + (String(conditions[i].target - pro)) + "/" + String(conditions[i].target));
+            i++;
          }
-         return _loc2_;
+         return temp;
       }
       
       public function get isCompleted() : Boolean
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
-         var _loc5_:int = 0;
-         var _loc2_:Boolean = false;
+         var ttt:int = 0;
+         var tempCond:* = null;
+         var i:int = 0;
+         var autoComplete:Boolean = false;
          if(TrusteeshipManager.instance.isTrusteeshipQuestEnd(id))
          {
             return true;
          }
          if(id >= 2153 && id <= 2160)
          {
-            _loc3_ = Game360VIP.vipLevel;
+            ttt = Game360VIP.vipLevel;
             if(Game360VIP.vipLevel >= 1 && id == 2153 || Game360VIP.vipLevel >= 2 && id == 2154 || Game360VIP.vipLevel >= 3 && id == 2155 || Game360VIP.vipLevel >= 4 && id == 2156 || Game360VIP.vipLevel >= 5 && id == 2157 || Game360VIP.vipLevel >= 6 && id == 2158 || Game360VIP.vipLevel >= 7 && id == 2159 || Game360VIP.vipLevel >= 8 && id == 2160)
             {
                return true;
@@ -952,20 +954,20 @@ package ddt.data.quest
          {
             return false;
          }
-         var _loc4_:int = optionalConditionNeed;
-         _loc5_ = 0;
+         var optionalCondNeed:int = optionalConditionNeed;
+         i = 0;
          while(true)
          {
-            _loc1_ = getConditionById(_loc5_);
-            if(getConditionById(_loc5_))
+            tempCond = getConditionById(i);
+            if(getConditionById(i))
             {
-               if(_loc1_)
+               if(tempCond)
                {
-                  if(_loc1_.type == 90)
+                  if(tempCond.type == 90)
                   {
                      if(data)
                      {
-                        if(data.progress[_loc5_] > 0 && data.progress[_loc5_] >= _loc1_.param2)
+                        if(data.progress[i] > 0 && data.progress[i] >= tempCond.param2)
                         {
                            return true;
                         }
@@ -973,104 +975,104 @@ package ddt.data.quest
                      }
                      return false;
                   }
-                  _loc2_ = getIsAutoComplete(_loc5_);
-                  if(progress[_loc5_] > 0 && _loc2_ == false)
+                  autoComplete = getIsAutoComplete(i);
+                  if(progress[i] > 0 && autoComplete == false)
                   {
-                     if(!_loc1_.isOpitional)
+                     if(!tempCond.isOpitional)
                      {
                         return false;
                      }
                   }
                   else
                   {
-                     _loc4_--;
+                     optionalCondNeed--;
                   }
-                  _loc5_++;
+                  i++;
                   continue;
                }
                break;
             }
             break;
          }
-         if(_loc4_ > 0)
+         if(optionalCondNeed > 0)
          {
             return false;
          }
          return true;
       }
       
-      private function getConditionById(param1:uint) : QuestCondition
+      private function getConditionById(id:uint) : QuestCondition
       {
          if(!conditions)
          {
             conditions = [];
          }
-         return conditions[param1] as QuestCondition;
+         return conditions[id] as QuestCondition;
       }
       
-      private function getIsAutoComplete(param1:int) : Boolean
+      private function getIsAutoComplete(index:int) : Boolean
       {
          if(data == null)
          {
             return false;
          }
-         return data.isAutoComplete && data.isAutoComplete[param1];
+         return data.isAutoComplete && data.isAutoComplete[index];
       }
       
       public function get questProgressNum() : Number
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
-         var _loc3_:int = 0;
-         _loc3_ = 0;
-         while(conditions[_loc3_])
+         var numerator:int = 0;
+         var denominator:int = 0;
+         var i:int = 0;
+         i = 0;
+         while(conditions[i])
          {
-            _loc2_ = _loc2_ + progress[_loc3_];
-            _loc1_ = _loc1_ + conditions[_loc3_].target;
-            _loc3_++;
+            numerator = numerator + progress[i];
+            denominator = denominator + conditions[i].target;
+            i++;
          }
-         return _loc2_ / _loc1_;
+         return numerator / denominator;
       }
       
       public function get canViewWithProgress() : Boolean
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
+         var numerator:int = 0;
+         var denominator:int = 0;
+         var i:int = 0;
          if(!conditions)
          {
             conditions = [];
          }
-         var _loc1_:Boolean = true;
+         var boo:Boolean = true;
          if(isCompleted)
          {
-            return _loc1_;
+            return boo;
          }
-         _loc4_ = 0;
-         while(conditions[_loc4_])
+         i = 0;
+         while(conditions[i])
          {
-            _loc3_ = _loc3_ + progress[_loc4_];
-            _loc2_ = _loc2_ + conditions[_loc4_].target;
-            _loc4_++;
+            numerator = numerator + progress[i];
+            denominator = denominator + conditions[i].target;
+            i++;
          }
-         if(_loc3_ == _loc2_)
+         if(numerator == denominator)
          {
-            _loc1_ = false;
+            boo = false;
          }
-         _loc4_ = 0;
-         while(conditions[_loc4_])
+         i = 0;
+         while(conditions[i])
          {
-            if(conditions[_loc4_].type == 9 || conditions[_loc4_].type == 12 || conditions[_loc4_].type == 17 || conditions[_loc4_].type == 21)
+            if(conditions[i].type == 9 || conditions[i].type == 12 || conditions[i].type == 17 || conditions[i].type == 21)
             {
-               _loc1_ = false;
+               boo = false;
             }
-            if(conditions[_loc4_].type == 20 && conditions[_loc4_].param == 2)
+            if(conditions[i].type == 20 && conditions[i].param == 2)
             {
-               _loc1_ = false;
+               boo = false;
             }
-            _loc4_++;
+            i++;
          }
-         return _loc1_;
+         return boo;
       }
       
       public function hasOtherAward() : Boolean
@@ -1117,25 +1119,24 @@ package ddt.data.quest
       
       private function checkIsPhoneTask() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(conditions)
          {
-            _loc1_ = 0;
-            while(_loc1_ < conditions.length)
+            for(i = 0; i < conditions.length; )
             {
-               if(conditions[_loc1_].type == 42)
+               if(conditions[i].type == 42)
                {
                   _isPhoneTask = true;
                   break;
                }
-               _loc1_++;
+               i++;
             }
          }
       }
       
-      public function set cellHeight(param1:Number) : void
+      public function set cellHeight(value:Number) : void
       {
-         _cellHeight = param1;
+         _cellHeight = value;
       }
       
       public function getCellHeight() : Number
@@ -1148,9 +1149,9 @@ package ddt.data.quest
          return _conditions;
       }
       
-      public function set conditions(param1:Array) : void
+      public function set conditions(value:Array) : void
       {
-         _conditions = param1;
+         _conditions = value;
       }
    }
 }

@@ -20,1175 +20,1168 @@ package ddt.manager
       
       public static function sendGodOfWealthPay() : void
       {
-         var _loc1_:PackageOut = new PackageOut(341);
-         _loc1_.writeByte(2);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(341);
+         pkg.writeByte(2);
+         sendPackage(pkg);
       }
       
       public static function sendGodOfWealthInfo() : void
       {
-         var _loc1_:PackageOut = new PackageOut(341);
-         _loc1_.writeByte(3);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(341);
+         pkg.writeByte(3);
+         sendPackage(pkg);
       }
       
-      public static function sendSXCreateMap(param1:Array) : void
+      public static function sendSXCreateMap(map:Array) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:PackageOut = new PackageOut(329);
-         _loc2_.writeByte(1);
-         _loc2_.writeInt(param1.length / 3);
-         _loc3_ = 0;
-         while(_loc3_ < param1.length)
+         var i:int = 0;
+         var pkg:PackageOut = new PackageOut(329);
+         pkg.writeByte(1);
+         pkg.writeInt(map.length / 3);
+         for(i = 0; i < map.length; )
          {
-            _loc2_.writeInt(param1[_loc3_]);
-            _loc2_.writeInt(param1[_loc3_ + 1]);
-            _loc2_.writeInt(param1[_loc3_ + 2]);
-            _loc3_ = _loc3_ + 3;
+            pkg.writeInt(map[i]);
+            pkg.writeInt(map[i + 1]);
+            pkg.writeInt(map[i + 2]);
+            i = i + 3;
          }
-         sendPackage(_loc2_);
+         sendPackage(pkg);
       }
       
       public static function sendSXRequireMapInfo() : void
       {
-         var _loc1_:PackageOut = new PackageOut(329);
-         _loc1_.writeByte(2);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(329);
+         pkg.writeByte(2);
+         sendPackage(pkg);
       }
       
-      public static function sendSXPropCrossBomb(param1:Boolean, param2:int) : void
+      public static function sendSXPropCrossBomb(isBind:Boolean, needMoney:int) : void
       {
-         var _loc3_:PackageOut = new PackageOut(329);
-         _loc3_.writeByte(41);
-         _loc3_.writeBoolean(param1);
-         _loc3_.writeInt(param2);
-         sendPackage(_loc3_);
+         var pkg:PackageOut = new PackageOut(329);
+         pkg.writeByte(41);
+         pkg.writeBoolean(isBind);
+         pkg.writeInt(needMoney);
+         sendPackage(pkg);
       }
       
-      public static function sendSXPropSquareBomb(param1:Boolean, param2:int) : void
+      public static function sendSXPropSquareBomb(isBind:Boolean, needMoney:int) : void
       {
-         var _loc3_:PackageOut = new PackageOut(329);
-         _loc3_.writeByte(48);
-         _loc3_.writeBoolean(param1);
-         _loc3_.writeInt(param2);
-         sendPackage(_loc3_);
+         var pkg:PackageOut = new PackageOut(329);
+         pkg.writeByte(48);
+         pkg.writeBoolean(isBind);
+         pkg.writeInt(needMoney);
+         sendPackage(pkg);
       }
       
-      public static function sendSXPropClearColor(param1:Boolean, param2:int) : void
+      public static function sendSXPropClearColor(isBind:Boolean, needMoney:int) : void
       {
-         var _loc3_:PackageOut = new PackageOut(329);
-         _loc3_.writeByte(49);
-         _loc3_.writeBoolean(param1);
-         _loc3_.writeInt(param2);
-         sendPackage(_loc3_);
+         var pkg:PackageOut = new PackageOut(329);
+         pkg.writeByte(49);
+         pkg.writeBoolean(isBind);
+         pkg.writeInt(needMoney);
+         sendPackage(pkg);
       }
       
-      public static function sendSXPropChangeColor(param1:Boolean, param2:int, param3:int, param4:int) : void
+      public static function sendSXPropChangeColor(isBind:Boolean, needMoney:int, originalType:int, changeToType:int) : void
       {
-         var _loc5_:PackageOut = new PackageOut(329);
-         _loc5_.writeByte(50);
-         _loc5_.writeBoolean(param1);
-         _loc5_.writeInt(param2);
-         _loc5_.writeInt(param3);
-         _loc5_.writeInt(param4);
-         sendPackage(_loc5_);
+         var pkg:PackageOut = new PackageOut(329);
+         pkg.writeByte(50);
+         pkg.writeBoolean(isBind);
+         pkg.writeInt(needMoney);
+         pkg.writeInt(originalType);
+         pkg.writeInt(changeToType);
+         sendPackage(pkg);
       }
       
-      public static function sendSXBoom(param1:int, param2:int, param3:int, param4:int, param5:Array) : void
+      public static function sendSXBoom(rowA:int, columnA:int, rowB:int, columnB:int, boomList:Array) : void
       {
-         var _loc6_:int = 0;
-         var _loc11_:int = 0;
-         var _loc10_:* = null;
-         var _loc8_:int = 0;
-         var _loc9_:int = 0;
-         var _loc7_:PackageOut = new PackageOut(329);
-         _loc7_.writeByte(3);
-         _loc7_.writeInt(param1);
-         _loc7_.writeInt(param2);
-         _loc7_.writeInt(param3);
-         _loc7_.writeInt(param4);
-         _loc6_ = param5.length;
-         _loc7_.writeInt(_loc6_);
-         _loc11_ = 0;
-         while(_loc11_ < _loc6_)
+         var lenType:int = 0;
+         var i:int = 0;
+         var typeList:* = null;
+         var len:int = 0;
+         var j:int = 0;
+         var pkg:PackageOut = new PackageOut(329);
+         pkg.writeByte(3);
+         pkg.writeInt(rowA);
+         pkg.writeInt(columnA);
+         pkg.writeInt(rowB);
+         pkg.writeInt(columnB);
+         lenType = boomList.length;
+         pkg.writeInt(lenType);
+         for(i = 0; i < lenType; )
          {
-            _loc10_ = param5[_loc11_];
-            _loc8_ = (_loc10_ as Array).length;
-            _loc7_.writeInt(int(_loc8_ / 2));
-            _loc9_ = 0;
-            while(_loc9_ < _loc8_)
+            typeList = boomList[i];
+            len = (typeList as Array).length;
+            pkg.writeInt(int(len / 2));
+            for(j = 0; j < len; )
             {
-               _loc7_.writeInt(_loc10_[_loc9_]);
-               _loc7_.writeInt(_loc10_[_loc9_ + 1]);
-               _loc9_ = _loc9_ + 2;
+               pkg.writeInt(typeList[j]);
+               pkg.writeInt(typeList[j + 1]);
+               j = j + 2;
             }
-            _loc11_++;
+            i++;
          }
-         sendPackage(_loc7_);
+         sendPackage(pkg);
       }
       
-      public static function sendSXFillCellList(param1:Vector.<SXCellData>) : void
+      public static function sendSXFillCellList($list:Vector.<SXCellData>) : void
       {
-         var _loc4_:int = 0;
-         if(param1 == null)
+         var i:int = 0;
+         if($list == null)
          {
             return;
          }
-         var _loc2_:PackageOut = new PackageOut(329);
-         _loc2_.writeByte(4);
-         var _loc3_:int = param1.length;
-         _loc2_.writeInt(_loc3_);
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var pkg:PackageOut = new PackageOut(329);
+         pkg.writeByte(4);
+         var len:int = $list.length;
+         pkg.writeInt(len);
+         for(i = 0; i < len; )
          {
-            _loc2_.writeInt(param1[_loc4_].row);
-            _loc2_.writeInt(param1[_loc4_].column);
-            _loc2_.writeInt(param1[_loc4_].type);
-            _loc4_++;
+            pkg.writeInt($list[i].row);
+            pkg.writeInt($list[i].column);
+            pkg.writeInt($list[i].type);
+            i++;
          }
-         sendPackage(_loc2_);
+         sendPackage(pkg);
       }
       
       public static function sendSXRequireViewData() : void
       {
-         var _loc1_:PackageOut = new PackageOut(329);
-         _loc1_.writeByte(5);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(329);
+         pkg.writeByte(5);
+         sendPackage(pkg);
       }
       
-      public static function sendSXGainPrise(param1:int) : void
+      public static function sendSXGainPrise(id:int) : void
       {
-         var _loc2_:PackageOut = new PackageOut(329);
-         _loc2_.writeByte(7);
-         _loc2_.writeInt(param1);
-         sendPackage(_loc2_);
+         var pkg:PackageOut = new PackageOut(329);
+         pkg.writeByte(7);
+         pkg.writeInt(id);
+         sendPackage(pkg);
       }
       
-      public static function sendSXBuyItem(param1:int, param2:int) : void
+      public static function sendSXBuyItem(id:int, num:int) : void
       {
-         var _loc3_:PackageOut = new PackageOut(329);
-         _loc3_.writeByte(8);
-         _loc3_.writeInt(param1);
-         _loc3_.writeInt(param2);
-         sendPackage(_loc3_);
+         var pkg:PackageOut = new PackageOut(329);
+         pkg.writeByte(8);
+         pkg.writeInt(id);
+         pkg.writeInt(num);
+         sendPackage(pkg);
       }
       
       public static function sendSXHitsEnd() : void
       {
-         var _loc1_:PackageOut = new PackageOut(329);
-         _loc1_.writeByte(9);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(329);
+         pkg.writeByte(9);
+         sendPackage(pkg);
       }
       
-      public static function sendSXBuyOneTimes(param1:int, param2:Boolean) : void
+      public static function sendSXBuyOneTimes(times:int, isBind:Boolean) : void
       {
-         var _loc3_:PackageOut = new PackageOut(329);
-         _loc3_.writeByte(15);
-         _loc3_.writeInt(param1);
-         _loc3_.writeBoolean(param2);
-         sendPackage(_loc3_);
+         var pkg:PackageOut = new PackageOut(329);
+         pkg.writeByte(15);
+         pkg.writeInt(times);
+         pkg.writeBoolean(isBind);
+         sendPackage(pkg);
       }
       
       public static function sendSXRewardsData() : void
       {
-         var _loc1_:PackageOut = new PackageOut(329);
-         _loc1_.writeByte(17);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(329);
+         pkg.writeByte(17);
+         sendPackage(pkg);
       }
       
       public static function sendSXStoreData() : void
       {
-         var _loc1_:PackageOut = new PackageOut(329);
-         _loc1_.writeByte(18);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(329);
+         pkg.writeByte(18);
+         sendPackage(pkg);
       }
       
-      public static function sendGradeBuy(param1:int, param2:int) : void
+      public static function sendGradeBuy(typeTempleteID:int, giftTempleteID:int) : void
       {
-         var _loc3_:PackageOut = new PackageOut(325);
-         _loc3_.writeInt(param1);
-         _loc3_.writeInt(param2);
-         sendPackage(_loc3_);
+         var pkg:PackageOut = new PackageOut(325);
+         pkg.writeInt(typeTempleteID);
+         pkg.writeInt(giftTempleteID);
+         sendPackage(pkg);
       }
       
-      public static function sendEvolutionMaterials(param1:Array) : void
+      public static function sendEvolutionMaterials(arr:Array) : void
       {
-         var _loc3_:* = null;
-         var _loc5_:int = 0;
-         var _loc2_:PackageOut = new PackageOut(384);
-         var _loc4_:int = param1.length;
-         _loc2_.writeInt(_loc4_);
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         var obj:* = null;
+         var i:int = 0;
+         var pkg:PackageOut = new PackageOut(384);
+         var len:int = arr.length;
+         pkg.writeInt(len);
+         for(i = 0; i < len; )
          {
-            _loc3_ = param1[_loc5_] as Object;
-            _loc2_.writeInt(_loc3_.bagType);
-            _loc2_.writeInt(_loc3_.place);
-            _loc2_.writeInt(_loc3_.count);
-            _loc5_++;
+            obj = arr[i] as Object;
+            pkg.writeInt(obj.bagType);
+            pkg.writeInt(obj.place);
+            pkg.writeInt(obj.count);
+            i++;
          }
-         sendPackage(_loc2_);
+         sendPackage(pkg);
       }
       
       public static function sendIsMaster() : void
       {
-         var _loc1_:PackageOut = new PackageOut(323);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(323);
+         sendPackage(pkg);
       }
       
       public static function sendDdtKingLetterCompose() : void
       {
-         var _loc1_:PackageOut = new PackageOut(322);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(322);
+         sendPackage(pkg);
       }
       
-      public static function sendBringUpLockStatusUpdate(param1:int, param2:int, param3:Boolean) : void
+      public static function sendBringUpLockStatusUpdate(bagType:int, place:int, isLocked:Boolean) : void
       {
-         var _loc4_:PackageOut = new PackageOut(313);
-         _loc4_.writeInt(param1);
-         _loc4_.writeInt(param2);
-         _loc4_.writeBoolean(param3);
-         sendPackage(_loc4_);
+         var pkg:PackageOut = new PackageOut(313);
+         pkg.writeInt(bagType);
+         pkg.writeInt(place);
+         pkg.writeBoolean(isLocked);
+         sendPackage(pkg);
       }
       
-      public static function sendBringUpEat(param1:int, ... rest) : void
+      public static function sendBringUpEat(count:int, ... arg) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:PackageOut = new PackageOut(308);
-         _loc3_.writeInt(param1);
-         if(param1 > 0)
+         var i:int = 0;
+         var pkg:PackageOut = new PackageOut(308);
+         pkg.writeInt(count);
+         if(count > 0)
          {
-            rest = rest[0];
-            _loc4_ = 0;
-            while(_loc4_ < param1)
+            arg = arg[0];
+            for(i = 0; i < count; )
             {
-               _loc3_.writeInt(rest.shift());
-               _loc3_.writeInt(rest.shift());
-               _loc4_++;
+               pkg.writeInt(arg.shift());
+               pkg.writeInt(arg.shift());
+               i++;
             }
          }
          else
          {
-            _loc3_.writeInt(rest.shift());
-            _loc3_.writeInt(rest.shift());
+            pkg.writeInt(arg.shift());
+            pkg.writeInt(arg.shift());
          }
-         sendPackage(_loc3_);
+         sendPackage(pkg);
       }
       
-      public static function sendUseGirlNewPhoto(param1:Boolean) : void
+      public static function sendUseGirlNewPhoto($isBind:Boolean) : void
       {
-         var _loc2_:PackageOut = new PackageOut(339);
-         _loc2_.writeBoolean(param1);
-         sendPackage(_loc2_);
+         var pkg:PackageOut = new PackageOut(339);
+         pkg.writeBoolean($isBind);
+         sendPackage(pkg);
       }
       
-      public static function sendUseGirlPhoto(param1:Boolean) : void
+      public static function sendUseGirlPhoto(isUse:Boolean) : void
       {
-         var _loc2_:PackageOut = new PackageOut(307);
-         _loc2_.writeBoolean(param1);
-         sendPackage(_loc2_);
+         var pkg:PackageOut = new PackageOut(307);
+         pkg.writeBoolean(isUse);
+         sendPackage(pkg);
       }
       
-      public static function sendRedPkgGain(param1:int) : void
+      public static function sendRedPkgGain(id:int) : void
       {
-         var _loc2_:PackageOut = new PackageOut(303);
-         _loc2_.writeByte(1);
-         _loc2_.writeInt(param1);
-         sendPackage(_loc2_);
+         var pkg:PackageOut = new PackageOut(303);
+         pkg.writeByte(1);
+         pkg.writeInt(id);
+         sendPackage(pkg);
       }
       
-      public static function sendRedPkgSend(param1:int, param2:int, param3:String, param4:Boolean) : void
+      public static function sendRedPkgSend(moneyNum:int, pkgNum:int, wishWords:String, isAverage:Boolean) : void
       {
-         var _loc5_:PackageOut = new PackageOut(303);
-         _loc5_.writeByte(2);
-         _loc5_.writeInt(param1);
-         _loc5_.writeInt(param2);
-         _loc5_.writeUTF(param3);
-         _loc5_.writeInt(param4 == true?1:0);
-         sendPackage(_loc5_);
+         var pkg:PackageOut = new PackageOut(303);
+         pkg.writeByte(2);
+         pkg.writeInt(moneyNum);
+         pkg.writeInt(pkgNum);
+         pkg.writeUTF(wishWords);
+         pkg.writeInt(isAverage == true?1:0);
+         sendPackage(pkg);
       }
       
       public static function sendRedPkgSendRecord() : void
       {
-         var _loc1_:PackageOut = new PackageOut(303);
-         _loc1_.writeByte(3);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(303);
+         pkg.writeByte(3);
+         sendPackage(pkg);
       }
       
-      public static function sendRedPkgGainRecord(param1:int) : void
+      public static function sendRedPkgGainRecord(id:int) : void
       {
-         var _loc2_:PackageOut = new PackageOut(303);
-         _loc2_.writeByte(4);
-         _loc2_.writeInt(param1);
-         sendPackage(_loc2_);
+         var pkg:PackageOut = new PackageOut(303);
+         pkg.writeByte(4);
+         pkg.writeInt(id);
+         sendPackage(pkg);
       }
       
       public static function sendRequestEnterPyramidSystem() : void
       {
-         var _loc1_:PackageOut = new PackageOut(145);
-         _loc1_.writeByte(1);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(145);
+         pkg.writeByte(1);
+         sendPackage(pkg);
       }
       
-      public static function sendPyramidTurnCard(param1:int, param2:int, param3:Boolean) : void
+      public static function sendPyramidTurnCard(layer:int, position:int, bindFlag:Boolean) : void
       {
-         var _loc4_:PackageOut = new PackageOut(145);
-         _loc4_.writeByte(3);
-         _loc4_.writeInt(param1);
-         _loc4_.writeInt(param2);
-         _loc4_.writeBoolean(param3);
-         sendPackage(_loc4_);
+         var pkg:PackageOut = new PackageOut(145);
+         pkg.writeByte(3);
+         pkg.writeInt(layer);
+         pkg.writeInt(position);
+         pkg.writeBoolean(bindFlag);
+         sendPackage(pkg);
       }
       
-      public static function sendPyramidStartOrstop(param1:Boolean) : void
+      public static function sendPyramidStartOrstop(isStart:Boolean) : void
       {
-         var _loc2_:PackageOut = new PackageOut(145);
-         _loc2_.writeByte(2);
-         _loc2_.writeBoolean(param1);
-         sendPackage(_loc2_);
+         var pkg:PackageOut = new PackageOut(145);
+         pkg.writeByte(2);
+         pkg.writeBoolean(isStart);
+         sendPackage(pkg);
       }
       
-      public static function sendPyramidRevive(param1:Boolean, param2:Boolean) : void
+      public static function sendPyramidRevive(isRevive:Boolean, bindFlag:Boolean) : void
       {
-         var _loc3_:PackageOut = new PackageOut(145);
-         _loc3_.writeByte(4);
-         _loc3_.writeBoolean(param1);
-         _loc3_.writeBoolean(param2);
-         sendPackage(_loc3_);
+         var pkg:PackageOut = new PackageOut(145);
+         pkg.writeByte(4);
+         pkg.writeBoolean(isRevive);
+         pkg.writeBoolean(bindFlag);
+         sendPackage(pkg);
       }
       
       public static function sendLanternIsOpen() : void
       {
-         var _loc1_:PackageOut = new PackageOut(300);
-         _loc1_.writeByte(1);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(300);
+         pkg.writeByte(1);
+         sendPackage(pkg);
       }
       
       public static function sendLanternRequireData() : void
       {
-         var _loc1_:PackageOut = new PackageOut(300);
-         _loc1_.writeByte(4);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(300);
+         pkg.writeByte(4);
+         sendPackage(pkg);
       }
       
-      public static function sendLanternMakeLantern(param1:int) : void
+      public static function sendLanternMakeLantern(num:int) : void
       {
-         var _loc2_:PackageOut = new PackageOut(300);
-         _loc2_.writeByte(2);
-         _loc2_.writeInt(param1);
-         sendPackage(_loc2_);
+         var pkg:PackageOut = new PackageOut(300);
+         pkg.writeByte(2);
+         pkg.writeInt(num);
+         sendPackage(pkg);
       }
       
-      public static function sendLanternCookLantern(param1:int) : void
+      public static function sendLanternCookLantern(num:int) : void
       {
-         var _loc2_:PackageOut = new PackageOut(300);
-         _loc2_.writeByte(3);
-         _loc2_.writeInt(param1);
-         sendPackage(_loc2_);
+         var pkg:PackageOut = new PackageOut(300);
+         pkg.writeByte(3);
+         pkg.writeInt(num);
+         sendPackage(pkg);
       }
       
-      public static function sendLanternWish(param1:int) : void
+      public static function sendLanternWish(id:int) : void
       {
-         var _loc2_:PackageOut = new PackageOut(300);
-         _loc2_.writeByte(5);
-         _loc2_.writeInt(param1);
-         sendPackage(_loc2_);
+         var pkg:PackageOut = new PackageOut(300);
+         pkg.writeByte(5);
+         pkg.writeInt(id);
+         sendPackage(pkg);
       }
       
       public static function sendLanternGainWishGift() : void
       {
-         var _loc1_:PackageOut = new PackageOut(300);
-         _loc1_.writeByte(6);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(300);
+         pkg.writeByte(6);
+         sendPackage(pkg);
       }
       
-      public static function sendMaxBtnState(param1:Boolean) : void
+      public static function sendMaxBtnState(isPackUp:Boolean) : void
       {
-         var _loc2_:PackageOut = new PackageOut(538);
-         _loc2_.writeByte(2);
-         _loc2_.writeBoolean(param1);
-         sendPackage(_loc2_);
+         var pkg:PackageOut = new PackageOut(538);
+         pkg.writeByte(2);
+         pkg.writeBoolean(isPackUp);
+         sendPackage(pkg);
       }
       
       public static function sendRequireMaxBtnState() : void
       {
-         var _loc1_:PackageOut = new PackageOut(538);
-         _loc1_.writeByte(1);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(538);
+         pkg.writeByte(1);
+         sendPackage(pkg);
       }
       
-      public static function sendWorshipTheMoon(param1:int, param2:Boolean) : void
+      public static function sendWorshipTheMoon(counts:int, isBindTickets:Boolean) : void
       {
-         var _loc3_:PackageOut = new PackageOut(281);
-         _loc3_.writeByte(3);
-         _loc3_.writeInt(param1);
-         _loc3_.writeBoolean(param2);
-         sendPackage(_loc3_);
+         var pkg:PackageOut = new PackageOut(281);
+         pkg.writeByte(3);
+         pkg.writeInt(counts);
+         pkg.writeBoolean(isBindTickets);
+         sendPackage(pkg);
       }
       
       public static function sendWorshipTheMoonIsActivityOpen() : void
       {
-         var _loc1_:PackageOut = new PackageOut(281);
-         _loc1_.writeByte(1);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(281);
+         pkg.writeByte(1);
+         sendPackage(pkg);
       }
       
-      public static function sendBagLockStates(param1:ByteArray = null) : void
+      public static function sendBagLockStates(stateData:ByteArray = null) : void
       {
-         var _loc2_:PackageOut = new PackageOut(25);
-         _loc2_.writeByte(2);
-         if(param1 == null)
+         var pkg:PackageOut = new PackageOut(25);
+         pkg.writeByte(2);
+         if(stateData == null)
          {
-            _loc2_.writeByte(0);
+            pkg.writeByte(0);
          }
          else
          {
-            _loc2_.writeByte(1);
-            _loc2_.writeBytes(param1);
+            pkg.writeByte(1);
+            pkg.writeBytes(stateData);
          }
-         sendPackage(_loc2_);
+         sendPackage(pkg);
       }
       
       public static function sendWorshipTheMoonFreeCount() : void
       {
-         var _loc1_:PackageOut = new PackageOut(281);
-         _loc1_.writeByte(2);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(281);
+         pkg.writeByte(2);
+         sendPackage(pkg);
       }
       
       public static function sendWorshipTheMoonAwardsList() : void
       {
-         var _loc1_:PackageOut = new PackageOut(281);
-         _loc1_.writeByte(4);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(281);
+         pkg.writeByte(4);
+         sendPackage(pkg);
       }
       
       public static function sendGainThe200timesAwardBox() : void
       {
-         var _loc1_:PackageOut = new PackageOut(281);
-         _loc1_.writeByte(5);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(281);
+         pkg.writeByte(5);
+         sendPackage(pkg);
       }
       
-      public static function sendGypsyBuy(param1:int, param2:Boolean) : void
+      public static function sendGypsyBuy(id:int, isBind:Boolean) : void
       {
-         var _loc3_:PackageOut = new PackageOut(278);
-         _loc3_.writeByte(3);
-         _loc3_.writeInt(param1);
-         _loc3_.writeBoolean(param2);
-         sendPackage(_loc3_);
+         var pkg:PackageOut = new PackageOut(278);
+         pkg.writeByte(3);
+         pkg.writeInt(id);
+         pkg.writeBoolean(isBind);
+         sendPackage(pkg);
       }
       
       public static function sendGypsyRefreshItemList() : void
       {
-         var _loc1_:PackageOut = new PackageOut(278);
-         _loc1_.writeByte(2);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(278);
+         pkg.writeByte(2);
+         sendPackage(pkg);
       }
       
       public static function sendGypsyManualRefreshItemList() : void
       {
-         var _loc1_:PackageOut = new PackageOut(278);
-         _loc1_.writeByte(5);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(278);
+         pkg.writeByte(5);
+         sendPackage(pkg);
       }
       
-      public static function sendGypsyManualRefreshItemListWithRMB(param1:Boolean) : void
+      public static function sendGypsyManualRefreshItemListWithRMB(isBind:Boolean) : void
       {
-         var _loc2_:PackageOut = new PackageOut(278);
-         _loc2_.writeByte(6);
-         _loc2_.writeBoolean(param1);
-         sendPackage(_loc2_);
+         var pkg:PackageOut = new PackageOut(278);
+         pkg.writeByte(6);
+         pkg.writeBoolean(isBind);
+         sendPackage(pkg);
       }
       
       public static function sendGypsyRefreshRareList() : void
       {
-         var _loc1_:PackageOut = new PackageOut(278);
-         _loc1_.writeByte(4);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(278);
+         pkg.writeByte(4);
+         sendPackage(pkg);
       }
       
       public static function sendRequestGypsyNPCState() : void
       {
-         var _loc1_:PackageOut = new PackageOut(278);
-         _loc1_.writeByte(1);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(278);
+         pkg.writeByte(1);
+         sendPackage(pkg);
       }
       
-      public static function sendGetScenePlayer(param1:int) : void
+      public static function sendGetScenePlayer(index:int) : void
       {
-         var _loc2_:PackageOut = new PackageOut(69);
-         _loc2_.writeByte(param1);
-         _loc2_.writeByte(6);
-         sendPackage(_loc2_);
+         var pkg:PackageOut = new PackageOut(69);
+         pkg.writeByte(index);
+         pkg.writeByte(6);
+         sendPackage(pkg);
       }
       
-      public static function sendInviteGame(param1:int) : void
+      public static function sendInviteGame(playerid:int) : void
       {
-         var _loc2_:PackageOut = new PackageOut(70);
-         _loc2_.writeInt(param1);
-         sendPackage(_loc2_);
+         var pkg:PackageOut = new PackageOut(70);
+         pkg.writeInt(playerid);
+         sendPackage(pkg);
       }
       
-      public static function sendBuyProp(param1:int) : void
+      public static function sendBuyProp(id:int) : void
       {
-         var _loc2_:PackageOut = new PackageOut(54);
-         _loc2_.writeInt(param1);
-         sendPackage(_loc2_);
+         var pkg:PackageOut = new PackageOut(54);
+         pkg.writeInt(id);
+         sendPackage(pkg);
       }
       
-      public static function sendSellProp(param1:int, param2:int) : void
+      public static function sendSellProp(id:int, GoodsID:int) : void
       {
-         var _loc3_:PackageOut = new PackageOut(55);
-         _loc3_.writeInt(param1);
-         _loc3_.writeInt(param2);
-         sendPackage(_loc3_);
+         var pkg:PackageOut = new PackageOut(55);
+         pkg.writeInt(id);
+         pkg.writeInt(GoodsID);
+         sendPackage(pkg);
       }
       
-      public static function sendGameRoomSetUp(param1:int, param2:int, param3:Boolean = false, param4:String = "", param5:String = "", param6:int = 2, param7:int = 0, param8:int = 0, param9:Boolean = false, param10:int = 0, param11:Boolean = false, param12:int = 0) : void
+      public static function sendGameRoomSetUp(id:int, type:int, isOpenBoss:Boolean = false, pass:String = "", name:String = "", secondType:int = 2, permission:int = 0, levelLimits:int = 0, allowCrossZone:Boolean = false, tempID:int = 0, isBand:Boolean = false, gameType:int = 0) : void
       {
-         var _loc14_:int = PlayerManager.Instance.Self.Grade < 5?4:param6;
-         var _loc13_:PackageOut = new PackageOut(94);
-         _loc13_.writeInt(2);
-         _loc13_.writeInt(param1);
-         _loc13_.writeByte(param2);
-         _loc13_.writeBoolean(param3);
-         _loc13_.writeUTF(param4);
-         _loc13_.writeUTF(param5);
-         _loc13_.writeByte(_loc14_);
-         _loc13_.writeByte(param7);
-         _loc13_.writeInt(param8);
-         _loc13_.writeBoolean(param9);
-         _loc13_.writeInt(param10);
-         _loc13_.writeInt(param12);
-         _loc13_.writeBoolean(param11);
-         sendPackage(_loc13_);
+         var secType:int = PlayerManager.Instance.Self.Grade < 5?4:secondType;
+         var pkg:PackageOut = new PackageOut(94);
+         pkg.writeInt(2);
+         pkg.writeInt(id);
+         pkg.writeByte(type);
+         pkg.writeBoolean(isOpenBoss);
+         pkg.writeUTF(pass);
+         pkg.writeUTF(name);
+         pkg.writeByte(secType);
+         pkg.writeByte(permission);
+         pkg.writeInt(levelLimits);
+         pkg.writeBoolean(allowCrossZone);
+         pkg.writeInt(tempID);
+         pkg.writeInt(gameType);
+         pkg.writeBoolean(isBand);
+         sendPackage(pkg);
       }
       
-      public static function sendCreateRoom(param1:String, param2:int, param3:int = 2, param4:String = "", param5:Boolean = false) : void
+      public static function sendCreateRoom(name:String, roomType:int, timeType:int = 2, pass:String = "", isDouble:Boolean = false) : void
       {
-         var _loc6_:int = PlayerManager.Instance.Self.Grade < 5?4:param3;
-         var _loc7_:PackageOut = new PackageOut(94);
-         _loc7_.writeInt(0);
-         _loc7_.writeByte(param2);
-         _loc7_.writeByte(_loc6_);
-         _loc7_.writeUTF(param1);
-         _loc7_.writeUTF(param4);
-         _loc7_.writeBoolean(param5);
-         sendPackage(_loc7_);
+         var secType:int = PlayerManager.Instance.Self.Grade < 5?4:timeType;
+         var pkg:PackageOut = new PackageOut(94);
+         pkg.writeInt(0);
+         pkg.writeByte(roomType);
+         pkg.writeByte(secType);
+         pkg.writeUTF(name);
+         pkg.writeUTF(pass);
+         pkg.writeBoolean(isDouble);
+         sendPackage(pkg);
       }
       
-      public static function sendGameRoomPlaceState(param1:int, param2:int, param3:Boolean = false, param4:int = -100) : void
+      public static function sendGameRoomPlaceState(index:int, isOpened:int, toNewPlace:Boolean = false, _newPlace:int = -100) : void
       {
-         var _loc5_:PackageOut = new PackageOut(94);
-         _loc5_.writeInt(10);
-         _loc5_.writeByte(param1);
-         _loc5_.writeInt(param2);
-         _loc5_.writeBoolean(param3);
-         _loc5_.writeInt(param4);
-         sendPackage(_loc5_);
+         var pkg:PackageOut = new PackageOut(94);
+         pkg.writeInt(10);
+         pkg.writeByte(index);
+         pkg.writeInt(isOpened);
+         pkg.writeBoolean(toNewPlace);
+         pkg.writeInt(_newPlace);
+         sendPackage(pkg);
       }
       
-      public static function sendGameRoomKick(param1:int) : void
+      public static function sendGameRoomKick(index:int) : void
       {
-         var _loc2_:PackageOut = new PackageOut(94);
-         _loc2_.writeInt(3);
-         _loc2_.writeByte(param1);
-         sendPackage(_loc2_);
+         var pkg:PackageOut = new PackageOut(94);
+         pkg.writeInt(3);
+         pkg.writeByte(index);
+         sendPackage(pkg);
       }
       
       public static function sendExitScene() : void
       {
-         var _loc1_:PackageOut = new PackageOut(21);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(21);
+         sendPackage(pkg);
       }
       
       public static function sendGamePlayerExit() : void
       {
-         var _loc1_:PackageOut = new PackageOut(94);
-         _loc1_.writeInt(5);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(94);
+         pkg.writeInt(5);
+         sendPackage(pkg);
       }
       
-      public static function sendGameTeam(param1:int) : void
+      public static function sendGameTeam(team:int) : void
       {
-         var _loc2_:PackageOut = new PackageOut(94);
-         _loc2_.writeInt(6);
-         _loc2_.writeByte(param1);
-         sendPackage(_loc2_);
+         var pkg:PackageOut = new PackageOut(94);
+         pkg.writeInt(6);
+         pkg.writeByte(team);
+         sendPackage(pkg);
       }
       
-      public static function sendFlagMode(param1:Boolean) : void
+      public static function sendFlagMode(flag:Boolean) : void
       {
-         var _loc2_:PackageOut = new PackageOut(91);
-         _loc2_.writeByte(97);
-         _loc2_.writeBoolean(param1);
-         sendPackage(_loc2_);
+         var pkg:PackageOut = new PackageOut(91);
+         pkg.writeByte(97);
+         pkg.writeBoolean(flag);
+         sendPackage(pkg);
       }
       
       public static function sendGameStart() : void
       {
-         var _loc1_:PackageOut = new PackageOut(94);
-         _loc1_.writeInt(7);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(94);
+         pkg.writeInt(7);
+         sendPackage(pkg);
       }
       
-      public static function sendGameMissionStart(param1:Boolean) : void
+      public static function sendGameMissionStart(isStart:Boolean) : void
       {
-         var _loc2_:PackageOut = new PackageOut(82);
-         _loc2_.writeBoolean(param1);
-         sendPackage(_loc2_);
+         var pkg:PackageOut = new PackageOut(82);
+         pkg.writeBoolean(isStart);
+         sendPackage(pkg);
       }
       
-      public static function sendGameMissionPrepare(param1:int, param2:Boolean) : void
+      public static function sendGameMissionPrepare(place:int, isRead:Boolean) : void
       {
-         var _loc3_:PackageOut = new PackageOut(91);
-         _loc3_.writeByte(116);
-         _loc3_.writeBoolean(param2);
-         sendPackage(_loc3_);
+         var pkg:PackageOut = new PackageOut(91);
+         pkg.writeByte(116);
+         pkg.writeBoolean(isRead);
+         sendPackage(pkg);
       }
       
-      public static function sendLoadingProgress(param1:Number) : void
+      public static function sendLoadingProgress(progress:Number) : void
       {
-         var _loc2_:PackageOut = new PackageOut(91);
-         _loc2_.writeByte(16);
-         _loc2_.writeInt(param1);
-         sendPackage(_loc2_);
+         var pkg:PackageOut = new PackageOut(91);
+         pkg.writeByte(16);
+         pkg.writeInt(progress);
+         sendPackage(pkg);
       }
       
-      public static function sendPlayerState(param1:int) : void
+      public static function sendPlayerState(ready:int) : void
       {
-         var _loc2_:PackageOut = new PackageOut(94);
-         _loc2_.writeInt(15);
-         _loc2_.writeByte(param1);
-         sendPackage(_loc2_);
+         var pkg:PackageOut = new PackageOut(94);
+         pkg.writeInt(15);
+         pkg.writeByte(ready);
+         sendPackage(pkg);
       }
       
       public static function sendStartOrPreCheckEnergy() : void
       {
-         var _loc1_:PackageOut = new PackageOut(94);
-         _loc1_.writeInt(20);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(94);
+         pkg.writeInt(20);
+         sendPackage(pkg);
       }
       
-      public static function sendGameCMDBlast(param1:int, param2:int, param3:int, param4:int) : void
+      public static function sendGameCMDBlast(id:int, x:int, y:int, t:int) : void
       {
-         var _loc5_:PackageOut = new PackageOut(91);
-         _loc5_.writeByte(3);
-         _loc5_.writeInt(param1);
-         _loc5_.writeInt(param2);
-         _loc5_.writeInt(param3);
-         _loc5_.writeInt(param4);
-         sendPackage(_loc5_);
+         var pkg:PackageOut = new PackageOut(91);
+         pkg.writeByte(3);
+         pkg.writeInt(id);
+         pkg.writeInt(x);
+         pkg.writeInt(y);
+         pkg.writeInt(t);
+         sendPackage(pkg);
       }
       
-      public static function sendGameCMDChange(param1:int, param2:int, param3:int, param4:int, param5:int) : void
+      public static function sendGameCMDChange(id:int, bombPosX:int, bombPosY:int, vx:int, vy:int) : void
       {
-         var _loc6_:PackageOut = new PackageOut(91);
-         _loc6_.writeByte(19);
-         _loc6_.writeInt(param1);
-         _loc6_.writeInt(param2);
-         _loc6_.writeInt(param3);
-         _loc6_.writeInt(param4);
-         _loc6_.writeInt(param5);
-         sendPackage(_loc6_);
+         var pkg:PackageOut = new PackageOut(91);
+         pkg.writeByte(19);
+         pkg.writeInt(id);
+         pkg.writeInt(bombPosX);
+         pkg.writeInt(bombPosY);
+         pkg.writeInt(vx);
+         pkg.writeInt(vy);
+         sendPackage(pkg);
       }
       
-      public static function sendGameCMDDirection(param1:int) : void
+      public static function sendGameCMDDirection(direction:int) : void
       {
-         var _loc2_:PackageOut = new PackageOut(91);
-         _loc2_.writeByte(7);
-         _loc2_.writeInt(param1);
-         sendPackage(_loc2_);
+         var pkg:PackageOut = new PackageOut(91);
+         pkg.writeByte(7);
+         pkg.writeInt(direction);
+         sendPackage(pkg);
       }
       
-      public static function sendGameCMDStunt(param1:int = 0) : void
+      public static function sendGameCMDStunt(skillId:int = 0) : void
       {
-         var _loc2_:PackageOut = new PackageOut(91);
-         _loc2_.writeByte(15);
-         _loc2_.writeByte(param1);
-         sendPackage(_loc2_);
+         var pkg:PackageOut = new PackageOut(91);
+         pkg.writeByte(15);
+         pkg.writeByte(skillId);
+         sendPackage(pkg);
       }
       
-      public static function sendGameCMDShoot(param1:int, param2:int, param3:int, param4:int) : void
+      public static function sendGameCMDShoot(x:int, y:int, force:int, angle:int) : void
       {
-         var _loc5_:PackageOut = new PackageOut(91);
-         _loc5_.writeByte(2);
-         _loc5_.writeInt(int(param1));
-         _loc5_.writeInt(int(param2));
-         _loc5_.writeInt(int(param3));
-         _loc5_.writeInt(int(param4));
-         sendPackage(_loc5_);
+         var pkg:PackageOut = new PackageOut(91);
+         pkg.writeByte(2);
+         pkg.writeInt(int(x));
+         pkg.writeInt(int(y));
+         pkg.writeInt(int(force));
+         pkg.writeInt(int(angle));
+         sendPackage(pkg);
       }
       
-      public static function sendGameSkipNext(param1:int) : void
+      public static function sendGameSkipNext(time:int) : void
       {
-         var _loc2_:PackageOut = new PackageOut(91);
-         _loc2_.writeByte(12);
-         _loc2_.writeByte(param1);
-         sendPackage(_loc2_);
+         var pkg:PackageOut = new PackageOut(91);
+         pkg.writeByte(12);
+         pkg.writeByte(time);
+         sendPackage(pkg);
       }
       
-      public static function sendTransmissionGate(param1:Boolean) : void
+      public static function sendTransmissionGate(value:Boolean) : void
       {
-         var _loc2_:PackageOut = new PackageOut(91);
-         _loc2_.writeByte(137);
-         _loc2_.writeBoolean(param1);
-         sendPackage(_loc2_);
+         var pkg:PackageOut = new PackageOut(91);
+         pkg.writeByte(137);
+         pkg.writeBoolean(value);
+         sendPackage(pkg);
       }
       
-      public static function sendGameStartMove(param1:Number, param2:int, param3:int, param4:Number, param5:Boolean, param6:Number) : void
+      public static function sendGameStartMove(type:Number, x:int, y:int, dir:Number, isLiving:Boolean, turnIndex:Number) : void
       {
-         var _loc7_:PackageOut = new PackageOut(91);
-         _loc7_.writeByte(9);
-         _loc7_.writeBoolean(true);
-         _loc7_.writeByte(param1);
-         _loc7_.writeInt(param2);
-         _loc7_.writeInt(param3);
-         _loc7_.writeByte(param4);
-         _loc7_.writeBoolean(param5);
-         _loc7_.writeShort(param6);
-         sendPackage(_loc7_);
+         var pkg:PackageOut = new PackageOut(91);
+         pkg.writeByte(9);
+         pkg.writeBoolean(true);
+         pkg.writeByte(type);
+         pkg.writeInt(x);
+         pkg.writeInt(y);
+         pkg.writeByte(dir);
+         pkg.writeBoolean(isLiving);
+         pkg.writeShort(turnIndex);
+         sendPackage(pkg);
       }
       
-      public static function sendGameStopMove(param1:int, param2:int, param3:Boolean) : void
+      public static function sendGameStopMove(posX:int, posY:int, isUser:Boolean) : void
       {
-         var _loc4_:PackageOut = new PackageOut(91);
-         _loc4_.writeByte(10);
-         _loc4_.writeInt(param1);
-         _loc4_.writeInt(param2);
-         _loc4_.writeBoolean(param3);
-         sendPackage(_loc4_);
+         var pkg:PackageOut = new PackageOut(91);
+         pkg.writeByte(10);
+         pkg.writeInt(posX);
+         pkg.writeInt(posY);
+         pkg.writeBoolean(isUser);
+         sendPackage(pkg);
       }
       
-      public static function sendGameTakeOut(param1:int) : void
+      public static function sendGameTakeOut(place:int) : void
       {
-         var _loc2_:PackageOut = new PackageOut(91);
-         _loc2_.writeByte(98);
-         _loc2_.writeByte(param1);
-         sendPackage(_loc2_);
+         var pkg:PackageOut = new PackageOut(91);
+         pkg.writeByte(98);
+         pkg.writeByte(place);
+         sendPackage(pkg);
       }
       
-      public static function sendBossTakeOut(param1:int) : void
+      public static function sendBossTakeOut(place:int) : void
       {
-         var _loc2_:PackageOut = new PackageOut(91);
-         _loc2_.writeByte(130);
-         _loc2_.writeByte(param1);
-         sendPackage(_loc2_);
+         var pkg:PackageOut = new PackageOut(91);
+         pkg.writeByte(130);
+         pkg.writeByte(place);
+         sendPackage(pkg);
       }
       
-      public static function sendGetTropToBag(param1:int) : void
+      public static function sendGetTropToBag(place:int) : void
       {
-         var _loc2_:PackageOut = new PackageOut(108);
-         _loc2_.writeInt(param1);
-         sendPackage(_loc2_);
+         var pkg:PackageOut = new PackageOut(108);
+         pkg.writeInt(place);
+         sendPackage(pkg);
       }
       
-      public static function sendShootTag(param1:Boolean, param2:int = 0) : void
+      public static function sendShootTag(b:Boolean, time:int = 0) : void
       {
-         var _loc3_:PackageOut = new PackageOut(91);
-         _loc3_.writeByte(96);
-         _loc3_.writeBoolean(param1);
-         if(param1)
+         var pkg:PackageOut = new PackageOut(91);
+         pkg.writeByte(96);
+         pkg.writeBoolean(b);
+         if(b)
          {
-            _loc3_.writeByte(param2);
+            pkg.writeByte(time);
          }
-         sendPackage(_loc3_);
+         sendPackage(pkg);
       }
       
-      public static function sendBeat(param1:Number, param2:Number, param3:Number) : void
+      public static function sendBeat(x:Number, y:Number, angle:Number) : void
       {
-         var _loc4_:PackageOut = new PackageOut(91);
-         _loc4_.writeByte(22);
-         _loc4_.writeShort(param1);
-         _loc4_.writeShort(param2);
-         _loc4_.writeShort(param3);
-         sendPackage(_loc4_);
+         var pkg:PackageOut = new PackageOut(91);
+         pkg.writeByte(22);
+         pkg.writeShort(x);
+         pkg.writeShort(y);
+         pkg.writeShort(angle);
+         sendPackage(pkg);
       }
       
-      public static function sendThrowProp(param1:int) : void
+      public static function sendThrowProp(place:int) : void
       {
-         var _loc2_:PackageOut = new PackageOut(75);
-         _loc2_.writeInt(param1);
-         sendPackage(_loc2_);
+         var pkg:PackageOut = new PackageOut(75);
+         pkg.writeInt(place);
+         sendPackage(pkg);
       }
       
-      public static function sendUseProp(param1:int, param2:int, param3:int) : void
+      public static function sendUseProp(type:int, place:int, tempid:int) : void
       {
-         var _loc4_:PackageOut = new PackageOut(91);
-         _loc4_.writeByte(32);
-         _loc4_.writeByte(param1);
-         _loc4_.writeInt(param2);
-         _loc4_.writeInt(param3);
-         sendPackage(_loc4_);
+         var pkg:PackageOut = new PackageOut(91);
+         pkg.writeByte(32);
+         pkg.writeByte(type);
+         pkg.writeInt(place);
+         pkg.writeInt(tempid);
+         sendPackage(pkg);
       }
       
       public static function sendCancelWait() : void
       {
-         var _loc1_:PackageOut = new PackageOut(94);
-         _loc1_.writeInt(11);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(94);
+         pkg.writeInt(11);
+         sendPackage(pkg);
       }
       
-      public static function sendSingleRoomBegin(param1:int) : void
+      public static function sendSingleRoomBegin(type:int) : void
       {
-         var _loc2_:PackageOut = new PackageOut(94);
-         _loc2_.writeInt(18);
-         _loc2_.writeInt(param1);
-         sendPackage(_loc2_);
+         var pkg:PackageOut = new PackageOut(94);
+         pkg.writeInt(18);
+         pkg.writeInt(type);
+         sendPackage(pkg);
       }
       
-      public static function sendGameStyle(param1:int) : void
+      public static function sendGameStyle(style:int) : void
       {
-         var _loc2_:PackageOut = new PackageOut(94);
-         _loc2_.writeInt(12);
-         _loc2_.writeInt(param1);
-         sendPackage(_loc2_);
+         var pkg:PackageOut = new PackageOut(94);
+         pkg.writeInt(12);
+         pkg.writeInt(style);
+         sendPackage(pkg);
       }
       
-      public static function sendGhostTarget(param1:Point) : void
+      public static function sendGhostTarget(pos:Point) : void
       {
-         var _loc2_:PackageOut = new PackageOut(91);
-         _loc2_.writeByte(54);
-         _loc2_.writeInt(param1.x);
-         _loc2_.writeInt(param1.y);
-         sendPackage(_loc2_);
+         var pkg:PackageOut = new PackageOut(91);
+         pkg.writeByte(54);
+         pkg.writeInt(pos.x);
+         pkg.writeInt(pos.y);
+         sendPackage(pkg);
       }
       
-      public static function sendPaymentTakeCard(param1:int, param2:Boolean = true) : void
+      public static function sendPaymentTakeCard(place:int, bool:Boolean = true) : void
       {
-         var _loc3_:PackageOut = new PackageOut(91);
-         _loc3_.writeByte(114);
-         _loc3_.writeByte(param1);
-         _loc3_.writeBoolean(param2);
-         sendPackage(_loc3_);
+         var pkg:PackageOut = new PackageOut(91);
+         pkg.writeByte(114);
+         pkg.writeByte(place);
+         pkg.writeBoolean(bool);
+         sendPackage(pkg);
       }
       
-      public static function sendMissionTryAgain(param1:int, param2:Boolean, param3:Boolean = true) : void
+      public static function sendMissionTryAgain(tryAgain:int, isHost:Boolean, bool:Boolean = true) : void
       {
-         var _loc4_:PackageOut = new PackageOut(91);
-         _loc4_.writeByte(119);
-         _loc4_.writeInt(param1);
-         _loc4_.writeBoolean(param2);
-         _loc4_.writeBoolean(param3);
-         sendPackage(_loc4_);
+         var pkg:PackageOut = new PackageOut(91);
+         pkg.writeByte(119);
+         pkg.writeInt(tryAgain);
+         pkg.writeBoolean(isHost);
+         pkg.writeBoolean(bool);
+         sendPackage(pkg);
       }
       
-      public static function sendFightLibInfoChange(param1:int, param2:int = -1) : void
+      public static function sendFightLibInfoChange(id:int, difficult:int = -1) : void
       {
-         var _loc3_:PackageOut = new PackageOut(91);
-         _loc3_.writeByte(-1);
-         _loc3_.writeInt(param1);
-         _loc3_.writeInt(param2);
-         sendPackage(_loc3_);
+         var pkg:PackageOut = new PackageOut(91);
+         pkg.writeByte(-1);
+         pkg.writeInt(id);
+         pkg.writeInt(difficult);
+         sendPackage(pkg);
       }
       
       public static function sendPassStory() : void
       {
-         var _loc1_:PackageOut = new PackageOut(91);
-         _loc1_.writeByte(133);
-         _loc1_.writeBoolean(true);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(91);
+         pkg.writeByte(133);
+         pkg.writeBoolean(true);
+         sendPackage(pkg);
       }
       
       public static function sendClientScriptStart() : void
       {
-         var _loc1_:PackageOut = new PackageOut(91);
-         _loc1_.writeByte(23);
-         _loc1_.writeInt(3);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(91);
+         pkg.writeByte(23);
+         pkg.writeInt(3);
+         sendPackage(pkg);
       }
       
       public static function sendClientScriptEnd() : void
       {
-         var _loc1_:PackageOut = new PackageOut(91);
-         _loc1_.writeByte(23);
-         _loc1_.writeInt(2);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(91);
+         pkg.writeByte(23);
+         pkg.writeInt(2);
+         sendPackage(pkg);
       }
       
-      public static function sendFightLibAnswer(param1:int, param2:int) : void
+      public static function sendFightLibAnswer(questionID:int, answerID:int) : void
       {
-         var _loc3_:PackageOut = new PackageOut(91);
-         _loc3_.writeByte(23);
-         _loc3_.writeInt(4);
-         _loc3_.writeInt(param1);
-         _loc3_.writeInt(param2);
-         sendPackage(_loc3_);
+         var pkg:PackageOut = new PackageOut(91);
+         pkg.writeByte(23);
+         pkg.writeInt(4);
+         pkg.writeInt(questionID);
+         pkg.writeInt(answerID);
+         sendPackage(pkg);
       }
       
       public static function sendFightLibReanswer() : void
       {
-         var _loc1_:PackageOut = new PackageOut(91);
-         _loc1_.writeByte(23);
-         _loc1_.writeInt(5);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(91);
+         pkg.writeByte(23);
+         pkg.writeInt(5);
+         sendPackage(pkg);
       }
       
-      public static function sendUpdatePlayStep(param1:String) : void
+      public static function sendUpdatePlayStep(cmd:String) : void
       {
-         var _loc2_:PackageOut = new PackageOut(91);
-         _loc2_.writeByte(25);
-         _loc2_.writeInt(6);
-         _loc2_.writeUTF(param1);
-         sendPackage(_loc2_);
+         var pkg:PackageOut = new PackageOut(91);
+         pkg.writeByte(25);
+         pkg.writeInt(6);
+         pkg.writeUTF(cmd);
+         sendPackage(pkg);
       }
       
       public static function sendGodCardInfoAttribute() : void
       {
-         var _loc1_:PackageOut = new PackageOut(329);
-         _loc1_.writeByte(20);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(329);
+         pkg.writeByte(20);
+         sendPackage(pkg);
       }
       
-      public static function sendGodCardOpenCard(param1:int, param2:Boolean) : void
+      public static function sendGodCardOpenCard(type:int, isBind:Boolean) : void
       {
-         var _loc3_:PackageOut = new PackageOut(329);
-         _loc3_.writeByte(21);
-         _loc3_.writeInt(param1);
-         _loc3_.writeBoolean(param2);
-         sendPackage(_loc3_);
+         var pkg:PackageOut = new PackageOut(329);
+         pkg.writeByte(21);
+         pkg.writeInt(type);
+         pkg.writeBoolean(isBind);
+         sendPackage(pkg);
       }
       
-      public static function sendGodCardOperateCard(param1:int, param2:int, param3:int) : void
+      public static function sendGodCardOperateCard(type:int, id:int, count:int) : void
       {
-         var _loc4_:PackageOut = new PackageOut(329);
-         _loc4_.writeByte(22);
-         _loc4_.writeInt(param1);
-         _loc4_.writeInt(param2);
-         _loc4_.writeInt(param3);
-         sendPackage(_loc4_);
+         var pkg:PackageOut = new PackageOut(329);
+         pkg.writeByte(22);
+         pkg.writeInt(type);
+         pkg.writeInt(id);
+         pkg.writeInt(count);
+         sendPackage(pkg);
       }
       
-      public static function sendGodCardExchange(param1:int, param2:Boolean = false) : void
+      public static function sendGodCardExchange(id:int, useGodCard:Boolean = false) : void
       {
-         var _loc3_:PackageOut = new PackageOut(329);
-         _loc3_.writeByte(23);
-         _loc3_.writeInt(param1);
-         _loc3_.writeBoolean(param2);
-         sendPackage(_loc3_);
+         var pkg:PackageOut = new PackageOut(329);
+         pkg.writeByte(23);
+         pkg.writeInt(id);
+         pkg.writeBoolean(useGodCard);
+         sendPackage(pkg);
       }
       
-      public static function sendGodCardPointAwardAttribute(param1:int) : void
+      public static function sendGodCardPointAwardAttribute(id:int) : void
       {
-         var _loc2_:PackageOut = new PackageOut(329);
-         _loc2_.writeByte(24);
-         _loc2_.writeInt(param1);
-         sendPackage(_loc2_);
+         var pkg:PackageOut = new PackageOut(329);
+         pkg.writeByte(24);
+         pkg.writeInt(id);
+         sendPackage(pkg);
       }
       
-      public static function sendSelectObject(param1:int, param2:int) : void
+      public static function sendSelectObject(id:int, zoneID:int) : void
       {
-         var _loc3_:PackageOut = new PackageOut(91);
-         _loc3_.writeByte(138);
-         _loc3_.writeInt(param1);
-         _loc3_.writeInt(param2);
-         sendPackage(_loc3_);
+         var pkg:PackageOut = new PackageOut(91);
+         pkg.writeByte(138);
+         pkg.writeInt(id);
+         pkg.writeInt(zoneID);
+         sendPackage(pkg);
       }
       
       public static function sendGetActivePveInfo() : void
       {
-         var _loc1_:PackageOut = new PackageOut(342);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(342);
+         sendPackage(pkg);
       }
       
-      public static function sendMoneyTreeSpeedUp(param1:int, param2:int, param3:Boolean) : void
+      public static function sendMoneyTreeSpeedUp(position:int, times:int, bind:Boolean) : void
       {
-         var _loc4_:PackageOut = new PackageOut(296);
-         _loc4_.writeByte(2);
-         _loc4_.writeInt(param1);
-         _loc4_.writeInt(param2);
-         _loc4_.writeBoolean(param3);
-         sendPackage(_loc4_);
+         var pkg:PackageOut = new PackageOut(296);
+         pkg.writeByte(2);
+         pkg.writeInt(position);
+         pkg.writeInt(times);
+         pkg.writeBoolean(bind);
+         sendPackage(pkg);
       }
       
-      public static function sendMoneyTreeSendRedPackage(param1:Array) : void
+      public static function sendMoneyTreeSendRedPackage(sendList:Array) : void
       {
-         var _loc8_:int = 0;
-         var _loc4_:int = 0;
-         var _loc7_:* = null;
-         var _loc3_:* = null;
-         var _loc5_:int = param1.length;
-         var _loc6_:int = 80;
-         _loc8_ = 0;
-         while(_loc8_ < _loc5_)
+         var i:int = 0;
+         var endIndex:int = 0;
+         var tempList:* = null;
+         var pkg:* = null;
+         var len:int = sendList.length;
+         var step:int = 80;
+         for(i = 0; i < len; )
          {
-            _loc4_ = Math.min(_loc5_,_loc8_ + _loc6_);
-            _loc7_ = param1.slice(_loc8_,_loc4_);
-            _loc3_ = new PackageOut(296);
-            _loc3_.writeByte(3);
-            _loc3_.writeInt(_loc7_.length);
+            endIndex = Math.min(len,i + step);
+            tempList = sendList.slice(i,endIndex);
+            pkg = new PackageOut(296);
+            pkg.writeByte(3);
+            pkg.writeInt(tempList.length);
             var _loc10_:int = 0;
-            var _loc9_:* = _loc7_;
-            for each(var _loc2_ in _loc7_)
+            var _loc9_:* = tempList;
+            for each(var id in tempList)
             {
-               _loc3_.writeInt(_loc2_);
+               pkg.writeInt(id);
             }
-            sendPackage(_loc3_);
-            _loc8_ = _loc8_ + _loc6_;
+            sendPackage(pkg);
+            i = i + step;
          }
       }
       
-      public static function sendMoneyTreePick(param1:int) : void
+      public static function sendMoneyTreePick(position:int) : void
       {
-         var _loc2_:PackageOut = new PackageOut(296);
-         _loc2_.writeByte(4);
-         _loc2_.writeInt(param1);
-         sendPackage(_loc2_);
+         var pkg:PackageOut = new PackageOut(296);
+         pkg.writeByte(4);
+         pkg.writeInt(position);
+         sendPackage(pkg);
       }
       
       public static function sendMoneyTreeRequireInfo() : void
       {
-         var _loc1_:PackageOut = new PackageOut(296);
-         _loc1_.writeByte(1);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(296);
+         pkg.writeByte(1);
+         sendPackage(pkg);
       }
       
-      public static function sendOrdinaryFB(param1:Boolean, param2:Boolean) : void
+      public static function sendOrdinaryFB(flag:Boolean, double:Boolean) : void
       {
-         var _loc3_:PackageOut = new PackageOut(258);
-         _loc3_.writeByte(17);
-         _loc3_.writeBoolean(param1);
-         _loc3_.writeBoolean(param2);
-         sendPackage(_loc3_);
+         var pkg:PackageOut = new PackageOut(258);
+         pkg.writeByte(17);
+         pkg.writeBoolean(flag);
+         pkg.writeBoolean(double);
+         sendPackage(pkg);
       }
       
-      public static function sendKingDivisionGameStart(param1:int) : void
+      public static function sendKingDivisionGameStart(type:int) : void
       {
-         var _loc2_:PackageOut = new PackageOut(328);
-         _loc2_.writeByte(param1);
-         sendPackage(_loc2_);
+         var pkg:PackageOut = new PackageOut(328);
+         pkg.writeByte(type);
+         sendPackage(pkg);
       }
       
       public static function sendGetConsortionMessageThisZone() : void
       {
-         var _loc1_:PackageOut = new PackageOut(328);
-         _loc1_.writeByte(1);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(328);
+         pkg.writeByte(1);
+         sendPackage(pkg);
       }
       
       public static function sendGetConsortionMessageAllZone() : void
       {
-         var _loc1_:PackageOut = new PackageOut(328);
-         _loc1_.writeByte(2);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(328);
+         pkg.writeByte(2);
+         sendPackage(pkg);
       }
       
       public static function sendGetEliminateConsortionMessageThisZone() : void
       {
-         var _loc1_:PackageOut = new PackageOut(328);
-         _loc1_.writeByte(7);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(328);
+         pkg.writeByte(7);
+         sendPackage(pkg);
       }
       
       public static function sendGetEliminateConsortionMessageAllZone() : void
       {
-         var _loc1_:PackageOut = new PackageOut(328);
-         _loc1_.writeByte(8);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(328);
+         pkg.writeByte(8);
+         sendPackage(pkg);
       }
       
       public static function sendDiceRefreshData() : void
       {
-         var _loc1_:PackageOut = new PackageOut(134);
-         _loc1_.writeByte(12);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(134);
+         pkg.writeByte(12);
+         sendPackage(pkg);
       }
       
-      public static function sendStartDiceInfo(param1:int, param2:int) : void
+      public static function sendStartDiceInfo(type:int, position:int) : void
       {
-         var _loc3_:PackageOut = new PackageOut(134);
-         _loc3_.writeByte(11);
-         _loc3_.writeInt(param1);
-         _loc3_.writeInt(param2);
-         sendPackage(_loc3_);
+         var pkg:PackageOut = new PackageOut(134);
+         pkg.writeByte(11);
+         pkg.writeInt(type);
+         pkg.writeInt(position);
+         sendPackage(pkg);
       }
       
       public static function sendRequestEnterDiceSystem() : void
       {
-         var _loc1_:PackageOut = new PackageOut(134);
-         _loc1_.writeByte(10);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(134);
+         pkg.writeByte(10);
+         sendPackage(pkg);
       }
       
       public static function sendGetBattleSkillInfo() : void
       {
-         var _loc1_:PackageOut = new PackageOut(132);
-         _loc1_.writeByte(8);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(132);
+         pkg.writeByte(8);
+         sendPackage(pkg);
       }
       
-      public static function sendUpdateBattleSkill(param1:int) : void
+      public static function sendUpdateBattleSkill(skillId:int) : void
       {
-         var _loc2_:PackageOut = new PackageOut(132);
-         _loc2_.writeByte(6);
-         _loc2_.writeInt(param1);
-         sendPackage(_loc2_);
+         var pkg:PackageOut = new PackageOut(132);
+         pkg.writeByte(6);
+         pkg.writeInt(skillId);
+         sendPackage(pkg);
       }
       
-      public static function sendBringBattleSkill(param1:int, param2:int) : void
+      public static function sendBringBattleSkill(skillID:int, skillPlace:int) : void
       {
-         var _loc3_:PackageOut = new PackageOut(132);
-         _loc3_.writeByte(7);
-         _loc3_.writeInt(param1);
-         _loc3_.writeInt(param2);
-         sendPackage(_loc3_);
+         var pkg:PackageOut = new PackageOut(132);
+         pkg.writeByte(7);
+         pkg.writeInt(skillID);
+         pkg.writeInt(skillPlace);
+         sendPackage(pkg);
       }
       
-      public static function sendGetFriendPack(param1:String, param2:String, param3:int, param4:int) : void
+      public static function sendGetFriendPack(name:String, content:String, bagType:int, place:int) : void
       {
-         var _loc5_:PackageOut = new PackageOut(358);
-         _loc5_.writeUTF(param1);
-         _loc5_.writeUTF(param2);
-         _loc5_.writeByte(param3);
-         _loc5_.writeInt(param4);
-         _loc5_.writeBoolean(true);
-         sendPackage(_loc5_);
+         var pkg:PackageOut = new PackageOut(358);
+         pkg.writeUTF(name);
+         pkg.writeUTF(content);
+         pkg.writeByte(bagType);
+         pkg.writeInt(place);
+         pkg.writeBoolean(true);
+         sendPackage(pkg);
       }
       
-      public static function sendQuestionAnswer(param1:AnswerInfo) : void
+      public static function sendQuestionAnswer(info:AnswerInfo) : void
       {
-         var _loc2_:PackageOut = new PackageOut(329);
-         _loc2_.writeByte(56);
-         _loc2_.writeUTF(param1.answer);
-         _loc2_.writeUTF(param1.qq);
-         _loc2_.writeUTF(param1.phone);
-         _loc2_.writeUTF(param1.suggest);
-         sendPackage(_loc2_);
+         var pkg:PackageOut = new PackageOut(329);
+         pkg.writeByte(56);
+         pkg.writeUTF(info.answer);
+         pkg.writeUTF(info.qq);
+         pkg.writeUTF(info.phone);
+         pkg.writeUTF(info.suggest);
+         sendPackage(pkg);
       }
       
       public static function sendGoldmineInfoAttribute() : void
       {
-         var _loc1_:PackageOut = new PackageOut(624);
-         _loc1_.writeByte(3);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(624);
+         pkg.writeByte(3);
+         sendPackage(pkg);
       }
       
       public static function sendGoldmineUse() : void
       {
-         var _loc1_:PackageOut = new PackageOut(624);
-         _loc1_.writeByte(2);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(624);
+         pkg.writeByte(2);
+         sendPackage(pkg);
       }
       
-      public static function sendChangeRoomHost(param1:int) : void
+      public static function sendChangeRoomHost(roomHostID:int) : void
       {
-         var _loc2_:PackageOut = new PackageOut(94);
-         _loc2_.writeInt(23);
-         _loc2_.writeInt(param1);
-         sendPackage(_loc2_);
+         var pkg:PackageOut = new PackageOut(94);
+         pkg.writeInt(23);
+         pkg.writeInt(roomHostID);
+         sendPackage(pkg);
       }
       
-      private static function sendPackage(param1:PackageOut) : void
+      private static function sendPackage(pkg:PackageOut) : void
       {
-         _socket.send(param1);
+         _socket.send(pkg);
       }
       
       public static function sendCalendarPet() : void
       {
-         var _loc1_:PackageOut = new PackageOut(13);
-         _loc1_.writeInt(11);
-         sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(13);
+         pkg.writeInt(11);
+         sendPackage(pkg);
       }
    }
 }

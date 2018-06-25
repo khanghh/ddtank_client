@@ -22,7 +22,7 @@ package game.gametrainer.view
          this.dispatchEvent(new TrainerEvent("closeFrame"));
       }
       
-      public function set gotoAndStopTip(param1:int) : void
+      public function set gotoAndStopTip(frame:int) : void
       {
       }
       
@@ -32,14 +32,14 @@ package game.gametrainer.view
          this.dispatchEvent(new TrainerEvent("closeFrame"));
       }
       
-      protected function __onKeyDownd(param1:KeyboardEvent) : void
+      protected function __onKeyDownd(e:KeyboardEvent) : void
       {
          KeyboardManager.getInstance().reset();
-         if(param1.keyCode != 27)
+         if(e.keyCode != 27)
          {
             return;
          }
-         param1.stopImmediatePropagation();
+         e.stopImmediatePropagation();
          this.dispatchEvent(new TrainerEvent("closeFrame"));
       }
       

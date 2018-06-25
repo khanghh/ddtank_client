@@ -19,16 +19,16 @@ package road7th.utils
          super();
       }
       
-      public function readByteArray(param1:ByteArray) : void
+      public function readByteArray(ba:ByteArray) : void
       {
          loader = new Loader();
          loader.contentLoaderInfo.addEventListener("complete",dataComplete);
-         loader.loadBytes(param1);
+         loader.loadBytes(ba);
       }
       
-      public function dataComplete(param1:Event) : void
+      public function dataComplete(e:Event) : void
       {
-         bitmap = param1.target.content;
+         bitmap = e.target.content;
          dispatchEvent(new Event("complete"));
       }
    }

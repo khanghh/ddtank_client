@@ -9,6 +9,7 @@ package game.view.map
    import com.pickgliss.ui.LayerManager;
    import com.pickgliss.ui.controls.alert.BaseAlerFrame;
    import com.pickgliss.utils.ClassUtils;
+   import com.pickgliss.utils.ObjectUtils;
    import ddt.data.BallInfo;
    import ddt.data.PathInfo;
    import ddt.data.map.MapInfo;
@@ -60,6 +61,7 @@ package game.view.map
    import gameCommon.actions.BaseAction;
    import gameCommon.model.GameInfo;
    import gameCommon.model.Living;
+   import gameCommon.model.SimpleBoxInfo;
    import gameCommon.model.TurnedLiving;
    import gameCommon.view.smallMap.SmallMapView;
    import phy.maps.Ground;
@@ -132,11 +134,13 @@ package game.view.map
       
       private var _objects:Dictionary;
       
-      private var _gamePlayerList:Vector.<GamePlayer>;
+      public var gamePlayerList:Vector.<GamePlayer>;
       
       private var expName:Vector.<String>;
       
       private var expDic:Dictionary;
+      
+      private var _backEffectView:BackEffectView;
       
       private var _currentTopLiving:GameLiving;
       
@@ -158,22 +162,22 @@ package game.view.map
       
       private var _boxTimer:Timer;
       
-      public function MapView(param1:GameInfo, param2:MapLoader)
+      public function MapView(game:GameInfo, loader:MapLoader)
       {
          _objects = new Dictionary();
-         _gamePlayerList = new Vector.<GamePlayer>();
+         gamePlayerList = new Vector.<GamePlayer>();
          expName = new Vector.<String>();
          expDic = new Dictionary();
          GameControl.Instance.Current.selfGamePlayer.currentMap = this;
-         _game = param1;
-         var _loc4_:Bitmap = new Bitmap(param2.backBmp.bitmapData);
-         var _loc3_:Ground = !!param2.foreBmp?new Ground(param2.foreBmp.bitmapData.clone(),true):null;
-         var _loc5_:Ground = !!param2.deadBmp?new Ground(param2.deadBmp.bitmapData.clone(),false):null;
-         var _loc6_:MapInfo = param2.info;
-         super(_loc4_,_loc3_,_loc5_,param2.middle);
-         airResistance = _loc6_.DragIndex;
-         gravity = _loc6_.Weight;
-         _info = _loc6_;
+         _game = game;
+         var skyBitmap:Bitmap = new Bitmap(loader.backBmp.bitmapData);
+         var f:Ground = !!loader.foreBmp?new Ground(loader.foreBmp.bitmapData.clone(),true):null;
+         var s:Ground = !!loader.deadBmp?new Ground(loader.deadBmp.bitmapData.clone(),false):null;
+         var info:MapInfo = loader.info;
+         super(skyBitmap,f,s,loader.middle);
+         airResistance = info.DragIndex;
+         gravity = info.Weight;
+         _info = info;
          _animateSet = new AnimationSet(this,PathInfo.GAME_WIDTH,PathInfo.GAME_HEIGHT);
          _smallMap = new SmallMapView(this,GameControl.Instance.Current.missionInfo);
          _smallMap.update();
@@ -207,9 +211,9 @@ package game.view.map
          initBox();
       }
       
-      public function set currentTurn(param1:int) : void
+      public function set currentTurn(i:int) : void
       {
-         _currentTurn = param1;
+         _currentTurn = i;
          dispatchEvent(new GameEvent("turnChanged",_currentTurn));
       }
       
@@ -218,40 +222,40 @@ package game.view.map
          return _currentTurn;
       }
       
-      public function requestForFocus(param1:GameLiving, param2:int = 0) : void
+      public function requestForFocus(target:GameLiving, level:int = 0) : void
       {
          if(GameControl.Instance.Current == null)
          {
             return;
          }
-         var _loc3_:int = GameControl.Instance.Current.selfGamePlayer.pos.x;
+         var x:int = GameControl.Instance.Current.selfGamePlayer.pos.x;
          if(_currentFocusedLiving)
          {
-            if(Math.abs(param1.pos.x - _loc3_) > Math.abs(_currentFocusedLiving.x - _loc3_))
+            if(Math.abs(target.pos.x - x) > Math.abs(_currentFocusedLiving.x - x))
             {
                return;
             }
          }
-         if(param2 < _currentFocusLevel)
+         if(level < _currentFocusLevel)
          {
             return;
          }
-         _currentFocusedLiving = param1;
-         _currentFocusLevel = param2;
+         _currentFocusedLiving = target;
+         _currentFocusLevel = level;
          _currentFocusedLiving.needFocus(0,0,{
             "strategy":"directly",
-            "priority":param2
+            "priority":level
          });
       }
       
-      public function cancelFocus(param1:GameLiving = null) : void
+      public function cancelFocus(target:GameLiving = null) : void
       {
-         if(param1 == null)
+         if(target == null)
          {
             _currentFocusedLiving = null;
             _currentFocusLevel = 0;
          }
-         if(param1 == _currentFocusedLiving)
+         if(target == _currentFocusedLiving)
          {
             _currentFocusedLiving = null;
             _currentFocusLevel = 0;
@@ -263,9 +267,9 @@ package game.view.map
          return _currentPlayer;
       }
       
-      public function set currentPlayer(param1:TurnedLiving) : void
+      public function set currentPlayer(value:TurnedLiving) : void
       {
-         _currentPlayer = param1;
+         _currentPlayer = value;
       }
       
       public function get gameInfo() : GameInfo
@@ -290,68 +294,73 @@ package game.view.map
       
       private function initOutCrater() : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc1_:* = null;
-         var _loc2_:DictionaryData = _game.outBombs;
-         if(_loc2_.length > 0)
+         var i:int = 0;
+         var pos:* = null;
+         var ballInfo:* = null;
+         var bombAsset:* = null;
+         var outBombs:DictionaryData = _game.outBombs;
+         if(outBombs.length > 0)
          {
-            _loc5_ = 0;
-            while(_loc5_ < _loc2_.length)
+            for(i = 0; i < outBombs.length; )
             {
-               _loc4_ = new Point(_loc2_.list[_loc5_].X,_loc2_.list[_loc5_].Y);
-               _loc3_ = BallManager.instance.findBall(_loc2_.list[_loc5_].Id);
-               _loc1_ = BallManager.instance.gameInBombAssets[_loc3_.craterID];
-               Dig(_loc4_,_loc1_.crater,_loc1_.craterBrink);
-               _loc5_++;
+               pos = new Point(outBombs.list[i].X,outBombs.list[i].Y);
+               ballInfo = BallManager.instance.findBall(outBombs.list[i].Id);
+               bombAsset = BallManager.instance.gameInBombAssets[ballInfo.craterID];
+               Dig(pos,bombAsset.crater,bombAsset.craterBrink);
+               i++;
             }
-            _loc2_.clear();
+            outBombs.clear();
          }
       }
       
       private function initBox() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:DictionaryData = _game.outBoxs;
-         if(_loc1_.length > 0)
+         var i:int = 0;
+         var boxInfo:* = null;
+         var model:* = null;
+         var box:* = null;
+         var outBoxs:DictionaryData = _game.outBoxs;
+         if(outBoxs.length > 0)
          {
-            _loc3_ = 0;
-            while(_loc3_ < _loc1_.length)
+            for(i = 0; i < outBoxs.length; )
             {
-               _loc2_ = new SimpleBox(_loc1_.list[_loc3_].bid,String(PathInfo.GAME_BOXPIC),_loc1_.list[_loc3_].subType);
-               _loc2_.x = _loc1_.list[_loc3_].bx;
-               _loc2_.y = _loc1_.list[_loc3_].by;
-               this.addPhysical(_loc2_);
-               _loc3_++;
+               boxInfo = outBoxs.list[i];
+               model = boxInfo.model;
+               if(model == "")
+               {
+                  model = String(PathInfo.GAME_BOXPIC);
+               }
+               box = new SimpleBox(boxInfo.bid,model,boxInfo.subType);
+               box.x = outBoxs.list[i].bx;
+               box.y = outBoxs.list[i].by;
+               this.addPhysical(box);
+               i++;
             }
-            _loc1_.clear();
+            outBoxs.clear();
          }
       }
       
-      public function DigOutCrater(param1:DictionaryData) : void
+      public function DigOutCrater(outBombs:DictionaryData) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         if(param1.length > 0)
+         var i:int = 0;
+         var pos:* = null;
+         var ballInfo:* = null;
+         var bombAsset:* = null;
+         if(outBombs.length > 0)
          {
-            _loc5_ = 0;
-            while(_loc5_ < param1.length)
+            for(i = 0; i < outBombs.length; )
             {
-               _loc4_ = new Point(param1.list[_loc5_].X,param1.list[_loc5_].Y);
-               _loc3_ = BallManager.instance.findBall(param1.list[_loc5_].Id);
-               _loc2_ = BallManager.instance.gameInBombAssets[_loc3_.craterID];
-               Dig(_loc4_,_loc2_.crater,_loc2_.craterBrink);
-               _loc5_++;
+               pos = new Point(outBombs.list[i].X,outBombs.list[i].Y);
+               ballInfo = BallManager.instance.findBall(outBombs.list[i].Id);
+               bombAsset = BallManager.instance.gameInBombAssets[ballInfo.craterID];
+               Dig(pos,bombAsset.crater,bombAsset.craterBrink);
+               i++;
             }
-            param1.clear();
+            outBombs.clear();
          }
       }
       
-      private function __setFacecontainLoctionAction(param1:Event) : void
+      private function __setFacecontainLoctionAction(e:Event) : void
       {
          setExpressionLoction();
       }
@@ -366,7 +375,7 @@ package game.view.map
          return -bound.height * scale + PathInfo.GAME_HEIGHT;
       }
       
-      private function __mouseClick(param1:MouseEvent) : void
+      private function __mouseClick(event:MouseEvent) : void
       {
          stage.focus = this;
          if(ChatManager.Instance.input.parent && !NewHandGuideManager.Instance.isNewHandFB())
@@ -376,20 +385,20 @@ package game.view.map
          }
       }
       
-      public function spellKill(param1:GamePlayer) : IAnimate
+      public function spellKill(player:GamePlayer) : IAnimate
       {
-         var _loc2_:* = null;
+         var skill:* = null;
          if(GameControl.Instance.Current.togetherShoot)
          {
-            _loc2_ = new SpellSkillAnimation(param1.x,param1.y,PathInfo.GAME_WIDTH,PathInfo.GAME_HEIGHT,_info.ForegroundWidth - 100,_info.ForegroundHeight + 600,param1,gameView);
+            skill = new SpellSkillAnimation(player.x,player.y,PathInfo.GAME_WIDTH,PathInfo.GAME_HEIGHT,_info.ForegroundWidth - 100,_info.ForegroundHeight + 600,player,gameView);
          }
          else
          {
-            _loc2_ = new SpellSkillAnimation(param1.x,param1.y,PathInfo.GAME_WIDTH,PathInfo.GAME_HEIGHT,_info.ForegroundWidth,_info.ForegroundHeight,param1,gameView);
+            skill = new SpellSkillAnimation(player.x,player.y,PathInfo.GAME_WIDTH,PathInfo.GAME_HEIGHT,_info.ForegroundWidth,_info.ForegroundHeight,player,gameView);
          }
-         animateSet.addAnimation(_loc2_);
+         animateSet.addAnimation(skill);
          SoundManager.instance.play("097");
-         return _loc2_;
+         return skill;
       }
       
       public function get isPlayingMovie() : Boolean
@@ -397,17 +406,17 @@ package game.view.map
          return _animateSet.current is SpellSkillAnimation;
       }
       
-      override public function set x(param1:Number) : void
+      override public function set x(value:Number) : void
       {
-         param1 = param1 < minX?minX:Number(param1 > 0?0:Number(param1));
-         _x = param1;
+         value = value < minX?minX:Number(value > 0?0:Number(value));
+         _x = value;
          .super.x = _x;
       }
       
-      override public function set y(param1:Number) : void
+      override public function set y(value:Number) : void
       {
-         param1 = param1 < minY?minY:Number(param1 > 0?0:Number(param1));
-         _y = param1;
+         value = value < minY?minY:Number(value > 0?0:Number(value));
+         _y = value;
          .super.y = _y;
       }
       
@@ -421,9 +430,9 @@ package game.view.map
          return _y;
       }
       
-      override public function set transform(param1:Transform) : void
+      override public function set transform(value:Transform) : void
       {
-         .super.transform = param1;
+         .super.transform = value;
       }
       
       override public function get transform() : Transform
@@ -431,20 +440,20 @@ package game.view.map
          return super.transform;
       }
       
-      public function set scale(param1:Number) : void
+      public function set scale(value:Number) : void
       {
-         if(param1 > 1)
+         if(value > 1)
          {
-            param1 = 1;
+            value = 1;
          }
-         if(param1 < _minScale)
+         if(value < _minScale)
          {
-            param1 = Number(_minScale);
+            value = Number(_minScale);
          }
-         _scale = param1;
-         var _loc2_:Matrix = new Matrix();
-         _loc2_.scale(_scale,_scale);
-         transform.matrix = _loc2_;
+         _scale = value;
+         var _matrix:Matrix = new Matrix();
+         _matrix.scale(_scale,_scale);
+         transform.matrix = _matrix;
          var _loc3_:* = Math.pow(_scale,-0.5);
          _sky.scaleY = _loc3_;
          _sky.scaleX = _loc3_;
@@ -461,33 +470,33 @@ package game.view.map
          return _scale;
       }
       
-      public function setCenter(param1:Number, param2:Number, param3:Boolean) : void
+      public function setCenter(px:Number, py:Number, isTween:Boolean) : void
       {
          if(GameManager.instance.isStopFocus)
          {
             return;
          }
          return;
-         §§push(_animateSet && _animateSet.addAnimation(new BaseSetCenterAnimation(param1,param2,50,!param3,1)));
+         §§push(_animateSet && _animateSet.addAnimation(new BaseSetCenterAnimation(px,py,50,!isTween,1)));
       }
       
-      public function scenarioSetCenter(param1:Number, param2:Number, param3:int) : void
+      public function scenarioSetCenter(px:Number, py:Number, type:int) : void
       {
          if(GameManager.instance.isStopFocus)
          {
             return;
          }
-         switch(int(param3) - 2)
+         switch(int(type) - 2)
          {
             case 0:
-               _animateSet.addAnimation(new ShockingSetCenterAnimation(param1,param2,165,false,2,9));
+               _animateSet.addAnimation(new ShockingSetCenterAnimation(px,py,165,false,2,9));
                break;
             case 1:
-               _animateSet.addAnimation(new ShockingSetCenterAnimation(param1,param2,50,false,2,9));
+               _animateSet.addAnimation(new ShockingSetCenterAnimation(px,py,50,false,2,9));
          }
       }
       
-      public function livingSetCenter(param1:Number, param2:Number, param3:Boolean, param4:int = 2, param5:Object = null, param6:GameLiving = null) : void
+      public function livingSetCenter(px:Number, py:Number, isTween:Boolean, priority:int = 2, data:Object = null, player:GameLiving = null) : void
       {
          if(GameManager.instance.isStopFocus)
          {
@@ -495,31 +504,31 @@ package game.view.map
          }
          if(_animateSet)
          {
-            _animateSet.addAnimation(new BaseSetCenterAnimation(param1,param2,25,!param3,param4,0,param5));
+            _animateSet.addAnimation(new BaseSetCenterAnimation(px,py,25,!isTween,priority,0,data));
          }
       }
       
-      public function setSelfCenter(param1:Boolean, param2:int = 2, param3:Object = null) : void
+      public function setSelfCenter(isTween:Boolean, priority:int = 2, data:Object = null) : void
       {
-         var _loc4_:Living = _game.livings[_game.selfGamePlayer.LivingID];
-         if(_loc4_ == null)
+         var self:Living = _game.livings[_game.selfGamePlayer.LivingID];
+         if(self == null)
          {
             return;
          }
-         _animateSet.addAnimation(new BaseSetCenterAnimation(_loc4_.pos.x - 50,_loc4_.pos.y - 150,25,!param1,param2,0,param3));
+         _animateSet.addAnimation(new BaseSetCenterAnimation(self.pos.x - 50,self.pos.y - 150,25,!isTween,priority,0,data));
       }
       
-      public function act(param1:BaseAction) : void
+      public function act(action:BaseAction) : void
       {
-         _actionManager.act(param1);
+         _actionManager.act(action);
       }
       
-      public function showShoot(param1:Number, param2:Number) : void
+      public function showShoot(x:Number, y:Number) : void
       {
          _circle = new Shape();
          _circle.graphics.beginFill(16711680);
-         _circle.graphics.drawCircle(param1,param2,3);
-         _circle.graphics.drawCircle(param1,param2,1);
+         _circle.graphics.drawCircle(x,y,3);
+         _circle.graphics.drawCircle(x,y,1);
          _circle.graphics.endFill();
          addChild(_circle);
       }
@@ -587,8 +596,8 @@ package game.view.map
          {
             return;
          }
-         var _loc1_:int = getTimer();
-         if(_loc1_ - _frameRateCounter > 46 && _frameRateCounter != 0)
+         var currentTime:int = getTimer();
+         if(currentTime - _frameRateCounter > 46 && _frameRateCounter != 0)
          {
             _currentFrameRateOverCount = Number(_currentFrameRateOverCount) + 1;
             if(_currentFrameRateOverCount > 25)
@@ -606,10 +615,10 @@ package game.view.map
          {
             _currentFrameRateOverCount = 0;
          }
-         _frameRateCounter = _loc1_;
+         _frameRateCounter = currentTime;
       }
       
-      private function __onRespose(param1:FrameEvent) : void
+      private function __onRespose(event:FrameEvent) : void
       {
          _frameRateAlert.removeEventListener("response",__onRespose);
          _frameRateAlert.dispose();
@@ -623,40 +632,40 @@ package game.view.map
       
       public function get mapBitmap() : Bitmap
       {
-         var _loc1_:BitmapData = new BitmapData(StageReferance.stageWidth,StageReferance.stageHeight);
-         var _loc2_:Point = globalToLocal(new Point(0,0));
-         _loc1_.draw(this,new Matrix(1,0,0,1,-_loc2_.x,-_loc2_.y),null,null);
-         return new Bitmap(_loc1_,"auto",true);
+         var bitData:BitmapData = new BitmapData(StageReferance.stageWidth,StageReferance.stageHeight);
+         var pos:Point = globalToLocal(new Point(0,0));
+         bitData.draw(this,new Matrix(1,0,0,1,-pos.x,-pos.y),null,null);
+         return new Bitmap(bitData,"auto",true);
       }
       
       private function updateSky() : void
       {
-         var _loc1_:Number = NaN;
-         var _loc2_:Number = NaN;
+         var _middleHScalePercent:Number = NaN;
+         var _middleWScalePercent:Number = NaN;
          if(_scale < 1)
          {
          }
-         var _loc4_:Number = (sky.height * _scale - PathInfo.GAME_HEIGHT) / (bound.height * _scale - PathInfo.GAME_HEIGHT);
-         var _loc3_:Number = (sky.width * _scale - PathInfo.GAME_WIDTH) / (bound.width * _scale - PathInfo.GAME_WIDTH);
-         _loc4_ = isNaN(_loc4_) || _loc4_ == -Infinity || _loc4_ == Infinity?1:Number(_loc4_);
-         _loc3_ = isNaN(_loc3_) || _loc3_ == -Infinity || _loc3_ == Infinity?1:Number(_loc3_);
-         _sky.y = y * (_loc4_ - 1) / _scale;
-         _sky.x = x * (_loc3_ - 1) / _scale;
+         var _skyHScalePercent:Number = (sky.height * _scale - PathInfo.GAME_HEIGHT) / (bound.height * _scale - PathInfo.GAME_HEIGHT);
+         var _skyWScalePercent:Number = (sky.width * _scale - PathInfo.GAME_WIDTH) / (bound.width * _scale - PathInfo.GAME_WIDTH);
+         _skyHScalePercent = isNaN(_skyHScalePercent) || _skyHScalePercent == -Infinity || _skyHScalePercent == Infinity?1:Number(_skyHScalePercent);
+         _skyWScalePercent = isNaN(_skyWScalePercent) || _skyWScalePercent == -Infinity || _skyWScalePercent == Infinity?1:Number(_skyWScalePercent);
+         _sky.y = y * (_skyHScalePercent - 1) / _scale;
+         _sky.x = x * (_skyWScalePercent - 1) / _scale;
          if(_middle)
          {
-            _loc1_ = (_middle.height * _scale - PathInfo.GAME_HEIGHT) / (bound.height * _scale - PathInfo.GAME_HEIGHT);
-            _loc2_ = (_middle.width * _scale - PathInfo.GAME_WIDTH) / (bound.width * _scale - PathInfo.GAME_WIDTH);
-            _loc1_ = isNaN(_loc1_) || _loc1_ == -Infinity || _loc1_ == Infinity?1:Number(_loc1_);
-            _loc2_ = isNaN(_loc2_) || _loc2_ == -Infinity || _loc2_ == Infinity?1:Number(_loc2_);
-            _middle.y = y * (_loc1_ - 1) / _scale;
-            _middle.x = x * (_loc2_ - 1) / _scale;
+            _middleHScalePercent = (_middle.height * _scale - PathInfo.GAME_HEIGHT) / (bound.height * _scale - PathInfo.GAME_HEIGHT);
+            _middleWScalePercent = (_middle.width * _scale - PathInfo.GAME_WIDTH) / (bound.width * _scale - PathInfo.GAME_WIDTH);
+            _middleHScalePercent = isNaN(_middleHScalePercent) || _middleHScalePercent == -Infinity || _middleHScalePercent == Infinity?1:Number(_middleHScalePercent);
+            _middleWScalePercent = isNaN(_middleWScalePercent) || _middleWScalePercent == -Infinity || _middleWScalePercent == Infinity?1:Number(_middleWScalePercent);
+            _middle.y = y * (_middleHScalePercent - 1) / _scale;
+            _middle.x = x * (_middleWScalePercent - 1) / _scale;
          }
          _smallMap.setScreenPos(x,y);
       }
       
-      public function getPhysical(param1:int) : PhysicalObj
+      public function getPhysical(id:int) : PhysicalObj
       {
-         return _objects[param1];
+         return _objects[id];
       }
       
       public function get objects() : Dictionary
@@ -668,111 +677,111 @@ package game.view.map
       {
          var _loc3_:int = 0;
          var _loc2_:* = _objects;
-         for each(var _loc1_ in _objects)
+         for each(var tmp in _objects)
          {
-            if(_loc1_ is GameSimpleBoss)
+            if(tmp is GameSimpleBoss)
             {
-               return _loc1_ as GameSimpleBoss;
+               return tmp as GameSimpleBoss;
             }
          }
          return null;
       }
       
-      override public function addPhysical(param1:Physics) : void
+      override public function addPhysical(phy:Physics) : void
       {
-         var _loc2_:* = null;
-         super.addPhysical(param1);
-         if(param1 is PhysicalObj)
+         var obj:* = null;
+         super.addPhysical(phy);
+         if(phy is PhysicalObj)
          {
-            _loc2_ = param1 as PhysicalObj;
-            _objects[_loc2_.Id] = _loc2_;
-            if(_loc2_.smallView)
+            obj = phy as PhysicalObj;
+            _objects[obj.Id] = obj;
+            if(obj.smallView)
             {
-               _smallMap.addObj(_loc2_.smallView);
-               _smallMap.updatePos(_loc2_.smallView,_loc2_.pos);
+               _smallMap.addObj(obj.smallView);
+               _smallMap.updatePos(obj.smallView,obj.pos);
             }
+            addToBackEffectView(obj);
          }
-         if(param1 is GamePlayer)
+         if(phy is GamePlayer)
          {
-            _gamePlayerList.push(param1);
+            gamePlayerList.push(phy);
          }
       }
       
-      private function controlExpNum(param1:GamePlayer) : void
+      private function controlExpNum(temp:GamePlayer) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
+         var randomNum:int = 0;
+         var randomExpnickname:* = null;
+         var randomExpcontainer:* = null;
          if(expName.length < 2)
          {
-            if(expName.indexOf(param1.facecontainer.nickName.text) < 0)
+            if(expName.indexOf(temp.facecontainer.nickName.text) < 0)
             {
-               expName.push(param1.facecontainer.nickName.text);
-               expDic[param1.facecontainer.nickName.text] = param1.facecontainer;
+               expName.push(temp.facecontainer.nickName.text);
+               expDic[temp.facecontainer.nickName.text] = temp.facecontainer;
             }
          }
-         else if(expName.indexOf(param1.facecontainer.nickName.text) < 0)
+         else if(expName.indexOf(temp.facecontainer.nickName.text) < 0)
          {
-            _loc4_ = Math.random() * 2;
-            _loc2_ = expName[_loc4_];
-            _loc3_ = expDic[_loc2_] as FaceContainer;
-            if(_loc3_.isActingExpression)
+            randomNum = Math.random() * 2;
+            randomExpnickname = expName[randomNum];
+            randomExpcontainer = expDic[randomExpnickname] as FaceContainer;
+            if(randomExpcontainer.isActingExpression)
             {
-               _loc3_.doClearFace();
+               randomExpcontainer.doClearFace();
             }
-            expName[_loc4_] = param1.facecontainer.nickName.text;
-            delete expDic[_loc2_];
-            expDic[param1.facecontainer.nickName.text] = param1.facecontainer;
+            expName[randomNum] = temp.facecontainer.nickName.text;
+            delete expDic[randomExpnickname];
+            expDic[temp.facecontainer.nickName.text] = temp.facecontainer;
          }
       }
       
-      private function resetDicAndVec(param1:GamePlayer) : void
+      private function resetDicAndVec(temp:GamePlayer) : void
       {
-         var _loc2_:int = expName.indexOf(param1.facecontainer.nickName.text);
-         if(_loc2_ >= 0)
+         var tempIndex:int = expName.indexOf(temp.facecontainer.nickName.text);
+         if(tempIndex >= 0)
          {
-            delete expDic[expName[_loc2_]];
-            expName.splice(_loc2_,1);
+            delete expDic[expName[tempIndex]];
+            expName.splice(tempIndex,1);
          }
       }
       
       public function setExpressionLoction() : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         var _loc1_:int = 0;
-         if(!_gamePlayerList || _gamePlayerList.length == 0)
+         var i:int = 0;
+         var temp:* = null;
+         var pointAtStage:* = null;
+         var tempFlg:int = 0;
+         if(!gamePlayerList || gamePlayerList.length == 0)
          {
             return;
          }
-         _loc4_ = 0;
-         while(_loc4_ < _gamePlayerList.length)
+         for(i = 0; i < gamePlayerList.length; )
          {
-            _loc2_ = _gamePlayerList[_loc4_];
-            if(_loc2_ == null || !_loc2_.isLiving || _loc2_.facecontainer == null)
+            temp = gamePlayerList[i];
+            if(temp == null || !temp.isLiving || temp.facecontainer == null)
             {
-               _gamePlayerList.splice(_loc4_,1);
+               gamePlayerList.splice(i,1);
             }
-            else if(_loc2_.facecontainer.isActingExpression)
+            else if(temp.facecontainer.isActingExpression)
             {
-               if(!(_loc2_.facecontainer.expressionID >= 1073 || _loc2_.facecontainer.expressionID <= 1001))
+               if(!(temp.facecontainer.expressionID >= 1073 || temp.facecontainer.expressionID <= 1001))
                {
-                  _loc3_ = this.localToGlobal(new Point(_loc2_.x,_loc2_.y));
-                  _loc1_ = onStageFlg(_loc3_);
-                  if(_loc1_ == 0)
+                  pointAtStage = this.localToGlobal(new Point(temp.x,temp.y));
+                  tempFlg = onStageFlg(pointAtStage);
+                  if(tempFlg == 0)
                   {
-                     _loc2_.facecontainer.x = 0;
-                     _loc2_.facecontainer.y = -100;
-                     resetDicAndVec(_loc2_);
-                     _loc2_.facecontainer.isShowNickName = false;
+                     temp.facecontainer.x = 0;
+                     temp.facecontainer.y = -100;
+                     resetDicAndVec(temp);
+                     temp.facecontainer.isShowNickName = false;
                   }
-                  else if(_loc1_ == 1)
+                  else if(tempFlg == 1)
                   {
-                     _loc2_.facecontainer.x = _loc2_.facecontainer.width / 2 + 30 - _loc3_.x;
-                     _loc2_.facecontainer.y = 270 + _loc2_.facecontainer.height / 2 - _loc3_.y;
-                     controlExpNum(_loc2_);
-                     _loc2_.facecontainer.isShowNickName = true;
+                     temp.facecontainer.x = temp.facecontainer.width / 2 + 30 - pointAtStage.x;
+                     temp.facecontainer.y = 270 + temp.facecontainer.height / 2 - pointAtStage.y;
+                     controlExpNum(temp);
+                     temp.facecontainer.isShowNickName = true;
                   }
                   if(expName.length == 2)
                   {
@@ -782,109 +791,177 @@ package game.view.map
             }
             else
             {
-               _loc2_.facecontainer.x = 0;
-               _loc2_.facecontainer.y = -100;
-               _loc2_.facecontainer.isShowNickName = false;
-               resetDicAndVec(_loc2_);
+               temp.facecontainer.x = 0;
+               temp.facecontainer.y = -100;
+               temp.facecontainer.isShowNickName = false;
+               resetDicAndVec(temp);
             }
-            _loc4_++;
+            i++;
          }
       }
       
-      private function onStageFlg(param1:Point) : int
+      private function onStageFlg(tempPoint:Point) : int
       {
-         if(param1 == null)
+         if(tempPoint == null)
          {
             return 100;
          }
-         if(param1.x >= 0 && param1.x <= 1000 && param1.y >= 0 && param1.y <= 600)
+         if(tempPoint.x >= 0 && tempPoint.x <= 1000 && tempPoint.y >= 0 && tempPoint.y <= 600)
          {
             return 0;
          }
          return 1;
       }
       
-      public function addObject(param1:Physics) : void
+      public function addObject(phy:Physics) : void
       {
-         var _loc2_:* = null;
-         if(param1 is PhysicalObj)
+         var obj:* = null;
+         if(phy is PhysicalObj)
          {
-            _loc2_ = param1 as PhysicalObj;
-            _objects[_loc2_.Id] = _loc2_;
+            obj = phy as PhysicalObj;
+            _objects[obj.Id] = obj;
          }
       }
       
-      public function bringToFront(param1:Living) : void
+      public function bringToFront($info:Living) : void
       {
-         if(!param1)
+         if(!$info)
          {
             return;
          }
-         var _loc2_:Physics = _objects[param1.LivingID] as Physics;
-         if(_loc2_)
+         var phy:Physics = _objects[$info.LivingID] as Physics;
+         if(phy)
          {
-            super.addPhysical(_loc2_);
+            super.addPhysical(phy);
          }
       }
       
-      public function phyBringToFront(param1:PhysicalObj) : void
+      public function phyBringToFront(phy:PhysicalObj) : void
       {
-         if(param1)
+         if(phy)
          {
-            super.addChild(param1);
+            super.addChild(phy);
          }
       }
       
-      override public function removePhysical(param1:Physics) : void
+      override public function removePhysical(phy:Physics) : void
       {
-         var _loc2_:* = null;
-         super.removePhysical(param1);
-         if(param1 is PhysicalObj)
+         var obj:* = null;
+         super.removePhysical(phy);
+         if(phy is PhysicalObj)
          {
-            _loc2_ = param1 as PhysicalObj;
-            if(_objects && _objects[_loc2_.Id])
+            obj = phy as PhysicalObj;
+            if(_objects && _objects[obj.Id])
             {
-               delete _objects[_loc2_.Id];
+               delete _objects[obj.Id];
             }
-            if(_smallMap && _loc2_.smallView)
+            if(_smallMap && obj.smallView)
             {
-               _smallMap.removeObj(_loc2_.smallView);
+               _smallMap.removeObj(obj.smallView);
             }
+            removeToBackEffectView(obj);
          }
       }
       
-      override public function addMapThing(param1:Physics) : void
+      override public function addMapThing(phy:Physics) : void
       {
-         var _loc2_:* = null;
-         super.addMapThing(param1);
-         if(param1 is PhysicalObj)
+         var obj:* = null;
+         super.addMapThing(phy);
+         if(phy is PhysicalObj)
          {
-            _loc2_ = param1 as PhysicalObj;
-            _objects[_loc2_.Id] = _loc2_;
-            if(_loc2_.smallView)
+            obj = phy as PhysicalObj;
+            _objects[obj.Id] = obj;
+            if(obj.smallView)
             {
-               _smallMap.addObj(_loc2_.smallView);
-               _smallMap.updatePos(_loc2_.smallView,_loc2_.pos);
+               _smallMap.addObj(obj.smallView);
+               _smallMap.updatePos(obj.smallView,obj.pos);
             }
+            addToBackEffectView(obj);
          }
       }
       
-      override public function removeMapThing(param1:Physics) : void
+      override public function removeMapThing(phy:Physics) : void
       {
-         var _loc2_:* = null;
-         super.removeMapThing(param1);
-         if(param1 is PhysicalObj)
+         var obj:* = null;
+         super.removeMapThing(phy);
+         if(phy is PhysicalObj)
          {
-            _loc2_ = param1 as PhysicalObj;
-            if(_objects[_loc2_.Id])
+            obj = phy as PhysicalObj;
+            if(_objects[obj.Id])
             {
-               delete _objects[_loc2_.Id];
+               delete _objects[obj.Id];
             }
-            if(_loc2_.smallView)
+            if(obj.smallView)
             {
-               _smallMap.removeObj(_loc2_.smallView);
+               _smallMap.removeObj(obj.smallView);
             }
+            removeToBackEffectView(obj);
          }
+      }
+      
+      public function createBackEffectView(gamePlayerRadius:Number = 400) : void
+      {
+         if(_backEffectView == null)
+         {
+            _backEffectView = new BackEffectView(this);
+         }
+         _backEffectView.gamePlayerRadius(gamePlayerRadius);
+         _backEffectView.resetEffect();
+         addChild(_backEffectView);
+      }
+      
+      public function removeBackEffectView() : void
+      {
+         if(_backEffectView)
+         {
+            _backEffectView.removeBackEffectView();
+         }
+         _backEffectView = null;
+      }
+      
+      public function hideBackEffectView() : void
+      {
+         if(_backEffectView)
+         {
+            _backEffectView.visible = false;
+         }
+      }
+      
+      public function showBackEffectView() : void
+      {
+         if(_backEffectView)
+         {
+            _backEffectView.visible = true;
+         }
+      }
+      
+      private function addToBackEffectView(phy:PhysicalObj) : void
+      {
+         if(_backEffectView)
+         {
+            _backEffectView.addObject(phy);
+         }
+      }
+      
+      private function updatePosBackEffectView(phy:PhysicalObj, pos:Point) : void
+      {
+         if(_backEffectView)
+         {
+            _backEffectView.updatePos(phy,pos);
+         }
+      }
+      
+      private function removeToBackEffectView(phy:PhysicalObj) : void
+      {
+         if(_backEffectView)
+         {
+            _backEffectView.removeObj(phy);
+         }
+      }
+      
+      public function updateObjectPos(phy:PhysicalObj, pos:Point) : void
+      {
+         updatePosBackEffectView(phy,pos);
       }
       
       public function get actionCount() : int
@@ -892,9 +969,9 @@ package game.view.map
          return _actionManager.actionCount;
       }
       
-      public function lockFocusAt(param1:Point) : void
+      public function lockFocusAt(pos:Point) : void
       {
-         animateSet.addAnimation(new NewHandAnimation(param1.x,param1.y - 150,2147483647,false,4));
+         animateSet.addAnimation(new NewHandAnimation(pos.x,pos.y - 150,2147483647,false,4));
       }
       
       public function releaseFocus() : void
@@ -913,7 +990,7 @@ package game.view.map
          _actionManager.traceAllRemainAction(PlayerManager.Instance.Self.NickName);
       }
       
-      public function bringToStageTop(param1:PhysicalObj) : void
+      public function bringToStageTop(living:PhysicalObj) : void
       {
          if(_currentTopLiving)
          {
@@ -923,7 +1000,7 @@ package game.view.map
          {
             _container.parent.removeChild(_container);
          }
-         _currentTopLiving = _objects[param1.Id] as GameLiving;
+         _currentTopLiving = _objects[living.Id] as GameLiving;
          if(_container == null)
          {
             _container = new Sprite();
@@ -950,25 +1027,25 @@ package game.view.map
          _currentTopLiving = null;
       }
       
-      public function setMatrx(param1:Matrix) : void
+      public function setMatrx(m:Matrix) : void
       {
-         transform.matrix = param1;
+         transform.matrix = m;
          if(_container)
          {
-            _container.transform.matrix = param1;
+            _container.transform.matrix = m;
          }
       }
       
-      public function dropOutBox(param1:Array) : void
+      public function dropOutBox(array:Array) : void
       {
-         _picIdList = param1;
+         _picIdList = array;
          setSelfCenter(false);
          _isPickBigBox = false;
          _bigBox = new MovieClipWrapper(ClassUtils.CreatInstance("asset.game.dropOut.bigBox.red"),true);
          _livingLayer.addChild(_bigBox.movie);
-         var _loc2_:Point = getTwoHundredDisPoint(_game.selfGamePlayer.pos.x,_game.selfGamePlayer.pos.y,_bigBox.movie.width / 2,_bigBox.movie.height / 2,_game.selfGamePlayer.direction);
-         _bigBox.movie.x = _loc2_.x;
-         _bigBox.movie.y = _loc2_.y;
+         var tmpPoint:Point = getTwoHundredDisPoint(_game.selfGamePlayer.pos.x,_game.selfGamePlayer.pos.y,_bigBox.movie.width / 2,_bigBox.movie.height / 2,_game.selfGamePlayer.direction);
+         _bigBox.movie.x = tmpPoint.x;
+         _bigBox.movie.y = tmpPoint.y;
          _bigBox.endFrame = 29;
          _bigBox.addEventListener("complete",dropEndHandler,false,0,true);
          _bigBox.movie.addEventListener("click",__onBigBoxClick);
@@ -980,7 +1057,7 @@ package game.view.map
          _boxTimer.start();
       }
       
-      protected function __openBox(param1:TimerEvent) : void
+      protected function __openBox(event:TimerEvent) : void
       {
          if(_boxTimer)
          {
@@ -991,7 +1068,7 @@ package game.view.map
          pickBigBoxSuccessHandler();
       }
       
-      protected function __onBigBoxClick(param1:MouseEvent) : void
+      protected function __onBigBoxClick(event:MouseEvent) : void
       {
          if(_boxTimer)
          {
@@ -1013,39 +1090,38 @@ package game.view.map
          GameInSocketOut.sendGameSkipNext(0);
       }
       
-      private function playPickBoxAwardMove(param1:Event) : void
+      private function playPickBoxAwardMove(event:Event) : void
       {
-         var _loc6_:int = 0;
-         var _loc4_:int = 0;
-         var _loc7_:int = 0;
-         var _loc5_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:Number = NaN;
+         var len:int = 0;
+         var tag:int = 0;
+         var i:int = 0;
+         var bg:* = null;
+         var tmpPic:* = null;
+         var tmpX:Number = NaN;
          if(_bigBox.movie.currentFrame == 37)
          {
             _picList = [];
-            _loc6_ = _picIdList.length;
-            _loc4_ = -1;
-            _loc7_ = 0;
-            while(_loc7_ < _loc6_)
+            len = _picIdList.length;
+            tag = -1;
+            for(i = 0; i < len; )
             {
-               _loc5_ = new Bitmap(new BitmapData(45,45,true,0));
-               _loc3_ = new BaseCell(_loc5_,ItemManager.Instance.getTemplateById(_picIdList[_loc7_]));
-               _loc3_.x = _picStartPoint.x;
-               _loc3_.y = _picStartPoint.y;
-               _picList.push(_loc3_);
-               addChild(_loc3_);
-               if(_loc6_ % 2 == 0)
+               bg = new Bitmap(new BitmapData(45,45,true,0));
+               tmpPic = new BaseCell(bg,ItemManager.Instance.getTemplateById(_picIdList[i]));
+               tmpPic.x = _picStartPoint.x;
+               tmpPic.y = _picStartPoint.y;
+               _picList.push(tmpPic);
+               addChild(tmpPic);
+               if(len % 2 == 0)
                {
-                  _loc2_ = int(_loc7_ / 2) * _loc4_ * 50 + 25 * _loc4_ + _loc3_.x;
+                  tmpX = int(i / 2) * tag * 50 + 25 * tag + tmpPic.x;
                }
                else
                {
-                  _loc2_ = int((_loc7_ + 1) / 2) * _loc4_ * 50 + _loc3_.x;
+                  tmpX = int((i + 1) / 2) * tag * 50 + tmpPic.x;
                }
-               TweenLite.to(_loc3_,0.2,{"x":_loc2_});
-               _loc4_ = _loc4_ * -1;
-               _loc7_++;
+               TweenLite.to(tmpPic,0.2,{"x":tmpX});
+               tag = tag * -1;
+               i++;
             }
          }
          else if(_bigBox.movie.currentFrame == 50)
@@ -1061,7 +1137,7 @@ package game.view.map
          }
       }
       
-      private function playPickBoxAwardMove2(param1:Event) : void
+      private function playPickBoxAwardMove2(event:Event) : void
       {
          _picMoveDelay = Number(_picMoveDelay) + 1;
          if(_picMoveDelay < 5)
@@ -1079,58 +1155,58 @@ package game.view.map
          }
       }
       
-      private function pickBigBoxSuccessHandler2(param1:BaseCell) : void
+      private function pickBigBoxSuccessHandler2(pic:BaseCell) : void
       {
-         TweenLite.to(param1,0.5,{
-            "y":param1.y - 60,
+         TweenLite.to(pic,0.5,{
+            "y":pic.y - 60,
             "alpha":1,
             "scaleX":1,
             "scaleY":1,
             "onComplete":upMoveEndHandler,
-            "onCompleteParams":[param1]
+            "onCompleteParams":[pic]
          });
       }
       
-      private function upMoveEndHandler(param1:BaseCell) : void
+      private function upMoveEndHandler(pic:BaseCell) : void
       {
-         lightCartoonPlayEndHandler(param1);
+         lightCartoonPlayEndHandler(pic);
       }
       
-      private function lightCartoonPlayEndHandler(param1:BaseCell) : void
+      private function lightCartoonPlayEndHandler(pic:BaseCell) : void
       {
          if(!_game || !_game.selfGamePlayer || !_game.selfGamePlayer.pos)
          {
             return;
          }
-         var _loc4_:Point = new Point(_game.selfGamePlayer.pos.x,_game.selfGamePlayer.pos.y);
-         var _loc2_:Number = (param1.x + _loc4_.x) / 2;
-         var _loc3_:Number = Math.min(param1.y,_loc4_.y) - 200;
-         TweenMax.to(param1,1,{
+         var arrivePos:Point = new Point(_game.selfGamePlayer.pos.x,_game.selfGamePlayer.pos.y);
+         var tmpxx:Number = (pic.x + arrivePos.x) / 2;
+         var tmpyy:Number = Math.min(pic.y,arrivePos.y) - 200;
+         TweenMax.to(pic,1,{
             "scaleX":0.1,
             "scaleY":0.1,
             "bezier":[{
-               "x":_loc2_,
-               "y":_loc3_
+               "x":tmpxx,
+               "y":tmpyy
             },{
-               "x":_loc4_.x,
-               "y":_loc4_.y
+               "x":arrivePos.x,
+               "y":arrivePos.y
             }],
             "onComplete":pickBigBoxEndHandler,
-            "onCompleteParams":[param1]
+            "onCompleteParams":[pic]
          });
       }
       
-      private function pickBigBoxEndHandler(param1:BaseCell) : void
+      private function pickBigBoxEndHandler(pic:BaseCell) : void
       {
-         if(!param1)
+         if(!pic)
          {
             return;
          }
-         param1.dispose();
-         param1 = null;
+         pic.dispose();
+         pic = null;
       }
       
-      private function playSoundEffect(param1:Event) : void
+      private function playSoundEffect(evnet:Event) : void
       {
          if(_bigBox.movie.currentFrame == 13)
          {
@@ -1142,36 +1218,36 @@ package game.view.map
          }
       }
       
-      private function openBigBox(param1:MouseEvent) : void
+      private function openBigBox(event:MouseEvent) : void
       {
          _bigBox.movie.buttonMode = false;
          _bigBox.movie.removeEventListener("click",openBigBox);
          _isPickBigBox = true;
       }
       
-      private function dropEndHandler(param1:Event) : void
+      private function dropEndHandler(event:Event) : void
       {
          _bigBox.removeEventListener("complete",dropEndHandler);
          _bigBox.gotoAndStop("stop");
       }
       
-      private function getTwoHundredDisPoint(param1:Number, param2:Number, param3:Number, param4:Number, param5:int) : Point
+      private function getTwoHundredDisPoint(x:Number, y:Number, width:Number, height:Number, direction:int) : Point
       {
-         var _loc7_:* = null;
-         param2 = 150;
-         var _loc6_:Number = param1 + 200 * param5 + param3 * param5;
-         if(!this.IsOutMap(_loc6_,param2) && this.IsEmpty(_loc6_,param2))
+         var point1:* = null;
+         y = 150;
+         var tmp:Number = x + 200 * direction + width * direction;
+         if(!this.IsOutMap(tmp,y) && this.IsEmpty(tmp,y))
          {
-            _loc7_ = findYLineNotEmptyPointDown(param1 + 200 * param5,param2,this.bound.height);
-            if(_loc7_)
+            point1 = findYLineNotEmptyPointDown(x + 200 * direction,y,this.bound.height);
+            if(point1)
             {
-               return _loc7_;
+               return point1;
             }
          }
-         param5 = param5 * -1;
-         _loc6_ = param1 + 200 * param5 + param3 * param5;
-         var _loc8_:Point = findYLineNotEmptyPointDown(param1 + 200 * param5,param2,this.bound.height);
-         return _loc8_;
+         direction = direction * -1;
+         tmp = x + 200 * direction + width * direction;
+         var point2:Point = findYLineNotEmptyPointDown(x + 200 * direction,y,this.bound.height);
+         return point2;
       }
       
       public function get disableFlyCD() : Boolean
@@ -1203,14 +1279,16 @@ package game.view.map
          }
          var _loc3_:int = 0;
          var _loc2_:* = _objects;
-         for each(var _loc1_ in _objects)
+         for each(var p in _objects)
          {
-            _loc1_.dispose();
-            _loc1_ = null;
+            p.dispose();
+            p = null;
          }
          _objects = null;
          _game = null;
          _info = null;
+         ObjectUtils.disposeObject(_backEffectView);
+         _backEffectView = null;
          _currentFocusedLiving = null;
          currentFocusedLiving = null;
          _currentPlayer = null;
@@ -1221,7 +1299,7 @@ package game.view.map
          _actionManager.clear();
          _actionManager = null;
          gameView = null;
-         _gamePlayerList = null;
+         gamePlayerList = null;
       }
    }
 }

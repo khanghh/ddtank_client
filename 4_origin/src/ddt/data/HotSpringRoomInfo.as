@@ -46,9 +46,9 @@ package ddt.data
          return _roomID;
       }
       
-      public function set roomID(param1:int) : void
+      public function set roomID(value:int) : void
       {
-         _roomID = param1;
+         _roomID = value;
       }
       
       public function get roomType() : int
@@ -56,9 +56,9 @@ package ddt.data
          return _roomType;
       }
       
-      public function set roomType(param1:int) : void
+      public function set roomType(value:int) : void
       {
-         _roomType = param1;
+         _roomType = value;
       }
       
       public function get roomName() : String
@@ -66,9 +66,9 @@ package ddt.data
          return _roomName;
       }
       
-      public function set roomName(param1:String) : void
+      public function set roomName(value:String) : void
       {
-         _roomName = param1;
+         _roomName = value;
       }
       
       public function get playerID() : int
@@ -76,9 +76,9 @@ package ddt.data
          return _playerID;
       }
       
-      public function set playerID(param1:int) : void
+      public function set playerID(value:int) : void
       {
-         _playerID = param1;
+         _playerID = value;
       }
       
       public function get playerName() : String
@@ -86,9 +86,9 @@ package ddt.data
          return _playerName;
       }
       
-      public function set playerName(param1:String) : void
+      public function set playerName(value:String) : void
       {
-         _playerName = param1;
+         _playerName = value;
       }
       
       public function get roomIsPassword() : Boolean
@@ -96,9 +96,9 @@ package ddt.data
          return _roomIsPassword;
       }
       
-      public function set roomIsPassword(param1:Boolean) : void
+      public function set roomIsPassword(value:Boolean) : void
       {
-         _roomIsPassword = param1;
+         _roomIsPassword = value;
       }
       
       public function get roomPassword() : String
@@ -106,9 +106,9 @@ package ddt.data
          return _roomPassword;
       }
       
-      public function set roomPassword(param1:String) : void
+      public function set roomPassword(value:String) : void
       {
-         _roomPassword = param1;
+         _roomPassword = value;
          _roomIsPassword = _roomPassword && _roomPassword != "" && _roomPassword.length > 0;
       }
       
@@ -117,9 +117,9 @@ package ddt.data
          return _effectiveTime;
       }
       
-      public function set effectiveTime(param1:int) : void
+      public function set effectiveTime(value:int) : void
       {
-         _effectiveTime = param1;
+         _effectiveTime = value;
       }
       
       public function get maxCount() : int
@@ -127,9 +127,9 @@ package ddt.data
          return _maxCount;
       }
       
-      public function set maxCount(param1:int) : void
+      public function set maxCount(value:int) : void
       {
-         _maxCount = param1;
+         _maxCount = value;
       }
       
       public function get curCount() : int
@@ -137,9 +137,9 @@ package ddt.data
          return _curCount;
       }
       
-      public function set curCount(param1:int) : void
+      public function set curCount(value:int) : void
       {
-         _curCount = param1;
+         _curCount = value;
       }
       
       public function get startTime() : Date
@@ -147,9 +147,9 @@ package ddt.data
          return _startTime;
       }
       
-      public function set startTime(param1:Date) : void
+      public function set startTime(value:Date) : void
       {
-         _startTime = param1;
+         _startTime = value;
       }
       
       public function get breakTime() : Date
@@ -157,9 +157,9 @@ package ddt.data
          return _breakTime;
       }
       
-      public function set breakTime(param1:Date) : void
+      public function set breakTime(value:Date) : void
       {
-         _breakTime = param1;
+         _breakTime = value;
       }
       
       public function get roomIntroduction() : String
@@ -167,9 +167,9 @@ package ddt.data
          return _roomIntroduction;
       }
       
-      public function set roomIntroduction(param1:String) : void
+      public function set roomIntroduction(value:String) : void
       {
-         _roomIntroduction = param1;
+         _roomIntroduction = value;
       }
       
       public function get serverID() : int
@@ -177,9 +177,9 @@ package ddt.data
          return _serverID;
       }
       
-      public function set serverID(param1:int) : void
+      public function set serverID(value:int) : void
       {
-         _serverID = param1;
+         _serverID = value;
       }
       
       public function get roomNumber() : int
@@ -187,9 +187,9 @@ package ddt.data
          return _roomNumber;
       }
       
-      public function set roomNumber(param1:int) : void
+      public function set roomNumber(value:int) : void
       {
-         _roomNumber = param1;
+         _roomNumber = value;
       }
    }
 }

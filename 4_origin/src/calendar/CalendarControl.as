@@ -74,7 +74,7 @@ package calendar
          CalendarManager.getInstance().addEventListener("calendarqqOpenView",__onQqOpen);
       }
       
-      private function __onOpenView(param1:CalendarEvent) : void
+      private function __onOpenView(event:CalendarEvent) : void
       {
          if(CalendarManager.getInstance().isShow)
          {
@@ -111,7 +111,7 @@ package calendar
          }
       }
       
-      private function __onQqOpen(param1:CalendarEvent) : void
+      private function __onQqOpen(event:CalendarEvent) : void
       {
          if(_frame != null)
          {
@@ -147,10 +147,10 @@ package calendar
          }
       }
       
-      private function __frameDispose(param1:ComponentEvent) : void
+      private function __frameDispose(event:ComponentEvent) : void
       {
          CalendarManager.getInstance().localVisible = false;
-         param1.currentTarget.removeEventListener("dispose",__frameDispose);
+         event.currentTarget.removeEventListener("dispose",__frameDispose);
          ObjectUtils.disposeObject(CalendarManager.getInstance().model);
          CalendarManager.getInstance().model = null;
          if(_timer)
@@ -162,14 +162,14 @@ package calendar
          }
       }
       
-      private function __mark(param1:Event) : void
+      private function __mark(event:Event) : void
       {
-         var _loc2_:* = null;
+         var today:* = null;
          if(CalendarManager.getInstance().isShow && CalendarManager.getInstance().model)
          {
-            _loc2_ = CalendarManager.getInstance().model.today;
-            _localMarkDate.time = _loc2_.time + getTimer() - CalendarManager.getInstance().startTime;
-            if(_localMarkDate.fullYear > _loc2_.fullYear || _localMarkDate.month > _loc2_.month || _localMarkDate.date > _loc2_.date)
+            today = CalendarManager.getInstance().model.today;
+            _localMarkDate.time = today.time + getTimer() - CalendarManager.getInstance().startTime;
+            if(_localMarkDate.fullYear > today.fullYear || _localMarkDate.month > today.month || _localMarkDate.date > today.date)
             {
                localToNextDay(CalendarManager.getInstance().model,_localMarkDate);
             }
@@ -181,124 +181,121 @@ package calendar
          setState(1);
       }
       
-      public function setState(param1:* = null) : void
+      public function setState(data:* = null) : void
       {
          if(_frame)
          {
-            (_frame as CalendarFrame).setState(param1);
+            (_frame as CalendarFrame).setState(data);
          }
       }
       
-      private function localToNextDay(param1:CalendarModel, param2:Date) : void
+      private function localToNextDay(model:CalendarModel, date:Date) : void
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         if(param2.date == 1)
+         var len:int = 0;
+         var i:int = 0;
+         if(date.date == 1)
          {
-            _loc3_ = CalendarModel.getMonthMaxDay(param2.month,param2.fullYear);
-            _loc4_ = 1;
-            while(_loc4_ <= _loc3_)
+            len = CalendarModel.getMonthMaxDay(date.month,date.fullYear);
+            for(i = 1; i <= len; )
             {
-               CalendarManager.getInstance().model.dayLog[_loc4_] = "0";
-               _loc4_++;
+               CalendarManager.getInstance().model.dayLog[i] = "0";
+               i++;
             }
             CalendarManager.getInstance().model.signCount = 0;
          }
-         CalendarManager.getInstance().model.today = param2;
+         CalendarManager.getInstance().model.today = date;
       }
       
-      public function sign(param1:Date) : Boolean
+      public function sign(date:Date) : Boolean
       {
-         var _loc3_:* = null;
-         var _loc2_:Boolean = false;
+         var today:* = null;
+         var result:Boolean = false;
          if(CalendarManager.getInstance().localVisible && CalendarManager.getInstance().model)
          {
-            _loc3_ = CalendarManager.getInstance().model.today;
-            if(param1.fullYear == _loc3_.fullYear && param1.month == _loc3_.month && param1.date == _loc3_.date && !CalendarManager.getInstance().model.hasSigned(param1))
+            today = CalendarManager.getInstance().model.today;
+            if(date.fullYear == today.fullYear && date.month == today.month && date.date == today.date && !CalendarManager.getInstance().model.hasSigned(date))
             {
-               _loc2_ = setSignInfo("True",param1);
+               result = setSignInfo("True",date);
             }
          }
-         return _loc2_;
+         return result;
       }
       
-      public function signNew(param1:Date) : Boolean
+      public function signNew(date:Date) : Boolean
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:Boolean = false;
+         var len:int = 0;
+         var i:int = 0;
+         var result:Boolean = false;
          if(CalendarManager.getInstance().localVisible && CalendarManager.getInstance().model)
          {
-            if(!CalendarManager.getInstance().model.hasSignedNew(param1))
+            if(!CalendarManager.getInstance().model.hasSignedNew(date))
             {
-               CalendarManager.getInstance().model.dayLog[param1.date.toString()] = "True";
+               CalendarManager.getInstance().model.dayLog[date.date.toString()] = "True";
                CalendarManager.getInstance().model.signCount++;
                CalendarManager.getInstance().signCount = CalendarManager.getInstance().model.signCount;
-               _loc2_ = true;
-               _loc3_ = CalendarManager.getInstance().model.awardCounts.length;
+               result = true;
+               len = CalendarManager.getInstance().model.awardCounts.length;
                returnPetIsShow(CalendarManager.getInstance().model.signCount);
-               _loc4_ = 0;
-               while(_loc4_ < _loc3_)
+               for(i = 0; i < len; )
                {
-                  if(CalendarManager.getInstance().model.signCount == CalendarManager.getInstance().model.awardCounts[_loc4_])
+                  if(CalendarManager.getInstance().model.signCount == CalendarManager.getInstance().model.awardCounts[i])
                   {
-                     receive(CalendarManager.getInstance().model.awardCounts[_loc4_],CalendarManager.getInstance().model.awards);
-                     return _loc2_;
+                     receive(CalendarManager.getInstance().model.awardCounts[i],CalendarManager.getInstance().model.awards);
+                     return result;
                   }
-                  _loc4_++;
+                  i++;
                }
             }
          }
-         return _loc2_;
+         return result;
       }
       
-      private function returnPetIsShow(param1:int) : void
+      private function returnPetIsShow(count:int) : void
       {
-         var _loc2_:Date = TimeManager.Instance.Now();
-         var _loc3_:Date = new Date(_loc2_.getFullYear(),_loc2_.getMonth() + 1);
-         _loc3_.time = _loc3_.time - 1;
-         var _loc4_:int = _loc3_.date;
-         if(param1 == _loc4_ && !CalendarManager.getInstance().isOK)
+         var serverTime:Date = TimeManager.Instance.Now();
+         var date:Date = new Date(serverTime.getFullYear(),serverTime.getMonth() + 1);
+         date.time = date.time - 1;
+         var totalDay:int = date.date;
+         if(count == totalDay && !CalendarManager.getInstance().isOK)
          {
             dispatchEvent(new Event("petBtnShow"));
          }
       }
       
-      private function setSignInfo(param1:String, param2:Date) : Boolean
+      private function setSignInfo(value:String, date:Date) : Boolean
       {
-         var _loc5_:int = 0;
-         var _loc3_:Boolean = false;
+         var i:int = 0;
+         var result:Boolean = false;
          SocketManager.Instance.out.sendDailyAward(5);
-         CalendarManager.getInstance().model.dayLog[param2.date.toString()] = "True";
+         CalendarManager.getInstance().model.dayLog[date.date.toString()] = "True";
          CalendarManager.getInstance().model.signCount++;
          CalendarManager.getInstance().signCount = CalendarManager.getInstance().model.signCount;
-         _loc3_ = true;
-         var _loc4_:int = CalendarManager.getInstance().model.awardCounts.length;
+         result = true;
+         var len:int = CalendarManager.getInstance().model.awardCounts.length;
          returnPetIsShow(CalendarManager.getInstance().model.signCount);
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         for(i = 0; i < len; )
          {
-            if(CalendarManager.getInstance().model.signCount == CalendarManager.getInstance().model.awardCounts[_loc5_])
+            if(CalendarManager.getInstance().model.signCount == CalendarManager.getInstance().model.awardCounts[i])
             {
-               receive(CalendarManager.getInstance().model.awardCounts[_loc5_],CalendarManager.getInstance().model.awards);
-               return _loc3_;
+               receive(CalendarManager.getInstance().model.awardCounts[i],CalendarManager.getInstance().model.awards);
+               return result;
             }
-            _loc5_++;
+            i++;
          }
-         return _loc3_;
+         return result;
       }
       
-      public function lookActivity(param1:Date) : void
+      public function lookActivity(date:Date) : void
       {
-         if(_frame && CalendarManager.getInstance().model && hasSameWeek(CalendarManager.getInstance().model.today,param1))
+         if(_frame && CalendarManager.getInstance().model && hasSameWeek(CalendarManager.getInstance().model.today,date))
          {
-            (_frame as CalendarFrame).activityList.setActivityDate(param1);
+            (_frame as CalendarFrame).activityList.setActivityDate(date);
          }
       }
       
-      private function hasSameWeek(param1:Date, param2:Date) : Boolean
+      private function hasSameWeek(date1:Date, date2:Date) : Boolean
       {
-         if(Math.abs(param2.time - param1.time) > 86400000 * 7)
+         if(Math.abs(date2.time - date1.time) > 86400000 * 7)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.calendar.OutWeek"));
             return false;
@@ -306,47 +303,47 @@ package calendar
          return true;
       }
       
-      public function receive(param1:int, param2:Array) : void
+      public function receive(signCount:int, list:Array) : void
       {
-         SocketManager.Instance.out.sendSignAward(param1);
-         var _loc3_:Array = [];
+         SocketManager.Instance.out.sendSignAward(signCount);
+         var awards:Array = [];
          var _loc6_:int = 0;
-         var _loc5_:* = param2;
-         for each(var _loc4_ in param2)
+         var _loc5_:* = list;
+         for each(var award in list)
          {
-            if(_loc4_.AwardDays == param1)
+            if(award.AwardDays == signCount)
             {
-               _loc3_.push(_loc4_);
+               awards.push(award);
             }
          }
-         showAwardInfo(_loc3_);
+         showAwardInfo(awards);
       }
       
-      public function showAwardInfo(param1:Array) : void
+      public function showAwardInfo(awards:Array) : void
       {
-         var _loc4_:* = null;
-         var _loc2_:String = "";
+         var info:* = null;
+         var msgStr:String = "";
          var _loc6_:int = 0;
-         var _loc5_:* = param1;
-         for each(var _loc3_ in param1)
+         var _loc5_:* = awards;
+         for each(var item in awards)
          {
-            if(_loc4_)
+            if(info)
             {
-               _loc2_ = _loc2_ + (_loc4_.Name + "X" + _loc3_.Count + " ");
+               msgStr = msgStr + (info.Name + "X" + item.Count + " ");
             }
          }
-         MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.calendar.signedAwards",_loc2_));
+         MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.calendar.signedAwards",msgStr));
       }
       
       public function reciveDayAward() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:Date = PlayerManager.Instance.Self.systemDate as Date;
+         var nowDate:* = null;
+         var date:Date = PlayerManager.Instance.Self.systemDate as Date;
          if(!CalendarManager.getInstance().dailyAwardState)
          {
-            _loc1_ = new Date();
-            _loc1_.setTime(_loc1_.getTime() + 86400000);
-            AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("tank.calendar.DailyAward",_loc1_.month + 1,_loc1_.date),LanguageMgr.GetTranslation("ok"),"",true,false,false,2);
+            nowDate = new Date();
+            nowDate.setTime(nowDate.getTime() + 86400000);
+            AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("tank.calendar.DailyAward",nowDate.month + 1,nowDate.date),LanguageMgr.GetTranslation("ok"),"",true,false,false,2);
          }
          else
          {
@@ -357,50 +354,50 @@ package calendar
          }
       }
       
-      public function reciveActivityAward(param1:ActiveEventsInfo, param2:String) : BaseLoader
+      public function reciveActivityAward(Active:ActiveEventsInfo, key:String) : BaseLoader
       {
-         _reciveActive = param1;
-         var _loc5_:ByteArray = new ByteArray();
-         _loc5_.writeUTFBytes(param2);
-         var _loc4_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         var _loc6_:AccountInfo = PlayerManager.Instance.Account;
-         _loc4_["activeKey"] = CrytoUtils.rsaEncry4(_loc6_.Key,_loc5_);
-         _loc4_["activeID"] = param1.ActiveID;
-         var _loc3_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ActivePullDown.ashx"),6,_loc4_);
-         _loc3_.addEventListener("loadError",__onLoadError);
-         _loc3_.addEventListener("complete",__activityLoadComplete,false,99);
-         LoadResourceManager.Instance.startLoad(_loc3_,true);
-         return _loc3_;
+         _reciveActive = Active;
+         var temp:ByteArray = new ByteArray();
+         temp.writeUTFBytes(key);
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         var acc:AccountInfo = PlayerManager.Instance.Account;
+         args["activeKey"] = CrytoUtils.rsaEncry4(acc.Key,temp);
+         args["activeID"] = Active.ActiveID;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ActivePullDown.ashx"),6,args);
+         loader.addEventListener("loadError",__onLoadError);
+         loader.addEventListener("complete",__activityLoadComplete,false,99);
+         LoadResourceManager.Instance.startLoad(loader,true);
+         return loader;
       }
       
-      private function __activityLoadComplete(param1:LoaderEvent) : void
+      private function __activityLoadComplete(event:LoaderEvent) : void
       {
-         var _loc3_:BaseLoader = param1.currentTarget as BaseLoader;
-         _loc3_.removeEventListener("loadError",__onLoadError);
-         _loc3_.removeEventListener("complete",__activityLoadComplete);
-         var _loc2_:XML = XML(param1.loader.content);
-         if(String(_loc2_.@value) == "True")
+         var loader:BaseLoader = event.currentTarget as BaseLoader;
+         loader.removeEventListener("loadError",__onLoadError);
+         loader.removeEventListener("complete",__activityLoadComplete);
+         var result:XML = XML(event.loader.content);
+         if(String(result.@value) == "True")
          {
             _reciveActive.isAttend = true;
          }
-         if(String(_loc2_.@message).length > 0)
+         if(String(result.@message).length > 0)
          {
-            MessageTipManager.getInstance().show(_loc2_.@message);
+            MessageTipManager.getInstance().show(result.@message);
          }
       }
       
-      private function __onLoadError(param1:LoaderEvent) : void
+      private function __onLoadError(event:LoaderEvent) : void
       {
-         var _loc2_:BaseLoader = param1.currentTarget as BaseLoader;
-         _loc2_.removeEventListener("loadError",__onLoadError);
-         _loc2_.removeEventListener("complete",__complete);
+         var loader:BaseLoader = event.currentTarget as BaseLoader;
+         loader.removeEventListener("loadError",__onLoadError);
+         loader.removeEventListener("complete",__complete);
       }
       
-      private function __complete(param1:LoaderEvent) : void
+      private function __complete(event:LoaderEvent) : void
       {
-         var _loc2_:BaseLoader = param1.currentTarget as BaseLoader;
-         _loc2_.removeEventListener("loadError",__onLoadError);
-         _loc2_.removeEventListener("complete",__complete);
+         var loader:BaseLoader = event.currentTarget as BaseLoader;
+         loader.removeEventListener("loadError",__onLoadError);
+         loader.removeEventListener("complete",__complete);
       }
       
       private function addEvent() : void

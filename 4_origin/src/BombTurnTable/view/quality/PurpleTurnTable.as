@@ -4,9 +4,9 @@ package BombTurnTable.view.quality
    {
        
       
-      public function PurpleTurnTable(param1:int)
+      public function PurpleTurnTable(status:int)
       {
-         super(param1);
+         super(status);
       }
       
       override public function get quality() : int

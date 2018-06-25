@@ -22,7 +22,7 @@ package horse.amulet
          super();
       }
       
-      override protected function __onMouseClick(param1:MouseEvent) : void
+      override protected function __onMouseClick(event:MouseEvent) : void
       {
          if(_enable)
          {
@@ -31,10 +31,10 @@ package horse.amulet
          }
       }
       
-      public function dragStart(param1:Number, param2:Number) : void
+      public function dragStart(stageX:Number, stageY:Number) : void
       {
-         var _loc3_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.horseAmulet.smashIcon");
-         DragManager.startDrag(this,this,_loc3_,param1,param2,"move",false);
+         var dragAsset:Bitmap = ComponentFactory.Instance.creatBitmap("asset.horseAmulet.smashIcon");
+         DragManager.startDrag(this,this,dragAsset,stageX,stageY,"move",false);
       }
       
       public function getSource() : IDragable
@@ -42,7 +42,7 @@ package horse.amulet
          return this;
       }
       
-      public function dragStop(param1:DragEffect) : void
+      public function dragStop(effect:DragEffect) : void
       {
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.bagLocked)
@@ -50,24 +50,24 @@ package horse.amulet
             BaglockedManager.Instance.show();
             return;
          }
-         if(param1.target is HorseAmuletEquipCell)
+         if(effect.target is HorseAmuletEquipCell)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.horseAmulet.smashEquipTips"));
             return;
          }
-         if(param1.target is HorseAmuletActivateCell)
+         if(effect.target is HorseAmuletActivateCell)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.horseAmulet.smashActivateTips"));
             return;
          }
-         if(param1.target is HorseAmuletCell)
+         if(effect.target is HorseAmuletCell)
          {
-            if((param1.target as HorseAmuletCell).itemInfo.cellLocked)
+            if((effect.target as HorseAmuletCell).itemInfo.cellLocked)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.horseAmulet.smashLockTips"));
                return;
             }
-            (param1.target as HorseAmuletCell).smash();
+            (effect.target as HorseAmuletCell).smash();
          }
       }
    }

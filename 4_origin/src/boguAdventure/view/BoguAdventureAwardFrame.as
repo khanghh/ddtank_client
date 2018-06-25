@@ -89,9 +89,9 @@ package boguAdventure.view
          _awardBtn3.addEventListener("click",__onAwardClick);
       }
       
-      public function set control(param1:BoguAdventureControl) : void
+      public function set control(value:BoguAdventureControl) : void
       {
-         _control = param1;
+         _control = value;
          updateBtnView();
       }
       
@@ -108,14 +108,14 @@ package boguAdventure.view
          _awardTipText3.text = LanguageMgr.GetTranslation("boguAdventure.view.successfulWalkCount",_control.model.awardCount[2]);
       }
       
-      private function __onAwardClick(param1:MouseEvent) : void
+      private function __onAwardClick(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         if(param1.currentTarget == _awardBtn1)
+         if(e.currentTarget == _awardBtn1)
          {
             _level = 0;
          }
-         else if(param1.currentTarget == _awardBtn2)
+         else if(e.currentTarget == _awardBtn2)
          {
             _level = 1;
          }
@@ -147,11 +147,11 @@ package boguAdventure.view
          dispose();
       }
       
-      private function createAwardTip(param1:Sprite) : void
+      private function createAwardTip(obj:Sprite) : void
       {
-         param1.graphics.beginFill(0,0.1);
-         param1.graphics.drawRect(0,0,param1.width,param1.height);
-         param1.graphics.endFill();
+         obj.graphics.beginFill(0,0.1);
+         obj.graphics.drawRect(0,0,obj.width,obj.height);
+         obj.graphics.endFill();
       }
       
       public function show() : void
@@ -159,10 +159,10 @@ package boguAdventure.view
          LayerManager.Instance.addToLayer(this,3,true,2);
       }
       
-      override protected function onResponse(param1:int) : void
+      override protected function onResponse(type:int) : void
       {
-         super.onResponse(param1);
-         if(param1 == 1 || param1 == 0)
+         super.onResponse(type);
+         if(type == 1 || type == 0)
          {
             SoundManager.instance.playButtonSound();
             ObjectUtils.disposeObject(this);

@@ -19,11 +19,11 @@ package ddt.view.tips
       
       private var rate_txt:FilterFrameText;
       
-      public function WinRate(param1:int, param2:int)
+      public function WinRate($win:int, $total:int)
       {
          super();
-         _win = param1;
-         _total = param2;
+         _win = $win;
+         _total = $total;
          init();
          setRate(_win,_total);
       }
@@ -36,12 +36,12 @@ package ddt.view.tips
          addChild(rate_txt);
       }
       
-      public function setRate(param1:int, param2:int) : void
+      public function setRate($win:int, $total:int) : void
       {
-         _win = param1;
-         _total = param2;
-         var _loc3_:Number = _total > 0?_win / _total * 100:0;
-         rate_txt.text = _loc3_.toFixed(2) + "%";
+         _win = $win;
+         _total = $total;
+         var rate:Number = _total > 0?_win / _total * 100:0;
+         rate_txt.text = rate.toFixed(2) + "%";
       }
       
       public function dispose() : void

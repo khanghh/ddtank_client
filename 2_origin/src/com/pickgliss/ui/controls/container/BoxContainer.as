@@ -47,27 +47,27 @@ package com.pickgliss.ui.controls.container
          super();
       }
       
-      override public function addChild(param1:DisplayObject) : DisplayObject
+      override public function addChild(child:DisplayObject) : DisplayObject
       {
-         if(_childrenList.indexOf(param1) > -1)
+         if(_childrenList.indexOf(child) > -1)
          {
-            return param1;
+            return child;
          }
          if(!_isReverAdd)
          {
-            _childrenList.push(super.addChild(param1));
+            _childrenList.push(super.addChild(child));
          }
          else if(!_isReverAddList)
          {
-            _childrenList.push(super.addChildAt(param1,0));
+            _childrenList.push(super.addChildAt(child,0));
          }
          else
          {
-            _childrenList.splice(0,0,super.addChildAt(param1,0));
+            _childrenList.splice(0,0,super.addChildAt(child,0));
          }
-         param1.addEventListener("propertiesChanged",__onResize);
+         child.addEventListener("propertiesChanged",__onResize);
          onPropertiesChanged("childRefresh");
-         return param1;
+         return child;
       }
       
       override public function dispose() : void
@@ -79,35 +79,34 @@ package com.pickgliss.ui.controls.container
       
       public function disposeAllChildren() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         _loc2_ = 0;
-         while(_loc2_ < numChildren)
+         var i:int = 0;
+         var child:* = null;
+         for(i = 0; i < numChildren; )
          {
-            _loc1_ = getChildAt(_loc2_);
-            _loc1_.removeEventListener("propertiesChanged",__onResize);
-            _loc2_++;
+            child = getChildAt(i);
+            child.removeEventListener("propertiesChanged",__onResize);
+            i++;
          }
          ObjectUtils.disposeAllChildren(this);
       }
       
-      public function set isReverAdd(param1:Boolean) : void
+      public function set isReverAdd(value:Boolean) : void
       {
-         if(_isReverAdd == param1)
+         if(_isReverAdd == value)
          {
             return;
          }
-         _isReverAdd = param1;
+         _isReverAdd = value;
          onPropertiesChanged("isReverAdd");
       }
       
-      public function set isReverAddList(param1:Boolean) : void
+      public function set isReverAddList(value:Boolean) : void
       {
-         if(_isReverAddList == param1)
+         if(_isReverAddList == value)
          {
             return;
          }
-         _isReverAddList = param1;
+         _isReverAddList = value;
       }
       
       public function refreshChildPos() : void
@@ -133,38 +132,37 @@ package com.pickgliss.ui.controls.container
          _childrenList.length = 0;
       }
       
-      override public function removeChild(param1:DisplayObject) : DisplayObject
+      override public function removeChild(child:DisplayObject) : DisplayObject
       {
-         param1.removeEventListener("propertiesChanged",__onResize);
-         _childrenList.splice(_childrenList.indexOf(param1),1);
-         super.removeChild(param1);
+         child.removeEventListener("propertiesChanged",__onResize);
+         _childrenList.splice(_childrenList.indexOf(child),1);
+         super.removeChild(child);
          onPropertiesChanged("childRefresh");
-         return param1;
+         return child;
       }
       
       public function reverChildren() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:Vector.<DisplayObject> = new Vector.<DisplayObject>();
+         var i:int = 0;
+         var tempAllChildren:Vector.<DisplayObject> = new Vector.<DisplayObject>();
          while(numChildren > 0)
          {
-            _loc1_.push(removeChildAt(0));
+            tempAllChildren.push(removeChildAt(0));
          }
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_.length)
+         for(i = 0; i < tempAllChildren.length; )
          {
-            addChild(_loc1_[_loc2_]);
-            _loc2_++;
+            addChild(tempAllChildren[i]);
+            i++;
          }
       }
       
-      public function set autoSize(param1:int) : void
+      public function set autoSize(value:int) : void
       {
-         if(_autoSize == param1)
+         if(_autoSize == value)
          {
             return;
          }
-         _autoSize = param1;
+         _autoSize = value;
          onPropertiesChanged("autoSize");
       }
       
@@ -173,23 +171,23 @@ package com.pickgliss.ui.controls.container
          return _spacing;
       }
       
-      public function set spacing(param1:Number) : void
+      public function set spacing(value:Number) : void
       {
-         if(_spacing == param1)
+         if(_spacing == value)
          {
             return;
          }
-         _spacing = param1;
+         _spacing = value;
          onPropertiesChanged("spacing");
       }
       
-      public function set strictSize(param1:Number) : void
+      public function set strictSize(value:Number) : void
       {
-         if(_strictSize == param1)
+         if(_strictSize == value)
          {
             return;
          }
-         _strictSize = param1;
+         _strictSize = value;
          onPropertiesChanged("strictSize");
       }
       
@@ -207,34 +205,33 @@ package com.pickgliss.ui.controls.container
          arrange();
       }
       
-      private function __onResize(param1:ComponentEvent) : void
+      private function __onResize(event:ComponentEvent) : void
       {
-         if(param1.changedProperties["height"] || param1.changedProperties["width"])
+         if(event.changedProperties["height"] || event.changedProperties["width"])
          {
             onPropertiesChanged("childRefresh");
          }
       }
       
-      protected function getItemWidth(param1:DisplayObject) : Number
+      protected function getItemWidth(child:DisplayObject) : Number
       {
          if(isStrictSize)
          {
             return _strictSize;
          }
-         return param1.width;
+         return child.width;
       }
       
       public function get realWidth() : Number
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _childrenList.length)
+         var i:int = 0;
+         var w:* = 0;
+         for(i = 0; i < _childrenList.length; )
          {
-            _loc1_ = Number(_loc1_ + (getItemWidth(_childrenList[_loc2_]) + _spacing));
-            _loc2_++;
+            w = Number(w + (getItemWidth(_childrenList[i]) + _spacing));
+            i++;
          }
-         return _loc1_ - _spacing;
+         return w - _spacing;
       }
    }
 }

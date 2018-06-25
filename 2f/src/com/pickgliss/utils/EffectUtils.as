@@ -1,23 +1,6 @@
-package com.pickgliss.utils
-{
-   import flash.display.Bitmap;
-   import flash.display.BitmapData;
-   import flash.display.DisplayObject;
-   import flash.filters.GradientGlowFilter;
-   import flash.geom.ColorTransform;
-   
-   public class EffectUtils
-   {
-       
-      
-      public function EffectUtils(){super();}
-      
-      public static function imageGlower(param1:DisplayObject, param2:Number, param3:Number, param4:Number, param5:String) : void{}
-      
-      public static function imageShiner(param1:DisplayObject, param2:Number) : void{}
-      
-      public static function creatMcToBitmap(param1:DisplayObject, param2:uint) : Bitmap{return null;}
-      
-      public static function toRadian(param1:Number) : Number{return 0;}
-   }
-}
+package com.pickgliss.utils{   import flash.display.Bitmap;   import flash.display.BitmapData;   import flash.display.DisplayObject;   import flash.filters.GradientGlowFilter;   import flash.geom.ColorTransform;      public class EffectUtils   {                   public function EffectUtils() { super(); }
+            public static function imageGlower($target:DisplayObject, glow_intensity:Number, glow_blur:Number, $glow_quality:Number, glow_color_name:String) : void { }
+            public static function imageShiner($target:DisplayObject, shine_intensity:Number) : void { }
+            public static function creatMcToBitmap($target:DisplayObject, $color:uint) : Bitmap { return null; }
+            public static function toRadian(degree:Number) : Number { return 0; }
+   }}

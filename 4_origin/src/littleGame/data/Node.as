@@ -24,11 +24,11 @@ package littleGame.data
       
       public var links:Vector.<Node>;
       
-      public function Node(param1:int, param2:int)
+      public function Node(x:int, y:int)
       {
          super();
-         this.x = param1;
-         this.y = param2;
+         this.x = x;
+         this.y = y;
       }
       
       public function dispose() : void

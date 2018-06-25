@@ -14,11 +14,11 @@ package ddt.view.buff.buffButton
          info = new BuffInfo(15);
       }
       
-      override protected function __onclick(param1:MouseEvent) : void
+      override protected function __onclick(evt:MouseEvent) : void
       {
       }
       
-      override public function set info(param1:BuffInfo) : void
+      override public function set info(value:BuffInfo) : void
       {
       }
       

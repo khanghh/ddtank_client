@@ -9,15 +9,15 @@ package fightLib.script.HighGap
    {
        
       
-      public function DifficultHighGap(param1:Object)
+      public function DifficultHighGap(fightView:Object)
       {
-         super(param1);
+         super(fightView);
       }
       
       override protected function initializeScript() : void
       {
-         var _loc1_:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.HighGap.DifficultHighGap.command1"),LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.startTrain"),startTrain);
-         _commonds.push(_loc1_);
+         var command1:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.HighGap.DifficultHighGap.command1"),LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.startTrain"),startTrain);
+         _commonds.push(command1);
          super.initializeScript();
       }
       

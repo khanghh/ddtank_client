@@ -38,14 +38,14 @@ package ddt.view.caddyII
          return _ins;
       }
       
-      public function setUp(param1:CaddyAwardDataAnalyzer) : void
+      public function setUp(analyzer:CaddyAwardDataAnalyzer) : void
       {
-         _awards = param1._awards;
-         _silverAwards = param1._silverAwards;
-         _goldAwards = param1._goldAwards;
-         _treasureAwards = param1._treasureAwards;
-         _silverToyAwards = param1._silverToyAwards;
-         _goldToyAwards = param1._goldToyAwards;
+         _awards = analyzer._awards;
+         _silverAwards = analyzer._silverAwards;
+         _goldAwards = analyzer._goldAwards;
+         _treasureAwards = analyzer._treasureAwards;
+         _silverToyAwards = analyzer._silverToyAwards;
+         _goldToyAwards = analyzer._goldToyAwards;
       }
       
       public function getAwards() : Vector.<CaddyAwardInfo>

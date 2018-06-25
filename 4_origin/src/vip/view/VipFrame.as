@@ -147,14 +147,14 @@ package vip.view
          }
       }
       
-      private function updateView(param1:int) : void
+      private function updateView(index:int) : void
       {
          if(_vipSp)
          {
             _vipSp.dispose();
          }
          _vipSp = null;
-         switch(int(param1))
+         switch(int(index))
          {
             case 0:
                _selectedButtonGroup.selectIndex = 0;
@@ -164,9 +164,9 @@ package vip.view
                _selectedButtonGroup.selectIndex = 1;
                _vipSp = new GiveOthersOpenedView(false,discountCode);
          }
-         var _loc2_:Point = ComponentFactory.Instance.creatCustomObject("vip.GiveYourselfOpenViewPos");
-         DisplayObject(_vipSp).x = _loc2_.x;
-         DisplayObject(_vipSp).y = _loc2_.y;
+         var point:Point = ComponentFactory.Instance.creatCustomObject("vip.GiveYourselfOpenViewPos");
+         DisplayObject(_vipSp).x = point.x;
+         DisplayObject(_vipSp).y = point.y;
          addToContent(DisplayObject(_vipSp));
          DisplayObject(_vipSp).parent.setChildIndex(DisplayObject(_vipSp),0);
       }
@@ -177,7 +177,7 @@ package vip.view
          _selectedButtonGroup.addEventListener("change",__selectedButtonGroupChange);
       }
       
-      private function __selectedButtonGroupChange(param1:Event) : void
+      private function __selectedButtonGroupChange(event:Event) : void
       {
          SoundManager.instance.play("008");
          updateView(_selectedButtonGroup.selectIndex);
@@ -193,10 +193,10 @@ package vip.view
          }
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:

@@ -34,11 +34,11 @@ package game.view.heroAuto
          _heroAutoState = false;
       }
       
-      public function updateWind(param1:int) : void
+      public function updateWind(value:int) : void
       {
          if(_autoControl)
          {
-            _autoControl.updateWind(param1);
+            _autoControl.updateWind(value);
          }
       }
       
@@ -57,18 +57,18 @@ package game.view.heroAuto
          GameControl.Instance.Current.selfGamePlayer.removeEventListener("die",__die);
       }
       
-      protected function __die(param1:Event) : void
+      protected function __die(event:Event) : void
       {
          visible = false;
          autoState = false;
          dispose();
       }
       
-      public function set autoState(param1:Boolean) : void
+      public function set autoState(value:Boolean) : void
       {
-         if(_heroAutoState != param1)
+         if(_heroAutoState != value)
          {
-            _heroAutoState = param1;
+            _heroAutoState = value;
             update();
             if(_autoControl)
             {

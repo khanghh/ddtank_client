@@ -14,38 +14,38 @@ package fightLib.script.TwentyDegree
       
       private var _arr:Array;
       
-      public function EasyTwentyDegree(param1:Object)
+      public function EasyTwentyDegree(fightView:Object)
       {
          _arr = new Array(7013,7008,7012,7010,7006,7011);
-         super(param1);
+         super(fightView);
       }
       
       override protected function initializeScript() : void
       {
-         var _loc1_:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.EasyTwentyDegree.command1"),"",null,"",null,true,false,_arr);
-         var _loc2_:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.EasyTwentyDegree.command2"));
-         var _loc5_:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.EasyTwentyDegree.command4"));
-         _loc5_.excuteFunArr.push(_host.showPowerTable1 as Function);
-         _loc5_.undoFunArr.push(_host.hidePowerTable as Function);
-         var _loc3_:PopupFrameCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.EasyTwentyDegree.command6"),null);
-         var _loc4_:ImmediateCommand = new ImmediateCommand();
-         _loc4_.excuteFunArr.push(_host.splitSmallMapDrager as Function);
-         _loc4_.completeFunArr.push(_host.openShowTurn as Function);
-         _loc4_.completeFunArr.push(_host.skip as Function);
-         var _loc7_:CreateMonsterCommand = new CreateMonsterCommand();
-         _loc7_.excuteFunArr.push(_host.waitAttack as Function);
-         var _loc8_:WaittingCommand = new WaittingCommand(null);
-         var _loc6_:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.EasyTwentyDegree.command7"),LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.startTrain"),startTrain,LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.watchAgain"),restart,true,true);
-         _loc6_.excuteFunArr.push(_host.closeShowTurn as Function);
-         _loc6_.undoFunArr.push(_host.hideSmallMapSplit as Function);
-         _commonds.push(_loc1_);
-         _commonds.push(_loc2_);
-         _commonds.push(_loc5_);
-         _commonds.push(_loc3_);
-         _commonds.push(_loc4_);
-         _commonds.push(_loc7_);
-         _commonds.push(_loc8_);
-         _commonds.push(_loc6_);
+         var command1:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.EasyTwentyDegree.command1"),"",null,"",null,true,false,_arr);
+         var command2:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.EasyTwentyDegree.command2"));
+         var command4:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.EasyTwentyDegree.command4"));
+         command4.excuteFunArr.push(_host.showPowerTable1 as Function);
+         command4.undoFunArr.push(_host.hidePowerTable as Function);
+         var command5:PopupFrameCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.EasyTwentyDegree.command6"),null);
+         var command6:ImmediateCommand = new ImmediateCommand();
+         command6.excuteFunArr.push(_host.splitSmallMapDrager as Function);
+         command6.completeFunArr.push(_host.openShowTurn as Function);
+         command6.completeFunArr.push(_host.skip as Function);
+         var command7:CreateMonsterCommand = new CreateMonsterCommand();
+         command7.excuteFunArr.push(_host.waitAttack as Function);
+         var command8:WaittingCommand = new WaittingCommand(null);
+         var command9:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.EasyTwentyDegree.command7"),LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.startTrain"),startTrain,LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.watchAgain"),restart,true,true);
+         command9.excuteFunArr.push(_host.closeShowTurn as Function);
+         command9.undoFunArr.push(_host.hideSmallMapSplit as Function);
+         _commonds.push(command1);
+         _commonds.push(command2);
+         _commonds.push(command4);
+         _commonds.push(command5);
+         _commonds.push(command6);
+         _commonds.push(command7);
+         _commonds.push(command8);
+         _commonds.push(command9);
          super.initializeScript();
       }
       
@@ -69,12 +69,12 @@ package fightLib.script.TwentyDegree
       
       override public function next() : void
       {
-         var _loc1_:* = null;
+         var commond:* = null;
          if(_index < _commonds.length)
          {
             _index = Number(_index) + 1;
-            _loc1_ = _commonds[Number(_index)];
-            _loc1_.excute();
+            commond = _commonds[Number(_index)];
+            commond.excute();
          }
          else
          {

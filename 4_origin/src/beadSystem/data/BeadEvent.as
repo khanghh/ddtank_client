@@ -29,11 +29,11 @@ package beadSystem.data
       
       private var _beadInfo:ItemTemplateInfo;
       
-      public function BeadEvent(param1:String, param2:int = -1, param3:ItemTemplateInfo = null, param4:Boolean = false, param5:Boolean = false)
+      public function BeadEvent(type:String, pCellID:int = -1, pBeadInfo:ItemTemplateInfo = null, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         super(param1,param4,param5);
-         _cellID = param2;
-         _beadInfo = param3;
+         super(type,bubbles,cancelable);
+         _cellID = pCellID;
+         _beadInfo = pBeadInfo;
       }
       
       public function get CellId() : int

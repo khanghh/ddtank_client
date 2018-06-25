@@ -16,10 +16,10 @@ package com.pickgliss.loader
       
       public var paras:Array;
       
-      public function LoadInterfaceEvent(param1:String, param2:Array)
+      public function LoadInterfaceEvent(type:String, paras:Array)
       {
-         this.paras = param2;
-         super(param1);
+         this.paras = paras;
+         super(type);
       }
    }
 }

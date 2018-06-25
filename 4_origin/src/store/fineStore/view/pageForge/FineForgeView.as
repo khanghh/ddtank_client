@@ -107,14 +107,14 @@ package store.fineStore.view.pageForge
       
       private function init() : void
       {
-         var _loc7_:int = 0;
-         var _loc8_:* = null;
-         var _loc3_:* = null;
-         var _loc6_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:int = 0;
-         var _loc12_:* = null;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var info:* = null;
+         var cell:* = null;
+         var material:* = null;
+         var titleName:* = null;
+         var itemState:int = 0;
+         var item:* = null;
+         var text:* = null;
          _bg = UICreatShortcut.creatAndAdd("store.fineforge.forgeBg",this);
          _movieBg = UICreatShortcut.creatAndAdd("newStore.fineStore.forgeMovieBg",this);
          _infoBg = UICreatShortcut.creatAndAdd("store.fineforge.infoBg",this);
@@ -128,76 +128,72 @@ package store.fineStore.view.pageForge
          _helpBtn = HelpFrameUtils.Instance.simpleHelpButton(this,"ddtstore.HelpButton",null,LanguageMgr.GetTranslation("store.view.HelpButtonText"),"store.fineforge.forgeHelp",404,484);
          PositionUtils.setPos(_helpBtn,"storeFine.forge.helpPos");
          _select = UICreatShortcut.creatAndAdd("storeFine.forge.allInject",this);
-         var _loc10_:Array = LanguageMgr.GetTranslation("storeFine.cell.titleText").split(",");
+         var title:Array = LanguageMgr.GetTranslation("storeFine.cell.titleText").split(",");
          _cell = [];
-         _loc7_ = 0;
-         while(_loc7_ < 14)
+         for(i = 0; i < 14; )
          {
-            _loc8_ = PlayerManager.Instance.Self.Bag.getItemAt(order[_loc7_]);
-            _loc3_ = new FineForgeCell(1,_loc10_[_loc7_],_loc8_);
-            _loc3_.addEventListener("click",__onClickCell);
-            _loc3_.setContentSize(46,46);
-            PositionUtils.setPos(_loc3_,"storeFine.cellPos" + _loc7_);
-            addChild(_loc3_);
-            _cell.push(_loc3_);
-            _loc7_++;
+            info = PlayerManager.Instance.Self.Bag.getItemAt(order[i]);
+            cell = new FineForgeCell(1,title[i],info);
+            cell.addEventListener("click",__onClickCell);
+            cell.setContentSize(46,46);
+            PositionUtils.setPos(cell,"storeFine.cellPos" + i);
+            addChild(cell);
+            _cell.push(cell);
+            i++;
          }
          updateCellBgView();
          _hBox = UICreatShortcut.creatAndAdd("storeFine.forge.hBox",this);
          addChild(_hBox);
          _materialList = [];
-         var _loc5_:Array = FineSuitManager.Instance.materialIDList;
-         var _loc13_:Bitmap = ComponentFactory.Instance.creatBitmap("store.fineforge.materialCellBg");
-         _loc13_.visible = false;
-         var _loc11_:int = needForgeCellId;
-         _loc7_ = 0;
-         while(_loc7_ < _loc5_.length)
+         var idList:Array = FineSuitManager.Instance.materialIDList;
+         var cellBg:Bitmap = ComponentFactory.Instance.creatBitmap("store.fineforge.materialCellBg");
+         cellBg.visible = false;
+         var needForgeId:int = needForgeCellId;
+         for(i = 0; i < idList.length; )
          {
-            _loc6_ = new BagCell(_loc7_,ItemManager.Instance.getTemplateById(_loc5_[_loc7_]),true,_loc13_);
-            _loc6_.setContentSize(45,45);
-            setForgeCellInfo(_loc6_,_loc11_);
-            _hBox.addChild(_loc6_);
-            _materialList.push(_loc6_);
-            _loc7_++;
+            material = new BagCell(i,ItemManager.Instance.getTemplateById(idList[i]),true,cellBg);
+            material.setContentSize(45,45);
+            setForgeCellInfo(material,needForgeId);
+            _hBox.addChild(material);
+            _materialList.push(material);
+            i++;
          }
          _hBox.arrange();
          updateMaterialCount();
          _butImage = UICreatShortcut.creatAndAdd("asset.horse.frame.buyBtn_small",this);
          _butImage.visible = false;
-         var _loc9_:Array = getTipsDataListView();
-         var _loc14_:Array = LanguageMgr.GetTranslation("storeFine.suit.type").split(",");
+         var dataList:Array = getTipsDataListView();
+         var suitType:Array = LanguageMgr.GetTranslation("storeFine.suit.type").split(",");
          _effect = new Sprite();
          addChild(_effect);
          PositionUtils.setPos(_effect,"storeFine.forge.effectPos");
          _efListSp = new Sprite();
-         var _loc15_:int = 0;
+         var currentY:int = 0;
          _effectList = [];
-         _loc7_ = 0;
-         while(_loc7_ < 5)
+         for(i = 0; i < 5; )
          {
-            _loc2_ = LanguageMgr.GetTranslation("storeFine.effect.titleText",_loc14_[_loc7_]);
-            _loc4_ = getforgeEffectState(_loc7_);
-            _loc12_ = new ForgeEffectItem(_loc7_,_loc2_,_loc9_[_loc7_],_loc4_);
-            _efListSp.addChild(_loc12_);
-            _effect.addChild(_loc12_);
-            _effectList.push(_loc12_);
-            _loc12_.y = _loc15_;
-            _loc15_ = _loc12_.y + _loc12_.height - 3;
-            _loc7_++;
+            titleName = LanguageMgr.GetTranslation("storeFine.effect.titleText",suitType[i]);
+            itemState = getforgeEffectState(i);
+            item = new ForgeEffectItem(i,titleName,dataList[i],itemState);
+            _efListSp.addChild(item);
+            _effect.addChild(item);
+            _effectList.push(item);
+            item.y = currentY;
+            currentY = item.y + item.height - 3;
+            i++;
          }
          _scroll = ComponentFactory.Instance.creatComponentByStylename("storeFine.forge.effect.scrollpanel");
          _scroll.setView(_efListSp);
          _scroll.invalidateViewport();
          _effect.addChild(_scroll);
          _list = [];
-         _loc7_ = 0;
-         while(_loc7_ < 6)
+         for(i = 0; i < 6; )
          {
-            _loc1_ = UICreatShortcut.creatAndAdd("storeFine.forge.infoText",_effect);
-            _loc1_.x = _loc7_ % 2 == 0?42:Number(177);
-            _loc1_.y = Math.ceil((_loc7_ + 1) / 2) * 23 + 270;
-            _list.push(_loc1_);
-            _loc7_++;
+            text = UICreatShortcut.creatAndAdd("storeFine.forge.infoText",_effect);
+            text.x = i % 2 == 0?42:Number(177);
+            text.y = Math.ceil((i + 1) / 2) * 23 + 270;
+            _list.push(text);
+            i++;
          }
          _mouseOver = new Sprite();
          PositionUtils.setPos(_mouseOver,"forgeMainView.mouseOverPos");
@@ -216,17 +212,17 @@ package store.fineStore.view.pageForge
          PlayerManager.Instance.Self.getBag(1).addEventListener("update",__onBagUpdate);
       }
       
-      protected function onMOOut(param1:MouseEvent) : void
+      protected function onMOOut(e:MouseEvent) : void
       {
          updateInfo();
       }
       
-      protected function onMOOver(param1:MouseEvent) : void
+      protected function onMOOver(e:MouseEvent) : void
       {
          updateInfoOver();
       }
       
-      private function __onCellClick(param1:MouseEvent) : void
+      private function __onCellClick(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.bagLocked)
@@ -234,22 +230,22 @@ package store.fineStore.view.pageForge
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc3_:BagCell = param1.currentTarget as BagCell;
-         var _loc2_:ShopItemInfo = ShopManager.Instance.getGoodsByTemplateID(_loc3_.info.TemplateID,1);
-         var _loc4_:QuickBuyAlertBase = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickBuyAlert");
-         _loc4_.setData(_loc2_.TemplateID,_loc2_.GoodsID,_loc2_.AValue1);
-         LayerManager.Instance.addToLayer(_loc4_,3,true,1);
+         var cell:BagCell = e.currentTarget as BagCell;
+         var shopInfo:ShopItemInfo = ShopManager.Instance.getGoodsByTemplateID(cell.info.TemplateID,1);
+         var quickBuyFrame:QuickBuyAlertBase = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickBuyAlert");
+         quickBuyFrame.setData(shopInfo.TemplateID,shopInfo.GoodsID,shopInfo.AValue1);
+         LayerManager.Instance.addToLayer(quickBuyFrame,3,true,1);
       }
       
-      private function __onCellOver(param1:MouseEvent) : void
+      private function __onCellOver(e:MouseEvent) : void
       {
-         var _loc2_:DisplayObject = param1.currentTarget as DisplayObject;
+         var display:DisplayObject = e.currentTarget as DisplayObject;
          _butImage.visible = true;
-         _butImage.x = _hBox.x + _loc2_.x + 2;
+         _butImage.x = _hBox.x + display.x + 2;
          _butImage.y = _hBox.y + 25;
       }
       
-      private function __onCellOut(param1:MouseEvent) : void
+      private function __onCellOut(e:MouseEvent) : void
       {
          _butImage.visible = false;
       }
@@ -273,7 +269,7 @@ package store.fineStore.view.pageForge
          _progress["star"].gotoAndStop(2);
       }
       
-      private function __onProgressAction(param1:Event) : void
+      private function __onProgressAction(e:Event) : void
       {
          _progressText.text = _progress.currentFrame.toString() + "%";
          if(_progress.currentFrame >= _forgeProgress)
@@ -295,29 +291,29 @@ package store.fineStore.view.pageForge
       
       public function forgeSucceed() : void
       {
-         var _loc1_:int = 0;
+         var type:int = 0;
          if(!_forgeAction)
          {
             _forgeAction = UICreatShortcut.creatAndAdd("store.fineforge.forgeAction",this);
             _forgeAction.addEventListener("enterFrame",__onEnterForgeAction);
-            _loc1_ = FineSuitManager.Instance.getSuitVoByExp(PlayerManager.Instance.Self.fineSuitExp).type;
-            PositionUtils.setPos(_forgeAction,"storeFine.actionPos" + _loc1_);
+            type = FineSuitManager.Instance.getSuitVoByExp(PlayerManager.Instance.Self.fineSuitExp).type;
+            PositionUtils.setPos(_forgeAction,"storeFine.actionPos" + type);
             _forgeAction.gotoAndPlay(1);
          }
       }
       
-      private function __onEnterForgeAction(param1:Event) : void
+      private function __onEnterForgeAction(e:Event) : void
       {
-         var _loc2_:* = null;
+         var pos:* = null;
          if(_forgeAction.currentFrame == _forgeAction.totalFrames - 1)
          {
             _forgeAction.removeEventListener("enterFrame",__onEnterForgeAction);
             _forgeAction.gotoAndStop(_forgeAction.totalFrames);
-            _loc2_ = new Point(currentSelectedCell.x + currentSelectedCell.width / 2,currentSelectedCell.y + currentSelectedCell.height / 2);
-            _forgeAction.rotation = Math.atan2(_loc2_.y - _forgeAction.y,_loc2_.x - _forgeAction.x) * 180 / 3.14159265358979 + 90;
+            pos = new Point(currentSelectedCell.x + currentSelectedCell.width / 2,currentSelectedCell.y + currentSelectedCell.height / 2);
+            _forgeAction.rotation = Math.atan2(pos.y - _forgeAction.y,pos.x - _forgeAction.x) * 180 / 3.14159265358979 + 90;
             TweenLite.to(_forgeAction,1,{
-               "x":_loc2_.x,
-               "y":_loc2_.y,
+               "x":pos.x,
+               "y":pos.y,
                "onComplete":moveComplete
             });
          }
@@ -325,19 +321,19 @@ package store.fineStore.view.pageForge
       
       private function moveComplete() : void
       {
-         var _loc1_:* = null;
+         var pos:* = null;
          disposeForgeAction();
          if(!_cellAction)
          {
-            _loc1_ = new Point(currentSelectedCell.x,currentSelectedCell.y);
+            pos = new Point(currentSelectedCell.x,currentSelectedCell.y);
             _cellAction = UICreatShortcut.creatAndAdd("store.fineforge.cellBgAction",this);
             _cellAction.addEventListener("enterFrame",__onEnterCellAction);
             _cellAction.gotoAndPlay(1);
-            PositionUtils.setPos(_cellAction,_loc1_);
+            PositionUtils.setPos(_cellAction,pos);
          }
       }
       
-      private function __onEnterCellAction(param1:Event) : void
+      private function __onEnterCellAction(e:Event) : void
       {
          if(_cellAction.currentFrame == _cellAction.totalFrames - 1)
          {
@@ -350,7 +346,7 @@ package store.fineStore.view.pageForge
          }
       }
       
-      private function __onClickForgeBtn(param1:MouseEvent) : void
+      private function __onClickForgeBtn(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(getTimer() - _timer < 1000)
@@ -363,9 +359,9 @@ package store.fineStore.view.pageForge
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("storeFine.accomplish"));
             return;
          }
-         var _loc3_:int = FineSuitManager.Instance.getNextSuitVoByExp(PlayerManager.Instance.Self.fineSuitExp).materialID;
-         var _loc2_:int = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(_loc3_);
-         if(_loc2_ <= 0)
+         var materialID:int = FineSuitManager.Instance.getNextSuitVoByExp(PlayerManager.Instance.Self.fineSuitExp).materialID;
+         var count:int = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(materialID);
+         if(count <= 0)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("storeFine.forgeTips"));
             return;
@@ -375,7 +371,7 @@ package store.fineStore.view.pageForge
          SocketManager.Instance.out.sendForgeSuit(!!_select.selected?0:1);
       }
       
-      private function __onClickCell(param1:MouseEvent) : void
+      private function __onClickCell(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.fineSuitExp == FineSuitManager.Instance.getSuitVoByLevel(70).exp)
@@ -383,24 +379,24 @@ package store.fineStore.view.pageForge
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("storeFine.accomplish"));
             return;
          }
-         var _loc2_:FineForgeCell = param1.currentTarget as FineForgeCell;
-         if(!_loc2_.selected)
+         var cell:FineForgeCell = e.currentTarget as FineForgeCell;
+         if(!cell.selected)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("storeFine.cell.selectTips",currentSelectedCell.cellName));
          }
       }
       
-      private function __onChangeSuitExp(param1:PkgEvent) : void
+      private function __onChangeSuitExp(e:PkgEvent) : void
       {
-         var _loc3_:Boolean = false;
-         var _loc2_:PackageIn = param1.pkg;
-         var _loc4_:int = _loc2_.readByte();
-         if(!(int(_loc4_) - 1))
+         var bool:Boolean = false;
+         var pkg:PackageIn = e.pkg;
+         var type:int = pkg.readByte();
+         if(!(int(type) - 1))
          {
-            _loc3_ = _loc2_.readBoolean();
-            PlayerManager.Instance.Self.fineSuitExp = _loc2_.readInt();
+            bool = pkg.readBoolean();
+            PlayerManager.Instance.Self.fineSuitExp = pkg.readInt();
             updateMaterialCount();
-            if(_loc3_)
+            if(bool)
             {
                forgeResultAction();
             }
@@ -411,97 +407,93 @@ package store.fineStore.view.pageForge
          }
       }
       
-      private function __onBagUpdate(param1:BagEvent) : void
+      private function __onBagUpdate(e:BagEvent) : void
       {
          updateMaterialCount();
       }
       
       private function updateInfo() : void
       {
-         var _loc1_:int = 0;
-         var _loc3_:FineSuitVo = FineSuitManager.Instance.getFineSuitPropertyByExp(PlayerManager.Instance.Self.fineSuitExp);
-         var _loc2_:Array = [_loc3_.Defence,_loc3_.hp,_loc3_.Luck,_loc3_.Agility,_loc3_.MagicDefence,_loc3_.Armor];
-         _loc1_ = 0;
-         while(_loc1_ < 6)
+         var i:int = 0;
+         var vo:FineSuitVo = FineSuitManager.Instance.getFineSuitPropertyByExp(PlayerManager.Instance.Self.fineSuitExp);
+         var info:Array = [vo.Defence,vo.hp,vo.Luck,vo.Agility,vo.MagicDefence,vo.Armor];
+         for(i = 0; i < 6; )
          {
-            _list[_loc1_].text = _loc2_[_loc1_] < 0?0:_loc2_[_loc1_];
-            _loc1_++;
+            _list[i].text = info[i] < 0?0:info[i];
+            i++;
          }
       }
       
       private function updateInfoOver() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:int = PlayerManager.Instance.Self.fineSuitExp;
-         var _loc2_:FineSuitVo = FineSuitManager.Instance.getNextLevelSuiteVo(_loc1_);
-         if(_loc2_ == null)
+         var i:int = 0;
+         var exp:int = PlayerManager.Instance.Self.fineSuitExp;
+         var nLvVo:FineSuitVo = FineSuitManager.Instance.getNextLevelSuiteVo(exp);
+         if(nLvVo == null)
          {
             return;
          }
-         var _loc6_:FineSuitVo = FineSuitManager.Instance.getFineSuitPropertyByExp(_loc1_);
-         var _loc5_:Array = [_loc6_.Defence,_loc6_.hp,_loc6_.Luck,_loc6_.Agility,_loc6_.MagicDefence,_loc6_.Armor];
-         var _loc4_:Array = [_loc2_.Defence,_loc2_.hp,_loc2_.Luck,_loc2_.Agility,_loc2_.MagicDefence,_loc2_.Armor];
-         _loc3_ = 0;
-         while(_loc3_ < 6)
+         var vo:FineSuitVo = FineSuitManager.Instance.getFineSuitPropertyByExp(exp);
+         var info:Array = [vo.Defence,vo.hp,vo.Luck,vo.Agility,vo.MagicDefence,vo.Armor];
+         var nextLevelInfo:Array = [nLvVo.Defence,nLvVo.hp,nLvVo.Luck,nLvVo.Agility,nLvVo.MagicDefence,nLvVo.Armor];
+         for(i = 0; i < 6; )
          {
-            _list[_loc3_].htmlText = (_loc5_[_loc3_] < 0?0:_loc5_[_loc3_]) + "<font color=\'#ff0000\'>+" + (_loc4_[_loc3_] < 0?0:_loc4_[_loc3_]) + "</font>";
-            _loc3_++;
+            _list[i].htmlText = (info[i] < 0?0:info[i]) + "<font color=\'#ff0000\'>+" + (nextLevelInfo[i] < 0?0:nextLevelInfo[i]) + "</font>";
+            i++;
          }
       }
       
       private function updateSuitExp() : void
       {
-         var _loc1_:int = forgeProgress;
-         _progress.gotoAndStop(_loc1_);
-         _progressText.text = _loc1_ + "%";
+         var exp:int = forgeProgress;
+         _progress.gotoAndStop(exp);
+         _progressText.text = exp + "%";
       }
       
       private function updateMaterialCount() : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc1_:int = 0;
-         var _loc2_:int = needForgeCellId;
-         _loc4_ = 0;
-         while(_loc4_ < _materialList.length)
+         var i:int = 0;
+         var material:* = null;
+         var count:int = 0;
+         var needForgeId:int = needForgeCellId;
+         for(i = 0; i < _materialList.length; )
          {
-            _loc3_ = _materialList[_loc4_] as BagCell;
-            _loc1_ = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(_loc3_.info.TemplateID);
-            _loc3_.setCount(_loc1_);
-            setForgeCellInfo(_loc3_,_loc2_);
-            _loc4_++;
+            material = _materialList[i] as BagCell;
+            count = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(material.info.TemplateID);
+            material.setCount(count);
+            setForgeCellInfo(material,needForgeId);
+            i++;
          }
       }
       
       private function updateCellBgView() : void
       {
-         var _loc6_:int = 0;
-         var _loc4_:* = null;
-         var _loc1_:* = 0;
-         var _loc2_:int = currentIndex;
-         if(_index == _loc2_ && _index != 0)
+         var i:int = 0;
+         var cell:* = null;
+         var cellPhase:* = 0;
+         var index:int = currentIndex;
+         if(_index == index && _index != 0)
          {
             return;
          }
-         _index = _loc2_;
-         var _loc3_:int = FineSuitManager.Instance.getNextSuitVoByExp(PlayerManager.Instance.Self.fineSuitExp).level;
-         var _loc5_:int = (_loc3_ - 1) / 14;
-         _loc6_ = 0;
-         while(_loc6_ < _cell.length)
+         _index = index;
+         var level:int = FineSuitManager.Instance.getNextSuitVoByExp(PlayerManager.Instance.Self.fineSuitExp).level;
+         var levelPhase:int = (level - 1) / 14;
+         for(i = 0; i < _cell.length; )
          {
-            _loc4_ = _cell[_loc6_] as FineForgeCell;
-            if(_loc6_ < _index - 1)
+            cell = _cell[i] as FineForgeCell;
+            if(i < _index - 1)
             {
-               _loc1_ = int(_loc5_ + 1);
+               cellPhase = int(levelPhase + 1);
             }
             else
             {
-               _loc1_ = _loc5_;
+               cellPhase = levelPhase;
             }
-            _loc1_++;
-            _loc4_.bgType = _loc1_ > 6?6:_loc1_;
-            _loc4_.selected = false;
-            _loc6_++;
+            cellPhase++;
+            cell.bgType = cellPhase > 6?6:cellPhase;
+            cell.selected = false;
+            i++;
          }
          if(PlayerManager.Instance.Self.fineSuitExp != FineSuitManager.Instance.getSuitVoByLevel(70).exp)
          {
@@ -511,14 +503,13 @@ package store.fineStore.view.pageForge
       
       private function updateTipsData() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _effectList.length)
+         var i:int = 0;
+         var itemState:int = 0;
+         for(i = 0; i < _effectList.length; )
          {
-            _loc1_ = getforgeEffectState(_loc2_);
-            ForgeEffectItem(_effectList[_loc2_]).updateTipData(_loc1_);
-            _loc2_++;
+            itemState = getforgeEffectState(i);
+            ForgeEffectItem(_effectList[i]).updateTipData(itemState);
+            i++;
          }
       }
       
@@ -529,90 +520,89 @@ package store.fineStore.view.pageForge
       
       private function get currentIndex() : int
       {
-         var _loc1_:int = FineSuitManager.Instance.getNextSuitVoByExp(PlayerManager.Instance.Self.fineSuitExp).level;
-         _loc1_ = _loc1_ % 14;
-         return _loc1_ == 0?14:_loc1_;
+         var level:int = FineSuitManager.Instance.getNextSuitVoByExp(PlayerManager.Instance.Self.fineSuitExp).level;
+         level = level % 14;
+         return level == 0?14:level;
       }
       
       private function get needForgeCellId() : int
       {
-         var _loc1_:int = FineSuitManager.Instance.getNextSuitVoByExp(PlayerManager.Instance.Self.fineSuitExp).materialID;
-         return _loc1_;
+         var id:int = FineSuitManager.Instance.getNextSuitVoByExp(PlayerManager.Instance.Self.fineSuitExp).materialID;
+         return id;
       }
       
-      private function setForgeCellInfo(param1:BagCell, param2:int) : void
+      private function setForgeCellInfo(material:BagCell, id:int) : void
       {
-         if(param1.info.TemplateID != param2)
+         if(material.info.TemplateID != id)
          {
-            param1.grayFilters = true;
-            param1.removeEventListener("click",__onCellClick);
-            param1.removeEventListener("mouseOver",__onCellOver);
-            param1.removeEventListener("mouseOut",__onCellOut);
+            material.grayFilters = true;
+            material.removeEventListener("click",__onCellClick);
+            material.removeEventListener("mouseOver",__onCellOver);
+            material.removeEventListener("mouseOut",__onCellOut);
          }
          else
          {
-            param1.grayFilters = false;
-            param1.buttonMode = true;
-            param1.addEventListener("click",__onCellClick);
-            param1.addEventListener("mouseOver",__onCellOver);
-            param1.addEventListener("mouseOut",__onCellOut);
+            material.grayFilters = false;
+            material.buttonMode = true;
+            material.addEventListener("click",__onCellClick);
+            material.addEventListener("mouseOver",__onCellOver);
+            material.addEventListener("mouseOut",__onCellOut);
          }
       }
       
       private function get forgeProgress() : int
       {
-         var _loc2_:int = PlayerManager.Instance.Self.fineSuitExp;
-         var _loc1_:int = FineSuitManager.Instance.getSuitVoByExp(_loc2_).exp;
-         var _loc3_:int = FineSuitManager.Instance.getNextSuitVoByExp(_loc2_).exp;
-         _progressTips.tipData = _loc2_ - _loc1_ + "/" + (_loc3_ - _loc1_);
-         if(_loc1_ == _loc3_)
+         var exp:int = PlayerManager.Instance.Self.fineSuitExp;
+         var baseExp:int = FineSuitManager.Instance.getSuitVoByExp(exp).exp;
+         var nextExp:int = FineSuitManager.Instance.getNextSuitVoByExp(exp).exp;
+         _progressTips.tipData = exp - baseExp + "/" + (nextExp - baseExp);
+         if(baseExp == nextExp)
          {
             return 100;
          }
-         return int((_loc2_ - _loc1_) / (_loc3_ - _loc1_) * 100);
+         return int((exp - baseExp) / (nextExp - baseExp) * 100);
       }
       
-      private function getforgeEffectState(param1:int) : int
+      private function getforgeEffectState(index:int) : int
       {
-         var _loc2_:int = FineSuitManager.Instance.getNextSuitVoByExp(PlayerManager.Instance.Self.fineSuitExp).level / 14;
-         var _loc3_:int = -1;
-         if(_loc2_ < param1)
+         var level:int = FineSuitManager.Instance.getNextSuitVoByExp(PlayerManager.Instance.Self.fineSuitExp).level / 14;
+         var nRes:int = -1;
+         if(level < index)
          {
-            _loc3_ = 3;
+            nRes = 3;
          }
-         else if(_loc2_ == param1)
+         else if(level == index)
          {
-            _loc3_ = currentIndex == 14?3:2;
+            nRes = currentIndex == 14?3:2;
          }
-         else if(_loc2_ == param1 + 1)
+         else if(level == index + 1)
          {
-            if(_loc2_ == 5 && currentIndex == 14)
+            if(level == 5 && currentIndex == 14)
             {
-               _loc3_ = 1;
+               nRes = 1;
             }
             else
             {
-               _loc3_ = currentIndex == 14?2:1;
+               nRes = currentIndex == 14?2:1;
             }
          }
          else
          {
-            _loc3_ = 1;
+            nRes = 1;
          }
-         return _loc3_;
+         return nRes;
       }
       
       private function getTipsDataListView() : Array
       {
-         var _loc2_:int = 0;
-         var _loc1_:Array = [];
-         _loc2_ = 1;
-         while(_loc2_ <= 5)
+         var i:int = 0;
+         var dataList:Array = [];
+         for(i = 1; i <= 5; )
          {
-            _loc1_.push(FineSuitManager.Instance.getTipsPropertyInfoList(_loc2_,"all"));
-            _loc2_++;
+            dataList.push(FineSuitManager.Instance.getTipsPropertyInfoList(i,"all"));
+            i++;
          }
-         return _loc1_;
+         return dataList;
       }
       
       private function disposeForgeAction() : void
@@ -651,7 +641,7 @@ package store.fineStore.view.pageForge
       
       public function dispose() : void
       {
-         var _loc2_:* = null;
+         var material:* = null;
          disposeProgressAction();
          disposeForgeAction();
          disposeCellAction();
@@ -671,20 +661,20 @@ package store.fineStore.view.pageForge
          ObjectUtils.disposeAllChildren(_effect);
          var _loc4_:int = 0;
          var _loc3_:* = _cell;
-         for each(var _loc1_ in _cell)
+         for each(var cell in _cell)
          {
-            _loc1_.removeEventListener("click",__onClickCell);
-            ObjectUtils.disposeObject(_loc1_);
-            _loc1_ = null;
+            cell.removeEventListener("click",__onClickCell);
+            ObjectUtils.disposeObject(cell);
+            cell = null;
          }
          _cell = null;
          while(_hBox.numChildren)
          {
-            _loc2_ = _hBox.getChildAt(0) as BagCell;
-            _loc2_.removeEventListener("click",__onCellClick);
-            _loc2_.removeEventListener("mouseOver",__onCellOver);
-            _loc2_.removeEventListener("mouseOut",__onCellOut);
-            ObjectUtils.disposeObject(_loc2_);
+            material = _hBox.getChildAt(0) as BagCell;
+            material.removeEventListener("click",__onCellClick);
+            material.removeEventListener("mouseOver",__onCellOver);
+            material.removeEventListener("mouseOut",__onCellOut);
+            ObjectUtils.disposeObject(material);
          }
          _forgeBtn.removeEventListener("click",__onClickForgeBtn);
          _forgeBtn.removeEventListener("rollOver",onMOOver);

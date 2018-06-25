@@ -79,7 +79,7 @@ package superWinner.view
          _light2.visible = false;
       }
       
-      private function frameBar(param1:Event) : void
+      private function frameBar(e:Event) : void
       {
          if(_movie.currentFrame >= 250)
          {

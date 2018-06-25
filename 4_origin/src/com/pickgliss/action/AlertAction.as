@@ -19,14 +19,14 @@ package com.pickgliss.action
       
       private var _center:Boolean;
       
-      public function AlertAction(param1:BaseAlerFrame, param2:int, param3:int, param4:String = null, param5:Boolean = true)
+      public function AlertAction(alert:BaseAlerFrame, layerType:int, blockBackgound:int, soundStr:String = null, center:Boolean = true)
       {
          super();
-         _alert = param1;
-         _layerType = param2;
-         _blockBackgound = param3;
-         _soundStr = param4;
-         _center = param5;
+         _alert = alert;
+         _layerType = layerType;
+         _blockBackgound = blockBackgound;
+         _soundStr = soundStr;
+         _center = center;
       }
       
       override public function act() : void

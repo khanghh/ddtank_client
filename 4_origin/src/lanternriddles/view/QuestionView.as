@@ -66,8 +66,8 @@ package lanternriddles.view
       
       private function initView() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:int = 0;
+         var select:* = null;
+         var i:int = 0;
          _questionTitle = ComponentFactory.Instance.creatComponentByStylename("lantern.view.questionTitle");
          _questionTitle.text = LanguageMgr.GetTranslation("lanternRiddles.view.questionTitleText");
          addChild(_questionTitle);
@@ -80,17 +80,16 @@ package lanternriddles.view
          addChild(_question);
          _question2 = ComponentFactory.Instance.creatComponentByStylename("lantern.view.question2");
          addChild(_question2);
-         _loc2_ = 0;
-         while(_loc2_ < SELECT_NUM)
+         for(i = 0; i < SELECT_NUM; )
          {
-            _loc1_ = ComponentFactory.Instance.creatComponentByStylename("lantern.view.selectMovie");
-            _loc1_.buttonMode = true;
-            _loc1_.movie.gotoAndStop(1);
-            _loc1_.addEventListener("click",__onSelectClick);
-            PositionUtils.setPos(_loc1_,"lantern.view.selectPos" + _loc2_);
-            addChild(_loc1_);
-            _selectVec.push(_loc1_);
-            _loc2_++;
+            select = ComponentFactory.Instance.creatComponentByStylename("lantern.view.selectMovie");
+            select.buttonMode = true;
+            select.movie.gotoAndStop(1);
+            select.addEventListener("click",__onSelectClick);
+            PositionUtils.setPos(select,"lantern.view.selectPos" + i);
+            addChild(select);
+            _selectVec.push(select);
+            i++;
          }
       }
       
@@ -99,18 +98,18 @@ package lanternriddles.view
          LanternRiddlesManager.instance.addEventListener("lanternRiddles_answer",__onAnswerResult);
       }
       
-      protected function __onAnswerResult(param1:CrazyTankSocketEvent) : void
+      protected function __onAnswerResult(event:CrazyTankSocketEvent) : void
       {
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc3_:Boolean = _loc4_.readBoolean();
-         var _loc2_:Boolean = _loc4_.readBoolean();
-         var _loc6_:int = _loc4_.readInt();
-         var _loc5_:String = _loc4_.readUTF();
-         if(_loc2_)
+         var pkg:PackageIn = event.pkg;
+         var correct:Boolean = pkg.readBoolean();
+         var hitFlag:Boolean = pkg.readBoolean();
+         var option:int = pkg.readInt();
+         var msg:String = pkg.readUTF();
+         if(hitFlag)
          {
-            setAnswerFlag(_loc6_);
+            setAnswerFlag(option);
          }
-         if(_loc3_)
+         if(correct)
          {
             _resultMovie = ComponentFactory.Instance.creat("lantern.view.correctMovie");
          }
@@ -120,13 +119,13 @@ package lanternriddles.view
          }
          LayerManager.Instance.addToLayer(_resultMovie,0,false,1);
          _resultMovie.movie["result"]["awardText"].autoSize = "center";
-         _resultMovie.movie["result"]["awardText"].text = _loc5_;
+         _resultMovie.movie["result"]["awardText"].text = msg;
          _resultMovie.x = (StageReferance.stage.stageWidth - _resultMovie.width) / 2;
          _resultMovie.y = 290;
          addEventListener("enterFrame",__onEnterFrame);
       }
       
-      protected function __onEnterFrame(param1:Event) : void
+      protected function __onEnterFrame(event:Event) : void
       {
          if(_resultMovie && _resultMovie.parent && _resultMovie.movie.currentFrame == 40)
          {
@@ -137,29 +136,29 @@ package lanternriddles.view
          }
       }
       
-      public function set info(param1:LanternInfo) : void
+      public function set info(info:LanternInfo) : void
       {
-         _info = param1;
+         _info = info;
          setQuestionCount(_info.QuestionIndex);
-         setQuestionInfo(param1);
+         setQuestionInfo(info);
          setCDTime(_info.EndDate);
          setAnswerFlag(_info.Option);
       }
       
-      private function setQuestionCount(param1:int) : void
+      private function setQuestionCount(index:int) : void
       {
-         _questionCount.text = param1.toString() + "/" + _count.toString();
+         _questionCount.text = index.toString() + "/" + _count.toString();
       }
       
-      private function setQuestionInfo(param1:LanternInfo) : void
+      private function setQuestionInfo(info:LanternInfo) : void
       {
-         _question.text = param1.QuestionContent;
-         _question2.text = LanguageMgr.GetTranslation("lanternRiddles.view.questionText","\n",param1.Option1,param1.Option2,param1.Option3,param1.Option4);
+         _question.text = info.QuestionContent;
+         _question2.text = LanguageMgr.GetTranslation("lanternRiddles.view.questionText","\n",info.Option1,info.Option2,info.Option3,info.Option4);
       }
       
-      private function setCDTime(param1:Date) : void
+      private function setCDTime(date:Date) : void
       {
-         _countDownTime = param1.time - TimeManager.Instance.Now().time;
+         _countDownTime = date.time - TimeManager.Instance.Now().time;
          if(_countDownTime > 0)
          {
             _countDownTime = _countDownTime / 1000;
@@ -183,7 +182,7 @@ package lanternriddles.view
          }
       }
       
-      protected function __onTimer(param1:TimerEvent) : void
+      protected function __onTimer(event:TimerEvent) : void
       {
          _countDownTime = Number(_countDownTime) - 1;
          if(_countDownTime < 0)
@@ -199,58 +198,56 @@ package lanternriddles.view
          }
       }
       
-      private function transSecond(param1:Number) : String
+      private function transSecond(num:Number) : String
       {
-         return (String("0" + Math.floor(param1 % 60))).substr(-2);
+         return (String("0" + Math.floor(num % 60))).substr(-2);
       }
       
-      protected function __onSelectClick(param1:MouseEvent) : void
+      protected function __onSelectClick(event:MouseEvent) : void
       {
-         var _loc3_:int = 0;
+         var i:int = 0;
          SoundManager.instance.playButtonSound();
-         var _loc2_:MovieImage = param1.currentTarget as MovieImage;
-         _loc3_ = 0;
-         while(_loc3_ < _selectVec.length)
+         var select:MovieImage = event.currentTarget as MovieImage;
+         for(i = 0; i < _selectVec.length; )
          {
-            if(_loc2_ == _selectVec[_loc3_])
+            if(select == _selectVec[i])
             {
-               _selectVec[_loc3_].movie.gotoAndStop(2);
-               _info.Option = _loc3_ + 1;
+               _selectVec[i].movie.gotoAndStop(2);
+               _info.Option = i + 1;
                SocketManager.Instance.out.sendLanternRiddlesAnswer(_info.QuestionID,_info.QuestionIndex,_info.Option);
             }
-            _selectVec[_loc3_].filters = _grayFilters;
-            _selectVec[_loc3_].removeEventListener("click",__onSelectClick);
-            _loc3_++;
+            _selectVec[i].filters = _grayFilters;
+            _selectVec[i].removeEventListener("click",__onSelectClick);
+            i++;
          }
       }
       
-      private function setAnswerFlag(param1:int) : void
+      private function setAnswerFlag(option:int) : void
       {
-         if(param1 > 0)
+         if(option > 0)
          {
             setSelectBtnEnable(false);
-            _selectVec[param1 - 1].movie.gotoAndStop(2);
+            _selectVec[option - 1].movie.gotoAndStop(2);
          }
       }
       
-      public function setSelectBtnEnable(param1:Boolean) : void
+      public function setSelectBtnEnable(flag:Boolean) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _selectVec.length)
+         var i:int = 0;
+         for(i = 0; i < _selectVec.length; )
          {
-            _selectVec[_loc2_].movie.gotoAndStop(1);
-            if(param1)
+            _selectVec[i].movie.gotoAndStop(1);
+            if(flag)
             {
-               _selectVec[_loc2_].filters = null;
-               _selectVec[_loc2_].addEventListener("click",__onSelectClick);
+               _selectVec[i].filters = null;
+               _selectVec[i].addEventListener("click",__onSelectClick);
             }
             else
             {
-               _selectVec[_loc2_].filters = _grayFilters;
-               _selectVec[_loc2_].removeEventListener("click",__onSelectClick);
+               _selectVec[i].filters = _grayFilters;
+               _selectVec[i].removeEventListener("click",__onSelectClick);
             }
-            _loc2_++;
+            i++;
          }
       }
       
@@ -261,7 +258,7 @@ package lanternriddles.view
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          removeEvent();
          if(_questionTitle)
          {
@@ -297,13 +294,12 @@ package lanternriddles.view
          }
          if(_selectVec)
          {
-            _loc1_ = 0;
-            while(_loc1_ < _selectVec.length)
+            for(i = 0; i < _selectVec.length; )
             {
-               _selectVec[_loc1_].removeEventListener("click",__onSelectClick);
-               _selectVec[_loc1_].dispose();
-               _selectVec[_loc1_] = null;
-               _loc1_++;
+               _selectVec[i].removeEventListener("click",__onSelectClick);
+               _selectVec[i].dispose();
+               _selectVec[i] = null;
+               i++;
             }
             _selectVec.length = 0;
             _selectVec = null;
@@ -314,9 +310,9 @@ package lanternriddles.view
          }
       }
       
-      public function set count(param1:int) : void
+      public function set count(value:int) : void
       {
-         _count = param1;
+         _count = value;
       }
       
       public function get info() : LanternInfo

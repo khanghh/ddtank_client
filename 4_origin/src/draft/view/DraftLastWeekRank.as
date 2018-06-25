@@ -39,39 +39,38 @@ package draft.view
       
       private function initData() : void
       {
-         var _loc2_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         _loc2_["page"] = 1;
-         _loc2_["size"] = 5;
-         _loc2_["isOrder"] = false;
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("GetBeautyVoteList.ashx"),7,_loc2_);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("tank.draft.loadDraftInfoError");
-         _loc1_.analyzer = new DraftListAnalyzer(getDraftPlayerInfo);
-         LoadResourceManager.Instance.startLoad(_loc1_);
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         args["page"] = 1;
+         args["size"] = 5;
+         args["isOrder"] = false;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("GetBeautyVoteList.ashx"),7,args);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("tank.draft.loadDraftInfoError");
+         loader.analyzer = new DraftListAnalyzer(getDraftPlayerInfo);
+         LoadResourceManager.Instance.startLoad(loader);
       }
       
-      private function getDraftPlayerInfo(param1:DraftListAnalyzer) : void
+      private function getDraftPlayerInfo(analyzer:DraftListAnalyzer) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:int = _playerVec.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var i:int = 0;
+         var player:* = null;
+         var count:int = _playerVec.length;
+         for(i = 0; i < count; )
          {
-            _loc2_ = new DraftPlayer();
-            PositionUtils.setPos(_loc2_,"lastRankView.player.Pos" + _loc4_);
-            if(_loc4_ < param1.draftInfoVec.length)
+            player = new DraftPlayer();
+            PositionUtils.setPos(player,"lastRankView.player.Pos" + i);
+            if(i < analyzer.draftInfoVec.length)
             {
-               param1.draftInfoVec[_loc4_].rank = _loc4_ + 1;
-               _loc2_.drafInfo = param1.draftInfoVec[_loc4_];
+               analyzer.draftInfoVec[i].rank = i + 1;
+               player.drafInfo = analyzer.draftInfoVec[i];
             }
             else
             {
-               _loc2_.drafInfo = null;
+               player.drafInfo = null;
             }
-            _loc2_.hideNotNeed(false);
-            _playerVec[_loc4_] = _loc2_;
-            addChild(_playerVec[_loc4_]);
-            _loc4_++;
+            player.hideNotNeed(false);
+            _playerVec[i] = player;
+            addChild(_playerVec[i]);
+            i++;
          }
       }
       
@@ -90,15 +89,15 @@ package draft.view
          _closeBtn.addEventListener("click",__onCloseClick);
       }
       
-      protected function __onResponse(param1:KeyboardEvent) : void
+      protected function __onResponse(event:KeyboardEvent) : void
       {
-         if(param1.keyCode == 27)
+         if(event.keyCode == 27)
          {
             __onCloseClick(null);
          }
       }
       
-      protected function __onCloseClick(param1:MouseEvent) : void
+      protected function __onCloseClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          dispose();
@@ -106,14 +105,13 @@ package draft.view
       
       private function deletePlayer() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = _playerVec.length;
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_)
+         var i:int = 0;
+         var count:int = _playerVec.length;
+         for(i = 0; i < count; )
          {
-            ObjectUtils.disposeObject(_playerVec[_loc2_]);
-            _playerVec[_loc2_] = null;
-            _loc2_++;
+            ObjectUtils.disposeObject(_playerVec[i]);
+            _playerVec[i] = null;
+            i++;
          }
          _playerVec.length = 0;
          _playerVec = null;

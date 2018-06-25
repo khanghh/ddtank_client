@@ -44,9 +44,9 @@ package quest
          addChild(_panel);
       }
       
-      public function set info(param1:QuestInfo) : void
+      public function set info(value:QuestInfo) : void
       {
-         _info = param1;
+         _info = value;
       }
       
       public function dispose() : void

@@ -56,7 +56,7 @@ package godCardRaise.view
          _numberSelecter.addEventListener("change",__numberSelecterHandler);
       }
       
-      private function __numberSelecterHandler(param1:Event) : void
+      private function __numberSelecterHandler(event:Event) : void
       {
          if(_type == 1)
          {
@@ -68,9 +68,9 @@ package godCardRaise.view
          }
       }
       
-      public function set setType(param1:int) : void
+      public function set setType($type:int) : void
       {
-         _type = param1;
+         _type = $type;
          if(_type == 1)
          {
             _contentTxt.text = LanguageMgr.GetTranslation("godCardRaiseAtlasCard.smashMsg1");
@@ -83,9 +83,9 @@ package godCardRaise.view
          }
       }
       
-      public function set setInfo(param1:GodCardListInfo) : void
+      public function set setInfo($info:GodCardListInfo) : void
       {
-         _godCardListInfo = param1;
+         _godCardListInfo = $info;
       }
       
       public function show() : void
@@ -98,9 +98,9 @@ package godCardRaise.view
          return _numberSelecter.currentValue;
       }
       
-      public function set valueLimit(param1:String) : void
+      public function set valueLimit(value:String) : void
       {
-         _numberSelecter.valueLimit = param1;
+         _numberSelecter.valueLimit = value;
       }
       
       private function removeEvent() : void

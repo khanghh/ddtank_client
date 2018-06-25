@@ -26,10 +26,10 @@ package collectionTask.vo
       
       private var _isRobert:Boolean;
       
-      public function PlayerVO(param1:IEventDispatcher = null)
+      public function PlayerVO(target:IEventDispatcher = null)
       {
          _walkPath = [];
-         super(param1);
+         super(target);
          _sceneCharacterDirection = SceneCharacterDirection.RB;
       }
       
@@ -42,9 +42,9 @@ package collectionTask.vo
          return _sceneCharacterDirection;
       }
       
-      public function set scenePlayerDirection(param1:SceneCharacterDirection) : void
+      public function set scenePlayerDirection(value:SceneCharacterDirection) : void
       {
-         _sceneCharacterDirection = param1;
+         _sceneCharacterDirection = value;
          var _loc2_:* = _sceneCharacterDirection;
          if(SceneCharacterDirection.RT !== _loc2_)
          {
@@ -78,9 +78,9 @@ package collectionTask.vo
          return _playerPos;
       }
       
-      public function set playerPos(param1:Point) : void
+      public function set playerPos(value:Point) : void
       {
-         _playerPos = param1;
+         _playerPos = value;
       }
       
       public function get playerMoveSpeed() : Number
@@ -88,9 +88,9 @@ package collectionTask.vo
          return _playerMoveSpeed;
       }
       
-      public function set playerMoveSpeed(param1:Number) : void
+      public function set playerMoveSpeed(value:Number) : void
       {
-         _playerMoveSpeed = param1;
+         _playerMoveSpeed = value;
       }
       
       public function get playerInfo() : PlayerInfo
@@ -98,9 +98,9 @@ package collectionTask.vo
          return _playerInfo;
       }
       
-      public function set playerInfo(param1:PlayerInfo) : void
+      public function set playerInfo(value:PlayerInfo) : void
       {
-         _playerInfo = param1;
+         _playerInfo = value;
       }
       
       public function get walkPath() : Array
@@ -108,9 +108,9 @@ package collectionTask.vo
          return _walkPath;
       }
       
-      public function set walkPath(param1:Array) : void
+      public function set walkPath(value:Array) : void
       {
-         _walkPath = param1;
+         _walkPath = value;
       }
       
       public function dispose() : void
@@ -129,9 +129,9 @@ package collectionTask.vo
          return _isRobert;
       }
       
-      public function set isRobert(param1:Boolean) : void
+      public function set isRobert(value:Boolean) : void
       {
-         _isRobert = param1;
+         _isRobert = value;
       }
    }
 }

@@ -32,14 +32,14 @@ package sevenDayTarget.view
          addChild(_itemNum);
       }
       
-      public function set info(param1:ItemTemplateInfo) : void
+      public function set info(value:ItemTemplateInfo) : void
       {
-         cell.info = param1;
+         cell.info = value;
       }
       
-      public function set itemNum(param1:String) : void
+      public function set itemNum(name:String) : void
       {
-         _itemNum.text = param1;
+         _itemNum.text = name;
       }
       
       public function dispose() : void

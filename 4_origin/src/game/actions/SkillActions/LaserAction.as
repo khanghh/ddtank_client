@@ -45,42 +45,42 @@ package game.actions.SkillActions
       
       private var _info:Bomb;
       
-      public function LaserAction(param1:Living, param2:MapView, param3:Bomb, param4:int, param5:Number)
+      public function LaserAction(living:Living, map:MapView, info:Bomb, angle:int, length:Number)
       {
          super();
-         _living = param1;
-         _map = param2;
-         _info = param3;
-         _angle = param4;
-         _length = param5;
+         _living = living;
+         _map = map;
+         _info = info;
+         _angle = angle;
+         _length = length;
       }
       
       override public function prepare() : void
       {
-         var _loc2_:int = 0;
+         var dis:int = 0;
          if(_isPrepare)
          {
             return;
          }
          _isPrepare = true;
          _laserMovie = new MovieClipWrapper(BallManager.instance.createBulletMovie(_info.Template.ID));
-         var _loc1_:MovieClip = _laserMovie.movie.getChildByName("beam") as MovieClip;
-         if(_loc1_)
+         var beamMovie:MovieClip = _laserMovie.movie.getChildByName("beam") as MovieClip;
+         if(beamMovie)
          {
-            _loc1_.width = _length;
+            beamMovie.width = _length;
          }
-         var _loc3_:int = 0;
+         var angle:int = 0;
          if(_living.direction == -1)
          {
-            _loc3_ = 180 + _angle;
+            angle = 180 + _angle;
             _laserMovie.movie.scaleX = -1;
          }
          else
          {
-            _loc3_ = _angle;
+            angle = _angle;
             _laserMovie.movie.scaleX = 1;
          }
-         _laserMovie.movie.rotation = _loc3_;
+         _laserMovie.movie.rotation = angle;
          if(_living is Player)
          {
             if(_living.direction == 1)
@@ -115,11 +115,11 @@ package game.actions.SkillActions
          }
       }
       
-      private function __laserFrame(param1:Event) : void
+      private function __laserFrame(event:Event) : void
       {
       }
       
-      private function __movieComplete(param1:Event) : void
+      private function __movieComplete(event:Event) : void
       {
          _laserMovie.removeEventListener("complete",__movieComplete);
          _laserMovie.movie.removeEventListener("enterFrame",__laserFrame);

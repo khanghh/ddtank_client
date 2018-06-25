@@ -63,11 +63,11 @@ package newTitle.view
       {
       }
       
-      public function setListCellStatus(param1:List, param2:Boolean, param3:int) : void
+      public function setListCellStatus(list:List, isSelected:Boolean, index:int) : void
       {
-         _index = param3;
-         _titleBg.setFrame(param3 % 2 + 1);
-         _shine.visible = param2;
+         _index = index;
+         _titleBg.setFrame(index % 2 + 1);
+         _shine.visible = isSelected;
       }
       
       public function getCellValue() : *
@@ -75,9 +75,9 @@ package newTitle.view
          return _info;
       }
       
-      public function setCellValue(param1:*) : void
+      public function setCellValue(value:*) : void
       {
-         _info = param1;
+         _info = value;
          _titleName.text = String(_info);
       }
       

@@ -100,10 +100,10 @@ package bagAndInfo.bag
          addToContent(_stoneCell);
          _num = 1;
          _numText.text = "1";
-         var _loc1_:int = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(11160);
+         var Count:int = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(11160);
          if(_stoneInfo)
          {
-            _stoneCell.setCount(_loc1_);
+            _stoneCell.setCount(Count);
          }
          initEvent();
          updateView();
@@ -127,33 +127,33 @@ package bagAndInfo.bag
          _maxBtn.removeEventListener("click",__onMax);
       }
       
-      protected function __onMax(param1:MouseEvent) : void
+      protected function __onMax(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:int = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(11160);
+         var Count:int = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(11160);
          if(_stoneInfo)
          {
-            _numText.text = String(_loc2_);
-            _num = _loc2_;
+            _numText.text = String(Count);
+            _num = Count;
          }
       }
       
-      protected function __updateInfo(param1:PlayerPropertyEvent) : void
+      protected function __updateInfo(event:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["necklaceExp"] || param1.changedProperties["necklaceExpAdd"])
+         if(event.changedProperties["necklaceExp"] || event.changedProperties["necklaceExpAdd"])
          {
             updateView();
          }
       }
       
-      protected function __onInput(param1:Event) : void
+      protected function __onInput(event:Event) : void
       {
          number = int(_numText.text);
       }
       
-      protected function __onFrameEvent(param1:FrameEvent) : void
+      protected function __onFrameEvent(event:FrameEvent) : void
       {
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         if(event.responseCode == 2 || event.responseCode == 3)
          {
             SoundManager.instance.playButtonSound();
             if(PlayerManager.Instance.Self.bagLocked)
@@ -187,12 +187,12 @@ package bagAndInfo.bag
          return true;
       }
       
-      protected function __onBagUpdate(param1:BagEvent) : void
+      protected function __onBagUpdate(event:BagEvent) : void
       {
-         var _loc2_:int = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(11160);
+         var Count:int = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(11160);
          if(_stoneInfo)
          {
-            _stoneCell.setCount(_loc2_);
+            _stoneCell.setCount(Count);
          }
          else
          {
@@ -206,61 +206,61 @@ package bagAndInfo.bag
          LayerManager.Instance.addToLayer(this,3,true,1);
       }
       
-      public function set number(param1:int) : void
+      public function set number(value:int) : void
       {
-         var _loc2_:int = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(11160);
-         if(param1 < _minNum)
+         var Count:int = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(11160);
+         if(value < _minNum)
          {
-            param1 = int(_minNum);
+            value = int(_minNum);
          }
-         else if(param1 > _maxNum)
+         else if(value > _maxNum)
          {
-            param1 = int(_maxNum);
+            value = int(_maxNum);
          }
-         if(param1 > _loc2_)
+         if(value > Count)
          {
-            param1 = _loc2_;
+            value = Count;
          }
-         _num = param1;
+         _num = value;
          updateView();
          dispatchEvent(new Event("change"));
       }
       
       private function updateView() : void
       {
-         var _loc4_:int = 0;
-         var _loc1_:int = PlayerManager.Instance.Self.necklaceExp;
-         var _loc3_:int = PlayerManager.Instance.Self.necklaceExpAdd;
-         var _loc6_:int = PlayerManager.Instance.Self.necklaceLevel;
+         var nextNecklaceStrengthPlus:int = 0;
+         var necklaceExp:int = PlayerManager.Instance.Self.necklaceExp;
+         var necklaceExpAdd:int = PlayerManager.Instance.Self.necklaceExpAdd;
+         var necklaceLevel:int = PlayerManager.Instance.Self.necklaceLevel;
          _numText.text = _num.toString();
-         _expText.text = String(_loc3_);
-         _levelText.text = "Lv. " + _loc6_.toString();
-         var _loc5_:int = StoreEquipExperience.getNecklaceStrengthPlus(_loc6_);
-         _currentLevel.text = LanguageMgr.GetTranslation("bagAndInfo.bag.NecklacePtetrochemicalView.info",_loc5_);
-         if(_loc6_ < StoreEquipExperience.NECKLACE_MAX_LEVEL)
+         _expText.text = String(necklaceExpAdd);
+         _levelText.text = "Lv. " + necklaceLevel.toString();
+         var necklaceStrengthPlus:int = StoreEquipExperience.getNecklaceStrengthPlus(necklaceLevel);
+         _currentLevel.text = LanguageMgr.GetTranslation("bagAndInfo.bag.NecklacePtetrochemicalView.info",necklaceStrengthPlus);
+         if(necklaceLevel < StoreEquipExperience.NECKLACE_MAX_LEVEL)
          {
-            _loc4_ = StoreEquipExperience.getNecklaceStrengthPlus(_loc6_ + 1);
-            _nextLevel.text = LanguageMgr.GetTranslation("bagAndInfo.bag.NecklacePtetrochemicalView.info",_loc4_);
+            nextNecklaceStrengthPlus = StoreEquipExperience.getNecklaceStrengthPlus(necklaceLevel + 1);
+            _nextLevel.text = LanguageMgr.GetTranslation("bagAndInfo.bag.NecklacePtetrochemicalView.info",nextNecklaceStrengthPlus);
          }
          else
          {
             _nextLevel.text = LanguageMgr.GetTranslation("bagAndInfo.bag.NecklacePtetrochemicalView.infoII");
          }
-         if(_loc6_ < StoreEquipExperience.NECKLACE_MAX_LEVEL)
+         if(necklaceLevel < StoreEquipExperience.NECKLACE_MAX_LEVEL)
          {
-            _progress.setProgress(StoreEquipExperience.getNecklaceCurrentlevelExp(_loc1_),StoreEquipExperience.getNecklaceCurrentlevelMaxExp(_loc6_));
+            _progress.setProgress(StoreEquipExperience.getNecklaceCurrentlevelExp(necklaceExp),StoreEquipExperience.getNecklaceCurrentlevelMaxExp(necklaceLevel));
          }
          else
          {
             _progress.setProgress(1,1);
          }
-         var _loc2_:int = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(11160);
-         if(_num > _loc2_)
+         var Count:int = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(11160);
+         if(_num > Count)
          {
             if(_stoneInfo)
             {
-               _numText.text = String(_loc2_);
-               _num = _loc2_;
+               _numText.text = String(Count);
+               _num = Count;
             }
          }
       }

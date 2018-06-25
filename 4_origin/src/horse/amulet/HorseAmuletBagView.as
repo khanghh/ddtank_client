@@ -41,41 +41,41 @@ package horse.amulet
          super();
       }
       
-      override public function setBagType(param1:int) : void
+      override public function setBagType(type:int) : void
       {
          _bagType = 42;
       }
       
-      private function __onClickSmashAll(param1:MouseEvent) : void
+      private function __onClickSmashAll(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc3_:Array = _listBag.getAllEnableSmashPlaceList();
-         var _loc4_:Boolean = _loc3_.pop();
-         if(_loc3_.length <= 0)
+         var list:Array = _listBag.getAllEnableSmashPlaceList();
+         var isConfirm:Boolean = list.pop();
+         if(list.length <= 0)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.horseAmulet.smashFail"));
             return;
          }
-         var _loc2_:HorseAmuletSmashAlert = ComponentFactory.Instance.creatComponentByStylename("horseAmulet.smashFrame");
-         _loc2_.show(_loc3_,_loc4_);
-         _loc2_.addEventListener("response",__onConfirmResponse);
-         _listBag.lockCellByPlace(true,_loc3_);
+         var frame:HorseAmuletSmashAlert = ComponentFactory.Instance.creatComponentByStylename("horseAmulet.smashFrame");
+         frame.show(list,isConfirm);
+         frame.addEventListener("response",__onConfirmResponse);
+         _listBag.lockCellByPlace(true,list);
       }
       
-      private function __onConfirmResponse(param1:FrameEvent) : void
+      private function __onConfirmResponse(event:FrameEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:HorseAmuletSmashAlert = param1.currentTarget as HorseAmuletSmashAlert;
-         _loc2_.removeEventListener("response",__onConfirmResponse);
-         _listBag.lockCellByPlace(false,_loc2_.placeList);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var alertInfo:HorseAmuletSmashAlert = event.currentTarget as HorseAmuletSmashAlert;
+         alertInfo.removeEventListener("response",__onConfirmResponse);
+         _listBag.lockCellByPlace(false,alertInfo.placeList);
+         if(event.responseCode == 3 || event.responseCode == 2)
          {
-            SocketManager.Instance.out.sendAmuletSmash(_loc2_.placeList);
+            SocketManager.Instance.out.sendAmuletSmash(alertInfo.placeList);
          }
-         ObjectUtils.disposeObject(_loc2_);
+         ObjectUtils.disposeObject(alertInfo);
       }
       
-      private function __onClickEquip(param1:MouseEvent) : void
+      private function __onClickEquip(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          HorseAmuletManager.instance.viewType = 1;
@@ -83,7 +83,7 @@ package horse.amulet
          _activateBtn.visible = true;
       }
       
-      private function __onClickActivate(param1:MouseEvent) : void
+      private function __onClickActivate(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          HorseAmuletManager.instance.viewType = 2;
@@ -91,13 +91,13 @@ package horse.amulet
          _activateBtn.visible = false;
       }
       
-      private function __onChangePage(param1:Event) : void
+      private function __onChangePage(e:Event) : void
       {
-         var _loc2_:int = _selectPage.currentPage;
-         _listBag.currentPage = _loc2_;
+         var index:int = _selectPage.currentPage;
+         _listBag.currentPage = index;
       }
       
-      override protected function __sortBagClick(param1:MouseEvent) : void
+      override protected function __sortBagClick(evt:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.bagLocked)
@@ -149,11 +149,11 @@ package horse.amulet
       {
       }
       
-      override protected function __bagArrangeOver(param1:MouseEvent) : void
+      override protected function __bagArrangeOver(evt:MouseEvent) : void
       {
       }
       
-      override protected function __bagArrangeOut(param1:MouseEvent) : void
+      override protected function __bagArrangeOut(event:MouseEvent) : void
       {
       }
       
@@ -187,13 +187,13 @@ package horse.amulet
          super.removeEvents();
       }
       
-      override protected function __cellClick(param1:CellEvent) : void
+      override protected function __cellClick(evt:CellEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:HorseAmuletCell = param1.data as HorseAmuletCell;
-         if(_loc2_.info)
+         var cell:HorseAmuletCell = evt.data as HorseAmuletCell;
+         if(cell.info)
          {
-            _loc2_.dragStart();
+            cell.dragStart();
          }
       }
       

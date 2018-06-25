@@ -31,7 +31,7 @@ package bones.loader
       
       private var _texture2BoneVoMap:Dictionary;
       
-      public function BonesLoaderManager(param1:BonesLoaderMnagerEnforcer)
+      public function BonesLoaderManager(enforcer:BonesLoaderMnagerEnforcer)
       {
          super();
          _loading = new DictionaryData();
@@ -48,71 +48,71 @@ package bones.loader
          return _instance;
       }
       
-      public function startLoader(param1:String, param2:int = 0, param3:String = "default") : void
+      public function startLoader(styleName:String, useType:int = 0, module:String = "default") : void
       {
-         var _loc4_:* = null;
-         var _loc5_:* = null;
-         var _loc6_:BoneVo = BoneMovieFactory.instance.model.getBonesStyle(param1);
-         if(_loc6_ == null)
+         var error:* = null;
+         var loader:* = null;
+         var vo:BoneVo = BoneMovieFactory.instance.model.getBonesStyle(styleName);
+         if(vo == null)
          {
-            _loc4_ = new Error("未找到\'" + param1 + "\'的配置，请检查!");
-            throw _loc4_;
+            error = new Error("未找到\'" + styleName + "\'的配置，请检查!");
+            throw error;
          }
-         _loc6_.useType = param2;
-         if(BoneMovieFactory.instance.hasBoneMovie(_loc6_.styleName))
+         vo.useType = useType;
+         if(BoneMovieFactory.instance.hasBoneMovie(vo.styleName))
          {
-            dispatchEvent(new BonesLoaderEvent("complete",_loc6_));
+            dispatchEvent(new BonesLoaderEvent("complete",vo));
          }
          else
          {
-            _loc5_ = new BonesResourceLoader(_loc6_);
-            _loc5_.module = param3;
-            _loc5_.addEventListener("complete",__onLoadBoneComplete);
-            _boneList.push(_loc5_);
-            _loc5_.load();
+            loader = new BonesResourceLoader(vo);
+            loader.module = module;
+            loader.addEventListener("complete",__onLoadBoneComplete);
+            _boneList.push(loader);
+            loader.load();
          }
       }
       
-      public function startLoaderByAtlas(param1:String, param2:String = "default") : void
+      public function startLoaderByAtlas(atlasName:String, module:String = "default") : void
       {
-         var _loc3_:* = null;
-         var _loc4_:BoneVo = BoneMovieFactory.instance.model.getBoneVoListByAtlasName(param1)[0];
-         if(!BoneMovieFactory.instance.checkTextureAtlas(param1,_loc4_.useType))
+         var loader:* = null;
+         var vo:BoneVo = BoneMovieFactory.instance.model.getBoneVoListByAtlasName(atlasName)[0];
+         if(!BoneMovieFactory.instance.checkTextureAtlas(atlasName,vo.useType))
          {
-            _loc3_ = new BonesResourceLoader(_loc4_);
-            _loc3_.module = param2;
-            _loc3_.addEventListener("complete",__onLoadBoneComplete);
-            _boneList.push(_loc3_);
-            _loc3_.load();
+            loader = new BonesResourceLoader(vo);
+            loader.module = module;
+            loader.addEventListener("complete",__onLoadBoneComplete);
+            _boneList.push(loader);
+            loader.load();
          }
       }
       
-      private function __onLoadBoneComplete(param1:Event) : void
+      private function __onLoadBoneComplete(e:Event) : void
       {
-         var _loc2_:BonesResourceLoader = param1.currentTarget as BonesResourceLoader;
-         if(BoneMovieFactory.instance.hasBoneMovie(_loc2_.vo.styleName))
+         var loader:BonesResourceLoader = e.currentTarget as BonesResourceLoader;
+         if(BoneMovieFactory.instance.hasBoneMovie(loader.vo.styleName))
          {
-            dispatchEvent(new BonesLoaderEvent("complete",_loc2_.vo));
-            _loc2_.removeEventListener("complete",__onLoadBoneComplete);
-            _loc2_.dispose();
+            dispatchEvent(new BonesLoaderEvent("complete",loader.vo));
+            loader.removeEventListener("complete",__onLoadBoneComplete);
+            loader.dispose();
          }
          else
          {
-            analysisLoader(_loc2_);
-            checkBoneListComplete(_loc2_.vo);
+            analysisLoader(loader);
+            checkBoneListComplete(loader.vo);
          }
       }
       
-      private function analysisLoader(param1:BonesResourceLoader) : void
+      private function analysisLoader(loader:BonesResourceLoader) : void
       {
-         loader = param1;
+         loader = loader;
          if(loader.vo.useType == 0 || loader.vo.useType == 2)
          {
             var texture:Texture = Texture.fromBitmap(loader.image,false);
             _texture2BoneVoMap[texture] = loader.vo;
             texture.root.onRestore = function():void
             {
-               onLoadBoneComplete = function(param1:Event):void
+               onLoadBoneComplete = function(e:Event):void
                {
                   restoreBonesResourceLoader.removeEventListener("complete",onLoadBoneComplete);
                   texture.root.uploadBitmap(restoreBonesResourceLoader.image);
@@ -148,70 +148,68 @@ package bones.loader
          }
       }
       
-      private function checkBoneListComplete(param1:BoneVo) : void
+      private function checkBoneListComplete(vo:BoneVo) : void
       {
-         var _loc6_:int = 0;
-         var _loc3_:* = null;
-         var _loc5_:int = 0;
-         var _loc2_:int = 0;
-         var _loc4_:Array = [];
-         _loc6_ = 0;
-         while(_loc6_ < _boneList.length)
+         var i:int = 0;
+         var loader:* = null;
+         var j:int = 0;
+         var index:int = 0;
+         var list:Array = [];
+         for(i = 0; i < _boneList.length; )
          {
-            _loc3_ = _boneList[_loc6_] as BonesResourceLoader;
-            if(param1.atlasName == _loc3_.vo.atlasName)
+            loader = _boneList[i] as BonesResourceLoader;
+            if(vo.atlasName == loader.vo.atlasName)
             {
-               _loc4_.push(_loc3_);
-               _loc3_.loaderComplete();
+               list.push(loader);
+               loader.loaderComplete();
             }
-            _loc6_++;
+            i++;
          }
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_.length)
+         for(j = 0; j < list.length; )
          {
-            _loc2_ = _boneList.indexOf(_loc4_[_loc5_]);
-            if(_loc2_ != -1)
+            index = _boneList.indexOf(list[j]);
+            if(index != -1)
             {
-               _boneList.splice(_loc2_,1);
+               _boneList.splice(index,1);
             }
-            _loc5_++;
+            j++;
          }
-         _loc4_.splice(0,_loc4_.length);
+         list.splice(0,list.length);
       }
       
-      public function saveBoneLoaderData(param1:BoneVo) : void
+      public function saveBoneLoaderData(vo:BoneVo) : void
       {
-         _loading.add(param1.atlasName,true);
+         _loading.add(vo.atlasName,true);
       }
       
-      public function getBoneLoaderComplete(param1:BoneVo) : Boolean
+      public function getBoneLoaderComplete(vo:BoneVo) : Boolean
       {
-         return _loading.hasKey(param1.atlasName);
+         return _loading.hasKey(vo.atlasName);
       }
       
-      public function clearBoneLoaderAtlas(param1:String) : void
+      public function clearBoneLoaderAtlas(atlasName:String) : void
       {
-         _loading.remove(param1);
+         _loading.remove(atlasName);
       }
       
-      public function loadBonesStyle(param1:String, param2:String) : void
+      public function loadBonesStyle(value:String, path:String) : void
       {
-         var _loc3_:* = null;
-         if(BoneMovieFactory.instance.model.hasLoadingBones(param1) == false)
+         var loader:* = null;
+         if(BoneMovieFactory.instance.model.hasLoadingBones(value) == false)
          {
-            _loc3_ = LoadResourceManager.Instance.createLoader(param2,2);
-            _loc3_.addEventListener("complete",__onLoaderBonesComplete);
-            LoadResourceManager.Instance.startLoad(_loc3_);
+            loader = LoadResourceManager.Instance.createLoader(path,2);
+            loader.addEventListener("complete",__onLoaderBonesComplete);
+            LoadResourceManager.Instance.startLoad(loader);
          }
       }
       
-      private function __onLoaderBonesComplete(param1:LoaderEvent) : void
+      private function __onLoaderBonesComplete(e:LoaderEvent) : void
       {
-         param1.loader.removeEventListener("complete",__onLoaderBonesComplete);
-         var _loc3_:XML = new XML(param1.loader.content);
-         var _loc2_:String = _loc3_.@name;
-         BoneMovieFactory.instance.model.parasBonesStyle(_loc3_..bone,_loc2_);
-         dispatchEvent(new BonesLoaderEvent("bonesstylecompelete",_loc2_));
+         e.loader.removeEventListener("complete",__onLoaderBonesComplete);
+         var xml:XML = new XML(e.loader.content);
+         var name:String = xml.@name;
+         BoneMovieFactory.instance.model.parasBonesStyle(xml..bone,name);
+         dispatchEvent(new BonesLoaderEvent("bonesstylecompelete",name));
       }
       
       public function clear() : void

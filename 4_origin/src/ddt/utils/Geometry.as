@@ -11,89 +11,89 @@ package ddt.utils
          super();
       }
       
-      public static function getAngle4(param1:Number, param2:Number, param3:Number, param4:Number) : Number
+      public static function getAngle4(p1x:Number, p1y:Number, p2x:Number, p2y:Number) : Number
       {
-         return Math.atan2(param4 - param2,param3 - param1);
+         return Math.atan2(p2y - p1y,p2x - p1x);
       }
       
-      public static function getAngle(param1:Point, param2:Point) : Number
+      public static function getAngle(p1:Point, p2:Point) : Number
       {
-         return Math.atan2(param2.y - param1.y,param2.x - param1.x);
+         return Math.atan2(p2.y - p1.y,p2.x - p1.x);
       }
       
-      public static function nextPoint2(param1:Number, param2:Number, param3:Number, param4:Number) : Point
+      public static function nextPoint2(px:Number, py:Number, angle:Number, distance:Number) : Point
       {
-         return new Point(param1 + Math.cos(param3) * param4,param2 + Math.sin(param3) * param4);
+         return new Point(px + Math.cos(angle) * distance,py + Math.sin(angle) * distance);
       }
       
-      public static function nextPoint(param1:Point, param2:Number, param3:Number) : Point
+      public static function nextPoint(p:Point, angle:Number, distance:Number) : Point
       {
-         return new Point(param1.x + Math.cos(param2) * param3,param1.y + Math.sin(param2) * param3);
+         return new Point(p.x + Math.cos(angle) * distance,p.y + Math.sin(angle) * distance);
       }
       
-      private static function standardAngle(param1:Number) : Number
+      private static function standardAngle(angle:Number) : Number
       {
-         param1 = param1 % (2 * 3.14159265358979);
-         if(param1 > 3.14159265358979)
+         angle = angle % (2 * 3.14159265358979);
+         if(angle > 3.14159265358979)
          {
-            param1 = param1 - 2 * 3.14159265358979;
+            angle = angle - 2 * 3.14159265358979;
          }
-         else if(param1 < -3.14159265358979)
+         else if(angle < -3.14159265358979)
          {
-            param1 = param1 + 2 * 3.14159265358979;
+            angle = angle + 2 * 3.14159265358979;
          }
-         return param1;
+         return angle;
       }
       
-      public static function crossAngle(param1:Number, param2:Number) : Number
+      public static function crossAngle(firstAngle:Number, secondAngle:Number) : Number
       {
-         return standardAngle(standardAngle(param1) - standardAngle(param2));
+         return standardAngle(standardAngle(firstAngle) - standardAngle(secondAngle));
       }
       
-      public static function isClockwish(param1:Number, param2:Number) : Boolean
+      public static function isClockwish(firstAngle:Number, secondAngle:Number) : Boolean
       {
-         return crossAngle(param1,param2) < 0;
+         return crossAngle(firstAngle,secondAngle) < 0;
       }
       
-      public static function cross_x(param1:Number, param2:Number, param3:Number, param4:Number, param5:Number, param6:Number, param7:Number, param8:Number) : Number
+      public static function cross_x(x11:Number, y11:Number, x12:Number, y12:Number, x21:Number, y21:Number, x22:Number, y22:Number) : Number
       {
-         var _loc13_:Number = (param2 - param4) / (param3 * param2 - param1 * param4);
-         var _loc10_:Number = (param3 - param1) / (param3 * param2 - param1 * param4);
-         var _loc9_:Number = (param6 - param8) / (param7 * param6 - param5 * param8);
-         var _loc12_:Number = (param7 - param5) / (param7 * param6 - param5 * param8);
-         var _loc11_:Number = (_loc10_ - _loc12_) / (_loc9_ * _loc10_ - _loc13_ * _loc12_);
-         return _loc11_;
+         var _local10:Number = (y11 - y12) / (x12 * y11 - x11 * y12);
+         var _local11:Number = (x12 - x11) / (x12 * y11 - x11 * y12);
+         var _local12:Number = (y21 - y22) / (x22 * y21 - x21 * y22);
+         var _local13:Number = (x22 - x21) / (x22 * y21 - x21 * y22);
+         var _local14:Number = (_local11 - _local13) / (_local12 * _local11 - _local10 * _local13);
+         return _local14;
       }
       
-      public static function cross_y(param1:Number, param2:Number, param3:Number, param4:Number, param5:Number, param6:Number, param7:Number, param8:Number) : Number
+      public static function cross_y(x11:Number, y11:Number, x12:Number, y12:Number, x21:Number, y21:Number, x22:Number, y22:Number) : Number
       {
-         var _loc13_:Number = (param2 - param4) / (param3 * param2 - param1 * param4);
-         var _loc10_:Number = (param3 - param1) / (param3 * param2 - param1 * param4);
-         var _loc9_:Number = (param6 - param8) / (param7 * param6 - param5 * param8);
-         var _loc12_:Number = (param7 - param5) / (param7 * param6 - param5 * param8);
-         var _loc11_:Number = (_loc13_ - _loc9_) / (_loc12_ * _loc13_ - _loc10_ * _loc9_);
-         return _loc11_;
+         var _local10:Number = (y11 - y12) / (x12 * y11 - x11 * y12);
+         var _local11:Number = (x12 - x11) / (x12 * y11 - x11 * y12);
+         var _local12:Number = (y21 - y22) / (x22 * y21 - x21 * y22);
+         var _local13:Number = (x22 - x21) / (x22 * y21 - x21 * y22);
+         var _local14:Number = (_local10 - _local12) / (_local13 * _local10 - _local11 * _local12);
+         return _local14;
       }
       
-      public static function crossPoint2D(param1:Number, param2:Number, param3:Number, param4:Number, param5:Number, param6:Number, param7:Number, param8:Number) : Point
+      public static function crossPoint2D(x11:Number, y11:Number, x12:Number, y12:Number, x21:Number, y21:Number, x22:Number, y22:Number) : Point
       {
-         var _loc13_:Number = (param2 - param4) / (param3 * param2 - param1 * param4);
-         var _loc10_:Number = (param3 - param1) / (param3 * param2 - param1 * param4);
-         var _loc9_:Number = (param6 - param8) / (param7 * param6 - param5 * param8);
-         var _loc12_:Number = (param7 - param5) / (param7 * param6 - param5 * param8);
-         var _loc11_:Number = (_loc10_ - _loc12_) / (_loc9_ * _loc10_ - _loc13_ * _loc12_);
-         var _loc14_:Number = (_loc13_ - _loc9_) / (_loc12_ * _loc13_ - _loc10_ * _loc9_);
-         return new Point(_loc11_,_loc14_);
+         var _local10:Number = (y11 - y12) / (x12 * y11 - x11 * y12);
+         var _local11:Number = (x12 - x11) / (x12 * y11 - x11 * y12);
+         var _local12:Number = (y21 - y22) / (x22 * y21 - x21 * y22);
+         var _local13:Number = (x22 - x21) / (x22 * y21 - x21 * y22);
+         var _local14:Number = (_local11 - _local13) / (_local12 * _local11 - _local10 * _local13);
+         var _local15:Number = (_local10 - _local12) / (_local13 * _local10 - _local11 * _local12);
+         return new Point(_local14,_local15);
       }
       
-      public static function distance(param1:Point, param2:Point) : Number
+      public static function distance(d1:Point, d2:Point) : Number
       {
-         return Math.sqrt(distanceSq(param1,param2));
+         return Math.sqrt(distanceSq(d1,d2));
       }
       
-      public static function distanceSq(param1:Point, param2:Point) : Number
+      public static function distanceSq(d1:Point, d2:Point) : Number
       {
-         return (param1.x - param2.x) * (param1.x - param2.x) + (param1.y - param2.y) * (param1.y - param2.y);
+         return (d1.x - d2.x) * (d1.x - d2.x) + (d1.y - d2.y) * (d1.y - d2.y);
       }
    }
 }

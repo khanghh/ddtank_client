@@ -1,107 +1,51 @@
-package org.as3commons.lang
-{
-   public final class ArrayUtils
-   {
-       
-      
-      public function ArrayUtils(){super();}
-      
-      public static function containsAny(param1:Array, param2:Array) : Boolean{return false;}
-      
-      public static function containsAnyEquality(param1:Array, param2:Array) : Boolean{return false;}
-      
-      public static function containsAnyStrictEquality(param1:Array, param2:Array) : Boolean{return false;}
-      
-      public static function containsAnyEquals(param1:Array, param2:Array) : Boolean{return false;}
-      
-      private static function containsAnyWithComparisonFunction(param1:Array, param2:Array, param3:Function) : Boolean{return false;}
-      
-      public static function containsAll(param1:Array, param2:Array) : Boolean{return false;}
-      
-      public static function containsAllEquality(param1:Array, param2:Array) : Boolean{return false;}
-      
-      public static function containsAllStrictEquality(param1:Array, param2:Array) : Boolean{return false;}
-      
-      public static function containsAllEquals(param1:Array, param2:Array) : Boolean{return false;}
-      
-      private static function containsAllWithComparisonFunction(param1:Array, param2:Array, param3:Function) : Boolean{return false;}
-      
-      public static function contains(param1:Array, param2:*) : Boolean{return false;}
-      
-      public static function containsEquality(param1:Array, param2:*) : Boolean{return false;}
-      
-      public static function containsStrictEquality(param1:Array, param2:*) : Boolean{return false;}
-      
-      public static function containsEquals(param1:Array, param2:IEquals) : Boolean{return false;}
-      
-      public static function indexOf(param1:Array, param2:*) : int{return 0;}
-      
-      public static function indexOfEquality(param1:Array, param2:*) : int{return 0;}
-      
-      public static function indexOfStrictEquality(param1:Array, param2:*) : int{return 0;}
-      
-      public static function indexOfEquals(param1:Array, param2:IEquals) : int{return 0;}
-      
-      private static function indexOfWithComparisonFunction(param1:Array, param2:*, param3:Function) : int{return 0;}
-      
-      private static function compareEquality(param1:*, param2:*) : Boolean{return false;}
-      
-      private static function compareStrictEquality(param1:*, param2:*) : Boolean{return false;}
-      
-      private static function compareEquals(param1:IEquals, param2:IEquals) : Boolean{return false;}
-      
-      public static function removeAllItems(param1:Array, param2:Array) : Array{return null;}
-      
-      public static function removeAllItemsEquality(param1:Array, param2:Array) : Array{return null;}
-      
-      public static function removeAllItemsStrictEquality(param1:Array, param2:Array) : Array{return null;}
-      
-      public static function removeAllItemsEquals(param1:Array, param2:Array) : Array{return null;}
-      
-      private static function removeAllItemsWithRemoveFunction(param1:Array, param2:Array, param3:Function) : Array{return null;}
-      
-      public static function removeItem(param1:Array, param2:*) : Array{return null;}
-      
-      public static function removeItemEquality(param1:Array, param2:*) : Array{return null;}
-      
-      public static function removeItemStrictEquality(param1:Array, param2:*) : Array{return null;}
-      
-      public static function removeItemEquals(param1:Array, param2:*) : Array{return null;}
-      
-      private static function removeItemWithComparisonFunction(param1:Array, param2:*, param3:Function) : Array{return null;}
-      
-      public static function removeLastOccurance(param1:Array, param2:*) : int{return 0;}
-      
-      public static function removeFirstOccurance(param1:Array, param2:*) : int{return 0;}
-      
-      public static function shuffle(param1:Array) : void{}
-      
-      public static function isSame(param1:Array, param2:Array) : Boolean{return false;}
-      
-      public static function getLength(param1:Array) : int{return 0;}
-      
-      public static function getUniqueValues(param1:Array) : Array{return null;}
-      
-      public static function getItemAt(param1:Array, param2:int, param3:* = null) : *{return null;}
-      
-      public static function getItemsByType(param1:Array, param2:Class) : Array{return null;}
-      
-      public static function addAll(param1:Array, param2:Array) : void{}
-      
-      public static function addAllIgnoreNull(param1:Array, param2:Array) : void{}
-      
-      public static function addIgnoreNull(param1:Array, param2:*) : void{}
-      
-      public static function moveElement(param1:Array, param2:*, param3:int) : void{}
-      
-      public static function removeAll(param1:Array) : void{}
-      
-      public static function isNotEmpty(param1:Array) : Boolean{return false;}
-      
-      public static function isEmpty(param1:Array) : Boolean{return false;}
-      
-      public static function clone(param1:Array) : Array{return null;}
-      
-      public static function toString(param1:Array, param2:String = ", ") : String{return null;}
-   }
-}
+package org.as3commons.lang{   public final class ArrayUtils   {                   public function ArrayUtils() { super(); }
+            public static function containsAny(array:Array, items:Array) : Boolean { return false; }
+            public static function containsAnyEquality(array:Array, items:Array) : Boolean { return false; }
+            public static function containsAnyStrictEquality(array:Array, items:Array) : Boolean { return false; }
+            public static function containsAnyEquals(array:Array, items:Array) : Boolean { return false; }
+            private static function containsAnyWithComparisonFunction(array:Array, items:Array, comparisonFunction:Function) : Boolean { return false; }
+            public static function containsAll(array:Array, find:Array) : Boolean { return false; }
+            public static function containsAllEquality(array:Array, items:Array) : Boolean { return false; }
+            public static function containsAllStrictEquality(array:Array, items:Array) : Boolean { return false; }
+            public static function containsAllEquals(array:Array, items:Array) : Boolean { return false; }
+            private static function containsAllWithComparisonFunction(array:Array, items:Array, comparisonFunction:Function) : Boolean { return false; }
+            public static function contains(array:Array, item:*) : Boolean { return false; }
+            public static function containsEquality(array:Array, item:*) : Boolean { return false; }
+            public static function containsStrictEquality(array:Array, item:*) : Boolean { return false; }
+            public static function containsEquals(array:Array, item:IEquals) : Boolean { return false; }
+            public static function indexOf(array:Array, item:*) : int { return 0; }
+            public static function indexOfEquality(array:Array, item:*) : int { return 0; }
+            public static function indexOfStrictEquality(array:Array, item:*) : int { return 0; }
+            public static function indexOfEquals(array:Array, item:IEquals) : int { return 0; }
+            private static function indexOfWithComparisonFunction(array:Array, item:*, comparisonFunction:Function) : int { return 0; }
+            private static function compareEquality(item1:*, item2:*) : Boolean { return false; }
+            private static function compareStrictEquality(item1:*, item2:*) : Boolean { return false; }
+            private static function compareEquals(item1:IEquals, item2:IEquals) : Boolean { return false; }
+            public static function removeAllItems(array:Array, itemsToRemove:Array) : Array { return null; }
+            public static function removeAllItemsEquality(array:Array, itemsToRemove:Array) : Array { return null; }
+            public static function removeAllItemsStrictEquality(array:Array, itemsToRemove:Array) : Array { return null; }
+            public static function removeAllItemsEquals(array:Array, itemsToRemove:Array) : Array { return null; }
+            private static function removeAllItemsWithRemoveFunction(array:Array, itemsToRemove:Array, removeFunction:Function) : Array { return null; }
+            public static function removeItem(array:Array, item:*) : Array { return null; }
+            public static function removeItemEquality(array:Array, item:*) : Array { return null; }
+            public static function removeItemStrictEquality(array:Array, item:*) : Array { return null; }
+            public static function removeItemEquals(array:Array, item:*) : Array { return null; }
+            private static function removeItemWithComparisonFunction(array:Array, item:*, comparisonFunction:Function) : Array { return null; }
+            public static function removeLastOccurance(array:Array, item:*) : int { return 0; }
+            public static function removeFirstOccurance(array:Array, item:*) : int { return 0; }
+            public static function shuffle(array:Array) : void { }
+            public static function isSame(array1:Array, array2:Array) : Boolean { return false; }
+            public static function getLength(array:Array) : int { return 0; }
+            public static function getUniqueValues(array:Array) : Array { return null; }
+            public static function getItemAt(array:Array, index:int, defaultValue:* = null) : * { return null; }
+            public static function getItemsByType(items:Array, type:Class) : Array { return null; }
+            public static function addAll(array:Array, itemsToAdd:Array) : void { }
+            public static function addAllIgnoreNull(array:Array, itemsToAdd:Array) : void { }
+            public static function addIgnoreNull(array:Array, element:*) : void { }
+            public static function moveElement(array:Array, element:*, newIndex:int) : void { }
+            public static function removeAll(array:Array) : void { }
+            public static function isNotEmpty(array:Array) : Boolean { return false; }
+            public static function isEmpty(array:Array) : Boolean { return false; }
+            public static function clone(array:Array) : Array { return null; }
+            public static function toString(array:Array, separator:String = ", ") : String { return null; }
+   }}

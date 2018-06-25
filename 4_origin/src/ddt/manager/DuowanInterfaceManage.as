@@ -34,58 +34,58 @@ package ddt.manager
          return _instance;
       }
       
-      private function __userActionNotice(param1:DuowanInterfaceEvent) : void
+      private function __userActionNotice(event:DuowanInterfaceEvent) : void
       {
-         var _loc4_:String = "4";
-         var _loc3_:String = PlayerManager.Instance.Self.ID.toString();
-         _loc3_ = encodeURI(_loc3_);
-         var _loc2_:String = MD5.hash(_loc3_ + _loc4_ + key);
-         send(_loc4_,_loc3_,_loc2_);
+         var op:String = "4";
+         var username:String = PlayerManager.Instance.Self.ID.toString();
+         username = encodeURI(username);
+         var sign:String = MD5.hash(username + op + key);
+         send(op,username,sign);
       }
       
-      private function __upGradeNotice(param1:DuowanInterfaceEvent) : void
+      private function __upGradeNotice(event:DuowanInterfaceEvent) : void
       {
-         var _loc4_:String = "1";
-         var _loc3_:String = PlayerManager.Instance.Self.ID.toString();
-         _loc3_ = encodeURI(_loc3_);
-         var _loc2_:String = MD5.hash(_loc3_ + _loc4_ + key);
-         send(_loc4_,_loc3_,_loc2_);
+         var op:String = "1";
+         var username:String = PlayerManager.Instance.Self.ID.toString();
+         username = encodeURI(username);
+         var sign:String = MD5.hash(username + op + key);
+         send(op,username,sign);
       }
       
-      private function __onLineNotice(param1:DuowanInterfaceEvent) : void
+      private function __onLineNotice(event:DuowanInterfaceEvent) : void
       {
-         var _loc4_:String = "2";
-         var _loc3_:String = PlayerManager.Instance.Self.ID.toString();
-         _loc3_ = encodeURI(_loc3_);
-         var _loc2_:String = MD5.hash(_loc3_ + _loc4_ + key);
-         send(_loc4_,_loc3_,_loc2_);
+         var op:String = "2";
+         var username:String = PlayerManager.Instance.Self.ID.toString();
+         username = encodeURI(username);
+         var sign:String = MD5.hash(username + op + key);
+         send(op,username,sign);
       }
       
-      private function __outLineNotice(param1:DuowanInterfaceEvent) : void
+      private function __outLineNotice(event:DuowanInterfaceEvent) : void
       {
-         var _loc4_:String = "3";
-         var _loc3_:String = PlayerManager.Instance.Self.ID.toString();
-         _loc3_ = encodeURI(_loc3_);
-         var _loc2_:String = MD5.hash(_loc3_ + _loc4_ + key);
-         send(_loc4_,_loc3_,_loc2_);
+         var op:String = "3";
+         var username:String = PlayerManager.Instance.Self.ID.toString();
+         username = encodeURI(username);
+         var sign:String = MD5.hash(username + op + key);
+         send(op,username,sign);
       }
       
-      private function send(param1:String, param2:String, param3:String) : void
+      private function send(op:String, username:String, sign:String) : void
       {
-         var _loc5_:String = PathManager.userActionNotice();
-         if(_loc5_ == "")
+         var requestURL:String = PathManager.userActionNotice();
+         if(requestURL == "")
          {
             return;
          }
-         _loc5_ = _loc5_.replace("{username}",param2);
-         _loc5_ = _loc5_.replace("{type}",param1);
-         _loc5_ = _loc5_.replace("{sign}",param3);
-         var _loc4_:RequestLoader = LoadResourceManager.Instance.createLoader(_loc5_,6,null,"GET",null,false,true);
-         _loc4_.addEventListener("complete",__loaderComplete2);
-         LoadResourceManager.Instance.startLoad(_loc4_);
+         requestURL = requestURL.replace("{username}",username);
+         requestURL = requestURL.replace("{type}",op);
+         requestURL = requestURL.replace("{sign}",sign);
+         var loader:RequestLoader = LoadResourceManager.Instance.createLoader(requestURL,6,null,"GET",null,false,true);
+         loader.addEventListener("complete",__loaderComplete2);
+         LoadResourceManager.Instance.startLoad(loader);
       }
       
-      private function __loaderComplete2(param1:LoaderEvent) : void
+      private function __loaderComplete2(event:LoaderEvent) : void
       {
       }
    }

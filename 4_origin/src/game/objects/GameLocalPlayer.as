@@ -34,6 +34,7 @@ package game.objects
    import org.aswing.KeyStroke;
    import org.aswing.KeyboardManager;
    import pet.data.PetSkillTemplateInfo;
+   import phy.maps.Map;
    import room.RoomManager;
    
    public class GameLocalPlayer extends GamePlayer
@@ -72,9 +73,9 @@ package game.objects
       
       private var _shootOverCount:int = 0;
       
-      public function GameLocalPlayer(param1:LocalPlayer, param2:ShowCharacter, param3:GameCharacter = null, param4:int = 0)
+      public function GameLocalPlayer(player:LocalPlayer, character:ShowCharacter, movie:GameCharacter = null, templeId:int = 0)
       {
-         super(param1,param2,param3,param4);
+         super(player,character,movie,templeId);
       }
       
       public function get localPlayer() : LocalPlayer
@@ -87,13 +88,13 @@ package game.objects
          return _takeAim;
       }
       
-      override public function set pos(param1:Point) : void
+      override public function set pos(value:Point) : void
       {
-         if(param1.x < 1000)
+         if(value.x < 1000)
          {
          }
-         x = param1.x;
-         y = param1.y;
+         x = value.x;
+         y = value.y;
       }
       
       override protected function initView() : void
@@ -140,6 +141,7 @@ package game.objects
          localPlayer.addEventListener("skip",__skip);
          localPlayer.addEventListener("setCenter",__setCenter);
          _shootTimer.addEventListener("timer",__shootTimer);
+         localPlayer.addEventListener("backEffectChange",__backEffChanged);
          if(!_info.autoOnHook)
          {
             KeyboardManager.getInstance().registerKeyAction(KeyStroke.VK_LEFT,__turnLeft);
@@ -150,10 +152,43 @@ package game.objects
          KeyboardManager.getInstance().addEventListener("keyUp",__keyUp);
       }
       
-      private function __setCenter(param1:LivingEvent) : void
+      override protected function removeListener() : void
       {
-         var _loc2_:Array = param1.paras;
-         map.animateSet.addAnimation(new DragMapAnimation(_loc2_[0],_loc2_[1],true));
+         super.removeListener();
+         localPlayer.addEventListener("backEffectChange",__backEffChanged);
+      }
+      
+      private function __backEffChanged(evt:LivingEvent) : void
+      {
+         var radius:Number = NaN;
+         if(map == null)
+         {
+            return;
+         }
+         if(localPlayer.backEffFog)
+         {
+            radius = evt.value;
+            map.createBackEffectView(radius);
+         }
+         else
+         {
+            map.removeBackEffectView();
+         }
+      }
+      
+      override public function setMap(map:Map) : void
+      {
+         super.setMap(map);
+         if(localPlayer.backEffFog)
+         {
+            (map as MapView).createBackEffectView(localPlayer.backEffRadius);
+         }
+      }
+      
+      private function __setCenter(event:LivingEvent) : void
+      {
+         var paras:Array = event.paras;
+         map.animateSet.addAnimation(new DragMapAnimation(paras[0],paras[1],true));
       }
       
       override public function dispose() : void
@@ -201,7 +236,7 @@ package game.objects
          super.dispose();
       }
       
-      protected function __skip(param1:LivingEvent) : void
+      protected function __skip(event:LivingEvent) : void
       {
          act(new SelfSkipAction(localPlayer));
       }
@@ -244,7 +279,7 @@ package game.objects
          addChild(_transmissionEffoct);
       }
       
-      private function __keyUp(param1:KeyboardEvent) : void
+      private function __keyUp(event:KeyboardEvent) : void
       {
          _keyDownTime = 0;
          _isChangeReverse = true;
@@ -339,9 +374,9 @@ package game.objects
          _isMoving = false;
       }
       
-      override protected function __attackingChanged(param1:LivingEvent) : void
+      override protected function __attackingChanged(event:LivingEvent) : void
       {
-         super.__attackingChanged(param1);
+         super.__attackingChanged(event);
          if(localPlayer.isAttacking && localPlayer.isLiving)
          {
             act(new SelfPlayerWalkAction(this,_currentReverse));
@@ -411,15 +446,15 @@ package game.objects
          setCollideRect(-5,-5,5,5);
       }
       
-      private function __mouseClick(param1:MouseEvent) : void
+      private function __mouseClick(event:MouseEvent) : void
       {
-         var _loc2_:Point = _map.globalToLocal(new Point(param1.stageX,param1.stageY));
+         var p:Point = _map.globalToLocal(new Point(event.stageX,event.stageY));
          _map.addChild(mouseAsset);
          SoundManager.instance.play("041");
-         mouseAsset.x = _loc2_.x;
-         mouseAsset.y = _loc2_.y;
+         mouseAsset.x = p.x;
+         mouseAsset.y = p.y;
          mouseAsset.visible = true;
-         GameInSocketOut.sendGhostTarget(_loc2_);
+         GameInSocketOut.sendGhostTarget(p);
       }
       
       public function hideTargetMouseTip() : void
@@ -427,16 +462,16 @@ package game.objects
          mouseAsset.visible = false;
       }
       
-      override protected function __usingItem(param1:LivingEvent) : void
+      override protected function __usingItem(event:LivingEvent) : void
       {
-         super.__usingItem(param1);
-         if(param1.paras[0] is ItemTemplateInfo)
+         super.__usingItem(event);
+         if(event.paras[0] is ItemTemplateInfo)
          {
-            localPlayer.energy = localPlayer.energy - int(param1.paras[0].Property4);
+            localPlayer.energy = localPlayer.energy - int(event.paras[0].Property4);
          }
       }
       
-      protected function __sendShoot(param1:LivingEvent) : void
+      protected function __sendShoot(event:LivingEvent) : void
       {
          _shootPoint = shootPoint();
          _shootCount = 0;
@@ -448,7 +483,7 @@ package game.objects
          GameInSocketOut.sendShootTag(true,localPlayer.shootTime);
          if(localPlayer.shootType == 0)
          {
-            localPlayer.force = param1.paras[0];
+            localPlayer.force = event.paras[0];
             _shootTimer.start();
             __shootTimer(null);
          }
@@ -458,24 +493,24 @@ package game.objects
          }
       }
       
-      private function __shootTimer(param1:Event) : void
+      private function __shootTimer(event:Event) : void
       {
-         var _loc3_:Number = NaN;
-         var _loc2_:int = 0;
+         var angle:Number = NaN;
+         var force:int = 0;
          if(localPlayer && localPlayer.isLiving && _shootCount < localPlayer.shootCount)
          {
-            _loc3_ = localPlayer.calcBombAngle();
-            _loc2_ = localPlayer.force;
-            GameInSocketOut.sendGameCMDShoot(_shootPoint.x,_shootPoint.y,_loc2_,_loc3_);
+            angle = localPlayer.calcBombAngle();
+            force = localPlayer.force;
+            GameInSocketOut.sendGameCMDShoot(_shootPoint.x,_shootPoint.y,force,angle);
             MapView(_map).gameView.setRecordRotation();
             _shootCount = Number(_shootCount) + 1;
          }
       }
       
-      override protected function __shoot(param1:LivingEvent) : void
+      override protected function __shoot(event:LivingEvent) : void
       {
-         super.__shoot(param1);
-         localPlayer.lastFireBombs = param1.paras[0];
+         super.__shoot(event);
+         localPlayer.lastFireBombs = event.paras[0];
          if(GameControl.Instance.Current.roomType == 21)
          {
             if(_shootCount >= localPlayer.shootCount && map)
@@ -485,9 +520,9 @@ package game.objects
          }
       }
       
-      override protected function __beginNewTurn(param1:LivingEvent) : void
+      override protected function __beginNewTurn(event:LivingEvent) : void
       {
-         super.__beginNewTurn(param1);
+         super.__beginNewTurn(event);
          if(localPlayer.isSelf)
          {
             map.act(new NewHandFightHelpAction(localPlayer,_shootOverCount,map));
@@ -507,25 +542,25 @@ package game.objects
          return _shootOverCount;
       }
       
-      public function set shootOverCount(param1:int) : void
+      public function set shootOverCount(count:int) : void
       {
-         _shootOverCount = param1;
+         _shootOverCount = count;
          if(_shootOverCount == _shootCount)
          {
             _isShooting = false;
          }
       }
       
-      protected function __gunangleChanged(param1:LivingEvent) : void
+      protected function __gunangleChanged(event:LivingEvent) : void
       {
          _takeAim["hand"].rotation = localPlayer.gunAngle;
       }
       
-      protected function __beginShoot(param1:LivingEvent) : void
+      protected function __beginShoot(event:LivingEvent) : void
       {
       }
       
-      protected function __energyChanged(param1:LivingEvent) : void
+      protected function __energyChanged(event:LivingEvent) : void
       {
          if(localPlayer.isLiving)
          {
@@ -533,18 +568,18 @@ package game.objects
          }
       }
       
-      override protected function __usePetSkill(param1:LivingEvent) : void
+      override protected function __usePetSkill(event:LivingEvent) : void
       {
          if(_info.isLocked)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.campBattle.onlyFly"));
             return;
          }
-         super.__usePetSkill(param1);
-         var _loc2_:PetSkillTemplateInfo = PetSkillManager.getSkillByID(param1.value);
-         if(_loc2_.isActiveSkill)
+         super.__usePetSkill(event);
+         var skill:PetSkillTemplateInfo = PetSkillManager.getSkillByID(event.value);
+         if(skill.isActiveSkill)
          {
-            switch(int(_loc2_.BallType))
+            switch(int(skill.BallType))
             {
                case 0:
                   localPlayer.spellKillEnabled = false;

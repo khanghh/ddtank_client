@@ -31,9 +31,9 @@ package catchInsect.view
       
       private function initView() : void
       {
-         var _loc4_:int = 0;
-         var _loc1_:* = null;
-         var _loc3_:* = null;
+         var i:int = 0;
+         var arr:* = null;
+         var cell:* = null;
          _bg = ComponentFactory.Instance.creat("catchInsect.indivPrizeBg");
          addChild(_bg);
          _vbox = ComponentFactory.Instance.creatComponentByStylename("catchInsect.indivPrize.vBox");
@@ -41,16 +41,15 @@ package catchInsect.view
          _scrollPanel.setView(_vbox);
          addChild(_scrollPanel);
          _listItem = new Vector.<IndivPrizeCell>();
-         var _loc2_:Array = ServerConfigManager.instance.catchInsectPrizeInfo;
-         _loc4_ = 0;
-         while(_loc4_ <= _loc2_.length - 1)
+         var prizeArr:Array = ServerConfigManager.instance.catchInsectPrizeInfo;
+         for(i = 0; i <= prizeArr.length - 1; )
          {
-            _loc1_ = _loc2_[_loc4_].split(",");
-            _loc3_ = new IndivPrizeCell();
-            _loc3_.setData(_loc1_[0],_loc1_[1]);
-            _vbox.addChild(_loc3_);
-            _listItem.push(_loc3_);
-            _loc4_++;
+            arr = prizeArr[i].split(",");
+            cell = new IndivPrizeCell();
+            cell.setData(arr[0],arr[1]);
+            _vbox.addChild(cell);
+            _listItem.push(cell);
+            i++;
          }
          _scrollPanel.invalidateViewport();
       }
@@ -59,15 +58,14 @@ package catchInsect.view
       {
       }
       
-      public function setPrizeStatus(param1:int) : void
+      public function setPrizeStatus(status:int) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ <= _listItem.length - 1)
+         var i:int = 0;
+         for(i = 0; i <= _listItem.length - 1; )
          {
-            _listItem[_loc2_].setStatus(param1 & 1);
-            param1 = param1 >> 1;
-            _loc2_++;
+            _listItem[i].setStatus(status & 1);
+            status = status >> 1;
+            i++;
          }
       }
       
@@ -77,14 +75,13 @@ package catchInsect.view
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          removeEvents();
-         _loc1_ = 0;
-         while(_loc1_ <= _listItem.length - 1)
+         for(i = 0; i <= _listItem.length - 1; )
          {
-            ObjectUtils.disposeObject(_listItem[_loc1_]);
-            _listItem[_loc1_] = null;
-            _loc1_++;
+            ObjectUtils.disposeObject(_listItem[i]);
+            _listItem[i] = null;
+            i++;
          }
          ObjectUtils.disposeObject(_bg);
          _bg = null;

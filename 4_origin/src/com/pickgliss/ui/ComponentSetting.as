@@ -76,13 +76,13 @@ package com.pickgliss.ui
          super();
       }
       
-      public static function getUIConfigXMLPath(param1:String) : String
+      public static function getUIConfigXMLPath(module:String) : String
       {
          if(ResloveConfigXMLPathCall == null)
          {
-            return "ui/" + LANGUAGE + "/xml/" + param1 + ".xml";
+            return "ui/" + LANGUAGE + "/xml/" + module + ".xml";
          }
-         return ResloveConfigXMLPathCall(param1);
+         return ResloveConfigXMLPathCall(module);
       }
       
       public static function getUIConfigZIPPath() : String
@@ -94,13 +94,13 @@ package com.pickgliss.ui
          return ResloveConfigZipPathCall();
       }
       
-      public static function getUISourcePath(param1:String) : String
+      public static function getUISourcePath(module:String) : String
       {
          if(ResloveConfigUISourcePathCall == null)
          {
-            return "ui/" + LANGUAGE + "/swf/" + param1 + ".swf";
+            return "ui/" + LANGUAGE + "/swf/" + module + ".swf";
          }
-         return ResloveConfigUISourcePathCall(param1);
+         return ResloveConfigUISourcePathCall(module);
       }
    }
 }

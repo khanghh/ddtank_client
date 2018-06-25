@@ -55,12 +55,12 @@ package cityBattle.view
          addEventListener("rollOut",__outHandler);
       }
       
-      protected function __outHandler(param1:MouseEvent) : void
+      protected function __outHandler(event:MouseEvent) : void
       {
          _exchangeBtn.visible = false;
       }
       
-      protected function __overHandler(param1:MouseEvent) : void
+      protected function __overHandler(event:MouseEvent) : void
       {
          if(open)
          {
@@ -75,7 +75,7 @@ package cityBattle.view
          removeEventListener("rollOut",__outHandler);
       }
       
-      private function __exchangeHandler(param1:MouseEvent) : void
+      private function __exchangeHandler(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.bagLocked)
@@ -83,15 +83,15 @@ package cityBattle.view
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:QuickExchangeFrame = ComponentFactory.Instance.creatComponentByStylename("welfare.exchangeFrame");
-         _loc2_.setData(_info.TemplateID,_info.ID,_info.NeedScore);
-         _loc2_.type = _info.Quality;
-         LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+         var quickBuyFrame:QuickExchangeFrame = ComponentFactory.Instance.creatComponentByStylename("welfare.exchangeFrame");
+         quickBuyFrame.setData(_info.TemplateID,_info.ID,_info.NeedScore);
+         quickBuyFrame.type = _info.Quality;
+         LayerManager.Instance.addToLayer(quickBuyFrame,3,true,1);
       }
       
-      public function set info(param1:WelfareInfo) : void
+      public function set info(value:WelfareInfo) : void
       {
-         _info = param1;
+         _info = value;
          _bagCell.info = ItemManager.Instance.getTemplateById(_info.TemplateID);
          var _loc2_:int = 77;
          _bagCell.height = _loc2_;

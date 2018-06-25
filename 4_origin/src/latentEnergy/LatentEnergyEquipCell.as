@@ -15,23 +15,23 @@ package latentEnergy
       
       private var _latentEnergyItemId:int;
       
-      public function LatentEnergyEquipCell(param1:int, param2:ItemTemplateInfo = null, param3:Boolean = true, param4:DisplayObject = null, param5:Boolean = true)
+      public function LatentEnergyEquipCell(index:int, info:ItemTemplateInfo = null, showLoading:Boolean = true, bg:DisplayObject = null, mouseOverEffBoolean:Boolean = true)
       {
-         super(param1,param2,param3,param4,param5);
+         super(index,info,showLoading,bg,mouseOverEffBoolean);
       }
       
-      public function set latentEnergyItemId(param1:int) : void
+      public function set latentEnergyItemId(value:int) : void
       {
-         _latentEnergyItemId = param1;
+         _latentEnergyItemId = value;
          if(_tipData && _tipData is GoodTipInfo)
          {
             (_tipData as GoodTipInfo).latentEnergyItemId = _latentEnergyItemId;
          }
       }
       
-      override public function set info(param1:ItemTemplateInfo) : void
+      override public function set info(value:ItemTemplateInfo) : void
       {
-         .super.info = param1;
+         .super.info = value;
          if(_tipData && _tipData is GoodTipInfo)
          {
             (_tipData as GoodTipInfo).latentEnergyItemId = _latentEnergyItemId;
@@ -53,43 +53,43 @@ package latentEnergy
          LatentEnergyManager.instance.addEventListener("latentEnergy_equip_move2",equipMoveHandler2);
       }
       
-      private function equipMoveHandler(param1:LatentEnergyEvent) : void
+      private function equipMoveHandler(event:LatentEnergyEvent) : void
       {
-         var _loc2_:* = null;
-         if(info == param1.info)
+         var event2:* = null;
+         if(info == event.info)
          {
             return;
          }
          if(info)
          {
-            _loc2_ = new LatentEnergyEvent("latentEnergy_equip_move2");
-            _loc2_.info = info as InventoryItemInfo;
-            _loc2_.moveType = 3;
-            LatentEnergyManager.instance.dispatchEvent(_loc2_);
+            event2 = new LatentEnergyEvent("latentEnergy_equip_move2");
+            event2.info = info as InventoryItemInfo;
+            event2.moveType = 3;
+            LatentEnergyManager.instance.dispatchEvent(event2);
          }
-         info = param1.info;
+         info = event.info;
       }
       
-      private function equipMoveHandler2(param1:LatentEnergyEvent) : void
+      private function equipMoveHandler2(event:LatentEnergyEvent) : void
       {
-         if(info != param1.info || param1.moveType != 2)
+         if(info != event.info || event.moveType != 2)
          {
             return;
          }
          info = null;
       }
       
-      protected function __doubleClickHandler(param1:InteractiveEvent) : void
+      protected function __doubleClickHandler(evt:InteractiveEvent) : void
       {
          if(!info)
          {
             return;
          }
          SoundManager.instance.play("008");
-         var _loc2_:LatentEnergyEvent = new LatentEnergyEvent("latentEnergy_equip_move2");
-         _loc2_.info = info as InventoryItemInfo;
-         _loc2_.moveType = 2;
-         LatentEnergyManager.instance.dispatchEvent(_loc2_);
+         var event:LatentEnergyEvent = new LatentEnergyEvent("latentEnergy_equip_move2");
+         event.info = info as InventoryItemInfo;
+         event.moveType = 2;
+         LatentEnergyManager.instance.dispatchEvent(event);
       }
       
       override protected function removeEvent() : void
@@ -102,7 +102,7 @@ package latentEnergy
          LatentEnergyManager.instance.removeEventListener("latentEnergy_equip_move2",equipMoveHandler2);
       }
       
-      protected function __clickHandler(param1:InteractiveEvent) : void
+      protected function __clickHandler(evt:InteractiveEvent) : void
       {
          SoundManager.instance.play("008");
          dragStart();
@@ -110,13 +110,13 @@ package latentEnergy
       
       public function clearInfo() : void
       {
-         var _loc1_:* = null;
+         var event:* = null;
          if(info)
          {
-            _loc1_ = new LatentEnergyEvent("latentEnergy_equip_move2");
-            _loc1_.info = info as InventoryItemInfo;
-            _loc1_.moveType = 2;
-            LatentEnergyManager.instance.dispatchEvent(_loc1_);
+            event = new LatentEnergyEvent("latentEnergy_equip_move2");
+            event.info = info as InventoryItemInfo;
+            event.moveType = 2;
+            LatentEnergyManager.instance.dispatchEvent(event);
          }
       }
    }

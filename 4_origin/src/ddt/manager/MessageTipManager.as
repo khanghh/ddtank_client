@@ -67,9 +67,9 @@ package ddt.manager
          return instance;
       }
       
-      private function __onShowMornUIMessage(param1:UIEvent) : void
+      private function __onShowMornUIMessage(e:UIEvent) : void
       {
-         show(param1.data);
+         show(e.data);
       }
       
       public function get currentType() : int
@@ -82,10 +82,10 @@ package ddt.manager
          return _isPlaying;
       }
       
-      private function setContent(param1:String) : DisplayObject
+      private function setContent(str:String) : DisplayObject
       {
          cleanContent();
-         _tipString = param1;
+         _tipString = str;
          _tipText.autoSize = "center";
          _tipText.text = _tipString;
          _tipBg.width = _tipText.textWidth + 260;
@@ -96,10 +96,10 @@ package ddt.manager
          return _tipContainer;
       }
       
-      private function setFullPropContent(param1:String) : DisplayObject
+      private function setFullPropContent(str:String) : DisplayObject
       {
          cleanContent();
-         _emptyGridContent.setContent(param1);
+         _emptyGridContent.setContent(str);
          _tipBg.width = _emptyGridContent.width + 260;
          _tipBg.height = _emptyGridContent.height + 20;
          _tipBg.x = StageReferance.stageWidth - _tipBg.width >> 1;
@@ -117,9 +117,9 @@ package ddt.manager
          }
       }
       
-      private function showTip(param1:DisplayObject, param2:Boolean = false, param3:Number = 0.3) : void
+      private function showTip(tipContent:DisplayObject, replace:Boolean = false, duration:Number = 0.3) : void
       {
-         if(!param2 && _isPlaying)
+         if(!replace && _isPlaying)
          {
             return;
          }
@@ -128,49 +128,49 @@ package ddt.manager
             TweenMax.killChildTweensOf(_tipContainer.parent);
          }
          _isPlaying = true;
-         _duration = param3;
-         var _loc4_:int = (StageReferance.stageHeight - param1.height) / 2 - 10;
-         TweenMax.fromTo(param1,0.3,{
+         _duration = duration;
+         var tempY:int = (StageReferance.stageHeight - tipContent.height) / 2 - 10;
+         TweenMax.fromTo(tipContent,0.3,{
             "y":StageReferance.stageHeight / 2 + 20,
             "alpha":0,
             "ease":Quint.easeIn,
             "onComplete":onTipToCenter,
-            "onCompleteParams":[param1]
+            "onCompleteParams":[tipContent]
          },{
-            "y":_loc4_,
+            "y":tempY,
             "alpha":1
          });
-         LayerManager.Instance.addToLayer(param1,1,false,0,false);
+         LayerManager.Instance.addToLayer(tipContent,1,false,0,false);
       }
       
-      public function show(param1:String, param2:int = 0, param3:Boolean = false, param4:Number = 0.3) : void
+      public function show(str:String, type:int = 0, replace:Boolean = false, duration:Number = 0.3) : void
       {
-         var _loc5_:* = null;
-         if(!param3 && _isPlaying)
+         var content:* = null;
+         if(!replace && _isPlaying)
          {
             return;
          }
-         _tipString = param1;
-         switch(int(param2) - 1)
+         _tipString = str;
+         switch(int(type) - 1)
          {
             case 0:
                break;
             case 1:
-               _loc5_ = setFullPropContent(param1);
+               content = setFullPropContent(str);
                break;
             case 2:
          }
-         _currentType = param2;
-         showTip(_loc5_,param3,param4);
+         _currentType = type;
+         showTip(content,replace,duration);
       }
       
-      private function onTipToCenter(param1:DisplayObject) : void
+      private function onTipToCenter(content:DisplayObject) : void
       {
-         TweenMax.to(param1,_duration,{
+         TweenMax.to(content,_duration,{
             "alpha":0,
             "ease":Quint.easeOut,
             "onComplete":hide,
-            "onCompleteParams":[param1],
+            "onCompleteParams":[content],
             "delay":1.2
          });
       }
@@ -185,15 +185,15 @@ package ddt.manager
          TweenMax.killTweensOf(_tipContainer);
       }
       
-      public function hide(param1:DisplayObject) : void
+      public function hide(content:DisplayObject) : void
       {
          _isPlaying = false;
          _tipString = null;
-         if(param1.parent)
+         if(content.parent)
          {
-            param1.parent.removeChild(param1);
+            content.parent.removeChild(content);
          }
-         TweenMax.killTweensOf(param1);
+         TweenMax.killTweensOf(content);
       }
    }
 }
@@ -226,10 +226,10 @@ class EmptyGridMsgHolder extends Sprite
       addChild(_item);
    }
    
-   public function setContent(param1:String) : void
+   public function setContent(str:String) : void
    {
-      var _loc2_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(int(param1));
-      _item.setInfo(_loc2_);
+      var item:ItemTemplateInfo = ItemManager.Instance.getTemplateById(int(str));
+      _item.setInfo(item);
       _item.x = _textField.x + _textField.width - 4;
    }
 }
@@ -265,11 +265,11 @@ class PropHolder extends Sprite
       addChild(_nameField);
    }
    
-   public function setInfo(param1:ItemTemplateInfo) : void
+   public function setInfo(item:ItemTemplateInfo) : void
    {
-      _nameField.text = param1.Name;
+      _nameField.text = item.Name;
       _itemCell.x = _nameField.x + _nameField.textWidth + 4;
       _fore.x = _itemCell.x + 1;
-      _itemCell.info = param1;
+      _itemCell.info = item;
    }
 }

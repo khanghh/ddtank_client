@@ -10,10 +10,10 @@ package deng.fzip
       
       public var file:FZipFile;
       
-      public function FZipEvent(param1:String, param2:FZipFile = null, param3:Boolean = false, param4:Boolean = false)
+      public function FZipEvent(type:String, file:FZipFile = null, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         this.file = param2;
-         super(param1,param3,param4);
+         this.file = file;
+         super(type,bubbles,cancelable);
       }
       
       override public function clone() : Event

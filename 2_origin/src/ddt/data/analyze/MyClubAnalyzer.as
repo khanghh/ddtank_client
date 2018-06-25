@@ -9,9 +9,9 @@ package ddt.data.analyze
       
       public var list:Vector.<ClubInfo>;
       
-      public function MyClubAnalyzer(param1:Function)
+      public function MyClubAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
    }
 }

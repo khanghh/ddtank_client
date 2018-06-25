@@ -66,20 +66,19 @@ package ddtmatch.view
       
       private function initView() : void
       {
-         var _loc3_:int = 0;
+         var i:int = 0;
          _bg = ComponentFactory.Instance.creatBitmap("ddtmatch.redPacketBg");
          addChild(_bg);
          _sendTimeTxt = ComponentFactory.Instance.creatComponentByStylename("ddtmatch.redpacket.sendTimeTxt");
          addChild(_sendTimeTxt);
-         var _loc1_:String = "";
-         var _loc2_:Array = ServerConfigManager.instance.getSysRedEnvelopePublishInfo().split("|");
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_.length)
+         var str:String = "";
+         var arr:Array = ServerConfigManager.instance.getSysRedEnvelopePublishInfo().split("|");
+         for(i = 0; i < arr.length; )
          {
-            _loc1_ = _loc1_ + _loc2_[_loc3_].split(",")[0] + ":00 ";
-            _loc3_++;
+            str = str + arr[i].split(",")[0] + ":00 ";
+            i++;
          }
-         _sendTimeTxt.text = LanguageMgr.GetTranslation("ddt.DDTMatch.redpacket.systemPacket.sendTime",_loc1_);
+         _sendTimeTxt.text = LanguageMgr.GetTranslation("ddt.DDTMatch.redpacket.systemPacket.sendTime",str);
          _activityTimeTxt = ComponentFactory.Instance.creatComponentByStylename("ddtmatch.redpacket.activityTimeTxt");
          addChild(_activityTimeTxt);
          _activityTimeTxt.text = ServerConfigManager.instance.getRedEnvelopeBeginTime() + "--" + ServerConfigManager.instance.getRedEnvelopeEndTime();
@@ -104,90 +103,87 @@ package ddtmatch.view
          DDTMatchManager.instance.addEventListener("updataRedPacketList",__updataList);
       }
       
-      private function __timerHandler(param1:TimerEvent) : void
+      private function __timerHandler(e:TimerEvent) : void
       {
          SocketManager.Instance.out.getRedPacketInfo();
       }
       
-      private function __updataList(param1:CrazyTankSocketEvent) : void
+      private function __updataList(e:CrazyTankSocketEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readInt();
+         var i:int = 0;
+         var info:* = null;
+         var pkg:PackageIn = e.pkg;
+         var redPacketListCount:int = pkg.readInt();
          allList = new Vector.<RedPacketInfo>();
          playerList = new Vector.<RedPacketInfo>();
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_)
+         for(i = 0; i < redPacketListCount; )
          {
-            _loc4_ = new RedPacketInfo();
-            _loc4_.id = _loc3_.readInt();
-            _loc4_.name = _loc3_.readUTF();
-            _loc4_.type = _loc3_.readByte();
-            _loc4_.userID = _loc3_.readInt();
-            _loc4_.nickName = _loc3_.readUTF();
-            _loc4_.totalMoney = _loc3_.readInt();
-            _loc4_.giftCount = _loc3_.readInt();
-            _loc4_.holdCount = _loc3_.readInt();
-            _loc4_.status = _loc3_.readByte();
-            _loc4_.ifGet = _loc3_.readBoolean();
-            if(_loc4_.type == 0)
+            info = new RedPacketInfo();
+            info.id = pkg.readInt();
+            info.name = pkg.readUTF();
+            info.type = pkg.readByte();
+            info.userID = pkg.readInt();
+            info.nickName = pkg.readUTF();
+            info.totalMoney = pkg.readInt();
+            info.giftCount = pkg.readInt();
+            info.holdCount = pkg.readInt();
+            info.status = pkg.readByte();
+            info.ifGet = pkg.readBoolean();
+            if(info.type == 0)
             {
-               allList.push(_loc4_);
+               allList.push(info);
             }
-            else if(_loc4_.type == 1)
+            else if(info.type == 1)
             {
-               playerList.push(_loc4_);
+               playerList.push(info);
             }
-            _loc5_++;
+            i++;
          }
          updataRedPacketList();
       }
       
       private function updataRedPacketList() : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
+         var j:int = 0;
+         var item1:* = null;
          _allRedPacketVec = new Vector.<DDTMatchRedPacketItem>();
          _vBoxAll.removeAllChild();
-         _loc4_ = 0;
-         while(_loc4_ < allList.length)
+         for(i = 0; i < allList.length; )
          {
-            _loc2_ = new DDTMatchRedPacketItem(1,_loc4_);
-            _vBoxAll.addChild(_loc2_);
-            _loc2_.info = allList[_loc4_];
-            _allRedPacketVec.push(_loc2_);
-            _loc4_++;
+            item = new DDTMatchRedPacketItem(1,i);
+            _vBoxAll.addChild(item);
+            item.info = allList[i];
+            _allRedPacketVec.push(item);
+            i++;
          }
          _listAllPanel.setView(_vBoxAll);
          _listAllPanel.invalidateViewport();
          _playerRedPacketVec = new Vector.<DDTMatchRedPacketItem>();
          _vBoxPlayer.removeAllChild();
-         _loc3_ = 0;
-         while(_loc3_ < playerList.length)
+         for(j = 0; j < playerList.length; )
          {
-            _loc1_ = new DDTMatchRedPacketItem(2,_loc3_);
-            _vBoxPlayer.addChild(_loc1_);
-            _loc1_.info = playerList[_loc3_];
-            _playerRedPacketVec.push(_loc1_);
-            _loc3_++;
+            item1 = new DDTMatchRedPacketItem(2,j);
+            _vBoxPlayer.addChild(item1);
+            item1.info = playerList[j];
+            _playerRedPacketVec.push(item1);
+            j++;
          }
          _listPlayerPanel.setView(_vBoxPlayer);
          _listPlayerPanel.invalidateViewport();
       }
       
-      private function __sendPacketBtnHandler(param1:MouseEvent) : void
+      private function __sendPacketBtnHandler(e:MouseEvent) : void
       {
          sendView = ComponentFactory.Instance.creatComponentByStylename("redPacketSendViewFrame");
          sendView.addEventListener("response",__respose);
          LayerManager.Instance.addToLayer(sendView,3,true,2);
       }
       
-      private function __respose(param1:FrameEvent) : void
+      private function __respose(e:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(e.responseCode == 0 || e.responseCode == 1)
          {
             sendView.parent.removeChild(sendView);
          }

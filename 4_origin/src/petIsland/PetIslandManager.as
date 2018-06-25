@@ -59,17 +59,17 @@ package petIsland
          dispatchEvent(new Event("showMainView"));
       }
       
-      private function initHandler(param1:CrazyTankSocketEvent) : void
+      private function initHandler(e:CrazyTankSocketEvent) : void
       {
-         var _loc6_:int = 0;
-         var _loc2_:int = 0;
-         var _loc4_:Boolean = false;
-         var _loc5_:PackageIn = param1.pkg;
-         var _loc3_:int = param1._cmd;
-         switch(int(_loc3_) - 186)
+         var type:int = 0;
+         var buyType:int = 0;
+         var flag:Boolean = false;
+         var pkg:PackageIn = e.pkg;
+         var cmd:int = e._cmd;
+         switch(int(cmd) - 186)
          {
             case 0:
-               model.isOpen = param1.pkg.readBoolean();
+               model.isOpen = e.pkg.readBoolean();
                if(model.isOpen)
                {
                   showEnterIcon();
@@ -84,57 +84,57 @@ package petIsland
                }
                break;
             case 1:
-               _loc6_ = param1.pkg.readInt();
-               model.openType = param1.pkg.readInt();
-               model.playerBlood = param1.pkg.readInt();
-               model.currentLevel = param1.pkg.readInt();
-               model.round = param1.pkg.readInt();
-               model.step = param1.pkg.readInt();
-               model.playerScore = param1.pkg.readInt();
-               model.npcBlood = param1.pkg.readInt();
-               model.npcScore = param1.pkg.readInt();
-               model.rewardRecord = param1.pkg.readUTF();
-               model.saveLifeCount = param1.pkg.readInt();
-               model.saveLife2Count = param1.pkg.readInt();
-               if(_loc6_ == 1)
+               type = e.pkg.readInt();
+               model.openType = e.pkg.readInt();
+               model.playerBlood = e.pkg.readInt();
+               model.currentLevel = e.pkg.readInt();
+               model.round = e.pkg.readInt();
+               model.step = e.pkg.readInt();
+               model.playerScore = e.pkg.readInt();
+               model.npcBlood = e.pkg.readInt();
+               model.npcScore = e.pkg.readInt();
+               model.rewardRecord = e.pkg.readUTF();
+               model.saveLifeCount = e.pkg.readInt();
+               model.saveLife2Count = e.pkg.readInt();
+               if(type == 1)
                {
                   show();
                }
-               else if(_loc6_ == 2)
+               else if(type == 2)
                {
                   dispatchEvent(new PetIslandEvent("refresh"));
                }
                break;
             case 2:
-               _loc2_ = param1.pkg.readInt();
-               if(_loc2_ == 1)
+               buyType = e.pkg.readInt();
+               if(buyType == 1)
                {
-                  model.saveLifeCount = param1.pkg.readInt();
+                  model.saveLifeCount = e.pkg.readInt();
                }
-               else if(_loc2_ == 2)
+               else if(buyType == 2)
                {
-                  model.saveLife2Count = param1.pkg.readInt();
+                  model.saveLife2Count = e.pkg.readInt();
                }
-               dispatchEvent(new PetIslandEvent("saveLifeCount",_loc2_));
+               dispatchEvent(new PetIslandEvent("saveLifeCount",buyType));
                break;
             default:
-               _loc2_ = param1.pkg.readInt();
-               if(_loc2_ == 1)
+               buyType = e.pkg.readInt();
+               if(buyType == 1)
                {
-                  model.saveLifeCount = param1.pkg.readInt();
+                  model.saveLifeCount = e.pkg.readInt();
                }
-               else if(_loc2_ == 2)
+               else if(buyType == 2)
                {
-                  model.saveLife2Count = param1.pkg.readInt();
+                  model.saveLife2Count = e.pkg.readInt();
                }
-               dispatchEvent(new PetIslandEvent("saveLifeCount",_loc2_));
+               dispatchEvent(new PetIslandEvent("saveLifeCount",buyType));
                break;
             case 4:
-               model.rewardRecord = param1.pkg.readUTF();
+               model.rewardRecord = e.pkg.readUTF();
                break;
             case 5:
-               _loc4_ = param1.pkg.readBoolean();
-               dispatchEvent(new PetIslandEvent("stepChange",_loc4_));
+               flag = e.pkg.readBoolean();
+               dispatchEvent(new PetIslandEvent("stepChange",flag));
          }
       }
       

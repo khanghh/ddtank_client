@@ -78,9 +78,9 @@ package fightLib.view
          return "fightLabGameView";
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
-         super.enter(param1,param2);
+         super.enter(prev,data);
          initScript();
          closeShowTurn();
          blockFly();
@@ -113,19 +113,19 @@ package fightLib.view
          FightLibManager.Instance.currentInfo = null;
       }
       
-      override public function updateControlBarState(param1:Living) : void
+      override public function updateControlBarState(info:Living) : void
       {
          setPropBarClickEnable(false,true);
       }
       
-      private function __reAnswer(param1:MouseEvent) : void
+      private function __reAnswer(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          GameInSocketOut.sendFightLibReanswer();
          FightLibManager.Instance.reAnswerNum--;
       }
       
-      private function __viewTutorial(param1:MouseEvent) : void
+      private function __viewTutorial(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          FightLibControl.Instance.script.restart();
@@ -243,9 +243,9 @@ package fightLib.view
          _barrier.addEventListener("DungeonHelpVisibleChanged",__dungeonHelpChanged);
          _barrier.addEventListener("updateSmallMapView",__updateSmallMapView);
          _missionHelp = new DungeonHelpView(_map.smallMap.titleBar.turnButton,_barrier,this);
-         var _loc1_:Point = ComponentFactory.Instance.creatCustomObject("asset.game.DungeonHelpViewPos");
-         _missionHelp.x = _loc1_.x;
-         _missionHelp.y = _loc1_.y;
+         var pos:Point = ComponentFactory.Instance.creatCustomObject("asset.game.DungeonHelpViewPos");
+         _missionHelp.x = pos.x;
+         _missionHelp.y = pos.y;
          addChild(_missionHelp);
          setTimeout(openShowTurn,3000);
       }
@@ -317,7 +317,7 @@ package fightLib.view
          addEventListener("enterFrame",onMoviePlay);
       }
       
-      private function onMoviePlay(param1:Event) : void
+      private function onMoviePlay(e:Event) : void
       {
          if(_guildMc.currentLabel == "end")
          {
@@ -338,17 +338,17 @@ package fightLib.view
          StageReferance.stage.addEventListener("mouseUp",__downHandler);
       }
       
-      private function __downHandler(param1:MouseEvent) : void
+      private function __downHandler(evt:MouseEvent) : void
       {
          if(!_map.smallMap.__StartDrag)
          {
             return;
          }
-         var _loc3_:int = _map.smallMap.screen.x;
-         var _loc5_:int = _map.smallMap.screenX;
-         var _loc4_:int = _map.smallMap.screen.y;
-         var _loc2_:int = _map.smallMap.screenY;
-         if(_loc3_ == _loc5_ && _loc4_ == _loc2_)
+         var _x:int = _map.smallMap.screen.x;
+         var _X:int = _map.smallMap.screenX;
+         var _y:int = _map.smallMap.screen.y;
+         var _Y:int = _map.smallMap.screenY;
+         if(_x == _X && _y == _Y)
          {
             return;
          }
@@ -356,7 +356,7 @@ package fightLib.view
          _script.continueScript();
       }
       
-      override protected function __playerChange(param1:CrazyTankSocketEvent) : void
+      override protected function __playerChange(event:CrazyTankSocketEvent) : void
       {
          if(!_scriptStarted)
          {
@@ -365,7 +365,7 @@ package fightLib.view
          }
          if(_shouldShowTurn)
          {
-            super.__playerChange(param1);
+            super.__playerChange(event);
          }
       }
       
@@ -384,37 +384,37 @@ package fightLib.view
          GameInSocketOut.sendClientScriptEnd();
       }
       
-      private function __popupQuestionFrame(param1:CrazyTankSocketEvent) : void
+      private function __popupQuestionFrame(evt:CrazyTankSocketEvent) : void
       {
-         var _loc9_:int = 0;
-         var _loc12_:int = 0;
-         var _loc3_:int = 0;
-         var _loc10_:int = 0;
-         var _loc2_:int = 0;
-         var _loc11_:* = null;
-         var _loc13_:* = null;
-         var _loc6_:* = null;
-         var _loc8_:* = null;
-         var _loc7_:* = null;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc5_:Boolean = _loc4_.readBoolean();
-         if(_loc5_)
+         var id:int = 0;
+         var hasAnswered:int = 0;
+         var needAnswer:int = 0;
+         var questionNumber:int = 0;
+         var timeLimit:int = 0;
+         var title:* = null;
+         var question:* = null;
+         var answer1:* = null;
+         var answer2:* = null;
+         var answer3:* = null;
+         var pkg:PackageIn = evt.pkg;
+         var pop:Boolean = pkg.readBoolean();
+         if(pop)
          {
-            _loc9_ = _loc4_.readInt();
-            _loc12_ = _loc4_.readInt();
-            _loc3_ = _loc4_.readInt();
-            _loc10_ = _loc4_.readInt();
-            _loc2_ = _loc4_.readInt();
-            _loc11_ = _loc4_.readUTF();
-            _loc13_ = _loc4_.readUTF();
-            _loc6_ = _loc4_.readUTF();
-            _loc8_ = _loc4_.readUTF();
-            _loc7_ = _loc4_.readUTF();
+            id = pkg.readInt();
+            hasAnswered = pkg.readInt();
+            needAnswer = pkg.readInt();
+            questionNumber = pkg.readInt();
+            timeLimit = pkg.readInt();
+            title = pkg.readUTF();
+            question = pkg.readUTF();
+            answer1 = pkg.readUTF();
+            answer2 = pkg.readUTF();
+            answer3 = pkg.readUTF();
             if(_frame)
             {
                _frame.close();
             }
-            _frame = ComponentFactory.Instance.creatCustomObject("fightLib.view.FightLibQuestionFrame",[_loc9_,_loc11_,_loc12_,_loc3_,_loc10_,_loc13_,_loc6_,_loc8_,_loc7_,_loc2_]);
+            _frame = ComponentFactory.Instance.creatCustomObject("fightLib.view.FightLibQuestionFrame",[id,title,hasAnswered,needAnswer,questionNumber,question,answer1,answer2,answer3,timeLimit]);
             _frame.show();
          }
          else if(_frame)
@@ -449,18 +449,18 @@ package fightLib.view
          _map.setCenter(_selfGamePlayer.pos.x + 1500,_selfGamePlayer.pos.y,false);
       }
       
-      override public function addliving(param1:CrazyTankSocketEvent) : void
+      override public function addliving(event:CrazyTankSocketEvent) : void
       {
-         super.addliving(param1);
+         super.addliving(event);
          if(_isWaittingToAttack)
          {
             var _loc4_:int = 0;
             var _loc3_:* = _gameInfo.livings;
-            for each(var _loc2_ in _gameInfo.livings)
+            for each(var living in _gameInfo.livings)
             {
-               if(!(_loc2_ is Player))
+               if(!(living is Player))
                {
-                  _loc2_.addEventListener("die",continueScript);
+                  living.addEventListener("die",continueScript);
                }
             }
          }
@@ -471,7 +471,7 @@ package fightLib.view
          _isWaittingToAttack = true;
       }
       
-      public function continueScript(param1:LivingEvent) : void
+      public function continueScript(evt:LivingEvent) : void
       {
          if(FightLibManager.Instance.isWork == true)
          {
@@ -481,11 +481,11 @@ package fightLib.view
          _isWaittingToAttack = false;
          var _loc4_:int = 0;
          var _loc3_:* = _gameInfo.livings;
-         for each(var _loc2_ in _gameInfo.livings)
+         for each(var living in _gameInfo.livings)
          {
-            if(!(_loc2_ is Player))
+            if(!(living is Player))
             {
-               _loc2_.removeEventListener("die",continueScript);
+               living.removeEventListener("die",continueScript);
             }
          }
          _script.continueScript();
@@ -569,13 +569,12 @@ package fightLib.view
       
       override public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          super.dispose();
-         _loc1_ = LayerManager.Instance.getLayerByType(1).numChildren;
-         while(_loc1_ > 0)
+         for(i = LayerManager.Instance.getLayerByType(1).numChildren; i > 0; )
          {
             LayerManager.Instance.getLayerByType(1).removeChildAt(0);
-            _loc1_--;
+            i--;
          }
          removeEvents();
          if(_frame)
@@ -601,7 +600,7 @@ package fightLib.view
          }
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
          _scriptStarted = false;
          _isWaittingToAttack = false;
@@ -609,11 +608,11 @@ package fightLib.view
          StageReferance.stage.removeEventListener("mouseUp",__downHandler);
          var _loc4_:int = 0;
          var _loc3_:* = _gameInfo.livings;
-         for each(var _loc2_ in _gameInfo.livings)
+         for each(var living in _gameInfo.livings)
          {
-            if(!(_loc2_ is Player))
+            if(!(living is Player))
             {
-               _loc2_.removeEventListener("die",continueScript);
+               living.removeEventListener("die",continueScript);
             }
          }
          if(_frame)
@@ -637,7 +636,7 @@ package fightLib.view
             _script.dispose();
             _script = null;
          }
-         super.leaving(param1);
+         super.leaving(next);
          GameControl.Instance.reset();
       }
    }

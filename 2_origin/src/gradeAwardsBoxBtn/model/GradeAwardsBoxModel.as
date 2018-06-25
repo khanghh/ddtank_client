@@ -12,7 +12,7 @@ package gradeAwardsBoxBtn.model
       private static var instance:GradeAwardsBoxModel;
        
       
-      public function GradeAwardsBoxModel(param1:inner)
+      public function GradeAwardsBoxModel(single:inner)
       {
          super();
       }
@@ -28,18 +28,18 @@ package gradeAwardsBoxBtn.model
       
       public function getGradeAwardsBoxInfo() : InventoryItemInfo
       {
-         var _loc3_:* = null;
-         var _loc1_:BagInfo = PlayerManager.Instance.Self.PropBag;
-         if(_loc1_ != null)
+         var itemInfos:* = null;
+         var bagInfo:BagInfo = PlayerManager.Instance.Self.PropBag;
+         if(bagInfo != null)
          {
-            _loc3_ = _loc1_.items;
+            itemInfos = bagInfo.items;
             var _loc6_:int = 0;
-            var _loc5_:* = _loc3_;
+            var _loc5_:* = itemInfos;
             while(true)
             {
-               for each(var _loc2_ in _loc3_)
+               for each(var i in itemInfos)
                {
-                  var _loc4_:* = _loc2_["TemplateID"];
+                  var _loc4_:* = i["TemplateID"];
                   if(1120098 !== _loc4_)
                   {
                      if(1120099 !== _loc4_)
@@ -53,112 +53,112 @@ package gradeAwardsBoxBtn.model
                         }
                         else
                         {
-                           addr34:
+                           addr43:
                         }
-                        return _loc2_ as InventoryItemInfo;
+                        return i as InventoryItemInfo;
                      }
                      break;
                   }
                   break;
                }
             }
-            §§goto(addr34);
+            §§goto(addr43);
          }
          return null;
       }
       
-      public function isTheLastBoxBtn(param1:InventoryItemInfo) : Boolean
+      public function isTheLastBoxBtn(itemInfo:InventoryItemInfo) : Boolean
       {
-         if(param1.TemplateID == 1120101)
+         if(itemInfo.TemplateID == 1120101)
          {
             return true;
          }
          return false;
       }
       
-      public function canGainGradeAwardsOnButtonClicked(param1:InventoryItemInfo) : int
+      public function canGainGradeAwardsOnButtonClicked(itemInfo:InventoryItemInfo) : int
       {
-         var _loc2_:int = PlayerManager.Instance.Self.Grade;
-         if(param1 != null && !isNaN(param1.getRemainDate()) && param1.getRemainDate() <= 0)
+         var playerLevel:int = PlayerManager.Instance.Self.Grade;
+         if(itemInfo != null && !isNaN(itemInfo.getRemainDate()) && itemInfo.getRemainDate() <= 0)
          {
             return 0;
          }
-         if(canGain(param1) == false)
+         if(canGain(itemInfo) == false)
          {
             return 1;
          }
          return 2;
       }
       
-      public function canGain(param1:InventoryItemInfo) : Boolean
+      public function canGain(info:InventoryItemInfo) : Boolean
       {
-         return param1.NeedLevel <= PlayerManager.Instance.Self.Grade;
+         return info.NeedLevel <= PlayerManager.Instance.Self.Grade;
       }
       
-      public function isShowGradeAwardsBtn(param1:InventoryItemInfo = null) : Boolean
+      public function isShowGradeAwardsBtn(info:InventoryItemInfo = null) : Boolean
       {
-         if(param1 != null && !isNaN(param1.getRemainDate()) && param1.getRemainDate() > 0)
+         if(info != null && !isNaN(info.getRemainDate()) && info.getRemainDate() > 0)
          {
             return true;
          }
          return false;
       }
       
-      public function getRemainTime(param1:InventoryItemInfo) : String
+      public function getRemainTime(_info:InventoryItemInfo) : String
       {
-         var _loc4_:* = null;
-         var _loc5_:Number = NaN;
-         var _loc6_:* = null;
-         var _loc9_:Number = NaN;
-         var _loc12_:Number = NaN;
-         var _loc10_:* = null;
-         var _loc8_:* = NaN;
-         var _loc7_:* = null;
-         var _loc2_:* = null;
-         var _loc11_:String = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.less");
-         var _loc14_:String = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.time");
-         var _loc15_:String = LanguageMgr.GetTranslation("minute2");
-         var _loc3_:String = LanguageMgr.GetTranslation("hour2");
-         var _loc13_:String = LanguageMgr.GetTranslation("shop.ShopIIShoppingCarItem.day");
-         if(param1 is InventoryItemInfo)
+         var timeStr:* = null;
+         var tempReman:Number = NaN;
+         var tempInfo:* = null;
+         var remain:Number = NaN;
+         var colorDate:Number = NaN;
+         var str:* = null;
+         var hour:* = NaN;
+         var hh:* = null;
+         var mm:* = null;
+         var wordRemain:String = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.less");
+         var wordUseBefore:String = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.time");
+         var wordMinute:String = LanguageMgr.GetTranslation("minute2");
+         var wordHours:String = LanguageMgr.GetTranslation("hour2");
+         var wordDays:String = LanguageMgr.GetTranslation("shop.ShopIIShoppingCarItem.day");
+         if(_info is InventoryItemInfo)
          {
-            _loc6_ = param1 as InventoryItemInfo;
-            _loc9_ = _loc6_.getRemainDate();
-            _loc12_ = _loc6_.getColorValidDate();
-            _loc10_ = _loc6_.CategoryID == 7?LanguageMgr.GetTranslation("bag.changeColor.tips.armName"):"";
-            if(_loc12_ > 0 && _loc12_ != 2147483647)
+            tempInfo = _info as InventoryItemInfo;
+            remain = tempInfo.getRemainDate();
+            colorDate = tempInfo.getColorValidDate();
+            str = tempInfo.CategoryID == 7?LanguageMgr.GetTranslation("bag.changeColor.tips.armName"):"";
+            if(colorDate > 0 && colorDate != 2147483647)
             {
-               if(_loc12_ >= 1)
+               if(colorDate >= 1)
                {
-                  _loc4_ = (!!_loc6_.IsUsed?LanguageMgr.GetTranslation("bag.changeColor.tips.name") + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.less"):LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.time")) + Math.ceil(_loc12_) + LanguageMgr.GetTranslation("shop.ShopIIShoppingCarItem.day");
+                  timeStr = (!!tempInfo.IsUsed?LanguageMgr.GetTranslation("bag.changeColor.tips.name") + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.less"):LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.time")) + Math.ceil(colorDate) + LanguageMgr.GetTranslation("shop.ShopIIShoppingCarItem.day");
                }
                else
                {
-                  _loc8_ = Number(Math.floor(_loc12_ * 24));
-                  if(_loc8_ < 1)
+                  hour = Number(Math.floor(colorDate * 24));
+                  if(hour < 1)
                   {
-                     _loc8_ = 1;
+                     hour = 1;
                   }
-                  _loc4_ = (!!_loc6_.IsUsed?LanguageMgr.GetTranslation("bag.changeColor.tips.name") + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.less"):LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.time")) + _loc8_ + LanguageMgr.GetTranslation("hours");
+                  timeStr = (!!tempInfo.IsUsed?LanguageMgr.GetTranslation("bag.changeColor.tips.name") + LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.less"):LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.time")) + hour + LanguageMgr.GetTranslation("hours");
                }
             }
-            if(_loc9_ == 2147483647)
+            if(remain == 2147483647)
             {
-               _loc4_ = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.use");
+               timeStr = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.use");
             }
-            else if(_loc9_ > 0)
+            else if(remain > 0)
             {
-               _loc7_ = (int(_loc9_ * 24)).toString();
-               _loc2_ = (int((_loc9_ * 24 - Math.floor(_loc9_ * 24)) * 60)).toString();
-               _loc5_ = Math.ceil(_loc9_);
-               _loc4_ = (!!_loc6_.IsUsed?_loc10_ + _loc11_:_loc14_) + _loc7_ + _loc3_ + _loc2_ + _loc15_;
+               hh = (int(remain * 24)).toString();
+               mm = (int((remain * 24 - Math.floor(remain * 24)) * 60)).toString();
+               tempReman = Math.ceil(remain);
+               timeStr = (!!tempInfo.IsUsed?str + wordRemain:wordUseBefore) + hh + wordHours + mm + wordMinute;
             }
-            else if(!isNaN(_loc9_))
+            else if(!isNaN(remain))
             {
-               _loc4_ = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.over");
+               timeStr = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.over");
             }
          }
-         return _loc4_;
+         return timeStr;
       }
    }
 }

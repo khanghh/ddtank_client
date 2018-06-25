@@ -129,19 +129,19 @@ package gameStarling.objects
       
       private var labelMapping:Dictionary;
       
-      public function GamePlayer3D(param1:Player, param2:ShowCharacter, param3:GameCharacter3D = null, param4:int = 0)
+      public function GamePlayer3D(player:Player, character:ShowCharacter, movie:GameCharacter3D = null, templeId:int = 0)
       {
          UsedPetSkill = new DictionaryData();
          labelMapping = new Dictionary();
-         _character = param2;
-         _body = param3;
-         super(param1);
+         _character = character;
+         _body = movie;
+         super(player);
          initBuff();
          GameControl.OBJECT = this;
          _ballpos = new Point(30,-20);
-         if(param1.currentPet && GameControl.Instance.Current.roomType != 120 && GameControl.Instance.Current.roomType != 123 && GameControl.Instance.Current.gameMode != 120)
+         if(player.currentPet && GameControl.Instance.Current.roomType != 120 && GameControl.Instance.Current.roomType != 123 && GameControl.Instance.Current.gameMode != 120)
          {
-            _petMovie = new GamePetMovie3D(param1.currentPet.petInfo,this);
+            _petMovie = new GamePetMovie3D(player.currentPet.petInfo,this);
          }
       }
       
@@ -153,13 +153,13 @@ package gameStarling.objects
       {
       }
       
-      public function replacePlayerSource(param1:ShowCharacter, param2:GameCharacter3D) : void
+      public function replacePlayerSource(character:ShowCharacter, movie:GameCharacter3D) : void
       {
-         _character = param1;
-         _body = param2;
+         _character = character;
+         _body = movie;
       }
       
-      protected function __playPlayerEffect(param1:Event) : void
+      protected function __playPlayerEffect(event:Event) : void
       {
          if(ModuleLoader.hasDefinition(_currentPetSkill.EffectClassLink))
          {
@@ -174,7 +174,7 @@ package gameStarling.objects
       
       override protected function initView() : void
       {
-         var _loc1_:* = null;
+         var tmpItemInfo:* = null;
          bodyHeight = 55;
          super.initView();
          _player = new Sprite();
@@ -223,10 +223,10 @@ package gameStarling.objects
          _facecontainer.setNickName(_nickName.text);
          if(_info.playerInfo.pvpBadgeId != 0)
          {
-            _loc1_ = ItemManager.Instance.getTemplateById(_info.playerInfo.pvpBadgeId);
-            if(_loc1_)
+            tmpItemInfo = ItemManager.Instance.getTemplateById(_info.playerInfo.pvpBadgeId);
+            if(tmpItemInfo)
             {
-               _badgeIcon = StarlingMain.instance.createImage("asset.game.badgeIcon" + _loc1_.TemplateID.toString());
+               _badgeIcon = StarlingMain.instance.createImage("asset.game.badgeIcon" + tmpItemInfo.TemplateID.toString());
                _badgeIcon.x = -8;
                _badgeIcon.y = -73;
                _player.addChild(_badgeIcon);
@@ -240,18 +240,18 @@ package gameStarling.objects
       
       private function updatePlayerTitle() : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var gameInfo:* = null;
+         var self:* = null;
+         var titleModel:* = null;
          if(player.playerInfo.IsShowConsortia && player.playerInfo.ConsortiaID > 0)
          {
             _consortiaName = new TextLabel("GameLiving.ConsortiaName");
             _consortiaName.text = player.playerInfo.ConsortiaName;
             if(player.playerInfo.ConsortiaID != 0)
             {
-               _loc3_ = GameControl.Instance.Current;
-               _loc2_ = PlayerManager.Instance.Self;
-               if(_loc2_.ConsortiaID == 0 || _loc2_.ConsortiaID == player.playerInfo.ConsortiaID && _loc2_.ZoneID == player.playerInfo.ZoneID || _loc3_ && _loc3_.gameMode == 2)
+               gameInfo = GameControl.Instance.Current;
+               self = PlayerManager.Instance.Self;
+               if(self.ConsortiaID == 0 || self.ConsortiaID == player.playerInfo.ConsortiaID && self.ZoneID == player.playerInfo.ZoneID || gameInfo && gameInfo.gameMode == 2)
                {
                   _consortiaName.setFrame(3);
                }
@@ -271,10 +271,10 @@ package gameStarling.objects
          }
          else if(player.playerInfo.honor != "" && (StateManager.currentStateType == "fighting3d" || StateManager.currentStateType == "dungeonRoom"))
          {
-            _loc1_ = NewTitleManager.instance.getTitleByName(player.playerInfo.honor);
-            if(_loc1_ && _loc1_.Show != "0" && _loc1_.Pic != "0")
+            titleModel = NewTitleManager.instance.getTitleByName(player.playerInfo.honor);
+            if(titleModel && titleModel.Show != "0" && titleModel.Pic != "0")
             {
-               _newTitle = StarlingMain.instance.createImage("image_title_" + _loc1_.Pic);
+               _newTitle = StarlingMain.instance.createImage("image_title_" + titleModel.Pic);
                _newTitle.x = -_newTitle.width / 2;
                _newTitle.y = _player.y - _player.height - _newTitle.height + 20;
                addChild(_newTitle);
@@ -299,8 +299,8 @@ package gameStarling.objects
       
       private function initBuff() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var buff:* = null;
          if(_info)
          {
             _info.turnBuffs = _info.outTurnBuffs;
@@ -315,12 +315,12 @@ package gameStarling.objects
             {
                _buffBar.parent.removeChild(_buffBar);
             }
-            _loc2_ = 0;
-            while(_loc2_ < _info.turnBuffs.length)
+            i = 0;
+            while(i < _info.turnBuffs.length)
             {
-               _loc1_ = _info.turnBuffs[_loc2_];
-               _loc1_.execute(this.info);
-               _loc2_++;
+               buff = _info.turnBuffs[i];
+               buff.execute(this.info);
+               i++;
             }
          }
       }
@@ -349,10 +349,10 @@ package gameStarling.objects
          }
       }
       
-      protected function __playerDoAction(param1:LivingEvent) : void
+      protected function __playerDoAction(event:LivingEvent) : void
       {
-         var _loc2_:* = param1.paras[0];
-         doAction(_loc2_);
+         var actionType:* = event.paras[0];
+         doAction(actionType);
       }
       
       override public function get movie() : Sprite
@@ -360,7 +360,7 @@ package gameStarling.objects
          return _player;
       }
       
-      protected function __boxPickHandler(param1:LivingEvent) : void
+      protected function __boxPickHandler(e:LivingEvent) : void
       {
          if(PlayerManager.Instance.Self.FightBag.itemNumber > 3)
          {
@@ -368,78 +368,78 @@ package gameStarling.objects
          }
       }
       
-      override protected function __applySkill(param1:LivingEvent) : void
+      override protected function __applySkill(event:LivingEvent) : void
       {
-         var _loc3_:Array = param1.paras;
-         var _loc2_:int = _loc3_[0];
-         switch(int(_loc2_) - 6)
+         var paras:Array = event.paras;
+         var skill:int = paras[0];
+         switch(int(skill) - 6)
          {
             case 0:
-               applyResolveHurt(_loc3_[1]);
+               applyResolveHurt(paras[1]);
                break;
             case 1:
-               applyRevert(_loc3_[1]);
+               applyRevert(paras[1]);
          }
       }
       
-      private function applyRevert(param1:PackageIn) : void
+      private function applyRevert(pkg:PackageIn) : void
       {
          map.animateSet.addAnimation(new BaseSetCenterAnimation(x,y - 150,1,false,2));
-         map.act(new RevertAction(map.spellKill(this),player,param1));
+         map.act(new RevertAction(map.spellKill(this),player,pkg));
       }
       
-      private function applyResolveHurt(param1:PackageIn) : void
+      private function applyResolveHurt(pkg:PackageIn) : void
       {
          map.animateSet.addAnimation(new BaseSetCenterAnimation(x,y - 150,1,false,2));
-         map.act(new ResolveHurtAction(map.spellKill(this),player,param1));
+         map.act(new ResolveHurtAction(map.spellKill(this),player,pkg));
       }
       
-      protected function __addState(param1:LivingEvent) : void
+      protected function __addState(event:LivingEvent) : void
       {
       }
       
-      protected function __useSkillHandler(param1:LivingEvent) : void
+      protected function __useSkillHandler(event:LivingEvent) : void
       {
-         var _loc2_:HorseSkillVo = HorseManager.instance.getHorseSkillInfoById(param1.paras[0]);
-         if(_loc2_ && _loc2_.isActiveSkill && _loc2_.Pic != "-1")
+         var horseSkillVo:HorseSkillVo = HorseManager.instance.getHorseSkillInfoById(event.paras[0]);
+         if(horseSkillVo && horseSkillVo.isActiveSkill && horseSkillVo.Pic != "-1")
          {
-            _propArray.push(_loc2_.Pic);
+            _propArray.push(horseSkillVo.Pic);
             doUseItemAnimation();
          }
       }
       
-      protected function __usingItem(param1:LivingEvent) : void
+      protected function __usingItem(event:LivingEvent) : void
       {
-         var _loc2_:* = null;
-         if(param1.paras[0] is ItemTemplateInfo)
+         var prop:* = null;
+         if(event.paras[0] is ItemTemplateInfo)
          {
-            _loc2_ = param1.paras[0];
-            _propArray.push(_loc2_.Pic);
-            doUseItemAnimation(EquipType.hasPropAnimation(param1.paras[0]) != null);
+            prop = event.paras[0];
+            _propArray.push(prop.Pic);
+            doUseItemAnimation(EquipType.hasPropAnimation(event.paras[0]) != null);
          }
-         else if(param1.paras[0] is CellContent3D)
+         else if(event.paras[0] is CellContent3D)
          {
-            _propArray.push(param1.paras[0]);
+            _propArray.push(event.paras[0]);
             doUseItemAnimation();
          }
       }
       
-      protected function __usingSpecialKill(param1:LivingEvent) : void
+      protected function __usingSpecialKill(event:LivingEvent) : void
       {
          _propArray.push("-1");
          doUseItemAnimation();
       }
       
-      override protected function doUseItemAnimation(param1:Boolean = false) : void
+      override protected function doUseItemAnimation(skip:Boolean = false) : void
       {
-         super.doUseItemAnimation(param1);
+         super.doUseItemAnimation(skip);
          if(_isLiving)
          {
             doAction(_body.handClipAction);
          }
       }
       
-      protected function __danderChanged(param1:LivingEvent) : void
+      protected function __danderChanged(event:LivingEvent) : void
       {
          StarlingObjectUtils.disposeObject(_danderFire);
          _danderFire = null;
@@ -453,7 +453,7 @@ package gameStarling.objects
          }
       }
       
-      override protected function __posChanged(param1:LivingEvent) : void
+      override protected function __posChanged(event:LivingEvent) : void
       {
          pos = player.pos;
          (_chatballview as ChatBallPlayer3D).setPos(popPos.x,popPos.y);
@@ -471,17 +471,17 @@ package gameStarling.objects
          player.dispatchEvent(new LivingEvent("checkCollide"));
       }
       
-      protected function __checkCollide(param1:LivingEvent) : void
+      protected function __checkCollide(event:LivingEvent) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var rect:* = null;
+         var phyObj:* = null;
+         var phyObj2:* = null;
          if(map)
          {
-            _loc4_ = getCollideRect();
-            _loc4_.offset(pos.x,pos.y);
-            _loc3_ = _map.getSceneEffectPhysicalObject(_loc4_,this) as GameSceneEffect3D;
-            if(_loc3_ && _loc3_.Id == SceneEffectObj.Hide && !_loc3_.isDie)
+            rect = getCollideRect();
+            rect.offset(pos.x,pos.y);
+            phyObj = _map.getSceneEffectPhysicalObject(rect,this) as GameSceneEffect3D;
+            if(phyObj && phyObj.Id == SceneEffectObj.Hide && !phyObj.isDie)
             {
                player.isFog = true;
             }
@@ -491,8 +491,8 @@ package gameStarling.objects
             }
             if(player.isSelf)
             {
-               _loc2_ = _map.getSceneEffectPhysicalObjectCircle(_loc4_,this) as GameSceneEffect3D;
-               if(_loc2_ && _loc2_.Id == SceneEffectObj.RedDead && !_loc2_.isDie)
+               phyObj2 = _map.getSceneEffectPhysicalObjectCircle(rect,this) as GameSceneEffect3D;
+               if(phyObj2 && phyObj2.Id == SceneEffectObj.RedDead && !phyObj2.isDie)
                {
                   player.isRedSkull = true;
                }
@@ -504,33 +504,33 @@ package gameStarling.objects
          }
       }
       
-      private function __isRedSkullChanged(param1:LivingEvent) : void
+      private function __isRedSkullChanged(event:LivingEvent) : void
       {
-         var _loc3_:PackageIn = new PackageIn();
-         _loc3_.writeInt(2);
-         _loc3_.writeBoolean(player.isRedSkull);
-         _loc3_.writeInt(player.playerInfo.ID);
-         _loc3_.position = 0;
-         var _loc2_:CrazyTankSocketEvent = new CrazyTankSocketEvent("add_animation",_loc3_);
-         SocketManager.Instance.dispatchEvent(_loc2_);
+         var pkg:PackageIn = new PackageIn();
+         pkg.writeInt(2);
+         pkg.writeBoolean(player.isRedSkull);
+         pkg.writeInt(player.playerInfo.ID);
+         pkg.position = 0;
+         var evt:CrazyTankSocketEvent = new CrazyTankSocketEvent("add_animation",pkg);
+         SocketManager.Instance.dispatchEvent(evt);
       }
       
       public function playerMove() : void
       {
       }
       
-      override protected function __dirChanged(param1:LivingEvent) : void
+      override protected function __dirChanged(event:LivingEvent) : void
       {
-         super.__dirChanged(param1);
+         super.__dirChanged(event);
          if(!player.isLiving)
          {
             setSoulPos();
          }
       }
       
-      override protected function __attackingChanged(param1:LivingEvent) : void
+      override protected function __attackingChanged(event:LivingEvent) : void
       {
-         super.__attackingChanged(param1);
+         super.__attackingChanged(event);
          attackingViewChanged();
       }
       
@@ -547,9 +547,9 @@ package gameStarling.objects
          }
       }
       
-      override protected function __hiddenChanged(param1:LivingEvent) : void
+      override protected function __hiddenChanged(event:LivingEvent) : void
       {
-         super.__hiddenChanged(param1);
+         super.__hiddenChanged(event);
          if(_info.isHidden)
          {
             if(_chatballview)
@@ -559,52 +559,52 @@ package gameStarling.objects
          }
       }
       
-      override protected function __say(param1:LivingEvent) : void
+      override protected function __say(event:LivingEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
+         var data:* = null;
+         var type:int = 0;
          if(!_info.isHidden)
          {
-            _loc2_ = param1.paras[0];
-            _loc3_ = 0;
-            if(param1.paras[1])
+            data = event.paras[0];
+            type = 0;
+            if(event.paras[1])
             {
-               _loc3_ = param1.paras[1];
+               type = event.paras[1];
             }
-            if(_loc3_ != 9)
+            if(type != 9)
             {
-               _loc3_ = player.playerInfo.paopaoType;
+               type = player.playerInfo.paopaoType;
             }
-            say(_loc2_,_loc3_);
+            say(data,type);
          }
       }
       
-      override protected function __playDeadEffect(param1:LivingEvent) : void
+      override protected function __playDeadEffect(event:LivingEvent) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:String = param1.paras[1] as String;
-         var _loc2_:Function = param1.paras[2] as Function;
+         var warpper:* = null;
+         var deadEffect:String = event.paras[1] as String;
+         var backFun:Function = event.paras[2] as Function;
          try
          {
-            _loc4_ = new BoneMovieWrapper(_loc3_,false,true);
-            addChild(_loc4_.asDisplay);
-            _loc4_.playAction("stand",_loc2_,param1.paras[3]);
+            warpper = new BoneMovieWrapper(deadEffect,false,true);
+            addChild(warpper.asDisplay);
+            warpper.playAction("stand",backFun,event.paras[3]);
             return;
          }
          catch(error:Error)
          {
-            if(_loc2_ != null)
+            if(backFun != null)
             {
-               _loc2_(param1.paras[3]);
+               backFun(event.paras[3]);
             }
             return;
          }
       }
       
-      override protected function __bloodChanged(param1:LivingEvent) : void
+      override protected function __bloodChanged(event:LivingEvent) : void
       {
-         super.__bloodChanged(param1);
-         if(param1.paras[0] != 0)
+         super.__bloodChanged(event);
+         if(event.paras[0] != 0)
          {
             if(_isLiving)
             {
@@ -623,19 +623,19 @@ package gameStarling.objects
          updateBloodStrip();
       }
       
-      override protected function __shoot(param1:LivingEvent) : void
+      override protected function __shoot(event:LivingEvent) : void
       {
-         var _loc2_:Array = param1.paras[0];
-         player.currentBomb = _loc2_[0].Template.ID;
+         var bombs:Array = event.paras[0];
+         player.currentBomb = bombs[0].Template.ID;
          if(GameControl.Instance.Current.togetherShoot && !(this is GameLocalPlayer3D))
          {
             act(new PrepareShootAction(this));
-            act(new ShootBombAction(this,_loc2_,param1.paras[1],_info.shootInterval));
+            act(new ShootBombAction(this,bombs,event.paras[1],_info.shootInterval));
          }
          else
          {
             map.act(new PrepareShootAction(this));
-            map.act(new ShootBombAction(this,_loc2_,param1.paras[1],_info.shootInterval));
+            map.act(new ShootBombAction(this,bombs,event.paras[1],_info.shootInterval));
          }
       }
       
@@ -653,24 +653,24 @@ package gameStarling.objects
          }
       }
       
-      override protected function __beat(param1:LivingEvent) : void
+      override protected function __beat(event:LivingEvent) : void
       {
          act(new PlayerBeatAction(this));
       }
       
-      protected function __usePetSkill(param1:LivingEvent) : void
+      protected function __usePetSkill(event:LivingEvent) : void
       {
-         var _loc2_:PetSkillTemplateInfo = PetSkillManager.getSkillByID(param1.value);
-         if(_loc2_ == null)
+         var skill:PetSkillTemplateInfo = PetSkillManager.getSkillByID(event.value);
+         if(skill == null)
          {
-            throw new Error("找不到技能，技能ID为：" + param1.value);
+            throw new Error("找不到技能，技能ID为：" + event.value);
          }
-         if(_loc2_.isActiveSkill)
+         if(skill.isActiveSkill)
          {
-            switch(int(_loc2_.BallType))
+            switch(int(skill.BallType))
             {
                case 0:
-                  usePetSkill(_loc2_);
+                  usePetSkill(skill);
                   break;
                case 1:
                   if(GameControl.Instance.Current.selfGamePlayer.team == info.team)
@@ -683,39 +683,39 @@ package gameStarling.objects
                   {
                      GameControl.Instance.Current.selfGamePlayer.soulPropEnabled = false;
                   }
-                  usePetSkill(_loc2_,skipSelfTurn);
+                  usePetSkill(skill,skipSelfTurn);
                   break;
                case 3:
-                  usePetSkill(_loc2_);
+                  usePetSkill(skill);
             }
-            UsedPetSkill.add(_loc2_.ID,_loc2_);
+            UsedPetSkill.add(skill.ID,skill);
             SoundManager.instance.play("039");
          }
       }
       
-      private function __petBeat(param1:LivingEvent) : void
+      private function __petBeat(event:LivingEvent) : void
       {
-         var _loc3_:String = param1.paras[0];
-         var _loc2_:Point = param1.paras[1];
-         var _loc4_:Array = param1.paras[2];
-         playPetMovie(_loc3_,_loc2_,updateHp,[_loc4_]);
+         var actName:String = event.paras[0];
+         var pt:Point = event.paras[1];
+         var targets:Array = event.paras[2];
+         playPetMovie(actName,pt,updateHp,[targets]);
       }
       
-      private function playPetMovie(param1:String, param2:Point, param3:Function = null, param4:Array = null) : void
+      private function playPetMovie(actName:String, pt:Point, callBack:Function = null, args:Array = null) : void
       {
          if(!_petMovie)
          {
             return;
          }
-         _petMovie.show(param2.x,param2.y);
+         _petMovie.show(pt.x,pt.y);
          _petMovie.direction = info.direction;
-         if(param3 == null)
+         if(callBack == null)
          {
-            _petMovie.doAction(param1,hidePetMovie);
+            _petMovie.doAction(actName,hidePetMovie);
          }
          else
          {
-            _petMovie.doAction(param1,param3,param4);
+            _petMovie.doAction(actName,callBack,args);
          }
       }
       
@@ -727,24 +727,24 @@ package gameStarling.objects
          }
       }
       
-      private function updateHp(param1:Array) : void
+      private function updateHp(targets:Array) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:int = 0;
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
+         var t:* = null;
+         var hp:int = 0;
+         var damage:int = 0;
+         var dander:int = 0;
          var _loc8_:int = 0;
-         var _loc7_:* = param1;
-         for each(var _loc6_ in param1)
+         var _loc7_:* = targets;
+         for each(var target in targets)
          {
-            _loc3_ = _loc6_.target;
-            _loc2_ = _loc6_.hp;
-            _loc5_ = _loc6_.damage;
-            _loc4_ = _loc6_.dander;
-            _loc3_.updateBlood(_loc2_,_loc6_.type,_loc5_);
-            if(_loc3_ is Player)
+            t = target.target;
+            hp = target.hp;
+            damage = target.damage;
+            dander = target.dander;
+            t.updateBlood(hp,target.type,damage);
+            if(t is Player)
             {
-               Player(_loc3_).dander = _loc4_;
+               Player(t).dander = dander;
             }
          }
          if(_petMovie)
@@ -753,19 +753,19 @@ package gameStarling.objects
          }
       }
       
-      public function usePetSkill(param1:PetSkillTemplateInfo, param2:Function = null) : void
+      public function usePetSkill(skill:PetSkillTemplateInfo, callback:Function = null) : void
       {
-         _currentPetSkill = param1;
+         _currentPetSkill = skill;
          if(_info && _info.isHidden && _info.team != GameControl.Instance.Current.selfGamePlayer.team)
          {
-            if(param2 != null)
+            if(callback != null)
             {
-               param2();
+               callback();
             }
          }
          else
          {
-            playPetMovie(param1.Action,_info.pos,param2);
+            playPetMovie(skill.Action,_info.pos,callback);
          }
       }
       
@@ -778,40 +778,40 @@ package gameStarling.objects
          }
       }
       
-      protected function __playerMoveTo(param1:LivingEvent) : void
+      protected function __playerMoveTo(event:LivingEvent) : void
       {
-         var _loc2_:int = param1.paras[0];
-         playerMoveTo(param1.paras);
+         var type:int = event.paras[0];
+         playerMoveTo(event.paras);
       }
       
-      override public function playerMoveTo(param1:Array) : void
+      override public function playerMoveTo(params:Array) : void
       {
-         var _loc2_:int = param1[0];
-         switch(int(_loc2_))
+         var type:int = params[0];
+         switch(int(type))
          {
             case 0:
-               act(new PlayerWalkAction(this,param1[1],param1[2],getAction("walk"),param1[5]));
+               act(new PlayerWalkAction(this,params[1],params[2],getAction("walk"),params[5]));
                break;
             case 1:
-               act(new PlayerFallingAction(this,param1[1],param1[3],false,param1[5]));
+               act(new PlayerFallingAction(this,params[1],params[3],false,params[5]));
                break;
             case 2:
-               act(new GhostMoveAction(this,param1[1],param1[4]));
+               act(new GhostMoveAction(this,params[1],params[4]));
                break;
             case 3:
-               act(new PlayerFallingAction(this,param1[1],param1[3],true,param1[5]));
+               act(new PlayerFallingAction(this,params[1],params[3],true,params[5]));
                break;
             case 4:
-               act(new PlayerWalkAction(this,param1[1],param1[2],getAction("stand"),param1[5]));
+               act(new PlayerWalkAction(this,params[1],params[2],getAction("stand"),params[5]));
          }
       }
       
-      override protected function __fall(param1:LivingEvent) : void
+      override protected function __fall(event:LivingEvent) : void
       {
-         act(new PlayerFallingAction(this,param1.paras[0],true,false));
+         act(new PlayerFallingAction(this,event.paras[0],true,false));
       }
       
-      override protected function __jump(param1:LivingEvent) : void
+      override protected function __jump(event:LivingEvent) : void
       {
       }
       
@@ -847,41 +847,41 @@ package gameStarling.objects
          return _weaponMovie;
       }
       
-      public function set weaponMovie(param1:BoneMovieWrapper) : void
+      public function set weaponMovie(value:BoneMovieWrapper) : void
       {
-         var _loc2_:* = null;
-         if(param1 != _weaponMovie)
+         var movie:* = null;
+         if(value != _weaponMovie)
          {
             StarlingObjectUtils.disposeObject(_weaponMovie);
-            _weaponMovie = param1;
+            _weaponMovie = value;
             _currentWeaponMovieAction = "";
             if(_weaponMovie)
             {
                _weaponMovie.addFrameScript("effect",creatWeaponShotAction);
                _weaponMovie.movie.stop();
-               _loc2_ = _weaponMovie.asDisplay as BoneMovieStarling;
-               _loc2_.visible = false;
-               _loc2_.x = _body.weaponX * _body.scaleX;
-               _loc2_.y = _body.weaponY * _body.scaleY;
-               _loc2_.scaleX = _body.scaleX;
-               _loc2_.scaleY = _body.scaleY;
-               _player.addChild(_loc2_);
+               movie = _weaponMovie.asDisplay as BoneMovieStarling;
+               movie.visible = false;
+               movie.x = _body.weaponX * _body.scaleX;
+               movie.y = _body.weaponY * _body.scaleY;
+               movie.scaleX = _body.scaleX;
+               movie.scaleY = _body.scaleY;
+               _player.addChild(movie);
             }
          }
       }
       
-      private function creatWeaponShotAction(param1:BoneMovieWrapper, param2:Array = null) : void
+      private function creatWeaponShotAction(boneMovie:BoneMovieWrapper, arge:Array = null) : void
       {
-         var _loc3_:BoneMovieWrapper = new BoneMovieWrapper("bonesEffect" + param2[0],true,true);
-         var _loc4_:BoneMovieStarling = _loc3_.asDisplay as BoneMovieStarling;
-         _loc4_.x = int(param2[1]) + param1.asDisplay.x;
-         _loc4_.y = int(param2[2]) + param1.asDisplay.y;
-         _loc4_.scaleX = param1.asDisplay.scaleX;
-         _loc4_.scaleY = param1.asDisplay.scaleY;
-         _player.addChild(_loc4_);
+         var effect:BoneMovieWrapper = new BoneMovieWrapper("bonesEffect" + arge[0],true,true);
+         var movie:BoneMovieStarling = effect.asDisplay as BoneMovieStarling;
+         movie.x = int(arge[1]) + boneMovie.asDisplay.x;
+         movie.y = int(arge[2]) + boneMovie.asDisplay.y;
+         movie.scaleX = boneMovie.asDisplay.scaleX;
+         movie.scaleY = boneMovie.asDisplay.scaleY;
+         _player.addChild(movie);
       }
       
-      private function checkCurrentMovie(param1:Event) : void
+      private function checkCurrentMovie(e:Event) : void
       {
          if(_weaponMovie == null)
          {
@@ -893,15 +893,15 @@ package gameStarling.objects
          }
       }
       
-      public function setWeaponMoiveActionSyc(param1:String) : void
+      public function setWeaponMoiveActionSyc(action:String) : void
       {
          if(_weaponMovie)
          {
-            _weaponMovie.playAction(param1);
+            _weaponMovie.playAction(action);
          }
          else
          {
-            _currentWeaponMovieAction = param1;
+            _currentWeaponMovieAction = action;
          }
       }
       
@@ -972,7 +972,7 @@ package gameStarling.objects
          _isNeedActRevive = false;
       }
       
-      protected function __updateNamePos(param1:Event) : void
+      protected function __updateNamePos(event:Event) : void
       {
          this.y = _tomb.y - 30;
       }
@@ -1028,7 +1028,7 @@ package gameStarling.objects
          _isNeedActRevive = false;
       }
       
-      private function insureActRevive(param1:TimerEvent) : void
+      private function insureActRevive(event:TimerEvent) : void
       {
          reviveCompleteHandler();
          if(!_isNeedActRevive)
@@ -1042,13 +1042,13 @@ package gameStarling.objects
       
       public function clearDebuff() : void
       {
-         var _loc1_:BoneMovieWrapper = new BoneMovieWrapper("bonesGameSkillClearDebuffMc",true,true);
-         addChild(_loc1_.asDisplay);
+         var tmpMc:BoneMovieWrapper = new BoneMovieWrapper("bonesGameSkillClearDebuffMc",true,true);
+         addChild(tmpMc.asDisplay);
       }
       
-      override protected function __beginNewTurn(param1:LivingEvent) : void
+      override protected function __beginNewTurn(event:LivingEvent) : void
       {
-         super.__beginNewTurn(param1);
+         super.__beginNewTurn(event);
          UsedPetSkill.clear();
          if(_isLiving)
          {
@@ -1078,34 +1078,34 @@ package gameStarling.objects
          }
       }
       
-      private function __getChat(param1:ChatEvent) : void
+      private function __getChat(evt:ChatEvent) : void
       {
          if(player.isHidden && player.team != GameControl.Instance.Current.selfGamePlayer.team)
          {
             return;
          }
-         var _loc2_:ChatData = ChatData(param1.data).clone();
-         _loc2_.msg = Helpers.deCodeString(_loc2_.msg);
-         if(_loc2_.channel == 2 || _loc2_.channel == 3)
+         var data:ChatData = ChatData(evt.data).clone();
+         data.msg = Helpers.deCodeString(data.msg);
+         if(data.channel == 2 || data.channel == 3)
          {
             return;
          }
-         if(_loc2_.zoneID == -1)
+         if(data.zoneID == -1)
          {
-            if(_loc2_.senderID == player.playerInfo.ID)
+            if(data.senderID == player.playerInfo.ID)
             {
-               say(_loc2_.msg,player.playerInfo.paopaoType);
+               say(data.msg,player.playerInfo.paopaoType);
             }
          }
-         else if(_loc2_.senderID == player.playerInfo.ID && _loc2_.zoneID == player.playerInfo.ZoneID)
+         else if(data.senderID == player.playerInfo.ID && data.zoneID == player.playerInfo.ZoneID)
          {
-            say(_loc2_.msg,player.playerInfo.paopaoType);
+            say(data.msg,player.playerInfo.paopaoType);
          }
       }
       
-      public function say(param1:String, param2:int) : void
+      public function say(msg:String, paopaoType:int) : void
       {
-         _chatballview.setText(param1,param2);
+         _chatballview.setText(msg,paopaoType);
          fitChatBallPos();
       }
       
@@ -1123,76 +1123,76 @@ package gameStarling.objects
          return null;
       }
       
-      private function __getFace(param1:ChatEvent) : void
+      private function __getFace(evt:ChatEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
+         var id:int = 0;
+         var delay:int = 0;
          if(player.isHidden && player.team != GameControl.Instance.Current.selfGamePlayer.team)
          {
             return;
          }
-         var _loc3_:Object = param1.data;
-         if(_loc3_["playerid"] == player.playerInfo.ID)
+         var data:Object = evt.data;
+         if(data["playerid"] == player.playerInfo.ID)
          {
-            _loc2_ = _loc3_["faceid"];
-            _loc4_ = _loc3_["delay"];
-            if(_loc2_ >= 49 && _loc2_ <= 74)
+            id = data["faceid"];
+            delay = data["delay"];
+            if(id >= 49 && id <= 74)
             {
-               setTimeout(showFace,_loc4_,_loc2_);
+               setTimeout(showFace,delay,id);
             }
             else
             {
-               showFace(_loc2_);
+               showFace(id);
                ChatManager.Instance.dispatchEvent(new ChatEvent("setFacecontainerLoction"));
             }
          }
       }
       
-      public function showFace(param1:int) : void
+      public function showFace(id:int) : void
       {
          if(_facecontainer == null)
          {
             return;
          }
          _facecontainer.scaleX = 1;
-         _facecontainer.setFace(param1);
+         _facecontainer.setFace(id);
       }
       
       public function shootPoint() : Point
       {
-         var _loc1_:Point = _ballpos;
-         _loc1_ = _body.localToGlobal(_loc1_);
-         _loc1_ = _map.globalToLocal(_loc1_);
-         return _loc1_;
+         var p:Point = _ballpos;
+         p = _body.localToGlobal(p);
+         p = _map.globalToLocal(p);
+         return p;
       }
       
       public function getPlayerMapPos() : Point
       {
-         var _loc1_:Point = new Point(0,0);
-         _loc1_ = _body.localToGlobal(_loc1_);
-         _loc1_ = _map.globalToLocal(_loc1_);
-         return _loc1_;
+         var p:Point = new Point(0,0);
+         p = _body.localToGlobal(p);
+         p = _map.globalToLocal(p);
+         return p;
       }
       
-      override public function doAction(param1:*, param2:Function = null, param3:Array = null) : void
+      override public function doAction(actionType:*, callback:Function = null, args:Array = null) : void
       {
-         if(param1 is PlayerAction)
+         if(actionType is PlayerAction)
          {
-            _body.doAction(param1);
+            _body.doAction(actionType);
          }
       }
       
-      override protected function __buffChanged(param1:LivingEvent) : void
+      override protected function __buffChanged(event:LivingEvent) : void
       {
-         var _loc2_:FightBuffInfo = param1.paras[1] as FightBuffInfo;
-         if(_loc2_ && _loc2_.type == 6)
+         var buff:FightBuffInfo = event.paras[1] as FightBuffInfo;
+         if(buff && buff.type == 6)
          {
-            if(_loc2_.id == 304)
+            if(buff.id == 304)
             {
-               _body.updateBuffEffect(_loc2_.id,_loc2_.Count > 0);
+               _body.updateBuffEffect(buff.id,buff.Count > 0);
             }
          }
-         super.__buffChanged(param1);
+         super.__buffChanged(event);
       }
       
       override public function dispose() : void
@@ -1279,56 +1279,56 @@ package gameStarling.objects
          super.dispose();
       }
       
-      override protected function __bombed(param1:LivingEvent) : void
+      override protected function __bombed(event:LivingEvent) : void
       {
          body.bombed();
       }
       
-      override public function setMap(param1:Map3D) : void
+      override public function setMap(map:Map3D) : void
       {
-         super.setMap(param1);
-         if(param1)
+         super.setMap(map);
+         if(map)
          {
             __posChanged(null);
          }
       }
       
-      override public function setProperty(param1:String, param2:String) : void
+      override public function setProperty(property:String, value:String) : void
       {
-         var _loc3_:Number = NaN;
-         var _loc4_:StringObject = new StringObject(param2);
-         var _loc5_:* = param1;
+         var gainEXP:Number = NaN;
+         var vo:StringObject = new StringObject(value);
+         var _loc5_:* = property;
          if("GhostGPUp" === _loc5_)
          {
-            _loc3_ = _loc4_.getInt();
-            _expView.exp = _loc3_;
+            gainEXP = vo.getInt();
+            _expView.exp = gainEXP;
             _expView.play();
             _body.doAction(GameCharacter3D.SOUL_SMILE);
          }
-         super.setProperty(param1,param2);
+         super.setProperty(property,value);
       }
       
-      public function set gainEXP(param1:int) : void
+      public function set gainEXP(value:int) : void
       {
-         _nickName.text = String(param1);
+         _nickName.text = String(value);
       }
       
-      override public function setActionMapping(param1:String, param2:String) : void
+      override public function setActionMapping(source:String, target:String) : void
       {
-         if(param1.length <= 0)
+         if(source.length <= 0)
          {
             return;
          }
-         labelMapping[param1] = param2;
+         labelMapping[source] = target;
       }
       
-      override public function getAction(param1:String) : *
+      override public function getAction(type:String) : *
       {
-         if(labelMapping[param1])
+         if(labelMapping[type])
          {
-            param1 = labelMapping[param1];
+            type = labelMapping[type];
          }
-         var _loc2_:* = param1;
+         var _loc2_:* = type;
          if("stand" !== _loc2_)
          {
             if("walk" !== _loc2_)

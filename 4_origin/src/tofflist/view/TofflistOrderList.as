@@ -37,39 +37,38 @@ package tofflist.view
          _list = null;
       }
       
-      public function items(param1:Array, param2:int = 1) : void
+      public function items($list:Array, page:int = 1) : void
       {
-         var _loc6_:int = 0;
-         var _loc3_:* = null;
-         var _loc5_:* = null;
+         var i:int = 0;
+         var item:* = null;
+         var currentItem:* = null;
          clearList();
-         if(!param1 || param1.length == 0)
+         if(!$list || $list.length == 0)
          {
             return;
          }
-         var _loc4_:int = param1.length > param2 * 8?param2 * 8:param1.length;
-         _loc6_ = (param2 - 1) * 8;
-         while(_loc6_ < _loc4_)
+         var length:int = $list.length > page * 8?page * 8:$list.length;
+         for(i = (page - 1) * 8; i < length; )
          {
-            _loc3_ = ComponentFactory.Instance.creatCustomObject("tofflist.orderItem");
-            _loc3_.index = _loc6_ + 1;
-            _loc3_.info = param1[_loc6_];
-            _list.addChild(_loc3_);
-            _items.push(_loc3_);
+            item = ComponentFactory.Instance.creatCustomObject("tofflist.orderItem");
+            item.index = i + 1;
+            item.info = $list[i];
+            _list.addChild(item);
+            _items.push(item);
             if(TofflistModel.firstMenuType == "teams" || TofflistModel.firstMenuType == "crossServerTeams")
             {
-               _loc3_.addEventListener("tofflistitemselect",__itemChange2);
+               item.addEventListener("tofflistitemselect",__itemChange2);
             }
             else
             {
-               _loc3_.addEventListener("tofflistitemselect",__itemChange);
+               item.addEventListener("tofflistitemselect",__itemChange);
             }
-            _loc6_++;
+            i++;
          }
          if(_list.getChildAt(0) is TofflistOrderItem)
          {
-            _loc5_ = _list.getChildAt(0) as TofflistOrderItem;
-            _loc5_.isSelect = true;
+            currentItem = _list.getChildAt(0) as TofflistOrderItem;
+            currentItem.isSelect = true;
          }
          else
          {
@@ -79,34 +78,34 @@ package tofflist.view
          }
       }
       
-      protected function __itemChange2(param1:TofflistEvent) : void
+      protected function __itemChange2(evt:TofflistEvent) : void
       {
          if(_currenItem)
          {
             _currenItem.isSelect = false;
          }
-         _currenItem = param1.data as TofflistOrderItem;
+         _currenItem = evt.data as TofflistOrderItem;
          TofflistModel.currentIndex = _currenItem.index;
          TofflistModel.currentTeamInfo = _currenItem.teamRankinfo;
       }
       
-      public function showHline(param1:Vector.<Point>) : void
+      public function showHline(points:Vector.<Point>) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = _items;
-         for each(var _loc2_ in _items)
+         for each(var item in _items)
          {
-            _loc2_.showHLine(param1);
+            item.showHLine(points);
          }
       }
       
-      private function __itemChange(param1:TofflistEvent) : void
+      private function __itemChange(evt:TofflistEvent) : void
       {
          if(_currenItem)
          {
             _currenItem.isSelect = false;
          }
-         _currenItem = param1.data as TofflistOrderItem;
+         _currenItem = evt.data as TofflistOrderItem;
          TofflistModel.currentConsortiaInfo = _currenItem.consortiaInfo;
          TofflistModel.currentText = _currenItem.currentText;
          TofflistModel.currentIndex = _currenItem.index;
@@ -120,16 +119,15 @@ package tofflist.view
       
       public function clearList() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         _loc2_ = 0;
-         while(_loc2_ < _items.length)
+         var i:int = 0;
+         var item:* = null;
+         for(i = 0; i < _items.length; )
          {
-            _loc1_ = _items[_loc2_] as TofflistOrderItem;
-            _loc1_.removeEventListener("tofflistitemselect",__itemChange);
-            ObjectUtils.disposeObject(_loc1_);
-            _loc1_ = null;
-            _loc2_++;
+            item = _items[i] as TofflistOrderItem;
+            item.removeEventListener("tofflistitemselect",__itemChange);
+            ObjectUtils.disposeObject(item);
+            item = null;
+            i++;
          }
          _items = new Vector.<TofflistOrderItem>();
          _currenItem = null;

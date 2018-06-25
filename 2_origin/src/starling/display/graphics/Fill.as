@@ -26,321 +26,320 @@ package starling.display.graphics
          _uvMatrix.scale(0.00390625,0.00390625);
       }
       
-      protected static function triangulate(param1:VertexList, param2:int, param3:Vector.<Number>, param4:Vector.<uint>, param5:Boolean) : void
+      protected static function triangulate(vertices:VertexList, _numVertices:int, outputVertices:Vector.<Number>, outputIndices:Vector.<uint>, isConvex:Boolean) : void
       {
-         var _loc8_:* = null;
-         var _loc21_:int = 0;
-         var _loc15_:Boolean = false;
-         var _loc20_:* = null;
-         var _loc7_:* = null;
-         var _loc6_:* = null;
-         var _loc9_:* = null;
-         var _loc12_:Number = NaN;
-         var _loc13_:Number = NaN;
-         var _loc19_:Number = NaN;
-         var _loc17_:Number = NaN;
-         var _loc16_:Number = NaN;
-         var _loc18_:Number = NaN;
-         var _loc11_:* = null;
-         var _loc10_:* = null;
-         var _loc22_:Boolean = false;
-         param1 = VertexList.clone(param1);
-         var _loc14_:Vector.<VertexList> = null;
-         if(param5 == false)
+         var currentList:* = null;
+         var iter:int = 0;
+         var flag:Boolean = false;
+         var currentNode:* = null;
+         var n0:* = null;
+         var n1:* = null;
+         var n2:* = null;
+         var v0x:Number = NaN;
+         var v0y:Number = NaN;
+         var v1x:Number = NaN;
+         var v1y:Number = NaN;
+         var v2x:Number = NaN;
+         var v2y:Number = NaN;
+         var startNode:* = null;
+         var n:* = null;
+         var found:Boolean = false;
+         vertices = VertexList.clone(vertices);
+         var openList:Vector.<VertexList> = null;
+         if(isConvex == false)
          {
-            _loc14_ = convertToSimple(param1);
+            openList = convertToSimple(vertices);
          }
          else
          {
-            _loc14_ = new Vector.<VertexList>();
-            _loc14_.push(param1);
+            openList = new Vector.<VertexList>();
+            openList.push(vertices);
          }
-         flatten(_loc14_,param3);
-         while(_loc14_.length > 0)
+         flatten(openList,outputVertices);
+         while(openList.length > 0)
          {
-            _loc8_ = _loc14_.pop();
-            if(isClockWise(_loc8_) == false)
+            currentList = openList.pop();
+            if(isClockWise(currentList) == false)
             {
-               VertexList.reverse(_loc8_);
+               VertexList.reverse(currentList);
             }
-            _loc21_ = 0;
-            _loc15_ = false;
-            _loc20_ = _loc8_.head;
-            while(_loc21_ <= param2 * 3)
+            iter = 0;
+            flag = false;
+            currentNode = currentList.head;
+            while(iter <= _numVertices * 3)
             {
-               _loc21_++;
-               _loc7_ = _loc20_.prev;
-               _loc6_ = _loc20_;
-               _loc9_ = _loc20_.next;
-               if(_loc9_.next == _loc7_)
+               iter++;
+               n0 = currentNode.prev;
+               n1 = currentNode;
+               n2 = currentNode.next;
+               if(n2.next == n0)
                {
-                  param4.push(_loc7_.index,_loc6_.index,_loc9_.index);
-                  VertexList.releaseNode(_loc7_);
-                  VertexList.releaseNode(_loc6_);
-                  VertexList.releaseNode(_loc9_);
+                  outputIndices.push(n0.index,n1.index,n2.index);
+                  VertexList.releaseNode(n0);
+                  VertexList.releaseNode(n1);
+                  VertexList.releaseNode(n2);
                   break;
                }
-               _loc12_ = _loc7_.vertex[0];
-               _loc13_ = _loc7_.vertex[1];
-               _loc19_ = _loc6_.vertex[0];
-               _loc17_ = _loc6_.vertex[1];
-               _loc16_ = _loc9_.vertex[0];
-               _loc18_ = _loc9_.vertex[1];
-               if(isReflex(_loc12_,_loc13_,_loc19_,_loc17_,_loc16_,_loc18_) == false)
+               v0x = n0.vertex[0];
+               v0y = n0.vertex[1];
+               v1x = n1.vertex[0];
+               v1y = n1.vertex[1];
+               v2x = n2.vertex[0];
+               v2y = n2.vertex[1];
+               if(isReflex(v0x,v0y,v1x,v1y,v2x,v2y) == false)
                {
-                  _loc20_ = _loc20_.next;
+                  currentNode = currentNode.next;
                }
                else
                {
-                  _loc11_ = _loc9_.next;
-                  _loc10_ = _loc11_;
-                  _loc22_ = false;
-                  while(_loc10_ != _loc7_)
+                  startNode = n2.next;
+                  n = startNode;
+                  found = false;
+                  while(n != n0)
                   {
-                     if(TriangleUtil.isPointInTriangle(_loc12_,_loc13_,_loc19_,_loc17_,_loc16_,_loc18_,_loc10_.vertex[0],_loc10_.vertex[1]))
+                     if(TriangleUtil.isPointInTriangle(v0x,v0y,v1x,v1y,v2x,v2y,n.vertex[0],n.vertex[1]))
                      {
-                        _loc22_ = true;
+                        found = true;
                         break;
                      }
-                     _loc10_ = _loc10_.next;
+                     n = n.next;
                   }
-                  if(_loc22_)
+                  if(found)
                   {
-                     _loc20_ = _loc20_.next;
+                     currentNode = currentNode.next;
                   }
                   else
                   {
-                     param4.push(_loc7_.index,_loc6_.index,_loc9_.index);
-                     if(_loc6_ == _loc6_.head)
+                     outputIndices.push(n0.index,n1.index,n2.index);
+                     if(n1 == n1.head)
                      {
-                        _loc6_.vertex = _loc9_.vertex;
-                        _loc6_.next = _loc9_.next;
-                        _loc6_.index = _loc9_.index;
-                        _loc6_.next.prev = _loc6_;
-                        VertexList.releaseNode(_loc9_);
+                        n1.vertex = n2.vertex;
+                        n1.next = n2.next;
+                        n1.index = n2.index;
+                        n1.next.prev = n1;
+                        VertexList.releaseNode(n2);
                      }
                      else
                      {
-                        _loc7_.next = _loc9_;
-                        _loc9_.prev = _loc7_;
-                        VertexList.releaseNode(_loc6_);
+                        n0.next = n2;
+                        n2.prev = n0;
+                        VertexList.releaseNode(n1);
                      }
-                     _loc20_ = _loc7_;
+                     currentNode = n0;
                   }
                }
             }
-            VertexList.dispose(_loc8_);
+            VertexList.dispose(currentList);
          }
       }
       
-      protected static function convertToSimple(param1:VertexList) : Vector.<VertexList>
+      protected static function convertToSimple(vertexList:VertexList) : Vector.<VertexList>
       {
-         var _loc3_:* = null;
-         var _loc11_:* = null;
-         var _loc7_:* = null;
-         var _loc13_:Boolean = false;
-         var _loc4_:* = null;
-         var _loc5_:* = undefined;
-         var _loc9_:* = null;
-         var _loc14_:* = null;
-         var _loc8_:* = null;
-         var _loc10_:* = null;
-         var _loc12_:Vector.<VertexList> = new Vector.<VertexList>();
-         var _loc2_:int = 0;
-         var _loc6_:Vector.<VertexList> = new Vector.<VertexList>();
-         _loc6_.push(param1);
-         while(_loc6_.length > 0)
+         var currentList:* = null;
+         var headA:* = null;
+         var nodeA:* = null;
+         var isSimple:Boolean = false;
+         var nodeB:* = null;
+         var isect:* = undefined;
+         var temp:* = null;
+         var isectNodeA:* = null;
+         var headB:* = null;
+         var isectNodeB:* = null;
+         var output:Vector.<VertexList> = new Vector.<VertexList>();
+         var outputLength:int = 0;
+         var openList:Vector.<VertexList> = new Vector.<VertexList>();
+         openList.push(vertexList);
+         while(openList.length > 0)
          {
-            _loc3_ = _loc6_.pop();
-            _loc11_ = _loc3_.head;
-            _loc7_ = _loc11_;
-            _loc13_ = true;
-            if(_loc7_.next == _loc7_ || _loc7_.next.next == _loc7_ || _loc7_.next.next.next == _loc7_)
+            currentList = openList.pop();
+            headA = currentList.head;
+            nodeA = headA;
+            isSimple = true;
+            if(nodeA.next == nodeA || nodeA.next.next == nodeA || nodeA.next.next.next == nodeA)
             {
-               _loc2_++;
-               _loc12_[_loc2_] = _loc11_;
+               outputLength++;
+               output[outputLength] = headA;
             }
             else
             {
                do
                {
-                  _loc4_ = _loc7_.next.next;
+                  nodeB = nodeA.next.next;
                   do
                   {
-                     _loc5_ = intersection(_loc7_,_loc7_.next,_loc4_,_loc4_.next);
-                     if(_loc5_ != null)
+                     isect = intersection(nodeA,nodeA.next,nodeB,nodeB.next);
+                     if(isect != null)
                      {
-                        _loc13_ = false;
-                        _loc9_ = _loc7_.next;
-                        _loc14_ = VertexList.getNode();
-                        _loc14_.vertex = _loc5_;
-                        _loc14_.prev = _loc7_;
-                        _loc14_.next = _loc4_.next;
-                        _loc14_.next.prev = _loc14_;
-                        _loc14_.head = _loc11_;
-                        _loc7_.next = _loc14_;
-                        _loc8_ = _loc4_;
-                        _loc10_ = VertexList.getNode();
-                        _loc10_.vertex = _loc5_;
-                        _loc10_.prev = _loc4_;
-                        _loc10_.next = _loc9_;
-                        _loc10_.next.prev = _loc10_;
-                        _loc10_.head = _loc8_;
-                        _loc4_.next = _loc10_;
+                        isSimple = false;
+                        temp = nodeA.next;
+                        isectNodeA = VertexList.getNode();
+                        isectNodeA.vertex = isect;
+                        isectNodeA.prev = nodeA;
+                        isectNodeA.next = nodeB.next;
+                        isectNodeA.next.prev = isectNodeA;
+                        isectNodeA.head = headA;
+                        nodeA.next = isectNodeA;
+                        headB = nodeB;
+                        isectNodeB = VertexList.getNode();
+                        isectNodeB.vertex = isect;
+                        isectNodeB.prev = nodeB;
+                        isectNodeB.next = temp;
+                        isectNodeB.next.prev = isectNodeB;
+                        isectNodeB.head = headB;
+                        nodeB.next = isectNodeB;
                         do
                         {
-                           _loc4_.head = _loc8_;
-                           _loc4_ = _loc4_.next;
+                           nodeB.head = headB;
+                           nodeB = nodeB.next;
                         }
-                        while(_loc4_ != _loc8_);
+                        while(nodeB != headB);
                         
-                        _loc6_.push(_loc11_,_loc8_);
+                        openList.push(headA,headB);
                         break;
                      }
-                     _loc4_ = _loc4_.next;
+                     nodeB = nodeB.next;
                   }
-                  while(_loc4_ != _loc7_.prev && _loc13_);
+                  while(nodeB != nodeA.prev && isSimple);
                   
-                  _loc7_ = _loc7_.next;
+                  nodeA = nodeA.next;
                }
-               while(_loc7_ != _loc11_ && _loc13_);
+               while(nodeA != headA && isSimple);
                
-               if(_loc13_)
+               if(isSimple)
                {
-                  _loc2_++;
-                  _loc12_[_loc2_] = _loc11_;
+                  outputLength++;
+                  output[outputLength] = headA;
                }
             }
          }
-         return _loc12_;
+         return output;
       }
       
-      protected static function flatten(param1:Vector.<VertexList>, param2:Vector.<Number>) : void
+      protected static function flatten(vertexLists:Vector.<VertexList>, output:Vector.<Number>) : void
       {
-         var _loc7_:int = 0;
-         var _loc6_:* = null;
-         var _loc3_:* = null;
-         var _loc5_:int = param1.length;
-         var _loc4_:int = 0;
-         _loc7_ = 0;
-         while(_loc7_ < _loc5_)
+         var i:int = 0;
+         var vertexList:* = null;
+         var node:* = null;
+         var L:int = vertexLists.length;
+         var index:int = 0;
+         for(i = 0; i < L; )
          {
-            _loc6_ = param1[_loc7_];
-            _loc3_ = _loc6_.head;
+            vertexList = vertexLists[i];
+            node = vertexList.head;
             do
             {
-               _loc4_++;
-               _loc3_.index = _loc4_;
-               param2.push(_loc3_.vertex[0],_loc3_.vertex[1],_loc3_.vertex[2],_loc3_.vertex[3],_loc3_.vertex[4],_loc3_.vertex[5],_loc3_.vertex[6],_loc3_.vertex[7],_loc3_.vertex[8]);
-               _loc3_ = _loc3_.next;
+               index++;
+               node.index = index;
+               output.push(node.vertex[0],node.vertex[1],node.vertex[2],node.vertex[3],node.vertex[4],node.vertex[5],node.vertex[6],node.vertex[7],node.vertex[8]);
+               node = node.next;
             }
-            while(_loc3_ != _loc3_.head);
+            while(node != node.head);
             
-            _loc7_++;
+            i++;
          }
       }
       
-      protected static function windingNumberAroundPoint(param1:VertexList, param2:Number, param3:Number) : int
+      protected static function windingNumberAroundPoint(vertexList:VertexList, x:Number, y:Number) : int
       {
-         var _loc6_:Number = NaN;
-         var _loc7_:Number = NaN;
-         var _loc4_:Number = NaN;
-         var _loc8_:Number = NaN;
-         var _loc10_:* = false;
-         var _loc9_:int = 0;
-         var _loc5_:VertexList = param1.head;
+         var v0y:Number = NaN;
+         var v1y:Number = NaN;
+         var v0x:Number = NaN;
+         var v1x:Number = NaN;
+         var isUp:* = false;
+         var wn:int = 0;
+         var node:VertexList = vertexList.head;
          do
          {
-            _loc6_ = _loc5_.vertex[1];
-            _loc7_ = _loc5_.next.vertex[1];
-            if(param3 > _loc6_ && param3 < _loc7_ || param3 > _loc7_ && param3 < _loc6_)
+            v0y = node.vertex[1];
+            v1y = node.next.vertex[1];
+            if(y > v0y && y < v1y || y > v1y && y < v0y)
             {
-               _loc4_ = _loc5_.vertex[0];
-               _loc8_ = _loc5_.next.vertex[0];
-               _loc10_ = _loc7_ < param3;
-               if(_loc10_)
+               v0x = node.vertex[0];
+               v1x = node.next.vertex[0];
+               isUp = v1y < y;
+               if(isUp)
                {
-                  _loc9_ = _loc9_ + ((_loc8_ - _loc4_) * (param3 - _loc6_) - (_loc7_ - _loc6_) * (param2 - _loc4_) < 0?1:0);
+                  wn = wn + ((v1x - v0x) * (y - v0y) - (v1y - v0y) * (x - v0x) < 0?1:0);
                }
                else
                {
-                  _loc9_ = _loc9_ + ((_loc8_ - _loc4_) * (param3 - _loc6_) - (_loc7_ - _loc6_) * (param2 - _loc4_) < 0?0:-1);
+                  wn = wn + ((v1x - v0x) * (y - v0y) - (v1y - v0y) * (x - v0x) < 0?0:-1);
                }
             }
-            _loc5_ = _loc5_.next;
+            node = node.next;
          }
-         while(_loc5_ != param1.head);
+         while(node != vertexList.head);
          
-         return _loc9_;
+         return wn;
       }
       
-      public static function isClockWise(param1:VertexList) : Boolean
+      public static function isClockWise(vertexList:VertexList) : Boolean
       {
-         var _loc3_:* = 0;
-         var _loc2_:VertexList = param1.head;
+         var wn:* = 0;
+         var node:VertexList = vertexList.head;
          do
          {
-            _loc3_ = Number(_loc3_ + (_loc2_.next.vertex[0] - _loc2_.vertex[0]) * (_loc2_.next.vertex[1] + _loc2_.vertex[1]));
-            _loc2_ = _loc2_.next;
+            wn = Number(wn + (node.next.vertex[0] - node.vertex[0]) * (node.next.vertex[1] + node.vertex[1]));
+            node = node.next;
          }
-         while(_loc2_ != param1.head);
+         while(node != vertexList.head);
          
-         return _loc3_ <= 0;
+         return wn <= 0;
       }
       
-      protected static function windingNumber(param1:VertexList) : int
+      protected static function windingNumber(vertexList:VertexList) : int
       {
-         var _loc3_:int = 0;
-         var _loc2_:VertexList = param1.head;
+         var wn:int = 0;
+         var node:VertexList = vertexList.head;
          do
          {
-            _loc3_ = _loc3_ + ((_loc2_.next.vertex[0] - _loc2_.vertex[0]) * (_loc2_.next.next.vertex[1] - _loc2_.vertex[1]) - (_loc2_.next.next.vertex[0] - _loc2_.vertex[0]) * (_loc2_.next.vertex[1] - _loc2_.vertex[1]) < 0?-1:1);
-            _loc2_ = _loc2_.next;
+            wn = wn + ((node.next.vertex[0] - node.vertex[0]) * (node.next.next.vertex[1] - node.vertex[1]) - (node.next.next.vertex[0] - node.vertex[0]) * (node.next.vertex[1] - node.vertex[1]) < 0?-1:1);
+            node = node.next;
          }
-         while(_loc2_ != param1.head);
+         while(node != vertexList.head);
          
-         return _loc3_;
+         return wn;
       }
       
-      protected static function isReflex(param1:Number, param2:Number, param3:Number, param4:Number, param5:Number, param6:Number) : Boolean
+      protected static function isReflex(v0x:Number, v0y:Number, v1x:Number, v1y:Number, v2x:Number, v2y:Number) : Boolean
       {
-         if(TriangleUtil.isLeft(param1,param2,param3,param4,param5,param6))
+         if(TriangleUtil.isLeft(v0x,v0y,v1x,v1y,v2x,v2y))
          {
             return false;
          }
-         if(TriangleUtil.isLeft(param3,param4,param5,param6,param1,param2))
+         if(TriangleUtil.isLeft(v1x,v1y,v2x,v2y,v0x,v0y))
          {
             return false;
          }
          return true;
       }
       
-      protected static function intersection(param1:VertexList, param2:VertexList, param3:VertexList, param4:VertexList) : Vector.<Number>
+      protected static function intersection(a0:VertexList, a1:VertexList, b0:VertexList, b1:VertexList) : Vector.<Number>
       {
-         var _loc15_:Number = param2.vertex[0] - param1.vertex[0];
-         var _loc12_:Number = param2.vertex[1] - param1.vertex[1];
-         var _loc13_:Number = param4.vertex[0] - param3.vertex[0];
-         var _loc10_:Number = param4.vertex[1] - param3.vertex[1];
-         var _loc11_:Number = param1.vertex[0] - param3.vertex[0];
-         var _loc9_:Number = param1.vertex[1] - param3.vertex[1];
-         var _loc6_:Number = _loc15_ * _loc10_ - _loc12_ * _loc13_;
-         if((_loc6_ < 0?-_loc6_:Number(_loc6_)) < 1.0e-7)
+         var ux:Number = a1.vertex[0] - a0.vertex[0];
+         var uy:Number = a1.vertex[1] - a0.vertex[1];
+         var vx:Number = b1.vertex[0] - b0.vertex[0];
+         var vy:Number = b1.vertex[1] - b0.vertex[1];
+         var wx:Number = a0.vertex[0] - b0.vertex[0];
+         var wy:Number = a0.vertex[1] - b0.vertex[1];
+         var D:Number = ux * vy - uy * vx;
+         if((D < 0?-D:Number(D)) < 1.0e-7)
          {
             return null;
          }
-         var _loc14_:Number = (_loc13_ * _loc9_ - _loc10_ * _loc11_) / _loc6_;
-         if(_loc14_ < 0 || _loc14_ > 1)
+         var t:Number = (vx * wy - vy * wx) / D;
+         if(t < 0 || t > 1)
          {
             return null;
          }
-         var _loc7_:Number = (_loc15_ * _loc9_ - _loc12_ * _loc11_) / _loc6_;
-         if(_loc7_ < 0 || _loc7_ > 1)
+         var t2:Number = (ux * wy - uy * wx) / D;
+         if(t2 < 0 || t2 > 1)
          {
             return null;
          }
-         var _loc5_:Vector.<Number> = param1.vertex;
-         var _loc8_:Vector.<Number> = param2.vertex;
-         return Vector.<Number>([_loc5_[0] + _loc14_ * (_loc8_[0] - _loc5_[0]),_loc5_[1] + _loc14_ * (_loc8_[1] - _loc5_[1]),0,_loc5_[3] + _loc14_ * (_loc8_[3] - _loc5_[3]),_loc5_[4] + _loc14_ * (_loc8_[4] - _loc5_[4]),_loc5_[5] + _loc14_ * (_loc8_[5] - _loc5_[5]),_loc5_[6] + _loc14_ * (_loc8_[6] - _loc5_[6]),_loc5_[7] + _loc14_ * (_loc8_[7] - _loc5_[7]),_loc5_[8] + _loc14_ * (_loc8_[8] - _loc5_[8])]);
+         var vertexA:Vector.<Number> = a0.vertex;
+         var vertexB:Vector.<Number> = a1.vertex;
+         return Vector.<Number>([vertexA[0] + t * (vertexB[0] - vertexA[0]),vertexA[1] + t * (vertexB[1] - vertexA[1]),0,vertexA[3] + t * (vertexB[3] - vertexA[3]),vertexA[4] + t * (vertexB[4] - vertexA[4]),vertexA[5] + t * (vertexB[5] - vertexA[5]),vertexA[6] + t * (vertexB[6] - vertexA[6]),vertexA[7] + t * (vertexB[7] - vertexA[7]),vertexA[8] + t * (vertexB[8] - vertexA[8])]);
       }
       
       public function get numVertices() : int
@@ -375,69 +374,69 @@ package starling.display.graphics
          super.dispose();
       }
       
-      public function addDegenerates(param1:Number, param2:Number, param3:uint = 16777215, param4:Number = 1) : void
+      public function addDegenerates(destX:Number, destY:Number, color:uint = 16777215, alpha:Number = 1) : void
       {
-         var _loc5_:* = 0;
+         var lastColor:* = 0;
          if(_numVertices < 1)
          {
             return;
          }
-         var _loc9_:Vector.<Number> = fillVertices.prev.vertex;
-         _loc5_ = uint(uint(_loc9_[3] * 255) << 16);
-         _loc5_ = uint(_loc5_ | uint(_loc9_[4] * 255) << 8);
-         _loc5_ = uint(_loc5_ | uint(_loc9_[5] * 255));
-         var _loc8_:Number = (param3 >> 16) / 255;
-         var _loc6_:Number = ((param3 & 65280) >> 8) / 255;
-         var _loc7_:Number = (param3 & 255) / 255;
-         addVertex(_loc9_[0],_loc9_[1],_loc5_,_loc9_[6]);
-         addVertex(param1,param2,param3,param4);
+         var lastVertex:Vector.<Number> = fillVertices.prev.vertex;
+         lastColor = uint(uint(lastVertex[3] * 255) << 16);
+         lastColor = uint(lastColor | uint(lastVertex[4] * 255) << 8);
+         lastColor = uint(lastColor | uint(lastVertex[5] * 255));
+         var r:Number = (color >> 16) / 255;
+         var g:Number = ((color & 65280) >> 8) / 255;
+         var b:Number = (color & 255) / 255;
+         addVertex(lastVertex[0],lastVertex[1],lastColor,lastVertex[6]);
+         addVertex(destX,destY,color,alpha);
       }
       
-      public function addVertexInConvexShape(param1:Number, param2:Number, param3:uint = 16777215, param4:Number = 1) : void
+      public function addVertexInConvexShape(x:Number, y:Number, color:uint = 16777215, alpha:Number = 1) : void
       {
-         addVertexInternal(param1,param2,param3,param4);
+         addVertexInternal(x,y,color,alpha);
       }
       
-      public function addVertex(param1:Number, param2:Number, param3:uint = 16777215, param4:Number = 1) : void
+      public function addVertex(x:Number, y:Number, color:uint = 16777215, alpha:Number = 1) : void
       {
          _isConvex = false;
-         addVertexInternal(param1,param2,param3,param4);
+         addVertexInternal(x,y,color,alpha);
       }
       
-      protected function addVertexInternal(param1:Number, param2:Number, param3:uint = 16777215, param4:Number = 1) : void
+      protected function addVertexInternal(x:Number, y:Number, color:uint = 16777215, alpha:Number = 1) : void
       {
-         var _loc8_:Number = (param3 >> 16) / 255;
-         var _loc5_:Number = ((param3 & 65280) >> 8) / 255;
-         var _loc7_:Number = (param3 & 255) / 255;
-         var _loc9_:Vector.<Number> = Vector.<Number>([param1,param2,0,_loc8_,_loc5_,_loc7_,param4,param1,param2]);
-         var _loc6_:VertexList = VertexList.getNode();
+         var r:Number = (color >> 16) / 255;
+         var g:Number = ((color & 65280) >> 8) / 255;
+         var b:Number = (color & 255) / 255;
+         var vertex:Vector.<Number> = Vector.<Number>([x,y,0,r,g,b,alpha,x,y]);
+         var node:VertexList = VertexList.getNode();
          if(_numVertices == 0)
          {
-            fillVertices = _loc6_;
-            _loc6_.head = _loc6_;
-            _loc6_.prev = _loc6_;
+            fillVertices = node;
+            node.head = node;
+            node.prev = node;
          }
-         _loc6_.next = fillVertices.head;
-         _loc6_.prev = fillVertices.head.prev;
-         _loc6_.prev.next = _loc6_;
-         _loc6_.next.prev = _loc6_;
-         _loc6_.index = _numVertices;
-         _loc6_.vertex = _loc9_;
-         if(param1 < minBounds.x)
+         node.next = fillVertices.head;
+         node.prev = fillVertices.head.prev;
+         node.prev.next = node;
+         node.next.prev = node;
+         node.index = _numVertices;
+         node.vertex = vertex;
+         if(x < minBounds.x)
          {
-            minBounds.x = param1;
+            minBounds.x = x;
          }
-         else if(param1 > maxBounds.x)
+         else if(x > maxBounds.x)
          {
-            maxBounds.x = param1;
+            maxBounds.x = x;
          }
-         if(param2 < minBounds.y)
+         if(y < minBounds.y)
          {
-            minBounds.y = param2;
+            minBounds.y = y;
          }
-         else if(param2 > maxBounds.y)
+         else if(y > maxBounds.y)
          {
-            maxBounds.y = param2;
+            maxBounds.y = y;
          }
          _numVertices = Number(_numVertices) + 1;
          setGeometryInvalid();
@@ -454,7 +453,7 @@ package starling.display.graphics
          triangulate(fillVertices,_numVertices,vertices,indices,_isConvex);
       }
       
-      override public function shapeHitTest(param1:Number, param2:Number) : Boolean
+      override public function shapeHitTest(stageX:Number, stageY:Number) : Boolean
       {
          if(vertices == null)
          {
@@ -464,23 +463,23 @@ package starling.display.graphics
          {
             return false;
          }
-         var _loc4_:Point = globalToLocal(new Point(param1,param2));
-         var _loc3_:int = windingNumberAroundPoint(fillVertices,_loc4_.x,_loc4_.y);
+         var pt:Point = globalToLocal(new Point(stageX,stageY));
+         var wn:int = windingNumberAroundPoint(fillVertices,pt.x,pt.y);
          if(isClockWise(fillVertices))
          {
-            return _loc3_ != 0;
+            return wn != 0;
          }
-         return _loc3_ == 0;
+         return wn == 0;
       }
       
-      override protected function shapeHitTestLocalInternal(param1:Number, param2:Number) : Boolean
+      override protected function shapeHitTestLocalInternal(localX:Number, localY:Number) : Boolean
       {
-         var _loc3_:int = windingNumberAroundPoint(fillVertices,param1,param2);
+         var wn:int = windingNumberAroundPoint(fillVertices,localX,localY);
          if(isClockWise(fillVertices))
          {
-            return _loc3_ != 0;
+            return wn != 0;
          }
-         return _loc3_ == 0;
+         return wn == 0;
       }
    }
 }

@@ -10,11 +10,11 @@ package ddt.action
       
       private var _showFun:Function;
       
-      public function FrameShowAction(param1:Object, param2:Function = null, param3:uint = 0)
+      public function FrameShowAction(frame:Object, showFun:Function = null, timeOut:uint = 0)
       {
-         _frame = param1;
-         _showFun = param2;
-         super(param3);
+         _frame = frame;
+         _showFun = showFun;
+         super(timeOut);
       }
       
       override public function act() : void

@@ -56,6 +56,8 @@ package ddt.manager
       
       private static var _pveBraveDoorList:Vector.<DungeonInfo>;
       
+      private static var _pveDreamLandList:Vector.<DungeonInfo>;
+      
       public static const PVP_TRAIN_MAP:int = 1;
       
       public static const PVP_TRAIN_MAP2:int = 25;
@@ -83,6 +85,8 @@ package ddt.manager
       public static const PVE_ADVANCED_MAP:Array = [13];
       
       private static const PROVING_ROUNDID:int = -2;
+      
+      public static const PVE_DREAMLAND_MAP:int = 70;
       
       public static const PVE_SPECIAL_MAP:int = 23;
       
@@ -116,59 +120,63 @@ package ddt.manager
          super();
       }
       
-      public static function getListByType(param1:int = 0) : *
+      public static function getListByType(type:int = 0) : *
       {
-         if(param1 == 1)
+         if(type == 1)
          {
             return _list;
          }
-         if(param1 == 5)
+         if(type == 5)
          {
             return _pveList;
          }
-         if(param1 == 4)
+         if(type == 4)
          {
             return _pveLinkList;
          }
-         if(param1 == 3)
+         if(type == 3)
          {
             return _pveBossList;
          }
-         if(param1 == 2)
+         if(type == 2)
          {
             return _pveExplrolList;
          }
-         if(param1 == 0)
+         if(type == 0)
          {
             return _pvpComplectiList;
          }
-         if(param1 == 6)
+         if(type == 6)
          {
             return _pvpList;
          }
-         if(param1 == 5)
+         if(type == 5)
          {
             return _fightLibList;
          }
-         if(param1 == 6)
+         if(type == 6)
          {
             return _pveAcademyList;
          }
-         if(param1 == 21 || param1 == 23 || param1 == 47 || param1 == 48 || param1 == 24)
+         if(type == 21 || type == 23 || type == 47 || type == 48 || type == 24)
          {
             return _pveActivityList;
          }
-         if(param1 == 14)
+         if(type == 14)
          {
             return _pveSingleLinkList;
          }
-         if(param1 == 22)
+         if(type == 22)
          {
             return _pveBraveDoorList;
          }
-         if(param1 == 25)
+         if(type == 25)
          {
             return _list2;
+         }
+         if(type == 70)
+         {
+            return _pveDreamLandList;
          }
          return null;
       }
@@ -178,11 +186,11 @@ package ddt.manager
          return _pveAdvancedList;
       }
       
-      public static function setupMapInfo(param1:MapAnalyzer) : void
+      public static function setupMapInfo(analyzer:MapAnalyzer) : void
       {
          _list2 = new DictionaryData();
          createRandomMapInfo();
-         _list = param1.list;
+         _list = analyzer.list;
          _pvpList = _list.slice();
          _list.unshift(_randomMapInfo3);
          _list.unshift(_randomMapInfo1);
@@ -207,10 +215,10 @@ package ddt.manager
          _randomMapInfo3.Description = LanguageMgr.GetTranslation("tank.manager.MapManager.randomEscape");
       }
       
-      public static function setupDungeonInfo(param1:DungeonAnalyzer) : void
+      public static function setupDungeonInfo(analyzer:DungeonAnalyzer) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var info:* = null;
          _defaultDungeon = new DungeonInfo();
          _defaultDungeon.ID = 10000;
          _defaultDungeon.Description = LanguageMgr.GetTranslation("tank.manager.selectDuplicate");
@@ -218,7 +226,7 @@ package ddt.manager
          _defaultDungeon.Name = LanguageMgr.GetTranslation("tank.manager.selectDuplicate");
          _defaultDungeon.Type = 4;
          _defaultDungeon.Ordering = -1;
-         _pveList = param1.list;
+         _pveList = analyzer.list;
          _pveLinkList = [];
          _pveAdvancedList = [];
          _pveBossList = new Vector.<DungeonInfo>();
@@ -228,100 +236,104 @@ package ddt.manager
          _pveActivityList = new Vector.<DungeonInfo>();
          _pveSingleLinkList = new Vector.<DungeonInfo>();
          _pveBraveDoorList = new Vector.<DungeonInfo>();
-         _loc3_ = 0;
-         while(_loc3_ < _pveList.length)
+         _pveDreamLandList = new Vector.<DungeonInfo>();
+         for(i = 0; i < _pveList.length; )
          {
-            _loc2_ = _pveList[_loc3_];
-            if(MapManager.PVE_ADVANCED_MAP.indexOf(_loc2_.ID) != -1 || PathManager.footballEnable && _loc2_.ID == 14)
+            info = _pveList[i];
+            if(MapManager.PVE_ADVANCED_MAP.indexOf(info.ID) != -1 || PathManager.footballEnable && info.ID == 14)
             {
-               _pveAdvancedList.push(_loc2_);
+               _pveAdvancedList.push(info);
             }
-            else if(_loc2_.Type == 4)
+            else if(info.Type == 4)
             {
-               _pveLinkList.push(_loc2_);
+               _pveLinkList.push(info);
             }
-            else if(_loc2_.Type == 3)
+            else if(info.Type == 3)
             {
-               _pveBossList.push(_loc2_);
+               _pveBossList.push(info);
             }
-            else if(_loc2_.Type == 2)
+            else if(info.Type == 2)
             {
-               _pveExplrolList.push(_loc2_);
+               _pveExplrolList.push(info);
             }
-            else if(_loc2_.Type == 5)
+            else if(info.Type == 5)
             {
-               _fightLibList.push(_loc2_);
+               _fightLibList.push(info);
             }
-            else if(_loc2_.Type == 6)
+            else if(info.Type == 6)
             {
-               _pveAcademyList.push(_loc2_);
+               _pveAcademyList.push(info);
             }
-            else if(_loc2_.Type == 21 || _loc2_.Type == 23 || _loc2_.Type == 47 || _loc2_.Type == 48 || _loc2_.Type == 24)
+            else if(info.Type == 21 || info.Type == 23 || info.Type == 47 || info.Type == 48 || info.Type == 24)
             {
-               _pveActivityList.push(_loc2_);
+               _pveActivityList.push(info);
             }
-            else if(_loc2_.Type == 14)
+            else if(info.Type == 14)
             {
-               _pveSingleLinkList.push(_loc2_);
+               _pveSingleLinkList.push(info);
             }
-            else if(_loc2_.Type == 22)
+            else if(info.Type == 22)
             {
-               _pveBraveDoorList.push(_loc2_);
+               _pveBraveDoorList.push(info);
             }
-            _loc3_++;
+            else if(info.Type == 70)
+            {
+               _pveDreamLandList.push(info);
+            }
+            i++;
          }
          _pveLinkList.unshift(_defaultDungeon);
          _pveAdvancedList.unshift(_defaultDungeon);
          _pveBossList.unshift(_defaultDungeon);
       }
       
-      public static function setupOpenMapInfo(param1:WeekOpenMapAnalyze) : void
+      public static function setupOpenMapInfo(analyzer:WeekOpenMapAnalyze) : void
       {
-         _openList = param1.list;
+         _openList = analyzer.list;
          buildMap();
       }
       
       public static function buildMap() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:* = 0;
+         var currentMaps:* = null;
+         var provingGroundsMaps:* = null;
+         var i:* = 0;
          if(_openList == null || _list == null || ServerManager.Instance.current == null)
          {
             return;
          }
-         _loc4_ = uint(0);
-         while(_loc4_ < _openList.length)
+         i = uint(0);
+         while(i < _openList.length)
          {
-            if(_openList[_loc4_].serverID == ServerManager.Instance.current.ID)
+            if(_openList[i].serverID == ServerManager.Instance.current.ID)
             {
-               _loc1_ = _openList[_loc4_].maps;
+               currentMaps = _openList[i].maps;
             }
-            else if(_openList[_loc4_].serverID == -2)
+            else if(_openList[i].serverID == -2)
             {
-               _loc2_ = _openList[_loc4_].maps;
+               provingGroundsMaps = _openList[i].maps;
             }
-            _loc4_++;
+            i++;
          }
          _list2.add(0,new Vector.<MapInfo>());
          _list2.add(1,new Vector.<MapInfo>());
          _list2.add(2,new Vector.<MapInfo>());
-         if(_openList && _list && _loc1_)
+         if(_openList && _list && currentMaps)
          {
             _list.splice(_list.indexOf(_randomMapInfo3),1);
             _list.splice(_list.indexOf(_randomMapInfo1),1);
             var _loc6_:int = 0;
             var _loc5_:* = _list;
-            for each(var _loc3_ in _list)
+            for each(var info in _list)
             {
-               _loc3_.isOpen = _loc1_.indexOf(String(_loc3_.ID)) > -1;
-               if(_loc3_.isOpen)
+               info.isOpen = currentMaps.indexOf(String(info.ID)) > -1;
+               if(info.isOpen)
                {
-                  _list2[0].push(_loc3_);
+                  _list2[0].push(info);
                }
-               if(_loc2_.indexOf(String(_loc3_.ID)) > -1)
+               if(provingGroundsMaps.indexOf(String(info.ID)) > -1)
                {
-                  _list2[1].push(_loc3_);
+                  _list2[1].push(info);
                }
             }
             _list2[0].unshift(_randomMapInfo1);
@@ -331,132 +343,160 @@ package ddt.manager
          }
       }
       
-      public static function isMapOpen(param1:int) : Boolean
+      public static function isMapOpen(id:int) : Boolean
       {
-         return getMapInfo(param1).isOpen;
+         return getMapInfo(id).isOpen;
       }
       
-      public static function getMapInfo(param1:Number) : MapInfo
+      public static function getMapInfo(id:Number) : MapInfo
       {
          var _loc4_:int = 0;
          var _loc3_:* = _list;
-         for each(var _loc2_ in _list)
+         for each(var info in _list)
          {
-            if(_loc2_.ID == param1)
+            if(info.ID == id)
             {
-               return _loc2_;
+               return info;
             }
          }
          return null;
       }
       
-      public static function getDungeonInfo(param1:int) : DungeonInfo
+      public static function getDungeonInfo(id:int) : DungeonInfo
       {
          var _loc4_:int = 0;
          var _loc3_:* = _pveList;
-         for each(var _loc2_ in _pveList)
+         for each(var info in _pveList)
          {
-            if(_loc2_.ID == param1)
+            if(info.ID == id)
             {
-               return _loc2_;
+               return info;
             }
          }
          return null;
       }
       
-      public static function getByOrderingDungeonInfo(param1:int) : DungeonInfo
+      public static function getDreamLandDupInfoByOrder(ordering:int) : DungeonInfo
+      {
+         var _loc4_:int = 0;
+         var _loc3_:* = _pveDreamLandList;
+         for each(var info in _pveDreamLandList)
+         {
+            if(info.Ordering == ordering)
+            {
+               return info;
+            }
+         }
+         return null;
+      }
+      
+      public static function getByOrderingDungeonInfo(ordering:int) : DungeonInfo
       {
          var _loc4_:int = 0;
          var _loc3_:* = _pveLinkList;
-         for each(var _loc2_ in _pveLinkList)
+         for each(var info in _pveLinkList)
          {
-            if(_loc2_.Ordering == param1)
+            if(info.Ordering == ordering)
             {
-               return _loc2_;
+               return info;
             }
          }
          return null;
       }
       
-      public static function getByOrderingAdvancedDungeonInfo(param1:int) : DungeonInfo
+      public static function getByOrderingAdvancedDungeonInfo(ordering:int) : DungeonInfo
       {
          var _loc4_:int = 0;
          var _loc3_:* = _pveAdvancedList;
-         for each(var _loc2_ in _pveAdvancedList)
+         for each(var info in _pveAdvancedList)
          {
-            if(_loc2_.Ordering == param1)
+            if(info.Ordering == ordering)
             {
-               return _loc2_;
+               return info;
             }
          }
          return null;
       }
       
-      public static function getByOrderingAcademyDungeonInfo(param1:int) : DungeonInfo
+      public static function getDreamLandDupInfoById(id:int) : DungeonInfo
+      {
+         var _loc4_:int = 0;
+         var _loc3_:* = _pveDreamLandList;
+         for each(var info in _pveDreamLandList)
+         {
+            if(info.ID == id)
+            {
+               return info;
+            }
+         }
+         return null;
+      }
+      
+      public static function getByOrderingAcademyDungeonInfo(ordering:int) : DungeonInfo
       {
          var _loc4_:int = 0;
          var _loc3_:* = _pveAcademyList;
-         for each(var _loc2_ in _pveAcademyList)
+         for each(var info in _pveAcademyList)
          {
-            if(_loc2_.Ordering == param1)
+            if(info.Ordering == ordering)
             {
-               return _loc2_;
+               return info;
             }
          }
          return null;
       }
       
-      public static function getByOrderingActivityDungeonInfo(param1:int) : DungeonInfo
+      public static function getByOrderingActivityDungeonInfo(ordering:int) : DungeonInfo
       {
          var _loc4_:int = 0;
          var _loc3_:* = _pveActivityList;
-         for each(var _loc2_ in _pveActivityList)
+         for each(var info in _pveActivityList)
          {
-            if(_loc2_.Ordering == param1)
+            if(info.Ordering == ordering)
             {
-               return _loc2_;
+               return info;
             }
          }
          return null;
       }
       
-      public static function getByOrderingNightmareDungeonInfo(param1:int) : DungeonInfo
+      public static function getByOrderingNightmareDungeonInfo(ordering:int) : DungeonInfo
       {
          var _loc4_:int = 0;
          var _loc3_:* = _pveLinkList;
-         for each(var _loc2_ in _pveLinkList)
+         for each(var info in _pveLinkList)
          {
-            if(_loc2_.Ordering == param1 && _loc2_.NightmareTemplateIds)
+            if(info.Ordering == ordering && info.NightmareTemplateIds)
             {
-               return _loc2_;
+               return info;
             }
          }
          return null;
       }
       
-      public static function getByOrderingSingleDungeonInfo(param1:int) : DungeonInfo
+      public static function getByOrderingSingleDungeonInfo(ordering:int) : DungeonInfo
       {
          var _loc4_:int = 0;
          var _loc3_:* = _pveSingleLinkList;
-         for each(var _loc2_ in _pveSingleLinkList)
+         for each(var info in _pveSingleLinkList)
          {
-            if(_loc2_.Ordering == param1)
+            if(info.Ordering == ordering)
             {
-               return _loc2_;
+               return info;
             }
          }
          return null;
       }
       
-      public static function getBraveDoorDuplicateInfo(param1:int) : DungeonInfo
+      public static function getBraveDoorDuplicateInfo(id:int) : DungeonInfo
       {
          var _loc4_:int = 0;
          var _loc3_:* = _pveBraveDoorList;
-         for each(var _loc2_ in _pveBraveDoorList)
+         for each(var info in _pveBraveDoorList)
          {
-            if(_loc2_.ID == param1)
+            if(info.ID == id)
             {
-               return _loc2_;
+               return info;
             }
          }
          return null;
@@ -467,17 +507,17 @@ package ddt.manager
          return _fightLibList;
       }
       
-      public static function getMapName(param1:int) : String
+      public static function getMapName(id:int) : String
       {
-         var _loc3_:DungeonInfo = getDungeonInfo(param1);
-         if(_loc3_)
+         var info:DungeonInfo = getDungeonInfo(id);
+         if(info)
          {
-            return _loc3_.Name;
+            return info.Name;
          }
-         var _loc2_:MapInfo = getMapInfo(param1);
-         if(_loc2_)
+         var m_info:MapInfo = getMapInfo(id);
+         if(m_info)
          {
-            return _loc2_.Name;
+            return m_info.Name;
          }
          return "";
       }
@@ -496,81 +536,79 @@ package ddt.manager
          SocketManager.Instance.addEventListener(PkgEvent.format(342),onActivePveInfo);
       }
       
-      private function onActivePveInfo(param1:PkgEvent) : void
+      private function onActivePveInfo(evt:PkgEvent) : void
       {
-         var _loc8_:int = 0;
-         var _loc10_:int = 0;
-         var _loc2_:* = null;
-         var _loc5_:* = null;
-         var _loc9_:Boolean = false;
-         var _loc6_:int = 0;
-         var _loc11_:int = 0;
-         var _loc12_:* = null;
-         var _loc13_:* = null;
-         var _loc3_:Boolean = false;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc7_:Number = TimeManager.Instance.Now().time;
+         var i:int = 0;
+         var dungeonId:int = 0;
+         var startDate:* = null;
+         var endDate:* = null;
+         var isDouble:Boolean = false;
+         var j:int = 0;
+         var dungeonId2:int = 0;
+         var startDate2:* = null;
+         var endDate2:* = null;
+         var isDouble2:Boolean = false;
+         var pkg:PackageIn = evt.pkg;
+         var nowTime:Number = TimeManager.Instance.Now().time;
          _activeDoubleDic = new Dictionary();
-         _loc8_ = 0;
-         while(_loc8_ < _activeDoubleIds.length)
+         for(i = 0; i < _activeDoubleIds.length; )
          {
-            _loc10_ = _activeDoubleIds[_loc8_];
-            _loc2_ = _loc4_.readDate();
-            _loc5_ = _loc4_.readDate();
-            _loc9_ = _loc4_.readBoolean();
-            if(_loc7_ >= _loc2_.time && _loc7_ < _loc5_.time)
+            dungeonId = _activeDoubleIds[i];
+            startDate = pkg.readDate();
+            endDate = pkg.readDate();
+            isDouble = pkg.readBoolean();
+            if(nowTime >= startDate.time && nowTime < endDate.time)
             {
-               trace("open activeDungeon id: " + _loc10_);
-               _activeDoubleDic[_loc10_] = {
-                  "startDate":_loc2_,
-                  "endDate":_loc5_,
-                  "isDouble":_loc9_
+               trace("open activeDungeon id: " + dungeonId);
+               _activeDoubleDic[dungeonId] = {
+                  "startDate":startDate,
+                  "endDate":endDate,
+                  "isDouble":isDouble
                };
             }
-            _loc8_++;
+            i++;
          }
          _singleDoubleDic = new Dictionary();
-         _loc6_ = 0;
-         while(_loc6_ < _singleDoubleIds.length)
+         for(j = 0; j < _singleDoubleIds.length; )
          {
-            _loc11_ = _singleDoubleIds[_loc6_];
-            _loc12_ = _loc4_.readDate();
-            _loc13_ = _loc4_.readDate();
-            _loc3_ = _loc4_.readBoolean();
-            if(_loc7_ >= _loc12_.time && _loc7_ < _loc13_.time)
+            dungeonId2 = _singleDoubleIds[j];
+            startDate2 = pkg.readDate();
+            endDate2 = pkg.readDate();
+            isDouble2 = pkg.readBoolean();
+            if(nowTime >= startDate2.time && nowTime < endDate2.time)
             {
-               trace("open singleDungeon id: " + _loc11_);
-               _singleDoubleDic[_loc11_] = {
-                  "startDate":_loc12_,
-                  "endDate":_loc13_,
-                  "isDouble":_loc3_
+               trace("open singleDungeon id: " + dungeonId2);
+               _singleDoubleDic[dungeonId2] = {
+                  "startDate":startDate2,
+                  "endDate":endDate2,
+                  "isDouble":isDouble2
                };
             }
-            _loc6_++;
+            j++;
          }
          dispatchEvent(new CEvent("updateActivePveInfo"));
       }
       
-      public function checkActiveAndSigleDic(param1:Dictionary, param2:Number) : Boolean
+      public function checkActiveAndSigleDic(dic:Dictionary, nowTime:Number) : Boolean
       {
-         var _loc6_:Boolean = false;
-         var _loc5_:* = null;
-         var _loc3_:* = null;
-         var _loc4_:* = null;
+         var bool:Boolean = false;
+         var obj:* = null;
+         var startDate:* = null;
+         var endDate:* = null;
          var _loc9_:int = 0;
-         var _loc8_:* = param1;
-         for(var _loc7_ in param1)
+         var _loc8_:* = dic;
+         for(var key in dic)
          {
-            _loc5_ = param1[_loc7_];
-            _loc3_ = _loc5_.startDate;
-            _loc4_ = _loc5_.endDate;
-            if(param2 < _loc3_.time || param2 >= _loc4_.time)
+            obj = dic[key];
+            startDate = obj.startDate;
+            endDate = obj.endDate;
+            if(nowTime < startDate.time || nowTime >= endDate.time)
             {
-               _loc6_ = true;
-               delete param1[_loc7_];
+               bool = true;
+               delete dic[key];
             }
          }
-         return _loc6_;
+         return bool;
       }
       
       public function get activeDoubleDic() : Dictionary

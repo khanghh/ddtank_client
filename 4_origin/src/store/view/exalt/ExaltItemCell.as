@@ -19,40 +19,40 @@ package store.view.exalt
    {
        
       
-      public function ExaltItemCell(param1:int)
+      public function ExaltItemCell($index:int)
       {
-         super(param1);
+         super($index);
       }
       
-      override public function dragDrop(param1:DragEffect) : void
+      override public function dragDrop(effect:DragEffect) : void
       {
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:InventoryItemInfo = param1.data as InventoryItemInfo;
-         if(_loc2_ && param1.action != "split")
+         var info:InventoryItemInfo = effect.data as InventoryItemInfo;
+         if(info && effect.action != "split")
          {
-            param1.action = "none";
-            if(_loc2_.getRemainDate() <= 0)
+            effect.action = "none";
+            if(info.getRemainDate() <= 0)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.view.fusion.AccessoryDragInArea.overdue"));
             }
-            else if(_loc2_.CanStrengthen && isAdaptToStone(_loc2_))
+            else if(info.CanStrengthen && isAdaptToStone(info))
             {
-               SocketManager.Instance.out.sendMoveGoods(_loc2_.BagType,_loc2_.Place,12,index,1);
+               SocketManager.Instance.out.sendMoveGoods(info.BagType,info.Place,12,index,1);
                _actionState = true;
-               param1.action = "none";
+               effect.action = "none";
                DragManager.acceptDrag(this);
                reset();
             }
          }
       }
       
-      override protected function isAdaptToStone(param1:InventoryItemInfo) : Boolean
+      override protected function isAdaptToStone(info:InventoryItemInfo) : Boolean
       {
-         if(param1.StrengthenLevel >= 15)
+         if(info.StrengthenLevel >= 15)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.view.exalt.warningI"));
             return false;
@@ -61,20 +61,20 @@ package store.view.exalt
          {
             return true;
          }
-         if(_stoneType == "2" && param1.RefineryLevel <= 0)
+         if(_stoneType == "2" && info.RefineryLevel <= 0)
          {
             return true;
          }
-         if(_stoneType == "35" && param1.RefineryLevel > 0)
+         if(_stoneType == "35" && info.RefineryLevel > 0)
          {
             return true;
          }
          return false;
       }
       
-      override public function set info(param1:ItemTemplateInfo) : void
+      override public function set info(value:ItemTemplateInfo) : void
       {
-         if(_info == param1 && !_info)
+         if(_info == value && !_info)
          {
             return;
          }
@@ -87,7 +87,7 @@ package store.view.exalt
             _tipData = null;
             locked = false;
          }
-         _info = param1;
+         _info = value;
          if(_info)
          {
             if(_showLoading)

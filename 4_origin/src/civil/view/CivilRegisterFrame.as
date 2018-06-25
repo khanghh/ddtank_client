@@ -82,9 +82,9 @@ package civil.view
          return _model;
       }
       
-      public function set model(param1:CivilModel) : void
+      public function set model(val:CivilModel) : void
       {
-         _model = param1;
+         _model = val;
          updateView();
       }
       
@@ -93,12 +93,12 @@ package civil.view
          return _state;
       }
       
-      public function set state(param1:int) : void
+      public function set state(val:int) : void
       {
          titleText = LanguageMgr.GetTranslation("civil.frame.CivilRegisterFrame.titleText");
-         if(_state != param1)
+         if(_state != val)
          {
-            _state = param1;
+            _state = val;
             if(_state == 0)
             {
                DisplayUtils.setFrame(_titleImage,1);
@@ -183,7 +183,7 @@ package civil.view
          addEventListener("addedToStage",__toStage);
       }
       
-      private function __toStage(param1:Event) : void
+      private function __toStage(evt:Event) : void
       {
          removeEventListener("addedToStage",__toStage);
          StageReferance.stage.focus = _introductionField.textField;
@@ -213,15 +213,15 @@ package civil.view
          removeEventListener("addedToStage",__toStage);
       }
       
-      private function __onPublicEquipClick(param1:MouseEvent) : void
+      private function __onPublicEquipClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }
       
-      private function __response(param1:FrameEvent) : void
+      private function __response(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode) - 1)
+         switch(int(evt.responseCode) - 1)
          {
             case 0:
                __onCloseClick(null);
@@ -231,30 +231,30 @@ package civil.view
          }
       }
       
-      private function __propertyChange(param1:PlayerPropertyEvent) : void
+      private function __propertyChange(evt:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["IsPublishEquit"])
+         if(evt.changedProperties["IsPublishEquit"])
          {
             _publicEquipButton.selected = PlayerManager.Instance.Self.IsPublishEquit;
          }
-         else if(param1.changedProperties["Introduction"])
+         else if(evt.changedProperties["Introduction"])
          {
             _introductionField.text = PlayerManager.Instance.Self.Introduction;
             _introductionField.textField.setSelection(_introductionField.textField.length,_introductionField.textField.length);
          }
       }
       
-      private function __getSelfInfo(param1:Event) : void
+      private function __getSelfInfo(evt:Event) : void
       {
          selfInfo();
       }
       
-      private function __limit(param1:TextEvent) : void
+      private function __limit(evt:TextEvent) : void
       {
          StringHelper.checkTextFieldLength(_introductionField.textField,300);
       }
       
-      private function __onSubmitClick(param1:MouseEvent) : void
+      private function __onSubmitClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _isPublishEquip = _publicEquipButton.selected;
@@ -279,9 +279,9 @@ package civil.view
          __onCloseClick(null);
       }
       
-      override protected function __onCloseClick(param1:MouseEvent) : void
+      override protected function __onCloseClick(event:MouseEvent) : void
       {
-         super.__onCloseClick(param1);
+         super.__onCloseClick(event);
          SoundManager.instance.play("008");
          dispatchEvent(new Event("complete"));
       }

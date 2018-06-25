@@ -44,9 +44,9 @@ package microenddownload.view
          addEventListener("response",_response);
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             close();
          }
@@ -60,7 +60,7 @@ package microenddownload.view
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          _treeImage = ComponentFactory.Instance.creatComponentByStylename("microendDownload.scale9cornerImageTree");
          addToContent(_treeImage);
          _treeImage2 = ComponentFactory.Instance.creatComponentByStylename("microendDownload.scale9cornerImageTree2");
@@ -69,23 +69,22 @@ package microenddownload.view
          addToContent(_back);
          titleText = "登录器礼包";
          _bagCellList = new Vector.<BagCell>();
-         var _loc1_:Vector.<ItemTemplateInfo> = MicroendDownloadAwardsManager.getInstance().getAwardsDetail();
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_.length)
+         var awardsInfoList:Vector.<ItemTemplateInfo> = MicroendDownloadAwardsManager.getInstance().getAwardsDetail();
+         for(i = 0; i < awardsInfoList.length; )
          {
-            _bagCellList[_loc2_] = new BagCell(0,_loc1_[_loc2_]);
-            _bagCellList[_loc2_].setCount(MicroendDownloadAwardsManager.getInstance().getCount(_loc2_));
-            _bagCellList[_loc2_].x = 58 + _loc2_ * 60;
-            _bagCellList[_loc2_].y = 256;
-            addToContent(_bagCellList[_loc2_]);
-            _loc2_++;
+            _bagCellList[i] = new BagCell(0,awardsInfoList[i]);
+            _bagCellList[i].setCount(MicroendDownloadAwardsManager.getInstance().getCount(i));
+            _bagCellList[i].x = 58 + i * 60;
+            _bagCellList[i].y = 256;
+            addToContent(_bagCellList[i]);
+            i++;
          }
          _btn = ComponentFactory.Instance.creatComponentByStylename("microendDownload.ftxtBtn");
          addToContent(_btn);
          _btn.addEventListener("click",onMouseClicked);
       }
       
-      protected function onMouseClicked(param1:MouseEvent) : void
+      protected function onMouseClicked(me:MouseEvent) : void
       {
          LeavePageManager.leaveToMicroendDownloadPath();
          close();
@@ -93,7 +92,7 @@ package microenddownload.view
       
       override public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          ObjectUtils.disposeObject(_btn);
          _btn = null;
          ObjectUtils.disposeObject(_ttlOfBtn);
@@ -104,12 +103,11 @@ package microenddownload.view
          _treeImage2 = null;
          ObjectUtils.disposeObject(_back);
          _back = null;
-         _loc1_ = 0;
-         while(_loc1_ < _bagCellList.length)
+         for(i = 0; i < _bagCellList.length; )
          {
-            _bagCellList[_loc1_].dispose();
+            _bagCellList[i].dispose();
             ObjectUtils.disposeObject(_bagCellList.pop());
-            _loc1_++;
+            i++;
          }
          _bagCellList.length = 0;
          _bagCellList = null;

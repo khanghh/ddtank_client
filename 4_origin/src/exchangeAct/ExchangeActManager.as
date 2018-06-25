@@ -33,28 +33,28 @@ package exchangeAct
          return _instance;
       }
       
-      public function addWonderfulIcon(param1:HallStateView) : void
+      public function addWonderfulIcon(hallView:HallStateView) : void
       {
-         _hallView = param1;
+         _hallView = hallView;
          creatWonderfulIcon();
       }
       
       public function creatWonderfulIcon() : void
       {
-         var _loc4_:Boolean = true;
-         var _loc2_:Dictionary = WonderfulActivityManager.Instance.exchangeActLeftViewInfoDic;
-         var _loc3_:String = LanguageMgr.GetTranslation("wonderfulActivityManager.btnTxt16");
+         var hasNoExchangeAct:Boolean = true;
+         var exchangeDic:Dictionary = WonderfulActivityManager.Instance.exchangeActLeftViewInfoDic;
+         var exchangeTitle:String = LanguageMgr.GetTranslation("wonderfulActivityManager.btnTxt16");
          var _loc6_:int = 0;
-         var _loc5_:* = _loc2_;
-         for each(var _loc1_ in _loc2_)
+         var _loc5_:* = exchangeDic;
+         for each(var v in exchangeDic)
          {
-            if(_loc1_.label != _loc3_)
+            if(v.label != exchangeTitle)
             {
-               _loc4_ = false;
+               hasNoExchangeAct = false;
                break;
             }
          }
-         if(_loc4_)
+         if(hasNoExchangeAct)
          {
             return;
          }

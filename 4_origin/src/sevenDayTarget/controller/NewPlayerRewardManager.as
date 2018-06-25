@@ -53,151 +53,145 @@ package sevenDayTarget.controller
          return this._model;
       }
       
-      private function pkgHandler(param1:CrazyTankSocketEvent) : void
+      private function pkgHandler(event:CrazyTankSocketEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = param1._cmd;
-         switch(int(_loc2_) - 96)
+         var pkg:PackageIn = event.pkg;
+         var cmd:int = event._cmd;
+         switch(int(cmd) - 96)
          {
             case 0:
-               openOrclose(_loc3_);
+               openOrclose(pkg);
                break;
             case 1:
-               enterView(_loc3_);
+               enterView(pkg);
                break;
             case 2:
-               updateView(_loc3_);
+               updateView(pkg);
          }
       }
       
-      private function updateView(param1:PackageIn) : void
+      private function updateView(pkg:PackageIn) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:Boolean = false;
-         var _loc4_:Boolean = param1.readBoolean();
-         if(_loc4_)
+         var questionID:int = 0;
+         var isComplete:Boolean = false;
+         var success:Boolean = pkg.readBoolean();
+         if(success)
          {
-            _loc3_ = param1.readInt();
-            _loc2_ = param1.readBoolean();
-            updateQuestionInfoArr(_loc3_,_loc4_,_loc2_);
+            questionID = pkg.readInt();
+            isComplete = pkg.readBoolean();
+            updateQuestionInfoArr(questionID,success,isComplete);
          }
       }
       
-      private function updateQuestionInfoArr(param1:int, param2:Boolean, param3:Boolean) : void
+      private function updateQuestionInfoArr(questionID:int, success:Boolean, isComplete:Boolean) : void
       {
-         var _loc4_:* = null;
-         var _loc7_:int = 0;
-         var _loc5_:int = 0;
-         var _loc6_:int = 0;
-         _loc7_ = 0;
-         while(_loc7_ < _model.chongzhiInfoArr.length)
+         var questionInfo:* = null;
+         var i:int = 0;
+         var j:int = 0;
+         var k:int = 0;
+         for(i = 0; i < _model.chongzhiInfoArr.length; )
          {
-            _loc4_ = _model.chongzhiInfoArr[_loc7_];
-            if(_loc4_.questId == param1)
+            questionInfo = _model.chongzhiInfoArr[i];
+            if(questionInfo.questId == questionID)
             {
-               _loc4_.getRewarded = param2;
-               _loc4_.finished = param3;
+               questionInfo.getRewarded = success;
+               questionInfo.finished = isComplete;
                return;
             }
-            _loc7_++;
+            i++;
          }
-         _loc5_ = 0;
-         while(_loc5_ < _model.xiaofeiInfoArr.length)
+         for(j = 0; j < _model.xiaofeiInfoArr.length; )
          {
-            _loc4_ = _model.xiaofeiInfoArr[_loc5_];
-            if(_loc4_.questId == param1)
+            questionInfo = _model.xiaofeiInfoArr[j];
+            if(questionInfo.questId == questionID)
             {
-               _loc4_.getRewarded = param2;
-               _loc4_.finished = param3;
+               questionInfo.getRewarded = success;
+               questionInfo.finished = isComplete;
                return;
             }
-            _loc5_++;
+            j++;
          }
-         _loc6_ = 0;
-         while(_loc6_ < _model.hunliInfoArr.length)
+         for(k = 0; k < _model.hunliInfoArr.length; )
          {
-            _loc4_ = _model.hunliInfoArr[_loc6_];
-            if(_loc4_.questId == param1)
+            questionInfo = _model.hunliInfoArr[k];
+            if(questionInfo.questId == questionID)
             {
-               _loc4_.getRewarded = param2;
-               _loc4_.finished = param3;
+               questionInfo.getRewarded = success;
+               questionInfo.finished = isComplete;
                return;
             }
-            _loc6_++;
+            k++;
          }
       }
       
-      private function openOrclose(param1:PackageIn) : void
+      private function openOrclose(pkg:PackageIn) : void
       {
-         _isShowIcon = param1.readBoolean();
+         _isShowIcon = pkg.readBoolean();
          NewSevenDayAndNewPlayerManager.Instance.newPlayerOpen = _isShowIcon;
          NewSevenDayAndNewPlayerManager.Instance.dispatchEvent(new Event("openUpdate"));
       }
       
-      public function enterView(param1:PackageIn) : void
+      public function enterView(pkg:PackageIn) : void
       {
-         var _loc10_:int = 0;
-         var _loc9_:* = null;
-         var _loc2_:int = 0;
-         var _loc6_:int = 0;
-         var _loc8_:* = null;
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc7_:int = 0;
-         var _loc5_:* = null;
-         _loc10_ = 0;
-         while(_loc10_ < 3)
+         var i:int = 0;
+         var newArr:* = null;
+         var count:int = 0;
+         var j:int = 0;
+         var info:* = null;
+         var rewardNum:int = 0;
+         var arr:* = null;
+         var k:int = 0;
+         var itemInfo:* = null;
+         for(i = 0; i < 3; )
          {
-            _loc9_ = [];
-            _loc2_ = param1.readInt();
-            _loc6_ = 0;
-            while(_loc6_ < _loc2_)
+            newArr = [];
+            count = pkg.readInt();
+            for(j = 0; j < count; )
             {
-               _loc8_ = new NewPlayerRewardInfo();
-               _loc8_.questId = param1.readInt();
-               _loc8_.num = param1.readInt();
-               if(_loc10_ == 0)
+               info = new NewPlayerRewardInfo();
+               info.questId = pkg.readInt();
+               info.num = pkg.readInt();
+               if(i == 0)
                {
-                  _loc8_.bgType = NewPlayerRewardMainView.CHONGZHI;
+                  info.bgType = NewPlayerRewardMainView.CHONGZHI;
                }
-               else if(_loc10_ == 1)
+               else if(i == 1)
                {
-                  _loc8_.bgType = NewPlayerRewardMainView.XIAOFEI;
+                  info.bgType = NewPlayerRewardMainView.XIAOFEI;
                }
-               else if(_loc10_ == 2)
+               else if(i == 2)
                {
-                  _loc8_.bgType = NewPlayerRewardMainView.HUNLI;
+                  info.bgType = NewPlayerRewardMainView.HUNLI;
                }
-               _loc8_.finished = param1.readBoolean();
-               _loc8_.getRewarded = param1.readBoolean();
-               _loc4_ = param1.readInt();
-               _loc3_ = [];
-               _loc7_ = 0;
-               while(_loc7_ < _loc4_)
+               info.finished = pkg.readBoolean();
+               info.getRewarded = pkg.readBoolean();
+               rewardNum = pkg.readInt();
+               arr = [];
+               for(k = 0; k < rewardNum; )
                {
-                  _loc5_ = new InventoryItemInfo();
-                  _loc5_.ItemID = param1.readInt();
-                  _loc5_.Count = param1.readInt();
-                  _loc3_.push(_loc5_);
-                  _loc7_++;
+                  itemInfo = new InventoryItemInfo();
+                  itemInfo.ItemID = pkg.readInt();
+                  itemInfo.Count = pkg.readInt();
+                  arr.push(itemInfo);
+                  k++;
                }
-               _loc8_.rewardArr = _loc3_;
-               _loc9_.push(_loc8_);
-               _loc6_++;
+               info.rewardArr = arr;
+               newArr.push(info);
+               j++;
             }
-            if(_loc10_ == 0)
+            if(i == 0)
             {
-               _model.chongzhiInfoArr = _loc9_;
+               _model.chongzhiInfoArr = newArr;
             }
-            else if(_loc10_ == 1)
+            else if(i == 1)
             {
-               _model.xiaofeiInfoArr = _loc9_;
+               _model.xiaofeiInfoArr = newArr;
             }
-            else if(_loc10_ == 2)
+            else if(i == 2)
             {
-               _model.hunliInfoArr = _loc9_;
+               _model.hunliInfoArr = newArr;
             }
-            _loc10_++;
+            i++;
          }
          if(SevenDayTargetManager.loadComplete)
          {
@@ -214,7 +208,7 @@ package sevenDayTarget.controller
          }
       }
       
-      protected function __onClose(param1:Event) : void
+      protected function __onClose(event:Event) : void
       {
          UIModuleSmallLoading.Instance.hide();
          UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);
@@ -222,17 +216,17 @@ package sevenDayTarget.controller
          UIModuleLoader.Instance.removeEventListener("uiModuleComplete",__completeShow);
       }
       
-      private function __progressShow(param1:UIModuleEvent) : void
+      private function __progressShow(event:UIModuleEvent) : void
       {
-         if(param1.module == "sevenDayTarget")
+         if(event.module == "sevenDayTarget")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
       
-      private function __completeShow(param1:UIModuleEvent) : void
+      private function __completeShow(event:UIModuleEvent) : void
       {
-         if(param1.module == "sevenDayTarget")
+         if(event.module == "sevenDayTarget")
          {
             UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);
             UIModuleLoader.Instance.removeEventListener("uiMoudleProgress",__progressShow);

@@ -10,28 +10,27 @@ package stock.analyzer
    {
        
       
-      public function StockNewsAnalyzer(param1:Function = null)
+      public function StockNewsAnalyzer(onCompleteCall:Function = null)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc7_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:Dictionary = new Dictionary();
-         var _loc4_:XML = new XML(param1);
-         var _loc6_:int = _loc4_.Item.length();
-         var _loc5_:XMLList = _loc4_.Item;
-         _loc7_ = 0;
-         while(_loc7_ < _loc6_)
+         var i:int = 0;
+         var itemData:* = null;
+         var tmp:Dictionary = new Dictionary();
+         var xml:XML = new XML(data);
+         var len:int = xml.Item.length();
+         var xmllist:XMLList = xml.Item;
+         for(i = 0; i < len; )
          {
-            _loc2_ = new StockNewsTemplateData();
-            ObjectUtils.copyPorpertiesByXML(_loc2_,_loc5_[_loc7_]);
-            _loc3_[_loc2_.NewsId] = _loc2_;
-            _loc7_++;
+            itemData = new StockNewsTemplateData();
+            ObjectUtils.copyPorpertiesByXML(itemData,xmllist[i]);
+            tmp[itemData.NewsId] = itemData;
+            i++;
          }
-         StockMgr.inst.model.cfgStockNews = _loc3_;
+         StockMgr.inst.model.cfgStockNews = tmp;
          onAnalyzeComplete();
       }
    }

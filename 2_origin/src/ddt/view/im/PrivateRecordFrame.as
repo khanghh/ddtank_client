@@ -87,10 +87,10 @@ package ddt.view.im
          _messages = new Vector.<Object>();
       }
       
-      protected function __clickHandler(param1:MouseEvent) : void
+      protected function __clickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = event.currentTarget;
          if(_firstPage !== _loc2_)
          {
             if(_prePage !== _loc2_)
@@ -118,36 +118,36 @@ package ddt.view.im
          }
       }
       
-      protected function __keyDownHandler(param1:KeyboardEvent) : void
+      protected function __keyDownHandler(event:KeyboardEvent) : void
       {
-         var _loc2_:int = 0;
-         if(param1.keyCode == 13)
+         var num:int = 0;
+         if(event.keyCode == 13)
          {
             SoundManager.instance.play("008");
-            _loc2_ = parseInt(_pageInput.text);
-            if(_loc2_ > _totalPage)
+            num = parseInt(_pageInput.text);
+            if(num > _totalPage)
             {
-               _loc2_ = _totalPage;
+               num = _totalPage;
             }
-            else if(_loc2_ < 1)
+            else if(num < 1)
             {
-               _loc2_ = 1;
+               num = 1;
             }
-            showPage(_totalPage + 1 - _loc2_);
+            showPage(_totalPage + 1 - num);
          }
       }
       
-      protected function __closeHandler(param1:MouseEvent) : void
+      protected function __closeHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          dispatchEvent(new Event("close"));
       }
       
-      public function set playerId(param1:int) : void
+      public function set playerId(id:int) : void
       {
-         if(SharedManager.Instance.privateChatRecord[param1])
+         if(SharedManager.Instance.privateChatRecord[id])
          {
-            _messages = SharedManager.Instance.privateChatRecord[param1];
+            _messages = SharedManager.Instance.privateChatRecord[id];
          }
          else
          {
@@ -159,10 +159,10 @@ package ddt.view.im
          showPage(1);
       }
       
-      protected function showPage(param1:int) : void
+      protected function showPage(page:int) : void
       {
-         var _loc5_:* = 0;
-         if(param1 == 1)
+         var i:* = 0;
+         if(page == 1)
          {
             _lastPage.enable = false;
             _nextPage.enable = false;
@@ -172,7 +172,7 @@ package ddt.view.im
             _lastPage.enable = true;
             _nextPage.enable = true;
          }
-         if(param1 == _totalPage)
+         if(page == _totalPage)
          {
             _firstPage.enable = false;
             _prePage.enable = false;
@@ -182,20 +182,19 @@ package ddt.view.im
             _firstPage.enable = true;
             _prePage.enable = true;
          }
-         _pageInput.text = (_totalPage + 1 - param1).toString();
-         _currentPage = param1;
-         var _loc2_:String = "";
-         var _loc4_:int = (_totalPage - _currentPage) * 20;
-         var _loc3_:int = (_totalPage - _currentPage + 1) * 20;
-         _loc4_ = _loc4_ < 0?0:_loc4_;
-         _loc3_ = _loc3_ > _messages.length?_messages.length:_loc3_;
-         _loc5_ = _loc4_;
-         while(_loc5_ < _loc3_)
+         _pageInput.text = (_totalPage + 1 - page).toString();
+         _currentPage = page;
+         var str:String = "";
+         var begain:int = (_totalPage - _currentPage) * 20;
+         var end:int = (_totalPage - _currentPage + 1) * 20;
+         begain = begain < 0?0:begain;
+         end = end > _messages.length?_messages.length:end;
+         for(i = begain; i < end; )
          {
-            _loc2_ = _loc2_ + (String(_messages[_loc5_]) + "<br/>");
-            _loc5_++;
+            str = str + (String(_messages[i]) + "<br/>");
+            i++;
          }
-         _content.htmlText = _loc2_;
+         _content.htmlText = str;
          _content.textField.setSelection(_content.text.length - 1,_content.text.length - 1);
          _content.upScrollArea();
       }

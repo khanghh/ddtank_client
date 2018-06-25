@@ -43,8 +43,8 @@ package beadSystem.tips
       
       private function initData() : void
       {
-         var _loc1_:String = LanguageMgr.GetTranslation("ddt.beadSystem.requestBeadNames");
-         _nameList = _loc1_.split(",");
+         var nameListStr:String = LanguageMgr.GetTranslation("ddt.beadSystem.requestBeadNames");
+         _nameList = nameListStr.split(",");
          _priceList = ServerConfigManager.instance.getRequestBeadPrice();
       }
       
@@ -53,32 +53,32 @@ package beadSystem.tips
          return _beadTipData;
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:int = 0;
-         _beadTipData = param1;
-         var _loc4_:int = param1;
-         switch(int(_loc4_))
+         var tmpName:* = null;
+         var tmpDisc:int = 0;
+         _beadTipData = data;
+         var place:int = data;
+         switch(int(place))
          {
             case 0:
-               _loc3_ = _nameList[0];
-               _loc2_ = _priceList[0];
+               tmpName = _nameList[0];
+               tmpDisc = _priceList[0];
                break;
             case 1:
-               _loc3_ = _nameList[1];
-               _loc2_ = _priceList[1];
+               tmpName = _nameList[1];
+               tmpDisc = _priceList[1];
                break;
             case 2:
-               _loc3_ = _nameList[2];
-               _loc2_ = _priceList[2];
+               tmpName = _nameList[2];
+               tmpDisc = _priceList[2];
                break;
             case 3:
-               _loc3_ = _nameList[3];
-               _loc2_ = _priceList[3];
+               tmpName = _nameList[3];
+               tmpDisc = _priceList[3];
          }
-         _nameTxt.text = _loc3_;
-         _discTxt.text = LanguageMgr.GetTranslation("ddt.beadSystem.getBead.requestBtn.tip.disc") + _loc2_.toString();
+         _nameTxt.text = tmpName;
+         _discTxt.text = LanguageMgr.GetTranslation("ddt.beadSystem.getBead.requestBtn.tip.disc") + tmpDisc.toString();
          updateSize();
       }
       

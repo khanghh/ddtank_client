@@ -20,17 +20,17 @@ package hallIcon.info
       
       public var timeShow:Boolean;
       
-      public function HallIconInfo(param1:String = "", param2:Boolean = false, param3:String = null, param4:int = 0, param5:Boolean = false, param6:int = 0, param7:int = -1, param8:Boolean = false)
+      public function HallIconInfo($icontype:String = "", $isopen:Boolean = false, $timemsg:String = null, $halltype:int = 0, $fightover:Boolean = false, $orderid:int = 0, $num:int = -1, $timeShow:Boolean = false)
       {
          super();
-         icontype = param1;
-         isopen = param2;
-         timemsg = param3;
-         halltype = param4;
-         fightover = param5;
-         orderid = param6;
-         num = param7;
-         timeShow = param8;
+         icontype = $icontype;
+         isopen = $isopen;
+         timemsg = $timemsg;
+         halltype = $halltype;
+         fightover = $fightover;
+         orderid = $orderid;
+         num = $num;
+         timeShow = $timeShow;
       }
    }
 }

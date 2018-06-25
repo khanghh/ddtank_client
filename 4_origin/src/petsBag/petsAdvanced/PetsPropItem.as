@@ -35,11 +35,11 @@ package petsBag.petsAdvanced
       
       private var _index:int;
       
-      public function PetsPropItem(param1:int)
+      public function PetsPropItem(viewType:int)
       {
          _propNameArr = ["MaxHp","attack","defence","agility","luck"];
          super();
-         _viewType = param1;
+         _viewType = viewType;
          initView();
       }
       
@@ -61,48 +61,48 @@ package petsBag.petsAdvanced
          }
       }
       
-      public function setData(param1:int, param2:int, param3:Number) : void
+      public function setData(index:int, propValue:int, addedProValue:Number) : void
       {
-         _index = param1;
-         _propValue = param2;
-         _addedProValue = param3;
+         _index = index;
+         _propValue = propValue;
+         _addedProValue = addedProValue;
          if(!_isPlayComplete)
          {
             return;
          }
-         _propNameTxt.text = LanguageMgr.GetTranslation(_propNameArr[param1]);
+         _propNameTxt.text = LanguageMgr.GetTranslation(_propNameArr[index]);
          if(_viewType == 1)
          {
-            _propValueTxt.text = "+" + param2;
-            _risingStarAddedPropValueTxt.text = "（+" + param3.toFixed(1) + "）";
+            _propValueTxt.text = "+" + propValue;
+            _risingStarAddedPropValueTxt.text = "（+" + addedProValue.toFixed(1) + "）";
          }
          else
          {
-            _propValueTxt.text = "" + param2;
-            _evolutionAddedPropValueTxt.text = "+" + int(param3);
+            _propValueTxt.text = "" + propValue;
+            _evolutionAddedPropValueTxt.text = "+" + int(addedProValue);
          }
       }
       
       public function playNumMc() : void
       {
-         var _loc1_:int = 0;
+         var num:int = 0;
          if(_viewType == 1)
          {
-            _loc1_ = _propValueTxt.text.length - 1;
+            num = _propValueTxt.text.length - 1;
          }
          else
          {
-            _loc1_ = _propValueTxt.text.length;
+            num = _propValueTxt.text.length;
          }
-         _numMc = ComponentFactory.Instance.creat("petsBag.advanced.numMc" + _loc1_);
-         _numMc.x = _propValueTxt.x + 13 + 4.5 * (5 - _loc1_);
+         _numMc = ComponentFactory.Instance.creat("petsBag.advanced.numMc" + num);
+         _numMc.x = _propValueTxt.x + 13 + 4.5 * (5 - num);
          _numMc.y = _propValueTxt.y + 2;
          addChild(_numMc);
          _isPlayComplete = false;
          addEventListener("enterFrame",__enterHandler);
       }
       
-      protected function __enterHandler(param1:Event) : void
+      protected function __enterHandler(event:Event) : void
       {
          if(_numMc.currentFrame >= 23)
          {

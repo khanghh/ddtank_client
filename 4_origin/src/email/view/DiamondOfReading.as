@@ -3,7 +3,6 @@ package email.view
    import baglocked.BaglockedManager;
    import com.pickgliss.events.FrameEvent;
    import com.pickgliss.ui.AlertManager;
-   import com.pickgliss.ui.ShowTipManager;
    import com.pickgliss.ui.controls.alert.BaseAlerFrame;
    import com.pickgliss.utils.ObjectUtils;
    import ddt.data.EquipType;
@@ -12,7 +11,6 @@ package email.view
    import ddt.manager.LeavePageManager;
    import ddt.manager.PlayerManager;
    import ddt.manager.SoundManager;
-   import email.MailManager;
    import email.manager.MailControl;
    import flash.events.MouseEvent;
    import mark.data.MarkChipData;
@@ -31,9 +29,9 @@ package email.view
          super();
       }
       
-      public function set readOnly(param1:Boolean) : void
+      public function set readOnly(value:Boolean) : void
       {
-         if(param1)
+         if(value)
          {
             removeEvent();
          }
@@ -55,16 +53,16 @@ package email.view
       
       override protected function update() : void
       {
-         var _loc3_:* = null;
-         var _loc1_:* = null;
-         var _loc8_:* = null;
-         var _loc6_:* = null;
-         var _loc5_:* = null;
-         var _loc4_:* = null;
-         var _loc2_:* = null;
-         var _loc7_:* = _info.getAnnexByIndex(index);
+         var item:* = null;
+         var chip:* = null;
+         var pro1:* = null;
+         var pro2:* = null;
+         var pro3:* = null;
+         var pro4:* = null;
+         var pro5:* = null;
+         var annex:* = _info.getAnnexByIndex(index);
          chargedImg.visible = false;
-         if(_loc7_ && _loc7_ is String)
+         if(annex && annex is String)
          {
             this.buttonMode = true;
             _cell.visible = false;
@@ -72,13 +70,13 @@ package email.view
             countTxt.text = "";
             mouseEnabled = true;
             mouseChildren = true;
-            if(_loc7_ == "gold")
+            if(annex == "gold")
             {
                centerMC.setFrame(3);
                countTxt.text = String(_info.Gold);
                mouseChildren = false;
             }
-            else if(_loc7_ == "money")
+            else if(annex == "money")
             {
                if(_info.Type > 100 || _info.Type == 83 || _info.Type == 81)
                {
@@ -93,74 +91,70 @@ package email.view
                   mouseChildren = false;
                }
             }
-            else if(_loc7_ == "bindMoney")
+            else if(annex == "bindMoney")
             {
                centerMC.setFrame(7);
                countTxt.text = String(_info.BindMoney);
                mouseChildren = false;
             }
-            else if(_loc7_ == "medal")
+            else if(annex == "medal")
             {
                centerMC.setFrame(6);
                countTxt.text = String(_info.Medal);
                mouseChildren = false;
             }
          }
-         else if(_loc7_)
+         else if(annex)
          {
             _cell.visible = true;
-            _loc3_ = _loc7_ as InventoryItemInfo;
-            if(EquipType.isMagicStone(_loc3_.CategoryID))
+            item = annex as InventoryItemInfo;
+            if(EquipType.isMagicStone(item.CategoryID))
             {
-               _loc3_.Attack = _loc3_.AttackCompose;
-               _loc3_.Defence = _loc3_.DefendCompose;
-               _loc3_.Agility = _loc3_.AgilityCompose;
-               _loc3_.Luck = _loc3_.LuckCompose;
-               _loc3_.Level = _loc3_.StrengthenLevel;
+               item.Attack = item.AttackCompose;
+               item.Defence = item.DefendCompose;
+               item.Agility = item.AgilityCompose;
+               item.Luck = item.LuckCompose;
+               item.Level = item.StrengthenLevel;
             }
-            if(_loc3_.CategoryID == 74)
+            if(item.CategoryID == 74)
             {
-               _loc1_ = new MarkChipData();
-               _loc1_.templateId = _loc3_.TemplateID;
-               _loc1_.bornLv = _loc3_.StrengthenLevel;
-               _loc1_.hammerLv = _loc3_.StrengthenExp;
-               _loc1_.hLv = _loc3_.AttackCompose;
-               _loc8_ = new MarkProData();
-               _loc8_.type = _loc3_.DefendCompose;
-               _loc8_.value = _loc3_.AgilityCompose;
-               _loc8_.attachValue = _loc3_.LuckCompose;
-               _loc1_.mainPro = _loc8_;
-               _loc6_ = new MarkProData();
-               _loc6_.type = _loc3_.Hole1;
-               _loc6_.value = _loc3_.Hole2;
-               _loc6_.attachValue = _loc3_.Hole3;
-               _loc6_.hummerCount = _loc3_.Hole5Exp;
-               _loc1_.props.push(_loc6_);
-               _loc5_ = new MarkProData();
-               _loc5_.type = _loc3_.Hole4;
-               _loc5_.value = _loc3_.Hole5;
-               _loc5_.attachValue = _loc3_.Hole6;
-               _loc5_.hummerCount = _loc3_.Hole6Exp;
-               _loc1_.props.push(_loc5_);
-               _loc4_ = new MarkProData();
-               _loc4_.type = _loc3_.ValidDate;
-               _loc4_.value = _loc3_.RefineryLevel;
-               _loc4_.attachValue = _loc3_.StrengthenTimes;
-               _loc4_.hummerCount = _loc3_.Hole5Exp;
-               _loc1_.props.push(_loc4_);
-               _loc2_ = new MarkProData();
-               _loc2_.type = parseInt(_loc3_.Skin.split("|")[0]);
-               _loc2_.value = parseInt(_loc3_.Skin.split("|")[1]);
-               _loc2_.attachValue = parseInt(_loc3_.Skin.split("|")[2]);
-               _loc2_.hummerCount = _loc3_.Hole6Level;
-               _loc1_.props.push(_loc2_);
-               _cell.markInfo = _loc1_;
-               if(MailManager.Instance.isSelecteMarkTip(_loc1_))
-               {
-                  ShowTipManager.Instance.removeTip(_cell);
-               }
+               chip = new MarkChipData();
+               chip.templateId = item.TemplateID;
+               chip.bornLv = item.StrengthenLevel;
+               chip.hammerLv = item.StrengthenExp;
+               chip.hLv = item.AttackCompose;
+               chip.isbind = item.IsBinds;
+               pro1 = new MarkProData();
+               pro1.type = item.DefendCompose;
+               pro1.value = item.AgilityCompose;
+               pro1.attachValue = item.LuckCompose;
+               chip.mainPro = pro1;
+               pro2 = new MarkProData();
+               pro2.type = item.Hole1;
+               pro2.value = item.Hole2;
+               pro2.attachValue = item.Hole3;
+               pro2.hummerCount = item.Hole5Exp;
+               chip.props.push(pro2);
+               pro3 = new MarkProData();
+               pro3.type = item.Hole4;
+               pro3.value = item.Hole5;
+               pro3.attachValue = item.Hole6;
+               pro3.hummerCount = item.Hole6Exp;
+               chip.props.push(pro3);
+               pro4 = new MarkProData();
+               pro4.type = item.ValidDate;
+               pro4.value = item.RefineryLevel;
+               pro4.attachValue = item.StrengthenTimes;
+               pro4.hummerCount = item.Hole5Exp;
+               chip.props.push(pro4);
+               pro5 = new MarkProData();
+               pro5.type = parseInt(item.Skin.split("|")[0]);
+               pro5.value = parseInt(item.Skin.split("|")[1]);
+               pro5.attachValue = parseInt(item.Skin.split("|")[2]);
+               pro5.hummerCount = item.Hole6Level;
+               chip.props.push(pro5);
             }
-            _cell.info = _loc3_;
+            _cell.info = item;
             mouseEnabled = true;
             mouseChildren = true;
             countTxt.text = "";
@@ -184,40 +178,39 @@ package email.view
          }
       }
       
-      private function __distill(param1:MouseEvent) : void
+      private function __distill(event:MouseEvent) : void
       {
-         var _loc3_:* = 0;
+         var i:* = 0;
          SoundManager.instance.play("008");
          if(_info == null)
          {
             return;
          }
-         var _loc2_:* = _info.getAnnexByIndex(index);
-         if(_loc2_)
+         var annex:* = _info.getAnnexByIndex(index);
+         if(annex)
          {
-            _loc3_ = uint(1);
-            while(_loc3_ <= 5)
+            for(i = uint(1); i <= 5; )
             {
-               if(_loc2_ == _info["Annex" + _loc3_])
+               if(annex == _info["Annex" + i])
                {
-                  type = _loc3_;
+                  type = i;
                   break;
                }
-               _loc3_++;
+               i++;
             }
-            if(_loc2_ == "gold")
+            if(annex == "gold")
             {
                type = 6;
             }
-            else if(_loc2_ == "money")
+            else if(annex == "money")
             {
                type = 7;
             }
-            else if(_loc2_ == "bindMoney")
+            else if(annex == "bindMoney")
             {
                type = 8;
             }
-            else if(_loc2_ == "medal")
+            else if(annex == "medal")
             {
                type = 9;
             }
@@ -239,17 +232,17 @@ package email.view
          }
       }
       
-      private function __payFrameResponse(param1:FrameEvent) : void
+      private function __payFrameResponse(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          payAlertFrame.removeEventListener("response",__payFrameResponse);
          payAlertFrame.dispose();
          payAlertFrame = null;
-         if(param1.responseCode == 3)
+         if(event.responseCode == 3)
          {
             confirmPay();
          }
-         else if(param1.responseCode == 4 || param1.responseCode == 0 || param1.responseCode == 1)
+         else if(event.responseCode == 4 || event.responseCode == 0 || event.responseCode == 1)
          {
             canclePay();
          }
@@ -257,7 +250,7 @@ package email.view
       
       private function confirmPay() : void
       {
-         var _loc1_:* = null;
+         var confirm:* = null;
          if(PlayerManager.Instance.Self.Money >= _info.Money)
          {
             MailControl.Instance.getAnnexToBag(_info,type);
@@ -266,24 +259,24 @@ package email.view
          }
          else
          {
-            _loc1_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.comon.lack"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
-            _loc1_.addEventListener("response",__confirmResponse);
+            confirm = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.comon.lack"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
+            confirm.addEventListener("response",__confirmResponse);
             mouseEnabled = true;
             mouseChildren = true;
          }
       }
       
-      private function __confirmResponse(param1:FrameEvent) : void
+      private function __confirmResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__confirmResponse);
-         ObjectUtils.disposeObject(_loc2_);
-         if(_loc2_.parent)
+         var frame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("response",__confirmResponse);
+         ObjectUtils.disposeObject(frame);
+         if(frame.parent)
          {
-            _loc2_.parent.removeChild(_loc2_);
+            frame.parent.removeChild(frame);
          }
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             LeavePageManager.leaveToFillPath();
          }

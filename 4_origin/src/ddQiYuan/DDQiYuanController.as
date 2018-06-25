@@ -19,9 +19,9 @@ package ddQiYuan
       
       private var _towerFrame:DDQiYuanTowerFrame;
       
-      public function DDQiYuanController(param1:IEventDispatcher = null)
+      public function DDQiYuanController(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : DDQiYuanController
@@ -39,7 +39,7 @@ package ddQiYuan
          DDQiYuanManager.instance.addEventListener("event_query_tower_task_back",onOpenTowerFrameView);
       }
       
-      protected function onOpenView(param1:Event) : void
+      protected function onOpenView(event:Event) : void
       {
          new HelperUIModuleLoad().loadUIModule(["ddqiyuan","ddtbagandinfo"],loadCompleteHandler);
       }
@@ -51,7 +51,7 @@ package ddQiYuan
          LayerManager.Instance.addToLayer(_frame,3,true,1);
       }
       
-      private function onOpenTowerFrameView(param1:Event) : void
+      private function onOpenTowerFrameView(event:Event) : void
       {
          _towerFrame = ComponentFactory.Instance.creatComponentByStylename("ddQiYuan.DDQiYuanTowerFrame");
          LayerManager.Instance.addToLayer(_towerFrame,3,true,1);

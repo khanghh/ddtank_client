@@ -42,10 +42,10 @@ package stock
       
       private var _hasServerStockData:Boolean = false;
       
-      public function StockMgr(param1:SingleTon)
+      public function StockMgr(single:SingleTon)
       {
          super();
-         if(!param1)
+         if(!single)
          {
             throw new Error("this is a single instance!");
          }
@@ -92,16 +92,16 @@ package stock
          HallIconManager.instance.updateSwitchHandler("stock",_model.status);
       }
       
-      public function showMainFrame(param1:MouseEvent = null) : void
+      public function showMainFrame(evt:MouseEvent = null) : void
       {
-         evt = param1;
+         evt = evt;
          AssetModuleLoader.addRequestLoader(LoaderCreate.Instance.createStockLoader());
          AssetModuleLoader.addRequestLoader(LoaderCreate.Instance.createStockNewsLoader());
          AssetModuleLoader.addModelLoader("stock",7);
          AssetModuleLoader.startCodeLoader(function():void
          {
-            var _loc1_:* = ComponentFactory.Instance.creatCustomObject("stock.mainFrame");
-            LayerManager.Instance.addToLayer(_loc1_,3,false,1);
+            var frame:* = ComponentFactory.Instance.creatCustomObject("stock.mainFrame");
+            LayerManager.Instance.addToLayer(frame,3,false,1);
          });
       }
       
@@ -112,43 +112,43 @@ package stock
       
       public function showStockSellFrame() : void
       {
-         var _loc1_:* = ComponentFactory.Instance.creatCustomObject("stock.sellFrame");
-         LayerManager.Instance.addToLayer(_loc1_,3,false,1);
+         var frame:* = ComponentFactory.Instance.creatCustomObject("stock.sellFrame");
+         LayerManager.Instance.addToLayer(frame,3,false,1);
       }
       
-      public function chooseOperation(param1:int) : void
+      public function chooseOperation(type:int) : void
       {
          _model.stockID = 0;
-         if(verifyOperation(param1))
+         if(verifyOperation(type))
          {
-            _operationType = param1;
-            SocketManager.Instance.out.sendUpdateUserCmd(param1);
+            _operationType = type;
+            SocketManager.Instance.out.sendUpdateUserCmd(type);
          }
-         dispatchEvent(new StockEvent("stock_choose",param1));
+         dispatchEvent(new StockEvent("stock_choose",type));
       }
       
-      public function getStocks(param1:int = 0) : Array
+      public function getStocks(sortType:int = 0) : Array
       {
-         var _loc2_:Array = [];
+         var arr:Array = [];
          var _loc5_:int = 0;
          var _loc4_:* = _model.stocks;
-         for each(var _loc3_ in _model.stocks)
+         for each(var item in _model.stocks)
          {
-            _loc2_.push(_loc3_);
+            arr.push(item);
          }
-         return _loc2_;
+         return arr;
       }
       
-      public function getMyStocks(param1:int = 0) : Array
+      public function getMyStocks(sortType:int = 0) : Array
       {
-         var _loc3_:Array = [];
+         var arr:Array = [];
          var _loc5_:int = 0;
          var _loc4_:* = _model.mytocks;
-         for each(var _loc2_ in _model.mytocks)
+         for each(var id in _model.mytocks)
          {
-            _loc3_.push(_model.stocks[_loc2_]);
+            arr.push(_model.stocks[id]);
          }
-         return _loc3_;
+         return arr;
       }
       
       public function get operationType() : int
@@ -161,11 +161,11 @@ package stock
          return _infoType;
       }
       
-      public function chooseInfoType(param1:int) : void
+      public function chooseInfoType(infType:int) : void
       {
-         if(verifyInfoType(param1))
+         if(verifyInfoType(infType))
          {
-            _infoType = param1;
+            _infoType = infType;
             if(_hasServerStockData)
             {
                requestStockSpecific();
@@ -173,29 +173,29 @@ package stock
          }
       }
       
-      private function verifyInfoType(param1:int) : Boolean
+      private function verifyInfoType(type:int) : Boolean
       {
-         if(param1 != 1 && param1 != 0)
+         if(type != 1 && type != 0)
          {
             return false;
          }
          return true;
       }
       
-      private function verifyOperation(param1:int) : Boolean
+      private function verifyOperation(type:int) : Boolean
       {
-         if(param1 > 4)
+         if(type > 4)
          {
             return false;
          }
          return true;
       }
       
-      public function chooseStock(param1:int) : void
+      public function chooseStock(id:int) : void
       {
-         if(verifyStock(param1))
+         if(verifyStock(id))
          {
-            _model.stockID = param1;
+            _model.stockID = id;
             if(_operationType == 1)
             {
                chooseInfoType(_infoType == -1?0:int(_infoType));
@@ -210,57 +210,55 @@ package stock
       
       public function parseStockScoreAward() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:* = null;
-         var _loc6_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc5_:int = 0;
+         var awardStr:* = null;
+         var pairs:* = null;
+         var size:int = 0;
+         var awardData:* = null;
+         var pair:* = null;
+         var i:int = 0;
          if(!_model.exchangedList)
          {
             _model.exchangedList = new Vector.<StockAwardData>();
-            _loc2_ = ServerConfigManager.instance.StockScoreAward;
-            _loc1_ = _loc2_.split("|");
-            _loc6_ = _loc1_.length;
-            _loc4_ = null;
-            _loc3_ = null;
-            _loc5_ = 0;
-            while(_loc5_ < _loc6_)
+            awardStr = ServerConfigManager.instance.StockScoreAward;
+            pairs = awardStr.split("|");
+            size = pairs.length;
+            awardData = null;
+            pair = null;
+            for(i = 0; i < size; )
             {
-               _loc4_ = new StockAwardData();
-               _loc4_.index = _loc5_;
-               _loc3_ = String(_loc1_[_loc5_]).split(",");
-               _loc4_.score = _loc3_.length == 0?0:int(_loc3_[0]);
-               _loc4_.awardId = _loc3_.length < 2?0:int(_loc3_[1]);
-               _model.exchangedList.push(_loc4_);
-               _loc5_++;
+               awardData = new StockAwardData();
+               awardData.index = i;
+               pair = String(pairs[i]).split(",");
+               awardData.score = pair.length == 0?0:int(pair[0]);
+               awardData.awardId = pair.length < 2?0:int(pair[1]);
+               _model.exchangedList.push(awardData);
+               i++;
             }
          }
       }
       
-      private function __responseAllStockInfo(param1:PkgEvent) : void
+      private function __responseAllStockInfo(pkg:PkgEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc5_:int = param1.pkg.readInt();
-         var _loc3_:int = 0;
-         var _loc2_:StockData = null;
-         _loc4_ = 0;
-         while(_loc4_ < _loc5_)
+         var i:int = 0;
+         var size:int = pkg.pkg.readInt();
+         var stockID:int = 0;
+         var stockData:StockData = null;
+         for(i = 0; i < size; )
          {
-            _loc3_ = param1.pkg.readInt();
-            _loc2_ = _model.stocks[_loc3_];
-            if(!_loc2_)
+            stockID = pkg.pkg.readInt();
+            stockData = _model.stocks[stockID];
+            if(!stockData)
             {
-               _loc2_ = new StockData(_loc3_);
-               _model.stocks[_loc3_] = _loc2_;
+               stockData = new StockData(stockID);
+               _model.stocks[stockID] = stockData;
             }
-            _loc2_.price = param1.pkg.readInt();
-            _loc2_.changeValue = param1.pkg.readInt();
-            _loc2_.dealNum = param1.pkg.readInt();
-            _loc2_.dayCenterPrice = param1.pkg.readInt();
-            _loc2_.centerPrice = param1.pkg.readInt();
-            _loc2_.maxBuyNum = param1.pkg.readInt();
-            _loc4_++;
+            stockData.price = pkg.pkg.readInt();
+            stockData.changeValue = pkg.pkg.readInt();
+            stockData.dealNum = pkg.pkg.readInt();
+            stockData.dayCenterPrice = pkg.pkg.readInt();
+            stockData.centerPrice = pkg.pkg.readInt();
+            stockData.maxBuyNum = pkg.pkg.readInt();
+            i++;
          }
          _hasServerStockData = true;
          requestStockNews();
@@ -272,36 +270,36 @@ package stock
          SocketManager.Instance.out.sendUserStockAccountInfo();
       }
       
-      private function __responseUserAccountInfo(param1:PkgEvent) : void
+      private function __responseUserAccountInfo(pkg:PkgEvent) : void
       {
-         _model.stockAccoutData.fund = param1.pkg.readInt();
-         _model.stockAccoutData.validLoan = param1.pkg.readInt();
-         _model.dailyLoanMax = param1.pkg.readInt();
+         _model.stockAccoutData.fund = pkg.pkg.readInt();
+         _model.stockAccoutData.validLoan = pkg.pkg.readInt();
+         _model.dailyLoanMax = pkg.pkg.readInt();
          dispatchEvent(new StockEvent("account_update"));
       }
       
-      public function requestDealStock(param1:int, param2:Boolean = false, param3:int = 0, param4:Boolean = false) : void
+      public function requestDealStock(cnt:int, isBuy:Boolean = false, demandType:int = 0, isLoan:Boolean = false) : void
       {
-         var _loc5_:* = null;
-         if(param4)
+         var stockData:* = null;
+         if(isLoan)
          {
-            SocketManager.Instance.out.sendBuyLoan(param1,param3);
+            SocketManager.Instance.out.sendBuyLoan(cnt,demandType);
          }
          else
          {
-            _loc5_ = _model.stocks[_model.stockID];
-            if(_loc5_)
+            stockData = _model.stocks[_model.stockID];
+            if(stockData)
             {
-               if(checkDeal(param2))
+               if(checkDeal(isBuy))
                {
-                  if(param2)
+                  if(isBuy)
                   {
-                     SocketManager.Instance.out.sendDealStockOrFund(0,_model.stockID,param1,param3,_loc5_.price);
+                     SocketManager.Instance.out.sendDealStockOrFund(0,_model.stockID,cnt,demandType,stockData.price);
                   }
                   else if(verifyMyStock())
                   {
-                     SocketManager.Instance.out.sendDealStockOrFund(1,_model.stockID,param1,param3,_loc5_.price);
-                     if(param1 == _loc5_.validNum)
+                     SocketManager.Instance.out.sendDealStockOrFund(1,_model.stockID,cnt,demandType,stockData.price);
+                     if(cnt == stockData.validNum)
                      {
                         dispatchEvent(new StockEvent("stock_sell_out"));
                      }
@@ -311,17 +309,17 @@ package stock
          }
       }
       
-      public function checkDeal(param1:Boolean = false) : Boolean
+      public function checkDeal(isBuy:Boolean = false) : Boolean
       {
-         var _loc2_:StockData = _model.stocks[_model.stockID];
-         if(!_loc2_)
+         var stockData:StockData = _model.stocks[_model.stockID];
+         if(!stockData)
          {
             return false;
          }
-         var _loc3_:Date = TimeManager.Instance.Now();
-         if(param1)
+         var date:Date = TimeManager.Instance.Now();
+         if(isBuy)
          {
-            if(_loc3_.hours < _model.startTime || _loc3_.hours >= _model.endTime)
+            if(date.hours < _model.startTime || date.hours >= _model.endTime)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("stock.outTimeDeal0"));
                return false;
@@ -329,12 +327,12 @@ package stock
          }
          else
          {
-            if(!(_loc3_.hours >= _model.startTime && _loc3_.hours < _model.endTime || StockMgr.inst.model.stockBuyEndTime <= _loc3_.time && _loc3_.time <= StockMgr.inst.model.shopCloseTime))
+            if(!(date.hours >= _model.startTime && date.hours < _model.endTime || StockMgr.inst.model.stockBuyEndTime <= date.time && date.time <= StockMgr.inst.model.shopCloseTime))
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("stock.outTimeDeal1"));
                return false;
             }
-            if(_loc2_.validNum <= 0)
+            if(stockData.validNum <= 0)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("stock.zeroStock"));
                return false;
@@ -345,14 +343,14 @@ package stock
       
       private function verifyMyStock() : Boolean
       {
-         var _loc1_:* = null;
+         var stockData:* = null;
          if(_model.mytocks.indexOf(_model.stockID) == -1)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("stock.invalidStock"));
             return false;
          }
-         _loc1_ = _model.stocks[_model.stockID];
-         if(_loc1_ && _loc1_.validNum <= 0)
+         stockData = _model.stocks[_model.stockID];
+         if(stockData && stockData.validNum <= 0)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("stock.zeroStock"));
             return false;
@@ -360,10 +358,10 @@ package stock
          return true;
       }
       
-      private function __resposeDealStockOrFund(param1:PkgEvent) : void
+      private function __resposeDealStockOrFund(pkg:PkgEvent) : void
       {
-         var _loc2_:int = param1.pkg.readByte();
-         switch(int(_loc2_))
+         var type:int = pkg.pkg.readByte();
+         switch(int(type))
          {
             case 0:
                break;
@@ -379,9 +377,9 @@ package stock
          }
       }
       
-      private function verifyStock(param1:int) : Boolean
+      private function verifyStock(id:int) : Boolean
       {
-         if(!_model.stocks[param1])
+         if(!_model.stocks[id])
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("stock.notStock"));
             _model.stockID = 0;
@@ -390,104 +388,101 @@ package stock
          return true;
       }
       
-      private function __resposeStockSpecific(param1:PkgEvent) : void
+      private function __resposeStockSpecific(pkg:PkgEvent) : void
       {
-         var _loc7_:Number = NaN;
-         var _loc4_:* = null;
-         var _loc5_:int = 0;
-         var _loc8_:* = null;
-         var _loc10_:int = 0;
-         var _loc3_:int = 0;
-         var _loc9_:int = 0;
-         var _loc13_:int = 0;
-         var _loc6_:int = 0;
-         var _loc12_:int = param1.pkg.readInt();
-         var _loc2_:int = param1.pkg.readByte();
-         var _loc11_:StockData = _model.stocks[_loc12_];
-         if(_loc11_)
+         var startTime:Number = NaN;
+         var date:* = null;
+         var size:int = 0;
+         var point:* = null;
+         var hourCnt:int = 0;
+         var dayCnt:int = 0;
+         var tmpDayCnt:int = 0;
+         var tmpHourCnt:int = 0;
+         var i:int = 0;
+         var stockID:int = pkg.pkg.readInt();
+         var infoType:int = pkg.pkg.readByte();
+         var stockData:StockData = _model.stocks[stockID];
+         if(stockData)
          {
-            _loc7_ = param1.pkg.readLong();
-            if(_model.dayGrahpicStartDate <= 0 && _loc2_ == 1)
+            startTime = pkg.pkg.readLong();
+            if(_model.dayGrahpicStartDate <= 0 && infoType == 1)
             {
-               _model.dayGrahpicStartDate = _loc7_;
+               _model.dayGrahpicStartDate = startTime;
             }
-            _loc4_ = new Date(_loc7_);
-            _loc11_.diffValue = param1.pkg.readInt();
-            _loc5_ = param1.pkg.extend2;
-            _loc8_ = null;
-            _loc10_ = 0;
-            _loc3_ = 0;
-            _loc9_ = 0;
-            _loc13_ = 0;
-            _loc11_.dailyPoints.length = 0;
-            _loc11_.hourPoints.length = 0;
-            _loc6_ = 0;
-            while(_loc6_ < _loc5_)
+            date = new Date(startTime);
+            stockData.diffValue = pkg.pkg.readInt();
+            size = pkg.pkg.extend2;
+            point = null;
+            hourCnt = 0;
+            dayCnt = 0;
+            tmpDayCnt = 0;
+            tmpHourCnt = 0;
+            stockData.dailyPoints.length = 0;
+            stockData.hourPoints.length = 0;
+            for(i = 0; i < size; )
             {
-               _loc8_ = new StockPointData();
-               _loc8_.dealPrice = param1.pkg.readInt();
-               if(_loc8_.dealPrice == 0)
+               point = new StockPointData();
+               point.dealPrice = pkg.pkg.readInt();
+               if(point.dealPrice == 0)
                {
-                  _loc8_.dealPrice = _loc11_.centerPrice;
+                  point.dealPrice = stockData.centerPrice;
                }
-               if(_loc2_ == 1)
+               if(infoType == 1)
                {
-                  _loc8_.timeIndex = _loc6_;
-                  _loc11_.dailyPoints.push(_loc8_);
+                  point.timeIndex = i;
+                  stockData.dailyPoints.push(point);
                }
-               else if(_loc2_ == 0)
+               else if(infoType == 0)
                {
-                  _loc8_.time = _loc4_.hours * 3600 + _loc4_.minutes * 60 + _loc4_.seconds + _loc6_ * StockModel.WAIT_TIMES[_loc2_];
-                  _loc11_.hourPoints.push(_loc8_);
+                  point.time = date.hours * 3600 + date.minutes * 60 + date.seconds + i * StockModel.WAIT_TIMES[infoType];
+                  stockData.hourPoints.push(point);
                }
-               _loc6_++;
+               i++;
             }
          }
          dispatchEvent(new StockEvent("stock_specifics_update"));
       }
       
-      private function clearBadData(param1:StockData) : void
+      private function clearBadData(stockData:StockData) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:Vector.<StockPointData> = new Vector.<StockPointData>();
-         _loc3_ = 0;
-         while(_loc3_ < param1.hourPoints.length)
+         var i:int = 0;
+         var tmpList:Vector.<StockPointData> = new Vector.<StockPointData>();
+         for(i = 0; i < stockData.hourPoints.length; )
          {
-            if(param1.hourPoints[_loc3_].time >= model.startTime * 3600)
+            if(stockData.hourPoints[i].time >= model.startTime * 3600)
             {
-               _loc2_.push(param1.hourPoints[_loc3_]);
+               tmpList.push(stockData.hourPoints[i]);
             }
-            _loc3_++;
+            i++;
          }
-         param1.hourPoints = _loc2_;
+         stockData.hourPoints = tmpList;
       }
       
-      private function __responseUserStockInfo(param1:PkgEvent) : void
+      private function __responseUserStockInfo(pkg:PkgEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:int = 0;
-         var _loc6_:int = param1.pkg.readInt();
-         var _loc3_:StockData = null;
-         _loc5_ = 0;
-         while(_loc5_ < _loc6_)
+         var i:int = 0;
+         var stockID:int = 0;
+         var idx:int = 0;
+         var size:int = pkg.pkg.readInt();
+         var stockData:StockData = null;
+         for(i = 0; i < size; )
          {
-            _loc4_ = param1.pkg.readInt();
-            if(_model.mytocks.indexOf(_loc4_) == -1)
+            stockID = pkg.pkg.readInt();
+            if(_model.mytocks.indexOf(stockID) == -1)
             {
-               _model.mytocks.push(_loc4_);
+               _model.mytocks.push(stockID);
             }
-            _loc3_ = _model.stocks[_loc4_];
-            _loc3_.buyTotalValue = param1.pkg.readInt();
-            _loc3_.sellTotalValue = param1.pkg.readInt();
-            _loc3_.holdNum = param1.pkg.readInt();
-            _loc3_.validNum = param1.pkg.readInt();
-            if(_loc3_.holdNum <= 0)
+            stockData = _model.stocks[stockID];
+            stockData.buyTotalValue = pkg.pkg.readInt();
+            stockData.sellTotalValue = pkg.pkg.readInt();
+            stockData.holdNum = pkg.pkg.readInt();
+            stockData.validNum = pkg.pkg.readInt();
+            if(stockData.holdNum <= 0)
             {
-               _loc2_ = _model.mytocks.indexOf(_loc4_);
-               _model.mytocks.splice(_loc2_,1);
+               idx = _model.mytocks.indexOf(stockID);
+               _model.mytocks.splice(idx,1);
             }
-            _loc5_++;
+            i++;
          }
          dispatchEvent(new StockEvent("stock_user_info"));
       }
@@ -500,134 +495,129 @@ package stock
          }
       }
       
-      private function __responseStockNews(param1:PkgEvent) : void
+      private function __responseStockNews(pkg:PkgEvent) : void
       {
-         var _loc8_:int = 0;
-         var _loc6_:int = 0;
+         var i:int = 0;
+         var j:int = 0;
          _model.hasRequestedNews = true;
-         var _loc7_:int = 0;
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:* = 0;
-         var _loc2_:StockNewsData = null;
-         var _loc9_:int = param1.pkg.readByte();
-         _loc8_ = 0;
-         while(_loc8_ < _loc9_)
+         var stockID:int = 0;
+         var newsCnt:int = 0;
+         var newsID:int = 0;
+         var newsTime:* = 0;
+         var stockNewsData:StockNewsData = null;
+         var size:int = pkg.pkg.readByte();
+         for(i = 0; i < size; )
          {
-            _loc7_ = param1.pkg.readShort();
-            _loc5_ = param1.pkg.readByte();
-            _loc6_ = 0;
-            while(_loc6_ < _loc5_)
+            stockID = pkg.pkg.readShort();
+            newsCnt = pkg.pkg.readByte();
+            for(j = 0; j < newsCnt; )
             {
-               _loc2_ = new StockNewsData(1);
-               _loc2_.NewsId = param1.pkg.readByte();
-               _loc2_.stockID = _loc7_;
-               _loc2_.time = param1.pkg.readLong();
-               _model.stocks[_loc7_].notices.push(_loc2_);
-               _loc6_++;
+               stockNewsData = new StockNewsData(1);
+               stockNewsData.NewsId = pkg.pkg.readByte();
+               stockNewsData.stockID = stockID;
+               stockNewsData.time = pkg.pkg.readLong();
+               _model.stocks[stockID].notices.push(stockNewsData);
+               j++;
             }
-            _loc8_++;
+            i++;
          }
          dispatchEvent(new StockEvent("stock_news"));
       }
       
-      private function __responseStockOpenStatus(param1:PkgEvent) : void
+      private function __responseStockOpenStatus(pkg:PkgEvent) : void
       {
-         _model.status = param1.pkg.readBoolean();
+         _model.status = pkg.pkg.readBoolean();
          checkStockIcon();
       }
       
-      private function __responseStockMarketValue(param1:PkgEvent) : void
+      private function __responseStockMarketValue(pkg:PkgEvent) : void
       {
-         _model.stockAccoutData.totalValue = param1.pkg.readInt();
+         _model.stockAccoutData.totalValue = pkg.pkg.readInt();
          dispatchEvent(new StockEvent("account_update"));
       }
       
-      private function __responseStockTradeMessage(param1:PkgEvent) : void
+      private function __responseStockTradeMessage(pkg:PkgEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc4_:int = param1.pkg.readInt();
+         var i:int = 0;
+         var stockNewsData:* = null;
+         var size:int = pkg.pkg.readInt();
          _model.stockAccoutData.historyList = new Vector.<StockNewsData>();
-         _loc3_ = 0;
-         while(_loc3_ < _loc4_)
+         for(i = 0; i < size; )
          {
-            _loc2_ = new StockNewsData(2);
-            _loc2_.stockID = param1.pkg.readInt();
-            _loc2_.dealType = param1.pkg.readInt();
-            _loc2_.singleCost = param1.pkg.readInt();
-            _loc2_.dealCnt = param1.pkg.readInt();
-            _loc2_.time = param1.pkg.readLong();
-            _model.stockAccoutData.historyList.push(_loc2_);
-            _loc3_++;
+            stockNewsData = new StockNewsData(2);
+            stockNewsData.stockID = pkg.pkg.readInt();
+            stockNewsData.dealType = pkg.pkg.readInt();
+            stockNewsData.singleCost = pkg.pkg.readInt();
+            stockNewsData.dealCnt = pkg.pkg.readInt();
+            stockNewsData.time = pkg.pkg.readLong();
+            _model.stockAccoutData.historyList.push(stockNewsData);
+            i++;
          }
          dispatchEvent(new StockEvent("stock_deal_message"));
       }
       
-      private function __responseHistoryAssets(param1:PkgEvent) : void
+      private function __responseHistoryAssets(pkg:PkgEvent) : void
       {
-         var _loc3_:int = 0;
-         _model.myScore = param1.pkg.readInt();
-         var _loc2_:StockAwardData = null;
-         _loc3_ = 0;
-         while(_loc3_ < _model.exchangedList.length)
+         var i:int = 0;
+         _model.myScore = pkg.pkg.readInt();
+         var awardData:StockAwardData = null;
+         for(i = 0; i < _model.exchangedList.length; )
          {
-            _loc2_ = _model.exchangedList[_loc3_];
-            if(_loc2_.score > _model.myScore)
+            awardData = _model.exchangedList[i];
+            if(awardData.score > _model.myScore)
             {
-               _loc2_.status = 0;
+               awardData.status = 0;
             }
-            else if(_loc2_.status != 2)
+            else if(awardData.status != 2)
             {
-               _loc2_.status = 1;
+               awardData.status = 1;
             }
-            _loc3_++;
+            i++;
          }
          dispatchEvent(new StockEvent("stock_update_score"));
       }
       
-      public function requestAward(param1:int) : void
+      public function requestAward(index:int) : void
       {
-         if(verifyAward(param1))
+         if(verifyAward(index))
          {
-            SocketManager.Instance.out.sendStockAward(param1);
+            SocketManager.Instance.out.sendStockAward(index);
          }
       }
       
-      private function verifyAward(param1:int) : Boolean
+      private function verifyAward(index:int) : Boolean
       {
-         if(param1 < 0 || param1 >= _model.exchangedList.length)
+         if(index < 0 || index >= _model.exchangedList.length)
          {
             return false;
          }
-         if(_model.exchangedList[param1].score > _model.myScore)
+         if(_model.exchangedList[index].score > _model.myScore)
          {
             return false;
          }
          return true;
       }
       
-      private function __responseExchangeAward(param1:PkgEvent) : void
+      private function __responseExchangeAward(pkg:PkgEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:int = param1.pkg.readInt();
-         _loc2_ = 0;
-         while(_loc2_ < _loc3_)
+         var i:int = 0;
+         var size:int = pkg.pkg.readInt();
+         for(i = 0; i < size; )
          {
-            _model.exchangedList[param1.pkg.readInt()].status = 2;
-            _loc2_++;
+            _model.exchangedList[pkg.pkg.readInt()].status = 2;
+            i++;
          }
          dispatchEvent(new StockEvent("stock_exchange_award"));
       }
       
-      private function __changeServerHandler(param1:Event) : void
+      private function __changeServerHandler(evt:Event) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = _model.stocks;
-         for each(var _loc2_ in _model.stocks)
+         for each(var item in _model.stocks)
          {
-            _loc2_.dailyPoints = new Vector.<StockPointData>();
-            _loc2_.hourPoints = new Vector.<StockPointData>();
+            item.dailyPoints = new Vector.<StockPointData>();
+            item.hourPoints = new Vector.<StockPointData>();
          }
       }
    }

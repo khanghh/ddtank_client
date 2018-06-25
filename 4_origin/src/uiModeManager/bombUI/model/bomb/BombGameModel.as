@@ -51,9 +51,9 @@ package uiModeManager.bombUI.model.bomb
          return _randomGameHisMaxScore;
       }
       
-      public function set randomGameHisMaxScore(param1:int) : void
+      public function set randomGameHisMaxScore(value:int) : void
       {
-         _randomGameHisMaxScore = param1;
+         _randomGameHisMaxScore = value;
       }
       
       public function get randomGameDayMaxScore() : int
@@ -61,45 +61,45 @@ package uiModeManager.bombUI.model.bomb
          return _randomGameDayMaxScore;
       }
       
-      public function set randomGameDayMaxScore(param1:int) : void
+      public function set randomGameDayMaxScore(value:int) : void
       {
-         _randomGameDayMaxScore = param1;
+         _randomGameDayMaxScore = value;
       }
       
       public function clearData() : void
       {
-         var _loc1_:* = null;
+         var info:* = null;
          CurrentScores = 0;
          if(rankDayFixInfos)
          {
             while(rankDayFixInfos.length > 0)
             {
-               _loc1_ = rankDayFixInfos.pop();
-               _loc1_ = null;
+               info = rankDayFixInfos.pop();
+               info = null;
             }
          }
          if(rankTotalFixInfos)
          {
             while(rankTotalFixInfos.length > 0)
             {
-               _loc1_ = rankTotalFixInfos.pop();
-               _loc1_ = null;
+               info = rankTotalFixInfos.pop();
+               info = null;
             }
          }
          if(rankDayRandomInfos)
          {
             while(rankDayRandomInfos.length > 0)
             {
-               _loc1_ = rankDayRandomInfos.pop();
-               _loc1_ = null;
+               info = rankDayRandomInfos.pop();
+               info = null;
             }
          }
          if(rankTotalRandomInfos)
          {
             while(rankTotalRandomInfos.length > 0)
             {
-               _loc1_ = rankTotalRandomInfos.pop();
-               _loc1_ = null;
+               info = rankTotalRandomInfos.pop();
+               info = null;
             }
          }
          CurrentGameCanBeClickTimes = 0;

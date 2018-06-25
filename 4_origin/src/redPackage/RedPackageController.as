@@ -26,7 +26,7 @@ package redPackage
       
       private var _redPkgConsortiaGainedRecordFrame:RedPackageConsortiaGainedRecordFrame;
       
-      public function RedPackageController(param1:inner)
+      public function RedPackageController(single:inner)
       {
          super();
       }
@@ -46,7 +46,7 @@ package redPackage
          addEventsMap([["RedPkg_show",onShowHandler],["RedPkg_update_send_record_view",onUpdateGainView],["RedPkg_update_gain_record_view",onUpdateGainRecordView]],_manager);
       }
       
-      private function onShowHandler(param1:CEvent) : void
+      private function onShowHandler(e:CEvent) : void
       {
          new HelperUIModuleLoad().loadUIModule(["redPackage"],onLoaded);
       }
@@ -74,7 +74,7 @@ package redPackage
          }
       }
       
-      private function onUpdateGainView(param1:CEvent) : void
+      private function onUpdateGainView(e:CEvent) : void
       {
          if(_redPkgConsortiaGainFrame != null)
          {
@@ -82,7 +82,7 @@ package redPackage
          }
       }
       
-      private function onUpdateGainRecordView(param1:CEvent) : void
+      private function onUpdateGainRecordView(e:CEvent) : void
       {
          _redPkgConsortiaGainedRecordFrame = ComponentFactory.Instance.creatComponentByStylename("redpkg.consortia.gainRecordFrame");
          LayerManager.Instance.addToLayer(_redPkgConsortiaGainedRecordFrame,3,true,1);

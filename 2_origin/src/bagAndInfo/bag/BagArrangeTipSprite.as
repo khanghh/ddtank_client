@@ -34,9 +34,9 @@ package bagAndInfo.bag
          return _arrangeAdd;
       }
       
-      public function set arrangeAdd(param1:Boolean) : void
+      public function set arrangeAdd(value:Boolean) : void
       {
-         _arrangeAdd = param1;
+         _arrangeAdd = value;
       }
       
       private function initEvent() : void
@@ -45,12 +45,12 @@ package bagAndInfo.bag
          _bagArrangeCheckBtn.addEventListener("click",__btnSelectedHandler);
       }
       
-      protected function __btnSelectedHandler(param1:MouseEvent) : void
+      protected function __btnSelectedHandler(event:MouseEvent) : void
       {
          _arrangeAdd = _bagArrangeCheckBtn.selected;
       }
       
-      protected function __outHandler(param1:MouseEvent) : void
+      protected function __outHandler(event:MouseEvent) : void
       {
          if(parent)
          {
@@ -58,7 +58,7 @@ package bagAndInfo.bag
          }
       }
       
-      protected function __overHandler(param1:MouseEvent) : void
+      protected function __overHandler(event:MouseEvent) : void
       {
          if(parent)
          {

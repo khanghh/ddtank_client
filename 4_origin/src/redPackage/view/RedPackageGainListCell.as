@@ -49,12 +49,12 @@ package redPackage.view
          ShowTipManager.Instance.addTip(this);
       }
       
-      protected function onGainBtnClick(param1:MouseEvent) : void
+      protected function onGainBtnClick(e:MouseEvent) : void
       {
          RedPackageManager.getInstance().onConsortionGainPackage(_pkgId);
       }
       
-      override public function set visible(param1:Boolean) : void
+      override public function set visible(value:Boolean) : void
       {
          if(_cellValue && _cellValue["nick"] != null && _cellValue["nick"] != "")
          {
@@ -62,11 +62,11 @@ package redPackage.view
          }
          else
          {
-            .super.visible = param1;
+            .super.visible = value;
          }
       }
       
-      protected function onHistoryBtnClick(param1:MouseEvent) : void
+      protected function onHistoryBtnClick(e:MouseEvent) : void
       {
          RedPackageManager.getInstance().onConsortionGainRecord(_pkgId);
       }
@@ -116,7 +116,7 @@ package redPackage.view
          }
       }
       
-      public function setListCellStatus(param1:List, param2:Boolean, param3:int) : void
+      public function setListCellStatus(list:List, isSelected:Boolean, index:int) : void
       {
       }
       
@@ -125,48 +125,48 @@ package redPackage.view
          return _cellValue;
       }
       
-      public function setCellValue(param1:*) : void
+      public function setCellValue(value:*) : void
       {
-         _cellValue = param1;
-         _pkgId = param1["id"];
-         _gainBtn.enable = !param1["isGained"];
-         var _loc3_:Date = param1["date"];
-         var _loc2_:Date = new Date();
-         if(_loc2_.time - _loc3_.time >= 86400000)
+         _cellValue = value;
+         _pkgId = value["id"];
+         _gainBtn.enable = !value["isGained"];
+         var sendDate:Date = value["date"];
+         var curDate:Date = new Date();
+         if(curDate.time - sendDate.time >= 86400000)
          {
             _gainBtn.enable = false;
          }
-         if(param1["remain"] == 0)
+         if(value["remain"] == 0)
          {
             _gainBtn.enable = false;
          }
-         if(!param1["isGained"])
+         if(!value["isGained"])
          {
-            _detailDidntGainText.text = LanguageMgr.GetTranslation("redpkg.consortion.gainListCell",formatDate(param1["date"]),param1["nick"]);
+            _detailDidntGainText.text = LanguageMgr.GetTranslation("redpkg.consortion.gainListCell",formatDate(value["date"]),value["nick"]);
             addChildAt(_detailDidntGainText,0);
             _detailGainedText.parent && removeChild(_detailGainedText);
          }
          else
          {
-            _detailGainedText.text = LanguageMgr.GetTranslation("redpkg.consortion.gainListCell",formatDate(param1["date"]),param1["nick"]);
+            _detailGainedText.text = LanguageMgr.GetTranslation("redpkg.consortion.gainListCell",formatDate(value["date"]),value["nick"]);
             addChildAt(_detailGainedText,0);
             _detailDidntGainText.parent && removeChild(_detailDidntGainText);
          }
       }
       
-      private function formatDate(param1:Date) : String
+      private function formatDate($date:Date) : String
       {
-         var _loc3_:* = null;
-         var _loc2_:Date = new Date();
-         if(_loc2_.fullYear == param1.fullYear && _loc2_.month == param1.month && _loc2_.date == param1.date)
+         var dateString:* = null;
+         var curDate:Date = new Date();
+         if(curDate.fullYear == $date.fullYear && curDate.month == $date.month && curDate.date == $date.date)
          {
-            _loc3_ = "Hôm " + Helpers.fixZero(param1.hours.toString()) + ":" + Helpers.fixZero((param1.minutes + 1).toString());
+            dateString = "Hôm " + Helpers.fixZero($date.hours.toString()) + ":" + Helpers.fixZero(($date.minutes + 1).toString());
          }
          else
          {
-            _loc3_ = param1.fullYear + "-" + Helpers.fixZero((param1.month + 1).toString()) + "-" + Helpers.fixZero(param1.date.toString()) + " " + Helpers.fixZero(param1.hours.toString()) + ":" + Helpers.fixZero((param1.minutes + 1).toString());
+            dateString = $date.fullYear + "-" + Helpers.fixZero(($date.month + 1).toString()) + "-" + Helpers.fixZero($date.date.toString()) + " " + Helpers.fixZero($date.hours.toString()) + ":" + Helpers.fixZero(($date.minutes + 1).toString());
          }
-         return _loc3_;
+         return dateString;
       }
       
       override public function asDisplayObject() : DisplayObject

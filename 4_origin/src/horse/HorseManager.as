@@ -16,6 +16,7 @@ package horse
    import horse.analyzer.HorseSkillElementDataAnalyzer;
    import horse.analyzer.HorseSkillGetDataAnalyzer;
    import horse.analyzer.HorseTemplateDataAnalyzer;
+   import horse.data.HorseEvent;
    import horse.data.HorsePicCherishVo;
    import horse.data.HorseSkillExpVo;
    import horse.data.HorseSkillGetVo;
@@ -36,6 +37,8 @@ package horse
       
       public static const KeepMovingMountsArr:Array = [117];
       
+      public static const UP_HORSE_SKILL:String = "upHorseSkill";
+      
       public static const CHANGE_HORSE:String = "horseChangeHorse";
       
       public static const CHANGE_HORSE_BYPICCHERISH:String = "changeHorseByPicCherish";
@@ -43,6 +46,8 @@ package horse
       public static const UP_HORSE_STEP_1:String = "horseUpHorseStep1";
       
       public static const UP_HORSE_STEP_2:String = "horseUpHorseStep2";
+      
+      public static const CHANGE_SKILL:String = "changeSkill";
       
       public static const UP_SKILL:String = "horseUpSkill";
       
@@ -107,13 +112,13 @@ package horse
       
       public var isUpFloatCartoonComplete:Boolean;
       
-      public function HorseManager(param1:IEventDispatcher = null)
+      public function HorseManager(target:IEventDispatcher = null)
       {
          _curHasSkillList = new Vector.<HorseSkillExpVo>();
          _curUseSkillList = new DictionaryData();
          _curHasBattleSkillList = new Vector.<HorseSkillExpVo>();
          _curUseBattleSkillList = new DictionaryData();
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : HorseManager
@@ -125,13 +130,13 @@ package horse
          return _instance;
       }
       
-      public function isSkillHasEquip(param1:int) : Boolean
+      public function isSkillHasEquip(skillId:int) : Boolean
       {
          var _loc4_:int = 0;
          var _loc3_:* = _curUseSkillList;
-         for each(var _loc2_ in _curUseSkillList)
+         for each(var tmpId in _curUseSkillList)
          {
-            if(_loc2_ == param1)
+            if(tmpId == skillId)
             {
                return true;
             }
@@ -139,13 +144,13 @@ package horse
          return false;
       }
       
-      public function isEqualSkillHasEquip(param1:int) : Boolean
+      public function isEqualSkillHasEquip(skillId:int) : Boolean
       {
          var _loc4_:int = 0;
          var _loc3_:* = _curUseBattleSkillList;
-         for each(var _loc2_ in _curUseBattleSkillList)
+         for each(var tmpId in _curUseBattleSkillList)
          {
-            if(_loc2_ == param1)
+            if(tmpId == skillId)
             {
                return true;
             }
@@ -246,117 +251,114 @@ package horse
          return _horseTemplateList[_curLevel + 1];
       }
       
-      public function getHorseTemplateInfoByLevel(param1:int) : HorseTemplateVo
+      public function getHorseTemplateInfoByLevel(level:int) : HorseTemplateVo
       {
-         if(param1 < 0 || param1 > maxLevel)
+         if(level < 0 || level > maxLevel)
          {
             return null;
          }
-         return _horseTemplateList[param1];
+         return _horseTemplateList[level];
       }
       
-      public function getHorseSkillGetInfoById(param1:int) : HorseSkillGetVo
+      public function getHorseSkillGetInfoById(skillId:int) : HorseSkillGetVo
       {
-         return _horseSkillGetIdList[param1];
+         return _horseSkillGetIdList[skillId];
       }
       
-      public function getHorseSkillName(param1:int, param2:int) : String
+      public function getHorseSkillName(type:int, level:int) : String
       {
-         var _loc4_:* = null;
+         var skillInfo:* = null;
          var _loc6_:int = 0;
          var _loc5_:* = _horseSkillGetIdList;
-         for each(var _loc3_ in _horseSkillGetIdList)
+         for each(var info in _horseSkillGetIdList)
          {
-            if(_loc3_.Type == param1 && _loc3_.Level == param2)
+            if(info.Type == type && info.Level == level)
             {
-               _loc4_ = _loc3_;
+               skillInfo = info;
                break;
             }
          }
-         return _horseSkillList[_loc4_.SkillID].Name;
+         return _horseSkillList[skillInfo.SkillID].Name;
       }
       
-      public function getHorseSkillInfoById(param1:int) : HorseSkillVo
+      public function getHorseSkillInfoById(skillId:int) : HorseSkillVo
       {
-         return _horseSkillList[param1];
+         return _horseSkillList[skillId];
       }
       
-      public function getLevelBySkillId(param1:int) : int
+      public function getLevelBySkillId(skillId:int) : int
       {
-         var _loc2_:int = -1;
+         var level:int = -1;
          var _loc5_:int = 0;
          var _loc4_:* = _horseTemplateList;
-         for each(var _loc3_ in _horseTemplateList)
+         for each(var tmp in _horseTemplateList)
          {
-            if(_loc3_.SkillID == param1)
+            if(tmp.SkillID == skillId)
             {
-               _loc2_ = _loc3_.Grade;
+               level = tmp.Grade;
                break;
             }
          }
-         return _loc2_;
+         return level;
       }
       
-      public function horseTemplateDataSetup(param1:HorseTemplateDataAnalyzer) : void
+      public function horseTemplateDataSetup(data:HorseTemplateDataAnalyzer) : void
       {
-         _horseTemplateList = param1.horseTemplateList;
+         _horseTemplateList = data.horseTemplateList;
       }
       
-      public function horseSkillGetDataSetup(param1:HorseSkillGetDataAnalyzer) : void
+      public function horseSkillGetDataSetup(data:HorseSkillGetDataAnalyzer) : void
       {
-         var _loc12_:int = 0;
-         var _loc8_:int = 0;
-         var _loc6_:int = 0;
-         var _loc9_:int = 0;
-         _horseSkillGetIdList = param1.horseSkillGetIdList;
-         var _loc5_:DictionaryData = param1.horseSkillGetList;
-         var _loc2_:Array = [];
-         var _loc3_:int = _horseTemplateList.length;
-         _loc12_ = 0;
-         while(_loc12_ < _loc3_)
+         var i:int = 0;
+         var j:int = 0;
+         var skillId:int = 0;
+         var k:int = 0;
+         _horseSkillGetIdList = data.horseSkillGetIdList;
+         var tmpDataList:DictionaryData = data.horseSkillGetList;
+         var skillIdList:Array = [];
+         var tmplen:int = _horseTemplateList.length;
+         for(i = 0; i < tmplen; )
          {
-            if(_horseTemplateList[_loc12_].SkillID > 0)
+            if(_horseTemplateList[i].SkillID > 0)
             {
-               _loc2_.push(_horseTemplateList[_loc12_].SkillID);
+               skillIdList.push(_horseTemplateList[i].SkillID);
             }
-            _loc12_++;
+            i++;
          }
-         var _loc4_:Array = [];
-         var _loc11_:int = _loc2_.length;
-         _loc8_ = 0;
-         while(_loc8_ < _loc11_)
+         var typeIdList:Array = [];
+         var tmplen2:int = skillIdList.length;
+         for(j = 0; j < tmplen2; )
          {
-            _loc6_ = _loc2_[_loc8_];
+            skillId = skillIdList[j];
             var _loc14_:int = 0;
-            var _loc13_:* = _loc5_;
-            for(var _loc10_ in _loc5_)
+            var _loc13_:* = tmpDataList;
+            for(var tmpType in tmpDataList)
             {
-               if(_loc5_[_loc10_][0].SkillID == _loc6_)
+               if(tmpDataList[tmpType][0].SkillID == skillId)
                {
-                  _loc4_.push(_loc5_[_loc10_][0].Type);
+                  typeIdList.push(tmpDataList[tmpType][0].Type);
                   break;
                }
             }
-            _loc8_++;
+            j++;
          }
-         var _loc7_:int = _loc4_.length;
+         var tmplen3:int = typeIdList.length;
          _horseSkillGetList = new DictionaryData();
-         _loc9_ = 0;
-         while(_loc9_ < _loc7_)
+         for(k = 0; k < tmplen3; )
          {
-            _horseSkillGetList.add(_loc4_[_loc9_],_loc5_[_loc4_[_loc9_]]);
-            _loc9_++;
+            _horseSkillGetList.add(typeIdList[k],tmpDataList[typeIdList[k]]);
+            k++;
          }
       }
       
-      public function horseSkillDataSetup(param1:HorseSkillDataAnalyzer) : void
+      public function horseSkillDataSetup(data:HorseSkillDataAnalyzer) : void
       {
-         _horseSkillList = param1.horseSkillList;
+         _horseSkillList = data.horseSkillList;
       }
       
-      public function horseSkillElementDataSetup(param1:HorseSkillElementDataAnalyzer) : void
+      public function horseSkillElementDataSetup(data:HorseSkillElementDataAnalyzer) : void
       {
-         _horseSkillElementList = param1.horseSkillElementList;
+         _horseSkillElementList = data.horseSkillElementList;
       }
       
       public function setup() : void
@@ -364,61 +366,61 @@ package horse
          SocketManager.Instance.addEventListener(PkgEvent.format(260),pkgHandler);
       }
       
-      private function pkgHandler(param1:PkgEvent) : void
+      private function pkgHandler(event:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readByte();
-         switch(int(_loc2_) - 1)
+         var pkg:PackageIn = event.pkg;
+         var cmd:int = pkg.readByte();
+         switch(int(cmd) - 1)
          {
             case 0:
-               initAllData(_loc3_);
+               initAllData(pkg);
                break;
             case 1:
-               changeHorse(_loc3_);
+               changeHorse(pkg);
                break;
             case 2:
-               upHorse(_loc3_);
+               upHorse(pkg);
                break;
             case 3:
-               getSkillHandler(_loc3_);
+               getSkillHandler(pkg);
                break;
             case 4:
-               upSkillHandler(_loc3_);
+               upSkillHandler(pkg);
                break;
             case 5:
-               takeUpDownSkillHandler(_loc3_);
+               takeUpDownSkillHandler(pkg);
                break;
             case 6:
-               activeHandler(_loc3_);
+               activeHandler(pkg);
                break;
             case 7:
-               picCherishInfo(_loc3_);
+               picCherishInfo(pkg);
                break;
             case 8:
-               initBattleHorseSkill(_loc3_);
+               initBattleHorseSkill(pkg);
                break;
             case 9:
-               takeUpDownEqualSkill(_loc3_);
+               takeUpDownEqualSkill(pkg);
          }
       }
       
-      private function takeUpDownSkillHandler(param1:PackageIn) : void
+      private function takeUpDownSkillHandler(pkg:PackageIn) : void
       {
-         var _loc3_:int = param1.readInt();
-         var _loc2_:int = param1.readInt();
-         if(_loc2_ > 0)
+         var skillId:int = pkg.readInt();
+         var status:int = pkg.readInt();
+         if(status > 0)
          {
-            _curUseSkillList.add(_loc2_,_loc3_);
+            _curUseSkillList.add(status,skillId);
          }
          else
          {
             var _loc6_:int = 0;
             var _loc5_:* = _curUseSkillList;
-            for(var _loc4_ in _curUseSkillList)
+            for(var key in _curUseSkillList)
             {
-               if(_curUseSkillList[_loc4_] == _loc3_)
+               if(_curUseSkillList[key] == skillId)
                {
-                  _curUseSkillList.remove(_loc4_);
+                  _curUseSkillList.remove(key);
                   break;
                }
             }
@@ -426,29 +428,29 @@ package horse
          dispatchEvent(new Event("horseTakeUpDownSkill"));
       }
       
-      private function upSkillHandler(param1:PackageIn) : void
+      private function upSkillHandler(pkg:PackageIn) : void
       {
-         var _loc6_:int = param1.readInt();
-         var _loc4_:int = param1.readInt();
-         var _loc2_:int = param1.readInt();
+         var oldSkillId:int = pkg.readInt();
+         var newSkillId:int = pkg.readInt();
+         var exp:int = pkg.readInt();
          var _loc8_:int = 0;
          var _loc7_:* = _curHasSkillList;
-         for each(var _loc5_ in _curHasSkillList)
+         for each(var tmp in _curHasSkillList)
          {
-            if(_loc5_.skillId == _loc6_)
+            if(tmp.skillId == oldSkillId)
             {
-               _loc5_.skillId = _loc4_;
-               _loc5_.exp = _loc2_;
+               tmp.skillId = newSkillId;
+               tmp.exp = exp;
                break;
             }
          }
          var _loc10_:int = 0;
          var _loc9_:* = _curUseSkillList;
-         for(var _loc3_ in _curUseSkillList)
+         for(var tmp2 in _curUseSkillList)
          {
-            if(_curUseSkillList[_loc3_] == _loc6_)
+            if(_curUseSkillList[tmp2] == oldSkillId)
             {
-               _curUseSkillList.add(_loc3_,_loc4_);
+               _curUseSkillList.add(tmp2,newSkillId);
                break;
             }
          }
@@ -456,31 +458,28 @@ package horse
          dispatchEvent(new Event("horseTakeUpDownSkill"));
       }
       
-      private function getSkillHandler(param1:PackageIn) : void
+      private function getSkillHandler(pkg:PackageIn) : void
       {
-         var _loc2_:HorseSkillExpVo = new HorseSkillExpVo();
-         _loc2_.skillId = param1.readInt();
-         _loc2_.exp = param1.readInt();
-         _curHasSkillList.push(_loc2_);
+         var tmp:HorseSkillExpVo = new HorseSkillExpVo();
+         tmp.skillId = pkg.readInt();
+         tmp.exp = pkg.readInt();
+         _curHasSkillList.push(tmp);
          isNeedPlayGetNewSkillCartoon = true;
-         if(isUpFloatCartoonComplete)
-         {
-            dispatchEvent(new Event("showNewSkillView"));
-         }
+         dispatchEvent(new Event("showNewSkillView"));
       }
       
-      private function upHorse(param1:PackageIn) : void
+      private function upHorse(pkg:PackageIn) : void
       {
-         isHasLevelUp = param1.readBoolean();
-         _curLevel = param1.readInt();
-         _curExp = param1.readInt();
+         isHasLevelUp = pkg.readBoolean();
+         _curLevel = pkg.readInt();
+         _curExp = pkg.readInt();
          isUpFloatCartoonComplete = false;
          dispatchEvent(new Event("horseUpHorseStep1"));
       }
       
-      private function changeHorse(param1:PackageIn) : void
+      private function changeHorse(pkg:PackageIn) : void
       {
-         _curUseHorse = param1.readInt();
+         _curUseHorse = pkg.readInt();
          updateHorse();
          if(_curUseHorse > 100)
          {
@@ -493,115 +492,113 @@ package horse
       {
          var _loc3_:int = 0;
          var _loc2_:* = PlayerManager.Instance.Self.horsePicCherishDic;
-         for(var _loc1_ in PlayerManager.Instance.Self.horsePicCherishDic)
+         for(var key in PlayerManager.Instance.Self.horsePicCherishDic)
          {
-            PlayerManager.Instance.Self.horsePicCherishDic[_loc1_].isUsed = int(_loc1_) == _curUseHorse;
+            PlayerManager.Instance.Self.horsePicCherishDic[key].isUsed = int(key) == _curUseHorse;
          }
-         dispatchEvent(new Event("horseChangeHorse"));
+         dispatchEvent(new HorseEvent("horseChangeHorse"));
       }
       
-      private function initAllData(param1:PackageIn) : void
+      private function initAllData(pkg:PackageIn) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:int = 0;
-         _curUseHorse = param1.readInt();
-         _curLevel = param1.readInt();
-         _curExp = param1.readInt();
-         param1.readInt();
-         var _loc2_:int = param1.readInt();
+         var i:int = 0;
+         var tmp:* = null;
+         var status:int = 0;
+         _curUseHorse = pkg.readInt();
+         _curLevel = pkg.readInt();
+         _curExp = pkg.readInt();
+         pkg.readInt();
+         var count:int = pkg.readInt();
          _curHasSkillList = new Vector.<HorseSkillExpVo>();
          _curUseSkillList = new DictionaryData();
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_)
+         for(i = 0; i < count; )
          {
-            _loc4_ = new HorseSkillExpVo();
-            _loc4_.skillId = param1.readInt();
-            _loc4_.exp = param1.readInt();
-            _curHasSkillList.push(_loc4_);
-            _loc3_ = param1.readInt();
-            if(_loc3_ > 0)
+            tmp = new HorseSkillExpVo();
+            tmp.skillId = pkg.readInt();
+            tmp.exp = pkg.readInt();
+            _curHasSkillList.push(tmp);
+            status = pkg.readInt();
+            if(status > 0)
             {
-               _curUseSkillList.add(_loc3_,_loc4_.skillId);
+               _curUseSkillList.add(status,tmp.skillId);
             }
-            _loc5_++;
+            i++;
          }
       }
       
-      public function getHorseLevelByExp(param1:int) : int
+      public function getHorseLevelByExp(value:int) : int
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         if(_horseTemplateList[_horseTemplateList.length - 1].Experience <= param1)
+         var i:int = 0;
+         var level:int = 0;
+         if(_horseTemplateList[_horseTemplateList.length - 1].Experience <= value)
          {
             return _horseTemplateList.length - 1;
          }
-         _loc3_ = 0;
-         while(_loc3_ < _horseTemplateList.length)
+         i = 0;
+         while(i < _horseTemplateList.length)
          {
-            if(_horseTemplateList[_loc3_].Experience > param1)
+            if(_horseTemplateList[i].Experience > value)
             {
-               _loc2_ = _loc3_ - 1;
+               level = i - 1;
                break;
             }
-            _loc3_++;
+            i++;
          }
-         return _loc2_;
+         return level;
       }
       
-      private function picCherishInfo(param1:PackageIn) : void
+      private function picCherishInfo(pkg:PackageIn) : void
       {
-         var _loc9_:int = 0;
-         var _loc2_:int = 0;
-         var _loc5_:* = false;
-         var _loc8_:* = null;
-         var _loc3_:int = 0;
-         var _loc4_:Number = NaN;
-         var _loc7_:* = null;
+         var i:int = 0;
+         var id:int = 0;
+         var isUsed:* = false;
+         var beginDate:* = null;
+         var valid:int = 0;
+         var time:Number = NaN;
+         var obj:* = null;
          PlayerManager.Instance.Self.horsePicCherishDic.clear();
-         var _loc6_:int = param1.readInt();
-         _loc9_ = 0;
-         while(_loc9_ < _loc6_)
+         var count:int = pkg.readInt();
+         for(i = 0; i < count; )
          {
-            _loc2_ = param1.readInt();
-            _loc5_ = param1.readInt() == 1;
-            _loc8_ = param1.readDate();
-            _loc3_ = param1.readInt();
-            _loc4_ = 86400000 * _loc3_ + _loc8_.getTime();
-            if(_loc3_ != 0 && _loc4_ < TimeManager.Instance.Now().getTime())
+            id = pkg.readInt();
+            isUsed = pkg.readInt() == 1;
+            beginDate = pkg.readDate();
+            valid = pkg.readInt();
+            time = 86400000 * valid + beginDate.getTime();
+            if(valid != 0 && time < TimeManager.Instance.Now().getTime())
             {
-               if(_loc5_)
+               if(isUsed)
                {
                   SocketManager.Instance.out.sendHorseChangeHorse(0);
                }
             }
             else
             {
-               _loc7_ = {
-                  "id":_loc2_,
-                  "isUsed":_loc5_,
-                  "beginDate":_loc8_,
-                  "valid":_loc3_
+               obj = {
+                  "id":id,
+                  "isUsed":isUsed,
+                  "beginDate":beginDate,
+                  "valid":valid
                };
-               PlayerManager.Instance.Self.horsePicCherishDic[_loc2_] = _loc7_;
+               PlayerManager.Instance.Self.horsePicCherishDic[id] = obj;
             }
-            _loc9_++;
+            i++;
          }
       }
       
-      private function activeHandler(param1:PackageIn) : void
+      private function activeHandler(pkg:PackageIn) : void
       {
-         var _loc2_:int = param1.readInt();
-         var _loc4_:* = param1.readInt() == 1;
-         var _loc6_:Date = param1.readDate();
-         var _loc3_:int = param1.readInt();
-         var _loc5_:Object = {
-            "id":_loc2_,
-            "isUsed":_loc4_,
-            "beginDate":_loc6_,
-            "valid":_loc3_
+         var id:int = pkg.readInt();
+         var isUsed:* = pkg.readInt() == 1;
+         var beginDate:Date = pkg.readDate();
+         var valid:int = pkg.readInt();
+         var obj:Object = {
+            "id":id,
+            "isUsed":isUsed,
+            "beginDate":beginDate,
+            "valid":valid
          };
-         PlayerManager.Instance.Self.horsePicCherishDic[_loc2_] = _loc5_;
+         PlayerManager.Instance.Self.horsePicCherishDic[id] = obj;
          if(updateCherishPropertyFunc != null)
          {
             updateCherishPropertyFunc();
@@ -609,9 +606,9 @@ package horse
          dispatchEvent(new Event("changeHorseByPicCherish"));
       }
       
-      public function horsePicCherishDataSetup(param1:HorsePicCherishAnalyzer) : void
+      public function horsePicCherishDataSetup(data:HorsePicCherishAnalyzer) : void
       {
-         _horsePicCherishList = param1.horsePicCherishList;
+         _horsePicCherishList = data.horsePicCherishList;
       }
       
       public function getHorsePicCherishData() : Vector.<HorsePicCherishVo>
@@ -635,6 +632,8 @@ package horse
          AssetModuleLoader.addRequestLoader(LoaderCreate.Instance.createHorseSkillGetDataLoader());
          AssetModuleLoader.addRequestLoader(LoaderCreate.Instance.createHorsePicCherishDataLoader());
          AssetModuleLoader.addModelLoader("horse",6);
+         AssetModuleLoader.addModelLoader("horseAmulet",6);
+         AssetModuleLoader.addModelLoader("ddtbagandinfo",6);
          AssetModuleLoader.startCodeLoader(dispatchShow);
       }
       
@@ -658,58 +657,56 @@ package horse
          return _horseTemplateList;
       }
       
-      public function getIsSit(param1:int) : Boolean
+      public function getIsSit(type:int) : Boolean
       {
-         return HorseManager.MountSitList.indexOf(param1) != -1;
+         return HorseManager.MountSitList.indexOf(type) != -1;
       }
       
-      public function getIsShakeRide(param1:int) : Boolean
+      public function getIsShakeRide(type:int) : Boolean
       {
-         return HorseManager.MountStandShakeList.indexOf(param1) != -1;
+         return HorseManager.MountStandShakeList.indexOf(type) != -1;
       }
       
-      public function getIsKeepMovingRide(param1:int) : Boolean
+      public function getIsKeepMovingRide(type:int) : Boolean
       {
-         return HorseManager.KeepMovingMountsArr.indexOf(param1) != -1;
+         return HorseManager.KeepMovingMountsArr.indexOf(type) != -1;
       }
       
-      public function getIsSaddleShake(param1:int) : Boolean
+      public function getIsSaddleShake(type:int) : Boolean
       {
-         return HorseManager.MountSaddleShakeList.indexOf(param1) != -1;
+         return HorseManager.MountSaddleShakeList.indexOf(type) != -1;
       }
       
-      private function initBattleHorseSkill(param1:PackageIn) : void
+      private function initBattleHorseSkill(pkg:PackageIn) : void
       {
-         var _loc6_:int = 0;
-         var _loc3_:* = null;
-         var _loc7_:int = 0;
-         var _loc4_:int = 0;
+         var j:int = 0;
+         var tmp:* = null;
+         var i:int = 0;
+         var skillId:int = 0;
          _curHasBattleSkillList = new Vector.<HorseSkillExpVo>();
-         var _loc5_:int = param1.readInt();
-         _loc6_ = 0;
-         while(_loc6_ < _loc5_)
+         var len:int = pkg.readInt();
+         for(j = 0; j < len; )
          {
-            _loc3_ = new HorseSkillExpVo();
-            _loc3_.skillId = param1.readInt();
-            _curHasBattleSkillList.push(_loc3_);
-            _loc6_++;
+            tmp = new HorseSkillExpVo();
+            tmp.skillId = pkg.readInt();
+            _curHasBattleSkillList.push(tmp);
+            j++;
          }
          _curUseBattleSkillList = new DictionaryData();
-         var _loc2_:int = param1.readInt();
-         _loc7_ = 0;
-         while(_loc7_ < _loc2_)
+         var count:int = pkg.readInt();
+         for(i = 0; i < count; )
          {
-            _loc4_ = param1.readInt();
-            _curUseBattleSkillList.add(_loc7_ + 1,_loc4_);
-            _loc7_++;
+            skillId = pkg.readInt();
+            _curUseBattleSkillList.add(i + 1,skillId);
+            i++;
          }
       }
       
-      private function takeUpDownEqualSkill(param1:PackageIn) : void
+      private function takeUpDownEqualSkill(pkg:PackageIn) : void
       {
-         var _loc2_:int = param1.readInt();
-         var _loc3_:int = param1.readInt();
-         _curUseBattleSkillList.add(_loc3_,_loc2_);
+         var skillId:int = pkg.readInt();
+         var place:int = pkg.readInt();
+         _curUseBattleSkillList.add(place,skillId);
          dispatchEvent(new Event("horseTakeUpDownSkill"));
       }
    }

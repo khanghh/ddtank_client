@@ -67,10 +67,10 @@ package dayActivity.items
       
       private var _levelLimit:int;
       
-      public function DayActivieListItem(param1:int)
+      public function DayActivieListItem(number:int)
       {
          super();
-         _index = param1;
+         _index = number;
          clickSp = new Sprite();
          clickSp.useHandCursor = true;
          clickSp.buttonMode = true;
@@ -83,7 +83,7 @@ package dayActivity.items
          addEventListener("click",mouseClickHander);
       }
       
-      protected function mouseClickHander(param1:MouseEvent) : void
+      protected function mouseClickHander(event:MouseEvent) : void
       {
          if(seleLigthFun != null)
          {
@@ -96,16 +96,16 @@ package dayActivity.items
          return _data;
       }
       
-      public function setData(param1:DayActiveData) : void
+      public function setData(data:DayActiveData) : void
       {
-         _data = param1;
+         _data = data;
          id = int(_data.JumpType);
          _levelLimit = int(_data.LevelLimit);
          activityTypeID = _data.ActivityTypeID;
          init(_index);
       }
       
-      public function initTxt(param1:Boolean) : void
+      public function initTxt(bool:Boolean) : void
       {
          ObjectUtils.disposeObject(_txt1);
          ObjectUtils.disposeObject(_txt2);
@@ -123,7 +123,7 @@ package dayActivity.items
          _txt4 = null;
          _txt5 = null;
          _worldBossHelperBtn = null;
-         if(param1)
+         if(bool)
          {
             _txt5 = ComponentFactory.Instance.creatComponentByStylename("day.activieView.item.closetxt");
             _txt5.text = LanguageMgr.GetTranslation("ddt.dayActivity.close");
@@ -158,8 +158,8 @@ package dayActivity.items
          _txt1.x = 3;
          _txt1.y = _txt1.numLines > 1?1:11;
          addChild(_txt1);
-         var _loc2_:String = _data.ActiveTime.substr(0,11) + "\n" + _data.ActiveTime.substr(11,12);
-         if(_loc2_.length < 15)
+         var str:String = _data.ActiveTime.substr(0,11) + "\n" + _data.ActiveTime.substr(11,12);
+         if(str.length < 15)
          {
             _txt2.y = 9;
             _txt2.height = 25;
@@ -172,7 +172,7 @@ package dayActivity.items
             _txt2.multiline = true;
          }
          _txt2.x = 113;
-         _txt2.text = _loc2_;
+         _txt2.text = str;
          addChild(_txt2);
          _txt3.x = 279;
          _txt3.y = 11;
@@ -211,7 +211,7 @@ package dayActivity.items
          addChild(clickSp);
       }
       
-      private function __worldBossHelperHandler(param1:MouseEvent) : void
+      private function __worldBossHelperHandler(e:MouseEvent) : void
       {
          if(!WeakGuildManager.Instance.checkOpen(76,20))
          {
@@ -222,11 +222,11 @@ package dayActivity.items
          WorldBossHelperController.Instance.show();
       }
       
-      public function upDataOpenState(param1:Boolean) : void
+      public function upDataOpenState(bool:Boolean) : void
       {
          clickSp.removeEventListener("click",clickHander);
          ObjectUtils.disposeObject(_txt5);
-         if(param1)
+         if(bool)
          {
             _txt5 = ComponentFactory.Instance.creatComponentByStylename("day.activieView.item.closetxt");
             _txt5.text = LanguageMgr.GetTranslation("ddt.dayActivity.close");
@@ -244,7 +244,7 @@ package dayActivity.items
          addChild(clickSp);
       }
       
-      public function updataCount(param1:int) : void
+      public function updataCount(num:int) : void
       {
          if(_data.Count == 0)
          {
@@ -252,11 +252,11 @@ package dayActivity.items
          }
          else
          {
-            if(param1 >= _data.Count)
+            if(num >= _data.Count)
             {
-               param1 = _data.Count;
+               num = _data.Count;
             }
-            _txt3.text = param1 + "/" + _data.Count;
+            _txt3.text = num + "/" + _data.Count;
          }
       }
       
@@ -265,9 +265,9 @@ package dayActivity.items
          return _txt5.text;
       }
       
-      private function clickHander(param1:MouseEvent) : void
+      private function clickHander(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var self:* = null;
          SoundManager.instance.play("008");
          switch(int(id) - 1)
          {
@@ -317,13 +317,13 @@ package dayActivity.items
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.functionLimitTip",_levelLimit));
                   return;
                }
-               _loc2_ = PlayerManager.Instance.Self;
+               self = PlayerManager.Instance.Self;
                if(PlayerManager.Instance.Self.Bag.getItemAt(6) == null)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.room.RoomIIController.weapon"));
                   return;
                }
-               if(_loc2_.IsMounts)
+               if(self.IsMounts)
                {
                   HorseRaceManager.Instance.enterView();
                }
@@ -408,21 +408,21 @@ package dayActivity.items
          DayActivityControl.Instance.dispose();
       }
       
-      private function sevenDoubleCanEnterHandler(param1:Event) : void
+      private function sevenDoubleCanEnterHandler(event:Event) : void
       {
          SevenDoubleManager.instance.removeEventListener("sevenDoubleCanEnter",sevenDoubleCanEnterHandler);
          StateManager.setState("sevenDoubleScene");
       }
       
-      public function setBg(param1:int) : void
+      public function setBg(number:int) : void
       {
-         _bg.gotoAndStop(param1 % 2 + 1);
+         _bg.gotoAndStop(number % 2 + 1);
       }
       
-      private function init(param1:int) : void
+      private function init(number:int) : void
       {
          _bg = ComponentFactory.Instance.creat("day.list.Back");
-         _bg.gotoAndStop(param1 % 2 + 1);
+         _bg.gotoAndStop(number % 2 + 1);
          addChild(_bg);
          _selectLight = ComponentFactory.Instance.creat("day.sele.light");
          _selectLight.scaleY = 0.957446808510638;
@@ -432,11 +432,11 @@ package dayActivity.items
          addChild(_selectLight);
       }
       
-      public function setLigthVisible(param1:Boolean) : void
+      public function setLigthVisible(value:Boolean) : void
       {
          if(_selectLight)
          {
-            _selectLight.visible = param1;
+            _selectLight.visible = value;
          }
       }
       

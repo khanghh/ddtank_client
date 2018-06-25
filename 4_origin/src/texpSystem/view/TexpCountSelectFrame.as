@@ -53,23 +53,23 @@ package texpSystem.view
          addToContent(_needText);
       }
       
-      public function show(param1:int, param2:int, param3:int = 1) : void
+      public function show(needCount:int, max:int, min:int = 1) : void
       {
-         _numberSelecter.valueLimit = param3 + "," + param2;
+         _numberSelecter.valueLimit = min + "," + max;
          LayerManager.Instance.addToLayer(this,3,true,1);
-         _needText.htmlText = LanguageMgr.GetTranslation("texpSystem.view.TexpCountSelect.CountText",param1);
+         _needText.htmlText = LanguageMgr.GetTranslation("texpSystem.view.TexpCountSelect.CountText",needCount);
          _needText.visible = true;
-         if(param1 > param2)
+         if(needCount > max)
          {
-            _numberSelecter.currentValue = param2;
+            _numberSelecter.currentValue = max;
          }
          else
          {
-            _numberSelecter.currentValue = param1;
+            _numberSelecter.currentValue = needCount;
          }
       }
       
-      private function __seleterChange(param1:Event) : void
+      private function __seleterChange(event:Event) : void
       {
          SoundManager.instance.play("008");
       }
@@ -79,9 +79,9 @@ package texpSystem.view
          return _texpInfo;
       }
       
-      public function set texpInfo(param1:InventoryItemInfo) : void
+      public function set texpInfo(value:InventoryItemInfo) : void
       {
-         _texpInfo = param1;
+         _texpInfo = value;
       }
       
       public function get count() : int

@@ -53,37 +53,36 @@ package store.fineStore.view
       
       private var _controller:StoreController;
       
-      public function FineStoreView(param1:StoreController)
+      public function FineStoreView(controller:StoreController)
       {
          super();
-         _controller = param1;
+         _controller = controller;
          init();
          setIndex();
       }
       
       private function setIndex() : void
       {
-         var _loc1_:* = null;
-         var _loc3_:int = 0;
-         var _loc2_:int = _btnGroup.length();
-         _loc3_ = _index;
-         while(_loc3_ < _loc2_)
+         var item:* = null;
+         var i:int = 0;
+         var len:int = _btnGroup.length();
+         for(i = _index; i < len; )
          {
-            _loc1_ = _btnGroup.getItemByIndex(_loc3_) as ITipedDisplay;
-            if(HelpBtnEnable.getInstance().isForbidden(_loc1_) == false)
+            item = _btnGroup.getItemByIndex(i) as ITipedDisplay;
+            if(HelpBtnEnable.getInstance().isForbidden(item) == false)
             {
-               _btnGroup.selectIndex = _loc3_;
+               _btnGroup.selectIndex = i;
                break;
             }
-            _loc3_++;
+            i++;
          }
       }
       
       private function init() : void
       {
-         var _loc1_:DisplayObject = ComponentFactory.Instance.creatCustomObject("ddtstore.BagStoreFrame.ContentBg");
-         addChild(_loc1_);
-         _loc1_.height = 425;
+         var contentBg:DisplayObject = ComponentFactory.Instance.creatCustomObject("ddtstore.BagStoreFrame.ContentBg");
+         addChild(contentBg);
+         contentBg.height = 425;
          _content = new Sprite();
          addChild(_content);
          _forgeBtn = ComponentFactory.Instance.creatComponentByStylename("ddtstore.fineStore.forgeBtn");
@@ -109,12 +108,12 @@ package store.fineStore.view
          _btnGroup.addSelectItem(_evolutionBtn);
       }
       
-      private function __changeHandler(param1:Event) : void
+      private function __changeHandler(event:Event) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:String = _forgeGroupType[_btnGroup.selectIndex];
+         var type:String = _forgeGroupType[_btnGroup.selectIndex];
          _tabVbox.arrange();
-         AssetModuleLoader.addModelLoader(_loc2_,6);
+         AssetModuleLoader.addModelLoader(type,6);
          AssetModuleLoader.startCodeLoader(showView);
       }
       

@@ -29,7 +29,6 @@ package ddt.data.player
    import store.data.StoreEquipExperience;
    import store.equipGhost.data.EquipGhostData;
    import store.view.embed.EmbedUpLevelCell;
-   import totem.TotemManager;
    import trainer.controller.NewHandGuideManager;
    
    public class PlayerInfo extends BasePlayer
@@ -220,6 +219,8 @@ package ddt.data.player
       
       private var _totemId:int;
       
+      private var _totemGrades:DictionaryData;
+      
       private var _gemstoneList:Vector.<GemstonInitInfo>;
       
       private var _hardCurrency:int;
@@ -309,6 +310,7 @@ package ddt.data.player
       public function PlayerInfo()
       {
          _buffInfo = new DictionaryData();
+         _totemGrades = new DictionaryData();
          horseAmuletProperty = [];
          super();
       }
@@ -318,9 +320,9 @@ package ddt.data.player
          return _curcentRoomBordenTemplateId;
       }
       
-      public function set curcentRoomBordenTemplateId(param1:int) : void
+      public function set curcentRoomBordenTemplateId(value:int) : void
       {
-         _curcentRoomBordenTemplateId = param1;
+         _curcentRoomBordenTemplateId = value;
       }
       
       override public function updateProperties() : void
@@ -346,59 +348,58 @@ package ddt.data.player
       
       private function parseStyle() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var tid:* = null;
          if(_style == null || _style == "")
          {
             _style = ",,,,,,,,,";
          }
-         var _loc1_:Array = _style.split(",");
-         _loc3_ = 0;
-         while(_loc3_ < _loc1_.length)
+         var s:Array = _style.split(",");
+         for(i = 0; i < s.length; )
          {
-            _loc2_ = getTID(_loc1_[_loc3_]);
-            if((_loc2_ == "" || _loc2_ == "0" || _loc2_ == "-1") && _loc3_ + 1 != 7 && _loc3_ < 7)
+            tid = getTID(s[i]);
+            if((tid == "" || tid == "0" || tid == "-1") && i + 1 != 7 && i < 7)
             {
-               _loc1_[_loc3_] = replaceTID(_loc1_[_loc3_],String(_loc3_ + 1) + (!!Sex?"1":"2") + "01");
+               s[i] = replaceTID(s[i],String(i + 1) + (!!Sex?"1":"2") + "01");
             }
-            else if((_loc2_ == "" || _loc2_ == "0" || _loc2_ == "-1") && _loc3_ + 1 == 7)
+            else if((tid == "" || tid == "0" || tid == "-1") && i + 1 == 7)
             {
-               _loc1_[_loc3_] = replaceTID(_loc1_[_loc3_],"7001",false);
+               s[i] = replaceTID(s[i],"7001",false);
             }
-            if((_loc2_ == "" || _loc2_ == "0" || _loc2_ == "-1") && _loc3_ == 7)
+            if((tid == "" || tid == "0" || tid == "-1") && i == 7)
             {
-               _loc1_[_loc3_] = replaceTID(_loc1_[_loc3_],"13" + (!!Sex?"1":"2") + "01");
+               s[i] = replaceTID(s[i],"13" + (!!Sex?"1":"2") + "01");
             }
-            if((_loc2_ == "" || _loc2_ == "0" || _loc2_ == "-1") && _loc3_ == 8)
+            if((tid == "" || tid == "0" || tid == "-1") && i == 8)
             {
-               _loc1_[_loc3_] = replaceTID(_loc1_[_loc3_],"15001");
+               s[i] = replaceTID(s[i],"15001");
             }
-            if((_loc2_ == "" || _loc2_ == "0" || _loc2_ == "-1") && _loc3_ == 9)
+            if((tid == "" || tid == "0" || tid == "-1") && i == 9)
             {
-               _loc1_[_loc3_] = replaceTID(_loc1_[_loc3_],"16000");
+               s[i] = replaceTID(s[i],"16000");
             }
-            _loc3_++;
+            i++;
          }
          if(_hidehat || _hideGlass || _suitesHide || _wingHide)
          {
             if(_hidehat)
             {
-               _loc1_[0] = replaceTID(_loc1_[0],"1" + (!!Sex?"1":"2") + "01");
+               s[0] = replaceTID(s[0],"1" + (!!Sex?"1":"2") + "01");
             }
             if(_hideGlass)
             {
-               _loc1_[1] = replaceTID(_loc1_[1],"2" + (!!Sex?"1":"2") + "01");
+               s[1] = replaceTID(s[1],"2" + (!!Sex?"1":"2") + "01");
             }
             if(_suitesHide)
             {
-               _loc1_[7] = replaceTID(_loc1_[7],"13" + (!!Sex?"1":"2") + "01");
+               s[7] = replaceTID(s[7],"13" + (!!Sex?"1":"2") + "01");
             }
             if(_wingHide)
             {
-               _loc1_[8] = replaceTID(_loc1_[8],"15001");
+               s[8] = replaceTID(s[8],"15001");
             }
          }
-         _modifyStyle = _loc1_.join(",");
+         _modifyStyle = s.join(",");
       }
       
       public function get lastLuckNum() : int
@@ -406,13 +407,13 @@ package ddt.data.player
          return _lastLuckNum;
       }
       
-      public function set lastLuckNum(param1:int) : void
+      public function set lastLuckNum(value:int) : void
       {
-         if(_lastLuckNum == param1)
+         if(_lastLuckNum == value)
          {
             return;
          }
-         _lastLuckNum = param1;
+         _lastLuckNum = value;
          onPropertiesChanged("luckynum");
       }
       
@@ -421,13 +422,13 @@ package ddt.data.player
          return _luckyNum;
       }
       
-      public function set luckyNum(param1:int) : void
+      public function set luckyNum(value:int) : void
       {
-         if(_luckyNum == param1)
+         if(_luckyNum == value)
          {
             return;
          }
-         _luckyNum = param1;
+         _luckyNum = value;
       }
       
       public function get lastLuckyNumDate() : Date
@@ -435,13 +436,13 @@ package ddt.data.player
          return _lastLuckyNumDate;
       }
       
-      public function set lastLuckyNumDate(param1:Date) : void
+      public function set lastLuckyNumDate(value:Date) : void
       {
-         if(_lastLuckyNumDate == param1)
+         if(_lastLuckyNumDate == value)
          {
             return;
          }
-         _lastLuckyNumDate = param1;
+         _lastLuckyNumDate = value;
       }
       
       public function get attachtype() : int
@@ -456,12 +457,12 @@ package ddt.data.player
       
       private function parseColos() : void
       {
-         var _loc2_:Array = _colors.split(",");
-         var _loc1_:Array = _loc2_[EquipType.CategeryIdToPlace(6)[0]].split("|");
-         _loc2_[EquipType.CategeryIdToPlace(6)[0]] = _loc1_[0] + "|" + _skin + "|" + (_loc1_[2] == undefined?"":_loc1_[2]);
-         _loc1_ = _loc2_[EquipType.CategeryIdToPlace(5)[0]].split("|");
-         _loc2_[EquipType.CategeryIdToPlace(5)[0]] = _loc1_[0] + "|" + _skin + "|" + (_loc1_[2] == undefined?"":_loc1_[2]);
-         _colors = _loc2_.join(",");
+         var arr:Array = _colors.split(",");
+         var t:Array = arr[EquipType.CategeryIdToPlace(6)[0]].split("|");
+         arr[EquipType.CategeryIdToPlace(6)[0]] = t[0] + "|" + _skin + "|" + (t[2] == undefined?"":t[2]);
+         t = arr[EquipType.CategeryIdToPlace(5)[0]].split("|");
+         arr[EquipType.CategeryIdToPlace(5)[0]] = t[0] + "|" + _skin + "|" + (t[2] == undefined?"":t[2]);
+         _colors = arr.join(",");
       }
       
       public function get Hide() : int
@@ -469,13 +470,13 @@ package ddt.data.player
          return _hide;
       }
       
-      public function set Hide(param1:int) : void
+      public function set Hide(value:int) : void
       {
-         if(_hide == param1)
+         if(_hide == value)
          {
             return;
          }
-         _hide = param1;
+         _hide = value;
          onPropertiesChanged("Hide");
       }
       
@@ -484,9 +485,9 @@ package ddt.data.player
          return _hidehat;
       }
       
-      public function setHatHide(param1:Boolean) : void
+      public function setHatHide(value:Boolean) : void
       {
-         Hide = int(String(_hide).slice(0,8) + (!!param1?"2":"1") + String(_hide).slice(9));
+         Hide = int(String(_hide).slice(0,8) + (!!value?"2":"1") + String(_hide).slice(9));
       }
       
       public function getGlassHide() : Boolean
@@ -494,9 +495,9 @@ package ddt.data.player
          return _hideGlass;
       }
       
-      public function setGlassHide(param1:Boolean) : void
+      public function setGlassHide(value:Boolean) : void
       {
-         Hide = int(String(_hide).slice(0,7) + (!!param1?"2":"1") + String(_hide).slice(8,9));
+         Hide = int(String(_hide).slice(0,7) + (!!value?"2":"1") + String(_hide).slice(8,9));
       }
       
       public function getSuitesHide() : Boolean
@@ -504,9 +505,9 @@ package ddt.data.player
          return _suitesHide;
       }
       
-      public function setSuiteHide(param1:Boolean) : void
+      public function setSuiteHide(value:Boolean) : void
       {
-         Hide = int(String(_hide).slice(0,6) + (!!param1?"2":"1") + String(_hide).slice(7,9));
+         Hide = int(String(_hide).slice(0,6) + (!!value?"2":"1") + String(_hide).slice(7,9));
       }
       
       public function getShowSuits() : Boolean
@@ -519,18 +520,18 @@ package ddt.data.player
          return _wingHide;
       }
       
-      public function set wingHide(param1:Boolean) : void
+      public function set wingHide(value:Boolean) : void
       {
-         Hide = int(String(_hide).slice(0,5) + (!!param1?"2":"1") + String(_hide).slice(6,9));
+         Hide = int(String(_hide).slice(0,5) + (!!value?"2":"1") + String(_hide).slice(6,9));
       }
       
-      public function set Nimbus(param1:int) : void
+      public function set Nimbus(nim:int) : void
       {
-         if(_nimbus == param1)
+         if(_nimbus == nim)
          {
             return;
          }
-         _nimbus = param1;
+         _nimbus = nim;
          onPropertiesChanged("Nimbus");
       }
       
@@ -578,37 +579,36 @@ package ddt.data.player
          return _modifyStyle;
       }
       
-      public function set Style(param1:String) : void
+      public function set Style(value:String) : void
       {
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         if(_style == param1)
+         var addFixStyleCount:int = 0;
+         var i:int = 0;
+         var j:int = 0;
+         if(_style == value)
          {
             return;
          }
-         if(param1 == null)
+         if(value == null)
          {
             return;
          }
-         var _loc5_:Array = param1.split(",");
-         if(_loc5_.length < 10)
+         var styleValues:Array = value.split(",");
+         if(styleValues.length < 10)
          {
-            _loc2_ = 10 - _loc5_.length;
-            _loc4_ = 0;
-            while(_loc4_ < _loc2_)
+            addFixStyleCount = 10 - styleValues.length;
+            for(i = 0; i < addFixStyleCount; )
             {
-               _loc5_.push("|");
-               _loc4_++;
+               styleValues.push("|");
+               i++;
             }
-            param1 = _loc5_.join(",");
+            value = styleValues.join(",");
          }
-         _loc3_ = 0;
-         while(_loc3_ < 10)
+         j = 0;
+         while(j < 10)
          {
-            _loc3_++;
+            j++;
          }
-         _style = param1;
+         _style = value;
          onPropertiesChanged("Style");
       }
       
@@ -619,10 +619,10 @@ package ddt.data.player
       
       public function getSuitsType() : int
       {
-         var _loc1_:int = ItemManager.Instance.getTemplateById(_modifyStyle.split(",")[7].split("|")[0]).Property1;
-         if(_loc1_)
+         var rInt:int = ItemManager.Instance.getTemplateById(_modifyStyle.split(",")[7].split("|")[0]).Property1;
+         if(rInt)
          {
-            return _loc1_;
+            return rInt;
          }
          return 2;
       }
@@ -637,62 +637,62 @@ package ddt.data.player
          return _tutorialProgress;
       }
       
-      public function set TutorialProgress(param1:int) : void
+      public function set TutorialProgress(value:int) : void
       {
-         if(_tutorialProgress == param1)
+         if(_tutorialProgress == value)
          {
             return;
          }
-         _tutorialProgress = param1;
+         _tutorialProgress = value;
          onPropertiesChanged("TutorialProgress");
       }
       
-      public function setPartStyle(param1:int, param2:int, param3:int = -1, param4:String = "", param5:Boolean = true) : void
+      public function setPartStyle(categoryId:int, needsex:int, templateId:int = -1, color:String = "", dispatch:Boolean = true) : void
       {
          if(Style == null)
          {
             return;
          }
-         var _loc6_:Array = _style.split(",");
-         if(param1 == 7)
+         var arr:Array = _style.split(",");
+         if(categoryId == 7)
          {
-            _loc6_[EquipType.CategeryIdToPlace(param1)[0]] = replaceTID(_loc6_[EquipType.CategeryIdToPlace(param1)[0]],param3 == -1 || param3 == 0?"7001":String(param3),false);
+            arr[EquipType.CategeryIdToPlace(categoryId)[0]] = replaceTID(arr[EquipType.CategeryIdToPlace(categoryId)[0]],templateId == -1 || templateId == 0?"7001":String(templateId),false);
          }
-         else if(param1 == 13)
+         else if(categoryId == 13)
          {
-            _loc6_[7] = replaceTID(_loc6_[7],param3 == -1 || param3 == 0?String(param1) + "101":String(param3));
+            arr[7] = replaceTID(arr[7],templateId == -1 || templateId == 0?String(categoryId) + "101":String(templateId));
          }
-         else if(param1 == 15)
+         else if(categoryId == 15)
          {
-            _loc6_[8] = replaceTID(_loc6_[8],param3 == -1 || param3 == 0?"15001":String(param3));
+            arr[8] = replaceTID(arr[8],templateId == -1 || templateId == 0?"15001":String(templateId));
          }
          else
          {
-            _loc6_[EquipType.CategeryIdToPlace(param1)[0]] = replaceTID(_loc6_[EquipType.CategeryIdToPlace(param1)[0]],param3 == -1 || param3 == 0?String(param1) + String(param2) + "01":String(param3));
+            arr[EquipType.CategeryIdToPlace(categoryId)[0]] = replaceTID(arr[EquipType.CategeryIdToPlace(categoryId)[0]],templateId == -1 || templateId == 0?String(categoryId) + String(needsex) + "01":String(templateId));
          }
-         _style = _loc6_.join(",");
+         _style = arr.join(",");
          onPropertiesChanged("Style");
-         setPartColor(param1,param4);
+         setPartColor(categoryId,color);
       }
       
-      private function jionPic(param1:String, param2:String) : String
+      private function jionPic(tid:String, pic:String) : String
       {
-         return param1 + "|" + param2;
+         return tid + "|" + pic;
       }
       
-      private function getTID(param1:String) : String
+      private function getTID(s:String) : String
       {
-         return param1.split("|")[0];
+         return s.split("|")[0];
       }
       
-      private function replaceTID(param1:String, param2:String, param3:Boolean = true) : String
+      private function replaceTID(original:String, tid:String, useTemplatePic:Boolean = true) : String
       {
-         return param2 + "|" + (!!param3?ItemManager.Instance.getTemplateById(int(param2)).Pic:param1.split("|")[1]);
+         return tid + "|" + (!!useTemplatePic?ItemManager.Instance.getTemplateById(int(tid)).Pic:original.split("|")[1]);
       }
       
-      public function getPartStyle(param1:int) : int
+      public function getPartStyle(categoryId:int) : int
       {
-         return int(Style.split(",")[param1 - 1].split("|")[0]);
+         return int(Style.split(",")[categoryId - 1].split("|")[0]);
       }
       
       public function get Colors() : String
@@ -700,18 +700,18 @@ package ddt.data.player
          return _colors;
       }
       
-      public function set Colors(param1:String) : void
+      public function set Colors(value:String) : void
       {
-         if(_intuitionalColor == param1)
+         if(_intuitionalColor == value)
          {
             return;
          }
-         _intuitionalColor = param1;
-         if(colorEqual(_colors,param1))
+         _intuitionalColor = value;
+         if(colorEqual(_colors,value))
          {
             return;
          }
-         _colors = param1;
+         _colors = value;
          onPropertiesChanged("Colors");
       }
       
@@ -720,66 +720,65 @@ package ddt.data.player
          return _intuitionalColor;
       }
       
-      private function colorEqual(param1:String, param2:String) : Boolean
+      private function colorEqual(color_1:String, color_2:String) : Boolean
       {
-         var _loc5_:int = 0;
-         if(param1 == param2)
+         var i:int = 0;
+         if(color_1 == color_2)
          {
             return true;
          }
-         var _loc4_:Array = param1.split(",");
-         var _loc3_:Array = param2.split(",");
-         _loc5_ = 0;
-         while(_loc5_ < _loc3_.length)
+         var colors1:Array = color_1.split(",");
+         var colors2:Array = color_2.split(",");
+         for(i = 0; i < colors2.length; )
          {
-            if(_loc5_ == 4)
+            if(i == 4)
             {
-               if(_loc4_[_loc5_].split("|").length > 2)
+               if(colors1[i].split("|").length > 2)
                {
-                  _loc4_[_loc5_] = _loc4_[_loc5_].split("|")[0] + "||" + _loc4_[_loc5_].split("|")[2];
+                  colors1[i] = colors1[i].split("|")[0] + "||" + colors1[i].split("|")[2];
                }
             }
-            if(_loc4_[_loc5_] != _loc3_[_loc5_])
+            if(colors1[i] != colors2[i])
             {
-               if(!((_loc4_[_loc5_] == "|" || _loc4_[_loc5_] == "||" || _loc4_[_loc5_] == "") && (_loc3_[_loc5_] == "|" || _loc3_[_loc5_] == "||" || _loc3_[_loc5_] == "")))
+               if(!((colors1[i] == "|" || colors1[i] == "||" || colors1[i] == "") && (colors2[i] == "|" || colors2[i] == "||" || colors2[i] == "")))
                {
                   return false;
                }
             }
-            _loc5_++;
+            i++;
          }
          return true;
       }
       
-      public function setPartColor(param1:int, param2:String) : void
+      public function setPartColor(id:int, color:String) : void
       {
-         var _loc3_:Array = _colors.split(",");
-         if(param1 != 13)
+         var arr:Array = _colors.split(",");
+         if(id != 13)
          {
-            _loc3_[EquipType.CategeryIdToPlace(param1)[0]] = param2;
+            arr[EquipType.CategeryIdToPlace(id)[0]] = color;
          }
-         Colors = _loc3_.join(",");
+         Colors = arr.join(",");
          onPropertiesChanged("Colors");
       }
       
-      public function getPartColor(param1:int) : String
+      public function getPartColor(id:int) : String
       {
-         var _loc2_:Array = Colors.split(",");
-         return _loc2_[param1 - 1];
+         var arr:Array = Colors.split(",");
+         return arr[id - 1];
       }
       
-      public function setSkinColor(param1:String) : void
+      public function setSkinColor(color:String) : void
       {
-         Skin = param1;
+         Skin = color;
       }
       
-      public function set Skin(param1:String) : void
+      public function set Skin(color:String) : void
       {
-         if(_skin == param1)
+         if(_skin == color)
          {
             return;
          }
-         _skin = param1;
+         _skin = color;
          onPropertiesChanged("Colors");
       }
       
@@ -790,13 +789,13 @@ package ddt.data.player
       
       public function getSkinColor() : String
       {
-         var _loc2_:Array = Colors.split(",");
-         if(_loc2_[EquipType.CategeryIdToPlace(6)[0]] == undefined)
+         var arr:Array = Colors.split(",");
+         if(arr[EquipType.CategeryIdToPlace(6)[0]] == undefined)
          {
             return "";
          }
-         var _loc1_:String = _loc2_[EquipType.CategeryIdToPlace(6)[0]].split("|")[1];
-         return _loc1_ == null?"":_loc1_;
+         var t:String = arr[EquipType.CategeryIdToPlace(6)[0]].split("|")[1];
+         return t == null?"":t;
       }
       
       public function clearColors() : void
@@ -804,26 +803,26 @@ package ddt.data.player
          Colors = ",,,,,,,,";
       }
       
-      public function updateStyle(param1:Boolean, param2:int, param3:String, param4:String, param5:String) : void
+      public function updateStyle(sex:Boolean, hide:int, style:String, colors:String, skin:String) : void
       {
          beginChanges();
-         Sex = param1;
-         Hide = param2;
-         Style = param3;
-         Colors = param4;
-         Skin = param5;
+         Sex = sex;
+         Hide = hide;
+         Style = style;
+         Colors = colors;
+         Skin = skin;
          commitChanges();
       }
       
       public function get paopaoType() : int
       {
-         var _loc1_:String = _style.split(",")[9].split("|")[0];
-         _loc1_.slice(4);
-         if(_loc1_ == null || _loc1_ == "" || _loc1_ == "0" || _loc1_ == "-1")
+         var st:String = _style.split(",")[9].split("|")[0];
+         st.slice(4);
+         if(st == null || st == "" || st == "0" || st == "-1")
          {
             return 0;
          }
-         return int(_loc1_.slice(3));
+         return int(st.slice(3));
       }
       
       public function get Attack() : int
@@ -831,21 +830,21 @@ package ddt.data.player
          return _attack;
       }
       
-      public function set Attack(param1:int) : void
+      public function set Attack(value:int) : void
       {
-         if(_attack == param1)
+         if(_attack == value)
          {
             return;
          }
-         _attack = param1;
+         _attack = value;
          onPropertiesChanged("Attack");
       }
       
-      public function set userGuildProgress(param1:int) : void
+      public function set userGuildProgress(p:int) : void
       {
-         _answerSite = param1;
-         TutorialProgress = param1;
-         NewHandGuideManager.Instance.progress = param1;
+         _answerSite = p;
+         TutorialProgress = p;
+         NewHandGuideManager.Instance.progress = p;
       }
       
       public function get userGuildProgress() : int
@@ -858,13 +857,13 @@ package ddt.data.player
          return _defence;
       }
       
-      public function set Defence(param1:int) : void
+      public function set Defence(value:int) : void
       {
-         if(_defence == param1)
+         if(_defence == value)
          {
             return;
          }
-         _defence = param1;
+         _defence = value;
          onPropertiesChanged("Defence");
       }
       
@@ -873,13 +872,13 @@ package ddt.data.player
          return _luck;
       }
       
-      public function set Luck(param1:int) : void
+      public function set Luck(value:int) : void
       {
-         if(_luck == param1)
+         if(_luck == value)
          {
             return;
          }
-         _luck = param1;
+         _luck = value;
          onPropertiesChanged("Luck");
       }
       
@@ -888,13 +887,13 @@ package ddt.data.player
          return _hp;
       }
       
-      public function set hp(param1:int) : void
+      public function set hp(value:int) : void
       {
-         if(_hp != param1)
+         if(_hp != value)
          {
-            increaHP = param1 - _hp;
+            increaHP = value - _hp;
          }
-         _hp = param1;
+         _hp = value;
       }
       
       public function get Agility() : int
@@ -902,13 +901,13 @@ package ddt.data.player
          return _agility;
       }
       
-      public function set Agility(param1:int) : void
+      public function set Agility(value:int) : void
       {
-         if(_agility == param1)
+         if(_agility == value)
          {
             return;
          }
-         _agility = param1;
+         _agility = value;
          onPropertiesChanged("Agility");
       }
       
@@ -917,13 +916,13 @@ package ddt.data.player
          return _magicAttack;
       }
       
-      public function set MagicAttack(param1:int) : void
+      public function set MagicAttack(value:int) : void
       {
-         if(_magicAttack == param1)
+         if(_magicAttack == value)
          {
             return;
          }
-         _magicAttack = param1;
+         _magicAttack = value;
          onPropertiesChanged("MagicAttack");
       }
       
@@ -932,24 +931,24 @@ package ddt.data.player
          return _magicDefence;
       }
       
-      public function set MagicDefence(param1:int) : void
+      public function set MagicDefence(value:int) : void
       {
-         if(_magicDefence == param1)
+         if(_magicDefence == value)
          {
             return;
          }
-         _magicDefence = param1;
+         _magicDefence = value;
          onPropertiesChanged("MagicDefence");
       }
       
-      public function setAttackDefenseValues(param1:int, param2:int, param3:int, param4:int, param5:int, param6:int) : void
+      public function setAttackDefenseValues(attack:int, defense:int, agility:int, luck:int, magicAttack:int, magicDefence:int) : void
       {
-         Attack = param1;
-         Defence = param2;
-         Agility = param3;
-         Luck = param4;
-         MagicAttack = param5;
-         MagicDefence = param6;
+         Attack = attack;
+         Defence = defense;
+         Agility = agility;
+         Luck = luck;
+         MagicAttack = magicAttack;
+         MagicDefence = magicDefence;
          onPropertiesChanged("setAttackDefenseValues");
       }
       
@@ -962,13 +961,13 @@ package ddt.data.player
          return _dungeonFlag;
       }
       
-      public function set dungeonFlag(param1:Object) : void
+      public function set dungeonFlag(value:Object) : void
       {
-         if(_dungeonFlag == param1)
+         if(_dungeonFlag == value)
          {
             return;
          }
-         _dungeonFlag = param1;
+         _dungeonFlag = value;
       }
       
       public function get propertyAddition() : DictionaryData
@@ -980,14 +979,18 @@ package ddt.data.player
          return _propertyAddition;
       }
       
-      public function set propertyAddition(param1:DictionaryData) : void
+      public function set propertyAddition(val:DictionaryData) : void
       {
-         _propertyAddition = param1;
+         _propertyAddition = val;
       }
       
-      public function getPropertyAdditionByType(param1:String) : DictionaryData
+      public function getPropertyAdditionByType(type:String) : DictionaryData
       {
-         return _propertyAddition[param1];
+         if(_propertyAddition && _propertyAddition.hasKey(type))
+         {
+            return _propertyAddition[type];
+         }
+         return null;
       }
       
       public function get Bag() : BagInfo
@@ -1010,21 +1013,21 @@ package ddt.data.player
       
       public function get DeputyWeapon() : InventoryItemInfo
       {
-         var _loc1_:Array = Bag.findBodyThingByCategory(17).concat(Bag.findBodyThingByCategory(31));
-         if(_loc1_.length > 0)
+         var arr:Array = Bag.findBodyThingByCategory(17).concat(Bag.findBodyThingByCategory(31));
+         if(arr.length > 0)
          {
-            return _loc1_[0] as InventoryItemInfo;
+            return arr[0] as InventoryItemInfo;
          }
          return null;
       }
       
-      public function set DeputyWeaponID(param1:int) : void
+      public function set DeputyWeaponID(value:int) : void
       {
-         if(_deputyWeaponID == param1)
+         if(_deputyWeaponID == value)
          {
             return;
          }
-         _deputyWeaponID = param1;
+         _deputyWeaponID = value;
          onPropertiesChanged("DeputyWeaponID");
       }
       
@@ -1038,9 +1041,9 @@ package ddt.data.player
          return _webSpeed;
       }
       
-      public function set webSpeed(param1:int) : void
+      public function set webSpeed(value:int) : void
       {
-         _webSpeed = param1;
+         _webSpeed = value;
          dispatchEvent(new WebSpeedEvent("stateChange"));
       }
       
@@ -1049,19 +1052,19 @@ package ddt.data.player
          return _weaponID;
       }
       
-      public function set WeaponID(param1:int) : void
+      public function set WeaponID(value:int) : void
       {
-         if(_weaponID == param1)
+         if(_weaponID == value)
          {
             return;
          }
-         _weaponID = param1;
+         _weaponID = value;
          onPropertiesChanged("WeaponID");
       }
       
-      public function set paopaoType(param1:int) : void
+      public function set paopaoType(type:int) : void
       {
-         _paopaoType = param1;
+         _paopaoType = type;
          onPropertiesChanged("paopaoType");
       }
       
@@ -1070,15 +1073,15 @@ package ddt.data.player
          return _buffInfo;
       }
       
-      protected function set buffInfo#6(param1:DictionaryData) : void
+      protected function set buffInfo#6(buffs:DictionaryData) : void
       {
-         _buffInfo = param1;
+         _buffInfo = buffs;
          onPropertiesChanged("buffInfo");
       }
       
-      public function addBuff(param1:BuffInfo) : void
+      public function addBuff(buff:BuffInfo) : void
       {
-         _buffInfo.add(param1.Type,param1);
+         _buffInfo.add(buff.Type,buff);
       }
       
       public function clearBuff() : void
@@ -1086,19 +1089,19 @@ package ddt.data.player
          _buffInfo.clear();
       }
       
-      public function hasBuff(param1:int) : Boolean
+      public function hasBuff(buffType:int) : Boolean
       {
-         if(param1 == 15)
+         if(buffType == 15)
          {
             return true;
          }
-         var _loc2_:BuffInfo = getBuff(param1);
-         return _loc2_ != null && _loc2_.IsExist;
+         var buff:BuffInfo = getBuff(buffType);
+         return buff != null && buff.IsExist;
       }
       
-      public function getBuff(param1:int) : BuffInfo
+      public function getBuff(buffType:int) : BuffInfo
       {
-         return _buffInfo[param1];
+         return _buffInfo[buffType];
       }
       
       public function get PvePermission() : String
@@ -1106,13 +1109,13 @@ package ddt.data.player
          return _pvePermission;
       }
       
-      public function set PvePermission(param1:String) : void
+      public function set PvePermission(permission:String) : void
       {
-         if(_pvePermission == param1)
+         if(_pvePermission == permission)
          {
             return;
          }
-         if(param1 == "")
+         if(permission == "")
          {
             _pvePermission = "11111111111111111111111111111111111111111111111111";
          }
@@ -1120,12 +1123,12 @@ package ddt.data.player
          {
             if(_pvePermission != null)
             {
-               if(_pvePermission.substr(0,1) == "1" && param1.substr(0,1) == "3")
+               if(_pvePermission.substr(0,1) == "1" && permission.substr(0,1) == "3")
                {
                   _isDupSimpleTip = true;
                }
             }
-            _pvePermission = param1;
+            _pvePermission = permission;
          }
          onPropertiesChanged("PvePermission");
       }
@@ -1135,9 +1138,9 @@ package ddt.data.player
          return _fightLibMission == null || _fightLibMission == ""?"0000000000":_fightLibMission;
       }
       
-      public function set fightLibMission(param1:String) : void
+      public function set fightLibMission(value:String) : void
       {
-         _fightLibMission = param1;
+         _fightLibMission = value;
          onPropertiesChanged("fightLibMission");
       }
       
@@ -1146,18 +1149,18 @@ package ddt.data.player
          return _lastSpaDate;
       }
       
-      public function set LastSpaDate(param1:Object) : void
+      public function set LastSpaDate(value:Object) : void
       {
-         _lastSpaDate = param1;
+         _lastSpaDate = value;
       }
       
-      public function set PveEpicPermission(param1:String) : void
+      public function set PveEpicPermission(value:String) : void
       {
-         if(this._pveEpicPermission == param1)
+         if(this._pveEpicPermission == value)
          {
             return;
          }
-         this._pveEpicPermission = param1;
+         this._pveEpicPermission = value;
          onPropertiesChanged("PveEpicPermission");
       }
       
@@ -1166,25 +1169,24 @@ package ddt.data.player
          return _pveEpicPermission;
       }
       
-      public function setMasterOrApprentices(param1:String) : void
+      public function setMasterOrApprentices(value:String) : void
       {
-         var _loc3_:* = null;
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
+         var nickNames:* = null;
+         var i:int = 0;
+         var idOrNickName:* = null;
          if(!_masterOrApprentices)
          {
             _masterOrApprentices = new DictionaryData();
          }
          _masterOrApprentices.clear();
-         if(param1 != "")
+         if(value != "")
          {
-            _loc3_ = param1.split(",");
-            _loc4_ = 0;
-            while(_loc4_ < _loc3_.length)
+            nickNames = value.split(",");
+            for(i = 0; i < nickNames.length; )
             {
-               _loc2_ = _loc3_[_loc4_].split("|");
-               _masterOrApprentices.add(int(_loc2_[0]),_loc2_[1]);
-               _loc4_++;
+               idOrNickName = nickNames[i].split("|");
+               _masterOrApprentices.add(int(idOrNickName[0]),idOrNickName[1]);
+               i++;
             }
          }
          onPropertiesChanged("masterOrApprentices");
@@ -1199,9 +1201,9 @@ package ddt.data.player
          return _masterOrApprentices;
       }
       
-      public function set masterID(param1:int) : void
+      public function set masterID(value:int) : void
       {
-         _masterID = param1;
+         _masterID = value;
       }
       
       public function get masterID() : int
@@ -1209,19 +1211,19 @@ package ddt.data.player
          return _masterID;
       }
       
-      public function isMyMaster(param1:int) : Boolean
+      public function isMyMaster(id:int) : Boolean
       {
-         return param1 == _masterID;
+         return id == _masterID;
       }
       
-      public function isMyApprent(param1:int) : Boolean
+      public function isMyApprent(id:int) : Boolean
       {
-         return _masterOrApprentices[param1];
+         return _masterOrApprentices[id];
       }
       
-      public function set graduatesCount(param1:int) : void
+      public function set graduatesCount(value:int) : void
       {
-         _graduatesCount = param1;
+         _graduatesCount = value;
       }
       
       public function get graduatesCount() : int
@@ -1229,9 +1231,9 @@ package ddt.data.player
          return _graduatesCount;
       }
       
-      public function set honourOfMaster(param1:String) : void
+      public function set honourOfMaster(value:String) : void
       {
-         _honourOfMaster = param1;
+         _honourOfMaster = value;
       }
       
       public function get honourOfMaster() : String
@@ -1239,9 +1241,9 @@ package ddt.data.player
          return _honourOfMaster;
       }
       
-      public function set freezesDate(param1:Date) : void
+      public function set freezesDate(value:Date) : void
       {
-         _freezesDate = param1;
+         _freezesDate = value;
       }
       
       public function get freezesDate() : Date
@@ -1249,9 +1251,9 @@ package ddt.data.player
          return _freezesDate;
       }
       
-      public function set myGiftData(param1:Vector.<MyGiftCellInfo>) : void
+      public function set myGiftData(list:Vector.<MyGiftCellInfo>) : void
       {
-         _myGiftData = param1;
+         _myGiftData = list;
          onPropertiesChanged("myGiftData");
       }
       
@@ -1266,19 +1268,19 @@ package ddt.data.player
       
       public function get giftSum() : int
       {
-         var _loc1_:int = 0;
+         var sum:int = 0;
          var _loc4_:int = 0;
          var _loc3_:* = myGiftData;
-         for each(var _loc2_ in myGiftData)
+         for each(var info in myGiftData)
          {
-            _loc1_ = _loc1_ + _loc2_.amount;
+            sum = sum + info.amount;
          }
-         return _loc1_;
+         return sum;
       }
       
-      public function set charmLevel(param1:int) : void
+      public function set charmLevel(value:int) : void
       {
-         _charmLevel = param1;
+         _charmLevel = value;
          onPropertiesChanged("GiftLevel");
       }
       
@@ -1291,38 +1293,37 @@ package ddt.data.player
          return _charmLevel;
       }
       
-      public function set charmGP(param1:int) : void
+      public function set charmGP(value:int) : void
       {
-         _charmGP = param1;
-         charmLevel = getCharLevel(param1);
+         _charmGP = value;
+         charmLevel = getCharLevel(value);
          onPropertiesChanged("GiftGp");
       }
       
-      private function getCharLevel(param1:int) : int
+      private function getCharLevel(value:int) : int
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = 0;
-         _loc3_ = 0;
-         while(_loc3_ < CHARM_LEVEL_ALL_EXP.length)
+         var i:int = 0;
+         var level:* = 0;
+         for(i = 0; i < CHARM_LEVEL_ALL_EXP.length; )
          {
-            if(param1 >= CHARM_LEVEL_ALL_EXP[100 - 1])
+            if(value >= CHARM_LEVEL_ALL_EXP[100 - 1])
             {
-               _loc2_ = 100;
+               level = 100;
                break;
             }
-            if(param1 < CHARM_LEVEL_ALL_EXP[_loc3_])
+            if(value < CHARM_LEVEL_ALL_EXP[i])
             {
-               _loc2_ = _loc3_;
+               level = i;
                break;
             }
-            if(param1 <= 0)
+            if(value <= 0)
             {
-               _loc2_ = 1;
+               level = 1;
                break;
             }
-            _loc3_++;
+            i++;
          }
-         return _loc2_;
+         return level;
       }
       
       public function get charmGP() : int
@@ -1339,13 +1340,13 @@ package ddt.data.player
          return _cardEquipDic;
       }
       
-      public function set cardEquipDic(param1:DictionaryData) : void
+      public function set cardEquipDic(value:DictionaryData) : void
       {
-         if(_cardEquipDic == param1)
+         if(_cardEquipDic == value)
          {
             return;
          }
-         _cardEquipDic = param1;
+         _cardEquipDic = value;
          onPropertiesChanged("cardEquipDic");
       }
       
@@ -1358,55 +1359,55 @@ package ddt.data.player
          return _cardBagDic;
       }
       
-      public function set cardBagDic(param1:DictionaryData) : void
+      public function set cardBagDic(value:DictionaryData) : void
       {
-         if(_cardBagDic == param1)
+         if(_cardBagDic == value)
          {
             return;
          }
-         _cardBagDic = param1;
+         _cardBagDic = value;
          onPropertiesChanged("cardBagDic");
       }
       
-      public function getCardInfoByID(param1:int) : CardInfo
+      public function getCardInfoByID(id:int) : CardInfo
       {
          var _loc4_:int = 0;
          var _loc3_:* = _cardBagDic;
-         for each(var _loc2_ in _cardBagDic)
+         for each(var cardInfo in _cardBagDic)
          {
-            if(_loc2_.TemplateID == param1)
+            if(cardInfo.TemplateID == id)
             {
-               return _loc2_;
+               return cardInfo;
             }
          }
          return null;
       }
       
-      public function getCardNumByType(param1:int) : int
+      public function getCardNumByType(type:int) : int
       {
-         var _loc2_:int = 0;
+         var count:int = 0;
          var _loc5_:int = 0;
          var _loc4_:* = _cardBagDic;
-         for each(var _loc3_ in _cardBagDic)
+         for each(var cardInfo in _cardBagDic)
          {
-            if(_loc3_.CardType <= param1 || _loc3_.CardType == 4)
+            if(cardInfo.CardType <= type || cardInfo.CardType == 4)
             {
-               _loc2_++;
+               count++;
             }
          }
-         return _loc2_;
+         return count;
       }
       
-      public function checkCurrentCardSets(param1:int, param2:int = 3) : Boolean
+      public function checkCurrentCardSets(id:int, type:int = 3) : Boolean
       {
-         var _loc3_:* = null;
-         var _loc5_:SetsInfo = CardManager.Instance.getCardSuitByID(param1);
+         var cardInfo:* = null;
+         var cardSetsInfo:SetsInfo = CardManager.Instance.getCardSuitByID(id);
          var _loc7_:int = 0;
-         var _loc6_:* = _loc5_.cardIdVec;
-         for each(var _loc4_ in _loc5_.cardIdVec)
+         var _loc6_:* = cardSetsInfo.cardIdVec;
+         for each(var cardID in cardSetsInfo.cardIdVec)
          {
-            _loc3_ = getCardInfoByID(_loc4_);
-            if(_loc3_ == null || _loc3_.CardType > param2 && _loc3_.CardType != 4)
+            cardInfo = getCardInfoByID(cardID);
+            if(cardInfo == null || cardInfo.CardType > type && cardInfo.CardType != 4)
             {
                return false;
             }
@@ -1414,42 +1415,42 @@ package ddt.data.player
          return true;
       }
       
-      public function getCurrentCardSetsNum(param1:int, param2:int = 3) : int
+      public function getCurrentCardSetsNum(id:int, type:int = 3) : int
       {
-         var _loc4_:* = null;
-         var _loc3_:int = 0;
-         var _loc6_:SetsInfo = CardManager.Instance.getCardSuitByID(param1);
+         var cardInfo:* = null;
+         var count:int = 0;
+         var cardSetsInfo:SetsInfo = CardManager.Instance.getCardSuitByID(id);
          var _loc8_:int = 0;
-         var _loc7_:* = _loc6_.cardIdVec;
-         for each(var _loc5_ in _loc6_.cardIdVec)
+         var _loc7_:* = cardSetsInfo.cardIdVec;
+         for each(var cardID in cardSetsInfo.cardIdVec)
          {
-            _loc4_ = getCardInfoByID(_loc5_);
-            if(_loc4_ && (_loc4_.CardType <= param2 || _loc4_.CardType == 4))
+            cardInfo = getCardInfoByID(cardID);
+            if(cardInfo && (cardInfo.CardType <= type || cardInfo.CardType == 4))
             {
-               _loc3_++;
+               count++;
             }
          }
-         return _loc3_;
+         return count;
       }
       
-      public function gainCardSetsNum(param1:int) : int
+      public function gainCardSetsNum(type:int) : int
       {
-         var _loc2_:int = 0;
+         var count:int = 0;
          var _loc5_:int = 0;
          var _loc4_:* = CardManager.Instance.model.setsSortRuleVector;
-         for each(var _loc3_ in CardManager.Instance.model.setsSortRuleVector)
+         for each(var item in CardManager.Instance.model.setsSortRuleVector)
          {
-            if(PlayerManager.Instance.Self.checkCurrentCardSets(int(_loc3_.ID),param1))
+            if(PlayerManager.Instance.Self.checkCurrentCardSets(int(item.ID),type))
             {
-               _loc2_++;
+               count++;
             }
          }
-         return _loc2_;
+         return count;
       }
       
-      public function getOptionState(param1:int) : Boolean
+      public function getOptionState(OptionType:int) : Boolean
       {
-         return (OptionOnOff & param1) == param1;
+         return (OptionOnOff & OptionType) == OptionType;
       }
       
       public function get shopFinallyGottenTime() : Date
@@ -1457,28 +1458,28 @@ package ddt.data.player
          return _shopFinallyGottenTime;
       }
       
-      public function set shopFinallyGottenTime(param1:Date) : void
+      public function set shopFinallyGottenTime(value:Date) : void
       {
-         if(_shopFinallyGottenTime == param1)
+         if(_shopFinallyGottenTime == value)
          {
             return;
          }
-         _shopFinallyGottenTime = param1;
+         _shopFinallyGottenTime = value;
          dispatchEvent(new Event("shopFinallyGottenTime"));
       }
       
       public function getLastDate() : int
       {
-         var _loc3_:int = 0;
-         var _loc1_:Date = TimeManager.Instance.Now();
-         var _loc2_:int = (_loc1_.valueOf() - _lastDate.valueOf()) / 3600000;
-         _loc3_ = _loc2_ < 1?1:_loc2_;
-         return _loc3_;
+         var totalHours:int = 0;
+         var now:Date = TimeManager.Instance.Now();
+         var hours:int = (now.valueOf() - _lastDate.valueOf()) / 3600000;
+         totalHours = hours < 1?1:hours;
+         return totalHours;
       }
       
-      public function set lastDate(param1:Date) : void
+      public function set lastDate(value:Date) : void
       {
-         _lastDate = param1;
+         _lastDate = value;
       }
       
       public function get lastDate() : Date
@@ -1491,18 +1492,18 @@ package ddt.data.player
          return _isSameCity;
       }
       
-      public function set isSameCity(param1:Boolean) : void
+      public function set isSameCity(value:Boolean) : void
       {
-         _isSameCity = param1;
+         _isSameCity = value;
       }
       
-      public function set IsShowConsortia(param1:Boolean) : void
+      public function set IsShowConsortia(boo:Boolean) : void
       {
-         if(_IsShowConsortia == param1)
+         if(_IsShowConsortia == boo)
          {
             return;
          }
-         _IsShowConsortia = param1;
+         _IsShowConsortia = boo;
          onPropertiesChanged("IsShowConsortia");
       }
       
@@ -1513,16 +1514,16 @@ package ddt.data.player
       
       public function get showDesignation() : String
       {
-         var _loc1_:String = !!IsShowConsortia?ConsortiaName:honor;
-         if(!_loc1_)
+         var str:String = !!IsShowConsortia?ConsortiaName:honor;
+         if(!str)
          {
-            _loc1_ = ConsortiaName;
+            str = ConsortiaName;
          }
-         if(!_loc1_)
+         if(!str)
          {
-            _loc1_ = honor;
+            str = honor;
          }
-         return _loc1_;
+         return str;
       }
       
       public function get badLuckNumber() : int
@@ -1530,11 +1531,11 @@ package ddt.data.player
          return _badLuckNumber;
       }
       
-      public function set badLuckNumber(param1:int) : void
+      public function set badLuckNumber(value:int) : void
       {
-         if(_badLuckNumber != param1)
+         if(_badLuckNumber != value)
          {
-            _badLuckNumber = param1;
+            _badLuckNumber = value;
             onPropertiesChanged("BadLuckNumber");
          }
       }
@@ -1549,9 +1550,9 @@ package ddt.data.player
          return _isSelf;
       }
       
-      public function set isSelf(param1:Boolean) : void
+      public function set isSelf(value:Boolean) : void
       {
-         _isSelf = param1;
+         _isSelf = value;
       }
       
       public function get pets() : DictionaryData
@@ -1565,26 +1566,26 @@ package ddt.data.player
       
       public function get currentPet() : PetInfo
       {
-         var _loc1_:* = null;
+         var resultPetInfo:* = null;
          var _loc4_:int = 0;
          var _loc3_:* = _pets;
-         for each(var _loc2_ in _pets)
+         for each(var petInfo in _pets)
          {
-            if(_loc2_.IsEquip)
+            if(petInfo.IsEquip)
             {
-               _loc1_ = _loc2_;
+               resultPetInfo = petInfo;
             }
          }
-         return _loc1_;
+         return resultPetInfo;
       }
       
-      public function set damageScores(param1:int) : void
+      public function set damageScores(value:int) : void
       {
-         if(_damageScores == param1)
+         if(_damageScores == value)
          {
             return;
          }
-         _damageScores = param1;
+         _damageScores = value;
          onPropertiesChanged("damageScores");
       }
       
@@ -1598,9 +1599,9 @@ package ddt.data.player
          return _embedUpLevelCell;
       }
       
-      public function set embedUpLevelCell(param1:EmbedUpLevelCell) : void
+      public function set embedUpLevelCell(value:EmbedUpLevelCell) : void
       {
-         _embedUpLevelCell = param1;
+         _embedUpLevelCell = value;
       }
       
       public function get totemId() : int
@@ -1608,15 +1609,44 @@ package ddt.data.player
          return _totemId;
       }
       
-      public function set totemId(param1:int) : void
+      public function set totemId(value:int) : void
       {
-         _totemId = param1;
-         TotemManager.instance.updatePropertyAddtion(_totemId,propertyAddition);
+         _totemId = value;
       }
       
-      public function set gemstoneList(param1:Vector.<GemstonInitInfo>) : void
+      public function addTotemGrade(totemID:int, grade:int) : void
       {
-         _gemstoneList = param1;
+         if(!_totemGrades.hasKey(totemID))
+         {
+            _totemGrades.add(totemID,grade);
+         }
+         else
+         {
+            _totemGrades[totemID] = grade;
+         }
+      }
+      
+      public function getTotemGradeByID(chapterID:int) : int
+      {
+         if(_totemGrades.hasKey(chapterID))
+         {
+            return _totemGrades[chapterID];
+         }
+         return 0;
+      }
+      
+      public function get totemGrades() : DictionaryData
+      {
+         if(_totemGrades == null)
+         {
+            _totemGrades = new DictionaryData();
+         }
+         return _totemGrades;
+      }
+      
+      public function set gemstoneList(list:Vector.<GemstonInitInfo>) : void
+      {
+         _gemstoneList = list;
       }
       
       public function get gemstoneList() : Vector.<GemstonInitInfo>
@@ -1629,13 +1659,13 @@ package ddt.data.player
          return _hardCurrency;
       }
       
-      public function set hardCurrency(param1:int) : void
+      public function set hardCurrency(value:int) : void
       {
-         if(_hardCurrency == param1)
+         if(_hardCurrency == value)
          {
             return;
          }
-         _hardCurrency = param1;
+         _hardCurrency = value;
          onPropertiesChanged("hardCurrency");
       }
       
@@ -1644,13 +1674,13 @@ package ddt.data.player
          return _jampsCurrency;
       }
       
-      public function set jampsCurrency(param1:int) : void
+      public function set jampsCurrency(value:int) : void
       {
-         if(_jampsCurrency == param1)
+         if(_jampsCurrency == value)
          {
             return;
          }
-         _jampsCurrency = param1;
+         _jampsCurrency = value;
          onPropertiesChanged("jampsCurrency");
       }
       
@@ -1659,9 +1689,9 @@ package ddt.data.player
          return _leagueMoney;
       }
       
-      public function set leagueMoney(param1:int) : void
+      public function set leagueMoney(value:int) : void
       {
-         _leagueMoney = param1;
+         _leagueMoney = value;
          onPropertiesChanged("leagueMoney");
       }
       
@@ -1670,9 +1700,9 @@ package ddt.data.player
          return _necklaceExp;
       }
       
-      public function set necklaceExp(param1:int) : void
+      public function set necklaceExp(value:int) : void
       {
-         _necklaceExp = param1;
+         _necklaceExp = value;
          necklaceLevel = StoreEquipExperience.getNecklaceLevelByGP(_necklaceExp);
          onPropertiesChanged("necklaceExp");
       }
@@ -1682,9 +1712,9 @@ package ddt.data.player
          return _necklaceLevel;
       }
       
-      public function set necklaceLevel(param1:int) : void
+      public function set necklaceLevel(value:int) : void
       {
-         _necklaceLevel = param1;
+         _necklaceLevel = value;
          onPropertiesChanged("necklaceLevel");
       }
       
@@ -1693,9 +1723,9 @@ package ddt.data.player
          return _necklaceExpAdd;
       }
       
-      public function set necklaceExpAdd(param1:int) : void
+      public function set necklaceExpAdd(value:int) : void
       {
-         _necklaceExpAdd = param1;
+         _necklaceExpAdd = value;
          onPropertiesChanged("necklaceExpAdd");
       }
       
@@ -1704,9 +1734,9 @@ package ddt.data.player
          return _pvpBadgeId;
       }
       
-      public function set pvpBadgeId(param1:int) : void
+      public function set pvpBadgeId(value:int) : void
       {
-         _pvpBadgeId = param1;
+         _pvpBadgeId = value;
       }
       
       public function get isTrusteeship() : Boolean
@@ -1714,10 +1744,10 @@ package ddt.data.player
          return _isTrusteeship;
       }
       
-      public function set isTrusteeship(param1:Boolean) : void
+      public function set isTrusteeship(value:Boolean) : void
       {
-         _isTrusteeship = param1;
-         dispatchEvent(new GameEvent("trusteeshipChange",param1));
+         _isTrusteeship = value;
+         dispatchEvent(new GameEvent("trusteeshipChange",value));
       }
       
       public function get fightStatus() : int
@@ -1725,10 +1755,10 @@ package ddt.data.player
          return _fightStatus;
       }
       
-      public function set fightStatus(param1:int) : void
+      public function set fightStatus(value:int) : void
       {
-         _fightStatus = param1;
-         dispatchEvent(new GameEvent("gameFightStatusChange",param1));
+         _fightStatus = value;
+         dispatchEvent(new GameEvent("gameFightStatusChange",value));
       }
       
       public function get accumulativeLoginDays() : int
@@ -1736,9 +1766,9 @@ package ddt.data.player
          return _accumulativeLoginDays;
       }
       
-      public function set accumulativeLoginDays(param1:int) : void
+      public function set accumulativeLoginDays(value:int) : void
       {
-         _accumulativeLoginDays = param1;
+         _accumulativeLoginDays = value;
       }
       
       public function get accumulativeAwardDays() : int
@@ -1746,9 +1776,9 @@ package ddt.data.player
          return _accumulativeAwardDays;
       }
       
-      public function set accumulativeAwardDays(param1:int) : void
+      public function set accumulativeAwardDays(value:int) : void
       {
-         _accumulativeAwardDays = param1;
+         _accumulativeAwardDays = value;
       }
       
       public function get evolutionGrade() : int
@@ -1756,9 +1786,9 @@ package ddt.data.player
          return _evolutionGrade;
       }
       
-      public function set evolutionGrade(param1:int) : void
+      public function set evolutionGrade(value:int) : void
       {
-         _evolutionGrade = param1;
+         _evolutionGrade = value;
       }
       
       public function get evolutionExp() : int
@@ -1766,9 +1796,9 @@ package ddt.data.player
          return _evolutionExp;
       }
       
-      public function set evolutionExp(param1:int) : void
+      public function set evolutionExp(value:int) : void
       {
-         _evolutionExp = param1;
+         _evolutionExp = value;
       }
       
       public function get horsePicCherishBlood() : int
@@ -1776,9 +1806,9 @@ package ddt.data.player
          return _horsePicCherishBlood;
       }
       
-      public function set horsePicCherishBlood(param1:int) : void
+      public function set horsePicCherishBlood(value:int) : void
       {
-         _horsePicCherishBlood = param1;
+         _horsePicCherishBlood = value;
       }
       
       public function get horsePicCherishGuard() : int
@@ -1786,9 +1816,9 @@ package ddt.data.player
          return _horsePicCherishGuard;
       }
       
-      public function set horsePicCherishGuard(param1:int) : void
+      public function set horsePicCherishGuard(value:int) : void
       {
-         _horsePicCherishGuard = param1;
+         _horsePicCherishGuard = value;
       }
       
       public function get horsePicCherishHurt() : int
@@ -1796,9 +1826,9 @@ package ddt.data.player
          return _horsePicCherishHurt;
       }
       
-      public function set horsePicCherishHurt(param1:int) : void
+      public function set horsePicCherishHurt(value:int) : void
       {
-         _horsePicCherishHurt = param1;
+         _horsePicCherishHurt = value;
       }
       
       public function get horsePicCherishMagicAttack() : int
@@ -1806,9 +1836,9 @@ package ddt.data.player
          return _horsePicCherishMagicAttack;
       }
       
-      public function set horsePicCherishMagicAttack(param1:int) : void
+      public function set horsePicCherishMagicAttack(value:int) : void
       {
-         _horsePicCherishMagicAttack = param1;
+         _horsePicCherishMagicAttack = value;
       }
       
       public function get horsePicCherishMagicDefence() : int
@@ -1816,9 +1846,9 @@ package ddt.data.player
          return _horsePicCherishMagicDefence;
       }
       
-      public function set horsePicCherishMagicDefence(param1:int) : void
+      public function set horsePicCherishMagicDefence(value:int) : void
       {
-         _horsePicCherishMagicDefence = param1;
+         _horsePicCherishMagicDefence = value;
       }
       
       public function get horsePicCherishDic() : DictionaryData
@@ -1830,9 +1860,9 @@ package ddt.data.player
          return _horsePicCherishDic;
       }
       
-      public function set peerID(param1:String) : void
+      public function set peerID(id:String) : void
       {
-         _peerID = param1;
+         _peerID = id;
       }
       
       public function get peerID() : String
@@ -1845,9 +1875,9 @@ package ddt.data.player
          return _horseInBookRidingID;
       }
       
-      public function set horseInBookRidingID(param1:int) : void
+      public function set horseInBookRidingID(value:int) : void
       {
-         _horseInBookRidingID = param1;
+         _horseInBookRidingID = value;
       }
       
       public function get fineSuitExp() : int
@@ -1855,13 +1885,13 @@ package ddt.data.player
          return _fineSuitExp;
       }
       
-      public function set fineSuitExp(param1:int) : void
+      public function set fineSuitExp(value:int) : void
       {
-         if(_fineSuitExp == param1)
+         if(_fineSuitExp == value)
          {
             return;
          }
-         _fineSuitExp = param1;
+         _fineSuitExp = value;
       }
       
       public function get guardCoreGrade() : int
@@ -1869,13 +1899,13 @@ package ddt.data.player
          return _guardCoreGrade;
       }
       
-      public function set guardCoreGrade(param1:int) : void
+      public function set guardCoreGrade(value:int) : void
       {
-         if(_guardCoreGrade == param1)
+         if(_guardCoreGrade == value)
          {
             return;
          }
-         _guardCoreGrade = param1;
+         _guardCoreGrade = value;
          onPropertiesChanged("GuardCoreGrade");
       }
       
@@ -1884,13 +1914,13 @@ package ddt.data.player
          return _guardCoreID;
       }
       
-      public function set guardCoreID(param1:int) : void
+      public function set guardCoreID(value:int) : void
       {
-         if(_guardCoreID == param1)
+         if(_guardCoreID == value)
          {
             return;
          }
-         _guardCoreID = param1;
+         _guardCoreID = value;
          onPropertiesChanged("GuardCoreID");
       }
       
@@ -1899,9 +1929,9 @@ package ddt.data.player
          return _experience_Rate;
       }
       
-      public function set experience_Rate(param1:Number) : void
+      public function set experience_Rate(value:Number) : void
       {
-         _experience_Rate = param1;
+         _experience_Rate = value;
       }
       
       public function get offer_Rate() : Number
@@ -1909,9 +1939,9 @@ package ddt.data.player
          return _offer_Rate;
       }
       
-      public function set offer_Rate(param1:Number) : void
+      public function set offer_Rate(value:Number) : void
       {
-         _offer_Rate = param1;
+         _offer_Rate = value;
       }
       
       public function get trailEliteLevel() : int
@@ -1919,9 +1949,9 @@ package ddt.data.player
          return _trailEliteLevel;
       }
       
-      public function set trailEliteLevel(param1:int) : void
+      public function set trailEliteLevel(value:int) : void
       {
-         _trailEliteLevel = param1;
+         _trailEliteLevel = value;
       }
       
       public function get manualProInfo() : PlayerManualProInfo
@@ -1942,150 +1972,149 @@ package ddt.data.player
          return _horseAmuletHp;
       }
       
-      public function set horseAmuletHp(param1:int) : void
+      public function set horseAmuletHp(value:int) : void
       {
-         _horseAmuletHp = param1;
+         _horseAmuletHp = value;
       }
       
-      public function addGhostData(param1:EquipGhostData) : void
+      public function addGhostData(data:EquipGhostData) : void
       {
          if(_ghostDic == null)
          {
             _ghostDic = new Dictionary(true);
          }
-         _ghostDic[param1.categoryID] = param1;
+         _ghostDic[data.categoryID] = data;
       }
       
-      public function getGhostData(param1:int, param2:int) : EquipGhostData
+      public function getGhostData(bagType:int, place:int) : EquipGhostData
       {
-         var _loc3_:int = BagInfo.parseCategoryID(param1,param2);
-         return getGhostDataByCategoryID(_loc3_);
+         var categoryID:int = BagInfo.parseCategoryID(bagType,place);
+         return getGhostDataByCategoryID(categoryID);
       }
       
-      public function getGhostDataByCategoryID(param1:int) : EquipGhostData
+      public function getGhostDataByCategoryID(categoryID:int) : EquipGhostData
       {
          if(_ghostDic == null)
          {
             return null;
          }
-         if(param1 == 27)
+         if(categoryID == 27)
          {
-            param1 = 7;
+            categoryID = 7;
          }
-         return _ghostDic[param1];
+         return _ghostDic[categoryID];
       }
       
-      public function getMarkChipCntByPlace(param1:int) : int
+      public function getMarkChipCntByPlace(place:int) : int
       {
-         var _loc3_:int = 0;
+         var cnt:int = 0;
          if(ID == PlayerManager.Instance.Self.ID)
          {
-            _loc3_ = MarkMgr.inst.model.getChipsCount(param1);
+            cnt = MarkMgr.inst.model.getChipsCount(place);
          }
          else
          {
             var _loc5_:int = 0;
             var _loc4_:* = Markbag.chips;
-            for each(var _loc2_ in Markbag.chips)
+            for each(var chip in Markbag.chips)
             {
-               if(_loc2_.equipType == param1)
+               if(chip.equipType == place)
                {
-                  _loc3_++;
+                  cnt++;
                }
             }
          }
-         return _loc3_;
+         return cnt;
       }
       
-      public function getMarkChipPropsByPlace(param1:int) : Dictionary
+      public function getMarkChipPropsByPlace(place:int) : Dictionary
       {
-         var _loc4_:* = null;
-         var _loc5_:Dictionary = null;
+         var pro:* = null;
+         var props:Dictionary = null;
          if(ID == PlayerManager.Instance.Self.ID)
          {
-            _loc5_ = MarkMgr.inst.calculateEquipProps(param1);
+            props = MarkMgr.inst.calculateEquipProps(place);
          }
          else
          {
-            _loc5_ = new Dictionary();
-            _loc4_ = null;
+            props = new Dictionary();
+            pro = null;
             var _loc10_:int = 0;
             var _loc9_:* = Markbag.chips;
-            for each(var _loc2_ in Markbag.chips)
+            for each(var chip in Markbag.chips)
             {
-               if(_loc2_.equipType == param1)
+               if(chip.equipType == place)
                {
-                  _loc4_ = _loc2_.mainPro;
-                  var _loc6_:* = _loc4_.type;
-                  _loc5_[_loc6_] = _loc5_[_loc6_] || new MarkProData();
-                  _loc5_[_loc4_.type].type = _loc2_.mainPro.type;
-                  _loc5_[_loc4_.type].value = _loc5_[_loc4_.type].value + _loc4_.value;
-                  _loc5_[_loc4_.type].attachValue = _loc5_[_loc4_.type].attachValue + _loc4_.attachValue;
+                  pro = chip.mainPro;
+                  var _loc6_:* = pro.type;
+                  props[_loc6_] = props[_loc6_] || new MarkProData();
+                  props[pro.type].type = chip.mainPro.type;
+                  props[pro.type].value = props[pro.type].value + pro.value;
+                  props[pro.type].attachValue = props[pro.type].attachValue + pro.attachValue;
                   var _loc8_:int = 0;
-                  var _loc7_:* = _loc2_.props;
-                  for each(var _loc3_ in _loc2_.props)
+                  var _loc7_:* = chip.props;
+                  for each(var item in chip.props)
                   {
-                     _loc6_ = _loc3_.type;
-                     _loc5_[_loc6_] = _loc5_[_loc6_] || new MarkProData();
-                     _loc5_[_loc3_.type].type = _loc3_.type;
-                     _loc5_[_loc3_.type].value = _loc5_[_loc3_.type].value + _loc3_.value;
-                     _loc5_[_loc3_.type].attachValue = _loc5_[_loc3_.type].attachValue + _loc3_.attachValue;
+                     _loc6_ = item.type;
+                     props[_loc6_] = props[_loc6_] || new MarkProData();
+                     props[item.type].type = item.type;
+                     props[item.type].value = props[item.type].value + item.value;
+                     props[item.type].attachValue = props[item.type].attachValue + item.attachValue;
                   }
                   continue;
                }
             }
          }
-         return _loc5_;
+         return props;
       }
       
-      public function getSuitListByPlace(param1:int) : Array
+      public function getSuitListByPlace(place:int) : Array
       {
-         var _loc6_:* = null;
-         var _loc7_:int = 0;
-         var _loc5_:* = null;
-         var _loc4_:Array = [];
+         var tmp:* = null;
+         var i:int = 0;
+         var dic:* = null;
+         var arr:Array = [];
          if(ID == PlayerManager.Instance.Self.ID)
          {
-            _loc6_ = MarkMgr.inst.model.getSuitList(param1);
-            _loc7_ = 0;
-            while(_loc7_ < _loc6_.length)
+            tmp = MarkMgr.inst.model.getSuitList(place);
+            for(i = 0; i < tmp.length; )
             {
-               _loc4_.push(_loc6_[_loc7_].id);
-               _loc7_++;
+               arr.push(tmp[i].id);
+               i++;
             }
          }
          else
          {
-            _loc5_ = new Dictionary();
+            dic = new Dictionary();
             var _loc10_:int = 0;
             var _loc9_:* = Markbag.chips;
-            for each(var _loc2_ in Markbag.chips)
+            for each(var chip in Markbag.chips)
             {
-               if(_loc2_.equipType == param1)
+               if(chip.equipType == place)
                {
-                  var _loc8_:* = MarkMgr.inst.model.cfgChip[_loc2_.templateId].SetID;
-                  _loc5_[_loc8_] = _loc5_[_loc8_] || [];
-                  _loc5_[MarkMgr.inst.model.cfgChip[_loc2_.templateId].SetID].push(_loc2_);
+                  var _loc8_:* = MarkMgr.inst.model.cfgChip[chip.templateId].SetID;
+                  dic[_loc8_] = dic[_loc8_] || [];
+                  dic[MarkMgr.inst.model.cfgChip[chip.templateId].SetID].push(chip);
                }
             }
             var _loc12_:int = 0;
             var _loc11_:* = MarkMgr.inst.model.cfgSuit;
-            for each(var _loc3_ in MarkMgr.inst.model.cfgSuit)
+            for each(var it in MarkMgr.inst.model.cfgSuit)
             {
-               if(_loc5_[_loc3_.SetId] && _loc3_.Demand <= _loc5_[_loc3_.SetId].length)
+               if(dic[it.SetId] && it.Demand <= dic[it.SetId].length)
                {
-                  _loc4_.push(_loc3_.Id);
+                  arr.push(it.Id);
                }
             }
          }
-         return _loc4_;
+         return arr;
       }
       
       public function clone() : PlayerInfo
       {
-         var _loc1_:PlayerInfo = new PlayerInfo();
-         ObjectUtils.copyProperties(_loc1_,this);
-         return _loc1_;
+         var tempPlayerInfo:PlayerInfo = new PlayerInfo();
+         ObjectUtils.copyProperties(tempPlayerInfo,this);
+         return tempPlayerInfo;
       }
    }
 }

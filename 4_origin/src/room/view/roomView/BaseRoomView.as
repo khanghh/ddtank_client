@@ -91,10 +91,10 @@ package room.view.roomView
       
       protected var _taskIconBtn:MovieImage;
       
-      public function BaseRoomView(param1:RoomInfo)
+      public function BaseRoomView(info:RoomInfo)
       {
          super();
-         _info = param1;
+         _info = info;
          initTimer();
          initView();
          initEvents();
@@ -140,9 +140,9 @@ package room.view.roomView
          updateButtons();
       }
       
-      private function showEmailEffect(param1:Boolean) : void
+      private function showEmailEffect(show:Boolean) : void
       {
-         if(param1 && MailManager.Instance.Model.hasUnReadEmail())
+         if(show && MailManager.Instance.Model.hasUnReadEmail())
          {
             _emailBtn.movie.gotoAndStop(2);
             _emailBtn.mouseEnabled = true;
@@ -154,11 +154,11 @@ package room.view.roomView
          }
       }
       
-      private function showTaskEffect(param1:Boolean) : void
+      private function showTaskEffect(show:Boolean) : void
       {
          if(_info.type != 120)
          {
-            if(param1)
+            if(show)
             {
                _taskIconBtn.movie.gotoAndStop(2);
                _taskIconBtn.mouseEnabled = true;
@@ -228,67 +228,63 @@ package room.view.roomView
       
       protected function initTileList() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var viewerItem:* = null;
          _playerItems = [];
          if(isViewerRoom)
          {
             _viewerItems = new Vector.<RoomViewerItem>();
-            _loc2_ = 8;
-            while(_loc2_ < 10)
+            for(i = 8; i < 10; )
             {
-               if(_info.type == 0 || _info.type == 120 || _info.type == 58)
+               if(_info.type == 0 || _info.type == 120 || _info.type == 58 || _info.type == 70)
                {
-                  _loc1_ = new RoomViewerItem(_loc2_);
+                  viewerItem = new RoomViewerItem(i);
                }
                else
                {
-                  _loc1_ = new RoomViewerItem(_loc2_,90);
+                  viewerItem = new RoomViewerItem(i,90);
                }
-               _viewerItems.push(_loc1_);
-               _loc2_++;
+               _viewerItems.push(viewerItem);
+               i++;
             }
          }
       }
       
       protected function get isViewerRoom() : Boolean
       {
-         return _info.type == 1 || _info.type == 0 || _info.type == 120 || _info.type == 4 || _info.type == 11 || _info.type == 21 || _info.type == 23 || _info.type == 123 || _info.type == 58;
+         return _info.type == 1 || _info.type == 0 || _info.type == 120 || _info.type == 4 || _info.type == 11 || _info.type == 21 || _info.type == 23 || _info.type == 123 || _info.type == 58 || _info.type == 70;
       }
       
       protected function initPlayerItems() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
-         _loc3_ = 0;
-         while(_loc3_ < _playerItems.length)
+         var i:int = 0;
+         var item:* = null;
+         var viewerItem:* = null;
+         for(i = 0; i < _playerItems.length; )
          {
-            _loc2_ = _playerItems[_loc3_] as RoomPlayerItem;
-            _loc2_.info = _info.findPlayerByPlace(_loc3_);
-            _loc2_.opened = _info.placesState[_loc3_] != 0;
-            _loc3_++;
+            item = _playerItems[i] as RoomPlayerItem;
+            item.info = _info.findPlayerByPlace(i);
+            item.opened = _info.placesState[i] != 0;
+            i++;
          }
          if(isViewerRoom)
          {
-            _loc3_ = 0;
-            while(_loc3_ < 2)
+            for(i = 0; i < 2; i++)
             {
-               if(_viewerItems && _viewerItems[_loc3_])
+               if(_viewerItems && _viewerItems[i])
                {
-                  _loc1_ = _viewerItems[_loc3_] as RoomViewerItem;
-                  _loc1_.info = _info.findPlayerByPlace(_loc3_ + 8);
-                  _loc1_.opened = _info.placesState[_loc3_ + 8] != 0;
+                  viewerItem = _viewerItems[i] as RoomViewerItem;
+                  viewerItem.info = _info.findPlayerByPlace(i + 8);
+                  viewerItem.opened = _info.placesState[i + 8] != 0;
                }
-               _loc3_++;
             }
          }
       }
       
       protected function initEvents() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var viewerItem:* = null;
          _inviteBtn.addEventListener("click",__inviteClick);
          _info.addEventListener("roomplaceChanged",__updatePlayerItems);
          _info.addEventListener("playerStateChanged",__updateState);
@@ -303,15 +299,13 @@ package room.view.roomView
          SocketManager.Instance.addEventListener(PkgEvent.format(390,21),__useRoomborden);
          if(isViewerRoom)
          {
-            _loc2_ = 0;
-            while(_loc2_ < 2)
+            for(i = 0; i < 2; i++)
             {
-               if(_viewerItems && _viewerItems[_loc2_])
+               if(_viewerItems && _viewerItems[i])
                {
-                  _loc1_ = _viewerItems[_loc2_];
-                  _viewerItems[_loc2_].addEventListener("viewerItemInfoSet",__switchClickEnabled);
+                  viewerItem = _viewerItems[i];
+                  _viewerItems[i].addEventListener("viewerItemInfoSet",__switchClickEnabled);
                }
-               _loc2_++;
             }
          }
          if(_info.type != 120)
@@ -331,48 +325,47 @@ package room.view.roomView
          TaskManager.instance.addEventListener("hideTaskHightLight",__hideTaskHightLight);
       }
       
-      protected function __changeRoomborden(param1:PkgEvent) : void
+      protected function __changeRoomborden(e:PkgEvent) : void
       {
-         var _loc5_:PackageIn = param1.pkg;
-         var _loc6_:int = _loc5_.readInt();
-         var _loc3_:int = _loc5_.readInt();
-         var _loc2_:int = _loc5_.readInt();
-         var _loc7_:RoomInfo = RoomManager.Instance.current;
-         _loc7_.findPlayerByPlace(_loc6_).playerInfo.curcentRoomBordenTemplateId = _loc2_;
-         var _loc4_:RoomPlayerItem = _playerItems[_loc6_] as RoomPlayerItem;
-         _loc4_.info = _info.findPlayerByPlace(_loc6_);
+         var pkg:PackageIn = e.pkg;
+         var place:int = pkg.readInt();
+         var id:int = pkg.readInt();
+         var templateId:int = pkg.readInt();
+         var info:RoomInfo = RoomManager.Instance.current;
+         info.findPlayerByPlace(place).playerInfo.curcentRoomBordenTemplateId = templateId;
+         var item:RoomPlayerItem = _playerItems[place] as RoomPlayerItem;
+         item.info = _info.findPlayerByPlace(place);
       }
       
-      protected function __useRoomborden(param1:PkgEvent) : void
+      protected function __useRoomborden(e:PkgEvent) : void
       {
-         var _loc6_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:PackageIn = param1.pkg;
-         PlayerManager.Instance.curcentId = _loc4_.readInt();
-         var _loc2_:BagInfo = PlayerManager.Instance.Self.getBag(43);
+         var i:int = 0;
+         var item:* = null;
+         var pkg:PackageIn = e.pkg;
+         PlayerManager.Instance.curcentId = pkg.readInt();
+         var bag:BagInfo = PlayerManager.Instance.Self.getBag(43);
          var _loc9_:int = 0;
-         var _loc8_:* = _loc2_.items;
-         for(var _loc5_ in _loc2_.items)
+         var _loc8_:* = bag.items;
+         for(var key in bag.items)
          {
-            if((_loc2_.items[_loc5_] as InventoryItemInfo).ItemID == PlayerManager.Instance.curcentId)
+            if((bag.items[key] as InventoryItemInfo).ItemID == PlayerManager.Instance.curcentId)
             {
-               (_loc2_.items[_loc5_] as InventoryItemInfo).IsUsed = _loc4_.readBoolean();
-               (_loc2_.items[_loc5_] as InventoryItemInfo).BeginDate = _loc4_.readDateString();
+               (bag.items[key] as InventoryItemInfo).IsUsed = pkg.readBoolean();
+               (bag.items[key] as InventoryItemInfo).BeginDate = pkg.readDateString();
                break;
             }
          }
          PlayerManager.Instance.Self.getBag(43).dispatchEvent(new BagEvent("update",null));
-         var _loc7_:RoomInfo = RoomManager.Instance.current;
-         _loc6_ = 0;
-         while(_loc6_ < 4)
+         var info:RoomInfo = RoomManager.Instance.current;
+         for(i = 0; i < 4; )
          {
-            _loc3_ = _playerItems[_loc6_] as RoomPlayerItem;
-            _loc3_.info = _info.findPlayerByPlace(_loc6_);
-            _loc6_++;
+            item = _playerItems[i] as RoomPlayerItem;
+            item.info = _info.findPlayerByPlace(i);
+            i++;
          }
       }
       
-      protected function __onMailClick(param1:MouseEvent) : void
+      protected function __onMailClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("003");
          if(PlayerManager.Instance.Self.Grade >= 1)
@@ -385,7 +378,7 @@ package room.view.roomView
          }
       }
       
-      protected function __updateEmail(param1:Event) : void
+      protected function __updateEmail(event:Event) : void
       {
          if(_emailBtn)
          {
@@ -393,7 +386,7 @@ package room.view.roomView
          }
       }
       
-      protected function __onSetEmailShine(param1:NewHallEvent) : void
+      protected function __onSetEmailShine(event:NewHallEvent) : void
       {
          if(_info.type != 120)
          {
@@ -401,41 +394,40 @@ package room.view.roomView
          }
       }
       
-      protected function __onTaskClick(param1:MouseEvent) : void
+      protected function __onTaskClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("003");
          TaskManager.instance.switchVisible();
       }
       
-      protected function __showTaskHightLight(param1:Event) : void
+      protected function __showTaskHightLight(event:Event) : void
       {
          showTaskEffect(true);
       }
       
-      protected function __hideTaskHightLight(param1:Event) : void
+      protected function __hideTaskHightLight(event:Event) : void
       {
          showTaskEffect(false);
       }
       
-      private function __switchClickEnabled(param1:RoomEvent) : void
+      private function __switchClickEnabled(event:RoomEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         _loc3_ = 0;
-         while(_loc3_ < _playerItems.length)
+         var i:int = 0;
+         var item:* = null;
+         for(i = 0; i < _playerItems.length; )
          {
-            _loc2_ = _playerItems[_loc3_] as RoomPlayerItem;
-            _loc2_.switchInEnabled = param1.params[0] == 1;
-            _loc3_++;
+            item = _playerItems[i] as RoomPlayerItem;
+            item.switchInEnabled = event.params[0] == 1;
+            i++;
          }
       }
       
-      private function __loadWeakGuild(param1:Event) : void
+      private function __loadWeakGuild(evt:Event) : void
       {
          removeEventListener("addedToStage",__loadWeakGuild);
       }
       
-      protected function __inviteClick(param1:MouseEvent) : void
+      protected function __inviteClick(evt:MouseEvent) : void
       {
          if(_inviteFrame != null)
          {
@@ -490,14 +482,14 @@ package room.view.roomView
          }
       }
       
-      private function __onInviteComplete(param1:Event) : void
+      private function __onInviteComplete(evt:Event) : void
       {
          _inviteFrame.removeEventListener("complete",__onInviteComplete);
          ObjectUtils.disposeObject(_inviteFrame);
          _inviteFrame = null;
       }
       
-      private function __onInviteResError(param1:UIModuleEvent) : void
+      private function __onInviteResError(evt:UIModuleEvent) : void
       {
          UIModuleLoader.Instance.removeEventListener("uiModuleComplete",__onInviteResComplete);
          UIModuleLoader.Instance.removeEventListener("uiModuleError",__onInviteResError);
@@ -505,8 +497,8 @@ package room.view.roomView
       
       protected function removeEvents() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var viewerItem:* = null;
          _info.removeEventListener("roomplaceChanged",__updatePlayerItems);
          _info.removeEventListener("playerStateChanged",__updateState);
          _info.removeEventListener("addPlayer",__addPlayer);
@@ -520,15 +512,13 @@ package room.view.roomView
          removeEventListener("addedToStage",__loadWeakGuild);
          if(isViewerRoom)
          {
-            _loc2_ = 0;
-            while(_loc2_ < 2)
+            for(i = 0; i < 2; i++)
             {
-               if(_viewerItems && _viewerItems[_loc2_])
+               if(_viewerItems && _viewerItems[i])
                {
-                  _loc1_ = _viewerItems[_loc2_];
-                  _viewerItems[_loc2_].removeEventListener("viewerItemInfoSet",__switchClickEnabled);
+                  viewerItem = _viewerItems[i];
+                  _viewerItems[i].removeEventListener("viewerItemInfoSet",__switchClickEnabled);
                }
-               _loc2_++;
             }
          }
          if(_info.type != 120)
@@ -562,16 +552,15 @@ package room.view.roomView
          }
       }
       
-      protected function __updatePlayerItems(param1:RoomEvent) : void
+      protected function __updatePlayerItems(evt:RoomEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         _loc3_ = 0;
-         while(_loc3_ < _playerItems.length)
+         var i:int = 0;
+         var element:* = null;
+         for(i = 0; i < _playerItems.length; )
          {
-            _loc2_ = _playerItems[_loc3_] as RoomPlayerItem;
-            _loc2_.opened = _info.placesState[_loc3_] != 0;
-            _loc3_++;
+            element = _playerItems[i] as RoomPlayerItem;
+            element.opened = _info.placesState[i] != 0;
+            i++;
          }
          if(isViewerRoom)
          {
@@ -591,7 +580,7 @@ package room.view.roomView
          updateButtons();
       }
       
-      protected function __updateState(param1:RoomEvent) : void
+      protected function __updateState(evt:RoomEvent) : void
       {
          updateButtons();
          if(_info.selfRoomPlayer.isHost)
@@ -628,47 +617,47 @@ package room.view.roomView
          }
       }
       
-      protected function __addPlayer(param1:RoomEvent) : void
+      protected function __addPlayer(evt:RoomEvent) : void
       {
-         var _loc2_:RoomPlayer = param1.params[0] as RoomPlayer;
-         if(_loc2_.isFirstIn)
+         var player:RoomPlayer = evt.params[0] as RoomPlayer;
+         if(player.isFirstIn)
          {
             SoundManager.instance.play("158");
          }
-         if(_loc2_.place >= 8)
+         if(player.place >= 8)
          {
-            _viewerItems[_loc2_.place - 8].info = _loc2_;
+            _viewerItems[player.place - 8].info = player;
          }
          else
          {
-            _playerItems[_loc2_.place].info = _loc2_;
+            _playerItems[player.place].info = player;
          }
          updateButtons();
       }
       
-      protected function __removePlayer(param1:RoomEvent) : void
+      protected function __removePlayer(evt:RoomEvent) : void
       {
-         var _loc2_:RoomPlayer = param1.params[0] as RoomPlayer;
-         if(_loc2_.place >= 8)
+         var player:RoomPlayer = evt.params[0] as RoomPlayer;
+         if(player.place >= 8)
          {
-            _viewerItems[_loc2_.place - 8].info = null;
+            _viewerItems[player.place - 8].info = null;
          }
          else
          {
-            _playerItems[_loc2_.place].info = null;
+            _playerItems[player.place].info = null;
          }
-         _loc2_.dispose();
+         player.dispose();
          updateButtons();
       }
       
-      protected function __startClick(param1:MouseEvent) : void
+      protected function __startClick(evt:MouseEvent) : void
       {
          if(!_info.isAllReady())
          {
             return;
          }
          SoundManager.instance.play("008");
-         CheckWeaponManager.instance.setFunction(this,__startClick,[param1]);
+         CheckWeaponManager.instance.setFunction(this,__startClick,[evt]);
          if(checkCanStartGame())
          {
             startGame();
@@ -676,12 +665,12 @@ package room.view.roomView
          }
       }
       
-      protected function __prepareClick(param1:MouseEvent) : void
+      protected function __prepareClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_info.type != 123)
          {
-            CheckWeaponManager.instance.setFunction(this,__prepareClick,[param1]);
+            CheckWeaponManager.instance.setFunction(this,__prepareClick,[evt]);
             if(CheckWeaponManager.instance.isNoWeapon())
             {
                CheckWeaponManager.instance.showAlert();
@@ -702,7 +691,7 @@ package room.view.roomView
          GameInSocketOut.sendGameStart();
       }
       
-      protected function __cancelClick(param1:MouseEvent) : void
+      protected function __cancelClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_info.selfRoomPlayer.isHost)
@@ -721,22 +710,22 @@ package room.view.roomView
       
       protected function checkCanStartGame() : Boolean
       {
-         var _loc1_:Boolean = true;
+         var result:Boolean = true;
          if(_info.selfRoomPlayer.isViewer || _info.type == 123)
          {
-            return _loc1_;
+            return result;
          }
          if(CheckWeaponManager.instance.isNoWeapon())
          {
-            _loc1_ = false;
+            result = false;
             CheckWeaponManager.instance.showAlert();
          }
-         return _loc1_;
+         return result;
       }
       
       protected function academyDungeonAllow() : Boolean
       {
-         var _loc1_:int = 0;
+         var num:int = 0;
          if(RoomManager.Instance.current.players.length < 2)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.room.roomStart.academy.warning4"));
@@ -744,39 +733,39 @@ package room.view.roomView
          }
          var _loc5_:int = 0;
          var _loc4_:* = RoomManager.Instance.current.players;
-         for each(var _loc3_ in RoomManager.Instance.current.players)
+         for each(var i in RoomManager.Instance.current.players)
          {
-            if(_loc3_.playerInfo.apprenticeshipState == 0 && !_loc3_.isViewer)
+            if(i.playerInfo.apprenticeshipState == 0 && !i.isViewer)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.room.roomStart.academy.warning1"));
                return false;
             }
-            if((_loc3_.playerInfo.apprenticeshipState == 2 || _loc3_.playerInfo.apprenticeshipState == 3 || _loc3_.playerInfo.apprenticeshipState == 1) && !_loc3_.isViewer)
+            if((i.playerInfo.apprenticeshipState == 2 || i.playerInfo.apprenticeshipState == 3 || i.playerInfo.apprenticeshipState == 1) && !i.isViewer)
             {
-               _loc1_++;
+               num++;
             }
          }
-         if(_loc1_ < 2)
+         if(num < 2)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.room.roomStart.academy.warning4"));
             return false;
          }
-         _loc1_ = 0;
+         num = 0;
          var _loc7_:int = 0;
          var _loc6_:* = RoomManager.Instance.current.players;
-         for each(var _loc2_ in RoomManager.Instance.current.players)
+         for each(var l in RoomManager.Instance.current.players)
          {
-            if((_loc2_.playerInfo.apprenticeshipState == 2 || _loc2_.playerInfo.apprenticeshipState == 3) && !_loc2_.isViewer)
+            if((l.playerInfo.apprenticeshipState == 2 || l.playerInfo.apprenticeshipState == 3) && !l.isViewer)
             {
-               _loc1_++;
-               if(_loc1_ > 1)
+               num++;
+               if(num > 1)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.room.roomStart.academy.warning3"));
                   return false;
                }
             }
          }
-         if(_loc1_ == 0)
+         if(num == 0)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.room.roomStart.academy.warning2"));
             return false;
@@ -788,23 +777,23 @@ package room.view.roomView
       {
          var _loc3_:int = 0;
          var _loc2_:* = RoomManager.Instance.current.players;
-         for each(var _loc1_ in RoomManager.Instance.current.players)
+         for each(var player in RoomManager.Instance.current.players)
          {
-            if(_loc1_.playerInfo.Grade < 25)
+            if(player.playerInfo.Grade < 25)
             {
-               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.room.ActivityDungeon.roomPromptInfo",_loc1_.playerInfo.NickName));
+               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.room.ActivityDungeon.roomPromptInfo",player.playerInfo.NickName));
                return false;
             }
-            if(_loc1_.playerInfo.activityTanabataNum <= 0)
+            if(player.playerInfo.activityTanabataNum <= 0)
             {
-               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.room.ActivityDungeon.roomPromptNum",_loc1_.playerInfo.NickName));
+               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.room.ActivityDungeon.roomPromptNum",player.playerInfo.NickName));
                return false;
             }
          }
          return true;
       }
       
-      protected function __startHandler(param1:RoomEvent) : void
+      protected function __startHandler(evt:RoomEvent) : void
       {
          updateButtons();
          if(_info.started)
@@ -889,7 +878,7 @@ package room.view.roomView
          SoundManager.instance.stop("007");
       }
       
-      protected function __onTimerII(param1:TimerEvent) : void
+      protected function __onTimerII(evt:TimerEvent) : void
       {
          if(!_info.selfRoomPlayer.isHost && !_info.selfRoomPlayer.isViewer)
          {
@@ -910,7 +899,7 @@ package room.view.roomView
          }
       }
       
-      protected function __onHostTimer(param1:TimerEvent) : void
+      protected function __onHostTimer(evt:TimerEvent) : void
       {
          if(_info.selfRoomPlayer.isHost && !_info.isOpenBoss && !_info.mapId == 12016 && !_info.mapId == 70020)
          {
@@ -1007,18 +996,18 @@ package room.view.roomView
          {
             var _loc4_:int = 0;
             var _loc3_:* = _viewerItems;
-            for each(var _loc1_ in _viewerItems)
+            for each(var vi in _viewerItems)
             {
-               _loc1_.dispose();
-               _loc1_ = null;
+               vi.dispose();
+               vi = null;
             }
          }
          _viewerItems = null;
          var _loc6_:int = 0;
          var _loc5_:* = _playerItems;
-         for each(var _loc2_ in _playerItems)
+         for each(var item in _playerItems)
          {
-            _loc2_.dispose();
+            item.dispose();
          }
          _playerItems = null;
          if(_hostTimer)

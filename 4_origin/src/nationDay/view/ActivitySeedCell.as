@@ -31,10 +31,10 @@ package nationDay.view
       
       private var _midFlag:Boolean;
       
-      public function ActivitySeedCell(param1:int, param2:ItemTemplateInfo = null, param3:Boolean = true, param4:DisplayObject = null, param5:Boolean = true)
+      public function ActivitySeedCell(id:int, info:ItemTemplateInfo = null, showLoading:Boolean = true, bg:DisplayObject = null, mouseOverEffBoolean:Boolean = true)
       {
-         _id = param1;
-         super(0,param2,param3,param4,param5);
+         _id = id;
+         super(0,info,showLoading,bg,mouseOverEffBoolean);
       }
       
       public function addSeedBtn() : void
@@ -56,22 +56,22 @@ package nationDay.view
       {
       }
       
-      protected function __updateCount(param1:BagEvent) : void
+      protected function __updateCount(event:BagEvent) : void
       {
       }
       
-      protected function __onSeedBtnClick(param1:MouseEvent) : void
+      protected function __onSeedBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          FarmModelController.instance.goFarm(PlayerManager.Instance.Self.ID,PlayerManager.Instance.Self.NickName);
       }
       
-      protected function __onMouseOver(param1:MouseEvent) : void
+      protected function __onMouseOver(event:MouseEvent) : void
       {
          _seedBtn.visible = true;
       }
       
-      protected function __onMouseOut(param1:MouseEvent) : void
+      protected function __onMouseOut(event:MouseEvent) : void
       {
          _seedBtn.visible = false;
       }
@@ -94,7 +94,7 @@ package nationDay.view
          _getAwardBtn.addEventListener("click",__onGetAwardClick);
       }
       
-      public function addFireworkAnimation(param1:int) : void
+      public function addFireworkAnimation(level:int) : void
       {
          if(_autumnAnimation)
          {
@@ -102,7 +102,7 @@ package nationDay.view
          }
          _autumnAnimation = ComponentFactory.Instance.creat("asset.activity.nationAnimation");
          addChild(_autumnAnimation);
-         _getAwardAnimation = ComponentFactory.Instance.creat("asset.activity.fireworkAnimation" + param1);
+         _getAwardAnimation = ComponentFactory.Instance.creat("asset.activity.fireworkAnimation" + level);
          PositionUtils.setPos(_getAwardAnimation,"nationDay.fireworkPlayPos0");
          addChild(_getAwardAnimation);
          _getAwardAnimation.stop();
@@ -126,21 +126,21 @@ package nationDay.view
          }
       }
       
-      protected function __onGetAwardClick(param1:MouseEvent) : void
+      protected function __onGetAwardClick(event:MouseEvent) : void
       {
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:ActivityEvent = new ActivityEvent(ActivityEvent.SEND_GOOD);
-         _loc2_.id = _id;
-         dispatchEvent(_loc2_);
+         var evt:ActivityEvent = new ActivityEvent(ActivityEvent.SEND_GOOD);
+         evt.id = _id;
+         dispatchEvent(evt);
       }
       
       public function playFireworkAnimation() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _getAwardAnimation.gotoAndPlay("play");
          if(_midFlag)
          {
@@ -149,15 +149,14 @@ package nationDay.view
          else
          {
             SoundManager.instance.play("117");
-            _loc1_ = 0;
-            while(_loc1_ < 4)
+            for(i = 0; i < 4; )
             {
-               if(_loc1_ == _id)
+               if(i == _id)
                {
-                  PositionUtils.setPos(_getAwardAnimation,"nationDay.fireworkPlayPos" + _loc1_);
+                  PositionUtils.setPos(_getAwardAnimation,"nationDay.fireworkPlayPos" + i);
                   break;
                }
-               _loc1_++;
+               i++;
             }
          }
       }

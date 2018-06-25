@@ -80,91 +80,91 @@ package feedback
          return _feedbackReplyData;
       }
       
-      public function set feedbackReplyData(param1:DictionaryData) : void
+      public function set feedbackReplyData(value:DictionaryData) : void
       {
          if(_feedbackReplyData)
          {
             _feedbackReplyData.removeEventListener("add",feedbackReplyDataAdd);
             _feedbackReplyData.removeEventListener("remove",feedbackReplyDataRemove);
          }
-         _feedbackReplyData = param1;
+         _feedbackReplyData = value;
          _feedbackReplyData.addEventListener("add",feedbackReplyDataAdd);
          _feedbackReplyData.addEventListener("remove",feedbackReplyDataRemove);
          SocketManager.Instance.addEventListener(PkgEvent.format(213),feedbackReplyBySocket);
          checkFeedbackReplyData();
       }
       
-      public function setupFeedbackData(param1:LoadFeedbackReplyAnalyzer) : void
+      public function setupFeedbackData(analyzer:LoadFeedbackReplyAnalyzer) : void
       {
          if(PathManager.solveFeedbackEnable())
          {
-            feedbackReplyData = param1.listData;
+            feedbackReplyData = analyzer.listData;
          }
-         var _loc3_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         _loc3_["userid"] = PlayerManager.Instance.Self.ID;
-         var _loc2_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("AdvanceQuestTime.ashx"),6,_loc3_);
-         _loc2_.addEventListener("complete",__loaderComplete);
-         LoadResourceManager.Instance.startLoad(_loc2_);
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         args["userid"] = PlayerManager.Instance.Self.ID;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("AdvanceQuestTime.ashx"),6,args);
+         loader.addEventListener("complete",__loaderComplete);
+         LoadResourceManager.Instance.startLoad(loader);
       }
       
-      private function __loaderComplete(param1:LoaderEvent) : void
+      private function __loaderComplete(event:LoaderEvent) : void
       {
-         param1.currentTarget.removeEventListener("complete",__loaderComplete);
-         if(param1.loader.content == 0)
+         event.currentTarget.removeEventListener("complete",__loaderComplete);
+         if(event.loader.content == 0)
          {
             return;
          }
-         var _loc2_:Array = String(param1.loader.content).split(",");
-         if(_loc2_[0])
+         var tempTime:Array = String(event.loader.content).split(",");
+         if(tempTime[0])
          {
-            if(_loc2_[0] == 0)
+            if(tempTime[0] == 0)
             {
                _feedbackTime = null;
             }
             else
             {
-               _feedbackTime = DateUtils.getDateByStr(_loc2_[0]);
+               _feedbackTime = DateUtils.getDateByStr(tempTime[0]);
             }
          }
-         if(_loc2_[1])
+         if(tempTime[1])
          {
-            _currentTime = DateUtils.getDateByStr(_loc2_[1]);
+            _currentTime = DateUtils.getDateByStr(tempTime[1]);
          }
-         if(_loc2_[2])
+         if(tempTime[2])
          {
-            _currentOpenInt = Number(_loc2_[2]);
+            _currentOpenInt = Number(tempTime[2]);
          }
       }
       
-      private function feedbackReplyBySocket(param1:PkgEvent) : void
+      private function feedbackReplyBySocket(event:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:FeedbackReplyInfo = new FeedbackReplyInfo();
-         _loc2_.questionId = _loc3_.readUTF();
-         _loc2_.replyId = _loc3_.readInt();
-         _loc2_.occurrenceDate = _loc3_.readUTF();
-         _loc2_.questionTitle = _loc3_.readUTF();
-         _loc2_.questionContent = _loc3_.readUTF();
-         _loc2_.replyContent = _loc3_.readUTF();
-         _loc2_.stopReply = _loc3_.readUTF();
-         _feedbackReplyData.add(_loc2_.questionId + "_" + _loc2_.replyId,_loc2_);
-         stopReplyEvt(_loc2_.stopReply);
+         var pkg:PackageIn = event.pkg;
+         var feedbackReplyInfo:FeedbackReplyInfo = new FeedbackReplyInfo();
+         feedbackReplyInfo.questionId = pkg.readUTF();
+         feedbackReplyInfo.replyId = pkg.readInt();
+         feedbackReplyInfo.occurrenceDate = pkg.readUTF();
+         feedbackReplyInfo.questionTitle = pkg.readUTF();
+         feedbackReplyInfo.questionContent = pkg.readUTF();
+         feedbackReplyInfo.replyContent = pkg.readUTF();
+         feedbackReplyInfo.stopReply = pkg.readUTF();
+         _feedbackReplyData.add(feedbackReplyInfo.questionId + "_" + feedbackReplyInfo.replyId,feedbackReplyInfo);
+         stopReplyEvt(feedbackReplyInfo.stopReply);
       }
       
-      private function stopReplyEvt(param1:String) : void
+      private function stopReplyEvt(str:String) : void
       {
-         var _loc3_:Object = {};
-         _loc3_.stopReply = param1;
-         var _loc2_:FeedbackEvent = new FeedbackEvent("feedbackStopReply",_loc3_);
-         dispatchEvent(_loc2_);
+         var obj:Object = {};
+         obj.stopReply = str;
+         var feedEvt:FeedbackEvent = new FeedbackEvent("feedbackStopReply",obj);
+         dispatchEvent(feedEvt);
       }
       
-      private function feedbackReplyDataAdd(param1:DictionaryEvent) : void
+      private function feedbackReplyDataAdd(event:DictionaryEvent) : void
       {
          checkFeedbackReplyData();
       }
       
-      private function feedbackReplyDataRemove(param1:DictionaryEvent) : void
+      private function feedbackReplyDataRemove(event:DictionaryEvent) : void
       {
          checkFeedbackReplyData();
       }
@@ -185,12 +185,12 @@ package feedback
       
       public function examineTime() : Boolean
       {
-         var _loc1_:Date = TimeManager.Instance.Now();
+         var timeTime:Date = TimeManager.Instance.Now();
          if(!_feedbackTime)
          {
             return true;
          }
-         if(_loc1_.time - _feedbackTime.time >= 2100000)
+         if(timeTime.time - _feedbackTime.time >= 2100000)
          {
             return true;
          }
@@ -246,87 +246,87 @@ package feedback
          dispatchEvent(new CEvent("closeFrame"));
       }
       
-      public function quickReport(param1:String, param2:String, param3:String) : void
+      public function quickReport(channel:String, name:String, message:String) : void
       {
-         var _loc4_:FeedbackInfo = new FeedbackInfo();
-         _loc4_.question_title = LanguageMgr.GetTranslation("quickReport.complain.lan");
-         _loc4_.question_content = "[" + param1 + "]" + "[" + param2 + "]:" + param3;
-         _loc4_.occurrence_date = DateUtils.dateFormat(new Date());
-         _loc4_.question_type = 9;
-         _loc4_.report_url = param2;
-         _loc4_.report_user_name = param2;
-         FeedbackManager.instance.submitFeedbackInfo(_loc4_);
+         var feedbackInfo:FeedbackInfo = new FeedbackInfo();
+         feedbackInfo.question_title = LanguageMgr.GetTranslation("quickReport.complain.lan");
+         feedbackInfo.question_content = "[" + channel + "]" + "[" + name + "]:" + message;
+         feedbackInfo.occurrence_date = DateUtils.dateFormat(new Date());
+         feedbackInfo.question_type = 9;
+         feedbackInfo.report_url = name;
+         feedbackInfo.report_user_name = name;
+         FeedbackManager.instance.submitFeedbackInfo(feedbackInfo);
       }
       
-      public function submitFeedbackInfo(param1:FeedbackInfo) : void
+      public function submitFeedbackInfo($feedbackInfo:FeedbackInfo) : void
       {
-         var _loc3_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         _loc3_.user_id = PlayerManager.Instance.Self.ID.toString();
-         _loc3_.user_name = PlayerManager.Instance.Self.LoginName;
-         _loc3_.user_nick_name = PlayerManager.Instance.Self.NickName;
-         _loc3_.question_title = param1.question_title;
-         _loc3_.question_content = param1.question_content;
-         _loc3_.occurrence_date = param1.occurrence_date;
-         _loc3_.question_type = param1.question_type.toString();
-         _loc3_.goods_get_method = param1.goods_get_method;
-         _loc3_.goods_get_date = param1.goods_get_date;
-         _loc3_.charge_order_id = param1.charge_order_id;
-         _loc3_.charge_method = param1.charge_method;
-         _loc3_.charge_moneys = param1.charge_moneys.toString();
-         _loc3_.activity_is_error = param1.activity_is_error.toString();
-         _loc3_.activity_name = param1.activity_name;
-         _loc3_.report_user_name = param1.report_user_name;
-         _loc3_.report_url = param1.report_url;
-         _loc3_.user_full_name = param1.user_full_name;
-         _loc3_.user_phone = param1.user_phone;
-         _loc3_.complaints_title = param1.complaints_title;
-         _loc3_.complaints_source = param1.complaints_source;
-         _loc3_.token = MD5.hash(PlayerManager.Instance.Self.ID.toString() + PlayerManager.Instance.Self.ZoneID.toString() + "3kjf2jfwj93pj22jfsl11jjoe12oij");
-         var _loc2_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("AdvanceQuestion.ashx"),6,_loc3_,"POST");
-         _loc2_.addEventListener("complete",__onLoadFreeBackComplete);
-         LoadResourceManager.Instance.startLoad(_loc2_);
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         args.user_id = PlayerManager.Instance.Self.ID.toString();
+         args.user_name = PlayerManager.Instance.Self.LoginName;
+         args.user_nick_name = PlayerManager.Instance.Self.NickName;
+         args.question_title = $feedbackInfo.question_title;
+         args.question_content = $feedbackInfo.question_content;
+         args.occurrence_date = $feedbackInfo.occurrence_date;
+         args.question_type = $feedbackInfo.question_type.toString();
+         args.goods_get_method = $feedbackInfo.goods_get_method;
+         args.goods_get_date = $feedbackInfo.goods_get_date;
+         args.charge_order_id = $feedbackInfo.charge_order_id;
+         args.charge_method = $feedbackInfo.charge_method;
+         args.charge_moneys = $feedbackInfo.charge_moneys.toString();
+         args.activity_is_error = $feedbackInfo.activity_is_error.toString();
+         args.activity_name = $feedbackInfo.activity_name;
+         args.report_user_name = $feedbackInfo.report_user_name;
+         args.report_url = $feedbackInfo.report_url;
+         args.user_full_name = $feedbackInfo.user_full_name;
+         args.user_phone = $feedbackInfo.user_phone;
+         args.complaints_title = $feedbackInfo.complaints_title;
+         args.complaints_source = $feedbackInfo.complaints_source;
+         args.token = MD5.hash(PlayerManager.Instance.Self.ID.toString() + PlayerManager.Instance.Self.ZoneID.toString() + "3kjf2jfwj93pj22jfsl11jjoe12oij");
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("AdvanceQuestion.ashx"),6,args,"POST");
+         loader.addEventListener("complete",__onLoadFreeBackComplete);
+         LoadResourceManager.Instance.startLoad(loader);
          closeFrame();
          _isSubmitTime = true;
       }
       
-      public function continueSubmit(param1:String, param2:int, param3:String) : void
+      public function continueSubmit(questionId:String, replyId:int, questionContent:String) : void
       {
-         _removeFeedbackInfoId = param1 + "_" + param2;
-         var _loc5_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         _loc5_.pass = MD5.hash(PlayerManager.Instance.Self.ID + "3kjf2jfwj93pj22jfsl11jjoe12oij");
-         _loc5_.userid = PlayerManager.Instance.Self.ID;
-         _loc5_.nick_name = PlayerManager.Instance.Self.NickName;
-         _loc5_.question_id = param1;
-         _loc5_.reply_id = param2;
-         _loc5_.reply_content = param3;
-         _loc5_.token = MD5.hash(param1.toString() + "3kjf2jfwj93pj22jfsl11jjoe12oij");
-         var _loc4_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("AdvanceReply.ashx"),6,_loc5_,"POST");
-         _loc4_.addEventListener("complete",__onLoadFreeBackComplete);
-         LoadResourceManager.Instance.startLoad(_loc4_);
+         _removeFeedbackInfoId = questionId + "_" + replyId;
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         args.pass = MD5.hash(PlayerManager.Instance.Self.ID + "3kjf2jfwj93pj22jfsl11jjoe12oij");
+         args.userid = PlayerManager.Instance.Self.ID;
+         args.nick_name = PlayerManager.Instance.Self.NickName;
+         args.question_id = questionId;
+         args.reply_id = replyId;
+         args.reply_content = questionContent;
+         args.token = MD5.hash(questionId.toString() + "3kjf2jfwj93pj22jfsl11jjoe12oij");
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("AdvanceReply.ashx"),6,args,"POST");
+         loader.addEventListener("complete",__onLoadFreeBackComplete);
+         LoadResourceManager.Instance.startLoad(loader);
          closeFrame();
       }
       
-      public function delPosts(param1:String, param2:int, param3:int, param4:String) : void
+      public function delPosts(questionId:String, replyId:int, appraisalGrade:int, AppraisalContent:String) : void
       {
-         _removeFeedbackInfoId = param1 + "_" + param2;
-         var _loc6_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         _loc6_.pass = MD5.hash(PlayerManager.Instance.Self.ID + "3kjf2jfwj93pj22jfsl11jjoe12oij");
-         _loc6_.userid = PlayerManager.Instance.Self.ID;
-         _loc6_.nick_name = PlayerManager.Instance.Self.NickName;
-         _loc6_.question_id = param1;
-         _loc6_.reply_id = param2;
-         _loc6_.appraisal_grade = param3;
-         _loc6_.appraisal_content = param4;
-         _loc6_.token = MD5.hash(param1.toString() + param3 + "3kjf2jfwj93pj22jfsl11jjoe12oij");
-         var _loc5_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("AdvanceQuestionAppraisal.ashx"),6,_loc6_,"POST");
-         _loc5_.addEventListener("complete",__onLoadFreeBackComplete);
-         LoadResourceManager.Instance.startLoad(_loc5_);
+         _removeFeedbackInfoId = questionId + "_" + replyId;
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         args.pass = MD5.hash(PlayerManager.Instance.Self.ID + "3kjf2jfwj93pj22jfsl11jjoe12oij");
+         args.userid = PlayerManager.Instance.Self.ID;
+         args.nick_name = PlayerManager.Instance.Self.NickName;
+         args.question_id = questionId;
+         args.reply_id = replyId;
+         args.appraisal_grade = appraisalGrade;
+         args.appraisal_content = AppraisalContent;
+         args.token = MD5.hash(questionId.toString() + appraisalGrade + "3kjf2jfwj93pj22jfsl11jjoe12oij");
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("AdvanceQuestionAppraisal.ashx"),6,args,"POST");
+         loader.addEventListener("complete",__onLoadFreeBackComplete);
+         LoadResourceManager.Instance.startLoad(loader);
          closeFrame();
       }
       
-      private function __onLoadFreeBackComplete(param1:LoaderEvent) : void
+      private function __onLoadFreeBackComplete(event:LoaderEvent) : void
       {
-         if(param1.loader.content == 1)
+         if(event.loader.content == 1)
          {
             if(_isSubmitTime)
             {
@@ -340,7 +340,7 @@ package feedback
             }
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("feedback.view.ThankReferQuestion"));
          }
-         else if(param1.loader.content == -1)
+         else if(event.loader.content == -1)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("feedback.view.MaxReferTimes"));
          }

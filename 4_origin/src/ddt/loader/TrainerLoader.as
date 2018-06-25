@@ -13,10 +13,10 @@ package ddt.loader
       
       private var _loadCompleted:Boolean;
       
-      public function TrainerLoader(param1:String)
+      public function TrainerLoader(module:String)
       {
          super();
-         _module = "trainer" + param1;
+         _module = "trainer" + module;
       }
       
       public function get completed() : Boolean
@@ -30,10 +30,10 @@ package ddt.loader
          UIModuleLoader.Instance.addUIModuleImp(_module);
       }
       
-      private function __onUIModuleComplete(param1:UIModuleEvent) : void
+      private function __onUIModuleComplete(evt:UIModuleEvent) : void
       {
          UIModuleLoader.Instance.removeEventListener("uiModuleComplete",__onUIModuleComplete);
-         if(param1.module == _module)
+         if(evt.module == _module)
          {
             _loadCompleted = true;
          }

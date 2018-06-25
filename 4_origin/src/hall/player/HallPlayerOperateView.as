@@ -118,29 +118,29 @@ package hall.player
          }
       }
       
-      private function callGirlHeadPhotoLoaded(param1:DisplayObject) : void
+      private function callGirlHeadPhotoLoaded(headPhoto:DisplayObject) : void
       {
-         var _loc2_:* = null;
-         if(param1 != null)
+         var mask:* = null;
+         if(headPhoto != null)
          {
             _headSprite = new Sprite();
             addChild(_headSprite);
-            _loc2_ = new Shape();
-            _loc2_.graphics.beginFill(16777215);
-            _loc2_.graphics.drawCircle(29,29,29);
-            _loc2_.graphics.endFill();
-            param1.mask = _loc2_;
+            mask = new Shape();
+            mask.graphics.beginFill(16777215);
+            mask.graphics.drawCircle(29,29,29);
+            mask.graphics.endFill();
+            headPhoto.mask = mask;
             _headSprite.x = 7;
             _headSprite.y = -10;
-            _headSprite.addChild(param1);
-            _headSprite.addChild(_loc2_);
-            if(param1.width > param1.height)
+            _headSprite.addChild(headPhoto);
+            _headSprite.addChild(mask);
+            if(headPhoto.width > headPhoto.height)
             {
-               Helpers.scaleDisplayObject(param1,null,58);
+               Helpers.scaleDisplayObject(headPhoto,null,58);
             }
             else
             {
-               Helpers.scaleDisplayObject(param1,58,null);
+               Helpers.scaleDisplayObject(headPhoto,58,null);
             }
          }
       }
@@ -152,27 +152,27 @@ package hall.player
          PlayerManager.Instance.addEventListener("newhallsetplayertippos",__onUpdateInfo);
       }
       
-      protected function __onTipsClick(param1:MouseEvent) : void
+      protected function __onTipsClick(event:MouseEvent) : void
       {
          _upDownBtn.setFrame(1);
       }
       
-      protected function __onUpdateInfo(param1:NewHallEvent) : void
+      protected function __onUpdateInfo(event:NewHallEvent) : void
       {
-         var _loc2_:PlayerVO = param1.data[0];
-         if(_loc2_)
+         var playerVo:PlayerVO = event.data[0];
+         if(playerVo)
          {
             this.visible = true;
-            if(!_playerInfo || _playerInfo.ID != _loc2_.playerInfo.ID)
+            if(!_playerInfo || _playerInfo.ID != playerVo.playerInfo.ID)
             {
-               _playerInfo = _loc2_.playerInfo;
+               _playerInfo = playerVo.playerInfo;
                loadHead();
             }
             _nickName.text = _playerInfo.NickName;
             _playerTips.setInfo(_playerInfo.NickName,_playerInfo.ID);
-            this.x = _loc2_.opposePos.x - 80;
-            this.y = _loc2_.opposePos.y - 280;
-            _attestBtn.visible = _loc2_.playerInfo.isAttest;
+            this.x = playerVo.opposePos.x - 80;
+            this.y = playerVo.opposePos.y - 280;
+            _attestBtn.visible = playerVo.playerInfo.isAttest;
          }
          else
          {
@@ -182,9 +182,9 @@ package hall.player
          }
       }
       
-      protected function __onClick(param1:MouseEvent) : void
+      protected function __onClick(event:MouseEvent) : void
       {
-         param1.stopPropagation();
+         event.stopPropagation();
          if(_upDownBtn.getFrame == 1)
          {
             _upDownBtn.setFrame(2);
@@ -198,39 +198,39 @@ package hall.player
          }
       }
       
-      protected function __onStageClick(param1:MouseEvent) : void
+      protected function __onStageClick(event:MouseEvent) : void
       {
          stage.removeEventListener("click",__onStageClick);
          _upDownBtn.setFrame(1);
          _playerTips.visible = false;
       }
       
-      private function headLoaderCallBack(param1:SceneCharacterLoaderHead, param2:Boolean = true) : void
+      private function headLoaderCallBack(headLoader:SceneCharacterLoaderHead, isAllLoadSucceed:Boolean = true) : void
       {
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         var _loc5_:* = null;
-         var _loc6_:* = null;
-         if(param1)
+         var headBitmap:* = null;
+         var rectangle:* = null;
+         var headBmp:* = null;
+         var mask:* = null;
+         if(headLoader)
          {
             _headSprite = new Sprite();
             PositionUtils.setPos(_headSprite,"hall.playerView.playerOperate.headPos");
             addChild(_headSprite);
-            _loc3_ = new Bitmap();
-            _loc4_ = new Rectangle(0,0,HeadWidth,HeadHeight);
-            _loc5_ = new BitmapData(HeadWidth,HeadHeight,true,0);
-            _loc5_.copyPixels(param1.getContent()[0] as BitmapData,_loc4_,new Point(0,0));
-            _loc3_.bitmapData = _loc5_;
-            param1.dispose();
-            _loc3_.rotationY = 180;
+            headBitmap = new Bitmap();
+            rectangle = new Rectangle(0,0,HeadWidth,HeadHeight);
+            headBmp = new BitmapData(HeadWidth,HeadHeight,true,0);
+            headBmp.copyPixels(headLoader.getContent()[0] as BitmapData,rectangle,new Point(0,0));
+            headBitmap.bitmapData = headBmp;
+            headLoader.dispose();
+            headBitmap.rotationY = 180;
             var _loc7_:* = 0.8;
-            _loc3_.scaleY = _loc7_;
-            _loc3_.scaleX = _loc7_;
-            _loc6_ = ComponentFactory.Instance.creat("hall.player.operate.mask");
-            PositionUtils.setPos(_loc6_,"hall.playerView.playerOperate.maskPos");
-            _headSprite.mask = _loc6_;
-            _headSprite.addChild(_loc3_);
-            _headSprite.addChild(_loc6_);
+            headBitmap.scaleY = _loc7_;
+            headBitmap.scaleX = _loc7_;
+            mask = ComponentFactory.Instance.creat("hall.player.operate.mask");
+            PositionUtils.setPos(mask,"hall.playerView.playerOperate.maskPos");
+            _headSprite.mask = mask;
+            _headSprite.addChild(headBitmap);
+            _headSprite.addChild(mask);
          }
       }
       

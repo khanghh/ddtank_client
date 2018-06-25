@@ -158,19 +158,19 @@ package vip.view
          _receiveShin.mouseEnabled = _loc2_;
          addToContent(_openVipBtn);
          receiveBtnCanUse();
-         var _loc1_:SelfInfo = PlayerManager.Instance.Self;
-         if(_loc1_.VIPLevel < 12)
+         var selfInfo:SelfInfo = PlayerManager.Instance.Self;
+         if(selfInfo.VIPLevel < 12)
          {
             LeftRechargeAlerTxt = new VipPrivilegeTxt();
-            LeftRechargeAlerTxt.AlertContent = _loc1_.VIPLevel;
+            LeftRechargeAlerTxt.AlertContent = selfInfo.VIPLevel;
             PositionUtils.setPos(LeftRechargeAlerTxt,"LeftRechageAlerTxtPos");
             RightRechargeAlerTxt = new VipPrivilegeTxt();
-            RightRechargeAlerTxt.AlertContent = _loc1_.VIPLevel + 1;
+            RightRechargeAlerTxt.AlertContent = selfInfo.VIPLevel + 1;
             PositionUtils.setPos(RightRechargeAlerTxt,"RightRechageAlerTxtPos");
             addToContent(LeftRechargeAlerTxt);
             addToContent(RightRechargeAlerTxt);
          }
-         if(_loc1_.VIPLevel == 12)
+         if(selfInfo.VIPLevel == 12)
          {
             LeftRechargeAlerTxt = new VipPrivilegeTxt();
             LeftRechargeAlerTxt.AlertContent = 12;
@@ -194,7 +194,7 @@ package vip.view
          removeEventListener("response",__frameEventHandler);
       }
       
-      private function __openVipHandler(param1:MouseEvent) : void
+      private function __openVipHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_vipFrame == null)
@@ -205,11 +205,11 @@ package vip.view
          VipController.instance.hide();
       }
       
-      private function __receive(param1:MouseEvent) : void
+      private function __receive(event:MouseEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
+         var incream:int = 0;
+         var date:* = null;
+         var nowDate:* = null;
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.canTakeVipReward || PlayerManager.Instance.Self.IsVIP == false)
          {
@@ -221,16 +221,16 @@ package vip.view
          }
          else
          {
-            _loc2_ = 0;
-            _loc4_ = PlayerManager.Instance.Self.systemDate as Date;
-            _loc3_ = new Date();
-            alertFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.vip.vipView.cueDateScript",_loc3_.month + 1,_loc3_.date + 1),LanguageMgr.GetTranslation("ok"),"",false,false,false,2);
+            incream = 0;
+            date = PlayerManager.Instance.Self.systemDate as Date;
+            nowDate = new Date();
+            alertFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.vip.vipView.cueDateScript",nowDate.month + 1,nowDate.date + 1),LanguageMgr.GetTranslation("ok"),"",false,false,false,2);
             alertFrame.moveEnable = false;
             alertFrame.addEventListener("response",__alertHandler);
          }
       }
       
-      private function __alertHandler(param1:FrameEvent) : void
+      private function __alertHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          alertFrame.removeEventListener("response",__alertHandler);
@@ -245,11 +245,11 @@ package vip.view
          alertFrame = null;
       }
       
-      private function __responseVipInfoTipHandler(param1:FrameEvent) : void
+      private function __responseVipInfoTipHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          _vipInfoTipBox.removeEventListener("response",__responseHandler);
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -263,7 +263,7 @@ package vip.view
          }
       }
       
-      private function showAwards(param1:ItemTemplateInfo) : void
+      private function showAwards(para:ItemTemplateInfo) : void
       {
          awards = ComponentFactory.Instance.creat("vip.awardFrame");
          awards.escEnable = true;
@@ -274,7 +274,7 @@ package vip.view
          LayerManager.Instance.addToLayer(awards,3,true,1);
       }
       
-      private function __sendReward(param1:Event) : void
+      private function __sendReward(event:Event) : void
       {
          SoundManager.instance.play("008");
          SocketManager.Instance.out.sendDailyAward(3);
@@ -284,11 +284,11 @@ package vip.view
          receiveBtnCanUse();
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          awards.removeEventListener("response",__responseHandler);
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -297,17 +297,17 @@ package vip.view
          }
       }
       
-      private function _getStrArr(param1:DictionaryData) : Array
+      private function _getStrArr(dic:DictionaryData) : Array
       {
-         var _loc2_:Array = param1[_vipChestsArr[PlayerManager.Instance.Self.VIPLevel - 1]];
-         return _loc2_;
+         var goodsArr:Array = dic[_vipChestsArr[PlayerManager.Instance.Self.VIPLevel - 1]];
+         return goodsArr;
       }
       
-      private function getVIPInfoTip(param1:DictionaryData) : Array
+      private function getVIPInfoTip(dic:DictionaryData) : Array
       {
-         var _loc2_:* = null;
-         _loc2_ = PlayerManager.Instance.Self.VIPLevel == 12?[ItemManager.Instance.getTemplateById(int(_vipChestsArr[PlayerManager.Instance.Self.VIPLevel - 1])),ItemManager.Instance.getTemplateById(int(_vipChestsArr[PlayerManager.Instance.Self.VIPLevel - 2]))]:[ItemManager.Instance.getTemplateById(int(_vipChestsArr[PlayerManager.Instance.Self.VIPLevel - 1])),ItemManager.Instance.getTemplateById(int(_vipChestsArr[PlayerManager.Instance.Self.VIPLevel]))];
-         return _loc2_;
+         var resultGoodsArray:* = null;
+         resultGoodsArray = PlayerManager.Instance.Self.VIPLevel == 12?[ItemManager.Instance.getTemplateById(int(_vipChestsArr[PlayerManager.Instance.Self.VIPLevel - 1])),ItemManager.Instance.getTemplateById(int(_vipChestsArr[PlayerManager.Instance.Self.VIPLevel - 2]))]:[ItemManager.Instance.getTemplateById(int(_vipChestsArr[PlayerManager.Instance.Self.VIPLevel - 1])),ItemManager.Instance.getTemplateById(int(_vipChestsArr[PlayerManager.Instance.Self.VIPLevel]))];
+         return resultGoodsArray;
       }
       
       private function receiveBtnCanUse() : void
@@ -337,10 +337,10 @@ package vip.view
          }
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:

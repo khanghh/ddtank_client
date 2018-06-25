@@ -113,7 +113,7 @@ package godCardRaise.view
          showView();
       }
       
-      private function __timeRemainHandler(param1:Event) : void
+      private function __timeRemainHandler(evt:Event) : void
       {
          if(_timeLabel)
          {
@@ -136,27 +136,27 @@ package godCardRaise.view
       
       private function getCurrentDoubleTimeStr() : String
       {
-         var _loc1_:Number = GodCardRaiseManager.Instance.doubleTime;
-         if(_loc1_ <= 0)
+         var time:Number = GodCardRaiseManager.Instance.doubleTime;
+         if(time <= 0)
          {
             return "";
          }
-         return int(_loc1_ / 60) + 1 + LanguageMgr.GetTranslation("minute2");
+         return int(time / 60) + 1 + LanguageMgr.GetTranslation("minute2");
       }
       
       private function getCurrentTimeStr() : String
       {
-         var _loc1_:Number = NaN;
+         var remainTime:Number = NaN;
          if(_timeFrame == 1)
          {
-            _loc1_ = (GodCardRaiseManager.Instance.dataEnd.time - TimeManager.Instance.Now().time) / 1000;
+            remainTime = (GodCardRaiseManager.Instance.dataEnd.time - TimeManager.Instance.Now().time) / 1000;
          }
          else
          {
-            _loc1_ = (GodCardRaiseManager.Instance.dataEnd.time - TimeManager.Instance.Now().time) / 1000 + 86400;
+            remainTime = (GodCardRaiseManager.Instance.dataEnd.time - TimeManager.Instance.Now().time) / 1000 + 86400;
          }
-         var _loc2_:Array = DateUtils.dateTimeRemainArr(_loc1_);
-         return LanguageMgr.GetTranslation("tank.timeRemain.msg1",_loc2_[0],_loc2_[1],_loc2_[2]);
+         var dateArr:Array = DateUtils.dateTimeRemainArr(remainTime);
+         return LanguageMgr.GetTranslation("tank.timeRemain.msg1",dateArr[0],dateArr[1],dateArr[2]);
       }
       
       private function checkIsEndActity() : Boolean
@@ -176,11 +176,11 @@ package godCardRaise.view
       
       private function isEndActity() : Boolean
       {
-         var _loc1_:Number = GodCardRaiseManager.Instance.dataEnd.time - TimeManager.Instance.Now().time;
-         return _loc1_ <= 0;
+         var tempNum:Number = GodCardRaiseManager.Instance.dataEnd.time - TimeManager.Instance.Now().time;
+         return tempNum <= 0;
       }
       
-      private function onSelectGroupChange(param1:Event) : void
+      private function onSelectGroupChange(event:Event) : void
       {
          SoundManager.instance.play("008");
          if(_divineView)
@@ -324,12 +324,12 @@ package godCardRaise.view
          addEventListener("response",__responseHandler);
       }
       
-      private function __openCardUpdateHandler(param1:CEvent) : void
+      private function __openCardUpdateHandler(event:CEvent) : void
       {
-         var _loc2_:Array = param1.data as Array;
+         var cards:Array = event.data as Array;
          if(_divineView)
          {
-            _divineView.playCardMovie(_loc2_);
+            _divineView.playCardMovie(cards);
             _divineView.updateView();
          }
          if(_atlasView)
@@ -346,7 +346,7 @@ package godCardRaise.view
          }
       }
       
-      private function __openCardLockChangeHandler(param1:Event) : void
+      private function __openCardLockChangeHandler(event:Event) : void
       {
          if(_divineView)
          {
@@ -355,7 +355,7 @@ package godCardRaise.view
          }
       }
       
-      private function __awardInfoUpdateHandler(param1:CEvent) : void
+      private function __awardInfoUpdateHandler(event:CEvent) : void
       {
          if(_scoreView)
          {
@@ -363,7 +363,7 @@ package godCardRaise.view
          }
       }
       
-      private function __operateCardUpdateHandler(param1:CEvent) : void
+      private function __operateCardUpdateHandler(event:CEvent) : void
       {
          if(_atlasView)
          {
@@ -375,7 +375,7 @@ package godCardRaise.view
          }
       }
       
-      private function __exchangeUpdateHandler(param1:CEvent) : void
+      private function __exchangeUpdateHandler(event:CEvent) : void
       {
          if(_exchangeView)
          {
@@ -387,7 +387,7 @@ package godCardRaise.view
          }
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(event:FrameEvent) : void
       {
          SoundManager.instance.playButtonSound();
       }

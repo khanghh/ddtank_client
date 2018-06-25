@@ -45,29 +45,28 @@ package road7th.comm
       
       private var pkgNumber:int = 0;
       
-      public function ByteSocket(param1:Boolean = true, param2:Boolean = false)
+      public function ByteSocket(encrypted:Boolean = true, debug:Boolean = false)
       {
          super();
          _readBuffer = new ByteArray();
          _send_fsm = new FSM(2059198199,1501);
          _receive_fsm = new FSM(2059198199,1501);
          _headerTemp = new ByteArray();
-         _encrypted = param1;
-         _debug = param2;
+         _encrypted = encrypted;
+         _debug = debug;
          setKey(KEY);
       }
       
-      public function setKey(param1:Array) : void
+      public function setKey(key:Array) : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          RECEIVE_KEY = new ByteArray();
          SEND_KEY = new ByteArray();
-         _loc2_ = 0;
-         while(_loc2_ < 8)
+         for(i = 0; i < 8; )
          {
-            RECEIVE_KEY.writeByte(param1[_loc2_]);
-            SEND_KEY.writeByte(param1[_loc2_]);
-            _loc2_++;
+            RECEIVE_KEY.writeByte(key[i]);
+            SEND_KEY.writeByte(key[i]);
+            i++;
          }
       }
       
@@ -76,13 +75,13 @@ package road7th.comm
          setKey(KEY);
       }
       
-      public function setFsm(param1:int, param2:int) : void
+      public function setFsm(adder:int, muliter:int) : void
       {
-         _send_fsm.setup(param1,param2);
-         _receive_fsm.setup(param1,param2);
+         _send_fsm.setup(adder,muliter);
+         _receive_fsm.setup(adder,muliter);
       }
       
-      public function connect(param1:String, param2:Number) : void
+      public function connect(ip:String, port:Number) : void
       {
          try
          {
@@ -92,12 +91,12 @@ package road7th.comm
             }
             _socket = new Socket();
             addEvent(_socket);
-            _ip = param1;
-            _port = param2;
+            _ip = ip;
+            _port = port;
             _readBuffer.position = 0;
             _readOffset = 0;
             _writeOffset = 0;
-            _socket.connect(param1,param2);
+            _socket.connect(ip,port);
             return;
          }
          catch(err:Error)
@@ -107,22 +106,22 @@ package road7th.comm
          }
       }
       
-      private function addEvent(param1:Socket) : void
+      private function addEvent(socket:Socket) : void
       {
-         param1.addEventListener("connect",this.handleConnect);
-         param1.addEventListener("close",this.handleClose);
-         param1.addEventListener("socketData",handleIncoming);
-         param1.addEventListener("ioError",handleIoError);
-         param1.addEventListener("securityError",handleIoError);
+         socket.addEventListener("connect",this.handleConnect);
+         socket.addEventListener("close",this.handleClose);
+         socket.addEventListener("socketData",handleIncoming);
+         socket.addEventListener("ioError",handleIoError);
+         socket.addEventListener("securityError",handleIoError);
       }
       
-      private function removeEvent(param1:Socket) : void
+      private function removeEvent(socket:Socket) : void
       {
-         param1.removeEventListener("connect",this.handleConnect);
-         param1.removeEventListener("close",this.handleClose);
-         param1.removeEventListener("socketData",handleIncoming);
-         param1.removeEventListener("ioError",handleIoError);
-         param1.removeEventListener("securityError",handleIoError);
+         socket.removeEventListener("connect",this.handleConnect);
+         socket.removeEventListener("close",this.handleClose);
+         socket.removeEventListener("socketData",handleIncoming);
+         socket.removeEventListener("ioError",handleIoError);
+         socket.removeEventListener("securityError",handleIoError);
       }
       
       public function get connected() : Boolean
@@ -130,47 +129,46 @@ package road7th.comm
          return _socket && _socket.connected;
       }
       
-      public function isSame(param1:String, param2:int) : Boolean
+      public function isSame(ip:String, port:int) : Boolean
       {
-         return _ip == param1 && param2 == _port;
+         return _ip == ip && port == _port;
       }
       
-      public function send(param1:PackageOut) : void
+      public function send(pkg:PackageOut) : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          if(_socket && _socket.connected)
          {
-            param1.pack();
+            pkg.pack();
             if(!_debug)
             {
             }
             if(_encrypted)
             {
-               _loc2_ = 0;
-               while(_loc2_ < param1.length)
+               for(i = 0; i < pkg.length; )
                {
-                  if(_loc2_ > 0)
+                  if(i > 0)
                   {
-                     SEND_KEY[_loc2_ % 8] = SEND_KEY[_loc2_ % 8] + param1[_loc2_ - 1] ^ _loc2_;
-                     param1[_loc2_] = (param1[_loc2_] ^ SEND_KEY[_loc2_ % 8]) + param1[_loc2_ - 1];
+                     SEND_KEY[i % 8] = SEND_KEY[i % 8] + pkg[i - 1] ^ i;
+                     pkg[i] = (pkg[i] ^ SEND_KEY[i % 8]) + pkg[i - 1];
                   }
                   else
                   {
-                     param1[0] = param1[0] ^ SEND_KEY[0];
+                     pkg[0] = pkg[0] ^ SEND_KEY[0];
                   }
-                  _loc2_++;
+                  i++;
                }
             }
-            _socket.writeBytes(param1,0,param1.length);
+            _socket.writeBytes(pkg,0,pkg.length);
             _socket.flush();
          }
       }
       
-      public function sendString(param1:String) : void
+      public function sendString(data:String) : void
       {
          if(_socket.connected)
          {
-            _socket.writeUTF(param1);
+            _socket.writeUTF(data);
             _socket.flush();
          }
       }
@@ -184,7 +182,7 @@ package road7th.comm
          }
       }
       
-      private function handleConnect(param1:Event) : void
+      private function handleConnect(event:Event) : void
       {
          try
          {
@@ -201,7 +199,7 @@ package road7th.comm
          }
       }
       
-      private function handleClose(param1:Event) : void
+      private function handleClose(event:Event) : void
       {
          try
          {
@@ -215,11 +213,11 @@ package road7th.comm
          }
       }
       
-      private function handleIoError(param1:ErrorEvent) : void
+      private function handleIoError(event:ErrorEvent) : void
       {
          try
          {
-            dispatchEvent(new ErrorEvent("error",false,false,param1.text));
+            dispatchEvent(new ErrorEvent("error",false,false,event.text));
             return;
          }
          catch(e:Error)
@@ -228,14 +226,14 @@ package road7th.comm
          }
       }
       
-      private function handleIncoming(param1:ProgressEvent) : void
+      private function handleIncoming(event:ProgressEvent) : void
       {
-         var _loc2_:int = 0;
+         var len:int = 0;
          if(_socket.bytesAvailable > 0)
          {
-            _loc2_ = _socket.bytesAvailable;
+            len = _socket.bytesAvailable;
             _socket.readBytes(_readBuffer,_writeOffset,_socket.bytesAvailable);
-            _writeOffset = _writeOffset + _loc2_;
+            _writeOffset = _writeOffset + len;
             if(_writeOffset > 1)
             {
                _readBuffer.position = 0;
@@ -250,12 +248,12 @@ package road7th.comm
       
       private function readPackage() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:int = _writeOffset - _readOffset;
+         var len:int = 0;
+         var buff:* = null;
+         var dataLeft:int = _writeOffset - _readOffset;
          while(true)
          {
-            _loc3_ = 0;
+            len = 0;
             while(_readOffset + 4 < _writeOffset)
             {
                _headerTemp.position = 0;
@@ -270,28 +268,28 @@ package road7th.comm
                _headerTemp.position = 0;
                if(_headerTemp.readShort() == 29099)
                {
-                  _loc3_ = _headerTemp.readUnsignedShort();
+                  len = _headerTemp.readUnsignedShort();
                   break;
                }
                _readOffset = Number(_readOffset) + 1;
             }
-            _loc1_ = _writeOffset - _readOffset;
-            if(_loc1_ >= _loc3_ && _loc3_ != 0)
+            dataLeft = _writeOffset - _readOffset;
+            if(dataLeft >= len && len != 0)
             {
                _readBuffer.position = _readOffset;
-               _loc2_ = new PackageIn();
+               buff = new PackageIn();
                if(_encrypted)
                {
-                  _loc2_.loadE(_readBuffer,_loc3_,RECEIVE_KEY);
+                  buff.loadE(_readBuffer,len,RECEIVE_KEY);
                }
                else
                {
-                  _loc2_.load(_readBuffer,_loc3_);
+                  buff.load(_readBuffer,len);
                }
-               _readOffset = _readOffset + _loc3_;
-               _loc1_ = _writeOffset - _readOffset;
-               handlePackage(_loc2_);
-               if(_loc1_ < 20)
+               _readOffset = _readOffset + len;
+               dataLeft = _writeOffset - _readOffset;
+               handlePackage(buff);
+               if(dataLeft < 20)
                {
                   break;
                }
@@ -300,91 +298,86 @@ package road7th.comm
             break;
          }
          _readBuffer.position = 0;
-         if(_loc1_ > 0)
+         if(dataLeft > 0)
          {
-            _readBuffer.writeBytes(_readBuffer,_readOffset,_loc1_);
+            _readBuffer.writeBytes(_readBuffer,_readOffset,dataLeft);
          }
          _readOffset = 0;
-         _writeOffset = _loc1_;
+         _writeOffset = dataLeft;
       }
       
-      private function copyByteArray(param1:ByteArray) : ByteArray
+      private function copyByteArray(src:ByteArray) : ByteArray
       {
-         var _loc3_:int = 0;
-         var _loc2_:ByteArray = new ByteArray();
-         _loc3_ = 0;
-         while(_loc3_ < param1.length)
+         var i:int = 0;
+         var result:ByteArray = new ByteArray();
+         for(i = 0; i < src.length; )
          {
-            _loc2_.writeByte(param1[_loc3_]);
-            _loc3_++;
+            result.writeByte(src[i]);
+            i++;
          }
-         return _loc2_;
+         return result;
       }
       
-      public function decrptBytes(param1:ByteArray, param2:int, param3:ByteArray) : ByteArray
+      public function decrptBytes(src:ByteArray, len:int, key:ByteArray) : ByteArray
       {
-         var _loc5_:int = 0;
-         var _loc4_:ByteArray = new ByteArray();
-         _loc5_ = 0;
-         while(_loc5_ < param2)
+         var i:int = 0;
+         var result:ByteArray = new ByteArray();
+         for(i = 0; i < len; )
          {
-            _loc4_.writeByte(param1[_loc5_]);
-            _loc5_++;
+            result.writeByte(src[i]);
+            i++;
          }
-         _loc5_ = 0;
-         while(_loc5_ < param2)
+         for(i = 0; i < len; )
          {
-            if(_loc5_ > 0)
+            if(i > 0)
             {
-               param3[_loc5_ % 8] = param3[_loc5_ % 8] + param1[_loc5_ - 1] ^ _loc5_;
-               _loc4_[_loc5_] = param1[_loc5_] - param1[_loc5_ - 1] ^ param3[_loc5_ % 8];
+               key[i % 8] = key[i % 8] + src[i - 1] ^ i;
+               result[i] = src[i] - src[i - 1] ^ key[i % 8];
             }
             else
             {
-               _loc4_[0] = param1[0] ^ param3[0];
+               result[0] = src[0] ^ key[0];
             }
-            _loc5_++;
+            i++;
          }
-         return _loc4_;
+         return result;
       }
       
-      private function tracePkg(param1:ByteArray, param2:String, param3:int = -1) : void
+      private function tracePkg(src:ByteArray, des:String, len:int = -1) : void
       {
-         var _loc6_:int = 0;
-         var _loc4_:* = param2;
-         var _loc5_:int = param3 < 0?param1.length:param3;
-         _loc6_ = 0;
-         while(_loc6_ < _loc5_)
+         var i:int = 0;
+         var str:* = des;
+         var l:int = len < 0?src.length:len;
+         for(i = 0; i < l; )
          {
-            _loc4_ = _loc4_ + (String(param1[_loc6_]) + ", ");
-            _loc6_++;
+            str = str + (String(src[i]) + ", ");
+            i++;
          }
       }
       
-      private function traceArr(param1:ByteArray) : void
+      private function traceArr(arr:ByteArray) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:String = "[";
-         _loc3_ = 0;
-         while(_loc3_ < param1.length)
+         var i:int = 0;
+         var str:String = "[";
+         for(i = 0; i < arr.length; )
          {
-            _loc2_ = _loc2_ + (param1[_loc3_] + " ");
-            _loc3_++;
+            str = str + (arr[i] + " ");
+            i++;
          }
-         _loc2_ = _loc2_ + "]";
+         str = str + "]";
       }
       
-      private function handlePackage(param1:PackageIn) : void
+      private function handlePackage(pkg:PackageIn) : void
       {
          if(!_debug)
          {
          }
          try
          {
-            if(param1.checkSum == param1.calculateCheckSum())
+            if(pkg.checkSum == pkg.calculateCheckSum())
             {
-               param1.position = 20;
-               dispatchEvent(new SocketEvent("data",param1));
+               pkg.position = 20;
+               dispatchEvent(new SocketEvent("data",pkg));
             }
             return;
          }
@@ -415,10 +408,10 @@ class FSM
    
    private var _multiper:int;
    
-   function FSM(param1:int, param2:int)
+   function FSM(adder:int, multiper:int)
    {
       super();
-      setup(param1,param2);
+      setup(adder,multiper);
    }
    
    public function getState() : int
@@ -431,10 +424,10 @@ class FSM
       _state = 0;
    }
    
-   public function setup(param1:int, param2:int) : void
+   public function setup(adder:int, multiper:int) : void
    {
-      _adder = param1;
-      _multiper = param2;
+      _adder = adder;
+      _multiper = multiper;
       updateState();
    }
    

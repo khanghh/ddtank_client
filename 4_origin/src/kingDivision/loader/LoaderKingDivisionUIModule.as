@@ -14,7 +14,7 @@ package kingDivision.loader
       
       private var _funcParams:Array;
       
-      public function LoaderKingDivisionUIModule(param1:PrivateClass)
+      public function LoaderKingDivisionUIModule(prc:PrivateClass)
       {
          super();
       }
@@ -28,10 +28,10 @@ package kingDivision.loader
          return LoaderKingDivisionUIModule._instance;
       }
       
-      public function loadUIModule(param1:Function = null, param2:Array = null) : void
+      public function loadUIModule(complete:Function = null, completeParams:Array = null) : void
       {
-         _func = param1;
-         _funcParams = param2;
+         _func = complete;
+         _funcParams = completeParams;
          UIModuleSmallLoading.Instance.progress = 0;
          UIModuleSmallLoading.Instance.show();
          UIModuleLoader.Instance.addEventListener("uiModuleComplete",loadCompleteHandler);
@@ -39,9 +39,9 @@ package kingDivision.loader
          UIModuleLoader.Instance.addUIModuleImp("kingdivision");
       }
       
-      private function loadCompleteHandler(param1:UIModuleEvent) : void
+      private function loadCompleteHandler(event:UIModuleEvent) : void
       {
-         if(param1.module == "kingdivision")
+         if(event.module == "kingdivision")
          {
             UIModuleSmallLoading.Instance.hide();
             UIModuleLoader.Instance.removeEventListener("uiModuleComplete",loadCompleteHandler);
@@ -55,11 +55,11 @@ package kingDivision.loader
          }
       }
       
-      private function onUimoduleLoadProgress(param1:UIModuleEvent) : void
+      private function onUimoduleLoadProgress(event:UIModuleEvent) : void
       {
-         if(param1.module == "kingdivision")
+         if(event.module == "kingdivision")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
    }

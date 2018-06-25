@@ -35,7 +35,7 @@ package panicBuying
          PanicBuyingManager.instance.addEventListener("updateView",__updateView);
       }
       
-      protected function __updateView(param1:PanicBuyingEvent) : void
+      protected function __updateView(event:PanicBuyingEvent) : void
       {
          if(_frame)
          {
@@ -43,7 +43,7 @@ package panicBuying
          }
       }
       
-      protected function __panicBuyingOpenView(param1:PanicBuyingEvent) : void
+      protected function __panicBuyingOpenView(event:PanicBuyingEvent) : void
       {
          AssetModuleLoader.addModelLoader("panicBuying",6);
          AssetModuleLoader.startCodeLoader(openPanicBuyingFrame);

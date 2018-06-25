@@ -45,10 +45,10 @@ package boguAdventure.view
       
       private var _boguDie:Bitmap;
       
-      public function BoguAdventureChangeView(param1:BoguAdventureControl)
+      public function BoguAdventureChangeView(control:BoguAdventureControl)
       {
          super();
-         _control = param1;
+         _control = control;
          init();
       }
       
@@ -61,45 +61,45 @@ package boguAdventure.view
          initEvent();
       }
       
-      public function boguWalk(param1:Array) : void
+      public function boguWalk(path:Array) : void
       {
          clearWarnAction();
-         _bogu.playerWalk(param1);
+         _bogu.playerWalk(path);
          _control.isMove = true;
          _move = true;
       }
       
-      public function placeGoods(param1:String, param2:int, param3:Point) : void
+      public function placeGoods(type:String, index:int, indexPos:Point) : void
       {
-         var _loc4_:* = null;
-         var _loc5_:String = param2.toString();
-         if(_list[_loc5_] != null)
+         var goods:* = null;
+         var key:String = index.toString();
+         if(_list[key] != null)
          {
             return;
          }
-         _loc4_ = UICreatShortcut.creatAndAdd("boguAdventure.mapView." + param1,this);
-         _loc4_.x = param3.x;
-         _loc4_.y = param3.y;
+         goods = UICreatShortcut.creatAndAdd("boguAdventure.mapView." + type,this);
+         goods.x = indexPos.x;
+         goods.y = indexPos.y;
          if(_mineNum)
          {
-            swapChildren(_mineNum,_loc4_);
+            swapChildren(_mineNum,goods);
          }
          changeShowLevel(getChildIndex(_bogu));
-         _list[_loc5_] = _loc4_;
+         _list[key] = goods;
       }
       
-      public function celarGoods(param1:int) : void
+      public function celarGoods(index:int) : void
       {
-         var _loc3_:String = param1.toString();
-         if(_list[_loc3_] == null)
+         var key:String = index.toString();
+         if(_list[key] == null)
          {
             return;
          }
-         var _loc2_:Bitmap = _list[_loc3_] as Bitmap;
-         ObjectUtils.disposeObject(_loc2_);
-         _loc2_ = null;
+         var sign:Bitmap = _list[key] as Bitmap;
+         ObjectUtils.disposeObject(sign);
+         sign = null;
          return;
-         §§push(delete _list[_loc3_]);
+         §§push(delete _list[key]);
       }
       
       public function playExplodAciton() : void
@@ -119,26 +119,26 @@ package boguAdventure.view
          SoundManager.instance.play("069");
       }
       
-      public function playAwardAction(param1:int) : void
+      public function playAwardAction(templateId:int) : void
       {
          if(_awardImgae)
          {
             return;
          }
          _awardImgae = new CellContentCreator();
-         _awardImgae.info = ItemManager.Instance.getTemplateById(param1);
+         _awardImgae.info = ItemManager.Instance.getTemplateById(templateId);
          _awardImgae.loadSync(onCreateAwardImageComplete);
       }
       
-      public function playWarnAction(param1:int, param2:Point) : void
+      public function playWarnAction(value:int, pos:Point) : void
       {
          clearWarnAction();
-         if(!_mineNum && param1 > 0)
+         if(!_mineNum && value > 0)
          {
             _mineNum = UICreatShortcut.creatAndAdd("boguAdventure.view.mineNum",this);
-            _mineNum.setFrame(param1);
-            _mineNum.x = param2.x;
-            _mineNum.y = param2.y;
+            _mineNum.setFrame(value);
+            _mineNum.x = pos.x;
+            _mineNum.y = pos.y;
             addChild(_mineNum);
          }
       }
@@ -155,13 +155,13 @@ package boguAdventure.view
          }
       }
       
-      public function resetBogu(param1:Point) : void
+      public function resetBogu(pos:Point) : void
       {
          _move = false;
          _control.isMove = false;
          _bogu.dir = SceneCharacterDirection.RB;
-         _bogu.x = param1.x;
-         _bogu.y = param1.y;
+         _bogu.x = pos.x;
+         _bogu.y = pos.y;
          addChild(_bogu);
       }
       
@@ -169,16 +169,16 @@ package boguAdventure.view
       {
          var _loc3_:int = 0;
          var _loc2_:* = _list;
-         for(var _loc1_ in _list)
+         for(var key in _list)
          {
-            ObjectUtils.disposeObject(_list[_loc1_] as Bitmap);
-            _list[_loc1_] = null;
-            delete _list[_loc1_];
+            ObjectUtils.disposeObject(_list[key] as Bitmap);
+            _list[key] = null;
+            delete _list[key];
          }
          _list = new Dictionary();
       }
       
-      private function __onPlayExplodAcitonComplete(param1:Event) : void
+      private function __onPlayExplodAcitonComplete(e:Event) : void
       {
          if(_explodeAction.currentFrame == _explodeAction.totalFrames)
          {
@@ -219,7 +219,7 @@ package boguAdventure.view
          _awardAction.addEventListener("enterFrame",__onPlayAwardAcitonComplete);
       }
       
-      private function __onPlayAwardAcitonComplete(param1:Event) : void
+      private function __onPlayAwardAcitonComplete(e:Event) : void
       {
          if(_awardAction.currentFrame == _awardAction.totalFrames)
          {
@@ -252,11 +252,11 @@ package boguAdventure.view
          }
       }
       
-      public function boguState(param1:Boolean) : void
+      public function boguState(value:Boolean) : void
       {
          ObjectUtils.disposeObject(_boguDie);
          _boguDie = null;
-         if(param1)
+         if(value)
          {
             _bogu.visible = true;
          }
@@ -277,9 +277,9 @@ package boguAdventure.view
          }
       }
       
-      private function __onStopMove(param1:SceneCharacterEvent) : void
+      private function __onStopMove(e:SceneCharacterEvent) : void
       {
-         if(!param1.data)
+         if(!e.data)
          {
             _move = false;
             _bogu.sceneCharacterActionType = "bogustop";
@@ -300,9 +300,9 @@ package boguAdventure.view
          addChild(_bogu);
       }
       
-      private function createBoguComplete(param1:BoguAdventurePlayer, param2:Boolean, param3:int = 0) : void
+      private function createBoguComplete(bogu:BoguAdventurePlayer, isLoadSucceed:Boolean, index:int = 0) : void
       {
-         if(param2)
+         if(isLoadSucceed)
          {
             _bogu.sceneCharacterActionType = "bogustop";
             _control.bogu = _bogu;
@@ -311,37 +311,37 @@ package boguAdventure.view
          throw new Error("加载啵咕形象失败!检查下资源文件!");
       }
       
-      private function changeShowLevel(param1:int) : void
+      private function changeShowLevel(index:int) : void
       {
-         var _loc2_:DisplayObject = getChildAt(param1);
+         var obj1:DisplayObject = getChildAt(index);
          var _loc5_:int = 0;
          var _loc4_:* = _list;
-         for each(var _loc3_ in _list)
+         for each(var obj2 in _list)
          {
-            swapShowLevel(getChildIndex(_loc2_),getChildIndex(_loc3_));
+            swapShowLevel(getChildIndex(obj1),getChildIndex(obj2));
          }
       }
       
-      private function swapShowLevel(param1:int, param2:int) : void
+      private function swapShowLevel(index1:int, index2:int) : void
       {
-         if(param1 == param2)
+         if(index1 == index2)
          {
             return;
          }
-         var _loc3_:DisplayObject = getChildAt(param1);
-         var _loc4_:DisplayObject = getChildAt(param2);
-         if(Math.abs(_loc3_.x - _loc4_.x) < 150 && Math.abs(_loc3_.y - _loc4_.y) < 150)
+         var obj1:DisplayObject = getChildAt(index1);
+         var obj2:DisplayObject = getChildAt(index2);
+         if(Math.abs(obj1.x - obj2.x) < 150 && Math.abs(obj1.y - obj2.y) < 150)
          {
-            if(_loc3_.y + _loc3_.height > _loc4_.y + _loc4_.height)
+            if(obj1.y + obj1.height > obj2.y + obj2.height)
             {
-               if(param1 < param2)
+               if(index1 < index2)
                {
-                  this.swapChildrenAt(param1,param2);
+                  this.swapChildrenAt(index1,index2);
                }
             }
-            else if(param1 > param2)
+            else if(index1 > index2)
             {
-               this.swapChildrenAt(param1,param2);
+               this.swapChildrenAt(index1,index2);
             }
          }
       }

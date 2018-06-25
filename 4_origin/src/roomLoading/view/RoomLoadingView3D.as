@@ -37,9 +37,9 @@ package roomLoading.view
       
       private var _isStarlingAssetComplete:Boolean;
       
-      public function RoomLoadingView3D(param1:GameInfo)
+      public function RoomLoadingView3D($info:GameInfo)
       {
-         super(param1);
+         super($info);
       }
       
       override protected function init() : void
@@ -67,9 +67,9 @@ package roomLoading.view
          }
       }
       
-      private function __onLoaderBonesComplete(param1:BonesLoaderEvent) : void
+      private function __onLoaderBonesComplete(e:BonesLoaderEvent) : void
       {
-         if(param1.data as String == "gamebones")
+         if(e.data as String == "gamebones")
          {
             BonesLoaderManager.instance.removeEventListener("bonesstylecompelete",__onLoaderBonesComplete);
             delayLoadingBombAsset();
@@ -78,8 +78,8 @@ package roomLoading.view
       
       private function delayLoadingBombAsset() : void
       {
-         var _loc1_:Array = _gameInfo.roomPlayers;
-         LoadBombManager.Instance.loadFullRoomPlayersBomb3D(_loc1_);
+         var roomPlayers:Array = _gameInfo.roomPlayers;
+         LoadBombManager.Instance.loadFullRoomPlayersBomb3D(roomPlayers);
          LoadBombManager.Instance.loadOutBomb3D(_gameInfo.getOutBombsIdList());
          if(!StartupResourceLoader.firstEnterHall)
          {
@@ -91,7 +91,7 @@ package roomLoading.view
          }
       }
       
-      override protected function __countDownTick(param1:TimerEvent) : void
+      override protected function __countDownTick(evt:TimerEvent) : void
       {
          _selfFinish = checkProgress();
          _countDownTxt.updateNum();
@@ -107,111 +107,111 @@ package roomLoading.view
       
       override protected function checkProgress() : Boolean
       {
-         var _loc1_:int = 0;
-         var _loc7_:* = null;
-         var _loc4_:int = 0;
+         var weaponId:int = 0;
+         var weaponInfo:* = null;
+         var deputyWeaponID:int = 0;
          _unloadedmsg = "";
-         var _loc2_:int = 0;
-         var _loc6_:int = 0;
+         var total:int = 0;
+         var finished:int = 0;
          var _loc10_:int = 0;
          var _loc9_:* = _gameInfo.roomPlayers;
-         for each(var _loc8_ in _gameInfo.roomPlayers)
+         for each(var info in _gameInfo.roomPlayers)
          {
-            if(!_loc8_.isViewer)
+            if(!info.isViewer)
             {
-               _loc1_ = _loc8_.playerInfo.WeaponID > 0?_loc8_.playerInfo.WeaponID:70016;
-               _loc7_ = new WeaponInfo(ItemManager.Instance.getTemplateById(_loc1_));
-               if(LoadBombManager.Instance.getLoadBombComplete3D(_loc7_))
+               weaponId = info.playerInfo.WeaponID > 0?info.playerInfo.WeaponID:70016;
+               weaponInfo = new WeaponInfo(ItemManager.Instance.getTemplateById(weaponId));
+               if(LoadBombManager.Instance.getLoadBombComplete3D(weaponInfo))
                {
-                  _loc6_++;
+                  finished++;
                }
                else
                {
-                  _unloadedmsg = _unloadedmsg + ("load bullet false id:" + _loc7_.bombs[0] + "\n");
+                  _unloadedmsg = _unloadedmsg + ("load bullet false id:" + weaponInfo.bombs[0] + "\n");
                }
-               _loc2_++;
+               total++;
                if(!StartupResourceLoader.firstEnterHall)
                {
-                  _loc4_ = _loc8_.playerInfo.DeputyWeaponID > 0?_loc8_.currentDeputyWeaponInfo.TemplateID:0;
-                  if(LoadBombManager.SpecialAllBomb.indexOf(_loc4_) != -1)
+                  deputyWeaponID = info.playerInfo.DeputyWeaponID > 0?info.currentDeputyWeaponInfo.TemplateID:0;
+                  if(LoadBombManager.SpecialAllBomb.indexOf(deputyWeaponID) != -1)
                   {
-                     _loc7_ = new WeaponInfo(ItemManager.Instance.getTemplateById(_loc4_));
-                     if(LoadBombManager.Instance.getLoadBombComplete3D(_loc7_))
+                     weaponInfo = new WeaponInfo(ItemManager.Instance.getTemplateById(deputyWeaponID));
+                     if(LoadBombManager.Instance.getLoadBombComplete3D(weaponInfo))
                      {
-                        _loc6_++;
+                        finished++;
                      }
                      else
                      {
-                        _unloadedmsg = _unloadedmsg + ("load bullet false id:" + _loc7_.bombs[0] + "\n");
+                        _unloadedmsg = _unloadedmsg + ("load bullet false id:" + weaponInfo.bombs[0] + "\n");
                      }
-                     _loc2_++;
+                     total++;
                   }
                }
             }
          }
          if(loadingOutBombsComplete())
          {
-            _loc6_++;
+            finished++;
          }
-         _loc2_++;
+         total++;
          if(_gameInfo.loaderMap.completed)
          {
-            _loc6_++;
+            finished++;
          }
          else
          {
             _unloadedmsg = _unloadedmsg + ("loaderMap false,id:" + _gameInfo.loaderMap.info.ID + "\n");
          }
-         _loc2_++;
+         total++;
          if(_isStarlingAssetComplete)
          {
-            _loc6_++;
+            finished++;
          }
-         _loc2_++;
+         total++;
          if(!StartupResourceLoader.firstEnterHall)
          {
             if(LoadBombManager.Instance.getLoadSpecialBombComplete3D())
             {
-               _loc6_++;
+               finished++;
             }
             else
             {
                _unloadedmsg = _unloadedmsg + ("Load SpecialBomb false  id: " + LoadBombManager.Instance.getUnloadedSpecialBomb3DString() + " \n");
             }
-            _loc2_++;
+            total++;
          }
          if(_gameInfo.roomType == 120 || _gameInfo.roomType == 123 || _gameInfo.roomType == 1 && _gameInfo.gameMode == 120)
          {
             if(checkBonesAssetComplete())
             {
-               _loc6_++;
+               finished++;
             }
             else
             {
                _unloadedmsg = _unloadedmsg + "Load boneslist false \n";
             }
-            _loc2_++;
+            total++;
          }
-         var _loc5_:* = Number(int(_loc6_ / _loc2_ * 100));
-         var _loc3_:* = _loc2_ == _loc6_;
-         if(_loc3_ && (!checkAnimationIsFinished() || !checkIsEnoughDelayTime()))
+         var pro:* = Number(int(finished / total * 100));
+         var res:* = total == finished;
+         if(res && (!checkAnimationIsFinished() || !checkIsEnoughDelayTime()))
          {
-            _loc5_ = 99;
-            _loc3_ = false;
+            pro = 99;
+            res = false;
          }
-         GameInSocketOut.sendLoadingProgress(_loc5_);
-         RoomManager.Instance.current.selfRoomPlayer.progress = _loc5_;
-         return _loc3_;
+         GameInSocketOut.sendLoadingProgress(pro);
+         RoomManager.Instance.current.selfRoomPlayer.progress = pro;
+         return res;
       }
       
       private function loadingOutBombsComplete() : Boolean
       {
-         var _loc2_:Array = _gameInfo.getOutBombsIdList();
+         var list:Array = _gameInfo.getOutBombsIdList();
          var _loc4_:int = 0;
-         var _loc3_:* = _loc2_;
-         for each(var _loc1_ in _loc2_)
+         var _loc3_:* = list;
+         for each(var outBombsId in list)
          {
-            if(!BallManager.instance.hasBombAsset(BallManager.instance.findBall(_loc1_).craterID))
+            if(!BallManager.instance.hasBombAsset(BallManager.instance.findBall(outBombsId).craterID))
             {
                return false;
             }
@@ -219,55 +219,55 @@ package roomLoading.view
          return true;
       }
       
-      override protected function loadingPetAsset(param1:PetInfo) : void
+      override protected function loadingPetAsset(currentPet:PetInfo) : void
       {
       }
       
-      override protected function initCharacter(param1:Player, param2:RoomLoadingCharacterItem) : void
+      override protected function initCharacter(gameplayer:Player, item:RoomLoadingCharacterItem) : void
       {
-         var _loc4_:Rectangle = ComponentFactory.Instance.creatCustomObject("asset.roomloading.BigCharacterSize");
-         var _loc3_:Rectangle = ComponentFactory.Instance.creatCustomObject("asset.roomloading.SuitCharacterSize");
-         param2.info.claerMovie3D();
-         param1.movie = param2.info.movie3D;
-         param1.character = param2.info.character;
-         param1.character.showGun = false;
-         param1.character.showWing = false;
-         if(param2.info.team == 1)
+         var size:Rectangle = ComponentFactory.Instance.creatCustomObject("asset.roomloading.BigCharacterSize");
+         var suitSize:Rectangle = ComponentFactory.Instance.creatCustomObject("asset.roomloading.SuitCharacterSize");
+         item.info.claerMovie3D();
+         gameplayer.movie = item.info.movie3D;
+         gameplayer.character = item.info.character;
+         gameplayer.character.showGun = false;
+         gameplayer.character.showWing = false;
+         if(item.info.team == 1)
          {
-            if(param1.isSelf || blueCharacterIndex == 1 && _gameInfo.selfGamePlayer.team != 1)
+            if(gameplayer.isSelf || blueCharacterIndex == 1 && _gameInfo.selfGamePlayer.team != 1)
             {
-               PositionUtils.setPos(param2.displayMc,"asset.roomloading.BigCharacterBluePos");
-               param1.character.showWithSize(false,-1,_loc4_.width,_loc4_.height);
+               PositionUtils.setPos(item.displayMc,"asset.roomloading.BigCharacterBluePos");
+               gameplayer.character.showWithSize(false,-1,size.width,size.height);
             }
             else
             {
-               PositionUtils.setPos(param2.displayMc,"asset.roomloading.SmallCharacterBluePos");
-               param1.character.show(false,-1);
+               PositionUtils.setPos(item.displayMc,"asset.roomloading.SmallCharacterBluePos");
+               gameplayer.character.show(false,-1);
             }
-            param2.appear(blueCharacterIndex.toString());
-            param2.index = blueCharacterIndex;
+            item.appear(blueCharacterIndex.toString());
+            item.index = blueCharacterIndex;
             blueCharacterIndex = Number(blueCharacterIndex) + 1;
          }
          else
          {
-            if(param1.isSelf || redCharacterIndex == 1 && _gameInfo.selfGamePlayer.team != 2)
+            if(gameplayer.isSelf || redCharacterIndex == 1 && _gameInfo.selfGamePlayer.team != 2)
             {
-               param1.character.showWithSize(false,-1,_loc4_.width,_loc4_.height);
-               PositionUtils.setPos(param2.displayMc,"asset.roomloading.BigCharacterRedPos");
+               gameplayer.character.showWithSize(false,-1,size.width,size.height);
+               PositionUtils.setPos(item.displayMc,"asset.roomloading.BigCharacterRedPos");
             }
             else
             {
-               PositionUtils.setPos(param2.displayMc,"asset.roomloading.SmallCharacterRedPos");
-               param1.character.show(false,-1);
+               PositionUtils.setPos(item.displayMc,"asset.roomloading.SmallCharacterRedPos");
+               gameplayer.character.show(false,-1);
             }
-            param2.appear(redCharacterIndex.toString());
-            param2.index = redCharacterIndex;
+            item.appear(redCharacterIndex.toString());
+            item.index = redCharacterIndex;
             redCharacterIndex = Number(redCharacterIndex) + 1;
          }
-         param1.movie.show(true,-1);
+         gameplayer.movie.show(true,-1);
       }
       
-      override protected function loadingHorseAsset(param1:Array) : void
+      override protected function loadingHorseAsset(horseSkillEquipList:Array) : void
       {
       }
       
@@ -297,9 +297,9 @@ package roomLoading.view
          }
          var _loc3_:int = 0;
          var _loc2_:* = _loadBonesList;
-         for each(var _loc1_ in _loadBonesList)
+         for each(var atlas in _loadBonesList)
          {
-            BonesLoaderManager.instance.startLoaderByAtlas(_loc1_,"fighting3d");
+            BonesLoaderManager.instance.startLoaderByAtlas(atlas,"fighting3d");
          }
       }
       
@@ -311,9 +311,9 @@ package roomLoading.view
          }
          var _loc3_:int = 0;
          var _loc2_:* = _loadBonesList;
-         for each(var _loc1_ in _loadBonesList)
+         for each(var atlas in _loadBonesList)
          {
-            if(!BoneMovieFactory.instance.checkTextureAtlas(_loc1_,0))
+            if(!BoneMovieFactory.instance.checkTextureAtlas(atlas,0))
             {
                return false;
             }

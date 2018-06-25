@@ -82,29 +82,29 @@ package ddt.view.tips
          addChild(_detail);
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         var _loc5_:FineSuitVo = FineSuitManager.Instance.getFineSuitPropertyByExp(int(param1));
-         var _loc4_:FineSuitVo = FineSuitManager.Instance.getSuitVoByExp(int(param1));
-         var _loc3_:int = _loc4_.level / 14;
-         var _loc2_:int = _loc4_.level % 14;
-         _icon.setFrame(Math.min(_loc3_ + 1,5));
-         if(_loc3_ == 5)
+         var vo:FineSuitVo = FineSuitManager.Instance.getFineSuitPropertyByExp(int(data));
+         var curVo:FineSuitVo = FineSuitManager.Instance.getSuitVoByExp(int(data));
+         var type:int = curVo.level / 14;
+         var tpLevel:int = curVo.level % 14;
+         _icon.setFrame(Math.min(type + 1,5));
+         if(type == 5)
          {
-            _typeText.text = "[" + _typeNameArr[_loc3_] + "]";
+            _typeText.text = "[" + _typeNameArr[type] + "]";
          }
          else
          {
-            _typeText.text = "[" + _typeNameArr[_loc3_] + "] " + _loc2_ + "/14";
+            _typeText.text = "[" + _typeNameArr[type] + "] " + tpLevel + "/14";
          }
-         _typeText.textFormatStyle = "finesuit.simpleTip.tf" + _loc3_.toString();
-         _typeText.filterString = "finesuit.simpleTip.gf" + _loc3_.toString();
-         _defenceTxt.htmlText = "Phòng thủ <font color=\'#76ff80\'>+" + _loc5_.Defence + "</font>";
-         _luckTxt.htmlText = "May mắn <font color=\'#76ff80\'>+" + _loc5_.Luck + "</font>";
-         _magicDefTxt.htmlText = "Ma Kháng <font color=\'#76ff80\'>+" + _loc5_.MagicDefence + "</font>";
-         _armorTxt.htmlText = "Hộ giáp <font color=\'#76ff80\'>+" + _loc5_.Armor + "</font>";
-         _agilityTxt.htmlText = "Nhanh nhẹn <font color=\'#76ff80\'>+" + _loc5_.Agility + "</font>";
-         _healthTxt.htmlText = "HP <font color=\'#76ff80\'>+" + _loc5_.hp + "</font>";
+         _typeText.textFormatStyle = "finesuit.simpleTip.tf" + type.toString();
+         _typeText.filterString = "finesuit.simpleTip.gf" + type.toString();
+         _defenceTxt.htmlText = "Phòng thủ <font color=\'#76ff80\'>+" + vo.Defence + "</font>";
+         _luckTxt.htmlText = "May mắn <font color=\'#76ff80\'>+" + vo.Luck + "</font>";
+         _magicDefTxt.htmlText = "Ma Kháng <font color=\'#76ff80\'>+" + vo.MagicDefence + "</font>";
+         _armorTxt.htmlText = "Hộ giáp <font color=\'#76ff80\'>+" + vo.Armor + "</font>";
+         _agilityTxt.htmlText = "Nhanh nhẹn <font color=\'#76ff80\'>+" + vo.Agility + "</font>";
+         _healthTxt.htmlText = "HP <font color=\'#76ff80\'>+" + vo.hp + "</font>";
       }
    }
 }

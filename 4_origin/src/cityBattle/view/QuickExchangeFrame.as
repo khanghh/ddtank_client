@@ -48,50 +48,48 @@ package cityBattle.view
       
       override protected function refreshNumText() : void
       {
-         var _loc1_:String = String(_number.number * _perPrice);
-         var _loc2_:String = LanguageMgr.GetTranslation("ddt.cityBattle.score");
-         totalText.text = _loc1_ + " " + _loc2_;
+         var priceStr:String = String(_number.number * _perPrice);
+         var tmp:String = LanguageMgr.GetTranslation("ddt.cityBattle.score");
+         totalText.text = priceStr + " " + tmp;
       }
       
-      override public function setData(param1:int, param2:int, param3:int) : void
+      override public function setData(templateId:int, goodsId:int, perPrice:int) : void
       {
-         var _loc4_:* = null;
-         var _loc7_:int = 0;
-         var _loc6_:* = null;
-         var _loc5_:int = 0;
-         super.setData(param1,param2,param3);
-         _loc7_ = 0;
-         while(_loc7_ < CityBattleManager.instance.welfareList.length)
+         var wel:* = null;
+         var i:int = 0;
+         var my:* = null;
+         var j:int = 0;
+         super.setData(templateId,goodsId,perPrice);
+         for(i = 0; i < CityBattleManager.instance.welfareList.length; )
          {
-            if(CityBattleManager.instance.welfareList[_loc7_].ID == _shopGoodsId)
+            if(CityBattleManager.instance.welfareList[i].ID == _shopGoodsId)
             {
-               _loc4_ = CityBattleManager.instance.welfareList[_loc7_];
+               wel = CityBattleManager.instance.welfareList[i];
             }
-            _loc7_++;
+            i++;
          }
-         _loc5_ = 0;
-         while(_loc5_ < CityBattleManager.instance.myExchangeInfo.length)
+         for(j = 0; j < CityBattleManager.instance.myExchangeInfo.length; )
          {
-            if(CityBattleManager.instance.myExchangeInfo[_loc5_].ID == _shopGoodsId)
+            if(CityBattleManager.instance.myExchangeInfo[j].ID == _shopGoodsId)
             {
-               _loc6_ = CityBattleManager.instance.myExchangeInfo[_loc5_];
+               my = CityBattleManager.instance.myExchangeInfo[j];
             }
-            _loc5_++;
+            j++;
          }
-         _restText.text = String(_loc4_.ExchangeCount - _loc6_.myExchangeCount);
-         _number.maximum = _loc4_.ExchangeCount - _loc6_.ExchangeCount;
+         _restText.text = String(wel.ExchangeCount - my.myExchangeCount);
+         _number.maximum = wel.ExchangeCount - my.ExchangeCount;
       }
       
-      override protected function __buy(param1:MouseEvent) : void
+      override protected function __buy(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:int = getNeedMoney();
+         var tmpNeedMoney:int = getNeedMoney();
          if(parseInt(_restText.text) < _number.number)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.cityBattle.noEnoughNum"));
             return;
          }
-         if(CityBattleManager.instance.myScore < _loc2_)
+         if(CityBattleManager.instance.myScore < tmpNeedMoney)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.cityBattle.noEnoughScore"));
             return;

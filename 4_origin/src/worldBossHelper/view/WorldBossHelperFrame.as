@@ -41,9 +41,9 @@ package worldBossHelper.view
          initEvent();
       }
       
-      public function addPlayerInfo(param1:Boolean, param2:int, param3:Array, param4:int) : void
+      public function addPlayerInfo(isFightOver:Boolean, num:int, hurtArr:Array, honor:int) : void
       {
-         _leftView.addDescription(param1,param2,param3,param4);
+         _leftView.addDescription(isFightOver,num,hurtArr,honor);
       }
       
       public function updateView() : void
@@ -73,7 +73,7 @@ package worldBossHelper.view
          _leftView.addEventListener("changeHelperState",__changeStateHandler);
       }
       
-      private function __chatClick(param1:MouseEvent) : void
+      private function __chatClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          LabyrinthManager.Instance.chat();
@@ -84,18 +84,18 @@ package worldBossHelper.view
          _leftView.startFight();
       }
       
-      protected function __changeStateHandler(param1:WorldBossHelperEvent) : void
+      protected function __changeStateHandler(event:WorldBossHelperEvent) : void
       {
          _data = _rightView.typeData;
          _data.requestType = 2;
-         _data.isOpen = param1.state;
+         _data.isOpen = event.state;
          SocketManager.Instance.out.openOrCloseWorldBossHelper(_data);
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         var _loc2_:* = null;
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         var alertAsk:* = null;
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
             if(!WorldBossHelperManager.Instance.isFighting)
@@ -104,23 +104,23 @@ package worldBossHelper.view
             }
             else
             {
-               _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("worldboss.helper.closehelper"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
-               _loc2_.addEventListener("response",__alertCloseHelper);
+               alertAsk = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("worldboss.helper.closehelper"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
+               alertAsk.addEventListener("response",__alertCloseHelper);
             }
          }
       }
       
-      private function __alertCloseHelper(param1:FrameEvent) : void
+      private function __alertCloseHelper(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode) - 2)
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
                WorldBossHelperManager.Instance.helperOpen = false;
                WorldBossHelperController.Instance.dispose();
          }
-         param1.currentTarget.removeEventListener("response",__alertCloseHelper);
-         ObjectUtils.disposeObject(param1.currentTarget);
+         event.currentTarget.removeEventListener("response",__alertCloseHelper);
+         ObjectUtils.disposeObject(event.currentTarget);
       }
       
       private function removeEvent() : void

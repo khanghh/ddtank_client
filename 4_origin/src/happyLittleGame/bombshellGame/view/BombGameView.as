@@ -208,9 +208,9 @@ package happyLittleGame.bombshellGame.view
          _mapData.x = 600;
          _mapData.y = 250;
          _mapData.textColor = 16755376;
-         var _loc1_:TextFormat = _mapData.defaultTextFormat;
-         _loc1_.size = 24;
-         _mapData.defaultTextFormat = _loc1_;
+         var format:TextFormat = _mapData.defaultTextFormat;
+         format.size = 24;
+         _mapData.defaultTextFormat = format;
          addChild(_bg);
          addChild(_lv);
          addChild(_lvValue);
@@ -250,19 +250,19 @@ package happyLittleGame.bombshellGame.view
       
       public function setRankData() : void
       {
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         var _loc5_:int = 0;
-         var _loc1_:int = HappyLittleGameManager.instance.currentGameType;
-         _loc2_ = HappyLittleGameManager.instance.bombManager.getMyTotalRankByGameType(_loc1_);
-         _loc4_ = HappyLittleGameManager.instance.bombManager.getMyDayRankByGameType(_loc1_);
-         _loc3_ = HappyLittleGameManager.instance.bombManager.getDayMaxScoreByType(_loc1_);
-         _loc5_ = HappyLittleGameManager.instance.bombManager.getHisMaxScoreByType(_loc1_);
-         _mytotalRank.text = _loc2_ == 0?LanguageMgr.GetTranslation("bombKing.outOfRank2"):_loc2_ + "";
-         _mydayRank.text = _loc4_ == 0?LanguageMgr.GetTranslation("bombKing.outOfRank2"):_loc4_ + "";
-         _historyMax.text = _loc5_ + "";
-         _dayMax.text = _loc3_ + "";
+         var HisRank:int = 0;
+         var dayRank:int = 0;
+         var dayMax:int = 0;
+         var HisMax:int = 0;
+         var gameType:int = HappyLittleGameManager.instance.currentGameType;
+         HisRank = HappyLittleGameManager.instance.bombManager.getMyTotalRankByGameType(gameType);
+         dayRank = HappyLittleGameManager.instance.bombManager.getMyDayRankByGameType(gameType);
+         dayMax = HappyLittleGameManager.instance.bombManager.getDayMaxScoreByType(gameType);
+         HisMax = HappyLittleGameManager.instance.bombManager.getHisMaxScoreByType(gameType);
+         _mytotalRank.text = HisRank == 0?LanguageMgr.GetTranslation("bombKing.outOfRank2"):HisRank + "";
+         _mydayRank.text = dayRank == 0?LanguageMgr.GetTranslation("bombKing.outOfRank2"):dayRank + "";
+         _historyMax.text = HisMax + "";
+         _dayMax.text = dayMax + "";
       }
       
       private function showServerScores() : void
@@ -279,34 +279,32 @@ package happyLittleGame.bombshellGame.view
          }
       }
       
-      private function SetScores(param1:int) : void
+      private function SetScores(score:int) : void
       {
          if(_scoreValue)
          {
-            _scoreValue.count = _scoreValue.count + param1;
+            _scoreValue.count = _scoreValue.count + score;
          }
       }
       
       private function dataTxt() : void
       {
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
-         var _loc1_:Array = HappyLittleGameManager.instance.bombManager.model.BombTrain;
-         var _loc3_:String = "";
-         _loc2_ = 0;
-         while(_loc2_ < 10)
+         var ii:int = 0;
+         var jj:int = 0;
+         var arr:Array = HappyLittleGameManager.instance.bombManager.model.BombTrain;
+         var temp:String = "";
+         for(ii = 0; ii < 10; )
          {
-            _loc4_ = 0;
-            while(_loc4_ < 10)
+            for(jj = 0; jj < 10; )
             {
-               _loc3_ = _loc3_ + (_loc1_[_loc2_][_loc4_] + " ,");
-               _loc4_++;
+               temp = temp + (arr[ii][jj] + " ,");
+               jj++;
             }
-            trace(_loc3_);
-            _loc3_ = _loc3_ + "\n\n";
-            _loc2_++;
+            trace(temp);
+            temp = temp + "\n\n";
+            ii++;
          }
-         _mapData.text = _loc3_;
+         _mapData.text = temp;
       }
       
       private function initEvent() : void
@@ -325,12 +323,12 @@ package happyLittleGame.bombshellGame.view
          SocketManager.Instance.addEventListener(PkgEvent.format(372,6),__gameNextHandler);
       }
       
-      private function __refreshMaxScoreHadler(param1:HappyLittleGameEvent) : void
+      private function __refreshMaxScoreHadler(evt:HappyLittleGameEvent) : void
       {
          setRankData();
       }
       
-      private function __firstPageBtnClickHandler(param1:MouseEvent) : void
+      private function __firstPageBtnClickHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_currentRankType == 2)
@@ -345,38 +343,38 @@ package happyLittleGame.bombshellGame.view
          }
       }
       
-      private function __pageEndBtnClickHander(param1:MouseEvent) : void
+      private function __pageEndBtnClickHander(evt:MouseEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
+         var len:int = 0;
+         var lenII:int = 0;
          SoundManager.instance.play("008");
          if(_currentRankType == 2)
          {
-            _loc2_ = Math.ceil(_currentarr.length / 10);
-            if(_dayPageIndex < _loc2_)
+            len = Math.ceil(_currentarr.length / 10);
+            if(_dayPageIndex < len)
             {
-               _dayPageIndex = _loc2_;
+               _dayPageIndex = len;
                showDayRankByPage(_dayPageIndex);
             }
          }
          if(_currentRankType == 1)
          {
-            _loc3_ = Math.ceil(_currentarr.length / 10);
-            if(_totalPageIndex < _loc3_)
+            lenII = Math.ceil(_currentarr.length / 10);
+            if(_totalPageIndex < lenII)
             {
-               _totalPageIndex = _loc3_;
+               _totalPageIndex = lenII;
                showDayRankByPage(_totalPageIndex);
             }
          }
       }
       
-      private function __keydownhandler(param1:KeyboardEvent) : void
+      private function __keydownhandler(evt:KeyboardEvent) : void
       {
-         if(param1.keyCode == 38)
+         if(evt.keyCode == 38)
          {
             _stepValue.count = _stepValue.count + 1;
          }
-         if(param1.keyCode == 40)
+         if(evt.keyCode == 40)
          {
             _stepValue.count = _stepValue.count - 1;
          }
@@ -384,13 +382,13 @@ package happyLittleGame.bombshellGame.view
       
       private function wandMc() : void
       {
-         var _loc1_:int = 0;
+         var mcDis:int = 0;
          if(_currentStep != _stepValue.count)
          {
             if(_currentStep > _stepValue.count)
             {
-               _loc1_ = Math.ceil(_maskH * (_maskBasic - _stepValue.count) / _maskBasic);
-               if(_wandBitMapMask.height < _loc1_)
+               mcDis = Math.ceil(_maskH * (_maskBasic - _stepValue.count) / _maskBasic);
+               if(_wandBitMapMask.height < mcDis)
                {
                   _wandBitMapMask.height++;
                }
@@ -401,8 +399,8 @@ package happyLittleGame.bombshellGame.view
             }
             else
             {
-               _loc1_ = Math.ceil(_maskH * (_maskBasic - _stepValue.count) / _maskBasic);
-               if(_wandBitMapMask.height > _loc1_)
+               mcDis = Math.ceil(_maskH * (_maskBasic - _stepValue.count) / _maskBasic);
+               if(_wandBitMapMask.height > mcDis)
                {
                   _wandBitMapMask.height--;
                }
@@ -494,15 +492,15 @@ package happyLittleGame.bombshellGame.view
          SocketManager.Instance.removeEventListener(PkgEvent.format(372,6),__gameNextHandler);
       }
       
-      private function __pageRClickHandler(param1:MouseEvent) : void
+      private function __pageRClickHandler(evt:MouseEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
+         var len:int = 0;
+         var lenII:int = 0;
          SoundManager.instance.play("008");
          if(_currentRankType == 2)
          {
-            _loc2_ = Math.ceil(_currentarr.length / 10);
-            if(_dayPageIndex < _loc2_)
+            len = Math.ceil(_currentarr.length / 10);
+            if(_dayPageIndex < len)
             {
                _dayPageIndex = Number(_dayPageIndex) + 1;
             }
@@ -514,8 +512,8 @@ package happyLittleGame.bombshellGame.view
          }
          if(_currentRankType == 1)
          {
-            _loc3_ = Math.ceil(_currentarr.length / 10);
-            if(_totalPageIndex < _loc3_)
+            lenII = Math.ceil(_currentarr.length / 10);
+            if(_totalPageIndex < lenII)
             {
                _totalPageIndex = Number(_totalPageIndex) + 1;
             }
@@ -527,9 +525,9 @@ package happyLittleGame.bombshellGame.view
          }
       }
       
-      private function __pageLClickHandler(param1:MouseEvent) : void
+      private function __pageLClickHandler(evt:MouseEvent) : void
       {
-         var _loc2_:int = 0;
+         var len:int = 0;
          SoundManager.instance.play("008");
          if(_currentRankType == 2)
          {
@@ -539,8 +537,8 @@ package happyLittleGame.bombshellGame.view
             }
             else
             {
-               _loc2_ = Math.ceil(_currentarr.length / 10);
-               _dayPageIndex = _loc2_;
+               len = Math.ceil(_currentarr.length / 10);
+               _dayPageIndex = len;
             }
             showDayRankByPage(_dayPageIndex);
          }
@@ -552,14 +550,14 @@ package happyLittleGame.bombshellGame.view
             }
             else
             {
-               _loc2_ = Math.ceil(_currentarr.length / 10);
-               _totalPageIndex = _loc2_;
+               len = Math.ceil(_currentarr.length / 10);
+               _totalPageIndex = len;
             }
             showDayRankByPage(_totalPageIndex);
          }
       }
       
-      private function __rankDayClickHandler(param1:MouseEvent) : void
+      private function __rankDayClickHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_dayRankBtn.selected == false)
@@ -571,7 +569,7 @@ package happyLittleGame.bombshellGame.view
          }
       }
       
-      private function _rankTotalClickHandler(param1:MouseEvent) : void
+      private function _rankTotalClickHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_totalRankBtn.selected == false)
@@ -583,10 +581,10 @@ package happyLittleGame.bombshellGame.view
          }
       }
       
-      private function __gameNextHandler(param1:PkgEvent) : void
+      private function __gameNextHandler(pkg:PkgEvent) : void
       {
          _lvValue.count = HappyLittleGameManager.instance.bombManager.currentGameLv;
-         var _loc2_:* = param1.pkg.readInt();
+         var _loc2_:* = pkg.pkg.readInt();
          HappyLittleGameManager.instance.bombManager.model.CurrentGameCanBeClickTimes = _loc2_;
          this._stepValue.count = _loc2_;
          showLvMc();
@@ -598,9 +596,9 @@ package happyLittleGame.bombshellGame.view
       
       private function showLvMc() : void
       {
-         var _loc4_:* = null;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
+         var num1:* = null;
+         var num2:* = null;
+         var num3:* = null;
          if(_lvMc == null)
          {
             _lvMc = ClassUtils.CreatInstance("asset.happygame.lv.mc");
@@ -608,33 +606,33 @@ package happyLittleGame.bombshellGame.view
             addChild(_lvMc);
          }
          _lvMc.gotoAndPlay(1);
-         var _loc1_:int = HappyLittleGameManager.instance.bombManager.currentGameLv;
-         if(_loc1_ < 10)
+         var lv:int = HappyLittleGameManager.instance.bombManager.currentGameLv;
+         if(lv < 10)
          {
             _lvMc.lv.lv_2.visible = false;
             _lvMc.lv.lv_3.visible = false;
-            _loc4_ = _lvMc.lv.lv_1;
-            _loc4_.gotoAndStop("s_" + _loc1_);
+            num1 = _lvMc.lv.lv_1;
+            num1.gotoAndStop("s_" + lv);
          }
-         if(_loc1_ < 99 && _loc1_ > 9)
+         if(lv < 99 && lv > 9)
          {
             _lvMc.lv.lv_3.visible = false;
-            _loc4_ = _lvMc.lv.lv_1;
-            _loc2_ = _lvMc.lv.lv_2;
-            _loc2_.visible = true;
-            _loc4_.gotoAndStop("s_" + Math.floor(_loc1_ / 10));
-            _loc2_.gotoAndStop("s_" + _loc1_ % 10);
+            num1 = _lvMc.lv.lv_1;
+            num2 = _lvMc.lv.lv_2;
+            num2.visible = true;
+            num1.gotoAndStop("s_" + Math.floor(lv / 10));
+            num2.gotoAndStop("s_" + lv % 10);
          }
-         if(_loc1_ > 99)
+         if(lv > 99)
          {
-            _loc4_ = _lvMc.lv.lv_1;
-            _loc2_ = _lvMc.lv.lv_2;
-            _loc2_.visible = true;
-            _loc3_ = _lvMc.lv.lv_3;
-            _loc3_.visible = true;
-            _loc4_.gotoAndStop("s_" + Math.floor(_loc1_ / 100));
-            _loc2_.gotoAndStop("s_" + Math.floor(_loc1_ / 10) % 10);
-            _loc3_.gotoAndStop("s_" + _loc1_ % 100 % 10);
+            num1 = _lvMc.lv.lv_1;
+            num2 = _lvMc.lv.lv_2;
+            num2.visible = true;
+            num3 = _lvMc.lv.lv_3;
+            num3.visible = true;
+            num1.gotoAndStop("s_" + Math.floor(lv / 100));
+            num2.gotoAndStop("s_" + Math.floor(lv / 10) % 10);
+            num3.gotoAndStop("s_" + lv % 100 % 10);
          }
       }
       
@@ -652,13 +650,13 @@ package happyLittleGame.bombshellGame.view
          }
       }
       
-      public function __refreshClickHandler(param1:PkgEvent) : void
+      public function __refreshClickHandler(pkg:PkgEvent) : void
       {
-         HappyLittleGameManager.instance.bombManager.model.CurrentScores = HappyLittleGameManager.instance.bombManager.model.CurrentScores + param1.pkg.readInt();
-         HappyLittleGameManager.instance.bombManager.model.CurrentGameCanBeClickTimes = param1.pkg.readInt();
+         HappyLittleGameManager.instance.bombManager.model.CurrentScores = HappyLittleGameManager.instance.bombManager.model.CurrentScores + pkg.pkg.readInt();
+         HappyLittleGameManager.instance.bombManager.model.CurrentGameCanBeClickTimes = pkg.pkg.readInt();
          refreshStep();
          adjustmentStepPos();
-         HappyLittleGameManager.instance.currentGameState = param1.pkg.readInt();
+         HappyLittleGameManager.instance.currentGameState = pkg.pkg.readInt();
          if(HappyLittleGameManager.instance.currentGameState == 1)
          {
             if(_logic)
@@ -711,14 +709,14 @@ package happyLittleGame.bombshellGame.view
       
       private function refreshStep() : void
       {
-         var _loc3_:int = ServerConfigManager.instance.BombGameDoubleScoreBeginCount;
-         var _loc1_:int = ServerConfigManager.instance.BombGameDoubleScoreKeepCount;
-         var _loc2_:int = HappyLittleGameManager.instance.bombManager.model.CurrentGameCanBeClickTimes;
-         if(_loc3_ <= _loc2_)
+         var step:int = ServerConfigManager.instance.BombGameDoubleScoreBeginCount;
+         var distance:int = ServerConfigManager.instance.BombGameDoubleScoreKeepCount;
+         var temp:int = HappyLittleGameManager.instance.bombManager.model.CurrentGameCanBeClickTimes;
+         if(step <= temp)
          {
             HappyLittleGameManager.instance.bombManager.doubleScore = true;
          }
-         else if(HappyLittleGameManager.instance.bombManager.doubleScore && _loc2_ <= _loc3_ - _loc1_)
+         else if(HappyLittleGameManager.instance.bombManager.doubleScore && temp <= step - distance)
          {
             HappyLittleGameManager.instance.bombManager.doubleScore = false;
          }
@@ -726,11 +724,11 @@ package happyLittleGame.bombshellGame.view
       
       private function checkStepCanAdd() : Boolean
       {
-         var _loc3_:int = ServerConfigManager.instance.BombGameDoubleScoreBeginCount;
-         var _loc1_:int = ServerConfigManager.instance.BombGameDoubleScoreKeepCount;
-         var _loc4_:Boolean = HappyLittleGameManager.instance.bombManager.doubleScore;
-         var _loc2_:int = HappyLittleGameManager.instance.bombManager.model.CurrentGameCanBeClickTimes;
-         if(_stepValue.count < _loc3_ && !(_loc4_ && _loc1_ > _loc3_ - _loc2_))
+         var step:int = ServerConfigManager.instance.BombGameDoubleScoreBeginCount;
+         var distance:int = ServerConfigManager.instance.BombGameDoubleScoreKeepCount;
+         var isDouble:Boolean = HappyLittleGameManager.instance.bombManager.doubleScore;
+         var serverStep:int = HappyLittleGameManager.instance.bombManager.model.CurrentGameCanBeClickTimes;
+         if(_stepValue.count < step && !(isDouble && distance > step - serverStep))
          {
             return false;
          }
@@ -762,19 +760,19 @@ package happyLittleGame.bombshellGame.view
          }
       }
       
-      private function setBtnClickState(param1:Boolean) : void
+      private function setBtnClickState(value:Boolean) : void
       {
          if(_backBtn)
          {
-            _backBtn.enable = param1;
+            _backBtn.enable = value;
          }
          if(_reStartBtn)
          {
-            _reStartBtn.enable = param1;
+            _reStartBtn.enable = value;
          }
       }
       
-      private function __passHandler(param1:Event) : void
+      private function __passHandler(evt:Event) : void
       {
          if(_logic)
          {
@@ -811,7 +809,7 @@ package happyLittleGame.bombshellGame.view
          }
       }
       
-      private function __passAllHandler(param1:Event) : void
+      private function __passAllHandler(evt:Event) : void
       {
          _passAll.addEventListener("complete",__passAllHandler);
          if(_logic)
@@ -820,14 +818,14 @@ package happyLittleGame.bombshellGame.view
          }
          HappyLittleGameManager.instance.bombManager.clearBombData();
          HappyLittleGameManager.instance.dispatchEvent(new HappyLittleGameEvent("cometoback"));
-         var _loc2_:int = HappyLittleGameManager.instance.currentGameType;
-         HappyLittleGameManager.instance.bombManager.clearRankDataByType(_loc2_);
+         var gameType:int = HappyLittleGameManager.instance.currentGameType;
+         HappyLittleGameManager.instance.bombManager.clearRankDataByType(gameType);
          SocketManager.Instance.out.sendBombEnterRoom(HappyLittleGameManager.instance.currentGameType);
-         FunnyGamesManager.getInstance().requestRankInfo(_loc2_,2);
-         FunnyGamesManager.getInstance().requestRankInfo(_loc2_,1);
+         FunnyGamesManager.getInstance().requestRankInfo(gameType,2);
+         FunnyGamesManager.getInstance().requestRankInfo(gameType,1);
       }
       
-      private function __gameoverhandler(param1:Event) : void
+      private function __gameoverhandler(evt:Event) : void
       {
          if(_oncemoreBtn == null)
          {
@@ -841,7 +839,7 @@ package happyLittleGame.bombshellGame.view
          }
       }
       
-      private function __oncemoreClickHandler(param1:MouseEvent) : void
+      private function __oncemoreClickHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_oncemoreBtn)
@@ -860,13 +858,13 @@ package happyLittleGame.bombshellGame.view
          SocketManager.Instance.out.sendBombStart(HappyLittleGameManager.instance.currentGameType);
       }
       
-      public function set RankInfos(param1:Vector.<BombRankInfo>) : void
+      public function set RankInfos(infos:Vector.<BombRankInfo>) : void
       {
-         if(_currentarr != param1)
+         if(_currentarr != infos)
          {
             _currentarr = null;
          }
-         _currentarr = param1;
+         _currentarr = infos;
          if(_currentRankType == 2)
          {
             showDayRankByPage(_dayPageIndex);
@@ -877,20 +875,20 @@ package happyLittleGame.bombshellGame.view
          }
       }
       
-      private function __backclickhandle(param1:MouseEvent) : void
+      private function __backclickhandle(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("happyLittleGame.goback"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
-         _loc2_.addEventListener("response",goBackSceneResponse);
+         var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("happyLittleGame.goback"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
+         alert.addEventListener("response",goBackSceneResponse);
       }
       
-      private function goBackSceneResponse(param1:FrameEvent) : void
+      private function goBackSceneResponse(e:FrameEvent) : void
       {
-         var _loc2_:int = 0;
+         var gameType:int = 0;
          SoundManager.instance.play("008");
-         var _loc3_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc3_.removeEventListener("response",onEnterSceneResponse);
-         switch(int(param1.responseCode))
+         var alert:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",onEnterSceneResponse);
+         switch(int(e.responseCode))
          {
             default:
             default:
@@ -903,22 +901,22 @@ package happyLittleGame.bombshellGame.view
                }
                HappyLittleGameManager.instance.bombManager.clearBombData();
                HappyLittleGameManager.instance.dispatchEvent(new HappyLittleGameEvent("cometoback"));
-               _loc2_ = HappyLittleGameManager.instance.currentGameType;
+               gameType = HappyLittleGameManager.instance.currentGameType;
                SocketManager.Instance.out.sendBombEnterRoom(HappyLittleGameManager.instance.currentGameType);
-               if(_loc2_ == 2)
+               if(gameType == 2)
                {
                   if(HappyLittleGameManager.instance.fixed_refresh)
                   {
-                     HappyLittleGameManager.instance.bombManager.clearRankDataByType(_loc2_);
+                     HappyLittleGameManager.instance.bombManager.clearRankDataByType(gameType);
                      FunnyGamesManager.getInstance().requestRankInfo(2,2);
                      FunnyGamesManager.getInstance().requestRankInfo(2,1);
                   }
                }
-               if(_loc2_ == 1)
+               if(gameType == 1)
                {
                   if(HappyLittleGameManager.instance.random_refresh)
                   {
-                     HappyLittleGameManager.instance.bombManager.clearRankDataByType(_loc2_);
+                     HappyLittleGameManager.instance.bombManager.clearRankDataByType(gameType);
                      FunnyGamesManager.getInstance().requestRankInfo(1,2);
                      FunnyGamesManager.getInstance().requestRankInfo(1,1);
                   }
@@ -931,43 +929,43 @@ package happyLittleGame.bombshellGame.view
                }
                HappyLittleGameManager.instance.bombManager.clearBombData();
                HappyLittleGameManager.instance.dispatchEvent(new HappyLittleGameEvent("cometoback"));
-               _loc2_ = HappyLittleGameManager.instance.currentGameType;
+               gameType = HappyLittleGameManager.instance.currentGameType;
                SocketManager.Instance.out.sendBombEnterRoom(HappyLittleGameManager.instance.currentGameType);
-               if(_loc2_ == 2)
+               if(gameType == 2)
                {
                   if(HappyLittleGameManager.instance.fixed_refresh)
                   {
-                     HappyLittleGameManager.instance.bombManager.clearRankDataByType(_loc2_);
+                     HappyLittleGameManager.instance.bombManager.clearRankDataByType(gameType);
                      FunnyGamesManager.getInstance().requestRankInfo(2,2);
                      FunnyGamesManager.getInstance().requestRankInfo(2,1);
                   }
                }
-               if(_loc2_ == 1)
+               if(gameType == 1)
                {
                   if(HappyLittleGameManager.instance.random_refresh)
                   {
-                     HappyLittleGameManager.instance.bombManager.clearRankDataByType(_loc2_);
+                     HappyLittleGameManager.instance.bombManager.clearRankDataByType(gameType);
                      FunnyGamesManager.getInstance().requestRankInfo(1,2);
                      FunnyGamesManager.getInstance().requestRankInfo(1,1);
                   }
                }
          }
-         _loc3_.dispose();
+         alert.dispose();
       }
       
-      private function __restartclickhandler(param1:MouseEvent) : void
+      private function __restartclickhandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("happyLittleGame.checkRePlay"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
-         _loc2_.addEventListener("response",onEnterSceneResponse);
+         var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("happyLittleGame.checkRePlay"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
+         alert.addEventListener("response",onEnterSceneResponse);
       }
       
-      private function onEnterSceneResponse(param1:FrameEvent) : void
+      private function onEnterSceneResponse(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",onEnterSceneResponse);
-         switch(int(param1.responseCode))
+         var alert:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",onEnterSceneResponse);
+         switch(int(e.responseCode))
          {
             default:
             default:
@@ -997,7 +995,7 @@ package happyLittleGame.bombshellGame.view
                HappyLittleGameManager.instance.bombManager.GetCurrentBombMapData();
                SocketManager.Instance.out.sendBombStart(HappyLittleGameManager.instance.currentGameType);
          }
-         _loc2_.dispose();
+         alert.dispose();
       }
       
       public function ReStart() : void
@@ -1019,87 +1017,80 @@ package happyLittleGame.bombshellGame.view
          }
       }
       
-      private function getComponentByStylename(param1:String) : *
+      private function getComponentByStylename(stylename:String) : *
       {
-         return ComponentFactory.Instance.creatComponentByStylename(param1);
+         return ComponentFactory.Instance.creatComponentByStylename(stylename);
       }
       
       private function initRankItem() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:int = 0;
+         var item:* = null;
+         var i:int = 0;
          _items = new Vector.<BombRankItemIII>();
-         _loc2_ = 0;
-         while(_loc2_ < 10)
+         for(i = 0; i < 10; )
          {
-            _loc1_ = new BombRankItemIII();
-            _loc1_.x = 737;
-            _loc1_.y = _loc2_ * 28 + 137;
-            addChild(_loc1_);
-            _items.push(_loc1_);
-            _loc2_++;
+            item = new BombRankItemIII();
+            item.x = 737;
+            item.y = i * 28 + 137;
+            addChild(item);
+            _items.push(item);
+            i++;
          }
       }
       
       public function clearItemInfo() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = _items.length;
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_)
+         var i:int = 0;
+         var len:int = _items.length;
+         for(i = 0; i < len; )
          {
-            _items[_loc2_].clear();
-            _loc2_++;
+            _items[i].clear();
+            i++;
          }
       }
       
-      public function showDayRankByPage(param1:int) : void
+      public function showDayRankByPage(page:int) : void
       {
-         var _loc2_:* = 0;
+         var index:* = 0;
          clearItemInfo();
          if(_currentarr.length == 0)
          {
             return;
          }
-         var _loc6_:int = Math.ceil(_currentarr.length / 10);
-         var _loc3_:int = (param1 - 1) * 10;
-         var _loc5_:int = _loc3_ + 10;
-         var _loc4_:int = 0;
-         _pageTxt.text = param1 + "/" + _loc6_;
-         if(param1 > _loc6_)
+         var len:int = Math.ceil(_currentarr.length / 10);
+         var startIndex:int = (page - 1) * 10;
+         var endIndex:int = startIndex + 10;
+         var infoIndex:int = 0;
+         _pageTxt.text = page + "/" + len;
+         if(page > len)
          {
+            trace("翻页超出");
             return;
-            §§push(trace("翻页超出"));
          }
-         else
+         if(page == len)
          {
-            if(param1 == _loc6_)
+            endIndex = _currentarr.length;
+         }
+         for(index = startIndex; index < endIndex; )
+         {
+            if(index < _currentarr.length)
             {
-               _loc5_ = _currentarr.length;
+               _items[infoIndex].Info = _currentarr[index];
+               infoIndex++;
             }
-            _loc2_ = _loc3_;
-            while(_loc2_ < _loc5_)
-            {
-               if(_loc2_ < _currentarr.length)
-               {
-                  _items[_loc4_].Info = _currentarr[_loc2_];
-                  _loc4_++;
-               }
-               _loc2_++;
-            }
-            return;
+            index++;
          }
       }
       
       public function dispose() : void
       {
-         var _loc1_:* = null;
+         var obj:* = null;
          removeEvent();
          while(this.numChildren > 0)
          {
-            _loc1_ = removeChildAt(0);
-            ObjectUtils.disposeObject(_loc1_);
-            _loc1_ = null;
+            obj = removeChildAt(0);
+            ObjectUtils.disposeObject(obj);
+            obj = null;
          }
          _items = null;
          _currentarr = null;

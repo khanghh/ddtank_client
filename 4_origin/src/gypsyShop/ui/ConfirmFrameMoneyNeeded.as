@@ -19,19 +19,19 @@ package gypsyShop.ui
          _confirmFrameMngr = new ConfirmFrameWithNotShowCheckManager();
       }
       
-      public function setID(param1:int) : void
+      public function setID(id:int) : void
       {
-         _id = param1;
+         _id = id;
       }
       
       public function alert() : void
       {
-         var _loc2_:String = LanguageMgr.GetTranslation("tank.game.GameView.gypsyRMBTicketConfirm",getPrice());
-         var _loc1_:String = LanguageMgr.GetTranslation("AlertDialog.Info");
-         var _loc3_:String = "gypsy.confirmView";
-         _confirmFrameMngr.detail = _loc2_;
-         _confirmFrameMngr.title = _loc1_;
-         _confirmFrameMngr.frameType = _loc3_;
+         var detail:String = LanguageMgr.GetTranslation("tank.game.GameView.gypsyRMBTicketConfirm",getPrice());
+         var title:String = LanguageMgr.GetTranslation("AlertDialog.Info");
+         var frameType:String = "gypsy.confirmView";
+         _confirmFrameMngr.detail = detail;
+         _confirmFrameMngr.title = title;
+         _confirmFrameMngr.frameType = frameType;
          _confirmFrameMngr.needMoney = getPrice();
          _confirmFrameMngr.onNotShowAgain = onNotShowAgain;
          _confirmFrameMngr.onComfirm = onConfirm;
@@ -39,14 +39,14 @@ package gypsyShop.ui
          _confirmFrameMngr.alert();
       }
       
-      protected function onNotShowAgain(param1:Boolean) : void
+      protected function onNotShowAgain(bool:Boolean) : void
       {
-         GypsyPurchaseModel.getInstance().updateShowAlertRmbTicketBuy(!param1);
+         GypsyPurchaseModel.getInstance().updateShowAlertRmbTicketBuy(!bool);
       }
       
-      protected function isBind(param1:Boolean) : void
+      protected function isBind(isBind:Boolean) : void
       {
-         GypsyPurchaseModel.getInstance().updateIsUseBindRmbTicket(param1);
+         GypsyPurchaseModel.getInstance().updateIsUseBindRmbTicket(isBind);
       }
       
       protected function onConfirm() : void

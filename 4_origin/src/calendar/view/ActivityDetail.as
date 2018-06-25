@@ -62,42 +62,42 @@ package calendar.view
          configUI();
       }
       
-      private static function calculateLast(param1:Date, param2:Date) : String
+      private static function calculateLast(end:Date, now:Date) : String
       {
-         var _loc4_:int = param1.time - param2.time;
-         var _loc3_:String = "";
-         if(_loc4_ >= 86400000)
+         var last:int = end.time - now.time;
+         var op:String = "";
+         if(last >= 86400000)
          {
-            _loc3_ = _loc3_ + (Math.floor(_loc4_ / 86400000) + LanguageMgr.GetTranslation("day"));
-            _loc4_ = _loc4_ % 86400000;
+            op = op + (Math.floor(last / 86400000) + LanguageMgr.GetTranslation("day"));
+            last = last % 86400000;
          }
-         if(_loc4_ >= 3600000)
+         if(last >= 3600000)
          {
-            _loc3_ = _loc3_ + (Math.floor(_loc4_ / 3600000) + LanguageMgr.GetTranslation("hour"));
-            _loc4_ = _loc4_ % 3600000;
+            op = op + (Math.floor(last / 3600000) + LanguageMgr.GetTranslation("hour"));
+            last = last % 3600000;
          }
-         else if(_loc3_.length > 0)
+         else if(op.length > 0)
          {
-            _loc3_ = _loc3_ + ("00" + LanguageMgr.GetTranslation("hour"));
+            op = op + ("00" + LanguageMgr.GetTranslation("hour"));
          }
-         if(_loc4_ >= 60000)
+         if(last >= 60000)
          {
-            _loc3_ = _loc3_ + (Math.floor(_loc4_ / 60000) + LanguageMgr.GetTranslation("minute"));
-            _loc4_ = _loc4_ % 60000;
+            op = op + (Math.floor(last / 60000) + LanguageMgr.GetTranslation("minute"));
+            last = last % 60000;
          }
-         else if(_loc3_.length > 0)
+         else if(op.length > 0)
          {
-            _loc3_ = _loc3_ + ("00" + LanguageMgr.GetTranslation("minute"));
+            op = op + ("00" + LanguageMgr.GetTranslation("minute"));
          }
-         if(_loc4_ >= 1000)
+         if(last >= 1000)
          {
-            _loc3_ = _loc3_ + (Math.floor(_loc4_ / 1000) + LanguageMgr.GetTranslation("second"));
+            op = op + (Math.floor(last / 1000) + LanguageMgr.GetTranslation("second"));
          }
-         else if(_loc3_.length > 0)
+         else if(op.length > 0)
          {
-            _loc3_ = _loc3_ + ("00" + LanguageMgr.GetTranslation("second"));
+            op = op + ("00" + LanguageMgr.GetTranslation("second"));
          }
-         return _loc3_;
+         return op;
       }
       
       private function configUI() : void
@@ -120,14 +120,14 @@ package calendar.view
          _contentField = ComponentFactory.Instance.creatComponentByStylename("ddtcalendar.ActivityState.StateContentField");
          _contentWidth = _contentField.width;
          addChild(_contentField);
-         var _loc1_:DisplayObject = ComponentFactory.Instance.creatBitmap("asset.ddtcalendar.ActivityState.SeparatorLine");
-         PositionUtils.setPos(_loc1_,"ddtcalendar.ActivityState.LinePos" + _lines.length);
-         _lines.push(_loc1_);
-         addChild(_loc1_);
-         _loc1_ = ComponentFactory.Instance.creatBitmap("asset.ddtcalendar.ActivityState.SeparatorLine");
-         PositionUtils.setPos(_loc1_,"ddtcalendar.ActivityState.LinePos" + _lines.length);
-         _lines.push(_loc1_);
-         addChild(_loc1_);
+         var line:DisplayObject = ComponentFactory.Instance.creatBitmap("asset.ddtcalendar.ActivityState.SeparatorLine");
+         PositionUtils.setPos(line,"ddtcalendar.ActivityState.LinePos" + _lines.length);
+         _lines.push(line);
+         addChild(line);
+         line = ComponentFactory.Instance.creatBitmap("asset.ddtcalendar.ActivityState.SeparatorLine");
+         PositionUtils.setPos(line,"ddtcalendar.ActivityState.LinePos" + _lines.length);
+         _lines.push(line);
+         addChild(line);
          _time = ComponentFactory.Instance.creatBitmap("asset.ddtcalendar.ActivityState.TimeIcon");
          addChild(_time);
          _award = ComponentFactory.Instance.creatBitmap("asset.ddtcalendar.ActivityState.AwardIcon");
@@ -140,10 +140,10 @@ package calendar.view
          addChild(_inputField);
       }
       
-      private function __timer(param1:Event) : void
+      private function __timer(event:Event) : void
       {
-         var _loc2_:Date = TimeManager.Instance.Now();
-         if(_loc2_.time <= _info.end.time)
+         var now:Date = TimeManager.Instance.Now();
+         if(now.time <= _info.end.time)
          {
          }
       }
@@ -155,13 +155,13 @@ package calendar.view
          __timer(null);
       }
       
-      public function setData(param1:ActiveEventsInfo) : void
+      public function setData(info:ActiveEventsInfo) : void
       {
-         if(_info == param1)
+         if(_info == info)
          {
             return;
          }
-         _info = param1;
+         _info = info;
          if(_timer == null)
          {
             _timer = TimerManager.getInstance().addTimerJuggler(1000);
@@ -173,7 +173,7 @@ package calendar.view
          _awardField.y = _award.y + _award.height - 4;
          _awardField.autoSize = "none";
          _awardField.width = _awardWidth;
-         _awardField.text = param1.AwardContent;
+         _awardField.text = info.AwardContent;
          _awardField.autoSize = "left";
          _awardTitle.x = _award.x + _award.width + 4;
          _awardTitle.y = _award.y;
@@ -182,13 +182,13 @@ package calendar.view
          _contentField.y = _content.y + _content.height - 8;
          _contentField.autoSize = "none";
          _contentField.width = _contentWidth;
-         _contentField.htmlText = param1.Content;
+         _contentField.htmlText = info.Content;
          _contentField.autoSize = "left";
          _contentField.mouseEnabled = true;
          _contentField.selectable = false;
          _contentTitle.x = _content.x + _content.width + 4;
          _contentTitle.y = _content.y;
-         _hasKey = param1.HasKey;
+         _hasKey = info.HasKey;
          if(_hasKey == 1 || _hasKey == 7 || _hasKey == 8)
          {
             var _loc2_:Boolean = true;
@@ -208,7 +208,7 @@ package calendar.view
          _timeField.y = _lines[1].y + _lines[1].height + 8;
          _timeField.autoSize = "none";
          _timeField.width = _timeWidth;
-         _timeField.text = param1.activeTime();
+         _timeField.text = info.activeTime();
          _timeField.autoSize = "left";
          _time.y = _timeField.y - 2;
          _timeTitle.x = _time.x + _time.width + 4;
@@ -217,9 +217,9 @@ package calendar.view
       
       override public function get height() : Number
       {
-         var _loc1_:int = 0;
-         _loc1_ = _timeField.y + _timeField.height + 10;
-         return _loc1_;
+         var h:int = 0;
+         h = _timeField.y + _timeField.height + 10;
+         return h;
       }
       
       public function getInputField() : TextInput
@@ -258,12 +258,12 @@ package calendar.view
          _awardTitle = null;
          ObjectUtils.disposeObject(_contentTitle);
          _contentTitle = null;
-         var _loc1_:DisplayObject = _lines.shift();
-         while(_loc1_ != null)
+         var line:DisplayObject = _lines.shift();
+         while(line != null)
          {
-            ObjectUtils.disposeObject(_loc1_);
-            _loc1_ = null;
-            _loc1_ = _lines.shift();
+            ObjectUtils.disposeObject(line);
+            line = null;
+            line = _lines.shift();
          }
          if(parent)
          {

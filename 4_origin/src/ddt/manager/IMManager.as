@@ -157,17 +157,17 @@ package ddt.manager
          loadIcon();
       }
       
-      private function __yearFoodRoomInvite(param1:CrazyTankSocketEvent) : void
+      private function __yearFoodRoomInvite(event:CrazyTankSocketEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:PackageIn = param1.pkg;
-         NewYearRiceManager.instance.model.playerID = _loc3_.readInt();
-         NewYearRiceManager.instance.model.playerName = _loc3_.readUTF();
-         var _loc4_:Boolean = _loc3_.readBoolean();
-         if(getInviteState() && InviteManager.Instance.enabled && !_loc4_)
+         var alert1:* = null;
+         var pkg:PackageIn = event.pkg;
+         NewYearRiceManager.instance.model.playerID = pkg.readInt();
+         NewYearRiceManager.instance.model.playerName = pkg.readUTF();
+         var isPublish:Boolean = pkg.readBoolean();
+         if(getInviteState() && InviteManager.Instance.enabled && !isPublish)
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("NewYearRiceMainView.view.Invite",NewYearRiceManager.instance.model.playerName),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
-            _loc2_.addEventListener("response",__inviteNewYearRice);
+            alert1 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("NewYearRiceMainView.view.Invite",NewYearRiceManager.instance.model.playerName),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
+            alert1.addEventListener("response",__inviteNewYearRice);
          }
          else
          {
@@ -175,21 +175,21 @@ package ddt.manager
          }
       }
       
-      private function __inviteNewYearRice(param1:FrameEvent) : void
+      private function __inviteNewYearRice(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__inviteNewYearRice);
-         _loc2_.disposeChildren = true;
-         _loc2_.dispose();
-         _loc2_ = null;
-         if(param1.responseCode == 3)
+         var alert:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",__inviteNewYearRice);
+         alert.disposeChildren = true;
+         alert.dispose();
+         alert = null;
+         if(e.responseCode == 3)
          {
             SocketManager.Instance.out.sendInviteYearFoodRoom(true,NewYearRiceManager.instance.model.playerID);
          }
       }
       
-      protected function __onChanllengeClick(param1:Event) : void
+      protected function __onChanllengeClick(e:Event) : void
       {
          if(PlayerTipManager.instance.info.Grade < 12)
          {
@@ -201,31 +201,30 @@ package ddt.manager
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.roomlist.friendOffline"));
             return;
          }
-         var _loc2_:int = Math.random() * RoomListEnumerate.PREWORD.length;
-         GameInSocketOut.sendCreateRoom(RoomListEnumerate.PREWORD[_loc2_],1,2,"");
+         var i:int = Math.random() * RoomListEnumerate.PREWORD.length;
+         GameInSocketOut.sendCreateRoom(RoomListEnumerate.PREWORD[i],1,2,"");
          RoomManager.Instance.tempInventPlayerID = PlayerTipManager.instance.info.ID;
       }
       
-      private function __privateTalkHandler(param1:PkgEvent) : void
+      private function __privateTalkHandler(event:PkgEvent) : void
       {
-         var _loc6_:* = null;
-         var _loc11_:int = 0;
-         var _loc7_:int = 0;
-         var _loc3_:* = null;
-         var _loc8_:PackageIn = param1.pkg;
-         var _loc5_:int = _loc8_.readInt();
-         var _loc4_:String = _loc8_.readUTF();
-         var _loc10_:Date = _loc8_.readDate();
-         var _loc2_:String = _loc8_.readUTF();
-         var _loc9_:Boolean = _loc8_.readBoolean();
-         _loc11_ = 0;
-         while(_loc11_ < _existChat.length)
+         var tempInfo:* = null;
+         var i:int = 0;
+         var n:int = 0;
+         var player:* = null;
+         var pkg:PackageIn = event.pkg;
+         var playerId:int = pkg.readInt();
+         var playerName:String = pkg.readUTF();
+         var date:Date = pkg.readDate();
+         var content:String = pkg.readUTF();
+         var autoReply:Boolean = pkg.readBoolean();
+         for(i = 0; i < _existChat.length; )
          {
-            if(_existChat[_loc11_].id == _loc5_)
+            if(_existChat[i].id == playerId)
             {
-               _loc6_ = _existChat[_loc11_];
-               _loc6_.addMessage(_loc4_,_loc10_,_loc2_);
-               if(_loc4_ != PlayerManager.Instance.Self.NickName)
+               tempInfo = _existChat[i];
+               tempInfo.addMessage(playerName,date,content);
+               if(playerName != PlayerManager.Instance.Self.NickName)
                {
                   if(!_talkTimer.running && _privateFrame != null)
                   {
@@ -233,193 +232,189 @@ package ddt.manager
                      _talkTimer.start();
                      _talkTimer.addEventListener("timer",__stopTalkTime);
                   }
-                  _existChat.splice(_loc11_,1);
-                  _existChat.unshift(_loc6_);
+                  _existChat.splice(i,1);
+                  _existChat.unshift(tempInfo);
                }
                break;
             }
-            _loc11_++;
+            i++;
          }
-         if(_loc6_ == null)
+         if(tempInfo == null)
          {
-            _loc6_ = new PresentRecordInfo();
-            _loc6_.id = _loc5_;
-            _loc6_.addMessage(_loc4_,_loc10_,_loc2_);
-            _existChat.unshift(_loc6_);
+            tempInfo = new PresentRecordInfo();
+            tempInfo.id = playerId;
+            tempInfo.addMessage(playerName,date,content);
+            _existChat.unshift(tempInfo);
          }
-         saveInShared(_loc6_);
+         saveInShared(tempInfo);
          getMessage();
-         saveRecentContactsID(_loc6_.id);
-         if(_privateFrame != null && _privateFrame.parent && _privateFrame.playerInfo.ID == _loc5_)
+         saveRecentContactsID(tempInfo.id);
+         if(_privateFrame != null && _privateFrame.parent && _privateFrame.playerInfo.ID == playerId)
          {
-            _loc7_ = 0;
-            while(_loc7_ < _existChat.length)
+            for(n = 0; n < _existChat.length; )
             {
-               if(_existChat[_loc7_].id == _loc5_)
+               if(_existChat[n].id == playerId)
                {
-                  _privateFrame.addMessage(_existChat[_loc7_].lastMessage);
-                  _existChat[_loc7_].exist = 0;
+                  _privateFrame.addMessage(_existChat[n].lastMessage);
+                  _existChat[n].exist = 0;
                   break;
                }
-               _loc7_++;
+               n++;
             }
          }
          else
          {
-            setExist(_loc5_,2);
-            changeID = _loc5_;
+            setExist(playerId,2);
+            changeID = playerId;
             cancelflashState = false;
             dispatchEvent(new Event("hasNewMessage"));
          }
-         if(PlayerManager.Instance.Self.playerState.AutoReply != "" && _loc4_ != PlayerManager.Instance.Self.NickName && !_loc9_)
+         if(PlayerManager.Instance.Self.playerState.AutoReply != "" && playerName != PlayerManager.Instance.Self.NickName && !autoReply)
          {
-            _loc3_ = PlayerManager.Instance.findPlayer(_loc5_) as PlayerInfo;
-            if(_loc3_ && _loc3_.playerState.StateID == 1)
+            player = PlayerManager.Instance.findPlayer(playerId) as PlayerInfo;
+            if(player && player.playerState.StateID == 1)
             {
-               SocketManager.Instance.out.sendOneOnOneTalk(_loc5_,FilterWordManager.filterWrod(PlayerManager.Instance.Self.playerState.AutoReply),true);
+               SocketManager.Instance.out.sendOneOnOneTalk(playerId,FilterWordManager.filterWrod(PlayerManager.Instance.Self.playerState.AutoReply),true);
             }
          }
       }
       
-      private function __stopTalkTime(param1:TimerEvent) : void
+      private function __stopTalkTime(event:TimerEvent) : void
       {
          _talkTimer.stop();
          _talkTimer.removeEventListener("timer",__stopTalkTime);
       }
       
-      public function setExist(param1:int, param2:int, param3:Boolean = false) : void
+      public function setExist(id:int, exist:int, isTeamChat:Boolean = false) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         if(param3)
+         var i:int = 0;
+         var j:int = 0;
+         if(isTeamChat)
          {
-            _loc5_ = 0;
-            while(_loc5_ < _existChat.length)
+            for(i = 0; i < _existChat.length; )
             {
-               if(_existChat[_loc5_].teamId == param1)
+               if(_existChat[i].teamId == id)
                {
-                  _existChat[_loc5_].exist = param2;
+                  _existChat[i].exist = exist;
                   break;
                }
-               _loc5_++;
+               i++;
             }
          }
          else
          {
-            _loc4_ = 0;
-            while(_loc4_ < _existChat.length)
+            j = 0;
+            while(j < _existChat.length)
             {
-               if(_existChat[_loc4_].id == param1)
+               if(_existChat[j].id == id)
                {
-                  _existChat[_loc4_].exist = param2;
+                  _existChat[j].exist = exist;
                   break;
                }
-               _loc4_++;
+               j++;
             }
          }
       }
       
-      private function TeamSaveShared(param1:PresentRecordInfo) : void
+      private function TeamSaveShared(tempInfo:PresentRecordInfo) : void
       {
-         var _loc2_:* = undefined;
-         if(SharedManager.Instance.teamChatRecord[param1.teamId] == null)
+         var message:* = undefined;
+         if(SharedManager.Instance.teamChatRecord[tempInfo.teamId] == null)
          {
-            SharedManager.Instance.teamChatRecord[param1.teamId] = param1.recordMessage;
+            SharedManager.Instance.teamChatRecord[tempInfo.teamId] = tempInfo.recordMessage;
          }
          else
          {
-            _loc2_ = SharedManager.Instance.teamChatRecord[param1.teamId];
-            if(_loc2_ != param1.recordMessage)
+            message = SharedManager.Instance.teamChatRecord[tempInfo.teamId];
+            if(message != tempInfo.recordMessage)
             {
-               _loc2_.push(param1.lastRecordMessage);
+               message.push(tempInfo.lastRecordMessage);
             }
-            SharedManager.Instance.teamChatRecord[param1.teamId] = _loc2_;
+            SharedManager.Instance.teamChatRecord[tempInfo.teamId] = message;
          }
          SharedManager.Instance.save();
       }
       
-      private function saveInShared(param1:PresentRecordInfo) : void
+      private function saveInShared(tempInfo:PresentRecordInfo) : void
       {
-         var _loc2_:* = undefined;
-         if(SharedManager.Instance.privateChatRecord[param1.id] == null)
+         var message:* = undefined;
+         if(SharedManager.Instance.privateChatRecord[tempInfo.id] == null)
          {
-            SharedManager.Instance.privateChatRecord[param1.id] = param1.recordMessage;
+            SharedManager.Instance.privateChatRecord[tempInfo.id] = tempInfo.recordMessage;
          }
          else
          {
-            _loc2_ = SharedManager.Instance.privateChatRecord[param1.id];
-            if(_loc2_ != param1.recordMessage)
+            message = SharedManager.Instance.privateChatRecord[tempInfo.id];
+            if(message != tempInfo.recordMessage)
             {
-               _loc2_.push(param1.lastRecordMessage);
+               message.push(tempInfo.lastRecordMessage);
             }
-            SharedManager.Instance.privateChatRecord[param1.id] = _loc2_;
+            SharedManager.Instance.privateChatRecord[tempInfo.id] = message;
          }
          SharedManager.Instance.save();
       }
       
-      private function __teamTalkHandler(param1:PkgEvent) : void
+      private function __teamTalkHandler(e:PkgEvent) : void
       {
-         var _loc4_:* = null;
-         var _loc9_:int = 0;
-         var _loc5_:int = 0;
-         var _loc6_:PackageIn = param1.pkg;
-         var _loc8_:int = _loc6_.readInt();
-         var _loc3_:String = _loc6_.readUTF();
-         var _loc7_:Date = _loc6_.readDate();
-         var _loc2_:String = _loc6_.readUTF();
-         _loc9_ = 0;
-         while(_loc9_ < _existChat.length)
+         var tempInfo:* = null;
+         var i:int = 0;
+         var n:int = 0;
+         var pkg:PackageIn = e.pkg;
+         var teamId:int = pkg.readInt();
+         var playerName:String = pkg.readUTF();
+         var date:Date = pkg.readDate();
+         var content:String = pkg.readUTF();
+         for(i = 0; i < _existChat.length; )
          {
-            if(_existChat[_loc9_].teamId == _loc8_)
+            if(_existChat[i].teamId == teamId)
             {
-               _loc4_ = _existChat[_loc9_];
-               _loc4_.addMessage(_loc3_,_loc7_,_loc2_);
-               if(_loc3_ != PlayerManager.Instance.Self.NickName)
+               tempInfo = _existChat[i];
+               tempInfo.addMessage(playerName,date,content);
+               if(playerName != PlayerManager.Instance.Self.NickName)
                {
-                  _existChat.splice(_loc9_,1);
-                  _existChat.unshift(_loc4_);
+                  _existChat.splice(i,1);
+                  _existChat.unshift(tempInfo);
                }
                break;
             }
-            _loc9_++;
+            i++;
          }
-         if(_loc4_ == null)
+         if(tempInfo == null)
          {
-            _loc4_ = new PresentRecordInfo();
-            _loc4_.teamId = _loc8_;
-            _loc4_.addMessage(_loc3_,_loc7_,_loc2_);
-            _existChat.unshift(_loc4_);
+            tempInfo = new PresentRecordInfo();
+            tempInfo.teamId = teamId;
+            tempInfo.addMessage(playerName,date,content);
+            _existChat.unshift(tempInfo);
          }
-         TeamSaveShared(_loc4_);
+         TeamSaveShared(tempInfo);
          getMessage();
          if(_teamChatFrame != null && _teamChatFrame.parent)
          {
-            _loc5_ = 0;
-            while(_loc5_ < _existChat.length)
+            for(n = 0; n < _existChat.length; )
             {
-               if(_existChat[_loc5_].teamId == _loc8_)
+               if(_existChat[n].teamId == teamId)
                {
-                  _teamChatFrame.addMessage(_existChat[_loc5_].lastMessage);
-                  _existChat[_loc5_].exist = 0;
+                  _teamChatFrame.addMessage(_existChat[n].lastMessage);
+                  _existChat[n].exist = 0;
                   break;
                }
-               _loc5_++;
+               n++;
             }
          }
          else
          {
-            setExist(_loc8_,2,true);
-            changeID = _loc8_;
+            setExist(teamId,2,true);
+            changeID = teamId;
             cancelflashState = false;
             dispatchEvent(new Event("hasNewMessage"));
          }
       }
       
-      public function alertTeamChatFrame(param1:int = 0) : void
+      public function alertTeamChatFrame(id:int = 0) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = undefined;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var messages:* = undefined;
+         var tempInfo:* = null;
          if(_teamChatFrame == null)
          {
             _teamChatFrame = ClassUtils.CreatInstance("team.view.im.TeamIMFrame");
@@ -430,29 +425,28 @@ package ddt.manager
             _privateFrame.parent.removeChild(_privateFrame);
             _lastId = 0;
          }
-         if(param1 != 0)
+         if(id != 0)
          {
-            _lastTeamId = param1;
+            _lastTeamId = id;
          }
          else
          {
             _lastTeamId = _existChat[0].id;
          }
-         _loc4_ = 0;
-         while(_loc4_ < _existChat.length)
+         for(i = 0; i < _existChat.length; )
          {
-            if(_existChat[_loc4_].teamId == param1)
+            if(_existChat[i].teamId == id)
             {
-               _existChat[_loc4_].exist = 0;
-               _loc3_ = _existChat[_loc4_].messages;
-               _teamChatFrame.addAllMessage(_loc3_);
-               _loc2_ = _existChat[_loc4_];
+               _existChat[i].exist = 0;
+               messages = _existChat[i].messages;
+               _teamChatFrame.addAllMessage(messages);
+               tempInfo = _existChat[i];
                dispatchEvent(new Event("alertMessage"));
-               _existChat.splice(_loc4_,1);
-               _existChat.push(_loc2_);
+               _existChat.splice(i,1);
+               _existChat.push(tempInfo);
                break;
             }
-            _loc4_++;
+            i++;
          }
          if(!hasUnreadMessage())
          {
@@ -465,11 +459,11 @@ package ddt.manager
          }
       }
       
-      public function alertPrivateFrame(param1:int = 0) : void
+      public function alertPrivateFrame(id:int = 0) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = undefined;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var messages:* = undefined;
+         var tempInfo:* = null;
          if(_privateFrame == null)
          {
             _privateFrame = ComponentFactory.Instance.creatComponentByStylename("privateChatFrame");
@@ -478,11 +472,11 @@ package ddt.manager
          {
             return;
          }
-         if(param1 == 0 && (_existChat.length == 0 || _existChat.length == 1 && _privateFrame.parent))
+         if(id == 0 && (_existChat.length == 0 || _existChat.length == 1 && _privateFrame.parent))
          {
             return;
          }
-         if(param1 != 0 && _lastId == param1)
+         if(id != 0 && _lastId == id)
          {
             return;
          }
@@ -496,10 +490,10 @@ package ddt.manager
             setExist(_lastId,1);
             _privateFrame.parent.removeChild(_privateFrame);
          }
-         if(param1 != 0)
+         if(id != 0)
          {
-            _changeInfo = PlayerManager.Instance.findPlayer(param1);
-            _lastId = param1;
+            _changeInfo = PlayerManager.Instance.findPlayer(id);
+            _lastId = id;
          }
          else
          {
@@ -515,29 +509,29 @@ package ddt.manager
             SocketManager.Instance.out.sendItemEquip(_changeInfo.ID,false);
             _changeInfo.addEventListener("propertychange",__IDChange);
          }
-         _loc4_ = 0;
-         while(_loc4_ < _existChat.length)
+         i = 0;
+         while(i < _existChat.length)
          {
-            if(_existChat[_loc4_].id == _lastId)
+            if(_existChat[i].id == _lastId)
             {
-               _existChat[_loc4_].exist = 0;
-               _loc3_ = _existChat[_loc4_].messages;
-               _privateFrame.addAllMessage(_loc3_);
-               _loc2_ = _existChat[_loc4_];
-               changeID = _existChat[_loc4_].id;
+               _existChat[i].exist = 0;
+               messages = _existChat[i].messages;
+               _privateFrame.addAllMessage(messages);
+               tempInfo = _existChat[i];
+               changeID = _existChat[i].id;
                dispatchEvent(new Event("alertMessage"));
-               _existChat.splice(_loc4_,1);
-               _existChat.push(_loc2_);
+               _existChat.splice(i,1);
+               _existChat.push(tempInfo);
                break;
             }
-            _loc4_++;
+            i++;
          }
          if(!hasUnreadMessage())
          {
             dispatchEvent(new Event("nomessage"));
          }
          getMessage();
-         saveRecentContactsID(param1);
+         saveRecentContactsID(id);
          LayerManager.Instance.addToLayer(_privateFrame,2,true);
       }
       
@@ -549,99 +543,96 @@ package ddt.manager
       
       public function hasUnreadMessage() : Boolean
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _existChat.length)
+         var i:int = 0;
+         for(i = 0; i < _existChat.length; )
          {
-            if(_existChat[_loc1_].exist == 2)
+            if(_existChat[i].exist == 2)
             {
                return true;
             }
-            _loc1_++;
+            i++;
          }
          return false;
       }
       
-      protected function __IDChange(param1:PlayerPropertyEvent) : void
+      protected function __IDChange(event:PlayerPropertyEvent) : void
       {
          _changeInfo.removeEventListener("propertychange",__IDChange);
          _privateFrame.playerInfo = _changeInfo;
       }
       
-      public function hidePrivateFrame(param1:int) : void
+      public function hidePrivateFrame(id:int) : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          StageReferance.stage.focus = StageReferance.stage;
-         _loc2_ = 0;
-         while(_loc2_ < _existChat.length)
+         for(i = 0; i < _existChat.length; )
          {
-            if(param1 != _existChat[_loc2_].id)
+            if(id != _existChat[i].id)
             {
-               if(_loc2_ == _existChat.length - 1)
+               if(i == _existChat.length - 1)
                {
-                  createPresentRecordInfo(param1);
+                  createPresentRecordInfo(id);
                }
-               _loc2_++;
+               i++;
                continue;
             }
             break;
          }
          if(_existChat.length == 0)
          {
-            createPresentRecordInfo(param1);
+            createPresentRecordInfo(id);
          }
          _lastId = 0;
          if(_privateFrame.parent)
          {
             _privateFrame.parent.removeChild(_privateFrame);
          }
-         setExist(param1,1);
+         setExist(id,1);
       }
       
-      public function hideTeamChatFrame(param1:int) : void
+      public function hideTeamChatFrame(id:int) : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          StageReferance.stage.focus = StageReferance.stage;
-         _loc2_ = 0;
-         while(_loc2_ < _existChat.length)
+         for(i = 0; i < _existChat.length; )
          {
-            if(param1 != _existChat[_loc2_].teamId)
+            if(id != _existChat[i].teamId)
             {
-               if(_loc2_ == _existChat.length - 1)
+               if(i == _existChat.length - 1)
                {
-                  createPresentRecordInfo(param1,true);
+                  createPresentRecordInfo(id,true);
                }
-               _loc2_++;
+               i++;
                continue;
             }
             break;
          }
          if(_existChat.length == 0)
          {
-            createPresentRecordInfo(param1,true);
+            createPresentRecordInfo(id,true);
          }
          _lastId = 0;
          if(_teamChatFrame.parent)
          {
             _teamChatFrame.parent.removeChild(_teamChatFrame);
          }
-         setExist(param1,1,true);
+         setExist(id,1,true);
       }
       
-      private function createPresentRecordInfo(param1:int, param2:Boolean = false) : void
+      private function createPresentRecordInfo(id:int, isTeamChat:Boolean = false) : void
       {
-         var _loc3_:* = null;
-         _loc3_ = new PresentRecordInfo();
-         if(param2)
+         var tempInfo:* = null;
+         tempInfo = new PresentRecordInfo();
+         if(isTeamChat)
          {
-            _loc3_.teamId = param1;
+            tempInfo.teamId = id;
          }
          else
          {
-            _loc3_.id = param1;
+            tempInfo.id = id;
          }
-         _loc3_.exist = 1;
-         _existChat.push(_loc3_);
+         tempInfo.exist = 1;
+         _existChat.push(tempInfo);
       }
       
       public function disposeTeamChatFrame() : void
@@ -655,7 +646,7 @@ package ddt.manager
          removeTeamMessage(PlayerManager.Instance.Self.teamID);
       }
       
-      public function disposePrivateFrame(param1:int) : void
+      public function disposePrivateFrame(id:int) : void
       {
          StageReferance.stage.focus = StageReferance.stage;
          _lastId = 0;
@@ -663,38 +654,36 @@ package ddt.manager
          {
             _privateFrame.parent.removeChild(_privateFrame);
          }
-         removePrivateMessage(param1);
+         removePrivateMessage(id);
       }
       
-      public function removeTeamMessage(param1:int) : void
+      public function removeTeamMessage(id:int) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _existChat.length)
+         var i:int = 0;
+         for(i = 0; i < _existChat.length; )
          {
-            if(_existChat[_loc2_].teamId == param1)
+            if(_existChat[i].teamId == id)
             {
-               _existChat.splice(_loc2_,1);
+               _existChat.splice(i,1);
                break;
             }
-            _loc2_++;
+            i++;
          }
       }
       
-      public function removePrivateMessage(param1:int) : void
+      public function removePrivateMessage(id:int) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _existChat.length)
+         var i:int = 0;
+         for(i = 0; i < _existChat.length; )
          {
-            if(_existChat[_loc2_].id == param1)
+            if(_existChat[i].id == id)
             {
-               changeID = param1;
+               changeID = id;
                dispatchEvent(new Event("alertMessage"));
-               _existChat.splice(_loc2_,1);
+               _existChat.splice(i,1);
                break;
             }
-            _loc2_++;
+            i++;
          }
          if(!hasUnreadMessage())
          {
@@ -702,9 +691,9 @@ package ddt.manager
          }
       }
       
-      public function showMessageBox(param1:DisplayObject) : void
+      public function showMessageBox(obj:DisplayObject) : void
       {
-         var _loc2_:* = null;
+         var pos:* = null;
          if(_messageBox == null)
          {
             _messageBox = new MessageBox();
@@ -714,9 +703,9 @@ package ddt.manager
          if(getMessage().length > 0)
          {
             LayerManager.Instance.addToLayer(_messageBox,2);
-            _loc2_ = param1.localToGlobal(new Point(0,0));
-            _messageBox.y = _loc2_.y - _messageBox.height;
-            _messageBox.x = _loc2_.x - _messageBox.width / 2 + param1.width / 2;
+            pos = obj.localToGlobal(new Point(0,0));
+            _messageBox.y = pos.y - _messageBox.height;
+            _messageBox.x = pos.x - _messageBox.width / 2 + obj.width / 2;
             if(_messageBox.x + _messageBox.width > StageReferance.stageWidth)
             {
                _messageBox.x = StageReferance.stageWidth - _messageBox.width - 10;
@@ -727,30 +716,29 @@ package ddt.manager
       
       public function getMessage() : Vector.<PresentRecordInfo>
       {
-         var _loc2_:int = 0;
-         var _loc1_:Vector.<PresentRecordInfo> = new Vector.<PresentRecordInfo>();
+         var i:int = 0;
+         var temp:Vector.<PresentRecordInfo> = new Vector.<PresentRecordInfo>();
          if(_messageBox)
          {
-            _loc2_ = 0;
-            while(_loc2_ < _existChat.length)
+            for(i = 0; i < _existChat.length; )
             {
-               if(_existChat[_loc2_].exist != 0)
+               if(_existChat[i].exist != 0)
                {
-                  _loc1_.push(_existChat[_loc2_]);
+                  temp.push(_existChat[i]);
                }
-               if(_loc1_.length != 10)
+               if(temp.length != 10)
                {
-                  _loc2_++;
+                  i++;
                   continue;
                }
                break;
             }
-            _messageBox.message = _loc1_;
+            _messageBox.message = temp;
          }
-         return _loc1_;
+         return temp;
       }
       
-      protected function __timerHandler(param1:TimerEvent) : void
+      protected function __timerHandler(event:TimerEvent) : void
       {
          if(!_messageBox.overState)
          {
@@ -799,29 +787,29 @@ package ddt.manager
          _loader = LoadResourceManager.Instance.creatAndStartLoad(PathManager.CommunityIcon(),0) as BitmapLoader;
       }
       
-      private function __friendResponse(param1:PkgEvent) : void
+      private function __friendResponse(evt:PkgEvent) : void
       {
-         var _loc6_:* = null;
-         var _loc2_:int = param1.pkg.clientId;
-         var _loc3_:int = param1.pkg.readInt();
-         var _loc5_:String = param1.pkg.readUTF();
-         var _loc4_:Boolean = param1.pkg.readBoolean();
-         if(_loc4_)
+         var str:* = null;
+         var id:int = evt.pkg.clientId;
+         var idtemp:int = evt.pkg.readInt();
+         var _nick:String = evt.pkg.readUTF();
+         var isSameCity:Boolean = evt.pkg.readBoolean();
+         if(isSameCity)
          {
-            _loc6_ = LanguageMgr.GetTranslation("tank.view.im.IMController.sameCityfriend");
-            _loc6_ = _loc6_.replace(/r/g,"[" + _loc5_ + "]");
+            str = LanguageMgr.GetTranslation("tank.view.im.IMController.sameCityfriend");
+            str = str.replace(/r/g,"[" + _nick + "]");
          }
          else
          {
-            _loc6_ = "[" + _loc5_ + "]" + LanguageMgr.GetTranslation("tank.view.im.IMController.friend");
+            str = "[" + _nick + "]" + LanguageMgr.GetTranslation("tank.view.im.IMController.friend");
          }
-         ChatManager.Instance.sysChatYellow(_loc6_);
+         ChatManager.Instance.sysChatYellow(str);
       }
       
-      private function __receiveInvite(param1:PkgEvent) : void
+      private function __receiveInvite(evt:PkgEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
+         var pkg:* = null;
+         var info:* = null;
          if(getInviteState() && InviteManager.Instance.enabled)
          {
             if(PlayerManager.Instance.Self.Grade < 4)
@@ -832,27 +820,27 @@ package ddt.manager
             {
                return;
             }
-            _loc2_ = param1.pkg;
-            _loc3_ = new InviteInfo();
-            _loc3_.playerid = _loc2_.readInt();
-            _loc3_.roomid = _loc2_.readInt();
-            _loc3_.mapid = _loc2_.readInt();
-            _loc3_.secondType = _loc2_.readByte();
-            _loc3_.gameMode = _loc2_.readByte();
-            _loc3_.hardLevel = _loc2_.readByte();
-            _loc3_.levelLimits = _loc2_.readByte();
-            _loc3_.nickname = _loc2_.readUTF();
-            _loc3_.isAttest = _loc2_.readBoolean();
-            _loc3_.typeVIP = _loc2_.readByte();
-            _loc3_.VIPLevel = _loc2_.readInt();
-            _loc3_.RN = _loc2_.readUTF();
-            _loc3_.password = _loc2_.readUTF();
-            _loc3_.barrierNum = _loc2_.readInt();
-            _loc3_.isOpenBoss = _loc2_.readBoolean();
-            _loc3_.power = _loc2_.readInt();
-            _loc3_.level = _loc2_.readInt();
-            _loc3_.isOld = _loc2_.readBoolean();
-            if(_loc3_.gameMode > 2 && PlayerManager.Instance.Self.Grade < GameManager.MinLevelDuplicate)
+            pkg = evt.pkg;
+            info = new InviteInfo();
+            info.playerid = pkg.readInt();
+            info.roomid = pkg.readInt();
+            info.mapid = pkg.readInt();
+            info.secondType = pkg.readByte();
+            info.gameMode = pkg.readByte();
+            info.hardLevel = pkg.readByte();
+            info.levelLimits = pkg.readByte();
+            info.nickname = pkg.readUTF();
+            info.isAttest = pkg.readBoolean();
+            info.typeVIP = pkg.readByte();
+            info.VIPLevel = pkg.readInt();
+            info.RN = pkg.readUTF();
+            info.password = pkg.readUTF();
+            info.barrierNum = pkg.readInt();
+            info.isOpenBoss = pkg.readBoolean();
+            info.power = pkg.readInt();
+            info.level = pkg.readInt();
+            info.isOld = pkg.readBoolean();
+            if(info.gameMode > 2 && PlayerManager.Instance.Self.Grade < GameManager.MinLevelDuplicate)
             {
                return;
             }
@@ -860,24 +848,24 @@ package ddt.manager
             {
                return;
             }
-            startReceiveInvite(_loc3_);
+            startReceiveInvite(info);
          }
       }
       
-      private function startReceiveInvite(param1:InviteInfo) : void
+      private function startReceiveInvite(info:InviteInfo) : void
       {
-         if(_prohibitInviteList[param1.nickname])
+         if(_prohibitInviteList[info.nickname])
          {
             return;
          }
          SoundManager.instance.play("018");
-         var _loc2_:InteractiveObject = StageReferance.stage.focus;
-         InviteManager.Instance.showResponseInviteFrame(param1);
-         if(_loc2_ is TextField)
+         var lastFocusObject:InteractiveObject = StageReferance.stage.focus;
+         InviteManager.Instance.showResponseInviteFrame(info);
+         if(lastFocusObject is TextField)
          {
-            if(TextField(_loc2_).type == "input")
+            if(TextField(lastFocusObject).type == "input")
             {
-               StageReferance.stage.focus = _loc2_;
+               StageReferance.stage.focus = lastFocusObject;
             }
          }
       }
@@ -908,22 +896,22 @@ package ddt.manager
                      return false;
                   }
                }
-               addr27:
+               addr39:
                return true;
             }
-            addr26:
-            §§goto(addr27);
+            addr38:
+            §§goto(addr39);
          }
-         §§goto(addr26);
+         §§goto(addr38);
       }
       
-      public function addFriend(param1:String) : void
+      public function addFriend(name:String) : void
       {
          if(isMaxFriend())
          {
             return;
          }
-         _name = param1;
+         _name = name;
          if(!checkFriendExist(_name))
          {
             alertGroupFrame(_name);
@@ -932,26 +920,26 @@ package ddt.manager
       
       public function isMaxFriend() : Boolean
       {
-         var _loc1_:int = 0;
+         var len:int = 0;
          if(PlayerManager.Instance.Self.IsVIP)
          {
-            _loc1_ = PlayerManager.Instance.Self.VIPLevel + 2;
+            len = PlayerManager.Instance.Self.VIPLevel + 2;
          }
-         if(PlayerManager.Instance.friendList.length >= 200 + _loc1_ * 50)
+         if(PlayerManager.Instance.friendList.length >= 200 + len * 50)
          {
-            _baseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.im.IMController.addFriend",200 + _loc1_ * 50),"","",false,false,false,2);
+            _baseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.im.IMController.addFriend",200 + len * 50),"","",false,false,false,2);
             _baseAlerFrame.addEventListener("response",__close);
             return true;
          }
          return false;
       }
       
-      private function alertGroupFrame(param1:String) : void
+      private function alertGroupFrame(name:String) : void
       {
          if(_groupFrame == null)
          {
             _groupFrame = ComponentFactory.Instance.creatComponentByStylename("friendGroupFrame");
-            _groupFrame.nickName = param1;
+            _groupFrame.nickName = name;
          }
          LayerManager.Instance.addToLayer(_groupFrame,1,true,1);
          _tempLock = ChatManager.Instance.lock;
@@ -963,7 +951,7 @@ package ddt.manager
          _groupFrame = null;
       }
       
-      private function __close(param1:FrameEvent) : void
+      private function __close(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          if(_baseAlerFrame)
@@ -974,16 +962,16 @@ package ddt.manager
          }
       }
       
-      public function addBlackList(param1:String) : void
+      public function addBlackList(name:String) : void
       {
-         if(PlayerManager.Instance.blackList.length >= 100)
+         if(PlayerManager.Instance.blackList.length >= 200)
          {
             _baseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.im.IMController.addBlackList"),"","",false,false,false,2);
             _baseAlerFrame.addEventListener("response",__closeII);
             return;
          }
-         _name = param1;
-         if(!checkBlackListExit(param1))
+         _name = name;
+         if(!checkBlackListExit(name))
          {
             if(_baseAlerFrame)
             {
@@ -997,7 +985,7 @@ package ddt.manager
          }
       }
       
-      private function __closeII(param1:FrameEvent) : void
+      private function __closeII(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          if(_baseAlerFrame)
@@ -1008,13 +996,13 @@ package ddt.manager
          }
       }
       
-      private function __frameEvent(param1:FrameEvent) : void
+      private function __frameEvent(evt:FrameEvent) : void
       {
          if(StateManager.currentStateType == "main")
          {
             ChatManager.Instance.lock = _tempLock;
          }
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
@@ -1039,14 +1027,14 @@ package ddt.manager
          }
       }
       
-      private function __frameEventII(param1:FrameEvent) : void
+      private function __frameEventII(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          if(StateManager.currentStateType == "main")
          {
             ChatManager.Instance.lock = _tempLock;
          }
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
@@ -1078,19 +1066,19 @@ package ddt.manager
          _name = "";
       }
       
-      private function checkBlackListExit(param1:String) : Boolean
+      private function checkBlackListExit(s:String) : Boolean
       {
-         if(param1 == PlayerManager.Instance.Self.NickName)
+         if(s == PlayerManager.Instance.Self.NickName)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.im.IMController.cannot"));
             return true;
          }
-         var _loc2_:DictionaryData = PlayerManager.Instance.blackList;
+         var f:DictionaryData = PlayerManager.Instance.blackList;
          var _loc5_:int = 0;
-         var _loc4_:* = _loc2_;
-         for each(var _loc3_ in _loc2_)
+         var _loc4_:* = f;
+         for each(var i in f)
          {
-            if(_loc3_.NickName == param1)
+            if(i.NickName == s)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.im.IMController.thisplayer"));
                return true;
@@ -1099,36 +1087,36 @@ package ddt.manager
          return false;
       }
       
-      private function checkFriendExist(param1:String) : Boolean
+      private function checkFriendExist(s:String) : Boolean
       {
-         if(!param1)
+         if(!s)
          {
             return true;
          }
-         if(param1.toLowerCase() == PlayerManager.Instance.Self.NickName.toLowerCase())
+         if(s.toLowerCase() == PlayerManager.Instance.Self.NickName.toLowerCase())
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.im.IMController.cannotAddSelfFriend"));
             return true;
          }
-         var _loc2_:DictionaryData = PlayerManager.Instance.friendList;
+         var f:DictionaryData = PlayerManager.Instance.friendList;
          var _loc7_:int = 0;
-         var _loc6_:* = _loc2_;
-         for each(var _loc5_ in _loc2_)
+         var _loc6_:* = f;
+         for each(var i in f)
          {
-            if(_loc5_.NickName == param1)
+            if(i.NickName == s)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.im.IMController.chongfu"));
                return true;
             }
          }
-         var _loc3_:DictionaryData = PlayerManager.Instance.blackList;
+         var b:DictionaryData = PlayerManager.Instance.blackList;
          var _loc9_:int = 0;
-         var _loc8_:* = _loc3_;
-         for each(var _loc4_ in _loc3_)
+         var _loc8_:* = b;
+         for each(var j in b)
          {
-            if(_loc4_.NickName == param1)
+            if(j.NickName == s)
             {
-               _name = param1;
+               _name = s;
                _baseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.im.IMController.thisone"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
                _baseAlerFrame.addEventListener("response",__frameEventII);
                return true;
@@ -1137,11 +1125,11 @@ package ddt.manager
          return false;
       }
       
-      public function deleteFriend(param1:int, param2:Boolean = false) : void
+      public function deleteFriend(id:int, isDeleteBlack:Boolean = false) : void
       {
-         _id = param1;
+         _id = id;
          disposeAlert();
-         if(!param2)
+         if(!isDeleteBlack)
          {
             _baseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.im.IMFriendItem.deleteFriend"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2);
             _baseAlerFrame.addEventListener("response",__frameEventIII);
@@ -1153,18 +1141,18 @@ package ddt.manager
          }
       }
       
-      public function deleteGroup(param1:int, param2:String) : void
+      public function deleteGroup(groupId:int, groupName:String) : void
       {
-         _groupId = param1;
-         _groupName = param2;
+         _groupId = groupId;
+         _groupName = groupName;
          disposeAlert();
-         _baseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.im.IMGourp.sure",param2),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2);
+         _baseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.im.IMGourp.sure",groupName),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2);
          _baseAlerFrame.addEventListener("response",__deleteGroupEvent);
       }
       
-      private function __deleteGroupEvent(param1:FrameEvent) : void
+      private function __deleteGroupEvent(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -1178,9 +1166,9 @@ package ddt.manager
          }
       }
       
-      private function __frameEventIII(param1:FrameEvent) : void
+      private function __frameEventIII(evt:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
@@ -1206,13 +1194,13 @@ package ddt.manager
          }
       }
       
-      public function deleteRecentContacts(param1:int = 0) : void
+      public function deleteRecentContacts(ID:int = 0) : void
       {
          if(!_recentContactsList)
          {
             return;
          }
-         _deleteRecentContact = param1;
+         _deleteRecentContact = ID;
          if(_baseAlerFrame)
          {
             _baseAlerFrame.removeEventListener("response",__deleteRecentContact);
@@ -1223,9 +1211,9 @@ package ddt.manager
          _baseAlerFrame.addEventListener("response",__deleteRecentContact);
       }
       
-      private function __deleteRecentContact(param1:FrameEvent) : void
+      private function __deleteRecentContact(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -1261,14 +1249,14 @@ package ddt.manager
          }
       }
       
-      public function isFriend(param1:String) : Boolean
+      public function isFriend(name:String) : Boolean
       {
-         var _loc2_:DictionaryData = PlayerManager.Instance.friendList;
+         var f:DictionaryData = PlayerManager.Instance.friendList;
          var _loc5_:int = 0;
-         var _loc4_:* = _loc2_;
-         for each(var _loc3_ in _loc2_)
+         var _loc4_:* = f;
+         for each(var i in f)
          {
-            if(_loc3_.NickName == param1)
+            if(i.NickName == name)
             {
                return true;
             }
@@ -1283,28 +1271,28 @@ package ddt.manager
          PlayerManager.Instance.dispatchEvent(new CEvent("girl_head_photo_change",false));
       }
       
-      public function girlHeadSelectedBtnClicked(param1:Boolean) : void
+      public function girlHeadSelectedBtnClicked(isUse:Boolean) : void
       {
-         GameInSocketOut.sendUseGirlPhoto(param1);
-         PlayerManager.Instance.Self.IsShow = param1;
-         PlayerManager.Instance.dispatchEvent(new CEvent("girl_head_photo_change",param1));
+         GameInSocketOut.sendUseGirlPhoto(isUse);
+         PlayerManager.Instance.Self.IsShow = isUse;
+         PlayerManager.Instance.dispatchEvent(new CEvent("girl_head_photo_change",isUse));
       }
       
       public function createConsortiaLoader() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var args:* = null;
+         var loader:* = null;
          if(!StringHelper.isNullOrEmpty(PathManager.CommunityFriendList()))
          {
-            _loc2_ = RequestVairableCreater.creatWidthKey(true);
-            _loc2_["uid"] = PlayerManager.Instance.Account.Account;
-            _loc1_ = LoadResourceManager.Instance.createLoader(PathManager.CommunityFriendList(),6,_loc2_,"GET",null,true,true);
-            _loc1_.analyzer = new LoadCMFriendList(setupCMFriendList);
-            LoadResourceManager.Instance.startLoad(_loc1_);
+            args = RequestVairableCreater.creatWidthKey(true);
+            args["uid"] = PlayerManager.Instance.Account.Account;
+            loader = LoadResourceManager.Instance.createLoader(PathManager.CommunityFriendList(),6,args,"GET",null,true,true);
+            loader.analyzer = new LoadCMFriendList(setupCMFriendList);
+            LoadResourceManager.Instance.startLoad(loader);
          }
       }
       
-      private function setupCMFriendList(param1:LoadCMFriendList) : void
+      private function setupCMFriendList(analyzer:LoadCMFriendList) : void
       {
          dispatchEvent(new Event("CMFriendComplete"));
          if(PlayerManager.Instance.Self.IsFirst == 1 && _isAddCMFriend)
@@ -1316,29 +1304,29 @@ package ddt.manager
       private function cmFriendAddToFriend() : void
       {
          _isAddCMFriend = false;
-         var _loc3_:DictionaryData = PlayerManager.Instance.CMFriendList;
-         var _loc1_:DictionaryData = PlayerManager.Instance.friendList;
+         var cmFriends:DictionaryData = PlayerManager.Instance.CMFriendList;
+         var friends:DictionaryData = PlayerManager.Instance.friendList;
          var _loc5_:int = 0;
-         var _loc4_:* = _loc3_;
-         for each(var _loc2_ in _loc3_)
+         var _loc4_:* = cmFriends;
+         for each(var i in cmFriends)
          {
-            if(_loc2_.IsExist && !_loc1_[_loc2_.UserId])
+            if(i.IsExist && !friends[i.UserId])
             {
-               SocketManager.Instance.out.sendAddFriend(_loc2_.NickName,0,true);
-               _loc3_.remove(_loc2_.UserName);
+               SocketManager.Instance.out.sendAddFriend(i.NickName,0,true);
+               cmFriends.remove(i.UserName);
             }
          }
       }
       
       public function loadRecentContacts() : void
       {
-         var _loc2_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         _loc2_["id"] = PlayerManager.Instance.Self.ID;
-         _loc2_["recentContacts"] = getFullRecentContactsID();
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("IMRecentContactsList.ashx"),6,_loc2_);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingBuddyListFailure");
-         _loc1_.analyzer = new RecentContactsAnalyze(PlayerManager.Instance.setupRecentContacts);
-         LoadResourceManager.Instance.startLoad(_loc1_);
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         args["id"] = PlayerManager.Instance.Self.ID;
+         args["recentContacts"] = getFullRecentContactsID();
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("IMRecentContactsList.ashx"),6,args);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingBuddyListFailure");
+         loader.analyzer = new RecentContactsAnalyze(PlayerManager.Instance.setupRecentContacts);
+         LoadResourceManager.Instance.startLoad(loader);
          _isLoadRecentContacts = false;
       }
       
@@ -1349,118 +1337,117 @@ package ddt.manager
       
       private function getFullRecentContactsID() : String
       {
-         var _loc1_:String = "";
+         var _fullRecentContactsID:String = "";
          var _loc4_:int = 0;
          var _loc3_:* = _recentContactsList;
-         for each(var _loc2_ in _recentContactsList)
+         for each(var recentContact in _recentContactsList)
          {
-            if(_loc2_ != 0)
+            if(recentContact != 0)
             {
-               _loc1_ = _loc1_ + (String(_loc2_) + ",");
+               _fullRecentContactsID = _fullRecentContactsID + (String(recentContact) + ",");
             }
          }
-         _loc1_ = _loc1_.substr(0,_loc1_.length - 1);
-         if(_loc1_ == "")
+         _fullRecentContactsID = _fullRecentContactsID.substr(0,_fullRecentContactsID.length - 1);
+         if(_fullRecentContactsID == "")
          {
-            _loc1_ = "0";
+            _fullRecentContactsID = "0";
          }
-         return _loc1_;
+         return _fullRecentContactsID;
       }
       
-      public function saveRecentContactsID(param1:int = 0) : void
+      public function saveRecentContactsID(ID:int = 0) : void
       {
          if(!_recentContactsList)
          {
             _recentContactsList = [];
          }
-         if(param1 == PlayerManager.Instance.Self.ID)
+         if(ID == PlayerManager.Instance.Self.ID)
          {
             return;
          }
          if(_recentContactsList.length < 20)
          {
-            if(testIdentical(param1) != -1)
+            if(testIdentical(ID) != -1)
             {
-               _recentContactsList.splice(testIdentical(param1),1);
+               _recentContactsList.splice(testIdentical(ID),1);
             }
-            _recentContactsList.unshift(param1);
+            _recentContactsList.unshift(ID);
          }
          else
          {
-            if(testIdentical(param1) != -1)
+            if(testIdentical(ID) != -1)
             {
-               _recentContactsList.splice(testIdentical(param1),1);
+               _recentContactsList.splice(testIdentical(ID),1);
             }
             else
             {
                _recentContactsList.splice(-1,1);
             }
-            _recentContactsList.unshift(param1);
+            _recentContactsList.unshift(ID);
          }
          SharedManager.Instance.recentContactsID[PlayerManager.Instance.Self.ID] = _recentContactsList;
          SharedManager.Instance.save();
          _isLoadRecentContacts = true;
       }
       
-      public function testIdentical(param1:int) : int
+      public function testIdentical(id:int) : int
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          if(_recentContactsList)
          {
-            _loc2_ = 0;
-            while(_loc2_ < _recentContactsList.length)
+            for(i = 0; i < _recentContactsList.length; )
             {
-               if(_recentContactsList[_loc2_] == param1)
+               if(_recentContactsList[i] == id)
                {
-                  return _loc2_;
+                  return i;
                }
-               _loc2_++;
+               i++;
             }
          }
          return -1;
       }
       
-      public function sortAcademyPlayer(param1:Array) : Array
+      public function sortAcademyPlayer(list:Array) : Array
       {
-         var _loc3_:Array = [];
-         var _loc4_:SelfInfo = PlayerManager.Instance.Self;
-         if(_loc4_.getMasterOrApprentices().length <= 0)
+         var temp:Array = [];
+         var self:SelfInfo = PlayerManager.Instance.Self;
+         if(self.getMasterOrApprentices().length <= 0)
          {
-            return param1;
+            return list;
          }
-         var _loc2_:DictionaryData = _loc4_.getMasterOrApprentices();
-         if(_loc4_.getMasterOrApprentices().length > 0)
+         var myAcademyPlayers:DictionaryData = self.getMasterOrApprentices();
+         if(self.getMasterOrApprentices().length > 0)
          {
             var _loc8_:int = 0;
-            var _loc7_:* = param1;
-            for each(var _loc6_ in param1)
+            var _loc7_:* = list;
+            for each(var i in list)
             {
-               if(_loc2_[_loc6_.ID] && _loc6_.ID != _loc4_.ID)
+               if(myAcademyPlayers[i.ID] && i.ID != self.ID)
                {
-                  if(_loc6_.ID == _loc4_.masterID)
+                  if(i.ID == self.masterID)
                   {
-                     _loc3_.unshift(_loc6_);
+                     temp.unshift(i);
                   }
                   else
                   {
-                     _loc3_.push(_loc6_);
+                     temp.push(i);
                   }
                }
             }
             var _loc10_:int = 0;
-            var _loc9_:* = _loc3_;
-            for each(var _loc5_ in _loc3_)
+            var _loc9_:* = temp;
+            for each(var j in temp)
             {
-               param1.splice(param1.indexOf(_loc5_),1);
+               list.splice(list.indexOf(j),1);
             }
          }
-         param1 = _loc3_.concat(param1);
-         return param1;
+         list = temp.concat(list);
+         return list;
       }
       
-      public function addTransregionalblackList(param1:String) : void
+      public function addTransregionalblackList(name:String) : void
       {
-         SharedManager.Instance.transregionalblackList[param1] = param1;
+         SharedManager.Instance.transregionalblackList[name] = name;
          SharedManager.Instance.save();
       }
       
@@ -1479,9 +1466,9 @@ package ddt.manager
          return _isLoadRecentContacts;
       }
       
-      public function set isLoadRecentContacts(param1:Boolean) : void
+      public function set isLoadRecentContacts(value:Boolean) : void
       {
-         _isLoadRecentContacts = param1;
+         _isLoadRecentContacts = value;
       }
    }
 }

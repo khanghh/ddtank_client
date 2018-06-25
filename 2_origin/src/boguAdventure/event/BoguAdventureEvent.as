@@ -26,11 +26,11 @@ package boguAdventure.event
       
       public var eventType:String;
       
-      public function BoguAdventureEvent(param1:String, param2:Object = null)
+      public function BoguAdventureEvent(type:String, $data:Object = null)
       {
          super("boguadventureeventevent");
-         eventType = param1;
-         data = param2;
+         eventType = type;
+         data = $data;
       }
    }
 }

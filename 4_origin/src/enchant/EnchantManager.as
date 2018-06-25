@@ -25,9 +25,9 @@ package enchant
       
       public var soulStoneGoodsId:int = 1116601;
       
-      public function EnchantManager(param1:IEventDispatcher = null)
+      public function EnchantManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
          setUp();
       }
       
@@ -40,9 +40,9 @@ package enchant
          return _instance;
       }
       
-      public function setupInfoList(param1:EnchantInfoAnalyzer) : void
+      public function setupInfoList(analyzer:EnchantInfoAnalyzer) : void
       {
-         infoVec = param1.list;
+         infoVec = analyzer.list;
       }
       
       private function setUp() : void
@@ -51,24 +51,24 @@ package enchant
          SocketManager.Instance.addEventListener(PkgEvent.format(280),__updateHandler);
       }
       
-      public function getEnchantInfoByLevel(param1:int) : EnchantInfo
+      public function getEnchantInfoByLevel(level:int) : EnchantInfo
       {
          var _loc4_:int = 0;
          var _loc3_:* = infoVec;
-         for each(var _loc2_ in infoVec)
+         for each(var info in infoVec)
          {
-            if(_loc2_.Lv == param1)
+            if(info.Lv == level)
             {
-               return _loc2_;
+               return info;
             }
          }
          return new EnchantInfo();
       }
       
-      protected function __updateHandler(param1:PkgEvent) : void
+      protected function __updateHandler(event:PkgEvent) : void
       {
-         var _loc2_:int = param1.pkg.readInt();
-         isUpGrade = param1.pkg.readBoolean();
+         var exp:int = event.pkg.readInt();
+         isUpGrade = event.pkg.readBoolean();
          if(isUpGrade)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("enchant.succes.txt"));

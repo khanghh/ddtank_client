@@ -36,9 +36,9 @@ package ddt.view.chat
          _blackListBtn.addEventListener("click",__onblackList);
       }
       
-      public function set NickName(param1:String) : void
+      public function set NickName(value:String) : void
       {
-         _name = param1;
+         _name = value;
       }
       
       public function get NickName() : String
@@ -46,7 +46,7 @@ package ddt.view.chat
          return _name;
       }
       
-      protected function __onblackList(param1:MouseEvent) : void
+      protected function __onblackList(event:MouseEvent) : void
       {
          IMManager.Instance.addTransregionalblackList(_name);
       }

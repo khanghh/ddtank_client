@@ -63,34 +63,33 @@ package cardSystem.view
       
       private function setList() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:Vector.<SetsInfo> = CardManager.Instance.model.setsSortRuleVector;
-         _loc3_ = 0;
-         while(_loc3_ < _loc1_.length)
+         var i:int = 0;
+         var item:* = null;
+         var infoList:Vector.<SetsInfo> = CardManager.Instance.model.setsSortRuleVector;
+         for(i = 0; i < infoList.length; )
          {
-            _loc2_ = new CardSelectItem();
-            _loc2_.info = _loc1_[_loc3_];
-            _loc2_.addEventListener("select_cards",__itemClick);
-            _itemList.push(_loc2_);
-            _list.addChild(_loc2_);
-            _loc3_++;
+            item = new CardSelectItem();
+            item.info = infoList[i];
+            item.addEventListener("select_cards",__itemClick);
+            _itemList.push(item);
+            _list.addChild(item);
+            i++;
          }
          _panel.invalidateViewport();
       }
       
-      private function __itemClick(param1:CardSocketEvent) : void
+      private function __itemClick(e:CardSocketEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:int = param1.data.id;
-         var _loc3_:Vector.<SetsInfo> = CardManager.Instance.model.setsSortRuleVector;
+         var id:int = e.data.id;
+         var infoList:Vector.<SetsInfo> = CardManager.Instance.model.setsSortRuleVector;
          var _loc6_:int = 0;
-         var _loc5_:* = _loc3_;
-         for each(var _loc4_ in _loc3_)
+         var _loc5_:* = infoList;
+         for each(var info in infoList)
          {
-            if(int(_loc4_.ID) == _loc2_)
+            if(int(info.ID) == id)
             {
-               _cardIdVec = _loc4_.cardIdVec;
+               _cardIdVec = info.cardIdVec;
                break;
             }
          }
@@ -102,68 +101,66 @@ package cardSystem.view
       
       private function getbagCard() : Vector.<CardInfo>
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc1_:* = null;
-         var _loc3_:Vector.<CardInfo> = new Vector.<CardInfo>();
-         _loc5_ = 0;
-         while(_loc5_ < _cardIdVec.length)
+         var i:int = 0;
+         var bagCardDic:* = null;
+         var cInfo:* = null;
+         var temp:Vector.<CardInfo> = new Vector.<CardInfo>();
+         for(i = 0; i < _cardIdVec.length; )
          {
-            _loc4_ = PlayerManager.Instance.Self.cardBagDic;
-            _loc1_ = null;
+            bagCardDic = PlayerManager.Instance.Self.cardBagDic;
+            cInfo = null;
             var _loc7_:int = 0;
-            var _loc6_:* = _loc4_;
-            for each(var _loc2_ in _loc4_)
+            var _loc6_:* = bagCardDic;
+            for each(var cardInfo in bagCardDic)
             {
-               if(_loc2_.TemplateID == _cardIdVec[_loc5_])
+               if(cardInfo.TemplateID == _cardIdVec[i])
                {
-                  _loc3_.push(_loc2_);
+                  temp.push(cardInfo);
                   break;
                }
             }
-            _loc5_++;
+            i++;
          }
-         return _loc3_;
+         return temp;
       }
       
       private function dealNeedEquip() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:int = 0;
+         var i:int = 0;
+         var index:int = 0;
          var _loc5_:int = 0;
          var _loc4_:* = PlayerManager.Instance.Self.cardEquipDic;
-         for(var _loc2_ in PlayerManager.Instance.Self.cardEquipDic)
+         for(var place in PlayerManager.Instance.Self.cardEquipDic)
          {
-            if(PlayerManager.Instance.Self.cardEquipDic != null)
+            if(PlayerManager.Instance.Self.cardEquipDic == null)
             {
-               _loc3_ = 0;
-               while(_loc3_ < _bagCard.length)
-               {
-                  if(PlayerManager.Instance.Self.cardEquipDic[_loc2_].TemplateID == _bagCard[_loc3_].TemplateID)
-                  {
-                     _bagCard.splice(_loc3_,1);
-                     _loc1_ = _equipArr.indexOf(int(_loc2_));
-                     if(_loc1_ > -1)
-                     {
-                        _equipArr.splice(_loc1_,1);
-                     }
-                     break;
-                  }
-                  _loc3_++;
-               }
-               continue;
+               break;
             }
-            break;
+            i = 0;
+            while(i < _bagCard.length)
+            {
+               if(PlayerManager.Instance.Self.cardEquipDic[place].TemplateID == _bagCard[i].TemplateID)
+               {
+                  _bagCard.splice(i,1);
+                  index = _equipArr.indexOf(int(place));
+                  if(index > -1)
+                  {
+                     _equipArr.splice(index,1);
+                  }
+                  break;
+               }
+               i++;
+            }
          }
       }
       
       private function moveAllCard() : void
       {
-         var _loc6_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
-         var _loc5_:DictionaryData = new DictionaryData();
+         var i:int = 0;
+         var j:int = 0;
+         var n:int = 0;
+         var mplace:int = 0;
+         var sendCardObj:DictionaryData = new DictionaryData();
          _bagCard = getbagCard();
          if(_bagCard.length == 0)
          {
@@ -172,66 +169,64 @@ package cardSystem.view
          }
          _equipArr = [1,2,3,4];
          dealNeedEquip();
-         _loc6_ = 0;
-         while(_loc6_ < _bagCard.length)
+         for(i = 0; i < _bagCard.length; )
          {
-            if(_bagCard[_loc6_].templateInfo.Property8 == "1")
+            if(_bagCard[i].templateInfo.Property8 == "1")
             {
-               _loc5_.add(0,_bagCard[_loc6_].Place);
+               sendCardObj.add(0,_bagCard[i].Place);
             }
             else
             {
-               _loc4_ = 1;
-               while(_loc4_ < 5)
+               j = 1;
+               while(j < 5)
                {
-                  if(PlayerManager.Instance.Self.cardEquipDic[_loc4_] == null)
+                  if(PlayerManager.Instance.Self.cardEquipDic[j] == null)
                   {
-                     if(_loc5_[_loc4_] == null)
+                     if(sendCardObj[j] == null)
                      {
-                        _loc5_.add(_loc4_,_bagCard[_loc6_].Place);
+                        sendCardObj.add(j,_bagCard[i].Place);
                         break;
                      }
                   }
-                  if(_loc4_ == 4)
+                  if(j == 4)
                   {
-                     _loc2_ = 0;
-                     while(_loc2_ < _equipArr.length)
+                     for(n = 0; n < _equipArr.length; )
                      {
-                        _loc1_ = _equipArr[_loc2_];
-                        if(_loc5_[_loc1_] == null)
+                        mplace = _equipArr[n];
+                        if(sendCardObj[mplace] == null)
                         {
-                           _equipArr.splice(_loc2_,1);
-                           _loc5_.add(_loc1_,_bagCard[_loc6_].Place);
+                           _equipArr.splice(n,1);
+                           sendCardObj.add(mplace,_bagCard[i].Place);
                            break;
                         }
-                        _loc2_++;
+                        n++;
                      }
                   }
-                  _loc4_++;
+                  j++;
                }
             }
-            _loc6_++;
+            i++;
          }
          var _loc8_:int = 0;
-         var _loc7_:* = _loc5_;
-         for(var _loc3_ in _loc5_)
+         var _loc7_:* = sendCardObj;
+         for(var place in sendCardObj)
          {
-            SocketManager.Instance.out.sendMoveCards(_loc5_[_loc3_],int(_loc3_));
+            SocketManager.Instance.out.sendMoveCards(sendCardObj[place],int(place));
          }
-         if(_loc5_.length == 0)
+         if(sendCardObj.length == 0)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.card.text"));
          }
-         if(_loc5_.length > 0)
+         if(sendCardObj.length > 0)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.card.HaveCard"));
          }
       }
       
-      override protected function __hideThis(param1:MouseEvent) : void
+      override protected function __hideThis(event:MouseEvent) : void
       {
-         var _loc2_:DisplayObject = param1.target as DisplayObject;
-         if(DisplayUtils.isTargetOrContain(_loc2_,_panel.vScrollbar))
+         var target:DisplayObject = event.target as DisplayObject;
+         if(DisplayUtils.isTargetOrContain(target,_panel.vScrollbar))
          {
             return;
          }
@@ -245,7 +240,7 @@ package cardSystem.view
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(_list)
          {
             ObjectUtils.disposeObject(_list);
@@ -265,12 +260,12 @@ package cardSystem.view
          {
             this.parent.removeChild(this);
          }
-         while(_loc1_ < _itemList.length)
+         while(i < _itemList.length)
          {
-            _itemList[_loc1_].removeEventListener("select_cards",__itemClick);
-            ObjectUtils.disposeObject(_itemList[_loc1_]);
-            _itemList[_loc1_] = null;
-            _loc1_++;
+            _itemList[i].removeEventListener("select_cards",__itemClick);
+            ObjectUtils.disposeObject(_itemList[i]);
+            _itemList[i] = null;
+            i++;
          }
          _itemList = null;
       }

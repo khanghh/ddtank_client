@@ -20,10 +20,10 @@ package ddtKingFloat.views
       
       private var _btn:SimpleBitmapButton;
       
-      public function DDTKingFloatHelpBtn(param1:Boolean = true)
+      public function DDTKingFloatHelpBtn(isInGame:Boolean = true)
       {
          super();
-         if(param1)
+         if(isInGame)
          {
             _btn = ComponentFactory.Instance.creatComponentByStylename("ddtKing.HelpButton");
          }
@@ -36,10 +36,10 @@ package ddtKingFloat.views
          _btn.addEventListener("click",clickHandler,false,0,true);
       }
       
-      private function clickHandler(param1:MouseEvent) : void
+      private function clickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         param1.stopImmediatePropagation();
+         event.stopImmediatePropagation();
          AssetModuleLoader.addModelLoader("ddtKingFloaticon",6);
          AssetModuleLoader.addModelLoader("ddtstore",6);
          AssetModuleLoader.startCodeLoader(loadIconCompleteHandler);
@@ -47,12 +47,12 @@ package ddtKingFloat.views
       
       private function loadIconCompleteHandler() : void
       {
-         var _loc1_:DisplayObject = ComponentFactory.Instance.creat("ddtKing.HelpPrompt");
-         var _loc2_:HelpFrame = ComponentFactory.Instance.creat("ddtKing.HelpFrame");
-         _loc2_.setView(_loc1_);
-         _loc2_.titleText = LanguageMgr.GetTranslation("store.view.HelpButtonText");
-         _loc2_.changeSubmitButtonY(29);
-         LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+         var helpBd:DisplayObject = ComponentFactory.Instance.creat("ddtKing.HelpPrompt");
+         var helpPage:HelpFrame = ComponentFactory.Instance.creat("ddtKing.HelpFrame");
+         helpPage.setView(helpBd);
+         helpPage.titleText = LanguageMgr.GetTranslation("store.view.HelpButtonText");
+         helpPage.changeSubmitButtonY(29);
+         LayerManager.Instance.addToLayer(helpPage,3,true,1);
       }
       
       public function dispose() : void

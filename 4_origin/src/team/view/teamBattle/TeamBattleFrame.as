@@ -72,7 +72,7 @@ package team.view.teamBattle
          TeamManager.instance.showTeamFrame();
       }
       
-      private function onBalltleBtnHanlder(param1:MouseEvent) : void
+      private function onBalltleBtnHanlder(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(StateManager.currentStateType == "matchRoom" || StateManager.currentStateType == "dungeonRoom" || StateManager.currentStateType == "battleRoom")
@@ -102,7 +102,7 @@ package team.view.teamBattle
          GameInSocketOut.sendCreateRoom(LanguageMgr.GetTranslation("teamBattle.roomName"),58,2);
       }
       
-      private function onClickHandler(param1:MouseEvent) : void
+      private function onClickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          dispose();
@@ -110,43 +110,41 @@ package team.view.teamBattle
       
       private function initView() : void
       {
-         var _loc7_:int = 0;
-         var _loc5_:int = 0;
+         var i:int = 0;
+         var j:int = 0;
          teamBattleTime.text = "S" + String(TeamManager.instance.model.teamBattleSeasonInfo.SeasonId) + LanguageMgr.GetTranslation("teamBattle.seasonCount") + TeamManager.instance.model.teamBattleSeasonInfo.getBeginData() + "-" + TeamManager.instance.model.teamBattleSeasonInfo.getEndData();
-         var _loc1_:BaseCell = null;
-         var _loc4_:ItemTemplateInfo = null;
-         var _loc3_:HBox = new HBox();
-         _loc3_.spacing = 20;
-         _loc7_ = 0;
-         while(_loc7_ < 3)
+         var cell:BaseCell = null;
+         var rewardData:ItemTemplateInfo = null;
+         var topBox:HBox = new HBox();
+         topBox.spacing = 20;
+         for(i = 0; i < 3; )
          {
-            _loc1_ = createItemCell();
-            _loc1_.info = TeamManager.instance.model.teamBattleSeasonInfo.getRankGift(_loc7_);
-            _topList.push(_loc1_);
-            _loc3_.addChild(_loc1_);
-            _loc7_++;
+            cell = createItemCell();
+            cell.info = TeamManager.instance.model.teamBattleSeasonInfo.getRankGift(i);
+            _topList.push(cell);
+            topBox.addChild(cell);
+            i++;
          }
-         _loc3_.arrange();
-         var _loc6_:HBox = new HBox();
-         _loc6_.spacing = 17;
-         var _loc2_:int = 0;
-         _loc5_ = 0;
-         while(_loc5_ < SEGMENT.length)
+         topBox.arrange();
+         var segmentBox:HBox = new HBox();
+         segmentBox.spacing = 17;
+         var giftID:int = 0;
+         for(j = 0; j < SEGMENT.length; )
          {
-            _loc1_ = createItemCell();
-            _loc2_ = TeamManager.instance.model.getTeamBattleSegmentInfo(SEGMENT[_loc5_]).GiftBagId;
-            _loc1_.info = ItemManager.Instance.getTemplateById(_loc2_);
-            _segmentList.push(_loc1_);
-            _loc6_.addChild(_loc1_);
-            _loc5_++;
+            cell = createItemCell();
+            giftID = TeamManager.instance.model.getTeamBattleSegmentInfo(SEGMENT[j]).GiftBagId;
+            cell.info = ItemManager.Instance.getTemplateById(giftID);
+            _segmentList.push(cell);
+            segmentBox.addChild(cell);
+            j++;
          }
-         _loc6_.arrange();
-         _loc3_.x = 197;
-         _loc3_.y = 392;
-         addChild(_loc3_);
-         _loc6_.x = 167;
-         _loc6_.y = 490;
-         addChild(_loc6_);
+         segmentBox.arrange();
+         topBox.x = 197;
+         topBox.y = 392;
+         addChild(topBox);
+         segmentBox.x = 167;
+         segmentBox.y = 490;
+         addChild(segmentBox);
          _btnHelp = HelpFrameUtils.Instance.simpleHelpButton(this,"team.helpButtonSmall",{
             "x":354,
             "y":356
@@ -156,14 +154,14 @@ package team.view.teamBattle
       
       private function createItemCell() : BaseCell
       {
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,56,56);
-         _loc1_.graphics.endFill();
-         var _loc2_:BaseCell = new BaseCell(_loc1_,null,true,true);
-         _loc2_.setContentSize(56,56);
-         CellFactory.instance.fillTipProp(_loc2_);
-         return _loc2_;
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(16777215,0);
+         sp.graphics.drawRect(0,0,56,56);
+         sp.graphics.endFill();
+         var cell:BaseCell = new BaseCell(sp,null,true,true);
+         cell.setContentSize(56,56);
+         CellFactory.instance.fillTipProp(cell);
+         return cell;
       }
       
       override public function dispose() : void
@@ -171,17 +169,17 @@ package team.view.teamBattle
          removeEvent();
          ObjectUtils.disposeObject(_btnHelp);
          _btnHelp = null;
-         var _loc1_:BaseCell = null;
+         var cell:BaseCell = null;
          while(_topList.length > 0)
          {
-            _loc1_ = _topList.pop();
-            _loc1_.dispose();
+            cell = _topList.pop();
+            cell.dispose();
          }
          _topList = null;
          while(_segmentList.length > 0)
          {
-            _loc1_ = _segmentList.pop();
-            _loc1_.dispose();
+            cell = _segmentList.pop();
+            cell.dispose();
          }
          _segmentList = null;
          super.dispose();

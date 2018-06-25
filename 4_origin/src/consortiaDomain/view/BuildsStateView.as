@@ -11,19 +11,18 @@ package consortiaDomain.view
       
       public function BuildsStateView()
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var cell:* = null;
          super();
          UICreatShortcut.creatAndAdd("consortiadomain.buildStateView.bg",this);
-         var _loc1_:Array = [5,4,2,1,3];
-         _loc3_ = 0;
-         while(_loc3_ < 5)
+         var buidIdArr:Array = [5,4,2,1,3];
+         for(i = 0; i < 5; )
          {
-            _loc2_ = new BuildsStateCell(_loc1_[_loc3_]);
-            _loc2_.x = 6;
-            _loc2_.y = _loc3_ * 20 + 6;
-            addChild(_loc2_);
-            _loc3_++;
+            cell = new BuildsStateCell(buidIdArr[i]);
+            cell.x = 6;
+            cell.y = i * 20 + 6;
+            addChild(cell);
+            i++;
          }
       }
       

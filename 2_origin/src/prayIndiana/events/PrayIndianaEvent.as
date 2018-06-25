@@ -16,9 +16,9 @@ package prayIndiana.events
       public static const PROBABILITY:int = 174;
        
       
-      public function PrayIndianaEvent(param1:String)
+      public function PrayIndianaEvent(type:String)
       {
-         super(param1,bubbles,cancelable);
+         super(type,bubbles,cancelable);
       }
    }
 }

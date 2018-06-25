@@ -21,9 +21,9 @@ package halloween
       
       private var _halloweenView:HalloweenView;
       
-      public function HalloweenControl(param1:IEventDispatcher = null)
+      public function HalloweenControl(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : HalloweenControl
@@ -40,7 +40,7 @@ package halloween
          HalloweenManager.instance.addEventListener("openView",__onOpenView);
       }
       
-      protected function __onOpenView(param1:Event) : void
+      protected function __onOpenView(event:Event) : void
       {
          show();
       }
@@ -62,9 +62,9 @@ package halloween
          }
       }
       
-      private function __complainShow(param1:UIModuleEvent) : void
+      private function __complainShow(event:UIModuleEvent) : void
       {
-         if(param1.module == "halloween")
+         if(event.module == "halloween")
          {
             UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);
             UIModuleLoader.Instance.removeEventListener("uiMoudleProgress",__progressShow);
@@ -76,15 +76,15 @@ package halloween
          }
       }
       
-      private function __progressShow(param1:UIModuleEvent) : void
+      private function __progressShow(event:UIModuleEvent) : void
       {
-         if(param1.module == "halloween")
+         if(event.module == "halloween")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
       
-      protected function __onClose(param1:Event) : void
+      protected function __onClose(event:Event) : void
       {
          UIModuleSmallLoading.Instance.hide();
          UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);

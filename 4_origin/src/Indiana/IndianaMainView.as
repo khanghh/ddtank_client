@@ -175,7 +175,7 @@ package Indiana
       
       private function clearIcon() : void
       {
-         var _loc1_:* = null;
+         var item:* = null;
          if(_petItem)
          {
             if(_petItem.parent)
@@ -199,42 +199,42 @@ package Indiana
          {
             while(_iconCon.numChildren > 0)
             {
-               _loc1_ = _iconCon.removeChildAt(0);
-               ObjectUtils.disposeObject(_loc1_);
-               _loc1_ = null;
+               item = _iconCon.removeChildAt(0);
+               ObjectUtils.disposeObject(item);
+               item = null;
             }
          }
       }
       
-      private function setIcon(param1:IndianaShopItemInfo) : void
+      private function setIcon(value:IndianaShopItemInfo) : void
       {
-         var _loc4_:* = null;
-         var _loc2_:int = 0;
-         var _loc3_:* = null;
-         var _loc6_:* = null;
-         var _loc8_:* = null;
-         var _loc7_:* = null;
-         var _loc5_:IndianaGoodsItemInfo = IndianaDataManager.instance.getIndianaGoodsItemInfoByshopId(param1.ShopId);
+         var item:* = null;
+         var petId:int = 0;
+         var tempInfo:* = null;
+         var __info:* = null;
+         var petInfo:* = null;
+         var url:* = null;
+         var itemInfo:IndianaGoodsItemInfo = IndianaDataManager.instance.getIndianaGoodsItemInfoByshopId(value.ShopId);
          clearIcon();
-         if(_loc5_.GoodType == 2)
+         if(itemInfo.GoodType == 2)
          {
-            _loc2_ = _loc5_.Remark.split("|")[0];
-            _loc3_ = ItemManager.Instance.getTemplateById(_loc5_.GoodsID);
-            _loc6_ = PetInfoManager.getPetByTemplateID(_loc2_);
-            if(_loc6_)
+            petId = itemInfo.Remark.split("|")[0];
+            tempInfo = ItemManager.Instance.getTemplateById(itemInfo.GoodsID);
+            __info = PetInfoManager.getPetByTemplateID(petId);
+            if(__info)
             {
-               _loc8_ = new PetInfo();
-               ObjectUtils.copyProperties(_loc8_,_loc6_);
+               petInfo = new PetInfo();
+               ObjectUtils.copyProperties(petInfo,__info);
                if(_petItem == null)
                {
                   _petItem = new PetBigItem();
                   PositionUtils.setPos(_petItem,"indiana.petMv.pos");
                   _iconCon.addChild(_petItem);
                }
-               _petItem.info = _loc8_;
+               _petItem.info = petInfo;
             }
          }
-         else if(_loc5_.GoodType == 4)
+         else if(itemInfo.GoodType == 4)
          {
             if(_wing)
             {
@@ -244,68 +244,68 @@ package Indiana
                }
                _wing = null;
             }
-            _loc4_ = IndianaDataManager.instance.getTemplatesByShopId(param1.ShopId);
-            layer = LayerFactory.instance.createLayer(_loc4_,PlayerManager.Instance.Self.Sex,"","show");
+            item = IndianaDataManager.instance.getTemplatesByShopId(value.ShopId);
+            layer = LayerFactory.instance.createLayer(item,PlayerManager.Instance.Self.Sex,"","show");
             layer.load(__wingOnComplete);
          }
          else
          {
-            _loc7_ = PathManager.solvePath(_loc5_.ResourcePath) + ".png";
-            _loader = LoadResourceManager.Instance.createLoader(_loc7_,0);
+            url = PathManager.solvePath(itemInfo.ResourcePath) + ".png";
+            _loader = LoadResourceManager.Instance.createLoader(url,0);
             _loader.addEventListener("complete",__bitmapOnComplete);
             LoadResourceManager.Instance.startLoad(_loader);
          }
       }
       
-      private function setTitleInfo(param1:IndianaShopItemInfo) : void
+      private function setTitleInfo(value:IndianaShopItemInfo) : void
       {
-         var _loc5_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         if(param1)
+         var tempInfo:* = null;
+         var goodInfo:* = null;
+         var name:* = null;
+         var dis:* = null;
+         if(value)
          {
-            _loc5_ = IndianaDataManager.instance.getTemplatesByShopId(param1.ShopId);
-            _loc2_ = IndianaDataManager.instance.getIndianaGoodsItemInfoByshopId(param1.ShopId);
-            _loc3_ = _loc2_.Publicity;
-            _loc4_ = _loc2_.Name + "," + _loc3_;
-            _loc4_ = _loc4_.length > 13?_loc4_.substr(0,13):_loc4_;
-            _itemDis.setText(_loc4_);
-            _itemDisII.text = LanguageMgr.GetTranslation("Indiana.main.perNum",param1.PeriodName);
+            tempInfo = IndianaDataManager.instance.getTemplatesByShopId(value.ShopId);
+            goodInfo = IndianaDataManager.instance.getIndianaGoodsItemInfoByshopId(value.ShopId);
+            dis = goodInfo.Publicity;
+            name = goodInfo.Name + "," + dis;
+            name = name.length > 13?name.substr(0,13):name;
+            _itemDis.setText(name);
+            _itemDisII.text = LanguageMgr.GetTranslation("Indiana.main.perNum",value.PeriodName);
             _itemDisII.x = _itemDis.x + _itemDis.textWidth + 10;
-            _itemValue.text = LanguageMgr.GetTranslation("Indiana.item.value",_loc2_.Cost);
-            _itemName.setText(LanguageMgr.GetTranslation("Indiana.item.order",param1.Order));
-            this._titleView.updateCurrentCell(param1.PeriodId);
-            setIcon(param1);
+            _itemValue.text = LanguageMgr.GetTranslation("Indiana.item.value",goodInfo.Cost);
+            _itemName.setText(LanguageMgr.GetTranslation("Indiana.item.order",value.Order));
+            this._titleView.updateCurrentCell(value.PeriodId);
+            setIcon(value);
          }
       }
       
-      private function __bitmapOnComplete(param1:LoaderEvent) : void
+      private function __bitmapOnComplete(event:LoaderEvent) : void
       {
-         _icon = param1.loader.content as Bitmap;
+         _icon = event.loader.content as Bitmap;
          _icon.x = -51;
          _icon.y = -74;
          _iconCon.addChild(_icon);
          clearLoader();
       }
       
-      private function __wingOnComplete(param1:BaseWingLayer) : void
+      private function __wingOnComplete(evnt:BaseWingLayer) : void
       {
          clearIcon();
-         _wing = param1.getContent() as MovieClip;
+         _wing = evnt.getContent() as MovieClip;
          _wing.x = -20;
          _wing.y = -61;
          _iconCon.addChild(_wing);
       }
       
-      private function __onComplete(param1:LoaderEvent) : void
+      private function __onComplete(event:LoaderEvent) : void
       {
-         var _loc2_:* = null;
+         var movieClass:* = null;
          _loader.removeEventListener("complete",__onComplete);
          if(ModuleLoader.hasDefinition("pet.asset.game." + _info.GameAssetUrl))
          {
-            _loc2_ = ModuleLoader.getDefinition("pet.asset.game." + _info.GameAssetUrl) as Class;
-            _petMovie = new _loc2_();
+            movieClass = ModuleLoader.getDefinition("pet.asset.game." + _info.GameAssetUrl) as Class;
+            _petMovie = new movieClass();
             _petMovie.mute();
             _petMovie.doAction(Helpers.randomPick(ACTIONS));
             _petMovie.addEventListener("actionEnd",doNextAction);
@@ -313,7 +313,7 @@ package Indiana
          }
       }
       
-      private function doNextAction(param1:ActionMovieEvent) : void
+      private function doNextAction(event:ActionMovieEvent) : void
       {
          if(_petMovie)
          {
@@ -347,32 +347,31 @@ package Indiana
          SocketManager.Instance.addEventListener(PkgEvent.format(385,IndianaEPackageType.CHECK_CODE),__checkCodeHandler);
       }
       
-      private function __checkCodeHandler(param1:PkgEvent) : void
+      private function __checkCodeHandler(pkg:PkgEvent) : void
       {
-         var _loc4_:* = null;
-         var _loc2_:* = null;
-         var _loc7_:int = 0;
-         var _loc3_:int = 0;
-         var _loc6_:int = 0;
-         var _loc5_:int = param1.pkg.readInt();
-         if(_loc5_ > 0)
+         var begins:* = null;
+         var timesarr:* = null;
+         var begin:int = 0;
+         var time:int = 0;
+         var i:int = 0;
+         var len:int = pkg.pkg.readInt();
+         if(len > 0)
          {
-            _loc4_ = [];
-            _loc2_ = [];
-            _loc6_ = 0;
-            while(_loc6_ < _loc5_)
+            begins = [];
+            timesarr = [];
+            for(i = 0; i < len; )
             {
-               _loc7_ = param1.pkg.readInt();
-               _loc3_ = param1.pkg.readInt();
-               _loc4_.push(_loc7_ + "|" + _loc3_);
-               _loc6_++;
+               begin = pkg.pkg.readInt();
+               time = pkg.pkg.readInt();
+               begins.push(begin + "|" + time);
+               i++;
             }
             if(_buyCodeView)
             {
                ObjectUtils.disposeObject(_buyCodeView);
                _buyCodeView = null;
             }
-            _buyCodeView = new IndianaShowBuyCodeView(_loc4_);
+            _buyCodeView = new IndianaShowBuyCodeView(begins);
             PositionUtils.setPos(_buyCodeView,"indiana.buy.view.pos");
             addChild(_buyCodeView);
          }
@@ -382,21 +381,21 @@ package Indiana
          }
       }
       
-      private function __leftClickHandler(param1:MouseEvent) : void
+      private function __leftClickHandler(evt:MouseEvent) : void
       {
          SocketManager.Instance.out.sendUpdateSysDate();
-         var _loc2_:int = _titleView.leftCell.Info.PeriodId;
-         SocketManager.Instance.out.sendIndianaEnterGame(_loc2_);
+         var perid:int = _titleView.leftCell.Info.PeriodId;
+         SocketManager.Instance.out.sendIndianaEnterGame(perid);
       }
       
-      private function __rightClickHandler(param1:MouseEvent) : void
+      private function __rightClickHandler(evt:MouseEvent) : void
       {
          SocketManager.Instance.out.sendUpdateSysDate();
-         var _loc2_:int = _titleView.rightCell.Info.PeriodId;
-         SocketManager.Instance.out.sendIndianaEnterGame(_loc2_);
+         var perid:int = _titleView.rightCell.Info.PeriodId;
+         SocketManager.Instance.out.sendIndianaEnterGame(perid);
       }
       
-      private function __changeHandler(param1:Event) : void
+      private function __changeHandler(e:Event) : void
       {
          _currentInfo = IndianaDataManager.instance.getCurrentShopItem;
          IndianaDataManager.instance.updataRecode = false;
@@ -481,7 +480,7 @@ package Indiana
          SocketManager.Instance.removeEventListener(PkgEvent.format(385,IndianaEPackageType.CHECK_CODE),__checkCodeHandler);
       }
       
-      override protected function onResponse(param1:int) : void
+      override protected function onResponse(type:int) : void
       {
          SoundManager.instance.play("008");
          IndianaDataManager.instance.disposeView();

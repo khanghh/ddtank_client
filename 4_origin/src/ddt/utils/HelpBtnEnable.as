@@ -19,7 +19,7 @@ package ddt.utils
       
       private var _hasForbiddenDic:Dictionary;
       
-      public function HelpBtnEnable(param1:inner)
+      public function HelpBtnEnable(single:inner)
       {
          _hasForbiddenDic = new Dictionary();
          super();
@@ -34,83 +34,83 @@ package ddt.utils
          return instance;
       }
       
-      public function greyByGrade(param1:DisplayObject, param2:int) : void
+      public function greyByGrade($target:DisplayObject, minLevel:int) : void
       {
-         if(PlayerManager.Instance.Self.Grade < param2)
+         if(PlayerManager.Instance.Self.Grade < minLevel)
          {
-            Helpers.grey(param1);
+            Helpers.grey($target);
          }
          else
          {
-            Helpers.colorful(param1);
+            Helpers.colorful($target);
          }
       }
       
-      public function showTipsByGrade(param1:int, param2:String, param3:Boolean = true) : Boolean
+      public function showTipsByGrade(minLevel:int, msg:String, useLanguageMgr:Boolean = true) : Boolean
       {
-         if(PlayerManager.Instance.Self.Grade < param1)
+         if(PlayerManager.Instance.Self.Grade < minLevel)
          {
-            if(param3)
+            if(useLanguageMgr)
             {
-               param2 = LanguageMgr.GetTranslation(param2,param1);
+               msg = LanguageMgr.GetTranslation(msg,minLevel);
             }
-            MessageTipManager.getInstance().show(param2);
+            MessageTipManager.getInstance().show(msg);
             return false;
          }
          return true;
       }
       
-      public function addMouseOverTips(param1:ITipedDisplay, param2:int, param3:String = "tips.open", param4:Boolean = true, param5:Boolean = true, param6:Boolean = true) : void
+      public function addMouseOverTips(target:ITipedDisplay, minLevel:int, msg:String = "tips.open", useLanguageMgr:Boolean = true, tagGrey:Boolean = true, otherCondition:Boolean = true) : void
       {
-         if(PlayerManager.Instance.Self.Grade < param2 && param6)
+         if(PlayerManager.Instance.Self.Grade < minLevel && otherCondition)
          {
-            param5 && Helpers.grey(param1 as DisplayObject);
-            _hasForbiddenDic[param1.name] = true;
-            if(param4)
+            tagGrey && Helpers.grey(target as DisplayObject);
+            _hasForbiddenDic[target.name] = true;
+            if(useLanguageMgr)
             {
-               param3 = LanguageMgr.GetTranslation(param3,param2);
+               msg = LanguageMgr.GetTranslation(msg,minLevel);
             }
-            param1.tipData = param3;
-            param1.tipDirctions = "7,0";
-            param1.tipStyle = "ddt.view.tips.OneLineTip";
-            ShowTipManager.Instance.addTip(param1);
-            (param1 as InteractiveObject).addEventListener("click",onClick,false,1);
-            if(param1 is BaseButton)
+            target.tipData = msg;
+            target.tipDirctions = "7,0";
+            target.tipStyle = "ddt.view.tips.OneLineTip";
+            ShowTipManager.Instance.addTip(target);
+            (target as InteractiveObject).addEventListener("click",onClick,false,1);
+            if(target is BaseButton)
             {
-               (param1 as BaseButton).enable = false;
+               (target as BaseButton).enable = false;
             }
-            (param1 as InteractiveObject).mouseEnabled = true;
+            (target as InteractiveObject).mouseEnabled = true;
          }
          else
          {
-            removeMouseOverTips(param1);
+            removeMouseOverTips(target);
          }
       }
       
-      public function removeMouseOverTips(param1:ITipedDisplay) : void
+      public function removeMouseOverTips(target:ITipedDisplay) : void
       {
-         if(param1 == null)
+         if(target == null)
          {
             return;
          }
-         Helpers.colorful(param1 as DisplayObject);
-         delete _hasForbiddenDic[param1.name];
-         ShowTipManager.Instance.removeTip(param1);
-         (param1 as InteractiveObject).removeEventListener("click",onClick);
-         if(param1 is BaseButton)
+         Helpers.colorful(target as DisplayObject);
+         delete _hasForbiddenDic[target.name];
+         ShowTipManager.Instance.removeTip(target);
+         (target as InteractiveObject).removeEventListener("click",onClick);
+         if(target is BaseButton)
          {
-            (param1 as BaseButton).enable = true;
+            (target as BaseButton).enable = true;
          }
       }
       
-      private function onClick(param1:MouseEvent) : void
+      private function onClick(e:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
+         e.stopImmediatePropagation();
       }
       
-      public function isForbidden(param1:ITipedDisplay) : Boolean
+      public function isForbidden(target:ITipedDisplay) : Boolean
       {
-         if(_hasForbiddenDic[param1.name])
+         if(_hasForbiddenDic[target.name])
          {
             return true;
          }

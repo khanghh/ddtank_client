@@ -139,9 +139,9 @@ package feedback.view
          _submitFrame.feedbackInfo.charge_moneys = Number(_prepaidAmountTextInput.text);
       }
       
-      public function set submitFrame(param1:FeedbackSubmitFrame) : void
+      public function set submitFrame($submitFrame:FeedbackSubmitFrame) : void
       {
-         _submitFrame = param1;
+         _submitFrame = $submitFrame;
          if(_submitFrame.feedbackInfo.question_content)
          {
             _detailTextArea.text = _submitFrame.feedbackInfo.question_content;
@@ -161,85 +161,85 @@ package feedback.view
          __texeInput(null);
       }
       
-      private function __closeBtnClick(param1:MouseEvent) : void
+      private function __closeBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          FeedbackManager.instance.closeFrame();
       }
       
-      private function __submitBtnClick(param1:MouseEvent) : void
+      private function __submitBtnClick(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var info:* = null;
          SoundManager.instance.play("008");
          setFeedbackInfo();
          if(check)
          {
-            _loc2_ = new FeedbackInfo();
-            _loc2_.question_type = _submitFrame.feedbackInfo.question_type;
-            _loc2_.question_title = _submitFrame.feedbackInfo.question_title;
-            _loc2_.occurrence_date = _submitFrame.feedbackInfo.occurrence_date;
-            _loc2_.question_content = _submitFrame.feedbackInfo.question_content;
-            _loc2_.charge_order_id = _submitFrame.feedbackInfo.charge_order_id;
-            _loc2_.charge_method = _submitFrame.feedbackInfo.charge_method;
-            _loc2_.charge_moneys = _submitFrame.feedbackInfo.charge_moneys;
-            FeedbackManager.instance.submitFeedbackInfo(_loc2_);
+            info = new FeedbackInfo();
+            info.question_type = _submitFrame.feedbackInfo.question_type;
+            info.question_title = _submitFrame.feedbackInfo.question_title;
+            info.occurrence_date = _submitFrame.feedbackInfo.occurrence_date;
+            info.question_content = _submitFrame.feedbackInfo.question_content;
+            info.charge_order_id = _submitFrame.feedbackInfo.charge_order_id;
+            info.charge_method = _submitFrame.feedbackInfo.charge_method;
+            info.charge_moneys = _submitFrame.feedbackInfo.charge_moneys;
+            FeedbackManager.instance.submitFeedbackInfo(info);
          }
       }
       
-      private function __texeInput(param1:Event) : void
+      private function __texeInput(event:Event) : void
       {
          _infoText.text = LanguageMgr.GetTranslation("feedback.view.infoText",_detailTextArea.maxChars - _detailTextArea.textField.length);
       }
       
       private function _init() : void
       {
-         var _loc1_:* = null;
+         var rec:* = null;
          _orderNumberValueTextImg = ComponentFactory.Instance.creatComponentByStylename("ddtfeedback.typeText");
          _orderNumberValueTextImg.text = LanguageMgr.GetTranslation("feedback.view.Feedback.text11");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.prepaidCardOrderNumberValueTextImgRec");
-         ObjectUtils.copyPropertyByRectangle(_orderNumberValueTextImg,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.prepaidCardOrderNumberValueTextImgRec");
+         ObjectUtils.copyPropertyByRectangle(_orderNumberValueTextImg,rec);
          addChildAt(_orderNumberValueTextImg,0);
          _orderNumberValueTextInput = ComponentFactory.Instance.creatComponentByStylename("feedback.textInput");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.prepaidCardOrderNumberValueInputRec");
-         ObjectUtils.copyPropertyByRectangle(_orderNumberValueTextInput,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.prepaidCardOrderNumberValueInputRec");
+         ObjectUtils.copyPropertyByRectangle(_orderNumberValueTextInput,rec);
          _orderNumberValueTextInput.textField.restrict = "a-zA-Z0-9";
          addChildAt(_orderNumberValueTextInput,0);
          _orderNumberValueAsterisk = ComponentFactory.Instance.creatBitmap("asset.feedback.asteriskImg");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.prepaidCardOrderNumberValueAsteriskRec");
-         ObjectUtils.copyPropertyByRectangle(_orderNumberValueAsterisk,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.prepaidCardOrderNumberValueAsteriskRec");
+         ObjectUtils.copyPropertyByRectangle(_orderNumberValueAsterisk,rec);
          addChildAt(_orderNumberValueAsterisk,0);
          _prepaidModeTextImg = ComponentFactory.Instance.creatComponentByStylename("ddtfeedback.typeText");
          _prepaidModeTextImg.text = LanguageMgr.GetTranslation("feedback.view.Feedback.text12");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.prepaidCardPrepaidModeTextImgRec");
-         ObjectUtils.copyPropertyByRectangle(_prepaidModeTextImg,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.prepaidCardPrepaidModeTextImgRec");
+         ObjectUtils.copyPropertyByRectangle(_prepaidModeTextImg,rec);
          addChildAt(_prepaidModeTextImg,0);
          _prepaidModeTextInput = ComponentFactory.Instance.creatComponentByStylename("feedback.textInput");
          _prepaidModeTextInput.maxChars = 10;
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.prepaidCardPrepaidModeInputRec");
-         ObjectUtils.copyPropertyByRectangle(_prepaidModeTextInput,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.prepaidCardPrepaidModeInputRec");
+         ObjectUtils.copyPropertyByRectangle(_prepaidModeTextInput,rec);
          addChildAt(_prepaidModeTextInput,0);
          _prepaidModeAsterisk = ComponentFactory.Instance.creatBitmap("asset.feedback.asteriskImg");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.prepaidCardPrepaidModeAsteriskRec");
-         ObjectUtils.copyPropertyByRectangle(_prepaidModeAsterisk,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.prepaidCardPrepaidModeAsteriskRec");
+         ObjectUtils.copyPropertyByRectangle(_prepaidModeAsterisk,rec);
          addChildAt(_prepaidModeAsterisk,0);
          _prepaidAmountTextImg = ComponentFactory.Instance.creatComponentByStylename("ddtfeedback.typeText");
          _prepaidAmountTextImg.text = LanguageMgr.GetTranslation("feedback.view.Feedback.text13");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.prepaidCardPrepaidAmountTextImgRec");
-         ObjectUtils.copyPropertyByRectangle(_prepaidAmountTextImg,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.prepaidCardPrepaidAmountTextImgRec");
+         ObjectUtils.copyPropertyByRectangle(_prepaidAmountTextImg,rec);
          addChildAt(_prepaidAmountTextImg,0);
          _prepaidAmountTextInput = ComponentFactory.Instance.creatComponentByStylename("feedback.textInput");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.prepaidCardPrepaidAmountInputRec");
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.prepaidCardPrepaidAmountInputRec");
          _prepaidAmountTextInput.textField.restrict = "0-9";
-         ObjectUtils.copyPropertyByRectangle(_prepaidAmountTextInput,_loc1_);
+         ObjectUtils.copyPropertyByRectangle(_prepaidAmountTextInput,rec);
          addChildAt(_prepaidAmountTextInput,0);
          _prepaidAmountAsterisk = ComponentFactory.Instance.creatBitmap("asset.feedback.asteriskImg");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.prepaidCardPrepaidAmountAsteriskRec");
-         ObjectUtils.copyPropertyByRectangle(_prepaidAmountAsterisk,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.prepaidCardPrepaidAmountAsteriskRec");
+         ObjectUtils.copyPropertyByRectangle(_prepaidAmountAsterisk,rec);
          addChildAt(_prepaidAmountAsterisk,0);
          _detailTextImg = ComponentFactory.Instance.creatComponentByStylename("ddtfeedback.descriptionText");
          _detailTextImg.text = LanguageMgr.GetTranslation("feedback.view.Feedback.text6");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.prepaidCardDetailTextImgRec");
-         ObjectUtils.copyPropertyByRectangle(_detailTextImg,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.prepaidCardDetailTextImgRec");
+         ObjectUtils.copyPropertyByRectangle(_detailTextImg,rec);
          addChildAt(_detailTextImg,0);
          _csTelText = ComponentFactory.Instance.creatComponentByStylename("feedback.csTelText");
          _csTelText.text = LanguageMgr.GetTranslation("feedback.view.csTelNumber",PathManager.solveFeedbackTelNumber());
@@ -248,25 +248,25 @@ package feedback.view
             addChild(_csTelText);
          }
          _infoText = ComponentFactory.Instance.creatComponentByStylename("feedback.infoText");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.prepaidCardDisappearInfoTextRec");
-         ObjectUtils.copyPropertyByRectangle(_infoText,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.prepaidCardDisappearInfoTextRec");
+         ObjectUtils.copyPropertyByRectangle(_infoText,rec);
          _csTelText.y = 197;
          addChildAt(_infoText,0);
          _detailTextArea = ComponentFactory.Instance.creatComponentByStylename("feedback.simpleTextArea");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.prepaidCardDetailTextAreaRec");
-         ObjectUtils.copyPropertyByRectangle(_detailTextArea,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.prepaidCardDetailTextAreaRec");
+         ObjectUtils.copyPropertyByRectangle(_detailTextArea,rec);
          addChildAt(_detailTextArea,0);
          _infoText.text = LanguageMgr.GetTranslation("feedback.view.infoText",_detailTextArea.maxChars);
          _textInputBg = ComponentFactory.Instance.creatComponentByStylename("feedbackCard.textBgImg_style");
          addChildAt(_textInputBg,0);
          _submitBtn = ComponentFactory.Instance.creatComponentByStylename("feedback.btn");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.submitBtnRec");
-         ObjectUtils.copyPropertyByRectangle(_submitBtn,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.submitBtnRec");
+         ObjectUtils.copyPropertyByRectangle(_submitBtn,rec);
          _submitBtn.text = LanguageMgr.GetTranslation("feedback.view.FeedbackSubmitSp.submitBtnText");
          addChildAt(_submitBtn,0);
          _closeBtn = ComponentFactory.Instance.creatComponentByStylename("feedback.btn");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.closeBtnRec");
-         ObjectUtils.copyPropertyByRectangle(_closeBtn,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.closeBtnRec");
+         ObjectUtils.copyPropertyByRectangle(_closeBtn,rec);
          _closeBtn.text = LanguageMgr.GetTranslation("tank.invite.InviteView.close");
          addChildAt(_closeBtn,0);
          addEvent();

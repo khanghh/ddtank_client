@@ -16,22 +16,22 @@ package enchant.view
          super();
       }
       
-      override protected function laterEquipment(param1:GoodTipInfo) : void
+      override protected function laterEquipment(goodTipInfo:GoodTipInfo) : void
       {
-         var _loc3_:InventoryItemInfo = null;
-         var _loc2_:GoodTipInfo = null;
-         var _loc4_:InventoryItemInfo = null;
-         if(param1)
+         var tInfo:InventoryItemInfo = null;
+         var tGoodTipInfo:GoodTipInfo = null;
+         var itemInfo:InventoryItemInfo = null;
+         if(goodTipInfo)
          {
-            _loc4_ = param1.itemInfo as InventoryItemInfo;
+            itemInfo = goodTipInfo.itemInfo as InventoryItemInfo;
          }
-         if(_loc4_ && _loc4_.MagicLevel < EnchantManager.instance.infoVec.length)
+         if(itemInfo && itemInfo.MagicLevel < EnchantManager.instance.infoVec.length)
          {
-            _loc2_ = new GoodTipInfo();
-            _loc3_ = new InventoryItemInfo();
-            ObjectUtils.copyProperties(_loc3_,_loc4_);
-            _loc3_.MagicLevel = _loc3_.MagicLevel + 1;
-            _loc2_.itemInfo = _loc3_;
+            tGoodTipInfo = new GoodTipInfo();
+            tInfo = new InventoryItemInfo();
+            ObjectUtils.copyProperties(tInfo,itemInfo);
+            tInfo.MagicLevel = tInfo.MagicLevel + 1;
+            tGoodTipInfo.itemInfo = tInfo;
             if(!_laterEquipmentView)
             {
                _laterEquipmentView = new LaterEquipmentView();
@@ -41,7 +41,7 @@ package enchant.view
             {
                addChild(_laterEquipmentView);
             }
-            _laterEquipmentView.tipData = _loc2_;
+            _laterEquipmentView.tipData = tGoodTipInfo;
          }
          else
          {

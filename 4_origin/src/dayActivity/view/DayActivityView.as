@@ -33,19 +33,19 @@ package dayActivity.view
          addChild(_leftView);
       }
       
-      public function updataBtn(param1:int) : void
+      public function updataBtn(num:int) : void
       {
-         _rightView.updataBtn(param1);
+         _rightView.updataBtn(num);
       }
       
-      public function setBar(param1:int) : void
+      public function setBar(num:int) : void
       {
-         _rightView.setBarValue(param1);
+         _rightView.setBarValue(num);
       }
       
-      public function setLeftView(param1:Vector.<ActivityData>, param2:Vector.<ActivityData>) : void
+      public function setLeftView(overList:Vector.<ActivityData>, noOverList:Vector.<ActivityData>) : void
       {
-         _leftView.initList(param1,param2);
+         _leftView.initList(overList,noOverList);
       }
       
       public function dispose() : void

@@ -28,10 +28,10 @@ package godCardRaise.view
       
       private var _picBmp:Bitmap;
       
-      public function GodCardRaiseExchangeRightCard(param1:Object)
+      public function GodCardRaiseExchangeRightCard($info:Object)
       {
          super();
-         _info = param1;
+         _info = $info;
          _cradInfo = GodCardRaiseManager.Instance.godCardListInfoList[_info.cardId];
          initView();
       }
@@ -46,20 +46,20 @@ package godCardRaise.view
          updateView();
       }
       
-      private function __picComplete(param1:LoaderEvent) : void
+      private function __picComplete(evt:LoaderEvent) : void
       {
-         param1.loader.removeEventListener("complete",__picComplete);
-         if(param1.loader.isSuccess)
+         evt.loader.removeEventListener("complete",__picComplete);
+         if(evt.loader.isSuccess)
          {
-            _picBmp = param1.loader.content as Bitmap;
+            _picBmp = evt.loader.content as Bitmap;
             addChild(_picBmp);
          }
       }
       
       public function updateView() : void
       {
-         var _loc1_:int = GodCardRaiseManager.Instance.model.cards[_info.cardId];
-         _countTxt.text = LanguageMgr.GetTranslation("godCardRaiseExchangeRightCard.countTxtMsg",_loc1_,_info.cardCount);
+         var cardCount:int = GodCardRaiseManager.Instance.model.cards[_info.cardId];
+         _countTxt.text = LanguageMgr.GetTranslation("godCardRaiseExchangeRightCard.countTxtMsg",cardCount,_info.cardCount);
       }
       
       public function dispose() : void

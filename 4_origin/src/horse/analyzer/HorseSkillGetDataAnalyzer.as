@@ -13,60 +13,59 @@ package horse.analyzer
       
       private var _horseSkillGetIdList:DictionaryData;
       
-      public function HorseSkillGetDataAnalyzer(param1:Function)
+      public function HorseSkillGetDataAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc5_:* = null;
-         var _loc7_:int = 0;
-         var _loc6_:int = 0;
-         var _loc2_:* = null;
-         var _loc4_:XML = new XML(param1);
+         var xmllist:* = null;
+         var i:int = 0;
+         var type:int = 0;
+         var tmpVo:* = null;
+         var xml:XML = new XML(data);
          _horseSkillGetList = new DictionaryData();
          _horseSkillGetIdList = new DictionaryData();
-         if(_loc4_.@value == "true")
+         if(xml.@value == "true")
          {
-            _loc5_ = _loc4_..item;
-            _loc7_ = 0;
-            while(_loc7_ < _loc5_.length())
+            xmllist = xml..item;
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc6_ = _loc5_[_loc7_].@Type;
-               if(!_horseSkillGetList[_loc6_])
+               type = xmllist[i].@Type;
+               if(!_horseSkillGetList[type])
                {
-                  _horseSkillGetList.add(_loc6_,new Vector.<HorseSkillGetVo>());
+                  _horseSkillGetList.add(type,new Vector.<HorseSkillGetVo>());
                }
-               _loc2_ = new HorseSkillGetVo();
-               ObjectUtils.copyPorpertiesByXML(_loc2_,_loc5_[_loc7_]);
-               _horseSkillGetList[_loc6_].push(_loc2_);
-               _horseSkillGetIdList.add(_loc2_.SkillID,_loc2_);
-               _loc7_++;
+               tmpVo = new HorseSkillGetVo();
+               ObjectUtils.copyPorpertiesByXML(tmpVo,xmllist[i]);
+               _horseSkillGetList[type].push(tmpVo);
+               _horseSkillGetIdList.add(tmpVo.SkillID,tmpVo);
+               i++;
             }
             var _loc9_:int = 0;
             var _loc8_:* = _horseSkillGetList;
-            for each(var _loc3_ in _horseSkillGetList)
+            for each(var tmp in _horseSkillGetList)
             {
-               _loc3_.sort(compareFunc);
+               tmp.sort(compareFunc);
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc4_.@message;
+            message = xml.@message;
             onAnalyzeError();
             onAnalyzeError();
          }
       }
       
-      private function compareFunc(param1:HorseSkillGetVo, param2:HorseSkillGetVo) : int
+      private function compareFunc(tmpA:HorseSkillGetVo, tmpB:HorseSkillGetVo) : int
       {
-         if(param1.Level > param2.Level)
+         if(tmpA.Level > tmpB.Level)
          {
             return 1;
          }
-         if(param1.Level < param2.Level)
+         if(tmpA.Level < tmpB.Level)
          {
             return -1;
          }

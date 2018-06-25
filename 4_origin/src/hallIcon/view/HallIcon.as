@@ -45,11 +45,11 @@ package hallIcon.view
       
       public var iconInfo:HallIconInfo;
       
-      public function HallIcon(param1:String, param2:HallIconInfo)
+      public function HallIcon($iconString:String, $iconInfo:HallIconInfo)
       {
          super();
-         _iconString = param1;
-         iconInfo = param2;
+         _iconString = $iconString;
+         iconInfo = $iconInfo;
          initView();
          buttonCursorMode(true);
          this.mouseChildren = false;
@@ -74,9 +74,9 @@ package hallIcon.view
          addChild(_iconTxt);
       }
       
-      public function updateIcon(param1:HallIconInfo) : void
+      public function updateIcon($iconInfo:HallIconInfo) : void
       {
-         iconInfo = param1;
+         iconInfo = $iconInfo;
          if(iconInfo.timemsg == null)
          {
             iconInfo.timemsg = "";
@@ -97,9 +97,9 @@ package hallIcon.view
          setNumShow(iconInfo.num);
       }
       
-      private function setTimeTxt(param1:String) : void
+      private function setTimeTxt(str:String) : void
       {
-         if(param1 == "" || iconInfo.timeShow)
+         if(str == "" || iconInfo.timeShow)
          {
             _icon.alpha = 1;
             buttonCursorMode(true);
@@ -109,12 +109,12 @@ package hallIcon.view
             _icon.alpha = 0.6;
             buttonCursorMode(false);
          }
-         _timeTxt.text = param1;
+         _timeTxt.text = str;
       }
       
-      private function setGlow(param1:Boolean) : void
+      private function setGlow($isglow:Boolean) : void
       {
-         if(param1)
+         if($isglow)
          {
             _glowMovie.play();
             _glowMovie.visible = true;
@@ -126,9 +126,9 @@ package hallIcon.view
          }
       }
       
-      private function setFightState(param1:Boolean) : void
+      private function setFightState($fightover:Boolean) : void
       {
-         if(param1)
+         if($fightover)
          {
             _icon.alpha = 0.6;
          }
@@ -138,10 +138,10 @@ package hallIcon.view
          }
       }
       
-      private function setNumShow(param1:int) : void
+      private function setNumShow(num:int) : void
       {
-         _iconTxt.text = param1.toString();
-         if(param1 > -1)
+         _iconTxt.text = num.toString();
+         if(num > -1)
          {
             _iconNumBg.visible = true;
             _iconTxt.visible = true;
@@ -153,10 +153,10 @@ package hallIcon.view
          }
       }
       
-      private function buttonCursorMode(param1:Boolean) : void
+      private function buttonCursorMode($isBool:Boolean) : void
       {
-         this.buttonMode = param1;
-         this.mouseEnabled = param1;
+         this.buttonMode = $isBool;
+         this.mouseEnabled = $isBool;
       }
       
       public function get tipStyle() : String
@@ -184,29 +184,29 @@ package hallIcon.view
          return _tipGapH;
       }
       
-      public function set tipStyle(param1:String) : void
+      public function set tipStyle(value:String) : void
       {
-         _tipStyle = param1;
+         _tipStyle = value;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(value:Object) : void
       {
-         _tipData = param1;
+         _tipData = value;
       }
       
-      public function set tipDirctions(param1:String) : void
+      public function set tipDirctions(value:String) : void
       {
-         _tipDirctions = param1;
+         _tipDirctions = value;
       }
       
-      public function set tipGapV(param1:int) : void
+      public function set tipGapV(value:int) : void
       {
-         _tipGapV = param1;
+         _tipGapV = value;
       }
       
-      public function set tipGapH(param1:int) : void
+      public function set tipGapH(value:int) : void
       {
-         _tipGapH = param1;
+         _tipGapH = value;
       }
       
       public function asDisplayObject() : DisplayObject

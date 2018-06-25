@@ -70,22 +70,21 @@ package oldPlayerRegress.view.itemView
       
       private function initData() : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
-         var _loc3_:* = null;
+         var i:int = 0;
+         var title:* = null;
+         var des:* = null;
+         var item:* = null;
          _vBox = new VBox();
          _vBox.spacing = 10;
-         _loc4_ = 1;
-         while(_loc4_ <= 3)
+         for(i = 1; i <= 3; )
          {
-            _loc2_ = LanguageMgr.GetTranslation("ddt.regress.welView.title" + _loc4_);
-            _loc1_ = LanguageMgr.GetTranslation("ddt.regress.welView.descript" + _loc4_);
-            _loc3_ = new WelcomeViewItem();
-            _loc3_.setData(_loc2_,_loc1_);
-            _loc3_.setDesOffset(2,10);
-            _vBox.addChild(_loc3_);
-            _loc4_++;
+            title = LanguageMgr.GetTranslation("ddt.regress.welView.title" + i);
+            des = LanguageMgr.GetTranslation("ddt.regress.welView.descript" + i);
+            item = new WelcomeViewItem();
+            item.setData(title,des);
+            item.setDesOffset(2,10);
+            _vBox.addChild(item);
+            i++;
          }
          _listView = ComponentFactory.Instance.creat("regress.welListView");
          _listView.setView(_vBox);
@@ -99,11 +98,11 @@ package oldPlayerRegress.view.itemView
          _privilegeBtn.addEventListener("click",__onPrivilegeClick);
       }
       
-      protected function __onPrivilegeClick(param1:MouseEvent) : void
+      protected function __onPrivilegeClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:WelFrameView = ComponentFactory.Instance.creatComponentByStylename("regress.privilegeAssetFrame");
-         LayerManager.Instance.addToLayer(_loc2_,2,true,1);
+         var welFrameView:WelFrameView = ComponentFactory.Instance.creatComponentByStylename("regress.privilegeAssetFrame");
+         LayerManager.Instance.addToLayer(welFrameView,2,true,1);
       }
       
       private function removeEvent() : void

@@ -24,9 +24,9 @@ package ddt.data.quest
          return _canOneKeyFinishTime;
       }
       
-      public function set canOneKeyFinishTime(param1:int) : void
+      public function set canOneKeyFinishTime(value:int) : void
       {
-         _canOneKeyFinishTime = param1;
+         _canOneKeyFinishTime = value;
       }
       
       public function get exploitRate() : Array
@@ -34,9 +34,9 @@ package ddt.data.quest
          return _exploitRate;
       }
       
-      public function set exploitRate(param1:Array) : void
+      public function set exploitRate(value:Array) : void
       {
-         _exploitRate = param1;
+         _exploitRate = value;
       }
       
       public function get goldRate() : Array
@@ -44,9 +44,9 @@ package ddt.data.quest
          return _goldRate;
       }
       
-      public function set goldRate(param1:Array) : void
+      public function set goldRate(value:Array) : void
       {
-         _goldRate = param1;
+         _goldRate = value;
       }
       
       public function get expRate() : Array
@@ -54,9 +54,9 @@ package ddt.data.quest
          return _expRate;
       }
       
-      public function set expRate(param1:Array) : void
+      public function set expRate(value:Array) : void
       {
-         _expRate = param1;
+         _expRate = value;
       }
       
       public function get bindMoneyRate() : Array
@@ -64,9 +64,9 @@ package ddt.data.quest
          return _bindMoneyRate;
       }
       
-      public function set bindMoneyRate(param1:Array) : void
+      public function set bindMoneyRate(value:Array) : void
       {
-         _bindMoneyRate = param1;
+         _bindMoneyRate = value;
       }
    }
 }

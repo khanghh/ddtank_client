@@ -28,9 +28,9 @@ package hall.tasktrack
       
       private var _guideTask1_mc:MovieClip;
       
-      public function HallTaskGuideManager(param1:IEventDispatcher = null)
+      public function HallTaskGuideManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : HallTaskGuideManager
@@ -44,11 +44,11 @@ package hall.tasktrack
       
       public function showTask1ClickBagArrow() : void
       {
-         var _loc1_:* = null;
+         var tmpInfo:* = null;
          if(StateManager.currentStateType == "main" && PlayerManager.Instance.Self.Grade < 10)
          {
-            _loc1_ = TaskManager.instance.getQuestByID(558);
-            if(TaskManager.instance.isAvailableQuest(_loc1_,true) && !_loc1_.isCompleted)
+            tmpInfo = TaskManager.instance.getQuestByID(558);
+            if(TaskManager.instance.isAvailableQuest(tmpInfo,true) && !tmpInfo.isCompleted)
             {
                NewHandContainer.Instance.showArrow(123,0,new Point(858,487),"","",LayerManager.Instance.getLayerByType(2));
                BagAndInfoManager.Instance.addEventListener("open",showTask2ClickEquipArrow);
@@ -58,14 +58,14 @@ package hall.tasktrack
          }
       }
       
-      private function showTask2ClickEquipArrow(param1:Event) : void
+      private function showTask2ClickEquipArrow(event:Event) : void
       {
-         var _loc2_:* = null;
+         var tmpInfo:* = null;
          BagAndInfoManager.Instance.removeEventListener("open",showTask2ClickEquipArrow);
          if(StateManager.currentStateType == "main" && PlayerManager.Instance.Self.Grade < 10)
          {
-            _loc2_ = TaskManager.instance.getQuestByID(558);
-            if(TaskManager.instance.isAvailableQuest(_loc2_,true) && !_loc2_.isCompleted)
+            tmpInfo = TaskManager.instance.getQuestByID(558);
+            if(TaskManager.instance.isAvailableQuest(tmpInfo,true) && !tmpInfo.isCompleted)
             {
                NewHandContainer.Instance.clearArrowByID(123);
                if(_guideTask1_mc == null)
@@ -82,7 +82,7 @@ package hall.tasktrack
          }
       }
       
-      private function onGuideTask1MCEnterFrame(param1:Event) : void
+      private function onGuideTask1MCEnterFrame(e:Event) : void
       {
          if(_guideTask1_mc.currentFrame == _guideTask1_mc.totalFrames)
          {

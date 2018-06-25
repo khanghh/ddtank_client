@@ -26,40 +26,38 @@ package farm.modelx
       
       public function get hasGrownLand() : Boolean
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < landStateVec.length)
+         var i:int = 0;
+         for(i = 0; i < landStateVec.length; )
          {
-            if(landStateVec[_loc1_].hasPlantGrown)
+            if(landStateVec[i].hasPlantGrown)
             {
                return true;
             }
-            _loc1_++;
+            i++;
          }
          return false;
       }
       
       public function get isStolen() : Boolean
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(hasGrownLand)
          {
-            _loc1_ = 0;
-            while(_loc1_ < landStateVec.length)
+            for(i = 0; i < landStateVec.length; )
             {
-               if(landStateVec[_loc1_].isStolen)
+               if(landStateVec[i].isStolen)
                {
                   return true;
                }
-               _loc1_++;
+               i++;
             }
          }
          return false;
       }
       
-      public function set isFeed(param1:Boolean) : void
+      public function set isFeed(value:Boolean) : void
       {
-         _isFeed = param1;
+         _isFeed = value;
       }
       
       public function get isFeed() : Boolean
@@ -67,9 +65,9 @@ package farm.modelx
          return _isFeed;
       }
       
-      public function set setLandStateVec(param1:Vector.<SimpleLandStateInfo>) : void
+      public function set setLandStateVec(value:Vector.<SimpleLandStateInfo>) : void
       {
-         landStateVec = param1;
+         landStateVec = value;
       }
    }
 }

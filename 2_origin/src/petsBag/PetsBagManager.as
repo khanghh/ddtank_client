@@ -13,6 +13,7 @@ package petsBag
    import ddt.manager.LanguageMgr;
    import ddt.manager.MessageTipManager;
    import ddt.manager.PlayerManager;
+   import ddt.manager.ServerConfigManager;
    import ddt.manager.SocketManager;
    import ddt.utils.AssetModuleLoader;
    import ddt.utils.HelperBuyAlert;
@@ -74,7 +75,11 @@ package petsBag
       
       private var _awakenEquipList:Dictionary;
       
+      public var activateAlertFrameShow:Boolean = true;
+      
       private var _newPetInfo:PetInfo;
+      
+      private var _washProItemLock:DictionaryData;
       
       public var isSelf:Boolean = true;
       
@@ -86,6 +91,7 @@ package petsBag
       {
          _popuMsg = [];
          super();
+         _washProItemLock = new DictionaryData();
       }
       
       public static function instance() : PetsBagManager
@@ -97,14 +103,32 @@ package petsBag
          return _instance;
       }
       
-      public function set newPetInfo(param1:PetInfo) : void
+      public function set newPetInfo(value:PetInfo) : void
       {
-         _newPetInfo = param1;
+         _newPetInfo = value;
       }
       
       public function get newPetInfo() : PetInfo
       {
          return _newPetInfo;
+      }
+      
+      public function addPetWashProItemLock(petID:int, result:Array) : void
+      {
+         if(_washProItemLock == null)
+         {
+            _washProItemLock = new DictionaryData();
+         }
+         _washProItemLock.add(petID,result);
+      }
+      
+      public function getWashProLockByPetID($pet:PetInfo) : Array
+      {
+         if(_washProItemLock && $pet && _washProItemLock.hasKey($pet.ID))
+         {
+            return _washProItemLock[$pet.ID];
+         }
+         return new Array(0,0,0,0,0);
       }
       
       public function setup() : void
@@ -121,20 +145,20 @@ package petsBag
          SocketManager.Instance.addEventListener(PkgEvent.format(68,38),petEquipAwakenInfoHandler);
       }
       
-      private function _eatPetsInfoHandler(param1:PkgEvent) : void
+      private function _eatPetsInfoHandler(e:PkgEvent) : void
       {
-         var _loc2_:DictionaryData = new DictionaryData();
-         _loc2_.add("weaponExp",param1.pkg.readInt());
-         _loc2_.add("weaponLevel",param1.pkg.readInt());
-         _loc2_.add("clothesExp",param1.pkg.readInt());
-         _loc2_.add("clothesLevel",param1.pkg.readInt());
-         _loc2_.add("hatExp",param1.pkg.readInt());
-         _loc2_.add("hatLevel",param1.pkg.readInt());
+         var eatPetsInfo:DictionaryData = new DictionaryData();
+         eatPetsInfo.add("weaponExp",e.pkg.readInt());
+         eatPetsInfo.add("weaponLevel",e.pkg.readInt());
+         eatPetsInfo.add("clothesExp",e.pkg.readInt());
+         eatPetsInfo.add("clothesLevel",e.pkg.readInt());
+         eatPetsInfo.add("hatExp",e.pkg.readInt());
+         eatPetsInfo.add("hatLevel",e.pkg.readInt());
          if(petModel.eatPetsInfo.length == 0)
          {
             petModel.eatPetsLevelUp = false;
          }
-         else if(_loc2_.weaponLevel > petModel.eatPetsInfo.weaponLevel || _loc2_.clothesLevel > petModel.eatPetsInfo.clothesLevel || _loc2_.hatLevel > petModel.eatPetsInfo.hatLevel)
+         else if(eatPetsInfo.weaponLevel > petModel.eatPetsInfo.weaponLevel || eatPetsInfo.clothesLevel > petModel.eatPetsInfo.clothesLevel || eatPetsInfo.hatLevel > petModel.eatPetsInfo.hatLevel)
          {
             petModel.eatPetsLevelUp = true;
          }
@@ -142,40 +166,40 @@ package petsBag
          {
             petModel.eatPetsLevelUp = false;
          }
-         petModel.eatPetsInfo = _loc2_;
+         petModel.eatPetsInfo = eatPetsInfo;
       }
       
-      public function petAtlasAnalyzer(param1:PetAtlasAnalyzer) : void
+      public function petAtlasAnalyzer(analyzer:PetAtlasAnalyzer) : void
       {
-         petModel.petsAtlas = param1.data;
+         petModel.petsAtlas = analyzer.data;
       }
       
-      public function updateAwakenEquipList(param1:AwakenEquipInfo) : void
+      public function updateAwakenEquipList(data:AwakenEquipInfo) : void
       {
          if(_awakenEquipList)
          {
-            _awakenEquipList[param1.itemID.toString()] = param1;
+            _awakenEquipList[data.itemID.toString()] = data;
          }
       }
       
-      public function getAwakenEquipInfo(param1:String) : AwakenEquipInfo
+      public function getAwakenEquipInfo(equipID:String) : AwakenEquipInfo
       {
          if(_awakenEquipList)
          {
-            return _awakenEquipList[param1];
+            return _awakenEquipList[equipID];
          }
          return null;
       }
       
-      public function isAwakenSkill(param1:int) : Boolean
+      public function isAwakenSkill(skillID:int) : Boolean
       {
          if(_awakenEquipList)
          {
             var _loc4_:int = 0;
             var _loc3_:* = _awakenEquipList;
-            for each(var _loc2_ in _awakenEquipList)
+            for each(var info in _awakenEquipList)
             {
-               if(_loc2_.skillId1 == param1 || _loc2_.skillId2 == param1)
+               if(info.skillId1 == skillID || info.skillId2 == skillID)
                {
                   return true;
                }
@@ -184,77 +208,77 @@ package petsBag
          return false;
       }
       
-      public function petEquipAwakenInfoHandler(param1:PkgEvent) : void
+      public function petEquipAwakenInfoHandler(evt:PkgEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc6_:* = null;
-         var _loc5_:int = 0;
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc4_:int = _loc3_.readInt();
+         var itemID:int = 0;
+         var info:* = null;
+         var i:int = 0;
+         var pkg:PackageIn = evt.pkg;
+         var len:int = pkg.readInt();
          if(_awakenEquipList == null)
          {
             _awakenEquipList = new Dictionary();
          }
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         i = 0;
+         while(i < len)
          {
-            _loc6_ = new AwakenEquipInfo();
-            _loc6_.itemID = _loc3_.readInt();
-            _loc6_.skillId1 = _loc3_.readInt();
-            _loc6_.skillId2 = _loc3_.readInt();
-            _loc6_.belongPetId = _loc3_.readInt();
-            _awakenEquipList[_loc6_.itemID] = _loc6_;
-            _loc5_++;
+            info = new AwakenEquipInfo();
+            info.itemID = pkg.readInt();
+            info.skillId1 = pkg.readInt();
+            info.skillId2 = pkg.readInt();
+            info.belongPetId = pkg.readInt();
+            _awakenEquipList[info.itemID] = info;
+            i++;
          }
       }
       
       public function curMaxBreakGrade() : int
       {
-         var _loc3_:int = 0;
-         var _loc1_:DictionaryData = PlayerManager.Instance.Self.pets;
+         var __curMaxBreakLevel:int = 0;
+         var dd:DictionaryData = PlayerManager.Instance.Self.pets;
          var _loc5_:int = 0;
-         var _loc4_:* = _loc1_;
-         for each(var _loc2_ in _loc1_)
+         var _loc4_:* = dd;
+         for each(var pInfo in dd)
          {
-            if(_loc2_.breakGrade > _loc3_)
+            if(pInfo.breakGrade > __curMaxBreakLevel)
             {
-               _loc3_ = _loc2_.breakGrade;
+               __curMaxBreakLevel = pInfo.breakGrade;
             }
          }
-         return _loc3_;
+         return __curMaxBreakLevel;
       }
       
-      public function onPetCellUnlockPrice(param1:PetsCellUnlocakPriceAnalyzer) : void
+      public function onPetCellUnlockPrice(analyzer:PetsCellUnlocakPriceAnalyzer) : void
       {
-         petModel.cellUnlockPrice = param1.getPrice();
+         petModel.cellUnlockPrice = analyzer.getPrice();
       }
       
-      protected function petCellUnLockHandler(param1:PkgEvent) : void
+      protected function petCellUnLockHandler(e:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         petModel.unlockedCellNum = _loc2_.readInt();
+         var pkg:PackageIn = e.pkg;
+         petModel.unlockedCellNum = pkg.readInt();
          dispatchEvent(new UpdatePetInfoEvent("ptm_unlock_update"));
       }
       
-      protected function petBreakInfoHandler(param1:PkgEvent) : void
+      protected function petBreakInfoHandler(e:PkgEvent) : void
       {
-         var _loc2_:BreakInfo = new BreakInfo();
-         var _loc3_:PackageIn = param1.pkg;
-         _loc2_.targetGrade = _loc3_.readInt();
-         _loc2_.stoneNumber = _loc3_.readInt();
-         _loc2_.breakGrade1 = _loc3_.readInt();
-         _loc2_.star1 = _loc3_.readInt();
-         _loc2_.breakGrade2 = _loc3_.readInt();
-         _loc2_.star2 = _loc3_.readInt();
-         petModel.currentPetBreakInfo = _loc2_;
+         var breakInfo:BreakInfo = new BreakInfo();
+         var pkg:PackageIn = e.pkg;
+         breakInfo.targetGrade = pkg.readInt();
+         breakInfo.stoneNumber = pkg.readInt();
+         breakInfo.breakGrade1 = pkg.readInt();
+         breakInfo.star1 = pkg.readInt();
+         breakInfo.breakGrade2 = pkg.readInt();
+         breakInfo.star2 = pkg.readInt();
+         petModel.currentPetBreakInfo = breakInfo;
          PetsAdvancedManager.Instance.dispatchEvent(new Event("change"));
       }
       
-      protected function petBreakHander(param1:PkgEvent) : void
+      protected function petBreakHander(e:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:Boolean = _loc3_.readBoolean();
-         if(_loc2_)
+         var pkg:PackageIn = e.pkg;
+         var suc:Boolean = pkg.readBoolean();
+         if(suc)
          {
             SocketManager.Instance.out.sendUpdatePetInfo(petModel.currentPetInfo.ID);
             petBreakInfoRequire();
@@ -267,14 +291,14 @@ package petsBag
          }
       }
       
-      public function petBreakBtnClick(param1:int, param2:Boolean, param3:Array) : void
+      public function petBreakBtnClick(tagPet:int, useProtect:Boolean, eatPosList:Array) : void
       {
-         petBreak(param1,param2,param3);
+         petBreak(tagPet,useProtect,eatPosList);
       }
       
-      private function petBreak(param1:int, param2:Boolean, param3:Array) : void
+      private function petBreak(tagPet:int, useProtect:Boolean, eatPosList:Array) : void
       {
-         SocketManager.Instance.out.sendPetBreak(param1,param2,param3);
+         SocketManager.Instance.out.sendPetBreak(tagPet,useProtect,eatPosList);
       }
       
       public function petBreakInfoRequire() : void
@@ -283,14 +307,14 @@ package petsBag
          {
             return;
          }
-         var _loc1_:int = petModel.currentPetInfo.breakGrade + 1;
-         SocketManager.Instance.out.sendBreakInfoRequire(_loc1_);
+         var targetGrade:int = petModel.currentPetInfo.breakGrade + 1;
+         SocketManager.Instance.out.sendBreakInfoRequire(targetGrade);
       }
       
-      public function onPetChange(param1:PetInfo) : void
+      public function onPetChange(info:PetInfo) : void
       {
-         var _loc2_:* = null;
-         if(param1 == null)
+         var msg:* = null;
+         if(info == null)
          {
             return;
          }
@@ -298,26 +322,26 @@ package petsBag
          {
             return;
          }
-         if(param1.IsEquip)
+         if(info.IsEquip)
          {
-            _loc2_ = LanguageMgr.GetTranslation("ddt.pets.bench.fighting.canotGotoBench");
-            MessageTipManager.getInstance().show(_loc2_,0,true,1.5);
+            msg = LanguageMgr.GetTranslation("ddt.pets.bench.fighting.canotGotoBench");
+            MessageTipManager.getInstance().show(msg,0,true,1.5);
          }
          else if(petModel.petBenchIsFull())
          {
-            _loc2_ = LanguageMgr.GetTranslation("ddt.pets.bench.full");
-            MessageTipManager.getInstance().show(_loc2_,0,true,1.5);
+            msg = LanguageMgr.GetTranslation("ddt.pets.bench.full");
+            MessageTipManager.getInstance().show(msg,0,true,1.5);
          }
       }
       
-      public function onBenchBagPetCellClick(param1:int) : void
+      public function onBenchBagPetCellClick(btnPlace:int) : void
       {
-         btnPlace = param1;
+         btnPlace = btnPlace;
          onCheckOut = function():void
          {
             SocketManager.Instance.out.sendPetCellUnlock(petModel.confirmData().isBind,times);
          };
-         onConfirm = function(param1:BaseAlerFrame):void
+         onConfirm = function(frame:BaseAlerFrame):void
          {
          };
          if(btnPlace >= petModel.cellMaxUnlockedPlace)
@@ -335,91 +359,91 @@ package petsBag
          }
       }
       
-      public function onBenchBagPetCellDoubleClick(param1:PetInfo) : void
+      public function onBenchBagPetCellDoubleClick(info:PetInfo) : void
       {
-         var _loc2_:* = null;
-         if(param1 != null)
+         var msg:* = null;
+         if(info != null)
          {
             if(petModel.petBagIsFull())
             {
-               _loc2_ = LanguageMgr.GetTranslation("ddt.pets.bag.full");
-               MessageTipManager.getInstance().show(_loc2_,0,true,1.5);
+               msg = LanguageMgr.GetTranslation("ddt.pets.bag.full");
+               MessageTipManager.getInstance().show(msg,0,true,1.5);
             }
          }
       }
       
-      protected function addPetEquipHander(param1:PkgEvent) : void
+      protected function addPetEquipHander(event:PkgEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc9_:int = 0;
-         var _loc10_:int = 0;
-         var _loc3_:* = null;
-         var _loc7_:int = 0;
-         var _loc6_:* = null;
-         var _loc5_:* = null;
-         var _loc2_:* = null;
-         var _loc8_:Boolean = param1.pkg.readBoolean();
-         if(_loc8_)
+         var petPlace:int = 0;
+         var type:int = 0;
+         var tempID:int = 0;
+         var startTime:* = null;
+         var ValidDate:int = 0;
+         var data:* = null;
+         var equInfo:* = null;
+         var newInfo:* = null;
+         var bool:Boolean = event.pkg.readBoolean();
+         if(bool)
          {
-            _loc4_ = param1.pkg.readInt();
-            _loc9_ = param1.pkg.readInt();
-            _loc10_ = param1.pkg.readInt();
-            _loc3_ = param1.pkg.readDateString();
-            _loc7_ = param1.pkg.readInt();
-            _loc6_ = new PetEquipData();
-            _loc6_.eqTemplateID = _loc10_;
-            _loc6_.eqType = _loc9_;
-            _loc6_.startTime = _loc3_;
-            _loc6_.ValidDate = _loc7_;
-            _loc5_ = new InventoryItemInfo();
-            _loc5_.TemplateID = _loc6_.eqTemplateID;
-            _loc5_.ValidDate = _loc6_.ValidDate;
-            _loc5_.BeginDate = _loc6_.startTime;
-            _loc5_.IsBinds = true;
-            _loc5_.IsUsed = true;
-            _loc5_.AttackCompose = param1.pkg.readInt();
-            _loc5_.DefendCompose = param1.pkg.readInt();
-            _loc5_.AgilityCompose = param1.pkg.readInt();
-            _loc5_.LuckCompose = param1.pkg.readInt();
-            _loc5_.ItemID = param1.pkg.readInt();
-            _loc5_.Place = _loc6_.eqType;
-            _loc2_ = ItemManager.fill(_loc5_) as InventoryItemInfo;
-            if(petModel.currentPetInfo.equipList[_loc9_])
+            petPlace = event.pkg.readInt();
+            type = event.pkg.readInt();
+            tempID = event.pkg.readInt();
+            startTime = event.pkg.readDateString();
+            ValidDate = event.pkg.readInt();
+            data = new PetEquipData();
+            data.eqTemplateID = tempID;
+            data.eqType = type;
+            data.startTime = startTime;
+            data.ValidDate = ValidDate;
+            equInfo = new InventoryItemInfo();
+            equInfo.TemplateID = data.eqTemplateID;
+            equInfo.ValidDate = data.ValidDate;
+            equInfo.BeginDate = data.startTime;
+            equInfo.IsBinds = true;
+            equInfo.IsUsed = true;
+            equInfo.AttackCompose = event.pkg.readInt();
+            equInfo.DefendCompose = event.pkg.readInt();
+            equInfo.AgilityCompose = event.pkg.readInt();
+            equInfo.LuckCompose = event.pkg.readInt();
+            equInfo.ItemID = event.pkg.readInt();
+            equInfo.Place = data.eqType;
+            newInfo = ItemManager.fill(equInfo) as InventoryItemInfo;
+            if(petModel.currentPetInfo.equipList[type])
             {
-               petModel.currentPetInfo.equipList[_loc9_] = _loc2_;
+               petModel.currentPetInfo.equipList[type] = newInfo;
             }
             else
             {
-               petModel.currentPetInfo.equipList.add(_loc9_,_loc2_);
+               petModel.currentPetInfo.equipList.add(type,newInfo);
             }
-            if(_view && _view.parent && _loc4_ == petModel.currentPetInfo.Place)
+            if(_view && _view.parent && petPlace == petModel.currentPetInfo.Place)
             {
-               _view.addPetEquip(_loc2_);
+               _view.addPetEquip(newInfo);
             }
          }
       }
       
-      protected function delPetEquipHander(param1:PkgEvent) : void
+      protected function delPetEquipHander(event:PkgEvent) : void
       {
-         var _loc6_:* = null;
-         var _loc4_:Boolean = param1.pkg.readBoolean();
-         var _loc2_:int = param1.pkg.readInt();
-         var _loc5_:int = param1.pkg.readInt();
-         if(_loc4_)
+         var petInfo:* = null;
+         var bool:Boolean = event.pkg.readBoolean();
+         var petPlace:int = event.pkg.readInt();
+         var type:int = event.pkg.readInt();
+         if(bool)
          {
             var _loc8_:int = 0;
             var _loc7_:* = PlayerManager.Instance.Self.pets;
-            for(var _loc3_ in PlayerManager.Instance.Self.pets)
+            for(var p in PlayerManager.Instance.Self.pets)
             {
-               _loc6_ = PlayerManager.Instance.Self.pets[_loc3_] as PetInfo;
-               if(_loc6_.Place == _loc2_ && _loc6_.equipList[_loc5_])
+               petInfo = PlayerManager.Instance.Self.pets[p] as PetInfo;
+               if(petInfo.Place == petPlace && petInfo.equipList[type])
                {
-                  _loc6_.equipList.remove(_loc5_);
+                  petInfo.equipList.remove(type);
                }
             }
-            if(_view && _view.parent && _loc2_ == petModel.currentPetInfo.Place)
+            if(_view && _view.parent && petPlace == petModel.currentPetInfo.Place)
             {
-               _view.delPetEquip(_loc2_,_loc5_);
+               _view.delPetEquip(petPlace,type);
             }
          }
       }
@@ -429,9 +453,9 @@ package petsBag
          return _view;
       }
       
-      public function set view(param1:PetsBagOutView) : void
+      public function set view(value:PetsBagOutView) : void
       {
-         _view = param1;
+         _view = value;
       }
       
       public function getEquipdSkillIndex() : int
@@ -439,9 +463,9 @@ package petsBag
          return view.getUnLockItemIndex();
       }
       
-      public function pushMsg(param1:String) : void
+      public function pushMsg(str:String) : void
       {
-         _popuMsg.push(param1);
+         _popuMsg.push(str);
          if(!_timer)
          {
             _timer = new Timer(2000);
@@ -450,14 +474,14 @@ package petsBag
          }
       }
       
-      private function __popu(param1:TimerEvent) : void
+      private function __popu(e:TimerEvent) : void
       {
-         var _loc2_:String = "";
+         var msg:String = "";
          if(_popuMsg.length > 0)
          {
-            _loc2_ = _popuMsg.shift();
-            MessageTipManager.getInstance().show(_loc2_);
-            ChatManager.Instance.sysChatYellow(_loc2_);
+            msg = _popuMsg.shift();
+            MessageTipManager.getInstance().show(msg);
+            ChatManager.Instance.sysChatYellow(msg);
          }
          else
          {
@@ -468,30 +492,30 @@ package petsBag
          }
       }
       
-      public function getPicStrByLv(param1:PetInfo) : String
+      public function getPicStrByLv($info:PetInfo) : String
       {
-         var _loc2_:String = "";
-         if(param1.Level < 30)
+         var result:String = "";
+         if($info.Level < 30)
          {
-            _loc2_ = param1.Pic + "/icon1";
+            result = $info.Pic + "/icon1";
          }
-         else if(30 <= param1.Level && param1.Level < 50)
+         else if(30 <= $info.Level && $info.Level < 50)
          {
-            _loc2_ = param1.Pic + "/icon2";
+            result = $info.Pic + "/icon2";
          }
-         else if(50 <= param1.Level)
+         else if(50 <= $info.Level)
          {
-            _loc2_ = param1.Pic + "/icon3";
+            result = $info.Pic + "/icon3";
          }
-         return _loc2_;
+         return result;
       }
       
-      private function loadPetsGuildeUI(param1:Function) : void
+      private function loadPetsGuildeUI(callBack:Function) : void
       {
-         callBack = param1;
-         var __Finish:Function = function(param1:UIModuleEvent):void
+         callBack = callBack;
+         var __Finish:Function = function(evt:UIModuleEvent):void
          {
-            if(param1.module == "farmPetTrainerUI")
+            if(evt.module == "farmPetTrainerUI")
             {
                UIModuleLoader.Instance.removeEventListener("uiModuleComplete",__Finish);
                petModel.isLoadPetTrainer = true;
@@ -505,59 +529,59 @@ package petsBag
          UIModuleLoader.Instance.addEventListener("uiModuleComplete",__Finish);
       }
       
-      private function showLoadedArrow(param1:Object) : void
+      private function showLoadedArrow(currentPetFarmArrow:Object) : void
       {
-         if(param1.id != 94 && param1.id != 119 && param1.id != 100)
+         if(currentPetFarmArrow.id != 94 && currentPetFarmArrow.id != 119 && currentPetFarmArrow.id != 100)
          {
-            NewHandContainer.Instance.showArrow(param1.id,param1.rotation,param1.arrowPos,param1.tip,param1.tipPos,param1.con,0,true);
+            NewHandContainer.Instance.showArrow(currentPetFarmArrow.id,currentPetFarmArrow.rotation,currentPetFarmArrow.arrowPos,currentPetFarmArrow.tip,currentPetFarmArrow.tipPos,currentPetFarmArrow.con,0,true);
          }
       }
       
-      public function showPetFarmGuildArrow(param1:int, param2:int, param3:String, param4:String = "", param5:String = "", param6:DisplayObjectContainer = null, param7:int = 0) : void
+      public function showPetFarmGuildArrow(id:int, rotation:int, arrowPos:String, tip:String = "", tipPos:String = "", con:DisplayObjectContainer = null, delay:int = 0) : void
       {
          if(petModel.isLoadPetTrainer)
          {
             if(petModel.preShowArrowID != 0)
             {
-               if(param1 != petModel.nextShowArrowID)
+               if(id != petModel.nextShowArrowID)
                {
                   return;
                }
             }
-            setAvailableArrow(param1);
-            if(param1 != 94)
+            setAvailableArrow(id);
+            if(id != 94)
             {
-               NewHandContainer.Instance.showArrow(param1,param2,param3,param4,param5,param6,0,true);
+               NewHandContainer.Instance.showArrow(id,rotation,arrowPos,tip,tipPos,con,0,true);
             }
          }
          else
          {
             petModel.CurrentPetFarmGuildeArrow = {};
-            petModel.CurrentPetFarmGuildeArrow.id = param1;
-            petModel.CurrentPetFarmGuildeArrow.rotation = param2;
-            petModel.CurrentPetFarmGuildeArrow.arrowPos = param3;
-            petModel.CurrentPetFarmGuildeArrow.tip = param4;
-            petModel.CurrentPetFarmGuildeArrow.tipPos = param5;
-            petModel.CurrentPetFarmGuildeArrow.con = param6;
+            petModel.CurrentPetFarmGuildeArrow.id = id;
+            petModel.CurrentPetFarmGuildeArrow.rotation = rotation;
+            petModel.CurrentPetFarmGuildeArrow.arrowPos = arrowPos;
+            petModel.CurrentPetFarmGuildeArrow.tip = tip;
+            petModel.CurrentPetFarmGuildeArrow.tipPos = tipPos;
+            petModel.CurrentPetFarmGuildeArrow.con = con;
             loadPetsGuildeUI(showLoadedArrow);
          }
       }
       
-      private function setAvailableArrow(param1:int) : Boolean
+      private function setAvailableArrow(arrowID:int) : Boolean
       {
          var _loc7_:int = 0;
          var _loc6_:* = petModel.petGuilde;
-         for each(var _loc2_ in petModel.petGuilde)
+         for each(var items in petModel.petGuilde)
          {
             var _loc5_:int = 0;
-            var _loc4_:* = _loc2_;
-            for each(var _loc3_ in _loc2_)
+            var _loc4_:* = items;
+            for each(var item in items)
             {
-               if(_loc3_.arrowID == param1)
+               if(item.arrowID == arrowID)
                {
-                  _loc3_.isFinish = true;
-                  petModel.nextShowArrowID = _loc3_.NextArrowID;
-                  petModel.preShowArrowID = _loc3_.PreArrowID;
+                  item.isFinish = true;
+                  petModel.nextShowArrowID = item.NextArrowID;
+                  petModel.preShowArrowID = item.PreArrowID;
                   return true;
                }
             }
@@ -565,21 +589,21 @@ package petsBag
          return false;
       }
       
-      public function clearCurrentPetFarmGuildeArrow(param1:int) : void
+      public function clearCurrentPetFarmGuildeArrow(orderID:int) : void
       {
-         NewHandContainer.Instance.clearArrowByID(param1);
+         NewHandContainer.Instance.clearArrowByID(orderID);
       }
       
-      public function haveTaskOrderByID(param1:int) : Boolean
+      public function haveTaskOrderByID(taskID:int) : Boolean
       {
-         var _loc2_:Boolean = TaskManager.instance.isAvailable(TaskManager.instance.getQuestByID(param1));
+         var bool:Boolean = TaskManager.instance.isAvailable(TaskManager.instance.getQuestByID(taskID));
          TaskManager.instance.checkSendRequestAddQuestDic();
-         return _loc2_;
+         return bool;
       }
       
-      public function isPetFarmGuildeTask(param1:int) : Boolean
+      public function isPetFarmGuildeTask(taskID:int) : Boolean
       {
-         return petModel.petGuilde[param1];
+         return petModel.petGuilde[taskID];
       }
       
       public function finishTask() : void
@@ -588,45 +612,45 @@ package petsBag
          petModel.nextShowArrowID = 0;
       }
       
-      private function __petGuildOptionChange(param1:PkgEvent) : void
+      private function __petGuildOptionChange(event:PkgEvent) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:int = 8;
-         var _loc2_:Boolean = true;
-         if(param1)
+         var pkg:* = null;
+         var optionOnOff:int = 8;
+         var isFlag:Boolean = true;
+         if(event)
          {
-            _loc4_ = param1.pkg;
-            _loc2_ = _loc4_.readBoolean();
-            _loc3_ = _loc4_.readInt();
+            pkg = event.pkg;
+            isFlag = pkg.readBoolean();
+            optionOnOff = pkg.readInt();
          }
-         switch(int(_loc3_) - 8)
+         switch(int(optionOnOff) - 8)
          {
             case 0:
-               petModel.petGuildeOptionOnOff.add(117,_loc3_);
+               petModel.petGuildeOptionOnOff.add(117,optionOnOff);
                break;
             default:
-               petModel.petGuildeOptionOnOff.add(117,_loc3_);
+               petModel.petGuildeOptionOnOff.add(117,optionOnOff);
                break;
             default:
-               petModel.petGuildeOptionOnOff.add(117,_loc3_);
+               petModel.petGuildeOptionOnOff.add(117,optionOnOff);
                break;
             default:
-               petModel.petGuildeOptionOnOff.add(117,_loc3_);
+               petModel.petGuildeOptionOnOff.add(117,optionOnOff);
                break;
             default:
-               petModel.petGuildeOptionOnOff.add(117,_loc3_);
+               petModel.petGuildeOptionOnOff.add(117,optionOnOff);
                break;
             default:
-               petModel.petGuildeOptionOnOff.add(117,_loc3_);
+               petModel.petGuildeOptionOnOff.add(117,optionOnOff);
                break;
             default:
-               petModel.petGuildeOptionOnOff.add(117,_loc3_);
+               petModel.petGuildeOptionOnOff.add(117,optionOnOff);
                break;
             default:
-               petModel.petGuildeOptionOnOff.add(117,_loc3_);
+               petModel.petGuildeOptionOnOff.add(117,optionOnOff);
                break;
             case 8:
-               petModel.petGuildeOptionOnOff.add(118,_loc3_);
+               petModel.petGuildeOptionOnOff.add(118,optionOnOff);
          }
       }
       
@@ -648,6 +672,26 @@ package petsBag
       public function hide() : void
       {
          dispatchEvent(new UpdatePetInfoEvent("petsBagHideView"));
+      }
+      
+      public function getPetQualityIndex(value:Number) : int
+      {
+         var i:int = 0;
+         var qArr:Array = ServerConfigManager.instance.petQualityConfig;
+         for(i = 0; i < qArr.length; )
+         {
+            if(value <= qArr[i])
+            {
+               return i;
+            }
+            i++;
+         }
+         return qArr.length - 1;
+      }
+      
+      public function sendPetWashBone(place:int, hpLock:Boolean, attackLock:Boolean, defenceLock:Boolean, agilityLock:Boolean, luckLock:Boolean) : void
+      {
+         SocketManager.Instance.out.sendPetWashBone(place,hpLock,attackLock,defenceLock,agilityLock,luckLock);
       }
    }
 }

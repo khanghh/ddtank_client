@@ -39,35 +39,35 @@ package bagAndInfo.bag
          initEvent();
       }
       
-      private function __mouseClick(param1:MouseEvent) : void
+      private function __mouseClick(event:MouseEvent) : void
       {
          if(!PlayerManager.Instance.Self.bagLocked)
          {
-            dragStart(param1.stageX,param1.stageY);
+            dragStart(event.stageX,event.stageY);
          }
       }
       
-      public function dragStart(param1:Number, param2:Number) : void
+      public function dragStart(stageX:Number, stageY:Number) : void
       {
-         DragManager.startDrag(this,this,ComponentFactory.Instance.creatBitmap("bagAndInfo.bag.breakIconAsset"),param1,param2,"move");
+         DragManager.startDrag(this,this,ComponentFactory.Instance.creatBitmap("bagAndInfo.bag.breakIconAsset"),stageX,stageY,"move");
       }
       
-      public function dragStop(param1:DragEffect) : void
+      public function dragStop(effect:DragEffect) : void
       {
-         var _loc2_:* = null;
-         if(param1.action == "move" && param1.target is ICell)
+         var cell:* = null;
+         if(effect.action == "move" && effect.target is ICell)
          {
-            _loc2_ = param1.target as BagCell;
-            if(_loc2_)
+            cell = effect.target as BagCell;
+            if(cell)
             {
-               if(_loc2_.itemInfo.Count > 1 && _loc2_.itemInfo.BagType != 11 && _loc2_.itemInfo.BagType != 511)
+               if(cell.itemInfo.Count > 1 && cell.itemInfo.BagType != 11 && cell.itemInfo.BagType != 511)
                {
-                  _dragTarget = _loc2_;
+                  _dragTarget = cell;
                   SoundManager.instance.play("008");
-                  _dragTarget = _loc2_;
+                  _dragTarget = cell;
                   SoundManager.instance.play("008");
                   win = ComponentFactory.Instance.creatComponentByStylename("breakGoodsView");
-                  win.cell = _loc2_;
+                  win.cell = cell;
                   win.show();
                }
             }
@@ -123,11 +123,11 @@ package bagAndInfo.bag
          super.dispose();
       }
       
-      private function __addToStage(param1:Event) : void
+      private function __addToStage(evt:Event) : void
       {
       }
       
-      private function __removeFromStage(param1:Event) : void
+      private function __removeFromStage(evt:Event) : void
       {
       }
       

@@ -39,39 +39,39 @@ package
       
       protected var _realRender:Boolean = true;
       
-      public function BitmapRendItem(param1:Number, param2:Number, param3:String = "original", param4:String = "auto", param5:Boolean = false)
+      public function BitmapRendItem(itemWidth:Number, itemHeight:Number, $rendmode:String = "original", pixelSnapping:String = "auto", smoothing:Boolean = false)
       {
-         this._rendMode = param3;
-         this._itemWidth = param1;
-         this._itemHeight = param2;
-         var _loc6_:BitmapData = null;
+         this._rendMode = $rendmode;
+         this._itemWidth = itemWidth;
+         this._itemHeight = itemHeight;
+         var bmd:BitmapData = null;
          if(this._rendMode == BitmapRendMode.ORIGINAL)
          {
-            _loc6_ = new BitmapData(this._itemWidth,this._itemHeight,true,0);
+            bmd = new BitmapData(this._itemWidth,this._itemHeight,true,0);
          }
          this._selfRect = new Rectangle(0,0,this._itemWidth,this._itemHeight);
          this._totalFrames = 1;
-         super(_loc6_,param4,param5);
+         super(bmd,pixelSnapping,smoothing);
          addEventListener(Event.ENTER_FRAME,this.onEnterFrame);
       }
       
-      private function set _2146088563itemWidth(param1:Number) : void
+      private function set _2146088563itemWidth(value:Number) : void
       {
-         if(this._itemWidth == param1)
+         if(this._itemWidth == value)
          {
             return;
          }
-         this._itemWidth = param1;
+         this._itemWidth = value;
          bitmapData = new BitmapData(this._itemWidth,this._itemHeight,true,0);
       }
       
-      private function set _1671241242itemHeight(param1:Number) : void
+      private function set _1671241242itemHeight(value:Number) : void
       {
-         if(this._itemHeight == param1)
+         if(this._itemHeight == value)
          {
             return;
          }
-         this._itemHeight = param1;
+         this._itemHeight = value;
          bitmapData = new BitmapData(this._itemWidth,this._itemHeight,true,0);
       }
       
@@ -80,7 +80,7 @@ package
          return this._totalFrames;
       }
       
-      private function onEnterFrame(param1:Event) : void
+      private function onEnterFrame(evt:Event) : void
       {
          if(this._playing)
          {
@@ -158,9 +158,9 @@ package
          return this._realRender;
       }
       
-      private function set _2032707372realRender(param1:Boolean) : void
+      private function set _2032707372realRender(value:Boolean) : void
       {
-         this._realRender = param1;
+         this._realRender = value;
       }
       
       [Bindable(event="propertyChange")]

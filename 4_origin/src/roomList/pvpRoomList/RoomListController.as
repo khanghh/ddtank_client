@@ -58,36 +58,34 @@ package roomList.pvpRoomList
          super();
       }
       
-      public static function disorder(param1:Array) : Array
+      public static function disorder(arr:Array) : Array
       {
-         var _loc6_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc5_:int = 0;
-         _loc6_ = 0;
-         while(_loc6_ < param1.length)
+         var i:int = 0;
+         var random:int = 0;
+         var temInfo:* = null;
+         var j:int = 0;
+         for(i = 0; i < arr.length; )
          {
-            _loc4_ = Math.random() * 10000 % param1.length;
-            _loc2_ = param1[_loc6_];
-            param1[_loc6_] = param1[_loc4_];
-            param1[_loc4_] = _loc2_;
-            _loc6_++;
+            random = Math.random() * 10000 % arr.length;
+            temInfo = arr[i];
+            arr[i] = arr[random];
+            arr[random] = temInfo;
+            i++;
          }
-         var _loc3_:Array = [];
-         _loc5_ = 0;
-         while(_loc5_ < param1.length)
+         var newArray:Array = [];
+         for(j = 0; j < arr.length; )
          {
-            if(!(param1[_loc5_] as RoomInfo).isPlaying)
+            if(!(arr[j] as RoomInfo).isPlaying)
             {
-               _loc3_.push(param1[_loc5_]);
+               newArray.push(arr[j]);
             }
             else
             {
-               _loc3_.unshift(param1[_loc5_]);
+               newArray.unshift(arr[j]);
             }
-            _loc5_++;
+            j++;
          }
-         return _loc3_;
+         return newArray;
       }
       
       public static function get instance() : RoomListController
@@ -104,7 +102,7 @@ package roomList.pvpRoomList
          RoomListManager.instance.addEventListener("openview",__openViewHandler);
       }
       
-      private function __openViewHandler(param1:CEvent) : void
+      private function __openViewHandler(event:CEvent) : void
       {
          enter();
       }
@@ -115,7 +113,7 @@ package roomList.pvpRoomList
          StateManager.createStateAsync("roomlist",initRoomListView);
       }
       
-      private function initRoomListView(param1:String = null) : void
+      private function initRoomListView(type:String = null) : void
       {
          StatisticManager.loginRoomListNum++;
          SocketManager.Instance.out.sendCurrentState(1);
@@ -145,22 +143,21 @@ package roomList.pvpRoomList
          PlayerManager.Instance.Self.sendOverTimeListByBody();
       }
       
-      private function timerHandler(param1:TimerEvent) : void
+      private function timerHandler(event:TimerEvent) : void
       {
-         var _loc3_:int = 0;
+         var i:int = 0;
          if(_buffList == null)
          {
             _buffList = new DictionaryData();
          }
-         var _loc2_:int = _buffList.length;
-         _loc2_ = _loc2_ > 50?50:_loc2_;
-         var _loc4_:Array = _buffList.list.concat();
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var len:int = _buffList.length;
+         len = len > 50?50:len;
+         var tmpArray:Array = _buffList.list.concat();
+         for(i = 0; i < len; )
          {
-            _model.addWaitingPlayer(_loc4_[_loc3_]);
-            _buffList.remove(_loc4_[_loc3_].ID);
-            _loc3_++;
+            _model.addWaitingPlayer(tmpArray[i]);
+            _buffList.remove(tmpArray[i].ID);
+            i++;
          }
       }
       
@@ -172,108 +169,107 @@ package roomList.pvpRoomList
          PlayerTipManager.instance.addEventListener("challenge",__onChanllengeClick);
       }
       
-      private function __addRoom(param1:CrazyTankSocketEvent) : void
+      private function __addRoom(evt:CrazyTankSocketEvent) : void
       {
-         var _loc7_:int = 0;
-         var _loc2_:int = 0;
-         var _loc6_:* = null;
-         var _loc3_:Array = [];
-         var _loc4_:PackageIn = param1.pkg;
-         _model.roomTotal = _loc4_.readInt();
-         var _loc5_:int = _loc4_.readInt();
-         _loc7_ = 0;
-         while(_loc7_ < _loc5_)
+         var i:int = 0;
+         var id:int = 0;
+         var info:* = null;
+         var tempArray:Array = [];
+         var pkg:PackageIn = evt.pkg;
+         _model.roomTotal = pkg.readInt();
+         var len:int = pkg.readInt();
+         for(i = 0; i < len; )
          {
-            _loc2_ = _loc4_.readInt();
-            _loc6_ = _model.getRoomById(_loc2_);
-            if(_loc6_ == null)
+            id = pkg.readInt();
+            info = _model.getRoomById(id);
+            if(info == null)
             {
-               _loc6_ = new RoomInfo();
+               info = new RoomInfo();
             }
-            _loc6_.ID = _loc2_;
-            _loc6_.type = _loc4_.readByte();
-            _loc6_.timeType = _loc4_.readByte();
-            _loc6_.totalPlayer = _loc4_.readByte();
-            _loc6_.viewerCnt = _loc4_.readByte();
-            _loc6_.maxViewerCnt = _loc4_.readByte();
-            _loc6_.placeCount = _loc4_.readByte();
-            _loc6_.IsLocked = _loc4_.readBoolean();
-            _loc6_.mapId = _loc4_.readInt();
-            _loc6_.isPlaying = _loc4_.readBoolean();
-            _loc6_.Name = _loc4_.readUTF();
-            var _loc8_:* = _loc4_.readByte();
-            _loc6_.gameMode = _loc8_;
-            _loc6_.dungeonMode = _loc8_;
-            _loc6_.hardLevel = _loc4_.readByte();
-            _loc6_.levelLimits = _loc4_.readInt();
-            _loc6_.isOpenBoss = _loc4_.readBoolean();
-            _loc3_.push(_loc6_);
-            _loc7_++;
+            info.ID = id;
+            info.type = pkg.readByte();
+            info.timeType = pkg.readByte();
+            info.totalPlayer = pkg.readByte();
+            info.viewerCnt = pkg.readByte();
+            info.maxViewerCnt = pkg.readByte();
+            info.placeCount = pkg.readByte();
+            info.IsLocked = pkg.readBoolean();
+            info.mapId = pkg.readInt();
+            info.isPlaying = pkg.readBoolean();
+            info.Name = pkg.readUTF();
+            var _loc8_:* = pkg.readByte();
+            info.gameMode = _loc8_;
+            info.dungeonMode = _loc8_;
+            info.hardLevel = pkg.readByte();
+            info.levelLimits = pkg.readInt();
+            info.isOpenBoss = pkg.readBoolean();
+            tempArray.push(info);
+            i++;
          }
-         updataRoom(_loc3_);
+         updataRoom(tempArray);
       }
       
-      private function updataRoom(param1:Array) : void
+      private function updataRoom(tempArray:Array) : void
       {
-         if(param1.length == 0)
+         if(tempArray.length == 0)
          {
-            _model.updateRoom(param1);
+            _model.updateRoom(tempArray);
             return;
          }
-         if((param1[0] as RoomInfo).type <= 2)
+         if((tempArray[0] as RoomInfo).type <= 2)
          {
-            _model.updateRoom(param1);
+            _model.updateRoom(tempArray);
          }
       }
       
-      private function __addWaitingPlayer(param1:PkgEvent) : void
+      private function __addWaitingPlayer(evt:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:PlayerInfo = PlayerManager.Instance.findPlayer(_loc3_.clientId);
-         _loc2_.beginChanges();
-         _loc2_.Grade = _loc3_.readInt();
-         _loc2_.ddtKingGrade = _loc3_.readInt();
-         _loc2_.Sex = _loc3_.readBoolean();
-         _loc2_.NickName = _loc3_.readUTF();
-         _loc2_.typeVIP = _loc3_.readByte();
-         _loc2_.VIPLevel = _loc3_.readInt();
-         _loc2_.ConsortiaName = _loc3_.readUTF();
-         _loc2_.Offer = _loc3_.readInt();
-         _loc2_.WinCount = _loc3_.readInt();
-         _loc2_.TotalCount = _loc3_.readInt();
-         _loc2_.EscapeCount = _loc3_.readInt();
-         _loc2_.ConsortiaID = _loc3_.readInt();
-         _loc2_.Repute = _loc3_.readInt();
-         _loc2_.IsMarried = _loc3_.readBoolean();
-         if(_loc2_.IsMarried)
+         var pkg:PackageIn = evt.pkg;
+         var player:PlayerInfo = PlayerManager.Instance.findPlayer(pkg.clientId);
+         player.beginChanges();
+         player.Grade = pkg.readInt();
+         player.ddtKingGrade = pkg.readInt();
+         player.Sex = pkg.readBoolean();
+         player.NickName = pkg.readUTF();
+         player.typeVIP = pkg.readByte();
+         player.VIPLevel = pkg.readInt();
+         player.ConsortiaName = pkg.readUTF();
+         player.Offer = pkg.readInt();
+         player.WinCount = pkg.readInt();
+         player.TotalCount = pkg.readInt();
+         player.EscapeCount = pkg.readInt();
+         player.ConsortiaID = pkg.readInt();
+         player.Repute = pkg.readInt();
+         player.IsMarried = pkg.readBoolean();
+         if(player.IsMarried)
          {
-            _loc2_.SpouseID = _loc3_.readInt();
-            _loc2_.SpouseName = _loc3_.readUTF();
+            player.SpouseID = pkg.readInt();
+            player.SpouseName = pkg.readUTF();
          }
-         _loc2_.LoginName = _loc3_.readUTF();
-         _loc2_.FightPower = _loc3_.readInt();
-         _loc2_.apprenticeshipState = _loc3_.readInt();
-         _loc2_.isOld = _loc3_.readBoolean();
-         _loc2_.commitChanges();
-         _buffList.add(_loc2_.ID,_loc2_);
+         player.LoginName = pkg.readUTF();
+         player.FightPower = pkg.readInt();
+         player.apprenticeshipState = pkg.readInt();
+         player.isOld = pkg.readBoolean();
+         player.commitChanges();
+         _buffList.add(player.ID,player);
       }
       
-      private function __removeWaitingPlayer(param1:PkgEvent) : void
+      private function __removeWaitingPlayer(evt:PkgEvent) : void
       {
-         var _loc2_:int = param1.pkg.clientId;
-         if(_buffList.hasKey(_loc2_))
+         var tmpId:int = evt.pkg.clientId;
+         if(_buffList.hasKey(tmpId))
          {
-            _buffList.remove(_loc2_);
+            _buffList.remove(tmpId);
          }
          else
          {
-            _model.removeWaitingPlayer(_loc2_);
+            _model.removeWaitingPlayer(tmpId);
          }
       }
       
-      public function setRoomShowMode(param1:int) : void
+      public function setRoomShowMode(mode:int) : void
       {
-         _model.roomShowMode = param1;
+         _model.roomShowMode = mode;
       }
       
       public function enter() : void
@@ -286,7 +282,7 @@ package roomList.pvpRoomList
          init();
       }
       
-      private function __modelCompleted(param1:Event) : void
+      private function __modelCompleted(event:Event) : void
       {
       }
       
@@ -307,7 +303,7 @@ package roomList.pvpRoomList
          return "roomlist";
       }
       
-      public function sendGoIntoRoom(param1:RoomInfo) : void
+      public function sendGoIntoRoom(info:RoomInfo) : void
       {
       }
       
@@ -322,24 +318,24 @@ package roomList.pvpRoomList
          LayerManager.Instance.addToLayer(_findRoom,3);
       }
       
-      protected function __containerClick(param1:MouseEvent) : void
+      protected function __containerClick(evt:MouseEvent) : void
       {
       }
       
-      protected function __onChanllengeClick(param1:Event) : void
+      protected function __onChanllengeClick(e:Event) : void
       {
          if(PlayerTipManager.instance.info.Grade < 12)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.roomlist.cantBeChallenged",12));
             return;
          }
-         if(PlayerTipManager.instance.info.playerState.StateID == 0 && param1.target.info is FriendListPlayer)
+         if(PlayerTipManager.instance.info.playerState.StateID == 0 && e.target.info is FriendListPlayer)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.roomlist.friendOffline"));
             return;
          }
-         var _loc2_:int = Math.random() * RoomListEnumerate.PREWORD.length;
-         GameInSocketOut.sendCreateRoom(RoomListEnumerate.PREWORD[_loc2_],1,2,"");
+         var i:int = Math.random() * RoomListEnumerate.PREWORD.length;
+         GameInSocketOut.sendCreateRoom(RoomListEnumerate.PREWORD[i],1,2,"");
          RoomManager.Instance.tempInventPlayerID = PlayerTipManager.instance.info.ID;
          PlayerTipManager.instance.removeEventListener("challenge",__onChanllengeClick);
       }

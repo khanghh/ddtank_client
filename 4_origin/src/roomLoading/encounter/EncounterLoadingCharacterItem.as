@@ -24,9 +24,9 @@ package roomLoading.encounter
       
       protected var _arrow:ScaleFrameImage;
       
-      public function EncounterLoadingCharacterItem(param1:RoomPlayer)
+      public function EncounterLoadingCharacterItem($info:RoomPlayer)
       {
-         super(param1);
+         super($info);
       }
       
       override protected function init() : void
@@ -73,15 +73,15 @@ package roomLoading.encounter
          _levelIcon.parent.removeChild(_levelIcon);
       }
       
-      protected function __onClick(param1:MouseEvent) : void
+      protected function __onClick(event:MouseEvent) : void
       {
          _arrow.rotation = _arrow.rotation + 4;
       }
       
-      public function set selectObject(param1:int) : void
+      public function set selectObject(type:int) : void
       {
          _arrow.visible = true;
-         switch(int(param1) - 1)
+         switch(int(type) - 1)
          {
             case 0:
                break;
@@ -106,15 +106,15 @@ package roomLoading.encounter
          }
       }
       
-      public function set arrowVisible(param1:Boolean) : void
+      public function set arrowVisible(value:Boolean) : void
       {
-         _arrow.visible = param1;
+         _arrow.visible = value;
          _bubble.visible = false;
       }
       
-      public function set bubbleVisible(param1:Boolean) : void
+      public function set bubbleVisible(value:Boolean) : void
       {
-         _bubble.visible = param1;
+         _bubble.visible = value;
       }
       
       override public function dispose() : void

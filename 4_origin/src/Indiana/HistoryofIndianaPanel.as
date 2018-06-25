@@ -34,7 +34,7 @@ package Indiana
          IndianaDataManager.instance.removeEventListener("historyiteminfo",__updateItem);
       }
       
-      private function __updateItem(param1:Event) : void
+      private function __updateItem(e:Event) : void
       {
          setItem();
       }
@@ -50,17 +50,16 @@ package Indiana
       
       private function setItem() : void
       {
-         var _loc1_:* = null;
-         var _loc3_:int = 0;
+         var item:* = null;
+         var i:int = 0;
          _vbox.clearAllChild();
-         var _loc2_:int = IndianaDataManager.instance.HistoryIndianaInfo.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var len:int = IndianaDataManager.instance.HistoryIndianaInfo.length;
+         for(i = 0; i < len; )
          {
-            _loc1_ = new IndianaHistoryItem();
-            _loc1_.setInfo(IndianaDataManager.instance.HistoryIndianaInfo[_loc3_]);
-            _vbox.addChild(_loc1_);
-            _loc3_++;
+            item = new IndianaHistoryItem();
+            item.setInfo(IndianaDataManager.instance.HistoryIndianaInfo[i]);
+            _vbox.addChild(item);
+            i++;
          }
          _scroller.setView(_vbox);
       }

@@ -43,10 +43,10 @@ package vipCoupons.view
          initEvent();
       }
       
-      public function setVipPlace(param1:int, param2:int) : void
+      public function setVipPlace(bagType:int, place:int) : void
       {
-         _bagType = param1;
-         _place = param2;
+         _bagType = bagType;
+         _place = place;
       }
       
       public function get getSendButton() : SimpleBitmapButton
@@ -81,29 +81,29 @@ package vipCoupons.view
          _sendToOtherTxt.maxChars = 100;
          _sendToOtherTxt.text = LanguageMgr.GetTranslation("game.vipCoupons.vipSendFrame.sendToOther");
          titleText = LanguageMgr.GetTranslation("game.vipCoupons.sendVip.titleTxt");
-         var _loc1_:int = 12568;
-         _vipCell = createBagCell(_loc1_);
+         var temId:int = 12568;
+         _vipCell = createBagCell(temId);
          _vipCell.x = 46;
          _vipCell.y = 379;
-         _vipCell.setCount(getItemCount(_loc1_));
+         _vipCell.setCount(getItemCount(temId));
          addToContent(_vipCell);
       }
       
-      private function getItemCount(param1:int) : int
+      private function getItemCount(temId:int) : int
       {
-         return PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(param1);
+         return PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(temId);
       }
       
-      private function createBagCell(param1:int) : BagCell
+      private function createBagCell(templeteId:int) : BagCell
       {
-         var _loc3_:InventoryItemInfo = new InventoryItemInfo();
-         _loc3_.TemplateID = param1;
-         _loc3_ = ItemManager.fill(_loc3_);
-         _loc3_.IsBinds = true;
-         var _loc2_:BagCell = new BagCell(0);
-         _loc2_.info = _loc3_;
-         _loc2_.setBgVisible(false);
-         return _loc2_;
+         var info:InventoryItemInfo = new InventoryItemInfo();
+         info.TemplateID = templeteId;
+         info = ItemManager.fill(info);
+         info.IsBinds = true;
+         var bagCell:BagCell = new BagCell(0);
+         bagCell.info = info;
+         bagCell.setBgVisible(false);
+         return bagCell;
       }
       
       private function initEvent() : void
@@ -124,9 +124,9 @@ package vipCoupons.view
          StageReferance.stage.removeEventListener("click",__hideDropList);
       }
       
-      protected function __hideDropList(param1:Event) : void
+      protected function __hideDropList(event:Event) : void
       {
-         if(param1.target is FilterFrameText && param1.target != _sendToOtherTxt)
+         if(event.target is FilterFrameText && event.target != _sendToOtherTxt)
          {
             return;
          }
@@ -136,62 +136,60 @@ package vipCoupons.view
          }
       }
       
-      protected function __onReceiverChange(param1:Event) : void
+      protected function __onReceiverChange(event:Event) : void
       {
          if(_nameInput.text == "")
          {
             _dropList.dataList = null;
             return;
          }
-         var _loc2_:Array = PlayerManager.Instance.onlineFriendList.concat(PlayerManager.Instance.offlineFriendList).concat(ConsortionModelManager.Instance.model.onlineConsortiaMemberList).concat(ConsortionModelManager.Instance.model.offlineConsortiaMemberList);
-         _dropList.dataList = filterSearch(filterRepeatInArray(_loc2_),_nameInput.text);
+         var list:Array = PlayerManager.Instance.onlineFriendList.concat(PlayerManager.Instance.offlineFriendList).concat(ConsortionModelManager.Instance.model.onlineConsortiaMemberList).concat(ConsortionModelManager.Instance.model.offlineConsortiaMemberList);
+         _dropList.dataList = filterSearch(filterRepeatInArray(list),_nameInput.text);
       }
       
-      private function filterRepeatInArray(param1:Array) : Array
+      private function filterRepeatInArray(filterArr:Array) : Array
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         var _loc2_:Array = [];
-         _loc4_ = 0;
-         while(_loc4_ < param1.length)
+         var i:int = 0;
+         var j:int = 0;
+         var arr:Array = [];
+         for(i = 0; i < filterArr.length; )
          {
-            if(_loc4_ == 0)
+            if(i == 0)
             {
-               _loc2_.push(param1[_loc4_]);
+               arr.push(filterArr[i]);
             }
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_.length)
+            j = 0;
+            while(j < arr.length)
             {
-               if(_loc2_[_loc3_].NickName != param1[_loc4_].NickName)
+               if(arr[j].NickName != filterArr[i].NickName)
                {
-                  if(_loc3_ == _loc2_.length - 1)
+                  if(j == arr.length - 1)
                   {
-                     _loc2_.push(param1[_loc4_]);
+                     arr.push(filterArr[i]);
                   }
-                  _loc3_++;
+                  j++;
                   continue;
                }
                break;
             }
-            _loc4_++;
+            i++;
          }
-         return _loc2_;
+         return arr;
       }
       
-      private function filterSearch(param1:Array, param2:String) : Array
+      private function filterSearch(list:Array, targetStr:String) : Array
       {
-         var _loc4_:int = 0;
-         var _loc3_:Array = [];
-         _loc4_ = 0;
-         while(_loc4_ < param1.length)
+         var i:int = 0;
+         var result:Array = [];
+         for(i = 0; i < list.length; )
          {
-            if(param1[_loc4_].NickName.indexOf(param2) != -1)
+            if(list[i].NickName.indexOf(targetStr) != -1)
             {
-               _loc3_.push(param1[_loc4_]);
+               result.push(list[i]);
             }
-            _loc4_++;
+            i++;
          }
-         return _loc3_;
+         return result;
       }
       
       override public function dispose() : void

@@ -79,11 +79,11 @@ package ddt.data.goods
       
       private var _unit:int;
       
-      public function Price(param1:int, param2:int)
+      public function Price(value:int, unit:int)
       {
          super();
-         _value = param1;
-         _unit = param2;
+         _value = value;
+         _unit = unit;
       }
       
       public function clone() : Price
@@ -96,9 +96,9 @@ package ddt.data.goods
          return _value;
       }
       
-      public function set Unit(param1:int) : void
+      public function set Unit(num:int) : void
       {
-         _unit = param1;
+         _unit = num;
       }
       
       public function get Unit() : int

@@ -25,11 +25,11 @@ package explorerManual.view
       
       private var _model:ExplorerManualInfo;
       
-      public function ManualLeftMenu(param1:ExplorerManualInfo)
+      public function ManualLeftMenu(model:ExplorerManualInfo)
       {
          super();
          initView();
-         _model = param1;
+         _model = model;
          addEvent();
          mouseEnabled = true;
          buttonMode = true;
@@ -65,13 +65,13 @@ package explorerManual.view
          }
       }
       
-      private function __modelUpdateHandler(param1:Event) : void
+      private function __modelUpdateHandler(evt:Event) : void
       {
-         var _loc4_:int = _model.activePageID.length;
-         var _loc2_:int = _model.havePage;
-         var _loc3_:int = ExplorerManualManager.instance.getAllPageItemCount();
-         _activeProgess.text = _loc4_ + "/" + _loc2_;
-         _unActiveProgress.text = (_loc3_ - _loc2_).toString();
+         var activeCount:int = _model.activePageID.length;
+         var haveCount:int = _model.havePage;
+         var totalCount:int = ExplorerManualManager.instance.getAllPageItemCount();
+         _activeProgess.text = activeCount + "/" + haveCount;
+         _unActiveProgress.text = (totalCount - haveCount).toString();
       }
       
       public function dispose() : void

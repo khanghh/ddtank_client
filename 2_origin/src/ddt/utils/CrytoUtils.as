@@ -14,52 +14,52 @@ package ddt.utils
          super();
       }
       
-      public static function rsaEncry(param1:String, param2:String, param3:String) : String
+      public static function rsaEncry(m:String, e:String, src:String) : String
       {
-         return rsaEncry2(Base64.decodeToByteArray(param1),Base64.decodeToByteArray(param2),param3);
+         return rsaEncry2(Base64.decodeToByteArray(m),Base64.decodeToByteArray(e),src);
       }
       
-      public static function rsaEncry2(param1:ByteArray, param2:ByteArray, param3:String) : String
+      public static function rsaEncry2(m:ByteArray, e:ByteArray, src:String) : String
       {
-         var _loc6_:BigInteger = new BigInteger(param1);
-         var _loc4_:BigInteger = new BigInteger(param2);
-         var _loc5_:RSAKey = new RSAKey(_loc6_,_loc4_.intValue());
-         return rsaEncry3(_loc5_,param3);
+         var mi:BigInteger = new BigInteger(m);
+         var ei:BigInteger = new BigInteger(e);
+         var rsa:RSAKey = new RSAKey(mi,ei.intValue());
+         return rsaEncry3(rsa,src);
       }
       
-      public static function generateRsaKey(param1:String, param2:String) : RSAKey
+      public static function generateRsaKey(m:String, e:String) : RSAKey
       {
-         return generateRsaKey2(Base64.decodeToByteArray(param1),Base64.decodeToByteArray(param2));
+         return generateRsaKey2(Base64.decodeToByteArray(m),Base64.decodeToByteArray(e));
       }
       
-      public static function generateRsaKey2(param1:ByteArray, param2:ByteArray) : RSAKey
+      public static function generateRsaKey2(m:ByteArray, e:ByteArray) : RSAKey
       {
-         var _loc4_:BigInteger = new BigInteger(param1);
-         var _loc3_:BigInteger = new BigInteger(param2);
-         return new RSAKey(_loc4_,_loc3_.intValue());
+         var mi:BigInteger = new BigInteger(m);
+         var ei:BigInteger = new BigInteger(e);
+         return new RSAKey(mi,ei.intValue());
       }
       
-      public static function rsaEncry3(param1:RSAKey, param2:String) : String
+      public static function rsaEncry3(rsa:RSAKey, src:String) : String
       {
-         var _loc3_:ByteArray = new ByteArray();
-         _loc3_.writeUTF(param2);
-         var _loc4_:ByteArray = new ByteArray();
-         param1.encrypt(_loc3_,_loc4_,_loc3_.length);
-         return Base64.encodeByteArray(_loc4_);
+         var sData:ByteArray = new ByteArray();
+         sData.writeUTF(src);
+         var dData:ByteArray = new ByteArray();
+         rsa.encrypt(sData,dData,sData.length);
+         return Base64.encodeByteArray(dData);
       }
       
-      public static function rsaEncry4(param1:RSAKey, param2:ByteArray) : String
+      public static function rsaEncry4(rsa:RSAKey, src:ByteArray) : String
       {
-         var _loc3_:ByteArray = new ByteArray();
-         param1.encrypt(param2,_loc3_,param2.length);
-         return Base64.encodeByteArray(_loc3_);
+         var dData:ByteArray = new ByteArray();
+         rsa.encrypt(src,dData,src.length);
+         return Base64.encodeByteArray(dData);
       }
       
-      public static function rsaEncry5(param1:RSAKey, param2:ByteArray) : ByteArray
+      public static function rsaEncry5(rsa:RSAKey, src:ByteArray) : ByteArray
       {
-         var _loc3_:ByteArray = new ByteArray();
-         param1.encrypt(param2,_loc3_,param2.length);
-         return _loc3_;
+         var dData:ByteArray = new ByteArray();
+         rsa.encrypt(src,dData,src.length);
+         return dData;
       }
    }
 }

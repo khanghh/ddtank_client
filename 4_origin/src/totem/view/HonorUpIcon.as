@@ -44,13 +44,13 @@ package totem.view
          }
       }
       
-      private function refreshShow(param1:Event) : void
+      private function refreshShow(event:Event) : void
       {
          _iconBtn.enable = true;
          _countTxt.text = (HonorUpManager.instance.dataList.length - HonorUpManager.instance.upCount).toString();
       }
       
-      private function openHonorUpFrame(param1:MouseEvent) : void
+      private function openHonorUpFrame(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(HonorUpManager.instance.upCount >= HonorUpManager.instance.dataList.length)
@@ -58,8 +58,8 @@ package totem.view
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.totem.honorUp.cannot"));
             return;
          }
-         var _loc2_:HonorUpFrame = ComponentFactory.Instance.creatComponentByStylename("totem.honorUpFrame");
-         LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+         var frame:HonorUpFrame = ComponentFactory.Instance.creatComponentByStylename("totem.honorUpFrame");
+         LayerManager.Instance.addToLayer(frame,3,true,1);
       }
       
       public function dispose() : void

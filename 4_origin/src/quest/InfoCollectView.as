@@ -47,9 +47,9 @@ package quest
       
       private var _id:int;
       
-      public function InfoCollectView(param1:int)
+      public function InfoCollectView(id:int)
       {
-         _id = param1;
+         _id = id;
          super();
          init();
       }
@@ -111,7 +111,7 @@ package quest
          alert("ddt.quest.collectInfo.validateSend");
       }
       
-      protected function __onSendBtn(param1:MouseEvent) : void
+      protected function __onSendBtn(evt:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(_inputData.text.length < 1)
@@ -132,13 +132,13 @@ package quest
          sendData();
       }
       
-      protected function _onSubmitBtn(param1:MouseEvent) : void
+      protected function _onSubmitBtn(evt:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          sendValidate();
       }
       
-      protected function __onRestBtn(param1:MouseEvent) : void
+      protected function __onRestBtn(evt:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          _inputData.type = "input";
@@ -148,56 +148,56 @@ package quest
       
       protected function sendData() : void
       {
-         var _loc3_:Number = PlayerManager.Instance.Self.ID;
-         var _loc1_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         _loc1_["selfid"] = _loc3_;
-         _loc1_["input"] = _inputData.text;
-         _loc1_["questid"] = _id;
-         _loc1_["rnd"] = Math.random();
-         fillArgs(_loc1_);
-         var _loc2_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("SendActiveKeySystem.ashx"),6,_loc1_);
-         _loc2_.addEventListener("loadError",__onLoadError);
-         _loc2_.addEventListener("complete",__onDataLoad);
-         LoadResourceManager.Instance.startLoad(_loc2_);
+         var selfid:Number = PlayerManager.Instance.Self.ID;
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         args["selfid"] = selfid;
+         args["input"] = _inputData.text;
+         args["questid"] = _id;
+         args["rnd"] = Math.random();
+         fillArgs(args);
+         var request:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("SendActiveKeySystem.ashx"),6,args);
+         request.addEventListener("loadError",__onLoadError);
+         request.addEventListener("complete",__onDataLoad);
+         LoadResourceManager.Instance.startLoad(request);
       }
       
       public function getPhoneData() : void
       {
-         var _loc3_:Number = PlayerManager.Instance.Self.ID;
-         var _loc1_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         _loc1_["selfid"] = _loc3_;
-         _loc1_["rnd"] = Math.random();
-         fillArgs(_loc1_);
-         var _loc2_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("GetVefityPhoneNumber.ashx"),6,_loc1_);
-         _loc2_.addEventListener("loadError",__onLoadError);
-         _loc2_.addEventListener("complete",__onPhoneDataLoad);
-         LoadResourceManager.Instance.startLoad(_loc2_);
+         var selfid:Number = PlayerManager.Instance.Self.ID;
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         args["selfid"] = selfid;
+         args["rnd"] = Math.random();
+         fillArgs(args);
+         var request:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("GetVefityPhoneNumber.ashx"),6,args);
+         request.addEventListener("loadError",__onLoadError);
+         request.addEventListener("complete",__onPhoneDataLoad);
+         LoadResourceManager.Instance.startLoad(request);
       }
       
-      protected function fillArgs(param1:URLVariables) : URLVariables
+      protected function fillArgs(args:URLVariables) : URLVariables
       {
-         param1["phone"] = param1["input"];
-         return param1;
+         args["phone"] = args["input"];
+         return args;
       }
       
-      private function __onDataLoad(param1:LoaderEvent) : void
+      private function __onDataLoad(e:LoaderEvent) : void
       {
-         param1.currentTarget.removeEventListener("complete",arguments.callee);
-         var _loc4_:XML = XML(param1.loader.content);
-         var _loc3_:String = _loc4_.@value;
-         if(_loc3_ != "true")
+         e.currentTarget.removeEventListener("complete",arguments.callee);
+         var x:XML = XML(e.loader.content);
+         var result:String = x.@value;
+         if(result != "true")
          {
          }
-         dalert(_loc4_.@message);
+         dalert(x.@message);
       }
       
-      private function __onPhoneDataLoad(param1:LoaderEvent) : void
+      private function __onPhoneDataLoad(e:LoaderEvent) : void
       {
-         param1.currentTarget.removeEventListener("complete",arguments.callee);
-         var _loc3_:String = String(param1.loader.content);
-         if(_loc3_ != "")
+         e.currentTarget.removeEventListener("complete",arguments.callee);
+         var phoneNum:String = String(e.loader.content);
+         if(phoneNum != "")
          {
-            _inputData.text = _loc3_;
+            _inputData.text = phoneNum;
             _inputData.type = "dynamic";
             if(_resetBtn)
             {
@@ -206,45 +206,45 @@ package quest
          }
       }
       
-      private function __onLoadError(param1:LoaderEvent) : void
+      private function __onLoadError(e:LoaderEvent) : void
       {
-         param1.currentTarget.removeEventListener("loadError",arguments.callee);
-         param1.currentTarget.addEventListener("complete",__onDataLoad);
-         param1.currentTarget.addEventListener("complete",__onPhoneDataLoad);
+         e.currentTarget.removeEventListener("loadError",arguments.callee);
+         e.currentTarget.addEventListener("complete",__onDataLoad);
+         e.currentTarget.addEventListener("complete",__onPhoneDataLoad);
       }
       
-      private function __onDataFocusOut(param1:Event) : void
+      private function __onDataFocusOut(e:Event) : void
       {
          alert(updateHelper(_inputData.text));
       }
       
-      protected function updateHelper(param1:String) : String
+      protected function updateHelper(value:String) : String
       {
-         if(param1.length > 11)
+         if(value.length > 11)
          {
             return "ddt.quest.collectInfo.phoneNumberError";
          }
          return "";
       }
       
-      protected function dalert(param1:String) : void
+      protected function dalert(alertString:String) : void
       {
-         _dataAlert.text = param1;
+         _dataAlert.text = alertString;
       }
       
-      protected function alert(param1:String) : void
+      protected function alert(alertString:String) : void
       {
-         _dataAlert.text = LanguageMgr.GetTranslation(param1);
+         _dataAlert.text = LanguageMgr.GetTranslation(alertString);
       }
       
-      protected function dalertVali(param1:String) : void
+      protected function dalertVali(alertString:String) : void
       {
-         _valiAlert.text = param1;
+         _valiAlert.text = alertString;
       }
       
-      protected function alertVali(param1:String) : void
+      protected function alertVali(alertString:String) : void
       {
-         _valiAlert.text = LanguageMgr.GetTranslation(param1);
+         _valiAlert.text = LanguageMgr.GetTranslation(alertString);
       }
       
       private function sendValidate() : void

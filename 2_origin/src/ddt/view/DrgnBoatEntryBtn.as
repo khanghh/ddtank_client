@@ -28,7 +28,7 @@ package ddt.view
          addEventListener("click",clickHandler,false,0,true);
       }
       
-      private function clickHandler(param1:MouseEvent) : void
+      private function clickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(DrgnBoatManager.instance.isInGame)
@@ -42,7 +42,7 @@ package ddt.view
          }
       }
       
-      private function canEnterHandler(param1:Event) : void
+      private function canEnterHandler(event:Event) : void
       {
          DrgnBoatManager.instance.removeEventListener("drgnBoatCanEnter",canEnterHandler);
          StateManager.setState("drgnBoat");

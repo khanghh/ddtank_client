@@ -71,22 +71,22 @@ package dayActivity
          _seleBtnGroup.addEventListener("change",changeHandler);
       }
       
-      public function updataBtn(param1:int) : void
+      public function updataBtn(num:int) : void
       {
-         _dayActivityView.updataBtn(param1);
+         _dayActivityView.updataBtn(num);
       }
       
-      protected function changeHandler(param1:Event) : void
+      protected function changeHandler(event:Event) : void
       {
          showView(_seleBtnGroup.selectIndex);
       }
       
-      private function showView(param1:int) : void
+      private function showView(type:int) : void
       {
          hideAll();
          SoundManager.instance.play("008");
-         var _loc2_:ISelectable = _seleBtnGroup.getItemByIndex(param1);
-         if(_loc2_ == _dayActivityBtn)
+         var selectedBtn:ISelectable = _seleBtnGroup.getItemByIndex(type);
+         if(selectedBtn == _dayActivityBtn)
          {
             if(_dayActiveView)
             {
@@ -101,7 +101,7 @@ package dayActivity
                addToContent(_dayActiveView);
             }
          }
-         else if(_loc2_ == _dayActiveBtn)
+         else if(selectedBtn == _dayActiveBtn)
          {
             if(_dayActivityView)
             {
@@ -117,7 +117,7 @@ package dayActivity
                addToContent(_dayActivityView);
             }
          }
-         else if(_loc2_ == _dayActivityAdvBtn)
+         else if(selectedBtn == _dayActivityAdvBtn)
          {
             if(_dayActivityAdvView)
             {
@@ -130,7 +130,7 @@ package dayActivity
                PositionUtils.setPos(_dayActivityAdvView,"activityAdv.viewPos");
             }
          }
-         else if(_loc2_ == _onLineRewardBtn)
+         else if(selectedBtn == _onLineRewardBtn)
          {
             if(!_onlineRewardView)
             {
@@ -142,19 +142,19 @@ package dayActivity
          }
       }
       
-      public function setLeftView(param1:Vector.<ActivityData>, param2:Vector.<ActivityData>) : void
+      public function setLeftView(overList:Vector.<ActivityData>, noOverList:Vector.<ActivityData>) : void
       {
-         _dayActivityView.setLeftView(param1,param2);
+         _dayActivityView.setLeftView(overList,noOverList);
       }
       
-      public function setBar(param1:int) : void
+      public function setBar(num:int) : void
       {
-         _dayActivityView.setBar(param1);
+         _dayActivityView.setBar(num);
       }
       
-      public function updata(param1:Array) : void
+      public function updata(arr:Array) : void
       {
-         _dayActiveView.updata(param1);
+         _dayActiveView.updata(arr);
       }
       
       private function initActivityFrame() : void
@@ -167,15 +167,15 @@ package dayActivity
          UIModuleLoader.Instance.addUIModuleImp("ddtcalendar");
       }
       
-      protected function onUIProgress(param1:UIModuleEvent) : void
+      protected function onUIProgress(event:UIModuleEvent) : void
       {
-         if(param1.module == "ddtcalendar")
+         if(event.module == "ddtcalendar")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
       
-      protected function createActivityFrame(param1:UIModuleEvent) : void
+      protected function createActivityFrame(event:UIModuleEvent) : void
       {
          UIModuleSmallLoading.Instance.hide();
          UIModuleSmallLoading.Instance.removeEventListener("close",onSmallLoadingClose);
@@ -183,7 +183,7 @@ package dayActivity
          UIModuleLoader.Instance.removeEventListener("uiMoudleProgress",onUIProgress);
       }
       
-      protected function onSmallLoadingClose(param1:Event) : void
+      protected function onSmallLoadingClose(event:Event) : void
       {
          UIModuleSmallLoading.Instance.hide();
          UIModuleSmallLoading.Instance.removeEventListener("close",onSmallLoadingClose);
@@ -232,7 +232,7 @@ package dayActivity
          {
             _seleBtnGroup.addSelectItem(_dayActivityAdvBtn);
          }
-         var _loc1_:int = 1;
+         var selectIndex:int = 1;
          if(DayActivityManager.Instance.isOnLineRewardOpen())
          {
             _onLineRewardBtn = UICreatShortcut.creatAndAdd("day.activity.onlineReward.tabBtn",_container);
@@ -247,10 +247,10 @@ package dayActivity
             _seleBtnGroup.addSelectItem(_onLineRewardBtn);
             if(DayActivityManager.Instance.canGetOnlineReward())
             {
-               _loc1_ = _seleBtnGroup.getSelectIndexByItem(_onLineRewardBtn);
+               selectIndex = _seleBtnGroup.getSelectIndexByItem(_onLineRewardBtn);
             }
          }
-         _seleBtnGroup.selectIndex = _loc1_;
+         _seleBtnGroup.selectIndex = selectIndex;
          showView(_seleBtnGroup.selectIndex);
          _serverTimeTxt = ComponentFactory.Instance.creatComponentByStylename("day.activieView.serverTimeTxt");
          _serverTimeTxtStr = LanguageMgr.GetTranslation("ddt.activieView.serverTimeTxtTitle");
@@ -261,19 +261,19 @@ package dayActivity
          _serverTimer.start();
       }
       
-      private function updateServerTime(param1:TimerEvent = null) : void
+      private function updateServerTime(evt:TimerEvent = null) : void
       {
-         var _loc2_:* = null;
+         var nowDate:* = null;
          if(_serverTimeTxt)
          {
-            _loc2_ = TimeManager.Instance.Now();
-            _serverTimeTxt.text = _serverTimeTxtStr + (_loc2_.date < 10?"0" + _loc2_.date:_loc2_.date) + "/" + (_loc2_.month + 1) + " " + (_loc2_.hours < 10?"0" + _loc2_.hours:_loc2_.hours) + ":" + (_loc2_.minutes < 10?"0" + _loc2_.minutes:_loc2_.minutes);
+            nowDate = TimeManager.Instance.Now();
+            _serverTimeTxt.text = _serverTimeTxtStr + (nowDate.date < 10?"0" + nowDate.date:nowDate.date) + "/" + (nowDate.month + 1) + " " + (nowDate.hours < 10?"0" + nowDate.hours:nowDate.hours) + ":" + (nowDate.minutes < 10?"0" + nowDate.minutes:nowDate.minutes);
          }
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
             DayActivityControl.Instance.dispose();

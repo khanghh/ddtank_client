@@ -62,7 +62,7 @@ package church.view.weddingRoomList
       
       private function update() : void
       {
-         var _loc1_:int = 0;
+         var maxNum:int = 0;
          if(_churchRoomInfo)
          {
             _weddingRoomListItemNumber.text = _churchRoomInfo.id.toString();
@@ -70,27 +70,27 @@ package church.view.weddingRoomList
             _weddingRoomListItemName.text = _churchRoomInfo.roomName;
             _weddingRoomListItemName.x = !!_churchRoomInfo.isLocked?60:60;
             _weddingRoomListItemName.width = !!_churchRoomInfo.isLocked?186:Number(212);
-            _loc1_ = 100;
+            maxNum = 100;
             switch(int(_churchRoomInfo.seniorType) - 1)
             {
                case 0:
-                  _loc1_ = 80;
+                  maxNum = 80;
                   break;
                case 1:
-                  _loc1_ = 100;
+                  maxNum = 100;
                   break;
                case 2:
-                  _loc1_ = 120;
+                  maxNum = 120;
             }
             if(_churchRoomInfo.status == "wedding_ing" && _churchRoomInfo.currentNum < 2)
             {
-               _weddingRoomListItemCount.text = "2/" + _loc1_;
+               _weddingRoomListItemCount.text = "2/" + maxNum;
             }
             else
             {
-               _weddingRoomListItemCount.text = String(_churchRoomInfo.currentNum) + "/" + _loc1_;
+               _weddingRoomListItemCount.text = String(_churchRoomInfo.currentNum) + "/" + maxNum;
             }
-            if(_churchRoomInfo.currentNum >= _loc1_ || _churchRoomInfo.status == "wedding_ing")
+            if(_churchRoomInfo.currentNum >= maxNum || _churchRoomInfo.status == "wedding_ing")
             {
                this.filters = ComponentFactory.Instance.creatFilters("grayFilter");
             }
@@ -114,12 +114,12 @@ package church.view.weddingRoomList
          removeEventListener("mouseOut",__mouseOutHandler);
       }
       
-      private function __mouseOverHandler(param1:MouseEvent) : void
+      private function __mouseOverHandler(evt:MouseEvent) : void
       {
          _weddingRoomListItemAsset.visible = true;
       }
       
-      private function __mouseOutHandler(param1:MouseEvent) : void
+      private function __mouseOutHandler(evt:MouseEvent) : void
       {
          _weddingRoomListItemAsset.visible = false;
       }
@@ -129,17 +129,17 @@ package church.view.weddingRoomList
          return _selected;
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
          if(_weddingRoomListItemAsset)
          {
-            _weddingRoomListItemAsset.visible = param1;
+            _weddingRoomListItemAsset.visible = value;
          }
-         if(_selected == param1)
+         if(_selected == value)
          {
             return;
          }
-         _selected = param1;
+         _selected = value;
          update();
       }
       
@@ -148,9 +148,9 @@ package church.view.weddingRoomList
          return _churchRoomInfo;
       }
       
-      public function set churchRoomInfo(param1:ChurchRoomInfo) : void
+      public function set churchRoomInfo(value:ChurchRoomInfo) : void
       {
-         _churchRoomInfo = param1;
+         _churchRoomInfo = value;
          update();
       }
       

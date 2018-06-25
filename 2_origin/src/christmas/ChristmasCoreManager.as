@@ -70,7 +70,7 @@ package christmas
       
       private var _pkg:PackageIn;
       
-      public function ChristmasCoreManager(param1:PrivateClass)
+      public function ChristmasCoreManager(pct:PrivateClass)
       {
          _appearPos = [];
          super();
@@ -103,62 +103,62 @@ package christmas
          _pkg = null;
       }
       
-      private function pkgHandler(param1:CrazyTankSocketEvent) : void
+      private function pkgHandler(e:CrazyTankSocketEvent) : void
       {
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:int = param1.cmd;
-         var _loc3_:CrazyTankSocketEvent = null;
-         switch(int(_loc2_) - 16)
+         var pkg:PackageIn = e.pkg;
+         var cmd:int = e.cmd;
+         var event:CrazyTankSocketEvent = null;
+         switch(int(cmd) - 16)
          {
             case 0:
-               openOrclose(_loc4_);
+               openOrclose(pkg);
                break;
             case 1:
-               _pkg = _loc4_;
+               _pkg = pkg;
                this.showChristmas();
                break;
             case 2:
-               _loc3_ = new CrazyTankSocketEvent("addplayer_room",_loc4_);
+               event = new CrazyTankSocketEvent("addplayer_room",pkg);
                break;
             case 3:
-               _loc3_ = new CrazyTankSocketEvent("christmas_exit",_loc4_);
+               event = new CrazyTankSocketEvent("christmas_exit",pkg);
                break;
             case 4:
-               _loc3_ = new CrazyTankSocketEvent("player_statue",_loc4_);
+               event = new CrazyTankSocketEvent("player_statue",pkg);
                break;
             case 5:
-               _loc3_ = new CrazyTankSocketEvent("christmas_move",_loc4_);
+               event = new CrazyTankSocketEvent("christmas_move",pkg);
                break;
             case 6:
-               _loc3_ = new CrazyTankSocketEvent("christmas_monster",_loc4_);
+               event = new CrazyTankSocketEvent("christmas_monster",pkg);
                break;
             default:
-               _loc3_ = new CrazyTankSocketEvent("christmas_monster",_loc4_);
+               event = new CrazyTankSocketEvent("christmas_monster",pkg);
                break;
             case 8:
-               makingSnowmanEnter(_loc4_);
+               makingSnowmanEnter(pkg);
                break;
             case 9:
-               snowIsUpdata(_loc4_);
+               snowIsUpdata(pkg);
                break;
             case 10:
-               _loc3_ = new CrazyTankSocketEvent("christmas_packs",_loc4_);
+               event = new CrazyTankSocketEvent("christmas_packs",pkg);
                break;
             case 11:
-               _loc3_ = new CrazyTankSocketEvent("getpackstoplayer",_loc4_);
+               event = new CrazyTankSocketEvent("getpackstoplayer",pkg);
                break;
             case 12:
-               _loc3_ = new CrazyTankSocketEvent("christmas_room_speak",_loc4_);
+               event = new CrazyTankSocketEvent("christmas_room_speak",pkg);
                break;
             default:
-               _loc3_ = new CrazyTankSocketEvent("christmas_room_speak",_loc4_);
+               event = new CrazyTankSocketEvent("christmas_room_speak",pkg);
                break;
             case 14:
-               _loc3_ = new CrazyTankSocketEvent("update_times_room",_loc4_);
+               event = new CrazyTankSocketEvent("update_times_room",pkg);
          }
-         if(_loc3_)
+         if(event)
          {
-            dispatchEvent(_loc3_);
+            dispatchEvent(event);
          }
       }
       
@@ -168,15 +168,15 @@ package christmas
          RoomManager.Instance.addEventListener("gameRoomCreate",__gameStart);
       }
       
-      private function __gameStart(param1:CrazyTankSocketEvent) : void
+      private function __gameStart(pEvent:CrazyTankSocketEvent) : void
       {
          RoomManager.Instance.removeEventListener("gameRoomCreate",__gameStart);
          dispatchEvent(new ChrismasEvent("xmas_game_start"));
       }
       
-      private function buyPlayingSnowmanVolumes(param1:Boolean) : void
+      private function buyPlayingSnowmanVolumes(isBand:Boolean) : void
       {
-         SocketManager.Instance.out.sendBuyPlayingSnowmanVolumes(param1);
+         SocketManager.Instance.out.sendBuyPlayingSnowmanVolumes(isBand);
       }
       
       public function playingSnowmanEnter() : void
@@ -200,52 +200,51 @@ package christmas
          SocketManager.Instance.out.enterChristmasRoomIsTrue();
       }
       
-      private function snowIsUpdata(param1:PackageIn) : void
+      private function snowIsUpdata(pkg:PackageIn) : void
       {
-         var _loc2_:ChristmasSystemItemsInfo = new ChristmasSystemItemsInfo();
-         _loc2_.isUp = param1.readBoolean();
-         _model.count = param1.readInt();
-         _model.exp = param1.readInt();
-         _loc2_.num = param1.readInt();
-         _loc2_.snowNum = param1.readInt();
-         dispatchEvent(new ChrismasEvent("xmas_snow_is_update",_loc2_));
+         var curSnowmenUpInfo:ChristmasSystemItemsInfo = new ChristmasSystemItemsInfo();
+         curSnowmenUpInfo.isUp = pkg.readBoolean();
+         _model.count = pkg.readInt();
+         _model.exp = pkg.readInt();
+         curSnowmenUpInfo.num = pkg.readInt();
+         curSnowmenUpInfo.snowNum = pkg.readInt();
+         dispatchEvent(new ChrismasEvent("xmas_snow_is_update",curSnowmenUpInfo));
       }
       
-      private function makingSnowmanEnter(param1:PackageIn) : void
+      private function makingSnowmanEnter(pkg:PackageIn) : void
       {
-         _model.count = param1.readInt();
-         _model.exp = param1.readInt();
+         _model.count = pkg.readInt();
+         _model.exp = pkg.readInt();
          _model.totalExp = 10;
-         _model.awardState = param1.readInt();
-         _model.packsNumber = param1.readInt();
+         _model.awardState = pkg.readInt();
+         _model.packsNumber = pkg.readInt();
          dispatchEvent(new ChrismasEvent("xmas_snowman_enter"));
       }
       
-      private function openOrclose(param1:PackageIn) : void
+      private function openOrclose(pkg:PackageIn) : void
       {
-         var _loc2_:* = undefined;
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         _model.isOpen = param1.readBoolean();
+         var list:* = undefined;
+         var i:int = 0;
+         var cellInfo:* = null;
+         _model.isOpen = pkg.readBoolean();
          if(_model.isOpen)
          {
-            _model.beginTime = param1.readDate();
-            _model.endTime = param1.readDate();
-            _model.packsLen = param1.readInt();
+            _model.beginTime = pkg.readDate();
+            _model.endTime = pkg.readDate();
+            _model.packsLen = pkg.readInt();
             _model.snowPackNum = [];
-            _loc2_ = new Vector.<ChristmasSystemItemsInfo>();
-            _loc4_ = 0;
-            while(_loc4_ < _model.packsLen)
+            list = new Vector.<ChristmasSystemItemsInfo>();
+            for(i = 0; i < _model.packsLen; )
             {
-               _loc3_ = new ChristmasSystemItemsInfo();
-               _loc3_.TemplateID = param1.readInt();
-               _loc2_.push(_loc3_);
-               _model.snowPackNum[_loc4_] = param1.readInt();
-               _loc4_++;
+               cellInfo = new ChristmasSystemItemsInfo();
+               cellInfo.TemplateID = pkg.readInt();
+               list.push(cellInfo);
+               _model.snowPackNum[i] = pkg.readInt();
+               i++;
             }
-            _model.lastPacks = param1.readInt();
-            _model.money = param1.readInt();
-            _model.myGiftData = _loc2_;
+            _model.lastPacks = pkg.readInt();
+            _model.money = pkg.readInt();
+            _model.myGiftData = list;
          }
          if(_model.isOpen)
          {
@@ -263,10 +262,10 @@ package christmas
       
       public function getBagSnowPacksCount() : int
       {
-         var _loc3_:SelfInfo = PlayerManager.Instance.Self;
-         var _loc1_:BagInfo = _loc3_.getBag(1);
-         var _loc2_:int = _loc1_.getItemCountByTemplateId(201144);
-         return _loc2_;
+         var _selfInfo:SelfInfo = PlayerManager.Instance.Self;
+         var bagInfo:BagInfo = _selfInfo.getBag(1);
+         var conut:int = bagInfo.getItemCountByTemplateId(201144);
+         return conut;
       }
       
       public function showEnterIcon() : void
@@ -284,16 +283,16 @@ package christmas
       
       public function getCount() : int
       {
-         var _loc3_:SelfInfo = PlayerManager.Instance.Self;
-         var _loc1_:BagInfo = _loc3_.getBag(1);
-         var _loc2_:int = _loc1_.getItemCountByTemplateId(201144);
-         return _loc2_;
+         var _selfInfo:SelfInfo = PlayerManager.Instance.Self;
+         var bagInfo:BagInfo = _selfInfo.getBag(1);
+         var conut:int = bagInfo.getItemCountByTemplateId(201144);
+         return conut;
       }
       
-      public function checkMoney(param1:int) : Boolean
+      public function checkMoney(money:int) : Boolean
       {
-         _money = param1;
-         if(PlayerManager.Instance.Self.Money < param1)
+         _money = money;
+         if(PlayerManager.Instance.Self.Money < money)
          {
             LeavePageManager.showFillFrame();
             return true;
@@ -313,20 +312,20 @@ package christmas
          dispatchEvent(new ChrismasEvent("xmas_dispose_enter_icon"));
       }
       
-      public function returnComponentBnt(param1:BaseButton, param2:String) : Component
+      public function returnComponentBnt(bnt:BaseButton, tipName:String) : Component
       {
-         var _loc3_:Component = new Component();
-         _loc3_.tipData = param2;
-         _loc3_.tipDirctions = "0,1,2";
-         _loc3_.tipStyle = "ddt.view.tips.OneLineTip";
-         _loc3_.tipGapH = 20;
-         _loc3_.width = param1.width;
-         _loc3_.x = param1.x;
-         _loc3_.y = param1.y;
-         param1.x = 0;
-         param1.y = 0;
-         _loc3_.addChild(param1);
-         return _loc3_;
+         var compoent:Component = new Component();
+         compoent.tipData = tipName;
+         compoent.tipDirctions = "0,1,2";
+         compoent.tipStyle = "ddt.view.tips.OneLineTip";
+         compoent.tipGapH = 20;
+         compoent.width = bnt.width;
+         compoent.x = bnt.x;
+         compoent.y = bnt.y;
+         bnt.x = 0;
+         bnt.y = 0;
+         compoent.addChild(bnt);
+         return compoent;
       }
       
       public function exitGame() : void
@@ -334,9 +333,9 @@ package christmas
          GameInSocketOut.sendGamePlayerExit();
       }
       
-      public function CanGetGift(param1:int) : Boolean
+      public function CanGetGift(step:int) : Boolean
       {
-         return (ChristmasCoreManager.instance.model.awardState >> param1 & 1) == 0;
+         return (ChristmasCoreManager.instance.model.awardState >> step & 1) == 0;
       }
       
       public function get model() : ChristmasModel
@@ -349,9 +348,9 @@ package christmas
          return _mapPath;
       }
       
-      public function set mapPath(param1:String) : void
+      public function set mapPath(value:String) : void
       {
-         _mapPath = param1;
+         _mapPath = value;
       }
       
       public function get canMakeSnowMen() : Boolean
@@ -359,9 +358,9 @@ package christmas
          return _canMakeSnowMen;
       }
       
-      public function set canMakeSnowMen(param1:Boolean) : void
+      public function set canMakeSnowMen(value:Boolean) : void
       {
-         _canMakeSnowMen = param1;
+         _canMakeSnowMen = value;
       }
       
       public function get christmasIcon() : MovieClip

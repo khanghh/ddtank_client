@@ -63,11 +63,11 @@ package dice.view
       
       private var end:int;
       
-      public function DiceSystemView(param1:DiceController)
+      public function DiceSystemView(control:DiceController)
       {
          _treasureBoxArr = [];
          super();
-         _controller = param1;
+         _controller = control;
          preInitialize();
          initialize();
          addEvent();
@@ -75,7 +75,7 @@ package dice.view
       
       private function preInitialize() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _bg = ComponentFactory.Instance.creatBitmap("asset.dice.mainBG");
          _returnBtn = ComponentFactory.Instance.creat("asset.dice.returnMenu");
          _toolbarView = ComponentFactory.Instance.creat("asset.dice.ToolBar");
@@ -85,12 +85,11 @@ package dice.view
          _helpBtn = ComponentFactory.Instance.creatComponentByStylename("asset.dice.helpBtn");
          _playView = ComponentFactory.Instance.creatCustomObject("asset.dice.diceStartView");
          _player = new DicePlayer();
-         _loc1_ = 0;
-         while(_loc1_ < DiceController.Instance.MAX_LEVEL)
+         for(i = 0; i < DiceController.Instance.MAX_LEVEL; )
          {
-            _treasureBoxArr[_loc1_] = ComponentFactory.Instance.creat("asset.dice.treasureBox.down" + (_loc1_ + 1));
-            PositionUtils.setPos(_treasureBoxArr[_loc1_],"asset.dice.treasuerBox.down.pos");
-            _loc1_++;
+            _treasureBoxArr[i] = ComponentFactory.Instance.creat("asset.dice.treasureBox.down" + (i + 1));
+            PositionUtils.setPos(_treasureBoxArr[i],"asset.dice.treasuerBox.down.pos");
+            i++;
          }
       }
       
@@ -120,7 +119,7 @@ package dice.view
          DiceController.Instance.addEventListener("dice_position_changed",__onPlayerPositionChanged);
       }
       
-      private function __onReturn(param1:DiceEvent) : void
+      private function __onReturn(event:DiceEvent) : void
       {
          SoundManager.instance.play("008");
          StateManager.setState("main");
@@ -139,95 +138,94 @@ package dice.view
          DiceController.Instance.removeEventListener("dice_position_changed",__onPlayerPositionChanged);
       }
       
-      private function __onActiveClose(param1:DiceEvent) : void
+      private function __onActiveClose(event:DiceEvent) : void
       {
          StateManager.setState("main");
          dispose();
       }
       
-      private function __onMovieFinish(param1:DiceEvent) : void
+      private function __onMovieFinish(event:DiceEvent) : void
       {
          _player.PlayerWalkByPosition(start,end);
       }
       
-      private function __getDiceResultData(param1:DiceEvent) : void
+      private function __getDiceResultData(event:DiceEvent) : void
       {
-         start = int(param1.resultData.position);
-         end = (start + int(param1.resultData.result)) % DiceController.Instance.CELL_COUNT;
+         start = int(event.resultData.position);
+         end = (start + int(event.resultData.result)) % DiceController.Instance.CELL_COUNT;
          end = end + (start > end && !DiceController.Instance.hasUsedFirstCell?1:0);
          if(_playView)
          {
             addChild(_playView);
             swapChildren(_playView,_player);
-            _playView.play(DiceController.Instance.diceType,param1.resultData.result);
+            _playView.play(DiceController.Instance.diceType,event.resultData.result);
          }
       }
       
-      private function __onPlayerPositionChanged(param1:DiceEvent) : void
+      private function __onPlayerPositionChanged(event:DiceEvent) : void
       {
          _player.CurrentPosition = DiceController.Instance.CurrentPosition;
       }
       
-      private function __onPlayerState(param1:DiceEvent) : void
+      private function __onPlayerState(event:DiceEvent) : void
       {
          __onLuckIntegralChanged(null);
-         if(!param1.resultData.isWalking)
+         if(!event.resultData.isWalking)
          {
             _playView.removeAllMovie();
          }
       }
       
-      private function __onLuckIntegralChanged(param1:DiceEvent) : void
+      private function __onLuckIntegralChanged(event:DiceEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:* = null;
+         var level:int = 0;
+         var movie:* = null;
          if(DiceController.Instance.isPlayDownMovie)
          {
             DiceController.Instance.isPlayDownMovie = false;
-            _loc2_ = DiceController.Instance.LuckIntegralLevel;
-            _loc2_ = _loc2_ - 1;
-            if(_loc2_ == -1)
+            level = DiceController.Instance.LuckIntegralLevel;
+            level = level - 1;
+            if(level == -1)
             {
-               _loc2_ = DiceController.Instance.MAX_LEVEL - 1;
+               level = DiceController.Instance.MAX_LEVEL - 1;
             }
-            _loc3_ = _treasureBoxArr[_loc2_];
-            _loc3_.buttonMode = true;
-            _loc3_.addEventListener("click",__onDownTreasureBoxClick);
-            _loc3_.gotoAndPlay(2);
-            LayerManager.Instance.addToLayer(_loc3_,3,false,1);
+            movie = _treasureBoxArr[level];
+            movie.buttonMode = true;
+            movie.addEventListener("click",__onDownTreasureBoxClick);
+            movie.gotoAndPlay(2);
+            LayerManager.Instance.addToLayer(movie,3,false,1);
          }
       }
       
-      private function __onDownTreasureBoxClick(param1:MouseEvent) : void
+      private function __onDownTreasureBoxClick(event:MouseEvent) : void
       {
-         var _loc5_:* = null;
-         var _loc3_:int = 0;
-         var _loc2_:* = undefined;
-         var _loc6_:int = 0;
-         var _loc4_:MovieClip = param1.currentTarget as MovieClip;
-         _loc4_.removeEventListener("click",__onDownTreasureBoxClick);
-         if(_loc4_.parent)
+         var msg:* = null;
+         var level:int = 0;
+         var _templateInfo:* = undefined;
+         var i:int = 0;
+         var movie:MovieClip = event.currentTarget as MovieClip;
+         movie.removeEventListener("click",__onDownTreasureBoxClick);
+         if(movie.parent)
          {
-            _loc5_ = LanguageMgr.GetTranslation("dice.Levelreward.caption");
-            _loc3_ = DiceController.Instance.LuckIntegralLevel;
-            _loc3_ = _loc3_ - 1;
-            if(_loc3_ == -1)
+            msg = LanguageMgr.GetTranslation("dice.Levelreward.caption");
+            level = DiceController.Instance.LuckIntegralLevel;
+            level = level - 1;
+            if(level == -1)
             {
-               _loc3_ = DiceController.Instance.MAX_LEVEL - 1;
+               level = DiceController.Instance.MAX_LEVEL - 1;
             }
-            _loc2_ = (DiceController.Instance.AwardLevelInfo[_loc3_] as DiceAwardInfo).templateInfo;
-            _loc6_ = 0;
-            while(_loc6_ < _loc2_.length)
+            _templateInfo = (DiceController.Instance.AwardLevelInfo[level] as DiceAwardInfo).templateInfo;
+            for(i = 0; i < _templateInfo.length; )
             {
-               _loc5_ = _loc5_ + ((_loc2_[_loc6_] as DiceAwardCell).info.Name + "*" + (_loc2_[_loc6_] as DiceAwardCell).count + "   ");
-               _loc6_++;
+               msg = msg + ((_templateInfo[i] as DiceAwardCell).info.Name + "*" + (_templateInfo[i] as DiceAwardCell).count + "   ");
+               i++;
             }
-            MessageTipManager.getInstance().show(_loc5_,0,true);
-            _loc4_.parent.removeChild(_loc4_);
+            MessageTipManager.getInstance().show(msg,0,true);
+            movie.parent.removeChild(movie);
          }
       }
       
-      private function __onHelpBtnClick(param1:MouseEvent) : void
+      private function __onHelpBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_helpFrame == null)
@@ -247,16 +245,16 @@ package dice.view
          LayerManager.Instance.addToLayer(_helpFrame,3,true,2);
       }
       
-      protected function __helpFrameRespose(param1:FrameEvent) : void
+      protected function __helpFrameRespose(event:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(event.responseCode == 0 || event.responseCode == 1)
          {
             SoundManager.instance.play("008");
             _helpFrame.parent.removeChild(_helpFrame);
          }
       }
       
-      private function __closeHelpFrame(param1:MouseEvent) : void
+      private function __closeHelpFrame(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _helpFrame.parent.removeChild(_helpFrame);
@@ -264,7 +262,7 @@ package dice.view
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          removeEvent();
          DiceController.Instance.isPlayDownMovie = false;
          ObjectUtils.disposeObject(_helpFrame);
@@ -291,12 +289,11 @@ package dice.view
          _luckIntegralView = null;
          ObjectUtils.disposeObject(_playView);
          _playView = null;
-         _loc1_ = _treasureBoxArr.length;
-         while(_loc1_ > 0)
+         for(i = _treasureBoxArr.length; i > 0; )
          {
-            ObjectUtils.disposeObject(_treasureBoxArr[_loc1_ - 1]);
-            _treasureBoxArr[_loc1_ - 1] = null;
-            _loc1_--;
+            ObjectUtils.disposeObject(_treasureBoxArr[i - 1]);
+            _treasureBoxArr[i - 1] = null;
+            i--;
          }
          _treasureBoxArr = null;
          if(parent)

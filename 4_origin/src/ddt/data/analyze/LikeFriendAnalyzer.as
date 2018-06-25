@@ -10,37 +10,36 @@ package ddt.data.analyze
       
       public var likeFriendList:Array;
       
-      public function LikeFriendAnalyzer(param1:Function)
+      public function LikeFriendAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
+         var i:int = 0;
+         var info:* = null;
          likeFriendList = [];
-         var _loc2_:XML = new XML(param1);
-         var _loc3_:XMLList = _loc2_..Item;
-         if(_loc2_.@value == "true")
+         var xml:XML = new XML(data);
+         var xmllist:XMLList = xml..Item;
+         if(xml.@value == "true")
          {
-            _loc5_ = 0;
-            while(_loc5_ < _loc3_.length())
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc4_ = new LikeFriendInfo();
-               ObjectUtils.copyPorpertiesByXML(_loc4_,_loc3_[_loc5_]);
-               _loc4_.isOld = int(_loc3_[_loc5_].@OldPlayer) == 1;
-               _loc4_.IsShow = _loc3_[_loc5_].@IsShow == "true"?true:false;
-               _loc4_.ImagePath = _loc3_[_loc5_].@ImagePath;
-               _loc4_.isAttest = _loc3_[_loc5_].@IsBeauty == "false"?false:true;
-               likeFriendList.push(_loc4_);
-               _loc5_++;
+               info = new LikeFriendInfo();
+               ObjectUtils.copyPorpertiesByXML(info,xmllist[i]);
+               info.isOld = int(xmllist[i].@OldPlayer) == 1;
+               info.IsShow = xmllist[i].@IsShow == "true"?true:false;
+               info.ImagePath = xmllist[i].@ImagePath;
+               info.isAttest = xmllist[i].@IsBeauty == "false"?false:true;
+               likeFriendList.push(info);
+               i++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc2_.@message;
+            message = xml.@message;
             onAnalyzeError();
             onAnalyzeComplete();
          }

@@ -41,15 +41,15 @@ package ddt.view.caddyII.offerPack
       private function initView() : void
       {
          _iconCell = CellFactory.instance.createPersonalInfoCell(-1,null,true) as BagCell;
-         var _loc1_:Rectangle = ComponentFactory.Instance.creatCustomObject("ddt.view.caddyII.offerPack.OfferPackItem.cellBounds");
-         _iconCell.x = _loc1_.x;
-         _iconCell.y = _loc1_.y;
-         _iconCell.width = _loc1_.width;
-         _iconCell.height = _loc1_.height;
-         var _loc2_:Scale9CornerImage = ComponentFactory.Instance.creatComponentByStylename("offer.oferItemCountBg");
+         var bounds:Rectangle = ComponentFactory.Instance.creatCustomObject("ddt.view.caddyII.offerPack.OfferPackItem.cellBounds");
+         _iconCell.x = bounds.x;
+         _iconCell.y = bounds.y;
+         _iconCell.width = bounds.width;
+         _iconCell.height = bounds.height;
+         var countFieldBG:Scale9CornerImage = ComponentFactory.Instance.creatComponentByStylename("offer.oferItemCountBg");
          _countField = ComponentFactory.Instance.creatComponentByStylename("caddy.OfferPack.PackItem.CountField");
          addChild(_iconCell);
-         addChild(_loc2_);
+         addChild(countFieldBG);
          addChild(_countField);
          _selecetedShin = ComponentFactory.Instance.creatComponentByStylename("offer.oferItemShin");
          addChild(_selecetedShin);
@@ -74,12 +74,12 @@ package ddt.view.caddyII.offerPack
          removeEventListener("mouseOut",__outHandler);
       }
       
-      private function __overHandler(param1:MouseEvent) : void
+      private function __overHandler(e:MouseEvent) : void
       {
          _selecetedShin.visible = true;
       }
       
-      private function __outHandler(param1:MouseEvent) : void
+      private function __outHandler(e:MouseEvent) : void
       {
          if(!_seleceted)
          {
@@ -92,9 +92,9 @@ package ddt.view.caddyII.offerPack
          return _count;
       }
       
-      public function set count(param1:int) : void
+      public function set count(val:int) : void
       {
-         _count = param1;
+         _count = val;
          if(_countField)
          {
             _countField.text = String(_count);
@@ -106,11 +106,11 @@ package ddt.view.caddyII.offerPack
          return _info;
       }
       
-      public function set info(param1:ItemTemplateInfo) : void
+      public function set info(val:ItemTemplateInfo) : void
       {
-         if(_info != param1)
+         if(_info != val)
          {
-            _info = param1;
+            _info = val;
             _iconCell.info = _info;
             count = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(_info.TemplateID);
          }
@@ -121,11 +121,11 @@ package ddt.view.caddyII.offerPack
          return _seleceted;
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(val:Boolean) : void
       {
-         if(_seleceted != param1)
+         if(_seleceted != val)
          {
-            _seleceted = param1;
+            _seleceted = val;
             if(_selecetedShin)
             {
                _selecetedShin.visible = _seleceted;

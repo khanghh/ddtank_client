@@ -8,9 +8,9 @@ package starlingui.core.events
       public static const MOVE:String = "move";
        
       
-      public function UIEvent(param1:String, param2:* = null, param3:Boolean = false)
+      public function UIEvent($type:String, $data:* = null, $bubbles:Boolean = false)
       {
-         super(param1,param3,param2);
+         super($type,$bubbles,$data);
       }
       
       public function clone() : Event

@@ -12,12 +12,12 @@ package mark.items
          super();
       }
       
-      public function set data(param1:MarkSetTemplateData) : void
+      public function set data(value:MarkSetTemplateData) : void
       {
-         lablName.text = param1.Name;
-         lblDesc.htmlText = param1.HelpExplain;
+         lablName.text = value.Name;
+         lblDesc.htmlText = value.HelpExplain;
          lblDesc.selectable = false;
-         clipTypes.index = param1.SetId % 1000 - 1;
+         clipTypes.index = value.SetId % 1000 - 1;
       }
    }
 }

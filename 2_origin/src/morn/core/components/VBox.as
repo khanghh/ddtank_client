@@ -19,38 +19,41 @@ package morn.core.components
       
       override protected function changeItems() : void
       {
-         var _loc6_:Component = null;
-         var _loc1_:Array = [];
-         var _loc2_:* = 0;
-         var _loc3_:int = 0;
-         var _loc4_:int = numChildren;
-         while(_loc3_ < _loc4_)
+         var i:int = 0;
+         var n:int = 0;
+         var item:* = null;
+         var items:Array = [];
+         var maxWidth:* = 0;
+         for(i = 0,n = numChildren; i < n; )
          {
-            _loc6_ = getChildAt(_loc3_) as Component;
-            if(_loc6_)
+            item = getChildAt(i) as Component;
+            if(item)
             {
-               _loc1_.push(_loc6_);
-               _loc2_ = Number(Math.max(_loc2_,_loc6_.displayWidth));
+               items.push(item);
+               maxWidth = Number(Math.max(maxWidth,item.displayWidth));
             }
-            _loc3_++;
+            i++;
          }
-         _loc1_.sortOn(["y"],Array.NUMERIC);
-         var _loc5_:* = 0;
-         for each(_loc6_ in _loc1_)
+         items.sortOn(["y"],16);
+         var top:* = 0;
+         var _loc8_:int = 0;
+         var _loc7_:* = items;
+         for each(item in items)
          {
-            _loc6_.y = _maxY = _loc5_;
-            _loc5_ = Number(_loc5_ + (_loc6_.displayHeight + _space));
-            if(_align == LEFT)
+            _maxY = top;
+            item.y = top;
+            top = Number(top + (item.displayHeight + _space));
+            if(_align == "left")
             {
-               _loc6_.x = 0;
+               item.x = 0;
             }
-            else if(_align == CENTER)
+            else if(_align == "center")
             {
-               _loc6_.x = (_loc2_ - _loc6_.displayWidth) * 0.5;
+               item.x = (maxWidth - item.displayWidth) * 0.5;
             }
-            else if(_align == RIGHT)
+            else if(_align == "right")
             {
-               _loc6_.x = _loc2_ - _loc6_.displayWidth;
+               item.x = maxWidth - item.displayWidth;
             }
          }
          changeSize();

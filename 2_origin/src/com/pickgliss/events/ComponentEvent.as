@@ -13,10 +13,10 @@ package com.pickgliss.events
       
       private var _changedProperties:Dictionary;
       
-      public function ComponentEvent(param1:String, param2:Dictionary = null)
+      public function ComponentEvent(type:String, changedPropertie:Dictionary = null)
       {
-         _changedProperties = param2;
-         super(param1);
+         _changedProperties = changedPropertie;
+         super(type);
       }
       
       public function get changedProperties() : Dictionary

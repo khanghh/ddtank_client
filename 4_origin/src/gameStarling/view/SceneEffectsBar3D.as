@@ -41,17 +41,17 @@ package gameStarling.view
       
       private var _updateBackFun:Function;
       
-      public function SceneEffectsBar3D(param1:MapView3D)
+      public function SceneEffectsBar3D($map:MapView3D)
       {
          super();
-         _map = param1;
+         _map = $map;
          initView();
       }
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var _cell:* = null;
          _bg = ComponentFactory.Instance.creatBitmap("asset.gameBattle.sceneEffectBarBg");
          addChild(_bg);
          _iconSprite = new Sprite();
@@ -60,46 +60,44 @@ package gameStarling.view
          _mask = creatMask(_iconSprite);
          PositionUtils.setPos(_mask,"asset.gameBattle.maskPos");
          addChild(_mask);
-         _loc2_ = 0;
-         while(_loc2_ < 6)
+         for(i = 0; i < 6; )
          {
-            _loc1_ = new SceneEffectsCell();
-            _iconSprite.addChild(_loc1_);
-            _cells.push(_loc1_);
-            _loc2_++;
+            _cell = new SceneEffectsCell();
+            _iconSprite.addChild(_cell);
+            _cells.push(_cell);
+            i++;
          }
          updatePos();
          _arrow = ComponentFactory.Instance.creatBitmap("asset.gameBattle.sceneEffectBarArrow");
          addChild(_arrow);
       }
       
-      private function creatMask(param1:DisplayObject) : Shape
+      private function creatMask(source:DisplayObject) : Shape
       {
-         var _loc2_:Shape = new Shape();
-         _loc2_.graphics.beginFill(16711680,1);
-         _loc2_.graphics.drawRect(0,0,32,180);
-         _loc2_.graphics.endFill();
-         param1.mask = _loc2_;
-         return _loc2_;
+         var result:Shape = new Shape();
+         result.graphics.beginFill(16711680,1);
+         result.graphics.drawRect(0,0,32,180);
+         result.graphics.endFill();
+         source.mask = result;
+         return result;
       }
       
       private function updatePos() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         _loc2_ = 0;
-         while(_loc2_ < _cells.length)
+         var i:int = 0;
+         var cell:* = null;
+         for(i = 0; i < _cells.length; )
          {
-            _loc1_ = _cells[_loc2_] as SceneEffectsCell;
-            _loc1_.y = _loc2_ * (32 + _spacing);
-            _loc2_++;
+            cell = _cells[i] as SceneEffectsCell;
+            cell.y = i * (32 + _spacing);
+            i++;
          }
       }
       
-      public function updateView(param1:Array, param2:Function) : void
+      public function updateView($arr:Array, $backFun:Function) : void
       {
-         $arr = param1;
-         $backFun = param2;
+         $arr = $arr;
+         $backFun = $backFun;
          exeUpdateBackFun();
          var quick:Boolean = false;
          if(_updateBackFun != null)
@@ -109,8 +107,7 @@ package gameStarling.view
          _updateBackFun = $backFun;
          if(_currentData == null)
          {
-            var i:int = 0;
-            while(i < _cells.length)
+            for(var i:int = 0; i < _cells.length; )
             {
                if($arr.hasOwnProperty(i))
                {
@@ -124,8 +121,7 @@ package gameStarling.view
          else
          {
             var cell0:SceneEffectsCell = _cells[0] as SceneEffectsCell;
-            var j:int = 1;
-            while(j < _cells.length)
+            for(var j:int = 1; j < _cells.length; )
             {
                var index:int = j - 1;
                if($arr.hasOwnProperty(index))
@@ -146,9 +142,9 @@ package gameStarling.view
             {
                TweenMax.killTweensOf(_iconSprite);
                _tween = null;
-               var _loc1_:SceneEffectsCell = _cells.shift();
-               _loc1_.updateView();
-               _cells.push(_loc1_);
+               var tempCell:SceneEffectsCell = _cells.shift();
+               tempCell.updateView();
+               _cells.push(tempCell);
                _iconSprite.y = 0;
                updatePos();
                if(_currentData[0].id != _currentId && _currentId != SceneEffectObj.Null)
@@ -173,10 +169,10 @@ package gameStarling.view
          _currentData = $arr;
       }
       
-      private function addSceneEffect(param1:SceneEffectObj, param2:Boolean = false) : void
+      private function addSceneEffect(obj:SceneEffectObj, quick:Boolean = false) : void
       {
-         obj = param1;
-         quick = param2;
+         obj = obj;
+         quick = quick;
          _currentId = obj.id;
          if(_currentId != SceneEffectObj.Null)
          {
@@ -230,89 +226,89 @@ package gameStarling.view
          }
       }
       
-      private function crateSceneEffect(param1:SceneEffectObj, param2:Boolean = false) : void
+      private function crateSceneEffect($obj:SceneEffectObj, quick:Boolean = false) : void
       {
-         var _loc8_:* = null;
-         var _loc6_:Boolean = false;
-         trace("创建特效：" + param1.id + " X:" + param1.x + " Y:" + param1.y);
-         var _loc9_:int = param1.x;
-         var _loc7_:int = param1.y;
-         var _loc5_:Boolean = false;
-         var _loc4_:int = 7;
-         if(param1.id == SceneEffectObj.Hide)
+         var rect:* = null;
+         var isTxt:Boolean = false;
+         trace("创建特效：" + $obj.id + " X:" + $obj.x + " Y:" + $obj.y);
+         var sx:int = $obj.x;
+         var sy:int = $obj.y;
+         var isMoving:Boolean = false;
+         var layerType:int = 7;
+         if($obj.id == SceneEffectObj.Hide)
          {
-            _loc8_ = new Rectangle(-250,0,500,_map.mapMaxHeight);
-            _loc4_ = 2;
+            rect = new Rectangle(-250,0,500,_map.mapMaxHeight);
+            layerType = 2;
          }
-         else if(param1.id == SceneEffectObj.RedDead)
+         else if($obj.id == SceneEffectObj.RedDead)
          {
-            _loc8_ = new Rectangle(-200,-200,400,400);
+            rect = new Rectangle(-200,-200,400,400);
          }
-         else if(param1.id == SceneEffectObj.BlackHole)
+         else if($obj.id == SceneEffectObj.BlackHole)
          {
-            _loc8_ = new Rectangle(-200,-200,400,400);
+            rect = new Rectangle(-200,-200,400,400);
          }
-         else if(param1.id < -100)
+         else if($obj.id < -100)
          {
-            _loc8_ = new Rectangle(0,0,1,_map.mapMaxHeight);
+            rect = new Rectangle(0,0,1,_map.mapMaxHeight);
          }
-         else if(param1.id == SceneEffectObj.Bomb)
+         else if($obj.id == SceneEffectObj.Bomb)
          {
-            _loc5_ = true;
-            _loc6_ = true;
-            _loc8_ = new Rectangle(0,0,1,1);
-            _loc4_ = 1;
+            isMoving = true;
+            isTxt = true;
+            rect = new Rectangle(0,0,1,1);
+            layerType = 1;
          }
-         else if(param1.id == SceneEffectObj.Star)
+         else if($obj.id == SceneEffectObj.Star)
          {
-            _loc8_ = new Rectangle(0,0,1,1);
-            _loc4_ = 2;
+            rect = new Rectangle(0,0,1,1);
+            layerType = 2;
          }
          else
          {
-            _loc8_ = new Rectangle(0,0,1,1);
+            rect = new Rectangle(0,0,1,1);
          }
-         var _loc3_:GameSceneEffect3D = new GameSceneEffect3D(param1.id,_loc8_,_loc4_,5,50);
-         _loc3_.x = _loc9_;
-         _loc3_.y = _loc7_;
-         if(_loc5_)
+         var sceneEffect:GameSceneEffect3D = new GameSceneEffect3D($obj.id,rect,layerType,5,50);
+         sceneEffect.x = sx;
+         sceneEffect.y = sy;
+         if(isMoving)
          {
-            _loc3_.initMoving();
+            sceneEffect.initMoving();
          }
-         if(_loc6_)
+         if(isTxt)
          {
-            _loc3_.updateTxt(param1.turn - 1);
+            sceneEffect.updateTxt($obj.turn - 1);
          }
-         _map.addPhysical(_loc3_);
-         if(param2)
+         _map.addPhysical(sceneEffect);
+         if(quick)
          {
-            _loc3_.act("stand");
+            sceneEffect.act("stand");
             exeUpdateBackFun();
          }
          else
          {
-            _loc3_.bombBackFun = exeUpdateBackFun;
-            _loc3_.act("born",exeUpdateBackFun);
-            _loc3_.stopMoving();
+            sceneEffect.bombBackFun = exeUpdateBackFun;
+            sceneEffect.act("born",exeUpdateBackFun);
+            sceneEffect.stopMoving();
          }
       }
       
-      private function removeSceneEffect(param1:int, param2:Boolean = false) : void
+      private function removeSceneEffect($id:int, quick:Boolean = false) : void
       {
-         var _loc3_:* = null;
-         if(param1 != SceneEffectObj.Null)
+         var physicalObj:* = null;
+         if($id != SceneEffectObj.Null)
          {
-            trace("移除特效：" + param1);
-            _loc3_ = _map.getSceneEffectPhysicalById(param1);
-            if(_loc3_)
+            trace("移除特效：" + $id);
+            physicalObj = _map.getSceneEffectPhysicalById($id);
+            if(physicalObj)
             {
-               if(param2)
+               if(quick)
                {
-                  _loc3_.dispose();
+                  physicalObj.dispose();
                }
                else
                {
-                  _loc3_.die();
+                  physicalObj.die();
                }
             }
          }
@@ -364,21 +360,21 @@ class SceneEffectsCell extends Sprite implements Disposeable, ITipedDisplay
    
    private var _tipStyle:String;
    
-   function SceneEffectsCell(param1:SceneEffectObj = null)
+   function SceneEffectsCell($info:SceneEffectObj = null)
    {
       super();
       _bg = ComponentFactory.Instance.creatBitmap("asset.gameBattle.sceneEffectCellBg");
       addChild(_bg);
-      updateView(param1);
+      updateView($info);
       this.buttonMode = true;
       ShowTipManager.Instance.addTip(this);
    }
    
-   public function updateView(param1:SceneEffectObj = null) : void
+   public function updateView($info:SceneEffectObj = null) : void
    {
-      _info = param1;
+      _info = $info;
       ObjectUtils.disposeObject(_icon);
-      if(param1 && param1.follow == false)
+      if($info && $info.follow == false)
       {
          _icon = ComponentFactory.Instance.creatBitmap("asset.gameBattle.sceneEffectIcon" + Math.abs(_info.id));
          addChild(_icon);
@@ -402,9 +398,9 @@ class SceneEffectsCell extends Sprite implements Disposeable, ITipedDisplay
       return _tipData;
    }
    
-   public function set tipData(param1:Object) : void
+   public function set tipData(value:Object) : void
    {
-      _tipData = param1;
+      _tipData = value;
    }
    
    public function get tipDirctions() : String
@@ -412,7 +408,7 @@ class SceneEffectsCell extends Sprite implements Disposeable, ITipedDisplay
       return "2,5,7,0,3,6,4,1";
    }
    
-   public function set tipDirctions(param1:String) : void
+   public function set tipDirctions(value:String) : void
    {
    }
    
@@ -421,7 +417,7 @@ class SceneEffectsCell extends Sprite implements Disposeable, ITipedDisplay
       return 0;
    }
    
-   public function set tipGapH(param1:int) : void
+   public function set tipGapH(value:int) : void
    {
    }
    
@@ -430,7 +426,7 @@ class SceneEffectsCell extends Sprite implements Disposeable, ITipedDisplay
       return 0;
    }
    
-   public function set tipGapV(param1:int) : void
+   public function set tipGapV(value:int) : void
    {
    }
    
@@ -439,9 +435,9 @@ class SceneEffectsCell extends Sprite implements Disposeable, ITipedDisplay
       return _tipStyle;
    }
    
-   public function set tipStyle(param1:String) : void
+   public function set tipStyle(value:String) : void
    {
-      _tipStyle = param1;
+      _tipStyle = value;
    }
    
    public function asDisplayObject() : DisplayObject

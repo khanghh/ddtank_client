@@ -37,13 +37,13 @@ package welfareCenter.view
          }
       }
       
-      public function set isGain(param1:Boolean) : void
+      public function set isGain(value:Boolean) : void
       {
-         if(_isGain == param1)
+         if(_isGain == value)
          {
             return;
          }
-         _isGain = param1;
+         _isGain = value;
          if(_isGain)
          {
             if(_gainBg == null)
@@ -72,13 +72,13 @@ package welfareCenter.view
          }
       }
       
-      public function set isShine(param1:Boolean) : void
+      public function set isShine(value:Boolean) : void
       {
-         if(_isShine == param1)
+         if(_isShine == value)
          {
             return;
          }
-         _isShine = param1;
+         _isShine = value;
          if(_isShine)
          {
             if(_shine == null)

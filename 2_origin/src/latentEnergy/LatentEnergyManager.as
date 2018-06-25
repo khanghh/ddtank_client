@@ -33,9 +33,9 @@ package latentEnergy
       
       private var _timer:Timer;
       
-      public function LatentEnergyManager(param1:IEventDispatcher = null)
+      public function LatentEnergyManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : LatentEnergyManager
@@ -56,53 +56,52 @@ package latentEnergy
          _timer.addEventListener("timerComplete",timerCompleteHandler,false,0,true);
       }
       
-      private function equipChangeHandler(param1:PkgEvent) : void
+      private function equipChangeHandler(event:PkgEvent) : void
       {
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc3_:Object = {};
-         _loc3_.place = _loc4_.readInt();
-         _loc3_.curStr = _loc4_.readUTF();
-         _loc3_.newStr = _loc4_.readUTF();
-         _loc3_.endTime = _loc4_.readDate();
-         var _loc2_:InventoryItemInfo = PlayerManager.Instance.Self.Bag.items[_loc3_.place] as InventoryItemInfo;
-         if(_loc2_)
+         var pkg:PackageIn = event.pkg;
+         var data:Object = {};
+         data.place = pkg.readInt();
+         data.curStr = pkg.readUTF();
+         data.newStr = pkg.readUTF();
+         data.endTime = pkg.readDate();
+         var equipInfo:InventoryItemInfo = PlayerManager.Instance.Self.Bag.items[data.place] as InventoryItemInfo;
+         if(equipInfo)
          {
-            doChange(_loc2_,_loc3_);
+            doChange(equipInfo,data);
          }
          else
          {
-            _cacheDataList.push(_loc3_);
+            _cacheDataList.push(data);
             _timer.reset();
             _timer.start();
          }
       }
       
-      private function doChange(param1:InventoryItemInfo, param2:Object) : void
+      private function doChange(equipInfo:InventoryItemInfo, data:Object) : void
       {
-         param1.latentEnergyCurStr = param2.curStr;
-         param1.latentEnergyNewStr = param2.newStr;
-         param1.latentEnergyEndTime = param2.endTime;
-         param1.IsBinds = true;
+         equipInfo.latentEnergyCurStr = data.curStr;
+         equipInfo.latentEnergyNewStr = data.newStr;
+         equipInfo.latentEnergyEndTime = data.endTime;
+         equipInfo.IsBinds = true;
          dispatchEvent(new Event("latentEnergy_equip_change"));
       }
       
-      private function timerHandler(param1:TimerEvent) : void
+      private function timerHandler(event:TimerEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:int = _cacheDataList.length;
-         if(_loc3_ > 0)
+         var i:int = 0;
+         var equipInfo:* = null;
+         var len:int = _cacheDataList.length;
+         if(len > 0)
          {
-            _loc4_ = _loc3_ - 1;
-            while(_loc4_ >= 0)
+            for(i = len - 1; i >= 0; )
             {
-               _loc2_ = PlayerManager.Instance.Self.Bag.items[_cacheDataList[_loc4_].place] as InventoryItemInfo;
-               if(_loc2_)
+               equipInfo = PlayerManager.Instance.Self.Bag.items[_cacheDataList[i].place] as InventoryItemInfo;
+               if(equipInfo)
                {
-                  doChange(_loc2_,_cacheDataList[_loc4_]);
-                  _cacheDataList.splice(_loc4_,1);
+                  doChange(equipInfo,_cacheDataList[i]);
+                  _cacheDataList.splice(i,1);
                }
-               _loc4_--;
+               i--;
             }
          }
          else
@@ -111,58 +110,58 @@ package latentEnergy
          }
       }
       
-      private function timerCompleteHandler(param1:TimerEvent) : void
+      private function timerCompleteHandler(event:TimerEvent) : void
       {
          _cacheDataList = [];
       }
       
       public function getCanLatentEnergyData() : BagInfo
       {
-         var _loc3_:DictionaryData = PlayerManager.Instance.Self.Bag.items;
-         var _loc5_:BagInfo = new BagInfo(0,21);
-         var _loc2_:Array = [];
+         var equipBaglist:DictionaryData = PlayerManager.Instance.Self.Bag.items;
+         var latentEnergyBagList:BagInfo = new BagInfo(0,21);
+         var arr:Array = [];
          var _loc7_:int = 0;
-         var _loc6_:* = _loc3_;
-         for each(var _loc4_ in _loc3_)
+         var _loc6_:* = equipBaglist;
+         for each(var item in equipBaglist)
          {
-            if(_loc4_.isCanLatentEnergy)
+            if(item.isCanLatentEnergy)
             {
-               if(_loc4_.getRemainDate() > 0)
+               if(item.getRemainDate() > 0)
                {
-                  if(_loc4_.Place < 17)
+                  if(item.Place < 17)
                   {
-                     _loc5_.addItem(_loc4_);
+                     latentEnergyBagList.addItem(item);
                   }
                   else
                   {
-                     _loc2_.push(_loc4_);
+                     arr.push(item);
                   }
                }
             }
          }
          var _loc9_:int = 0;
-         var _loc8_:* = _loc2_;
-         for each(var _loc1_ in _loc2_)
+         var _loc8_:* = arr;
+         for each(var infoItem in arr)
          {
-            _loc5_.addItem(_loc1_);
+            latentEnergyBagList.addItem(infoItem);
          }
-         return _loc5_;
+         return latentEnergyBagList;
       }
       
       public function getLatentEnergyItemData() : BagInfo
       {
-         var _loc1_:DictionaryData = PlayerManager.Instance.Self.PropBag.items;
-         var _loc3_:BagInfo = new BagInfo(1,21);
+         var proBaglist:DictionaryData = PlayerManager.Instance.Self.PropBag.items;
+         var latentEnergyBagList:BagInfo = new BagInfo(1,21);
          var _loc5_:int = 0;
-         var _loc4_:* = _loc1_;
-         for each(var _loc2_ in _loc1_)
+         var _loc4_:* = proBaglist;
+         for each(var item in proBaglist)
          {
-            if(_loc2_.CategoryID == 11 && int(_loc2_.Property1) == 101)
+            if(item.CategoryID == 11 && int(item.Property1) == 101)
             {
-               _loc3_.addItem(_loc2_);
+               latentEnergyBagList.addItem(item);
             }
          }
-         return _loc3_;
+         return latentEnergyBagList;
       }
    }
 }

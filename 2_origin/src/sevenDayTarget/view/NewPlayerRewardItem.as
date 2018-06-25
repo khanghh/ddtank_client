@@ -34,56 +34,56 @@ package sevenDayTarget.view
          super();
       }
       
-      public function setInfo(param1:NewPlayerRewardInfo) : void
+      public function setInfo(info:NewPlayerRewardInfo) : void
       {
-         var _loc9_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         var _loc2_:Array = param1.rewardArr;
-         var _loc7_:int = param1.bgType;
-         var _loc6_:int = _loc2_.length;
-         var _loc5_:Boolean = param1.finished;
-         var _loc8_:Boolean = param1.getRewarded;
-         _info = param1;
-         if(!_loc5_)
+         var i:int = 0;
+         var cell:* = null;
+         var itemInfo:* = null;
+         var arr:Array = info.rewardArr;
+         var type:int = info.bgType;
+         var len:int = arr.length;
+         var isfinished:Boolean = info.finished;
+         var getRewarded:Boolean = info.getRewarded;
+         _info = info;
+         if(!isfinished)
          {
             _getRewardBnt = ComponentFactory.Instance.creatComponentByStylename("newSevenDayAndNewPlayer.newplayerRewardItemRewardBnt");
             _getRewardBnt.enable = false;
          }
-         else if(_loc5_ && !_loc8_)
+         else if(isfinished && !getRewarded)
          {
             _getRewardBnt = ComponentFactory.Instance.creatComponentByStylename("newSevenDayAndNewPlayer.newplayerRewardItemRewardBnt");
             _getRewardBnt.enable = true;
          }
-         else if(_loc8_)
+         else if(getRewarded)
          {
             _getRewardBnt = ComponentFactory.Instance.creatComponentByStylename("newSevenDayAndNewPlayer.newplayerRewardItemRewardBnt2");
             _getRewardBnt.enable = false;
          }
          _getRewardBnt.addEventListener("click",__getReward);
-         if(_loc6_ <= 4 && _loc6_ > 0 && _loc7_ == NewPlayerRewardMainView.CHONGZHI)
+         if(len <= 4 && len > 0 && type == NewPlayerRewardMainView.CHONGZHI)
          {
             _bg = ComponentFactory.Instance.creat("newSevenDayAndNewPlayer.chongzhi");
             _titleText = ComponentFactory.Instance.creatComponentByStylename("newSevenDayAndNewPlayer.titletext1");
-            _titleText.text = LanguageMgr.GetTranslation("newSevenDayAndNewPlayer.chongzhitext",param1.num);
+            _titleText.text = LanguageMgr.GetTranslation("newSevenDayAndNewPlayer.chongzhitext",info.num);
          }
-         else if(_loc6_ > 4 && _loc6_ <= 8 && _loc7_ == NewPlayerRewardMainView.CHONGZHI)
+         else if(len > 4 && len <= 8 && type == NewPlayerRewardMainView.CHONGZHI)
          {
             _bg = ComponentFactory.Instance.creat("newSevenDayAndNewPlayer.chongzhibig");
             _titleText = ComponentFactory.Instance.creatComponentByStylename("newSevenDayAndNewPlayer.titletext1");
-            _titleText.text = LanguageMgr.GetTranslation("newSevenDayAndNewPlayer.chongzhitext",param1.num);
+            _titleText.text = LanguageMgr.GetTranslation("newSevenDayAndNewPlayer.chongzhitext",info.num);
          }
-         else if(_loc6_ <= 4 && _loc6_ > 0 && _loc7_ == NewPlayerRewardMainView.XIAOFEI)
+         else if(len <= 4 && len > 0 && type == NewPlayerRewardMainView.XIAOFEI)
          {
             _bg = ComponentFactory.Instance.creat("newSevenDayAndNewPlayer.xiaofei");
             _titleText = ComponentFactory.Instance.creatComponentByStylename("newSevenDayAndNewPlayer.titletext2");
-            _titleText.text = LanguageMgr.GetTranslation("newSevenDayAndNewPlayer.xiaofeitext",param1.num);
+            _titleText.text = LanguageMgr.GetTranslation("newSevenDayAndNewPlayer.xiaofeitext",info.num);
          }
-         else if(_loc6_ > 4 && _loc6_ <= 8 && _loc7_ == NewPlayerRewardMainView.XIAOFEI)
+         else if(len > 4 && len <= 8 && type == NewPlayerRewardMainView.XIAOFEI)
          {
             _bg = ComponentFactory.Instance.creat("newSevenDayAndNewPlayer.xiaofeiibig");
             _titleText = ComponentFactory.Instance.creatComponentByStylename("newSevenDayAndNewPlayer.titletext2");
-            _titleText.text = LanguageMgr.GetTranslation("newSevenDayAndNewPlayer.xiaofeitext",param1.num);
+            _titleText.text = LanguageMgr.GetTranslation("newSevenDayAndNewPlayer.xiaofeitext",info.num);
          }
          else
          {
@@ -91,7 +91,7 @@ package sevenDayTarget.view
             _titleText.text = LanguageMgr.GetTranslation("newSevenDayAndNewPlayer.hunlitext");
          }
          PositionUtils.setPos(_titleText,"newSevenDayAndNewPlayer.newplayerRewardItemTitlePos");
-         if(_loc6_ <= 4 && _loc6_ > 0)
+         if(len <= 4 && len > 0)
          {
             PositionUtils.setPos(_getRewardBnt,"newSevenDayAndNewPlayer.newplayerRewardItemRewardBntPos");
          }
@@ -107,19 +107,18 @@ package sevenDayTarget.view
          addChild(_titleText);
          addChild(_getRewardBnt);
          addChild(_rewardList);
-         _loc9_ = 0;
-         while(_loc9_ < _loc2_.length)
+         for(i = 0; i < arr.length; )
          {
-            _loc3_ = new NewPlayerRewardCell();
-            _loc4_ = _loc2_[_loc9_] as InventoryItemInfo;
-            _loc3_.info = ItemManager.Instance.getTemplateById(_loc4_.ItemID);
-            _loc3_.itemNum = _loc4_.Count + "";
-            _rewardList.addChild(_loc3_);
-            _loc9_++;
+            cell = new NewPlayerRewardCell();
+            itemInfo = arr[i] as InventoryItemInfo;
+            cell.info = ItemManager.Instance.getTemplateById(itemInfo.ItemID);
+            cell.itemNum = itemInfo.Count + "";
+            _rewardList.addChild(cell);
+            i++;
          }
       }
       
-      private function __getReward(param1:MouseEvent) : void
+      private function __getReward(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_getRewardBnt)
@@ -127,11 +126,11 @@ package sevenDayTarget.view
             _getRewardBnt.backStyle = "newSevenDayAndNewPlayer.getRewardBG1";
             _getRewardBnt.enable = false;
          }
-         var _loc2_:int = _info.questId;
-         SocketManager.Instance.out.newPlayerReward_getReward(_loc2_);
+         var questionId:int = _info.questId;
+         SocketManager.Instance.out.newPlayerReward_getReward(questionId);
       }
       
-      private function initView(param1:int) : void
+      private function initView(type:int) : void
       {
       }
    }

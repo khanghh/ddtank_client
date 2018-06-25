@@ -64,22 +64,22 @@ package homeTemple.view
          this.addEventListener("enterFrame",__startFrame);
       }
       
-      private function __startFrame(param1:Event) : void
+      private function __startFrame(e:Event) : void
       {
          _currentFrame = Number(_currentFrame) + 1;
          setMask(_currentFrame);
-         var _loc2_:int = 0;
+         var frameNum:int = 0;
          if(_taskFrames.hasOwnProperty(0))
          {
-            _loc2_ = _taskFrames[0];
+            frameNum = _taskFrames[0];
          }
-         if(_loc2_ == 0 && _taskFrames.hasOwnProperty(1))
+         if(frameNum == 0 && _taskFrames.hasOwnProperty(1))
          {
-            _loc2_ = _taskFrames[1];
+            frameNum = _taskFrames[1];
          }
-         if(_currentFrame >= _loc2_)
+         if(_currentFrame >= frameNum)
          {
-            if(_loc2_ >= _total)
+            if(frameNum >= _total)
             {
                _currentFrame = 0;
                _taskFrames[0] = 0;
@@ -88,7 +88,7 @@ package homeTemple.view
             {
                _taskFrames[1] = 0;
                this.removeEventListener("enterFrame",__startFrame);
-               param1.stopImmediatePropagation();
+               e.stopImmediatePropagation();
             }
          }
       }
@@ -106,22 +106,22 @@ package homeTemple.view
       
       public function initProgress() : void
       {
-         var _loc1_:Number = NaN;
-         var _loc2_:int = 0;
-         var _loc3_:HomeTempleData = HomeTempleController.Instance.currentInfo;
+         var rate:Number = NaN;
+         var tempFrame:int = 0;
+         var info:HomeTempleData = HomeTempleController.Instance.currentInfo;
          _currentFrame = 0;
-         _strengthenExp = _loc3_.CurrentExp;
-         _strengthenLevel = _loc3_.CurrentLevel;
+         _strengthenExp = info.CurrentExp;
+         _strengthenLevel = info.CurrentLevel;
          _max = HomeTempleController.Instance.getPracticeByLevel(_strengthenLevel + 1).Exp - HomeTempleController.Instance.getPracticeByLevel(_strengthenLevel).Exp;
          if(_max > 0 && _strengthenExp < _max)
          {
-            _loc1_ = _strengthenExp / _max;
-            _loc2_ = Math.floor(_loc1_ * _total);
-            if(_loc2_ < 1 && _loc1_ > 0)
+            rate = _strengthenExp / _max;
+            tempFrame = Math.floor(rate * _total);
+            if(tempFrame < 1 && rate > 0)
             {
-               _loc2_ = 1;
+               tempFrame = 1;
             }
-            _currentFrame = _loc2_;
+            _currentFrame = tempFrame;
          }
          setMask(_currentFrame);
          setExpPercent();
@@ -134,11 +134,11 @@ package homeTemple.view
       
       public function setProgress() : void
       {
-         var _loc3_:HomeTempleData = HomeTempleController.Instance.currentInfo;
-         if(_strengthenLevel != _loc3_.CurrentLevel)
+         var info:HomeTempleData = HomeTempleController.Instance.currentInfo;
+         if(_strengthenLevel != info.CurrentLevel)
          {
             _taskFrames[0] = _total;
-            _strengthenLevel = _loc3_.CurrentLevel;
+            _strengthenLevel = info.CurrentLevel;
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("home.temple.upgradeText",HomeTempleController.Instance.getStarNum(),HomeTempleController.Instance.getStarLevelNum()));
             if(_strengthenLevel % 10 == 1)
             {
@@ -148,27 +148,27 @@ package homeTemple.view
          }
          else
          {
-            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("home.temple.upgradeExpNumberText",_loc3_.CurrentExp - _strengthenExp),0,true);
+            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("home.temple.upgradeExpNumberText",info.CurrentExp - _strengthenExp),0,true);
          }
-         _strengthenExp = _loc3_.CurrentExp;
+         _strengthenExp = info.CurrentExp;
          _max = HomeTempleController.Instance.getPracticeByLevel(_strengthenLevel + 1).Exp - HomeTempleController.Instance.getPracticeByLevel(_strengthenLevel).Exp;
-         var _loc1_:Number = _strengthenExp / _max;
-         var _loc2_:int = Math.floor(_loc1_ * _total);
-         if(_loc2_ < 1 && _loc1_ > 0)
+         var rate:Number = _strengthenExp / _max;
+         var tempFrame:int = Math.floor(rate * _total);
+         if(tempFrame < 1 && rate > 0)
          {
-            _loc2_ = 1;
+            tempFrame = 1;
          }
-         if(_currentFrame == _loc2_)
+         if(_currentFrame == tempFrame)
          {
             if(_taskFrames[0] && int(_taskFrames[0]) != 0)
             {
-               _taskFrames[1] = _loc2_;
+               _taskFrames[1] = tempFrame;
                startProgress();
             }
          }
          else
          {
-            _taskFrames[1] = _loc2_;
+            _taskFrames[1] = tempFrame;
             startProgress();
          }
          setExpPercent();
@@ -185,31 +185,31 @@ package homeTemple.view
          _upgradeMovie.gotoAndPlay(1);
       }
       
-      private function setMask(param1:Number) : void
+      private function setMask(value:Number) : void
       {
-         var _loc2_:Number = param1 * _scaleValue;
-         if(isNaN(_loc2_) || _loc2_ == 0)
+         var tempWidth:Number = value * _scaleValue;
+         if(isNaN(tempWidth) || tempWidth == 0)
          {
             _progressBarMask.width = 0;
          }
          else
          {
-            if(_loc2_ >= _thuck.width)
+            if(tempWidth >= _thuck.width)
             {
-               _loc2_ = _loc2_ % _thuck.width;
+               tempWidth = tempWidth % _thuck.width;
             }
-            _progressBarMask.width = _loc2_;
+            _progressBarMask.width = tempWidth;
          }
       }
       
       private function setExpPercent() : void
       {
-         var _loc1_:String = HomeTempleController.Instance.getExpPercent();
-         if(_loc1_ == "")
+         var expPercent:String = HomeTempleController.Instance.getExpPercent();
+         if(expPercent == "")
          {
-            _loc1_ = "0";
+            expPercent = "0";
          }
-         _progressLabel.text = _loc1_ + "%";
+         _progressLabel.text = expPercent + "%";
          if(_strengthenLevel >= HomeTempleController.MAXLEVEL)
          {
             _progressLabel.text = "0%";

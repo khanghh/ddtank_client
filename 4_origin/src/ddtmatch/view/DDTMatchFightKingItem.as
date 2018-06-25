@@ -21,29 +21,28 @@ package ddtmatch.view
       
       private var _hBox:HBox;
       
-      public function DDTMatchFightKingItem(param1:int, param2:Array)
+      public function DDTMatchFightKingItem(score:int, cellList:Array)
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
+         var i:int = 0;
+         var awardsBox:* = null;
+         var cell:* = null;
          super();
          _bg = ComponentFactory.Instance.creatBitmap("ddtmatch.fightKing.socreBg");
          addChild(_bg);
          _itemTitleTxt = ComponentFactory.Instance.creatComponentByStylename("ddtmatch.fightKing.itemTitleTxt");
          addChild(_itemTitleTxt);
-         _itemTitleTxt.text = LanguageMgr.GetTranslation("ddt.DDTMatch.fightKing.itemTitle",param1);
+         _itemTitleTxt.text = LanguageMgr.GetTranslation("ddt.DDTMatch.fightKing.itemTitle",score);
          _hBox = ComponentFactory.Instance.creatComponentByStylename("ddtmatch.fightKing.hBox");
          addChild(_hBox);
-         _loc5_ = 0;
-         while(_loc5_ < param2.length)
+         for(i = 0; i < cellList.length; )
          {
-            _loc4_ = ComponentFactory.Instance.creatBitmap("ddtmatch.fightKing.cellBg");
-            _loc3_ = new BagCell(1,null,true,_loc4_,false);
-            _loc3_.setContentSize(47,47);
-            _loc3_.info = ItemManager.Instance.getTemplateById(int(param2[_loc5_].split(",")[0]));
-            _loc3_.setCount(int(param2[_loc5_].split(",")[1]));
-            _hBox.addChild(_loc3_);
-            _loc5_++;
+            awardsBox = ComponentFactory.Instance.creatBitmap("ddtmatch.fightKing.cellBg");
+            cell = new BagCell(1,null,true,awardsBox,false);
+            cell.setContentSize(47,47);
+            cell.info = ItemManager.Instance.getTemplateById(int(cellList[i].split(",")[0]));
+            cell.setCount(int(cellList[i].split(",")[1]));
+            _hBox.addChild(cell);
+            i++;
          }
       }
       

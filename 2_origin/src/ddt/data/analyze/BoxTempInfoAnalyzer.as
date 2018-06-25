@@ -29,23 +29,23 @@ package ddt.data.analyze
       
       private var microendAwardsIDList:Array;
       
-      public function BoxTempInfoAnalyzer(param1:Function)
+      public function BoxTempInfoAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc10_:* = null;
-         var _loc9_:int = 0;
-         var _loc5_:* = null;
-         var _loc2_:int = 0;
-         var _loc4_:* = null;
-         var _loc8_:* = null;
+         var info:* = null;
+         var i:int = 0;
+         var boxTempID:* = null;
+         var templateId:int = 0;
+         var info1:* = null;
+         var info2:* = null;
          microendAwardsIDList = [];
-         var _loc7_:uint = getTimer();
-         var _loc6_:XML = new XML(param1);
-         var _loc3_:XMLList = _loc6_..Item;
+         var _start:uint = getTimer();
+         var xml:XML = new XML(data);
+         var items:XMLList = xml..Item;
          inventoryItemList = new DictionaryData();
          caddyTempIDList = new DictionaryData();
          beadTempInfoList = new DictionaryData();
@@ -54,60 +54,59 @@ package ddt.data.analyze
          _boxTemplateID = BossBoxManager.instance.boxTemplateID;
          exploitTemplateIDs = BossBoxManager.instance.exploitTemplateIDs;
          initDictionaryData();
-         if(_loc6_.@value == "true")
+         if(xml.@value == "true")
          {
-            _loc9_ = 0;
-            while(_loc9_ < _loc3_.length())
+            for(i = 0; i < items.length(); )
             {
-               _loc5_ = _loc3_[_loc9_].@ID;
-               _loc2_ = _loc3_[_loc9_].@TemplateId;
-               _loc10_ = new BoxGoodsTempInfo();
-               ObjectUtils.copyPorpertiesByXML(_loc10_,_loc3_[_loc9_]);
-               if(!inventoryItemList.hasKey(_loc5_))
+               boxTempID = items[i].@ID;
+               templateId = items[i].@TemplateId;
+               info = new BoxGoodsTempInfo();
+               ObjectUtils.copyPorpertiesByXML(info,items[i]);
+               if(!inventoryItemList.hasKey(boxTempID))
                {
-                  inventoryItemList[_loc5_] = [];
+                  inventoryItemList[boxTempID] = [];
                }
-               inventoryItemList[_loc5_].push(_loc10_);
-               if(_loc5_ == "112376")
+               inventoryItemList[boxTempID].push(info);
+               if(boxTempID == "112376")
                {
                   microendAwardsIDList.push({
-                     "count":_loc3_[_loc9_].@ItemCount,
-                     "id":int(_loc3_[_loc9_].@TemplateId)
+                     "count":items[i].@ItemCount,
+                     "id":int(items[i].@TemplateId)
                   });
                }
-               if(int(_loc5_) == 112047 || int(_loc5_) == 112222 || int(_loc5_) == 112223 || int(_loc5_) == 112224 || int(_loc5_) == 2000 || int(_loc5_) == 1222010 || int(_loc5_) == 1222110)
+               if(int(boxTempID) == 112047 || int(boxTempID) == 112222 || int(boxTempID) == 112223 || int(boxTempID) == 112224 || int(boxTempID) == 2000 || int(boxTempID) == 1222010 || int(boxTempID) == 1222110)
                {
-                  _loc4_ = new BoxGoodsTempInfo();
-                  ObjectUtils.copyPorpertiesByXML(_loc4_,_loc3_[_loc9_]);
-                  caddyBoxGoodsInfo.push(_loc4_);
-                  caddyTempIDList.add(_loc4_.TemplateId,_loc4_);
+                  info1 = new BoxGoodsTempInfo();
+                  ObjectUtils.copyPorpertiesByXML(info1,items[i]);
+                  caddyBoxGoodsInfo.push(info1);
+                  caddyTempIDList.add(info1.TemplateId,info1);
                }
-               else if(int(_loc5_) == 311500 || int(_loc5_) == 312500 || int(_loc5_) == 313500)
+               else if(int(boxTempID) == 311500 || int(boxTempID) == 312500 || int(boxTempID) == 313500)
                {
-                  _loc8_ = new BoxGoodsTempInfo();
-                  ObjectUtils.copyPorpertiesByXML(_loc8_,_loc3_[_loc9_]);
-                  beadTempInfoList[_loc5_].push(_loc8_);
+                  info2 = new BoxGoodsTempInfo();
+                  ObjectUtils.copyPorpertiesByXML(info2,items[i]);
+                  beadTempInfoList[boxTempID].push(info2);
                }
-               if(int(_loc5_) == 400014 || int(_loc5_) == 400015 || int(_loc5_) == 400016 || int(_loc5_) == 400017 || int(_loc5_) == 400018 || int(_loc5_) == 400019 || int(_loc5_) == 400020)
+               if(int(boxTempID) == 400014 || int(boxTempID) == 400015 || int(boxTempID) == 400016 || int(boxTempID) == 400017 || int(boxTempID) == 400018 || int(boxTempID) == 400019 || int(boxTempID) == 400020)
                {
-                  _loc10_ = new BoxGoodsTempInfo();
-                  ObjectUtils.copyPorpertiesByXML(_loc10_,_loc3_[_loc9_]);
-                  cityBattleTempInfoList[int(_loc5_)].push(_loc10_);
+                  info = new BoxGoodsTempInfo();
+                  ObjectUtils.copyPorpertiesByXML(info,items[i]);
+                  cityBattleTempInfoList[int(boxTempID)].push(info);
                }
-               if(exploitTemplateIDs[_loc5_])
+               if(exploitTemplateIDs[boxTempID])
                {
-                  _loc10_ = new BoxGoodsTempInfo();
-                  ObjectUtils.copyPorpertiesByXML(_loc10_,_loc3_[_loc9_]);
-                  exploitTemplateIDs[_loc5_].push(_loc10_);
+                  info = new BoxGoodsTempInfo();
+                  ObjectUtils.copyPorpertiesByXML(info,items[i]);
+                  exploitTemplateIDs[boxTempID].push(info);
                }
-               _loc9_++;
+               i++;
             }
             MicroendDownloadAwardsManager.getInstance().setup(microendAwardsIDList);
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc6_.@message;
+            message = xml.@message;
             onAnalyzeError();
             onAnalyzeComplete();
          }

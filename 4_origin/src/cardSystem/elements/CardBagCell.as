@@ -56,9 +56,9 @@ package cardSystem.elements
       
       private var _collectCard:Boolean;
       
-      public function CardBagCell(param1:DisplayObject, param2:int = -1, param3:CardInfo = null, param4:Boolean = false, param5:Boolean = true)
+      public function CardBagCell(bg:DisplayObject, place:int = -1, $info:CardInfo = null, showLoading:Boolean = false, showTip:Boolean = true)
       {
-         super(param1,param2,param3,param4,param5);
+         super(bg,place,$info,showLoading,showTip);
       }
       
       override protected function createChildren() : void
@@ -148,9 +148,9 @@ package cardSystem.elements
          _timeLine.stop();
       }
       
-      override protected function onMouseOver(param1:MouseEvent) : void
+      override protected function onMouseOver(evt:MouseEvent) : void
       {
-         super.onMouseOver(param1);
+         super.onMouseOver(evt);
          if(cardInfo && cardInfo.isFirstGet)
          {
             stopShine();
@@ -182,9 +182,9 @@ package cardSystem.elements
          }
       }
       
-      override protected function onMouseOut(param1:MouseEvent) : void
+      override protected function onMouseOut(evt:MouseEvent) : void
       {
-         super.onMouseOut(param1);
+         super.onMouseOut(evt);
          if(cardInfo == null)
          {
             return;
@@ -201,7 +201,7 @@ package cardSystem.elements
          __timelineComplete();
       }
       
-      private function __timelineComplete(param1:TweenEvent = null) : void
+      private function __timelineComplete(event:TweenEvent = null) : void
       {
          if(_timeLine.currentTime < _timeLine.totalDuration)
          {
@@ -214,10 +214,10 @@ package cardSystem.elements
          _timeLine.reverse();
       }
       
-      protected function __upGrade(param1:MouseEvent) : void
+      protected function __upGrade(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         param1.stopImmediatePropagation();
+         event.stopImmediatePropagation();
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
@@ -226,14 +226,14 @@ package cardSystem.elements
          CardControl.Instance.showUpGradeFrame(cardInfo);
       }
       
-      override public function set cardInfo(param1:CardInfo) : void
+      override public function set cardInfo(value:CardInfo) : void
       {
-         var _loc2_:GrooveInfo = new GrooveInfo();
-         if(super.cardInfo == param1 && !super.cardInfo)
+         var _grooveinfo:GrooveInfo = new GrooveInfo();
+         if(super.cardInfo == value && !super.cardInfo)
          {
             return;
          }
-         .super.cardInfo = param1;
+         .super.cardInfo = value;
          setStar();
          if(cardInfo)
          {
@@ -540,9 +540,9 @@ package cardSystem.elements
          return _collectCard;
       }
       
-      public function set collectCard(param1:Boolean) : void
+      public function set collectCard(value:Boolean) : void
       {
-         _collectCard = param1;
+         _collectCard = value;
       }
       
       override public function dispose() : void
@@ -580,14 +580,14 @@ package cardSystem.elements
          super.dispose();
       }
       
-      override protected function updateSize(param1:Sprite) : void
+      override protected function updateSize(sp:Sprite) : void
       {
-         if(param1)
+         if(sp)
          {
-            param1.height = _contentHeight;
-            param1.width = _contentWidth;
-            param1.x = (_bg.width - _contentWidth) / 2;
-            param1.y = (_bg.height - _contentHeight) / 2;
+            sp.height = _contentHeight;
+            sp.width = _contentWidth;
+            sp.x = (_bg.width - _contentWidth) / 2;
+            sp.y = (_bg.height - _contentHeight) / 2;
          }
       }
       
@@ -597,10 +597,10 @@ package cardSystem.elements
          updateSize(_pic);
       }
       
-      override public function set locked(param1:Boolean) : void
+      override public function set locked(value:Boolean) : void
       {
-         .super.locked = param1;
-         if(param1 == true)
+         .super.locked = value;
+         if(value == true)
          {
             _timeLine.restart();
             _timeLine.stop();

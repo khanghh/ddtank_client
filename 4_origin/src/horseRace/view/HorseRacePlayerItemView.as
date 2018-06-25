@@ -48,10 +48,10 @@ package horseRace.view
       
       private var _pingzhangBuff:MovieClip;
       
-      public function HorseRacePlayerItemView(param1:HorseRaceWalkPlayer)
+      public function HorseRacePlayerItemView(walkingPlayer:HorseRaceWalkPlayer)
       {
          super();
-         _walkingPlayer = param1;
+         _walkingPlayer = walkingPlayer;
          initView();
          loadHead();
          initEvent();
@@ -69,9 +69,9 @@ package horseRace.view
          _lblName = ComponentFactory.Instance.creat("asset.hall.playerInfo.lblName");
          _lblName.mouseEnabled = false;
          _lblName.text = _walkingPlayer.playerVO.playerInfo.NickName;
-         var _loc1_:int = _lblName.textWidth + 8;
+         var spWidth:int = _lblName.textWidth + 8;
          _spName.graphics.beginFill(0,0.5);
-         _spName.graphics.drawRoundRect(-4,0,_loc1_,22,5,5);
+         _spName.graphics.drawRoundRect(-4,0,spWidth,22,5,5);
          _spName.graphics.endFill();
          _spName.addChild(_lblName);
          PositionUtils.setPos(_spName,"horseRace.raceView.playerItemNamePos");
@@ -100,30 +100,29 @@ package horseRace.view
          PositionUtils.setPos(_pingzhangBuff,"horseRace.raceView.pingzhangBuffPos");
       }
       
-      public function setBgVisible(param1:Boolean) : void
+      public function setBgVisible(bool:Boolean) : void
       {
-         _selectbg.visible = param1;
+         _selectbg.visible = bool;
       }
       
-      public function flashBuffList(param1:Array) : void
+      public function flashBuffList(buffArr:Array) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc2_:Boolean = false;
+         var i:int = 0;
+         var buffTIP:* = null;
+         var isHavePingzhang:Boolean = false;
          _buffList.removeAllChild();
-         _loc4_ = 0;
-         while(_loc4_ < param1.length)
+         for(i = 0; i < buffArr.length; )
          {
-            if(param1[_loc4_] == 8)
+            if(buffArr[i] == 8)
             {
-               _loc2_ = true;
+               isHavePingzhang = true;
             }
-            _loc3_ = getBuffByType(param1[_loc4_]);
-            _buffList.addChild(_loc3_);
-            _loc4_++;
+            buffTIP = getBuffByType(buffArr[i]);
+            _buffList.addChild(buffTIP);
+            i++;
          }
          flushRank();
-         showPingzhangBuff(_loc2_);
+         showPingzhangBuff(isHavePingzhang);
       }
       
       public function flushRank() : void
@@ -131,9 +130,9 @@ package horseRace.view
          _rakeImg.gotoAndStop(_walkingPlayer.rank);
       }
       
-      public function showPingzhangBuff(param1:Boolean) : void
+      public function showPingzhangBuff(bool:Boolean) : void
       {
-         if(param1)
+         if(bool)
          {
             _pingzhangBuff.visible = true;
          }
@@ -143,44 +142,44 @@ package horseRace.view
          }
       }
       
-      private function getBuffByType(param1:int) : Bitmap
+      private function getBuffByType(type:int) : Bitmap
       {
-         var _loc2_:* = null;
-         if(param1 == 1)
+         var buff:* = null;
+         if(type == 1)
          {
-            _loc2_ = ComponentFactory.Instance.creat("horseRace.raceView.buff1");
+            buff = ComponentFactory.Instance.creat("horseRace.raceView.buff1");
          }
-         else if(param1 == 2)
+         else if(type == 2)
          {
-            _loc2_ = ComponentFactory.Instance.creat("horseRace.raceView.buff2");
+            buff = ComponentFactory.Instance.creat("horseRace.raceView.buff2");
          }
-         else if(param1 == 3)
+         else if(type == 3)
          {
-            _loc2_ = ComponentFactory.Instance.creat("horseRace.raceView.buff3");
+            buff = ComponentFactory.Instance.creat("horseRace.raceView.buff3");
          }
-         else if(param1 == 4)
+         else if(type == 4)
          {
-            _loc2_ = ComponentFactory.Instance.creat("horseRace.raceView.buff3");
+            buff = ComponentFactory.Instance.creat("horseRace.raceView.buff3");
          }
-         else if(param1 == 5)
+         else if(type == 5)
          {
-            _loc2_ = ComponentFactory.Instance.creat("horseRace.raceView.buff5");
+            buff = ComponentFactory.Instance.creat("horseRace.raceView.buff5");
          }
-         else if(param1 == 6)
+         else if(type == 6)
          {
-            _loc2_ = ComponentFactory.Instance.creat("horseRace.raceView.buff6");
+            buff = ComponentFactory.Instance.creat("horseRace.raceView.buff6");
          }
-         else if(param1 == 7)
+         else if(type == 7)
          {
-            _loc2_ = ComponentFactory.Instance.creat("horseRace.raceView.buff7");
+            buff = ComponentFactory.Instance.creat("horseRace.raceView.buff7");
          }
-         else if(param1 == 8)
+         else if(type == 8)
          {
-            _loc2_ = ComponentFactory.Instance.creat("horseRace.raceView.buff8");
+            buff = ComponentFactory.Instance.creat("horseRace.raceView.buff8");
          }
-         _loc2_.width = 16;
-         _loc2_.height = 16;
-         return _loc2_;
+         buff.width = 16;
+         buff.height = 16;
+         return buff;
       }
       
       public function loadHead() : void
@@ -194,21 +193,21 @@ package horseRace.view
          _headLoader.load(headLoaderCallBack);
       }
       
-      private function headLoaderCallBack(param1:SceneCharacterLoaderHead, param2:Boolean = true) : void
+      private function headLoaderCallBack(headLoader:SceneCharacterLoaderHead, isAllLoadSucceed:Boolean = true) : void
       {
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         if(param1)
+         var rectangle:* = null;
+         var headBmp:* = null;
+         if(headLoader)
          {
             if(!_headBitmap)
             {
                _headBitmap = new Bitmap();
             }
-            _loc3_ = new Rectangle(0,0,HeadWidth,HeadHeight);
-            _loc4_ = new BitmapData(HeadWidth,HeadHeight,true,0);
-            _loc4_.copyPixels(param1.getContent()[0] as BitmapData,_loc3_,new Point(0,0));
-            _headBitmap.bitmapData = _loc4_;
-            param1.dispose();
+            rectangle = new Rectangle(0,0,HeadWidth,HeadHeight);
+            headBmp = new BitmapData(HeadWidth,HeadHeight,true,0);
+            headBmp.copyPixels(headLoader.getContent()[0] as BitmapData,rectangle,new Point(0,0));
+            _headBitmap.bitmapData = headBmp;
+            headLoader.dispose();
             _headBitmap.rotationY = 180;
             if(_walkingPlayer.isSelf)
             {

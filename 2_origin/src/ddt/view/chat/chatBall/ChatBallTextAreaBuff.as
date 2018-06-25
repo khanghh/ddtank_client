@@ -27,10 +27,10 @@ package ddt.view.chat.chatBall
          addChild(tf);
       }
       
-      override public function set text(param1:String) : void
+      override public function set text(value:String) : void
       {
          clear();
-         _text = param1;
+         _text = value;
          tf.text = _text;
          tf.width = tf.textWidth;
          tf.height = tf.textHeight;

@@ -18,7 +18,7 @@ package homeTemple
       
       private var _con:DisplayObjectContainer;
       
-      public function HomeTempleManager(param1:inner)
+      public function HomeTempleManager(single:inner)
       {
          super();
       }
@@ -43,16 +43,16 @@ package homeTemple
          dispatchEvent(new CEvent("ht_show"));
       }
       
-      public function setContainer(param1:DisplayObjectContainer) : void
+      public function setContainer(con:DisplayObjectContainer) : void
       {
-         _con = param1;
+         _con = con;
       }
       
-      public function setView(param1:DisplayObject) : void
+      public function setView(view:DisplayObject) : void
       {
          if(_con)
          {
-            _con.addChild(param1);
+            _con.addChild(view);
          }
       }
       

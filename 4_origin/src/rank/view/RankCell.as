@@ -21,10 +21,10 @@ package rank.view
       
       private var _info:GmActivityInfo;
       
-      public function RankCell(param1:GmActivityInfo)
+      public function RankCell(info:GmActivityInfo)
       {
          super();
-         _info = param1;
+         _info = info;
          initUI();
       }
       
@@ -38,13 +38,13 @@ package rank.view
          return _selected;
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         if(_selected == param1)
+         if(_selected == value)
          {
             return;
          }
-         _selected = param1;
+         _selected = value;
          DisplayUtils.setFrame(_bg,!!_selected?2:1);
          DisplayUtils.setFrame(_titlefield,!!_selected?2:1);
       }

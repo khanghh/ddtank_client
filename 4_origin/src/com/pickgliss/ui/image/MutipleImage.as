@@ -29,14 +29,13 @@ package com.pickgliss.ui.image
       
       override public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(_images)
          {
-            _loc1_ = 0;
-            while(_loc1_ < _images.length)
+            for(i = 0; i < _images.length; )
             {
-               ObjectUtils.disposeObject(_images[_loc1_]);
-               _loc1_++;
+               ObjectUtils.disposeObject(_images[i]);
+               i++;
             }
          }
          _images = null;
@@ -44,45 +43,44 @@ package com.pickgliss.ui.image
          super.dispose();
       }
       
-      public function set imageRectString(param1:String) : void
+      public function set imageRectString(value:String) : void
       {
-         var _loc2_:int = 0;
-         if(_imageRectString == param1)
+         var i:int = 0;
+         if(_imageRectString == value)
          {
             return;
          }
          _imagesRect = new Vector.<InnerRectangle>();
-         _imageRectString = param1;
-         var _loc3_:Array = ComponentFactory.parasArgs(_imageRectString);
-         _loc2_ = 0;
-         while(_loc2_ < _loc3_.length)
+         _imageRectString = value;
+         var rectsData:Array = ComponentFactory.parasArgs(_imageRectString);
+         for(i = 0; i < rectsData.length; )
          {
-            if(String(_loc3_[_loc2_]) == "")
+            if(String(rectsData[i]) == "")
             {
                _imagesRect.push(null);
             }
             else
             {
-               _imagesRect.push(ClassUtils.CreatInstance("com.pickgliss.geom.InnerRectangle",String(_loc3_[_loc2_]).split("|")));
+               _imagesRect.push(ClassUtils.CreatInstance("com.pickgliss.geom.InnerRectangle",String(rectsData[i]).split("|")));
             }
-            _loc2_++;
+            i++;
          }
          onPropertiesChanged("imagesRect");
       }
       
       override protected function addChildren() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          super.addChildren();
          if(_images == null)
          {
             return;
          }
-         _loc1_ = 0;
-         while(_loc1_ < _images.length)
+         i = 0;
+         while(i < _images.length)
          {
-            Sprite(_display).addChild(_images[_loc1_]);
-            _loc1_++;
+            Sprite(_display).addChild(_images[i]);
+            i++;
          }
       }
       
@@ -101,65 +99,63 @@ package com.pickgliss.ui.image
       
       override protected function updateSize() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var innerRect:* = null;
          if(_images == null)
          {
             return;
          }
          if(_changedPropeties["width"] || _changedPropeties["height"] || _changedPropeties["imagesRect"])
          {
-            _loc2_ = 0;
-            while(_loc2_ < _images.length)
+            for(i = 0; i < _images.length; )
             {
-               if(_imagesRect && _imagesRect[_loc2_])
+               if(_imagesRect && _imagesRect[i])
                {
-                  _loc1_ = _imagesRect[_loc2_].getInnerRect(_width,_height);
-                  _images[_loc2_].x = _loc1_.x;
-                  _images[_loc2_].y = _loc1_.y;
-                  _images[_loc2_].height = _loc1_.height;
-                  _images[_loc2_].width = _loc1_.width;
-                  _width = Math.max(_width,_images[_loc2_].width);
-                  _height = Math.max(_height,_images[_loc2_].height);
+                  innerRect = _imagesRect[i].getInnerRect(_width,_height);
+                  _images[i].x = innerRect.x;
+                  _images[i].y = innerRect.y;
+                  _images[i].height = innerRect.height;
+                  _images[i].width = innerRect.width;
+                  _width = Math.max(_width,_images[i].width);
+                  _height = Math.max(_height,_images[i].height);
                }
                else
                {
-                  _images[_loc2_].width = _width;
-                  _images[_loc2_].height = _height;
+                  _images[i].width = _width;
+                  _images[i].height = _height;
                }
-               _loc2_++;
+               i++;
             }
          }
       }
       
       private function creatImages() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var image:* = null;
+         var imageArgs:* = null;
          _images = new Vector.<DisplayObject>();
-         _loc3_ = 0;
-         while(_loc3_ < _imageLinks.length)
+         for(i = 0; i < _imageLinks.length; )
          {
-            _loc2_ = String(_imageLinks[_loc3_]).split("|");
-            _loc1_ = ComponentFactory.Instance.creat(_loc2_[0]);
-            _images.push(_loc1_);
-            _loc3_++;
+            imageArgs = String(_imageLinks[i]).split("|");
+            image = ComponentFactory.Instance.creat(imageArgs[0]);
+            _images.push(image);
+            i++;
          }
       }
       
       private function removeImages() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(_images == null)
          {
             return;
          }
-         _loc1_ = 0;
-         while(_loc1_ < _images.length)
+         i = 0;
+         while(i < _images.length)
          {
-            ObjectUtils.disposeObject(_images[_loc1_]);
-            _loc1_++;
+            ObjectUtils.disposeObject(_images[i]);
+            i++;
          }
       }
    }

@@ -34,18 +34,18 @@ package luckStar.view
          addChild(awardText);
       }
       
-      public function setText(param1:String, param2:int, param3:int) : void
+      public function setText($name:String, $award:int, $count:int) : void
       {
-         var _loc4_:* = null;
-         if(ItemManager.Instance.getTemplateById(param2))
+         var goods:* = null;
+         if(ItemManager.Instance.getTemplateById($award))
          {
-            nameText.text = param1;
-            _loc4_ = ItemManager.Instance.getTemplateById(param2).Name + " x " + param3.toString();
-            if(ItemManager.Instance.getTemplateById(param2).Quality >= 5)
+            nameText.text = $name;
+            goods = ItemManager.Instance.getTemplateById($award).Name + " x " + $count.toString();
+            if(ItemManager.Instance.getTemplateById($award).Quality >= 5)
             {
-               _loc4_ = _loc4_.replace(_loc4_,"<font color=\'#ff0000\'>" + _loc4_ + "</font>");
+               goods = goods.replace(goods,"<font color=\'#ff0000\'>" + goods + "</font>");
             }
-            awardText.htmlText = _loc4_;
+            awardText.htmlText = goods;
          }
       }
       

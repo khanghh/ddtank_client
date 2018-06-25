@@ -46,11 +46,11 @@ package foodActivity.view
          return _tipWidth;
       }
       
-      public function set tipWidth(param1:int) : void
+      public function set tipWidth(w:int) : void
       {
-         if(_tipWidth != param1)
+         if(_tipWidth != w)
          {
-            _tipWidth = param1;
+            _tipWidth = w;
             updateTransform();
          }
       }
@@ -60,9 +60,9 @@ package foodActivity.view
          return _data;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(data:Object) : void
       {
-         _data = param1;
+         _data = data;
          _contentTxt.text = _data["content"];
          _awardsTxt.text = _data["awards"];
          updateTransform();
@@ -70,8 +70,8 @@ package foodActivity.view
       
       protected function updateTransform() : void
       {
-         var _loc1_:int = _contentTxt.width > _awardsTxt.width?_contentTxt.width:Number(_awardsTxt.width);
-         _bg.width = _loc1_ + 16;
+         var wi:int = _contentTxt.width > _awardsTxt.width?_contentTxt.width:Number(_awardsTxt.width);
+         _bg.width = wi + 16;
          _bg.height = _contentTxt.height + _awardsTxt.height + 8;
          _contentTxt.x = _bg.x + 8;
          _contentTxt.y = _bg.y + 4;
@@ -84,7 +84,7 @@ package foodActivity.view
          return _bg.height;
       }
       
-      public function set tipHeight(param1:int) : void
+      public function set tipHeight(h:int) : void
       {
       }
       

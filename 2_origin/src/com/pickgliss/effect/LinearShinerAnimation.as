@@ -8,9 +8,9 @@ package com.pickgliss.effect
    {
        
       
-      public function LinearShinerAnimation(param1:int)
+      public function LinearShinerAnimation($id:int)
       {
-         super(param1);
+         super($id);
       }
       
       override public function play() : void

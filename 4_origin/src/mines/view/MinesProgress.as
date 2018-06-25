@@ -9,9 +9,9 @@ package mines.view
    {
        
       
-      public function MinesProgress(param1:String = null)
+      public function MinesProgress(skin:String = null)
       {
-         super(param1);
+         super(skin);
       }
       
       override protected function createChildren() : void

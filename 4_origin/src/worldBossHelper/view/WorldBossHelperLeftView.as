@@ -90,11 +90,11 @@ package worldBossHelper.view
          _closeBtn.addEventListener("click",__btnHandler);
       }
       
-      protected function __btnHandler(param1:MouseEvent) : void
+      protected function __btnHandler(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var alertAsk:* = null;
          SoundManager.instance.play("008");
-         if(param1.target == _openBtn)
+         if(event.target == _openBtn)
          {
             if(PlayerManager.Instance.Self.bagLocked)
             {
@@ -116,10 +116,10 @@ package worldBossHelper.view
             }
             _date1 = _date2;
          }
-         if(param1.target == _openBtn)
+         if(event.target == _openBtn)
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("worldboss.helper.isOpen"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
-            _loc2_.addEventListener("response",__alertOpenHelper);
+            alertAsk = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("worldboss.helper.isOpen"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
+            alertAsk.addEventListener("response",__alertOpenHelper);
          }
          else
          {
@@ -133,104 +133,104 @@ package worldBossHelper.view
       
       public function dispatchHelperEvent() : void
       {
-         var _loc1_:WorldBossHelperEvent = new WorldBossHelperEvent("changeHelperState");
-         _loc1_.state = _openBtn.visible;
-         dispatchEvent(_loc1_);
+         var newEvent:WorldBossHelperEvent = new WorldBossHelperEvent("changeHelperState");
+         newEvent.state = _openBtn.visible;
+         dispatchEvent(newEvent);
       }
       
-      protected function __alertOpenHelper(param1:FrameEvent) : void
+      protected function __alertOpenHelper(event:FrameEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         var _loc5_:* = null;
-         var _loc6_:int = 0;
-         var _loc8_:* = null;
-         var _loc7_:int = 0;
-         var _loc2_:* = null;
-         switch(int(param1.responseCode) - 2)
+         var buffNum:int = 0;
+         var money:int = 0;
+         var moneyNumInfo:* = null;
+         var money1:int = 0;
+         var moneyNumInfo1:* = null;
+         var buffType:int = 0;
+         var alertFrame:* = null;
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
                if(WorldBossManager.Instance.bossInfo)
                {
-                  _loc3_ = WorldBossHelperController.Instance.data.buffNum - WorldBossManager.Instance.bossInfo.myPlayerVO.buffLevel;
-                  if(_loc3_ <= 0)
+                  buffNum = WorldBossHelperController.Instance.data.buffNum - WorldBossManager.Instance.bossInfo.myPlayerVO.buffLevel;
+                  if(buffNum <= 0)
                   {
-                     _loc3_ = 0;
+                     buffNum = 0;
                   }
                }
                else
                {
-                  _loc3_ = WorldBossHelperController.Instance.data.buffNum;
+                  buffNum = WorldBossHelperController.Instance.data.buffNum;
                }
-               _loc5_ = ServerConfigManager.instance.findInfoByName("BuyBossBufferMoney");
-               if(_loc5_ && _loc5_.Value)
+               moneyNumInfo = ServerConfigManager.instance.findInfoByName("BuyBossBufferMoney");
+               if(moneyNumInfo && moneyNumInfo.Value)
                {
-                  _loc4_ = _loc5_.Value;
+                  money = moneyNumInfo.Value;
                }
                else
                {
-                  _loc4_ = 30;
+                  money = 30;
                }
-               _loc8_ = ServerConfigManager.instance.findInfoByName("WorldBossAssistantFightMoney");
-               if(_loc8_ && _loc8_.Value)
+               moneyNumInfo1 = ServerConfigManager.instance.findInfoByName("WorldBossAssistantFightMoney");
+               if(moneyNumInfo1 && moneyNumInfo1.Value)
                {
-                  _loc6_ = _loc8_.Value;
+                  money1 = moneyNumInfo1.Value;
                }
                else
                {
-                  _loc6_ = 10;
+                  money1 = 10;
                }
-               if(PlayerManager.Instance.Self.DDTMoney < _loc6_)
+               if(PlayerManager.Instance.Self.DDTMoney < money1)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.worldBoss.notEnoughtmedal"));
                   break;
                }
                if(WorldBossHelperController.Instance.monkeyType == 1)
                {
-                  _loc7_ = 10;
+                  buffType = 10;
                }
                else if(WorldBossHelperController.Instance.monkeyType == 2)
                {
-                  _loc7_ = 12;
+                  buffType = 12;
                }
                else
                {
-                  _loc7_ = 0;
+                  buffType = 0;
                }
-               if(PlayerManager.Instance.Self.Money < _loc3_ * _loc4_ + _loc7_)
+               if(PlayerManager.Instance.Self.Money < buffNum * money + buffType)
                {
-                  _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.title"),LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.content"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
-                  _loc2_.addEventListener("response",_response);
-                  param1.currentTarget.removeEventListener("response",__alertOpenHelper);
-                  ObjectUtils.disposeObject(param1.currentTarget);
+                  alertFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.title"),LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.content"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
+                  alertFrame.addEventListener("response",_response);
+                  event.currentTarget.removeEventListener("response",__alertOpenHelper);
+                  ObjectUtils.disposeObject(event.currentTarget);
                   return;
                }
                dispatchHelperEvent();
                break;
          }
-         param1.currentTarget.removeEventListener("response",__alertOpenHelper);
-         ObjectUtils.disposeObject(param1.currentTarget);
+         event.currentTarget.removeEventListener("response",__alertOpenHelper);
+         ObjectUtils.disposeObject(event.currentTarget);
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(evt:FrameEvent) : void
       {
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",_response);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         (evt.currentTarget as BaseAlerFrame).removeEventListener("response",_response);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             LeavePageManager.leaveToFillPath();
          }
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(evt.currentTarget);
       }
       
       private function fightFailDescription() : void
       {
-         var _loc1_:* = null;
+         var child:* = null;
          stopAndDisposeTimer();
          if(_vBox.numChildren > 0)
          {
-            _loc1_ = _vBox.getChildAt(_vBox.numChildren - 1) as FilterFrameText;
-            _loc1_.text = LanguageMgr.GetTranslation("worldboss.helper.fightFail",WorldBossHelperManager.Instance.num);
+            child = _vBox.getChildAt(_vBox.numChildren - 1) as FilterFrameText;
+            child.text = LanguageMgr.GetTranslation("worldboss.helper.fightFail",WorldBossHelperManager.Instance.num);
          }
       }
       
@@ -249,9 +249,9 @@ package worldBossHelper.view
          return _state;
       }
       
-      public function set state(param1:Boolean) : void
+      public function set state(value:Boolean) : void
       {
-         _state = param1;
+         _state = value;
       }
       
       private function initView() : void
@@ -334,7 +334,7 @@ package worldBossHelper.view
          return false;
       }
       
-      private function startTimerHandler(param1:TimerEvent) : void
+      private function startTimerHandler(event:TimerEvent) : void
       {
          if(WorldBossManager.Instance.bossInfo && !WorldBossManager.Instance.bossInfo.fightOver && WorldBossManager.Instance.beforeStartTime <= 0)
          {
@@ -399,7 +399,7 @@ package worldBossHelper.view
          _timer.start();
       }
       
-      protected function __timerHandler(param1:TimerEvent) : void
+      protected function __timerHandler(event:TimerEvent) : void
       {
          if(_count != _remainTime)
          {
@@ -421,46 +421,46 @@ package worldBossHelper.view
          }
       }
       
-      public function addDescription(param1:Boolean, param2:int, param3:Array, param4:int) : void
+      public function addDescription(isFightOver:Boolean, num:int, hurtArr:Array, honor:int) : void
       {
-         var _loc5_:* = null;
-         var _loc8_:* = null;
-         var _loc9_:int = 0;
-         var _loc7_:* = null;
-         var _loc6_:* = null;
+         var honorTxt:* = null;
+         var fightTitleTxt:* = null;
+         var i:int = 0;
+         var descriptionTxt:* = null;
+         var fightTitleDescriptionTxt:* = null;
          if(WorldBossHelperManager.Instance.isFighting)
          {
-            if(param1)
+            if(isFightOver)
             {
                _allHonorTxt.text = "" + WorldBossHelperManager.Instance.allHonor;
                _allMoneyTxt.text = "" + WorldBossHelperManager.Instance.allMoney;
                _allMedalTxt.text = "" + WorldBossHelperManager.Instance.allMedal;
-               _loc5_ = ComponentFactory.Instance.creatComponentByStylename("worldBossHelper.view.infoText");
-               if(param3.length > 0)
+               honorTxt = ComponentFactory.Instance.creatComponentByStylename("worldBossHelper.view.infoText");
+               if(hurtArr.length > 0)
                {
-                  _loc8_ = _titleTxtArr[param2 - 1];
-                  _loc8_.text = LanguageMgr.GetTranslation("worldboss.helper.fightTitleTxt",param2);
+                  fightTitleTxt = _titleTxtArr[num - 1];
+                  fightTitleTxt.text = LanguageMgr.GetTranslation("worldboss.helper.fightTitleTxt",num);
                }
-               _loc9_ = 0;
-               while(_loc9_ < param3.length)
+               i = 0;
+               while(i < hurtArr.length)
                {
-                  _loc7_ = ComponentFactory.Instance.creatComponentByStylename("worldBossHelper.view.infoText");
-                  _loc7_.text = LanguageMgr.GetTranslation("worldboss.helper.fightHurt",_countArr[_loc9_],param3[_loc9_]);
-                  _loc7_.x = _loc8_.x + 40;
-                  _vBox.addChild(_loc7_);
-                  _loc9_++;
+                  descriptionTxt = ComponentFactory.Instance.creatComponentByStylename("worldBossHelper.view.infoText");
+                  descriptionTxt.text = LanguageMgr.GetTranslation("worldboss.helper.fightHurt",_countArr[i],hurtArr[i]);
+                  descriptionTxt.x = fightTitleTxt.x + 40;
+                  _vBox.addChild(descriptionTxt);
+                  i++;
                }
-               _loc5_.text = LanguageMgr.GetTranslation("worldboss.helper.fightHonor",param4);
-               _loc5_.x = _loc8_.x + 40;
-               _vBox.addChild(_loc5_);
+               honorTxt.text = LanguageMgr.GetTranslation("worldboss.helper.fightHonor",honor);
+               honorTxt.x = fightTitleTxt.x + 40;
+               _vBox.addChild(honorTxt);
                _receieveData = true;
             }
             else
             {
-               _loc6_ = ComponentFactory.Instance.creatComponentByStylename("worldBossHelper.view.titleInfoText");
-               _loc6_.text = LanguageMgr.GetTranslation("worldboss.helper.fighting",param2);
-               _vBox.addChild(_loc6_);
-               _titleTxtArr.push(_loc6_);
+               fightTitleDescriptionTxt = ComponentFactory.Instance.creatComponentByStylename("worldBossHelper.view.titleInfoText");
+               fightTitleDescriptionTxt.text = LanguageMgr.GetTranslation("worldboss.helper.fighting",num);
+               _vBox.addChild(fightTitleDescriptionTxt);
+               _titleTxtArr.push(fightTitleDescriptionTxt);
             }
          }
          else
@@ -478,7 +478,7 @@ package worldBossHelper.view
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          disposeStartTimer();
          stopAndDisposeTimer();
          removeEvent();
@@ -502,15 +502,14 @@ package worldBossHelper.view
          _openBtn = null;
          ObjectUtils.disposeObject(_closeBtn);
          _closeBtn = null;
-         _loc1_ = 0;
-         while(_loc1_ < _titleTxtArr.length)
+         for(i = 0; i < _titleTxtArr.length; )
          {
-            if(_titleTxtArr[_loc1_])
+            if(_titleTxtArr[i])
             {
-               ObjectUtils.disposeObject(_titleTxtArr[_loc1_]);
-               _titleTxtArr[_loc1_] = null;
+               ObjectUtils.disposeObject(_titleTxtArr[i]);
+               _titleTxtArr[i] = null;
             }
-            _loc1_++;
+            i++;
          }
          _titleTxtArr = null;
          _date1 = null;

@@ -16,23 +16,23 @@ package gameCommon.motions
       
       protected var _isPlaying:Boolean;
       
-      public function BaseMotionFunc(param1:Object)
+      public function BaseMotionFunc(paramsObject:Object)
       {
          super();
          _lifetime = 0;
          _initial = new Point(0,0);
-         if(param1.initial)
+         if(paramsObject.initial)
          {
-            _initial = param1.initial;
+            _initial = paramsObject.initial;
          }
          _final = new Point(0,0);
-         if(param1.final)
+         if(paramsObject.final)
          {
-            _final = param1.final;
+            _final = paramsObject.final;
          }
       }
       
-      public function getVectorByTime(param1:int) : Object
+      public function getVectorByTime(t:int) : Object
       {
          return null;
       }

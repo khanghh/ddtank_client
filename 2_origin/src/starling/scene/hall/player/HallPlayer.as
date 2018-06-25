@@ -62,9 +62,9 @@ package starling.scene.hall.player
       
       private var _randomPathMap:Object;
       
-      public function HallPlayer(param1:PlayerVO)
+      public function HallPlayer(playerVO:PlayerVO)
       {
-         _playerVO = param1;
+         _playerVO = playerVO;
          _currentWalkStartPoint = _playerVO.playerPos;
          super(_playerVO);
          updatePlayerWalk();
@@ -107,38 +107,38 @@ package starling.scene.hall.player
          }
       }
       
-      public function updatePlayerLocal(param1:Point = null) : void
+      public function updatePlayerLocal(point:Point = null) : void
       {
-         var _loc2_:* = null;
+         var pos:* = null;
          if(_isDefaultCharacter)
          {
-            _loc2_ = HallPlayerPos.MOUNT_0;
+            pos = HallPlayerPos.MOUNT_0;
          }
          else
          {
-            _loc2_ = param1 || HallPlayerPos["MOUNT_" + _playerVO.playerInfo.MountsType];
+            pos = point || HallPlayerPos["MOUNT_" + _playerVO.playerInfo.MountsType];
          }
-         _nameSprite.x = _namePos.x + _loc2_.x;
-         _nameSprite.y = _namePos.y + _loc2_.y;
-         _titleSprite.x = _titlePos.x + _loc2_.x;
-         _titleSprite.y = _titlePos.y + _loc2_.y;
-         _characterPlayer.x = _loc2_.x;
-         _characterPlayer.y = _loc2_.y;
+         _nameSprite.x = _namePos.x + pos.x;
+         _nameSprite.y = _namePos.y + pos.y;
+         _titleSprite.x = _titlePos.x + pos.x;
+         _titleSprite.y = _titlePos.y + pos.y;
+         _characterPlayer.x = pos.x;
+         _characterPlayer.y = pos.y;
          if(_characterTouch)
          {
-            _characterTouch.x = _loc2_.x + 15;
-            _characterTouch.y = _loc2_.y + 15;
+            _characterTouch.x = pos.x + 15;
+            _characterTouch.y = pos.y + 15;
          }
          changeCharacterDirection();
       }
       
       public function updatePlayerName() : void
       {
-         var _loc3_:* = null;
-         var _loc1_:* = null;
-         var _loc2_:* = null;
-         _loc3_ = null;
-         var _loc5_:* = null;
+         var nameText:* = null;
+         var assetName:* = null;
+         var vipImage:* = null;
+         nameText = null;
+         var girlAttest:* = null;
          if(_nameSprite == null)
          {
             _namePos = new Point();
@@ -151,54 +151,54 @@ package starling.scene.hall.player
          {
             StarlingObjectUtils.disposeAllChildren(_nameSprite);
          }
-         var _loc6_:* = 0;
-         var _loc4_:Sprite = new Sprite();
-         _nameSprite.addChild(_loc4_);
+         var nameWidth:* = 0;
+         var bg:Sprite = new Sprite();
+         _nameSprite.addChild(bg);
          if(_playerVO.playerInfo.IsVIP)
          {
-            _loc3_ = new TextLabel("asset.hall.playerInfo.lblNameVIP");
-            _loc3_.text = _playerVO.playerInfo.NickName;
-            _loc3_.x = 5;
-            _nameSprite.addChild(_loc3_);
-            _loc6_ = Number(_loc6_ + (_loc3_.width + 10));
-            _loc1_ = "image_vipGrade_small" + _playerVO.playerInfo.VIPLevel;
-            _loc2_ = StarlingMain.instance.createImage(_loc1_);
-            _loc2_.x = 5;
-            _loc2_.y = -10;
-            _nameSprite.addChild(_loc2_);
-            _loc3_.x = _loc2_.width + 5;
-            _loc6_ = Number(_loc6_ + (_loc2_.width + 5));
+            nameText = new TextLabel("asset.hall.playerInfo.lblNameVIP");
+            nameText.text = _playerVO.playerInfo.NickName;
+            nameText.x = 5;
+            _nameSprite.addChild(nameText);
+            nameWidth = Number(nameWidth + (nameText.width + 10));
+            assetName = "image_vipGrade_small" + _playerVO.playerInfo.VIPLevel;
+            vipImage = StarlingMain.instance.createImage(assetName);
+            vipImage.x = 5;
+            vipImage.y = -10;
+            _nameSprite.addChild(vipImage);
+            nameText.x = vipImage.width + 5;
+            nameWidth = Number(nameWidth + (vipImage.width + 5));
          }
          else
          {
-            _loc3_ = new TextLabel("asset.hall.playerInfo.lblName");
-            _loc3_.text = _playerVO.playerInfo.NickName;
-            _loc3_.x = 5;
-            _nameSprite.addChild(_loc3_);
-            _loc6_ = Number(_loc6_ + (_loc3_.width + 10));
+            nameText = new TextLabel("asset.hall.playerInfo.lblName");
+            nameText.text = _playerVO.playerInfo.NickName;
+            nameText.x = 5;
+            _nameSprite.addChild(nameText);
+            nameWidth = Number(nameWidth + (nameText.width + 10));
          }
          if(playerVO.playerInfo.isAttest)
          {
-            _loc5_ = StarlingMain.instance.createImage("image_player_girlAttest");
-            _nameSprite.addChild(_loc5_);
-            _loc5_.x = _loc6_;
-            _loc5_.y = -5;
-            _loc6_ = Number(_loc6_ + (_loc5_.width + 5));
+            girlAttest = StarlingMain.instance.createImage("image_player_girlAttest");
+            _nameSprite.addChild(girlAttest);
+            girlAttest.x = nameWidth;
+            girlAttest.y = -5;
+            nameWidth = Number(nameWidth + (girlAttest.width + 5));
          }
-         _loc4_.graphics.beginFill(0,0.5);
-         _loc4_.graphics.drawRect(0,0,_loc6_,20);
-         _loc4_.graphics.endFill();
-         _nameSprite.x = 60 - _loc6_ / 2;
+         bg.graphics.beginFill(0,0.5);
+         bg.graphics.drawRect(0,0,nameWidth,20);
+         bg.graphics.endFill();
+         _nameSprite.x = 60 - nameWidth / 2;
          _namePos.setTo(_nameSprite.x,_nameSprite.y);
       }
       
       public function updateTitle() : void
       {
-         var _loc5_:Number = NaN;
-         var _loc3_:* = null;
-         var _loc1_:* = null;
-         var _loc4_:* = null;
-         var _loc2_:* = null;
+         var textWidth:Number = NaN;
+         var consortiaText:* = null;
+         var icon:* = null;
+         var titleModel:* = null;
+         var image:* = null;
          if(_titleSprite == null)
          {
             _titlePos = new Point();
@@ -216,28 +216,28 @@ package starling.scene.hall.player
          }
          if(_playerVO.playerInfo.IsShowConsortia && _playerVO.playerInfo.ConsortiaID > 0)
          {
-            _loc5_ = FilterFrameText.getStringWidthByTextField(_playerVO.playerInfo.ConsortiaName,13);
-            _loc3_ = new TextField(_loc5_,20,_playerVO.playerInfo.ConsortiaName,"Arial",12,3002359,true);
+            textWidth = FilterFrameText.getStringWidthByTextField(_playerVO.playerInfo.ConsortiaName,13);
+            consortiaText = new TextField(textWidth,20,_playerVO.playerInfo.ConsortiaName,"Arial",12,3002359,true);
             if(_playerVO.playerInfo.badgeID > 0)
             {
-               _loc1_ = StarlingMain.instance.createImage("image_badge_" + _playerVO.playerInfo.badgeID);
+               icon = StarlingMain.instance.createImage("image_badge_" + _playerVO.playerInfo.badgeID);
                var _loc6_:int = 25;
-               _loc1_.height = _loc6_;
-               _loc1_.width = _loc6_;
-               _titleSprite.addChild(_loc1_);
-               _loc3_.x = 25;
+               icon.height = _loc6_;
+               icon.width = _loc6_;
+               _titleSprite.addChild(icon);
+               consortiaText.x = 25;
             }
             _titleSprite.y = -30;
-            _titleSprite.addChild(_loc3_);
+            _titleSprite.addChild(consortiaText);
          }
          else if(_playerVO.playerInfo.honor.length > 0)
          {
-            _loc4_ = NewTitleManager.instance.titleInfo[_playerVO.playerInfo.honorId];
-            if(_loc4_ && _loc4_.Show != "0" && _loc4_.Pic != "0")
+            titleModel = NewTitleManager.instance.titleInfo[_playerVO.playerInfo.honorId];
+            if(titleModel && titleModel.Show != "0" && titleModel.Pic != "0")
             {
-               _loc2_ = StarlingMain.instance.createImage("image_title_" + _loc4_.Pic);
-               _titleSprite.y = -(_loc2_.height + 5);
-               _titleSprite.addChild(_loc2_);
+               image = StarlingMain.instance.createImage("image_title_" + titleModel.Pic);
+               _titleSprite.y = -(image.height + 5);
+               _titleSprite.addChild(image);
             }
          }
          _titleSprite.x = 60 - _titleSprite.width / 2;
@@ -249,17 +249,17 @@ package starling.scene.hall.player
          return _playerVO;
       }
       
-      override protected function __onTouch(param1:TouchEvent) : void
+      override protected function __onTouch(e:TouchEvent) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         super.__onTouch(param1);
-         var _loc2_:Touch = param1.getTouch(_characterTouch,"ended");
+         var lastFilter:* = null;
+         var locationPoint:* = null;
+         super.__onTouch(e);
+         var touch:Touch = e.getTouch(_characterTouch,"ended");
          if(_characterPlayer)
          {
-            _loc4_ = _characterPlayer.filter;
-            _loc4_ && _loc4_.dispose();
-            if(param1.getTouch(_characterTouch,"hover"))
+            lastFilter = _characterPlayer.filter;
+            lastFilter && lastFilter.dispose();
+            if(e.getTouch(_characterTouch,"hover"))
             {
                _characterPlayer.filter = BlurFilter.createGlow(16776960,1,8,0.5);
             }
@@ -268,10 +268,10 @@ package starling.scene.hall.player
                _characterPlayer.filter = null;
             }
          }
-         if(_loc2_)
+         if(touch)
          {
-            _loc3_ = _loc2_.getLocation(_characterTouch);
-            if(_characterTouch.hitTest(_loc3_,true))
+            locationPoint = touch.getLocation(_characterTouch);
+            if(_characterTouch.hitTest(locationPoint,true))
             {
                SoundManager.instance.playButtonSound();
                if(!_playerVO.playerInfo.isSelf)
@@ -288,33 +288,33 @@ package starling.scene.hall.player
          return _isHideTitle;
       }
       
-      public function set isHideTitle(param1:Boolean) : void
+      public function set isHideTitle(value:Boolean) : void
       {
-         if(_isHideTitle != param1)
+         if(_isHideTitle != value)
          {
-            _isHideTitle = param1;
+            _isHideTitle = value;
             updateTitle();
             updatePlayerLocal();
          }
       }
       
-      override protected function __onStyleChange(param1:PlayerPropertyEvent) : void
+      override protected function __onStyleChange(evt:PlayerPropertyEvent) : void
       {
          if(_isDefaultCharacter)
          {
             return;
          }
-         if(param1.changedProperties["petsID"])
+         if(evt.changedProperties["petsID"])
          {
             updatePetsFollow();
          }
-         if(param1.changedProperties["IsShowConsortia"] || !_playerVO.playerInfo.IsShowConsortia && param1.changedProperties["honor"])
+         if(evt.changedProperties["IsShowConsortia"] || !_playerVO.playerInfo.IsShowConsortia && evt.changedProperties["honor"])
          {
             updateTitle();
             updatePlayerLocal();
          }
-         super.__onStyleChange(param1);
-         if(param1.changedProperties["mountsType"])
+         super.__onStyleChange(evt);
+         if(evt.changedProperties["mountsType"])
          {
             updatePetsFollowPos();
             updatePlayerLocal();
@@ -324,18 +324,18 @@ package starling.scene.hall.player
       
       protected function updatePetsFollow() : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:* = null;
-         var _loc1_:* = null;
+         var index:int = 0;
+         var path:* = null;
+         var styleName:* = null;
          removePetsFollow();
          if(_playerVO.playerInfo.isPetsFollow)
          {
-            _loc2_ = PetsAdvancedManager.Instance.getFormDataIndexByTempId(_playerVO.playerInfo.PetsID);
-            if(_loc2_ != -1)
+            index = PetsAdvancedManager.Instance.getFormDataIndexByTempId(_playerVO.playerInfo.PetsID);
+            if(index != -1)
             {
-               _loc3_ = PetsAdvancedManager.Instance.formDataList[_loc2_].Resource;
-               _loc1_ = "game.living.L" + _loc3_.slice(1,_loc3_.length);
-               _petFollow = BoneMovieFactory.instance.creatBoneMovieFast(_loc1_);
+               path = PetsAdvancedManager.Instance.formDataList[index].Resource;
+               styleName = "game.living.L" + path.slice(1,path.length);
+               _petFollow = BoneMovieFactory.instance.creatBoneMovieFast(styleName);
                updatePetsFollowPos();
                addChildAt(_petFollow,0);
                changeCharacterDirection();
@@ -370,7 +370,7 @@ package starling.scene.hall.player
       
       override protected function changeCharacterDirection() : void
       {
-         var _loc1_:int = 0;
+         var desX:int = 0;
          super.changeCharacterDirection();
          if(_petFollow)
          {
@@ -382,9 +382,9 @@ package starling.scene.hall.player
             {
                _petFollow.scaleX = -1;
             }
-            _loc1_ = _petFollow.scaleX * HallPlayerPos["PET_X_" + _playerVO.playerInfo.MountsType];
+            desX = _petFollow.scaleX * HallPlayerPos["PET_X_" + _playerVO.playerInfo.MountsType];
             TweenLite.killTweensOf(_petFollow);
-            TweenLite.to(_petFollow,1.2,{"x":_loc1_});
+            TweenLite.to(_petFollow,1.2,{"x":desX});
             if(_playerVO.playerInfo.IsMounts || sceneCharacterDirection == SceneCharacterDirection.RB || sceneCharacterDirection == SceneCharacterDirection.LB)
             {
                _petFollow.play("standA");
@@ -396,11 +396,11 @@ package starling.scene.hall.player
          }
       }
       
-      override public function playerWalk(param1:Array) : void
+      override public function playerWalk(walkPath:Array) : void
       {
-         var _loc2_:* = null;
-         var _loc4_:Number = NaN;
-         var _loc3_:Number = NaN;
+         var dirction:* = null;
+         var dis:Number = NaN;
+         var sec:Number = NaN;
          if(_walkPath != null && _isPlaying && _walkPath == _playerVO.walkPath)
          {
             return;
@@ -409,15 +409,15 @@ package starling.scene.hall.player
          if(_walkPath && _walkPath.length > 0)
          {
             _currentWalkStartPoint = _walkPath[0];
-            _loc2_ = setPlayerDirection();
-            if(_loc2_ != sceneCharacterDirection)
+            dirction = setPlayerDirection();
+            if(dirction != sceneCharacterDirection)
             {
-               sceneCharacterDirection = _loc2_;
+               sceneCharacterDirection = dirction;
             }
             characterDirectionChange(true);
-            _loc4_ = Point.distance(_currentWalkStartPoint,playerPoint);
-            _loc3_ = _loc4_ / _moveSpeed / 1000;
-            resetTween(_loc3_);
+            dis = Point.distance(_currentWalkStartPoint,playerPoint);
+            sec = dis / _moveSpeed / 1000;
+            resetTween(sec);
             _tween.animate("x",_currentWalkStartPoint.x);
             _tween.animate("y",_currentWalkStartPoint.y);
             Starling.juggler.add(_tween);
@@ -433,26 +433,26 @@ package starling.scene.hall.player
       
       private function setPlayerDirection() : SceneCharacterDirection
       {
-         var _loc1_:* = null;
-         _loc1_ = SceneCharacterDirection.getDirection(playerPoint,_currentWalkStartPoint);
+         var direction:* = null;
+         direction = SceneCharacterDirection.getDirection(playerPoint,_currentWalkStartPoint);
          if(_playerVO.playerInfo.IsMounts)
          {
-            if(_loc1_ == SceneCharacterDirection.LT)
+            if(direction == SceneCharacterDirection.LT)
             {
-               _loc1_ = SceneCharacterDirection.LB;
+               direction = SceneCharacterDirection.LB;
             }
-            else if(_loc1_ == SceneCharacterDirection.RT)
+            else if(direction == SceneCharacterDirection.RT)
             {
-               _loc1_ = SceneCharacterDirection.RB;
+               direction = SceneCharacterDirection.RB;
             }
          }
-         return _loc1_;
+         return direction;
       }
       
-      public function stopWalk(param1:Boolean = true) : void
+      public function stopWalk(isDispatchEvent:Boolean = true) : void
       {
          characterDirectionChange(false);
-         param1 && dispatchEvent(new NewHallEventStarling("newhallbtnclick"));
+         isDispatchEvent && dispatchEvent(new NewHallEventStarling("newhallbtnclick"));
          if(_walkPath)
          {
             _walkPath = [];
@@ -482,58 +482,57 @@ package starling.scene.hall.player
       
       private function fixPlayerPath() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var lastPath:* = null;
          if(_playerVO.currentWalkStartPoint == null)
          {
             return;
          }
-         var _loc2_:* = -1;
-         _loc3_ = 0;
-         while(_loc3_ < _walkPath.length)
+         var startPointIndex:* = -1;
+         for(i = 0; i < _walkPath.length; )
          {
-            if(_walkPath[_loc3_].x == _playerVO.currentWalkStartPoint.x && _walkPath[_loc3_].y == _playerVO.currentWalkStartPoint.y)
+            if(_walkPath[i].x == _playerVO.currentWalkStartPoint.x && _walkPath[i].y == _playerVO.currentWalkStartPoint.y)
             {
-               _loc2_ = _loc3_;
+               startPointIndex = i;
                break;
             }
-            _loc3_++;
+            i++;
          }
-         if(_loc2_ > 0)
+         if(startPointIndex > 0)
          {
-            _loc1_ = _walkPath.slice(0,_loc2_);
-            _playerVO.walkPath = _loc1_.concat(_playerVO.walkPath);
+            lastPath = _walkPath.slice(0,startPointIndex);
+            _playerVO.walkPath = lastPath.concat(_playerVO.walkPath);
          }
       }
       
-      public function startRandomWalk(param1:int, param2:int, param3:Object) : void
+      public function startRandomWalk(randomPathX:int, randomPathY:int, randomPathMap:Object) : void
       {
-         _randomPathMap = param3;
-         _randomPathX = param1;
-         _randomPathY = param2;
+         _randomPathMap = randomPathMap;
+         _randomPathX = randomPathX;
+         _randomPathY = randomPathY;
          _posTimer = new Timer(getRandomDelayTime(),1);
          _posTimer.addEventListener("timerComplete",onControlWalk);
          _posTimer.start();
       }
       
-      protected function onControlWalk(param1:TimerEvent) : void
+      protected function onControlWalk(evt:TimerEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
+         var newStartPointIndex:int = 0;
+         var newEndPointIndex:int = 0;
+         var walkPath:* = null;
          if(_isPlaying)
          {
             stopWalk();
          }
          else if(_walkPath == null || _walkPath.length == 0)
          {
-            _loc3_ = playerVO.randomEndPointIndex;
-            _loc4_ = getEndPointIndex(_loc3_);
-            playerVO.randomStartPointIndex = _loc3_;
-            playerVO.randomEndPointIndex = _loc4_;
-            _loc2_ = getPointPath(_loc3_,_loc4_);
-            _loc2_.unshift();
-            playerVO.walkPath = _loc2_;
+            newStartPointIndex = playerVO.randomEndPointIndex;
+            newEndPointIndex = getEndPointIndex(newStartPointIndex);
+            playerVO.randomStartPointIndex = newStartPointIndex;
+            playerVO.randomEndPointIndex = newEndPointIndex;
+            walkPath = getPointPath(newStartPointIndex,newEndPointIndex);
+            walkPath.unshift();
+            playerVO.walkPath = walkPath;
             playerVO.currentWalkStartPoint = _currentWalkStartPoint;
          }
          _posTimer.reset();
@@ -547,52 +546,50 @@ package starling.scene.hall.player
          return 2000 + Math.random() * 2000;
       }
       
-      private function getEndPointIndex(param1:int) : int
+      private function getEndPointIndex(startPointIndex:int) : int
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = param1 / _randomPathY;
-         if(_loc2_ == _randomPathX - 1)
+         var dir:int = 0;
+         var col:int = startPointIndex / _randomPathY;
+         if(col == _randomPathX - 1)
          {
-            _loc3_ = -1;
+            dir = -1;
          }
-         else if(_loc2_ == 0)
+         else if(col == 0)
          {
-            _loc3_ = 1;
+            dir = 1;
          }
          else
          {
-            _loc3_ = Math.random() > 0.5?1:-1;
+            dir = Math.random() > 0.5?1:-1;
          }
-         var _loc4_:int = (_loc2_ + _loc3_) * _randomPathY + int(Math.random() * _randomPathY);
-         return _loc4_;
+         var newEndPointIndex:int = (col + dir) * _randomPathY + int(Math.random() * _randomPathY);
+         return newEndPointIndex;
       }
       
-      private function getPointPath(param1:int, param2:int) : Array
+      private function getPointPath(newStartPointIndex:int, newEndPointIndex:int) : Array
       {
-         var _loc4_:* = null;
-         var _loc5_:int = 0;
-         var _loc3_:Array = [];
-         if(param1 < param2)
+         var path:* = null;
+         var i:int = 0;
+         var pointPath:Array = [];
+         if(newStartPointIndex < newEndPointIndex)
          {
-            _loc4_ = _randomPathMap[param1 + "_" + param2];
-            _loc5_ = 0;
-            while(_loc5_ < _loc4_.length / 2)
+            path = _randomPathMap[newStartPointIndex + "_" + newEndPointIndex];
+            for(i = 0; i < path.length / 2; )
             {
-               _loc3_.push(new Point(_loc4_[_loc5_ * 2],_loc4_[_loc5_ * 2 + 1]));
-               _loc5_++;
+               pointPath.push(new Point(path[i * 2],path[i * 2 + 1]));
+               i++;
             }
          }
          else
          {
-            _loc4_ = _randomPathMap[param2 + "_" + param1];
-            _loc5_ = _loc4_.length / 2 - 1;
-            while(_loc5_ > -1)
+            path = _randomPathMap[newEndPointIndex + "_" + newStartPointIndex];
+            for(i = path.length / 2 - 1; i > -1; )
             {
-               _loc3_.push(new Point(_loc4_[_loc5_ * 2],_loc4_[_loc5_ * 2 + 1]));
-               _loc5_--;
+               pointPath.push(new Point(path[i * 2],path[i * 2 + 1]));
+               i--;
             }
          }
-         return _loc3_;
+         return pointPath;
       }
       
       public function get currentWalkStartPoint() : Point

@@ -60,10 +60,10 @@ package church.view.weddingRoomList
          info = _alertInfo;
          this.escEnable = true;
          _infoText = ComponentFactory.Instance.creatComponentByStylename("DivorcePromptFrameText");
-         var _loc1_:String = LanguageMgr.GetTranslation("church.weddingRoom.frame.AddWeddingRoomFrame.frameInfo");
-         _loc1_ = _loc1_.replace(/XXXX/g,"<font COLOR=\'#FF0000\'>" + PlayerManager.Instance.Self.SpouseName + "</font>");
-         _loc1_ = QuestDescTextAnalyz.start(_loc1_);
-         _infoText.htmlText = _loc1_;
+         var _str:String = LanguageMgr.GetTranslation("church.weddingRoom.frame.AddWeddingRoomFrame.frameInfo");
+         _str = _str.replace(/XXXX/g,"<font COLOR=\'#FF0000\'>" + PlayerManager.Instance.Self.SpouseName + "</font>");
+         _str = QuestDescTextAnalyz.start(_str);
+         _infoText.htmlText = _str;
          addToContent(_infoText);
       }
       
@@ -78,13 +78,13 @@ package church.view.weddingRoomList
          }
       }
       
-      private function __mateTimeA(param1:PkgEvent) : void
+      private function __mateTimeA(e:PkgEvent) : void
       {
-         var _loc3_:Date = param1.pkg.readDate();
+         var _date:Date = e.pkg.readDate();
          SocketManager.Instance.removeEventListener(PkgEvent.format(85),__mateTimeA);
-         var _loc2_:Date = TimeManager.Instance.Now();
-         var _loc4_:int = (_loc2_.valueOf() - _loc3_.valueOf()) / 3600000;
-         if(_loc4_ > 720)
+         var dat:Date = TimeManager.Instance.Now();
+         var gapHours:int = (dat.valueOf() - _date.valueOf()) / 3600000;
+         if(gapHours > 720)
          {
             LayerManager.Instance.addToLayer(this,3,true,1);
          }
@@ -108,10 +108,10 @@ package church.view.weddingRoomList
          removeEventListener("response",onFrameResponse);
       }
       
-      private function onFrameResponse(param1:FrameEvent) : void
+      private function onFrameResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:

@@ -24,9 +24,9 @@ package mines.view
          _sprite.visible = false;
       }
       
-      public function setType(param1:int) : void
+      public function setType(type:int) : void
       {
-         _type = param1;
+         _type = type;
          if(_type == 1)
          {
             _totalTipText.text = LanguageMgr.GetTranslation("ddt.mines.shopView.cell.exchange");
@@ -39,21 +39,21 @@ package mines.view
          }
       }
       
-      override public function setData(param1:int, param2:int, param3:int) : void
+      override public function setData(templateId:int, goodsId:int, perPrice:int) : void
       {
-         _perPrice = param3;
-         _shopGoodsId = param2;
-         var _loc4_:InventoryItemInfo = new InventoryItemInfo();
-         _loc4_.TemplateID = param1;
-         ItemManager.fill(_loc4_);
-         _loc4_.BindType = 4;
-         _cell.info = _loc4_;
+         _perPrice = perPrice;
+         _shopGoodsId = goodsId;
+         var info:InventoryItemInfo = new InventoryItemInfo();
+         info.TemplateID = templateId;
+         ItemManager.fill(info);
+         info.BindType = 4;
+         _cell.info = info;
          _cell.setCountNotVisible();
          _cell.setBgVisible(false);
          refreshNumText();
       }
       
-      override protected function __buy(param1:MouseEvent) : void
+      override protected function __buy(event:MouseEvent) : void
       {
          if(_type == 1)
          {
@@ -67,9 +67,9 @@ package mines.view
       
       override protected function refreshNumText() : void
       {
-         var _loc1_:String = String(_number.number * _perPrice);
-         var _loc2_:String = LanguageMgr.GetTranslation("ddt.mines.shopView.cell.moneyType");
-         totalText.text = _loc1_ + " " + _loc2_;
+         var priceStr:String = String(_number.number * _perPrice);
+         var tmp:String = LanguageMgr.GetTranslation("ddt.mines.shopView.cell.moneyType");
+         totalText.text = priceStr + " " + tmp;
       }
    }
 }

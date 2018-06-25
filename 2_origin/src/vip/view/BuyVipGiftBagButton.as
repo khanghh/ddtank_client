@@ -39,12 +39,12 @@ package vip.view
          _buyPackageBtn.addEventListener("click",__onbuyMouseCilck);
       }
       
-      private function __onbuyMouseCilck(param1:MouseEvent) : void
+      private function __onbuyMouseCilck(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var alert1:* = null;
          if(_enable)
          {
-            param1.stopImmediatePropagation();
+            event.stopImmediatePropagation();
             SoundManager.instance.play("008");
             if(PlayerManager.Instance.Self.bagLocked)
             {
@@ -56,21 +56,21 @@ package vip.view
                LeavePageManager.showFillFrame();
                return;
             }
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.vip.view.buyVipGift"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
-            _loc2_.mouseEnabled = false;
-            _loc2_.addEventListener("response",_responseI);
+            alert1 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.vip.view.buyVipGift"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
+            alert1.mouseEnabled = false;
+            alert1.addEventListener("response",_responseI);
          }
       }
       
-      private function _responseI(param1:FrameEvent) : void
+      private function _responseI(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",_responseI);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         (event.currentTarget as BaseAlerFrame).removeEventListener("response",_responseI);
+         if(event.responseCode == 3 || event.responseCode == 2)
          {
             dobuy();
          }
-         ObjectUtils.disposeObject(param1.target);
+         ObjectUtils.disposeObject(event.target);
       }
       
       private function dobuy() : void

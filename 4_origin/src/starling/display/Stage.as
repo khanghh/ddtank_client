@@ -34,12 +34,12 @@ package starling.display
       
       private var mEnterFrameListeners:Vector.<DisplayObject>;
       
-      public function Stage(param1:int, param2:int, param3:uint = 0)
+      public function Stage(width:int, height:int, color:uint = 0)
       {
          super();
-         mWidth = param1;
-         mHeight = param2;
-         mColor = param3;
+         mWidth = width;
+         mHeight = height;
+         mColor = color;
          mFieldOfView = 1;
          mProjectionOffset = new Point();
          mCameraPosition = new Vector3D();
@@ -47,146 +47,144 @@ package starling.display
          mEnterFrameListeners = new Vector.<DisplayObject>(0);
       }
       
-      public function advanceTime(param1:Number) : void
+      public function advanceTime(passedTime:Number) : void
       {
-         mEnterFrameEvent.reset("enterFrame",false,param1);
+         mEnterFrameEvent.reset("enterFrame",false,passedTime);
          broadcastEvent(mEnterFrameEvent);
       }
       
-      override public function hitTest(param1:Point, param2:Boolean = false) : DisplayObject
+      override public function hitTest(localPoint:Point, forTouch:Boolean = false) : DisplayObject
       {
-         if(param2 && (!visible || !touchable))
+         if(forTouch && (!visible || !touchable))
          {
             return null;
          }
-         if(param1.x < 0 || param1.x > mWidth || param1.y < 0 || param1.y > mHeight)
+         if(localPoint.x < 0 || localPoint.x > mWidth || localPoint.y < 0 || localPoint.y > mHeight)
          {
             return null;
          }
-         var _loc3_:DisplayObject = super.hitTest(param1,param2);
-         if(_loc3_ == null)
+         var target:DisplayObject = super.hitTest(localPoint,forTouch);
+         if(target == null)
          {
-            _loc3_ = this;
+            target = this;
          }
-         return _loc3_;
+         return target;
       }
       
-      public function drawToBitmapData(param1:BitmapData = null, param2:Boolean = true) : BitmapData
+      public function drawToBitmapData(destination:BitmapData = null, transparent:Boolean = true) : BitmapData
       {
-         var _loc5_:int = 0;
-         var _loc3_:int = 0;
-         var _loc4_:RenderSupport = new RenderSupport();
-         var _loc6_:Starling = Starling.current;
-         if(param1 == null)
+         var width:int = 0;
+         var height:int = 0;
+         var support:RenderSupport = new RenderSupport();
+         var star:Starling = Starling.current;
+         if(destination == null)
          {
-            _loc5_ = _loc6_.backBufferWidth * _loc6_.backBufferPixelsPerPoint;
-            _loc3_ = _loc6_.backBufferHeight * _loc6_.backBufferPixelsPerPoint;
-            param1 = new BitmapData(_loc5_,_loc3_,param2);
+            width = star.backBufferWidth * star.backBufferPixelsPerPoint;
+            height = star.backBufferHeight * star.backBufferPixelsPerPoint;
+            destination = new BitmapData(width,height,transparent);
          }
-         _loc4_.renderTarget = null;
-         _loc4_.setProjectionMatrix(0,0,mWidth,mHeight,mWidth,mHeight,cameraPosition);
-         if(param2)
+         support.renderTarget = null;
+         support.setProjectionMatrix(0,0,mWidth,mHeight,mWidth,mHeight,cameraPosition);
+         if(transparent)
          {
-            _loc4_.clear();
+            support.clear();
          }
          else
          {
-            _loc4_.clear(mColor,1);
+            support.clear(mColor,1);
          }
-         render(_loc4_,1);
-         _loc4_.finishQuadBatch();
-         _loc4_.dispose();
-         Starling.current.context.drawToBitmapData(param1);
+         render(support,1);
+         support.finishQuadBatch();
+         support.dispose();
+         Starling.current.context.drawToBitmapData(destination);
          Starling.current.context.present();
-         return param1;
+         return destination;
       }
       
-      public function getCameraPosition(param1:DisplayObject = null, param2:Vector3D = null) : Vector3D
+      public function getCameraPosition(space:DisplayObject = null, result:Vector3D = null) : Vector3D
       {
-         getTransformationMatrix3D(param1,sHelperMatrix);
-         return MatrixUtil.transformCoords3D(sHelperMatrix,mWidth / 2 + mProjectionOffset.x,mHeight / 2 + mProjectionOffset.y,-focalLength,param2);
+         getTransformationMatrix3D(space,sHelperMatrix);
+         return MatrixUtil.transformCoords3D(sHelperMatrix,mWidth / 2 + mProjectionOffset.x,mHeight / 2 + mProjectionOffset.y,-focalLength,result);
       }
       
-      function addEnterFrameListener(param1:DisplayObject) : void
+      function addEnterFrameListener(listener:DisplayObject) : void
       {
-         mEnterFrameListeners.push(param1);
+         mEnterFrameListeners.push(listener);
       }
       
-      function removeEnterFrameListener(param1:DisplayObject) : void
+      function removeEnterFrameListener(listener:DisplayObject) : void
       {
-         var _loc2_:int = mEnterFrameListeners.indexOf(param1);
-         if(_loc2_ >= 0)
+         var index:int = mEnterFrameListeners.indexOf(listener);
+         if(index >= 0)
          {
-            mEnterFrameListeners.splice(_loc2_,1);
+            mEnterFrameListeners.splice(index,1);
          }
       }
       
-      override function getChildEventListeners(param1:DisplayObject, param2:String, param3:Vector.<DisplayObject>) : void
+      override function getChildEventListeners(object:DisplayObject, eventType:String, listeners:Vector.<DisplayObject>) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         if(param2 == "enterFrame" && param1 == this)
+         var i:int = 0;
+         var length:int = 0;
+         if(eventType == "enterFrame" && object == this)
          {
-            _loc5_ = 0;
-            _loc4_ = mEnterFrameListeners.length;
-            while(_loc5_ < _loc4_)
+            for(i = 0,length = mEnterFrameListeners.length; i < length; )
             {
-               param3[param3.length] = mEnterFrameListeners[_loc5_];
-               _loc5_++;
+               listeners[listeners.length] = mEnterFrameListeners[i];
+               i++;
             }
          }
          else
          {
-            super.getChildEventListeners(param1,param2,param3);
+            super.getChildEventListeners(object,eventType,listeners);
          }
       }
       
-      override public function set width(param1:Number) : void
+      override public function set width(value:Number) : void
       {
          throw new IllegalOperationError("Cannot set width of stage");
       }
       
-      override public function set height(param1:Number) : void
+      override public function set height(value:Number) : void
       {
          throw new IllegalOperationError("Cannot set height of stage");
       }
       
-      override public function set x(param1:Number) : void
+      override public function set x(value:Number) : void
       {
          throw new IllegalOperationError("Cannot set x-coordinate of stage");
       }
       
-      override public function set y(param1:Number) : void
+      override public function set y(value:Number) : void
       {
          throw new IllegalOperationError("Cannot set y-coordinate of stage");
       }
       
-      override public function set scaleX(param1:Number) : void
+      override public function set scaleX(value:Number) : void
       {
          throw new IllegalOperationError("Cannot scale stage");
       }
       
-      override public function set scaleY(param1:Number) : void
+      override public function set scaleY(value:Number) : void
       {
          throw new IllegalOperationError("Cannot scale stage");
       }
       
-      override public function set rotation(param1:Number) : void
+      override public function set rotation(value:Number) : void
       {
          throw new IllegalOperationError("Cannot rotate stage");
       }
       
-      override public function set skewX(param1:Number) : void
+      override public function set skewX(value:Number) : void
       {
          throw new IllegalOperationError("Cannot skew stage");
       }
       
-      override public function set skewY(param1:Number) : void
+      override public function set skewY(value:Number) : void
       {
          throw new IllegalOperationError("Cannot skew stage");
       }
       
-      override public function set filter(param1:FragmentFilter) : void
+      override public function set filter(value:FragmentFilter) : void
       {
          throw new IllegalOperationError("Cannot add filter to stage. Add it to \'root\' instead!");
       }
@@ -196,9 +194,9 @@ package starling.display
          return mColor;
       }
       
-      public function set color(param1:uint) : void
+      public function set color(value:uint) : void
       {
-         mColor = param1;
+         mColor = value;
       }
       
       public function get stageWidth() : int
@@ -206,9 +204,9 @@ package starling.display
          return mWidth;
       }
       
-      public function set stageWidth(param1:int) : void
+      public function set stageWidth(value:int) : void
       {
-         mWidth = param1;
+         mWidth = value;
       }
       
       public function get stageHeight() : int
@@ -216,9 +214,9 @@ package starling.display
          return mHeight;
       }
       
-      public function set stageHeight(param1:int) : void
+      public function set stageHeight(value:int) : void
       {
-         mHeight = param1;
+         mHeight = value;
       }
       
       public function get focalLength() : Number
@@ -226,9 +224,9 @@ package starling.display
          return mWidth / (2 * Math.tan(mFieldOfView / 2));
       }
       
-      public function set focalLength(param1:Number) : void
+      public function set focalLength(value:Number) : void
       {
-         mFieldOfView = 2 * Math.atan(stageWidth / (2 * param1));
+         mFieldOfView = 2 * Math.atan(stageWidth / (2 * value));
       }
       
       public function get fieldOfView() : Number
@@ -236,9 +234,9 @@ package starling.display
          return mFieldOfView;
       }
       
-      public function set fieldOfView(param1:Number) : void
+      public function set fieldOfView(value:Number) : void
       {
-         mFieldOfView = param1;
+         mFieldOfView = value;
       }
       
       public function get projectionOffset() : Point
@@ -246,9 +244,9 @@ package starling.display
          return mProjectionOffset;
       }
       
-      public function set projectionOffset(param1:Point) : void
+      public function set projectionOffset(value:Point) : void
       {
-         mProjectionOffset.setTo(param1.x,param1.y);
+         mProjectionOffset.setTo(value.x,value.y);
       }
       
       public function get cameraPosition() : Vector3D

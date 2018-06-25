@@ -33,10 +33,10 @@ package ddt.view.chat.chatBall
          return _field2;
       }
       
-      override public function setText(param1:String, param2:int = 0) : void
+      override public function setText(s:String, paopaoType:int = 0) : void
       {
          clear();
-         if(param2 == 9)
+         if(paopaoType == 9)
          {
             _popupTimer = TimerManager.getInstance().addTimerJuggler(2700,1);
          }
@@ -44,14 +44,14 @@ package ddt.view.chat.chatBall
          {
             _popupTimer = TimerManager.getInstance().addTimerJuggler(4000,1);
          }
-         if(_currentPaopaoType != param2 || paopaoMC == null)
+         if(_currentPaopaoType != paopaoType || paopaoMC == null)
          {
-            _currentPaopaoType = param2;
+            _currentPaopaoType = paopaoType;
             newPaopao();
          }
-         var _loc3_:int = this.globalToLocal(new Point(500,10)).x;
-         field.x = _loc3_ < 0?0:_loc3_;
-         field.text = param1;
+         var temp:int = this.globalToLocal(new Point(500,10)).x;
+         field.x = temp < 0?0:temp;
+         field.text = s;
          fitSize(field);
          show();
       }
@@ -71,9 +71,9 @@ package ddt.view.chat.chatBall
          }
       }
       
-      override public function set width(param1:Number) : void
+      override public function set width(value:Number) : void
       {
-         .super.width = param1;
+         .super.width = value;
       }
       
       private function newPaopao() : void

@@ -9,8 +9,8 @@ package starling.display.shaders.fragment
       public function VertexColorFragmentShader()
       {
          super();
-         var _loc1_:String = "mul oc, v0, fc0";
-         compileAGAL("fragment",_loc1_);
+         var agal:String = "mul oc, v0, fc0";
+         compileAGAL("fragment",agal);
       }
    }
 }

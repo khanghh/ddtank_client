@@ -32,9 +32,9 @@ package team.view.create
       private function __onClickCreate() : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc1_:TeamCreateInfoView = new TeamCreateInfoView();
-         PositionUtils.setPos(_loc1_,"team.create.infoViewPos");
-         LayerManager.Instance.addToLayer(_loc1_,3,false,1);
+         var createInfoView:TeamCreateInfoView = new TeamCreateInfoView();
+         PositionUtils.setPos(createInfoView,"team.create.infoViewPos");
+         LayerManager.Instance.addToLayer(createInfoView,3,false,1);
       }
    }
 }

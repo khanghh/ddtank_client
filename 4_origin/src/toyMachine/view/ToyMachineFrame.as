@@ -68,35 +68,35 @@ package toyMachine.view
          SocketManager.Instance.addEventListener(PkgEvent.format(326),__onGetReward);
       }
       
-      protected function __onGetReward(param1:PkgEvent) : void
+      protected function __onGetReward(event:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _loc2_.position = 20;
-         var _loc3_:int = _loc2_.readInt();
-         if(_loc3_ == 1)
+         var pkg:PackageIn = event.pkg;
+         pkg.position = 20;
+         var type:int = pkg.readInt();
+         if(type == 1)
          {
-            _silverItem.getReward(_loc2_);
+            _silverItem.getReward(pkg);
          }
          else
          {
-            _goldItem.getReward(_loc2_);
+            _goldItem.getReward(pkg);
          }
       }
       
-      protected function __onUpdateView(param1:PkgEvent) : void
+      protected function __onUpdateView(event:PkgEvent) : void
       {
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:Date = _loc4_.readDate();
-         var _loc3_:int = _loc4_.readInt();
-         var _loc5_:Date = _loc4_.readDate();
-         _silverItem.setItemInfo(_loc2_,_loc3_);
-         _goldItem.setItemInfo(_loc5_);
+         var pkg:PackageIn = event.pkg;
+         var silverTime:Date = pkg.readDate();
+         var silverCount:int = pkg.readInt();
+         var goldTime:Date = pkg.readDate();
+         _silverItem.setItemInfo(silverTime,silverCount);
+         _goldItem.setItemInfo(goldTime);
       }
       
-      protected function __onResponse(param1:FrameEvent) : void
+      protected function __onResponse(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:

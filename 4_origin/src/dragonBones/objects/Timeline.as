@@ -20,31 +20,31 @@ package dragonBones.objects
       
       public function dispose() : void
       {
-         var _loc1_:int = _frameList.length;
+         var i:int = _frameList.length;
          while(true)
          {
-            _loc1_--;
-            if(!_loc1_)
+            i--;
+            if(!i)
             {
                break;
             }
-            _frameList[_loc1_].dispose();
+            _frameList[i].dispose();
          }
          _frameList.fixed = false;
          _frameList.length = 0;
          _frameList = null;
       }
       
-      public function addFrame(param1:Frame) : void
+      public function addFrame(frame:Frame) : void
       {
-         if(!param1)
+         if(!frame)
          {
             throw new ArgumentError();
          }
-         if(_frameList.indexOf(param1) < 0)
+         if(_frameList.indexOf(frame) < 0)
          {
             _frameList.fixed = false;
-            _frameList[_frameList.length] = param1;
+            _frameList[_frameList.length] = frame;
             _frameList.fixed = true;
             return;
          }

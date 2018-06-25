@@ -32,11 +32,11 @@ package starling.utils
       
       public static function initialize() : void
       {
-         var _loc4_:* = null;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         var _loc1_:* = null;
-         var _loc5_:* = null;
+         var nativeAppClass:* = null;
+         var nativeApp:* = null;
+         var appDescriptor:* = null;
+         var ns:* = null;
+         var ds:* = null;
          if(sInitialized)
          {
             return;
@@ -46,14 +46,14 @@ package starling.utils
          sVersion = Capabilities.version.substr(4);
          try
          {
-            _loc4_ = getDefinitionByName("flash.desktop::NativeApplication");
-            _loc2_ = _loc4_["nativeApplication"] as EventDispatcher;
-            _loc2_.addEventListener("activate",onActivate,false,0,true);
-            _loc2_.addEventListener("deactivate",onDeactivate,false,0,true);
-            _loc3_ = _loc2_["applicationDescriptor"];
-            _loc1_ = _loc3_.namespace();
-            _loc5_ = _loc3_._loc1_::initialWindow._loc1_::depthAndStencil.toString().toLowerCase();
-            sSupportsDepthAndStencil = _loc5_ == "true";
+            nativeAppClass = getDefinitionByName("flash.desktop::NativeApplication");
+            nativeApp = nativeAppClass["nativeApplication"] as EventDispatcher;
+            nativeApp.addEventListener("activate",onActivate,false,0,true);
+            nativeApp.addEventListener("deactivate",onDeactivate,false,0,true);
+            appDescriptor = nativeApp["applicationDescriptor"];
+            ns = appDescriptor.namespace();
+            ds = appDescriptor.ns::initialWindow.ns::depthAndStencil.toString().toLowerCase();
+            sSupportsDepthAndStencil = ds == "true";
             sAIR = true;
             return;
          }
@@ -64,33 +64,33 @@ package starling.utils
          }
       }
       
-      private static function onActivate(param1:Object) : void
+      private static function onActivate(event:Object) : void
       {
          sApplicationActive = true;
          var _loc4_:int = 0;
          var _loc3_:* = sWaitingCalls;
-         for each(var _loc2_ in sWaitingCalls)
+         for each(var call in sWaitingCalls)
          {
-            _loc2_[0].apply(null,_loc2_[1]);
+            call[0].apply(null,call[1]);
          }
          sWaitingCalls = [];
       }
       
-      private static function onDeactivate(param1:Object) : void
+      private static function onDeactivate(event:Object) : void
       {
          sApplicationActive = false;
       }
       
-      public static function executeWhenApplicationIsActive(param1:Function, ... rest) : void
+      public static function executeWhenApplicationIsActive(call:Function, ... args) : void
       {
          initialize();
          if(sApplicationActive)
          {
-            param1.apply(null,rest);
+            call.apply(null,args);
          }
          else
          {
-            sWaitingCalls.push([param1,rest]);
+            sWaitingCalls.push([call,args]);
          }
       }
       

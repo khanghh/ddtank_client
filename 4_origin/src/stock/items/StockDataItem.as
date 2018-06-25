@@ -28,21 +28,20 @@ package stock.items
          addEventListener("click",overOrOut);
       }
       
-      private function overOrOut(param1:MouseEvent) : void
+      private function overOrOut(event:MouseEvent) : void
       {
-         var _loc3_:int = 0;
-         if(_data == null && param1.type == "click")
+         var i:int = 0;
+         if(_data == null && event.type == "click")
          {
-            param1.stopImmediatePropagation();
+            event.stopImmediatePropagation();
          }
          validLabel();
-         var _loc2_:Boolean = param1.type == "mouseOver" || param1.type == "click";
-         _loc3_ = 0;
-         while(_loc3_ < _overLabels.length)
+         var isOver:Boolean = event.type == "mouseOver" || event.type == "click";
+         for(i = 0; i < _overLabels.length; )
          {
-            _overLabels[_loc3_].visible = _loc2_;
-            _normalLabels[_loc3_].visible = !_loc2_;
-            _loc3_++;
+            _overLabels[i].visible = isOver;
+            _normalLabels[i].visible = !isOver;
+            i++;
          }
       }
       
@@ -125,45 +124,45 @@ package stock.items
          }
       }
       
-      public function set data(param1:StockData) : void
+      public function set data(value:StockData) : void
       {
-         var _loc3_:int = 0;
-         _data = param1;
-         var _loc2_:* = param1 == null;
-         var _loc4_:* = !!_loc2_?"":param1.StockID.toString();
+         var i:int = 0;
+         _data = value;
+         var isNull:* = value == null;
+         var _loc4_:* = !!isNull?"":value.StockID.toString();
          lablIDSelected.text = _loc4_;
          lablID.text = _loc4_;
-         _loc4_ = !!_loc2_?"":param1.StockName;
+         _loc4_ = !!isNull?"":value.StockName;
          lablNameSelected.text = _loc4_;
          lablName.text = _loc4_;
-         _loc4_ = !!_loc2_?"":param1.holdNum.toString();
+         _loc4_ = !!isNull?"":value.holdNum.toString();
          lblHoldNumSelected.text = _loc4_;
          lblHoldNum.text = _loc4_;
-         _loc4_ = !!_loc2_?"":param1.validNum.toString();
+         _loc4_ = !!isNull?"":value.validNum.toString();
          lblValidNumSelected.text = _loc4_;
          lblValidNum.text = _loc4_;
-         _loc4_ = !!_loc2_?"":param1.price.toString();
+         _loc4_ = !!isNull?"":value.price.toString();
          lblPriceLO.text = _loc4_;
          _loc4_ = _loc4_;
          lablPriceLN.text = _loc4_;
          _loc4_ = _loc4_;
          lablPriceGO.text = _loc4_;
          lablPriceGN.text = _loc4_;
-         _loc4_ = !!_loc2_?"":param1.cost.toString();
+         _loc4_ = !!isNull?"":value.cost.toString();
          lblCostLO.text = _loc4_;
          _loc4_ = _loc4_;
          lblCostLN.text = _loc4_;
          _loc4_ = _loc4_;
          lblCostGO.text = _loc4_;
          lblCostGN.text = _loc4_;
-         _loc4_ = !!_loc2_?"":param1.floatBenefit.toString();
+         _loc4_ = !!isNull?"":value.floatBenefit.toString();
          lblFloatBenefitLN.text = _loc4_;
          _loc4_ = _loc4_;
          lblFloatBenefitLO.text = _loc4_;
          _loc4_ = _loc4_;
          lblFloatBenefitGN.text = _loc4_;
          lblFloatBenefitGO.text = _loc4_;
-         _loc4_ = !!_loc2_?"":(param1.benefitRate * 100).toFixed(2) + "%";
+         _loc4_ = !!isNull?"":(value.benefitRate * 100).toFixed(2) + "%";
          lblBenefitRateGN.text = _loc4_;
          _loc4_ = _loc4_;
          lblBenefitRateGO.text = _loc4_;
@@ -171,11 +170,10 @@ package stock.items
          lblBenefitRateLN.text = _loc4_;
          lblBenefitRateLO.text = _loc4_;
          validLabel();
-         _loc3_ = 0;
-         while(_loc3_ < _normalLabels.length)
+         for(i = 0; i < _normalLabels.length; )
          {
-            _normalLabels[_loc3_].visible = true;
-            _loc3_++;
+            _normalLabels[i].visible = true;
+            i++;
          }
       }
       

@@ -31,48 +31,47 @@ package consortion.view.selfConsortia.consortiaTask
          itemList = new Vector.<Object>();
       }
       
-      public function addItemData(param1:int, param2:String, param3:int = 0, param4:Number = 0, param5:int = 0, param6:int = 0) : void
+      public function addItemData(id:int, content:String, taskType:int = 0, currenValue:Number = 0, targetValue:int = 0, finishValue:int = 0) : void
       {
-         var _loc7_:Object = {};
-         _loc7_["id"] = param1;
-         _loc7_["taskType"] = param3;
-         _loc7_["content"] = param2;
-         _loc7_["currenValue"] = param4;
-         _loc7_["targetValue"] = param5;
-         _loc7_["finishValue"] = param6;
-         itemList.push(_loc7_);
+         var obj:Object = {};
+         obj["id"] = id;
+         obj["taskType"] = taskType;
+         obj["content"] = content;
+         obj["currenValue"] = currenValue;
+         obj["targetValue"] = targetValue;
+         obj["finishValue"] = finishValue;
+         itemList.push(obj);
       }
       
       public function sortItem() : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:Vector.<Object> = new Vector.<Object>();
-         while(_loc2_ < sortKey.length)
+         var i:int = 0;
+         var tempList:Vector.<Object> = new Vector.<Object>();
+         for(; i < sortKey.length; i++)
          {
             var _loc5_:int = 0;
             var _loc4_:* = itemList;
-            for each(var _loc1_ in itemList)
+            for each(var obj in itemList)
             {
-               if(sortKey[_loc2_] == _loc1_["taskType"])
+               if(sortKey[i] == obj["taskType"])
                {
-                  _loc3_.push(_loc1_);
+                  tempList.push(obj);
                }
             }
-            _loc2_++;
          }
-         itemList = _loc3_;
+         itemList = tempList;
       }
       
-      public function updateItemData(param1:int, param2:Number = 0, param3:int = 0) : void
+      public function updateItemData(id:int, currenValue:Number = 0, finishValue:int = 0) : void
       {
          var _loc6_:int = 0;
          var _loc5_:* = itemList;
-         for each(var _loc4_ in itemList)
+         for each(var obj in itemList)
          {
-            if(_loc4_["id"] == param1)
+            if(obj["id"] == id)
             {
-               _loc4_["currenValue"] = param2;
-               _loc4_["finishValue"] = param3;
+               obj["currenValue"] = currenValue;
+               obj["finishValue"] = finishValue;
             }
          }
       }

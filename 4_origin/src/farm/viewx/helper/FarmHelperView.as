@@ -199,22 +199,22 @@ package farm.viewx.helper
       
       private function setHelperTime() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:* = null;
+         var date:* = null;
+         var date1:* = null;
          if(FarmModelController.instance.model.isHelperMay || PlayerManager.Instance.Self.IsVIP && PlayerManager.Instance.Self.VIPLevel >= FarmModelController.instance.model.vipLimitLevel)
          {
             if(PlayerManager.Instance.Self.IsVIP && PlayerManager.Instance.Self.VIPLevel >= FarmModelController.instance.model.vipLimitLevel)
             {
-               _loc1_ = PlayerManager.Instance.Self.VIPExpireDay as Date;
-               _helperShowTime.text = _loc1_.fullYear + "-" + (_loc1_.month + 1) + "-";
-               _helperShowTime.text = _helperShowTime.text + (_loc1_.date + " " + fixZero(_loc1_.hours) + ":" + fixZero(_loc1_.minutes));
+               date = PlayerManager.Instance.Self.VIPExpireDay as Date;
+               _helperShowTime.text = date.fullYear + "-" + (date.month + 1) + "-";
+               _helperShowTime.text = _helperShowTime.text + (date.date + " " + fixZero(date.hours) + ":" + fixZero(date.minutes));
                _helperShowText2.text = LanguageMgr.GetTranslation("ddt.farm.helperShow.text2");
             }
             else
             {
-               _loc2_ = FarmModelController.instance.model.stopTime as Date;
-               _helperShowTime.text = _loc2_.fullYear + "-" + (_loc2_.month + 1) + "-";
-               _helperShowTime.text = _helperShowTime.text + (_loc2_.date + " " + fixZero(_loc2_.hours) + ":" + fixZero(_loc2_.minutes));
+               date1 = FarmModelController.instance.model.stopTime as Date;
+               _helperShowTime.text = date1.fullYear + "-" + (date1.month + 1) + "-";
+               _helperShowTime.text = _helperShowTime.text + (date1.date + " " + fixZero(date1.hours) + ":" + fixZero(date1.minutes));
                _helperShowText2.text = LanguageMgr.GetTranslation("ddt.farm.helperShow.text2");
             }
          }
@@ -227,34 +227,33 @@ package farm.viewx.helper
       
       private function setComboxContent() : void
       {
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:int = 0;
+         var i:int = 0;
+         var name:* = null;
+         var ID:int = 0;
          _farmChoose.beginChanges();
          _farmChoose.selctedPropName = "text";
-         var _loc2_:VectorListModel = _farmChoose.listPanel.vectorListModel;
-         _loc2_.clear();
-         _loc5_ = 0;
-         for(; _loc5_ < _infoList.length; _loc5_++)
+         var comboxModel:VectorListModel = _farmChoose.listPanel.vectorListModel;
+         comboxModel.clear();
+         for(i = 0; i < _infoList.length; i++)
          {
-            if(_infoList[_loc5_] && _infoList[_loc5_].TemplateInfo.CategoryID == 32 && _infoList[_loc5_].TemplateInfo.Property7 == "1")
+            if(_infoList[i] && _infoList[i].TemplateInfo.CategoryID == 32 && _infoList[i].TemplateInfo.Property7 == "1")
             {
                if(PlayerManager.Instance.Self.VIPLevel < ServerConfigManager.instance.getPrivilegeMinLevel("8") || !PlayerManager.Instance.Self.IsVIP)
                {
                }
                continue;
             }
-            if(PlayerManager.Instance.Self.Grade >= _infoList[_loc5_].LimitGrade)
+            if(PlayerManager.Instance.Self.Grade >= _infoList[i].LimitGrade)
             {
-               _loc3_ = _infoList[_loc5_].TemplateInfo.Name;
-               _loc4_ = _infoList[_loc5_].TemplateID;
-               _listArray.push(_loc3_);
-               _listArrayID.push(_loc4_);
-               _listSeedNum.push(int(_infoList[_loc5_].TemplateInfo.Property2));
-               _loc2_.append(_loc3_);
-               if(PlayerManager.Instance.Self.isFarmHelper && _infoList[_loc5_].TemplateID == FarmModelController.instance.model.helperArray[1])
+               name = _infoList[i].TemplateInfo.Name;
+               ID = _infoList[i].TemplateID;
+               _listArray.push(name);
+               _listArrayID.push(ID);
+               _listSeedNum.push(int(_infoList[i].TemplateInfo.Property2));
+               comboxModel.append(name);
+               if(PlayerManager.Instance.Self.isFarmHelper && _infoList[i].TemplateID == FarmModelController.instance.model.helperArray[1])
                {
-                  _farmChoose.textField.text = _infoList[_loc5_].TemplateInfo.Name;
+                  _farmChoose.textField.text = _infoList[i].TemplateInfo.Name;
                   continue;
                }
                continue;
@@ -266,48 +265,48 @@ package farm.viewx.helper
          _timeChoose.beginChanges();
          _timeChoose.selctedPropName = "text";
          _timeChoose.textField.text = "12" + LanguageMgr.GetTranslation("hour");
-         var _loc1_:VectorListModel = _timeChoose.listPanel.vectorListModel;
-         _loc1_.clear();
-         _loc1_.append(_listTimeTextArray[0]);
-         _loc1_.append(_listTimeTextArray[1]);
+         var comboxModel2:VectorListModel = _timeChoose.listPanel.vectorListModel;
+         comboxModel2.clear();
+         comboxModel2.append(_listTimeTextArray[0]);
+         comboxModel2.append(_listTimeTextArray[1]);
          _timeChoose.listPanel.list.updateListView();
          _timeChoose.listPanel.list.addEventListener("listItemClick",__itemClick2);
          _timeChoose.commitChanges();
       }
       
-      private function setBtnEna(param1:Boolean = true) : void
+      private function setBtnEna(value:Boolean = true) : void
       {
          if(_onekeyStartBtn)
          {
-            if(param1 == true)
+            if(value == true)
             {
                if(_listArrayID.length > 0)
                {
-                  _onekeyStartBtn.enable = param1;
+                  _onekeyStartBtn.enable = value;
                }
             }
             else
             {
-               _onekeyStartBtn.visible = param1;
+               _onekeyStartBtn.visible = value;
             }
          }
          if(_seeSeedBtn)
          {
-            _seeSeedBtn.enable = !param1;
+            _seeSeedBtn.enable = !value;
          }
          if(_onekeyCloseBtn)
          {
-            _onekeyCloseBtn.visible = !param1;
+            _onekeyCloseBtn.visible = !value;
          }
          if(_farmChoose)
          {
-            _farmChoose.enable = param1;
-            _farmChoose.filters = param1 == true?ComponentFactory.Instance.creatFilters("lightFilter"):ComponentFactory.Instance.creatFilters("grayFilter");
+            _farmChoose.enable = value;
+            _farmChoose.filters = value == true?ComponentFactory.Instance.creatFilters("lightFilter"):ComponentFactory.Instance.creatFilters("grayFilter");
          }
          if(_timeChoose)
          {
-            _timeChoose.enable = param1;
-            _timeChoose.filters = param1 == true?ComponentFactory.Instance.creatFilters("lightFilter"):ComponentFactory.Instance.creatFilters("grayFilter");
+            _timeChoose.enable = value;
+            _timeChoose.filters = value == true?ComponentFactory.Instance.creatFilters("lightFilter"):ComponentFactory.Instance.creatFilters("grayFilter");
          }
       }
       
@@ -325,7 +324,7 @@ package farm.viewx.helper
          _seeSeedBtn.addEventListener("click",__onSeeSeed);
       }
       
-      private function __onSeeSeed(param1:MouseEvent) : void
+      private function __onSeeSeed(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_selectedView != null)
@@ -339,7 +338,7 @@ package farm.viewx.helper
          _selectedView.viewType = 1;
       }
       
-      private function __showHelperTime(param1:FarmEvent) : void
+      private function __showHelperTime(pEvent:FarmEvent) : void
       {
          setHelperTime();
       }
@@ -349,10 +348,10 @@ package farm.viewx.helper
          LayerManager.Instance.addToLayer(this,3,true,1);
       }
       
-      private function __closeFarmHelper(param1:FrameEvent) : void
+      private function __closeFarmHelper(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -360,7 +359,7 @@ package farm.viewx.helper
          }
       }
       
-      private function __beginHelper(param1:FarmEvent) : void
+      private function __beginHelper(event:FarmEvent) : void
       {
          if(PlayerManager.Instance.Self.isFarmHelper)
          {
@@ -370,7 +369,7 @@ package farm.viewx.helper
          }
       }
       
-      private function __stopHelper(param1:FarmEvent) : void
+      private function __stopHelper(event:FarmEvent) : void
       {
          if(!PlayerManager.Instance.Self.isFarmHelper)
          {
@@ -386,24 +385,24 @@ package farm.viewx.helper
          }
       }
       
-      private function __itemClick(param1:ListItemEvent) : void
+      private function __itemClick(event:ListItemEvent) : void
       {
-         var _loc2_:* = null;
+         var tempInfo:* = null;
          SoundManager.instance.play("008");
-         _currentID = _listArrayID[param1.index];
+         _currentID = _listArrayID[event.index];
          var _loc5_:int = 0;
          var _loc4_:* = _infoList;
-         for each(var _loc3_ in _infoList)
+         for each(var info in _infoList)
          {
-            if(_loc3_.TemplateID == _currentID)
+            if(info.TemplateID == _currentID)
             {
-               _loc2_ = _loc3_;
+               tempInfo = info;
                break;
             }
          }
-         _getSeedNumOne = _listSeedNum[param1.index];
+         _getSeedNumOne = _listSeedNum[event.index];
          _onekeyStartBtn.enable = true;
-         switch(int(_loc2_.APrice1) - -9)
+         switch(int(tempInfo.APrice1) - -9)
          {
             case 0:
                _modelType = -9;
@@ -428,79 +427,77 @@ package farm.viewx.helper
          _getSeed.text = _getSeedNum.toString() + "/" + _getSeedNum.toString();
       }
       
-      private function __itemClick2(param1:ListItemEvent) : void
+      private function __itemClick2(event:ListItemEvent) : void
       {
          SoundManager.instance.play("008");
-         _currentTime = _listTimeArray[param1.index];
+         _currentTime = _listTimeArray[event.index];
          _needSeed.text = getseedCountByID().toString();
          _getSeed.text = _getSeedNum.toString() + "/" + _getSeedNum.toString();
       }
       
       private function getseedCountByID() : int
       {
-         var _loc6_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:int = findSeedTimebyID(_currentID);
-         var _loc5_:int = 0;
-         var _loc1_:Vector.<FieldVO> = FarmModelController.instance.model.fieldsInfo;
-         _loc6_ = 0;
-         while(_loc6_ < FarmModelController.instance.model.fieldsInfo.length)
+         var m:int = 0;
+         var nowDate:int = 0;
+         var needTime:int = findSeedTimebyID(_currentID);
+         var filedCounts:int = 0;
+         var fieldsInfo:Vector.<FieldVO> = FarmModelController.instance.model.fieldsInfo;
+         for(m = 0; m < FarmModelController.instance.model.fieldsInfo.length; )
          {
-            _loc4_ = (new Date().getTime() - _loc1_[_loc6_].payTime.getTime()) / 3600000;
-            if(_loc1_[_loc6_].fieldValidDate > _loc4_ || _loc1_[_loc6_].fieldValidDate == -1)
+            nowDate = (new Date().getTime() - fieldsInfo[m].payTime.getTime()) / 3600000;
+            if(fieldsInfo[m].fieldValidDate > nowDate || fieldsInfo[m].fieldValidDate == -1)
             {
-               _loc5_++;
+               filedCounts++;
             }
-            _loc6_++;
+            m++;
          }
-         var _loc3_:int = _loc5_ * _currentTime / _loc2_;
-         _getSeedNum = _loc5_ * _currentTime / _loc2_ * _getSeedNumOne;
-         return _loc3_;
+         var seedCount:int = filedCounts * _currentTime / needTime;
+         _getSeedNum = filedCounts * _currentTime / needTime * _getSeedNumOne;
+         return seedCount;
       }
       
-      private function findSeedTimebyID(param1:int) : int
+      private function findSeedTimebyID(ID:int) : int
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _seedItemInfo.length)
+         var i:int = 0;
+         for(i = 0; i < _seedItemInfo.length; )
          {
-            if(_currentID == _seedItemInfo[_loc2_].TemplateID)
+            if(_currentID == _seedItemInfo[i].TemplateID)
             {
-               return int(_seedItemInfo[_loc2_].TemplateInfo.Property3);
+               return int(_seedItemInfo[i].TemplateInfo.Property3);
             }
-            _loc2_++;
+            i++;
          }
          return 0;
       }
       
-      private function __comBoxBtnClick(param1:MouseEvent) : void
+      private function __comBoxBtnClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }
       
-      private function __onekeyStartClick(param1:MouseEvent) : void
+      private function __onekeyStartClick(e:MouseEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
+         var seedInfoCount:int = 0;
+         var seedCount:int = 0;
+         var times:int = 0;
          if(_farmChoose.textField.text == null)
          {
             return;
          }
          SoundManager.instance.play("008");
-         var _loc5_:SelfInfo = PlayerManager.Instance.Self;
+         var selfInfo:SelfInfo = PlayerManager.Instance.Self;
          if(FarmModelController.instance.model.isHelperMay || PlayerManager.Instance.Self.IsVIP && PlayerManager.Instance.Self.VIPLevel >= FarmModelController.instance.model.vipLimitLevel)
          {
-            _loc4_ = FarmModelController.instance.model.getSeedCountByID(_currentID);
-            _loc3_ = getseedCountByID();
-            _loc2_ = 0;
+            seedInfoCount = FarmModelController.instance.model.getSeedCountByID(_currentID);
+            seedCount = getseedCountByID();
+            times = 0;
             _beginFrame = ComponentFactory.Instance.creatComponentByStylename("farm.farmHelperView.beginFrame");
             _beginFrame.seedID = _currentID;
             _beginFrame.seedTime = _currentTime;
             _beginFrame.getCount = _getSeedNum;
             _beginFrame.modelType = _modelType;
-            _beginFrame.needCount = _loc3_ > _loc4_?_loc3_ - _loc4_:0;
-            _beginFrame.haveCount = _loc4_ > _loc3_?_loc3_:int(_loc4_);
+            _beginFrame.needCount = seedCount > seedInfoCount?seedCount - seedInfoCount:0;
+            _beginFrame.haveCount = seedInfoCount > seedCount?seedCount:int(seedInfoCount);
             _beginFrame.show();
          }
          else
@@ -510,7 +507,7 @@ package farm.viewx.helper
          }
       }
       
-      private function __onekeyCloseClick(param1:MouseEvent) : void
+      private function __onekeyCloseClick(e:MouseEvent) : void
       {
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -522,28 +519,28 @@ package farm.viewx.helper
          LayerManager.Instance.addToLayer(_stopHelpeCconfigm,3,true,1);
       }
       
-      private function __confirmStopHelper(param1:FarmEvent) : void
+      private function __confirmStopHelper(event:FarmEvent) : void
       {
-         var _loc2_:Array = [];
-         _loc2_.push(false);
-         SocketManager.Instance.out.sendBeginHelper(_loc2_);
+         var array1:Array = [];
+         array1.push(false);
+         SocketManager.Instance.out.sendBeginHelper(array1);
          dispose();
       }
       
       private function setTimes() : void
       {
-         var _loc3_:Date = FarmModelController.instance.model.helperArray[2];
-         var _loc4_:int = _loc3_.getTime() / 1000;
-         var _loc1_:Date = TimeManager.Instance.Now();
-         var _loc2_:int = _loc1_.getTime() / 1000;
+         var startTime1:Date = FarmModelController.instance.model.helperArray[2];
+         var startTime2:int = startTime1.getTime() / 1000;
+         var nowTime1:Date = TimeManager.Instance.Now();
+         var nowTime2:int = nowTime1.getTime() / 1000;
          _autoTime = FarmModelController.instance.model.helperArray[3] * 60;
-         if(_loc2_ - _loc4_ < 0)
+         if(nowTime2 - startTime2 < 0)
          {
             _timeDiff = _autoTime;
          }
          else
          {
-            _timeDiff = _autoTime - (_loc2_ - _loc4_);
+            _timeDiff = _autoTime - (nowTime2 - startTime2);
          }
          _timer = new Timer(1000,int(_timeDiff));
          _timer.start();
@@ -565,7 +562,7 @@ package farm.viewx.helper
          _timerSeed.addEventListener("timer",__timerSeedHandler);
       }
       
-      private function __timerSeedHandler(param1:TimerEvent) : void
+      private function __timerSeedHandler(evnet:TimerEvent) : void
       {
          setGetSeedCount();
       }
@@ -580,39 +577,39 @@ package farm.viewx.helper
          _getSeed.text = String(int((1 - _timeDiff / _autoTime) * FarmModelController.instance.model.helperArray[5])) + "/" + FarmModelController.instance.model.helperArray[5].toString();
       }
       
-      private function __timerHandler(param1:TimerEvent) : void
+      private function __timerHandler(evnet:TimerEvent) : void
       {
-         var _loc2_:* = null;
+         var array2:* = null;
          _timeText.text = getTimeDiff(_timeDiff);
          _timeDiff = Number(_timeDiff) - 1;
          if(_timeDiff == 0)
          {
-            _loc2_ = [];
-            _loc2_.push(false);
-            SocketManager.Instance.out.sendBeginHelper(_loc2_);
+            array2 = [];
+            array2.push(false);
+            SocketManager.Instance.out.sendBeginHelper(array2);
             dispose();
          }
       }
       
-      private function getTimeDiff(param1:int) : String
+      private function getTimeDiff(diff:int) : String
       {
-         var _loc4_:* = 0;
-         var _loc3_:* = 0;
-         var _loc2_:* = 0;
-         if(param1 >= 0)
+         var h:* = 0;
+         var m:* = 0;
+         var s:* = 0;
+         if(diff >= 0)
          {
-            _loc4_ = uint(Math.floor(param1 / 60 / 60));
-            param1 = param1 % 3600;
-            _loc3_ = uint(Math.floor(param1 / 60));
-            param1 = param1 % 60;
-            _loc2_ = uint(param1);
+            h = uint(Math.floor(diff / 60 / 60));
+            diff = diff % 3600;
+            m = uint(Math.floor(diff / 60));
+            diff = diff % 60;
+            s = uint(diff);
          }
-         return fixZero(_loc4_) + ":" + fixZero(_loc3_) + ":" + fixZero(_loc2_);
+         return fixZero(h) + ":" + fixZero(m) + ":" + fixZero(s);
       }
       
-      private function fixZero(param1:uint) : String
+      private function fixZero(num:uint) : String
       {
-         return param1 < 10?"0" + String(param1):String(param1);
+         return num < 10?"0" + String(num):String(num);
       }
       
       private function removeEvent() : void

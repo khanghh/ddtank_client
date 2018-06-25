@@ -44,14 +44,14 @@ package petsBag.view
          initView();
       }
       
-      public function set petInfo(param1:PetInfo) : void
+      public function set petInfo(val:PetInfo) : void
       {
-         _petInfo = param1;
+         _petInfo = val;
       }
       
-      public function set foodInfo(param1:InventoryItemInfo) : void
+      public function set foodInfo(val:InventoryItemInfo) : void
       {
-         _foodInfo = param1;
+         _foodInfo = val;
       }
       
       public function get foodInfo() : InventoryItemInfo
@@ -85,46 +85,46 @@ package petsBag.view
          addToContent(_needFoodText);
       }
       
-      private function __seleterChange(param1:Event) : void
+      private function __seleterChange(event:Event) : void
       {
          SoundManager.instance.play("008");
       }
       
-      public function show(param1:int, param2:int = 1) : void
+      public function show(max:int, min:int = 1) : void
       {
-         var _loc9_:* = 0;
-         var _loc6_:int = 0;
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         var _loc8_:* = null;
-         var _loc7_:int = 0;
-         var _loc3_:int = 0;
-         if(_foodInfo.Count >= param1)
+         var limitNum:* = 0;
+         var level:int = 0;
+         var upgradeNeeded:int = 0;
+         var addHunger:int = 0;
+         var currentPet:* = null;
+         var petLevel:int = 0;
+         var playerLevel:int = 0;
+         if(_foodInfo.Count >= max)
          {
-            _loc9_ = param1;
+            limitNum = max;
          }
          else
          {
-            _loc9_ = int(_foodInfo.Count);
+            limitNum = int(_foodInfo.Count);
          }
-         _numberSelecter.valueLimit = param2 + "," + _loc9_;
+         _numberSelecter.valueLimit = min + "," + limitNum;
          LayerManager.Instance.addToLayer(this,3,true,1);
          if(_petInfo)
          {
-            _loc6_ = PetExperience.getLevelByGP(_petInfo.GP);
-            _loc5_ = PetExperience.expericence[_loc6_] - _petInfo.GP;
-            neededFoodAmount = int(Math.ceil(_loc5_ / _foodInfo.Property2));
-            _loc4_ = _foodInfo.Property1;
-            _loc8_ = PetsBagManager.instance().petModel.currentPetInfo;
-            _loc7_ = _loc8_.Level;
-            _loc3_ = PlayerManager.Instance.Self.Grade;
-            if(_loc7_ == _loc3_ || _loc7_ == PetExperience.MAX_LEVEL)
+            level = PetExperience.getLevelByGP(_petInfo.GP);
+            upgradeNeeded = PetExperience.expericence[level] - _petInfo.GP;
+            neededFoodAmount = int(Math.ceil(upgradeNeeded / _foodInfo.Property2));
+            addHunger = _foodInfo.Property1;
+            currentPet = PetsBagManager.instance().petModel.currentPetInfo;
+            petLevel = currentPet.Level;
+            playerLevel = PlayerManager.Instance.Self.Grade;
+            if(petLevel == playerLevel || petLevel == PetExperience.MAX_LEVEL)
             {
-               _needFoodText.htmlText = LanguageMgr.GetTranslation("ddt.pets.hungerNeedFoodAmount",param1);
+               _needFoodText.htmlText = LanguageMgr.GetTranslation("ddt.pets.hungerNeedFoodAmount",max);
                _needFoodText.visible = true;
-               if(_foodInfo.Count >= param1)
+               if(_foodInfo.Count >= max)
                {
-                  _numberSelecter.currentValue = param1;
+                  _numberSelecter.currentValue = max;
                }
                else
                {
@@ -142,12 +142,12 @@ package petsBag.view
          }
       }
       
-      private function needMaxFood(param1:int, param2:int) : int
+      private function needMaxFood(hunger:int, addHunger:int) : int
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = PetconfigAnalyzer.PetCofnig.MaxHunger - param1;
-         _loc3_ = Math.ceil(_loc4_ / param2);
-         return _loc3_;
+         var maxFood:int = 0;
+         var limitHunger:int = PetconfigAnalyzer.PetCofnig.MaxHunger - hunger;
+         maxFood = Math.ceil(limitHunger / addHunger);
+         return maxFood;
       }
       
       override public function dispose() : void

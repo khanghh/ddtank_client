@@ -77,9 +77,9 @@ package gameCommon.view.tool
          _mask.width = 0;
          _danderStrip.mask = _mask;
          _danderStripCopy = new Sprite();
-         var _loc1_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.game.danderStripAsset");
+         var _copy:Bitmap = ComponentFactory.Instance.creatBitmap("asset.game.danderStripAsset");
          addChild(_danderStripCopy);
-         _danderStripCopy.addChild(_loc1_);
+         _danderStripCopy.addChild(_copy);
          _danderStripCopy.alpha = 0;
          addDanderStripTip();
          _movie = ClassUtils.CreatInstance("asset.game.danderCartoonAsset") as MovieClip;
@@ -107,27 +107,27 @@ package gameCommon.view.tool
          _btn.tipStyle = "core.ToolPropTips";
          _btn.tipDirctions = "0";
          _btn.tipGapV = 5;
-         var _loc3_:ItemTemplateInfo = new ItemTemplateInfo();
-         _loc3_.Name = LanguageMgr.GetTranslation("tank.game.ToolStripView.itemTemplateInfo.Name");
-         _loc3_.Description = LanguageMgr.GetTranslation("tank.game.ToolStripView.itemTemplateInfo.Description");
-         var _loc2_:ToolPropInfo = new ToolPropInfo();
-         _loc2_.info = _loc3_;
-         _loc2_.showTurn = false;
-         _loc2_.showThew = false;
-         _loc2_.showCount = false;
-         _btn.tipData = _loc2_;
+         var temp:ItemTemplateInfo = new ItemTemplateInfo();
+         temp.Name = LanguageMgr.GetTranslation("tank.game.ToolStripView.itemTemplateInfo.Name");
+         temp.Description = LanguageMgr.GetTranslation("tank.game.ToolStripView.itemTemplateInfo.Description");
+         var tipInfo:ToolPropInfo = new ToolPropInfo();
+         tipInfo.info = temp;
+         tipInfo.showTurn = false;
+         tipInfo.showThew = false;
+         tipInfo.showCount = false;
+         _btn.tipData = tipInfo;
          _btn2.tipStyle = "core.ToolPropTips";
          _btn2.tipDirctions = "0";
          _btn2.tipGapV = 5;
-         _loc3_ = new ItemTemplateInfo();
-         _loc3_.Name = LanguageMgr.GetTranslation("tank.game.ToolStripView.itemTemplateInfo.Name2");
-         _loc3_.Description = LanguageMgr.GetTranslation("tank.game.ToolStripView.itemTemplateInfo.Description2");
-         _loc2_ = new ToolPropInfo();
-         _loc2_.info = _loc3_;
-         _loc2_.showTurn = false;
-         _loc2_.showThew = false;
-         _loc2_.showCount = false;
-         _btn2.tipData = _loc2_;
+         temp = new ItemTemplateInfo();
+         temp.Name = LanguageMgr.GetTranslation("tank.game.ToolStripView.itemTemplateInfo.Name2");
+         temp.Description = LanguageMgr.GetTranslation("tank.game.ToolStripView.itemTemplateInfo.Description2");
+         tipInfo = new ToolPropInfo();
+         tipInfo.info = temp;
+         tipInfo.showTurn = false;
+         tipInfo.showThew = false;
+         tipInfo.showCount = false;
+         _btn2.tipData = tipInfo;
          setDander();
          initEvents();
       }
@@ -150,9 +150,9 @@ package gameCommon.view.tool
          _danderStripTip.visible = false;
       }
       
-      public function setInfo(param1:LocalPlayer) : void
+      public function setInfo(info:LocalPlayer) : void
       {
-         _info = param1;
+         _info = info;
       }
       
       private function initEvents() : void
@@ -174,18 +174,18 @@ package gameCommon.view.tool
          _skillBtn.removeEventListener("click",__useSkill);
       }
       
-      private function __showDanderStripTip(param1:MouseEvent) : void
+      private function __showDanderStripTip(evt:MouseEvent) : void
       {
          _danderStripTip.visible = true;
          LayerManager.Instance.addToLayer(_danderStripTip,0,false);
       }
       
-      private function __hideDanderStripTip(param1:MouseEvent) : void
+      private function __hideDanderStripTip(evt:MouseEvent) : void
       {
          _danderStripTip.visible = false;
       }
       
-      private function __update(param1:LivingEvent) : void
+      private function __update(evt:LivingEvent) : void
       {
          setDander();
       }
@@ -194,11 +194,11 @@ package gameCommon.view.tool
       {
          _danderStripTipInfo.current = _info.dander / 2;
          _danderStripTip.tipData = _danderStripTipInfo;
-         var _loc1_:Number = _info.dander / 200;
+         var s:Number = _info.dander / 200;
          TweenLite.killTweensOf(_mask,true);
-         if(_loc1_ > 0)
+         if(s > 0)
          {
-            TweenLite.to(_mask,1,{"scaleX":_loc1_});
+            TweenLite.to(_mask,1,{"scaleX":s});
          }
          else
          {
@@ -207,7 +207,7 @@ package gameCommon.view.tool
          __updateBtn(null);
       }
       
-      private function __updateBtn(param1:LivingEvent) : void
+      private function __updateBtn(evt:LivingEvent) : void
       {
          _movie.gotoAndStop(_info.dander >= 200?2:1);
          if(_info.isAttacking && _info.dander >= 200 && !_isDisable)
@@ -229,7 +229,7 @@ package gameCommon.view.tool
          _isDisable = false;
       }
       
-      private function __useSkill(param1:MouseEvent) : void
+      private function __useSkill(evt:MouseEvent) : void
       {
          if(_specialEnabled && GameControl.Instance.Current.selfGamePlayer.dander >= 200 && GameControl.Instance.Current.selfGamePlayer.isAttacking)
          {
@@ -241,7 +241,7 @@ package gameCommon.view.tool
          }
       }
       
-      private function __useSkill2(param1:MouseEvent) : void
+      private function __useSkill2(event:MouseEvent) : void
       {
          GameControl.Instance.Current.selfGamePlayer.isSpecialSkill = true;
          GameControl.Instance.Current.selfGamePlayer.skill = 1;
@@ -259,21 +259,21 @@ package gameCommon.view.tool
          }
       }
       
-      private function __keydown(param1:KeyboardEvent) : void
+      private function __keydown(event:KeyboardEvent) : void
       {
-         if(param1.keyCode == KeyStroke.VK_B.getCode())
+         if(event.keyCode == KeyStroke.VK_B.getCode())
          {
             __useSkill(null);
          }
-         else if(param1.keyCode == KeyStroke.VK_N.getCode())
+         else if(event.keyCode == KeyStroke.VK_N.getCode())
          {
             __useSkill2(null);
          }
       }
       
-      public function set specialEnabled(param1:Boolean) : void
+      public function set specialEnabled(value:Boolean) : void
       {
-         _specialEnabled = param1;
+         _specialEnabled = value;
       }
       
       public function get enable() : Boolean
@@ -281,9 +281,9 @@ package gameCommon.view.tool
          return _enable;
       }
       
-      public function set enable(param1:Boolean) : void
+      public function set enable(value:Boolean) : void
       {
-         _enable = param1;
+         _enable = value;
       }
       
       public function dispose() : void

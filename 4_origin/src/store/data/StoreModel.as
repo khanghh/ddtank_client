@@ -91,10 +91,10 @@ package store.data
       
       private var _needAutoLink:int = 0;
       
-      public function StoreModel(param1:PlayerInfo)
+      public function StoreModel(info:PlayerInfo)
       {
          super();
-         _info = param1 as SelfInfo;
+         _info = info as SelfInfo;
          _equipmentBag = _info.Bag.items;
          _propBag = _info.PropBag.items;
          initData();
@@ -119,13 +119,13 @@ package store.data
          return _holeExpModel.getMaxOpLv();
       }
       
-      public static function getHoleExpByLv(param1:int) : int
+      public static function getHoleExpByLv(lv:int) : int
       {
          if(_holeExpModel == null)
          {
             _holeExpModel = ComponentFactory.Instance.creatCustomObject("HoleExpModel");
          }
-         return _holeExpModel.getExpByLevel(param1);
+         return _holeExpModel.getExpByLevel(lv);
       }
       
       private function initData() : void
@@ -167,103 +167,103 @@ package store.data
          _canRongLiangEquipmengtList = sortRoogEquipList(_canRongLiangEquipmengtList);
       }
       
-      private function pickValidItemsOutOf(param1:DictionaryData, param2:Boolean) : void
+      private function pickValidItemsOutOf(bag:DictionaryData, isEquip:Boolean) : void
       {
          var _loc5_:int = 0;
-         var _loc4_:* = param1;
-         for each(var _loc3_ in param1)
+         var _loc4_:* = bag;
+         for each(var item in bag)
          {
-            if(param2)
+            if(isEquip)
             {
-               if(isProperTo_CanStrthEqpmtList(_loc3_))
+               if(isProperTo_CanStrthEqpmtList(item))
                {
-                  _canStrthEqpmtList.add(_canStrthEqpmtList.length,_loc3_);
+                  _canStrthEqpmtList.add(_canStrthEqpmtList.length,item);
                }
-               if(isProperTo_CanCpsEquipmentList(_loc3_))
+               if(isProperTo_CanCpsEquipmentList(item))
                {
-                  _canCpsEquipmentList.add(_canCpsEquipmentList.length,_loc3_);
+                  _canCpsEquipmentList.add(_canCpsEquipmentList.length,item);
                }
-               if(isProperTo_CanRongLiangEquipmengtList(_loc3_))
+               if(isProperTo_CanRongLiangEquipmengtList(item))
                {
-                  _canRongLiangEquipmengtList.add(_canRongLiangEquipmengtList.length,_loc3_);
+                  _canRongLiangEquipmengtList.add(_canRongLiangEquipmengtList.length,item);
                }
-               if(_loc3_.Quality >= 4 && (_loc3_.CanCompose || _loc3_.CanStrengthen || _loc3_.isCanLatentEnergy) || _loc3_.CategoryID == 70)
+               if(item.Quality >= 4 && (item.CanCompose || item.CanStrengthen || item.isCanLatentEnergy) || item.CategoryID == 70)
                {
-                  if(isProperTo_CanTransEquipmengtList(_loc3_))
+                  if(isProperTo_CanTransEquipmengtList(item))
                   {
-                     _canTransEquipmengtList.add(_canTransEquipmengtList.length,_loc3_);
+                     _canTransEquipmengtList.add(_canTransEquipmengtList.length,item);
                   }
-                  else if(isProperTo_NotCanTransEquipmengtList(_loc3_))
+                  else if(isProperTo_NotCanTransEquipmengtList(item))
                   {
-                     _canNotTransEquipmengtList.add(_canNotTransEquipmengtList.length,_loc3_);
+                     _canNotTransEquipmengtList.add(_canNotTransEquipmengtList.length,item);
                   }
                }
-               if(isProperTo_canLianhuaEquipList(_loc3_))
+               if(isProperTo_canLianhuaEquipList(item))
                {
-                  _canLianhuaEquipList.add(_canLianhuaEquipList.length,_loc3_);
+                  _canLianhuaEquipList.add(_canLianhuaEquipList.length,item);
                }
-               if(isProperTo_CanEmbedEquipList(_loc3_))
+               if(isProperTo_CanEmbedEquipList(item))
                {
-                  _canEmbedEquipList.add(_canEmbedEquipList.length,_loc3_);
+                  _canEmbedEquipList.add(_canEmbedEquipList.length,item);
                }
-               if(isProperTo_CanGhostEquipList(_loc3_))
+               if(isProperTo_CanGhostEquipList(item))
                {
-                  _canGhostEquipList.add(_canGhostEquipList.length,_loc3_);
+                  _canGhostEquipList.add(_canGhostEquipList.length,item);
                }
-               if(isProperTo_CanExaltEqpmtList(_loc3_))
+               if(isProperTo_CanExaltEqpmtList(item))
                {
-                  _canExaltEqpmtList.add(_canExaltEqpmtList.length,_loc3_);
+                  _canExaltEqpmtList.add(_canExaltEqpmtList.length,item);
                }
-               if(isPropreTo_CanExaltAssistantList(_loc3_))
+               if(isPropreTo_CanExaltAssistantList(item))
                {
-                  _canExaltAssistantList.add(_canExaltAssistantList.length,_loc3_);
+                  _canExaltAssistantList.add(_canExaltAssistantList.length,item);
                }
             }
             else
             {
-               if(isProperTo_StrthList(_loc3_))
+               if(isProperTo_StrthList(item))
                {
-                  _strthList.add(_strthList.length,_loc3_);
+                  _strthList.add(_strthList.length,item);
                }
-               if(isProperTo_CpsAndANchList(_loc3_))
+               if(isProperTo_CpsAndANchList(item))
                {
-                  _cpsAndANchList.add(_cpsAndANchList.length,_loc3_);
+                  _cpsAndANchList.add(_cpsAndANchList.length,item);
                }
-               if(isProperTo_canLianhuaPropList(_loc3_))
+               if(isProperTo_canLianhuaPropList(item))
                {
-                  _canLianhuaPropList.add(_canLianhuaPropList.length,_loc3_);
+                  _canLianhuaPropList.add(_canLianhuaPropList.length,item);
                }
-               if(isProperTo_CanEmbedPropList(_loc3_))
+               if(isProperTo_CanEmbedPropList(item))
                {
-                  _canEmbedPropList.add(_canEmbedPropList.length,_loc3_);
+                  _canEmbedPropList.add(_canEmbedPropList.length,item);
                }
-               if(isProperTo_CanGhostPropList(_loc3_))
+               if(isProperTo_CanGhostPropList(item))
                {
-                  _canGhostPropList.add(_canGhostPropList.length,_loc3_);
+                  _canGhostPropList.add(_canGhostPropList.length,item);
                }
-               if(isProperTo_canRongLiangProperList(_loc3_))
+               if(isProperTo_canRongLiangProperList(item))
                {
-                  _canRongLiangPropList.add(_canRongLiangPropList.length,_loc3_);
+                  _canRongLiangPropList.add(_canRongLiangPropList.length,item);
                }
-               if(isProperTo_ExaltList(_loc3_))
+               if(isProperTo_ExaltList(item))
                {
-                  _exaltRock.add(_exaltRock.length,_loc3_);
+                  _exaltRock.add(_exaltRock.length,item);
                }
-               if(isEvolutionMaterial(_loc3_))
+               if(isEvolutionMaterial(item))
                {
-                  _assistantEvolutionList.add(_assistantEvolutionList.length,_loc3_);
+                  _assistantEvolutionList.add(_assistantEvolutionList.length,item);
                }
             }
          }
       }
       
-      private function isProperTo_canRongLiangProperList(param1:InventoryItemInfo) : Boolean
+      private function isProperTo_canRongLiangProperList(item:InventoryItemInfo) : Boolean
       {
-         if(param1.Property1 == "8")
+         if(item.Property1 == "8")
          {
             return true;
          }
-         if(param1.FusionType != 0 && param1.getRemainDate() > 0)
+         if(item.FusionType != 0 && item.getRemainDate() > 0)
          {
             return true;
          }
@@ -276,386 +276,386 @@ package store.data
          _info.Bag.addEventListener("update",updateBag);
       }
       
-      private function updateBag(param1:BagEvent) : void
+      private function updateBag(evt:BagEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:BagInfo = param1.target as BagInfo;
-         var _loc5_:Dictionary = param1.changedSlots;
+         var c:* = null;
+         var bag:BagInfo = evt.target as BagInfo;
+         var changes:Dictionary = evt.changedSlots;
          var _loc7_:int = 0;
-         var _loc6_:* = _loc5_;
-         for each(var _loc4_ in _loc5_)
+         var _loc6_:* = changes;
+         for each(var i in changes)
          {
-            _loc2_ = _loc3_.getItemAt(_loc4_.Place);
-            if(_loc2_)
+            c = bag.getItemAt(i.Place);
+            if(c)
             {
-               if(_loc3_.BagType == 0)
+               if(bag.BagType == 0)
                {
-                  __updateEquip(_loc2_);
+                  __updateEquip(c);
                }
-               else if(_loc3_.BagType == 1)
+               else if(bag.BagType == 1)
                {
-                  __updateProp(_loc2_);
+                  __updateProp(c);
                }
             }
-            else if(_loc3_.BagType == 0)
+            else if(bag.BagType == 0)
             {
-               removeFrom(_loc4_,_canStrthEqpmtList);
-               removeFrom(_loc4_,_canCpsEquipmentList);
-               removeFrom(_loc4_,_canTransEquipmengtList);
-               removeFrom(_loc4_,_canNotTransEquipmengtList);
-               removeFrom(_loc4_,_canLianhuaEquipList);
-               removeFrom(_loc4_,_canEmbedEquipList);
-               removeFrom(_loc4_,_canGhostEquipList);
-               removeFrom(_loc4_,_canRongLiangEquipmengtList);
-               removeFrom(_loc4_,_canExaltEqpmtList);
-               removeFrom(_loc4_,_canExaltAssistantList);
+               removeFrom(i,_canStrthEqpmtList);
+               removeFrom(i,_canCpsEquipmentList);
+               removeFrom(i,_canTransEquipmengtList);
+               removeFrom(i,_canNotTransEquipmengtList);
+               removeFrom(i,_canLianhuaEquipList);
+               removeFrom(i,_canEmbedEquipList);
+               removeFrom(i,_canGhostEquipList);
+               removeFrom(i,_canRongLiangEquipmengtList);
+               removeFrom(i,_canExaltEqpmtList);
+               removeFrom(i,_canExaltAssistantList);
             }
             else
             {
-               removeFrom(_loc4_,_strthList);
-               removeFrom(_loc4_,_cpsAndANchList);
-               removeFrom(_loc4_,_canRongLiangPropList);
-               removeFrom(_loc4_,_canLianhuaPropList);
-               removeFrom(_loc4_,_canEmbedPropList);
-               removeFrom(_loc4_,_exaltRock);
-               removeFrom(_loc4_,_assistantEvolutionList);
-               removeFrom(_loc4_,_canGhostPropList);
+               removeFrom(i,_strthList);
+               removeFrom(i,_cpsAndANchList);
+               removeFrom(i,_canRongLiangPropList);
+               removeFrom(i,_canLianhuaPropList);
+               removeFrom(i,_canEmbedPropList);
+               removeFrom(i,_exaltRock);
+               removeFrom(i,_assistantEvolutionList);
+               removeFrom(i,_canGhostPropList);
             }
          }
       }
       
-      private function __updateEquip(param1:InventoryItemInfo) : void
+      private function __updateEquip(item:InventoryItemInfo) : void
       {
-         if(isProperTo_CanStrthEqpmtList(param1))
+         if(isProperTo_CanStrthEqpmtList(item))
          {
-            updateDic(_canStrthEqpmtList,param1);
+            updateDic(_canStrthEqpmtList,item);
          }
          else
          {
-            removeFrom(param1,_canStrthEqpmtList);
+            removeFrom(item,_canStrthEqpmtList);
          }
-         if(isProperTo_CanCpsEquipmentList(param1))
+         if(isProperTo_CanCpsEquipmentList(item))
          {
-            updateDic(_canCpsEquipmentList,param1);
-         }
-         else
-         {
-            removeFrom(param1,_canCpsEquipmentList);
-         }
-         if(isProperTo_CanTransEquipmengtList(param1))
-         {
-            updateDic(_canTransEquipmengtList,param1);
+            updateDic(_canCpsEquipmentList,item);
          }
          else
          {
-            removeFrom(param1,_canTransEquipmengtList);
+            removeFrom(item,_canCpsEquipmentList);
          }
-         if(isProperTo_NotCanTransEquipmengtList(param1))
+         if(isProperTo_CanTransEquipmengtList(item))
          {
-            updateDic(_canNotTransEquipmengtList,param1);
-         }
-         else
-         {
-            removeFrom(param1,_canNotTransEquipmengtList);
-         }
-         if(isProperTo_CanRongLiangEquipmengtList(param1))
-         {
-            updateDic(_canRongLiangEquipmengtList,param1);
+            updateDic(_canTransEquipmengtList,item);
          }
          else
          {
-            removeFrom(param1,_canRongLiangEquipmengtList);
+            removeFrom(item,_canTransEquipmengtList);
          }
-         if(isProperTo_canLianhuaEquipList(param1))
+         if(isProperTo_NotCanTransEquipmengtList(item))
          {
-            updateDic(_canLianhuaEquipList,param1);
-         }
-         else
-         {
-            removeFrom(param1,_canLianhuaEquipList);
-         }
-         if(isProperTo_CanEmbedEquipList(param1))
-         {
-            updateDic(_canEmbedEquipList,param1);
+            updateDic(_canNotTransEquipmengtList,item);
          }
          else
          {
-            removeFrom(param1,_canEmbedEquipList);
+            removeFrom(item,_canNotTransEquipmengtList);
          }
-         if(isProperTo_CanGhostEquipList(param1))
+         if(isProperTo_CanRongLiangEquipmengtList(item))
          {
-            updateDic(_canGhostEquipList,param1);
-         }
-         else
-         {
-            removeFrom(param1,_canGhostEquipList);
-         }
-         if(isProperTo_CanExaltEqpmtList(param1))
-         {
-            updateDic(_canExaltEqpmtList,param1);
+            updateDic(_canRongLiangEquipmengtList,item);
          }
          else
          {
-            removeFrom(param1,_canExaltEqpmtList);
+            removeFrom(item,_canRongLiangEquipmengtList);
          }
-         if(isPropreTo_CanExaltAssistantList(param1))
+         if(isProperTo_canLianhuaEquipList(item))
          {
-            updateDic(_canExaltAssistantList,param1);
+            updateDic(_canLianhuaEquipList,item);
          }
          else
          {
-            removeFrom(param1,_canExaltAssistantList);
+            removeFrom(item,_canLianhuaEquipList);
+         }
+         if(isProperTo_CanEmbedEquipList(item))
+         {
+            updateDic(_canEmbedEquipList,item);
+         }
+         else
+         {
+            removeFrom(item,_canEmbedEquipList);
+         }
+         if(isProperTo_CanGhostEquipList(item))
+         {
+            updateDic(_canGhostEquipList,item);
+         }
+         else
+         {
+            removeFrom(item,_canGhostEquipList);
+         }
+         if(isProperTo_CanExaltEqpmtList(item))
+         {
+            updateDic(_canExaltEqpmtList,item);
+         }
+         else
+         {
+            removeFrom(item,_canExaltEqpmtList);
+         }
+         if(isPropreTo_CanExaltAssistantList(item))
+         {
+            updateDic(_canExaltAssistantList,item);
+         }
+         else
+         {
+            removeFrom(item,_canExaltAssistantList);
          }
       }
       
-      private function __updateProp(param1:InventoryItemInfo) : void
+      private function __updateProp(item:InventoryItemInfo) : void
       {
-         if(isProperTo_CpsAndANchList(param1))
+         if(isProperTo_CpsAndANchList(item))
          {
-            updateDic(_cpsAndANchList,param1);
+            updateDic(_cpsAndANchList,item);
          }
          else
          {
-            removeFrom(param1,_cpsAndANchList);
+            removeFrom(item,_cpsAndANchList);
          }
-         if(isProperTo_canRongLiangProperList(param1))
+         if(isProperTo_canRongLiangProperList(item))
          {
-            updateDic(_canRongLiangPropList,param1);
-         }
-         else
-         {
-            removeFrom(param1,_canRongLiangPropList);
-         }
-         if(isProperTo_StrthList(param1))
-         {
-            updateDic(_strthList,param1);
+            updateDic(_canRongLiangPropList,item);
          }
          else
          {
-            removeFrom(param1,_strthList);
+            removeFrom(item,_canRongLiangPropList);
          }
-         if(isProperTo_ExaltList(param1))
+         if(isProperTo_StrthList(item))
          {
-            updateDic(_exaltRock,param1);
-         }
-         else
-         {
-            removeFrom(param1,_exaltRock);
-         }
-         if(isProperTo_canLianhuaPropList(param1))
-         {
-            updateDic(_canLianhuaPropList,param1);
+            updateDic(_strthList,item);
          }
          else
          {
-            removeFrom(param1,_canLianhuaPropList);
+            removeFrom(item,_strthList);
          }
-         if(isProperTo_CanEmbedPropList(param1))
+         if(isProperTo_ExaltList(item))
          {
-            updateDic(_canEmbedPropList,param1);
-         }
-         else
-         {
-            removeFrom(param1,_canEmbedPropList);
-         }
-         if(isEvolutionMaterial(param1))
-         {
-            updateDic(_assistantEvolutionList,param1);
+            updateDic(_exaltRock,item);
          }
          else
          {
-            removeFrom(param1,_assistantEvolutionList);
+            removeFrom(item,_exaltRock);
          }
-         if(isProperTo_CanGhostPropList(param1))
+         if(isProperTo_canLianhuaPropList(item))
          {
-            updateDic(_canGhostPropList,param1);
+            updateDic(_canLianhuaPropList,item);
          }
          else
          {
-            removeFrom(param1,_canGhostPropList);
+            removeFrom(item,_canLianhuaPropList);
+         }
+         if(isProperTo_CanEmbedPropList(item))
+         {
+            updateDic(_canEmbedPropList,item);
+         }
+         else
+         {
+            removeFrom(item,_canEmbedPropList);
+         }
+         if(isEvolutionMaterial(item))
+         {
+            updateDic(_assistantEvolutionList,item);
+         }
+         else
+         {
+            removeFrom(item,_assistantEvolutionList);
+         }
+         if(isProperTo_CanGhostPropList(item))
+         {
+            updateDic(_canGhostPropList,item);
+         }
+         else
+         {
+            removeFrom(item,_canGhostPropList);
          }
       }
       
-      private function isProperTo_CanCpsEquipmentList(param1:InventoryItemInfo) : Boolean
+      private function isProperTo_CanCpsEquipmentList(item:InventoryItemInfo) : Boolean
       {
-         if(param1.CanCompose && param1.getRemainDate() > 0)
+         if(item.CanCompose && item.getRemainDate() > 0)
          {
             return true;
          }
          return false;
       }
       
-      private function isProperTo_CanStrthEqpmtList(param1:InventoryItemInfo) : Boolean
+      private function isProperTo_CanStrthEqpmtList(item:InventoryItemInfo) : Boolean
       {
-         if(param1.CanStrengthen && param1.getRemainDate() > 0)
+         if(item.CanStrengthen && item.getRemainDate() > 0)
          {
             return true;
          }
          return false;
       }
       
-      private function isProperTo_CanExaltEqpmtList(param1:InventoryItemInfo) : Boolean
+      private function isProperTo_CanExaltEqpmtList(item:InventoryItemInfo) : Boolean
       {
-         if(param1.CanStrengthen && param1.getRemainDate() > 0 && param1.StrengthenLevel >= 12)
+         if(item.CanStrengthen && item.getRemainDate() > 0 && item.StrengthenLevel >= 12)
          {
             return true;
          }
          return false;
       }
       
-      private function isPropreTo_CanExaltAssistantList(param1:InventoryItemInfo) : Boolean
+      private function isPropreTo_CanExaltAssistantList(item:InventoryItemInfo) : Boolean
       {
-         if(param1.getRemainDate() > 0 && param1.CategoryID == 17 && (param1.Property3 == "32" || param1.Property3 == "31") && int(param1.Property2) > 0)
+         if(item.getRemainDate() > 0 && item.CategoryID == 17 && (item.Property3 == "32" || item.Property3 == "31" || item.Property3 == "132") && int(item.Property2) > 0)
          {
             return true;
          }
          return false;
       }
       
-      private function isEvolutionMaterial(param1:InventoryItemInfo) : Boolean
+      private function isEvolutionMaterial(item:InventoryItemInfo) : Boolean
       {
-         if(param1.TemplateID == 12572)
+         if(item.TemplateID == 12572)
          {
             return true;
          }
          return false;
       }
       
-      private function isProperTo_StrthList(param1:InventoryItemInfo) : Boolean
+      private function isProperTo_StrthList(item:InventoryItemInfo) : Boolean
       {
-         if(param1.getRemainDate() <= 0)
+         if(item.getRemainDate() <= 0)
          {
             return false;
          }
-         if(EquipType.isStrengthStone(param1))
+         if(EquipType.isStrengthStone(item))
          {
             return true;
          }
          return false;
       }
       
-      private function isProperTo_ExaltList(param1:InventoryItemInfo) : Boolean
+      private function isProperTo_ExaltList(item:InventoryItemInfo) : Boolean
       {
-         if(param1.getRemainDate() <= 0)
+         if(item.getRemainDate() <= 0)
          {
             return false;
          }
-         if(param1.CategoryID == 11 && param1.Property1 == "45")
+         if(item.CategoryID == 11 && item.Property1 == "45")
          {
             return true;
          }
          return false;
       }
       
-      private function isProperTo_CpsAndANchList(param1:InventoryItemInfo) : Boolean
+      private function isProperTo_CpsAndANchList(item:InventoryItemInfo) : Boolean
       {
-         if(param1.getRemainDate() <= 0)
+         if(item.getRemainDate() <= 0)
          {
             return false;
          }
-         if(EquipType.isComposeStone(param1) || param1.CategoryID == 11 && param1.Property1 == "3")
+         if(EquipType.isComposeStone(item) || item.CategoryID == 11 && item.Property1 == "3")
          {
             return true;
          }
          return false;
       }
       
-      private function isProperTo_CpsAndStrthAndformula(param1:InventoryItemInfo) : Boolean
+      private function isProperTo_CpsAndStrthAndformula(item:InventoryItemInfo) : Boolean
       {
-         if(param1.getRemainDate() <= 0)
+         if(item.getRemainDate() <= 0)
          {
             return false;
          }
-         if(param1.FusionType != 0)
+         if(item.FusionType != 0)
          {
             return true;
          }
-         if(EquipType.isComposeStone(param1) || param1.CategoryID == 11 && param1.Property1 == "8" || EquipType.isStrengthStone(param1))
+         if(EquipType.isComposeStone(item) || item.CategoryID == 11 && item.Property1 == "8" || EquipType.isStrengthStone(item))
          {
             return true;
          }
-         if(param1.CategoryID == 11 && param1.Property1 == "31")
-         {
-            return true;
-         }
-         return false;
-      }
-      
-      private function isProperTo_CanRongLiangEquipmengtList(param1:InventoryItemInfo) : Boolean
-      {
-         if(param1.FusionType != 0 && param1.getRemainDate() > 0 && param1.FusionRate > 0)
+         if(item.CategoryID == 11 && item.Property1 == "31")
          {
             return true;
          }
          return false;
       }
       
-      private function isProperTo_canLianhuaEquipList(param1:InventoryItemInfo) : Boolean
+      private function isProperTo_CanRongLiangEquipmengtList(item:InventoryItemInfo) : Boolean
       {
-         if(param1.RefineryLevel >= 0 && param1.getRemainDate() >= 0)
+         if(item.FusionType != 0 && item.getRemainDate() > 0 && item.FusionRate > 0)
          {
             return true;
          }
          return false;
       }
       
-      private function isProperTo_canLianhuaPropList(param1:InventoryItemInfo) : Boolean
+      private function isProperTo_canLianhuaEquipList(item:InventoryItemInfo) : Boolean
       {
-         if(param1.getRemainDate() <= 0)
+         if(item.RefineryLevel >= 0 && item.getRemainDate() >= 0)
+         {
+            return true;
+         }
+         return false;
+      }
+      
+      private function isProperTo_canLianhuaPropList(item:InventoryItemInfo) : Boolean
+      {
+         if(item.getRemainDate() <= 0)
          {
             return false;
          }
-         if(param1.CategoryID == 11 && (param1.Property1 == "32" || param1.Property1 == "33") || param1.CategoryID == 11 && param1.Property1 == "3")
+         if(item.CategoryID == 11 && (item.Property1 == "32" || item.Property1 == "33") || item.CategoryID == 11 && item.Property1 == "3")
          {
             return true;
          }
          return false;
       }
       
-      private function isProperTo_CanTransEquipmengtList(param1:InventoryItemInfo) : Boolean
+      private function isProperTo_CanTransEquipmengtList(item:InventoryItemInfo) : Boolean
       {
-         if(param1.CategoryID == 27)
+         if(item.CategoryID == 27)
          {
             return false;
          }
-         if(param1.CategoryID == 70)
+         if(item.CategoryID == 70)
          {
-            if(param1.StrengthenLevel > 1 || param1.StrengthenExp > 0)
+            if(item.StrengthenLevel > 1 || item.StrengthenExp > 0)
             {
                return true;
             }
             return false;
          }
-         if(param1.StrengthenLevel > 0 || param1.AttackCompose > 0 || param1.DefendCompose > 0 || param1.AgilityCompose > 0 || param1.LuckCompose > 0 || param1.isHasLatentEnergy || param1.isCanEnchant() && param1.MagicLevel > 0)
+         if(item.StrengthenLevel > 0 || item.AttackCompose > 0 || item.DefendCompose > 0 || item.AgilityCompose > 0 || item.LuckCompose > 0 || item.isHasLatentEnergy || item.isCanEnchant() && item.MagicLevel > 0)
          {
             return true;
          }
          return false;
       }
       
-      private function isProperTo_NotCanTransEquipmengtList(param1:InventoryItemInfo) : Boolean
+      private function isProperTo_NotCanTransEquipmengtList(item:InventoryItemInfo) : Boolean
       {
-         if(!isProperTo_CanTransEquipmengtList(param1))
+         if(!isProperTo_CanTransEquipmengtList(item))
          {
             return true;
          }
          return false;
       }
       
-      private function isProperTo_CanEmbedEquipList(param1:InventoryItemInfo) : Boolean
+      private function isProperTo_CanEmbedEquipList(item:InventoryItemInfo) : Boolean
       {
-         var _loc2_:* = null;
-         if(param1.getRemainDate() <= 0 || param1.CategoryID == 27)
+         var propertyArr:* = null;
+         if(item.getRemainDate() <= 0 || item.CategoryID == 27)
          {
             return false;
          }
-         var _loc3_:Array = param1.Hole.split("|");
+         var holeArr:Array = item.Hole.split("|");
          var _loc6_:int = 0;
-         var _loc5_:* = _loc3_;
-         for each(var _loc4_ in _loc3_)
+         var _loc5_:* = holeArr;
+         for each(var hole in holeArr)
          {
-            _loc2_ = _loc4_.split(",");
-            if(_loc2_[1] == "-1")
+            propertyArr = hole.split(",");
+            if(propertyArr[1] == "-1")
             {
                return false;
             }
@@ -663,395 +663,390 @@ package store.data
          return true;
       }
       
-      private function isProperTo_CanGhostEquipList(param1:InventoryItemInfo) : Boolean
+      private function isProperTo_CanGhostEquipList(item:InventoryItemInfo) : Boolean
       {
-         var _loc2_:Array = [1,5,7];
-         if(param1.Place > 30 || _loc2_.lastIndexOf(param1.CategoryID) == -1)
+         var ghostEquipArr:Array = [1,5,7];
+         if(item.Place > 30 || ghostEquipArr.lastIndexOf(item.CategoryID) == -1)
          {
             return false;
          }
-         var _loc3_:InventoryItemInfo = PlayerManager.Instance.Self.Bag.getItemAt(param1.Place);
-         return _loc3_ != null;
+         var data:InventoryItemInfo = PlayerManager.Instance.Self.Bag.getItemAt(item.Place);
+         return data != null;
       }
       
-      private function isProperTo_CanEmbedPropList(param1:InventoryItemInfo) : Boolean
+      private function isProperTo_CanEmbedPropList(item:InventoryItemInfo) : Boolean
       {
-         if(param1.getRemainDate() <= 0)
+         if(item.getRemainDate() <= 0)
          {
             return false;
          }
-         if(EquipType.isDrill(param1))
+         if(EquipType.isDrill(item))
          {
             return true;
          }
-         if(param1.CategoryID == 11 && (param1.Property1 == "31" || param1.Property1 == "16"))
+         if(item.CategoryID == 11 && (item.Property1 == "31" || item.Property1 == "16"))
          {
             return true;
          }
          return false;
       }
       
-      private function isProperTo_CanGhostPropList(param1:InventoryItemInfo) : Boolean
+      private function isProperTo_CanGhostPropList(item:InventoryItemInfo) : Boolean
       {
-         if(param1.CategoryID == 11 && (param1.Property1 == "117" || param1.Property1 == "118"))
+         if(item.CategoryID == 11 && (item.Property1 == "117" || item.Property1 == "118"))
          {
             return true;
          }
          return false;
       }
       
-      private function updateDic(param1:DictionaryData, param2:InventoryItemInfo) : void
+      private function updateDic(dic:DictionaryData, item:InventoryItemInfo) : void
       {
-         var _loc3_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < param1.length)
+         var i:int = 0;
+         for(i = 0; i < dic.length; )
          {
-            if(param1[_loc3_] != null && param1[_loc3_].Place == param2.Place)
+            if(dic[i] != null && dic[i].Place == item.Place)
             {
-               param1.add(_loc3_,param2);
-               param1.dispatchEvent(new UpdateItemEvent("updateItemEvent",_loc3_,param2));
+               dic.add(i,item);
+               dic.dispatchEvent(new UpdateItemEvent("updateItemEvent",i,item));
                return;
             }
-            _loc3_++;
+            i++;
          }
-         addItemToTheFirstNullCell(param2,param1);
+         addItemToTheFirstNullCell(item,dic);
       }
       
-      private function __removeEquip(param1:DictionaryEvent) : void
+      private function __removeEquip(evt:DictionaryEvent) : void
       {
-         var _loc2_:InventoryItemInfo = param1.data as InventoryItemInfo;
-         removeFrom(_loc2_,_canCpsEquipmentList);
-         removeFrom(_loc2_,_canStrthEqpmtList);
-         removeFrom(_loc2_,_canTransEquipmengtList);
-         removeFrom(_loc2_,_canRongLiangEquipmengtList);
+         var item_1:InventoryItemInfo = evt.data as InventoryItemInfo;
+         removeFrom(item_1,_canCpsEquipmentList);
+         removeFrom(item_1,_canStrthEqpmtList);
+         removeFrom(item_1,_canTransEquipmengtList);
+         removeFrom(item_1,_canRongLiangEquipmengtList);
       }
       
-      private function addItemToTheFirstNullCell(param1:InventoryItemInfo, param2:DictionaryData) : void
+      private function addItemToTheFirstNullCell(item:InventoryItemInfo, dic:DictionaryData) : void
       {
-         param2.add(findFirstNullCellID(param2),param1);
+         dic.add(findFirstNullCellID(dic),item);
       }
       
-      private function findFirstNullCellID(param1:DictionaryData) : int
+      private function findFirstNullCellID(dic:DictionaryData) : int
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = -1;
-         var _loc3_:int = param1.length;
-         _loc4_ = 0;
-         while(_loc4_ <= _loc3_)
+         var i:int = 0;
+         var result:* = -1;
+         var lth:int = dic.length;
+         for(i = 0; i <= lth; )
          {
-            if(param1[_loc4_] == null)
+            if(dic[i] == null)
             {
-               _loc2_ = _loc4_;
+               result = i;
                break;
             }
-            _loc4_++;
+            i++;
          }
-         return _loc2_;
+         return result;
       }
       
-      private function removeFrom(param1:InventoryItemInfo, param2:DictionaryData) : void
+      private function removeFrom(item:InventoryItemInfo, dic:DictionaryData) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = param2.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var i:int = 0;
+         var lth:int = dic.length;
+         for(i = 0; i < lth; )
          {
-            if(param2[_loc4_] && param2[_loc4_].Place == param1.Place)
+            if(dic[i] && dic[i].Place == item.Place)
             {
-               param2[_loc4_] = null;
-               param2.dispatchEvent(new StoreBagEvent("storeBagRemove",_loc4_,param1));
+               dic[i] = null;
+               dic.dispatchEvent(new StoreBagEvent("storeBagRemove",i,item));
                break;
             }
-            _loc4_++;
+            i++;
          }
       }
       
-      public function sortEquipList(param1:DictionaryData) : DictionaryData
+      public function sortEquipList(equipList:DictionaryData) : DictionaryData
       {
-         var _loc2_:* = param1;
-         param1 = new DictionaryData();
-         fillByCategoryID(_loc2_,param1,7);
-         fillByCategoryID(_loc2_,param1,5);
-         fillByCategoryID(_loc2_,param1,1);
-         fillByCategoryID(_loc2_,param1,2);
-         fillByCategoryID(_loc2_,param1,3);
-         fillByCategoryID(_loc2_,param1,4);
-         fillByCategoryID(_loc2_,param1,6);
-         fillByCategoryID(_loc2_,param1,13);
-         fillByCategoryID(_loc2_,param1,15);
-         fillByCategoryID(_loc2_,param1,8);
-         fillByCategoryID(_loc2_,param1,9);
-         fillByCategoryID(_loc2_,param1,17);
-         fillByCategoryID(_loc2_,param1,70);
-         param1 = sortByIsUsed(param1);
-         return param1;
+         var temp:* = equipList;
+         equipList = new DictionaryData();
+         fillByCategoryID(temp,equipList,7);
+         fillByCategoryID(temp,equipList,5);
+         fillByCategoryID(temp,equipList,1);
+         fillByCategoryID(temp,equipList,2);
+         fillByCategoryID(temp,equipList,3);
+         fillByCategoryID(temp,equipList,4);
+         fillByCategoryID(temp,equipList,6);
+         fillByCategoryID(temp,equipList,13);
+         fillByCategoryID(temp,equipList,15);
+         fillByCategoryID(temp,equipList,8);
+         fillByCategoryID(temp,equipList,9);
+         fillByCategoryID(temp,equipList,17);
+         fillByCategoryID(temp,equipList,70);
+         equipList = sortByIsUsed(equipList);
+         return equipList;
       }
       
-      private function sortByIsUsed(param1:DictionaryData) : DictionaryData
+      private function sortByIsUsed(source:DictionaryData) : DictionaryData
       {
-         var _loc5_:DictionaryData = new DictionaryData();
-         var _loc3_:DictionaryData = new DictionaryData();
+         var temp:DictionaryData = new DictionaryData();
+         var dic:DictionaryData = new DictionaryData();
          var _loc7_:int = 0;
-         var _loc6_:* = param1;
-         for each(var _loc2_ in param1)
+         var _loc6_:* = source;
+         for each(var item in source)
          {
-            if(_loc2_.Place < 17 || _loc2_.Place == 18)
+            if(item.Place < 17 || item.Place == 18)
             {
-               _loc5_.add(_loc5_.length,_loc2_);
+               temp.add(temp.length,item);
             }
             else
             {
-               _loc3_.add(_loc3_.length,_loc2_);
+               dic.add(dic.length,item);
             }
          }
          var _loc9_:int = 0;
-         var _loc8_:* = _loc3_;
-         for each(var _loc4_ in _loc3_)
+         var _loc8_:* = dic;
+         for each(var itemInfo in dic)
          {
-            _loc5_.add(_loc5_.length,_loc4_);
+            temp.add(temp.length,itemInfo);
          }
-         return _loc5_;
+         return temp;
       }
       
-      public function sortRoogEquipList(param1:DictionaryData) : DictionaryData
+      public function sortRoogEquipList(equipList:DictionaryData) : DictionaryData
       {
-         var _loc2_:* = param1;
-         param1 = new DictionaryData();
-         rongLiangFill(_loc2_,param1,7);
-         rongLiangFill(_loc2_,param1,17);
-         rongLiangFill(_loc2_,param1,8);
-         rongLiangFill(_loc2_,param1,9);
-         rongLiangFill(_loc2_,param1,14);
-         rongLiangFill(_loc2_,param1,70);
-         return param1;
+         var temp:* = equipList;
+         equipList = new DictionaryData();
+         rongLiangFill(temp,equipList,7);
+         rongLiangFill(temp,equipList,17);
+         rongLiangFill(temp,equipList,8);
+         rongLiangFill(temp,equipList,9);
+         rongLiangFill(temp,equipList,14);
+         rongLiangFill(temp,equipList,70);
+         return equipList;
       }
       
-      private function fillByCategoryID(param1:DictionaryData, param2:DictionaryData, param3:int) : void
+      private function fillByCategoryID(source:DictionaryData, target:DictionaryData, categoryID:int) : void
       {
          var _loc6_:int = 0;
-         var _loc5_:* = param1;
-         for each(var _loc4_ in param1)
+         var _loc5_:* = source;
+         for each(var item in source)
          {
-            if(_loc4_.CategoryID == param3)
+            if(item.CategoryID == categoryID)
             {
-               param2.add(param2.length,_loc4_);
+               target.add(target.length,item);
             }
          }
       }
       
-      private function rongLiangFill(param1:DictionaryData, param2:DictionaryData, param3:int) : void
+      private function rongLiangFill(source:DictionaryData, target:DictionaryData, CategoryID:int) : void
       {
          var _loc6_:int = 0;
-         var _loc5_:* = param1;
-         for each(var _loc4_ in param1)
+         var _loc5_:* = source;
+         for each(var item in source)
          {
-            if(_loc4_.CategoryID == param3)
+            if(item.CategoryID == CategoryID)
             {
-               param2.add(param2.length,_loc4_);
+               target.add(target.length,item);
             }
          }
       }
       
-      private function rongLiangFunFill(param1:DictionaryData, param2:DictionaryData) : void
+      private function rongLiangFunFill(source:DictionaryData, target:DictionaryData) : void
       {
          var _loc5_:int = 0;
-         var _loc4_:* = param1;
-         for each(var _loc3_ in param1)
+         var _loc4_:* = source;
+         for each(var item in source)
          {
-            if(_loc3_.Property1 == "8")
+            if(item.Property1 == "8")
             {
-               param2.add(param2.length,_loc3_);
+               target.add(target.length,item);
             }
          }
       }
       
-      private function fillByTemplateID(param1:DictionaryData, param2:DictionaryData, param3:int) : void
+      private function fillByTemplateID(source:DictionaryData, target:DictionaryData, templateID:int) : void
       {
          var _loc6_:int = 0;
-         var _loc5_:* = param1;
-         for each(var _loc4_ in param1)
+         var _loc5_:* = source;
+         for each(var item in source)
          {
-            if(_loc4_.TemplateID == param3)
+            if(item.TemplateID == templateID)
             {
-               param2.add(param2.length,_loc4_);
+               target.add(target.length,item);
             }
          }
       }
       
-      private function fillByProperty1AndProperty3(param1:DictionaryData, param2:DictionaryData, param3:String, param4:String) : void
+      private function fillByProperty1AndProperty3(source:DictionaryData, target:DictionaryData, property1:String, property3:String) : void
       {
-         var _loc6_:* = null;
-         var _loc5_:Array = [];
+         var item:* = null;
+         var tempArr:Array = [];
          var _loc8_:int = 0;
-         var _loc7_:* = param1;
-         for each(_loc6_ in param1)
+         var _loc7_:* = source;
+         for each(item in source)
          {
-            if(_loc6_.Property1 == param3 && _loc6_.Property3 == param4)
+            if(item.Property1 == property1 && item.Property3 == property3)
             {
-               _loc5_.push(_loc6_);
+               tempArr.push(item);
             }
          }
-         bubbleSort(_loc5_);
+         bubbleSort(tempArr);
          var _loc10_:int = 0;
-         var _loc9_:* = _loc5_;
-         for each(_loc6_ in _loc5_)
+         var _loc9_:* = tempArr;
+         for each(item in tempArr)
          {
-            param2.add(param2.length,_loc6_);
+            target.add(target.length,item);
          }
       }
       
-      private function fillByProperty1(param1:DictionaryData, param2:DictionaryData, param3:String) : void
+      private function fillByProperty1(source:DictionaryData, target:DictionaryData, property1:String) : void
       {
-         var _loc5_:* = null;
-         var _loc4_:Array = [];
+         var item:* = null;
+         var tempArr:Array = [];
          var _loc7_:int = 0;
-         var _loc6_:* = param1;
-         for each(_loc5_ in param1)
+         var _loc6_:* = source;
+         for each(item in source)
          {
-            if(_loc5_.Property1 == param3)
+            if(item.Property1 == property1)
             {
-               _loc4_.push(_loc5_);
+               tempArr.push(item);
             }
          }
-         bubbleSort(_loc4_);
+         bubbleSort(tempArr);
          var _loc9_:int = 0;
-         var _loc8_:* = _loc4_;
-         for each(_loc5_ in _loc4_)
+         var _loc8_:* = tempArr;
+         for each(item in tempArr)
          {
-            param2.add(param2.length,_loc5_);
+            target.add(target.length,item);
          }
       }
       
-      private function findByTemplateID(param1:DictionaryData, param2:DictionaryData, param3:int) : void
+      private function findByTemplateID(source:DictionaryData, target:DictionaryData, templateId:int) : void
       {
-         var _loc5_:* = null;
-         var _loc4_:Array = [];
+         var item:* = null;
+         var tempArr:Array = [];
          var _loc7_:int = 0;
-         var _loc6_:* = param1;
-         for each(_loc5_ in param1)
+         var _loc6_:* = source;
+         for each(item in source)
          {
-            if(_loc5_.TemplateID == param3)
+            if(item.TemplateID == templateId)
             {
-               _loc4_.push(_loc5_);
+               tempArr.push(item);
             }
          }
-         bubbleSort(_loc4_);
+         bubbleSort(tempArr);
          var _loc9_:int = 0;
-         var _loc8_:* = _loc4_;
-         for each(_loc5_ in _loc4_)
+         var _loc8_:* = tempArr;
+         for each(item in tempArr)
          {
-            param2.add(param2.length,_loc5_);
+            target.add(target.length,item);
          }
       }
       
-      public function sortOffHandList(param1:DictionaryData) : DictionaryData
+      public function sortOffHandList(propList:DictionaryData) : DictionaryData
       {
-         var _loc2_:* = param1;
-         param1 = new DictionaryData();
-         rongLiangFunFill(_loc2_,param1);
-         fillOffHand(_loc2_,param1,17);
-         return param1;
+         var temp:* = propList;
+         propList = new DictionaryData();
+         rongLiangFunFill(temp,propList);
+         fillOffHand(temp,propList,17);
+         return propList;
       }
       
-      private function fillOffHand(param1:DictionaryData, param2:DictionaryData, param3:int) : void
+      private function fillOffHand(source:DictionaryData, target:DictionaryData, categoryID:int) : void
       {
          var _loc6_:int = 0;
-         var _loc5_:* = param1;
-         for each(var _loc4_ in param1)
+         var _loc5_:* = source;
+         for each(var item in source)
          {
-            if(_loc4_.CategoryID == param3 && (_loc4_.Property3 == "32" || _loc4_.Property3 == "31"))
+            if(item.CategoryID == categoryID && (item.Property3 == "32" || item.Property3 == "31" || item.Property3 == "132"))
             {
-               param2.add(param2.length,_loc4_);
+               target.add(target.length,item);
             }
          }
       }
       
-      public function sortEvolutionMaterialList(param1:DictionaryData) : DictionaryData
+      public function sortEvolutionMaterialList(propList:DictionaryData) : DictionaryData
       {
-         var _loc2_:* = param1;
-         param1 = new DictionaryData();
-         rongLiangFunFill(_loc2_,param1);
-         fillByCategoryID(_loc2_,param1,12572);
-         return param1;
+         var temp:* = propList;
+         propList = new DictionaryData();
+         rongLiangFunFill(temp,propList);
+         fillByCategoryID(temp,propList,12572);
+         return propList;
       }
       
-      public function sortPropList(param1:DictionaryData, param2:Boolean = false) : DictionaryData
+      public function sortPropList(propList:DictionaryData, isCompose:Boolean = false) : DictionaryData
       {
-         var _loc3_:* = param1;
-         param1 = new DictionaryData();
-         rongLiangFunFill(_loc3_,param1);
-         fillByProperty1(_loc3_,param1,"2");
-         fillByProperty1(_loc3_,param1,"35");
-         fillByProperty1(_loc3_,param1,"32");
-         fillByProperty1(_loc3_,param1,"33");
-         fillByProperty1(_loc3_,param1,"16");
-         fillByProperty1(_loc3_,param1,"31");
-         fillByProperty1AndProperty3(_loc3_,param1,"1","1");
-         fillByProperty1AndProperty3(_loc3_,param1,"1","2");
-         fillByProperty1AndProperty3(_loc3_,param1,"1","3");
-         fillByProperty1AndProperty3(_loc3_,param1,"1","4");
-         if(!param2)
+         var temp:* = propList;
+         propList = new DictionaryData();
+         rongLiangFunFill(temp,propList);
+         fillByProperty1(temp,propList,"2");
+         fillByProperty1(temp,propList,"35");
+         fillByProperty1(temp,propList,"32");
+         fillByProperty1(temp,propList,"33");
+         fillByProperty1(temp,propList,"16");
+         fillByProperty1(temp,propList,"31");
+         fillByProperty1AndProperty3(temp,propList,"1","1");
+         fillByProperty1AndProperty3(temp,propList,"1","2");
+         fillByProperty1AndProperty3(temp,propList,"1","3");
+         fillByProperty1AndProperty3(temp,propList,"1","4");
+         if(!isCompose)
          {
-            fillByProperty1(_loc3_,param1,"7");
+            fillByProperty1(temp,propList,"7");
          }
-         fillByProperty1(_loc3_,param1,"3");
-         rongLiangFill(_loc3_,param1,8);
-         rongLiangFill(_loc3_,param1,9);
-         rongLiangFill(_loc3_,param1,14);
-         fillByProperty1(_loc3_,param1,"10");
-         return param1;
+         fillByProperty1(temp,propList,"3");
+         rongLiangFill(temp,propList,8);
+         rongLiangFill(temp,propList,9);
+         rongLiangFill(temp,propList,14);
+         fillByProperty1(temp,propList,"10");
+         return propList;
       }
       
-      public function sortPropStrthList(param1:DictionaryData, param2:Boolean = false) : DictionaryData
+      public function sortPropStrthList(propList:DictionaryData, isCompose:Boolean = false) : DictionaryData
       {
-         var _loc3_:* = param1;
-         param1 = new DictionaryData();
-         rongLiangFunFill(_loc3_,param1);
-         fillByProperty1(_loc3_,param1,"2");
-         fillByProperty1(_loc3_,param1,"35");
-         fillByProperty1(_loc3_,param1,"32");
-         fillByProperty1(_loc3_,param1,"33");
-         fillByProperty1(_loc3_,param1,"16");
-         fillByProperty1(_loc3_,param1,"31");
-         fillByProperty1AndProperty3(_loc3_,param1,"1","1");
-         fillByProperty1AndProperty3(_loc3_,param1,"1","2");
-         fillByProperty1AndProperty3(_loc3_,param1,"1","3");
-         fillByProperty1AndProperty3(_loc3_,param1,"1","4");
-         rongLiangFill(_loc3_,param1,8);
-         rongLiangFill(_loc3_,param1,9);
-         rongLiangFill(_loc3_,param1,14);
-         fillByProperty1(_loc3_,param1,"10");
-         return param1;
+         var temp:* = propList;
+         propList = new DictionaryData();
+         rongLiangFunFill(temp,propList);
+         fillByProperty1(temp,propList,"2");
+         fillByProperty1(temp,propList,"35");
+         fillByProperty1(temp,propList,"32");
+         fillByProperty1(temp,propList,"33");
+         fillByProperty1(temp,propList,"16");
+         fillByProperty1(temp,propList,"31");
+         fillByProperty1AndProperty3(temp,propList,"1","1");
+         fillByProperty1AndProperty3(temp,propList,"1","2");
+         fillByProperty1AndProperty3(temp,propList,"1","3");
+         fillByProperty1AndProperty3(temp,propList,"1","4");
+         rongLiangFill(temp,propList,8);
+         rongLiangFill(temp,propList,9);
+         rongLiangFill(temp,propList,14);
+         fillByProperty1(temp,propList,"10");
+         return propList;
       }
       
-      private function bubbleSort(param1:Array) : void
+      private function bubbleSort(dic:Array) : void
       {
-         var _loc6_:int = 0;
-         var _loc3_:Boolean = false;
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc2_:int = param1.length;
-         _loc6_ = 0;
-         while(_loc6_ < _loc2_)
+         var i:int = 0;
+         var flag:Boolean = false;
+         var j:int = 0;
+         var temp:* = null;
+         var lth:int = dic.length;
+         for(i = 0; i < lth; )
          {
-            _loc3_ = true;
-            _loc5_ = 0;
-            while(_loc5_ < _loc2_ - 1)
+            flag = true;
+            for(j = 0; j < lth - 1; )
             {
-               if(param1[_loc5_].Quality < param1[_loc5_ + 1].Quality)
+               if(dic[j].Quality < dic[j + 1].Quality)
                {
-                  _loc4_ = param1[_loc5_];
-                  param1[_loc5_] = param1[_loc5_ + 1];
-                  param1[_loc5_ + 1] = _loc4_;
-                  _loc3_ = false;
+                  temp = dic[j];
+                  dic[j] = dic[j + 1];
+                  dic[j + 1] = temp;
+                  flag = false;
                }
-               _loc5_++;
+               j++;
             }
-            if(_loc3_)
+            if(flag)
             {
                return;
             }
-            _loc6_++;
+            i++;
          }
       }
       
@@ -1060,9 +1055,9 @@ package store.data
          return _info;
       }
       
-      public function set currentPanel(param1:int) : void
+      public function set currentPanel(currentPanel:int) : void
       {
-         _currentPanel = param1;
+         _currentPanel = currentPanel;
       }
       
       public function get currentPanel() : int
@@ -1165,9 +1160,9 @@ package store.data
          return _canGhostPropList;
       }
       
-      public function set NeedAutoLink(param1:int) : void
+      public function set NeedAutoLink(value:int) : void
       {
-         _needAutoLink = param1;
+         _needAutoLink = value;
       }
       
       public function get NeedAutoLink() : int
@@ -1177,33 +1172,33 @@ package store.data
       
       public function checkEmbeded() : Boolean
       {
-         var _loc1_:* = null;
+         var item:* = null;
          var _loc4_:int = 0;
          var _loc3_:* = _canEmbedEquipList;
-         for(var _loc2_ in _canEmbedEquipList)
+         for(var length in _canEmbedEquipList)
          {
-            _loc1_ = _canEmbedEquipList[int(_loc2_)] as InventoryItemInfo;
-            if(_loc1_ && _loc1_.Hole1 != -1 && _loc1_.Hole1 != 0)
+            item = _canEmbedEquipList[int(length)] as InventoryItemInfo;
+            if(item && item.Hole1 != -1 && item.Hole1 != 0)
             {
                return false;
             }
-            if(_loc1_ && _loc1_.Hole2 != -1 && _loc1_.Hole2 != 0)
+            if(item && item.Hole2 != -1 && item.Hole2 != 0)
             {
                return false;
             }
-            if(_loc1_ && _loc1_.Hole3 != -1 && _loc1_.Hole3 != 0)
+            if(item && item.Hole3 != -1 && item.Hole3 != 0)
             {
                return false;
             }
-            if(_loc1_ && _loc1_.Hole4 != -1 && _loc1_.Hole4 != 0)
+            if(item && item.Hole4 != -1 && item.Hole4 != 0)
             {
                return false;
             }
-            if(_loc1_ && _loc1_.Hole5 != -1 && _loc1_.Hole5 != 0)
+            if(item && item.Hole5 != -1 && item.Hole5 != 0)
             {
                return false;
             }
-            if(_loc1_ && _loc1_.Hole6 != -1 && _loc1_.Hole6 != 0)
+            if(item && item.Hole6 != -1 && item.Hole6 != 0)
             {
                return false;
             }

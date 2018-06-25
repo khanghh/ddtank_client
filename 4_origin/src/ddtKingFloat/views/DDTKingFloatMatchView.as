@@ -84,26 +84,26 @@ package ddtKingFloat.views
          DDTKingFloatManager.instance.addEventListener("floatParadeCancelGame",cancelGameHandler);
       }
       
-      private function cancelMatchHandler(param1:FrameEvent) : void
+      private function cancelMatchHandler(event:FrameEvent) : void
       {
-         if(param1.responseCode == 1 || param1.responseCode == 4 || param1.responseCode == 0)
+         if(event.responseCode == 1 || event.responseCode == 4 || event.responseCode == 0)
          {
             SoundManager.instance.play("008");
             SocketManager.Instance.out.sendEscortCancelGame();
          }
       }
       
-      private function cancelGameHandler(param1:Event) : void
+      private function cancelGameHandler(event:Event) : void
       {
          dispose();
       }
       
-      private function onCancel(param1:MouseEvent) : void
+      private function onCancel(event:MouseEvent) : void
       {
          dispatchEvent(new FrameEvent(4));
       }
       
-      private function timerHandler(param1:TimerEvent) : void
+      private function timerHandler(event:TimerEvent) : void
       {
          _countDown = Number(_countDown) - 1;
          if(_countDown < 0)

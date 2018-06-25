@@ -33,23 +33,23 @@ package stock.views
       
       private function toArray() : Array
       {
-         var _loc2_:int = 0;
-         var _loc1_:Array = [];
-         _loc2_ = 0;
-         while(StockMgr.inst.model.exchangedList && _loc2_ < StockMgr.inst.model.exchangedList.length)
+         var i:int = 0;
+         var tmp:Array = [];
+         i = 0;
+         while(StockMgr.inst.model.exchangedList && i < StockMgr.inst.model.exchangedList.length)
          {
-            _loc1_.push(StockMgr.inst.model.exchangedList[_loc2_]);
-            _loc2_++;
+            tmp.push(StockMgr.inst.model.exchangedList[i]);
+            i++;
          }
-         return _loc1_;
+         return tmp;
       }
       
       private function updateLeftTime() : void
       {
-         var _loc1_:Number = StockMgr.inst.model.shopCloseTime;
-         var _loc2_:Number = TimeManager.Instance.NowTime();
-         var _loc3_:Array = DateUtils.dateTimeRemainArr(Math.max(0,(StockMgr.inst.model.shopCloseTime - TimeManager.Instance.NowTime()) / 1000));
-         lablTime.text = LanguageMgr.GetTranslation("stock.award.time",_loc3_[0],_loc3_[1] < 10?"0" + _loc3_[1]:_loc3_[1],_loc3_[2] < 10?"0" + _loc3_[2]:_loc3_[2],_loc3_[3] < 10?"0" + _loc3_[3]:_loc3_[3]);
+         var closeTime:Number = StockMgr.inst.model.shopCloseTime;
+         var serverTime:Number = TimeManager.Instance.NowTime();
+         var dateArr:Array = DateUtils.dateTimeRemainArr(Math.max(0,(StockMgr.inst.model.shopCloseTime - TimeManager.Instance.NowTime()) / 1000));
+         lablTime.text = LanguageMgr.GetTranslation("stock.award.time",dateArr[0],dateArr[1] < 10?"0" + dateArr[1]:dateArr[1],dateArr[2] < 10?"0" + dateArr[2]:dateArr[2],dateArr[3] < 10?"0" + dateArr[3]:dateArr[3]);
          if(!_timer)
          {
             _timer = new Timer(1000);
@@ -58,12 +58,12 @@ package stock.views
          }
       }
       
-      private function cooldown(param1:TimerEvent) : void
+      private function cooldown(event:TimerEvent) : void
       {
-         var _loc2_:int = StockMgr.inst.model.shopCloseTime - TimeManager.Instance.NowTime();
-         var _loc3_:Array = DateUtils.dateTimeRemainArr(Math.max(0,(StockMgr.inst.model.shopCloseTime - TimeManager.Instance.NowTime()) / 1000));
-         lablTime.text = LanguageMgr.GetTranslation("stock.award.time",_loc3_[0],_loc3_[1] < 10?"0" + _loc3_[1]:_loc3_[1],_loc3_[2] < 10?"0" + _loc3_[2]:_loc3_[2],_loc3_[3] < 10?"0" + _loc3_[3]:_loc3_[3]);
-         if(_loc2_ < 0)
+         var durationTime:int = StockMgr.inst.model.shopCloseTime - TimeManager.Instance.NowTime();
+         var dateArr:Array = DateUtils.dateTimeRemainArr(Math.max(0,(StockMgr.inst.model.shopCloseTime - TimeManager.Instance.NowTime()) / 1000));
+         lablTime.text = LanguageMgr.GetTranslation("stock.award.time",dateArr[0],dateArr[1] < 10?"0" + dateArr[1]:dateArr[1],dateArr[2] < 10?"0" + dateArr[2]:dateArr[2],dateArr[3] < 10?"0" + dateArr[3]:dateArr[3]);
+         if(durationTime < 0)
          {
             _timer.stop();
          }
@@ -81,12 +81,12 @@ package stock.views
          StockMgr.inst.removeEventListener("stock_exchange_award",__updateStatus);
       }
       
-      private function __updateScore(param1:StockEvent) : void
+      private function __updateScore(evt:StockEvent) : void
       {
          update();
       }
       
-      private function __updateStatus(param1:StockEvent) : void
+      private function __updateStatus(evt:StockEvent) : void
       {
          update();
       }
@@ -97,13 +97,13 @@ package stock.views
          awardList.array = toArray();
       }
       
-      private function render(param1:StockAwardItem, param2:int) : void
+      private function render(item:StockAwardItem, index:int) : void
       {
          if(awardList.array == null || awardList.array.length == 0)
          {
             return;
          }
-         param1.data = awardList.array[param2];
+         item.data = awardList.array[index];
       }
       
       override public function dispose() : void

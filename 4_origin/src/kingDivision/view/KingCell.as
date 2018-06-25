@@ -51,12 +51,12 @@ package kingDivision.view
          _dic = KingDivisionManager.Instance.dataDic;
       }
       
-      public function setNickName(param1:KingDivisionConsortionItemInfo, param2:String = "left") : void
+      public function setNickName(playerInfo:KingDivisionConsortionItemInfo, direction:String = "left") : void
       {
          if(_playerInfo == null)
          {
-            _playerInfo = param1;
-            _directrion = param2;
+            _playerInfo = playerInfo;
+            _directrion = direction;
             setInfo();
             return;
          }
@@ -109,7 +109,7 @@ package kingDivision.view
          }
       }
       
-      private function __playerInfoChange(param1:PlayerPropertyEvent) : void
+      private function __playerInfoChange(event:PlayerPropertyEvent) : void
       {
          _info.removeEventListener("propertychange",__playerInfoChange);
          updateCharacter();
@@ -142,7 +142,7 @@ package kingDivision.view
          _character.buttonMode = _loc1_;
       }
       
-      private function __characterComplete(param1:Event) : void
+      private function __characterComplete(evt:Event) : void
       {
          if(_figure && _figure.parent && _figure.bitmapData)
          {
@@ -180,10 +180,10 @@ package kingDivision.view
       
       private function tipUpdate() : void
       {
-         var _loc1_:Bitmap = new Bitmap(new BitmapData(200,200));
-         _loc1_.width = 42;
-         _loc1_.height = 36;
-         _loc1_.visible = false;
+         var figure:Bitmap = new Bitmap(new BitmapData(200,200));
+         figure.width = 42;
+         figure.height = 36;
+         figure.visible = false;
          if(_dic == null)
          {
             components = KingDivisionManager.Instance.returnComponent(_figure,LanguageMgr.GetTranslation("asset.kingCell.tip",_playerInfo.consortionNameArea,_playerInfo.consortionScoreArea));
@@ -206,9 +206,9 @@ package kingDivision.view
          return _index;
       }
       
-      public function set index(param1:int) : void
+      public function set index(value:int) : void
       {
-         _index = param1;
+         _index = value;
       }
       
       public function dispose() : void

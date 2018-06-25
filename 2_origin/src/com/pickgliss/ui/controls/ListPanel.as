@@ -34,17 +34,17 @@ package com.pickgliss.ui.controls
          super.dispose();
       }
       
-      public function set factoryStyle(param1:String) : void
+      public function set factoryStyle(value:String) : void
       {
-         if(_factoryStrle == param1)
+         if(_factoryStrle == value)
          {
             return;
          }
-         _factoryStrle = param1;
-         var _loc4_:Array = param1.split("|");
-         var _loc3_:String = _loc4_[0];
-         var _loc2_:Array = ComponentFactory.parasArgs(_loc4_[1]);
-         _factory = ClassUtils.CreatInstance(_loc3_,_loc2_);
+         _factoryStrle = value;
+         var factoryAndArgs:Array = value.split("|");
+         var classname:String = factoryAndArgs[0];
+         var args:Array = ComponentFactory.parasArgs(factoryAndArgs[1]);
+         _factory = ClassUtils.CreatInstance(classname,args);
          onPropertiesChanged("factory");
       }
       
@@ -58,13 +58,13 @@ package com.pickgliss.ui.controls
          return list.model;
       }
       
-      public function set listStyle(param1:String) : void
+      public function set listStyle(stylename:String) : void
       {
-         if(_listStyle == param1)
+         if(_listStyle == stylename)
          {
             return;
          }
-         _listStyle = param1;
+         _listStyle = stylename;
          viewPort = ComponentFactory.Instance.creat(_listStyle);
       }
       

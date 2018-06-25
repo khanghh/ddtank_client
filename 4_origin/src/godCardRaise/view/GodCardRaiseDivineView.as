@@ -110,7 +110,7 @@ package godCardRaise.view
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          _bg = ComponentFactory.Instance.creatComponentByStylename("godCardRaiseDivineView.bg");
          addChild(_bg);
          _divineBtn = ComponentFactory.Instance.creatComponentByStylename("godCardRaiseDivineView.divineBtn");
@@ -148,14 +148,13 @@ package godCardRaise.view
          _selectedCB = ComponentFactory.Instance.creat("godCardRaiseDivineView.dropListCombo");
          addChild(_selectedCB);
          _selectedCB.beginChanges();
-         var _loc1_:VectorListModel = _selectedCB.listPanel.vectorListModel;
-         _loc1_.clear();
+         var comboxModel:VectorListModel = _selectedCB.listPanel.vectorListModel;
+         comboxModel.clear();
          godcardLevels = LanguageMgr.GetTranslation("godCardRaiseDivineView.godcardLevelsMsg").split("|");
-         _loc2_ = 0;
-         while(_loc2_ < godcardLevels.length)
+         for(i = 0; i < godcardLevels.length; )
          {
-            _loc1_.append(godcardLevels[_loc2_]);
-            _loc2_++;
+            comboxModel.append(godcardLevels[i]);
+            i++;
          }
          _selectedCB.commitChanges();
          _selectedCB.textField.text = godcardLevels[godcardLevels.length - 1];
@@ -173,34 +172,34 @@ package godCardRaise.view
          _inputText.addEventListener("focusOut",__inputTextFousOut);
       }
       
-      private function __selectedClickHandler(param1:Event) : void
+      private function __selectedClickHandler(pEvent:Event) : void
       {
-         if(param1.target == _selectedBtn)
+         if(pEvent.target == _selectedBtn)
          {
             _inputSelectedBtn.selected = false;
          }
-         else if(param1.target == _inputSelectedBtn)
+         else if(pEvent.target == _inputSelectedBtn)
          {
             _selectedBtn.selected = false;
          }
       }
       
-      private function setButtonFrame(param1:BaseButton, param2:int) : void
+      private function setButtonFrame($btn:BaseButton, $frameIndex:int) : void
       {
-         var _loc3_:ScaleFrameImage = param1.backgound as ScaleFrameImage;
-         _loc3_.setFrame(param2);
+         var bg:ScaleFrameImage = $btn.backgound as ScaleFrameImage;
+         bg.setFrame($frameIndex);
       }
       
-      private function getButtonCurrentFrame(param1:BaseButton) : int
+      private function getButtonCurrentFrame($btn:BaseButton) : int
       {
-         var _loc2_:ScaleFrameImage = param1.backgound as ScaleFrameImage;
-         return _loc2_.getFrame;
+         var bg:ScaleFrameImage = $btn.backgound as ScaleFrameImage;
+         return bg.getFrame;
       }
       
-      private function __onListClicked(param1:ListItemEvent) : void
+      private function __onListClicked(e:ListItemEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:int = godcardLevels.indexOf(param1.cellValue);
+         var index:int = godcardLevels.indexOf(e.cellValue);
       }
       
       private function showFreeCount() : void
@@ -216,13 +215,13 @@ package godCardRaise.view
          return ServerConfigManager.instance.godCardDailyFreeCount - GodCardRaiseManager.Instance.model.freeCount;
       }
       
-      private function __divineClickHandler(param1:MouseEvent) : void
+      private function __divineClickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:int = getButtonCurrentFrame(_divineBtn);
+         var currentFrameIndex:int = getButtonCurrentFrame(_divineBtn);
          if(_selectedBtn.selected == false && _inputSelectedBtn.selected == true)
          {
-            if(_loc2_ == 1)
+            if(currentFrameIndex == 1)
             {
                selectedContinuous(1);
             }
@@ -234,7 +233,7 @@ package godCardRaise.view
                continueOpen = 0;
             }
          }
-         else if(_loc2_ == 1)
+         else if(currentFrameIndex == 1)
          {
             if(openCardLock)
             {
@@ -260,14 +259,14 @@ package godCardRaise.view
          }
       }
       
-      private function selectedContinuous(param1:int) : void
+      private function selectedContinuous(num:int) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         _buyCount = param1;
+         var msg:* = null;
+         var frame:* = null;
+         _buyCount = num;
          if(int(_inputText.text) > 0)
          {
-            if(param1 == 1)
+            if(num == 1)
             {
                if(int(_inputText.text) > freeCount)
                {
@@ -277,15 +276,15 @@ package godCardRaise.view
                {
                   needMoney = 0;
                }
-               _loc3_ = LanguageMgr.GetTranslation("godCardRaiseDivineView.continuousMsg1",needMoney,int(_inputText.text));
+               msg = LanguageMgr.GetTranslation("godCardRaiseDivineView.continuousMsg1",needMoney,int(_inputText.text));
             }
-            else if(param1 == 5)
+            else if(num == 5)
             {
                needMoney = int(_inputText.text) * ServerConfigManager.instance.godCardOpenFiveTimeMoney;
-               _loc3_ = LanguageMgr.GetTranslation("godCardRaiseDivineView.continuousMsg2",needMoney,int(_inputText.text));
+               msg = LanguageMgr.GetTranslation("godCardRaiseDivineView.continuousMsg2",needMoney,int(_inputText.text));
             }
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),_loc3_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2,null,"SimpleAlert",60,false,1);
-            _loc2_.addEventListener("response",__onContinuous);
+            frame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),msg,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2,null,"SimpleAlert",60,false,1);
+            frame.addEventListener("response",__onContinuous);
          }
          else
          {
@@ -293,9 +292,9 @@ package godCardRaise.view
          }
       }
       
-      private function __onContinuous(param1:FrameEvent) : void
+      private function __onContinuous(e:FrameEvent) : void
       {
-         e = param1;
+         e = e;
          var frame:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
          frame.removeEventListener("response",__onContinuous);
          if(e.responseCode == 3 || e.responseCode == 2)
@@ -314,44 +313,44 @@ package godCardRaise.view
          frame.dispose();
       }
       
-      private function isMoney(param1:int) : Boolean
+      private function isMoney(num:int) : Boolean
       {
-         var _loc2_:Number = NaN;
-         _buyCount = param1;
-         if(param1 == 1)
+         var currentNeedMoney:Number = NaN;
+         _buyCount = num;
+         if(num == 1)
          {
             if(freeCount > 0)
             {
                return true;
             }
-            _loc2_ = ServerConfigManager.instance.godCardOpenOneTimeMoney;
+            currentNeedMoney = ServerConfigManager.instance.godCardOpenOneTimeMoney;
          }
-         else if(param1 == 5)
+         else if(num == 5)
          {
-            _loc2_ = ServerConfigManager.instance.godCardOpenFiveTimeMoney;
+            currentNeedMoney = ServerConfigManager.instance.godCardOpenFiveTimeMoney;
          }
          if(_isContinuousBind)
          {
-            if(PlayerManager.Instance.Self.BandMoney < _loc2_)
+            if(PlayerManager.Instance.Self.BandMoney < currentNeedMoney)
             {
                return false;
             }
             return true;
          }
-         if(PlayerManager.Instance.Self.Money < _loc2_)
+         if(PlayerManager.Instance.Self.Money < currentNeedMoney)
          {
             return false;
          }
          return true;
       }
       
-      private function __manyDivineClickHandler(param1:MouseEvent) : void
+      private function __manyDivineClickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:int = getButtonCurrentFrame(_manyDivineBtn);
+         var currentFrameIndex:int = getButtonCurrentFrame(_manyDivineBtn);
          if(_selectedBtn.selected == false && _inputSelectedBtn.selected == true)
          {
-            if(_loc2_ == 1)
+            if(currentFrameIndex == 1)
             {
                selectedContinuous(5);
             }
@@ -363,7 +362,7 @@ package godCardRaise.view
                continueOpen = 0;
             }
          }
-         else if(_loc2_ == 1)
+         else if(currentFrameIndex == 1)
          {
             if(openCardLock)
             {
@@ -389,9 +388,9 @@ package godCardRaise.view
             GodCardRaiseManager.Instance.buyIsBind = __data.isBind;
             sendOpenCard(_buyCount,__data.isBind);
          };
-         __onConfirm = function(param1:BaseAlerFrame):void
+         __onConfirm = function(frame:BaseAlerFrame):void
          {
-            if(param1.selectedCheckButton.selected)
+            if(frame.selectedCheckButton.selected)
             {
                GodCardRaiseManager.Instance.notShowAlertAgain = true;
             }
@@ -421,7 +420,7 @@ package godCardRaise.view
          }
       }
       
-      private function sendOpenCard(param1:int, param2:Boolean, param3:Boolean = false) : void
+      private function sendOpenCard(buyCount:int, isBind:Boolean, isSpecial:Boolean = false) : void
       {
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -431,19 +430,19 @@ package godCardRaise.view
          _inputText.type = "dynamic";
          if(_selectedBtn.selected || _inputSelectedBtn.selected)
          {
-            continueOpen = param1;
+            continueOpen = buyCount;
          }
          else
          {
             continueOpen = 0;
          }
-         GameInSocketOut.sendGodCardOpenCard(param1,param2);
+         GameInSocketOut.sendGodCardOpenCard(buyCount,isBind);
          openCardLock = true;
       }
       
-      public function set openCardLock(param1:Boolean) : void
+      public function set openCardLock(value:Boolean) : void
       {
-         _openCardLock = param1;
+         _openCardLock = value;
          var _loc2_:* = !_openCardLock;
          _manyDivineBtn.enable = _loc2_;
          _divineBtn.enable = _loc2_;
@@ -480,18 +479,18 @@ package godCardRaise.view
          return _openCardLock;
       }
       
-      public function playCardMovie(param1:Array) : void
+      public function playCardMovie($cards:Array) : void
       {
-         _currentCards = param1;
+         _currentCards = $cards;
          _cardsLoader.loadCards(_currentCards,loaderCardsComplete);
       }
       
       private function playEndMovie() : void
       {
-         var _loc4_:int = 0;
-         var _loc1_:* = null;
-         var _loc3_:Boolean = false;
-         var _loc2_:int = godcardLevels.indexOf(_selectedCB.textField.text) + 3;
+         var i:int = 0;
+         var cardInfo:* = null;
+         var isBool:Boolean = false;
+         var currentLevelIndex:int = godcardLevels.indexOf(_selectedCB.textField.text) + 3;
          if(_selectedBtn.selected == false && _inputSelectedBtn.selected == true)
          {
             _inputText.text = (int(_inputText.text) - 1).toString();
@@ -504,19 +503,18 @@ package godCardRaise.view
          }
          if(!_isContinuous)
          {
-            _loc4_ = 0;
-            while(_loc4_ < _currentCards.length)
+            for(i = 0; i < _currentCards.length; )
             {
-               _loc1_ = GodCardRaiseManager.Instance.godCardListInfoList[_currentCards[_loc4_]];
-               if(_loc1_ && _loc1_.Level == _loc2_)
+               cardInfo = GodCardRaiseManager.Instance.godCardListInfoList[_currentCards[i]];
+               if(cardInfo && cardInfo.Level == currentLevelIndex)
                {
-                  _loc3_ = true;
+                  isBool = true;
                   break;
                }
-               _loc4_++;
+               i++;
             }
          }
-         if(continueOpen == 0 || _loc3_)
+         if(continueOpen == 0 || isBool)
          {
             openCardLock = false;
          }
@@ -586,15 +584,15 @@ package godCardRaise.view
       
       private function showNoMoeny() : void
       {
-         var _loc1_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("godCardRaiseDivineView.continuous.noMoneyMsg"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2,null,"SimpleAlert",60,false,1);
-         _loc1_.addEventListener("response",__onNoMoeny);
+         var frame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("godCardRaiseDivineView.continuous.noMoneyMsg"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2,null,"SimpleAlert",60,false,1);
+         frame.addEventListener("response",__onNoMoeny);
       }
       
-      protected function __onNoMoeny(param1:FrameEvent) : void
+      protected function __onNoMoeny(event:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onContinuous);
-         _loc2_.dispose();
+         var frame:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("response",__onContinuous);
+         frame.dispose();
          _inputText.type = "input";
       }
       
@@ -630,71 +628,71 @@ package godCardRaise.view
       
       private function cardScript1() : void
       {
-         var _loc2_:MovieClip = _card1.getChildByName("card") as MovieClip;
-         var _loc1_:int = _currentCards[0];
-         addCardToMovie(_loc2_,_loc1_);
+         var card1:MovieClip = _card1.getChildByName("card") as MovieClip;
+         var cardId:int = _currentCards[0];
+         addCardToMovie(card1,cardId);
       }
       
       private function cardScript2() : void
       {
-         var _loc2_:MovieClip = _card2.getChildByName("card") as MovieClip;
-         var _loc1_:int = _currentCards[1];
-         addCardToMovie(_loc2_,_loc1_);
+         var card2:MovieClip = _card2.getChildByName("card") as MovieClip;
+         var cardId:int = _currentCards[1];
+         addCardToMovie(card2,cardId);
       }
       
       private function cardScript3() : void
       {
-         var _loc1_:int = 0;
-         var _loc2_:MovieClip = _card3.getChildByName("card") as MovieClip;
+         var cardId:int = 0;
+         var card3:MovieClip = _card3.getChildByName("card") as MovieClip;
          if(_currentCards.length == 1)
          {
-            _loc1_ = _currentCards[0];
+            cardId = _currentCards[0];
          }
          else
          {
-            _loc1_ = _currentCards[2];
+            cardId = _currentCards[2];
          }
-         addCardToMovie(_loc2_,_loc1_);
+         addCardToMovie(card3,cardId);
       }
       
       private function cardScript4() : void
       {
-         var _loc2_:MovieClip = _card4.getChildByName("card") as MovieClip;
-         var _loc1_:int = _currentCards[3];
-         addCardToMovie(_loc2_,_loc1_);
+         var card4:MovieClip = _card4.getChildByName("card") as MovieClip;
+         var cardId:int = _currentCards[3];
+         addCardToMovie(card4,cardId);
       }
       
       private function cardScript5() : void
       {
-         var _loc2_:MovieClip = _card5.getChildByName("card") as MovieClip;
-         var _loc1_:int = _currentCards[4];
-         addCardToMovie(_loc2_,_loc1_);
+         var card5:MovieClip = _card5.getChildByName("card") as MovieClip;
+         var cardId:int = _currentCards[4];
+         addCardToMovie(card5,cardId);
       }
       
-      private function clearMovie(param1:MovieClip) : void
+      private function clearMovie($movie:MovieClip) : void
       {
-         var _loc2_:* = null;
-         if(param1)
+         var display:* = null;
+         if($movie)
          {
-            while(param1.numChildren > 0)
+            while($movie.numChildren > 0)
             {
-               _loc2_ = param1.getChildAt(0);
-               param1.removeChild(_loc2_);
+               display = $movie.getChildAt(0);
+               $movie.removeChild(display);
             }
          }
       }
       
-      private function addCardToMovie(param1:MovieClip, param2:int) : void
+      private function addCardToMovie($movie:MovieClip, $cardId:int) : void
       {
-         var _loc3_:* = null;
-         clearMovie(param1);
-         var _loc4_:Bitmap = _cardsLoader.displayCards[param2] as Bitmap;
-         if(_loc4_)
+         var bmp:* = null;
+         clearMovie($movie);
+         var cardBmp:Bitmap = _cardsLoader.displayCards[$cardId] as Bitmap;
+         if(cardBmp)
          {
-            _loc3_ = new Bitmap(_loc4_.bitmapData,_loc4_.pixelSnapping,true);
-            _loc3_.x = -83;
-            _loc3_.y = -123;
-            param1.addChild(_loc3_);
+            bmp = new Bitmap(cardBmp.bitmapData,cardBmp.pixelSnapping,true);
+            bmp.x = -83;
+            bmp.y = -123;
+            $movie.addChild(bmp);
          }
       }
       
@@ -703,7 +701,7 @@ package godCardRaise.view
          showFreeCount();
       }
       
-      private function __clickInput(param1:MouseEvent) : void
+      private function __clickInput(e:MouseEvent) : void
       {
          if(_inputText.text == LanguageMgr.GetTranslation("godCardRaiseDivineView.inputTextMsg"))
          {
@@ -711,7 +709,7 @@ package godCardRaise.view
          }
       }
       
-      protected function __inputTextFousIn(param1:FocusEvent) : void
+      protected function __inputTextFousIn(event:FocusEvent) : void
       {
          if(_inputText.text == LanguageMgr.GetTranslation("godCardRaiseDivineView.inputTextMsg"))
          {
@@ -719,7 +717,7 @@ package godCardRaise.view
          }
       }
       
-      protected function __inputTextFousOut(param1:FocusEvent) : void
+      protected function __inputTextFousOut(event:FocusEvent) : void
       {
          if(_inputText.text.length == 0)
          {
@@ -727,18 +725,18 @@ package godCardRaise.view
          }
       }
       
-      private function __inputChange(param1:Event) : void
+      private function __inputChange(event:Event) : void
       {
          if(_inputText.text.indexOf(LanguageMgr.GetTranslation("godCardRaiseDivineView.inputTextMsg")) > -1)
          {
             _inputText.text = _inputText.text.replace(LanguageMgr.GetTranslation("godCardRaiseDivineView.inputTextMsg"),"");
          }
-         var _loc2_:int = _inputText.text;
-         if(_loc2_ > 999)
+         var num:int = _inputText.text;
+         if(num > 999)
          {
             _inputText.text = 999.toString();
          }
-         if(_loc2_ < 1)
+         if(num < 1)
          {
             _inputText.text = 1.toString();
          }

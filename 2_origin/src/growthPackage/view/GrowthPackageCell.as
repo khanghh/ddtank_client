@@ -8,9 +8,9 @@ package growthPackage.view
    {
        
       
-      public function GrowthPackageCell(param1:int, param2:ItemTemplateInfo = null, param3:Boolean = true)
+      public function GrowthPackageCell(index:int, info:ItemTemplateInfo = null, showLoading:Boolean = true)
       {
-         super(param1,param2,param3,ComponentFactory.Instance.creatBitmap("assets.growthPackage.cellBg"),true);
+         super(index,info,showLoading,ComponentFactory.Instance.creatBitmap("assets.growthPackage.cellBg"),true);
       }
       
       override public function updateCount() : void

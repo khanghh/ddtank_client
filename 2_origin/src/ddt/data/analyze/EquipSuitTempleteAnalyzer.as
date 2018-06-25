@@ -15,48 +15,47 @@ package ddt.data.analyze
       
       private var _data:Dictionary;
       
-      public function EquipSuitTempleteAnalyzer(param1:Function)
+      public function EquipSuitTempleteAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc5_:* = null;
-         var _loc4_:* = null;
-         var _loc7_:int = 0;
-         var _loc6_:* = null;
-         var _loc2_:* = null;
+         var xmllist:* = null;
+         var ecInfo:* = null;
+         var i:int = 0;
+         var info:* = null;
+         var arr:* = null;
          _dic = new Dictionary();
          _data = new Dictionary();
-         var _loc3_:XML = new XML(param1);
-         if(_loc3_.@value == "true")
+         var xml:XML = new XML(data);
+         if(xml.@value == "true")
          {
-            _loc5_ = _loc3_..item;
-            _loc4_ = describeType(new SuitTemplateInfo());
-            _loc7_ = 0;
-            while(_loc7_ < _loc5_.length())
+            xmllist = xml..item;
+            ecInfo = describeType(new SuitTemplateInfo());
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc6_ = new EquipSuitTemplateInfo();
-               ObjectUtils.copyPorpertiesByXML(_loc6_,_loc5_[_loc7_]);
-               if(_dic[_loc6_.ID])
+               info = new EquipSuitTemplateInfo();
+               ObjectUtils.copyPorpertiesByXML(info,xmllist[i]);
+               if(_dic[info.ID])
                {
-                  _loc2_ = _dic[_loc6_.ID];
+                  arr = _dic[info.ID];
                }
                else
                {
-                  _loc2_ = [];
-                  _dic[_loc6_.ID] = _loc2_;
+                  arr = [];
+                  _dic[info.ID] = arr;
                }
-               _loc2_.push(_loc6_);
-               _data[_loc6_.PartName] = _loc6_;
-               _loc7_++;
+               arr.push(info);
+               _data[info.PartName] = info;
+               i++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc3_.@message;
+            message = xml.@message;
             onAnalyzeError();
             onAnalyzeComplete();
          }

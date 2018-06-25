@@ -47,8 +47,8 @@ package consortion.view.guard
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var tmpItem:* = null;
          _bg = ComponentFactory.Instance.creatComponentByStylename("consortiaGuard.boosRankViewBg");
          addChild(_bg);
          _rankText = ComponentFactory.Instance.creatComponentByStylename("consortiaGuard.rank.titleText");
@@ -72,14 +72,13 @@ package consortion.view.guard
          _selectPage.maxPage = 5;
          addChild(_selectPage);
          _rankItemList = new Vector.<ConsortiaGuardSubBossRankItem>();
-         _loc2_ = 0;
-         while(_loc2_ < 8)
+         for(i = 0; i < 8; )
          {
-            _loc1_ = new ConsortiaGuardSubBossRankItem(_loc2_);
-            _loc1_.y = 21 + _loc2_ * (_loc1_.height + 11);
-            _rankItemList[_loc2_] = _loc1_;
-            addChild(_rankItemList[_loc2_]);
-            _loc2_++;
+            tmpItem = new ConsortiaGuardSubBossRankItem(i);
+            tmpItem.y = 21 + i * (tmpItem.height + 11);
+            _rankItemList[i] = tmpItem;
+            addChild(_rankItemList[i]);
+            i++;
          }
       }
       
@@ -88,7 +87,7 @@ package consortion.view.guard
          _selectPage.addEventListener("change",__pageChange);
       }
       
-      protected function __pageChange(param1:Event) : void
+      protected function __pageChange(event:Event) : void
       {
          SoundManager.instance.playButtonSound();
          _currentPage = _selectPage.currentPage;
@@ -97,34 +96,33 @@ package consortion.view.guard
       
       private function refreshView() : void
       {
-         var _loc6_:int = 0;
-         var _loc2_:int = 0;
-         var _loc5_:* = null;
-         var _loc1_:int = (_currentPage - 1) * 8;
-         var _loc4_:int = 40;
-         var _loc3_:DictionaryData = ConsortiaGuardControl.Instance.model.rankBossList;
-         _loc6_ = 0;
-         while(_loc6_ < 8)
+         var i:int = 0;
+         var tmpTag:int = 0;
+         var vo:* = null;
+         var startIndex:int = (_currentPage - 1) * 8;
+         var tmpCount:int = 40;
+         var list:DictionaryData = ConsortiaGuardControl.Instance.model.rankBossList;
+         for(i = 0; i < 8; )
          {
-            _loc2_ = _loc1_ + _loc6_ + 1;
-            _loc5_ = _loc3_[_loc2_] as ConsortiaBossDataVo;
-            if(_loc5_)
+            tmpTag = startIndex + i + 1;
+            vo = list[tmpTag] as ConsortiaBossDataVo;
+            if(vo)
             {
-               if(_loc2_ >= _loc4_)
+               if(tmpTag >= tmpCount)
                {
-                  _rankItemList[_loc6_].visible = false;
+                  _rankItemList[i].visible = false;
                }
                else
                {
-                  _rankItemList[_loc6_].visible = true;
-                  _rankItemList[_loc6_].updata(_loc5_);
+                  _rankItemList[i].visible = true;
+                  _rankItemList[i].updata(vo);
                }
             }
             else
             {
-               _rankItemList[_loc6_].visible = false;
+               _rankItemList[i].visible = false;
             }
-            _loc6_++;
+            i++;
          }
       }
       
@@ -142,13 +140,12 @@ package consortion.view.guard
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          removeEvent();
-         _loc1_ = 0;
-         while(_loc1_ < _rankItemList.length)
+         for(i = 0; i < _rankItemList.length; )
          {
-            _rankItemList[_loc1_].dispose();
-            _loc1_++;
+            _rankItemList[i].dispose();
+            i++;
          }
          ObjectUtils.disposeObject(_bg);
          _bg = null;

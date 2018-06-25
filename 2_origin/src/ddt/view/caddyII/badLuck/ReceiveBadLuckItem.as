@@ -39,11 +39,11 @@ package ddt.view.caddyII.badLuck
          _RnameTxt = ComponentFactory.Instance.creatComponentByStylename("caddy.badLuck.RNameTxt");
          _RgoosTxt = ComponentFactory.Instance.creatComponentByStylename("caddy.badLuck.RgoodsTxt");
          _topThteeBit = ComponentFactory.Instance.creatComponentByStylename("caddy.RBadTopThreeRink");
-         var _loc1_:Shape = new Shape();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,28,28);
-         _loc1_.graphics.endFill();
-         _cell = ComponentFactory.Instance.creatCustomObject("badLuck.itemCell",[_loc1_]);
+         var shape:Shape = new Shape();
+         shape.graphics.beginFill(16777215,0);
+         shape.graphics.drawRect(0,0,28,28);
+         shape.graphics.endFill();
+         _cell = ComponentFactory.Instance.creatCustomObject("badLuck.itemCell",[shape]);
          addChild(_bg);
          addChild(_RsortTxt);
          addChild(_RnameTxt);
@@ -52,16 +52,16 @@ package ddt.view.caddyII.badLuck
          addChild(_cell);
       }
       
-      public function update(param1:int, param2:String, param3:InventoryItemInfo) : void
+      public function update(sortNumber:int, name:String, info:InventoryItemInfo) : void
       {
-         _bg.setFrame(param1 % 2 + 1);
-         _RsortTxt.text = param1 + 1 + "th";
-         _topThteeBit.setFrame(param1 < 3?param1 + 1:1);
-         _topThteeBit.visible = param1 < 3;
-         _RsortTxt.visible = param1 >= 3;
-         _RnameTxt.text = param2;
-         _RgoosTxt.text = param3.Name;
-         _cell.info = param3;
+         _bg.setFrame(sortNumber % 2 + 1);
+         _RsortTxt.text = sortNumber + 1 + "th";
+         _topThteeBit.setFrame(sortNumber < 3?sortNumber + 1:1);
+         _topThteeBit.visible = sortNumber < 3;
+         _RsortTxt.visible = sortNumber >= 3;
+         _RnameTxt.text = name;
+         _RgoosTxt.text = info.Name;
+         _cell.info = info;
       }
       
       override public function get height() : Number

@@ -33,7 +33,7 @@ package luckStar.cell
       
       private var _boolCreep:Boolean;
       
-      public function LuckStarCell(param1:DisplayObject = null)
+      public function LuckStarCell(bg:DisplayObject = null)
       {
          super(ComponentFactory.Instance.creatComponentByStylename("luckyStar.view.cellBg"));
          initView();
@@ -55,14 +55,14 @@ package luckStar.cell
          _cellFrame.visible = _loc1_;
       }
       
-      override public function set info(param1:ItemTemplateInfo) : void
+      override public function set info(value:ItemTemplateInfo) : void
       {
-         if(param1 == null)
+         if(value == null)
          {
             return;
          }
-         .super.info = param1;
-         if(param1.Quality == 1)
+         .super.info = value;
+         if(value.Quality == 1)
          {
             _isMaxAward = true;
             _maxAward.visible = true;
@@ -71,33 +71,33 @@ package luckStar.cell
                _pic.visible = false;
             }
          }
-         else if(param1.Quality == 2)
+         else if(value.Quality == 2)
          {
             _cellFrame.visible = true;
          }
       }
       
-      override protected function updateSize(param1:Sprite) : void
+      override protected function updateSize(sp:Sprite) : void
       {
-         if(param1)
+         if(sp)
          {
-            param1.width = 48;
-            param1.height = 48;
+            sp.width = 48;
+            sp.height = 48;
             if(_picPos != null)
             {
-               param1.x = _picPos.x;
+               sp.x = _picPos.x;
             }
             else
             {
-               param1.x = Math.abs(param1.width - _contentWidth) / 2;
+               sp.x = Math.abs(sp.width - _contentWidth) / 2;
             }
             if(_picPos != null)
             {
-               param1.y = _picPos.y;
+               sp.y = _picPos.y;
             }
             else
             {
-               param1.y = Math.abs(param1.height - _contentHeight) / 2;
+               sp.y = Math.abs(sp.height - _contentHeight) / 2;
             }
          }
       }
@@ -107,14 +107,14 @@ package luckStar.cell
          return _isMaxAward;
       }
       
-      public function set count(param1:int) : void
+      public function set count(value:int) : void
       {
-         if(param1 <= 1)
+         if(value <= 1)
          {
             _txtCount.text = "";
             return;
          }
-         _txtCount.text = String(param1);
+         _txtCount.text = String(value);
          addChild(_txtCount);
       }
       
@@ -160,9 +160,9 @@ package luckStar.cell
          }
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         _selected = param1;
+         _selected = value;
          _selectMovie.visible = _selected;
          if(_selected == false)
          {

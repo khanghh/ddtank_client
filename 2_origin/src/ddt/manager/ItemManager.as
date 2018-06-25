@@ -41,32 +41,32 @@ package ddt.manager
          super();
       }
       
-      public static function fill(param1:InventoryItemInfo) : InventoryItemInfo
+      public static function fill(item:InventoryItemInfo) : InventoryItemInfo
       {
-         var _loc2_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(param1.TemplateID);
-         ObjectUtils.copyProperties(param1,_loc2_);
-         return param1;
+         var t:ItemTemplateInfo = ItemManager.Instance.getTemplateById(item.TemplateID);
+         ObjectUtils.copyProperties(item,t);
+         return item;
       }
       
-      public static function firFill(param1:InventoryItemInfo) : InventoryItemInfo
+      public static function firFill(item:InventoryItemInfo) : InventoryItemInfo
       {
-         var _loc2_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(param1.TemplateID);
-         ObjectUtils.copyProperties(_loc2_,param1);
-         return param1;
+         var t:ItemTemplateInfo = ItemManager.Instance.getTemplateById(item.TemplateID);
+         ObjectUtils.copyProperties(t,item);
+         return item;
       }
       
-      public static function fillByID(param1:int) : InventoryItemInfo
+      public static function fillByID(templateID:int) : InventoryItemInfo
       {
-         var _loc2_:InventoryItemInfo = new InventoryItemInfo();
-         ObjectUtils.copyProperties(_loc2_,ItemManager.Instance.getTemplateById(param1));
-         return _loc2_;
+         var item:InventoryItemInfo = new InventoryItemInfo();
+         ObjectUtils.copyProperties(item,ItemManager.Instance.getTemplateById(templateID));
+         return item;
       }
       
-      public static function copy(param1:InventoryItemInfo) : InventoryItemInfo
+      public static function copy(item:InventoryItemInfo) : InventoryItemInfo
       {
-         var _loc2_:InventoryItemInfo = new InventoryItemInfo();
-         ObjectUtils.copyProperties(_loc2_,param1);
-         return _loc2_;
+         var t:InventoryItemInfo = new InventoryItemInfo();
+         ObjectUtils.copyProperties(t,item);
+         return t;
       }
       
       public static function get Instance() : ItemManager
@@ -78,66 +78,66 @@ package ddt.manager
          return _instance;
       }
       
-      public function setupGoodsTemplates(param1:ItemTempleteAnalyzer) : void
+      public function setupGoodsTemplates(analyzer:ItemTempleteAnalyzer) : void
       {
-         _goodsTemplates = param1.list;
+         _goodsTemplates = analyzer.list;
       }
       
-      public function setupGoodsCategory(param1:GoodCategoryAnalyzer) : void
+      public function setupGoodsCategory(analyzer:GoodCategoryAnalyzer) : void
       {
-         _categorys = param1.list;
+         _categorys = analyzer.list;
       }
       
-      public function addGoodsTemplates(param1:ItemTempleteAnalyzer) : void
+      public function addGoodsTemplates(analyzer:ItemTempleteAnalyzer) : void
       {
          var _loc4_:int = 0;
-         var _loc3_:* = param1.list;
-         for each(var _loc2_ in param1.list)
+         var _loc3_:* = analyzer.list;
+         for each(var obj in analyzer.list)
          {
-            if(!_goodsTemplates.hasKey(_loc2_.TemplateID))
+            if(!_goodsTemplates.hasKey(obj.TemplateID))
             {
-               _goodsTemplates.add(_loc2_.TemplateID,_loc2_);
+               _goodsTemplates.add(obj.TemplateID,obj);
             }
             else
             {
-               _goodsTemplates[_loc2_.TemplateID] = _loc2_;
+               _goodsTemplates[obj.TemplateID] = obj;
             }
          }
       }
       
       public function getPropByTypeAndPro() : Array
       {
-         var _loc1_:Array = [];
+         var result:Array = [];
          var _loc4_:int = 0;
          var _loc3_:* = _goodsTemplates;
-         for each(var _loc2_ in _goodsTemplates)
+         for each(var info in _goodsTemplates)
          {
-            if(_loc2_.CategoryID == 10 && _loc2_.Property8 == "1")
+            if(info.CategoryID == 10 && info.Property8 == "1")
             {
-               _loc1_.push(_loc2_);
+               result.push(info);
             }
          }
-         return _loc1_;
+         return result;
       }
       
       public function getMinesPropByPro() : Array
       {
-         var _loc1_:Array = [];
+         var result:Array = [];
          var _loc4_:int = 0;
          var _loc3_:* = _goodsTemplates;
-         for each(var _loc2_ in _goodsTemplates)
+         for each(var info in _goodsTemplates)
          {
-            if(_loc2_.CategoryID == 81)
+            if(info.CategoryID == 81)
             {
-               _loc1_.push(_loc2_);
+               result.push(info);
             }
          }
-         return _loc1_;
+         return result;
       }
       
-      public function getTemplateById(param1:int) : ItemTemplateInfo
+      public function getTemplateById(templateId:int) : ItemTemplateInfo
       {
-         return _goodsTemplates[param1];
+         return _goodsTemplates[templateId];
       }
       
       public function get categorys() : Vector.<CateCoryInfo>
@@ -145,15 +145,15 @@ package ddt.manager
          return _categorys.slice(0);
       }
       
-      public function setupSuitTemplates(param1:SuitTempleteAnalyzer) : void
+      public function setupSuitTemplates(analyzer:SuitTempleteAnalyzer) : void
       {
-         _SuitTemplates = param1.list;
+         _SuitTemplates = analyzer.list;
       }
       
-      public function setupEquipSuitTemplates(param1:EquipSuitTempleteAnalyzer) : void
+      public function setupEquipSuitTemplates(analyzer:EquipSuitTempleteAnalyzer) : void
       {
-         _EquipSuit = param1.dic;
-         _EquipTemplates = param1.data;
+         _EquipSuit = analyzer.dic;
+         _EquipTemplates = analyzer.data;
       }
       
       public function get EquipSuit() : Dictionary
@@ -166,19 +166,19 @@ package ddt.manager
          return _playerinfo;
       }
       
-      public function set playerInfo(param1:PlayerInfo) : void
+      public function set playerInfo(value:PlayerInfo) : void
       {
-         _playerinfo = param1;
+         _playerinfo = value;
       }
       
-      public function getSuitTemplateByID(param1:String) : SuitTemplateInfo
+      public function getSuitTemplateByID(key:String) : SuitTemplateInfo
       {
-         return _SuitTemplates[param1];
+         return _SuitTemplates[key];
       }
       
-      public function getEquipSuitbyContainEquip(param1:String) : EquipSuitTemplateInfo
+      public function getEquipSuitbyContainEquip(name:String) : EquipSuitTemplateInfo
       {
-         return _EquipTemplates[param1];
+         return _EquipTemplates[name];
       }
       
       public function get storeCateCory() : Array
@@ -186,9 +186,9 @@ package ddt.manager
          return _storeCateCory;
       }
       
-      public function set storeCateCory(param1:Array) : void
+      public function set storeCateCory(value:Array) : void
       {
-         _storeCateCory = param1;
+         _storeCateCory = value;
       }
       
       public function get goodsTemplates() : DictionaryData
@@ -196,41 +196,41 @@ package ddt.manager
          return _goodsTemplates;
       }
       
-      public function getFreeTemplateByCategoryId(param1:int, param2:int = 0) : ItemTemplateInfo
+      public function getFreeTemplateByCategoryId(categoryid:int, sex:int = 0) : ItemTemplateInfo
       {
-         if(param1 != 7)
+         if(categoryid != 7)
          {
-            return getTemplateById(Number(String(param1) + String(param2) + "01"));
+            return getTemplateById(Number(String(categoryid) + String(sex) + "01"));
          }
-         return getTemplateById(Number(String(param1) + "00" + String(param2)));
+         return getTemplateById(Number(String(categoryid) + "00" + String(sex)));
       }
       
-      public function searchGoodsNameByStr(param1:String) : Array
+      public function searchGoodsNameByStr(str:String) : Array
       {
-         var _loc3_:int = 0;
-         var _loc2_:Array = [];
+         var i:int = 0;
+         var result:Array = [];
          var _loc6_:int = 0;
          var _loc5_:* = _goodsTemplates;
-         for each(var _loc4_ in _goodsTemplates)
+         for each(var info in _goodsTemplates)
          {
-            if(_loc4_.Name.indexOf(param1) > -1)
+            if(info.Name.indexOf(str) > -1)
             {
-               if(_loc2_.length == 0)
+               if(result.length == 0)
                {
-                  _loc2_.push(_loc4_.Name);
+                  result.push(info.Name);
                }
                else
                {
-                  _loc3_ = 0;
-                  while(_loc3_ < _loc2_.length)
+                  i = 0;
+                  while(i < result.length)
                   {
-                     if(_loc2_[_loc3_] != _loc4_.Name)
+                     if(result[i] != info.Name)
                      {
-                        if(_loc3_ == _loc2_.length - 1)
+                        if(i == result.length - 1)
                         {
-                           _loc2_.push(_loc4_.Name);
+                           result.push(info.Name);
                         }
-                        _loc3_++;
+                        i++;
                         continue;
                      }
                      break;
@@ -239,7 +239,7 @@ package ddt.manager
                continue;
             }
          }
-         return _loc2_;
+         return result;
       }
    }
 }

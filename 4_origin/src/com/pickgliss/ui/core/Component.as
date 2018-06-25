@@ -101,9 +101,9 @@ package com.pickgliss.ui.core
          _changedPropeties = new Dictionary(true);
       }
       
-      public function getBitmapdata(param1:Boolean = false) : BitmapData
+      public function getBitmapdata(reflesh:Boolean = false) : BitmapData
       {
-         if(_bitmapdata == null || param1)
+         if(_bitmapdata == null || reflesh)
          {
             ObjectUtils.disposeObject(_bitmapdata);
             _bitmapdata = new BitmapData(_width,_height,true,16711680);
@@ -117,13 +117,13 @@ package com.pickgliss.ui.core
          return _height;
       }
       
-      override public function set height(param1:Number) : void
+      override public function set height(h:Number) : void
       {
-         if(param1 == _height)
+         if(h == _height)
          {
             return;
          }
-         _height = param1;
+         _height = h;
          onPropertiesChanged("height");
       }
       
@@ -132,15 +132,15 @@ package com.pickgliss.ui.core
          return _id;
       }
       
-      public function set id(param1:int) : void
+      public function set id(value:int) : void
       {
-         _id = param1;
+         _id = value;
       }
       
-      public function move(param1:Number, param2:Number) : void
+      public function move(xpos:Number, ypos:Number) : void
       {
-         x = param1;
-         y = param2;
+         x = xpos;
+         y = ypos;
       }
       
       public function get tipData() : Object
@@ -148,13 +148,13 @@ package com.pickgliss.ui.core
          return _tipData;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(value:Object) : void
       {
-         if(_tipData == param1)
+         if(_tipData == value)
          {
             return;
          }
-         _tipData = param1;
+         _tipData = value;
          onPropertiesChanged("tipData");
       }
       
@@ -163,13 +163,13 @@ package com.pickgliss.ui.core
          return _tipDirction;
       }
       
-      public function set tipDirctions(param1:String) : void
+      public function set tipDirctions(value:String) : void
       {
-         if(_tipDirction == param1)
+         if(_tipDirction == value)
          {
             return;
          }
-         _tipDirction = param1;
+         _tipDirction = value;
          onPropertiesChanged("tipDirction");
       }
       
@@ -178,13 +178,13 @@ package com.pickgliss.ui.core
          return _tipGapV;
       }
       
-      public function set tipGapV(param1:int) : void
+      public function set tipGapV(value:int) : void
       {
-         if(_tipGapV == param1)
+         if(_tipGapV == value)
          {
             return;
          }
-         _tipGapV = param1;
+         _tipGapV = value;
          onPropertiesChanged("tipGap");
       }
       
@@ -193,13 +193,13 @@ package com.pickgliss.ui.core
          return _tipGapH;
       }
       
-      public function set tipGapH(param1:int) : void
+      public function set tipGapH(value:int) : void
       {
-         if(_tipGapH == param1)
+         if(_tipGapH == value)
          {
             return;
          }
-         _tipGapH = param1;
+         _tipGapH = value;
          onPropertiesChanged("tipGap");
       }
       
@@ -208,13 +208,13 @@ package com.pickgliss.ui.core
          return _tipStyle;
       }
       
-      public function set tipStyle(param1:String) : void
+      public function set tipStyle(value:String) : void
       {
-         if(_tipStyle == param1)
+         if(_tipStyle == value)
          {
             return;
          }
-         _tipStyle = param1;
+         _tipStyle = value;
          onPropertiesChanged("tipStyle");
       }
       
@@ -223,25 +223,25 @@ package com.pickgliss.ui.core
          return _width;
       }
       
-      override public function set width(param1:Number) : void
+      override public function set width(w:Number) : void
       {
-         if(param1 == _width)
+         if(w == _width)
          {
             return;
          }
-         _width = param1;
+         _width = w;
          onPropertiesChanged("width");
       }
       
-      override public function set x(param1:Number) : void
+      override public function set x(value:Number) : void
       {
-         .super.x = Math.round(param1);
+         .super.x = Math.round(value);
          onPosChanged();
       }
       
-      override public function set y(param1:Number) : void
+      override public function set y(value:Number) : void
       {
-         .super.y = Math.round(param1);
+         .super.y = Math.round(value);
          onPosChanged();
       }
       
@@ -263,19 +263,19 @@ package com.pickgliss.ui.core
          }
       }
       
-      protected function onPropertiesChanged(param1:String = null) : void
+      protected function onPropertiesChanged(propName:String = null) : void
       {
          if(_changedPropeties == null)
          {
             return;
          }
-         if(_changedPropeties[param1])
+         if(_changedPropeties[propName])
          {
             return;
          }
-         if(param1 != null)
+         if(propName != null)
          {
-            _changedPropeties[param1] = true;
+            _changedPropeties[propName] = true;
          }
          invalidate();
       }

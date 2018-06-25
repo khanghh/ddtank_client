@@ -27,7 +27,7 @@ package zodiac
       
       private var _questCounts:int = 0;
       
-      public function ZodiacModel(param1:ZodiacInstance)
+      public function ZodiacModel(zodiacInstance:ZodiacInstance)
       {
          super();
          indexTypeArr = new Dictionary();
@@ -44,16 +44,15 @@ package zodiac
       
       public function get questCounts() : int
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _questCounts = 0;
-         _loc1_ = 0;
-         while(_loc1_ < questArr.length)
+         for(i = 0; i < questArr.length; )
          {
-            if(questArr[_loc1_] != 0)
+            if(questArr[i] != 0)
             {
                _questCounts = Number(_questCounts) + 1;
             }
-            _loc1_++;
+            i++;
          }
          return _questCounts;
       }

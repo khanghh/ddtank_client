@@ -14,9 +14,9 @@ package starling.display.sceneCharacter.event
       public static const CHARACTER_DIRECTION_CHANGE:String = "characterDirectionChange";
        
       
-      public function SceneCharacterEvent(param1:String, param2:Object = null)
+      public function SceneCharacterEvent(type:String, data:Object = null)
       {
-         super(param1,false,param2);
+         super(type,false,data);
       }
    }
 }

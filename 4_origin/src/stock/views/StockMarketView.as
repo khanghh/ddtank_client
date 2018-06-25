@@ -60,7 +60,7 @@ package stock.views
       
       override protected function initialize() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          stockText1.text = LanguageMgr.GetTranslation("ddt.stock.allView.text9");
          stockText2.text = LanguageMgr.GetTranslation("ddt.stock.allView.text10");
          stockText3.text = LanguageMgr.GetTranslation("ddt.stock.allView.text11");
@@ -77,11 +77,10 @@ package stock.views
          _sortBtns = [btnID,btnPrice,btnChange,btnHold];
          _sortStatus = [true,true,true,true];
          _sortFields = ["StockID","price","changeValue","holdNum"];
-         _loc1_ = 0;
-         while(_loc1_ < _sortBtns.length)
+         for(i = 0; i < _sortBtns.length; )
          {
-            _sortBtns[_loc1_].clickHandler = new Handler(sort,[_loc1_]);
-            _loc1_++;
+            _sortBtns[i].clickHandler = new Handler(sort,[i]);
+            i++;
          }
          _hourSp = createChart();
          var _loc2_:Boolean = false;
@@ -103,27 +102,27 @@ package stock.views
          stockAllUpdate();
       }
       
-      private function sort(param1:int) : void
+      private function sort(idx:int) : void
       {
-         _sortIdx = param1;
-         var _loc2_:Boolean = _sortStatus[param1];
-         _sortStatus[param1] = !_loc2_;
+         _sortIdx = idx;
+         var status:Boolean = _sortStatus[idx];
+         _sortStatus[idx] = !status;
          execRule();
          listAllStocks.selectedIndex = 0;
       }
       
       private function execRule() : void
       {
-         var _loc1_:String = _sortFields[_sortIdx];
-         var _loc2_:Array = listAllStocks.array;
-         _loc2_ = _loc2_.sortOn(_loc1_,!!_sortStatus[_sortIdx]?16:16 | 2);
-         listAllStocks.array = _loc2_;
+         var field:String = _sortFields[_sortIdx];
+         var arr:Array = listAllStocks.array;
+         arr = arr.sortOn(field,!!_sortStatus[_sortIdx]?16:16 | 2);
+         listAllStocks.array = arr;
       }
       
-      private function change(param1:int) : void
+      private function change(index:int) : void
       {
-         StockMgr.inst.chooseInfoType(param1);
-         if(param1 == 0 && StockMgr.inst.checkVaildHourData())
+         StockMgr.inst.chooseInfoType(index);
+         if(index == 0 && StockMgr.inst.checkVaildHourData())
          {
             _daySp.visible = false;
             hideHourGraphics();
@@ -137,37 +136,37 @@ package stock.views
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("stock.selectStock"));
             return;
          }
-         var _loc1_:StockSellFrame = ComponentFactory.Instance.creatCustomObject("stock.sellFrame",[StockMgr.inst.model.stockID]);
-         LayerManager.Instance.addToLayer(_loc1_,3,false,1);
+         var frame:StockSellFrame = ComponentFactory.Instance.creatCustomObject("stock.sellFrame",[StockMgr.inst.model.stockID]);
+         LayerManager.Instance.addToLayer(frame,3,false,1);
       }
       
-      private function select(param1:int) : void
+      private function select(index:int) : void
       {
-         if(!listAllStocks || !listAllStocks.array || listAllStocks.array.length <= param1)
+         if(!listAllStocks || !listAllStocks.array || listAllStocks.array.length <= index)
          {
             return;
          }
-         StockMgr.inst.chooseStock((listAllStocks.array[param1] as StockData).StockID);
+         StockMgr.inst.chooseStock((listAllStocks.array[index] as StockData).StockID);
          updateCurStockInfo();
          stockNewsUpdate();
       }
       
       private function updateCurStockInfo() : void
       {
-         var _loc1_:StockData = StockMgr.inst.model.stocks[StockMgr.inst.model.stockID];
-         if(_loc1_ == null)
+         var stockData:StockData = StockMgr.inst.model.stocks[StockMgr.inst.model.stockID];
+         if(stockData == null)
          {
             return;
          }
-         lablStockName.text = _loc1_.StockName;
-         var _loc2_:* = _loc1_.changeValue < 0?3069696:16711680;
+         lablStockName.text = stockData.StockName;
+         var _loc2_:* = stockData.changeValue < 0?3069696:16711680;
          lablFloatBenefit.color = _loc2_;
          _loc2_ = _loc2_;
          lablStockBenefit.color = _loc2_;
          lablStockPrice.color = _loc2_;
-         lablStockPrice.text = _loc1_.price.toString();
-         lablStockBenefit.text = _loc1_.changeValue.toString();
-         lablFloatBenefit.text = (_loc1_.changeValue / _loc1_.centerPrice * 100).toFixed(2) + "%";
+         lablStockPrice.text = stockData.price.toString();
+         lablStockBenefit.text = stockData.changeValue.toString();
+         lablFloatBenefit.text = (stockData.changeValue / stockData.centerPrice * 100).toFixed(2) + "%";
       }
       
       private function buy() : void
@@ -177,17 +176,17 @@ package stock.views
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("stock.selectStock1"));
             return;
          }
-         var _loc1_:* = ComponentFactory.Instance.creatCustomObject("stock.buyFrame",[StockMgr.inst.model.stockID]);
-         LayerManager.Instance.addToLayer(_loc1_,3,false,1);
+         var frame:* = ComponentFactory.Instance.creatCustomObject("stock.buyFrame",[StockMgr.inst.model.stockID]);
+         LayerManager.Instance.addToLayer(frame,3,false,1);
       }
       
-      private function render(param1:StockInfoItem, param2:int) : void
+      private function render(item:StockInfoItem, index:int) : void
       {
          if(listAllStocks.array == null || listAllStocks.array.length == 0)
          {
             return;
          }
-         param1.data = listAllStocks.array[param2];
+         item.data = listAllStocks.array[index];
       }
       
       private function initEvent() : void
@@ -200,10 +199,10 @@ package stock.views
          StockMgr.inst.addEventListener("stock_sell_out",stockSellOut);
       }
       
-      private function stockChoose(param1:StockEvent) : void
+      private function stockChoose(evt:StockEvent) : void
       {
-         var _loc2_:int = param1.data;
-         if(_loc2_ == 1)
+         var type:int = evt.data;
+         if(type == 1)
          {
             if(listAllStocks.array && listAllStocks.array.length > 0)
             {
@@ -212,30 +211,29 @@ package stock.views
          }
       }
       
-      private function stockSpecificsUpdate(param1:StockEvent) : void
+      private function stockSpecificsUpdate(event:StockEvent) : void
       {
          updateChart();
          listAllStocks.array = StockMgr.inst.getStocks();
          execRule();
       }
       
-      private function stockNewsUpdate(param1:StockEvent = null) : void
+      private function stockNewsUpdate(event:StockEvent = null) : void
       {
-         var _loc3_:int = 0;
+         var i:int = 0;
          txtNotices.text = "";
-         var _loc2_:StockData = StockMgr.inst.model.stocks[StockMgr.inst.model.stockID];
-         if(_loc2_)
+         var stockData:StockData = StockMgr.inst.model.stocks[StockMgr.inst.model.stockID];
+         if(stockData)
          {
-            _loc3_ = _loc2_.notices.length - 1;
-            while(_loc3_ >= 0)
+            for(i = stockData.notices.length - 1; i >= 0; )
             {
-               txtNotices.appendText(_loc2_.notices[_loc3_].content);
-               _loc3_--;
+               txtNotices.appendText(stockData.notices[i].content);
+               i--;
             }
          }
       }
       
-      private function stockAllUpdate(param1:StockEvent = null) : void
+      private function stockAllUpdate(event:StockEvent = null) : void
       {
          listAllStocks.array = StockMgr.inst.getStocks();
          execRule();
@@ -260,7 +258,7 @@ package stock.views
          dayBg.removeEventListener("mouseOut",overHandler);
       }
       
-      private function stockSellOut(param1:StockEvent) : void
+      private function stockSellOut(evt:StockEvent) : void
       {
          if(listAllStocks.array && listAllStocks.array.length > 0)
          {
@@ -268,21 +266,21 @@ package stock.views
          }
       }
       
-      private function overHandler(param1:MouseEvent) : void
+      private function overHandler(event:MouseEvent) : void
       {
-         var _loc2_:* = param1.type == "mouseOver";
+         var isOver:* = event.type == "mouseOver";
          if(StockMgr.inst.infoType == 0)
          {
             return;
          }
-         if(!_loc2_)
+         if(!isOver)
          {
             _timer.stop();
             _bg.graphics.clear();
             _detailInfo.visible = false;
             return;
          }
-         updateDetail(param1.localX,param1.localY);
+         updateDetail(event.localX,event.localY);
          if(!_timer)
          {
             _timer = new Timer(100);
@@ -291,91 +289,90 @@ package stock.views
          _timer.start();
       }
       
-      private function update(param1:TimerEvent) : void
+      private function update(evt:TimerEvent) : void
       {
-         var _loc3_:Number = dayBg.mouseX - dayBg.x;
-         var _loc2_:Number = dayBg.mouseY - dayBg.y;
-         updateDetail(_loc3_,_loc2_);
+         var x:Number = dayBg.mouseX - dayBg.x;
+         var y:Number = dayBg.mouseY - dayBg.y;
+         updateDetail(x,y);
       }
       
-      private function updateDetail(param1:Number, param2:Number) : void
+      private function updateDetail(x:Number, y:Number) : void
       {
          if(!_detailInfo)
          {
             _detailInfo = new StockDetailInfoItem();
             _daySp.addChild(_detailInfo);
          }
-         if(!checkValid(param1))
+         if(!checkValid(x))
          {
             _detailInfo.visible = false;
             _bg.graphics.clear();
             return;
          }
          PositionUtils.setPos(_detailInfo,{
-            "x":param1,
+            "x":x,
             "y":0
          });
          _detailInfo.data = getPointInfo(_detailInfo.x);
          _detailInfo.visible = false;
          _bg.graphics.clear();
          _bg.graphics.lineStyle(0.5,16777215,0.6);
-         _bg.graphics.moveTo(param1,0);
-         _bg.graphics.lineTo(param1,282);
-         _bg.graphics.moveTo(0,param2);
-         _bg.graphics.lineTo(463,param2);
+         _bg.graphics.moveTo(x,0);
+         _bg.graphics.lineTo(x,282);
+         _bg.graphics.moveTo(0,y);
+         _bg.graphics.lineTo(463,y);
       }
       
-      private function getPointInfo(param1:Number) : *
+      private function getPointInfo(posX:Number) : *
       {
-         var _loc4_:Number = param1 / 463;
-         var _loc3_:Number = _loc4_ * 6 * StockMgr.inst.model.dayHours * 3600;
-         var _loc6_:Date = new Date(StockMgr.inst.model.dayGrahpicStartDate + _loc3_ * 1000);
-         var _loc5_:String = LanguageMgr.GetTranslation("stock.detailInfoTime",_loc6_.getHours() < 10?"0" + _loc6_.getHours():_loc6_.getHours(),_loc6_.getMinutes() < 10?"0" + _loc6_.getMinutes():_loc6_.getMinutes());
-         var _loc2_:String = getPrice(param1).toString();
+         var rate:Number = posX / 463;
+         var time:Number = rate * 6 * StockMgr.inst.model.dayHours * 3600;
+         var date:Date = new Date(StockMgr.inst.model.dayGrahpicStartDate + time * 1000);
+         var timeStr:String = LanguageMgr.GetTranslation("stock.detailInfoTime",date.getHours() < 10?"0" + date.getHours():date.getHours(),date.getMinutes() < 10?"0" + date.getMinutes():date.getMinutes());
+         var priceStr:String = getPrice(posX).toString();
          return {
-            "timeStr":_loc5_,
-            "dealPrice":_loc2_
+            "timeStr":timeStr,
+            "dealPrice":priceStr
          };
       }
       
-      private function getPrice(param1:Number) : int
+      private function getPrice(pos:Number) : int
       {
-         var _loc3_:* = null;
-         var _loc5_:* = null;
-         var _loc2_:* = null;
-         var _loc6_:int = 0;
-         var _loc4_:StockData = StockMgr.inst.model.stocks[StockMgr.inst.model.stockID];
-         if(_loc4_ && _loc4_.dailyPoints.length > 0)
+         var leftPoint:* = null;
+         var rightPoint:* = null;
+         var tmpPoint:* = null;
+         var i:int = 0;
+         var stockData:StockData = StockMgr.inst.model.stocks[StockMgr.inst.model.stockID];
+         if(stockData && stockData.dailyPoints.length > 0)
          {
-            _loc3_ = _loc4_.dailyPoints[0];
-            _loc5_ = _loc3_;
-            _loc2_ = null;
-            _loc6_ = 0;
-            while(_loc6_ < _loc4_.dailyPoints.length)
+            leftPoint = stockData.dailyPoints[0];
+            rightPoint = leftPoint;
+            tmpPoint = null;
+            for(i = 0; i < stockData.dailyPoints.length; )
             {
-               _loc2_ = _loc4_.dailyPoints[_loc6_];
-               if(_loc2_.dayPoint.x < param1)
+               tmpPoint = stockData.dailyPoints[i];
+               if(tmpPoint.dayPoint.x < pos)
                {
-                  _loc3_ = _loc2_;
+                  leftPoint = tmpPoint;
                }
-               if(_loc2_.dayPoint.x >= param1)
+               if(tmpPoint.dayPoint.x >= pos)
                {
-                  _loc5_ = _loc2_;
+                  rightPoint = tmpPoint;
                   break;
                }
-               _loc6_++;
+               i++;
             }
-            return _loc3_.dealPrice + (_loc5_.dealPrice - _loc3_.dealPrice) / (_loc5_.dayPoint.x - _loc3_.dayPoint.x) * (param1 - _loc3_.dayPoint.x);
+            return leftPoint.dealPrice + (rightPoint.dealPrice - leftPoint.dealPrice) / (rightPoint.dayPoint.x - leftPoint.dayPoint.x) * (pos - leftPoint.dayPoint.x);
          }
          return 0;
       }
       
-      private function checkValid(param1:Number) : Boolean
+      private function checkValid(pos:Number) : Boolean
       {
-         var _loc2_:StockData = StockMgr.inst.model.stocks[StockMgr.inst.model.stockID];
-         if(_loc2_ && _loc2_.dailyPoints.length > 0)
+         var stockData:StockData = StockMgr.inst.model.stocks[StockMgr.inst.model.stockID];
+         if(stockData && stockData.dailyPoints.length > 0)
          {
-            return param1 <= _loc2_.dailyPoints[_loc2_.dailyPoints.length - 1].dayPoint.x;
+            return pos <= stockData.dailyPoints[stockData.dailyPoints.length - 1].dayPoint.x;
          }
          return false;
       }
@@ -399,22 +396,22 @@ package stock.views
       
       private function updateChart() : void
       {
-         var _loc1_:* = null;
-         var _loc12_:int = 0;
-         var _loc11_:Number = NaN;
-         var _loc10_:* = undefined;
-         var _loc4_:* = undefined;
-         var _loc6_:* = undefined;
-         var _loc3_:int = 0;
-         var _loc7_:Number = NaN;
-         var _loc5_:int = 0;
-         var _loc2_:Number = NaN;
-         var _loc9_:* = null;
-         var _loc8_:StockData = StockMgr.inst.model.stocks[StockMgr.inst.model.stockID];
-         if(_loc8_)
+         var point:* = null;
+         var i:int = 0;
+         var durationValue:Number = NaN;
+         var upLabels:* = undefined;
+         var downLabels:* = undefined;
+         var xLabels:* = undefined;
+         var centerPrice:int = 0;
+         var xDuration:Number = NaN;
+         var cnt:int = 0;
+         var time:Number = NaN;
+         var date:* = null;
+         var stockData:StockData = StockMgr.inst.model.stocks[StockMgr.inst.model.stockID];
+         if(stockData)
          {
-            _loc1_ = null;
-            _loc12_ = 0;
+            point = null;
+            i = 0;
             if(StockMgr.inst.infoType == 0)
             {
                if(StockMgr.inst.checkVaildHourData())
@@ -427,12 +424,11 @@ package stock.views
                _hourSp.graphics.clear();
                _hourSp.graphics.lineStyle(1,16777215);
                _hourSp.graphics.moveTo(0,282 / 2);
-               _loc12_ = 0;
-               while(_loc12_ < _loc8_.hourPoints.length)
+               for(i = 0; i < stockData.hourPoints.length; )
                {
-                  parsePoint(_loc8_.hourPoints[_loc12_]);
-                  _hourSp.graphics.lineTo(_loc8_.hourPoints[_loc12_].hourPoint.x,_loc8_.hourPoints[_loc12_].hourPoint.y);
-                  _loc12_++;
+                  parsePoint(stockData.hourPoints[i]);
+                  _hourSp.graphics.lineTo(stockData.hourPoints[i].hourPoint.x,stockData.hourPoints[i].hourPoint.y);
+                  i++;
                }
             }
             else if(StockMgr.inst.infoType == 1)
@@ -442,56 +438,53 @@ package stock.views
                _daySp.graphics.clear();
                _daySp.graphics.lineStyle(1,16777215);
                _daySp.graphics.moveTo(0,282 / 2);
-               _loc12_ = 0;
-               while(_loc12_ < _loc8_.dailyPoints.length)
+               for(i = 0; i < stockData.dailyPoints.length; )
                {
-                  parsePoint(_loc8_.dailyPoints[_loc12_]);
-                  _daySp.graphics.lineTo(_loc8_.dailyPoints[_loc12_].dayPoint.x,_loc8_.dailyPoints[_loc12_].dayPoint.y);
-                  _loc12_++;
+                  parsePoint(stockData.dailyPoints[i]);
+                  _daySp.graphics.lineTo(stockData.dailyPoints[i].dayPoint.x,stockData.dailyPoints[i].dayPoint.y);
+                  i++;
                }
             }
-            _loc11_ = _loc8_.diffValue / 7;
-            _loc10_ = new <Label>[lablUp1,lablUp2,lablUp3,lablUp4,lablUp5,lablUp6,lablUp7];
-            _loc4_ = new <Label>[lablDown1,lablDown2,lablDown3,lablDown4,lablDown5,lablDown6,lablDown7];
-            _loc6_ = new <Label>[lablTime1,lablTime2,lablTime3,lablTime4,lablTime5,lablTime6,lablTime7];
-            _loc3_ = StockMgr.inst.infoType == 1?_loc8_.dayCenterPrice:int(_loc8_.centerPrice);
-            lablUp0.text = _loc3_.toString();
+            durationValue = stockData.diffValue / 7;
+            upLabels = new <Label>[lablUp1,lablUp2,lablUp3,lablUp4,lablUp5,lablUp6,lablUp7];
+            downLabels = new <Label>[lablDown1,lablDown2,lablDown3,lablDown4,lablDown5,lablDown6,lablDown7];
+            xLabels = new <Label>[lablTime1,lablTime2,lablTime3,lablTime4,lablTime5,lablTime6,lablTime7];
+            centerPrice = StockMgr.inst.infoType == 1?stockData.dayCenterPrice:int(stockData.centerPrice);
+            lablUp0.text = centerPrice.toString();
             lablUp0.visible = true;
-            _loc12_ = 0;
-            while(_loc12_ < 7)
+            for(i = 0; i < 7; )
             {
                var _loc13_:Boolean = true;
-               _loc4_[_loc12_].visible = _loc13_;
-               _loc10_[_loc12_].visible = _loc13_;
-               _loc10_[_loc12_].text = (_loc3_ + int(_loc11_ * (_loc12_ + 1))).toString();
-               _loc4_[_loc12_].text = (_loc3_ - int(_loc11_ * (_loc12_ + 1))).toString();
-               _loc12_++;
+               downLabels[i].visible = _loc13_;
+               upLabels[i].visible = _loc13_;
+               upLabels[i].text = (centerPrice + int(durationValue * (i + 1))).toString();
+               downLabels[i].text = (centerPrice - int(durationValue * (i + 1))).toString();
+               i++;
             }
-            _loc5_ = Math.max(1,7 - 1);
+            cnt = Math.max(1,7 - 1);
             if(StockMgr.inst.infoType == 0)
             {
-               _loc2_ = Math.abs(StockMgr.inst.model.endTime - StockMgr.inst.model.startTime);
-               _loc7_ = _loc2_ / _loc5_;
+               time = Math.abs(StockMgr.inst.model.endTime - StockMgr.inst.model.startTime);
+               xDuration = time / cnt;
             }
             else
             {
-               _loc7_ = 6 / _loc5_;
+               xDuration = 6 / cnt;
             }
-            _loc9_ = null;
-            _loc12_ = 0;
-            while(_loc12_ < 7)
+            date = null;
+            for(i = 0; i < 7; )
             {
-               _loc6_[_loc12_].visible = true;
+               xLabels[i].visible = true;
                if(StockMgr.inst.infoType == 0)
                {
-                  _loc6_[_loc12_].text = LanguageMgr.GetTranslation("stock.xTime",StockMgr.inst.model.startTime + _loc7_ * _loc12_);
+                  xLabels[i].text = LanguageMgr.GetTranslation("stock.xTime",StockMgr.inst.model.startTime + xDuration * i);
                }
                else
                {
-                  _loc9_ = new Date(StockMgr.inst.model.dayGrahpicStartDate + _loc7_ * _loc12_ * 24 * 3600 * 1000);
-                  _loc6_[_loc12_].text = LanguageMgr.GetTranslation("stock.xTime1",_loc9_.month + 1,_loc9_.date);
+                  date = new Date(StockMgr.inst.model.dayGrahpicStartDate + xDuration * i * 24 * 3600 * 1000);
+                  xLabels[i].text = LanguageMgr.GetTranslation("stock.xTime1",date.month + 1,date.date);
                }
-               _loc12_++;
+               i++;
             }
          }
       }
@@ -499,71 +492,69 @@ package stock.views
       private function hideHourGraphics() : void
       {
          _hourSp.visible = false;
-         var _loc3_:Vector.<Label> = new <Label>[lablUp1,lablUp2,lablUp3,lablUp4,lablUp5,lablUp6,lablUp7];
-         var _loc1_:Vector.<Label> = new <Label>[lablDown1,lablDown2,lablDown3,lablDown4,lablDown5,lablDown6,lablDown7];
-         var _loc2_:Vector.<Label> = new <Label>[lablTime1,lablTime2,lablTime3,lablTime4,lablTime5,lablTime6,lablTime7];
-         var _loc4_:int = 0;
-         _loc4_ = 0;
-         while(_loc4_ < 7)
+         var upLabels:Vector.<Label> = new <Label>[lablUp1,lablUp2,lablUp3,lablUp4,lablUp5,lablUp6,lablUp7];
+         var downLabels:Vector.<Label> = new <Label>[lablDown1,lablDown2,lablDown3,lablDown4,lablDown5,lablDown6,lablDown7];
+         var xLabels:Vector.<Label> = new <Label>[lablTime1,lablTime2,lablTime3,lablTime4,lablTime5,lablTime6,lablTime7];
+         var i:int = 0;
+         for(i = 0; i < 7; )
          {
             var _loc5_:Boolean = false;
-            _loc1_[_loc4_].visible = _loc5_;
-            _loc3_[_loc4_].visible = _loc5_;
-            _loc4_++;
+            downLabels[i].visible = _loc5_;
+            upLabels[i].visible = _loc5_;
+            i++;
          }
          lablUp0.visible = false;
-         _loc4_ = 0;
-         while(_loc4_ < 7)
+         for(i = 0; i < 7; )
          {
-            _loc2_[_loc4_].visible = false;
-            _loc4_++;
+            xLabels[i].visible = false;
+            i++;
          }
       }
       
       private function createChart() : Sprite
       {
-         var _loc1_:Sprite = new Sprite();
-         addChild(_loc1_);
-         PositionUtils.setPos(_loc1_,{
+         var sp:Sprite = new Sprite();
+         addChild(sp);
+         PositionUtils.setPos(sp,{
             "x":378,
             "y":119
          });
-         return _loc1_;
+         return sp;
       }
       
-      private function parsePoint(param1:StockPointData) : void
+      private function parsePoint(value:StockPointData) : void
       {
-         var _loc5_:* = NaN;
-         var _loc4_:* = NaN;
-         var _loc3_:int = 0;
-         var _loc2_:Point = new Point();
-         var _loc6_:StockData = StockMgr.inst.model.stocks[StockMgr.inst.model.stockID];
-         if(_loc6_)
+         var timeDuration:* = NaN;
+         var rate:* = NaN;
+         var centerPrice:int = 0;
+         var point:Point = new Point();
+         var stockData:StockData = StockMgr.inst.model.stocks[StockMgr.inst.model.stockID];
+         if(stockData)
          {
-            _loc5_ = 0;
-            _loc4_ = 0;
+            timeDuration = 0;
+            rate = 0;
             if(StockMgr.inst.infoType == 0)
             {
-               _loc5_ = Number(StockMgr.inst.model.endTime - StockMgr.inst.model.startTime);
-               _loc4_ = Number((param1.time - StockMgr.inst.model.startTime * 3600) / (_loc5_ * 3600));
+               timeDuration = Number(StockMgr.inst.model.endTime - StockMgr.inst.model.startTime);
+               rate = Number((value.time - StockMgr.inst.model.startTime * 3600) / (timeDuration * 3600));
             }
             else
             {
-               _loc5_ = Number(6 * StockMgr.inst.model.dayHours * 60 * 60);
-               _loc4_ = Number(param1.timeIndex / (26 * 6));
+               timeDuration = Number(6 * StockMgr.inst.model.dayHours * 60 * 60);
+               rate = Number(value.timeIndex / (26 * 6));
             }
-            _loc2_.x = _loc4_ * 463;
-            _loc3_ = StockMgr.inst.infoType == 1?_loc6_.dayCenterPrice:int(_loc6_.centerPrice);
-            _loc4_ = Number((param1.dealPrice - _loc3_) / _loc6_.diffValue);
-            _loc2_.y = 282 / 2 - _loc4_ * (282 / 2);
+            point.x = rate * 463;
+            centerPrice = StockMgr.inst.infoType == 1?stockData.dayCenterPrice:int(stockData.centerPrice);
+            rate = Number((value.dealPrice - centerPrice) / stockData.diffValue);
+            point.y = 282 / 2 - rate * (282 / 2);
          }
          if(StockMgr.inst.infoType == 0)
          {
-            param1.hourPoint = _loc2_;
+            value.hourPoint = point;
          }
          else if(StockMgr.inst.infoType == 1)
          {
-            param1.dayPoint = _loc2_;
+            value.dayPoint = point;
          }
       }
    }

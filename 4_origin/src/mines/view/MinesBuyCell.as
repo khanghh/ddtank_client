@@ -50,12 +50,12 @@ package mines.view
          addEventListener("rollOut",__outHandler);
       }
       
-      protected function __outHandler(param1:MouseEvent) : void
+      protected function __outHandler(event:MouseEvent) : void
       {
          _buyBtn.visible = false;
       }
       
-      protected function __overHandler(param1:MouseEvent) : void
+      protected function __overHandler(event:MouseEvent) : void
       {
          _buyBtn.visible = true;
       }
@@ -67,7 +67,7 @@ package mines.view
          removeEventListener("rollOut",__outHandler);
       }
       
-      protected function __exchangeHandler(param1:MouseEvent) : void
+      protected function __exchangeHandler(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.bagLocked)
@@ -75,15 +75,15 @@ package mines.view
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:MinesExchangeFrame = ComponentFactory.Instance.creatComponentByStylename("mines.cell.exchangeFrame");
-         _loc2_.setType(1);
-         _loc2_.setData(_info.templateID,_info.templateID,_info.price);
-         LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+         var quickBuyFrame:MinesExchangeFrame = ComponentFactory.Instance.creatComponentByStylename("mines.cell.exchangeFrame");
+         quickBuyFrame.setType(1);
+         quickBuyFrame.setData(_info.templateID,_info.templateID,_info.price);
+         LayerManager.Instance.addToLayer(quickBuyFrame,3,true,1);
       }
       
-      public function set info(param1:ShopDropInfo) : void
+      public function set info(value:ShopDropInfo) : void
       {
-         _info = param1;
+         _info = value;
          _bagCell.info = ItemManager.Instance.getTemplateById(_info.templateID);
          _bagCell.setCount(_info.limitedCount);
       }

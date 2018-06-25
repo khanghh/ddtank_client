@@ -61,7 +61,7 @@ package bagAndInfo.bag
       
       private var _list:Sprite;
       
-      public function CellMenu(param1:SingletonFoce)
+      public function CellMenu(single:SingletonFoce)
       {
          super();
          init();
@@ -109,17 +109,17 @@ package bagAndInfo.bag
          _relieveBtm.addEventListener("click",__relieveClick);
       }
       
-      private function __relieveClick(param1:MouseEvent) : void
+      private function __relieveClick(e:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
+         e.stopImmediatePropagation();
          SoundManager.instance.play("008");
          dispatchEvent(new Event("relieve"));
          hide();
       }
       
-      public function set cell(param1:BagCell) : void
+      public function set cell(value:BagCell) : void
       {
-         _cell = param1;
+         _cell = value;
       }
       
       public function get cell() : BagCell
@@ -127,39 +127,39 @@ package bagAndInfo.bag
          return _cell;
       }
       
-      private function __mouseClick(param1:MouseEvent) : void
+      private function __mouseClick(evt:MouseEvent) : void
       {
          hide();
          SoundManager.instance.play("008");
       }
       
-      private function __addpriceClick(param1:MouseEvent) : void
+      private function __addpriceClick(evt:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
+         evt.stopImmediatePropagation();
          SoundManager.instance.play("008");
          dispatchEvent(new Event("addprice"));
          hide();
       }
       
-      private function __moveClick(param1:MouseEvent) : void
+      private function __moveClick(evt:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
+         evt.stopImmediatePropagation();
          SoundManager.instance.play("008");
          dispatchEvent(new Event("move"));
          hide();
       }
       
-      private function __openClick(param1:MouseEvent) : void
+      private function __openClick(evt:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
+         evt.stopImmediatePropagation();
          SoundManager.instance.play("008");
          dispatchEvent(new Event("open"));
          hide();
       }
       
-      private function __useClick(param1:MouseEvent) : void
+      private function __useClick(evt:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
+         evt.stopImmediatePropagation();
          SoundManager.instance.play("008");
          if(parent)
          {
@@ -169,9 +169,9 @@ package bagAndInfo.bag
          hide();
       }
       
-      private function __openBatchClick(param1:MouseEvent) : void
+      private function __openBatchClick(evt:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
+         evt.stopImmediatePropagation();
          SoundManager.instance.play("008");
          if(parent)
          {
@@ -181,17 +181,17 @@ package bagAndInfo.bag
          hide();
       }
       
-      private function __colorChangeClick(param1:MouseEvent) : void
+      private function __colorChangeClick(evt:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
+         evt.stopImmediatePropagation();
          SoundManager.instance.play("008");
          dispatchEvent(new Event("color_change"));
          hide();
       }
       
-      private function __sellClick(param1:MouseEvent) : void
+      private function __sellClick(evt:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
+         evt.stopImmediatePropagation();
          SoundManager.instance.play("008");
          if(parent)
          {
@@ -201,15 +201,15 @@ package bagAndInfo.bag
          hide();
       }
       
-      public function show(param1:BagCell, param2:int, param3:int) : void
+      public function show(cell:BagCell, x:int, y:int) : void
       {
-         _cell = param1;
+         _cell = cell;
          if(_cell == null)
          {
             return;
          }
-         var _loc4_:ItemTemplateInfo = _cell.info;
-         if(_loc4_ == null)
+         var info:ItemTemplateInfo = _cell.info;
+         if(info == null)
          {
             return;
          }
@@ -219,9 +219,9 @@ package bagAndInfo.bag
          _openitem.y = 0;
          _moveitem.x = 0;
          _moveitem.y = 27;
-         if(DressUtils.isDress(_loc4_ as InventoryItemInfo))
+         if(DressUtils.isDress(info as InventoryItemInfo))
          {
-            if(InventoryItemInfo(_loc4_).getRemainDate() <= 0)
+            if(InventoryItemInfo(info).getRemainDate() <= 0)
             {
                _list.addChild(_addpriceitem);
             }
@@ -233,15 +233,15 @@ package bagAndInfo.bag
             _colorChangeItem.y = -1;
             _sellItem.y = 28;
          }
-         else if(_loc4_.CategoryID == 73)
+         else if(info.CategoryID == 73)
          {
-            if(param1.itemInfo.ItemID != PlayerManager.Instance.curcentId)
+            if(cell.itemInfo.ItemID != PlayerManager.Instance.curcentId)
             {
                _list.addChild(_useitem);
                _useitem.x = -2;
                _useitem.y = -2;
             }
-            else if(param1.itemInfo.getRemainDate() > 0)
+            else if(cell.itemInfo.getRemainDate() > 0)
             {
                _list.addChild(_relieveBtm);
                _relieveBtm.x = -2;
@@ -259,11 +259,11 @@ package bagAndInfo.bag
          }
          else
          {
-            if(InventoryItemInfo(_loc4_).getRemainDate() <= 0)
+            if(InventoryItemInfo(info).getRemainDate() <= 0)
             {
                _list.addChild(_addpriceitem);
             }
-            else if(_loc4_.CategoryID == 43)
+            else if(info.CategoryID == 43)
             {
                _list.addChild(_openitem);
                _openitem.x = -2;
@@ -271,10 +271,10 @@ package bagAndInfo.bag
                _moveitem.x = -2;
                _moveitem.y = 27;
             }
-            else if(EquipType.isCardSoule(_loc4_) || EquipType.isPackage(_loc4_) || EquipType.isGetPackage(_loc4_) || EquipType.isFireworks(_loc4_))
+            else if(EquipType.isCardSoule(info) || EquipType.isPackage(info) || EquipType.isGetPackage(info) || EquipType.isFireworks(info))
             {
                _list.addChild(_openitem);
-               if(EquipType.isCanBatchHandler(_loc4_ as InventoryItemInfo) || isCanBatch(_loc4_.TemplateID) || EquipType.isFireworks(_loc4_))
+               if(EquipType.isCanBatchHandler(info as InventoryItemInfo) || isCanBatch(info.TemplateID) || EquipType.isFireworks(info))
                {
                   _list.addChild(_openBatchItem);
                   _bg.visible = false;
@@ -287,10 +287,10 @@ package bagAndInfo.bag
                   _moveitem.y = 56;
                }
             }
-            else if(EquipType.isBatchOnlyDouble(_loc4_))
+            else if(EquipType.isBatchOnlyDouble(info))
             {
                _list.addChild(_useitem);
-               if(EquipType.isCanBatchHandler(_loc4_ as InventoryItemInfo))
+               if(EquipType.isCanBatchHandler(info as InventoryItemInfo))
                {
                   _list.addChild(_openBatchItem);
                   _bg.visible = false;
@@ -303,14 +303,14 @@ package bagAndInfo.bag
                   _moveitem.y = 56;
                }
             }
-            else if(EquipType.isPetEgg(_loc4_.CategoryID) || _loc4_.CategoryID == 68)
+            else if(EquipType.isPetEgg(info.CategoryID) || info.CategoryID == 68)
             {
                _list.addChild(_openitem);
             }
-            else if(EquipType.canBeUsed(_loc4_))
+            else if(EquipType.canBeUsed(info))
             {
                _list.addChild(_useitem);
-               if(EquipType.isOpenBatch(_loc4_) && EquipType.isCanBatchHandler(_loc4_ as InventoryItemInfo))
+               if(EquipType.isOpenBatch(info) && EquipType.isCanBatchHandler(info as InventoryItemInfo))
                {
                   _list.addChild(_openBatchItem);
                   _bg.visible = false;
@@ -326,15 +326,15 @@ package bagAndInfo.bag
             _list.addChild(_moveitem);
          }
          LayerManager.Instance.addToLayer(this,2);
-         this.x = param2;
-         this.y = param3;
+         this.x = x;
+         this.y = y;
       }
       
-      private function isCanBatch(param1:int) : Boolean
+      private function isCanBatch(id:int) : Boolean
       {
-         var _loc2_:int = 121999;
-         var _loc3_:int = 129999;
-         if(param1 > _loc2_ && param1 <= _loc3_)
+         var min:int = 121999;
+         var max:int = 129999;
+         if(id > min && id <= max)
          {
             return true;
          }

@@ -27,52 +27,52 @@ package com.greensock.plugins
          this.overwriteProps = ["tint"];
       }
       
-      override public function onInitTween(param1:Object, param2:*, param3:TweenLite) : Boolean
+      override public function onInitTween(target:Object, value:*, tween:TweenLite) : Boolean
       {
-         if(!(param1 is DisplayObject))
+         if(!(target is DisplayObject))
          {
             return false;
          }
-         var _loc4_:ColorTransform = new ColorTransform();
-         if(param2 != null && param3.vars.removeTint != true)
+         var end:ColorTransform = new ColorTransform();
+         if(value != null && tween.vars.removeTint != true)
          {
-            _loc4_.color = uint(param2);
+            end.color = uint(value);
          }
          _ignoreAlpha = true;
-         init(param1 as DisplayObject,_loc4_);
+         init(target as DisplayObject,end);
          return true;
       }
       
-      public function init(param1:DisplayObject, param2:ColorTransform) : void
+      public function init(target:DisplayObject, end:ColorTransform) : void
       {
-         var _loc3_:* = null;
-         _transform = param1.transform;
+         var p:* = null;
+         _transform = target.transform;
          _ct = _transform.colorTransform;
-         var _loc4_:int = _props.length;
+         var i:int = _props.length;
          while(true)
          {
-            _loc4_--;
-            if(!_loc4_)
+            i--;
+            if(!i)
             {
                break;
             }
-            _loc3_ = _props[_loc4_];
-            if(_ct[_loc3_] != param2[_loc3_])
+            p = _props[i];
+            if(_ct[p] != end[p])
             {
-               _tweens[_tweens.length] = new PropTween(_ct,_loc3_,_ct[_loc3_],param2[_loc3_] - _ct[_loc3_],"tint",false);
+               _tweens[_tweens.length] = new PropTween(_ct,p,_ct[p],end[p] - _ct[p],"tint",false);
             }
          }
       }
       
-      override public function set changeFactor(param1:Number) : void
+      override public function set changeFactor(n:Number) : void
       {
-         var _loc2_:* = null;
-         updateTweens(param1);
+         var ct:* = null;
+         updateTweens(n);
          if(_ignoreAlpha)
          {
-            _loc2_ = _transform.colorTransform;
-            _ct.alphaMultiplier = _loc2_.alphaMultiplier;
-            _ct.alphaOffset = _loc2_.alphaOffset;
+            ct = _transform.colorTransform;
+            _ct.alphaMultiplier = ct.alphaMultiplier;
+            _ct.alphaOffset = ct.alphaOffset;
          }
          _transform.colorTransform = _ct;
       }

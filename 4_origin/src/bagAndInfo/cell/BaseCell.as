@@ -27,6 +27,8 @@ package bagAndInfo.cell
    import flash.events.MouseEvent;
    import flash.geom.Point;
    import magicStone.MagicStoneManager;
+   import mark.data.MarkChipData;
+   import mark.data.MarkModel;
    
    [Event(name="change",type="flash.events.Event")]
    public class BaseCell extends Sprite implements ICell, ITipedDisplay, Disposeable
@@ -75,24 +77,26 @@ package bagAndInfo.cell
       
       protected var _markStarContainer:HBox;
       
+      protected var _markChip:MarkChipData;
+      
       public var showStarContainer:Boolean = true;
       
-      public function BaseCell(param1:DisplayObject, param2:ItemTemplateInfo = null, param3:Boolean = true, param4:Boolean = true)
+      public function BaseCell(bg:DisplayObject, $info:ItemTemplateInfo = null, showLoading:Boolean = true, showTip:Boolean = true)
       {
          super();
-         _bg = param1;
-         _showLoading = param3;
-         _showTip = param4;
+         _bg = bg;
+         _showLoading = showLoading;
+         _showTip = showTip;
          init();
          initTip();
          initEvent();
-         info = param2;
+         info = $info;
       }
       
-      public function set overBg(param1:DisplayObject) : void
+      public function set overBg(value:DisplayObject) : void
       {
          ObjectUtils.disposeObject(_overBg);
-         _overBg = param1;
+         _overBg = value;
          if(_overBg)
          {
             _overBg.visible = false;
@@ -105,9 +109,9 @@ package bagAndInfo.cell
          return _overBg;
       }
       
-      public function set PicPos(param1:Point) : void
+      public function set PicPos(value:Point) : void
       {
-         _picPos = param1;
+         _picPos = value;
          updateSize(_pic);
       }
       
@@ -116,9 +120,9 @@ package bagAndInfo.cell
          return _allowDrag;
       }
       
-      public function set allowDrag(param1:Boolean) : void
+      public function set allowDrag(value:Boolean) : void
       {
-         _allowDrag = param1;
+         _allowDrag = value;
       }
       
       public function asDisplayObject() : DisplayObject
@@ -147,7 +151,7 @@ package bagAndInfo.cell
          }
       }
       
-      public function dragDrop(param1:DragEffect) : void
+      public function dragDrop(effect:DragEffect) : void
       {
       }
       
@@ -162,9 +166,9 @@ package bagAndInfo.cell
          }
       }
       
-      public function dragStop(param1:DragEffect) : void
+      public function dragStop(effect:DragEffect) : void
       {
-         if(param1.action == "none")
+         if(effect.action == "none")
          {
             locked = false;
          }
@@ -193,10 +197,10 @@ package bagAndInfo.cell
          return this;
       }
       
-      public function set grayFilters(param1:Boolean) : void
+      public function set grayFilters(b:Boolean) : void
       {
-         _grayFlag = param1;
-         if(param1)
+         _grayFlag = b;
+         if(b)
          {
             filters = ComponentFactory.Instance.creatFilters("grayFilter");
          }
@@ -225,9 +229,9 @@ package bagAndInfo.cell
          return _info;
       }
       
-      public function set info(param1:ItemTemplateInfo) : void
+      public function set info(value:ItemTemplateInfo) : void
       {
-         if(_info == param1 && !_info)
+         if(_info == value && !_info)
          {
             return;
          }
@@ -241,8 +245,19 @@ package bagAndInfo.cell
             clearLoading();
             _tipData = null;
             locked = false;
+            if(_markStarContainer)
+            {
+               _markStarContainer.clearAllChild();
+               ObjectUtils.disposeObject(_markStarContainer);
+            }
+            _markStarContainer = null;
          }
-         _info = param1;
+         _info = value;
+         if(_info && _info.CategoryID == 74)
+         {
+            tipStyle = "mark.MarkChipTip";
+            tipDirctions = "7,6,2,1,5,4,0,3,6";
+         }
          if(_info)
          {
             if(_showLoading)
@@ -262,7 +277,6 @@ package bagAndInfo.cell
             }
             setDefaultTipData();
          }
-         updateCellStar();
          dispatchEvent(new Event("change"));
       }
       
@@ -277,25 +291,25 @@ package bagAndInfo.cell
       
       protected function setDefaultTipData() : void
       {
-         var _loc1_:* = null;
+         var vItemInfo:* = null;
          if(EquipType.isCardBox(_info))
          {
             tipStyle = "core.CardBoxTipPanel";
             tipData = _info;
          }
-         else if(_info.CategoryID != 26)
+         else if(_info.CategoryID != 26 && _info.CategoryID != 74)
          {
             tipStyle = "core.GoodsTip";
             _tipData = new GoodTipInfo();
             GoodTipInfo(_tipData).itemInfo = _info;
-            _loc1_ = _info as InventoryItemInfo;
+            vItemInfo = _info as InventoryItemInfo;
             if(_info.Property1 == "31")
             {
-               if(_loc1_ && _loc1_.Hole2 > 0)
+               if(vItemInfo && vItemInfo.Hole2 > 0)
                {
-                  GoodTipInfo(_tipData).exp = _loc1_.Hole2;
-                  GoodTipInfo(_tipData).upExp = ServerConfigManager.instance.getBeadUpgradeExp()[_loc1_.Hole1 + 1];
-                  GoodTipInfo(_tipData).beadName = _loc1_.Name + "-" + beadSystemManager.Instance.getBeadName(_loc1_);
+                  GoodTipInfo(_tipData).exp = vItemInfo.Hole2;
+                  GoodTipInfo(_tipData).upExp = ServerConfigManager.instance.getBeadUpgradeExp()[vItemInfo.Hole1 + 1];
+                  GoodTipInfo(_tipData).beadName = vItemInfo.Name + "-" + beadSystemManager.Instance.getBeadName(vItemInfo);
                }
                else
                {
@@ -306,9 +320,9 @@ package bagAndInfo.cell
             }
             else if(info.Property1 == "81")
             {
-               if(_loc1_ && _loc1_.StrengthenExp > 0)
+               if(vItemInfo && vItemInfo.StrengthenExp > 0)
                {
-                  GoodTipInfo(_tipData).exp = _loc1_.StrengthenExp - MagicStoneManager.instance.getNeedExp(info.TemplateID,_loc1_.StrengthenLevel);
+                  GoodTipInfo(_tipData).exp = vItemInfo.StrengthenExp - MagicStoneManager.instance.getNeedExp(info.TemplateID,vItemInfo.StrengthenLevel);
                }
                else
                {
@@ -318,11 +332,17 @@ package bagAndInfo.cell
                GoodTipInfo(_tipData).beadName = info.Name + "Lv" + info.Level;
             }
          }
+         else if(_info.CategoryID == 74 && _info is InventoryItemInfo)
+         {
+            _tipData = new MarkChipData();
+            _tipData = MarkModel.exchangeMark(_info);
+            updateCellStar();
+         }
       }
       
-      private function isNotWeddingRing(param1:ItemTemplateInfo) : Boolean
+      private function isNotWeddingRing(item:ItemTemplateInfo) : Boolean
       {
-         var _loc2_:* = param1.TemplateID;
+         var _loc2_:* = item.TemplateID;
          if(9022 !== _loc2_)
          {
             if(9122 !== _loc2_)
@@ -338,19 +358,19 @@ package bagAndInfo.cell
                            return true;
                         }
                      }
-                     addr11:
+                     addr15:
                      return false;
                   }
-                  addr10:
-                  §§goto(addr11);
+                  addr14:
+                  §§goto(addr15);
                }
-               addr9:
-               §§goto(addr10);
+               addr13:
+               §§goto(addr14);
             }
-            addr8:
-            §§goto(addr9);
+            addr12:
+            §§goto(addr13);
          }
-         §§goto(addr8);
+         §§goto(addr12);
       }
       
       public function get locked() : Boolean
@@ -358,13 +378,13 @@ package bagAndInfo.cell
          return _locked;
       }
       
-      public function set locked(param1:Boolean) : void
+      public function set locked(value:Boolean) : void
       {
-         if(_locked == param1)
+         if(_locked == value)
          {
             return;
          }
-         _locked = param1;
+         _locked = value;
          updateLockState();
          if(_info is InventoryItemInfo)
          {
@@ -373,15 +393,15 @@ package bagAndInfo.cell
          dispatchEvent(new CellEvent("lockChanged"));
       }
       
-      public function setColor(param1:*) : Boolean
+      public function setColor(color:*) : Boolean
       {
-         return _pic.setColor(param1);
+         return _pic.setColor(color);
       }
       
-      public function setContentSize(param1:Number, param2:Number) : void
+      public function setContentSize(cWidth:Number, cHeight:Number) : void
       {
-         _contentWidth = param1;
-         _contentHeight = param2;
+         _contentWidth = cWidth;
+         _contentHeight = cHeight;
          updateSize(_pic);
          if(_effect && _effect.numChildren > 0)
          {
@@ -395,9 +415,9 @@ package bagAndInfo.cell
          return _tipData;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(value:Object) : void
       {
-         _tipData = param1;
+         _tipData = value;
       }
       
       public function get tipDirctions() : String
@@ -405,9 +425,9 @@ package bagAndInfo.cell
          return _tipDirection;
       }
       
-      public function set tipDirctions(param1:String) : void
+      public function set tipDirctions(value:String) : void
       {
-         _tipDirection = param1;
+         _tipDirection = value;
       }
       
       public function get tipGapH() : int
@@ -415,9 +435,9 @@ package bagAndInfo.cell
          return _tipGapH;
       }
       
-      public function set tipGapH(param1:int) : void
+      public function set tipGapH(value:int) : void
       {
-         _tipGapH = param1;
+         _tipGapH = value;
       }
       
       public function get tipGapV() : int
@@ -425,9 +445,9 @@ package bagAndInfo.cell
          return _tipGapV;
       }
       
-      public function set tipGapV(param1:int) : void
+      public function set tipGapV(value:int) : void
       {
-         _tipGapV = param1;
+         _tipGapV = value;
       }
       
       public function get tipStyle() : String
@@ -435,9 +455,9 @@ package bagAndInfo.cell
          return _tipStyle;
       }
       
-      public function set tipStyle(param1:String) : void
+      public function set tipStyle(value:String) : void
       {
-         _tipStyle = param1;
+         _tipStyle = value;
       }
       
       override public function get width() : Number
@@ -484,12 +504,12 @@ package bagAndInfo.cell
       
       protected function createDragImg() : DisplayObject
       {
-         var _loc1_:* = null;
+         var img:* = null;
          if(_pic && _pic.width > 0 && _pic.height > 0)
          {
-            _loc1_ = new Bitmap(new BitmapData(_pic.width / _pic.scaleX,_pic.height / _pic.scaleY,true,0));
-            _loc1_.bitmapData.draw(_pic);
-            return _loc1_;
+            img = new Bitmap(new BitmapData(_pic.width / _pic.scaleX,_pic.height / _pic.scaleY,true,0));
+            img.bitmapData.draw(_pic);
+            return img;
          }
          return null;
       }
@@ -529,11 +549,11 @@ package bagAndInfo.cell
          addEventListener("mouseOver",onMouseOver);
       }
       
-      protected function onMouseClick(param1:MouseEvent) : void
+      protected function onMouseClick(evt:MouseEvent) : void
       {
       }
       
-      protected function onMouseOut(param1:MouseEvent) : void
+      protected function onMouseOut(evt:MouseEvent) : void
       {
          if(_overBg)
          {
@@ -541,7 +561,7 @@ package bagAndInfo.cell
          }
       }
       
-      protected function onMouseOver(param1:MouseEvent) : void
+      protected function onMouseOver(evt:MouseEvent) : void
       {
          if(_overBg)
          {
@@ -556,27 +576,27 @@ package bagAndInfo.cell
          removeEventListener("rollOver",onMouseOver);
       }
       
-      protected function updateSize(param1:Sprite) : void
+      protected function updateSize(sp:Sprite) : void
       {
-         if(param1)
+         if(sp)
          {
-            param1.width = _contentWidth - 2;
-            param1.height = _contentHeight - 2;
+            sp.width = _contentWidth - 2;
+            sp.height = _contentHeight - 2;
             if(_picPos != null)
             {
-               param1.x = _picPos.x;
+               sp.x = _picPos.x;
             }
             else
             {
-               param1.x = Math.abs(param1.width - _contentWidth) / 2;
+               sp.x = Math.abs(sp.width - _contentWidth) / 2;
             }
             if(_picPos != null)
             {
-               param1.y = _picPos.y;
+               sp.y = _picPos.y;
             }
             else
             {
-               param1.y = Math.abs(param1.height - _contentHeight) / 2;
+               sp.y = Math.abs(sp.height - _contentHeight) / 2;
             }
          }
       }
@@ -591,9 +611,9 @@ package bagAndInfo.cell
          _loadingasset = null;
       }
       
-      private function updateCellStar() : void
+      public function updateCellStar() : void
       {
-         var _loc1_:int = 0;
+         var starNum:int = 0;
          if(_info && _info.CategoryID == 74)
          {
             if(!_markStarContainer)
@@ -601,19 +621,20 @@ package bagAndInfo.cell
                _markStarContainer = ComponentFactory.Instance.creatComponentByStylename("ddtcorei.cell.starHBox");
             }
             addChild(_markStarContainer);
+            starNum = 0;
             if(_info is InventoryItemInfo)
             {
-               _loc1_ = (_info as InventoryItemInfo).StrengthenLevel;
+               starNum = (_info as InventoryItemInfo).StrengthenLevel;
             }
-            else
+            if(_tipData is MarkChipData)
             {
-               _loc1_ = 0;
+               starNum = (_tipData as MarkChipData).bornLv;
             }
-            while(_markStarContainer.numChildren > _loc1_)
+            while(_markStarContainer.numChildren > starNum)
             {
                ObjectUtils.disposeObject(_markStarContainer.getChildAt(0));
             }
-            while(_markStarContainer.numChildren < _loc1_)
+            while(_markStarContainer.numChildren < starNum)
             {
                _markStarContainer.addChild(ComponentFactory.Instance.creatBitmap("asset.mark.littleStar"));
             }
@@ -644,7 +665,7 @@ package bagAndInfo.cell
          }
       }
       
-      protected function updateSizeII(param1:Sprite) : void
+      protected function updateSizeII(sp:Sprite) : void
       {
       }
    }

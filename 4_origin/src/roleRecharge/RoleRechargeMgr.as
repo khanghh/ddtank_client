@@ -60,33 +60,31 @@ package roleRecharge
          LayerManager.Instance.addToLayer(_frame,3,true,1);
       }
       
-      public function roleRechargeData(param1:Vector.<GiftRewardInfo>, param2:int) : RoleRechargeInfo
+      public function roleRechargeData(arr:Vector.<GiftRewardInfo>, index:int) : RoleRechargeInfo
       {
-         var _loc7_:int = 0;
-         var _loc6_:* = null;
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:RoleRechargeInfo = new RoleRechargeInfo();
-         _loc7_ = 0;
-         while(_loc7_ < param1.length)
+         var i:int = 0;
+         var info:* = null;
+         var j:int = 0;
+         var conInfo:* = null;
+         var roleRechargeInfo:RoleRechargeInfo = new RoleRechargeInfo();
+         for(i = 0; i < arr.length; )
          {
-            _loc6_ = param1[_loc7_] as GiftBagInfo;
-            _loc5_ = 0;
-            while(_loc5_ < _loc6_.giftConditionArr.length)
+            info = arr[i] as GiftBagInfo;
+            for(j = 0; j < info.giftConditionArr.length; )
             {
-               _loc3_ = _loc6_.giftConditionArr[_loc5_] as GiftConditionInfo;
-               if(_loc3_.conditionIndex == 0 && _loc3_.conditionValue == param2)
+               conInfo = info.giftConditionArr[j] as GiftConditionInfo;
+               if(conInfo.conditionIndex == 0 && conInfo.conditionValue == index)
                {
-                  _loc4_.beginIndex = _loc3_.conditionValue;
-                  _loc4_.endIndex = _loc3_.remain1;
-                  _loc4_.giftRewardArr = _loc6_.giftRewardArr.slice();
-                  return _loc4_;
+                  roleRechargeInfo.beginIndex = conInfo.conditionValue;
+                  roleRechargeInfo.endIndex = conInfo.remain1;
+                  roleRechargeInfo.giftRewardArr = info.giftRewardArr.slice();
+                  return roleRechargeInfo;
                }
-               _loc5_++;
+               j++;
             }
-            _loc7_++;
+            i++;
          }
-         return _loc4_;
+         return roleRechargeInfo;
       }
       
       public function get isOpen() : Boolean
@@ -94,9 +92,9 @@ package roleRecharge
          return _isOpen;
       }
       
-      public function set isOpen(param1:Boolean) : void
+      public function set isOpen(value:Boolean) : void
       {
-         _isOpen = param1;
+         _isOpen = value;
       }
    }
 }

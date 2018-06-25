@@ -56,7 +56,7 @@ package store.godRefining.view
       
       private function initView() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _bg = ComponentFactory.Instance.creatComponentByStylename("ddtstore.godRefining.fineQuenchViewBg");
          addChild(_bg);
          _cellBg = ComponentFactory.Instance.creatBitmap("asset.godRefining.fineQuenchCellBg");
@@ -88,13 +88,12 @@ package store.godRefining.view
          _items[1] = new GodRefiningChipCell(["3"],1);
          PositionUtils.setPos(_items[1],"ddtstore.godRefining.clipCellPos");
          addChild(_items[1]);
-         _loc1_ = 2;
-         while(_loc1_ < 5)
+         for(i = 2; i < 5; )
          {
-            _items[_loc1_] = new GodRefiningStoneCell(["3"],_loc1_);
-            PositionUtils.setPos(_items[_loc1_],"ddtstore.godRefining.stoneCellPos" + (_loc1_ - 2));
-            addChild(_items[_loc1_]);
-            _loc1_++;
+            _items[i] = new GodRefiningStoneCell(["3"],i);
+            PositionUtils.setPos(_items[i],"ddtstore.godRefining.stoneCellPos" + (i - 2));
+            addChild(_items[i]);
+            i++;
          }
       }
       
@@ -105,128 +104,124 @@ package store.godRefining.view
       
       public function updateView() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _items.length)
+         var i:int = 0;
+         for(i = 0; i < _items.length; )
          {
-            _items[_loc1_].info = null;
-            _loc1_++;
+            _items[i].info = null;
+            i++;
          }
       }
       
-      public function refreshData(param1:Dictionary) : void
+      public function refreshData(items:Dictionary) : void
       {
-         var _loc2_:* = 0;
+         var itemPlace:* = 0;
          var _loc5_:int = 0;
-         var _loc4_:* = param1;
-         for(_loc2_ in param1)
+         var _loc4_:* = items;
+         for(itemPlace in items)
          {
-            if(_loc2_ < _items.length)
+            if(itemPlace < _items.length)
             {
-               _items[_loc2_].info = PlayerManager.Instance.Self.StoreBag.items[_loc2_];
+               _items[itemPlace].info = PlayerManager.Instance.Self.StoreBag.items[itemPlace];
             }
          }
       }
       
-      public function quitStartDrag(param1:CEvent) : void
+      public function quitStartDrag(evt:CEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:BagCell = param1.data as BagCell;
-         var _loc4_:Array = getAllCurCellIndex(_loc2_.info);
-         if(_loc4_.length > 0)
+         var i:int = 0;
+         var cell:BagCell = evt.data as BagCell;
+         var indexs:Array = getAllCurCellIndex(cell.info);
+         if(indexs.length > 0)
          {
-            _loc3_ = 0;
-            while(_loc3_ < _loc4_.length)
+            for(i = 0; i < indexs.length; )
             {
-               startShine(_loc4_[_loc3_]);
-               _loc3_++;
+               startShine(indexs[i]);
+               i++;
             }
          }
       }
       
-      private function getCurCellIndex(param1:ItemTemplateInfo) : int
+      private function getCurCellIndex(itemInfo:ItemTemplateInfo) : int
       {
-         var _loc2_:* = 0;
-         var _loc3_:int = 0;
-         if(EquipType.isArmShell(param1))
+         var index:* = 0;
+         var i:int = 0;
+         if(EquipType.isArmShell(itemInfo))
          {
             return 0;
          }
-         if(EquipType.isArmShellClip(param1))
+         if(EquipType.isArmShellClip(itemInfo))
          {
             return 1;
          }
-         if(EquipType.isArmShellStone(param1))
+         if(EquipType.isArmShellStone(itemInfo))
          {
-            _loc2_ = 2;
-            _loc3_ = 2;
-            while(_loc3_ < _items.length)
+            index = 2;
+            for(i = 2; i < _items.length; )
             {
-               if(_items[_loc3_].info == null)
+               if(_items[i].info == null)
                {
-                  _loc2_ = _loc3_;
+                  index = i;
                   break;
                }
-               _loc3_++;
+               i++;
             }
-            return _loc2_;
+            return index;
          }
          return -1;
       }
       
-      private function getAllCurCellIndex(param1:ItemTemplateInfo) : Array
+      private function getAllCurCellIndex(itemInfo:ItemTemplateInfo) : Array
       {
-         if(EquipType.isArmShell(param1))
+         if(EquipType.isArmShell(itemInfo))
          {
             return [0];
          }
-         if(EquipType.isArmShellClip(param1))
+         if(EquipType.isArmShellClip(itemInfo))
          {
             return [1];
          }
-         if(EquipType.isArmShellStone(param1))
+         if(EquipType.isArmShellStone(itemInfo))
          {
             return [2,3,4];
          }
          return [];
       }
       
-      public function quitStopDrag(param1:CEvent) : void
+      public function quitStopDrag(evt:CEvent) : void
       {
          stopShine();
       }
       
-      public function startShine(param1:int) : void
+      public function startShine(cellId:int) : void
       {
-         _items[param1].startShine();
+         _items[cellId].startShine();
       }
       
       public function stopShine() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _items.length)
+         var i:int = 0;
+         for(i = 0; i < _items.length; )
          {
-            _items[_loc1_].stopShine();
-            _loc1_++;
+            _items[i].stopShine();
+            i++;
          }
       }
       
-      private function __startFineQuenchBtnHandler(param1:MouseEvent) : void
+      private function __startFineQuenchBtnHandler(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
       }
       
-      public function equipDoubleClickMove(param1:CEvent) : void
+      public function equipDoubleClickMove(event:CEvent) : void
       {
-         var _loc2_:InventoryItemInfo = param1.data as InventoryItemInfo;
-         SocketManager.Instance.out.sendMoveGoods(_loc2_.BagType,_loc2_.Place,12,0,1);
+         var info:InventoryItemInfo = event.data as InventoryItemInfo;
+         SocketManager.Instance.out.sendMoveGoods(info.BagType,info.Place,12,0,1);
       }
       
-      public function propDoubleClickMove(param1:CEvent) : void
+      public function propDoubleClickMove(event:CEvent) : void
       {
-         var _loc2_:InventoryItemInfo = param1.data as InventoryItemInfo;
-         SocketManager.Instance.out.sendMoveGoods(_loc2_.BagType,_loc2_.Place,12,getCurCellIndex(_loc2_),1);
+         var info:InventoryItemInfo = event.data as InventoryItemInfo;
+         SocketManager.Instance.out.sendMoveGoods(info.BagType,info.Place,12,getCurCellIndex(info),1);
       }
       
       private function removeEvent() : void

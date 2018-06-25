@@ -26,17 +26,17 @@ package store.fineStore.view.pageForge
       
       private var _name:String;
       
-      public function FineForgeCell(param1:int, param2:String = "", param3:ItemTemplateInfo = null, param4:Boolean = true, param5:Boolean = true)
+      public function FineForgeCell(type:int, text:String = "", $info:ItemTemplateInfo = null, showLoading:Boolean = true, showTip:Boolean = true)
       {
-         _type = param1;
-         _name = param2;
-         var _loc6_:DisplayObject = ComponentFactory.Instance.creatBitmap("store.fineforge.cellBg" + _type);
-         super(_loc6_,param3,param4,param5);
+         _type = type;
+         _name = text;
+         var bg:DisplayObject = ComponentFactory.Instance.creatBitmap("store.fineforge.cellBg" + _type);
+         super(bg,$info,showLoading,showTip);
       }
       
-      override public function set info(param1:ItemTemplateInfo) : void
+      override public function set info(value:ItemTemplateInfo) : void
       {
-         .super.info = param1;
+         .super.info = value;
          if(_tipData && _tipData is GoodTipInfo)
          {
             GoodTipInfo(_tipData).suitIcon = true;
@@ -52,13 +52,13 @@ package store.fineStore.view.pageForge
          PicPos = new Point(5,6);
       }
       
-      public function set bgType(param1:int) : void
+      public function set bgType(value:int) : void
       {
-         if(_type == param1)
+         if(_type == value)
          {
             return;
          }
-         _type = param1;
+         _type = value;
          ObjectUtils.disposeObject(_bg);
          _type = _type > 5?5:_type;
          _bg = ComponentFactory.Instance.creatBitmap("store.fineforge.cellBg" + _type);
@@ -85,14 +85,14 @@ package store.fineStore.view.pageForge
          return _name;
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         if(_select == param1)
+         if(_select == value)
          {
             return;
          }
-         _select = param1;
-         _shine.visible = param1;
+         _select = value;
+         _shine.visible = value;
       }
       
       public function get selected() : Boolean
@@ -100,7 +100,7 @@ package store.fineStore.view.pageForge
          return _select;
       }
       
-      public function set autoSelect(param1:Boolean) : void
+      public function set autoSelect(value:Boolean) : void
       {
       }
       

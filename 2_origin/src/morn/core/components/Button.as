@@ -2,7 +2,6 @@ package morn.core.components
 {
    import flash.display.BitmapData;
    import flash.display.Sprite;
-   import flash.events.Event;
    import flash.events.MouseEvent;
    import flash.geom.Rectangle;
    import flash.utils.getTimer;
@@ -76,598 +75,600 @@ package morn.core.components
       
       protected var _showClickTooQuickTip:Boolean = false;
       
-      public function Button(param1:String = null, param2:String = "")
+      public function Button(skin:String = null, label:String = "")
       {
-         this._labelColors = Styles.buttonLabelColors;
-         this._labelMargin = Styles.buttonLabelMargin;
-         this._stateNum = Styles.buttonStateNum;
+         _labelColors = Styles.buttonLabelColors;
+         _labelMargin = Styles.buttonLabelMargin;
+         _stateNum = Styles.buttonStateNum;
          super();
-         this.skin = param1;
-         this.label = param2;
+         this.skin = skin;
+         this.label = label;
          buttonMode = true;
       }
       
       override protected function createChildren() : void
       {
-         this._content = new Sprite();
-         addChild(this._content);
-         this._content.addChild(this._bitmap = new AutoBitmap());
-         this._content.addChild(this._btnLabel = new Label());
+         _content = new Sprite();
+         addChild(_content);
+         _bitmap = new AutoBitmap();
+         _content.addChild(new AutoBitmap());
+         _btnLabel = new Label();
+         _content.addChild(new Label());
       }
       
       override protected function initialize() : void
       {
-         this._btnLabel.align = "center";
-         addEventListener(MouseEvent.ROLL_OVER,this.onMouse);
-         addEventListener(MouseEvent.ROLL_OUT,this.onMouse);
-         addEventListener(MouseEvent.MOUSE_DOWN,this.onMouse);
-         addEventListener(MouseEvent.CLICK,this.onMouse);
-         addEventListener(MouseEvent.MOUSE_UP,this.onMouse);
-         App.stage.addEventListener(MouseEvent.MOUSE_UP,this.onStageMouseUp);
-         this._bitmap.sizeGrid = Styles.defaultSizeGrid;
+         _btnLabel.align = "center";
+         addEventListener("rollOver",onMouse);
+         addEventListener("rollOut",onMouse);
+         addEventListener("mouseDown",onMouse);
+         addEventListener("click",onMouse);
+         addEventListener("mouseUp",onMouse);
+         App.stage.addEventListener("mouseUp",onStageMouseUp);
+         _bitmap.sizeGrid = Styles.defaultSizeGrid;
       }
       
-      protected function onMouse(param1:MouseEvent) : void
+      protected function onMouse(e:MouseEvent) : void
       {
-         var _loc2_:int = 0;
-         if(this._toggle == false && this._selected || _disabled)
+         var nowTime:int = 0;
+         if(_toggle == false && _selected || _disabled)
          {
             return;
          }
-         if(param1.type == MouseEvent.CLICK)
+         if(e.type == "click")
          {
-            _loc2_ = getTimer();
-            if(_loc2_ - this._lastClickTime >= this._clickInterval)
+            nowTime = getTimer();
+            if(nowTime - _lastClickTime >= _clickInterval)
             {
-               this._lastClickTime = _loc2_;
-               if(this._toggle)
+               _lastClickTime = nowTime;
+               if(_toggle)
                {
-                  this.selected = !this._selected;
+                  selected = !_selected;
                }
-               if(this._clickHandler)
+               if(_clickHandler)
                {
-                  this._clickHandler.execute();
+                  _clickHandler.execute();
                }
             }
-            else if(this._showClickTooQuickTip)
+            else if(_showClickTooQuickTip)
             {
-               App.stage.dispatchEvent(new UIEvent(UIEvent.APP_DDT_MSG,"您点击的频率太高，请稍后再试"));
+               App.stage.dispatchEvent(new UIEvent("APP_DDT_MSG","您点击的频率太高，请稍后再试"));
             }
             return;
          }
-         if(param1.type == MouseEvent.ROLL_OVER)
+         if(e.type == "rollOver")
          {
-            if(this._enableRollOverLightEffect)
+            if(_enableRollOverLightEffect)
             {
                filters = [Styles.singleButtonFilter];
             }
          }
-         else if(param1.type == MouseEvent.ROLL_OUT)
+         else if(e.type == "rollOut")
          {
-            if(this._enableRollOverLightEffect)
+            if(_enableRollOverLightEffect)
             {
                filters = null;
             }
          }
-         else if(param1.type == MouseEvent.MOUSE_DOWN)
+         else if(e.type == "mouseDown")
          {
-            if(this._enableClickMoveDownEffect)
+            if(_enableClickMoveDownEffect)
             {
-               this._content.x = 1;
-               this._content.y = 1;
+               _content.x = 1;
+               _content.y = 1;
             }
          }
-         if(this._selected == false)
+         if(_selected == false)
          {
-            this.state = stateMap[param1.type];
+            state = stateMap[e.type];
          }
       }
       
-      private function onStageMouseUp(param1:MouseEvent) : void
+      private function onStageMouseUp(e:MouseEvent) : void
       {
-         if(this._enableClickMoveDownEffect)
+         if(_enableClickMoveDownEffect)
          {
-            this._content.x = 0;
-            this._content.y = 0;
+            _content.x = 0;
+            _content.y = 0;
          }
       }
       
-      public function set threeURLs(param1:String) : void
+      public function set threeURLs(str:String) : void
       {
-         this._threeURLs = param1.split(",");
-         callLater(this.changeState);
+         _threeURLs = str.split(",");
+         callLater(changeState);
       }
       
-      public function set twoURLs(param1:String) : void
+      public function set twoURLs(str:String) : void
       {
-         this._twoURLs = param1.split(",");
-         callLater(this.changeState);
+         _twoURLs = str.split(",");
+         callLater(changeState);
       }
       
-      public function set checkButtonSkin(param1:String) : void
+      public function set checkButtonSkin(str:String) : void
       {
-         this.skin = "";
-         this._twoURLs = [param1,param1 + "$select"];
-         callLater(this.changeState);
+         skin = "";
+         _twoURLs = [str,str + "$select"];
+         callLater(changeState);
       }
       
       public function get label() : String
       {
-         return this._btnLabel.text;
+         return _btnLabel.text;
       }
       
-      public function set label(param1:String) : void
+      public function set label(value:String) : void
       {
-         if(this._btnLabel.text != param1)
+         if(_btnLabel.text != value)
          {
-            this._btnLabel.text = param1;
-            callLater(this.changeState);
+            _btnLabel.text = value;
+            callLater(changeState);
          }
       }
       
-      public function set labelHtml(param1:String) : void
+      public function set labelHtml(value:String) : void
       {
-         this._btnLabel.htmlText = param1;
-         callLater(this.changeState);
+         _btnLabel.htmlText = value;
+         callLater(changeState);
       }
       
       public function get skin() : String
       {
-         return this._skin;
+         return _skin;
       }
       
-      public function set skin(param1:String) : void
+      public function set skin(value:String) : void
       {
-         if(this._skin != param1)
+         if(_skin != value)
          {
-            this._skin = param1;
-            callLater(this.changeClips);
-            callLater(this.changeLabelSize);
+            _skin = value;
+            callLater(changeClips);
+            callLater(changeLabelSize);
          }
       }
       
       protected function changeClips() : void
       {
-         var _loc1_:Vector.<BitmapData> = null;
-         var _loc2_:int = 0;
-         if(this._skin)
+         var vec:* = undefined;
+         var i:int = 0;
+         if(_skin)
          {
-            this._bitmap.clips = App.asset.getClips(this._skin,1,this._stateNum);
+            _bitmap.clips = App.asset.getClips(_skin,1,_stateNum);
          }
-         if(this._imageLabel)
+         if(_imageLabel)
          {
-            _loc1_ = new Vector.<BitmapData>();
-            _loc2_ = 0;
-            while(_loc2_ < this._imageLabelSkins.length)
+            vec = new Vector.<BitmapData>();
+            for(i = 0; i < _imageLabelSkins.length; )
             {
-               _loc1_.push(App.asset.getBitmapData(this._imageLabelSkins[_loc2_]));
-               _loc2_++;
+               vec.push(App.asset.getBitmapData(_imageLabelSkins[i]));
+               i++;
             }
-            this._imageLabelClip.clips = _loc1_;
+            _imageLabelClip.clips = vec;
          }
-         if(this._autoSize)
+         if(_autoSize)
          {
-            _contentWidth = this._bitmap.width;
-            _contentHeight = this._bitmap.height;
+            _contentWidth = _bitmap.width;
+            _contentHeight = _bitmap.height;
          }
       }
       
       override public function commitMeasure() : void
       {
-         exeCallLater(this.changeClips);
+         exeCallLater(changeClips);
       }
       
       protected function changeLabelSize() : void
       {
-         exeCallLater(this.changeClips);
-         this._btnLabel.width = width - this._labelMargin[0] - this._labelMargin[2];
-         this._btnLabel.height = ObjectUtils.getTextField(this._btnLabel.format).height;
-         this._btnLabel.x = this._labelMargin[0];
-         this._btnLabel.y = (height - this._btnLabel.height) * 0.5 + this._labelMargin[1] - this._labelMargin[3];
+         exeCallLater(changeClips);
+         _btnLabel.width = width - _labelMargin[0] - _labelMargin[2];
+         _btnLabel.height = ObjectUtils.getTextField(_btnLabel.format).height;
+         _btnLabel.x = _labelMargin[0];
+         _btnLabel.y = (height - _btnLabel.height) * 0.5 + _labelMargin[1] - _labelMargin[3];
       }
       
       public function get selected() : Boolean
       {
-         return this._selected;
+         return _selected;
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         if(this._selected != param1)
+         if(_selected != value)
          {
-            this._selected = param1;
-            this.state = !!this._selected?int(stateMap["selected"]):int(stateMap["rollOut"]);
-            if(this._selected == false)
+            _selected = value;
+            state = !!_selected?stateMap["selected"]:stateMap["rollOut"];
+            if(_selected == false)
             {
                filters = null;
             }
-            sendEvent(Event.CHANGE);
-            sendEvent(Event.SELECT);
+            sendEvent("change");
+            sendEvent("select");
          }
       }
       
       protected function get state() : int
       {
-         return this._state;
+         return _state;
       }
       
-      protected function set state(param1:int) : void
+      protected function set state(value:int) : void
       {
-         this._state = param1;
-         callLater(this.changeState);
+         _state = value;
+         callLater(changeState);
       }
       
       protected function changeState() : void
       {
-         var _loc1_:int = this._state;
-         if(this._stateNum == 2)
+         var index:int = _state;
+         if(_stateNum == 2)
          {
-            _loc1_ = _loc1_ < 2?int(_loc1_):1;
+            index = index < 2?index:1;
          }
-         else if(this._stateNum == 1 && !this._threeURLs && !this._twoURLs)
+         else if(_stateNum == 1 && !_threeURLs && !_twoURLs)
          {
-            _loc1_ = 0;
+            index = 0;
          }
-         if(this._threeURLs)
+         if(_threeURLs)
          {
-            this.skin = this._threeURLs[_loc1_];
+            skin = _threeURLs[index];
          }
-         else if(this._twoURLs)
+         else if(_twoURLs)
          {
-            _loc1_ = _loc1_ == 1?0:_loc1_ == 2?1:0;
-            this.skin = this._twoURLs[_loc1_];
+            index = index == 1?0:Number(index == 2?1:0);
+            skin = _twoURLs[index];
          }
          else
          {
-            if(!this.bitmap)
+            if(!bitmap)
             {
                return;
             }
-            this._bitmap.index = _loc1_;
+            _bitmap.index = index;
          }
-         if(this._imageLabel)
+         if(_imageLabel)
          {
-            this._imageLabelClip.index = _loc1_;
+            _imageLabelClip.index = index;
          }
-         if(this._stateNum == 1)
+         if(_stateNum == 1)
          {
-            this._btnLabel.color = this._labelColors[0];
+            _btnLabel.color = _labelColors[0];
          }
          else
          {
-            this._btnLabel.color = this._labelColors[this._state];
+            _btnLabel.color = _labelColors[_state];
          }
       }
       
       public function get toggle() : Boolean
       {
-         return this._toggle;
+         return _toggle;
       }
       
-      public function set toggle(param1:Boolean) : void
+      public function set toggle(value:Boolean) : void
       {
-         this._toggle = param1;
+         _toggle = value;
       }
       
-      override public function set disabled(param1:Boolean) : void
+      override public function set disabled(value:Boolean) : void
       {
-         if(_disabled != param1)
+         if(_disabled != value)
          {
-            this.state = !!this._selected?int(stateMap["selected"]):int(stateMap["rollOut"]);
-            super.disabled = param1;
+            state = !!_selected?stateMap["selected"]:stateMap["rollOut"];
+            .super.disabled = value;
          }
       }
       
       public function get labelColors() : String
       {
-         return String(this._labelColors);
+         return String(_labelColors);
       }
       
-      public function set labelColors(param1:String) : void
+      public function set labelColors(value:String) : void
       {
-         this._labelColors = StringUtils.fillArray(this._labelColors,param1);
-         callLater(this.changeState);
+         _labelColors = StringUtils.fillArray(_labelColors,value);
+         callLater(changeState);
       }
       
       public function get labelMargin() : String
       {
-         return String(this._labelMargin);
+         return String(_labelMargin);
       }
       
-      public function set labelMargin(param1:String) : void
+      public function set labelMargin(value:String) : void
       {
-         this._labelMargin = StringUtils.fillArray(this._labelMargin,param1,int);
-         callLater(this.changeLabelSize);
+         _labelMargin = StringUtils.fillArray(_labelMargin,value,int);
+         callLater(changeLabelSize);
       }
       
       public function get labelStroke() : String
       {
-         return this._btnLabel.stroke;
+         return _btnLabel.stroke;
       }
       
-      public function set labelStroke(param1:String) : void
+      public function set labelStroke(value:String) : void
       {
-         this._btnLabel.stroke = param1;
+         _btnLabel.stroke = value;
       }
       
       public function get labelSize() : Object
       {
-         return this._btnLabel.size;
+         return _btnLabel.size;
       }
       
-      public function set labelSize(param1:Object) : void
+      public function set labelSize(value:Object) : void
       {
-         this._btnLabel.size = param1;
-         callLater(this.changeLabelSize);
+         _btnLabel.size = value;
+         callLater(changeLabelSize);
       }
       
       public function get labelBold() : Object
       {
-         return this._btnLabel.bold;
+         return _btnLabel.bold;
       }
       
-      public function set labelBold(param1:Object) : void
+      public function set labelBold(value:Object) : void
       {
-         this._btnLabel.bold = param1;
-         callLater(this.changeLabelSize);
+         _btnLabel.bold = value;
+         callLater(changeLabelSize);
       }
       
       public function get letterSpacing() : Object
       {
-         return this._btnLabel.letterSpacing;
+         return _btnLabel.letterSpacing;
       }
       
-      public function set letterSpacing(param1:Object) : void
+      public function set letterSpacing(value:Object) : void
       {
-         this._btnLabel.letterSpacing = param1;
-         callLater(this.changeLabelSize);
+         _btnLabel.letterSpacing = value;
+         callLater(changeLabelSize);
       }
       
       public function get labelFont() : String
       {
-         return this._btnLabel.font;
+         return _btnLabel.font;
       }
       
-      public function set labelFont(param1:String) : void
+      public function set labelFont(value:String) : void
       {
-         this._btnLabel.font = param1;
-         callLater(this.changeLabelSize);
+         _btnLabel.font = value;
+         callLater(changeLabelSize);
       }
       
       public function get labelLeading() : Object
       {
-         return this._btnLabel.leading;
+         return _btnLabel.leading;
       }
       
-      public function set labelLeading(param1:Object) : void
+      public function set labelLeading(value:Object) : void
       {
-         this._btnLabel.leading = param1;
-         callLater(this.changeLabelSize);
+         _btnLabel.leading = value;
+         callLater(changeLabelSize);
       }
       
       public function get clickHandler() : Handler
       {
-         return this._clickHandler;
+         return _clickHandler;
       }
       
-      public function set clickHandler(param1:Handler) : void
+      public function set clickHandler(value:Handler) : void
       {
-         this._clickHandler = param1;
+         _clickHandler = value;
       }
       
       public function get btnLabel() : Label
       {
-         return this._btnLabel;
+         return _btnLabel;
       }
       
       public function get sizeGrid() : String
       {
-         if(this._bitmap.sizeGrid)
+         if(_bitmap.sizeGrid)
          {
-            return this._bitmap.sizeGrid.join(",");
+            return _bitmap.sizeGrid.join(",");
          }
          return null;
       }
       
-      public function set sizeGrid(param1:String) : void
+      public function set sizeGrid(value:String) : void
       {
-         this._bitmap.sizeGrid = StringUtils.fillArray(Styles.defaultSizeGrid,param1);
+         _bitmap.sizeGrid = StringUtils.fillArray(Styles.defaultSizeGrid,value);
       }
       
-      override public function set width(param1:Number) : void
+      override public function set width(value:Number) : void
       {
-         super.width = param1;
-         if(this._autoSize)
+         .super.width = value;
+         if(_autoSize)
          {
-            this._bitmap.width = param1;
+            _bitmap.width = value;
          }
-         callLater(this.changeLabelSize);
+         callLater(changeLabelSize);
       }
       
-      override public function set height(param1:Number) : void
+      override public function set height(value:Number) : void
       {
-         super.height = param1;
-         if(this._autoSize)
+         .super.height = value;
+         if(_autoSize)
          {
-            this._bitmap.height = param1;
+            _bitmap.height = value;
          }
-         callLater(this.changeLabelSize);
+         callLater(changeLabelSize);
       }
       
-      override public function set dataSource(param1:Object) : void
+      override public function set dataSource(value:Object) : void
       {
-         _dataSource = param1;
-         if(param1 is Number || param1 is String)
+         _dataSource = value;
+         if(value is Number || value is String)
          {
-            this.label = String(param1);
+            label = String(value);
          }
          else
          {
-            super.dataSource = param1;
+            .super.dataSource = value;
          }
       }
       
       public function get stateNum() : int
       {
-         return this._stateNum;
+         return _stateNum;
       }
       
-      public function set stateNum(param1:int) : void
+      public function set stateNum(value:int) : void
       {
-         if(this._stateNum != param1)
+         if(_stateNum != value)
          {
-            this._stateNum = param1 < 1?1:param1 > 3?3:int(param1);
-            callLater(this.changeClips);
+            _stateNum = value < 1?1:value > 3?3:value;
+            callLater(changeClips);
          }
       }
       
       public function get imageLabel() : String
       {
-         return this._imageLabel;
+         return _imageLabel;
       }
       
-      public function set imageLabel(param1:String) : void
+      public function set imageLabel(value:String) : void
       {
-         if(!this._imageLabelClip)
+         if(!_imageLabelClip)
          {
-            this._content.addChild(this._imageLabelClip = new AutoBitmap());
+            _imageLabelClip = new AutoBitmap();
+            _content.addChild(new AutoBitmap());
          }
-         this._imageLabelSkins = param1.split(",");
-         this._imageLabel = param1;
-         callLater(this.changeClips);
+         _imageLabelSkins = value.split(",");
+         _imageLabel = value;
+         callLater(changeClips);
       }
       
       public function get imageLabelX() : int
       {
-         return this._imageLabelX;
+         return _imageLabelX;
       }
       
-      public function set imageLabelX(param1:int) : void
+      public function set imageLabelX(value:int) : void
       {
-         this._imageLabelX = param1;
-         this._imageLabelClip.x = param1;
+         _imageLabelX = value;
+         _imageLabelClip.x = value;
       }
       
       public function get imageLabelY() : int
       {
-         return this._imageLabelY;
+         return _imageLabelY;
       }
       
-      public function set imageLabelY(param1:int) : void
+      public function set imageLabelY(value:int) : void
       {
-         this._imageLabelY = param1;
-         this._imageLabelClip.y = param1;
+         _imageLabelY = value;
+         _imageLabelClip.y = value;
       }
       
       public function get bitmap() : AutoBitmap
       {
-         return this._bitmap;
+         return _bitmap;
       }
       
       public function get imageLabelClip() : AutoBitmap
       {
-         return this._imageLabelClip;
+         return _imageLabelClip;
       }
       
       override public function dispose() : void
       {
          super.dispose();
-         removeEventListener(MouseEvent.ROLL_OVER,this.onMouse);
-         removeEventListener(MouseEvent.ROLL_OUT,this.onMouse);
-         removeEventListener(MouseEvent.MOUSE_DOWN,this.onMouse);
-         removeEventListener(MouseEvent.MOUSE_UP,this.onMouse);
-         removeEventListener(MouseEvent.CLICK,this.onMouse);
-         App.stage.removeEventListener(MouseEvent.MOUSE_UP,this.onStageMouseUp);
-         this._bitmap && this._bitmap.dispose();
-         this._btnLabel && this._btnLabel.dispose();
-         this._content = null;
-         this._bitmap = null;
-         this._btnLabel = null;
-         this._clickHandler = null;
-         this._labelColors = null;
-         this._labelMargin = null;
+         removeEventListener("rollOver",onMouse);
+         removeEventListener("rollOut",onMouse);
+         removeEventListener("mouseDown",onMouse);
+         removeEventListener("mouseUp",onMouse);
+         removeEventListener("click",onMouse);
+         App.stage.removeEventListener("mouseUp",onStageMouseUp);
+         _bitmap && _bitmap.dispose();
+         _btnLabel && _btnLabel.dispose();
+         _content = null;
+         _bitmap = null;
+         _btnLabel = null;
+         _clickHandler = null;
+         _labelColors = null;
+         _labelMargin = null;
       }
       
       public function get enableClickMoveDownEffect() : Boolean
       {
-         return this._enableClickMoveDownEffect;
+         return _enableClickMoveDownEffect;
       }
       
-      public function set enableClickMoveDownEffect(param1:Boolean) : void
+      public function set enableClickMoveDownEffect(value:Boolean) : void
       {
-         this._enableClickMoveDownEffect = param1;
+         _enableClickMoveDownEffect = value;
       }
       
       public function get enableRollOverLightEffect() : Boolean
       {
-         return this._enableRollOverLightEffect;
+         return _enableRollOverLightEffect;
       }
       
-      public function set enableRollOverLightEffect(param1:Boolean) : void
+      public function set enableRollOverLightEffect(value:Boolean) : void
       {
-         this._enableRollOverLightEffect = param1;
+         _enableRollOverLightEffect = value;
       }
       
       public function get clickInterval() : int
       {
-         return this._clickInterval;
+         return _clickInterval;
       }
       
-      public function set clickInterval(param1:int) : void
+      public function set clickInterval(value:int) : void
       {
-         this._clickInterval = param1;
+         _clickInterval = value;
       }
       
       public function get showClickTooQuickTip() : Boolean
       {
-         return this._showClickTooQuickTip;
+         return _showClickTooQuickTip;
       }
       
-      public function set showClickTooQuickTip(param1:Boolean) : void
+      public function set showClickTooQuickTip(value:Boolean) : void
       {
-         this._showClickTooQuickTip = param1;
+         _showClickTooQuickTip = value;
       }
       
       public function get imageLabelSizeGrid() : String
       {
-         if(this._imageLabelClip.sizeGrid)
+         if(_imageLabelClip.sizeGrid)
          {
-            return this._imageLabelClip.sizeGrid.join(",");
+            return _imageLabelClip.sizeGrid.join(",");
          }
          return null;
       }
       
-      public function set imageLabelSizeGrid(param1:String) : void
+      public function set imageLabelSizeGrid(value:String) : void
       {
-         this._imageLabelClip.sizeGrid = StringUtils.fillArray(Styles.defaultSizeGrid,param1);
+         _imageLabelClip.sizeGrid = StringUtils.fillArray(Styles.defaultSizeGrid,value);
       }
       
       public function get imageLabelRect() : String
       {
-         if(this._imageLabelRect)
+         if(_imageLabelRect)
          {
-            return this._imageLabelRect.x + "," + this._imageLabelRect.y + "," + this._imageLabelRect.width + "," + this._imageLabelRect.height;
+            return _imageLabelRect.x + "," + _imageLabelRect.y + "," + _imageLabelRect.width + "," + _imageLabelRect.height;
          }
          return null;
       }
       
-      public function set imageLabelRect(param1:String) : void
+      public function set imageLabelRect(value:String) : void
       {
-         var _loc2_:Array = StringUtils.fillArray([0,0,0,0],param1);
-         if(!this._imageLabelRect)
+         var imageLabelRectArr:Array = StringUtils.fillArray([0,0,0,0],value);
+         if(!_imageLabelRect)
          {
-            this._imageLabelRect = new Rectangle();
+            _imageLabelRect = new Rectangle();
          }
-         this._imageLabelRect.setTo(_loc2_[0],_loc2_[1],_loc2_[2],_loc2_[3]);
-         this._imageLabelClip.x = this._imageLabelRect.x;
-         this._imageLabelClip.y = this._imageLabelRect.y;
-         if(this._imageLabelRect.width != 0)
+         _imageLabelRect.setTo(imageLabelRectArr[0],imageLabelRectArr[1],imageLabelRectArr[2],imageLabelRectArr[3]);
+         _imageLabelClip.x = _imageLabelRect.x;
+         _imageLabelClip.y = _imageLabelRect.y;
+         if(_imageLabelRect.width != 0)
          {
-            this._imageLabelClip.width = this._imageLabelRect.width;
+            _imageLabelClip.width = _imageLabelRect.width;
          }
-         if(this._imageLabelRect.height != 0)
+         if(_imageLabelRect.height != 0)
          {
-            this._imageLabelClip.height = this._imageLabelRect.height;
+            _imageLabelClip.height = _imageLabelRect.height;
          }
       }
    }

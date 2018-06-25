@@ -21,34 +21,34 @@ package dragonBones.utils
          super();
       }
       
-      public static function getType(param1:ByteArray) : String
+      public static function getType(bytes:ByteArray) : String
       {
-         var _loc5_:* = null;
-         var _loc2_:uint = param1[0];
-         var _loc4_:uint = param1[1];
-         var _loc3_:uint = param1[2];
-         var _loc6_:uint = param1[3];
-         if((_loc2_ == 70 || _loc2_ == 67 || _loc2_ == 90) && _loc4_ == 87 && _loc3_ == 83)
+         var outputType:* = null;
+         var b1:uint = bytes[0];
+         var b2:uint = bytes[1];
+         var b3:uint = bytes[2];
+         var b4:uint = bytes[3];
+         if((b1 == 70 || b1 == 67 || b1 == 90) && b2 == 87 && b3 == 83)
          {
-            _loc5_ = "swf";
+            outputType = "swf";
          }
-         else if(_loc2_ == 137 && _loc4_ == 80 && _loc3_ == 78 && _loc6_ == 71)
+         else if(b1 == 137 && b2 == 80 && b3 == 78 && b4 == 71)
          {
-            _loc5_ = "png";
+            outputType = "png";
          }
-         else if(_loc2_ == 255)
+         else if(b1 == 255)
          {
-            _loc5_ = "jpg";
+            outputType = "jpg";
          }
-         else if(_loc2_ == 65 && _loc4_ == 84 && _loc3_ == 70)
+         else if(b1 == 65 && b2 == 84 && b3 == 70)
          {
-            _loc5_ = "atf";
+            outputType = "atf";
          }
-         else if(_loc2_ == 80 && _loc4_ == 75)
+         else if(b1 == 80 && b2 == 75)
          {
-            _loc5_ = "zip";
+            outputType = "zip";
          }
-         return _loc5_;
+         return outputType;
       }
    }
 }

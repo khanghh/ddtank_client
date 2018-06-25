@@ -73,32 +73,32 @@ package petsBag.view
          PetsBagManager.instance().petBreakInfoRequire();
       }
       
-      private function __startShine(param1:CellEvent) : void
+      private function __startShine(event:CellEvent) : void
       {
-         if(param1.data is ItemTemplateInfo)
+         if(event.data is ItemTemplateInfo)
          {
-            if((param1.data as ItemTemplateInfo).CategoryID == 34)
+            if((event.data as ItemTemplateInfo).CategoryID == 34)
             {
                if(_petsBagOutView)
                {
                   _petsBagOutView.startShine();
                }
             }
-            else if((param1.data as ItemTemplateInfo).CategoryID == 50)
+            else if((event.data as ItemTemplateInfo).CategoryID == 50)
             {
                if(_petsBagOutView)
                {
                   _petsBagOutView.playShined(0);
                }
             }
-            else if((param1.data as ItemTemplateInfo).CategoryID == 52)
+            else if((event.data as ItemTemplateInfo).CategoryID == 52)
             {
                if(_petsBagOutView)
                {
                   _petsBagOutView.playShined(2);
                }
             }
-            else if((param1.data as ItemTemplateInfo).CategoryID == 51)
+            else if((event.data as ItemTemplateInfo).CategoryID == 51)
             {
                if(_petsBagOutView)
                {
@@ -108,7 +108,7 @@ package petsBag.view
          }
       }
       
-      private function __stopShine(param1:CellEvent) : void
+      private function __stopShine(event:CellEvent) : void
       {
          if(_petsBagOutView)
          {
@@ -128,7 +128,7 @@ package petsBag.view
          }
       }
       
-      private function __changeHandler(param1:Event) : void
+      private function __changeHandler(event:Event) : void
       {
       }
       
@@ -145,10 +145,10 @@ package petsBag.view
          _bagView.removeEventListener("tabChange",__changeHandler);
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:

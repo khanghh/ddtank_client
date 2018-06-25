@@ -186,13 +186,13 @@ package quest
          _buySpinelBtn = ComponentFactory.Instance.creatComponentByStylename("core.quest.buySpinelBtn");
          _buySpinelBtn.text = LanguageMgr.GetTranslation("tank.manager.TaskManager.buySpinel");
          addToContent(_buySpinelBtn);
-         var _loc1_:Object = {};
-         _loc1_["color"] = "gold";
-         _goDungeonBtnShine = EffectManager.Instance.creatEffect(3,_goDungeonBtn,_loc1_);
+         var shineData:Object = {};
+         shineData["color"] = "gold";
+         _goDungeonBtnShine = EffectManager.Instance.creatEffect(3,_goDungeonBtn,shineData);
          _goDungeonBtnShine.stop();
-         _downClientShine = EffectManager.Instance.creatEffect(3,_downloadClientBtn,_loc1_);
+         _downClientShine = EffectManager.Instance.creatEffect(3,_downloadClientBtn,shineData);
          _downClientShine.play();
-         _questBtnShine = EffectManager.Instance.creatEffect(3,_questBtn,_loc1_);
+         _questBtnShine = EffectManager.Instance.creatEffect(3,_questBtn,shineData);
          _questBtnShine.stop();
          _buySpinelBtn.visible = false;
          _questBtn.enable = false;
@@ -230,53 +230,51 @@ package quest
       {
       }
       
-      private function switchBG(param1:int) : void
+      private function switchBG(style:int) : void
       {
       }
       
       private function addQuestList() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var cateView:* = null;
          if(cateViewArr)
          {
             return;
          }
          cateViewArr = [];
-         _loc2_ = 0;
-         while(_loc2_ < 9)
+         for(i = 0; i < 9; )
          {
-            _loc1_ = new QuestCateView(_loc2_,leftPanel);
-            _loc1_.collapse();
-            _loc1_.x = 0;
-            _loc1_.y = 0 + 50 * _loc2_;
-            _loc1_.addEventListener(QuestCateView.TITLECLICKED,__onTitleClicked);
-            _loc1_.addEventListener("change",__onCateViewChange);
-            _loc1_.addEventListener("enableChange",__onEnbleChange);
-            cateViewArr.push(_loc1_);
-            leftPanelContent.addChild(_loc1_);
-            _loc2_++;
+            cateView = new QuestCateView(i,leftPanel);
+            cateView.collapse();
+            cateView.x = 0;
+            cateView.y = 0 + 50 * i;
+            cateView.addEventListener(QuestCateView.TITLECLICKED,__onTitleClicked);
+            cateView.addEventListener("change",__onCateViewChange);
+            cateView.addEventListener("enableChange",__onEnbleChange);
+            cateViewArr.push(cateView);
+            leftPanelContent.addChild(cateView);
+            i++;
          }
          leftPanel.invalidateViewport();
          __onEnbleChange(null);
       }
       
-      private function __onEnbleChange(param1:Event) : void
+      private function __onEnbleChange(evt:Event) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc4_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < 9 - 1)
+         var i:int = 0;
+         var cateView:* = null;
+         var cates:int = 0;
+         for(i = 0; i < 9 - 1; )
          {
-            _loc2_ = cateViewArr[_loc3_];
-            if(_loc2_.visible)
+            cateView = cateViewArr[i];
+            if(cateView.visible)
             {
-               _loc2_.y = 0 + 50 * _loc4_;
-               _loc4_++;
-               leftPanelContent.addChild(_loc2_);
+               cateView.y = 0 + 50 * cates;
+               cates++;
+               leftPanelContent.addChild(cateView);
             }
-            _loc3_++;
+            i++;
          }
          leftPanel.setView(leftPanelContent);
          leftPanel.invalidateViewport();
@@ -300,17 +298,17 @@ package quest
          TrusteeshipManager.instance.addEventListener("update_spirit_value",updateSpiritValueHandler);
       }
       
-      protected function __onTaskFinished(param1:TaskEvent) : void
+      protected function __onTaskFinished(event:TaskEvent) : void
       {
-         if(param1.data.id == 367)
+         if(event.data.id == 367)
          {
             PetsBagManager.instance().showPetFarmGuildArrow(94,50,"farmTrainer.openBagArrowPos","asset.farmTrainer.clickHere","farmTrainer.openBagTipPos",LayerManager.Instance.getLayerByType(4),10);
          }
-         if(param1.data.id == 369 && StateManager.currentStateType == "main")
+         if(event.data.id == 369 && StateManager.currentStateType == "main")
          {
             PetsBagManager.instance().showPetFarmGuildArrow(119,-150,"farmTrainer.openFarmArrowPos","asset.farmTrainer.grain1","farmTrainer.grainopenFarmTipPos",LayerManager.Instance.getLayerByType(4),10);
          }
-         if(param1.data.id == 368 && StateManager.currentStateType == "main")
+         if(event.data.id == 368 && StateManager.currentStateType == "main")
          {
             PetsBagManager.instance().showPetFarmGuildArrow(120,-150,"farmTrainer.openFarmArrowPos","asset.farmTrainer.seed","farmTrainer.grainopenFarmTipPosout",LayerManager.Instance.getLayerByType(4),10);
          }
@@ -359,41 +357,40 @@ package quest
          TrusteeshipManager.instance.removeEventListener("update_spirit_value",updateSpiritValueHandler);
       }
       
-      private function __updatePetFarmGuilde(param1:UpdatePetFarmGuildeEvent) : void
+      private function __updatePetFarmGuilde(e:UpdatePetFarmGuildeEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
+         var j:int = 0;
+         var jview:* = null;
          PetsBagManager.instance().finishTask();
-         var _loc4_:QuestInfo = param1.data as QuestInfo;
-         if(_loc4_ && _loc4_.QuestID == 363)
+         var currentGuildeInfo:QuestInfo = e.data as QuestInfo;
+         if(currentGuildeInfo && currentGuildeInfo.QuestID == 363)
          {
-            _loc3_ = 0;
-            while(_loc3_ < cateViewArr.length)
+            for(j = 0; j < cateViewArr.length; )
             {
-               _loc2_ = cateViewArr[_loc3_] as QuestCateView;
-               _loc2_.initData();
+               jview = cateViewArr[j] as QuestCateView;
+               jview.initData();
                var _loc7_:int = 0;
-               var _loc6_:* = _loc2_.data.list;
-               for each(var _loc5_ in _loc2_.data.list)
+               var _loc6_:* = jview.data.list;
+               for each(var taskInfo in jview.data.list)
                {
-                  if(_loc5_ == _loc4_)
+                  if(taskInfo == currentGuildeInfo)
                   {
-                     _loc2_.active();
-                     jumpToQuest(_loc4_);
+                     jview.active();
+                     jumpToQuest(currentGuildeInfo);
                      if(!PetsBagManager.instance().haveTaskOrderByID(363))
                      {
                      }
                      return;
                   }
                }
-               _loc3_++;
+               j++;
             }
          }
       }
       
-      private function __onDataChanged(param1:TaskEvent) : void
+      private function __onDataChanged(e:TaskEvent) : void
       {
-         var _loc2_:* = 0;
+         var i:* = 0;
          infoView.visible = false;
          _questBtn.enable = false;
          if(!_currentCateView || currentNewCateView != null)
@@ -404,20 +401,20 @@ package quest
          {
             return;
          }
-         _loc2_ = uint(0);
-         while(!(cateViewArr[_loc2_] as QuestCateView).active())
+         i = uint(0);
+         while(!(cateViewArr[i] as QuestCateView).active())
          {
-            _loc2_++;
-            if(_loc2_ == 4)
+            i++;
+            if(i == 4)
             {
                return;
             }
          }
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -426,14 +423,14 @@ package quest
          }
       }
       
-      public function jumpToQuest(param1:QuestInfo) : void
+      public function jumpToQuest(info:QuestInfo) : void
       {
-         var _loc2_:int = 0;
-         if(param1.MapID > 0 || param1.Condition == 64)
+         var s:int = 0;
+         if(info.MapID > 0 || info.Condition == 64)
          {
-            showOtherBtn(param1);
+            showOtherBtn(info);
          }
-         else if(checkGotoSceneCondition(param1))
+         else if(checkGotoSceneCondition(info))
          {
             _gotoAcademy.visible = false;
             _goDungeonBtn.visible = false;
@@ -442,7 +439,7 @@ package quest
             _buySpinelBtn.visible = false;
             _gotoGameBtn.visible = false;
             _gotoTrainBtn.visible = false;
-            if(!TrusteeshipManager.instance.getTrusteeshipInfo(param1.id))
+            if(!TrusteeshipManager.instance.getTrusteeshipInfo(info.id))
             {
                _gotoSceneBtn.visible = true;
             }
@@ -453,7 +450,7 @@ package quest
          }
          else
          {
-            _loc2_ = TaskManager.itemAwardSelected;
+            s = TaskManager.itemAwardSelected;
             _goDungeonBtn.visible = false;
             _goDungeonBtnShine.stop();
             _gotoAcademy.visible = false;
@@ -462,24 +459,24 @@ package quest
             _gotoGameBtn.visible = false;
             _gotoTrainBtn.visible = false;
             _gotoSceneBtn.visible = false;
-            _buySpinelBtn.visible = existRewardId(param1,11555);
+            _buySpinelBtn.visible = existRewardId(info,11555);
             showStyle(1);
             hideGuide();
          }
-         infoView.info = param1;
-         showQuestOverBtn(param1.isCompleted);
+         infoView.info = info;
+         showQuestOverBtn(info.isCompleted);
          if(PathManager.getTrusteeshipViewEnable)
          {
-            showTrusteeshipView(param1);
+            showTrusteeshipView(info);
          }
       }
       
-      private function showTrusteeshipView(param1:QuestInfo) : void
+      private function showTrusteeshipView(info:QuestInfo) : void
       {
-         if(param1.TrusteeshipCost >= 0)
+         if(info.TrusteeshipCost >= 0)
          {
             _trusteeshipView.visible = true;
-            _trusteeshipView.refreshView(param1,showQuestOverBtn,_questBtn);
+            _trusteeshipView.refreshView(info,showQuestOverBtn,_questBtn);
          }
          else
          {
@@ -488,9 +485,9 @@ package quest
          }
       }
       
-      private function showQuestOverBtn(param1:Boolean) : void
+      private function showQuestOverBtn(value:Boolean) : void
       {
-         if(param1)
+         if(value)
          {
             _questBtn.enable = true;
             _questBtn.visible = true;
@@ -512,9 +509,9 @@ package quest
          }
       }
       
-      private function showOtherBtn(param1:QuestInfo) : void
+      private function showOtherBtn(info:QuestInfo) : void
       {
-         if(param1.Condition == 64)
+         if(info.Condition == 64)
          {
             _gotoAcademy.visible = false;
             _downloadClientBtn.visible = false;
@@ -523,9 +520,9 @@ package quest
             _gotoTrainBtn.visible = false;
             _gotoSceneBtn.visible = true;
          }
-         else if(param1.MapID > 0)
+         else if(info.MapID > 0)
          {
-            if(param1.MapID == 1)
+            if(info.MapID == 1)
             {
                _gotoAcademy.visible = false;
                _goDungeonBtn.visible = false;
@@ -536,7 +533,7 @@ package quest
                _gotoTrainBtn.visible = false;
                _gotoSceneBtn.visible = true;
             }
-            else if(param1.MapID == 2)
+            else if(info.MapID == 2)
             {
                _gotoAcademy.visible = true;
                _goDungeonBtn.visible = false;
@@ -547,7 +544,7 @@ package quest
                _gotoTrainBtn.visible = false;
                _gotoSceneBtn.visible = false;
             }
-            else if(param1.MapID == 3)
+            else if(info.MapID == 3)
             {
                _downloadClientBtn.visible = true;
                _questBtn.visible = true;
@@ -558,7 +555,7 @@ package quest
                _gotoTrainBtn.visible = false;
                _gotoSceneBtn.visible = false;
             }
-            else if(param1.MapID == 4)
+            else if(info.MapID == 4)
             {
                _downloadClientBtn.visible = false;
                _gotoAcademy.visible = false;
@@ -568,7 +565,7 @@ package quest
                _gotoTrainBtn.visible = false;
                _gotoSceneBtn.visible = false;
             }
-            else if(param1.MapID > 9 && param1.MapID < 30)
+            else if(info.MapID > 9 && info.MapID < 30)
             {
                _downloadClientBtn.visible = false;
                _gotoAcademy.visible = false;
@@ -582,7 +579,7 @@ package quest
             {
                showStyle(2);
                _goDungeonBtn.visible = true;
-               _goDungeonBtn.enable = !param1.isCompleted;
+               _goDungeonBtn.enable = !info.isCompleted;
                if(_goDungeonBtn.enable)
                {
                   _goDungeonBtnShine.play();
@@ -609,7 +606,7 @@ package quest
             _gotoGameBtn.visible = false;
             _gotoTrainBtn.visible = false;
             _gotoSceneBtn.visible = false;
-            _buySpinelBtn.visible = existRewardId(param1,11555);
+            _buySpinelBtn.visible = existRewardId(info,11555);
          }
          if(WeakGuildManager.Instance.switchUserGuide && !PlayerManager.Instance.Self.IsWeakGuildFinish(950) && PlayerManager.Instance.Self.Grade < 2 && _goDungeonBtn.visible && _goDungeonBtn.enable)
          {
@@ -617,13 +614,13 @@ package quest
          }
       }
       
-      private function existRewardId(param1:QuestInfo, param2:int) : Boolean
+      private function existRewardId(info:QuestInfo, itemID:int) : Boolean
       {
          var _loc5_:int = 0;
-         var _loc4_:* = param1.itemRewards;
-         for each(var _loc3_ in param1.itemRewards)
+         var _loc4_:* = info.itemRewards;
+         for each(var temp in info.itemRewards)
          {
-            if(_loc3_.itemID == param2)
+            if(temp.itemID == itemID)
             {
                return true;
             }
@@ -647,7 +644,7 @@ package quest
          _timer.start();
       }
       
-      private function __timer(param1:TimerEvent) : void
+      private function __timer(evt:TimerEvent) : void
       {
          resetTimer();
          removeChild(_mcTaskTarget);
@@ -678,81 +675,78 @@ package quest
          }
       }
       
-      private function showStyle(param1:int) : void
+      private function showStyle(style:int) : void
       {
-         var _loc2_:int = 0;
-         if(_style == param1)
+         var i:int = 0;
+         if(_style == style)
          {
             return;
          }
-         _style = param1;
-         _loc2_ = 0;
-         while(_loc2_ < cateViewArr.length)
+         _style = style;
+         for(i = 0; i < cateViewArr.length; )
          {
-            (cateViewArr[_loc2_] as QuestCateView).taskStyle = param1;
-            _loc2_++;
+            (cateViewArr[i] as QuestCateView).taskStyle = style;
+            i++;
          }
-         switchBG(param1);
+         switchBG(style);
       }
       
-      private function __onCateViewChange(param1:Event) : void
+      private function __onCateViewChange(e:Event) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
+         var i:int = 0;
+         var view:* = null;
          clearVBox();
          infoView.visible = false;
-         var _loc3_:int = 0;
-         var _loc2_:int = 42;
-         _loc5_ = 0;
-         while(_loc5_ < cateViewArr.length)
+         var visibleItemNumber:int = 0;
+         var _currentY:int = 42;
+         for(i = 0; i < cateViewArr.length; )
          {
-            _loc4_ = cateViewArr[_loc5_] as QuestCateView;
-            if(_loc4_.visible)
+            view = cateViewArr[i] as QuestCateView;
+            if(view.visible)
             {
-               _loc3_++;
-               _loc4_.y = _loc2_;
-               _loc2_ = _loc2_ + (_loc4_.contentHeight + 7);
-               leftPanelContent.addChild(_loc4_);
+               visibleItemNumber++;
+               view.y = _currentY;
+               _currentY = _currentY + (view.contentHeight + 7);
+               leftPanelContent.addChild(view);
             }
-            _loc5_++;
+            i++;
          }
          leftPanel.setView(leftPanelContent);
          leftPanel.invalidateViewport();
-         if(_loc3_ == 0)
+         if(visibleItemNumber == 0)
          {
             TaskManager.instance.taskFrameHide();
          }
       }
       
-      private function __onTitleClicked(param1:Event) : void
+      private function __onTitleClicked(e:Event) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
+         var i:int = 0;
+         var view:* = null;
          clearVBox();
          if(!parent || currentNewCateView != null)
          {
             return;
          }
-         if(_currentCateView != param1.target as QuestCateView)
+         if(_currentCateView != e.target as QuestCateView)
          {
          }
-         _currentCateView = param1.target as QuestCateView;
-         var _loc2_:int = 0;
-         _loc4_ = 0;
-         while(_loc4_ < cateViewArr.length)
+         _currentCateView = e.target as QuestCateView;
+         var _currentY:int = 0;
+         for(i = 0; i < cateViewArr.length; )
          {
-            _loc3_ = cateViewArr[_loc4_] as QuestCateView;
-            if(_loc3_ != _currentCateView)
+            view = cateViewArr[i] as QuestCateView;
+            if(view != _currentCateView)
             {
-               _loc3_.collapse();
+               view.collapse();
             }
-            if(_loc3_.visible)
+            if(view.visible)
             {
-               _loc3_.y = _loc2_;
-               _loc2_ = _loc2_ + (_loc3_.contentHeight + 7);
-               leftPanelContent.addChild(_loc3_);
+               view.y = _currentY;
+               _currentY = _currentY + (view.contentHeight + 7);
+               leftPanelContent.addChild(view);
             }
-            _loc4_++;
+            i++;
          }
          leftPanel.setView(leftPanelContent);
          leftPanel.invalidateViewport();
@@ -785,51 +779,51 @@ package quest
          }
       }
       
-      private function __onQuestBtnClicked(param1:MouseEvent) : void
+      private function __onQuestBtnClicked(e:MouseEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc5_:* = null;
-         var _loc8_:* = null;
-         var _loc6_:* = null;
-         var _loc4_:* = null;
+         var time:int = 0;
+         var strMd5:* = null;
+         var loader:* = null;
+         var url:* = null;
+         var obj:* = null;
+         var alert:* = null;
          if(!infoView.info)
          {
             return;
          }
          SoundManager.instance.play("008");
-         var _loc7_:QuestInfo = infoView.info;
-         if(_loc7_.id >= 2153 && _loc7_.id <= 2160)
+         var questInfo:QuestInfo = infoView.info;
+         if(questInfo.id >= 2153 && questInfo.id <= 2160)
          {
-            _loc3_ = TimeManager.Instance.Now().getTime() / 1000;
-            _loc2_ = PlayerManager.Instance.Self.LoginName + "m$iux6&dn!0Q2dsf#q3o3sdxc6ml@w5L" + _loc7_.id.toString();
-            _loc5_ = new URLLoader();
-            _loc8_ = new URLRequest(PathManager.getRequest_path() + "VIP360GameReward.ashx");
-            _loc6_ = new URLVariables();
-            _loc6_["username"] = PlayerManager.Instance.Self.LoginName;
-            _loc6_["questid"] = _loc7_.id;
-            _loc6_["sign"] = MD5.hash(_loc2_);
-            _loc6_["timestamp"] = _loc3_;
-            _loc8_.data = _loc6_;
-            _loc5_.load(_loc8_);
+            time = TimeManager.Instance.Now().getTime() / 1000;
+            strMd5 = PlayerManager.Instance.Self.LoginName + "m$iux6&dn!0Q2dsf#q3o3sdxc6ml@w5L" + questInfo.id.toString();
+            loader = new URLLoader();
+            url = new URLRequest(PathManager.getRequest_path() + "VIP360GameReward.ashx");
+            obj = new URLVariables();
+            obj["username"] = PlayerManager.Instance.Self.LoginName;
+            obj["questid"] = questInfo.id;
+            obj["sign"] = MD5.hash(strMd5);
+            obj["timestamp"] = time;
+            url.data = obj;
+            loader.load(url);
             return;
          }
-         if(_loc7_.RewardBindMoney != 0 && _loc7_.RewardBindMoney + PlayerManager.Instance.Self.DDTMoney > ServerConfigManager.instance.getBindBidLimit(PlayerManager.Instance.Self.Grade,PlayerManager.Instance.Self.VIPLevel))
+         if(questInfo.RewardBindMoney != 0 && questInfo.RewardBindMoney + PlayerManager.Instance.Self.DDTMoney > ServerConfigManager.instance.getBindBidLimit(PlayerManager.Instance.Self.Grade,PlayerManager.Instance.Self.VIPLevel))
          {
-            _loc4_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.BindBid.tip"),LanguageMgr.GetTranslation("shop.PresentFrame.OkBtnText"),LanguageMgr.GetTranslation("shop.PresentFrame.CancelBtnText"),false,false,true,1);
-            _loc4_.addEventListener("response",__onResponse);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.BindBid.tip"),LanguageMgr.GetTranslation("shop.PresentFrame.OkBtnText"),LanguageMgr.GetTranslation("shop.PresentFrame.CancelBtnText"),false,false,true,1);
+            alert.addEventListener("response",__onResponse);
          }
          else
          {
-            finishQuest(_loc7_);
+            finishQuest(questInfo);
          }
       }
       
-      private function finishQuest(param1:QuestInfo) : void
+      private function finishQuest(pQuestInfo:QuestInfo) : void
       {
-         var _loc2_:* = null;
-         var _loc4_:* = null;
-         if(param1 && !param1.isCompleted)
+         var items:* = null;
+         var info:* = null;
+         if(pQuestInfo && !pQuestInfo.isCompleted)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.task.TaskCatalogContentView.dropTaskIII"));
             _currentCateView.active();
@@ -837,33 +831,33 @@ package quest
          }
          if(TaskManager.itemAwardSelected == -1)
          {
-            _loc2_ = [];
+            items = [];
             var _loc6_:int = 0;
-            var _loc5_:* = param1.itemRewards;
-            for each(var _loc3_ in param1.itemRewards)
+            var _loc5_:* = pQuestInfo.itemRewards;
+            for each(var temp in pQuestInfo.itemRewards)
             {
-               _loc4_ = new InventoryItemInfo();
-               _loc4_.TemplateID = _loc3_.itemID;
-               ItemManager.fill(_loc4_);
-               _loc4_.ValidDate = _loc3_.ValidateTime;
-               _loc4_.TemplateID = _loc3_.itemID;
-               _loc4_.IsJudge = true;
-               _loc4_.IsBinds = _loc3_.isBind;
-               _loc4_.AttackCompose = _loc3_.AttackCompose;
-               _loc4_.DefendCompose = _loc3_.DefendCompose;
-               _loc4_.AgilityCompose = _loc3_.AgilityCompose;
-               _loc4_.LuckCompose = _loc3_.LuckCompose;
-               _loc4_.StrengthenLevel = _loc3_.StrengthenLevel;
-               _loc4_.Count = _loc3_.count[param1.QuestLevel - 1];
-               if(!(0 != _loc4_.NeedSex && getSexByInt(PlayerManager.Instance.Self.Sex) != _loc4_.NeedSex))
+               info = new InventoryItemInfo();
+               info.TemplateID = temp.itemID;
+               ItemManager.fill(info);
+               info.ValidDate = temp.ValidateTime;
+               info.TemplateID = temp.itemID;
+               info.IsJudge = true;
+               info.IsBinds = temp.isBind;
+               info.AttackCompose = temp.AttackCompose;
+               info.DefendCompose = temp.DefendCompose;
+               info.AgilityCompose = temp.AgilityCompose;
+               info.LuckCompose = temp.LuckCompose;
+               info.StrengthenLevel = temp.StrengthenLevel;
+               info.Count = temp.count[pQuestInfo.QuestLevel - 1];
+               if(!(0 != info.NeedSex && getSexByInt(PlayerManager.Instance.Self.Sex) != info.NeedSex))
                {
-                  if(_loc3_.isOptional == 1)
+                  if(temp.isOptional == 1)
                   {
-                     _loc2_.push(_loc4_);
+                     items.push(info);
                   }
                }
             }
-            TryonSystemController.Instance.show(_loc2_,chooseReward,cancelChoose);
+            TryonSystemController.Instance.show(items,chooseReward,cancelChoose);
             return;
          }
          if(infoView.info)
@@ -885,30 +879,30 @@ package quest
          }
       }
       
-      private function __onResponse(param1:FrameEvent) : void
+      private function __onResponse(pEvent:FrameEvent) : void
       {
-         var _loc2_:* = null;
-         param1.currentTarget.removeEventListener("response",__onResponse);
-         if(param1.responseCode == 3)
+         var questInfo:* = null;
+         pEvent.currentTarget.removeEventListener("response",__onResponse);
+         if(pEvent.responseCode == 3)
          {
-            _loc2_ = infoView.info;
-            finishQuest(_loc2_);
+            questInfo = infoView.info;
+            finishQuest(questInfo);
          }
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(pEvent.currentTarget);
       }
       
-      private function getSexByInt(param1:Boolean) : int
+      private function getSexByInt(Sex:Boolean) : int
       {
-         if(param1)
+         if(Sex)
          {
             return 1;
          }
          return 2;
       }
       
-      private function chooseReward(param1:ItemTemplateInfo) : void
+      private function chooseReward(item:ItemTemplateInfo) : void
       {
-         SocketManager.Instance.out.sendQuestFinish(infoView.info.QuestID,param1.TemplateID);
+         SocketManager.Instance.out.sendQuestFinish(infoView.info.QuestID,item.TemplateID);
          TaskManager.itemAwardSelected = -1;
          checkThreeAndPower();
       }
@@ -918,11 +912,11 @@ package quest
          TaskManager.itemAwardSelected = -1;
       }
       
-      private function __onGoDungeonClicked(param1:MouseEvent) : void
+      private function __onGoDungeonClicked(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _goDungeonBtn.enable = false;
-         CheckWeaponManager.instance.setFunction(this,__onGoDungeonClicked,[param1]);
+         CheckWeaponManager.instance.setFunction(this,__onGoDungeonClicked,[event]);
          if(CheckWeaponManager.instance.isNoWeapon())
          {
             CheckWeaponManager.instance.showAlert();
@@ -960,7 +954,7 @@ package quest
          }
       }
       
-      private function __gotoGame(param1:MouseEvent) : void
+      private function __gotoGame(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _gotoGameBtn.enable = false;
@@ -972,9 +966,9 @@ package quest
          }
       }
       
-      private function __gotoScene(param1:MouseEvent) : void
+      private function __gotoScene(event:MouseEvent) : void
       {
-         var _loc2_:Boolean = false;
+         var isFirst:Boolean = false;
          SoundManager.instance.play("008");
          _gotoSceneBtn.enable = false;
          switch(int(infoView.info.ConditionTurn) - 1)
@@ -1051,23 +1045,23 @@ package quest
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.functionLimitTip",11));
                   return;
                }
-               _loc2_ = false;
+               isFirst = false;
                if(PlayerManager.Instance.Self.IsWeakGuildFinish(13) && !PlayerManager.Instance.Self.IsWeakGuildFinish(61))
                {
                   SocketManager.Instance.out.syncWeakStep(61);
-                  _loc2_ = true;
+                  isFirst = true;
                }
-               StateManager.setState("civil",_loc2_);
+               StateManager.setState("civil",isFirst);
                ComponentSetting.SEND_USELOG_ID(10);
                break;
          }
       }
       
-      private function __gotoTrain(param1:MouseEvent) : void
+      private function __gotoTrain(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _gotoTrainBtn.enable = false;
-         CheckWeaponManager.instance.setFunction(this,__gotoTrain,[param1]);
+         CheckWeaponManager.instance.setFunction(this,__gotoTrain,[e]);
          if(CheckWeaponManager.instance.isNoWeapon())
          {
             CheckWeaponManager.instance.showAlert();
@@ -1087,82 +1081,82 @@ package quest
          SocketManager.Instance.out.createUserGuide(5);
       }
       
-      private function __gameStart(param1:CrazyTankSocketEvent) : void
+      private function __gameStart(e:CrazyTankSocketEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
+         var _difficulty:int = 0;
+         var _infoId:int = 0;
+         var _sencondType:int = 0;
          RoomManager.Instance.removeEventListener("gameRoomCreate",__gameStart);
          switch(int(TaskManager.instance.guideId) - 10)
          {
             case 0:
-               _loc2_ = 0;
-               _loc4_ = 1000;
+               _difficulty = 0;
+               _infoId = 1000;
                break;
             case 1:
-               _loc2_ = 1;
-               _loc4_ = 1000;
+               _difficulty = 1;
+               _infoId = 1000;
                break;
             case 2:
-               _loc2_ = 2;
-               _loc4_ = 1000;
+               _difficulty = 2;
+               _infoId = 1000;
                break;
             case 3:
-               _loc2_ = 0;
-               _loc4_ = 1001;
+               _difficulty = 0;
+               _infoId = 1001;
                break;
             case 4:
-               _loc2_ = 1;
-               _loc4_ = 1001;
+               _difficulty = 1;
+               _infoId = 1001;
                break;
             case 5:
-               _loc2_ = 2;
-               _loc4_ = 1001;
+               _difficulty = 2;
+               _infoId = 1001;
                break;
             case 6:
-               _loc2_ = 0;
-               _loc4_ = 1002;
+               _difficulty = 0;
+               _infoId = 1002;
                break;
             case 7:
-               _loc2_ = 1;
-               _loc4_ = 1002;
+               _difficulty = 1;
+               _infoId = 1002;
                break;
             case 8:
-               _loc2_ = 2;
-               _loc4_ = 1002;
+               _difficulty = 2;
+               _infoId = 1002;
                break;
             case 9:
-               _loc2_ = 0;
-               _loc4_ = 1003;
+               _difficulty = 0;
+               _infoId = 1003;
                break;
             case 10:
-               _loc2_ = 1;
-               _loc4_ = 1003;
+               _difficulty = 1;
+               _infoId = 1003;
                break;
             case 11:
-               _loc2_ = 2;
-               _loc4_ = 1003;
+               _difficulty = 2;
+               _infoId = 1003;
                break;
             case 12:
-               _loc2_ = 0;
-               _loc4_ = 1004;
+               _difficulty = 0;
+               _infoId = 1004;
                break;
             case 13:
-               _loc2_ = 1;
-               _loc4_ = 1004;
+               _difficulty = 1;
+               _infoId = 1004;
                break;
             case 14:
-               _loc2_ = 2;
-               _loc4_ = 1004;
+               _difficulty = 2;
+               _infoId = 1004;
          }
-         _loc3_ = getSecondType(_loc4_,_loc2_);
-         GameInSocketOut.sendGameRoomSetUp(_loc4_,5,false,"","",_loc3_,_loc2_,0,false,0);
-         FightLibManager.Instance.currentInfoID = _loc4_;
-         FightLibManager.Instance.currentInfo.difficulty = _loc2_;
+         _sencondType = getSecondType(_infoId,_difficulty);
+         GameInSocketOut.sendGameRoomSetUp(_infoId,5,false,"","",_sencondType,_difficulty,0,false,0);
+         FightLibManager.Instance.currentInfoID = _infoId;
+         FightLibManager.Instance.currentInfo.difficulty = _difficulty;
          StateManager.setState("fightLib");
       }
       
-      private function updateAllDataHandler(param1:Event) : void
+      private function updateAllDataHandler(event:Event) : void
       {
          if(!_trusteeshipView.visible && !PathManager.getTrusteeshipViewEnable)
          {
@@ -1183,16 +1177,16 @@ package quest
          }
       }
       
-      private function checkGotoSceneCondition(param1:QuestInfo) : Boolean
+      private function checkGotoSceneCondition(info:QuestInfo) : Boolean
       {
-         if(param1.Condition == 21 || param1.Condition == 6 || param1.Condition == 34 || param1.Condition == 26 || param1.Condition == 5 || param1.Condition == 51 || param1.Condition == 9 || param1.Condition == 85 || param1.Condition == 86 || param1.Condition == 87 || param1.Condition == 83)
+         if(info.Condition == 21 || info.Condition == 6 || info.Condition == 34 || info.Condition == 26 || info.Condition == 5 || info.Condition == 51 || info.Condition == 9 || info.Condition == 85 || info.Condition == 86 || info.Condition == 87 || info.Condition == 83)
          {
             return true;
          }
          return false;
       }
       
-      private function updateSpiritValueHandler(param1:Event) : void
+      private function updateSpiritValueHandler(event:Event) : void
       {
          if(!_trusteeshipView.visible && !PathManager.getTrusteeshipViewEnable)
          {
@@ -1201,54 +1195,54 @@ package quest
          _trusteeshipView.refreshSpiritTxt();
       }
       
-      private function getSecondType(param1:int, param2:int) : int
+      private function getSecondType(infoId:int, difficulty:int) : int
       {
-         var _loc3_:int = 0;
-         if(param1 == 1001 || param1 == 1002 || param1 == 1003)
+         var secondType:int = 0;
+         if(infoId == 1001 || infoId == 1002 || infoId == 1003)
          {
-            if(param2 == 0)
+            if(difficulty == 0)
             {
-               _loc3_ = 6;
+               secondType = 6;
             }
-            else if(param2 == 1)
+            else if(difficulty == 1)
             {
-               _loc3_ = 5;
+               secondType = 5;
             }
             else
             {
-               _loc3_ = 3;
+               secondType = 3;
             }
          }
-         else if(param1 == 1004)
+         else if(infoId == 1004)
          {
-            if(param2 == 0)
+            if(difficulty == 0)
             {
-               _loc3_ = 5;
+               secondType = 5;
             }
-            else if(param2 == 1)
+            else if(difficulty == 1)
             {
-               _loc3_ = 4;
+               secondType = 4;
             }
             else
             {
-               _loc3_ = 3;
+               secondType = 3;
             }
          }
-         return _loc3_;
+         return secondType;
       }
       
-      private function __gotoAcademy(param1:MouseEvent) : void
+      private function __gotoAcademy(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          AcademyManager.Instance.gotoAcademyState();
       }
       
-      private function __downloadClient(param1:MouseEvent) : void
+      private function __downloadClient(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }
       
-      private function __buySpinelClick(param1:MouseEvent) : void
+      private function __buySpinelClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -1256,7 +1250,7 @@ package quest
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:ShopItemInfo = ShopManager.Instance.getMoneyShopItemByTemplateID(11555);
+         var shopItemInfo:ShopItemInfo = ShopManager.Instance.getMoneyShopItemByTemplateID(11555);
          _quick = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
          _quick.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
          _quick.itemID = 11555;
@@ -1265,78 +1259,75 @@ package quest
          LayerManager.Instance.addToLayer(_quick,2,true,1);
       }
       
-      public function gotoQuest(param1:QuestInfo) : void
+      public function gotoQuest(info:QuestInfo) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         _loc4_ = 0;
-         while(_loc4_ < cateViewArr.length)
+         var j:int = 0;
+         var jview:* = null;
+         for(j = 0; j < cateViewArr.length; )
          {
-            _loc3_ = cateViewArr[_loc4_] as QuestCateView;
+            jview = cateViewArr[j] as QuestCateView;
             var _loc9_:int = 0;
-            var _loc8_:* = _loc3_.data.list;
-            for each(var _loc5_ in _loc3_.data.list)
+            var _loc8_:* = jview.data.list;
+            for each(var taskInfo in jview.data.list)
             {
-               if(_loc5_.QuestID == param1.QuestID)
+               if(taskInfo.QuestID == info.QuestID)
                {
-                  _loc3_.active();
+                  jview.active();
                   var _loc7_:int = 0;
-                  var _loc6_:* = _loc3_.itemArr;
-                  for each(var _loc2_ in _loc3_.itemArr)
+                  var _loc6_:* = jview.itemArr;
+                  for each(var item in jview.itemArr)
                   {
-                     if(_loc2_.info.id == param1.QuestID)
+                     if(item.info.id == info.QuestID)
                      {
-                        _loc2_.active();
+                        item.active();
                      }
                   }
                   return;
                }
             }
-            _loc4_++;
+            j++;
          }
       }
       
-      override protected function __onAddToStage(param1:Event) : void
+      override protected function __onAddToStage(e:Event) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc6_:int = 0;
-         var _loc2_:* = null;
-         super.__onAddToStage(param1);
-         var _loc3_:* = -1;
-         _loc5_ = 0;
-         while(_loc5_ < cateViewArr.length)
+         var j:int = 0;
+         var jview:* = null;
+         var k:int = 0;
+         var view1:* = null;
+         super.__onAddToStage(e);
+         var cate:* = -1;
+         for(j = 0; j < cateViewArr.length; )
          {
-            _loc4_ = cateViewArr[_loc5_] as QuestCateView;
-            _loc4_.initData();
-            _loc5_++;
+            jview = cateViewArr[j] as QuestCateView;
+            jview.initData();
+            j++;
          }
-         _loc6_ = 0;
-         while(_loc6_ < cateViewArr.length)
+         for(k = 0; k < cateViewArr.length; )
          {
-            _loc2_ = cateViewArr[_loc6_] as QuestCateView;
-            if(_loc2_.questType != 4)
+            view1 = cateViewArr[k] as QuestCateView;
+            if(view1.questType != 4)
             {
-               _loc2_.initData();
-               if(_loc2_.data.haveCompleted)
+               view1.initData();
+               if(view1.data.haveCompleted)
                {
-                  _loc2_.active();
+                  view1.active();
                   leftPanel.invalidateViewport();
                   return;
                }
-               if(_loc2_.length > 0 && _loc3_ < 0)
+               if(view1.length > 0 && cate < 0)
                {
-                  _loc3_ = _loc6_;
-                  _loc2_.active();
+                  cate = k;
+                  view1.active();
                }
             }
-            _loc6_++;
+            k++;
          }
       }
       
       override public function dispose() : void
       {
-         var _loc1_:* = null;
+         var cateView:* = null;
          TaskControl.instance.MainFrame = null;
          hideGuide();
          removeEvent();
@@ -1344,16 +1335,16 @@ package quest
          currentNewCateView = null;
          while(true)
          {
-            _loc1_ = cateViewArr.pop();
+            cateView = cateViewArr.pop();
             if(!cateViewArr.pop())
             {
                break;
             }
-            _loc1_.removeEventListener(QuestCateView.TITLECLICKED,__onTitleClicked);
-            _loc1_.removeEventListener("enableChange",__onEnbleChange);
-            _loc1_.removeEventListener("change",__onCateViewChange);
-            _loc1_.dispose();
-            _loc1_ = null;
+            cateView.removeEventListener(QuestCateView.TITLECLICKED,__onTitleClicked);
+            cateView.removeEventListener("enableChange",__onEnbleChange);
+            cateView.removeEventListener("change",__onCateViewChange);
+            cateView.dispose();
+            cateView = null;
          }
          ObjectUtils.disposeObject(leftPanelContent);
          leftPanelContent = null;

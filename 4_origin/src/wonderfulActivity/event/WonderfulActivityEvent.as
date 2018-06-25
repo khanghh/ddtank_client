@@ -18,9 +18,9 @@ package wonderfulActivity.event
       
       public var data;
       
-      public function WonderfulActivityEvent(param1:String, param2:Boolean = false, param3:Boolean = false)
+      public function WonderfulActivityEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         super(param1,param2,param3);
+         super(type,bubbles,cancelable);
       }
    }
 }

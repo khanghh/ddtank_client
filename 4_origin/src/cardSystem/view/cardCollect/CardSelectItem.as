@@ -45,28 +45,28 @@ package cardSystem.view.cardCollect
          addEventListener("mouseOut",__mouseOut);
       }
       
-      private function __mouseOver(param1:MouseEvent) : void
+      private function __mouseOver(event:MouseEvent) : void
       {
          _bgImg.alpha = 1;
       }
       
-      private function __mouseOut(param1:MouseEvent) : void
+      private function __mouseOut(event:MouseEvent) : void
       {
          _bgImg.alpha = 0;
       }
       
-      private function __click(param1:MouseEvent) : void
+      private function __click(e:MouseEvent) : void
       {
-         var _loc3_:Object = {};
-         _loc3_.id = _id;
-         var _loc2_:CardSocketEvent = new CardSocketEvent("select_cards",_loc3_);
-         dispatchEvent(_loc2_);
+         var obj:Object = {};
+         obj.id = _id;
+         var evt:CardSocketEvent = new CardSocketEvent("select_cards",obj);
+         dispatchEvent(evt);
       }
       
-      public function set info(param1:SetsInfo) : void
+      public function set info(goods:SetsInfo) : void
       {
-         _nameTxt.text = param1.name;
-         _id = param1.ID;
+         _nameTxt.text = goods.name;
+         _id = goods.ID;
       }
       
       public function dispose() : void

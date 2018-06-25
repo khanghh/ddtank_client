@@ -53,9 +53,9 @@ package explorerManual
          return _puzzleState;
       }
       
-      public function set puzzleState(param1:Boolean) : void
+      public function set puzzleState(value:Boolean) : void
       {
-         _puzzleState = param1;
+         _puzzleState = value;
       }
       
       public function setup() : void
@@ -72,36 +72,35 @@ package explorerManual
          SocketManager.Instance.addEventListener(PkgEvent.format(377,3),__pageActiveHandler);
       }
       
-      private function __initDataHandler(param1:PkgEvent) : void
+      private function __initDataHandler(evt:PkgEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc2_:PackageIn = param1.pkg;
+         var i:int = 0;
+         var pkg:PackageIn = evt.pkg;
          _manaualModel.clear();
          _manaualModel.beginChanges();
-         _manaualModel.manualLev = _loc2_.readInt();
-         _manaualModel.progress = _loc2_.readInt();
-         _manaualModel.maxProgress = _loc2_.readInt();
-         _manaualModel.havePage = _loc2_.readInt();
-         _manaualModel.conditionCount = _loc2_.readInt();
-         _manaualModel.pageAllPro.pro_Agile = _loc2_.readInt();
-         _manaualModel.pageAllPro.pro_Armor = _loc2_.readInt();
-         _manaualModel.pageAllPro.pro_Attack = _loc2_.readInt();
-         _manaualModel.pageAllPro.pro_Damage = _loc2_.readInt();
-         _manaualModel.pageAllPro.pro_Defense = _loc2_.readInt();
-         _manaualModel.pageAllPro.pro_HP = _loc2_.readInt();
-         _manaualModel.pageAllPro.pro_Lucky = _loc2_.readInt();
-         _manaualModel.pageAllPro.pro_MagicAttack = _loc2_.readInt();
-         _manaualModel.pageAllPro.pro_MagicResistance = _loc2_.readInt();
-         _manaualModel.pageAllPro.pro_Stamina = _loc2_.readInt();
-         var _loc4_:int = _loc2_.readInt();
-         var _loc3_:Array = [];
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         _manaualModel.manualLev = pkg.readInt();
+         _manaualModel.progress = pkg.readInt();
+         _manaualModel.maxProgress = pkg.readInt();
+         _manaualModel.havePage = pkg.readInt();
+         _manaualModel.conditionCount = pkg.readInt();
+         _manaualModel.pageAllPro.pro_Agile = pkg.readInt();
+         _manaualModel.pageAllPro.pro_Armor = pkg.readInt();
+         _manaualModel.pageAllPro.pro_Attack = pkg.readInt();
+         _manaualModel.pageAllPro.pro_Damage = pkg.readInt();
+         _manaualModel.pageAllPro.pro_Defense = pkg.readInt();
+         _manaualModel.pageAllPro.pro_HP = pkg.readInt();
+         _manaualModel.pageAllPro.pro_Lucky = pkg.readInt();
+         _manaualModel.pageAllPro.pro_MagicAttack = pkg.readInt();
+         _manaualModel.pageAllPro.pro_MagicResistance = pkg.readInt();
+         _manaualModel.pageAllPro.pro_Stamina = pkg.readInt();
+         var len:int = pkg.readInt();
+         var pageIDList:Array = [];
+         for(i = 0; i < len; )
          {
-            _loc3_.push(_loc2_.readInt());
-            _loc5_++;
+            pageIDList.push(pkg.readInt());
+            i++;
          }
-         _manaualModel.activePageID = _loc3_;
+         _manaualModel.activePageID = pageIDList;
          updatePlayerManualPro();
          _manaualModel.upgradeCondition.conditions = ExplorerManualManager.instance.getupgradeConditionByLev(_manaualModel.manualLev);
          _manaualModel.refreshData();
@@ -110,23 +109,23 @@ package explorerManual
       
       private function updatePlayerManualPro() : void
       {
-         var _loc1_:SelfInfo = PlayerManager.Instance.Self;
-         _loc1_.manualProInfo.manual_Level = _manaualModel.manualLev;
-         _loc1_.manualProInfo.pro_Agile = _manaualModel.pageAllPro.pro_Agile;
-         _loc1_.manualProInfo.pro_Armor = _manaualModel.pageAllPro.pro_Armor;
-         _loc1_.manualProInfo.pro_Attack = _manaualModel.pageAllPro.pro_Attack;
-         _loc1_.manualProInfo.pro_Damage = _manaualModel.pageAllPro.pro_Damage;
-         _loc1_.manualProInfo.pro_Defense = _manaualModel.pageAllPro.pro_Defense;
-         _loc1_.manualProInfo.pro_HP = _manaualModel.pageAllPro.pro_HP;
-         _loc1_.manualProInfo.pro_Lucky = _manaualModel.pageAllPro.pro_Lucky;
-         _loc1_.manualProInfo.pro_MagicAttack = _manaualModel.pageAllPro.pro_MagicAttack;
-         _loc1_.manualProInfo.pro_MagicResistance = _manaualModel.pageAllPro.pro_MagicResistance;
-         _loc1_.manualProInfo.pro_Stamina = _manaualModel.pageAllPro.pro_Stamina;
+         var selft:SelfInfo = PlayerManager.Instance.Self;
+         selft.manualProInfo.manual_Level = _manaualModel.manualLev;
+         selft.manualProInfo.pro_Agile = _manaualModel.pageAllPro.pro_Agile;
+         selft.manualProInfo.pro_Armor = _manaualModel.pageAllPro.pro_Armor;
+         selft.manualProInfo.pro_Attack = _manaualModel.pageAllPro.pro_Attack;
+         selft.manualProInfo.pro_Damage = _manaualModel.pageAllPro.pro_Damage;
+         selft.manualProInfo.pro_Defense = _manaualModel.pageAllPro.pro_Defense;
+         selft.manualProInfo.pro_HP = _manaualModel.pageAllPro.pro_HP;
+         selft.manualProInfo.pro_Lucky = _manaualModel.pageAllPro.pro_Lucky;
+         selft.manualProInfo.pro_MagicAttack = _manaualModel.pageAllPro.pro_MagicAttack;
+         selft.manualProInfo.pro_MagicResistance = _manaualModel.pageAllPro.pro_MagicResistance;
+         selft.manualProInfo.pro_Stamina = _manaualModel.pageAllPro.pro_Stamina;
       }
       
-      private function __openViewHandler(param1:Event) : void
+      private function __openViewHandler(evt:Event) : void
       {
-         evt = param1;
+         evt = evt;
          if(ExplorerManualManager.instance.isInitData)
          {
             loadUIModule();
@@ -150,93 +149,92 @@ package explorerManual
          puzzleState = false;
       }
       
-      private function __upgradeHandler(param1:PkgEvent) : void
+      private function __upgradeHandler(evt:PkgEvent) : void
       {
-         var _loc5_:* = null;
-         var _loc8_:PackageIn = param1.pkg;
-         var _loc10_:Boolean = _loc8_.readBoolean();
-         var _loc3_:Boolean = _loc8_.readBoolean();
-         var _loc4_:Boolean = _loc8_.readBoolean();
-         var _loc9_:int = _loc8_.readInt();
-         var _loc2_:int = _loc8_.readInt();
-         var _loc7_:int = _manaualModel.progress;
-         var _loc6_:* = _loc2_;
+         var str:* = null;
+         var pkg:PackageIn = evt.pkg;
+         var type:Boolean = pkg.readBoolean();
+         var result:Boolean = pkg.readBoolean();
+         var isCrit:Boolean = pkg.readBoolean();
+         var manualLev:int = pkg.readInt();
+         var progress:int = pkg.readInt();
+         var cur:int = _manaualModel.progress;
+         var next:* = progress;
          if(_manaualModel)
          {
-            if(_manaualModel.manualLev != _loc9_)
+            if(_manaualModel.manualLev != manualLev)
             {
-               if(!_loc10_)
+               if(!type)
                {
-                  _loc5_ = LanguageMgr.GetTranslation("explorerManual.upgrade.succeed");
+                  str = LanguageMgr.GetTranslation("explorerManual.upgrade.succeed");
                }
                else
                {
-                  _loc5_ = LanguageMgr.GetTranslation("explorerManual.upgrade.complete");
+                  str = LanguageMgr.GetTranslation("explorerManual.upgrade.complete");
                }
                requestInitData();
                this.dispatchEvent(new Event("upgradeComplete"));
             }
             else
             {
-               if(!_loc10_)
+               if(!type)
                {
-                  _loc5_ = LanguageMgr.GetTranslation(!!_loc4_?"explorerManual.upgrade.critPrompt":"explorerManual.upgrade.prompt",_loc2_ - _loc7_);
+                  str = LanguageMgr.GetTranslation(!!isCrit?"explorerManual.upgrade.critPrompt":"explorerManual.upgrade.prompt",progress - cur);
                }
                else
                {
-                  _loc5_ = LanguageMgr.GetTranslation("explorerManual.upgrade.complete");
+                  str = LanguageMgr.GetTranslation("explorerManual.upgrade.complete");
                }
                _manaualModel.beginChanges();
-               _manaualModel.progress = _loc2_;
+               _manaualModel.progress = progress;
                _manaualModel.commitChanges();
             }
          }
-         MessageTipManager.getInstance().show(_loc5_);
+         MessageTipManager.getInstance().show(str);
       }
       
-      private function __pageUpdateHandler(param1:PkgEvent) : void
+      private function __pageUpdateHandler(evt:PkgEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
-         var _loc8_:* = null;
-         var _loc7_:int = 0;
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc4_:int = _loc3_.readInt();
-         var _loc6_:ManualPageDebrisInfo = new ManualPageDebrisInfo();
-         _loc7_ = 0;
-         while(_loc7_ < _loc4_)
+         var piecesID:int = 0;
+         var getDate:* = null;
+         var info:* = null;
+         var i:int = 0;
+         var pkg:PackageIn = evt.pkg;
+         var len:int = pkg.readInt();
+         var deInfo:ManualPageDebrisInfo = new ManualPageDebrisInfo();
+         for(i = 0; i < len; )
          {
-            _loc8_ = new DebrisInfo();
-            _loc8_.debrisID = _loc3_.readInt();
-            _loc8_.date = _loc3_.readDate();
-            _loc6_.debris.push(_loc8_);
-            _loc7_++;
+            info = new DebrisInfo();
+            info.debrisID = pkg.readInt();
+            info.date = pkg.readDate();
+            deInfo.debris.push(info);
+            i++;
          }
          _manaualModel.beginChanges();
-         _manaualModel.debrisInfo = _loc6_;
+         _manaualModel.debrisInfo = deInfo;
          _manaualModel.commitChanges();
       }
       
-      private function __pageActiveHandler(param1:PkgEvent) : void
+      private function __pageActiveHandler(evt:PkgEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:Boolean = _loc4_.readBoolean();
-         var _loc5_:int = _loc4_.readInt();
-         if(_loc5_ == 1)
+         var str:* = null;
+         var pkg:PackageIn = evt.pkg;
+         var result:Boolean = pkg.readBoolean();
+         var type:int = pkg.readInt();
+         if(type == 1)
          {
-            _loc3_ = !!_loc2_?"explorerManual.active.succeesMsg":"explorerManual.active.failMsg";
-            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation(_loc3_));
-            if(_loc2_)
+            str = !!result?"explorerManual.active.succeesMsg":"explorerManual.active.failMsg";
+            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation(str));
+            if(result)
             {
                requestInitData();
             }
          }
-         else if(_loc5_ == 2)
+         else if(type == 2)
          {
-            _loc3_ = !!_loc2_?"explorerManual.akeyMuzzle.succeesMsg":"explorerManual.akeyMuzzle.failMsg";
-            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation(_loc3_));
-            this.dispatchEvent(new CEvent("akeyMuzzleComplete",_loc2_));
+            str = !!result?"explorerManual.akeyMuzzle.succeesMsg":"explorerManual.akeyMuzzle.failMsg";
+            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation(str));
+            this.dispatchEvent(new CEvent("akeyMuzzleComplete",result));
          }
       }
       
@@ -264,37 +262,37 @@ package explorerManual
          }
       }
       
-      public function startUpgrade(param1:Boolean, param2:Boolean) : void
+      public function startUpgrade(autoBuy:Boolean, bindMoney:Boolean) : void
       {
-         upgrade(param1,param2);
+         upgrade(autoBuy,bindMoney);
       }
       
-      public function autoUpgrade(param1:Boolean, param2:Boolean, param3:Boolean) : void
+      public function autoUpgrade(autoBuy:Boolean, bindMoney:Boolean, autoUpgrade:Boolean) : void
       {
-         upgrade(param1,param2,param3);
+         upgrade(autoBuy,bindMoney,autoUpgrade);
       }
       
-      private function upgrade(param1:Boolean, param2:Boolean, param3:Boolean = false) : void
+      private function upgrade(autoBuy:Boolean, bindMoney:Boolean, autoUpgrade:Boolean = false) : void
       {
-         ExplorerManualManager.instance.startUpgrade(param1,param2,param3);
+         ExplorerManualManager.instance.startUpgrade(autoBuy,bindMoney,autoUpgrade);
       }
       
-      public function requestManualPageData(param1:int) : void
+      public function requestManualPageData(chapterID:int) : void
       {
-         ExplorerManualManager.instance.requestManualPageData(param1);
+         ExplorerManualManager.instance.requestManualPageData(chapterID);
       }
       
-      public function switchChapterView(param1:int) : void
+      public function switchChapterView(chapterID:int) : void
       {
          if(_frame)
          {
-            _frame.openPageView(param1);
+            _frame.openPageView(chapterID);
          }
       }
       
-      public function sendManualPageActive(param1:int, param2:int) : void
+      public function sendManualPageActive(activeType:int, pageID:int) : void
       {
-         ExplorerManualManager.instance.sendManualPageActive(param1,param2);
+         ExplorerManualManager.instance.sendManualPageActive(activeType,pageID);
       }
       
       private function requestInitData() : void
@@ -307,9 +305,9 @@ package explorerManual
          return _autoUpgradeing;
       }
       
-      public function set autoUpgradeing(param1:Boolean) : void
+      public function set autoUpgradeing(value:Boolean) : void
       {
-         _autoUpgradeing = param1;
+         _autoUpgradeing = value;
       }
    }
 }

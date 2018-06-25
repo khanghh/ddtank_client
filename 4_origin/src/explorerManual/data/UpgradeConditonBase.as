@@ -13,9 +13,9 @@ package explorerManual.data
          super();
       }
       
-      public function set conditions(param1:Array) : void
+      public function set conditions(value:Array) : void
       {
-         _conditions = param1;
+         _conditions = value;
       }
       
       public function get materialCondition() : ManualUpgradeInfo

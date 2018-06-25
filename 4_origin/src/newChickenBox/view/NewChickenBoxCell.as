@@ -9,11 +9,11 @@ package newChickenBox.view
    {
        
       
-      public function NewChickenBoxCell(param1:DisplayObject, param2:ItemTemplateInfo = null, param3:Boolean = true, param4:Boolean = true)
+      public function NewChickenBoxCell(bg:DisplayObject, $info:ItemTemplateInfo = null, showLoading:Boolean = true, showTip:Boolean = true)
       {
-         super(param1,param2,param3,param4);
-         var _loc5_:Point = new Point(2,2);
-         PicPos = _loc5_;
+         super(bg,$info,showLoading,showTip);
+         var point:Point = new Point(2,2);
+         PicPos = point;
       }
    }
 }

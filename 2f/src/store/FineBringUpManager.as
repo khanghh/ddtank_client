@@ -1,9 +1,2 @@
-package store
-{
-   public class FineBringUpManager
-   {
-       
-      
-      public function FineBringUpManager(){super();}
-   }
-}
+package store{   public class FineBringUpManager   {                   public function FineBringUpManager() { super(); }
+   }}

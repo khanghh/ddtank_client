@@ -14,15 +14,15 @@ package com.pickgliss.geom
       
       public var height:int = 0;
       
-      public function IntRectangle(param1:int = 0, param2:int = 0, param3:int = 0, param4:int = 0)
+      public function IntRectangle(x:int = 0, y:int = 0, width:int = 0, height:int = 0)
       {
          super();
-         setRectXYWH(param1,param2,param3,param4);
+         setRectXYWH(x,y,width,height);
       }
       
-      public static function creatWithRectangle(param1:Rectangle) : IntRectangle
+      public static function creatWithRectangle(r:Rectangle) : IntRectangle
       {
-         return new IntRectangle(param1.x,param1.y,param1.width,param1.height);
+         return new IntRectangle(r.x,r.y,r.width,r.height);
       }
       
       public function toRectangle() : Rectangle
@@ -30,37 +30,37 @@ package com.pickgliss.geom
          return new Rectangle(x,y,width,height);
       }
       
-      public function setWithRectangle(param1:Rectangle) : void
+      public function setWithRectangle(r:Rectangle) : void
       {
-         x = param1.x;
-         y = param1.y;
-         width = param1.width;
-         height = param1.height;
+         x = r.x;
+         y = r.y;
+         width = r.width;
+         height = r.height;
       }
       
-      public function setRect(param1:IntRectangle) : void
+      public function setRect(rect:IntRectangle) : void
       {
-         setRectXYWH(param1.x,param1.y,param1.width,param1.height);
+         setRectXYWH(rect.x,rect.y,rect.width,rect.height);
       }
       
-      public function setRectXYWH(param1:int, param2:int, param3:int, param4:int) : void
+      public function setRectXYWH(x:int, y:int, width:int, height:int) : void
       {
-         this.x = param1;
-         this.y = param2;
-         this.width = param3;
-         this.height = param4;
+         this.x = x;
+         this.y = y;
+         this.width = width;
+         this.height = height;
       }
       
-      public function setLocation(param1:IntPoint) : void
+      public function setLocation(p:IntPoint) : void
       {
-         this.x = param1.x;
-         this.y = param1.y;
+         this.x = p.x;
+         this.y = p.y;
       }
       
-      public function setSize(param1:IntDimension) : void
+      public function setSize(size:IntDimension) : void
       {
-         this.width = param1.width;
-         this.height = param1.height;
+         this.width = size.width;
+         this.height = size.height;
       }
       
       public function getSize() : IntDimension
@@ -73,33 +73,33 @@ package com.pickgliss.geom
          return new IntPoint(x,y);
       }
       
-      public function union(param1:IntRectangle) : IntRectangle
+      public function union(r:IntRectangle) : IntRectangle
       {
-         var _loc5_:int = Math.min(x,param1.x);
-         var _loc4_:int = Math.max(x + width,param1.x + param1.width);
-         var _loc2_:int = Math.min(y,param1.y);
-         var _loc3_:int = Math.max(y + height,param1.y + param1.height);
-         return new IntRectangle(_loc5_,_loc2_,_loc4_ - _loc5_,_loc3_ - _loc2_);
+         var x1:int = Math.min(x,r.x);
+         var x2:int = Math.max(x + width,r.x + r.width);
+         var y1:int = Math.min(y,r.y);
+         var y2:int = Math.max(y + height,r.y + r.height);
+         return new IntRectangle(x1,y1,x2 - x1,y2 - y1);
       }
       
-      public function grow(param1:int, param2:int) : void
+      public function grow(h:int, v:int) : void
       {
-         x = x - param1;
-         y = y - param2;
-         width = width + param1 * 2;
-         height = height + param2 * 2;
+         x = x - h;
+         y = y - v;
+         width = width + h * 2;
+         height = height + v * 2;
       }
       
-      public function move(param1:int, param2:int) : void
+      public function move(dx:int, dy:int) : void
       {
-         x = x + param1;
-         y = y + param2;
+         x = x + dx;
+         y = y + dy;
       }
       
-      public function resize(param1:int = 0, param2:int = 0) : void
+      public function resize(dwidth:int = 0, dheight:int = 0) : void
       {
-         width = width + param1;
-         height = height + param2;
+         width = width + dwidth;
+         height = height + dheight;
       }
       
       public function leftTop() : IntPoint
@@ -122,23 +122,23 @@ package com.pickgliss.geom
          return new IntPoint(x + width,y + height);
       }
       
-      public function containsPoint(param1:IntPoint) : Boolean
+      public function containsPoint(p:IntPoint) : Boolean
       {
-         if(param1.x < x || param1.y < y || param1.x > x + width || param1.y > y + height)
+         if(p.x < x || p.y < y || p.x > x + width || p.y > y + height)
          {
             return false;
          }
          return true;
       }
       
-      public function equals(param1:Object) : Boolean
+      public function equals(o:Object) : Boolean
       {
-         var _loc2_:IntRectangle = param1 as IntRectangle;
-         if(_loc2_ == null)
+         var r:IntRectangle = o as IntRectangle;
+         if(r == null)
          {
             return false;
          }
-         return x === _loc2_.x && y === _loc2_.y && width === _loc2_.width && height === _loc2_.height;
+         return x === r.x && y === r.y && width === r.width && height === r.height;
       }
       
       public function clone() : IntRectangle

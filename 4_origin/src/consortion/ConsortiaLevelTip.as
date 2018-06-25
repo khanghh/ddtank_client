@@ -82,22 +82,22 @@ package consortion
          return _tempData;
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         _tempData = param1 as Vector.<String>;
-         _explainText2.text = param1[0] == null?"":param1[0];
+         _tempData = data as Vector.<String>;
+         _explainText2.text = data[0] == null?"":data[0];
          var _loc2_:* = _explainText2.y + _explainText2.textHeight + 5;
          _nextLevelText2.y = _loc2_;
          _nextLevelText.y = _loc2_;
-         _nextLevelText2.text = param1[1] == null?"":param1[1];
+         _nextLevelText2.text = data[1] == null?"":data[1];
          _loc2_ = _nextLevelText2.y + _nextLevelText2.textHeight + 5;
          _requirementsText2.y = _loc2_;
          _requirementsText.y = _loc2_;
-         _requirementsText2.htmlText = param1[2] == null?"":param1[2];
+         _requirementsText2.htmlText = data[2] == null?"":data[2];
          _loc2_ = _requirementsText2.y + _requirementsText2.textHeight + 5;
          _consumptionText2.y = _loc2_;
          _consumptionText.y = _loc2_;
-         _consumptionText2.htmlText = param1[3] == null?"":param1[3];
+         _consumptionText2.htmlText = data[3] == null?"":data[3];
          drawBG();
       }
       
@@ -107,7 +107,7 @@ package consortion
          _bg.width = 0;
       }
       
-      private function drawBG(param1:int = 0) : void
+      private function drawBG($width:int = 0) : void
       {
          reset();
          _bg.width = 286;

@@ -50,44 +50,43 @@ package treasure.controller
          SocketManager.Instance.addEventListener("dig",__digHandler);
       }
       
-      private function __digHandler(param1:CrazyTankSocketEvent) : void
+      private function __digHandler(e:CrazyTankSocketEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc2_:int = param1.pkg.readInt();
-         var _loc6_:int = param1.pkg.readInt();
-         var _loc4_:int = param1.pkg.readInt();
-         PlayerManager.Instance.Self.treasure = param1.pkg.readInt();
-         var _loc3_:int = param1.pkg.readInt();
-         PlayerManager.Instance.Self.treasureAdd = _loc3_ > 0?_loc3_:0;
-         _loc5_ = 0;
-         while(_loc5_ < TreasureModel.instance.itemList.length)
+         var i:int = 0;
+         var id:int = e.pkg.readInt();
+         var pos:int = e.pkg.readInt();
+         var count:int = e.pkg.readInt();
+         PlayerManager.Instance.Self.treasure = e.pkg.readInt();
+         var num:int = e.pkg.readInt();
+         PlayerManager.Instance.Self.treasureAdd = num > 0?num:0;
+         for(i = 0; i < TreasureModel.instance.itemList.length; )
          {
-            if(TreasureModel.instance.itemList[_loc5_].TemplateID == _loc2_ && TreasureModel.instance.itemList[_loc5_].Count == _loc4_)
+            if(TreasureModel.instance.itemList[i].TemplateID == id && TreasureModel.instance.itemList[i].Count == count)
             {
-               TreasureModel.instance.itemList[_loc5_].pos = _loc6_;
+               TreasureModel.instance.itemList[i].pos = pos;
                sortList();
-               dispatchEvent(new TreasureEvents("dig",{"pos":_loc6_}));
+               dispatchEvent(new TreasureEvents("dig",{"pos":pos}));
                return;
             }
-            _loc5_++;
+            i++;
          }
       }
       
-      private function __endGameHandler(param1:CrazyTankSocketEvent) : void
+      private function __endGameHandler(e:CrazyTankSocketEvent) : void
       {
-         TreasureModel.instance.isEndTreasure = param1.pkg.readBoolean();
+         TreasureModel.instance.isEndTreasure = e.pkg.readBoolean();
          dispatchEvent(new TreasureEvents("endGame"));
       }
       
-      private function __stratGameHandler(param1:CrazyTankSocketEvent) : void
+      private function __stratGameHandler(e:CrazyTankSocketEvent) : void
       {
-         TreasureModel.instance.isBeginTreasure = param1.pkg.readBoolean();
+         TreasureModel.instance.isBeginTreasure = e.pkg.readBoolean();
          dispatchEvent(new TreasureEvents("beginGame"));
       }
       
-      private function __farmBeRepairHandler(param1:CrazyTankSocketEvent) : void
+      private function __farmBeRepairHandler(e:CrazyTankSocketEvent) : void
       {
-         TreasureModel.instance.friendHelpTimes = param1.pkg.readInt();
+         TreasureModel.instance.friendHelpTimes = e.pkg.readInt();
          if(TreasureModel.instance.friendHelpTimes == PathManager.treasureHelpTimes)
          {
             PlayerManager.Instance.Self.treasureAdd = 1;
@@ -95,64 +94,62 @@ package treasure.controller
          dispatchEvent(new TreasureEvents("beRepairFriendFarmSend"));
       }
       
-      private function __onEnterTreasure(param1:CrazyTankSocketEvent) : void
+      private function __onEnterTreasure(e:CrazyTankSocketEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc9_:int = 0;
-         var _loc4_:int = 0;
-         var _loc7_:* = null;
-         var _loc6_:* = null;
-         var _loc5_:* = null;
-         var _loc2_:* = null;
-         TreasureModel.instance.logoinDays = param1.pkg.readInt();
-         PlayerManager.Instance.Self.treasure = param1.pkg.readInt();
-         var _loc8_:int = param1.pkg.readInt();
-         PlayerManager.Instance.Self.treasureAdd = _loc8_ > 0?_loc8_:0;
-         TreasureModel.instance.friendHelpTimes = param1.pkg.readInt();
-         TreasureModel.instance.isEndTreasure = param1.pkg.readBoolean();
-         TreasureModel.instance.isBeginTreasure = param1.pkg.readBoolean();
+         var num:int = 0;
+         var i:int = 0;
+         var ran:int = 0;
+         var _info:* = null;
+         var __info:* = null;
+         var _info1:* = null;
+         var __info1:* = null;
+         TreasureModel.instance.logoinDays = e.pkg.readInt();
+         PlayerManager.Instance.Self.treasure = e.pkg.readInt();
+         var num1:int = e.pkg.readInt();
+         PlayerManager.Instance.Self.treasureAdd = num1 > 0?num1:0;
+         TreasureModel.instance.friendHelpTimes = e.pkg.readInt();
+         TreasureModel.instance.isEndTreasure = e.pkg.readBoolean();
+         TreasureModel.instance.isBeginTreasure = e.pkg.readBoolean();
          TreasureModel.instance.itemList = new Vector.<TreasureTempInfo>();
-         _loc3_ = param1.pkg.readInt();
-         _loc9_ = 0;
-         while(_loc9_ < _loc3_)
+         num = e.pkg.readInt();
+         for(i = 0; i < num; )
          {
-            _loc7_ = new ItemTemplateInfo();
-            _loc7_.TemplateID = param1.pkg.readInt();
-            _loc7_ = ItemManager.Instance.getTemplateById(_loc7_.TemplateID);
-            _loc6_ = new TreasureTempInfo();
-            ObjectUtils.copyProperties(_loc6_,_loc7_);
-            _loc6_.ValidDate = param1.pkg.readInt();
-            _loc6_.Count = param1.pkg.readInt();
-            _loc6_.pos = 0;
-            _loc6_.IsBinds = true;
-            _loc6_.BindType = 1;
+            _info = new ItemTemplateInfo();
+            _info.TemplateID = e.pkg.readInt();
+            _info = ItemManager.Instance.getTemplateById(_info.TemplateID);
+            __info = new TreasureTempInfo();
+            ObjectUtils.copyProperties(__info,_info);
+            __info.ValidDate = e.pkg.readInt();
+            __info.Count = e.pkg.readInt();
+            __info.pos = 0;
+            __info.IsBinds = true;
+            __info.BindType = 1;
             if(TreasureModel.instance.itemList.length == 0)
             {
-               _loc4_ = 0;
+               ran = 0;
             }
             else
             {
-               _loc4_ = Math.floor((TreasureModel.instance.itemList.length + 1) * Math.random());
+               ran = Math.floor((TreasureModel.instance.itemList.length + 1) * Math.random());
             }
-            TreasureModel.instance.itemList.splice(_loc4_,0,_loc6_);
-            _loc9_++;
+            TreasureModel.instance.itemList.splice(ran,0,__info);
+            i++;
          }
-         _loc3_ = param1.pkg.readInt();
-         _loc9_ = 0;
-         while(_loc9_ < _loc3_)
+         num = e.pkg.readInt();
+         for(i = 0; i < num; )
          {
-            _loc5_ = new ItemTemplateInfo();
-            _loc5_.TemplateID = param1.pkg.readInt();
-            _loc5_ = ItemManager.Instance.getTemplateById(_loc5_.TemplateID);
-            _loc2_ = new TreasureTempInfo();
-            ObjectUtils.copyProperties(_loc2_,_loc5_);
-            _loc2_.pos = param1.pkg.readInt();
-            _loc2_.ValidDate = param1.pkg.readInt();
-            _loc2_.Count = param1.pkg.readInt();
-            _loc2_.IsBinds = true;
-            _loc2_.BindType = 1;
-            TreasureModel.instance.itemList.push(_loc2_);
-            _loc9_++;
+            _info1 = new ItemTemplateInfo();
+            _info1.TemplateID = e.pkg.readInt();
+            _info1 = ItemManager.Instance.getTemplateById(_info1.TemplateID);
+            __info1 = new TreasureTempInfo();
+            ObjectUtils.copyProperties(__info1,_info1);
+            __info1.pos = e.pkg.readInt();
+            __info1.ValidDate = e.pkg.readInt();
+            __info1.Count = e.pkg.readInt();
+            __info1.IsBinds = true;
+            __info1.BindType = 1;
+            TreasureModel.instance.itemList.push(__info1);
+            i++;
          }
          sortList();
          if(_UILoadComplete)
@@ -167,43 +164,39 @@ package treasure.controller
       
       private function sortList() : void
       {
-         var _loc7_:int = 0;
-         var _loc4_:int = 0;
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
-         var _loc6_:int = 0;
-         var _loc1_:Array = [];
-         _loc7_ = 0;
-         while(_loc7_ < TreasureModel.instance.itemList.length)
+         var i:int = 0;
+         var n:int = 0;
+         var m:int = 0;
+         var temporary:* = null;
+         var j:int = 0;
+         var arr:Array = [];
+         for(i = 0; i < TreasureModel.instance.itemList.length; )
          {
-            if(TreasureModel.instance.itemList[_loc7_].pos != 0)
+            if(TreasureModel.instance.itemList[i].pos != 0)
             {
-               _loc1_.push({"pos":TreasureModel.instance.itemList[_loc7_].pos});
+               arr.push({"pos":TreasureModel.instance.itemList[i].pos});
             }
-            _loc7_++;
+            i++;
          }
-         _loc4_ = 0;
-         while(_loc4_ < TreasureModel.instance.itemList.length - 1)
+         for(n = 0; n < TreasureModel.instance.itemList.length - 1; )
          {
-            _loc5_ = _loc4_ + 1;
-            while(_loc5_ < TreasureModel.instance.itemList.length)
+            for(m = n + 1; m < TreasureModel.instance.itemList.length; )
             {
-               if(TreasureModel.instance.itemList[_loc4_].pos > TreasureModel.instance.itemList[_loc5_].pos)
+               if(TreasureModel.instance.itemList[n].pos > TreasureModel.instance.itemList[m].pos)
                {
-                  _loc3_ = TreasureModel.instance.itemList[_loc4_];
-                  TreasureModel.instance.itemList[_loc4_] = TreasureModel.instance.itemList[_loc5_];
-                  TreasureModel.instance.itemList[_loc5_] = _loc3_;
+                  temporary = TreasureModel.instance.itemList[n];
+                  TreasureModel.instance.itemList[n] = TreasureModel.instance.itemList[m];
+                  TreasureModel.instance.itemList[m] = temporary;
                }
-               _loc5_++;
+               m++;
             }
-            _loc4_++;
+            n++;
          }
-         var _loc2_:Vector.<TreasureTempInfo> = TreasureModel.instance.itemList.splice(TreasureModel.instance.itemList.length - _loc1_.length,_loc1_.length);
-         _loc6_ = 0;
-         while(_loc6_ < _loc2_.length)
+         var item:Vector.<TreasureTempInfo> = TreasureModel.instance.itemList.splice(TreasureModel.instance.itemList.length - arr.length,arr.length);
+         for(j = 0; j < item.length; )
          {
-            TreasureModel.instance.itemList.splice(_loc2_[_loc6_].pos - 1,0,_loc2_[_loc6_]);
-            _loc6_++;
+            TreasureModel.instance.itemList.splice(item[j].pos - 1,0,item[j]);
+            j++;
          }
       }
       
@@ -232,7 +225,7 @@ package treasure.controller
          }
       }
       
-      protected function __onClose(param1:Event) : void
+      protected function __onClose(event:Event) : void
       {
          UIModuleSmallLoading.Instance.hide();
          UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);
@@ -240,7 +233,7 @@ package treasure.controller
          UIModuleLoader.Instance.removeEventListener("uiMoudleProgress",__onProgress);
       }
       
-      protected function __onUIModuleComplete(param1:UIModuleEvent) : void
+      protected function __onUIModuleComplete(event:UIModuleEvent) : void
       {
          _UILoadComplete = true;
          UIModuleLoader.Instance.removeEventListener("uiModuleComplete",__onUIModuleComplete);
@@ -250,9 +243,9 @@ package treasure.controller
          creatView();
       }
       
-      protected function __onProgress(param1:UIModuleEvent) : void
+      protected function __onProgress(event:UIModuleEvent) : void
       {
-         UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+         UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
       }
       
       public function show() : void

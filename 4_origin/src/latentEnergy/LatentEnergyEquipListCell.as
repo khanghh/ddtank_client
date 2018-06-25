@@ -8,9 +8,9 @@ package latentEnergy
    {
        
       
-      public function LatentEnergyEquipListCell(param1:int, param2:ItemTemplateInfo = null, param3:Boolean = true, param4:DisplayObject = null, param5:Boolean = true)
+      public function LatentEnergyEquipListCell(index:int, info:ItemTemplateInfo = null, showLoading:Boolean = true, bg:DisplayObject = null, mouseOverEffBoolean:Boolean = true)
       {
-         super(param1,param2,param3,param4,param5);
+         super(index,info,showLoading,bg,mouseOverEffBoolean);
          _isShowIsUsedBitmap = true;
       }
    }

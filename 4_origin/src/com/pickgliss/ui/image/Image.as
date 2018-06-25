@@ -45,23 +45,23 @@ package com.pickgliss.ui.image
          super.dispose();
       }
       
-      public function set filterString(param1:String) : void
+      public function set filterString(value:String) : void
       {
-         if(_filterString == param1)
+         if(_filterString == value)
          {
             return;
          }
-         _filterString = param1;
+         _filterString = value;
          frameFilters = ComponentFactory.Instance.creatFrameFilters(_filterString);
       }
       
-      public function set frameFilters(param1:Array) : void
+      public function set frameFilters(filter:Array) : void
       {
-         if(_frameFilter == param1)
+         if(_frameFilter == filter)
          {
             return;
          }
-         _frameFilter = param1;
+         _frameFilter = filter;
          onPropertiesChanged("frameFilters");
       }
       
@@ -70,13 +70,13 @@ package com.pickgliss.ui.image
          return _resourceLink;
       }
       
-      public function set resourceLink(param1:String) : void
+      public function set resourceLink(value:String) : void
       {
-         if(param1 == _resourceLink)
+         if(value == _resourceLink)
          {
             return;
          }
-         _resourceLink = param1;
+         _resourceLink = value;
          onPropertiesChanged("resourceLink");
       }
       
@@ -85,24 +85,24 @@ package com.pickgliss.ui.image
          return _scaleGridString;
       }
       
-      public function set scaleGridString(param1:String) : void
+      public function set scaleGridString(args:String) : void
       {
-         if(param1 == _scaleGridString)
+         if(args == _scaleGridString)
          {
             return;
          }
-         _scaleGridString = param1;
+         _scaleGridString = args;
          _scaleGridArgs = ComponentFactory.parasArgs(_scaleGridString);
          onPropertiesChanged("scale9Grid");
       }
       
-      public function setFrame(param1:int) : void
+      public function setFrame(frameIndex:int) : void
       {
-         if(_frameFilter == null || param1 <= 0 || param1 > _frameFilter.length)
+         if(_frameFilter == null || frameIndex <= 0 || frameIndex > _frameFilter.length)
          {
             return;
          }
-         filters = _frameFilter[param1 - 1];
+         filters = _frameFilter[frameIndex - 1];
       }
       
       override protected function addChildren() : void
@@ -159,12 +159,12 @@ package com.pickgliss.ui.image
       
       protected function updateScale9Grid() : void
       {
-         var _loc1_:Rectangle = new Rectangle(0,0,_display.width,_display.height);
-         _loc1_.left = _scaleGridArgs[0];
-         _loc1_.top = _scaleGridArgs[1];
-         _loc1_.right = _scaleGridArgs[2];
-         _loc1_.bottom = _scaleGridArgs[3];
-         _display.scale9Grid = _loc1_;
+         var rect:Rectangle = new Rectangle(0,0,_display.width,_display.height);
+         rect.left = _scaleGridArgs[0];
+         rect.top = _scaleGridArgs[1];
+         rect.right = _scaleGridArgs[2];
+         rect.bottom = _scaleGridArgs[3];
+         _display.scale9Grid = rect;
       }
       
       protected function updateSize() : void

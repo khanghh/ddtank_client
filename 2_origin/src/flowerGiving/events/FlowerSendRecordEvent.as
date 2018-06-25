@@ -10,10 +10,10 @@ package flowerGiving.events
       
       private var _nickName:String;
       
-      public function FlowerSendRecordEvent(param1:String, param2:String)
+      public function FlowerSendRecordEvent(type:String, nickName:String)
       {
-         super(param1,bubbles,cancelable);
-         _nickName = param2;
+         super(type,bubbles,cancelable);
+         _nickName = nickName;
       }
       
       public function get nickName() : String

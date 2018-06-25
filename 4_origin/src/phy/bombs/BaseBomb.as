@@ -15,28 +15,28 @@ package phy.bombs
       
       protected var _border:Bitmap;
       
-      public function BaseBomb(param1:int, param2:Number = 10, param3:Number = 100, param4:Number = 1, param5:Number = 1)
+      public function BaseBomb(id:int, mass:Number = 10, gfactor:Number = 100, windFactor:Number = 1, airResitFactor:Number = 1)
       {
-         super(param1,1,param2,param3,param4,param5);
+         super(id,1,mass,gfactor,windFactor,airResitFactor);
          _testRect = new Rectangle(-3,-3,6,6);
       }
       
-      public function setMovie(param1:Sprite, param2:Bitmap, param3:Bitmap) : void
+      public function setMovie(movie:Sprite, shape:Bitmap, border:Bitmap) : void
       {
-         _movie = param1;
+         _movie = movie;
          if(_movie)
          {
             _movie.x = 0;
             _movie.y = 0;
             addChild(_movie);
          }
-         _shape = param2;
-         _border = param3;
+         _shape = shape;
+         _border = border;
       }
       
-      override public function update(param1:Number) : void
+      override public function update(dt:Number) : void
       {
-         super.update(param1);
+         super.update(dt);
       }
       
       public function get bombRectang() : Rectangle

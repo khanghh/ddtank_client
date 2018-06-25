@@ -69,214 +69,210 @@ package starling.display
          Starling.current.stage3D.addEventListener("context3DCreate",onContextCreated,false,0,true);
       }
       
-      public static function compile(param1:DisplayObject, param2:Vector.<QuadBatch>) : void
+      public static function compile(object:DisplayObject, quadBatches:Vector.<QuadBatch>) : void
       {
-         compileObject(param1,param2,-1,new Matrix());
+         compileObject(object,quadBatches,-1,new Matrix());
       }
       
-      public static function optimize(param1:Vector.<QuadBatch>) : void
+      public static function optimize(quadBatches:Vector.<QuadBatch>) : void
       {
-         var _loc4_:* = null;
-         var _loc2_:* = null;
-         var _loc5_:int = 0;
-         var _loc3_:int = 0;
-         _loc5_ = 0;
-         while(_loc5_ < param1.length)
+         var batch2:* = null;
+         var batch1:* = null;
+         var i:int = 0;
+         var j:int = 0;
+         for(i = 0; i < quadBatches.length; )
          {
-            _loc2_ = param1[_loc5_];
-            _loc3_ = _loc5_ + 1;
-            while(_loc3_ < param1.length)
+            batch1 = quadBatches[i];
+            for(j = i + 1; j < quadBatches.length; )
             {
-               _loc4_ = param1[_loc3_];
-               if(!_loc2_.isStateChange(_loc4_.tinted,1,_loc4_.texture,_loc4_.smoothing,_loc4_.blendMode))
+               batch2 = quadBatches[j];
+               if(!batch1.isStateChange(batch2.tinted,1,batch2.texture,batch2.smoothing,batch2.blendMode))
                {
-                  _loc2_.addQuadBatch(_loc4_);
-                  _loc4_.dispose();
-                  param1.splice(_loc3_,1);
+                  batch1.addQuadBatch(batch2);
+                  batch2.dispose();
+                  quadBatches.splice(j,1);
                }
                else
                {
-                  _loc3_++;
+                  j++;
                }
             }
-            _loc5_++;
+            i++;
          }
       }
       
-      private static function compileObject(param1:DisplayObject, param2:Vector.<QuadBatch>, param3:int, param4:Matrix, param5:Number = 1.0, param6:String = null, param7:Boolean = false) : int
+      private static function compileObject(object:DisplayObject, quadBatches:Vector.<QuadBatch>, quadBatchID:int, transformationMatrix:Matrix, alpha:Number = 1.0, blendMode:String = null, ignoreCurrentFilter:Boolean = false) : int
       {
-         var _loc15_:int = 0;
-         var _loc11_:* = null;
-         var _loc23_:int = 0;
-         var _loc19_:* = null;
-         var _loc16_:* = null;
-         var _loc14_:* = null;
-         var _loc8_:* = null;
-         var _loc10_:* = null;
-         var _loc13_:Boolean = false;
-         var _loc9_:int = 0;
-         var _loc12_:* = null;
-         if(param1 is Sprite3D)
+         var i:int = 0;
+         var quadBatch:* = null;
+         var numChildren:int = 0;
+         var childMatrix:* = null;
+         var child:* = null;
+         var childBlendMode:* = null;
+         var texture:* = null;
+         var smoothing:* = null;
+         var tinted:Boolean = false;
+         var numQuads:int = 0;
+         var image:* = null;
+         if(object is Sprite3D)
          {
             throw new IllegalOperationError("Sprite3D objects cannot be flattened");
          }
-         var _loc21_:Boolean = false;
-         var _loc17_:* = Number(param1.alpha);
-         var _loc22_:DisplayObjectContainer = param1 as DisplayObjectContainer;
-         var _loc18_:Quad = param1 as Quad;
-         var _loc20_:QuadBatch = param1 as QuadBatch;
-         var _loc24_:FragmentFilter = param1.filter;
-         if(param3 == -1)
+         var isRootObject:Boolean = false;
+         var objectAlpha:* = Number(object.alpha);
+         var container:DisplayObjectContainer = object as DisplayObjectContainer;
+         var quad:Quad = object as Quad;
+         var batch:QuadBatch = object as QuadBatch;
+         var filter:FragmentFilter = object.filter;
+         if(quadBatchID == -1)
          {
-            _loc21_ = true;
-            param3 = 0;
-            _loc17_ = 1;
-            param6 = param1.blendMode;
-            param7 = true;
-            if(param2.length == 0)
+            isRootObject = true;
+            quadBatchID = 0;
+            objectAlpha = 1;
+            blendMode = object.blendMode;
+            ignoreCurrentFilter = true;
+            if(quadBatches.length == 0)
             {
-               param2[0] = new QuadBatch();
+               quadBatches[0] = new QuadBatch();
             }
             else
             {
-               param2[0].reset();
-               param2[0].ownsTexture = false;
+               quadBatches[0].reset();
+               quadBatches[0].ownsTexture = false;
             }
          }
          else
          {
-            if(param1.mask)
+            if(object.mask)
             {
                trace("[Starling] Masks are ignored on children of a flattened sprite.");
             }
-            if(param1 is Sprite && (param1 as Sprite).clipRect)
+            if(object is Sprite && (object as Sprite).clipRect)
             {
                trace("[Starling] ClipRects are ignored on children of a flattened sprite.");
             }
          }
-         if(_loc24_ && !param7)
+         if(filter && !ignoreCurrentFilter)
          {
-            if(_loc24_.mode == "above")
+            if(filter.mode == "above")
             {
-               param3 = compileObject(param1,param2,param3,param4,param5,param6,true);
+               quadBatchID = compileObject(object,quadBatches,quadBatchID,transformationMatrix,alpha,blendMode,true);
             }
-            param3 = compileObject(_loc24_.compile(param1),param2,param3,param4,param5,param6);
-            param2[param3].ownsTexture = true;
-            if(_loc24_.mode == "below")
+            quadBatchID = compileObject(filter.compile(object),quadBatches,quadBatchID,transformationMatrix,alpha,blendMode);
+            quadBatches[quadBatchID].ownsTexture = true;
+            if(filter.mode == "below")
             {
-               param3 = compileObject(param1,param2,param3,param4,param5,param6,true);
+               quadBatchID = compileObject(object,quadBatches,quadBatchID,transformationMatrix,alpha,blendMode,true);
             }
          }
-         else if(_loc22_)
+         else if(container)
          {
-            _loc23_ = _loc22_.numChildren;
-            _loc19_ = new Matrix();
-            _loc15_ = 0;
-            while(_loc15_ < _loc23_)
+            numChildren = container.numChildren;
+            childMatrix = new Matrix();
+            for(i = 0; i < numChildren; )
             {
-               _loc16_ = _loc22_.getChildAt(_loc15_);
-               if(_loc16_.hasVisibleArea)
+               child = container.getChildAt(i);
+               if(child.hasVisibleArea)
                {
-                  _loc14_ = _loc16_.blendMode == "auto"?param6:_loc16_.blendMode;
-                  _loc19_.copyFrom(param4);
-                  RenderSupport.transformMatrixForObject(_loc19_,_loc16_);
-                  param3 = compileObject(_loc16_,param2,param3,_loc19_,param5 * _loc17_,_loc14_);
+                  childBlendMode = child.blendMode == "auto"?blendMode:child.blendMode;
+                  childMatrix.copyFrom(transformationMatrix);
+                  RenderSupport.transformMatrixForObject(childMatrix,child);
+                  quadBatchID = compileObject(child,quadBatches,quadBatchID,childMatrix,alpha * objectAlpha,childBlendMode);
                }
-               _loc15_++;
+               i++;
             }
          }
-         else if(_loc18_ || _loc20_)
+         else if(quad || batch)
          {
-            if(_loc18_)
+            if(quad)
             {
-               _loc12_ = _loc18_ as Image;
-               _loc8_ = !!_loc12_?_loc12_.texture:null;
-               _loc10_ = !!_loc12_?_loc12_.smoothing:null;
-               _loc13_ = _loc18_.tinted;
-               _loc9_ = 1;
+               image = quad as Image;
+               texture = !!image?image.texture:null;
+               smoothing = !!image?image.smoothing:null;
+               tinted = quad.tinted;
+               numQuads = 1;
             }
             else
             {
-               _loc8_ = _loc20_.mTexture;
-               _loc10_ = _loc20_.mSmoothing;
-               _loc13_ = _loc20_.mTinted;
-               _loc9_ = _loc20_.mNumQuads;
+               texture = batch.mTexture;
+               smoothing = batch.mSmoothing;
+               tinted = batch.mTinted;
+               numQuads = batch.mNumQuads;
             }
-            _loc11_ = param2[param3];
-            if(_loc11_.isStateChange(_loc13_,param5 * _loc17_,_loc8_,_loc10_,param6,_loc9_))
+            quadBatch = quadBatches[quadBatchID];
+            if(quadBatch.isStateChange(tinted,alpha * objectAlpha,texture,smoothing,blendMode,numQuads))
             {
-               param3++;
-               if(param2.length <= param3)
+               quadBatchID++;
+               if(quadBatches.length <= quadBatchID)
                {
-                  param2.push(new QuadBatch());
+                  quadBatches.push(new QuadBatch());
                }
-               _loc11_ = param2[param3];
-               _loc11_.reset();
-               _loc11_.ownsTexture = false;
+               quadBatch = quadBatches[quadBatchID];
+               quadBatch.reset();
+               quadBatch.ownsTexture = false;
             }
-            if(_loc18_)
+            if(quad)
             {
-               _loc11_.addQuad(_loc18_,param5,_loc8_,_loc10_,param4,param6);
+               quadBatch.addQuad(quad,alpha,texture,smoothing,transformationMatrix,blendMode);
             }
             else
             {
-               _loc11_.addQuadBatch(_loc20_,param5,param4,param6);
+               quadBatch.addQuadBatch(batch,alpha,transformationMatrix,blendMode);
             }
          }
          else
          {
-            throw new Error("Unsupported display object: " + getQualifiedClassName(param1));
+            throw new Error("Unsupported display object: " + getQualifiedClassName(object));
          }
-         if(_loc21_)
+         if(isRootObject)
          {
-            _loc15_ = param2.length - 1;
-            while(_loc15_ > param3)
+            for(i = quadBatches.length - 1; i > quadBatchID; )
             {
-               param2.pop().dispose();
-               _loc15_--;
+               quadBatches.pop().dispose();
+               i--;
             }
          }
-         return param3;
+         return quadBatchID;
       }
       
-      private static function getImageProgramName(param1:Boolean, param2:Boolean = true, param3:Boolean = false, param4:String = "bgra", param5:String = "bilinear") : String
+      private static function getImageProgramName(tinted:Boolean, mipMap:Boolean = true, repeat:Boolean = false, format:String = "bgra", smoothing:String = "bilinear") : String
       {
-         var _loc7_:uint = 0;
-         if(param1)
+         var bitField:uint = 0;
+         if(tinted)
          {
-            _loc7_ = _loc7_ | 1;
+            bitField = bitField | 1;
          }
-         if(param2)
+         if(mipMap)
          {
-            _loc7_ = _loc7_ | 2;
+            bitField = bitField | 2;
          }
-         if(param3)
+         if(repeat)
          {
-            _loc7_ = _loc7_ | 4;
+            bitField = bitField | 4;
          }
-         if(param5 == "none")
+         if(smoothing == "none")
          {
-            _loc7_ = _loc7_ | 8;
+            bitField = bitField | 8;
          }
-         else if(param5 == "trilinear")
+         else if(smoothing == "trilinear")
          {
-            _loc7_ = _loc7_ | 16;
+            bitField = bitField | 16;
          }
-         if(param4 == "compressed")
+         if(format == "compressed")
          {
-            _loc7_ = _loc7_ | 32;
+            bitField = bitField | 32;
          }
-         else if(param4 == "compressedAlpha")
+         else if(format == "compressedAlpha")
          {
-            _loc7_ = _loc7_ | 64;
+            bitField = bitField | 64;
          }
-         var _loc6_:String = sProgramNameCache[_loc7_];
-         if(_loc6_ == null)
+         var name:String = sProgramNameCache[bitField];
+         if(name == null)
          {
-            _loc6_ = "QB_i." + _loc7_.toString(16);
-            sProgramNameCache[_loc7_] = _loc6_;
+            name = "QB_i." + bitField.toString(16);
+            sProgramNameCache[bitField] = name;
          }
-         return _loc6_;
+         return name;
       }
       
       override public function dispose() : void
@@ -293,7 +289,7 @@ package starling.display
          super.dispose();
       }
       
-      private function onContextCreated(param1:Object) : void
+      private function onContextCreated(event:Object) : void
       {
          createBuffers();
       }
@@ -305,47 +301,47 @@ package starling.display
       
       public function clone() : QuadBatch
       {
-         var _loc1_:QuadBatch = new QuadBatch();
-         _loc1_.mVertexData = mVertexData.clone(0,mNumQuads * 4);
-         _loc1_.mIndexData = mIndexData.slice(0,mNumQuads * 6);
-         _loc1_.mNumQuads = mNumQuads;
-         _loc1_.mTinted = mTinted;
-         _loc1_.mTexture = mTexture;
-         _loc1_.mSmoothing = mSmoothing;
-         _loc1_.mSyncRequired = true;
-         _loc1_.blendMode = blendMode;
-         _loc1_.alpha = alpha;
-         return _loc1_;
+         var clone:QuadBatch = new QuadBatch();
+         clone.mVertexData = mVertexData.clone(0,mNumQuads * 4);
+         clone.mIndexData = mIndexData.slice(0,mNumQuads * 6);
+         clone.mNumQuads = mNumQuads;
+         clone.mTinted = mTinted;
+         clone.mTexture = mTexture;
+         clone.mSmoothing = mSmoothing;
+         clone.mSyncRequired = true;
+         clone.blendMode = blendMode;
+         clone.alpha = alpha;
+         return clone;
       }
       
       private function expand() : void
       {
-         var _loc1_:int = this.capacity;
-         if(_loc1_ >= 16383)
+         var oldCapacity:int = this.capacity;
+         if(oldCapacity >= 16383)
          {
             throw new Error("Exceeded maximum number of quads!");
          }
-         this.capacity = _loc1_ < 8?16:Number(_loc1_ * 2);
+         this.capacity = oldCapacity < 8?16:Number(oldCapacity * 2);
       }
       
       private function createBuffers() : void
       {
          destroyBuffers();
-         var _loc3_:int = mVertexData.numVertices;
-         var _loc1_:int = mIndexData.length;
-         var _loc2_:Context3D = Starling.context;
-         if(_loc3_ == 0)
+         var numVertices:int = mVertexData.numVertices;
+         var numIndices:int = mIndexData.length;
+         var context:Context3D = Starling.context;
+         if(numVertices == 0)
          {
             return;
          }
-         if(_loc2_ == null)
+         if(context == null)
          {
             throw new MissingContextError();
          }
-         mVertexBuffer = _loc2_.createVertexBuffer(_loc3_,8);
-         mVertexBuffer.uploadFromVector(mVertexData.rawData,0,_loc3_);
-         mIndexBuffer = _loc2_.createIndexBuffer(_loc1_);
-         mIndexBuffer.uploadFromVector(mIndexData,0,_loc1_);
+         mVertexBuffer = context.createVertexBuffer(numVertices,8);
+         mVertexBuffer.uploadFromVector(mVertexData.rawData,0,numVertices);
+         mIndexBuffer = context.createIndexBuffer(numIndices);
+         mIndexBuffer.uploadFromVector(mIndexData,0,numIndices);
          mSyncRequired = false;
       }
       
@@ -376,7 +372,7 @@ package starling.display
          }
       }
       
-      public function renderCustom(param1:Matrix3D, param2:Number = 1.0, param3:String = null) : void
+      public function renderCustom(mvpMatrix:Matrix3D, parentAlpha:Number = 1.0, blendMode:String = null) : void
       {
          if(mNumQuads == 0)
          {
@@ -386,37 +382,37 @@ package starling.display
          {
             syncBuffers();
          }
-         var _loc6_:Boolean = mVertexData.premultipliedAlpha;
-         var _loc4_:Context3D = Starling.context;
-         var _loc5_:Boolean = mTinted || param2 != 1;
-         var _loc7_:* = !!_loc6_?param2:1;
+         var pma:Boolean = mVertexData.premultipliedAlpha;
+         var context:Context3D = Starling.context;
+         var tinted:Boolean = mTinted || parentAlpha != 1;
+         var _loc7_:* = !!pma?parentAlpha:1;
          sRenderAlpha[2] = _loc7_;
          _loc7_ = _loc7_;
          sRenderAlpha[1] = _loc7_;
          sRenderAlpha[0] = _loc7_;
-         sRenderAlpha[3] = param2;
-         RenderSupport.setBlendFactors(_loc6_,!!param3?param3:this.blendMode);
-         _loc4_.setProgram(getProgram(_loc5_));
-         _loc4_.setProgramConstantsFromVector("vertex",0,sRenderAlpha,1);
-         _loc4_.setProgramConstantsFromMatrix("vertex",1,param1,true);
-         _loc4_.setVertexBufferAt(0,mVertexBuffer,0,"float2");
-         if(mTexture == null || _loc5_)
+         sRenderAlpha[3] = parentAlpha;
+         RenderSupport.setBlendFactors(pma,!!blendMode?blendMode:this.blendMode);
+         context.setProgram(getProgram(tinted));
+         context.setProgramConstantsFromVector("vertex",0,sRenderAlpha,1);
+         context.setProgramConstantsFromMatrix("vertex",1,mvpMatrix,true);
+         context.setVertexBufferAt(0,mVertexBuffer,0,"float2");
+         if(mTexture == null || tinted)
          {
-            _loc4_.setVertexBufferAt(1,mVertexBuffer,2,"float4");
+            context.setVertexBufferAt(1,mVertexBuffer,2,"float4");
          }
          if(mTexture)
          {
-            _loc4_.setTextureAt(0,mTexture.base);
-            _loc4_.setVertexBufferAt(2,mVertexBuffer,6,"float2");
+            context.setTextureAt(0,mTexture.base);
+            context.setVertexBufferAt(2,mVertexBuffer,6,"float2");
          }
-         _loc4_.drawTriangles(mIndexBuffer,0,mNumQuads * 2);
+         context.drawTriangles(mIndexBuffer,0,mNumQuads * 2);
          if(mTexture)
          {
-            _loc4_.setTextureAt(0,null);
-            _loc4_.setVertexBufferAt(2,null);
+            context.setTextureAt(0,null);
+            context.setVertexBufferAt(2,null);
          }
-         _loc4_.setVertexBufferAt(1,null);
-         _loc4_.setVertexBufferAt(0,null);
+         context.setVertexBufferAt(1,null);
+         context.setVertexBufferAt(0,null);
       }
       
       public function reset() : void
@@ -431,194 +427,192 @@ package starling.display
          mSyncRequired = true;
       }
       
-      public function addImage(param1:Image, param2:Number = 1.0, param3:Matrix = null, param4:String = null) : void
+      public function addImage(image:Image, parentAlpha:Number = 1.0, modelViewMatrix:Matrix = null, blendMode:String = null) : void
       {
-         addQuad(param1,param2,param1.texture,param1.smoothing,param3,param4);
+         addQuad(image,parentAlpha,image.texture,image.smoothing,modelViewMatrix,blendMode);
       }
       
-      public function addQuad(param1:Quad, param2:Number = 1.0, param3:Texture = null, param4:String = null, param5:Matrix = null, param6:String = null) : void
+      public function addQuad(quad:Quad, parentAlpha:Number = 1.0, texture:Texture = null, smoothing:String = null, modelViewMatrix:Matrix = null, blendMode:String = null) : void
       {
-         if(param5 == null)
+         if(modelViewMatrix == null)
          {
-            param5 = param1.transformationMatrix;
+            modelViewMatrix = quad.transformationMatrix;
          }
-         var _loc8_:Number = param2 * param1.alpha;
-         var _loc7_:int = mNumQuads * 4;
+         var alpha:Number = parentAlpha * quad.alpha;
+         var vertexID:int = mNumQuads * 4;
          if(mNumQuads + 1 > mVertexData.numVertices / 4)
          {
             expand();
          }
          if(mNumQuads == 0)
          {
-            this.blendMode = !!param6?param6:param1.blendMode;
-            mTexture = param3;
-            mTinted = mForceTinted || param1.tinted || param2 != 1;
-            mSmoothing = param4;
-            mVertexData.setPremultipliedAlpha(param1.premultipliedAlpha);
+            this.blendMode = !!blendMode?blendMode:quad.blendMode;
+            mTexture = texture;
+            mTinted = mForceTinted || quad.tinted || parentAlpha != 1;
+            mSmoothing = smoothing;
+            mVertexData.setPremultipliedAlpha(quad.premultipliedAlpha);
          }
-         param1.copyVertexDataTransformedTo(mVertexData,_loc7_,param5);
-         if(_loc8_ != 1)
+         quad.copyVertexDataTransformedTo(mVertexData,vertexID,modelViewMatrix);
+         if(alpha != 1)
          {
-            mVertexData.scaleAlpha(_loc7_,_loc8_,4);
+            mVertexData.scaleAlpha(vertexID,alpha,4);
          }
          mSyncRequired = true;
          mNumQuads = Number(mNumQuads) + 1;
       }
       
-      public function addQuadBatch(param1:QuadBatch, param2:Number = 1.0, param3:Matrix = null, param4:String = null) : void
+      public function addQuadBatch(quadBatch:QuadBatch, parentAlpha:Number = 1.0, modelViewMatrix:Matrix = null, blendMode:String = null) : void
       {
-         if(param3 == null)
+         if(modelViewMatrix == null)
          {
-            param3 = param1.transformationMatrix;
+            modelViewMatrix = quadBatch.transformationMatrix;
          }
-         var _loc6_:Number = param2 * param1.alpha;
-         var _loc5_:int = mNumQuads * 4;
-         var _loc7_:int = param1.numQuads;
-         if(mNumQuads + _loc7_ > capacity)
+         var alpha:Number = parentAlpha * quadBatch.alpha;
+         var vertexID:int = mNumQuads * 4;
+         var numQuads:int = quadBatch.numQuads;
+         if(mNumQuads + numQuads > capacity)
          {
-            capacity = mNumQuads + _loc7_;
+            capacity = mNumQuads + numQuads;
          }
          if(mNumQuads == 0)
          {
-            this.blendMode = !!param4?param4:param1.blendMode;
-            mTexture = param1.mTexture;
-            mTinted = mForceTinted || param1.mTinted || param2 != 1;
-            mSmoothing = param1.mSmoothing;
-            mVertexData.setPremultipliedAlpha(param1.mVertexData.premultipliedAlpha,false);
+            this.blendMode = !!blendMode?blendMode:quadBatch.blendMode;
+            mTexture = quadBatch.mTexture;
+            mTinted = mForceTinted || quadBatch.mTinted || parentAlpha != 1;
+            mSmoothing = quadBatch.mSmoothing;
+            mVertexData.setPremultipliedAlpha(quadBatch.mVertexData.premultipliedAlpha,false);
          }
-         param1.mVertexData.copyTransformedTo(mVertexData,_loc5_,param3,0,_loc7_ * 4);
-         if(_loc6_ != 1)
+         quadBatch.mVertexData.copyTransformedTo(mVertexData,vertexID,modelViewMatrix,0,numQuads * 4);
+         if(alpha != 1)
          {
-            mVertexData.scaleAlpha(_loc5_,_loc6_,_loc7_ * 4);
+            mVertexData.scaleAlpha(vertexID,alpha,numQuads * 4);
          }
          mSyncRequired = true;
-         mNumQuads = mNumQuads + _loc7_;
+         mNumQuads = mNumQuads + numQuads;
       }
       
-      public function isStateChange(param1:Boolean, param2:Number, param3:Texture, param4:String, param5:String, param6:int = 1) : Boolean
+      public function isStateChange(tinted:Boolean, parentAlpha:Number, texture:Texture, smoothing:String, blendMode:String, numQuads:int = 1) : Boolean
       {
          if(mNumQuads == 0)
          {
             return false;
          }
-         if(mNumQuads + param6 > 16383)
+         if(mNumQuads + numQuads > 16383)
          {
             return true;
          }
-         if(mTexture == null && param3 == null)
+         if(mTexture == null && texture == null)
          {
-            return this.blendMode != param5;
+            return this.blendMode != blendMode;
          }
-         if(mTexture != null && param3 != null)
+         if(mTexture != null && texture != null)
          {
-            return mTexture.base != param3.base || mTexture.repeat != param3.repeat || mSmoothing != param4 || mTinted != (mForceTinted || param1 || param2 != 1) || this.blendMode != param5;
+            return mTexture.base != texture.base || mTexture.repeat != texture.repeat || mSmoothing != smoothing || mTinted != (mForceTinted || tinted || parentAlpha != 1) || this.blendMode != blendMode;
          }
          return true;
       }
       
-      public function transformQuad(param1:int, param2:Matrix) : void
+      public function transformQuad(quadID:int, matrix:Matrix) : void
       {
-         mVertexData.transformVertex(param1 * 4,param2,4);
+         mVertexData.transformVertex(quadID * 4,matrix,4);
          mSyncRequired = true;
       }
       
-      public function getVertexColor(param1:int, param2:int) : uint
+      public function getVertexColor(quadID:int, vertexID:int) : uint
       {
-         return mVertexData.getColor(param1 * 4 + param2);
+         return mVertexData.getColor(quadID * 4 + vertexID);
       }
       
-      public function setVertexColor(param1:int, param2:int, param3:uint) : void
+      public function setVertexColor(quadID:int, vertexID:int, color:uint) : void
       {
-         mVertexData.setColor(param1 * 4 + param2,param3);
+         mVertexData.setColor(quadID * 4 + vertexID,color);
          mSyncRequired = true;
       }
       
-      public function getVertexAlpha(param1:int, param2:int) : Number
+      public function getVertexAlpha(quadID:int, vertexID:int) : Number
       {
-         return mVertexData.getAlpha(param1 * 4 + param2);
+         return mVertexData.getAlpha(quadID * 4 + vertexID);
       }
       
-      public function setVertexAlpha(param1:int, param2:int, param3:Number) : void
+      public function setVertexAlpha(quadID:int, vertexID:int, alpha:Number) : void
       {
-         mVertexData.setAlpha(param1 * 4 + param2,param3);
+         mVertexData.setAlpha(quadID * 4 + vertexID,alpha);
          mSyncRequired = true;
       }
       
-      public function getQuadColor(param1:int) : uint
+      public function getQuadColor(quadID:int) : uint
       {
-         return mVertexData.getColor(param1 * 4);
+         return mVertexData.getColor(quadID * 4);
       }
       
-      public function setQuadColor(param1:int, param2:uint) : void
+      public function setQuadColor(quadID:int, color:uint) : void
       {
-         var _loc3_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < 4)
+         var i:int = 0;
+         for(i = 0; i < 4; )
          {
-            mVertexData.setColor(param1 * 4 + _loc3_,param2);
-            _loc3_++;
+            mVertexData.setColor(quadID * 4 + i,color);
+            i++;
          }
          mSyncRequired = true;
       }
       
-      public function getQuadAlpha(param1:int) : Number
+      public function getQuadAlpha(quadID:int) : Number
       {
-         return mVertexData.getAlpha(param1 * 4);
+         return mVertexData.getAlpha(quadID * 4);
       }
       
-      public function setQuadAlpha(param1:int, param2:Number) : void
+      public function setQuadAlpha(quadID:int, alpha:Number) : void
       {
-         var _loc3_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < 4)
+         var i:int = 0;
+         for(i = 0; i < 4; )
          {
-            mVertexData.setAlpha(param1 * 4 + _loc3_,param2);
-            _loc3_++;
+            mVertexData.setAlpha(quadID * 4 + i,alpha);
+            i++;
          }
          mSyncRequired = true;
       }
       
-      public function setQuad(param1:Number, param2:Quad) : void
+      public function setQuad(quadID:Number, quad:Quad) : void
       {
-         var _loc5_:Matrix = param2.transformationMatrix;
-         var _loc4_:Number = param2.alpha;
-         var _loc3_:int = param1 * 4;
-         param2.copyVertexDataTransformedTo(mVertexData,_loc3_,_loc5_);
-         if(_loc4_ != 1)
+         var matrix:Matrix = quad.transformationMatrix;
+         var alpha:Number = quad.alpha;
+         var vertexID:int = quadID * 4;
+         quad.copyVertexDataTransformedTo(mVertexData,vertexID,matrix);
+         if(alpha != 1)
          {
-            mVertexData.scaleAlpha(_loc3_,_loc4_,4);
+            mVertexData.scaleAlpha(vertexID,alpha,4);
          }
          mSyncRequired = true;
       }
       
-      public function getQuadBounds(param1:int, param2:Matrix = null, param3:Rectangle = null) : Rectangle
+      public function getQuadBounds(quadID:int, transformationMatrix:Matrix = null, resultRect:Rectangle = null) : Rectangle
       {
-         return mVertexData.getBounds(param2,param1 * 4,4,param3);
+         return mVertexData.getBounds(transformationMatrix,quadID * 4,4,resultRect);
       }
       
-      override public function getBounds(param1:DisplayObject, param2:Rectangle = null) : Rectangle
+      override public function getBounds(targetSpace:DisplayObject, resultRect:Rectangle = null) : Rectangle
       {
-         if(param2 == null)
+         if(resultRect == null)
          {
-            param2 = new Rectangle();
+            resultRect = new Rectangle();
          }
-         var _loc3_:Matrix = param1 == this?null:getTransformationMatrix(param1,sHelperMatrix);
-         return mVertexData.getBounds(_loc3_,0,mNumQuads * 4,param2);
+         var transformationMatrix:Matrix = targetSpace == this?null:getTransformationMatrix(targetSpace,sHelperMatrix);
+         return mVertexData.getBounds(transformationMatrix,0,mNumQuads * 4,resultRect);
       }
       
-      override public function render(param1:RenderSupport, param2:Number) : void
+      override public function render(support:RenderSupport, parentAlpha:Number) : void
       {
          if(mNumQuads)
          {
             if(mBatchable)
             {
-               param1.batchQuadBatch(this,param2);
+               support.batchQuadBatch(this,parentAlpha);
             }
             else
             {
-               param1.finishQuadBatch();
-               param1.raiseDrawCount();
-               renderCustom(param1.mvpMatrix3D,alpha * param2,param1.blendMode);
+               support.finishQuadBatch();
+               support.raiseDrawCount();
+               renderCustom(support.mvpMatrix3D,alpha * parentAlpha,support.blendMode);
             }
          }
       }
@@ -653,9 +647,9 @@ package starling.display
          return mBatchable;
       }
       
-      public function set batchable(param1:Boolean) : void
+      public function set batchable(value:Boolean) : void
       {
-         mBatchable = param1;
+         mBatchable = value;
       }
       
       public function get forceTinted() : Boolean
@@ -663,9 +657,9 @@ package starling.display
          return mForceTinted;
       }
       
-      public function set forceTinted(param1:Boolean) : void
+      public function set forceTinted(value:Boolean) : void
       {
-         mForceTinted = param1;
+         mForceTinted = value;
       }
       
       public function get ownsTexture() : Boolean
@@ -673,9 +667,9 @@ package starling.display
          return mOwnsTexture;
       }
       
-      public function set ownsTexture(param1:Boolean) : void
+      public function set ownsTexture(value:Boolean) : void
       {
-         mOwnsTexture = param1;
+         mOwnsTexture = value;
       }
       
       public function get capacity() : int
@@ -683,70 +677,69 @@ package starling.display
          return mVertexData.numVertices / 4;
       }
       
-      public function set capacity(param1:int) : void
+      public function set capacity(value:int) : void
       {
-         var _loc3_:* = 0;
-         var _loc2_:int = capacity;
-         if(param1 == _loc2_)
+         var i:* = 0;
+         var oldCapacity:int = capacity;
+         if(value == oldCapacity)
          {
             return;
          }
-         if(param1 == 0)
+         if(value == 0)
          {
             throw new Error("Capacity must be > 0");
          }
-         if(param1 > 16383)
+         if(value > 16383)
          {
-            param1 = 16383;
+            value = 16383;
          }
-         if(mNumQuads > param1)
+         if(mNumQuads > value)
          {
-            mNumQuads = param1;
+            mNumQuads = value;
          }
-         mVertexData.numVertices = param1 * 4;
-         mIndexData.length = param1 * 6;
-         _loc3_ = _loc2_;
-         while(_loc3_ < param1)
+         mVertexData.numVertices = value * 4;
+         mIndexData.length = value * 6;
+         for(i = oldCapacity; i < value; )
          {
-            mIndexData[int(_loc3_ * 6)] = _loc3_ * 4;
-            mIndexData[int(_loc3_ * 6 + 1)] = _loc3_ * 4 + 1;
-            mIndexData[int(_loc3_ * 6 + 2)] = _loc3_ * 4 + 2;
-            mIndexData[int(_loc3_ * 6 + 3)] = _loc3_ * 4 + 1;
-            mIndexData[int(_loc3_ * 6 + 4)] = _loc3_ * 4 + 3;
-            mIndexData[int(_loc3_ * 6 + 5)] = _loc3_ * 4 + 2;
-            _loc3_++;
+            mIndexData[int(i * 6)] = i * 4;
+            mIndexData[int(i * 6 + 1)] = i * 4 + 1;
+            mIndexData[int(i * 6 + 2)] = i * 4 + 2;
+            mIndexData[int(i * 6 + 3)] = i * 4 + 1;
+            mIndexData[int(i * 6 + 4)] = i * 4 + 3;
+            mIndexData[int(i * 6 + 5)] = i * 4 + 2;
+            i++;
          }
          destroyBuffers();
          mSyncRequired = true;
       }
       
-      private function getProgram(param1:Boolean) : Program3D
+      private function getProgram(tinted:Boolean) : Program3D
       {
-         var _loc2_:* = null;
-         var _loc5_:* = null;
-         var _loc4_:Starling = Starling.current;
-         var _loc6_:String = "QB_q";
+         var vertexShader:* = null;
+         var fragmentShader:* = null;
+         var target:Starling = Starling.current;
+         var programName:String = "QB_q";
          if(mTexture)
          {
-            _loc6_ = getImageProgramName(param1,mTexture.mipMapping,mTexture.repeat,mTexture.format,mSmoothing);
+            programName = getImageProgramName(tinted,mTexture.mipMapping,mTexture.repeat,mTexture.format,mSmoothing);
          }
-         var _loc3_:Program3D = _loc4_.getProgram(_loc6_);
-         if(!_loc3_)
+         var program:Program3D = target.getProgram(programName);
+         if(!program)
          {
             if(!mTexture)
             {
-               _loc2_ = "m44 op, va0, vc1 \nmul v0, va1, vc0 \n";
-               _loc5_ = "mov oc, v0       \n";
+               vertexShader = "m44 op, va0, vc1 \nmul v0, va1, vc0 \n";
+               fragmentShader = "mov oc, v0       \n";
             }
             else
             {
-               _loc2_ = !!param1?"m44 op, va0, vc1 \nmul v0, va1, vc0 \nmov v1, va2      \n":"m44 op, va0, vc1 \nmov v1, va2      \n";
-               _loc5_ = !!param1?"tex ft1,  v1, fs0 <???> \nmul  oc, ft1,  v0       \n":"tex  oc,  v1, fs0 <???> \n";
-               _loc5_ = _loc5_.replace("<???>",RenderSupport.getTextureLookupFlags(mTexture.format,mTexture.mipMapping,mTexture.repeat,smoothing));
+               vertexShader = !!tinted?"m44 op, va0, vc1 \nmul v0, va1, vc0 \nmov v1, va2      \n":"m44 op, va0, vc1 \nmov v1, va2      \n";
+               fragmentShader = !!tinted?"tex ft1,  v1, fs0 <???> \nmul  oc, ft1,  v0       \n":"tex  oc,  v1, fs0 <???> \n";
+               fragmentShader = fragmentShader.replace("<???>",RenderSupport.getTextureLookupFlags(mTexture.format,mTexture.mipMapping,mTexture.repeat,smoothing));
             }
-            _loc3_ = _loc4_.registerProgramFromSource(_loc6_,_loc2_,_loc5_);
+            program = target.registerProgramFromSource(programName,vertexShader,fragmentShader);
          }
-         return _loc3_;
+         return program;
       }
    }
 }

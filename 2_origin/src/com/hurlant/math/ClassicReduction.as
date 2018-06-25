@@ -8,41 +8,41 @@ package com.hurlant.math
       
       private var m:BigInteger;
       
-      function ClassicReduction(param1:BigInteger)
+      function ClassicReduction(m:BigInteger)
       {
          super();
-         this.m = param1;
+         this.m = m;
       }
       
-      public function revert(param1:BigInteger) : BigInteger
+      public function revert(x:BigInteger) : BigInteger
       {
-         return param1;
+         return x;
       }
       
-      public function reduce(param1:BigInteger) : void
+      public function reduce(x:BigInteger) : void
       {
-         param1.divRemTo(m,null,param1);
+         x.divRemTo(m,null,x);
       }
       
-      public function convert(param1:BigInteger) : BigInteger
+      public function convert(x:BigInteger) : BigInteger
       {
-         if(param1.s < 0 || param1.compareTo(m) >= 0)
+         if(x.s < 0 || x.compareTo(m) >= 0)
          {
-            return param1.mod(m);
+            return x.mod(m);
          }
-         return param1;
+         return x;
       }
       
-      public function sqrTo(param1:BigInteger, param2:BigInteger) : void
+      public function sqrTo(x:BigInteger, r:BigInteger) : void
       {
-         param1.squareTo(param2);
-         reduce(param2);
+         x.squareTo(r);
+         reduce(r);
       }
       
-      public function mulTo(param1:BigInteger, param2:BigInteger, param3:BigInteger) : void
+      public function mulTo(x:BigInteger, y:BigInteger, r:BigInteger) : void
       {
-         param1.multiplyTo(param2,param3);
-         reduce(param3);
+         x.multiplyTo(y,r);
+         reduce(r);
       }
    }
 }

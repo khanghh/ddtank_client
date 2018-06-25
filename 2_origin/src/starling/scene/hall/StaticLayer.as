@@ -114,9 +114,9 @@ package starling.scene.hall
          PlayerManager.Instance.Self.removeEventListener("propertychange",__propertyChange);
       }
       
-      private function __propertyChange(param1:PlayerPropertyEvent) : void
+      private function __propertyChange(event:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["Grade"])
+         if(event.changedProperties["Grade"])
          {
             initBuilds();
          }
@@ -124,17 +124,17 @@ package starling.scene.hall
       
       private function createBottomThing() : void
       {
-         var _loc2_:BoneMovieFastStarling = BoneMovieFactory.instance.creatBoneMovieFast("hallScene.sea");
-         _loc2_.x = -857;
-         _loc2_.y = -22;
-         _bottomLayer.addChild(_loc2_);
-         var _loc3_:BoneMovieFastStarling = BoneMovieFactory.instance.creatBoneMovieFast("hallScene.boat");
-         _loc3_.x = 959;
-         _loc3_.y = -3;
-         _bottomLayer.addChild(_loc3_);
-         var _loc1_:Image = StarlingMain.instance.createImage("hall_scene_bg_light");
-         _loc1_.y = 135;
-         _bottomLayer.addChild(_loc1_);
+         var sea:BoneMovieFastStarling = BoneMovieFactory.instance.creatBoneMovieFast("hallScene.sea");
+         sea.x = -857;
+         sea.y = -22;
+         _bottomLayer.addChild(sea);
+         var boat:BoneMovieFastStarling = BoneMovieFactory.instance.creatBoneMovieFast("hallScene.boat");
+         boat.x = 959;
+         boat.y = -3;
+         _bottomLayer.addChild(boat);
+         var image:Image = StarlingMain.instance.createImage("hall_scene_bg_light");
+         image.y = 135;
+         _bottomLayer.addChild(image);
       }
       
       private function createBuilds() : void
@@ -142,21 +142,21 @@ package starling.scene.hall
          createBuild("dungeon");
          createBuild("cryptBoss");
          createBuild("home");
-         var _loc1_:Image = StarlingMain.instance.createImage("hall_scene_church_build");
-         _loc1_.x = 2446;
-         _buildLayer.addChild(_loc1_);
-         var _loc3_:Image = StarlingMain.instance.createImage("hall_scene_bg_flower1");
-         _loc3_.x = 1836;
-         _loc3_.y = 232;
-         _buildLayer.addChild(_loc3_);
-         var _loc2_:Image = StarlingMain.instance.createImage("hall_scene_bg_flower2");
-         _loc2_.x = 3341;
-         _loc2_.y = 176;
-         _buildLayer.addChild(_loc2_);
-         var _loc4_:Image = StarlingMain.instance.createImage("hall_scene_bg_flower3");
-         _loc4_.x = 3704;
-         _loc4_.y = 150;
-         _buildLayer.addChild(_loc4_);
+         var churchBuildImage:Image = StarlingMain.instance.createImage("hall_scene_church_build");
+         churchBuildImage.x = 2446;
+         _buildLayer.addChild(churchBuildImage);
+         var flowImage1:Image = StarlingMain.instance.createImage("hall_scene_bg_flower1");
+         flowImage1.x = 1836;
+         flowImage1.y = 232;
+         _buildLayer.addChild(flowImage1);
+         var flowImage2:Image = StarlingMain.instance.createImage("hall_scene_bg_flower2");
+         flowImage2.x = 3341;
+         flowImage2.y = 176;
+         _buildLayer.addChild(flowImage2);
+         var flowImage3:Image = StarlingMain.instance.createImage("hall_scene_bg_flower3");
+         flowImage3.x = 3704;
+         flowImage3.y = 150;
+         _buildLayer.addChild(flowImage3);
          createImageBuild("poster");
          createBuild("ringStation");
          createBuild("labyrinth");
@@ -165,113 +165,112 @@ package starling.scene.hall
       
       private function createNpcs() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         _loc2_ = 6;
-         while(_loc2_ < _btnArray.length)
+         var i:int = 0;
+         var btnName:* = null;
+         for(i = 6; i < _btnArray.length; )
          {
-            _loc1_ = _btnArray[_loc2_];
-            if(_loc1_ != "drgnBoatBuilding" && _loc1_ != "laurel" && _loc1_ != "guide" && _loc1_ != "poster")
+            btnName = _btnArray[i];
+            if(btnName != "drgnBoatBuilding" && btnName != "laurel" && btnName != "guide" && btnName != "poster")
             {
-               createNpc(_loc1_);
+               createNpc(btnName);
             }
-            _loc2_++;
+            i++;
          }
       }
       
       private function createBulidEffects() : void
       {
-         var _loc2_:BoneMovieFastStarling = BoneMovieFactory.instance.creatBoneMovieFast("hallScene.butterfly1");
-         _loc2_.scaleX = 1.45;
-         _loc2_.scaleY = 1.45;
-         _loc2_.x = 1125;
-         _loc2_.y = 127;
-         _effectLayer.addChild(_loc2_);
-         _effectMap["butterfly1"] = _loc2_;
-         var _loc1_:BoneMovieFastStarling = BoneMovieFactory.instance.creatBoneMovieFast("hallScene.butterfly2");
-         _loc1_.scaleX = 1.45;
-         _loc1_.scaleY = 1.45;
-         _loc1_.x = 1526;
-         _loc1_.y = 109;
-         _effectLayer.addChild(_loc1_);
-         _effectMap["butterfly2"] = _loc1_;
+         var butterfly1:BoneMovieFastStarling = BoneMovieFactory.instance.creatBoneMovieFast("hallScene.butterfly1");
+         butterfly1.scaleX = 1.45;
+         butterfly1.scaleY = 1.45;
+         butterfly1.x = 1125;
+         butterfly1.y = 127;
+         _effectLayer.addChild(butterfly1);
+         _effectMap["butterfly1"] = butterfly1;
+         var butterfly2:BoneMovieFastStarling = BoneMovieFactory.instance.creatBoneMovieFast("hallScene.butterfly2");
+         butterfly2.scaleX = 1.45;
+         butterfly2.scaleY = 1.45;
+         butterfly2.x = 1526;
+         butterfly2.y = 109;
+         _effectLayer.addChild(butterfly2);
+         _effectMap["butterfly2"] = butterfly2;
       }
       
       private function createBuildTitles() : void
       {
          var _loc3_:int = 0;
          var _loc2_:* = btnTitlePos;
-         for(var _loc1_ in btnTitlePos)
+         for(var titleName in btnTitlePos)
          {
-            createBuildTitle(_loc1_);
+            createBuildTitle(titleName);
          }
       }
       
-      private function createBuildTitle(param1:String) : void
+      private function createBuildTitle(titleName:String) : void
       {
-         if(_buildTitleMap[param1])
+         if(_buildTitleMap[titleName])
          {
             return;
          }
-         var _loc3_:Point = btnTitlePos[param1];
-         var _loc2_:Image = StarlingMain.instance.createImage("hall_scene_build_title_" + param1);
-         _loc2_.x = _loc3_.x;
-         _loc2_.y = _loc3_.y;
-         _buildTitleLayer.addChild(_loc2_);
-         _buildTitleMap[param1] = _loc2_;
+         var pos:Point = btnTitlePos[titleName];
+         var titleImage:Image = StarlingMain.instance.createImage("hall_scene_build_title_" + titleName);
+         titleImage.x = pos.x;
+         titleImage.y = pos.y;
+         _buildTitleLayer.addChild(titleImage);
+         _buildTitleMap[titleName] = titleImage;
       }
       
-      public function createBuild(param1:String) : void
+      public function createBuild(btnName:String) : void
       {
-         if(_buildNpcMap[param1])
+         if(_buildNpcMap[btnName])
          {
             return;
          }
-         var _loc3_:Point = btnPos[param1];
-         var _loc2_:BoneMovieFastStarling = BoneMovieFactory.instance.creatBoneMovieFast("hallScene." + param1);
-         _loc2_.x = _loc3_.x;
-         _loc2_.y = _loc3_.y;
-         _buildLayer.addChild(_loc2_);
-         _buildNpcMap[param1] = _loc2_;
+         var pos:Point = btnPos[btnName];
+         var buildBtn:BoneMovieFastStarling = BoneMovieFactory.instance.creatBoneMovieFast("hallScene." + btnName);
+         buildBtn.x = pos.x;
+         buildBtn.y = pos.y;
+         _buildLayer.addChild(buildBtn);
+         _buildNpcMap[btnName] = buildBtn;
       }
       
-      public function createNpc(param1:String) : void
+      public function createNpc(btnName:String) : void
       {
-         if(_buildNpcMap[param1])
+         if(_buildNpcMap[btnName])
          {
             return;
          }
-         var _loc3_:Point = btnPos[param1];
-         var _loc2_:BoneMovieFastStarling = BoneMovieFactory.instance.creatBoneMovieFast("hallScene." + param1);
-         _loc2_.x = _loc3_.x;
-         _loc2_.y = _loc3_.y;
-         _npcLayer.addChild(_loc2_);
-         _buildNpcMap[param1] = _loc2_;
+         var pos:Point = btnPos[btnName];
+         var buildBtn:BoneMovieFastStarling = BoneMovieFactory.instance.creatBoneMovieFast("hallScene." + btnName);
+         buildBtn.x = pos.x;
+         buildBtn.y = pos.y;
+         _npcLayer.addChild(buildBtn);
+         _buildNpcMap[btnName] = buildBtn;
       }
       
-      public function createImageBuild(param1:String) : void
+      public function createImageBuild(btnName:String) : void
       {
-         if(_buildImageMap[param1])
+         if(_buildImageMap[btnName])
          {
             return;
          }
-         var _loc3_:Point = btnPos[param1];
-         var _loc2_:Image = StarlingMain.instance.createImage("hall_scene_image_" + param1);
-         _loc2_.x = _loc3_.x;
-         _loc2_.y = _loc3_.y;
-         _npcLayer.addChild(_loc2_);
-         _buildImageMap[param1] = _loc2_;
+         var pos:Point = btnPos[btnName];
+         var buildBtn:Image = StarlingMain.instance.createImage("hall_scene_image_" + btnName);
+         buildBtn.x = pos.x;
+         buildBtn.y = pos.y;
+         _npcLayer.addChild(buildBtn);
+         _buildImageMap[btnName] = buildBtn;
       }
       
       private function initBuilds() : void
       {
-         var _loc1_:int = PlayerManager.Instance.Self.Grade;
-         setBuildState(0,_loc1_ >= 10?true:false);
-         setBuildState(1,_loc1_ >= 3?true:false);
-         setBuildState(2,_loc1_ >= 30?true:false);
-         setBuildState(3,_loc1_ >= 25?true:false);
-         setBuildState(4,_loc1_ >= 28?true:false);
-         setBuildState(5,_loc1_ >= 46?true:false);
+         var lv:int = PlayerManager.Instance.Self.Grade;
+         setBuildState(0,lv >= 10?true:false);
+         setBuildState(1,lv >= 3?true:false);
+         setBuildState(2,lv >= 30?true:false);
+         setBuildState(3,lv >= 25?true:false);
+         setBuildState(4,lv >= 28?true:false);
+         setBuildState(5,lv >= 46?true:false);
          setBuildState(6,true);
          setBuildState(7,GypsyNPCModel.getInstance().isStart());
          setBuildState(9,true);
@@ -282,44 +281,44 @@ package starling.scene.hall
          setBuildState(14,true);
       }
       
-      private function setBuildState(param1:int, param2:Boolean, param3:Boolean = false) : void
+      private function setBuildState(idx:int, enable:Boolean, isVisible:Boolean = false) : void
       {
-         var _loc5_:String = _btnArray[param1];
-         var _loc7_:BoneMovieFastStarling = _buildNpcMap[_loc5_];
-         var _loc4_:Image = _buildTitleMap[_loc5_];
-         var _loc6_:Image = _buildImageMap[_loc5_];
-         if(_loc4_)
+         var btnName:String = _btnArray[idx];
+         var buid:BoneMovieFastStarling = _buildNpcMap[btnName];
+         var title:Image = _buildTitleMap[btnName];
+         var image:Image = _buildImageMap[btnName];
+         if(title)
          {
-            _loc4_.visible = param2;
+            title.visible = enable;
          }
-         if(param3)
+         if(isVisible)
          {
-            _loc7_.visible = param2;
+            buid.visible = enable;
          }
-         if(_loc6_)
+         if(image)
          {
-            _loc6_.visible = param2;
+            image.visible = enable;
          }
       }
       
-      public function setBuildVisible(param1:String, param2:Boolean) : void
+      public function setBuildVisible(btnName:String, isVisible:Boolean) : void
       {
-         var _loc3_:BoneMovieFastStarling = _buildNpcMap[param1];
-         if(_loc3_)
+         var buid:BoneMovieFastStarling = _buildNpcMap[btnName];
+         if(buid)
          {
-            _loc3_.visible = param2;
+            buid.visible = isVisible;
          }
       }
       
-      public function setCharacterFilter(param1:String, param2:Boolean) : void
+      public function setCharacterFilter(btnName:String, value:Boolean) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:DisplayObject = _buildNpcMap[param1] || _buildImageMap[param1];
-         if(_loc3_ && (_loc3_ is BoneMovieFastStarling || param1 == "poster"))
+         var lastFilter:* = null;
+         var buid:DisplayObject = _buildNpcMap[btnName] || _buildImageMap[btnName];
+         if(buid && (buid is BoneMovieFastStarling || btnName == "poster"))
          {
-            _loc4_ = _loc3_.filter;
-            _loc4_ && _loc4_.dispose();
-            _loc3_.filter = !!param2?BlurFilter.createGlow(16776960,1,8,0.5):null;
+            lastFilter = buid.filter;
+            lastFilter && lastFilter.dispose();
+            buid.filter = !!value?BlurFilter.createGlow(16776960,1,8,0.5):null;
          }
       }
       
@@ -331,46 +330,46 @@ package starling.scene.hall
          }
       }
       
-      public function changeBuildNpcBtnAni(param1:String, param2:String) : void
+      public function changeBuildNpcBtnAni(btnName:String, animationName:String) : void
       {
-         var _loc3_:BoneMovieFastStarling = _buildNpcMap[param1];
+         var buid:BoneMovieFastStarling = _buildNpcMap[btnName];
       }
       
-      public function removeBuildNpcBtn(param1:String) : void
+      public function removeBuildNpcBtn(btnName:String) : void
       {
-         var _loc4_:BoneMovieFastStarling = _buildNpcMap[param1];
-         if(_loc4_)
+         var buid:BoneMovieFastStarling = _buildNpcMap[btnName];
+         if(buid)
          {
-            _loc4_.removeFromParent(true);
-            delete _buildNpcMap[param1];
+            buid.removeFromParent(true);
+            delete _buildNpcMap[btnName];
          }
-         var _loc2_:Image = _buildTitleMap[param1];
-         if(_loc2_)
+         var title:Image = _buildTitleMap[btnName];
+         if(title)
          {
-            _loc2_.removeFromParent(true);
-            delete _buildTitleMap[param1];
+            title.removeFromParent(true);
+            delete _buildTitleMap[btnName];
          }
-         var _loc3_:Image = _buildImageMap[param1];
-         if(_loc3_)
+         var image:Image = _buildImageMap[btnName];
+         if(image)
          {
-            _loc3_.removeFromParent(true);
-            delete _buildImageMap[param1];
+            image.removeFromParent(true);
+            delete _buildImageMap[btnName];
          }
       }
       
-      public function getBuildNpcBtnByName(param1:String) : BoneMovieFastStarling
+      public function getBuildNpcBtnByName(btnName:String) : BoneMovieFastStarling
       {
-         return _buildNpcMap[param1];
+         return _buildNpcMap[btnName];
       }
       
-      public function checkAndPlay(param1:int, param2:int) : void
+      public function checkAndPlay(startCheckX:int, endCheckX:int) : void
       {
-         var _loc11_:* = null;
-         var _loc7_:* = null;
-         var _loc4_:* = null;
-         var _loc6_:* = null;
-         var _loc9_:int = param1 - 70;
-         var _loc8_:int = param2 + 70;
+         var rect:* = null;
+         var buildNpcBoneMovie:* = null;
+         var effectBoneMovie:* = null;
+         var boneMovie:* = null;
+         var fixedStartCheckX:int = startCheckX - 70;
+         var fixedEndCheckX:int = endCheckX + 70;
          if(_buildNpcEffectRectsMap == null)
          {
             if(BoneMovieFactory.instance.checkTextureAtlas("ui_hallScene_build_bones",0))
@@ -378,19 +377,19 @@ package starling.scene.hall
                _buildNpcEffectRectsMap = {};
                var _loc13_:int = 0;
                var _loc12_:* = _buildNpcMap;
-               for(var _loc5_ in _buildNpcMap)
+               for(var buildNpcName in _buildNpcMap)
                {
-                  _loc7_ = _buildNpcMap[_loc5_];
-                  _loc11_ = _loc7_.getBounds(_loc7_.parent);
-                  _buildNpcEffectRectsMap[_loc5_] = _loc11_;
+                  buildNpcBoneMovie = _buildNpcMap[buildNpcName];
+                  rect = buildNpcBoneMovie.getBounds(buildNpcBoneMovie.parent);
+                  _buildNpcEffectRectsMap[buildNpcName] = rect;
                }
                var _loc15_:int = 0;
                var _loc14_:* = _effectMap;
-               for(var _loc10_ in _effectMap)
+               for(var effectName in _effectMap)
                {
-                  _loc4_ = _effectMap[_loc10_];
-                  _loc11_ = _loc4_.getBounds(_loc4_.parent);
-                  _buildNpcEffectRectsMap[_loc10_] = _loc11_;
+                  effectBoneMovie = _effectMap[effectName];
+                  rect = effectBoneMovie.getBounds(effectBoneMovie.parent);
+                  _buildNpcEffectRectsMap[effectName] = rect;
                }
             }
          }
@@ -398,23 +397,23 @@ package starling.scene.hall
          {
             var _loc17_:int = 0;
             var _loc16_:* = _buildNpcEffectRectsMap;
-            for(var _loc3_ in _buildNpcEffectRectsMap)
+            for(var nameKey in _buildNpcEffectRectsMap)
             {
-               _loc6_ = _buildNpcMap[_loc3_];
-               if(!_loc6_)
+               boneMovie = _buildNpcMap[nameKey];
+               if(!boneMovie)
                {
-                  _loc6_ = _effectMap[_loc3_];
+                  boneMovie = _effectMap[nameKey];
                }
-               if(_loc6_)
+               if(boneMovie)
                {
-                  _loc11_ = _buildNpcEffectRectsMap[_loc3_];
-                  if(_loc11_.right > _loc9_ && _loc11_.left < _loc8_)
+                  rect = _buildNpcEffectRectsMap[nameKey];
+                  if(rect.right > fixedStartCheckX && rect.left < fixedEndCheckX)
                   {
-                     _loc6_.startClock();
+                     boneMovie.startClock();
                   }
                   else
                   {
-                     _loc6_.stopClock();
+                     boneMovie.stopClock();
                   }
                }
             }

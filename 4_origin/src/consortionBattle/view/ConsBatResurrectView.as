@@ -52,10 +52,10 @@ package consortionBattle.view
       
       private var _lastCreatTime:int = 0;
       
-      public function ConsBatResurrectView(param1:int)
+      public function ConsBatResurrectView(totalCount:int)
       {
          super();
-         _totalCount = param1;
+         _totalCount = totalCount;
          init();
          addEvent();
       }
@@ -79,31 +79,31 @@ package consortionBattle.view
          _timer.start();
       }
       
-      private function __startCount(param1:Event) : void
+      private function __startCount(e:Event) : void
       {
          if(_totalCount < 0)
          {
             __timerComplete();
             return;
          }
-         var _loc2_:String = setFormat(int(_totalCount / 3600)) + ":" + setFormat(int(_totalCount / 60 % 60)) + ":" + setFormat(int(_totalCount % 60));
-         (_timeCD["timeHour2"] as MovieClip).gotoAndStop("num_" + _loc2_.charAt(0));
-         (_timeCD["timeHour"] as MovieClip).gotoAndStop("num_" + _loc2_.charAt(1));
-         (_timeCD["timeMint2"] as MovieClip).gotoAndStop("num_" + _loc2_.charAt(3));
-         (_timeCD["timeMint"] as MovieClip).gotoAndStop("num_" + _loc2_.charAt(4));
-         (_timeCD["timeSecond2"] as MovieClip).gotoAndStop("num_" + _loc2_.charAt(6));
-         (_timeCD["timeSecond"] as MovieClip).gotoAndStop("num_" + _loc2_.charAt(7));
+         var str:String = setFormat(int(_totalCount / 3600)) + ":" + setFormat(int(_totalCount / 60 % 60)) + ":" + setFormat(int(_totalCount % 60));
+         (_timeCD["timeHour2"] as MovieClip).gotoAndStop("num_" + str.charAt(0));
+         (_timeCD["timeHour"] as MovieClip).gotoAndStop("num_" + str.charAt(1));
+         (_timeCD["timeMint2"] as MovieClip).gotoAndStop("num_" + str.charAt(3));
+         (_timeCD["timeMint"] as MovieClip).gotoAndStop("num_" + str.charAt(4));
+         (_timeCD["timeSecond2"] as MovieClip).gotoAndStop("num_" + str.charAt(6));
+         (_timeCD["timeSecond"] as MovieClip).gotoAndStop("num_" + str.charAt(7));
          _totalCount = Number(_totalCount) - 1;
       }
       
-      private function setFormat(param1:int) : String
+      private function setFormat(value:int) : String
       {
-         var _loc2_:String = param1.toString();
-         if(param1 < 10)
+         var str:String = value.toString();
+         if(value < 10)
          {
-            _loc2_ = "0" + _loc2_;
+            str = "0" + str;
          }
-         return _loc2_;
+         return str;
       }
       
       protected function __timerComplete() : void
@@ -125,7 +125,7 @@ package consortionBattle.view
          _stayResBtn.addEventListener("click",__stayRes,false,0,true);
       }
       
-      private function __stayRes(param1:MouseEvent) : void
+      private function __stayRes(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(getTimer() - _lastCreatTime2 > 1000)
@@ -142,67 +142,67 @@ package consortionBattle.view
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc1_:Object = ConsortiaBattleManager.instance.getBuyRecordStatus(3);
-         if(_loc1_.isNoPrompt)
+         var tmpObj:Object = ConsortiaBattleManager.instance.getBuyRecordStatus(3);
+         if(tmpObj.isNoPrompt)
          {
-            if(_loc1_.isBand && PlayerManager.Instance.Self.BandMoney < 80)
+            if(tmpObj.isBand && PlayerManager.Instance.Self.BandMoney < 80)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.consortiaBattle.buy.noEnoughBindMoneyTxt"));
-               _loc1_.isNoPrompt = false;
+               tmpObj.isNoPrompt = false;
             }
-            else if(!_loc1_.isBand && PlayerManager.Instance.Self.Money < 80)
+            else if(!tmpObj.isBand && PlayerManager.Instance.Self.Money < 80)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.consortiaBattle.buy.noEnoughMoneyTxt"));
-               _loc1_.isNoPrompt = false;
+               tmpObj.isNoPrompt = false;
             }
             else
             {
-               SocketManager.Instance.out.sendConsBatConsume(4,_loc1_.isBand);
+               SocketManager.Instance.out.sendConsBatConsume(4,tmpObj.isBand);
                return;
             }
          }
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.consortiaBattle.buyStayResurrect.promptTxt"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"ConsBatBuyConfirmView",30,true,1);
-         _loc2_.moveEnable = false;
-         _loc2_.addEventListener("response",__StayResurrectConfirm,false,0,true);
+         var confirmFrame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.consortiaBattle.buyStayResurrect.promptTxt"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"ConsBatBuyConfirmView",30,true,1);
+         confirmFrame.moveEnable = false;
+         confirmFrame.addEventListener("response",__StayResurrectConfirm,false,0,true);
       }
       
-      protected function __StayResurrectConfirm(param1:FrameEvent) : void
+      protected function __StayResurrectConfirm(evt:FrameEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
+         var confirmFrame2:* = null;
+         var tmpObj:* = null;
          SoundManager.instance.play("008");
-         var _loc4_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc4_.removeEventListener("response",__StayResurrectConfirm);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",__StayResurrectConfirm);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
-            if(_loc4_.isBand && PlayerManager.Instance.Self.BandMoney < 80)
+            if(confirmFrame.isBand && PlayerManager.Instance.Self.BandMoney < 80)
             {
-               _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.consortiaBattle.changeMoneyCostTxt"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
-               _loc2_.moveEnable = false;
-               _loc2_.addEventListener("response",__StayResurrectTwoConfirm,false,0,true);
+               confirmFrame2 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.consortiaBattle.changeMoneyCostTxt"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
+               confirmFrame2.moveEnable = false;
+               confirmFrame2.addEventListener("response",__StayResurrectTwoConfirm,false,0,true);
                return;
             }
-            if(!_loc4_.isBand && PlayerManager.Instance.Self.Money < 80)
+            if(!confirmFrame.isBand && PlayerManager.Instance.Self.Money < 80)
             {
                LeavePageManager.showFillFrame();
                return;
             }
-            if((_loc4_ as ConsBatBuyConfirmView).isNoPrompt)
+            if((confirmFrame as ConsBatBuyConfirmView).isNoPrompt)
             {
-               _loc3_ = ConsortiaBattleManager.instance.getBuyRecordStatus(3);
-               _loc3_.isNoPrompt = true;
-               _loc3_.isBand = _loc4_.isBand;
+               tmpObj = ConsortiaBattleManager.instance.getBuyRecordStatus(3);
+               tmpObj.isNoPrompt = true;
+               tmpObj.isBand = confirmFrame.isBand;
             }
-            SocketManager.Instance.out.sendConsBatConsume(4,_loc4_.isBand);
+            SocketManager.Instance.out.sendConsBatConsume(4,confirmFrame.isBand);
          }
       }
       
-      protected function __StayResurrectTwoConfirm(param1:FrameEvent) : void
+      protected function __StayResurrectTwoConfirm(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__StayResurrectTwoConfirm);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",__StayResurrectTwoConfirm);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             if(PlayerManager.Instance.Self.Money < 80)
             {
@@ -213,7 +213,7 @@ package consortionBattle.view
          }
       }
       
-      private function __resurrect(param1:MouseEvent) : void
+      private function __resurrect(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(getTimer() - _lastCreatTime > 1000)
@@ -230,67 +230,67 @@ package consortionBattle.view
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc1_:Object = ConsortiaBattleManager.instance.getBuyRecordStatus(2);
-         if(_loc1_.isNoPrompt)
+         var tmpObj:Object = ConsortiaBattleManager.instance.getBuyRecordStatus(2);
+         if(tmpObj.isNoPrompt)
          {
-            if(_loc1_.isBand && PlayerManager.Instance.Self.BandMoney < 50)
+            if(tmpObj.isBand && PlayerManager.Instance.Self.BandMoney < 50)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.consortiaBattle.buy.noEnoughBindMoneyTxt"));
-               _loc1_.isNoPrompt = false;
+               tmpObj.isNoPrompt = false;
             }
-            else if(!_loc1_.isBand && PlayerManager.Instance.Self.Money < 50)
+            else if(!tmpObj.isBand && PlayerManager.Instance.Self.Money < 50)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.consortiaBattle.buy.noEnoughMoneyTxt"));
-               _loc1_.isNoPrompt = false;
+               tmpObj.isNoPrompt = false;
             }
             else
             {
-               SocketManager.Instance.out.sendConsBatConsume(3,_loc1_.isBand);
+               SocketManager.Instance.out.sendConsBatConsume(3,tmpObj.isBand);
                return;
             }
          }
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.consortiaBattle.buyResurrect.promptTxt"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"ConsBatBuyConfirmView",30,true,1);
-         _loc2_.moveEnable = false;
-         _loc2_.addEventListener("response",__resurrectConfirm,false,0,true);
+         var confirmFrame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.consortiaBattle.buyResurrect.promptTxt"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"ConsBatBuyConfirmView",30,true,1);
+         confirmFrame.moveEnable = false;
+         confirmFrame.addEventListener("response",__resurrectConfirm,false,0,true);
       }
       
-      protected function __resurrectConfirm(param1:FrameEvent) : void
+      protected function __resurrectConfirm(evt:FrameEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
+         var confirmFrame2:* = null;
+         var tmpObj:* = null;
          SoundManager.instance.play("008");
-         var _loc4_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc4_.removeEventListener("response",__resurrectConfirm);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",__resurrectConfirm);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
-            if(_loc4_.isBand && PlayerManager.Instance.Self.BandMoney < 50)
+            if(confirmFrame.isBand && PlayerManager.Instance.Self.BandMoney < 50)
             {
-               _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.consortiaBattle.changeMoneyCostTxt"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
-               _loc2_.moveEnable = false;
-               _loc2_.addEventListener("response",__resurrectTwoConfirm,false,0,true);
+               confirmFrame2 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.consortiaBattle.changeMoneyCostTxt"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
+               confirmFrame2.moveEnable = false;
+               confirmFrame2.addEventListener("response",__resurrectTwoConfirm,false,0,true);
                return;
             }
-            if(!_loc4_.isBand && PlayerManager.Instance.Self.Money < 50)
+            if(!confirmFrame.isBand && PlayerManager.Instance.Self.Money < 50)
             {
                LeavePageManager.showFillFrame();
                return;
             }
-            if((_loc4_ as ConsBatBuyConfirmView).isNoPrompt)
+            if((confirmFrame as ConsBatBuyConfirmView).isNoPrompt)
             {
-               _loc3_ = ConsortiaBattleManager.instance.getBuyRecordStatus(2);
-               _loc3_.isNoPrompt = true;
-               _loc3_.isBand = _loc4_.isBand;
+               tmpObj = ConsortiaBattleManager.instance.getBuyRecordStatus(2);
+               tmpObj.isNoPrompt = true;
+               tmpObj.isBand = confirmFrame.isBand;
             }
-            SocketManager.Instance.out.sendConsBatConsume(3,_loc4_.isBand);
+            SocketManager.Instance.out.sendConsBatConsume(3,confirmFrame.isBand);
          }
       }
       
-      protected function __resurrectTwoConfirm(param1:FrameEvent) : void
+      protected function __resurrectTwoConfirm(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__resurrectTwoConfirm);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",__resurrectTwoConfirm);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             if(PlayerManager.Instance.Self.Money < 50)
             {

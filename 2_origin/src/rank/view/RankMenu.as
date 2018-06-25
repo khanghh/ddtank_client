@@ -25,32 +25,32 @@ package rank.view
       
       private function createUI() : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:int = 0;
+         var info:* = null;
+         var cell:* = null;
+         var i:int = 0;
          var _loc6_:int = 0;
          var _loc5_:* = WonderfulActivityManager.Instance.rankDic;
-         for(var _loc1_ in WonderfulActivityManager.Instance.rankDic)
+         for(var id in WonderfulActivityManager.Instance.rankDic)
          {
-            _loc3_ = WonderfulActivityManager.Instance.rankDic[_loc1_] as GmActivityInfo;
-            if(_loc3_)
+            info = WonderfulActivityManager.Instance.rankDic[id] as GmActivityInfo;
+            if(info)
             {
-               _loc2_ = new RankCell(_loc3_);
-               _loc2_.y = _loc4_ * 54;
-               _loc2_.addEventListener("click",_cellClickedHandle);
-               addChild(_loc2_);
-               _cellArr.push(_loc2_);
-               _loc4_++;
+               cell = new RankCell(info);
+               cell.y = i * 54;
+               cell.addEventListener("click",_cellClickedHandle);
+               addChild(cell);
+               _cellArr.push(cell);
+               i++;
             }
          }
       }
       
-      private function _cellClickedHandle(param1:MouseEvent) : void
+      private function _cellClickedHandle(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:RankCell = param1.currentTarget as RankCell;
-         setSelectItem(_loc2_);
-         RankManager.instance.model.currentInfo = _loc2_.info;
+         var item:RankCell = event.currentTarget as RankCell;
+         setSelectItem(item);
+         RankManager.instance.model.currentInfo = item.info;
          RankManager.instance.setCurrentInfo();
       }
       
@@ -59,39 +59,39 @@ package rank.view
          _cellArr[0].dispatchEvent(new MouseEvent("click"));
       }
       
-      private function setSelectItem(param1:RankCell) : void
+      private function setSelectItem(item:RankCell) : void
       {
-         if(param1 != _selectItem)
+         if(item != _selectItem)
          {
             if(_selectItem)
             {
                _selectItem.selected = false;
             }
-            _selectItem = param1;
+            _selectItem = item;
             _selectItem.selected = true;
          }
       }
       
       public function dispose() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var cell:* = null;
          if(_selectItem)
          {
             _selectItem.dispose();
             _selectItem = null;
          }
-         _loc2_ = 0;
-         while(_loc2_ < _cellArr.length)
+         i = 0;
+         while(i < _cellArr.length)
          {
-            _loc1_ = _cellArr[_loc2_];
-            if(_loc1_)
+            cell = _cellArr[i];
+            if(cell)
             {
-               _loc1_.removeEventListener("click",_cellClickedHandle);
-               _loc1_.dispose();
-               _loc1_ = null;
+               cell.removeEventListener("click",_cellClickedHandle);
+               cell.dispose();
+               cell = null;
             }
-            _loc2_++;
+            i++;
          }
          if(parent)
          {

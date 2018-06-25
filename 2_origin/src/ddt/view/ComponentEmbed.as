@@ -5,6 +5,7 @@ package ddt.view
    import bagAndInfo.info.PlayerInfoView;
    import bagAndInfo.tips.CallPropTxtTip;
    import bagAndInfo.tips.CharacterPropTxtTip;
+   import bagAndInfo.tips.CharacterSecondProTxtTip;
    import beadSystem.controls.DrillItem;
    import beadSystem.tips.BeadBtnTip;
    import beadSystem.tips.BeadUpgradeTip;
@@ -50,6 +51,7 @@ package ddt.view
    import ddt.view.tips.CardsTipPanel;
    import ddt.view.tips.ChangeNumToolTip;
    import ddt.view.tips.ChatFaceTip;
+   import ddt.view.tips.DreamLandBuffTip;
    import ddt.view.tips.EquipmentCardsTips;
    import ddt.view.tips.FightBuffTip;
    import ddt.view.tips.FineSuitTips;
@@ -70,6 +72,7 @@ package ddt.view
    import ddt.view.tips.PropTxtTip;
    import ddt.view.tips.SmallPlayerTip;
    import ddt.view.tips.ToolPropTip;
+   import ddt.view.tips.TotemLeftWindowChapterTipView;
    import ddt.view.tips.WordWrapLineTip;
    import ddtKingWay.view.DDTKingWayMainView;
    import game.view.propertyWaterBuff.PropertyWaterBuffTip;
@@ -196,6 +199,9 @@ package ddt.view
          LotteryTicketCell;
          HorseAmuletEquipTips;
          DDTKingWayMainView;
+         MarkChipTip;
+         DreamLandBuffTip;
+         CharacterSecondProTxtTip;
       }
    }
 }

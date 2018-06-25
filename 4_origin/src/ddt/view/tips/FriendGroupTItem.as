@@ -40,28 +40,28 @@ package ddt.view.tips
          addEventListener("click",__clickHandler);
       }
       
-      public function set info(param1:CustomInfo) : void
+      public function set info(info:CustomInfo) : void
       {
-         _info = param1;
+         _info = info;
          _text.text = _info.Name;
       }
       
-      public function set NickName(param1:String) : void
+      public function set NickName(str:String) : void
       {
-         _nickName = param1;
+         _nickName = str;
       }
       
-      protected function __overHandler(param1:MouseEvent) : void
+      protected function __overHandler(event:MouseEvent) : void
       {
          _bg.visible = true;
       }
       
-      protected function __outHandler(param1:MouseEvent) : void
+      protected function __outHandler(event:MouseEvent) : void
       {
          _bg.visible = false;
       }
       
-      protected function __clickHandler(param1:MouseEvent) : void
+      protected function __clickHandler(event:MouseEvent) : void
       {
          SocketManager.Instance.out.sendAddFriend(_nickName,_info.ID);
       }

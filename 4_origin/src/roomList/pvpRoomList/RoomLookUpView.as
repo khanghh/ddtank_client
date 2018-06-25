@@ -35,13 +35,13 @@ package roomList.pvpRoomList
       
       private var _updateClick:Function;
       
-      public function RoomLookUpView(param1:Function, param2:int)
+      public function RoomLookUpView(func:Function, hallType:int)
       {
          super();
          init();
          initEvent();
-         _updateClick = param1;
-         _hallType = param2;
+         _updateClick = func;
+         _hallType = hallType;
       }
       
       private function init() : void
@@ -72,9 +72,9 @@ package roomList.pvpRoomList
          _flushBtn.addEventListener("click",__updateClick);
       }
       
-      protected function __onKeyDown(param1:KeyboardEvent) : void
+      protected function __onKeyDown(event:KeyboardEvent) : void
       {
-         if(param1.keyCode == 13)
+         if(event.keyCode == 13)
          {
             stage.removeEventListener("click",__onStageClick);
             SoundManager.instance.play("008");
@@ -89,28 +89,28 @@ package roomList.pvpRoomList
          }
       }
       
-      private function __updateClick(param1:MouseEvent) : void
+      private function __updateClick(event:MouseEvent) : void
       {
          if(_updateClick != null)
          {
-            _updateClick(param1);
+            _updateClick(event);
          }
       }
       
-      protected function __onStageClick(param1:MouseEvent) : void
+      protected function __onStageClick(event:MouseEvent) : void
       {
          stage.removeEventListener("click",__onStageClick);
          _inputText.text = LanguageMgr.GetTranslation("room.roomList.lookup.text");
       }
       
-      protected function __textClick(param1:MouseEvent) : void
+      protected function __textClick(event:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
+         event.stopImmediatePropagation();
          stage.addEventListener("click",__onStageClick);
          _inputText.text = "";
       }
       
-      protected function __onEnterBtnClick(param1:MouseEvent) : void
+      protected function __onEnterBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_inputText.text.length == 6)

@@ -139,10 +139,10 @@ package rewardTask.view
          }
       }
       
-      private function __addTaskNumberClick(param1:MouseEvent) : void
+      private function __addTaskNumberClick(e:MouseEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
+         var vipLevel:int = 0;
+         var frame:* = null;
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -151,11 +151,11 @@ package rewardTask.view
          }
          if(PlayerManager.Instance.Self.IsVIP)
          {
-            _loc3_ = PlayerManager.Instance.Self.VIPLevel;
-            if(_loc3_ >= RewardTaskControl.instance.model.buyTimes)
+            vipLevel = PlayerManager.Instance.Self.VIPLevel;
+            if(vipLevel >= RewardTaskControl.instance.model.buyTimes)
             {
-               _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("rewardTask.addTaskNumAlter",ServerConfigManager.instance.rewardMultiplePrice + RewardTaskControl.instance.model.buyTimes * ServerConfigManager.instance.addTaskNumPrice),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2,null,"SimpleAlert",60,false,1);
-               _loc2_.addEventListener("response",__onAddTaskNumber);
+               frame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("rewardTask.addTaskNumAlter",ServerConfigManager.instance.rewardMultiplePrice + RewardTaskControl.instance.model.buyTimes * ServerConfigManager.instance.addTaskNumPrice),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2,null,"SimpleAlert",60,false,1);
+               frame.addEventListener("response",__onAddTaskNumber);
             }
             else
             {
@@ -168,9 +168,9 @@ package rewardTask.view
          }
       }
       
-      private function __onAddTaskNumber(param1:FrameEvent) : void
+      private function __onAddTaskNumber(e:FrameEvent) : void
       {
-         e = param1;
+         e = e;
          var frame:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
          frame.removeEventListener("response",__onRefreshRewardResponse);
          if(e.responseCode == 3 || e.responseCode == 2)
@@ -184,9 +184,9 @@ package rewardTask.view
          frame.dispose();
       }
       
-      private function __onClickrefreshReward(param1:MouseEvent) : void
+      private function __onClickrefreshReward(e:MouseEvent) : void
       {
-         e = param1;
+         e = e;
          SoundManager.instance.playButtonSound();
          if(getTimer() - _clickTime < 1000)
          {
@@ -221,9 +221,9 @@ package rewardTask.view
          }
       }
       
-      private function __onRefreshRewardResponse(param1:FrameEvent) : void
+      private function __onRefreshRewardResponse(e:FrameEvent) : void
       {
-         e = param1;
+         e = e;
          var frame:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
          frame.removeEventListener("response",__onRefreshRewardResponse);
          if(e.responseCode == 3 || e.responseCode == 2)
@@ -242,9 +242,9 @@ package rewardTask.view
          frame.dispose();
       }
       
-      private function __onClickRefreshTask(param1:MouseEvent) : void
+      private function __onClickRefreshTask(e:MouseEvent) : void
       {
-         e = param1;
+         e = e;
          SoundManager.instance.playButtonSound();
          if(getTimer() - _clickTime < 1000)
          {
@@ -278,9 +278,9 @@ package rewardTask.view
          }
       }
       
-      private function __onRefreshTaskResponse(param1:FrameEvent) : void
+      private function __onRefreshTaskResponse(e:FrameEvent) : void
       {
-         e = param1;
+         e = e;
          var frame:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
          frame.removeEventListener("response",__onRefreshTaskResponse);
          var money:int = PlayerManager.Instance.Self.Money;
@@ -300,47 +300,47 @@ package rewardTask.view
          frame.dispose();
       }
       
-      private function __onRefreshQuest(param1:PkgEvent) : void
+      private function __onRefreshQuest(e:PkgEvent) : void
       {
-         RewardTaskControl.instance.model.questID = param1.pkg.readInt();
-         RewardTaskControl.instance.model.multiple = param1.pkg.readInt();
-         RewardTaskControl.instance.model.buyTimes = param1.pkg.readInt();
-         RewardTaskControl.instance.model.times = param1.pkg.readInt();
-         RewardTaskControl.instance.model.status = param1.pkg.readInt();
+         RewardTaskControl.instance.model.questID = e.pkg.readInt();
+         RewardTaskControl.instance.model.multiple = e.pkg.readInt();
+         RewardTaskControl.instance.model.buyTimes = e.pkg.readInt();
+         RewardTaskControl.instance.model.times = e.pkg.readInt();
+         RewardTaskControl.instance.model.status = e.pkg.readInt();
          updateView();
       }
       
-      private function __onAddTimes(param1:PkgEvent) : void
+      private function __onAddTimes(e:PkgEvent) : void
       {
-         RewardTaskControl.instance.model.questID = param1.pkg.readInt();
-         RewardTaskControl.instance.model.multiple = param1.pkg.readInt();
-         RewardTaskControl.instance.model.buyTimes = param1.pkg.readInt();
-         RewardTaskControl.instance.model.times = param1.pkg.readInt();
-         RewardTaskControl.instance.model.status = param1.pkg.readInt();
+         RewardTaskControl.instance.model.questID = e.pkg.readInt();
+         RewardTaskControl.instance.model.multiple = e.pkg.readInt();
+         RewardTaskControl.instance.model.buyTimes = e.pkg.readInt();
+         RewardTaskControl.instance.model.times = e.pkg.readInt();
+         RewardTaskControl.instance.model.status = e.pkg.readInt();
          updateView();
       }
       
-      private function __onRefreshReward(param1:PkgEvent) : void
+      private function __onRefreshReward(e:PkgEvent) : void
       {
-         RewardTaskControl.instance.model.questID = param1.pkg.readInt();
-         RewardTaskControl.instance.model.multiple = param1.pkg.readInt();
-         RewardTaskControl.instance.model.buyTimes = param1.pkg.readInt();
-         RewardTaskControl.instance.model.times = param1.pkg.readInt();
-         RewardTaskControl.instance.model.status = param1.pkg.readInt();
+         RewardTaskControl.instance.model.questID = e.pkg.readInt();
+         RewardTaskControl.instance.model.multiple = e.pkg.readInt();
+         RewardTaskControl.instance.model.buyTimes = e.pkg.readInt();
+         RewardTaskControl.instance.model.times = e.pkg.readInt();
+         RewardTaskControl.instance.model.status = e.pkg.readInt();
          updateView();
       }
       
-      private function __onUpdateItems(param1:PkgEvent) : void
+      private function __onUpdateItems(e:PkgEvent) : void
       {
-         RewardTaskControl.instance.model.questID = param1.pkg.readInt();
-         RewardTaskControl.instance.model.multiple = param1.pkg.readInt();
-         RewardTaskControl.instance.model.buyTimes = param1.pkg.readInt();
-         RewardTaskControl.instance.model.times = param1.pkg.readInt();
-         RewardTaskControl.instance.model.status = param1.pkg.readInt();
+         RewardTaskControl.instance.model.questID = e.pkg.readInt();
+         RewardTaskControl.instance.model.multiple = e.pkg.readInt();
+         RewardTaskControl.instance.model.buyTimes = e.pkg.readInt();
+         RewardTaskControl.instance.model.times = e.pkg.readInt();
+         RewardTaskControl.instance.model.status = e.pkg.readInt();
          updateView();
       }
       
-      private function __onAceptQuest(param1:PkgEvent) : void
+      private function __onAceptQuest(e:PkgEvent) : void
       {
          updateView();
       }

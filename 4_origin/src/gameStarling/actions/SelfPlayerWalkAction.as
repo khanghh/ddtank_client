@@ -29,18 +29,18 @@ package gameStarling.actions
       
       private var _transmissionGate:Boolean = true;
       
-      public function SelfPlayerWalkAction(param1:GameLocalPlayer3D, param2:int = 1)
+      public function SelfPlayerWalkAction(player:GameLocalPlayer3D, $reverse:int = 1)
       {
          super();
-         _player = param1;
+         _player = player;
          _count = 0;
-         _currentReverse = param2;
+         _currentReverse = $reverse;
          _isFinished = false;
       }
       
-      override public function connect(param1:BaseAction) : Boolean
+      override public function connect(action:BaseAction) : Boolean
       {
-         return param1 is SelfPlayerWalkAction;
+         return action is SelfPlayerWalkAction;
       }
       
       private function isDirkeyDown() : Boolean
@@ -63,8 +63,8 @@ package gameStarling.actions
       
       override public function execute() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:Number = NaN;
+         var pos:* = null;
+         var tx:Number = NaN;
          if(!_player || !_player.info)
          {
             _isFinished = true;
@@ -72,10 +72,10 @@ package gameStarling.actions
          }
          if(isDirkeyDown() && (_player.localPlayer.powerRatio == 0 || _player.localPlayer.energy > 0) && _player.localPlayer.isAttacking && !_player.localPlayer.forbidMoving)
          {
-            _loc2_ = _player.getNextWalkPoint(_player.info.direction);
-            if(_loc2_)
+            pos = _player.getNextWalkPoint(_player.info.direction);
+            if(pos)
             {
-               _player.info.pos = _loc2_;
+               _player.info.pos = pos;
                _player.body.doAction(_player.body.walkAction);
                _player.body.WingState = "move";
                SoundManager.instance.play("044",false,false);
@@ -93,19 +93,19 @@ package gameStarling.actions
             {
                sendAction();
                finish();
-               _loc1_ = _player.x + _player.info.direction * Player.MOVE_SPEED;
-               if(_player.canMoveDirection(_player.info.direction) && _player.canStand(_loc1_,_player.y) == false)
+               tx = _player.x + _player.info.direction * Player.MOVE_SPEED;
+               if(_player.canMoveDirection(_player.info.direction) && _player.canStand(tx,_player.y) == false)
                {
-                  _loc2_ = _player.map.findYLineNotEmptyPointDown(_loc1_,_player.y - 7,_player.map.bound.height);
-                  if(_loc2_)
+                  pos = _player.map.findYLineNotEmptyPointDown(tx,_player.y - 7,_player.map.bound.height);
+                  if(pos)
                   {
-                     _player.act(new PlayerFallingAction(_player,_loc2_,true,false));
-                     GameInSocketOut.sendGameStartMove(1,_loc2_.x,_loc2_.y,0,true,_player.map.currentTurn);
+                     _player.act(new PlayerFallingAction(_player,pos,true,false));
+                     GameInSocketOut.sendGameStartMove(1,pos.x,pos.y,0,true,_player.map.currentTurn);
                   }
                   else
                   {
-                     _player.act(new PlayerFallingAction(_player,new Point(_loc1_,_player.map.bound.height - 70),false,false));
-                     GameInSocketOut.sendGameStartMove(1,_loc1_,_player.map.bound.height,0,false,_player.map.currentTurn);
+                     _player.act(new PlayerFallingAction(_player,new Point(tx,_player.map.bound.height - 70),false,false));
+                     GameInSocketOut.sendGameStartMove(1,tx,_player.map.bound.height,0,false,_player.map.currentTurn);
                   }
                }
             }
@@ -127,16 +127,16 @@ package gameStarling.actions
       
       private function transmissionGate() : void
       {
-         var _loc1_:Rectangle = _player.getCollideRect();
-         _loc1_.offset(_player.x,_player.y);
-         var _loc2_:Array = _player.map.getCollidedPhysicalObjects(_loc1_,_player);
-         if(_loc2_.length != 0 && _transmissionGate)
+         var playerRect:Rectangle = _player.getCollideRect();
+         playerRect.offset(_player.x,_player.y);
+         var list:Array = _player.map.getCollidedPhysicalObjects(playerRect,_player);
+         if(list.length != 0 && _transmissionGate)
          {
             var _loc5_:int = 0;
-            var _loc4_:* = _loc2_;
-            for each(var _loc3_ in _loc2_)
+            var _loc4_:* = list;
+            for each(var i in list)
             {
-               if(_loc3_ is SimpleObject3D && _loc3_.layerType == 3)
+               if(i is SimpleObject3D && i.layerType == 3)
                {
                   _player.localPlayer.isAttacking = false;
                   _player.showTransmissionEffoct();

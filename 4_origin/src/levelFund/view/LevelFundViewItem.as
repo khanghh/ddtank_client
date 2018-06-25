@@ -36,9 +36,9 @@ package levelFund.view
       
       private var _index:int;
       
-      public function LevelFundViewItem(param1:int = 0)
+      public function LevelFundViewItem($index:int = 0)
       {
-         _index = param1;
+         _index = $index;
          super();
          initView();
          initEvent();
@@ -68,19 +68,19 @@ package levelFund.view
          addChild(_getAwardBtn);
       }
       
-      public function updateView(param1:Object, param2:int) : void
+      public function updateView($info:Object, buyMultiple:int) : void
       {
-         _info = param1;
+         _info = $info;
          _levelTxt.text = LanguageMgr.GetTranslation("levelFund.levelFundViewItem.levelTxt",_info.level);
-         if(param2 == 0)
+         if(buyMultiple == 0)
          {
-            _buyMultipleTxt.text = param1.money + "";
+            _buyMultipleTxt.text = $info.money + "";
          }
          else
          {
-            _buyMultipleTxt.text = LanguageMgr.GetTranslation("levelFund.levelFundViewItem.buyMultipleTxt",param1.money,param2);
+            _buyMultipleTxt.text = LanguageMgr.GetTranslation("levelFund.levelFundViewItem.buyMultipleTxt",$info.money,buyMultiple);
          }
-         if(param1.state == 0)
+         if($info.state == 0)
          {
             _getAwardBtn.enable = true;
          }
@@ -95,7 +95,7 @@ package levelFund.view
          _getAwardBtn.addEventListener("click",__getAwardBtnClickHandler);
       }
       
-      private function __getAwardBtnClickHandler(param1:MouseEvent) : void
+      private function __getAwardBtnClickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(LevelFundManager.instance.model.buyType == 0)

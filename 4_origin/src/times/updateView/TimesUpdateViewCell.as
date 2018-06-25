@@ -14,13 +14,13 @@ package times.updateView
       
       private var _contentTxt:FilterFrameText;
       
-      public function TimesUpdateViewCell(param1:Object)
+      public function TimesUpdateViewCell(data:Object)
       {
          super();
          _titleTxt = ComponentFactory.Instance.creatComponentByStylename("timesUpdate.viewCell.titleTxt");
-         _titleTxt.text = "·" + param1.Title;
+         _titleTxt.text = "·" + data.Title;
          _contentTxt = ComponentFactory.Instance.creatComponentByStylename("timesUpdate.viewCell.contentTxt");
-         _contentTxt.text = param1.Text;
+         _contentTxt.text = data.Text;
          _contentTxt.height = _contentTxt.textHeight + 5;
          addChild(_titleTxt);
          addChild(_contentTxt);

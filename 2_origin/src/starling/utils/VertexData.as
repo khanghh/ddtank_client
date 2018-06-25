@@ -28,524 +28,512 @@ package starling.utils
       
       private var mNumVertices:int;
       
-      public function VertexData(param1:int, param2:Boolean = false)
+      public function VertexData(numVertices:int, premultipliedAlpha:Boolean = false)
       {
          super();
          mRawData = new Vector.<Number>(0);
-         mPremultipliedAlpha = param2;
-         this.numVertices = param1;
+         mPremultipliedAlpha = premultipliedAlpha;
+         this.numVertices = numVertices;
       }
       
-      public function clone(param1:int = 0, param2:int = -1) : VertexData
+      public function clone(vertexID:int = 0, numVertices:int = -1) : VertexData
       {
-         if(param2 < 0 || param1 + param2 > mNumVertices)
+         if(numVertices < 0 || vertexID + numVertices > mNumVertices)
          {
-            param2 = mNumVertices - param1;
+            numVertices = mNumVertices - vertexID;
          }
-         var _loc3_:VertexData = new VertexData(0,mPremultipliedAlpha);
-         _loc3_.mNumVertices = param2;
-         _loc3_.mRawData = mRawData.slice(param1 * 8,param2 * 8);
-         _loc3_.mRawData.fixed = true;
-         return _loc3_;
+         var clone:VertexData = new VertexData(0,mPremultipliedAlpha);
+         clone.mNumVertices = numVertices;
+         clone.mRawData = mRawData.slice(vertexID * 8,numVertices * 8);
+         clone.mRawData.fixed = true;
+         return clone;
       }
       
-      public function copyTo(param1:VertexData, param2:int = 0, param3:int = 0, param4:int = -1) : void
+      public function copyTo(targetData:VertexData, targetVertexID:int = 0, vertexID:int = 0, numVertices:int = -1) : void
       {
-         copyTransformedTo(param1,param2,null,param3,param4);
+         copyTransformedTo(targetData,targetVertexID,null,vertexID,numVertices);
       }
       
-      public function copyTransformedTo(param1:VertexData, param2:int = 0, param3:Matrix = null, param4:int = 0, param5:int = -1) : void
+      public function copyTransformedTo(targetData:VertexData, targetVertexID:int = 0, matrix:Matrix = null, vertexID:int = 0, numVertices:int = -1) : void
       {
-         var _loc10_:Number = NaN;
-         var _loc11_:Number = NaN;
-         if(param5 < 0 || param4 + param5 > mNumVertices)
+         var y:Number = NaN;
+         var x:Number = NaN;
+         if(numVertices < 0 || vertexID + numVertices > mNumVertices)
          {
-            param5 = mNumVertices - param4;
+            numVertices = mNumVertices - vertexID;
          }
-         var _loc8_:Vector.<Number> = param1.mRawData;
-         var _loc7_:int = param2 * 8;
-         var _loc9_:int = param4 * 8;
-         var _loc6_:int = (param4 + param5) * 8;
-         if(param3)
+         var targetRawData:Vector.<Number> = targetData.mRawData;
+         var targetIndex:int = targetVertexID * 8;
+         var sourceIndex:int = vertexID * 8;
+         var sourceEnd:int = (vertexID + numVertices) * 8;
+         if(matrix)
          {
-            while(_loc9_ < _loc6_)
+            while(sourceIndex < sourceEnd)
             {
-               _loc9_++;
-               _loc11_ = mRawData[int(_loc9_)];
-               _loc9_++;
-               _loc10_ = mRawData[int(_loc9_)];
-               _loc7_++;
-               _loc8_[int(_loc7_)] = param3.a * _loc11_ + param3.c * _loc10_ + param3.tx;
-               _loc7_++;
-               _loc8_[int(_loc7_)] = param3.d * _loc10_ + param3.b * _loc11_ + param3.ty;
-               _loc7_++;
-               _loc9_++;
-               _loc8_[int(_loc7_)] = mRawData[int(_loc9_)];
-               _loc7_++;
-               _loc9_++;
-               _loc8_[int(_loc7_)] = mRawData[int(_loc9_)];
-               _loc7_++;
-               _loc9_++;
-               _loc8_[int(_loc7_)] = mRawData[int(_loc9_)];
-               _loc7_++;
-               _loc9_++;
-               _loc8_[int(_loc7_)] = mRawData[int(_loc9_)];
-               _loc7_++;
-               _loc9_++;
-               _loc8_[int(_loc7_)] = mRawData[int(_loc9_)];
-               _loc7_++;
-               _loc9_++;
-               _loc8_[int(_loc7_)] = mRawData[int(_loc9_)];
+               sourceIndex++;
+               x = mRawData[int(sourceIndex)];
+               sourceIndex++;
+               y = mRawData[int(sourceIndex)];
+               targetIndex++;
+               targetRawData[int(targetIndex)] = matrix.a * x + matrix.c * y + matrix.tx;
+               targetIndex++;
+               targetRawData[int(targetIndex)] = matrix.d * y + matrix.b * x + matrix.ty;
+               targetIndex++;
+               sourceIndex++;
+               targetRawData[int(targetIndex)] = mRawData[int(sourceIndex)];
+               targetIndex++;
+               sourceIndex++;
+               targetRawData[int(targetIndex)] = mRawData[int(sourceIndex)];
+               targetIndex++;
+               sourceIndex++;
+               targetRawData[int(targetIndex)] = mRawData[int(sourceIndex)];
+               targetIndex++;
+               sourceIndex++;
+               targetRawData[int(targetIndex)] = mRawData[int(sourceIndex)];
+               targetIndex++;
+               sourceIndex++;
+               targetRawData[int(targetIndex)] = mRawData[int(sourceIndex)];
+               targetIndex++;
+               sourceIndex++;
+               targetRawData[int(targetIndex)] = mRawData[int(sourceIndex)];
             }
          }
          else
          {
-            while(_loc9_ < _loc6_)
+            while(sourceIndex < sourceEnd)
             {
-               _loc7_++;
-               _loc9_++;
-               _loc8_[int(_loc7_)] = mRawData[int(_loc9_)];
+               targetIndex++;
+               sourceIndex++;
+               targetRawData[int(targetIndex)] = mRawData[int(sourceIndex)];
             }
          }
       }
       
-      public function append(param1:VertexData) : void
+      public function append(data:VertexData) : void
       {
-         var _loc5_:int = 0;
+         var i:int = 0;
          mRawData.fixed = false;
-         var _loc2_:int = mRawData.length;
-         var _loc3_:Vector.<Number> = param1.mRawData;
-         var _loc4_:int = _loc3_.length;
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         var targetIndex:int = mRawData.length;
+         var rawData:Vector.<Number> = data.mRawData;
+         var rawDataLength:int = rawData.length;
+         for(i = 0; i < rawDataLength; )
          {
-            _loc2_++;
-            mRawData[int(_loc2_)] = _loc3_[_loc5_];
-            _loc5_++;
+            targetIndex++;
+            mRawData[int(targetIndex)] = rawData[i];
+            i++;
          }
-         mNumVertices = mNumVertices + param1.numVertices;
+         mNumVertices = mNumVertices + data.numVertices;
          mRawData.fixed = true;
       }
       
-      public function setPosition(param1:int, param2:Number, param3:Number) : void
+      public function setPosition(vertexID:int, x:Number, y:Number) : void
       {
-         var _loc4_:int = param1 * 8 + 0;
-         mRawData[_loc4_] = param2;
-         mRawData[int(_loc4_ + 1)] = param3;
+         var offset:int = vertexID * 8 + 0;
+         mRawData[offset] = x;
+         mRawData[int(offset + 1)] = y;
       }
       
-      public function getPosition(param1:int, param2:Point) : void
+      public function getPosition(vertexID:int, position:Point) : void
       {
-         var _loc3_:int = param1 * 8 + 0;
-         param2.x = mRawData[_loc3_];
-         param2.y = mRawData[int(_loc3_ + 1)];
+         var offset:int = vertexID * 8 + 0;
+         position.x = mRawData[offset];
+         position.y = mRawData[int(offset + 1)];
       }
       
-      public function setColorAndAlpha(param1:int, param2:uint, param3:Number) : void
+      public function setColorAndAlpha(vertexID:int, color:uint, alpha:Number) : void
       {
-         if(param3 < 0.001)
+         if(alpha < 0.001)
          {
-            param3 = 0.001;
+            alpha = 0.001;
          }
-         else if(param3 > 1)
+         else if(alpha > 1)
          {
-            param3 = 1;
+            alpha = 1;
          }
-         var _loc4_:int = param1 * 8 + 2;
-         var _loc5_:Number = !!mPremultipliedAlpha?param3:1;
-         mRawData[_loc4_] = (param2 >> 16 & 255) / 255 * _loc5_;
-         mRawData[int(_loc4_ + 1)] = (param2 >> 8 & 255) / 255 * _loc5_;
-         mRawData[int(_loc4_ + 2)] = (param2 & 255) / 255 * _loc5_;
-         mRawData[int(_loc4_ + 3)] = param3;
+         var offset:int = vertexID * 8 + 2;
+         var multiplier:Number = !!mPremultipliedAlpha?alpha:1;
+         mRawData[offset] = (color >> 16 & 255) / 255 * multiplier;
+         mRawData[int(offset + 1)] = (color >> 8 & 255) / 255 * multiplier;
+         mRawData[int(offset + 2)] = (color & 255) / 255 * multiplier;
+         mRawData[int(offset + 3)] = alpha;
       }
       
-      public function setColor(param1:int, param2:uint) : void
+      public function setColor(vertexID:int, color:uint) : void
       {
-         var _loc3_:int = param1 * 8 + 2;
-         var _loc4_:Number = !!mPremultipliedAlpha?mRawData[int(_loc3_ + 3)]:1;
-         mRawData[_loc3_] = (param2 >> 16 & 255) / 255 * _loc4_;
-         mRawData[int(_loc3_ + 1)] = (param2 >> 8 & 255) / 255 * _loc4_;
-         mRawData[int(_loc3_ + 2)] = (param2 & 255) / 255 * _loc4_;
+         var offset:int = vertexID * 8 + 2;
+         var multiplier:Number = !!mPremultipliedAlpha?mRawData[int(offset + 3)]:1;
+         mRawData[offset] = (color >> 16 & 255) / 255 * multiplier;
+         mRawData[int(offset + 1)] = (color >> 8 & 255) / 255 * multiplier;
+         mRawData[int(offset + 2)] = (color & 255) / 255 * multiplier;
       }
       
-      public function getColor(param1:int) : uint
+      public function getColor(vertexID:int) : uint
       {
-         var _loc2_:Number = NaN;
-         var _loc4_:Number = NaN;
-         var _loc3_:Number = NaN;
-         var _loc6_:int = param1 * 8 + 2;
-         var _loc5_:Number = !!mPremultipliedAlpha?mRawData[int(_loc6_ + 3)]:1;
-         if(_loc5_ == 0)
+         var red:Number = NaN;
+         var green:Number = NaN;
+         var blue:Number = NaN;
+         var offset:int = vertexID * 8 + 2;
+         var divisor:Number = !!mPremultipliedAlpha?mRawData[int(offset + 3)]:1;
+         if(divisor == 0)
          {
             return 0;
          }
-         _loc2_ = mRawData[_loc6_] / _loc5_;
-         _loc4_ = mRawData[int(_loc6_ + 1)] / _loc5_;
-         _loc3_ = mRawData[int(_loc6_ + 2)] / _loc5_;
-         return int(_loc2_ * 255) << 16 | int(_loc4_ * 255) << 8 | int(_loc3_ * 255);
+         red = mRawData[offset] / divisor;
+         green = mRawData[int(offset + 1)] / divisor;
+         blue = mRawData[int(offset + 2)] / divisor;
+         return int(red * 255) << 16 | int(green * 255) << 8 | int(blue * 255);
       }
       
-      public function setAlpha(param1:int, param2:Number) : void
+      public function setAlpha(vertexID:int, alpha:Number) : void
       {
          if(mPremultipliedAlpha)
          {
-            setColorAndAlpha(param1,getColor(param1),param2);
+            setColorAndAlpha(vertexID,getColor(vertexID),alpha);
          }
          else
          {
-            mRawData[int(param1 * 8 + 2 + 3)] = param2;
+            mRawData[int(vertexID * 8 + 2 + 3)] = alpha;
          }
       }
       
-      public function getAlpha(param1:int) : Number
+      public function getAlpha(vertexID:int) : Number
       {
-         var _loc2_:int = param1 * 8 + 2 + 3;
-         return mRawData[_loc2_];
+         var offset:int = vertexID * 8 + 2 + 3;
+         return mRawData[offset];
       }
       
-      public function setTexCoords(param1:int, param2:Number, param3:Number) : void
+      public function setTexCoords(vertexID:int, u:Number, v:Number) : void
       {
-         var _loc4_:int = param1 * 8 + 6;
-         mRawData[_loc4_] = param2;
-         mRawData[int(_loc4_ + 1)] = param3;
+         var offset:int = vertexID * 8 + 6;
+         mRawData[offset] = u;
+         mRawData[int(offset + 1)] = v;
       }
       
-      public function getTexCoords(param1:int, param2:Point) : void
+      public function getTexCoords(vertexID:int, texCoords:Point) : void
       {
-         var _loc3_:int = param1 * 8 + 6;
-         param2.x = mRawData[_loc3_];
-         param2.y = mRawData[int(_loc3_ + 1)];
+         var offset:int = vertexID * 8 + 6;
+         texCoords.x = mRawData[offset];
+         texCoords.y = mRawData[int(offset + 1)];
       }
       
-      public function translateVertex(param1:int, param2:Number, param3:Number) : void
+      public function translateVertex(vertexID:int, deltaX:Number, deltaY:Number) : void
       {
-         var _loc4_:int = param1 * 8 + 0;
-         var _loc5_:* = _loc4_;
-         var _loc6_:* = mRawData[_loc5_] + param2;
+         var offset:int = vertexID * 8 + 0;
+         var _loc5_:* = offset;
+         var _loc6_:* = mRawData[_loc5_] + deltaX;
          mRawData[_loc5_] = _loc6_;
-         _loc6_ = int(_loc4_ + 1);
-         _loc5_ = mRawData[_loc6_] + param3;
+         _loc6_ = int(offset + 1);
+         _loc5_ = mRawData[_loc6_] + deltaY;
          mRawData[_loc6_] = _loc5_;
       }
       
-      public function transformVertex(param1:int, param2:Matrix, param3:int = 1) : void
+      public function transformVertex(vertexID:int, matrix:Matrix, numVertices:int = 1) : void
       {
-         var _loc5_:Number = NaN;
-         var _loc7_:Number = NaN;
-         var _loc6_:int = 0;
-         var _loc4_:int = param1 * 8 + 0;
-         _loc6_ = 0;
-         while(_loc6_ < param3)
+         var y:Number = NaN;
+         var x:Number = NaN;
+         var i:int = 0;
+         var offset:int = vertexID * 8 + 0;
+         for(i = 0; i < numVertices; )
          {
-            _loc7_ = mRawData[_loc4_];
-            _loc5_ = mRawData[int(_loc4_ + 1)];
-            mRawData[_loc4_] = param2.a * _loc7_ + param2.c * _loc5_ + param2.tx;
-            mRawData[int(_loc4_ + 1)] = param2.d * _loc5_ + param2.b * _loc7_ + param2.ty;
-            _loc4_ = _loc4_ + 8;
-            _loc6_++;
+            x = mRawData[offset];
+            y = mRawData[int(offset + 1)];
+            mRawData[offset] = matrix.a * x + matrix.c * y + matrix.tx;
+            mRawData[int(offset + 1)] = matrix.d * y + matrix.b * x + matrix.ty;
+            offset = offset + 8;
+            i++;
          }
       }
       
-      public function setUniformColor(param1:uint) : void
+      public function setUniformColor(color:uint) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < mNumVertices)
+         var i:int = 0;
+         for(i = 0; i < mNumVertices; )
          {
-            setColor(_loc2_,param1);
-            _loc2_++;
+            setColor(i,color);
+            i++;
          }
       }
       
-      public function setUniformAlpha(param1:Number) : void
+      public function setUniformAlpha(alpha:Number) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < mNumVertices)
+         var i:int = 0;
+         for(i = 0; i < mNumVertices; )
          {
-            setAlpha(_loc2_,param1);
-            _loc2_++;
+            setAlpha(i,alpha);
+            i++;
          }
       }
       
-      public function scaleAlpha(param1:int, param2:Number, param3:int = 1) : void
+      public function scaleAlpha(vertexID:int, factor:Number, numVertices:int = 1) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         if(param2 == 1)
+         var i:int = 0;
+         var offset:int = 0;
+         if(factor == 1)
          {
             return;
          }
-         if(param3 < 0 || param1 + param3 > mNumVertices)
+         if(numVertices < 0 || vertexID + numVertices > mNumVertices)
          {
-            param3 = mNumVertices - param1;
+            numVertices = mNumVertices - vertexID;
          }
          if(mPremultipliedAlpha)
          {
-            _loc5_ = 0;
-            while(_loc5_ < param3)
+            for(i = 0; i < numVertices; )
             {
-               setAlpha(param1 + _loc5_,getAlpha(param1 + _loc5_) * param2);
-               _loc5_++;
+               setAlpha(vertexID + i,getAlpha(vertexID + i) * factor);
+               i++;
             }
          }
          else
          {
-            _loc4_ = param1 * 8 + 2 + 3;
-            _loc5_ = 0;
-            while(_loc5_ < param3)
+            offset = vertexID * 8 + 2 + 3;
+            for(i = 0; i < numVertices; )
             {
-               var _loc6_:int = _loc4_ + _loc5_ * 8;
-               var _loc7_:* = mRawData[_loc6_] * param2;
+               var _loc6_:int = offset + i * 8;
+               var _loc7_:* = mRawData[_loc6_] * factor;
                mRawData[_loc6_] = _loc7_;
-               _loc5_++;
+               i++;
             }
          }
       }
       
-      public function getBounds(param1:Matrix = null, param2:int = 0, param3:int = -1, param4:Rectangle = null) : Rectangle
+      public function getBounds(transformationMatrix:Matrix = null, vertexID:int = 0, numVertices:int = -1, resultRect:Rectangle = null) : Rectangle
       {
-         var _loc9_:* = NaN;
-         var _loc12_:* = NaN;
-         var _loc7_:int = 0;
-         var _loc8_:Number = NaN;
-         var _loc11_:int = 0;
-         var _loc10_:Number = NaN;
-         if(param4 == null)
+         var minX:* = NaN;
+         var minY:* = NaN;
+         var offset:int = 0;
+         var y:Number = NaN;
+         var i:int = 0;
+         var x:Number = NaN;
+         if(resultRect == null)
          {
-            param4 = new Rectangle();
+            resultRect = new Rectangle();
          }
-         if(param3 < 0 || param2 + param3 > mNumVertices)
+         if(numVertices < 0 || vertexID + numVertices > mNumVertices)
          {
-            param3 = mNumVertices - param2;
+            numVertices = mNumVertices - vertexID;
          }
-         if(param3 == 0)
+         if(numVertices == 0)
          {
-            if(param1 == null)
+            if(transformationMatrix == null)
             {
-               param4.setEmpty();
+               resultRect.setEmpty();
             }
             else
             {
-               MatrixUtil.transformCoords(param1,0,0,sHelperPoint);
-               param4.setTo(sHelperPoint.x,sHelperPoint.y,0,0);
+               MatrixUtil.transformCoords(transformationMatrix,0,0,sHelperPoint);
+               resultRect.setTo(sHelperPoint.x,sHelperPoint.y,0,0);
             }
          }
          else
          {
-            _loc9_ = 1.79769313486232e308;
-            var _loc6_:* = -1.79769313486232e308;
-            _loc12_ = 1.79769313486232e308;
-            var _loc5_:* = -1.79769313486232e308;
-            _loc7_ = param2 * 8 + 0;
-            if(param1 == null)
+            minX = 1.79769313486232e308;
+            var maxX:* = -1.79769313486232e308;
+            minY = 1.79769313486232e308;
+            var maxY:* = -1.79769313486232e308;
+            offset = vertexID * 8 + 0;
+            if(transformationMatrix == null)
             {
-               _loc11_ = 0;
-               while(_loc11_ < param3)
+               for(i = 0; i < numVertices; )
                {
-                  _loc10_ = mRawData[_loc7_];
-                  _loc8_ = mRawData[int(_loc7_ + 1)];
-                  _loc7_ = _loc7_ + 8;
-                  if(_loc9_ > _loc10_)
+                  x = mRawData[offset];
+                  y = mRawData[int(offset + 1)];
+                  offset = offset + 8;
+                  if(minX > x)
                   {
-                     _loc9_ = _loc10_;
+                     minX = x;
                   }
-                  if(_loc6_ < _loc10_)
+                  if(maxX < x)
                   {
-                     _loc6_ = _loc10_;
+                     maxX = x;
                   }
-                  if(_loc12_ > _loc8_)
+                  if(minY > y)
                   {
-                     _loc12_ = _loc8_;
+                     minY = y;
                   }
-                  if(_loc5_ < _loc8_)
+                  if(maxY < y)
                   {
-                     _loc5_ = _loc8_;
+                     maxY = y;
                   }
-                  _loc11_++;
+                  i++;
                }
             }
             else
             {
-               _loc11_ = 0;
-               while(_loc11_ < param3)
+               i = 0;
+               while(i < numVertices)
                {
-                  _loc10_ = mRawData[_loc7_];
-                  _loc8_ = mRawData[int(_loc7_ + 1)];
-                  _loc7_ = _loc7_ + 8;
-                  MatrixUtil.transformCoords(param1,_loc10_,_loc8_,sHelperPoint);
-                  if(_loc9_ > sHelperPoint.x)
+                  x = mRawData[offset];
+                  y = mRawData[int(offset + 1)];
+                  offset = offset + 8;
+                  MatrixUtil.transformCoords(transformationMatrix,x,y,sHelperPoint);
+                  if(minX > sHelperPoint.x)
                   {
-                     _loc9_ = Number(sHelperPoint.x);
+                     minX = Number(sHelperPoint.x);
                   }
-                  if(_loc6_ < sHelperPoint.x)
+                  if(maxX < sHelperPoint.x)
                   {
-                     _loc6_ = Number(sHelperPoint.x);
+                     maxX = Number(sHelperPoint.x);
                   }
-                  if(_loc12_ > sHelperPoint.y)
+                  if(minY > sHelperPoint.y)
                   {
-                     _loc12_ = Number(sHelperPoint.y);
+                     minY = Number(sHelperPoint.y);
                   }
-                  if(_loc5_ < sHelperPoint.y)
+                  if(maxY < sHelperPoint.y)
                   {
-                     _loc5_ = Number(sHelperPoint.y);
+                     maxY = Number(sHelperPoint.y);
                   }
-                  _loc11_++;
+                  i++;
                }
             }
-            param4.setTo(_loc9_,_loc12_,_loc6_ - _loc9_,_loc5_ - _loc12_);
+            resultRect.setTo(minX,minY,maxX - minX,maxY - minY);
          }
-         return param4;
+         return resultRect;
       }
       
-      public function getBoundsProjected(param1:Matrix3D, param2:Vector3D, param3:int = 0, param4:int = -1, param5:Rectangle = null) : Rectangle
+      public function getBoundsProjected(transformationMatrix:Matrix3D, camPos:Vector3D, vertexID:int = 0, numVertices:int = -1, resultRect:Rectangle = null) : Rectangle
       {
-         var _loc8_:* = NaN;
-         var _loc9_:* = NaN;
-         var _loc11_:int = 0;
-         var _loc12_:Number = NaN;
-         var _loc10_:int = 0;
-         var _loc13_:Number = NaN;
-         if(param2 == null)
+         var minX:* = NaN;
+         var minY:* = NaN;
+         var offset:int = 0;
+         var y:Number = NaN;
+         var i:int = 0;
+         var x:Number = NaN;
+         if(camPos == null)
          {
             throw new ArgumentError("camPos must not be null");
          }
-         if(param5 == null)
+         if(resultRect == null)
          {
-            param5 = new Rectangle();
+            resultRect = new Rectangle();
          }
-         if(param4 < 0 || param3 + param4 > mNumVertices)
+         if(numVertices < 0 || vertexID + numVertices > mNumVertices)
          {
-            param4 = mNumVertices - param3;
+            numVertices = mNumVertices - vertexID;
          }
-         if(param4 == 0)
+         if(numVertices == 0)
          {
-            if(param1)
+            if(transformationMatrix)
             {
-               MatrixUtil.transformCoords3D(param1,0,0,0,sHelperPoint3D);
+               MatrixUtil.transformCoords3D(transformationMatrix,0,0,0,sHelperPoint3D);
             }
             else
             {
                sHelperPoint3D.setTo(0,0,0);
             }
-            MathUtil.intersectLineWithXYPlane(param2,sHelperPoint3D,sHelperPoint);
-            param5.setTo(sHelperPoint.x,sHelperPoint.y,0,0);
+            MathUtil.intersectLineWithXYPlane(camPos,sHelperPoint3D,sHelperPoint);
+            resultRect.setTo(sHelperPoint.x,sHelperPoint.y,0,0);
          }
          else
          {
-            _loc8_ = 1.79769313486232e308;
-            var _loc7_:* = -1.79769313486232e308;
-            _loc9_ = 1.79769313486232e308;
-            var _loc6_:* = -1.79769313486232e308;
-            _loc11_ = param3 * 8 + 0;
-            _loc10_ = 0;
-            while(_loc10_ < param4)
+            minX = 1.79769313486232e308;
+            var maxX:* = -1.79769313486232e308;
+            minY = 1.79769313486232e308;
+            var maxY:* = -1.79769313486232e308;
+            offset = vertexID * 8 + 0;
+            for(i = 0; i < numVertices; )
             {
-               _loc13_ = mRawData[_loc11_];
-               _loc12_ = mRawData[int(_loc11_ + 1)];
-               _loc11_ = _loc11_ + 8;
-               if(param1)
+               x = mRawData[offset];
+               y = mRawData[int(offset + 1)];
+               offset = offset + 8;
+               if(transformationMatrix)
                {
-                  MatrixUtil.transformCoords3D(param1,_loc13_,_loc12_,0,sHelperPoint3D);
+                  MatrixUtil.transformCoords3D(transformationMatrix,x,y,0,sHelperPoint3D);
                }
                else
                {
-                  sHelperPoint3D.setTo(_loc13_,_loc12_,0);
+                  sHelperPoint3D.setTo(x,y,0);
                }
-               MathUtil.intersectLineWithXYPlane(param2,sHelperPoint3D,sHelperPoint);
-               if(_loc8_ > sHelperPoint.x)
+               MathUtil.intersectLineWithXYPlane(camPos,sHelperPoint3D,sHelperPoint);
+               if(minX > sHelperPoint.x)
                {
-                  _loc8_ = Number(sHelperPoint.x);
+                  minX = Number(sHelperPoint.x);
                }
-               if(_loc7_ < sHelperPoint.x)
+               if(maxX < sHelperPoint.x)
                {
-                  _loc7_ = Number(sHelperPoint.x);
+                  maxX = Number(sHelperPoint.x);
                }
-               if(_loc9_ > sHelperPoint.y)
+               if(minY > sHelperPoint.y)
                {
-                  _loc9_ = Number(sHelperPoint.y);
+                  minY = Number(sHelperPoint.y);
                }
-               if(_loc6_ < sHelperPoint.y)
+               if(maxY < sHelperPoint.y)
                {
-                  _loc6_ = Number(sHelperPoint.y);
+                  maxY = Number(sHelperPoint.y);
                }
-               _loc10_++;
+               i++;
             }
-            param5.setTo(_loc8_,_loc9_,_loc7_ - _loc8_,_loc6_ - _loc9_);
+            resultRect.setTo(minX,minY,maxX - minX,maxY - minY);
          }
-         return param5;
+         return resultRect;
       }
       
       public function toString() : String
       {
-         var _loc4_:int = 0;
-         var _loc2_:String = "[VertexData \n";
-         var _loc1_:Point = new Point();
-         var _loc3_:Point = new Point();
-         _loc4_ = 0;
-         while(_loc4_ < numVertices)
+         var i:int = 0;
+         var result:String = "[VertexData \n";
+         var position:Point = new Point();
+         var texCoords:Point = new Point();
+         for(i = 0; i < numVertices; )
          {
-            getPosition(_loc4_,_loc1_);
-            getTexCoords(_loc4_,_loc3_);
-            _loc2_ = _loc2_ + ("  [Vertex " + _loc4_ + ": " + "x=" + _loc1_.x.toFixed(1) + ", " + "y=" + _loc1_.y.toFixed(1) + ", " + "rgb=" + getColor(_loc4_).toString(16) + ", " + "a=" + getAlpha(_loc4_).toFixed(2) + ", " + "u=" + _loc3_.x.toFixed(4) + ", " + "v=" + _loc3_.y.toFixed(4) + "]" + (_loc4_ == numVertices - 1?"\n":",\n"));
-            _loc4_++;
+            getPosition(i,position);
+            getTexCoords(i,texCoords);
+            result = result + ("  [Vertex " + i + ": " + "x=" + position.x.toFixed(1) + ", " + "y=" + position.y.toFixed(1) + ", " + "rgb=" + getColor(i).toString(16) + ", " + "a=" + getAlpha(i).toFixed(2) + ", " + "u=" + texCoords.x.toFixed(4) + ", " + "v=" + texCoords.y.toFixed(4) + "]" + (i == numVertices - 1?"\n":",\n"));
+            i++;
          }
-         return _loc2_ + "]";
+         return result + "]";
       }
       
       public function get tinted() : Boolean
       {
-         var _loc3_:int = 0;
-         var _loc1_:int = 0;
-         var _loc2_:int = 2;
-         _loc3_ = 0;
-         while(_loc3_ < mNumVertices)
+         var i:int = 0;
+         var j:int = 0;
+         var offset:int = 2;
+         for(i = 0; i < mNumVertices; )
          {
-            _loc1_ = 0;
-            while(_loc1_ < 4)
+            for(j = 0; j < 4; )
             {
-               if(mRawData[int(_loc2_ + _loc1_)] != 1)
+               if(mRawData[int(offset + j)] != 1)
                {
                   return true;
                }
-               _loc1_++;
+               j++;
             }
-            _loc2_ = _loc2_ + 8;
-            _loc3_++;
+            offset = offset + 8;
+            i++;
          }
          return false;
       }
       
-      public function setPremultipliedAlpha(param1:Boolean, param2:Boolean = true) : void
+      public function setPremultipliedAlpha(value:Boolean, updateData:Boolean = true) : void
       {
-         var _loc6_:int = 0;
-         var _loc7_:int = 0;
-         var _loc3_:Number = NaN;
-         var _loc4_:Number = NaN;
-         var _loc5_:Number = NaN;
-         if(param1 == mPremultipliedAlpha)
+         var dataLength:int = 0;
+         var i:int = 0;
+         var alpha:Number = NaN;
+         var divisor:Number = NaN;
+         var multiplier:Number = NaN;
+         if(value == mPremultipliedAlpha)
          {
             return;
          }
-         if(param2)
+         if(updateData)
          {
-            _loc6_ = mNumVertices * 8;
-            _loc7_ = 2;
-            while(_loc7_ < _loc6_)
+            dataLength = mNumVertices * 8;
+            for(i = 2; i < dataLength; )
             {
-               _loc3_ = mRawData[int(_loc7_ + 3)];
-               _loc4_ = !!mPremultipliedAlpha?_loc3_:1;
-               _loc5_ = !!param1?_loc3_:1;
-               if(_loc4_ != 0)
+               alpha = mRawData[int(i + 3)];
+               divisor = !!mPremultipliedAlpha?alpha:1;
+               multiplier = !!value?alpha:1;
+               if(divisor != 0)
                {
-                  mRawData[_loc7_] = mRawData[_loc7_] / _loc4_ * _loc5_;
-                  mRawData[int(_loc7_ + 1)] = mRawData[int(_loc7_ + 1)] / _loc4_ * _loc5_;
-                  mRawData[int(_loc7_ + 2)] = mRawData[int(_loc7_ + 2)] / _loc4_ * _loc5_;
+                  mRawData[i] = mRawData[i] / divisor * multiplier;
+                  mRawData[int(i + 1)] = mRawData[int(i + 1)] / divisor * multiplier;
+                  mRawData[int(i + 2)] = mRawData[int(i + 2)] / divisor * multiplier;
                }
-               _loc7_ = _loc7_ + 8;
+               i = i + 8;
             }
          }
-         mPremultipliedAlpha = param1;
+         mPremultipliedAlpha = value;
       }
       
       public function get premultipliedAlpha() : Boolean
@@ -553,9 +541,9 @@ package starling.utils
          return mPremultipliedAlpha;
       }
       
-      public function set premultipliedAlpha(param1:Boolean) : void
+      public function set premultipliedAlpha(value:Boolean) : void
       {
-         setPremultipliedAlpha(param1);
+         setPremultipliedAlpha(value);
       }
       
       public function get numVertices() : int
@@ -563,20 +551,19 @@ package starling.utils
          return mNumVertices;
       }
       
-      public function set numVertices(param1:int) : void
+      public function set numVertices(value:int) : void
       {
-         var _loc4_:* = 0;
+         var i:* = 0;
          mRawData.fixed = false;
-         mRawData.length = param1 * 8;
-         var _loc2_:int = mNumVertices * 8 + 2 + 3;
-         var _loc3_:int = mRawData.length;
-         _loc4_ = _loc2_;
-         while(_loc4_ < _loc3_)
+         mRawData.length = value * 8;
+         var startIndex:int = mNumVertices * 8 + 2 + 3;
+         var endIndex:int = mRawData.length;
+         for(i = startIndex; i < endIndex; )
          {
-            mRawData[_loc4_] = 1;
-            _loc4_ = int(_loc4_ + 8);
+            mRawData[i] = 1;
+            i = int(i + 8);
          }
-         mNumVertices = param1;
+         mNumVertices = value;
          mRawData.fixed = true;
       }
       

@@ -15,7 +15,7 @@ package zodiac
       
       public var inRolling:Boolean = false;
       
-      public function ZodiacControl(param1:ZodiacInstance)
+      public function ZodiacControl(zodiacInstance:ZodiacInstance)
       {
          super();
       }
@@ -37,13 +37,13 @@ package zodiac
          ZodiacManager.instance.addEventListener("zodiacUpdataMessage",__updataMessageHandler);
       }
       
-      private function __showMainViewHandler(param1:Event) : void
+      private function __showMainViewHandler(e:Event) : void
       {
          _frame = ComponentFactory.Instance.creatComponentByStylename("zodiac.mainFrame.ZodiacFrame");
          LayerManager.Instance.addToLayer(_frame,3,true,2);
       }
       
-      private function __hideMainViewhandler(param1:Event) : void
+      private function __hideMainViewhandler(e:Event) : void
       {
          if(_frame)
          {
@@ -52,7 +52,7 @@ package zodiac
          }
       }
       
-      private function __updataIndexHandler(param1:Event) : void
+      private function __updataIndexHandler(e:Event) : void
       {
          if(_frame)
          {
@@ -61,7 +61,7 @@ package zodiac
          setCurrentIndexView(ZodiacModel.instance.newIndex);
       }
       
-      private function __updataMessageHandler(param1:Event) : void
+      private function __updataMessageHandler(e:Event) : void
       {
          if(_frame)
          {
@@ -70,13 +70,13 @@ package zodiac
          }
       }
       
-      public function setCurrentIndexView(param1:int) : void
+      public function setCurrentIndexView($index:int) : void
       {
          if(inRolling == true)
          {
             return;
          }
-         ZodiacModel.instance.index = param1;
+         ZodiacModel.instance.index = $index;
          if(_frame)
          {
             _frame.mainView.setViewIndex(ZodiacModel.instance.index);
@@ -85,17 +85,16 @@ package zodiac
       
       public function getCurrentIndex() : int
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(ZodiacModel.instance.index == 0)
          {
-            _loc1_ = 0;
-            while(_loc1_ < ZodiacModel.instance.questArr.length)
+            for(i = 0; i < ZodiacModel.instance.questArr.length; )
             {
-               if(ZodiacModel.instance.questArr[_loc1_] != 0)
+               if(ZodiacModel.instance.questArr[i] != 0)
                {
-                  ZodiacModel.instance.index = _loc1_ + 1;
+                  ZodiacModel.instance.index = i + 1;
                }
-               _loc1_++;
+               i++;
             }
          }
          return ZodiacModel.instance.index;

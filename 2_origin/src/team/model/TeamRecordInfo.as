@@ -43,31 +43,31 @@ package team.model
          super();
       }
       
-      public function getName(param1:Boolean) : String
+      public function getName(win:Boolean) : String
       {
-         return !!param1?teamName:enemyName;
+         return !!win?teamName:enemyName;
       }
       
-      public function getZone(param1:Boolean) : String
+      public function getZone(win:Boolean) : String
       {
-         return !!param1?teamZone:enemyZone;
+         return !!win?teamZone:enemyZone;
       }
       
-      public function getKill(param1:Boolean) : int
+      public function getKill(win:Boolean) : int
       {
-         return !!param1?teamKill:int(enemyKill);
+         return !!win?teamKill:int(enemyKill);
       }
       
-      public function getSurvival(param1:Boolean) : int
+      public function getSurvival(win:Boolean) : int
       {
-         return !!param1?teamSurvival:int(enemySurvival);
+         return !!win?teamSurvival:int(enemySurvival);
       }
       
-      public function getMemberInfo(param1:Boolean) : Array
+      public function getMemberInfo(win:Boolean) : Array
       {
-         var _loc2_:String = !!param1?teamMemberInfo:enemyMemberInfo;
-         var _loc3_:Array = _loc2_.split("|");
-         return _loc3_;
+         var str:String = !!win?teamMemberInfo:enemyMemberInfo;
+         var list:Array = str.split("|");
+         return list;
       }
    }
 }

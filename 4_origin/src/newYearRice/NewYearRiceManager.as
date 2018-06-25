@@ -31,7 +31,7 @@ package newYearRice
       
       private var _model:NewYearRiceModel;
       
-      public function NewYearRiceManager(param1:PrivateClass)
+      public function NewYearRiceManager(pct:PrivateClass)
       {
          super();
       }
@@ -51,68 +51,67 @@ package newYearRice
          SocketManager.Instance.addEventListener("newYearRice",pkgHandler);
       }
       
-      private function pkgHandler(param1:CrazyTankSocketEvent) : void
+      private function pkgHandler(e:CrazyTankSocketEvent) : void
       {
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:int = param1._cmd;
-         var _loc3_:CrazyTankSocketEvent = null;
-         switch(int(_loc2_) - 161)
+         var pkg:PackageIn = e.pkg;
+         var cmd:int = e._cmd;
+         var event:CrazyTankSocketEvent = null;
+         switch(int(cmd) - 161)
          {
             case 0:
-               openOrclose(_loc4_);
+               openOrclose(pkg);
                break;
             case 1:
-               openNewYearRiceView(_loc4_);
+               openNewYearRiceView(pkg);
                break;
             case 2:
-               _loc3_ = new CrazyTankSocketEvent("yearFoodEnter",_loc4_);
+               event = new CrazyTankSocketEvent("yearFoodEnter",pkg);
                break;
             case 3:
-               yearFoodRoomInvitePlayer(_loc4_);
+               yearFoodRoomInvitePlayer(pkg);
                break;
             case 4:
-               _loc3_ = new CrazyTankSocketEvent("yearFoodCreateFood",_loc4_);
+               event = new CrazyTankSocketEvent("yearFoodCreateFood",pkg);
                break;
             case 5:
-               _loc3_ = new CrazyTankSocketEvent("exitYearFoodRoom",_loc4_);
+               event = new CrazyTankSocketEvent("exitYearFoodRoom",pkg);
                break;
             case 6:
-               _loc3_ = new CrazyTankSocketEvent("yearFoodCook",_loc4_);
+               event = new CrazyTankSocketEvent("yearFoodCook",pkg);
                break;
             case 7:
-               _loc3_ = new CrazyTankSocketEvent("yearFoodRoomInvite",_loc4_);
+               event = new CrazyTankSocketEvent("yearFoodRoomInvite",pkg);
          }
-         if(_loc3_)
+         if(event)
          {
-            dispatchEvent(_loc3_);
+            dispatchEvent(event);
          }
       }
       
-      private function openOrclose(param1:PackageIn = null) : void
+      private function openOrclose(pkg:PackageIn = null) : void
       {
-         _model.isOpen = param1.readBoolean();
+         _model.isOpen = pkg.readBoolean();
          showEnterIcon(_model.isOpen);
       }
       
-      private function yearFoodRoomInvitePlayer(param1:PackageIn) : void
+      private function yearFoodRoomInvitePlayer(pkg:PackageIn) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         _model.roomType = param1.readInt();
-         _model.playersLength = param1.readInt();
+         var i:int = 0;
+         var obj:* = null;
+         _model.roomType = pkg.readInt();
+         _model.playersLength = pkg.readInt();
          if(_model.playersLength > 0)
          {
             _model.playersArray = [];
-            _loc3_ = 0;
-            while(_loc3_ < _model.playersLength)
+            for(i = 0; i < _model.playersLength; )
             {
-               _loc2_ = {};
-               _loc2_.ID = param1.readInt();
-               _loc2_.Style = param1.readUTF();
-               _loc2_.NikeName = param1.readUTF();
-               _loc2_.Sex = param1.readBoolean();
-               _model.playersArray[_loc3_] = _loc2_;
-               _loc3_++;
+               obj = {};
+               obj.ID = pkg.readInt();
+               obj.Style = pkg.readUTF();
+               obj.NikeName = pkg.readUTF();
+               obj.Sex = pkg.readBoolean();
+               _model.playersArray[i] = obj;
+               i++;
             }
             openInviteView();
          }
@@ -129,9 +128,9 @@ package newYearRice
          dispatchEvent(new Event("newyearrice_invite"));
       }
       
-      private function openNewYearRiceView(param1:PackageIn) : void
+      private function openNewYearRiceView(pkg:PackageIn) : void
       {
-         _model.yearFoodInfo = param1.readInt();
+         _model.yearFoodInfo = pkg.readInt();
          initOpenFrame();
       }
       
@@ -153,25 +152,25 @@ package newYearRice
          dispatchEvent(new Event("newyearrice_openframe"));
       }
       
-      public function showEnterIcon(param1:Boolean) : void
+      public function showEnterIcon(flag:Boolean) : void
       {
-         HallIconManager.instance.updateSwitchHandler("newYearRice",param1);
+         HallIconManager.instance.updateSwitchHandler("newYearRice",flag);
       }
       
-      public function returnComponent(param1:Bitmap, param2:String) : Component
+      public function returnComponent(cell:Bitmap, tipName:String) : Component
       {
-         var _loc3_:Component = new Component();
-         _loc3_.tipData = param2;
-         _loc3_.tipDirctions = "0,1,2";
-         _loc3_.tipStyle = "ddt.view.tips.OneLineTip";
-         _loc3_.tipGapH = 20;
-         _loc3_.width = param1.width;
-         _loc3_.x = param1.x;
-         _loc3_.y = param1.y;
-         param1.x = 0;
-         param1.y = 0;
-         _loc3_.addChild(param1);
-         return _loc3_;
+         var compoent:Component = new Component();
+         compoent.tipData = tipName;
+         compoent.tipDirctions = "0,1,2";
+         compoent.tipStyle = "ddt.view.tips.OneLineTip";
+         compoent.tipGapH = 20;
+         compoent.width = cell.width;
+         compoent.x = cell.x;
+         compoent.y = cell.y;
+         cell.x = 0;
+         cell.y = 0;
+         compoent.addChild(cell);
+         return compoent;
       }
       
       public function get model() : NewYearRiceModel
@@ -179,9 +178,9 @@ package newYearRice
          return _model;
       }
       
-      public function templateDataSetup(param1:Array) : void
+      public function templateDataSetup(dataList:Array) : void
       {
-         _model.itemInfoList = param1;
+         _model.itemInfoList = dataList;
       }
    }
 }

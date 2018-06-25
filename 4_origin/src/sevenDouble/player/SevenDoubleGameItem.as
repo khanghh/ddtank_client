@@ -11,12 +11,12 @@ package sevenDouble.player
       
       private var _itemMc:MovieClip;
       
-      public function SevenDoubleGameItem(param1:int, param2:int, param3:int)
+      public function SevenDoubleGameItem(index:int, type:int, posX:int)
       {
          super();
-         this.x = 280 + param3;
-         this.y = 170 + 65 * param1;
-         _itemMc = ComponentFactory.Instance.creat("asset.sevenDouble.itemMc" + param2);
+         this.x = 280 + posX;
+         this.y = 170 + 65 * index;
+         _itemMc = ComponentFactory.Instance.creat("asset.sevenDouble.itemMc" + type);
          _itemMc.gotoAndStop(1);
          addChild(_itemMc);
       }

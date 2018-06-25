@@ -49,9 +49,9 @@ package baglocked
          super();
       }
       
-      public function __onTextEnter(param1:KeyboardEvent) : void
+      public function __onTextEnter(event:KeyboardEvent) : void
       {
-         if(param1.keyCode == 13)
+         if(event.keyCode == 13)
          {
             if(_nextBtn1.enable)
             {
@@ -60,9 +60,9 @@ package baglocked
          }
       }
       
-      public function set bagLockedController(param1:BagLockedController) : void
+      public function set bagLockedController(value:BagLockedController) : void
       {
-         _bagLockedController = param1;
+         _bagLockedController = value;
       }
       
       override public function dispose() : void
@@ -141,9 +141,9 @@ package baglocked
          addEvent();
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -153,13 +153,13 @@ package baglocked
          }
       }
       
-      private function __nextBtn1Click(param1:MouseEvent) : void
+      private function __nextBtn1Click(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var info:* = null;
          SoundManager.instance.play("008");
          if(_textinput1.text == _textinput2.text)
          {
-            _loc2_ = new BagLockedInfo();
+            info = new BagLockedInfo();
             _bagLockedController.bagLockedInfo.psw = _textinput1.text;
             _bagLockedController.openSetPassFrame2();
             _bagLockedController.closeSetPassFrame1();
@@ -170,7 +170,7 @@ package baglocked
          }
       }
       
-      private function __textChange(param1:Event) : void
+      private function __textChange(event:Event) : void
       {
          if(_textinput1.textField.length >= 6 && _textinput2.textField.length >= 6)
          {

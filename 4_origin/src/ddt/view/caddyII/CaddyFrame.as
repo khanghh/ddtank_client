@@ -55,38 +55,38 @@ package ddt.view.caddyII
       
       private var _selectInfo:InventoryItemInfo;
       
-      public function CaddyFrame(param1:int, param2:ItemTemplateInfo = null)
+      public function CaddyFrame(type:int, itemInfo:ItemTemplateInfo = null)
       {
          super();
-         _itemInfo = param2;
-         _type = param1;
-         initView(param1);
+         _itemInfo = itemInfo;
+         _type = type;
+         initView(type);
          initEvents();
       }
       
-      public function setCaddyType(param1:int) : void
+      public function setCaddyType(id:int) : void
       {
-         CaddyModel.instance.caddyType = param1;
+         CaddyModel.instance.caddyType = id;
       }
       
-      public function setBeadType(param1:int) : void
+      public function setBeadType(id:int) : void
       {
-         CaddyModel.instance.beadType = param1;
+         CaddyModel.instance.beadType = id;
       }
       
-      public function setOfferType(param1:int) : void
+      public function setOfferType(id:int) : void
       {
-         CaddyModel.instance.offerType = param1;
+         CaddyModel.instance.offerType = id;
       }
       
-      public function setCardType(param1:int, param2:int) : void
+      public function setCardType(id:int, place:int) : void
       {
-         CardViewII.instance.setCard(param1,param2);
+         CardViewII.instance.setCard(id,place);
       }
       
-      private function initView(param1:int) : void
+      private function initView(type:int) : void
       {
-         CaddyModel.instance.setup(param1);
+         CaddyModel.instance.setup(type);
          _bg = ComponentFactory.Instance.creatComponentByStylename("asset.caddyFrame.bg");
          addToContent(_bg);
          _bag = ComponentFactory.Instance.creatCustomObject("caddy.CaddyBagView");
@@ -121,7 +121,7 @@ package ddt.view.caddyII
          ChatManager.Instance.addEventListener("buybead",__buyBeads);
       }
       
-      private function __updateInfo(param1:PkgEvent) : void
+      private function __updateInfo(e:PkgEvent) : void
       {
          if(_reader is BadLuckView)
          {
@@ -133,39 +133,39 @@ package ddt.view.caddyII
          }
       }
       
-      private function __lotteryOpen(param1:PkgEvent) : void
+      private function __lotteryOpen(event:PkgEvent) : void
       {
          if(_itemInfo && (_itemInfo.TemplateID == 112047 || _itemInfo.TemplateID == 112222))
          {
-            _caddyAwardCount = param1.pkg.readInt();
+            _caddyAwardCount = event.pkg.readInt();
          }
       }
       
-      private function __buyBeads(param1:Event) : void
+      private function __buyBeads(event:Event) : void
       {
-         var _loc2_:int = 0;
+         var newBeadID:int = 0;
          if(EquipType.isBeadFromSmeltByID(CaddyModel.instance.beadType))
          {
             ObjectUtils.disposeObject(this);
-            _loc2_ = getOpenBeadType(CaddyModel.instance.beadType);
-            if(_loc2_ >= 0)
+            newBeadID = getOpenBeadType(CaddyModel.instance.beadType);
+            if(newBeadID >= 0)
             {
-               RouletteManager.instance.useBead(_loc2_);
+               RouletteManager.instance.useBead(newBeadID);
             }
          }
       }
       
-      private function getOpenBeadType(param1:int) : int
+      private function getOpenBeadType(id:int) : int
       {
-         if(EquipType.isAttackBeadFromSmeltByID(param1))
+         if(EquipType.isAttackBeadFromSmeltByID(id))
          {
             return 0;
          }
-         if(EquipType.isDefenceBeadFromSmeltByID(param1))
+         if(EquipType.isDefenceBeadFromSmeltByID(id))
          {
             return 1;
          }
-         if(EquipType.isAttributeBeadFromSmeltByID(param1))
+         if(EquipType.isAttributeBeadFromSmeltByID(id))
          {
             return 2;
          }
@@ -186,7 +186,7 @@ package ddt.view.caddyII
          ChatManager.Instance.removeEventListener("buybead",__buyBeads);
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          if(!_view.openBtnEnable)
@@ -194,7 +194,7 @@ package ddt.view.caddyII
             MessageTipManager.getInstance().show(CaddyModel.instance.dontClose);
             return;
          }
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             if(_bag.checkCell())
             {
@@ -207,20 +207,20 @@ package ddt.view.caddyII
          }
       }
       
-      private function _responseII(param1:FrameEvent) : void
+      private function _responseII(e:FrameEvent) : void
       {
-         var _loc2_:* = null;
+         var alert:* = null;
          SoundManager.instance.play("008");
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",_responseII);
-         switch(int(param1.responseCode))
+         (e.currentTarget as BaseAlerFrame).removeEventListener("response",_responseII);
+         switch(int(e.responseCode))
          {
             case 0:
             case 1:
-               ObjectUtils.disposeObject(param1.currentTarget);
+               ObjectUtils.disposeObject(e.currentTarget);
                break;
             case 2:
             case 3:
-               ObjectUtils.disposeObject(param1.currentTarget);
+               ObjectUtils.disposeObject(e.currentTarget);
                ObjectUtils.disposeObject(this);
                if(_type == 2)
                {
@@ -229,17 +229,17 @@ package ddt.view.caddyII
                }
                break;
             case 4:
-               _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.caddy.sellAllNode") + _bag.getSellAllPriceString(),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
-               _loc2_.moveEnable = false;
-               _loc2_.addEventListener("response",_responseI);
-               ObjectUtils.disposeObject(param1.currentTarget);
+               alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.caddy.sellAllNode") + _bag.getSellAllPriceString(),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
+               alert.moveEnable = false;
+               alert.addEventListener("response",_responseI);
+               ObjectUtils.disposeObject(e.currentTarget);
          }
       }
       
-      private function _responseI(param1:FrameEvent) : void
+      private function _responseI(e:FrameEvent) : void
       {
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",_responseI);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         (e.currentTarget as BaseAlerFrame).removeEventListener("response",_responseI);
+         if(e.responseCode == 2 || e.responseCode == 3)
          {
             SocketManager.Instance.out.sendSellAll();
          }
@@ -247,21 +247,21 @@ package ddt.view.caddyII
          {
             _showCloseAlert();
          }
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(e.currentTarget);
       }
       
       private function _showCloseAlert() : void
       {
-         var _loc1_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.caddy.closeNode"),LanguageMgr.GetTranslation("tank.view.caddy.putInBag"),LanguageMgr.GetTranslation("tank.view.caddy.sellAll"),false,false,false,2);
-         _loc1_.addEventListener("response",_responseII);
+         var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.caddy.closeNode"),LanguageMgr.GetTranslation("tank.view.caddy.putInBag"),LanguageMgr.GetTranslation("tank.view.caddy.sellAll"),false,false,false,2);
+         alert.addEventListener("response",_responseII);
       }
       
-      private function _questCellPoint(param1:Event) : void
+      private function _questCellPoint(e:Event) : void
       {
          _bag.findCell();
       }
       
-      private function _turnComplete(param1:Event) : void
+      private function _turnComplete(e:Event) : void
       {
          if(_selectInfo.TemplateID == 11550)
          {
@@ -273,7 +273,7 @@ package ddt.view.caddyII
          }
       }
       
-      private function _moveComplete(param1:Event) : void
+      private function _moveComplete(e:Event) : void
       {
          if(_closed)
          {
@@ -324,9 +324,9 @@ package ddt.view.caddyII
          }
       }
       
-      private function _startTurn(param1:CaddyEvent) : void
+      private function _startTurn(e:CaddyEvent) : void
       {
-         _moveSprite.setInfo(param1.info);
+         _moveSprite.setInfo(e.info);
          _bag.sellBtn.enable = false;
          if(_bag.getAllBtn)
          {
@@ -339,26 +339,26 @@ package ddt.view.caddyII
          closeAble = false;
       }
       
-      public function turnComplete(param1:Event) : void
+      public function turnComplete(e:Event) : void
       {
       }
       
-      private function _startMove(param1:Event) : void
+      private function _startMove(e:Event) : void
       {
          _moveSprite.startMove();
       }
       
-      private function _getCellPoint(param1:CaddyEvent) : void
+      private function _getCellPoint(e:CaddyEvent) : void
       {
-         _moveSprite.setMovePoint(param1.point);
+         _moveSprite.setMovePoint(e.point);
       }
       
-      private function _getGoodsInfo(param1:CaddyEvent) : void
+      private function _getGoodsInfo(e:CaddyEvent) : void
       {
-         _selectInfo = param1.info;
+         _selectInfo = e.info;
          if(!_closed)
          {
-            _view.setSelectGoodsInfo(param1.info);
+            _view.setSelectGoodsInfo(e.info);
          }
       }
       
@@ -382,9 +382,9 @@ package ddt.view.caddyII
          y = y + -50;
       }
       
-      public function set closeAble(param1:Boolean) : void
+      public function set closeAble(value:Boolean) : void
       {
-         _closeAble = param1;
+         _closeAble = value;
       }
       
       public function get closeAble() : Boolean

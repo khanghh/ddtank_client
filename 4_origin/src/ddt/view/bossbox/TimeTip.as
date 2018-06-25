@@ -17,10 +17,10 @@ package ddt.view.bossbox
          super();
       }
       
-      public function setView(param1:Sprite, param2:Sprite) : void
+      public function setView(close:Sprite, text:Sprite) : void
       {
-         _closeBox = param1;
-         _delayText = param2;
+         _closeBox = close;
+         _delayText = text;
          addChild(_closeBox);
       }
       

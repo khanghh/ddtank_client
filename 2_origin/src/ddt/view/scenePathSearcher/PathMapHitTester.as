@@ -10,31 +10,31 @@ package ddt.view.scenePathSearcher
       
       private var mc:Sprite;
       
-      public function PathMapHitTester(param1:Sprite)
+      public function PathMapHitTester(mesh:Sprite)
       {
          super();
-         this.mc = param1;
+         this.mc = mesh;
       }
       
-      public function isHit(param1:Point) : Boolean
+      public function isHit(point:Point) : Boolean
       {
-         var _loc2_:Point = mc.localToGlobal(param1);
-         return this.mc.hitTestPoint(_loc2_.x,_loc2_.y,true);
+         var g:Point = mc.localToGlobal(point);
+         return this.mc.hitTestPoint(g.x,g.y,true);
       }
       
-      public function getNextMoveAblePoint(param1:Point, param2:Number, param3:Number, param4:Number) : Point
+      public function getNextMoveAblePoint(point:Point, angle:Number, step:Number, max:Number) : Point
       {
-         var _loc5_:* = 0;
-         while(isHit(param1))
+         var dist:* = 0;
+         while(isHit(point))
          {
-            param1 = Geometry.nextPoint(param1,param2,param3);
-            _loc5_ = Number(_loc5_ + param3);
-            if(_loc5_ > param4)
+            point = Geometry.nextPoint(point,angle,step);
+            dist = Number(dist + step);
+            if(dist > max)
             {
                return null;
             }
          }
-         return param1;
+         return point;
       }
    }
 }

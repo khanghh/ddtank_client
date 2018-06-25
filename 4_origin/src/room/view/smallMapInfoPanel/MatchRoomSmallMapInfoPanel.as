@@ -45,9 +45,9 @@ package room.view.smallMapInfoPanel
          addChild(_btn);
       }
       
-      override public function set info(param1:RoomInfo) : void
+      override public function set info(value:RoomInfo) : void
       {
-         .super.info = param1;
+         .super.info = value;
          if(_info)
          {
             _info.selfRoomPlayer.addEventListener("isHostChange",__update);
@@ -72,7 +72,7 @@ package room.view.smallMapInfoPanel
          }
       }
       
-      private function __update(param1:RoomPlayerEvent) : void
+      private function __update(evt:RoomPlayerEvent) : void
       {
          if(_info.selfRoomPlayer.isHost)
          {
@@ -94,9 +94,9 @@ package room.view.smallMapInfoPanel
          }
       }
       
-      public function set _actionStatus(param1:Boolean) : void
+      public function set _actionStatus(Boo:Boolean) : void
       {
-         if(param1)
+         if(Boo)
          {
             buttonMode = true;
             addEventListener("click",__onClick);
@@ -114,15 +114,15 @@ package room.view.smallMapInfoPanel
          }
       }
       
-      protected function __onClick(param1:MouseEvent) : void
+      protected function __onClick(evt:MouseEvent) : void
       {
          if(_info.gameMode == 58)
          {
             return;
          }
          SoundManager.instance.play("008");
-         var _loc2_:MatchRoomSetView = new MatchRoomSetView();
-         _loc2_.showMatchRoomSetView();
+         var mapChooser:MatchRoomSetView = new MatchRoomSetView();
+         mapChooser.showMatchRoomSetView();
       }
       
       override public function dispose() : void

@@ -16,12 +16,12 @@ package ddt.view.sceneCharacter
       
       private var _callBack:Function;
       
-      public function SceneCharacterSynthesis(param1:SceneCharacterSet, param2:Function)
+      public function SceneCharacterSynthesis(sceneCharacterSet:SceneCharacterSet, callBack:Function)
       {
          _frameBitmap = new Vector.<Bitmap>();
          super();
-         _sceneCharacterSet = param1;
-         _callBack = param2;
+         _sceneCharacterSet = sceneCharacterSet;
+         _callBack = callBack;
          initialize();
       }
       
@@ -32,128 +32,122 @@ package ddt.view.sceneCharacter
       
       private function characterSynthesis() : void
       {
-         var _loc1_:* = null;
-         var _loc12_:int = 0;
-         var _loc4_:* = null;
-         var _loc11_:int = 0;
-         var _loc10_:int = 0;
-         var _loc7_:int = 0;
-         var _loc9_:* = null;
-         var _loc5_:Matrix = new Matrix();
-         var _loc3_:Point = new Point(0,0);
-         var _loc2_:Rectangle = new Rectangle();
+         var bmp:* = null;
+         var i:int = 0;
+         var bmp2:* = null;
+         var row:int = 0;
+         var cellCount:int = 0;
+         var j:int = 0;
+         var sourcePoint:* = null;
+         var matrix:Matrix = new Matrix();
+         var point:Point = new Point(0,0);
+         var rectangle:Rectangle = new Rectangle();
          var _loc15_:int = 0;
          var _loc14_:* = _sceneCharacterSet.dataSet;
-         for each(var _loc6_ in _sceneCharacterSet.dataSet)
+         for each(var sceneCharacterItem in _sceneCharacterSet.dataSet)
          {
-            if(_loc6_.isRepeat)
+            if(sceneCharacterItem.isRepeat)
             {
-               _loc1_ = new BitmapData(_loc6_.source.width * _loc6_.repeatNumber,_loc6_.source.height,true,0);
-               _loc12_ = 0;
-               while(_loc12_ < _loc6_.repeatNumber)
+               bmp = new BitmapData(sceneCharacterItem.source.width * sceneCharacterItem.repeatNumber,sceneCharacterItem.source.height,true,0);
+               for(i = 0; i < sceneCharacterItem.repeatNumber; )
                {
-                  _loc5_.tx = _loc6_.source.width * _loc12_;
-                  _loc1_.draw(_loc6_.source,_loc5_);
-                  _loc12_++;
+                  matrix.tx = sceneCharacterItem.source.width * i;
+                  bmp.draw(sceneCharacterItem.source,matrix);
+                  i++;
                }
-               _loc6_.source.dispose();
-               _loc6_.source = null;
-               _loc6_.source = new BitmapData(_loc1_.width,_loc1_.height,true,0);
-               _loc6_.source.draw(_loc1_);
-               _loc1_.dispose();
-               _loc1_ = null;
+               sceneCharacterItem.source.dispose();
+               sceneCharacterItem.source = null;
+               sceneCharacterItem.source = new BitmapData(bmp.width,bmp.height,true,0);
+               sceneCharacterItem.source.draw(bmp);
+               bmp.dispose();
+               bmp = null;
             }
-            if(_loc6_.points && _loc6_.points.length > 0)
+            if(sceneCharacterItem.points && sceneCharacterItem.points.length > 0)
             {
-               _loc4_ = new BitmapData(_loc6_.source.width,_loc6_.source.height,true,0);
-               _loc4_.draw(_loc6_.source);
-               _loc6_.source.dispose();
-               _loc6_.source = null;
-               _loc6_.source = new BitmapData(_loc4_.width,_loc4_.height,true,0);
-               _loc2_.width = _loc6_.cellWitdh;
-               _loc2_.height = _loc6_.cellHeight;
-               _loc11_ = 0;
-               while(_loc11_ < _loc6_.rowNumber)
+               bmp2 = new BitmapData(sceneCharacterItem.source.width,sceneCharacterItem.source.height,true,0);
+               bmp2.draw(sceneCharacterItem.source);
+               sceneCharacterItem.source.dispose();
+               sceneCharacterItem.source = null;
+               sceneCharacterItem.source = new BitmapData(bmp2.width,bmp2.height,true,0);
+               rectangle.width = sceneCharacterItem.cellWitdh;
+               rectangle.height = sceneCharacterItem.cellHeight;
+               for(row = 0; row < sceneCharacterItem.rowNumber; )
                {
-                  _loc10_ = !!_loc6_.isRepeat?_loc6_.repeatNumber:int(_loc6_.rowCellNumber);
-                  _loc7_ = 0;
-                  while(_loc7_ < _loc10_)
+                  cellCount = !!sceneCharacterItem.isRepeat?sceneCharacterItem.repeatNumber:int(sceneCharacterItem.rowCellNumber);
+                  for(j = 0; j < cellCount; )
                   {
-                     _loc9_ = _loc6_.points[_loc11_ * _loc10_ + _loc7_];
-                     if(_loc9_)
+                     sourcePoint = sceneCharacterItem.points[row * cellCount + j];
+                     if(sourcePoint)
                      {
-                        _loc3_.x = _loc6_.cellWitdh * _loc7_ + _loc9_.x;
-                        _loc3_.y = _loc6_.cellHeight * _loc11_ + _loc9_.y;
-                        _loc2_.x = _loc6_.cellWitdh * _loc7_;
-                        _loc2_.y = _loc6_.cellHeight * _loc11_;
-                        _loc6_.source.copyPixels(_loc4_,_loc2_,_loc3_);
+                        point.x = sceneCharacterItem.cellWitdh * j + sourcePoint.x;
+                        point.y = sceneCharacterItem.cellHeight * row + sourcePoint.y;
+                        rectangle.x = sceneCharacterItem.cellWitdh * j;
+                        rectangle.y = sceneCharacterItem.cellHeight * row;
+                        sceneCharacterItem.source.copyPixels(bmp2,rectangle,point);
                      }
                      else
                      {
-                        var _loc13_:* = _loc6_.cellWitdh * _loc7_;
-                        _loc2_.x = _loc13_;
-                        _loc3_.x = _loc13_;
-                        _loc13_ = _loc6_.cellHeight * _loc11_;
-                        _loc2_.y = _loc13_;
-                        _loc3_.y = _loc13_;
-                        _loc6_.source.copyPixels(_loc4_,_loc2_,_loc3_);
+                        var _loc13_:* = sceneCharacterItem.cellWitdh * j;
+                        rectangle.x = _loc13_;
+                        point.x = _loc13_;
+                        _loc13_ = sceneCharacterItem.cellHeight * row;
+                        rectangle.y = _loc13_;
+                        point.y = _loc13_;
+                        sceneCharacterItem.source.copyPixels(bmp2,rectangle,point);
                      }
-                     _loc7_++;
+                     j++;
                   }
-                  _loc11_++;
+                  row++;
                }
-               _loc4_.dispose();
-               _loc4_ = null;
+               bmp2.dispose();
+               bmp2 = null;
             }
          }
          var _loc17_:int = 0;
          var _loc16_:* = _sceneCharacterSet.dataSet;
-         for each(var _loc8_ in _sceneCharacterSet.dataSet)
+         for each(var sceneCharacterItemGroup in _sceneCharacterSet.dataSet)
          {
-            characterGroupDraw(_loc8_);
+            characterGroupDraw(sceneCharacterItemGroup);
          }
          characterDraw();
       }
       
-      private function characterGroupDraw(param1:SceneCharacterItem) : void
+      private function characterGroupDraw(sceneCharacterItem:SceneCharacterItem) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _sceneCharacterSet.dataSet.length)
+         var i:int = 0;
+         for(i = 0; i < _sceneCharacterSet.dataSet.length; )
          {
-            if(param1.groupType == _sceneCharacterSet.dataSet[_loc2_].groupType && _sceneCharacterSet.dataSet[_loc2_].type != param1.type)
+            if(sceneCharacterItem.groupType == _sceneCharacterSet.dataSet[i].groupType && _sceneCharacterSet.dataSet[i].type != sceneCharacterItem.type)
             {
-               param1.source.draw(_sceneCharacterSet.dataSet[_loc2_].source);
-               param1.rowNumber = _sceneCharacterSet.dataSet[_loc2_].rowNumber > param1.rowNumber?_sceneCharacterSet.dataSet[_loc2_].rowNumber:int(param1.rowNumber);
-               param1.rowCellNumber = _sceneCharacterSet.dataSet[_loc2_].rowCellNumber > param1.rowCellNumber?_sceneCharacterSet.dataSet[_loc2_].rowCellNumber:int(param1.rowCellNumber);
-               _sceneCharacterSet.dataSet.splice(_sceneCharacterSet.dataSet.indexOf(_sceneCharacterSet.dataSet[_loc2_]),1);
-               _loc2_--;
+               sceneCharacterItem.source.draw(_sceneCharacterSet.dataSet[i].source);
+               sceneCharacterItem.rowNumber = _sceneCharacterSet.dataSet[i].rowNumber > sceneCharacterItem.rowNumber?_sceneCharacterSet.dataSet[i].rowNumber:int(sceneCharacterItem.rowNumber);
+               sceneCharacterItem.rowCellNumber = _sceneCharacterSet.dataSet[i].rowCellNumber > sceneCharacterItem.rowCellNumber?_sceneCharacterSet.dataSet[i].rowCellNumber:int(sceneCharacterItem.rowCellNumber);
+               _sceneCharacterSet.dataSet.splice(_sceneCharacterSet.dataSet.indexOf(_sceneCharacterSet.dataSet[i]),1);
+               i--;
             }
-            _loc2_++;
+            i++;
          }
       }
       
       private function characterDraw() : void
       {
-         var _loc1_:* = null;
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
+         var bmp:* = null;
+         var row:int = 0;
+         var i:int = 0;
          var _loc6_:int = 0;
          var _loc5_:* = _sceneCharacterSet.dataSet;
-         for each(var _loc2_ in _sceneCharacterSet.dataSet)
+         for each(var sceneCharacterItem in _sceneCharacterSet.dataSet)
          {
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_.rowNumber)
+            for(row = 0; row < sceneCharacterItem.rowNumber; )
             {
-               _loc4_ = 0;
-               while(_loc4_ < _loc2_.rowCellNumber)
+               for(i = 0; i < sceneCharacterItem.rowCellNumber; )
                {
-                  _loc1_ = new BitmapData(_loc2_.cellWitdh,_loc2_.cellHeight,true,0);
-                  _loc1_.copyPixels(_loc2_.source,new Rectangle(_loc4_ * _loc2_.cellWitdh,_loc2_.cellHeight * _loc3_,_loc2_.cellWitdh,_loc2_.cellHeight),new Point(0,0));
-                  _frameBitmap.push(new Bitmap(_loc1_));
-                  _loc4_++;
+                  bmp = new BitmapData(sceneCharacterItem.cellWitdh,sceneCharacterItem.cellHeight,true,0);
+                  bmp.copyPixels(sceneCharacterItem.source,new Rectangle(i * sceneCharacterItem.cellWitdh,sceneCharacterItem.cellHeight * row,sceneCharacterItem.cellWitdh,sceneCharacterItem.cellHeight),new Point(0,0));
+                  _frameBitmap.push(new Bitmap(bmp));
+                  i++;
                }
-               _loc3_++;
+               row++;
             }
          }
          if(_callBack != null)

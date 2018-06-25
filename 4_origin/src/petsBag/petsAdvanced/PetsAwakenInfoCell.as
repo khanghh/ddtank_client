@@ -35,7 +35,7 @@ package petsBag.petsAdvanced
          addChild(_awakenSucessMovie);
       }
       
-      public function set iteminfo(param1:InventoryItemInfo) : void
+      public function set iteminfo(info:InventoryItemInfo) : void
       {
          if(_equipCell == null)
          {
@@ -46,8 +46,8 @@ package petsBag.petsAdvanced
             _equipCell.y = 14;
             addChild(_equipCell);
          }
-         _equipCell.info = param1;
-         _awakenSucessMovie.visible = param1 != null;
+         _equipCell.info = info;
+         _awakenSucessMovie.visible = info != null;
       }
       
       public function get cellInfo() : InventoryItemInfo

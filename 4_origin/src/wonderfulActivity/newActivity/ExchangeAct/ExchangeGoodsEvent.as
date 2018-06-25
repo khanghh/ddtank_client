@@ -10,10 +10,10 @@ package wonderfulActivity.newActivity.ExchangeAct
       
       private var _enable:Boolean;
       
-      public function ExchangeGoodsEvent(param1:String, param2:Boolean = true, param3:Boolean = false, param4:Boolean = false)
+      public function ExchangeGoodsEvent(type:String, enable:Boolean = true, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         super(param1,param3,param4);
-         _enable = param2;
+         super(type,bubbles,cancelable);
+         _enable = enable;
       }
       
       public function get enable() : Boolean

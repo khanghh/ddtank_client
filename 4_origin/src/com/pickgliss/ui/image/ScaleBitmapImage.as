@@ -16,13 +16,13 @@ package com.pickgliss.ui.image
          super();
       }
       
-      public function set resource(param1:BitmapData) : void
+      public function set resource(source:BitmapData) : void
       {
-         if(param1 == _resource)
+         if(source == _resource)
          {
             return;
          }
-         _resource = param1;
+         _resource = source;
          onPropertiesChanged("resourceLink");
       }
       
@@ -34,8 +34,8 @@ package com.pickgliss.ui.image
       override protected function resetDisplay() : void
       {
          ObjectUtils.disposeObject(_display);
-         var _loc1_:BitmapData = _resource == null?ClassUtils.CreatInstance(_resourceLink,[_width,_height]):_resource;
-         _display = new ScaleBitmap(_loc1_);
+         var bitmapData:BitmapData = _resource == null?ClassUtils.CreatInstance(_resourceLink,[_width,_height]):_resource;
+         _display = new ScaleBitmap(bitmapData);
       }
    }
 }

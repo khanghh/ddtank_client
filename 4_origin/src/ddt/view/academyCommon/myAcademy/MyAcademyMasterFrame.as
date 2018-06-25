@@ -178,74 +178,71 @@ package ddt.view.academyCommon.myAcademy
          addToContent(_nameTitle);
          initItemContent();
          _items = new Vector.<MyAcademyApprenticeItem>();
-         var _loc2_:MyAcademyApprenticeItem = new MyAcademyApprenticeItem();
-         PositionUtils.setPos(_loc2_,"academyCommon.myAcademy.MyAcademyMasterFrame.Apprentice");
-         addToContent(_loc2_);
-         _items.push(_loc2_);
-         var _loc3_:MyAcademyApprenticeItem = new MyAcademyApprenticeItem();
-         PositionUtils.setPos(_loc3_,"academyCommon.myAcademy.MyAcademyMasterFrame.ApprenticeII");
-         addToContent(_loc3_);
-         _items.push(_loc3_);
-         var _loc1_:MyAcademyApprenticeItem = new MyAcademyApprenticeItem();
-         PositionUtils.setPos(_loc1_,"academyCommon.myAcademy.MyAcademyMasterFrame.ApprenticeIII");
-         addToContent(_loc1_);
-         _items.push(_loc1_);
+         var apprentice:MyAcademyApprenticeItem = new MyAcademyApprenticeItem();
+         PositionUtils.setPos(apprentice,"academyCommon.myAcademy.MyAcademyMasterFrame.Apprentice");
+         addToContent(apprentice);
+         _items.push(apprentice);
+         var apprenticeII:MyAcademyApprenticeItem = new MyAcademyApprenticeItem();
+         PositionUtils.setPos(apprenticeII,"academyCommon.myAcademy.MyAcademyMasterFrame.ApprenticeII");
+         addToContent(apprenticeII);
+         _items.push(apprenticeII);
+         var apprenticeIII:MyAcademyApprenticeItem = new MyAcademyApprenticeItem();
+         PositionUtils.setPos(apprenticeIII,"academyCommon.myAcademy.MyAcademyMasterFrame.ApprenticeIII");
+         addToContent(apprenticeIII);
+         _items.push(apprenticeIII);
          updateItem();
       }
       
       protected function initEvent() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          addEventListener("response",__onResponse);
          _titleBtn.addEventListener("click",__titleBtnClick);
-         _loc1_ = 0;
-         while(_loc1_ < _items.length)
+         for(i = 0; i < _items.length; )
          {
-            _items[_loc1_].addEventListener("click",__itemClick);
-            _loc1_++;
+            _items[i].addEventListener("click",__itemClick);
+            i++;
          }
          AcademyManager.Instance.myAcademyPlayers.addEventListener("remove",__removeItem);
          AcademyManager.Instance.myAcademyPlayers.addEventListener("clear",__clearItem);
       }
       
-      protected function __titleBtnClick(param1:MouseEvent) : void
+      protected function __titleBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          AcademyFrameManager.Instance.showAcademyPreviewFrame();
       }
       
-      protected function __clearItem(param1:DictionaryEvent) : void
+      protected function __clearItem(event:DictionaryEvent) : void
       {
          updateItem();
       }
       
-      protected function __removeItem(param1:DictionaryEvent) : void
+      protected function __removeItem(event:DictionaryEvent) : void
       {
          updateItem();
       }
       
       protected function updateItem() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _myApprentice.list.length)
+         var i:int = 0;
+         var j:int = 0;
+         for(i = 0; i < _myApprentice.list.length; )
          {
-            _items[_loc2_].info = _myApprentice.list[_loc2_];
-            _loc2_++;
+            _items[i].info = _myApprentice.list[i];
+            i++;
          }
-         _loc1_ = _myApprentice.list.length;
-         while(_loc1_ < 3)
+         for(j = _myApprentice.list.length; j < 3; )
          {
-            _items[_loc1_].visible = false;
-            _loc1_++;
+            _items[j].visible = false;
+            j++;
          }
       }
       
-      protected function __onResponse(param1:FrameEvent) : void
+      protected function __onResponse(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             default:
             default:
@@ -259,32 +256,31 @@ package ddt.view.academyCommon.myAcademy
       
       protected function clearItem() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _items.length)
+         var i:int = 0;
+         for(i = 0; i < _items.length; )
          {
-            if(_items[_loc1_])
+            if(_items[i])
             {
-               _items[_loc1_].removeEventListener("click",__itemClick);
-               _items[_loc1_].dispose();
-               _items[_loc1_] = null;
+               _items[i].removeEventListener("click",__itemClick);
+               _items[i].dispose();
+               _items[i] = null;
             }
-            _loc1_++;
+            i++;
          }
       }
       
-      protected function __itemClick(param1:MouseEvent) : void
+      protected function __itemClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(!_currentItem)
          {
-            _currentItem = param1.currentTarget as MyAcademyMasterItem;
+            _currentItem = event.currentTarget as MyAcademyMasterItem;
          }
-         if(_currentItem != param1.currentTarget as MyAcademyMasterItem)
+         if(_currentItem != event.currentTarget as MyAcademyMasterItem)
          {
             _currentItem.isSelect = false;
          }
-         _currentItem = param1.currentTarget as MyAcademyMasterItem;
+         _currentItem = event.currentTarget as MyAcademyMasterItem;
          _currentItem.isSelect = true;
       }
       

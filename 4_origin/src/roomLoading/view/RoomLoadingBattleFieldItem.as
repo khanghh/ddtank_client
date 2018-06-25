@@ -36,14 +36,14 @@ package roomLoading.view
       
       private var _fieldName:Bitmap;
       
-      public function RoomLoadingBattleFieldItem(param1:int = -1)
+      public function RoomLoadingBattleFieldItem(mapId:int = -1)
       {
          super();
          if(RoomManager.Instance.current.mapId > 0)
          {
-            param1 = RoomManager.Instance.current.mapId;
+            mapId = RoomManager.Instance.current.mapId;
          }
-         _mapId = param1;
+         _mapId = mapId;
          try
          {
             init();
@@ -57,9 +57,9 @@ package roomLoading.view
          }
       }
       
-      private function __onScaleBitmapLoaded(param1:UIModuleEvent) : void
+      private function __onScaleBitmapLoaded(pEvent:UIModuleEvent) : void
       {
-         if(param1.module == "ddtcorescalebitmap")
+         if(pEvent.module == "ddtcorescalebitmap")
          {
             UIModuleLoader.Instance.removeEventListener("uiModuleComplete",__onScaleBitmapLoaded);
             init();
@@ -79,16 +79,16 @@ package roomLoading.view
          LoadResourceManager.Instance.startLoad(_fieldNameLoader);
       }
       
-      private function __onLoadComplete(param1:LoaderEvent) : void
+      private function __onLoadComplete(evt:LoaderEvent) : void
       {
-         if(param1.currentTarget.isSuccess)
+         if(evt.currentTarget.isSuccess)
          {
-            if(param1.currentTarget == _mapLoader)
+            if(evt.currentTarget == _mapLoader)
             {
                _map = PositionUtils.setPos(Bitmap(_mapLoader.content),"roomLoading.BattleFieldItemMapPos");
                _map = Bitmap(_mapLoader.content);
             }
-            else if(param1.currentTarget == _fieldNameLoader)
+            else if(evt.currentTarget == _fieldNameLoader)
             {
                _fieldName = PositionUtils.setPos(Bitmap(_fieldNameLoader.content),"roomLoading.BattleFieldItemNamePos");
                _fieldName = Bitmap(_fieldNameLoader.content);
@@ -105,73 +105,73 @@ package roomLoading.view
          }
       }
       
-      private function solveMapPath(param1:int) : String
+      private function solveMapPath(type:int) : String
       {
-         var _loc3_:String = "samll_map";
+         var imgName:String = "samll_map";
          if(RoomManager.Instance.current.dungeonType == 4)
          {
-            _loc3_ = _loc3_ + "_e";
+            imgName = imgName + "_e";
          }
-         if(param1 == 2)
+         if(type == 2)
          {
-            _loc3_ = "icon";
+            imgName = "icon";
          }
-         var _loc2_:String = PathManager.SITE_MAIN + "image/map/";
+         var result:String = PathManager.SITE_MAIN + "image/map/";
          if(GameControl.Instance.Current && GameControl.Instance.Current.gameMode == 8)
          {
-            _loc2_ = _loc2_ + ("1133/" + _loc3_ + ".png");
-            return _loc2_;
+            result = result + ("1133/" + imgName + ".png");
+            return result;
          }
-         if(RoomManager.Instance.current.type == 15 && param1 != 2)
+         if(RoomManager.Instance.current.type == 15 && type != 2)
          {
             if(!(int(RoomManager.Instance.current.mapId) - 500))
             {
-               _loc2_ = _loc2_ + "70021/samll_map.png";
+               result = result + "70021/samll_map.png";
             }
             else
             {
-               _loc2_ = _loc2_ + "214/samll_map.png";
+               result = result + "214/samll_map.png";
             }
-            return _loc2_;
+            return result;
          }
-         if(RoomManager.Instance.current.type == 20 && param1 != 2 && GameControl.Instance.Current.gameMode == 24)
+         if(RoomManager.Instance.current.type == 20 && type != 2 && GameControl.Instance.Current.gameMode == 24)
          {
-            _loc2_ = _loc2_ + "216/samll_map.jpg";
-            return _loc2_;
+            result = result + "216/samll_map.jpg";
+            return result;
          }
-         if(RoomManager.Instance.current.type == 49 && param1 != 2)
+         if(RoomManager.Instance.current.type == 49 && type != 2)
          {
-            _loc2_ = _loc2_ + "1495/samll_map.png";
-            return _loc2_;
+            result = result + "1495/samll_map.png";
+            return result;
          }
-         if(RoomManager.Instance.current.type == 155 && param1 != 2)
+         if(RoomManager.Instance.current.type == 155 && type != 2)
          {
-            _loc2_ = _loc2_ + "50000/samll_map.png";
-            return _loc2_;
+            result = result + "50000/samll_map.png";
+            return result;
          }
-         if(RoomManager.Instance.current.type == 31 && param1 != 2)
+         if(RoomManager.Instance.current.type == 31 && type != 2)
          {
             if(EscortManager.instance.isStart)
             {
-               _loc2_ = _loc2_ + "1350/samll_map.png";
+               result = result + "1350/samll_map.png";
             }
             else if(DrgnBoatManager.instance.isStart)
             {
-               _loc2_ = _loc2_ + "71002/samll_map.png";
+               result = result + "71002/samll_map.png";
             }
             else
             {
-               _loc2_ = _loc2_ + "217/samll_map.png";
+               result = result + "217/samll_map.png";
             }
-            return _loc2_;
+            return result;
          }
          if(RoomManager.Instance.current.type == 52)
          {
-            _loc2_ = _loc2_ + ("70003/" + _loc3_ + ".png");
-            return _loc2_;
+            result = result + ("70003/" + imgName + ".png");
+            return result;
          }
-         _loc2_ = _loc2_ + (_mapId.toString() + "/" + _loc3_ + ".png");
-         return _loc2_;
+         result = result + (_mapId.toString() + "/" + imgName + ".png");
+         return result;
       }
       
       public function dispose() : void

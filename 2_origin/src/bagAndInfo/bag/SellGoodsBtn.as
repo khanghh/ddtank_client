@@ -44,56 +44,56 @@ package bagAndInfo.bag
          super.init();
       }
       
-      public function dragStart(param1:Number, param2:Number) : void
+      public function dragStart(stageX:Number, stageY:Number) : void
       {
          isActive = true;
-         var _loc3_:Bitmap = ComponentFactory.Instance.creatBitmap("bagAndInfo.bag.sellIconAsset");
-         DragManager.startDrag(this,this,_loc3_,param1,param2,"move",false);
+         var dragAsset:Bitmap = ComponentFactory.Instance.creatBitmap("bagAndInfo.bag.sellIconAsset");
+         DragManager.startDrag(this,this,dragAsset,stageX,stageY,"move",false);
       }
       
-      public function dragStop(param1:DragEffect) : void
+      public function dragStop(effect:DragEffect) : void
       {
-         var _loc2_:* = null;
+         var cell:* = null;
          isActive = false;
-         if(PlayerManager.Instance.Self.bagLocked && param1.target is ICell)
+         if(PlayerManager.Instance.Self.bagLocked && effect.target is ICell)
          {
             BaglockedManager.Instance.show();
             isActive = true;
-            if(param1.target is BagCell)
+            if(effect.target is BagCell)
             {
-               (param1.target as BagCell).locked = false;
-               (param1.target as BagCell).allowDrag = true;
+               (effect.target as BagCell).locked = false;
+               (effect.target as BagCell).allowDrag = true;
                dispatchEvent(new Event("stopsell"));
                isActive = false;
             }
             return;
          }
-         if(param1.action == "move" && param1.target is ICell)
+         if(effect.action == "move" && effect.target is ICell)
          {
-            _loc2_ = param1.target as BagCell;
-            if(_loc2_ && _loc2_.info)
+            cell = effect.target as BagCell;
+            if(cell && cell.info)
             {
-               if(EquipType.isValuableEquip(_loc2_.info))
+               if(EquipType.isValuableEquip(cell.info))
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.bagII.SellGoodsBtn.CantSellEquip1"));
-                  _loc2_.locked = false;
+                  cell.locked = false;
                   dispatchEvent(new Event("stopsell"));
                }
-               else if(EquipType.isPetSpeciallFood(_loc2_.info))
+               else if(EquipType.isPetSpeciallFood(cell.info))
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.bagAndInfo.sell.CanNotSell"));
-                  _loc2_.locked = false;
+                  cell.locked = false;
                   dispatchEvent(new Event("stopsell"));
                }
-               else if(_loc2_.info.CategoryID == 34)
+               else if(cell.info.CategoryID == 34)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.bagAndInfo.sell.CanNotSell"));
-                  _loc2_.locked = false;
+                  cell.locked = false;
                   dispatchEvent(new Event("stopsell"));
                }
                else
                {
-                  _dragTarget = _loc2_;
+                  _dragTarget = cell;
                   showSellFrame();
                }
             }
@@ -131,7 +131,7 @@ package bagAndInfo.bag
          return this;
       }
       
-      private function confirmBack(param1:Event) : void
+      private function confirmBack(event:Event) : void
       {
          if(stage)
          {
@@ -142,12 +142,12 @@ package bagAndInfo.bag
       
       private function setUpLintingFilter() : void
       {
-         var _loc1_:Array = [];
-         _loc1_ = _loc1_.concat([1,0,0,0,25]);
-         _loc1_ = _loc1_.concat([0,1,0,0,25]);
-         _loc1_ = _loc1_.concat([0,0,1,0,25]);
-         _loc1_ = _loc1_.concat([0,0,0,1,0]);
-         lightingFilter = new ColorMatrixFilter(_loc1_);
+         var matrix:Array = [];
+         matrix = matrix.concat([1,0,0,0,25]);
+         matrix = matrix.concat([0,1,0,0,25]);
+         matrix = matrix.concat([0,0,1,0,25]);
+         matrix = matrix.concat([0,0,0,1,0]);
+         lightingFilter = new ColorMatrixFilter(matrix);
       }
       
       override public function dispose() : void
@@ -172,7 +172,7 @@ package bagAndInfo.bag
          sellFrame = null;
       }
       
-      private function cancelBack(param1:Event) : void
+      private function cancelBack(event:Event) : void
       {
          if(_dragTarget)
          {

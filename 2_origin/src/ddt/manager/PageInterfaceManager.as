@@ -44,11 +44,11 @@ package ddt.manager
          }
       }
       
-      private static function call(param1:String, ... rest) : void
+      private static function call(functionName:String, ... arg) : void
       {
          if(ExternalInterface.available && !DesktopManager.Instance.isDesktop)
          {
-            ExternalInterface.call(param1,rest);
+            ExternalInterface.call(functionName,arg);
          }
       }
    }

@@ -16,9 +16,9 @@ package com.demonsters.debugger
          connector = new MonsterDebuggerConnectionDefault();
       }
       
-      static function set address(param1:String) : void
+      static function set address(value:String) : void
       {
-         connector.address = param1;
+         connector.address = value;
       }
       
       static function get connected() : Boolean
@@ -31,9 +31,9 @@ package com.demonsters.debugger
          connector.processQueue();
       }
       
-      static function send(param1:String, param2:Object, param3:Boolean = false) : void
+      static function send(id:String, data:Object, direct:Boolean = false) : void
       {
-         connector.send(param1,param2,param3);
+         connector.send(id,data,direct);
       }
       
       static function connect() : void

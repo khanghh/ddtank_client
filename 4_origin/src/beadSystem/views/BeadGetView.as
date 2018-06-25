@@ -144,7 +144,7 @@ package beadSystem.views
          addChild(_moneyTxt);
       }
       
-      private function selectedHander(param1:MouseEvent) : void
+      private function selectedHander(e:MouseEvent) : void
       {
          if(_selectedBandBtn.selected)
          {
@@ -156,7 +156,7 @@ package beadSystem.views
          }
       }
       
-      private function selectedBandHander(param1:MouseEvent) : void
+      private function selectedBandHander(e:MouseEvent) : void
       {
          if(_selectedBtn.selected)
          {
@@ -225,12 +225,12 @@ package beadSystem.views
          KingBlessManager.instance.addEventListener("update_main_event",refreshFreeTipTxt);
       }
       
-      private function refreshFreeTipTxt(param1:Event) : void
+      private function refreshFreeTipTxt(event:Event) : void
       {
-         var _loc2_:int = KingBlessManager.instance.getOneBuffData(3);
-         if(_loc2_ > 0)
+         var freeCount:int = KingBlessManager.instance.getOneBuffData(3);
+         if(freeCount > 0)
          {
-            _freeTipTxt.text = LanguageMgr.GetTranslation("ddt.beadSystem.getBeadView.freeGetTipTxt",_loc2_);
+            _freeTipTxt.text = LanguageMgr.GetTranslation("ddt.beadSystem.getBeadView.freeGetTipTxt",freeCount);
             _freeTipTxt.visible = true;
          }
          else
@@ -239,7 +239,7 @@ package beadSystem.views
          }
       }
       
-      private function __onOpenBeadAlertCancelled(param1:Event) : void
+      private function __onOpenBeadAlertCancelled(pEvent:Event) : void
       {
          _isSelectAutoCheck = false;
          _autoOpenBeadCheckBtn.selected = false;
@@ -259,15 +259,15 @@ package beadSystem.views
          KingBlessManager.instance.removeEventListener("update_main_event",refreshFreeTipTxt);
       }
       
-      private function __onViewIndexChanged(param1:BeadEvent) : void
+      private function __onViewIndexChanged(pEvent:BeadEvent) : void
       {
-         if(param1.CellId == 3)
+         if(pEvent.CellId == 3)
          {
             removeTimer();
          }
       }
       
-      private function __onAutoBtnClick(param1:MouseEvent) : void
+      private function __onAutoBtnClick(pEvent:MouseEvent) : void
       {
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -277,7 +277,7 @@ package beadSystem.views
          }
       }
       
-      private function __autoCheck(param1:Event) : void
+      private function __autoCheck(pEvent:Event) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -312,10 +312,10 @@ package beadSystem.views
          }
       }
       
-      private function __onAutoOpenResponse(param1:FrameEvent) : void
+      private function __onAutoOpenResponse(pEvent:FrameEvent) : void
       {
          _alertConfirm.removeEventListener("response",__onAutoOpenResponse);
-         switch(int(param1.responseCode))
+         switch(int(pEvent.responseCode))
          {
             case 0:
             case 1:
@@ -332,12 +332,12 @@ package beadSystem.views
          _alertConfirm = null;
       }
       
-      private function __requestClick(param1:MouseEvent) : void
+      private function __requestClick(pEvent:MouseEvent) : void
       {
          if(!_isSelectAutoCheck)
          {
             SoundManager.instance.play("008");
-            vBtn = param1.currentTarget as SimpleBitmapButton;
+            vBtn = pEvent.currentTarget as SimpleBitmapButton;
             if(PlayerManager.Instance.Self.bagLocked)
             {
                BaglockedManager.Instance.show();
@@ -361,11 +361,11 @@ package beadSystem.views
          SocketManager.Instance.out.sendOpenBead(int(vBtn.tipData),CheckMoneyUtils.instance.isBind);
       }
       
-      private function __poorManResponse(param1:FrameEvent) : void
+      private function __poorManResponse(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          _alertCharge.removeEventListener("response",__poorManResponse);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         if(event.responseCode == 3 || event.responseCode == 2)
          {
             dispatchEvent(new Event("unSelectAutoOpenBtn"));
             LeavePageManager.leaveToFillPath();
@@ -378,9 +378,9 @@ package beadSystem.views
          _alertCharge = null;
       }
       
-      public function buttonState(param1:int) : void
+      public function buttonState(pIndex:int) : void
       {
-         if((param1 & 1) == 1)
+         if((pIndex & 1) == 1)
          {
             _requestBtn2.enable = true;
             _requestBtn2MC.visible = true;
@@ -390,7 +390,7 @@ package beadSystem.views
             _requestBtn2.enable = false;
             _requestBtn2MC.visible = false;
          }
-         if((param1 & 2) > 0)
+         if((pIndex & 2) > 0)
          {
             _requestBtn3.enable = true;
             _requestBtn3MC.visible = true;
@@ -400,7 +400,7 @@ package beadSystem.views
             _requestBtn3.enable = false;
             _requestBtn3MC.visible = false;
          }
-         if((param1 & 4) > 0)
+         if((pIndex & 4) > 0)
          {
             _requestBtn4.enable = true;
             _requestBtn4MC.visible = true;
@@ -436,7 +436,7 @@ package beadSystem.views
          beadSystemManager.Instance.dispatchEvent(new BeadEvent("autoOpenBead",0));
       }
       
-      private function __onAutoOpen(param1:Event) : void
+      private function __onAutoOpen(pEvent:Event) : void
       {
          autoOpenBead();
       }
@@ -472,24 +472,24 @@ package beadSystem.views
       
       private function getMaxRequestBtn() : int
       {
-         var _loc1_:int = 0;
+         var result:int = 0;
          if(_requestBtn4MC.visible)
          {
-            _loc1_ = 3;
+            result = 3;
          }
          else if(_requestBtn3MC.visible)
          {
-            _loc1_ = 2;
+            result = 2;
          }
          else if(_requestBtn2MC.visible)
          {
-            _loc1_ = 1;
+            result = 1;
          }
          else if(_requestBtn1MC.visible)
          {
-            _loc1_ = 0;
+            result = 0;
          }
-         return _loc1_;
+         return result;
       }
       
       public function dispose() : void

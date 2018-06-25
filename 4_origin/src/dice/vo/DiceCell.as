@@ -46,19 +46,19 @@ package dice.vo
       
       private var _Deform:Shape;
       
-      public function DiceCell(param1:DisplayObject, param2:DiceCellInfo, param3:ItemTemplateInfo = null, param4:DisplayObject = null, param5:Boolean = true, param6:Boolean = true)
+      public function DiceCell(bg:DisplayObject, cellInfo:DiceCellInfo, $info:ItemTemplateInfo = null, mask:DisplayObject = null, showLoading:Boolean = true, showTip:Boolean = true)
       {
-         super(param1,param3,param5,param6);
-         _cellInfo = param2;
-         _mask = param4;
+         super(bg,$info,showLoading,showTip);
+         _cellInfo = cellInfo;
+         _mask = mask;
          preInitialize();
          initialize();
       }
       
       private function preInitialize() : void
       {
-         var _loc1_:Class = getDefinitionByName(getQualifiedClassName(_mask)) as Class;
-         _lightByMask = new _loc1_();
+         var ClassRef:Class = getDefinitionByName(getQualifiedClassName(_mask)) as Class;
+         _lightByMask = new ClassRef();
          _lightByMask.x = _mask.x;
          _lightByMask.y = _mask.y;
       }
@@ -68,22 +68,22 @@ package dice.vo
          return _isDestination;
       }
       
-      public function set isDestination(param1:Boolean) : void
+      public function set isDestination(value:Boolean) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         if(_isDestination != param1)
+         var _x:int = 0;
+         var _y:int = 0;
+         if(_isDestination != value)
          {
-            _isDestination = param1;
+            _isDestination = value;
             if(_isDestination)
             {
                _lightByMask.filters = [new GlowFilter(16777215,1,10,10,2,1,false,true)];
                addChild(_lightByMask);
-               _loc2_ = x - (width * 1.2 - width >> 1);
-               _loc3_ = y - (height * 1.2 - height >> 1);
+               _x = x - (width * 1.2 - width >> 1);
+               _y = y - (height * 1.2 - height >> 1);
                TweenLite.to(this,0.5,{
-                  "x":_loc2_,
-                  "y":_loc3_,
+                  "x":_x,
+                  "y":_y,
                   "scaleX":1.2,
                   "scaleY":1.2
                });
@@ -111,9 +111,9 @@ package dice.vo
          return _isBind;
       }
       
-      public function set isBind(param1:Boolean) : void
+      public function set isBind(value:Boolean) : void
       {
-         _isBind = param1;
+         _isBind = value;
       }
       
       public function get validate() : int
@@ -121,9 +121,9 @@ package dice.vo
          return _validate;
       }
       
-      public function set validate(param1:int) : void
+      public function set validate(value:int) : void
       {
-         _validate = param1;
+         _validate = value;
       }
       
       public function get strengthLevel() : int
@@ -131,9 +131,9 @@ package dice.vo
          return _strengthLevel;
       }
       
-      public function set strengthLevel(param1:int) : void
+      public function set strengthLevel(value:int) : void
       {
-         _strengthLevel = param1;
+         _strengthLevel = value;
       }
       
       public function get position() : int
@@ -141,9 +141,9 @@ package dice.vo
          return _position;
       }
       
-      public function set position(param1:int) : void
+      public function set position(value:int) : void
       {
-         _position = param1;
+         _position = value;
       }
       
       public function get count() : int
@@ -151,12 +151,12 @@ package dice.vo
          return _count;
       }
       
-      public function set count(param1:int) : void
+      public function set count(value:int) : void
       {
-         _count = param1;
+         _count = value;
          _txtCount.text = String(_count);
          _txtCount.visible = true;
-         if(param1 == 1)
+         if(value == 1)
          {
             _txtCount.visible = false;
          }
@@ -193,7 +193,7 @@ package dice.vo
          y = _cellInfo.Position.y;
       }
       
-      override public function setContentSize(param1:Number, param2:Number) : void
+      override public function setContentSize(cWidth:Number, cHeight:Number) : void
       {
          _contentWidth = _pic.width;
          _contentHeight = _pic.height;
@@ -209,10 +209,10 @@ package dice.vo
       override protected function createContentComplete() : void
       {
          super.createContentComplete();
-         var _loc1_:BitmapData = new BitmapData(_pic.width,_pic.height,true,0);
-         _loc1_.draw(_pic,null,null,null,null,true);
+         var bmp:BitmapData = new BitmapData(_pic.width,_pic.height,true,0);
+         bmp.draw(_pic,null,null,null,null,true);
          _Deform.graphics.clear();
-         _Deform.graphics.beginBitmapFill(_loc1_);
+         _Deform.graphics.beginBitmapFill(bmp);
          _Deform.graphics.drawTriangles(_vertices,_indices,_uvtData);
          addChild(_Deform);
          addChild(_txtCount);

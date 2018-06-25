@@ -14,9 +14,9 @@ package com.pickgliss.manager
       
       public var firstEnterGame:Boolean = false;
       
-      public function NoviceDataManager(param1:IEventDispatcher = null)
+      public function NoviceDataManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : NoviceDataManager
@@ -28,13 +28,13 @@ package com.pickgliss.manager
          return _instance;
       }
       
-      public function saveNoviceData(param1:int, param2:String, param3:String) : void
+      public function saveNoviceData(nodeID:int, userName:String, site:String) : void
       {
-         var _loc5_:URLVariables = new URLVariables();
-         _loc5_["nodeID"] = param1;
-         _loc5_["userName"] = param2;
-         var _loc4_:BaseLoader = LoadResourceManager.Instance.createLoader(param3 + "NoviceNodeData.ashx",6,_loc5_);
-         LoadResourceManager.Instance.startLoad(_loc4_);
+         var args:URLVariables = new URLVariables();
+         args["nodeID"] = nodeID;
+         args["userName"] = userName;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(site + "NoviceNodeData.ashx",6,args);
+         LoadResourceManager.Instance.startLoad(loader);
       }
    }
 }

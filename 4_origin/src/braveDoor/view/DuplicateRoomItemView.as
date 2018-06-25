@@ -22,9 +22,9 @@ package braveDoor.view
       
       private var _placeCountText:FilterFrameText;
       
-      public function DuplicateRoomItemView(param1:RoomInfo = null)
+      public function DuplicateRoomItemView(info:RoomInfo = null)
       {
-         _info = param1;
+         _info = info;
          super();
          init();
       }
@@ -47,14 +47,14 @@ package braveDoor.view
          }
       }
       
-      private function updateBgItem(param1:int) : void
+      private function updateBgItem(id:int) : void
       {
          if(_itemBg)
          {
             ObjectUtils.disposeObject(_itemBg);
             _itemBg = null;
          }
-         _itemBg = ComponentFactory.Instance.creat("asset.braveDoor.room.duplicateIcon" + param1);
+         _itemBg = ComponentFactory.Instance.creat("asset.braveDoor.room.duplicateIcon" + id);
          addChildAt(_itemBg,0);
       }
       
@@ -63,9 +63,9 @@ package braveDoor.view
          return _info;
       }
       
-      public function set info(param1:RoomInfo) : void
+      public function set info(value:RoomInfo) : void
       {
-         _info = param1;
+         _info = value;
          update();
       }
       

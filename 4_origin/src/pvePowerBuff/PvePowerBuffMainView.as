@@ -155,10 +155,10 @@ package pvePowerBuff
       
       private function _initView() : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc1_:* = null;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var __itembg:* = null;
+         var __itembgC:* = null;
+         var __itemAr:* = null;
          _bg = ComponentFactory.Instance.creat("asset.pvepowerbuff.frame.bg");
          addChild(_bg);
          _others = new Vector.<PvePowerBuffPerson>();
@@ -227,51 +227,50 @@ package pvePowerBuff
          addChild(_otherRearAr);
          PositionUtils.setPos(_otherRearAr,"pvePowerBuff.mainView.otherRearAr.pos");
          _arBmArr = [];
-         _loc4_ = 0;
-         while(_loc4_ < 9)
+         for(i = 0; i < 9; )
          {
-            _loc3_ = ComponentFactory.Instance.creat("asset.pvepowerbuff.attribute.item.bg");
-            _loc1_ = ComponentFactory.Instance.creatComponentByStylename("pvePowerBuff.mainview.item.TipContent");
-            switch(int(_loc4_))
+            __itembg = ComponentFactory.Instance.creat("asset.pvepowerbuff.attribute.item.bg");
+            __itembgC = ComponentFactory.Instance.creatComponentByStylename("pvePowerBuff.mainview.item.TipContent");
+            switch(int(i))
             {
                case 0:
-                  _loc1_.tipData = LanguageMgr.GetTranslation("tank.view.personalinfoII.attact");
+                  __itembgC.tipData = LanguageMgr.GetTranslation("tank.view.personalinfoII.attact");
                   break;
                case 1:
-                  _loc1_.tipData = LanguageMgr.GetTranslation("tank.view.personalinfoII.defense");
+                  __itembgC.tipData = LanguageMgr.GetTranslation("tank.view.personalinfoII.defense");
                   break;
                case 2:
-                  _loc1_.tipData = LanguageMgr.GetTranslation("tank.view.personalinfoII.agility");
+                  __itembgC.tipData = LanguageMgr.GetTranslation("tank.view.personalinfoII.agility");
                   break;
                case 3:
-                  _loc1_.tipData = LanguageMgr.GetTranslation("tank.view.personalinfoII.luck");
+                  __itembgC.tipData = LanguageMgr.GetTranslation("tank.view.personalinfoII.luck");
                   break;
                case 4:
-                  _loc1_.tipData = LanguageMgr.GetTranslation("tank.view.personalinfoII.hp");
+                  __itembgC.tipData = LanguageMgr.GetTranslation("tank.view.personalinfoII.hp");
                   break;
                case 5:
-                  _loc1_.tipData = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.magicAttack");
+                  __itembgC.tipData = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.magicAttack");
                   break;
                case 6:
-                  _loc1_.tipData = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.magicDefence");
+                  __itembgC.tipData = LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.magicDefence");
                   break;
                case 7:
-                  _loc1_.tipData = LanguageMgr.GetTranslation("tank.view.personalinfoII.damage");
+                  __itembgC.tipData = LanguageMgr.GetTranslation("tank.view.personalinfoII.damage");
                   break;
                case 8:
-                  _loc1_.tipData = LanguageMgr.GetTranslation("tank.view.personalinfoII.recovery");
+                  __itembgC.tipData = LanguageMgr.GetTranslation("tank.view.personalinfoII.recovery");
             }
-            _loc1_.addChild(_loc3_);
-            addChild(_loc1_);
-            _loc1_.x = 668;
-            _loc1_.y = 34 + 28 * _loc4_;
-            _loc2_ = ComponentFactory.Instance.creat("asset.pvepowerbuff.uparrow");
-            _loc2_.visible = false;
-            addChild(_loc2_);
-            _loc2_.x = 774;
-            _loc2_.y = 37 + 28 * _loc4_;
-            _arBmArr[_loc4_] = _loc2_;
-            _loc4_++;
+            __itembgC.addChild(__itembg);
+            addChild(__itembgC);
+            __itembgC.x = 668;
+            __itembgC.y = 34 + 28 * i;
+            __itemAr = ComponentFactory.Instance.creat("asset.pvepowerbuff.uparrow");
+            __itemAr.visible = false;
+            addChild(__itemAr);
+            __itemAr.x = 774;
+            __itemAr.y = 37 + 28 * i;
+            _arBmArr[i] = __itemAr;
+            i++;
          }
          _atkIconBm = ComponentFactory.Instance.creat("asset.pvepowerbuff.icon.atk");
          addChild(_atkIconBm);
@@ -419,19 +418,19 @@ package pvePowerBuff
          }
       }
       
-      private function _setOtherPower(param1:PlayerInfo = null) : void
+      private function _setOtherPower(info:PlayerInfo = null) : void
       {
-         if(param1)
+         if(info)
          {
-            _otherRearAtk.text = param1.Attack.toString();
-            _otherRearDef.text = param1.Defence.toString();
-            _otherRearAgl.text = param1.Agility.toString();
-            _otherRearLuck.text = param1.Luck.toString();
-            _otherRearHp.text = param1.hp.toString();
-            _otherRearMAtk.text = param1.MagicAttack.toString();
-            _otherRearMDef.text = param1.MagicDefence.toString();
-            _otherRearDmg.text = param1.Damage.toString();
-            _otherRearAr.text = param1.Guard.toString();
+            _otherRearAtk.text = info.Attack.toString();
+            _otherRearDef.text = info.Defence.toString();
+            _otherRearAgl.text = info.Agility.toString();
+            _otherRearLuck.text = info.Luck.toString();
+            _otherRearHp.text = info.hp.toString();
+            _otherRearMAtk.text = info.MagicAttack.toString();
+            _otherRearMDef.text = info.MagicDefence.toString();
+            _otherRearDmg.text = info.Damage.toString();
+            _otherRearAr.text = info.Guard.toString();
          }
          else
          {
@@ -447,9 +446,9 @@ package pvePowerBuff
          }
       }
       
-      private function _setSelfRearTxt(param1:Boolean = false) : void
+      private function _setSelfRearTxt(f:Boolean = false) : void
       {
-         if(param1 == true)
+         if(f == true)
          {
             _selfRearAtk.text = Math.floor(PvePowerBuffManager.instance.getBuffAtk * 0.2).toString();
             _selfRearDef.text = Math.floor(PvePowerBuffManager.instance.getBuffDef * 0.2).toString();
@@ -463,9 +462,9 @@ package pvePowerBuff
          }
       }
       
-      private function _setSelfRearTextVisible(param1:Boolean) : void
+      private function _setSelfRearTextVisible(v:Boolean) : void
       {
-         var _loc2_:* = param1;
+         var _loc2_:* = v;
          _selfRearAr.visible = _loc2_;
          _loc2_ = _loc2_;
          _selfRearDmg.visible = _loc2_;
@@ -486,41 +485,40 @@ package pvePowerBuff
       
       private function _setTimeText() : void
       {
-         var _loc1_:* = null;
-         var _loc4_:* = null;
-         var _loc2_:Number = NaN;
-         var _loc3_:Number = NaN;
+         var getD:* = null;
+         var nowTime:* = null;
+         var tic:Number = NaN;
+         var m:Number = NaN;
          if(PvePowerBuffManager.instance.getBuffCount > 0 && PvePowerBuffManager.instance.getBuffDate != null)
          {
-            _loc1_ = PvePowerBuffManager.instance.getBuffDate;
-            _loc4_ = TimeManager.Instance.Now();
-            _loc2_ = _loc4_.getTime() - _loc1_.getTime();
-            _loc3_ = 30 - Math.floor(_loc2_ / 60000);
-            _lefttime.text = LanguageMgr.GetTranslation("ddt.pvePowerBuff.buff.left.time.text",_loc3_ < 0?0:Number(_loc3_));
+            getD = PvePowerBuffManager.instance.getBuffDate;
+            nowTime = TimeManager.Instance.Now();
+            tic = nowTime.getTime() - getD.getTime();
+            m = 30 - Math.floor(tic / 60000);
+            _lefttime.text = LanguageMgr.GetTranslation("ddt.pvePowerBuff.buff.left.time.text",m < 0?0:Number(m));
             _lefttime.visible = true;
          }
       }
       
       private function _refreshOthers() : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:* = null;
+         var c:int = 0;
+         var pvePowerBuffPlayer:* = null;
          while(_others.length)
          {
             removeChild(_others[0]);
             _others[0] = null;
             _others.shift();
          }
-         var _loc1_:Vector.<PlayerInfo> = PvePowerBuffManager.instance.playerInfoVc;
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_.length)
+         var playerInfoVc:Vector.<PlayerInfo> = PvePowerBuffManager.instance.playerInfoVc;
+         for(c = 0; c < playerInfoVc.length; )
          {
-            _loc3_ = new PvePowerBuffPerson(_loc2_);
-            _loc3_.updatePlayer(_loc1_[_loc2_]);
-            addChild(_loc3_);
-            PositionUtils.setPos(_loc3_,"pvePowerBuff.mainView.character." + _loc2_ + ".pos");
-            _others.push(_loc3_);
-            _loc2_++;
+            pvePowerBuffPlayer = new PvePowerBuffPerson(c);
+            pvePowerBuffPlayer.updatePlayer(playerInfoVc[c]);
+            addChild(pvePowerBuffPlayer);
+            PositionUtils.setPos(pvePowerBuffPlayer,"pvePowerBuff.mainView.character." + c + ".pos");
+            _others.push(pvePowerBuffPlayer);
+            c++;
          }
          PvePowerBuffManager.instance.isInRefresh = false;
       }
@@ -539,25 +537,25 @@ package pvePowerBuff
          _getAgainBtn.addEventListener("click",__getAgainBtnClickHandler);
       }
       
-      private function __selectPlayerHandler(param1:PvePowerBuffEvent) : void
+      private function __selectPlayerHandler(e:PvePowerBuffEvent) : void
       {
          if(_selectedPlayer)
          {
             _selectedPlayer.setLightMcVisible(false);
          }
-         _selectedPlayer = param1.info;
+         _selectedPlayer = e.info;
          _selectedPlayer.setLightMcVisible(true);
          _setOtherPower(_selectedPlayer.playerInfo);
       }
       
-      private function __refreshBuffHandler(param1:PvePowerBuffEvent) : void
+      private function __refreshBuffHandler(e:PvePowerBuffEvent) : void
       {
          _selectedPlayer = null;
          _refreshButtonTipsData();
          _refreshOthers();
       }
       
-      private function __getBuffHandler(param1:PvePowerBuffEvent) : void
+      private function __getBuffHandler(e:PvePowerBuffEvent) : void
       {
          PvePowerBuffManager.instance.isInGetBuff = true;
          if(_huafeiMc)
@@ -567,14 +565,14 @@ package pvePowerBuff
          _huafeiMc = ClassUtils.CreatInstance("asset.pvepowerbuff.hua.fei.mc");
          PositionUtils.setPos(_huafeiMc,"pvePowerBuff.mainView.huafei." + PvePowerBuffManager.instance.getBuffIndex + ".pos");
          addChild(_huafeiMc);
-         var _loc2_:TimelineLite = new TimelineLite({"onComplete":_tweenCompleteHua});
-         _loc2_.append(TweenLite.to(_huafeiMc,1,{
+         var tweenline:TimelineLite = new TimelineLite({"onComplete":_tweenCompleteHua});
+         tweenline.append(TweenLite.to(_huafeiMc,1,{
             "scaleX":1,
             "scaleY":1,
             "x":_huafeiMc.x,
             "y":_huafeiMc.y
          }));
-         _loc2_.append(TweenLite.to(_huafeiMc,2,{
+         tweenline.append(TweenLite.to(_huafeiMc,2,{
             "scaleX":1,
             "scaleY":1,
             "x":670,
@@ -589,8 +587,8 @@ package pvePowerBuff
          _shuziMc = ClassUtils.CreatInstance("asset.pvepowerbuff.quare.light.mc");
          PositionUtils.setPos(_shuziMc,"pvePowerBuff.character.shuzi.mc.pos");
          addChild(_shuziMc);
-         var _loc1_:TimelineLite = new TimelineLite({"onComplete":_shuziKuang});
-         _loc1_.append(TweenLite.to(_shuziMc,1,{
+         var tweenline:TimelineLite = new TimelineLite({"onComplete":_shuziKuang});
+         tweenline.append(TweenLite.to(_shuziMc,1,{
             "scaleX":1,
             "scaleY":1,
             "x":_shuziMc.x,
@@ -618,31 +616,30 @@ package pvePowerBuff
          PvePowerBuffManager.instance.isInGetBuff = false;
       }
       
-      private function _showArrows(param1:Boolean = false) : void
+      private function _showArrows(v:Boolean = false) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _arBmArr.length)
+         var i:int = 0;
+         for(i = 0; i < _arBmArr.length; )
          {
-            _arBmArr[_loc2_].visible = param1;
-            _loc2_++;
+            _arBmArr[i].visible = v;
+            i++;
          }
       }
       
-      private function __onRefreshResponse(param1:FrameEvent) : void
+      private function __onRefreshResponse(e:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onRefreshResponse);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var frame:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("response",__onRefreshResponse);
+         if(e.responseCode == 3 || e.responseCode == 2)
          {
             SocketManager.Instance.out.pvePowerBuffRefresh();
          }
-         _loc2_.dispose();
+         frame.dispose();
       }
       
-      private function __refreshBtnClickHandler(param1:MouseEvent) : void
+      private function __refreshBtnClickHandler(e:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var frame:* = null;
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
@@ -659,12 +656,12 @@ package pvePowerBuff
                LeavePageManager.showFillFrame();
                return;
             }
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.pvePowerBuff.refreshBtn.pay",ServerConfigManager.instance.pvePowerBuffRefreshPrice),"",LanguageMgr.GetTranslation("cancel"),true,true,false,2);
-            _loc2_.addEventListener("response",__onRefreshResponse);
+            frame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.pvePowerBuff.refreshBtn.pay",ServerConfigManager.instance.pvePowerBuffRefreshPrice),"",LanguageMgr.GetTranslation("cancel"),true,true,false,2);
+            frame.addEventListener("response",__onRefreshResponse);
          }
       }
       
-      private function __getBuffBtnClickHandler(param1:MouseEvent) : void
+      private function __getBuffBtnClickHandler(e:MouseEvent) : void
       {
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -680,7 +677,7 @@ package pvePowerBuff
          SocketManager.Instance.out.pvePowerBuffGetBuff(_selectedPlayer.index);
       }
       
-      private function __getAgainBtnClickHandler(param1:MouseEvent) : void
+      private function __getAgainBtnClickHandler(e:MouseEvent) : void
       {
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -698,23 +695,23 @@ package pvePowerBuff
             return;
          }
          _getAgainBtn.enable = false;
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.pvePowerBuff.getBuffBtn.pay",ServerConfigManager.instance.pvePowerBuffGetBuffPrice),"",LanguageMgr.GetTranslation("cancel"),true,true,false,2);
-         _loc2_.addEventListener("response",__onGetAgainResponse);
+         var frame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.pvePowerBuff.getBuffBtn.pay",ServerConfigManager.instance.pvePowerBuffGetBuffPrice),"",LanguageMgr.GetTranslation("cancel"),true,true,false,2);
+         frame.addEventListener("response",__onGetAgainResponse);
       }
       
-      private function __onGetAgainResponse(param1:FrameEvent) : void
+      private function __onGetAgainResponse(e:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onGetAgainResponse);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var frame:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("response",__onGetAgainResponse);
+         if(e.responseCode == 3 || e.responseCode == 2)
          {
             SocketManager.Instance.out.pvePowerBuffGetBuff(_selectedPlayer.index);
          }
-         else if(param1.responseCode == 4 || param1.responseCode == 0 || param1.responseCode == 1)
+         else if(e.responseCode == 4 || e.responseCode == 0 || e.responseCode == 1)
          {
             _getAgainBtn.enable = true;
          }
-         _loc2_.dispose();
+         frame.dispose();
       }
       
       private function _removeEvent() : void

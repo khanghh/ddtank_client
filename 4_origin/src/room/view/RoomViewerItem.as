@@ -64,11 +64,11 @@ package room.view
       
       private var _loadingMode:Boolean;
       
-      public function RoomViewerItem(param1:int = 8, param2:uint = 186)
+      public function RoomViewerItem(place:int = 8, widthType:uint = 186)
       {
          super();
-         _place = param1;
-         _bgWidth = param2;
+         _place = place;
+         _bgWidth = widthType;
          init();
       }
       
@@ -133,9 +133,9 @@ package room.view
          addChildAt(_bg,0);
       }
       
-      public function set opened(param1:Boolean) : void
+      public function set opened(value:Boolean) : void
       {
-         _opened = param1;
+         _opened = value;
          if(_opened && _info == null)
          {
             if(contains(_closeBitmap))
@@ -161,11 +161,11 @@ package room.view
          }
       }
       
-      public function set loadingMode(param1:Boolean) : void
+      public function set loadingMode(value:Boolean) : void
       {
-         if(param1)
+         if(value)
          {
-            _loadingMode = param1;
+            _loadingMode = value;
             if(contains(_viewInfoBtn))
             {
                removeChild(_viewInfoBtn);
@@ -181,10 +181,10 @@ package room.view
          }
       }
       
-      private function setCenterPos(param1:DisplayObject) : void
+      private function setCenterPos(display:DisplayObject) : void
       {
-         param1.x = (_bgWidth - param1.width) / 2;
-         param1.y = (_bg.height - param1.height) / 2;
+         display.x = (_bgWidth - display.width) / 2;
+         display.y = (_bg.height - display.height) / 2;
       }
       
       public function get info() : RoomPlayer
@@ -192,20 +192,20 @@ package room.view
          return _info;
       }
       
-      public function set info(param1:RoomPlayer) : void
+      public function set info(info:RoomPlayer) : void
       {
-         var _loc2_:* = null;
-         if(param1 != null && param1.isSelf)
+         var _gameInfo:* = null;
+         if(info != null && info.isSelf)
          {
             MainToolBar.Instance.setRoomStartState();
             MainToolBar.Instance.setReturnEnable(true);
          }
          _kickOutBtn.enable = RoomManager.Instance.current.selfRoomPlayer.isHost;
-         if(_info == param1)
+         if(_info == info)
          {
             return;
          }
-         _info = param1;
+         _info = info;
          if(_info)
          {
             if(contains(_closeBitmap))
@@ -222,10 +222,10 @@ package room.view
                addChild(_kickOutBtn);
                addChild(_addFriendBtn);
             }
-            _loc2_ = GameControl.Instance.Current;
-            if(!_loadingMode && _loc2_ != null && _loc2_.hasNextMission && (RoomManager.Instance.current.type == 4 || RoomManager.Instance.current.type == 23 || RoomManager.Instance.current.type == 11 || RoomManager.Instance.current.type == 123))
+            _gameInfo = GameControl.Instance.Current;
+            if(!_loadingMode && _gameInfo != null && _gameInfo.hasNextMission && (RoomManager.Instance.current.type == 4 || RoomManager.Instance.current.type == 23 || RoomManager.Instance.current.type == 11 || RoomManager.Instance.current.type == 123))
             {
-               _loc2_.livingToViewer(_info.playerInfo.ID,_info.playerInfo.ZoneID);
+               _gameInfo.livingToViewer(_info.playerInfo.ID,_info.playerInfo.ZoneID);
             }
             _info.place = _place;
             _portrait.info = _info.playerInfo;
@@ -268,7 +268,7 @@ package room.view
          dispatchEvent(new RoomEvent("viewerItemInfoSet",[0]));
       }
       
-      private function __infoStateChange(param1:RoomPlayerEvent) : void
+      private function __infoStateChange(event:RoomPlayerEvent) : void
       {
       }
       
@@ -292,7 +292,7 @@ package room.view
          RoomManager.Instance.current.selfRoomPlayer.removeEventListener("isHostChange",__updateBtns);
       }
       
-      private function __updateBtns(param1:Event) : void
+      private function __updateBtns(e:Event) : void
       {
          buttonMode = !RoomManager.Instance.current.started;
          if(_info != null)
@@ -302,7 +302,7 @@ package room.view
          _kickOutBtn.enable = !RoomManager.Instance.current.started && RoomManager.Instance.current.selfRoomPlayer.isHost;
       }
       
-      private function __changePlace(param1:MouseEvent) : void
+      private function __changePlace(event:MouseEvent) : void
       {
          if(_info)
          {
@@ -340,11 +340,11 @@ package room.view
          SoundManager.instance.play("008");
       }
       
-      private function __clickHandler(param1:MouseEvent) : void
+      private function __clickHandler(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         param1.stopImmediatePropagation();
-         var _loc2_:* = param1.currentTarget;
+         e.stopImmediatePropagation();
+         var _loc2_:* = e.currentTarget;
          if(_viewInfoBtn !== _loc2_)
          {
             if(_addFriendBtn !== _loc2_)

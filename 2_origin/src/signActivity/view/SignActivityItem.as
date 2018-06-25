@@ -56,11 +56,11 @@ package signActivity.view
       
       private var dayArray:Array;
       
-      public function SignActivityItem(param1:int, param2:int)
+      public function SignActivityItem($day:int, $money:int)
       {
          dayArray = [3,7,14];
          super();
-         _day = param1;
+         _day = $day;
       }
       
       private function removeEvent() : void
@@ -76,26 +76,25 @@ package signActivity.view
          }
       }
       
-      private function getRewardBtnClick(param1:MouseEvent) : void
+      private function getRewardBtnClick(e:MouseEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc5_:SendGiftInfo = new SendGiftInfo();
-         _loc5_.activityId = SignActivityMgr.instance.model.actId;
-         var _loc2_:Array = [];
-         _loc4_ = 0;
-         while(_loc4_ < giftInfo.giftRewardArr.length)
+         var i:int = 0;
+         var getAwardInfo:SendGiftInfo = new SendGiftInfo();
+         getAwardInfo.activityId = SignActivityMgr.instance.model.actId;
+         var arr:Array = [];
+         for(i = 0; i < giftInfo.giftRewardArr.length; )
          {
-            _loc2_[_loc4_] = giftInfo.giftbagId;
-            _loc4_++;
+            arr[i] = giftInfo.giftbagId;
+            i++;
          }
-         _loc5_.giftIdArr = _loc2_;
-         var _loc3_:Vector.<SendGiftInfo> = new Vector.<SendGiftInfo>();
-         _loc3_.push(_loc5_);
-         SocketManager.Instance.out.sendWonderfulActivityGetReward(_loc3_);
+         getAwardInfo.giftIdArr = arr;
+         var data:Vector.<SendGiftInfo> = new Vector.<SendGiftInfo>();
+         data.push(getAwardInfo);
+         SocketManager.Instance.out.sendWonderfulActivityGetReward(data);
          setGetBtnEnalbe(false);
       }
       
-      public function setGetBtnEnalbe(param1:*) : void
+      public function setGetBtnEnalbe($flag:*) : void
       {
          if(_smallBtn)
          {
@@ -112,14 +111,14 @@ package signActivity.view
          {
             createBigBtn(leftIndex + 1,false);
             addChild(_smallBtn);
-            _smallBtn.enable = param1;
+            _smallBtn.enable = $flag;
             leftIndex = Number(leftIndex) + 1;
          }
       }
       
-      public function setGoods(param1:GiftBagInfo) : void
+      public function setGoods(info:GiftBagInfo) : void
       {
-         giftInfo = param1;
+         giftInfo = info;
          condition = _money;
          if(giftInfo.giftConditionArr[0].conditionIndex == 1)
          {
@@ -133,11 +132,11 @@ package signActivity.view
       
       private function everyDayGoods() : void
       {
-         var _loc6_:* = null;
-         var _loc5_:* = null;
-         var _loc4_:* = null;
-         var _loc1_:* = null;
-         var _loc2_:* = null;
+         var array:* = null;
+         var bg:* = null;
+         var itemInfo:* = null;
+         var tInfo:* = null;
+         var cell:* = null;
          if(_goodEveryDayItemContainerAll)
          {
             ObjectUtils.disposeObject(_goodEveryDayItemContainerAll);
@@ -146,27 +145,27 @@ package signActivity.view
          _goodEveryDayItemContainerAll = new Sprite();
          var _loc8_:int = 0;
          var _loc7_:* = giftInfo.giftRewardArr;
-         for each(var _loc3_ in giftInfo.giftRewardArr)
+         for each(var item in giftInfo.giftRewardArr)
          {
-            _loc6_ = _loc3_.property.split(",");
-            _loc5_ = ComponentFactory.Instance.creatBitmap("asset.signactivity.goodsBG");
-            _loc4_ = ItemManager.Instance.getTemplateById(_loc3_.templateId) as ItemTemplateInfo;
-            _loc1_ = new InventoryItemInfo();
-            ObjectUtils.copyProperties(_loc1_,_loc4_);
-            _loc1_.StrengthenLevel = _loc6_[0];
-            _loc1_.AttackCompose = _loc6_[1];
-            _loc1_.DefendCompose = _loc6_[2];
-            _loc1_.AgilityCompose = _loc6_[3];
-            _loc1_.LuckCompose = _loc6_[4];
-            _loc1_.MagicAttack = _loc6_[6];
-            _loc1_.MagicDefence = _loc6_[7];
-            _loc1_.ValidDate = _loc3_.validDate;
-            _loc1_.IsBinds = _loc3_.isBind;
-            _loc1_.Count = _loc3_.count;
-            _loc2_ = new BagCell(0,_loc1_,false);
-            _loc2_.setBgVisible(false);
-            _goodEveryDayItemContainerAll.addChild(_loc5_);
-            _goodEveryDayItemContainerAll.addChild(_loc2_);
+            array = item.property.split(",");
+            bg = ComponentFactory.Instance.creatBitmap("asset.signactivity.goodsBG");
+            itemInfo = ItemManager.Instance.getTemplateById(item.templateId) as ItemTemplateInfo;
+            tInfo = new InventoryItemInfo();
+            ObjectUtils.copyProperties(tInfo,itemInfo);
+            tInfo.StrengthenLevel = array[0];
+            tInfo.AttackCompose = array[1];
+            tInfo.DefendCompose = array[2];
+            tInfo.AgilityCompose = array[3];
+            tInfo.LuckCompose = array[4];
+            tInfo.MagicAttack = array[6];
+            tInfo.MagicDefence = array[7];
+            tInfo.ValidDate = item.validDate;
+            tInfo.IsBinds = item.isBind;
+            tInfo.Count = item.count;
+            cell = new BagCell(0,tInfo,false);
+            cell.setBgVisible(false);
+            _goodEveryDayItemContainerAll.addChild(bg);
+            _goodEveryDayItemContainerAll.addChild(cell);
          }
          addChild(_goodEveryDayItemContainerAll);
          PositionUtils.setPos(_goodEveryDayItemContainerAll,"everyDayGoods." + _day + "." + length);
@@ -183,7 +182,7 @@ package signActivity.view
          }
       }
       
-      private function __onOver(param1:MouseEvent) : void
+      private function __onOver(e:MouseEvent) : void
       {
          if(_smallBtn)
          {
@@ -191,7 +190,7 @@ package signActivity.view
          }
       }
       
-      private function __onOut(param1:MouseEvent) : void
+      private function __onOut(e:MouseEvent) : void
       {
          if(_smallBtn)
          {
@@ -201,11 +200,11 @@ package signActivity.view
       
       private function continuousGoods() : void
       {
-         var _loc7_:* = null;
-         var _loc6_:* = null;
-         var _loc5_:* = null;
-         var _loc1_:* = null;
-         var _loc2_:* = null;
+         var array:* = null;
+         var bg:* = null;
+         var itemInfo:* = null;
+         var tInfo:* = null;
+         var cell:* = null;
          if(_goodItemContainerAll)
          {
             ObjectUtils.disposeObject(_goodItemContainerAll);
@@ -214,62 +213,62 @@ package signActivity.view
          _goodItemContainerAll = new Sprite();
          _goodItemContainerAll.x = 527;
          _goodItemContainerAll.y = 36;
-         var _loc4_:int = 0;
+         var length:int = 0;
          var _loc10_:int = 0;
          var _loc9_:* = giftInfo.giftRewardArr;
-         for each(var _loc3_ in giftInfo.giftRewardArr)
+         for each(var item in giftInfo.giftRewardArr)
          {
-            _loc7_ = _loc3_.property.split(",");
-            _loc6_ = ComponentFactory.Instance.creatBitmap("asset.signactivity.goodsBG");
-            _loc5_ = ItemManager.Instance.getTemplateById(_loc3_.templateId) as ItemTemplateInfo;
-            _loc1_ = new InventoryItemInfo();
-            ObjectUtils.copyProperties(_loc1_,_loc5_);
-            _loc1_.StrengthenLevel = _loc7_[0];
-            _loc1_.AttackCompose = _loc7_[1];
-            _loc1_.DefendCompose = _loc7_[2];
-            _loc1_.AgilityCompose = _loc7_[3];
-            _loc1_.LuckCompose = _loc7_[4];
-            _loc1_.MagicAttack = _loc7_[6];
-            _loc1_.MagicDefence = _loc7_[7];
-            _loc1_.ValidDate = _loc3_.validDate;
-            _loc1_.IsBinds = _loc3_.isBind;
-            _loc1_.Count = _loc3_.count;
-            _loc2_ = new BagCell(0,_loc1_,false);
+            array = item.property.split(",");
+            bg = ComponentFactory.Instance.creatBitmap("asset.signactivity.goodsBG");
+            itemInfo = ItemManager.Instance.getTemplateById(item.templateId) as ItemTemplateInfo;
+            tInfo = new InventoryItemInfo();
+            ObjectUtils.copyProperties(tInfo,itemInfo);
+            tInfo.StrengthenLevel = array[0];
+            tInfo.AttackCompose = array[1];
+            tInfo.DefendCompose = array[2];
+            tInfo.AgilityCompose = array[3];
+            tInfo.LuckCompose = array[4];
+            tInfo.MagicAttack = array[6];
+            tInfo.MagicDefence = array[7];
+            tInfo.ValidDate = item.validDate;
+            tInfo.IsBinds = item.isBind;
+            tInfo.Count = item.count;
+            cell = new BagCell(0,tInfo,false);
             if(_day == dayArray[2])
             {
-               _loc2_.width = 42;
-               _loc2_.height = 42;
+               cell.width = 42;
+               cell.height = 42;
                var _loc8_:int = 45;
-               _loc6_.height = _loc8_;
-               _loc6_.width = _loc8_;
-               _loc6_.x = _loc4_ * (_loc6_.width + 2);
-               _loc2_.x = _loc6_.x + 5;
+               bg.height = _loc8_;
+               bg.width = _loc8_;
+               bg.x = length * (bg.width + 2);
+               cell.x = bg.x + 5;
             }
             else
             {
-               _loc6_.x = _loc4_ * (_loc6_.width + 2);
-               _loc2_.x = _loc6_.x + 5;
+               bg.x = length * (bg.width + 2);
+               cell.x = bg.x + 5;
             }
-            _loc6_.y = 20;
-            _loc2_.y = 25;
-            _loc2_.setBgVisible(false);
-            _goodItemContainerAll.addChild(_loc6_);
-            _goodItemContainerAll.addChild(_loc2_);
-            _loc4_++;
+            bg.y = 20;
+            cell.y = 25;
+            cell.setBgVisible(false);
+            _goodItemContainerAll.addChild(bg);
+            _goodItemContainerAll.addChild(cell);
+            length++;
          }
          addChild(_goodItemContainerAll);
          PositionUtils.setPos(_goodItemContainerAll,"continuousGoods." + _day + "." + continuousGoodsIndex);
          continuousGoodsIndex = Number(continuousGoodsIndex) + 1;
       }
       
-      public function setStatus(param1:Array, param2:Dictionary, param3:int) : void
+      public function setStatus(statusArr:Array, giftStatusDic:Dictionary, index:int) : void
       {
-         var _loc6_:* = null;
+         var status2:* = null;
          clearBtn();
-         tagIndex = param3;
-         var _loc5_:PlayerCurInfo = param1[param3] as PlayerCurInfo;
-         var _loc4_:int = (param2[giftInfo.giftbagId] as GiftCurInfo).times;
-         if(_loc4_ == 0)
+         tagIndex = index;
+         var status:PlayerCurInfo = statusArr[index] as PlayerCurInfo;
+         var alreadyGet:int = (giftStatusDic[giftInfo.giftbagId] as GiftCurInfo).times;
+         if(alreadyGet == 0)
          {
             if(giftInfo.giftConditionArr[0].conditionIndex == 1)
             {
@@ -291,20 +290,20 @@ package signActivity.view
             _smallBtn.enable = false;
             if(giftInfo.giftConditionArr[0].conditionIndex == 1)
             {
-               if(_loc5_.statusValue == 1)
+               if(status.statusValue == 1)
                {
                   _smallBtn.enable = true;
                   _smallBtn.addEventListener("click",getRewardBtnClick);
                }
-               else if(_loc5_.statusValue == 2)
+               else if(status.statusValue == 2)
                {
-                  createTag(param3);
+                  createTag(index);
                }
             }
             else if(giftInfo.giftConditionArr[0].conditionIndex == 2)
             {
-               _loc6_ = param1[13 + (btnBigIndex - 1)] as PlayerCurInfo;
-               if(_loc6_.statusValue == 1)
+               status2 = statusArr[13 + (btnBigIndex - 1)] as PlayerCurInfo;
+               if(status2.statusValue == 1)
                {
                   _smallBtn.enable = true;
                   _smallBtn.addEventListener("click",getRewardBtnClick);
@@ -313,7 +312,7 @@ package signActivity.view
          }
          else if(giftInfo.giftConditionArr[0].conditionIndex == 1)
          {
-            createTag(param3);
+            createTag(index);
             btnIndex = Number(btnIndex) + 1;
          }
          else
@@ -325,9 +324,9 @@ package signActivity.view
          }
       }
       
-      private function createBigBtn(param1:int, param2:Boolean = true) : void
+      private function createBigBtn(btnBigIndex:int, flag:Boolean = true) : void
       {
-         if(param2)
+         if(flag)
          {
             if(_day != dayArray[0])
             {
@@ -346,10 +345,10 @@ package signActivity.view
          {
             _smallBtn = ComponentFactory.Instance.creat("signActivityItem.getBtnBig4");
          }
-         PositionUtils.setPos(_smallBtn,"signActivityItem.getBtnBig." + _day + "." + param1);
+         PositionUtils.setPos(_smallBtn,"signActivityItem.getBtnBig." + _day + "." + btnBigIndex);
       }
       
-      private function createTag(param1:int) : void
+      private function createTag(index:int) : void
       {
          if(_smallBtn)
          {
@@ -357,7 +356,7 @@ package signActivity.view
             _smallBtn = null;
          }
          _tag = ComponentFactory.Instance.creatBitmap("asset.signactivity.tag");
-         PositionUtils.setPos(_tag,"asset.signactivity.tag.pos." + _day + "." + (param1 + 1));
+         PositionUtils.setPos(_tag,"asset.signactivity.tag.pos." + _day + "." + (index + 1));
          addChild(_tag);
       }
       

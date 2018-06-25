@@ -35,343 +35,347 @@ package morn.core.ex
       
       private var _layoutType:int = 1;
       
-      public function NumericStepper(param1:int = 0, param2:String = null)
+      public function NumericStepper(value:int = 0, skin:String = null)
       {
          super();
-         this.numValue = param1;
-         this.skin = param2;
-         this.mouseChildren = this.mouseEnabled = true;
+         this.numValue = value;
+         this.skin = skin;
+         var _loc3_:Boolean = true;
+         this.mouseEnabled = _loc3_;
+         this.mouseChildren = _loc3_;
       }
       
       public function get changeHandler() : Handler
       {
-         return this._changeHandler;
+         return _changeHandler;
       }
       
-      public function set changeHandler(param1:Handler) : void
+      public function set changeHandler(value:Handler) : void
       {
-         this._changeHandler = param1;
+         _changeHandler = value;
       }
       
       public function get step() : int
       {
-         return this._step;
+         return _step;
       }
       
-      public function set step(param1:int) : void
+      public function set step(value:int) : void
       {
-         this._step = param1;
+         _step = value;
       }
       
       public function get minValue() : int
       {
-         return this._minValue;
+         return _minValue;
       }
       
-      public function set minValue(param1:int) : void
+      public function set minValue(value:int) : void
       {
-         this._minValue = param1;
-         this.checkBtnStatus();
+         _minValue = value;
+         checkBtnStatus();
       }
       
       public function get maxValue() : int
       {
-         return this._maxValue;
+         return _maxValue;
       }
       
-      public function set maxValue(param1:int) : void
+      public function set maxValue(value:int) : void
       {
-         this._maxValue = param1;
-         this.checkBtnStatus();
+         _maxValue = value;
+         checkBtnStatus();
       }
       
-      public function set skin(param1:String) : void
+      public function set skin(value:String) : void
       {
-         var _loc2_:Array = null;
-         if(param1 != null)
+         var arr:* = null;
+         if(value != null)
          {
-            _loc2_ = param1.split(",");
-            if(_loc2_.length > 0)
+            arr = value.split(",");
+            if(arr.length > 0)
             {
-               this.subButtonSkin = _loc2_[0];
+               subButtonSkin = arr[0];
             }
-            if(_loc2_.length > 1)
+            if(arr.length > 1)
             {
-               this.inputTextSkin = _loc2_[1];
+               inputTextSkin = arr[1];
             }
-            if(_loc2_.length > 2)
+            if(arr.length > 2)
             {
-               this.addButtonSkin = _loc2_[2];
+               addButtonSkin = arr[2];
             }
          }
       }
       
       public function get skin() : String
       {
-         return this._btnSub.skin + "," + this._input.skin + "," + this._btnAdd.skin;
+         return _btnSub.skin + "," + _input.skin + "," + _btnAdd.skin;
       }
       
       override protected function preinitialize() : void
       {
-         this._numValue = 1;
-         this._minValue = 0;
-         this._maxValue = 9999;
+         _numValue = 1;
+         _minValue = 0;
+         _maxValue = 9999;
       }
       
       override protected function createChildren() : void
       {
-         this._btnSub = new Button();
-         addChild(this._btnSub);
-         this._input = new TextInput();
-         this._input.sizeGrid = "4,4,4,1";
-         addChild(this._input);
-         this._btnAdd = new Button();
-         addChild(this._btnAdd);
-         this.layout();
+         _btnSub = new Button();
+         addChild(_btnSub);
+         _input = new TextInput();
+         _input.sizeGrid = "4,4,4,1";
+         addChild(_input);
+         _btnAdd = new Button();
+         addChild(_btnAdd);
+         layout();
       }
       
       private function layout() : void
       {
-         if(this._layoutType == LAYOUT_NORMAL)
+         if(_layoutType == 1)
          {
-            this._input.x = this._btnSub.x + this._btnSub.width + this._space;
-            this._btnAdd.x = this._input.x + this._input.width + this._space;
-            this._input.y = (this._btnSub.height - this._input.height) / 2 + this._btnSub.y;
-            this._btnAdd.y = (this._btnSub.height - this._btnAdd.height) / 2 + this._btnSub.y;
+            _input.x = _btnSub.x + _btnSub.width + _space;
+            _btnAdd.x = _input.x + _input.width + _space;
+            _input.y = (_btnSub.height - _input.height) / 2 + _btnSub.y;
+            _btnAdd.y = (_btnSub.height - _btnAdd.height) / 2 + _btnSub.y;
          }
-         else if(this._layoutType == LAYOUT_RIGHT)
+         else if(_layoutType == 2)
          {
-            this._btnAdd.x = this._btnSub.x = this._input.x + this._input.width + this._space;
-            this._btnAdd.y = this._input.y - this._btnAdd.height / 2;
-            this._btnSub.y = this._input.y + this._input.height - this._btnSub.height / 2;
+            var _loc1_:* = _input.x + _input.width + _space;
+            _btnSub.x = _loc1_;
+            _btnAdd.x = _loc1_;
+            _btnAdd.y = _input.y - _btnAdd.height / 2;
+            _btnSub.y = _input.y + _input.height - _btnSub.height / 2;
          }
       }
       
       override public function commitMeasure() : void
       {
-         this.layout();
+         layout();
       }
       
       override protected function initialize() : void
       {
-         this._input.text = this._numValue.toString();
-         this._input.restrict = "0-9";
-         this._input.align = "center";
-         this._btnSub.clickHandler = new Handler(this.btnClick,[false]);
-         this._btnAdd.clickHandler = new Handler(this.btnClick,[true]);
-         this._input.addEventListener(Event.CHANGE,this.onTextFieldChange);
+         _input.text = _numValue.toString();
+         _input.restrict = "0-9";
+         _input.align = "center";
+         _btnSub.clickHandler = new Handler(btnClick,[false]);
+         _btnAdd.clickHandler = new Handler(btnClick,[true]);
+         _input.addEventListener("change",onTextFieldChange);
       }
       
-      private function onTextFieldChange(param1:Event) : void
+      private function onTextFieldChange(evt:Event) : void
       {
-         if(this._input.text == "")
+         if(_input.text == "")
          {
-            this._input.text = "1";
+            _input.text = "1";
          }
-         if(parseInt(this._input.text) <= this.minValue)
+         if(parseInt(_input.text) <= minValue)
          {
-            this._input.text = this.minValue.toString();
+            _input.text = minValue.toString();
          }
-         else if(parseInt(this._input.text) >= this.maxValue)
+         else if(parseInt(_input.text) >= maxValue)
          {
-            this._input.text = this.maxValue.toString();
+            _input.text = maxValue.toString();
          }
-         this.numValue = parseInt(this._input.text);
-         this.checkBtnStatus();
+         numValue = parseInt(_input.text);
+         checkBtnStatus();
       }
       
-      private function btnClick(param1:Boolean) : void
+      private function btnClick(isAdd:Boolean) : void
       {
-         if(param1)
+         if(isAdd)
          {
-            this.numValue = this.numValue + this._step;
-            this._btnSub.disabled = false;
+            numValue = numValue + _step;
+            _btnSub.disabled = false;
          }
          else
          {
-            this.numValue = this.numValue - this._step;
-            this._btnAdd.disabled = false;
+            numValue = numValue - _step;
+            _btnAdd.disabled = false;
          }
-         this.checkBtnStatus();
+         checkBtnStatus();
       }
       
       private function checkBtnStatus() : void
       {
-         this._btnAdd.disabled = false;
-         this._btnSub.disabled = false;
-         if(this.numValue >= this._maxValue)
+         _btnAdd.disabled = false;
+         _btnSub.disabled = false;
+         if(numValue >= _maxValue)
          {
-            this._btnAdd.disabled = true;
+            _btnAdd.disabled = true;
          }
-         if(this.numValue <= this._minValue)
+         if(numValue <= _minValue)
          {
-            this._btnSub.disabled = true;
+            _btnSub.disabled = true;
          }
       }
       
-      public function set subButtonSkin(param1:String) : void
+      public function set subButtonSkin(value:String) : void
       {
-         this._btnSub.skin = param1;
-         this._btnSub.stateNum = 1;
-         this.commitMeasure();
+         _btnSub.skin = value;
+         _btnSub.stateNum = 1;
+         commitMeasure();
       }
       
       public function get subButtonSkin() : String
       {
-         return this._btnSub.skin;
+         return _btnSub.skin;
       }
       
-      public function set addButtonSkin(param1:String) : void
+      public function set addButtonSkin(value:String) : void
       {
-         this._btnAdd.skin = param1;
-         this._btnAdd.stateNum = 1;
-         this.commitMeasure();
+         _btnAdd.skin = value;
+         _btnAdd.stateNum = 1;
+         commitMeasure();
       }
       
       public function get addButtonSkin() : String
       {
-         return this._btnAdd.skin;
+         return _btnAdd.skin;
       }
       
-      public function set inputTextSkin(param1:String) : void
+      public function set inputTextSkin(value:String) : void
       {
-         this._input.skin = param1;
-         this.commitMeasure();
+         _input.skin = value;
+         commitMeasure();
       }
       
       public function get inputTextSkin() : String
       {
-         return this._input.skin;
+         return _input.skin;
       }
       
-      public function set spacing(param1:int) : void
+      public function set spacing(value:int) : void
       {
-         this._space = param1;
-         this.commitMeasure();
+         _space = value;
+         commitMeasure();
       }
       
       public function get spacing() : int
       {
-         return this._space;
+         return _space;
       }
       
       public function get maxChars() : int
       {
-         return this._input.maxChars;
+         return _input.maxChars;
       }
       
-      public function set maxChars(param1:int) : void
+      public function set maxChars(value:int) : void
       {
-         this._input.maxChars = param1;
+         _input.maxChars = value;
       }
       
       public function get stroke() : String
       {
-         return this._input.stroke;
+         return _input.stroke;
       }
       
-      public function set stroke(param1:String) : void
+      public function set stroke(value:String) : void
       {
-         this._input.stroke = param1;
+         _input.stroke = value;
       }
       
       public function get color() : Object
       {
-         return this._input.color;
+         return _input.color;
       }
       
-      public function set color(param1:Object) : void
+      public function set color(value:Object) : void
       {
-         this._input.color = param1;
+         _input.color = value;
       }
       
       public function get font() : String
       {
-         return this._input.font;
+         return _input.font;
       }
       
-      public function set font(param1:String) : void
+      public function set font(value:String) : void
       {
-         this._input.font = param1;
+         _input.font = value;
       }
       
       public function get bold() : Object
       {
-         return this._input.bold;
+         return _input.bold;
       }
       
-      public function set bold(param1:Object) : void
+      public function set bold(value:Object) : void
       {
-         this._input.bold = param1;
+         _input.bold = value;
       }
       
       public function get margin() : String
       {
-         return this._input.margin;
+         return _input.margin;
       }
       
-      public function set margin(param1:String) : void
+      public function set margin(value:String) : void
       {
-         this._input.margin = param1;
+         _input.margin = value;
       }
       
       public function get size() : Object
       {
-         return this._input.size;
+         return _input.size;
       }
       
-      public function set size(param1:Object) : void
+      public function set size(value:Object) : void
       {
-         this._input.size = param1;
+         _input.size = value;
       }
       
       public function get inputWidth() : Number
       {
-         return this._input.width;
+         return _input.width;
       }
       
-      public function set inputWidht(param1:Number) : void
+      public function set inputWidht(value:Number) : void
       {
-         this._input.width = param1;
-         this.commitMeasure();
+         _input.width = value;
+         commitMeasure();
       }
       
-      public function set numValue(param1:int) : void
+      public function set numValue(value:int) : void
       {
-         this._numValue = param1;
-         this.checkBtnStatus();
-         this._input.text = this._numValue.toString();
-         if(this._changeHandler)
+         _numValue = value;
+         checkBtnStatus();
+         _input.text = _numValue.toString();
+         if(_changeHandler)
          {
-            this._changeHandler.executeWith([this._numValue]);
+            _changeHandler.executeWith([_numValue]);
          }
       }
       
       public function get numValue() : int
       {
-         return this._numValue;
+         return _numValue;
       }
       
       public function get layoutType() : int
       {
-         return this._layoutType;
+         return _layoutType;
       }
       
-      public function set layoutType(param1:int) : void
+      public function set layoutType(value:int) : void
       {
-         this._layoutType = param1;
-         this.layout();
+         _layoutType = value;
+         layout();
       }
       
       override public function dispose() : void
       {
-         this._input.removeEventListener(Event.CHANGE,this.onTextFieldChange);
-         ObjectUtils.disposeObject(this._input);
-         this._input = null;
-         ObjectUtils.disposeObject(this._btnSub);
-         this._btnSub = null;
-         ObjectUtils.disposeObject(this._btnAdd);
-         this._btnAdd = null;
+         _input.removeEventListener("change",onTextFieldChange);
+         ObjectUtils.disposeObject(_input);
+         _input = null;
+         ObjectUtils.disposeObject(_btnSub);
+         _btnSub = null;
+         ObjectUtils.disposeObject(_btnAdd);
+         _btnAdd = null;
       }
    }
 }

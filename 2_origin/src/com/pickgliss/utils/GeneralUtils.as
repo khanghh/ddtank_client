@@ -14,194 +14,194 @@ package com.pickgliss.utils
          super();
       }
       
-      public static function cloneObject(param1:*) : *
+      public static function cloneObject(_obj:*) : *
       {
-         return doSerializeObject(param1,true);
+         return doSerializeObject(_obj,true);
       }
       
-      public static function serializeObject(param1:*) : Object
+      public static function serializeObject(_obj:*) : Object
       {
-         return doSerializeObject(param1,false);
+         return doSerializeObject(_obj,false);
       }
       
-      public static function deserializeObject(param1:Object) : *
+      public static function deserializeObject(_obj:Object) : *
       {
-         return doDeserializeObject(param1);
+         return doDeserializeObject(_obj);
       }
       
-      private static function doDeserializeObject(param1:Object) : *
+      private static function doDeserializeObject(_transportLayerData:Object) : *
       {
-         var _loc5_:* = undefined;
-         var _loc4_:Type = Type.forName(param1["classFullName"]);
-         var _loc7_:* = param1["warpObject"];
-         var _loc3_:* = new _loc4_.clazz();
-         if(_loc3_ is Vector.<*> || _loc3_ is Array)
+         var cloneProperty:* = undefined;
+         var returnObjType:Type = Type.forName(_transportLayerData["classFullName"]);
+         var warpObject:* = _transportLayerData["warpObject"];
+         var returnObj:* = new returnObjType.clazz();
+         if(returnObj is Vector.<*> || returnObj is Array)
          {
             var _loc10_:int = 0;
-            var _loc9_:* = _loc7_;
-            for each(var _loc2_ in _loc7_)
+            var _loc9_:* = warpObject;
+            for each(var subObject in warpObject)
             {
-               if(_loc2_ is String || _loc2_ is int || _loc2_ is uint || _loc2_ is Number || _loc2_ is Boolean)
+               if(subObject is String || subObject is int || subObject is uint || subObject is Number || subObject is Boolean)
                {
-                  _loc3_.push(_loc2_);
+                  returnObj.push(subObject);
                }
                else
                {
-                  _loc3_.push(doDeserializeObject(_loc2_));
+                  returnObj.push(doDeserializeObject(subObject));
                }
             }
          }
          else
          {
-            _loc5_ = null;
-            if(param1["classFullName"] == "Object")
+            cloneProperty = null;
+            if(_transportLayerData["classFullName"] == "Object")
             {
                var _loc12_:int = 0;
-               var _loc11_:* = _loc7_;
-               for(var _loc8_ in _loc7_)
+               var _loc11_:* = warpObject;
+               for(var key in warpObject)
                {
-                  _loc5_ = doDeserializeProperty(_loc7_[_loc8_],null);
-                  _loc3_[_loc8_] = _loc5_;
+                  cloneProperty = doDeserializeProperty(warpObject[key],null);
+                  returnObj[key] = cloneProperty;
                }
             }
             else
             {
                var _loc14_:int = 0;
-               var _loc13_:* = _loc4_.properties;
-               for each(var _loc6_ in _loc4_.properties)
+               var _loc13_:* = returnObjType.properties;
+               for each(var property in returnObjType.properties)
                {
-                  if(_loc6_ is Variable || _loc6_ is Accessor && Accessor(_loc6_).writeable && _loc6_.name != "prototype")
+                  if(property is Variable || property is Accessor && Accessor(property).writeable && property.name != "prototype")
                   {
-                     _loc5_ = doDeserializeProperty(_loc7_[_loc6_.name],_loc6_);
-                     _loc3_[_loc6_.name] = _loc5_;
+                     cloneProperty = doDeserializeProperty(warpObject[property.name],property);
+                     returnObj[property.name] = cloneProperty;
                   }
                }
             }
          }
-         return _loc3_;
+         return returnObj;
       }
       
-      private static function doDeserializeProperty(param1:*, param2:Field) : *
+      private static function doDeserializeProperty(_sourceProperty:*, _currentField:Field) : *
       {
-         if(param1 != null)
+         if(_sourceProperty != null)
          {
-            if(param1 is Boolean || param1 is String || param1 is int || param1 is uint || param1 is Number)
+            if(_sourceProperty is Boolean || _sourceProperty is String || _sourceProperty is int || _sourceProperty is uint || _sourceProperty is Number)
             {
-               return param1;
+               return _sourceProperty;
             }
-            return doDeserializeObject(param1);
+            return doDeserializeObject(_sourceProperty);
          }
          return null;
       }
       
-      private static function doSerializeObject(param1:*, param2:Boolean, param3:Type = null) : Object
+      private static function doSerializeObject(_normalObj:*, _isClone:Boolean, _objType:Type = null) : Object
       {
-         var _loc6_:* = null;
-         var _loc7_:* = undefined;
-         var _loc5_:* = null;
-         if(param3 == null)
+         var returnCloneObj:* = null;
+         var cloneProperty:* = undefined;
+         var transportWarp:* = null;
+         if(_objType == null)
          {
-            param3 = Type.forInstance(param1);
+            _objType = Type.forInstance(_normalObj);
          }
-         if(param1 != null)
+         if(_normalObj != null)
          {
-            if(param1 is Vector.<*> || param1 is Array)
+            if(_normalObj is Vector.<*> || _normalObj is Array)
             {
-               if(param2)
+               if(_isClone)
                {
-                  _loc6_ = new param3.clazz();
+                  returnCloneObj = new _objType.clazz();
                }
                else
                {
-                  _loc6_ = [];
+                  returnCloneObj = [];
                }
                var _loc11_:int = 0;
-               var _loc10_:* = param1;
-               for each(var _loc4_ in param1)
+               var _loc10_:* = _normalObj;
+               for each(var subObject in _normalObj)
                {
-                  if(_loc4_ is String || _loc4_ is int || _loc4_ is uint || _loc4_ is Number || _loc4_ is Boolean)
+                  if(subObject is String || subObject is int || subObject is uint || subObject is Number || subObject is Boolean)
                   {
-                     _loc6_.push(_loc4_);
+                     returnCloneObj.push(subObject);
                   }
                   else
                   {
-                     _loc6_.push(doSerializeObject(_loc4_,param2));
+                     returnCloneObj.push(doSerializeObject(subObject,_isClone));
                   }
                }
             }
             else
             {
-               if(param2)
+               if(_isClone)
                {
-                  _loc6_ = new param3.clazz();
+                  returnCloneObj = new _objType.clazz();
                }
                else
                {
-                  _loc6_ = {};
+                  returnCloneObj = {};
                }
-               _loc7_ = null;
-               if(param3.isDynamic)
+               cloneProperty = null;
+               if(_objType.isDynamic)
                {
                   var _loc13_:int = 0;
-                  var _loc12_:* = param1;
-                  for(var _loc9_ in param1)
+                  var _loc12_:* = _normalObj;
+                  for(var key in _normalObj)
                   {
-                     if(param1[_loc9_] != null)
+                     if(_normalObj[key] != null)
                      {
-                        _loc7_ = doSerializeProperty(param1[_loc9_],param2,null);
-                        _loc6_[_loc9_] = _loc7_;
+                        cloneProperty = doSerializeProperty(_normalObj[key],_isClone,null);
+                        returnCloneObj[key] = cloneProperty;
                      }
                   }
                }
                else
                {
                   var _loc15_:int = 0;
-                  var _loc14_:* = param3.properties;
-                  for each(var _loc8_ in param3.properties)
+                  var _loc14_:* = _objType.properties;
+                  for each(var property in _objType.properties)
                   {
-                     if(_loc8_ is Variable || _loc8_ is Accessor && Accessor(_loc8_).writeable && _loc8_.name != "prototype")
+                     if(property is Variable || property is Accessor && Accessor(property).writeable && property.name != "prototype")
                      {
-                        if(param1[_loc8_.name] != null)
+                        if(_normalObj[property.name] != null)
                         {
-                           _loc7_ = doSerializeProperty(param1[_loc8_.name],param2,_loc8_);
-                           _loc6_[_loc8_.name] = _loc7_;
+                           cloneProperty = doSerializeProperty(_normalObj[property.name],_isClone,property);
+                           returnCloneObj[property.name] = cloneProperty;
                         }
                      }
                   }
                }
             }
-            if(!param2)
+            if(!_isClone)
             {
-               _loc5_ = {};
-               _loc5_["isCETransportObject"] = true;
-               _loc5_["classFullName"] = param3.fullName;
-               _loc5_["warpObject"] = _loc6_;
-               return _loc5_;
+               transportWarp = {};
+               transportWarp["isCETransportObject"] = true;
+               transportWarp["classFullName"] = _objType.fullName;
+               transportWarp["warpObject"] = returnCloneObj;
+               return transportWarp;
             }
-            return _loc6_;
+            return returnCloneObj;
          }
          return null;
       }
       
-      private static function doSerializeProperty(param1:*, param2:Boolean, param3:Field) : *
+      private static function doSerializeProperty(_sourceProperty:*, _isClone:Boolean, _currentField:Field) : *
       {
-         if(param3)
+         if(_currentField)
          {
-            if(param3 is Variable || param3 is Accessor && Accessor(param3).writeable && param3.name != "prototype")
+            if(_currentField is Variable || _currentField is Accessor && Accessor(_currentField).writeable && _currentField.name != "prototype")
             {
-               if(param3.type.fullName == "Boolean" || param3.type.fullName == "String" || param3.type.fullName == "int" || param3.type.fullName == "uint" || param3.type.fullName == "Number")
+               if(_currentField.type.fullName == "Boolean" || _currentField.type.fullName == "String" || _currentField.type.fullName == "int" || _currentField.type.fullName == "uint" || _currentField.type.fullName == "Number")
                {
-                  return param1;
+                  return _sourceProperty;
                }
-               return doSerializeObject(param1,param2,param3.type);
+               return doSerializeObject(_sourceProperty,_isClone,_currentField.type);
             }
             return;
          }
-         if(param1 is Boolean || param1 is String || param1 is int || param1 is uint || param1 is Number)
+         if(_sourceProperty is Boolean || _sourceProperty is String || _sourceProperty is int || _sourceProperty is uint || _sourceProperty is Number)
          {
-            return param1;
+            return _sourceProperty;
          }
-         return doSerializeObject(param1,param2,null);
+         return doSerializeObject(_sourceProperty,_isClone,null);
       }
    }
 }

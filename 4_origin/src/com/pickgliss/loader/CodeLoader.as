@@ -25,25 +25,25 @@ package com.pickgliss.loader
          super();
       }
       
-      public static function loaded(param1:String) : Boolean
+      public static function loaded(url:String) : Boolean
       {
-         return _loadedDic[param1] != null;
+         return _loadedDic[url] != null;
       }
       
-      public static function removeURL(param1:String) : void
+      public static function removeURL(url:String) : void
       {
       }
       
-      public static function addLoadURL(param1:String) : void
+      public static function addLoadURL(url:String) : void
       {
-         _loadedDic[param1] = 1;
+         _loadedDic[url] = 1;
       }
       
-      public function loadPNG(param1:String, param2:Function, param3:Function) : void
+      public function loadPNG($url:String, $onLoaded:Function, $onProgress:Function) : void
       {
-         _url = param1;
-         _onLoaded = param2;
-         _onProgress = param3;
+         _url = $url;
+         _onLoaded = $onLoaded;
+         _onProgress = $onProgress;
          startLoad();
       }
       
@@ -55,26 +55,26 @@ package com.pickgliss.loader
       
       private function startLoad() : void
       {
-         var _loc1_:String = ComponentSetting.FLASHSITE + _url;
-         _coreLoader = LoadResourceManager.Instance.createLoader(_loc1_,4);
+         var url:String = ComponentSetting.FLASHSITE + _url;
+         _coreLoader = LoadResourceManager.Instance.createLoader(url,4);
          _coreLoader.addEventListener("complete",__onloadCoreComplete);
          _coreLoader.addEventListener("progress",__onLoadCoreProgress);
          LoadResourceManager.Instance.startLoad(_coreLoader);
       }
       
-      protected function __onLoadCoreProgress(param1:LoaderEvent) : void
+      protected function __onLoadCoreProgress(event:LoaderEvent) : void
       {
       }
       
-      private function __onloadCoreComplete(param1:LoaderEvent) : void
+      private function __onloadCoreComplete(event:LoaderEvent) : void
       {
-         param1.loader.removeEventListener("complete",__onloadCoreComplete);
-         param1.loader.removeEventListener("progress",__onLoadCoreProgress);
-         var _loc2_:* = ClassUtils.CreatInstance("DDT_Core");
-         if(_loc2_ != null)
+         event.loader.removeEventListener("complete",__onloadCoreComplete);
+         event.loader.removeEventListener("progress",__onLoadCoreProgress);
+         var ddtCoreInstance:* = ClassUtils.CreatInstance("DDT_Core");
+         if(ddtCoreInstance != null)
          {
             LoaderSavingManager.saveFilesToLocal();
-            _loc2_["setup"]();
+            ddtCoreInstance["setup"]();
             _loadedDic[_url] = 1;
             if(_onLoaded != null)
             {

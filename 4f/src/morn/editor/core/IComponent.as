@@ -1,11 +1,1 @@
-package morn.editor.core
-{
-   public interface IComponent
-   {
-       
-      
-      function get comXml() : XML;
-      
-      function set comXml(param1:XML) : void;
-   }
-}
+package morn.editor.core{   public interface IComponent   {                   function get comXml() : XML;            function set comXml(param1:XML) : void;   }}

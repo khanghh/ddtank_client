@@ -79,7 +79,7 @@ package org.as3commons.reflect
       
       private var _metadataLookup:Object;
       
-      public function Type(param1:ApplicationDomain)
+      public function Type(applicationDomain:ApplicationDomain)
       {
          super();
          this._accessors = [];
@@ -90,7 +90,7 @@ package org.as3commons.reflect
          this._extendsClasses = [];
          this._interfaces = [];
          this._parameters = [];
-         this._applicationDomain = param1;
+         this._applicationDomain = applicationDomain;
       }
       
       public static function reset() : void
@@ -107,24 +107,22 @@ package org.as3commons.reflect
          return _currentApplicationDomain = _currentApplicationDomain || ApplicationDomain.currentDomain;
       }
       
-      public static function forInstance(param1:*, param2:ApplicationDomain = null) : Type
-      {
-         var _loc3_:Type = null;
-         param2 = param2 || currentApplicationDomain;
-         var _loc4_:Class = ClassUtils.forInstance(param1,param2);
-         if(_loc4_ != null)
-         {
-            _loc3_ = Type.forClass(_loc4_,param2);
-         }
-         return _loc3_;
-      }
-      
-      public static function forName(param1:String, param2:ApplicationDomain = null) : Type
+      public static function forInstance(instance:*, applicationDomain:ApplicationDomain = null) : Type
       {
          var result:Type = null;
-         var name:String = param1;
-         var applicationDomain:ApplicationDomain = param2;
          applicationDomain = applicationDomain || currentApplicationDomain;
+         var clazz:Class = ClassUtils.forInstance(instance,applicationDomain);
+         if(clazz != null)
+         {
+            result = Type.forClass(clazz,applicationDomain);
+         }
+         return result;
+      }
+      
+      public static function forName(name:String, applicationDomain:ApplicationDomain = null) : Type
+      {
+         var result:Type = null;
+         var applicationDomain:ApplicationDomain = applicationDomain || currentApplicationDomain;
          switch(name)
          {
             case VOID_NAME:
@@ -153,20 +151,20 @@ package org.as3commons.reflect
          return result;
       }
       
-      public static function forClass(param1:Class, param2:ApplicationDomain = null) : Type
+      public static function forClass(clazz:Class, applicationDomain:ApplicationDomain = null) : Type
       {
-         var _loc3_:Type = null;
-         param2 = param2 || currentApplicationDomain;
-         var _loc4_:String = ClassUtils.getFullyQualifiedName(param1);
-         if(getTypeProvider().getTypeCache().contains(_loc4_,param2))
+         var result:Type = null;
+         applicationDomain = applicationDomain || currentApplicationDomain;
+         var fullyQualifiedClassName:String = ClassUtils.getFullyQualifiedName(clazz);
+         if(getTypeProvider().getTypeCache().contains(fullyQualifiedClassName,applicationDomain))
          {
-            _loc3_ = getTypeProvider().getTypeCache().get(_loc4_,param2);
+            result = getTypeProvider().getTypeCache().get(fullyQualifiedClassName,applicationDomain);
          }
          else
          {
-            _loc3_ = getTypeProvider().getType(param1,param2);
+            result = getTypeProvider().getType(clazz,applicationDomain);
          }
-         return _loc3_;
+         return result;
       }
       
       public static function getTypeProvider() : ITypeProvider
@@ -196,9 +194,9 @@ package org.as3commons.reflect
          return this._applicationDomain;
       }
       
-      public function set applicationDomain(param1:ApplicationDomain) : void
+      public function set applicationDomain(value:ApplicationDomain) : void
       {
-         this._applicationDomain = param1;
+         this._applicationDomain = value;
       }
       
       public function get alias() : String
@@ -206,9 +204,9 @@ package org.as3commons.reflect
          return this._alias;
       }
       
-      public function set alias(param1:String) : void
+      public function set alias(value:String) : void
       {
-         this._alias = param1;
+         this._alias = value;
       }
       
       public function get name() : String
@@ -216,9 +214,9 @@ package org.as3commons.reflect
          return this._name;
       }
       
-      public function set name(param1:String) : void
+      public function set name(value:String) : void
       {
-         this._name = param1;
+         this._name = value;
       }
       
       public function get fullName() : String
@@ -226,9 +224,9 @@ package org.as3commons.reflect
          return this._fullName;
       }
       
-      public function set fullName(param1:String) : void
+      public function set fullName(value:String) : void
       {
-         this._fullName = param1;
+         this._fullName = value;
       }
       
       public function get clazz() : Class
@@ -236,9 +234,9 @@ package org.as3commons.reflect
          return this._class;
       }
       
-      public function set clazz(param1:Class) : void
+      public function set clazz(value:Class) : void
       {
-         this._class = param1;
+         this._class = value;
       }
       
       public function get isDynamic() : Boolean
@@ -246,9 +244,9 @@ package org.as3commons.reflect
          return this._isDynamic;
       }
       
-      public function set isDynamic(param1:Boolean) : void
+      public function set isDynamic(value:Boolean) : void
       {
-         this._isDynamic = param1;
+         this._isDynamic = value;
       }
       
       public function get isFinal() : Boolean
@@ -256,9 +254,9 @@ package org.as3commons.reflect
          return this._isFinal;
       }
       
-      public function set isFinal(param1:Boolean) : void
+      public function set isFinal(value:Boolean) : void
       {
-         this._isFinal = param1;
+         this._isFinal = value;
       }
       
       public function get isStatic() : Boolean
@@ -266,9 +264,9 @@ package org.as3commons.reflect
          return this._isStatic;
       }
       
-      public function set isStatic(param1:Boolean) : void
+      public function set isStatic(value:Boolean) : void
       {
-         this._isStatic = param1;
+         this._isStatic = value;
       }
       
       public function get isInterface() : Boolean
@@ -276,9 +274,9 @@ package org.as3commons.reflect
          return this._isInterface;
       }
       
-      public function set isInterface(param1:Boolean) : void
+      public function set isInterface(value:Boolean) : void
       {
-         this._isInterface = param1;
+         this._isInterface = value;
       }
       
       public function get parameters() : Array
@@ -291,9 +289,9 @@ package org.as3commons.reflect
          return this._interfaces;
       }
       
-      public function set interfaces(param1:Array) : void
+      public function set interfaces(value:Array) : void
       {
-         this._interfaces = param1;
+         this._interfaces = value;
       }
       
       public function get constructor() : Constructor
@@ -301,9 +299,9 @@ package org.as3commons.reflect
          return this._constructor;
       }
       
-      public function set constructor(param1:Constructor) : void
+      public function set constructor(constructor:Constructor) : void
       {
-         this._constructor = param1;
+         this._constructor = constructor;
       }
       
       public function get accessors() : Array
@@ -311,9 +309,9 @@ package org.as3commons.reflect
          return this._accessors;
       }
       
-      public function set accessors(param1:Array) : void
+      public function set accessors(value:Array) : void
       {
-         this._accessors = param1;
+         this._accessors = value;
          this._fields = null;
       }
       
@@ -322,9 +320,9 @@ package org.as3commons.reflect
          return this._methods != null?this._methods.getArray():[];
       }
       
-      public function set methods(param1:Array) : void
+      public function set methods(value:Array) : void
       {
-         this._methods = new HashArray(MEMBER_PROPERTY_NAME,false,param1);
+         this._methods = new HashArray(MEMBER_PROPERTY_NAME,false,value);
       }
       
       public function get staticConstants() : Array
@@ -332,9 +330,9 @@ package org.as3commons.reflect
          return this._staticConstants;
       }
       
-      public function set staticConstants(param1:Array) : void
+      public function set staticConstants(value:Array) : void
       {
-         this._staticConstants = param1;
+         this._staticConstants = value;
          this._fields = null;
       }
       
@@ -343,9 +341,9 @@ package org.as3commons.reflect
          return this._constants;
       }
       
-      public function set constants(param1:Array) : void
+      public function set constants(value:Array) : void
       {
-         this._constants = param1;
+         this._constants = value;
          this._fields = null;
       }
       
@@ -354,9 +352,9 @@ package org.as3commons.reflect
          return this._staticVariables;
       }
       
-      public function set staticVariables(param1:Array) : void
+      public function set staticVariables(value:Array) : void
       {
-         this._staticVariables = param1;
+         this._staticVariables = value;
          this._fields = null;
       }
       
@@ -365,9 +363,9 @@ package org.as3commons.reflect
          return this._extendsClasses;
       }
       
-      public function set extendsClasses(param1:Array) : void
+      public function set extendsClasses(value:Array) : void
       {
-         this._extendsClasses = param1;
+         this._extendsClasses = value;
       }
       
       public function get variables() : Array
@@ -375,9 +373,9 @@ package org.as3commons.reflect
          return this._variables;
       }
       
-      public function set variables(param1:Array) : void
+      public function set variables(value:Array) : void
       {
-         this._variables = param1;
+         this._variables = value;
          this._fields = null;
       }
       
@@ -400,43 +398,43 @@ package org.as3commons.reflect
          return this.accessors.concat(this.variables);
       }
       
-      public function getMethod(param1:String, param2:String = null) : Method
+      public function getMethod(name:String, ns:String = null) : Method
       {
-         var _loc3_:Array = null;
-         var _loc4_:Method = null;
-         if(param2 == null)
+         var mthds:Array = null;
+         var method:Method = null;
+         if(ns == null)
          {
-            return this._methods.get(param1);
+            return this._methods.get(name);
          }
-         _loc3_ = this._methods.getArray();
-         for each(_loc4_ in _loc3_)
+         mthds = this._methods.getArray();
+         for each(method in mthds)
          {
-            if(_loc4_.name == param1 && _loc4_.namespaceURI == param2)
+            if(method.name == name && method.namespaceURI == ns)
             {
-               return _loc4_;
+               return method;
             }
          }
          return null;
       }
       
-      public function getField(param1:String, param2:String = null) : Field
+      public function getField(name:String, ns:String = null) : Field
       {
-         var _loc3_:Array = null;
-         var _loc4_:Field = null;
+         var flds:Array = null;
+         var field:Field = null;
          if(this._fields == null)
          {
             this.createFieldsHashArray();
          }
-         if(param2 == null || param2.length == 0)
+         if(ns == null || ns.length == 0)
          {
-            return this._fields.get(param1);
+            return this._fields.get(name);
          }
-         _loc3_ = this._fields.getArray();
-         for each(_loc4_ in _loc3_)
+         flds = this._fields.getArray();
+         for each(field in flds)
          {
-            if(_loc4_.name == param1 && _loc4_.namespaceURI == param2)
+            if(field.name == name && field.namespaceURI == ns)
             {
-               return _loc4_;
+               return field;
             }
          }
          return null;
@@ -454,42 +452,42 @@ package org.as3commons.reflect
          this.addToMetadataLookup(this._fields.getArray());
       }
       
-      public function getMetadataContainers(param1:String) : Array
+      public function getMetadataContainers(name:String) : Array
       {
          if(this._metadataLookup != null)
          {
-            param1 = param1.toLowerCase();
-            param1 = param1 != "constructor"?param1:"_constructor";
-            return this._metadataLookup[param1] as Array;
+            name = name.toLowerCase();
+            name = name != "constructor"?name:"_constructor";
+            return this._metadataLookup[name] as Array;
          }
          return null;
       }
       
-      private function addToMetadataLookup(param1:Array) : void
+      private function addToMetadataLookup(containerList:Array) : void
       {
-         var _loc2_:MetadataContainer = null;
-         var _loc3_:Array = null;
-         var _loc4_:Metadata = null;
-         var _loc5_:String = null;
-         var _loc6_:Array = null;
-         for each(_loc2_ in param1)
+         var container:MetadataContainer = null;
+         var metadatas:Array = null;
+         var m:Metadata = null;
+         var name:String = null;
+         var arr:Array = null;
+         for each(container in containerList)
          {
-            _loc3_ = _loc2_.metadata;
-            for each(_loc4_ in _loc3_)
+            metadatas = container.metadata;
+            for each(m in metadatas)
             {
-               if(_loc4_ != null)
+               if(m != null)
                {
-                  _loc5_ = _loc4_.name != "constructor"?_loc4_.name:"_constructor";
-                  _loc6_ = this._metadataLookup[_loc5_] = this._metadataLookup[_loc5_] || [];
-                  _loc6_[_loc6_.length] = _loc2_;
+                  name = m.name != "constructor"?m.name:"_constructor";
+                  arr = this._metadataLookup[name] = this._metadataLookup[name] || [];
+                  arr[arr.length] = container;
                }
             }
          }
       }
       
-      as3commons_reflect function setParameters(param1:Array) : void
+      as3commons_reflect function setParameters(value:Array) : void
       {
-         this._parameters = param1;
+         this._parameters = value;
       }
    }
 }

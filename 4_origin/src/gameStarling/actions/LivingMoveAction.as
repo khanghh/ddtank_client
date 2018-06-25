@@ -18,15 +18,15 @@ package gameStarling.actions
       
       private var _endAction:String;
       
-      public function LivingMoveAction(param1:GameLiving3D, param2:Array, param3:int, param4:String = "")
+      public function LivingMoveAction(living:GameLiving3D, path:Array, dir:int, endAction:String = "")
       {
          super();
          _isFinished = false;
-         _living = param1;
-         _path = param2;
-         _dir = param3;
+         _living = living;
+         _path = path;
+         _dir = dir;
          _currentPathIndex = 0;
-         _endAction = param4;
+         _endAction = endAction;
       }
       
       override public function prepare() : void

@@ -23,34 +23,34 @@ package game.actions
       
       private var _finishedFun:Function;
       
-      public function PlayerFallingAction(param1:GameLiving, param2:Point, param3:Boolean, param4:Boolean, param5:Function = null)
+      public function PlayerFallingAction(player:GameLiving, target:Point, isLiving:Boolean, canIgnore:Boolean, finishedFun:Function = null)
       {
          super();
-         _target = param2;
-         _isLiving = param3;
+         _target = target;
+         _isLiving = isLiving;
          if(!_isLiving)
          {
             _target.y = _target.y + 70;
          }
-         _info = param1.info;
-         _player = param1;
-         _canIgnore = param4;
-         _finishedFun = param5;
+         _info = player.info;
+         _player = player;
+         _canIgnore = canIgnore;
+         _finishedFun = finishedFun;
       }
       
-      override public function connect(param1:BaseAction) : Boolean
+      override public function connect(action:BaseAction) : Boolean
       {
-         var _loc2_:PlayerFallingAction = param1 as PlayerFallingAction;
-         if(_loc2_ && _loc2_._target.y < _target.y)
+         var ac:PlayerFallingAction = action as PlayerFallingAction;
+         if(ac && ac._target.y < _target.y)
          {
             return true;
          }
          return false;
       }
       
-      override public function canReplace(param1:BaseAction) : Boolean
+      override public function canReplace(action:BaseAction) : Boolean
       {
-         if(param1 is PlayerWalkAction)
+         if(action is PlayerWalkAction)
          {
             if(_canIgnore)
             {

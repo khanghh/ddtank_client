@@ -50,16 +50,16 @@ package horse.horsePicCherish
       
       private var _lastClickTime:int = 0;
       
-      public function HorsePicCherishItem(param1:int, param2:HorsePicCherishVo)
+      public function HorsePicCherishItem(index:int, data:HorsePicCherishVo)
       {
          super();
-         _index = param1;
-         _data = param2;
+         _index = index;
+         _data = data;
          if(_data)
          {
             _stateArr = LanguageMgr.GetTranslation("ddt.totem.totemPointTip.statusValueTxt").split(",");
             _propertyTxtArr = LanguageMgr.GetTranslation("horse.horsePicCherish.peopertyTxt").split(",");
-            _propertyValueArr = HorseControl.instance.getHorsePicCherishAddProperty(param2.ID);
+            _propertyValueArr = HorseControl.instance.getHorsePicCherishAddProperty(data.ID);
          }
          initView();
          initEvent();
@@ -102,14 +102,14 @@ package horse.horsePicCherish
          HorseManager.instance.addEventListener("changeHorseByPicCherish",__changeHorseHandler);
       }
       
-      protected function __changeHorseHandler(param1:Event) : void
+      protected function __changeHorseHandler(event:Event) : void
       {
          updateView();
       }
       
-      protected function __activeHandler(param1:MouseEvent) : void
+      protected function __activeHandler(event:MouseEvent) : void
       {
-         var _loc2_:int = 0;
+         var place:int = 0;
          SoundManager.instance.playButtonSound();
          if(getTimer() - _lastClickTime < 2000)
          {
@@ -127,14 +127,14 @@ package horse.horsePicCherish
          }
          if(_state[1])
          {
-            _loc2_ = PlayerManager.Instance.Self.getBag(1).getItemByTemplateId(_data.TemplateId).Place;
-            SocketManager.Instance.out.sendActiveHorsePicCherish(_loc2_);
+            place = PlayerManager.Instance.Self.getBag(1).getItemByTemplateId(_data.TemplateId).Place;
+            SocketManager.Instance.out.sendActiveHorsePicCherish(place);
             return;
          }
          MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("horse.horsePicCherish.noPic"));
       }
       
-      protected function __useHandler(param1:MouseEvent) : void
+      protected function __useHandler(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(!_data || !_state[0])
@@ -146,46 +146,45 @@ package horse.horsePicCherish
       
       private function updateView() : void
       {
-         var _loc3_:* = null;
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:int = 0;
+         var tip:* = null;
+         var i:int = 0;
+         var beginDate:* = null;
+         var valid:int = 0;
          if(_data)
          {
             _state = HorseControl.instance.getHorsePicCherishState(_data.ID,_data.TemplateId);
             if(!tipData)
             {
-               _loc3_ = {};
-               _loc3_.title = LanguageMgr.GetTranslation("horse.horsePicCherish.frameTitleTxt");
-               _loc3_.type = LanguageMgr.GetTranslation("horse.horsePicCherish.frameTitleTxt");
-               tipData = _loc3_;
+               tip = {};
+               tip.title = LanguageMgr.GetTranslation("horse.horsePicCherish.frameTitleTxt");
+               tip.type = LanguageMgr.GetTranslation("horse.horsePicCherish.frameTitleTxt");
+               tipData = tip;
             }
             tipData.state = !!_state[0]?_stateArr[0]:_stateArr[1];
             tipData.isActivate = _state[0];
             tipData.activeValue = ItemManager.Instance.getTemplateById(_data.TemplateId).Name;
             tipData.propertyValue = "";
             tipData.isActive = _state[0];
-            _loc4_ = 0;
-            while(_loc4_ < _propertyValueArr.length)
+            for(i = 0; i < _propertyValueArr.length; )
             {
-               if(_propertyValueArr[_loc4_] != 0)
+               if(_propertyValueArr[i] != 0)
                {
-                  tipData.propertyValue = tipData.propertyValue + (_propertyTxtArr[_loc4_] + _propertyValueArr[_loc4_] + "\n");
+                  tipData.propertyValue = tipData.propertyValue + (_propertyTxtArr[i] + _propertyValueArr[i] + "\n");
                }
-               _loc4_++;
+               i++;
             }
             tipData.getValue = LanguageMgr.GetTranslation("horse.pic.getTxt");
             if(PlayerManager.Instance.Self.horsePicCherishDic.hasKey(_data.ID))
             {
-               _loc2_ = PlayerManager.Instance.Self.horsePicCherishDic[_data.ID].beginDate;
-               _loc1_ = PlayerManager.Instance.Self.horsePicCherishDic[_data.ID].valid;
-               if(_loc1_ == 0)
+               beginDate = PlayerManager.Instance.Self.horsePicCherishDic[_data.ID].beginDate;
+               valid = PlayerManager.Instance.Self.horsePicCherishDic[_data.ID].valid;
+               if(valid == 0)
                {
                   tipData.valid = 2147483647;
                }
                else
                {
-                  tipData.valid = _loc1_ * 86400000 + _loc2_.getTime();
+                  tipData.valid = valid * 86400000 + beginDate.getTime();
                }
             }
          }

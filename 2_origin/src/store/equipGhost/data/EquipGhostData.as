@@ -16,11 +16,11 @@ package store.equipGhost.data
       
       public var totalGhost:uint;
       
-      public function EquipGhostData(param1:uint, param2:uint)
+      public function EquipGhostData(bagType:uint, place:uint)
       {
          super();
-         _bagType = param1;
-         _place = param2;
+         _bagType = bagType;
+         _place = place;
          _categoryID = BagInfo.parseCategoryID(_bagType,_place);
       }
       

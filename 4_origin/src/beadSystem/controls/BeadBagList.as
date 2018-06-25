@@ -34,27 +34,27 @@ package beadSystem.controls
       
       private var _beadInfo:InventoryItemInfo;
       
-      public function BeadBagList(param1:int, param2:int = 32, param3:int = 80, param4:int = 7)
+      public function BeadBagList(bagType:int, startIndex:int = 32, stopIndex:int = 80, columnNum:int = 7)
       {
-         _startIndex = param2;
-         _stopIndex = param3;
-         super(param1,param4);
+         _startIndex = startIndex;
+         _stopIndex = stopIndex;
+         super(bagType,columnNum);
       }
       
-      override protected function __doubleClickHandler(param1:InteractiveEvent) : void
+      override protected function __doubleClickHandler(evt:InteractiveEvent) : void
       {
-         var _loc2_:* = null;
+         var bindAlert:* = null;
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc3_:InventoryItemInfo = (param1.currentTarget as BeadCell).itemInfo;
-         _beadInfo = _loc3_;
-         if(_loc3_ && !_loc3_.IsBinds)
+         var info:InventoryItemInfo = (evt.currentTarget as BeadCell).itemInfo;
+         _beadInfo = info;
+         if(info && !info.IsBinds)
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.beadSystem.useBindBead"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
-            _loc2_.addEventListener("response",__onBindRespones);
+            bindAlert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.beadSystem.useBindBead"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
+            bindAlert.addEventListener("response",__onBindRespones);
          }
          else
          {
@@ -64,7 +64,7 @@ package beadSystem.controls
       
       private function doBeadEquip() : void
       {
-         var _loc1_:int = 0;
+         var vToPlace:int = 0;
          if(_beadInfo)
          {
             if(_beadInfo.Property1 == "31")
@@ -72,42 +72,42 @@ package beadSystem.controls
                if(!_beadInfo.IsBinds)
                {
                }
-               _loc1_ = beadSystemManager.Instance.getEquipPlace(_beadInfo);
-               if(PlayerManager.Instance.Self.BeadBag.getItemAt(4) && _loc1_ == 4)
+               vToPlace = beadSystemManager.Instance.getEquipPlace(_beadInfo);
+               if(PlayerManager.Instance.Self.BeadBag.getItemAt(4) && vToPlace == 4)
                {
                   if(!PlayerManager.Instance.Self.BeadBag.getItemAt(13) && BeadModel._BeadCells[13].isOpend && beadSystemManager.Instance.judgeLevel(_beadInfo.Hole1,BeadModel._BeadCells[13].HoleLv))
                   {
-                     _loc1_ = 13;
+                     vToPlace = 13;
                   }
                   else if(!PlayerManager.Instance.Self.BeadBag.getItemAt(14) && BeadModel._BeadCells[14].isOpend && beadSystemManager.Instance.judgeLevel(_beadInfo.Hole1,BeadModel._BeadCells[14].HoleLv))
                   {
-                     _loc1_ = 14;
+                     vToPlace = 14;
                   }
                   else if(!PlayerManager.Instance.Self.BeadBag.getItemAt(15) && BeadModel._BeadCells[15].isOpend && beadSystemManager.Instance.judgeLevel(_beadInfo.Hole1,BeadModel._BeadCells[15].HoleLv))
                   {
-                     _loc1_ = 15;
+                     vToPlace = 15;
                   }
                   else if(!PlayerManager.Instance.Self.BeadBag.getItemAt(16) && BeadModel._BeadCells[16].isOpend && beadSystemManager.Instance.judgeLevel(_beadInfo.Hole1,BeadModel._BeadCells[16].HoleLv))
                   {
-                     _loc1_ = 16;
+                     vToPlace = 16;
                   }
                   else if(!PlayerManager.Instance.Self.BeadBag.getItemAt(17) && BeadModel._BeadCells[17].isOpend && beadSystemManager.Instance.judgeLevel(_beadInfo.Hole1,BeadModel._BeadCells[17].HoleLv))
                   {
-                     _loc1_ = 17;
+                     vToPlace = 17;
                   }
                   else if(!PlayerManager.Instance.Self.BeadBag.getItemAt(18) && BeadModel._BeadCells[18].isOpend && beadSystemManager.Instance.judgeLevel(_beadInfo.Hole1,BeadModel._BeadCells[18].HoleLv))
                   {
-                     _loc1_ = 18;
+                     vToPlace = 18;
                   }
                }
-               SocketManager.Instance.out.sendBeadEquip(_beadInfo.Place,_loc1_);
+               SocketManager.Instance.out.sendBeadEquip(_beadInfo.Place,vToPlace);
             }
          }
       }
       
-      protected function __onBindRespones(param1:FrameEvent) : void
+      protected function __onBindRespones(pEvent:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(pEvent.responseCode))
          {
             case 0:
             case 1:
@@ -117,8 +117,8 @@ package beadSystem.controls
             case 4:
                doBeadEquip();
          }
-         param1.currentTarget.removeEventListener("response",__onBindRespones);
-         ObjectUtils.disposeObject(param1.currentTarget);
+         pEvent.currentTarget.removeEventListener("response",__onBindRespones);
+         ObjectUtils.disposeObject(pEvent.currentTarget);
       }
       
       public function get BeadCells() : Dictionary
@@ -128,28 +128,27 @@ package beadSystem.controls
       
       override protected function createCells() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var cell:* = null;
          _cells = new Dictionary();
          _cellMouseOverBg = ComponentFactory.Instance.creatBitmap("bagAndInfo.cell.bagCellOverBgAsset");
-         _loc2_ = _startIndex;
-         while(_loc2_ <= _stopIndex)
+         for(i = _startIndex; i <= _stopIndex; )
          {
-            _loc1_ = BeadCell(CellFactory.instance.createBeadCell(_loc2_));
-            addChild(_loc1_);
-            _loc1_.addEventListener("interactive_click",__clickHandler);
-            _loc1_.addEventListener("interactive_double_click",__doubleClickHandler);
-            DoubleClickManager.Instance.enableDoubleClick(_loc1_);
-            _loc1_.addEventListener("lockChanged",__cellChanged);
-            _cells[_loc1_.beadPlace] = _loc1_;
-            _cellVec.push(_loc1_);
-            _loc2_++;
+            cell = BeadCell(CellFactory.instance.createBeadCell(i));
+            addChild(cell);
+            cell.addEventListener("interactive_click",__clickHandler);
+            cell.addEventListener("interactive_double_click",__doubleClickHandler);
+            DoubleClickManager.Instance.enableDoubleClick(cell);
+            cell.addEventListener("lockChanged",__cellChanged);
+            _cells[cell.beadPlace] = cell;
+            _cellVec.push(cell);
+            i++;
          }
       }
       
-      override public function setData(param1:BagInfo) : void
+      override public function setData(bag:BagInfo) : void
       {
-         if(_bagdata == param1)
+         if(_bagdata == bag)
          {
             return;
          }
@@ -158,69 +157,69 @@ package beadSystem.controls
             _bagdata.removeEventListener("update",__updateGoods);
          }
          clearDataCells();
-         _bagdata = param1;
+         _bagdata = bag;
          var _loc4_:int = 0;
          var _loc3_:* = _bagdata.items;
-         for(var _loc2_ in _bagdata.items)
+         for(var i in _bagdata.items)
          {
-            if(_cells[_loc2_] != null)
+            if(_cells[i] != null)
             {
-               _bagdata.items[_loc2_].isMoveSpace = true;
-               _cells[_loc2_].itemInfo = _bagdata.items[_loc2_];
-               _cells[_loc2_].info = _bagdata.items[_loc2_];
+               _bagdata.items[i].isMoveSpace = true;
+               _cells[i].itemInfo = _bagdata.items[i];
+               _cells[i].info = _bagdata.items[i];
             }
          }
          _bagdata.addEventListener("update",__updateGoods);
       }
       
-      override protected function __updateGoods(param1:BagEvent) : void
+      override protected function __updateGoods(evt:BagEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc4_:Dictionary = param1.changedSlots;
+         var c:* = null;
+         var changes:Dictionary = evt.changedSlots;
          var _loc6_:int = 0;
-         var _loc5_:* = _loc4_;
-         for each(var _loc3_ in _loc4_)
+         var _loc5_:* = changes;
+         for each(var i in changes)
          {
-            _loc2_ = _bagdata.getItemAt(_loc3_.Place);
-            if(_loc2_)
+            c = _bagdata.getItemAt(i.Place);
+            if(c)
             {
-               setCellInfo(_loc2_.Place,_loc2_);
+               setCellInfo(c.Place,c);
             }
             else
             {
-               setCellInfo(_loc3_.Place,null);
+               setCellInfo(i.Place,null);
             }
             dispatchEvent(new Event("change"));
          }
       }
       
-      override protected function __clickHandler(param1:InteractiveEvent) : void
+      override protected function __clickHandler(evt:InteractiveEvent) : void
       {
-         if((param1.currentTarget as BeadCell).info != null)
+         if((evt.currentTarget as BeadCell).info != null)
          {
-            dispatchEvent(new CellEvent("itemclick",param1.currentTarget,false,false,param1.ctrlKey));
+            dispatchEvent(new CellEvent("itemclick",evt.currentTarget,false,false,evt.ctrlKey));
          }
       }
       
-      override public function setCellInfo(param1:int, param2:InventoryItemInfo) : void
+      override public function setCellInfo(index:int, info:InventoryItemInfo) : void
       {
-         if(param1 >= _startIndex && param1 <= _stopIndex)
+         if(index >= _startIndex && index <= _stopIndex)
          {
-            if(param2 == null)
+            if(info == null)
             {
-               _cells[param1].info = null;
-               _cells[param1].itemInfo = null;
+               _cells[index].info = null;
+               _cells[index].itemInfo = null;
                return;
             }
-            if(param2.Count == 0)
+            if(info.Count == 0)
             {
-               _cells[param1].info = null;
-               _cells[param1].itemInfo = null;
+               _cells[index].info = null;
+               _cells[index].itemInfo = null;
             }
             else
             {
-               _cells[param1].itemInfo = param2;
-               _cells[param1].info = param2;
+               _cells[index].itemInfo = info;
+               _cells[index].info = info;
             }
          }
       }
@@ -229,12 +228,12 @@ package beadSystem.controls
       {
          var _loc3_:int = 0;
          var _loc2_:* = _cells;
-         for each(var _loc1_ in _cells)
+         for each(var cell in _cells)
          {
-            _loc1_.removeEventListener("interactive_click",__clickHandler);
-            _loc1_.removeEventListener("interactive_double_click",__doubleClickHandler);
-            _loc1_.locked = false;
-            _loc1_.dispose();
+            cell.removeEventListener("interactive_click",__clickHandler);
+            cell.removeEventListener("interactive_double_click",__doubleClickHandler);
+            cell.locked = false;
+            cell.dispose();
          }
          _cells = null;
          super.dispose();

@@ -9,34 +9,33 @@ package magicStone.data
       
       private var _mgStoneTempArr:Array;
       
-      public function MagicStoneTempAnalyer(param1:Function)
+      public function MagicStoneTempAnalyer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc3_:* = null;
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc2_:XML = new XML(param1);
-         if(_loc2_.@value == "true")
+         var xmllist:* = null;
+         var i:int = 0;
+         var vo:* = null;
+         var xml:XML = new XML(data);
+         if(xml.@value == "true")
          {
             _mgStoneTempArr = [];
-            _loc3_ = _loc2_..Item;
-            _loc5_ = 0;
-            while(_loc5_ <= _loc3_.length() - 1)
+            xmllist = xml..Item;
+            for(i = 0; i <= xmllist.length() - 1; )
             {
-               _loc4_ = new MgStoneTempVO();
-               ObjectUtils.copyPorpertiesByXML(_loc4_,_loc3_[_loc5_]);
-               _mgStoneTempArr.push(_loc4_);
-               _loc5_++;
+               vo = new MgStoneTempVO();
+               ObjectUtils.copyPorpertiesByXML(vo,xmllist[i]);
+               _mgStoneTempArr.push(vo);
+               i++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc2_.@message;
+            message = xml.@message;
             onAnalyzeError();
             onAnalyzeError();
          }

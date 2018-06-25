@@ -93,7 +93,7 @@ package catchInsect.view
          }
       }
       
-      private function __gotoForestBtnClick(param1:MouseEvent) : void
+      private function __gotoForestBtnClick(e:MouseEvent) : void
       {
          if(new Date().time - _clickDate > 1000)
          {
@@ -103,15 +103,15 @@ package catchInsect.view
          }
       }
       
-      private function __checkGeinBtnClick(param1:MouseEvent) : void
+      private function __checkGeinBtnClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          CatchInsectControl.instance.openCheckGeinFrame();
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();

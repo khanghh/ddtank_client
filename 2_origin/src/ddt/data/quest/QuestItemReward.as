@@ -42,12 +42,12 @@ package ddt.data.quest
       
       public var MagicDefence:int;
       
-      public function QuestItemReward(param1:int, param2:Array, param3:String, param4:String = "true")
+      public function QuestItemReward(id:int, count:Array, optional:String, isBind:String = "true")
       {
          super();
-         _itemID = param1;
-         _count = param2;
-         if(param3 == "true")
+         _itemID = id;
+         _count = count;
+         if(optional == "true")
          {
             _isOptional = 1;
          }
@@ -55,7 +55,7 @@ package ddt.data.quest
          {
             _isOptional = 0;
          }
-         if(param4 == "true")
+         if(isBind == "true")
          {
             _isBind = true;
          }
@@ -75,9 +75,9 @@ package ddt.data.quest
          return _itemID;
       }
       
-      public function set time(param1:int) : void
+      public function set time(time:int) : void
       {
-         _time = param1;
+         _time = time;
       }
       
       public function get time() : int

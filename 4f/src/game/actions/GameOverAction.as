@@ -1,42 +1,5 @@
-package game.actions
-{
-   import com.pickgliss.utils.ClassUtils;
-   import ddt.events.CrazyTankSocketEvent;
-   import ddt.manager.SoundManager;
-   import flash.display.MovieClip;
-   import game.view.map.MapView;
-   import gameCommon.GameControl;
-   import gameCommon.actions.BaseAction;
-   import gameCommon.model.GameInfo;
-   import gameCommon.model.Living;
-   import gameCommon.model.LocalPlayer;
-   import gameCommon.model.Player;
-   import road7th.comm.PackageIn;
-   import road7th.utils.MovieClipWrapper;
-   import room.RoomManager;
-   
-   public class GameOverAction extends BaseAction
-   {
-       
-      
-      private var _event:CrazyTankSocketEvent;
-      
-      private var _executed:Boolean;
-      
-      private var _count:int;
-      
-      private var _map:MapView;
-      
-      private var _current:GameInfo;
-      
-      private var _func:Function;
-      
-      public function GameOverAction(param1:MapView, param2:CrazyTankSocketEvent, param3:Function, param4:Number = 3000){super();}
-      
-      private function readInfo(param1:CrazyTankSocketEvent) : void{}
-      
-      override public function cancel() : void{}
-      
-      override public function execute() : void{}
-   }
-}
+package game.actions{   import com.pickgliss.utils.ClassUtils;   import ddt.events.CrazyTankSocketEvent;   import ddt.manager.SoundManager;   import flash.display.MovieClip;   import game.view.map.MapView;   import gameCommon.GameControl;   import gameCommon.actions.BaseAction;   import gameCommon.model.GameInfo;   import gameCommon.model.Living;   import gameCommon.model.LocalPlayer;   import gameCommon.model.Player;   import road7th.comm.PackageIn;   import road7th.utils.MovieClipWrapper;   import room.RoomManager;      public class GameOverAction extends BaseAction   {                   private var _event:CrazyTankSocketEvent;            private var _executed:Boolean;            private var _count:int;            private var _map:MapView;            private var _current:GameInfo;            private var _func:Function;            public function GameOverAction(map:MapView, event:CrazyTankSocketEvent, func:Function, waitTime:Number = 3000) { super(); }
+            private function readInfo(event:CrazyTankSocketEvent) : void { }
+            override public function cancel() : void { }
+            override public function execute() : void { }
+   }}

@@ -45,10 +45,10 @@ package guildMemberWeek.items
          return int(_inputTxt.text);
       }
       
-      public function initView(param1:int) : void
+      public function initView(Ranking:int) : void
       {
-         _ItemID = param1;
-         if(param1 % 2 == 0)
+         _ItemID = Ranking;
+         if(Ranking % 2 == 0)
          {
             _bg = ComponentFactory.Instance.creatBitmap("asset.guildmemberweek.AddRankingFrame.ItemA");
          }
@@ -65,11 +65,11 @@ package guildMemberWeek.items
          _PointBookBitmp.y = 8;
          _inputTxt = ComponentFactory.Instance.creatComponentByStylename("guildmemberweek.addRanking.inputTxt");
          _inputTxt.tabEnabled = false;
-         if(param1 <= 3)
+         if(Ranking <= 3)
          {
             _RankingText.visible = false;
             _RankingBitmp = ComponentFactory.Instance.creat("toffilist.guildMemberWeektopThreeRink");
-            _RankingBitmp.setFrame(param1);
+            _RankingBitmp.setFrame(Ranking);
             _RankingBitmp.y = 4;
             _RankingBitmp.x = -4;
          }
@@ -113,56 +113,55 @@ package guildMemberWeek.items
          removeEventListener("focusOut",__ItemWorkFocusEvent);
       }
       
-      private function __ItemWorkCheckKeyboard(param1:KeyboardEvent) : void
+      private function __ItemWorkCheckKeyboard(event:KeyboardEvent) : void
       {
          _ItemWork();
       }
       
-      private function __ItemWorkFocusEvent(param1:FocusEvent) : void
+      private function __ItemWorkFocusEvent(event:FocusEvent) : void
       {
          _ItemWork();
       }
       
       private function _ItemWork() : void
       {
-         var _loc2_:Number = NaN;
+         var tempAllMoney:Number = NaN;
          if(_inputTxt.text == "")
          {
             _inputTxt.text = "0";
          }
-         var _loc1_:Number = _inputTxt.text;
-         var _loc6_:* = 0;
-         var _loc4_:int = _ItemID - 1;
-         var _loc5_:int = 0;
-         var _loc3_:int = GuildMemberWeekManager.instance.model.PlayerAddPointBook.length;
-         _loc5_ = 0;
-         while(_loc5_ < _loc3_)
+         var Money:Number = _inputTxt.text;
+         var AllMoney:* = 0;
+         var N:int = _ItemID - 1;
+         var i:int = 0;
+         var L:int = GuildMemberWeekManager.instance.model.PlayerAddPointBook.length;
+         for(i = 0; i < L; )
          {
-            if(_loc5_ != _loc4_)
+            if(i != N)
             {
-               _loc6_ = Number(_loc6_ + GuildMemberWeekManager.instance.model.PlayerAddPointBook[_loc5_]);
+               AllMoney = Number(AllMoney + GuildMemberWeekManager.instance.model.PlayerAddPointBook[i]);
             }
-            _loc5_++;
+            i++;
          }
-         if(_loc1_ < 0)
+         if(Money < 0)
          {
-            _loc1_ = PlayerManager.Instance.Self.Money - _loc6_;
+            Money = PlayerManager.Instance.Self.Money - AllMoney;
          }
          else
          {
-            _loc2_ = _loc6_ + _loc1_;
-            if(_loc2_ >= PlayerManager.Instance.Self.Money)
+            tempAllMoney = AllMoney + Money;
+            if(tempAllMoney >= PlayerManager.Instance.Self.Money)
             {
-               _loc1_ = PlayerManager.Instance.Self.Money - _loc6_;
+               Money = PlayerManager.Instance.Self.Money - AllMoney;
             }
          }
-         _inputTxt.text = String(_loc1_);
-         GuildMemberWeekManager.instance.Controller.upPointBookData(_ItemID,_loc1_);
+         _inputTxt.text = String(Money);
+         GuildMemberWeekManager.instance.Controller.upPointBookData(_ItemID,Money);
       }
       
-      public function ChangeGetPointBook(param1:int) : void
+      public function ChangeGetPointBook(Money:int) : void
       {
-         _ShowGetPointBookText.text = String(param1);
+         _ShowGetPointBookText.text = String(Money);
       }
       
       public function dispose() : void

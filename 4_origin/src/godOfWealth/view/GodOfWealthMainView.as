@@ -66,7 +66,7 @@ package godOfWealth.view
       
       protected function init() : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          _bg = ComponentFactory.Instance.creat("ast.godofwealth.bg");
          addChild(_bg);
          _closeBtn = ComponentFactory.Instance.creat("godOfWealth.closeBtn");
@@ -82,16 +82,15 @@ package godOfWealth.view
          _btnPay.addEventListener("mouseDown",onDown);
          _btnPay.addEventListener("click",onPayClick);
          addChild(_btnPay);
-         var _loc1_:Vector.<BitmapData> = new Vector.<BitmapData>();
-         _loc2_ = 0;
-         while(_loc2_ < 10)
+         var numList:Vector.<BitmapData> = new Vector.<BitmapData>();
+         for(i = 0; i < 10; )
          {
-            _loc1_[_loc2_] = ComponentFactory.Instance.creatBitmapData("ast.godofwealth.n" + _loc2_.toString());
-            _loc2_++;
+            numList[i] = ComponentFactory.Instance.creatBitmapData("ast.godofwealth.n" + i.toString());
+            i++;
          }
          _numRes = new N_BitmapDataNumber();
          _numRes.gap = -3;
-         _numRes.numList = _loc1_;
+         _numRes.numList = numList;
          _numRes.rect = new Rectangle(0,0,134,24);
          _numTitleBitmap = ComponentFactory.Instance.creatBitmap("ast.godofwealth.txt.buy");
          PositionUtils.setPos(_numTitleBitmap,"godOfWealth.btnTitlePos");
@@ -111,11 +110,11 @@ package godOfWealth.view
          onEndTimeTimer(null);
       }
       
-      protected function onEndTimeTimer(param1:Event) : void
+      protected function onEndTimeTimer(e:Event) : void
       {
-         var _loc2_:Number = _endTime - TimeManager.Instance.Now().time;
-         _endTimeTxt.text = Helpers.getTimeString(_loc2_);
-         if(_loc2_ <= 0)
+         var time:Number = _endTime - TimeManager.Instance.Now().time;
+         _endTimeTxt.text = Helpers.getTimeString(time);
+         if(time <= 0)
          {
             _btnPay.mouseEnabled = false;
             Helpers.grey(_btnPay);
@@ -127,34 +126,34 @@ package godOfWealth.view
          }
       }
       
-      protected function onDown(param1:MouseEvent) : void
+      protected function onDown(e:MouseEvent) : void
       {
          _btnPay.y = 435;
          _btnPay.alpha = 1;
       }
       
-      protected function onOver(param1:MouseEvent) : void
+      protected function onOver(e:MouseEvent) : void
       {
          _btnPay.y = 434;
          _btnPay.alpha = 0.9;
          _btnPay.filters = ComponentFactory.Instance.creatFilters("lightFilter");
       }
       
-      protected function onOut(param1:MouseEvent) : void
+      protected function onOut(e:MouseEvent) : void
       {
          _btnPay.y = 435;
          _btnPay.alpha = 1;
          _btnPay.filters = [];
       }
       
-      protected function onPayClick(param1:MouseEvent) : void
+      protected function onPayClick(e:MouseEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var msg:* = null;
+         var alert:* = null;
          if(GodOfWealthManager.getInstance().nextPayNeeded <= 0)
          {
-            _loc3_ = LanguageMgr.GetTranslation("godOfWealth.alert.godIsSmiling");
-            MessageTipManager.getInstance().show(_loc3_,0,true,1);
+            msg = LanguageMgr.GetTranslation("godOfWealth.alert.godIsSmiling");
+            MessageTipManager.getInstance().show(msg,0,true,1);
          }
          else
          {
@@ -164,17 +163,17 @@ package godOfWealth.view
                return;
             }
             KeyboardManager.getInstance().removeEventListener("keyDown",onKeyDown);
-            _loc3_ = LanguageMgr.GetTranslation("godOfWealth.alert",GodOfWealthManager.getInstance().nextPayNeeded);
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("alert"),_loc3_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,false,false,2);
-            _loc2_.addEventListener("response",onResponse);
+            msg = LanguageMgr.GetTranslation("godOfWealth.alert",GodOfWealthManager.getInstance().nextPayNeeded);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("alert"),msg,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,false,false,2);
+            alert.addEventListener("response",onResponse);
          }
       }
       
-      protected function onResponse(param1:FrameEvent) : void
+      protected function onResponse(e:FrameEvent) : void
       {
-         param1.target.removeEventListener("response",onResponse);
+         e.target.removeEventListener("response",onResponse);
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(e.responseCode))
          {
             default:
             default:
@@ -196,23 +195,23 @@ package godOfWealth.view
          GameInSocketOut.sendGodOfWealthPay();
       }
       
-      protected function onKeyDown(param1:KeyboardEvent) : void
+      protected function onKeyDown(e:KeyboardEvent) : void
       {
-         if(!(int(param1.keyCode) - 27))
+         if(!(int(e.keyCode) - 27))
          {
             ObjectUtils.disposeObject(this);
          }
       }
       
-      protected function onCloseClick(param1:MouseEvent) : void
+      protected function onCloseClick(e:MouseEvent) : void
       {
          ObjectUtils.disposeObject(this);
       }
       
       public function update() : void
       {
-         var _loc1_:int = GodOfWealthManager.getInstance().nextPayNeeded;
-         if(_loc1_ <= 0)
+         var nextNeed:int = GodOfWealthManager.getInstance().nextPayNeeded;
+         if(nextNeed <= 0)
          {
             _numTitleBitmap.bitmapData = ComponentFactory.Instance.creatBitmapData("ast.godofwealth.txt.tks");
             _numTxtBitmap.visible = false;
@@ -224,10 +223,10 @@ package godOfWealth.view
          else
          {
             _numTitleBitmap.bitmapData = ComponentFactory.Instance.creatBitmapData("ast.godofwealth.txt.buy");
-            _numTxtBitmap.bitmapData = _numRes.getNumber(_loc1_.toString());
+            _numTxtBitmap.bitmapData = _numRes.getNumber(nextNeed.toString());
             _numTxtBitmap.visible = true;
             _detailTxt.text = LanguageMgr.GetTranslation("godOfWealth.detail",GodOfWealthManager.getInstance().nextRewardMin,GodOfWealthManager.getInstance().nextRewardMax);
-            _btnPay.width = _numTitleBitmap.width + _loc1_.toString().length * 20 + 12;
+            _btnPay.width = _numTitleBitmap.width + nextNeed.toString().length * 20 + 12;
             _btnPay.x = 300 - _btnPay.width * 0.5;
             _numTitleBitmap.x = _btnPay.x + 4;
             _numTxtBitmap.x = _numTitleBitmap.x + _numTitleBitmap.width;

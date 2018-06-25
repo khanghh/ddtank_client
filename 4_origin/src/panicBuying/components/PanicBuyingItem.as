@@ -124,22 +124,22 @@ package panicBuying.components
          _giveBtn.addEventListener("click",__giveBtnClick);
       }
       
-      protected function __giveBtnClick(param1:MouseEvent) : void
+      protected function __giveBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          ShopGiftsManager.Instance.buy(_info.goodsId,true,2);
       }
       
-      protected function __askForBtnClick(param1:MouseEvent) : void
+      protected function __askForBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          ShopBuyManager.Instance.buy(_info.goodsId,2,3);
       }
       
-      protected function __buyBtnClick(param1:MouseEvent) : void
+      protected function __buyBtnClick(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:Boolean = false;
+         var _view:* = null;
+         var isBind:Boolean = false;
          SoundManager.instance.play("008");
          Price.ONLYMONEY = _info.priceType == -8?true:false;
          if(!(int(_type) - 2))
@@ -148,22 +148,22 @@ package panicBuying.components
          }
          else
          {
-            _loc2_ = new PanicBuyingBuyView(_info.priceType);
-            LayerManager.Instance.addToLayer(_loc2_,3,true,1);
-            _loc2_.info = _info;
-            _loc2_.goodsID = _templateId;
+            _view = new PanicBuyingBuyView(_info.priceType);
+            LayerManager.Instance.addToLayer(_view,3,true,1);
+            _view.info = _info;
+            _view.goodsID = _templateId;
             if(_info.remain > 0)
             {
-               _loc2_.numberSelecter.valueLimit = "1," + _info.remain;
+               _view.numberSelecter.valueLimit = "1," + _info.remain;
             }
-            _loc2_.numberSelecter.validate();
+            _view.numberSelecter.validate();
          }
       }
       
-      public function setData(param1:PBuyingItemInfo, param2:int) : void
+      public function setData(info:PBuyingItemInfo, $curType:int) : void
       {
-         var _loc6_:* = null;
-         var _loc5_:* = null;
+         var shopItemInfo:* = null;
+         var shopItem:* = null;
          ObjectUtils.disposeObject(_vip);
          _vip = null;
          ObjectUtils.disposeObject(_tag);
@@ -172,9 +172,9 @@ package panicBuying.components
          _levelTxt = null;
          ObjectUtils.disposeObject(_bagCell);
          _bagCell = null;
-         var _loc4_:* = param1.templateId != 0;
+         var flag:* = info.templateId != 0;
          _entireRemainTxt.visible = false;
-         var _loc7_:* = _loc4_;
+         var _loc7_:* = flag;
          _payType.visible = _loc7_;
          _loc7_ = _loc7_;
          _buyBtn.visible = _loc7_;
@@ -191,12 +191,12 @@ package panicBuying.components
          _loc7_ = _loc7_;
          _countTxt.visible = _loc7_;
          _title.visible = _loc7_;
-         if(!_loc4_)
+         if(!flag)
          {
             return;
          }
-         _templateId = param1.templateId;
-         _info = param1;
+         _templateId = info.templateId;
+         _info = info;
          _payType.setFrame(_info.priceType == -8?2:Number(_info.priceType == -9?1:2));
          _price.text = _info.price.toString();
          _originalPrice.text = LanguageMgr.GetTranslation("panicBuying.originalPrice",_info.originalPrice);
@@ -204,23 +204,23 @@ package panicBuying.components
          _loc7_ = _info.originalPrice > 0;
          _delLine.visible = _loc7_;
          _originalPrice.visible = _loc7_;
-         var _loc3_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(_templateId);
-         _title.text = _loc3_.Name;
-         _bagCell = new PanicBuyingCell(0,_loc3_,param1.buyType,param1.unitCount);
+         var template:ItemTemplateInfo = ItemManager.Instance.getTemplateById(_templateId);
+         _title.text = template.Name;
+         _bagCell = new PanicBuyingCell(0,template,info.buyType,info.unitCount);
          addChild(_bagCell);
          _bagCell.setContentSize(65,65);
          _bagCell.setBgVisible(false);
          PositionUtils.setPos(_bagCell,"panicBuying.bagCellPos");
-         if(param2 == 2)
+         if($curType == 2)
          {
-            _loc6_ = ShopManager.Instance.getShopItemByGoodsID(_info.goodsId);
-            if(!_loc6_)
+            shopItemInfo = ShopManager.Instance.getShopItemByGoodsID(_info.goodsId);
+            if(!shopItemInfo)
             {
-               _loc6_ = ShopManager.Instance.getGoodsByTemplateID(_info.goodsId);
+               shopItemInfo = ShopManager.Instance.getGoodsByTemplateID(_info.goodsId);
             }
-            if(_loc6_.buyTypeToString == "个")
+            if(shopItemInfo.buyTypeToString == "个")
             {
-               _bagCell.setCount(_loc6_.AUnit);
+               _bagCell.setCount(shopItemInfo.AUnit);
             }
             else
             {
@@ -229,32 +229,32 @@ package panicBuying.components
          }
          else
          {
-            _loc5_ = new ShopCarItemInfo(0,_templateId);
-            _loc5_.APrice1 = _info.priceType;
-            _loc5_.APrice2 = _info.priceType;
-            _loc5_.APrice3 = _info.priceType;
-            _loc5_.BuyType = _info.buyType;
-            _loc5_.AUnit = _info.unitCount;
-            _loc5_.AValue1 = _info.price;
-            _loc5_.BUnit = -1;
-            _loc5_.CUnit = -1;
-            if(_loc5_.buyTypeToString == "个")
+            shopItem = new ShopCarItemInfo(0,_templateId);
+            shopItem.APrice1 = _info.priceType;
+            shopItem.APrice2 = _info.priceType;
+            shopItem.APrice3 = _info.priceType;
+            shopItem.BuyType = _info.buyType;
+            shopItem.AUnit = _info.unitCount;
+            shopItem.AValue1 = _info.price;
+            shopItem.BUnit = -1;
+            shopItem.CUnit = -1;
+            if(shopItem.buyTypeToString == "个")
             {
                _bagCell.setCount(_info.unitCount);
             }
             else
             {
-               _bagCell.setCount(param1.count);
+               _bagCell.setCount(info.count);
             }
          }
-         if(param2 == 2)
+         if($curType == 2)
          {
             _type = 2;
             _giveBtn.visible = false;
             _askForBtn.visible = false;
             _countTxt.visible = false;
          }
-         else if(param2 == 4)
+         else if($curType == 4)
          {
             _type = 4;
             _entireRemainTxt.visible = true;

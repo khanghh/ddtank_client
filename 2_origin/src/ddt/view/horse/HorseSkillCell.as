@@ -26,20 +26,20 @@ package ddt.view.horse
       
       private var _skillIcon:Bitmap;
       
-      public function HorseSkillCell(param1:int, param2:Boolean = true, param3:Boolean = false)
+      public function HorseSkillCell(skillId:int, isShowBg:Boolean = true, isScale:Boolean = false)
       {
          super();
-         _skillId = param1;
+         _skillId = skillId;
          _skillGetInfo = HorseManager.instance.getHorseSkillGetInfoById(_skillId);
          _skillInfo = HorseManager.instance.getHorseSkillInfoById(_skillId);
          _skillIcon = ComponentFactory.Instance.creatBitmap("game.crazyTank.view.Prop" + _skillInfo.Pic + "Asset");
-         if(param2)
+         if(isShowBg)
          {
             _bg = ComponentFactory.Instance.creatBitmap("asset.horse.skillFrame.cell.bg");
             addChild(_bg);
-            param3 = true;
+            isScale = true;
          }
-         if(param3)
+         if(isScale)
          {
             _skillIcon.smoothing = true;
             _skillIcon.width = 38;
@@ -56,7 +56,7 @@ package ddt.view.horse
          return _skillInfo;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(value:Object) : void
       {
       }
       
@@ -65,7 +65,7 @@ package ddt.view.horse
          return "5,2,7,1,6,4";
       }
       
-      public function set tipDirctions(param1:String) : void
+      public function set tipDirctions(value:String) : void
       {
       }
       
@@ -74,7 +74,7 @@ package ddt.view.horse
          return 5;
       }
       
-      public function set tipGapH(param1:int) : void
+      public function set tipGapH(value:int) : void
       {
       }
       
@@ -83,7 +83,7 @@ package ddt.view.horse
          return 5;
       }
       
-      public function set tipGapV(param1:int) : void
+      public function set tipGapV(value:int) : void
       {
       }
       
@@ -92,7 +92,7 @@ package ddt.view.horse
          return "horse.view.HorseSkillCellTip";
       }
       
-      public function set tipStyle(param1:String) : void
+      public function set tipStyle(value:String) : void
       {
       }
       

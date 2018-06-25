@@ -94,11 +94,11 @@ package vip.view
       
       private var _helpFrame:VIPHelpFrame;
       
-      public function VipFrameHead(param1:Boolean = false, param2:Boolean = true)
+      public function VipFrameHead(isVipRechargeShow:Boolean = false, isShowReward:Boolean = true)
       {
          super();
-         _isVipRechargeShow = param1;
-         _isShowReward = param2;
+         _isVipRechargeShow = isVipRechargeShow;
+         _isShowReward = isShowReward;
          init();
       }
       
@@ -178,18 +178,18 @@ package vip.view
       
       private function creatGetIntegralBtn() : void
       {
-         var _loc1_:int = 0;
+         var level:int = 0;
          if(_isShowReward)
          {
             _getIntegralBtn = ComponentFactory.Instance.creatComponentByStylename("vip.getIntegralBtn");
-            _loc1_ = _portrait.info.VIPLevel;
-            if(_loc1_ >= 15)
+            level = _portrait.info.VIPLevel;
+            if(level >= 15)
             {
-               _getIntegralBtn.tipData = LanguageMgr.GetTranslation("vipIntegralShopView.getReward.tipsText2",ServerConfigManager.instance.getVipIntegral()[_loc1_ - 1]);
+               _getIntegralBtn.tipData = LanguageMgr.GetTranslation("vipIntegralShopView.getReward.tipsText2",ServerConfigManager.instance.getVipIntegral()[level - 1]);
             }
             else
             {
-               _getIntegralBtn.tipData = LanguageMgr.GetTranslation("vipIntegralShopView.getReward.tipsText1",ServerConfigManager.instance.getVipIntegral()[_loc1_ - 1],ServerConfigManager.instance.getVipIntegral()[_loc1_]);
+               _getIntegralBtn.tipData = LanguageMgr.GetTranslation("vipIntegralShopView.getReward.tipsText1",ServerConfigManager.instance.getVipIntegral()[level - 1],ServerConfigManager.instance.getVipIntegral()[level]);
             }
             addChild(_getIntegralBtn);
             _getIntegralBtn.enable = PlayerManager.Instance.Self.canTakeVipReward;
@@ -202,9 +202,9 @@ package vip.view
          _DueTipSprite.graphics.beginFill(0,0);
          _DueTipSprite.graphics.drawRect(0,0,_vipLevelProgress.width,_vipLevelProgress.height);
          _DueTipSprite.graphics.endFill();
-         var _loc1_:Point = ComponentFactory.Instance.creatCustomObject("Vip.DueTipSpritePos");
-         _DueTipSprite.x = _loc1_.x;
-         _DueTipSprite.y = _loc1_.y;
+         var pos:Point = ComponentFactory.Instance.creatCustomObject("Vip.DueTipSpritePos");
+         _DueTipSprite.x = pos.x;
+         _DueTipSprite.y = pos.y;
          addChild(_DueTipSprite);
          _DueTip = new OneLineTip();
          addChild(_DueTip);
@@ -234,7 +234,7 @@ package vip.view
          }
       }
       
-      protected function __onGetIntegralClick(param1:MouseEvent) : void
+      protected function __onGetIntegralClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("vipIntegralShopView.getReward.tipsText3",ServerConfigManager.instance.getVipIntegral()[_portrait.info.VIPLevel - 1]));
@@ -243,27 +243,27 @@ package vip.view
          _getIntegralBtn.enable = false;
       }
       
-      protected function onSelectedChange(param1:Event) : void
+      protected function onSelectedChange(e:Event) : void
       {
       }
       
-      private function __helpHandler(param1:MouseEvent) : void
+      private function __helpHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _descriptionFrame = ComponentFactory.Instance.creatComponentByStylename("vip.VipPrivilegeFrame");
          LayerManager.Instance.addToLayer(_descriptionFrame,3,true,2);
       }
       
-      private function __helpFrameRespose(param1:FrameEvent) : void
+      private function __helpFrameRespose(event:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(event.responseCode == 0 || event.responseCode == 1)
          {
             SoundManager.instance.play("008");
             disposeHelpFrame();
          }
       }
       
-      private function __closeHelpFrame(param1:MouseEvent) : void
+      private function __closeHelpFrame(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }
@@ -297,7 +297,7 @@ package vip.view
          }
       }
       
-      protected function vipStateChange(param1:Event) : void
+      protected function vipStateChange(e:Event) : void
       {
          if(PlayerManager.Instance.Self.IsVIP)
          {
@@ -321,17 +321,17 @@ package vip.view
          }
       }
       
-      private function __showDueTip(param1:MouseEvent) : void
+      private function __showDueTip(evt:MouseEvent) : void
       {
          _DueTip.visible = true;
       }
       
-      private function __hideDueTip(param1:MouseEvent) : void
+      private function __hideDueTip(evt:MouseEvent) : void
       {
          _DueTip.visible = false;
       }
       
-      private function __showHelpFrame(param1:MouseEvent) : void
+      private function __showHelpFrame(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _helpFrame = ComponentFactory.Instance.creatComponentByStylename("vip.viphelpFrame");
@@ -339,11 +339,11 @@ package vip.view
          _helpFrame.addEventListener("response",__responseHandler);
       }
       
-      protected function __responseHandler(param1:FrameEvent) : void
+      protected function __responseHandler(event:FrameEvent) : void
       {
          _helpFrame.removeEventListener("response",__responseHandler);
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -352,9 +352,9 @@ package vip.view
          }
       }
       
-      private function __propertyChange(param1:PlayerPropertyEvent) : void
+      private function __propertyChange(evt:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["isVip"] || param1.changedProperties["VipExpireDay"] || param1.changedProperties["VIPNextLevelDaysNeeded"])
+         if(evt.changedProperties["isVip"] || evt.changedProperties["VipExpireDay"] || evt.changedProperties["VIPNextLevelDaysNeeded"])
          {
             _portrait.info = PlayerManager.Instance.Self;
             upView();
@@ -363,13 +363,13 @@ package vip.view
       
       private function upView() : void
       {
-         var _loc1_:int = 0;
-         var _loc6_:* = null;
-         var _loc2_:int = 0;
+         var need:int = 0;
+         var date:* = null;
+         var exp:int = 0;
          if(_portrait.info.VIPLevel != 15 && _portrait.info.IsVIP)
          {
-            _loc1_ = ServerConfigManager.instance.VIPExpNeededForEachLv[_portrait.info.VIPLevel] - _portrait.info.VIPExp;
-            _DueTip.tipData = LanguageMgr.GetTranslation("ddt.vip.dueTime.tip",_loc1_,_portrait.info.VIPLevel + 1);
+            need = ServerConfigManager.instance.VIPExpNeededForEachLv[_portrait.info.VIPLevel] - _portrait.info.VIPExp;
+            _DueTip.tipData = LanguageMgr.GetTranslation("ddt.vip.dueTime.tip",need,_portrait.info.VIPLevel + 1);
          }
          else if(!_portrait.info.IsVIP)
          {
@@ -417,8 +417,8 @@ package vip.view
          _nextLevel.text = "LV:" + (_portrait.info.VIPLevel + 1);
          if(!_isVipRechargeShow)
          {
-            _loc6_ = PlayerManager.Instance.Self.VIPExpireDay as Date;
-            _dueData.text = _loc6_.fullYear + "-" + (_loc6_.month + 1) + "-" + _loc6_.date;
+            date = PlayerManager.Instance.Self.VIPExpireDay as Date;
+            _dueData.text = date.fullYear + "-" + (date.month + 1) + "-" + date.date;
          }
          if(!_portrait.info.IsVIP && !_isVipRechargeShow)
          {
@@ -436,21 +436,21 @@ package vip.view
          {
             _dueTime.text = PlayerManager.Instance.Self.VIPNextLevelDaysNeeded + LanguageMgr.GetTranslation("shop.ShopIIShoppingCarItem.day");
          }
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         var _loc5_:int = _portrait.info.VIPLevel;
+         var now:int = 0;
+         var max:int = 0;
+         var curLevel:int = _portrait.info.VIPLevel;
          if(_portrait.info.VIPLevel == 15)
          {
-            _loc2_ = ServerConfigManager.instance.VIPExpNeededForEachLv[11] - ServerConfigManager.instance.VIPExpNeededForEachLv[10];
+            exp = ServerConfigManager.instance.VIPExpNeededForEachLv[11] - ServerConfigManager.instance.VIPExpNeededForEachLv[10];
             _vipLevelProgress.setProgress(1,1);
-            _vipLevelProgress.labelText = _loc2_ + "/" + _loc2_;
+            _vipLevelProgress.labelText = exp + "/" + exp;
          }
          else
          {
-            _loc4_ = _portrait.info.VIPExp - ServerConfigManager.instance.VIPExpNeededForEachLv[_loc5_ - 1];
-            _loc3_ = ServerConfigManager.instance.VIPExpNeededForEachLv[_loc5_] - ServerConfigManager.instance.VIPExpNeededForEachLv[_loc5_ - 1];
-            _vipLevelProgress.setProgress(_loc4_,_loc3_);
-            _vipLevelProgress.labelText = _loc4_ + "/" + _loc3_;
+            now = _portrait.info.VIPExp - ServerConfigManager.instance.VIPExpNeededForEachLv[curLevel - 1];
+            max = ServerConfigManager.instance.VIPExpNeededForEachLv[curLevel] - ServerConfigManager.instance.VIPExpNeededForEachLv[curLevel - 1];
+            _vipLevelProgress.setProgress(now,max);
+            _vipLevelProgress.labelText = now + "/" + max;
          }
          grayOrLightVIP();
          if(_getIntegralBtn != null)

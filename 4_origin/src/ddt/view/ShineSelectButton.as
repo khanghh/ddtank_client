@@ -26,35 +26,35 @@ package ddt.view
          super();
       }
       
-      public function set delay(param1:int) : void
+      public function set delay(value:int) : void
       {
-         _delay = param1;
+         _delay = value;
       }
       
-      public function set shineStyle(param1:String) : void
+      public function set shineStyle(value:String) : void
       {
          if(_shineBg)
          {
             ObjectUtils.disposeObject(_shineBg);
          }
-         _shineBg = ComponentFactory.Instance.creat(param1);
+         _shineBg = ComponentFactory.Instance.creat(value);
          _shineBg.visible = false;
       }
       
-      public function set textStyle(param1:String) : void
+      public function set textStyle(value:String) : void
       {
          if(_textField)
          {
             ObjectUtils.disposeObject(_textField);
          }
-         _textField = ComponentFactory.Instance.creat(param1);
+         _textField = ComponentFactory.Instance.creat(value);
       }
       
-      public function set text(param1:String) : void
+      public function set text(value:String) : void
       {
          if(_textField)
          {
-            _textField.text = param1;
+            _textField.text = value;
          }
       }
       
@@ -110,7 +110,7 @@ package ddt.view
          super.dispose();
       }
       
-      private function __onTimer(param1:TimerEvent) : void
+      private function __onTimer(evt:TimerEvent) : void
       {
          _shineBg.visible = _timer.currentCount % 2 == 1;
       }

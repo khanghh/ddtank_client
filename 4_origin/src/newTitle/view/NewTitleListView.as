@@ -36,47 +36,44 @@ package newTitle.view
          _list.list.addEventListener("listItemClick",__onListItemClick);
       }
       
-      protected function __onListItemClick(param1:ListItemEvent) : void
+      protected function __onListItemClick(event:ListItemEvent) : void
       {
-         NewTitleControl.instance.dispatchEvent(new NewTitleEvent("titleItemClick",[param1.index]));
+         NewTitleControl.instance.dispatchEvent(new NewTitleEvent("titleItemClick",[event.index]));
       }
       
       public function updateOwnTitleList() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:int = 0;
-         var _loc2_:Array = EffortManager.Instance.getHonorArray();
+         var i:int = 0;
+         var j:int = 0;
+         var titleArray:Array = EffortManager.Instance.getHonorArray();
          _list.vectorListModel.clear();
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_.length)
+         for(i = 0; i < titleArray.length; )
          {
-            _list.vectorListModel.append(_loc2_[_loc3_].Name,_loc3_);
-            _loc3_++;
+            _list.vectorListModel.append(titleArray[i].Name,i);
+            i++;
          }
          _list.list.updateListView();
-         _loc1_ = 0;
-         while(_loc1_ < _loc2_.length)
+         for(j = 0; j < titleArray.length; )
          {
-            if(PlayerManager.Instance.Self.honor == _loc2_[_loc1_].Name)
+            if(PlayerManager.Instance.Self.honor == titleArray[j].Name)
             {
-               _list.setViewPosition(_loc1_);
-               _list.list.currentSelectedIndex = _loc1_;
+               _list.setViewPosition(j);
+               _list.list.currentSelectedIndex = j;
                break;
             }
-            _loc1_++;
+            j++;
          }
       }
       
       public function updateAllTitleList() : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          _list.vectorListModel.clear();
-         var _loc1_:Array = NewTitleManager.instance.titleArray;
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_.length)
+         var titleArray:Array = NewTitleManager.instance.titleArray;
+         for(i = 0; i < titleArray.length; )
          {
-            _list.vectorListModel.append(_loc1_[_loc2_].Name,_loc2_);
-            _loc2_++;
+            _list.vectorListModel.append(titleArray[i].Name,i);
+            i++;
          }
          _list.list.updateListView();
          _list.list.currentSelectedIndex = 0;

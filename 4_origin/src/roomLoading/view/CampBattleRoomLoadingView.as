@@ -25,70 +25,69 @@ package roomLoading.view
    {
        
       
-      public function CampBattleRoomLoadingView(param1:GameInfo)
+      public function CampBattleRoomLoadingView($info:GameInfo)
       {
-         super(param1);
+         super($info);
       }
       
       override protected function initLoadingItems() : void
       {
-         var _loc9_:int = 0;
-         var _loc14_:int = 0;
-         var _loc16_:* = null;
-         var _loc11_:int = 0;
-         var _loc13_:int = 0;
-         var _loc4_:* = null;
-         var _loc17_:* = null;
-         var _loc6_:* = null;
-         var _loc8_:* = null;
-         var _loc15_:* = null;
-         var _loc3_:* = null;
-         var _loc12_:int = 0;
-         var _loc10_:int = _gameInfo.roomPlayers.length;
-         _loc16_ = _gameInfo.roomPlayers;
-         LoadBombManager.Instance.loadFullRoomPlayersBomb(_loc16_);
+         var blueLen:int = 0;
+         var redLen:int = 0;
+         var roomPlayers:* = null;
+         var team:int = 0;
+         var i:int = 0;
+         var roomPlayer:* = null;
+         var item:* = null;
+         var gameplayer:* = null;
+         var currentPet:* = null;
+         var skill:* = null;
+         var ball:* = null;
+         var j:int = 0;
+         var len:int = _gameInfo.roomPlayers.length;
+         roomPlayers = _gameInfo.roomPlayers;
+         LoadBombManager.Instance.loadFullRoomPlayersBomb(roomPlayers);
          if(!StartupResourceLoader.firstEnterHall)
          {
             LoadBombManager.Instance.loadSpecialBomb();
          }
          var _loc19_:int = 0;
-         var _loc18_:* = _loc16_;
-         for each(var _loc1_ in _loc16_)
+         var _loc18_:* = roomPlayers;
+         for each(var rp1 in roomPlayers)
          {
-            if(PlayerManager.Instance.Self.ID == _loc1_.playerInfo.ID)
+            if(PlayerManager.Instance.Self.ID == rp1.playerInfo.ID)
             {
-               _loc11_ = _loc1_.team;
+               team = rp1.team;
             }
          }
          var _loc21_:int = 0;
-         var _loc20_:* = _loc16_;
-         for each(var _loc2_ in _loc16_)
+         var _loc20_:* = roomPlayers;
+         for each(var rp in roomPlayers)
          {
-            if(!_loc2_.isViewer)
+            if(!rp.isViewer)
             {
-               if(_loc2_.team == 1)
+               if(rp.team == 1)
                {
-                  _loc9_++;
-                  §§push(_loc9_);
+                  blueLen++;
+                  §§push(blueLen);
                }
                else
                {
-                  _loc14_++;
-                  §§push(int(_loc14_));
+                  redLen++;
+                  §§push(int(redLen));
                }
                §§pop();
-               if(!(RoomManager.Instance.current.type == 0 && _loc2_.team != _loc11_))
+               if(!(RoomManager.Instance.current.type == 0 && rp.team != team))
                {
-                  IMManager.Instance.saveRecentContactsID(_loc2_.playerInfo.ID);
+                  IMManager.Instance.saveRecentContactsID(rp.playerInfo.ID);
                }
             }
          }
-         _loc13_ = 0;
-         while(_loc13_ < _loc10_)
+         for(i = 0; i < len; )
          {
-            _loc4_ = _gameInfo.roomPlayers[_loc13_];
-            _loc4_.addEventListener("progressChange",__onLoadingFinished);
-            if(_loc4_.isViewer)
+            roomPlayer = _gameInfo.roomPlayers[i];
+            roomPlayer.addEventListener("progressChange",__onLoadingFinished);
+            if(roomPlayer.isViewer)
             {
                if(contains(_tipsItem))
                {
@@ -98,36 +97,36 @@ package roomLoading.view
             }
             else
             {
-               _loc17_ = new RoomLoadingCharacterItem(_loc4_);
-               initRoomItem(_loc17_);
-               _loc6_ = _gameInfo.findLivingByPlayerID(_loc4_.playerInfo.ID,_loc4_.playerInfo.ZoneID);
-               initCharacter(_loc6_,_loc17_);
-               _loc8_ = _loc6_.playerInfo.currentPet;
-               if(_loc8_)
+               item = new RoomLoadingCharacterItem(roomPlayer);
+               initRoomItem(item);
+               gameplayer = _gameInfo.findLivingByPlayerID(roomPlayer.playerInfo.ID,roomPlayer.playerInfo.ZoneID);
+               initCharacter(gameplayer,item);
+               currentPet = gameplayer.playerInfo.currentPet;
+               if(currentPet)
                {
-                  LoadResourceManager.Instance.creatAndStartLoad(PathManager.solvePetGameAssetUrl(_loc8_.GameAssetUrl),4);
+                  LoadResourceManager.Instance.creatAndStartLoad(PathManager.solvePetGameAssetUrl(currentPet.GameAssetUrl),4);
                   var _loc23_:int = 0;
-                  var _loc22_:* = _loc8_.equipdSkills;
-                  for each(var _loc5_ in _loc8_.equipdSkills)
+                  var _loc22_:* = currentPet.equipdSkills;
+                  for each(var skillid in currentPet.equipdSkills)
                   {
-                     if(_loc5_ > 0)
+                     if(skillid > 0)
                      {
-                        _loc15_ = PetSkillManager.getSkillByID(_loc5_);
-                        if(_loc15_.EffectPic)
+                        skill = PetSkillManager.getSkillByID(skillid);
+                        if(skill.EffectPic)
                         {
-                           LoadResourceManager.Instance.creatAndStartLoad(PathManager.solvePetSkillEffect(_loc15_.EffectPic),4);
+                           LoadResourceManager.Instance.creatAndStartLoad(PathManager.solvePetSkillEffect(skill.EffectPic),4);
                         }
-                        if(_loc15_.NewBallID != -1)
+                        if(skill.NewBallID != -1)
                         {
-                           _loc3_ = BallManager.instance.findBall(_loc15_.NewBallID);
-                           _loc3_.loadBombAsset();
-                           _loc3_.loadCraterBitmap();
+                           ball = BallManager.instance.findBall(skill.NewBallID);
+                           ball.loadBombAsset();
+                           ball.loadCraterBitmap();
                         }
                      }
                   }
                }
             }
-            _loc13_++;
+            i++;
          }
          if(blueBig)
          {
@@ -139,20 +138,19 @@ package roomLoading.view
          }
          if(!StartupResourceLoader.firstEnterHall)
          {
-            _loc12_ = 0;
-            while(_loc12_ < _gameInfo.neededMovies.length)
+            for(j = 0; j < _gameInfo.neededMovies.length; )
             {
-               if(_gameInfo.neededMovies[_loc12_].type == 1)
+               if(_gameInfo.neededMovies[j].type == 1)
                {
-                  _gameInfo.neededMovies[_loc12_].startLoad();
+                  _gameInfo.neededMovies[j].startLoad();
                }
-               _loc12_++;
+               j++;
             }
             var _loc25_:int = 0;
             var _loc24_:* = _gameInfo.neededPetSkillResource;
-            for each(var _loc7_ in _gameInfo.neededPetSkillResource)
+            for each(var skillRes in _gameInfo.neededPetSkillResource)
             {
-               _loc7_.startLoad();
+               skillRes.startLoad();
             }
          }
          _gameInfo.loaderMap = new MapLoader(MapManager.getMapInfo(_gameInfo.mapIndex));

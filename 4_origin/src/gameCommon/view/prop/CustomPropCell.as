@@ -34,10 +34,10 @@ package gameCommon.view.prop
       
       private var _countTxt:FilterFrameText;
       
-      public function CustomPropCell(param1:String, param2:int, param3:int)
+      public function CustomPropCell(shortcutKey:String, mode:int, type:int)
       {
-         super(param1,param2);
-         _type = param3;
+         super(shortcutKey,mode);
+         _type = type;
          mouseChildren = false;
          if(_type)
          {
@@ -45,9 +45,9 @@ package gameCommon.view.prop
          }
       }
       
-      public function set isLock(param1:Boolean) : void
+      public function set isLock(value:Boolean) : void
       {
-         if(param1)
+         if(value)
          {
             _lockIcon.visible = true;
             info = null;
@@ -56,7 +56,7 @@ package gameCommon.view.prop
          {
             _lockIcon.visible = false;
          }
-         _isLock = param1;
+         _isLock = value;
       }
       
       override protected function configUI() : void
@@ -75,7 +75,7 @@ package gameCommon.view.prop
       {
       }
       
-      override protected function __mouseOut(param1:MouseEvent) : void
+      override protected function __mouseOut(event:MouseEvent) : void
       {
          if(_deleteBtn.parent)
          {
@@ -95,7 +95,7 @@ package gameCommon.view.prop
          filters = null;
       }
       
-      override protected function __mouseOver(param1:MouseEvent) : void
+      override protected function __mouseOver(event:MouseEvent) : void
       {
          if(!(GameControl.Instance.Current.missionInfo && GameControl.Instance.Current.missionInfo.isWorldCupI))
          {
@@ -104,7 +104,7 @@ package gameCommon.view.prop
                addChild(_deleteBtn);
             }
          }
-         super.__mouseOver(param1);
+         super.__mouseOver(event);
       }
       
       override protected function addEvent() : void
@@ -113,14 +113,14 @@ package gameCommon.view.prop
          addEventListener("click",__clicked);
       }
       
-      private function __deleteClick(param1:MouseEvent) : void
+      private function __deleteClick(event:MouseEvent) : void
       {
       }
       
       private function deleteContainMouse() : Boolean
       {
-         var _loc1_:Rectangle = _deleteBtn.getBounds(this);
-         return _loc1_.contains(mouseX,mouseY);
+         var rect:Rectangle = _deleteBtn.getBounds(this);
+         return rect.contains(mouseX,mouseY);
       }
       
       private function deleteProp() : void
@@ -128,7 +128,7 @@ package gameCommon.view.prop
          dispatchEvent(new FightPropEevnt("delete"));
       }
       
-      private function __clicked(param1:MouseEvent) : void
+      private function __clicked(event:MouseEvent) : void
       {
          StageReferance.stage.focus = null;
          if(_deleteBtn.parent && deleteContainMouse())
@@ -141,11 +141,11 @@ package gameCommon.view.prop
          }
       }
       
-      override public function set enabled(param1:Boolean) : void
+      override public function set enabled(val:Boolean) : void
       {
-         if(_enabled != param1)
+         if(_enabled != val)
          {
-            _enabled = param1;
+            _enabled = val;
             if(!_enabled)
             {
                if(_asset)
@@ -163,7 +163,7 @@ package gameCommon.view.prop
       
       override public function useProp() : void
       {
-         var _loc1_:* = null;
+         var self:* = null;
          if(_info != null && !isUsed)
          {
             if(_info.Template.CategoryID == 10 && _info.Template.Property1 == "54")
@@ -179,8 +179,8 @@ package gameCommon.view.prop
                   return;
                }
             }
-            _loc1_ = GameControl.Instance.Current.selfGamePlayer;
-            if(_info && _info.TemplateID == 10611 && !_loc1_.usePassBall)
+            self = GameControl.Instance.Current.selfGamePlayer;
+            if(_info && _info.TemplateID == 10611 && !self.usePassBall)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.game.prop.usePassBall"));
                return;
@@ -202,35 +202,35 @@ package gameCommon.view.prop
          removeEventListener("click",__clicked);
       }
       
-      override public function set info(param1:PropInfo) : void
+      override public function set info(val:PropInfo) : void
       {
-         var _loc2_:* = null;
+         var bitmap:* = null;
          if(_isLock)
          {
             return;
          }
          ShowTipManager.Instance.removeTip(this);
-         _info = param1;
-         var _loc3_:DisplayObject = _asset;
+         _info = val;
+         var asset:DisplayObject = _asset;
          if(_info != null)
          {
-            _loc2_ = ComponentFactory.Instance.creatBitmap("game.crazyTank.view.Prop" + _info.Template.Pic + "Asset");
-            if(_loc2_)
+            bitmap = ComponentFactory.Instance.creatBitmap("game.crazyTank.view.Prop" + _info.Template.Pic + "Asset");
+            if(bitmap)
             {
-               _loc2_.smoothing = true;
+               bitmap.smoothing = true;
                var _loc4_:int = 1;
-               _loc2_.y = _loc4_;
-               _loc2_.x = _loc4_;
+               bitmap.y = _loc4_;
+               bitmap.x = _loc4_;
                _loc4_ = 35;
-               _loc2_.height = _loc4_;
-               _loc2_.width = _loc4_;
-               addChildAt(_loc2_,getChildIndex(_fore));
+               bitmap.height = _loc4_;
+               bitmap.width = _loc4_;
+               addChildAt(bitmap,getChildIndex(_fore));
             }
             if(_asset)
             {
-               _loc2_.filters = _asset.filters;
+               bitmap.filters = _asset.filters;
             }
-            _asset = _loc2_;
+            _asset = bitmap;
             _tipInfo.info = _info.Template;
             _tipInfo.shortcutKey = _shortcutKey;
             ShowTipManager.Instance.addTip(this);
@@ -246,9 +246,9 @@ package gameCommon.view.prop
             buttonMode = false;
             _countTxt.visible = false;
          }
-         if(_loc3_ != null)
+         if(asset != null)
          {
-            ObjectUtils.disposeObject(_loc3_);
+            ObjectUtils.disposeObject(asset);
          }
          isUsed = false;
          if(_info == null)
@@ -257,15 +257,15 @@ package gameCommon.view.prop
          }
       }
       
-      public function setCount(param1:int) : void
+      public function setCount(count:int) : void
       {
-         _countTxt.text = param1.toString();
+         _countTxt.text = count.toString();
          _countTxt.visible = true;
       }
       
-      override public function setPossiton(param1:int, param2:int) : void
+      override public function setPossiton(x:int, y:int) : void
       {
-         super.setPossiton(param1,param2);
+         super.setPossiton(x,y);
          this.x = _x;
          this.y = _y;
       }

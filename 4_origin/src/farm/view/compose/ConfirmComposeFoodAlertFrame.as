@@ -58,10 +58,10 @@ package farm.view.compose
       
       private function initView() : void
       {
-         var _loc4_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
+         var i:int = 0;
+         var btn:* = null;
+         var sp:* = null;
+         var itemCell:* = null;
          _bg3 = ComponentFactory.Instance.creatComponentByStylename("farm.confirmComposeFoodAlertFrame.bg3");
          addToContent(_bg3);
          _showTxtBG = ComponentFactory.Instance.creatComponentByStylename("farm.confirmComposeFoodAlertFrame.showTxtBG");
@@ -77,23 +77,22 @@ package farm.view.compose
          _cells = new Vector.<ShopItemCell>();
          _hBox = ComponentFactory.Instance.creat("farm.confirmComposeFoodAlertFrame.cropBox");
          addToContent(_hBox);
-         _loc4_ = 0;
-         while(_loc4_ < 3)
+         for(i = 0; i < 3; )
          {
-            _loc1_ = ComponentFactory.Instance.creatComponentByStylename("farmHouse.btnSelectHouseCompose3");
-            _loc2_ = new Sprite();
-            _loc2_.graphics.beginFill(16777215,0);
-            _loc2_.graphics.drawRect(0,0,50,50);
-            _loc2_.graphics.endFill();
-            _loc3_ = new ShopItemCell(_loc2_);
-            _loc3_.cellSize = 50;
-            _loc1_.addEventListener("click",__selectValue);
-            _loc1_.mouseChildren = true;
-            _loc1_.addChild(_loc3_);
-            PositionUtils.setPos(_loc3_,"farm.confirmComposeFoodAlertFrame.cellPos");
-            _hBox.addChild(_loc1_);
-            _cells.push(_loc3_);
-            _loc4_++;
+            btn = ComponentFactory.Instance.creatComponentByStylename("farmHouse.btnSelectHouseCompose3");
+            sp = new Sprite();
+            sp.graphics.beginFill(16777215,0);
+            sp.graphics.drawRect(0,0,50,50);
+            sp.graphics.endFill();
+            itemCell = new ShopItemCell(sp);
+            itemCell.cellSize = 50;
+            btn.addEventListener("click",__selectValue);
+            btn.mouseChildren = true;
+            btn.addChild(itemCell);
+            PositionUtils.setPos(itemCell,"farm.confirmComposeFoodAlertFrame.cellPos");
+            _hBox.addChild(btn);
+            _cells.push(itemCell);
+            i++;
          }
       }
       
@@ -104,10 +103,10 @@ package farm.view.compose
          _nextBtn.addEventListener("click",__onPageBtnClick);
       }
       
-      private function __onPageBtnClick(param1:MouseEvent) : void
+      private function __onPageBtnClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = e.currentTarget;
          if(_preBtn !== _loc2_)
          {
             if(_nextBtn === _loc2_)
@@ -124,66 +123,64 @@ package farm.view.compose
       
       private function initData() : void
       {
-         var _loc1_:int = 0;
-         var _loc3_:* = null;
+         var foodId:int = 0;
+         var info:* = null;
          _cellInfos = [];
          var _loc5_:int = 0;
          var _loc4_:* = FarmComposeHouseController.instance().composeHouseModel.foodComposeList;
-         for each(var _loc2_ in FarmComposeHouseController.instance().composeHouseModel.foodComposeList)
+         for each(var itemInfoVec in FarmComposeHouseController.instance().composeHouseModel.foodComposeList)
          {
-            _loc1_ = _loc2_[0].FoodID;
-            _loc3_ = ItemManager.Instance.getTemplateById(_loc1_);
-            _cellInfos.push(_loc3_);
+            foodId = itemInfoVec[0].FoodID;
+            info = ItemManager.Instance.getTemplateById(foodId);
+            _cellInfos.push(info);
          }
          _totlePage = _cellInfos.length % 3 == 0?_cellInfos.length / 3 - 1:Number(_cellInfos.length / 3);
          upCells(0);
       }
       
-      private function upCells(param1:int = 0) : void
+      private function upCells(page:int = 0) : void
       {
-         var _loc3_:int = 0;
-         _currentPage = param1;
-         var _loc2_:int = param1 * 3;
-         _loc3_ = 0;
-         while(_loc3_ < _cells.length)
+         var i:int = 0;
+         _currentPage = page;
+         var start:int = page * 3;
+         for(i = 0; i < _cells.length; )
          {
-            if(_cellInfos[_loc3_ + _loc2_])
+            if(_cellInfos[i + start])
             {
-               _cells[_loc3_].info = _cellInfos[_loc3_ + _loc2_];
+               _cells[i].info = _cellInfos[i + start];
             }
-            _loc3_++;
+            i++;
          }
       }
       
-      private function __selectValue(param1:MouseEvent) : void
+      private function __selectValue(e:MouseEvent) : void
       {
-         var _loc5_:* = null;
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
+         var info:* = null;
+         var i:int = 0;
+         var obj:* = null;
          SoundManager.instance.play("008");
-         var _loc2_:BaseButton = param1.currentTarget as BaseButton;
-         _loc4_ = 0;
-         while(_loc4_ < _loc2_.numChildren)
+         var btn:BaseButton = e.currentTarget as BaseButton;
+         for(i = 0; i < btn.numChildren; )
          {
-            _loc3_ = _loc2_.getChildAt(_loc4_);
-            if(_loc3_ is ShopItemCell)
+            obj = btn.getChildAt(i);
+            if(obj is ShopItemCell)
             {
-               _loc5_ = _loc3_.info;
+               info = obj.info;
                break;
             }
-            _loc4_++;
+            i++;
          }
-         if(_loc5_)
+         if(info)
          {
-            dispatchEvent(new SelectComposeItemEvent("selectFood",_loc5_));
+            dispatchEvent(new SelectComposeItemEvent("selectFood",info));
          }
       }
       
-      protected function __framePesponse(param1:FrameEvent) : void
+      protected function __framePesponse(event:FrameEvent) : void
       {
          removeEventListener("response",__framePesponse);
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -200,20 +197,19 @@ package farm.view.compose
       
       override public function dispose() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var obj:* = null;
          removeEvent();
          if(_hBox)
          {
-            _loc2_ = 0;
-            while(_loc2_ < _hBox.numChildren)
+            for(i = 0; i < _hBox.numChildren; )
             {
-               _loc1_ = _hBox.getChildAt(_loc2_);
-               if(_loc1_ is BaseButton)
+               obj = _hBox.getChildAt(i);
+               if(obj is BaseButton)
                {
-                  _loc1_.removeEventListener("click",__onPageBtnClick);
+                  obj.removeEventListener("click",__onPageBtnClick);
                }
-               _loc2_++;
+               i++;
             }
             _hBox.disposeAllChildren();
             _hBox.dispose();

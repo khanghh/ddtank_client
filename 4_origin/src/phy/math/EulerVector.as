@@ -12,13 +12,13 @@ package phy.math
       
       public var addx2:Number = 0;
       
-      public function EulerVector(param1:Number, param2:Number, param3:Number, param4:Number = 0)
+      public function EulerVector(x0:Number, x1:Number, x2:Number, addx2:Number = 0)
       {
          super();
-         this.x0 = param1;
-         this.x1 = param2;
-         this.x2 = param3;
-         this.addx2 = param4;
+         this.x0 = x0;
+         this.x1 = x1;
+         this.x2 = x2;
+         this.addx2 = addx2;
       }
       
       public function clear() : void
@@ -36,16 +36,16 @@ package phy.math
          addx2 = 0;
       }
       
-      public function ComputeOneEulerStep(param1:Number, param2:Number, param3:Number, param4:Number) : void
+      public function ComputeOneEulerStep(m:Number, af:Number, f:Number, dt:Number) : void
       {
-         x2 = (param3 - param2 * x1) / param1 + addx2;
-         x1 = x1 + x2 * param4;
-         x0 = x0 + x1 * param4;
+         x2 = (f - af * x1) / m + addx2;
+         x1 = x1 + x2 * dt;
+         x0 = x0 + x1 * dt;
       }
       
-      public function set x0(param1:Number) : void
+      public function set x0(value:Number) : void
       {
-         _x0 = param1;
+         _x0 = value;
       }
       
       public function get x0() : Number

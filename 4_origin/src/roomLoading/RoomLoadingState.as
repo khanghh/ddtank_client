@@ -29,11 +29,11 @@ package roomLoading
          super();
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
-         super.enter(param1,param2);
+         super.enter(prev,data);
          StateManager.currentStateType = "gameLoading";
-         _current = param2 as GameInfo;
+         _current = data as GameInfo;
          if(GameControl.Instance.is3DGame)
          {
             _loadingView = new RoomLoadingView3D(_current);
@@ -64,16 +64,16 @@ package roomLoading
          }
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
          dispose();
-         if(StateManager.isExitRoom(param1.getType()))
+         if(StateManager.isExitRoom(next.getType()))
          {
             GameInSocketOut.sendGamePlayerExit();
             GameControl.Instance.reset();
             RoomManager.Instance.reset();
          }
-         super.leaving(param1);
+         super.leaving(next);
       }
       
       override public function getType() : String

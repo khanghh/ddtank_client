@@ -14,11 +14,11 @@ package game.actions
       
       private var _boxid:int;
       
-      public function PickBoxAction(param1:int, param2:int)
+      public function PickBoxAction(boxid:int, time:int)
       {
          super();
-         _time = param2;
-         _boxid = param1;
+         _time = time;
+         _boxid = boxid;
       }
       
       public function get time() : int
@@ -26,13 +26,13 @@ package game.actions
          return _time;
       }
       
-      public function execute(param1:GamePlayer) : void
+      public function execute(player:GamePlayer) : void
       {
          executed = true;
-         var _loc2_:PhysicalObj = param1.map.getPhysical(_boxid);
-         if(_loc2_ is SimpleBox)
+         var obj:PhysicalObj = player.map.getPhysical(_boxid);
+         if(obj is SimpleBox)
          {
-            SimpleBox(_loc2_).pickByLiving(param1.info);
+            SimpleBox(obj).pickByLiving(player.info);
          }
       }
    }

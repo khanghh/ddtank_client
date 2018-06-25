@@ -34,9 +34,9 @@ package roomList
       
       private function initContainer() : void
       {
-         var _loc1_:AlertInfo = new AlertInfo();
-         _loc1_.title = LanguageMgr.GetTranslation("AlertDialog.Info");
-         info = _loc1_;
+         var _alertInfo:AlertInfo = new AlertInfo();
+         _alertInfo.title = LanguageMgr.GetTranslation("AlertDialog.Info");
+         info = _alertInfo;
          _passInputText = ComponentFactory.Instance.creat("asset.ddtroomlist.passinputFrame.input");
          _passInputText.text = "";
          _passInputText.textField.restrict = "0-9 A-Z a-z";
@@ -54,15 +54,15 @@ package roomList
          _passInputText.addEventListener("keyDown",__KeyDown);
       }
       
-      private function __KeyDown(param1:KeyboardEvent) : void
+      private function __KeyDown(event:KeyboardEvent) : void
       {
-         if(param1.keyCode == 13)
+         if(event.keyCode == 13)
          {
             submit();
          }
       }
       
-      private function __addStage(param1:Event) : void
+      private function __addStage(event:Event) : void
       {
          if(_passInputText)
          {
@@ -71,9 +71,9 @@ package roomList
          }
       }
       
-      private function __frameEvent(param1:FrameEvent) : void
+      private function __frameEvent(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -115,9 +115,9 @@ package roomList
          return _ID;
       }
       
-      public function set ID(param1:int) : void
+      public function set ID(value:int) : void
       {
-         _ID = param1;
+         _ID = value;
       }
       
       private function hide() : void
@@ -125,7 +125,7 @@ package roomList
          dispose();
       }
       
-      private function __input(param1:Event) : void
+      private function __input(e:Event) : void
       {
          if(_passInputText.text != "")
          {

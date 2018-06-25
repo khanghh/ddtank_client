@@ -18,14 +18,13 @@ package consortiaDomain
       
       public function EachBuildInfo()
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          super();
          lowHpWarnArr = [];
-         _loc1_ = 0;
-         while(_loc1_ < ConsortiaDomainManager.BUILD_LOW_HP_WARN_ARR.length)
+         for(i = 0; i < ConsortiaDomainManager.BUILD_LOW_HP_WARN_ARR.length; )
          {
             lowHpWarnArr.push(false);
-            _loc1_++;
+            i++;
          }
       }
    }

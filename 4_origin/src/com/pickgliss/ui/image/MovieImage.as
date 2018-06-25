@@ -17,10 +17,10 @@ package com.pickgliss.ui.image
          return _display as MovieClip;
       }
       
-      override public function setFrame(param1:int) : void
+      override public function setFrame(frameIndex:int) : void
       {
-         super.setFrame(param1);
-         movie.gotoAndStop(param1);
+         super.setFrame(frameIndex);
+         movie.gotoAndStop(frameIndex);
          if(_width != Math.round(movie.width))
          {
             _width = Math.round(movie.width);

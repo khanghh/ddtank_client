@@ -97,13 +97,13 @@ package ddt.view.tips
       
       public function get txtPos() : Point
       {
-         var _loc1_:Point = new Point();
+         var ret:Point = new Point();
          if(_lv)
          {
-            _loc1_.x = _lv.x + _lv.width + 3;
-            _loc1_.y = _lv.y + 4;
+            ret.x = _lv.x + _lv.width + 3;
+            ret.y = _lv.y + 4;
          }
-         return _loc1_;
+         return ret;
       }
       
       override public function get tipData() : Object
@@ -111,18 +111,18 @@ package ddt.view.tips
          return _tipInfo;
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         if(param1 is LevelTipInfo)
+         if(data is LevelTipInfo)
          {
             this.visible = true;
-            makeTip(param1);
+            makeTip(data);
          }
          else
          {
             this.visible = false;
          }
-         _tipInfo = param1;
+         _tipInfo = data;
       }
       
       private function updateWH() : void
@@ -145,40 +145,40 @@ package ddt.view.tips
          _tipContainer.addChild(_battle);
       }
       
-      private function makeTip(param1:Object) : void
+      private function makeTip(obj:Object) : void
       {
-         if(param1)
+         if(obj)
          {
-            resetLevelTip(param1.Level,param1.ddtKingGraed,param1.Repute,param1.Win,param1.Total,param1.Battle,param1.exploit,param1.enableTip,param1.team,param1.nickName);
+            resetLevelTip(obj.Level,obj.ddtKingGraed,obj.Repute,obj.Win,obj.Total,obj.Battle,obj.exploit,obj.enableTip,obj.team,obj.nickName);
          }
       }
       
-      private function resetLevelTip(param1:int, param2:int, param3:int, param4:int, param5:int, param6:int, param7:int, param8:Boolean = true, param9:int = 1, param10:String = "") : void
+      private function resetLevelTip(lv:int, ddtKingGraed:int, repute:int, win:int, total:int, battle:int, exploit:int, enableTip:Boolean = true, team:int = 1, name:String = "") : void
       {
-         var _loc11_:* = undefined;
-         _level = param1;
-         _reputeCount = param3;
-         _win = param4;
-         _total = param5;
-         _exploitValue = param7;
-         _enableTip = param8;
-         _nameField.text = param10;
+         var gameControl:* = undefined;
+         _level = lv;
+         _reputeCount = repute;
+         _win = win;
+         _total = total;
+         _exploitValue = exploit;
+         _enableTip = enableTip;
+         _nameField.text = name;
          this.visible = _enableTip;
          if(!_enableTip)
          {
             return;
          }
          setRepute(_level,_reputeCount);
-         if(param2 > 0)
+         if(ddtKingGraed > 0)
          {
-            _ddtKingGradeText.text = "+" + param2;
+            _ddtKingGradeText.text = "+" + ddtKingGraed;
          }
          else
          {
             _ddtKingGradeText.text = "";
          }
-         setRate(param4,param5);
-         setBattle(param6);
+         setRate(win,total);
+         setBattle(battle);
          setExploit(_exploitValue);
          if(_bgH == 0)
          {
@@ -186,10 +186,10 @@ package ddt.view.tips
          }
          if(StateManager.currentStateType == "fighting" || StateManager.currentStateType == "trainer1" || StateManager.currentStateType == "trainer2" || StateManager.currentStateType == "fightLabGameView")
          {
-            _loc11_ = getDefinitionByName("gameCommon.GameControl");
-            if(_loc11_)
+            gameControl = getDefinitionByName("gameCommon.GameControl");
+            if(gameControl)
             {
-               if(param9 != _loc11_.Instance.Current.selfGamePlayer.team)
+               if(team != gameControl.Instance.Current.selfGamePlayer.team)
                {
                   _battle.visible = false;
                   _bg.height = _bgH - 20 - 20;
@@ -209,21 +209,21 @@ package ddt.view.tips
          updateTip();
       }
       
-      private function setRepute(param1:int, param2:int) : void
+      private function setRepute(level:int, reputeCount:int) : void
       {
       }
       
-      private function setRate(param1:int, param2:int) : void
+      private function setRate($win:int, $total:int) : void
       {
-         _winRate.setRate(param1,param2);
+         _winRate.setRate($win,$total);
       }
       
-      private function setBattle(param1:int) : void
+      private function setBattle(num:int) : void
       {
-         _battle.BattleNum = param1;
+         _battle.BattleNum = num;
       }
       
-      private function setExploit(param1:int) : void
+      private function setExploit(value:int) : void
       {
       }
       

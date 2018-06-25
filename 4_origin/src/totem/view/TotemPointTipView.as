@@ -70,15 +70,14 @@ package totem.view
       
       private function initData() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _propertyValueTextFormatList = new Vector.<TextFormat>();
          _propertyValueGlowFilterList = new Vector.<GlowFilter>();
-         _loc1_ = 1;
-         while(_loc1_ <= 7)
+         for(i = 1; i <= 7; )
          {
-            _propertyValueTextFormatList.push(ComponentFactory.Instance.model.getSet("totem.totemWindow.propertyName" + _loc1_ + ".tf"));
-            _propertyValueGlowFilterList.push(ComponentFactory.Instance.model.getSet("totem.totemWindow.propertyName" + _loc1_ + ".gf"));
-            _loc1_++;
+            _propertyValueTextFormatList.push(ComponentFactory.Instance.model.getSet("totem.totemWindow.propertyName" + i + ".tf"));
+            _propertyValueGlowFilterList.push(ComponentFactory.Instance.model.getSet("totem.totemWindow.propertyName" + i + ".gf"));
+            i++;
          }
          _propertyValueList = LanguageMgr.GetTranslation("ddt.totem.sevenProperty").split(",");
          _possibleValeList = LanguageMgr.GetTranslation("ddt.totem.totemPointTip.possibleValueTxt").split(",");
@@ -87,8 +86,8 @@ package totem.view
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var tmpTxt:* = null;
          _bg = ComponentFactory.Instance.creatBitmap("asset.totem.leftView.tipBg");
          _propertyNameTxt = ComponentFactory.Instance.creatComponentByStylename("totem.totemPointTip.propertyNameTxt");
          _propertyNameTxt.text = LanguageMgr.GetTranslation("ddt.totem.totemPointTip.propertyNameTxt");
@@ -103,15 +102,14 @@ package totem.view
          _honorExpSprite.addChild(_expTxt);
          _lvAddPropertyTxtSprite = ComponentFactory.Instance.creatCustomObject("totem.totemPointTip.lvAddPropertySprite");
          _lvAddPropertyTxtList = new Vector.<FilterFrameText>();
-         _loc2_ = 0;
-         while(_loc2_ < 10)
+         for(i = 0; i < 10; )
          {
-            _loc1_ = ComponentFactory.Instance.creatComponentByStylename("totem.totemPointTip.lvAddProperty");
-            _loc1_.x = _loc2_ % 2 * 112;
-            _loc1_.y = int(_loc2_ / 2) * 18;
-            _lvAddPropertyTxtSprite.addChild(_loc1_);
-            _lvAddPropertyTxtList.push(_loc1_);
-            _loc2_++;
+            tmpTxt = ComponentFactory.Instance.creatComponentByStylename("totem.totemPointTip.lvAddProperty");
+            tmpTxt.x = i % 2 * 112;
+            tmpTxt.y = int(i / 2) * 18;
+            _lvAddPropertyTxtSprite.addChild(tmpTxt);
+            _lvAddPropertyTxtList.push(tmpTxt);
+            i++;
          }
          _bg2 = ComponentFactory.Instance.creatBitmap("asset.totem.leftView.tipBg2");
          _statusNameTxt = ComponentFactory.Instance.creatComponentByStylename("totem.totemPointTip.statusNameTxt");
@@ -132,17 +130,17 @@ package totem.view
          addChild(_currentPropertyTxt);
       }
       
-      public function show(param1:TotemDataVo, param2:Boolean, param3:Boolean) : void
+      public function show(totemData:TotemDataVo, isCurCanClickTotem:Boolean, isLighted:Boolean) : void
       {
-         var _loc14_:int = 0;
-         var _loc7_:int = 0;
-         var _loc13_:int = 0;
-         var _loc18_:* = null;
-         var _loc10_:int = 0;
-         var _loc19_:int = 0;
-         var _loc16_:* = null;
-         var _loc12_:int = 0;
-         if(param2)
+         var possible:int = 0;
+         var totemSignCount:int = 0;
+         var i:int = 0;
+         var tmp:* = null;
+         var lv:int = 0;
+         var index2:int = 0;
+         var propertyStr:* = null;
+         var value2:int = 0;
+         if(isCurCanClickTotem)
          {
             showStatus1();
          }
@@ -150,47 +148,47 @@ package totem.view
          {
             showStatus2();
          }
-         var _loc5_:int = param1.Location - 1;
-         var _loc17_:int = getValueByIndex(_loc5_,param1);
-         _propertyValueTxt.text = _propertyValueList[_loc5_] + "+" + _loc17_;
-         _propertyValueTxt.setTextFormat(_propertyValueTextFormatList[_loc5_]);
-         _propertyValueTxt.filters = [_propertyValueGlowFilterList[_loc5_]];
-         if(param2)
+         var index:int = totemData.Location - 1;
+         var value:int = getValueByIndex(index,totemData);
+         _propertyValueTxt.text = _propertyValueList[index] + "+" + value;
+         _propertyValueTxt.setTextFormat(_propertyValueTextFormatList[index]);
+         _propertyValueTxt.filters = [_propertyValueGlowFilterList[index]];
+         if(isCurCanClickTotem)
          {
-            _loc14_ = param1.Random;
-            if(_loc14_ >= 100)
+            possible = totemData.Random;
+            if(possible >= 100)
             {
-               _loc5_ = 0;
+               index = 0;
             }
-            else if(_loc14_ >= 80 && _loc14_ < 100)
+            else if(possible >= 80 && possible < 100)
             {
-               _loc5_ = 1;
+               index = 1;
             }
-            else if(_loc14_ >= 40 && _loc14_ < 80)
+            else if(possible >= 40 && possible < 80)
             {
-               _loc5_ = 2;
+               index = 2;
             }
-            else if(_loc14_ >= 20 && _loc14_ < 40)
+            else if(possible >= 20 && possible < 40)
             {
-               _loc5_ = 3;
+               index = 3;
             }
             else
             {
-               _loc5_ = 4;
+               index = 4;
             }
-            _honorTxt.text = LanguageMgr.GetTranslation("ddt.totem.totemPointTip.honorTxt",param1.ConsumeHonor);
-            _expTxt.text = LanguageMgr.GetTranslation("ddt.totem.totemPointTip.expTxt",param1.ConsumeExp);
-            if(PlayerManager.Instance.Self.myHonor < param1.ConsumeHonor)
+            _honorTxt.text = LanguageMgr.GetTranslation("ddt.totem.totemPointTip.honorTxt",totemData.ConsumeHonor);
+            _expTxt.text = LanguageMgr.GetTranslation("ddt.totem.totemPointTip.expTxt",totemData.ConsumeExp);
+            if(PlayerManager.Instance.Self.myHonor < totemData.ConsumeHonor)
             {
                _honorTxt.setTextFormat(new TextFormat(null,null,16711680));
             }
-            _loc7_ = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(30000,true);
-            if(PlayerManager.Instance.Self.Money + _loc7_ < param1.ConsumeExp)
+            totemSignCount = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(30000,true);
+            if(PlayerManager.Instance.Self.Money + totemSignCount < totemData.ConsumeExp)
             {
                _expTxt.setTextFormat(new TextFormat(null,null,16711680));
             }
          }
-         else if(param3)
+         else if(isLighted)
          {
             _statusValueTxt.text = _statusValueList[0];
             _statusValueTxt.setTextFormat(new TextFormat(null,null,15728384));
@@ -200,34 +198,33 @@ package totem.view
             _statusValueTxt.text = _statusValueList[1];
             _statusValueTxt.setTextFormat(new TextFormat(null,null,9408399));
          }
-         var _loc15_:int = param1.Page;
-         var _loc8_:int = param1.Location;
-         var _loc6_:Array = TotemManager.instance.getSamePageLocationList(_loc15_,_loc8_);
-         var _loc11_:int = _loc6_.length;
-         var _loc9_:int = param1.Layers - 1;
-         var _loc4_:int = param1.Layers;
-         _loc13_ = 0;
-         while(_loc13_ < _loc11_)
+         var page:int = totemData.Page;
+         var location:int = totemData.Location;
+         var dataArray:Array = TotemManager.instance.getSamePageLocationList(page,location);
+         var len:int = dataArray.length;
+         var layer:int = totemData.Layers - 1;
+         var layer2:int = totemData.Layers;
+         for(i = 0; i < len; )
          {
-            _loc18_ = _loc6_[_loc13_] as TotemDataVo;
-            _loc10_ = (_loc15_ - 1) * 10 + _loc18_.Layers;
-            _loc19_ = _loc18_.Location - 1;
-            _loc16_ = _propertyValueList[_loc19_];
-            _loc12_ = getValueByIndex(_loc19_,_loc18_);
-            _lvAddPropertyTxtList[_loc13_].text = LanguageMgr.GetTranslation("ddt.totem.totemPointTip.lvAddPropertyTxt",_loc10_,_loc16_,_loc12_);
-            _lvAddPropertyTxtList[_loc13_].setTextFormat(_propertyValueTextFormatList[_loc5_]);
-            if(param3 && _loc18_.Layers <= _loc4_ || !param3 && _loc18_.Layers <= _loc9_)
+            tmp = dataArray[i] as TotemDataVo;
+            lv = (page - 1) * 10 + tmp.Layers;
+            index2 = tmp.Location - 1;
+            propertyStr = _propertyValueList[index2];
+            value2 = getValueByIndex(index2,tmp);
+            _lvAddPropertyTxtList[i].text = LanguageMgr.GetTranslation("ddt.totem.totemPointTip.lvAddPropertyTxt",lv,propertyStr,value2);
+            _lvAddPropertyTxtList[i].setTextFormat(_propertyValueTextFormatList[index]);
+            if(isLighted && tmp.Layers <= layer2 || !isLighted && tmp.Layers <= layer)
             {
-               _lvAddPropertyTxtList[_loc13_].setTextFormat(new TextFormat(null,null,null,false));
-               _lvAddPropertyTxtList[_loc13_].filters = [_propertyValueGlowFilterList[_loc5_]];
+               _lvAddPropertyTxtList[i].setTextFormat(new TextFormat(null,null,null,false));
+               _lvAddPropertyTxtList[i].filters = [_propertyValueGlowFilterList[index]];
             }
             else
             {
-               _lvAddPropertyTxtList[_loc13_].setTextFormat(new TextFormat(null,null,11842740,false));
+               _lvAddPropertyTxtList[i].setTextFormat(new TextFormat(null,null,11842740,false));
             }
-            _loc13_++;
+            i++;
          }
-         if(param2)
+         if(isCurCanClickTotem)
          {
             PositionUtils.setPos(_lvAddPropertyTxtSprite,"totem.totemPointTip.lvAddPropertySpritePos1");
          }
@@ -267,33 +264,33 @@ package totem.view
          _currentPropertyTxt.visible = true;
       }
       
-      public function getValueByIndex(param1:int, param2:TotemDataVo) : int
+      public function getValueByIndex(index:int, totemData:TotemDataVo) : int
       {
-         var _loc3_:int = 0;
-         switch(int(param1))
+         var value:int = 0;
+         switch(int(index))
          {
             case 0:
-               _loc3_ = param2.AddAttack;
+               value = totemData.AddAttack;
                break;
             case 1:
-               _loc3_ = param2.AddDefence;
+               value = totemData.AddDefence;
                break;
             case 2:
-               _loc3_ = param2.AddAgility;
+               value = totemData.AddAgility;
                break;
             case 3:
-               _loc3_ = param2.AddLuck;
+               value = totemData.AddLuck;
                break;
             case 4:
-               _loc3_ = param2.AddBlood;
+               value = totemData.AddBlood;
                break;
             case 5:
-               _loc3_ = param2.AddDamage;
+               value = totemData.AddDamage;
                break;
             case 6:
-               _loc3_ = param2.AddGuard;
+               value = totemData.AddGuard;
          }
-         return _loc3_;
+         return value;
       }
       
       public function dispose() : void
@@ -315,9 +312,9 @@ package totem.view
          _honorExpSprite = null;
          var _loc3_:int = 0;
          var _loc2_:* = _lvAddPropertyTxtList;
-         for each(var _loc1_ in _lvAddPropertyTxtList)
+         for each(var tmp in _lvAddPropertyTxtList)
          {
-            ObjectUtils.disposeObject(_loc1_);
+            ObjectUtils.disposeObject(tmp);
          }
          _lvAddPropertyTxtList = null;
          _lvAddPropertyTxtSprite = null;

@@ -9,25 +9,24 @@ package condiscount.analyzer
       
       public var itemList:Vector.<CondiscountInfo>;
       
-      public function CondiscountListAnalyzer(param1:Function)
+      public function CondiscountListAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc6_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var itemData:* = null;
          itemList = new Vector.<CondiscountInfo>();
-         var _loc3_:XML = new XML(param1);
-         var _loc5_:int = _loc3_.Item.length();
-         var _loc4_:XMLList = _loc3_..Item;
-         _loc6_ = 0;
-         while(_loc6_ < _loc4_.length())
+         var xml:XML = new XML(data);
+         var len:int = xml.Item.length();
+         var xmllist:XMLList = xml..Item;
+         for(i = 0; i < xmllist.length(); )
          {
-            _loc2_ = new CondiscountInfo();
-            itemList.push(_loc2_);
-            _loc6_++;
+            itemData = new CondiscountInfo();
+            itemList.push(itemData);
+            i++;
          }
          onAnalyzeComplete();
       }

@@ -33,9 +33,9 @@ package totem.view
          _iconComponent = ComponentFactory.Instance.creatComponentByStylename("totem.rightView.iconComponent");
       }
       
-      public function show(param1:int) : void
+      public function show(type:int) : void
       {
-         if(param1 == 1)
+         if(type == 1)
          {
             _icon = ComponentFactory.Instance.creatBitmap("asset.totem.rightView.exp");
             _iconComponent.tipStyle = null;
@@ -53,10 +53,10 @@ package totem.view
          addChild(_lineSp);
       }
       
-      public function refresh(param1:int, param2:Boolean = false) : void
+      public function refresh(value:int, isChangeColor:Boolean = false) : void
       {
-         _txt.text = param1.toString();
-         if(param2)
+         _txt.text = value.toString();
+         if(isChangeColor)
          {
             _txt.setTextFormat(new TextFormat(null,null,16711680));
          }

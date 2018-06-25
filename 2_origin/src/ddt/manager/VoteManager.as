@@ -68,23 +68,23 @@ package ddt.manager
          return vote;
       }
       
-      public function loadCompleted(param1:VoteInfoAnalyzer) : void
+      public function loadCompleted(analyzer:VoteInfoAnalyzer) : void
       {
          loadOver = true;
-         list = param1.list;
-         voteId = param1.voteId;
-         firstQuestionID = param1.firstQuestionID;
-         completeMessage = param1.completeMessage;
-         minGrade = param1.minGrade;
-         maxGrade = param1.maxGrade;
-         questionLength = param1.questionLength;
-         awardDic = param1.awardDic;
+         list = analyzer.list;
+         voteId = analyzer.voteId;
+         firstQuestionID = analyzer.firstQuestionID;
+         completeMessage = analyzer.completeMessage;
+         minGrade = analyzer.minGrade;
+         maxGrade = analyzer.maxGrade;
+         questionLength = analyzer.questionLength;
+         awardDic = analyzer.awardDic;
          dispatchEvent(new Event(LOAD_COMPLETED));
       }
       
       public function openVote() : void
       {
-         var _loc1_:* = null;
+         var id:* = null;
          if(PlayerManager.Instance.Self.Grade < minGrade || PlayerManager.Instance.Self.Grade > maxGrade)
          {
             return;
@@ -94,8 +94,8 @@ package ddt.manager
          voteView.addEventListener(VoteView.VOTEVIEW_CLOSE,__voteViewCLose);
          if(SharedManager.Instance.voteData["userId"] == PlayerManager.Instance.Self.ID)
          {
-            _loc1_ = SharedManager.Instance.voteData["voteId"];
-            if(voteId == _loc1_)
+            id = SharedManager.Instance.voteData["voteId"];
+            if(voteId == id)
             {
                count = SharedManager.Instance.voteData["voteProgress"] - 1;
                nextQuetion(SharedManager.Instance.voteData["voteQuestionID"]);
@@ -112,19 +112,19 @@ package ddt.manager
          }
       }
       
-      private function __chosed(param1:Event) : void
+      private function __chosed(e:Event) : void
       {
          answerArr.push(voteView.selectAnswer);
          nextQuetion(nowVoteQuestionInfo.nextQuestionID);
       }
       
-      private function nextQuetion(param1:String) : void
+      private function nextQuetion(questionID:String) : void
       {
          count = Number(count) + 1;
-         if(param1 != "0")
+         if(questionID != "0")
          {
             voteView.visible = false;
-            nowVoteQuestionInfo = list[param1];
+            nowVoteQuestionInfo = list[questionID];
             voteView.info = nowVoteQuestionInfo;
             voteView.visible = true;
             LayerManager.Instance.addToLayer(voteView,3,true,1);
@@ -146,31 +146,30 @@ package ddt.manager
       
       private function sendToServer() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
-         _loc3_ = 0;
-         while(_loc3_ < answerArr.length)
+         var i:int = 0;
+         var args:* = null;
+         var loader:* = null;
+         for(i = 0; i < answerArr.length; )
          {
-            _loc2_ = new URLVariables();
-            _loc2_["userId"] = PlayerManager.Instance.Self.ID;
-            _loc2_["voteId"] = voteId;
-            _loc2_["answerContent"] = answerArr[_loc3_];
-            _loc2_["rnd"] = Math.random();
-            _loc1_ = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("VoteSubmitResult.ashx"),6,_loc2_,"POST");
-            _loc1_.analyzer = new VoteSubmitResultAnalyzer(getResult);
-            LoadResourceManager.Instance.startLoad(_loc1_);
-            _loc3_++;
+            args = new URLVariables();
+            args["userId"] = PlayerManager.Instance.Self.ID;
+            args["voteId"] = voteId;
+            args["answerContent"] = answerArr[i];
+            args["rnd"] = Math.random();
+            loader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("VoteSubmitResult.ashx"),6,args,"POST");
+            loader.analyzer = new VoteSubmitResultAnalyzer(getResult);
+            LoadResourceManager.Instance.startLoad(loader);
+            i++;
          }
       }
       
-      private function getResult(param1:VoteSubmitResultAnalyzer) : void
+      private function getResult(analyzer:VoteSubmitResultAnalyzer) : void
       {
          if(isVoteComplete)
          {
             return;
          }
-         if(param1.result == 1)
+         if(analyzer.result == 1)
          {
             MessageTipManager.getInstance().show(completeMessage);
          }
@@ -181,7 +180,7 @@ package ddt.manager
          isVoteComplete = true;
       }
       
-      private function __voteViewCLose(param1:Event) : void
+      private function __voteViewCLose(e:Event) : void
       {
          voteView = null;
          loadOver = false;

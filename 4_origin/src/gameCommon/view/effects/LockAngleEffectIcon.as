@@ -18,15 +18,15 @@ package gameCommon.view.effects
          return 3;
       }
       
-      override protected function excuteEffectImp(param1:Living) : void
+      override protected function excuteEffectImp(live:Living) : void
       {
-         param1.isLockAngle = true;
-         super.excuteEffectImp(param1);
+         live.isLockAngle = true;
+         super.excuteEffectImp(live);
       }
       
-      override public function unExcuteEffect(param1:Living) : void
+      override public function unExcuteEffect(live:Living) : void
       {
-         param1.isLockAngle = false;
+         live.isLockAngle = false;
       }
    }
 }

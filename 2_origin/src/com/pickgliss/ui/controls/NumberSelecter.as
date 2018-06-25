@@ -50,15 +50,15 @@ package com.pickgliss.ui.controls
          super();
       }
       
-      public function set valueLimit(param1:String) : void
+      public function set valueLimit(value:String) : void
       {
-         if(param1.length == 0)
+         if(value.length == 0)
          {
             return;
          }
-         var _loc2_:Array = param1.split(",");
-         var _loc3_:int = int(_loc2_[1]) < 0?2147483647:int(_loc2_[1]);
-         _valueLimit = new Point(_loc2_[0],_loc3_);
+         var arr:Array = value.split(",");
+         var maxNumber:int = int(arr[1]) < 0?2147483647:int(arr[1]);
+         _valueLimit = new Point(arr[0],maxNumber);
          currentValue = _valueLimit.x;
       }
       
@@ -72,9 +72,9 @@ package com.pickgliss.ui.controls
          return _increment;
       }
       
-      public function set increment(param1:Number) : void
+      public function set increment(value:Number) : void
       {
-         _increment = param1;
+         _increment = value;
       }
       
       public function get targetFieldStyle() : String
@@ -82,24 +82,24 @@ package com.pickgliss.ui.controls
          return _targetFieldStyle;
       }
       
-      public function set targetFieldStyle(param1:String) : void
+      public function set targetFieldStyle(stylename:String) : void
       {
-         if(param1 == _upStyle)
+         if(stylename == _upStyle)
          {
             return;
          }
-         _targetFieldStyle = param1;
+         _targetFieldStyle = stylename;
          targetField = ComponentFactory.Instance.creat(_targetFieldStyle);
       }
       
-      public function set targetField(param1:TextField) : void
+      public function set targetField(targetField:TextField) : void
       {
-         if(_targetField == param1)
+         if(_targetField == targetField)
          {
             return;
          }
          ObjectUtils.disposeObject(_targetField);
-         _targetField = param1;
+         _targetField = targetField;
          onPropertiesChanged("P_targetFieldStyle");
       }
       
@@ -108,24 +108,24 @@ package com.pickgliss.ui.controls
          return _upStyle;
       }
       
-      public function set upStyle(param1:String) : void
+      public function set upStyle(stylename:String) : void
       {
-         if(param1 == _upStyle)
+         if(stylename == _upStyle)
          {
             return;
          }
-         _upStyle = param1;
+         _upStyle = stylename;
          upDisplay = ComponentFactory.Instance.creat(_upStyle);
       }
       
-      public function set upDisplay(param1:DisplayObject) : void
+      public function set upDisplay(upDisplay:DisplayObject) : void
       {
-         if(_upDisplay == param1)
+         if(_upDisplay == upDisplay)
          {
             return;
          }
          ObjectUtils.disposeObject(_upDisplay);
-         _upDisplay = param1;
+         _upDisplay = upDisplay;
          onPropertiesChanged("P_upStyle");
       }
       
@@ -134,24 +134,24 @@ package com.pickgliss.ui.controls
          return _downStyle;
       }
       
-      public function set downStyle(param1:String) : void
+      public function set downStyle(stylename:String) : void
       {
-         if(param1 == _downStyle)
+         if(stylename == _downStyle)
          {
             return;
          }
-         _downStyle = param1;
+         _downStyle = stylename;
          downDisplay = ComponentFactory.Instance.creat(_downStyle);
       }
       
-      public function set downDisplay(param1:DisplayObject) : void
+      public function set downDisplay(downDisplay:DisplayObject) : void
       {
-         if(_downDisplay == param1)
+         if(_downDisplay == downDisplay)
          {
             return;
          }
          ObjectUtils.disposeObject(_downDisplay);
-         _downDisplay = param1;
+         _downDisplay = downDisplay;
          onPropertiesChanged("P_downStyle");
       }
       
@@ -187,13 +187,13 @@ package com.pickgliss.ui.controls
          setReduceBtnState();
       }
       
-      private function __fieldChange(param1:Event) : void
+      private function __fieldChange(event:Event) : void
       {
          if(!_targetField)
          {
             return;
          }
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = event.currentTarget;
          if(_upDisplay !== _loc2_)
          {
             if(_downDisplay === _loc2_)
@@ -267,7 +267,7 @@ package com.pickgliss.ui.controls
          }
       }
       
-      protected function __targetFieldChange(param1:Event) : void
+      protected function __targetFieldChange(event:Event) : void
       {
          if(_targetField.text.length <= 0)
          {
@@ -277,9 +277,9 @@ package com.pickgliss.ui.controls
          validate();
       }
       
-      private function __onMouseWheel(param1:MouseEvent) : void
+      private function __onMouseWheel(event:MouseEvent) : void
       {
-         if(param1.delta < 0)
+         if(event.delta < 0)
          {
             currentValue = currentValue + _increment;
          }
@@ -291,28 +291,28 @@ package com.pickgliss.ui.controls
          validate();
       }
       
-      public function set back(param1:DisplayObject) : void
+      public function set back(display:DisplayObject) : void
       {
-         if(_back == param1)
+         if(_back == display)
          {
             return;
          }
          ObjectUtils.disposeObject(_back);
-         _back = param1;
+         _back = display;
          onPropertiesChanged("P_back");
       }
       
-      public function set backStyle(param1:String) : void
+      public function set backStyle(stylename:String) : void
       {
-         if(_backStyle == param1)
+         if(_backStyle == stylename)
          {
             return;
          }
-         _backStyle = param1;
+         _backStyle = stylename;
          back = ComponentFactory.Instance.creat(_backStyle);
       }
       
-      public function validate(param1:FocusEvent = null) : void
+      public function validate(e:FocusEvent = null) : void
       {
          if(!_targetField.text == "")
          {
@@ -327,27 +327,27 @@ package com.pickgliss.ui.controls
             currentValue = _valueLimit.x;
          }
          setText(_currentValue);
-         if(!param1)
+         if(!e)
          {
             StageReferance.stage.focus = _targetField;
          }
          setReduceBtnState();
       }
       
-      public function set currentValue(param1:Number) : void
+      public function set currentValue(value:Number) : void
       {
-         if(_currentValue == param1)
+         if(_currentValue == value)
          {
             return;
          }
-         _currentValue = param1;
+         _currentValue = value;
          setText(_currentValue);
          dispatchEvent(new Event("change"));
       }
       
-      private function setText(param1:int) : void
+      private function setText(value:int) : void
       {
-         _targetField.text = String(param1);
+         _targetField.text = String(value);
          _targetField.setSelection(_targetField.length,_targetField.length);
       }
       

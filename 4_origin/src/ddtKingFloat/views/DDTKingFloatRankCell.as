@@ -20,18 +20,18 @@ package ddtKingFloat.views
       
       private var _rateTxt:FilterFrameText;
       
-      public function DDTKingFloatRankCell(param1:int)
+      public function DDTKingFloatRankCell(index:int)
       {
          super();
          _rankTxt = ComponentFactory.Instance.creatComponentByStylename("ddtKing.rankView.cellTxt");
-         _rankTxt.text = (param1 + 1).toString();
+         _rankTxt.text = (index + 1).toString();
          _nameTxt1 = ComponentFactory.Instance.creatComponentByStylename("ddtKing.rankView.cellTxt");
          _nameTxt1.text = "-------";
          PositionUtils.setPos(_nameTxt1,"ddtKing.rankView.cellNameTxtPos");
          _nameTxt2 = ComponentFactory.Instance.creatComponentByStylename("ddtKing.rankView.cellNameTxt");
          _nameTxt2.visible = false;
          _rateTxt = ComponentFactory.Instance.creatComponentByStylename("ddtKing.rankView.cellTxt");
-         _rateTxt.text = String(1 + DDTKingFloatManager.instance.rankAddInfo[param1] / 100);
+         _rateTxt.text = String(1 + DDTKingFloatManager.instance.rankAddInfo[index] / 100);
          PositionUtils.setPos(_rateTxt,"ddtKing.rankView.cellRateTxtPos");
          addChild(_rankTxt);
          addChild(_nameTxt1);
@@ -39,14 +39,14 @@ package ddtKingFloat.views
          addChild(_rateTxt);
       }
       
-      public function setName(param1:String, param2:int, param3:Boolean) : void
+      public function setName(name:String, carType:int, isSelf:Boolean) : void
       {
-         _nameTxt2.text = param1;
-         if(param2 == 3)
+         _nameTxt2.text = name;
+         if(carType == 3)
          {
             _nameTxt2.textColor = 710173;
          }
-         else if(param3)
+         else if(isSelf)
          {
             _nameTxt2.textColor = 52479;
          }

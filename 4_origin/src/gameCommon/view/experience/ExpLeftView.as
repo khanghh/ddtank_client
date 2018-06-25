@@ -50,11 +50,11 @@ package gameCommon.view.experience
       
       private function init() : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          _itemList = new Vector.<ExpFriendItem>();
          _glowFilter = new GlowFilter(16750848,1,3,3,1);
          _blurFilter = new BlurFilter(5,5);
-         var _loc1_:Boolean = false;
+         var error:Boolean = false;
          _playersList = GameControl.Instance.Current.allias;
          _title = ComponentFactory.Instance.creatBitmap("asset.experience.friendViewTitleBg");
          _bodyBg = ComponentFactory.Instance.creatBitmap("asset.experience.friendViewBodyBg");
@@ -70,15 +70,15 @@ package gameCommon.view.experience
          }
          _characterLight = ComponentFactory.Instance.creat("asset.experience.characterLight");
          _lightBg = ComponentFactory.Instance.creatBitmap("asset.experience.characterLightBg");
-         var _loc3_:ShowCharacter = GameControl.Instance.Current.selfGamePlayer.character as ShowCharacter;
+         var character:ShowCharacter = GameControl.Instance.Current.selfGamePlayer.character as ShowCharacter;
          if(GameControl.Instance.Current.selfGamePlayer.isWin)
          {
-            _bigCharacter = new Bitmap(_loc3_.winCharater.clone());
+            _bigCharacter = new Bitmap(character.winCharater.clone());
             PositionUtils.setPos(_bigCharacter,"experience.LeftViewCharacterWinPos");
          }
          else
          {
-            _bigCharacter = new Bitmap(_loc3_.charaterWithoutWeapon.clone());
+            _bigCharacter = new Bitmap(character.charaterWithoutWeapon.clone());
             PositionUtils.setPos(_bigCharacter,"experience.LeftViewCharacterLosePos");
          }
          _bigCharacter.smoothing = true;
@@ -93,13 +93,12 @@ package gameCommon.view.experience
          addChild(_tabName);
          addChild(_tabExp);
          addChild(_tabExploit);
-         _loc2_ = 0;
-         while(_loc2_ < _playersList.length)
+         for(i = 0; i < _playersList.length; )
          {
-            _itemList.push(new ExpFriendItem(_playersList[_loc2_]));
-            PositionUtils.setPos(_itemList[_loc2_],"experience.FriendItemPos_" + (String(_loc2_ + 1)));
-            addChild(_itemList[_loc2_]);
-            _loc2_++;
+            _itemList.push(new ExpFriendItem(_playersList[i]));
+            PositionUtils.setPos(_itemList[i],"experience.FriendItemPos_" + (String(i + 1)));
+            addChild(_itemList[i]);
+            i++;
          }
          initEffect();
       }
@@ -138,7 +137,7 @@ package gameCommon.view.experience
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          TweenMax.killTweensOf(_glowFilter);
          if(_characterLight && _characterLight.parent)
          {
@@ -177,12 +176,11 @@ package gameCommon.view.experience
          }
          ObjectUtils.disposeObject(_lightBg);
          _lightBg = null;
-         _loc1_ = 0;
-         while(_loc1_ < _itemList.length)
+         for(i = 0; i < _itemList.length; )
          {
-            _itemList[_loc1_].dispose();
-            _itemList[_loc1_] = null;
-            _loc1_++;
+            _itemList[i].dispose();
+            _itemList[i] = null;
+            i++;
          }
          _blurFilter = null;
          _glowFilter = null;

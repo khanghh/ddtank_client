@@ -61,27 +61,27 @@ package catchInsect.componets
          _getPrizeBtn.addEventListener("click",__getPrizeBtnClick);
       }
       
-      protected function __getPrizeBtnClick(param1:MouseEvent) : void
+      protected function __getPrizeBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          SocketManager.Instance.out.getInsectPrize(_templateId);
       }
       
-      public function setData(param1:int, param2:int) : void
+      public function setData(templateId:int, need:int) : void
       {
-         _templateId = param1;
-         var _loc3_:InventoryItemInfo = new InventoryItemInfo();
-         _loc3_.TemplateID = _templateId;
-         ItemManager.fill(_loc3_);
-         _loc3_.IsBinds = true;
-         _cell.info = _loc3_;
+         _templateId = templateId;
+         var info:InventoryItemInfo = new InventoryItemInfo();
+         info.TemplateID = _templateId;
+         ItemManager.fill(info);
+         info.IsBinds = true;
+         _cell.info = info;
          _cell.setCountNotVisible();
-         _requestTxt.text = LanguageMgr.GetTranslation("catchInsect.needScore",param2);
+         _requestTxt.text = LanguageMgr.GetTranslation("catchInsect.needScore",need);
       }
       
-      public function setStatus(param1:int) : void
+      public function setStatus(value:int) : void
       {
-         switch(int(param1))
+         switch(int(value))
          {
             case 0:
                _getPrizeBtn.enable = true;

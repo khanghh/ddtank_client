@@ -53,9 +53,9 @@ package im
          return _date;
       }
       
-      public function setCellValue(param1:*) : void
+      public function setCellValue(value:*) : void
       {
-         _date = param1;
+         _date = value;
          update();
       }
       
@@ -71,12 +71,12 @@ package im
          _stateName.text = _date.convertToString();
       }
       
-      private function __out(param1:MouseEvent) : void
+      private function __out(event:MouseEvent) : void
       {
          _overBg.visible = false;
       }
       
-      private function __over(param1:MouseEvent) : void
+      private function __over(event:MouseEvent) : void
       {
          _overBg.visible = true;
       }
@@ -86,9 +86,9 @@ package im
          return _selected;
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         _selected = param1;
+         _selected = value;
       }
       
       private function creatIcon() : Bitmap

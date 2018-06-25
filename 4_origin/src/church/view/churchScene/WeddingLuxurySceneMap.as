@@ -9,9 +9,9 @@ package church.view.churchScene
    {
        
       
-      public function WeddingLuxurySceneMap(param1:ChurchRoomModel, param2:SceneScene, param3:DictionaryData, param4:Sprite, param5:Sprite, param6:Sprite = null, param7:Sprite = null)
+      public function WeddingLuxurySceneMap(model:ChurchRoomModel, sceneScene:SceneScene, data:DictionaryData, bg:Sprite, mesh:Sprite, acticle:Sprite = null, sky:Sprite = null)
       {
-         super(param1,param2,param3,param4,param5,param6,param7);
+         super(model,sceneScene,data,bg,mesh,acticle,sky);
       }
    }
 }

@@ -48,11 +48,11 @@ package gemstone.items
          super();
       }
       
-      public function setup(param1:int, param2:int, param3:Boolean = false) : void
+      public function setup(itemID:int, storeTab:int, needDispacthEvent:Boolean = false) : void
       {
-         _itemID = param1;
-         _storeTab = param2;
-         _needDispatchEvent = param3;
+         _itemID = itemID;
+         _storeTab = storeTab;
+         _needDispatchEvent = needDispacthEvent;
          initliziItemTemplate();
       }
       
@@ -60,11 +60,11 @@ package gemstone.items
       {
          _itemInfo = ItemManager.Instance.getTemplateById(_itemID);
          _shopItemInfo = ShopManager.Instance.getMoneyShopItemByTemplateID(_itemID);
-         var _loc1_:GoodTipInfo = new GoodTipInfo();
-         _loc1_.itemInfo = _itemInfo;
-         _loc1_.isBalanceTip = false;
-         _loc1_.typeIsSecond = false;
-         tipData = _loc1_;
+         var goodInfo:GoodTipInfo = new GoodTipInfo();
+         goodInfo.itemInfo = _itemInfo;
+         goodInfo.isBalanceTip = false;
+         goodInfo.typeIsSecond = false;
+         tipData = goodInfo;
          _btn = ComponentFactory.Instance.creatComponentByStylename("gemstone.buy.btn");
          addChild(_btn);
          mouseChildren = false;
@@ -73,7 +73,7 @@ package gemstone.items
          addEventListener("click",clickHander);
       }
       
-      protected function clickHander(param1:MouseEvent) : void
+      protected function clickHander(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -81,30 +81,30 @@ package gemstone.items
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:BuySingleGoodsView = new BuySingleGoodsView(-1);
-         LayerManager.Instance.addToLayer(_loc2_,3,true,1);
-         _loc2_.isDisCount = false;
-         _loc2_.goodsID = int(_itemID.toString() + "01");
-         _loc2_.numberSelecter.valueLimit = "";
+         var _buyFrame:BuySingleGoodsView = new BuySingleGoodsView(-1);
+         LayerManager.Instance.addToLayer(_buyFrame,3,true,1);
+         _buyFrame.isDisCount = false;
+         _buyFrame.goodsID = int(_itemID.toString() + "01");
+         _buyFrame.numberSelecter.valueLimit = "";
       }
       
-      private function removeFromStageHandler(param1:Event) : void
+      private function removeFromStageHandler(event:Event) : void
       {
          BagStore.instance.reduceTipPanelNumber();
       }
       
-      private function __shortCutBuyHandler(param1:ShortcutBuyEvent) : void
+      private function __shortCutBuyHandler(evt:ShortcutBuyEvent) : void
       {
-         param1.stopImmediatePropagation();
+         evt.stopImmediatePropagation();
          if(_needDispatchEvent)
          {
-            dispatchEvent(new ShortcutBuyEvent(param1.ItemID,param1.ItemNum));
+            dispatchEvent(new ShortcutBuyEvent(evt.ItemID,evt.ItemNum));
          }
       }
       
-      public function setText(param1:String) : void
+      public function setText(str:String) : void
       {
-         _txt.text = param1;
+         _txt.text = str;
       }
       
       public function dispose() : void

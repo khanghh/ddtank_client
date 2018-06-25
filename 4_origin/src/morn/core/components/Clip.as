@@ -1,18 +1,16 @@
 package morn.core.components
 {
-   import com.pickgliss.loader.BaseLoader;
    import com.pickgliss.loader.BitmapLoader;
    import com.pickgliss.loader.LoadResourceManager;
    import com.pickgliss.loader.LoaderEvent;
    import flash.display.BitmapData;
    import flash.events.Event;
-   import morn.core.events.UIEvent;
    import morn.core.handlers.Handler;
    import morn.core.utils.StringUtils;
    import morn.editor.core.IClip;
    
-   [Event(name="frameChanged",type="morn.core.events.UIEvent")]
    [Event(name="imageLoaded",type="morn.core.events.UIEvent")]
+   [Event(name="frameChanged",type="morn.core.events.UIEvent")]
    public class Clip extends Component implements IClip
    {
        
@@ -47,475 +45,469 @@ package morn.core.components
       
       protected var _bitmapLoader:BitmapLoader;
       
-      public function Clip(param1:String = null, param2:int = 1, param3:int = 1)
+      public function Clip(url:String = null, clipX:int = 1, clipY:int = 1)
       {
-         this._interval = Config.MOVIE_INTERVAL;
+         _interval = Config.MOVIE_INTERVAL;
          super();
-         this._clipX = param2;
-         this._clipY = param3;
-         this.url = param1;
+         _clipX = clipX;
+         _clipY = clipY;
+         this.url = url;
       }
       
       override protected function createChildren() : void
       {
-         addChild(this._bitmap = new AutoBitmap());
+         _bitmap = new AutoBitmap();
+         addChild(new AutoBitmap());
       }
       
       override protected function initialize() : void
       {
-         addEventListener(Event.ADDED_TO_STAGE,this.onAddedToStage);
-         addEventListener(Event.REMOVED_FROM_STAGE,this.onRemovedFromStage);
+         addEventListener("addedToStage",onAddedToStage);
+         addEventListener("removedFromStage",onRemovedFromStage);
       }
       
-      protected function onAddedToStage(param1:Event) : void
+      protected function onAddedToStage(e:Event) : void
       {
-         if(this._autoPlay)
+         if(_autoPlay)
          {
-            this.play();
+            play();
          }
       }
       
-      protected function onRemovedFromStage(param1:Event) : void
+      protected function onRemovedFromStage(e:Event) : void
       {
-         if(this._autoStopAtRemoved)
+         if(_autoStopAtRemoved)
          {
-            this.stop();
+            stop();
          }
       }
       
       public function get url() : String
       {
-         return this._url;
+         return _url;
       }
       
-      public function set url(param1:String) : void
+      public function set url(value:String) : void
       {
-         if(this._url != param1 && Boolean(param1))
+         if(_url != value && value)
          {
-            this._url = param1;
-            callLater(this.changeClip);
+            _url = value;
+            callLater(changeClip);
          }
       }
       
       public function get skin() : String
       {
-         return this._url;
+         return _url;
       }
       
-      public function set skin(param1:String) : void
+      public function set skin(value:String) : void
       {
-         this.url = param1;
+         url = value;
       }
       
       public function get clipX() : int
       {
-         return this._clipX;
+         return _clipX;
       }
       
-      public function set clipX(param1:int) : void
+      public function set clipX(value:int) : void
       {
-         if(this._clipX != param1)
+         if(_clipX != value)
          {
-            this._clipX = param1;
-            callLater(this.changeClip);
+            _clipX = value;
+            callLater(changeClip);
          }
       }
       
       public function get clipY() : int
       {
-         return this._clipY;
+         return _clipY;
       }
       
-      public function set clipY(param1:int) : void
+      public function set clipY(value:int) : void
       {
-         if(this._clipY != param1)
+         if(_clipY != value)
          {
-            this._clipY = param1;
-            callLater(this.changeClip);
+            _clipY = value;
+            callLater(changeClip);
          }
       }
       
       public function get clipWidth() : Number
       {
-         return this._clipWidth;
+         return _clipWidth;
       }
       
-      public function set clipWidth(param1:Number) : void
+      public function set clipWidth(value:Number) : void
       {
-         this._clipWidth = param1;
-         callLater(this.changeClip);
+         _clipWidth = value;
+         callLater(changeClip);
       }
       
       public function get clipHeight() : Number
       {
-         return this._clipHeight;
+         return _clipHeight;
       }
       
-      public function set clipHeight(param1:Number) : void
+      public function set clipHeight(value:Number) : void
       {
-         this._clipHeight = param1;
-         callLater(this.changeClip);
+         _clipHeight = value;
+         callLater(changeClip);
       }
       
       protected function changeClip() : void
       {
-         if(App.asset.hasClass(this._url))
+         if(App.asset.hasClass(_url))
          {
-            this.loadComplete(this._url,false,App.asset.getBitmapData(this._url,false));
+            loadComplete(_url,false,App.asset.getBitmapData(_url,false));
          }
          else
          {
-            this._bitmapLoader = LoadResourceManager.Instance.createLoader(this._url,BaseLoader.BITMAP_LOADER);
-            this._bitmapLoader.addEventListener(LoaderEvent.COMPLETE,this.__onLoaderComplete);
-            this._bitmapLoader.addEventListener(LoaderEvent.LOAD_ERROR,this.__onLoaderError);
-            LoadResourceManager.Instance.startLoad(this._bitmapLoader);
+            _bitmapLoader = LoadResourceManager.Instance.createLoader(_url,0);
+            _bitmapLoader.addEventListener("complete",__onLoaderComplete);
+            _bitmapLoader.addEventListener("loadError",__onLoaderError);
+            LoadResourceManager.Instance.startLoad(_bitmapLoader);
          }
       }
       
-      private function __onLoaderComplete(param1:LoaderEvent) : void
+      private function __onLoaderComplete(e:LoaderEvent) : void
       {
-         this.loadComplete(this._url,true,this._bitmapLoader.bitmapData);
-         this.clearBitmapLoader();
+         loadComplete(_url,true,_bitmapLoader.bitmapData);
+         clearBitmapLoader();
       }
       
-      private function __onLoaderError(param1:LoaderEvent) : void
+      private function __onLoaderError(e:LoaderEvent) : void
       {
-         this.clearBitmapLoader();
+         clearBitmapLoader();
       }
       
       private function clearBitmapLoader() : void
       {
-         if(this._bitmapLoader)
+         if(_bitmapLoader)
          {
-            this._bitmapLoader.removeEventListener(LoaderEvent.COMPLETE,this.__onLoaderComplete);
-            this._bitmapLoader.removeEventListener(LoaderEvent.LOAD_ERROR,this.__onLoaderError);
+            _bitmapLoader.removeEventListener("complete",__onLoaderComplete);
+            _bitmapLoader.removeEventListener("loadError",__onLoaderError);
          }
-         this._bitmapLoader = null;
+         _bitmapLoader = null;
       }
       
-      protected function loadComplete(param1:String, param2:Boolean, param3:BitmapData) : void
+      protected function loadComplete(url:String, isLoad:Boolean, bmd:BitmapData) : void
       {
-         if(param1 == this._url && param3)
+         if(url == _url && bmd)
          {
-            if(!isNaN(this._clipWidth))
+            if(!isNaN(_clipWidth))
             {
-               this._clipX = Math.ceil(param3.width / this._clipWidth);
+               _clipX = Math.ceil(bmd.width / _clipWidth);
             }
-            if(!isNaN(this._clipHeight))
+            if(!isNaN(_clipHeight))
             {
-               this._clipY = Math.ceil(param3.height / this._clipHeight);
+               _clipY = Math.ceil(bmd.height / _clipHeight);
             }
-            this.clips = App.asset.getClips(param1,this._clipX,this._clipY,true,param3);
+            clips = App.asset.getClips(url,_clipX,_clipY,true,bmd);
          }
       }
       
       public function get clips() : Vector.<BitmapData>
       {
-         return this._bitmap.clips;
+         return _bitmap.clips;
       }
       
-      public function set clips(param1:Vector.<BitmapData>) : void
+      public function set clips(value:Vector.<BitmapData>) : void
       {
-         if(param1)
+         if(value)
          {
-            this._bitmap.clips = param1;
-            _contentWidth = this._bitmap.width;
-            _contentHeight = this._bitmap.height;
+            _bitmap.clips = value;
+            _contentWidth = _bitmap.width;
+            _contentHeight = _bitmap.height;
          }
-         sendEvent(UIEvent.IMAGE_LOADED);
+         sendEvent("imageLoaded");
       }
       
       public function get clipsUrl() : String
       {
-         return this._clipsUrl;
+         return _clipsUrl;
       }
       
-      public function set clipsUrl(param1:String) : void
+      public function set clipsUrl(value:String) : void
       {
-         var _loc2_:Array = null;
-         var _loc3_:Vector.<BitmapData> = null;
-         var _loc4_:String = null;
-         if(Boolean(param1) && param1 != "null")
+         var arr:* = null;
+         var vec:* = undefined;
+         if(value && value != "null")
          {
-            this._clipsUrl = param1;
-            _loc2_ = param1.split(",");
-            _loc3_ = new Vector.<BitmapData>();
-            for each(_loc4_ in _loc2_)
+            _clipsUrl = value;
+            arr = value.split(",");
+            vec = new Vector.<BitmapData>();
+            var _loc6_:int = 0;
+            var _loc5_:* = arr;
+            for each(var u in arr)
             {
-               if(_loc4_)
+               if(u)
                {
-                  _loc3_.push(App.asset.getBitmapData(_loc4_));
+                  vec.push(App.asset.getBitmapData(u));
                }
                else
                {
-                  _loc3_.push(new BitmapData(1,1));
+                  vec.push(new BitmapData(1,1));
                }
             }
-            this._clipX = _loc2_.length;
-            this._clipY = 1;
-            this.clips = _loc3_;
-            this.width = _loc3_[0].width;
-            this.height = _loc3_[0].height;
-            _contentWidth = _loc3_[0].width;
-            _contentHeight = _loc3_[0].height;
+            _clipX = arr.length;
+            _clipY = 1;
+            clips = vec;
+            width = vec[0].width;
+            height = vec[0].height;
+            _contentWidth = vec[0].width;
+            _contentHeight = vec[0].height;
          }
       }
       
-      public function set clipsUrlSimple(param1:String) : void
+      public function set clipsUrlSimple(value:String) : void
       {
-         var _loc2_:Array = null;
-         var _loc3_:Array = null;
-         var _loc4_:int = 0;
-         var _loc5_:Vector.<BitmapData> = null;
-         var _loc6_:int = 0;
-         if(param1)
+         var args:* = null;
+         var arr:* = null;
+         var len:int = 0;
+         var vec:* = undefined;
+         var i:int = 0;
+         if(value)
          {
-            _loc2_ = param1.split(",");
-            _loc3_ = [];
-            _loc4_ = int(_loc2_[1]);
-            this._clipsUrl = param1;
-            _loc5_ = new Vector.<BitmapData>();
-            _loc5_.push(App.asset.getBitmapData(_loc2_[0]));
-            _loc6_ = 1;
-            while(_loc6_ <= _loc4_)
+            args = value.split(",");
+            arr = [];
+            len = args[1];
+            _clipsUrl = value;
+            vec = new Vector.<BitmapData>();
+            vec.push(App.asset.getBitmapData(args[0]));
+            for(i = 1; i <= len; )
             {
-               _loc5_.push(App.asset.getBitmapData(_loc2_[0] + "$" + _loc6_));
-               _loc6_++;
+               vec.push(App.asset.getBitmapData(args[0] + "$" + i));
+               i++;
             }
-            this._clipX = _loc5_.length;
-            this._clipY = 1;
-            this.clips = _loc5_;
-            this.width = _loc5_[0].width;
-            this.height = _loc5_[0].height;
-            _contentWidth = _loc5_[0].width;
-            _contentHeight = _loc5_[0].height;
+            _clipX = vec.length;
+            _clipY = 1;
+            clips = vec;
+            width = vec[0].width;
+            height = vec[0].height;
+            _contentWidth = vec[0].width;
+            _contentHeight = vec[0].height;
          }
       }
       
-      override public function set width(param1:Number) : void
+      override public function set width(value:Number) : void
       {
-         super.width = param1;
-         this._bitmap.width = param1;
+         .super.width = value;
+         _bitmap.width = value;
       }
       
-      override public function set height(param1:Number) : void
+      override public function set height(value:Number) : void
       {
-         super.height = param1;
-         this._bitmap.height = param1;
+         .super.height = value;
+         _bitmap.height = value;
       }
       
       override public function commitMeasure() : void
       {
-         exeCallLater(this.changeClip);
+         exeCallLater(changeClip);
       }
       
       public function get sizeGrid() : String
       {
-         if(this._bitmap.sizeGrid)
+         if(_bitmap.sizeGrid)
          {
-            return this._bitmap.sizeGrid.join(",");
+            return _bitmap.sizeGrid.join(",");
          }
          return null;
       }
       
-      public function set sizeGrid(param1:String) : void
+      public function set sizeGrid(value:String) : void
       {
-         this._bitmap.sizeGrid = StringUtils.fillArray(Styles.defaultSizeGrid,param1);
+         _bitmap.sizeGrid = StringUtils.fillArray(Styles.defaultSizeGrid,value);
       }
       
       public function get frame() : int
       {
-         return this._bitmap.index;
+         return _bitmap.index;
       }
       
-      public function set frame(param1:int) : void
+      public function set frame(value:int) : void
       {
-         var _loc2_:Handler = null;
-         this._bitmap.index = param1;
-         sendEvent(UIEvent.FRAME_CHANGED);
-         if(this._bitmap.index == this._to)
+         var handler:* = null;
+         _bitmap.index = value;
+         sendEvent("frameChanged");
+         if(_bitmap.index == _to)
          {
-            this.stop();
-            this._to = -1;
-            if(this._complete != null)
+            stop();
+            _to = -1;
+            if(_complete != null)
             {
-               _loc2_ = this._complete;
-               this._complete = null;
-               _loc2_.execute();
+               handler = _complete;
+               _complete = null;
+               handler.execute();
             }
          }
       }
       
       public function get index() : int
       {
-         return this._bitmap.index;
+         return _bitmap.index;
       }
       
-      public function set index(param1:int) : void
+      public function set index(value:int) : void
       {
-         this.frame = param1;
+         frame = value;
       }
       
       public function get totalFrame() : int
       {
-         exeCallLater(this.changeClip);
-         return !!this._bitmap.clips?int(this._bitmap.clips.length):0;
+         exeCallLater(changeClip);
+         return !!_bitmap.clips?_bitmap.clips.length:0;
       }
       
       public function get autoStopAtRemoved() : Boolean
       {
-         return this._autoStopAtRemoved;
+         return _autoStopAtRemoved;
       }
       
-      public function set autoStopAtRemoved(param1:Boolean) : void
+      public function set autoStopAtRemoved(value:Boolean) : void
       {
-         this._autoStopAtRemoved = param1;
+         _autoStopAtRemoved = value;
       }
       
       public function get autoPlay() : Boolean
       {
-         return this._autoPlay;
+         return _autoPlay;
       }
       
-      public function set autoPlay(param1:Boolean) : void
+      public function set autoPlay(value:Boolean) : void
       {
-         if(this._autoPlay != param1)
+         if(_autoPlay != value)
          {
-            this._autoPlay = param1;
-            if(this._autoPlay)
-            {
-               this.play();
-            }
-            else
-            {
-               this.stop();
-            }
+            _autoPlay = value;
+            !!_autoPlay?play():stop();
          }
       }
       
       public function get interval() : int
       {
-         return this._interval;
+         return _interval;
       }
       
-      public function set interval(param1:int) : void
+      public function set interval(value:int) : void
       {
-         if(this._interval != param1)
+         if(_interval != value)
          {
-            this._interval = param1;
-            if(this._isPlaying)
+            _interval = value;
+            if(_isPlaying)
             {
-               this.play();
+               play();
             }
          }
       }
       
       public function get isPlaying() : Boolean
       {
-         return this._isPlaying;
+         return _isPlaying;
       }
       
-      public function set isPlaying(param1:Boolean) : void
+      public function set isPlaying(value:Boolean) : void
       {
-         this._isPlaying = param1;
+         _isPlaying = value;
       }
       
       public function play() : void
       {
-         this._isPlaying = true;
-         this.frame = this._bitmap.index;
-         App.timer.doLoop(this._interval,this.loop);
+         _isPlaying = true;
+         frame = _bitmap.index;
+         App.timer.doLoop(_interval,loop);
       }
       
       protected function loop() : void
       {
-         this.frame++;
+         frame = Number(frame) + 1;
       }
       
       public function stop() : void
       {
-         App.timer.clearTimer(this.loop);
-         this._isPlaying = false;
+         App.timer.clearTimer(loop);
+         _isPlaying = false;
       }
       
-      public function gotoAndPlay(param1:int) : void
+      public function gotoAndPlay(frame:int) : void
       {
-         this.frame = param1;
-         this.play();
+         this.frame = frame;
+         play();
       }
       
-      public function gotoAndStop(param1:int) : void
+      public function gotoAndStop(frame:int) : void
       {
-         this.stop();
-         this.frame = param1;
+         stop();
+         this.frame = frame;
       }
       
-      public function playFromTo(param1:int = -1, param2:int = -1, param3:Handler = null) : void
+      public function playFromTo(from:int = -1, to:int = -1, complete:Handler = null) : void
       {
-         this._from = param1 == -1?0:int(param1);
-         this._to = param2 == -1?int(this._clipX * this._clipY - 1):int(param2);
-         this._complete = param3;
-         this.gotoAndPlay(this._from);
+         _from = from == -1?0:from;
+         _to = to == -1?_clipX * _clipY - 1:to;
+         _complete = complete;
+         gotoAndPlay(_from);
       }
       
-      override public function set dataSource(param1:Object) : void
+      override public function set dataSource(value:Object) : void
       {
-         _dataSource = param1;
-         if(param1 is int || param1 is String)
+         _dataSource = value;
+         if(value is int || value is String)
          {
-            this.frame = int(param1);
+            frame = int(value);
          }
          else
          {
-            super.dataSource = param1;
+            .super.dataSource = value;
          }
       }
       
       public function get smoothing() : Boolean
       {
-         return this._bitmap.smoothing;
+         return _bitmap.smoothing;
       }
       
-      public function set smoothing(param1:Boolean) : void
+      public function set smoothing(value:Boolean) : void
       {
-         this._bitmap.smoothing = param1;
+         _bitmap.smoothing = value;
       }
       
       public function get anchorX() : Number
       {
-         return this._bitmap.anchorX;
+         return _bitmap.anchorX;
       }
       
-      public function set anchorX(param1:Number) : void
+      public function set anchorX(value:Number) : void
       {
-         this._bitmap.anchorX = param1;
+         _bitmap.anchorX = value;
       }
       
       public function get anchorY() : Number
       {
-         return this._bitmap.anchorY;
+         return _bitmap.anchorY;
       }
       
-      public function set anchorY(param1:Number) : void
+      public function set anchorY(value:Number) : void
       {
-         this._bitmap.anchorY = param1;
+         _bitmap.anchorY = value;
       }
       
       public function get bitmap() : AutoBitmap
       {
-         return this._bitmap;
+         return _bitmap;
       }
       
       override public function dispose() : void
       {
-         this.destroy(false);
-         this.clearBitmapLoader();
+         destroy(false);
+         clearBitmapLoader();
       }
       
-      public function destroy(param1:Boolean = false) : void
+      public function destroy(clearFromLoader:Boolean = false) : void
       {
-         this._bitmap.bitmapData = null;
-         App.asset.destroyClips(this._url);
+         _bitmap.bitmapData = null;
+         App.asset.destroyClips(_url);
       }
    }
 }

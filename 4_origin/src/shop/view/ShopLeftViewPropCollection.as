@@ -132,26 +132,26 @@ package shop.view
          super();
       }
       
-      public function addItemToList(param1:ShopCartItem) : void
+      public function addItemToList($item:ShopCartItem) : void
       {
-         var _loc2_:int = itemList.length;
-         if(_loc2_ > 0)
+         var len:int = itemList.length;
+         if(len > 0)
          {
-            param1.y = itemList[_loc2_ - 1].y + itemList[_loc2_ - 1].height;
+            $item.y = itemList[len - 1].y + itemList[len - 1].height;
          }
          else
          {
-            param1.y = 0;
+            $item.y = 0;
          }
-         itemList.push(param1);
-         param1.id = itemList.length - 1;
-         cartItemList.addChild(param1);
+         itemList.push($item);
+         $item.id = itemList.length - 1;
+         cartItemList.addChild($item);
       }
       
       public function setup() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var cell:* = null;
          itemList = new Vector.<ShopCartItem>();
          cartItemList = new Sprite();
          panelBtnGroup = new SelectedButtonGroup();
@@ -245,44 +245,43 @@ package shop.view
          purchaseView.addChild(playerGiftTxt);
          purchaseView.addChild(oderGiftTxt);
          purchaseView.addChild(leftMoneyPanelBuyBtn);
-         _loc2_ = 0;
-         while(_loc2_ < 8)
+         for(i = 0; i < 8; )
          {
-            _loc1_ = CellFactory.instance.createShopPlayerItemCell() as ShopPlayerCell;
-            PositionUtils.setPos(_loc1_,"ddtshop.PlayerCellPos_" + String(_loc2_));
-            playerCells.push(_loc1_);
-            dressView.addChild(_loc1_);
-            _loc2_++;
+            cell = CellFactory.instance.createShopPlayerItemCell() as ShopPlayerCell;
+            PositionUtils.setPos(cell,"ddtshop.PlayerCellPos_" + String(i));
+            playerCells.push(cell);
+            dressView.addChild(cell);
+            i++;
          }
          randomBtn = ComponentFactory.Instance.creatComponentByStylename("ddtshop.BtnRandom");
          randomBtn.text = LanguageMgr.GetTranslation("shop.ShopLeftView.BodyInfo.RandomBtnText");
          randomBtn.tipData = LanguageMgr.GetTranslation("shop.ShopLeftView.BodyInfo.RandomBtnTipText");
       }
       
-      public function addChildrenTo(param1:DisplayObjectContainer) : void
+      public function addChildrenTo(display:DisplayObjectContainer) : void
       {
-         param1.addChild(bg);
-         param1.addChild(middlePanelBg);
-         param1.addChild(presentBtn);
-         param1.addChild(purchaseBtn);
-         param1.addChild(askBtn);
-         param1.addChild(panelCartBtn);
-         param1.addChild(panelColorBtn);
-         param1.addChild(dressView);
-         param1.addChild(colorEditor);
-         param1.addChild(purchaseView);
-         param1.addChild(cartScroll);
-         param1.addChild(lastItem);
-         param1.addChild(randomBtn);
-         param1.addChild(playerNameText);
-         param1.addChild(rankingLabelText);
-         param1.addChild(rankingText);
-         param1.addChild(fittingRoomText);
+         display.addChild(bg);
+         display.addChild(middlePanelBg);
+         display.addChild(presentBtn);
+         display.addChild(purchaseBtn);
+         display.addChild(askBtn);
+         display.addChild(panelCartBtn);
+         display.addChild(panelColorBtn);
+         display.addChild(dressView);
+         display.addChild(colorEditor);
+         display.addChild(purchaseView);
+         display.addChild(cartScroll);
+         display.addChild(lastItem);
+         display.addChild(randomBtn);
+         display.addChild(playerNameText);
+         display.addChild(rankingLabelText);
+         display.addChild(rankingText);
+         display.addChild(fittingRoomText);
       }
       
-      public function disposeAllChildrenFrom(param1:DisplayObjectContainer) : void
+      public function disposeAllChildrenFrom(display:DisplayObjectContainer) : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          EffectManager.Instance.removeEffect(presentEffet);
          EffectManager.Instance.removeEffect(purchaseEffet);
          EffectManager.Instance.removeEffect(saveFigureEffet);
@@ -290,19 +289,16 @@ package shop.view
          ObjectUtils.disposeAllChildren(colorEditor);
          ObjectUtils.disposeAllChildren(dressView);
          ObjectUtils.disposeAllChildren(purchaseView);
-         ObjectUtils.disposeAllChildren(param1);
+         ObjectUtils.disposeAllChildren(display);
          ObjectUtils.disposeObject(moneyPanelTipText);
          panelBtnGroup.dispose();
          panelBtnGroup = null;
-         _loc2_ = 0;
-         while(_loc2_ < playerCells.length)
+         for(i = 0; i < playerCells.length; playerCells[i] = null,i++)
          {
-            playerCells[_loc2_] = null;
-            _loc2_++;
          }
          dressView = null;
          purchaseView = null;
-         param1 = null;
+         display = null;
          playerCells = null;
          dressView = null;
          lastItem = null;

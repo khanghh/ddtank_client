@@ -61,30 +61,30 @@ package ddt.view.common
          ShowTipManager.Instance.addTip(this);
       }
       
-      public function setInfo(param1:BasePlayer, param2:Boolean = true, param3:Boolean = false) : void
+      public function setInfo(info:BasePlayer, isShowTip:Boolean = true, forVIPFrame:Boolean = false) : void
       {
-         var _loc4_:int = 0;
-         _level = param1.VIPLevel;
-         _isVip = param1.IsVIP;
-         _vipExp = param1.VIPExp;
-         if(param1.ID == PlayerManager.Instance.Self.ID)
+         var need:int = 0;
+         _level = info.VIPLevel;
+         _isVip = info.IsVIP;
+         _vipExp = info.VIPExp;
+         if(info.ID == PlayerManager.Instance.Self.ID)
          {
-            if(param2)
+            if(isShowTip)
             {
-               buttonMode = !param3;
+               buttonMode = !forVIPFrame;
                if(_isVip)
                {
-                  if(param1.VIPLevel < 15)
+                  if(info.VIPLevel < 15)
                   {
-                     _loc4_ = ServerConfigManager.instance.VIPExpNeededForEachLv[_level] - param1.VIPExp;
-                     _tipData = LanguageMgr.GetTranslation("ddt.vip.vipIcon.upGradDays",_loc4_,_level + 1);
+                     need = ServerConfigManager.instance.VIPExpNeededForEachLv[_level] - info.VIPExp;
+                     _tipData = LanguageMgr.GetTranslation("ddt.vip.vipIcon.upGradDays",need,_level + 1);
                   }
                   else
                   {
                      _tipData = LanguageMgr.GetTranslation("ddt.vip.vipIcon.upGradFull");
                   }
                }
-               else if(param1.VIPExp > 0)
+               else if(info.VIPExp > 0)
                {
                   _tipData = LanguageMgr.GetTranslation("ddt.vip.vipView.expiredTrue");
                }
@@ -102,7 +102,7 @@ package ddt.view.common
             {
                _level = 0;
             }
-            if(!param3)
+            if(!forVIPFrame)
             {
                addEventListener("click",__showVipFrame);
             }
@@ -111,9 +111,9 @@ package ddt.view.common
          {
             removeEventListener("click",__showVipFrame);
             buttonMode = false;
-            if(param2)
+            if(isShowTip)
             {
-               _tipData = LanguageMgr.GetTranslation("ddt.vip.vipIcon.otherVipTip",param1.VIPLevel);
+               _tipData = LanguageMgr.GetTranslation("ddt.vip.vipIcon.otherVipTip",info.VIPLevel);
             }
             else
             {
@@ -121,11 +121,11 @@ package ddt.view.common
                mouseChildren = false;
             }
          }
-         _type = param1.typeVIP;
+         _type = info.typeVIP;
          updateIcon();
       }
       
-      private function __showVipFrame(param1:MouseEvent) : void
+      private function __showVipFrame(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          VipController.instance.show();
@@ -162,9 +162,9 @@ package ddt.view.common
          }
       }
       
-      public function setSize(param1:int) : void
+      public function setSize(size:int) : void
       {
-         _size = param1;
+         _size = size;
          updateIcon();
       }
       
@@ -193,25 +193,25 @@ package ddt.view.common
          return 0;
       }
       
-      public function set tipStyle(param1:String) : void
+      public function set tipStyle(value:String) : void
       {
-         _tipStyle = param1;
+         _tipStyle = value;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(value:Object) : void
       {
-         _tipData = param1 as String;
+         _tipData = value as String;
       }
       
-      public function set tipDirctions(param1:String) : void
-      {
-      }
-      
-      public function set tipGapV(param1:int) : void
+      public function set tipDirctions(value:String) : void
       {
       }
       
-      public function set tipGapH(param1:int) : void
+      public function set tipGapV(value:int) : void
+      {
+      }
+      
+      public function set tipGapH(value:int) : void
       {
       }
       
@@ -220,7 +220,7 @@ package ddt.view.common
          return 0;
       }
       
-      public function set tipWidth(param1:int) : void
+      public function set tipWidth(w:int) : void
       {
       }
       

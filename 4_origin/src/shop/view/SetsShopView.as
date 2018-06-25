@@ -33,11 +33,11 @@ package shop.view
          super();
       }
       
-      public function initialize(param1:Array) : void
+      public function initialize(list:Array) : void
       {
          init();
          initEvent();
-         setList(param1);
+         setList(list);
          _commodityPricesText2.text = "0";
          _purchaseConfirmationBtn.visible = true;
          _commodityNumberTip.htmlText = LanguageMgr.GetTranslation("shop.setsshopview.commodity");
@@ -85,7 +85,7 @@ package shop.view
          _allCheckBox.addEventListener("select",__allSelected);
       }
       
-      protected function __soundPlay(param1:MouseEvent) : void
+      protected function __soundPlay(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }
@@ -97,55 +97,54 @@ package shop.view
          _allCheckBox.removeEventListener("select",__allSelected);
       }
       
-      private function __allSelected(param1:Event) : void
+      private function __allSelected(event:Event) : void
       {
-         var _loc2_:* = null;
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
+         var item:* = null;
+         var i:int = 0;
+         var j:int = 0;
          if(_allCheckBox.selected)
          {
-            _loc4_ = 0;
-            while(_loc4_ < _cartList.numChildren)
+            for(i = 0; i < _cartList.numChildren; )
             {
-               _loc2_ = _cartList.getChildAt(_loc4_) as SetsShopItem;
-               if(_loc2_)
+               item = _cartList.getChildAt(i) as SetsShopItem;
+               if(item)
                {
-                  _loc2_.selected = true;
+                  item.selected = true;
                }
-               _loc4_++;
+               i++;
             }
          }
          else
          {
-            _loc3_ = 0;
-            while(_loc3_ < _cartList.numChildren)
+            j = 0;
+            while(j < _cartList.numChildren)
             {
-               _loc2_ = _cartList.getChildAt(_loc3_) as SetsShopItem;
-               if(_loc2_)
+               item = _cartList.getChildAt(j) as SetsShopItem;
+               if(item)
                {
-                  _loc2_.selected = false;
+                  item.selected = false;
                }
-               _loc3_++;
+               j++;
             }
          }
          updateTxt();
       }
       
-      override protected function addItemEvent(param1:ShopCartItem) : void
+      override protected function addItemEvent(item:ShopCartItem) : void
       {
-         super.addItemEvent(param1);
-         param1.addEventListener("select",__itemSelectedChanged);
+         super.addItemEvent(item);
+         item.addEventListener("select",__itemSelectedChanged);
       }
       
-      private function __itemSelectedChanged(param1:Event) : void
+      private function __itemSelectedChanged(event:Event) : void
       {
          updateTxt();
       }
       
-      override protected function removeItemEvent(param1:ShopCartItem) : void
+      override protected function removeItemEvent(item:ShopCartItem) : void
       {
-         super.removeItemEvent(param1);
-         param1.removeEventListener("select",__itemSelectedChanged);
+         super.removeItemEvent(item);
+         item.removeEventListener("select",__itemSelectedChanged);
       }
       
       override protected function createShopItem() : ShopCartItem
@@ -155,38 +154,37 @@ package shop.view
       
       override protected function updateTxt() : void
       {
-         var _loc1_:int = 0;
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
+         var selectedCount:int = 0;
+         var itemCount:int = 0;
+         var i:int = 0;
+         var item:* = null;
          _totalPrice = 0;
-         _loc4_ = 0;
-         while(_loc4_ < _cartList.numChildren)
+         for(i = 0; i < _cartList.numChildren; )
          {
-            _loc2_ = _cartList.getChildAt(_loc4_) as SetsShopItem;
-            if(_loc2_)
+            item = _cartList.getChildAt(i) as SetsShopItem;
+            if(item)
             {
-               _loc3_++;
-               if(_loc2_.selected)
+               itemCount++;
+               if(item.selected)
                {
-                  _totalPrice = _totalPrice + _loc2_.shopItemInfo.AValue1;
-                  _loc1_++;
+                  _totalPrice = _totalPrice + item.shopItemInfo.AValue1;
+                  selectedCount++;
                }
             }
-            _loc4_++;
+            i++;
          }
-         _commodityNumberText.text = _loc1_.toString();
-         if(_loc3_ > 0 && _loc1_ >= _loc3_)
+         _commodityNumberText.text = selectedCount.toString();
+         if(itemCount > 0 && selectedCount >= itemCount)
          {
             _commodityPricesText1.text = _setsPrice.toString();
             _totalPrice = _setsPrice;
          }
-         else if(_loc3_ > 0)
+         else if(itemCount > 0)
          {
             _commodityPricesText1.text = _totalPrice.toString();
          }
-         _commodityNumberText.text = String(_loc1_);
-         if(_loc1_ > 0)
+         _commodityNumberText.text = String(selectedCount);
+         if(selectedCount > 0)
          {
             _purchaseConfirmationBtn.enable = true;
          }
@@ -196,11 +194,11 @@ package shop.view
          }
       }
       
-      override protected function __purchaseConfirmationBtnClick(param1:MouseEvent = null) : void
+      override protected function __purchaseConfirmationBtnClick(event:MouseEvent = null) : void
       {
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         var _loc5_:int = 0;
+         var alert:* = null;
+         var item:* = null;
+         var j:int = 0;
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -209,32 +207,31 @@ package shop.view
          }
          if(PlayerManager.Instance.Self.Money < _totalPrice)
          {
-            _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("poorNote"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
-            _loc3_.moveEnable = false;
-            _loc3_.addEventListener("response",__poorManResponse);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("poorNote"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
+            alert.moveEnable = false;
+            alert.addEventListener("response",__poorManResponse);
             return;
          }
-         var _loc2_:Array = [];
-         _loc5_ = 0;
-         while(_loc5_ < _cartList.numChildren)
+         var items:Array = [];
+         for(j = 0; j < _cartList.numChildren; )
          {
-            _loc4_ = _cartList.getChildAt(_loc5_) as SetsShopItem;
-            if(_loc4_ && _loc4_.selected)
+            item = _cartList.getChildAt(j) as SetsShopItem;
+            if(item && item.selected)
             {
-               _loc2_.push(_loc4_.shopItemInfo.GoodsID);
+               items.push(item.shopItemInfo.GoodsID);
             }
-            _loc5_++;
+            j++;
          }
-         SocketManager.Instance.out.sendUseCard(-1,-1,_loc2_,1);
+         SocketManager.Instance.out.sendUseCard(-1,-1,items,1);
          ObjectUtils.disposeObject(this);
       }
       
-      private function __poorManResponse(param1:FrameEvent) : void
+      private function __poorManResponse(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         param1.currentTarget.removeEventListener("response",__poorManResponse);
-         ObjectUtils.disposeObject(param1.currentTarget);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         event.currentTarget.removeEventListener("response",__poorManResponse);
+         ObjectUtils.disposeObject(event.currentTarget);
+         if(event.responseCode == 3 || event.responseCode == 2)
          {
             LeavePageManager.leaveToFillPath();
          }

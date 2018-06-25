@@ -32,23 +32,23 @@ package consortion.view.selfConsortia
          addEvent();
       }
       
-      private function onClick(param1:MouseEvent) : void
+      private function onClick(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var shopFrame:* = null;
          if(PlayerManager.Instance.Self.consortiaInfo.ChairmanID == PlayerManager.Instance.Self.ID)
          {
             SoundManager.instance.playButtonSound();
-            _loc2_ = ComponentFactory.Instance.creatComponentByStylename("consortion.badgeShopFrame");
-            LayerManager.Instance.addToLayer(_loc2_,3,true,2,true);
+            shopFrame = ComponentFactory.Instance.creatComponentByStylename("consortion.badgeShopFrame");
+            LayerManager.Instance.addToLayer(shopFrame,3,true,2,true);
          }
       }
       
-      private function onMouseOver(param1:MouseEvent) : void
+      private function onMouseOver(evt:MouseEvent) : void
       {
          filters = ComponentFactory.Instance.creatFilters("lightFilter");
       }
       
-      private function onMouseOut(param1:MouseEvent) : void
+      private function onMouseOut(evt:MouseEvent) : void
       {
          filters = [];
       }
@@ -84,20 +84,20 @@ package consortion.view.selfConsortia
          return _badgeID;
       }
       
-      public function set badgeID(param1:int) : void
+      public function set badgeID(value:int) : void
       {
-         if(_badgeID == param1)
+         if(_badgeID == value)
          {
             return;
          }
-         _badgeID = param1;
+         _badgeID = value;
          _buyBadgeTxt.visible = _badgeID == 0;
          if(PlayerManager.Instance.Self.consortiaInfo.BadgeID > 0)
          {
             _badge.buyDate = DateUtils.dealWithStringDate(PlayerManager.Instance.Self.consortiaInfo.BadgeBuyTime);
             ShowTipManager.Instance.addTip(_badge);
          }
-         _badge.badgeID = param1;
+         _badge.badgeID = value;
          _badge.visible = _badgeID > 0;
       }
       

@@ -61,8 +61,8 @@ package farm.view.compose
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var cell:* = null;
          _bgBottom = ComponentFactory.Instance.creat("assets.farmHouse.BottomBg");
          addChild(_bgBottom);
          _bgHouseItem = ComponentFactory.Instance.creat("asset.farmHouse.houseBg");
@@ -81,13 +81,12 @@ package farm.view.compose
          addChild(_currentPageTxt);
          _listView = ComponentFactory.Instance.creat("farm.simpleTileList.farmHouse",[5]);
          addChild(_listView);
-         _loc2_ = 0;
-         while(_loc2_ < 10)
+         for(i = 0; i < 10; )
          {
-            _loc1_ = new FarmHouseItem(_loc2_);
-            _listView.addChild(_loc1_);
-            _cells.push(_loc1_);
-            _loc2_++;
+            cell = new FarmHouseItem(i);
+            _listView.addChild(cell);
+            _cells.push(cell);
+            i++;
          }
          _bagdata = PlayerManager.Instance.Self.getBag(14);
          _totalPage = _bagdata.items.list.length % 10 == 0?_bagdata.items.list.length / 10 == 0?1:Number(_bagdata.items.list.length / 10):Number(_bagdata.items.list.length / 10 + 1);
@@ -113,7 +112,7 @@ package farm.view.compose
          _bagdata.removeEventListener("update",__updateGoods);
       }
       
-      private function __updateGoods(param1:BagEvent) : void
+      private function __updateGoods(event:BagEvent) : void
       {
          _totalPage = _bagdata.items.list.length % 10 == 0?_bagdata.items.list.length / 10 == 0?1:Number(_bagdata.items.list.length / 10):Number(_bagdata.items.list.length / 10 + 1);
          update();
@@ -121,27 +120,26 @@ package farm.view.compose
       
       private function update() : void
       {
-         var _loc3_:* = 0;
+         var i:* = 0;
          clearitems();
-         var _loc1_:int = (_currentPage - 1) * 10;
-         var _loc2_:int = _bagdata.items.list.length < _currentPage * 10?_bagdata.items.list.length:_currentPage * 10;
-         _loc3_ = _loc1_;
-         while(_loc3_ < _loc2_)
+         var start:int = (_currentPage - 1) * 10;
+         var end:int = _bagdata.items.list.length < _currentPage * 10?_bagdata.items.list.length:_currentPage * 10;
+         for(i = start; i < end; )
          {
-            _cells[_loc3_ - _loc1_].info = _bagdata.items.list[_loc3_];
-            _loc3_++;
+            _cells[i - start].info = _bagdata.items.list[i];
+            i++;
          }
          _currentPageTxt.text = _currentPage + "/" + _totalPage;
       }
       
-      private function __pageBtnClick(param1:MouseEvent) : void
+      private function __pageBtnClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_totalPage == 1)
          {
             return;
          }
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = evt.currentTarget;
          if(_firstPage !== _loc2_)
          {
             if(_prePageBtn !== _loc2_)
@@ -172,14 +170,13 @@ package farm.view.compose
       
       private function clearitems() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(_cells.length > 0)
          {
-            _loc1_ = 0;
-            while(_loc1_ < 10)
+            for(i = 0; i < 10; )
             {
-               _cells[_loc1_].info = null;
-               _loc1_++;
+               _cells[i].info = null;
+               i++;
             }
          }
       }
@@ -190,12 +187,12 @@ package farm.view.compose
          clearitems();
          var _loc3_:int = 0;
          var _loc2_:* = _cells;
-         for each(var _loc1_ in _cells)
+         for each(var item in _cells)
          {
-            if(_loc1_)
+            if(item)
             {
-               ObjectUtils.disposeObject(_loc1_);
-               _loc1_ = null;
+               ObjectUtils.disposeObject(item);
+               item = null;
             }
          }
          _cells.splice(0,_cells.length);

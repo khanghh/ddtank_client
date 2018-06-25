@@ -13,11 +13,11 @@ package store.events
       
       public var item:InventoryItemInfo;
       
-      public function UpdateItemEvent(param1:String, param2:int, param3:InventoryItemInfo, param4:Boolean = false, param5:Boolean = false)
+      public function UpdateItemEvent(type:String, place:int, item:InventoryItemInfo, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         super(param1,param4,param5);
-         this.pos = param2;
-         this.item = param3;
+         super(type,bubbles,cancelable);
+         this.pos = place;
+         this.item = item;
       }
    }
 }

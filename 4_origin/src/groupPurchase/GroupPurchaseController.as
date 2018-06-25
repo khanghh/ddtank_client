@@ -30,12 +30,12 @@ package groupPurchase
          GroupPurchaseManager.instance.addEventListener("GroupPurchaseShowFrame",__onShowFrame);
       }
       
-      private function __onShowFrame(param1:Event) : void
+      private function __onShowFrame(e:Event) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:GroupPurchaseMainView = new GroupPurchaseMainView();
-         _loc2_.init();
-         HallIconManager.instance.showCommonFrame(_loc2_,"wonderfulActivityManager.btnTxt9",530,565);
+         var _view:GroupPurchaseMainView = new GroupPurchaseMainView();
+         _view.init();
+         HallIconManager.instance.showCommonFrame(_view,"wonderfulActivityManager.btnTxt9",530,565);
       }
    }
 }

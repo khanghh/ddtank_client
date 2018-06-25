@@ -21,16 +21,15 @@ package conRecharge.view
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var _dayItem:* = null;
          _vbox = ComponentFactory.Instance.creatComponentByStylename("conRecharge.rightItem.vbox");
          addChild(_vbox);
-         _loc2_ = 0;
-         while(_loc2_ < ConRechargeManager.instance.dayGiftbagArray.length)
+         for(i = 0; i < ConRechargeManager.instance.dayGiftbagArray.length; )
          {
-            _loc1_ = new DayItem(ConRechargeManager.instance.dayGiftbagArray[_loc2_]);
-            _vbox.addChild(_loc1_);
-            _loc2_++;
+            _dayItem = new DayItem(ConRechargeManager.instance.dayGiftbagArray[i]);
+            _vbox.addChild(_dayItem);
+            i++;
          }
       }
       
@@ -77,29 +76,29 @@ class DayItem extends Component
    
    private var _num:Sprite;
    
-   function DayItem(param1:GiftBagInfo)
+   function DayItem(info:GiftBagInfo)
    {
-      var _loc2_:* = null;
-      var _loc8_:int = 0;
-      var _loc7_:* = null;
-      var _loc6_:* = null;
-      var _loc3_:* = null;
-      var _loc5_:* = null;
-      var _loc4_:* = null;
+      var _cell:* = null;
+      var i:int = 0;
+      var array:* = null;
+      var itemInfo:* = null;
+      var tInfo:* = null;
+      var bg:* = null;
+      var cell:* = null;
       super();
-      _info = param1;
+      _info = info;
       _bg = ComponentFactory.Instance.creatBitmap("asset.conRecharge.rightItem.bg");
       addChild(_bg);
       _statusArr = WonderfulActivityManager.Instance.getActivityInitDataById(ConRechargeManager.instance.actId).statusArr;
       _statusArr.sortOn("statusID",16);
-      if(WonderfulActivityManager.Instance.getActivityInitDataById(ConRechargeManager.instance.actId).giftInfoDic[param1.giftbagId].times != 0)
+      if(WonderfulActivityManager.Instance.getActivityInitDataById(ConRechargeManager.instance.actId).giftInfoDic[info.giftbagId].times != 0)
       {
          _btn = ComponentFactory.Instance.creatComponentByStylename("conRecharge.havaReceived.btn");
          addChild(_btn);
          _btn.addEventListener("click",clickHandler);
          _btn.enable = false;
       }
-      else if(param1.giftConditionArr[0].conditionValue > _statusArr[0].statusValue)
+      else if(info.giftConditionArr[0].conditionValue > _statusArr[0].statusValue)
       {
          _btn = ComponentFactory.Instance.creatComponentByStylename("conRecharge.canReceive.btn");
          addChild(_btn);
@@ -112,43 +111,42 @@ class DayItem extends Component
          addChild(_btn);
          _btn.addEventListener("click",clickHandler);
       }
-      _num = ComponentFactory.Instance.creatNumberSprite(param1.giftConditionArr[0].conditionValue,"asset.conRecharge.red");
+      _num = ComponentFactory.Instance.creatNumberSprite(info.giftConditionArr[0].conditionValue,"asset.conRecharge.red");
       addChild(_num);
       PositionUtils.setPos(_num,"asset.conRecharge.red.pos");
       _hbox = ComponentFactory.Instance.creatComponentByStylename("conRecharge.rightItem.hbox");
       addChild(_hbox);
-      _loc8_ = 0;
-      while(_loc8_ < param1.giftRewardArr.length)
+      for(i = 0; i < info.giftRewardArr.length; )
       {
-         _loc7_ = param1.giftRewardArr[_loc8_].property.split(",");
-         _loc6_ = ItemManager.Instance.getTemplateById(param1.giftRewardArr[_loc8_].templateId) as ItemTemplateInfo;
-         _loc3_ = new InventoryItemInfo();
-         ObjectUtils.copyProperties(_loc3_,_loc6_);
-         _loc3_.StrengthenLevel = _loc7_[0];
-         _loc3_.AttackCompose = _loc7_[1];
-         _loc3_.DefendCompose = _loc7_[2];
-         _loc3_.AgilityCompose = _loc7_[3];
-         _loc3_.LuckCompose = _loc7_[4];
-         _loc3_.MagicAttack = _loc7_[6];
-         _loc3_.MagicDefence = _loc7_[7];
-         _loc3_.ValidDate = param1.giftRewardArr[_loc8_].validDate;
-         _loc3_.IsBinds = param1.giftRewardArr[_loc8_].isBind;
-         _loc3_.Count = param1.giftRewardArr[_loc8_].count;
-         _loc5_ = ComponentFactory.Instance.creatBitmap("asset.conRecharge.goodsBG");
-         _loc4_ = new BagCell(0,_loc3_,false,_loc5_);
-         _hbox.addChild(_loc4_);
-         _loc8_++;
+         array = info.giftRewardArr[i].property.split(",");
+         itemInfo = ItemManager.Instance.getTemplateById(info.giftRewardArr[i].templateId) as ItemTemplateInfo;
+         tInfo = new InventoryItemInfo();
+         ObjectUtils.copyProperties(tInfo,itemInfo);
+         tInfo.StrengthenLevel = array[0];
+         tInfo.AttackCompose = array[1];
+         tInfo.DefendCompose = array[2];
+         tInfo.AgilityCompose = array[3];
+         tInfo.LuckCompose = array[4];
+         tInfo.MagicAttack = array[6];
+         tInfo.MagicDefence = array[7];
+         tInfo.ValidDate = info.giftRewardArr[i].validDate;
+         tInfo.IsBinds = info.giftRewardArr[i].isBind;
+         tInfo.Count = info.giftRewardArr[i].count;
+         bg = ComponentFactory.Instance.creatBitmap("asset.conRecharge.goodsBG");
+         cell = new BagCell(0,tInfo,false,bg);
+         _hbox.addChild(cell);
+         i++;
       }
    }
    
-   private function clickHandler(param1:MouseEvent) : void
+   private function clickHandler(e:MouseEvent) : void
    {
-      var _loc3_:SendGiftInfo = new SendGiftInfo();
-      _loc3_.activityId = ConRechargeManager.instance.actId;
-      _loc3_.giftIdArr = [_info.giftbagId];
-      var _loc2_:Vector.<SendGiftInfo> = new Vector.<SendGiftInfo>();
-      _loc2_.push(_loc3_);
-      SocketManager.Instance.out.sendWonderfulActivityGetReward(_loc2_);
+      var getAwardInfo:SendGiftInfo = new SendGiftInfo();
+      getAwardInfo.activityId = ConRechargeManager.instance.actId;
+      getAwardInfo.giftIdArr = [_info.giftbagId];
+      var data:Vector.<SendGiftInfo> = new Vector.<SendGiftInfo>();
+      data.push(getAwardInfo);
+      SocketManager.Instance.out.sendWonderfulActivityGetReward(data);
       ObjectUtils.disposeObject(_btn);
       _btn.removeEventListener("click",clickHandler);
       _btn = ComponentFactory.Instance.creatComponentByStylename("conRecharge.havaReceived.btn");

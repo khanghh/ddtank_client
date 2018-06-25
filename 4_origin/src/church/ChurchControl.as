@@ -34,10 +34,10 @@ package church
          SocketManager.Instance.addEventListener(PkgEvent.format(249,12),__showGiftView);
       }
       
-      private function __showGiftView(param1:PkgEvent) : void
+      private function __showGiftView(e:PkgEvent) : void
       {
-         param1.pkg.readByte();
-         var _loc2_:int = param1.pkg.readInt();
+         e.pkg.readByte();
+         var needTotalMoney:int = e.pkg.readInt();
          if(_weddingRoomGiftFrameView)
          {
             if(_weddingRoomGiftFrameView.parent)
@@ -52,12 +52,12 @@ package church
          {
             _weddingRoomGiftFrameView = ComponentFactory.Instance.creat("church.weddingRoom.frame.WeddingRoomGiftFrameView");
             _weddingRoomGiftFrameView.addEventListener("close",closeRoomGift);
-            _weddingRoomGiftFrameView.txtMoney = _loc2_.toString();
+            _weddingRoomGiftFrameView.txtMoney = needTotalMoney.toString();
             _weddingRoomGiftFrameView.show();
          }
       }
       
-      private function closeRoomGift(param1:Event = null) : void
+      private function closeRoomGift(evt:Event = null) : void
       {
          if(_weddingRoomGiftFrameView)
          {

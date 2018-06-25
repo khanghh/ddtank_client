@@ -15,7 +15,7 @@ package com.pickgliss.action
       
       private var _timeOut:uint;
       
-      public function BaseAction(param1:uint = 0)
+      public function BaseAction(timeOut:uint = 0)
       {
          super();
       }
@@ -28,9 +28,9 @@ package com.pickgliss.action
          }
       }
       
-      public function setCompleteFun(param1:Function) : void
+      public function setCompleteFun(fun:Function) : void
       {
-         _completeFun = param1;
+         _completeFun = fun;
       }
       
       private function startLimitTimer() : void
@@ -41,7 +41,7 @@ package com.pickgliss.action
          _limitTimer.start();
       }
       
-      protected function onLimitTimerComplete(param1:TimerEvent) : void
+      protected function onLimitTimerComplete(event:TimerEvent) : void
       {
          removeLimitTimer();
          if(_acting)

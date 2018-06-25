@@ -18,41 +18,40 @@ package groupPurchase.view
       
       public function GroupPurchaseAwardView()
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          super();
          _awardList = GroupPurchaseManager.instance.awardInfoList;
-         _loc1_ = 1;
-         while(_loc1_ <= 12)
+         for(i = 1; i <= 12; )
          {
-            createAwardCell(_loc1_);
-            _loc1_++;
+            createAwardCell(i);
+            i++;
          }
       }
       
-      private function createAwardCell(param1:int) : void
+      private function createAwardCell(index:int) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:GroupPurchaseAwardInfo = _awardList[param1];
-         if(_loc2_)
+         var awardCell:* = null;
+         var itemInfo:* = null;
+         var awardInfo:GroupPurchaseAwardInfo = _awardList[index];
+         if(awardInfo)
          {
-            _loc4_ = new BagCell(1,null,true,null,false);
-            _loc4_.tipGapH = 0;
-            _loc4_.tipGapV = 0;
-            _loc3_ = new InventoryItemInfo();
-            _loc3_.TemplateID = _loc2_.TemplateID;
-            ItemManager.fill(_loc3_);
-            _loc3_.StrengthenLevel = _loc2_.StrengthenLevel;
-            _loc3_.AttackCompose = _loc2_.AttackCompose;
-            _loc3_.DefendCompose = _loc2_.DefendCompose;
-            _loc3_.LuckCompose = _loc2_.LuckCompose;
-            _loc3_.AgilityCompose = _loc2_.AgilityCompose;
-            _loc3_.IsBinds = _loc2_.IsBind;
-            _loc3_.ValidDate = _loc2_.ValidDate;
-            _loc3_.Count = _loc2_.Count;
-            _loc4_.info = _loc3_;
-            PositionUtils.setPos(_loc4_,"groupPurchase.awardCellPos" + param1);
-            addChild(_loc4_);
+            awardCell = new BagCell(1,null,true,null,false);
+            awardCell.tipGapH = 0;
+            awardCell.tipGapV = 0;
+            itemInfo = new InventoryItemInfo();
+            itemInfo.TemplateID = awardInfo.TemplateID;
+            ItemManager.fill(itemInfo);
+            itemInfo.StrengthenLevel = awardInfo.StrengthenLevel;
+            itemInfo.AttackCompose = awardInfo.AttackCompose;
+            itemInfo.DefendCompose = awardInfo.DefendCompose;
+            itemInfo.LuckCompose = awardInfo.LuckCompose;
+            itemInfo.AgilityCompose = awardInfo.AgilityCompose;
+            itemInfo.IsBinds = awardInfo.IsBind;
+            itemInfo.ValidDate = awardInfo.ValidDate;
+            itemInfo.Count = awardInfo.Count;
+            awardCell.info = itemInfo;
+            PositionUtils.setPos(awardCell,"groupPurchase.awardCellPos" + index);
+            addChild(awardCell);
          }
       }
       

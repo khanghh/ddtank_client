@@ -73,14 +73,14 @@ package drgnBoatBuild.components
          addEventListener("click",__itemClick);
       }
       
-      protected function __itemClick(param1:MouseEvent) : void
+      protected function __itemClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          DrgnBoatBuildManager.instance.selectedId = _info.id;
          SocketManager.Instance.out.updateDrgnBoatBuildInfo(_info.id);
       }
       
-      protected function __itemOut(param1:MouseEvent) : void
+      protected function __itemOut(event:MouseEvent) : void
       {
          if(!isFriendSelected())
          {
@@ -88,7 +88,7 @@ package drgnBoatBuild.components
          }
       }
       
-      protected function __itemOver(param1:MouseEvent) : void
+      protected function __itemOver(event:MouseEvent) : void
       {
          _light.visible = true;
       }
@@ -126,9 +126,9 @@ package drgnBoatBuild.components
          return false;
       }
       
-      public function setListCellStatus(param1:List, param2:Boolean, param3:int) : void
+      public function setListCellStatus(list:List, isSelected:Boolean, index:int) : void
       {
-         _bg.setFrame(param3 % 2 + 1);
+         _bg.setFrame(index % 2 + 1);
       }
       
       public function getCellValue() : *
@@ -136,9 +136,9 @@ package drgnBoatBuild.components
          return _info;
       }
       
-      public function setCellValue(param1:*) : void
+      public function setCellValue(value:*) : void
       {
-         _info = param1;
+         _info = value;
          update();
       }
       

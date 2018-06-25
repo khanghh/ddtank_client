@@ -14,59 +14,57 @@ package explorerManual.view.chapter
       
       private var _ctrl:ExplorerManualController;
       
-      public function ChapterListView(param1:ExplorerManualController, param2:int = 2, param3:int = 0)
+      public function ChapterListView(ctrl:ExplorerManualController, columnNum:int = 2, arrangeType:int = 0)
       {
-         _ctrl = param1;
-         super(param2,param3);
+         _ctrl = ctrl;
+         super(columnNum,arrangeType);
          _chapterList = [];
       }
       
-      public function updateProgress(param1:ExplorerManualInfo) : void
+      public function updateProgress(model:ExplorerManualInfo) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < _chapterList.length)
+         var item:* = null;
+         var i:int = 0;
+         for(i = 0; i < _chapterList.length; )
          {
-            _loc2_ = _chapterList[_loc3_] as ExplorerChapterItemView;
-            _loc2_.updateProgress(param1.chapterProgress(_loc2_.chapterID));
-            _loc3_++;
+            item = _chapterList[i] as ExplorerChapterItemView;
+            item.updateProgress(model.chapterProgress(item.chapterID));
+            i++;
          }
       }
       
-      public function set templeteData(param1:Array) : void
+      public function set templeteData(info:Array) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < param1.length)
+         var i:int = 0;
+         for(i = 0; i < info.length; )
          {
-            createItem(param1[_loc2_].ID);
-            _loc2_++;
+            createItem(info[i].ID);
+            i++;
          }
       }
       
-      private function createItem(param1:int) : void
+      private function createItem(chapterID:int) : void
       {
-         var _loc2_:ExplorerChapterItemView = new ExplorerChapterItemView(param1);
-         addChild(_loc2_);
-         _loc2_.addEventListener("click",__itemCLickHandler);
-         _chapterList.push(_loc2_);
+         var item:ExplorerChapterItemView = new ExplorerChapterItemView(chapterID);
+         addChild(item);
+         item.addEventListener("click",__itemCLickHandler);
+         _chapterList.push(item);
       }
       
-      private function __itemCLickHandler(param1:MouseEvent) : void
+      private function __itemCLickHandler(evt:MouseEvent) : void
       {
-         var _loc2_:ExplorerChapterItemView = param1.target as ExplorerChapterItemView;
-         _ctrl.switchChapterView(_loc2_.chapterID);
+         var item:ExplorerChapterItemView = evt.target as ExplorerChapterItemView;
+         _ctrl.switchChapterView(item.chapterID);
       }
       
       override public function dispose() : void
       {
-         var _loc1_:* = null;
+         var item:* = null;
          while(_chapterList && _chapterList.length > 0)
          {
-            _loc1_ = _chapterList.shift();
-            _loc1_.removeEventListener("click",__itemCLickHandler);
-            ObjectUtils.disposeObject(_loc1_);
+            item = _chapterList.shift();
+            item.removeEventListener("click",__itemCLickHandler);
+            ObjectUtils.disposeObject(item);
          }
          _chapterList = null;
          _ctrl = null;

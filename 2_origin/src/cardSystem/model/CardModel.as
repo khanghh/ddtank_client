@@ -63,15 +63,15 @@ package cardSystem.model
          return _setsSortRuleVector;
       }
       
-      public function set setsSortRuleVector(param1:Vector.<SetsInfo>) : void
+      public function set setsSortRuleVector(value:Vector.<SetsInfo>) : void
       {
-         _setsSortRuleVector = param1;
+         _setsSortRuleVector = value;
          dispatchEvent(new CardSocketEvent("setsSortRuleInitComplete",setsSortRuleVector));
       }
       
-      public function set GrooveInfoVector(param1:Vector.<GrooveInfo>) : void
+      public function set GrooveInfoVector(value:Vector.<GrooveInfo>) : void
       {
-         _grooveinfo = param1;
+         _grooveinfo = value;
       }
       
       public function get GrooveInfoVector() : Vector.<GrooveInfo>
@@ -83,9 +83,9 @@ package cardSystem.model
          return _grooveinfo;
       }
       
-      public function set PlayerId(param1:int) : void
+      public function set PlayerId(value:int) : void
       {
-         _playerid = param1;
+         _playerid = value;
       }
       
       public function get PlayerId() : int
@@ -98,9 +98,9 @@ package cardSystem.model
          return _setsList;
       }
       
-      public function set setsList(param1:DictionaryData) : void
+      public function set setsList(value:DictionaryData) : void
       {
-         _setsList = param1;
+         _setsList = value;
          dispatchEvent(new CardSocketEvent("setsPropIntComplete",setsList));
       }
       
@@ -109,54 +109,54 @@ package cardSystem.model
          return _inputSoul;
       }
       
-      public function set inputSoul(param1:int) : void
+      public function set inputSoul(value:int) : void
       {
-         _inputSoul = param1;
+         _inputSoul = value;
       }
       
       public function fourIsOpen() : Boolean
       {
-         var _loc1_:int = 0;
+         var num:int = 0;
          var _loc4_:int = 0;
          var _loc3_:* = PlayerManager.Instance.Self.cardBagDic;
-         for each(var _loc2_ in PlayerManager.Instance.Self.cardBagDic)
+         for each(var cardInfo in PlayerManager.Instance.Self.cardBagDic)
          {
-            if(_loc2_.Level >= 20)
+            if(cardInfo.Level >= 20)
             {
-               _loc1_++;
+               num++;
             }
          }
-         return _loc1_ >= 1;
+         return num >= 1;
       }
       
       public function fiveIsOpen() : Boolean
       {
-         var _loc1_:int = 0;
+         var num:int = 0;
          var _loc4_:int = 0;
          var _loc3_:* = PlayerManager.Instance.Self.cardBagDic;
-         for each(var _loc2_ in PlayerManager.Instance.Self.cardBagDic)
+         for each(var cardInfo in PlayerManager.Instance.Self.cardBagDic)
          {
-            if(_loc2_.Level == 30)
+            if(cardInfo.Level == 30)
             {
-               _loc1_++;
+               num++;
             }
          }
-         return _loc1_ >= 1;
+         return num >= 1;
       }
       
       public function fiveIsOpen2() : Boolean
       {
-         var _loc1_:int = 0;
+         var num:int = 0;
          var _loc4_:int = 0;
          var _loc3_:* = PlayerManager.Instance.Self.cardBagDic;
-         for each(var _loc2_ in PlayerManager.Instance.Self.cardBagDic)
+         for each(var cardInfo in PlayerManager.Instance.Self.cardBagDic)
          {
-            if(_loc2_.Level >= 20)
+            if(cardInfo.Level >= 20)
             {
-               _loc1_++;
+               num++;
             }
          }
-         return _loc1_ >= 3;
+         return num >= 3;
       }
       
       public function get Pages() : int
@@ -164,80 +164,80 @@ package cardSystem.model
          return Math.ceil(PlayerManager.Instance.Self.cardBagDic.length / 15);
       }
       
-      public function getDataByPage(param1:int) : DictionaryData
+      public function getDataByPage(nowPage:int) : DictionaryData
       {
-         var _loc2_:DictionaryData = new DictionaryData();
-         var _loc3_:DictionaryData = PlayerManager.Instance.Self.cardBagDic;
-         var _loc6_:int = (param1 - 1) * 15 + 5;
-         var _loc4_:int = _loc6_ + 15;
+         var result:DictionaryData = new DictionaryData();
+         var data:DictionaryData = PlayerManager.Instance.Self.cardBagDic;
+         var up:int = (nowPage - 1) * 15 + 5;
+         var down:int = up + 15;
          var _loc8_:int = 0;
-         var _loc7_:* = _loc3_;
-         for each(var _loc5_ in _loc3_)
+         var _loc7_:* = data;
+         for each(var info in data)
          {
-            if(_loc5_.Place >= _loc6_ && _loc5_.Place < _loc4_)
+            if(info.Place >= up && info.Place < down)
             {
-               _loc2_[_loc5_.Place] = _loc5_;
+               result[info.Place] = info;
             }
          }
-         return _loc2_;
+         return result;
       }
       
       public function getBagListData() : Array
       {
-         var _loc5_:int = 0;
-         var _loc3_:int = 0;
-         var _loc6_:int = 0;
-         var _loc1_:Array = [];
-         var _loc4_:DictionaryData = PlayerManager.Instance.Self.cardBagDic;
-         var _loc2_:int = 0;
+         var m:int = 0;
+         var n:int = 0;
+         var i:int = 0;
+         var result:Array = [];
+         var data:DictionaryData = PlayerManager.Instance.Self.cardBagDic;
+         var max:int = 0;
          var _loc9_:int = 0;
-         var _loc8_:* = _loc4_;
-         for each(var _loc7_ in _loc4_)
+         var _loc8_:* = data;
+         for each(var info in data)
          {
-            _loc5_ = _loc7_.Place % 4 == 0?_loc7_.Place / 4 - 2:Number(_loc7_.Place / 4 - 1);
-            if(_loc1_[_loc5_] == null)
+            m = info.Place % 4 == 0?info.Place / 4 - 2:Number(info.Place / 4 - 1);
+            if(result[m] == null)
             {
-               _loc1_[_loc5_] = [];
+               result[m] = [];
             }
-            _loc3_ = _loc7_.Place % 4 == 0?4:Number(_loc7_.Place % 4);
-            _loc1_[_loc5_][0] = _loc5_ + 1;
-            _loc1_[_loc5_][_loc3_] = _loc7_;
-            if(_loc5_ + 1 > _loc2_)
+            n = info.Place % 4 == 0?4:Number(info.Place % 4);
+            result[m][0] = m + 1;
+            result[m][n] = info;
+            if(m + 1 > max)
             {
-               _loc2_ = _loc5_ + 1;
+               max = m + 1;
             }
          }
-         if(_loc2_ < 3)
+         if(max < 3)
          {
-            _loc2_ = 3;
+            max = 3;
          }
-         _loc6_ = 0;
-         while(_loc6_ < _loc2_)
+         i = 0;
+         while(i < max)
          {
-            if(_loc1_[_loc6_] == null)
+            if(result[i] == null)
             {
-               _loc1_[_loc6_] = [];
-               _loc1_[_loc6_][0] = _loc6_ + 1;
+               result[i] = [];
+               result[i][0] = i + 1;
             }
-            _loc6_++;
+            i++;
          }
-         return _loc1_;
+         return result;
       }
       
-      public function getSetsCardFromCardBag(param1:String) : Vector.<CardInfo>
+      public function getSetsCardFromCardBag(setsId:String) : Vector.<CardInfo>
       {
-         var _loc3_:DictionaryData = PlayerManager.Instance.Self.cardBagDic;
-         var _loc4_:Vector.<CardInfo> = new Vector.<CardInfo>();
+         var data:DictionaryData = PlayerManager.Instance.Self.cardBagDic;
+         var infoVec:Vector.<CardInfo> = new Vector.<CardInfo>();
          var _loc6_:int = 0;
-         var _loc5_:* = _loc3_;
-         for each(var _loc2_ in _loc3_)
+         var _loc5_:* = data;
+         for each(var cardInfo in data)
          {
-            if(_loc2_.templateInfo.Property7 == param1)
+            if(cardInfo.templateInfo.Property7 == setsId)
             {
-               _loc4_.push(_loc2_);
+               infoVec.push(cardInfo);
             }
          }
-         return _loc4_;
+         return infoVec;
       }
    }
 }

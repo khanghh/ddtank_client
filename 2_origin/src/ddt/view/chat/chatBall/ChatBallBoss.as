@@ -21,14 +21,14 @@ package ddt.view.chat.chatBall
          _field.addEventListener("complete",__onTextDisplayCompleted);
       }
       
-      override public function setText(param1:String, param2:int = 0) : void
+      override public function setText(s:String, paopaoType:int = 0) : void
       {
          clear();
          if(paopaoMC == null)
          {
             newPaopao();
          }
-         if(param2 == 1)
+         if(paopaoType == 1)
          {
             (_field as ChatBallTextAreaBoss).animation = false;
          }
@@ -36,9 +36,9 @@ package ddt.view.chat.chatBall
          {
             (_field as ChatBallTextAreaBoss).animation = true;
          }
-         var _loc3_:int = this.globalToLocal(new Point(500,10)).x;
-         _field.x = _loc3_ < 0?0:_loc3_;
-         _field.text = param1;
+         var temp:int = this.globalToLocal(new Point(500,10)).x;
+         _field.x = temp < 0?0:temp;
+         _field.text = s;
          fitSize(_field);
          show();
       }
@@ -55,7 +55,7 @@ package ddt.view.chat.chatBall
          addChild(paopao);
       }
       
-      private function __onTextDisplayCompleted(param1:Event) : void
+      private function __onTextDisplayCompleted(e:Event) : void
       {
          beginPopDelay();
       }

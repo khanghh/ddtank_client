@@ -48,13 +48,13 @@ package dice.vo
       
       public var _playerHeight:Number = 175;
       
-      public function DicePlayerBase(param1:PlayerInfo, param2:Function = null, param3:Function = null)
+      public function DicePlayerBase(playerInfo:PlayerInfo, SynchronousPosition:Function = null, callBack:Function = null)
       {
          _rectangle = new Rectangle();
-         super(param3);
-         _playerInfo = param1;
-         _callBack = param3;
-         _SynchronousPosition = param2;
+         super(callBack);
+         _playerInfo = playerInfo;
+         _callBack = callBack;
+         _SynchronousPosition = SynchronousPosition;
          initialize();
       }
       
@@ -71,14 +71,14 @@ package dice.vo
          _sceneCharacterLoaderHead.load(sceneCharacterLoaderHeadCallBack);
       }
       
-      private function sceneCharacterLoaderHeadCallBack(param1:SceneCharacterLoaderHead, param2:Boolean = true) : void
+      private function sceneCharacterLoaderHeadCallBack(sceneCharacterLoaderHead:SceneCharacterLoaderHead, isAllLoadSuccess:Boolean = true) : void
       {
-         _headBitmapData = param1.getContent()[0] as BitmapData;
-         if(param1)
+         _headBitmapData = sceneCharacterLoaderHead.getContent()[0] as BitmapData;
+         if(sceneCharacterLoaderHead)
          {
-            param1.dispose();
+            sceneCharacterLoaderHead.dispose();
          }
-         if(!param2 || !_headBitmapData)
+         if(!isAllLoadSuccess || !_headBitmapData)
          {
             if(_callBack != null)
             {
@@ -91,16 +91,16 @@ package dice.vo
       
       private function sceneCharacterStateNatural() : void
       {
-         var _loc1_:* = null;
+         var actionBmp:* = null;
          _sceneCharacterSetNatural = new SceneCharacterSet();
-         var _loc2_:Vector.<Point> = new Vector.<Point>();
-         _loc2_.push(new Point(0,0));
-         _loc2_.push(new Point(0,0));
-         _loc2_.push(new Point(0,-1));
-         _loc2_.push(new Point(0,2));
-         _loc2_.push(new Point(0,0));
-         _loc2_.push(new Point(0,-1));
-         _loc2_.push(new Point(0,2));
+         var points:Vector.<Point> = new Vector.<Point>();
+         points.push(new Point(0,0));
+         points.push(new Point(0,0));
+         points.push(new Point(0,-1));
+         points.push(new Point(0,2));
+         points.push(new Point(0,0));
+         points.push(new Point(0,-1));
+         points.push(new Point(0,2));
          if(!_rectangle)
          {
             _rectangle = new Rectangle();
@@ -109,23 +109,23 @@ package dice.vo
          _rectangle.y = 0;
          _rectangle.width = _playerWidth;
          _rectangle.height = _playerHeight;
-         _loc1_ = new BitmapData(_playerWidth,_playerHeight,true,0);
-         _loc1_.copyPixels(_headBitmapData,_rectangle,new Point(0,0));
-         _sceneCharacterSetNatural.push(new SceneCharacterItem("NaturalFrontHead","NaturalFrontAction",_loc1_,1,1,_playerWidth,_playerHeight,1,_loc2_,true,7));
+         actionBmp = new BitmapData(_playerWidth,_playerHeight,true,0);
+         actionBmp.copyPixels(_headBitmapData,_rectangle,new Point(0,0));
+         _sceneCharacterSetNatural.push(new SceneCharacterItem("NaturalFrontHead","NaturalFrontAction",actionBmp,1,1,_playerWidth,_playerHeight,1,points,true,7));
          _rectangle.x = _playerWidth;
          _rectangle.y = 0;
          _rectangle.width = _playerWidth;
          _rectangle.height = _playerHeight;
-         _loc1_ = new BitmapData(_playerWidth,_playerHeight,true,0);
-         _loc1_.copyPixels(_headBitmapData,_rectangle,new Point(0,0));
-         _sceneCharacterSetNatural.push(new SceneCharacterItem("NaturalFrontEyesCloseHead","NaturalFrontEyesCloseAction",_loc1_,1,1,_playerWidth,_playerHeight,2));
+         actionBmp = new BitmapData(_playerWidth,_playerHeight,true,0);
+         actionBmp.copyPixels(_headBitmapData,_rectangle,new Point(0,0));
+         _sceneCharacterSetNatural.push(new SceneCharacterItem("NaturalFrontEyesCloseHead","NaturalFrontEyesCloseAction",actionBmp,1,1,_playerWidth,_playerHeight,2));
          _rectangle.x = _playerWidth * 2;
          _rectangle.y = 0;
          _rectangle.width = _playerWidth;
          _rectangle.height = _playerHeight;
-         _loc1_ = new BitmapData(_playerWidth,_playerHeight * 2,true,0);
-         _loc1_.copyPixels(_headBitmapData,_rectangle,new Point(0,0));
-         _sceneCharacterSetNatural.push(new SceneCharacterItem("NaturalBackHead","NaturalBackAction",_loc1_,1,1,_playerWidth,_playerHeight,6,_loc2_,true,7));
+         actionBmp = new BitmapData(_playerWidth,_playerHeight * 2,true,0);
+         actionBmp.copyPixels(_headBitmapData,_rectangle,new Point(0,0));
+         _sceneCharacterSetNatural.push(new SceneCharacterItem("NaturalBackHead","NaturalBackAction",actionBmp,1,1,_playerWidth,_playerHeight,6,points,true,7));
          sceneCharacterLoadBodyNatural();
       }
       
@@ -135,19 +135,19 @@ package dice.vo
          _sceneCharacterLoaderBody.load(sceneCharacterLoaderBodyNaturalCallBack);
       }
       
-      private function sceneCharacterLoaderBodyNaturalCallBack(param1:DiceSceneCharacterLoaderBody, param2:Boolean = true) : void
+      private function sceneCharacterLoaderBodyNaturalCallBack(sceneCharacterLoaderBody:DiceSceneCharacterLoaderBody, isAllLoadSuccess:Boolean = true) : void
       {
-         var _loc7_:* = null;
+         var actionBmp:* = null;
          if(!_sceneCharacterSetNatural)
          {
             return;
          }
-         _bodyBitmapData = param1.getContent()[0] as BitmapData;
-         if(param1)
+         _bodyBitmapData = sceneCharacterLoaderBody.getContent()[0] as BitmapData;
+         if(sceneCharacterLoaderBody)
          {
-            param1.dispose();
+            sceneCharacterLoaderBody.dispose();
          }
-         if(!param2 || !_bodyBitmapData)
+         if(!isAllLoadSuccess || !_bodyBitmapData)
          {
             if(_callBack != null)
             {
@@ -163,49 +163,49 @@ package dice.vo
          _rectangle.y = 0;
          _rectangle.width = _bodyBitmapData.width;
          _rectangle.height = _playerHeight;
-         _loc7_ = new BitmapData(_bodyBitmapData.width,_playerHeight,true,0);
-         _loc7_.copyPixels(_bodyBitmapData,_rectangle,new Point(0,0));
-         _sceneCharacterSetNatural.push(new SceneCharacterItem("NaturalFrontBody","NaturalFrontAction",_loc7_,1,7,_playerWidth,_playerHeight,3));
+         actionBmp = new BitmapData(_bodyBitmapData.width,_playerHeight,true,0);
+         actionBmp.copyPixels(_bodyBitmapData,_rectangle,new Point(0,0));
+         _sceneCharacterSetNatural.push(new SceneCharacterItem("NaturalFrontBody","NaturalFrontAction",actionBmp,1,7,_playerWidth,_playerHeight,3));
          _rectangle.x = 0;
          _rectangle.y = 0;
          _rectangle.width = _playerWidth;
          _rectangle.height = _playerHeight;
-         _loc7_ = new BitmapData(_playerWidth,_playerHeight,true,0);
-         _loc7_.copyPixels(_bodyBitmapData,_rectangle,new Point(0,0));
-         _sceneCharacterSetNatural.push(new SceneCharacterItem("NaturalFrontEyesCloseBody","NaturalFrontEyesCloseAction",_loc7_,1,1,_playerWidth,_playerHeight,4));
+         actionBmp = new BitmapData(_playerWidth,_playerHeight,true,0);
+         actionBmp.copyPixels(_bodyBitmapData,_rectangle,new Point(0,0));
+         _sceneCharacterSetNatural.push(new SceneCharacterItem("NaturalFrontEyesCloseBody","NaturalFrontEyesCloseAction",actionBmp,1,1,_playerWidth,_playerHeight,4));
          _rectangle.x = 0;
          _rectangle.y = _playerHeight;
          _rectangle.width = _bodyBitmapData.width;
          _rectangle.height = _playerHeight;
-         _loc7_ = new BitmapData(_bodyBitmapData.width,_playerHeight,true,0);
-         _loc7_.copyPixels(_bodyBitmapData,_rectangle,new Point(0,0));
-         _sceneCharacterSetNatural.push(new SceneCharacterItem("NaturalbackBody","NaturalBackAction",_loc7_,1,7,_playerWidth,_playerHeight,5));
-         var _loc6_:SceneCharacterActionItem = new SceneCharacterActionItem("naturalStandFront",[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,7,7],true);
-         _sceneCharacterActionSetNatural.push(_loc6_);
-         var _loc5_:SceneCharacterActionItem = new SceneCharacterActionItem("naturalStandBack",[8],false);
-         _sceneCharacterActionSetNatural.push(_loc5_);
-         var _loc4_:SceneCharacterActionItem = new SceneCharacterActionItem("naturalWalkFront",[1,1,1,2,2,2,3,3,3,4,4,4,5,5,5,6,6,6],true);
-         _sceneCharacterActionSetNatural.push(_loc4_);
-         var _loc3_:SceneCharacterActionItem = new SceneCharacterActionItem("naturalWalkBack",[9,9,9,10,10,10,11,11,11,12,12,12,13,13,13,14,14,14],true);
-         _sceneCharacterActionSetNatural.push(_loc3_);
-         var _loc8_:SceneCharacterStateItem = new SceneCharacterStateItem("natural",_sceneCharacterSetNatural,_sceneCharacterActionSetNatural);
-         _sceneCharacterStateSet.push(_loc8_);
+         actionBmp = new BitmapData(_bodyBitmapData.width,_playerHeight,true,0);
+         actionBmp.copyPixels(_bodyBitmapData,_rectangle,new Point(0,0));
+         _sceneCharacterSetNatural.push(new SceneCharacterItem("NaturalbackBody","NaturalBackAction",actionBmp,1,7,_playerWidth,_playerHeight,5));
+         var sceneCharacterActionItem1:SceneCharacterActionItem = new SceneCharacterActionItem("naturalStandFront",[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,7,7],true);
+         _sceneCharacterActionSetNatural.push(sceneCharacterActionItem1);
+         var sceneCharacterActionItem2:SceneCharacterActionItem = new SceneCharacterActionItem("naturalStandBack",[8],false);
+         _sceneCharacterActionSetNatural.push(sceneCharacterActionItem2);
+         var sceneCharacterActionItem3:SceneCharacterActionItem = new SceneCharacterActionItem("naturalWalkFront",[1,1,1,2,2,2,3,3,3,4,4,4,5,5,5,6,6,6],true);
+         _sceneCharacterActionSetNatural.push(sceneCharacterActionItem3);
+         var sceneCharacterActionItem4:SceneCharacterActionItem = new SceneCharacterActionItem("naturalWalkBack",[9,9,9,10,10,10,11,11,11,12,12,12,13,13,13,14,14,14],true);
+         _sceneCharacterActionSetNatural.push(sceneCharacterActionItem4);
+         var _sceneCharacterStateItemNatural:SceneCharacterStateItem = new SceneCharacterStateItem("natural",_sceneCharacterSetNatural,_sceneCharacterActionSetNatural);
+         _sceneCharacterStateSet.push(_sceneCharacterStateItemNatural);
          .super.sceneCharacterStateSet = _sceneCharacterStateSet;
       }
       
-      override public function playerWalk(param1:Array) : void
+      override public function playerWalk(walkPath:Array) : void
       {
-         var _loc2_:* = null;
-         var _loc4_:* = null;
-         var _loc3_:Number = NaN;
-         _walkPath = param1;
+         var _walkPath0:* = null;
+         var po1:* = null;
+         var _walkDistance:Number = NaN;
+         _walkPath = walkPath;
          if(_walkPath && _walkPath.length > 0)
          {
             sceneCharacterDirection = SceneCharacterDirection.getDirection(new Point(this.x,this.y),_walkPath[0]);
-            _loc2_ = _walkPath[0] as Point;
-            _loc4_ = new Point(this.x,this.y);
-            _loc3_ = Point.distance(_loc2_,new Point(this.x,this.y));
-            if(_loc3_ > 0 || DiceController.Instance.CurrentPosition == 0)
+            _walkPath0 = _walkPath[0] as Point;
+            po1 = new Point(this.x,this.y);
+            _walkDistance = Point.distance(_walkPath0,new Point(this.x,this.y));
+            if(_walkDistance > 0 || DiceController.Instance.CurrentPosition == 0)
             {
                if(sceneCharacterDirection.type == "RT" && this.y - _walkPath[0].y <= 1)
                {
@@ -213,7 +213,7 @@ package dice.vo
                }
                dispatchEvent(new SceneCharacterEvent("characterDirectionChange",true));
             }
-            _tween.start(_loc3_ / _moveSpeed,"x",_walkPath[0].x,"y",_walkPath[0].y);
+            _tween.start(_walkDistance / _moveSpeed,"x",_walkPath[0].x,"y",_walkPath[0].y);
             if(_SynchronousPosition != null)
             {
                _SynchronousPosition(_walkPath[0]);

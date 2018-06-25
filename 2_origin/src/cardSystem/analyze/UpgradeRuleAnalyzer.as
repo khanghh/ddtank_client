@@ -10,36 +10,35 @@ package cardSystem.analyze
       
       public var upgradeRuleVec:Vector.<SetsUpgradeRuleInfo>;
       
-      public function UpgradeRuleAnalyzer(param1:Function)
+      public function UpgradeRuleAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
          upgradeRuleVec = new Vector.<SetsUpgradeRuleInfo>();
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:int = 0;
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
-         var _loc2_:XML = new XML(param1);
-         if(_loc2_.@value == "true")
+         var xmllist1:* = null;
+         var len1:int = 0;
+         var i:int = 0;
+         var info:* = null;
+         var xml:XML = new XML(data);
+         if(xml.@value == "true")
          {
-            _loc4_ = _loc2_..Item;
-            _loc3_ = _loc4_.length();
-            _loc6_ = 0;
-            while(_loc6_ < _loc3_)
+            xmllist1 = xml..Item;
+            len1 = xmllist1.length();
+            for(i = 0; i < len1; )
             {
-               _loc5_ = new SetsUpgradeRuleInfo();
-               ObjectUtils.copyPorpertiesByXML(_loc5_,_loc4_[_loc6_]);
-               upgradeRuleVec.push(_loc5_);
-               _loc6_++;
+               info = new SetsUpgradeRuleInfo();
+               ObjectUtils.copyPorpertiesByXML(info,xmllist1[i]);
+               upgradeRuleVec.push(info);
+               i++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc2_.@message;
+            message = xml.@message;
             onAnalyzeError();
             onAnalyzeComplete();
          }

@@ -25,15 +25,15 @@ package starling.display.player
       
       private var _isShowPlayer:Boolean = true;
       
-      public function FightPlayer(param1:FightPlayerVo)
+      public function FightPlayer(playerVO:FightPlayerVo)
       {
-         param1.playerInfo.showMounts = false;
-         super(param1);
+         playerVO.playerInfo.showMounts = false;
+         super(playerVO);
       }
       
       public function updatePlayerState() : void
       {
-         var _loc1_:Boolean = true;
+         var isWalk:Boolean = true;
          stopWalk();
          if(fightPlayerVo.isFight)
          {
@@ -46,7 +46,7 @@ package starling.display.player
             {
                addChild(_fightMoive);
             }
-            _loc1_ = false;
+            isWalk = false;
          }
          else
          {
@@ -67,7 +67,7 @@ package starling.display.player
                addChild(_tombstone);
             }
             _characterPlayer.visible = false;
-            _loc1_ = false;
+            isWalk = false;
          }
          else if(_tombstone)
          {
@@ -79,9 +79,9 @@ package starling.display.player
          {
             _characterPlayer.visible = _isShowPlayer && true;
          }
-         if(_loc1_ && _isWalk != _loc1_ && _playerVO && _playerVO.playerInfo.ID != PlayerManager.Instance.Self.ID)
+         if(isWalk && _isWalk != isWalk && _playerVO && _playerVO.playerInfo.ID != PlayerManager.Instance.Self.ID)
          {
-            _isWalk = _loc1_;
+            _isWalk = isWalk;
             if(fightPlayerVo.stateType == "consortiaGuard")
             {
                startRandomWalk(2,1,{"0_1":[462,470,1098,1022]});
@@ -89,7 +89,7 @@ package starling.display.player
          }
       }
       
-      override protected function onControlWalk(param1:TimerEvent) : void
+      override protected function onControlWalk(evt:TimerEvent) : void
       {
          if(fightPlayerVo && (fightPlayerVo.isFight || fightPlayerVo.isDie))
          {
@@ -98,12 +98,12 @@ package starling.display.player
             _posTimer.repeatCount = 1;
             return;
          }
-         super.onControlWalk(param1);
+         super.onControlWalk(evt);
       }
       
-      public function set showPlayer(param1:Boolean) : void
+      public function set showPlayer(value:Boolean) : void
       {
-         _isShowPlayer = param1;
+         _isShowPlayer = value;
          _characterPlayer.visible = _isShowPlayer && !fightPlayerVo.isDie;
       }
       
@@ -113,9 +113,9 @@ package starling.display.player
       
       public function reveive() : void
       {
-         var _loc1_:BoneMovieWrapper = new BoneMovieWrapper("sceneFightRevive",false,true);
-         addChild(_loc1_.asDisplay);
-         _loc1_.playAction("default",showReveive);
+         var movie:BoneMovieWrapper = new BoneMovieWrapper("sceneFightRevive",false,true);
+         addChild(movie.asDisplay);
+         movie.playAction("default",showReveive);
       }
       
       private function showReveive() : void

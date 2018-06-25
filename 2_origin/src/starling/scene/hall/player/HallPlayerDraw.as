@@ -22,10 +22,10 @@ package starling.scene.hall.player
       
       protected var _mountSImage:Image;
       
-      public function HallPlayerDraw(param1:PlayerInfo)
+      public function HallPlayerDraw(playerInfo:PlayerInfo)
       {
          super();
-         _playerInfo = param1;
+         _playerInfo = playerInfo;
       }
       
       override protected function initialize() : void
@@ -82,99 +82,98 @@ package starling.scene.hall.player
       
       private function updateMounts() : void
       {
-         var _loc10_:int = 0;
-         var _loc6_:* = null;
-         var _loc2_:int = 0;
-         var _loc5_:* = null;
-         var _loc4_:* = null;
-         var _loc3_:int = 0;
-         var _loc9_:* = null;
-         var _loc1_:* = null;
-         var _loc7_:int = 0;
-         var _loc8_:Vector.<SceneCharacterActionItem> = _actionSet.getItems(_state);
-         _loc10_ = 0;
-         while(_loc10_ < _loc8_.length)
+         var i:int = 0;
+         var type:* = null;
+         var index:int = 0;
+         var data:* = null;
+         var texture:* = null;
+         var sortOrder:int = 0;
+         var pos:* = null;
+         var pointItem:* = null;
+         var posIndex:int = 0;
+         var actionList:Vector.<SceneCharacterActionItem> = _actionSet.getItems(_state);
+         for(i = 0; i < actionList.length; )
          {
-            _loc6_ = _loc8_[_loc10_].type;
-            _loc2_ = _frames[_loc6_];
-            if(_loc2_ >= _loc8_[_loc10_].total)
+            type = actionList[i].type;
+            index = _frames[type];
+            if(index >= actionList[i].total)
             {
-               if(_loc8_[_loc10_].repeat)
+               if(actionList[i].repeat)
                {
-                  _loc2_ = 0;
+                  index = 0;
                }
                else
                {
-                  _loc2_ = _loc8_[_loc10_].total - 1;
+                  index = actionList[i].total - 1;
                }
             }
-            _loc5_ = getImage(_loc6_);
-            if(_loc5_ != null)
+            data = getImage(type);
+            if(data != null)
             {
-               if(_loc2_ >= _loc8_[_loc10_].frames.length)
+               if(index >= actionList[i].frames.length)
                {
-                  _loc4_ = _loc5_.frams[_loc8_[_loc10_].frames[_loc8_[_loc10_].frames.length - 1]];
+                  texture = data.frams[actionList[i].frames[actionList[i].frames.length - 1]];
                }
                else
                {
-                  _loc4_ = _loc5_.frams[_loc8_[_loc10_].frames[_loc2_]];
+                  texture = data.frams[actionList[i].frames[index]];
                }
-               if(_loc4_ != null)
+               if(texture != null)
                {
-                  _loc3_ = _loc5_.sortOrder;
-                  if(_loc8_[_loc10_].state == "standBack" || _loc8_[_loc10_].state == "walkBack")
+                  sortOrder = data.sortOrder;
+                  if(actionList[i].state == "standBack" || actionList[i].state == "walkBack")
                   {
-                     if(_loc6_ == "head")
+                     if(type == "head")
                      {
-                        _loc3_ = 1;
+                        sortOrder = 1;
                      }
-                     if(_loc6_ == "body")
+                     if(type == "body")
                      {
-                        _loc3_ = 0;
+                        sortOrder = 0;
                      }
                   }
-                  else if(_loc6_ == "bodyBack")
+                  else if(type == "bodyBack")
                   {
-                     _loc3_ = 1;
+                     sortOrder = 1;
                   }
-                  else if(_loc6_ == "mountSaddle")
+                  else if(type == "mountSaddle")
                   {
-                     _loc3_ = 3;
+                     sortOrder = 3;
                   }
-                  _loc1_ = _actionPointSet.getItem(_loc6_);
-                  if(_loc1_)
+                  pointItem = _actionPointSet.getItem(type);
+                  if(pointItem)
                   {
-                     _loc7_ = _loc2_ % _loc1_.amount;
-                     _loc9_ = _loc1_.getPoint(_loc7_);
+                     posIndex = index % pointItem.amount;
+                     pos = pointItem.getPoint(posIndex);
                   }
-                  _frames[_loc6_] = _loc2_ + 1;
-                  drawCharacterItem(_loc3_,_loc4_,_loc5_.w,_loc5_.h,_loc9_);
+                  _frames[type] = index + 1;
+                  drawCharacterItem(sortOrder,texture,data.w,data.h,pos);
                }
             }
-            _loc10_++;
+            i++;
          }
       }
       
-      override protected function getCharacterItem(param1:int) : Image
+      override protected function getCharacterItem(sortOrder:int) : Image
       {
-         if(param1 == 1)
+         if(sortOrder == 1)
          {
             return _bodyBackImage;
          }
-         if(param1 == 2)
+         if(sortOrder == 2)
          {
             return _mountImage;
          }
-         if(param1 == 3)
+         if(sortOrder == 3)
          {
             return _mountSImage;
          }
-         return super.getCharacterItem(param1);
+         return super.getCharacterItem(sortOrder);
       }
       
-      private function getImage(param1:String) : Object
+      private function getImage(type:String) : Object
       {
-         var _loc2_:* = param1;
+         var _loc2_:* = type;
          if("head" !== _loc2_)
          {
             if("body" !== _loc2_)

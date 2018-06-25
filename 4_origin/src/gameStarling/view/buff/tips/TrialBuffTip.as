@@ -19,24 +19,23 @@ package gameStarling.view.buff.tips
          conditionTxt = LanguageMgr.GetTranslation("ddt.gameView.buff.trialBuffConditionTxt");
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         var _loc2_:int = 0;
-         .super.tipData = param1;
-         var _loc5_:Array = String(param1).split(",");
-         var _loc3_:Array = getProName();
-         var _loc4_:String = "";
-         var _loc6_:int = _loc3_.length;
-         _loc2_ = 0;
-         for(; _loc2_ < _loc6_; _loc2_++)
+         var index:int = 0;
+         .super.tipData = data;
+         var proValue:Array = String(data).split(",");
+         var proName:Array = getProName();
+         var temValue:String = "";
+         var temLen:int = proName.length;
+         for(index = 0; index < temLen; index++)
          {
-            if(_loc5_.length > 0 && _loc5_.length == _loc6_)
+            if(proValue.length > 0 && proValue.length == temLen)
             {
-               if(_loc5_[_loc2_] > 0)
+               if(proValue[index] > 0)
                {
                   _proTxt = ComponentFactory.Instance.creatComponentByStylename("game.kingbless.tipView.valueTxt");
-                  _loc4_ = int(_loc5_[_loc2_]) >= 0?"+" + int(_loc5_[_loc2_]):"-" + int(_loc5_[_loc2_]);
-                  _proTxt.text = _loc3_[_loc2_] + _loc4_;
+                  temValue = int(proValue[index]) >= 0?"+" + int(proValue[index]):"-" + int(proValue[index]);
+                  _proTxt.text = proName[index] + temValue;
                }
                else
                {
@@ -46,7 +45,7 @@ package gameStarling.view.buff.tips
             else
             {
                _proTxt = ComponentFactory.Instance.creatComponentByStylename("game.kingbless.tipView.valueTxt");
-               _proTxt.text = _loc3_[_loc2_];
+               _proTxt.text = proName[index];
             }
             _proTxt.y = _propertySpri.numChildren * 20;
             _propertySpri.addChild(_proTxt);

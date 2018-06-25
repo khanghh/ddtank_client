@@ -48,19 +48,19 @@ package ddt.manager
          GameInSocketOut.sendRequireMaxBtnState();
       }
       
-      protected function onSetStateHandler(param1:PkgEvent) : void
+      protected function onSetStateHandler(e:PkgEvent) : void
       {
-         var _loc2_:ByteArray = param1.pkg as ByteArray;
-         var _loc3_:Boolean = _loc2_.readBoolean();
-         _maxBtnIsPackUp = _loc3_;
+         var bytes:ByteArray = e.pkg as ByteArray;
+         var state:Boolean = bytes.readBoolean();
+         _maxBtnIsPackUp = state;
          dispatchEvent(new Event("maxbtnstate_change"));
       }
       
-      protected function onGetStateHandler(param1:PkgEvent) : void
+      protected function onGetStateHandler(e:PkgEvent) : void
       {
-         var _loc2_:ByteArray = param1.pkg as ByteArray;
-         var _loc3_:Boolean = _loc2_.readBoolean();
-         _maxBtnIsPackUp = _loc3_;
+         var bytes:ByteArray = e.pkg as ByteArray;
+         var state:Boolean = bytes.readBoolean();
+         _maxBtnIsPackUp = state;
          dispatchEvent(new Event("maxbtnstate_change"));
       }
       

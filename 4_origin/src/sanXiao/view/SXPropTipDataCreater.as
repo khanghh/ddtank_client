@@ -15,17 +15,17 @@ package sanXiao.view
          super();
       }
       
-      public function getTipData(param1:int) : Object
+      public function getTipData(propType:int) : Object
       {
-         var _loc4_:String = LanguageMgr.GetTranslation(_detailStringList[param1],SanXiaoManager.getInstance().getPropScore(param1));
-         var _loc3_:String = SanXiaoManager.getInstance().getPropPrice(param1).toString();
-         var _loc5_:Boolean = SanXiaoManager.getInstance().isDiscounts;
-         var _loc2_:String = SanXiaoManager.getInstance().getPropCurPrice(param1);
+         var __detail:String = LanguageMgr.GetTranslation(_detailStringList[propType],SanXiaoManager.getInstance().getPropScore(propType));
+         var __price:String = SanXiaoManager.getInstance().getPropPrice(propType).toString();
+         var __isDiscount:Boolean = SanXiaoManager.getInstance().isDiscounts;
+         var __curPrice:String = SanXiaoManager.getInstance().getPropCurPrice(propType);
          return {
-            "detail":_loc4_,
-            "price":_loc3_,
-            "isDiscount":_loc5_,
-            "curPrice":_loc2_
+            "detail":__detail,
+            "price":__price,
+            "isDiscount":__isDiscount,
+            "curPrice":__curPrice
          };
       }
    }

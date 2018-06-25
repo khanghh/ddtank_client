@@ -41,10 +41,10 @@ package ringStation.view
       
       private var msgID:String = "1";
       
-      public function BattleFieldsItem(param1:int)
+      public function BattleFieldsItem($index:int)
       {
          super();
-         _index = param1;
+         _index = $index;
          init();
       }
       
@@ -58,9 +58,9 @@ package ringStation.view
          addChild(_nickNameText);
       }
       
-      public function update(param1:BattleFieldListItemInfo) : void
+      public function update(info:BattleFieldListItemInfo) : void
       {
-         _battleInfo = param1;
+         _battleInfo = info;
          if(_fightIconBg)
          {
             ObjectUtils.disposeObject(_fightIconBg);
@@ -82,9 +82,9 @@ package ringStation.view
          _fightIconBg = ComponentFactory.Instance.creat("ringStation.view.fightIconBg");
          addChild(_fightIconBg);
          addChild(_fightIcon);
-         var _loc2_:String = "";
-         _loc2_ = _index == 0?LanguageMgr.GetTranslation("ringStation.view.battleFieldsView.itemInfoNew") + " ":"";
-         _infoText.htmlText = _loc2_ + updateText(_battleInfo);
+         var newString:String = "";
+         newString = _index == 0?LanguageMgr.GetTranslation("ringStation.view.battleFieldsView.itemInfoNew") + " ":"";
+         _infoText.htmlText = newString + updateText(_battleInfo);
          _nickNameText.htmlText = "<u><a href=\'event:battleTxt\'>" + setUerNameLength(_battleInfo.UserName) + "</a></u>";
          if(msgID == "1" || msgID == "2" || msgID == "5")
          {
@@ -98,19 +98,19 @@ package ringStation.view
          {
             _nickNameText.x = _nickNameText.x + 27;
          }
-         findPlayer(param1.UserName);
+         findPlayer(info.UserName);
       }
       
-      private function findPlayer(param1:String) : void
+      private function findPlayer(playerName:String) : void
       {
          _playerInfo = new PlayerInfo();
-         if(param1 == PlayerManager.Instance.Self.NickName)
+         if(playerName == PlayerManager.Instance.Self.NickName)
          {
             _playerInfo = PlayerManager.Instance.Self;
          }
          else
          {
-            _playerInfo = PlayerManager.Instance.findPlayerByNickName(_playerInfo,param1);
+            _playerInfo = PlayerManager.Instance.findPlayerByNickName(_playerInfo,playerName);
          }
          if(_playerInfo.ID && _playerInfo.Style)
          {
@@ -118,12 +118,12 @@ package ringStation.view
          }
          else
          {
-            SocketManager.Instance.out.sendItemEquip(param1,true);
+            SocketManager.Instance.out.sendItemEquip(playerName,true);
             _playerInfo.addEventListener("propertychange",__playerInfoChange);
          }
       }
       
-      private function __playerInfoChange(param1:PlayerPropertyEvent) : void
+      private function __playerInfoChange(event:PlayerPropertyEvent) : void
       {
          _playerInfo.removeEventListener("propertychange",__playerInfoChange);
          updateTxt();
@@ -131,7 +131,7 @@ package ringStation.view
       
       private function updateTxt() : void
       {
-         var _loc1_:String = setUerNameLength(_playerInfo.NickName);
+         var tempName:String = setUerNameLength(_playerInfo.NickName);
          if(_playerInfo.IsVIP)
          {
             _vipName = VipController.instance.getVipNameTxt(104,_playerInfo.typeVIP);
@@ -143,43 +143,43 @@ package ringStation.view
             _vipName.textSize = 14;
             _vipName.x = _nickNameText.x;
             _vipName.y = _nickNameText.y;
-            _vipName.text = _loc1_;
+            _vipName.text = tempName;
             addChild(_vipName);
             PositionUtils.adaptNameStyle(_playerInfo,_nickNameText,_vipName);
          }
       }
       
-      private function updateText(param1:BattleFieldListItemInfo) : String
+      private function updateText(info:BattleFieldListItemInfo) : String
       {
-         if(param1.DareFlag)
+         if(info.DareFlag)
          {
-            msgID = !!param1.SuccessFlag?"1":"2";
-            if(param1.SuccessFlag && param1.Level == 0)
+            msgID = !!info.SuccessFlag?"1":"2";
+            if(info.SuccessFlag && info.Level == 0)
             {
                msgID = "5";
             }
          }
          else
          {
-            msgID = !!param1.SuccessFlag?"3":"4";
-            if(!param1.SuccessFlag && param1.Level == 0)
+            msgID = !!info.SuccessFlag?"3":"4";
+            if(!info.SuccessFlag && info.Level == 0)
             {
                msgID = "6";
             }
          }
-         return LanguageMgr.GetTranslation("ringStation.view.battleFieldsView.itemInfo" + msgID,"                   ",param1.Level);
+         return LanguageMgr.GetTranslation("ringStation.view.battleFieldsView.itemInfo" + msgID,"                   ",info.Level);
       }
       
-      private function setUerNameLength(param1:String) : String
+      private function setUerNameLength(userName:String) : String
       {
-         if(param1.length > 7)
+         if(userName.length > 7)
          {
-            param1 = param1.substring(0,5) + "..";
+            userName = userName.substring(0,5) + "..";
          }
-         return param1;
+         return userName;
       }
       
-      private function __nickNameLinkHandler(param1:Event) : void
+      private function __nickNameLinkHandler(evt:Event) : void
       {
          SoundManager.instance.play("008");
          if(_playerInfo)

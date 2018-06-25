@@ -51,10 +51,10 @@ package shop.view
       
       private var _buyFrom:int;
       
-      public function ShopBugleView(param1:int)
+      public function ShopBugleView($type:int)
       {
          super();
-         _type = param1;
+         _type = $type;
          init();
          ChatManager.Instance.focusFuncEnabled = false;
          if(_info)
@@ -65,7 +65,7 @@ package shop.view
       
       public function dispose() : void
       {
-         var _loc1_:* = null;
+         var item:* = null;
          StageReferance.stage.removeEventListener("keyDown",__onKeyDownd);
          if(_type == 40002)
          {
@@ -73,10 +73,10 @@ package shop.view
          }
          while(_itemContainer.numChildren > 0)
          {
-            _loc1_ = _itemContainer.getChildAt(0) as ShopBugleViewItem;
-            _loc1_.removeEventListener("click",__click);
-            _loc1_.dispose();
-            _loc1_ = null;
+            item = _itemContainer.getChildAt(0) as ShopBugleViewItem;
+            item.removeEventListener("click",__click);
+            item.dispose();
+            item = null;
          }
          _frame.dispose();
          clearAllItem();
@@ -101,50 +101,50 @@ package shop.view
          return _info;
       }
       
-      protected function __onKeyDownd(param1:KeyboardEvent) : void
+      protected function __onKeyDownd(e:KeyboardEvent) : void
       {
-         var _loc3_:int = _itemGroup.selectIndex;
-         var _loc2_:int = _itemContainer.numChildren;
-         if(param1.keyCode == 37)
+         var number:int = _itemGroup.selectIndex;
+         var max:int = _itemContainer.numChildren;
+         if(e.keyCode == 37)
          {
-            if(_loc3_ == 0)
+            if(number == 0)
             {
                §§push(0);
             }
             else
             {
-               _loc3_--;
-               §§push(_loc3_);
+               number--;
+               §§push(number);
             }
-            _loc3_ = §§pop();
+            number = §§pop();
          }
-         else if(param1.keyCode == 39)
+         else if(e.keyCode == 39)
          {
-            if(_loc3_ == _loc2_ - 1)
+            if(number == max - 1)
             {
-               §§push(_loc2_ - 1);
+               §§push(max - 1);
             }
             else
             {
-               _loc3_++;
-               §§push(_loc3_);
+               number++;
+               §§push(number);
             }
-            _loc3_ = §§pop();
+            number = §§pop();
          }
-         if(_itemGroup.selectIndex != _loc3_)
+         if(_itemGroup.selectIndex != number)
          {
             SoundManager.instance.play("008");
-            _itemGroup.selectIndex = _loc3_;
+            _itemGroup.selectIndex = number;
          }
-         param1.stopImmediatePropagation();
-         param1.stopPropagation();
+         e.stopImmediatePropagation();
+         e.stopPropagation();
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(e:FrameEvent) : void
       {
-         var _loc2_:* = null;
+         var item:* = null;
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(e.responseCode))
          {
             case 0:
             case 1:
@@ -159,72 +159,72 @@ package shop.view
                   BaglockedManager.Instance.show();
                   return;
                }
-               _loc2_ = _itemContainer.getChildAt(_itemGroup.selectIndex) as ShopBugleViewItem;
-               if(PlayerManager.Instance.Self.Money < _loc2_.money)
+               item = _itemContainer.getChildAt(_itemGroup.selectIndex) as ShopBugleViewItem;
+               if(PlayerManager.Instance.Self.Money < item.money)
                {
                   LeavePageManager.showFillFrame();
                   return;
                }
-               SocketManager.Instance.out.sendBuyGoods([_info.GoodsID],[_loc2_.type],[""],[0],[false],[""],_buyFrom);
+               SocketManager.Instance.out.sendBuyGoods([_info.GoodsID],[item.type],[""],[0],[false],[""],_buyFrom);
                dispose();
                break;
          }
       }
       
-      private function addItem(param1:ShopItemInfo, param2:int) : void
+      private function addItem(info:ShopItemInfo, index:int) : void
       {
-         var _loc5_:Shape = new Shape();
-         _loc5_.graphics.beginFill(16777215,0);
-         _loc5_.graphics.drawRect(0,0,70,70);
-         _loc5_.graphics.endFill();
-         var _loc4_:ShopItemCell = CellFactory.instance.createShopItemCell(_loc5_,param1.TemplateInfo) as ShopItemCell;
-         PositionUtils.setPos(_loc4_,"ddtshop.BugleViewItemCellPos");
-         var _loc3_:ShopBugleViewItem = new ShopBugleViewItem(param2,param1.getTimeToString(param2),param1.getItemPrice(param2).bothMoneyValue,_loc4_);
-         _loc3_.addEventListener("click",__click);
-         _itemContainer.addChild(_loc3_);
-         _itemGroup.addSelectItem(_loc3_);
+         var shape:Shape = new Shape();
+         shape.graphics.beginFill(16777215,0);
+         shape.graphics.drawRect(0,0,70,70);
+         shape.graphics.endFill();
+         var cell:ShopItemCell = CellFactory.instance.createShopItemCell(shape,info.TemplateInfo) as ShopItemCell;
+         PositionUtils.setPos(cell,"ddtshop.BugleViewItemCellPos");
+         var item:ShopBugleViewItem = new ShopBugleViewItem(index,info.getTimeToString(index),info.getItemPrice(index).bothMoneyValue,cell);
+         item.addEventListener("click",__click);
+         _itemContainer.addChild(item);
+         _itemGroup.addSelectItem(item);
       }
       
-      private function __click(param1:MouseEvent) : void
+      private function __click(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         _itemGroup.selectIndex = _itemContainer.getChildIndex(param1.currentTarget as ShopBugleViewItem);
+         _itemGroup.selectIndex = _itemContainer.getChildIndex(e.currentTarget as ShopBugleViewItem);
       }
       
       private function addItems() : void
       {
-         var _loc1_:int = 0;
+         var id:int = 0;
          if(_type == 11102)
          {
-            _loc1_ = 11102;
+            id = 11102;
             _frame.titleText = LanguageMgr.GetTranslation("tank.dialog.showbugleframe.bigbugletitle");
             _buyFrom = 3;
          }
          else if(_type == 11101)
          {
-            _loc1_ = 11101;
+            id = 11101;
             _frame.titleText = LanguageMgr.GetTranslation("tank.dialog.showbugleframe.smallbugletitle");
             _buyFrom = 3;
          }
          else if(_type == 11100)
          {
-            _loc1_ = 11100;
+            id = 11100;
             _frame.titleText = LanguageMgr.GetTranslation("tank.dialog.showbugleframe.crossbugletitle");
             _buyFrom = 3;
          }
          else if(_type == 11456)
          {
-            _loc1_ = 11456;
+            id = 11456;
             _frame.titleText = LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy");
             _buyFrom = 0;
          }
          else if(_type == 40002)
          {
-            _loc1_ = 40002;
+            id = 40002;
             _frame.titleText = LanguageMgr.GetTranslation("tank.dialog.showbugleframe.texpQuickBuy");
             _buyFrom = 6;
          }
-         _info = ShopManager.Instance.getMoneyShopItemByTemplateID(_loc1_);
+         _info = ShopManager.Instance.getMoneyShopItemByTemplateID(id);
          if(_info)
          {
             if(_info.getItemPrice(1).IsValid)
@@ -244,13 +244,13 @@ package shop.view
       
       private function clearAllItem() : void
       {
-         var _loc1_:* = null;
+         var item:* = null;
          while(_itemContainer.numChildren > 0)
          {
-            _loc1_ = _itemContainer.getChildAt(0) as ShopBugleViewItem;
-            _loc1_.removeEventListener("click",__click);
-            _loc1_.dispose();
-            _loc1_ = null;
+            item = _itemContainer.getChildAt(0) as ShopBugleViewItem;
+            item.removeEventListener("click",__click);
+            item.dispose();
+            item = null;
          }
       }
       
@@ -259,8 +259,8 @@ package shop.view
          _itemGroup = new SelectedButtonGroup();
          _frame = ComponentFactory.Instance.creatComponentByStylename("ddtshop.newBugleFrame");
          _itemContainer = ComponentFactory.Instance.creatComponentByStylename("ddtshop.newBugleViewItemContainer");
-         var _loc1_:AlertInfo = new AlertInfo("",LanguageMgr.GetTranslation("tank.dialog.showbugleframe.ok"));
-         _frame.info = _loc1_;
+         var ai:AlertInfo = new AlertInfo("",LanguageMgr.GetTranslation("tank.dialog.showbugleframe.ok"));
+         _frame.info = ai;
          _frame.addToContent(_itemContainer);
          _frame.addEventListener("response",__frameEventHandler);
          addChild(_frame);

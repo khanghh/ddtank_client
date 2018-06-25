@@ -56,9 +56,9 @@ package ddt.view.common.church
          dispose();
       }
       
-      private function onFrameResponse(param1:FrameEvent) : void
+      private function onFrameResponse(evt:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
@@ -73,12 +73,12 @@ package ddt.view.common.church
          }
       }
       
-      public function set msgInfo(param1:Object) : void
+      public function set msgInfo(value:Object) : void
       {
-         _inviteName = param1["inviteName"];
-         _roomid = param1["roomID"];
-         _password = param1["pwd"];
-         _sceneIndex = param1["sceneIndex"];
+         _inviteName = value["inviteName"];
+         _roomid = value["roomID"];
+         _password = value["pwd"];
+         _sceneIndex = value["sceneIndex"];
          _name_txt = ComponentFactory.Instance.creatComponentByStylename("common.church.ChurchInviteFrameInfoAsset");
          _name_txt.text = _inviteName;
          addToContent(_name_txt);
@@ -87,9 +87,9 @@ package ddt.view.common.church
          _bmMsg = ComponentFactory.Instance.creatBitmap("asset.church.churchInviteMsgAsset");
          addToContent(_bmMsg);
          _bmMsg.x = _name_txt.textWidth + _name_txt.x + 10;
-         var _loc2_:int = _name_txt.textWidth + _bmMsg.width + 60;
-         width = _loc2_;
-         _bmTitle.x = (_loc2_ - _bmTitle.width) / 2 - 30;
+         var fwidth:int = _name_txt.textWidth + _bmMsg.width + 60;
+         width = fwidth;
+         _bmTitle.x = (fwidth - _bmTitle.width) / 2 - 30;
       }
       
       public function show() : void

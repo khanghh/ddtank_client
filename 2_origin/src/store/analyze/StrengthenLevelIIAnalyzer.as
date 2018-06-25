@@ -21,34 +21,33 @@ package store.analyze
       
       private var _xml:XML;
       
-      public function StrengthenLevelIIAnalyzer(param1:Function)
+      public function StrengthenLevelIIAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         _xml = new XML(param1);
+         var i:int = 0;
+         var info:* = null;
+         _xml = new XML(data);
          LevelItems1 = new Dictionary(true);
          LevelItems2 = new Dictionary(true);
          LevelItems3 = new Dictionary(true);
          LevelItems4 = new Dictionary(true);
-         var _loc2_:XMLList = _xml.Item;
+         var xmllist:XMLList = _xml.Item;
          if(_xml.@value == "true")
          {
-            _loc4_ = 0;
-            while(_loc4_ < _loc2_.length())
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc3_ = new StrengthenLevelII();
-               ObjectUtils.copyPorpertiesByXML(_loc3_,_loc2_[_loc4_]);
-               SucceedRate = _loc3_.DamagePlusRate;
-               LevelItems1[_loc3_.StrengthenLevel] = _loc3_.Rock;
-               LevelItems2[_loc3_.StrengthenLevel] = _loc3_.Rock1;
-               LevelItems3[_loc3_.StrengthenLevel] = _loc3_.Rock2;
-               LevelItems4[_loc3_.StrengthenLevel] = _loc3_.Rock3;
-               _loc4_++;
+               info = new StrengthenLevelII();
+               ObjectUtils.copyPorpertiesByXML(info,xmllist[i]);
+               SucceedRate = info.DamagePlusRate;
+               LevelItems1[info.StrengthenLevel] = info.Rock;
+               LevelItems2[info.StrengthenLevel] = info.Rock1;
+               LevelItems3[info.StrengthenLevel] = info.Rock2;
+               LevelItems4[info.StrengthenLevel] = info.Rock3;
+               i++;
             }
             onAnalyzeComplete();
          }

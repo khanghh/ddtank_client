@@ -14,39 +14,39 @@ package ddt.utils
          super();
       }
       
-      public static function getOverdueItemsFrom(param1:DictionaryData) : Array
+      public static function getOverdueItemsFrom(param:DictionaryData) : Array
       {
-         var _loc6_:* = null;
-         var _loc3_:Number = NaN;
-         var _loc5_:Number = NaN;
-         var _loc2_:Array = [];
-         var _loc4_:Array = [];
+         var date:* = null;
+         var diff:Number = NaN;
+         var remainDate:Number = NaN;
+         var betoArr:Array = [];
+         var hasArr:Array = [];
          var _loc9_:int = 0;
-         var _loc8_:* = param1;
-         for each(var _loc7_ in param1)
+         var _loc8_:* = param;
+         for each(var i in param)
          {
-            if(_loc7_)
+            if(i)
             {
-               if(_loc7_.IsUsed)
+               if(i.IsUsed)
                {
-                  if(_loc7_.ValidDate != 0)
+                  if(i.ValidDate != 0)
                   {
-                     _loc6_ = DateUtils.getDateByStr(_loc7_.BeginDate);
-                     _loc3_ = TimeManager.Instance.TotalDaysToNow(_loc6_);
-                     _loc5_ = (_loc7_.ValidDate - _loc3_) * 24;
-                     if(_loc5_ < 24 && _loc5_ > 0)
+                     date = DateUtils.getDateByStr(i.BeginDate);
+                     diff = TimeManager.Instance.TotalDaysToNow(date);
+                     remainDate = (i.ValidDate - diff) * 24;
+                     if(remainDate < 24 && remainDate > 0)
                      {
-                        _loc2_.push(_loc7_);
+                        betoArr.push(i);
                      }
-                     else if(_loc5_ <= 0)
+                     else if(remainDate <= 0)
                      {
-                        _loc4_.push(_loc7_);
+                        hasArr.push(i);
                      }
                   }
                }
             }
          }
-         return [_loc2_,_loc4_];
+         return [betoArr,hasArr];
       }
    }
 }

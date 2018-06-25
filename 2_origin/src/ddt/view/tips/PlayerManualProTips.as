@@ -41,26 +41,25 @@ package ddt.view.tips
          addChild(_tipContainer);
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         var _loc4_:* = null;
-         var _loc5_:int = 0;
+         var totalPro:* = null;
+         var i:int = 0;
          if(_tipContainer)
          {
             _tipContainer.clearAllChild();
          }
-         var _loc7_:PlayerManualProInfo = param1 as PlayerManualProInfo;
-         var _loc3_:ManualItemInfo = ExplorerManualManager.instance.getManualInfoByManualLev(Math.max(_loc7_.manual_Level,1));
-         _title.text = _loc3_.Name;
-         var _loc2_:Array = LanguageMgr.GetTranslation("explorerManual.manualAllPro.name").split(",");
-         var _loc6_:Array = ManualProType.proArr;
-         _loc5_ = 0;
-         while(_loc5_ < _loc6_.length)
+         var info:PlayerManualProInfo = data as PlayerManualProInfo;
+         var itemInfo:ManualItemInfo = ExplorerManualManager.instance.getManualInfoByManualLev(Math.max(info.manual_Level,1));
+         _title.text = itemInfo.Name;
+         var lan:Array = LanguageMgr.GetTranslation("explorerManual.manualAllPro.name").split(",");
+         var proArr:Array = ManualProType.proArr;
+         for(i = 0; i < proArr.length; )
          {
-            _loc4_ = ComponentFactory.Instance.creatComponentByStylename("explorerManual.playerManual.propertyText");
-            _tipContainer.addChild(_loc4_);
-            _loc4_.htmlText = _loc2_[_loc5_] + " <font color=\'#76ff80\'>+" + _loc7_[_loc6_[_loc5_]] + "</font>";
-            _loc5_++;
+            totalPro = ComponentFactory.Instance.creatComponentByStylename("explorerManual.playerManual.propertyText");
+            _tipContainer.addChild(totalPro);
+            totalPro.htmlText = lan[i] + " <font color=\'#76ff80\'>+" + info[proArr[i]] + "</font>";
+            i++;
          }
          _tipContainer.arrange();
       }

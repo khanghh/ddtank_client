@@ -63,9 +63,9 @@ package ddt.view.common.church
          return _spouseID;
       }
       
-      public function set spouseID(param1:int) : void
+      public function set spouseID(value:int) : void
       {
-         _spouseID = param1;
+         _spouseID = value;
       }
       
       private function initialize() : void
@@ -112,9 +112,9 @@ package ddt.view.common.church
          _txtInfo.addEventListener("addedToStage",__addToStages);
       }
       
-      private function onFrameResponse(param1:FrameEvent) : void
+      private function onFrameResponse(evt:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
@@ -142,13 +142,13 @@ package ddt.view.common.church
          _txtInfo.removeEventListener("addedToStage",__addToStages);
       }
       
-      private function __checkClick(param1:Event) : void
+      private function __checkClick(event:Event) : void
       {
          SoundManager.instance.play("008");
          useBugle = _chkSysMsg.selected;
       }
       
-      private function getFocus(param1:MouseEvent) : void
+      private function getFocus(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(stage)
@@ -157,28 +157,28 @@ package ddt.view.common.church
          }
       }
       
-      private function __addToStages(param1:Event) : void
+      private function __addToStages(e:Event) : void
       {
          _txtInfo.stage.focus = _txtInfo;
          _txtInfo.text = "";
       }
       
-      private function __input(param1:Event) : void
+      private function __input(e:Event) : void
       {
-         var _loc2_:int = _txtInfo.text.length;
-         _maxChar.text = String(300 - _loc2_);
+         var inputCharacter:int = _txtInfo.text.length;
+         _maxChar.text = String(300 - inputCharacter);
       }
       
       private function confirmSubmit() : void
       {
-         var _loc1_:* = null;
+         var str:* = null;
          if(!PlayerManager.Instance.Self.getBag(1).findFistItemByTemplateId(11103))
          {
-            _loc1_ = FilterWordManager.filterWrod(_txtInfo.text);
+            str = FilterWordManager.filterWrod(_txtInfo.text);
             _buyRingFrame = ComponentFactory.Instance.creat("common.church.ChurchBuyRingFrame");
             _buyRingFrame.addEventListener("close",buyRingFrameClose);
             _buyRingFrame.spouseID = spouseID;
-            _buyRingFrame.proposeStr = _loc1_;
+            _buyRingFrame.proposeStr = str;
             _buyRingFrame.useBugle = _chkSysMsg.selected;
             _buyRingFrame.titleText = "Gợi ý";
             _buyRingFrame.show();
@@ -190,8 +190,8 @@ package ddt.view.common.church
       
       private function sendPropose() : void
       {
-         var _loc1_:String = FilterWordManager.filterWrod(_txtInfo.text);
-         SocketManager.Instance.out.sendPropose(_spouseID,_loc1_,useBugle,false);
+         var str:String = FilterWordManager.filterWrod(_txtInfo.text);
+         SocketManager.Instance.out.sendPropose(_spouseID,str,useBugle,false);
          dispose();
       }
       
@@ -200,7 +200,7 @@ package ddt.view.common.church
          LayerManager.Instance.addToLayer(this,2,true,1,true);
       }
       
-      private function buyRingFrameClose(param1:Event) : void
+      private function buyRingFrameClose(evt:Event) : void
       {
          if(_buyRingFrame)
          {

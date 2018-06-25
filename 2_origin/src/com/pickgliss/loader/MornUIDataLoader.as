@@ -11,40 +11,40 @@ package com.pickgliss.loader
       
       private var _content;
       
-      public function MornUIDataLoader(param1:int, param2:String, param3:URLVariables = null, param4:String = "GET")
+      public function MornUIDataLoader(id:int, url:String, args:URLVariables = null, requestMethod:String = "GET")
       {
-         if(param3 == null)
+         if(args == null)
          {
-            param3 = new URLVariables();
+            args = new URLVariables();
          }
-         if(param3["rnd"] == null)
+         if(args["rnd"] == null)
          {
-            param3["rnd"] = TextLoader.TextLoaderKey;
+            args["rnd"] = TextLoader.TextLoaderKey;
          }
-         super(param1,param2,param3,param4);
+         super(id,url,args,requestMethod);
       }
       
-      override protected function __onDataLoadComplete(param1:Event) : void
+      override protected function __onDataLoadComplete(event:Event) : void
       {
          removeEvent();
          unload();
-         var _loc2_:ByteArray = _loader.data;
-         _loc2_.uncompress();
-         _content = _loc2_.readObject();
+         var temp:ByteArray = _loader.data;
+         temp.uncompress();
+         _content = temp.readObject();
          analysisMornUIData();
          fireCompleteEvent();
       }
       
       private function analysisMornUIData() : void
       {
-         var _loc1_:Object = getDefinitionByName("morn.core.components.View");
-         if(_loc1_)
+         var View:Object = getDefinitionByName("morn.core.components.View");
+         if(View)
          {
             var _loc4_:int = 0;
             var _loc3_:* = _content;
-            for(var _loc2_ in _content)
+            for(var key in _content)
             {
-               _loc1_.uiMap[_loc2_] = _content[_loc2_];
+               View.uiMap[key] = _content[key];
             }
          }
          else

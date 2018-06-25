@@ -25,38 +25,37 @@ package superWinner.view.bigAwards
       
       private function init() : void
       {
-         var i:uint = 1;
-         while(i <= 6)
+         for(var i:uint = 1; i <= 6; )
          {
             var awards:SuperWinnerBigAward = new SuperWinnerBigAward(i);
             var point:Point = ComponentFactory.Instance.creatCustomObject("superWinner.bigAward" + i);
             awards.x = point.x;
             awards.y = point.y;
             _awardsArr[i - 1] = awards;
-            function(param1:SuperWinnerBigAward, param2:uint):void
+            function(mc:SuperWinnerBigAward, ii:uint):void
             {
-               param1.addEventListener("rollOver",showTip);
-               param1.addEventListener("rollOut",hideTip);
+               mc.addEventListener("rollOver",showTip);
+               mc.addEventListener("rollOut",hideTip);
             }(awards,i);
             addChild(awards);
             i = Number(i) + 1;
          }
       }
       
-      private function showTip(param1:MouseEvent) : void
+      private function showTip(e:MouseEvent) : void
       {
-         var _loc3_:SuperWinnerBigAward = param1.currentTarget as SuperWinnerBigAward;
-         var _loc2_:SuperWinnerEvent = new SuperWinnerEvent("showtip");
-         _loc2_.resultData = _loc3_.awardType;
-         this.dispatchEvent(_loc2_);
+         var award:SuperWinnerBigAward = e.currentTarget as SuperWinnerBigAward;
+         var evt:SuperWinnerEvent = new SuperWinnerEvent("showtip");
+         evt.resultData = award.awardType;
+         this.dispatchEvent(evt);
       }
       
-      private function hideTip(param1:MouseEvent) : void
+      private function hideTip(e:MouseEvent) : void
       {
-         var _loc3_:SuperWinnerBigAward = param1.currentTarget as SuperWinnerBigAward;
-         var _loc2_:SuperWinnerEvent = new SuperWinnerEvent("hidetip");
-         _loc2_.resultData = _loc3_.awardType;
-         this.dispatchEvent(_loc2_);
+         var award:SuperWinnerBigAward = e.currentTarget as SuperWinnerBigAward;
+         var evt:SuperWinnerEvent = new SuperWinnerEvent("hidetip");
+         evt.resultData = award.awardType;
+         this.dispatchEvent(evt);
       }
       
       private function initEvent() : void
@@ -64,15 +63,14 @@ package superWinner.view.bigAwards
          SuperWinnerController.instance.model.addEventListener("flush_awards",flushAwards);
       }
       
-      private function flushAwards(param1:SuperWinnerEvent) : void
+      private function flushAwards(e:SuperWinnerEvent) : void
       {
-         var _loc3_:* = 0;
-         var _loc2_:Array = SuperWinnerController.instance.model.awards;
-         _loc3_ = uint(0);
-         while(_loc3_ < _awardsArr.length)
+         var i:* = 0;
+         var awards:Array = SuperWinnerController.instance.model.awards;
+         for(i = uint(0); i < _awardsArr.length; )
          {
-            _awardsArr[_loc3_].awardNum = _loc2_[_loc3_];
-            _loc3_++;
+            _awardsArr[i].awardNum = awards[i];
+            i++;
          }
       }
       
@@ -83,21 +81,20 @@ package superWinner.view.bigAwards
       
       public function dispose() : void
       {
-         var _loc2_:* = 0;
-         var _loc1_:* = null;
-         _loc2_ = uint(0);
-         while(_loc2_ < _awardsArr.length)
+         var i:* = 0;
+         var mc:* = null;
+         for(i = uint(0); i < _awardsArr.length; )
          {
-            _loc1_ = _awardsArr[_loc2_];
-            if(_loc1_.hasEventListener("rollOver"))
+            mc = _awardsArr[i];
+            if(mc.hasEventListener("rollOver"))
             {
-               _loc1_.removeEventListener("rollOver",showTip);
+               mc.removeEventListener("rollOver",showTip);
             }
-            if(_loc1_.hasEventListener("rollOut"))
+            if(mc.hasEventListener("rollOut"))
             {
-               _loc1_.removeEventListener("rollOut",hideTip);
+               mc.removeEventListener("rollOut",hideTip);
             }
-            _loc2_++;
+            i++;
          }
          _awardsArr = null;
          ObjectUtils.removeChildAllChildren(this);

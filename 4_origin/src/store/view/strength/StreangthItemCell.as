@@ -28,24 +28,24 @@ package store.view.strength
       
       protected var _actionState:Boolean;
       
-      public function StreangthItemCell(param1:int)
+      public function StreangthItemCell($index:int)
       {
-         var _loc2_:Sprite = new Sprite();
-         var _loc3_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtstore.EquipCellBG");
-         _loc2_.addChild(_loc3_);
-         super(_loc2_,param1);
+         var bg:Sprite = new Sprite();
+         var bgBit:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtstore.EquipCellBG");
+         bg.addChild(bgBit);
+         super(bg,$index);
          setContentSize(68,68);
          this.PicPos = new Point(-3,-3);
       }
       
-      public function set stoneType(param1:String) : void
+      public function set stoneType(value:String) : void
       {
-         _stoneType = param1;
+         _stoneType = value;
       }
       
-      public function set actionState(param1:Boolean) : void
+      public function set actionState(value:Boolean) : void
       {
-         _actionState = param1;
+         _actionState = value;
       }
       
       public function get actionState() : Boolean
@@ -53,51 +53,51 @@ package store.view.strength
          return _actionState;
       }
       
-      override public function dragDrop(param1:DragEffect) : void
+      override public function dragDrop(effect:DragEffect) : void
       {
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:InventoryItemInfo = param1.data as InventoryItemInfo;
-         if(_loc2_ && param1.action != "split")
+         var info:InventoryItemInfo = effect.data as InventoryItemInfo;
+         if(info && effect.action != "split")
          {
-            param1.action = "none";
-            if(_loc2_.getRemainDate() <= 0)
+            effect.action = "none";
+            if(info.getRemainDate() <= 0)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.view.fusion.AccessoryDragInArea.overdue"));
             }
-            else if(_loc2_.CanStrengthen && isAdaptToStone(_loc2_))
+            else if(info.CanStrengthen && isAdaptToStone(info))
             {
-               if(_loc2_.StrengthenLevel >= PathManager.solveStrengthMax())
+               if(info.StrengthenLevel >= PathManager.solveStrengthMax())
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.StrengthItemCell.up"));
                   return;
                }
-               SocketManager.Instance.out.sendMoveGoods(_loc2_.BagType,_loc2_.Place,12,index,1);
+               SocketManager.Instance.out.sendMoveGoods(info.BagType,info.Place,12,index,1);
                _actionState = true;
-               param1.action = "none";
+               effect.action = "none";
                DragManager.acceptDrag(this);
                reset();
             }
-            else if(isAdaptToStone(_loc2_))
+            else if(isAdaptToStone(info))
             {
             }
          }
       }
       
-      protected function isAdaptToStone(param1:InventoryItemInfo) : Boolean
+      protected function isAdaptToStone(info:InventoryItemInfo) : Boolean
       {
          if(_stoneType == "")
          {
             return true;
          }
-         if(_stoneType == "2" && param1.RefineryLevel <= 0)
+         if(_stoneType == "2" && info.RefineryLevel <= 0)
          {
             return true;
          }
-         if(_stoneType == "35" && param1.RefineryLevel > 0)
+         if(_stoneType == "35" && info.RefineryLevel > 0)
          {
             return true;
          }
@@ -109,9 +109,9 @@ package store.view.strength
          _stoneType = "";
       }
       
-      override public function set info(param1:ItemTemplateInfo) : void
+      override public function set info(value:ItemTemplateInfo) : void
       {
-         if(_info == param1 && !_info)
+         if(_info == value && !_info)
          {
             return;
          }
@@ -124,7 +124,7 @@ package store.view.strength
             _tipData = null;
             locked = false;
          }
-         _info = param1;
+         _info = value;
          if(_info)
          {
             if(_showLoading)

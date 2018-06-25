@@ -8,14 +8,13 @@ package morn.core.components
    import flash.events.MouseEvent;
    import flash.geom.Rectangle;
    import morn.core.events.DragEvent;
-   import morn.core.events.UIEvent;
    import morn.core.handlers.Handler;
    import morn.editor.Builder;
    import morn.editor.Sys;
    import morn.editor.core.IRender;
    
-   [Event(name="listRender",type="morn.core.events.UIEvent")]
    [Event(name="change",type="flash.events.Event")]
+   [Event(name="listRender",type="morn.core.events.UIEvent")]
    public class List extends Box implements IRender, IItem
    {
        
@@ -66,247 +65,246 @@ package morn.core.components
       
       public function List()
       {
-         this._cells = new Vector.<Component>();
+         _cells = new Vector.<Component>();
          super();
       }
       
       override protected function createChildren() : void
       {
-         addChild(this._content = new Box());
+         _content = new Box();
+         addChild(new Box());
       }
       
-      override public function removeChild(param1:DisplayObject) : DisplayObject
+      override public function removeChild(child:DisplayObject) : DisplayObject
       {
-         return param1 != this._content?super.removeChild(param1):null;
+         return child != _content?super.removeChild(child):null;
       }
       
-      override public function removeChildAt(param1:int) : DisplayObject
+      override public function removeChildAt(index:int) : DisplayObject
       {
-         return getChildAt(param1) != this._content?super.removeChildAt(param1):null;
+         return getChildAt(index) != _content?super.removeChildAt(index):null;
       }
       
       public function get content() : Box
       {
-         return this._content;
+         return _content;
       }
       
       public function get scrollBar() : ScrollBar
       {
-         return this._scrollBar;
+         return _scrollBar;
       }
       
-      public function set scrollBar(param1:ScrollBar) : void
+      public function set scrollBar(value:ScrollBar) : void
       {
-         if(this._scrollBar != param1)
+         if(_scrollBar != value)
          {
-            this._scrollBar = param1;
-            if(param1)
+            _scrollBar = value;
+            if(value)
             {
-               addChild(this._scrollBar);
-               this._scrollBar.target = this;
-               this._scrollBar.addEventListener(Event.CHANGE,this.onScrollBarChange);
-               this._isVerticalLayout = this._scrollBar.direction == ScrollBar.VERTICAL;
+               addChild(_scrollBar);
+               _scrollBar.target = this;
+               _scrollBar.addEventListener("change",onScrollBarChange);
+               _isVerticalLayout = _scrollBar.direction == "vertical";
             }
          }
       }
       
       public function get itemRender() : *
       {
-         return this._itemRender;
+         return _itemRender;
       }
       
-      public function set itemRender(param1:*) : void
+      public function set itemRender(value:*) : void
       {
-         this._itemRender = param1;
-         callLater(this.changeCells);
+         _itemRender = value;
+         callLater(changeCells);
       }
       
       public function get repeatX() : int
       {
-         return this._repeatX > 0?int(this._repeatX):this._repeatX2 > 0?int(this._repeatX2):1;
+         return _repeatX > 0?_repeatX:_repeatX2 > 0?_repeatX2:1;
       }
       
-      public function set repeatX(param1:int) : void
+      public function set repeatX(value:int) : void
       {
-         this._repeatX = param1;
-         callLater(this.changeCells);
+         _repeatX = value;
+         callLater(changeCells);
       }
       
       public function get repeatY() : int
       {
-         return this._repeatY > 0?int(this._repeatY):this._repeatY2 > 0?int(this._repeatY2):1;
+         return _repeatY > 0?_repeatY:_repeatY2 > 0?_repeatY2:1;
       }
       
-      public function set repeatY(param1:int) : void
+      public function set repeatY(value:int) : void
       {
-         this._repeatY = param1;
-         callLater(this.changeCells);
+         _repeatY = value;
+         callLater(changeCells);
       }
       
       public function get spaceX() : int
       {
-         return this._spaceX;
+         return _spaceX;
       }
       
-      public function set spaceX(param1:int) : void
+      public function set spaceX(value:int) : void
       {
-         this._spaceX = param1;
-         callLater(this.changeCells);
+         _spaceX = value;
+         callLater(changeCells);
       }
       
       public function get spaceY() : int
       {
-         return this._spaceY;
+         return _spaceY;
       }
       
-      public function set spaceY(param1:int) : void
+      public function set spaceY(value:int) : void
       {
-         this._spaceY = param1;
-         callLater(this.changeCells);
+         _spaceY = value;
+         callLater(changeCells);
       }
       
       protected function changeCells() : void
       {
-         var _loc1_:Component = null;
-         var _loc2_:Number = NaN;
-         var _loc3_:Number = NaN;
-         var _loc4_:Number = NaN;
-         var _loc5_:Number = NaN;
-         var _loc6_:int = 0;
-         var _loc7_:int = 0;
-         var _loc8_:int = 0;
-         var _loc9_:int = 0;
-         if(this._itemRender)
+         var cell:* = null;
+         var cellWidth:Number = NaN;
+         var cellHeight:Number = NaN;
+         var listWidth:Number = NaN;
+         var listHeight:Number = NaN;
+         var numX:int = 0;
+         var numY:int = 0;
+         var k:int = 0;
+         var l:int = 0;
+         if(_itemRender)
          {
-            this.destroyCells();
-            this._cells.length = 0;
-            this.scrollBar = getChildByName("scrollBar") as ScrollBar;
-            _loc1_ = this.createItem();
-            _loc2_ = _loc1_.width + this._spaceX;
-            if(this._repeatX < 1 && !isNaN(_width))
+            destroyCells();
+            _cells.length = 0;
+            scrollBar = getChildByName("scrollBar") as ScrollBar;
+            cell = createItem();
+            cellWidth = cell.width + _spaceX;
+            if(_repeatX < 1 && !isNaN(_width))
             {
-               this._repeatX2 = Math.round(_width / _loc2_);
+               _repeatX2 = Math.round(_width / cellWidth);
             }
-            _loc3_ = _loc1_.height + this._spaceY;
-            if(this._repeatY < 1 && !isNaN(_height))
+            cellHeight = cell.height + _spaceY;
+            if(_repeatY < 1 && !isNaN(_height))
             {
-               this._repeatY2 = Math.round(_height / _loc3_);
+               _repeatY2 = Math.round(_height / cellHeight);
             }
-            _loc4_ = !!isNaN(_width)?Number(_loc2_ * this.repeatX - this._spaceX):Number(_width);
-            _loc5_ = !!isNaN(_height)?Number(_loc3_ * this.repeatY - this._spaceY):Number(_height);
-            this._cellSize = !!this._isVerticalLayout?Number(_loc3_):Number(_loc2_);
-            if(this._isVerticalLayout && this._scrollBar)
+            listWidth = !!isNaN(_width)?cellWidth * repeatX - _spaceX:Number(_width);
+            listHeight = !!isNaN(_height)?cellHeight * repeatY - _spaceY:Number(_height);
+            _cellSize = !!_isVerticalLayout?cellHeight:Number(cellWidth);
+            if(_isVerticalLayout && _scrollBar)
             {
-               this._scrollBar.height = _loc5_;
+               _scrollBar.height = listHeight;
             }
-            else if(!this._isVerticalLayout && this._scrollBar)
+            else if(!_isVerticalLayout && _scrollBar)
             {
-               this._scrollBar.width = _loc4_;
+               _scrollBar.width = listWidth;
             }
-            this.setContentSize(_loc4_,_loc5_);
-            _loc6_ = !!this._isVerticalLayout?int(this.repeatX):int(this.repeatY);
-            _loc7_ = (!!this._isVerticalLayout?this.repeatY:this.repeatX) + (!!this._scrollBar?1:0);
-            _loc8_ = 0;
-            while(_loc8_ < _loc7_)
+            setContentSize(listWidth,listHeight);
+            numX = !!_isVerticalLayout?repeatX:int(repeatY);
+            numY = (!!_isVerticalLayout?repeatY:int(repeatX)) + (!!_scrollBar?1:0);
+            for(k = 0; k < numY; )
             {
-               _loc9_ = 0;
-               while(_loc9_ < _loc6_)
+               for(l = 0; l < numX; )
                {
-                  _loc1_ = this.createItem();
-                  _loc1_.x = (!!this._isVerticalLayout?_loc9_:_loc8_) * (this._spaceX + _loc1_.width);
-                  _loc1_.y = (!!this._isVerticalLayout?_loc8_:_loc9_) * (this._spaceY + _loc1_.height);
-                  _loc1_.name = "item" + (_loc8_ * _loc6_ + _loc9_);
-                  this._content.addChild(_loc1_);
-                  this.addCell(_loc1_);
-                  _loc9_++;
+                  cell = createItem();
+                  cell.x = (!!_isVerticalLayout?l:int(k)) * (_spaceX + cell.width);
+                  cell.y = (!!_isVerticalLayout?k:int(l)) * (_spaceY + cell.height);
+                  cell.name = "item" + (k * numX + l);
+                  _content.addChild(cell);
+                  addCell(cell);
+                  l++;
                }
-               _loc8_++;
+               k++;
             }
          }
-         if(this._array)
+         if(_array)
          {
-            this.array = this._array;
-            exeCallLater(this.renderItems);
+            array = _array;
+            exeCallLater(renderItems);
          }
       }
       
       public function updateCellSpaceX() : void
       {
-         TweenLite.killTweensOf(this.updateCellSpaceXReal);
-         TweenLite.delayedCall(2,this.updateCellSpaceXReal,null,true);
+         TweenLite.killTweensOf(updateCellSpaceXReal);
+         TweenLite.delayedCall(2,updateCellSpaceXReal,null,true);
       }
       
       private function updateCellSpaceXReal() : void
       {
-         var _loc4_:Component = null;
-         var _loc1_:int = this.repeatX;
-         var _loc2_:* = 0;
-         var _loc3_:int = 0;
-         while(_loc3_ < _loc1_)
+         var l:int = 0;
+         var cell:* = null;
+         var numX:int = repeatX;
+         var nextCellX:* = 0;
+         for(l = 0; l < numX; )
          {
-            _loc4_ = this._cells[_loc3_];
-            _loc4_.x = _loc2_;
-            _loc2_ = Number(_loc4_.x + _loc4_.width + this._spaceX);
-            _loc3_++;
+            cell = _cells[l];
+            cell.x = nextCellX;
+            nextCellX = Number(cell.x + cell.width + _spaceX);
+            l++;
          }
       }
       
       private function createItem() : Box
       {
-         var _loc1_:Box = null;
-         var _loc2_:DisplayObject = null;
-         var _loc3_:Box = null;
+         var tempBox:* = null;
+         var display:* = null;
+         var box:* = null;
          if(!Builder.isEditor)
          {
-            _loc1_ = this._itemRender is Class?new this._itemRender():View.createComp(this._itemRender) as Box;
-            return _loc1_;
+            tempBox = _itemRender is Class?new _itemRender():View.createComp(_itemRender) as Box;
+            return tempBox;
          }
-         _loc2_ = Sys.getCompInstance(this._itemRender);
-         _loc3_ = new Box();
-         _loc3_.addChild(_loc2_);
-         return _loc3_;
+         display = Sys.getCompInstance(_itemRender);
+         box = new Box();
+         box.addChild(display);
+         return box;
       }
       
       private function destroyCells() : void
       {
-         var _loc1_:Component = null;
-         for each(_loc1_ in this._cells)
+         var _loc3_:int = 0;
+         var _loc2_:* = _cells;
+         for each(var cell in _cells)
          {
-            _loc1_.removeEventListener(MouseEvent.CLICK,this.onCellMouse);
-            _loc1_.removeEventListener(MouseEvent.ROLL_OVER,this.onCellMouse);
-            _loc1_.removeEventListener(MouseEvent.ROLL_OUT,this.onCellMouse);
-            _loc1_.removeEventListener(MouseEvent.MOUSE_DOWN,this.onCellMouse);
-            _loc1_.removeEventListener(MouseEvent.MOUSE_UP,this.onCellMouse);
-            _loc1_.removeEventListener(MouseEvent.DOUBLE_CLICK,this.onCellMouse);
-            ObjectUtils.disposeObject(_loc1_);
+            cell.removeEventListener("click",onCellMouse);
+            cell.removeEventListener("rollOver",onCellMouse);
+            cell.removeEventListener("rollOut",onCellMouse);
+            cell.removeEventListener("mouseDown",onCellMouse);
+            cell.removeEventListener("mouseUp",onCellMouse);
+            cell.removeEventListener("doubleClick",onCellMouse);
+            ObjectUtils.disposeObject(cell);
          }
       }
       
-      protected function addCell(param1:Component) : void
+      protected function addCell(cell:Component) : void
       {
-         param1.addEventListener(MouseEvent.CLICK,this.onCellMouse);
-         param1.addEventListener(MouseEvent.ROLL_OVER,this.onCellMouse);
-         param1.addEventListener(MouseEvent.ROLL_OUT,this.onCellMouse);
-         param1.addEventListener(MouseEvent.MOUSE_DOWN,this.onCellMouse);
-         param1.addEventListener(MouseEvent.MOUSE_UP,this.onCellMouse);
-         param1.addEventListener(MouseEvent.DOUBLE_CLICK,this.onCellMouse);
-         this._cells.push(param1);
+         cell.addEventListener("click",onCellMouse);
+         cell.addEventListener("rollOver",onCellMouse);
+         cell.addEventListener("rollOut",onCellMouse);
+         cell.addEventListener("mouseDown",onCellMouse);
+         cell.addEventListener("mouseUp",onCellMouse);
+         cell.addEventListener("doubleClick",onCellMouse);
+         _cells.push(cell);
       }
       
       public function initItems() : void
       {
-         var _loc1_:int = 0;
-         var _loc2_:Component = null;
-         if(!this._itemRender)
+         var i:int = 0;
+         var cell:* = null;
+         if(!_itemRender)
          {
-            _loc1_ = 0;
-            while(_loc1_ < int.MAX_VALUE)
+            for(i = 0; i < 2147483647; )
             {
-               _loc2_ = getChildByName("item" + _loc1_) as Component;
-               if(_loc2_)
+               cell = getChildByName("item" + i) as Component;
+               if(cell)
                {
-                  this.addCell(_loc2_);
-                  _loc1_++;
+                  addCell(cell);
+                  i++;
                   continue;
                }
                break;
@@ -314,489 +312,492 @@ package morn.core.components
          }
       }
       
-      override public function set width(param1:Number) : void
+      override public function set width(value:Number) : void
       {
-         super.width = param1;
-         callLater(this.changeCells);
+         .super.width = value;
+         callLater(changeCells);
       }
       
-      override public function set height(param1:Number) : void
+      override public function set height(value:Number) : void
       {
-         super.height = param1;
-         callLater(this.changeCells);
+         .super.height = value;
+         callLater(changeCells);
       }
       
-      public function setContentSize(param1:Number, param2:Number) : void
+      public function setContentSize(width:Number, height:Number) : void
       {
-         var _loc3_:Graphics = graphics;
-         _loc3_.clear();
-         _loc3_.beginFill(16711680,0);
-         _loc3_.drawRect(0,0,param1,param2);
-         _loc3_.endFill();
-         this._content.width = param1;
-         this._content.height = param2;
-         if(this._scrollBar)
+         var g:Graphics = graphics;
+         g.clear();
+         g.beginFill(16711680,0);
+         g.drawRect(0,0,width,height);
+         g.endFill();
+         _content.width = width;
+         _content.height = height;
+         if(_scrollBar)
          {
-            this._content.scrollRect = new Rectangle(0,0,param1,param2);
+            _content.scrollRect = new Rectangle(0,0,width,height);
          }
       }
       
-      protected function onCellMouse(param1:MouseEvent) : void
+      protected function onCellMouse(e:MouseEvent) : void
       {
-         var _loc2_:Component = param1.currentTarget as Component;
-         var _loc3_:int = this._startIndex + this._cells.indexOf(_loc2_);
-         if(param1.type == MouseEvent.CLICK || param1.type == MouseEvent.ROLL_OVER || param1.type == MouseEvent.ROLL_OUT)
+         var cell:Component = e.currentTarget as Component;
+         var index:int = _startIndex + _cells.indexOf(cell);
+         if(e.type == "click" || e.type == "rollOver" || e.type == "rollOut")
          {
-            if(param1.type == MouseEvent.CLICK)
+            if(e.type == "click")
             {
-               if(this._selectEnable)
+               if(_selectEnable)
                {
-                  this.selectedIndex = _loc3_;
+                  selectedIndex = index;
                }
                else
                {
-                  this.changeCellState(_loc2_,true,0);
-                  this.changeCellBg(_loc2_,0);
+                  changeCellState(cell,true,0);
+                  changeCellBg(cell,0);
                }
             }
-            else if(this._selectedIndex != _loc3_)
+            else if(_selectedIndex != index)
             {
-               this.changeCellState(_loc2_,param1.type == MouseEvent.ROLL_OVER,0);
+               changeCellState(cell,e.type == "rollOver",0);
             }
          }
-         if(this._mouseHandler != null)
+         if(_mouseHandler != null)
          {
-            this._mouseHandler.executeWith([param1,_loc3_]);
+            _mouseHandler.executeWith([e,index]);
          }
       }
       
-      protected function changeCellState(param1:Component, param2:Boolean, param3:int) : void
+      protected function changeCellState(cell:Component, visable:Boolean, frame:int) : void
       {
-         var _loc4_:Clip = param1.getChildByName("selectBox") as Clip;
-         if(_loc4_)
+         var selectBox:Component = cell.getChildByName("selectBox") as Component;
+         if(selectBox)
          {
-            _loc4_.visible = param2;
-            _loc4_.frame = param3;
-         }
-      }
-      
-      protected function changeCellBg(param1:Component, param2:int) : void
-      {
-         var _loc3_:Clip = param1.getChildByName("selectBg") as Clip;
-         if(_loc3_)
-         {
-            _loc3_.frame = param2;
-         }
-         var _loc4_:int = 0;
-         while(_loc4_ < int.MAX_VALUE)
-         {
-            _loc3_ = param1.getChildByName("selectBg" + _loc4_) as Clip;
-            if(_loc3_)
+            selectBox.visible = visable;
+            if(selectBox is Clip)
             {
-               _loc3_.frame = param2;
-               _loc4_++;
+               (selectBox as Clip).frame = frame;
+            }
+         }
+      }
+      
+      protected function changeCellBg(cell:Component, frame:int) : void
+      {
+         var i:int = 0;
+         var selectBox:Clip = cell.getChildByName("selectBg") as Clip;
+         if(selectBox)
+         {
+            selectBox.frame = frame;
+         }
+         for(i = 0; i < 2147483647; )
+         {
+            selectBox = cell.getChildByName("selectBg" + i) as Clip;
+            if(selectBox)
+            {
+               selectBox.frame = frame;
+               i++;
                continue;
             }
             break;
          }
       }
       
-      protected function onScrollBarChange(param1:Event) : void
+      protected function onScrollBarChange(e:Event) : void
       {
-         exeCallLater(this.changeCells);
-         var _loc2_:Rectangle = this._content.scrollRect;
-         var _loc3_:Number = this._scrollBar.value;
-         if(isNaN(_loc3_))
+         exeCallLater(changeCells);
+         var rect:Rectangle = _content.scrollRect;
+         var scrollValue:Number = _scrollBar.value;
+         if(isNaN(scrollValue))
          {
-            this._scrollBar.value = 0;
+            _scrollBar.value = 0;
             return;
          }
-         var _loc4_:int = int(_loc3_ / this._cellSize) * (!!this._isVerticalLayout?this.repeatX:this.repeatY);
-         if(_loc4_ != this._startIndex)
+         var index:int = int(scrollValue / _cellSize) * (!!_isVerticalLayout?repeatX:int(repeatY));
+         if(index != _startIndex)
          {
-            this.startIndex = _loc4_;
+            startIndex = index;
          }
-         if(this._isVerticalLayout)
+         if(_isVerticalLayout)
          {
-            _loc2_.y = _loc3_ % this._cellSize;
+            rect.y = scrollValue % _cellSize;
          }
          else
          {
-            _loc2_.x = _loc3_ % this._cellSize;
+            rect.x = scrollValue % _cellSize;
          }
-         this._content.scrollRect = _loc2_;
+         _content.scrollRect = rect;
       }
       
       public function get autoHideItem() : Boolean
       {
-         return this._autoHideItem;
+         return _autoHideItem;
       }
       
-      public function set autoHideItem(param1:Boolean) : void
+      public function set autoHideItem(value:Boolean) : void
       {
-         this._autoHideItem = param1;
+         _autoHideItem = value;
       }
       
       public function get selectEnable() : Boolean
       {
-         return this._selectEnable;
+         return _selectEnable;
       }
       
-      public function set selectEnable(param1:Boolean) : void
+      public function set selectEnable(value:Boolean) : void
       {
-         this._selectEnable = param1;
+         _selectEnable = value;
       }
       
       public function get selectedIndex() : int
       {
-         return this._selectedIndex;
+         return _selectedIndex;
       }
       
-      public function set selectedIndex(param1:int) : void
+      public function set selectedIndex(value:int) : void
       {
-         if(this._selectedIndex != param1)
+         if(_selectedIndex != value)
          {
-            this._selectedIndex = param1;
-            this.changeSelectStatus();
+            _selectedIndex = value;
+            changeSelectStatus();
          }
-         sendEvent(Event.CHANGE);
-         sendEvent(Event.SELECT);
-         if(this._selectHandler != null)
+         sendEvent("change");
+         sendEvent("select");
+         if(_selectHandler != null)
          {
-            this._selectHandler.executeWith([param1]);
+            _selectHandler.executeWith([value]);
          }
       }
       
       public function resetSelect() : void
       {
-         this._selectedIndex = -1;
+         _selectedIndex = -1;
       }
       
       protected function changeSelectStatus() : void
       {
-         var _loc1_:int = 0;
-         var _loc2_:int = this._cells.length;
-         while(_loc1_ < _loc2_)
+         var i:int = 0;
+         var n:int = 0;
+         for(i = 0,n = _cells.length; i < n; )
          {
-            this.changeCellState(this._cells[_loc1_],this._selectedIndex == this._startIndex + _loc1_,1);
-            this.changeCellBg(this._cells[_loc1_],!!Boolean(this._selectedIndex == this._startIndex + _loc1_)?1:0);
-            _loc1_++;
+            changeCellState(_cells[i],_selectedIndex == _startIndex + i,1);
+            changeCellBg(_cells[i],_selectedIndex == _startIndex + i?1:0);
+            i++;
          }
       }
       
       public function get selectedItem() : Object
       {
-         return this._selectedIndex != -1?this._array[this._selectedIndex]:null;
+         return _selectedIndex != -1?_array[_selectedIndex]:null;
       }
       
-      public function set selectedItem(param1:Object) : void
+      public function set selectedItem(value:Object) : void
       {
-         this.selectedIndex = this._array.indexOf(param1);
+         selectedIndex = _array.indexOf(value);
       }
       
       public function get selection() : Component
       {
-         return this.getCell(this._selectedIndex);
+         return getCell(_selectedIndex);
       }
       
-      public function set selection(param1:Component) : void
+      public function set selection(value:Component) : void
       {
-         this.selectedIndex = this._startIndex + this._cells.indexOf(param1);
+         selectedIndex = _startIndex + _cells.indexOf(value);
       }
       
       public function get selectHandler() : Handler
       {
-         return this._selectHandler;
+         return _selectHandler;
       }
       
-      public function set selectHandler(param1:Handler) : void
+      public function set selectHandler(value:Handler) : void
       {
-         this._selectHandler = param1;
+         _selectHandler = value;
       }
       
       public function get renderHandler() : Handler
       {
-         return this._renderHandler;
+         return _renderHandler;
       }
       
-      public function set renderHandler(param1:Handler) : void
+      public function set renderHandler(value:Handler) : void
       {
-         this._renderHandler = param1;
+         _renderHandler = value;
       }
       
       public function get mouseHandler() : Handler
       {
-         return this._mouseHandler;
+         return _mouseHandler;
       }
       
-      public function set mouseHandler(param1:Handler) : void
+      public function set mouseHandler(value:Handler) : void
       {
-         this._mouseHandler = param1;
+         _mouseHandler = value;
       }
       
       public function get startIndex() : int
       {
-         return this._startIndex;
+         return _startIndex;
       }
       
-      public function set startIndex(param1:int) : void
+      public function set startIndex(value:int) : void
       {
-         this._startIndex = param1 > 0?int(param1):0;
-         callLater(this.renderItems);
+         _startIndex = value > 0?value:0;
+         callLater(renderItems);
       }
       
       protected function renderItems() : void
       {
-         var _loc1_:int = 0;
-         var _loc2_:int = this._cells.length;
-         while(_loc1_ < _loc2_)
+         var i:int = 0;
+         var n:int = 0;
+         for(i = 0,n = _cells.length; i < n; )
          {
-            this.renderItem(this._cells[_loc1_],this._startIndex + _loc1_);
-            _loc1_++;
+            renderItem(_cells[i],_startIndex + i);
+            i++;
          }
-         this.changeSelectStatus();
+         changeSelectStatus();
       }
       
-      protected function renderItem(param1:Component, param2:int) : void
+      protected function renderItem(cell:Component, index:int) : void
       {
-         param1.visible = true;
-         if(param2 < this._array.length)
+         cell.visible = true;
+         if(index < _array.length)
          {
-            param1.dataSource = this._array[param2];
+            cell.dataSource = _array[index];
          }
          else
          {
-            if(this._autoHideItem)
+            if(_autoHideItem)
             {
-               param1.visible = false;
+               cell.visible = false;
             }
-            param1.dataSource = null;
+            cell.dataSource = null;
          }
-         this.changeItemBg(param1,param2);
-         sendEvent(UIEvent.ITEM_RENDER,[param1,param2]);
-         if(this._renderHandler != null)
+         changeItemBg(cell,index);
+         sendEvent("listRender",[cell,index]);
+         if(_renderHandler != null)
          {
-            this._renderHandler.executeWith([param1,param2]);
+            _renderHandler.executeWith([cell,index]);
          }
       }
       
-      private function changeItemBg(param1:Component, param2:int) : void
+      private function changeItemBg(cell:Component, index:int) : void
       {
-         var _loc3_:Clip = param1.getChildByName("itemBg") as Clip;
-         if(_loc3_)
+         var itemBg:Clip = cell.getChildByName("itemBg") as Clip;
+         if(itemBg)
          {
-            _loc3_.index = param2 % 2;
+            itemBg.index = index % 2;
          }
       }
       
       public function get array() : Array
       {
-         return this._array;
+         return _array;
       }
       
-      public function set array(param1:Array) : void
+      public function set array(value:Array) : void
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         var _loc5_:int = 0;
-         exeCallLater(this.changeCells);
-         this._array = param1 || [];
-         var _loc2_:int = this._array.length;
-         this._totalPage = Math.ceil(_loc2_ / (this.repeatX * this.repeatY));
-         this._selectedIndex = this._selectedIndex < _loc2_?int(this._selectedIndex):int(_loc2_ - 1);
-         this.startIndex = this._startIndex;
-         if(this._scrollBar)
+         var numX:int = 0;
+         var numY:int = 0;
+         var lineCount:int = 0;
+         exeCallLater(changeCells);
+         _array = value || [];
+         var length:int = _array.length;
+         _totalPage = Math.ceil(length / (repeatX * repeatY));
+         _selectedIndex = _selectedIndex < length?_selectedIndex:length - 1;
+         startIndex = _startIndex;
+         if(_scrollBar)
          {
-            _loc3_ = !!this._isVerticalLayout?int(this.repeatX):int(this.repeatY);
-            _loc4_ = !!this._isVerticalLayout?int(this.repeatY):int(this.repeatX);
-            _loc5_ = Math.ceil(_loc2_ / _loc3_);
-            this._scrollBar.visible = this._totalPage > 1;
-            if(this._scrollBar.visible)
+            numX = !!_isVerticalLayout?repeatX:int(repeatY);
+            numY = !!_isVerticalLayout?repeatY:int(repeatX);
+            lineCount = Math.ceil(length / numX);
+            _scrollBar.visible = _totalPage > 1;
+            if(_scrollBar.visible)
             {
-               this._scrollBar.scrollSize = this._cellSize;
-               this._scrollBar.thumbPercent = _loc4_ / _loc5_;
-               this._scrollBar.setScroll(0,(_loc5_ - _loc4_) * this._cellSize,this._startIndex / _loc3_ * this._cellSize);
+               _scrollBar.scrollSize = _cellSize;
+               _scrollBar.thumbPercent = numY / lineCount;
+               _scrollBar.setScroll(0,(lineCount - numY) * _cellSize,_startIndex / numX * _cellSize);
             }
             else
             {
-               this._scrollBar.setScroll(0,0,0);
+               _scrollBar.setScroll(0,0,0);
             }
          }
       }
       
       public function get totalPage() : int
       {
-         return this._totalPage;
+         return _totalPage;
       }
       
-      public function set totalPage(param1:int) : void
+      public function set totalPage(value:int) : void
       {
-         this._totalPage = param1;
+         _totalPage = value;
       }
       
       public function get page() : int
       {
-         return this._page;
+         return _page;
       }
       
-      public function set page(param1:int) : void
+      public function set page(value:int) : void
       {
-         this._page = param1;
-         if(this._array)
+         _page = value;
+         if(_array)
          {
-            this._page = param1 > 0?int(param1):0;
-            this._page = this._page < this._totalPage?int(this._page):int(this._totalPage - 1);
-            this.startIndex = this._page * this.repeatX * this.repeatY;
+            _page = value > 0?value:0;
+            _page = _page < _totalPage?_page:_totalPage - 1;
+            startIndex = _page * repeatX * repeatY;
          }
       }
       
       public function get length() : int
       {
-         return this._array.length;
+         return _array.length;
       }
       
-      override public function set dataSource(param1:Object) : void
+      override public function set dataSource(value:Object) : void
       {
-         _dataSource = param1;
-         if(param1 is int || param1 is String)
+         _dataSource = value;
+         if(value is int || value is String)
          {
-            this.selectedIndex = int(param1);
+            selectedIndex = int(value);
          }
-         else if(param1 is Array)
+         else if(value is Array)
          {
-            this.array = param1 as Array;
+            array = value as Array;
          }
          else
          {
-            super.dataSource = param1;
+            .super.dataSource = value;
          }
       }
       
       public function get cells() : Vector.<Component>
       {
-         exeCallLater(this.changeCells);
-         return this._cells;
+         exeCallLater(changeCells);
+         return _cells;
       }
       
       public function get vScrollBarSkin() : String
       {
-         return !!this._scrollBar?this._scrollBar.skin:null;
+         return !!_scrollBar?_scrollBar.skin:null;
       }
       
-      public function set vScrollBarSkin(param1:String) : void
+      public function set vScrollBarSkin(value:String) : void
       {
          removeChildByName("scrollBar");
-         var _loc2_:ScrollBar = new VScrollBar();
-         _loc2_.name = "scrollBar";
-         _loc2_.right = 0;
-         _loc2_.skin = param1;
-         addChild(_loc2_);
-         callLater(this.changeCells);
+         var scrollBar:ScrollBar = new VScrollBar();
+         scrollBar.name = "scrollBar";
+         scrollBar.right = 0;
+         scrollBar.skin = value;
+         addChild(scrollBar);
+         callLater(changeCells);
       }
       
       public function get hScrollBarSkin() : String
       {
-         return !!this._scrollBar?this._scrollBar.skin:null;
+         return !!_scrollBar?_scrollBar.skin:null;
       }
       
-      public function set hScrollBarSkin(param1:String) : void
+      public function set hScrollBarSkin(value:String) : void
       {
          removeChildByName("scrollBar");
-         var _loc2_:ScrollBar = new HScrollBar();
-         _loc2_.name = "scrollBar";
-         _loc2_.bottom = 0;
-         _loc2_.skin = param1;
-         addChild(_loc2_);
-         callLater(this.changeCells);
+         var scrollBar:ScrollBar = new HScrollBar();
+         scrollBar.name = "scrollBar";
+         scrollBar.bottom = 0;
+         scrollBar.skin = value;
+         addChild(scrollBar);
+         callLater(changeCells);
       }
       
       override public function commitMeasure() : void
       {
-         exeCallLater(this.changeCells);
+         exeCallLater(changeCells);
       }
       
       public function refresh() : void
       {
-         this.array = this._array;
+         array = _array;
       }
       
-      public function getItem(param1:int) : Object
+      public function getItem(index:int) : Object
       {
-         if(param1 > -1 && param1 < this._array.length)
+         if(index > -1 && index < _array.length)
          {
-            return this._array[param1];
+            return _array[index];
          }
          return null;
       }
       
-      public function changeItem(param1:int, param2:Object) : void
+      public function changeItem(index:int, source:Object) : void
       {
-         if(param1 > -1 && param1 < this._array.length)
+         if(index > -1 && index < _array.length)
          {
-            this._array[param1] = param2;
-            if(param1 >= this._startIndex && param1 < this._startIndex + this._cells.length)
+            _array[index] = source;
+            if(index >= _startIndex && index < _startIndex + _cells.length)
             {
-               this.renderItem(this.getCell(param1),param1);
+               renderItem(getCell(index),index);
             }
          }
       }
       
-      public function addItem(param1:Object) : void
+      public function addItem(souce:Object) : void
       {
-         this._array.push(param1);
-         this.array = this._array;
+         _array.push(souce);
+         array = _array;
       }
       
-      public function addItemAt(param1:Object, param2:int) : void
+      public function addItemAt(souce:Object, index:int) : void
       {
-         this._array.splice(param2,0,param1);
-         this.array = this._array;
+         _array.splice(index,0,souce);
+         array = _array;
       }
       
-      public function deleteItem(param1:int) : void
+      public function deleteItem(index:int) : void
       {
-         this._array.splice(param1,1);
-         this.array = this._array;
+         _array.splice(index,1);
+         array = _array;
       }
       
-      public function updateItem(param1:int, param2:*) : void
+      public function updateItem(index:int, item:*) : void
       {
-         this._array[param1] = param2;
+         _array[index] = item;
       }
       
-      public function getCell(param1:int) : Box
+      public function getCell(index:int) : Box
       {
-         exeCallLater(this.changeCells);
-         if(param1 > -1 && this._cells)
+         exeCallLater(changeCells);
+         if(index > -1 && _cells)
          {
-            return this._cells[(param1 - this._startIndex) % this._cells.length] as Box;
+            return _cells[(index - _startIndex) % _cells.length] as Box;
          }
          return null;
       }
       
-      public function scrollTo(param1:int) : void
+      public function scrollTo(index:int) : void
       {
-         var _loc2_:int = 0;
-         this.startIndex = param1;
-         if(this._scrollBar)
+         var numX:int = 0;
+         startIndex = index;
+         if(_scrollBar)
          {
-            _loc2_ = !!this._isVerticalLayout?int(this.repeatX):int(this.repeatY);
-            this._scrollBar.value = param1 / _loc2_ * this._cellSize;
+            numX = !!_isVerticalLayout?repeatX:int(repeatY);
+            _scrollBar.value = index / numX * _cellSize;
          }
       }
       
-      public function getDropIndex(param1:DragEvent) : int
+      public function getDropIndex(e:DragEvent) : int
       {
-         var _loc2_:DisplayObject = param1.data.dropTarget;
-         var _loc3_:int = 0;
-         var _loc4_:int = this._cells.length;
-         while(_loc3_ < _loc4_)
+         var i:int = 0;
+         var n:int = 0;
+         var target:DisplayObject = e.data.dropTarget;
+         for(i = 0,n = _cells.length; i < n; )
          {
-            if(this._cells[_loc3_].contains(_loc2_))
+            if(_cells[i].contains(target))
             {
-               return this._startIndex + _loc3_;
+               return _startIndex + i;
             }
-            _loc3_++;
+            i++;
          }
          return -1;
       }
@@ -804,18 +805,18 @@ package morn.core.components
       override public function dispose() : void
       {
          super.dispose();
-         TweenLite.killTweensOf(this.updateCellSpaceXReal);
-         this.destroyCells();
-         this._content && this._content.dispose();
-         this._scrollBar && this._scrollBar.dispose();
-         this._content = null;
-         this._scrollBar = null;
-         this._itemRender = null;
-         this._cells = null;
-         this._array = null;
-         this._selectHandler = null;
-         this._renderHandler = null;
-         this._mouseHandler = null;
+         TweenLite.killTweensOf(updateCellSpaceXReal);
+         destroyCells();
+         _content && _content.dispose();
+         _scrollBar && _scrollBar.dispose();
+         _content = null;
+         _scrollBar = null;
+         _itemRender = null;
+         _cells = null;
+         _array = null;
+         _selectHandler = null;
+         _renderHandler = null;
+         _mouseHandler = null;
       }
    }
 }

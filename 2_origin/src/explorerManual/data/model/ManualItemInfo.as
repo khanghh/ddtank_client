@@ -26,9 +26,9 @@ package explorerManual.data.model
          return _Boost;
       }
       
-      public function set Boost(param1:int) : void
+      public function set Boost(value:int) : void
       {
-         _Boost = param1;
+         _Boost = value;
       }
       
       public function get MagicResistance() : int
@@ -36,9 +36,9 @@ package explorerManual.data.model
          return _magicResistance;
       }
       
-      public function set MagicResistance(param1:int) : void
+      public function set MagicResistance(value:int) : void
       {
-         _magicResistance = param1;
+         _magicResistance = value;
       }
       
       public function get MagicAttack() : int
@@ -46,9 +46,9 @@ package explorerManual.data.model
          return _magicAttack;
       }
       
-      public function set MagicAttack(param1:int) : void
+      public function set MagicAttack(value:int) : void
       {
-         _magicAttack = param1;
+         _magicAttack = value;
       }
       
       public function get Describe() : String
@@ -56,9 +56,9 @@ package explorerManual.data.model
          return _describe;
       }
       
-      public function set Describe(param1:String) : void
+      public function set Describe(value:String) : void
       {
-         _describe = param1;
+         _describe = value;
       }
       
       public function get Name() : String
@@ -66,9 +66,9 @@ package explorerManual.data.model
          return _name;
       }
       
-      public function set Name(param1:String) : void
+      public function set Name(value:String) : void
       {
-         _name = param1;
+         _name = value;
       }
       
       public function get Level() : int
@@ -76,9 +76,9 @@ package explorerManual.data.model
          return _level;
       }
       
-      public function set Level(param1:int) : void
+      public function set Level(value:int) : void
       {
-         _level = param1;
+         _level = value;
       }
    }
 }

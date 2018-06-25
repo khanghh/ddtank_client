@@ -10,46 +10,45 @@ package godsRoads.analyze
       
       public var dataList:Vector.<GodsRoadsMissionInfo>;
       
-      public function GodsRoadsDataAnalyzer(param1:Function)
+      public function GodsRoadsDataAnalyzer(onCompleteCall:Function)
       {
          dataList = new Vector.<GodsRoadsMissionInfo>();
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc5_:* = null;
-         var _loc6_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         var _loc4_:XML = new XML(param1);
-         GodsRoadsManager.instance.XMLData = _loc4_;
-         if(_loc4_.@value == "true")
+         var xmllist:* = null;
+         var i:int = 0;
+         var questinfo:* = null;
+         var questItem:* = null;
+         var xml:XML = new XML(data);
+         GodsRoadsManager.instance.XMLData = xml;
+         if(xml.@value == "true")
          {
-            _loc5_ = _loc4_..Item;
-            _loc6_ = 0;
-            while(_loc6_ < _loc5_.length())
+            xmllist = xml..Item;
+            for(i = 0; i < xmllist.length(); )
             {
-               if(_loc5_[_loc6_].@QuestType != 1)
+               if(xmllist[i].@QuestType != 1)
                {
-                  _loc2_ = new GodsRoadsMissionInfo();
-                  _loc3_ = _loc5_[_loc6_]..Item_Condiction;
-                  _loc2_.questId = _loc5_[_loc6_].@ID;
-                  _loc2_.Title = _loc5_[_loc6_].@Title;
-                  _loc2_.Detail = _loc5_[_loc6_].@Detail;
-                  _loc2_.Objective = _loc5_[_loc6_].@Objective;
-                  _loc2_.NeedMinLevel = _loc5_[_loc6_].@NeedMinLevel;
-                  _loc2_.NeedMaxLevel = _loc5_[_loc6_].@NeedMaxLevel;
-                  _loc2_.Period = _loc5_[_loc6_].@Period;
-                  _loc2_.conditiontId = _loc3_[0].@CondictionID;
-                  _loc2_.conditiontTitle = _loc3_[0].@CondictionTitle;
-                  _loc2_.conditionType = _loc3_[0].@CondictionType;
-                  _loc2_.Para1 = _loc3_[0].@Para1;
-                  _loc2_.Para2 = _loc3_[0].@Para2;
-                  _loc2_.IndexType = _loc3_[0].@IndexType;
-                  dataList.push(_loc2_);
+                  questinfo = new GodsRoadsMissionInfo();
+                  questItem = xmllist[i]..Item_Condiction;
+                  questinfo.questId = xmllist[i].@ID;
+                  questinfo.Title = xmllist[i].@Title;
+                  questinfo.Detail = xmllist[i].@Detail;
+                  questinfo.Objective = xmllist[i].@Objective;
+                  questinfo.NeedMinLevel = xmllist[i].@NeedMinLevel;
+                  questinfo.NeedMaxLevel = xmllist[i].@NeedMaxLevel;
+                  questinfo.Period = xmllist[i].@Period;
+                  questinfo.conditiontId = questItem[0].@CondictionID;
+                  questinfo.conditiontTitle = questItem[0].@CondictionTitle;
+                  questinfo.conditionType = questItem[0].@CondictionType;
+                  questinfo.Para1 = questItem[0].@Para1;
+                  questinfo.Para2 = questItem[0].@Para2;
+                  questinfo.IndexType = questItem[0].@IndexType;
+                  dataList.push(questinfo);
                }
-               _loc6_++;
+               i++;
             }
             onAnalyzeComplete();
          }

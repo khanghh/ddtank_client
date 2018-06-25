@@ -39,15 +39,15 @@ package bagAndInfo.cell
          _factory = LayerFactory.instance;
       }
       
-      public function set info(param1:ItemTemplateInfo) : void
+      public function set info($info:ItemTemplateInfo) : void
       {
-         _info = param1;
+         _info = $info;
       }
       
-      public function loadSync(param1:Function) : void
+      public function loadSync(callBack:Function) : void
       {
-         var _loc2_:* = null;
-         _callBack = param1;
+         var color:* = null;
+         _callBack = callBack;
          if(_info.CategoryID == 10)
          {
             _timer = TimerManager.getInstance().addTimerJuggler(100,1);
@@ -58,8 +58,8 @@ package bagAndInfo.cell
          {
             if(_info is InventoryItemInfo)
             {
-               _loc2_ = EquipType.isEditable(_info) && InventoryItemInfo(_info).Color != null?InventoryItemInfo(_info).Color:"";
-               _loader = _factory.createLayer(_info,_info.NeedSex == 1,_loc2_,"icon");
+               color = EquipType.isEditable(_info) && InventoryItemInfo(_info).Color != null?InventoryItemInfo(_info).Color:"";
+               _loader = _factory.createLayer(_info,_info.NeedSex == 1,color,"icon");
             }
             else
             {
@@ -78,7 +78,7 @@ package bagAndInfo.cell
          }
       }
       
-      protected function __timerComplete(param1:Event) : void
+      protected function __timerComplete(evt:Event) : void
       {
          if(_timer)
          {
@@ -90,16 +90,16 @@ package bagAndInfo.cell
          addChild(PropItemView.createView(_info.Pic) as Bitmap);
       }
       
-      protected function loadComplete(param1:ILayer) : void
+      protected function loadComplete(layer:ILayer) : void
       {
-         addChild(param1.getContent());
+         addChild(layer.getContent());
       }
       
-      public function setColor(param1:*) : Boolean
+      public function setColor(color:*) : Boolean
       {
          if(_loader != null)
          {
-            return _loader.setColor(param1);
+            return _loader.setColor(color);
          }
          return false;
       }
@@ -113,16 +113,16 @@ package bagAndInfo.cell
          return _loader.currentEdit;
       }
       
-      override public function set width(param1:Number) : void
+      override public function set width(value:Number) : void
       {
-         .super.width = param1;
-         _w = param1;
+         .super.width = value;
+         _w = value;
       }
       
-      override public function set height(param1:Number) : void
+      override public function set height(value:Number) : void
       {
-         .super.height = param1;
-         _h = param1;
+         .super.height = value;
+         _h = value;
       }
       
       public function dispose() : void

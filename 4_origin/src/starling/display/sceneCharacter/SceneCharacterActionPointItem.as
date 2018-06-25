@@ -14,27 +14,26 @@ package starling.display.sceneCharacter
       
       public var amount:int;
       
-      public function SceneCharacterActionPointItem(param1:String, param2:int, param3:Array)
+      public function SceneCharacterActionPointItem(type:String, amount:int, points:Array)
       {
          super();
-         this.type = param1;
-         this.amount = param2;
-         this.points = param3;
+         this.type = type;
+         this.amount = amount;
+         this.points = points;
       }
       
-      public function getPoint(param1:int) : Point
+      public function getPoint(value:int) : Point
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         _loc3_ = 0;
-         while(_loc3_ < points.length)
+         var i:int = 0;
+         var item:* = null;
+         for(i = 0; i < points.length; )
          {
-            _loc2_ = this.points[_loc3_] as SceneCharacterActionPoint;
-            if(_loc2_.isFrame(param1))
+            item = this.points[i] as SceneCharacterActionPoint;
+            if(item.isFrame(value))
             {
-               return _loc2_.point;
+               return item.point;
             }
-            _loc3_++;
+            i++;
          }
          return null;
       }

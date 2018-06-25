@@ -93,12 +93,12 @@ package ddt.view.caddyII
       
       protected function initView() : void
       {
-         var _loc5_:* = 0;
-         var _loc3_:* = null;
-         var _loc6_:* = 0;
-         var _loc1_:* = null;
-         var _loc4_:* = 0;
-         var _loc2_:* = null;
+         var j:* = 0;
+         var item1:* = null;
+         var k:* = 0;
+         var item2:* = null;
+         var n:* = 0;
+         var item3:* = null;
          _bg = ComponentFactory.Instance.creatComponentByStylename("caddy.LeftBG");
          addChild(_bg);
          _bg2 = ComponentFactory.Instance.creatComponentByStylename("ddtCaddbagView");
@@ -117,14 +117,13 @@ package ddt.view.caddyII
             addChild(_list);
             _items = new Vector.<CaddyCell>();
             _list.beginChanges();
-            _loc5_ = uint(0);
-            while(_loc5_ < 25)
+            for(j = uint(0); j < 25; )
             {
-               _loc3_ = new CaddyCell(_loc5_);
-               _items.push(_loc3_);
-               _loc3_.addEventListener("itemclick",__itemClick);
-               _list.addChild(_loc3_);
-               _loc5_++;
+               item1 = new CaddyCell(j);
+               _items.push(item1);
+               item1.addEventListener("itemclick",__itemClick);
+               _list.addChild(item1);
+               j++;
             }
             _list.commitChanges();
             _sellAllBtn = ComponentFactory.Instance.creatComponentByStylename("caddy.sellAllBtn");
@@ -140,14 +139,13 @@ package ddt.view.caddyII
             addChild(_list);
             _items = new Vector.<CaddyCell>();
             _list.beginChanges();
-            _loc6_ = uint(0);
-            while(_loc6_ < 25)
+            for(k = uint(0); k < 25; )
             {
-               _loc1_ = new CaddyCell(_loc6_);
-               _items.push(_loc1_);
-               _loc1_.addEventListener("itemclick",__itemClick);
-               _list.addChild(_loc1_);
-               _loc6_++;
+               item2 = new CaddyCell(k);
+               _items.push(item2);
+               item2.addEventListener("itemclick",__itemClick);
+               _list.addChild(item2);
+               k++;
             }
             _node1 = ComponentFactory.Instance.creatComponentByStylename("asset.caddy.exchangeTxt");
             _node1.text = LanguageMgr.GetTranslation("tank.view.caddy.exchangeTxt");
@@ -178,14 +176,13 @@ package ddt.view.caddyII
             addChild(_list);
             _items = new Vector.<CaddyCell>();
             _list.beginChanges();
-            _loc4_ = uint(0);
-            while(_loc4_ < 25)
+            for(n = uint(0); n < 25; )
             {
-               _loc2_ = new CaddyCell(_loc4_);
-               _items.push(_loc2_);
-               _loc2_.addEventListener("itemclick",__itemClick);
-               _list.addChild(_loc2_);
-               _loc4_++;
+               item3 = new CaddyCell(n);
+               _items.push(item3);
+               item3.addEventListener("itemclick",__itemClick);
+               _list.addChild(item3);
+               n++;
             }
             _list.commitChanges();
             _sellAllBtn = ComponentFactory.Instance.creatComponentByStylename("caddy.sellAllBtn");
@@ -229,50 +226,50 @@ package ddt.view.caddyII
          PlayerManager.Instance.Self.addEventListener("propertychange",__changeBadLuckNumber);
       }
       
-      private function _getConverteds(param1:PkgEvent) : void
+      private function _getConverteds(event:PkgEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:PackageIn = param1.pkg;
-         if(_loc3_.bytesAvailable == 0)
+         var alert:* = null;
+         var pkg:PackageIn = event.pkg;
+         if(pkg.bytesAvailable == 0)
          {
             return;
          }
          _CaddyInfo = new CaddyInfo();
-         _CaddyInfo.isConver = _loc3_.readBoolean();
-         _CaddyInfo.totalSorce = _loc3_.readInt();
-         _CaddyInfo.lotteryScore = _loc3_.readInt();
-         _loc3_.clear();
+         _CaddyInfo.isConver = pkg.readBoolean();
+         _CaddyInfo.totalSorce = pkg.readInt();
+         _CaddyInfo.lotteryScore = pkg.readInt();
+         pkg.clear();
          _haveExchange.text = String(_CaddyInfo.lotteryScore);
          if(_CaddyInfo.totalSorce != 0 && !_CaddyInfo.isConver && isAlert)
          {
             isAlert = false;
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.caddy.convertedAll",_CaddyInfo.totalSorce),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
-            _loc2_.mouseEnabled = false;
-            _loc2_.addEventListener("response",_responseII);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.caddy.convertedAll",_CaddyInfo.totalSorce),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
+            alert.mouseEnabled = false;
+            alert.addEventListener("response",_responseII);
          }
       }
       
-      private function _getexchange(param1:PkgEvent) : void
+      private function _getexchange(event:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _CaddyInfo.lotteryScore = _loc2_.readInt();
+         var pkg:PackageIn = event.pkg;
+         _CaddyInfo.lotteryScore = pkg.readInt();
          _haveExchange.text = String(_CaddyInfo.lotteryScore);
       }
       
-      private function _responseII(param1:FrameEvent) : void
+      private function _responseII(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",_responseII);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         (event.currentTarget as BaseAlerFrame).removeEventListener("response",_responseII);
+         if(event.responseCode == 2 || event.responseCode == 3)
          {
             SocketManager.Instance.out.sendconverted(true);
          }
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(event.currentTarget);
       }
       
-      private function _exchangeHandler(param1:MouseEvent) : void
+      private function _exchangeHandler(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var alert:* = null;
          SoundManager.instance.play("008");
          if(_CaddyInfo.lotteryScore < 30)
          {
@@ -280,51 +277,51 @@ package ddt.view.caddyII
          }
          else
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.caddy.exchangeAll",Math.floor(_CaddyInfo.lotteryScore / 30)),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
-            _loc2_.mouseEnabled = false;
-            _loc2_.addEventListener("response",_responseIII);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.caddy.exchangeAll",Math.floor(_CaddyInfo.lotteryScore / 30)),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
+            alert.mouseEnabled = false;
+            alert.addEventListener("response",_responseIII);
          }
       }
       
-      private function _convertedHandler(param1:MouseEvent) : void
+      private function _convertedHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          SocketManager.Instance.out.sendconverted(isConver);
          isAlert = true;
       }
       
-      private function _responseIII(param1:FrameEvent) : void
+      private function _responseIII(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",_responseIII);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         (event.currentTarget as BaseAlerFrame).removeEventListener("response",_responseIII);
+         if(event.responseCode == 2 || event.responseCode == 3)
          {
             SocketManager.Instance.out.sendExchange();
          }
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(event.currentTarget);
       }
       
-      protected function __openAllHandler(param1:MouseEvent) : void
+      protected function __openAllHandler(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var alert:* = null;
          SoundManager.instance.play("008");
          if(CaddyModel.instance.bagInfo.itemNumber > 0)
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.caddy.opennAll"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
-            _loc2_.moveEnable = false;
-            _loc2_.addEventListener("response",_responseIV);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.caddy.opennAll"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
+            alert.moveEnable = false;
+            alert.addEventListener("response",_responseIV);
          }
       }
       
-      private function _responseIV(param1:FrameEvent) : void
+      private function _responseIV(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",_responseI);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         (event.currentTarget as BaseAlerFrame).removeEventListener("response",_responseI);
+         if(event.responseCode == 2 || event.responseCode == 3)
          {
             SocketManager.Instance.out.sendOpenAll();
          }
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(event.currentTarget);
       }
       
       protected function removeEvents() : void
@@ -351,27 +348,27 @@ package ddt.view.caddyII
          SocketManager.Instance.removeEventListener(PkgEvent.format(211),_getexchange);
       }
       
-      private function __changeBadLuckNumber(param1:PlayerPropertyEvent) : void
+      private function __changeBadLuckNumber(event:PlayerPropertyEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         if(param1.changedProperties["BadLuckNumber"])
+         var itemInfo:* = null;
+         var evt:* = null;
+         if(event.changedProperties["BadLuckNumber"])
          {
             if(PlayerManager.Instance.Self.badLuckNumber == 0)
             {
                return;
             }
-            _loc3_ = new InventoryItemInfo();
-            _loc3_.TemplateID = 11550;
-            ItemManager.fill(_loc3_);
-            _loc2_ = new CaddyEvent("caddy_get_goodsinfo");
-            _selectedGoodsInfo = _loc3_;
-            _loc2_.info = _loc3_;
-            dispatchEvent(_loc2_);
+            itemInfo = new InventoryItemInfo();
+            itemInfo.TemplateID = 11550;
+            ItemManager.fill(itemInfo);
+            evt = new CaddyEvent("caddy_get_goodsinfo");
+            _selectedGoodsInfo = itemInfo;
+            evt.info = itemInfo;
+            dispatchEvent(evt);
          }
       }
       
-      private function _getAll(param1:MouseEvent) : void
+      private function _getAll(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(CaddyModel.instance.bagInfo.itemNumber > 0)
@@ -380,91 +377,91 @@ package ddt.view.caddyII
          }
       }
       
-      private function _sellAll(param1:MouseEvent) : void
+      private function _sellAll(e:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var alert:* = null;
          SoundManager.instance.play("008");
          if(CaddyModel.instance.bagInfo.itemNumber > 0)
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.caddy.sellAllNode") + getSellAllPriceString(),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
-            _loc2_.moveEnable = false;
-            _loc2_.addEventListener("response",_responseI);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.caddy.sellAllNode") + getSellAllPriceString(),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
+            alert.moveEnable = false;
+            alert.addEventListener("response",_responseI);
          }
       }
       
       public function getSellAllPriceString() : String
       {
-         var _loc2_:* = 0;
-         var _loc1_:* = 0;
+         var gold:* = 0;
+         var gift:* = 0;
          var _loc5_:int = 0;
          var _loc4_:* = CaddyModel.instance.bagInfo.items;
-         for each(var _loc3_ in CaddyModel.instance.bagInfo.items)
+         for each(var info in CaddyModel.instance.bagInfo.items)
          {
-            if(_loc3_.ReclaimType == 1)
+            if(info.ReclaimType == 1)
             {
-               _loc2_ = Number(_loc2_ + _loc3_.ReclaimValue * _loc3_.Count);
+               gold = Number(gold + info.ReclaimValue * info.Count);
             }
-            else if(_loc3_.ReclaimType == 2)
+            else if(info.ReclaimType == 2)
             {
-               _loc1_ = Number(_loc1_ + _loc3_.ReclaimValue * _loc3_.Count);
+               gift = Number(gift + info.ReclaimValue * info.Count);
             }
          }
-         return (_loc2_ > 0?_loc2_ + LanguageMgr.GetTranslation("tank.hotSpring.gold"):"") + (_loc2_ > 0 && _loc1_ > 0?",":"") + (_loc1_ > 0?_loc1_ + LanguageMgr.GetTranslation("tank.gameover.takecard.gifttoken"):"");
+         return (gold > 0?gold + LanguageMgr.GetTranslation("tank.hotSpring.gold"):"") + (gold > 0 && gift > 0?",":"") + (gift > 0?gift + LanguageMgr.GetTranslation("tank.gameover.takecard.gifttoken"):"");
       }
       
-      private function _responseI(param1:FrameEvent) : void
+      private function _responseI(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",_responseI);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         (e.currentTarget as BaseAlerFrame).removeEventListener("response",_responseI);
+         if(e.responseCode == 2 || e.responseCode == 3)
          {
             SocketManager.Instance.out.sendSellAll();
          }
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(e.currentTarget);
       }
       
-      public function _update(param1:BagEvent) : void
+      public function _update(e:BagEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         var _loc4_:Dictionary = param1.changedSlots;
+         var c:* = null;
+         var evt:* = null;
+         var data:Dictionary = e.changedSlots;
          var _loc7_:int = 0;
-         var _loc6_:* = _loc4_;
-         for(var _loc5_ in _loc4_)
+         var _loc6_:* = data;
+         for(var i in data)
          {
-            _loc2_ = CaddyModel.instance.bagInfo.getItemAt(int(_loc5_));
-            if(_loc2_)
+            c = CaddyModel.instance.bagInfo.getItemAt(int(i));
+            if(c)
             {
-               _selectedGoodsInfo = _loc2_;
-               _selectPlace = _loc2_.Place;
-               _loc3_ = new CaddyEvent("caddy_get_goodsinfo");
-               _loc3_.info = _selectedGoodsInfo;
-               dispatchEvent(_loc3_);
+               _selectedGoodsInfo = c;
+               _selectPlace = c.Place;
+               evt = new CaddyEvent("caddy_get_goodsinfo");
+               evt.info = _selectedGoodsInfo;
+               dispatchEvent(evt);
             }
             else
             {
-               _items[_loc5_].info = null;
+               _items[i].info = null;
             }
          }
       }
       
-      public function __itemClick(param1:CellEvent) : void
+      public function __itemClick(event:CellEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc4_:CaddyCell = param1.data as CaddyCell;
-         var _loc3_:int = (_loc4_.info as InventoryItemInfo).Count;
-         var _loc2_:int = _getBagType(_loc4_.info as InventoryItemInfo);
-         SocketManager.Instance.out.sendMoveGoods(5,_loc4_.place,_loc2_,-1,_loc3_);
+         var item:CaddyCell = event.data as CaddyCell;
+         var count:int = (item.info as InventoryItemInfo).Count;
+         var bagType:int = _getBagType(item.info as InventoryItemInfo);
+         SocketManager.Instance.out.sendMoveGoods(5,item.place,bagType,-1,count);
       }
       
-      private function _getBagType(param1:InventoryItemInfo) : int
+      private function _getBagType(info:InventoryItemInfo) : int
       {
-         var _loc2_:int = 0;
-         if(param1.Property1 == "31")
+         var type:int = 0;
+         if(info.Property1 == "31")
          {
             return 21;
          }
-         var _loc3_:* = param1.CategoryID;
+         var _loc3_:* = info.CategoryID;
          if(11 !== _loc3_)
          {
             if(10 !== _loc3_)
@@ -475,76 +472,81 @@ package ddt.view.caddyII
                   {
                      if(53 !== _loc3_)
                      {
-                        if(23 !== _loc3_)
+                        if(78 !== _loc3_)
                         {
-                           if(30 !== _loc3_)
+                           if(23 !== _loc3_)
                            {
-                              if(34 !== _loc3_)
+                              if(30 !== _loc3_)
                               {
-                                 if(35 !== _loc3_)
+                                 if(34 !== _loc3_)
                                  {
-                                    if(36 !== _loc3_)
+                                    if(35 !== _loc3_)
                                     {
-                                       if(32 !== _loc3_)
+                                       if(36 !== _loc3_)
                                        {
-                                          if(33 !== _loc3_)
+                                          if(32 !== _loc3_)
                                           {
+                                             if(33 !== _loc3_)
+                                             {
+                                             }
+                                             addr58:
+                                             type = 0;
                                           }
-                                          addr41:
-                                          _loc2_ = 0;
+                                          type = 13;
+                                          §§goto(addr58);
                                        }
-                                       _loc2_ = 13;
-                                       §§goto(addr41);
                                     }
+                                    addr48:
+                                    type = 1;
                                  }
-                                 addr33:
-                                 _loc2_ = 1;
+                                 addr47:
+                                 §§goto(addr48);
                               }
-                              addr32:
-                              §§goto(addr33);
+                              addr46:
+                              §§goto(addr47);
                            }
-                           addr31:
-                           §§goto(addr32);
+                           addr45:
+                           §§goto(addr46);
                         }
-                        addr30:
-                        §§goto(addr31);
+                        addr44:
+                        §§goto(addr45);
                      }
-                     addr29:
-                     §§goto(addr30);
+                     addr43:
+                     §§goto(addr44);
                   }
-                  addr28:
-                  §§goto(addr29);
+                  addr42:
+                  §§goto(addr43);
                }
-               addr27:
-               §§goto(addr28);
+               addr41:
+               §§goto(addr42);
             }
-            §§goto(addr27);
+            §§goto(addr41);
          }
-         else if(param1.Property1 == "31")
+         else if(info.Property1 == "31")
          {
-            _loc2_ = 21;
+            type = 21;
          }
          else
          {
-            _loc2_ = 1;
+            type = 1;
          }
-         return _loc2_;
+         return type;
       }
       
       public function findCell() : void
       {
-         var _loc1_:* = null;
+         var point:* = null;
          if(_selectedGoodsInfo.TemplateID == 11550)
          {
-            _loc1_ = localToGlobal(new Point(685,285));
+            point = localToGlobal(new Point(685,285));
          }
          else
          {
-            _loc1_ = localToGlobal(new Point(_items[_selectPlace].x,_items[_selectPlace].y));
+            point = localToGlobal(new Point(_items[_selectPlace].x,_items[_selectPlace].y));
          }
-         var _loc2_:CaddyEvent = new CaddyEvent("send_nullCell_poing");
-         _loc2_.point = _loc1_;
-         dispatchEvent(_loc2_);
+         var evt:CaddyEvent = new CaddyEvent("send_nullCell_poing");
+         evt.point = point;
+         dispatchEvent(evt);
       }
       
       public function addCell() : void
@@ -557,15 +559,14 @@ package ddt.view.caddyII
       
       public function checkCell() : Boolean
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _items.length)
+         var i:int = 0;
+         for(i = 0; i < _items.length; )
          {
-            if(_items[_loc1_].info != null)
+            if(_items[i].info != null)
             {
                return true;
             }
-            _loc1_++;
+            i++;
          }
          return false;
       }
@@ -607,7 +608,7 @@ package ddt.view.caddyII
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          removeEvents();
          if(_bg)
          {
@@ -634,11 +635,10 @@ package ddt.view.caddyII
             ObjectUtils.disposeObject(_openAll);
          }
          _openAll = null;
-         _loc1_ = 0;
-         while(_loc1_ < _items.length)
+         for(i = 0; i < _items.length; )
          {
-            ObjectUtils.disposeObject(_items[_loc1_]);
-            _loc1_++;
+            ObjectUtils.disposeObject(_items[i]);
+            i++;
          }
          _items = null;
          _selectedGoodsInfo = null;

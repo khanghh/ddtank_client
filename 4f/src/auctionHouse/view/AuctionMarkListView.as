@@ -1,0 +1,7 @@
+package auctionHouse.view{   import bagAndInfo.bag.BagListView;   import bagAndInfo.cell.BagCell;   import bagAndInfo.cell.CellFactory;   import com.pickgliss.events.InteractiveEvent;   import com.pickgliss.ui.ComponentFactory;   import com.pickgliss.utils.DoubleClickManager;   import ddt.data.goods.InventoryItemInfo;   import ddt.manager.ItemManager;   import flash.utils.Dictionary;   import mark.MarkMgr;   import mark.data.MarkBagData;   import mark.data.MarkChipData;      public class AuctionMarkListView extends BagListView   {                   public var _startIndex:int;            public var _stopIndex:int;            private var _type:int = 1003;            public function AuctionMarkListView(bagType:int, startIndex:int = 31, stopIndex:int = 80, columnNum:int = 7, page:int = 1) { super(null,null,null); }
+            override protected function createCells() : void { }
+            public function set type(value:int) : void { }
+            public function get type() : int { return 0; }
+            override protected function __doubleClickHandler(evt:InteractiveEvent) : void { }
+            public function setMarkDic(page:int = 1) : void { }
+   }}

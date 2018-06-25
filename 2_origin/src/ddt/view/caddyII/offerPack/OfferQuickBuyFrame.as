@@ -59,15 +59,15 @@ package ddt.view.caddyII.offerPack
       {
          _list = ComponentFactory.Instance.creatComponentByStylename("offer.quickBox");
          _selectNumber = ComponentFactory.Instance.creatCustomObject("offer.numberSelecter");
-         var _loc1_:Image = ComponentFactory.Instance.creatComponentByStylename("offer.TipsTextBg");
-         var _loc2_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("offer.TotalTipsText");
-         _loc2_.text = LanguageMgr.GetTranslation("ddt.QuickFrame.TotalTipText");
+         var _tipsTextBg:Image = ComponentFactory.Instance.creatComponentByStylename("offer.TipsTextBg");
+         var _totalTipText:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("offer.TotalTipsText");
+         _totalTipText.text = LanguageMgr.GetTranslation("ddt.QuickFrame.TotalTipText");
          _moneyTxt = ComponentFactory.Instance.creatComponentByStylename("offer.TotalText");
          _itemGroup = new SelectedButtonGroup();
          addToContent(_moneyTxt);
          addToContent(_selectNumber);
-         addToContent(_loc1_);
-         addToContent(_loc2_);
+         addToContent(_tipsTextBg);
+         addToContent(_totalTipText);
          addToContent(_moneyTxt);
          createCell();
       }
@@ -88,9 +88,9 @@ package ddt.view.caddyII.offerPack
          _selectNumber.removeEventListener("number_enter",_numberEnter);
       }
       
-      public function set offShopList(param1:Vector.<ShopItemInfo>) : void
+      public function set offShopList(pValue:Vector.<ShopItemInfo>) : void
       {
-         _shopInfoList = param1;
+         _shopInfoList = pValue;
       }
       
       public function get offShopList() : Vector.<ShopItemInfo>
@@ -100,70 +100,68 @@ package ddt.view.caddyII.offerPack
       
       private function createCell() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var cell:* = null;
          _list.beginChanges();
-         _loc2_ = 0;
-         while(_loc2_ < _itemTempLateID.length)
+         for(i = 0; i < _itemTempLateID.length; )
          {
-            _loc1_ = new OfferQuickCell();
-            _loc1_.info = ItemManager.Instance.getTemplateById(_itemTempLateID[_loc2_]);
-            _loc1_.addEventListener("click",_itemClick);
-            _itemGroup.addSelectItem(_loc1_);
-            _list.addChild(_loc1_);
-            _loc2_++;
+            cell = new OfferQuickCell();
+            cell.info = ItemManager.Instance.getTemplateById(_itemTempLateID[i]);
+            cell.addEventListener("click",_itemClick);
+            _itemGroup.addSelectItem(cell);
+            _list.addChild(cell);
+            i++;
          }
          _list.commitChanges();
       }
       
       private function removeListChildEvent() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _list.numChildren)
+         var i:int = 0;
+         for(i = 0; i < _list.numChildren; )
          {
-            _list.getChildAt(_loc1_).removeEventListener("click",_itemClick);
-            _loc1_++;
+            _list.getChildAt(i).removeEventListener("click",_itemClick);
+            i++;
          }
       }
       
-      private function _numberChange(param1:Event) : void
+      private function _numberChange(e:Event) : void
       {
          money = _selectNumber.number * _shopInfoList[select].getItemPrice(1).gesteValue;
       }
       
-      private function _numberClose(param1:Event) : void
+      private function _numberClose(e:Event) : void
       {
          ObjectUtils.disposeObject(this);
       }
       
-      private function _numberEnter(param1:Event) : void
+      private function _numberEnter(e:Event) : void
       {
          buy();
          ObjectUtils.disposeObject(this);
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         if(e.responseCode == 2 || e.responseCode == 3)
          {
             buy();
          }
          ObjectUtils.disposeObject(this);
       }
       
-      private function _itemClick(param1:MouseEvent) : void
+      private function _itemClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         _selectCell = param1.currentTarget as OfferQuickCell;
+         _selectCell = e.currentTarget as OfferQuickCell;
          select = _list.getChildIndex(_selectCell);
          _selectNumber.number = 1;
       }
       
       private function buy() : void
       {
-         var _loc7_:int = 0;
+         var i:int = 0;
          if(PlayerManager.Instance.Self.ConsortiaID == 0)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.offer.noConsortia"));
@@ -179,39 +177,38 @@ package ddt.view.caddyII.offerPack
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.offer.noOffer"));
             return;
          }
-         var _loc1_:Array = [];
-         var _loc5_:Array = [];
-         var _loc2_:Array = [];
-         var _loc3_:Array = [];
-         var _loc6_:Array = [];
-         var _loc4_:Array = [];
-         _loc7_ = 0;
-         while(_loc7_ < _selectNumber.number)
+         var items:Array = [];
+         var types:Array = [];
+         var colors:Array = [];
+         var dresses:Array = [];
+         var skins:Array = [];
+         var places:Array = [];
+         for(i = 0; i < _selectNumber.number; )
          {
-            _loc1_.push(_shopInfoList[select].GoodsID);
-            _loc5_.push(1);
-            _loc2_.push("");
-            _loc3_.push(false);
-            _loc6_.push("");
-            _loc4_.push(-1);
-            _loc7_++;
+            items.push(_shopInfoList[select].GoodsID);
+            types.push(1);
+            colors.push("");
+            dresses.push(false);
+            skins.push("");
+            places.push(-1);
+            i++;
          }
-         SocketManager.Instance.out.sendBuyGoods(_loc1_,_loc5_,_loc2_,_loc4_,_loc3_,_loc6_,0);
+         SocketManager.Instance.out.sendBuyGoods(items,types,colors,places,dresses,skins,0);
       }
       
-      private function _responseI(param1:FrameEvent) : void
+      private function _responseI(e:FrameEvent) : void
       {
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",_responseI);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         (e.currentTarget as BaseAlerFrame).removeEventListener("response",_responseI);
+         if(e.responseCode == 3 || e.responseCode == 2)
          {
             LeavePageManager.leaveToFillPath();
          }
-         ObjectUtils.disposeObject(param1.target);
+         ObjectUtils.disposeObject(e.target);
       }
       
-      public function set money(param1:int) : void
+      public function set money(value:int) : void
       {
-         _money = param1;
+         _money = value;
          _moneyTxt.text = String(_money) + " " + LanguageMgr.GetTranslation("offer");
       }
       
@@ -220,13 +217,13 @@ package ddt.view.caddyII.offerPack
          return _money;
       }
       
-      public function set select(param1:int) : void
+      public function set select(value:int) : void
       {
-         if(_select == param1)
+         if(_select == value)
          {
             return;
          }
-         _select = param1;
+         _select = value;
          _itemGroup.selectIndex = _select;
          _numberChange(null);
       }
@@ -236,18 +233,18 @@ package ddt.view.caddyII.offerPack
          return _select;
       }
       
-      public function show(param1:int) : void
+      public function show(number:int) : void
       {
-         var _loc2_:AlertInfo = new AlertInfo();
-         _loc2_.title = LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy");
-         _loc2_.data = _list;
-         _loc2_.submitLabel = LanguageMgr.GetTranslation("store.view.shortcutBuy.buyBtn");
-         _loc2_.showCancel = false;
-         _loc2_.moveEnable = false;
-         info = _loc2_;
+         var alertInfo:AlertInfo = new AlertInfo();
+         alertInfo.title = LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy");
+         alertInfo.data = _list;
+         alertInfo.submitLabel = LanguageMgr.GetTranslation("store.view.shortcutBuy.buyBtn");
+         alertInfo.showCancel = false;
+         alertInfo.moveEnable = false;
+         info = alertInfo;
          addToContent(_list);
          LayerManager.Instance.addToLayer(this,2,true,1);
-         select = param1;
+         select = number;
       }
       
       override public function dispose() : void
@@ -281,9 +278,9 @@ package ddt.view.caddyII.offerPack
          _itemGroup = null;
          var _loc3_:int = 0;
          var _loc2_:* = _cellItems;
-         for each(var _loc1_ in _cellItems)
+         for each(var cell in _cellItems)
          {
-            ObjectUtils.disposeObject(_loc1_);
+            ObjectUtils.disposeObject(cell);
          }
          _cellItems = null;
          _shopInfoList = null;

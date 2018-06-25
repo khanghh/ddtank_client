@@ -18,20 +18,19 @@ package starling.events
       
       function TouchMarker()
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var marker:* = null;
          super();
          mCenter = new Point();
          mTexture = createTexture();
-         _loc2_ = 0;
-         while(_loc2_ < 2)
+         for(i = 0; i < 2; )
          {
-            _loc1_ = new Image(mTexture);
-            _loc1_.pivotX = mTexture.width / 2;
-            _loc1_.pivotY = mTexture.height / 2;
-            _loc1_.touchable = false;
-            addChild(_loc1_);
-            _loc2_++;
+            marker = new Image(mTexture);
+            marker.pivotX = mTexture.width / 2;
+            marker.pivotY = mTexture.height / 2;
+            marker.touchable = false;
+            addChild(marker);
+            i++;
          }
       }
       
@@ -41,43 +40,43 @@ package starling.events
          super.dispose();
       }
       
-      public function moveMarker(param1:Number, param2:Number, param3:Boolean = false) : void
+      public function moveMarker(x:Number, y:Number, withCenter:Boolean = false) : void
       {
-         if(param3)
+         if(withCenter)
          {
-            mCenter.x = mCenter.x + (param1 - realMarker.x);
-            mCenter.y = mCenter.y + (param2 - realMarker.y);
+            mCenter.x = mCenter.x + (x - realMarker.x);
+            mCenter.y = mCenter.y + (y - realMarker.y);
          }
-         realMarker.x = param1;
-         realMarker.y = param2;
-         mockMarker.x = 2 * mCenter.x - param1;
-         mockMarker.y = 2 * mCenter.y - param2;
+         realMarker.x = x;
+         realMarker.y = y;
+         mockMarker.x = 2 * mCenter.x - x;
+         mockMarker.y = 2 * mCenter.y - y;
       }
       
-      public function moveCenter(param1:Number, param2:Number) : void
+      public function moveCenter(x:Number, y:Number) : void
       {
-         mCenter.x = param1;
-         mCenter.y = param2;
+         mCenter.x = x;
+         mCenter.y = y;
          moveMarker(realX,realY);
       }
       
       private function createTexture() : Texture
       {
-         var _loc2_:Number = Starling.contentScaleFactor;
-         var _loc6_:Number = 12 * _loc2_;
-         var _loc4_:int = 32 * _loc2_;
-         var _loc3_:int = 32 * _loc2_;
-         var _loc5_:Number = 1.5 * _loc2_;
-         var _loc7_:Shape = new Shape();
-         _loc7_.graphics.lineStyle(_loc5_,0,0.3);
-         _loc7_.graphics.drawCircle(_loc4_ / 2,_loc3_ / 2,_loc6_ + _loc5_);
-         _loc7_.graphics.beginFill(16777215,0.4);
-         _loc7_.graphics.lineStyle(_loc5_,16777215);
-         _loc7_.graphics.drawCircle(_loc4_ / 2,_loc3_ / 2,_loc6_);
-         _loc7_.graphics.endFill();
-         var _loc1_:BitmapData = new BitmapData(_loc4_,_loc3_,true,0);
-         _loc1_.draw(_loc7_);
-         return Texture.fromBitmapData(_loc1_,false,false,_loc2_);
+         var scale:Number = Starling.contentScaleFactor;
+         var radius:Number = 12 * scale;
+         var width:int = 32 * scale;
+         var height:int = 32 * scale;
+         var thickness:Number = 1.5 * scale;
+         var shape:Shape = new Shape();
+         shape.graphics.lineStyle(thickness,0,0.3);
+         shape.graphics.drawCircle(width / 2,height / 2,radius + thickness);
+         shape.graphics.beginFill(16777215,0.4);
+         shape.graphics.lineStyle(thickness,16777215);
+         shape.graphics.drawCircle(width / 2,height / 2,radius);
+         shape.graphics.endFill();
+         var bmpData:BitmapData = new BitmapData(width,height,true,0);
+         bmpData.draw(shape);
+         return Texture.fromBitmapData(bmpData,false,false,scale);
       }
       
       private function get realMarker() : Image

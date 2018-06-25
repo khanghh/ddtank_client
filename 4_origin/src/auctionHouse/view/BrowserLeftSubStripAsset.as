@@ -39,9 +39,9 @@ package auctionHouse.view
          icon = null;
       }
       
-      override public function set selectState(param1:Boolean) : void
+      override public function set selectState(value:Boolean) : void
       {
-         if(param1)
+         if(value)
          {
             _type_text.visible = false;
             _type_text1.visible = true;
@@ -53,9 +53,9 @@ package auctionHouse.view
          }
       }
       
-      override public function set type_txt(param1:GradientText) : void
+      override public function set type_txt(value:GradientText) : void
       {
-         _type_txt = param1;
+         _type_txt = value;
          _type_text.text = _type_txt.text;
          _type_text1.text = _type_txt.text;
       }
@@ -65,10 +65,10 @@ package auctionHouse.view
          return _type_txt;
       }
       
-      override public function set type_text(param1:String) : void
+      override public function set type_text(str:String) : void
       {
-         _type_text.text = param1;
-         _type_text1.text = param1;
+         _type_text.text = str;
+         _type_text1.text = str;
       }
       
       override public function dispose() : void

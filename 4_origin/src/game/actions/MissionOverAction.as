@@ -74,131 +74,129 @@ package game.actions
       
       private var _lost:MovieClipWrapper;
       
-      public function MissionOverAction(param1:MapView, param2:CrazyTankSocketEvent, param3:Function, param4:Number = 3000)
+      public function MissionOverAction(map:MapView, event:CrazyTankSocketEvent, func:Function, waitTime:Number = 3000)
       {
          super();
-         _event = param2;
-         _map = param1;
-         _func = param3;
-         _count = param4 / 40;
+         _event = event;
+         _map = map;
+         _func = func;
+         _count = waitTime / 40;
          readInfo(_event);
       }
       
-      public static function getGradedStr(param1:int) : String
+      public static function getGradedStr(grade:int) : String
       {
-         if(param1 >= 3)
+         if(grade >= 3)
          {
             return "S";
          }
-         if(param1 >= 2)
+         if(grade >= 2)
          {
             return "A";
          }
-         if(param1 == 0)
+         if(grade == 0)
          {
             return "C";
          }
-         if(param1 < 2)
+         if(grade < 2)
          {
             return "B";
          }
          return "C";
       }
       
-      private function readInfo(param1:CrazyTankSocketEvent) : void
+      private function readInfo(event:CrazyTankSocketEvent) : void
       {
-         var _loc12_:int = 0;
-         var _loc9_:* = null;
-         var _loc6_:* = null;
-         var _loc4_:* = null;
-         var _loc5_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         var _loc10_:* = 0;
-         var _loc8_:PackageIn = param1.pkg;
-         var _loc7_:GameInfo = GameControl.Instance.Current;
-         _loc7_.missionInfo.missionOverPlayer = [];
-         _loc7_.missionInfo.tackCardType = _loc8_.readInt();
-         _loc7_.hasNextMission = _loc8_.readBoolean();
-         if(_loc7_.hasNextMission)
+         var i:int = 0;
+         var obj:* = null;
+         var playerGainInfo:* = null;
+         var player:* = null;
+         var cardCount:int = 0;
+         var playerCanGetCardCount:int = 0;
+         var count:int = 0;
+         var j:* = 0;
+         var pkg:PackageIn = event.pkg;
+         var current:GameInfo = GameControl.Instance.Current;
+         current.missionInfo.missionOverPlayer = [];
+         current.missionInfo.tackCardType = pkg.readInt();
+         current.hasNextMission = pkg.readBoolean();
+         if(current.hasNextMission)
          {
-            _loc7_.missionInfo.pic = _loc8_.readUTF();
+            current.missionInfo.pic = pkg.readUTF();
          }
-         _loc7_.missionInfo.canEnterFinall = _loc8_.readBoolean();
-         var _loc11_:int = _loc8_.readInt();
-         _loc12_ = 0;
-         while(_loc12_ < _loc11_)
+         current.missionInfo.canEnterFinall = pkg.readBoolean();
+         var playerCount:int = pkg.readInt();
+         for(i = 0; i < playerCount; )
          {
-            _loc9_ = {};
-            _loc6_ = new BaseSettleInfo();
-            _loc6_.playerid = _loc8_.readInt();
-            _loc6_.level = _loc8_.readInt();
-            _loc6_.treatment = _loc8_.readInt();
-            _loc4_ = _loc7_.findGamerbyPlayerId(_loc6_.playerid);
-            _loc9_.gainGP = _loc8_.readInt();
-            _loc4_.isWin = _loc8_.readBoolean();
-            _loc5_ = _loc8_.readInt();
-            _loc2_ = _loc8_.readInt();
-            _loc4_.GetCardCount = _loc2_;
-            _loc4_.BossCardCount = _loc2_;
-            _loc4_.hasLevelAgain = _loc8_.readBoolean();
-            _loc4_.hasGardGet = _loc8_.readBoolean();
-            if(_loc4_.isWin)
+            obj = {};
+            playerGainInfo = new BaseSettleInfo();
+            playerGainInfo.playerid = pkg.readInt();
+            playerGainInfo.level = pkg.readInt();
+            playerGainInfo.treatment = pkg.readInt();
+            player = current.findGamerbyPlayerId(playerGainInfo.playerid);
+            obj.gainGP = pkg.readInt();
+            player.isWin = pkg.readBoolean();
+            cardCount = pkg.readInt();
+            playerCanGetCardCount = pkg.readInt();
+            player.GetCardCount = playerCanGetCardCount;
+            player.BossCardCount = playerCanGetCardCount;
+            player.hasLevelAgain = pkg.readBoolean();
+            player.hasGardGet = pkg.readBoolean();
+            if(player.isWin)
             {
-               if(_loc5_ == 0)
+               if(cardCount == 0)
                {
-                  _loc9_.gameOverType = 0;
+                  obj.gameOverType = 0;
                }
-               else if(_loc5_ == 1 && !_loc7_.hasNextMission)
+               else if(cardCount == 1 && !current.hasNextMission)
                {
-                  _loc9_.gameOverType = 6;
+                  obj.gameOverType = 6;
                }
-               else if(_loc5_ == 1 && _loc7_.hasNextMission)
+               else if(cardCount == 1 && current.hasNextMission)
                {
-                  _loc9_.gameOverType = 2;
+                  obj.gameOverType = 2;
                }
-               else if(_loc5_ == 2 && _loc7_.hasNextMission)
+               else if(cardCount == 2 && current.hasNextMission)
                {
-                  _loc9_.gameOverType = 3;
+                  obj.gameOverType = 3;
                }
-               else if(_loc5_ == 2 && !_loc7_.hasNextMission)
+               else if(cardCount == 2 && !current.hasNextMission)
                {
-                  _loc9_.gameOverType = 4;
+                  obj.gameOverType = 4;
                }
                else
                {
-                  _loc9_.gameOverType = 0;
+                  obj.gameOverType = 0;
                }
             }
             else
             {
-               _loc9_.gameOverType = 5;
+               obj.gameOverType = 5;
                if(RoomManager.Instance.current.type == 14)
                {
                   SocketManager.Instance.out.sendWorldBossRoomStauts(3);
                   WorldBossManager.Instance.setSelfStatus(3);
                }
             }
-            _loc4_.expObj = _loc9_;
-            if(_loc4_.playerInfo.ID == _loc7_.selfGamePlayer.playerInfo.ID)
+            player.expObj = obj;
+            if(player.playerInfo.ID == current.selfGamePlayer.playerInfo.ID)
             {
-               _loc7_.selfGamePlayer.BossCardCount = _loc4_.BossCardCount;
+               current.selfGamePlayer.BossCardCount = player.BossCardCount;
             }
-            _loc7_.missionInfo.missionOverPlayer.push(_loc6_);
-            _loc12_++;
+            current.missionInfo.missionOverPlayer.push(playerGainInfo);
+            i++;
          }
-         if(_loc7_.selfGamePlayer.BossCardCount > 0)
+         if(current.selfGamePlayer.BossCardCount > 0)
          {
-            _loc3_ = _loc8_.readInt();
-            _loc7_.missionInfo.missionOverNPCMovies = [];
-            _loc10_ = uint(0);
-            while(_loc10_ < _loc3_)
+            count = pkg.readInt();
+            current.missionInfo.missionOverNPCMovies = [];
+            for(j = uint(0); j < count; )
             {
-               _loc7_.missionInfo.missionOverNPCMovies.push(_loc8_.readUTF());
-               _loc10_++;
+               current.missionInfo.missionOverNPCMovies.push(pkg.readUTF());
+               j++;
             }
          }
-         _loc7_.missionInfo.nextMissionIndex = _loc7_.missionInfo.missionIndex + 1;
+         current.missionInfo.nextMissionIndex = current.missionInfo.missionIndex + 1;
       }
       
       override public function cancel() : void
@@ -208,8 +206,8 @@ package game.actions
       
       override public function execute() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var movie:* = null;
+         var mc:* = null;
          if(RoomManager.Instance.current.selfRoomPlayer.isViewer)
          {
             _executed = true;
@@ -296,20 +294,20 @@ package game.actions
                }
                if(GameControl.Instance.Current.selfGamePlayer.isWin)
                {
-                  _loc1_ = ClassUtils.CreatInstance("asset.game.winAsset");
+                  mc = ClassUtils.CreatInstance("asset.game.winAsset");
                }
                else
                {
-                  _loc1_ = ClassUtils.CreatInstance("asset.game.lostAsset");
+                  mc = ClassUtils.CreatInstance("asset.game.lostAsset");
                }
                infoPane.x = 77;
-               _loc1_.addChild(infoPane);
-               _loc2_ = new MovieClipWrapper(_loc1_,true,true);
+               mc.addChild(infoPane);
+               movie = new MovieClipWrapper(mc,true,true);
                SoundManager.instance.play("040");
-               _loc2_.movie.x = 500;
-               _loc2_.movie.y = 360;
-               _loc2_.addEventListener("complete",__complete);
-               _map.gameView.addChild(_loc2_.movie);
+               movie.movie.x = 500;
+               movie.movie.y = 360;
+               movie.addEventListener("complete",__complete);
+               _map.gameView.addChild(movie.movie);
             }
          }
          else
@@ -323,23 +321,23 @@ package game.actions
          }
       }
       
-      private function __explainEnter(param1:Event) : void
+      private function __explainEnter(evt:Event) : void
       {
-         (param1.currentTarget as EventDispatcher).removeEventListener("explainEnter",__explainEnter);
+         (evt.currentTarget as EventDispatcher).removeEventListener("explainEnter",__explainEnter);
          _clicked = true;
-         if(_ten == param1.currentTarget)
+         if(_ten == evt.currentTarget)
          {
             NoviceDataManager.instance.saveNoviceData(440,PathManager.userName(),PathManager.solveRequestPath());
          }
-         else if(_plane == param1.currentTarget)
+         else if(_plane == evt.currentTarget)
          {
             NoviceDataManager.instance.saveNoviceData(630,PathManager.userName(),PathManager.solveRequestPath());
          }
-         else if(_twoTwenty == param1.currentTarget)
+         else if(_twoTwenty == evt.currentTarget)
          {
             NoviceDataManager.instance.saveNoviceData(790,PathManager.userName(),PathManager.solveRequestPath());
          }
-         else if(_threeFourFive == param1.currentTarget)
+         else if(_threeFourFive == evt.currentTarget)
          {
             NoviceDataManager.instance.saveNoviceData(970,PathManager.userName(),PathManager.solveRequestPath());
          }
@@ -563,23 +561,23 @@ package game.actions
          NewHandQueue.Instance.dispose();
       }
       
-      private function __complete(param1:Event) : void
+      private function __complete(event:Event) : void
       {
-         MovieClipWrapper(param1.target).removeEventListener("complete",__complete);
+         MovieClipWrapper(event.target).removeEventListener("complete",__complete);
          infoPane.dispose();
          infoPane = null;
       }
       
-      private function upContextView(param1:MissionOverInfoPanel) : void
+      private function upContextView(mc:MissionOverInfoPanel) : void
       {
-         var _loc3_:MissionInfo = GameControl.Instance.Current.missionInfo;
-         var _loc2_:BaseSettleInfo = GameControl.Instance.Current.missionInfo.findMissionOverInfo(PlayerManager.Instance.Self.ID);
-         param1.titleTxt1.text = LanguageMgr.GetTranslation("tank.game.actions.kill");
-         param1.valueTxt1.text = String(_loc3_.currentValue2);
-         param1.titleTxt2.text = LanguageMgr.GetTranslation("tank.game.actions.turn");
-         param1.valueTxt2.text = String(_loc3_.currentValue1);
-         param1.titleTxt3.text = LanguageMgr.GetTranslation("tank.game.BloodStrip.HP");
-         param1.valueTxt3.text = String(_loc2_.treatment);
+         var info:MissionInfo = GameControl.Instance.Current.missionInfo;
+         var gameOverInfo:BaseSettleInfo = GameControl.Instance.Current.missionInfo.findMissionOverInfo(PlayerManager.Instance.Self.ID);
+         mc.titleTxt1.text = LanguageMgr.GetTranslation("tank.game.actions.kill");
+         mc.valueTxt1.text = String(info.currentValue2);
+         mc.titleTxt2.text = LanguageMgr.GetTranslation("tank.game.actions.turn");
+         mc.valueTxt2.text = String(info.currentValue1);
+         mc.titleTxt3.text = LanguageMgr.GetTranslation("tank.game.BloodStrip.HP");
+         mc.valueTxt3.text = String(gameOverInfo.treatment);
       }
    }
 }

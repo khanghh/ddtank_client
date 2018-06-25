@@ -49,32 +49,32 @@ package braveDoor.view
          _list.vSpace = _listVSpace;
       }
       
-      public function set info(param1:Array) : void
+      public function set info(value:Array) : void
       {
-         var _loc4_:* = null;
-         var _loc6_:* = null;
-         var _loc3_:* = null;
-         var _loc5_:* = null;
+         var cell:* = null;
+         var rect:* = null;
+         var item:* = null;
+         var cell1:* = null;
          while(_cells.length > 0)
          {
-            _loc4_ = _cells.shift();
-            _loc4_.dispose();
+            cell = _cells.shift();
+            cell.dispose();
          }
-         if(param1.length > 0)
+         if(value.length > 0)
          {
             if(!_scrollPanel.visible)
             {
                _scrollPanel.visible = true;
             }
-            _loc6_ = ComponentFactory.Instance.creatCustomObject("braveDoor.duplicateMapView.dropList.scrollPanelRect");
+            rect = ComponentFactory.Instance.creatCustomObject("braveDoor.duplicateMapView.dropList.scrollPanelRect");
             var _loc8_:int = 0;
-            var _loc7_:* = param1;
-            for each(var _loc2_ in param1)
+            var _loc7_:* = value;
+            for each(var id in value)
             {
-               _loc3_ = ItemManager.Instance.getTemplateById(_loc2_);
-               _loc5_ = new BaseCell(ComponentFactory.Instance.creatBitmap("asset.braveDoor.dropCellBgAsset"),_loc3_);
-               _list.addChild(_loc5_);
-               _cells.push(_loc5_);
+               item = ItemManager.Instance.getTemplateById(id);
+               cell1 = new BaseCell(ComponentFactory.Instance.creatBitmap("asset.braveDoor.dropCellBgAsset"),item);
+               _list.addChild(cell1);
+               _cells.push(cell1);
             }
             _scrollPanel.setView(_list);
             _scrollPanel.height = _scrollPanelRect.width;
@@ -84,7 +84,7 @@ package braveDoor.view
       
       public function dispose() : void
       {
-         var _loc1_:* = null;
+         var cell:* = null;
          if(_list)
          {
             ObjectUtils.disposeObject(_list);
@@ -98,8 +98,8 @@ package braveDoor.view
          _scrollPanel = null;
          while(_cells.length > 0)
          {
-            _loc1_ = _cells.shift();
-            ObjectUtils.disposeObject(_loc1_);
+            cell = _cells.shift();
+            ObjectUtils.disposeObject(cell);
          }
          _cells = null;
          if(parent)

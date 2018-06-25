@@ -157,7 +157,7 @@ package magicStone.stoneExploreView
          }
       }
       
-      private function __startLoading(param1:Event) : void
+      private function __startLoading(e:Event) : void
       {
          StateManager.getInGame_Step_6 = true;
          ChatManager.Instance.input.faceEnabled = false;
@@ -166,7 +166,7 @@ package magicStone.stoneExploreView
          StateManager.getInGame_Step_7 = true;
       }
       
-      private function __gameStart(param1:CrazyTankSocketEvent) : void
+      private function __gameStart(pEvent:CrazyTankSocketEvent) : void
       {
          if(index == 0)
          {
@@ -180,7 +180,7 @@ package magicStone.stoneExploreView
          }
       }
       
-      private function __startOrdinaryBtnClick(param1:MouseEvent) : void
+      private function __startOrdinaryBtnClick(evt:MouseEvent) : void
       {
          if(StateManager.currentStateType != "main")
          {
@@ -222,7 +222,7 @@ package magicStone.stoneExploreView
          }
       }
       
-      private function __startEliteBtnClick(param1:MouseEvent) : void
+      private function __startEliteBtnClick(evt:MouseEvent) : void
       {
          if(StateManager.currentStateType != "main")
          {
@@ -266,9 +266,9 @@ package magicStone.stoneExploreView
       
       private function checkBagStone() : Boolean
       {
-         var _loc1_:BagInfo = _selfInfo.getBag(1);
-         var _loc2_:int = _loc1_.getItemCountByTemplateId(201581);
-         if(_loc2_ >= ServerConfigManager.instance.magicStoneCostItemNum)
+         var bagInfo:BagInfo = _selfInfo.getBag(1);
+         var conut:int = bagInfo.getItemCountByTemplateId(201581);
+         if(conut >= ServerConfigManager.instance.magicStoneCostItemNum)
          {
             return true;
          }
@@ -295,19 +295,19 @@ package magicStone.stoneExploreView
          }
       }
       
-      private function __scOrdinaryCheckBoxClick(param1:MouseEvent) : void
+      private function __scOrdinaryCheckBoxClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }
       
-      private function __scEliteCheckBoxClick(param1:MouseEvent) : void
+      private function __scEliteCheckBoxClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();
@@ -316,13 +316,13 @@ package magicStone.stoneExploreView
       
       public function checkCanStartGame() : Boolean
       {
-         var _loc1_:Boolean = true;
+         var result:Boolean = true;
          if(PlayerManager.Instance.Self.Bag.getItemAt(6) == null)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.room.RoomIIController.weapon"));
-            _loc1_ = false;
+            result = false;
          }
-         return _loc1_;
+         return result;
       }
       
       override public function dispose() : void

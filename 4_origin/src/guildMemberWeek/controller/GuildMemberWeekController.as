@@ -14,10 +14,10 @@ package guildMemberWeek.controller
       private static var _instance:GuildMemberWeekController;
        
       
-      public function GuildMemberWeekController(param1:PrivateClass)
+      public function GuildMemberWeekController(pct:PrivateClass)
       {
          super();
-         if(param1 == null)
+         if(pct == null)
          {
             throw new Error("错误：GuildMemberWeekController类属于单例，请使用本类的istance获取实例");
          }
@@ -56,27 +56,27 @@ package guildMemberWeek.controller
          GuildMemberWeekManager.instance.removeEventListener("guildmemberweek_showactivityend",__activityEndShowRanking);
       }
       
-      private function __ShowFinishFrame(param1:CrazyTankSocketEvent) : void
+      private function __ShowFinishFrame(event:CrazyTankSocketEvent) : void
       {
          GuildMemberWeekManager.instance.LoadAndOpenShowTop10PromptFrame();
       }
       
-      private function __ShowRankingFrame(param1:CrazyTankSocketEvent) : void
+      private function __ShowRankingFrame(event:CrazyTankSocketEvent) : void
       {
          GuildMemberWeekManager.instance.LoadAndOpenGuildMemberWeekFinishActivity();
       }
       
-      private function __UpTop10Data(param1:CrazyTankSocketEvent) : void
+      private function __UpTop10Data(event:CrazyTankSocketEvent) : void
       {
-         var _loc9_:int = 0;
-         var _loc5_:int = 0;
-         var _loc8_:* = null;
-         var _loc7_:int = 0;
-         var _loc6_:int = 0;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc3_:String = _loc4_.readUTF();
-         GuildMemberWeekManager.instance.model.upData = _loc3_;
-         var _loc2_:int = _loc4_.readInt();
+         var i:int = 0;
+         var PlayerID:int = 0;
+         var PlayerName:* = null;
+         var PlayerRanking:int = 0;
+         var PlayeroCntribute:int = 0;
+         var pkg:PackageIn = event.pkg;
+         var upTime:String = pkg.readUTF();
+         GuildMemberWeekManager.instance.model.upData = upTime;
+         var count:int = pkg.readInt();
          if(GuildMemberWeekManager.instance.model)
          {
             GuildMemberWeekManager.instance.model.TopTenMemberData.splice(0);
@@ -85,80 +85,77 @@ package guildMemberWeek.controller
          {
             GuildMemberWeekManager.instance.MainFrame.upDataTimeTxt();
          }
-         _loc9_ = 0;
-         while(_loc9_ < _loc2_)
+         i = 0;
+         while(i < count)
          {
-            _loc5_ = _loc4_.readInt();
-            _loc8_ = _loc4_.readUTF();
-            _loc7_ = _loc4_.readInt();
-            _loc6_ = _loc4_.readInt();
-            GuildMemberWeekManager.instance.model.TopTenMemberData.push([_loc5_,_loc8_,_loc7_,_loc6_]);
-            _loc9_++;
+            PlayerID = pkg.readInt();
+            PlayerName = pkg.readUTF();
+            PlayerRanking = pkg.readInt();
+            PlayeroCntribute = pkg.readInt();
+            GuildMemberWeekManager.instance.model.TopTenMemberData.push([PlayerID,PlayerName,PlayerRanking,PlayeroCntribute]);
+            i++;
          }
          UpTop10Data("Member");
       }
       
-      private function __UpAddPointBook(param1:CrazyTankSocketEvent) : void
+      private function __UpAddPointBook(event:CrazyTankSocketEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc3_:int = 0;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc4_.readInt();
+         var i:int = 0;
+         var AddPointBook:int = 0;
+         var pkg:PackageIn = event.pkg;
+         var count:int = pkg.readInt();
          GuildMemberWeekManager.instance.model.TopTenAddPointBook.splice(0);
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_)
+         for(i = 0; i < count; )
          {
-            _loc3_ = _loc4_.readInt();
-            GuildMemberWeekManager.instance.model.TopTenAddPointBook.push(_loc3_);
-            _loc5_++;
+            AddPointBook = pkg.readInt();
+            GuildMemberWeekManager.instance.model.TopTenAddPointBook.push(AddPointBook);
+            i++;
          }
          UpTop10Data("PointBook");
       }
       
-      private function __activityEndShowRanking(param1:CrazyTankSocketEvent) : void
+      private function __activityEndShowRanking(event:CrazyTankSocketEvent) : void
       {
-         var _loc6_:int = 0;
-         var _loc3_:int = 0;
-         var _loc5_:* = null;
-         var _loc9_:int = 0;
-         var _loc8_:int = 0;
-         var _loc2_:int = 0;
+         var count:int = 0;
+         var playerID:int = 0;
+         var playerName:* = null;
+         var playerRanking:int = 0;
+         var playerCntribute:int = 0;
+         var addPointBook:int = 0;
          GuildMemberWeekManager.instance.model.TopTenMemberData.splice(0);
          GuildMemberWeekManager.instance.model.TopTenAddPointBook.splice(0);
-         var _loc11_:Boolean = false;
-         var _loc10_:int = 0;
-         var _loc7_:PackageIn = param1.pkg;
-         var _loc4_:String = _loc7_.readUTF();
-         GuildMemberWeekManager.instance.model.upData = _loc4_;
+         var getRanking:Boolean = false;
+         var i:int = 0;
+         var pkg:PackageIn = event.pkg;
+         var upTime:String = pkg.readUTF();
+         GuildMemberWeekManager.instance.model.upData = upTime;
          if(GuildMemberWeekManager.instance.MainFrame)
          {
             GuildMemberWeekManager.instance.MainFrame.upDataTimeTxt();
          }
-         _loc6_ = _loc7_.readInt();
-         _loc10_ = 0;
-         while(_loc10_ < _loc6_)
+         count = pkg.readInt();
+         for(i = 0; i < count; )
          {
-            _loc3_ = _loc7_.readInt();
-            _loc5_ = _loc7_.readUTF();
-            _loc9_ = _loc7_.readInt();
-            _loc8_ = _loc7_.readInt();
-            GuildMemberWeekManager.instance.model.TopTenMemberData.push([_loc3_,_loc5_,_loc9_,_loc8_]);
-            if(PlayerManager.Instance.Self.ID == _loc3_)
+            playerID = pkg.readInt();
+            playerName = pkg.readUTF();
+            playerRanking = pkg.readInt();
+            playerCntribute = pkg.readInt();
+            GuildMemberWeekManager.instance.model.TopTenMemberData.push([playerID,playerName,playerRanking,playerCntribute]);
+            if(PlayerManager.Instance.Self.ID == playerID)
             {
-               _loc11_ = true;
+               getRanking = true;
             }
-            _loc10_++;
+            i++;
          }
-         _loc6_ = _loc7_.readInt();
-         _loc10_ = 0;
-         while(_loc10_ < _loc6_)
+         count = pkg.readInt();
+         for(i = 0; i < count; )
          {
-            _loc2_ = _loc7_.readInt();
-            GuildMemberWeekManager.instance.model.TopTenAddPointBook.push(_loc2_);
-            _loc10_++;
+            addPointBook = pkg.readInt();
+            GuildMemberWeekManager.instance.model.TopTenAddPointBook.push(addPointBook);
+            i++;
          }
-         GuildMemberWeekManager.instance.model.MyRanking = _loc7_.readInt();
-         GuildMemberWeekManager.instance.model.MyContribute = _loc7_.readInt();
+         GuildMemberWeekManager.instance.model.MyRanking = pkg.readInt();
+         GuildMemberWeekManager.instance.model.MyContribute = pkg.readInt();
          UpTop10Data("Member");
          UpTop10Data("PointBook");
          UpTop10Data("Gift");
@@ -170,28 +167,27 @@ package guildMemberWeek.controller
          {
             GuildMemberWeekManager.instance.FinishActivityFrame.UpMyRanking();
          }
-         if(_loc11_)
+         if(getRanking)
          {
             if(GuildMemberWeekManager.instance.model.MyRanking <= 0 || GuildMemberWeekManager.instance.model.MyRanking > 10)
             {
-               _loc11_ = false;
+               getRanking = false;
             }
          }
-         GuildMemberWeekManager.instance.CheckShowEndFrame(_loc11_);
+         GuildMemberWeekManager.instance.CheckShowEndFrame(getRanking);
       }
       
-      public function _UpAddPointRecord(param1:CrazyTankSocketEvent) : void
+      public function _UpAddPointRecord(event:CrazyTankSocketEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc3_:int = _loc4_.readInt();
-         _loc5_ = 0;
-         while(_loc5_ < _loc3_)
+         var i:int = 0;
+         var Record:* = null;
+         var pkg:PackageIn = event.pkg;
+         var count:int = pkg.readInt();
+         for(i = 0; i < count; )
          {
-            _loc2_ = _loc4_.readUTF();
-            GuildMemberWeekManager.instance.model.AddRanking.push(_loc2_);
-            _loc5_++;
+            Record = pkg.readUTF();
+            GuildMemberWeekManager.instance.model.AddRanking.push(Record);
+            i++;
          }
          if(GuildMemberWeekManager.instance.MainFrame != null)
          {
@@ -199,16 +195,16 @@ package guildMemberWeek.controller
          }
       }
       
-      public function _UpImmediatelyRecord(param1:CrazyTankSocketEvent) : void
+      public function _UpImmediatelyRecord(event:CrazyTankSocketEvent) : void
       {
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc5_:int = _loc4_.readInt() - 1;
-         var _loc3_:int = _loc4_.readInt();
-         var _loc2_:String = _loc4_.readUTF();
-         var _loc6_:* = _loc5_;
-         var _loc7_:* = GuildMemberWeekManager.instance.model.TopTenAddPointBook[_loc6_] + _loc3_;
+         var pkg:PackageIn = event.pkg;
+         var Ranking:int = pkg.readInt() - 1;
+         var Money:int = pkg.readInt();
+         var Record:String = pkg.readUTF();
+         var _loc6_:* = Ranking;
+         var _loc7_:* = GuildMemberWeekManager.instance.model.TopTenAddPointBook[_loc6_] + Money;
          GuildMemberWeekManager.instance.model.TopTenAddPointBook[_loc6_] = _loc7_;
-         GuildMemberWeekManager.instance.model.AddRanking.push(_loc2_);
+         GuildMemberWeekManager.instance.model.AddRanking.push(Record);
          if(GuildMemberWeekManager.instance.MainFrame != null)
          {
             GuildMemberWeekManager.instance.MainFrame.UpRecord();
@@ -216,11 +212,11 @@ package guildMemberWeek.controller
          }
       }
       
-      public function __UpMyRanking(param1:CrazyTankSocketEvent) : void
+      public function __UpMyRanking(event:CrazyTankSocketEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         GuildMemberWeekManager.instance.model.MyRanking = _loc2_.readInt();
-         GuildMemberWeekManager.instance.model.MyContribute = _loc2_.readInt();
+         var pkg:PackageIn = event.pkg;
+         GuildMemberWeekManager.instance.model.MyRanking = pkg.readInt();
+         GuildMemberWeekManager.instance.model.MyContribute = pkg.readInt();
          if(GuildMemberWeekManager.instance.MainFrame != null)
          {
             GuildMemberWeekManager.instance.MainFrame.UpMyRanking();
@@ -231,46 +227,45 @@ package guildMemberWeek.controller
          }
       }
       
-      private function UpTop10Data(param1:String) : void
+      private function UpTop10Data(UpType:String) : void
       {
          if(GuildMemberWeekManager.instance.MainFrame != null)
          {
             if(GuildMemberWeekManager.instance.MainFrame.TopTenShowSprite != null)
             {
-               GuildMemberWeekManager.instance.MainFrame.TopTenShowSprite.UpTop10data(param1);
+               GuildMemberWeekManager.instance.MainFrame.TopTenShowSprite.UpTop10data(UpType);
             }
          }
       }
       
       public function CheckAddBookIsOK() : void
       {
-         var _loc4_:Boolean = true;
-         var _loc3_:Boolean = false;
-         var _loc6_:int = 0;
-         var _loc1_:int = 0;
-         var _loc5_:int = GuildMemberWeekManager.instance.model.PlayerAddPointBook.length;
-         var _loc2_:Array = [];
-         _loc6_ = 0;
-         while(_loc6_ < _loc5_)
+         var Type:Boolean = true;
+         var HavePointBook:Boolean = false;
+         var i:int = 0;
+         var TAddPointBook:int = 0;
+         var L:int = GuildMemberWeekManager.instance.model.PlayerAddPointBook.length;
+         var TAddRankingArray:Array = [];
+         for(i = 0; i < L; )
          {
-            _loc1_ = GuildMemberWeekManager.instance.model.PlayerAddPointBook[_loc6_];
-            _loc2_.push(_loc1_);
-            if(_loc1_ >= 10)
+            TAddPointBook = GuildMemberWeekManager.instance.model.PlayerAddPointBook[i];
+            TAddRankingArray.push(TAddPointBook);
+            if(TAddPointBook >= 10)
             {
-               _loc3_ = true;
+               HavePointBook = true;
             }
-            else if(_loc1_ > 0 && _loc1_ < 10)
+            else if(TAddPointBook > 0 && TAddPointBook < 10)
             {
-               _loc4_ = false;
+               Type = false;
                break;
             }
-            _loc6_++;
+            i++;
          }
-         if(_loc4_)
+         if(Type)
          {
-            if(_loc3_)
+            if(HavePointBook)
             {
-               SocketManager.Instance.out.sendGuildMemberWeekAddRanking(_loc2_.concat());
+               SocketManager.Instance.out.sendGuildMemberWeekAddRanking(TAddRankingArray.concat());
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("guildMemberWeek.AddRankingFrame.AddOKPointBook"));
                GuildMemberWeekManager.instance.model.PlayerAddPointBook = [0,0,0,0,0,0,0,0,0,0];
                GuildMemberWeekManager.instance.CloseAddRankingFrame();
@@ -286,23 +281,23 @@ package guildMemberWeek.controller
          }
       }
       
-      public function upPointBookData(param1:int, param2:Number, param3:Boolean = true) : void
+      public function upPointBookData(ItemID:int, Money:Number, ChangeMoneyShow:Boolean = true) : void
       {
-         var _loc6_:int = param1 - 1;
-         var _loc4_:Number = param2 / 10;
-         var _loc5_:int = 0;
-         if(String(_loc4_).indexOf(".") >= 0)
+         var i:int = ItemID - 1;
+         var tax:Number = Money / 10;
+         var GetMoney:int = 0;
+         if(String(tax).indexOf(".") >= 0)
          {
-            _loc4_ = Math.round(_loc4_);
-            _loc5_ = param2 - _loc4_;
+            tax = Math.round(tax);
+            GetMoney = Money - tax;
          }
          else
          {
-            _loc5_ = param2 - int(_loc4_);
+            GetMoney = Money - int(tax);
          }
-         GuildMemberWeekManager.instance.model.PlayerAddPointBook[_loc6_] = param2;
-         GuildMemberWeekManager.instance.AddRankingFrame.ChangePointBookShow(param1,_loc5_);
-         if(param3)
+         GuildMemberWeekManager.instance.model.PlayerAddPointBook[i] = Money;
+         GuildMemberWeekManager.instance.AddRankingFrame.ChangePointBookShow(ItemID,GetMoney);
+         if(ChangeMoneyShow)
          {
             ChangePlayerMoney();
          }
@@ -310,38 +305,35 @@ package guildMemberWeek.controller
       
       public function ChangePlayerMoney() : void
       {
-         var _loc3_:* = 0;
-         var _loc1_:int = GuildMemberWeekManager.instance.model.PlayerAddPointBook.length;
-         var _loc4_:int = 0;
-         var _loc2_:int = 0;
-         _loc4_ = 0;
-         while(_loc4_ < _loc1_)
+         var AddMoney:* = 0;
+         var L:int = GuildMemberWeekManager.instance.model.PlayerAddPointBook.length;
+         var i:int = 0;
+         var N:int = 0;
+         for(i = 0; i < L; )
          {
-            _loc3_ = Number(_loc3_ + GuildMemberWeekManager.instance.model.PlayerAddPointBook[_loc4_]);
-            _loc4_++;
+            AddMoney = Number(AddMoney + GuildMemberWeekManager.instance.model.PlayerAddPointBook[i]);
+            i++;
          }
-         if(_loc3_ > PlayerManager.Instance.Self.Money)
+         if(AddMoney > PlayerManager.Instance.Self.Money)
          {
-            _loc4_ = 0;
-            while(_loc4_ < _loc1_)
+            for(i = 0; i < L; )
             {
-               _loc2_ = GuildMemberWeekManager.instance.model.PlayerAddPointBookBefor[_loc4_];
-               GuildMemberWeekManager.instance.model.PlayerAddPointBook[_loc4_] = _loc2_;
-               upPointBookData(_loc4_ + 1,_loc2_,false);
-               _loc4_++;
+               N = GuildMemberWeekManager.instance.model.PlayerAddPointBookBefor[i];
+               GuildMemberWeekManager.instance.model.PlayerAddPointBook[i] = N;
+               upPointBookData(i + 1,N,false);
+               i++;
             }
          }
          else
          {
-            _loc3_ = Number(PlayerManager.Instance.Self.Money - _loc3_);
-            _loc4_ = 0;
-            while(_loc4_ < _loc1_)
+            AddMoney = Number(PlayerManager.Instance.Self.Money - AddMoney);
+            for(i = 0; i < L; )
             {
-               _loc2_ = GuildMemberWeekManager.instance.model.PlayerAddPointBook[_loc4_];
-               GuildMemberWeekManager.instance.model.PlayerAddPointBookBefor[_loc4_] = _loc2_;
-               _loc4_++;
+               N = GuildMemberWeekManager.instance.model.PlayerAddPointBook[i];
+               GuildMemberWeekManager.instance.model.PlayerAddPointBookBefor[i] = N;
+               i++;
             }
-            GuildMemberWeekManager.instance.AddRankingFrame.ChangePlayerMoneyShow(_loc3_);
+            GuildMemberWeekManager.instance.AddRankingFrame.ChangePlayerMoneyShow(AddMoney);
          }
       }
       

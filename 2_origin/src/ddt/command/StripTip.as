@@ -33,9 +33,9 @@ package ddt.command
          addChild(_mouseActiveObjectShape);
       }
       
-      public function setView(param1:DisplayObject) : void
+      public function setView(view:DisplayObject) : void
       {
-         _view = param1;
+         _view = view;
          addChild(_view);
       }
       

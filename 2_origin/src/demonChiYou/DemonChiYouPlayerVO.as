@@ -7,9 +7,9 @@ package demonChiYou
    {
        
       
-      public function DemonChiYouPlayerVO(param1:IEventDispatcher = null)
+      public function DemonChiYouPlayerVO(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
    }
 }

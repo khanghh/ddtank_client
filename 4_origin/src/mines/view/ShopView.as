@@ -28,38 +28,36 @@ package mines.view
       
       override protected function initialize() : void
       {
-         var _loc6_:int = 0;
-         var _loc4_:* = null;
-         var _loc1_:* = null;
-         var _loc3_:int = 0;
-         var _loc5_:* = null;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var dropInfo:* = null;
+         var cell:* = null;
+         var j:int = 0;
+         var exchangeInfo:* = null;
+         var cell1:* = null;
          list = new Vector.<MinesBuyCell>();
          list1 = new Vector.<MinesExchangeCell>();
          infoLabel.text = LanguageMgr.GetTranslation("ddt.mines.shopView.info");
-         _loc6_ = 0;
-         while(_loc6_ < MinesManager.instance.model.shopDropList.length)
+         for(i = 0; i < MinesManager.instance.model.shopDropList.length; )
          {
-            _loc4_ = MinesManager.instance.model.shopDropList[_loc6_];
-            _loc1_ = new MinesBuyCell();
-            _loc1_.info = _loc4_;
-            _loc1_.x = 136 + 75 * _loc6_;
-            _loc1_.y = 273;
-            box.addChild(_loc1_);
-            list.push(_loc1_);
-            _loc6_++;
+            dropInfo = MinesManager.instance.model.shopDropList[i];
+            cell = new MinesBuyCell();
+            cell.info = dropInfo;
+            cell.x = 136 + 75 * i;
+            cell.y = 273;
+            box.addChild(cell);
+            list.push(cell);
+            i++;
          }
-         _loc3_ = 0;
-         while(_loc3_ < MinesManager.instance.model.shopExchangeList.length)
+         for(j = 0; j < MinesManager.instance.model.shopExchangeList.length; )
          {
-            _loc5_ = MinesManager.instance.model.shopExchangeList[_loc3_];
-            _loc2_ = new MinesExchangeCell();
-            _loc2_.infoExchange = _loc5_;
-            _loc2_.x = 136 + 75 * _loc3_;
-            _loc2_.y = 402;
-            box1.addChild(_loc2_);
-            list1.push(_loc2_);
-            _loc3_++;
+            exchangeInfo = MinesManager.instance.model.shopExchangeList[j];
+            cell1 = new MinesExchangeCell();
+            cell1.infoExchange = exchangeInfo;
+            cell1.x = 136 + 75 * j;
+            cell1.y = 402;
+            box1.addChild(cell1);
+            list1.push(cell1);
+            j++;
          }
          addChild(box);
          addChild(box1);
@@ -67,23 +65,21 @@ package mines.view
       
       public function updataList() : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:int = 0;
-         var _loc3_:* = null;
-         _loc4_ = 0;
-         while(_loc4_ < list.length)
+         var i:int = 0;
+         var dropInfo:* = null;
+         var j:int = 0;
+         var exchangeInfo:* = null;
+         for(i = 0; i < list.length; )
          {
-            _loc2_ = MinesManager.instance.model.shopDropList[_loc4_];
-            list[_loc4_].info = _loc2_;
-            _loc4_++;
+            dropInfo = MinesManager.instance.model.shopDropList[i];
+            list[i].info = dropInfo;
+            i++;
          }
-         _loc1_ = 0;
-         while(_loc1_ < list1.length)
+         for(j = 0; j < list1.length; )
          {
-            _loc3_ = MinesManager.instance.model.shopExchangeList[_loc1_];
-            list1[_loc1_].infoExchange = _loc3_;
-            _loc1_++;
+            exchangeInfo = MinesManager.instance.model.shopExchangeList[j];
+            list1[j].infoExchange = exchangeInfo;
+            j++;
          }
       }
    }

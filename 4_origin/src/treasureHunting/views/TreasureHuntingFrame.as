@@ -148,15 +148,15 @@ package treasureHunting.views
          _unitPrice = TreasureManager.instance.needMoney;
       }
       
-      protected function updateRank(param1:TimerEvent) : void
+      protected function updateRank(event:TimerEvent) : void
       {
          SocketManager.Instance.out.sendQequestBadLuck();
       }
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          _content = new Sprite();
          PositionUtils.setPos(_content,"treasureHunting.Treasure.ContentPos2");
          _bg = ComponentFactory.Instance.creatComponentByStylename("treasureHunting.Treasure.BG");
@@ -165,14 +165,13 @@ package treasureHunting.views
          _content.addChild(_treasureTitle);
          _itemList = ComponentFactory.Instance.creatCustomObject("treasureHunting.Treasure.SimpleTileList",[4]);
          _itemArr = new Vector.<TreasureItem>();
-         _loc2_ = 1;
-         while(_loc2_ <= 16)
+         for(i = 1; i <= 16; )
          {
-            _loc1_ = new TreasureItem();
-            _loc1_.initView(_loc2_);
-            _itemList.addChild(_loc1_);
-            _itemArr.push(_loc1_);
-            _loc2_++;
+            item = new TreasureItem();
+            item.initView(i);
+            _itemList.addChild(item);
+            _itemArr.push(item);
+            i++;
          }
          _content.addChild(_itemList);
          _itemArr[0].selectedLight.visible = true;
@@ -249,37 +248,37 @@ package treasureHunting.views
          SocketManager.Instance.addEventListener(PkgEvent.format(110,5),__getRemainScore);
       }
       
-      private function __getConverteds(param1:PkgEvent) : void
+      private function __getConverteds(event:PkgEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc5_:Boolean = _loc4_.readBoolean();
-         var _loc3_:int = _loc4_.readInt();
-         totalScore = _loc4_.readInt();
+         var alert:* = null;
+         var pkg:PackageIn = event.pkg;
+         var isConvert:Boolean = pkg.readBoolean();
+         var convertSorce:int = pkg.readInt();
+         totalScore = pkg.readInt();
          _pointTxt.text = totalScore.toString();
-         if(_loc3_ != 0 && !_loc5_ && TreasureControl.instance.isAlert)
+         if(convertSorce != 0 && !isConvert && TreasureControl.instance.isAlert)
          {
             TreasureControl.instance.isAlert = false;
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.caddy.convertedAll",_loc3_),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
-            _loc2_.mouseEnabled = false;
-            _loc2_.addEventListener("response",_responseII);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.caddy.convertedAll",convertSorce),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
+            alert.mouseEnabled = false;
+            alert.addEventListener("response",_responseII);
          }
       }
       
-      private function _responseII(param1:FrameEvent) : void
+      private function _responseII(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",_responseII);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         (event.currentTarget as BaseAlerFrame).removeEventListener("response",_responseII);
+         if(event.responseCode == 2 || event.responseCode == 3)
          {
             SocketManager.Instance.out.sendConvertScore(true);
          }
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(event.currentTarget);
       }
       
-      protected function onExchangeBtnClick(param1:MouseEvent) : void
+      protected function onExchangeBtnClick(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var alert:* = null;
          SoundManager.instance.play("008");
          if(totalScore < 30)
          {
@@ -287,31 +286,31 @@ package treasureHunting.views
          }
          else
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("treasureHunting.exchangeAll",Math.floor(totalScore / 30)),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
-            _loc2_.mouseEnabled = false;
-            _loc2_.addEventListener("response",_responseIII);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("treasureHunting.exchangeAll",Math.floor(totalScore / 30)),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
+            alert.mouseEnabled = false;
+            alert.addEventListener("response",_responseIII);
          }
       }
       
-      private function _responseIII(param1:FrameEvent) : void
+      private function _responseIII(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",_responseIII);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         (event.currentTarget as BaseAlerFrame).removeEventListener("response",_responseIII);
+         if(event.responseCode == 2 || event.responseCode == 3)
          {
             SocketManager.Instance.out.sendHuntingByScore();
          }
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(event.currentTarget);
       }
       
-      private function __getRemainScore(param1:PkgEvent) : void
+      private function __getRemainScore(event:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         totalScore = _loc2_.readInt();
+         var pkg:PackageIn = event.pkg;
+         totalScore = pkg.readInt();
          _pointTxt.text = totalScore.toString();
       }
       
-      protected function onRankBtnClick(param1:MouseEvent) : void
+      protected function onRankBtnClick(event:MouseEvent) : void
       {
          _bagBtn.visible = true;
          _rankBtn.visible = false;
@@ -321,7 +320,7 @@ package treasureHunting.views
          _recordView.visible = false;
       }
       
-      protected function onBagBtnClick(param1:MouseEvent) : void
+      protected function onBagBtnClick(event:MouseEvent) : void
       {
          _bagBtn.visible = false;
          _rankBtn.visible = true;
@@ -332,7 +331,7 @@ package treasureHunting.views
          _recordView.visible = false;
       }
       
-      protected function onRecordBtnClick(param1:MouseEvent) : void
+      protected function onRecordBtnClick(event:MouseEvent) : void
       {
          _bagBtn.visible = true;
          _rankBtn.visible = true;
@@ -344,34 +343,34 @@ package treasureHunting.views
          SocketManager.Instance.out.sendRequestAwards(15);
       }
       
-      private function onShowPrizeBtnClick(param1:MouseEvent) : void
+      private function onShowPrizeBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          TreasureControl.instance.openShowPrize();
       }
       
-      private function onRankPrizeBtnClick(param1:MouseEvent) : void
+      private function onRankPrizeBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          TreasureControl.instance.openRankPrize();
       }
       
-      private function _change(param1:Event) : void
+      private function _change(event:Event) : void
       {
-         var _loc3_:int = _timesInput.text;
-         var _loc2_:String = _timesInput.text.toString();
-         var _loc4_:int = 24;
-         if(_loc3_ > _loc4_)
+         var current:int = _timesInput.text;
+         var num:String = _timesInput.text.toString();
+         var bagSize:int = 24;
+         if(current > bagSize)
          {
-            _timesInput.text = _loc4_.toString();
+            _timesInput.text = bagSize.toString();
          }
-         if(_loc2_ == "0" || _loc2_ == "")
+         if(num == "0" || num == "")
          {
             _timesInput.text = "1";
          }
       }
       
-      private function onHuntingBtnClick(param1:MouseEvent) : void
+      private function onHuntingBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_timesInput.text == "" || _timesInput.text == "0")
@@ -399,158 +398,158 @@ package treasureHunting.views
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:int = parseInt(_timesInput.text);
-         var _loc1_:String = LanguageMgr.GetTranslation("treasureHunting.alert.title",_unitPrice * _loc2_,_loc2_,_loc2_);
-         var _loc3_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc1_,"",LanguageMgr.GetTranslation("cancel"),true,true,true,1);
-         _loc3_.moveEnable = false;
-         _loc3_.setIsShowTheLog(true,LanguageMgr.GetTranslation("notAlertAgain"));
-         _loc3_.addEventListener("response",__onResponse);
-         _loc3_.selectedCheckButton.addEventListener("click",__onSelectCheckClick);
+         var count:int = parseInt(_timesInput.text);
+         var str:String = LanguageMgr.GetTranslation("treasureHunting.alert.title",_unitPrice * count,count,count);
+         var singleAlsert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),str,"",LanguageMgr.GetTranslation("cancel"),true,true,true,1);
+         singleAlsert.moveEnable = false;
+         singleAlsert.setIsShowTheLog(true,LanguageMgr.GetTranslation("notAlertAgain"));
+         singleAlsert.addEventListener("response",__onResponse);
+         singleAlsert.selectedCheckButton.addEventListener("click",__onSelectCheckClick);
       }
       
-      protected function __onSelectCheckClick(param1:MouseEvent) : void
+      protected function __onSelectCheckClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
       }
       
-      private function __onResponse(param1:FrameEvent) : void
+      private function __onResponse(evt:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var singleAlsert:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         if(evt.responseCode == 2 || evt.responseCode == 3)
          {
-            SharedManager.Instance.isRemindTreasureBind = !_loc2_.selectedCheckButton.selected;
+            SharedManager.Instance.isRemindTreasureBind = !singleAlsert.selectedCheckButton.selected;
             payForHunting(false);
          }
-         _loc2_.removeEventListener("response",__onResponse);
-         _loc2_.selectedCheckButton.removeEventListener("click",__onSelectCheckClick);
-         _loc2_.dispose();
-         _loc2_ = null;
+         singleAlsert.removeEventListener("response",__onResponse);
+         singleAlsert.selectedCheckButton.removeEventListener("click",__onSelectCheckClick);
+         singleAlsert.dispose();
+         singleAlsert = null;
       }
       
-      private function onMaxBtnClick(param1:MouseEvent) : void
+      private function onMaxBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:int = 24 - PlayerManager.Instance.Self.CaddyBag.items.length;
-         if(PlayerManager.Instance.Self.Money < _loc2_ * _unitPrice)
+         var max:int = 24 - PlayerManager.Instance.Self.CaddyBag.items.length;
+         if(PlayerManager.Instance.Self.Money < max * _unitPrice)
          {
-            _loc2_ = Math.floor(PlayerManager.Instance.Self.Money / _unitPrice) as int;
+            max = Math.floor(PlayerManager.Instance.Self.Money / _unitPrice) as int;
          }
-         if(_loc2_ == 0)
+         if(max == 0)
          {
-            _loc2_ = 1;
+            max = 1;
          }
-         _timesInput.text = String(_loc2_);
+         _timesInput.text = String(max);
       }
       
-      private function payForHunting(param1:Boolean) : void
+      private function payForHunting(isBind:Boolean) : void
       {
-         SharedManager.Instance.isTreasureBind = param1;
+         SharedManager.Instance.isTreasureBind = isBind;
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:int = parseInt(_timesInput.text);
-         if(!param1 && PlayerManager.Instance.Self.Money < _unitPrice * _loc2_)
+         var count:int = parseInt(_timesInput.text);
+         if(!isBind && PlayerManager.Instance.Self.Money < _unitPrice * count)
          {
             LeavePageManager.showFillFrame();
             SharedManager.Instance.isRemindTreasureBind = true;
             return;
          }
-         if(_loc2_ == 1)
+         if(count == 1)
          {
             _huntingBtn.enable = false;
             TreasureControl.instance.isMovieComplete = false;
             TreasureControl.instance.addMask();
          }
-         SocketManager.Instance.out.sendPayForHunting(param1,_loc2_);
+         SocketManager.Instance.out.sendPayForHunting(isBind,count);
       }
       
-      private function onTimer(param1:TimerEvent) : void
+      private function onTimer(event:TimerEvent) : void
       {
-         var _loc2_:int = 0;
+         var tmp:int = 0;
          removeAllItemLight();
          do
          {
-            _loc2_ = Math.floor(Math.random() * 16) as int;
+            tmp = Math.floor(Math.random() * 16) as int;
          }
-         while(_loc2_ == _ran);
+         while(tmp == _ran);
          
-         _ran = _loc2_;
+         _ran = tmp;
          _itemArr[_ran].selectedLight.visible = true;
          SoundManager.instance.play("203");
       }
       
       private function removeAllItemLight() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(_itemArr == null)
          {
             return;
          }
-         _loc1_ = 0;
-         while(_loc1_ <= _itemArr.length - 1)
+         i = 0;
+         while(i <= _itemArr.length - 1)
          {
-            _itemArr[_loc1_].selectedLight.visible = false;
-            _loc1_++;
+            _itemArr[i].selectedLight.visible = false;
+            i++;
          }
       }
       
-      private function onTimerComplete(param1:TimerEvent) : void
+      private function onTimerComplete(event:TimerEvent) : void
       {
-         var _loc3_:Array = TreasureControl.instance.lightIndexArr;
+         var indexArr:Array = TreasureControl.instance.lightIndexArr;
          removeAllItemLight();
          _glint = ComponentFactory.Instance.creat("treasureHunting.GlintAsset");
          _glint.addEventListener("enterFrame",onEnterFrame);
-         var _loc2_:int = _loc3_[0];
+         var index:int = indexArr[0];
          _glint.scaleX = 1.3;
          _glint.scaleY = 1.3;
-         _glint.x = _itemList.x + _itemArr[_loc2_].x + 10;
-         _glint.y = _itemList.y + _itemArr[_loc2_].y + 10;
+         _glint.x = _itemList.x + _itemArr[index].x + 10;
+         _glint.y = _itemList.y + _itemArr[index].y + 10;
          _content.addChild(_glint);
       }
       
-      public function creatMoveCell(param1:int) : void
+      public function creatMoveCell(templateID:int) : void
       {
-         var _loc3_:Shape = new Shape();
-         _loc3_.graphics.beginFill(16777215,0);
-         _loc3_.graphics.drawRect(0,0,75,75);
-         _loc3_.graphics.endFill();
-         var _loc2_:InventoryItemInfo = new InventoryItemInfo();
-         _loc2_.TemplateID = param1;
-         _loc2_ = ItemManager.fill(_loc2_);
-         if(param1 == 11550)
+         var shape:Shape = new Shape();
+         shape.graphics.beginFill(16777215,0);
+         shape.graphics.drawRect(0,0,75,75);
+         shape.graphics.endFill();
+         var item:InventoryItemInfo = new InventoryItemInfo();
+         item.TemplateID = templateID;
+         item = ItemManager.fill(item);
+         if(templateID == 11550)
          {
-            luckStoneCell = new BaseCell(_loc3_);
-            luckStoneCell.info = _loc2_;
+            luckStoneCell = new BaseCell(shape);
+            luckStoneCell.info = item;
          }
          else
          {
-            moveCell = new BaseCell(_loc3_);
-            moveCell.info = _loc2_;
+            moveCell = new BaseCell(shape);
+            moveCell.info = item;
          }
       }
       
-      private function onEnterFrame(param1:Event) : void
+      private function onEnterFrame(event:Event) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:int = 0;
+         var indexArr:* = null;
+         var index:int = 0;
          if(_glint.currentFrame == _glint.totalFrames)
          {
             _glint.stop();
             _glint.removeEventListener("enterFrame",onEnterFrame);
             _content.removeChild(_glint);
             _glint = null;
-            _loc3_ = TreasureControl.instance.lightIndexArr;
-            _loc2_ = _loc3_[0];
-            _itemArr[_loc2_].selectedLight.visible = true;
+            indexArr = TreasureControl.instance.lightIndexArr;
+            index = indexArr[0];
+            _itemArr[index].selectedLight.visible = true;
             SoundManager.instance.play("204");
-            _itemArr[_loc2_].addChild(moveCell);
+            _itemArr[index].addChild(moveCell);
             moveCell.visible = false;
             addMoveEffect(moveCell,582,67);
             if(luckStoneCell)
             {
-               _itemArr[_loc2_].addChild(luckStoneCell);
+               _itemArr[index].addChild(luckStoneCell);
                luckStoneCell.visible = false;
                addMoveEffect(luckStoneCell,625,488);
                luckStoneCell = null;
@@ -559,59 +558,59 @@ package treasureHunting.views
          }
       }
       
-      private function addMoveEffect(param1:DisplayObject, param2:int, param3:int) : void
+      private function addMoveEffect($item:DisplayObject, targetX:int, targetY:int) : void
       {
-         var _loc7_:* = null;
-         var _loc8_:* = null;
-         var _loc5_:* = null;
-         var _loc6_:* = null;
-         if(!param1)
+         var tp:* = null;
+         var timeline:* = null;
+         var tw:* = null;
+         var tw1:* = null;
+         if(!$item)
          {
             return;
          }
-         var _loc9_:BitmapData = new BitmapData(param1.width,param1.height,true,0);
-         _loc9_.draw(param1);
-         var _loc4_:Bitmap = new Bitmap(_loc9_,"auto",true);
-         addChild(_loc4_);
-         _loc7_ = TweenProxy.create(_loc4_);
-         _loc7_.registrationX = _loc7_.width / 2;
-         _loc7_.registrationY = _loc7_.height / 2;
-         var _loc10_:Point = DisplayUtils.localizePoint(this,param1);
-         _loc7_.x = _loc10_.x + _loc7_.width / 2;
-         _loc7_.y = _loc10_.y + _loc7_.height / 2;
-         _loc8_ = new TimelineLite();
-         _loc8_.vars.onComplete = twComplete;
-         _loc8_.vars.onCompleteParams = [_loc8_,_loc7_,_loc4_];
-         _loc5_ = new TweenLite(_loc7_,0.4,{
-            "x":param2,
-            "y":param3
+         var tempBitmapD:BitmapData = new BitmapData($item.width,$item.height,true,0);
+         tempBitmapD.draw($item);
+         var bitmap:Bitmap = new Bitmap(tempBitmapD,"auto",true);
+         addChild(bitmap);
+         tp = TweenProxy.create(bitmap);
+         tp.registrationX = tp.width / 2;
+         tp.registrationY = tp.height / 2;
+         var pos:Point = DisplayUtils.localizePoint(this,$item);
+         tp.x = pos.x + tp.width / 2;
+         tp.y = pos.y + tp.height / 2;
+         timeline = new TimelineLite();
+         timeline.vars.onComplete = twComplete;
+         timeline.vars.onCompleteParams = [timeline,tp,bitmap];
+         tw = new TweenLite(tp,0.4,{
+            "x":targetX,
+            "y":targetY
          });
-         _loc6_ = new TweenLite(_loc7_,0.4,{
+         tw1 = new TweenLite(tp,0.4,{
             "scaleX":0.1,
             "scaleY":0.1
          });
-         _loc8_.append(_loc5_);
-         _loc8_.append(_loc6_,-0.2);
+         timeline.append(tw);
+         timeline.append(tw1,-0.2);
       }
       
-      private function twComplete(param1:TimelineLite, param2:TweenProxy, param3:Bitmap) : void
+      private function twComplete(timeline:TimelineLite, tp:TweenProxy, bitmap:Bitmap) : void
       {
-         if(param1)
+         if(timeline)
          {
-            param1.kill();
+            timeline.kill();
          }
-         if(param2)
+         if(tp)
          {
-            param2.destroy();
+            tp.destroy();
          }
-         if(param3.parent)
+         if(bitmap.parent)
          {
-            param3.parent.removeChild(param3);
-            param3.bitmapData.dispose();
+            bitmap.parent.removeChild(bitmap);
+            bitmap.bitmapData.dispose();
          }
-         param2 = null;
-         param3 = null;
-         param1 = null;
+         tp = null;
+         bitmap = null;
+         timeline = null;
          movieComplete();
       }
       
@@ -637,16 +636,15 @@ package treasureHunting.views
       
       public function lightUpItemArr() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         var _loc1_:Array = TreasureControl.instance.lightIndexArr;
+         var i:int = 0;
+         var index2:int = 0;
+         var indexArr:Array = TreasureControl.instance.lightIndexArr;
          removeAllItemLight();
-         _loc3_ = 0;
-         while(_loc3_ <= _loc1_.length - 1)
+         for(i = 0; i <= indexArr.length - 1; )
          {
-            _loc2_ = _loc1_[_loc3_];
-            _itemArr[_loc2_].selectedLight.visible = true;
-            _loc3_++;
+            index2 = indexArr[i];
+            _itemArr[index2].selectedLight.visible = true;
+            i++;
          }
          MessageTipManager.getInstance().show(TreasureControl.instance.countMsg);
          ChatManager.Instance.sysChatYellow(TreasureControl.instance.msgStr);
@@ -654,17 +652,17 @@ package treasureHunting.views
          TreasureControl.instance.msgStr = "";
       }
       
-      protected function _response(param1:FrameEvent) : void
+      protected function _response(event:FrameEvent) : void
       {
-         var _loc2_:* = null;
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         var alert:* = null;
+         if(event.responseCode == 0 || event.responseCode == 1)
          {
             SoundManager.instance.play("008");
             if(TreasureControl.instance.checkBag())
             {
-               _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("treasureHunting.alert.ensureGetAll"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
-               _loc2_.mouseEnabled = false;
-               _loc2_.addEventListener("response",onAlertResponse);
+               alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("treasureHunting.alert.ensureGetAll"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
+               alert.mouseEnabled = false;
+               alert.addEventListener("response",onAlertResponse);
             }
             else
             {
@@ -673,25 +671,25 @@ package treasureHunting.views
          }
       }
       
-      private function onAlertResponse(param1:FrameEvent) : void
+      private function onAlertResponse(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",onAlertResponse);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         (event.currentTarget as BaseAlerFrame).removeEventListener("response",onAlertResponse);
+         if(event.responseCode == 2 || event.responseCode == 3)
          {
             SocketManager.Instance.out.getAllTreasure();
             dispose();
          }
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(event.currentTarget);
       }
       
-      private function __updateLastTime(param1:CaddyEvent) : void
+      private function __updateLastTime(event:CaddyEvent) : void
       {
       }
       
-      private function __changeBadLuckNumber(param1:PlayerPropertyEvent) : void
+      private function __changeBadLuckNumber(event:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["BadLuckNumber"])
+         if(event.changedProperties["BadLuckNumber"])
          {
             if(PlayerManager.Instance.Self.badLuckNumber == 0)
             {
@@ -700,7 +698,7 @@ package treasureHunting.views
          }
       }
       
-      protected function __updateInfo(param1:PkgEvent) : void
+      protected function __updateInfo(event:PkgEvent) : void
       {
          _myNumberTxt.text = PlayerManager.Instance.Self.badLuckNumber.toString();
       }

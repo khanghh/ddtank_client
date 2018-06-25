@@ -34,7 +34,7 @@ package gradeAwardsBoxBtn.view
       
       private var _hall:HallStateView;
       
-      public function GradeAwardsBoxSprite(param1:inner)
+      public function GradeAwardsBoxSprite(single:inner)
       {
          super();
          init();
@@ -73,14 +73,14 @@ package gradeAwardsBoxBtn.view
          y = 220;
       }
       
-      public function updateText(param1:String) : void
+      public function updateText($text:String) : void
       {
-         _gradeBottomTimeTips.text = param1;
+         _gradeBottomTimeTips.text = $text;
       }
       
-      public function show(param1:InventoryItemInfo, param2:Boolean) : void
+      public function show(info:InventoryItemInfo, shining:Boolean) : void
       {
-         var _loc3_:* = null;
+         var movie:* = null;
          if(_hall != null)
          {
             if(_gradeBottomTimeTips == null)
@@ -91,18 +91,18 @@ package gradeAwardsBoxBtn.view
             {
                return;
             }
-            _gradeAwardsItem.info = param1;
-            _gradeBD.setBitmapData(param1.NeedLevel);
-            _loc3_ = _gradeAwardsBoxBtn.movie.getChildAt(2) as MovieClip;
-            if(param2)
+            _gradeAwardsItem.info = info;
+            _gradeBD.setBitmapData(info.NeedLevel);
+            movie = _gradeAwardsBoxBtn.movie.getChildAt(2) as MovieClip;
+            if(shining)
             {
-               _loc3_.visible = true;
-               _loc3_.play();
+               movie.visible = true;
+               movie.play();
             }
             else
             {
-               _loc3_.visible = false;
-               _loc3_.stop();
+               movie.visible = false;
+               movie.stop();
             }
             _hall.addChild(this);
             _isVisible = true;
@@ -138,9 +138,9 @@ package gradeAwardsBoxBtn.view
          instance = null;
       }
       
-      public function setHall(param1:HallStateView) : void
+      public function setHall(value:HallStateView) : void
       {
-         _hall = param1;
+         _hall = value;
       }
       
       public function get isVisible() : Boolean

@@ -36,13 +36,13 @@ package BombTurnTable.view
       
       private var _icon:Bitmap;
       
-      public function TurnTableGoodCell(param1:BombTurnTableGoodInfo, param2:int)
+      public function TurnTableGoodCell(info:BombTurnTableGoodInfo, quality:int)
       {
-         _info = param1;
-         _index = param1.place;
-         _temID = param1.templateId;
-         _state = param1.isReceive;
-         _quality = param2;
+         _info = info;
+         _index = info.place;
+         _temID = info.templateId;
+         _state = info.isReceive;
+         _quality = quality;
          super();
          initView();
       }
@@ -61,7 +61,7 @@ package BombTurnTable.view
       
       protected function createGoodView() : void
       {
-         var _loc1_:int = 0;
+         var count:int = 0;
          _bg = ComponentFactory.Instance.creatBitmap("asset.bombTurnTable.goodbg.quality" + _quality);
          addChild(_bg);
          _cell = createCell();
@@ -74,10 +74,10 @@ package BombTurnTable.view
          addChild(_goodCount);
          if(_cell)
          {
-            _loc1_ = _cell.itemInfo.Count;
-            if(_loc1_ > 1)
+            count = _cell.itemInfo.Count;
+            if(count > 1)
             {
-               _goodCount.text = _loc1_.toString();
+               _goodCount.text = count.toString();
             }
          }
       }
@@ -99,17 +99,17 @@ package BombTurnTable.view
       
       protected function createCell() : BagCell
       {
-         var _loc2_:InventoryItemInfo = new InventoryItemInfo();
-         _loc2_.TemplateID = _temID;
-         _loc2_.IsBinds = true;
-         _loc2_.Count = _info.goodCount;
-         _loc2_ = ItemManager.fill(_loc2_);
-         _loc2_.BindType = 4;
-         var _loc1_:BagCell = new BagCell(0,_loc2_,true);
-         _loc1_.setBgVisible(false);
-         _loc1_.setContentSize(57,57);
-         _loc1_.setCountNotVisible();
-         return _loc1_;
+         var info:InventoryItemInfo = new InventoryItemInfo();
+         info.TemplateID = _temID;
+         info.IsBinds = true;
+         info.Count = _info.goodCount;
+         info = ItemManager.fill(info);
+         info.BindType = 4;
+         var cell:BagCell = new BagCell(0,info,true);
+         cell.setBgVisible(false);
+         cell.setContentSize(57,57);
+         cell.setCountNotVisible();
+         return cell;
       }
       
       public function get info() : BombTurnTableGoodInfo

@@ -81,93 +81,91 @@ package store.godRefining.view
       
       public function updateView() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _items.length)
+         var i:int = 0;
+         for(i = 0; i < _items.length; )
          {
-            _items[_loc1_].info = null;
-            _loc1_++;
+            _items[i].info = null;
+            i++;
          }
       }
       
-      private function getCurCellIndex(param1:ItemTemplateInfo) : int
+      private function getCurCellIndex(itemInfo:ItemTemplateInfo) : int
       {
-         if(EquipType.isArmShellClip(param1))
+         if(EquipType.isArmShellClip(itemInfo))
          {
             return 0;
          }
          return -1;
       }
       
-      public function refreshData(param1:Dictionary) : void
+      public function refreshData(items:Dictionary) : void
       {
-         var _loc2_:* = 0;
+         var itemPlace:* = 0;
          var _loc5_:int = 0;
-         var _loc4_:* = param1;
-         for(_loc2_ in param1)
+         var _loc4_:* = items;
+         for(itemPlace in items)
          {
-            if(_loc2_ < _items.length)
+            if(itemPlace < _items.length)
             {
-               _items[_loc2_].info = PlayerManager.Instance.Self.StoreBag.items[_loc2_];
+               _items[itemPlace].info = PlayerManager.Instance.Self.StoreBag.items[itemPlace];
             }
          }
       }
       
-      public function quitStartDrag(param1:CEvent) : void
+      public function quitStartDrag(evt:CEvent) : void
       {
-         var _loc3_:BagCell = param1.data as BagCell;
-         var _loc2_:int = getCurCellIndex(_loc3_.info);
-         if(_loc2_ != -1)
+         var cell:BagCell = evt.data as BagCell;
+         var index:int = getCurCellIndex(cell.info);
+         if(index != -1)
          {
-            startShine(_loc2_);
+            startShine(index);
          }
       }
       
-      public function quitStopDrag(param1:CEvent) : void
+      public function quitStopDrag(evt:CEvent) : void
       {
          stopShine();
       }
       
-      public function startShine(param1:int) : void
+      public function startShine(cellId:int) : void
       {
-         var _loc2_:StoreCell = _items[param1] as StoreCell;
-         if(_loc2_)
+         var storeCell:StoreCell = _items[cellId] as StoreCell;
+         if(storeCell)
          {
-            _loc2_.startShine();
+            storeCell.startShine();
          }
       }
       
       public function stopShine() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         _loc2_ = 0;
-         while(_loc2_ < _items.length)
+         var i:int = 0;
+         var storeCell:* = null;
+         for(i = 0; i < _items.length; )
          {
-            _loc1_ = _items[_loc2_] as StoreCell;
-            if(_loc1_)
+            storeCell = _items[i] as StoreCell;
+            if(storeCell)
             {
-               _loc1_.stopShine();
+               storeCell.stopShine();
             }
-            _loc2_++;
+            i++;
          }
       }
       
-      public function equipDoubleClickMove(param1:CEvent) : void
+      public function equipDoubleClickMove(event:CEvent) : void
       {
       }
       
-      public function propDoubleClickMove(param1:CEvent) : void
+      public function propDoubleClickMove(event:CEvent) : void
       {
-         var _loc3_:InventoryItemInfo = param1.data as InventoryItemInfo;
-         var _loc2_:int = getCurCellIndex(_loc3_);
-         if(_loc2_ != -1)
+         var info:InventoryItemInfo = event.data as InventoryItemInfo;
+         var index:int = getCurCellIndex(info);
+         if(index != -1)
          {
-            SocketManager.Instance.out.sendMoveGoods(_loc3_.BagType,_loc3_.Place,12,_loc2_,1);
+            SocketManager.Instance.out.sendMoveGoods(info.BagType,info.Place,12,index,1);
          }
       }
       
-      private function __startComposeBtnHandler(param1:MouseEvent) : void
+      private function __startComposeBtnHandler(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
       }

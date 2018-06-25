@@ -56,18 +56,18 @@ package consortionBattle.view
          return _index;
       }
       
-      public function set index(param1:int) : void
+      public function set index(value:int) : void
       {
-         _index = param1;
+         _index = value;
          y = _index * 30;
       }
       
-      public function set existCount(param1:int) : void
+      public function set existCount(value:int) : void
       {
-         _existCount = param1;
+         _existCount = value;
       }
       
-      private function timerHandler(param1:Event) : void
+      private function timerHandler(event:Event) : void
       {
          _existCount = Number(_existCount) + 1;
          if(_existCount >= 2)
@@ -92,9 +92,9 @@ package consortionBattle.view
          dispatchEvent(new Event("ConsBatChatViewCell_Disappear_Complete"));
       }
       
-      public function setText(param1:String, param2:int = 0) : void
+      public function setText(value:String, existCount:int = 0) : void
       {
-         if(!param1 || param1 == "")
+         if(!value || value == "")
          {
             _timer.stop();
             _isGuard = false;
@@ -104,11 +104,11 @@ package consortionBattle.view
          else
          {
             TweenLite.killTweensOf(_txt);
-            _txt.text = param1;
+            _txt.text = value;
             _txt.alpha = 1;
             _isGuard = true;
             _isActive = true;
-            _existCount = param2;
+            _existCount = existCount;
             _timer.reset();
             _timer.start();
          }

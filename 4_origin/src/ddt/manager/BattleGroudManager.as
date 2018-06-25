@@ -54,10 +54,10 @@ package ddt.manager
       public function __onBattleBtnHander() : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc1_:int = ServerConfigManager.instance.trialBattleLevelLimit;
-         if(PlayerManager.Instance.Self.Grade < _loc1_)
+         var limitLev:int = ServerConfigManager.instance.trialBattleLevelLimit;
+         if(PlayerManager.Instance.Self.Grade < limitLev)
          {
-            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.functionLimitTip",_loc1_));
+            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.functionLimitTip",limitLev));
             return;
          }
          if(getTimer() - _lastCreatTime > 3000)
@@ -76,39 +76,39 @@ package ddt.manager
          GameInSocketOut.sendCreateRoom(LanguageMgr.GetTranslation("ddt.battleRoom.roomName"),120,3);
       }
       
-      private function playAllMc(param1:MovieClip) : void
+      private function playAllMc($mc:MovieClip) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
-         while(param1.numChildren - _loc3_)
+         var cMc:* = null;
+         var index:int = 0;
+         while($mc.numChildren - index)
          {
-            if(param1.getChildAt(_loc3_) is MovieClip)
+            if($mc.getChildAt(index) is MovieClip)
             {
-               _loc2_ = param1.getChildAt(_loc3_) as MovieClip;
-               _loc2_.play();
-               playAllMc(_loc2_);
+               cMc = $mc.getChildAt(index) as MovieClip;
+               cMc.play();
+               playAllMc(cMc);
             }
-            _loc3_++;
+            index++;
          }
       }
       
-      private function stopAllMc(param1:MovieClip) : void
+      private function stopAllMc($mc:MovieClip) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
-         while(param1.numChildren - _loc3_)
+         var cMc:* = null;
+         var index:int = 0;
+         while($mc.numChildren - index)
          {
-            if(param1.getChildAt(_loc3_) is MovieClip)
+            if($mc.getChildAt(index) is MovieClip)
             {
-               _loc2_ = param1.getChildAt(_loc3_) as MovieClip;
-               _loc2_.stop();
-               stopAllMc(_loc2_);
+               cMc = $mc.getChildAt(index) as MovieClip;
+               cMc.stop();
+               stopAllMc(cMc);
             }
-            _loc3_++;
+            index++;
          }
       }
       
-      public function open(param1:PkgEvent) : void
+      public function open(e:PkgEvent) : void
       {
          isShow = true;
          if(PlayerManager.Instance.Self.Grade >= 20)
@@ -120,7 +120,7 @@ package ddt.manager
          }
       }
       
-      public function over(param1:PkgEvent) : void
+      public function over(e:PkgEvent) : void
       {
          isShow = false;
          DdtActivityIconManager.Instance.currObj = null;

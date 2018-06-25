@@ -22,13 +22,13 @@ package yzhkof.ui
          return this._width;
       }
       
-      override public function set width(param1:Number) : void
+      override public function set width(value:Number) : void
       {
-         if(param1 == this._width)
+         if(value == this._width)
          {
             return;
          }
-         this._width = param1;
+         this._width = value;
          this.commitChage("width");
       }
       
@@ -37,19 +37,19 @@ package yzhkof.ui
          return this._height;
       }
       
-      override public function set height(param1:Number) : void
+      override public function set height(value:Number) : void
       {
-         if(param1 == this._height)
+         if(value == this._height)
          {
             return;
          }
-         this._height = param1;
+         this._height = value;
          this.commitChage("height");
       }
       
-      override protected function commitChage(param1:String = "default_change") : void
+      override protected function commitChage(changeThing:String = "default_change") : void
       {
-         super.commitChage(param1);
+         super.commitChage(changeThing);
          if(hasEventListener(ComponentEvent.COMPONENT_CHANGE))
          {
             dispatchEvent(new ComponentEvent(ComponentEvent.COMPONENT_CHANGE));

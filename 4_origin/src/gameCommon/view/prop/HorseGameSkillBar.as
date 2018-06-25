@@ -33,10 +33,10 @@ package gameCommon.view.prop
       
       private var _horseSkillLockStatus:Boolean;
       
-      public function HorseGameSkillBar(param1:LocalPlayer)
+      public function HorseGameSkillBar(self:LocalPlayer)
       {
          super();
-         _self = param1;
+         _self = self;
          initView();
          initEvent();
          skillInfoInit(null);
@@ -45,19 +45,19 @@ package gameCommon.view.prop
       private function initView() : void
       {
          _cellList = new Vector.<HorseGameSkillCell>();
-         var _loc3_:DictionaryData = curUseSkillList;
-         var _loc1_:HorseGameSkillCell = new HorseGameSkillCell(!!_loc3_.hasKey("1")?_loc3_["1"]:-1,"z",_self);
-         var _loc2_:HorseGameSkillCell = new HorseGameSkillCell(!!_loc3_.hasKey("2")?_loc3_["2"]:-1,"x",_self);
-         var _loc4_:HorseGameSkillCell = new HorseGameSkillCell(!!_loc3_.hasKey("3")?_loc3_["3"]:-1,"c",_self);
-         PositionUtils.setPos(_loc1_,"CustomPropCellPosz");
-         PositionUtils.setPos(_loc2_,"CustomPropCellPosx");
-         PositionUtils.setPos(_loc4_,"CustomPropCellPosc");
-         addChild(_loc1_);
-         addChild(_loc2_);
-         addChild(_loc4_);
-         _cellList.push(_loc1_);
-         _cellList.push(_loc2_);
-         _cellList.push(_loc4_);
+         var tmpUseSkillList:DictionaryData = curUseSkillList;
+         var tmpZ:HorseGameSkillCell = new HorseGameSkillCell(!!tmpUseSkillList.hasKey("1")?tmpUseSkillList["1"]:-1,"z",_self);
+         var tmpX:HorseGameSkillCell = new HorseGameSkillCell(!!tmpUseSkillList.hasKey("2")?tmpUseSkillList["2"]:-1,"x",_self);
+         var tmpC:HorseGameSkillCell = new HorseGameSkillCell(!!tmpUseSkillList.hasKey("3")?tmpUseSkillList["3"]:-1,"c",_self);
+         PositionUtils.setPos(tmpZ,"CustomPropCellPosz");
+         PositionUtils.setPos(tmpX,"CustomPropCellPosx");
+         PositionUtils.setPos(tmpC,"CustomPropCellPosc");
+         addChild(tmpZ);
+         addChild(tmpX);
+         addChild(tmpC);
+         _cellList.push(tmpZ);
+         _cellList.push(tmpX);
+         _cellList.push(tmpC);
       }
       
       private function get curUseSkillList() : DictionaryData
@@ -71,7 +71,7 @@ package gameCommon.view.prop
       
       private function initEvent() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _self.addEventListener("horseSkillUse",useSkillHandler);
          _self.addEventListener("attackingChanged",onAttackingChange);
          SocketManager.Instance.addEventListener("roundOneEnd",__onRoundOneEnd);
@@ -83,65 +83,63 @@ package gameCommon.view.prop
          _self.addEventListener("notUseBattleSkill",__notUseBattleSkill);
          GameControl.Instance.addEventListener("skillInfoInitGame",skillInfoInit);
          KeyboardManager.getInstance().addEventListener("keyDown",__keyDown);
-         _loc1_ = 0;
-         while(_loc1_ <= _cellList.length - 1)
+         for(i = 0; i <= _cellList.length - 1; )
          {
-            _cellList[_loc1_].addEventListener("cell_clicked",__horseGameSkillCellClicked);
-            _loc1_++;
+            _cellList[i].addEventListener("cell_clicked",__horseGameSkillCellClicked);
+            i++;
          }
          _horseSkillLockStatus = true;
       }
       
-      protected function __horseGameSkillCellClicked(param1:Event) : void
+      protected function __horseGameSkillCellClicked(event:Event) : void
       {
          _turnEnabled = false;
          enabled = false;
       }
       
-      private function __keyDown(param1:KeyboardEvent) : void
+      private function __keyDown(event:KeyboardEvent) : void
       {
-         var _loc2_:int = -1;
-         var _loc3_:* = param1.keyCode;
+         var key:int = -1;
+         var _loc3_:* = event.keyCode;
          if(KeyStroke.VK_Z.getCode() !== _loc3_)
          {
             if(KeyStroke.VK_X.getCode() !== _loc3_)
             {
                if(KeyStroke.VK_C.getCode() === _loc3_)
                {
-                  _loc2_ = 2;
+                  key = 2;
                }
             }
             else
             {
-               _loc2_ = 1;
+               key = 1;
             }
          }
          else
          {
-            _loc2_ = 0;
+            key = 0;
          }
-         if(_loc2_ >= 0)
+         if(key >= 0)
          {
-            _cellList[_loc2_].useSkill();
+            _cellList[key].useSkill();
          }
       }
       
-      public function set lockState(param1:Boolean) : void
+      public function set lockState(value:Boolean) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         var _loc4_:* = param1;
+         var i:int = 0;
+         var j:int = 0;
+         var _loc4_:* = value;
          if(true !== _loc4_)
          {
             if(false === _loc4_)
             {
                _horseSkillLockStatus = false;
                KeyboardManager.getInstance().removeEventListener("keyDown",__keyDown);
-               _loc2_ = 0;
-               while(_loc2_ <= _cellList.length - 1)
+               for(j = 0; j <= _cellList.length - 1; )
                {
-                  _cellList[_loc2_].removeEventListener("cell_clicked",__horseGameSkillCellClicked);
-                  _loc2_++;
+                  _cellList[j].removeEventListener("cell_clicked",__horseGameSkillCellClicked);
+                  j++;
                }
             }
          }
@@ -149,47 +147,46 @@ package gameCommon.view.prop
          {
             _horseSkillLockStatus = true;
             KeyboardManager.getInstance().addEventListener("keyDown",__keyDown);
-            _loc3_ = 0;
-            while(_loc3_ <= _cellList.length - 1)
+            for(i = 0; i <= _cellList.length - 1; )
             {
-               _cellList[_loc3_].addEventListener("cell_clicked",__horseGameSkillCellClicked);
-               _loc3_++;
+               _cellList[i].addEventListener("cell_clicked",__horseGameSkillCellClicked);
+               i++;
             }
          }
       }
       
-      protected function __onRoundOneEnd(param1:CrazyTankSocketEvent) : void
+      protected function __onRoundOneEnd(event:CrazyTankSocketEvent) : void
       {
          _turnEnabled = true;
          enabled = _turnEnabled && _self.propEnabled && _self.customPropEnabled;
          var _loc4_:int = 0;
          var _loc3_:* = _cellList;
-         for each(var _loc2_ in _cellList)
+         for each(var tmp in _cellList)
          {
-            _loc2_.roundOneEndHandler();
+            tmp.roundOneEndHandler();
          }
       }
       
-      private function onAttackingChange(param1:LivingEvent) : void
+      private function onAttackingChange(event:LivingEvent) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = _cellList;
-         for each(var _loc2_ in _cellList)
+         for each(var tmp in _cellList)
          {
-            _loc2_.attackChangeHandler(_self.isAttacking);
+            tmp.attackChangeHandler(_self.isAttacking);
          }
       }
       
-      private function useSkillHandler(param1:LivingEvent) : void
+      private function useSkillHandler(event:LivingEvent) : void
       {
-         var _loc2_:Array = param1.paras;
+         var args:Array = event.paras;
          var _loc5_:int = 0;
          var _loc4_:* = _cellList;
-         for each(var _loc3_ in _cellList)
+         for each(var tmp in _cellList)
          {
-            if(_loc3_.skillId == _loc2_[0])
+            if(tmp.skillId == args[0])
             {
-               _loc3_.useCompleteHandler(_loc2_[1],_loc2_[2]);
+               tmp.useCompleteHandler(args[1],args[2]);
                break;
             }
          }
@@ -200,22 +197,22 @@ package gameCommon.view.prop
          return _enabled;
       }
       
-      public function set enabled(param1:Boolean) : void
+      public function set enabled(val:Boolean) : void
       {
-         if(_enabled != param1 && !_self.notHasFairBattleSkill)
+         if(_enabled != val && !_self.notHasFairBattleSkill)
          {
-            changeEnabled(param1);
+            changeEnabled(val);
          }
       }
       
-      private function changeEnabled(param1:Boolean) : void
+      private function changeEnabled(val:Boolean) : void
       {
-         _enabled = param1;
+         _enabled = val;
          var _loc4_:int = 0;
          var _loc3_:* = _cellList;
-         for each(var _loc2_ in _cellList)
+         for each(var cell in _cellList)
          {
-            _loc2_.enabled = _enabled;
+            cell.enabled = _enabled;
          }
          if(_enabled)
          {
@@ -228,7 +225,7 @@ package gameCommon.view.prop
          }
       }
       
-      private function __energyChange(param1:LivingEvent) : void
+      private function __energyChange(event:LivingEvent) : void
       {
          if(_enabled)
          {
@@ -238,88 +235,88 @@ package gameCommon.view.prop
       
       private function updatePropByEnergy() : void
       {
-         var _loc2_:* = null;
+         var info:* = null;
          var _loc4_:int = 0;
          var _loc3_:* = _cellList;
-         for each(var _loc1_ in _cellList)
+         for each(var cell in _cellList)
          {
-            if(_loc1_.skillInfo)
+            if(cell.skillInfo)
             {
-               _loc2_ = _loc1_.skillInfo;
-               if(_loc2_)
+               info = cell.skillInfo;
+               if(info)
                {
-                  if(_self.energy < _loc2_.CostEnergy)
+                  if(_self.energy < info.CostEnergy)
                   {
-                     _loc1_.enabled = false;
+                     cell.enabled = false;
                   }
                   else
                   {
-                     _loc1_.enabled = true;
+                     cell.enabled = true;
                   }
                }
             }
          }
       }
       
-      private function __notUseBattleSkill(param1:LivingEvent) : void
+      private function __notUseBattleSkill(evtent:LivingEvent) : void
       {
          lockState = !_self.notHasFairBattleSkill;
          enabled = !_self.notHasFairBattleSkill;
       }
       
-      private function __enabledChanged(param1:LivingEvent) : void
+      private function __enabledChanged(event:LivingEvent) : void
       {
          enabled = _turnEnabled && _self.propEnabled && _self.customPropEnabled;
       }
       
-      private function __customEnabledChanged(param1:LivingEvent) : void
+      private function __customEnabledChanged(evt:LivingEvent) : void
       {
          enabled = _turnEnabled && _self.customPropEnabled;
       }
       
-      private function __usingSpecialKill(param1:LivingEvent) : void
+      private function __usingSpecialKill(event:LivingEvent) : void
       {
-         var _loc3_:* = null;
+         var info:* = null;
          var _loc5_:int = 0;
          var _loc4_:* = _cellList;
-         for each(var _loc2_ in _cellList)
+         for each(var cell in _cellList)
          {
-            _loc3_ = _loc2_.skillInfo;
-            if(_loc3_ && _loc3_.BallType == 1)
+            info = cell.skillInfo;
+            if(info && info.BallType == 1)
             {
-               _loc2_.isCanUse2 = false;
+               cell.isCanUse2 = false;
             }
          }
       }
       
-      private function __onUseItem(param1:LivingEvent) : void
+      private function __onUseItem(event:LivingEvent) : void
       {
          __usingSpecialKill(null);
       }
       
-      private function skillInfoInit(param1:Event) : void
+      private function skillInfoInit(event:Event) : void
       {
-         var _loc4_:int = 0;
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
-         var _loc2_:Array = GameControl.Instance.horseSkillList;
-         if(_loc2_)
+         var len:int = 0;
+         var i:int = 0;
+         var info:* = null;
+         var infoList:Array = GameControl.Instance.horseSkillList;
+         if(infoList)
          {
-            _loc4_ = _loc2_.length;
-            while(_loc6_ < _loc4_)
+            len = infoList.length;
+            while(i < len)
             {
                var _loc8_:int = 0;
                var _loc7_:* = _cellList;
-               for each(var _loc3_ in _cellList)
+               for each(var cell in _cellList)
                {
-                  _loc5_ = _loc3_.skillInfo;
-                  if(_loc5_ && _loc5_.ID == _loc2_[_loc6_].id)
+                  info = cell.skillInfo;
+                  if(info && info.ID == infoList[i].id)
                   {
-                     _loc3_.setColdCount(_loc2_[_loc6_].cd,_loc2_[_loc6_].count);
+                     cell.setColdCount(infoList[i].cd,infoList[i].count);
                      break;
                   }
                }
-               _loc6_++;
+               i++;
             }
             GameControl.Instance.horseSkillList = null;
          }
@@ -336,7 +333,7 @@ package gameCommon.view.prop
       
       private function removeEvent() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _self.removeEventListener("horseSkillUse",useSkillHandler);
          _self.removeEventListener("attackingChanged",onAttackingChange);
          SocketManager.Instance.removeEventListener("roundOneEnd",__onRoundOneEnd);
@@ -347,11 +344,10 @@ package gameCommon.view.prop
          _self.removeEventListener("usingItem",__onUseItem);
          GameControl.Instance.removeEventListener("skillInfoInitGame",skillInfoInit);
          KeyboardManager.getInstance().removeEventListener("keyDown",__keyDown);
-         _loc1_ = 0;
-         while(_loc1_ <= _cellList.length - 1)
+         for(i = 0; i <= _cellList.length - 1; )
          {
-            _cellList[_loc1_].removeEventListener("cell_clicked",__horseGameSkillCellClicked);
-            _loc1_++;
+            _cellList[i].removeEventListener("cell_clicked",__horseGameSkillCellClicked);
+            i++;
          }
       }
       

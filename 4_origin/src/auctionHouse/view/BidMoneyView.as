@@ -37,8 +37,8 @@ package auctionHouse.view
       
       private function initView() : void
       {
-         var _loc1_:MutipleImage = ComponentFactory.Instance.creatComponentByStylename("auctionHouse.BidInputIcon");
-         addChild(_loc1_);
+         var icon:MutipleImage = ComponentFactory.Instance.creatComponentByStylename("auctionHouse.BidInputIcon");
+         addChild(icon);
          _money = ComponentFactory.Instance.creat("auctionHouse.BidMoney");
          _money.restrict = "0-9";
          addChild(_money);
@@ -68,17 +68,17 @@ package auctionHouse.view
          _money.removeEventListener("keyUp",_moneyUp);
       }
       
-      function canMoneyBid(param1:int) : void
+      function canMoneyBid(price:int) : void
       {
          _money.mouseEnabled = true;
          _canMoney = true;
          _canGold = false;
-         _money.text = param1.toString();
+         _money.text = price.toString();
          _money.setFocus();
-         _money.setSelection(param1.toString().length,param1.toString().length);
+         _money.setSelection(price.toString().length,price.toString().length);
       }
       
-      function canGoldBid(param1:int) : void
+      function canGoldBid(price:int) : void
       {
          _money.text = "";
          if(_money.stage)
@@ -104,33 +104,33 @@ package auctionHouse.view
       
       function getData() : Number
       {
-         var _loc1_:Number = NaN;
+         var result:Number = NaN;
          if(!_canGold)
          {
             if(_canMoney)
             {
-               _loc1_ = _money.text;
+               result = _money.text;
             }
          }
-         return _loc1_;
+         return result;
       }
       
-      private function _moneyUp(param1:KeyboardEvent) : void
+      private function _moneyUp(e:KeyboardEvent) : void
       {
-         if(param1.keyCode == 13)
+         if(e.keyCode == 13)
          {
             _money.removeEventListener("keyUp",_moneyUp);
             dispatchEvent(new Event("money_key_up"));
          }
       }
       
-      private function __change(param1:Event) : void
+      private function __change(event:Event) : void
       {
       }
       
-      private function __inputTextM(param1:TextEvent) : void
+      private function __inputTextM(event:TextEvent) : void
       {
-         if(Number(_money.text) + Number(param1.text) > PlayerManager.Instance.Self.Money || Number(_money.text) + Number(param1.text) == 0)
+         if(Number(_money.text) + Number(event.text) > PlayerManager.Instance.Self.Money || Number(_money.text) + Number(event.text) == 0)
          {
             return;
          }

@@ -68,16 +68,16 @@ package trainer.view
          _btn.addEventListener("click",btnClickHandler);
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();
          }
       }
       
-      private function btnClickHandler(param1:MouseEvent) : void
+      private function btnClickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_type == 9)
@@ -97,14 +97,14 @@ package trainer.view
          dispose();
       }
       
-      public function show(param1:int, param2:Function, param3:InventoryItemInfo = null, param4:int = 0) : void
+      public function show(type:int, callback:Function, item:InventoryItemInfo = null, toPlace:int = 0) : void
       {
          LayerManager.Instance.addToLayer(this,3);
          StageResizeUtils.Instance.addAutoResize(this);
-         _toPlace = param4;
-         _type = param1;
-         _callback = param2;
-         switch(int(param1) - 1)
+         _toPlace = toPlace;
+         _type = type;
+         _callback = callback;
+         switch(int(type) - 1)
          {
             case 0:
                _icon = ComponentFactory.Instance.creatBitmap("asset.systemOpenPrompt.totemIcon");
@@ -143,7 +143,7 @@ package trainer.view
                _btn.backStyle = "asset.systemOpenPrompt.goBtn";
                break;
             case 8:
-               _equipCell = new BagCell(0,param3);
+               _equipCell = new BagCell(0,item);
                _equipCell.x = 28;
                _equipCell.y = 23;
                _equipCell.setBgVisible(false);

@@ -27,7 +27,7 @@ package starling.scene.consortiaDomain
          _bgLayer.setCenter();
       }
       
-      public function onStageResize(param1:Event) : void
+      public function onStageResize(evt:Event) : void
       {
          _bgLayer.onStageResize();
       }

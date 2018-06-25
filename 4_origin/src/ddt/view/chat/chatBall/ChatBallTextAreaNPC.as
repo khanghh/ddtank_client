@@ -21,10 +21,10 @@ package ddt.view.chat.chatBall
          super.initView();
       }
       
-      override public function set text(param1:String) : void
+      override public function set text(value:String) : void
       {
          clear();
-         _text = param1;
+         _text = value;
          _text = "<p>" + _text + "</p>";
          _plainString = StringHelper.rePlaceHtmlTextField(_text);
          setFormat();
@@ -36,30 +36,29 @@ package ddt.view.chat.chatBall
       
       protected function setFormat() : void
       {
-         var _loc1_:StyleSheet = new StyleSheet();
-         _loc1_.parseCSS("p{font-size:12px;text-align:center;font-weight:normal;}.red{color:#FF0000}.blue{color:#0000FF}.green{color:#00FF00}");
-         tf.styleSheet = _loc1_;
+         var style:StyleSheet = new StyleSheet();
+         style.parseCSS("p{font-size:12px;text-align:center;font-weight:normal;}.red{color:#FF0000}.blue{color:#0000FF}.green{color:#00FF00}");
+         tf.styleSheet = style;
       }
       
       protected function fitScale() : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:int = 0;
-         var _loc1_:* = 0;
-         var _loc3_:int = tf.numLines;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var i:int = 0;
+         var length:int = 0;
+         var count:* = 0;
+         var line:int = tf.numLines;
+         for(i = 0; i < line; )
          {
-            _loc2_ = tf.getLineLength(_loc4_);
-            if(_loc1_ < _loc2_)
+            length = tf.getLineLength(i);
+            if(count < length)
             {
-               _loc1_ = _loc2_;
+               count = length;
             }
-            _loc4_++;
+            i++;
          }
-         if(_loc1_ < 8)
+         if(count < 8)
          {
-            tf.width = _loc1_ * 17;
+            tf.width = count * 17;
          }
          else
          {

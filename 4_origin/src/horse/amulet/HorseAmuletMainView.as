@@ -1,18 +1,15 @@
 package horse.amulet
 {
    import com.pickgliss.ui.ComponentFactory;
-   import com.pickgliss.ui.LayerManager;
-   import com.pickgliss.ui.controls.Frame;
-   import com.pickgliss.ui.controls.SimpleBitmapButton;
+   import com.pickgliss.ui.core.Disposeable;
    import com.pickgliss.ui.image.ScaleBitmapImage;
    import com.pickgliss.utils.ObjectUtils;
-   import ddt.manager.LanguageMgr;
-   import ddt.utils.HelpFrameUtils;
    import ddt.utils.PositionUtils;
+   import flash.display.Sprite;
    import flash.events.Event;
    import horse.HorseAmuletManager;
    
-   public class HorseAmuletMainView extends Frame
+   public class HorseAmuletMainView extends Sprite implements Disposeable
    {
        
       
@@ -24,17 +21,16 @@ package horse.amulet
       
       private var _activateView:HorseAmuletActivateView;
       
-      private var _helpBtn:SimpleBitmapButton;
-      
       public function HorseAmuletMainView()
       {
          super();
          HorseAmuletManager.instance.viewType = 1;
+         initView();
          __onUpdateLeftView(null);
          initEvent();
       }
       
-      override protected function init() : void
+      protected function initView() : void
       {
          _mainBg = ComponentFactory.Instance.creatComponentByStylename("horseAmulet.mainViewBg");
          _equipView = new HorseAmuletEquipView();
@@ -45,55 +41,37 @@ package horse.amulet
          addChild(_activateView);
          _bgView = new HorseAmuletBagView();
          PositionUtils.setPos(_bgView,"horseAmulet.bagViewPos");
-         super.init();
-         _helpBtn = HelpFrameUtils.Instance.simpleHelpButton(this,"core.helpButtonSmall","horseAmulet.helpPos",LanguageMgr.GetTranslation("store.view.HelpButtonText"),"asset.horseAmulet.help",450,540) as SimpleBitmapButton;
-         titleText = LanguageMgr.GetTranslation("tank.horseAmulet.title");
+         if(_mainBg)
+         {
+            addChild(_mainBg);
+         }
+         if(_equipView)
+         {
+            addChild(_equipView);
+         }
+         if(_activateView)
+         {
+            addChild(_activateView);
+         }
+         if(_bgView)
+         {
+            addChild(_bgView);
+         }
       }
       
-      private function __onUpdateLeftView(param1:Event) : void
+      private function __onUpdateLeftView(e:Event) : void
       {
-         var _loc2_:int = HorseAmuletManager.instance.viewType;
-         if(_loc2_ == 1)
+         var type:int = HorseAmuletManager.instance.viewType;
+         if(type == 1)
          {
             _equipView.visible = true;
             _activateView.visible = false;
          }
-         else if(_loc2_ == 2)
+         else if(type == 2)
          {
             _equipView.visible = false;
             _activateView.visible = true;
          }
-      }
-      
-      override protected function addChildren() : void
-      {
-         super.addChildren();
-         if(_mainBg)
-         {
-            addToContent(_mainBg);
-         }
-         if(_equipView)
-         {
-            addToContent(_equipView);
-         }
-         if(_activateView)
-         {
-            addToContent(_activateView);
-         }
-         if(_bgView)
-         {
-            addToContent(_bgView);
-         }
-      }
-      
-      override protected function onResponse(param1:int) : void
-      {
-         dispose();
-      }
-      
-      public function show() : void
-      {
-         LayerManager.Instance.addToLayer(this,3,true,1);
       }
       
       private function initEvent() : void
@@ -106,12 +84,10 @@ package horse.amulet
          HorseAmuletManager.instance.removeEventListener("change",__onUpdateLeftView);
       }
       
-      override public function dispose() : void
+      public function dispose() : void
       {
          removeEvent();
-         ObjectUtils.disposeObject(_helpBtn);
-         _helpBtn = null;
-         super.dispose();
+         ObjectUtils.disposeAllChildren(this);
          _bgView = null;
          _mainBg = null;
          _equipView = null;

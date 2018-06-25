@@ -62,10 +62,10 @@ package godCardRaise
       
       private var _doubleTime:Date;
       
-      public function GodCardRaiseManager(param1:IEventDispatcher = null)
+      public function GodCardRaiseManager(target:IEventDispatcher = null)
       {
          _dateEnd = new Date();
-         super(param1);
+         super(target);
       }
       
       public static function get Instance() : GodCardRaiseManager
@@ -95,100 +95,97 @@ package godCardRaise
       
       private function test() : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc8_:int = 0;
-         var _loc5_:* = null;
-         var _loc7_:* = null;
-         var _loc2_:int = 0;
-         var _loc6_:int = 0;
-         var _loc1_:* = null;
+         var a:int = 0;
+         var godCardListInfo:* = null;
+         var i:int = 0;
+         var godCardListGroupInfo:* = null;
+         var Cards:* = null;
+         var cardId:int = 0;
+         var j:int = 0;
+         var rewardInfo:* = null;
          _model.cards[1] = 100;
          _model.chipCount = 500;
          _godCardListInfoList = new Dictionary();
-         _loc4_ = 0;
-         while(_loc4_ < 10)
+         for(a = 0; a < 10; )
          {
-            _loc3_ = new GodCardListInfo();
-            _loc3_.ID = _loc4_ + 1;
-            _loc3_.Name = "卡牌模板" + _loc8_;
-            _loc3_.Pic = (_loc4_ % 2 == 0?1:2) + "";
-            _loc3_.Composition = 100;
-            _loc3_.Decompose = 5;
-            _loc3_.Level = 0;
-            _godCardListInfoList[_loc3_.ID] = _loc3_;
-            _loc4_++;
+            godCardListInfo = new GodCardListInfo();
+            godCardListInfo.ID = a + 1;
+            godCardListInfo.Name = "卡牌模板" + i;
+            godCardListInfo.Pic = (a % 2 == 0?1:2) + "";
+            godCardListInfo.Composition = 100;
+            godCardListInfo.Decompose = 5;
+            godCardListInfo.Level = 0;
+            _godCardListInfoList[godCardListInfo.ID] = godCardListInfo;
+            a++;
          }
          _godCardListGroupInfoList = [];
-         _loc8_ = 0;
-         while(_loc8_ < 20)
+         for(i = 0; i < 20; )
          {
-            _loc5_ = new GodCardListGroupInfo();
-            _loc5_.GroupID = _loc8_ + 1;
-            _loc5_.GroupName = "测试卡组" + _loc8_;
-            _loc5_.ExchangeTimes = 2;
-            _loc7_ = [];
-            _loc2_ = _loc8_ % 2 == 0?1:2;
-            if(_loc8_ % 2 == 0)
+            godCardListGroupInfo = new GodCardListGroupInfo();
+            godCardListGroupInfo.GroupID = i + 1;
+            godCardListGroupInfo.GroupName = "测试卡组" + i;
+            godCardListGroupInfo.ExchangeTimes = 2;
+            Cards = [];
+            cardId = i % 2 == 0?1:2;
+            if(i % 2 == 0)
             {
-               _loc7_.push({
-                  "cardId":_loc2_,
+               Cards.push({
+                  "cardId":cardId,
                   "cardCount":5
                });
             }
-            else if(_loc8_ % 3 == 0)
+            else if(i % 3 == 0)
             {
-               _loc7_.push({
-                  "cardId":_loc2_,
+               Cards.push({
+                  "cardId":cardId,
                   "cardCount":7
                });
-               _loc7_.push({
-                  "cardId":_loc2_,
+               Cards.push({
+                  "cardId":cardId,
                   "cardCount":9
                });
             }
             else
             {
-               _loc7_.push({
-                  "cardId":_loc2_,
+               Cards.push({
+                  "cardId":cardId,
                   "cardCount":3
                });
-               _loc7_.push({
-                  "cardId":_loc2_,
+               Cards.push({
+                  "cardId":cardId,
                   "cardCount":3
                });
-               _loc7_.push({
-                  "cardId":_loc2_,
+               Cards.push({
+                  "cardId":cardId,
                   "cardCount":3
                });
             }
-            _loc5_.Cards = _loc7_;
-            _loc5_.GiftID = 1120 + _loc8_;
-            _godCardListGroupInfoList.push(_loc5_);
-            _loc8_++;
+            godCardListGroupInfo.Cards = Cards;
+            godCardListGroupInfo.GiftID = 1120 + i;
+            _godCardListGroupInfoList.push(godCardListGroupInfo);
+            i++;
          }
          _godCardPointRewardListList = new Vector.<GodCardPointRewardListInfo>();
-         _loc6_ = 0;
-         while(_loc6_ < 10)
+         for(j = 0; j < 10; )
          {
-            _loc1_ = new GodCardPointRewardListInfo();
-            _loc1_.ID = _loc6_;
-            _loc1_.ItemID = 1120 + _loc8_;
-            _loc1_.Count = 2;
-            _loc1_.Point = 100 * (_loc8_ + 1);
-            _loc1_.Valid = 7;
-            _godCardPointRewardListList.push(_loc1_);
-            _loc6_++;
+            rewardInfo = new GodCardPointRewardListInfo();
+            rewardInfo.ID = j;
+            rewardInfo.ItemID = 1120 + i;
+            rewardInfo.Count = 2;
+            rewardInfo.Point = 100 * (i + 1);
+            rewardInfo.Valid = 7;
+            _godCardPointRewardListList.push(rewardInfo);
+            j++;
          }
          _model.awardIds[1] = 1;
       }
       
-      protected function onIsOpen(param1:PkgEvent) : void
+      protected function onIsOpen(e:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         var _loc3_:Boolean = _loc2_.readBoolean();
-         _dateEnd = _loc2_.readDate();
-         _isOpen = _loc3_;
+         var pkg:PackageIn = e.pkg;
+         var isOpen:Boolean = pkg.readBoolean();
+         _dateEnd = pkg.readDate();
+         _isOpen = isOpen;
          if(_isOpen)
          {
             ChatManager.Instance.sysChatAmaranth(LanguageMgr.GetTranslation("godCardRaise.beginTips"));
@@ -204,144 +201,138 @@ package godCardRaise
          }
       }
       
-      private function onInit(param1:PkgEvent) : void
+      private function onInit(e:PkgEvent) : void
       {
-         var _loc7_:int = 0;
-         var _loc8_:int = 0;
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
-         var _loc6_:int = 0;
-         var _loc9_:int = 0;
-         var _loc10_:int = 0;
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc13_:Dictionary = new Dictionary();
-         var _loc11_:int = _loc3_.readInt();
-         _loc7_ = 0;
-         while(_loc7_ < _loc11_)
+         var i:int = 0;
+         var id:int = 0;
+         var count:int = 0;
+         var j:int = 0;
+         var h:int = 0;
+         var groupId:int = 0;
+         var exchangeCount:int = 0;
+         var pkg:PackageIn = e.pkg;
+         var cards:Dictionary = new Dictionary();
+         var length:int = pkg.readInt();
+         for(i = 0; i < length; )
          {
-            _loc8_ = _loc3_.readInt();
-            _loc2_ = _loc3_.readInt();
-            _loc13_[_loc8_] = _loc2_;
-            _loc7_++;
+            id = pkg.readInt();
+            count = pkg.readInt();
+            cards[id] = count;
+            i++;
          }
-         _model.cards = _loc13_;
-         _model.score = _loc3_.readInt();
-         _model.chipCount = _loc3_.readInt();
-         _model.freeCount = _loc3_.readInt();
-         var _loc5_:int = _loc3_.readInt();
-         _loc4_ = 0;
-         while(_loc4_ < _loc5_)
+         _model.cards = cards;
+         _model.score = pkg.readInt();
+         _model.chipCount = pkg.readInt();
+         _model.freeCount = pkg.readInt();
+         var awardIdsLength:int = pkg.readInt();
+         for(j = 0; j < awardIdsLength; )
          {
-            _model.awardIds[_loc3_.readInt()] = 1;
-            _loc4_++;
+            _model.awardIds[pkg.readInt()] = 1;
+            j++;
          }
-         var _loc12_:int = _loc3_.readInt();
-         _loc6_ = 0;
-         while(_loc6_ < _loc12_)
+         var groupsLength:int = pkg.readInt();
+         for(h = 0; h < groupsLength; )
          {
-            _loc9_ = _loc3_.readInt();
-            _loc10_ = _loc3_.readInt();
-            _model.groups[_loc9_] = _loc10_;
-            _loc6_++;
+            groupId = pkg.readInt();
+            exchangeCount = pkg.readInt();
+            _model.groups[groupId] = exchangeCount;
+            h++;
          }
-         _doubleTime = param1.pkg.readDate();
+         _doubleTime = e.pkg.readDate();
          dispatchEvent(new CEvent("godCardRaise_show_view"));
       }
       
-      private function onOpenCard(param1:PkgEvent) : void
+      private function onOpenCard(e:PkgEvent) : void
       {
-         var _loc7_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         var _loc5_:PackageIn = param1.pkg;
-         var _loc6_:Array = [];
-         var _loc4_:int = _loc5_.readInt();
-         _loc7_ = 0;
-         while(_loc7_ < _loc4_)
+         var i:int = 0;
+         var cardId:int = 0;
+         var cardCount:int = 0;
+         var pkg:PackageIn = e.pkg;
+         var cards:Array = [];
+         var length:int = pkg.readInt();
+         for(i = 0; i < length; )
          {
-            _loc2_ = _loc5_.readInt();
-            _loc6_.push(_loc2_);
-            _loc3_ = _model.cards[_loc2_];
-            _model.cards[_loc2_] = _loc3_ + 1;
-            _loc7_++;
+            cardId = pkg.readInt();
+            cards.push(cardId);
+            cardCount = _model.cards[cardId];
+            _model.cards[cardId] = cardCount + 1;
+            i++;
          }
-         _model.score = _loc5_.readInt();
-         _model.freeCount = _loc5_.readInt();
-         dispatchEvent(new CEvent("openCard",_loc6_));
+         _model.score = pkg.readInt();
+         _model.freeCount = pkg.readInt();
+         dispatchEvent(new CEvent("openCard",cards));
       }
       
-      private function onOperateCard(param1:PkgEvent) : void
+      private function onOperateCard(e:PkgEvent) : void
       {
-         var _loc5_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc5_.readInt();
-         var _loc4_:int = _loc5_.readInt();
-         var _loc3_:int = _loc5_.readInt();
-         _model.cards[_loc2_] = _loc4_;
-         _model.chipCount = _loc3_;
+         var pkg:PackageIn = e.pkg;
+         var cardId:int = pkg.readInt();
+         var cardCount:int = pkg.readInt();
+         var clipCount:int = pkg.readInt();
+         _model.cards[cardId] = cardCount;
+         _model.chipCount = clipCount;
          dispatchEvent(new CEvent("operateCard"));
       }
       
-      private function onExchange(param1:PkgEvent) : void
+      private function onExchange(e:PkgEvent) : void
       {
-         var _loc8_:int = 0;
-         var _loc2_:int = 0;
-         var _loc5_:int = 0;
-         var _loc7_:PackageIn = param1.pkg;
-         var _loc4_:int = _loc7_.readInt();
-         var _loc6_:int = _loc7_.readInt();
-         GodCardRaiseManager.Instance.model.groups[_loc4_] = _loc6_;
-         var _loc3_:int = _loc7_.readInt();
-         _loc8_ = 0;
-         while(_loc8_ < _loc3_)
+         var i:int = 0;
+         var cardId:int = 0;
+         var cardCount:int = 0;
+         var pkg:PackageIn = e.pkg;
+         var groupId:int = pkg.readInt();
+         var exchangeCount:int = pkg.readInt();
+         GodCardRaiseManager.Instance.model.groups[groupId] = exchangeCount;
+         var cardsLength:int = pkg.readInt();
+         for(i = 0; i < cardsLength; )
          {
-            _loc2_ = _loc7_.readInt();
-            _loc5_ = _loc7_.readInt();
-            _model.cards[_loc2_] = _loc5_;
-            _loc8_++;
+            cardId = pkg.readInt();
+            cardCount = pkg.readInt();
+            _model.cards[cardId] = cardCount;
+            i++;
          }
          dispatchEvent(new CEvent("exchange"));
       }
       
-      private function onPointAwardAttribute(param1:PkgEvent) : void
+      private function onPointAwardAttribute(e:PkgEvent) : void
       {
       }
       
-      public function getMyCardCount(param1:int = 0) : int
+      public function getMyCardCount(cardID:int = 0) : int
       {
-         if(_model.cards[param1] != null)
+         if(_model.cards[cardID] != null)
          {
-            return _model.cards[param1];
+            return _model.cards[cardID];
          }
          return 0;
       }
       
-      private function onAwardInfo(param1:PkgEvent) : void
+      private function onAwardInfo(e:PkgEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readInt();
-         _loc4_ = 0;
-         while(_loc4_ < _loc2_)
+         var i:int = 0;
+         var pkg:PackageIn = e.pkg;
+         var length:int = pkg.readInt();
+         for(i = 0; i < length; )
          {
-            _model.awardIds[_loc3_.readInt()] = 1;
-            _loc4_++;
+            _model.awardIds[pkg.readInt()] = 1;
+            i++;
          }
          dispatchEvent(new CEvent("awardInfo"));
       }
       
-      public function loadGodCardListTemplate(param1:GodCardListAnalyzer) : void
+      public function loadGodCardListTemplate(anlyzer:GodCardListAnalyzer) : void
       {
-         _godCardListInfoList = param1.list;
+         _godCardListInfoList = anlyzer.list;
       }
       
-      public function loadGodCardListGroup(param1:GodCardListGroupAnalyzer) : void
+      public function loadGodCardListGroup(anlyzer:GodCardListGroupAnalyzer) : void
       {
-         _godCardListGroupInfoList = param1.list;
+         _godCardListGroupInfoList = anlyzer.list;
       }
       
-      public function loadGodCardPointRewardList(param1:GodCardPointRewardListAnalyzer) : void
+      public function loadGodCardPointRewardList(anlyzer:GodCardPointRewardListAnalyzer) : void
       {
-         _godCardPointRewardListList = param1.list;
+         _godCardPointRewardListList = anlyzer.list;
       }
       
       public function get godCardListInfoList() : Dictionary
@@ -349,20 +340,20 @@ package godCardRaise
          return _godCardListInfoList;
       }
       
-      public function getGodCardListInfoListByLevel(param1:int) : Array
+      public function getGodCardListInfoListByLevel(level:int) : Array
       {
-         var _loc2_:Array = [];
+         var arr:Array = [];
          var _loc5_:int = 0;
          var _loc4_:* = _godCardListInfoList;
-         for each(var _loc3_ in _godCardListInfoList)
+         for each(var info in _godCardListInfoList)
          {
-            if(param1 == _loc3_.Level)
+            if(level == info.Level)
             {
-               _loc2_.push(_loc3_);
+               arr.push(info);
             }
          }
-         _loc2_.sortOn("ID",16);
-         return _loc2_;
+         arr.sortOn("ID",16);
+         return arr;
       }
       
       public function get godCardListGroupInfoList() : Array
@@ -370,20 +361,20 @@ package godCardRaise
          return _godCardListGroupInfoList;
       }
       
-      public function getGodCardListGroupInfo(param1:int) : GodCardListGroupInfo
+      public function getGodCardListGroupInfo(groupId:int) : GodCardListGroupInfo
       {
-         var _loc2_:* = null;
+         var currentInfo:* = null;
          var _loc5_:int = 0;
          var _loc4_:* = _godCardListGroupInfoList;
-         for each(var _loc3_ in _godCardListGroupInfoList)
+         for each(var info in _godCardListGroupInfoList)
          {
-            if(_loc3_.GroupID == param1)
+            if(info.GroupID == groupId)
             {
-               _loc2_ = _loc3_;
+               currentInfo = info;
                break;
             }
          }
-         return _loc2_;
+         return currentInfo;
       }
       
       public function get godCardPointRewardList() : Vector.<GodCardPointRewardListInfo>
@@ -391,29 +382,28 @@ package godCardRaise
          return _godCardPointRewardListList;
       }
       
-      public function calculateExchangeCount(param1:GodCardListGroupInfo) : int
+      public function calculateExchangeCount(groupInfo:GodCardListGroupInfo) : int
       {
-         var _loc8_:int = 0;
-         var _loc6_:* = null;
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         var _loc7_:int = 0;
-         var _loc4_:int = param1.Cards.length;
-         var _loc5_:Dictionary = model.cards;
-         _loc8_ = 0;
-         while(_loc8_ < param1.Cards.length)
+         var i:int = 0;
+         var obj:* = null;
+         var cardId:int = 0;
+         var cardCount:int = 0;
+         var myCardCount:int = 0;
+         var exchangeCount:int = groupInfo.Cards.length;
+         var myCards:Dictionary = model.cards;
+         for(i = 0; i < groupInfo.Cards.length; )
          {
-            _loc6_ = param1.Cards[_loc8_];
-            _loc2_ = _loc6_["cardId"];
-            _loc3_ = _loc6_["cardCount"];
-            _loc7_ = _loc5_[_loc2_];
-            if(_loc7_ < _loc3_)
+            obj = groupInfo.Cards[i];
+            cardId = obj["cardId"];
+            cardCount = obj["cardCount"];
+            myCardCount = myCards[cardId];
+            if(myCardCount < cardCount)
             {
-               _loc4_--;
+               exchangeCount--;
             }
-            _loc8_++;
+            i++;
          }
-         return _loc4_;
+         return exchangeCount;
       }
       
       public function checkIcon() : void

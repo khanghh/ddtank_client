@@ -14,28 +14,30 @@ package mark.items
          super();
       }
       
-      public function set data(param1:Object) : void
+      public function set data(value:Object) : void
       {
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         if(param1)
+         var suit:* = null;
+         var setId:int = 0;
+         var txt:* = null;
+         if(value)
          {
-            _loc3_ = new MarkSuitTemplateData();
-            var _loc6_:int = 0;
-            var _loc5_:* = MarkMgr.inst.model.cfgSuit;
-            for each(var _loc2_ in MarkMgr.inst.model.cfgSuit)
+            suit = new MarkSuitTemplateData();
+            var _loc7_:int = 0;
+            var _loc6_:* = MarkMgr.inst.model.cfgSuit;
+            for each(var it in MarkMgr.inst.model.cfgSuit)
             {
-               if(_loc2_.Id == param1.id)
+               if(it.Id == value.id)
                {
-                  _loc3_ = _loc2_;
+                  suit = it;
                }
             }
-            chipIcon.gotoAndStop(Math.ceil(_loc3_.Id / 2));
-            _loc4_ = new FilterFrameText();
-            _loc4_.htmlText = _loc3_.Explain;
-            chipIcon.toolTip = _loc4_.text;
+            setId = suit.SetId % 1000;
+            chipIcon.gotoAndStop(setId - 1);
+            txt = new FilterFrameText();
+            txt.htmlText = suit.Explain;
+            chipIcon.toolTip = txt.text;
             chipIcon.tipWidth = 400;
-            addTypeLabel.text = _loc3_.Name.split("·")[0] + "(" + _loc3_.Name.split("·")[1] + ")";
+            addTypeLabel.text = suit.Name.split("·")[0] + "(" + suit.Name.split("·")[1] + ")";
          }
       }
    }

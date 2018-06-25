@@ -41,9 +41,9 @@ package roomList
       {
          this.escEnable = true;
          this.enterEnable = true;
-         var _loc1_:AlertInfo = new AlertInfo();
-         _loc1_.title = LanguageMgr.GetTranslation("tank.roomlist.RoomListIIFindRoomPanel.search");
-         info = _loc1_;
+         var _alertInfo:AlertInfo = new AlertInfo();
+         _alertInfo.title = LanguageMgr.GetTranslation("tank.roomlist.RoomListIIFindRoomPanel.search");
+         info = _alertInfo;
          _idInputText = ComponentFactory.Instance.creatComponentByStylename("asset.ddtroomlist.idinput");
          _idInputText.text = "";
          _idInputText.textField.restrict = "0-9";
@@ -73,16 +73,16 @@ package roomList
          _passInputText.addEventListener("keyDown",__onkeyDown);
       }
       
-      private function __onkeyDown(param1:KeyboardEvent) : void
+      private function __onkeyDown(event:KeyboardEvent) : void
       {
-         if(param1.keyCode == 13)
+         if(event.keyCode == 13)
          {
             SoundManager.instance.play("008");
             submit();
          }
       }
       
-      private function __addStage(param1:Event) : void
+      private function __addStage(event:Event) : void
       {
          IMEManager.disable();
          if(_idInputText)
@@ -91,10 +91,10 @@ package roomList
          }
       }
       
-      private function __frameEvent(param1:FrameEvent) : void
+      private function __frameEvent(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -133,7 +133,7 @@ package roomList
          dispose();
       }
       
-      private function __checkBoxClick(param1:MouseEvent) : void
+      private function __checkBoxClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _passInputText.text = "";

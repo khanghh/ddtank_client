@@ -25,10 +25,10 @@ package kingDivision.event
       
       private var _pkg:PackageIn;
       
-      public function KingDivisionEvent(param1:String, param2:PackageIn = null)
+      public function KingDivisionEvent(type:String, pkg:PackageIn = null)
       {
-         super(param1,bubbles,cancelable);
-         _pkg = param2;
+         super(type,bubbles,cancelable);
+         _pkg = pkg;
       }
       
       public function get pkg() : PackageIn

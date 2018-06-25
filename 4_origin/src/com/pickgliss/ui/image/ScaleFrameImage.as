@@ -33,13 +33,13 @@ package com.pickgliss.ui.image
          super.dispose();
       }
       
-      public function set fillAlphaRect(param1:Boolean) : void
+      public function set fillAlphaRect(value:Boolean) : void
       {
-         if(_fillAlphaRect == param1)
+         if(_fillAlphaRect == value)
          {
             return;
          }
-         _fillAlphaRect = param1;
+         _fillAlphaRect = value;
          onPropertiesChanged("fillAlphaRect");
       }
       
@@ -48,35 +48,34 @@ package com.pickgliss.ui.image
          return _currentFrame;
       }
       
-      override public function setFrame(param1:int) : void
+      override public function setFrame(frameIndex:int) : void
       {
-         var _loc2_:int = 0;
-         super.setFrame(param1);
-         _currentFrame = param1;
-         _loc2_ = 0;
-         while(_loc2_ < _images.length)
+         var i:int = 0;
+         super.setFrame(frameIndex);
+         _currentFrame = frameIndex;
+         for(i = 0; i < _images.length; )
          {
-            if(_images[_loc2_] != null)
+            if(_images[i] != null)
             {
-               if(param1 - 1 == _loc2_)
+               if(frameIndex - 1 == i)
                {
-                  addChild(_images[_loc2_]);
-                  if(_images[_loc2_] is MovieImage)
+                  addChild(_images[i]);
+                  if(_images[i] is MovieImage)
                   {
-                     ((_images[_loc2_] as MovieImage).display as MovieClip).gotoAndPlay(1);
+                     ((_images[i] as MovieImage).display as MovieClip).gotoAndPlay(1);
                   }
-                  if(_width != Math.round(_images[_loc2_].width))
+                  if(_width != Math.round(_images[i].width))
                   {
-                     _width = Math.round(_images[_loc2_].width);
+                     _width = Math.round(_images[i].width);
                      _changedPropeties["width"] = true;
                   }
                }
-               else if(_images[_loc2_] && _images[_loc2_].parent)
+               else if(_images[i] && _images[i].parent)
                {
-                  removeChild(_images[_loc2_]);
+                  removeChild(_images[i]);
                }
             }
-            _loc2_++;
+            i++;
          }
          fillRect();
       }
@@ -106,74 +105,71 @@ package com.pickgliss.ui.image
       
       override protected function updateSize() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(_images == null)
          {
             return;
          }
          if(_changedPropeties["width"] || _changedPropeties["height"])
          {
-            _loc1_ = 0;
-            while(_loc1_ < _images.length)
+            for(i = 0; i < _images.length; )
             {
-               if(_images[_loc1_] != null)
+               if(_images[i] != null)
                {
-                  _images[_loc1_].width = _width;
-                  _images[_loc1_].height = _height;
+                  _images[i].width = _width;
+                  _images[i].height = _height;
                }
-               _loc1_++;
+               i++;
             }
          }
       }
       
       private function fillImages() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _images = new Vector.<DisplayObject>();
-         _loc1_ = 0;
-         while(_loc1_ < _imageLinks.length)
+         for(i = 0; i < _imageLinks.length; )
          {
             _images.push(null);
-            _loc1_++;
+            i++;
          }
       }
       
-      public function creatFrameImage(param1:int) : void
+      public function creatFrameImage(index:int) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         _loc3_ = 0;
-         while(_loc3_ < _imageLinks.length)
+         var i:int = 0;
+         var image:* = null;
+         for(i = 0; i < _imageLinks.length; )
          {
-            if(!StringUtils.isEmpty(_imageLinks[_loc3_]) && _images[_loc3_] == null)
+            if(!StringUtils.isEmpty(_imageLinks[i]) && _images[i] == null)
             {
-               _loc2_ = ComponentFactory.Instance.creat(_imageLinks[_loc3_]);
-               _width = Math.max(_width,_loc2_.width);
-               _height = Math.max(_height,_loc2_.height);
-               _images[_loc3_] = _loc2_;
-               addChild(_loc2_);
+               image = ComponentFactory.Instance.creat(_imageLinks[i]);
+               _width = Math.max(_width,image.width);
+               _height = Math.max(_height,image.height);
+               _images[i] = image;
+               addChild(image);
             }
-            _loc3_++;
+            i++;
          }
       }
       
-      public function getFrameImage(param1:int) : DisplayObject
+      public function getFrameImage(frameIndex:int) : DisplayObject
       {
-         return _images[param1];
+         return _images[frameIndex];
       }
       
       private function removeImages() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(_images == null)
          {
             return;
          }
-         _loc1_ = 0;
-         while(_loc1_ < _images.length)
+         i = 0;
+         while(i < _images.length)
          {
-            ObjectUtils.disposeObject(_images[_loc1_]);
-            _loc1_++;
+            ObjectUtils.disposeObject(_images[i]);
+            i++;
          }
       }
       

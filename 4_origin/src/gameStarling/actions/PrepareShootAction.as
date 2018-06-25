@@ -28,28 +28,28 @@ package gameStarling.actions
       
       private var _petMovieOver:Boolean = true;
       
-      public function PrepareShootAction(param1:GamePlayer3D)
+      public function PrepareShootAction(player:GamePlayer3D)
       {
          super();
-         _player = param1;
+         _player = player;
       }
       
-      override public function connect(param1:BaseAction) : Boolean
+      override public function connect(action:BaseAction) : Boolean
       {
-         return param1 is PrepareShootAction;
+         return action is PrepareShootAction;
       }
       
       override public function prepare() : void
       {
-         var _loc1_:* = null;
+         var skill:* = null;
          if(_player.player && _player.isLiving)
          {
             if(_player.UsedPetSkill.length > 0 && _player.UsedPetSkill.list[0].BallType == 1)
             {
-               _loc1_ = _player.UsedPetSkill.list[0];
-               _skill = _loc1_;
+               skill = _player.UsedPetSkill.list[0];
+               _skill = skill;
                _petMovieOver = false;
-               _player.usePetSkill(_loc1_,finishPetMovie);
+               _player.usePetSkill(skill,finishPetMovie);
             }
             else
             {
@@ -72,8 +72,8 @@ package gameStarling.actions
       private function doPrepareToShootAction() : void
       {
          _hasDonePrepareAction = true;
-         var _loc1_:BallInfo = BallManager.instance.findBall(_player.player.currentBomb);
-         _actionType = _loc1_.ActionType == 0?GameCharacter3D.SHOWTHROWS:GameCharacter3D.SHOWGUN;
+         var ball:BallInfo = BallManager.instance.findBall(_player.player.currentBomb);
+         _actionType = ball.ActionType == 0?GameCharacter3D.SHOWTHROWS:GameCharacter3D.SHOWGUN;
          if(!GameControl.Instance.Current.togetherShoot || _player is GameLocalPlayer3D)
          {
             if((_player.player.skill >= 0 || _player.player.isSpecialSkill) && SharedManager.Instance.showParticle && !hasDoSkillAnimation)
@@ -82,10 +82,10 @@ package gameStarling.actions
                _player.map.spellKill(_player);
             }
          }
-         var _loc2_:String = "bonesShootMovie" + _player.player.currentBomb;
-         if(_player.weaponMovie == null || _player.weaponMovie.movie.styleName != _loc2_)
+         var weaponName:String = "bonesShootMovie" + _player.player.currentBomb;
+         if(_player.weaponMovie == null || _player.weaponMovie.movie.styleName != weaponName)
          {
-            _player.weaponMovie = new BoneMovieWrapper(_loc2_);
+            _player.weaponMovie = new BoneMovieWrapper(weaponName);
          }
          if(_player.weaponMovie)
          {

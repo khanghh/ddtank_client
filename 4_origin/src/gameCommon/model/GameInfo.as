@@ -60,6 +60,10 @@ package gameCommon.model
       
       public var startTime:Date;
       
+      public var exitTimes:int;
+      
+      public var exitTimeLimit:int;
+      
       private var _weatherType:int;
       
       public var viewers:DictionaryData;
@@ -107,9 +111,9 @@ package gameCommon.model
          return _mapIndex;
       }
       
-      public function set mapIndex(param1:int) : void
+      public function set mapIndex(value:int) : void
       {
-         _mapIndex = param1;
+         _mapIndex = value;
       }
       
       public function get isWeather() : Boolean
@@ -122,14 +126,14 @@ package gameCommon.model
          return _teams;
       }
       
-      public function set teams(param1:DictionaryData) : void
+      public function set teams(value:DictionaryData) : void
       {
-         _teams = param1;
+         _teams = value;
       }
       
-      public function set gameMode(param1:int) : void
+      public function set gameMode(value:int) : void
       {
-         _gameMode = param1;
+         _gameMode = value;
       }
       
       public function get gameMode() : int
@@ -142,9 +146,9 @@ package gameCommon.model
          return _resultCard;
       }
       
-      public function set resultCard(param1:Array) : void
+      public function set resultCard(arr:Array) : void
       {
-         _resultCard = param1;
+         _resultCard = arr;
       }
       
       public function get missionInfo() : MissionInfo
@@ -152,210 +156,210 @@ package gameCommon.model
          return _missionInfo;
       }
       
-      public function set missionInfo(param1:MissionInfo) : void
+      public function set missionInfo(value:MissionInfo) : void
       {
-         _missionInfo = param1;
+         _missionInfo = value;
       }
       
       public function resetBossCardCnt() : void
       {
-         var _loc1_:* = null;
+         var player:* = null;
          var _loc4_:int = 0;
          var _loc3_:* = livings;
-         for each(var _loc2_ in livings)
+         for each(var living in livings)
          {
-            _loc1_ = _loc2_ as Player;
-            if(_loc1_)
+            player = living as Player;
+            if(player)
             {
-               _loc1_.BossCardCount = 0;
-               _loc1_.GetCardCount = 0;
+               player.BossCardCount = 0;
+               player.GetCardCount = 0;
             }
          }
       }
       
-      public function addGamePlayer(param1:Living) : void
+      public function addGamePlayer(info:Living) : void
       {
-         var _loc2_:Living = livings[param1.LivingID];
-         if(_loc2_)
+         var p:Living = livings[info.LivingID];
+         if(p)
          {
-            _loc2_.dispose();
+            p.dispose();
          }
-         if(param1 is LocalPlayer)
+         if(info is LocalPlayer)
          {
-            _selfGamePlayer = param1 as LocalPlayer;
+            _selfGamePlayer = info as LocalPlayer;
          }
-         livings.add(param1.LivingID,param1);
-         addTeamPlayer(param1);
+         livings.add(info.LivingID,info);
+         addTeamPlayer(info);
       }
       
-      public function addGameViewer(param1:Living) : void
+      public function addGameViewer(info:Living) : void
       {
-         var _loc2_:Living = viewers[param1.playerInfo.ID];
-         if(_loc2_)
+         var p:Living = viewers[info.playerInfo.ID];
+         if(p)
          {
-            _loc2_.dispose();
+            p.dispose();
          }
-         if(param1 is LocalPlayer)
+         if(info is LocalPlayer)
          {
-            _selfGamePlayer = param1 as LocalPlayer;
+            _selfGamePlayer = info as LocalPlayer;
          }
-         viewers.add(param1.playerInfo.ID,param1);
+         viewers.add(info.playerInfo.ID,info);
       }
       
-      public function viewerToLiving(param1:int) : void
+      public function viewerToLiving(playerID:int) : void
       {
-         var _loc2_:Living = viewers[param1];
-         if(_loc2_)
+         var player:Living = viewers[playerID];
+         if(player)
          {
-            viewers.remove(param1);
-            if(_loc2_ is LocalPlayer)
+            viewers.remove(playerID);
+            if(player is LocalPlayer)
             {
-               _selfGamePlayer = _loc2_ as LocalPlayer;
+               _selfGamePlayer = player as LocalPlayer;
             }
-            livings.add(_loc2_.LivingID,_loc2_);
-            addTeamPlayer(_loc2_);
+            livings.add(player.LivingID,player);
+            addTeamPlayer(player);
          }
       }
       
-      public function livingToViewer(param1:int, param2:int) : void
+      public function livingToViewer(playerID:int, zoneID:int) : void
       {
-         var _loc3_:Living = findLivingByPlayerID(param1,param2);
-         if(_loc3_)
+         var player:Living = findLivingByPlayerID(playerID,zoneID);
+         if(player)
          {
-            livings.remove(_loc3_.LivingID);
-            removeTeamPlayer(_loc3_);
-            if(_loc3_ is LocalPlayer)
+            livings.remove(player.LivingID);
+            removeTeamPlayer(player);
+            if(player is LocalPlayer)
             {
-               _selfGamePlayer = _loc3_ as LocalPlayer;
+               _selfGamePlayer = player as LocalPlayer;
             }
-            viewers.add(param1,_loc3_);
+            viewers.add(playerID,player);
          }
       }
       
-      public function addTeamPlayer(param1:Living) : void
+      public function addTeamPlayer(info:Living) : void
       {
-         var _loc2_:DictionaryData = new DictionaryData();
-         if(teams[param1.team] == null)
+         var team:DictionaryData = new DictionaryData();
+         if(teams[info.team] == null)
          {
-            _loc2_ = new DictionaryData();
-            teams[param1.team] = _loc2_;
+            team = new DictionaryData();
+            teams[info.team] = team;
          }
          else
          {
-            _loc2_ = teams[param1.team];
+            team = teams[info.team];
          }
-         if(_loc2_[param1.LivingID] == null)
+         if(team[info.LivingID] == null)
          {
-            _loc2_.add(param1.LivingID,param1);
+            team.add(info.LivingID,info);
          }
       }
       
-      public function removeTeamPlayer(param1:Living) : void
+      public function removeTeamPlayer(info:Living) : void
       {
-         var _loc2_:DictionaryData = teams[param1.team];
-         if(_loc2_ && _loc2_[param1.LivingID])
+         var team:DictionaryData = teams[info.team];
+         if(team && team[info.LivingID])
          {
-            _loc2_.remove(param1.LivingID);
+            team.remove(info.LivingID);
          }
       }
       
-      public function setSelfGamePlayer(param1:Living) : void
+      public function setSelfGamePlayer(info:Living) : void
       {
-         _selfGamePlayer = param1 as LocalPlayer;
+         _selfGamePlayer = info as LocalPlayer;
       }
       
-      public function removeGamePlayer(param1:int) : Living
+      public function removeGamePlayer(livingID:int) : Living
       {
-         var _loc2_:Living = livings[param1];
-         if(_loc2_)
+         var info:Living = livings[livingID];
+         if(info)
          {
-            removeTeamPlayer(_loc2_);
-            livings.remove(param1);
-            _loc2_.dispose();
+            removeTeamPlayer(info);
+            livings.remove(livingID);
+            info.dispose();
          }
-         return _loc2_;
+         return info;
       }
       
-      public function removeGamePlayerByPlayerID(param1:int, param2:int) : void
+      public function removeGamePlayerByPlayerID(zoneID:int, playerID:int) : void
       {
          var _loc6_:int = 0;
          var _loc5_:* = livings;
-         for each(var _loc3_ in livings)
+         for each(var living in livings)
          {
-            if(_loc3_ is Player && _loc3_.playerInfo)
+            if(living is Player && living.playerInfo)
             {
-               if(_loc3_.playerInfo.ZoneID == param1 && _loc3_.playerInfo.ID == param2)
+               if(living.playerInfo.ZoneID == zoneID && living.playerInfo.ID == playerID)
                {
-                  livings.remove(_loc3_.LivingID);
-                  _loc3_.dispose();
+                  livings.remove(living.LivingID);
+                  living.dispose();
                }
             }
          }
          var _loc8_:int = 0;
          var _loc7_:* = viewers;
-         for each(var _loc4_ in viewers)
+         for each(var viewer in viewers)
          {
-            if(_loc4_.playerInfo.ZoneID == param1 && _loc4_.playerInfo.ID == param2)
+            if(viewer.playerInfo.ZoneID == zoneID && viewer.playerInfo.ID == playerID)
             {
-               viewers.remove(_loc4_.playerInfo.ID);
-               _loc4_.dispose();
+               viewers.remove(viewer.playerInfo.ID);
+               viewer.dispose();
             }
          }
       }
       
       public function isAllReady() : Boolean
       {
-         var _loc1_:Boolean = true;
+         var allReady:Boolean = true;
          var _loc4_:int = 0;
          var _loc3_:* = livings;
-         for each(var _loc2_ in livings)
+         for each(var info in livings)
          {
-            if(_loc2_.isReady == false)
+            if(info.isReady == false)
             {
-               _loc1_ = false;
+               allReady = false;
                break;
             }
          }
-         return _loc1_;
+         return allReady;
       }
       
-      public function findPlayer(param1:int) : Player
+      public function findPlayer(livingID:int) : Player
       {
-         return livings[param1] as Player;
+         return livings[livingID] as Player;
       }
       
-      public function findPlayerByPlayerID(param1:int) : Player
+      public function findPlayerByPlayerID(playerid:int) : Player
       {
          var _loc4_:int = 0;
          var _loc3_:* = livings;
-         for each(var _loc2_ in livings)
+         for each(var i in livings)
          {
-            if(_loc2_.isPlayer() && _loc2_.playerInfo.ID == param1)
+            if(i.isPlayer() && i.playerInfo.ID == playerid)
             {
-               return _loc2_ as Player;
+               return i as Player;
             }
          }
          return null;
       }
       
-      public function findGamerbyPlayerId(param1:int) : Player
+      public function findGamerbyPlayerId(playerid:int) : Player
       {
          var _loc5_:int = 0;
          var _loc4_:* = livings;
-         for each(var _loc3_ in livings)
+         for each(var i in livings)
          {
-            if(_loc3_.isPlayer() && _loc3_.playerInfo.ID == param1)
+            if(i.isPlayer() && i.playerInfo.ID == playerid)
             {
-               return _loc3_ as Player;
+               return i as Player;
             }
          }
          var _loc7_:int = 0;
          var _loc6_:* = viewers;
-         for each(var _loc2_ in viewers)
+         for each(var v in viewers)
          {
-            if(_loc2_.playerInfo.ID == param1)
+            if(v.playerInfo.ID == playerid)
             {
-               return _loc2_ as Player;
+               return v as Player;
             }
          }
          return null;
@@ -365,9 +369,9 @@ package gameCommon.model
       {
          var _loc3_:int = 0;
          var _loc2_:* = livings;
-         for each(var _loc1_ in livings)
+         for each(var info in livings)
          {
-            if(_loc1_.isLiving && _loc1_.team == selfGamePlayer.team)
+            if(info.isLiving && info.team == selfGamePlayer.team)
             {
                return true;
             }
@@ -377,72 +381,71 @@ package gameCommon.model
       
       public function get allias() : Vector.<Player>
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
-         var _loc3_:Vector.<Player> = new Vector.<Player>();
-         _loc4_ = 0;
-         while(_loc4_ < roomPlayers.length)
+         var i:int = 0;
+         var item:* = null;
+         var item1:* = null;
+         var players:Vector.<Player> = new Vector.<Player>();
+         for(i = 0; i < roomPlayers.length; )
          {
-            _loc2_ = roomPlayers[_loc4_] as RoomPlayer;
-            if(_loc2_)
+            item = roomPlayers[i] as RoomPlayer;
+            if(item)
             {
-               _loc1_ = findPlayerByPlayerID(_loc2_.playerInfo.ID);
-               if(_loc1_ && _loc1_.team == selfGamePlayer.team && _loc1_ != selfGamePlayer && _loc1_.expObj)
+               item1 = findPlayerByPlayerID(item.playerInfo.ID);
+               if(item1 && item1.team == selfGamePlayer.team && item1 != selfGamePlayer && item1.expObj)
                {
-                  _loc3_.push(_loc1_);
+                  players.push(item1);
                }
             }
-            _loc4_++;
+            i++;
          }
-         return _loc3_;
+         return players;
       }
       
-      public function findLiving(param1:int) : Living
+      public function findLiving(livingID:int) : Living
       {
-         return livings[param1];
+         return livings[livingID];
       }
       
-      public function findLivingByName(param1:String) : Living
+      public function findLivingByName(name:String) : Living
       {
          var _loc4_:int = 0;
          var _loc3_:* = livings;
-         for each(var _loc2_ in livings)
+         for each(var info in livings)
          {
-            if(_loc2_.isLiving && _loc2_.name == param1)
+            if(info.isLiving && info.name == name)
             {
-               return _loc2_;
+               return info;
             }
          }
          return null;
       }
       
-      public function findTeam(param1:int) : DictionaryData
+      public function findTeam(id:int) : DictionaryData
       {
-         return teams[param1];
+         return teams[id];
       }
       
       public function resetWithinTheMap() : void
       {
          var _loc3_:int = 0;
          var _loc2_:* = livings;
-         for each(var _loc1_ in livings)
+         for each(var living in livings)
          {
-            _loc1_.resetWithinTheMap();
+            living.resetWithinTheMap();
          }
       }
       
-      public function findLivingByPlayerID(param1:int, param2:int) : Player
+      public function findLivingByPlayerID(playerID:int, zoneID:int) : Player
       {
          var _loc5_:int = 0;
          var _loc4_:* = livings;
-         for each(var _loc3_ in livings)
+         for each(var living in livings)
          {
-            if(_loc3_ is Player && _loc3_.playerInfo)
+            if(living is Player && living.playerInfo)
             {
-               if(_loc3_.playerInfo.ID == param1 && _loc3_.playerInfo.ZoneID == param2)
+               if(living.playerInfo.ID == playerID && living.playerInfo.ZoneID == zoneID)
                {
-                  return _loc3_ as Player;
+                  return living as Player;
                }
             }
          }
@@ -453,12 +456,12 @@ package gameCommon.model
       {
          var _loc3_:int = 0;
          var _loc2_:* = livings;
-         for each(var _loc1_ in livings)
+         for each(var living in livings)
          {
-            if(!(_loc1_ is Player))
+            if(!(living is Player))
             {
-               livings.remove(_loc1_.LivingID);
-               _loc1_.dispose();
+               livings.remove(living.LivingID);
+               living.dispose();
             }
          }
       }
@@ -472,49 +475,49 @@ package gameCommon.model
          return _selfGamePlayer;
       }
       
-      public function addRoomPlayer(param1:RoomPlayer) : void
+      public function addRoomPlayer(info:RoomPlayer) : void
       {
-         var _loc2_:int = roomPlayers.indexOf(param1);
-         if(_loc2_ > -1)
+         var index:int = roomPlayers.indexOf(info);
+         if(index > -1)
          {
-            removeRoomPlayer(param1.playerInfo.ZoneID,param1.playerInfo.ID);
+            removeRoomPlayer(info.playerInfo.ZoneID,info.playerInfo.ID);
          }
-         roomPlayers.push(param1);
+         roomPlayers.push(info);
       }
       
-      public function removeRoomPlayer(param1:int, param2:int) : void
+      public function removeRoomPlayer(zoneID:int, playerID:int) : void
       {
-         var _loc3_:RoomPlayer = findRoomPlayer(param2,param1);
-         if(_loc3_)
+         var info:RoomPlayer = findRoomPlayer(playerID,zoneID);
+         if(info)
          {
-            roomPlayers.splice(roomPlayers.indexOf(_loc3_),1);
+            roomPlayers.splice(roomPlayers.indexOf(info),1);
          }
       }
       
-      public function findRoomPlayer(param1:int, param2:int) : RoomPlayer
+      public function findRoomPlayer(userID:int, zoneID:int) : RoomPlayer
       {
          var _loc5_:int = 0;
          var _loc4_:* = roomPlayers;
-         for each(var _loc3_ in roomPlayers)
+         for each(var rp in roomPlayers)
          {
-            if(_loc3_.playerInfo != null)
+            if(rp.playerInfo != null)
             {
-               if(_loc3_.playerInfo.ID == param1 && _loc3_.playerInfo.ZoneID == param2)
+               if(rp.playerInfo.ID == userID && rp.playerInfo.ZoneID == zoneID)
                {
-                  return _loc3_;
+                  return rp;
                }
             }
          }
          return null;
       }
       
-      public function setWind(param1:Number, param2:Boolean = false, param3:Array = null) : void
+      public function setWind(value:Number, isSelfTurn:Boolean = false, arr:Array = null) : void
       {
-         _wind = Number(param1.toFixed(1));
+         _wind = Number(value.toFixed(1));
          dispatchEvent(new GameEvent("windChanged",{
             "wind":_wind,
-            "isSelfTurn":param2,
-            "windNumArr":param3
+            "isSelfTurn":isSelfTurn,
+            "windNumArr":arr
          }));
       }
       
@@ -523,9 +526,9 @@ package gameCommon.model
          return _wind;
       }
       
-      public function set windRate(param1:Number) : void
+      public function set windRate(value:Number) : void
       {
-         _windRate = param1;
+         _windRate = value;
       }
       
       public function get windRate() : Number
@@ -538,13 +541,13 @@ package gameCommon.model
          return _hasNextMission;
       }
       
-      public function set hasNextMission(param1:Boolean) : void
+      public function set hasNextMission(value:Boolean) : void
       {
-         if(_hasNextMission == param1)
+         if(_hasNextMission == value)
          {
             return;
          }
-         _hasNextMission = param1;
+         _hasNextMission = value;
       }
       
       public function resetResultCard() : void
@@ -552,15 +555,15 @@ package gameCommon.model
          _resultCard = [];
       }
       
-      public function getRoomPlayerByID(param1:int, param2:int) : RoomPlayer
+      public function getRoomPlayerByID(id:int, zoneID:int) : RoomPlayer
       {
          var _loc5_:int = 0;
          var _loc4_:* = roomPlayers;
-         for each(var _loc3_ in roomPlayers)
+         for each(var p in roomPlayers)
          {
-            if(_loc3_.playerInfo.ID == param1 && _loc3_.playerInfo.ZoneID == param2)
+            if(p.playerInfo.ID == id && p.playerInfo.ZoneID == zoneID)
             {
-               return _loc3_;
+               return p;
             }
          }
          return null;
@@ -568,26 +571,26 @@ package gameCommon.model
       
       public function getOutBombsIdList() : Array
       {
-         var _loc1_:Array = [];
+         var arr:Array = [];
          var _loc4_:int = 0;
          var _loc3_:* = outBombs;
-         for each(var _loc2_ in outBombs)
+         for each(var item in outBombs)
          {
-            if(_loc1_.indexOf(_loc2_.Id) == -1)
+            if(arr.indexOf(item.Id) == -1)
             {
-               _loc1_.push(_loc2_.Id);
+               arr.push(item.Id);
             }
          }
-         return _loc1_;
+         return arr;
       }
       
       public function get isHasOneDead() : Boolean
       {
          var _loc3_:int = 0;
          var _loc2_:* = livings;
-         for each(var _loc1_ in livings)
+         for each(var living in livings)
          {
-            if(_loc1_ is Player && _loc1_.team == selfGamePlayer.team && !_loc1_.isLiving)
+            if(living is Player && living.team == selfGamePlayer.team && !living.isLiving)
             {
                return true;
             }
@@ -597,52 +600,51 @@ package gameCommon.model
       
       public function getGuardCoreBuffList() : Array
       {
-         var _loc2_:* = null;
-         var _loc7_:* = null;
-         var _loc4_:Boolean = false;
-         var _loc6_:int = 0;
-         var _loc1_:* = null;
-         var _loc3_:Array = [];
+         var player:* = null;
+         var info:* = null;
+         var isCheck:Boolean = false;
+         var i:int = 0;
+         var listInfo:* = null;
+         var list:Array = [];
          var _loc9_:int = 0;
          var _loc8_:* = livings;
-         for each(var _loc5_ in livings)
+         for each(var living in livings)
          {
-            _loc2_ = _loc5_ as Player;
-            if(_loc2_)
+            player = living as Player;
+            if(player)
             {
-               _loc7_ = GuardCoreManager.instance.getGuardCoreInfoByID(_loc2_.playerInfo.guardCoreID);
-               if(_loc7_ && _loc7_.GainGrade <= _loc2_.playerInfo.Grade)
+               info = GuardCoreManager.instance.getGuardCoreInfoByID(player.playerInfo.guardCoreID);
+               if(info && info.GainGrade <= player.playerInfo.Grade)
                {
-                  if(_loc2_.team == selfGamePlayer.team && _loc7_.GroupType == 1 && !_loc2_.isSelf || _loc2_.team != selfGamePlayer.team && _loc7_.GroupType == 2 && !_loc2_.isSelf || _loc2_.isSelf && (_loc7_.GroupType == 0 || _loc7_.GroupType == 1))
+                  if(player.team == selfGamePlayer.team && info.GroupType == 1 && !player.isSelf || player.team != selfGamePlayer.team && info.GroupType == 2 && !player.isSelf || player.isSelf && (info.GroupType == 0 || info.GroupType == 1))
                   {
-                     if(_loc7_.KeepTurn == 0 || selfGamePlayer.turnCount <= _loc7_.KeepTurn)
+                     if(info.KeepTurn == 0 || selfGamePlayer.turnCount <= info.KeepTurn)
                      {
-                        _loc4_ = false;
-                        _loc6_ = 0;
-                        while(_loc6_ < _loc3_.length)
+                        isCheck = false;
+                        for(i = 0; i < list.length; )
                         {
-                           _loc1_ = _loc3_[_loc6_] as GuardCoreInfo;
-                           if(_loc1_.Type == _loc7_.Type)
+                           listInfo = list[i] as GuardCoreInfo;
+                           if(listInfo.Type == info.Type)
                            {
-                              if(_loc7_.SkillGrade > _loc1_.SkillGrade)
+                              if(info.SkillGrade > listInfo.SkillGrade)
                               {
-                                 _loc3_[_loc6_] = _loc7_;
+                                 list[i] = info;
                               }
-                              _loc4_ = true;
+                              isCheck = true;
                               break;
                            }
-                           _loc6_++;
+                           i++;
                         }
-                        if(!_loc4_)
+                        if(!isCheck)
                         {
-                           _loc3_.push(_loc7_);
+                           list.push(info);
                         }
                      }
                   }
                }
             }
          }
-         return _loc3_;
+         return list;
       }
       
       public function get guardCoreEnable() : Boolean
@@ -650,24 +652,24 @@ package gameCommon.model
          return _guardCoreEnable;
       }
       
-      public function set guardCoreEnable(param1:Boolean) : void
+      public function set guardCoreEnable(value:Boolean) : void
       {
-         _guardCoreEnable = param1;
+         _guardCoreEnable = value;
       }
       
       public function dispose() : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = roomPlayers;
-         for each(var _loc1_ in roomPlayers)
+         for each(var player in roomPlayers)
          {
-            if(RoomManager.Instance.current.players.list.indexOf(_loc1_) == -1)
+            if(RoomManager.Instance.current.players.list.indexOf(player) == -1)
             {
-               _loc1_.dispose();
+               player.dispose();
             }
             else
             {
-               _loc1_.claerMovie3D();
+               player.claerMovie3D();
             }
          }
          if(roomPlayers)
@@ -678,10 +680,10 @@ package gameCommon.model
          {
             var _loc6_:int = 0;
             var _loc5_:* = livings;
-            for each(var _loc2_ in livings)
+            for each(var i in livings)
             {
-               _loc2_.dispose();
-               _loc2_ = null;
+               i.dispose();
+               i = null;
             }
             livings.clear();
          }
@@ -714,9 +716,9 @@ package gameCommon.model
          return _weatherType;
       }
       
-      public function set weatherType(param1:int) : void
+      public function set weatherType(value:int) : void
       {
-         _weatherType = param1;
+         _weatherType = value;
       }
    }
 }

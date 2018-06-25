@@ -10,10 +10,10 @@ package store.events
       
       private var _cellID:int;
       
-      public function EmbedEvent(param1:String, param2:int, param3:Boolean = false, param4:Boolean = false)
+      public function EmbedEvent(type:String, cellID:int, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         super(param1,param3,param4);
-         _cellID = param2;
+         super(type,bubbles,cancelable);
+         _cellID = cellID;
       }
       
       public function get CellID() : int

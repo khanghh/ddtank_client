@@ -1,4 +1,2 @@
-package starling.utils
-{
-   public function getNextPowerOfTwo(param1:Number) : int{return 0;}
-}
+package starling.utils{   public function getNextPowerOfTwo(number:Number) : int { return 0; }
+}

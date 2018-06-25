@@ -38,11 +38,11 @@ package treasure.view
       
       private var cursor:Bitmap;
       
-      public function TreasureCell(param1:int, param2:Boolean = true)
+      public function TreasureCell(fieldPos:int, dis:Boolean = true)
       {
          super();
          cursor = ComponentFactory.Instance.creatBitmap("asset.treasure.cursor");
-         _fieldPos = param1;
+         _fieldPos = fieldPos;
          _field = ComponentFactory.Instance.creat("asset.treasure.field");
          if(TreasureModel.instance.itemList[_fieldPos - 1].pos > 0)
          {
@@ -54,7 +54,7 @@ package treasure.view
          }
          _field.alpha = 0;
          addChild(_field);
-         if(param2 || TreasureModel.instance.itemList[_fieldPos - 1].pos > 0)
+         if(dis || TreasureModel.instance.itemList[_fieldPos - 1].pos > 0)
          {
             creatCartoon();
          }
@@ -62,31 +62,31 @@ package treasure.view
          cursor.visible = false;
       }
       
-      public function creatCartoon(param1:String = "show") : void
+      public function creatCartoon(frame:String = "show") : void
       {
          if(cartoon)
          {
             ObjectUtils.disposeObject(cartoon);
          }
          cartoon = null;
-         if(param1 == "end")
+         if(frame == "end")
          {
             removeEvent();
             outHandler(new MouseEvent("mouseMove"));
          }
          cartoon = ComponentFactory.Instance.creat("asset.treasure.cartoon1");
-         var _loc2_:Sprite = new Sprite();
-         _loc2_.graphics.beginFill(16777215,0);
-         _loc2_.graphics.drawRect(0,0,78,78);
-         _loc2_.graphics.endFill();
+         var s:Sprite = new Sprite();
+         s.graphics.beginFill(16777215,0);
+         s.graphics.drawRect(0,0,78,78);
+         s.graphics.endFill();
          _tbxCount = ComponentFactory.Instance.creatComponentByStylename("treasure.CountText");
          _tbxCount.mouseEnabled = false;
          PositionUtils.setPos(_tbxCount,"treasure.cell.numTf.pos");
-         cell = new TreasureFieldCell(_loc2_,TreasureModel.instance.itemList[_fieldPos - 1]);
+         cell = new TreasureFieldCell(s,TreasureModel.instance.itemList[_fieldPos - 1]);
          cartoon.mc.addChild(cell);
          cartoon.mc.addChild(_tbxCount);
-         cartoon.gotoAndPlay(param1);
-         if(param1 == "end")
+         cartoon.gotoAndPlay(frame);
+         if(frame == "end")
          {
             cartoon.addEventListener("enterFrame",__allOverHandler);
          }
@@ -97,7 +97,7 @@ package treasure.view
          PositionUtils.setPos(cartoon,"cartoon1.pos");
       }
       
-      private function __allOverHandler(param1:Event) : void
+      private function __allOverHandler(e:Event) : void
       {
          if(cartoon.currentFrame == cartoon.totalFrames)
          {
@@ -136,7 +136,7 @@ package treasure.view
          cartoon_dig.addEventListener("enterFrame",cartoon_digHandler);
       }
       
-      private function cartoon_digHandler(param1:Event) : void
+      private function cartoon_digHandler(e:Event) : void
       {
          if(cartoon_dig.currentFrame == cartoon_dig.totalFrames)
          {
@@ -165,28 +165,28 @@ package treasure.view
          }
       }
       
-      private function overHandler(param1:MouseEvent) : void
+      private function overHandler(e:MouseEvent) : void
       {
          Mouse.hide();
          this.addEventListener("mouseMove",mouseMoveHandler);
       }
       
-      private function outHandler(param1:MouseEvent) : void
+      private function outHandler(e:MouseEvent) : void
       {
          Mouse.show();
          cursor.visible = false;
          this.removeEventListener("mouseMove",mouseMoveHandler);
       }
       
-      private function mouseMoveHandler(param1:MouseEvent) : void
+      private function mouseMoveHandler(event:MouseEvent) : void
       {
-         cursor.x = param1.localX;
-         cursor.y = param1.localY - 18;
-         param1.updateAfterEvent();
+         cursor.x = event.localX;
+         cursor.y = event.localY - 18;
+         event.updateAfterEvent();
          cursor.visible = true;
       }
       
-      private function clickHandler(param1:MouseEvent) : void
+      private function clickHandler(e:MouseEvent) : void
       {
          if(TreasureModel.instance.isClick)
          {

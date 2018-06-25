@@ -25,24 +25,24 @@ package
       
       protected var _sourceName:String;
       
-      public function FrameByFrameItem(param1:Number, param2:Number, param3:BitmapData, param4:String = "original", param5:Boolean = false)
+      public function FrameByFrameItem($width:Number, $height:Number, source:BitmapData, $rendmode:String = "original", autoStop:Boolean = false)
       {
-         super(param1,param2,param4,PixelSnapping.NEVER,false);
+         super($width,$height,$rendmode,PixelSnapping.NEVER,false);
          _type = BitmapRendItem.FRAME_BY_FRAME;
-         this._source = param3;
-         this._autoStop = param5;
+         this._source = source;
+         this._autoStop = autoStop;
          this._offset = new Point();
          this.initRectangles();
          this._len = this._rects.length;
       }
       
-      public function set source(param1:BitmapData) : void
+      public function set source(value:BitmapData) : void
       {
-         if(this._source == param1)
+         if(this._source == value)
          {
             return;
          }
-         this._source = param1;
+         this._source = value;
          this.initRectangles();
          this._len = this._rects.length;
       }
@@ -52,9 +52,9 @@ package
          return this._sourceName;
       }
       
-      public function set sourceName(param1:String) : void
+      public function set sourceName(value:String) : void
       {
-         this._sourceName = param1;
+         this._sourceName = value;
       }
       
       public function get source() : BitmapData
@@ -70,20 +70,16 @@ package
       
       private function initRectangles() : void
       {
-         var _loc4_:int = 0;
+         var j:int = 0;
          this._rects = new Vector.<Rectangle>();
-         var _loc1_:int = Math.ceil(this._source.width / _itemWidth);
-         var _loc2_:int = Math.ceil(this._source.height / _itemHeight);
-         var _loc3_:int = 1;
-         while(_loc3_ <= _loc2_)
+         var rowNum:int = Math.ceil(this._source.width / _itemWidth);
+         var lineNum:int = Math.ceil(this._source.height / _itemHeight);
+         for(var i:int = 1; i <= lineNum; i++)
          {
-            _loc4_ = 1;
-            while(_loc4_ <= _loc1_)
+            for(j = 1; j <= rowNum; j++)
             {
-               this._rects.push(new Rectangle((_loc4_ - 1) * _itemWidth,(_loc3_ - 1) * _itemHeight,_itemWidth,_itemHeight));
-               _loc4_++;
+               this._rects.push(new Rectangle((j - 1) * _itemWidth,(i - 1) * _itemHeight,_itemWidth,_itemHeight));
             }
-            _loc3_++;
          }
       }
       
@@ -106,9 +102,9 @@ package
          this._index = 0;
       }
       
-      public function set moveInfo(param1:Vector.<Point>) : void
+      public function set moveInfo(value:Vector.<Point>) : void
       {
-         this._moveInfo = param1;
+         this._moveInfo = value;
       }
       
       override protected function update() : void
@@ -141,20 +137,20 @@ package
          return this._autoStop;
       }
       
-      public function set autoStop(param1:Boolean) : void
+      public function set autoStop(value:Boolean) : void
       {
-         this._autoStop = param1;
+         this._autoStop = value;
       }
       
       override public function toXml() : XML
       {
-         var _loc1_:XML = <asset/>;
-         _loc1_.@type = type;
-         _loc1_.@width = _itemWidth;
-         _loc1_.@height = _itemHeight;
-         _loc1_.@resource = this._sourceName;
-         _loc1_.@rendMode = rendMode;
-         return _loc1_;
+         var result:XML = <asset/>;
+         result.@type = type;
+         result.@width = _itemWidth;
+         result.@height = _itemHeight;
+         result.@resource = this._sourceName;
+         result.@rendMode = rendMode;
+         return result;
       }
       
       override public function get typeToString() : String

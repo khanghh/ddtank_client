@@ -11,26 +11,25 @@ package road7th.math
          super();
       }
       
-      override public function interpolate(param1:Number) : Number
+      override public function interpolate(x:Number) : Number
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:int = 0;
+         var p1:* = null;
+         var p2:* = null;
+         var i:int = 0;
          if(!fix)
          {
-            _loc4_ = 1;
-            while(_loc4_ < list.length)
+            for(i = 1; i < list.length; )
             {
-               _loc2_ = list[_loc4_];
-               _loc3_ = list[_loc4_ - 1];
-               if(_loc2_.x <= param1)
+               p2 = list[i];
+               p1 = list[i - 1];
+               if(p2.x <= x)
                {
-                  _loc4_++;
+                  i++;
                   continue;
                }
                break;
             }
-            return interpolateColors(_loc3_.y,_loc2_.y,1 - (param1 - _loc3_.x) / (_loc2_.x - _loc3_.x));
+            return interpolateColors(p1.y,p2.y,1 - (x - p1.x) / (p2.x - p1.x));
          }
          return fixValue;
       }

@@ -15,34 +15,34 @@ package yzhkof.util
          super();
       }
       
-      public static function isListeners(param1:QName) : Boolean
+      public static function isListeners(qName:QName) : Boolean
       {
-         return isEqual(param1,LISTENERS);
+         return isEqual(qName,LISTENERS);
       }
       
-      public static function isSavedThis(param1:QName) : Boolean
+      public static function isSavedThis(qName:QName) : Boolean
       {
-         return isEqual(param1,SAVEDTHIS);
+         return isEqual(qName,SAVEDTHIS);
       }
       
-      public static function isEqual(param1:QName, param2:QName) : Boolean
+      public static function isEqual(qName1:QName, qName2:QName) : Boolean
       {
-         if(param1.uri == param2.uri && param1.localName == param2.localName)
+         if(qName1.uri == qName2.uri && qName1.localName == qName2.localName)
          {
             return true;
          }
          return false;
       }
       
-      public static function getObjectQname(param1:Object, param2:QName) : QName
+      public static function getObjectQname(obj:Object, qName:QName) : QName
       {
-         var _loc4_:QName = null;
-         var _loc3_:Object = getMemberNames(param1);
-         for each(_loc4_ in _loc3_)
+         var i:QName = null;
+         var qNames:Object = getMemberNames(obj);
+         for each(i in qNames)
          {
-            if(isEqual(_loc4_,param2))
+            if(isEqual(i,qName))
             {
-               return _loc4_;
+               return i;
             }
          }
          return null;

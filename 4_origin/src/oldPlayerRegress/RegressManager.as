@@ -27,23 +27,22 @@ package oldPlayerRegress
          autoPopUp = false;
       }
       
-      public static function recvPacksInfo(param1:PackageIn) : void
+      public static function recvPacksInfo(pkg:PackageIn) : void
       {
-         var _loc4_:int = 0;
-         isCallEnable = !!param1.readInt()?false:true;
-         isApplyEnable = !!param1.readInt()?false:true;
-         var _loc2_:int = param1.readInt();
-         isFirstLogin = _loc2_ > 1?false:true;
-         var _loc3_:int = param1.readInt();
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var i:int = 0;
+         isCallEnable = !!pkg.readInt()?false:true;
+         isApplyEnable = !!pkg.readInt()?false:true;
+         var dayNum:int = pkg.readInt();
+         isFirstLogin = dayNum > 1?false:true;
+         var length:int = pkg.readInt();
+         for(i = 0; i < length; )
          {
-            if(param1.readByte() == 0)
+            if(pkg.readByte() == 0)
             {
                isOver = false;
                break;
             }
-            _loc4_++;
+            i++;
          }
          RegressManager.instance.dispatchEvent(new RegressEvent("regress_addbtn"));
       }

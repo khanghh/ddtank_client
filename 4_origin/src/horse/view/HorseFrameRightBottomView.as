@@ -17,20 +17,17 @@ package horse.view
    import ddt.manager.SoundManager;
    import ddt.manager.StateManager;
    import ddt.utils.PositionUtils;
-   import ddt.view.horse.HorseFrameRightBottomItemCell;
    import ddtDeed.DeedManager;
    import flash.display.MovieClip;
    import flash.display.Sprite;
    import flash.events.Event;
    import flash.events.MouseEvent;
    import flash.events.TextEvent;
-   import flash.geom.Point;
    import flash.utils.getTimer;
    import horse.HorseControl;
    import horse.HorseManager;
    import road7th.utils.MovieClipWrapper;
    import shop.manager.ShopBuyManager;
-   import trainer.view.NewHandContainer;
    
    public class HorseFrameRightBottomView extends Sprite implements Disposeable
    {
@@ -44,7 +41,7 @@ package horse.view
       
       private var _scb:SelectedCheckButton;
       
-      private var _itemCell:HorseFrameRightBottomItemCell;
+      private var _itemCell:HorseFrameRightBottomItemCell2;
       
       private var _lastUpClickTime:int = 0;
       
@@ -57,20 +54,11 @@ package horse.view
          super();
          initView();
          initEvent();
-         guideHandler();
-      }
-      
-      private function guideHandler() : void
-      {
-         if(!PlayerManager.Instance.Self.isNewOnceFinish(112))
-         {
-            NewHandContainer.Instance.showArrow(128,0,new Point(544,288),"","",this);
-         }
       }
       
       private function initView() : void
       {
-         _itemCell = new HorseFrameRightBottomItemCell(11164,1116401);
+         _itemCell = new HorseFrameRightBottomItemCell2(11164,1116401);
          PositionUtils.setPos(_itemCell,"horse.frame.itemCellPos");
          _levelUpBtn = ComponentFactory.Instance.creatComponentByStylename("horse.frame.levelUpBtn");
          _freeUpBtn = ComponentFactory.Instance.creatComponentByStylename("horse.frame.levelUpBtn2");
@@ -103,33 +91,33 @@ package horse.view
          DeedManager.instance.addEventListener("update_main_event",refreshFreeTipTxt);
       }
       
-      private function refreshFreeTipTxt(param1:Event = null) : void
+      private function refreshFreeTipTxt(event:Event = null) : void
       {
-         var _loc2_:int = DeedManager.instance.getOneBuffData(12);
-         if(_loc2_ > 0)
+         var freeCount1:int = DeedManager.instance.getOneBuffData(12);
+         if(freeCount1 > 0)
          {
             _freeUpBtn.visible = true;
             _freeUpTxt.visible = true;
-            _freeUpTxt.text = "(" + _loc2_ + ")";
+            _freeUpTxt.text = "(" + freeCount1 + ")";
             _levelUpBtn.visible = false;
          }
          else
          {
-            _freeUpTxt.text = "(" + _loc2_ + ")";
+            _freeUpTxt.text = "(" + freeCount1 + ")";
             _freeUpBtn.visible = false;
             _freeUpTxt.visible = false;
             _levelUpBtn.visible = true;
          }
       }
       
-      private function upSuccessHandler(param1:Event) : void
+      private function upSuccessHandler(event:Event) : void
       {
          _isPlayingFloatCartoon = true;
-         var _loc2_:MovieClip = ComponentFactory.Instance.creat("asset.horse.upHorse.flowCartoon");
-         PositionUtils.setPos(_loc2_,"horse.frame.upHorseFlowCartoonPos");
-         addChild(_loc2_);
-         var _loc3_:MovieClipWrapper = new MovieClipWrapper(_loc2_,true,true);
-         _loc3_.addEventListener("complete",playCompleteHandler);
+         var mc:MovieClip = ComponentFactory.Instance.creat("asset.horse.upHorse.flowCartoon");
+         PositionUtils.setPos(mc,"horse.frame.upHorseFlowCartoonPos");
+         addChild(mc);
+         var mcw:MovieClipWrapper = new MovieClipWrapper(mc,true,true);
+         mcw.addEventListener("complete",playCompleteHandler);
          SoundManager.instance.play("171");
          judgeLevelUpBtn();
       }
@@ -148,21 +136,21 @@ package horse.view
          }
       }
       
-      private function playCompleteHandler(param1:Event) : void
+      private function playCompleteHandler(event:Event) : void
       {
-         var _loc2_:MovieClipWrapper = param1.currentTarget as MovieClipWrapper;
-         _loc2_.removeEventListener("complete",playCompleteHandler);
+         var mcw:MovieClipWrapper = event.currentTarget as MovieClipWrapper;
+         mcw.removeEventListener("complete",playCompleteHandler);
          HorseControl.instance.upFloatCartoonPlayComplete();
          _isPlayingFloatCartoon = false;
       }
       
-      private function levelUpHandler(param1:MouseEvent) : void
+      private function levelUpHandler(event:MouseEvent) : void
       {
-         var _loc4_:* = null;
-         var _loc2_:int = 0;
-         var _loc7_:int = 0;
-         var _loc8_:int = 0;
-         var _loc3_:int = 0;
+         var confirmFrame:* = null;
+         var nextNeedTotal:int = 0;
+         var curHasExp:int = 0;
+         var upExp:int = 0;
+         var tmp:int = 0;
          SoundManager.instance.play("008");
          if(HorseManager.instance.curLevel >= 90)
          {
@@ -182,49 +170,44 @@ package horse.view
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc9_:int = DeedManager.instance.getOneBuffData(12);
-         if(_loc9_ > 0)
+         var freeCount1:int = DeedManager.instance.getOneBuffData(12);
+         if(freeCount1 > 0)
          {
             SocketManager.Instance.out.sendHorseUpHorse(1);
             return;
          }
-         var _loc6_:int = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(11164);
-         if(_loc6_ <= 0)
+         var itemCount:int = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(11164);
+         if(itemCount <= 0)
          {
-            _loc4_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("horse.itemConfirmBuyPrompt"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
-            _loc4_.moveEnable = false;
-            _loc4_.addEventListener("response",buyConfirm,false,0,true);
+            confirmFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("horse.itemConfirmBuyPrompt"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
+            confirmFrame.moveEnable = false;
+            confirmFrame.addEventListener("response",buyConfirm,false,0,true);
             return;
          }
-         var _loc5_:int = 1;
+         var useCount:int = 1;
          if(_scb.selected)
          {
-            _loc2_ = HorseManager.instance.nextHorseTemplateInfo.Experience;
-            _loc7_ = HorseManager.instance.curExp;
-            _loc8_ = ItemManager.Instance.getTemplateById(11164).Property2;
-            _loc3_ = Math.ceil((_loc2_ - _loc7_) / _loc8_);
-            _loc5_ = Math.min(_loc6_,_loc3_);
+            nextNeedTotal = HorseManager.instance.nextHorseTemplateInfo.Experience;
+            curHasExp = HorseManager.instance.curExp;
+            upExp = ItemManager.Instance.getTemplateById(11164).Property2;
+            tmp = Math.ceil((nextNeedTotal - curHasExp) / upExp);
+            useCount = Math.min(itemCount,tmp);
          }
-         SocketManager.Instance.out.sendHorseUpHorse(_loc5_);
-         if(!PlayerManager.Instance.Self.isNewOnceFinish(112))
-         {
-            SocketManager.Instance.out.syncWeakStep(112);
-         }
-         NewHandContainer.Instance.clearArrowByID(128);
+         SocketManager.Instance.out.sendHorseUpHorse(useCount);
       }
       
-      private function buyConfirm(param1:FrameEvent) : void
+      private function buyConfirm(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",buyConfirm);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",buyConfirm);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             ShopBuyManager.Instance.buy(1116401,1,-1);
          }
       }
       
-      private function __toLinkTxtHandler(param1:TextEvent) : void
+      private function __toLinkTxtHandler(evt:TextEvent) : void
       {
          SoundManager.instance.playButtonSound();
          StateManager.setState("dungeon");

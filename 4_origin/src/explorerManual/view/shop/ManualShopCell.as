@@ -50,11 +50,11 @@ package explorerManual.view.shop
          addChild(_nameTxt);
          _needMoneyTxt = ComponentFactory.Instance.creatComponentByStylename("explorerManual.needMoneyTxt");
          addChild(_needMoneyTxt);
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,70,70);
-         _loc1_.graphics.endFill();
-         _itemCell = CellFactory.instance.createShopItemCell(_loc1_,null,true,true) as ShopItemCell;
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(16777215,0);
+         sp.graphics.drawRect(0,0,70,70);
+         sp.graphics.endFill();
+         _itemCell = CellFactory.instance.createShopItemCell(sp,null,true,true) as ShopItemCell;
          PositionUtils.setPos(_itemCell,"explorerManual.itemCell.pos");
          addChild(_itemCell);
          _integral = ComponentFactory.Instance.creatComponentByStylename("explorerManual.integral");
@@ -63,7 +63,7 @@ package explorerManual.view.shop
          _buyBtn.addEventListener("click",buyHandler,false,0,true);
       }
       
-      private function buyHandler(param1:MouseEvent) : void
+      private function buyHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -71,14 +71,14 @@ package explorerManual.view.shop
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:ManualShopQuickBuy = ComponentFactory.Instance.creatComponentByStylename("explorerManual.shop.QuickBuyAlert");
-         _loc2_.setData(_shopItemInfo.TemplateID,_shopItemInfo.GoodsID,_shopItemInfo.AValue1);
-         LayerManager.Instance.addToLayer(_loc2_,2,true,1);
+         var _buyView:ManualShopQuickBuy = ComponentFactory.Instance.creatComponentByStylename("explorerManual.shop.QuickBuyAlert");
+         _buyView.setData(_shopItemInfo.TemplateID,_shopItemInfo.GoodsID,_shopItemInfo.AValue1);
+         LayerManager.Instance.addToLayer(_buyView,2,true,1);
       }
       
-      public function refreshShow(param1:ShopItemInfo) : void
+      public function refreshShow(value:ShopItemInfo) : void
       {
-         _shopItemInfo = param1;
+         _shopItemInfo = value;
          _itemCell.info = _shopItemInfo.TemplateInfo;
          _itemCell.tipInfo = _shopItemInfo;
          _nameTxt.text = _itemCell.info.Name;

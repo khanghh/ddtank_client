@@ -55,10 +55,10 @@ package store.view.exalt
          _maxWidth = _progressBar.width;
       }
       
-      public function progress(param1:Number, param2:Number) : void
+      public function progress(value:Number, max:Number) : void
       {
-         _currentProgress = param1;
-         _maxProgress = param2;
+         _currentProgress = value;
+         _maxProgress = max;
          update();
       }
       

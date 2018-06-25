@@ -70,7 +70,7 @@ package halloween.view
          _exchangeBtn.addEventListener("click",__onExchangeClick);
       }
       
-      protected function __onExchangeClick(param1:MouseEvent) : void
+      protected function __onExchangeClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.bagLocked)
@@ -81,22 +81,22 @@ package halloween.view
          SocketManager.Instance.out.getHalloweenExchange(_info.Index);
       }
       
-      public function set info(param1:HalloweenModel) : void
+      public function set info(value:HalloweenModel) : void
       {
-         var _loc2_:* = param1 != null;
+         var _loc2_:* = value != null;
          _itemsPrice.visible = _loc2_;
          _loc2_ = _loc2_;
          _itemsName.visible = _loc2_;
          _loc2_ = _loc2_;
          _items.visible = _loc2_;
          _exchangeBtn.visible = _loc2_;
-         if(param1)
+         if(value)
          {
-            if(_info == param1)
+            if(_info == value)
             {
                return;
             }
-            _info = param1;
+            _info = value;
             _items.info = ItemManager.Instance.getTemplateById(_info.Id);
             _itemsName.text = _items.info.Name;
             _itemsPrice.text = _info.Price.toString();

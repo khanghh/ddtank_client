@@ -32,18 +32,18 @@ package oldPlayerRegress.view.itemView
          addChild(_descript);
       }
       
-      public function setData(param1:String, param2:String) : void
+      public function setData(title:String, descript:String) : void
       {
-         _title.htmlText = param1;
-         _descript.htmlText = param2;
+         _title.htmlText = title;
+         _descript.htmlText = descript;
          _descript.x = _desOffsetWidth;
          _descript.y = _title.height + _desOffsetHeight;
       }
       
-      public function setDesOffset(param1:int = 0, param2:int = 0) : void
+      public function setDesOffset($width:int = 0, $height:int = 0) : void
       {
-         _desOffsetWidth = param1 || int(_desOffsetWidth);
-         _desOffsetHeight = param2 || int(_desOffsetHeight);
+         _desOffsetWidth = $width || int(_desOffsetWidth);
+         _desOffsetHeight = $height || int(_desOffsetHeight);
          _descript.x = _desOffsetWidth;
          _descript.y = _title.height + _desOffsetHeight;
       }

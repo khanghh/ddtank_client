@@ -16,11 +16,11 @@ package ddt.events
       
       private var _itemNum:int;
       
-      public function ShortcutBuyEvent(param1:int, param2:int, param3:Boolean = false, param4:Boolean = false, param5:String = "shortcutBuy")
+      public function ShortcutBuyEvent(itemID:int, itemNum:int, bubbles:Boolean = false, cancelable:Boolean = false, eventName:String = "shortcutBuy")
       {
-         super(param5,param3,param4);
-         _itemID = param1;
-         _itemNum = param2;
+         super(eventName,bubbles,cancelable);
+         _itemID = itemID;
+         _itemNum = itemNum;
       }
       
       public function get ItemID() : int

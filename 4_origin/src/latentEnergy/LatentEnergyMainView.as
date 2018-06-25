@@ -89,17 +89,17 @@ package latentEnergy
          UIModuleLoader.Instance.addUIModuleImp("latentenergy");
       }
       
-      private function onUimoduleLoadProgress(param1:UIModuleEvent) : void
+      private function onUimoduleLoadProgress(event:UIModuleEvent) : void
       {
-         if(param1.module == "latentenergy")
+         if(event.module == "latentenergy")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
       
-      private function loadCompleteHandler(param1:UIModuleEvent) : void
+      private function loadCompleteHandler(event:UIModuleEvent) : void
       {
-         if(param1.module == "latentenergy")
+         if(event.module == "latentenergy")
          {
             UIModuleSmallLoading.Instance.hide();
             UIModuleLoader.Instance.removeEventListener("uiModuleComplete",loadCompleteHandler);
@@ -155,45 +155,44 @@ package latentEnergy
       
       private function createTxtView() : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc1_:* = null;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var tmpTxt:* = null;
+         var tmpTxt2:* = null;
+         var tmpMc:* = null;
          _noProTxt = LanguageMgr.GetTranslation("ddt.latentEnergy.oldProNoTxt");
          _leftProTxtList = new Vector.<FilterFrameText>(4);
          _rightProTxtList = new Vector.<FilterFrameText>(4);
          _moreLessIconMcList = new Vector.<MovieClip>(4);
-         _loc4_ = 1;
-         while(_loc4_ <= 4)
+         for(i = 1; i <= 4; )
          {
-            _loc3_ = ComponentFactory.Instance.creatComponentByStylename("latentEnergyFrame.leftProTxt");
-            PositionUtils.setPos(_loc3_,"latentEnergyFrame.leftProTxtPos" + _loc4_);
-            _loc3_.visible = false;
-            addChild(_loc3_);
-            _leftProTxtList[_loc4_ - 1] = _loc3_;
-            _loc1_ = ComponentFactory.Instance.creatComponentByStylename("latentEnergyFrame.rightProTxt");
-            PositionUtils.setPos(_loc1_,"latentEnergyFrame.rightProTxtPos" + _loc4_);
-            _loc1_.visible = false;
-            addChild(_loc1_);
-            _rightProTxtList[_loc4_ - 1] = _loc1_;
-            _loc2_ = ComponentFactory.Instance.creat("asset.latentEnergyFrame.moreLessIcon");
-            PositionUtils.setPos(_loc2_,"latentEnergyFrame.moreLessIconPos" + _loc4_);
-            _loc2_.gotoAndStop(3);
-            addChild(_loc2_);
-            _moreLessIconMcList[_loc4_ - 1] = _loc2_;
-            _loc4_++;
+            tmpTxt = ComponentFactory.Instance.creatComponentByStylename("latentEnergyFrame.leftProTxt");
+            PositionUtils.setPos(tmpTxt,"latentEnergyFrame.leftProTxtPos" + i);
+            tmpTxt.visible = false;
+            addChild(tmpTxt);
+            _leftProTxtList[i - 1] = tmpTxt;
+            tmpTxt2 = ComponentFactory.Instance.creatComponentByStylename("latentEnergyFrame.rightProTxt");
+            PositionUtils.setPos(tmpTxt2,"latentEnergyFrame.rightProTxtPos" + i);
+            tmpTxt2.visible = false;
+            addChild(tmpTxt2);
+            _rightProTxtList[i - 1] = tmpTxt2;
+            tmpMc = ComponentFactory.Instance.creat("asset.latentEnergyFrame.moreLessIcon");
+            PositionUtils.setPos(tmpMc,"latentEnergyFrame.moreLessIconPos" + i);
+            tmpMc.gotoAndStop(3);
+            addChild(tmpMc);
+            _moreLessIconMcList[i - 1] = tmpMc;
+            i++;
          }
       }
       
-      public function set itemPlace(param1:int) : void
+      public function set itemPlace(place:int) : void
       {
-         _itemPlace = param1;
-         var _loc2_:InventoryItemInfo = PlayerManager.Instance.Self.PropBag.items[_itemPlace] as InventoryItemInfo;
-         _itemCell = new LatentEnergyItemCell(_itemPlace,_loc2_,true,new Bitmap(new BitmapData(60,60,true,0)),false);
+         _itemPlace = place;
+         var itemInfo:InventoryItemInfo = PlayerManager.Instance.Self.PropBag.items[_itemPlace] as InventoryItemInfo;
+         _itemCell = new LatentEnergyItemCell(_itemPlace,itemInfo,true,new Bitmap(new BitmapData(60,60,true,0)),false);
          PositionUtils.setPos(_itemCell,"latentEnergyFrame.itemCellPos");
          _itemCell.BGVisible = false;
          addChild(_itemCell);
-         _equipCell.latentEnergyItemId = _loc2_.TemplateID;
+         _equipCell.latentEnergyItemId = itemInfo.TemplateID;
       }
       
       private function createAcceptDragSprite() : void
@@ -232,20 +231,20 @@ package latentEnergy
          LatentEnergyManager.instance.addEventListener("latentEnergy_equip_change",equipInfoChangeHandler);
       }
       
-      private function bagInfoChangeHandler(param1:BagEvent) : void
+      private function bagInfoChangeHandler(event:BagEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:Dictionary = param1.changedSlots;
+         var changeItemInfo:* = null;
+         var tmp2:* = null;
+         var changedSlots:Dictionary = event.changedSlots;
          var _loc7_:int = 0;
-         var _loc6_:* = _loc4_;
-         for each(var _loc5_ in _loc4_)
+         var _loc6_:* = changedSlots;
+         for each(var tmp in changedSlots)
          {
-            _loc3_ = _loc5_;
+            changeItemInfo = tmp;
          }
-         if(_loc3_ && !PlayerManager.Instance.Self.Bag.items[_loc3_.Place])
+         if(changeItemInfo && !PlayerManager.Instance.Self.Bag.items[changeItemInfo.Place])
          {
-            if(_equipCell.info && (_equipCell.info as InventoryItemInfo).Place == _loc3_.Place)
+            if(_equipCell.info && (_equipCell.info as InventoryItemInfo).Place == changeItemInfo.Place)
             {
                _equipCell.info = null;
             }
@@ -256,35 +255,35 @@ package latentEnergy
          }
          else
          {
-            _loc2_ = LatentEnergyManager.instance.getCanLatentEnergyData();
-            if(_loc2_.items.length != _equipBagInfo.items.length)
+            tmp2 = LatentEnergyManager.instance.getCanLatentEnergyData();
+            if(tmp2.items.length != _equipBagInfo.items.length)
             {
-               _equipBagInfo = _loc2_;
+               _equipBagInfo = tmp2;
                _bagList.setData(_equipBagInfo);
             }
          }
       }
       
-      private function equipInfoChangeHandler(param1:Event) : void
+      private function equipInfoChangeHandler(event:Event) : void
       {
          refreshCurProView();
          refreshNewProView();
       }
       
-      private function propInfoChangeHandler(param1:BagEvent) : void
+      private function propInfoChangeHandler(event:BagEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:Dictionary = param1.changedSlots;
+         var changeItemInfo:* = null;
+         var tmpItemInfo:* = null;
+         var changedSlots:Dictionary = event.changedSlots;
          var _loc7_:int = 0;
-         var _loc6_:* = _loc4_;
-         for each(var _loc5_ in _loc4_)
+         var _loc6_:* = changedSlots;
+         for each(var tmp in changedSlots)
          {
-            _loc3_ = _loc5_;
+            changeItemInfo = tmp;
          }
-         if(_loc3_ && !PlayerManager.Instance.Self.PropBag.items[_loc3_.Place])
+         if(changeItemInfo && !PlayerManager.Instance.Self.PropBag.items[changeItemInfo.Place])
          {
-            if(_itemCell.info && (_itemCell.info as InventoryItemInfo).Place == _loc3_.Place)
+            if(_itemCell.info && (_itemCell.info as InventoryItemInfo).Place == changeItemInfo.Place)
             {
                _itemCell.info = null;
             }
@@ -299,21 +298,21 @@ package latentEnergy
             {
                return;
             }
-            _loc2_ = _itemCell.info as InventoryItemInfo;
-            if(!PlayerManager.Instance.Self.PropBag.items[_loc2_.Place])
+            tmpItemInfo = _itemCell.info as InventoryItemInfo;
+            if(!PlayerManager.Instance.Self.PropBag.items[tmpItemInfo.Place])
             {
                _itemCell.info = null;
             }
             else
             {
-               _itemCell.setCount(_loc2_.Count);
+               _itemCell.setCount(tmpItemInfo.Count);
             }
          }
       }
       
-      private function openHandler(param1:MouseEvent) : void
+      private function openHandler(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var confirmFrame:* = null;
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -335,9 +334,9 @@ package latentEnergy
          }
          if(!(_equipCell.info as InventoryItemInfo).IsBinds)
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.latentEnergy.bindTipTxt"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
-            _loc2_.moveEnable = false;
-            _loc2_.addEventListener("response",__confirm,false,0,true);
+            confirmFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.latentEnergy.bindTipTxt"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
+            confirmFrame.moveEnable = false;
+            confirmFrame.addEventListener("response",__confirm,false,0,true);
          }
          else
          {
@@ -347,19 +346,19 @@ package latentEnergy
       
       private function doOpenHandler() : void
       {
-         var _loc1_:InventoryItemInfo = _equipCell.info as InventoryItemInfo;
-         var _loc2_:InventoryItemInfo = _itemCell.info as InventoryItemInfo;
-         SocketManager.Instance.out.sendLatentEnergy(1,_loc1_.BagType,_loc1_.Place,_loc2_.BagType,_loc2_.Place);
+         var equipInfo:InventoryItemInfo = _equipCell.info as InventoryItemInfo;
+         var itemInfo:InventoryItemInfo = _itemCell.info as InventoryItemInfo;
+         SocketManager.Instance.out.sendLatentEnergy(1,equipInfo.BagType,equipInfo.Place,itemInfo.BagType,itemInfo.Place);
          _openBtn.enable = false;
          _delayIndex = setTimeout(openBtnEnableHandler,1000);
       }
       
-      private function __confirm(param1:FrameEvent) : void
+      private function __confirm(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__confirm);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",__confirm);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             doOpenHandler();
          }
@@ -380,7 +379,7 @@ package latentEnergy
          }
       }
       
-      private function replaceHandler(param1:MouseEvent) : void
+      private function replaceHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(!_equipCell.info)
@@ -393,11 +392,11 @@ package latentEnergy
             _replaceBtn.enable = false;
             return;
          }
-         var _loc2_:InventoryItemInfo = _equipCell.info as InventoryItemInfo;
-         SocketManager.Instance.out.sendLatentEnergy(2,_loc2_.BagType,_loc2_.Place);
+         var equipInfo:InventoryItemInfo = _equipCell.info as InventoryItemInfo;
+         SocketManager.Instance.out.sendLatentEnergy(2,equipInfo.BagType,equipInfo.Place);
       }
       
-      private function itemChangeHandler(param1:Event) : void
+      private function itemChangeHandler(event:Event) : void
       {
          if(_itemCell.info)
          {
@@ -410,9 +409,9 @@ package latentEnergy
          equipChangeHandler(null);
       }
       
-      private function equipChangeHandler(param1:Event) : void
+      private function equipChangeHandler(event:Event) : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          if(_equipCell.info)
          {
             refreshCurProView();
@@ -421,13 +420,12 @@ package latentEnergy
          else
          {
             _replaceBtn.enable = false;
-            _loc2_ = 0;
-            while(_loc2_ < 4)
+            for(i = 0; i < 4; )
             {
-               _leftProTxtList[_loc2_].visible = false;
-               _rightProTxtList[_loc2_].visible = false;
-               _moreLessIconMcList[_loc2_].gotoAndStop(3);
-               _loc2_++;
+               _leftProTxtList[i].visible = false;
+               _rightProTxtList[i].visible = false;
+               _moreLessIconMcList[i].gotoAndStop(3);
+               i++;
             }
          }
          if(_equipCell.info && _itemCell.info)
@@ -442,87 +440,84 @@ package latentEnergy
       
       private function refreshCurProView() : void
       {
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
+         var tmpValueArray:* = null;
+         var k:int = 0;
+         var i:int = 0;
          if(!_equipCell.info)
          {
             return;
          }
-         var _loc1_:InventoryItemInfo = _equipCell.info as InventoryItemInfo;
-         if(_loc1_.isHasLatentEnergy)
+         var tmpItemInfo:InventoryItemInfo = _equipCell.info as InventoryItemInfo;
+         if(tmpItemInfo.isHasLatentEnergy)
          {
-            _loc2_ = _loc1_.latentEnergyCurList;
-            _loc3_ = 0;
-            while(_loc3_ < 4)
+            tmpValueArray = tmpItemInfo.latentEnergyCurList;
+            for(k = 0; k < 4; )
             {
-               _leftProTxtList[_loc3_].text = _loc2_[_loc3_];
-               _leftProTxtList[_loc3_].visible = true;
-               _loc3_++;
+               _leftProTxtList[k].text = tmpValueArray[k];
+               _leftProTxtList[k].visible = true;
+               k++;
             }
          }
          else
          {
-            _loc4_ = 0;
-            while(_loc4_ < 4)
+            i = 0;
+            while(i < 4)
             {
-               _leftProTxtList[_loc4_].text = _noProTxt;
-               _leftProTxtList[_loc4_].visible = true;
-               _loc4_++;
+               _leftProTxtList[i].text = _noProTxt;
+               _leftProTxtList[i].visible = true;
+               i++;
             }
          }
       }
       
       private function refreshNewProView() : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:int = 0;
-         var _loc5_:int = 0;
+         var tmpValueArray:* = null;
+         var tmpCurValueArray:* = null;
+         var k:int = 0;
+         var i:int = 0;
          if(!_equipCell.info)
          {
             return;
          }
-         var _loc1_:InventoryItemInfo = _equipCell.info as InventoryItemInfo;
-         if(_loc1_.isHasLatenetEnergyNew)
+         var tmpItemInfo:InventoryItemInfo = _equipCell.info as InventoryItemInfo;
+         if(tmpItemInfo.isHasLatenetEnergyNew)
          {
             _replaceBtn.enable = true;
-            _loc3_ = _loc1_.latentEnergyNewList;
-            _loc2_ = _loc1_.latentEnergyCurList;
-            _loc4_ = 0;
-            while(_loc4_ < 4)
+            tmpValueArray = tmpItemInfo.latentEnergyNewList;
+            tmpCurValueArray = tmpItemInfo.latentEnergyCurList;
+            for(k = 0; k < 4; )
             {
-               _rightProTxtList[_loc4_].text = _loc3_[_loc4_];
-               _rightProTxtList[_loc4_].visible = true;
-               if(int(_loc3_[_loc4_]) > int(_loc2_[_loc4_]))
+               _rightProTxtList[k].text = tmpValueArray[k];
+               _rightProTxtList[k].visible = true;
+               if(int(tmpValueArray[k]) > int(tmpCurValueArray[k]))
                {
-                  _moreLessIconMcList[_loc4_].gotoAndStop(1);
+                  _moreLessIconMcList[k].gotoAndStop(1);
                }
-               else if(int(_loc3_[_loc4_]) == int(_loc2_[_loc4_]))
+               else if(int(tmpValueArray[k]) == int(tmpCurValueArray[k]))
                {
-                  _moreLessIconMcList[_loc4_].gotoAndStop(3);
+                  _moreLessIconMcList[k].gotoAndStop(3);
                }
-               else if(int(_loc3_[_loc4_]) < int(_loc2_[_loc4_]))
+               else if(int(tmpValueArray[k]) < int(tmpCurValueArray[k]))
                {
-                  _moreLessIconMcList[_loc4_].gotoAndStop(2);
+                  _moreLessIconMcList[k].gotoAndStop(2);
                }
-               _loc4_++;
+               k++;
             }
          }
          else
          {
             _replaceBtn.enable = false;
-            _loc5_ = 0;
-            while(_loc5_ < 4)
+            for(i = 0; i < 4; )
             {
-               _rightProTxtList[_loc5_].visible = false;
-               _moreLessIconMcList[_loc5_].gotoAndStop(3);
-               _loc5_++;
+               _rightProTxtList[i].visible = false;
+               _moreLessIconMcList[i].gotoAndStop(3);
+               i++;
             }
          }
       }
       
-      protected function __cellDoubleClick(param1:CellEvent) : void
+      protected function __cellDoubleClick(evt:CellEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -530,33 +525,33 @@ package latentEnergy
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:String = "";
-         if(param1.target == _proBagList)
+         var tmpStr:String = "";
+         if(evt.target == _proBagList)
          {
-            _loc2_ = "latentEnergy_item_move";
+            tmpStr = "latentEnergy_item_move";
          }
          else
          {
-            _loc2_ = "latentEnergy_equip_move";
+            tmpStr = "latentEnergy_equip_move";
          }
-         var _loc3_:LatentEnergyEvent = new LatentEnergyEvent(_loc2_);
-         var _loc4_:BagCell = param1.data as BagCell;
-         _loc3_.info = _loc4_.info as InventoryItemInfo;
-         _loc3_.moveType = 1;
-         LatentEnergyManager.instance.dispatchEvent(_loc3_);
+         var event:LatentEnergyEvent = new LatentEnergyEvent(tmpStr);
+         var cell:BagCell = evt.data as BagCell;
+         event.info = cell.info as InventoryItemInfo;
+         event.moveType = 1;
+         LatentEnergyManager.instance.dispatchEvent(event);
       }
       
-      private function cellClickHandler(param1:CellEvent) : void
+      private function cellClickHandler(event:CellEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BagCell = param1.data as BagCell;
-         _loc2_.dragStart();
+         var cell:BagCell = event.data as BagCell;
+         cell.dragStart();
       }
       
-      override public function set visible(param1:Boolean) : void
+      override public function set visible(value:Boolean) : void
       {
-         .super.visible = param1;
-         if(param1)
+         .super.visible = value;
+         if(value)
          {
             if(!_isDispose)
             {
@@ -597,9 +592,9 @@ package latentEnergy
          }
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             dispose();
          }

@@ -139,62 +139,61 @@ package gemstone
          _loader.addEventListener("complete",loaderComplete);
       }
       
-      private function compeleteHander(param1:GemstoneAnalyze) : void
+      private function compeleteHander(analyze:GemstoneAnalyze) : void
       {
       }
       
-      private function loaderComplete(param1:LoaderEvent) : void
+      private function loaderComplete(event:LoaderEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
+         var i:int = 0;
+         var gInfo:* = null;
          redInfoList = new Vector.<GemstoneStaticInfo>();
          bluInfoList = new Vector.<GemstoneStaticInfo>();
          greInfoList = new Vector.<GemstoneStaticInfo>();
          yelInfoList = new Vector.<GemstoneStaticInfo>();
          purpleInfoList = new Vector.<GemstoneStaticInfo>();
          _gInfoList = new Vector.<GemstoneStaticInfo>();
-         var _loc2_:XML = new XML(param1.loader.content);
-         var _loc3_:int = _loc2_.item.length();
-         _loc5_ = 0;
-         while(_loc5_ < _loc3_)
+         var xml:XML = new XML(event.loader.content);
+         var len:int = xml.item.length();
+         for(i = 0; i < len; )
          {
-            _loc4_ = new GemstoneStaticInfo();
-            _loc4_.id = _loc2_.item[_loc5_].@FightSpiritID;
-            _loc4_.fightSpiritIcon = _loc2_.item[_loc5_].@FightSpiritIcon;
-            _loc4_.attack = _loc2_.item[_loc5_].@Attack;
-            _loc4_.level = _loc2_.item[_loc5_].@Level;
-            _loc4_.luck = _loc2_.item[_loc5_].@Lucky;
-            _loc4_.Exp = _loc2_.item[_loc5_].@Exp;
-            _loc4_.agility = _loc2_.item[_loc5_].@Agility;
-            _loc4_.defence = _loc2_.item[_loc5_].@Defence;
-            _loc4_.blood = _loc2_.item[_loc5_].@Blood;
-            _gInfoList.push(_loc4_);
-            if(_loc4_.id == 100001)
+            gInfo = new GemstoneStaticInfo();
+            gInfo.id = xml.item[i].@FightSpiritID;
+            gInfo.fightSpiritIcon = xml.item[i].@FightSpiritIcon;
+            gInfo.attack = xml.item[i].@Attack;
+            gInfo.level = xml.item[i].@Level;
+            gInfo.luck = xml.item[i].@Lucky;
+            gInfo.Exp = xml.item[i].@Exp;
+            gInfo.agility = xml.item[i].@Agility;
+            gInfo.defence = xml.item[i].@Defence;
+            gInfo.blood = xml.item[i].@Blood;
+            _gInfoList.push(gInfo);
+            if(gInfo.id == 100001)
             {
-               GemstoneManager.Instance.setRedUrl(_loc4_.fightSpiritIcon);
-               redInfoList.push(_loc4_);
+               GemstoneManager.Instance.setRedUrl(gInfo.fightSpiritIcon);
+               redInfoList.push(gInfo);
             }
-            else if(_loc4_.id == 100002)
+            else if(gInfo.id == 100002)
             {
-               GemstoneManager.Instance.setBulUrl(_loc4_.fightSpiritIcon);
-               bluInfoList.push(_loc4_);
+               GemstoneManager.Instance.setBulUrl(gInfo.fightSpiritIcon);
+               bluInfoList.push(gInfo);
             }
-            else if(_loc4_.id == 100003)
+            else if(gInfo.id == 100003)
             {
-               GemstoneManager.Instance.setGreUrl(_loc4_.fightSpiritIcon);
-               greInfoList.push(_loc4_);
+               GemstoneManager.Instance.setGreUrl(gInfo.fightSpiritIcon);
+               greInfoList.push(gInfo);
             }
-            else if(_loc4_.id == 100004)
+            else if(gInfo.id == 100004)
             {
-               GemstoneManager.Instance.setYelUrl(_loc4_.fightSpiritIcon);
-               yelInfoList.push(_loc4_);
+               GemstoneManager.Instance.setYelUrl(gInfo.fightSpiritIcon);
+               yelInfoList.push(gInfo);
             }
-            else if(_loc4_.id == 100005)
+            else if(gInfo.id == 100005)
             {
-               GemstoneManager.Instance.setPurpleUrl(_loc4_.fightSpiritIcon);
-               purpleInfoList.push(_loc4_);
+               GemstoneManager.Instance.setPurpleUrl(gInfo.fightSpiritIcon);
+               purpleInfoList.push(gInfo);
             }
-            _loc5_++;
+            i++;
          }
          curMaxLevel = bluInfoList.length - 1;
       }
@@ -205,9 +204,9 @@ package gemstone
          return _gemstoneFrame;
       }
       
-      public function initFrame(param1:GemstoneFrame) : void
+      public function initFrame(gemstoneFrame:GemstoneFrame) : void
       {
-         _gemstoneFrame = param1;
+         _gemstoneFrame = gemstoneFrame;
       }
       
       public function clearFrame() : void
@@ -234,127 +233,124 @@ package gemstone
          SocketManager.Instance.addEventListener(PkgEvent.format(209,1),playerFigSpiritinit);
       }
       
-      private function playerFigSpiritinit(param1:CrazyTankSocketEvent) : void
+      private function playerFigSpiritinit(event:CrazyTankSocketEvent) : void
       {
-         var _loc10_:int = 0;
-         var _loc6_:* = null;
-         var _loc4_:* = null;
-         var _loc5_:* = undefined;
-         var _loc9_:int = 0;
-         var _loc2_:* = null;
-         var _loc8_:* = null;
-         var _loc7_:Boolean = param1.pkg.readBoolean();
-         var _loc3_:int = param1.pkg.readInt();
-         _loc10_ = 0;
-         while(_loc10_ < _loc3_)
+         var i:int = 0;
+         var obj:* = null;
+         var arr:* = null;
+         var list:* = undefined;
+         var t_i:int = 0;
+         var gems1:* = null;
+         var ginfo:* = null;
+         var bool:Boolean = event.pkg.readBoolean();
+         var count:int = event.pkg.readInt();
+         for(i = 0; i < count; )
          {
-            _loc6_ = new GemstonInitInfo();
-            _loc6_.userId = param1.pkg.readInt();
-            _loc6_.figSpiritId = param1.pkg.readInt();
-            _loc6_.figSpiritIdValue = param1.pkg.readUTF();
-            _loc6_.equipPlace = param1.pkg.readInt();
-            _loc4_ = rezArr(_loc6_.figSpiritIdValue);
-            _loc5_ = new Vector.<GemstListInfo>();
-            _loc9_ = 0;
-            while(_loc9_ < 3)
+            obj = new GemstonInitInfo();
+            obj.userId = event.pkg.readInt();
+            obj.figSpiritId = event.pkg.readInt();
+            obj.figSpiritIdValue = event.pkg.readUTF();
+            obj.equipPlace = event.pkg.readInt();
+            arr = rezArr(obj.figSpiritIdValue);
+            list = new Vector.<GemstListInfo>();
+            for(t_i = 0; t_i < 3; )
             {
-               _loc2_ = _loc4_[_loc9_].split(",");
-               _loc8_ = new GemstListInfo();
-               _loc8_.fightSpiritId = _loc6_.figSpiritId;
-               _loc8_.level = _loc2_[0];
-               _loc8_.exp = _loc2_[1];
-               _loc8_.place = _loc2_[2];
-               _loc5_.push(_loc8_);
-               _loc9_++;
+               gems1 = arr[t_i].split(",");
+               ginfo = new GemstListInfo();
+               ginfo.fightSpiritId = obj.figSpiritId;
+               ginfo.level = gems1[0];
+               ginfo.exp = gems1[1];
+               ginfo.place = gems1[2];
+               list.push(ginfo);
+               t_i++;
             }
-            _loc6_.list = _loc5_;
-            switch(int(_loc6_.equipPlace) - 2)
+            obj.list = list;
+            switch(int(obj.equipPlace) - 2)
             {
                case 0:
-                  hariList = _loc5_;
+                  hariList = list;
                   break;
                case 1:
-                  faceList = _loc5_;
+                  faceList = list;
                   break;
                default:
-                  faceList = _loc5_;
+                  faceList = list;
                   break;
                case 3:
-                  glassList = _loc5_;
+                  glassList = list;
                   break;
                default:
-                  glassList = _loc5_;
+                  glassList = list;
                   break;
                default:
-                  glassList = _loc5_;
+                  glassList = list;
                   break;
                default:
-                  glassList = _loc5_;
+                  glassList = list;
                   break;
                default:
-                  glassList = _loc5_;
+                  glassList = list;
                   break;
                default:
-                  glassList = _loc5_;
+                  glassList = list;
                   break;
                case 9:
-                  suitList = _loc5_;
+                  suitList = list;
                   break;
                default:
-                  suitList = _loc5_;
+                  suitList = list;
                   break;
                case 11:
-                  decorationList = _loc5_;
+                  decorationList = list;
             }
-            _loc10_++;
+            i++;
          }
       }
       
-      private function rezArr(param1:String) : Array
+      private function rezArr(str:String) : Array
       {
-         var _loc2_:Array = param1.split("|");
-         return _loc2_;
+         var arr:Array = str.split("|");
+         return arr;
       }
       
-      protected function playerFigSpiritUp(param1:CrazyTankSocketEvent) : void
+      protected function playerFigSpiritUp(event:CrazyTankSocketEvent) : void
       {
-         var _loc6_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:GemstoneUpGradeInfo = new GemstoneUpGradeInfo();
-         _loc3_.isUp = param1.pkg.readBoolean();
-         _loc3_.isMaxLevel = param1.pkg.readBoolean();
-         _loc3_.isFall = param1.pkg.readBoolean();
-         _loc3_.num = param1.pkg.readInt();
-         var _loc5_:Vector.<GemstListInfo> = new Vector.<GemstListInfo>();
-         var _loc2_:int = param1.pkg.readInt();
-         while(_loc6_ < _loc2_)
+         var i:int = 0;
+         var gemstListInfo:* = null;
+         var curGemstoneUpInfo:GemstoneUpGradeInfo = new GemstoneUpGradeInfo();
+         curGemstoneUpInfo.isUp = event.pkg.readBoolean();
+         curGemstoneUpInfo.isMaxLevel = event.pkg.readBoolean();
+         curGemstoneUpInfo.isFall = event.pkg.readBoolean();
+         curGemstoneUpInfo.num = event.pkg.readInt();
+         var list:Vector.<GemstListInfo> = new Vector.<GemstListInfo>();
+         for(var count:int = event.pkg.readInt(); i < count; )
          {
-            _loc4_ = new GemstListInfo();
-            _loc4_.fightSpiritId = param1.pkg.readInt();
-            _loc4_.level = param1.pkg.readInt();
-            _loc4_.exp = param1.pkg.readInt();
-            _loc4_.place = param1.pkg.readInt();
-            _loc5_.push(_loc4_);
-            _loc6_++;
+            gemstListInfo = new GemstListInfo();
+            gemstListInfo.fightSpiritId = event.pkg.readInt();
+            gemstListInfo.level = event.pkg.readInt();
+            gemstListInfo.exp = event.pkg.readInt();
+            gemstListInfo.place = event.pkg.readInt();
+            list.push(gemstListInfo);
+            i++;
          }
-         _loc3_.equipPlace = param1.pkg.readInt();
-         _loc3_.dir = param1.pkg.readInt();
-         _loc3_.list = _loc5_;
-         setGemstoneListInfo(_loc3_);
+         curGemstoneUpInfo.equipPlace = event.pkg.readInt();
+         curGemstoneUpInfo.dir = event.pkg.readInt();
+         curGemstoneUpInfo.list = list;
+         setGemstoneListInfo(curGemstoneUpInfo);
          if(_gemstoneFrame)
          {
             _gemstoneFrame.upDatafitCount();
-            _gemstoneFrame.gemstoneAction(_loc3_);
+            _gemstoneFrame.gemstoneAction(curGemstoneUpInfo);
          }
          _gemstoneFrame.updateUpButton();
       }
       
-      public function loadGemstoneModule(param1:Function = null, param2:Array = null) : void
+      public function loadGemstoneModule(completeHandler:Function = null, completeParams:Array = null) : void
       {
-         _funcParams = param2;
+         _funcParams = completeParams;
          UIModuleSmallLoading.Instance.progress = 0;
          UIModuleSmallLoading.Instance.show();
-         UIModuleLoader.Instance.addEventListener("uiModuleComplete",param1);
+         UIModuleLoader.Instance.addEventListener("uiModuleComplete",completeHandler);
          UIModuleLoader.Instance.addEventListener("uiMoudleProgress",onUimoduleLoadProgress);
          UIModuleLoader.Instance.addUIModuleImp("gemstone");
       }
@@ -389,119 +385,119 @@ package gemstone
          return _greUrl;
       }
       
-      public function setRedUrl(param1:String) : void
+      public function setRedUrl(str:String) : void
       {
-         _redUrl = param1;
+         _redUrl = str;
       }
       
-      public function setYelUrl(param1:String) : void
+      public function setYelUrl(str:String) : void
       {
-         _yelUrl = param1;
+         _yelUrl = str;
       }
       
-      public function setBulUrl(param1:String) : void
+      public function setBulUrl(str:String) : void
       {
-         _bulUrl = param1;
+         _bulUrl = str;
       }
       
-      public function setGreUrl(param1:String) : void
+      public function setGreUrl(str:String) : void
       {
-         _greUrl = param1;
+         _greUrl = str;
       }
       
-      public function setPurpleUrl(param1:String) : void
+      public function setPurpleUrl(str:String) : void
       {
-         _purpleUrl = param1;
+         _purpleUrl = str;
       }
       
-      private function onUimoduleLoadProgress(param1:UIModuleEvent) : void
+      private function onUimoduleLoadProgress(event:UIModuleEvent) : void
       {
-         if(param1.module == "gemstone")
+         if(event.module == "gemstone")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
       
-      public function getSelfList(param1:int) : Vector.<GemstListInfo>
+      public function getSelfList(p:int) : Vector.<GemstListInfo>
       {
-         if(param1 == 13)
+         if(p == 13)
          {
             return decorationList;
          }
-         if(param1 == 3)
+         if(p == 3)
          {
             return faceList;
          }
-         if(param1 == 5)
+         if(p == 5)
          {
             return glassList;
          }
-         if(param1 == 2)
+         if(p == 2)
          {
             return hariList;
          }
-         if(param1 == 11)
+         if(p == 11)
          {
             return suitList;
          }
          return null;
       }
       
-      public function getByPlayerInfoList(param1:int, param2:int) : Vector.<GemstListInfo>
+      public function getByPlayerInfoList(p:int, playerID:int) : Vector.<GemstListInfo>
       {
-         var _loc3_:* = undefined;
-         var _loc4_:PlayerInfo = PlayerManager.Instance.findPlayer(param2);
-         if(_loc4_ is SelfInfo)
+         var gemstoneList:* = undefined;
+         var playerInfo:PlayerInfo = PlayerManager.Instance.findPlayer(playerID);
+         if(playerInfo is SelfInfo)
          {
-            return getSelfList(param1);
+            return getSelfList(p);
          }
-         _loc3_ = _loc4_.gemstoneList;
-         if(getPlaceByGemstonInitInfo(param1,_loc3_))
+         gemstoneList = playerInfo.gemstoneList;
+         if(getPlaceByGemstonInitInfo(p,gemstoneList))
          {
-            return getPlaceByGemstonInitInfo(param1,_loc3_).list;
+            return getPlaceByGemstonInitInfo(p,gemstoneList).list;
          }
          return null;
       }
       
-      public function setGemstoneListInfo(param1:GemstoneUpGradeInfo) : void
+      public function setGemstoneListInfo(info:GemstoneUpGradeInfo) : void
       {
-         if(param1.equipPlace == 3)
+         if(info.equipPlace == 3)
          {
-            faceList = param1.list;
+            faceList = info.list;
          }
-         else if(param1.equipPlace == 11)
+         else if(info.equipPlace == 11)
          {
-            suitList = param1.list;
+            suitList = info.list;
          }
-         else if(param1.equipPlace == 5)
+         else if(info.equipPlace == 5)
          {
-            glassList = param1.list;
+            glassList = info.list;
          }
-         else if(param1.equipPlace == 13)
+         else if(info.equipPlace == 13)
          {
-            decorationList = param1.list;
+            decorationList = info.list;
          }
-         else if(param1.equipPlace == 2)
+         else if(info.equipPlace == 2)
          {
-            hariList = param1.list;
+            hariList = info.list;
          }
       }
       
-      public function getPlaceByGemstonInitInfo(param1:int, param2:Vector.<GemstonInitInfo>) : GemstonInitInfo
+      public function getPlaceByGemstonInitInfo(p:int, gemstoneList:Vector.<GemstonInitInfo>) : GemstonInitInfo
       {
-         var _loc3_:int = 0;
-         if(!param2 || param2.length <= 0)
+         var i:int = 0;
+         if(!gemstoneList || gemstoneList.length <= 0)
          {
             return null;
          }
-         _loc3_ = 0;
-         while(_loc3_ < param2.length)
+         i = 0;
+         while(i < gemstoneList.length)
          {
-            if(param2[_loc3_].equipPlace == param1)
+            if(gemstoneList[i].equipPlace == p)
             {
-               return param2[_loc3_];
+               return gemstoneList[i];
             }
-            _loc3_++;
+            i++;
          }
          return null;
       }

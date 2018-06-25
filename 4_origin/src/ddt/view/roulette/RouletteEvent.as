@@ -10,14 +10,14 @@ package ddt.view.roulette
       
       private var _keyCount:int = 0;
       
-      public function RouletteEvent(param1:String, param2:Boolean = false, param3:Boolean = false)
+      public function RouletteEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         super(param1,param2,param3);
+         super(type,bubbles,cancelable);
       }
       
-      public function set keyCount(param1:int) : void
+      public function set keyCount(value:int) : void
       {
-         _keyCount = param1;
+         _keyCount = value;
       }
       
       public function get keyCount() : int

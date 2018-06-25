@@ -29,10 +29,10 @@ package consortion.view.selfConsortia
       
       private var _index:int;
       
-      public function ConsortionPollItem(param1:int)
+      public function ConsortionPollItem(index:int)
       {
          super();
-         _index = param1;
+         _index = index;
          initView();
       }
       
@@ -59,9 +59,9 @@ package consortion.view.selfConsortia
          return _bg.y + _bg.displayHeight;
       }
       
-      public function set info(param1:ConsortionPollInfo) : void
+      public function set info(value:ConsortionPollInfo) : void
       {
-         _info = param1;
+         _info = value;
          _name.text = _info.pollName;
          _count.text = String(_info.pollCount);
       }
@@ -79,13 +79,13 @@ package consortion.view.selfConsortia
       {
       }
       
-      private function __selectHandler(param1:MouseEvent) : void
+      private function __selectHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          selected = _selected == true?false:true;
       }
       
-      private function __overHandler(param1:MouseEvent) : void
+      private function __overHandler(event:MouseEvent) : void
       {
          if(!selected)
          {
@@ -94,7 +94,7 @@ package consortion.view.selfConsortia
          }
       }
       
-      private function __outHandler(param1:MouseEvent) : void
+      private function __outHandler(event:MouseEvent) : void
       {
          if(!selected)
          {
@@ -103,10 +103,10 @@ package consortion.view.selfConsortia
          }
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         _selected = param1;
-         _selectedBtn.selected = param1;
+         _selected = value;
+         _selectedBtn.selected = value;
       }
       
       public function get selected() : Boolean

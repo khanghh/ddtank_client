@@ -42,7 +42,7 @@ package cloudBuyLottery
       
       public var logArr:Array;
       
-      public function CloudBuyLotteryManager(param1:PrivateClass)
+      public function CloudBuyLotteryManager(pct:PrivateClass)
       {
          super();
       }
@@ -62,11 +62,11 @@ package cloudBuyLottery
          SocketManager.Instance.addEventListener("cloudBuy",__cloudBuyLotteryHandle);
       }
       
-      private function __cloudBuyLotteryHandle(param1:CrazyTankSocketEvent) : void
+      private function __cloudBuyLotteryHandle(e:CrazyTankSocketEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = param1._cmd;
-         var _loc4_:* = _loc2_;
+         var pkg:PackageIn = e.pkg;
+         var cmd:int = e._cmd;
+         var _loc4_:* = cmd;
          if(CloudBuyLotteryPackageType.OPEN_GAME !== _loc4_)
          {
             if(CloudBuyLotteryPackageType.Enter_GAME !== _loc4_)
@@ -77,33 +77,33 @@ package cloudBuyLottery
                   {
                      if(CloudBuyLotteryPackageType.GET_REWARD === _loc4_)
                      {
-                        getReward(_loc3_);
+                        getReward(pkg);
                      }
                   }
                   else
                   {
-                     updateInfo(_loc3_);
+                     updateInfo(pkg);
                   }
                }
                else
                {
-                  buyGoods(_loc3_);
+                  buyGoods(pkg);
                }
             }
             else
             {
-               enterGame(_loc3_);
+               enterGame(pkg);
             }
          }
          else
          {
-            activityOpen(_loc3_);
+            activityOpen(pkg);
          }
       }
       
-      private function activityOpen(param1:PackageIn) : void
+      private function activityOpen(pkg:PackageIn) : void
       {
-         _model.isOpen = param1.readBoolean();
+         _model.isOpen = pkg.readBoolean();
          initIcon(_model.isOpen);
          if(!_model.isOpen)
          {
@@ -112,70 +112,69 @@ package cloudBuyLottery
          _loadXml("BuyItemRewardLogList.ashx?ran=" + Math.random(),6);
       }
       
-      private function enterGame(param1:PackageIn) : void
+      private function enterGame(pkg:PackageIn) : void
       {
-         var _loc2_:int = 0;
-         _model.templateId = param1.readInt();
-         _model.templatedIdCount = param1.readInt();
-         _model.validDate = param1.readInt();
-         _model.property = param1.readUTF().split(",");
-         _model.count = param1.readInt();
+         var i:int = 0;
+         _model.templateId = pkg.readInt();
+         _model.templatedIdCount = pkg.readInt();
+         _model.validDate = pkg.readInt();
+         _model.property = pkg.readUTF().split(",");
+         _model.count = pkg.readInt();
          if(_model.count <= 0)
          {
             return;
          }
          _model.buyGoodsIDArray = [];
          _model.buyGoodsCountArray = [];
-         _loc2_ = 0;
-         while(_loc2_ < _model.count)
+         for(i = 0; i < _model.count; )
          {
-            _model.buyGoodsIDArray[_loc2_] = param1.readInt();
-            _model.buyGoodsCountArray[_loc2_] = param1.readInt();
-            _loc2_++;
+            _model.buyGoodsIDArray[i] = pkg.readInt();
+            _model.buyGoodsCountArray[i] = pkg.readInt();
+            i++;
          }
-         _model.buyMoney = param1.readInt();
-         _model.maxNum = param1.readInt();
-         _model.currentNum = param1.readInt();
-         _model.luckTime = param1.readDate();
-         _model.luckCount = param1.readInt();
-         _model.remainTimes = param1.readInt();
-         _model.isGame = param1.readBoolean();
+         _model.buyMoney = pkg.readInt();
+         _model.maxNum = pkg.readInt();
+         _model.currentNum = pkg.readInt();
+         _model.luckTime = pkg.readDate();
+         _model.luckCount = pkg.readInt();
+         _model.remainTimes = pkg.readInt();
+         _model.isGame = pkg.readBoolean();
          LoaderUIModule.Instance.loadUIModule(initOpenFrame,null,"cloudBuy");
       }
       
-      private function buyGoods(param1:PackageIn) : void
+      private function buyGoods(pkg:PackageIn) : void
       {
       }
       
-      public function templateDataSetup(param1:Array) : void
+      public function templateDataSetup(dataList:Array) : void
       {
-         itemInfoList = param1;
+         itemInfoList = dataList;
       }
       
-      private function updateInfo(param1:PackageIn) : void
+      private function updateInfo(pkg:PackageIn) : void
       {
-         var _loc2_:int = param1.readInt();
-         _model.templatedIdCount = param1.readInt();
-         _model.validDate = param1.readInt();
-         _model.property = param1.readUTF().split(",");
-         _model.maxNum = param1.readInt();
-         _model.currentNum = param1.readInt();
-         _model.luckTime = param1.readDate();
-         _model.luckCount = param1.readInt();
-         _model.remainTimes = param1.readInt();
-         _model.isGame = param1.readBoolean();
+         var templateId:int = pkg.readInt();
+         _model.templatedIdCount = pkg.readInt();
+         _model.validDate = pkg.readInt();
+         _model.property = pkg.readUTF().split(",");
+         _model.maxNum = pkg.readInt();
+         _model.currentNum = pkg.readInt();
+         _model.luckTime = pkg.readDate();
+         _model.luckCount = pkg.readInt();
+         _model.remainTimes = pkg.readInt();
+         _model.isGame = pkg.readBoolean();
          _loadXml("BuyItemRewardLogList.ashx?ran=" + Math.random(),6);
-         _model.templateId = _loc2_;
+         _model.templateId = templateId;
          dispatchEvent(new Event("updateInfo"));
       }
       
-      private function getReward(param1:PackageIn) : void
+      private function getReward(pkg:PackageIn) : void
       {
-         _model.isGetReward = param1.readBoolean();
+         _model.isGetReward = pkg.readBoolean();
          if(_model.isGetReward)
          {
-            _model.remainTimes = param1.readInt();
-            _model.luckDrawId = param1.readInt();
+            _model.remainTimes = pkg.readInt();
+            _model.luckDrawId = pkg.readInt();
          }
          dispatchEvent(new Event("Individual"));
          dispatchEvent(new Event("frmeupdate"));
@@ -195,10 +194,10 @@ package cloudBuyLottery
          LayerManager.Instance.addToLayer(cloudBuyFrame,3,true,2);
       }
       
-      public function initIcon(param1:Boolean) : void
+      public function initIcon(flag:Boolean) : void
       {
-         HallIconManager.instance.updateSwitchHandler("cloudbuylottery",param1);
-         if(cloudBuyFrame != null && param1 == false)
+         HallIconManager.instance.updateSwitchHandler("cloudbuylottery",flag);
+         if(cloudBuyFrame != null && flag == false)
          {
             if(cloudBuyFrame)
             {
@@ -208,73 +207,72 @@ package cloudBuyLottery
          }
       }
       
-      public function returnTen(param1:String) : int
+      public function returnTen(str:String) : int
       {
-         if(param1.length > 1)
+         if(str.length > 1)
          {
-            return int(param1.charAt(0)) + 1;
+            return int(str.charAt(0)) + 1;
          }
          return 1;
       }
       
-      public function returnABit(param1:String) : int
+      public function returnABit(str:String) : int
       {
-         if(param1.length <= 1)
+         if(str.length <= 1)
          {
-            return int(param1.charAt(0)) + 1;
+            return int(str.charAt(0)) + 1;
          }
-         return int(param1.charAt(1)) + 1;
+         return int(str.charAt(1)) + 1;
       }
       
       public function refreshTimePlayTxt() : String
       {
-         var _loc7_:Number = _model.luckTime.getTime();
-         var _loc6_:Number = TimeManager.Instance.Now().getTime();
-         var _loc1_:Number = _loc7_ - _loc6_;
-         _loc1_ = _loc1_ < 0?0:Number(_loc1_);
-         var _loc2_:int = 0;
-         var _loc8_:String = "";
-         var _loc4_:int = _loc1_ / 3600000;
-         var _loc5_:int = (_loc1_ - _loc4_ * 1000 * 60 * 60) / 60000;
-         var _loc3_:int = (_loc1_ - _loc4_ * 1000 * 60 * 60 - _loc5_ * 1000 * 60) / 1000;
-         _loc8_ = _loc4_ + ":" + _loc5_ + ":" + _loc3_;
-         return _loc8_;
+         var endTimestamp:Number = _model.luckTime.getTime();
+         var nowTimestamp:Number = TimeManager.Instance.Now().getTime();
+         var differ:Number = endTimestamp - nowTimestamp;
+         differ = differ < 0?0:Number(differ);
+         var count:int = 0;
+         var timeTxtStr:String = "";
+         var hours:int = differ / 3600000;
+         var minitues:int = (differ - hours * 1000 * 60 * 60) / 60000;
+         var seconds:int = (differ - hours * 1000 * 60 * 60 - minitues * 1000 * 60) / 1000;
+         timeTxtStr = hours + ":" + minitues + ":" + seconds;
+         return timeTxtStr;
       }
       
-      private function _loadXml(param1:String, param2:int, param3:String = "") : void
+      private function _loadXml($url:String, $requestType:int, $loadErrorMessage:String = "") : void
       {
-         var _loc4_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath(param1),param2);
-         _loc4_.loadErrorMessage = param3;
-         _loc4_.analyzer = new CloudBuyAnalyzer(logComplete);
-         LoadResourceManager.Instance.startLoad(_loc4_);
+         var loadSelfConsortiaMemberList:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath($url),$requestType);
+         loadSelfConsortiaMemberList.loadErrorMessage = $loadErrorMessage;
+         loadSelfConsortiaMemberList.analyzer = new CloudBuyAnalyzer(logComplete);
+         LoadResourceManager.Instance.startLoad(loadSelfConsortiaMemberList);
       }
       
-      private function logComplete(param1:DataAnalyzer) : void
+      private function logComplete(analyzer:DataAnalyzer) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         if(param1 is CloudBuyAnalyzer)
+         var i:int = 0;
+         var cellInfo:* = null;
+         if(analyzer is CloudBuyAnalyzer)
          {
-            logArr = CloudBuyAnalyzer(param1).dataArr;
+            logArr = CloudBuyAnalyzer(analyzer).dataArr;
          }
          if(logArr == null || logArr.length <= 0)
          {
             return;
          }
-         var _loc2_:Vector.<WinningLogItemInfo> = new Vector.<WinningLogItemInfo>();
-         _loc4_ = 0;
-         while(_loc4_ < logArr.length)
+         var list:Vector.<WinningLogItemInfo> = new Vector.<WinningLogItemInfo>();
+         for(i = 0; i < logArr.length; )
          {
-            _loc3_ = new WinningLogItemInfo();
-            _loc3_.TemplateID = int(logArr[_loc4_].templateId);
-            _loc3_.validate = int(logArr[_loc4_].validate);
-            _loc3_.count = int(logArr[_loc4_].count);
-            _loc3_.property = logArr[_loc4_].property.split(",");
-            _loc3_.nickName = logArr[_loc4_].nickName;
-            _loc2_.push(_loc3_);
-            _loc4_++;
+            cellInfo = new WinningLogItemInfo();
+            cellInfo.TemplateID = int(logArr[i].templateId);
+            cellInfo.validate = int(logArr[i].validate);
+            cellInfo.count = int(logArr[i].count);
+            cellInfo.property = logArr[i].property.split(",");
+            cellInfo.nickName = logArr[i].nickName;
+            list.push(cellInfo);
+            i++;
          }
-         _model.myGiftData = _loc2_;
+         _model.myGiftData = list;
       }
       
       public function get model() : CloudBuyLotteryModel

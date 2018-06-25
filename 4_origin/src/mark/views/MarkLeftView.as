@@ -1,10 +1,20 @@
 package mark.views
 {
    import bagAndInfo.cell.BaseCell;
+   import baglocked.BaglockedManager;
+   import com.pickgliss.events.FrameEvent;
+   import com.pickgliss.events.ListItemEvent;
+   import com.pickgliss.ui.AlertManager;
    import com.pickgliss.ui.ComponentFactory;
+   import com.pickgliss.ui.controls.ComboBox;
+   import com.pickgliss.ui.controls.alert.BaseAlerFrame;
    import com.pickgliss.utils.ObjectUtils;
    import ddt.manager.LanguageMgr;
+   import ddt.manager.MessageTipManager;
    import ddt.manager.PlayerManager;
+   import ddt.manager.ServerConfigManager;
+   import ddt.manager.SoundManager;
+   import ddt.utils.CheckMoneyUtils;
    import ddt.utils.PositionUtils;
    import flash.display.MovieClip;
    import flash.display.Shape;
@@ -14,6 +24,7 @@ package mark.views
    import mark.data.MarkChipData;
    import mark.data.MarkChipTemplateData;
    import mark.data.MarkProData;
+   import mark.data.MarkSchemeModel;
    import mark.data.MarkSetTemplateData;
    import mark.data.MarkSuitTemplateData;
    import mark.event.MarkEvent;
@@ -25,6 +36,10 @@ package mark.views
    
    public class MarkLeftView extends MarkLeftViewUI
    {
+      
+      private static const MAX_SCHEME_COUNT:int = 5;
+      
+      private static const FREE_SCHEME_COUNT:int = 2;
        
       
       private var _items:Vector.<MarkChipItem> = null;
@@ -33,8 +48,21 @@ package mark.views
       
       private var _bgEffect:MovieClip = null;
       
+      private var _selectedBox:ComboBox;
+      
+      private var _comboBoxArr:Array;
+      
+      private var _schemeMode:MarkSchemeModel;
+      
+      private var _schemePrice:int = 2000;
+      
+      private var _isSwitchScheme:Boolean = false;
+      
+      private var _clickNum:Number = 0;
+      
       public function MarkLeftView()
       {
+         _comboBoxArr = [];
          super();
       }
       
@@ -50,6 +78,7 @@ package mark.views
          label11.text = LanguageMgr.GetTranslation("mark.mornUI.label11");
          label12.text = LanguageMgr.GetTranslation("mark.mornUI.label12");
          icon14.toolTip = LanguageMgr.GetTranslation("mark.mornUI.label14");
+         initComBoxSuitWay();
          initEvent();
          listEquip.renderHandler = new Handler(render);
          listEquip.selectHandler = new Handler(select);
@@ -60,12 +89,33 @@ package mark.views
          updateMarkMoney();
       }
       
-      private function suitRender(param1:MarkSuitProItem, param2:int) : void
+      private function initComBoxSuitWay() : void
+      {
+         var i:int = 0;
+         _isSwitchScheme = false;
+         _schemeMode = MarkMgr.inst.schemeModel;
+         _selectedBox = ComponentFactory.Instance.creatComponentByStylename("mark.suitWay.selectCombo");
+         addChild(_selectedBox);
+         var schemCount:int = Math.max(2,_schemeMode.schemCount);
+         for(i = 0; i < schemCount; )
+         {
+            _comboBoxArr.push(LanguageMgr.GetTranslation("mark.equipScheme.txt" + i));
+            i++;
+         }
+         if(schemCount < 5)
+         {
+            _comboBoxArr.push(LanguageMgr.GetTranslation("mark.equipScheme.add"));
+         }
+         _selectedBox.textField.text = _comboBoxArr[_schemeMode.curScheme];
+         _selectedBox.listPanel.vectorListModel.appendAll(_comboBoxArr);
+      }
+      
+      private function suitRender(item:MarkSuitProItem, index:int) : void
       {
          if(listSuitType.array.length > 0)
          {
             listSuitType.visible = true;
-            param1.data = listSuitType.array[param2];
+            item.data = listSuitType.array[index];
             lblSuit.htmlText = "";
          }
          else
@@ -75,36 +125,36 @@ package mark.views
          }
       }
       
-      private function render(param1:MarkEquipItem, param2:int) : void
+      private function render(item:MarkEquipItem, index:int) : void
       {
-         param1.data = listEquip.array[param2];
+         item.data = listEquip.array[index];
       }
       
-      private function chooseEquip(param1:MarkEvent) : void
+      private function chooseEquip(evt:MarkEvent) : void
       {
          clearItems();
          _items = new Vector.<MarkChipItem>();
-         var _loc3_:MarkChipItem = null;
-         var _loc4_:MarkChipTemplateData = null;
+         var item:MarkChipItem = null;
+         var chipTemplate:MarkChipTemplateData = null;
          var _loc7_:int = 0;
          var _loc6_:* = MarkMgr.inst.model.getChipsByEquipType(MarkMgr.inst.model.equip);
-         for each(var _loc2_ in MarkMgr.inst.model.getChipsByEquipType(MarkMgr.inst.model.equip))
+         for each(var chip in MarkMgr.inst.model.getChipsByEquipType(MarkMgr.inst.model.equip))
          {
-            _loc4_ = MarkMgr.inst.model.cfgChip[_loc2_.templateId];
-            if(_loc4_)
+            chipTemplate = MarkMgr.inst.model.cfgChip[chip.templateId];
+            if(chipTemplate)
             {
-               _loc3_ = new MarkChipItem(_loc2_);
-               addChild(_loc3_);
-               _loc3_.tipData = _loc2_;
-               PositionUtils.setPos(_loc3_,"mark.itemPos" + _loc4_.Place);
-               _items.push(_loc3_);
+               item = new MarkChipItem(chip);
+               addChild(item);
+               item.tipData = chip;
+               PositionUtils.setPos(item,"mark.itemPos" + chipTemplate.Place);
+               _items.push(item);
             }
          }
-         var _loc5_:Shape = new Shape();
-         _loc5_.graphics.beginFill(16777215,0);
-         _loc5_.graphics.drawRect(0,0,56,56);
-         _loc5_.graphics.endFill();
-         _item = new BaseCell(_loc5_);
+         var cellBG:Shape = new Shape();
+         cellBG.graphics.beginFill(16777215,0);
+         cellBG.graphics.drawRect(0,0,56,56);
+         cellBG.graphics.endFill();
+         _item = new BaseCell(cellBG);
          _item.setContentSize(56,56);
          PositionUtils.setPos(_item,"mark.equipPos");
          addChild(_item);
@@ -114,53 +164,54 @@ package mark.views
          updateProps();
          listSuitType.array = MarkMgr.inst.model.getSuitList();
          listSuitType.repeatX = listSuitType.array.length;
+         if(!_isSwitchScheme)
+         {
+            updateSaveSchemeBtnState();
+         }
       }
       
       private function updateProps() : void
       {
-         var _loc2_:int = 0;
-         var _loc11_:int = 0;
-         var _loc1_:String = "";
-         var _loc10_:Array = MarkMgr.inst.sortedProps(MarkMgr.inst.getEquipProps());
-         var _loc9_:int = 0;
-         var _loc3_:MarkProData = null;
-         var _loc7_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _loc10_.length)
+         var idx:int = 0;
+         var i:int = 0;
+         var proStr:String = "";
+         var props:Array = MarkMgr.inst.sortedProps(MarkMgr.inst.getEquipProps());
+         var proValue:int = 0;
+         var it:MarkProData = null;
+         var line:int = 0;
+         for(idx = 0; idx < props.length; )
          {
-            _loc3_ = _loc10_[_loc2_] as MarkProData;
-            if(_loc3_ != null)
+            it = props[idx] as MarkProData;
+            if(it != null)
             {
-               _loc9_ = _loc3_.value + _loc3_.attachValue;
-               if(_loc9_ > 0)
+               proValue = it.value + it.attachValue;
+               if(proValue > 0)
                {
-                  _loc1_ = _loc1_ + (LanguageMgr.GetTranslation(_loc2_ > 8?"mark.realValue":"mark.realBigValue",LanguageMgr.GetTranslation("mark.pro" + _loc3_.type),_loc3_.value + _loc3_.attachValue) + "  ");
-                  _loc7_++;
-                  _loc1_ = _loc1_ + (_loc7_ % 4 == 0?"\n":"");
+                  proStr = proStr + (LanguageMgr.GetTranslation(idx > 8?"mark.realValue":"mark.realBigValue",LanguageMgr.GetTranslation("mark.pro" + it.type),it.value + it.attachValue) + "  ");
+                  line++;
                }
             }
-            _loc2_++;
+            idx++;
          }
-         txtProps.htmlText = _loc1_.length == 0?LanguageMgr.GetTranslation("mark.noProps"):_loc1_;
+         txtProps.htmlText = proStr.length == 0?LanguageMgr.GetTranslation("mark.noProps"):proStr;
          txtProps.selectable = false;
          txtProps.editable = false;
-         var _loc5_:String = "";
-         var _loc6_:Array = MarkMgr.inst.model.getSuitList();
-         var _loc4_:MarkSuitTemplateData = null;
-         var _loc8_:MarkSetTemplateData = null;
-         _loc11_ = 0;
-         while(_loc11_ < _loc6_.length)
+         var suitStr:String = "";
+         var suits:Array = MarkMgr.inst.model.getSuitList();
+         var suit:MarkSuitTemplateData = null;
+         var sett:MarkSetTemplateData = null;
+         for(i = 0; i < suits.length; )
          {
-            _loc4_ = MarkMgr.inst.model.cfgSuit[_loc6_[_loc11_].id];
-            _loc8_ = MarkMgr.inst.model.cfgSet[_loc4_.SetId];
-            _loc5_ = _loc5_ + (LanguageMgr.GetTranslation("mark.suitPor",_loc8_.Name,_loc4_.Demand) + "   ");
-            _loc11_++;
+            suit = MarkMgr.inst.model.cfgSuit[suits[i].id];
+            sett = MarkMgr.inst.model.cfgSet[suit.SetId];
+            suitStr = suitStr + (LanguageMgr.GetTranslation("mark.suitPor",sett.Name,suit.Demand) + "   ");
+            i++;
          }
       }
       
-      private function select(param1:int) : void
+      private function select(index:int) : void
       {
-         MarkMgr.inst.chooseEquip(param1);
+         MarkMgr.inst.chooseEquip(index);
       }
       
       private function initEvent() : void
@@ -170,16 +221,157 @@ package mark.views
          MarkMgr.inst.addEventListener("updateChips",chooseEquip);
          MarkMgr.inst.addEventListener("putOnChip",putOnChip);
          MarkMgr.inst.addEventListener("putOffChip",putOffChip);
+         MarkMgr.inst.addEventListener("curSchemeChange",__updateCurScheme);
+         MarkMgr.inst.addEventListener("curSchemeChangeDEF",__updateCurSchemeDe);
          MarkMgr.inst.addEventListener("markMoney",updateMarkMoney);
          btnJewel.addEventListener("click",__onClickHandler);
+         btn_save.addEventListener("click",__onSaveSuitWayHandler);
+         MarkMgr.inst.addEventListener("addScheme",__onAddSchemeHandler);
+         MarkMgr.inst.addEventListener("saveScheme",__onSaveSchemeHandler);
+         if(_selectedBox)
+         {
+            _selectedBox.listPanel.list.addEventListener("listItemClick",__itemClickHander);
+         }
       }
       
-      private function updateMarkMoney(param1:MarkEvent = null) : void
+      private function __updateCurScheme(evt:MarkEvent) : void
+      {
+         _selectedBox.textField.text = _comboBoxArr[_schemeMode.curScheme];
+         _isSwitchScheme = false;
+         updateSaveSchemeBtnState();
+      }
+      
+      private function __updateCurSchemeDe(evt:MarkEvent) : void
+      {
+         _isSwitchScheme = false;
+      }
+      
+      private function updateSaveSchemeBtnState() : void
+      {
+         var curCheckScheme:String = MarkMgr.inst.model.getChipsJoinById();
+         var needSave:* = _schemeMode.getSchemeInfo(_schemeMode.curScheme).schemeData == curCheckScheme;
+         btn_save.disabled = needSave;
+         MarkMgr.inst.needSave = !needSave;
+      }
+      
+      private function __itemClickHander(evt:ListItemEvent) : void
+      {
+         var alertAsk:* = null;
+         var state:Boolean = false;
+         SoundManager.instance.playButtonSound();
+         var _curSeIndex:int = _comboBoxArr.indexOf(evt.cellValue);
+         _selectedBox.textField.text = _comboBoxArr[_schemeMode.curScheme];
+         if(!canClick)
+         {
+            evt.stopImmediatePropagation();
+            return;
+         }
+         if(evt.cellValue == LanguageMgr.GetTranslation("mark.equipScheme.add"))
+         {
+            if(PlayerManager.Instance.Self.bagLocked)
+            {
+               BaglockedManager.Instance.show();
+               return;
+            }
+            _schemePrice = ServerConfigManager.instance.MarkEquipSchemePrice;
+            alertAsk = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("tank.game.GameView.gypsyRMBTicketConfirm",_schemePrice),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false,0);
+            alertAsk.addEventListener("response",__alertAllBack);
+            return;
+         }
+         state = btn_save.disabled;
+         if(state)
+         {
+            sendSwitchScheme(_curSeIndex);
+         }
+         else
+         {
+            alertSavePrompt(_curSeIndex);
+         }
+         evt.stopImmediatePropagation();
+      }
+      
+      private function alertSavePrompt(newIndex:*) : void
+      {
+         newIndex = newIndex;
+         MarkMgr.inst.promptSchemeSave(function():*
+         {
+            var /*UnknownSlot*/:* = function(result:Boolean):void
+            {
+               if(result)
+               {
+                  sendSwitchScheme(newIndex);
+                  return;
+               }
+            };
+            return function(result:Boolean):void
+            {
+               if(result)
+               {
+                  sendSwitchScheme(newIndex);
+                  return;
+               }
+            };
+         }());
+      }
+      
+      private function sendSwitchScheme(newIndex:int) : void
+      {
+         _isSwitchScheme = true;
+         MarkMgr.inst.reqSwitchEquipScheme(newIndex);
+      }
+      
+      private function __alertAllBack(event:FrameEvent) : void
+      {
+         var frame:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("response",__alertAllBack);
+         SoundManager.instance.playButtonSound();
+         switch(int(event.responseCode) - 2)
+         {
+            case 0:
+            case 1:
+               CheckMoneyUtils.instance.checkMoney(frame.isBand,_schemePrice,MarkMgr.inst.reqAddEquipScheme);
+         }
+         frame.dispose();
+      }
+      
+      private function __onSaveSuitWayHandler(evt:MouseEvent) : void
+      {
+         SoundManager.instance.playButtonSound();
+         var schemeID:int = _schemeMode.curScheme;
+         MarkMgr.inst.reqSaveMarkScheme(schemeID);
+      }
+      
+      private function __onAddSchemeHandler(evt:MarkEvent) : void
+      {
+         _selectedBox.textField.text = _comboBoxArr[_schemeMode.curScheme];
+         var haveScheme:int = _schemeMode.schemCount;
+         if(haveScheme <= 2)
+         {
+            return;
+         }
+         _comboBoxArr.splice(haveScheme - 1,haveScheme == 5?1:0,LanguageMgr.GetTranslation("mark.equipScheme.txt" + (haveScheme - 1)));
+         if(haveScheme < 5)
+         {
+            _selectedBox.listPanel.vectorListModel.append(_comboBoxArr[haveScheme - 1],haveScheme - 1);
+         }
+         else
+         {
+            _selectedBox.listPanel.vectorListModel.remove(LanguageMgr.GetTranslation("mark.equipScheme.add"));
+            _selectedBox.listPanel.vectorListModel.append(_comboBoxArr[haveScheme - 1],4);
+         }
+      }
+      
+      private function __onSaveSchemeHandler(e:MarkEvent) : void
+      {
+         updateSaveSchemeBtnState();
+      }
+      
+      private function updateMarkMoney(evt:MarkEvent = null) : void
       {
          lblDemandCnt.text = MarkMgr.inst.model.markMoney.toString();
       }
       
-      protected function __onClickHandler(param1:MouseEvent) : void
+      protected function __onClickHandler(event:MouseEvent) : void
       {
          MarkMgr.inst.isFarmMark = true;
          MarkMgr.inst.showTreasureRoomView();
@@ -192,67 +384,76 @@ package mark.views
          MarkMgr.inst.removeEventListener("updateChips",chooseEquip);
          MarkMgr.inst.removeEventListener("putOnChip",putOnChip);
          MarkMgr.inst.removeEventListener("putOffChip",putOffChip);
+         MarkMgr.inst.removeEventListener("curSchemeChange",__updateCurScheme);
+         MarkMgr.inst.removeEventListener("curSchemeChangeDEF",__updateCurSchemeDe);
          MarkMgr.inst.removeEventListener("markMoney",updateMarkMoney);
          btnJewel.removeEventListener("click",__onClickHandler);
+         btn_save.removeEventListener("click",__onSaveSuitWayHandler);
+         MarkMgr.inst.removeEventListener("addScheme",__onAddSchemeHandler);
+         MarkMgr.inst.removeEventListener("saveScheme",__onSaveSchemeHandler);
+         if(_selectedBox)
+         {
+            _selectedBox.removeEventListener("listItemClick",__itemClickHander);
+         }
       }
       
-      private function putOnChip(param1:MarkEvent) : void
+      private function putOnChip(evt:MarkEvent) : void
       {
-         var _loc3_:int = param1.data;
-         var _loc2_:MarkChipData = MarkMgr.inst.model.getChipById(_loc3_);
-         var _loc4_:MarkChipItem = new MarkChipItem(_loc2_);
-         _loc4_.tipData = _loc2_;
-         var _loc5_:MarkChipTemplateData = MarkMgr.inst.model.cfgChip[_loc2_.templateId];
-         addChild(_loc4_);
-         PositionUtils.setPos(_loc4_,"mark.itemPos" + _loc5_.Place);
+         var id:int = evt.data;
+         var chip:MarkChipData = MarkMgr.inst.model.getChipById(id);
+         var item:MarkChipItem = new MarkChipItem(chip);
+         item.tipData = chip;
+         var chipTemplate:MarkChipTemplateData = MarkMgr.inst.model.cfgChip[chip.templateId];
+         addChild(item);
+         PositionUtils.setPos(item,"mark.itemPos" + chipTemplate.Place);
          if(!_items)
          {
             _items = new Vector.<MarkChipItem>();
          }
-         _items.push(_loc4_);
-         playSuitEffect(1,_loc3_);
+         _items.push(item);
+         playSuitEffect(1,id);
          updateProps();
       }
       
-      private function playSuitEffect(param1:int = 0, param2:int = 0) : void
+      private function playSuitEffect(type:int = 0, chipId:int = 0) : void
       {
          if(_items == null || _items.length == 0)
          {
             return;
          }
          clearEffect();
-         var _loc6_:Dictionary = new Dictionary();
-         var _loc4_:MarkChipTemplateData = null;
+         var suitDic:Dictionary = new Dictionary();
+         var chipData:MarkChipTemplateData = null;
          var _loc13_:int = 0;
          var _loc12_:* = _items;
-         for each(var _loc5_ in _items)
+         for each(var item in _items)
          {
-            _loc4_ = MarkMgr.inst.model.cfgChip[(MarkMgr.inst.model.getChipById(_loc5_.id) as MarkChipData).templateId];
-            var _loc11_:* = _loc4_.SetID;
-            _loc6_[_loc11_] = _loc6_[_loc11_] || [];
-            _loc6_[_loc4_.SetID].push(_loc5_);
+            chipData = MarkMgr.inst.model.cfgChip[(MarkMgr.inst.model.getChipById(item.id) as MarkChipData).templateId];
+            var _loc11_:* = chipData.SetID;
+            suitDic[_loc11_] = suitDic[_loc11_] || [];
+            suitDic[chipData.SetID].push(item);
          }
-         var _loc9_:MarkChipData = MarkMgr.inst.model.getChipById(param2);
-         var _loc8_:MarkChipTemplateData = _loc9_ == null?null:MarkMgr.inst.model.cfgChip[_loc9_.templateId];
+         var operChip:MarkChipData = MarkMgr.inst.model.getChipById(chipId);
+         var putOnChip:MarkChipTemplateData = operChip == null?null:MarkMgr.inst.model.cfgChip[operChip.templateId];
          var _loc19_:int = 0;
-         var _loc18_:* = _loc6_;
-         for(var _loc10_ in _loc6_)
+         var _loc18_:* = suitDic;
+         for(var key in suitDic)
          {
             var _loc17_:int = 0;
             var _loc16_:* = MarkMgr.inst.model.cfgSuit;
-            for each(var _loc7_ in MarkMgr.inst.model.cfgSuit)
+            for each(var suit in MarkMgr.inst.model.cfgSuit)
             {
                var _loc15_:int = 0;
-               var _loc14_:* = _loc6_[_loc10_];
-               for each(var _loc3_ in _loc6_[_loc10_])
+               var _loc14_:* = suitDic[key];
+               for each(var it in suitDic[key])
                {
-                  _loc3_.playSuitEffect();
+                  it.playSuitEffect();
                }
-               if(_loc7_.SetId == int(_loc10_))
+               if(suit.SetId == int(key))
                {
-                  if(_loc7_.Demand <= _loc6_[_loc10_].length)
+                  if(suit.Demand <= suitDic[key].length)
                   {
-                     if(param1 == 1 && _loc7_.Demand == _loc6_[_loc10_].length && _loc8_.SetID == _loc10_)
+                     if(type == 1 && suit.Demand == suitDic[key].length && putOnChip.SetID == key)
                      {
                         if(!_bgEffect)
                         {
@@ -281,44 +482,43 @@ package mark.views
       {
          var _loc3_:int = 0;
          var _loc2_:* = _items;
-         for each(var _loc1_ in _items)
+         for each(var item in _items)
          {
-            _loc1_.stopSuitEffect();
+            item.stopSuitEffect();
          }
       }
       
-      private function putOffChip(param1:MarkEvent) : void
+      private function putOffChip(evt:MarkEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = undefined;
-         var _loc2_:* = -1;
-         _loc4_ = 0;
-         while(_loc4_ < _items.length)
+         var i:int = 0;
+         var items:* = undefined;
+         var index:* = -1;
+         for(i = 0; i < _items.length; )
          {
-            if(_items[_loc4_].id == param1.data)
+            if(_items[i].id == evt.data)
             {
-               _loc2_ = _loc4_;
+               index = i;
                break;
             }
-            _loc4_++;
+            i++;
          }
-         if(_loc2_ > -1)
+         if(index > -1)
          {
-            _loc3_ = _items.splice(_loc2_,1);
-            ObjectUtils.disposeObject(_loc3_[0]);
+            items = _items.splice(index,1);
+            ObjectUtils.disposeObject(items[0]);
             updateProps();
          }
          playSuitEffect(2);
       }
       
-      private function disposeView(param1:MarkEvent) : void
+      private function disposeView(evt:MarkEvent) : void
       {
          dispose();
       }
       
       private function clearItems() : void
       {
-         var _loc1_:* = null;
+         var item:* = null;
          if(_item)
          {
             ObjectUtils.disposeObject(_item);
@@ -326,14 +526,26 @@ package mark.views
          _item = null;
          if(_items)
          {
-            _loc1_ = null;
+            item = null;
             while(_items.length > 0)
             {
-               _loc1_ = _items.pop();
-               ObjectUtils.disposeObject(_loc1_);
+               item = _items.pop();
+               ObjectUtils.disposeObject(item);
             }
             _items = null;
          }
+      }
+      
+      private function get canClick() : Boolean
+      {
+         var nowTime:Number = new Date().time;
+         if(nowTime - _clickNum < 2000)
+         {
+            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.storeIIStrength.startStrengthClickTimerMsg"));
+            return false;
+         }
+         _clickNum = nowTime;
+         return true;
       }
       
       override public function dispose() : void

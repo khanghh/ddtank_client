@@ -22,81 +22,78 @@ package consortionBattle.player
       
       private var _equipType:int;
       
-      public function ConsBatLoaderHeadOrBody(param1:ConsortiaBattlePlayerInfo, param2:int)
+      public function ConsBatLoaderHeadOrBody(playerData:ConsortiaBattlePlayerInfo, equipType:int)
       {
          super();
-         _consBatPlayerData = param1;
-         _equipType = param2;
+         _consBatPlayerData = playerData;
+         _equipType = equipType;
       }
       
-      public function load(param1:Function = null) : void
+      public function load(callBack:Function = null) : void
       {
-         var _loc3_:int = 0;
-         _callBack = param1;
+         var i:int = 0;
+         _callBack = callBack;
          initLoaders();
-         var _loc2_:int = _loaders.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var loaderCount:int = _loaders.length;
+         for(i = 0; i < loaderCount; )
          {
-            _loaders[_loc3_].load(layerComplete);
-            _loc3_++;
+            _loaders[i].load(layerComplete);
+            i++;
          }
       }
       
       private function initLoaders() : void
       {
          _loaders = new Vector.<ConsBattSceneCharacterLayer>();
-         var _loc1_:int = 5361;
+         var tmpItemId:int = 5361;
          if(_equipType == 1)
          {
-            _loaders.push(new ConsBattSceneCharacterLayer(ItemManager.Instance.getTemplateById(_loc1_),1,_consBatPlayerData.sex,_consBatPlayerData.clothIndex,1));
-            _loaders.push(new ConsBattSceneCharacterLayer(ItemManager.Instance.getTemplateById(_loc1_),3,_consBatPlayerData.sex,_consBatPlayerData.clothIndex,1));
+            _loaders.push(new ConsBattSceneCharacterLayer(ItemManager.Instance.getTemplateById(tmpItemId),1,_consBatPlayerData.sex,_consBatPlayerData.clothIndex,1));
+            _loaders.push(new ConsBattSceneCharacterLayer(ItemManager.Instance.getTemplateById(tmpItemId),3,_consBatPlayerData.sex,_consBatPlayerData.clothIndex,1));
          }
          else
          {
-            _loaders.push(new ConsBattSceneCharacterLayer(ItemManager.Instance.getTemplateById(_loc1_),2,_consBatPlayerData.sex,_consBatPlayerData.clothIndex,1));
-            _loaders.push(new ConsBattSceneCharacterLayer(ItemManager.Instance.getTemplateById(_loc1_),2,_consBatPlayerData.sex,_consBatPlayerData.clothIndex,2));
+            _loaders.push(new ConsBattSceneCharacterLayer(ItemManager.Instance.getTemplateById(tmpItemId),2,_consBatPlayerData.sex,_consBatPlayerData.clothIndex,1));
+            _loaders.push(new ConsBattSceneCharacterLayer(ItemManager.Instance.getTemplateById(tmpItemId),2,_consBatPlayerData.sex,_consBatPlayerData.clothIndex,2));
          }
       }
       
       private function drawCharacter() : void
       {
-         var _loc3_:* = 0;
-         var _loc2_:* = null;
-         var _loc1_:Number = _loaders[0].width;
-         var _loc4_:Number = _loaders[0].height;
-         if(_loc1_ == 0 || _loc4_ == 0)
+         var i:* = 0;
+         var layer:* = null;
+         var picWidth:Number = _loaders[0].width;
+         var picHeight:Number = _loaders[0].height;
+         if(picWidth == 0 || picHeight == 0)
          {
             return;
          }
-         _content = new BitmapData(_loc1_,_loc4_,true,0);
-         _loc3_ = uint(0);
-         while(_loc3_ < _loaders.length)
+         _content = new BitmapData(picWidth,picHeight,true,0);
+         for(i = uint(0); i < _loaders.length; )
          {
-            _loc2_ = _loaders[_loc3_];
-            if(!_loc2_.isAllLoadSucceed)
+            layer = _loaders[i];
+            if(!layer.isAllLoadSucceed)
             {
                _isAllLoadSucceed = false;
             }
-            _content.draw(_loc2_.getContent(),null,null,"normal");
-            _loc3_++;
+            _content.draw(layer.getContent(),null,null,"normal");
+            i++;
          }
       }
       
-      private function layerComplete(param1:ILayer) : void
+      private function layerComplete(layer:ILayer) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:Boolean = true;
-         _loc3_ = 0;
-         while(_loc3_ < _loaders.length)
+         var i:int = 0;
+         var isAllLayerComplete:Boolean = true;
+         for(i = 0; i < _loaders.length; )
          {
-            if(!_loaders[_loc3_].isComplete)
+            if(!_loaders[i].isComplete)
             {
-               _loc2_ = false;
+               isAllLayerComplete = false;
             }
-            _loc3_++;
+            i++;
          }
-         if(_loc2_)
+         if(isAllLayerComplete)
          {
             drawCharacter();
             loadComplete();
@@ -118,16 +115,16 @@ package consortionBattle.player
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(_loaders == null)
          {
             return;
          }
-         _loc1_ = 0;
-         while(_loc1_ < _loaders.length)
+         i = 0;
+         while(i < _loaders.length)
          {
-            _loaders[_loc1_].dispose();
-            _loc1_++;
+            _loaders[i].dispose();
+            i++;
          }
          _loaders = null;
          _consBatPlayerData = null;

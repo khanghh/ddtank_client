@@ -25,17 +25,17 @@ package ddt.data.analyze
       
       public var signPetInfo:Array;
       
-      public function DaylyGiveAnalyzer(param1:Function)
+      public function DaylyGiveAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc2_:* = null;
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         _xml = new XML(param1);
+         var xmllist:* = null;
+         var i:int = 0;
+         var info:* = null;
+         _xml = new XML(data);
          list = [];
          signAwardList = [];
          signPetInfo = [];
@@ -43,34 +43,33 @@ package ddt.data.analyze
          signAwardCounts = [];
          if(_xml.@value == "true")
          {
-            _loc2_ = _xml..Item;
-            _loc4_ = 0;
-            while(_loc4_ < _loc2_.length())
+            xmllist = _xml..Item;
+            for(i = 0; i < xmllist.length(); )
             {
-               if(_loc2_[_loc4_].@GetWay == 0)
+               if(xmllist[i].@GetWay == 0)
                {
-                  _loc3_ = new DaylyGiveInfo();
-                  ObjectUtils.copyPorpertiesByXML(_loc3_,_loc2_[_loc4_]);
-                  list.push(_loc3_);
+                  info = new DaylyGiveInfo();
+                  ObjectUtils.copyPorpertiesByXML(info,xmllist[i]);
+                  list.push(info);
                }
-               else if(_loc2_[_loc4_].@GetWay == 4)
+               else if(xmllist[i].@GetWay == 4)
                {
-                  _loc3_ = new DaylyGiveInfo();
-                  ObjectUtils.copyPorpertiesByXML(_loc3_,_loc2_[_loc4_]);
-                  signAwardList.push(_loc3_);
-                  if(!_awardDic[_loc2_[_loc4_].@AwardDays])
+                  info = new DaylyGiveInfo();
+                  ObjectUtils.copyPorpertiesByXML(info,xmllist[i]);
+                  signAwardList.push(info);
+                  if(!_awardDic[xmllist[i].@AwardDays])
                   {
-                     _awardDic[_loc2_[_loc4_].@AwardDays] = true;
-                     signAwardCounts.push(_loc2_[_loc4_].@AwardDays);
+                     _awardDic[xmllist[i].@AwardDays] = true;
+                     signAwardCounts.push(xmllist[i].@AwardDays);
                   }
                }
-               else if(_loc2_[_loc4_].@GetWay == 11)
+               else if(xmllist[i].@GetWay == 11)
                {
-                  _loc3_ = new DaylyGiveInfo();
-                  ObjectUtils.copyPorpertiesByXML(_loc3_,_loc2_[_loc4_]);
-                  signPetInfo.push(_loc3_);
+                  info = new DaylyGiveInfo();
+                  ObjectUtils.copyPorpertiesByXML(info,xmllist[i]);
+                  signPetInfo.push(info);
                }
-               _loc4_++;
+               i++;
             }
             onAnalyzeComplete();
          }

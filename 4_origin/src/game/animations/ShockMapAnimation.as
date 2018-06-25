@@ -24,22 +24,22 @@ package game.animations
       
       private var _scale:int;
       
-      public function ShockMapAnimation(param1:PhysicalObj, param2:Number = 7, param3:Number = 0)
+      public function ShockMapAnimation(bomb:PhysicalObj, radius:Number = 7, life:Number = 0)
       {
-         var _loc4_:* = null;
+         var b:* = null;
          super();
          _age = 0;
-         _life = param3;
+         _life = life;
          _finished = false;
-         _bomb = param1;
-         _radius = param2;
+         _bomb = bomb;
+         _radius = radius;
          _scale = 1;
          if(_bomb is SimpleBomb)
          {
-            _loc4_ = _bomb as SimpleBomb;
-            if(_loc4_.target && _loc4_.owner)
+            b = _bomb as SimpleBomb;
+            if(b.target && b.owner)
             {
-               if(_loc4_.target.x - _loc4_.owner.pos.x < 0)
+               if(b.target.x - b.owner.pos.x < 0)
                {
                   _scale = -1;
                }
@@ -62,12 +62,12 @@ package game.animations
          return !_finished || _life > 0;
       }
       
-      public function canReplace(param1:IAnimate) : Boolean
+      public function canReplace(anit:IAnimate) : Boolean
       {
          return true;
       }
       
-      public function prepare(param1:AnimationSet) : void
+      public function prepare(aniset:AnimationSet) : void
       {
       }
       
@@ -77,27 +77,27 @@ package game.animations
          _life = 0;
       }
       
-      public function update(param1:MapView) : Boolean
+      public function update(movie:MapView) : Boolean
       {
          _life = Number(_life) - 1;
          if(!_finished)
          {
             if(_age == 0)
             {
-               _x = param1.x;
-               _y = param1.y;
+               _x = movie.x;
+               _y = movie.y;
             }
             _age = _age + 0.25;
             if(_age < 1.5)
             {
                _radius = -_radius;
-               param1.x = _x + _radius * scale;
-               param1.y = _y + _radius;
+               movie.x = _x + _radius * scale;
+               movie.y = _y + _radius;
             }
             else
             {
-               param1.x = _x;
-               param1.y = _y;
+               movie.x = _x;
+               movie.y = _y;
                _finished = true;
             }
             return true;

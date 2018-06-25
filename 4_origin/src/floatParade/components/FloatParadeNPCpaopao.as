@@ -20,10 +20,10 @@ package floatParade.components
       
       private var _direction:int;
       
-      public function FloatParadeNPCpaopao(param1:int = 0)
+      public function FloatParadeNPCpaopao(direction:int = 0)
       {
          super();
-         _direction = param1;
+         _direction = direction;
          initView();
          initEvents();
       }
@@ -52,9 +52,9 @@ package floatParade.components
       {
       }
       
-      public function setTxt(param1:String) : void
+      public function setTxt(str:String) : void
       {
-         _txt.text = param1;
+         _txt.text = str;
       }
       
       private function paopaoComplete() : void

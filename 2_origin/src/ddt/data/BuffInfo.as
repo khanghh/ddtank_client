@@ -25,6 +25,8 @@ package ddt.data
       
       public static const DOUBLE_PRESTIGE:int = 26;
       
+      public static const GOURD_EXP:int = 27;
+      
       public static const Caddy_Good:int = 70;
       
       public static const Save_Life:int = 51;
@@ -74,16 +76,16 @@ package ddt.data
       
       private var _valided:Boolean = true;
       
-      public function BuffInfo(param1:int = -1, param2:Boolean = false, param3:Date = null, param4:int = 0, param5:int = 0, param6:int = 0, param7:int = 0)
+      public function BuffInfo(type:int = -1, isExist:Boolean = false, beginData:Date = null, validDate:int = 0, value:int = 0, validCount:int = 0, templateID:int = 0)
       {
          super();
-         this.Type = param1;
-         this.IsExist = param2;
-         this.BeginData = param3;
-         this.ValidDate = param4;
-         this.Value = param5;
-         this._ValidCount = param6;
-         this.TemplateID = param7;
+         this.Type = type;
+         this.IsExist = isExist;
+         this.BeginData = beginData;
+         this.ValidDate = validDate;
+         this.Value = value;
+         this._ValidCount = validCount;
+         this.TemplateID = templateID;
          initItemInfo();
       }
       
@@ -92,9 +94,9 @@ package ddt.data
          return _ValidCount + additionCount;
       }
       
-      public function set ValidDate(param1:int) : void
+      public function set ValidDate(value:int) : void
       {
-         _ValidDate = param1;
+         _ValidDate = value;
       }
       
       public function get ValidDate() : int
@@ -107,11 +109,11 @@ package ddt.data
          return _buffItem != null?int(_buffItem.Property3) + additionCount:0;
       }
       
-      public function getLeftTimeByUnit(param1:Number) : int
+      public function getLeftTimeByUnit(unit:Number) : int
       {
          if(getLeftTime() > 0)
          {
-            var _loc2_:* = param1;
+            var _loc2_:* = unit;
             if(86400000 !== _loc2_)
             {
                if(3600000 !== _loc2_)
@@ -141,19 +143,19 @@ package ddt.data
       
       public function calculatePayBuffValidDay() : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         var _loc1_:int = 0;
+         var now:* = null;
+         var begin:* = null;
+         var elapsed:int = 0;
          if(BeginData)
          {
-            _loc2_ = TimeManager.Instance.Now();
-            _loc3_ = new Date(BeginData.fullYear,BeginData.month,BeginData.date);
-            _loc2_ = new Date(_loc2_.fullYear,_loc2_.month,_loc2_.date);
-            _loc1_ = (_loc2_.time - _loc3_.time) / 86400000;
-            if(_loc1_ < ValidDate)
+            now = TimeManager.Instance.Now();
+            begin = new Date(BeginData.fullYear,BeginData.month,BeginData.date);
+            now = new Date(now.fullYear,now.month,now.date);
+            elapsed = (now.time - begin.time) / 86400000;
+            if(elapsed < ValidDate)
             {
                _valided = true;
-               day = ValidDate - _loc1_;
+               day = ValidDate - elapsed;
             }
             else
             {
@@ -164,16 +166,16 @@ package ddt.data
       
       private function getLeftTime() : Number
       {
-         var _loc1_:* = NaN;
+         var leftTime:* = NaN;
          if(IsExist)
          {
-            _loc1_ = Number(ValidDate - Math.floor((TimeManager.Instance.Now().time - BeginData.time) / 60000));
+            leftTime = Number(ValidDate - Math.floor((TimeManager.Instance.Now().time - BeginData.time) / 60000));
          }
          else
          {
-            _loc1_ = -1;
+            leftTime = -1;
          }
-         return _loc1_ * 60000;
+         return leftTime * 60000;
       }
       
       public function get buffName() : String
@@ -186,9 +188,9 @@ package ddt.data
          return _buffItem.Data;
       }
       
-      public function set description(param1:String) : void
+      public function set description(value:String) : void
       {
-         _buffItem.Data = param1;
+         _buffItem.Data = value;
       }
       
       public function get buffItemInfo() : ItemTemplateInfo
@@ -227,33 +229,33 @@ package ddt.data
                                              {
                                                 if(14 !== _loc1_)
                                                 {
-                                                   if(17 !== _loc1_)
+                                                   if(27 !== _loc1_)
                                                    {
-                                                      if(110 !== _loc1_)
+                                                      if(17 !== _loc1_)
                                                       {
-                                                         if(18 !== _loc1_)
+                                                         if(110 !== _loc1_)
                                                          {
-                                                            _buffItem = ItemManager.Instance.getTemplateById(TemplateID);
+                                                            if(18 !== _loc1_)
+                                                            {
+                                                               _buffItem = ItemManager.Instance.getTemplateById(TemplateID);
+                                                            }
+                                                            else
+                                                            {
+                                                               _buffItem = ItemManager.Instance.getTemplateById(11966);
+                                                            }
                                                          }
                                                          else
                                                          {
-                                                            _buffItem = ItemManager.Instance.getTemplateById(11966);
+                                                            _buffItem = ItemManager.Instance.getTemplateById(11956);
                                                          }
                                                       }
                                                       else
                                                       {
-                                                         _buffItem = ItemManager.Instance.getTemplateById(11956);
+                                                         _buffItem = new ItemTemplateInfo();
                                                       }
                                                    }
-                                                   else
-                                                   {
-                                                      _buffItem = new ItemTemplateInfo();
-                                                   }
                                                 }
-                                                else
-                                                {
-                                                   _buffItem = new ItemTemplateInfo();
-                                                }
+                                                _buffItem = new ItemTemplateInfo();
                                              }
                                              else
                                              {

@@ -45,8 +45,8 @@ package store.newFusion.view
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var unitView:* = null;
          _leftBg = ComponentFactory.Instance.creatBitmap("asset.newFusion.leftBg");
          _rightView = new FusionNewRightView();
          PositionUtils.setPos(_rightView,"store.newFusion.mainView.rightViewPos");
@@ -54,14 +54,13 @@ package store.newFusion.view
          _vbox = new VBox();
          _vbox.spacing = 2;
          _unitList = new Vector.<FusionNewUnitView>();
-         _loc2_ = 1;
-         while(_loc2_ <= 6)
+         for(i = 1; i <= 6; )
          {
-            _loc1_ = new FusionNewUnitView(_loc2_,_rightView);
-            _loc1_.addEventListener("fusionNewUnitView_selected_change",refreshView,false,0,true);
-            _vbox.addChild(_loc1_);
-            _unitList.push(_loc1_);
-            _loc2_++;
+            unitView = new FusionNewUnitView(i,_rightView);
+            unitView.addEventListener("fusionNewUnitView_selected_change",refreshView,false,0,true);
+            _vbox.addChild(unitView);
+            _unitList.push(unitView);
+            i++;
          }
          _listPanel = ComponentFactory.Instance.creatComponentByStylename("store.newFusion.unitScrollPanel");
          _listPanel.setView(_vbox);
@@ -78,37 +77,37 @@ package store.newFusion.view
          _canFusionSCB.addEventListener("click",canFusionChangeHandler,false,0,true);
       }
       
-      private function canFusionChangeHandler(param1:MouseEvent) : void
+      private function canFusionChangeHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          var _loc4_:int = 0;
          var _loc3_:* = _unitList;
-         for each(var _loc2_ in _unitList)
+         for each(var tmp in _unitList)
          {
-            _loc2_.isFilter = _canFusionSCB.selected;
+            tmp.isFilter = _canFusionSCB.selected;
          }
       }
       
-      private function refreshView(param1:Event) : void
+      private function refreshView(event:Event) : void
       {
-         var _loc2_:FusionNewUnitView = param1.target as FusionNewUnitView;
+         var tmpTargetUnit:FusionNewUnitView = event.target as FusionNewUnitView;
          var _loc5_:int = 0;
          var _loc4_:* = _unitList;
-         for each(var _loc3_ in _unitList)
+         for each(var tmp in _unitList)
          {
-            if(_loc3_ != _loc2_)
+            if(tmp != tmpTargetUnit)
             {
-               _loc3_.unextendHandler();
+               tmp.unextendHandler();
             }
          }
          _vbox.arrange();
       }
       
-      public function dragDrop(param1:BagCell) : void
+      public function dragDrop(source:BagCell) : void
       {
       }
       
-      public function refreshData(param1:Dictionary) : void
+      public function refreshData(items:Dictionary) : void
       {
       }
       

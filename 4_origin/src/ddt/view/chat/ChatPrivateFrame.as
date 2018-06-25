@@ -35,25 +35,24 @@ package ddt.view.chat
       
       override protected function init() : void
       {
-         var _loc4_:* = 0;
-         var _loc1_:* = null;
+         var i:* = 0;
+         var item:* = null;
          super.init();
          _comBox = ComponentFactory.Instance.creat("chat.FriendListCombo");
          _comBox.addEventListener("addedToStage",__setFocus);
          _textField = ComponentFactory.Instance.creatComponentByStylename("chat.PrivateFrameComboText");
-         var _loc3_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("chat.PrivateFrameText");
-         _loc3_.text = LanguageMgr.GetTranslation("tank.view.scenechatII.PrivateChatIIView.nick");
-         var _loc2_:VectorListModel = _comBox.listPanel.vectorListModel;
+         var descriptionTxt:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("chat.PrivateFrameText");
+         descriptionTxt.text = LanguageMgr.GetTranslation("tank.view.scenechatII.PrivateChatIIView.nick");
+         var listModel:VectorListModel = _comBox.listPanel.vectorListModel;
          _friendList = PlayerManager.Instance.onlineFriendList;
          _comBox.snapItemHeight = _friendList.length < 4;
          _comBox.selctedPropName = "text";
          _comBox.beginChanges();
-         _loc4_ = uint(0);
-         while(_loc4_ < _friendList.length)
+         for(i = uint(0); i < _friendList.length; )
          {
-            _loc1_ = _friendList[_loc4_] as FriendListPlayer;
-            _loc2_.append(_loc1_.NickName);
-            _loc4_++;
+            item = _friendList[i] as FriendListPlayer;
+            listModel.append(item.NickName);
+            i++;
          }
          _comBox.listPanel.list.updateListView();
          _comBox.commitChanges();
@@ -62,32 +61,32 @@ package ddt.view.chat
          _textField.addEventListener("keyDown",__keyDownHandler);
          _comBox.button.addEventListener("click",__playSound);
          _comBox.addEventListener("stateChange",__comChange);
-         addToContent(_loc3_);
+         addToContent(descriptionTxt);
          addToContent(_comBox);
          addToContent(_comBox.textField);
       }
       
-      private function __setFocus(param1:Event) : void
+      private function __setFocus(event:Event) : void
       {
          _comBox.removeEventListener("addedToStage",__setFocus);
          StageReferance.stage.focus = _comBox.textField;
       }
       
-      private function __comChange(param1:InteractiveEvent) : void
+      private function __comChange(event:InteractiveEvent) : void
       {
          SoundManager.instance.play("008");
       }
       
-      private function __keyDownHandler(param1:KeyboardEvent) : void
+      private function __keyDownHandler(e:KeyboardEvent) : void
       {
-         param1.stopImmediatePropagation();
-         if(param1.keyCode == 13)
+         e.stopImmediatePropagation();
+         if(e.keyCode == 13)
          {
             dispatchEvent(new FrameEvent(2));
          }
       }
       
-      private function __playSound(param1:MouseEvent) : void
+      private function __playSound(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }

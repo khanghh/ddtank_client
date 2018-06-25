@@ -51,10 +51,10 @@ package labyrinth.model
       
       private var _doubleWarrior:Boolean = true;
       
-      public function LabyrinthModel(param1:IEventDispatcher = null)
+      public function LabyrinthModel(target:IEventDispatcher = null)
       {
          _cleanOutInfos = new DictionaryData();
-         super(param1);
+         super(target);
       }
       
       public function get myRanking() : int
@@ -62,9 +62,9 @@ package labyrinth.model
          return _myRanking;
       }
       
-      public function set myRanking(param1:int) : void
+      public function set myRanking(value:int) : void
       {
-         _myRanking = param1;
+         _myRanking = value;
       }
       
       public function get myProgress() : int
@@ -72,9 +72,9 @@ package labyrinth.model
          return _myProgress;
       }
       
-      public function set myProgress(param1:int) : void
+      public function set myProgress(value:int) : void
       {
-         _myProgress = param1;
+         _myProgress = value;
       }
       
       public function get completeChallenge() : Boolean
@@ -82,23 +82,23 @@ package labyrinth.model
          return _completeChallenge;
       }
       
-      public function set completeChallenge(param1:Boolean) : void
+      public function set completeChallenge(value:Boolean) : void
       {
-         _completeChallenge = param1;
+         _completeChallenge = value;
       }
       
       public function getMaxLevel() : int
       {
-         var _loc1_:int = 0;
+         var level:int = 0;
          switch(int(_sType))
          {
             case 0:
-               _loc1_ = ServerConfigManager.instance.getWarriorHighFamMaxLevel();
+               level = ServerConfigManager.instance.getWarriorHighFamMaxLevel();
                break;
             case 1:
-               _loc1_ = ServerConfigManager.instance.getMagicHighFamMaxLevel();
+               level = ServerConfigManager.instance.getMagicHighFamMaxLevel();
          }
-         return _loc1_;
+         return level;
       }
       
       public function get isDoubleAward() : Boolean
@@ -106,9 +106,9 @@ package labyrinth.model
          return getDouble;
       }
       
-      public function set isDoubleAward(param1:Boolean) : void
+      public function set isDoubleAward(value:Boolean) : void
       {
-         _isDoubleAward = param1;
+         _isDoubleAward = value;
       }
       
       public function getIsDoubleAwardFromServer() : Boolean
@@ -116,16 +116,16 @@ package labyrinth.model
          return _isDoubleAward;
       }
       
-      public function useDoubleAward(param1:Boolean) : void
+      public function useDoubleAward(selected:Boolean) : void
       {
          _isSelectedDoubleChange = true;
          switch(int(_sType))
          {
             case 0:
-               _doubleWarrior = param1;
+               _doubleWarrior = selected;
                break;
             case 1:
-               _doubleMagic = param1;
+               _doubleMagic = selected;
          }
       }
       
@@ -145,9 +145,9 @@ package labyrinth.model
          return _rankingList;
       }
       
-      public function set rankingList(param1:Array) : void
+      public function set rankingList(value:Array) : void
       {
-         _rankingList = param1;
+         _rankingList = value;
       }
       
       public function get currentFloor() : int
@@ -155,9 +155,9 @@ package labyrinth.model
          return _currentFloor;
       }
       
-      public function set currentFloor(param1:int) : void
+      public function set currentFloor(value:int) : void
       {
-         _currentFloor = param1;
+         _currentFloor = value;
       }
       
       public function get accumulateExp() : int
@@ -165,9 +165,9 @@ package labyrinth.model
          return _accumulateExp;
       }
       
-      public function set accumulateExp(param1:int) : void
+      public function set accumulateExp(value:int) : void
       {
-         _accumulateExp = param1;
+         _accumulateExp = value;
       }
       
       public function get cleanOutInfos() : DictionaryData
@@ -175,9 +175,9 @@ package labyrinth.model
          return _cleanOutInfos;
       }
       
-      public function set cleanOutInfos(param1:DictionaryData) : void
+      public function set cleanOutInfos(value:DictionaryData) : void
       {
-         _cleanOutInfos = param1;
+         _cleanOutInfos = value;
       }
       
       public function get remainTime() : int
@@ -185,9 +185,9 @@ package labyrinth.model
          return _remainTime;
       }
       
-      public function set remainTime(param1:int) : void
+      public function set remainTime(value:int) : void
       {
-         _remainTime = param1;
+         _remainTime = value;
       }
       
       public function get cleanOutAllTime() : int
@@ -195,9 +195,9 @@ package labyrinth.model
          return _cleanOutAllTime;
       }
       
-      public function set cleanOutAllTime(param1:int) : void
+      public function set cleanOutAllTime(value:int) : void
       {
-         _cleanOutAllTime = param1;
+         _cleanOutAllTime = value;
       }
       
       public function get cleanOutGold() : int
@@ -205,9 +205,9 @@ package labyrinth.model
          return _cleanOutGold;
       }
       
-      public function set cleanOutGold(param1:int) : void
+      public function set cleanOutGold(value:int) : void
       {
-         _cleanOutGold = param1;
+         _cleanOutGold = value;
       }
       
       public function get currentRemainTime() : int
@@ -215,9 +215,9 @@ package labyrinth.model
          return _currentRemainTime;
       }
       
-      public function set currentRemainTime(param1:int) : void
+      public function set currentRemainTime(value:int) : void
       {
-         _currentRemainTime = param1;
+         _currentRemainTime = value;
       }
       
       public function get tryAgainComplete() : Boolean
@@ -225,9 +225,9 @@ package labyrinth.model
          return _tryAgainComplete;
       }
       
-      public function set tryAgainComplete(param1:Boolean) : void
+      public function set tryAgainComplete(value:Boolean) : void
       {
-         _tryAgainComplete = param1;
+         _tryAgainComplete = value;
       }
       
       public function get isInGame() : Boolean
@@ -235,9 +235,9 @@ package labyrinth.model
          return _isInGame;
       }
       
-      public function set isInGame(param1:Boolean) : void
+      public function set isInGame(value:Boolean) : void
       {
-         _isInGame = param1;
+         _isInGame = value;
       }
       
       public function get isCleanOut() : Boolean
@@ -245,9 +245,9 @@ package labyrinth.model
          return _isCleanOut;
       }
       
-      public function set isCleanOut(param1:Boolean) : void
+      public function set isCleanOut(value:Boolean) : void
       {
-         _isCleanOut = param1;
+         _isCleanOut = value;
       }
       
       public function get serverMultiplyingPower() : Boolean
@@ -255,9 +255,9 @@ package labyrinth.model
          return _serverMultiplyingPower;
       }
       
-      public function set serverMultiplyingPower(param1:Boolean) : void
+      public function set serverMultiplyingPower(value:Boolean) : void
       {
-         _serverMultiplyingPower = param1;
+         _serverMultiplyingPower = value;
       }
       
       public function get nightmareProgress() : int
@@ -265,9 +265,9 @@ package labyrinth.model
          return _nightmareProgress;
       }
       
-      public function set nightmareProgress(param1:int) : void
+      public function set nightmareProgress(value:int) : void
       {
-         _nightmareProgress = param1;
+         _nightmareProgress = value;
       }
       
       public function get sType() : int
@@ -275,9 +275,9 @@ package labyrinth.model
          return _sType;
       }
       
-      public function set sType(param1:int) : void
+      public function set sType(value:int) : void
       {
-         _sType = param1;
+         _sType = value;
       }
    }
 }

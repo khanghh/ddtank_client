@@ -38,35 +38,35 @@ package com.pickgliss.ui.controls
          super.dispose();
       }
       
-      public function set icon(param1:DisplayObject) : void
+      public function set icon(display:DisplayObject) : void
       {
-         if(_icon == param1)
+         if(_icon == display)
          {
             return;
          }
          ObjectUtils.disposeObject(_icon);
-         _icon = param1;
+         _icon = display;
          onPropertiesChanged("icon");
       }
       
-      public function set iconInnerRectString(param1:String) : void
+      public function set iconInnerRectString(value:String) : void
       {
-         if(_iconInnerRectString == param1)
+         if(_iconInnerRectString == value)
          {
             return;
          }
-         _iconInnerRectString = param1;
+         _iconInnerRectString = value;
          _iconInnerRect = ClassUtils.CreatInstance("com.pickgliss.geom.InnerRectangle",ComponentFactory.parasArgs(_iconInnerRectString));
          onPropertiesChanged("iconInnerRect");
       }
       
-      public function set iconStyle(param1:String) : void
+      public function set iconStyle(stylename:String) : void
       {
-         if(_iconStyle == param1)
+         if(_iconStyle == stylename)
          {
             return;
          }
-         _iconStyle = param1;
+         _iconStyle = stylename;
          icon = ComponentFactory.Instance.creat(_iconStyle);
       }
       
@@ -96,10 +96,10 @@ package com.pickgliss.ui.controls
          }
       }
       
-      override public function setFrame(param1:int) : void
+      override public function setFrame(frameIndex:int) : void
       {
-         super.setFrame(param1);
-         DisplayUtils.setFrame(_icon,param1);
+         super.setFrame(frameIndex);
+         DisplayUtils.setFrame(_icon,frameIndex);
       }
    }
 }

@@ -34,34 +34,34 @@ package starling.filters
       
       private var sTmpWeights:Vector.<Number>;
       
-      public function BlurFilter(param1:Number = 1, param2:Number = 1, param3:Number = 1)
+      public function BlurFilter(blurX:Number = 1, blurY:Number = 1, resolution:Number = 1)
       {
          mOffsets = new <Number>[0,0,0,0];
          mWeights = new <Number>[0,0,0,0];
          mColor = new <Number>[1,1,1,1];
          sTmpWeights = new Vector.<Number>(5,true);
-         super(1,param3);
-         mBlurX = param1;
-         mBlurY = param2;
+         super(1,resolution);
+         mBlurX = blurX;
+         mBlurY = blurY;
          updateMarginsAndPasses();
       }
       
-      public static function createDropShadow(param1:Number = 4.0, param2:Number = 0.785, param3:uint = 0, param4:Number = 0.5, param5:Number = 1.0, param6:Number = 0.5) : BlurFilter
+      public static function createDropShadow(distance:Number = 4.0, angle:Number = 0.785, color:uint = 0, alpha:Number = 0.5, blur:Number = 1.0, resolution:Number = 0.5) : BlurFilter
       {
-         var _loc7_:BlurFilter = new BlurFilter(param5,param5,param6);
-         _loc7_.offsetX = Math.cos(param2) * param1;
-         _loc7_.offsetY = Math.sin(param2) * param1;
-         _loc7_.mode = "below";
-         _loc7_.setUniformColor(true,param3,param4);
-         return _loc7_;
+         var dropShadow:BlurFilter = new BlurFilter(blur,blur,resolution);
+         dropShadow.offsetX = Math.cos(angle) * distance;
+         dropShadow.offsetY = Math.sin(angle) * distance;
+         dropShadow.mode = "below";
+         dropShadow.setUniformColor(true,color,alpha);
+         return dropShadow;
       }
       
-      public static function createGlow(param1:uint = 16776960, param2:Number = 1.0, param3:Number = 1.0, param4:Number = 0.5) : BlurFilter
+      public static function createGlow(color:uint = 16776960, alpha:Number = 1.0, blur:Number = 1.0, resolution:Number = 0.5) : BlurFilter
       {
-         var _loc5_:BlurFilter = new BlurFilter(param3,param3,param4);
-         _loc5_.mode = "below";
-         _loc5_.setUniformColor(true,param1,param2);
-         return _loc5_;
+         var glow:BlurFilter = new BlurFilter(blur,blur,resolution);
+         glow.mode = "below";
+         glow.setUniformColor(true,color,alpha);
+         return glow;
       }
       
       override protected function createPrograms() : void
@@ -70,96 +70,95 @@ package starling.filters
          mTintedProgram = createProgram(true);
       }
       
-      private function createProgram(param1:Boolean) : Program3D
+      private function createProgram(tinted:Boolean) : Program3D
       {
-         var _loc5_:String = !!param1?"BF_t":"BF_n";
-         var _loc3_:Starling = Starling.current;
-         if(_loc3_.hasProgram(_loc5_))
+         var programName:String = !!tinted?"BF_t":"BF_n";
+         var target:Starling = Starling.current;
+         if(target.hasProgram(programName))
          {
-            return _loc3_.getProgram(_loc5_);
+            return target.getProgram(programName);
          }
-         var _loc2_:String = "m44 op, va0, vc0       \nmov v0, va1            \nsub v1, va1, vc4.zwxx  \nsub v2, va1, vc4.xyxx  \nadd v3, va1, vc4.xyxx  \nadd v4, va1, vc4.zwxx  \n";
-         var _loc4_:String = "tex ft0,  v0, fs0 <2d, clamp, linear, mipnone> \nmul ft5, ft0, fc0.xxxx                         \ntex ft1,  v1, fs0 <2d, clamp, linear, mipnone> \nmul ft1, ft1, fc0.zzzz                         \nadd ft5, ft5, ft1                              \ntex ft2,  v2, fs0 <2d, clamp, linear, mipnone> \nmul ft2, ft2, fc0.yyyy                         \nadd ft5, ft5, ft2                              \ntex ft3,  v3, fs0 <2d, clamp, linear, mipnone> \nmul ft3, ft3, fc0.yyyy                         \nadd ft5, ft5, ft3                              \ntex ft4,  v4, fs0 <2d, clamp, linear, mipnone> \nmul ft4, ft4, fc0.zzzz                         \n";
-         if(param1)
+         var vertexShader:String = "m44 op, va0, vc0       \nmov v0, va1            \nsub v1, va1, vc4.zwxx  \nsub v2, va1, vc4.xyxx  \nadd v3, va1, vc4.xyxx  \nadd v4, va1, vc4.zwxx  \n";
+         var fragmentShader:String = "tex ft0,  v0, fs0 <2d, clamp, linear, mipnone> \nmul ft5, ft0, fc0.xxxx                         \ntex ft1,  v1, fs0 <2d, clamp, linear, mipnone> \nmul ft1, ft1, fc0.zzzz                         \nadd ft5, ft5, ft1                              \ntex ft2,  v2, fs0 <2d, clamp, linear, mipnone> \nmul ft2, ft2, fc0.yyyy                         \nadd ft5, ft5, ft2                              \ntex ft3,  v3, fs0 <2d, clamp, linear, mipnone> \nmul ft3, ft3, fc0.yyyy                         \nadd ft5, ft5, ft3                              \ntex ft4,  v4, fs0 <2d, clamp, linear, mipnone> \nmul ft4, ft4, fc0.zzzz                         \n";
+         if(tinted)
          {
-            _loc4_ = _loc4_ + "add ft5, ft5, ft4                              \nmul ft5.xyz, fc1.xyz, ft5.www                  \nmul oc, ft5, fc1.wwww                          \n";
+            fragmentShader = fragmentShader + "add ft5, ft5, ft4                              \nmul ft5.xyz, fc1.xyz, ft5.www                  \nmul oc, ft5, fc1.wwww                          \n";
          }
          else
          {
-            _loc4_ = _loc4_ + "add  oc, ft5, ft4                              \n";
+            fragmentShader = fragmentShader + "add  oc, ft5, ft4                              \n";
          }
-         return _loc3_.registerProgramFromSource(_loc5_,_loc2_,_loc4_);
+         return target.registerProgramFromSource(programName,vertexShader,fragmentShader);
       }
       
-      override protected function activate(param1:int, param2:Context3D, param3:Texture) : void
+      override protected function activate(pass:int, context:Context3D, texture:Texture) : void
       {
-         updateParameters(param1,param3.nativeWidth,param3.nativeHeight);
-         param2.setProgramConstantsFromVector("vertex",4,mOffsets);
-         param2.setProgramConstantsFromVector("fragment",0,mWeights);
-         if(mUniformColor && param1 == numPasses - 1)
+         updateParameters(pass,texture.nativeWidth,texture.nativeHeight);
+         context.setProgramConstantsFromVector("vertex",4,mOffsets);
+         context.setProgramConstantsFromVector("fragment",0,mWeights);
+         if(mUniformColor && pass == numPasses - 1)
          {
-            param2.setProgramConstantsFromVector("fragment",1,mColor);
-            param2.setProgram(mTintedProgram);
+            context.setProgramConstantsFromVector("fragment",1,mColor);
+            context.setProgram(mTintedProgram);
          }
          else
          {
-            param2.setProgram(mNormalProgram);
+            context.setProgram(mNormalProgram);
          }
       }
       
-      private function updateParameters(param1:int, param2:int, param3:int) : void
+      private function updateParameters(pass:int, textureWidth:int, textureHeight:int) : void
       {
-         var _loc11_:Number = NaN;
-         var _loc9_:Number = NaN;
-         var _loc8_:int = 0;
-         var _loc12_:* = param1 < mBlurX;
-         if(_loc12_)
+         var sigma:Number = NaN;
+         var pixelSize:Number = NaN;
+         var i:int = 0;
+         var horizontal:* = pass < mBlurX;
+         if(horizontal)
          {
-            _loc11_ = Math.min(1,mBlurX - param1) * 2;
-            _loc9_ = 1 / param2;
+            sigma = Math.min(1,mBlurX - pass) * 2;
+            pixelSize = 1 / textureWidth;
          }
          else
          {
-            _loc11_ = Math.min(1,mBlurY - (param1 - Math.ceil(mBlurX))) * 2;
-            _loc9_ = 1 / param3;
+            sigma = Math.min(1,mBlurY - (pass - Math.ceil(mBlurX))) * 2;
+            pixelSize = 1 / textureHeight;
          }
-         var _loc13_:Number = 2 * _loc11_ * _loc11_;
+         var _loc13_:Number = 2 * sigma * sigma;
          var _loc7_:Number = 1 / Math.sqrt(_loc13_ * 3.14159265358979);
-         _loc8_ = 0;
-         while(_loc8_ < 5)
+         for(i = 0; i < 5; )
          {
-            sTmpWeights[_loc8_] = _loc7_ * Math.exp(-_loc8_ * _loc8_ / _loc13_);
-            _loc8_++;
+            sTmpWeights[i] = _loc7_ * Math.exp(-i * i / _loc13_);
+            i++;
          }
          mWeights[0] = sTmpWeights[0];
          mWeights[1] = sTmpWeights[1] + sTmpWeights[2];
          mWeights[2] = sTmpWeights[3] + sTmpWeights[4];
-         var _loc6_:Number = mWeights[0] + 2 * mWeights[1] + 2 * mWeights[2];
-         var _loc10_:Number = 1 / _loc6_;
+         var weightSum:Number = mWeights[0] + 2 * mWeights[1] + 2 * mWeights[2];
+         var invWeightSum:Number = 1 / weightSum;
          var _loc14_:* = 0;
-         var _loc15_:* = mWeights[_loc14_] * _loc10_;
+         var _loc15_:* = mWeights[_loc14_] * invWeightSum;
          mWeights[_loc14_] = _loc15_;
          _loc15_ = 1;
-         _loc14_ = mWeights[_loc15_] * _loc10_;
+         _loc14_ = mWeights[_loc15_] * invWeightSum;
          mWeights[_loc15_] = _loc14_;
          _loc14_ = 2;
-         _loc15_ = mWeights[_loc14_] * _loc10_;
+         _loc15_ = mWeights[_loc14_] * invWeightSum;
          mWeights[_loc14_] = _loc15_;
-         var _loc5_:Number = (_loc9_ * sTmpWeights[1] + 2 * _loc9_ * sTmpWeights[2]) / mWeights[1];
-         var _loc4_:Number = (3 * _loc9_ * sTmpWeights[3] + 4 * _loc9_ * sTmpWeights[4]) / mWeights[2];
-         if(_loc12_)
+         var offset1:Number = (pixelSize * sTmpWeights[1] + 2 * pixelSize * sTmpWeights[2]) / mWeights[1];
+         var offset2:Number = (3 * pixelSize * sTmpWeights[3] + 4 * pixelSize * sTmpWeights[4]) / mWeights[2];
+         if(horizontal)
          {
-            mOffsets[0] = _loc5_;
+            mOffsets[0] = offset1;
             mOffsets[1] = 0;
-            mOffsets[2] = _loc4_;
+            mOffsets[2] = offset2;
             mOffsets[3] = 0;
          }
          else
          {
             mOffsets[0] = 0;
-            mOffsets[1] = _loc5_;
+            mOffsets[1] = offset1;
             mOffsets[2] = 0;
-            mOffsets[3] = _loc4_;
+            mOffsets[3] = offset2;
          }
       }
       
@@ -174,13 +173,13 @@ package starling.filters
          marginY = (3 + Math.ceil(mBlurY)) / resolution;
       }
       
-      public function setUniformColor(param1:Boolean, param2:uint = 0, param3:Number = 1.0) : void
+      public function setUniformColor(enable:Boolean, color:uint = 0, alpha:Number = 1.0) : void
       {
-         mColor[0] = Color.getRed(param2) / 255;
-         mColor[1] = Color.getGreen(param2) / 255;
-         mColor[2] = Color.getBlue(param2) / 255;
-         mColor[3] = param3;
-         mUniformColor = param1;
+         mColor[0] = Color.getRed(color) / 255;
+         mColor[1] = Color.getGreen(color) / 255;
+         mColor[2] = Color.getBlue(color) / 255;
+         mColor[3] = alpha;
+         mUniformColor = enable;
       }
       
       public function get blurX() : Number
@@ -188,9 +187,9 @@ package starling.filters
          return mBlurX;
       }
       
-      public function set blurX(param1:Number) : void
+      public function set blurX(value:Number) : void
       {
-         mBlurX = param1;
+         mBlurX = value;
          updateMarginsAndPasses();
       }
       
@@ -199,9 +198,9 @@ package starling.filters
          return mBlurY;
       }
       
-      public function set blurY(param1:Number) : void
+      public function set blurY(value:Number) : void
       {
-         mBlurY = param1;
+         mBlurY = value;
          updateMarginsAndPasses();
       }
    }

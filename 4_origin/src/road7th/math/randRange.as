@@ -1,7 +1,7 @@
 package road7th.math
 {
-   public function randRange(param1:Number, param2:Number) : Number
+   public function randRange(min:Number, max:Number) : Number
    {
-      return Math.random() * (param2 - param1) + param1;
+      return Math.random() * (max - min) + min;
    }
 }

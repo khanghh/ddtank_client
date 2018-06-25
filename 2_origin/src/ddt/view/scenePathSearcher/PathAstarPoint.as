@@ -14,9 +14,9 @@ package ddt.view.scenePathSearcher
       
       public var source_point:PathAstarPoint;
       
-      public function PathAstarPoint(param1:int = 0, param2:int = 0)
+      public function PathAstarPoint(x:int = 0, y:int = 0)
       {
-         super(param1,param2);
+         super(x,y);
          source_point = null;
       }
    }

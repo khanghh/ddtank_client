@@ -17,17 +17,17 @@ package store.view.embed
          super();
       }
       
-      public function show(param1:DisplayObject) : void
+      public function show(_data:DisplayObject) : void
       {
-         var _loc2_:AlertInfo = new AlertInfo();
-         _loc2_.title = LanguageMgr.GetTranslation("AlertDialog.Info");
-         _loc2_.submitLabel = LanguageMgr.GetTranslation("ok");
-         _loc2_.cancelLabel = LanguageMgr.GetTranslation("cancel");
-         _loc2_.data = param1;
-         info = _loc2_;
-         addToContent(param1);
-         width = param1.width + _containerX * 2;
-         height = param1.height + _containerY + 60;
+         var alertInfo:AlertInfo = new AlertInfo();
+         alertInfo.title = LanguageMgr.GetTranslation("AlertDialog.Info");
+         alertInfo.submitLabel = LanguageMgr.GetTranslation("ok");
+         alertInfo.cancelLabel = LanguageMgr.GetTranslation("cancel");
+         alertInfo.data = _data;
+         info = alertInfo;
+         addToContent(_data);
+         width = _data.width + _containerX * 2;
+         height = _data.height + _containerY + 60;
          moveEnable = false;
          LayerManager.Instance.addToLayer(this,2,true,2);
       }

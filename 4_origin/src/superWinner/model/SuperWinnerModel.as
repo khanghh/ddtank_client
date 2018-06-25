@@ -55,125 +55,120 @@ package superWinner.model
          _self = PlayerManager.Instance.Self;
       }
       
-      public function setRoomInfo(param1:PackageIn) : void
+      public function setRoomInfo(pkg:PackageIn) : void
       {
-         formatPlayerList(param1);
-         formatAwards(param1);
-         formatMyAwards(param1);
-         flushChampion(param1);
-         _endDate = param1.readDate();
-         _roomId = param1.readInt();
+         formatPlayerList(pkg);
+         formatAwards(pkg);
+         formatMyAwards(pkg);
+         flushChampion(pkg);
+         _endDate = pkg.readDate();
+         _roomId = pkg.readInt();
       }
       
-      public function formatPlayerList(param1:PackageIn) : void
+      public function formatPlayerList(pkg:PackageIn) : void
       {
-         var _loc3_:* = 0;
-         var _loc2_:* = null;
-         playerNum = param1.readByte();
-         _loc3_ = uint(0);
-         while(_loc3_ < playerNum)
+         var i:* = 0;
+         var info:* = null;
+         playerNum = pkg.readByte();
+         for(i = uint(0); i < playerNum; )
          {
-            _loc2_ = new SuperWinnerPlayerInfo();
-            _loc2_.ID = param1.readInt();
-            _loc2_.NickName = param1.readUTF();
-            _loc2_.IsVIP = param1.readBoolean();
-            _loc2_.Sex = param1.readBoolean();
-            _loc2_.IsOnline = param1.readBoolean();
-            _loc2_.Grade = param1.readByte();
-            _playerlist.add(_loc2_.ID,_loc2_);
-            _loc3_++;
+            info = new SuperWinnerPlayerInfo();
+            info.ID = pkg.readInt();
+            info.NickName = pkg.readUTF();
+            info.IsVIP = pkg.readBoolean();
+            info.Sex = pkg.readBoolean();
+            info.IsOnline = pkg.readBoolean();
+            info.Grade = pkg.readByte();
+            _playerlist.add(info.ID,info);
+            i++;
          }
          dispatchEvent(new SuperWinnerEvent("init_players"));
       }
       
-      public function formatAwards(param1:PackageIn) : void
+      public function formatAwards(pkg:PackageIn) : void
       {
-         var _loc3_:* = 0;
-         var _loc2_:Array = [];
-         _loc3_ = uint(0);
-         while(_loc3_ < 6)
+         var ii:* = 0;
+         var arr:Array = [];
+         for(ii = uint(0); ii < 6; )
          {
-            _loc2_.push(param1.readByte());
-            _loc3_++;
+            arr.push(pkg.readByte());
+            ii++;
          }
-         awards = _loc2_;
+         awards = arr;
          dispatchEvent(new SuperWinnerEvent("flush_awards"));
       }
       
-      public function sendGetAwardsMsg(param1:PackageIn) : void
+      public function sendGetAwardsMsg(pkg:PackageIn) : void
       {
-         var _loc8_:int = 0;
-         var _loc4_:* = null;
-         var _loc6_:* = 0;
-         var _loc7_:* = null;
-         var _loc3_:* = null;
-         var _loc5_:* = null;
-         var _loc2_:int = param1.readByte();
-         _loc8_ = 0;
-         while(_loc8_ < _loc2_)
+         var i:int = 0;
+         var playerName:* = null;
+         var lv:* = 0;
+         var awardName:* = null;
+         var str:* = null;
+         var evt:* = null;
+         var getAwardsNum:int = pkg.readByte();
+         for(i = 0; i < getAwardsNum; )
          {
-            _loc4_ = param1.readUTF();
-            _loc6_ = uint(param1.readByte());
-            if(_loc6_ != 6)
+            playerName = pkg.readUTF();
+            lv = uint(pkg.readByte());
+            if(lv != 6)
             {
-               _loc7_ = getAwardNameByLevel(_loc6_);
-               _loc3_ = LanguageMgr.GetTranslation("ddt.superWinner.someoneGetAward",_loc4_,_loc7_);
-               _loc5_ = new SuperWinnerEvent("notice");
-               _loc5_.resultData = _loc3_;
-               dispatchEvent(_loc5_);
+               awardName = getAwardNameByLevel(lv);
+               str = LanguageMgr.GetTranslation("ddt.superWinner.someoneGetAward",playerName,awardName);
+               evt = new SuperWinnerEvent("notice");
+               evt.resultData = str;
+               dispatchEvent(evt);
             }
-            _loc8_++;
+            i++;
          }
       }
       
-      public function getAwardNameByLevel(param1:int) : String
+      public function getAwardNameByLevel(lv:int) : String
       {
-         return AWARDSNAME[param1 - 1];
+         return AWARDSNAME[lv - 1];
       }
       
-      public function formatMyAwards(param1:PackageIn) : void
+      public function formatMyAwards(pkg:PackageIn) : void
       {
-         var _loc2_:* = 0;
-         var _loc3_:Array = [];
-         _loc2_ = uint(0);
-         while(_loc2_ < 6)
+         var iii:* = 0;
+         var arr1:Array = [];
+         for(iii = uint(0); iii < 6; )
          {
-            _loc3_.push(param1.readByte());
-            _loc2_++;
+            arr1.push(pkg.readByte());
+            iii++;
          }
-         myAwards = _loc3_;
+         myAwards = arr1;
          dispatchEvent(new SuperWinnerEvent("flush_my_awards"));
       }
       
-      public function flushChampion(param1:PackageIn, param2:Boolean = false) : void
+      public function flushChampion(pkg:PackageIn, showMsg:Boolean = false) : void
       {
-         var _loc3_:* = null;
-         var _loc6_:Boolean = false;
-         var _loc4_:* = undefined;
-         var _loc7_:int = 0;
-         var _loc5_:int = param1.readInt();
-         _showMsg = param2;
-         if(_loc5_ == 0)
+         var evt:* = null;
+         var hadChampion:Boolean = false;
+         var vt:* = undefined;
+         var i:int = 0;
+         var championId:int = pkg.readInt();
+         _showMsg = showMsg;
+         if(championId == 0)
          {
             return;
          }
-         _loc6_ = false;
-         _loc4_ = new Vector.<int>(6);
+         hadChampion = false;
+         vt = new Vector.<int>(6);
          if(championItem)
          {
-            _loc6_ = true;
+            hadChampion = true;
          }
-         setChampionItem(_loc5_);
-         _loc7_ = 0;
-         while(_loc7_ < 6)
+         setChampionItem(championId);
+         for(i = 0; i < 6; )
          {
-            _loc4_[_loc7_] = param1.readByte();
-            _loc7_++;
+            vt[i] = pkg.readByte();
+            i++;
          }
-         championDices = _loc4_;
-         _loc3_ = new SuperWinnerEvent("champion_change");
-         _loc3_.resultData = _loc6_;
-         dispatchEvent(_loc3_);
+         championDices = vt;
+         evt = new SuperWinnerEvent("champion_change");
+         evt.resultData = hadChampion;
+         dispatchEvent(evt);
       }
       
       public function get isShowChampionMsg() : Boolean
@@ -181,21 +176,21 @@ package superWinner.model
          return _showMsg;
       }
       
-      public function joinRoom(param1:PackageIn) : void
+      public function joinRoom(pkg:PackageIn) : void
       {
-         var _loc2_:SuperWinnerPlayerInfo = new SuperWinnerPlayerInfo();
-         _loc2_.ID = param1.readInt();
-         _loc2_.NickName = param1.readUTF();
-         _loc2_.IsVIP = param1.readBoolean();
-         _loc2_.Sex = param1.readBoolean();
-         _loc2_.IsOnline = param1.readBoolean();
-         _loc2_.Grade = param1.readByte();
-         _playerlist.add(_loc2_.ID,_loc2_);
+         var info:SuperWinnerPlayerInfo = new SuperWinnerPlayerInfo();
+         info.ID = pkg.readInt();
+         info.NickName = pkg.readUTF();
+         info.IsVIP = pkg.readBoolean();
+         info.Sex = pkg.readBoolean();
+         info.IsOnline = pkg.readBoolean();
+         info.Grade = pkg.readByte();
+         _playerlist.add(info.ID,info);
       }
       
-      public function set lastDicePoints(param1:Vector.<int>) : void
+      public function set lastDicePoints(val:Vector.<int>) : void
       {
-         _lastDicePoints = param1;
+         _lastDicePoints = val;
       }
       
       public function get lastDicePoints() : Vector.<int>
@@ -203,9 +198,9 @@ package superWinner.model
          return _lastDicePoints;
       }
       
-      public function set currentDicePoints(param1:Vector.<int>) : void
+      public function set currentDicePoints(val:Vector.<int>) : void
       {
-         _currentDicePoints = param1;
+         _currentDicePoints = val;
       }
       
       public function get currentDicePoints() : Vector.<int>
@@ -213,9 +208,9 @@ package superWinner.model
          return _currentDicePoints;
       }
       
-      public function set isCurrentDiceGetAward(param1:Boolean) : void
+      public function set isCurrentDiceGetAward(val:Boolean) : void
       {
-         _isCurrentDiceGetAward = param1;
+         _isCurrentDiceGetAward = val;
       }
       
       public function get isCurrentDiceGetAward() : Boolean
@@ -223,9 +218,9 @@ package superWinner.model
          return _isCurrentDiceGetAward;
       }
       
-      public function set currentAwardLevel(param1:uint) : void
+      public function set currentAwardLevel(val:uint) : void
       {
-         _currentAwardLevel = param1;
+         _currentAwardLevel = val;
       }
       
       public function get currentAwardLevel() : uint
@@ -243,9 +238,9 @@ package superWinner.model
          return _self;
       }
       
-      public function set playerNum(param1:uint) : void
+      public function set playerNum($count:uint) : void
       {
-         _playerNum = param1;
+         _playerNum = $count;
       }
       
       public function get playerNum() : uint
@@ -253,9 +248,9 @@ package superWinner.model
          return _playerNum;
       }
       
-      public function set awards(param1:Array) : void
+      public function set awards(arr:Array) : void
       {
-         _awardArr = param1;
+         _awardArr = arr;
       }
       
       public function get awards() : Array
@@ -263,9 +258,9 @@ package superWinner.model
          return _awardArr;
       }
       
-      public function set myAwards(param1:Array) : void
+      public function set myAwards(arr:Array) : void
       {
-         _myAwardArr = param1;
+         _myAwardArr = arr;
       }
       
       public function get myAwards() : Array
@@ -273,9 +268,9 @@ package superWinner.model
          return _myAwardArr;
       }
       
-      public function set championDices(param1:Vector.<int>) : void
+      public function set championDices(val:Vector.<int>) : void
       {
-         _championDices = param1;
+         _championDices = val;
       }
       
       public function get championDices() : Vector.<int>
@@ -283,9 +278,9 @@ package superWinner.model
          return _championDices;
       }
       
-      public function setChampionItem(param1:int) : void
+      public function setChampionItem(val:int) : void
       {
-         _championInfo = getPlayerList()[param1];
+         _championInfo = getPlayerList()[val];
       }
       
       public function get championItem() : SuperWinnerPlayerInfo
@@ -308,9 +303,9 @@ package superWinner.model
          return _awardsVector;
       }
       
-      public function set awardsVector(param1:Vector.<SuperWinnerAwardsMode>) : void
+      public function set awardsVector(val:Vector.<SuperWinnerAwardsMode>) : void
       {
-         _awardsVector = param1;
+         _awardsVector = val;
       }
    }
 }

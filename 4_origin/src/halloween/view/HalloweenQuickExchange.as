@@ -48,10 +48,10 @@ package halloween.view
       
       private function initView() : void
       {
-         var _loc1_:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("task.taskView.quickUse.titleText"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"));
-         _loc1_.moveEnable = false;
-         _loc1_.autoDispose = false;
-         info = _loc1_;
+         var alertInfo:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("task.taskView.quickUse.titleText"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"));
+         alertInfo.moveEnable = false;
+         alertInfo.autoDispose = false;
+         info = alertInfo;
          _textInfo = ComponentFactory.Instance.creatComponentByStylename("quickUseFrame.tipsInfo");
          _textInfo.text = LanguageMgr.GetTranslation("quickUseFrame.tipsInfoText");
          addToContent(_textInfo);
@@ -63,16 +63,16 @@ package halloween.view
          addToContent(_maxBtn);
       }
       
-      public function setItemInfo(param1:int) : void
+      public function setItemInfo(itemId:int) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         if(_itemId != param1)
+         var bg:* = null;
+         var itemInfo:* = null;
+         if(_itemId != itemId)
          {
-            _itemId = param1;
-            _loc3_ = ComponentFactory.Instance.creatComponentByStylename("ddtcore.CellBg");
-            _loc2_ = ItemManager.Instance.getTemplateById(_itemId);
-            if(_loc2_)
+            _itemId = itemId;
+            bg = ComponentFactory.Instance.creatComponentByStylename("ddtcore.CellBg");
+            itemInfo = ItemManager.Instance.getTemplateById(_itemId);
+            if(itemInfo)
             {
                _cell = new BagCell(0);
                _cell.setContentSize(49,49);
@@ -88,9 +88,9 @@ package halloween.view
          }
       }
       
-      private function updateItemCellCount(param1:int) : void
+      private function updateItemCellCount(needNum:int) : void
       {
-         _cellNum = param1;
+         _cellNum = needNum;
          _num.text = "1";
          _cell.setCount(_cellNum);
          _cell.refreshTbxPos();
@@ -103,12 +103,12 @@ package halloween.view
          _maxBtn.addEventListener("click",__onMouseClick);
       }
       
-      protected function __onMouseClick(param1:MouseEvent) : void
+      protected function __onMouseClick(event:MouseEvent) : void
       {
          _num.text = _cellNum.toString();
       }
       
-      protected function __onTextInput(param1:Event) : void
+      protected function __onTextInput(event:Event) : void
       {
          if(int(_num.text) > _cellNum)
          {
@@ -116,10 +116,10 @@ package halloween.view
          }
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         if(e.responseCode == 3 || e.responseCode == 2)
          {
             SocketManager.Instance.out.sendTrusteeshipUseSpiritItem(_cell.place,_cell.bagType,int(_num.text));
          }

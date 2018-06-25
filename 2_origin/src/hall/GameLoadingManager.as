@@ -52,7 +52,7 @@ package hall
          }
       }
       
-      protected function __onHide(param1:TimerEvent) : void
+      protected function __onHide(event:TimerEvent) : void
       {
          hide();
       }

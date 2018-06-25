@@ -104,33 +104,33 @@ package bagAndInfo.amulet
       
       private function initCell() : void
       {
-         var _loc2_:* = null;
+         var cellBg:* = null;
          _info = PlayerManager.Instance.Self.Bag.items[18];
-         _loc2_ = new Shape();
-         _loc2_.graphics.beginFill(0,0);
-         _loc2_.graphics.drawRect(0,0,60,60);
-         _loc2_.graphics.endFill();
-         _oldCell = new BagCell(0,_info,true,_loc2_);
+         cellBg = new Shape();
+         cellBg.graphics.beginFill(0,0);
+         cellBg.graphics.drawRect(0,0,60,60);
+         cellBg.graphics.endFill();
+         _oldCell = new BagCell(0,_info,true,cellBg);
          PositionUtils.setPos(_oldCell,"equipAmulet.oldCellPos");
          addChild(_oldCell);
-         _loc2_ = new Shape();
-         _loc2_.graphics.beginFill(0,0);
-         _loc2_.graphics.drawRect(0,0,70,70);
-         _loc2_.graphics.endFill();
-         _newCell = new BagCell(0,null,true,_loc2_);
+         cellBg = new Shape();
+         cellBg.graphics.beginFill(0,0);
+         cellBg.graphics.drawRect(0,0,70,70);
+         cellBg.graphics.endFill();
+         _newCell = new BagCell(0,null,true,cellBg);
          PositionUtils.setPos(_newCell,"equipAmulet.newCellPos");
          addChild(_newCell);
-         var _loc1_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(stoneTemtID);
-         _loc2_ = new Shape();
-         _loc2_.graphics.beginFill(0,0);
-         _loc2_.graphics.drawRect(0,0,48,48);
-         _loc2_.graphics.endFill();
-         _propCell = new BagCell(0,_loc1_,true,_loc2_);
+         var wishInfo:ItemTemplateInfo = ItemManager.Instance.getTemplateById(stoneTemtID);
+         cellBg = new Shape();
+         cellBg.graphics.beginFill(0,0);
+         cellBg.graphics.drawRect(0,0,48,48);
+         cellBg.graphics.endFill();
+         _propCell = new BagCell(0,wishInfo,true,cellBg);
          PositionUtils.setPos(_propCell,"equipAmulet.propCellPos");
          addChild(_propCell);
       }
       
-      protected function __onClickUpgradeBtn(param1:MouseEvent) : void
+      protected function __onClickUpgradeBtn(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(getTimer() - _currentTime < 1500)
@@ -144,8 +144,8 @@ package bagAndInfo.amulet
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:EquipAmuletVo = EquipAmuletManager.Instance.getAmuletVo(_info.StrengthenLevel + 1);
-         if(_loc2_ == null)
+         var vo:EquipAmuletVo = EquipAmuletManager.Instance.getAmuletVo(_info.StrengthenLevel + 1);
+         if(vo == null)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.equipAmulet.fullGrade"));
             return;
@@ -158,49 +158,49 @@ package bagAndInfo.amulet
          SocketManager.Instance.out.sendEquipAmuletUpgrade(_upgradeAllBtn.selected);
       }
       
-      public function update(param1:Boolean = true) : void
+      public function update(allUpdate:Boolean = true) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
+         var grade:int = 0;
+         var times:int = 0;
          if(_propCell.info.TemplateID != stoneTemtID)
          {
             _propCell.info = ItemManager.Instance.getTemplateById(stoneTemtID);
          }
-         var _loc3_:BagInfo = PlayerManager.Instance.Self.getBag(1);
-         _propCell.setCount(_loc3_.getItemCountByTemplateId(_propCell.info.TemplateID));
-         var _loc2_:InventoryItemInfo = _newCell.info as InventoryItemInfo;
-         var _loc7_:EquipAmuletVo = EquipAmuletManager.Instance.getAmuletVo(_info.StrengthenLevel + 1);
-         var _loc6_:EquipAmuletVo = EquipAmuletManager.Instance.getAmuletVo(_info.StrengthenLevel);
-         if(param1)
+         var bagInfo:BagInfo = PlayerManager.Instance.Self.getBag(1);
+         _propCell.setCount(bagInfo.getItemCountByTemplateId(_propCell.info.TemplateID));
+         var newInfo:InventoryItemInfo = _newCell.info as InventoryItemInfo;
+         var vo:EquipAmuletVo = EquipAmuletManager.Instance.getAmuletVo(_info.StrengthenLevel + 1);
+         var oldVo:EquipAmuletVo = EquipAmuletManager.Instance.getAmuletVo(_info.StrengthenLevel);
+         if(allUpdate)
          {
-            _loc5_ = EquipAmuletManager.Instance.getAmuletPhaseVoByGrade(_info.StrengthenLevel).grade;
-            if(_loc5_ == _info.StrengthenLevel && _loc5_ != 1)
+            grade = EquipAmuletManager.Instance.getAmuletPhaseVoByGrade(_info.StrengthenLevel).grade;
+            if(grade == _info.StrengthenLevel && grade != 1)
             {
                _oldCell.resetLoadIcon();
             }
             _promote.visible = false;
             _maxLevel.visible = false;
-            if(_loc7_ == null)
+            if(vo == null)
             {
                _maxLevel.visible = true;
-               _loc2_ = _info;
+               newInfo = _info;
             }
             else
             {
-               if(_loc6_.phase == _loc7_.phase - 1)
+               if(oldVo.phase == vo.phase - 1)
                {
                   _promote.visible = true;
                }
-               _loc2_ = ItemManager.copy(_info);
-               _loc2_.StrengthenLevel = _info.StrengthenLevel + 1;
+               newInfo = ItemManager.copy(_info);
+               newInfo.StrengthenLevel = _info.StrengthenLevel + 1;
             }
-            _newCell.info = _loc2_;
+            _newCell.info = newInfo;
          }
          _oldLevelText.text = _info.StrengthenLevel.toString();
          _oldHpText.text = EquipAmuletManager.Instance.getAmuletVo(_info.StrengthenLevel).HP.toString();
-         _newLevelText.text = _loc2_.StrengthenLevel.toString();
-         _newHpText.text = EquipAmuletManager.Instance.getAmuletVo(_loc2_.StrengthenLevel).HP.toString();
-         if(_loc7_ == null)
+         _newLevelText.text = newInfo.StrengthenLevel.toString();
+         _newHpText.text = EquipAmuletManager.Instance.getAmuletVo(newInfo.StrengthenLevel).HP.toString();
+         if(vo == null)
          {
             _upgradeTipText.visible = false;
             _newLevelText.text = LanguageMgr.GetTranslation("tank.equipAmulet.maxGrade");
@@ -208,37 +208,37 @@ package bagAndInfo.amulet
          else
          {
             _upgradeTipText.visible = true;
-            _loc4_ = EquipAmuletManager.Instance.getAmuletVo(_info.StrengthenLevel).GuaranteeTimes - _info.StrengthenTimes;
-            _upgradeTipText.htmlText = LanguageMgr.GetTranslation("tank.equipAmulet.upgradeTip",_loc4_);
+            times = EquipAmuletManager.Instance.getAmuletVo(_info.StrengthenLevel).GuaranteeTimes - _info.StrengthenTimes;
+            _upgradeTipText.htmlText = LanguageMgr.GetTranslation("tank.equipAmulet.upgradeTip",times);
          }
       }
       
-      private function __onUpgradeComplete(param1:PkgEvent) : void
+      private function __onUpgradeComplete(e:PkgEvent) : void
       {
-         var _loc4_:* = null;
-         var _loc2_:* = null;
-         var _loc3_:Boolean = param1.pkg.readBoolean();
-         var _loc5_:int = param1.pkg.readInt();
-         _info.StrengthenLevel = param1.pkg.readInt();
-         _info.StrengthenTimes = param1.pkg.readInt();
-         if(_loc3_)
+         var tip:* = null;
+         var alertFrame:* = null;
+         var bool:Boolean = e.pkg.readBoolean();
+         var consume:int = e.pkg.readInt();
+         _info.StrengthenLevel = e.pkg.readInt();
+         _info.StrengthenTimes = e.pkg.readInt();
+         if(bool)
          {
-            _loc4_ = LanguageMgr.GetTranslation("tank.equipAmulet.upgradeComplete",_info.StrengthenLevel,_propCell.info.Name,_loc5_);
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),_loc4_,LanguageMgr.GetTranslation("ok"),"",false,true,false,2,null,"SimpleAlert",60,false);
-            _loc2_.addEventListener("response",__onAlertCompleteFrame);
+            tip = LanguageMgr.GetTranslation("tank.equipAmulet.upgradeComplete",_info.StrengthenLevel,_propCell.info.Name,consume);
+            alertFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),tip,LanguageMgr.GetTranslation("ok"),"",false,true,false,2,null,"SimpleAlert",60,false);
+            alertFrame.addEventListener("response",__onAlertCompleteFrame);
          }
          else
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.equipAmulet.upgradeFail"));
          }
-         update(_loc3_);
+         update(bool);
       }
       
-      private function __onAlertCompleteFrame(param1:FrameEvent) : void
+      private function __onAlertCompleteFrame(e:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onAlertCompleteFrame);
-         _loc2_.dispose();
+         var alertFrame:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         alertFrame.removeEventListener("response",__onAlertCompleteFrame);
+         alertFrame.dispose();
       }
       
       private function initEvent() : void

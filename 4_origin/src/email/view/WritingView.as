@@ -126,13 +126,13 @@ package email.view
       {
          disposeChildren = true;
          titleText = LanguageMgr.GetTranslation("tank.view.emailII.writingView.titleTxt");
-         var _loc2_:ScaleBitmapImage = ComponentFactory.Instance.creatComponentByStylename("email.writeBG1");
-         addToContent(_loc2_);
+         var bg:ScaleBitmapImage = ComponentFactory.Instance.creatComponentByStylename("email.writeBG1");
+         addToContent(bg);
          _writingViewBG = ClassUtils.CreatInstance("asset.email.writeViewBg");
          PositionUtils.setPos(_writingViewBG,"writingView.BGPos");
          addToContent(_writingViewBG);
-         var _loc3_:Image = ComponentFactory.Instance.creatComponentByStylename("email.writeLine");
-         addToContent(_loc3_);
+         var xuLine:Image = ComponentFactory.Instance.creatComponentByStylename("email.writeLine");
+         addToContent(xuLine);
          _senderTip = ComponentFactory.Instance.creatComponentByStylename("email.geterTipTxt");
          _senderTip.text = LanguageMgr.GetTranslation("tank.view.emailII.readView.geterTip");
          addToContent(_senderTip);
@@ -154,8 +154,8 @@ package email.view
          _friendsBtn = ComponentFactory.Instance.creat("email.friendsBtn");
          _friendsBtn.text = LanguageMgr.GetTranslation("tank.view.emailII.writingView.friendlist");
          addToContent(_friendsBtn);
-         var _loc4_:MutipleImage = ComponentFactory.Instance.creatComponentByStylename("email.writeBG3");
-         addToContent(_loc4_);
+         var bg1:MutipleImage = ComponentFactory.Instance.creatComponentByStylename("email.writeBG3");
+         addToContent(bg1);
          _houerBtnGroup = new SelectedButtonGroup();
          _oneHouerBtn = ComponentFactory.Instance.creatComponentByStylename("email.oneHouerBtn");
          _oneHouerBtn.text = LanguageMgr.GetTranslation("tank.view.emailII.writingView.onehour");
@@ -192,8 +192,8 @@ package email.view
          _cancelBtn = ComponentFactory.Instance.creat("email.cancelBtn");
          _cancelBtn.text = LanguageMgr.GetTranslation("cancel");
          addToContent(_cancelBtn);
-         var _loc1_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.email.diamondTipImg");
-         addToContent(_loc1_);
+         var diamondTipImg:Bitmap = ComponentFactory.Instance.creatBitmap("asset.email.diamondTipImg");
+         addToContent(diamondTipImg);
          _friendList = new ChatFriendListPanel();
          _friendList.setup(selectName);
          _bag = ComponentFactory.Instance.creat("email.emialBagFrame");
@@ -218,12 +218,12 @@ package email.view
          PositionUtils.setPos(_diamonds,"writingView.diaPos");
       }
       
-      private function setTip(param1:SelectedCheckButton, param2:String) : void
+      private function setTip(btn:SelectedCheckButton, data:String) : void
       {
-         param1.tipStyle = "ddt.view.tips.OneLineTip";
-         param1.tipDirctions = "0";
-         param1.tipData = param2;
-         param1.tipGapV = 5;
+         btn.tipStyle = "ddt.view.tips.OneLineTip";
+         btn.tipDirctions = "0";
+         btn.tipData = data;
+         btn.tipGapV = 5;
       }
       
       private function addEvent() : void
@@ -251,7 +251,7 @@ package email.view
          bagContent.emailBagView.addEventListener("tabChange",__onBagTabChanged);
       }
       
-      protected function __onBagTabChanged(param1:Event) : void
+      protected function __onBagTabChanged(event:Event) : void
       {
          if(bagContent.emailBagView.bagType == 21)
          {
@@ -264,9 +264,9 @@ package email.view
          }
       }
       
-      private function __hideDropList(param1:MouseEvent) : void
+      private function __hideDropList(event:MouseEvent) : void
       {
-         if(param1.target is FriendDropListTarget)
+         if(event.target is FriendDropListTarget)
          {
             return;
          }
@@ -276,62 +276,60 @@ package email.view
          }
       }
       
-      private function __onReceiverChange(param1:Event) : void
+      private function __onReceiverChange(event:Event) : void
       {
          if(_receiver.text == "")
          {
             _dropList.dataList = null;
             return;
          }
-         var _loc2_:Array = PlayerManager.Instance.onlineFriendList.concat(PlayerManager.Instance.offlineFriendList).concat(ConsortionModelManager.Instance.model.onlineConsortiaMemberList).concat(ConsortionModelManager.Instance.model.offlineConsortiaMemberList);
-         _dropList.dataList = filterRepeatInArray(filterSearch(_loc2_,_receiver.text));
+         var list:Array = PlayerManager.Instance.onlineFriendList.concat(PlayerManager.Instance.offlineFriendList).concat(ConsortionModelManager.Instance.model.onlineConsortiaMemberList).concat(ConsortionModelManager.Instance.model.offlineConsortiaMemberList);
+         _dropList.dataList = filterRepeatInArray(filterSearch(list,_receiver.text));
       }
       
-      private function filterRepeatInArray(param1:Array) : Array
+      private function filterRepeatInArray(filterArr:Array) : Array
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         var _loc2_:Array = [];
-         _loc4_ = 0;
-         while(_loc4_ < param1.length)
+         var i:int = 0;
+         var j:int = 0;
+         var arr:Array = [];
+         for(i = 0; i < filterArr.length; )
          {
-            if(_loc4_ == 0)
+            if(i == 0)
             {
-               _loc2_.push(param1[_loc4_]);
+               arr.push(filterArr[i]);
             }
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_.length)
+            j = 0;
+            while(j < arr.length)
             {
-               if(_loc2_[_loc3_].NickName != param1[_loc4_].NickName)
+               if(arr[j].NickName != filterArr[i].NickName)
                {
-                  if(_loc3_ == _loc2_.length - 1)
+                  if(j == arr.length - 1)
                   {
-                     _loc2_.push(param1[_loc4_]);
+                     arr.push(filterArr[i]);
                   }
-                  _loc3_++;
+                  j++;
                   continue;
                }
                break;
             }
-            _loc4_++;
+            i++;
          }
-         return _loc2_;
+         return arr;
       }
       
-      private function filterSearch(param1:Array, param2:String) : Array
+      private function filterSearch(list:Array, targetStr:String) : Array
       {
-         var _loc4_:int = 0;
-         var _loc3_:Array = [];
-         _loc4_ = 0;
-         while(_loc4_ < param1.length)
+         var i:int = 0;
+         var result:Array = [];
+         for(i = 0; i < list.length; )
          {
-            if(param1[_loc4_].NickName.indexOf(param2) != -1)
+            if(list[i].NickName.indexOf(targetStr) != -1)
             {
-               _loc3_.push(param1[_loc4_]);
+               result.push(list[i]);
             }
-            _loc4_++;
+            i++;
          }
-         return _loc3_;
+         return result;
       }
       
       private function removeEvent() : void
@@ -354,9 +352,9 @@ package email.view
          bagContent.emailBagView.removeEventListener("tabChange",__onBagTabChanged);
       }
       
-      public function set selectInfo(param1:EmailInfo) : void
+      public function set selectInfo(value:EmailInfo) : void
       {
-         _selectInfo = param1;
+         _selectInfo = value;
       }
       
       public function isHasWrite() : Boolean
@@ -380,31 +378,31 @@ package email.view
          return false;
       }
       
-      private function selectName(param1:String, param2:int = 0) : void
+      private function selectName(nick:String, id:int = 0) : void
       {
-         _receiver.text = param1;
+         _receiver.text = nick;
          _friendList.setVisible = false;
       }
       
-      public function dragDrop(param1:DragEffect) : void
+      public function dragDrop(effect:DragEffect) : void
       {
          if(PlayerManager.Instance.Self.bagLocked)
          {
             return;
          }
-         param1.action = "move";
-         var _loc2_:InventoryItemInfo = param1.data as InventoryItemInfo;
-         if(_loc2_ && param1.action != "split")
+         effect.action = "move";
+         var info:InventoryItemInfo = effect.data as InventoryItemInfo;
+         if(info && effect.action != "split")
          {
             if(_diamonds.annex == null)
             {
-               _diamonds.dragDrop(param1);
-               if(param1.target)
+               _diamonds.dragDrop(effect);
+               if(effect.target)
                {
                   return;
                }
             }
-            param1.action = "none";
+            effect.action = "none";
          }
       }
       
@@ -467,10 +465,10 @@ package email.view
          MailControl.Instance.changeState("read");
       }
       
-      private function payEnable(param1:Boolean) : void
+      private function payEnable(b:Boolean) : void
       {
-         _topic.enable = !param1;
-         var _loc2_:* = param1;
+         _topic.enable = !b;
+         var _loc2_:* = b;
          _payForBtn.selected = _loc2_;
          _loc2_ = _loc2_;
          _payForBtn.enable = _loc2_;
@@ -479,7 +477,7 @@ package email.view
          _loc2_ = _loc2_;
          _payForBtn.mouseEnabled = _loc2_;
          _payForBtn.mouseChildren = _loc2_;
-         _moneyInput.enable = param1;
+         _moneyInput.enable = b;
          _moneyInput.text = "";
          isChargeMail = _payForBtn.selected;
       }
@@ -513,27 +511,27 @@ package email.view
          switchHourBtnState(isChargeMail);
       }
       
-      private function switchHourBtnState(param1:Boolean) : void
+      private function switchHourBtnState(isChargeMail:Boolean) : void
       {
          _oneHouerBtn.selected = false;
          _sixHouerBtn.selected = false;
-         _oneHouerBtn.enable = param1;
-         _sixHouerBtn.enable = param1;
-         if(param1)
+         _oneHouerBtn.enable = isChargeMail;
+         _sixHouerBtn.enable = isChargeMail;
+         if(isChargeMail)
          {
             _currentHourBtn = _oneHouerBtn;
             _currentHourBtn.selected = true;
          }
       }
       
-      private function __selectHourListener(param1:MouseEvent) : void
+      private function __selectHourListener(e:MouseEvent) : void
       {
          btnSound();
          if(_currentHourBtn)
          {
             _currentHourBtn.selected = false;
          }
-         _currentHourBtn = param1.currentTarget as SelectedButton;
+         _currentHourBtn = e.currentTarget as SelectedButton;
          _currentHourBtn.selected = true;
          if(_currentHourBtn == _oneHouerBtn)
          {
@@ -545,18 +543,18 @@ package email.view
          }
       }
       
-      private function __selectMoneyType(param1:MouseEvent) : void
+      private function __selectMoneyType(e:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var diamond:* = null;
          isChargeMail = _payForBtn.selected;
          if(isChargeMail)
          {
             _moneyInput.enable = true;
-            _loc2_ = getFirstDiamond();
-            if(StringUtils.trim(_moneyInput.text) == "" && !isNaN(_loc2_.annex.FloorPrice))
+            diamond = getFirstDiamond();
+            if(StringUtils.trim(_moneyInput.text) == "" && !isNaN(diamond.annex.FloorPrice))
             {
-               _lowestPrice = _loc2_._cell.goodsCount * _loc2_.annex.FloorPrice;
-               _moneyInput.text = String(_loc2_._cell.goodsCount * _loc2_.annex.FloorPrice);
+               _lowestPrice = diamond._cell.goodsCount * diamond.annex.FloorPrice;
+               _moneyInput.text = String(diamond._cell.goodsCount * diamond.annex.FloorPrice);
             }
          }
          else
@@ -578,22 +576,22 @@ package email.view
          setDiamondMoneyType();
       }
       
-      private function __moneyChange(param1:Event) : void
+      private function __moneyChange(e:Event) : void
       {
          if(_moneyInput.text.charAt(0) == "0")
          {
             _moneyInput.text = "";
          }
-         param1.preventDefault();
+         e.preventDefault();
       }
       
-      private function __send(param1:MouseEvent) : void
+      private function __send(event:MouseEvent) : void
       {
-         var _loc5_:* = null;
-         var _loc4_:* = null;
-         var _loc6_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var alert:* = null;
+         var param:* = null;
+         var diamond:* = null;
+         var annexArr:* = null;
+         var tempDiamond:* = null;
          btnSound();
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -616,9 +614,9 @@ package email.view
          }
          else if(PlayerManager.Instance.Self.Gold < 100)
          {
-            _loc5_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.GoldInadequate"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
-            _loc5_.moveEnable = false;
-            _loc5_.addEventListener("response",__quickBuyResponse);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.GoldInadequate"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
+            alert.moveEnable = false;
+            alert.addEventListener("response",__quickBuyResponse);
          }
          else if(_content.text.length > 200)
          {
@@ -646,98 +644,105 @@ package email.view
                LeavePageManager.showFillFrame();
                return;
             }
-            _loc4_ = {};
-            _loc4_.NickName = _receiver.text;
+            param = {};
+            param.NickName = _receiver.text;
             if(FilterWordManager.IsNullorEmpty(_topic.text))
             {
                _topic.text = getFirstDiamond().annex.Name;
             }
-            _loc4_.Title = FilterWordManager.filterWrod(_topic.text);
-            _loc4_.Content = FilterWordManager.filterWrod(_content.text);
-            _loc4_.SendedMoney = Number(_moneyInput.text);
-            _loc4_.isPay = isChargeMail;
+            param.Title = FilterWordManager.filterWrod(_topic.text);
+            param.Content = FilterWordManager.filterWrod(_content.text);
+            param.SendedMoney = Number(_moneyInput.text);
+            param.isPay = isChargeMail;
             if(isChargeMail)
             {
-               _loc4_.hours = _hours;
-               _loc6_ = getFirstDiamond();
-               _loc4_.Title = _loc6_.annex.Name;
+               param.hours = _hours;
+               diamond = getFirstDiamond();
+               param.Title = diamond.annex.Name;
             }
             else
             {
-               _loc4_.SendedMoney = 0;
+               param.SendedMoney = 0;
             }
-            _loc3_ = [];
+            annexArr = [];
             if(_diamonds.annex)
             {
-               _loc2_ = _diamonds.annex as InventoryItemInfo;
-               _loc3_.push(_loc2_);
-               _loc4_["Annex0"] = _loc2_.BagType.toString() + "," + _loc2_.Place.toString();
+               tempDiamond = _diamonds.annex as InventoryItemInfo;
+               if(tempDiamond.CategoryID != 74)
+               {
+                  annexArr.push(tempDiamond);
+                  param["Annex0"] = tempDiamond.BagType.toString() + "," + tempDiamond.Place.toString();
+               }
+               else
+               {
+                  param["Annex0"] = 100.toString() + "," + tempDiamond.ItemID.toString();
+               }
             }
-            _loc4_.Count = _diamonds._cell.goodsCount;
-            MailControl.Instance.sendEmail(_loc4_);
-            MailControl.Instance.onSendAnnex(_loc3_);
+            param.Count = _diamonds._cell.goodsCount;
+            MailControl.Instance.sendEmail(param);
+            MailControl.Instance.onSendAnnex(annexArr);
             _sendBtn.enable = false;
          }
       }
       
-      private function __quickBuyResponse(param1:FrameEvent) : void
+      private function __quickBuyResponse(evt:FrameEvent) : void
       {
-         var _loc3_:* = null;
+         var quickBuy:* = null;
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__quickBuyResponse);
-         _loc2_.dispose();
-         if(_loc2_.parent)
+         var frame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("response",__quickBuyResponse);
+         frame.dispose();
+         if(frame.parent)
          {
-            _loc2_.parent.removeChild(_loc2_);
+            frame.parent.removeChild(frame);
          }
-         _loc2_ = null;
-         if(param1.responseCode == 3)
+         frame = null;
+         if(evt.responseCode == 3)
          {
-            _loc3_ = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
-            _loc3_.itemID = 11233;
-            _loc3_.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
-            LayerManager.Instance.addToLayer(_loc3_,2,true,1);
+            quickBuy = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
+            quickBuy.itemID = 11233;
+            quickBuy.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
+            LayerManager.Instance.addToLayer(quickBuy,2,true,1);
          }
       }
       
-      private function __friendListView(param1:MouseEvent) : void
+      private function __friendListView(event:MouseEvent) : void
       {
          btnSound();
-         var _loc2_:Point = _friendsBtn.localToGlobal(new Point(0,0));
-         _friendList.x = _loc2_.x + _friendsBtn.width;
-         _friendList.y = _loc2_.y;
+         var pos:Point = _friendsBtn.localToGlobal(new Point(0,0));
+         _friendList.x = pos.x + _friendsBtn.width;
+         _friendList.y = pos.y;
          _friendList.setVisible = true;
       }
       
-      private function __taInput(param1:TextEvent) : void
+      private function __taInput(event:TextEvent) : void
       {
          if(_content.text.length > 300)
          {
-            param1.preventDefault();
+            event.preventDefault();
          }
       }
       
-      private function __sendEmailBack(param1:PkgEvent) : void
+      private function __sendEmailBack(e:PkgEvent) : void
       {
          _sendBtn.enable = true;
       }
       
-      private function __StopEnter(param1:KeyboardEvent) : void
+      private function __StopEnter(e:KeyboardEvent) : void
       {
-         if(param1.keyCode == 13)
+         if(e.keyCode == 13)
          {
-            param1.stopImmediatePropagation();
+            e.stopImmediatePropagation();
          }
-         else if(param1.keyCode == 27)
+         else if(e.keyCode == 27)
          {
-            param1.stopImmediatePropagation();
+            e.stopImmediatePropagation();
             SoundManager.instance.play("008");
             closeWin();
          }
       }
       
-      private function addToStageListener(param1:Event) : void
+      private function addToStageListener(event:Event) : void
       {
          reset();
          _receiver.text = !!_selectInfo?_selectInfo.Sender:"";
@@ -753,23 +758,23 @@ package email.view
          _diamonds.annex = null;
       }
       
-      private function __showBag(param1:EmailEvent) : void
+      private function __showBag(event:EmailEvent) : void
       {
-         var _loc2_:DiamondOfWriting = param1.target as DiamondOfWriting;
-         if(_loc2_.annex == null || _bag.parent == null)
+         var diamond:DiamondOfWriting = event.target as DiamondOfWriting;
+         if(diamond.annex == null || _bag.parent == null)
          {
             _bag.visible = true;
          }
       }
       
-      private function __hideBag(param1:EmailEvent) : void
+      private function __hideBag(event:EmailEvent) : void
       {
          _bag.visible = false;
       }
       
-      private function __doDragIn(param1:EmailEvent) : void
+      private function __doDragIn(e:EmailEvent) : void
       {
-         var _loc2_:* = null;
+         var diamond:* = null;
          var _loc3_:* = true;
          _payForBtn.enable = _loc3_;
          _loc3_ = _loc3_;
@@ -779,10 +784,10 @@ package email.view
          _payForBtn.mouseChildren = _loc3_;
          if(_topic.text == "" || !_titleIsManMade)
          {
-            _loc2_ = getFirstDiamond();
-            if(_loc2_)
+            diamond = getFirstDiamond();
+            if(diamond)
             {
-               _topic.text = _loc2_.annex.Name;
+               _topic.text = diamond.annex.Name;
                _titleIsManMade = false;
             }
             else
@@ -794,7 +799,7 @@ package email.view
          setDiamondMoneyType();
       }
       
-      private function __doDragOut(param1:EmailEvent) : void
+      private function __doDragOut(e:EmailEvent) : void
       {
          if(atLeastOneDiamond())
          {
@@ -808,30 +813,30 @@ package email.view
          setDiamondMoneyType();
       }
       
-      private function __sound(param1:Event) : void
+      private function __sound(event:Event) : void
       {
          _titleIsManMade = true;
       }
       
-      private function __frameClose(param1:FrameEvent) : void
+      private function __frameClose(event:FrameEvent) : void
       {
          btnSound();
          closeWin();
       }
       
-      private function __close(param1:MouseEvent) : void
+      private function __close(event:MouseEvent) : void
       {
          btnSound();
          closeWin();
       }
       
-      private function __confirmResponse(param1:FrameEvent) : void
+      private function __confirmResponse(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          _confirmFrame.removeEventListener("response",__confirmResponse);
          _confirmFrame.dispose();
          _confirmFrame = null;
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         if(event.responseCode == 3 || event.responseCode == 2)
          {
             if(_type == 0)
             {
@@ -841,9 +846,9 @@ package email.view
          }
       }
       
-      public function set type(param1:int) : void
+      public function set type(value:int) : void
       {
-         _type = param1;
+         _type = value;
       }
       
       public function get type() : int
@@ -851,9 +856,9 @@ package email.view
          return _type;
       }
       
-      public function setName(param1:String) : void
+      public function setName(value:String) : void
       {
-         _receiver.text = param1;
+         _receiver.text = value;
       }
       
       override public function dispose() : void

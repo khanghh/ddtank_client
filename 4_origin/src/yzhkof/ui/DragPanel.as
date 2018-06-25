@@ -38,12 +38,12 @@ package yzhkof.ui
          this._dragContainer.addEventListener(MouseEvent.MOUSE_UP,this.__onStopDrag);
       }
       
-      private function __onStartDrag(param1:Event) : void
+      private function __onStartDrag(e:Event) : void
       {
          this.startDrag();
       }
       
-      private function __onStopDrag(param1:Event) : void
+      private function __onStopDrag(e:Event) : void
       {
          this.stopDrag();
       }

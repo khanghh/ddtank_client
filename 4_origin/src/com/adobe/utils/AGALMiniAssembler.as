@@ -228,10 +228,10 @@ package com.adobe.utils
       
       public var verbose:Boolean = false;
       
-      public function AGALMiniAssembler(param1:Boolean = false)
+      public function AGALMiniAssembler(debugging:Boolean = false)
       {
          super();
-         debugEnabled = param1;
+         debugEnabled = debugging;
          if(!initialized)
          {
             init();
@@ -319,445 +319,441 @@ package com.adobe.utils
          return _agalcode;
       }
       
-      public function assemble2(param1:Context3D, param2:uint, param3:String, param4:String) : Program3D
+      public function assemble2(ctx3d:Context3D, version:uint, vertexsrc:String, fragmentsrc:String) : Program3D
       {
-         var _loc6_:ByteArray = assemble("vertex",param3,param2);
-         var _loc7_:ByteArray = assemble("fragment",param4,param2);
-         var _loc5_:Program3D = param1.createProgram();
-         _loc5_.upload(_loc6_,_loc7_);
-         return _loc5_;
+         var agalvertex:ByteArray = assemble("vertex",vertexsrc,version);
+         var agalfragment:ByteArray = assemble("fragment",fragmentsrc,version);
+         var prog:Program3D = ctx3d.createProgram();
+         prog.upload(agalvertex,agalfragment);
+         return prog;
       }
       
-      public function assemble(param1:String, param2:String, param3:uint = 1, param4:Boolean = false) : ByteArray
+      public function assemble(mode:String, source:String, version:uint = 1, ignorelimits:Boolean = false) : ByteArray
       {
-         var _loc43_:int = 0;
-         var _loc30_:* = null;
-         var _loc22_:int = 0;
-         var _loc28_:int = 0;
-         var _loc5_:* = null;
-         var _loc34_:* = null;
-         var _loc10_:* = null;
-         var _loc17_:* = null;
-         var _loc44_:Boolean = false;
-         var _loc39_:* = 0;
-         var _loc29_:* = 0;
-         var _loc41_:int = 0;
-         var _loc35_:Boolean = false;
-         var _loc16_:* = null;
-         var _loc27_:* = null;
-         var _loc9_:* = null;
-         var _loc15_:* = null;
-         var _loc19_:* = 0;
-         var _loc49_:* = 0;
-         var _loc50_:* = null;
-         var _loc33_:Boolean = false;
-         var _loc7_:Boolean = false;
-         var _loc24_:* = 0;
-         var _loc20_:* = 0;
-         var _loc8_:int = 0;
-         var _loc18_:* = 0;
-         var _loc31_:* = 0;
-         var _loc42_:int = 0;
-         var _loc11_:* = null;
-         var _loc26_:* = null;
-         var _loc6_:* = null;
-         var _loc38_:* = null;
-         var _loc46_:* = 0;
-         var _loc13_:* = 0;
-         var _loc12_:* = NaN;
-         var _loc45_:* = null;
-         var _loc36_:* = null;
-         var _loc37_:* = 0;
-         var _loc14_:* = 0;
-         var _loc48_:* = null;
-         var _loc23_:uint = getTimer();
+         var i:int = 0;
+         var line:* = null;
+         var startcomment:int = 0;
+         var optsi:int = 0;
+         var opts:* = null;
+         var opCode:* = null;
+         var opFound:* = null;
+         var regs:* = null;
+         var badreg:Boolean = false;
+         var pad:* = 0;
+         var regLength:* = 0;
+         var j:int = 0;
+         var isRelative:Boolean = false;
+         var relreg:* = null;
+         var res:* = null;
+         var regFound:* = null;
+         var idxmatch:* = null;
+         var regidx:* = 0;
+         var regmask:* = 0;
+         var maskmatch:* = null;
+         var isDest:Boolean = false;
+         var isSampler:Boolean = false;
+         var reltype:* = 0;
+         var relsel:* = 0;
+         var reloffset:int = 0;
+         var cv:* = 0;
+         var maskLength:* = 0;
+         var k:int = 0;
+         var relname:* = null;
+         var regFoundRel:* = null;
+         var selmatch:* = null;
+         var relofs:* = null;
+         var samplerbits:* = 0;
+         var optsLength:* = 0;
+         var bias:* = NaN;
+         var optfound:* = null;
+         var dbgLine:* = null;
+         var agalLength:* = 0;
+         var index:* = 0;
+         var byteStr:* = null;
+         var start:uint = getTimer();
          _agalcode = new ByteArray();
          _error = "";
-         var _loc47_:Boolean = false;
-         if(param1 == "fragment")
+         var isFrag:Boolean = false;
+         if(mode == "fragment")
          {
-            _loc47_ = true;
+            isFrag = true;
          }
-         else if(param1 != "vertex")
+         else if(mode != "vertex")
          {
-            _error = "ERROR: mode needs to be \"fragment\" or \"vertex\" but is \"" + param1 + "\".";
+            _error = "ERROR: mode needs to be \"fragment\" or \"vertex\" but is \"" + mode + "\".";
          }
          agalcode.endian = "littleEndian";
          agalcode.writeByte(160);
-         agalcode.writeUnsignedInt(param3);
+         agalcode.writeUnsignedInt(version);
          agalcode.writeByte(161);
-         agalcode.writeByte(!!_loc47_?1:0);
-         initregmap(param3,param4);
-         var _loc25_:Array = param2.replace(/[\f\n\r\v]+/g,"\n").split("\n");
-         var _loc40_:int = 0;
-         var _loc21_:int = 0;
-         var _loc32_:int = _loc25_.length;
-         _loc43_ = 0;
-         while(_loc43_ < _loc32_ && _error == "")
+         agalcode.writeByte(!!isFrag?1:0);
+         initregmap(version,ignorelimits);
+         var lines:Array = source.replace(/[\f\n\r\v]+/g,"\n").split("\n");
+         var nest:int = 0;
+         var nops:int = 0;
+         var lng:int = lines.length;
+         i = 0;
+         while(i < lng && _error == "")
          {
-            _loc30_ = new String(_loc25_[_loc43_]);
-            _loc30_ = _loc30_.replace(REGEXP_OUTER_SPACES,"");
-            _loc22_ = _loc30_.search("//");
-            if(_loc22_ != -1)
+            line = new String(lines[i]);
+            line = line.replace(REGEXP_OUTER_SPACES,"");
+            startcomment = line.search("//");
+            if(startcomment != -1)
             {
-               _loc30_ = _loc30_.slice(0,_loc22_);
+               line = line.slice(0,startcomment);
             }
-            _loc28_ = _loc30_.search(/<.*>/g);
-            if(_loc28_ != -1)
+            optsi = line.search(/<.*>/g);
+            if(optsi != -1)
             {
-               _loc5_ = _loc30_.slice(_loc28_).match(/([\w\.\-\+]+)/gi);
-               _loc30_ = _loc30_.slice(0,_loc28_);
+               opts = line.slice(optsi).match(/([\w\.\-\+]+)/gi);
+               line = line.slice(0,optsi);
             }
-            _loc34_ = _loc30_.match(/^\w{3}/gi);
-            if(!_loc34_)
+            opCode = line.match(/^\w{3}/gi);
+            if(!opCode)
             {
-               if(_loc30_.length >= 3)
+               if(line.length >= 3)
                {
-                  trace("warning: bad line " + _loc43_ + ": " + _loc25_[_loc43_]);
+                  trace("warning: bad line " + i + ": " + lines[i]);
                }
             }
             else
             {
-               _loc10_ = OPMAP[_loc34_[0]];
+               opFound = OPMAP[opCode[0]];
                if(debugEnabled)
                {
-                  trace(_loc10_);
+                  trace(opFound);
                }
-               if(_loc10_ == null)
+               if(opFound == null)
                {
-                  if(_loc30_.length >= 3)
+                  if(line.length >= 3)
                   {
-                     trace("warning: bad line " + _loc43_ + ": " + _loc25_[_loc43_]);
+                     trace("warning: bad line " + i + ": " + lines[i]);
                   }
                }
                else
                {
-                  _loc30_ = _loc30_.slice(_loc30_.search(_loc10_.name) + _loc10_.name.length);
-                  if(_loc10_.flags & 256 && param3 < 2)
+                  line = line.slice(line.search(opFound.name) + opFound.name.length);
+                  if(opFound.flags & 256 && version < 2)
                   {
                      _error = "error: opcode requires version 2.";
                      break;
                   }
-                  if(_loc10_.flags & 64 && _loc47_)
+                  if(opFound.flags & 64 && isFrag)
                   {
                      _error = "error: opcode is only allowed in vertex programs.";
                      break;
                   }
-                  if(_loc10_.flags & 32 && !_loc47_)
+                  if(opFound.flags & 32 && !isFrag)
                   {
                      _error = "error: opcode is only allowed in fragment programs.";
                      break;
                   }
                   if(verbose)
                   {
-                     trace("emit opcode=" + _loc10_);
+                     trace("emit opcode=" + opFound);
                   }
-                  agalcode.writeUnsignedInt(_loc10_.emitCode);
-                  _loc21_++;
-                  if(_loc21_ > 2048)
+                  agalcode.writeUnsignedInt(opFound.emitCode);
+                  nops++;
+                  if(nops > 2048)
                   {
                      _error = "error: too many opcodes. maximum is 2048.";
                      break;
                   }
-                  _loc17_ = _loc30_.match(/vc\[([vof][acostdip]?)(\d*)?(\.[xyzw](\+\d{1,3})?)?\](\.[xyzw]{1,4})?|([vof][acostdip]?)(\d*)?(\.[xyzw]{1,4})?/gi);
-                  if(!_loc17_ || _loc17_.length != _loc10_.numRegister)
+                  regs = line.match(/vc\[([vof][acostdip]?)(\d*)?(\.[xyzw](\+\d{1,3})?)?\](\.[xyzw]{1,4})?|([vof][acostdip]?)(\d*)?(\.[xyzw]{1,4})?/gi);
+                  if(!regs || regs.length != opFound.numRegister)
                   {
-                     _error = "error: wrong number of operands. found " + _loc17_.length + " but expected " + _loc10_.numRegister + ".";
+                     _error = "error: wrong number of operands. found " + regs.length + " but expected " + opFound.numRegister + ".";
                      break;
                   }
-                  _loc44_ = false;
-                  _loc39_ = uint(160);
-                  _loc29_ = uint(_loc17_.length);
-                  _loc41_ = 0;
-                  while(_loc41_ < _loc29_)
+                  badreg = false;
+                  pad = uint(160);
+                  regLength = uint(regs.length);
+                  for(j = 0; j < regLength; )
                   {
-                     _loc35_ = false;
-                     _loc16_ = _loc17_[_loc41_].match(/\[.*\]/gi);
-                     if(_loc16_ && _loc16_.length > 0)
+                     isRelative = false;
+                     relreg = regs[j].match(/\[.*\]/gi);
+                     if(relreg && relreg.length > 0)
                      {
-                        _loc17_[_loc41_] = _loc17_[_loc41_].replace(_loc16_[0],"0");
+                        regs[j] = regs[j].replace(relreg[0],"0");
                         if(verbose)
                         {
                            trace("IS REL");
                         }
-                        _loc35_ = true;
+                        isRelative = true;
                      }
-                     _loc27_ = _loc17_[_loc41_].match(/^\b[A-Za-z]{1,2}/gi);
-                     if(!_loc27_)
+                     res = regs[j].match(/^\b[A-Za-z]{1,2}/gi);
+                     if(!res)
                      {
-                        _error = "error: could not parse operand " + _loc41_ + " (" + _loc17_[_loc41_] + ").";
-                        _loc44_ = true;
+                        _error = "error: could not parse operand " + j + " (" + regs[j] + ").";
+                        badreg = true;
                         break;
                      }
-                     _loc9_ = REGMAP[_loc27_[0]];
+                     regFound = REGMAP[res[0]];
                      if(debugEnabled)
                      {
-                        trace(_loc9_);
+                        trace(regFound);
                      }
-                     if(_loc9_ == null)
+                     if(regFound == null)
                      {
-                        _error = "error: could not find register name for operand " + _loc41_ + " (" + _loc17_[_loc41_] + ").";
-                        _loc44_ = true;
+                        _error = "error: could not find register name for operand " + j + " (" + regs[j] + ").";
+                        badreg = true;
                         break;
                      }
-                     if(_loc47_)
+                     if(isFrag)
                      {
-                        if(!(_loc9_.flags & 32))
+                        if(!(regFound.flags & 32))
                         {
-                           _error = "error: register operand " + _loc41_ + " (" + _loc17_[_loc41_] + ") only allowed in vertex programs.";
-                           _loc44_ = true;
+                           _error = "error: register operand " + j + " (" + regs[j] + ") only allowed in vertex programs.";
+                           badreg = true;
                            break;
                         }
-                        if(_loc35_)
+                        if(isRelative)
                         {
-                           _error = "error: register operand " + _loc41_ + " (" + _loc17_[_loc41_] + ") relative adressing not allowed in fragment programs.";
-                           _loc44_ = true;
+                           _error = "error: register operand " + j + " (" + regs[j] + ") relative adressing not allowed in fragment programs.";
+                           badreg = true;
                            break;
                         }
                      }
-                     else if(!(_loc9_.flags & 64))
+                     else if(!(regFound.flags & 64))
                      {
-                        _error = "error: register operand " + _loc41_ + " (" + _loc17_[_loc41_] + ") only allowed in fragment programs.";
-                        _loc44_ = true;
+                        _error = "error: register operand " + j + " (" + regs[j] + ") only allowed in fragment programs.";
+                        badreg = true;
                         break;
                      }
-                     _loc17_[_loc41_] = _loc17_[_loc41_].slice(_loc17_[_loc41_].search(_loc9_.name) + _loc9_.name.length);
-                     _loc15_ = !!_loc35_?_loc16_[0].match(/\d+/):_loc17_[_loc41_].match(/\d+/);
-                     _loc19_ = uint(0);
-                     if(_loc15_)
+                     regs[j] = regs[j].slice(regs[j].search(regFound.name) + regFound.name.length);
+                     idxmatch = !!isRelative?relreg[0].match(/\d+/):regs[j].match(/\d+/);
+                     regidx = uint(0);
+                     if(idxmatch)
                      {
-                        _loc19_ = uint(_loc15_[0]);
+                        regidx = uint(idxmatch[0]);
                      }
-                     if(_loc9_.range < _loc19_)
+                     if(regFound.range < regidx)
                      {
-                        _error = "error: register operand " + _loc41_ + " (" + _loc17_[_loc41_] + ") index exceeds limit of " + (_loc9_.range + 1) + ".";
-                        _loc44_ = true;
+                        _error = "error: register operand " + j + " (" + regs[j] + ") index exceeds limit of " + (regFound.range + 1) + ".";
+                        badreg = true;
                         break;
                      }
-                     _loc49_ = uint(0);
-                     _loc50_ = _loc17_[_loc41_].match(/(\.[xyzw]{1,4})/);
-                     _loc33_ = _loc41_ == 0 && !(_loc10_.flags & 128);
-                     _loc7_ = _loc41_ == 2 && _loc10_.flags & 8;
-                     _loc24_ = uint(0);
-                     _loc20_ = uint(0);
-                     _loc8_ = 0;
-                     if(_loc33_ && _loc35_)
+                     regmask = uint(0);
+                     maskmatch = regs[j].match(/(\.[xyzw]{1,4})/);
+                     isDest = j == 0 && !(opFound.flags & 128);
+                     isSampler = j == 2 && opFound.flags & 8;
+                     reltype = uint(0);
+                     relsel = uint(0);
+                     reloffset = 0;
+                     if(isDest && isRelative)
                      {
                         _error = "error: relative can not be destination";
-                        _loc44_ = true;
+                        badreg = true;
                         break;
                      }
-                     if(_loc50_)
+                     if(maskmatch)
                      {
-                        _loc49_ = uint(0);
-                        _loc31_ = uint(_loc50_[0].length);
-                        _loc42_ = 1;
-                        while(_loc42_ < _loc31_)
+                        regmask = uint(0);
+                        maskLength = uint(maskmatch[0].length);
+                        for(k = 1; k < maskLength; )
                         {
-                           _loc18_ = uint(_loc50_[0].charCodeAt(_loc42_) - "x".charCodeAt(0));
-                           if(_loc18_ > 2)
+                           cv = uint(maskmatch[0].charCodeAt(k) - "x".charCodeAt(0));
+                           if(cv > 2)
                            {
-                              _loc18_ = uint(3);
+                              cv = uint(3);
                            }
-                           if(_loc33_)
+                           if(isDest)
                            {
-                              _loc49_ = uint(_loc49_ | 1 << _loc18_);
+                              regmask = uint(regmask | 1 << cv);
                            }
                            else
                            {
-                              _loc49_ = uint(_loc49_ | _loc18_ << (_loc42_ - 1 << 1));
+                              regmask = uint(regmask | cv << (k - 1 << 1));
                            }
-                           _loc42_++;
+                           k++;
                         }
-                        if(!_loc33_)
+                        if(!isDest)
                         {
-                           while(_loc42_ <= 4)
+                           while(k <= 4)
                            {
-                              _loc49_ = uint(_loc49_ | _loc18_ << (_loc42_ - 1 << 1));
-                              _loc42_++;
+                              regmask = uint(regmask | cv << (k - 1 << 1));
+                              k++;
                            }
                         }
                      }
                      else
                      {
-                        _loc49_ = uint(!!_loc33_?15:Number(228));
+                        regmask = uint(!!isDest?15:Number(228));
                      }
-                     if(_loc35_)
+                     if(isRelative)
                      {
-                        _loc11_ = _loc16_[0].match(/[A-Za-z]{1,2}/gi);
-                        _loc26_ = REGMAP[_loc11_[0]];
-                        if(_loc26_ == null)
+                        relname = relreg[0].match(/[A-Za-z]{1,2}/gi);
+                        regFoundRel = REGMAP[relname[0]];
+                        if(regFoundRel == null)
                         {
                            _error = "error: bad index register";
-                           _loc44_ = true;
+                           badreg = true;
                            break;
                         }
-                        _loc24_ = uint(_loc26_.emitCode);
-                        _loc6_ = _loc16_[0].match(/(\.[xyzw]{1,1})/);
-                        if(_loc6_.length == 0)
+                        reltype = uint(regFoundRel.emitCode);
+                        selmatch = relreg[0].match(/(\.[xyzw]{1,1})/);
+                        if(selmatch.length == 0)
                         {
                            _error = "error: bad index register select";
-                           _loc44_ = true;
+                           badreg = true;
                            break;
                         }
-                        _loc20_ = uint(_loc6_[0].charCodeAt(1) - "x".charCodeAt(0));
-                        if(_loc20_ > 2)
+                        relsel = uint(selmatch[0].charCodeAt(1) - "x".charCodeAt(0));
+                        if(relsel > 2)
                         {
-                           _loc20_ = uint(3);
+                           relsel = uint(3);
                         }
-                        _loc38_ = _loc16_[0].match(/\+\d{1,3}/gi);
-                        if(_loc38_.length > 0)
+                        relofs = relreg[0].match(/\+\d{1,3}/gi);
+                        if(relofs.length > 0)
                         {
-                           _loc8_ = _loc38_[0];
+                           reloffset = relofs[0];
                         }
-                        if(_loc8_ < 0 || _loc8_ > 255)
+                        if(reloffset < 0 || reloffset > 255)
                         {
-                           _error = "error: index offset " + _loc8_ + " out of bounds. [0..255]";
-                           _loc44_ = true;
+                           _error = "error: index offset " + reloffset + " out of bounds. [0..255]";
+                           badreg = true;
                            break;
                         }
                         if(verbose)
                         {
-                           trace("RELATIVE: type=" + _loc24_ + "==" + _loc11_[0] + " sel=" + _loc20_ + "==" + _loc6_[0] + " idx=" + _loc19_ + " offset=" + _loc8_);
+                           trace("RELATIVE: type=" + reltype + "==" + relname[0] + " sel=" + relsel + "==" + selmatch[0] + " idx=" + regidx + " offset=" + reloffset);
                         }
                      }
                      if(verbose)
                      {
-                        trace("  emit argcode=" + _loc9_ + "[" + _loc19_ + "][" + _loc49_ + "]");
+                        trace("  emit argcode=" + regFound + "[" + regidx + "][" + regmask + "]");
                      }
-                     if(_loc33_)
+                     if(isDest)
                      {
-                        agalcode.writeShort(_loc19_);
-                        agalcode.writeByte(_loc49_);
-                        agalcode.writeByte(_loc9_.emitCode);
-                        _loc39_ = uint(_loc39_ - 32);
+                        agalcode.writeShort(regidx);
+                        agalcode.writeByte(regmask);
+                        agalcode.writeByte(regFound.emitCode);
+                        pad = uint(pad - 32);
                      }
-                     else if(_loc7_)
+                     else if(isSampler)
                      {
                         if(verbose)
                         {
                            trace("  emit sampler");
                         }
-                        _loc46_ = uint(5);
-                        _loc13_ = uint(_loc5_ == null?0:_loc5_.length);
-                        _loc12_ = 0;
-                        _loc42_ = 0;
-                        while(_loc42_ < _loc13_)
+                        samplerbits = uint(5);
+                        optsLength = uint(opts == null?0:opts.length);
+                        bias = 0;
+                        for(k = 0; k < optsLength; )
                         {
                            if(verbose)
                            {
-                              trace("    opt: " + _loc5_[_loc42_]);
+                              trace("    opt: " + opts[k]);
                            }
-                           _loc45_ = SAMPLEMAP[_loc5_[_loc42_]];
-                           if(_loc45_ == null)
+                           optfound = SAMPLEMAP[opts[k]];
+                           if(optfound == null)
                            {
-                              _loc12_ = Number(_loc5_[_loc42_]);
+                              bias = Number(opts[k]);
                               if(verbose)
                               {
-                                 trace("    bias: " + _loc12_);
+                                 trace("    bias: " + bias);
                               }
                            }
                            else
                            {
-                              if(_loc45_.flag != 16)
+                              if(optfound.flag != 16)
                               {
-                                 _loc46_ = uint(_loc46_ & ~(15 << _loc45_.flag));
+                                 samplerbits = uint(samplerbits & ~(15 << optfound.flag));
                               }
-                              _loc46_ = uint(_loc46_ | uint(_loc45_.mask) << uint(_loc45_.flag));
+                              samplerbits = uint(samplerbits | uint(optfound.mask) << uint(optfound.flag));
                            }
-                           _loc42_++;
+                           k++;
                         }
-                        agalcode.writeShort(_loc19_);
-                        agalcode.writeByte(int(_loc12_ * 8));
+                        agalcode.writeShort(regidx);
+                        agalcode.writeByte(int(bias * 8));
                         agalcode.writeByte(0);
-                        agalcode.writeUnsignedInt(_loc46_);
+                        agalcode.writeUnsignedInt(samplerbits);
                         if(verbose)
                         {
-                           trace("    bits: " + (_loc46_ - 5));
+                           trace("    bits: " + (samplerbits - 5));
                         }
-                        _loc39_ = uint(_loc39_ - 64);
+                        pad = uint(pad - 64);
                      }
                      else
                      {
-                        if(_loc41_ == 0)
+                        if(j == 0)
                         {
                            agalcode.writeUnsignedInt(0);
-                           _loc39_ = uint(_loc39_ - 32);
+                           pad = uint(pad - 32);
                         }
-                        agalcode.writeShort(_loc19_);
-                        agalcode.writeByte(_loc8_);
-                        agalcode.writeByte(_loc49_);
-                        agalcode.writeByte(_loc9_.emitCode);
-                        agalcode.writeByte(_loc24_);
-                        agalcode.writeShort(!!_loc35_?_loc20_ | 32768:0);
-                        _loc39_ = uint(_loc39_ - 64);
+                        agalcode.writeShort(regidx);
+                        agalcode.writeByte(reloffset);
+                        agalcode.writeByte(regmask);
+                        agalcode.writeByte(regFound.emitCode);
+                        agalcode.writeByte(reltype);
+                        agalcode.writeShort(!!isRelative?relsel | 32768:0);
+                        pad = uint(pad - 64);
                      }
-                     _loc41_++;
+                     j++;
                   }
-                  _loc41_ = 0;
-                  while(_loc41_ < _loc39_)
+                  j = 0;
+                  while(j < pad)
                   {
                      agalcode.writeByte(0);
-                     _loc41_ = _loc41_ + 8;
+                     j = j + 8;
                   }
-                  if(_loc44_)
+                  if(badreg)
                   {
                      break;
                   }
                }
             }
-            _loc43_++;
+            i++;
          }
          if(_error != "")
          {
-            _error = _error + ("\n  at line " + _loc43_ + " " + _loc25_[_loc43_]);
+            _error = _error + ("\n  at line " + i + " " + lines[i]);
             agalcode.length = 0;
             trace(_error);
          }
          if(debugEnabled)
          {
-            _loc36_ = "generated bytecode:";
-            _loc37_ = uint(agalcode.length);
-            _loc14_ = uint(0);
-            while(_loc14_ < _loc37_)
+            dbgLine = "generated bytecode:";
+            agalLength = uint(agalcode.length);
+            for(index = uint(0); index < agalLength; )
             {
-               if(!(_loc14_ % 16))
+               if(!(index % 16))
                {
-                  _loc36_ = _loc36_ + "\n";
+                  dbgLine = dbgLine + "\n";
                }
-               if(!(_loc14_ % 4))
+               if(!(index % 4))
                {
-                  _loc36_ = _loc36_ + " ";
+                  dbgLine = dbgLine + " ";
                }
-               _loc48_ = agalcode[_loc14_].toString(16);
-               if(_loc48_.length < 2)
+               byteStr = agalcode[index].toString(16);
+               if(byteStr.length < 2)
                {
-                  _loc48_ = "0" + _loc48_;
+                  byteStr = "0" + byteStr;
                }
-               _loc36_ = _loc36_ + _loc48_;
-               _loc14_++;
+               dbgLine = dbgLine + byteStr;
+               index++;
             }
-            trace(_loc36_);
+            trace(dbgLine);
          }
          if(verbose)
          {
-            trace("AGALMiniAssembler.assemble time: " + (getTimer() - _loc23_) / 1000 + "s");
+            trace("AGALMiniAssembler.assemble time: " + (getTimer() - start) / 1000 + "s");
          }
          return agalcode;
       }
       
-      private function initregmap(param1:uint, param2:Boolean) : void
+      private function initregmap(version:uint, ignorelimits:Boolean) : void
       {
-         REGMAP["va"] = new Register("va","vertex attribute",0,!!param2?1024:Number(param1 == 1 || param1 == 2?7:15),64 | 2);
-         REGMAP["vc"] = new Register("vc","vertex constant",1,!!param2?1024:Number(param1 == 1?127:Number(249)),64 | 2);
-         REGMAP["vt"] = new Register("vt","vertex temporary",2,!!param2?1024:Number(param1 == 1?7:25),64 | 1 | 2);
-         REGMAP["vo"] = new Register("vo","vertex output",3,!!param2?1024:0,64 | 1);
-         REGMAP["vi"] = new Register("vi","varying",4,!!param2?1024:Number(param1 == 1?7:9),64 | 32 | 2 | 1);
-         REGMAP["fc"] = new Register("fc","fragment constant",1,!!param2?1024:Number(param1 == 1?27:Number(param1 == 2?63:Number(199))),32 | 2);
-         REGMAP["ft"] = new Register("ft","fragment temporary",2,!!param2?1024:Number(param1 == 1?7:25),32 | 1 | 2);
-         REGMAP["fs"] = new Register("fs","texture sampler",5,!!param2?1024:7,32 | 2);
-         REGMAP["fo"] = new Register("fo","fragment output",3,!!param2?1024:Number(param1 == 1?0:3),32 | 1);
-         REGMAP["fd"] = new Register("fd","fragment depth output",6,!!param2?1024:Number(param1 == 1?-1:0),32 | 1);
+         REGMAP["va"] = new Register("va","vertex attribute",0,!!ignorelimits?1024:Number(version == 1 || version == 2?7:15),64 | 2);
+         REGMAP["vc"] = new Register("vc","vertex constant",1,!!ignorelimits?1024:Number(version == 1?127:Number(249)),64 | 2);
+         REGMAP["vt"] = new Register("vt","vertex temporary",2,!!ignorelimits?1024:Number(version == 1?7:25),64 | 1 | 2);
+         REGMAP["vo"] = new Register("vo","vertex output",3,!!ignorelimits?1024:0,64 | 1);
+         REGMAP["vi"] = new Register("vi","varying",4,!!ignorelimits?1024:Number(version == 1?7:9),64 | 32 | 2 | 1);
+         REGMAP["fc"] = new Register("fc","fragment constant",1,!!ignorelimits?1024:Number(version == 1?27:Number(version == 2?63:Number(199))),32 | 2);
+         REGMAP["ft"] = new Register("ft","fragment temporary",2,!!ignorelimits?1024:Number(version == 1?7:25),32 | 1 | 2);
+         REGMAP["fs"] = new Register("fs","texture sampler",5,!!ignorelimits?1024:7,32 | 2);
+         REGMAP["fo"] = new Register("fo","fragment output",3,!!ignorelimits?1024:Number(version == 1?0:3),32 | 1);
+         REGMAP["fd"] = new Register("fd","fragment depth output",6,!!ignorelimits?1024:Number(version == 1?-1:0),32 | 1);
          REGMAP["op"] = REGMAP["vo"];
          REGMAP["i"] = REGMAP["vi"];
          REGMAP["v"] = REGMAP["vi"];
@@ -780,13 +776,13 @@ class OpCode
    
    private var _numRegister:uint;
    
-   function OpCode(param1:String, param2:uint, param3:uint, param4:uint)
+   function OpCode(name:String, numRegister:uint, emitCode:uint, flags:uint)
    {
       super();
-      _name = param1;
-      _numRegister = param2;
-      _emitCode = param3;
-      _flags = param4;
+      _name = name;
+      _numRegister = numRegister;
+      _emitCode = emitCode;
+      _flags = flags;
    }
    
    public function get emitCode() : uint
@@ -829,14 +825,14 @@ class Register
    
    private var _range:uint;
    
-   function Register(param1:String, param2:String, param3:uint, param4:uint, param5:uint)
+   function Register(name:String, longName:String, emitCode:uint, range:uint, flags:uint)
    {
       super();
-      _name = param1;
-      _longName = param2;
-      _emitCode = param3;
-      _range = param4;
-      _flags = param5;
+      _name = name;
+      _longName = longName;
+      _emitCode = emitCode;
+      _range = range;
+      _flags = flags;
    }
    
    public function get emitCode() : uint
@@ -880,12 +876,12 @@ class Sampler
    
    private var _name:String;
    
-   function Sampler(param1:String, param2:uint, param3:uint)
+   function Sampler(name:String, flag:uint, mask:uint)
    {
       super();
-      _name = param1;
-      _flag = param2;
-      _mask = param3;
+      _name = name;
+      _flag = flag;
+      _mask = mask;
    }
    
    public function get flag() : uint

@@ -20,11 +20,11 @@ package starlingui.core.text
       
       private var _text:String;
       
-      public function TextLabel(param1:String = "")
+      public function TextLabel(styleName:String = "")
       {
          super();
          this.touchable = false;
-         _styleName = param1;
+         _styleName = styleName;
          _fText = _styleName == ""?new TextField():ComponentFactory.Instance.creatComponentByStylename(_styleName);
          _fText.mouseEnabled = false;
          this.x = _fText.x;
@@ -42,20 +42,20 @@ package starlingui.core.text
             return;
          }
          _fText.htmlText = _text;
-         var _loc1_:BitmapData = drawTextToBitmapData();
-         _fImage = Image.fromBitmapData(_loc1_,false);
+         var btmd:BitmapData = drawTextToBitmapData();
+         _fImage = Image.fromBitmapData(btmd,false);
          _fImage.touchable = false;
-         _loc1_.dispose();
+         btmd.dispose();
          addChild(_fImage);
       }
       
-      public function set text(param1:String) : void
+      public function set text(value:String) : void
       {
-         if(_text == param1)
+         if(_text == value)
          {
             return;
          }
-         _text = param1;
+         _text = value;
          _fText.htmlText = _text;
          drawText();
       }
@@ -65,30 +65,30 @@ package starlingui.core.text
          return _text;
       }
       
-      public function setFrame(param1:int) : void
+      public function setFrame(frameIndex:int) : void
       {
-         frameText.setFrame(param1);
+         frameText.setFrame(frameIndex);
          drawText();
       }
       
-      public function set textFormatStyle(param1:String) : void
+      public function set textFormatStyle(stylename:String) : void
       {
-         if(frameText.textFormatStyle == param1)
+         if(frameText.textFormatStyle == stylename)
          {
             return;
          }
-         frameText.textFormatStyle = param1;
+         frameText.textFormatStyle = stylename;
          drawText();
       }
       
-      public function set isAutoFitLength(param1:Boolean) : void
+      public function set isAutoFitLength(value:Boolean) : void
       {
-         frameText.isAutoFitLength = param1;
+         frameText.isAutoFitLength = value;
       }
       
-      public function set fText(param1:TextField) : void
+      public function set fText(value:TextField) : void
       {
-         _fText = param1;
+         _fText = value;
       }
       
       public function get fText() : TextField
@@ -103,13 +103,13 @@ package starlingui.core.text
       
       private function drawTextToBitmapData() : BitmapData
       {
-         var _loc1_:BitmapData = new BitmapData(_fText.width,_fText.height,true,16777215);
+         var btmd:BitmapData = new BitmapData(_fText.width,_fText.height,true,16777215);
          if(text == "" || text == null || _fText.width <= 0 || _fText.height <= 0)
          {
             throw new Error("drawText to BitmapData failed!");
          }
-         _loc1_.draw(_fText);
-         return _loc1_;
+         btmd.draw(_fText);
+         return btmd;
       }
       
       override public function dispose() : void

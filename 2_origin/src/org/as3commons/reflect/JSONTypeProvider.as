@@ -31,105 +31,96 @@ package org.as3commons.reflect
          }
       }
       
-      override public function getType(param1:Class, param2:ApplicationDomain) : Type
+      override public function getType(cls:Class, applicationDomain:ApplicationDomain) : Type
       {
-         var _loc10_:Type = null;
-         var _loc11_:Array = null;
-         var _loc12_:int = 0;
-         var _loc13_:int = 0;
-         var _loc14_:Metadata = null;
-         var _loc3_:Type = new Type(param2);
-         var _loc4_:String = ClassUtils.getFullyQualifiedName(param1);
-         typeCache.put(_loc4_,_loc3_,param2);
-         var _loc5_:Object = this._describeTypeJSON(param1,DescribeType.GET_INSTANCE_INFO);
-         var _loc6_:Object = this._describeTypeJSON(param1,DescribeType.GET_CLASS_INFO);
-         _loc3_.fullName = _loc4_;
-         _loc3_.name = ClassUtils.getNameFromFullyQualifiedName(_loc4_);
-         var _loc7_:Class = ClassUtils.getClassParameterFromFullyQualifiedName(_loc5_.name,param2);
-         if(_loc7_ != null)
+         var interfaze:Type = null;
+         var interfaceMetadata:Array = null;
+         var numMetadata:int = 0;
+         var j:int = 0;
+         var metadata:Metadata = null;
+         var type:Type = new Type(applicationDomain);
+         var fullyQualifiedClassName:String = ClassUtils.getFullyQualifiedName(cls);
+         typeCache.put(fullyQualifiedClassName,type,applicationDomain);
+         var instanceInfo:Object = this._describeTypeJSON(cls,DescribeType.GET_INSTANCE_INFO);
+         var classInfo:Object = this._describeTypeJSON(cls,DescribeType.GET_CLASS_INFO);
+         type.fullName = fullyQualifiedClassName;
+         type.name = ClassUtils.getNameFromFullyQualifiedName(fullyQualifiedClassName);
+         var param:Class = ClassUtils.getClassParameterFromFullyQualifiedName(instanceInfo.name,applicationDomain);
+         if(param != null)
          {
-            _loc3_.parameters[_loc3_.parameters.length] = _loc7_;
+            type.parameters[type.parameters.length] = param;
          }
-         _loc3_.clazz = param1;
-         _loc3_.isDynamic = _loc5_.isDynamic;
-         _loc3_.isFinal = _loc5_.isFinal;
-         _loc3_.isStatic = _loc5_.isStatic;
-         _loc3_.alias = ALIAS_NOT_AVAILABLE;
-         _loc3_.isInterface = _loc5_.traits.bases.length == 0;
-         _loc3_.constructor = this.parseConstructor(_loc3_,_loc5_.traits.constructor,param2);
-         _loc3_.accessors = this.parseAccessors(_loc3_,_loc5_.traits.accessors,param2,false).concat(this.parseAccessors(_loc3_,_loc6_.traits.accessors,param2,true));
-         _loc3_.methods = this.parseMethods(_loc3_,_loc5_.traits.methods,param2,false).concat(this.parseMethods(_loc3_,_loc6_.traits.methods,param2,true));
-         _loc3_.staticConstants = this.parseMembers(_loc3_,Constant,_loc6_.traits.variables,_loc4_,true,true,param2);
-         _loc3_.constants = this.parseMembers(_loc3_,Constant,_loc5_.traits.variables,_loc4_,false,true,param2);
-         _loc3_.staticVariables = this.parseMembers(_loc3_,Variable,_loc6_.traits.variables,_loc4_,true,false,param2);
-         _loc3_.variables = this.parseMembers(_loc3_,Variable,_loc5_.traits.variables,_loc4_,false,false,param2);
-         _loc3_.extendsClasses = _loc5_.traits.bases.concat();
-         this.parseMetadata(_loc5_.traits.metadata,_loc3_);
-         _loc3_.interfaces = this.parseImplementedInterfaces(_loc5_.traits.interfaces);
-         var _loc8_:int = _loc3_.interfaces.length;
-         var _loc9_:int = 0;
-         while(_loc9_ < _loc8_)
+         type.clazz = cls;
+         type.isDynamic = instanceInfo.isDynamic;
+         type.isFinal = instanceInfo.isFinal;
+         type.isStatic = instanceInfo.isStatic;
+         type.alias = ALIAS_NOT_AVAILABLE;
+         type.isInterface = instanceInfo.traits.bases.length == 0;
+         type.constructor = this.parseConstructor(type,instanceInfo.traits.constructor,applicationDomain);
+         type.accessors = this.parseAccessors(type,instanceInfo.traits.accessors,applicationDomain,false).concat(this.parseAccessors(type,classInfo.traits.accessors,applicationDomain,true));
+         type.methods = this.parseMethods(type,instanceInfo.traits.methods,applicationDomain,false).concat(this.parseMethods(type,classInfo.traits.methods,applicationDomain,true));
+         type.staticConstants = this.parseMembers(type,Constant,classInfo.traits.variables,fullyQualifiedClassName,true,true,applicationDomain);
+         type.constants = this.parseMembers(type,Constant,instanceInfo.traits.variables,fullyQualifiedClassName,false,true,applicationDomain);
+         type.staticVariables = this.parseMembers(type,Variable,classInfo.traits.variables,fullyQualifiedClassName,true,false,applicationDomain);
+         type.variables = this.parseMembers(type,Variable,instanceInfo.traits.variables,fullyQualifiedClassName,false,false,applicationDomain);
+         type.extendsClasses = instanceInfo.traits.bases.concat();
+         this.parseMetadata(instanceInfo.traits.metadata,type);
+         type.interfaces = this.parseImplementedInterfaces(instanceInfo.traits.interfaces);
+         var numInterfaces:int = type.interfaces.length;
+         for(var i:int = 0; i < numInterfaces; i++)
          {
-            _loc10_ = Type.forName(_loc3_.interfaces[int(_loc9_)],param2);
-            if(_loc10_ != null)
+            interfaze = Type.forName(type.interfaces[int(i)],applicationDomain);
+            if(interfaze != null)
             {
-               this.concatMetadata(_loc3_,_loc10_.methods,"methods");
-               this.concatMetadata(_loc3_,_loc10_.accessors,"accessors");
-               _loc11_ = _loc10_.metadata;
-               _loc12_ = _loc11_.length;
-               _loc13_ = 0;
-               while(_loc13_ < _loc12_)
+               this.concatMetadata(type,interfaze.methods,"methods");
+               this.concatMetadata(type,interfaze.accessors,"accessors");
+               interfaceMetadata = interfaze.metadata;
+               numMetadata = interfaceMetadata.length;
+               for(j = 0; j < numMetadata; j++)
                {
-                  _loc14_ = _loc11_[int(_loc13_)];
-                  if(!_loc3_.hasExactMetadata(_loc14_))
+                  metadata = interfaceMetadata[int(j)];
+                  if(!type.hasExactMetadata(metadata))
                   {
-                     _loc3_.addMetadata(_loc14_);
+                     type.addMetadata(metadata);
                   }
-                  _loc13_++;
                }
             }
-            _loc9_++;
          }
-         _loc3_.createMetadataLookup();
-         return _loc3_;
+         type.createMetadataLookup();
+         return type;
       }
       
-      protected function parseConstructor(param1:Type, param2:Array, param3:ApplicationDomain) : Constructor
+      protected function parseConstructor(type:Type, constructor:Array, applicationDomain:ApplicationDomain) : Constructor
       {
-         var _loc4_:Array = null;
-         if(param2 != null && param2.length > 0)
+         var params:Array = null;
+         if(constructor != null && constructor.length > 0)
          {
-            _loc4_ = this.parseParameters(param2,param3);
-            return new Constructor(param1.fullName,param3,_loc4_);
+            params = this.parseParameters(constructor,applicationDomain);
+            return new Constructor(type.fullName,applicationDomain,params);
          }
-         return new Constructor(param1.fullName,param3);
+         return new Constructor(type.fullName,applicationDomain);
       }
       
-      private function concatMetadata(param1:Type, param2:Array, param3:String) : void
+      private function concatMetadata(type:Type, metadataContainers:Array, propertyName:String) : void
       {
          var container:IMetadataContainer = null;
-         var type:Type = param1;
-         var metadataContainers:Array = param2;
-         var propertyName:String = param3;
          for each(container in metadataContainers)
          {
-            type[propertyName].some(function(param1:MetadataContainer, param2:int, param3:Array):Boolean
+            type[propertyName].some(function(item:MetadataContainer, index:int, arr:Array):Boolean
             {
-               var _loc4_:Array = null;
-               var _loc5_:int = 0;
-               var _loc6_:int = 0;
-               if(Object(param1).name == Object(container).name)
+               var metadataList:Array = null;
+               var numMetadata:int = 0;
+               var j:int = 0;
+               if(Object(item).name == Object(container).name)
                {
-                  _loc4_ = container.metadata;
-                  _loc5_ = _loc4_.length;
-                  _loc6_ = 0;
-                  while(_loc6_ < _loc5_)
+                  metadataList = container.metadata;
+                  numMetadata = metadataList.length;
+                  for(j = 0; j < numMetadata; j++)
                   {
-                     if(!param1.hasExactMetadata(_loc4_[_loc6_]))
+                     if(!item.hasExactMetadata(metadataList[j]))
                      {
-                        param1.addMetadata(_loc4_[_loc6_]);
+                        item.addMetadata(metadataList[j]);
                      }
-                     _loc6_++;
                   }
                   return true;
                }
@@ -138,110 +129,110 @@ package org.as3commons.reflect
          }
       }
       
-      private function parseImplementedInterfaces(param1:Array) : Array
+      private function parseImplementedInterfaces(interfacesDescription:Array) : Array
       {
-         var _loc3_:String = null;
-         var _loc2_:Array = [];
-         for each(_loc3_ in param1)
+         var fullyQualifiedInterfaceName:String = null;
+         var result:Array = [];
+         for each(fullyQualifiedInterfaceName in interfacesDescription)
          {
-            _loc2_[_loc2_.length] = ClassUtils.convertFullyQualifiedName(_loc3_);
+            result[result.length] = ClassUtils.convertFullyQualifiedName(fullyQualifiedInterfaceName);
          }
-         return _loc2_;
+         return result;
       }
       
-      private function parseMethods(param1:Type, param2:Array, param3:ApplicationDomain, param4:Boolean) : Array
+      private function parseMethods(type:Type, methods:Array, applicationDomain:ApplicationDomain, isStatic:Boolean) : Array
       {
-         var _loc6_:Object = null;
-         var _loc7_:Array = null;
-         var _loc8_:Method = null;
-         var _loc5_:Array = [];
-         for each(_loc6_ in param2)
+         var methodObj:Object = null;
+         var params:Array = null;
+         var method:Method = null;
+         var result:Array = [];
+         for each(methodObj in methods)
          {
-            _loc7_ = this.parseParameters(_loc6_.parameters,param3);
-            _loc8_ = new Method(_loc6_.declaredBy,_loc6_.name,param4,_loc7_,_loc6_.returnType,param3);
-            _loc8_.as3commons_reflect::setNamespaceURI(_loc6_.uri);
-            this.parseMetadata(_loc6_.metadata,_loc8_);
-            _loc5_[_loc5_.length] = _loc8_;
+            params = this.parseParameters(methodObj.parameters,applicationDomain);
+            method = new Method(methodObj.declaredBy,methodObj.name,isStatic,params,methodObj.returnType,applicationDomain);
+            method.as3commons_reflect::setNamespaceURI(methodObj.uri);
+            this.parseMetadata(methodObj.metadata,method);
+            result[result.length] = method;
          }
-         return _loc5_;
+         return result;
       }
       
-      private function parseParameters(param1:Array, param2:ApplicationDomain) : Array
+      private function parseParameters(params:Array, applicationDomain:ApplicationDomain) : Array
       {
-         var _loc4_:Object = null;
-         var _loc5_:BaseParameter = null;
-         var _loc3_:Array = [];
-         for each(_loc4_ in param1)
+         var paramObj:Object = null;
+         var param:BaseParameter = null;
+         var result:Array = [];
+         for each(paramObj in params)
          {
-            _loc5_ = BaseParameter.newInstance(_loc4_.type,param2,_loc4_.optional);
-            _loc3_[_loc3_.length] = _loc5_;
+            param = BaseParameter.newInstance(paramObj.type,applicationDomain,paramObj.optional);
+            result[result.length] = param;
          }
-         return _loc3_;
+         return result;
       }
       
-      private function parseAccessors(param1:Type, param2:Array, param3:ApplicationDomain, param4:Boolean) : Array
+      private function parseAccessors(type:Type, accessors:Array, applicationDomain:ApplicationDomain, isStatic:Boolean) : Array
       {
-         var _loc6_:Object = null;
-         var _loc7_:Accessor = null;
-         var _loc5_:Array = [];
-         for each(_loc6_ in param2)
+         var acc:Object = null;
+         var accessor:Accessor = null;
+         var result:Array = [];
+         for each(acc in accessors)
          {
-            _loc7_ = Accessor.newInstance(_loc6_.name,AccessorAccess.fromString(_loc6_.access),_loc6_.type,_loc6_.declaredBy,param4,param3);
-            _loc7_.as3commons_reflect::setNamespaceURI(_loc6_.uri);
-            this.parseMetadata(_loc6_.metadata,_loc7_);
-            _loc5_[_loc5_.length] = _loc7_;
+            accessor = Accessor.newInstance(acc.name,AccessorAccess.fromString(acc.access),acc.type,acc.declaredBy,isStatic,applicationDomain);
+            accessor.as3commons_reflect::setNamespaceURI(acc.uri);
+            this.parseMetadata(acc.metadata,accessor);
+            result[result.length] = accessor;
          }
-         return _loc5_;
+         return result;
       }
       
-      private function parseMetadata(param1:Array, param2:IMetadataContainer) : void
+      private function parseMetadata(metadataNodes:Array, metadata:IMetadataContainer) : void
       {
-         var _loc3_:Object = null;
-         var _loc4_:String = null;
-         var _loc5_:Array = null;
-         var _loc6_:Object = null;
-         for each(_loc3_ in param1)
+         var metadataObj:Object = null;
+         var metadataName:String = null;
+         var metadataArgs:Array = null;
+         var metadataArgNode:Object = null;
+         for each(metadataObj in metadataNodes)
          {
-            _loc4_ = _loc3_.name;
-            if(!this.isIgnoredMetadata(_loc4_))
+            metadataName = metadataObj.name;
+            if(!this.isIgnoredMetadata(metadataName))
             {
-               _loc5_ = [];
-               for each(_loc6_ in _loc3_.value)
+               metadataArgs = [];
+               for each(metadataArgNode in metadataObj.value)
                {
-                  _loc5_[_loc5_.length] = MetadataArgument.newInstance(_loc6_.key,_loc6_.value);
+                  metadataArgs[metadataArgs.length] = MetadataArgument.newInstance(metadataArgNode.key,metadataArgNode.value);
                }
-               param2.addMetadata(Metadata.newInstance(_loc4_,_loc5_));
+               metadata.addMetadata(Metadata.newInstance(metadataName,metadataArgs));
             }
          }
       }
       
-      private function isIgnoredMetadata(param1:String) : Boolean
+      private function isIgnoredMetadata(metadataName:String) : Boolean
       {
-         return this._ignoredMetadata.indexOf(param1) > -1;
+         return this._ignoredMetadata.indexOf(metadataName) > -1;
       }
       
-      private function parseMembers(param1:Type, param2:Class, param3:Array, param4:String, param5:Boolean, param6:Boolean, param7:ApplicationDomain) : Array
+      private function parseMembers(type:Type, memberClass:Class, members:Array, declaringType:String, isStatic:Boolean, isConstant:Boolean, applicationDomain:ApplicationDomain) : Array
       {
-         var _loc9_:Object = null;
-         var _loc10_:IMember = null;
-         var _loc8_:Array = [];
-         for each(_loc9_ in param3)
+         var m:Object = null;
+         var member:IMember = null;
+         var result:Array = [];
+         for each(m in members)
          {
-            if(!(param6 && _loc9_.access != AccessorAccess.READ_ONLY.name))
+            if(!(isConstant && m.access != AccessorAccess.READ_ONLY.name))
             {
-               if(!(!param6 && _loc9_.access == AccessorAccess.READ_ONLY.name))
+               if(!(!isConstant && m.access == AccessorAccess.READ_ONLY.name))
                {
-                  _loc10_ = param2["newInstance"](_loc9_.name,_loc9_.type,param4,param5,param7);
-                  if(_loc10_ is INamespaceOwner)
+                  member = memberClass["newInstance"](m.name,m.type,declaringType,isStatic,applicationDomain);
+                  if(member is INamespaceOwner)
                   {
-                     INamespaceOwner(_loc10_).as3commons_reflect::setNamespaceURI(_loc9_.uri);
+                     INamespaceOwner(member).as3commons_reflect::setNamespaceURI(m.uri);
                   }
-                  this.parseMetadata(_loc9_.metadata,_loc10_);
-                  _loc8_[_loc8_.length] = _loc10_;
+                  this.parseMetadata(m.metadata,member);
+                  result[result.length] = member;
                }
             }
          }
-         return _loc8_;
+         return result;
       }
    }
 }

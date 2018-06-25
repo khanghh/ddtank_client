@@ -107,9 +107,9 @@ package ddt.view.academyCommon.register
          _introductionField.textField.setSelection(_introductionField.textField.length,_introductionField.textField.length);
       }
       
-      public function isAmend(param1:Boolean) : void
+      public function isAmend(value:Boolean) : void
       {
-         if(param1)
+         if(value)
          {
             _alertInfo.title = LanguageMgr.GetTranslation("ddt.view.academyCommon.register.TitleTxtII");
             info = _alertInfo;
@@ -138,20 +138,20 @@ package ddt.view.academyCommon.register
          _introductionField.addEventListener("textInput",__limit);
       }
       
-      private function __limit(param1:TextEvent) : void
+      private function __limit(evt:TextEvent) : void
       {
          StringHelper.checkTextFieldLength(_introductionField.textField,150);
       }
       
-      private function __checkBoxLabelClick(param1:MouseEvent) : void
+      private function __checkBoxLabelClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }
       
-      private function __frameEvent(param1:FrameEvent) : void
+      private function __frameEvent(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:

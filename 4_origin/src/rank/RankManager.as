@@ -31,9 +31,9 @@ package rank
       
       public var lastUpdateTime:String;
       
-      public function RankManager(param1:IEventDispatcher = null)
+      public function RankManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : RankManager
@@ -55,10 +55,10 @@ package rank
          new HelperUIModuleLoad().loadUIModule(["rank"],onLoaded);
       }
       
-      public function activityAwardComp(param1:RankingListAwardAnalyzer) : void
+      public function activityAwardComp(data:RankingListAwardAnalyzer) : void
       {
-         reweadDataList = param1.itemList;
-         lastUpdateTime = param1.lastUpdateTime;
+         reweadDataList = data.itemList;
+         lastUpdateTime = data.lastUpdateTime;
          _frame = ComponentFactory.Instance.creatCustomObject("rank.RankFrame");
          _frame.titleText = LanguageMgr.GetTranslation("ddt.rankFrame.title");
          _frame.init();
@@ -67,39 +67,37 @@ package rank
       
       private function onLoaded() : void
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("RankingListAwardList.xml?ran=" + Math.random()),5);
-         _loc1_.loadErrorMessage = "RankingListAwardList";
-         _loc1_.analyzer = new RankingListAwardAnalyzer(activityAwardComp);
-         LoadResourceManager.Instance.startLoad(_loc1_);
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("RankingListAwardList.xml?ran=" + Math.random()),5);
+         loader.loadErrorMessage = "RankingListAwardList";
+         loader.analyzer = new RankingListAwardAnalyzer(activityAwardComp);
+         LoadResourceManager.Instance.startLoad(loader);
       }
       
-      public function rankData(param1:Array, param2:int) : RankInfo
+      public function rankData(arr:Array, index:int) : RankInfo
       {
-         var _loc7_:int = 0;
-         var _loc6_:* = null;
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc5_:RankInfo = new RankInfo();
-         _loc7_ = 0;
-         while(_loc7_ < param1.length)
+         var i:int = 0;
+         var info:* = null;
+         var j:int = 0;
+         var conInfo:* = null;
+         var rankInfo:RankInfo = new RankInfo();
+         for(i = 0; i < arr.length; )
          {
-            _loc6_ = param1[_loc7_] as GiftBagInfo;
-            _loc4_ = 0;
-            while(_loc4_ < _loc6_.giftConditionArr.length)
+            info = arr[i] as GiftBagInfo;
+            for(j = 0; j < info.giftConditionArr.length; )
             {
-               _loc3_ = _loc6_.giftConditionArr[_loc4_] as GiftConditionInfo;
-               if(_loc3_.conditionIndex == 0 && _loc3_.conditionValue == param2)
+               conInfo = info.giftConditionArr[j] as GiftConditionInfo;
+               if(conInfo.conditionIndex == 0 && conInfo.conditionValue == index)
                {
-                  _loc5_.beginIndex = _loc3_.conditionValue;
-                  _loc5_.endIndex = _loc3_.remain1;
-                  _loc5_.giftRewardArr = _loc6_.giftRewardArr.slice();
-                  return _loc5_;
+                  rankInfo.beginIndex = conInfo.conditionValue;
+                  rankInfo.endIndex = conInfo.remain1;
+                  rankInfo.giftRewardArr = info.giftRewardArr.slice();
+                  return rankInfo;
                }
-               _loc4_++;
+               j++;
             }
-            _loc7_++;
+            i++;
          }
-         return _loc5_;
+         return rankInfo;
       }
       
       public function setCurrentInfo() : void

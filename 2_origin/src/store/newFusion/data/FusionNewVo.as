@@ -83,9 +83,9 @@ package store.newFusion.data
       
       public function get item1Count() : int
       {
-         var _loc1_:int = _equipBag.getBagItemCountByTemplateId(Item1);
-         var _loc2_:int = _propBag.getItemCountByTemplateId(Item1);
-         return _loc1_ + _loc2_;
+         var equipCount:int = _equipBag.getBagItemCountByTemplateId(Item1);
+         var propCount:int = _propBag.getItemCountByTemplateId(Item1);
+         return equipCount + propCount;
       }
       
       public function get isNeedItem2() : Boolean
@@ -95,9 +95,9 @@ package store.newFusion.data
       
       public function get item2Count() : int
       {
-         var _loc1_:int = _equipBag.getBagItemCountByTemplateId(Item2);
-         var _loc2_:int = _propBag.getItemCountByTemplateId(Item2);
-         return _loc1_ + _loc2_;
+         var equipCount:int = _equipBag.getBagItemCountByTemplateId(Item2);
+         var propCount:int = _propBag.getItemCountByTemplateId(Item2);
+         return equipCount + propCount;
       }
       
       public function get isNeedItem3() : Boolean
@@ -107,9 +107,9 @@ package store.newFusion.data
       
       public function get item3Count() : int
       {
-         var _loc1_:int = _equipBag.getBagItemCountByTemplateId(Item3);
-         var _loc2_:int = _propBag.getItemCountByTemplateId(Item3);
-         return _loc1_ + _loc2_;
+         var equipCount:int = _equipBag.getBagItemCountByTemplateId(Item3);
+         var propCount:int = _propBag.getItemCountByTemplateId(Item3);
+         return equipCount + propCount;
       }
       
       public function get isNeedItem4() : Boolean
@@ -119,35 +119,35 @@ package store.newFusion.data
       
       public function get item4Count() : int
       {
-         var _loc1_:int = _equipBag.getBagItemCountByTemplateId(Item4);
-         var _loc2_:int = _propBag.getItemCountByTemplateId(Item4);
-         return _loc1_ + _loc2_;
+         var equipCount:int = _equipBag.getBagItemCountByTemplateId(Item4);
+         var propCount:int = _propBag.getItemCountByTemplateId(Item4);
+         return equipCount + propCount;
       }
       
       public function get canFusionCount() : int
       {
-         var _loc2_:int = 2147483647;
+         var item1CanCount:int = 2147483647;
          if(isNeedItem1)
          {
-            _loc2_ = item1Count / Count1;
+            item1CanCount = item1Count / Count1;
          }
-         var _loc5_:int = 2147483647;
+         var item2CanCount:int = 2147483647;
          if(isNeedItem2)
          {
-            _loc5_ = item2Count / Count2;
+            item2CanCount = item2Count / Count2;
          }
-         var _loc3_:int = 2147483647;
+         var item3CanCount:int = 2147483647;
          if(isNeedItem3)
          {
-            _loc3_ = item3Count / Count3;
+            item3CanCount = item3Count / Count3;
          }
-         var _loc1_:int = 2147483647;
+         var item4CanCount:int = 2147483647;
          if(isNeedItem4)
          {
-            _loc1_ = item4Count / Count4;
+            item4CanCount = item4Count / Count4;
          }
-         var _loc4_:int = Math.min(_loc2_,_loc5_,_loc3_,_loc1_);
-         return _loc4_ == 2147483647?0:_loc4_;
+         var tmp:int = Math.min(item1CanCount,item2CanCount,item3CanCount,item4CanCount);
+         return tmp == 2147483647?0:tmp;
       }
       
       public function get FusionRate() : int
@@ -155,28 +155,28 @@ package store.newFusion.data
          return _FusionRate;
       }
       
-      public function set FusionRate(param1:int) : void
+      public function set FusionRate(value:int) : void
       {
-         _FusionRate = param1 / 1000 > 1?int(param1 / 1000):1;
+         _FusionRate = value / 1000 > 1?int(value / 1000):1;
       }
       
-      public function getItemInfoByIndex(param1:int) : ItemTemplateInfo
+      public function getItemInfoByIndex(index:int) : ItemTemplateInfo
       {
-         if(!this["isNeedItem" + param1])
+         if(!this["isNeedItem" + index])
          {
             return null;
          }
-         return ItemManager.Instance.getTemplateById(this["Item" + param1]);
+         return ItemManager.Instance.getTemplateById(this["Item" + index]);
       }
       
-      public function getItemNeedCount(param1:int) : int
+      public function getItemNeedCount(index:int) : int
       {
-         return this["Count" + param1];
+         return this["Count" + index];
       }
       
-      public function getItemHadCount(param1:int) : int
+      public function getItemHadCount(index:int) : int
       {
-         return this["item" + param1 + "Count"];
+         return this["item" + index + "Count"];
       }
       
       public function getCellHeight() : Number
@@ -184,48 +184,48 @@ package store.newFusion.data
          return 26;
       }
       
-      public function isNeedPopBindTipWindow(param1:int) : Boolean
+      public function isNeedPopBindTipWindow(num:int) : Boolean
       {
-         var _loc3_:int = getCanFusionCountByBindType(1);
-         var _loc2_:int = getCanFusionCountByBindType(2);
-         if(param1 > _loc3_ + _loc2_)
+         var unbindCanCount:int = getCanFusionCountByBindType(1);
+         var bindCanCount:int = getCanFusionCountByBindType(2);
+         if(num > unbindCanCount + bindCanCount)
          {
             return true;
          }
          return false;
       }
       
-      public function getCanFusionCountByBindType(param1:int) : int
+      public function getCanFusionCountByBindType(bindType:int) : int
       {
-         var _loc3_:int = 2147483647;
+         var item1CanCount:int = 2147483647;
          if(isNeedItem1)
          {
-            _loc3_ = getItemCountByIndexBindType(1,param1) / Count1;
+            item1CanCount = getItemCountByIndexBindType(1,bindType) / Count1;
          }
-         var _loc6_:int = 2147483647;
+         var item2CanCount:int = 2147483647;
          if(isNeedItem2)
          {
-            _loc6_ = getItemCountByIndexBindType(2,param1) / Count2;
+            item2CanCount = getItemCountByIndexBindType(2,bindType) / Count2;
          }
-         var _loc4_:int = 2147483647;
+         var item3CanCount:int = 2147483647;
          if(isNeedItem3)
          {
-            _loc4_ = getItemCountByIndexBindType(3,param1) / Count3;
+            item3CanCount = getItemCountByIndexBindType(3,bindType) / Count3;
          }
-         var _loc2_:int = 2147483647;
+         var item4CanCount:int = 2147483647;
          if(isNeedItem4)
          {
-            _loc2_ = getItemCountByIndexBindType(4,param1) / Count4;
+            item4CanCount = getItemCountByIndexBindType(4,bindType) / Count4;
          }
-         var _loc5_:int = Math.min(_loc3_,_loc6_,_loc4_,_loc2_);
-         return _loc5_ == 2147483647?0:_loc5_;
+         var tmp:int = Math.min(item1CanCount,item2CanCount,item3CanCount,item4CanCount);
+         return tmp == 2147483647?0:tmp;
       }
       
-      private function getItemCountByIndexBindType(param1:int, param2:int) : int
+      private function getItemCountByIndexBindType(index:int, bindType:int) : int
       {
-         var _loc3_:int = _equipBag.getBagItemCountByTemplateIdBindType(this["Item" + param1],param2);
-         var _loc4_:int = _propBag.getItemCountByTemplateIdBindType(this["Item" + param1],param2);
-         return _loc3_ + _loc4_;
+         var equipCount:int = _equipBag.getBagItemCountByTemplateIdBindType(this["Item" + index],bindType);
+         var propCount:int = _propBag.getItemCountByTemplateIdBindType(this["Item" + index],bindType);
+         return equipCount + propCount;
       }
       
       public function get mountID() : int

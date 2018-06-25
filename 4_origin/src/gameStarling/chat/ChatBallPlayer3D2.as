@@ -36,15 +36,15 @@ package gameStarling.chat
          return _field2;
       }
       
-      override public function setText(param1:String, param2:int = 0) : void
+      override public function setText(s:String, paopaoType:int = 0) : void
       {
          clear();
-         var _loc3_:int = this.globalToLocal(new Point(500,10)).x;
-         field.x = _loc3_ < 0?0:_loc3_;
-         field.text = param1;
-         if(_currentPaopaoType != param2 || paopao == null)
+         var temp:int = this.globalToLocal(new Point(500,10)).x;
+         field.x = temp < 0?0:temp;
+         field.text = s;
+         if(_currentPaopaoType != paopaoType || paopao == null)
          {
-            _currentPaopaoType = param2;
+            _currentPaopaoType = paopaoType;
             if(!BoneMovieFactory.instance.hasBoneMovie(getChatBallName()))
             {
                BonesLoaderManager.instance.removeEventListener("complete",__onLoaderComplete);
@@ -59,9 +59,9 @@ package gameStarling.chat
          waitShow();
       }
       
-      private function __onLoaderComplete(param1:BonesLoaderEvent) : void
+      private function __onLoaderComplete(e:BonesLoaderEvent) : void
       {
-         if(param1.vo.styleName == getChatBallName())
+         if(e.vo.styleName == getChatBallName())
          {
             BonesLoaderManager.instance.removeEventListener("complete",__onLoaderComplete);
             newPaopao();
@@ -92,9 +92,9 @@ package gameStarling.chat
          beginPopDelay();
       }
       
-      override public function set width(param1:Number) : void
+      override public function set width(value:Number) : void
       {
-         .super.width = param1;
+         .super.width = value;
       }
       
       private function newPaopao() : void

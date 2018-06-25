@@ -37,10 +37,10 @@ package ddt.view.character
          return _instance;
       }
       
-      public function createLayer(param1:ItemTemplateInfo, param2:Boolean, param3:String = "", param4:String = "show", param5:Boolean = false, param6:int = 1, param7:String = null, param8:String = "") : ILayer
+      public function createLayer(info:ItemTemplateInfo, sex:Boolean, color:String = "", type:String = "show", gunBack:Boolean = false, hairType:int = 1, pic:String = null, stateType:String = "") : ILayer
       {
-         var _loc9_:* = null;
-         var _loc10_:* = param4;
+         var _layer:* = null;
+         var _loc10_:* = type;
          if("icon" !== _loc10_)
          {
             if("show" !== _loc10_)
@@ -55,57 +55,57 @@ package ddt.view.character
                         {
                            if("movie_clip_effect" === _loc10_)
                            {
-                              _loc9_ = new CellMovieClipSpecialEffectLayer(int(param1.Property1));
+                              _layer = new CellMovieClipSpecialEffectLayer(int(info.Property1));
                            }
                         }
                         else
                         {
-                           _loc9_ = new RoomLayer(param1,"",false,1,null,int(param8));
+                           _layer = new RoomLayer(info,"",false,1,null,int(stateType));
                         }
                      }
                      else
                      {
-                        _loc9_ = new SpecialEffectsLayer(int(param8));
+                        _layer = new SpecialEffectsLayer(int(stateType));
                      }
                   }
                   else
                   {
-                     _loc9_ = new StateLayer(param1,param2,param3,int(param8));
+                     _layer = new StateLayer(info,sex,color,int(stateType));
                   }
                }
-               else if(param1)
+               else if(info)
                {
-                  if(param1.CategoryID == 15)
+                  if(info.CategoryID == 15)
                   {
-                     _loc9_ = new BaseWingLayer(param1,1);
+                     _layer = new BaseWingLayer(info,1);
                   }
-                  else if(EquipType.isDynamicWeapon(param1.TemplateID))
+                  else if(EquipType.isDynamicWeapon(info.TemplateID))
                   {
-                     _loc9_ = new DynamicWeaponLayer(param1,param3,param5,param6,param7);
+                     _layer = new DynamicWeaponLayer(info,color,gunBack,hairType,pic);
                   }
                   else
                   {
-                     _loc9_ = new GameLayer(param1,param3,param5,param6,param7,param8);
+                     _layer = new GameLayer(info,color,gunBack,hairType,pic,stateType);
                   }
                }
             }
-            else if(param1)
+            else if(info)
             {
-               if(param1.CategoryID == 15)
+               if(info.CategoryID == 15)
                {
-                  _loc9_ = new BaseWingLayer(param1);
+                  _layer = new BaseWingLayer(info);
                }
                else
                {
-                  _loc9_ = new ShowLayer(param1,param3,param5,param6,param7);
+                  _layer = new ShowLayer(info,color,gunBack,hairType,pic);
                }
             }
          }
          else
          {
-            _loc9_ = new IconLayer(param1,param3,param5,param6);
+            _layer = new IconLayer(info,color,gunBack,hairType);
          }
-         return _loc9_;
+         return _layer;
       }
    }
 }

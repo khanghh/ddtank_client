@@ -21,9 +21,9 @@ package questionAward
       
       private var _questionControl:QuestionAwardControl;
       
-      public function QuestionAwardManager(param1:IEventDispatcher = null)
+      public function QuestionAwardManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
          _questionControl = new QuestionAwardControl();
       }
       
@@ -41,9 +41,9 @@ package questionAward
          SocketManager.Instance.addEventListener(PkgEvent.format(329,57),__questionInfoHandler);
       }
       
-      private function __questionInfoHandler(param1:PkgEvent) : void
+      private function __questionInfoHandler(evt:PkgEvent) : void
       {
-         _dataPkg = param1.pkg;
+         _dataPkg = evt.pkg;
          _questionAwardInfo = new QuestionAwardInfo();
          _questionAwardInfo.title = _dataPkg.readUTF();
          _questionAwardInfo.addDataBaseInfo(_dataPkg.readUTF());
@@ -65,9 +65,9 @@ package questionAward
          return _questionAwardInfo;
       }
       
-      public function sendAnswer(param1:String) : void
+      public function sendAnswer(content:String) : void
       {
-         SocketManager.Instance.out.sendQuestionAwardAnswer(param1);
+         SocketManager.Instance.out.sendQuestionAwardAnswer(content);
       }
    }
 }

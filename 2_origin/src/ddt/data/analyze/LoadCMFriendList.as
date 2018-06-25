@@ -9,63 +9,62 @@ package ddt.data.analyze
    {
        
       
-      public function LoadCMFriendList(param1:Function)
+      public function LoadCMFriendList(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc8_:int = 0;
-         var _loc7_:* = null;
-         var _loc2_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:DictionaryData = new DictionaryData();
-         var _loc5_:XML = new XML(param1);
-         var _loc6_:XMLList = _loc5_..Item;
-         if(_loc5_.@value == "true")
+         var i:int = 0;
+         var info:* = null;
+         var sex:int = 0;
+         var tmp:* = null;
+         var _cmFriendList:DictionaryData = new DictionaryData();
+         var xml:XML = new XML(data);
+         var xmllist:XMLList = xml..Item;
+         if(xml.@value == "true")
          {
-            _loc8_ = 0;
-            while(_loc8_ < _loc6_.length())
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc7_ = new CMFriendInfo();
-               _loc7_.NickName = _loc6_[_loc8_].@NickName;
-               _loc7_.UserName = _loc6_[_loc8_].@UserName;
-               _loc7_.UserId = _loc6_[_loc8_].@UserId;
-               _loc7_.Photo = _loc6_[_loc8_].@Photo;
-               _loc7_.PersonWeb = _loc6_[_loc8_].@PersonWeb;
-               _loc7_.OtherName = _loc6_[_loc8_].@OtherName;
-               _loc7_.level = _loc6_[_loc8_].@Level;
-               _loc2_ = _loc6_[_loc8_].@Sex;
-               if(_loc2_ == 0)
+               info = new CMFriendInfo();
+               info.NickName = xmllist[i].@NickName;
+               info.UserName = xmllist[i].@UserName;
+               info.UserId = xmllist[i].@UserId;
+               info.Photo = xmllist[i].@Photo;
+               info.PersonWeb = xmllist[i].@PersonWeb;
+               info.OtherName = xmllist[i].@OtherName;
+               info.level = xmllist[i].@Level;
+               sex = xmllist[i].@Sex;
+               if(sex == 0)
                {
-                  _loc7_.sex = false;
+                  info.sex = false;
                }
                else
                {
-                  _loc7_.sex = true;
+                  info.sex = true;
                }
-               _loc4_ = _loc6_[_loc8_].@IsExist;
-               if(_loc4_ == "true")
+               tmp = xmllist[i].@IsExist;
+               if(tmp == "true")
                {
-                  _loc7_.IsExist = true;
+                  info.IsExist = true;
                }
                else
                {
-                  _loc7_.IsExist = false;
+                  info.IsExist = false;
                }
-               if(!(_loc7_.IsExist && PlayerManager.Instance.friendList[_loc7_.UserId]))
+               if(!(info.IsExist && PlayerManager.Instance.friendList[info.UserId]))
                {
-                  _loc3_.add(_loc7_.UserName,_loc7_);
+                  _cmFriendList.add(info.UserName,info);
                }
-               _loc8_++;
+               i++;
             }
-            PlayerManager.Instance.CMFriendList = _loc3_;
+            PlayerManager.Instance.CMFriendList = _cmFriendList;
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc5_.@message;
+            message = xml.@message;
             onAnalyzeError();
             onAnalyzeComplete();
          }

@@ -36,36 +36,36 @@ package ddt.loader
          _loadCall = null;
       }
       
-      private static function getLoaderDataList(param1:String) : Array
+      private static function getLoaderDataList(type:String) : Array
       {
-         var _loc2_:Array = null;
-         var _loc3_:* = param1;
+         var list:Array = null;
+         var _loc3_:* = type;
          if("consortia" !== _loc3_)
          {
             if("farm" !== _loc3_)
             {
                if("pyramid" === _loc3_)
                {
-                  _loc2_ = [LoaderCreate.Instance.creatPyramidLoader()];
+                  list = [LoaderCreate.Instance.creatPyramidLoader()];
                }
             }
             else
             {
-               _loc2_ = [LoaderCreate.Instance.creatFarmPoultryInfo()];
+               list = [LoaderCreate.Instance.creatFarmPoultryInfo()];
             }
          }
          else
          {
-            _loc2_ = [LoaderCreate.Instance.creatBadgeInfoLoader(),LoaderCreate.Instance.creatConsortiaWeekRewardLoader()];
+            list = [LoaderCreate.Instance.creatBadgeInfoLoader(),LoaderCreate.Instance.creatConsortiaWeekRewardLoader()];
          }
-         return _loc2_;
+         return list;
       }
       
-      public static function startStarlingBonesLoad(param1:String, param2:String, param3:Function) : void
+      public static function startStarlingBonesLoad(last:String, next:String, complete:Function) : void
       {
-         last = param1;
-         next = param2;
-         complete = param3;
+         last = last;
+         next = next;
+         complete = complete;
          onStarlingSceneLoadComplete = function():void
          {
             UIModuleSmallLoading.Instance.progress = 50;
@@ -130,11 +130,11 @@ package ddt.loader
          }
       }
       
-      private static function loadBones(param1:String) : void
+      private static function loadBones(next:String) : void
       {
-         next = param1;
+         next = next;
          var list:Array = getLoadBonesList(next);
-         BonesLoaderManager.instance.addEventListener("complete",function(param1:BonesLoaderEvent):void
+         BonesLoaderManager.instance.addEventListener("complete",function(e:BonesLoaderEvent):void
          {
             if(checkBonesAssetComplete(next))
             {
@@ -150,18 +150,18 @@ package ddt.loader
          }
       }
       
-      private static function checkBonesAssetComplete(param1:String) : Boolean
+      private static function checkBonesAssetComplete(next:String) : Boolean
       {
-         var _loc3_:Array = getLoadBonesList(param1);
-         if(_loc3_ == null || _loc3_.length == 0)
+         var list:Array = getLoadBonesList(next);
+         if(list == null || list.length == 0)
          {
             return true;
          }
          var _loc5_:int = 0;
-         var _loc4_:* = _loc3_;
-         for each(var _loc2_ in _loc3_)
+         var _loc4_:* = list;
+         for each(var obj in list)
          {
-            if(!BoneMovieFactory.instance.checkTextureAtlas(_loc2_.atlas,_loc2_.useTpye))
+            if(!BoneMovieFactory.instance.checkTextureAtlas(obj.atlas,obj.useTpye))
             {
                return false;
             }
@@ -169,12 +169,12 @@ package ddt.loader
          return true;
       }
       
-      public static function getStarlingSceneResource(param1:String) : Array
+      public static function getStarlingSceneResource($type:String) : Array
       {
-         var _loc3_:String = PathManager.getUIPath();
-         var _loc2_:String = PathManager.SITE_MAIN;
-         var _loc4_:Array = null;
-         var _loc5_:* = param1;
+         var path:String = PathManager.getUIPath();
+         var imagePath:String = PathManager.SITE_MAIN;
+         var list:Array = null;
+         var _loc5_:* = $type;
          if("main" !== _loc5_)
          {
             if("fighting3d" !== _loc5_)
@@ -185,45 +185,45 @@ package ddt.loader
                   {
                      if("consortiaGuard" !== _loc5_)
                      {
-                        _loc4_ = [];
+                        list = [];
                      }
                      else
                      {
-                        _loc4_ = [{"url":_loc3_ + "/starling/consortiaGuard/consortiaGuard.png"},{"url":_loc3_ + "/starling/consortiaGuard/consortiaGuard.xml"},{"url":_loc3_ + "/starling/default/default_resource.png"},{"url":_loc3_ + "/starling/default/default_resource.xml"}];
+                        list = [{"url":path + "/starling/consortiaGuard/consortiaGuard.png"},{"url":path + "/starling/consortiaGuard/consortiaGuard.xml"},{"url":path + "/starling/default/default_resource.png"},{"url":path + "/starling/default/default_resource.xml"}];
                      }
                   }
                   else
                   {
-                     _loc4_ = [{"url":_loc3_ + "/starling/consortia_domain_scene/consortia_domain_scene1.png"},{"url":_loc3_ + "/starling/consortia_domain_scene/consortia_domain_scene1.xml"},{"url":_loc3_ + "/starling/consortia_domain_scene/consortia_domain_scene2.png"},{"url":_loc3_ + "/starling/consortia_domain_scene/consortia_domain_scene2.xml"},{"url":_loc3_ + "/starling/default/default_resource.png"},{"url":_loc3_ + "/starling/default/default_resource.xml"},{
-                        "url":_loc3_ + "/starling/consortia_domain_scene/consortia_domain_scene_build.png",
+                     list = [{"url":path + "/starling/consortia_domain_scene/consortia_domain_scene1.png"},{"url":path + "/starling/consortia_domain_scene/consortia_domain_scene1.xml"},{"url":path + "/starling/consortia_domain_scene/consortia_domain_scene2.png"},{"url":path + "/starling/consortia_domain_scene/consortia_domain_scene2.xml"},{"url":path + "/starling/default/default_resource.png"},{"url":path + "/starling/default/default_resource.xml"},{
+                        "url":path + "/starling/consortia_domain_scene/consortia_domain_scene_build.png",
                         "useType":2
                      },{
-                        "url":_loc3_ + "/starling/consortia_domain_scene/consortia_domain_scene_build.xml",
+                        "url":path + "/starling/consortia_domain_scene/consortia_domain_scene_build.xml",
                         "useType":2
                      }];
                   }
                }
                else
                {
-                  _loc4_ = [{"url":_loc3_ + "/starling/demon_chi_you_scene/demon_chi_you_scene.png"},{"url":_loc3_ + "/starling/demon_chi_you_scene/demon_chi_you_scene.xml"},{"url":_loc3_ + "/starling/demon_chi_you_scene/demon_chi_you_scene2.png"},{"url":_loc3_ + "/starling/demon_chi_you_scene/demon_chi_you_scene2.xml"}];
+                  list = [{"url":path + "/starling/demon_chi_you_scene/demon_chi_you_scene.png"},{"url":path + "/starling/demon_chi_you_scene/demon_chi_you_scene.xml"},{"url":path + "/starling/demon_chi_you_scene/demon_chi_you_scene2.png"},{"url":path + "/starling/demon_chi_you_scene/demon_chi_you_scene2.xml"}];
                }
             }
             else
             {
-               _loc4_ = [{"url":_loc3_ + "/starling/game/game.png"},{"url":_loc3_ + "/starling/game/game.xml"},{"url":_loc3_ + "/starling/game/gameprop.png"},{"url":_loc3_ + "/starling/game/gameprop.xml"}];
+               list = [{"url":path + "/starling/game/game.png"},{"url":path + "/starling/game/game.xml"},{"url":path + "/starling/game/gameprop.png"},{"url":path + "/starling/game/gameprop.xml"}];
             }
          }
          else
          {
-            _loc4_ = [{"url":_loc3_ + "/starling/hall_scene/hall_scene.png"},{"url":_loc3_ + "/starling/hall_scene/hall_scene.xml"},{"url":_loc3_ + "/starling/default/default_resource.png"},{"url":_loc3_ + "/starling/default/default_resource.xml"}];
+            list = [{"url":path + "/starling/hall_scene/hall_scene.png"},{"url":path + "/starling/hall_scene/hall_scene.xml"},{"url":path + "/starling/default/default_resource.png"},{"url":path + "/starling/default/default_resource.xml"}];
          }
-         return _loc4_;
+         return list;
       }
       
-      private static function getLoadBonesList(param1:String) : Array
+      private static function getLoadBonesList(type:String) : Array
       {
-         var _loc2_:Array = [];
-         var _loc3_:* = param1;
+         var list:Array = [];
+         var _loc3_:* = type;
          if("main" !== _loc3_)
          {
             if("roomlist" !== _loc3_)
@@ -232,7 +232,7 @@ package ddt.loader
                {
                   if("consortiaGuard" === _loc3_)
                   {
-                     _loc2_ = [{
+                     list = [{
                         "atlas":"consortiaGuardBones1",
                         "useType":0
                      },{
@@ -243,7 +243,7 @@ package ddt.loader
                }
             }
          }
-         return _loc2_;
+         return list;
       }
    }
 }

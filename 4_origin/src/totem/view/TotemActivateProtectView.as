@@ -25,7 +25,7 @@ package totem.view
          addChild(_activateProtectSCB);
       }
       
-      private function clickHandler(param1:MouseEvent) : void
+      private function clickHandler(event:MouseEvent) : void
       {
          TotemManager.instance.isSelectedActPro = _activateProtectSCB.selected;
          TotemManager.instance.isDonotPromptActPro = false;

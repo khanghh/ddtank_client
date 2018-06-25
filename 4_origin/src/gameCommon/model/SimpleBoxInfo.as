@@ -12,6 +12,8 @@ package gameCommon.model
       
       public var subType:int;
       
+      public var model:String;
+      
       public function SimpleBoxInfo()
       {
          super();

@@ -48,12 +48,12 @@ package consortion.view.selfConsortia
       
       private var _currentInfo:ConsortionSkillInfo;
       
-      public function ConsortionSkillItem(param1:int, param2:Boolean, param3:Boolean = false)
+      public function ConsortionSkillItem(level:int, open:Boolean, isMetal:Boolean = false)
       {
          super();
-         _level = param1;
-         _open = param2;
-         _isMetal = param3;
+         _level = level;
+         _open = open;
+         _isMetal = isMetal;
          initView();
          initEvent();
       }
@@ -91,62 +91,60 @@ package consortion.view.selfConsortia
       
       private function removeEvent() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(_open)
          {
-            _loc1_ = 0;
-            while(_loc1_ < _cells.length)
+            for(i = 0; i < _cells.length; )
             {
-               if(_cells[_loc1_])
+               if(_cells[i])
                {
-                  _cells[_loc1_].removeEventListener("click",__clickHandler);
+                  _cells[i].removeEventListener("click",__clickHandler);
                }
-               if(_btns[_loc1_])
+               if(_btns[i])
                {
-                  _btns[_loc1_].removeEventListener("click",__clickHandler);
+                  _btns[i].removeEventListener("click",__clickHandler);
                }
-               _loc1_++;
+               i++;
             }
          }
       }
       
-      public function set data(param1:Vector.<ConsortionSkillInfo>) : void
+      public function set data(value:Vector.<ConsortionSkillInfo>) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         _loc4_ = 0;
-         while(_loc4_ < param1.length)
+         var i:int = 0;
+         var cell:* = null;
+         var btn:* = null;
+         for(i = 0; i < value.length; )
          {
-            _loc3_ = new ConsortionSkillCell();
-            _loc3_.tipData = param1[_loc4_];
-            _loc3_.contentRect(54,54);
-            addChild(_loc3_);
-            PositionUtils.setPos(_loc3_,"consortion.killItem.cellPos" + _loc4_);
-            _loc2_ = new ConsortionSkillItenBtn();
-            addChild(_loc2_);
-            PositionUtils.setPos(_loc2_,"consortion.killItem.btnPos" + _loc4_);
-            if(param1[_loc4_].type == 1)
+            cell = new ConsortionSkillCell();
+            cell.tipData = value[i];
+            cell.contentRect(54,54);
+            addChild(cell);
+            PositionUtils.setPos(cell,"consortion.killItem.cellPos" + i);
+            btn = new ConsortionSkillItenBtn();
+            addChild(btn);
+            PositionUtils.setPos(btn,"consortion.killItem.btnPos" + i);
+            if(value[i].type == 1)
             {
-               _loc2_.setValue(LanguageMgr.GetTranslation("ddt.consortion.skillItem.oneDay"),param1[_loc4_].riches + " " + LanguageMgr.GetTranslation("consortia.Money"));
+               btn.setValue(LanguageMgr.GetTranslation("ddt.consortion.skillItem.oneDay"),value[i].riches + " " + LanguageMgr.GetTranslation("consortia.Money"));
             }
             else if(_isMetal)
             {
-               _loc2_.setValue(LanguageMgr.GetTranslation("ddt.consortion.skillItem.oneDay"),param1[_loc4_].metal + " " + LanguageMgr.GetTranslation("medalMoney"));
+               btn.setValue(LanguageMgr.GetTranslation("ddt.consortion.skillItem.oneDay"),value[i].metal + " " + LanguageMgr.GetTranslation("medalMoney"));
             }
             else
             {
-               _loc2_.setValue(LanguageMgr.GetTranslation("ddt.consortion.skillItem.oneDay"),param1[_loc4_].riches + " " + LanguageMgr.GetTranslation("ddt.consortion.skillCell.btnPersonal.rich"));
+               btn.setValue(LanguageMgr.GetTranslation("ddt.consortion.skillItem.oneDay"),value[i].riches + " " + LanguageMgr.GetTranslation("ddt.consortion.skillCell.btnPersonal.rich"));
             }
-            _loc3_.addEventListener("click",__clickHandler);
-            _loc2_.addEventListener("click",__clickHandler);
-            _cells[_loc4_] = _loc3_;
-            _btns[_loc4_] = _loc2_;
-            _loc4_++;
+            cell.addEventListener("click",__clickHandler);
+            btn.addEventListener("click",__clickHandler);
+            _cells[i] = cell;
+            _btns[i] = btn;
+            i++;
          }
       }
       
-      private function __clickHandler(param1:MouseEvent) : void
+      private function __clickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -154,13 +152,13 @@ package consortion.view.selfConsortia
             BaglockedManager.Instance.show();
             return;
          }
-         if(param1.currentTarget is ConsortionSkillCell)
+         if(event.currentTarget is ConsortionSkillCell)
          {
-            _currentInfo = (param1.currentTarget as ConsortionSkillCell).info;
+            _currentInfo = (event.currentTarget as ConsortionSkillCell).info;
          }
          else
          {
-            _currentInfo = _cells[_btns.indexOf(param1.currentTarget as ConsortionSkillItenBtn)].info;
+            _currentInfo = _cells[_btns.indexOf(event.currentTarget as ConsortionSkillItenBtn)].info;
          }
          if(_currentInfo.type == 1 && PlayerManager.Instance.Self.DutyLevel > 2)
          {
@@ -172,25 +170,25 @@ package consortion.view.selfConsortia
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.consortion.skillItem.click.open"));
             return;
          }
-         var _loc2_:ConsortionOpenSkillFrame = ComponentFactory.Instance.creatComponentByStylename("consortionOpenSkillFrame");
-         _loc2_.isMetal = _isMetal;
-         _loc2_.info = _currentInfo;
-         LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+         var frame:ConsortionOpenSkillFrame = ComponentFactory.Instance.creatComponentByStylename("consortionOpenSkillFrame");
+         frame.isMetal = _isMetal;
+         frame.info = _currentInfo;
+         LayerManager.Instance.addToLayer(frame,3,true,1);
       }
       
-      private function __confirmResponseHandler(param1:FrameEvent) : void
+      private function __confirmResponseHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode) - 2)
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
                SocketManager.Instance.out.sendConsortionSkill(false,_currentInfo.id,0);
          }
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__confirmResponseHandler);
-         _loc2_.dispose();
-         _loc2_ = null;
+         var frame:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("response",__confirmResponseHandler);
+         frame.dispose();
+         frame = null;
       }
       
       override public function get height() : Number
@@ -200,15 +198,14 @@ package consortion.view.selfConsortia
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          removeEvent();
          ObjectUtils.disposeAllChildren(this);
-         _loc1_ = 0;
-         while(_loc1_ < 2)
+         for(i = 0; i < 2; )
          {
-            _cells[_loc1_] = null;
-            _btns[_loc1_] = null;
-            _loc1_++;
+            _cells[i] = null;
+            _btns[i] = null;
+            i++;
          }
          _bg1 = null;
          _bg2 = null;

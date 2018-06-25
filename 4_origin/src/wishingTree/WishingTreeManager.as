@@ -28,9 +28,9 @@ package wishingTree
       
       private var _wishingTreeIcon:MovieClip;
       
-      public function WishingTreeManager(param1:IEventDispatcher = null)
+      public function WishingTreeManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : WishingTreeManager
@@ -47,16 +47,16 @@ package wishingTree
          SocketManager.Instance.addEventListener(PkgEvent.format(299,1),__wishingTreeOpen);
       }
       
-      protected function __wishingTreeOpen(param1:PkgEvent) : void
+      protected function __wishingTreeOpen(event:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         var _loc3_:Boolean = _isShowIcon;
-         _isShowIcon = _loc2_.readBoolean();
+         var pkg:PackageIn = event.pkg;
+         var oldIsShow:Boolean = _isShowIcon;
+         _isShowIcon = pkg.readBoolean();
          if(_isShowIcon)
          {
             showEnterIcon();
          }
-         else if(_loc3_)
+         else if(oldIsShow)
          {
             hideEnterIcon();
          }
@@ -77,9 +77,9 @@ package wishingTree
          ChatManager.Instance.sysChatAmaranth(LanguageMgr.GetTranslation("wishingTree.close"));
       }
       
-      public function addEnterIcon(param1:HallStateView) : void
+      public function addEnterIcon($hall:HallStateView) : void
       {
-         _hallStateView = param1;
+         _hallStateView = $hall;
          if(_hallStateView && _isShowIcon)
          {
             disposeEnterIcon();
@@ -99,7 +99,7 @@ package wishingTree
          }
       }
       
-      protected function __wishingTreeIconClick(param1:MouseEvent) : void
+      protected function __wishingTreeIconClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          show();

@@ -34,10 +34,10 @@ package consortion.view.selfConsortia
          addChild(_pay);
       }
       
-      public function setValue(param1:String, param2:String) : void
+      public function setValue(day:String, pay:String) : void
       {
-         _day.text = param1;
-         _pay.text = param2;
+         _day.text = day;
+         _pay.text = pay;
       }
       
       public function dispose() : void

@@ -23,10 +23,10 @@ package ddt.events
       
       private var _info:EffortInfo;
       
-      public function EffortEvent(param1:String, param2:EffortInfo = null)
+      public function EffortEvent(type:String, info:EffortInfo = null)
       {
-         _info = param2;
-         super(param1,false,false);
+         _info = info;
+         super(type,false,false);
       }
    }
 }

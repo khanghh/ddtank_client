@@ -18,9 +18,9 @@ package starling.utils
          throw new AbstractClassError();
       }
       
-      public static function isValid(param1:String) : Boolean
+      public static function isValid(scaleMode:String) : Boolean
       {
-         return param1 == "none" || param1 == "noBorder" || param1 == "showAll";
+         return scaleMode == "none" || scaleMode == "noBorder" || scaleMode == "showAll";
       }
    }
 }

@@ -38,12 +38,12 @@ package ddt.view.scenePathSearcher
          return _y;
       }
       
-      public function set position(param1:Point) : void
+      public function set position(value:Point) : void
       {
-         if(param1.x != _x || param1.y != _y)
+         if(value.x != _x || value.y != _y)
          {
-            this._x = param1.x;
-            this._y = param1.y;
+            this._x = value.x;
+            this._y = value.y;
          }
       }
       
@@ -52,34 +52,34 @@ package ddt.view.scenePathSearcher
          return new Point(_x,_y);
       }
       
-      public function setPathSearcher(param1:PathIPathSearcher) : void
+      public function setPathSearcher(path:PathIPathSearcher) : void
       {
-         _pathSearcher = param1;
+         _pathSearcher = path;
       }
       
-      public function setHitTester(param1:PathIHitTester) : void
+      public function setHitTester(tester:PathIHitTester) : void
       {
-         _hitTester = param1;
+         _hitTester = tester;
       }
       
-      public function hit(param1:Point) : Boolean
+      public function hit(local:Point) : Boolean
       {
-         return _hitTester.isHit(param1);
+         return _hitTester.isHit(local);
       }
       
-      public function searchPath(param1:Point, param2:Point) : Array
+      public function searchPath(from:Point, to:Point) : Array
       {
-         return _pathSearcher.search(param1,param2,_hitTester);
+         return _pathSearcher.search(from,to,_hitTester);
       }
       
-      public function localToGlobal(param1:Point) : Point
+      public function localToGlobal(point:Point) : Point
       {
-         return new Point(param1.x + _x,param1.y + _y);
+         return new Point(point.x + _x,point.y + _y);
       }
       
-      public function globalToLocal(param1:Point) : Point
+      public function globalToLocal(point:Point) : Point
       {
-         return new Point(param1.x - _x,param1.y - _y);
+         return new Point(point.x - _x,point.y - _y);
       }
       
       public function dispose() : void

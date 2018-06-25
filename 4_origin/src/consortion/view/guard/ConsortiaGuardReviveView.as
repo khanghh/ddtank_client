@@ -62,76 +62,76 @@ package consortion.view.guard
          addChild(_promptlyRevive);
       }
       
-      public function show(param1:FightPlayerVo) : void
+      public function show(vo:FightPlayerVo) : void
       {
-         if(param1 == null || !param1.reviveTime)
+         if(vo == null || !vo.reviveTime)
          {
             dispose();
             return;
          }
-         _fightPlayerVo = param1;
+         _fightPlayerVo = vo;
          _timer = new Timer(1000);
          _timer.addEventListener("timer",__onTimer);
          _timer.start();
          LayerManager.Instance.addToLayer(this,1,true,2);
       }
       
-      private function __onTimer(param1:TimerEvent) : void
+      private function __onTimer(e:TimerEvent) : void
       {
-         var _loc3_:Number = _fightPlayerVo.reviveTime.getTime();
-         var _loc2_:Number = TimeManager.Instance.NowTime();
-         if(_loc2_ >= _loc3_)
+         var reviveTime:Number = _fightPlayerVo.reviveTime.getTime();
+         var time:Number = TimeManager.Instance.NowTime();
+         if(time >= reviveTime)
          {
             revive(false);
          }
          else
          {
-            updateTime(_loc3_ - _loc2_);
+            updateTime(reviveTime - time);
          }
       }
       
-      private function revive(param1:Boolean) : void
+      private function revive(value:Boolean) : void
       {
          _timer.stop();
          _timer.removeEventListener("timer",__onTimer);
-         SocketManager.Instance.out.sendConsortiaGuradPlayerRevive(param1);
+         SocketManager.Instance.out.sendConsortiaGuradPlayerRevive(value);
          dispose();
       }
       
-      private function updateTime(param1:Number) : void
+      private function updateTime(surplus:Number) : void
       {
-         var _loc3_:Date = new Date(param1);
-         var _loc2_:String = setFormat(0) + ":" + setFormat(_loc3_.minutes) + ":" + setFormat(_loc3_.seconds);
-         (_timeCD["timeHour2"] as MovieClip).gotoAndStop("num_" + _loc2_.charAt(0));
-         (_timeCD["timeHour"] as MovieClip).gotoAndStop("num_" + _loc2_.charAt(1));
-         (_timeCD["timeMint2"] as MovieClip).gotoAndStop("num_" + _loc2_.charAt(3));
-         (_timeCD["timeMint"] as MovieClip).gotoAndStop("num_" + _loc2_.charAt(4));
-         (_timeCD["timeSecond2"] as MovieClip).gotoAndStop("num_" + _loc2_.charAt(6));
-         (_timeCD["timeSecond"] as MovieClip).gotoAndStop("num_" + _loc2_.charAt(7));
+         var date:Date = new Date(surplus);
+         var str:String = setFormat(0) + ":" + setFormat(date.minutes) + ":" + setFormat(date.seconds);
+         (_timeCD["timeHour2"] as MovieClip).gotoAndStop("num_" + str.charAt(0));
+         (_timeCD["timeHour"] as MovieClip).gotoAndStop("num_" + str.charAt(1));
+         (_timeCD["timeMint2"] as MovieClip).gotoAndStop("num_" + str.charAt(3));
+         (_timeCD["timeMint"] as MovieClip).gotoAndStop("num_" + str.charAt(4));
+         (_timeCD["timeSecond2"] as MovieClip).gotoAndStop("num_" + str.charAt(6));
+         (_timeCD["timeSecond"] as MovieClip).gotoAndStop("num_" + str.charAt(7));
       }
       
-      private function setFormat(param1:int) : String
+      private function setFormat(value:int) : String
       {
-         var _loc2_:String = param1.toString();
-         if(param1 < 10)
+         var str:String = value.toString();
+         if(value < 10)
          {
-            _loc2_ = "0" + _loc2_;
+            str = "0" + str;
          }
-         return _loc2_;
+         return str;
       }
       
-      private function __onReviveClick(param1:MouseEvent) : void
+      private function __onReviveClick(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:int = ServerConfigManager.instance.consortiaGuardReviveRiches;
-         if(PlayerManager.Instance.Self.Riches < _loc2_)
+         var riches:int = ServerConfigManager.instance.consortiaGuardReviveRiches;
+         if(PlayerManager.Instance.Self.Riches < riches)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.consortiaGurad.notRiches"));
             return;
          }
          if(!ConsortiaGuardControl.Instance.notAlertAgain)
          {
-            _alertFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("tank.consortiaGurad.richesTips",_loc2_),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false);
+            _alertFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("tank.consortiaGurad.richesTips",riches),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false);
             _alertFrame.addEventListener("response",__onAlertFrame);
             _alertFrame.setIsShowTheLog(true,LanguageMgr.GetTranslation("notAlertAgain"));
             _alertFrame.selectedCheckButton.addEventListener("click",__onSelectCheckClick);
@@ -142,16 +142,16 @@ package consortion.view.guard
          }
       }
       
-      protected function __onSelectCheckClick(param1:MouseEvent) : void
+      protected function __onSelectCheckClick(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:SelectedCheckButton = param1.currentTarget as SelectedCheckButton;
-         ConsortiaGuardControl.Instance.notAlertAgain = _loc2_.selected;
+         var btn:SelectedCheckButton = e.currentTarget as SelectedCheckButton;
+         ConsortiaGuardControl.Instance.notAlertAgain = btn.selected;
       }
       
-      private function __onAlertFrame(param1:FrameEvent) : void
+      private function __onAlertFrame(e:FrameEvent) : void
       {
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         if(e.responseCode == 2 || e.responseCode == 3)
          {
             _fightPlayerVo.state = 0;
             SocketManager.Instance.out.sendConsortiaGuradPlayerRevive(true);

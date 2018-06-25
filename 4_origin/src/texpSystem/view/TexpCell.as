@@ -21,6 +21,7 @@ package texpSystem.view
    import flash.events.MouseEvent;
    import flash.geom.Point;
    import flash.geom.Rectangle;
+   import texpSystem.controller.TexpManager;
    import texpSystem.data.TexpInfo;
    
    public class TexpCell extends BagCell
@@ -35,18 +36,18 @@ package texpSystem.view
       
       public function TexpCell()
       {
-         var _loc1_:Sprite = new Sprite();
-         var _loc2_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.texpSystem.itemBg1");
-         _loc1_.addChild(_loc2_);
-         super(0,null,true,_loc1_);
+         var s:Sprite = new Sprite();
+         var bg:Bitmap = ComponentFactory.Instance.creatBitmap("asset.texpSystem.itemBg1");
+         s.addChild(bg);
+         super(0,null,true,s);
          _shiner = new ShineObject(ComponentFactory.Instance.creat("asset.texpSystem.cellShine"));
          addChild(_shiner);
          var _loc4_:Boolean = false;
          _shiner.mouseEnabled = _loc4_;
          _shiner.mouseChildren = _loc4_;
-         var _loc3_:Rectangle = ComponentFactory.Instance.creatCustomObject("texpSystem.texpCell.content");
-         setContentSize(_loc3_.width,_loc3_.height);
-         PicPos = new Point(_loc3_.x,_loc3_.y);
+         var rect:Rectangle = ComponentFactory.Instance.creatCustomObject("texpSystem.texpCell.content");
+         setContentSize(rect.width,rect.height);
+         PicPos = new Point(rect.x,rect.y);
       }
       
       override protected function initEvent() : void
@@ -65,56 +66,59 @@ package texpSystem.view
          DoubleClickManager.Instance.disableDoubleClick(this);
       }
       
-      private function getNeedCount(param1:int) : int
+      private function getNeedCount(sigExp:int) : int
       {
-         var _loc2_:int = (_texpInfo.upExp - _texpInfo.currExp) / param1;
-         if((_texpInfo.upExp - _texpInfo.currExp) % param1 > 0)
+         var count:int = (_texpInfo.upExp - _texpInfo.currExp) / sigExp;
+         if((_texpInfo.upExp - _texpInfo.currExp) % sigExp > 0)
          {
-            _loc2_ = int(_loc2_) + 1;
+            count = int(count) + 1;
          }
-         return _loc2_;
+         return count;
       }
       
-      override public function dragDrop(param1:DragEffect) : void
+      override public function dragDrop(effect:DragEffect) : void
       {
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:InventoryItemInfo = param1.data as InventoryItemInfo;
-         if(_loc2_ && param1.action != "split")
+         var info:InventoryItemInfo = effect.data as InventoryItemInfo;
+         if(info && effect.action != "split")
          {
-            if(_texpInfo.type == 5 || _texpInfo.type == 6)
+            effect.action = "none";
+            if(TexpManager.Instance.texpType != info.CategoryID)
             {
-               if(_loc2_.CategoryID != 53)
+               if(TexpManager.Instance.texpType == 53)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("texpSystem.view.TextCell.magicTexpTips"));
-                  param1.action = "none";
                   return;
                }
-            }
-            else if(_loc2_.CategoryID != 20)
-            {
-               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("texpSystem.view.TextCell.texpTips"));
-               param1.action = "none";
-               return;
+               if(TexpManager.Instance.texpType == 20)
+               {
+                  MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("texpSystem.view.TextCell.texpTips"));
+                  return;
+               }
+               if(TexpManager.Instance.texpType == 78)
+               {
+                  MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("texpSystem.view.TextCell.nsTexpTips"));
+                  return;
+               }
             }
             if(this.info)
             {
                SocketManager.Instance.out.sendClearStoreBag();
             }
-            SocketManager.Instance.out.sendMoveGoods(_loc2_.BagType,_loc2_.Place,12,0,_loc2_.Count,true);
-            param1.action = "none";
+            SocketManager.Instance.out.sendMoveGoods(info.BagType,info.Place,12,0,info.Count,true);
             DragManager.acceptDrag(this);
          }
       }
       
-      private function __ontexpCountResponse(param1:FrameEvent) : void
+      private function __ontexpCountResponse(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:InventoryItemInfo = _texpCountSelectFrame.texpInfo;
-         switch(int(param1.responseCode))
+         var texpInfo:InventoryItemInfo = _texpCountSelectFrame.texpInfo;
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -127,7 +131,7 @@ package texpSystem.view
                {
                   SocketManager.Instance.out.sendClearStoreBag();
                }
-               SocketManager.Instance.out.sendMoveGoods(_loc2_.BagType,_loc2_.Place,12,0,_texpCountSelectFrame.count,true);
+               SocketManager.Instance.out.sendMoveGoods(texpInfo.BagType,texpInfo.Place,12,0,_texpCountSelectFrame.count,true);
                _texpCountSelectFrame.dispose();
          }
       }
@@ -144,11 +148,11 @@ package texpSystem.view
          addChild(_tbxCount);
       }
       
-      override protected function onMouseOver(param1:MouseEvent) : void
+      override protected function onMouseOver(evt:MouseEvent) : void
       {
       }
       
-      override protected function onMouseOut(param1:MouseEvent) : void
+      override protected function onMouseOut(evt:MouseEvent) : void
       {
       }
       
@@ -162,7 +166,7 @@ package texpSystem.view
          _shiner.stopShine();
       }
       
-      private function __clickHandler(param1:InteractiveEvent) : void
+      private function __clickHandler(evt:InteractiveEvent) : void
       {
          if(_info && !locked && stage && allowDrag)
          {
@@ -171,14 +175,14 @@ package texpSystem.view
          dragStart();
       }
       
-      protected function __doubleClickHandler(param1:InteractiveEvent) : void
+      protected function __doubleClickHandler(event:InteractiveEvent) : void
       {
-         var _loc2_:* = null;
+         var itemInfo:* = null;
          if(_info && !locked)
          {
             SoundManager.instance.playButtonSound();
-            _loc2_ = _info as InventoryItemInfo;
-            SocketManager.Instance.out.sendMoveGoods(_loc2_.BagType,_loc2_.Place,1,0,_loc2_.Count,true);
+            itemInfo = _info as InventoryItemInfo;
+            SocketManager.Instance.out.sendMoveGoods(itemInfo.BagType,itemInfo.Place,1,0,itemInfo.Count,true);
             SocketManager.Instance.out.sendClearStoreBag();
             info = null;
          }
@@ -204,9 +208,9 @@ package texpSystem.view
          return _texpInfo;
       }
       
-      public function set texpInfo(param1:TexpInfo) : void
+      public function set texpInfo(value:TexpInfo) : void
       {
-         _texpInfo = param1;
+         _texpInfo = value;
       }
    }
 }

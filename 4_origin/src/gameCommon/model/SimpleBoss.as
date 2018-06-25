@@ -7,14 +7,14 @@ package gameCommon.model
    {
        
       
-      public function SimpleBoss(param1:int, param2:int, param3:int)
+      public function SimpleBoss(id:int, team:int, maxBlood:int)
       {
-         super(param1,param2,param3);
+         super(id,team,maxBlood);
       }
       
-      override public function shoot(param1:Array, param2:CrazyTankSocketEvent) : void
+      override public function shoot(list:Array, event:CrazyTankSocketEvent) : void
       {
-         dispatchEvent(new LivingEvent("shoot",0,0,param1,param2));
+         dispatchEvent(new LivingEvent("shoot",0,0,list,event));
       }
       
       override public function beginNewTurn() : void

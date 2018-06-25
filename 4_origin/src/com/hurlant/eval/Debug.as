@@ -15,49 +15,47 @@ package com.hurlant.eval
          super();
       }
       
-      public static function set logger(param1:ILogger) : void
+      public static function set logger(value:ILogger) : void
       {
-         _logger = param1;
+         _logger = value;
       }
       
-      static function arrows(param1:*) : String
+      static function arrows(c:*) : String
       {
-         var _loc2_:* = "";
-         var _loc3_:* = nesting;
-         while(_loc3_ > 0)
+         var str:* = "";
+         for(var n:* = nesting; n > 0; n = n - 1)
          {
-            _loc2_ = _loc2_ + param1;
-            _loc3_ = _loc3_ - 1;
+            str = str + c;
          }
-         return nesting + " " + _loc2_ + " ";
+         return nesting + " " + str + " ";
       }
       
-      public static function exit(param1:*, param2:* = "") : *
+      public static function exit(s:*, a:* = "") : *
       {
          nesting = nesting - 1;
       }
       
-      public static function assert(param1:*) : *
+      public static function assert(bool:*) : *
       {
-         if(!param1)
+         if(!bool)
          {
             throw "Assert failed.";
          }
       }
       
-      public static function enter(param1:*, param2:* = "") : *
+      public static function enter(s:*, a:* = "") : *
       {
          nesting = nesting + 1;
       }
       
-      public static function print(... rest) : void
+      public static function print(... args) : void
       {
-         var _loc2_:String = rest.join(" - ");
+         var s:String = args.join(" - ");
          if(_logger != null)
          {
-            _logger.print(_loc2_);
+            _logger.print(s);
          }
-         trace(_loc2_);
+         trace(s);
       }
    }
 }

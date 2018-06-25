@@ -22,155 +22,155 @@ package com.pickgliss.geom
       
       private var _resultRect:Rectangle;
       
-      public function InnerRectangle(param1:int, param2:int, param3:int, param4:int, param5:int = 0)
+      public function InnerRectangle(para1:int, para2:int, para3:int, para4:int, lockDirection:int = 0)
       {
          super();
-         this.para1 = param1;
-         this.para2 = param2;
-         this.para3 = param3;
-         this.para4 = param4;
-         this.lockDirection = param5;
+         this.para1 = para1;
+         this.para2 = para2;
+         this.para3 = para3;
+         this.para4 = para4;
+         this.lockDirection = lockDirection;
       }
       
-      public function equals(param1:InnerRectangle) : Boolean
+      public function equals(innerRect:InnerRectangle) : Boolean
       {
-         if(param1 == null)
+         if(innerRect == null)
          {
             return false;
          }
-         return para4 == param1.para4 && para1 == param1.para1 && lockDirection == param1.lockDirection && para2 == param1.para2 && para3 == param1.para3;
+         return para4 == innerRect.para4 && para1 == innerRect.para1 && lockDirection == innerRect.lockDirection && para2 == innerRect.para2 && para3 == innerRect.para3;
       }
       
-      public function getInnerRect(param1:int, param2:int) : Rectangle
+      public function getInnerRect(outerWidth:int, outerHeight:int) : Rectangle
       {
-         _outerWidth = param1;
-         _outerHeight = param2;
+         _outerWidth = outerWidth;
+         _outerHeight = outerHeight;
          return calculateCurrent();
       }
       
       private function calculateCurrent() : Rectangle
       {
-         var _loc1_:Rectangle = new Rectangle();
+         var resultRect:Rectangle = new Rectangle();
          if(lockDirection == 0)
          {
-            _loc1_.x = para1;
-            _loc1_.y = para3;
-            _loc1_.width = _outerWidth - para1 - para2;
-            _loc1_.height = _outerHeight - para3 - para4;
+            resultRect.x = para1;
+            resultRect.y = para3;
+            resultRect.width = _outerWidth - para1 - para2;
+            resultRect.height = _outerHeight - para3 - para4;
          }
          else if(lockDirection == 1)
          {
-            _loc1_.x = para1;
-            _loc1_.y = para3;
-            _loc1_.width = _outerWidth - para1 - para2;
-            _loc1_.height = para4;
+            resultRect.x = para1;
+            resultRect.y = para3;
+            resultRect.width = _outerWidth - para1 - para2;
+            resultRect.height = para4;
          }
          else if(lockDirection == 2)
          {
-            _loc1_.x = para1;
-            _loc1_.y = para3;
-            _loc1_.width = para2;
-            _loc1_.height = _outerHeight - para3 - para4;
+            resultRect.x = para1;
+            resultRect.y = para3;
+            resultRect.width = para2;
+            resultRect.height = _outerHeight - para3 - para4;
          }
          else if(lockDirection == 3)
          {
-            _loc1_.x = _outerWidth - para1 - para2;
-            _loc1_.y = para3;
-            _loc1_.width = para1;
-            _loc1_.height = _outerHeight - para3 - para4;
+            resultRect.x = _outerWidth - para1 - para2;
+            resultRect.y = para3;
+            resultRect.width = para1;
+            resultRect.height = _outerHeight - para3 - para4;
          }
          else if(lockDirection == 4)
          {
-            _loc1_.x = para1;
-            _loc1_.y = _outerHeight - para3 - para4;
-            _loc1_.width = _outerWidth - para1 - para2;
-            _loc1_.height = para3;
+            resultRect.x = para1;
+            resultRect.y = _outerHeight - para3 - para4;
+            resultRect.width = _outerWidth - para1 - para2;
+            resultRect.height = para3;
          }
          else if(lockDirection == 9)
          {
-            _loc1_.x = (_outerWidth - para1) / 2 + para4;
-            _loc1_.y = para3;
-            _loc1_.width = para1;
-            _loc1_.height = para2;
+            resultRect.x = (_outerWidth - para1) / 2 + para4;
+            resultRect.y = para3;
+            resultRect.width = para1;
+            resultRect.height = para2;
          }
          else if(lockDirection == 10)
          {
-            _loc1_.x = (_outerWidth - para1) / 2 + para3;
-            _loc1_.y = _outerHeight - para4 - para2;
-            _loc1_.width = para1;
-            _loc1_.height = para2;
+            resultRect.x = (_outerWidth - para1) / 2 + para3;
+            resultRect.y = _outerHeight - para4 - para2;
+            resultRect.width = para1;
+            resultRect.height = para2;
          }
          else if(lockDirection == 11)
          {
-            _loc1_.x = para1;
-            _loc1_.y = (_outerHeight - para4) / 2 + para2;
-            _loc1_.width = para3;
-            _loc1_.height = para4;
+            resultRect.x = para1;
+            resultRect.y = (_outerHeight - para4) / 2 + para2;
+            resultRect.width = para3;
+            resultRect.height = para4;
          }
          else if(lockDirection == 12)
          {
-            _loc1_.x = _outerWidth - para2 - para3;
-            _loc1_.y = (_outerHeight - para3) / 2 + para1;
-            _loc1_.width = para3;
-            _loc1_.height = para4;
+            resultRect.x = _outerWidth - para2 - para3;
+            resultRect.y = (_outerHeight - para3) / 2 + para1;
+            resultRect.width = para3;
+            resultRect.height = para4;
          }
          else if(lockDirection == 13)
          {
-            _loc1_.x = para1;
-            _loc1_.y = para3;
-            _loc1_.width = para2;
-            _loc1_.height = para4;
+            resultRect.x = para1;
+            resultRect.y = para3;
+            resultRect.width = para2;
+            resultRect.height = para4;
          }
          else if(lockDirection == 14)
          {
-            _loc1_.x = _outerWidth - para1 - para2;
-            _loc1_.y = para3;
-            _loc1_.width = para1;
-            _loc1_.height = para4;
+            resultRect.x = _outerWidth - para1 - para2;
+            resultRect.y = para3;
+            resultRect.width = para1;
+            resultRect.height = para4;
          }
          else if(lockDirection == 15)
          {
-            _loc1_.x = para1;
-            _loc1_.y = _outerHeight - para4 - para3;
-            _loc1_.width = para2;
-            _loc1_.height = para3;
+            resultRect.x = para1;
+            resultRect.y = _outerHeight - para4 - para3;
+            resultRect.width = para2;
+            resultRect.height = para3;
          }
          else if(lockDirection == 16)
          {
-            _loc1_.x = _outerWidth - para1 - para2;
-            _loc1_.y = _outerHeight - para4 - para3;
-            _loc1_.width = para1;
-            _loc1_.height = para3;
+            resultRect.x = _outerWidth - para1 - para2;
+            resultRect.y = _outerHeight - para4 - para3;
+            resultRect.width = para1;
+            resultRect.height = para3;
          }
          else if(lockDirection == -1)
          {
-            _loc1_.x = -para1;
-            _loc1_.y = -para3;
-            _loc1_.width = _outerWidth + para1 + para2;
-            _loc1_.height = _outerHeight + para4 + para3;
+            resultRect.x = -para1;
+            resultRect.y = -para3;
+            resultRect.width = _outerWidth + para1 + para2;
+            resultRect.height = _outerHeight + para4 + para3;
          }
          else if(lockDirection == 17)
          {
-            _loc1_.x = (_outerWidth - para2) / 2 + para1;
-            _loc1_.y = (_outerHeight - para4) / 2 + para3;
-            _loc1_.width = para2;
-            _loc1_.height = para4;
+            resultRect.x = (_outerWidth - para2) / 2 + para1;
+            resultRect.y = (_outerHeight - para4) / 2 + para3;
+            resultRect.width = para2;
+            resultRect.height = para4;
          }
          else if(lockDirection == 5)
          {
-            _loc1_.x = para1;
-            _loc1_.y = para2;
-            _loc1_.width = _outerWidth - para3;
-            _loc1_.height = _outerHeight - para4;
+            resultRect.x = para1;
+            resultRect.y = para2;
+            resultRect.width = _outerWidth - para3;
+            resultRect.height = _outerHeight - para4;
          }
          else if(lockDirection == 18)
          {
-            _loc1_.x = para1;
-            _loc1_.y = para2;
-            _loc1_.width = _outerWidth - para3;
-            _loc1_.height = para4;
+            resultRect.x = para1;
+            resultRect.y = para2;
+            resultRect.width = _outerWidth - para3;
+            resultRect.height = para4;
          }
-         return _loc1_;
+         return resultRect;
       }
    }
 }

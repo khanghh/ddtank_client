@@ -35,44 +35,43 @@ package chickActivation.view
          _itemsPanel.invalidateViewport();
       }
       
-      public function update(param1:Array) : void
+      public function update($arr:Array) : void
       {
-         _arrData = param1;
+         _arrData = $arr;
          updateView();
          _itemsPanel.invalidateViewport();
       }
       
       private function updateView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var _cell:* = null;
          ObjectUtils.disposeAllChildren(_items);
          if(_arrData)
          {
-            _loc2_ = 0;
-            while(_loc2_ < _arrData.length)
+            for(i = 0; i < _arrData.length; )
             {
-               _loc1_ = createCell(_arrData[_loc2_]);
-               _loc1_.x = _loc2_ % 5 * 105;
-               _loc1_.y = int(_loc2_ / 5) * 80 + 5;
-               _items.addChild(_loc1_);
-               _loc2_++;
+               _cell = createCell(_arrData[i]);
+               _cell.x = i % 5 * 105;
+               _cell.y = int(i / 5) * 80 + 5;
+               _items.addChild(_cell);
+               i++;
             }
          }
       }
       
-      private function createCell(param1:ChickActivationInfo) : BagCell
+      private function createCell($info:ChickActivationInfo) : BagCell
       {
-         var _loc3_:InventoryItemInfo = ChickActivationManager.instance.model.getInventoryItemInfo(param1);
-         if(_loc3_ == null)
+         var itemInfo:InventoryItemInfo = ChickActivationManager.instance.model.getInventoryItemInfo($info);
+         if(itemInfo == null)
          {
             return null;
          }
-         var _loc2_:BagCell = new BagCell(0,_loc3_,true,ComponentFactory.Instance.creatBitmap("assets.chickActivation.itemBg"));
-         _loc2_.width = 64;
-         _loc2_.height = 64.1;
-         _loc2_.setCount(_loc3_.Count);
-         return _loc2_;
+         var _cell:BagCell = new BagCell(0,itemInfo,true,ComponentFactory.Instance.creatBitmap("assets.chickActivation.itemBg"));
+         _cell.width = 64;
+         _cell.height = 64.1;
+         _cell.setCount(itemInfo.Count);
+         return _cell;
       }
       
       public function get arrData() : Array

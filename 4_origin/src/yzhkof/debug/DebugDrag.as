@@ -20,10 +20,10 @@ package yzhkof.debug
       
       private var preY:Number;
       
-      public function DebugDrag(param1:DisplayObject = null)
+      public function DebugDrag(target:DisplayObject = null)
       {
          super();
-         this._target = param1;
+         this._target = target;
          this.addEvent();
       }
       
@@ -55,7 +55,7 @@ package yzhkof.debug
          this.target.removeEventListener(Event.ENTER_FRAME,this.__enterFrame);
       }
       
-      private function __enterFrame(param1:Event) : void
+      private function __enterFrame(event:Event) : void
       {
          this.target.x = this.target.x + (this.target.parent.mouseX - this.preX);
          this.target.y = this.target.y + (this.target.parent.mouseY - this.preY);
@@ -72,7 +72,7 @@ package yzhkof.debug
          }
       }
       
-      private function __mouseDown(param1:MouseEvent) : void
+      private function __mouseDown(event:MouseEvent) : void
       {
          if(this.state > 0)
          {
@@ -87,19 +87,19 @@ package yzhkof.debug
          }
       }
       
-      protected final function callBackFunction(param1:Function) : void
+      protected final function callBackFunction(fun:Function) : void
       {
-         if(param1 == null)
+         if(fun == null)
          {
             return;
          }
-         if(param1.length > 0)
+         if(fun.length > 0)
          {
-            param1(this);
+            fun(this);
          }
          else
          {
-            param1();
+            fun();
          }
       }
       
@@ -108,17 +108,17 @@ package yzhkof.debug
          return this._target;
       }
       
-      public function set target(param1:DisplayObject) : void
+      public function set target(value:DisplayObject) : void
       {
          this.removeEvent();
-         this._target = param1;
+         this._target = value;
          this.addEvent();
       }
       
-      private function __onKeyDown(param1:KeyboardEvent) : void
+      private function __onKeyDown(e:KeyboardEvent) : void
       {
          this.state = 0;
-         switch(param1.keyCode)
+         switch(e.keyCode)
          {
             case Keyboard.UP:
                this._target.y--;

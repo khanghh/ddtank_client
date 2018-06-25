@@ -60,9 +60,9 @@ package magicHouse.magicCollection
          addToContent(_tipTxt);
       }
       
-      private function __getBoxChange(param1:MouseEvent) : void
+      private function __getBoxChange(e:MouseEvent) : void
       {
-         if(_oneTimeBtn == param1.currentTarget as SelectedCheckButton)
+         if(_oneTimeBtn == e.currentTarget as SelectedCheckButton)
          {
             _oneTimeBtn.selected = true;
             _fiveTimeBtn.selected = false;
@@ -78,13 +78,13 @@ package magicHouse.magicCollection
          }
       }
       
-      private function __confirmGetBox(param1:MouseEvent) : void
+      private function __confirmGetBox(e:MouseEvent) : void
       {
          SocketManager.Instance.out.magicLibChargeGet(openCount);
          dispose();
       }
       
-      private function __cancleGetBox(param1:MouseEvent) : void
+      private function __cancleGetBox(e:MouseEvent) : void
       {
          dispose();
       }

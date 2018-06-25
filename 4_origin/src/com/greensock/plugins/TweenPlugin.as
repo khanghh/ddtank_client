@@ -39,115 +39,115 @@ package com.greensock.plugins
          super();
       }
       
-      private static function onTweenEvent(param1:String, param2:TweenLite) : Boolean
+      private static function onTweenEvent(type:String, tween:TweenLite) : Boolean
       {
-         var _loc6_:Boolean = false;
-         var _loc4_:* = null;
-         var _loc5_:int = 0;
-         var _loc3_:* = param2.cachedPT1;
-         if(param1 == "onInitAllProps")
+         var changed:Boolean = false;
+         var tweens:* = null;
+         var i:int = 0;
+         var pt:* = tween.cachedPT1;
+         if(type == "onInitAllProps")
          {
-            _loc4_ = [];
-            _loc5_ = 0;
-            while(_loc3_)
+            tweens = [];
+            i = 0;
+            while(pt)
             {
-               _loc5_++;
-               _loc4_[_loc5_] = _loc3_;
-               _loc3_ = _loc3_.nextNode;
+               i++;
+               tweens[i] = pt;
+               pt = pt.nextNode;
             }
-            _loc4_.sortOn("priority",16 | 2);
+            tweens.sortOn("priority",16 | 2);
             while(true)
             {
-               _loc5_--;
-               if(_loc5_ <= -1)
+               i--;
+               if(i <= -1)
                {
                   break;
                }
-               PropTween(_loc4_[_loc5_]).nextNode = _loc4_[_loc5_ + 1];
-               PropTween(_loc4_[_loc5_]).prevNode = _loc4_[_loc5_ - 1];
+               PropTween(tweens[i]).nextNode = tweens[i + 1];
+               PropTween(tweens[i]).prevNode = tweens[i - 1];
             }
-            var _loc7_:* = _loc4_[0];
-            param2.cachedPT1 = _loc7_;
-            _loc3_ = _loc7_;
+            var _loc7_:* = tweens[0];
+            tween.cachedPT1 = _loc7_;
+            pt = _loc7_;
          }
-         while(_loc3_)
+         while(pt)
          {
-            if(_loc3_.isPlugin && _loc3_.target[param1])
+            if(pt.isPlugin && pt.target[type])
             {
-               if(_loc3_.target.activeDisable)
+               if(pt.target.activeDisable)
                {
-                  _loc6_ = true;
+                  changed = true;
                }
-               _loc3_.target[param1]();
+               pt.target[type]();
             }
-            _loc3_ = _loc3_.nextNode;
+            pt = pt.nextNode;
          }
-         return _loc6_;
+         return changed;
       }
       
-      public static function activate(param1:Array) : Boolean
+      public static function activate(plugins:Array) : Boolean
       {
-         var _loc2_:* = null;
+         var instance:* = null;
          TweenLite.onPluginEvent = TweenPlugin.onTweenEvent;
-         var _loc3_:int = param1.length;
+         var i:int = plugins.length;
          while(true)
          {
-            _loc3_--;
-            if(!_loc3_)
+            i--;
+            if(!i)
             {
                break;
             }
-            if(param1[_loc3_].hasOwnProperty("API"))
+            if(plugins[i].hasOwnProperty("API"))
             {
-               _loc2_ = new (param1[_loc3_] as Class)();
-               TweenLite.plugins[_loc2_.propName] = param1[_loc3_];
+               instance = new (plugins[i] as Class)();
+               TweenLite.plugins[instance.propName] = plugins[i];
             }
          }
          return true;
       }
       
-      public function onInitTween(param1:Object, param2:*, param3:TweenLite) : Boolean
+      public function onInitTween(target:Object, value:*, tween:TweenLite) : Boolean
       {
-         addTween(param1,this.propName,param1[this.propName],param2,this.propName);
+         addTween(target,this.propName,target[this.propName],value,this.propName);
          return true;
       }
       
-      protected function addTween(param1:Object, param2:String, param3:Number, param4:*, param5:String = null) : void
+      protected function addTween(object:Object, propName:String, start:Number, end:*, overwriteProp:String = null) : void
       {
-         var _loc6_:Number = NaN;
-         if(param4 != null)
+         var change:Number = NaN;
+         if(end != null)
          {
-            _loc6_ = typeof param4 == "number"?param4 - param3:Number(param4);
-            if(_loc6_ != 0)
+            change = typeof end == "number"?end - start:Number(end);
+            if(change != 0)
             {
-               _tweens[_tweens.length] = new PropTween(param1,param2,param3,_loc6_,param5 || param2,false);
+               _tweens[_tweens.length] = new PropTween(object,propName,start,change,overwriteProp || propName,false);
             }
          }
       }
       
-      protected function updateTweens(param1:Number) : void
+      protected function updateTweens(changeFactor:Number) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:Number = NaN;
-         var _loc4_:int = _tweens.length;
+         var pt:* = null;
+         var val:Number = NaN;
+         var i:int = _tweens.length;
          if(this.round)
          {
             while(true)
             {
-               _loc4_--;
-               if(_loc4_ <= -1)
+               i--;
+               if(i <= -1)
                {
                   break;
                }
-               _loc3_ = _tweens[_loc4_];
-               _loc2_ = _loc3_.start + _loc3_.change * param1;
-               if(_loc2_ > 0)
+               pt = _tweens[i];
+               val = pt.start + pt.change * changeFactor;
+               if(val > 0)
                {
-                  _loc3_.target[_loc3_.property] = _loc2_ + 0.5 >> 0;
+                  pt.target[pt.property] = val + 0.5 >> 0;
                }
                else
                {
-                  _loc3_.target[_loc3_.property] = _loc2_ - 0.5 >> 0;
+                  pt.target[pt.property] = val - 0.5 >> 0;
                }
             }
          }
@@ -155,13 +155,13 @@ package com.greensock.plugins
          {
             while(true)
             {
-               _loc4_--;
-               if(_loc4_ <= -1)
+               i--;
+               if(i <= -1)
                {
                   break;
                }
-               _loc3_ = _tweens[_loc4_];
-               _loc3_.target[_loc3_.property] = _loc3_.start + _loc3_.change * param1;
+               pt = _tweens[i];
+               pt.target[pt.property] = pt.start + pt.change * changeFactor;
             }
          }
       }
@@ -171,38 +171,38 @@ package com.greensock.plugins
          return _changeFactor;
       }
       
-      public function set changeFactor(param1:Number) : void
+      public function set changeFactor(n:Number) : void
       {
-         updateTweens(param1);
-         _changeFactor = param1;
+         updateTweens(n);
+         _changeFactor = n;
       }
       
-      public function killProps(param1:Object) : void
+      public function killProps(lookup:Object) : void
       {
-         var _loc2_:int = this.overwriteProps.length;
+         var i:int = this.overwriteProps.length;
          while(true)
          {
-            _loc2_--;
-            if(_loc2_ <= -1)
+            i--;
+            if(i <= -1)
             {
                break;
             }
-            if(this.overwriteProps[_loc2_] in param1)
+            if(this.overwriteProps[i] in lookup)
             {
-               this.overwriteProps.splice(_loc2_,1);
+               this.overwriteProps.splice(i,1);
             }
          }
-         _loc2_ = _tweens.length;
+         i = _tweens.length;
          while(true)
          {
-            _loc2_--;
-            if(_loc2_ <= -1)
+            i--;
+            if(i <= -1)
             {
                break;
             }
-            if(PropTween(_tweens[_loc2_]).name in param1)
+            if(PropTween(_tweens[i]).name in lookup)
             {
-               _tweens.splice(_loc2_,1);
+               _tweens.splice(i,1);
             }
          }
       }

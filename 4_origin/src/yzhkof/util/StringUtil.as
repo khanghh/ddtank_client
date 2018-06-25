@@ -9,14 +9,14 @@ package yzhkof.util
          super();
       }
       
-      public static function addString(param1:String, param2:String, param3:uint) : String
+      public static function addString(str:String, strAdd:String, index:uint) : String
       {
-         return replaceString(param1,param2,param3,param3);
+         return replaceString(str,strAdd,index,index);
       }
       
-      public static function replaceString(param1:String, param2:String, param3:uint, param4:uint) : String
+      public static function replaceString(str:String, strAdd:String, startIndex:uint, endIndex:uint) : String
       {
-         return param1.substring(0,param3) + param2 + param1.substring(param4);
+         return str.substring(0,startIndex) + strAdd + str.substring(endIndex);
       }
    }
 }

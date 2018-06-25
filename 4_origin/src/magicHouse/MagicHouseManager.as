@@ -32,7 +32,7 @@ package magicHouse
       private static var _instance:MagicHouseManager;
        
       
-      public function MagicHouseManager(param1:MagicHouseInstance)
+      public function MagicHouseManager($instance:MagicHouseInstance)
       {
          super();
       }
@@ -56,178 +56,174 @@ package magicHouse
          SocketManager.Instance.addEventListener("magichouse",__magicHouseHandler);
       }
       
-      private function __magicHouseHandler(param1:CrazyTankSocketEvent) : void
+      private function __magicHouseHandler(event:CrazyTankSocketEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readInt();
-         if(_loc2_ == 1)
+         var pkg:PackageIn = event.pkg;
+         var cmd:int = pkg.readInt();
+         if(cmd == 1)
          {
-            _loginMessage(_loc3_);
+            _loginMessage(pkg);
          }
-         else if(_loc2_ == 2)
+         else if(cmd == 2)
          {
-            _updateMessage(_loc3_);
+            _updateMessage(pkg);
          }
-         else if(_loc2_ == 3)
+         else if(cmd == 3)
          {
-            _isOpen(_loc3_);
+            _isOpen(pkg);
          }
-         else if(_loc2_ == 4)
+         else if(cmd == 4)
          {
-            _getFreeBoxMessage(_loc3_);
+            _getFreeBoxMessage(pkg);
          }
-         else if(_loc2_ == 5)
+         else if(cmd == 5)
          {
-            _getChargeBoxMessage(_loc3_);
+            _getChargeBoxMessage(pkg);
          }
-         else if(_loc2_ == 6)
+         else if(cmd == 6)
          {
-            _extractionComplete(_loc3_);
+            _extractionComplete(pkg);
          }
-         else if(_loc2_ == 7)
+         else if(cmd == 7)
          {
-            _fusionComplete(_loc3_);
+            _fusionComplete(pkg);
          }
       }
       
-      private function _loginMessage(param1:PackageIn) : void
+      private function _loginMessage(pkg:PackageIn) : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          MagicHouseModel.instance.activityWeapons = [];
-         MagicHouseModel.instance.isMagicRoomShow = param1.readBoolean();
-         _loc2_ = 0;
-         while(_loc2_ < 9)
+         MagicHouseModel.instance.isMagicRoomShow = pkg.readBoolean();
+         for(i = 0; i < 9; )
          {
-            MagicHouseModel.instance.activityWeapons[_loc2_] = param1.readInt();
-            _loc2_++;
+            MagicHouseModel.instance.activityWeapons[i] = pkg.readInt();
+            i++;
          }
-         MagicHouseModel.instance.magicJuniorLv = param1.readInt();
-         MagicHouseModel.instance.magicJuniorExp = param1.readInt();
-         MagicHouseModel.instance.magicMidLv = param1.readInt();
-         MagicHouseModel.instance.magicMidExp = param1.readInt();
-         MagicHouseModel.instance.magicSeniorLv = param1.readInt();
-         MagicHouseModel.instance.magicSeniorExp = param1.readInt();
-         MagicHouseModel.instance.freeGetCount = param1.readInt();
-         MagicHouseModel.instance.freeGetTime = param1.readDate();
-         MagicHouseModel.instance.chargeGetCount = param1.readInt();
-         MagicHouseModel.instance.chargeGetTime = param1.readDate();
-         MagicHouseModel.instance.depotCount = param1.readInt();
-         PlayerManager.Instance.Self.essence = param1.readInt();
+         MagicHouseModel.instance.magicJuniorLv = pkg.readInt();
+         MagicHouseModel.instance.magicJuniorExp = pkg.readInt();
+         MagicHouseModel.instance.magicMidLv = pkg.readInt();
+         MagicHouseModel.instance.magicMidExp = pkg.readInt();
+         MagicHouseModel.instance.magicSeniorLv = pkg.readInt();
+         MagicHouseModel.instance.magicSeniorExp = pkg.readInt();
+         MagicHouseModel.instance.freeGetCount = pkg.readInt();
+         MagicHouseModel.instance.freeGetTime = pkg.readDate();
+         MagicHouseModel.instance.chargeGetCount = pkg.readInt();
+         MagicHouseModel.instance.chargeGetTime = pkg.readDate();
+         MagicHouseModel.instance.depotCount = pkg.readInt();
+         PlayerManager.Instance.Self.essence = pkg.readInt();
       }
       
-      private function _updateMessage(param1:PackageIn) : void
+      private function _updateMessage(pkg:PackageIn) : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          if(MagicHouseModel.instance.activityWeapons == null)
          {
             MagicHouseModel.instance.activityWeapons = [];
          }
-         MagicHouseModel.instance.isMagicRoomShow = param1.readBoolean();
-         _loc2_ = 0;
-         while(_loc2_ < 9)
+         MagicHouseModel.instance.isMagicRoomShow = pkg.readBoolean();
+         for(i = 0; i < 9; )
          {
-            MagicHouseModel.instance.activityWeapons[_loc2_] = param1.readInt();
-            _loc2_++;
+            MagicHouseModel.instance.activityWeapons[i] = pkg.readInt();
+            i++;
          }
-         MagicHouseModel.instance.magicJuniorLv = param1.readInt();
-         MagicHouseModel.instance.magicJuniorExp = param1.readInt();
-         MagicHouseModel.instance.magicMidLv = param1.readInt();
-         MagicHouseModel.instance.magicMidExp = param1.readInt();
-         MagicHouseModel.instance.magicSeniorLv = param1.readInt();
-         MagicHouseModel.instance.magicSeniorExp = param1.readInt();
-         MagicHouseModel.instance.freeGetCount = param1.readInt();
-         MagicHouseModel.instance.freeGetTime = param1.readDate();
-         MagicHouseModel.instance.chargeGetCount = param1.readInt();
-         MagicHouseModel.instance.chargeGetTime = param1.readDate();
-         MagicHouseModel.instance.depotCount = param1.readInt();
-         PlayerManager.Instance.Self.essence = param1.readInt();
+         MagicHouseModel.instance.magicJuniorLv = pkg.readInt();
+         MagicHouseModel.instance.magicJuniorExp = pkg.readInt();
+         MagicHouseModel.instance.magicMidLv = pkg.readInt();
+         MagicHouseModel.instance.magicMidExp = pkg.readInt();
+         MagicHouseModel.instance.magicSeniorLv = pkg.readInt();
+         MagicHouseModel.instance.magicSeniorExp = pkg.readInt();
+         MagicHouseModel.instance.freeGetCount = pkg.readInt();
+         MagicHouseModel.instance.freeGetTime = pkg.readDate();
+         MagicHouseModel.instance.chargeGetCount = pkg.readInt();
+         MagicHouseModel.instance.chargeGetTime = pkg.readDate();
+         MagicHouseModel.instance.depotCount = pkg.readInt();
+         PlayerManager.Instance.Self.essence = pkg.readInt();
          dispatchEvent(new Event("magichouse_updata"));
       }
       
-      private function _isOpen(param1:PackageIn) : void
+      private function _isOpen(pkg:PackageIn) : void
       {
-         MagicHouseModel.instance.isOpen = param1.readBoolean();
-         MagicHouseModel.instance.isMagicRoomShow = param1.readBoolean();
+         MagicHouseModel.instance.isOpen = pkg.readBoolean();
+         MagicHouseModel.instance.isMagicRoomShow = pkg.readBoolean();
       }
       
-      private function _getFreeBoxMessage(param1:PackageIn) : void
+      private function _getFreeBoxMessage(pkg:PackageIn) : void
       {
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
-         var _loc4_:int = param1.readInt();
-         MagicHouseModel.instance.freeGetTime = param1.readDate();
-         var _loc3_:int = param1.readInt();
-         var _loc2_:Array = [];
-         _loc6_ = 0;
-         while(_loc6_ < _loc3_)
+         var i:int = 0;
+         var info:* = null;
+         var currentCount:int = pkg.readInt();
+         MagicHouseModel.instance.freeGetTime = pkg.readDate();
+         var count:int = pkg.readInt();
+         var infos:Array = [];
+         for(i = 0; i < count; )
          {
-            _loc5_ = new BoxGoodsTempInfo();
-            _loc5_.TemplateId = param1.readInt();
-            _loc5_.ItemCount = param1.readInt();
-            _loc5_.ItemValid = param1.readInt();
-            _loc5_.IsBind = param1.readBoolean();
-            _loc5_.StrengthenLevel = param1.readInt();
-            _loc5_.AttackCompose = param1.readInt();
-            _loc5_.DefendCompose = param1.readInt();
-            _loc5_.AgilityCompose = param1.readInt();
-            _loc5_.LuckCompose = param1.readInt();
-            _loc2_.push(_loc5_);
-            _loc6_++;
+            info = new BoxGoodsTempInfo();
+            info.TemplateId = pkg.readInt();
+            info.ItemCount = pkg.readInt();
+            info.ItemValid = pkg.readInt();
+            info.IsBind = pkg.readBoolean();
+            info.StrengthenLevel = pkg.readInt();
+            info.AttackCompose = pkg.readInt();
+            info.DefendCompose = pkg.readInt();
+            info.AgilityCompose = pkg.readInt();
+            info.LuckCompose = pkg.readInt();
+            infos.push(info);
+            i++;
          }
          MagicHouseModel.instance.freeBoxGoodListInfos = null;
-         MagicHouseModel.instance.freeBoxGoodListInfos = _loc2_;
+         MagicHouseModel.instance.freeBoxGoodListInfos = infos;
          dispatchEvent(new Event("freebox_return"));
       }
       
-      private function _getChargeBoxMessage(param1:PackageIn) : void
+      private function _getChargeBoxMessage(pkg:PackageIn) : void
       {
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
-         var _loc4_:int = param1.readInt();
-         MagicHouseModel.instance.chargeGetCount = MagicHouseModel.instance.chargeGetCount - _loc4_;
-         MagicHouseModel.instance.chargeGetTime = param1.readDate();
-         var _loc3_:int = param1.readInt();
-         var _loc2_:Array = [];
-         _loc6_ = 0;
-         while(_loc6_ < _loc3_)
+         var i:int = 0;
+         var info:* = null;
+         var currentCount:int = pkg.readInt();
+         MagicHouseModel.instance.chargeGetCount = MagicHouseModel.instance.chargeGetCount - currentCount;
+         MagicHouseModel.instance.chargeGetTime = pkg.readDate();
+         var count:int = pkg.readInt();
+         var infos:Array = [];
+         for(i = 0; i < count; )
          {
-            _loc5_ = new BoxGoodsTempInfo();
-            _loc5_.TemplateId = param1.readInt();
-            _loc5_.ItemCount = param1.readInt();
-            _loc5_.ItemValid = param1.readInt();
-            _loc5_.IsBind = param1.readBoolean();
-            _loc5_.StrengthenLevel = param1.readInt();
-            _loc5_.AttackCompose = param1.readInt();
-            _loc5_.DefendCompose = param1.readInt();
-            _loc5_.AgilityCompose = param1.readInt();
-            _loc5_.LuckCompose = param1.readInt();
-            _loc2_.push(_loc5_);
-            _loc6_++;
+            info = new BoxGoodsTempInfo();
+            info.TemplateId = pkg.readInt();
+            info.ItemCount = pkg.readInt();
+            info.ItemValid = pkg.readInt();
+            info.IsBind = pkg.readBoolean();
+            info.StrengthenLevel = pkg.readInt();
+            info.AttackCompose = pkg.readInt();
+            info.DefendCompose = pkg.readInt();
+            info.AgilityCompose = pkg.readInt();
+            info.LuckCompose = pkg.readInt();
+            infos.push(info);
+            i++;
          }
          MagicHouseModel.instance.chargeBoxGoodListInfos = null;
-         MagicHouseModel.instance.chargeBoxGoodListInfos = _loc2_;
+         MagicHouseModel.instance.chargeBoxGoodListInfos = infos;
          dispatchEvent(new Event("chargebox_return"));
       }
       
-      private function _extractionComplete(param1:PackageIn) : void
+      private function _extractionComplete(pkg:PackageIn) : void
       {
-         var _loc2_:Boolean = param1.readBoolean();
-         if(_loc2_)
+         var value:Boolean = pkg.readBoolean();
+         if(value)
          {
             dispatchEvent(new Event("magicbox_extraction_complete"));
          }
       }
       
-      private function _fusionComplete(param1:PackageIn) : void
+      private function _fusionComplete(pkg:PackageIn) : void
       {
-         var _loc2_:Boolean = param1.readBoolean();
-         if(_loc2_)
+         var value:Boolean = pkg.readBoolean();
+         if(value)
          {
             dispatchEvent(new Event("magicbox_fusion_complete"));
          }
       }
       
-      public function setupMagicBoxData(param1:MagicBoxDataAnalyzer) : void
+      public function setupMagicBoxData(analyzer:MagicBoxDataAnalyzer) : void
       {
          if(!MagicHouseModel.instance.itemExtrationEnableList)
          {
@@ -237,18 +233,18 @@ package magicHouse
          {
             MagicHouseModel.instance.itemFusionEnableList = [];
          }
-         var _loc2_:Vector.<MagicBoxItemInfo> = param1.list;
+         var list:Vector.<MagicBoxItemInfo> = analyzer.list;
          var _loc5_:int = 0;
-         var _loc4_:* = _loc2_;
-         for each(var _loc3_ in _loc2_)
+         var _loc4_:* = list;
+         for each(var info in list)
          {
-            if(_loc3_.Type == 1)
+            if(info.Type == 1)
             {
-               MagicHouseModel.instance.itemFusionEnableList.push(_loc3_);
+               MagicHouseModel.instance.itemFusionEnableList.push(info);
             }
             else
             {
-               MagicHouseModel.instance.itemExtrationEnableList.push(_loc3_);
+               MagicHouseModel.instance.itemExtrationEnableList.push(info);
             }
          }
       }

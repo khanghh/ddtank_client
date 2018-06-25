@@ -4,6 +4,7 @@ package horse.amulet
    import com.pickgliss.events.FrameEvent;
    import com.pickgliss.ui.AlertManager;
    import com.pickgliss.ui.ComponentFactory;
+   import com.pickgliss.ui.controls.BaseButton;
    import com.pickgliss.ui.controls.SelectedCheckButton;
    import com.pickgliss.ui.controls.SimpleBitmapButton;
    import com.pickgliss.ui.controls.alert.BaseAlerFrame;
@@ -54,6 +55,10 @@ package horse.amulet
       private var _helpText:FilterFrameText;
       
       private var _activateBtn:SimpleBitmapButton;
+      
+      private var _replaceBtn:BaseButton;
+      
+      private var _cancelBtn:BaseButton;
       
       private var _hBox:HBox;
       
@@ -118,6 +123,10 @@ package horse.amulet
          addChild(_helpText);
          _activateBtn = ComponentFactory.Instance.creatComponentByStylename("horseAmulet.activate.activateBtn");
          addChild(_activateBtn);
+         _replaceBtn = ComponentFactory.Instance.creatComponentByStylename("horseAmulet.activate.replaceBtn");
+         addChild(_replaceBtn);
+         _cancelBtn = ComponentFactory.Instance.creatComponentByStylename("horseAmulet.activate.cancelBtn");
+         addChild(_cancelBtn);
          _hBox = ComponentFactory.Instance.creatComponentByStylename("horseAmulet.activate.hBox");
          _activateText = ComponentFactory.Instance.creatComponentByStylename("horseAmulet.activate.text");
          _property = ComponentFactory.Instance.creatBitmap("asset.horseAmulet.activate.property");
@@ -134,11 +143,14 @@ package horse.amulet
          PositionUtils.setPos(_activateCell,"horseAmulet.activate.activateCellPos");
          addChild(_activateCell);
          __onChangeCell(null);
+         updateSatate(false);
       }
       
       private function initEvent() : void
       {
          _activateBtn.addEventListener("click",__onClickActivate);
+         _replaceBtn.addEventListener("click",__onClickReplace);
+         _cancelBtn.addEventListener("click",__onClickCancel);
          _activateCell.addEventListener("change",__onChangeCell);
          SocketManager.Instance.addEventListener(PkgEvent.format(375,1),__onUpdateActivate);
          SocketManager.Instance.addEventListener(PkgEvent.format(375,7),__onReplaceComplete);
@@ -149,6 +161,8 @@ package horse.amulet
       private function removeEvent() : void
       {
          _activateBtn.removeEventListener("click",__onClickActivate);
+         _replaceBtn.removeEventListener("click",__onClickReplace);
+         _cancelBtn.removeEventListener("click",__onClickCancel);
          _activateCell.removeEventListener("change",__onChangeCell);
          SocketManager.Instance.removeEventListener(PkgEvent.format(375,1),__onUpdateActivate);
          SocketManager.Instance.removeEventListener(PkgEvent.format(375,7),__onReplaceComplete);
@@ -156,30 +170,39 @@ package horse.amulet
          PlayerManager.Instance.Self.removeEventListener("propertychange",__propertyChange);
       }
       
-      private function __propertyChange(param1:PlayerPropertyEvent) : void
+      private function updateSatate(isActivate:Boolean) : void
       {
-         if(param1.changedProperties["stive"])
+         HorseAmuletManager.instance.isActivate = isActivate;
+         _activateBtn.visible = !isActivate;
+         var _loc2_:* = isActivate;
+         _cancelBtn.visible = _loc2_;
+         _replaceBtn.visible = _loc2_;
+      }
+      
+      private function __propertyChange(evt:PlayerPropertyEvent) : void
+      {
+         if(evt.changedProperties["stive"])
          {
             _havaDustNumText.text = PlayerManager.Instance.Self.stive.toString();
          }
       }
       
-      private function __onChangeCell(param1:Event = null) : void
+      private function __onChangeCell(e:Event = null) : void
       {
-         var _loc2_:* = null;
+         var amuletVo:* = null;
          _resultIcon.visible = false;
          if(_activateCell.info)
          {
-            _loc2_ = HorseAmuletManager.instance.getHorseAmuletVo(_activateCell.info.TemplateID);
-            _activateText.setFrame(_loc2_.Quality);
-            _minCount.count = _loc2_.ExtendType1MinValue;
-            _maxCount.count = _loc2_.ExtendType1MaxValue;
+            amuletVo = HorseAmuletManager.instance.getHorseAmuletVo(_activateCell.info.TemplateID);
+            _activateText.setFrame(amuletVo.Quality);
+            _minCount.count = amuletVo.ExtendType1MinValue;
+            _maxCount.count = amuletVo.ExtendType1MaxValue;
             _hBox.arrange();
             _hBox.visible = true;
-            _needDustText.text = _loc2_.Consume.toString();
-            if(_loc2_.ExtendType1 > 0)
+            _needDustText.text = amuletVo.Consume.toString();
+            if(amuletVo.ExtendType1 > 0)
             {
-               var _loc3_:* = HorseAmuletManager.instance.getByExtendType(_loc2_.ExtendType1);
+               var _loc3_:* = HorseAmuletManager.instance.getByExtendType(amuletVo.ExtendType1);
                _extendTypeText.text = _loc3_;
                _newExtendTypeText.text = _loc3_;
             }
@@ -195,20 +218,16 @@ package horse.amulet
             _extendTypeText.text = "";
             _newExtendTypeText.text = "";
          }
+         updateSatate(false);
       }
       
-      private function __onUpdateActivate(param1:PkgEvent) : void
+      private function __onUpdateActivate(e:PkgEvent) : void
       {
-         var _loc3_:int = param1.pkg.readInt();
-         var _loc2_:int = param1.pkg.readInt();
-         PlayerManager.Instance.Self.stive = _loc2_;
+         var property:int = e.pkg.readInt();
+         var stive:int = e.pkg.readInt();
+         PlayerManager.Instance.Self.stive = stive;
          MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.horseAmulet.activateComplete"));
-         if(int(_newPropertyText.text) > 0)
-         {
-            _propertyText.text = _newPropertyText.text;
-         }
-         _newPropertyText.text = _loc3_.toString();
-         if(_loc3_ < int(_propertyText.text))
+         if(property < int(_propertyText.text))
          {
             _resultIcon.setFrame(2);
          }
@@ -216,26 +235,38 @@ package horse.amulet
          {
             _resultIcon.setFrame(1);
          }
+         _newPropertyText.text = property.toString();
          _resultIcon.visible = true;
-         _activateCell.tipData = _activateCell.info;
+         updateSatate(true);
       }
       
-      private function __onReplaceComplete(param1:PkgEvent) : void
+      private function __onReplaceComplete(e:PkgEvent) : void
       {
+         var isSuccess:Boolean = e.pkg.readBoolean();
+         if(isSuccess)
+         {
+            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.horseAmulet.replaceComplete"));
+            if(int(_newPropertyText.text) > 0)
+            {
+               _propertyText.text = _newPropertyText.text;
+            }
+            _activateCell.itemInfo.Hole1 = int(_propertyText.text);
+         }
          _newPropertyText.text = "0";
-         MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.horseAmulet.replaceComplete"));
+         _resultIcon.visible = false;
+         updateSatate(false);
       }
       
-      private function __onSmashComplete(param1:PkgEvent) : void
+      private function __onSmashComplete(e:PkgEvent) : void
       {
-         var _loc2_:int = param1.pkg.readInt();
-         PlayerManager.Instance.Self.stive = _loc2_;
+         var stive:int = e.pkg.readInt();
+         PlayerManager.Instance.Self.stive = stive;
          MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.horseAmulet.smashCompleteTips"));
       }
       
-      private function __onClickActivate(param1:MouseEvent) : void
+      private function __onClickActivate(e:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var alertFrame:* = null;
          SoundManager.instance.playButtonSound();
          if(getTimer() - _currentTime < 1500)
          {
@@ -253,23 +284,23 @@ package horse.amulet
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.horseAmulet.activate.notAmulet"));
             return;
          }
-         var _loc3_:HorseAmuletVo = HorseAmuletManager.instance.getHorseAmuletVo(_activateCell.itemInfo.TemplateID);
-         if(!_loc3_.IsCanWash)
+         var vo:HorseAmuletVo = HorseAmuletManager.instance.getHorseAmuletVo(_activateCell.itemInfo.TemplateID);
+         if(!vo.IsCanWash)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.horseAmulet.activateFail"));
             return;
          }
-         if(PlayerManager.Instance.Self.stive < _loc3_.Consume)
+         if(PlayerManager.Instance.Self.stive < vo.Consume)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.horseAmulet.stiveTips"));
             return;
          }
          if(HorseAmuletManager.instance.activateAlertFrameShow)
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("tank.horseAmulet.activateConfirm",_loc3_.Consume),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false);
-            _loc2_.addEventListener("response",__onAlertFrame);
-            _loc2_.setIsShowTheLog(true,LanguageMgr.GetTranslation("notAlertAgain"));
-            _loc2_.selectedCheckButton.addEventListener("click",__onSelectCheckClick);
+            alertFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("tank.horseAmulet.activateConfirm",vo.Consume),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false);
+            alertFrame.addEventListener("response",__onAlertFrame);
+            alertFrame.setIsShowTheLog(true,LanguageMgr.GetTranslation("notAlertAgain"));
+            alertFrame.selectedCheckButton.addEventListener("click",__onSelectCheckClick);
          }
          else
          {
@@ -277,26 +308,26 @@ package horse.amulet
          }
       }
       
-      protected function __onSelectCheckClick(param1:MouseEvent) : void
+      protected function __onSelectCheckClick(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:SelectedCheckButton = param1.currentTarget as SelectedCheckButton;
-         HorseAmuletManager.instance.activateAlertFrameShow = !_loc2_.selected;
+         var btn:SelectedCheckButton = e.currentTarget as SelectedCheckButton;
+         HorseAmuletManager.instance.activateAlertFrameShow = !btn.selected;
       }
       
-      private function __onAlertFrame(param1:FrameEvent) : void
+      private function __onAlertFrame(e:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onAlertFrame);
-         _loc2_.selectedCheckButton.removeEventListener("click",__onSelectCheckClick);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var alertFrame:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         alertFrame.removeEventListener("response",__onAlertFrame);
+         alertFrame.selectedCheckButton.removeEventListener("click",__onSelectCheckClick);
+         if(e.responseCode == 2 || e.responseCode == 3)
          {
             SocketManager.Instance.out.sendAmuletActivate(_activateCell.place);
          }
-         _loc2_.dispose();
+         alertFrame.dispose();
       }
       
-      private function __onClickReplace(param1:MouseEvent) : void
+      private function __onClickReplace(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(getTimer() - _currentTime < 1500)
@@ -320,13 +351,35 @@ package horse.amulet
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.horseAmulet.activate.notReplace"));
             return;
          }
-         SocketManager.Instance.out.sendAmuletActivateReplace(_activateCell.place);
+         SocketManager.Instance.out.sendAmuletActivateReplace(true);
+      }
+      
+      private function __onClickCancel(e:MouseEvent) : void
+      {
+         if(getTimer() - _currentTime < 1500)
+         {
+            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("carnival.clickTip"));
+            return;
+         }
+         _currentTime = getTimer();
+         if(PlayerManager.Instance.Self.bagLocked)
+         {
+            BaglockedManager.Instance.show();
+            return;
+         }
+         if(_activateCell.info == null)
+         {
+            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.horseAmulet.activate.notAmulet"));
+            return;
+         }
+         SocketManager.Instance.out.sendAmuletActivateReplace(false);
       }
       
       public function dispose() : void
       {
+         SocketManager.Instance.out.sendAmuletActivateReplace(false);
+         HorseAmuletManager.instance.isActivate = false;
          removeEvent();
-         _activateCell.clearCell();
          ObjectUtils.disposeObject(_hBox);
          ObjectUtils.disposeAllChildren(this);
          _bg = null;
@@ -336,6 +389,8 @@ package horse.amulet
          _propertyText = null;
          _newPropertyText = null;
          _helpText = null;
+         _replaceBtn = null;
+         _cancelBtn = null;
          _activateText = null;
          _minCount = null;
          _maxCount = null;

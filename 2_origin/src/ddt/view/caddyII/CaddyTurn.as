@@ -75,26 +75,26 @@ package ddt.view.caddyII
       
       private var _caddyType:int = 1;
       
-      public function CaddyTurn(param1:FilterFrameText)
+      public function CaddyTurn(txt:FilterFrameText)
       {
          super();
-         init(param1);
+         init(txt);
          initEvents();
       }
       
-      public function setCaddyType(param1:int) : void
+      public function setCaddyType(val:int) : void
       {
-         if(_caddyType != param1)
+         if(_caddyType != val)
          {
-            _caddyType = param1;
+            _caddyType = val;
             configMovie();
          }
       }
       
       private function configMovie() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:MovieClip = _movie;
+         var i:int = 0;
+         var movie:MovieClip = _movie;
          if(_caddyType == 4)
          {
             _movie = ComponentFactory.Instance.creat("ddt.view.caddyII.Gold_videoAsset");
@@ -107,34 +107,33 @@ package ddt.view.caddyII
          {
             _movie = ComponentFactory.Instance.creat("ddt.view.caddyII.videoAsset");
          }
-         _loc2_ = 0;
-         while(_loc2_ < _movie.currentLabels.length)
+         for(i = 0; i < _movie.currentLabels.length; )
          {
-            if(_movie.currentLabels[_loc2_].name == "turn")
+            if(_movie.currentLabels[i].name == "turn")
             {
-               _turnStartFrame = _movie.currentLabels[_loc2_].frame;
+               _turnStartFrame = _movie.currentLabels[i].frame;
             }
-            else if(_movie.currentLabels[_loc2_].name == "showItems")
+            else if(_movie.currentLabels[i].name == "showItems")
             {
-               _showItemFrame = _movie.currentLabels[_loc2_].frame;
+               _showItemFrame = _movie.currentLabels[i].frame;
             }
-            else if(_movie.currentLabels[_loc2_].name == "turnEnd")
+            else if(_movie.currentLabels[i].name == "turnEnd")
             {
-               _turnEndFrame = _movie.currentLabels[_loc2_].frame;
+               _turnEndFrame = _movie.currentLabels[i].frame;
             }
-            _loc2_++;
+            i++;
          }
          PositionUtils.setPos(_movie,"caddy.moviePos");
          addChildAt(_movie,0);
-         if(_loc1_ && _loc1_ != _movie)
+         if(movie && movie != _movie)
          {
-            _loc1_.removeEventListener("enterFrame",__frameHandler);
-            disposeMovie(_loc1_);
-            ObjectUtils.disposeObject(_loc1_);
+            movie.removeEventListener("enterFrame",__frameHandler);
+            disposeMovie(movie);
+            ObjectUtils.disposeObject(movie);
          }
       }
       
-      private function init(param1:FilterFrameText) : void
+      private function init(txt:FilterFrameText) : void
       {
          configMovie();
          _getMovie = new MovieClipWrapper(ComponentFactory.Instance.creatCustomObject("MovieGet"));
@@ -142,14 +141,14 @@ package ddt.view.caddyII
          addChild(_getMovie.movie);
          _turnSprite = ComponentFactory.Instance.creatCustomObject("caddy.turnSprite");
          addChild(_turnSprite);
-         _goodsNameTxt = param1;
-         var _loc3_:Point = ComponentFactory.Instance.creatCustomObject("caddy.selectCellSize");
-         var _loc2_:Shape = new Shape();
-         _loc2_.graphics.beginFill(16777215,0);
-         _loc2_.graphics.drawRect(0,0,_loc3_.x,_loc3_.y);
-         _loc2_.graphics.endFill();
+         _goodsNameTxt = txt;
+         var size:Point = ComponentFactory.Instance.creatCustomObject("caddy.selectCellSize");
+         var shape:Shape = new Shape();
+         shape.graphics.beginFill(16777215,0);
+         shape.graphics.drawRect(0,0,size.x,size.y);
+         shape.graphics.endFill();
          _selectSprite = ComponentFactory.Instance.creatCustomObject("caddy.turnSprite");
-         _selectedCell = new BaseCell(_loc2_);
+         _selectedCell = new BaseCell(shape);
          _selectedCell.x = _selectedCell.width / -2;
          _selectedCell.y = _selectedCell.height / -2;
          _selectSprite.addChild(_selectedCell);
@@ -173,38 +172,37 @@ package ddt.view.caddyII
       
       private function createCells() : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
+         var i:int = 0;
+         var cell:* = null;
+         var selectedCell:* = null;
          _cells = new Vector.<BaseCell>();
-         var _loc1_:int = Math.floor(Math.random() * _templateIDList.length);
-         _loc4_ = 0;
-         while(_loc4_ < _templateIDList.length)
+         var ran:int = Math.floor(Math.random() * _templateIDList.length);
+         for(i = 0; i < _templateIDList.length; )
          {
-            _loc2_ = new BaseCell(ComponentFactory.Instance.creatBitmap("asset.caddy.caddyCellBG"));
-            _loc2_.info = ItemManager.Instance.getTemplateById(_templateIDList[_loc4_]);
-            _loc2_.x = _loc2_.width / -2;
-            _loc2_.y = _loc2_.height / -2;
-            _turnSprite.addChild(_loc2_);
-            _loc2_.visible = false;
-            if(_loc4_ == _loc1_)
+            cell = new BaseCell(ComponentFactory.Instance.creatBitmap("asset.caddy.caddyCellBG"));
+            cell.info = ItemManager.Instance.getTemplateById(_templateIDList[i]);
+            cell.x = cell.width / -2;
+            cell.y = cell.height / -2;
+            _turnSprite.addChild(cell);
+            cell.visible = false;
+            if(i == ran)
             {
-               _loc3_ = new BaseCell(ComponentFactory.Instance.creatBitmap("asset.caddy.caddyCellBG"));
-               _loc3_.info = _selectedGoodsInfo;
-               _loc3_.x = _loc3_.width / -2;
-               _loc3_.y = _loc3_.height / -2;
-               _turnSprite.addChild(_loc3_);
-               _cells.push(_loc3_);
-               _loc3_.visible = false;
+               selectedCell = new BaseCell(ComponentFactory.Instance.creatBitmap("asset.caddy.caddyCellBG"));
+               selectedCell.info = _selectedGoodsInfo;
+               selectedCell.x = selectedCell.width / -2;
+               selectedCell.y = selectedCell.height / -2;
+               _turnSprite.addChild(selectedCell);
+               _cells.push(selectedCell);
+               selectedCell.visible = false;
             }
-            _cells.push(_loc2_);
-            _loc4_++;
+            _cells.push(cell);
+            i++;
          }
          _turnSprite.scaleX = _itemsScale;
          _turnSprite.scaleY = _itemsScale;
       }
       
-      private function _oneComplete(param1:Event) : void
+      private function _oneComplete(evt:Event) : void
       {
          _cells[_cellNumber].visible = !!_showCellAble?true:false;
          if(_cellNow == null)
@@ -253,27 +251,27 @@ package ddt.view.caddyII
          }
       }
       
-      private function creatTweenMagnify(param1:Number = 1, param2:Number = 1.5, param3:int = -1, param4:Boolean = true, param5:int = 1100) : void
+      private function creatTweenMagnify(duration:Number = 1, scale:Number = 1.5, repeat:int = -1, yoyo:Boolean = true, delay:int = 1100) : void
       {
          if(_caddyType == 4)
          {
-            TweenMax.to(_selectSprite,param1,{
-               "scaleX":param2,
-               "scaleY":param2,
-               "repeat":param3,
-               "yoyo":param4
+            TweenMax.to(_selectSprite,duration,{
+               "scaleX":scale,
+               "scaleY":scale,
+               "repeat":repeat,
+               "yoyo":yoyo
             });
          }
          else
          {
-            TweenMax.to(_selectSprite,param1,{
-               "scaleX":param2,
-               "scaleY":param2,
-               "repeat":param3,
-               "yoyo":param4,
+            TweenMax.to(_selectSprite,duration,{
+               "scaleX":scale,
+               "scaleY":scale,
+               "repeat":repeat,
+               "yoyo":yoyo,
                "ease":Elastic.easeOut
             });
-            setTimeout(_timeOut,param5);
+            setTimeout(_timeOut,delay);
          }
       }
       
@@ -283,9 +281,9 @@ package ddt.view.caddyII
          _templateIDList = null;
          var _loc3_:int = 0;
          var _loc2_:* = _cells;
-         for each(var _loc1_ in _cells)
+         for each(var cell in _cells)
          {
-            ObjectUtils.disposeObject(_loc1_);
+            ObjectUtils.disposeObject(cell);
          }
          _cells = null;
          TweenMax.killTweensOf(_selectSprite);
@@ -305,16 +303,16 @@ package ddt.view.caddyII
          }
       }
       
-      public function setTurnInfo(param1:InventoryItemInfo, param2:Vector.<int>) : void
+      public function setTurnInfo(info:InventoryItemInfo, list:Vector.<int>) : void
       {
-         _selectedGoodsInfo = param1;
-         _templateIDList = param2;
+         _selectedGoodsInfo = info;
+         _templateIDList = list;
          createCells();
       }
       
-      public function start(param1:ItemTemplateInfo) : void
+      public function start(box:ItemTemplateInfo) : void
       {
-         _box = param1;
+         _box = box;
          if(_box.TemplateID == 112047)
          {
             SoundManager.instance.play("155");
@@ -338,7 +336,7 @@ package ddt.view.caddyII
          }
       }
       
-      private function __frameHandler(param1:Event) : void
+      private function __frameHandler(event:Event) : void
       {
          if(_movie.currentFrame == _showItemFrame)
          {
@@ -384,7 +382,7 @@ package ddt.view.caddyII
          creatTweenMagnify(1,2,-1,true,3500);
       }
       
-      private function __getMovieComplete(param1:Event) : void
+      private function __getMovieComplete(event:Event) : void
       {
          _getMovie.removeEventListener("complete",__getMovieComplete);
          _getMovie.movie.visible = false;
@@ -397,34 +395,33 @@ package ddt.view.caddyII
          _timer.start();
       }
       
-      private function disposeMovie(param1:DisplayObjectContainer) : void
+      private function disposeMovie(target:DisplayObjectContainer) : void
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         if(param1 != null)
+         var len:int = 0;
+         var i:int = 0;
+         var child:* = null;
+         if(target != null)
          {
-            if(param1 is MovieClip)
+            if(target is MovieClip)
             {
-               MovieClip(param1).gotoAndStop(1);
+               MovieClip(target).gotoAndStop(1);
             }
-            _loc3_ = param1.numChildren;
-            _loc4_ = 0;
-            while(_loc4_ < _loc3_)
+            len = target.numChildren;
+            for(i = 0; i < len; )
             {
-               _loc2_ = param1.getChildAt(_loc4_);
-               if(_loc2_ is Video)
+               child = target.getChildAt(i);
+               if(child is Video)
                {
-                  Video(_loc2_).clear();
+                  Video(child).clear();
                }
-               _loc4_++;
+               i++;
             }
          }
       }
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          removeEvens();
          if(_turnSprite)
          {
@@ -463,11 +460,11 @@ package ddt.view.caddyII
             TimerManager.getInstance().removeJugglerByTimer(_timer);
             _timer = null;
          }
-         _loc1_ = 0;
-         while(_cells && _loc1_ < _cells.length)
+         i = 0;
+         while(_cells && i < _cells.length)
          {
-            ObjectUtils.disposeObject(_cells[_loc1_]);
-            _loc1_++;
+            ObjectUtils.disposeObject(_cells[i]);
+            i++;
          }
          _cells = null;
          _goodsNameTxt = null;

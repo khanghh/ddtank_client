@@ -69,49 +69,49 @@ package team.view.im
       
       private function get teamChatPlayer() : Array
       {
-         var _loc2_:Array = TeamManager.instance.model.onlineTeamMemberList;
-         var _loc3_:Array = TeamManager.instance.model.offlineTeamMemberList;
-         _loc2_ = _loc2_.sortOn("Grade",16 | 2);
-         _loc3_ = _loc3_.sortOn("Grade",16 | 2);
-         var _loc1_:Array = _loc2_.concat(_loc3_);
-         return _loc1_;
+         var tem1:Array = TeamManager.instance.model.onlineTeamMemberList;
+         var tem2:Array = TeamManager.instance.model.offlineTeamMemberList;
+         tem1 = tem1.sortOn("Grade",16 | 2);
+         tem2 = tem2.sortOn("Grade",16 | 2);
+         var temp:Array = tem1.concat(tem2);
+         return temp;
       }
       
-      private function __updateTeamChatList(param1:TeamEvent) : void
+      private function __updateTeamChatList(e:TeamEvent) : void
       {
          member_list.array = teamChatPlayer;
       }
       
-      private function __onRenderMemeber(param1:Box, param2:int) : void
+      private function __onRenderMemeber(item:Box, index:int) : void
       {
-         var _loc6_:* = null;
-         var _loc4_:NameTextEx = param1.getChildByName("nameText") as NameTextEx;
-         var _loc3_:LevelIconEx = param1.getChildByName("levelIcon") as LevelIconEx;
-         var _loc5_:Clip = param1.getChildByName("sexIcon") as Clip;
-         if(param2 < member_list.array.length)
+         var info:* = null;
+         var nameText:NameTextEx = item.getChildByName("nameText") as NameTextEx;
+         var levelIcon:LevelIconEx = item.getChildByName("levelIcon") as LevelIconEx;
+         var sexIcon:Clip = item.getChildByName("sexIcon") as Clip;
+         if(index < member_list.array.length)
          {
-            _loc6_ = member_list.array[param2] as TeamMemberInfo;
-            _loc3_.level = _loc6_.Grade;
-            _loc3_.setInfo(_loc6_.Grade,_loc6_.ddtKingGrade,_loc6_.Repute,_loc6_.WinCount,_loc6_.TotalCount,_loc6_.FightPower,_loc6_.Offer,true,false);
-            _loc5_.index = !!_loc6_.Sex?0:1;
-            _loc4_.text = _loc6_.NickName;
-            _loc4_.textType = _loc6_ && _loc6_.IsVIP?2:1;
-            if(_loc6_.playerState.StateID == 0)
+            info = member_list.array[index] as TeamMemberInfo;
+            levelIcon.level = info.Grade;
+            levelIcon.setInfo(info.Grade,info.ddtKingGrade,info.Repute,info.WinCount,info.TotalCount,info.FightPower,info.Offer,true,false);
+            sexIcon.index = !!info.Sex?0:1;
+            nameText.text = info.NickName;
+            nameText.textType = info && info.IsVIP?2:1;
+            if(info.playerState.StateID == 0)
             {
-               param1.filters = [_myColorMatrix_filter];
+               item.filters = [_myColorMatrix_filter];
             }
             else
             {
-               param1.filters = null;
+               item.filters = null;
             }
-            _loc3_.visible = true;
-            _loc5_.visible = true;
+            levelIcon.visible = true;
+            sexIcon.visible = true;
          }
          else
          {
-            _loc3_.visible = false;
-            _loc5_.visible = false;
-            _loc4_.text = "";
+            levelIcon.visible = false;
+            sexIcon.visible = false;
+            nameText.text = "";
          }
       }
       
@@ -126,13 +126,13 @@ package team.view.im
          TeamManager.instance.addEventListener("updateteammember",__updateTeamChatList);
       }
       
-      private function __textInput(param1:MouseEvent) : void
+      private function __textInput(e:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
-         param1.stopPropagation();
+         e.stopImmediatePropagation();
+         e.stopPropagation();
       }
       
-      private function __recordHanlder(param1:MouseEvent) : void
+      private function __recordHanlder(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_teamRecordFrame == null)
@@ -163,16 +163,16 @@ package team.view.im
          _show = false;
       }
       
-      protected function __recordCloseHandler(param1:Event) : void
+      protected function __recordCloseHandler(event:Event) : void
       {
          SoundManager.instance.play("008");
          _teamRecordFrame.parent.removeChild(_teamRecordFrame);
          _show = false;
       }
       
-      protected function __recordResponseHandler(param1:FrameEvent) : void
+      protected function __recordResponseHandler(event:FrameEvent) : void
       {
-         if(param1.responseCode == 0)
+         if(event.responseCode == 0)
          {
             SoundManager.instance.play("008");
             _teamRecordFrame.parent.removeChild(_teamRecordFrame);
@@ -180,50 +180,49 @@ package team.view.im
          }
       }
       
-      private function __minChatView(param1:MouseEvent) : void
+      private function __minChatView(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          IMManager.Instance.hideTeamChatFrame(PlayerManager.Instance.Self.teamID);
       }
       
-      public function addMessage(param1:String) : void
+      public function addMessage(msg:String) : void
       {
-         outputText.text = outputText.text + (param1 + "<br/>");
+         outputText.text = outputText.text + (msg + "<br/>");
          outputText.textField.setSelection(outputText.text.length - 1,outputText.text.length - 1);
       }
       
-      public function addAllMessage(param1:Vector.<String>) : void
+      public function addAllMessage(messages:Vector.<String>) : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          outputText.text = "";
-         _loc2_ = 0;
-         while(_loc2_ < param1.length)
+         for(i = 0; i < messages.length; )
          {
-            outputText.text = outputText.text + (param1[_loc2_] + "<br/>");
-            _loc2_++;
+            outputText.text = outputText.text + (messages[i] + "<br/>");
+            i++;
          }
          outputText.textField.setSelection(outputText.text.length - 1,outputText.text.length - 1);
       }
       
-      protected function __keyUpHandler(param1:KeyboardEvent) : void
+      protected function __keyUpHandler(event:KeyboardEvent) : void
       {
-         param1.stopImmediatePropagation();
-         param1.stopPropagation();
-         if(param1.keyCode == 13)
+         event.stopImmediatePropagation();
+         event.stopPropagation();
+         if(event.keyCode == 13)
          {
             __sendHandler(null);
          }
       }
       
-      protected function __sendHandler(param1:MouseEvent) : void
+      protected function __sendHandler(e:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var str:* = null;
          SoundManager.instance.play("008");
          if(StringHelper.trim(textInput.text) != "")
          {
-            _loc2_ = textInput.text.replace(/</g,"&lt;").replace(/>/g,"&gt;");
-            _loc2_ = FilterWordManager.filterWrod(_loc2_);
-            SocketManager.Instance.out.sendTeamChatTalk(PlayerManager.Instance.Self.teamID,_loc2_);
+            str = textInput.text.replace(/</g,"&lt;").replace(/>/g,"&gt;");
+            str = FilterWordManager.filterWrod(str);
+            SocketManager.Instance.out.sendTeamChatTalk(PlayerManager.Instance.Self.teamID,str);
             textInput.text = "";
          }
          else
@@ -243,7 +242,7 @@ package team.view.im
          TeamManager.instance.removeEventListener("updateteammember",__updateTeamChatList);
       }
       
-      private function __closeChat(param1:MouseEvent) : void
+      private function __closeChat(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          IMManager.Instance.disposeTeamChatFrame();
@@ -260,25 +259,25 @@ package team.view.im
          _moveRect.addEventListener("mouseDown",__onFrameMoveStart);
       }
       
-      protected function __onFrameMoveStart(param1:MouseEvent) : void
+      protected function __onFrameMoveStart(event:MouseEvent) : void
       {
          StageReferance.stage.addEventListener("mouseMove",__onMoveWindow);
          StageReferance.stage.addEventListener("mouseUp",__onFrameMoveStop);
          startDrag();
       }
       
-      protected function __onFrameMoveStop(param1:MouseEvent) : void
+      protected function __onFrameMoveStop(event:MouseEvent) : void
       {
          StageReferance.stage.removeEventListener("mouseUp",__onFrameMoveStop);
          StageReferance.stage.removeEventListener("mouseMove",__onMoveWindow);
          stopDrag();
       }
       
-      protected function __onMoveWindow(param1:MouseEvent) : void
+      protected function __onMoveWindow(event:MouseEvent) : void
       {
-         if(DisplayUtils.isInTheStage(new Point(param1.localX,param1.localY),this))
+         if(DisplayUtils.isInTheStage(new Point(event.localX,event.localY),this))
          {
-            param1.updateAfterEvent();
+            event.updateAfterEvent();
          }
          else
          {

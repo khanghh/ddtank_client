@@ -17,7 +17,7 @@ package ddt.manager
       
       private var _timer:TimerJuggler;
       
-      public function PlayerStateManager(param1:SingleTonForce)
+      public function PlayerStateManager(singleTon:SingleTonForce)
       {
          super();
       }
@@ -39,13 +39,13 @@ package ddt.manager
          StageReferance.stage.addEventListener("click",onStageClick,false,2147483647);
       }
       
-      private function timerComplete(param1:Event) : void
+      private function timerComplete(event:Event) : void
       {
          PlayerManager.Instance.Self.playerState = new PlayerState(2);
          SocketManager.Instance.out.sendFriendState(PlayerManager.Instance.Self.playerState.StateID);
       }
       
-      private function onStageClick(param1:MouseEvent) : void
+      private function onStageClick(event:MouseEvent) : void
       {
          if(PlayerManager.Instance.Self.playerState.StateID == 2)
          {

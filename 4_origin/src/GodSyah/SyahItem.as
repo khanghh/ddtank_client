@@ -56,10 +56,10 @@ package GodSyah
          _buildUI();
       }
       
-      public function setSyahItemInfo(param1:InventoryItemInfo) : void
+      public function setSyahItemInfo(info:InventoryItemInfo) : void
       {
-         _info = param1;
-         _mode = SyahManager.Instance.getSyahModeByInfo(param1);
+         _info = info;
+         _mode = SyahManager.Instance.getSyahModeByInfo(info);
          _createInfo();
       }
       
@@ -143,7 +143,7 @@ package GodSyah
       
       private function _arrangeText() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          switch(int(_vec.length) - 2)
          {
             case 0:
@@ -488,11 +488,11 @@ package GodSyah
                _vec[13].y = _loc2_;
                _vec[12].y = _loc2_;
          }
-         _loc1_ = 0;
-         while(_loc1_ < _vec.length)
+         i = 0;
+         while(i < _vec.length)
          {
-            addChild(_vec[_loc1_]);
-            _loc1_++;
+            addChild(_vec[i]);
+            i++;
          }
       }
       

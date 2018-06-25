@@ -104,26 +104,25 @@ package treasurePuzzle.view
          addToContent(_helpBnt);
       }
       
-      public function set currentPuzzle(param1:int) : void
+      public function set currentPuzzle(id:int) : void
       {
-         var _loc2_:* = null;
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         _currentPuzzle = param1;
-         TreasurePuzzleManager.Instance.currentPuzzle = _currentPuzzle;
-         while(_loc4_ < TreasurePuzzleManager.Instance.model.dataArr.length)
+         var currentPuzzleData:* = null;
+         var i:int = 0;
+         var data:* = null;
+         _currentPuzzle = id;
+         for(TreasurePuzzleManager.Instance.currentPuzzle = _currentPuzzle; i < TreasurePuzzleManager.Instance.model.dataArr.length; )
          {
-            _loc3_ = TreasurePuzzleManager.Instance.model.dataArr[_loc4_];
-            if(_loc3_.id == _currentPuzzle)
+            data = TreasurePuzzleManager.Instance.model.dataArr[i];
+            if(data.id == _currentPuzzle)
             {
-               _loc2_ = _loc3_;
-               pice1DataText.text = _loc3_.hole1Have + "/" + _loc3_.hole1Need;
-               pice2DataText.text = _loc3_.hole2Have + "/" + _loc3_.hole2Need;
-               pice3DataText.text = _loc3_.hole3Have + "/" + _loc3_.hole3Need;
-               pice4DataText.text = _loc3_.hole4Have + "/" + _loc3_.hole4Need;
-               pice5DataText.text = _loc3_.hole5Have + "/" + _loc3_.hole5Need;
-               pice6DataText.text = _loc3_.hole6Have + "/" + _loc3_.hole6Need;
-               if(_loc3_.hole1Have >= _loc3_.hole1Need && _loc3_.hole2Have >= _loc3_.hole2Need && _loc3_.hole3Have >= _loc3_.hole3Need && _loc3_.hole4Have >= _loc3_.hole4Need && _loc3_.hole5Have >= _loc3_.hole5Need && _loc3_.hole6Have >= _loc3_.hole6Need && !_loc3_._canGetReward)
+               currentPuzzleData = data;
+               pice1DataText.text = data.hole1Have + "/" + data.hole1Need;
+               pice2DataText.text = data.hole2Have + "/" + data.hole2Need;
+               pice3DataText.text = data.hole3Have + "/" + data.hole3Need;
+               pice4DataText.text = data.hole4Have + "/" + data.hole4Need;
+               pice5DataText.text = data.hole5Have + "/" + data.hole5Need;
+               pice6DataText.text = data.hole6Have + "/" + data.hole6Need;
+               if(data.hole1Have >= data.hole1Need && data.hole2Have >= data.hole2Need && data.hole3Have >= data.hole3Need && data.hole4Have >= data.hole4Need && data.hole5Have >= data.hole5Need && data.hole6Have >= data.hole6Need && !data._canGetReward)
                {
                   _getRewardBnt.enable = true;
                }
@@ -132,7 +131,7 @@ package treasurePuzzle.view
                   _getRewardBnt.enable = false;
                }
             }
-            _loc4_++;
+            i++;
          }
          if(_currentPuzzle == 1)
          {
@@ -150,12 +149,12 @@ package treasurePuzzle.view
             _rightBnt.enable = true;
          }
          getCurrentPicMap(_currentPuzzle);
-         showLightPic(_loc2_);
+         showLightPic(currentPuzzleData);
       }
       
-      public function showLightPic(param1:TreasurePuzzlePiceData) : void
+      public function showLightPic(data:TreasurePuzzlePiceData) : void
       {
-         if(param1.hole1Have >= param1.hole1Need)
+         if(data.hole1Have >= data.hole1Need)
          {
             pic_liang1.visible = true;
          }
@@ -163,7 +162,7 @@ package treasurePuzzle.view
          {
             pic_liang1.visible = false;
          }
-         if(param1.hole2Have >= param1.hole2Need)
+         if(data.hole2Have >= data.hole2Need)
          {
             pic_liang2.visible = true;
          }
@@ -171,7 +170,7 @@ package treasurePuzzle.view
          {
             pic_liang2.visible = false;
          }
-         if(param1.hole3Have >= param1.hole3Need)
+         if(data.hole3Have >= data.hole3Need)
          {
             pic_liang3.visible = true;
          }
@@ -179,7 +178,7 @@ package treasurePuzzle.view
          {
             pic_liang3.visible = false;
          }
-         if(param1.hole4Have >= param1.hole4Need)
+         if(data.hole4Have >= data.hole4Need)
          {
             pic_liang4.visible = true;
          }
@@ -187,7 +186,7 @@ package treasurePuzzle.view
          {
             pic_liang4.visible = false;
          }
-         if(param1.hole5Have >= param1.hole5Need)
+         if(data.hole5Have >= data.hole5Need)
          {
             pic_liang5.visible = true;
          }
@@ -195,7 +194,7 @@ package treasurePuzzle.view
          {
             pic_liang5.visible = false;
          }
-         if(param1.hole6Have >= param1.hole6Need)
+         if(data.hole6Have >= data.hole6Need)
          {
             pic_liang6.visible = true;
          }
@@ -205,25 +204,25 @@ package treasurePuzzle.view
          }
       }
       
-      public function getCurrentPicMap(param1:int) : void
+      public function getCurrentPicMap(id:int) : void
       {
-         var _loc2_:* = null;
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:String = "treasurePuzzle.view.tu" + param1;
-         bg = ComponentFactory.Instance.creat(_loc3_ + "Bg");
-         pic_an1 = ComponentFactory.Instance.creat(_loc3_ + "_an1");
-         pic_an2 = ComponentFactory.Instance.creat(_loc3_ + "_an2");
-         pic_an3 = ComponentFactory.Instance.creat(_loc3_ + "_an3");
-         pic_an4 = ComponentFactory.Instance.creat(_loc3_ + "_an4");
-         pic_an5 = ComponentFactory.Instance.creat(_loc3_ + "_an5");
-         pic_an6 = ComponentFactory.Instance.creat(_loc3_ + "_an6");
-         pic_liang1 = ComponentFactory.Instance.creat(_loc3_ + "_liang1");
-         pic_liang2 = ComponentFactory.Instance.creat(_loc3_ + "_liang2");
-         pic_liang3 = ComponentFactory.Instance.creat(_loc3_ + "_liang3");
-         pic_liang4 = ComponentFactory.Instance.creat(_loc3_ + "_liang4");
-         pic_liang5 = ComponentFactory.Instance.creat(_loc3_ + "_liang5");
-         pic_liang6 = ComponentFactory.Instance.creat(_loc3_ + "_liang6");
+         var currentPuzzleData:* = null;
+         var i:int = 0;
+         var data:* = null;
+         var str:String = "treasurePuzzle.view.tu" + id;
+         bg = ComponentFactory.Instance.creat(str + "Bg");
+         pic_an1 = ComponentFactory.Instance.creat(str + "_an1");
+         pic_an2 = ComponentFactory.Instance.creat(str + "_an2");
+         pic_an3 = ComponentFactory.Instance.creat(str + "_an3");
+         pic_an4 = ComponentFactory.Instance.creat(str + "_an4");
+         pic_an5 = ComponentFactory.Instance.creat(str + "_an5");
+         pic_an6 = ComponentFactory.Instance.creat(str + "_an6");
+         pic_liang1 = ComponentFactory.Instance.creat(str + "_liang1");
+         pic_liang2 = ComponentFactory.Instance.creat(str + "_liang2");
+         pic_liang3 = ComponentFactory.Instance.creat(str + "_liang3");
+         pic_liang4 = ComponentFactory.Instance.creat(str + "_liang4");
+         pic_liang5 = ComponentFactory.Instance.creat(str + "_liang5");
+         pic_liang6 = ComponentFactory.Instance.creat(str + "_liang6");
          PositionUtils.setPos(bg,"treasurePuzzle.view.tuBgPos");
          PositionUtils.setPos(pic_an1,"treasurePuzzle.view.tu_an1Pos");
          PositionUtils.setPos(pic_an2,"treasurePuzzle.view.tu_an2Pos");
@@ -257,14 +256,13 @@ package treasurePuzzle.view
          addToContent(pice5DataText);
          addToContent(pice6DataText);
          addToContent(_leftBnt);
-         addToContent(_rightBnt);
-         while(_loc5_ < TreasurePuzzleManager.Instance.model.dataArr.length)
+         for(addToContent(_rightBnt); i < TreasurePuzzleManager.Instance.model.dataArr.length; )
          {
-            _loc4_ = TreasurePuzzleManager.Instance.model.dataArr[_loc5_];
-            if(_loc4_.id == _currentPuzzle)
+            data = TreasurePuzzleManager.Instance.model.dataArr[i];
+            if(data.id == _currentPuzzle)
             {
-               _loc2_ = _loc4_;
-               if(_loc4_.hole1Have == 0 && _loc4_.hole2Have == 0 && _loc4_.hole3Have == 0 && _loc4_.hole4Have == 0 && _loc4_.hole5Have == 0 && _loc4_.hole6Have == 0)
+               currentPuzzleData = data;
+               if(data.hole1Have == 0 && data.hole2Have == 0 && data.hole3Have == 0 && data.hole4Have == 0 && data.hole5Have == 0 && data.hole6Have == 0)
                {
                   pic_an1.visible = false;
                   pic_an2.visible = false;
@@ -283,7 +281,7 @@ package treasurePuzzle.view
                   pic_an6.visible = true;
                }
             }
-            _loc5_++;
+            i++;
          }
       }
       
@@ -296,7 +294,7 @@ package treasurePuzzle.view
          _rightBnt.addEventListener("click",__clickRightBnt);
       }
       
-      private function __clickLeftBnt(param1:MouseEvent) : void
+      private function __clickLeftBnt(e:MouseEvent) : void
       {
          if(_currentPuzzle - 1 < 1)
          {
@@ -307,7 +305,7 @@ package treasurePuzzle.view
          currentPuzzle = _currentPuzzle;
       }
       
-      private function __clickRightBnt(param1:MouseEvent) : void
+      private function __clickRightBnt(e:MouseEvent) : void
       {
          if(_currentPuzzle + 1 > TreasurePuzzleManager.Instance.model.dataArr.length)
          {
@@ -318,7 +316,7 @@ package treasurePuzzle.view
          currentPuzzle = _currentPuzzle;
       }
       
-      private function __getRewardBntClick(param1:MouseEvent) : void
+      private function __getRewardBntClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          SocketManager.Instance.out.treasurePuzzle_getReward(_currentPuzzle);
@@ -326,8 +324,8 @@ package treasurePuzzle.view
       
       public function showShiwuInfoView() : void
       {
-         var _loc1_:TreasurePuzzleRewardInfoView = ComponentFactory.Instance.creat("treasurePuzzle.view.rewardInfoView");
-         LayerManager.Instance.addToLayer(_loc1_,0,true,1);
+         var rewardInfoView:TreasurePuzzleRewardInfoView = ComponentFactory.Instance.creat("treasurePuzzle.view.rewardInfoView");
+         LayerManager.Instance.addToLayer(rewardInfoView,0,true,1);
       }
       
       public function flushRewardBnt() : void
@@ -335,7 +333,7 @@ package treasurePuzzle.view
          currentPuzzle = _currentPuzzle;
       }
       
-      private function __helpBntClick(param1:MouseEvent) : void
+      private function __helpBntClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          SocketManager.Instance.out.treasurePuzzle_seeReward();
@@ -343,8 +341,8 @@ package treasurePuzzle.view
       
       public function showHelpView() : void
       {
-         var _loc1_:TreasurePuzzleHelpView = ComponentFactory.Instance.creat("treasurePuzzle.helpView");
-         LayerManager.Instance.addToLayer(_loc1_,0,true,1);
+         var helpView:TreasurePuzzleHelpView = ComponentFactory.Instance.creat("treasurePuzzle.helpView");
+         LayerManager.Instance.addToLayer(helpView,0,true,1);
       }
       
       private function removeEvent() : void
@@ -356,10 +354,10 @@ package treasurePuzzle.view
          _rightBnt.removeEventListener("click",__clickRightBnt);
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:

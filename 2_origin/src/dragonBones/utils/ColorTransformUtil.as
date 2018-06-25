@@ -13,26 +13,26 @@ package dragonBones.utils
          super();
       }
       
-      public static function cloneColor(param1:ColorTransform) : ColorTransform
+      public static function cloneColor(color:ColorTransform) : ColorTransform
       {
-         return new ColorTransform(param1.redMultiplier,param1.greenMultiplier,param1.blueMultiplier,param1.alphaMultiplier,param1.redOffset,param1.greenOffset,param1.blueOffset,param1.alphaOffset);
+         return new ColorTransform(color.redMultiplier,color.greenMultiplier,color.blueMultiplier,color.alphaMultiplier,color.redOffset,color.greenOffset,color.blueOffset,color.alphaOffset);
       }
       
-      public static function isEqual(param1:ColorTransform, param2:ColorTransform) : Boolean
+      public static function isEqual(color1:ColorTransform, color2:ColorTransform) : Boolean
       {
-         return param1.alphaOffset == param2.alphaOffset && param1.redOffset == param2.redOffset && param1.greenOffset == param2.greenOffset && param1.blueOffset == param2.blueOffset && param1.alphaMultiplier == param2.alphaMultiplier && param1.redMultiplier == param2.redMultiplier && param1.greenMultiplier == param2.greenMultiplier && param1.blueMultiplier == param2.blueMultiplier;
+         return color1.alphaOffset == color2.alphaOffset && color1.redOffset == color2.redOffset && color1.greenOffset == color2.greenOffset && color1.blueOffset == color2.blueOffset && color1.alphaMultiplier == color2.alphaMultiplier && color1.redMultiplier == color2.redMultiplier && color1.greenMultiplier == color2.greenMultiplier && color1.blueMultiplier == color2.blueMultiplier;
       }
       
-      public static function minus(param1:ColorTransform, param2:ColorTransform, param3:ColorTransform) : void
+      public static function minus(color1:ColorTransform, color2:ColorTransform, outputColor:ColorTransform) : void
       {
-         param3.alphaOffset = param1.alphaOffset - param2.alphaOffset;
-         param3.redOffset = param1.redOffset - param2.redOffset;
-         param3.greenOffset = param1.greenOffset - param2.greenOffset;
-         param3.blueOffset = param1.blueOffset - param2.blueOffset;
-         param3.alphaMultiplier = param1.alphaMultiplier - param2.alphaMultiplier;
-         param3.redMultiplier = param1.redMultiplier - param2.redMultiplier;
-         param3.greenMultiplier = param1.greenMultiplier - param2.greenMultiplier;
-         param3.blueMultiplier = param1.blueMultiplier - param2.blueMultiplier;
+         outputColor.alphaOffset = color1.alphaOffset - color2.alphaOffset;
+         outputColor.redOffset = color1.redOffset - color2.redOffset;
+         outputColor.greenOffset = color1.greenOffset - color2.greenOffset;
+         outputColor.blueOffset = color1.blueOffset - color2.blueOffset;
+         outputColor.alphaMultiplier = color1.alphaMultiplier - color2.alphaMultiplier;
+         outputColor.redMultiplier = color1.redMultiplier - color2.redMultiplier;
+         outputColor.greenMultiplier = color1.greenMultiplier - color2.greenMultiplier;
+         outputColor.blueMultiplier = color1.blueMultiplier - color2.blueMultiplier;
       }
    }
 }

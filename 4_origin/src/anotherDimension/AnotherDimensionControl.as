@@ -35,12 +35,12 @@ package anotherDimension
          AnotherDimensionManager.Instance.addEventListener("updateResourceData",__updateResourceDataHandler);
       }
       
-      private function __showHandler(param1:Event) : void
+      private function __showHandler(e:Event) : void
       {
          showMainView();
       }
       
-      private function __updateResourceDataHandler(param1:Event) : void
+      private function __updateResourceDataHandler(e:Event) : void
       {
          if(_anotherDimensionMainView)
          {

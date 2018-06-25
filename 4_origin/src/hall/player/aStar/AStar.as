@@ -28,9 +28,9 @@ package hall.player.aStar
          super();
       }
       
-      public function findPath(param1:Grid) : Boolean
+      public function findPath(grid:Grid) : Boolean
       {
-         _grid = param1;
+         _grid = grid;
          _startNode = _grid.startNode;
          _endNode = _grid.endNode;
          if(_startNode.x == _endNode.x && _startNode.y == _endNode.y)
@@ -53,85 +53,83 @@ package hall.player.aStar
       
       public function search() : Boolean
       {
-         var _loc12_:int = 0;
-         var _loc3_:int = 0;
-         var _loc13_:int = 0;
-         var _loc5_:int = 0;
-         var _loc10_:* = 0;
-         var _loc7_:* = 0;
-         var _loc4_:* = null;
-         var _loc8_:Number = NaN;
-         var _loc2_:Number = NaN;
-         var _loc9_:Number = NaN;
-         var _loc1_:Number = NaN;
-         var _loc6_:* = false;
-         var _loc11_:Node = _startNode;
-         while(_loc11_ != _endNode)
+         var startX:int = 0;
+         var endX:int = 0;
+         var startY:int = 0;
+         var endY:int = 0;
+         var i:* = 0;
+         var j:* = 0;
+         var test:* = null;
+         var cost:Number = NaN;
+         var g:Number = NaN;
+         var h:Number = NaN;
+         var f:Number = NaN;
+         var isInOpen:* = false;
+         var node:Node = _startNode;
+         while(node != _endNode)
          {
-            _loc12_ = 0 > _loc11_.x - 1?0:Number(_loc11_.x - 1);
-            _loc3_ = _grid.numCols - 1 < _loc11_.x + 1?_grid.numCols - 1:Number(_loc11_.x + 1);
-            _loc13_ = 0 > _loc11_.y - 1?0:Number(_loc11_.y - 1);
-            _loc5_ = _grid.numRows - 1 < _loc11_.y + 1?_grid.numRows - 1:Number(_loc11_.y + 1);
-            _loc10_ = _loc12_;
-            while(_loc10_ <= _loc3_)
+            startX = 0 > node.x - 1?0:Number(node.x - 1);
+            endX = _grid.numCols - 1 < node.x + 1?_grid.numCols - 1:Number(node.x + 1);
+            startY = 0 > node.y - 1?0:Number(node.y - 1);
+            endY = _grid.numRows - 1 < node.y + 1?_grid.numRows - 1:Number(node.y + 1);
+            for(i = startX; i <= endX; )
             {
-               _loc7_ = _loc13_;
-               while(_loc7_ <= _loc5_)
+               for(j = startY; j <= endY; )
                {
-                  _loc4_ = _grid.getNode(_loc10_,_loc7_);
-                  if(_loc4_ != _loc11_)
+                  test = _grid.getNode(i,j);
+                  if(test != node)
                   {
-                     if(!_loc4_.walkable || !isDiagonalWalkable(_loc11_,_loc4_))
+                     if(!test.walkable || !isDiagonalWalkable(node,test))
                      {
-                        _loc4_.costMultiplier = 2147483647;
+                        test.costMultiplier = 2147483647;
                      }
                      else
                      {
-                        _loc4_.costMultiplier = 1;
+                        test.costMultiplier = 1;
                      }
-                     _loc8_ = _straightCost;
-                     if(!(_loc11_.x == _loc4_.x || _loc11_.y == _loc4_.y))
+                     cost = _straightCost;
+                     if(!(node.x == test.x || node.y == test.y))
                      {
-                        _loc8_ = _diagCost;
+                        cost = _diagCost;
                      }
-                     _loc2_ = _loc11_.g + _loc8_ * _loc4_.costMultiplier;
-                     _loc9_ = _heuristic(_loc4_);
-                     _loc1_ = _loc2_ + _loc9_;
-                     _loc6_ = _open.indexOf(_loc4_) != -1;
-                     if(_loc6_ || _closed.indexOf(_loc4_) != -1)
+                     g = node.g + cost * test.costMultiplier;
+                     h = _heuristic(test);
+                     f = g + h;
+                     isInOpen = _open.indexOf(test) != -1;
+                     if(isInOpen || _closed.indexOf(test) != -1)
                      {
-                        if(_loc4_.f > _loc1_)
+                        if(test.f > f)
                         {
-                           _loc4_.f = _loc1_;
-                           _loc4_.g = _loc2_;
-                           _loc4_.h = _loc9_;
-                           _loc4_.parent = _loc11_;
-                           if(_loc6_)
+                           test.f = f;
+                           test.g = g;
+                           test.h = h;
+                           test.parent = node;
+                           if(isInOpen)
                            {
-                              _open.updateNode(_loc4_);
+                              _open.updateNode(test);
                            }
                         }
                      }
                      else
                      {
-                        _loc4_.f = _loc1_;
-                        _loc4_.g = _loc2_;
-                        _loc4_.h = _loc9_;
-                        _loc4_.parent = _loc11_;
-                        _open.push(_loc4_);
+                        test.f = f;
+                        test.g = g;
+                        test.h = h;
+                        test.parent = node;
+                        _open.push(test);
                      }
                   }
-                  _loc7_++;
+                  j++;
                }
-               _loc10_++;
+               i++;
             }
-            _closed.push(_loc11_);
+            _closed.push(node);
             if(_open.length == 0)
             {
                trace("no path found");
                return false;
             }
-            _loc11_ = _open.shift() as Node;
+            node = _open.shift() as Node;
          }
          buildPath();
          return true;
@@ -139,34 +137,33 @@ package hall.player.aStar
       
       private function buildPath() : void
       {
-         var _loc3_:int = 0;
+         var i:int = 0;
          _path = [];
-         var _loc1_:Node = _endNode;
-         _path.push(_loc1_);
-         while(_loc1_.parent != _startNode)
+         var node:Node = _endNode;
+         _path.push(node);
+         while(node.parent != _startNode)
          {
-            _loc1_ = _loc1_.parent;
-            _path.unshift(_loc1_);
+            node = node.parent;
+            _path.unshift(node);
          }
-         var _loc2_:int = _path.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var len:int = _path.length;
+         for(i = 0; i < len; )
          {
-            if(_path[_loc3_].walkable == false)
+            if(_path[i].walkable == false)
             {
-               _path.splice(_loc3_,_loc2_ - _loc3_);
+               _path.splice(i,len - i);
                break;
             }
-            if(_loc2_ == 1 && !isDiagonalWalkable(_startNode,_endNode))
+            if(len == 1 && !isDiagonalWalkable(_startNode,_endNode))
             {
                _path.shift();
             }
-            else if(_loc3_ < _loc2_ - 1 && !isDiagonalWalkable(_path[_loc3_],_path[_loc3_ + 1]))
+            else if(i < len - 1 && !isDiagonalWalkable(_path[i],_path[i + 1]))
             {
-               _path.splice(_loc3_ + 1,_loc2_ - _loc3_ - 1);
+               _path.splice(i + 1,len - i - 1);
                break;
             }
-            _loc3_++;
+            i++;
          }
       }
       
@@ -175,36 +172,36 @@ package hall.player.aStar
          return _path;
       }
       
-      private function isDiagonalWalkable(param1:Node, param2:Node) : Boolean
+      private function isDiagonalWalkable(node1:Node, node2:Node) : Boolean
       {
-         var _loc4_:Node = _grid.getNode(param1.x,param2.y);
-         var _loc3_:Node = _grid.getNode(param2.x,param1.y);
-         if(_loc4_.walkable && _loc3_.walkable)
+         var nearByNode1:Node = _grid.getNode(node1.x,node2.y);
+         var nearByNode2:Node = _grid.getNode(node2.x,node1.y);
+         if(nearByNode1.walkable && nearByNode2.walkable)
          {
             return true;
          }
          return false;
       }
       
-      private function manhattan(param1:Node) : Number
+      private function manhattan(node:Node) : Number
       {
-         return Math.abs(param1.x - _endNode.x) * _straightCost + Math.abs(param1.y + _endNode.y) * _straightCost;
+         return Math.abs(node.x - _endNode.x) * _straightCost + Math.abs(node.y + _endNode.y) * _straightCost;
       }
       
-      private function euclidian(param1:Node) : Number
+      private function euclidian(node:Node) : Number
       {
-         var _loc2_:Number = param1.x - _endNode.x;
-         var _loc3_:Number = param1.y - _endNode.y;
-         return Math.sqrt(_loc2_ * _loc2_ + _loc3_ * _loc3_) * _straightCost;
+         var dx:Number = node.x - _endNode.x;
+         var dy:Number = node.y - _endNode.y;
+         return Math.sqrt(dx * dx + dy * dy) * _straightCost;
       }
       
-      private function diagonal(param1:Node) : Number
+      private function diagonal(node:Node) : Number
       {
-         var _loc3_:Number = param1.x - _endNode.x < 0?_endNode.x - param1.x:Number(param1.x - _endNode.x);
-         var _loc4_:Number = param1.y - _endNode.y < 0?_endNode.y - param1.y:Number(param1.y - _endNode.y);
-         var _loc2_:Number = _loc3_ < _loc4_?_loc3_:Number(_loc4_);
-         var _loc5_:Number = _loc3_ + _loc4_;
-         return _diagCost * _loc2_ + _straightCost * (_loc5_ - 2 * _loc2_);
+         var dx:Number = node.x - _endNode.x < 0?_endNode.x - node.x:Number(node.x - _endNode.x);
+         var dy:Number = node.y - _endNode.y < 0?_endNode.y - node.y:Number(node.y - _endNode.y);
+         var diag:Number = dx < dy?dx:Number(dy);
+         var straight:Number = dx + dy;
+         return _diagCost * diag + _straightCost * (straight - 2 * diag);
       }
    }
 }

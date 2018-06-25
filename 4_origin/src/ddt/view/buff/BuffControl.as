@@ -1,14 +1,18 @@
 package ddt.view.buff
 {
+   import bagAndInfo.BagAndInfoManager;
    import com.pickgliss.ui.ComponentFactory;
+   import com.pickgliss.ui.LayerManager;
    import com.pickgliss.ui.controls.BaseButton;
    import com.pickgliss.ui.controls.container.HBox;
    import com.pickgliss.ui.core.Disposeable;
    import com.pickgliss.ui.image.ScaleFrameImage;
    import com.pickgliss.utils.ObjectUtils;
    import ddt.data.BuffInfo;
+   import ddt.data.GourdExpBottleInfo;
    import ddt.events.CEvent;
    import ddt.events.PkgEvent;
+   import ddt.events.PlayerPropertyEvent;
    import ddt.manager.LanguageMgr;
    import ddt.manager.PathManager;
    import ddt.manager.PlayerManager;
@@ -16,16 +20,19 @@ package ddt.view.buff
    import ddt.manager.SoundManager;
    import ddt.utils.HelpFrameUtils;
    import ddt.view.buff.buffButton.BuffButton;
+   import ddt.view.buff.buffButton.GourdExpBottleButton;
    import ddt.view.buff.buffButton.GrowHelpBuffButton;
    import ddt.view.buff.buffButton.LabyrinthBuffButton;
    import ddt.view.buff.buffButton.PayBuffButton;
    import flash.display.MovieClip;
    import flash.display.Sprite;
    import flash.events.MouseEvent;
+   import flash.geom.Point;
    import oldplayergetticket.GetTicketManager;
    import road7th.comm.PackageIn;
    import road7th.data.DictionaryData;
    import road7th.data.DictionaryEvent;
+   import trainer.view.NewHandContainer;
    
    public class BuffControl extends Sprite implements Disposeable
    {
@@ -53,18 +60,20 @@ package ddt.view.buff
       
       private var _attestBtn:ScaleFrameImage;
       
-      public function BuffControl(param1:String = "", param2:int = 0)
+      private var _gourdExpBottle:GourdExpBottleButton;
+      
+      public function BuffControl(str:String = "", spacing:int = 0)
       {
          super();
-         _spacing = param2;
-         _str = param1;
+         _spacing = spacing;
+         _str = str;
          init();
          initEvents();
       }
       
-      public static function isPayBuff(param1:BuffInfo) : Boolean
+      public static function isPayBuff(buffInfo:BuffInfo) : Boolean
       {
-         var _loc2_:* = param1.Type;
+         var _loc2_:* = buffInfo.Type;
          if(70 !== _loc2_)
          {
             if(51 !== _loc2_)
@@ -82,22 +91,22 @@ package ddt.view.buff
                               return false;
                            }
                         }
-                        addr12:
+                        addr16:
                         return true;
                      }
-                     addr11:
-                     §§goto(addr12);
+                     addr15:
+                     §§goto(addr16);
                   }
-                  addr10:
-                  §§goto(addr11);
+                  addr14:
+                  §§goto(addr15);
                }
-               addr9:
-               §§goto(addr10);
+               addr13:
+               §§goto(addr14);
             }
-            addr8:
-            §§goto(addr9);
+            addr12:
+            §§goto(addr13);
          }
-         §§goto(addr8);
+         §§goto(addr12);
       }
       
       private function init() : void
@@ -109,9 +118,9 @@ package ddt.view.buff
          initBuffButtons();
       }
       
-      public function set boxSpacing(param1:int) : void
+      public function set boxSpacing(value:int) : void
       {
-         _buffList.spacing = param1;
+         _buffList.spacing = value;
       }
       
       private function initEvents() : void
@@ -119,6 +128,20 @@ package ddt.view.buff
          _buffData.addEventListener("add",__addBuff);
          _buffData.addEventListener("remove",__removeBuff);
          _buffData.addEventListener("update",__addBuff);
+         PlayerManager.Instance.Self.addEventListener("propertychange",addGourdExpBottleBuffEvent);
+      }
+      
+      protected function addGourdExpBottleBuffEvent(event:PlayerPropertyEvent) : void
+      {
+         if(event.changedProperties["Grade"])
+         {
+            if(PlayerManager.Instance.Self.Grade >= 30)
+            {
+               SocketManager.Instance.addEventListener(PkgEvent.format(393),__addGourdExpBottleButton);
+               SocketManager.Instance.out.sendStopExpStorage(1);
+               PlayerManager.Instance.Self.removeEventListener("propertychange",addGourdExpBottleBuffEvent);
+            }
+         }
       }
       
       private function removeEvents() : void
@@ -130,6 +153,7 @@ package ddt.view.buff
             _buffData.removeEventListener("remove",__removeBuff);
             _buffData.removeEventListener("update",__addBuff);
          }
+         PlayerManager.Instance.Self.removeEventListener("propertychange",addGourdExpBottleBuffEvent);
       }
       
       private function initBuffButtons() : void
@@ -142,6 +166,45 @@ package ddt.view.buff
          addExpBuff();
          addAttestBuff();
          addRegressTicketBuff();
+         addGourdExpBottleBuff();
+      }
+      
+      private function addGourdExpBottleBuff() : void
+      {
+         if(PlayerManager.Instance.Self.Grade >= 30)
+         {
+            SocketManager.Instance.addEventListener(PkgEvent.format(393),__addGourdExpBottleButton);
+            SocketManager.Instance.out.sendStopExpStorage(1);
+         }
+      }
+      
+      private function __addGourdExpBottleButton(event:PkgEvent) : void
+      {
+         var pkg:PackageIn = event.pkg;
+         var info:GourdExpBottleInfo = new GourdExpBottleInfo();
+         info.UserID = pkg.readInt();
+         info.TemplateID = pkg.readInt();
+         info.Exp = pkg.readInt();
+         info.Stage = pkg.readInt();
+         info.IsFrist = pkg.readInt();
+         if(info.Stage > 0)
+         {
+            if(!_gourdExpBottle)
+            {
+               _gourdExpBottle = new GourdExpBottleButton();
+               _buffList.addChild(_gourdExpBottle);
+            }
+            _gourdExpBottle.gourdInfo = info;
+         }
+         else
+         {
+            deleteGourdExpBottleBtn();
+         }
+         if(info.IsFrist == 1)
+         {
+            BagAndInfoManager.Instance.hideBagAndInfo();
+            NewHandContainer.Instance.showArrow(153,180,new Point(16 + x + (_buffList.numChildren - 1) * 32,73 + y),"","",LayerManager.Instance.getLayerByType(2));
+         }
       }
       
       private function addAttestBuff() : void
@@ -160,11 +223,11 @@ package ddt.view.buff
          }
       }
       
-      protected function __onAttestBtnClick(param1:MouseEvent) : void
+      protected function __onAttestBtnClick(event:MouseEvent) : void
       {
-         var _loc2_:MovieClip = ComponentFactory.Instance.creat("asset.hall.beautiful.attestHelpInfo");
-         _loc2_["qqText"].text = PathManager.getBeautyProveQQ();
-         HelpFrameUtils.Instance.simpleHelpFrame(LanguageMgr.GetTranslation("ddt.consortia.bossFrame.helpTitle"),_loc2_,408,488);
+         var mc:MovieClip = ComponentFactory.Instance.creat("asset.hall.beautiful.attestHelpInfo");
+         mc["qqText"].text = PathManager.getBeautyProveQQ();
+         HelpFrameUtils.Instance.simpleHelpFrame(LanguageMgr.GetTranslation("ddt.consortia.bossFrame.helpTitle"),mc,408,488);
       }
       
       private function addRegressTicketBuff() : void
@@ -173,17 +236,17 @@ package ddt.view.buff
          SocketManager.Instance.out.sendRegressTicketInfo();
       }
       
-      private function __addGetTicketBtn(param1:PkgEvent) : void
+      private function __addGetTicketBtn(event:PkgEvent) : void
       {
-         var _loc7_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc7_.readInt();
-         var _loc5_:int = _loc7_.readInt();
-         var _loc6_:int = _loc7_.readInt();
-         var _loc3_:int = _loc7_.readInt();
-         var _loc8_:int = _loc7_.readInt();
-         var _loc4_:CEvent = new CEvent("getTicket_data",[_loc2_,_loc5_,_loc6_,_loc3_,_loc8_]);
-         GetTicketManager.instance.dispatchEvent(_loc4_);
-         if(_loc3_ > 0)
+         var pkg:PackageIn = event.pkg;
+         var level:int = pkg.readInt();
+         var money:int = pkg.readInt();
+         var bindMoney:int = pkg.readInt();
+         var stockBindMoney:int = pkg.readInt();
+         var currentBindMoney:int = pkg.readInt();
+         var evt:CEvent = new CEvent("getTicket_data",[level,money,bindMoney,stockBindMoney,currentBindMoney]);
+         GetTicketManager.instance.dispatchEvent(evt);
+         if(stockBindMoney > 0)
          {
             addOldPlayerGetTicketBtn();
          }
@@ -204,7 +267,7 @@ package ddt.view.buff
          _buffList.addChild(_getTicketBtn);
       }
       
-      protected function __onGetTicketClick(param1:MouseEvent) : void
+      protected function __onGetTicketClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          GetTicketManager.instance.show();
@@ -216,34 +279,33 @@ package ddt.view.buff
          SocketManager.Instance.out.sendExpBlessedData();
       }
       
-      protected function __addExpBlessedBtn(param1:PkgEvent) : void
+      protected function __addExpBlessedBtn(event:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readInt();
-         if(_loc2_ != 0)
+         var pkg:PackageIn = event.pkg;
+         var expValue:int = pkg.readInt();
+         if(expValue != 0)
          {
             if(!_expBlessedIcon)
             {
                _expBlessedIcon = ComponentFactory.Instance.creatComponentByStylename("hall.expblessed.icon");
             }
-            _expBlessedIcon.tipData = LanguageMgr.GetTranslation("ddt.HallStateView.expValue",_loc2_);
+            _expBlessedIcon.tipData = LanguageMgr.GetTranslation("ddt.HallStateView.expValue",expValue);
             _buffList.addChild(_expBlessedIcon);
          }
       }
       
       private function addGrowHelpIcon() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          _growHelpBuff = new GrowHelpBuffButton();
          _buffList.addChild(_growHelpBuff);
          _buffBtnArr = [];
-         _loc2_ = 0;
-         while(_loc2_ < 5)
+         for(i = 0; i < 5; )
          {
-            _loc1_ = BuffButton.createBuffButton(_loc2_);
-            _buffBtnArr.push(_loc1_);
-            _loc2_++;
+            item = BuffButton.createBuffButton(i);
+            _buffBtnArr.push(item);
+            i++;
          }
       }
       
@@ -259,11 +321,11 @@ package ddt.view.buff
          _growHelpBuff.buffArray = _buffBtnArr;
          var _loc3_:int = 0;
          var _loc2_:* = _buffData;
-         for(var _loc1_ in _buffData)
+         for(var j in _buffData)
          {
-            if(_buffData[_loc1_] != null)
+            if(_buffData[j] != null)
             {
-               if(_buffData[_loc1_].Type >= 74 && _buffData[_loc1_].Type <= 80)
+               if(_buffData[j].Type >= 74 && _buffData[j].Type <= 80)
                {
                   if(!_labyrinthBuff)
                   {
@@ -276,15 +338,15 @@ package ddt.view.buff
          }
       }
       
-      public function setInfo(param1:DictionaryData) : void
+      public function setInfo(buffData:DictionaryData) : void
       {
          var _loc5_:int = 0;
-         var _loc4_:* = param1;
-         for(var _loc2_ in param1)
+         var _loc4_:* = buffData;
+         for(var j in buffData)
          {
-            if(param1[_loc2_] != null)
+            if(buffData[j] != null)
             {
-               var _loc3_:* = param1[_loc2_].Type;
+               var _loc3_:* = buffData[j].Type;
                if(13 !== _loc3_)
                {
                   if(12 !== _loc3_)
@@ -312,51 +374,51 @@ package ddt.view.buff
                                                    continue;
                                                 }
                                              }
-                                             addr75:
-                                             _payBuff.addBuff(param1[_loc2_]);
+                                             addr89:
+                                             _payBuff.addBuff(buffData[j]);
                                              continue;
                                           }
-                                          addr74:
-                                          §§goto(addr75);
+                                          addr88:
+                                          §§goto(addr89);
                                        }
-                                       addr73:
-                                       §§goto(addr74);
+                                       addr87:
+                                       §§goto(addr88);
                                     }
-                                    addr72:
-                                    §§goto(addr73);
+                                    addr86:
+                                    §§goto(addr87);
                                  }
-                                 addr71:
-                                 §§goto(addr72);
+                                 addr85:
+                                 §§goto(addr86);
                               }
-                              §§goto(addr71);
+                              §§goto(addr85);
                            }
                            else
                            {
-                              _buffBtnArr[4].info = param1[_loc2_];
+                              _buffBtnArr[4].info = buffData[j];
                               continue;
                            }
                         }
                         else
                         {
-                           _buffBtnArr[3].info = param1[_loc2_];
+                           _buffBtnArr[3].info = buffData[j];
                            continue;
                         }
                      }
                      else
                      {
-                        _buffBtnArr[2].info = param1[_loc2_];
+                        _buffBtnArr[2].info = buffData[j];
                         continue;
                      }
                   }
                   else
                   {
-                     _buffBtnArr[1].info = param1[_loc2_];
+                     _buffBtnArr[1].info = buffData[j];
                      continue;
                   }
                }
                else
                {
-                  _buffBtnArr[0].info = param1[_loc2_];
+                  _buffBtnArr[0].info = buffData[j];
                   continue;
                }
             }
@@ -367,10 +429,10 @@ package ddt.view.buff
          }
       }
       
-      private function __addBuff(param1:DictionaryEvent) : void
+      private function __addBuff(evt:DictionaryEvent) : void
       {
-         var _loc2_:BuffInfo = param1.data as BuffInfo;
-         var _loc3_:* = _loc2_.Type;
+         var buffInfo:BuffInfo = evt.data as BuffInfo;
+         var _loc3_:* = buffInfo.Type;
          if(13 !== _loc3_)
          {
             if(12 !== _loc3_)
@@ -411,86 +473,86 @@ package ddt.view.buff
                                                                {
                                                                }
                                                             }
-                                                            addr59:
+                                                            addr71:
                                                             if(!_labyrinthBuff)
                                                             {
                                                                _labyrinthBuff = new LabyrinthBuffButton();
                                                                _buffList.addChild(_labyrinthBuff);
                                                             }
                                                          }
-                                                         addr58:
-                                                         §§goto(addr59);
+                                                         addr70:
+                                                         §§goto(addr71);
                                                       }
-                                                      addr57:
-                                                      §§goto(addr58);
+                                                      addr69:
+                                                      §§goto(addr70);
                                                    }
-                                                   addr56:
-                                                   §§goto(addr57);
+                                                   addr68:
+                                                   §§goto(addr69);
                                                 }
-                                                addr55:
-                                                §§goto(addr56);
+                                                addr67:
+                                                §§goto(addr68);
                                              }
-                                             §§goto(addr55);
+                                             §§goto(addr67);
                                           }
                                        }
-                                       addr48:
-                                       _payBuff.addBuff(_loc2_);
+                                       addr59:
+                                       _payBuff.addBuff(buffInfo);
                                     }
-                                    addr47:
-                                    §§goto(addr48);
+                                    addr58:
+                                    §§goto(addr59);
                                  }
-                                 addr46:
-                                 §§goto(addr47);
+                                 addr57:
+                                 §§goto(addr58);
                               }
-                              addr45:
-                              §§goto(addr46);
+                              addr56:
+                              §§goto(addr57);
                            }
-                           addr44:
-                           §§goto(addr45);
+                           addr55:
+                           §§goto(addr56);
                         }
-                        §§goto(addr44);
+                        §§goto(addr55);
                      }
                      else
                      {
-                        setBuffButtonInfo(4,_loc2_);
+                        setBuffButtonInfo(4,buffInfo);
                      }
                   }
                   else
                   {
-                     setBuffButtonInfo(3,_loc2_);
+                     setBuffButtonInfo(3,buffInfo);
                   }
                }
                else
                {
-                  setBuffButtonInfo(2,_loc2_);
+                  setBuffButtonInfo(2,buffInfo);
                }
             }
             else
             {
-               setBuffButtonInfo(1,_loc2_);
+               setBuffButtonInfo(1,buffInfo);
             }
          }
          else
          {
-            setBuffButtonInfo(0,_loc2_);
+            setBuffButtonInfo(0,buffInfo);
          }
       }
       
-      private function setBuffButtonInfo(param1:int, param2:BuffInfo) : void
+      private function setBuffButtonInfo(btnId:int, buffinfo:BuffInfo) : void
       {
-         if(param2.IsExist)
+         if(buffinfo.IsExist)
          {
-            _buffBtnArr[param1].info = param2;
+            _buffBtnArr[btnId].info = buffinfo;
          }
          else
          {
-            _buffBtnArr[param1].info.IsExist = false;
+            _buffBtnArr[btnId].info.IsExist = false;
          }
       }
       
-      private function __removeBuff(param1:DictionaryEvent) : void
+      private function __removeBuff(evt:DictionaryEvent) : void
       {
-         var _loc2_:* = (param1.data as BuffInfo).Type;
+         var _loc2_:* = (evt.data as BuffInfo).Type;
          if(13 !== _loc2_)
          {
             if(12 !== _loc2_)
@@ -525,17 +587,17 @@ package ddt.view.buff
          }
       }
       
-      private function __updateBuff(param1:DictionaryEvent) : void
+      private function __updateBuff(evt:DictionaryEvent) : void
       {
       }
       
-      public function set CanClick(param1:Boolean) : void
+      public function set CanClick(value:Boolean) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = _buffBtnArr;
-         for each(var _loc2_ in _buffBtnArr)
+         for each(var i in _buffBtnArr)
          {
-            _loc2_.CanClick = param1;
+            i.CanClick = value;
          }
       }
       
@@ -563,11 +625,25 @@ package ddt.view.buff
          }
       }
       
+      private function deleteGourdExpBottleBtn() : void
+      {
+         if(_gourdExpBottle)
+         {
+            _gourdExpBottle.dispose();
+            _gourdExpBottle = null;
+         }
+      }
+      
       public function dispose() : void
       {
          removeEvents();
+         if(PlayerManager.Instance.Self.Grade >= 30)
+         {
+            SocketManager.Instance.removeEventListener(PkgEvent.format(393),__addGourdExpBottleButton);
+         }
          deleteGetTicketBtn();
          deleteExpBlessedBtn();
+         deleteGourdExpBottleBtn();
          if(_growHelpBuff)
          {
             _growHelpBuff.dispose();

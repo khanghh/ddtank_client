@@ -51,38 +51,37 @@ package starling.display.graphics
          return pool.pop();
       }
       
-      public static function returnInstance(param1:StrokeVertex) : void
+      public static function returnInstance(instance:StrokeVertex) : void
       {
-         pool[poolLength] = param1;
+         pool[poolLength] = instance;
          poolLength = Number(poolLength) + 1;
       }
       
-      public static function returnInstances(param1:Vector.<StrokeVertex>) : void
+      public static function returnInstances(instances:Vector.<StrokeVertex>) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = param1.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var i:int = 0;
+         var L:int = instances.length;
+         for(i = 0; i < L; )
          {
-            pool[poolLength] = param1[_loc3_];
+            pool[poolLength] = instances[i];
             poolLength = Number(poolLength) + 1;
-            _loc3_++;
+            i++;
          }
       }
       
       public function clone() : StrokeVertex
       {
-         var _loc1_:StrokeVertex = getInstance();
-         _loc1_.x = x;
-         _loc1_.y = y;
-         _loc1_.r1 = r1;
-         _loc1_.g1 = g1;
-         _loc1_.b1 = b1;
-         _loc1_.a1 = a1;
-         _loc1_.u = u;
-         _loc1_.v = v;
-         _loc1_.degenerate = degenerate;
-         return _loc1_;
+         var vertex:StrokeVertex = getInstance();
+         vertex.x = x;
+         vertex.y = y;
+         vertex.r1 = r1;
+         vertex.g1 = g1;
+         vertex.b1 = b1;
+         vertex.a1 = a1;
+         vertex.u = u;
+         vertex.v = v;
+         vertex.degenerate = degenerate;
+         return vertex;
       }
    }
 }

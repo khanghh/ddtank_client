@@ -34,13 +34,13 @@ package par
       
       public static function setup() : void
       {
-         var _loc1_:* = null;
+         var cls:* = null;
          try
          {
-            _loc1_ = ParticleManager.Domain.getDefinition("ParticalShapLib");
-            if(_loc1_["data"])
+            cls = ParticleManager.Domain.getDefinition("ParticalShapLib");
+            if(cls["data"])
             {
-               list = _loc1_["data"];
+               list = cls["data"];
                _ready = true;
             }
             return;
@@ -52,66 +52,65 @@ package par
          }
       }
       
-      public static function create(param1:uint) : DisplayObject
+      public static function create(id:uint) : DisplayObject
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         if(param1 < 0 || param1 >= list.length)
+         var sprit:* = null;
+         var ator:* = null;
+         if(id < 0 || id >= list.length)
          {
-            _loc3_ = new Sprite();
-            _loc3_.graphics.beginFill(0);
-            _loc3_.graphics.drawCircle(0,0,10);
-            _loc3_.graphics.endFill();
-            return _loc3_;
+            sprit = new Sprite();
+            sprit.graphics.beginFill(0);
+            sprit.graphics.drawCircle(0,0,10);
+            sprit.graphics.endFill();
+            return sprit;
          }
-         _loc2_ = list[param1]["data"];
-         return creatShape(_loc2_);
+         ator = list[id]["data"];
+         return creatShape(ator);
       }
       
-      private static function creatShape(param1:*) : DisplayObject
+      private static function creatShape(clazz:*) : DisplayObject
       {
-         var _loc2_:* = null;
-         if(param1 is String)
+         var classname:* = null;
+         if(clazz is String)
          {
-            _loc2_ = param1;
+            classname = clazz;
          }
          else
          {
-            _loc2_ = getQualifiedClassName(param1);
+            classname = getQualifiedClassName(clazz);
          }
-         if(objects[_loc2_] == null)
+         if(objects[classname] == null)
          {
-            objects[_loc2_] = new Vector.<DisplayObject>();
+            objects[classname] = new Vector.<DisplayObject>();
          }
-         var _loc3_:Vector.<DisplayObject> = objects[_loc2_];
-         return getFreeObject(_loc3_,_loc2_);
+         var list:Vector.<DisplayObject> = objects[classname];
+         return getFreeObject(list,classname);
       }
       
-      private static function getFreeObject(param1:Vector.<DisplayObject>, param2:String) : DisplayObject
+      private static function getFreeObject(objects:Vector.<DisplayObject>, classname:String) : DisplayObject
       {
-         var _loc6_:int = 0;
-         var _loc4_:* = undefined;
-         var _loc5_:int = param1.length;
-         _loc6_ = 0;
-         while(_loc6_ < param1.length)
+         var i:int = 0;
+         var object:* = undefined;
+         var len:int = objects.length;
+         for(i = 0; i < objects.length; )
          {
-            if(param1[_loc6_].parent == null)
+            if(objects[i].parent == null)
             {
-               return param1[_loc6_];
+               return objects[i];
             }
-            _loc6_++;
+            i++;
          }
-         var _loc3_:Class = ParticleManager.Domain.getDefinition(param2) as Class;
+         var objectClass:Class = ParticleManager.Domain.getDefinition(classname) as Class;
          try
          {
-            _loc4_ = new _loc3_();
-            param1.push(_loc4_);
+            object = new objectClass();
+            objects.push(object);
          }
          catch(e:Error)
          {
-            throw new Error(param2 + "isn\'t exist!");
+            throw new Error(classname + "isn\'t exist!");
          }
-         return _loc4_;
+         return object;
       }
    }
 }

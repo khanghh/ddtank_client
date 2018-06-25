@@ -9,17 +9,17 @@ package fightLib.script.TwentyDegree
    {
        
       
-      public function NormalTwentyDegree(param1:Object)
+      public function NormalTwentyDegree(fightView:Object)
       {
-         super(param1);
+         super(fightView);
       }
       
       override protected function initializeScript() : void
       {
-         var _loc1_:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.NormalTwentyDegree.command2"),LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.startTrain"),startTrain);
-         _loc1_.excuteFunArr.push(_host.showPowerTable2 as Function);
-         _loc1_.undoFunArr.push(_host.hidePowerTable as Function);
-         _commonds.push(_loc1_);
+         var command2:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.NormalTwentyDegree.command2"),LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.startTrain"),startTrain);
+         command2.excuteFunArr.push(_host.showPowerTable2 as Function);
+         command2.undoFunArr.push(_host.hidePowerTable as Function);
+         _commonds.push(command2);
          super.initializeScript();
       }
       

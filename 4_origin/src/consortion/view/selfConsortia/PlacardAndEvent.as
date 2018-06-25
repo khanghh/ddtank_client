@@ -178,18 +178,18 @@ package consortion.view.selfConsortia
          ConsortionModelManager.Instance.model.removeEventListener("eventListChange",__eventChangeHandler);
       }
       
-      private function __voteHandler(param1:MouseEvent) : void
+      private function __voteHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:ConsortionPollFrame = ComponentFactory.Instance.creatComponentByStylename("consortionPollFrame");
-         LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+         var pollFrame:ConsortionPollFrame = ComponentFactory.Instance.creatComponentByStylename("consortionPollFrame");
+         LayerManager.Instance.addToLayer(pollFrame,3,true,1);
          ConsortionModelManager.Instance.loadPollList(PlayerManager.Instance.Self.ConsortiaID);
       }
       
       private function upPlacard() : void
       {
-         var _loc1_:String = PlayerManager.Instance.Self.consortiaInfo.Placard;
-         _placard.text = _loc1_ == ""?LanguageMgr.GetTranslation("tank.consortia.myconsortia.systemWord"):_loc1_;
+         var str:String = PlayerManager.Instance.Self.consortiaInfo.Placard;
+         _placard.text = str == ""?LanguageMgr.GetTranslation("tank.consortia.myconsortia.systemWord"):str;
          _lastPlacard = _placard.text;
          var _loc2_:* = false;
          _cancelBtn.enable = _loc2_;
@@ -202,19 +202,19 @@ package consortion.view.selfConsortia
          _placard.editable = _loc2_;
       }
       
-      private function __btnClickHandler(param1:MouseEvent) : void
+      private function __btnClickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }
       
-      private function __groupChangeHandler(param1:Event) : void
+      private function __groupChangeHandler(event:Event) : void
       {
          showPlacardOrEvent(_btnGroup.selectIndex);
       }
       
-      private function showPlacardOrEvent(param1:int) : void
+      private function showPlacardOrEvent(type:int) : void
       {
-         switch(int(param1))
+         switch(int(type))
          {
             case 0:
                var _loc2_:* = true;
@@ -278,30 +278,29 @@ package consortion.view.selfConsortia
          }
       }
       
-      private function __eventChangeHandler(param1:ConsortionEvent) : void
+      private function __eventChangeHandler(event:ConsortionEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var item:* = null;
          _vbox.disposeAllChildren();
-         var _loc3_:Vector.<ConsortiaEventInfo> = ConsortionModelManager.Instance.model.eventList;
-         var _loc4_:int = _loc3_.length;
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         var list:Vector.<ConsortiaEventInfo> = ConsortionModelManager.Instance.model.eventList;
+         var len:int = list.length;
+         for(i = 0; i < len; )
          {
-            _loc2_ = new EventListItem();
-            _loc2_.info = _loc3_[_loc5_];
-            _vbox.addChild(_loc2_);
-            _loc5_++;
+            item = new EventListItem();
+            item.info = list[i];
+            _vbox.addChild(item);
+            i++;
          }
          _eventPanel.invalidateViewport();
       }
       
-      private function __editHandler(param1:MouseEvent) : void
+      private function __editHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc3_:ByteArray = new ByteArray();
-         _loc3_.writeUTF(StringHelper.trim(_placard.textField.text));
-         if(_loc3_.length > 300)
+         var b:ByteArray = new ByteArray();
+         b.writeUTF(StringHelper.trim(_placard.textField.text));
+         if(b.length > 300)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaAfficheFrame.long"));
             return;
@@ -311,15 +310,15 @@ package consortion.view.selfConsortia
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaAfficheFrame"));
             return;
          }
-         var _loc2_:String = FilterWordManager.filterWrod(_placard.textField.text);
-         _loc2_ = StringHelper.trim(_loc2_);
-         SocketManager.Instance.out.sendConsortiaUpdatePlacard(_loc2_);
+         var str:String = FilterWordManager.filterWrod(_placard.textField.text);
+         str = StringHelper.trim(str);
+         SocketManager.Instance.out.sendConsortiaUpdatePlacard(str);
          var _loc4_:Boolean = false;
          _cancelBtn.enable = _loc4_;
          _editBtn.enable = _loc4_;
       }
       
-      private function __cancelHandler(param1:MouseEvent) : void
+      private function __cancelHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _placard.text = _lastPlacard;
@@ -328,7 +327,7 @@ package consortion.view.selfConsortia
          _editBtn.enable = _loc2_;
       }
       
-      private function __isClearHandler(param1:MouseEvent) : void
+      private function __isClearHandler(event:MouseEvent) : void
       {
          if(_placard.editable)
          {
@@ -336,7 +335,7 @@ package consortion.view.selfConsortia
          }
       }
       
-      private function __inputHandler(param1:Event) : void
+      private function __inputHandler(event:Event) : void
       {
          var _loc2_:Boolean = true;
          _cancelBtn.enable = _loc2_;
@@ -344,17 +343,17 @@ package consortion.view.selfConsortia
          StringHelper.checkTextFieldLength(_placard.textField,200);
       }
       
-      private function __placardChangeHandler(param1:PlayerPropertyEvent) : void
+      private function __placardChangeHandler(event:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["placard"] || param1.changedProperties["isVoting"])
+         if(event.changedProperties["placard"] || event.changedProperties["isVoting"])
          {
             upPlacard();
          }
       }
       
-      private function __rightChangeHandler(param1:PlayerPropertyEvent) : void
+      private function __rightChangeHandler(event:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["Right"])
+         if(event.changedProperties["Right"])
          {
             upPlacard();
          }

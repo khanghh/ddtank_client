@@ -14,33 +14,32 @@ package equipretrieve.effect
       
       private var _movieokTotal:int = 0;
       
-      public function AnimationControl(param1:IEventDispatcher = null)
+      public function AnimationControl(target:IEventDispatcher = null)
       {
          _movieArr = [];
-         super(param1);
+         super(target);
       }
       
-      public function addMovies(param1:EventDispatcher) : void
+      public function addMovies(anim:EventDispatcher) : void
       {
-         _movieArr.push(param1);
+         _movieArr.push(anim);
       }
       
       public function startMovie() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _movieokTotal = _movieArr.length;
-         _loc1_ = 0;
-         while(_loc1_ < _movieokTotal)
+         for(i = 0; i < _movieokTotal; )
          {
-            _movieArr[_loc1_].movieStart();
-            _movieArr[_loc1_].addEventListener("complete",_movieArrComplete);
-            _loc1_++;
+            _movieArr[i].movieStart();
+            _movieArr[i].addEventListener("complete",_movieArrComplete);
+            i++;
          }
       }
       
-      private function _movieArrComplete(param1:Event) : void
+      private function _movieArrComplete(e:Event) : void
       {
-         param1.currentTarget.removeEventListener("complete",_movieArrComplete);
+         e.currentTarget.removeEventListener("complete",_movieArrComplete);
          _movieokNum = _movieokNum + 1;
          if(_movieokNum == _movieokTotal)
          {

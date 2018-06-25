@@ -53,16 +53,16 @@ package shop
          return _rankingView;
       }
       
-      public function addTempEquip(param1:ShopItemInfo) : Boolean
+      public function addTempEquip(item:ShopItemInfo) : Boolean
       {
-         var _loc2_:Boolean = _model.addTempEquip(param1);
+         var boolean:Boolean = _model.addTempEquip(item);
          showPanel(0);
-         return _loc2_;
+         return boolean;
       }
       
-      public function addToCar(param1:ShopCarItemInfo) : Boolean
+      public function addToCar(item:ShopCarItemInfo) : Boolean
       {
-         _model.addToShoppingCar(param1);
+         _model.addToShoppingCar(item);
          if(_model.isCarListMax())
          {
             return false;
@@ -70,38 +70,37 @@ package shop
          return true;
       }
       
-      public function buyItems(param1:Array, param2:Boolean, param3:String = "", param4:Array = null) : void
+      public function buyItems(list:Array, dressing:Boolean, skin:String = "", isBandArr:Array = null) : void
       {
-         var _loc7_:int = 0;
-         var _loc9_:* = null;
-         var _loc10_:Array = [];
-         var _loc12_:Array = [];
-         var _loc5_:Array = [];
-         var _loc11_:Array = [];
-         var _loc6_:Array = [];
-         var _loc13_:Array = [];
-         var _loc8_:Array = [];
-         _loc7_ = 0;
-         while(_loc7_ < param1.length)
+         var i:int = 0;
+         var t:* = null;
+         var items:Array = [];
+         var types:Array = [];
+         var colors:Array = [];
+         var dresses:Array = [];
+         var places:Array = [];
+         var skins:Array = [];
+         var goodsTyps:Array = [];
+         for(i = 0; i < list.length; )
          {
-            _loc9_ = param1[_loc7_];
-            _loc10_.push(_loc9_.GoodsID);
-            _loc12_.push(_loc9_.currentBuyType);
-            _loc5_.push(_loc9_.Color);
-            _loc6_.push(_loc9_.place);
-            if(_loc9_.CategoryID == 6)
+            t = list[i];
+            items.push(t.GoodsID);
+            types.push(t.currentBuyType);
+            colors.push(t.Color);
+            places.push(t.place);
+            if(t.CategoryID == 6)
             {
-               _loc13_.push(_loc9_.skin);
+               skins.push(t.skin);
             }
             else
             {
-               _loc13_.push("");
+               skins.push("");
             }
-            _loc11_.push(!!param2?_loc9_.dressing:false);
-            _loc8_.push(_loc9_.isDiscount);
-            _loc7_++;
+            dresses.push(!!dressing?t.dressing:false);
+            goodsTyps.push(t.isDiscount);
+            i++;
          }
-         SocketManager.Instance.out.sendBuyGoods(_loc10_,_loc12_,_loc5_,_loc6_,_loc11_,_loc13_,0,_loc8_,param4);
+         SocketManager.Instance.out.sendBuyGoods(items,types,colors,places,dresses,skins,0,goodsTyps,isBandArr);
       }
       
       override public function dispose() : void
@@ -114,9 +113,9 @@ package shop
          MainToolBar.Instance.hide();
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
-         super.enter(param1);
+         super.enter(prev);
          SocketManager.Instance.out.sendCurrentState(1);
          SocketManager.Instance.out.sendUpdateGoodsCount();
          ChatManager.Instance.state = 16;
@@ -142,13 +141,13 @@ package shop
          return _view;
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
          dispose();
          PlayerManager.Instance.Self.Bag.unLockAll();
          PlayerManager.Instance.Self.playerState = new PlayerState(1,0);
          SocketManager.Instance.out.sendFriendState(PlayerManager.Instance.Self.playerState.StateID);
-         super.leaving(param1);
+         super.leaving(next);
       }
       
       public function loadList() : void
@@ -160,44 +159,43 @@ package shop
          return _model;
       }
       
-      public function presentItems(param1:Array, param2:String, param3:String) : void
+      public function presentItems(list:Array, msg:String, nick:String) : void
       {
-         var _loc10_:int = 0;
-         var _loc4_:* = null;
-         var _loc5_:Array = [];
-         var _loc8_:Array = [];
-         var _loc6_:Array = [];
-         var _loc9_:Array = [];
-         var _loc7_:Array = [];
-         _loc10_ = 0;
-         while(_loc10_ < param1.length)
+         var i:int = 0;
+         var t:* = null;
+         var items:Array = [];
+         var types:Array = [];
+         var colors:Array = [];
+         var skins:Array = [];
+         var goodTypes:Array = [];
+         for(i = 0; i < list.length; )
          {
-            _loc4_ = param1[_loc10_];
-            _loc5_.push(_loc4_.GoodsID);
-            _loc8_.push(_loc4_.currentBuyType);
-            _loc6_.push(_loc4_.Color);
-            if(_loc4_.CategoryID == 6)
+            t = list[i];
+            items.push(t.GoodsID);
+            types.push(t.currentBuyType);
+            colors.push(t.Color);
+            if(t.CategoryID == 6)
             {
-               _loc9_.push(_model.currentModel.Skin);
+               skins.push(_model.currentModel.Skin);
             }
             else
             {
-               _loc9_.push("");
+               skins.push("");
             }
-            _loc7_.push(_loc4_.isDiscount);
-            _loc10_++;
+            goodTypes.push(t.isDiscount);
+            i++;
          }
-         SocketManager.Instance.out.sendPresentGoods(_loc5_,_loc8_,_loc6_,_loc7_,param2,param3,_loc9_,[]);
+         SocketManager.Instance.out.sendPresentGoods(items,types,colors,goodTypes,msg,nick,skins,[]);
       }
       
-      public function removeFromCar(param1:ShopCarItemInfo) : void
+      public function removeFromCar(item:ShopCarItemInfo) : void
       {
-         _model.removeFromShoppingCar(param1);
+         _model.removeFromShoppingCar(item);
       }
       
-      public function removeTempEquip(param1:ShopCarItemInfo) : void
+      public function removeTempEquip(item:ShopCarItemInfo) : void
       {
-         _model.removeTempEquip(param1);
+         _model.removeTempEquip(item);
       }
       
       public function restoreAllItemsOnBody() : void
@@ -210,25 +208,25 @@ package shop
          _model.revertToDefalt();
       }
       
-      public function setFittingModel(param1:Boolean) : void
+      public function setFittingModel(gender:Boolean) : void
       {
-         _rightView.setCurrentSex(!!param1?1:2);
+         _rightView.setCurrentSex(!!gender?1:2);
          _rightView.loadList();
-         _model.fittingSex = param1;
+         _model.fittingSex = gender;
          _leftView.hideLight();
          _leftView.adjustUpperView(0);
          _leftView.refreshCharater();
          _rankingView.loadList();
       }
       
-      public function setSelectedEquip(param1:ShopCarItemInfo) : void
+      public function setSelectedEquip(item:ShopCarItemInfo) : void
       {
-         _model.setSelectedEquip(param1);
+         _model.setSelectedEquip(item);
       }
       
-      public function showPanel(param1:uint) : void
+      public function showPanel(type:uint) : void
       {
-         _leftView.adjustUpperView(param1);
+         _leftView.adjustUpperView(type);
       }
       
       public function updateCost() : void

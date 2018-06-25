@@ -40,63 +40,61 @@ package littleGame.character
       
       private var _callBack:Function;
       
-      public function LittleGameCharaterLoader(param1:PlayerInfo, param2:int = 1)
+      public function LittleGameCharaterLoader(info:PlayerInfo, littleGameId:int = 1)
       {
          super();
-         _playerInfo = param1;
+         _playerInfo = info;
          _loaders = new Vector.<LittleGameCharacterLayer>();
          _recordStyle = _playerInfo.Style.split(",");
          _recordColor = _playerInfo.Colors.split(",");
          hasFaceColor = Boolean(_recordColor[5]);
          hasClothColor = Boolean(_recordColor[4]);
-         _loaders.push(new LittleGameCharacterLayer(ItemManager.Instance.getTemplateById(int(_recordStyle[4].split("|")[0])),_recordColor[4],_playerInfo.Sex,param2));
-         _loaders.push(new LittleGameCharacterLayer(ItemManager.Instance.getTemplateById(int(_recordStyle[5].split("|")[0])),_recordColor[5],_playerInfo.Sex,param2));
-         _loaders.push(new LittleGameCharacterLayer(ItemManager.Instance.getTemplateById(int(_recordStyle[2].split("|")[0])),_recordColor[2],_playerInfo.Sex,param2));
-         _loaders.push(new LittleGameCharacterLayer(ItemManager.Instance.getTemplateById(int(_recordStyle[3].split("|")[0])),_recordColor[3],_playerInfo.Sex,param2));
+         _loaders.push(new LittleGameCharacterLayer(ItemManager.Instance.getTemplateById(int(_recordStyle[4].split("|")[0])),_recordColor[4],_playerInfo.Sex,littleGameId));
+         _loaders.push(new LittleGameCharacterLayer(ItemManager.Instance.getTemplateById(int(_recordStyle[5].split("|")[0])),_recordColor[5],_playerInfo.Sex,littleGameId));
+         _loaders.push(new LittleGameCharacterLayer(ItemManager.Instance.getTemplateById(int(_recordStyle[2].split("|")[0])),_recordColor[2],_playerInfo.Sex,littleGameId));
+         _loaders.push(new LittleGameCharacterLayer(ItemManager.Instance.getTemplateById(int(_recordStyle[3].split("|")[0])),_recordColor[3],_playerInfo.Sex,littleGameId));
          if(effect == null)
          {
-            _loaders.push(new LittleGameCharacterLayer(ItemManager.Instance.getTemplateById(int(_recordStyle[5].split("|")[0])),_recordColor[5],_playerInfo.Sex,param2,30,1));
+            _loaders.push(new LittleGameCharacterLayer(ItemManager.Instance.getTemplateById(int(_recordStyle[5].split("|")[0])),_recordColor[5],_playerInfo.Sex,littleGameId,30,1));
          }
          if(specialHeads == null || hasFaceColor)
          {
             specialHeads = new Vector.<BitmapData>();
-            _loaders.push(new LittleGameCharacterLayer(ItemManager.Instance.getTemplateById(int(_recordStyle[5].split("|")[0])),_recordColor[5],_playerInfo.Sex,param2,6,1));
-            _loaders.push(new LittleGameCharacterLayer(ItemManager.Instance.getTemplateById(int(_recordStyle[5].split("|")[0])),_recordColor[5],_playerInfo.Sex,param2,6,2));
-            _loaders.push(new LittleGameCharacterLayer(ItemManager.Instance.getTemplateById(int(_recordStyle[5].split("|")[0])),_recordColor[5],_playerInfo.Sex,param2,6,3));
+            _loaders.push(new LittleGameCharacterLayer(ItemManager.Instance.getTemplateById(int(_recordStyle[5].split("|")[0])),_recordColor[5],_playerInfo.Sex,littleGameId,6,1));
+            _loaders.push(new LittleGameCharacterLayer(ItemManager.Instance.getTemplateById(int(_recordStyle[5].split("|")[0])),_recordColor[5],_playerInfo.Sex,littleGameId,6,2));
+            _loaders.push(new LittleGameCharacterLayer(ItemManager.Instance.getTemplateById(int(_recordStyle[5].split("|")[0])),_recordColor[5],_playerInfo.Sex,littleGameId,6,3));
          }
       }
       
-      public function load(param1:Function) : void
+      public function load(callBack:Function) : void
       {
-         var _loc2_:int = 0;
-         _callBack = param1;
-         _loc2_ = 0;
-         while(_loc2_ < _loaders.length)
+         var i:int = 0;
+         _callBack = callBack;
+         for(i = 0; i < _loaders.length; )
          {
-            _loaders[_loc2_].load(onComplete);
-            _loc2_++;
+            _loaders[i].load(onComplete);
+            i++;
          }
       }
       
-      private function onComplete(param1:ILayer) : void
+      private function onComplete(layer:ILayer) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:Number = NaN;
-         var _loc3_:Boolean = true;
-         _loc4_ = 0;
-         while(_loc4_ < _loaders.length)
+         var i:int = 0;
+         var t:Number = NaN;
+         var isAllLayerComplete:Boolean = true;
+         for(i = 0; i < _loaders.length; )
          {
-            if(!_loaders[_loc4_].isComplete)
+            if(!_loaders[i].isComplete)
             {
-               _loc3_ = false;
+               isAllLayerComplete = false;
             }
-            _loc4_++;
+            i++;
          }
-         if(_loc3_)
+         if(isAllLayerComplete)
          {
-            _loc2_ = getTimer();
+            t = getTimer();
             drawCharacter();
-            trace("============drawcharacter",getTimer() - _loc2_);
+            trace("============drawcharacter",getTimer() - t);
             loadComplete();
          }
       }
@@ -165,37 +163,37 @@ package littleGame.character
          }
       }
       
-      private function drawHeadByFace(param1:int) : BitmapData
+      private function drawHeadByFace(faceLayer:int) : BitmapData
       {
-         var _loc3_:BitmapData = new BitmapData(_loaders[param1].width,_loaders[param1].height,true,0);
-         var _loc2_:LittleGameCharacterLayer = _loaders[param1];
-         _loc3_.draw(_loc2_.getContent(),null,null,"normal");
-         _loc2_ = _loaders[2];
-         _loc3_.draw(_loc2_.getContent(),null,null,"normal");
-         _loc2_ = _loaders[3];
-         _loc3_.draw(_loc2_.getContent(),null,null,"normal");
-         return _loc3_;
+         var head:BitmapData = new BitmapData(_loaders[faceLayer].width,_loaders[faceLayer].height,true,0);
+         var layer:LittleGameCharacterLayer = _loaders[faceLayer];
+         head.draw(layer.getContent(),null,null,"normal");
+         layer = _loaders[2];
+         head.draw(layer.getContent(),null,null,"normal");
+         layer = _loaders[3];
+         head.draw(layer.getContent(),null,null,"normal");
+         return head;
       }
       
       public function getContent() : Vector.<BitmapData>
       {
-         var _loc1_:Vector.<BitmapData> = new Vector.<BitmapData>();
-         _loc1_.push(_head);
-         _loc1_.push(_body);
-         _loc1_.push(effect);
+         var result:Vector.<BitmapData> = new Vector.<BitmapData>();
+         result.push(_head);
+         result.push(_body);
+         result.push(effect);
          if(hasFaceColor)
          {
-            _loc1_.push(drawHeadByFace(_loaders.length - 3));
-            _loc1_.push(drawHeadByFace(_loaders.length - 2));
-            _loc1_.push(drawHeadByFace(_loaders.length - 1));
+            result.push(drawHeadByFace(_loaders.length - 3));
+            result.push(drawHeadByFace(_loaders.length - 2));
+            result.push(drawHeadByFace(_loaders.length - 1));
          }
          else
          {
-            _loc1_.push(specialHeads[0]);
-            _loc1_.push(specialHeads[1]);
-            _loc1_.push(specialHeads[2]);
+            result.push(specialHeads[0]);
+            result.push(specialHeads[1]);
+            result.push(specialHeads[2]);
          }
-         return _loc1_;
+         return result;
       }
       
       private function loadComplete() : void
@@ -210,9 +208,9 @@ package littleGame.character
       {
          var _loc3_:int = 0;
          var _loc2_:* = _loaders;
-         for each(var _loc1_ in _loaders)
+         for each(var layer in _loaders)
          {
-            _loc1_.dispose();
+            layer.dispose();
          }
          _loaders == null;
          _head = null;

@@ -13,30 +13,29 @@ package ddt.data.analyze
       
       public var totalCount:int;
       
-      public function LoginSelectListAnalyzer(param1:Function)
+      public function LoginSelectListAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc3_:* = null;
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc2_:XML = new XML(param1);
-         if(_loc2_.@value == "true")
+         var xmllist:* = null;
+         var i:int = 0;
+         var info:* = null;
+         var xml:XML = new XML(data);
+         if(xml.@value == "true")
          {
             list = new Vector.<Role>();
-            totalCount = int(_loc2_.@total);
-            _loc3_ = XML(_loc2_)..Item;
-            _loc5_ = 0;
-            while(_loc5_ < _loc3_.length())
+            totalCount = int(xml.@total);
+            xmllist = XML(xml)..Item;
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc4_ = new Role();
-               ObjectUtils.copyPorpertiesByXML(_loc4_,_loc3_[_loc5_]);
-               _loc4_.lastDate = DateUtils.decodeDated(_loc3_[_loc5_].@LastDate);
-               list.push(_loc4_);
-               _loc5_++;
+               info = new Role();
+               ObjectUtils.copyPorpertiesByXML(info,xmllist[i]);
+               info.lastDate = DateUtils.decodeDated(xmllist[i].@LastDate);
+               list.push(info);
+               i++;
             }
             list.sort(sortLastDate);
             list.sort(sortLoginState);
@@ -44,36 +43,36 @@ package ddt.data.analyze
          }
          else
          {
-            message = _loc2_.@message;
+            message = xml.@message;
             onAnalyzeError();
          }
       }
       
-      private function sortLastDate(param1:Role, param2:Role) : int
+      private function sortLastDate(a:Role, b:Role) : int
       {
-         var _loc3_:int = 0;
-         if(param1.lastDate.time < param2.lastDate.time)
+         var result:int = 0;
+         if(a.lastDate.time < b.lastDate.time)
          {
-            _loc3_ = 1;
+            result = 1;
          }
          else
          {
-            _loc3_ = -1;
+            result = -1;
          }
-         return _loc3_;
+         return result;
       }
       
-      private function sortLoginState(param1:Role, param2:Role) : int
+      private function sortLoginState(a:Role, b:Role) : int
       {
-         if(param1.LoginState == 1 && param2.LoginState != 1)
+         if(a.LoginState == 1 && b.LoginState != 1)
          {
             return 1;
          }
-         if(param1.LoginState != -1 && param2.LoginState == 1)
+         if(a.LoginState != -1 && b.LoginState == 1)
          {
             return -1;
          }
-         return sortLastDate(param1,param2);
+         return sortLastDate(a,b);
       }
    }
 }

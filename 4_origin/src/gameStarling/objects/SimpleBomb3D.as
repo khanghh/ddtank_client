@@ -84,19 +84,19 @@ package gameStarling.objects
       
       private var _playBlastOutEffectCount:int;
       
-      public function SimpleBomb3D(param1:Bomb, param2:Living, param3:int = 0, param4:Boolean = false)
+      public function SimpleBomb3D(info:Bomb, owner:Living, refineryLevel:int = 0, isPhantom:Boolean = false)
       {
          _bulletEffects = [];
          _blastOutEffects = [];
-         _info = param1;
+         _info = info;
          _lifeTime = 0;
-         _owner = param2;
+         _owner = owner;
          _bitmapNum = 0;
-         _refineryLevel = param3;
-         _isPhantom = param4;
+         _refineryLevel = refineryLevel;
+         _isPhantom = isPhantom;
          _smallBall = new SmallBomb();
          touchable = false;
-         super(_info.Id,param1.Template.Mass,param1.Template.Weight,param1.Template.Wind,param1.Template.DragIndex);
+         super(_info.Id,info.Template.Mass,info.Template.Weight,info.Template.Wind,info.Template.DragIndex);
          createBallAsset();
       }
       
@@ -117,18 +117,18 @@ package gameStarling.objects
       
       private function createBallAsset() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:BallInfo = BallManager.instance.findBall(_info.Template.ID);
-         _bullet = BoneMovieFactory.instance.creatBoneMovie(_loc2_.bulletName);
-         if(_loc2_.blastOutID != 0)
+         var bombAsset:* = null;
+         var ballInfo:BallInfo = BallManager.instance.findBall(_info.Template.ID);
+         _bullet = BoneMovieFactory.instance.creatBoneMovie(ballInfo.bulletName);
+         if(ballInfo.blastOutID != 0)
          {
-            _blastOut = BoneMovieFactory.instance.creatBoneMovie(_loc2_.blastOutName);
+            _blastOut = BoneMovieFactory.instance.creatBoneMovie(ballInfo.blastOutName);
          }
          if(BallManager.instance.hasBombAsset(info.Template.craterID))
          {
-            _loc1_ = BallManager.instance.gameInBombAssets[info.Template.craterID];
-            _crater = _loc1_.crater;
-            _craterBrink = _loc1_.craterBrink;
+            bombAsset = BallManager.instance.gameInBombAssets[info.Template.craterID];
+            _crater = bombAsset.crater;
+            _craterBrink = bombAsset.craterBrink;
          }
       }
       
@@ -166,10 +166,10 @@ package gameStarling.objects
          startMoving();
       }
       
-      override public function setMap(param1:Map3D) : void
+      override public function setMap(map:Map3D) : void
       {
-         super.setMap(param1);
-         if(param1)
+         super.setMap(map);
+         if(map)
          {
             _game = this.map.gameInfo;
             initMovie();
@@ -178,7 +178,7 @@ package gameStarling.objects
       
       override public function startMoving() : void
       {
-         var _loc1_:* = null;
+         var emitterInfo:* = null;
          super.startMoving();
          if(GameControl.Instance.Current == null)
          {
@@ -188,10 +188,10 @@ package gameStarling.objects
          {
             if(_info.changedPartical != "" && _particleRenderInfo == null)
             {
-               _loc1_ = ParticleManager.Instance.emitters[_info.changedPartical] as EmitterInfo;
-               if(_loc1_)
+               emitterInfo = ParticleManager.Instance.emitters[_info.changedPartical] as EmitterInfo;
+               if(emitterInfo)
                {
-                  _particleRenderInfo = ParticleRender.Instance.registerParticle(this,_loc1_.id,_loc1_.particleIds);
+                  _particleRenderInfo = ParticleRender.Instance.registerParticle(this,emitterInfo.id,emitterInfo.particleIds);
                }
                else
                {
@@ -207,19 +207,19 @@ package gameStarling.objects
          return _smallBall;
       }
       
-      override public function moveTo(param1:Point) : void
+      override public function moveTo(p:Point) : void
       {
-         var _loc2_:* = null;
-         var _loc5_:* = null;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
+         var currentAction:* = null;
+         var prePos:* = null;
+         var rect:* = null;
+         var phyObj:* = null;
          while(_info.Actions.length > 0)
          {
             if(_info.Actions[0].time <= _lifeTime)
             {
-               _loc2_ = _info.Actions.shift();
-               _info.UsedActions.push(_loc2_);
-               _loc2_.execute(this,_game);
+               currentAction = _info.Actions.shift();
+               _info.UsedActions.push(currentAction);
+               currentAction.execute(this,_game);
                if(!_isLiving)
                {
                   return;
@@ -230,23 +230,23 @@ package gameStarling.objects
          }
          if(_isLiving)
          {
-            if(_map.IsOutMap(param1.x,param1.y))
+            if(_map.IsOutMap(p.x,p.y))
             {
                die();
             }
             else
             {
                map.smallMap.updatePos(_smallBall,pos);
-               _loc5_ = new Point(pos.x,pos.y);
-               pos = param1;
-               _loc4_ = getCollideRect();
-               _loc4_.offset(pos.x,pos.y);
+               prePos = new Point(pos.x,pos.y);
+               pos = p;
+               rect = getCollideRect();
+               rect.offset(pos.x,pos.y);
                if(isPillarCollide())
                {
-                  _loc3_ = _map.getSceneEffectPhysicalObject(_loc4_,this,_loc5_);
-                  if(_loc3_ && _loc3_ is GameSceneEffect3D)
+                  phyObj = _map.getSceneEffectPhysicalObject(rect,this,prePos);
+                  if(phyObj && phyObj is GameSceneEffect3D)
                   {
-                     sceneEffectCollideId = _loc3_.Id;
+                     sceneEffectCollideId = phyObj.Id;
                   }
                   checkCreateBombSceneEffect();
                }
@@ -286,10 +286,10 @@ package gameStarling.objects
          return false;
       }
       
-      override protected function computeFallNextXY(param1:Number) : Point
+      override protected function computeFallNextXY(dt:Number) : Point
       {
-         _vx.ComputeOneEulerStep(_mass,_arf,_wf + _ef.x,param1);
-         _vy.ComputeOneEulerStep(_mass,_arf,_gf + _ef.y,param1);
+         _vx.ComputeOneEulerStep(_mass,_arf,_wf + _ef.x,dt);
+         _vy.ComputeOneEulerStep(_mass,_arf,_gf + _ef.y,dt);
          return new Point(_vx.x0,_vy.x0);
       }
       
@@ -307,7 +307,7 @@ package gameStarling.objects
       
       override public function bomb() : void
       {
-         var _loc2_:* = 0;
+         var radius:* = 0;
          if(_particleRenderInfo)
          {
             _particleRenderInfo.dispose();
@@ -319,14 +319,14 @@ package gameStarling.objects
             map.smallMap.draw();
             map.resetMapChanged();
          }
-         var _loc3_:Array = map.getPhysicalObjectByPoint(pos,100,this);
+         var list:Array = map.getPhysicalObjectByPoint(pos,100,this);
          var _loc5_:int = 0;
-         var _loc4_:* = _loc3_;
-         for each(var _loc1_ in _loc3_)
+         var _loc4_:* = list;
+         for each(var p in list)
          {
-            if(_loc1_ is TombView3D)
+            if(p is TombView3D)
             {
-               _loc1_.startMoving();
+               p.startMoving();
             }
          }
          stopMoving();
@@ -334,16 +334,16 @@ package gameStarling.objects
          {
             if(_info.Template.Shake)
             {
-               _loc2_ = uint(7);
+               radius = uint(7);
                if(info.damageMod < 1)
                {
-                  _loc2_ = uint(4);
+                  radius = uint(4);
                }
                if(info.damageMod > 2)
                {
-                  _loc2_ = uint(14);
+                  radius = uint(14);
                }
-               map.animateSet.addAnimation(new ShockMapAnimation(this,_loc2_));
+               map.animateSet.addAnimation(new ShockMapAnimation(this,radius));
             }
             else if((!GameControl.Instance.Current.togetherShoot || GameControl.Instance.Current.roomType == 21 && _owner && _owner is Player && _owner.LivingID == GameControl.Instance.Current.selfGamePlayer.LivingID) && !GameManager.instance.isStopFocus)
             {
@@ -389,31 +389,30 @@ package gameStarling.objects
       
       override public function bombAtOnce() : void
       {
-         var _loc1_:* = null;
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
+         var boomAction:* = null;
+         var i:int = 0;
+         var action:* = null;
          fastModel = true;
-         _loc5_ = 0;
-         while(_loc5_ < _info.Actions.length)
+         for(i = 0; i < _info.Actions.length; )
          {
-            if(_info.Actions[_loc5_].type == 2)
+            if(_info.Actions[i].type == 2)
             {
-               _loc1_ = _info.Actions[_loc5_];
+               boomAction = _info.Actions[i];
                break;
             }
-            _loc5_++;
+            i++;
          }
-         var _loc4_:int = _info.Actions.indexOf(_loc1_);
-         var _loc3_:Array = _info.Actions.splice(_loc4_,1);
-         if(_loc1_)
+         var boomIndex:int = _info.Actions.indexOf(boomAction);
+         var newActions:Array = _info.Actions.splice(boomIndex,1);
+         if(boomAction)
          {
-            _info.Actions.push(_loc1_);
+            _info.Actions.push(boomAction);
          }
          while(_info.Actions.length > 0)
          {
-            _loc2_ = _info.Actions.shift();
-            _info.UsedActions.push(_loc2_);
-            _loc2_.execute(this,_game);
+            action = _info.Actions.shift();
+            _info.UsedActions.push(action);
+            action.execute(this,_game);
             if(!_isLiving)
             {
                return;
@@ -427,12 +426,12 @@ package gameStarling.objects
       
       protected function checkCreateBombSceneEffect() : void
       {
-         var _loc7_:int = 0;
-         var _loc6_:* = null;
-         var _loc1_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:* = null;
-         var _loc5_:* = null;
+         var be:int = 0;
+         var bulletEffectObj:* = null;
+         var bulletEffect:* = null;
+         var sceneEffectBulletName:* = null;
+         var sceneEffectBlastOutName:* = null;
+         var sceneEffectBlastOut:* = null;
          if(_sceneEffectCollideId == 0)
          {
             return;
@@ -445,68 +444,67 @@ package gameStarling.objects
          {
             return;
          }
-         var _loc3_:Boolean = true;
+         var isAddBulletEffect:Boolean = true;
          if(_bulletEffects)
          {
-            _loc7_ = 0;
-            while(_loc7_ < _bulletEffects.length)
+            for(be = 0; be < _bulletEffects.length; )
             {
-               _loc6_ = _bulletEffects[_loc7_];
-               if(_loc6_.id == _sceneEffectCollideId)
+               bulletEffectObj = _bulletEffects[be];
+               if(bulletEffectObj.id == _sceneEffectCollideId)
                {
-                  _loc3_ = false;
+                  isAddBulletEffect = false;
                   break;
                }
-               _loc7_++;
+               be++;
             }
          }
-         if(_loc3_)
+         if(isAddBulletEffect)
          {
-            _loc2_ = "bones.game.sceneEffectBullet" + _sceneEffectCollideId;
-            if(BoneMovieFactory.instance.model.getBonesStyle(_loc2_))
+            sceneEffectBulletName = "bones.game.sceneEffectBullet" + _sceneEffectCollideId;
+            if(BoneMovieFactory.instance.model.getBonesStyle(sceneEffectBulletName))
             {
                if(_isReplaceBullet)
                {
                   _movie.visible = false;
                }
-               _loc1_ = BoneMovieFactory.instance.creatBoneMovie(_loc2_);
-               addChild(_loc1_);
+               bulletEffect = BoneMovieFactory.instance.creatBoneMovie(sceneEffectBulletName);
+               addChild(bulletEffect);
             }
             _bulletEffects.push({
                "id":_sceneEffectCollideId,
-               "movie":_loc1_
+               "movie":bulletEffect
             });
-            _loc4_ = "bones.game.sceneEffectBlastOut" + _sceneEffectCollideId;
-            if(BoneMovieFactory.instance.model.getBonesStyle(_loc4_))
+            sceneEffectBlastOutName = "bones.game.sceneEffectBlastOut" + _sceneEffectCollideId;
+            if(BoneMovieFactory.instance.model.getBonesStyle(sceneEffectBlastOutName))
             {
-               _loc5_ = BoneMovieFactory.instance.creatBoneMovie(_loc4_);
-               _loc5_.visible = false;
-               addChild(_loc5_);
-               _blastOutEffects.push(_loc5_);
+               sceneEffectBlastOut = BoneMovieFactory.instance.creatBoneMovie(sceneEffectBlastOutName);
+               sceneEffectBlastOut.visible = false;
+               addChild(sceneEffectBlastOut);
+               _blastOutEffects.push(sceneEffectBlastOut);
             }
          }
       }
       
       protected function removeBulletSceneEffect() : void
       {
-         var _loc1_:* = null;
+         var bulletEffect:* = null;
          if(_bulletEffects)
          {
             var _loc4_:int = 0;
             var _loc3_:* = _bulletEffects;
-            for each(var _loc2_ in _bulletEffects)
+            for each(var bulletEffectObject in _bulletEffects)
             {
-               if(_loc2_.movie != null)
+               if(bulletEffectObject.movie != null)
                {
-                  _loc1_ = _loc2_.movie as BoneMovieStarling;
-                  StarlingObjectUtils.disposeObject(_loc1_);
+                  bulletEffect = bulletEffectObject.movie as BoneMovieStarling;
+                  StarlingObjectUtils.disposeObject(bulletEffect);
                }
             }
             _bulletEffects = [];
          }
       }
       
-      private function playBlastOutEffects(param1:Number) : void
+      private function playBlastOutEffects(delay:Number) : void
       {
          if(_blastOutEffects.length == 0)
          {
@@ -519,16 +517,16 @@ package gameStarling.objects
          else
          {
             _playBlastOutEffectCount = _blastOutEffects.length;
-            _playBlastOutEffectTimer = new Timer(param1,_blastOutEffects.length - 1);
+            _playBlastOutEffectTimer = new Timer(delay,_blastOutEffects.length - 1);
             _playBlastOutEffectTimer.addEventListener("timer",_playBlastOutEffectTimerHandler);
             _playBlastOutEffectTimer.start();
             _playBlastOutEffectTimerHandler(null);
          }
       }
       
-      private function _playBlastOutEffectTimerHandler(param1:TimerEvent) : void
+      private function _playBlastOutEffectTimerHandler(evt:TimerEvent) : void
       {
-         evt = param1;
+         evt = evt;
          playBlastOutEffect(function():void
          {
             _playBlastOutEffectCount = Number(_playBlastOutEffectCount) - 1;
@@ -539,9 +537,9 @@ package gameStarling.objects
          });
       }
       
-      private function playBlastOutEffect(param1:Function) : void
+      private function playBlastOutEffect(backFun:Function) : void
       {
-         backFun = param1;
+         backFun = backFun;
          if(_isLiving)
          {
             SoundManager.instance.play(_info.Template.BombSound);
@@ -567,9 +565,9 @@ package gameStarling.objects
          {
             var _loc3_:int = 0;
             var _loc2_:* = _blastOutEffects;
-            for each(var _loc1_ in _blastOutEffects)
+            for each(var blastOutEffect in _blastOutEffects)
             {
-               StarlingObjectUtils.disposeObject(_loc1_);
+               StarlingObjectUtils.disposeObject(blastOutEffect);
             }
             _blastOutEffects = null;
          }
@@ -587,10 +585,10 @@ package gameStarling.objects
          dispose();
       }
       
-      override protected function updatePosition(param1:Number) : void
+      override protected function updatePosition(dt:Number) : void
       {
          _lifeTime = _lifeTime + 40;
-         super.updatePosition(param1);
+         super.updatePosition(dt);
          if(!_isLiving)
          {
             return;
@@ -608,9 +606,9 @@ package gameStarling.objects
          return _sceneEffectCollideId;
       }
       
-      public function set sceneEffectCollideId(param1:int) : void
+      public function set sceneEffectCollideId(value:int) : void
       {
-         _sceneEffectCollideId = param1;
+         _sceneEffectCollideId = value;
       }
       
       public function get target() : Point

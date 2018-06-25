@@ -52,9 +52,9 @@ package uiModeManager.bombUI
       
       private var _lastRequstRankDataTime:Date;
       
-      public function HappyLittleGameManager(param1:IEventDispatcher = null)
+      public function HappyLittleGameManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
          bombManager = new BombGameManager();
          gameActiveInfos = new Vector.<HappyMiniGameActiveInfo>();
          this._rankRewardCfg = new RankRewardCfg();
@@ -80,15 +80,15 @@ package uiModeManager.bombUI
          return this._rankRewardCfg;
       }
       
-      public function set currentGameType(param1:int) : void
+      public function set currentGameType(value:int) : void
       {
-         _currentGameType = param1;
+         _currentGameType = value;
       }
       
       private function onComplete() : void
       {
-         var _loc1_:* = ComponentFactory.Instance.creatComponentByStylename("happyLittleGame.Frame");
-         _loc1_.show();
+         var view:* = ComponentFactory.Instance.creatComponentByStylename("happyLittleGame.Frame");
+         view.show();
       }
       
       override protected function start() : void
@@ -104,10 +104,10 @@ package uiModeManager.bombUI
       
       private function checkRankDataRequst() : Boolean
       {
-         var _loc1_:Date = TimeManager.Instance.Now();
-         if(this._lastRequstRankDataTime && _loc1_.day == this._lastRequstRankDataTime.day)
+         var curTime:Date = TimeManager.Instance.Now();
+         if(this._lastRequstRankDataTime && curTime.day == this._lastRequstRankDataTime.day)
          {
-            if(_loc1_.hours > 0 || _loc1_.minutes > 10)
+            if(curTime.hours > 0 || curTime.minutes > 10)
             {
                return false;
             }
@@ -117,16 +117,16 @@ package uiModeManager.bombUI
       
       public function showRankFrame() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:* = ComponentFactory.Instance.creatComponentByStylename("simpleGameRank.Frame");
-         if(_loc2_)
+         var loader:* = null;
+         var view:* = ComponentFactory.Instance.creatComponentByStylename("simpleGameRank.Frame");
+         if(view)
          {
-            _loc2_.show();
+            view.show();
          }
          if(!this._rankRewardCfg.aviliable)
          {
-            _loc1_ = LoaderCreate.Instance.CreateMiniGameRankRewardCfgLoader();
-            LoadResourceManager.Instance.startLoad(_loc1_);
+            loader = LoaderCreate.Instance.CreateMiniGameRankRewardCfgLoader();
+            LoadResourceManager.Instance.startLoad(loader);
             return;
          }
          requestRankInfo();
@@ -141,102 +141,98 @@ package uiModeManager.bombUI
          }
       }
       
-      public function onAnalyzeRankRewardCfg(param1:HappyLittleGameRankAnalyzer) : void
+      public function onAnalyzeRankRewardCfg(analyzer:HappyLittleGameRankAnalyzer) : void
       {
-         this._rankRewardCfg.cfg = param1.data;
+         this._rankRewardCfg.cfg = analyzer.data;
          requestRankInfo();
       }
       
-      private function onGameRankInfo(param1:PkgEvent) : void
+      private function onGameRankInfo(pkg:PkgEvent) : void
       {
-         var _loc3_:* = 0;
-         var _loc8_:* = null;
-         var _loc5_:* = null;
-         var _loc6_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc9_:int = 0;
+         var idx:* = 0;
+         var serverName:* = null;
+         var playerName:* = null;
+         var score:int = 0;
+         var paral:int = 0;
+         var rankData:* = null;
+         var i:int = 0;
          SocketManager.Instance.removeEventListener(PkgEvent.format(372,8),onGameRankInfo);
          while(_rankDataList.length > 0)
          {
             _rankDataList.pop();
          }
-         var _loc7_:int = param1.pkg.readInt();
-         _loc3_ = uint(0);
-         while(_loc3_ < _loc7_)
+         var len:int = pkg.pkg.readInt();
+         for(idx = uint(0); idx < len; )
          {
-            _loc8_ = param1.pkg.readUTF();
-            _loc5_ = param1.pkg.readUTF();
-            _loc6_ = param1.pkg.readInt();
-            _loc4_ = param1.pkg.readInt();
-            _loc2_ = new HappyMiniGameRankData(_loc8_,_loc5_,_loc6_);
-            this._rankDataList.push(_loc2_);
-            _loc3_++;
+            serverName = pkg.pkg.readUTF();
+            playerName = pkg.pkg.readUTF();
+            score = pkg.pkg.readInt();
+            paral = pkg.pkg.readInt();
+            rankData = new HappyMiniGameRankData(serverName,playerName,score);
+            this._rankDataList.push(rankData);
+            idx++;
          }
          this._rankDataList = this._rankDataList.sort(sortRankDataList);
-         _loc9_ = 0;
-         while(_loc9_ < this._rankDataList.length)
+         for(i = 0; i < this._rankDataList.length; )
          {
-            this._rankDataList[_loc9_].rank = _loc9_;
-            _loc9_++;
+            this._rankDataList[i].rank = i;
+            i++;
          }
          this._lastRequstRankDataTime = TimeManager.Instance.Now();
          FunnyGamesManager.getInstance().dispatchEvent(new FunnyGamesEvent("rankRewardUpdate"));
       }
       
-      private function sortRankDataList(param1:HappyMiniGameRankData, param2:HappyMiniGameRankData) : int
+      private function sortRankDataList(left:HappyMiniGameRankData, right:HappyMiniGameRankData) : int
       {
-         if(param1.score > param2.score)
+         if(left.score > right.score)
          {
             return -1;
          }
-         if(param1.score < param2.score)
+         if(left.score < right.score)
          {
             return 1;
          }
          return 0;
       }
       
-      public function getRankDataList(param1:int = 0, param2:int = 16777215) : Vector.<HappyMiniGameRankData>
+      public function getRankDataList(startIndex:int = 0, endIndex:int = 16777215) : Vector.<HappyMiniGameRankData>
       {
-         param2 = param2 > this._rankDataList.length?this._rankDataList.length:param2;
-         return this._rankDataList.slice(param1,param2);
+         endIndex = endIndex > this._rankDataList.length?this._rankDataList.length:endIndex;
+         return this._rankDataList.slice(startIndex,endIndex);
       }
       
       public function getSelfRank() : int
       {
-         var _loc1_:* = 0;
-         _loc1_ = uint(0);
-         while(_loc1_ < this._rankDataList.length)
+         var i:* = 0;
+         for(i = uint(0); i < this._rankDataList.length; )
          {
-            if(this._rankDataList[_loc1_].playerName == PlayerManager.Instance.Self.NickName)
+            if(this._rankDataList[i].playerName == PlayerManager.Instance.Self.NickName)
             {
-               return _loc1_;
+               return i;
             }
-            _loc1_++;
+            i++;
          }
          return -1;
       }
       
-      private function __activeDataHandler(param1:PkgEvent) : void
+      private function __activeDataHandler(pkg:PkgEvent) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:int = 0;
+         var info:* = null;
+         var i:int = 0;
          clearActiveInfo();
-         var _loc2_:int = param1.pkg.readInt();
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var len:int = pkg.pkg.readInt();
+         for(i = 0; i < len; )
          {
-            _loc4_ = new HappyMiniGameActiveInfo();
-            _loc4_.serverName = param1.pkg.readUTF();
-            _loc4_.nickName = param1.pkg.readUTF();
-            _loc4_.score = param1.pkg.readInt();
-            _loc4_.gameType = param1.pkg.readInt();
-            _loc4_.endtime = param1.pkg.readDate();
-            _loc4_.rank = param1.pkg.readInt();
-            _loc4_.rankType = param1.pkg.readInt();
-            gameActiveInfos.push(_loc4_);
-            _loc3_++;
+            info = new HappyMiniGameActiveInfo();
+            info.serverName = pkg.pkg.readUTF();
+            info.nickName = pkg.pkg.readUTF();
+            info.score = pkg.pkg.readInt();
+            info.gameType = pkg.pkg.readInt();
+            info.endtime = pkg.pkg.readDate();
+            info.rank = pkg.pkg.readInt();
+            info.rankType = pkg.pkg.readInt();
+            gameActiveInfos.push(info);
+            i++;
          }
          gameActiveInfos.reverse();
          dispatchEvent(new HappyLittleGameEvent("refreshdaynew"));
@@ -244,17 +240,17 @@ package uiModeManager.bombUI
       
       private function clearActiveInfo() : void
       {
-         var _loc1_:* = null;
+         var info:* = null;
          while(gameActiveInfos.length > 0)
          {
-            _loc1_ = gameActiveInfos.pop();
-            _loc1_ = null;
+            info = gameActiveInfos.pop();
+            info = null;
          }
       }
       
-      public function startTimerByType(param1:int) : void
+      public function startTimerByType(type:int) : void
       {
-         if(param1 == 2)
+         if(type == 2)
          {
             if(timer_fixed == null)
             {
@@ -267,7 +263,7 @@ package uiModeManager.bombUI
                timer_fixed.start();
             }
          }
-         if(param1 == 1)
+         if(type == 1)
          {
             if(timer_random == null)
             {
@@ -300,13 +296,13 @@ package uiModeManager.bombUI
          }
       }
       
-      private function __timerfixedComplete(param1:Event) : void
+      private function __timerfixedComplete(evt:Event) : void
       {
          timer_fixed.stop();
          fixed_refresh = true;
       }
       
-      private function __timerrandomComplete(param1:Event) : void
+      private function __timerrandomComplete(evt:Event) : void
       {
          timer_random.stop();
          random_refresh = true;

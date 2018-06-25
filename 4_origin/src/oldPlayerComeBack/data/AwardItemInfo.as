@@ -20,9 +20,9 @@ package oldPlayerComeBack.data
          return _count;
       }
       
-      public function set count(param1:int) : void
+      public function set count(value:int) : void
       {
-         _count = param1;
+         _count = value;
       }
       
       public function get templateID() : String
@@ -30,9 +30,9 @@ package oldPlayerComeBack.data
          return _templateID;
       }
       
-      public function set templateID(param1:String) : void
+      public function set templateID(value:String) : void
       {
-         _templateID = param1;
+         _templateID = value;
       }
       
       public function get place() : int
@@ -40,9 +40,9 @@ package oldPlayerComeBack.data
          return _place;
       }
       
-      public function set place(param1:int) : void
+      public function set place(value:int) : void
       {
-         _place = param1;
+         _place = value;
       }
    }
 }

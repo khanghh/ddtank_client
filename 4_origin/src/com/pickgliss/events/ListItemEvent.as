@@ -25,12 +25,12 @@ package com.pickgliss.events
       
       public var index:int;
       
-      public function ListItemEvent(param1:IListCell, param2:*, param3:String, param4:int)
+      public function ListItemEvent($cell:IListCell, $cellValue:*, type:String, $index:int)
       {
-         cell = param1;
-         cellValue = param2;
-         index = param4;
-         super(param3);
+         cell = $cell;
+         cellValue = $cellValue;
+         index = $index;
+         super(type);
       }
    }
 }

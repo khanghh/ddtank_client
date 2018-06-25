@@ -26,9 +26,9 @@ package mainbutton
          return _btnCompleteVisable;
       }
       
-      public function set btnCompleteVisable(param1:int) : void
+      public function set btnCompleteVisable(value:int) : void
       {
-         _btnCompleteVisable = param1;
+         _btnCompleteVisable = value;
       }
       
       public function get btnServerVisable() : int
@@ -36,9 +36,9 @@ package mainbutton
          return _btnServerVisable;
       }
       
-      public function set btnServerVisable(param1:int) : void
+      public function set btnServerVisable(value:int) : void
       {
-         _btnServerVisable = param1;
+         _btnServerVisable = value;
       }
       
       public function get btnName() : String
@@ -46,9 +46,9 @@ package mainbutton
          return _btnName;
       }
       
-      public function set btnName(param1:String) : void
+      public function set btnName(value:String) : void
       {
-         _btnName = param1;
+         _btnName = value;
       }
       
       public function get btnMark() : int
@@ -56,9 +56,9 @@ package mainbutton
          return _btnMark;
       }
       
-      public function set btnMark(param1:int) : void
+      public function set btnMark(value:int) : void
       {
-         _btnMark = param1;
+         _btnMark = value;
       }
    }
 }

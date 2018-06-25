@@ -41,10 +41,10 @@ package ddt.events
       
       private var _passwordArray:Array;
       
-      public function BagEvent(param1:String, param2:Dictionary)
+      public function BagEvent(type:String, changedSlots:Dictionary)
       {
-         _changedSlot = param2;
-         super(param1);
+         _changedSlot = changedSlots;
+         super(type);
       }
       
       public function get changedSlots() : Dictionary
@@ -57,9 +57,9 @@ package ddt.events
          return _passwordArray;
       }
       
-      public function set passwordArray(param1:Array) : void
+      public function set passwordArray(value:Array) : void
       {
-         _passwordArray = param1;
+         _passwordArray = value;
       }
       
       public function get flag() : Boolean
@@ -67,9 +67,9 @@ package ddt.events
          return _flag;
       }
       
-      public function set flag(param1:Boolean) : void
+      public function set flag(value:Boolean) : void
       {
-         this._flag = param1;
+         this._flag = value;
       }
       
       public function get needSecond() : Boolean
@@ -77,9 +77,9 @@ package ddt.events
          return _needSecond;
       }
       
-      public function set needSecond(param1:Boolean) : void
+      public function set needSecond(value:Boolean) : void
       {
-         _needSecond = param1;
+         _needSecond = value;
       }
    }
 }

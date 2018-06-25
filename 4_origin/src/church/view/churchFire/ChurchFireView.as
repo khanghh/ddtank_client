@@ -60,11 +60,11 @@ package church.view.churchFire
       
       private var _alert:BaseAlerFrame;
       
-      public function ChurchFireView(param1:ChurchRoomController, param2:ChurchRoomModel)
+      public function ChurchFireView(controller:ChurchRoomController, model:ChurchRoomModel)
       {
          super();
-         _controller = param1;
-         _model = param2;
+         _controller = controller;
+         _model = model;
          initialize();
       }
       
@@ -181,35 +181,34 @@ package church.view.churchFire
       
       private function removeEvent() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _fireClose.removeEventListener("click",onCloseClick);
          PlayerManager.Instance.Self.removeEventListener("propertychange",updateGold);
          _model.removeEventListener("room fire enable change",fireEnableChange);
          if(_fireListBox)
          {
-            while(_loc1_ < _fireListBox.numChildren)
+            while(i < _fireListBox.numChildren)
             {
-               _fireListBox.getChildAt(_loc1_).removeEventListener("click",itemClickHandler);
-               _loc1_++;
+               _fireListBox.getChildAt(i).removeEventListener("click",itemClickHandler);
+               i++;
             }
          }
       }
       
       private function getFireList() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         _loc2_ = 0;
-         while(_loc2_ < All_Fires.length)
+         var i:int = 0;
+         var item:* = null;
+         for(i = 0; i < All_Fires.length; )
          {
-            _loc1_ = new ChurchFireCell(All_FireIcons[_loc2_],ShopManager.Instance.getGoldShopItemByTemplateID(All_Fires[_loc2_]),All_Fires[_loc2_]);
-            _loc1_.addEventListener("click",itemClickHandler);
-            _fireListBox.addChild(_loc1_);
-            _loc2_++;
+            item = new ChurchFireCell(All_FireIcons[i],ShopManager.Instance.getGoldShopItemByTemplateID(All_Fires[i]),All_Fires[i]);
+            item.addEventListener("click",itemClickHandler);
+            _fireListBox.addChild(item);
+            i++;
          }
       }
       
-      private function itemClickHandler(param1:MouseEvent) : void
+      private function itemClickHandler(e:MouseEvent) : void
       {
          if(PlayerManager.Instance.Self.Gold < _fireUseGold)
          {
@@ -222,17 +221,17 @@ package church.view.churchFire
                return;
             }
          }
-         var _loc2_:ChurchFireCell = param1.currentTarget as ChurchFireCell;
-         _controller.useFire(PlayerManager.Instance.Self.ID,_loc2_.fireTemplateID);
-         SocketManager.Instance.out.sendUseFire(PlayerManager.Instance.Self.ID,_loc2_.fireTemplateID);
+         var item:ChurchFireCell = e.currentTarget as ChurchFireCell;
+         _controller.useFire(PlayerManager.Instance.Self.ID,item.fireTemplateID);
+         SocketManager.Instance.out.sendUseFire(PlayerManager.Instance.Self.ID,item.fireTemplateID);
       }
       
-      private function _responseV(param1:FrameEvent) : void
+      private function _responseV(event:FrameEvent) : void
       {
          _alert.removeEventListener("response",_responseV);
          _alert.dispose();
          _alert = null;
-         switch(int(param1.responseCode) - 2)
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
@@ -242,49 +241,49 @@ package church.view.churchFire
       
       private function okFastPurchaseGold() : void
       {
-         var _loc1_:QuickBuyFrame = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
-         _loc1_.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
-         _loc1_.itemID = 11233;
-         LayerManager.Instance.addToLayer(_loc1_,2,true,1);
+         var _quick:QuickBuyFrame = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
+         _quick.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
+         _quick.itemID = 11233;
+         LayerManager.Instance.addToLayer(_quick,2,true,1);
       }
       
-      private function updateGold(param1:PlayerPropertyEvent) : void
+      private function updateGold(evt:PlayerPropertyEvent) : void
       {
          _fireGlod.text = PlayerManager.Instance.Self.Gold.toString();
       }
       
-      private function fireEnableChange(param1:WeddingRoomEvent) : void
+      private function fireEnableChange(e:WeddingRoomEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
+         var i:int = 0;
+         var j:int = 0;
          setButtnEnable(_fireListBox,_model.fireEnable);
          if(_model.fireEnable)
          {
-            while(_loc3_ < _fireListBox.numChildren)
+            while(i < _fireListBox.numChildren)
             {
-               _fireListBox.getChildAt(_loc3_).removeEventListener("click",itemClickHandler);
-               _fireListBox.getChildAt(_loc3_).addEventListener("click",itemClickHandler);
-               _loc3_++;
+               _fireListBox.getChildAt(i).removeEventListener("click",itemClickHandler);
+               _fireListBox.getChildAt(i).addEventListener("click",itemClickHandler);
+               i++;
             }
          }
          else
          {
-            while(_loc2_ < _fireListBox.numChildren)
+            while(j < _fireListBox.numChildren)
             {
-               _fireListBox.getChildAt(_loc2_).removeEventListener("click",itemClickHandler);
-               _loc2_++;
+               _fireListBox.getChildAt(j).removeEventListener("click",itemClickHandler);
+               j++;
             }
          }
       }
       
-      private function setButtnEnable(param1:Sprite, param2:Boolean) : void
+      private function setButtnEnable(obj:Sprite, value:Boolean) : void
       {
-         param1.mouseEnabled = param2;
+         obj.mouseEnabled = value;
          _fireListFilter = ComponentFactory.Instance.creatFilters("grayFilter");
-         param1.filters = !!param2?[]:_fireListFilter;
+         obj.filters = !!value?[]:_fireListFilter;
       }
       
-      private function onCloseClick(param1:MouseEvent) : void
+      private function onCloseClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(parent)

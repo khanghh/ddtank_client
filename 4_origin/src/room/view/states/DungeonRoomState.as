@@ -22,13 +22,13 @@ package room.view.states
          super();
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
          SocketManager.Instance.out.getPlayerSpecialProperty(3);
          _roomView = new DungeonRoomView(RoomManager.Instance.current);
          PositionUtils.setPos(_roomView,"asset.ddtroom.matchroomstate.pos");
          addChild(_roomView);
-         super.enter(param1,param2);
+         super.enter(prev,data);
          if(!PlayerManager.Instance.Self.isDungeonGuideFinish(120))
          {
             NoviceDataManager.instance.saveNoviceData(1040,PathManager.userName(),PathManager.solveRequestPath());
@@ -40,7 +40,7 @@ package room.view.states
          }
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
          NewHandContainer.Instance.clearArrowByID(130);
          MainToolBar.Instance.hide();
@@ -48,14 +48,25 @@ package room.view.states
          {
             if(RoomManager.Instance.current.isOpenBoss)
             {
-               GameInSocketOut.sendGameRoomSetUp(10000,4,true,_info.roomPass,_info.roomName,1,_info.hardLevel,0,false,_info.mapId);
+               if(RoomManager.SPECIAL_BOSS_MAPID.indexOf(_info.mapId) >= 0)
+               {
+                  GameInSocketOut.sendGameRoomSetUp(10000,123,true,_info.roomPass,_info.roomName,1,_info.hardLevel,0,false,_info.mapId);
+               }
+               else
+               {
+                  GameInSocketOut.sendGameRoomSetUp(10000,4,true,_info.roomPass,_info.roomName,1,_info.hardLevel,0,false,_info.mapId);
+               }
+            }
+            else if(RoomManager.SPECIAL_BOSS_MAPID.indexOf(_info.mapId) >= 0)
+            {
+               GameInSocketOut.sendGameRoomSetUp(10000,123,false,_info.roomPass,_info.roomName,1,0,0,false,0);
             }
             else
             {
                GameInSocketOut.sendGameRoomSetUp(10000,4,false,_info.roomPass,_info.roomName,1,0,0,false,0);
             }
          }
-         super.leaving(param1);
+         super.leaving(next);
       }
       
       override public function getType() : String

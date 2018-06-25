@@ -51,10 +51,10 @@ package braveDoor.view
          super();
       }
       
-      public function initView(param1:BraveDoorControl, param2:BraveDoorDuplicateInfo) : void
+      public function initView($ctr:BraveDoorControl, $info:BraveDoorDuplicateInfo) : void
       {
-         _control = param1;
-         _duplicats = param2;
+         _control = $ctr;
+         _duplicats = $info;
          _mapSpri.removeChildren();
          addChild(_mapSpri);
          createMap();
@@ -79,35 +79,35 @@ package braveDoor.view
          }
       }
       
-      private function selectedDulicateHandler(param1:BraveDoorEvent) : void
+      private function selectedDulicateHandler(evt:BraveDoorEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc4_:int = param1.data;
+         var dupBtn:* = null;
+         var dupID:int = evt.data;
          var _loc6_:int = 0;
          var _loc5_:* = _duplicateList;
-         for each(var _loc3_ in _duplicateList)
+         for each(var btn in _duplicateList)
          {
-            _loc3_.enable = true;
-            updateDuplicateFilter(_loc3_,false);
+            btn.enable = true;
+            updateDuplicateFilter(btn,false);
          }
-         curSelectDupID = _loc4_;
-         if(_duplicateList.hasKey(_loc4_))
+         curSelectDupID = dupID;
+         if(_duplicateList.hasKey(dupID))
          {
-            _loc2_ = _duplicateList[_loc4_];
-            _loc2_.enable = false;
-            updateDuplicateFilter(_loc2_,true);
+            dupBtn = _duplicateList[dupID];
+            dupBtn.enable = false;
+            updateDuplicateFilter(dupBtn,true);
          }
       }
       
-      public function set isEnableClick(param1:Boolean) : void
+      public function set isEnableClick(value:Boolean) : void
       {
-         _mapSpri.mouseChildren = param1;
-         _mapSpri.mouseEnabled = param1;
+         _mapSpri.mouseChildren = value;
+         _mapSpri.mouseEnabled = value;
       }
       
       protected function createMap() : void
       {
-         var _loc1_:int = BraveDoorManager.instance.currentPage;
+         var page:int = BraveDoorManager.instance.currentPage;
          _mapBg = null;
          if(_duplicats != null)
          {
@@ -121,93 +121,92 @@ package braveDoor.view
          createDuplicates(_duplicats);
       }
       
-      protected function createDuplicates(param1:BraveDoorDuplicateInfo) : void
+      protected function createDuplicates(info:BraveDoorDuplicateInfo) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:Vector.<DuplicateInfo> = param1.duplicateInfo;
-         var _loc3_:int = _loc2_.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var i:int = 0;
+         var duplicates:Vector.<DuplicateInfo> = info.duplicateInfo;
+         var len:int = duplicates.length;
+         for(i = 0; i < len; )
          {
-            _baseBtn = new duplicateIconButton(_loc2_[_loc4_]);
+            _baseBtn = new duplicateIconButton(duplicates[i]);
             _baseBtn.beginChanges();
-            _baseBtn.x = _loc2_[_loc4_].x;
-            _baseBtn.y = _loc2_[_loc4_].y;
-            _baseBtn.backStyle = _loc2_[_loc4_].backStyle;
+            _baseBtn.x = duplicates[i].x;
+            _baseBtn.y = duplicates[i].y;
+            _baseBtn.backStyle = duplicates[i].backStyle;
             _baseBtn.addEventListener("click",__duplicateClickHandler);
             _baseBtn.addEventListener("mouseMove",__btnOver);
             _baseBtn.addEventListener("mouseOut",__btnOut);
-            _baseBtn.filterString = _loc2_[_loc4_].filterString;
+            _baseBtn.filterString = duplicates[i].filterString;
             _baseBtn.commitChanges();
-            _duplicateList[_loc2_[_loc4_].id] = _baseBtn;
+            _duplicateList[duplicates[i].id] = _baseBtn;
             _mapSpri.addChild(_baseBtn);
-            _loc4_++;
+            i++;
          }
       }
       
-      private function __btnOver(param1:MouseEvent) : void
+      private function __btnOver(evt:MouseEvent) : void
       {
-         var _loc2_:duplicateIconButton = param1.target as duplicateIconButton;
-         if(isCanFilter(_loc2_.info.id))
+         var btn:duplicateIconButton = evt.target as duplicateIconButton;
+         if(isCanFilter(btn.info.id))
          {
-            updateDuplicateFilter(_loc2_,true);
+            updateDuplicateFilter(btn,true);
          }
       }
       
-      private function __btnOut(param1:MouseEvent) : void
+      private function __btnOut(evt:MouseEvent) : void
       {
-         var _loc2_:duplicateIconButton = param1.target as duplicateIconButton;
-         if(_loc2_ && _loc2_.info && isCanFilter(_loc2_.info.id))
+         var btn:duplicateIconButton = evt.target as duplicateIconButton;
+         if(btn && btn.info && isCanFilter(btn.info.id))
          {
-            updateDuplicateFilter(_loc2_,false);
+            updateDuplicateFilter(btn,false);
          }
       }
       
-      private function isCanFilter(param1:int) : Boolean
+      private function isCanFilter(dupId:int) : Boolean
       {
-         return curSelectDupID != param1;
+         return curSelectDupID != dupId;
       }
       
-      private function updateDuplicateFilter(param1:duplicateIconButton, param2:Boolean) : void
+      private function updateDuplicateFilter(btn:duplicateIconButton, isAdd:Boolean) : void
       {
-         if(param2)
+         if(isAdd)
          {
-            param1.filters = [new GlowFilter(16776960,1,8,8,2,2)];
+            btn.filters = [new GlowFilter(16776960,1,8,8,2,2)];
          }
          else
          {
-            param1.filters = null;
+            btn.filters = null;
          }
       }
       
-      private function __duplicateClickHandler(param1:MouseEvent) : void
+      private function __duplicateClickHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc4_:RoomInfo = RoomManager.Instance.current;
-         if(_loc4_ && _loc4_.selfRoomPlayer && !_loc4_.selfRoomPlayer.isHost && _control.currentRoomType != 1)
+         var info:RoomInfo = RoomManager.Instance.current;
+         if(info && info.selfRoomPlayer && !info.selfRoomPlayer.isHost && _control.currentRoomType != 1)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("game.braveDoor.noRoot.selectMap"));
             return;
          }
-         var _loc2_:int = duplicateIconButton(param1.target).info.id;
-         if(levCheck(_loc2_))
+         var dupId:int = duplicateIconButton(evt.target).info.id;
+         if(levCheck(dupId))
          {
             return;
          }
-         var _loc3_:DuplicateSelectView = ComponentFactory.Instance.creat("ddt.braveDoor.duplicateSelectFrame",[_control]);
-         if(_loc3_)
+         var _frame:DuplicateSelectView = ComponentFactory.Instance.creat("ddt.braveDoor.duplicateSelectFrame",[_control]);
+         if(_frame)
          {
-            LayerManager.Instance.addToLayer(_loc3_,3,true,1);
-            _loc3_.duplicateID = _loc2_;
+            LayerManager.Instance.addToLayer(_frame,3,true,1);
+            _frame.duplicateID = dupId;
          }
       }
       
-      private function levCheck(param1:int) : Boolean
+      private function levCheck(dupId:int) : Boolean
       {
-         var _loc2_:DungeonInfo = MapManager.getBraveDoorDuplicateInfo(param1);
-         if(PlayerManager.Instance.Self.Grade < _loc2_.LevelLimits)
+         var info:DungeonInfo = MapManager.getBraveDoorDuplicateInfo(dupId);
+         if(PlayerManager.Instance.Self.Grade < info.LevelLimits)
          {
-            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.room.RoomMapSetPanelDuplicate.clew",_loc2_.LevelLimits));
+            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.room.RoomMapSetPanelDuplicate.clew",info.LevelLimits));
             return true;
          }
          return false;
@@ -218,14 +217,14 @@ package braveDoor.view
          return _curSelectDupID;
       }
       
-      public function set curSelectDupID(param1:int) : void
+      public function set curSelectDupID(value:int) : void
       {
-         _curSelectDupID = param1;
+         _curSelectDupID = value;
       }
       
       public function dispose() : void
       {
-         var _loc1_:* = null;
+         var btn:* = null;
          if(_title)
          {
             ObjectUtils.disposeObject(_title);
@@ -235,11 +234,11 @@ package braveDoor.view
          {
             while(_duplicateList.list.length > 0)
             {
-               _loc1_ = _duplicateList.list.shift();
-               _loc1_.removeEventListener("click",__duplicateClickHandler);
-               _loc1_.removeEventListener("mouseMove",__btnOver);
-               _loc1_.removeEventListener("mouseOut",__btnOut);
-               ObjectUtils.disposeObject(_loc1_);
+               btn = _duplicateList.list.shift();
+               btn.removeEventListener("click",__duplicateClickHandler);
+               btn.removeEventListener("mouseMove",__btnOver);
+               btn.removeEventListener("mouseOut",__btnOut);
+               ObjectUtils.disposeObject(btn);
             }
          }
          if(_mapSpri)

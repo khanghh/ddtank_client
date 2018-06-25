@@ -207,7 +207,7 @@ package consortion.view.selfConsortia
          }
       }
       
-      private function onGetConsortiaInfoRes(param1:Event) : void
+      private function onGetConsortiaInfoRes(event:Event) : void
       {
          if(!ConsortiaDomainManager.instance.model.isActive)
          {
@@ -218,12 +218,12 @@ package consortion.view.selfConsortia
          consortionInfo = PlayerManager.Instance.Self.consortiaInfo;
       }
       
-      private function onClickActiveBtn(param1:MouseEvent) : void
+      private function onClickActiveBtn(evt:MouseEvent) : void
       {
          SocketManager.Instance.out.sendConsortiaDomainActive();
       }
       
-      private function onActiveRes(param1:Event) : void
+      private function onActiveRes(evt:Event) : void
       {
          if(ConsortiaDomainManager.instance.model.isActive)
          {
@@ -233,20 +233,20 @@ package consortion.view.selfConsortia
          }
       }
       
-      private function _levelUpRuleChange(param1:ConsortionEvent) : void
+      private function _levelUpRuleChange(event:ConsortionEvent) : void
       {
          setWeekyPay();
       }
       
-      private function _consortiaInfoChange(param1:PlayerPropertyEvent) : void
+      private function _consortiaInfoChange(event:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["consortiaInfo"])
+         if(event.changedProperties["consortiaInfo"])
          {
             consortionInfo = PlayerManager.Instance.Self.consortiaInfo;
          }
       }
       
-      private function __consortiaInfoPropChange(param1:PlayerPropertyEvent) : void
+      private function __consortiaInfoPropChange(event:PlayerPropertyEvent) : void
       {
          consortionInfo = PlayerManager.Instance.Self.consortiaInfo;
       }
@@ -268,11 +268,11 @@ package consortion.view.selfConsortia
          }
       }
       
-      private function set consortionInfo(param1:ConsortiaInfo) : void
+      private function set consortionInfo(info:ConsortiaInfo) : void
       {
-         var _loc2_:* = null;
-         _consortiaInfo = param1;
-         if(param1.ConsortiaID != 0)
+         var textFormat:* = null;
+         _consortiaInfo = info;
+         if(info.ConsortiaID != 0)
          {
             var _loc3_:* = true;
             _skillIcon.mouseEnabled = _loc3_;
@@ -289,38 +289,38 @@ package consortion.view.selfConsortia
             _loc3_ = _loc3_;
             _shopIcon.mouseEnabled = _loc3_;
             _shopIcon.mouseChildren = _loc3_;
-            _shopIcon.tipData = param1.ShopLevel;
-            _storeIcon.tipData = param1.SmithLevel;
-            _bankIcon.tipData = param1.StoreLevel;
-            _skillIcon.tipData = param1.BufferLevel;
-            _level.setFrame(param1.Level);
-            _consortionNameInput.text = param1.ConsortiaName;
-            if(param1.ChairmanIsVIP)
+            _shopIcon.tipData = info.ShopLevel;
+            _storeIcon.tipData = info.SmithLevel;
+            _bankIcon.tipData = info.StoreLevel;
+            _skillIcon.tipData = info.BufferLevel;
+            _level.setFrame(info.Level);
+            _consortionNameInput.text = info.ConsortiaName;
+            if(info.ChairmanIsVIP)
             {
                ObjectUtils.disposeObject(_vipChairman);
-               _vipChairman = VipController.instance.getVipNameTxt(142,param1.ChairmanTypeVIP);
-               _loc2_ = new TextFormat();
-               _loc2_.align = "center";
-               _loc2_.bold = true;
-               _vipChairman.textField.defaultTextFormat = _loc2_;
+               _vipChairman = VipController.instance.getVipNameTxt(142,info.ChairmanTypeVIP);
+               textFormat = new TextFormat();
+               textFormat.align = "center";
+               textFormat.bold = true;
+               _vipChairman.textField.defaultTextFormat = textFormat;
                _vipChairman.textSize = 16;
                _vipChairman.x = _chairmanName.x;
                _vipChairman.y = _chairmanName.y;
-               _vipChairman.text = param1.ChairmanName;
+               _vipChairman.text = info.ChairmanName;
                addChild(_vipChairman);
                DisplayUtils.removeDisplay(_chairmanName);
             }
             else
             {
-               _chairmanName.text = param1.ChairmanName;
+               _chairmanName.text = info.ChairmanName;
                addChild(_chairmanName);
                DisplayUtils.removeDisplay(_vipChairman);
             }
-            _count.text = String(param1.Count);
-            _riches.text = String(param1.Riches);
-            _honor.text = String(param1.Honor);
-            _repute.text = String(param1.Repute);
-            _badgeBtn.badgeID = param1.BadgeID;
+            _count.text = String(info.Count);
+            _riches.text = String(info.Riches);
+            _honor.text = String(info.Honor);
+            _repute.text = String(info.Repute);
+            _badgeBtn.badgeID = info.BadgeID;
             setWeekyPay();
          }
          else

@@ -36,10 +36,10 @@ package godCardRaise.view
       
       private var _clickNum:Number = 0;
       
-      public function GodCardRaiseScoreViewItem(param1:GodCardPointRewardListInfo)
+      public function GodCardRaiseScoreViewItem($info:GodCardPointRewardListInfo)
       {
          super();
-         _info = param1;
+         _info = $info;
          initView();
          initEvent();
       }
@@ -52,14 +52,14 @@ package godCardRaise.view
          _awardCell = new BagCell(0);
          PositionUtils.setPos(_awardCell,"godCardRaiseScoreViewItem.cellPos");
          addChild(_awardCell);
-         var _loc1_:InventoryItemInfo = new InventoryItemInfo();
-         _loc1_.TemplateID = _info.ItemID;
-         ItemManager.fill(_loc1_);
-         _loc1_.IsBinds = _info.IsBind;
-         _loc1_.MaxCount = _info.Count;
-         _loc1_.Count = _info.Count;
-         _loc1_.ValidDate = _info.Valid;
-         _awardCell.info = _loc1_;
+         var tempInfo:InventoryItemInfo = new InventoryItemInfo();
+         tempInfo.TemplateID = _info.ItemID;
+         ItemManager.fill(tempInfo);
+         tempInfo.IsBinds = _info.IsBind;
+         tempInfo.MaxCount = _info.Count;
+         tempInfo.Count = _info.Count;
+         tempInfo.ValidDate = _info.Valid;
+         _awardCell.info = tempInfo;
          _getBtn = ComponentFactory.Instance.creatComponentByStylename("godCardRaiseScoreViewItem.getBtn");
          addChild(_getBtn);
          _getBmp = ComponentFactory.Instance.creatBitmap("asset.godCardRaiseScoreViewItem.getBmp");
@@ -69,9 +69,9 @@ package godCardRaise.view
       
       public function updateView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:Dictionary = GodCardRaiseManager.Instance.model.awardIds;
-         if(_loc1_.hasOwnProperty(_info.ID))
+         var myScore:int = 0;
+         var awardIds:Dictionary = GodCardRaiseManager.Instance.model.awardIds;
+         if(awardIds.hasOwnProperty(_info.ID))
          {
             _getBtn.visible = false;
             _getBmp.visible = true;
@@ -79,8 +79,8 @@ package godCardRaise.view
          }
          else
          {
-            _loc2_ = GodCardRaiseManager.Instance.model.score;
-            if(_loc2_ >= _info.Point)
+            myScore = GodCardRaiseManager.Instance.model.score;
+            if(myScore >= _info.Point)
             {
                _getBtn.visible = true;
                _getBmp.visible = false;
@@ -95,16 +95,16 @@ package godCardRaise.view
          }
       }
       
-      private function __getBtnHandler(param1:MouseEvent) : void
+      private function __getBtnHandler(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:Number = new Date().time;
-         if(_loc2_ - _clickNum < 1000)
+         var nowTime:Number = new Date().time;
+         if(nowTime - _clickNum < 1000)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.storeIIStrength.startStrengthClickTimerMsg"));
             return;
          }
-         _clickNum = _loc2_;
+         _clickNum = nowTime;
          GameInSocketOut.sendGodCardPointAwardAttribute(_info.ID);
       }
       

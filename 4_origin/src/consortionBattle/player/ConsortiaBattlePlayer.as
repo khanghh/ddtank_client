@@ -54,10 +54,10 @@ package consortionBattle.player
       
       private var _walkSpeed:Number;
       
-      public function ConsortiaBattlePlayer(param1:ConsortiaBattlePlayerInfo, param2:Function = null)
+      public function ConsortiaBattlePlayer(playerData:ConsortiaBattlePlayerInfo, callBack:Function = null)
       {
-         _playerData = param1;
-         super(param1,param2);
+         _playerData = playerData;
+         super(playerData,callBack);
          _character = character;
          initView();
          initEvent();
@@ -112,20 +112,20 @@ package consortionBattle.player
       
       public function refreshStatus() : void
       {
-         var _loc1_:int = (_playerData.tombstoneEndTime.getTime() - TimeManager.Instance.Now().getTime()) / 1000;
-         if(isInTomb && _loc1_ <= 0)
+         var timeOffset:int = (_playerData.tombstoneEndTime.getTime() - TimeManager.Instance.Now().getTime()) / 1000;
+         if(isInTomb && timeOffset <= 0)
          {
             resurrectHandler();
             return;
          }
-         if(_loc1_ > 0)
+         if(timeOffset > 0)
          {
             _character.visible = false;
             _fighting.gotoAndStop(2);
             _fighting.visible = false;
             _tombstone.visible = true;
             _tombstone.gotoAndPlay(1);
-            createRrsurrectView(_loc1_);
+            createRrsurrectView(timeOffset);
             _consortiaNameTxt.y = -79;
          }
          else if(_playerData.status == 2)
@@ -189,19 +189,19 @@ package consortionBattle.player
          _isJustWin = false;
       }
       
-      private function createRrsurrectView(param1:int) : void
+      private function createRrsurrectView(total:int) : void
       {
-         var _loc2_:* = null;
+         var tmp:* = null;
          if(_resurrectView)
          {
             return;
          }
          if(_playerData.id == PlayerManager.Instance.Self.ID)
          {
-            _resurrectView = new ConsBatResurrectView(param1);
-            _loc2_ = this.localToGlobal(new Point(-113,-121));
-            _resurrectView.x = _loc2_.x;
-            _resurrectView.y = _loc2_.y;
+            _resurrectView = new ConsBatResurrectView(total);
+            tmp = this.localToGlobal(new Point(-113,-121));
+            _resurrectView.x = tmp.x;
+            _resurrectView.y = tmp.y;
             LayerManager.Instance.addToLayer(_resurrectView,3);
          }
       }
@@ -219,7 +219,7 @@ package consortionBattle.player
          addChild(_resurrectCartoon);
       }
       
-      private function cartoonCompleteHandler(param1:Event) : void
+      private function cartoonCompleteHandler(event:Event) : void
       {
          if(_resurrectCartoon)
          {
@@ -242,7 +242,7 @@ package consortionBattle.player
          playerHitArea.addEventListener("click",__onMouseClick);
       }
       
-      override protected function __onMouseClick(param1:MouseEvent) : void
+      override protected function __onMouseClick(event:MouseEvent) : void
       {
          if(isCanBeFight)
          {
@@ -257,7 +257,7 @@ package consortionBattle.player
          }
       }
       
-      override protected function __onMouseOver(param1:MouseEvent) : void
+      override protected function __onMouseOver(event:MouseEvent) : void
       {
          if(isCanBeFight)
          {
@@ -280,10 +280,10 @@ package consortionBattle.player
          playerHitArea.addEventListener("mouseMove",mouseMoveHandler);
       }
       
-      private function mouseMoveHandler(param1:MouseEvent) : void
+      private function mouseMoveHandler(event:MouseEvent) : void
       {
-         _swordIcon.x = param1.stageX;
-         _swordIcon.y = param1.stageY;
+         _swordIcon.x = event.stageX;
+         _swordIcon.y = event.stageY;
       }
       
       private function hideSwordMouse() : void
@@ -299,7 +299,7 @@ package consortionBattle.player
          Mouse.show();
       }
       
-      override protected function __onMouseOut(param1:MouseEvent) : void
+      override protected function __onMouseOut(event:MouseEvent) : void
       {
          if(isEnemy)
          {
@@ -318,16 +318,16 @@ package consortionBattle.player
          return isEnemy && !_tombstone.visible && !_fighting.visible && ConsortiaBattleManager.instance.beforeStartTime <= 0;
       }
       
-      public function set setSceneCharacterDirectionDefault(param1:SceneCharacterDirection) : void
+      public function set setSceneCharacterDirectionDefault(value:SceneCharacterDirection) : void
       {
-         if(param1 == SceneCharacterDirection.LT || param1 == SceneCharacterDirection.RT)
+         if(value == SceneCharacterDirection.LT || value == SceneCharacterDirection.RT)
          {
             if(sceneCharacterStateType == "natural")
             {
                sceneCharacterActionType = "naturalStandBack";
             }
          }
-         else if(param1 == SceneCharacterDirection.LB || param1 == SceneCharacterDirection.RB)
+         else if(value == SceneCharacterDirection.LB || value == SceneCharacterDirection.RB)
          {
             if(sceneCharacterStateType == "natural")
             {
@@ -363,7 +363,7 @@ package consortionBattle.player
       
       private function characterMirror() : void
       {
-         var _loc1_:int = playerHeight;
+         var height:int = playerHeight;
          if(!isDefaultCharacter)
          {
             this.character.scaleX = !!sceneCharacterDirection.isMirror?-1:1;
@@ -377,9 +377,9 @@ package consortionBattle.player
             this.character.x = -60;
             this.playerHitArea.scaleX = 1;
             this.playerHitArea.x = this.character.x;
-            _loc1_ = 175;
+            height = 175;
          }
-         this.character.y = -_loc1_ + 12;
+         this.character.y = -height + 12;
          this.playerHitArea.y = this.character.y;
       }
       
@@ -398,34 +398,33 @@ package consortionBattle.player
       
       private function fixPlayerPath() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var lastPath:* = null;
          if(_playerData.currentWalkStartPoint == null)
          {
             return;
          }
-         var _loc2_:* = -1;
-         _loc3_ = 0;
-         while(_loc3_ < _walkPath.length)
+         var startPointIndex:* = -1;
+         for(i = 0; i < _walkPath.length; )
          {
-            if(_walkPath[_loc3_].x == _playerData.currentWalkStartPoint.x && _walkPath[_loc3_].y == _playerData.currentWalkStartPoint.y)
+            if(_walkPath[i].x == _playerData.currentWalkStartPoint.x && _walkPath[i].y == _playerData.currentWalkStartPoint.y)
             {
-               _loc2_ = _loc3_;
+               startPointIndex = i;
                break;
             }
-            _loc3_++;
+            i++;
          }
-         if(_loc2_ > 0)
+         if(startPointIndex > 0)
          {
-            _loc1_ = _walkPath.slice(0,_loc2_);
-            _playerData.walkPath = _loc1_.concat(_playerData.walkPath);
+            lastPath = _walkPath.slice(0,startPointIndex);
+            _playerData.walkPath = lastPath.concat(_playerData.walkPath);
          }
       }
       
-      override public function playerWalk(param1:Array) : void
+      override public function playerWalk(walkPathArray:Array) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:Number = NaN;
+         var dirction:* = null;
+         var dis:Number = NaN;
          if(_walkPath != null && _tween.isPlaying && _walkPath == playerData.walkPath)
          {
             return;
@@ -434,14 +433,14 @@ package consortionBattle.player
          if(_walkPath && _walkPath.length > 0)
          {
             _currentWalkStartPoint = _walkPath[0];
-            _loc2_ = setPlayerDirection();
-            if(_loc2_ != sceneCharacterDirection)
+            dirction = setPlayerDirection();
+            if(dirction != sceneCharacterDirection)
             {
-               sceneCharacterDirection = _loc2_;
+               sceneCharacterDirection = dirction;
             }
             characterDirectionChange(true);
-            _loc3_ = Point.distance(_currentWalkStartPoint,playerPoint);
-            _tween.start(_loc3_ / _walkSpeed,"x",_currentWalkStartPoint.x,"y",_currentWalkStartPoint.y);
+            dis = Point.distance(_currentWalkStartPoint,playerPoint);
+            _tween.start(dis / _walkSpeed,"x",_currentWalkStartPoint.x,"y",_currentWalkStartPoint.y);
             _walkPath.shift();
          }
          else
@@ -452,20 +451,20 @@ package consortionBattle.player
       
       private function setPlayerDirection() : SceneCharacterDirection
       {
-         var _loc1_:* = null;
-         _loc1_ = SceneCharacterDirection.getDirection(playerPoint,_currentWalkStartPoint);
+         var direction:* = null;
+         direction = SceneCharacterDirection.getDirection(playerPoint,_currentWalkStartPoint);
          if(_playerData.IsMounts)
          {
-            if(_loc1_ == SceneCharacterDirection.LT)
+            if(direction == SceneCharacterDirection.LT)
             {
-               _loc1_ = SceneCharacterDirection.LB;
+               direction = SceneCharacterDirection.LB;
             }
-            else if(_loc1_ == SceneCharacterDirection.RT)
+            else if(direction == SceneCharacterDirection.RT)
             {
-               _loc1_ = SceneCharacterDirection.RB;
+               direction = SceneCharacterDirection.RB;
             }
          }
-         return _loc1_;
+         return direction;
       }
       
       public function get playerData() : ConsortiaBattlePlayerInfo
@@ -483,9 +482,9 @@ package consortionBattle.player
          return _fighting.visible;
       }
       
-      private function characterDirectionChange(param1:Boolean) : void
+      private function characterDirectionChange(actionFlag:Boolean) : void
       {
-         if(param1)
+         if(actionFlag)
          {
             if(sceneCharacterDirection == SceneCharacterDirection.LT || sceneCharacterDirection == SceneCharacterDirection.RT)
             {

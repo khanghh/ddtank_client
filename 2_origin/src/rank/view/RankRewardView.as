@@ -48,7 +48,7 @@ package rank.view
          _checkBtn.addEventListener("click",checkBtnHandler);
       }
       
-      private function checkBtnHandler(param1:MouseEvent) : void
+      private function checkBtnHandler(event:MouseEvent) : void
       {
          if(RankManager.instance.reweadDataList && RankManager.instance.reweadDataList.length > 0)
          {
@@ -60,70 +60,68 @@ package rank.view
       
       public function setData() : void
       {
-         var _loc8_:int = 0;
-         var _loc6_:* = null;
-         var _loc1_:* = null;
-         var _loc5_:int = 0;
-         var _loc7_:* = null;
-         var _loc4_:* = null;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
+         var i:int = 0;
+         var rankInfo:* = null;
+         var hbox:* = null;
+         var j:int = 0;
+         var info:* = null;
+         var attrArr:* = null;
+         var cell:* = null;
+         var countTxt:* = null;
          ObjectUtils.disposeObject(vbox);
          vbox = null;
          vbox = ComponentFactory.Instance.creatComponentByStylename("rank.ActivityState.Vbox");
          addChild(vbox);
-         _loc8_ = 1;
-         while(_loc8_ <= RankManager.instance.model.currentInfo.giftbagArray.length)
+         for(i = 1; i <= RankManager.instance.model.currentInfo.giftbagArray.length; )
          {
-            _loc6_ = new RankInfo();
-            _loc6_ = RankManager.instance.rankData(RankManager.instance.model.currentInfo.giftbagArray,_loc8_);
-            if(_loc6_ && _loc6_.giftRewardArr)
+            rankInfo = new RankInfo();
+            rankInfo = RankManager.instance.rankData(RankManager.instance.model.currentInfo.giftbagArray,i);
+            if(rankInfo && rankInfo.giftRewardArr)
             {
-               _loc1_ = new HBox();
-               _loc5_ = 0;
-               while(_loc5_ < _loc6_.giftRewardArr.length)
+               hbox = new HBox();
+               for(j = 0; j < rankInfo.giftRewardArr.length; )
                {
-                  _loc7_ = new InventoryItemInfo();
-                  _loc7_.TemplateID = _loc6_.giftRewardArr[_loc5_].templateId;
-                  _loc7_ = ItemManager.fill(_loc7_);
-                  _loc7_.IsBinds = _loc6_.giftRewardArr[_loc5_].isBind;
-                  _loc7_.ValidDate = _loc6_.giftRewardArr[_loc5_].validDate;
-                  _loc4_ = _loc6_.giftRewardArr[_loc5_].property.split(",");
-                  _loc7_.StrengthenLevel = parseInt(_loc4_[0]);
-                  _loc7_.AttackCompose = parseInt(_loc4_[1]);
-                  _loc7_.DefendCompose = parseInt(_loc4_[2]);
-                  _loc7_.AgilityCompose = parseInt(_loc4_[3]);
-                  _loc7_.LuckCompose = parseInt(_loc4_[4]);
-                  if(EquipType.isMagicStone(_loc7_.CategoryID))
+                  info = new InventoryItemInfo();
+                  info.TemplateID = rankInfo.giftRewardArr[j].templateId;
+                  info = ItemManager.fill(info);
+                  info.IsBinds = rankInfo.giftRewardArr[j].isBind;
+                  info.ValidDate = rankInfo.giftRewardArr[j].validDate;
+                  attrArr = rankInfo.giftRewardArr[j].property.split(",");
+                  info.StrengthenLevel = parseInt(attrArr[0]);
+                  info.AttackCompose = parseInt(attrArr[1]);
+                  info.DefendCompose = parseInt(attrArr[2]);
+                  info.AgilityCompose = parseInt(attrArr[3]);
+                  info.LuckCompose = parseInt(attrArr[4]);
+                  if(EquipType.isMagicStone(info.CategoryID))
                   {
-                     _loc7_.Level = _loc7_.StrengthenLevel;
-                     _loc7_.Attack = _loc7_.AttackCompose;
-                     _loc7_.Defence = _loc7_.DefendCompose;
-                     _loc7_.Agility = _loc7_.AgilityCompose;
-                     _loc7_.Luck = _loc7_.LuckCompose;
-                     _loc7_.MagicAttack = parseInt(_loc4_[6]);
-                     _loc7_.MagicDefence = parseInt(_loc4_[7]);
-                     _loc7_.StrengthenExp = parseInt(_loc4_[8]);
+                     info.Level = info.StrengthenLevel;
+                     info.Attack = info.AttackCompose;
+                     info.Defence = info.DefendCompose;
+                     info.Agility = info.AgilityCompose;
+                     info.Luck = info.LuckCompose;
+                     info.MagicAttack = parseInt(attrArr[6]);
+                     info.MagicDefence = parseInt(attrArr[7]);
+                     info.StrengthenExp = parseInt(attrArr[8]);
                   }
-                  _loc7_.Count = _loc6_.giftRewardArr[_loc5_].count;
-                  _loc2_ = new BagCell(0,_loc7_,false,ComponentFactory.Instance.creatBitmap("asset.rank.cellBg"));
-                  if(_loc7_.MaxCount == 1 && _loc7_.Count > _loc7_.MaxCount)
+                  info.Count = rankInfo.giftRewardArr[j].count;
+                  cell = new BagCell(0,info,false,ComponentFactory.Instance.creatBitmap("asset.rank.cellBg"));
+                  if(info.MaxCount == 1 && info.Count > info.MaxCount)
                   {
-                     _loc3_ = ComponentFactory.Instance.creatComponentByStylename("BagCellCountText");
-                     _loc3_.text = String(_loc7_.Count);
-                     _loc3_.x = 34;
-                     _loc3_.y = 31;
-                     _loc2_.addChild(_loc3_);
+                     countTxt = ComponentFactory.Instance.creatComponentByStylename("BagCellCountText");
+                     countTxt.text = String(info.Count);
+                     countTxt.x = 34;
+                     countTxt.y = 31;
+                     cell.addChild(countTxt);
                   }
-                  _loc2_.x = _loc5_ * _loc2_.width;
-                  _loc2_.refreshTbxPos();
-                  _loc1_.addChild(_loc2_);
-                  _loc5_++;
+                  cell.x = j * cell.width;
+                  cell.refreshTbxPos();
+                  hbox.addChild(cell);
+                  j++;
                }
-               _loc1_.y = _loc8_ * 50;
-               vbox.addChild(_loc1_);
+               hbox.y = i * 50;
+               vbox.addChild(hbox);
             }
-            _loc8_++;
+            i++;
          }
       }
       

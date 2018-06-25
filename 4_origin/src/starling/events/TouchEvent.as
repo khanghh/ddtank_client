@@ -18,132 +18,128 @@ package starling.events
       
       private var mVisitedObjects:Vector.<EventDispatcher>;
       
-      public function TouchEvent(param1:String, param2:Vector.<Touch>, param3:Boolean = false, param4:Boolean = false, param5:Boolean = true)
+      public function TouchEvent(type:String, touches:Vector.<Touch>, shiftKey:Boolean = false, ctrlKey:Boolean = false, bubbles:Boolean = true)
       {
-         var _loc7_:int = 0;
-         super(param1,param5,param2);
-         mShiftKey = param3;
-         mCtrlKey = param4;
+         var i:int = 0;
+         super(type,bubbles,touches);
+         mShiftKey = shiftKey;
+         mCtrlKey = ctrlKey;
          mTimestamp = -1;
          mVisitedObjects = new Vector.<EventDispatcher>(0);
-         var _loc6_:int = param2.length;
-         _loc7_ = 0;
-         while(_loc7_ < _loc6_)
+         var numTouches:int = touches.length;
+         for(i = 0; i < numTouches; )
          {
-            if(param2[_loc7_].timestamp > mTimestamp)
+            if(touches[i].timestamp > mTimestamp)
             {
-               mTimestamp = param2[_loc7_].timestamp;
+               mTimestamp = touches[i].timestamp;
             }
-            _loc7_++;
+            i++;
          }
       }
       
-      public function getTouches(param1:DisplayObject, param2:String = null, param3:Vector.<Touch> = null) : Vector.<Touch>
+      public function getTouches(target:DisplayObject, phase:String = null, result:Vector.<Touch> = null) : Vector.<Touch>
       {
-         var _loc9_:int = 0;
-         var _loc4_:* = null;
-         var _loc8_:Boolean = false;
-         var _loc6_:Boolean = false;
-         if(param3 == null)
+         var i:int = 0;
+         var touch:* = null;
+         var correctTarget:Boolean = false;
+         var correctPhase:Boolean = false;
+         if(result == null)
          {
-            param3 = new Vector.<Touch>(0);
+            result = new Vector.<Touch>(0);
          }
-         var _loc5_:Vector.<Touch> = data as Vector.<Touch>;
-         var _loc7_:int = _loc5_.length;
-         _loc9_ = 0;
-         while(_loc9_ < _loc7_)
+         var allTouches:Vector.<Touch> = data as Vector.<Touch>;
+         var numTouches:int = allTouches.length;
+         for(i = 0; i < numTouches; )
          {
-            _loc4_ = _loc5_[_loc9_];
-            _loc8_ = _loc4_.isTouching(param1);
-            _loc6_ = param2 == null || param2 == _loc4_.phase;
-            if(_loc8_ && _loc6_)
+            touch = allTouches[i];
+            correctTarget = touch.isTouching(target);
+            correctPhase = phase == null || phase == touch.phase;
+            if(correctTarget && correctPhase)
             {
-               param3[param3.length] = _loc4_;
+               result[result.length] = touch;
             }
-            _loc9_++;
+            i++;
          }
-         return param3;
+         return result;
       }
       
-      public function getTouch(param1:DisplayObject, param2:String = null, param3:int = -1) : Touch
+      public function getTouch(target:DisplayObject, phase:String = null, id:int = -1) : Touch
       {
-         var _loc4_:* = null;
-         var _loc6_:int = 0;
-         getTouches(param1,param2,sTouches);
-         var _loc5_:int = sTouches.length;
-         if(_loc5_ > 0)
+         var touch:* = null;
+         var i:int = 0;
+         getTouches(target,phase,sTouches);
+         var numTouches:int = sTouches.length;
+         if(numTouches > 0)
          {
-            _loc4_ = null;
-            if(param3 < 0)
+            touch = null;
+            if(id < 0)
             {
-               _loc4_ = sTouches[0];
+               touch = sTouches[0];
             }
             else
             {
-               _loc6_ = 0;
-               while(_loc6_ < _loc5_)
+               i = 0;
+               while(i < numTouches)
                {
-                  if(sTouches[_loc6_].id == param3)
+                  if(sTouches[i].id == id)
                   {
-                     _loc4_ = sTouches[_loc6_];
+                     touch = sTouches[i];
                      break;
                   }
-                  _loc6_++;
+                  i++;
                }
             }
             sTouches.length = 0;
-            return _loc4_;
+            return touch;
          }
          return null;
       }
       
-      public function interactsWith(param1:DisplayObject) : Boolean
+      public function interactsWith(target:DisplayObject) : Boolean
       {
-         var _loc3_:int = 0;
-         var _loc2_:Boolean = false;
-         getTouches(param1,null,sTouches);
-         _loc3_ = sTouches.length - 1;
-         while(_loc3_ >= 0)
+         var i:int = 0;
+         var result:Boolean = false;
+         getTouches(target,null,sTouches);
+         for(i = sTouches.length - 1; i >= 0; )
          {
-            if(sTouches[_loc3_].phase != "ended")
+            if(sTouches[i].phase != "ended")
             {
-               _loc2_ = true;
+               result = true;
                break;
             }
-            _loc3_--;
+            i--;
          }
          sTouches.length = 0;
-         return _loc2_;
+         return result;
       }
       
-      function dispatch(param1:Vector.<EventDispatcher>) : void
+      function dispatch(chain:Vector.<EventDispatcher>) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
-         var _loc4_:Boolean = false;
-         if(param1 && param1.length)
+         var chainLength:int = 0;
+         var previousTarget:* = null;
+         var i:int = 0;
+         var chainElement:* = null;
+         var stopPropagation:Boolean = false;
+         if(chain && chain.length)
          {
-            _loc3_ = !!bubbles?param1.length:1;
-            _loc2_ = target;
-            setTarget(param1[0] as EventDispatcher);
-            _loc6_ = 0;
-            while(_loc6_ < _loc3_)
+            chainLength = !!bubbles?chain.length:1;
+            previousTarget = target;
+            setTarget(chain[0] as EventDispatcher);
+            for(i = 0; i < chainLength; )
             {
-               _loc5_ = param1[_loc6_] as EventDispatcher;
-               if(mVisitedObjects.indexOf(_loc5_) == -1)
+               chainElement = chain[i] as EventDispatcher;
+               if(mVisitedObjects.indexOf(chainElement) == -1)
                {
-                  _loc4_ = _loc5_.invokeEvent(this);
-                  mVisitedObjects[mVisitedObjects.length] = _loc5_;
-                  if(_loc4_)
+                  stopPropagation = chainElement.invokeEvent(this);
+                  mVisitedObjects[mVisitedObjects.length] = chainElement;
+                  if(stopPropagation)
                   {
                      break;
                   }
                }
-               _loc6_++;
+               i++;
             }
-            setTarget(_loc2_);
+            setTarget(previousTarget);
          }
       }
       

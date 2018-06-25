@@ -50,10 +50,10 @@ package demonChiYou.view
       
       private var _confirmAlertHelper:ConfirmAlertHelper;
       
-      public function RewardSelectItem(param1:int)
+      public function RewardSelectItem(index:int)
       {
          super();
-         _index = param1;
+         _index = index;
          initView();
          initEvent();
       }
@@ -67,12 +67,12 @@ package demonChiYou.view
          _bagCell = new BagCell(1);
          _bagCell.BGVisible = false;
          _bagCell.setContentSize(60,60);
-         var _loc1_:InventoryItemInfo = _itemData["InventoryItemInfo"];
-         _bagCell.info = _loc1_;
-         _bagCell.setCount(_loc1_.Count);
+         var inventoryItemInfo:InventoryItemInfo = _itemData["InventoryItemInfo"];
+         _bagCell.info = inventoryItemInfo;
+         _bagCell.setCount(inventoryItemInfo.Count);
          PositionUtils.setPos(_bagCell,"demonChiYou.selectItemGoodPos");
          addChild(_bagCell);
-         _selectItemNameTf = UICreatShortcut.creatTextAndAdd("demonChiYou.selectItemNameTf",_loc1_.Name,this);
+         _selectItemNameTf = UICreatShortcut.creatTextAndAdd("demonChiYou.selectItemNameTf",inventoryItemInfo.Name,this);
          _selectItemRollCostTf = UICreatShortcut.creatTextAndAdd("demonChiYou.selectItemRollCostTf",_mgr.getRollCost() + LanguageMgr.GetTranslation("money"),this);
          _diceMC = UICreatShortcut.creatAndAdd("DemonChiYou.DiceMC",this);
          PositionUtils.setPos(_diceMC,"demonChiYou.selectItemDicePos");
@@ -104,12 +104,12 @@ package demonChiYou.view
          _mgr.removeEventListener("event_buy_roll_back",onRollBack);
       }
       
-      private function onRollBack(param1:CEvent) : void
+      private function onRollBack(evt:CEvent) : void
       {
-         var _loc2_:Object = param1.data;
-         if(_loc2_.id == _itemData["ID"])
+         var data:Object = evt.data;
+         if(data.id == _itemData["ID"])
          {
-            _resultPoint = _loc2_.roll;
+            _resultPoint = data.roll;
             _diceMC.addEventListener("enterFrame",onDiceFrame);
             _diceMC.play();
             _selectItemRollCostTf.visible = false;
@@ -120,12 +120,12 @@ package demonChiYou.view
          }
       }
       
-      private function onClickDiceMC(param1:MouseEvent) : void
+      private function onClickDiceMC(evt:MouseEvent) : void
       {
-         evt = param1;
-         onUsePropConfirm = function(param1:BaseAlerFrame):void
+         evt = evt;
+         onUsePropConfirm = function(frame:BaseAlerFrame):void
          {
-            _buyConfirmAlertData.notShowAlertAgain = param1["isNoPrompt"];
+            _buyConfirmAlertData.notShowAlertAgain = frame["isNoPrompt"];
          };
          onUsePropCheckOut = function():void
          {
@@ -153,7 +153,7 @@ package demonChiYou.view
          }
       }
       
-      private function onDiceFrame(param1:Event) : void
+      private function onDiceFrame(evt:Event) : void
       {
          if(_diceMC.currentFrame == 13)
          {

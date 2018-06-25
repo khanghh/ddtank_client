@@ -74,16 +74,16 @@ package magicHouse
          _btnGroup.removeEventListener("change",__changeHandler);
       }
       
-      private function __response(param1:FrameEvent) : void
+      private function __response(e:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(e.responseCode == 0 || e.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();
          }
       }
       
-      private function __changeHandler(param1:Event) : void
+      private function __changeHandler(e:Event) : void
       {
          switch(int(_btnGroup.selectIndex))
          {
@@ -155,10 +155,10 @@ package magicHouse
          }
       }
       
-      public function show(param1:int = 0) : void
+      public function show(view:int = 0) : void
       {
          LayerManager.Instance.addToLayer(this,3,true,2);
-         _btnGroup.selectIndex = param1;
+         _btnGroup.selectIndex = view;
       }
       
       public function close() : void

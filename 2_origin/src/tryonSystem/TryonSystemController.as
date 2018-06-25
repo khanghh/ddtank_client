@@ -43,10 +43,10 @@ package tryonSystem
          return _instance;
       }
       
-      public function getModelByView(param1:Frame) : TryonModel
+      public function getModelByView(view:Frame) : TryonModel
       {
-         _view = param1;
-         return _modelDic[param1];
+         _view = view;
+         return _modelDic[view];
       }
       
       public function get view() : Frame
@@ -54,48 +54,48 @@ package tryonSystem
          return _view;
       }
       
-      public function show(param1:Array, param2:Function = null, param3:Function = null) : void
+      public function show(items:Array, submitFun:Function = null, cancelFun:Function = null) : void
       {
          if(_view)
          {
             return;
          }
-         var _loc5_:TryonModel = new TryonModel(param1);
-         var _loc4_:* = param2;
-         var _loc6_:* = param3;
-         if(EquipType.isAvatar(InventoryItemInfo(param1[0]).CategoryID))
+         var model:TryonModel = new TryonModel(items);
+         var sumFun:* = submitFun;
+         var canFun:* = cancelFun;
+         if(EquipType.isAvatar(InventoryItemInfo(items[0]).CategoryID))
          {
             _view = ComponentFactory.Instance.creatComponentByStylename("tryonSystem.tryonFrame") as TryonPanelFrame;
-            _modelDic[_view] = _loc5_;
+            _modelDic[_view] = model;
             TryonPanelFrame(_view).controller = this;
          }
          else
          {
             _view = ComponentFactory.Instance.creatComponentByStylename("tryonSystem.ChoosePanelFrame") as ChooseFrame;
-            _modelDic[_view] = _loc5_;
+            _modelDic[_view] = model;
             ChooseFrame(_view).controller = this;
          }
-         if(_loc4_ != null)
+         if(sumFun != null)
          {
-            _sumbmintFunDic[_view] = _loc4_;
+            _sumbmintFunDic[_view] = sumFun;
          }
-         if(_loc6_ != null)
+         if(canFun != null)
          {
-            _cancelFunDic[_view] = _loc6_;
+            _cancelFunDic[_view] = canFun;
          }
          _view.addEventListener("response",__onResponse);
          _view.addEventListener("removedFromStage",__onRemoved);
          LayerManager.Instance.addToLayer(_view,3,true,1,true);
       }
       
-      private function __onRemoved(param1:Event) : void
+      private function __onRemoved(event:Event) : void
       {
-         var _loc2_:* = null;
+         var model:* = null;
          if(_modelDic[_view])
          {
-            _loc2_ = _modelDic[_view];
-            _loc2_.dispose();
-            _loc2_ = null;
+            model = _modelDic[_view];
+            model.dispose();
+            model = null;
             delete _modelDic[_view];
          }
          if(_view)
@@ -117,11 +117,11 @@ package tryonSystem
          _view = null;
       }
       
-      private function __onResponse(param1:FrameEvent) : void
+      private function __onResponse(event:FrameEvent) : void
       {
-         var _loc2_:* = null;
+         var model:* = null;
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -147,9 +147,9 @@ package tryonSystem
          }
          if(_modelDic[_view])
          {
-            _loc2_ = _modelDic[_view];
-            _loc2_.dispose();
-            _loc2_ = null;
+            model = _modelDic[_view];
+            model.dispose();
+            model = null;
             delete _modelDic[_view];
          }
          if(_view)

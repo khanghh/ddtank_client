@@ -78,6 +78,8 @@ package consortion.view.selfConsortia.consortiaTask
       
       private var _delayTimeBtn:TextButton;
       
+      private var _reSetTaskMoney:int;
+      
       public function ConsortiaMyTaskView()
       {
          super();
@@ -87,11 +89,11 @@ package consortion.view.selfConsortia.consortiaTask
       
       private function initView() : void
       {
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
+         var i:int = 0;
+         var item:* = null;
          _finishItemList = new Vector.<ConsortiaMyTaskFinishItem>();
-         var _loc2_:MutipleImage = ComponentFactory.Instance.creatComponentByStylename("consortion.task.bgI");
-         var _loc6_:MutipleImage = ComponentFactory.Instance.creatComponentByStylename("consortion.task.bgII");
+         var bgI:MutipleImage = ComponentFactory.Instance.creatComponentByStylename("consortion.task.bgI");
+         var bgII:MutipleImage = ComponentFactory.Instance.creatComponentByStylename("consortion.task.bgII");
          _vbox = ComponentFactory.Instance.creatComponentByStylename("consortion.task.vboxI");
          _myFinishTxt = ComponentFactory.Instance.creatComponentByStylename("consortion.task.MyfinishTxt");
          _expText = ComponentFactory.Instance.creatComponentByStylename("consortion.task.expTxt");
@@ -112,20 +114,19 @@ package consortion.view.selfConsortia.consortiaTask
          _badgeLbl = ComponentFactory.Instance.creatComponentByStylename("consortion.task.badgeLbl");
          _badgeLbl.text = LanguageMgr.GetTranslation("consortion.task.badge");
          _badgeText = ComponentFactory.Instance.creatComponentByStylename("consortion.task.badgeTxt");
-         var _loc1_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.conortionTask.FontContent");
+         var font1:Bitmap = ComponentFactory.Instance.creatBitmap("asset.conortionTask.FontContent");
          _contentTxt1 = ComponentFactory.Instance.creatComponentByStylename("consortion.task.contentTxt1");
          _contentTxt2 = ComponentFactory.Instance.creatComponentByStylename("consortion.task.contentTxt2");
          _contentTxt3 = ComponentFactory.Instance.creatComponentByStylename("consortion.task.contentTxt3");
-         _loc5_ = 0;
-         while(_loc5_ < 3)
+         for(i = 0; i < 3; )
          {
-            _loc3_ = ComponentFactory.Instance.creatCustomObject("ConsortiaMyTaskFinishItem");
-            _finishItemList.push(_loc3_);
-            _vbox.addChild(_loc3_);
-            _loc5_++;
+            item = ComponentFactory.Instance.creatCustomObject("ConsortiaMyTaskFinishItem");
+            _finishItemList.push(item);
+            _vbox.addChild(item);
+            i++;
          }
-         addChild(_loc2_);
-         addChild(_loc6_);
+         addChild(bgI);
+         addChild(bgII);
          addChild(_vbox);
          addChild(_myFinishTxt);
          addChild(_expText);
@@ -150,9 +151,10 @@ package consortion.view.selfConsortia.consortiaTask
          _delayTimeBtn = ComponentFactory.Instance.creatComponentByStylename("consortion.task.delayTimeBtn");
          _delayTimeBtn.text = LanguageMgr.GetTranslation("consortia.task.delayTime");
          addChild(_delayTimeBtn);
-         var _loc4_:int = PlayerManager.Instance.Self.Right;
-         _myReseBtn.visible = ConsortiaDutyManager.GetRight(_loc4_,512);
-         _delayTimeBtn.visible = ConsortiaDutyManager.GetRight(_loc4_,512);
+         var right:int = PlayerManager.Instance.Self.Right;
+         _myReseBtn.visible = ConsortiaDutyManager.GetRight(right,512);
+         _delayTimeBtn.visible = ConsortiaDutyManager.GetRight(right,512);
+         ConsortionModelManager.Instance.TaskModel.lockNum = 0;
       }
       
       private function initEvents() : void
@@ -163,14 +165,14 @@ package consortion.view.selfConsortia.consortiaTask
          PlayerManager.Instance.Self.addEventListener("propertychange",__propChange);
       }
       
-      protected function __taskRankClick(param1:MouseEvent) : void
+      protected function __taskRankClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:ConsortionTaskRank = ComponentFactory.Instance.creatComponentByStylename("consortion.taskRank.frame");
-         LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+         var taskRankFrame:ConsortionTaskRank = ComponentFactory.Instance.creatComponentByStylename("consortion.taskRank.frame");
+         LayerManager.Instance.addToLayer(taskRankFrame,3,true,1);
       }
       
-      private function __delayTimeClick(param1:MouseEvent) : void
+      private function __delayTimeClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -178,26 +180,42 @@ package consortion.view.selfConsortia.consortiaTask
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:int = ConsortionModelManager.Instance.TaskModel.taskInfo.level - 1;
-         var _loc3_:int = ServerConfigManager.instance.consortiaTaskDelayInfo[_loc2_][0];
-         var _loc5_:int = ServerConfigManager.instance.consortiaTaskDelayInfo[_loc2_][1];
-         var _loc4_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("consortia.task.delayTime"),LanguageMgr.GetTranslation("consortia.task.delayTimeContent",_loc5_,_loc3_),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
-         _loc4_.moveEnable = false;
-         _loc4_.addEventListener("response",_responseII);
+         var tmpLevel:int = ConsortionModelManager.Instance.TaskModel.taskInfo.level - 1;
+         var tmpTime:int = ServerConfigManager.instance.consortiaTaskDelayInfo[tmpLevel][0];
+         var tmpRich:int = ServerConfigManager.instance.consortiaTaskDelayInfo[tmpLevel][1];
+         var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("consortia.task.delayTime"),LanguageMgr.GetTranslation("consortia.task.delayTimeContent",tmpRich,tmpTime),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
+         alert.moveEnable = false;
+         alert.addEventListener("response",_responseII);
       }
       
-      private function _responseII(param1:FrameEvent) : void
+      private function _responseII(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",_responseII);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         (event.currentTarget as BaseAlerFrame).removeEventListener("response",_responseII);
+         if(event.responseCode == 2 || event.responseCode == 3)
          {
             SocketManager.Instance.out.sendReleaseConsortiaTask(6);
          }
       }
       
-      private function __resetClick(param1:MouseEvent) : void
+      private function getLockIdArr() : Array
       {
+         var i:int = 0;
+         var arr:Array = [];
+         for(i = 0; i < _finishItemList.length; )
+         {
+            if(_finishItemList[i].isLock)
+            {
+               arr.push(_finishItemList[i].lockId);
+            }
+            i++;
+         }
+         return arr;
+      }
+      
+      private function __resetClick(event:MouseEvent) : void
+      {
+         var alert:* = null;
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -208,15 +226,35 @@ package consortion.view.selfConsortia.consortiaTask
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("consortia.task.stopTable"));
          }
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("consortia.task.resetTable"),LanguageMgr.GetTranslation("consortia.task.resetContent",ConsortiaTaskView.RESET_MONEY),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2,null,"SimpleAlert",30,true,1);
-         _loc2_.moveEnable = false;
-         _loc2_.addEventListener("response",_responseI);
+         var arr:Array = getLockIdArr();
+         var length:int = arr.length;
+         if(length)
+         {
+            if(length == 1)
+            {
+               _reSetTaskMoney = ConsortiaTaskView.RESET_MONEY + int(ServerConfigManager.instance.consortiaTaskPriceArr[0]);
+            }
+            else if(length == 2)
+            {
+               _reSetTaskMoney = ConsortiaTaskView.RESET_MONEY + int(ServerConfigManager.instance.consortiaTaskPriceArr[0]) + int(ServerConfigManager.instance.consortiaTaskPriceArr[1]);
+            }
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("consortia.task.resetTable"),LanguageMgr.GetTranslation("consortia.task.resetLuckContent",arr.length,_reSetTaskMoney),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2,null,"SimpleAlert",30,true,1);
+            alert.moveEnable = false;
+            alert.addEventListener("response",_responseI);
+         }
+         else
+         {
+            _reSetTaskMoney = ConsortiaTaskView.RESET_MONEY;
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("consortia.task.resetTable"),LanguageMgr.GetTranslation("consortia.task.resetContent",_reSetTaskMoney),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2,null,"SimpleAlert",30,true,1);
+            alert.moveEnable = false;
+            alert.addEventListener("response",_responseI);
+         }
       }
       
-      private function _responseI(param1:FrameEvent) : void
+      private function _responseI(event:FrameEvent) : void
       {
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",_responseI);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         (event.currentTarget as BaseAlerFrame).removeEventListener("response",_responseI);
+         if(event.responseCode == 2 || event.responseCode == 3)
          {
             if(ConsortionModelManager.Instance.TaskModel.taskInfo == null)
             {
@@ -225,27 +263,30 @@ package consortion.view.selfConsortia.consortiaTask
             }
             else
             {
-               CheckMoneyUtils.instance.checkMoney(param1.currentTarget.isBand,ConsortiaTaskView.RESET_MONEY,onCheckComplete);
+               CheckMoneyUtils.instance.checkMoney(event.currentTarget.isBand,_reSetTaskMoney,onCheckComplete);
             }
          }
-         ObjectUtils.disposeObject(param1.currentTarget as BaseAlerFrame);
+         ObjectUtils.disposeObject(event.currentTarget as BaseAlerFrame);
       }
       
       protected function onCheckComplete() : void
       {
-         SocketManager.Instance.out.sendReleaseConsortiaTask(1,CheckMoneyUtils.instance.isBind);
+         var lockArr:Array = getLockIdArr();
+         var lock1:int = !!lockArr[0]?lockArr[0]:0;
+         var lock2:int = !!lockArr[1]?lockArr[1]:0;
+         SocketManager.Instance.out.sendReleaseConsortiaTask(1,CheckMoneyUtils.instance.isBind,1,1,lock1,lock2);
          SocketManager.Instance.out.sendReleaseConsortiaTask(2);
       }
       
-      private function __onNoMoneyResponse(param1:FrameEvent) : void
+      private function __onNoMoneyResponse(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onNoMoneyResponse);
-         _loc2_.disposeChildren = true;
-         _loc2_.dispose();
-         _loc2_ = null;
-         if(param1.responseCode == 3)
+         var alert:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",__onNoMoneyResponse);
+         alert.disposeChildren = true;
+         alert.dispose();
+         alert = null;
+         if(event.responseCode == 3)
          {
             LeavePageManager.leaveToFillPath();
          }
@@ -268,70 +309,102 @@ package consortion.view.selfConsortia.consortiaTask
          PlayerManager.Instance.Self.removeEventListener("propertychange",__propChange);
       }
       
-      private function __propChange(param1:PlayerPropertyEvent) : void
+      private function __propChange(event:PlayerPropertyEvent) : void
       {
-         var _loc2_:int = 0;
-         if(param1.changedProperties["Right"])
+         var right:int = 0;
+         if(event.changedProperties["Right"])
          {
-            _loc2_ = PlayerManager.Instance.Self.Right;
-            _myReseBtn.visible = ConsortiaDutyManager.GetRight(_loc2_,512);
-            _delayTimeBtn.visible = ConsortiaDutyManager.GetRight(_loc2_,512);
+            right = PlayerManager.Instance.Self.Right;
+            _myReseBtn.visible = ConsortiaDutyManager.GetRight(right,512);
+            _delayTimeBtn.visible = ConsortiaDutyManager.GetRight(right,512);
          }
       }
       
       private function update() : void
       {
-         var _loc8_:int = 0;
-         var _loc5_:int = 0;
-         var _loc6_:int = PlayerManager.Instance.Self.Right;
-         var _loc3_:Boolean = true;
-         var _loc4_:int = _taskInfo.itemList.length;
-         _loc8_ = 0;
-         while(_loc8_ < _loc4_)
+         var i:int = 0;
+         var m:int = 0;
+         var h:int = 0;
+         var right:int = PlayerManager.Instance.Self.Right;
+         var isFinished:Boolean = true;
+         var len:int = _taskInfo.itemList.length;
+         for(i = 0; i < len; )
          {
-            if(_taskInfo.itemList[_loc8_].currenValue - _taskInfo.itemList[_loc8_].targetValue < 0)
+            if(_taskInfo.itemList[i].currenValue - _taskInfo.itemList[i].targetValue < 0)
             {
-               _loc3_ = false;
+               isFinished = false;
                break;
             }
-            _loc8_++;
+            i++;
          }
-         PositionUtils.setPos(_contributionRankBtn,!!_loc3_?"taskRank.taskRankBtn.posFisished":"taskRank.taskRankBtn.posNotFisished");
-         _myReseBtn.visible = ConsortiaDutyManager.GetRight(_loc6_,512) && !_loc3_;
-         _delayTimeBtn.visible = ConsortiaDutyManager.GetRight(_loc6_,512);
-         _loc5_ = 0;
-         while(_loc5_ < _finishItemList.length)
+         PositionUtils.setPos(_contributionRankBtn,!!isFinished?"taskRank.taskRankBtn.posFisished":"taskRank.taskRankBtn.posNotFisished");
+         _myReseBtn.visible = ConsortiaDutyManager.GetRight(right,512) && !isFinished;
+         _delayTimeBtn.visible = ConsortiaDutyManager.GetRight(right,512);
+         var j:int = 0;
+         var arr:Array = getLockIdArr();
+         for(m = 0; m < _finishItemList.length; )
          {
-            _finishItemList[_loc5_].update(_taskInfo.itemList[_loc5_]["taskType"],_taskInfo.itemList[_loc5_]["content"],_taskInfo.itemList[_loc5_]["currenValue"],_taskInfo.itemList[_loc5_]["targetValue"]);
-            _loc5_++;
+            if(arr.length)
+            {
+               if(_finishItemList[m].isLock)
+               {
+                  for(h = 0; h < _taskInfo.itemList.length; )
+                  {
+                     if(_finishItemList[m].taskId == _taskInfo.itemList[h]["id"])
+                     {
+                        _finishItemList[m].updateFinishTxt(_taskInfo.itemList[h]["currenValue"]);
+                     }
+                     h++;
+                  }
+               }
+               else
+               {
+                  j;
+                  while(j < _taskInfo.itemList.length)
+                  {
+                     if(arr.indexOf(_taskInfo.itemList[j]["id"]) == -1)
+                     {
+                        _finishItemList[m].update(_taskInfo.itemList[j]["taskType"],_taskInfo.itemList[j]["content"],_taskInfo.itemList[j]["currenValue"],_taskInfo.itemList[j]["targetValue"],_taskInfo.itemList[j]["id"]);
+                        j++;
+                        break;
+                     }
+                     j++;
+                  }
+               }
+            }
+            else
+            {
+               _finishItemList[m].update(_taskInfo.itemList[m]["taskType"],_taskInfo.itemList[m]["content"],_taskInfo.itemList[m]["currenValue"],_taskInfo.itemList[m]["targetValue"],_taskInfo.itemList[m]["id"]);
+            }
+            m++;
          }
          _expTxt.text = _taskInfo.exp.toString();
          _offerTxt.text = _taskInfo.offer.toString();
          _richesTxt.text = _taskInfo.riches.toString();
          _contributionTxt.text = _taskInfo.contribution.toString();
-         var _loc7_:ConsortionSkillInfo = ConsortionModelManager.Instance.model.getSkillInfoByID(_taskInfo.buffID);
-         if(_loc7_ != null)
+         var buffinfo:ConsortionSkillInfo = ConsortionModelManager.Instance.model.getSkillInfoByID(_taskInfo.buffID);
+         if(buffinfo != null)
          {
-            _skillNameTxt.text = _loc7_.name + "*1天";
+            _skillNameTxt.text = buffinfo.name + "*1天";
          }
          _contentTxt1.text = "1. " + _taskInfo.itemList[0]["content"];
          _contentTxt2.text = "2. " + _taskInfo.itemList[1]["content"];
          _contentTxt3.text = "3. " + _taskInfo.itemList[2]["content"];
-         var _loc2_:Number = (_taskInfo.itemList[0]["finishValue"] / _taskInfo.itemList[0]["targetValue"] + _taskInfo.itemList[1]["finishValue"] / _taskInfo.itemList[1]["targetValue"] + _taskInfo.itemList[2]["finishValue"] / _taskInfo.itemList[2]["targetValue"]) / 3;
-         var _loc1_:int = _loc2_ * 100;
-         _myFinishTxt.text = _loc1_ + "%";
+         var myFinishRate:Number = (_taskInfo.itemList[0]["finishValue"] / _taskInfo.itemList[0]["targetValue"] + _taskInfo.itemList[1]["finishValue"] / _taskInfo.itemList[1]["targetValue"] + _taskInfo.itemList[2]["finishValue"] / _taskInfo.itemList[2]["targetValue"]) / 3;
+         var myFinish:int = myFinishRate * 100;
+         _myFinishTxt.text = myFinish + "%";
          _badgeText.text = String(50 * (_taskInfo.level + 1));
       }
       
-      public function set taskInfo(param1:ConsortiaTaskInfo) : void
+      public function set taskInfo(info:ConsortiaTaskInfo) : void
       {
-         _taskInfo = param1;
+         _taskInfo = info;
          update();
       }
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          removeEvents();
          _taskInfo = null;
          if(_myReseBtn)
@@ -349,11 +422,11 @@ package consortion.view.selfConsortia.consortiaTask
             ObjectUtils.disposeObject(_delayTimeBtn);
          }
          _delayTimeBtn = null;
-         _loc1_ = 0;
-         while(_finishItemList != null && _loc1_ < _finishItemList.length)
+         i = 0;
+         while(_finishItemList != null && i < _finishItemList.length)
          {
-            ObjectUtils.disposeObject(_finishItemList[_loc1_]);
-            _loc1_++;
+            ObjectUtils.disposeObject(_finishItemList[i]);
+            i++;
          }
          _finishItemList = null;
          if(_vbox)

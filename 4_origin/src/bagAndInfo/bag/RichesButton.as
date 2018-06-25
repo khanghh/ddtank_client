@@ -20,11 +20,11 @@ package bagAndInfo.bag
       
       private function drawBackground() : void
       {
-         var _loc1_:Graphics = graphics;
-         _loc1_.clear();
-         _loc1_.beginFill(16777215,0);
-         _loc1_.drawRect(0,0,_width <= 0?1:Number(_width),_height <= 0?1:Number(_height));
-         _loc1_.endFill();
+         var pen:Graphics = graphics;
+         pen.clear();
+         pen.beginFill(16777215,0);
+         pen.drawRect(0,0,_width <= 0?1:Number(_width),_height <= 0?1:Number(_height));
+         pen.endFill();
       }
    }
 }

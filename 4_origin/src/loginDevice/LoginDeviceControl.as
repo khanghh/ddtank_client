@@ -16,7 +16,7 @@ package loginDevice
       
       private var _mainView:LoginDeviceMainFrame;
       
-      public function LoginDeviceControl(param1:LoginDeviceInstance)
+      public function LoginDeviceControl(instance:LoginDeviceInstance)
       {
          super();
       }
@@ -37,17 +37,17 @@ package loginDevice
          LoginDeviceManager.instance().addEventListener("reward_view_update",__rewardViewUpdateHandler);
       }
       
-      private function __showMainViewHandler(param1:Event) : void
+      private function __showMainViewHandler(e:Event) : void
       {
          _mainView = ComponentFactory.Instance.creatComponentByStylename("loginDevice.LoginDeviceMainFrame");
          _mainView.show();
       }
       
-      private function __hideMainViewHandler(param1:Event) : void
+      private function __hideMainViewHandler(e:Event) : void
       {
       }
       
-      private function __rewardViewUpdateHandler(param1:LoginDeviceEvent) : void
+      private function __rewardViewUpdateHandler(e:LoginDeviceEvent) : void
       {
          if(_mainView)
          {

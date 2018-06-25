@@ -17,58 +17,56 @@ package dragonBoat.analyzer
       
       private var _dataListOther:Array;
       
-      public function DragonBoatActiveDataAnalyzer(param1:Function)
+      public function DragonBoatActiveDataAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc4_:* = null;
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:XML = new XML(param1);
+         var xmllist:* = null;
+         var i:int = 0;
+         var awardInfo:* = null;
+         var xml:XML = new XML(data);
          _data = new DragonBoatActiveInfo();
          _dataList = [];
          _dataListSelf = [];
          _dataListOther = [];
-         if(_loc3_.@value == "true")
+         if(xml.@value == "true")
          {
-            _loc4_ = _loc3_..Active;
-            _loc5_ = 0;
-            if(_loc5_ < _loc4_.length())
+            xmllist = xml..Active;
+            i = 0;
+            if(i < xmllist.length())
             {
-               ObjectUtils.copyPorpertiesByXML(_data,_loc4_[_loc5_]);
+               ObjectUtils.copyPorpertiesByXML(_data,xmllist[i]);
             }
-            _loc4_ = _loc3_..ActiveExp;
-            _loc5_ = 0;
-            while(_loc5_ < _loc4_.length())
+            xmllist = xml..ActiveExp;
+            for(i = 0; i < xmllist.length(); )
             {
-               if(_loc4_[_loc5_].@ActiveID == _data.ActiveID.toString())
+               if(xmllist[i].@ActiveID == _data.ActiveID.toString())
                {
-                  _dataList.push(int(_loc4_[_loc5_].@Exp));
+                  _dataList.push(int(xmllist[i].@Exp));
                }
-               _loc5_++;
+               i++;
             }
             _dataList.sort(16);
-            _loc4_ = _loc3_..ActiveAward;
-            _loc5_ = 0;
-            while(_loc5_ < _loc4_.length())
+            xmllist = xml..ActiveAward;
+            for(i = 0; i < xmllist.length(); )
             {
-               if(_loc4_[_loc5_].@ActiveID == _data.ActiveID.toString())
+               if(xmllist[i].@ActiveID == _data.ActiveID.toString())
                {
-                  _loc2_ = new DragonBoatAwardInfo();
-                  ObjectUtils.copyPorpertiesByXML(_loc2_,_loc4_[_loc5_]);
-                  if(_loc4_[_loc5_].@IsArea == "1")
+                  awardInfo = new DragonBoatAwardInfo();
+                  ObjectUtils.copyPorpertiesByXML(awardInfo,xmllist[i]);
+                  if(xmllist[i].@IsArea == "1")
                   {
-                     _dataListSelf.push(_loc2_);
+                     _dataListSelf.push(awardInfo);
                   }
                   else
                   {
-                     _dataListOther.push(_loc2_);
+                     _dataListOther.push(awardInfo);
                   }
                }
-               _loc5_++;
+               i++;
             }
             _dataListSelf.sortOn("RandID",16);
             _dataListOther.sortOn("RandID",16);
@@ -76,7 +74,7 @@ package dragonBoat.analyzer
          }
          else
          {
-            message = _loc3_.@message;
+            message = xml.@message;
             onAnalyzeError();
             onAnalyzeError();
          }

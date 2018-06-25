@@ -11,9 +11,9 @@ package questionAward.view
       
       private var _txtInfo:TextArea;
       
-      public function QuestionInputView(param1:QuestionDataBaseInfo)
+      public function QuestionInputView(value:QuestionDataBaseInfo)
       {
-         super(param1);
+         super(value);
       }
       
       override protected function initView() : void
@@ -26,8 +26,8 @@ package questionAward.view
       
       override public function getAnswer() : String
       {
-         var _loc1_:String = _txtInfo.text.replace("$","USD");
-         return _loc1_.replace("|","or");
+         var result:String = _txtInfo.text.replace("$","USD");
+         return result.replace("|","or");
       }
       
       override public function dispose() : void

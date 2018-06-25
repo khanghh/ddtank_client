@@ -34,10 +34,10 @@ package bones.loader
       
       public var module:String = "default";
       
-      public function BonesResourceLoader(param1:BoneVo)
+      public function BonesResourceLoader(vo:BoneVo)
       {
          super();
-         _vo = param1;
+         _vo = vo;
          _skeletonList = [];
       }
       
@@ -51,50 +51,49 @@ package bones.loader
          }
       }
       
-      private function __onLoadComplete(param1:LoaderEvent) : void
+      private function __onLoadComplete(e:LoaderEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         param1.loader.removeEventListener("complete",__onLoadComplete);
+         var byteArray:* = null;
+         var fzip:* = null;
+         e.loader.removeEventListener("complete",__onLoadComplete);
          if(!BonesLoaderManager.instance.getBoneLoaderComplete(_vo))
          {
             BonesLoaderManager.instance.saveBoneLoaderData(vo);
-            _loc2_ = NewCrypto.decry(_loadRes.content);
-            _loc3_ = new FZip();
-            _loc3_.addEventListener("complete",__onZipParaComplete);
-            _loc3_.loadBytes(_loc2_);
+            byteArray = NewCrypto.decry(_loadRes.content);
+            fzip = new FZip();
+            fzip.addEventListener("complete",__onZipParaComplete);
+            fzip.loadBytes(byteArray);
          }
          _loadRes = null;
       }
       
-      private function __onZipParaComplete(param1:Event) : void
+      private function __onZipParaComplete(e:Event) : void
       {
-         _fzip = param1.currentTarget as FZip;
+         _fzip = e.currentTarget as FZip;
          _fzip.removeEventListener("complete",__onZipParaComplete);
          _loader = new Loader();
          _loader.contentLoaderInfo.addEventListener("complete",__onLoadBitmapComplete);
          _loader.loadBytes(_fzip.getFileByName(_vo.atlasName + ".png").content);
       }
       
-      private function __onLoadBitmapComplete(param1:Event) : void
+      private function __onLoadBitmapComplete(e:Event) : void
       {
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var name:* = null;
+         var json:* = null;
          _loader.contentLoaderInfo.removeEventListener("complete",__onLoadBitmapComplete);
          _image = _loader.content as Bitmap;
          _atlas = new XML(_fzip.getFileByName(_vo.atlasName + ".xml").content.toString());
-         var _loc4_:Array = BoneMovieFactory.instance.model.getBoneVoListByAtlasName(_vo.atlasName);
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_.length)
+         var list:Array = BoneMovieFactory.instance.model.getBoneVoListByAtlasName(_vo.atlasName);
+         for(i = 0; i < list.length; )
          {
-            _loc3_ = (_loc4_[_loc5_] as BoneVo).styleName;
-            _loc2_ = _fzip.getFileByName(_loc3_ + ".json").content.toString();
+            name = (list[i] as BoneVo).styleName;
+            json = _fzip.getFileByName(name + ".json").content.toString();
             _skeletonList.push({
-               "name":_loc3_,
-               "data":_loc2_
+               "name":name,
+               "data":json
             });
-            _loc5_++;
+            i++;
          }
          _fzip.close();
          _loader.unload();
@@ -107,18 +106,18 @@ package bones.loader
          dispatchEvent(new Event("complete"));
       }
       
-      private function getLoaderPath(param1:BoneVo) : String
+      private function getLoaderPath(vo:BoneVo) : String
       {
-         var _loc2_:* = null;
+         var path:* = null;
          if(_vo.loadType == 1)
          {
-            _loc2_ = BonesLoaderManager.FLASHSITE;
+            path = BonesLoaderManager.FLASHSITE;
          }
          else
          {
-            _loc2_ = BonesLoaderManager.SITE_MAIN;
+            path = BonesLoaderManager.SITE_MAIN;
          }
-         return _loc2_ + param1.path + param1.atlasName + param1.ext;
+         return path + vo.path + vo.atlasName + vo.ext;
       }
       
       public function get image() : Bitmap

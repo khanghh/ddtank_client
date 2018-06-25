@@ -27,9 +27,9 @@ package starling.scene.hall.player
       
       private var _playerAsset:HallPlayerAsset;
       
-      public function HallPlayerBase(param1:PlayerVO)
+      public function HallPlayerBase(playerVO:PlayerVO)
       {
-         _playerVO = param1;
+         _playerVO = playerVO;
          _playerInfo = _playerVO.playerInfo;
          super();
       }
@@ -59,22 +59,22 @@ package starling.scene.hall.player
       
       private function showDefault() : void
       {
-         var _loc1_:Image = StarlingMain.instance.createImage("image_deafult_player");
-         _loc1_.x = 35;
-         _loc1_.y = 30;
-         _characterPlayer.addChild(_loc1_);
+         var player:Image = StarlingMain.instance.createImage("image_deafult_player");
+         player.x = 35;
+         player.y = 30;
+         _characterPlayer.addChild(player);
          _isDefaultCharacter = true;
       }
       
-      protected function __onStyleChange(param1:PlayerPropertyEvent) : void
+      protected function __onStyleChange(evt:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["Style"] || param1.changedProperties["Colors"])
+         if(evt.changedProperties["Style"] || evt.changedProperties["Colors"])
          {
             _sceneCharacterState.removeTexture("head");
             _playerAsset.resetLoader();
             _playerAsset.loadHead();
          }
-         if(param1.changedProperties["mountsType"])
+         if(evt.changedProperties["mountsType"])
          {
             if(_playerInfo.IsMounts)
             {
@@ -89,7 +89,7 @@ package starling.scene.hall.player
          }
       }
       
-      private function __onPlayerAssetComplete(param1:Event) : void
+      private function __onPlayerAssetComplete(e:Event) : void
       {
          _isDefaultCharacter = false;
          resetPlayerAsset();
@@ -97,10 +97,10 @@ package starling.scene.hall.player
       
       protected function resetPlayerAsset() : void
       {
-         var _loc4_:* = null;
-         var _loc1_:* = null;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
+         var head:* = null;
+         var body:* = null;
+         var mount:* = null;
+         var state:* = null;
          if(_playerAsset.isFirstLoad())
          {
             setCharacterData();
@@ -115,23 +115,23 @@ package starling.scene.hall.player
          {
             if(_playerAsset.isResetByAssetName(_playerAsset.headAssetName))
             {
-               _loc4_ = new SceneCharacterTextureItem("head",_playerAsset.headAssetName,3,1,3,120,150,0);
-               _sceneCharacterState.updateTexture(_loc4_);
+               head = new SceneCharacterTextureItem("head",_playerAsset.headAssetName,3,1,3,120,150,0);
+               _sceneCharacterState.updateTexture(head);
             }
             if(_playerAsset.isResetByAssetName(_playerAsset.bodyAssetName))
             {
-               _loc1_ = new SceneCharacterTextureItem("body",_playerAsset.bodyAssetName,17,3,7,120,175,4);
-               _sceneCharacterState.updateTexture(_loc1_);
+               body = new SceneCharacterTextureItem("body",_playerAsset.bodyAssetName,17,3,7,120,175,4);
+               _sceneCharacterState.updateTexture(body);
             }
             if(_playerAsset.isResetByAssetName(_playerAsset.mountsAssetName))
             {
-               _loc2_ = new SceneCharacterTextureItem("mount",_playerAsset.mountsAssetName,7,0,0,500,400,2,1);
-               _sceneCharacterState.updateTexture(_loc2_);
-               _loc3_ = _sceneCharacterState.setSceneCharacterActionState;
-               if(_loc3_ == "walkRide" || _loc3_ == "walkSit" || _loc3_ == "standRide" || _loc3_ == "standSit")
+               mount = new SceneCharacterTextureItem("mount",_playerAsset.mountsAssetName,7,0,0,500,400,2,1);
+               _sceneCharacterState.updateTexture(mount);
+               state = _sceneCharacterState.setSceneCharacterActionState;
+               if(state == "walkRide" || state == "walkSit" || state == "standRide" || state == "standSit")
                {
-                  setSceneCharacterAction(_loc3_);
-                  setSceneCharacterActionPoint(_loc3_);
+                  setSceneCharacterAction(state);
+                  setSceneCharacterActionPoint(state);
                }
                sceneCharacterActionState = _sceneCharacterState.setSceneCharacterActionState;
             }
@@ -141,108 +141,108 @@ package starling.scene.hall.player
       
       protected function setCharacterData() : void
       {
-         var _loc5_:SceneCharacterActionSet = getSceneCharacterActionSet();
-         var _loc3_:SceneCharacterActionPointSet = getSceneCharacterActionPointSet();
-         var _loc1_:SceneCharacterTextureSet = getSceneCharacterTextureSet();
-         var _loc2_:HallPlayerDraw = new HallPlayerDraw(_playerInfo);
-         var _loc4_:SceneCharacterState = new SceneCharacterState(_loc1_,_loc5_,_loc3_,_loc2_);
-         this.sceneCharacterState = _loc4_;
+         var actionSet:SceneCharacterActionSet = getSceneCharacterActionSet();
+         var actionPointSet:SceneCharacterActionPointSet = getSceneCharacterActionPointSet();
+         var textureSet:SceneCharacterTextureSet = getSceneCharacterTextureSet();
+         var playerDraw:HallPlayerDraw = new HallPlayerDraw(_playerInfo);
+         var state:SceneCharacterState = new SceneCharacterState(textureSet,actionSet,actionPointSet,playerDraw);
+         this.sceneCharacterState = state;
       }
       
       protected function getSceneCharacterActionSet() : SceneCharacterActionSet
       {
-         var _loc1_:SceneCharacterActionSet = new SceneCharacterActionSet();
-         _loc1_.push(SceneCharacterActionType.ACTION_HEAD_STAND_FRONT);
-         _loc1_.push(SceneCharacterActionType.ACTION_BODY_STAND_FRONT);
-         _loc1_.push(SceneCharacterActionType.ACTION_STAND_BACK_ACTION);
-         _loc1_.push(SceneCharacterActionType.ACTION_BODY_STAND_BACK);
-         _loc1_.push(SceneCharacterActionType.ACTION_HEAD_WALK_FRONT);
-         _loc1_.push(SceneCharacterActionType.ACTION_BODY_WALK_FRONT);
-         _loc1_.push(SceneCharacterActionType.ACTION_HEAD_WALK_BACK);
-         _loc1_.push(SceneCharacterActionType.ACTION_BODY_WALK_BACK);
-         return _loc1_;
+         var actionSet:SceneCharacterActionSet = new SceneCharacterActionSet();
+         actionSet.push(SceneCharacterActionType.ACTION_HEAD_STAND_FRONT);
+         actionSet.push(SceneCharacterActionType.ACTION_BODY_STAND_FRONT);
+         actionSet.push(SceneCharacterActionType.ACTION_STAND_BACK_ACTION);
+         actionSet.push(SceneCharacterActionType.ACTION_BODY_STAND_BACK);
+         actionSet.push(SceneCharacterActionType.ACTION_HEAD_WALK_FRONT);
+         actionSet.push(SceneCharacterActionType.ACTION_BODY_WALK_FRONT);
+         actionSet.push(SceneCharacterActionType.ACTION_HEAD_WALK_BACK);
+         actionSet.push(SceneCharacterActionType.ACTION_BODY_WALK_BACK);
+         return actionSet;
       }
       
       protected function getSceneCharacterActionPointSet() : SceneCharacterActionPointSet
       {
-         var _loc1_:SceneCharacterActionPointSet = new SceneCharacterActionPointSet();
-         return _loc1_;
+         var actionPointSet:SceneCharacterActionPointSet = new SceneCharacterActionPointSet();
+         return actionPointSet;
       }
       
       protected function getSceneCharacterTextureSet() : SceneCharacterTextureSet
       {
-         var _loc3_:* = null;
-         var _loc2_:SceneCharacterTextureSet = new SceneCharacterTextureSet();
-         var _loc4_:SceneCharacterTextureItem = new SceneCharacterTextureItem("head",_playerAsset.headAssetName,3,1,3,120,150,0);
-         var _loc1_:SceneCharacterTextureItem = new SceneCharacterTextureItem("body",_playerAsset.bodyAssetName,17,3,7,120,175,4);
-         _loc2_.push(_loc4_);
-         _loc2_.push(_loc1_);
+         var mount:* = null;
+         var textureSet:SceneCharacterTextureSet = new SceneCharacterTextureSet();
+         var head:SceneCharacterTextureItem = new SceneCharacterTextureItem("head",_playerAsset.headAssetName,3,1,3,120,150,0);
+         var body:SceneCharacterTextureItem = new SceneCharacterTextureItem("body",_playerAsset.bodyAssetName,17,3,7,120,175,4);
+         textureSet.push(head);
+         textureSet.push(body);
          if(_playerInfo.IsMounts)
          {
-            _loc3_ = new SceneCharacterTextureItem("mount",_playerAsset.mountsAssetName,7,0,0,500,400,2,1);
-            _loc2_.push(_loc3_);
+            mount = new SceneCharacterTextureItem("mount",_playerAsset.mountsAssetName,7,0,0,500,400,2,1);
+            textureSet.push(mount);
          }
-         return _loc2_;
+         return textureSet;
       }
       
-      override public function set sceneCharacterActionState(param1:String) : void
+      override public function set sceneCharacterActionState(value:String) : void
       {
-         var _loc2_:* = param1;
+         var state:* = value;
          if(_playerVO.playerInfo.IsMounts)
          {
             if(HorseManager.instance.getIsSit(_playerVO.playerInfo.MountsType))
             {
-               if(param1 == "walkBack" || param1 == "walkFront" || param1 == "walkRide" || param1 == "walkSit")
+               if(value == "walkBack" || value == "walkFront" || value == "walkRide" || value == "walkSit")
                {
-                  _loc2_ = "walkSit";
+                  state = "walkSit";
                }
                else
                {
-                  _loc2_ = "standSit";
+                  state = "standSit";
                }
             }
-            else if(param1 == "walkBack" || param1 == "walkFront" || param1 == "walkSit" || param1 == "walkRide")
+            else if(value == "walkBack" || value == "walkFront" || value == "walkSit" || value == "walkRide")
             {
-               _loc2_ = "walkRide";
+               state = "walkRide";
             }
             else
             {
-               _loc2_ = "standRide";
+               state = "standRide";
             }
          }
          else
          {
-            if(param1 == "walkSit" || param1 == "walkRide")
+            if(value == "walkSit" || value == "walkRide")
             {
                characterDirectionChange(true);
                return;
             }
-            if(param1 == "standSit" || param1 == "standRide")
+            if(value == "standSit" || value == "standRide")
             {
                characterDirectionChange(false);
                return;
             }
          }
-         sceneCharacterDefaultActionState = _loc2_;
-         if(!_sceneCharacterState || _sceneCharacterState.setSceneCharacterActionState == _loc2_)
+         sceneCharacterDefaultActionState = state;
+         if(!_sceneCharacterState || _sceneCharacterState.setSceneCharacterActionState == state)
          {
             return;
          }
-         setSceneCharacterAction(_loc2_);
-         setSceneCharacterActionPoint(_loc2_);
-         _sceneCharacterState.setSceneCharacterActionState = _loc2_;
-         dispatchEvent(new SceneCharacterEvent("characterActionChange",_loc2_));
+         setSceneCharacterAction(state);
+         setSceneCharacterActionPoint(state);
+         _sceneCharacterState.setSceneCharacterActionState = state;
+         dispatchEvent(new SceneCharacterEvent("characterActionChange",state));
       }
       
-      private function setSceneCharacterActionPoint(param1:String) : void
+      private function setSceneCharacterActionPoint(state:String) : void
       {
-         var _loc3_:String = "POINT_MOUNT_" + _playerInfo.MountsType;
-         var _loc2_:String = "POINT_MOUNT_" + _playerInfo.MountsType + "_BODY";
-         var _loc5_:String = "POINT_MOUNT_" + _playerInfo.MountsType + "_BODY_BACK";
-         var _loc4_:String = "POINT_MOUNT_" + _playerInfo.MountsType + "_SADDLE";
-         var _loc6_:String = "POINT_MOUNT_" + _playerInfo.MountsType + "_HEAD";
+         var mount:String = "POINT_MOUNT_" + _playerInfo.MountsType;
+         var body:String = "POINT_MOUNT_" + _playerInfo.MountsType + "_BODY";
+         var bodyBack:String = "POINT_MOUNT_" + _playerInfo.MountsType + "_BODY_BACK";
+         var saddle:String = "POINT_MOUNT_" + _playerInfo.MountsType + "_SADDLE";
+         var head:String = "POINT_MOUNT_" + _playerInfo.MountsType + "_HEAD";
          _sceneCharacterState.sceneCharacterActionPointSet.reset();
-         var _loc7_:* = param1;
+         var _loc7_:* = state;
          if("walkFront" !== _loc7_)
          {
             if("walkBack" !== _loc7_)
@@ -257,60 +257,60 @@ package starling.scene.hall.player
                         {
                         }
                      }
-                     if(SceneCharacterActionType[_loc6_])
+                     if(SceneCharacterActionType[head])
                      {
-                        _sceneCharacterState.sceneCharacterActionPointSet.push(SceneCharacterActionType[_loc6_]);
+                        _sceneCharacterState.sceneCharacterActionPointSet.push(SceneCharacterActionType[head]);
                      }
-                     if(SceneCharacterActionType[_loc2_])
+                     if(SceneCharacterActionType[body])
                      {
-                        _sceneCharacterState.sceneCharacterActionPointSet.push(SceneCharacterActionType[_loc2_]);
-                        _sceneCharacterState.sceneCharacterActionPointSet.push(SceneCharacterActionType[_loc5_]);
+                        _sceneCharacterState.sceneCharacterActionPointSet.push(SceneCharacterActionType[body]);
+                        _sceneCharacterState.sceneCharacterActionPointSet.push(SceneCharacterActionType[bodyBack]);
                      }
-                     else if(SceneCharacterActionType[_loc6_])
+                     else if(SceneCharacterActionType[head])
                      {
-                        _sceneCharacterState.sceneCharacterActionPointSet.push(SceneCharacterActionType.getCopyActionPointItem(SceneCharacterActionType[_loc6_],"body"));
-                        _sceneCharacterState.sceneCharacterActionPointSet.push(SceneCharacterActionType.getCopyActionPointItem(SceneCharacterActionType[_loc6_],"bodyBack"));
+                        _sceneCharacterState.sceneCharacterActionPointSet.push(SceneCharacterActionType.getCopyActionPointItem(SceneCharacterActionType[head],"body"));
+                        _sceneCharacterState.sceneCharacterActionPointSet.push(SceneCharacterActionType.getCopyActionPointItem(SceneCharacterActionType[head],"bodyBack"));
                      }
-                     if(SceneCharacterActionType[_loc3_])
+                     if(SceneCharacterActionType[mount])
                      {
-                        _sceneCharacterState.sceneCharacterActionPointSet.push(SceneCharacterActionType[_loc3_]);
+                        _sceneCharacterState.sceneCharacterActionPointSet.push(SceneCharacterActionType[mount]);
                      }
-                     if(SceneCharacterActionType[_loc4_])
+                     if(SceneCharacterActionType[saddle])
                      {
-                        _sceneCharacterState.sceneCharacterActionPointSet.push(SceneCharacterActionType[_loc4_]);
+                        _sceneCharacterState.sceneCharacterActionPointSet.push(SceneCharacterActionType[saddle]);
                      }
                   }
                }
-               if(SceneCharacterActionType[_loc3_])
+               if(SceneCharacterActionType[mount])
                {
-                  _sceneCharacterState.sceneCharacterActionPointSet.push(SceneCharacterActionType[_loc3_]);
+                  _sceneCharacterState.sceneCharacterActionPointSet.push(SceneCharacterActionType[mount]);
                }
-               if(SceneCharacterActionType[_loc4_ + "_STAND"])
+               if(SceneCharacterActionType[saddle + "_STAND"])
                {
-                  _sceneCharacterState.sceneCharacterActionPointSet.push(SceneCharacterActionType[_loc4_ + "_STAND"]);
+                  _sceneCharacterState.sceneCharacterActionPointSet.push(SceneCharacterActionType[saddle + "_STAND"]);
                }
-               else if(SceneCharacterActionType[_loc4_])
+               else if(SceneCharacterActionType[saddle])
                {
-                  _sceneCharacterState.sceneCharacterActionPointSet.push(SceneCharacterActionType[_loc4_]);
+                  _sceneCharacterState.sceneCharacterActionPointSet.push(SceneCharacterActionType[saddle]);
                }
-               _loc6_ = _loc6_ + "_STAND";
-               if(HorseManager.instance.getIsShakeRide(_playerInfo.MountsType) && SceneCharacterActionType[_loc6_])
+               head = head + "_STAND";
+               if(HorseManager.instance.getIsShakeRide(_playerInfo.MountsType) && SceneCharacterActionType[head])
                {
-                  _sceneCharacterState.sceneCharacterActionPointSet.push(SceneCharacterActionType[_loc6_]);
-                  _sceneCharacterState.sceneCharacterActionPointSet.push(SceneCharacterActionType.getCopyActionPointItem(SceneCharacterActionType[_loc6_],"body"));
-                  _sceneCharacterState.sceneCharacterActionPointSet.push(SceneCharacterActionType.getCopyActionPointItem(SceneCharacterActionType[_loc6_],"bodyBack"));
+                  _sceneCharacterState.sceneCharacterActionPointSet.push(SceneCharacterActionType[head]);
+                  _sceneCharacterState.sceneCharacterActionPointSet.push(SceneCharacterActionType.getCopyActionPointItem(SceneCharacterActionType[head],"body"));
+                  _sceneCharacterState.sceneCharacterActionPointSet.push(SceneCharacterActionType.getCopyActionPointItem(SceneCharacterActionType[head],"bodyBack"));
                }
             }
-            addr227:
+            addr279:
             return;
          }
          _sceneCharacterState.sceneCharacterActionPointSet.push(SceneCharacterActionType.POINT_HEAD_WALK);
-         §§goto(addr227);
+         §§goto(addr279);
       }
       
-      private function setSceneCharacterAction(param1:String) : void
+      private function setSceneCharacterAction(state:String) : void
       {
-         if(param1 == "standSit" || param1 == "standRide")
+         if(state == "standSit" || state == "standRide")
          {
             if(HorseManager.instance.getIsShakeRide(_playerInfo.MountsType))
             {
@@ -335,7 +335,7 @@ package starling.scene.hall.player
                _sceneCharacterState.sceneCharacterActionSet.replace(SceneCharacterActionType.ACTION_MOUNT_RIDE_STAND_1);
             }
          }
-         else if(param1 == "walkRide" || param1 == "walkSit")
+         else if(state == "walkRide" || state == "walkSit")
          {
             if(HorseManager.instance.getIsShakeRide(_playerInfo.MountsType))
             {
@@ -368,25 +368,25 @@ package starling.scene.hall.player
          }
       }
       
-      public function set setSceneCharacterDirectionDefault(param1:SceneCharacterDirection) : void
+      public function set setSceneCharacterDirectionDefault(value:SceneCharacterDirection) : void
       {
-         if(param1 == SceneCharacterDirection.LT || param1 == SceneCharacterDirection.RT)
+         if(value == SceneCharacterDirection.LT || value == SceneCharacterDirection.RT)
          {
             sceneCharacterActionState = "standBack";
          }
-         else if(param1 == SceneCharacterDirection.LB || param1 == SceneCharacterDirection.RB)
+         else if(value == SceneCharacterDirection.LB || value == SceneCharacterDirection.RB)
          {
             sceneCharacterActionState = "standFront";
          }
       }
       
-      protected function characterDirectionChange(param1:Boolean) : void
+      protected function characterDirectionChange(actionFlag:Boolean) : void
       {
          if(_playerVO)
          {
             _playerVO.scenePlayerDirection = sceneCharacterDirection;
          }
-         if(param1)
+         if(actionFlag)
          {
             if(sceneCharacterDirection == SceneCharacterDirection.LT || sceneCharacterDirection == SceneCharacterDirection.RT)
             {

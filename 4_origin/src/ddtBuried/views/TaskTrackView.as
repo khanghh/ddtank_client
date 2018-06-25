@@ -76,9 +76,9 @@ package ddtBuried.views
       
       private function initView() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var taskInfo:* = null;
+         var info:* = null;
          _taskBg = ComponentFactory.Instance.creatComponentByStylename("ddtburied.taskTrackbg");
          addChild(_taskBg);
          _taskBackBtn = ComponentFactory.Instance.creatComponentByStylename("ddtburied.taskBuried");
@@ -96,25 +96,24 @@ package ddtBuried.views
          if(_data.list.length > 0)
          {
             _taskBackPopBtn.visible = false;
-            _loc3_ = 0;
-            while(_loc3_ < _data.list.length)
+            for(i = 0; i < _data.list.length; )
             {
-               _loc2_ = new TaskTrackInfoView();
-               _loc1_ = _data.list[_loc3_] as QuestInfo;
-               _loc2_.info = _loc1_;
-               _loc2_.taskTitle.text = ">>" + _loc1_.Title;
-               _loc2_.taskInfo.htmlText = "<u>" + _loc1_.conditionDescription[0] + "</u>";
-               if(_gotoNewTaskIdArr.indexOf(_loc1_.QuestID) == -1)
+               taskInfo = new TaskTrackInfoView();
+               info = _data.list[i] as QuestInfo;
+               taskInfo.info = info;
+               taskInfo.taskTitle.text = ">>" + info.Title;
+               taskInfo.taskInfo.htmlText = "<u>" + info.conditionDescription[0] + "</u>";
+               if(_gotoNewTaskIdArr.indexOf(info.QuestID) == -1)
                {
-                  _loc2_.func = _funcArray[getFuncID(_loc1_.Condition)];
+                  taskInfo.func = _funcArray[getFuncID(info.Condition)];
                }
                else
                {
-                  _loc2_.func = gotoTask;
+                  taskInfo.func = gotoTask;
                }
-               _loc2_.taskBtnRect();
-               _itemList.addChild(_loc2_);
-               _loc3_++;
+               taskInfo.taskBtnRect();
+               _itemList.addChild(taskInfo);
+               i++;
             }
          }
          else
@@ -133,33 +132,32 @@ package ddtBuried.views
       
       public function refreshTask() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var taskInfo:* = null;
+         var info:* = null;
          _data = TaskManager.instance.getAvailableQuests(5);
-         _loc3_ = 0;
-         while(_loc3_ < _data.list.length)
+         for(i = 0; i < _data.list.length; )
          {
-            _loc2_ = new TaskTrackInfoView();
-            _loc1_ = _data.list[_loc3_] as QuestInfo;
-            _loc2_.info = _loc1_;
-            _loc2_.taskTitle.text = ">>" + _loc1_.Title;
-            _loc2_.taskInfo.htmlText = "<u>" + _loc1_.conditionDescription[0] + "</u>";
-            if(_gotoNewTaskIdArr.indexOf(_loc1_.QuestID) == -1)
+            taskInfo = new TaskTrackInfoView();
+            info = _data.list[i] as QuestInfo;
+            taskInfo.info = info;
+            taskInfo.taskTitle.text = ">>" + info.Title;
+            taskInfo.taskInfo.htmlText = "<u>" + info.conditionDescription[0] + "</u>";
+            if(_gotoNewTaskIdArr.indexOf(info.QuestID) == -1)
             {
-               _loc2_.func = _funcArray[getFuncID(_loc1_.Condition)];
+               taskInfo.func = _funcArray[getFuncID(info.Condition)];
             }
             else
             {
-               _loc2_.func = gotoTask;
+               taskInfo.func = gotoTask;
             }
-            _loc2_.taskBtnRect();
-            _itemList.addChild(_loc2_);
-            _loc3_++;
+            taskInfo.taskBtnRect();
+            _itemList.addChild(taskInfo);
+            i++;
          }
       }
       
-      protected function __onBackClick(param1:MouseEvent) : void
+      protected function __onBackClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_buriedFlag)
@@ -175,29 +173,28 @@ package ddtBuried.views
          _buriedFlag = !_buriedFlag;
       }
       
-      public function __onBackRollout(param1:MouseEvent) : void
+      public function __onBackRollout(event:MouseEvent) : void
       {
-         param1.stopPropagation();
+         event.stopPropagation();
       }
       
-      private function getFuncID(param1:int) : int
+      private function getFuncID(conditionId:int) : int
       {
-         var _loc2_:* = 0;
-         var _loc3_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < _idArray.length)
+         var id:* = 0;
+         var i:int = 0;
+         for(i = 0; i < _idArray.length; )
          {
-            if(_idArray[_loc3_].indexOf(param1) != -1)
+            if(_idArray[i].indexOf(conditionId) != -1)
             {
-               _loc2_ = _loc3_;
+               id = i;
                break;
             }
-            _loc3_++;
+            i++;
          }
-         return _loc2_;
+         return id;
       }
       
-      private function gotoShop(param1:QuestInfo) : void
+      private function gotoShop(info:QuestInfo) : void
       {
          if(!WeakGuildManager.Instance.checkOpen(18,3))
          {
@@ -208,7 +205,7 @@ package ddtBuried.views
          ComponentSetting.SEND_USELOG_ID(1);
       }
       
-      private function gotoHall(param1:QuestInfo) : void
+      private function gotoHall(info:QuestInfo) : void
       {
          if(!WeakGuildManager.Instance.checkOpen(1,2))
          {
@@ -223,7 +220,7 @@ package ddtBuried.views
          }
       }
       
-      private function gotoDungeon(param1:QuestInfo) : void
+      private function gotoDungeon(info:QuestInfo) : void
       {
          if(!WeakGuildManager.Instance.checkOpen(16,8))
          {
@@ -242,7 +239,7 @@ package ddtBuried.views
          }
       }
       
-      private function gotoStore(param1:QuestInfo) : void
+      private function gotoStore(info:QuestInfo) : void
       {
          if(WeakGuildManager.Instance.switchUserGuide && !PlayerManager.Instance.Self.IsWeakGuildFinish(950))
          {
@@ -256,22 +253,22 @@ package ddtBuried.views
          ComponentSetting.SEND_USELOG_ID(2);
       }
       
-      private function gotoFarm(param1:QuestInfo) : void
+      private function gotoFarm(info:QuestInfo) : void
       {
          FarmModelController.instance.goFarm(PlayerManager.Instance.Self.ID,PlayerManager.Instance.Self.NickName);
       }
       
-      private function gotoMainView(param1:QuestInfo) : void
+      private function gotoMainView(info:QuestInfo) : void
       {
          BuriedManager.Instance.dispose();
          BuriedControl.Instance.dispose();
          SocketManager.Instance.out.outCard();
       }
       
-      private function gotoTask(param1:QuestInfo) : void
+      private function gotoTask(info:QuestInfo) : void
       {
          StateManager.setState("main");
-         TaskManager.instance.jumpToQuestByID(param1.QuestID);
+         TaskManager.instance.jumpToQuestByID(info.QuestID);
       }
       
       private function removeEvent() : void

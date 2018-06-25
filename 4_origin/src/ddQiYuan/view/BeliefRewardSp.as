@@ -31,21 +31,20 @@ package ddQiYuan.view
       
       private function initView() : void
       {
-         var _loc2_:* = null;
-         var _loc4_:int = 0;
-         var _loc1_:DDQiYuanModel = DDQiYuanManager.instance.model;
+         var item:* = null;
+         var i:int = 0;
+         var model:DDQiYuanModel = DDQiYuanManager.instance.model;
          _beliefRewardOfferTimesTf = ComponentFactory.Instance.creatComponentByStylename("ddQiYuan.beliefRewardOfferTimesTf");
          addChild(_beliefRewardOfferTimesTf);
          _list = new VBox();
          _list.spacing = 3;
-         var _loc3_:Array = _loc1_.beliefConfigArr;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_.length)
+         var beliefConfigArr:Array = model.beliefConfigArr;
+         for(i = 0; i < beliefConfigArr.length; )
          {
-            _loc2_ = new BeliefRewardListItem();
-            _loc2_.setData(_loc3_[_loc4_]);
-            _list.addChild(_loc2_);
-            _loc4_++;
+            item = new BeliefRewardListItem();
+            item.setData(beliefConfigArr[i]);
+            _list.addChild(item);
+            i++;
          }
          _panel = ComponentFactory.Instance.creatComponentByStylename("ddQiYuan.beliefRewardScrollPanel");
          _panel.setView(_list);
@@ -55,8 +54,8 @@ package ddQiYuan.view
       
       public function update() : void
       {
-         var _loc1_:DDQiYuanModel = DDQiYuanManager.instance.model;
-         _beliefRewardOfferTimesTf.text = LanguageMgr.GetTranslation("ddQiYuan.frame.beliefRewardOfferTimesTfMsg",_loc1_.myOfferTimes);
+         var model:DDQiYuanModel = DDQiYuanManager.instance.model;
+         _beliefRewardOfferTimesTf.text = LanguageMgr.GetTranslation("ddQiYuan.frame.beliefRewardOfferTimesTfMsg",model.myOfferTimes);
       }
       
       public function dispose() : void

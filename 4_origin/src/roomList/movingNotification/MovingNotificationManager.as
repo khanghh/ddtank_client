@@ -28,19 +28,19 @@ package roomList.movingNotification
          return _instance;
       }
       
-      public function setup(param1:MovingNotificationAnalyzer) : void
+      public function setup(analyzer:MovingNotificationAnalyzer) : void
       {
-         _list = param1.list;
+         _list = analyzer.list;
       }
       
-      public function showIn(param1:DisplayObjectContainer) : void
+      public function showIn(display:DisplayObjectContainer) : void
       {
          if(!_view)
          {
             _view = new MovingNotificationView();
          }
          _view.list = _list;
-         param1.addChild(_view);
+         display.addChild(_view);
       }
       
       public function get view() : MovingNotificationView

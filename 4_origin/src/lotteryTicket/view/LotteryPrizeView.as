@@ -31,8 +31,8 @@ package lotteryTicket.view
       
       public function LotteryPrizeView()
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          super();
          _bg = ComponentFactory.Instance.creatBitmap("asset.lotteryTicket.bg1");
          addToContent(_bg);
@@ -52,25 +52,24 @@ package lotteryTicket.view
          addToContent(_fourthInfoTxt);
          _fourthInfoTxt.htmlText = LanguageMgr.GetTranslation("asset.lotteryTicket.prizeInfo",LotteryManager.instance.model.fourthCount,LotteryManager.instance.model.fourthMoney);
          PositionUtils.setPos(_fourthInfoTxt,"asset.lotteryTicket.prizeInfo.pos4");
-         var _loc2_:Sprite = new Sprite();
-         _loc3_ = 0;
-         while(_loc3_ < LotteryManager.instance.model.firstPlayerInfo.length)
+         var sprite:Sprite = new Sprite();
+         for(i = 0; i < LotteryManager.instance.model.firstPlayerInfo.length; )
          {
-            _loc1_ = new PrizeItem(_loc3_);
-            _loc2_.addChild(_loc1_);
-            _loc1_.y = _loc3_ * 37;
-            _loc3_++;
+            item = new PrizeItem(i);
+            sprite.addChild(item);
+            item.y = i * 37;
+            i++;
          }
          scrollPanel = ComponentFactory.Instance.creatComponentByStylename("lotteryTicket.prizeList");
-         scrollPanel.setView(_loc2_);
+         scrollPanel.setView(sprite);
          addToContent(scrollPanel);
          addEventListener("response",_responseHandle);
       }
       
-      protected function _responseHandle(param1:FrameEvent) : void
+      protected function _responseHandle(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
                dispose();
@@ -146,10 +145,10 @@ class PrizeItem extends Sprite
    
    private var level:LevelIcon;
    
-   function PrizeItem(param1:int)
+   function PrizeItem(index:int)
    {
       super();
-      if(param1 % 2 == 0)
+      if(index % 2 == 0)
       {
          bg = ComponentFactory.Instance.creatBitmap("asset.lotteryTicket.list1");
       }
@@ -161,16 +160,16 @@ class PrizeItem extends Sprite
       _zoneTxt = ComponentFactory.Instance.creatComponentByStylename("asset.lotteryTicket.prizeListInfo.txt");
       addChild(_zoneTxt);
       _zoneTxt.width = 110;
-      _zoneTxt.text = LotteryManager.instance.model.firstPlayerInfo[param1].split("-")[0];
+      _zoneTxt.text = LotteryManager.instance.model.firstPlayerInfo[index].split("-")[0];
       PositionUtils.setPos(_zoneTxt,"asset.lotteryTicket.prizeZone.pos");
       _nameTxt = ComponentFactory.Instance.creatComponentByStylename("asset.lotteryTicket.prizeListInfo.txt");
       addChild(_nameTxt);
       _nameTxt.width = 183;
-      _nameTxt.text = LotteryManager.instance.model.firstPlayerInfo[param1].split("-")[1];
+      _nameTxt.text = LotteryManager.instance.model.firstPlayerInfo[index].split("-")[1];
       PositionUtils.setPos(_nameTxt,"asset.lotteryTicket.prizeName.pos");
       level = new LevelIcon();
       PositionUtils.setPos(level,"asset.lotteryTicket.levelIcon.pos");
-      level.setInfo(parseInt(LotteryManager.instance.model.firstPlayerInfo[param1].split("-")[2]),0,0,0,0,0,0,false,false);
+      level.setInfo(parseInt(LotteryManager.instance.model.firstPlayerInfo[index].split("-")[2]),0,0,0,0,0,0,false,false);
       addChild(level);
    }
 }

@@ -15,10 +15,10 @@ package ddt.data
       
       protected var _changedPropeties:Dictionary;
       
-      public function BaseEventDispatcherInfo(param1:IEventDispatcher = null)
+      public function BaseEventDispatcherInfo(target:IEventDispatcher = null)
       {
          _changedPropeties = new Dictionary();
-         super(param1);
+         super(target);
       }
       
       public function beginChanges() : void
@@ -36,11 +36,11 @@ package ddt.data
          }
       }
       
-      protected function onPropertiesChanged(param1:String = null) : void
+      protected function onPropertiesChanged(propName:String = null) : void
       {
-         if(param1 != null)
+         if(propName != null)
          {
-            _changedPropeties[param1] = true;
+            _changedPropeties[propName] = true;
          }
          if(_changeCount <= 0)
          {
@@ -51,9 +51,9 @@ package ddt.data
       
       public function updateProperties() : void
       {
-         var _loc1_:Dictionary = _changedPropeties;
+         var temp:Dictionary = _changedPropeties;
          _changedPropeties = new Dictionary();
-         dispatchEvent(new CEvent("propertychange",_loc1_));
+         dispatchEvent(new CEvent("propertychange",temp));
       }
    }
 }

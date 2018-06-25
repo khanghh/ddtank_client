@@ -48,11 +48,11 @@ package ddt.view
       
       private var _info:BKingStatueInfo;
       
-      public function BKingStatueItem(param1:int)
+      public function BKingStatueItem(type:int)
       {
          _matrixData = [[7,-6,11,3],[9,-1,41,-1],[6,-13,35,15]];
          super();
-         _type = param1;
+         _type = type;
          if(!int(_type))
          {
             _titleName = ComponentFactory.Instance.creat("asst.hall.attackKing");
@@ -65,26 +65,26 @@ package ddt.view
          }
       }
       
-      public function set info(param1:BKingStatueInfo) : void
+      public function set info(info:BKingStatueInfo) : void
       {
-         _info = param1;
-         var _loc2_:PlayerInfo = new PlayerInfo();
-         _loc2_.Style = param1.style;
-         _loc2_.Colors = param1.color;
-         _loc2_.Sex = param1.sex;
-         var _loc3_:ShowCharacter = CharactoryFactory.createCharacter(_loc2_) as ShowCharacter;
-         _loc3_.addEventListener("complete",__characterComplete);
-         _loc3_.showGun = true;
-         _loc3_.setShowLight(false,null);
-         _loc3_.stopAnimation();
-         _loc3_.show(true,1);
+         _info = info;
+         var playerInfo:PlayerInfo = new PlayerInfo();
+         playerInfo.Style = info.style;
+         playerInfo.Colors = info.color;
+         playerInfo.Sex = info.sex;
+         var characterLoader:ShowCharacter = CharactoryFactory.createCharacter(playerInfo) as ShowCharacter;
+         characterLoader.addEventListener("complete",__characterComplete);
+         characterLoader.showGun = true;
+         characterLoader.setShowLight(false,null);
+         characterLoader.stopAnimation();
+         characterLoader.show(true,1);
       }
       
       private function createName() : void
       {
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
-         var _loc1_:String = _info && _info.name?_info.name:"";
+         var playerInfo:* = null;
+         var spWidth:int = 0;
+         var name:String = _info && _info.name?_info.name:"";
          if(!_spName)
          {
             _spName = new Sprite();
@@ -96,7 +96,7 @@ package ddt.view
             {
                _vipName = VipController.instance.getVipNameTxt(-1,_info.vipType);
                _vipName.textSize = 16;
-               _vipName.text = _loc1_;
+               _vipName.text = name;
             }
             _spName.addChild(_vipName);
             DisplayUtils.removeDisplay(_lblName);
@@ -107,10 +107,10 @@ package ddt.view
                {
                   _vipIcon.y = _vipIcon.y - 5;
                }
-               _loc2_ = new BasePlayer();
-               _loc2_.VIPLevel = _info.vipLevel;
-               _loc2_.typeVIP = _info.vipType;
-               _vipIcon.setInfo(_loc2_,false);
+               playerInfo = new BasePlayer();
+               playerInfo.VIPLevel = _info.vipLevel;
+               playerInfo.typeVIP = _info.vipType;
+               _vipIcon.setInfo(playerInfo,false);
                _spName.addChild(_vipIcon);
                _vipName.x = _vipIcon.x + _vipIcon.width;
             }
@@ -121,16 +121,16 @@ package ddt.view
             {
                _lblName = ComponentFactory.Instance.creat("asset.hall.playerInfo.lblName");
                _lblName.mouseEnabled = false;
-               _lblName.text = _loc1_;
+               _lblName.text = name;
             }
             _spName.addChild(_lblName);
             DisplayUtils.removeDisplay(_vipName);
          }
-         if(_loc1_ != "")
+         if(name != "")
          {
-            _loc3_ = !!_vipIcon?_vipName.width + _vipIcon.width + 8:Number(_lblName.textWidth + 8);
+            spWidth = !!_vipIcon?_vipName.width + _vipIcon.width + 8:Number(_lblName.textWidth + 8);
             _spName.graphics.beginFill(0,0.5);
-            _spName.graphics.drawRoundRect(-4,0,_loc3_,22,5,5);
+            _spName.graphics.drawRoundRect(-4,0,spWidth,22,5,5);
             _spName.graphics.endFill();
             _spName.x = (this.width - _spName.width) / 2 - 16;
             _spName.y = 4;
@@ -157,35 +157,35 @@ package ddt.view
          }
       }
       
-      private function __characterComplete(param1:Event) : void
+      private function __characterComplete(event:Event) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:ShowCharacter = param1.target as ShowCharacter;
-         _loc3_.removeEventListener("complete",__characterComplete);
-         _loc2_ = new Bitmap(new BitmapData(250,320));
-         _loc2_.bitmapData.copyPixels(_loc3_.characterBitmapdata,new Rectangle(0,0,250,320),new Point(0,0));
-         _loc2_.scaleX = 0.6;
-         _loc2_.scaleY = 0.6;
-         _loc2_.smoothing = true;
-         addChild(_loc2_);
-         ShowRelief(_loc2_);
+         var figure:* = null;
+         var loader:ShowCharacter = event.target as ShowCharacter;
+         loader.removeEventListener("complete",__characterComplete);
+         figure = new Bitmap(new BitmapData(250,320));
+         figure.bitmapData.copyPixels(loader.characterBitmapdata,new Rectangle(0,0,250,320),new Point(0,0));
+         figure.scaleX = 0.6;
+         figure.scaleY = 0.6;
+         figure.smoothing = true;
+         addChild(figure);
+         ShowRelief(figure);
          createName();
       }
       
-      private function ShowRelief(param1:Bitmap) : void
+      private function ShowRelief(figure:Bitmap) : void
       {
-         param1.filters = ComponentFactory.Instance.creatFilters("grayFilter");
-         var _loc2_:Bitmap = ComponentFactory.Instance.creat("bombKing.role.relief" + _type);
-         _loc2_.blendMode = "hardlight";
-         var _loc3_:BitmapData = param1.bitmapData.clone();
-         _loc3_.applyFilter(_loc3_,new Rectangle(0,0,param1.width,param1.height),new Point(0,0),new ColorMatrixFilter([0.3,0.59,0.11,0,0,0.3,0.59,0.11,0,0,0.3,0.59,0.11,0,0,0,0,0,1,0]));
-         _relief = new Tile(_loc3_,true);
-         _relief.scaleX = param1.scaleX;
-         _relief.scaleY = param1.scaleY;
-         _relief.Dig(new Point(param1.width / 2 + 50,param1.height - 45),null,_loc2_);
+         figure.filters = ComponentFactory.Instance.creatFilters("grayFilter");
+         var reliefBitmap:Bitmap = ComponentFactory.Instance.creat("bombKing.role.relief" + _type);
+         reliefBitmap.blendMode = "hardlight";
+         var figureData:BitmapData = figure.bitmapData.clone();
+         figureData.applyFilter(figureData,new Rectangle(0,0,figure.width,figure.height),new Point(0,0),new ColorMatrixFilter([0.3,0.59,0.11,0,0,0.3,0.59,0.11,0,0,0.3,0.59,0.11,0,0,0,0,0,1,0]));
+         _relief = new Tile(figureData,true);
+         _relief.scaleX = figure.scaleX;
+         _relief.scaleY = figure.scaleY;
+         _relief.Dig(new Point(figure.width / 2 + 50,figure.height - 45),null,reliefBitmap);
          _relief.alpha = 0.4;
          addChild(_relief);
-         PositionUtils.setPos(_relief,param1);
+         PositionUtils.setPos(_relief,figure);
       }
       
       public function dispose() : void

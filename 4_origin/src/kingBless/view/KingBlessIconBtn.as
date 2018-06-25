@@ -27,26 +27,26 @@ package kingBless.view
          KingBlessManager.instance.addEventListener("update_main_event",refreshCartoonState);
       }
       
-      private function refreshCartoonState(param1:Event) : void
+      private function refreshCartoonState(event:Event) : void
       {
-         var _loc3_:MovieClip = _btn["cartoon"] as MovieClip;
-         var _loc2_:MovieClip = _btn["icon"] as MovieClip;
-         if(_loc3_)
+         var tmp:MovieClip = _btn["cartoon"] as MovieClip;
+         var icon:MovieClip = _btn["icon"] as MovieClip;
+         if(tmp)
          {
             if(KingBlessManager.instance.openType > 0)
             {
-               _loc3_.gotoAndPlay(1);
-               _loc2_.gotoAndPlay(1);
+               tmp.gotoAndPlay(1);
+               icon.gotoAndPlay(1);
             }
             else
             {
-               _loc3_.gotoAndStop(_loc3_.totalFrames);
-               _loc2_.gotoAndStop(1);
+               tmp.gotoAndStop(tmp.totalFrames);
+               icon.gotoAndStop(1);
             }
          }
       }
       
-      private function openKingBlessFrame(param1:MouseEvent) : void
+      private function openKingBlessFrame(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          KingBlessManager.instance.show();

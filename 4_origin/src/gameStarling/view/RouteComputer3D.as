@@ -13,40 +13,40 @@ package gameStarling.view
       
       private var _map:Map3D;
       
-      public function RouteComputer3D(param1:Map3D)
+      public function RouteComputer3D(map:Map3D)
       {
          super();
-         _map = param1;
+         _map = map;
       }
       
-      public function getPath(param1:int, param2:int) : Array
+      public function getPath(angle:int, power:int) : Array
       {
-         var _loc4_:PhysicalObj3D = new PhysicalObj3D(0,1,10,70,240,1);
-         _loc4_.x = GameControl.Instance.Current.selfGamePlayer.pos.x;
-         _loc4_.y = GameControl.Instance.Current.selfGamePlayer.pos.y;
-         _loc4_.setSpeedXY(new Point(getVx(param1,param2),getVy(param1,param2)));
-         _loc4_.setCollideRect(-3,-3,6,6);
-         _map.addPhysical(_loc4_);
-         _loc4_.startMoving();
-         var _loc3_:Array = [];
-         while(_loc4_.isMoving())
+         var obj:PhysicalObj3D = new PhysicalObj3D(0,1,10,70,240,1);
+         obj.x = GameControl.Instance.Current.selfGamePlayer.pos.x;
+         obj.y = GameControl.Instance.Current.selfGamePlayer.pos.y;
+         obj.setSpeedXY(new Point(getVx(angle,power),getVy(angle,power)));
+         obj.setCollideRect(-3,-3,6,6);
+         _map.addPhysical(obj);
+         obj.startMoving();
+         var result:Array = [];
+         while(obj.isMoving())
          {
-            _loc3_.push(new Point(_loc4_.x,_loc4_.y));
-            _loc4_.update(DELAY_TIME);
+            result.push(new Point(obj.x,obj.y));
+            obj.update(DELAY_TIME);
          }
-         return _loc3_;
+         return result;
       }
       
-      private function getVx(param1:int, param2:int) : Number
+      private function getVx(angle:int, power:int) : Number
       {
-         var _loc3_:Number = param2 * Math.cos(param1 / 180 * 3.14159265358979);
-         return _loc3_;
+         var vx:Number = power * Math.cos(angle / 180 * 3.14159265358979);
+         return vx;
       }
       
-      private function getVy(param1:int, param2:int) : Number
+      private function getVy(angle:int, power:int) : Number
       {
-         var _loc3_:Number = param2 * Math.sin(param1 / 180 * 3.14159265358979);
-         return _loc3_;
+         var vy:Number = power * Math.sin(angle / 180 * 3.14159265358979);
+         return vy;
       }
    }
 }

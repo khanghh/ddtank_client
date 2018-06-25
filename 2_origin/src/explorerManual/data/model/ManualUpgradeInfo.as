@@ -26,9 +26,9 @@ package explorerManual.data.model
          return _parameter3;
       }
       
-      public function set Parameter3(param1:int) : void
+      public function set Parameter3(value:int) : void
       {
-         _parameter3 = param1;
+         _parameter3 = value;
       }
       
       public function get Parameter2() : int
@@ -36,9 +36,9 @@ package explorerManual.data.model
          return _parameter2;
       }
       
-      public function set Parameter2(param1:int) : void
+      public function set Parameter2(value:int) : void
       {
-         _parameter2 = param1;
+         _parameter2 = value;
       }
       
       public function get Parameter1() : int
@@ -46,9 +46,9 @@ package explorerManual.data.model
          return _parameter1;
       }
       
-      public function set Parameter1(param1:int) : void
+      public function set Parameter1(value:int) : void
       {
-         _parameter1 = param1;
+         _parameter1 = value;
       }
       
       public function get ConditionType() : int
@@ -56,9 +56,9 @@ package explorerManual.data.model
          return _conditionType;
       }
       
-      public function set ConditionType(param1:int) : void
+      public function set ConditionType(value:int) : void
       {
-         _conditionType = param1;
+         _conditionType = value;
       }
       
       public function get Describe() : String
@@ -66,9 +66,9 @@ package explorerManual.data.model
          return _describe;
       }
       
-      public function set Describe(param1:String) : void
+      public function set Describe(value:String) : void
       {
-         _describe = param1;
+         _describe = value;
       }
       
       public function get ManualLevel() : int
@@ -76,9 +76,9 @@ package explorerManual.data.model
          return _manualLevel;
       }
       
-      public function set ManualLevel(param1:int) : void
+      public function set ManualLevel(value:int) : void
       {
-         _manualLevel = param1;
+         _manualLevel = value;
       }
    }
 }

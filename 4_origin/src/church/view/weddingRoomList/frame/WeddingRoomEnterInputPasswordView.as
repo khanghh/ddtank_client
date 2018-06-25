@@ -39,9 +39,9 @@ package church.view.weddingRoomList.frame
          setEvent();
       }
       
-      public function set churchRoomInfo(param1:ChurchRoomInfo) : void
+      public function set churchRoomInfo(value:ChurchRoomInfo) : void
       {
-         _churchRoomInfo = param1;
+         _churchRoomInfo = value;
       }
       
       private function setView() : void
@@ -105,15 +105,15 @@ package church.view.weddingRoomList.frame
          _txtPassword.removeEventListener("change",onTxtPasswordChange);
       }
       
-      private function onKeyDown(param1:KeyboardEvent) : void
+      private function onKeyDown(evt:KeyboardEvent) : void
       {
-         if(param1.keyCode == 13)
+         if(evt.keyCode == 13)
          {
             enterRoomConfirm();
          }
       }
       
-      private function onTxtPasswordChange(param1:Event) : void
+      private function onTxtPasswordChange(evt:Event) : void
       {
          if(_txtPassword.text != "")
          {
@@ -125,9 +125,9 @@ package church.view.weddingRoomList.frame
          }
       }
       
-      private function onFrameResponse(param1:FrameEvent) : void
+      private function onFrameResponse(evt:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
@@ -150,20 +150,20 @@ package church.view.weddingRoomList.frame
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.roomlist.RoomListIIPassInput.write"));
             return;
          }
-         var _loc1_:int = 0;
+         var type:int = 0;
          if(_churchRoomInfo.seniorType == 0)
          {
-            _loc1_ = 1;
+            type = 1;
          }
          else if(_churchRoomInfo.seniorType == 4)
          {
-            _loc1_ = 3;
+            type = 3;
          }
          else
          {
-            _loc1_ = 2;
+            type = 2;
          }
-         SocketManager.Instance.out.sendEnterRoom(_churchRoomInfo.id,_txtPassword.text,_loc1_);
+         SocketManager.Instance.out.sendEnterRoom(_churchRoomInfo.id,_txtPassword.text,type);
          dispose();
       }
       

@@ -10,10 +10,10 @@ package newYearRice.events
       
       public var data:Array;
       
-      public function NewYearRiceEvent(param1:String, param2:Array = null)
+      public function NewYearRiceEvent(type:String, obj:Array = null)
       {
-         super(param1,bubbles,cancelable);
-         data = param2;
+         super(type,bubbles,cancelable);
+         data = obj;
       }
    }
 }

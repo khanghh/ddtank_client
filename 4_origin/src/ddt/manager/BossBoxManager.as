@@ -127,12 +127,12 @@ package ddt.manager
          SocketManager.Instance.addEventListener(PkgEvent.format(90),_getTimeBoxInfo);
       }
       
-      protected function _getTimeBoxInfo(param1:CrazyTankSocketEvent) : void
+      protected function _getTimeBoxInfo(event:CrazyTankSocketEvent) : void
       {
-         receiebox = param1.pkg.readInt();
-         receieGrade = param1.pkg.readInt();
-         needGetBoxTime = param1.pkg.readInt();
-         _countdown = param1.pkg.readInt();
+         receiebox = event.pkg.readInt();
+         receieGrade = event.pkg.readInt();
+         needGetBoxTime = event.pkg.readInt();
+         _countdown = event.pkg.readInt();
          currentGrade = PlayerManager.Instance.Self.Grade;
          startGradeChangeEvent();
          startDelayTime();
@@ -144,23 +144,23 @@ package ddt.manager
          initEvent();
       }
       
-      public function setupBoxInfo(param1:UserBoxInfoAnalyzer) : void
+      public function setupBoxInfo(analyzer:UserBoxInfoAnalyzer) : void
       {
-         timeBoxList = param1.timeBoxList;
-         gradeBoxList = param1.gradeBoxList;
-         boxTemplateID = param1.boxTemplateID;
-         CSMBoxManager.instance.CSMBoxList = param1.CSMBoxList;
+         timeBoxList = analyzer.timeBoxList;
+         gradeBoxList = analyzer.gradeBoxList;
+         boxTemplateID = analyzer.boxTemplateID;
+         CSMBoxManager.instance.CSMBoxList = analyzer.CSMBoxList;
          DataLoaded = true;
          dispatchEvent(new Event("loadUserBoxInfo_complete"));
       }
       
-      public function setupBoxTempInfo(param1:BoxTempInfoAnalyzer) : void
+      public function setupBoxTempInfo(analyzer:BoxTempInfoAnalyzer) : void
       {
-         inventoryItemList = param1.inventoryItemList;
-         boxTempIDList = param1.caddyTempIDList;
-         beadTempInfoList = param1.beadTempInfoList;
-         caddyBoxGoodsInfo = param1.caddyBoxGoodsInfo;
-         cityBattleTempInfoList = param1.cityBattleTempInfoList;
+         inventoryItemList = analyzer.inventoryItemList;
+         boxTempIDList = analyzer.caddyTempIDList;
+         beadTempInfoList = analyzer.beadTempInfoList;
+         caddyBoxGoodsInfo = analyzer.caddyBoxGoodsInfo;
+         cityBattleTempInfoList = analyzer.cityBattleTempInfoList;
       }
       
       public function startDelayTime() : void
@@ -207,7 +207,7 @@ package ddt.manager
          PlayerManager.Instance.Self.addEventListener("propertychange",_updateGradeII);
       }
       
-      private function _updateGradeII(param1:PlayerPropertyEvent) : void
+      private function _updateGradeII(e:PlayerPropertyEvent) : void
       {
          if(PlayerManager.Instance.Self.Grade > currentGrade)
          {
@@ -220,23 +220,23 @@ package ddt.manager
          }
       }
       
-      private function _checkeGradeForBox(param1:int, param2:int) : Boolean
+      private function _checkeGradeForBox(prevGrade:int, NowGrade:int) : Boolean
       {
          currentGrade = PlayerManager.Instance.Self.Grade;
-         return _findGetedBoxGrade(param1,param2);
+         return _findGetedBoxGrade(prevGrade,NowGrade);
       }
       
-      public function showSignAward(param1:int, param2:Array) : void
+      public function showSignAward(signCount:int, awardids:Array) : void
       {
-         _showBox(4,param1,param2);
+         _showBox(4,signCount,awardids);
       }
       
-      public function showFightLibAwardBox(param1:int, param2:int, param3:Array) : void
+      public function showFightLibAwardBox(type:int, level:int, awardids:Array) : void
       {
          if(StateManager.currentStateType != "fighting")
          {
             isShowGradeBox = false;
-            _showBox(3,1,param3,param1,param2);
+            _showBox(3,1,awardids,type,level);
          }
          else
          {
@@ -265,16 +265,16 @@ package ddt.manager
          SocketManager.Instance.removeEventListener("getTimeBoxInfo",_getTimeBoxInfo);
       }
       
-      private function _getTimeBox(param1:CrazyTankSocketEvent) : void
+      private function _getTimeBox(evt:CrazyTankSocketEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc4_:Boolean = _loc3_.readBoolean();
-         var _loc2_:int = _loc3_.readInt();
-         if(_loc4_)
+         var pkg:PackageIn = evt.pkg;
+         var isGet:Boolean = pkg.readBoolean();
+         var nextBoxTime:int = pkg.readInt();
+         if(isGet)
          {
             _isBoxShowedNow = false;
             _selectedBoxID = null;
-            _findBoxIdByTime_II(_loc2_);
+            _findBoxIdByTime_II(nextBoxTime);
             continueTime();
             _showOtherBox();
          }
@@ -282,7 +282,7 @@ package ddt.manager
          {
             _isBoxShowedNow = false;
             _selectedBoxID = null;
-            _findBoxIdByTime_II(_loc2_);
+            _findBoxIdByTime_II(nextBoxTime);
             continueTime();
             _showOtherBox();
          }
@@ -290,48 +290,48 @@ package ddt.manager
       
       private function currentTimeBoxGrade() : int
       {
-         var _loc1_:int = 0;
+         var currentGrade:int = 0;
          var _loc4_:int = 0;
          var _loc3_:* = timeBoxList;
-         for each(var _loc2_ in timeBoxList)
+         for each(var info in timeBoxList)
          {
-            if(PlayerManager.Instance.Self.Grade <= _loc2_.Level)
+            if(PlayerManager.Instance.Self.Grade <= info.Level)
             {
-               if(_loc1_ == 0 || _loc1_ > _loc2_.Level)
+               if(currentGrade == 0 || currentGrade > info.Level)
                {
-                  _loc1_ = _loc2_.Level;
+                  currentGrade = info.Level;
                }
             }
          }
-         return _loc1_;
+         return currentGrade;
       }
       
-      public function _findBoxIdByTime_II(param1:int) : void
+      public function _findBoxIdByTime_II(time:int) : void
       {
-         var _loc2_:* = null;
-         var _loc4_:int = currentTimeBoxGrade();
+         var minBoxInfo:* = null;
+         var boxGrade:int = currentTimeBoxGrade();
          var _loc6_:int = 0;
          var _loc5_:* = timeBoxList;
-         for each(var _loc3_ in timeBoxList)
+         for each(var info in timeBoxList)
          {
-            if(_loc3_.Condition > param1)
+            if(info.Condition > time)
             {
-               if(_loc3_.Level == _loc4_)
+               if(info.Level == boxGrade)
                {
-                  if(_loc2_ == null)
+                  if(minBoxInfo == null)
                   {
-                     _loc2_ = _loc3_;
+                     minBoxInfo = info;
                   }
-                  if(_loc3_.Condition < _loc2_.Condition)
+                  if(info.Condition < minBoxInfo.Condition)
                   {
-                     _loc2_ = _loc3_;
+                     minBoxInfo = info;
                   }
                }
             }
          }
-         if(_loc2_)
+         if(minBoxInfo)
          {
-            _delayBox = _loc2_.ID;
+            _delayBox = minBoxInfo.ID;
             startDelayTimeB = true;
          }
          else
@@ -342,16 +342,16 @@ package ddt.manager
          }
       }
       
-      private function _findGetedBoxByTime(param1:int) : void
+      private function _findGetedBoxByTime(time:int) : void
       {
-         var _loc3_:int = currentTimeBoxGrade();
+         var boxGrade:int = currentTimeBoxGrade();
          var _loc5_:int = 0;
          var _loc4_:* = timeBoxList;
-         for each(var _loc2_ in timeBoxList)
+         for each(var info in timeBoxList)
          {
-            if(param1 <= _loc2_.Condition && _loc2_.Level == _loc3_)
+            if(time <= info.Condition && info.Level == boxGrade)
             {
-               _delayBox = _loc2_.ID;
+               _delayBox = info.ID;
                if(timeBoxList[_delayBox])
                {
                   startDelayTimeB = true;
@@ -365,52 +365,51 @@ package ddt.manager
          }
       }
       
-      private function _findGetedBoxGrade(param1:int, param2:int) : Boolean
+      private function _findGetedBoxGrade(prevGrade:int, NowGrade:int) : Boolean
       {
-         var _loc3_:Boolean = false;
+         var bool:Boolean = false;
          var _loc6_:int = 0;
          var _loc5_:* = gradeBoxList;
-         for each(var _loc4_ in gradeBoxList)
+         for each(var info in gradeBoxList)
          {
             if(PlayerManager.Instance.Self.Sex)
             {
-               if(_loc4_.Level > param1 && _loc4_.Level <= param2 && _loc4_.Condition)
+               if(info.Level > prevGrade && info.Level <= NowGrade && info.Condition)
                {
-                  if(_boxShowArray.indexOf(_loc4_.ID + ",grade") == -1)
+                  if(_boxShowArray.indexOf(info.ID + ",grade") == -1)
                   {
-                     _boxShowArray.push(_loc4_.ID + ",grade");
+                     _boxShowArray.push(info.ID + ",grade");
                   }
-                  _loc3_ = true;
+                  bool = true;
                }
             }
-            else if(_loc4_.Level > param1 && _loc4_.Level <= param2 && !_loc4_.Condition)
+            else if(info.Level > prevGrade && info.Level <= NowGrade && !info.Condition)
             {
-               if(_boxShowArray.indexOf(_loc4_.ID + ",grade") == -1)
+               if(_boxShowArray.indexOf(info.ID + ",grade") == -1)
                {
-                  _boxShowArray.push(_loc4_.ID + ",grade");
+                  _boxShowArray.push(info.ID + ",grade");
                }
-               _loc3_ = true;
+               bool = true;
             }
          }
-         return _loc3_;
+         return bool;
       }
       
       public function _showOtherBox() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _boxShowArray.length)
+         var i:int = 0;
+         for(i = 0; i < _boxShowArray.length; )
          {
-            if(String(_boxShowArray[_loc1_]).indexOf("grade") > 0)
+            if(String(_boxShowArray[i]).indexOf("grade") > 0)
             {
                showGradeBox();
                return;
             }
-            _loc1_++;
+            i++;
          }
       }
       
-      private function _timeOver(param1:Event) : void
+      private function _timeOver(e:Event) : void
       {
          if(timeBoxList[_delayBox])
          {
@@ -420,47 +419,46 @@ package ddt.manager
          }
       }
       
-      private function _timeOne(param1:Event) : void
+      private function _timeOne(e:Event) : void
       {
          delaySumTime = Number(delaySumTime) - 1;
       }
       
-      private function _getShowBoxID(param1:String) : int
+      private function _getShowBoxID(boxType:String) : int
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < _boxShowArray.length)
+         var i:int = 0;
+         var id:int = 0;
+         for(i = 0; i < _boxShowArray.length; )
          {
-            if(String(_boxShowArray[_loc3_]).indexOf(param1) > 0)
+            if(String(_boxShowArray[i]).indexOf(boxType) > 0)
             {
-               _loc2_ = String(_boxShowArray[_loc3_]).split(",")[0];
-               _selectedBoxID = _boxShowArray.splice(_loc3_,1);
-               return _loc2_;
+               id = String(_boxShowArray[i]).split(",")[0];
+               _selectedBoxID = _boxShowArray.splice(i,1);
+               return id;
             }
-            _loc3_++;
+            i++;
          }
          return 0;
       }
       
       public function showTimeBox() : void
       {
-         var _loc1_:int = 0;
-         var _loc2_:* = null;
+         var id:int = 0;
+         var awards:* = null;
          if(!_isBoxShowedNow)
          {
-            _loc1_ = _getShowBoxID("time");
-            if(_loc1_ != 0)
+            id = _getShowBoxID("time");
+            if(id != 0)
             {
-               _showBox(0,_loc1_,inventoryItemList[timeBoxList[_loc1_].TemplateID]);
+               _showBox(0,id,inventoryItemList[timeBoxList[id].TemplateID]);
             }
             else
             {
-               _loc2_ = ComponentFactory.Instance.creat("bossbox.AwardsViewAsset");
-               _loc2_.boxType = 0;
-               _loc2_.goodsList = inventoryItemList[timeBoxList[_delayBox].TemplateID];
-               _loc2_.setCheck();
-               LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+               awards = ComponentFactory.Instance.creat("bossbox.AwardsViewAsset");
+               awards.boxType = 0;
+               awards.goodsList = inventoryItemList[timeBoxList[_delayBox].TemplateID];
+               awards.setCheck();
+               LayerManager.Instance.addToLayer(awards,3,true,1);
             }
          }
       }
@@ -469,10 +467,10 @@ package ddt.manager
       {
       }
       
-      public function _showBox(param1:int, param2:int, param3:Array, param4:int = -1, param5:int = -1) : void
+      public function _showBox(boxType:int, _id:int, goodsIDs:Array, fightLibType:int = -1, fightLibLevel:int = -1) : void
       {
          _isBoxShowedNow = true;
-         LayerManager.Instance.addToLayer(new BossBoxView(param1,param2,param3,param4,param5),3);
+         LayerManager.Instance.addToLayer(new BossBoxView(boxType,_id,goodsIDs,fightLibType,fightLibLevel),3);
       }
       
       public function showOtherGradeBox() : void
@@ -487,18 +485,18 @@ package ddt.manager
          {
             return false;
          }
-         var _loc9_:Date = TimeManager.Instance.Now();
-         var _loc11_:ServerConfigInfo = ServerConfigManager.instance.serverConfigInfo["HighTimeBoxBegin"];
-         var _loc10_:ServerConfigInfo = ServerConfigManager.instance.serverConfigInfo["HighTimeBoxEnd"];
-         var _loc5_:Array = _loc11_.Value.split(" ");
-         var _loc2_:Array = _loc10_.Value.split(" ");
-         var _loc1_:Array = _loc5_[0].split("/");
-         var _loc8_:Array = _loc2_[0].split("/");
-         var _loc3_:Array = _loc5_[1].split(":");
-         var _loc4_:Array = _loc2_[1].split(":");
-         var _loc7_:Date = new Date(_loc1_[0],int(_loc1_[1]) - 1,_loc1_[2],_loc3_[0],_loc3_[1],_loc3_[2]);
-         var _loc6_:Date = new Date(_loc8_[0],int(_loc8_[1]) - 1,_loc8_[2],_loc4_[0],_loc4_[1],_loc4_[2]);
-         if(_loc9_.getTime() < _loc7_.getTime() || _loc9_.getTime() > _loc6_.getTime())
+         var today:Date = TimeManager.Instance.Now();
+         var begin:ServerConfigInfo = ServerConfigManager.instance.serverConfigInfo["HighTimeBoxBegin"];
+         var end:ServerConfigInfo = ServerConfigManager.instance.serverConfigInfo["HighTimeBoxEnd"];
+         var benginDayArr:Array = begin.Value.split(" ");
+         var bengintimeArr:Array = end.Value.split(" ");
+         var beginDArr:Array = benginDayArr[0].split("/");
+         var endDArr:Array = bengintimeArr[0].split("/");
+         var beginTArr:Array = benginDayArr[1].split(":");
+         var endTArr:Array = bengintimeArr[1].split(":");
+         var beginData:Date = new Date(beginDArr[0],int(beginDArr[1]) - 1,beginDArr[2],beginTArr[0],beginTArr[1],beginTArr[2]);
+         var endData:Date = new Date(endDArr[0],int(endDArr[1]) - 1,endDArr[2],endTArr[0],endTArr[1],endTArr[2]);
+         if(today.getTime() < beginData.getTime() || today.getTime() > endData.getTime())
          {
             return false;
          }
@@ -510,7 +508,7 @@ package ddt.manager
          stopShowTimeBox(_delayBox);
       }
       
-      public function stopShowTimeBox(param1:int) : void
+      public function stopShowTimeBox(ID:int) : void
       {
          if(_isBoxShowedNow && _selectedBoxID != null)
          {
@@ -519,18 +517,18 @@ package ddt.manager
          _isBoxShowedNow = false;
       }
       
-      public function set receieGrade(param1:int) : void
+      public function set receieGrade(value:int) : void
       {
-         _receieGrade = param1;
+         _receieGrade = value;
          if(_findGetedBoxGrade(_receieGrade,PlayerManager.Instance.Self.Grade))
          {
             isShowGradeBox = true;
          }
       }
       
-      public function set needGetBoxTime(param1:int) : void
+      public function set needGetBoxTime(value:int) : void
       {
-         _needGetBoxTime = param1;
+         _needGetBoxTime = value;
          if(_needGetBoxTime > 0)
          {
             _findGetedBoxByTime(_needGetBoxTime);
@@ -546,14 +544,14 @@ package ddt.manager
          }
       }
       
-      public function set receiebox(param1:int) : void
+      public function set receiebox(value:int) : void
       {
-         _findBoxIdByTime_II(param1);
+         _findBoxIdByTime_II(value);
       }
       
-      public function set isShowGradeBox(param1:Boolean) : void
+      public function set isShowGradeBox(value:Boolean) : void
       {
-         _isShowGradeBox = param1;
+         _isShowGradeBox = value;
       }
       
       public function get isShowGradeBox() : Boolean
@@ -561,12 +559,12 @@ package ddt.manager
          return _isShowGradeBox;
       }
       
-      public function set currentGrade(param1:int) : void
+      public function set currentGrade(value:int) : void
       {
-         _currentGrade = param1;
+         _currentGrade = value;
          var _loc4_:int = 0;
          var _loc3_:* = timeBoxList;
-         for each(var _loc2_ in timeBoxList)
+         for each(var info in timeBoxList)
          {
             if(_currentGrade > 70)
             {
@@ -582,12 +580,12 @@ package ddt.manager
          return _currentGrade;
       }
       
-      public function set boxButtonShowType(param1:int) : void
+      public function set boxButtonShowType(value:int) : void
       {
-         _boxButtonShowType = param1;
-         var _loc2_:TimeBoxEvent = new TimeBoxEvent("update_smallBoxButton_state");
-         _loc2_.boxButtonShowType = _boxButtonShowType;
-         dispatchEvent(_loc2_);
+         _boxButtonShowType = value;
+         var evt:TimeBoxEvent = new TimeBoxEvent("update_smallBoxButton_state");
+         evt.boxButtonShowType = _boxButtonShowType;
+         dispatchEvent(evt);
       }
       
       public function get boxButtonShowType() : int
@@ -595,13 +593,13 @@ package ddt.manager
          return _boxButtonShowType;
       }
       
-      public function set delaySumTime(param1:int) : void
+      public function set delaySumTime(value:int) : void
       {
-         _delaySumTime = param1;
+         _delaySumTime = value;
          _delaySumTime = _delaySumTime < 0?0:_delaySumTime;
-         var _loc2_:TimeBoxEvent = new TimeBoxEvent("updateTimeCount");
-         _loc2_.delaySumTime = _delaySumTime;
-         dispatchEvent(_loc2_);
+         var evt:TimeBoxEvent = new TimeBoxEvent("updateTimeCount");
+         evt.delaySumTime = _delaySumTime;
+         dispatchEvent(evt);
       }
       
       public function get delaySumTime() : int
@@ -609,9 +607,9 @@ package ddt.manager
          return _delaySumTime;
       }
       
-      public function set startDelayTimeB(param1:Boolean) : void
+      public function set startDelayTimeB(value:Boolean) : void
       {
-         _startDelayTime = param1;
+         _startDelayTime = value;
       }
       
       public function get startDelayTimeB() : Boolean

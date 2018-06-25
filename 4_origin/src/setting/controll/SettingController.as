@@ -59,9 +59,9 @@ package setting.controll
          dispatchEvent(new CEvent("closeview"));
       }
       
-      public function set isShow(param1:Boolean) : void
+      public function set isShow(value:Boolean) : void
       {
-         _isShow = param1;
+         _isShow = value;
       }
       
       public function get isShow() : Boolean

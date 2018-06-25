@@ -33,12 +33,12 @@ package petsBag.petsAdvanced
       
       protected var _tbxCount:FilterFrameText;
       
-      public function PetsAwakenEquipCell(param1:int, param2:ItemTemplateInfo = null, param3:Boolean = true, param4:DisplayObject = null, param5:Boolean = true)
+      public function PetsAwakenEquipCell(index:int, info:ItemTemplateInfo = null, showLoading:Boolean = true, bg:DisplayObject = null, mouseOverEffBoolean:Boolean = true)
       {
          _drag = new Sprite();
-         _place = param1;
-         param4 = param4 == null?ComponentFactory.Instance.creatCustomObject("petsBag.skillItemBG"):param4;
-         super(param4,param2,param3,param5);
+         _place = index;
+         bg = bg == null?ComponentFactory.Instance.creatCustomObject("petsBag.skillItemBG"):bg;
+         super(bg,info,showLoading,mouseOverEffBoolean);
          _tbxCount = ComponentFactory.Instance.creatComponentByStylename("BagCellCountText");
          _tbxCount.mouseEnabled = false;
          addChild(_tbxCount);
@@ -50,9 +50,9 @@ package petsBag.petsAdvanced
          return _type;
       }
       
-      public function set type(param1:int) : void
+      public function set type(value:int) : void
       {
-         _type = param1;
+         _type = value;
       }
       
       private function drawDrag() : void
@@ -63,11 +63,11 @@ package petsBag.petsAdvanced
          addChild(_drag);
       }
       
-      public function setCount(param1:*) : void
+      public function setCount(num:*) : void
       {
          if(_tbxCount)
          {
-            _tbxCount.text = String(param1);
+            _tbxCount.text = String(num);
             _tbxCount.visible = true;
             _tbxCount.x = _contentWidth - _tbxCount.width;
             _tbxCount.y = _contentHeight - _tbxCount.height;
@@ -75,9 +75,9 @@ package petsBag.petsAdvanced
          }
       }
       
-      public function setBgVisible(param1:Boolean) : void
+      public function setBgVisible(boo:Boolean) : void
       {
-         _bg.visible = param1;
+         _bg.visible = boo;
       }
       
       public function getCount() : int
@@ -85,12 +85,12 @@ package petsBag.petsAdvanced
          return int(_tbxCount.text);
       }
       
-      public function setCountPos(param1:int, param2:int) : void
+      public function setCountPos(x:int, y:int) : void
       {
          if(_tbxCount)
          {
-            _tbxCount.x = param1;
-            _tbxCount.y = param2;
+            _tbxCount.x = x;
+            _tbxCount.y = y;
          }
       }
       
@@ -125,14 +125,14 @@ package petsBag.petsAdvanced
          }
       }
       
-      public function set bgVisible(param1:Boolean) : void
+      public function set bgVisible(value:Boolean) : void
       {
-         _bg.visible = param1;
+         _bg.visible = value;
       }
       
-      public function set isReceiveDrag(param1:Boolean) : void
+      public function set isReceiveDrag(value:Boolean) : void
       {
-         _isReceiveDrag = param1;
+         _isReceiveDrag = value;
       }
       
       public function get isReceiveDrag() : Boolean
@@ -140,9 +140,9 @@ package petsBag.petsAdvanced
          return _isReceiveDrag;
       }
       
-      public function set isSendToHideBag(param1:Boolean) : void
+      public function set isSendToHideBag(value:Boolean) : void
       {
-         _isSendToHideBag = param1;
+         _isSendToHideBag = value;
       }
       
       public function get isSendToHideBag() : Boolean
@@ -158,9 +158,9 @@ package petsBag.petsAdvanced
          }
       }
       
-      override public function set info(param1:ItemTemplateInfo) : void
+      override public function set info(value:ItemTemplateInfo) : void
       {
-         .super.info = param1;
+         .super.info = value;
       }
       
       public function get itemInfo() : InventoryItemInfo
@@ -168,70 +168,70 @@ package petsBag.petsAdvanced
          return _itemInfo;
       }
       
-      public function set itemInfo(param1:InventoryItemInfo) : void
+      public function set itemInfo(value:InventoryItemInfo) : void
       {
-         _itemInfo = param1;
-         if(isSendToHideBag && param1)
+         _itemInfo = value;
+         if(isSendToHideBag && value)
          {
-            if(param1.CategoryID == 50 || param1.CategoryID == 51 || param1.CategoryID == 52)
+            if(value.CategoryID == 50 || value.CategoryID == 51 || value.CategoryID == 52)
             {
-               SocketManager.Instance.out.sendMoveGoods(param1.BagType,param1.Place,12,1,1);
+               SocketManager.Instance.out.sendMoveGoods(value.BagType,value.Place,12,1,1);
             }
             else
             {
-               SocketManager.Instance.out.sendMoveGoods(param1.BagType,param1.Place,12,0,_itemInfo.Count,true);
+               SocketManager.Instance.out.sendMoveGoods(value.BagType,value.Place,12,0,_itemInfo.Count,true);
             }
          }
          updateCount();
       }
       
-      override public function dragDrop(param1:DragEffect) : void
+      override public function dragDrop(effect:DragEffect) : void
       {
-         var _loc2_:* = null;
+         var infos:* = null;
          if(this.info)
          {
             return;
          }
-         param1.action = "none";
+         effect.action = "none";
          if(isReceiveDrag)
          {
-            if(param1.data is InventoryItemInfo)
+            if(effect.data is InventoryItemInfo)
             {
-               _loc2_ = param1.data as InventoryItemInfo;
+               infos = effect.data as InventoryItemInfo;
                switch(int(type) - 1)
                {
                   case 0:
-                     if(_loc2_.Property1 == "132")
+                     if(infos.Property1 == "132")
                      {
                         return;
                      }
                      break;
                   case 1:
-                     if(_loc2_.CategoryID == 50 || _loc2_.CategoryID == 51 || _loc2_.CategoryID == 52)
+                     if(infos.CategoryID == 50 || infos.CategoryID == 51 || infos.CategoryID == 52)
                      {
                         return;
                      }
                      break;
                   case 2:
                }
-               if(_loc2_ && param1.action != "split")
+               if(infos && effect.action != "split")
                {
-                  this.info = _loc2_;
-                  itemInfo = _loc2_;
+                  this.info = infos;
+                  itemInfo = infos;
                   DragManager.acceptDrag(this);
                }
             }
          }
-         super.dragDrop(param1);
+         super.dragDrop(effect);
       }
       
-      override public function dragStop(param1:DragEffect) : void
+      override public function dragStop(effect:DragEffect) : void
       {
-         if(param1.target == null)
+         if(effect.target == null)
          {
             return;
          }
-         super.dragStop(param1);
+         super.dragStop(effect);
          itemInfo = null;
          info = null;
          dispatchEvent(new Event("dataChange"));

@@ -16,70 +16,70 @@ package com.greensock.plugins
          this.propName = "colorTransform";
       }
       
-      override public function onInitTween(param1:Object, param2:*, param3:TweenLite) : Boolean
+      override public function onInitTween(target:Object, value:*, tween:TweenLite) : Boolean
       {
-         var _loc4_:Number = NaN;
-         if(!(param1 is DisplayObject))
+         var ratio:Number = NaN;
+         if(!(target is DisplayObject))
          {
             return false;
          }
-         var _loc6_:ColorTransform = param1.transform.colorTransform;
+         var end:ColorTransform = target.transform.colorTransform;
          var _loc8_:* = 0;
-         var _loc7_:* = param2;
-         for(var _loc5_ in param2)
+         var _loc7_:* = value;
+         for(var p in value)
          {
-            if(_loc5_ == "tint" || _loc5_ == "color")
+            if(p == "tint" || p == "color")
             {
-               if(param2[_loc5_] != null)
+               if(value[p] != null)
                {
-                  _loc6_.color = int(param2[_loc5_]);
+                  end.color = int(value[p]);
                }
             }
-            else if(!(_loc5_ == "tintAmount" || _loc5_ == "exposure" || _loc5_ == "brightness"))
+            else if(!(p == "tintAmount" || p == "exposure" || p == "brightness"))
             {
-               _loc6_[_loc5_] = param2[_loc5_];
+               end[p] = value[p];
             }
          }
-         if(!isNaN(param2.tintAmount))
+         if(!isNaN(value.tintAmount))
          {
-            _loc4_ = param2.tintAmount / (1 - (_loc6_.redMultiplier + _loc6_.greenMultiplier + _loc6_.blueMultiplier) / 3);
-            _loc6_.redOffset = _loc6_.redOffset * _loc4_;
-            _loc6_.greenOffset = _loc6_.greenOffset * _loc4_;
-            _loc6_.blueOffset = _loc6_.blueOffset * _loc4_;
-            _loc8_ = 1 - param2.tintAmount;
-            _loc6_.blueMultiplier = _loc8_;
+            ratio = value.tintAmount / (1 - (end.redMultiplier + end.greenMultiplier + end.blueMultiplier) / 3);
+            end.redOffset = end.redOffset * ratio;
+            end.greenOffset = end.greenOffset * ratio;
+            end.blueOffset = end.blueOffset * ratio;
+            _loc8_ = 1 - value.tintAmount;
+            end.blueMultiplier = _loc8_;
             _loc7_ = _loc8_;
-            _loc6_.greenMultiplier = _loc7_;
-            _loc6_.redMultiplier = _loc7_;
+            end.greenMultiplier = _loc7_;
+            end.redMultiplier = _loc7_;
          }
-         else if(!isNaN(param2.exposure))
+         else if(!isNaN(value.exposure))
          {
-            _loc8_ = 255 * (param2.exposure - 1);
-            _loc6_.blueOffset = _loc8_;
+            _loc8_ = 255 * (value.exposure - 1);
+            end.blueOffset = _loc8_;
             _loc7_ = _loc8_;
-            _loc6_.greenOffset = _loc7_;
-            _loc6_.redOffset = _loc7_;
+            end.greenOffset = _loc7_;
+            end.redOffset = _loc7_;
             _loc8_ = 1;
-            _loc6_.blueMultiplier = _loc8_;
+            end.blueMultiplier = _loc8_;
             _loc7_ = _loc8_;
-            _loc6_.greenMultiplier = _loc7_;
-            _loc6_.redMultiplier = _loc7_;
+            end.greenMultiplier = _loc7_;
+            end.redMultiplier = _loc7_;
          }
-         else if(!isNaN(param2.brightness))
+         else if(!isNaN(value.brightness))
          {
-            _loc8_ = Math.max(0,(param2.brightness - 1) * 255);
-            _loc6_.blueOffset = _loc8_;
+            _loc8_ = Math.max(0,(value.brightness - 1) * 255);
+            end.blueOffset = _loc8_;
             _loc7_ = _loc8_;
-            _loc6_.greenOffset = _loc7_;
-            _loc6_.redOffset = _loc7_;
-            _loc8_ = 1 - Math.abs(param2.brightness - 1);
-            _loc6_.blueMultiplier = _loc8_;
+            end.greenOffset = _loc7_;
+            end.redOffset = _loc7_;
+            _loc8_ = 1 - Math.abs(value.brightness - 1);
+            end.blueMultiplier = _loc8_;
             _loc7_ = _loc8_;
-            _loc6_.greenMultiplier = _loc7_;
-            _loc6_.redMultiplier = _loc7_;
+            end.greenMultiplier = _loc7_;
+            end.redMultiplier = _loc7_;
          }
-         _ignoreAlpha = Boolean(param3.vars.alpha != undefined && param2.alphaMultiplier == undefined);
-         init(param1 as DisplayObject,_loc6_);
+         _ignoreAlpha = Boolean(tween.vars.alpha != undefined && value.alphaMultiplier == undefined);
+         init(target as DisplayObject,end);
          return true;
       }
    }

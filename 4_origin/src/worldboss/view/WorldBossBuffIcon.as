@@ -34,12 +34,12 @@ package worldboss.view
       
       private function initView() : void
       {
-         var _loc1_:int = WorldBossManager.Instance.bossInfo.addInjureBuffMoney;
-         var _loc2_:int = WorldBossManager.Instance.bossInfo.addInjureValue;
+         var addInjureBuffMoney:int = WorldBossManager.Instance.bossInfo.addInjureBuffMoney;
+         var addInjureValue:int = WorldBossManager.Instance.bossInfo.addInjureValue;
          _moneyBtn = ComponentFactory.Instance.creat("worldbossRoom.money.buffBtn");
          _bindMoneyBtn = ComponentFactory.Instance.creat("worldbossRoom.bindMoney.buffBtn");
-         _moneyBtn.tipData = LanguageMgr.GetTranslation("worldboss.money.buffBtn.tip",_loc1_,_loc2_);
-         _bindMoneyBtn.tipData = LanguageMgr.GetTranslation("worldboss.bindMoney.buffBtn.tip",_loc1_,_loc2_);
+         _moneyBtn.tipData = LanguageMgr.GetTranslation("worldboss.money.buffBtn.tip",addInjureBuffMoney,addInjureValue);
+         _bindMoneyBtn.tipData = LanguageMgr.GetTranslation("worldboss.bindMoney.buffBtn.tip",addInjureBuffMoney,addInjureValue);
          _buffIcon = new WorldBossBuffItem();
          PositionUtils.setPos(_buffIcon,"worldboss.RoomView.BuffIconPos");
          addChild(_moneyBtn);
@@ -53,44 +53,44 @@ package worldboss.view
          _bindMoneyBtn.addEventListener("click",buyBuff);
       }
       
-      private function buyBuff(param1:MouseEvent) : void
+      private function buyBuff(event:MouseEvent) : void
       {
-         var _loc3_:int = 0;
+         var tag:int = 0;
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
          SoundManager.instance.playButtonSound();
-         if(param1.currentTarget == _moneyBtn)
+         if(event.currentTarget == _moneyBtn)
          {
-            _loc3_ = 1;
+            tag = 1;
          }
          else
          {
-            _loc3_ = 2;
+            tag = 2;
          }
-         if(_loc3_ == 1 && SharedManager.Instance.isWorldBossBuyBuff)
+         if(tag == 1 && SharedManager.Instance.isWorldBossBuyBuff)
          {
-            WorldBossManager.Instance.buyNewBuff(_loc3_,SharedManager.Instance.isWorldBossBuyBuffFull);
+            WorldBossManager.Instance.buyNewBuff(tag,SharedManager.Instance.isWorldBossBuyBuffFull);
             return;
          }
-         if(_loc3_ == 2 && SharedManager.Instance.isWorldBossBindBuyBuff)
+         if(tag == 2 && SharedManager.Instance.isWorldBossBindBuyBuff)
          {
-            WorldBossManager.Instance.buyNewBuff(_loc3_,SharedManager.Instance.isWorldBossBindBuyBuffFull);
+            WorldBossManager.Instance.buyNewBuff(tag,SharedManager.Instance.isWorldBossBindBuyBuffFull);
             return;
          }
-         var _loc2_:WorldBossBuyBuffConfirmFrame = ComponentFactory.Instance.creatComponentByStylename("worldboss.buyBuff.confirmFrame");
-         _loc2_.show(_loc3_);
-         _loc2_.addEventListener("response",__onResponse);
+         var alert:WorldBossBuyBuffConfirmFrame = ComponentFactory.Instance.creatComponentByStylename("worldboss.buyBuff.confirmFrame");
+         alert.show(tag);
+         alert.addEventListener("response",__onResponse);
       }
       
-      private function __onResponse(param1:FrameEvent) : void
+      private function __onResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:WorldBossBuyBuffConfirmFrame = param1.currentTarget as WorldBossBuyBuffConfirmFrame;
-         _loc2_.removeEventListener("response",__onResponse);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var alert:WorldBossBuyBuffConfirmFrame = evt.currentTarget as WorldBossBuyBuffConfirmFrame;
+         alert.removeEventListener("response",__onResponse);
+         if(evt.responseCode == 2 || evt.responseCode == 3)
          {
             if(PlayerManager.Instance.Self.bagLocked)
             {

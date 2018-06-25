@@ -89,11 +89,11 @@ package deng.fzip
       
       protected var parseFunc:Function;
       
-      public function FZipFile(param1:String = "utf-8")
+      public function FZipFile(filenameEncoding:String = "utf-8")
       {
          parseFunc = parseFileHead;
          super();
-         _filenameEncoding = param1;
+         _filenameEncoding = filenameEncoding;
          _extraFields = new Dictionary();
          _content = new ByteArray();
          _content.endian = "bigEndian";
@@ -104,9 +104,9 @@ package deng.fzip
          return _date;
       }
       
-      public function set date(param1:Date) : void
+      public function set date(value:Date) : void
       {
-         _date = param1 != null?param1:new Date();
+         _date = value != null?value:new Date();
       }
       
       public function get filename() : String
@@ -114,9 +114,9 @@ package deng.fzip
          return _filename;
       }
       
-      public function set filename(param1:String) : void
+      public function set filename(value:String) : void
       {
-         _filename = param1;
+         _filename = value;
       }
       
       function get hasDataDescriptor() : Boolean
@@ -133,17 +133,17 @@ package deng.fzip
          return _content;
       }
       
-      public function set content(param1:ByteArray) : void
+      public function set content(data:ByteArray) : void
       {
-         setContent(param1);
+         setContent(data);
       }
       
-      public function setContent(param1:ByteArray, param2:Boolean = true) : void
+      public function setContent(data:ByteArray, doCompress:Boolean = true) : void
       {
-         if(param1 != null && param1.length > 0)
+         if(data != null && data.length > 0)
          {
-            param1.position = 0;
-            param1.readBytes(_content,0,param1.length);
+            data.position = 0;
+            data.readBytes(_content,0,data.length);
             _crc32 = ChecksumUtil.CRC32(_content);
             _hasAdler32 = false;
          }
@@ -153,7 +153,7 @@ package deng.fzip
             _content.position = 0;
             isCompressed = false;
          }
-         if(param2)
+         if(doCompress)
          {
             compress();
          }
@@ -179,49 +179,49 @@ package deng.fzip
          return _sizeUncompressed;
       }
       
-      public function getContentAsString(param1:Boolean = true, param2:String = "utf-8") : String
+      public function getContentAsString(recompress:Boolean = true, charset:String = "utf-8") : String
       {
-         var _loc3_:* = null;
+         var str:* = null;
          if(isCompressed)
          {
             uncompress();
          }
          _content.position = 0;
-         if(param2 == "utf-8")
+         if(charset == "utf-8")
          {
-            _loc3_ = _content.readUTFBytes(_content.bytesAvailable);
+            str = _content.readUTFBytes(_content.bytesAvailable);
          }
          else
          {
-            _loc3_ = _content.readMultiByte(_content.bytesAvailable,param2);
+            str = _content.readMultiByte(_content.bytesAvailable,charset);
          }
          _content.position = 0;
-         if(param1)
+         if(recompress)
          {
             compress();
          }
-         return _loc3_;
+         return str;
       }
       
-      public function setContentAsString(param1:String, param2:String = "utf-8", param3:Boolean = true) : void
+      public function setContentAsString(value:String, charset:String = "utf-8", doCompress:Boolean = true) : void
       {
          _content.length = 0;
          _content.position = 0;
          isCompressed = false;
-         if(param1 != null && param1.length > 0)
+         if(value != null && value.length > 0)
          {
-            if(param2 == "utf-8")
+            if(charset == "utf-8")
             {
-               _content.writeUTFBytes(param1);
+               _content.writeUTFBytes(value);
             }
             else
             {
-               _content.writeMultiByte(param1,param2);
+               _content.writeMultiByte(value,charset);
             }
             _crc32 = ChecksumUtil.CRC32(_content);
             _hasAdler32 = false;
          }
-         if(param3)
+         if(doCompress)
          {
             compress();
          }
@@ -232,152 +232,152 @@ package deng.fzip
          }
       }
       
-      public function serialize(param1:IDataOutput, param2:Boolean, param3:Boolean = false, param4:uint = 0) : uint
+      public function serialize(stream:IDataOutput, includeAdler32:Boolean, centralDir:Boolean = false, centralDirOffset:uint = 0) : uint
       {
-         var _loc7_:* = null;
-         var _loc13_:Boolean = false;
-         if(param1 == null)
+         var extraBytes:* = null;
+         var compressed:Boolean = false;
+         if(stream == null)
          {
             return 0;
          }
-         if(param3)
+         if(centralDir)
          {
-            param1.writeUnsignedInt(33639248);
-            param1.writeShort(_versionHost << 8 | 20);
+            stream.writeUnsignedInt(33639248);
+            stream.writeShort(_versionHost << 8 | 20);
          }
          else
          {
-            param1.writeUnsignedInt(67324752);
+            stream.writeUnsignedInt(67324752);
          }
-         param1.writeShort(_versionHost << 8 | 20);
-         param1.writeShort(_filenameEncoding == "utf-8"?2048:0);
-         param1.writeShort(!!isCompressed?8:0);
-         var _loc6_:Date = _date != null?_date:new Date();
-         var _loc15_:uint = uint(_loc6_.getSeconds()) | uint(_loc6_.getMinutes()) << 5 | uint(_loc6_.getHours()) << 11;
-         var _loc10_:uint = uint(_loc6_.getDate()) | uint(_loc6_.getMonth() + 1) << 5 | uint(_loc6_.getFullYear() - 1980) << 9;
-         param1.writeShort(_loc15_);
-         param1.writeShort(_loc10_);
-         param1.writeUnsignedInt(_crc32);
-         param1.writeUnsignedInt(_sizeCompressed);
-         param1.writeUnsignedInt(_sizeUncompressed);
-         var _loc9_:ByteArray = new ByteArray();
-         _loc9_.endian = "littleEndian";
+         stream.writeShort(_versionHost << 8 | 20);
+         stream.writeShort(_filenameEncoding == "utf-8"?2048:0);
+         stream.writeShort(!!isCompressed?8:0);
+         var d:Date = _date != null?_date:new Date();
+         var msdosTime:uint = uint(d.getSeconds()) | uint(d.getMinutes()) << 5 | uint(d.getHours()) << 11;
+         var msdosDate:uint = uint(d.getDate()) | uint(d.getMonth() + 1) << 5 | uint(d.getFullYear() - 1980) << 9;
+         stream.writeShort(msdosTime);
+         stream.writeShort(msdosDate);
+         stream.writeUnsignedInt(_crc32);
+         stream.writeUnsignedInt(_sizeCompressed);
+         stream.writeUnsignedInt(_sizeUncompressed);
+         var ba:ByteArray = new ByteArray();
+         ba.endian = "littleEndian";
          if(_filenameEncoding == "utf-8")
          {
-            _loc9_.writeUTFBytes(_filename);
+            ba.writeUTFBytes(_filename);
          }
          else
          {
-            _loc9_.writeMultiByte(_filename,_filenameEncoding);
+            ba.writeMultiByte(_filename,_filenameEncoding);
          }
-         var _loc14_:uint = _loc9_.position;
+         var filenameSize:uint = ba.position;
          var _loc18_:int = 0;
          var _loc17_:* = _extraFields;
-         for(var _loc16_ in _extraFields)
+         for(var headerId in _extraFields)
          {
-            _loc7_ = _extraFields[_loc16_] as ByteArray;
-            if(_loc7_ != null)
+            extraBytes = _extraFields[headerId] as ByteArray;
+            if(extraBytes != null)
             {
-               _loc9_.writeShort(uint(_loc16_));
-               _loc9_.writeShort(uint(_loc7_.length));
-               _loc9_.writeBytes(_loc7_);
+               ba.writeShort(uint(headerId));
+               ba.writeShort(uint(extraBytes.length));
+               ba.writeBytes(extraBytes);
             }
          }
-         if(param2)
+         if(includeAdler32)
          {
             if(!_hasAdler32)
             {
-               _loc13_ = isCompressed;
-               if(_loc13_)
+               compressed = isCompressed;
+               if(compressed)
                {
                   uncompress();
                }
                _adler32 = ChecksumUtil.Adler32(_content,0,_content.length);
                _hasAdler32 = true;
-               if(_loc13_)
+               if(compressed)
                {
                   compress();
                }
             }
-            _loc9_.writeShort(56026);
-            _loc9_.writeShort(4);
-            _loc9_.writeUnsignedInt(_adler32);
+            ba.writeShort(56026);
+            ba.writeShort(4);
+            ba.writeUnsignedInt(_adler32);
          }
-         var _loc8_:uint = _loc9_.position - _loc14_;
-         if(param3 && _comment.length > 0)
+         var extrafieldsSize:uint = ba.position - filenameSize;
+         if(centralDir && _comment.length > 0)
          {
             if(_filenameEncoding == "utf-8")
             {
-               _loc9_.writeUTFBytes(_comment);
+               ba.writeUTFBytes(_comment);
             }
             else
             {
-               _loc9_.writeMultiByte(_comment,_filenameEncoding);
+               ba.writeMultiByte(_comment,_filenameEncoding);
             }
          }
-         var _loc5_:uint = _loc9_.position - _loc14_ - _loc8_;
-         param1.writeShort(_loc14_);
-         param1.writeShort(_loc8_);
-         if(param3)
+         var commentSize:uint = ba.position - filenameSize - extrafieldsSize;
+         stream.writeShort(filenameSize);
+         stream.writeShort(extrafieldsSize);
+         if(centralDir)
          {
-            param1.writeShort(_loc5_);
-            param1.writeShort(0);
-            param1.writeShort(0);
-            param1.writeUnsignedInt(0);
-            param1.writeUnsignedInt(param4);
+            stream.writeShort(commentSize);
+            stream.writeShort(0);
+            stream.writeShort(0);
+            stream.writeUnsignedInt(0);
+            stream.writeUnsignedInt(centralDirOffset);
          }
-         if(_loc14_ + _loc8_ + _loc5_ > 0)
+         if(filenameSize + extrafieldsSize + commentSize > 0)
          {
-            param1.writeBytes(_loc9_);
+            stream.writeBytes(ba);
          }
-         var _loc12_:uint = 0;
-         if(!param3 && _content.length > 0)
+         var fileSize:uint = 0;
+         if(!centralDir && _content.length > 0)
          {
             if(isCompressed)
             {
                if(HAS_UNCOMPRESS || HAS_INFLATE)
                {
-                  _loc12_ = _content.length;
-                  param1.writeBytes(_content,0,_loc12_);
+                  fileSize = _content.length;
+                  stream.writeBytes(_content,0,fileSize);
                }
                else
                {
-                  _loc12_ = _content.length - 6;
-                  param1.writeBytes(_content,2,_loc12_);
+                  fileSize = _content.length - 6;
+                  stream.writeBytes(_content,2,fileSize);
                }
             }
             else
             {
-               _loc12_ = _content.length;
-               param1.writeBytes(_content,0,_loc12_);
+               fileSize = _content.length;
+               stream.writeBytes(_content,0,fileSize);
             }
          }
-         var _loc11_:uint = 30 + _loc14_ + _loc8_ + _loc5_ + _loc12_;
-         if(param3)
+         var size:uint = 30 + filenameSize + extrafieldsSize + commentSize + fileSize;
+         if(centralDir)
          {
-            _loc11_ = _loc11_ + 16;
+            size = size + 16;
          }
-         return _loc11_;
+         return size;
       }
       
-      function parse(param1:IDataInput) : Boolean
+      function parse(stream:IDataInput) : Boolean
       {
-         while(param1.bytesAvailable && parseFunc(param1))
+         while(stream.bytesAvailable && parseFunc(stream))
          {
          }
          return parseFunc === parseFileIdle;
       }
       
-      protected function parseFileIdle(param1:IDataInput) : Boolean
+      protected function parseFileIdle(stream:IDataInput) : Boolean
       {
          return false;
       }
       
-      protected function parseFileHead(param1:IDataInput) : Boolean
+      protected function parseFileHead(stream:IDataInput) : Boolean
       {
-         if(param1.bytesAvailable >= 30)
+         if(stream.bytesAvailable >= 30)
          {
-            parseHead(param1);
+            parseHead(stream);
             if(_sizeFilename + _sizeExtra > 0)
             {
                parseFunc = parseFileHeadExt;
@@ -391,137 +391,137 @@ package deng.fzip
          return false;
       }
       
-      protected function parseFileHeadExt(param1:IDataInput) : Boolean
+      protected function parseFileHeadExt(stream:IDataInput) : Boolean
       {
-         if(param1.bytesAvailable >= _sizeFilename + _sizeExtra)
+         if(stream.bytesAvailable >= _sizeFilename + _sizeExtra)
          {
-            parseHeadExt(param1);
+            parseHeadExt(stream);
             parseFunc = parseFileContent;
             return true;
          }
          return false;
       }
       
-      protected function parseFileContent(param1:IDataInput) : Boolean
+      protected function parseFileContent(stream:IDataInput) : Boolean
       {
-         var _loc2_:Boolean = true;
+         var continueParsing:Boolean = true;
          if(_hasDataDescriptor)
          {
             parseFunc = parseFileIdle;
-            _loc2_ = false;
+            continueParsing = false;
          }
          else if(_sizeCompressed == 0)
          {
             parseFunc = parseFileIdle;
          }
-         else if(param1.bytesAvailable >= _sizeCompressed)
+         else if(stream.bytesAvailable >= _sizeCompressed)
          {
-            parseContent(param1);
+            parseContent(stream);
             parseFunc = parseFileIdle;
          }
          else
          {
-            _loc2_ = false;
+            continueParsing = false;
          }
-         return _loc2_;
+         return continueParsing;
       }
       
-      protected function parseHead(param1:IDataInput) : void
+      protected function parseHead(data:IDataInput) : void
       {
-         var _loc6_:uint = param1.readUnsignedShort();
-         _versionHost = _loc6_ >> 8;
-         _versionNumber = Math.floor((_loc6_ & 255) / 10) + "." + (_loc6_ & 255) % 10;
-         var _loc3_:uint = param1.readUnsignedShort();
-         _compressionMethod = param1.readUnsignedShort();
-         _encrypted = (_loc3_ & 1) !== 0;
-         _hasDataDescriptor = (_loc3_ & 8) !== 0;
-         _hasCompressedPatchedData = (_loc3_ & 32) !== 0;
-         if((_loc3_ & 800) !== 0)
+         var vSrc:uint = data.readUnsignedShort();
+         _versionHost = vSrc >> 8;
+         _versionNumber = Math.floor((vSrc & 255) / 10) + "." + (vSrc & 255) % 10;
+         var flag:uint = data.readUnsignedShort();
+         _compressionMethod = data.readUnsignedShort();
+         _encrypted = (flag & 1) !== 0;
+         _hasDataDescriptor = (flag & 8) !== 0;
+         _hasCompressedPatchedData = (flag & 32) !== 0;
+         if((flag & 800) !== 0)
          {
             _filenameEncoding = "utf-8";
          }
          if(_compressionMethod === 6)
          {
-            _implodeDictSize = (_loc3_ & 2) !== 0?8192:Number(4096);
-            _implodeShannonFanoTrees = (_loc3_ & 4) !== 0?3:2;
+            _implodeDictSize = (flag & 2) !== 0?8192:Number(4096);
+            _implodeShannonFanoTrees = (flag & 4) !== 0?3:2;
          }
          else if(_compressionMethod === 8)
          {
-            _deflateSpeedOption = (_loc3_ & 6) >> 1;
+            _deflateSpeedOption = (flag & 6) >> 1;
          }
-         var _loc9_:uint = param1.readUnsignedShort();
-         var _loc7_:uint = param1.readUnsignedShort();
-         var _loc4_:* = _loc9_ & 31;
-         var _loc2_:* = (_loc9_ & 2016) >> 5;
-         var _loc11_:* = (_loc9_ & 63488) >> 11;
-         var _loc10_:* = _loc7_ & 31;
-         var _loc5_:* = (_loc7_ & 480) >> 5;
-         var _loc8_:int = ((_loc7_ & 65024) >> 9) + 1980;
-         _date = new Date(_loc8_,_loc5_ - 1,_loc10_,_loc11_,_loc2_,_loc4_,0);
-         _crc32 = param1.readUnsignedInt();
-         _sizeCompressed = param1.readUnsignedInt();
-         _sizeUncompressed = param1.readUnsignedInt();
-         _sizeFilename = param1.readUnsignedShort();
-         _sizeExtra = param1.readUnsignedShort();
+         var msdosTime:uint = data.readUnsignedShort();
+         var msdosDate:uint = data.readUnsignedShort();
+         var sec:* = msdosTime & 31;
+         var min:* = (msdosTime & 2016) >> 5;
+         var hour:* = (msdosTime & 63488) >> 11;
+         var day:* = msdosDate & 31;
+         var month:* = (msdosDate & 480) >> 5;
+         var year:int = ((msdosDate & 65024) >> 9) + 1980;
+         _date = new Date(year,month - 1,day,hour,min,sec,0);
+         _crc32 = data.readUnsignedInt();
+         _sizeCompressed = data.readUnsignedInt();
+         _sizeUncompressed = data.readUnsignedInt();
+         _sizeFilename = data.readUnsignedShort();
+         _sizeExtra = data.readUnsignedShort();
       }
       
-      protected function parseHeadExt(param1:IDataInput) : void
+      protected function parseHeadExt(data:IDataInput) : void
       {
-         var _loc5_:* = 0;
-         var _loc4_:* = 0;
-         var _loc3_:* = null;
+         var headerId:* = 0;
+         var dataSize:* = 0;
+         var extraBytes:* = null;
          if(_filenameEncoding == "utf-8")
          {
-            _filename = param1.readUTFBytes(_sizeFilename);
+            _filename = data.readUTFBytes(_sizeFilename);
          }
          else
          {
-            _filename = param1.readMultiByte(_sizeFilename,_filenameEncoding);
+            _filename = data.readMultiByte(_sizeFilename,_filenameEncoding);
          }
-         var _loc2_:uint = _sizeExtra;
-         while(_loc2_ > 4)
+         var bytesLeft:uint = _sizeExtra;
+         while(bytesLeft > 4)
          {
-            _loc5_ = uint(param1.readUnsignedShort());
-            _loc4_ = uint(param1.readUnsignedShort());
-            if(_loc4_ > _loc2_)
+            headerId = uint(data.readUnsignedShort());
+            dataSize = uint(data.readUnsignedShort());
+            if(dataSize > bytesLeft)
             {
                throw new Error("Parse error in file " + _filename + ": Extra field data size too big.");
             }
-            if(_loc5_ === 56026 && _loc4_ === 4)
+            if(headerId === 56026 && dataSize === 4)
             {
-               _adler32 = param1.readUnsignedInt();
+               _adler32 = data.readUnsignedInt();
                _hasAdler32 = true;
             }
-            else if(_loc4_ > 0)
+            else if(dataSize > 0)
             {
-               _loc3_ = new ByteArray();
-               param1.readBytes(_loc3_,0,_loc4_);
-               _extraFields[_loc5_] = _loc3_;
+               extraBytes = new ByteArray();
+               data.readBytes(extraBytes,0,dataSize);
+               _extraFields[headerId] = extraBytes;
             }
-            _loc2_ = _loc2_ - (_loc4_ + 4);
+            bytesLeft = bytesLeft - (dataSize + 4);
          }
-         if(_loc2_ > 0)
+         if(bytesLeft > 0)
          {
-            param1.readBytes(new ByteArray(),0,_loc2_);
+            data.readBytes(new ByteArray(),0,bytesLeft);
          }
       }
       
-      function parseContent(param1:IDataInput) : void
+      function parseContent(data:IDataInput) : void
       {
-         var _loc2_:* = 0;
+         var flg:* = 0;
          if(_compressionMethod === 8 && !_encrypted)
          {
             if(HAS_UNCOMPRESS || HAS_INFLATE)
             {
-               param1.readBytes(_content,0,_sizeCompressed);
+               data.readBytes(_content,0,_sizeCompressed);
             }
             else if(_hasAdler32)
             {
                _content.writeByte(120);
-               _loc2_ = uint(~_deflateSpeedOption << 6 & 192);
-               _loc2_ = uint(_loc2_ + (31 - (30720 | _loc2_) % 31));
-               _content.writeByte(_loc2_);
-               param1.readBytes(_content,2,_sizeCompressed);
+               flg = uint(~_deflateSpeedOption << 6 & 192);
+               flg = uint(flg + (31 - (30720 | flg) % 31));
+               _content.writeByte(flg);
+               data.readBytes(_content,2,_sizeCompressed);
                _content.position = _content.length;
                _content.writeUnsignedInt(_adler32);
             }
@@ -533,7 +533,7 @@ package deng.fzip
          }
          else if(_compressionMethod == 0)
          {
-            param1.readBytes(_content,0,_sizeCompressed);
+            data.readBytes(_content,0,_sizeCompressed);
             isCompressed = false;
          }
          else

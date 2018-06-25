@@ -67,9 +67,9 @@ package littleGame
       
       private var _configReady:Boolean = false;
       
-      public function ScenarioLoader(param1:Scenario)
+      public function ScenarioLoader(scene:Scenario)
       {
-         _scene = param1;
+         _scene = scene;
          super();
       }
       
@@ -82,38 +82,37 @@ package littleGame
       
       private function loadObjects() : void
       {
-         var _loc4_:int = 0;
-         var _loc1_:* = null;
-         var _loc3_:Array = _scene.objects.split(",");
-         _total = _loc3_.length + 2;
+         var i:int = 0;
+         var loader:* = null;
+         var objects:Array = _scene.objects.split(",");
+         _total = objects.length + 2;
          _objectLoaders = new Vector.<BaseLoader>();
-         var _loc2_:int = _loc3_.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc2_)
+         var len:int = objects.length;
+         for(i = 0; i < len; )
          {
-            _loc1_ = LoadResourceManager.Instance.createLoader(PathManager.solveLittleGameObjectPath(_loc3_[_loc4_]),4);
-            _loc1_.addEventListener("loadError",__loaderError);
-            _loc1_.addEventListener("complete",__objectComplete);
-            LoadResourceManager.Instance.startLoad(_loc1_);
-            _objectLoaders.push(_loc1_);
-            _loc4_++;
+            loader = LoadResourceManager.Instance.createLoader(PathManager.solveLittleGameObjectPath(objects[i]),4);
+            loader.addEventListener("loadError",__loaderError);
+            loader.addEventListener("complete",__objectComplete);
+            LoadResourceManager.Instance.startLoad(loader);
+            _objectLoaders.push(loader);
+            i++;
          }
       }
       
-      private function __loaderError(param1:LoaderEvent) : void
+      private function __loaderError(event:LoaderEvent) : void
       {
-         var _loc2_:BaseLoader = param1.currentTarget as BaseLoader;
-         _loc2_.removeEventListener("complete",__scenarioConfigComplete);
-         _loc2_.removeEventListener("complete",__objectComplete);
-         _loc2_.removeEventListener("complete",__scenarioResComplete);
-         _loc2_.removeEventListener("loadError",__loaderError);
+         var loader:BaseLoader = event.currentTarget as BaseLoader;
+         loader.removeEventListener("complete",__scenarioConfigComplete);
+         loader.removeEventListener("complete",__objectComplete);
+         loader.removeEventListener("complete",__scenarioResComplete);
+         loader.removeEventListener("loadError",__loaderError);
       }
       
-      private function __objectComplete(param1:LoaderEvent) : void
+      private function __objectComplete(event:LoaderEvent) : void
       {
-         var _loc2_:BaseLoader = param1.currentTarget as BaseLoader;
-         _loc2_.removeEventListener("complete",__objectComplete);
-         _loc2_.removeEventListener("loadError",__loaderError);
+         var loader:BaseLoader = event.currentTarget as BaseLoader;
+         loader.removeEventListener("complete",__objectComplete);
+         loader.removeEventListener("loadError",__loaderError);
          _objectLoaded = Number(_objectLoaded) + 1;
          _loaded = Number(_loaded) + 1;
          complete();
@@ -138,32 +137,32 @@ package littleGame
          LoadResourceManager.Instance.startLoad(_resLoader);
       }
       
-      private function __scenarioResComplete(param1:LoaderEvent) : void
+      private function __scenarioResComplete(event:LoaderEvent) : void
       {
-         var _loc2_:BaseLoader = param1.currentTarget as BaseLoader;
-         _loc2_.removeEventListener("complete",__scenarioResComplete);
-         _loc2_.removeEventListener("loadError",__loaderError);
+         var loader:BaseLoader = event.currentTarget as BaseLoader;
+         loader.removeEventListener("complete",__scenarioResComplete);
+         loader.removeEventListener("loadError",__loaderError);
          _loaded = Number(_loaded) + 1;
          complete();
       }
       
       private function loadConfig() : void
       {
-         var _loc1_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         _loc1_["rnd"] = Math.random();
-         _configLoader = LoadResourceManager.Instance.createLoader(PathManager.solveLittleGameConfigPath(_scene.id),3,_loc1_);
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         args["rnd"] = Math.random();
+         _configLoader = LoadResourceManager.Instance.createLoader(PathManager.solveLittleGameConfigPath(_scene.id),3,args);
          _configLoader.addEventListener("loadError",__loaderError);
          _configLoader.addEventListener("complete",__scenarioConfigComplete);
          LoadResourceManager.Instance.startLoad(_configLoader);
       }
       
-      private function __scenarioConfigComplete(param1:LoaderEvent) : void
+      private function __scenarioConfigComplete(event:LoaderEvent) : void
       {
          _loaded = Number(_loaded) + 1;
-         var _loc2_:BaseLoader = param1.currentTarget as BaseLoader;
-         _loc2_.removeEventListener("complete",__scenarioConfigComplete);
-         _loc2_.removeEventListener("loadError",__loaderError);
-         _configBytes = _loc2_.content as ByteArray;
+         var loader:BaseLoader = event.currentTarget as BaseLoader;
+         loader.removeEventListener("complete",__scenarioConfigComplete);
+         loader.removeEventListener("loadError",__loaderError);
+         _configBytes = loader.content as ByteArray;
          _configBytes.uncompress();
          _configBytes.endian = "littleEndian";
          _w = _configBytes.readInt();
@@ -188,24 +187,22 @@ package littleGame
       
       private function loadConfigData() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
+         var i:int = 0;
+         var j:int = 0;
          _configProcessState = 2;
-         var _loc1_:int = _localW + 5000 / _h;
-         _loc1_ = _loc1_ > _w?_w:int(_loc1_);
-         _loc3_ = _localW;
-         while(_loc3_ < _loc1_)
+         var w:int = _localW + 5000 / _h;
+         w = w > _w?_w:int(w);
+         for(i = _localW; i < w; )
          {
-            _loc2_ = 0;
-            while(_loc2_ < _h)
+            for(j = 0; j < _h; )
             {
-               _grid.setNodeWalkAble(_loc3_,_loc2_,_configBytes.readByte() == 1?true:false);
+               _grid.setNodeWalkAble(i,j,_configBytes.readByte() == 1?true:false);
                _configBytes.readByte();
-               _loc2_++;
+               j++;
             }
-            _loc3_++;
+            i++;
          }
-         _localW = _loc1_;
+         _localW = w;
          if(_localW < _w)
          {
             _loaded = Number(_loaded) + 1;
@@ -219,19 +216,19 @@ package littleGame
          }
       }
       
-      private function __resDataComplete(param1:Event) : void
+      private function __resDataComplete(event:Event) : void
       {
-         var _loc2_:URLLoader = param1.currentTarget as URLLoader;
-         _loc2_.removeEventListener("complete",__resDataComplete);
-         var _loc3_:ByteArray = _loc2_.data as ByteArray;
-         var _loc4_:Loader = new Loader();
-         _loc4_.contentLoaderInfo.addEventListener("complete",__resComplete);
-         _loc4_.loadBytes(_loc3_,new LoaderContext(false,ApplicationDomain.currentDomain));
+         var dataLoader:URLLoader = event.currentTarget as URLLoader;
+         dataLoader.removeEventListener("complete",__resDataComplete);
+         var bytes:ByteArray = dataLoader.data as ByteArray;
+         var loader:Loader = new Loader();
+         loader.contentLoaderInfo.addEventListener("complete",__resComplete);
+         loader.loadBytes(bytes,new LoaderContext(false,ApplicationDomain.currentDomain));
       }
       
-      private function __resComplete(param1:Event) : void
+      private function __resComplete(event:Event) : void
       {
-         param1.currentTarget.removeEventListener("complete",__resComplete);
+         event.currentTarget.removeEventListener("complete",__resComplete);
          _loaded = Number(_loaded) + 1;
          complete();
       }
@@ -269,12 +266,12 @@ package littleGame
          return _onProcess;
       }
       
-      public function set onProcess(param1:Boolean) : void
+      public function set onProcess(val:Boolean) : void
       {
          _onProcess = false;
       }
       
-      public function process(param1:Number) : void
+      public function process(rate:Number) : void
       {
          if(_configReady && _configProcessState == 3)
          {

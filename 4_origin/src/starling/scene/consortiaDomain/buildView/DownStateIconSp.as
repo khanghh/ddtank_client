@@ -26,53 +26,53 @@ package starling.scene.consortiaDomain.buildView
       
       private var _progressImageW:int = 137;
       
-      public function DownStateIconSp(param1:int)
+      public function DownStateIconSp(buildId:int)
       {
          super();
-         _buildId = param1;
+         _buildId = buildId;
          ConsortiaDomainManager.instance.addEventListener("event_repair_player_num_change",onRepairPlayerNumChange);
       }
       
-      public function set state(param1:int) : void
+      public function set state(value:int) : void
       {
-         var _loc6_:* = null;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc5_:* = null;
-         if(_state != param1)
+         var repairLabel:* = null;
+         var progressBg:* = null;
+         var hpLabel:* = null;
+         var progressBg2:* = null;
+         if(_state != value)
          {
             clear();
-            if(param1 != 1)
+            if(value != 1)
             {
-               if(param1 == 2)
+               if(value == 2)
                {
                   _downGradeTf = new TextField(200,40,LanguageMgr.GetTranslation("consortiadomain.canGradeUp"),"Arial",24,4278949358,true);
                   _downGradeTf.filter = BlurFilter.createGlow(0,1,2);
                   _downGradeTf.x = 11;
                   addChild(_downGradeTf);
                }
-               else if(param1 == 3 || param1 == 4)
+               else if(value == 3 || value == 4)
                {
-                  _loc6_ = new Image(DDTAssetManager.instance.getTexture("consortiaDomainCompleteDegree"));
-                  addChild(_loc6_);
-                  _loc4_ = new Image(DDTAssetManager.instance.getTexture("consortiaDomainProgressBg"));
-                  _loc4_.x = 46;
-                  _loc4_.y = 1;
-                  addChild(_loc4_);
+                  repairLabel = new Image(DDTAssetManager.instance.getTexture("consortiaDomainCompleteDegree"));
+                  addChild(repairLabel);
+                  progressBg = new Image(DDTAssetManager.instance.getTexture("consortiaDomainProgressBg"));
+                  progressBg.x = 46;
+                  progressBg.y = 1;
+                  addChild(progressBg);
                   _progressImage = new Image(DDTAssetManager.instance.getTexture("consortiaDomainProgressGreen"));
                   _progressImage.x = 48;
                   _progressImage.y = 4;
                   addChild(_progressImage);
                   _progressImageW = _progressImage.width;
                }
-               else if(param1 == 5 || param1 == 6)
+               else if(value == 5 || value == 6)
                {
-                  _loc3_ = new Image(DDTAssetManager.instance.getTexture("consortiaDomainHp"));
-                  addChild(_loc3_);
-                  _loc5_ = new Image(DDTAssetManager.instance.getTexture("consortiaDomainProgressBg"));
-                  _loc5_.x = 46;
-                  _loc5_.y = 1;
-                  addChild(_loc5_);
+                  hpLabel = new Image(DDTAssetManager.instance.getTexture("consortiaDomainHp"));
+                  addChild(hpLabel);
+                  progressBg2 = new Image(DDTAssetManager.instance.getTexture("consortiaDomainProgressBg"));
+                  progressBg2.x = 46;
+                  progressBg2.y = 1;
+                  addChild(progressBg2);
                   _progressImage = new Image(DDTAssetManager.instance.getTexture("consortiaDomainProgressRed"));
                   _progressImage.x = 48;
                   _progressImage.y = 4;
@@ -80,63 +80,63 @@ package starling.scene.consortiaDomain.buildView
                   _progressImageW = _progressImage.width;
                }
             }
-            createTips(param1);
-            _state = param1;
+            createTips(value);
+            _state = value;
          }
-         var _loc2_:EachBuildInfo = ConsortiaDomainManager.instance.model.allBuildInfo[_buildId];
-         if(param1 == 3 || param1 == 4)
+         var eachBuildInfo:EachBuildInfo = ConsortiaDomainManager.instance.model.allBuildInfo[_buildId];
+         if(value == 3 || value == 4)
          {
-            _progressImage.width = _progressImageW * (ConsortiaDomainManager.instance.consortiaLandRepairBlood - _loc2_.Repair) / ConsortiaDomainManager.instance.consortiaLandRepairBlood;
+            _progressImage.width = _progressImageW * (ConsortiaDomainManager.instance.consortiaLandRepairBlood - eachBuildInfo.Repair) / ConsortiaDomainManager.instance.consortiaLandRepairBlood;
          }
-         else if(param1 == 6 || param1 == 5)
+         else if(value == 6 || value == 5)
          {
-            _progressImage.width = _progressImageW * _loc2_.Blood / ConsortiaDomainManager.instance.consortiaLandBuildBlood;
+            _progressImage.width = _progressImageW * eachBuildInfo.Blood / ConsortiaDomainManager.instance.consortiaLandBuildBlood;
          }
       }
       
-      private function createTips(param1:int) : void
+      private function createTips(value:int) : void
       {
-         var _loc3_:* = null;
-         var _loc4_:int = 0;
-         var _loc5_:* = 0;
-         var _loc2_:* = null;
-         if(param1 == 3)
+         var tipsMsg:* = null;
+         var tipsTfX:int = 0;
+         var tipsColor:* = 0;
+         var eachBuildInfo:* = null;
+         if(value == 3)
          {
-            _loc2_ = ConsortiaDomainManager.instance.model.allBuildInfo[_buildId];
-            _loc3_ = LanguageMgr.GetTranslation("consortiadomain.buildRepairTip",_loc2_.repairPlayerNum);
-            _loc4_ = 0;
-            _loc5_ = uint(6289152);
+            eachBuildInfo = ConsortiaDomainManager.instance.model.allBuildInfo[_buildId];
+            tipsMsg = LanguageMgr.GetTranslation("consortiadomain.buildRepairTip",eachBuildInfo.repairPlayerNum);
+            tipsTfX = 0;
+            tipsColor = uint(6289152);
          }
-         else if(param1 == 4)
+         else if(value == 4)
          {
-            _loc3_ = LanguageMgr.GetTranslation("consortiadomain.buildWaitRepairTip");
-            _loc4_ = 46;
-            _loc5_ = uint(6289152);
+            tipsMsg = LanguageMgr.GetTranslation("consortiadomain.buildWaitRepairTip");
+            tipsTfX = 46;
+            tipsColor = uint(6289152);
          }
-         else if(param1 == 6)
+         else if(value == 6)
          {
-            _loc3_ = LanguageMgr.GetTranslation("consortiadomain.buildBeBeatTip");
-            _loc4_ = 0;
-            _loc5_ = uint(16711680);
+            tipsMsg = LanguageMgr.GetTranslation("consortiadomain.buildBeBeatTip");
+            tipsTfX = 0;
+            tipsColor = uint(16711680);
          }
-         if(_loc3_ != null)
+         if(tipsMsg != null)
          {
-            _tipsTf = new TextField(320,20,_loc3_,"Arial",16,_loc5_,true);
+            _tipsTf = new TextField(320,20,tipsMsg,"Arial",16,tipsColor,true);
             _tipsTf.filter = BlurFilter.createGlow(0,1,2);
             _tipsTf.hAlign = "left";
-            _tipsTf.x = _loc4_;
+            _tipsTf.x = tipsTfX;
             _tipsTf.y = 22;
             addChild(_tipsTf);
          }
       }
       
-      public function onRepairPlayerNumChange(param1:Event) : void
+      public function onRepairPlayerNumChange(evt:Event) : void
       {
-         var _loc2_:* = null;
+         var eachBuildInfo:* = null;
          if(_state == 3)
          {
-            _loc2_ = ConsortiaDomainManager.instance.model.allBuildInfo[_buildId];
-            _tipsTf.text = LanguageMgr.GetTranslation("consortiadomain.buildRepairTip",_loc2_.repairPlayerNum);
+            eachBuildInfo = ConsortiaDomainManager.instance.model.allBuildInfo[_buildId];
+            _tipsTf.text = LanguageMgr.GetTranslation("consortiadomain.buildRepairTip",eachBuildInfo.repairPlayerNum);
          }
       }
       

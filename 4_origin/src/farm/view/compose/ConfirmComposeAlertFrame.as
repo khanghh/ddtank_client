@@ -41,12 +41,12 @@ package farm.view.compose
       public function ConfirmComposeAlertFrame()
       {
          super();
-         var _loc1_:AlertInfo = new AlertInfo();
-         _loc1_.title = LanguageMgr.GetTranslation("ddt.farms.composeComfirmNumPnlTitle");
-         _loc1_.bottomGap = 37;
-         _loc1_.buttonGape = 65;
-         _loc1_.customPos = ComponentFactory.Instance.creat("farm.confirmComposeAlertBtnPos");
-         this.info = _loc1_;
+         var alertInfo:AlertInfo = new AlertInfo();
+         alertInfo.title = LanguageMgr.GetTranslation("ddt.farms.composeComfirmNumPnlTitle");
+         alertInfo.bottomGap = 37;
+         alertInfo.buttonGape = 65;
+         alertInfo.customPos = ComponentFactory.Instance.creat("farm.confirmComposeAlertBtnPos");
+         this.info = alertInfo;
          initView();
          initEvent();
       }
@@ -86,11 +86,11 @@ package farm.view.compose
          _removeBtn.addEventListener("click",__changeInputNumber);
       }
       
-      protected function __framePesponse(param1:FrameEvent) : void
+      protected function __framePesponse(event:FrameEvent) : void
       {
          removeEventListener("response",__framePesponse);
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode) - 2)
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
@@ -99,7 +99,7 @@ package farm.view.compose
          dispose();
       }
       
-      private function __inputCheck(param1:Event) : void
+      private function __inputCheck(e:Event) : void
       {
          _inputNum = int(_inputTxt.text);
          if(_inputNum > 999)
@@ -126,9 +126,9 @@ package farm.view.compose
          _inputTxt.text = _inputNum.toString();
       }
       
-      private function __changeInputNumber(param1:MouseEvent) : void
+      private function __changeInputNumber(e:MouseEvent) : void
       {
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = e.currentTarget;
          if(_maxBtn !== _loc2_)
          {
             if(_minBtn !== _loc2_)
@@ -157,9 +157,9 @@ package farm.view.compose
          checkInput();
       }
       
-      public function set maxCount(param1:int) : void
+      public function set maxCount(value:int) : void
       {
-         _inputNum = param1;
+         _inputNum = value;
          _inputTxt.text = _inputNum.toString();
       }
       

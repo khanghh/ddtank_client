@@ -95,26 +95,26 @@ package baglocked.phoneServiceFrames
          addEvent();
       }
       
-      public function setRestTimes(param1:int) : void
+      public function setRestTimes(value:int) : void
       {
-         _tips.text = LanguageMgr.GetTranslation("tank.view.bagII.baglocked.tip21",param1);
+         _tips.text = LanguageMgr.GetTranslation("tank.view.bagII.baglocked.tip21",value);
       }
       
-      protected function __nextBtnClick(param1:MouseEvent) : void
+      protected function __nextBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          SocketManager.Instance.out.getBackLockPwdByQuestion(1,_answerInput1.text,_answerInput2.text);
       }
       
-      protected function __cancelBtnClick(param1:MouseEvent) : void
+      protected function __cancelBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _bagLockedController.close();
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -123,9 +123,9 @@ package baglocked.phoneServiceFrames
          }
       }
       
-      public function set bagLockedController(param1:BagLockedController) : void
+      public function set bagLockedController(value:BagLockedController) : void
       {
-         _bagLockedController = param1;
+         _bagLockedController = value;
       }
       
       public function show() : void

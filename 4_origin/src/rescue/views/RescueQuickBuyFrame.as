@@ -115,7 +115,7 @@ package rescue.views
          _submitButton.addEventListener("click",__buyBuff);
       }
       
-      protected function __buyBuff(param1:MouseEvent) : void
+      protected function __buyBuff(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          CheckMoneyUtils.instance.checkMoney(_isBand,getNeedMoney(),onCheckComplete);
@@ -127,7 +127,7 @@ package rescue.views
          dispose();
       }
       
-      protected function selectedBandHander(param1:MouseEvent) : void
+      protected function selectedBandHander(event:MouseEvent) : void
       {
          if(_selectedBandBtn.selected)
          {
@@ -143,7 +143,7 @@ package rescue.views
          refreshNumText();
       }
       
-      protected function seletedHander(param1:MouseEvent) : void
+      protected function seletedHander(event:MouseEvent) : void
       {
          if(_selectedBtn.selected)
          {
@@ -159,16 +159,16 @@ package rescue.views
          refreshNumText();
       }
       
-      private function reConfirmHandler(param1:FrameEvent) : void
+      private function reConfirmHandler(evt:FrameEvent) : void
       {
-         var _loc2_:int = 0;
+         var needMoney:int = 0;
          SoundManager.instance.play("008");
-         var _loc3_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc3_.removeEventListener("response",reConfirmHandler);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",reConfirmHandler);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
-            _loc2_ = getNeedMoney();
-            if(PlayerManager.Instance.Self.Money < _loc2_)
+            needMoney = getNeedMoney();
+            if(PlayerManager.Instance.Self.Money < needMoney)
             {
                LeavePageManager.showFillFrame();
                return;
@@ -183,22 +183,22 @@ package rescue.views
          return _perPrice * _number.number;
       }
       
-      private function selectHandler(param1:Event) : void
+      private function selectHandler(e:Event) : void
       {
          refreshNumText();
       }
       
       protected function refreshNumText() : void
       {
-         var _loc1_:String = String(_number.number * _perPrice);
-         var _loc2_:String = !!_isBand?LanguageMgr.GetTranslation("ddtMoney"):LanguageMgr.GetTranslation("money");
-         totalText.text = _loc1_ + " " + _loc2_;
+         var priceStr:String = String(_number.number * _perPrice);
+         var tmp:String = !!_isBand?LanguageMgr.GetTranslation("ddtMoney"):LanguageMgr.GetTranslation("money");
+         totalText.text = priceStr + " " + tmp;
       }
       
-      public function setData(param1:int, param2:int) : void
+      public function setData(type:int, perPrice:int) : void
       {
-         _type = param1;
-         _perPrice = param2;
+         _type = type;
+         _perPrice = perPrice;
          switch(int(_type))
          {
             case 0:
@@ -222,10 +222,10 @@ package rescue.views
          refreshNumText();
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:

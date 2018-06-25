@@ -113,19 +113,18 @@ package worldboss.view
       
       private function setList() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:Array = WorldBossManager.Instance.bossInfo.buffArray;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_.length)
+         var i:int = 0;
+         var cItem:* = null;
+         var arr:Array = WorldBossManager.Instance.bossInfo.buffArray;
+         for(i = 0; i < arr.length; )
          {
-            _loc1_ = new BuffCartItem();
-            _loc1_.buffItemInfo = _loc2_[_loc3_] as WorldBossBuffInfo;
-            _cartList.addChild(_loc1_);
-            _selectedArr.push(_loc1_);
-            _loc1_.selected(_autoBuyBuffItem.hasKey(_loc1_.buffID));
-            _loc1_.addEventListener("select",__itemSelected);
-            _loc3_++;
+            cItem = new BuffCartItem();
+            cItem.buffItemInfo = arr[i] as WorldBossBuffInfo;
+            _cartList.addChild(cItem);
+            _selectedArr.push(cItem);
+            cItem.selected(_autoBuyBuffItem.hasKey(cItem.buffID));
+            cItem.addEventListener("select",__itemSelected);
+            i++;
          }
          _cartScroll.invalidateViewport();
          updatePrice();
@@ -139,9 +138,9 @@ package worldboss.view
          PlayerManager.Instance.Self.addEventListener("propertychange",__onPropertyChanged);
       }
       
-      protected function __onPropertyChanged(param1:PlayerPropertyEvent) : void
+      protected function __onPropertyChanged(event:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["Money"])
+         if(event.changedProperties["Money"])
          {
             _money.text = PlayerManager.Instance.Self.Money.toString();
          }
@@ -155,35 +154,35 @@ package worldboss.view
          PlayerManager.Instance.Self.removeEventListener("propertychange",__onPropertyChanged);
       }
       
-      private function __itemSelected(param1:Event = null) : void
+      private function __itemSelected(e:Event = null) : void
       {
          updatePrice();
-         var _loc2_:BuffCartItem = param1.currentTarget as BuffCartItem;
-         if(_loc2_.IsSelected)
+         var cartItem:BuffCartItem = e.currentTarget as BuffCartItem;
+         if(cartItem.IsSelected)
          {
-            _autoBuyBuffItem.add(_loc2_.buffID,_loc2_.buffID);
+            _autoBuyBuffItem.add(cartItem.buffID,cartItem.buffID);
          }
          else
          {
-            _autoBuyBuffItem.remove(_loc2_.buffID);
+            _autoBuyBuffItem.remove(cartItem.buffID);
          }
       }
       
       private function updatePrice() : void
       {
-         var _loc1_:int = 0;
+         var num:int = 0;
          var _loc4_:int = 0;
          var _loc3_:* = _selectedArr;
-         for each(var _loc2_ in _selectedArr)
+         for each(var item in _selectedArr)
          {
-            if(_loc2_.IsSelected)
+            if(item.IsSelected)
             {
-               _loc1_ = _loc1_ + _loc2_.price;
+               num = num + item.price;
             }
          }
       }
       
-      private function __againChange(param1:Event) : void
+      private function __againChange(e:Event) : void
       {
          SoundManager.instance.play("008");
          if(_notAgainBtn.selected)
@@ -197,19 +196,19 @@ package worldboss.view
          MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("worldboss.buyBuff.setShowSucess"));
       }
       
-      private function _responseI(param1:FrameEvent) : void
+      private function _responseI(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.responseCode == 3)
+         if(e.responseCode == 3)
          {
             LeavePageManager.leaveToFillPath();
          }
-         ObjectUtils.disposeObject(param1.target);
+         ObjectUtils.disposeObject(e.target);
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(evt:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
@@ -218,34 +217,34 @@ package worldboss.view
          }
       }
       
-      private function __getBuff(param1:CrazyTankSocketEvent) : void
+      private function __getBuff(evt:CrazyTankSocketEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc6_:int = 0;
-         var _loc4_:int = 0;
-         var _loc5_:PackageIn = param1.pkg;
-         if(_loc5_.readBoolean())
+         var count:int = 0;
+         var i:int = 0;
+         var buffID:int = 0;
+         var pkg:PackageIn = evt.pkg;
+         if(pkg.readBoolean())
          {
-            _loc2_ = _loc5_.readInt();
-            if(_loc2_ > 1)
+            count = pkg.readInt();
+            if(count > 1)
             {
                dispose();
             }
-            _loc6_ = 0;
-            while(_loc6_ < _loc2_)
+            i = 0;
+            while(i < count)
             {
-               _loc4_ = _loc5_.readInt();
+               buffID = pkg.readInt();
                var _loc8_:int = 0;
                var _loc7_:* = _selectedArr;
-               for each(var _loc3_ in _selectedArr)
+               for each(var item in _selectedArr)
                {
-                  if(_loc4_ == _loc3_.buffID)
+                  if(buffID == item.buffID)
                   {
-                     WorldBossManager.Instance.bossInfo.myPlayerVO.buffID = _loc4_;
-                     _loc3_.changeStatusBuy();
+                     WorldBossManager.Instance.bossInfo.myPlayerVO.buffID = buffID;
+                     item.changeStatusBuy();
                   }
                }
-               _loc6_++;
+               i++;
             }
             updatePrice();
             dispatchEvent(new Event("change"));

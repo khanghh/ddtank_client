@@ -1,13 +1,2 @@
-package game.gametrainer
-{
-   import flash.events.Event;
-   
-   public class TrainerEvent extends Event
-   {
-      
-      public static const CLOSE_FRAME:String = "closeFrame";
-       
-      
-      public function TrainerEvent(param1:String, param2:Boolean = false, param3:Boolean = false){super(null,null,null);}
-   }
-}
+package game.gametrainer{   import flash.events.Event;      public class TrainerEvent extends Event   {            public static const CLOSE_FRAME:String = "closeFrame";                   public function TrainerEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false) { super(null,null,null); }
+   }}

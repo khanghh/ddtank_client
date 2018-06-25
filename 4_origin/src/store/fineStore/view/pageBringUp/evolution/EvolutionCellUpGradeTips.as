@@ -21,60 +21,60 @@ package store.fineStore.view.pageBringUp.evolution
          super();
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         .super.tipData = param1;
-         evolutionUpgradTip(param1 as GoodTipInfo);
+         .super.tipData = data;
+         evolutionUpgradTip(data as GoodTipInfo);
       }
       
-      private function evolutionUpgradTip(param1:GoodTipInfo) : void
+      private function evolutionUpgradTip(pTipInfo:GoodTipInfo) : void
       {
-         var _loc5_:* = null;
-         var _loc4_:* = null;
-         var _loc3_:InventoryItemInfo = null;
-         var _loc2_:GoodTipInfo = null;
-         var _loc6_:InventoryItemInfo = null;
-         if(param1)
+         var data:* = null;
+         var _rightArrows:* = null;
+         var tInfo:InventoryItemInfo = null;
+         var tGoodTipInfo:GoodTipInfo = null;
+         var itemInfo:InventoryItemInfo = null;
+         if(pTipInfo)
          {
-            _loc6_ = param1.itemInfo as InventoryItemInfo;
+            itemInfo = pTipInfo.itemInfo as InventoryItemInfo;
          }
-         if(_loc6_)
+         if(itemInfo)
          {
-            _loc2_ = new GoodTipInfo();
-            _loc3_ = new InventoryItemInfo();
-            ObjectUtils.copyProperties(_loc3_,_loc6_);
-            _loc5_ = FineEvolutionManager.Instance.GetEvolutionDataByExp(_loc3_.curExp);
-            if(_loc5_)
+            tGoodTipInfo = new GoodTipInfo();
+            tInfo = new InventoryItemInfo();
+            ObjectUtils.copyProperties(tInfo,itemInfo);
+            data = FineEvolutionManager.Instance.GetEvolutionDataByExp(tInfo.curExp);
+            if(data)
             {
-               if(_loc5_.isMax == false)
+               if(data.isMax == false)
                {
-                  _loc3_.curExp = FineEvolutionManager.Instance.EvolutionDataByLv(_loc5_.Level + 1).Exp;
+                  tInfo.curExp = FineEvolutionManager.Instance.EvolutionDataByLv(data.Level + 1).Exp;
                }
                else
                {
-                  _loc3_.curExp = _loc5_.Exp;
+                  tInfo.curExp = data.Exp;
                }
             }
             else
             {
-               _loc3_.curExp = FineEvolutionManager.Instance.EvolutionDataByLv(1).Exp;
+               tInfo.curExp = FineEvolutionManager.Instance.EvolutionDataByLv(1).Exp;
             }
-            _loc2_.itemInfo = _loc3_;
-            _loc2_.beadName = ItemManager.Instance.getTemplateById(_loc3_.TemplateID).Name;
+            tGoodTipInfo.itemInfo = tInfo;
+            tGoodTipInfo.beadName = ItemManager.Instance.getTemplateById(tInfo.TemplateID).Name;
             if(!_upgradeBeadTip)
             {
                _upgradeBeadTip = new GoodTip();
             }
-            _upgradeBeadTip.tipData = _loc2_;
+            _upgradeBeadTip.tipData = tGoodTipInfo;
             _upgradeBeadTip.x = _tipbackgound.x + _tipbackgound.width + 25;
             if(!this.contains(_upgradeBeadTip))
             {
                addChild(_upgradeBeadTip);
             }
-            _loc4_ = ComponentFactory.Instance.creatBitmap("asset.ddtstore.rightArrows");
-            _loc4_.x = _tipbackgound.x + _tipbackgound.width - 20;
-            _loc4_.y = 90;
-            addChild(_loc4_);
+            _rightArrows = ComponentFactory.Instance.creatBitmap("asset.ddtstore.rightArrows");
+            _rightArrows.x = _tipbackgound.x + _tipbackgound.width - 20;
+            _rightArrows.y = 90;
+            addChild(_rightArrows);
          }
          else
          {

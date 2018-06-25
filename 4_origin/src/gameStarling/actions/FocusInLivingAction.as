@@ -9,10 +9,10 @@ package gameStarling.actions
       
       private var _gameLiving:GameLiving3D;
       
-      public function FocusInLivingAction(param1:GameLiving3D)
+      public function FocusInLivingAction(gameLiving:GameLiving3D)
       {
          super();
-         _gameLiving = param1;
+         _gameLiving = gameLiving;
       }
       
       override public function execute() : void

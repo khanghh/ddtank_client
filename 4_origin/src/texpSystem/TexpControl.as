@@ -5,7 +5,7 @@ package texpSystem
    import ddt.events.CEvent;
    import texpSystem.controller.TexpManager;
    import texpSystem.view.TexpInfoView;
-   import texpSystem.view.TexpView;
+   import texpSystem.view.TexpMainView;
    
    public class TexpControl
    {
@@ -13,7 +13,7 @@ package texpSystem
       private static var _instance:TexpControl;
        
       
-      private var _texpView:TexpView;
+      private var _texpView:TexpMainView;
       
       private var _infoView:TexpInfoView;
       
@@ -37,9 +37,9 @@ package texpSystem
          TexpManager.Instance.addEventListener("texpView",__onTexpViewEvent);
       }
       
-      private function __onInfoViewEvent(param1:CEvent) : void
+      private function __onInfoViewEvent(e:CEvent) : void
       {
-         var _loc2_:* = param1.data.type;
+         var _loc2_:* = e.data.type;
          if("openview" !== _loc2_)
          {
             if("closeView" !== _loc2_)
@@ -50,13 +50,13 @@ package texpSystem
                   {
                      if(_infoView)
                      {
-                        _infoView.info = param1.data.info;
+                        _infoView.info = e.data.info;
                      }
                   }
                }
                else if(_infoView)
                {
-                  _infoView.visible = param1.data.visible;
+                  _infoView.visible = e.data.visible;
                }
             }
             else
@@ -68,13 +68,13 @@ package texpSystem
          else if(_infoView == null)
          {
             _infoView = ComponentFactory.Instance.creatCustomObject("texpSystem.texpInfoView.main");
-            param1.data.parent.addChild(_infoView);
+            e.data.parent.addChild(_infoView);
          }
       }
       
-      private function __onTexpViewEvent(param1:CEvent) : void
+      private function __onTexpViewEvent(e:CEvent) : void
       {
-         var _loc2_:* = param1.data.type;
+         var _loc2_:* = e.data.type;
          if("openview" !== _loc2_)
          {
             if("closeView" !== _loc2_)
@@ -93,12 +93,12 @@ package texpSystem
                   }
                   else if(_texpView)
                   {
-                     !!param1.data.shine?_texpView.startShine():_texpView.stopShine();
+                     !!e.data.shine?_texpView.startShine():_texpView.stopShine();
                   }
                }
                else if(_texpView)
                {
-                  _texpView.visible = param1.data.visible;
+                  _texpView.visible = e.data.visible;
                }
             }
             else
@@ -109,8 +109,8 @@ package texpSystem
          }
          else if(!_texpView)
          {
-            _texpView = ComponentFactory.Instance.creatCustomObject("texpSystem.main");
-            param1.data.parent.addChild(_texpView);
+            _texpView = new TexpMainView();
+            e.data.parent.addChild(_texpView);
          }
       }
    }

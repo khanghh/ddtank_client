@@ -68,7 +68,7 @@ package com.pickgliss.ui
          return _instance;
       }
       
-      public function setup(param1:Stage) : void
+      public function setup(stage:Stage) : void
       {
          _stageTopLayer = new SpriteLayer();
          _stageDynamicLayer = new SpriteLayer();
@@ -78,9 +78,9 @@ package com.pickgliss.ui
          _gameUILayer = new SpriteLayer();
          _gameBaseLayer = new SpriteLayer();
          _gameBottomLayer = new SpriteLayer();
-         param1.addChild(_stageBottomLayer);
-         param1.addChild(_stageDynamicLayer);
-         param1.addChild(_stageTopLayer);
+         stage.addChild(_stageBottomLayer);
+         stage.addChild(_stageDynamicLayer);
+         stage.addChild(_stageTopLayer);
          _gameDynamicLayer.autoClickTotop = true;
          _stageBottomLayer.addChild(_gameBottomLayer);
          _stageBottomLayer.addChild(_gameBaseLayer);
@@ -89,9 +89,9 @@ package com.pickgliss.ui
          _stageBottomLayer.addChild(_gameTopLayer);
       }
       
-      public function getLayerByType(param1:int) : SpriteLayer
+      public function getLayerByType(type:int) : SpriteLayer
       {
-         switch(int(param1))
+         switch(int(type))
          {
             case 0:
                return _stageTopLayer;
@@ -112,25 +112,25 @@ package com.pickgliss.ui
          }
       }
       
-      public function addToLayer(param1:DisplayObject, param2:int, param3:Boolean = false, param4:int = 0, param5:Boolean = true) : void
+      public function addToLayer(source:DisplayObject, type:int, center:Boolean = false, blockBackgound:int = 0, focusTop:Boolean = true) : void
       {
-         var _loc6_:* = null;
-         var _loc7_:SpriteLayer = getLayerByType(param2);
-         if(param3)
+         var visibleSize:* = null;
+         var container:SpriteLayer = getLayerByType(type);
+         if(center)
          {
-            if(param1 is Component)
+            if(source is Component)
             {
-               param1.x = (StageReferance.stageWidth - param1.width) / 2;
-               param1.y = (StageReferance.stageHeight - param1.height) / 2;
+               source.x = (StageReferance.stageWidth - source.width) / 2;
+               source.y = (StageReferance.stageHeight - source.height) / 2;
             }
             else
             {
-               _loc6_ = DisplayUtils.getVisibleSize(param1);
-               param1.x = (StageReferance.stageWidth - _loc6_.width) / 2;
-               param1.y = (StageReferance.stageHeight - _loc6_.height) / 2;
+               visibleSize = DisplayUtils.getVisibleSize(source);
+               source.x = (StageReferance.stageWidth - visibleSize.width) / 2;
+               source.y = (StageReferance.stageHeight - visibleSize.height) / 2;
             }
          }
-         _loc7_.addTolayer(param1,param4,param5);
+         container.addTolayer(source,blockBackgound,focusTop);
       }
       
       public function clearnStageDynamic() : void
@@ -150,13 +150,13 @@ package com.pickgliss.ui
          cleanSprite(_stageTopLayer);
       }
       
-      private function cleanSprite(param1:Sprite) : void
+      private function cleanSprite(target:Sprite) : void
       {
-         var _loc2_:* = null;
-         while(param1.numChildren > 0)
+         var child:* = null;
+         while(target.numChildren > 0)
          {
-            _loc2_ = param1.getChildAt(0);
-            ObjectUtils.disposeObject(_loc2_);
+            child = target.getChildAt(0);
+            ObjectUtils.disposeObject(child);
          }
       }
       

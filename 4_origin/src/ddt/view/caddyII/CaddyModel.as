@@ -141,9 +141,9 @@ package ddt.view.caddyII
          exploitList.push(new Vector.<InventoryItemInfo>());
       }
       
-      public function setup(param1:int) : void
+      public function setup(type:int) : void
       {
-         _type = param1;
+         _type = type;
       }
       
       private function createData() : void
@@ -159,48 +159,47 @@ package ddt.view.caddyII
          sortBeadData();
       }
       
-      private function createBeadData(param1:Vector.<BoxGoodsTempInfo>, param2:Vector.<InventoryItemInfo>) : void
+      private function createBeadData(list:Vector.<BoxGoodsTempInfo>, beadList:Vector.<InventoryItemInfo>) : void
       {
-         var _loc3_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < param1.length)
+         var i:int = 0;
+         for(i = 0; i < list.length; )
          {
-            param2.push(createInfo(param1[_loc3_]));
-            _loc3_++;
+            beadList.push(createInfo(list[i]));
+            i++;
          }
       }
       
-      private function createInfo(param1:BoxGoodsTempInfo) : InventoryItemInfo
+      private function createInfo(boxInfo:BoxGoodsTempInfo) : InventoryItemInfo
       {
-         var _loc2_:* = null;
-         if(param1)
+         var GoodsInfo:* = null;
+         if(boxInfo)
          {
-            _loc2_ = getTemplateInfo(param1.TemplateId) as InventoryItemInfo;
-            _loc2_.StrengthenLevel = param1.StrengthenLevel;
-            _loc2_.AttackCompose = param1.AttackCompose;
-            _loc2_.DefendCompose = param1.DefendCompose;
-            _loc2_.LuckCompose = param1.LuckCompose;
-            _loc2_.AgilityCompose = param1.AgilityCompose;
-            _loc2_.isShowBind = false;
-            if(param1.TemplateId == 11025)
+            GoodsInfo = getTemplateInfo(boxInfo.TemplateId) as InventoryItemInfo;
+            GoodsInfo.StrengthenLevel = boxInfo.StrengthenLevel;
+            GoodsInfo.AttackCompose = boxInfo.AttackCompose;
+            GoodsInfo.DefendCompose = boxInfo.DefendCompose;
+            GoodsInfo.LuckCompose = boxInfo.LuckCompose;
+            GoodsInfo.AgilityCompose = boxInfo.AgilityCompose;
+            GoodsInfo.isShowBind = false;
+            if(boxInfo.TemplateId == 11025)
             {
-               _loc2_.Count == 10;
+               GoodsInfo.Count == 10;
             }
             else
             {
-               _loc2_.Count = param1.ItemCount;
+               GoodsInfo.Count = boxInfo.ItemCount;
             }
-            _loc2_.IsJudge = true;
+            GoodsInfo.IsJudge = true;
          }
-         return _loc2_;
+         return GoodsInfo;
       }
       
-      private function getTemplateInfo(param1:int) : InventoryItemInfo
+      private function getTemplateInfo(id:int) : InventoryItemInfo
       {
-         var _loc2_:InventoryItemInfo = new InventoryItemInfo();
-         _loc2_.TemplateID = param1;
-         ItemManager.fill(_loc2_);
-         return _loc2_;
+         var itemInfo:InventoryItemInfo = new InventoryItemInfo();
+         itemInfo.TemplateID = id;
+         ItemManager.fill(itemInfo);
+         return itemInfo;
       }
       
       private function sortBeadData() : void
@@ -210,51 +209,51 @@ package ddt.view.caddyII
          _attributeList.sort(compareBeadDataFun);
       }
       
-      private function compareFun(param1:BoxGoodsTempInfo, param2:BoxGoodsTempInfo) : int
+      private function compareFun(info1:BoxGoodsTempInfo, info2:BoxGoodsTempInfo) : int
       {
-         if(param1.IsTips >= param2.IsTips)
+         if(info1.IsTips >= info2.IsTips)
          {
             return -1;
          }
          return 1;
       }
       
-      private function compareBeadDataFun(param1:InventoryItemInfo, param2:InventoryItemInfo) : int
+      private function compareBeadDataFun(info1:InventoryItemInfo, info2:InventoryItemInfo) : int
       {
-         if(param1.TemplateID >= param2.TemplateID)
+         if(info1.TemplateID >= info2.TemplateID)
          {
             return -1;
          }
          return 1;
       }
       
-      private function _addAwardsInfo(param1:String, param2:int, param3:Boolean = false, param4:String = "", param5:int = 0, param6:int = 0, param7:int = 0) : void
+      private function _addAwardsInfo(name:String, id:int, isLong:Boolean = false, zone:String = "", zoneID:int = 0, channel:int = 0, count:int = 0) : void
       {
-         var _loc8_:AwardsInfo = new AwardsInfo();
-         _loc8_.name = param1;
-         _loc8_.TemplateId = param2;
-         _loc8_.isLong = param3;
-         _loc8_.zone = param4;
-         _loc8_.zoneID = param5;
-         _loc8_.channel = param6;
-         _loc8_.count = param7;
-         awardsList.unshift(_loc8_);
+         var info:AwardsInfo = new AwardsInfo();
+         info.name = name;
+         info.TemplateId = id;
+         info.isLong = isLong;
+         info.zone = zone;
+         info.zoneID = zoneID;
+         info.channel = channel;
+         info.count = count;
+         awardsList.unshift(info);
          if(awardsList.length > 1000)
          {
             awardsList.pop();
          }
       }
       
-      private function _addBeadAwardsInfo(param1:String, param2:int, param3:Boolean = false, param4:String = "", param5:int = 0, param6:int = 0) : void
+      private function _addBeadAwardsInfo(name:String, id:int, isLong:Boolean = false, zone:String = "", zoneID:int = 0, channel:int = 0) : void
       {
-         var _loc7_:AwardsInfo = new AwardsInfo();
-         _loc7_.name = param1;
-         _loc7_.TemplateId = param2;
-         _loc7_.isLong = param3;
-         _loc7_.zone = param4;
-         _loc7_.zoneID = param5;
-         _loc7_.channel = param6;
-         beadAwardsList.unshift(_loc7_);
+         var info:AwardsInfo = new AwardsInfo();
+         info.name = name;
+         info.TemplateId = id;
+         info.isLong = isLong;
+         info.zone = zone;
+         info.zoneID = zoneID;
+         info.channel = channel;
+         beadAwardsList.unshift(info);
          if(beadAwardsList.length > 1000)
          {
             beadAwardsList.pop();
@@ -266,59 +265,58 @@ package ddt.view.caddyII
          return _caddyTempId;
       }
       
-      public function set tempid(param1:Array) : void
+      public function set tempid(val:Array) : void
       {
-         _caddyTempId = param1;
+         _caddyTempId = val;
       }
       
-      private function fillListFromAward(param1:Vector.<CaddyAwardInfo>) : Vector.<InventoryItemInfo>
+      private function fillListFromAward(award:Vector.<CaddyAwardInfo>) : Vector.<InventoryItemInfo>
       {
-         var _loc5_:int = 0;
-         var _loc2_:Vector.<InventoryItemInfo> = new Vector.<InventoryItemInfo>();
-         var _loc4_:DictionaryData = BossBoxManager.instance.boxTempIDList;
-         var _loc3_:int = param1.length;
-         _loc5_ = 0;
-         while(_loc5_ < _loc3_)
+         var i:int = 0;
+         var list:Vector.<InventoryItemInfo> = new Vector.<InventoryItemInfo>();
+         var boxTempIDList:DictionaryData = BossBoxManager.instance.boxTempIDList;
+         var len:int = award.length;
+         for(i = 0; i < len; )
          {
-            _loc4_[param1[_loc5_].TemplateID].ItemCount = param1[_loc5_].Count;
-            _loc2_.push(createInfo(_loc4_[param1[_loc5_].TemplateID]));
-            _loc5_++;
+            boxTempIDList[award[i].TemplateID].ItemCount = award[i].Count;
+            list.push(createInfo(boxTempIDList[award[i].TemplateID]));
+            i++;
          }
-         return _loc2_;
+         return list;
       }
       
-      public function getCaddyTrophy(param1:int) : Vector.<InventoryItemInfo>
+      public function getCaddyTrophy(type:int) : Vector.<InventoryItemInfo>
       {
-         if(param1 == 112101 || param1 == 112224)
+         if(type == 112101 || type == 112224)
          {
             return fillListFromAward(CaddyAwardModel.getInstance().getGoldAwards());
          }
-         if(param1 == 112100 || param1 == 112223)
+         if(type == 112100 || type == 112223)
          {
             return fillListFromAward(CaddyAwardModel.getInstance().getSilverAwards());
          }
-         if(param1 == 112222)
+         if(type == 112222)
          {
             return fillListFromAward(CaddyAwardModel.getInstance().getAwards());
          }
-         if(param1 == 2000)
+         if(type == 2000)
          {
             return fillListFromAward(CaddyAwardModel.getInstance().getTreasureAwards());
          }
-         if(param1 == 1222010)
+         if(type == 1222010)
          {
             return fillListFromAward(CaddyAwardModel.getInstance().getSilverToyAwards());
          }
-         if(param1 == 1222110)
+         if(type == 1222110)
          {
             return fillListFromAward(CaddyAwardModel.getInstance().getGoldToyAwards());
          }
          return new Vector.<InventoryItemInfo>();
       }
       
-      public function getOfferPacketThrophy(param1:int) : Vector.<InventoryItemInfo>
+      public function getOfferPacketThrophy(type:int) : Vector.<InventoryItemInfo>
       {
-         switch(int(param1) - 11252)
+         switch(int(type) - 11252)
          {
             case 0:
                return exploitList[0];
@@ -359,133 +357,130 @@ package ddt.view.caddyII
          }
       }
       
-      public function appendAwardsInfo(param1:String, param2:int, param3:Boolean = false, param4:String = "", param5:int = 0, param6:int = 0) : void
+      public function appendAwardsInfo(name:String, id:int, isLong:Boolean = false, zone:String = "", zoneID:int = 0, mes:int = 0) : void
       {
          switch(int(_type) - 1)
          {
             case 0:
-               if(param6 == 3)
+               if(mes == 3)
                {
-                  _addAwardsInfo(param1,param2,param3,param4,param5);
+                  _addAwardsInfo(name,id,isLong,zone,zoneID);
                   dispatchEvent(new Event("awards_change"));
                }
                break;
             case 1:
-               if(param6 == 4)
+               if(mes == 4)
                {
-                  _addBeadAwardsInfo(param1,param2,param3,param4,param5);
+                  _addBeadAwardsInfo(name,id,isLong,zone,zoneID);
                   dispatchEvent(new Event("beadType_change"));
                }
                break;
             case 2:
-               if(param6 == 5)
+               if(mes == 5)
                {
-                  _addAwardsInfo(param1,param2,param3,param4,param5);
+                  _addAwardsInfo(name,id,isLong,zone,zoneID);
                   dispatchEvent(new Event("awards_change"));
                }
                break;
             default:
-               if(param6 == 5)
+               if(mes == 5)
                {
-                  _addAwardsInfo(param1,param2,param3,param4,param5);
+                  _addAwardsInfo(name,id,isLong,zone,zoneID);
                   dispatchEvent(new Event("awards_change"));
                }
                break;
             default:
-               if(param6 == 5)
+               if(mes == 5)
                {
-                  _addAwardsInfo(param1,param2,param3,param4,param5);
+                  _addAwardsInfo(name,id,isLong,zone,zoneID);
                   dispatchEvent(new Event("awards_change"));
                }
                break;
             default:
-               if(param6 == 5)
+               if(mes == 5)
                {
-                  _addAwardsInfo(param1,param2,param3,param4,param5);
+                  _addAwardsInfo(name,id,isLong,zone,zoneID);
                   dispatchEvent(new Event("awards_change"));
                }
                break;
             default:
-               if(param6 == 5)
+               if(mes == 5)
                {
-                  _addAwardsInfo(param1,param2,param3,param4,param5);
+                  _addAwardsInfo(name,id,isLong,zone,zoneID);
                   dispatchEvent(new Event("awards_change"));
                }
                break;
             default:
-               if(param6 == 5)
+               if(mes == 5)
                {
-                  _addAwardsInfo(param1,param2,param3,param4,param5);
+                  _addAwardsInfo(name,id,isLong,zone,zoneID);
                   dispatchEvent(new Event("awards_change"));
                }
                break;
             default:
-               if(param6 == 5)
+               if(mes == 5)
                {
-                  _addAwardsInfo(param1,param2,param3,param4,param5);
+                  _addAwardsInfo(name,id,isLong,zone,zoneID);
                   dispatchEvent(new Event("awards_change"));
                }
                break;
             case 9:
-               if(param6 == 11)
+               if(mes == 11)
                {
-                  _addAwardsInfo(param1,param2,param3,param4,param5);
+                  _addAwardsInfo(name,id,isLong,zone,zoneID);
                   dispatchEvent(new Event("bless_change"));
                   break;
                }
                break;
             default:
-               if(param6 == 11)
+               if(mes == 11)
                {
-                  _addAwardsInfo(param1,param2,param3,param4,param5);
+                  _addAwardsInfo(name,id,isLong,zone,zoneID);
                   dispatchEvent(new Event("bless_change"));
                   break;
                }
                break;
             case 11:
-               if(param6 == 14)
+               if(mes == 14)
                {
-                  _addAwardsInfo(param1,param2,param3,param4,param5);
+                  _addAwardsInfo(name,id,isLong,zone,zoneID);
                   dispatchEvent(new Event("awards_change"));
                }
          }
       }
       
-      public function addAwardsInfoByArr(param1:Vector.<AwardsInfo>) : void
+      public function addAwardsInfoByArr(arr:Vector.<AwardsInfo>) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = param1.length > 1000?1000:param1.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var i:int = 0;
+         var len:int = arr.length > 1000?1000:arr.length;
+         for(i = 0; i < len; )
          {
-            _addAwardsInfo(param1[_loc3_].name,param1[_loc3_].TemplateId,param1[_loc3_].isLong,param1[_loc3_].zone,param1[_loc3_].zoneID,param1[_loc3_].channel);
-            _loc3_++;
+            _addAwardsInfo(arr[i].name,arr[i].TemplateId,arr[i].isLong,arr[i].zone,arr[i].zoneID,arr[i].channel);
+            i++;
          }
          dispatchEvent(new Event("awards_change"));
       }
       
-      public function addBlessInfoByArr(param1:Vector.<AwardsInfo>) : void
+      public function addBlessInfoByArr(arr:Vector.<AwardsInfo>) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = param1.length > 1000?1000:param1.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var i:int = 0;
+         var len:int = arr.length > 1000?1000:arr.length;
+         for(i = 0; i < len; )
          {
-            _addAwardsInfo(param1[_loc3_].name,param1[_loc3_].TemplateId,param1[_loc3_].isLong,param1[_loc3_].zone,param1[_loc3_].zoneID,param1[_loc3_].channel,param1[_loc3_].count);
-            _loc3_++;
+            _addAwardsInfo(arr[i].name,arr[i].TemplateId,arr[i].isLong,arr[i].zone,arr[i].zoneID,arr[i].channel,arr[i].count);
+            i++;
          }
          dispatchEvent(new Event("bless_change"));
       }
       
-      public function addTreasureInfoByArr(param1:Vector.<AwardsInfo>) : void
+      public function addTreasureInfoByArr(arr:Vector.<AwardsInfo>) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = param1.length > 1000?1000:param1.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var i:int = 0;
+         var len:int = arr.length > 1000?1000:arr.length;
+         for(i = 0; i < len; )
          {
-            _addAwardsInfo(param1[_loc3_].name,param1[_loc3_].TemplateId,param1[_loc3_].isLong,param1[_loc3_].zone,param1[_loc3_].zoneID,param1[_loc3_].channel,param1[_loc3_].count);
-            _loc3_++;
+            _addAwardsInfo(arr[i].name,arr[i].TemplateId,arr[i].isLong,arr[i].zone,arr[i].zoneID,arr[i].channel,arr[i].count);
+            i++;
          }
          dispatchEvent(new Event("treasure_change"));
       }
@@ -578,9 +573,9 @@ package ddt.view.caddyII
          return _CaddyType;
       }
       
-      public function set caddyType(param1:int) : void
+      public function set caddyType(value:int) : void
       {
-         _CaddyType = param1;
+         _CaddyType = value;
       }
       
       public function get beadType() : int
@@ -588,16 +583,16 @@ package ddt.view.caddyII
          return _beadType;
       }
       
-      public function set beadType(param1:int) : void
+      public function set beadType(value:int) : void
       {
-         var _loc2_:* = param1;
+         var _loc2_:* = value;
          if(311500 !== _loc2_)
          {
             if(312500 !== _loc2_)
             {
                if(313500 !== _loc2_)
                {
-                  _beadType = param1;
+                  _beadType = value;
                }
                else
                {
@@ -616,9 +611,9 @@ package ddt.view.caddyII
          dispatchEvent(new Event("beadType_change"));
       }
       
-      public function set offerType(param1:int) : void
+      public function set offerType(value:int) : void
       {
-         switch(int(param1) - 11252)
+         switch(int(value) - 11252)
          {
             case 0:
                _offerType = 0;

@@ -38,13 +38,13 @@ package ddt.view.character
       
       private var _isComplete:Boolean;
       
-      public function DynamicWeaponLayer(param1:ItemTemplateInfo, param2:String = "", param3:Boolean = false, param4:int = 1, param5:String = null)
+      public function DynamicWeaponLayer(info:ItemTemplateInfo, color:String = "", gunback:Boolean = false, hairType:int = 1, pic:String = null)
       {
-         _info = param1;
-         _color = param2 == null?"":param2;
-         _gunBack = param3;
-         _hairType = param4 == 1?"B":"A";
-         _pic = param5 == null || String(param5) == "undefined"?_info.Pic:param5;
+         _info = info;
+         _color = color == null?"":color;
+         _gunBack = gunback;
+         _hairType = hairType == 1?"B":"A";
+         _pic = pic == null || String(pic) == "undefined"?_info.Pic:pic;
          super();
       }
       
@@ -62,9 +62,9 @@ package ddt.view.character
          }
       }
       
-      protected function __sourceComplete(param1:LoaderEvent = null) : void
+      protected function __sourceComplete(event:LoaderEvent = null) : void
       {
-         var _loc2_:* = null;
+         var WingClass:* = null;
          if(info == null)
          {
             return;
@@ -73,14 +73,14 @@ package ddt.view.character
          {
             _loader.removeEventListener("complete",__sourceComplete);
          }
-         if(param1 != null && !param1.loader.isSuccess)
+         if(event != null && !event.loader.isSuccess)
          {
             _weapon = null;
          }
          else
          {
-            _loc2_ = ClassUtils.uiSourceDomain.getDefinition("game_weapon_" + info.TemplateID) as Class;
-            _weapon = new _loc2_();
+            WingClass = ClassUtils.uiSourceDomain.getDefinition("game_weapon_" + info.TemplateID) as Class;
+            _weapon = new WingClass();
          }
          _isComplete = true;
          if(_callBack != null)
@@ -89,7 +89,7 @@ package ddt.view.character
          }
       }
       
-      public function setColor(param1:*) : Boolean
+      public function setColor(color:*) : Boolean
       {
          return false;
       }
@@ -99,9 +99,9 @@ package ddt.view.character
          return _info;
       }
       
-      public function set info(param1:ItemTemplateInfo) : void
+      public function set info(value:ItemTemplateInfo) : void
       {
-         _info = param1;
+         _info = value;
       }
       
       public function getContent() : DisplayObject
@@ -125,9 +125,9 @@ package ddt.view.character
          }
       }
       
-      public function load(param1:Function) : void
+      public function load(callBack:Function) : void
       {
-         _callBack = param1;
+         _callBack = callBack;
          initLoader();
       }
       
@@ -135,7 +135,7 @@ package ddt.view.character
       {
       }
       
-      public function set currentEdit(param1:int) : void
+      public function set currentEdit(n:int) : void
       {
       }
       

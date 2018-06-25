@@ -17,24 +17,24 @@ package starling.scene.common
          Starling.current.nativeStage.addEventListener("click",onNativeStageClick);
       }
       
-      private function onNativeStageClick(param1:MouseEvent) : void
+      private function onNativeStageClick(evt:MouseEvent) : void
       {
-         _nativeStageClickDisplayObj = param1.target as DisplayObject;
+         _nativeStageClickDisplayObj = evt.target as DisplayObject;
       }
       
-      public function isTypeOf(param1:Array) : Boolean
+      public function isTypeOf(arr:Array) : Boolean
       {
-         if(_nativeStageClickDisplayObj == null && param1 == null)
+         if(_nativeStageClickDisplayObj == null && arr == null)
          {
             return true;
          }
-         if(param1)
+         if(arr)
          {
             var _loc4_:int = 0;
-            var _loc3_:* = param1;
-            for each(var _loc2_ in param1)
+            var _loc3_:* = arr;
+            for each(var clazz in arr)
             {
-               if(_nativeStageClickDisplayObj is _loc2_)
+               if(_nativeStageClickDisplayObj is clazz)
                {
                   return true;
                }

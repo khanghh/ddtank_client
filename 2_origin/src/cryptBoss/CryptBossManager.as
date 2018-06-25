@@ -41,69 +41,67 @@ package cryptBoss
          SocketManager.Instance.addEventListener(PkgEvent.format(275),pkgHandler);
       }
       
-      protected function pkgHandler(param1:PkgEvent) : void
+      protected function pkgHandler(event:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readByte();
-         switch(int(_loc2_) - 1)
+         var pkg:PackageIn = event.pkg;
+         var cmd:int = pkg.readByte();
+         switch(int(cmd) - 1)
          {
             case 0:
-               initAllData(_loc3_);
+               initAllData(pkg);
                break;
             case 1:
-               updateSingleData(_loc3_);
+               updateSingleData(pkg);
          }
       }
       
-      private function updateSingleData(param1:PackageIn) : void
+      private function updateSingleData(pkg:PackageIn) : void
       {
-         var _loc2_:int = param1.readInt();
-         var _loc4_:int = param1.readInt();
-         var _loc3_:int = param1.readInt();
-         var _loc5_:CryptBossItemInfo = openWeekDaysDic[_loc2_];
-         _loc5_.id = _loc2_;
-         _loc5_.star = _loc4_;
-         _loc5_.state = _loc3_;
+         var id:int = pkg.readInt();
+         var star:int = pkg.readInt();
+         var state:int = pkg.readInt();
+         var itemInfo:CryptBossItemInfo = openWeekDaysDic[id];
+         itemInfo.id = id;
+         itemInfo.star = star;
+         itemInfo.state = state;
          dispatchEvent(new CryptBossEvent("cryptBossUpdateView"));
       }
       
-      private function initAllData(param1:PackageIn) : void
+      private function initAllData(pkg:PackageIn) : void
       {
-         var _loc7_:int = 0;
-         var _loc9_:* = null;
-         var _loc8_:int = 0;
-         var _loc5_:* = null;
-         var _loc2_:* = null;
-         var _loc6_:int = 0;
-         var _loc3_:int = param1.readInt();
-         if(_loc3_ == 0)
+         var k:int = 0;
+         var info:* = null;
+         var i:int = 0;
+         var temp:* = null;
+         var openArr:* = null;
+         var j:int = 0;
+         var count:int = pkg.readInt();
+         if(count == 0)
          {
             return;
          }
-         _loc7_ = 0;
-         while(_loc7_ < _loc3_)
+         k = 0;
+         while(k < count)
          {
-            _loc9_ = new CryptBossItemInfo();
-            _loc9_.id = param1.readInt();
-            _loc9_.star = param1.readInt();
-            _loc9_.state = param1.readInt();
-            openWeekDaysDic[_loc9_.id] = _loc9_;
-            _loc7_++;
+            info = new CryptBossItemInfo();
+            info.id = pkg.readInt();
+            info.star = pkg.readInt();
+            info.state = pkg.readInt();
+            openWeekDaysDic[info.id] = info;
+            k++;
          }
-         var _loc4_:Array = ServerConfigManager.instance.cryptBossOpenDay;
-         _loc8_ = 0;
-         while(_loc8_ < _loc4_.length)
+         var arr:Array = ServerConfigManager.instance.cryptBossOpenDay;
+         for(i = 0; i < arr.length; )
          {
-            _loc5_ = _loc4_[_loc8_].split(",");
-            _loc2_ = [];
-            _loc6_ = 1;
-            while(_loc6_ < _loc5_.length)
+            temp = arr[i].split(",");
+            openArr = [];
+            for(j = 1; j < temp.length; )
             {
-               _loc2_.push(_loc5_[_loc6_]);
-               _loc6_++;
+               openArr.push(temp[j]);
+               j++;
             }
-            (openWeekDaysDic[_loc5_[0]] as CryptBossItemInfo).openWeekDaysArr = _loc2_;
-            _loc8_++;
+            (openWeekDaysDic[temp[0]] as CryptBossItemInfo).openWeekDaysArr = openArr;
+            i++;
          }
          dispatchEvent(new CryptBossEvent("cryptBossUpdateView"));
       }

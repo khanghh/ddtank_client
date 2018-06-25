@@ -41,10 +41,10 @@ package dayActivity.items
          addChild(_expBarTxt);
       }
       
-      public function initBar(param1:int) : void
+      public function initBar(num:int) : void
       {
-         _newFrame = param1;
-         if(param1 == 0)
+         _newFrame = num;
+         if(num == 0)
          {
             _bar.gotoAndStop(1);
             _expBarTxt.text = String(_newFrame);

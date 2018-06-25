@@ -16,18 +16,18 @@ package starling.scene.demonChiYou
       
       public function StaticLayer()
       {
-         var _loc2_:* = null;
+         var _promptMovie:* = null;
          super();
          _bgLayer = new BgLayer();
          addChild(_bgLayer);
          if(!DemonChiYouManager.instance.hasShowPromptMC)
          {
-            _loc2_ = BoneMovieFactory.instance.creatBoneMovieFast("demon_chi_you_prompt");
-            addChild(_loc2_);
+            _promptMovie = BoneMovieFactory.instance.creatBoneMovieFast("demon_chi_you_prompt");
+            addChild(_promptMovie);
             DemonChiYouManager.instance.hasShowPromptMC = true;
          }
-         var _loc1_:BoneMovieFastStarling = BoneMovieFactory.instance.creatBoneMovieFast("demon_chi_you");
-         addChild(_loc1_);
+         var demon_chi_you:BoneMovieFastStarling = BoneMovieFactory.instance.creatBoneMovieFast("demon_chi_you");
+         addChild(demon_chi_you);
       }
       
       override public function dispose() : void

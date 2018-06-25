@@ -80,19 +80,19 @@ package happyLittleGame.bombshellGame.view
       
       public function setRankData() : void
       {
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         var _loc5_:int = 0;
-         var _loc1_:int = HappyLittleGameManager.instance.currentGameType;
-         _loc2_ = HappyLittleGameManager.instance.bombManager.getMyTotalRankByGameType(_loc1_);
-         _loc4_ = HappyLittleGameManager.instance.bombManager.getMyDayRankByGameType(_loc1_);
-         _loc3_ = HappyLittleGameManager.instance.bombManager.getDayMaxScoreByType(_loc1_);
-         _loc5_ = HappyLittleGameManager.instance.bombManager.getHisMaxScoreByType(_loc1_);
-         _myTotalRank.text = _loc2_ == 0?LanguageMgr.GetTranslation("bombKing.outOfRank2"):_loc2_ + "";
-         _myDayRank.text = _loc4_ == 0?LanguageMgr.GetTranslation("bombKing.outOfRank2"):_loc4_ + "";
-         _HistoryMaxPoints.text = _loc5_ + "";
-         _dayMaxPoints.text = _loc3_ + "";
+         var HisRank:int = 0;
+         var dayRank:int = 0;
+         var dayMax:int = 0;
+         var HisMax:int = 0;
+         var gameType:int = HappyLittleGameManager.instance.currentGameType;
+         HisRank = HappyLittleGameManager.instance.bombManager.getMyTotalRankByGameType(gameType);
+         dayRank = HappyLittleGameManager.instance.bombManager.getMyDayRankByGameType(gameType);
+         dayMax = HappyLittleGameManager.instance.bombManager.getDayMaxScoreByType(gameType);
+         HisMax = HappyLittleGameManager.instance.bombManager.getHisMaxScoreByType(gameType);
+         _myTotalRank.text = HisRank == 0?LanguageMgr.GetTranslation("bombKing.outOfRank2"):HisRank + "";
+         _myDayRank.text = dayRank == 0?LanguageMgr.GetTranslation("bombKing.outOfRank2"):dayRank + "";
+         _HistoryMaxPoints.text = HisMax + "";
+         _dayMaxPoints.text = dayMax + "";
       }
       
       private function initEvent() : void
@@ -102,7 +102,7 @@ package happyLittleGame.bombshellGame.view
          this._rankBtn.addEventListener("click",onRankClick);
       }
       
-      private function onRankClick(param1:MouseEvent) : void
+      private function onRankClick(evt:MouseEvent) : void
       {
          HappyLittleGameManager.instance.showRankFrame();
       }
@@ -131,7 +131,7 @@ package happyLittleGame.bombshellGame.view
          this._rankBtn.removeEventListener("click",onRankClick);
       }
       
-      private function __dayclickhandler(param1:MouseEvent) : void
+      private function __dayclickhandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _selectDayRank.mouseEnabled = false;
@@ -153,7 +153,7 @@ package happyLittleGame.bombshellGame.view
          }
       }
       
-      private function __totalclickhandler(param1:MouseEvent) : void
+      private function __totalclickhandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _selectDayRank.mouseEnabled = true;
@@ -177,13 +177,13 @@ package happyLittleGame.bombshellGame.view
       
       public function dispose() : void
       {
-         var _loc1_:* = null;
+         var obj:* = null;
          removeEvent();
          while(this.numChildren > 0)
          {
-            _loc1_ = removeChildAt(0);
-            ObjectUtils.disposeObject(_loc1_);
-            _loc1_ = null;
+            obj = removeChildAt(0);
+            ObjectUtils.disposeObject(obj);
+            obj = null;
          }
       }
    }

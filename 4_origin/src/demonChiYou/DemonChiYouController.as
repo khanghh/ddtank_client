@@ -23,9 +23,9 @@ package demonChiYou
       
       private var _rewardBuyCardFrame:DemonChiYouRewardBuyCardFrame;
       
-      public function DemonChiYouController(param1:IEventDispatcher = null)
+      public function DemonChiYouController(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : DemonChiYouController
@@ -43,22 +43,22 @@ package demonChiYou
          _mgr.addEventListener("complete",onComplete);
       }
       
-      protected function onComplete(param1:Event) : void
+      protected function onComplete(event:Event) : void
       {
-         var _loc2_:int = _mgr.frameType;
-         if(_loc2_ == 1)
+         var frameType:int = _mgr.frameType;
+         if(frameType == 1)
          {
             disposeRewardSelectFrame();
             _rewardSelectFrame = ComponentFactory.Instance.creatComponentByStylename("demonChiYou.DemonChiYouRewardSelectFrame");
             LayerManager.Instance.addToLayer(_rewardSelectFrame,3,true,1);
          }
-         else if(_loc2_ == 2)
+         else if(frameType == 2)
          {
             disposeRewardResultFrame();
             _rewardResultFrame = ComponentFactory.Instance.creatComponentByStylename("demonChiYou.DemonChiYouRewardResultFrame");
             LayerManager.Instance.addToLayer(_rewardResultFrame,3,true,1);
          }
-         else if(_loc2_ == 3)
+         else if(frameType == 3)
          {
             disposeRewardBuyCardFrame();
             _rewardBuyCardFrame = ComponentFactory.Instance.creatComponentByStylename("demonChiYou.DemonChiYouRewardBuyCardFrame");

@@ -30,11 +30,11 @@ package starling.display.materials
       
       protected var _premultipliedAlpha:Boolean = false;
       
-      public function StandardMaterial(param1:IShader = null, param2:IShader = null)
+      public function StandardMaterial(vertexShader:IShader = null, fragmentShader:IShader = null)
       {
          super();
-         this.vertexShader = param1 || new StandardVertexShader();
-         this.fragmentShader = param2 || new VertexColorFragmentShader();
+         this.vertexShader = vertexShader || new StandardVertexShader();
+         this.fragmentShader = fragmentShader || new VertexColorFragmentShader();
          textures = new Vector.<Texture>();
          colorVector = new Vector.<Number>();
          color = 16777215;
@@ -59,9 +59,9 @@ package starling.display.materials
          }
       }
       
-      public function set textures(param1:Vector.<Texture>) : void
+      public function set textures(value:Vector.<Texture>) : void
       {
-         _textures = param1;
+         _textures = value;
       }
       
       public function get textures() : Vector.<Texture>
@@ -69,9 +69,9 @@ package starling.display.materials
          return _textures;
       }
       
-      public function set vertexShader(param1:IShader) : void
+      public function set vertexShader(value:IShader) : void
       {
-         _vertexShader = param1;
+         _vertexShader = value;
          if(program)
          {
             Program3DCache.releaseProgram3D(program);
@@ -84,9 +84,9 @@ package starling.display.materials
          return _vertexShader;
       }
       
-      public function set fragmentShader(param1:IShader) : void
+      public function set fragmentShader(value:IShader) : void
       {
-         _fragmentShader = param1;
+         _fragmentShader = value;
          if(program)
          {
             Program3DCache.releaseProgram3D(program);
@@ -104,9 +104,9 @@ package starling.display.materials
          return _alpha;
       }
       
-      public function set alpha(param1:Number) : void
+      public function set alpha(value:Number) : void
       {
-         _alpha = param1;
+         _alpha = value;
       }
       
       public function get color() : uint
@@ -114,42 +114,41 @@ package starling.display.materials
          return _color;
       }
       
-      public function set color(param1:uint) : void
+      public function set color(value:uint) : void
       {
-         _color = param1;
+         _color = value;
          colorVector[0] = (_color >> 16) / 255;
          colorVector[1] = ((_color & 65280) >> 8) / 255;
          colorVector[2] = (_color & 255) / 255;
       }
       
-      public function drawTriangles(param1:Context3D, param2:Matrix3D, param3:VertexBuffer3D, param4:IndexBuffer3D, param5:Number = 1, param6:int = -1) : void
+      public function drawTriangles(context:Context3D, matrix:Matrix3D, vertexBuffer:VertexBuffer3D, indexBuffer:IndexBuffer3D, alpha:Number = 1, numTriangles:int = -1) : void
       {
-         drawTrianglesEx(param1,param2,param3,param4,param5,param6,0);
+         drawTrianglesEx(context,matrix,vertexBuffer,indexBuffer,alpha,numTriangles,0);
       }
       
-      public function drawTrianglesEx(param1:Context3D, param2:Matrix3D, param3:VertexBuffer3D, param4:IndexBuffer3D, param5:Number = 1, param6:int = -1, param7:int = 0) : void
+      public function drawTrianglesEx(context:Context3D, matrix:Matrix3D, vertexBuffer:VertexBuffer3D, indexBuffer:IndexBuffer3D, alpha:Number = 1, numTriangles:int = -1, startTriangle:int = 0) : void
       {
-         var _loc8_:int = 0;
-         param1.setVertexBufferAt(0,param3,0,"float3");
-         param1.setVertexBufferAt(1,param3,3,"float4");
-         param1.setVertexBufferAt(2,param3,7,"float2");
+         var i:int = 0;
+         context.setVertexBufferAt(0,vertexBuffer,0,"float3");
+         context.setVertexBufferAt(1,vertexBuffer,3,"float4");
+         context.setVertexBufferAt(2,vertexBuffer,7,"float2");
          if(program == null && _vertexShader && _fragmentShader)
          {
-            program = Program3DCache.getProgram3D(param1,_vertexShader,_fragmentShader);
+            program = Program3DCache.getProgram3D(context,_vertexShader,_fragmentShader);
          }
-         param1.setProgram(program);
-         _loc8_ = 0;
-         while(_loc8_ < 8)
+         context.setProgram(program);
+         for(i = 0; i < 8; )
          {
-            param1.setTextureAt(_loc8_,_loc8_ < _textures.length?_textures[_loc8_].base:null);
-            _loc8_++;
+            context.setTextureAt(i,i < _textures.length?_textures[i].base:null);
+            i++;
          }
-         param1.setProgramConstantsFromMatrix("vertex",0,param2,true);
-         _vertexShader.setConstants(param1,4);
-         colorVector[3] = _alpha * param5;
-         param1.setProgramConstantsFromVector("fragment",0,colorVector);
-         _fragmentShader.setConstants(param1,1);
-         param1.drawTriangles(param4,param7,param6);
+         context.setProgramConstantsFromMatrix("vertex",0,matrix,true);
+         _vertexShader.setConstants(context,4);
+         colorVector[3] = _alpha * alpha;
+         context.setProgramConstantsFromVector("fragment",0,colorVector);
+         _fragmentShader.setConstants(context,1);
+         context.drawTriangles(indexBuffer,startTriangle,numTriangles);
       }
       
       public function get premultipliedAlpha() : Boolean
@@ -157,9 +156,9 @@ package starling.display.materials
          return _premultipliedAlpha;
       }
       
-      public function set premultipliedAlpha(param1:Boolean) : void
+      public function set premultipliedAlpha(value:Boolean) : void
       {
-         _premultipliedAlpha = param1;
+         _premultipliedAlpha = value;
       }
    }
 }

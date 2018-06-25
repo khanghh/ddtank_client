@@ -71,9 +71,9 @@ package firstRecharge
          initEvent();
       }
       
-      public function completeHander(param1:RechargeAnalyer) : void
+      public function completeHander(analyzer:RechargeAnalyer) : void
       {
-         _goodsList = param1.goodsList;
+         _goodsList = analyzer.goodsList;
          WonderfulActivityManager.Instance.updateChargeActiveTemplateXml();
       }
       
@@ -100,19 +100,19 @@ package firstRecharge
          return _isopen;
       }
       
-      public function set ShowIcon(param1:Function) : void
+      public function set ShowIcon(value:Function) : void
       {
-         callback = param1;
+         callback = value;
       }
       
-      private function __firstRechargeOpen(param1:CrazyTankSocketEvent) : void
+      private function __firstRechargeOpen(e:CrazyTankSocketEvent) : void
       {
-         var _loc7_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var rechargeData:* = null;
          _goodsList_haiwai = new Vector.<RechargeData>();
-         var _loc6_:PackageIn = param1.pkg;
-         var _loc5_:Boolean = _loc6_.readBoolean();
-         if(_loc5_)
+         var pkg:PackageIn = e.pkg;
+         var active:Boolean = pkg.readBoolean();
+         if(active)
          {
             _isopen = true;
          }
@@ -125,26 +125,25 @@ package firstRecharge
          {
             callback(_isopen);
          }
-         rechargeMoneyTotal = _loc6_.readInt();
-         rechargeGiftBagValue = _loc6_.readInt();
-         var _loc4_:int = _loc6_.readInt();
-         rechargeEndTime = _loc6_.readUTF();
-         var _loc3_:int = _loc6_.readInt();
-         _loc7_ = 0;
-         while(_loc7_ < _loc3_)
+         rechargeMoneyTotal = pkg.readInt();
+         rechargeGiftBagValue = pkg.readInt();
+         var _rechargeGiftBagId:int = pkg.readInt();
+         rechargeEndTime = pkg.readUTF();
+         var _rechargeGiftBagItemNum:int = pkg.readInt();
+         for(i = 0; i < _rechargeGiftBagItemNum; )
          {
-            _loc2_ = new RechargeData();
-            _loc2_.RewardItemID = _loc6_.readInt();
-            _loc2_.RewardItemCount = _loc6_.readInt();
-            _loc2_.RewardItemValid = _loc6_.readInt();
-            _loc2_.IsBind = _loc6_.readBoolean();
-            _loc2_.StrengthenLevel = _loc6_.readInt();
-            _loc2_.AttackCompose = _loc6_.readInt();
-            _loc2_.DefendCompose = _loc6_.readInt();
-            _loc2_.AgilityCompose = _loc6_.readInt();
-            _loc2_.LuckCompose = _loc6_.readInt();
-            _goodsList_haiwai.push(_loc2_);
-            _loc7_++;
+            rechargeData = new RechargeData();
+            rechargeData.RewardItemID = pkg.readInt();
+            rechargeData.RewardItemCount = pkg.readInt();
+            rechargeData.RewardItemValid = pkg.readInt();
+            rechargeData.IsBind = pkg.readBoolean();
+            rechargeData.StrengthenLevel = pkg.readInt();
+            rechargeData.AttackCompose = pkg.readInt();
+            rechargeData.DefendCompose = pkg.readInt();
+            rechargeData.AgilityCompose = pkg.readInt();
+            rechargeData.LuckCompose = pkg.readInt();
+            _goodsList_haiwai.push(rechargeData);
+            i++;
          }
          if(!_isopen)
          {
@@ -156,14 +155,14 @@ package firstRecharge
          }
       }
       
-      protected function getSpree(param1:CrazyTankSocketEvent) : void
+      protected function getSpree(event:CrazyTankSocketEvent) : void
       {
       }
       
-      protected function cumlatechargeOpen(param1:CrazyTankSocketEvent) : void
+      protected function cumlatechargeOpen(event:CrazyTankSocketEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _isOpen = _loc2_.readBoolean();
+         var pkg:PackageIn = event.pkg;
+         _isOpen = pkg.readBoolean();
          new HelperDataModuleLoad().loadDataModule([LoaderCreate.Instance.firstRechargeLoader],loadRewardComplete);
          if(_isOpen)
          {
@@ -179,10 +178,10 @@ package firstRecharge
          }
       }
       
-      protected function cumlatechargeOver(param1:CrazyTankSocketEvent) : void
+      protected function cumlatechargeOver(event:CrazyTankSocketEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _isOver = _loc2_.readBoolean();
+         var pkg:PackageIn = event.pkg;
+         _isOver = pkg.readBoolean();
       }
       
       public function show() : void
@@ -190,11 +189,11 @@ package firstRecharge
          dispatchEvent(new FirstRechageEvent("firstRechageOpen"));
       }
       
-      private function gemstoneProgress(param1:UIModuleEvent) : void
+      private function gemstoneProgress(pEvent:UIModuleEvent) : void
       {
-         if(param1.module == "firstRecharge")
+         if(pEvent.module == "firstRecharge")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = pEvent.loader.progress * 100;
          }
       }
       

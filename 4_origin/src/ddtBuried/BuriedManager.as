@@ -125,9 +125,9 @@ package ddtBuried
          return _isOpening;
       }
       
-      public function set isOpening(param1:Boolean) : void
+      public function set isOpening(bool:Boolean) : void
       {
-         _isOpening = param1;
+         _isOpening = bool;
       }
       
       public function setup() : void
@@ -143,10 +143,10 @@ package ddtBuried
          AssetModuleLoader.startCodeLoader(loadComplete);
       }
       
-      private function playerEnterHander(param1:PkgEvent) : void
+      private function playerEnterHander(e:PkgEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
+         var i:int = 0;
+         var data:* = null;
          serverConfigInfo = ServerConfigManager.instance.serverConfigInfo["SearchGoodsFreeCount"];
          cardPayinfo = ServerConfigManager.instance.serverConfigInfo["SearchGoodsTakeCardMoney"];
          takeCardPayList = cardPayinfo.Value.split("|");
@@ -154,11 +154,11 @@ package ddtBuried
          totol_count = pay_count + int(serverConfigInfo.Value);
          dispose();
          mapdataList = new Vector.<MapItemData>();
-         var _loc4_:PackageIn = param1.pkg;
-         mapID = _loc4_.readInt();
-         level = _loc4_.readInt();
-         nowPosition = _loc4_.readInt();
-         _num = _loc4_.readInt();
+         var pkg:PackageIn = e.pkg;
+         mapID = pkg.readInt();
+         level = pkg.readInt();
+         nowPosition = pkg.readInt();
+         _num = pkg.readInt();
          isOver = false;
          if(num > pay_count)
          {
@@ -169,23 +169,22 @@ package ddtBuried
             limit = num;
             currPayLevel = pay_count - num + 1;
          }
-         var _loc2_:int = _loc4_.readInt();
-         if(_loc2_ == 0)
+         var count:int = pkg.readInt();
+         if(count == 0)
          {
             return;
          }
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_)
+         for(i = 0; i < count; )
          {
-            _loc3_ = new MapItemData();
-            _loc3_.type = _loc4_.readInt();
-            _loc3_.tempID = _loc4_.readInt();
-            mapdataList.push(_loc3_);
-            _loc5_++;
+            data = new MapItemData();
+            data.type = pkg.readInt();
+            data.tempID = pkg.readInt();
+            mapdataList.push(data);
+            i++;
          }
-         timesReachEnd = _loc4_.readInt();
-         stateRewardsGained = _loc4_.readInt();
-         timesBuyDice = _loc4_.readInt();
+         timesReachEnd = pkg.readInt();
+         stateRewardsGained = pkg.readInt();
+         timesBuyDice = pkg.readInt();
          dispatchEvent(new BuriedEvent("buriedOpenView"));
       }
       
@@ -194,15 +193,15 @@ package ddtBuried
          SocketManager.Instance.out.enterBuried();
       }
       
-      public function checkMoney(param1:Boolean, param2:int, param3:Function = null) : Boolean
+      public function checkMoney(bool:Boolean, money:int, fun:Function = null) : Boolean
       {
-         _money = param2;
-         _outFun = param3;
-         if(param1)
+         _money = money;
+         _outFun = fun;
+         if(bool)
          {
-            if(PlayerManager.Instance.Self.BandMoney < param2)
+            if(PlayerManager.Instance.Self.BandMoney < money)
             {
-               if(param3 != null)
+               if(fun != null)
                {
                   initAlertFarme();
                }
@@ -213,7 +212,7 @@ package ddtBuried
                return true;
             }
          }
-         else if(PlayerManager.Instance.Self.Money < param2)
+         else if(PlayerManager.Instance.Self.Money < money)
          {
             LeavePageManager.showFillFrame();
             return true;
@@ -223,14 +222,14 @@ package ddtBuried
       
       private function initAlertFarme() : void
       {
-         var _loc1_:* = null;
-         _loc1_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("buried.alertInfo.noBindMoney"),"",LanguageMgr.GetTranslation("cancel"),true,false,false,2);
-         _loc1_.addEventListener("response",onResponseHander);
+         var frame:* = null;
+         frame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("buried.alertInfo.noBindMoney"),"",LanguageMgr.GetTranslation("cancel"),true,false,false,2);
+         frame.addEventListener("response",onResponseHander);
       }
       
-      private function onResponseHander(param1:FrameEvent) : void
+      private function onResponseHander(e:FrameEvent) : void
       {
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         if(e.responseCode == 2 || e.responseCode == 3)
          {
             if(checkMoney(false,_money,_outFun))
             {
@@ -241,17 +240,17 @@ package ddtBuried
                _outFun(false);
             }
          }
-         param1.currentTarget.dispose();
+         e.currentTarget.dispose();
       }
       
-      public function SearchGoodsTempHander(param1:UpdateStarAnalyer) : void
+      public function SearchGoodsTempHander(analyer:UpdateStarAnalyer) : void
       {
-         upDateStarList = param1.itemList;
+         upDateStarList = analyer.itemList;
       }
       
-      public function searchGoodsPayHander(param1:SearchGoodsPayAnalyer) : void
+      public function searchGoodsPayHander(analyzer:SearchGoodsPayAnalyer) : void
       {
-         payMoneyList = param1.itemList;
+         payMoneyList = analyzer.itemList;
       }
       
       private function initEvents() : void
@@ -265,68 +264,67 @@ package ddtBuried
          SocketManager.Instance.addEventListener(PkgEvent.format(98,34),removeOneStepHandler);
       }
       
-      private function removeEventHandler(param1:PkgEvent) : void
+      private function removeEventHandler(e:PkgEvent) : void
       {
-         var _loc2_:Object = {};
-         _loc2_.key = param1.pkg.readInt();
-         _loc2_.value = param1.pkg.readInt();
-         dispatchEvent(new BuriedEvent("buried_removeEvent",_loc2_));
+         var obj:Object = {};
+         obj.key = e.pkg.readInt();
+         obj.value = e.pkg.readInt();
+         dispatchEvent(new BuriedEvent("buried_removeEvent",obj));
       }
       
-      private function removeOneStepHandler(param1:PkgEvent) : void
+      private function removeOneStepHandler(e:PkgEvent) : void
       {
-         var _loc2_:Object = {};
-         _loc2_.key = param1.pkg.readInt();
-         _loc2_.value = param1.pkg.readInt();
-         dispatchEvent(new BuriedEvent("buried_oneStep",_loc2_));
+         var obj:Object = {};
+         obj.key = e.pkg.readInt();
+         obj.value = e.pkg.readInt();
+         dispatchEvent(new BuriedEvent("buried_oneStep",obj));
       }
       
-      private function takeCardResponseHandler(param1:PkgEvent) : void
+      private function takeCardResponseHandler(e:PkgEvent) : void
       {
-         takeCardLimit = param1.pkg.readInt();
-         var _loc4_:int = param1.pkg.readInt();
-         var _loc2_:int = param1.pkg.readInt();
-         var _loc3_:Object = {};
-         _loc3_.tempID = _loc4_;
-         _loc3_.count = _loc2_;
-         dispatchEvent(new BuriedEvent("take_card",_loc3_));
+         takeCardLimit = e.pkg.readInt();
+         var tempID:int = e.pkg.readInt();
+         var count:int = e.pkg.readInt();
+         var obj:Object = {};
+         obj.tempID = tempID;
+         obj.count = count;
+         dispatchEvent(new BuriedEvent("take_card",obj));
       }
       
-      private function flopCardHandler(param1:PkgEvent) : void
+      private function flopCardHandler(e:PkgEvent) : void
       {
-         var _loc6_:int = 0;
-         var _loc5_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:* = null;
+         var i:int = 0;
+         var tempID:int = 0;
+         var count:int = 0;
+         var obj:* = null;
          isOpenBuried = true;
          cardInitList = [];
-         takeCardLimit = param1.pkg.readInt();
-         var _loc4_:int = param1.pkg.readInt();
-         _loc6_ = 0;
-         while(_loc6_ < _loc4_)
+         takeCardLimit = e.pkg.readInt();
+         var conut:int = e.pkg.readInt();
+         for(i = 0; i < conut; )
          {
-            _loc5_ = param1.pkg.readInt();
-            _loc2_ = param1.pkg.readInt();
-            _loc3_ = {};
-            _loc3_.tempID = _loc5_;
-            _loc3_.count = _loc2_;
-            cardInitList.push(_loc3_);
-            _loc6_++;
+            tempID = e.pkg.readInt();
+            count = e.pkg.readInt();
+            obj = {};
+            obj.tempID = tempID;
+            obj.count = count;
+            cardInitList.push(obj);
+            i++;
          }
       }
       
-      private function getGoodsHandler(param1:PkgEvent) : void
+      private function getGoodsHandler(e:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         currGoodID = _loc2_.readInt();
+         var pkg:PackageIn = e.pkg;
+         currGoodID = pkg.readInt();
          isGetGoods = true;
       }
       
-      private function playNowPositionHander(param1:PkgEvent) : void
+      private function playNowPositionHander(e:PkgEvent) : void
       {
          isContinue = true;
-         var _loc2_:PackageIn = param1.pkg;
-         eventPosition = _loc2_.readInt();
+         var pkg:PackageIn = e.pkg;
+         eventPosition = pkg.readInt();
          if(eventPosition - nowPosition == 1)
          {
             isGo = true;
@@ -347,14 +345,14 @@ package ddtBuried
       
       public function getBuriedStoneNum() : String
       {
-         var _loc2_:BagInfo = PlayerManager.Instance.Self.getBag(1);
-         var _loc1_:int = _loc2_.getItemCountByTemplateId(11680);
-         return _loc1_.toString();
+         var bagInfo:BagInfo = PlayerManager.Instance.Self.getBag(1);
+         var num:int = bagInfo.getItemCountByTemplateId(11680);
+         return num.toString();
       }
       
-      public function setRemindRoll(param1:Boolean) : void
+      public function setRemindRoll(bool:Boolean) : void
       {
-         SharedManager.Instance.isRemindRoll = param1;
+         SharedManager.Instance.isRemindRoll = bool;
       }
       
       public function getRemindRoll() : Boolean
@@ -362,9 +360,9 @@ package ddtBuried
          return SharedManager.Instance.isRemindRoll;
       }
       
-      public function setRemindOverCard(param1:Boolean) : void
+      public function setRemindOverCard(bool:Boolean) : void
       {
-         SharedManager.Instance.isRemindOverCard = param1;
+         SharedManager.Instance.isRemindOverCard = bool;
       }
       
       public function getRemindOverCard() : Boolean
@@ -372,9 +370,9 @@ package ddtBuried
          return SharedManager.Instance.isRemindOverCard;
       }
       
-      public function setRemindOverBind(param1:Boolean) : void
+      public function setRemindOverBind(bool:Boolean) : void
       {
-         SharedManager.Instance.isRemindOverCardBind = param1;
+         SharedManager.Instance.isRemindOverCardBind = bool;
       }
       
       public function getRemindOverBind() : Boolean
@@ -382,9 +380,9 @@ package ddtBuried
          return SharedManager.Instance.isRemindOverCardBind;
       }
       
-      public function setRemindRollBind(param1:Boolean) : void
+      public function setRemindRollBind(bool:Boolean) : void
       {
-         SharedManager.Instance.isRemindRollBind = param1;
+         SharedManager.Instance.isRemindRollBind = bool;
       }
       
       public function getRemindRollBind() : Boolean
@@ -408,27 +406,27 @@ package ddtBuried
          isOver = false;
       }
       
-      public function applyGray(param1:DisplayObject) : void
+      public function applyGray(child:DisplayObject) : void
       {
-         var _loc2_:Array = [];
-         _loc2_ = _loc2_.concat([0.3086,0.6094,0.082,0,0]);
-         _loc2_ = _loc2_.concat([0.3086,0.6094,0.082,0,0]);
-         _loc2_ = _loc2_.concat([0.3086,0.6094,0.082,0,0]);
-         _loc2_ = _loc2_.concat([0,0,0,1,0]);
-         applyFilter(param1,_loc2_);
+         var matrix:Array = [];
+         matrix = matrix.concat([0.3086,0.6094,0.082,0,0]);
+         matrix = matrix.concat([0.3086,0.6094,0.082,0,0]);
+         matrix = matrix.concat([0.3086,0.6094,0.082,0,0]);
+         matrix = matrix.concat([0,0,0,1,0]);
+         applyFilter(child,matrix);
       }
       
-      public function reGray(param1:DisplayObject) : void
+      public function reGray(child:DisplayObject) : void
       {
-         param1.filters = null;
+         child.filters = null;
       }
       
-      private function applyFilter(param1:DisplayObject, param2:Array) : void
+      private function applyFilter(child:DisplayObject, matrix:Array) : void
       {
-         var _loc4_:ColorMatrixFilter = new ColorMatrixFilter(param2);
-         var _loc3_:Array = [];
-         _loc3_.push(_loc4_);
-         param1.filters = _loc3_;
+         var filter:ColorMatrixFilter = new ColorMatrixFilter(matrix);
+         var filters:Array = [];
+         filters.push(filter);
+         child.filters = filters;
       }
       
       public function get timesReachEnd() : int
@@ -446,19 +444,19 @@ package ddtBuried
          return _timesBuyDice;
       }
       
-      public function set stateRewardsGained(param1:int) : void
+      public function set stateRewardsGained(value:int) : void
       {
-         _stateRewardsGained = param1;
+         _stateRewardsGained = value;
       }
       
-      public function set timesReachEnd(param1:int) : void
+      public function set timesReachEnd(value:int) : void
       {
-         _timesReachEnd = param1;
+         _timesReachEnd = value;
       }
       
-      public function set timesBuyDice(param1:int) : void
+      public function set timesBuyDice(value:int) : void
       {
-         _timesBuyDice = param1;
+         _timesBuyDice = value;
       }
       
       public function get num() : int
@@ -466,9 +464,9 @@ package ddtBuried
          return _num;
       }
       
-      public function set num(param1:int) : void
+      public function set num(value:int) : void
       {
-         _num = param1;
+         _num = value;
       }
    }
 }

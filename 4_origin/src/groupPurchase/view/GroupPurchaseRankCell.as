@@ -27,13 +27,13 @@ package groupPurchase.view
          addChild(_numTxt);
       }
       
-      public function refreshView(param1:Object) : void
+      public function refreshView(data:Object) : void
       {
-         if(param1)
+         if(data)
          {
-            _rankTxt.text = param1.rank;
-            _nameTxt.text = param1.name;
-            _numTxt.text = param1.num;
+            _rankTxt.text = data.rank;
+            _nameTxt.text = data.name;
+            _numTxt.text = data.num;
          }
          else
          {

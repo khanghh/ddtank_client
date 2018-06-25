@@ -26,46 +26,44 @@ package consortion.view.club
          ConsortionModelManager.Instance.model.addEventListener("myApplyListIsChange",__applyListChange);
       }
       
-      private function __applyListChange(param1:ConsortionEvent) : void
+      private function __applyListChange(event:ConsortionEvent) : void
       {
          _selfApplyList = ConsortionModelManager.Instance.model.myApplyList;
       }
       
       override protected function init() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          super.init();
          items = new Vector.<ConsortionListItem>(6);
-         _loc1_ = 0;
-         while(_loc1_ < 6)
+         for(i = 0; i < 6; )
          {
-            items[_loc1_] = new ConsortionListItem(_loc1_);
-            items[_loc1_].buttonMode = true;
-            addChild(items[_loc1_]);
-            items[_loc1_].addEventListener("click",__clickHandler);
-            items[_loc1_].addEventListener("mouseOver",__overHandler);
-            items[_loc1_].addEventListener("mouseOut",__outHandler);
-            _loc1_++;
+            items[i] = new ConsortionListItem(i);
+            items[i].buttonMode = true;
+            addChild(items[i]);
+            items[i].addEventListener("click",__clickHandler);
+            items[i].addEventListener("mouseOver",__overHandler);
+            items[i].addEventListener("mouseOut",__outHandler);
+            i++;
          }
       }
       
-      private function __clickHandler(param1:MouseEvent) : void
+      private function __clickHandler(event:MouseEvent) : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          SoundManager.instance.play("008");
-         _loc2_ = 0;
-         while(_loc2_ < 6)
+         for(i = 0; i < 6; )
          {
-            if(items[_loc2_] == param1.currentTarget as ConsortionListItem)
+            if(items[i] == event.currentTarget as ConsortionListItem)
             {
-               items[_loc2_].selected = true;
-               _currentItem = items[_loc2_];
+               items[i].selected = true;
+               _currentItem = items[i];
             }
             else
             {
-               items[_loc2_].selected = false;
+               items[i].selected = false;
             }
-            _loc2_++;
+            i++;
          }
          dispatchEvent(new ConsortionEvent("ClubItemSelected"));
       }
@@ -75,37 +73,36 @@ package consortion.view.club
          return _currentItem;
       }
       
-      private function __overHandler(param1:MouseEvent) : void
+      private function __overHandler(event:MouseEvent) : void
       {
-         (param1.currentTarget as ConsortionListItem).light = true;
+         (event.currentTarget as ConsortionListItem).light = true;
       }
       
-      private function __outHandler(param1:MouseEvent) : void
+      private function __outHandler(event:MouseEvent) : void
       {
-         (param1.currentTarget as ConsortionListItem).light = false;
+         (event.currentTarget as ConsortionListItem).light = false;
       }
       
-      public function setListData(param1:Vector.<ConsortiaInfo>) : void
+      public function setListData(data:Vector.<ConsortiaInfo>) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         if(param1 != null)
+         var len:int = 0;
+         var i:int = 0;
+         if(data != null)
          {
-            _loc2_ = param1.length;
-            _loc3_ = 0;
-            while(_loc3_ < 6)
+            len = data.length;
+            for(i = 0; i < 6; )
             {
-               if(_loc3_ < _loc2_)
+               if(i < len)
                {
-                  items[_loc3_].info = param1[_loc3_];
-                  items[_loc3_].visible = true;
-                  items[_loc3_].isApply = false;
+                  items[i].info = data[i];
+                  items[i].visible = true;
+                  items[i].isApply = false;
                }
                else
                {
-                  items[_loc3_].visible = false;
+                  items[i].visible = false;
                }
-               _loc3_++;
+               i++;
             }
             setStatus();
             if(_currentItem)
@@ -117,45 +114,42 @@ package consortion.view.club
       
       private function setStatus() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:int = 0;
-         var _loc2_:int = 0;
+         var i:int = 0;
+         var len:int = 0;
+         var j:int = 0;
          if(_selfApplyList != null)
          {
-            _loc3_ = 0;
-            while(_loc3_ < 6)
+            for(i = 0; i < 6; )
             {
-               _loc1_ = _selfApplyList.length;
-               if(items[_loc3_].visible)
+               len = _selfApplyList.length;
+               if(items[i].visible)
                {
-                  _loc2_ = 0;
-                  while(_loc2_ < _loc1_)
+                  for(j = 0; j < len; )
                   {
-                     if(items[_loc3_].info.ConsortiaID == _selfApplyList[_loc2_].ConsortiaID)
+                     if(items[i].info.ConsortiaID == _selfApplyList[j].ConsortiaID)
                      {
-                        items[_loc3_].isApply = true;
+                        items[i].isApply = true;
                      }
-                     _loc2_++;
+                     j++;
                   }
                }
-               _loc3_++;
+               i++;
             }
          }
       }
       
       override public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          ConsortionModelManager.Instance.model.removeEventListener("myApplyListIsChange",__applyListChange);
-         _loc1_ = 0;
-         while(_loc1_ < 6)
+         for(i = 0; i < 6; )
          {
-            items[_loc1_].dispose();
-            items[_loc1_].removeEventListener("click",__clickHandler);
-            items[_loc1_].removeEventListener("mouseOver",__overHandler);
-            items[_loc1_].removeEventListener("mouseOut",__outHandler);
-            items[_loc1_] = null;
-            _loc1_++;
+            items[i].dispose();
+            items[i].removeEventListener("click",__clickHandler);
+            items[i].removeEventListener("mouseOver",__overHandler);
+            items[i].removeEventListener("mouseOut",__outHandler);
+            items[i] = null;
+            i++;
          }
          _currentItem = null;
          super.dispose();

@@ -102,90 +102,90 @@ package bagAndInfo.bag.ring
          PlayerManager.Instance.Self.addEventListener("propertychange",__onUpdateProperty);
       }
       
-      protected function __onHelpClick(param1:MouseEvent) : void
+      protected function __onHelpClick(event:MouseEvent) : void
       {
          HelpFrameUtils.Instance.simpleHelpFrame(LanguageMgr.GetTranslation("ddt.consortia.bossFrame.helpTitle"),ComponentFactory.Instance.creat("asset.bagAndInfo.bag.RingSystem.heopInfo"),408,488);
       }
       
       protected function setViewInfo() : void
       {
-         var _loc3_:RingSystemData = BagAndInfoManager.Instance.getCurrentRingData();
-         _currentData.text = _loc3_.Attack + "%\n" + _loc3_.Defence + "%\n" + _loc3_.Agility + "%\n" + _loc3_.Luck + "%";
-         var _loc1_:RingSystemData = BagAndInfoManager.Instance.RingData[_loc3_.Level + 1];
-         if(_loc1_ != null)
+         var data:RingSystemData = BagAndInfoManager.Instance.getCurrentRingData();
+         _currentData.text = data.Attack + "%\n" + data.Defence + "%\n" + data.Agility + "%\n" + data.Luck + "%";
+         var nextData:RingSystemData = BagAndInfoManager.Instance.RingData[data.Level + 1];
+         if(nextData != null)
          {
-            _nextData.text = _loc1_.Attack + "%\n" + _loc1_.Defence + "%\n" + _loc1_.Agility + "%\n" + _loc1_.Luck + "%";
+            _nextData.text = nextData.Attack + "%\n" + nextData.Defence + "%\n" + nextData.Agility + "%\n" + nextData.Luck + "%";
          }
          else
          {
-            PlayerManager.Instance.Self.RingExp = _loc3_.Exp;
+            PlayerManager.Instance.Self.RingExp = data.Exp;
          }
-         var _loc2_:int = !!_loc1_?_loc1_.Exp:int(_loc3_.Exp);
-         _progress.setProgress(PlayerManager.Instance.Self.RingExp - _loc3_.Exp,_loc3_.Level,_loc2_ - _loc3_.Exp);
+         var nexExp:int = !!nextData?nextData.Exp:int(data.Exp);
+         _progress.setProgress(PlayerManager.Instance.Self.RingExp - data.Exp,data.Level,nexExp - data.Exp);
       }
       
       private function setSkillTipData() : void
       {
-         var _loc2_:* = null;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc1_:int = BagAndInfoManager.Instance.getCurrentRingData().Level / 10;
-         if(_loc1_ == 0)
+         var level:* = null;
+         var obj:* = null;
+         var nextLevel:* = null;
+         var skillLevel:int = BagAndInfoManager.Instance.getCurrentRingData().Level / 10;
+         if(skillLevel == 0)
          {
-            _loc2_ = ConsortionModelManager.Instance.model.getskillInfoWithTypeAndLevel(0,1)[0];
-            _loc4_ = {};
-            _loc4_["name"] = _loc2_.name;
-            _loc4_["content"] = LanguageMgr.GetTranslation("tank.bagAndInfo.ringSkill.notGet");
+            level = ConsortionModelManager.Instance.model.getskillInfoWithTypeAndLevel(0,1)[0];
+            obj = {};
+            obj["name"] = level.name;
+            obj["content"] = LanguageMgr.GetTranslation("tank.bagAndInfo.ringSkill.notGet");
          }
          else
          {
-            _loc2_ = ConsortionModelManager.Instance.model.getskillInfoWithTypeAndLevel(0,_loc1_)[0];
-            _loc4_ = {};
-            _loc4_["name"] = _loc2_.name + "Lv" + _loc1_;
-            _loc4_["content"] = _loc2_.descript.replace("{0}",_loc2_.value);
+            level = ConsortionModelManager.Instance.model.getskillInfoWithTypeAndLevel(0,skillLevel)[0];
+            obj = {};
+            obj["name"] = level.name + "Lv" + skillLevel;
+            obj["content"] = level.descript.replace("{0}",level.value);
          }
-         if(_loc1_ < RingSystemData.TotalLevel * 0.1)
+         if(skillLevel < RingSystemData.TotalLevel * 0.1)
          {
-            _loc3_ = ConsortionModelManager.Instance.model.getskillInfoWithTypeAndLevel(0,_loc1_ + 1)[0];
-            _loc4_["nextLevel"] = LanguageMgr.GetTranslation("tank.bagAndInfo.ringSkill.nextLevel",_loc3_.name,_loc1_ + 1,_loc3_.descript.replace("{0}",_loc3_.value));
-            _loc4_["limitLevel"] = LanguageMgr.GetTranslation("tank.bagAndInfo.ringSkill.nextUnLock",(_loc1_ + 1) * 10);
+            nextLevel = ConsortionModelManager.Instance.model.getskillInfoWithTypeAndLevel(0,skillLevel + 1)[0];
+            obj["nextLevel"] = LanguageMgr.GetTranslation("tank.bagAndInfo.ringSkill.nextLevel",nextLevel.name,skillLevel + 1,nextLevel.descript.replace("{0}",nextLevel.value));
+            obj["limitLevel"] = LanguageMgr.GetTranslation("tank.bagAndInfo.ringSkill.nextUnLock",(skillLevel + 1) * 10);
          }
          else
          {
-            _loc4_["nextLevel"] = LanguageMgr.GetTranslation("tank.bagAndInfo.ringSkill.fullLevel");
-            _loc4_["limitLevel"] = "";
+            obj["nextLevel"] = LanguageMgr.GetTranslation("tank.bagAndInfo.ringSkill.fullLevel");
+            obj["limitLevel"] = "";
          }
-         _skill.tipData = _loc4_;
-         if(_loc1_ <= 0)
+         _skill.tipData = obj;
+         if(skillLevel <= 0)
          {
             _skill.filters = ComponentFactory.Instance.creatFilters("grayFilter");
          }
       }
       
-      private function __onUpdateProperty(param1:PlayerPropertyEvent) : void
+      private function __onUpdateProperty(event:PlayerPropertyEvent) : void
       {
-         var _loc2_:* = null;
-         if(param1.changedProperties["ringUseNum"])
+         var obj:* = null;
+         if(event.changedProperties["ringUseNum"])
          {
-            _loc2_ = PlayerManager.Instance.Self.ringUseNum;
+            obj = PlayerManager.Instance.Self.ringUseNum;
             _coupleNum.setInfoText({
-               "info":getSurplusCount(_loc2_[0],20) + "/20",
+               "info":getSurplusCount(obj[0],20) + "/20",
                "tipData":LanguageMgr.GetTranslation("ddt.bagandinfo.ringSystem.infoText3")
             });
             _dungeonNum.setInfoText({
-               "info":getSurplusCount(_loc2_[1],4) + "/4",
+               "info":getSurplusCount(obj[1],4) + "/4",
                "tipData":LanguageMgr.GetTranslation("ddt.bagandinfo.ringSystem.infoText4")
             });
             _propsNum.setInfoText({
-               "info":getSurplusCount(_loc2_[2],5) + "/5",
+               "info":getSurplusCount(obj[2],5) + "/5",
                "tipData":LanguageMgr.GetTranslation("ddt.bagandinfo.ringSystem.infoText5")
             });
          }
       }
       
-      private function getSurplusCount(param1:int, param2:int) : int
+      private function getSurplusCount(useNum:int, total:int) : int
       {
-         return param2 - param1;
+         return total - useNum;
       }
       
       private function sendPkg() : void

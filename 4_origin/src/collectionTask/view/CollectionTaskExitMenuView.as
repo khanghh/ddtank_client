@@ -60,34 +60,34 @@ package collectionTask.view
          _returnBtn.addEventListener("click",exitHandler,false,0,true);
       }
       
-      private function outHandler(param1:MouseEvent) : void
+      private function outHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          setInOutVisible(false);
          TweenLite.to(this,0.5,{"x":966});
       }
       
-      private function setInOutVisible(param1:Boolean) : void
+      private function setInOutVisible(isOut:Boolean) : void
       {
-         _moveOutBtn.visible = param1;
-         _moveInBtn.visible = !param1;
+         _moveOutBtn.visible = isOut;
+         _moveInBtn.visible = !isOut;
       }
       
-      private function inHandler(param1:MouseEvent) : void
+      private function inHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          setInOutVisible(true);
          TweenLite.to(this,0.5,{"x":909});
       }
       
-      private function exitHandler(param1:MouseEvent) : void
+      private function exitHandler(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var alert:* = null;
          SoundManager.instance.playButtonSound();
          if(!CollectionTaskManager.Instance.isTaskComplete)
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("collectionTask.leaveScene"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
-            _loc2_.addEventListener("response",__frameResponse);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("collectionTask.leaveScene"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
+            alert.addEventListener("response",__frameResponse);
          }
          else
          {
@@ -96,16 +96,16 @@ package collectionTask.view
          }
       }
       
-      private function __frameResponse(param1:FrameEvent) : void
+      private function __frameResponse(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__frameResponse);
-         switch(int(param1.responseCode))
+         var alert:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",__frameResponse);
+         switch(int(e.responseCode))
          {
             case 0:
             case 1:
-               _loc2_.dispose();
+               alert.dispose();
                break;
             case 2:
             case 3:

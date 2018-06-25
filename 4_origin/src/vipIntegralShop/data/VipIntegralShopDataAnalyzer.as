@@ -9,26 +9,25 @@ package vipIntegralShop.data
       
       private var _shopInfoVec:Vector.<VipIntegralShopInfo>;
       
-      public function VipIntegralShopDataAnalyzer(param1:Function)
+      public function VipIntegralShopDataAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc6_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var itemData:* = null;
          _shopInfoVec = new Vector.<VipIntegralShopInfo>();
-         var _loc3_:XML = new XML(param1);
-         var _loc5_:int = _loc3_.Item.length();
-         var _loc4_:XMLList = _loc3_.Item;
-         _loc6_ = 0;
-         while(_loc6_ < _loc5_)
+         var xml:XML = new XML(data);
+         var len:int = xml.Item.length();
+         var xmllist:XMLList = xml.Item;
+         for(i = 0; i < len; )
          {
-            _loc2_ = new VipIntegralShopInfo();
-            ObjectUtils.copyPorpertiesByXML(_loc2_,_loc4_[_loc6_]);
-            _shopInfoVec.push(_loc2_);
-            _loc6_++;
+            itemData = new VipIntegralShopInfo();
+            ObjectUtils.copyPorpertiesByXML(itemData,xmllist[i]);
+            _shopInfoVec.push(itemData);
+            i++;
          }
          onAnalyzeComplete();
       }

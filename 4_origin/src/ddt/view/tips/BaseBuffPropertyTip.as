@@ -51,17 +51,17 @@ package ddt.view.tips
          addChild(_propertySpri);
       }
       
-      public function setBgWidth(param1:int) : void
+      public function setBgWidth($width:int) : void
       {
-         _bg.width = param1;
+         _bg.width = $width;
       }
       
-      public function setBgHeight(param1:int) : void
+      public function setBgHeight($height:int) : void
       {
-         _bg.height = param1;
+         _bg.height = $height;
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
          clearBuffProperty();
       }
@@ -81,11 +81,11 @@ package ddt.view.tips
          return ComponentFactory.Instance.creatComponentByStylename("game.kingbless.tipView.titleTxt");
       }
       
-      public function set titleTxt(param1:String) : void
+      public function set titleTxt(value:String) : void
       {
          if(_titleTxt)
          {
-            _titleTxt.text = param1;
+            _titleTxt.text = value;
          }
       }
       
@@ -94,11 +94,11 @@ package ddt.view.tips
          return ComponentFactory.Instance.creatComponentByStylename("game.kingbless.tipView.tipTxt");
       }
       
-      protected function set conditionTxt(param1:String) : void
+      protected function set conditionTxt(value:String) : void
       {
          if(_conditionTxt)
          {
-            _conditionTxt.text = param1;
+            _conditionTxt.text = value;
          }
       }
       

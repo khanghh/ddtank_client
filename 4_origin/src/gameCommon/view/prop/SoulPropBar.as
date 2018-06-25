@@ -29,10 +29,10 @@ package gameCommon.view.prop
       
       private var _lockScreen:DisplayObject;
       
-      public function SoulPropBar(param1:LocalPlayer)
+      public function SoulPropBar(self:LocalPlayer)
       {
          _soulCells = new Vector.<SoulPropCell>();
-         super(param1);
+         super(self);
       }
       
       override protected function configUI() : void
@@ -56,9 +56,9 @@ package gameCommon.view.prop
          _self.removeEventListener("soulPropEnableChanged",__enableChanged);
          var _loc3_:int = 0;
          var _loc2_:* = _soulCells;
-         for each(var _loc1_ in _soulCells)
+         for each(var cell in _soulCells)
          {
-            _loc1_.removeEventListener("click",__itemClicked);
+            cell.removeEventListener("click",__itemClicked);
          }
       }
       
@@ -69,7 +69,7 @@ package gameCommon.view.prop
          super.enter();
       }
       
-      private function __psychicChanged(param1:LivingEvent) : void
+      private function __psychicChanged(event:LivingEvent) : void
       {
          if(_enabled)
          {
@@ -77,7 +77,7 @@ package gameCommon.view.prop
          }
       }
       
-      private function __enableChanged(param1:LivingEvent) : void
+      private function __enableChanged(event:LivingEvent) : void
       {
          enabled = _self.soulPropEnabled;
          if(_enabled)
@@ -104,47 +104,47 @@ package gameCommon.view.prop
       {
          var _loc3_:int = 0;
          var _loc2_:* = _soulCells;
-         for each(var _loc1_ in _soulCells)
+         for each(var cell in _soulCells)
          {
-            if(_loc1_.info != null && _self.psychic >= _loc1_.info.needPsychic)
+            if(cell.info != null && _self.psychic >= cell.info.needPsychic)
             {
-               _loc1_.enabled = true;
+               cell.enabled = true;
                showHelpMsg();
             }
             else
             {
-               _loc1_.enabled = false;
+               cell.enabled = false;
             }
          }
       }
       
       override protected function drawCells() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:int = 0;
-         var _loc5_:Point = new Point(4,4);
-         while(_loc3_ < 12)
+         var _y:int = 0;
+         var _x:int = 0;
+         var cell:* = null;
+         var count:int = 0;
+         var offset:Point = new Point(4,4);
+         while(count < 12)
          {
-            _loc4_ = new SoulPropCell();
-            _loc4_.addEventListener("click",__itemClicked);
-            _loc1_ = _loc3_ % 6 * (_loc4_.width + 1) + 3.5;
-            if(_loc3_ >= 6)
+            cell = new SoulPropCell();
+            cell.addEventListener("click",__itemClicked);
+            _x = count % 6 * (cell.width + 1) + 3.5;
+            if(count >= 6)
             {
-               _loc2_ = _loc4_.height + 2;
+               _y = cell.height + 2;
             }
-            _loc4_.setPossiton(_loc1_ + _loc5_.x,_loc2_ + _loc5_.y);
-            addChild(_loc4_);
-            _soulCells.push(_loc4_);
-            _loc3_++;
+            cell.setPossiton(_x + offset.x,_y + offset.y);
+            addChild(cell);
+            _soulCells.push(cell);
+            count++;
          }
       }
       
-      override protected function __itemClicked(param1:MouseEvent) : void
+      override protected function __itemClicked(event:MouseEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var cell:* = null;
+         var result:* = null;
          if(_enabled)
          {
             if(_msgShape)
@@ -152,35 +152,34 @@ package gameCommon.view.prop
                ObjectUtils.disposeObject(_msgShape);
                _msgShape = null;
             }
-            _loc3_ = param1.currentTarget as SoulPropCell;
+            cell = event.currentTarget as SoulPropCell;
             SoundManager.instance.play("008");
-            _loc2_ = _self.useProp(_loc3_.info,1);
-            if(_loc2_ != "-1" && _loc2_ != "0")
+            result = _self.useProp(cell.info,1);
+            if(result != "-1" && result != "0")
             {
-               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.game.prop." + _loc2_));
+               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.game.prop." + result));
             }
-            super.__itemClicked(param1);
+            super.__itemClicked(event);
          }
       }
       
       public function setProps() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         _loc2_ = 0;
-         while(_loc2_ < _propDatas.length)
+         var i:int = 0;
+         var info:* = null;
+         for(i = 0; i < _propDatas.length; )
          {
-            _loc1_ = new PropInfo(ItemManager.Instance.getTemplateById(_propDatas[_loc2_]));
-            _loc1_.Place = -1;
-            _soulCells[_loc2_].info = _loc1_;
-            _soulCells[_loc2_].enabled = false;
-            _loc2_++;
+            info = new PropInfo(ItemManager.Instance.getTemplateById(_propDatas[i]));
+            info.Place = -1;
+            _soulCells[i].info = info;
+            _soulCells[i].enabled = false;
+            i++;
          }
       }
       
-      public function set props(param1:String) : void
+      public function set props(val:String) : void
       {
-         _propDatas = param1.split(",");
+         _propDatas = val.split(",");
       }
       
       override public function dispose() : void

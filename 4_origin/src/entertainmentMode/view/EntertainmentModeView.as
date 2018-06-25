@@ -87,11 +87,11 @@ package entertainmentMode.view
       
       private function initView() : void
       {
-         var _loc5_:int = 0;
-         var _loc1_:* = null;
-         var _loc4_:* = null;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
+         var i:int = 0;
+         var _bitmap:* = null;
+         var _txt:* = null;
+         var _itemCell:* = null;
+         var _info:* = null;
          _itemArray = [];
          titleText = LanguageMgr.GetTranslation("ddt.entertainmentMode.title");
          if(PathManager.pkEnable)
@@ -136,32 +136,31 @@ package entertainmentMode.view
          addToContent(list);
          list.hScrollProxy = 2;
          list.vScrollProxy = 0;
-         _loc5_ = 0;
-         while(_loc5_ < ServerConfigManager.instance.entertainmentScore().length)
+         for(i = 0; i < ServerConfigManager.instance.entertainmentScore().length; )
          {
-            if(_loc5_ % 2 == 0)
+            if(i % 2 == 0)
             {
-               _loc1_ = ComponentFactory.Instance.creat("asset.Entertainment.mode.dark");
+               _bitmap = ComponentFactory.Instance.creat("asset.Entertainment.mode.dark");
             }
             else
             {
-               _loc1_ = ComponentFactory.Instance.creat("asset.Entertainment.mode.light");
+               _bitmap = ComponentFactory.Instance.creat("asset.Entertainment.mode.light");
             }
-            _box.addChild(_loc1_);
-            _loc4_ = ComponentFactory.Instance.creat("asset.entertainment.list.score");
-            _box.addChild(_loc4_);
-            _loc4_.text = String(ServerConfigManager.instance.entertainmentScore()[_loc5_].split("|")[0]);
-            _loc4_.y = _loc5_ * _loc1_.height + 9;
-            _loc1_.y = _loc5_ * _loc1_.height;
-            _loc2_ = creatItemCell();
-            _loc2_.buttonMode = true;
-            _loc2_.cellSize = 39;
-            _loc3_ = ItemManager.Instance.getTemplateById(ServerConfigManager.instance.entertainmentScore()[_loc5_].split("|")[1]);
-            _loc2_.info = _loc3_;
-            _loc2_.x = 126;
-            _loc2_.y = _loc5_ * _loc1_.height - 7;
-            _box.addChild(_loc2_);
-            _loc5_++;
+            _box.addChild(_bitmap);
+            _txt = ComponentFactory.Instance.creat("asset.entertainment.list.score");
+            _box.addChild(_txt);
+            _txt.text = String(ServerConfigManager.instance.entertainmentScore()[i].split("|")[0]);
+            _txt.y = i * _bitmap.height + 9;
+            _bitmap.y = i * _bitmap.height;
+            _itemCell = creatItemCell();
+            _itemCell.buttonMode = true;
+            _itemCell.cellSize = 39;
+            _info = ItemManager.Instance.getTemplateById(ServerConfigManager.instance.entertainmentScore()[i].split("|")[1]);
+            _itemCell.info = _info;
+            _itemCell.x = 126;
+            _itemCell.y = i * _bitmap.height - 7;
+            _box.addChild(_itemCell);
+            i++;
          }
          list.setView(_box);
          if(PathManager.pkEnable)
@@ -178,11 +177,11 @@ package entertainmentMode.view
       
       private function creatItemCell() : ShopItemCell
       {
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,23,23);
-         _loc1_.graphics.endFill();
-         return CellFactory.instance.createShopItemCell(_loc1_,null,true,true) as ShopItemCell;
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(16777215,0);
+         sp.graphics.drawRect(0,0,23,23);
+         sp.graphics.endFill();
+         return CellFactory.instance.createShopItemCell(sp,null,true,true) as ShopItemCell;
       }
       
       private function initEvent() : void
@@ -207,63 +206,62 @@ package entertainmentMode.view
          updateRoomList();
       }
       
-      private function helpBtnClickHandler(param1:MouseEvent) : void
+      private function helpBtnClickHandler(e:MouseEvent) : void
       {
-         var _loc2_:EntertainmentInfoFrame = ComponentFactory.Instance.creatCustomObject("entertainment.infoFrame");
-         LayerManager.Instance.addToLayer(_loc2_,2,true,2);
+         var helpPage:EntertainmentInfoFrame = ComponentFactory.Instance.creatCustomObject("entertainment.infoFrame");
+         LayerManager.Instance.addToLayer(helpPage,2,true,2);
       }
       
-      private function __pkBtnHandler(param1:MouseEvent) : void
+      private function __pkBtnHandler(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          GameInSocketOut.sendCreateRoom(RoomListBGView.PREWORD[int(Math.random() * RoomListBGView.PREWORD.length)],42,3);
       }
       
-      private function __onEnter(param1:CrazyTankSocketEvent) : void
+      private function __onEnter(evt:CrazyTankSocketEvent) : void
       {
-         var _loc7_:int = 0;
-         var _loc2_:int = 0;
-         var _loc6_:* = null;
-         var _loc3_:Array = [];
-         var _loc4_:PackageIn = param1.pkg;
-         EntertainmentModel.instance.roomTotal = _loc4_.readInt();
-         var _loc5_:int = _loc4_.readInt();
-         _loc7_ = 0;
-         while(_loc7_ < _loc5_)
+         var i:int = 0;
+         var id:int = 0;
+         var info:* = null;
+         var listArr:Array = [];
+         var pkg:PackageIn = evt.pkg;
+         EntertainmentModel.instance.roomTotal = pkg.readInt();
+         var len:int = pkg.readInt();
+         for(i = 0; i < len; )
          {
-            _loc2_ = _loc4_.readInt();
-            _loc6_ = new RoomInfo();
-            _loc6_.ID = _loc2_;
-            _loc6_.type = _loc4_.readByte();
-            _loc6_.timeType = _loc4_.readByte();
-            _loc6_.totalPlayer = _loc4_.readByte();
-            _loc6_.viewerCnt = _loc4_.readByte();
-            _loc6_.maxViewerCnt = _loc4_.readByte();
-            _loc6_.placeCount = _loc4_.readByte();
-            _loc6_.IsLocked = _loc4_.readBoolean();
-            _loc6_.mapId = _loc4_.readInt();
-            _loc6_.isPlaying = _loc4_.readBoolean();
-            _loc6_.Name = _loc4_.readUTF();
-            _loc6_.gameMode = _loc4_.readByte();
-            _loc6_.hardLevel = _loc4_.readByte();
-            _loc6_.levelLimits = _loc4_.readInt();
-            _loc6_.isOpenBoss = _loc4_.readBoolean();
-            _loc3_.push(_loc6_);
-            _loc7_++;
+            id = pkg.readInt();
+            info = new RoomInfo();
+            info.ID = id;
+            info.type = pkg.readByte();
+            info.timeType = pkg.readByte();
+            info.totalPlayer = pkg.readByte();
+            info.viewerCnt = pkg.readByte();
+            info.maxViewerCnt = pkg.readByte();
+            info.placeCount = pkg.readByte();
+            info.IsLocked = pkg.readBoolean();
+            info.mapId = pkg.readInt();
+            info.isPlaying = pkg.readBoolean();
+            info.Name = pkg.readUTF();
+            info.gameMode = pkg.readByte();
+            info.hardLevel = pkg.readByte();
+            info.levelLimits = pkg.readInt();
+            info.isOpenBoss = pkg.readBoolean();
+            listArr.push(info);
+            i++;
          }
-         EntertainmentModel.instance.updateRoom(_loc3_);
+         EntertainmentModel.instance.updateRoom(listArr);
       }
       
-      private function __scoreChanger(param1:Event) : void
+      private function __scoreChanger(e:Event) : void
       {
          _scoreTxt.text = EntertainmentModel.instance.score.toString();
       }
       
-      private function __gameStart(param1:CrazyTankSocketEvent) : void
+      private function __gameStart(evt:CrazyTankSocketEvent) : void
       {
       }
       
-      private function __enterBtnHandler(param1:MouseEvent) : void
+      private function __enterBtnHandler(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_searchTxt.text == "")
@@ -274,13 +272,13 @@ package entertainmentMode.view
          SocketManager.Instance.out.sendGameLogin(8,-1,int(_searchTxt.text));
       }
       
-      private function __createBtnHandler(param1:MouseEvent) : void
+      private function __createBtnHandler(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          GameInSocketOut.sendCreateRoom(RoomListBGView.PREWORD[int(Math.random() * RoomListBGView.PREWORD.length)],41,3);
       }
       
-      private function __joinBtnHandler(param1:MouseEvent) : void
+      private function __joinBtnHandler(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(!_isPermissionEnter)
@@ -291,7 +289,7 @@ package entertainmentMode.view
          _isPermissionEnter = false;
       }
       
-      private function __updateClick(param1:MouseEvent) : void
+      private function __updateClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          sendSift();
@@ -302,39 +300,39 @@ package entertainmentMode.view
          SocketManager.Instance.out.sendSceneLogin(8);
       }
       
-      private function __roomListChanger(param1:Event) : void
+      private function __roomListChanger(e:Event) : void
       {
          updateRoomList();
       }
       
       private function updateRoomList() : void
       {
-         var _loc2_:* = null;
+         var item:* = null;
          cleanItem();
          var _loc4_:int = 0;
          var _loc3_:* = EntertainmentModel.instance.roomList;
-         for each(var _loc1_ in EntertainmentModel.instance.roomList)
+         for each(var room1 in EntertainmentModel.instance.roomList)
          {
-            _loc2_ = new EntertainmentListItem(_loc1_);
-            _loc2_.addEventListener("click",__itemClick,false,0,true);
-            _itemList.addChild(_loc2_);
-            _itemArray.push(_loc2_);
+            item = new EntertainmentListItem(room1);
+            item.addEventListener("click",__itemClick,false,0,true);
+            _itemList.addChild(item);
+            _itemArray.push(item);
          }
       }
       
-      private function __itemClick(param1:MouseEvent) : void
+      private function __itemClick(event:MouseEvent) : void
       {
          if(!_isPermissionEnter)
          {
             return;
          }
          SoundManager.instance.play("008");
-         var _loc2_:EntertainmentListItem = param1.currentTarget as EntertainmentListItem;
-         SocketManager.Instance.out.sendGameLogin(8,-1,_loc2_.info.ID);
+         var itemView:EntertainmentListItem = event.currentTarget as EntertainmentListItem;
+         SocketManager.Instance.out.sendGameLogin(8,-1,itemView.info.ID);
          _isPermissionEnter = false;
       }
       
-      private function _clickName(param1:MouseEvent) : void
+      private function _clickName(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_searchTxt.text == LanguageMgr.GetTranslation("ddt.entertainmentMode.input.roomNumber"))
@@ -343,17 +341,17 @@ package entertainmentMode.view
          }
       }
       
-      private function setFocus(param1:Event) : void
+      private function setFocus(e:Event) : void
       {
          _searchTxt.text = LanguageMgr.GetTranslation("ddt.entertainmentMode.input.roomNumber");
          _searchTxt.setFocus();
          _searchTxt.setCursor(_searchTxt.text.length);
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -388,14 +386,13 @@ package entertainmentMode.view
       
       private function cleanItem() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _isPermissionEnter = true;
-         _loc1_ = 0;
-         while(_loc1_ < _itemArray.length)
+         for(i = 0; i < _itemArray.length; )
          {
-            _itemArray[_loc1_].removeEventListener("click",__itemClick);
-            _itemArray[_loc1_].dispose();
-            _loc1_++;
+            _itemArray[i].removeEventListener("click",__itemClick);
+            _itemArray[i].dispose();
+            i++;
          }
          _itemList.disposeAllChildren();
          _itemArray = [];

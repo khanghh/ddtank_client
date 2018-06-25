@@ -43,10 +43,10 @@ package com.greensock
       
       public var isTweenProxy:Boolean = true;
       
-      public function TweenProxyStarling(param1:DisplayObject, param2:Boolean = false)
+      public function TweenProxyStarling(target:DisplayObject, ignoreSiblingUpdates:Boolean = false)
       {
          super();
-         _target = param1;
+         _target = target;
          if(_dict[_target] == undefined)
          {
             _dict[_target] = [];
@@ -54,36 +54,36 @@ package com.greensock
          _proxies = _dict[_target];
          _proxies.push(this);
          _localRegistration = new Point(0,0);
-         this.ignoreSiblingUpdates = param2;
+         this.ignoreSiblingUpdates = ignoreSiblingUpdates;
          calibrate();
       }
       
-      public static function create(param1:DisplayObject, param2:Boolean = true) : TweenProxyStarling
+      public static function create(target:DisplayObject, allowRecycle:Boolean = true) : TweenProxyStarling
       {
-         if(_dict[param1] != null && param2)
+         if(_dict[target] != null && allowRecycle)
          {
-            return _dict[param1][0];
+            return _dict[target][0];
          }
-         return new TweenProxyStarling(param1);
+         return new TweenProxyStarling(target);
       }
       
       public function getCenter() : Point
       {
-         var _loc2_:* = null;
-         var _loc3_:Boolean = false;
+         var s:* = null;
+         var remove:Boolean = false;
          if(_target.parent == null)
          {
-            _loc3_ = true;
-            _loc2_ = new Sprite();
-            _loc2_.addChild(_target);
+            remove = true;
+            s = new Sprite();
+            s.addChild(_target);
          }
-         var _loc1_:Rectangle = _target.getBounds(_target.parent);
-         var _loc4_:Point = new Point(_loc1_.x + _loc1_.width / 2,_loc1_.y + _loc1_.height / 2);
-         if(_loc3_)
+         var b:Rectangle = _target.getBounds(_target.parent);
+         var p:Point = new Point(b.x + b.width / 2,b.y + b.height / 2);
+         if(remove)
          {
             _target.parent.removeChild(_target);
          }
-         return _loc4_;
+         return p;
       }
       
       public function get target() : DisplayObject
@@ -101,18 +101,17 @@ package com.greensock
       
       public function destroy() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:Array = _dict[_target];
-         _loc2_ = _loc1_.length - 1;
-         while(_loc2_ > -1)
+         var i:int = 0;
+         var a:Array = _dict[_target];
+         for(i = a.length - 1; i > -1; )
          {
-            if(_loc1_[_loc2_] == this)
+            if(a[i] == this)
             {
-               _loc1_.splice(_loc2_,1);
+               a.splice(i,1);
             }
-            _loc2_--;
+            i--;
          }
-         if(_loc1_.length == 0)
+         if(a.length == 0)
          {
             delete _dict[_target];
          }
@@ -122,62 +121,61 @@ package com.greensock
          _proxies = null;
       }
       
-      override flash_proxy function callProperty(param1:*, ... rest) : *
+      override flash_proxy function callProperty(name:*, ... args) : *
       {
-         return _target[param1].apply(null,rest);
+         return _target[name].apply(null,args);
       }
       
-      override flash_proxy function getProperty(param1:*) : *
+      override flash_proxy function getProperty(prop:*) : *
       {
-         return _target[param1];
+         return _target[prop];
       }
       
-      override flash_proxy function setProperty(param1:*, param2:*) : void
+      override flash_proxy function setProperty(prop:*, value:*) : void
       {
-         _target[param1] = param2;
+         _target[prop] = value;
       }
       
-      override flash_proxy function hasProperty(param1:*) : Boolean
+      override flash_proxy function hasProperty(name:*) : Boolean
       {
-         if(_target.hasOwnProperty(param1))
+         if(_target.hasOwnProperty(name))
          {
             return true;
          }
-         if(_addedProps.indexOf(" " + param1 + " ") != -1)
+         if(_addedProps.indexOf(" " + name + " ") != -1)
          {
             return true;
          }
          return false;
       }
       
-      public function moveRegX(param1:Number) : void
+      public function moveRegX(n:Number) : void
       {
-         _registration.x = _registration.x + param1;
+         _registration.x = _registration.x + n;
       }
       
-      public function moveRegY(param1:Number) : void
+      public function moveRegY(n:Number) : void
       {
-         _registration.y = _registration.y + param1;
+         _registration.y = _registration.y + n;
       }
       
       private function reposition() : void
       {
-         var _loc1_:Point = _target.parent.globalToLocal(_target.localToGlobal(_localRegistration));
-         _target.x = _target.x + (_registration.x - _loc1_.x);
-         _target.y = _target.y + (_registration.y - _loc1_.y);
+         var p:Point = _target.parent.globalToLocal(_target.localToGlobal(_localRegistration));
+         _target.x = _target.x + (_registration.x - p.x);
+         _target.y = _target.y + (_registration.y - p.y);
       }
       
       private function updateSiblingProxies() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = _proxies.length - 1;
-         while(_loc1_ > -1)
+         var i:int = 0;
+         for(i = _proxies.length - 1; i > -1; )
          {
-            if(_proxies[_loc1_] != this)
+            if(_proxies[i] != this)
             {
-               _proxies[_loc1_].onSiblingUpdate(_scaleX,_scaleY,_angle);
+               _proxies[i].onSiblingUpdate(_scaleX,_scaleY,_angle);
             }
-            _loc1_--;
+            i--;
          }
       }
       
@@ -193,11 +191,11 @@ package com.greensock
          _regAt0 = _localRegistration.x == 0 && _localRegistration.y == 0;
       }
       
-      public function onSiblingUpdate(param1:Number, param2:Number, param3:Number) : void
+      public function onSiblingUpdate(scaleX:Number, scaleY:Number, angle:Number) : void
       {
-         _scaleX = param1;
-         _scaleY = param2;
-         _angle = param3;
+         _scaleX = scaleX;
+         _scaleY = scaleY;
+         _angle = angle;
          if(this.ignoreSiblingUpdates)
          {
             calibrateLocal();
@@ -213,9 +211,9 @@ package com.greensock
          return _localRegistration;
       }
       
-      public function set localRegistration(param1:Point) : void
+      public function set localRegistration(p:Point) : void
       {
-         _localRegistration = param1;
+         _localRegistration = p;
          calibrateRegistration();
       }
       
@@ -224,9 +222,9 @@ package com.greensock
          return _localRegistration.x;
       }
       
-      public function set localRegistrationX(param1:Number) : void
+      public function set localRegistrationX(n:Number) : void
       {
-         _localRegistration.x = param1;
+         _localRegistration.x = n;
          calibrateRegistration();
       }
       
@@ -235,9 +233,9 @@ package com.greensock
          return _localRegistration.y;
       }
       
-      public function set localRegistrationY(param1:Number) : void
+      public function set localRegistrationY(n:Number) : void
       {
-         _localRegistration.y = param1;
+         _localRegistration.y = n;
          calibrateRegistration();
       }
       
@@ -246,9 +244,9 @@ package com.greensock
          return _registration;
       }
       
-      public function set registration(param1:Point) : void
+      public function set registration(p:Point) : void
       {
-         _registration = param1;
+         _registration = p;
          calibrateLocal();
       }
       
@@ -257,9 +255,9 @@ package com.greensock
          return _registration.x;
       }
       
-      public function set registrationX(param1:Number) : void
+      public function set registrationX(n:Number) : void
       {
-         _registration.x = param1;
+         _registration.x = n;
          calibrateLocal();
       }
       
@@ -268,9 +266,9 @@ package com.greensock
          return _registration.y;
       }
       
-      public function set registrationY(param1:Number) : void
+      public function set registrationY(n:Number) : void
       {
-         _registration.y = param1;
+         _registration.y = n;
          calibrateLocal();
       }
       
@@ -279,19 +277,18 @@ package com.greensock
          return _registration.x;
       }
       
-      public function set x(param1:Number) : void
+      public function set x(n:Number) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:Number = param1 - _registration.x;
-         _target.x = _target.x + _loc2_;
-         _loc3_ = _proxies.length - 1;
-         while(_loc3_ > -1)
+         var i:int = 0;
+         var tx:Number = n - _registration.x;
+         _target.x = _target.x + tx;
+         for(i = _proxies.length - 1; i > -1; )
          {
-            if(_proxies[_loc3_] == this || !_proxies[_loc3_].ignoreSiblingUpdates)
+            if(_proxies[i] == this || !_proxies[i].ignoreSiblingUpdates)
             {
-               _proxies[_loc3_].moveRegX(_loc2_);
+               _proxies[i].moveRegX(tx);
             }
-            _loc3_--;
+            i--;
          }
       }
       
@@ -300,19 +297,18 @@ package com.greensock
          return _registration.y;
       }
       
-      public function set y(param1:Number) : void
+      public function set y(n:Number) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:Number = param1 - _registration.y;
-         _target.y = _target.y + _loc2_;
-         _loc3_ = _proxies.length - 1;
-         while(_loc3_ > -1)
+         var i:int = 0;
+         var ty:Number = n - _registration.y;
+         _target.y = _target.y + ty;
+         for(i = _proxies.length - 1; i > -1; )
          {
-            if(_proxies[_loc3_] == this || !_proxies[_loc3_].ignoreSiblingUpdates)
+            if(_proxies[i] == this || !_proxies[i].ignoreSiblingUpdates)
             {
-               _proxies[_loc3_].moveRegY(_loc2_);
+               _proxies[i].moveRegY(ty);
             }
-            _loc3_--;
+            i--;
          }
       }
       
@@ -321,13 +317,13 @@ package com.greensock
          return _angle * 57.2957795130823;
       }
       
-      public function set rotation(param1:Number) : void
+      public function set rotation(n:Number) : void
       {
-         var _loc2_:Number = param1 * 0.0174532925199433;
-         var _loc3_:Matrix = _target.transformationMatrix;
-         _loc3_.rotate(_loc2_ - _angle);
-         _target.transformationMatrix = _loc3_;
-         _angle = _loc2_;
+         var radians:Number = n * 0.0174532925199433;
+         var m:Matrix = _target.transformationMatrix;
+         m.rotate(radians - _angle);
+         _target.transformationMatrix = m;
+         _angle = radians;
          reposition();
          if(_proxies.length > 1)
          {
@@ -337,18 +333,18 @@ package com.greensock
       
       public function get skewX() : Number
       {
-         var _loc1_:Matrix = _target.transformationMatrix;
-         return (Math.atan2(-_loc1_.c,_loc1_.d) - _angle) * 57.2957795130823;
+         var m:Matrix = _target.transformationMatrix;
+         return (Math.atan2(-m.c,m.d) - _angle) * 57.2957795130823;
       }
       
-      public function set skewX(param1:Number) : void
+      public function set skewX(n:Number) : void
       {
-         var _loc2_:Number = param1 * 0.0174532925199433;
-         var _loc3_:Matrix = _target.transformationMatrix;
-         var _loc4_:Number = _scaleY < 0?-_scaleY:Number(_scaleY);
-         _loc3_.c = -_loc4_ * Math.sin(_loc2_ + _angle);
-         _loc3_.d = _loc4_ * Math.cos(_loc2_ + _angle);
-         _target.transformationMatrix = _loc3_;
+         var radians:Number = n * 0.0174532925199433;
+         var m:Matrix = _target.transformationMatrix;
+         var sy:Number = _scaleY < 0?-_scaleY:Number(_scaleY);
+         m.c = -sy * Math.sin(radians + _angle);
+         m.d = sy * Math.cos(radians + _angle);
+         _target.transformationMatrix = m;
          if(!_regAt0)
          {
             reposition();
@@ -361,18 +357,18 @@ package com.greensock
       
       public function get skewY() : Number
       {
-         var _loc1_:Matrix = _target.transformationMatrix;
-         return (Math.atan2(_loc1_.b,_loc1_.a) - _angle) * 57.2957795130823;
+         var m:Matrix = _target.transformationMatrix;
+         return (Math.atan2(m.b,m.a) - _angle) * 57.2957795130823;
       }
       
-      public function set skewY(param1:Number) : void
+      public function set skewY(n:Number) : void
       {
-         var _loc2_:Number = param1 * 0.0174532925199433;
-         var _loc3_:Matrix = _target.transformationMatrix;
-         var _loc4_:Number = _scaleX < 0?-_scaleX:Number(_scaleX);
-         _loc3_.a = _loc4_ * Math.cos(_loc2_ + _angle);
-         _loc3_.b = _loc4_ * Math.sin(_loc2_ + _angle);
-         _target.transformationMatrix = _loc3_;
+         var radians:Number = n * 0.0174532925199433;
+         var m:Matrix = _target.transformationMatrix;
+         var sx:Number = _scaleX < 0?-_scaleX:Number(_scaleX);
+         m.a = sx * Math.cos(radians + _angle);
+         m.b = sx * Math.sin(radians + _angle);
+         _target.transformationMatrix = m;
          if(!_regAt0)
          {
             reposition();
@@ -388,9 +384,9 @@ package com.greensock
          return this.skewX2Radians * 57.2957795130823;
       }
       
-      public function set skewX2(param1:Number) : void
+      public function set skewX2(n:Number) : void
       {
-         this.skewX2Radians = param1 * 0.0174532925199433;
+         this.skewX2Radians = n * 0.0174532925199433;
       }
       
       public function get skewY2() : Number
@@ -398,9 +394,9 @@ package com.greensock
          return this.skewY2Radians * 57.2957795130823;
       }
       
-      public function set skewY2(param1:Number) : void
+      public function set skewY2(n:Number) : void
       {
-         this.skewY2Radians = param1 * 0.0174532925199433;
+         this.skewY2Radians = n * 0.0174532925199433;
       }
       
       public function get skewX2Radians() : Number
@@ -408,11 +404,11 @@ package com.greensock
          return -Math.atan(_target.transformationMatrix.c);
       }
       
-      public function set skewX2Radians(param1:Number) : void
+      public function set skewX2Radians(n:Number) : void
       {
-         var _loc2_:Matrix = _target.transformationMatrix;
-         _loc2_.c = Math.tan(-param1);
-         _target.transformationMatrix = _loc2_;
+         var m:Matrix = _target.transformationMatrix;
+         m.c = Math.tan(-n);
+         _target.transformationMatrix = m;
          if(!_regAt0)
          {
             reposition();
@@ -428,11 +424,11 @@ package com.greensock
          return Math.atan(_target.transformationMatrix.b);
       }
       
-      public function set skewY2Radians(param1:Number) : void
+      public function set skewY2Radians(n:Number) : void
       {
-         var _loc2_:Matrix = _target.transformationMatrix;
-         _loc2_.b = Math.tan(param1);
-         _target.transformationMatrix = _loc2_;
+         var m:Matrix = _target.transformationMatrix;
+         m.b = Math.tan(n);
+         _target.transformationMatrix = m;
          if(!_regAt0)
          {
             reposition();
@@ -448,18 +444,18 @@ package com.greensock
          return _scaleX;
       }
       
-      public function set scaleX(param1:Number) : void
+      public function set scaleX(n:Number) : void
       {
-         if(param1 == 0)
+         if(n == 0)
          {
-            param1 = 0.0001;
+            n = 0.0001;
          }
-         var _loc2_:Matrix = _target.transformationMatrix;
-         _loc2_.rotate(-_angle);
-         _loc2_.scale(param1 / _scaleX,1);
-         _loc2_.rotate(_angle);
-         _target.transformationMatrix = _loc2_;
-         _scaleX = param1;
+         var m:Matrix = _target.transformationMatrix;
+         m.rotate(-_angle);
+         m.scale(n / _scaleX,1);
+         m.rotate(_angle);
+         _target.transformationMatrix = m;
+         _scaleX = n;
          reposition();
          if(_proxies.length > 1)
          {
@@ -472,18 +468,18 @@ package com.greensock
          return _scaleY;
       }
       
-      public function set scaleY(param1:Number) : void
+      public function set scaleY(n:Number) : void
       {
-         if(param1 == 0)
+         if(n == 0)
          {
-            param1 = 0.0001;
+            n = 0.0001;
          }
-         var _loc2_:Matrix = _target.transformationMatrix;
-         _loc2_.rotate(-_angle);
-         _loc2_.scale(1,param1 / _scaleY);
-         _loc2_.rotate(_angle);
-         _target.transformationMatrix = _loc2_;
-         _scaleY = param1;
+         var m:Matrix = _target.transformationMatrix;
+         m.rotate(-_angle);
+         m.scale(1,n / _scaleY);
+         m.rotate(_angle);
+         _target.transformationMatrix = m;
+         _scaleY = n;
          reposition();
          if(_proxies.length > 1)
          {
@@ -496,19 +492,19 @@ package com.greensock
          return (_scaleX + _scaleY) / 2;
       }
       
-      public function set scale(param1:Number) : void
+      public function set scale(n:Number) : void
       {
-         if(param1 == 0)
+         if(n == 0)
          {
-            param1 = 0.0001;
+            n = 0.0001;
          }
-         var _loc2_:Matrix = _target.transformationMatrix;
-         _loc2_.rotate(-_angle);
-         _loc2_.scale(param1 / _scaleX,param1 / _scaleY);
-         _loc2_.rotate(_angle);
-         _target.transformationMatrix = _loc2_;
-         _scaleY = param1;
-         _scaleX = param1;
+         var m:Matrix = _target.transformationMatrix;
+         m.rotate(-_angle);
+         m.scale(n / _scaleX,n / _scaleY);
+         m.rotate(_angle);
+         _target.transformationMatrix = m;
+         _scaleY = n;
+         _scaleX = n;
          reposition();
          if(_proxies.length > 1)
          {
@@ -521,9 +517,9 @@ package com.greensock
          return _target.alpha;
       }
       
-      public function set alpha(param1:Number) : void
+      public function set alpha(n:Number) : void
       {
-         _target.alpha = param1;
+         _target.alpha = n;
       }
       
       public function get width() : Number
@@ -531,9 +527,9 @@ package com.greensock
          return _target.width;
       }
       
-      public function set width(param1:Number) : void
+      public function set width(n:Number) : void
       {
-         _target.width = param1;
+         _target.width = n;
          if(!_regAt0)
          {
             reposition();
@@ -549,9 +545,9 @@ package com.greensock
          return _target.height;
       }
       
-      public function set height(param1:Number) : void
+      public function set height(n:Number) : void
       {
-         _target.height = param1;
+         _target.height = n;
          if(!_regAt0)
          {
             reposition();

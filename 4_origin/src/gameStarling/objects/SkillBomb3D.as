@@ -27,11 +27,11 @@ package gameStarling.objects
       
       private var _game:GameInfo;
       
-      public function SkillBomb3D(param1:Bomb, param2:Living)
+      public function SkillBomb3D(info:Bomb, owner:Living)
       {
-         _info = param1;
+         _info = info;
          _lifeTime = 0;
-         _owner = param2;
+         _owner = owner;
          super(_info.Id);
       }
       
@@ -40,19 +40,19 @@ package gameStarling.objects
          return _map as MapView3D;
       }
       
-      override public function setMap(param1:Map3D) : void
+      override public function setMap(map:Map3D) : void
       {
-         super.setMap(param1);
-         if(param1)
+         super.setMap(map);
+         if(map)
          {
             _game = this.map.gameInfo;
          }
       }
       
-      override public function update(param1:Number) : void
+      override public function update(dt:Number) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var living:* = null;
+         var player:* = null;
          if(_cunrrentAction == null)
          {
             _cunrrentAction = _info.Actions.shift();
@@ -65,8 +65,8 @@ package gameStarling.objects
          {
             if(_laserAction == null)
             {
-               _loc3_ = _game.findLiving(_cunrrentAction.param1);
-               _laserAction = new LaserAction3D(_loc3_,map,_info,_cunrrentAction.param2,_cunrrentAction.param3);
+               living = _game.findLiving(_cunrrentAction.param1);
+               _laserAction = new LaserAction3D(living,map,_info,_cunrrentAction.param2,_cunrrentAction.param3);
                _laserAction.prepare();
             }
             else if(_laserAction.isFinished)
@@ -80,16 +80,16 @@ package gameStarling.objects
          }
          else if(_cunrrentAction.type == 5)
          {
-            _loc2_ = _game.findLiving(_cunrrentAction.param1);
-            if(_loc2_)
+            player = _game.findLiving(_cunrrentAction.param1);
+            if(player)
             {
-               if(Math.abs(_loc2_.blood - _cunrrentAction.param4) > 150000 && _owner is Player)
+               if(Math.abs(player.blood - _cunrrentAction.param4) > 150000 && _owner is Player)
                {
-                  SocketManager.Instance.out.sendErrorMsg("客户端发现异常:" + _owner.playerInfo.NickName + "打出单发炮弹" + Math.abs(_loc2_.blood - _cunrrentAction.param4) + "的伤害");
+                  SocketManager.Instance.out.sendErrorMsg("客户端发现异常:" + _owner.playerInfo.NickName + "打出单发炮弹" + Math.abs(player.blood - _cunrrentAction.param4) + "的伤害");
                }
-               _loc2_.updateBlood(_cunrrentAction.param4,_cunrrentAction.param3,0 - _cunrrentAction.param2);
-               _loc2_.isHidden = false;
-               _loc2_.bomd();
+               player.updateBlood(_cunrrentAction.param4,_cunrrentAction.param3,0 - _cunrrentAction.param2);
+               player.isHidden = false;
+               player.bomd();
             }
             _cunrrentAction = _info.Actions.shift();
          }

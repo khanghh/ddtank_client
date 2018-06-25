@@ -79,11 +79,11 @@ package magicStone.components
          _payType.mouseEnabled = false;
          _itemNameTxt = ComponentFactory.Instance.creatComponentByStylename("ddtshop.GoodItemName");
          _itemPriceTxt = ComponentFactory.Instance.creatComponentByStylename("ddtshop.GoodItemPrice");
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,60,60);
-         _loc1_.graphics.endFill();
-         _itemCell = new EmbedMgStoneCell(0,null,true,_loc1_);
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(16777215,0);
+         sp.graphics.drawRect(0,0,60,60);
+         sp.graphics.endFill();
+         _itemCell = new EmbedMgStoneCell(0,null,true,sp);
          CellFactory.instance.fillTipProp(_itemCell);
          _needScore = ComponentFactory.Instance.creatComponentByStylename("magicStone.shopFrame.needScoreTxt");
          _needScore.text = LanguageMgr.GetTranslation("magicStone.score");
@@ -119,15 +119,15 @@ package magicStone.components
          _itemPriceTxt.visible = false;
       }
       
-      public function set shopItemInfo(param1:ShopItemInfo) : void
+      public function set shopItemInfo(value:ShopItemInfo) : void
       {
-         var _loc2_:int = 0;
-         if(param1)
+         var curScore:int = 0;
+         if(value)
          {
-            _shopItemInfo = param1;
+            _shopItemInfo = value;
             _shopItemInfo.TemplateInfo.Level = 1;
-            MagicStoneManager.instance.fillPropertys(param1.TemplateInfo);
-            _itemCell.info = param1.TemplateInfo;
+            MagicStoneManager.instance.fillPropertys(value.TemplateInfo);
+            _itemCell.info = value.TemplateInfo;
             _itemCell.visible = true;
             _itemCellBtn.visible = true;
             _itemNameTxt.visible = true;
@@ -137,9 +137,9 @@ package magicStone.components
                _itemNameTxt.text = _itemNameTxt.text.substr(0,6) + "...";
             }
             _needScore.visible = true;
-            _needScore.text = LanguageMgr.GetTranslation("magicStone.score",String(param1.AValue1));
-            _loc2_ = MagicStoneControl.instance.mgStoneScore;
-            if(param1.TemplateInfo.Property3 == "0")
+            _needScore.text = LanguageMgr.GetTranslation("magicStone.score",String(value.AValue1));
+            curScore = MagicStoneControl.instance.mgStoneScore;
+            if(value.TemplateInfo.Property3 == "0")
             {
                if(PlayerManager.Instance.Self.IsVIP && PlayerManager.Instance.Self.VIPLevel >= 4)
                {
@@ -152,7 +152,7 @@ package magicStone.components
                   _payType.visible = true;
                   _payType.setFrame(2);
                   _itemPriceTxt.visible = true;
-                  _itemPriceTxt.text = String(param1.AValue1);
+                  _itemPriceTxt.text = String(value.AValue1);
                }
                else
                {
@@ -166,7 +166,7 @@ package magicStone.components
                   _payType.visible = true;
                   _payType.setFrame(2);
                   _itemPriceTxt.visible = true;
-                  _itemPriceTxt.text = String(param1.AValue1);
+                  _itemPriceTxt.text = String(value.AValue1);
                }
             }
             else
@@ -222,7 +222,7 @@ package magicStone.components
          _itemCellBtn.removeEventListener("mouseOut",__itemMouseOut);
       }
       
-      protected function __itemClick(param1:MouseEvent) : void
+      protected function __itemClick(evt:MouseEvent) : void
       {
          if(!_shopItemInfo)
          {
@@ -232,7 +232,7 @@ package magicStone.components
          dispatchEvent(new ItemEvent("itemClick",_shopItemInfo,1));
       }
       
-      protected function __covertBtnClick(param1:MouseEvent) : void
+      protected function __covertBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -243,7 +243,7 @@ package magicStone.components
          SocketManager.Instance.out.convertMgStoneScore(_shopItemInfo.GoodsID);
       }
       
-      protected function __buyBtnClick(param1:MouseEvent) : void
+      protected function __buyBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -258,7 +258,7 @@ package magicStone.components
          _batFrame.show();
       }
       
-      protected function __itemMouseOver(param1:MouseEvent) : void
+      protected function __itemMouseOver(event:MouseEvent) : void
       {
          if(!_itemCell.info)
          {
@@ -272,7 +272,7 @@ package magicStone.components
          _isMouseOver = true;
       }
       
-      protected function __itemMouseOut(param1:MouseEvent) : void
+      protected function __itemMouseOut(event:MouseEvent) : void
       {
          ObjectUtils.disposeObject(_lightMc);
          if(!_shopItemInfo)
@@ -282,25 +282,25 @@ package magicStone.components
          _isMouseOver = false;
       }
       
-      public function setItemLight(param1:MovieClip) : void
+      public function setItemLight($lightMc:MovieClip) : void
       {
-         if(_lightMc == param1)
+         if(_lightMc == $lightMc)
          {
             return;
          }
-         _lightMc = param1;
+         _lightMc = $lightMc;
          _lightMc.mouseChildren = false;
          _lightMc.mouseEnabled = false;
          _lightMc.gotoAndPlay(1);
       }
       
-      public function setRemainCount(param1:int) : void
+      public function setRemainCount(remain:int) : void
       {
          if(_remainCount)
          {
-            _remainCount.text = param1.toString();
+            _remainCount.text = remain.toString();
          }
-         if(param1 == 0)
+         if(remain == 0)
          {
             _buyBtn.enable = false;
          }
@@ -315,15 +315,15 @@ package magicStone.components
          return _selected;
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         if(_selected == param1)
+         if(_selected == value)
          {
             return;
          }
-         _selected = param1;
-         _itemNameTxt.setFrame(!!param1?2:1);
-         _itemPriceTxt.setFrame(!!param1?2:1);
+         _selected = value;
+         _itemNameTxt.setFrame(!!value?2:1);
+         _itemPriceTxt.setFrame(!!value?2:1);
       }
       
       public function dispose() : void

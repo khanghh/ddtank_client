@@ -27,9 +27,9 @@ package accumulativeLogin
       
       public var dataDic:Dictionary;
       
-      public function AccumulativeManager(param1:IEventDispatcher = null)
+      public function AccumulativeManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : AccumulativeManager
@@ -46,12 +46,12 @@ package accumulativeLogin
          SocketManager.Instance.addEventListener(PkgEvent.format(238),__awardHandler);
       }
       
-      protected function __awardHandler(param1:CrazyTankSocketEvent) : void
+      protected function __awardHandler(event:CrazyTankSocketEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         var _loc3_:SelfInfo = PlayerManager.Instance.Self;
-         _loc3_.accumulativeLoginDays = _loc2_.readInt();
-         _loc3_.accumulativeAwardDays = _loc2_.readInt();
+         var pkg:PackageIn = event.pkg;
+         var self:SelfInfo = PlayerManager.Instance.Self;
+         self.accumulativeLoginDays = pkg.readInt();
+         self.accumulativeAwardDays = pkg.readInt();
          dispatchEvent(new Event("accumulativeLoginAwardRefresh"));
       }
       
@@ -73,9 +73,9 @@ package accumulativeLogin
          HallIconManager.instance.executeCacheRightIconLevelLimit("accumulativeLogin",false);
       }
       
-      public function loadTempleteDataComplete(param1:AccumulativeLoginAnalyer) : void
+      public function loadTempleteDataComplete(analyzer:AccumulativeLoginAnalyer) : void
       {
-         dataDic = param1.accumulativeloginDataDic;
+         dataDic = analyzer.accumulativeloginDataDic;
       }
       
       public function showFrame() : void
@@ -88,26 +88,26 @@ package accumulativeLogin
          UIModuleLoader.Instance.addUIModuleImp("wonderfulactivity");
       }
       
-      private function onUimoduleLoadProgress(param1:UIModuleEvent) : void
+      private function onUimoduleLoadProgress(event:UIModuleEvent) : void
       {
-         if(param1.module == "wonderfulactivity")
+         if(event.module == "wonderfulactivity")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
       
-      private function loadCompleteHandler(param1:UIModuleEvent) : void
+      private function loadCompleteHandler(event:UIModuleEvent) : void
       {
-         var _loc2_:* = null;
-         if(param1.module == "wonderfulactivity")
+         var _view:* = null;
+         if(event.module == "wonderfulactivity")
          {
             UIModuleSmallLoading.Instance.hide();
             UIModuleLoader.Instance.removeEventListener("uiModuleComplete",loadCompleteHandler);
             UIModuleLoader.Instance.removeEventListener("uiMoudleProgress",onUimoduleLoadProgress);
-            _loc2_ = new AccumulativeLoginView();
-            _loc2_.init();
-            _loc2_.x = -227;
-            HallIconManager.instance.showCommonFrame(_loc2_,"wonderfulActivityManager.btnTxt15");
+            _view = new AccumulativeLoginView();
+            _view.init();
+            _view.x = -227;
+            HallIconManager.instance.showCommonFrame(_view,"wonderfulActivityManager.btnTxt15");
          }
       }
    }

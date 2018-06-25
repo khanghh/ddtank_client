@@ -30,10 +30,10 @@ package gameCommon.view.experience
       
       protected var _valueArr:Array;
       
-      public function ExpFightExpItem(param1:Array)
+      public function ExpFightExpItem(arr:Array)
       {
          super();
-         _valueArr = param1;
+         _valueArr = arr;
          init();
       }
       
@@ -47,42 +47,41 @@ package gameCommon.view.experience
       
       public function createView() : void
       {
-         var _loc6_:int = 0;
-         var _loc3_:Point = ComponentFactory.Instance.creatCustomObject("experience.txtStartPos");
-         var _loc1_:Point = ComponentFactory.Instance.creatCustomObject("experience.txtOffset");
+         var i:int = 0;
+         var txtPos:Point = ComponentFactory.Instance.creatCustomObject("experience.txtStartPos");
+         var txtOffset:Point = ComponentFactory.Instance.creatCustomObject("experience.txtOffset");
          PositionUtils.setPos(_bg,"experience.ItemBgPos");
          _typeTxts = new Vector.<ExpTypeTxt>();
          addChild(_bg);
          addChild(_titleBitmap);
          _step = 0;
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:int = _itemType == "fightingExp"?4:Number(_itemType == "attatchExp"?9:6);
-         _loc6_ = 0;
-         while(_loc6_ < _loc2_)
+         var k:int = 0;
+         var skip:int = 0;
+         var len:int = _itemType == "fightingExp"?4:Number(_itemType == "attatchExp"?9:6);
+         for(i = 0; i < len; )
          {
-            if(_itemType == "attatchExp" && (_loc6_ == 1 || _loc6_ == 7) && GameControl.Instance.Current.roomType != 0 && GameControl.Instance.Current.roomType != 1 && GameControl.Instance.Current.roomType != 16 && GameControl.Instance.Current.roomType != 18)
+            if(_itemType == "attatchExp" && (i == 1 || i == 7) && GameControl.Instance.Current.roomType != 0 && GameControl.Instance.Current.roomType != 1 && GameControl.Instance.Current.roomType != 16 && GameControl.Instance.Current.roomType != 18)
             {
-               _loc4_++;
+               skip++;
             }
             else
             {
-               _typeTxts.push(new ExpTypeTxt(_itemType,_loc6_,_valueArr[_loc6_ - _loc4_]));
-               if(_loc5_ % 2 == 0 && _loc5_ != 8)
+               _typeTxts.push(new ExpTypeTxt(_itemType,i,_valueArr[i - skip]));
+               if(k % 2 == 0 && k != 8)
                {
-                  _loc3_.y = _loc3_.y + _loc1_.y;
-                  _typeTxts[_loc5_].y = _loc3_.y + _loc1_.y;
+                  txtPos.y = txtPos.y + txtOffset.y;
+                  _typeTxts[k].y = txtPos.y + txtOffset.y;
                }
                else
                {
-                  _typeTxts[_loc5_].y = _loc3_.y;
-                  _typeTxts[_loc5_].x = _loc3_.x + _loc1_.x;
+                  _typeTxts[k].y = txtPos.y;
+                  _typeTxts[k].x = txtPos.x + txtOffset.x;
                }
-               _typeTxts[_loc5_].addEventListener("change",__updateText);
-               addChild(_typeTxts[_loc5_]);
-               _loc5_++;
+               _typeTxts[k].addEventListener("change",__updateText);
+               addChild(_typeTxts[k]);
+               k++;
             }
-            _loc6_++;
+            i++;
          }
          createNumTxt();
       }
@@ -94,14 +93,14 @@ package gameCommon.view.experience
          addChild(_numTxt);
       }
       
-      private function __updateText(param1:Event = null) : void
+      private function __updateText(event:Event = null) : void
       {
-         _numTxt.updateNum(param1.currentTarget.value);
+         _numTxt.updateNum(event.currentTarget.value);
       }
       
-      protected function __onTextChange(param1:Event) : void
+      protected function __onTextChange(event:Event) : void
       {
-         _value = param1.currentTarget.targetValue;
+         _value = event.currentTarget.targetValue;
          dispatchEvent(new Event("change"));
       }
       
@@ -112,21 +111,20 @@ package gameCommon.view.experience
       
       public function dispose() : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          if(_numTxt)
          {
             _numTxt.removeEventListener("change",__onTextChange);
             _numTxt.dispose();
             _numTxt = null;
          }
-         var _loc1_:int = _typeTxts.length;
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_)
+         var len:int = _typeTxts.length;
+         for(i = 0; i < len; )
          {
-            _typeTxts[_loc2_].removeEventListener("change",__updateText);
-            _typeTxts[_loc2_].dispose();
-            _typeTxts[_loc2_] = null;
-            _loc2_++;
+            _typeTxts[i].removeEventListener("change",__updateText);
+            _typeTxts[i].dispose();
+            _typeTxts[i] = null;
+            i++;
          }
          if(_bg)
          {

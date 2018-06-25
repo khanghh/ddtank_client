@@ -22,10 +22,10 @@ package dragonBones.cache
          super();
       }
       
-      public function copy(param1:FrameCache) : void
+      public function copy(frameCache:FrameCache) : void
       {
-         globalTransform = param1.globalTransform;
-         globalTransformMatrix = param1.globalTransformMatrix;
+         globalTransform = frameCache.globalTransform;
+         globalTransformMatrix = frameCache.globalTransformMatrix;
       }
       
       public function clear() : void

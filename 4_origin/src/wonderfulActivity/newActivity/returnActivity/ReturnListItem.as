@@ -58,12 +58,12 @@ package wonderfulActivity.newActivity.returnActivity
       
       private var _selectedIndex:int;
       
-      public function ReturnListItem(param1:int, param2:int, param3:String)
+      public function ReturnListItem(type:int, bgType:int, actId:String)
       {
          super();
-         _type = param1;
-         _bgType = param2;
-         _actId = param3;
+         _type = type;
+         _bgType = bgType;
+         _actId = actId;
          initView();
       }
       
@@ -86,49 +86,48 @@ package wonderfulActivity.newActivity.returnActivity
          addChild(_prizeHBox);
       }
       
-      public function setData(param1:String, param2:GiftBagInfo, param3:Boolean) : void
+      public function setData(desc:String, info:GiftBagInfo, canSelect:Boolean) : void
       {
-         var _loc8_:* = null;
-         var _loc9_:int = 0;
-         var _loc7_:* = null;
-         var _loc6_:* = null;
-         var _loc5_:* = null;
-         giftInfo = param2;
+         var dic:* = null;
+         var i:int = 0;
+         var item:* = null;
+         var gift:* = null;
+         var prizeItem:* = null;
+         giftInfo = info;
          condition = giftInfo.giftConditionArr[0].conditionValue;
-         param1 = param1.replace(/\{0\}/g,condition);
+         desc = desc.replace(/\{0\}/g,condition);
          condition2 = giftInfo.giftConditionArr[1].conditionValue;
          if(condition2 == -1)
          {
-            param1 = param1.replace(/-\{1\}/g,LanguageMgr.GetTranslation("wonderfulActivity.above"));
+            desc = desc.replace(/-\{1\}/g,LanguageMgr.GetTranslation("wonderfulActivity.above"));
          }
          else
          {
-            param1 = param1.replace(/\{1\}/g,condition2);
+            desc = desc.replace(/\{1\}/g,condition2);
          }
-         _nameTxt.text = param1;
+         _nameTxt.text = desc;
          _nameTxt.y = _back.height / 2 - _nameTxt.height / 2;
-         var _loc4_:Vector.<GiftRewardInfo> = giftInfo.giftRewardArr;
-         _canSelect = param3;
+         var rewardArr:Vector.<GiftRewardInfo> = giftInfo.giftRewardArr;
+         _canSelect = canSelect;
          _prizeArr = [];
          if(_canSelect)
          {
-            _loc8_ = classifyReward(_loc4_);
-            _loc9_ = 0;
-            while(_loc9_ <= 3)
+            dic = classifyReward(rewardArr);
+            for(i = 0; i <= 3; )
             {
-               if(_loc8_[_loc9_.toString()])
+               if(dic[i.toString()])
                {
-                  _loc7_ = new GiftBagItem(_type,_loc9_);
-                  _loc7_.addEventListener("click",__itemClick);
-                  _prizeHBox.addChild(_loc7_);
-                  _loc7_.setData(_loc8_[_loc9_]);
-                  _prizeArr.push(_loc7_);
+                  item = new GiftBagItem(_type,i);
+                  item.addEventListener("click",__itemClick);
+                  _prizeHBox.addChild(item);
+                  item.setData(dic[i]);
+                  _prizeArr.push(item);
                   if(giftInfo.giftRewardArr.length <= 1)
                   {
-                     _selectedIndex = _loc7_.index;
+                     _selectedIndex = item.index;
                   }
                }
-               _loc9_++;
+               i++;
             }
             if(_prizeArr.length == 1)
             {
@@ -138,83 +137,82 @@ package wonderfulActivity.newActivity.returnActivity
          }
          else
          {
-            _loc9_ = 0;
-            while(_loc9_ <= _loc4_.length - 1)
+            i = 0;
+            while(i <= rewardArr.length - 1)
             {
-               _loc6_ = _loc4_[_loc9_];
-               _loc5_ = new PrizeListItem();
-               _loc5_.initView(_loc9_);
-               _loc5_.setCellData(_loc6_);
-               _prizeHBox.addChild(_loc5_);
-               _prizeArr.push(_loc5_);
-               _loc9_++;
+               gift = rewardArr[i];
+               prizeItem = new PrizeListItem();
+               prizeItem.initView(i);
+               prizeItem.setCellData(gift);
+               _prizeHBox.addChild(prizeItem);
+               _prizeArr.push(prizeItem);
+               i++;
             }
          }
       }
       
-      protected function __itemClick(param1:MouseEvent) : void
+      protected function __itemClick(event:MouseEvent) : void
       {
-         var _loc3_:int = 0;
+         var i:int = 0;
          SoundManager.instance.play("008");
-         _loc3_ = 0;
-         while(_loc3_ <= _prizeArr.length - 1)
+         for(i = 0; i <= _prizeArr.length - 1; )
          {
-            _prizeArr[_loc3_].selected = false;
-            _loc3_++;
+            _prizeArr[i].selected = false;
+            i++;
          }
-         var _loc2_:GiftBagItem = param1.currentTarget as GiftBagItem;
-         _loc2_.selected = true;
-         _selectedIndex = _loc2_.index;
+         var item:GiftBagItem = event.currentTarget as GiftBagItem;
+         item.selected = true;
+         _selectedIndex = item.index;
       }
       
-      private function classifyReward(param1:Vector.<GiftRewardInfo>) : Dictionary
+      private function classifyReward(rewardVec:Vector.<GiftRewardInfo>) : Dictionary
       {
-         var _loc2_:Dictionary = new Dictionary();
+         var dic:Dictionary = new Dictionary();
          var _loc5_:int = 0;
-         var _loc4_:* = param1;
-         for each(var _loc3_ in param1)
+         var _loc4_:* = rewardVec;
+         for each(var info in rewardVec)
          {
-            if(!_loc2_[_loc3_.rewardType])
+            if(!dic[info.rewardType])
             {
-               _loc2_[_loc3_.rewardType] = new Vector.<GiftRewardInfo>();
+               dic[info.rewardType] = new Vector.<GiftRewardInfo>();
             }
-            (_loc2_[_loc3_.rewardType] as Vector.<GiftRewardInfo>).push(_loc3_);
+            (dic[info.rewardType] as Vector.<GiftRewardInfo>).push(info);
          }
-         return _loc2_;
+         return dic;
       }
       
-      public function setStatus(param1:Array, param2:Dictionary) : void
+      public function setStatus(statusArr:Array, giftStatusDic:Dictionary) : void
       {
-         var _loc5_:int = 0;
-         var _loc7_:int = 0;
+         var remain:int = 0;
+         var payValue:int = 0;
          clearBtn();
-         var _loc4_:int = (param2[giftInfo.giftbagId] as GiftCurInfo).times;
-         var _loc3_:int = giftInfo.giftConditionArr[2].conditionValue;
+         var alreadyGet:int = (giftStatusDic[giftInfo.giftbagId] as GiftCurInfo).times;
+         var canReget:int = giftInfo.giftConditionArr[2].conditionValue;
          if(_type == 2 || _type == 3)
          {
             var _loc9_:int = 0;
-            var _loc8_:* = param1;
-            for each(var _loc6_ in param1)
+            var _loc8_:* = statusArr;
+            for each(var playerStatus in statusArr)
             {
-               if(_loc6_.statusID == condition)
+               if(playerStatus.statusID == condition)
                {
-                  _loc5_ = _loc6_.statusValue - _loc4_;
+                  remain = playerStatus.statusValue - alreadyGet;
                }
             }
          }
          else
          {
-            _loc7_ = param1[0].statusValue;
-            _loc5_ = int(Math.floor(_loc7_ / condition)) - _loc4_;
+            payValue = statusArr[0].statusValue;
+            remain = int(Math.floor(payValue / condition)) - alreadyGet;
          }
-         if(_loc3_ == 0)
+         if(canReget == 0)
          {
-            if(_loc5_ > 0)
+            if(remain > 0)
             {
                _btn = ComponentFactory.Instance.creatComponentByStylename("wonderfulactivity.smallGetBtn");
                addChild(_btn);
                _btnTxt = ComponentFactory.Instance.creatComponentByStylename("wonderfulactivity.right.btnTxt");
-               _btnTxt.text = "(" + _loc5_ + ")";
+               _btnTxt.text = "(" + remain + ")";
                _btn.addChild(_btnTxt);
                _tipsBtn = ComponentFactory.Instance.creat("wonderfulactivity.can.repeat");
                _btn.addChild(_tipsBtn);
@@ -230,12 +228,12 @@ package wonderfulActivity.newActivity.returnActivity
                _btn.enable = false;
             }
          }
-         else if(_loc4_ == 0)
+         else if(alreadyGet == 0)
          {
             _btn = ComponentFactory.Instance.creatComponentByStylename("wonderfulactivity.bigGetBtn");
             addChild(_btn);
             _btn.enable = false;
-            if(_loc5_ > 0)
+            if(remain > 0)
             {
                _btn.enable = true;
                _btn.addEventListener("click",getRewardBtnClick);
@@ -249,7 +247,7 @@ package wonderfulActivity.newActivity.returnActivity
          }
       }
       
-      protected function getRewardBtnClick(param1:MouseEvent) : void
+      protected function getRewardBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_canSelect)
@@ -260,15 +258,15 @@ package wonderfulActivity.newActivity.returnActivity
                return;
             }
          }
-         var _loc4_:SendGiftInfo = new SendGiftInfo();
-         _loc4_.activityId = _actId;
-         var _loc2_:GiftChildInfo = new GiftChildInfo();
-         _loc2_.giftId = giftInfo.giftbagId;
-         _loc2_.index = _selectedIndex;
-         _loc4_.giftIdArr = [_loc2_];
-         var _loc3_:Vector.<SendGiftInfo> = new Vector.<SendGiftInfo>();
-         _loc3_.push(_loc4_);
-         SocketManager.Instance.out.sendWonderfulActivityGetReward(_loc3_);
+         var getAwardInfo:SendGiftInfo = new SendGiftInfo();
+         getAwardInfo.activityId = _actId;
+         var childInfo:GiftChildInfo = new GiftChildInfo();
+         childInfo.giftId = giftInfo.giftbagId;
+         childInfo.index = _selectedIndex;
+         getAwardInfo.giftIdArr = [childInfo];
+         var data:Vector.<SendGiftInfo> = new Vector.<SendGiftInfo>();
+         data.push(getAwardInfo);
+         SocketManager.Instance.out.sendWonderfulActivityGetReward(data);
          _btn.enable = false;
       }
       
@@ -293,15 +291,14 @@ package wonderfulActivity.newActivity.returnActivity
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          removeEvent();
-         _loc1_ = 0;
-         while(_loc1_ <= _prizeArr.length - 1)
+         for(i = 0; i <= _prizeArr.length - 1; )
          {
-            _prizeArr[_loc1_].removeEventListener("click",__itemClick);
-            ObjectUtils.disposeObject(_prizeArr[_loc1_]);
-            _prizeArr[_loc1_] = null;
-            _loc1_++;
+            _prizeArr[i].removeEventListener("click",__itemClick);
+            ObjectUtils.disposeObject(_prizeArr[i]);
+            _prizeArr[i] = null;
+            i++;
          }
          ObjectUtils.disposeObject(_back);
          _back = null;

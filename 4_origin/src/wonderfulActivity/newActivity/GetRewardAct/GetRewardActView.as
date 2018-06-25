@@ -43,10 +43,10 @@ package wonderfulActivity.newActivity.GetRewardAct
       
       private var _limitTime:Number = 0;
       
-      public function GetRewardActView(param1:String)
+      public function GetRewardActView(id:String)
       {
          super();
-         _actId = param1;
+         _actId = id;
       }
       
       public function init() : void
@@ -62,23 +62,23 @@ package wonderfulActivity.newActivity.GetRewardAct
          _getButton.addEventListener("click",__getRewardHandler);
       }
       
-      protected function __getRewardHandler(param1:MouseEvent) : void
+      protected function __getRewardHandler(event:MouseEvent) : void
       {
-         var _loc4_:* = undefined;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
+         var sendInfoVec:* = undefined;
+         var sendInfo:* = null;
+         var giftIdArr:* = null;
          SoundManager.instance.playButtonSound();
          if(getTimer() - _limitTime > 1500)
          {
             _limitTime = getTimer();
-            _loc4_ = new Vector.<SendGiftInfo>();
-            _loc2_ = new SendGiftInfo();
-            _loc2_.activityId = _activityInfo.activityId;
-            _loc3_ = [];
-            _loc3_.push(_activityInfo.giftbagArray[0].giftbagId);
-            _loc2_.giftIdArr = _loc3_;
-            _loc4_.push(_loc2_);
-            SocketManager.Instance.out.sendWonderfulActivityGetReward(_loc4_);
+            sendInfoVec = new Vector.<SendGiftInfo>();
+            sendInfo = new SendGiftInfo();
+            sendInfo.activityId = _activityInfo.activityId;
+            giftIdArr = [];
+            giftIdArr.push(_activityInfo.giftbagArray[0].giftbagId);
+            sendInfo.giftIdArr = giftIdArr;
+            sendInfoVec.push(sendInfo);
+            SocketManager.Instance.out.sendWonderfulActivityGetReward(sendInfoVec);
          }
       }
       
@@ -127,7 +127,7 @@ package wonderfulActivity.newActivity.GetRewardAct
          _activityInfo = WonderfulActivityManager.Instance.activityData[_actId];
       }
       
-      public function setState(param1:int, param2:int) : void
+      public function setState(type:int, id:int) : void
       {
       }
       

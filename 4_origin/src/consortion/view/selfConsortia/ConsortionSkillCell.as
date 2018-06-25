@@ -52,9 +52,9 @@ package consortion.view.selfConsortia
          return _info;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(value:Object) : void
       {
-         _info = param1 as ConsortionSkillInfo;
+         _info = value as ConsortionSkillInfo;
          if(_bg)
          {
             ObjectUtils.disposeObject(_bg);
@@ -74,15 +74,15 @@ package consortion.view.selfConsortia
          }
       }
       
-      public function contentRect(param1:int, param2:int) : void
+      public function contentRect(width:int, height:int) : void
       {
-         _bg.width = param1;
-         _bg.height = param2;
+         _bg.width = width;
+         _bg.height = height;
       }
       
-      public function setGray(param1:Boolean) : void
+      public function setGray(value:Boolean) : void
       {
-         if(!param1)
+         if(!value)
          {
             this.filters = null;
          }
@@ -93,7 +93,7 @@ package consortion.view.selfConsortia
          return "0";
       }
       
-      public function set tipDirctions(param1:String) : void
+      public function set tipDirctions(value:String) : void
       {
       }
       
@@ -102,7 +102,7 @@ package consortion.view.selfConsortia
          return 0;
       }
       
-      public function set tipGapH(param1:int) : void
+      public function set tipGapH(value:int) : void
       {
       }
       
@@ -111,7 +111,7 @@ package consortion.view.selfConsortia
          return 0;
       }
       
-      public function set tipGapV(param1:int) : void
+      public function set tipGapV(value:int) : void
       {
       }
       
@@ -120,7 +120,7 @@ package consortion.view.selfConsortia
          return "ddt.view.tips.MultipleLineTip";
       }
       
-      public function set tipStyle(param1:String) : void
+      public function set tipStyle(value:String) : void
       {
       }
       
@@ -134,7 +134,7 @@ package consortion.view.selfConsortia
          return 200;
       }
       
-      public function set tipWidth(param1:int) : void
+      public function set tipWidth(w:int) : void
       {
       }
       
@@ -143,7 +143,7 @@ package consortion.view.selfConsortia
          return -1;
       }
       
-      public function set tipHeight(param1:int) : void
+      public function set tipHeight(h:int) : void
       {
       }
    }

@@ -48,10 +48,10 @@ package times.view
       
       private var _lineLite:TimelineLite;
       
-      public function TimesThumbnailPoint(param1:TimesPicInfo)
+      public function TimesThumbnailPoint(info:TimesPicInfo)
       {
          super();
-         _info = param1;
+         _info = info;
          init();
       }
       
@@ -68,17 +68,17 @@ package times.view
          mouseChildren = false;
       }
       
-      public function pointPlay(param1:Object) : void
+      public function pointPlay(obj:Object) : void
       {
-         _point.gotoAndPlay(param1);
+         _point.gotoAndPlay(obj);
       }
       
-      public function pointStop(param1:Object) : void
+      public function pointStop(obj:Object) : void
       {
-         _point.gotoAndStop(param1);
+         _point.gotoAndStop(obj);
       }
       
-      private function __overEffect(param1:MouseEvent) : void
+      private function __overEffect(event:MouseEvent) : void
       {
          if(_lineLite == null)
          {
@@ -99,7 +99,7 @@ package times.view
          pointPlay("rollOver");
       }
       
-      private function __outEffect(param1:MouseEvent) : void
+      private function __outEffect(event:MouseEvent) : void
       {
          if(_selected)
          {
@@ -109,7 +109,7 @@ package times.view
          pointPlay("rollOut");
       }
       
-      private function __pointClick(param1:MouseEvent) : void
+      private function __pointClick(event:MouseEvent) : void
       {
          _controller.dispatchEvent(new TimesEvent("playSound"));
          if(_info)
@@ -122,7 +122,7 @@ package times.view
          }
       }
       
-      public function set autoSelect(param1:Boolean) : void
+      public function set autoSelect(value:Boolean) : void
       {
       }
       
@@ -131,9 +131,9 @@ package times.view
          return _selected;
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         if(_selected == param1)
+         if(_selected == value)
          {
             return;
          }
@@ -148,7 +148,7 @@ package times.view
                "ease":Circ.easeOut
             }));
          }
-         _selected = param1;
+         _selected = value;
          if(_selected)
          {
             _lineLite.play();
@@ -172,9 +172,9 @@ package times.view
          return _tipData;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(value:Object) : void
       {
-         _tipData = param1;
+         _tipData = value;
       }
       
       public function get tipDirctions() : String
@@ -182,9 +182,9 @@ package times.view
          return _tipDirections;
       }
       
-      public function set tipDirctions(param1:String) : void
+      public function set tipDirctions(value:String) : void
       {
-         _tipDirections = param1;
+         _tipDirections = value;
       }
       
       public function get tipGapH() : int
@@ -192,9 +192,9 @@ package times.view
          return _tipGapH;
       }
       
-      public function set tipGapH(param1:int) : void
+      public function set tipGapH(value:int) : void
       {
-         _tipGapH = param1;
+         _tipGapH = value;
       }
       
       public function get tipGapV() : int
@@ -202,9 +202,9 @@ package times.view
          return _tipGapV;
       }
       
-      public function set tipGapV(param1:int) : void
+      public function set tipGapV(value:int) : void
       {
-         _tipGapV = param1;
+         _tipGapV = value;
       }
       
       public function get tipStyle() : String
@@ -212,9 +212,9 @@ package times.view
          return _tipStyle;
       }
       
-      public function set tipStyle(param1:String) : void
+      public function set tipStyle(value:String) : void
       {
-         _tipStyle = param1;
+         _tipStyle = value;
       }
       
       public function dispose() : void

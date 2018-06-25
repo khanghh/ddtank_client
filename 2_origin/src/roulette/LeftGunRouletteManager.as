@@ -49,9 +49,9 @@ package roulette
       
       private var _content:Sprite;
       
-      public function LeftGunRouletteManager(param1:IEventDispatcher = null)
+      public function LeftGunRouletteManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : LeftGunRouletteManager
@@ -68,46 +68,45 @@ package roulette
          SocketManager.Instance.addEventListener(PkgEvent.format(137),__openRoulett);
       }
       
-      private function __openRoulett(param1:PkgEvent) : void
+      private function __openRoulett(event:PkgEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc8_:int = 0;
-         var _loc3_:int = 0;
-         var _loc6_:PackageIn = param1.pkg;
-         var _loc7_:int = _loc6_.readInt();
-         if(!(int(_loc7_) - 1))
+         var typeI:int = 0;
+         var count:int = 0;
+         var result:* = null;
+         var i:int = 0;
+         var num:int = 0;
+         var pkg:PackageIn = event.pkg;
+         var type:int = pkg.readInt();
+         if(!(int(type) - 1))
          {
-            _loc5_ = _loc6_.readInt();
-            if(!(int(_loc5_) - 1))
+            typeI = pkg.readInt();
+            if(!(int(typeI) - 1))
             {
-               IsOpen = _loc6_.readBoolean();
+               IsOpen = pkg.readBoolean();
                if(IsOpen)
                {
                   isFrist = true;
-                  _loc4_ = _loc6_.readInt();
-                  _loc2_ = _loc6_.readUTF();
+                  count = pkg.readInt();
+                  result = pkg.readUTF();
                   dispatchEvent(new RouletteFrameEvent("leftGun_enable"));
-                  if(_loc4_ <= 0 && _loc2_ == "0")
+                  if(count <= 0 && result == "0")
                   {
-                     reward = _loc2_;
+                     reward = result;
                      isvisible = false;
                      return;
                   }
-                  gCount = _loc4_;
-                  reward = _loc2_;
+                  gCount = count;
+                  reward = result;
                   isvisible = true;
                   ArrNum = [];
-                  _loc8_ = 0;
-                  while(_loc8_ < 20)
+                  for(i = 0; i < 20; )
                   {
-                     _loc3_ = _loc6_.readInt();
-                     ArrNum.push(_loc3_);
-                     _loc8_++;
+                     num = pkg.readInt();
+                     ArrNum.push(num);
+                     i++;
                   }
-                  beginTime = _loc6_.readDate();
-                  endTime = _loc6_.readDate();
+                  beginTime = pkg.readDate();
+                  endTime = pkg.readDate();
                   showGunButton();
                }
                else
@@ -154,44 +153,44 @@ package roulette
          }
       }
       
-      public function showTipFrame(param1:String) : void
+      public function showTipFrame(reward:String) : void
       {
-         var _loc2_:String = LanguageMgr.GetTranslation("tank.roulette.tipInfo",param1);
-         _alertAward = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc2_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
+         var msg:String = LanguageMgr.GetTranslation("tank.roulette.tipInfo",reward);
+         _alertAward = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),msg,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
          _alertAward.moveEnable = false;
          _alertAward.addEventListener("response",__goRenewal);
       }
       
-      private function getReward(param1:String) : String
+      private function getReward(str:String) : String
       {
-         var _loc3_:* = null;
-         var _loc2_:Array = param1.split(".");
-         var _loc6_:int = _loc2_[0];
-         var _loc4_:int = _loc2_[1];
-         var _loc5_:int = _loc6_ - 1;
-         if(_loc5_ == 0)
+         var reward:* = null;
+         var num:Array = str.split(".");
+         var num1:int = num[0];
+         var num2:int = num[1];
+         var num3:int = num1 - 1;
+         if(num3 == 0)
          {
-            _loc3_ = _loc4_ + "0" + "%";
+            reward = num2 + "0" + "%";
          }
          else
          {
-            _loc3_ = _loc5_.toString() + _loc4_.toString() + "0" + "%";
+            reward = num3.toString() + num2.toString() + "0" + "%";
          }
-         return _loc3_;
+         return reward;
       }
       
-      public function createFrame(param1:Sprite = null) : void
+      public function createFrame(p:Sprite = null) : void
       {
-         dispatchEvent(new CEvent("openview",param1));
+         dispatchEvent(new CEvent("openview",p));
       }
       
-      private function __goRenewal(param1:FrameEvent) : void
+      private function __goRenewal(evt:FrameEvent) : void
       {
          if(_alertAward)
          {
             _alertAward.removeEventListener("response",__goRenewal);
          }
-         switch(int(param1.responseCode) - 2)
+         switch(int(evt.responseCode) - 2)
          {
             case 0:
             case 1:

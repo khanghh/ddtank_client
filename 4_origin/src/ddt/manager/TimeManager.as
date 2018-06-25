@@ -44,39 +44,39 @@ package ddt.manager
          super();
       }
       
-      public static function getHHMMSSArr(param1:int) : Array
+      public static function getHHMMSSArr(sec:int) : Array
       {
-         var _loc4_:* = null;
-         var _loc5_:* = null;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         if(param1 > 0)
+         var arr:* = null;
+         var hour:* = null;
+         var minute:* = null;
+         var second:* = null;
+         if(sec > 0)
          {
-            _loc5_ = setTwoDigit(param1 / 3600);
-            _loc2_ = setTwoDigit(param1 % 3600 / 60);
-            _loc3_ = setTwoDigit(param1 % 60);
-            _loc4_ = [_loc5_,_loc2_,_loc3_];
+            hour = setTwoDigit(sec / 3600);
+            minute = setTwoDigit(sec % 3600 / 60);
+            second = setTwoDigit(sec % 60);
+            arr = [hour,minute,second];
          }
-         return _loc4_;
+         return arr;
       }
       
-      public static function setTwoDigit(param1:int) : String
+      public static function setTwoDigit(digit:int) : String
       {
-         if(param1 < 10)
+         if(digit < 10)
          {
-            return "0" + param1;
+            return "0" + digit;
          }
-         return param1.toString();
+         return digit.toString();
       }
       
-      public static function addEventListener(param1:String, param2:Function) : void
+      public static function addEventListener(type:String, listener:Function) : void
       {
-         _dispatcher.addEventListener(param1,param2);
+         _dispatcher.addEventListener(type,listener);
       }
       
-      public static function removeEventListener(param1:String, param2:Function) : void
+      public static function removeEventListener(type:String, listener:Function) : void
       {
-         _dispatcher.removeEventListener(param1,param2);
+         _dispatcher.removeEventListener(type,listener);
       }
       
       public static function get Instance() : TimeManager
@@ -95,10 +95,10 @@ package ddt.manager
          SocketManager.Instance.addEventListener(PkgEvent.format(5),__update);
       }
       
-      private function __update(param1:PkgEvent) : void
+      private function __update(event:PkgEvent) : void
       {
          _serverTick = getTimer();
-         _serverDate = param1.pkg.readDate();
+         _serverDate = event.pkg.readDate();
          if(StateManager.currentStateType == "main" || StateManager.currentStateType == "roomlist" || StateManager.currentStateType == "dungeon")
          {
             WantStrongManager.Instance.dispatchEvent(new WantStrongEvent("alreadyUpdateTime"));
@@ -129,86 +129,86 @@ package ddt.manager
          return Now().getDay();
       }
       
-      public function TimeSpanToNow(param1:Date) : Date
+      public function TimeSpanToNow(last:Date) : Date
       {
-         return new Date(Math.abs(_serverDate.getTime() + getTimer() - _serverTick - param1.time));
+         return new Date(Math.abs(_serverDate.getTime() + getTimer() - _serverTick - last.time));
       }
       
-      public function TotalDaysToNow(param1:Date) : Number
+      public function TotalDaysToNow(last:Date) : Number
       {
-         return (_serverDate.getTime() + getTimer() - _serverTick - param1.time) / 86400000;
+         return (_serverDate.getTime() + getTimer() - _serverTick - last.time) / 86400000;
       }
       
-      public function TotalHoursToNow(param1:Date) : Number
+      public function TotalHoursToNow(last:Date) : Number
       {
-         return (_serverDate.getTime() + getTimer() - _serverTick - param1.time) / 3600000;
+         return (_serverDate.getTime() + getTimer() - _serverTick - last.time) / 3600000;
       }
       
-      public function TotalMinuteToNow(param1:Date) : Number
+      public function TotalMinuteToNow(last:Date) : Number
       {
-         return (_serverDate.getTime() + getTimer() - _serverTick - param1.time) / 60000;
+         return (_serverDate.getTime() + getTimer() - _serverTick - last.time) / 60000;
       }
       
-      public function TotalSecondToNow(param1:Date) : Number
+      public function TotalSecondToNow(last:Date) : Number
       {
-         return (_serverDate.getTime() + getTimer() - _serverTick - param1.time) / 1000;
+         return (_serverDate.getTime() + getTimer() - _serverTick - last.time) / 1000;
       }
       
-      public function TotalDaysToNow2(param1:Date) : Number
+      public function TotalDaysToNow2(last:Date) : Number
       {
-         var _loc2_:Date = Now();
-         _loc2_.setHours(0,0,0,0);
-         var _loc3_:Date = new Date(param1.time);
-         _loc3_.setHours(0,0,0,0);
-         return (_loc2_.time - _loc3_.time) / 86400000;
+         var dt:Date = Now();
+         dt.setHours(0,0,0,0);
+         var lt:Date = new Date(last.time);
+         lt.setHours(0,0,0,0);
+         return (dt.time - lt.time) / 86400000;
       }
       
-      public function getMaxRemainDateStr(param1:Date, param2:int = 1) : String
+      public function getMaxRemainDateStr(endTime:Date, type:int = 1) : String
       {
-         var _loc7_:* = null;
-         if(!param1)
+         var timeTxtStr:* = null;
+         if(!endTime)
          {
             return "0" + LanguageMgr.GetTranslation("second");
          }
-         var _loc6_:Number = param1.getTime();
-         var _loc5_:Number = Now().getTime();
-         var _loc3_:Number = _loc6_ - _loc5_;
-         _loc3_ = _loc3_ - 10000 < 0?_loc3_:Number(_loc3_ - 10000);
-         _loc3_ = _loc3_ < 0?0:Number(_loc3_);
-         var _loc4_:int = 0;
-         if(_loc3_ / 86400000 > 1)
+         var endTimestamp:Number = endTime.getTime();
+         var nowTimestamp:Number = Now().getTime();
+         var differ:Number = endTimestamp - nowTimestamp;
+         differ = differ - 10000 < 0?differ:Number(differ - 10000);
+         differ = differ < 0?0:Number(differ);
+         var count:int = 0;
+         if(differ / 86400000 > 1)
          {
-            if(param2 == 1)
+            if(type == 1)
             {
-               _loc4_ = Math.floor(_loc3_ / 86400000);
+               count = Math.floor(differ / 86400000);
             }
             else
             {
-               _loc4_ = Math.ceil(_loc3_ / 86400000);
+               count = Math.ceil(differ / 86400000);
             }
-            _loc7_ = _loc4_ + LanguageMgr.GetTranslation("day");
+            timeTxtStr = count + LanguageMgr.GetTranslation("day");
          }
-         else if(_loc3_ / 3600000 > 1)
+         else if(differ / 3600000 > 1)
          {
-            _loc4_ = _loc3_ / 3600000;
-            _loc7_ = _loc4_ + LanguageMgr.GetTranslation("hour");
+            count = differ / 3600000;
+            timeTxtStr = count + LanguageMgr.GetTranslation("hour");
          }
-         else if(_loc3_ / 60000 > 1)
+         else if(differ / 60000 > 1)
          {
-            _loc4_ = _loc3_ / 60000;
-            _loc7_ = _loc4_ + LanguageMgr.GetTranslation("minute");
+            count = differ / 60000;
+            timeTxtStr = count + LanguageMgr.GetTranslation("minute");
          }
          else
          {
-            _loc4_ = _loc3_ / 1000;
-            _loc7_ = _loc4_ + LanguageMgr.GetTranslation("second");
+            count = differ / 1000;
+            timeTxtStr = count + LanguageMgr.GetTranslation("second");
          }
-         return _loc7_;
+         return timeTxtStr;
       }
       
-      public function set totalGameTime(param1:int) : void
+      public function set totalGameTime(time:int) : void
       {
-         _totalGameTime = param1;
+         _totalGameTime = time;
          _dispatcher.dispatchEvent(new Event(TimeManager.CHANGE));
       }
       
@@ -222,9 +222,9 @@ package ddt.manager
          return _enterFightTime;
       }
       
-      public function set enterFightTime(param1:Number) : void
+      public function set enterFightTime(value:Number) : void
       {
-         _enterFightTime = param1;
+         _enterFightTime = value;
       }
    }
 }

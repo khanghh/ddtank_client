@@ -22,21 +22,21 @@ package littleGame.actions
          super();
       }
       
-      ddt_internal function initializeLiving(param1:LittleLiving) : void
+      ddt_internal function initializeLiving(living:LittleLiving) : void
       {
-         _living = param1;
+         _living = living;
       }
       
-      public function parsePackege(param1:Scenario, param2:PackageIn = null) : void
+      public function parsePackege(scene:Scenario, pkg:PackageIn = null) : void
       {
       }
       
-      public function connect(param1:LittleAction) : Boolean
+      public function connect(action:LittleAction) : Boolean
       {
          return false;
       }
       
-      public function canReplace(param1:LittleAction) : Boolean
+      public function canReplace(action:LittleAction) : Boolean
       {
          return false;
       }

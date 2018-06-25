@@ -11,9 +11,9 @@ package consortionBattle
       private static var _instance:ConsortiaBattleController;
        
       
-      public function ConsortiaBattleController(param1:IEventDispatcher = null)
+      public function ConsortiaBattleController(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : ConsortiaBattleController
@@ -25,21 +25,21 @@ package consortionBattle
          return _instance;
       }
       
-      public function judgePlayerVisible(param1:ConsortiaBattlePlayer) : Boolean
+      public function judgePlayerVisible(player:ConsortiaBattlePlayer) : Boolean
       {
-         if(param1.playerData.id == PlayerManager.Instance.Self.ID)
+         if(player.playerData.id == PlayerManager.Instance.Self.ID)
          {
             return true;
          }
-         if(ConsortiaBattleManager.instance.isHide(1) && param1.playerData.selfOrEnemy == 1)
+         if(ConsortiaBattleManager.instance.isHide(1) && player.playerData.selfOrEnemy == 1)
          {
             return false;
          }
-         if(ConsortiaBattleManager.instance.isHide(2) && param1.isInTomb)
+         if(ConsortiaBattleManager.instance.isHide(2) && player.isInTomb)
          {
             return false;
          }
-         if(ConsortiaBattleManager.instance.isHide(3) && param1.isInFighting)
+         if(ConsortiaBattleManager.instance.isHide(3) && player.isInFighting)
          {
             return false;
          }

@@ -127,8 +127,8 @@ package panicBuying.views
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          titleText = LanguageMgr.GetTranslation("panicBuying.title");
          _bg = ComponentFactory.Instance.creatComponentByStylename("panicBuying.bg");
          addToContent(_bg);
@@ -142,13 +142,12 @@ package panicBuying.views
          _tileList = ComponentFactory.Instance.creat("panicBuying.tileList",[3]);
          addToContent(_tileList);
          _itemVec = new Vector.<PanicBuyingItem>();
-         _loc2_ = 0;
-         while(_loc2_ < 6)
+         for(i = 0; i < 6; )
          {
-            _loc1_ = new PanicBuyingItem();
-            _tileList.addChild(_loc1_);
-            _itemVec.push(_loc1_);
-            _loc2_++;
+            item = new PanicBuyingItem();
+            _tileList.addChild(item);
+            _itemVec.push(item);
+            i++;
          }
          _remainBmp = ComponentFactory.Instance.creat("panicBuying.remain");
          addToContent(_remainBmp);
@@ -233,20 +232,19 @@ package panicBuying.views
       
       private function refreshTab() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = _hBox.numChildren;
-         _loc2_ = 1;
-         while(_loc2_ < _loc1_)
+         var i:int = 0;
+         var len:int = _hBox.numChildren;
+         for(i = 1; i < len; )
          {
-            if((_hBox.getChildAt(_loc2_ - 1) as SelectedButtonForArrange).selected)
+            if((_hBox.getChildAt(i - 1) as SelectedButtonForArrange).selected)
             {
-               _hBox.getChildAt(_loc2_).x = _hBox.getChildAt(_loc2_ - 1).x + 2 + 132;
+               _hBox.getChildAt(i).x = _hBox.getChildAt(i - 1).x + 2 + 132;
             }
             else
             {
-               _hBox.getChildAt(_loc2_).x = _hBox.getChildAt(_loc2_ - 1).x + 2 + 113;
+               _hBox.getChildAt(i).x = _hBox.getChildAt(i - 1).x + 2 + 113;
             }
-            _loc2_++;
+            i++;
          }
       }
       
@@ -273,14 +271,14 @@ package panicBuying.views
          {
             return;
          }
-         var _loc3_:Date = DateUtils.getDateByStr(_xmlData.endTime);
-         var _loc2_:Date = TimeManager.Instance.Now();
-         var _loc1_:String = getTimeDiff(_loc3_,_loc2_);
+         var endDate:Date = DateUtils.getDateByStr(_xmlData.endTime);
+         var nowDate:Date = TimeManager.Instance.Now();
+         var str:String = getTimeDiff(endDate,nowDate);
          if(_remainTxt)
          {
-            _remainTxt.text = _loc1_;
+            _remainTxt.text = str;
          }
-         if(_loc1_ == "0")
+         if(str == "0")
          {
             if(_remainTxt)
             {
@@ -290,91 +288,91 @@ package panicBuying.views
          }
       }
       
-      public function getTimeDiff(param1:Date, param2:Date) : String
+      public function getTimeDiff(endDate:Date, nowDate:Date) : String
       {
-         var _loc3_:* = 0;
-         var _loc8_:* = 0;
-         var _loc7_:* = 0;
-         var _loc5_:* = 0;
-         var _loc4_:* = null;
-         var _loc6_:Number = Math.round((param1.getTime() - param2.getTime()) / 1000);
-         if(_loc6_ >= 0)
+         var d:* = 0;
+         var h:* = 0;
+         var m:* = 0;
+         var s:* = 0;
+         var str:* = null;
+         var diff:Number = Math.round((endDate.getTime() - nowDate.getTime()) / 1000);
+         if(diff >= 0)
          {
-            _loc3_ = uint(Math.floor(_loc6_ / 60 / 60 / 24));
-            _loc6_ = _loc6_ % 86400;
-            _loc8_ = uint(Math.floor(_loc6_ / 60 / 60));
-            _loc6_ = _loc6_ % 3600;
-            _loc7_ = uint(Math.floor(_loc6_ / 60));
-            _loc5_ = uint(_loc6_ % 60);
-            if(_loc3_ > 0)
+            d = uint(Math.floor(diff / 60 / 60 / 24));
+            diff = diff % 86400;
+            h = uint(Math.floor(diff / 60 / 60));
+            diff = diff % 3600;
+            m = uint(Math.floor(diff / 60));
+            s = uint(diff % 60);
+            if(d > 0)
             {
-               return _loc3_ + LanguageMgr.GetTranslation("wonderfulActivityManager.d");
+               return d + LanguageMgr.GetTranslation("wonderfulActivityManager.d");
             }
-            _loc4_ = "";
-            if(_loc8_ > 0)
+            str = "";
+            if(h > 0)
             {
-               _loc4_ = _loc4_ + (_loc8_ + LanguageMgr.GetTranslation("wonderfulActivityManager.h"));
+               str = str + (h + LanguageMgr.GetTranslation("wonderfulActivityManager.h"));
             }
-            if(_loc7_ > 0)
+            if(m > 0)
             {
-               _loc4_ = _loc4_ + (_loc7_ + LanguageMgr.GetTranslation("wonderfulActivityManager.m"));
+               str = str + (m + LanguageMgr.GetTranslation("wonderfulActivityManager.m"));
             }
-            if(_loc4_ == "")
+            if(str == "")
             {
-               _loc4_ = _loc5_ + LanguageMgr.GetTranslation("wonderfulActivityManager.s");
+               str = s + LanguageMgr.GetTranslation("wonderfulActivityManager.s");
             }
-            return _loc4_;
+            return str;
          }
          return "0";
       }
       
-      protected function __lastBtnClick(param1:MouseEvent) : void
+      protected function __lastBtnClick(event:MouseEvent) : void
       {
-         var _loc2_:int = 0;
+         var total:int = 0;
          SoundManager.instance.play("008");
          if(_curType == 2)
          {
-            _loc2_ = ShopManager.Instance.getDisCountResultPages(1,6);
+            total = ShopManager.Instance.getDisCountResultPages(1,6);
          }
          else
          {
-            _loc2_ = getGiftBagTotal();
+            total = getGiftBagTotal();
          }
-         _curPage = _loc2_;
+         _curPage = total;
          update();
       }
       
-      protected function __nextBtnClick(param1:MouseEvent) : void
+      protected function __nextBtnClick(event:MouseEvent) : void
       {
-         var _loc2_:int = 0;
+         var total:int = 0;
          SoundManager.instance.play("008");
          if(_curType == 2)
          {
-            _loc2_ = ShopManager.Instance.getDisCountResultPages(1,6);
+            total = ShopManager.Instance.getDisCountResultPages(1,6);
          }
          else
          {
-            _loc2_ = getGiftBagTotal();
+            total = getGiftBagTotal();
          }
-         _curPage = _curPage >= _loc2_?_loc2_:_curPage + 1;
+         _curPage = _curPage >= total?total:_curPage + 1;
          update();
       }
       
-      protected function __preBtnClick(param1:MouseEvent) : void
+      protected function __preBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _curPage = _curPage <= 1?1:Number(_curPage - 1);
          update();
       }
       
-      protected function __firstBtnClick(param1:MouseEvent) : void
+      protected function __firstBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _curPage = 1;
          update();
       }
       
-      protected function __changeHandler(param1:Event) : void
+      protected function __changeHandler(event:Event) : void
       {
          SoundManager.instance.play("008");
          _curType = _typeArr[_tabGroup.selectIndex];
@@ -385,43 +383,42 @@ package panicBuying.views
       
       private function update() : void
       {
-         var _loc10_:int = 0;
-         var _loc9_:* = null;
-         var _loc7_:int = 0;
-         var _loc3_:* = undefined;
-         var _loc2_:* = null;
-         var _loc6_:* = null;
-         var _loc8_:* = undefined;
-         var _loc4_:int = 0;
-         var _loc1_:* = undefined;
-         var _loc5_:int = 0;
+         var i:int = 0;
+         var info:* = null;
+         var totalPage:int = 0;
+         var list:* = undefined;
+         var arr:* = null;
+         var giftBagArr:* = null;
+         var conditionArr:* = undefined;
+         var j:int = 0;
+         var rewardArr:* = undefined;
+         var k:int = 0;
          updateFrameStyle();
          if(_curType == 2)
          {
-            _loc3_ = ShopManager.Instance.getDisCountGoods(1,_curPage,6);
-            _loc10_ = 0;
-            while(_loc10_ < 6)
+            list = ShopManager.Instance.getDisCountGoods(1,_curPage,6);
+            for(i = 0; i < 6; )
             {
-               _loc9_ = new PBuyingItemInfo();
-               if(_loc10_ <= _loc3_.length - 1)
+               info = new PBuyingItemInfo();
+               if(i <= list.length - 1)
                {
-                  _loc9_.templateId = _loc3_[_loc10_].TemplateID;
-                  _loc9_.goodsId = _loc3_[_loc10_].GoodsID;
-                  _loc9_.price = _loc3_[_loc10_].AValue1;
-                  _loc9_.originalPrice = _loc3_[_loc10_].Position;
-                  _loc9_.priceType = _loc3_[_loc10_].APrice1;
-                  _loc9_.unitCount = _loc3_[_loc10_].AUnit;
+                  info.templateId = list[i].TemplateID;
+                  info.goodsId = list[i].GoodsID;
+                  info.price = list[i].AValue1;
+                  info.originalPrice = list[i].Position;
+                  info.priceType = list[i].APrice1;
+                  info.unitCount = list[i].AUnit;
                }
                else
                {
-                  _loc9_.templateId = 0;
+                  info.templateId = 0;
                }
-               _itemVec[_loc10_].setData(_loc9_,_curType);
-               _loc10_++;
+               _itemVec[i].setData(info,_curType);
+               i++;
             }
             _xmlData = WonderfulActivityManager.Instance.activityData[PanicBuyingManager.instance.entireId];
             setHelpTxt(_xmlData.desc);
-            _loc7_ = ShopManager.Instance.getDisCountResultPages(1,6);
+            totalPage = ShopManager.Instance.getDisCountResultPages(1,6);
          }
          else
          {
@@ -434,12 +431,12 @@ package panicBuying.views
                case 1:
                   _xmlData = WonderfulActivityManager.Instance.activityData[PanicBuyingManager.instance.vipId];
                   _giftInfoDic = WonderfulActivityManager.Instance.activityInitData[PanicBuyingManager.instance.vipId].giftInfoDic;
-                  _loc2_ = WonderfulActivityManager.Instance.activityInitData[PanicBuyingManager.instance.vipId].statusArr;
+                  arr = WonderfulActivityManager.Instance.activityInitData[PanicBuyingManager.instance.vipId].statusArr;
                   break;
                default:
                   _xmlData = WonderfulActivityManager.Instance.activityData[PanicBuyingManager.instance.vipId];
                   _giftInfoDic = WonderfulActivityManager.Instance.activityInitData[PanicBuyingManager.instance.vipId].giftInfoDic;
-                  _loc2_ = WonderfulActivityManager.Instance.activityInitData[PanicBuyingManager.instance.vipId].statusArr;
+                  arr = WonderfulActivityManager.Instance.activityInitData[PanicBuyingManager.instance.vipId].statusArr;
                   break;
                case 3:
                   _xmlData = WonderfulActivityManager.Instance.activityData[PanicBuyingManager.instance.indivId];
@@ -449,97 +446,94 @@ package panicBuying.views
                   _xmlData = WonderfulActivityManager.Instance.activityData[PanicBuyingManager.instance.newEntireId];
                   _giftInfoDic = WonderfulActivityManager.Instance.activityInitData[PanicBuyingManager.instance.newEntireId].giftInfoDic;
             }
-            _loc6_ = getGiftBagInCurPage(_curPage);
-            _loc10_ = 0;
-            while(_loc10_ < 6)
+            giftBagArr = getGiftBagInCurPage(_curPage);
+            for(i = 0; i < 6; )
             {
-               _loc9_ = new PBuyingItemInfo();
-               if(_loc10_ <= _loc6_.length - 1)
+               info = new PBuyingItemInfo();
+               if(i <= giftBagArr.length - 1)
                {
-                  _loc9_.templateId = _loc6_[_loc10_].giftRewardArr[0].templateId;
-                  _loc9_.activityId = _loc6_[_loc10_].activityId;
-                  _loc9_.giftbagId = _loc6_[_loc10_].giftbagId;
-                  _loc9_.limitedType = 0;
-                  _loc8_ = _loc6_[_loc10_].giftConditionArr;
-                  _loc4_ = 0;
-                  while(_loc4_ <= _loc8_.length - 1)
+                  info.templateId = giftBagArr[i].giftRewardArr[0].templateId;
+                  info.activityId = giftBagArr[i].activityId;
+                  info.giftbagId = giftBagArr[i].giftbagId;
+                  info.limitedType = 0;
+                  conditionArr = giftBagArr[i].giftConditionArr;
+                  for(j = 0; j <= conditionArr.length - 1; )
                   {
-                     if(_loc8_[_loc4_].conditionIndex == 1)
+                     if(conditionArr[j].conditionIndex == 1)
                      {
-                        _loc9_.total = _loc8_[_loc4_].conditionValue;
+                        info.total = conditionArr[j].conditionValue;
                      }
-                     if(_loc8_[_loc4_].conditionIndex == 2)
+                     if(conditionArr[j].conditionIndex == 2)
                      {
-                        _loc9_.priceType = _loc8_[_loc4_].conditionValue;
+                        info.priceType = conditionArr[j].conditionValue;
                      }
-                     if(_loc8_[_loc4_].conditionIndex == 3)
+                     if(conditionArr[j].conditionIndex == 3)
                      {
-                        _loc9_.price = _loc8_[_loc4_].conditionValue;
+                        info.price = conditionArr[j].conditionValue;
                      }
-                     else if(_loc8_[_loc4_].conditionIndex == 4)
+                     else if(conditionArr[j].conditionIndex == 4)
                      {
-                        _loc9_.levelLimit = _loc8_[_loc4_].conditionValue;
+                        info.levelLimit = conditionArr[j].conditionValue;
                      }
-                     else if(_loc8_[_loc4_].conditionIndex == 5)
+                     else if(conditionArr[j].conditionIndex == 5)
                      {
-                        _loc9_.vipLimit = _loc8_[_loc4_].conditionValue;
+                        info.vipLimit = conditionArr[j].conditionValue;
                      }
-                     else if(_loc8_[_loc4_].conditionIndex == 6)
+                     else if(conditionArr[j].conditionIndex == 6)
                      {
-                        _loc9_.originalPrice = _loc8_[_loc4_].conditionValue;
+                        info.originalPrice = conditionArr[j].conditionValue;
                      }
-                     else if(_loc8_[_loc4_].conditionIndex == 100)
+                     else if(conditionArr[j].conditionIndex == 100)
                      {
-                        _loc9_.remain = _loc8_[_loc4_].conditionValue;
-                        _loc9_.limitedType = 1;
+                        info.remain = conditionArr[j].conditionValue;
+                        info.limitedType = 1;
                      }
-                     _loc4_++;
+                     j++;
                   }
                   if(_curType == 4)
                   {
-                     if(_loc10_ <= _loc6_.length - 1)
+                     if(i <= giftBagArr.length - 1)
                      {
-                        if(_loc9_.total == 0)
+                        if(info.total == 0)
                         {
-                           _loc9_.remain = _loc9_.remain - _giftInfoDic[_loc9_.giftbagId].allGiftGetTimes;
+                           info.remain = info.remain - _giftInfoDic[info.giftbagId].allGiftGetTimes;
                         }
                         else
                         {
-                           _loc9_.limitedType = 1;
-                           _loc9_.remain = _loc9_.total - _giftInfoDic[_loc9_.giftbagId].times;
+                           info.limitedType = 1;
+                           info.remain = info.total - _giftInfoDic[info.giftbagId].times;
                         }
                      }
                   }
                   else
                   {
-                     _loc9_.remain = _loc9_.total - _giftInfoDic[_loc9_.giftbagId].times;
+                     info.remain = info.total - _giftInfoDic[info.giftbagId].times;
                   }
-                  _loc1_ = _loc6_[_loc10_].giftRewardArr;
-                  _loc5_ = 0;
-                  while(_loc5_ <= _loc1_.length - 1)
+                  rewardArr = giftBagArr[i].giftRewardArr;
+                  for(k = 0; k <= rewardArr.length - 1; )
                   {
-                     _loc9_.count = _loc1_[_loc5_].count;
-                     if(_loc1_[_loc5_].validDate == 0)
+                     info.count = rewardArr[k].count;
+                     if(rewardArr[k].validDate == 0)
                      {
-                        _loc9_.buyType = 1;
-                        _loc9_.unitCount = _loc1_[_loc5_].count;
+                        info.buyType = 1;
+                        info.unitCount = rewardArr[k].count;
                      }
                      else
                      {
-                        _loc9_.buyType = 0;
-                        _loc9_.unitCount = _loc1_[_loc5_].validDate;
+                        info.buyType = 0;
+                        info.unitCount = rewardArr[k].validDate;
                      }
-                     _loc5_++;
+                     k++;
                   }
                }
                else
                {
-                  _loc9_.templateId = 0;
+                  info.templateId = 0;
                }
-               _itemVec[_loc10_].setData(_loc9_,_curType);
-               _loc10_++;
+               _itemVec[i].setData(info,_curType);
+               i++;
             }
-            _loc7_ = getGiftBagTotal();
+            totalPage = getGiftBagTotal();
          }
          if(_curType == 2)
          {
@@ -553,11 +547,11 @@ package panicBuying.views
             _dateTxt.text = dateTrim(_xmlData.beginTime) + "-" + dateTrim(_xmlData.endTime);
             setHelpTxt(_xmlData.desc);
          }
-         _pageTxt.text = _curPage + "/" + _loc7_;
+         _pageTxt.text = _curPage + "/" + totalPage;
          timerHandler();
       }
       
-      private function setHelpTxt(param1:String) : void
+      private function setHelpTxt(desc:String) : void
       {
          _helpTxt.autoSize = "none";
          _helpTxt.width = _helpTxtWidth;
@@ -566,19 +560,19 @@ package panicBuying.views
          _helpScrollPanel.invalidateViewport(false);
       }
       
-      private function getGiftBagInCurPage(param1:int) : Array
+      private function getGiftBagInCurPage(curPage:int) : Array
       {
-         var _loc3_:Array = [];
+         var arr:Array = [];
          var _loc5_:int = 0;
          var _loc4_:* = _xmlData.giftbagArray;
-         for each(var _loc2_ in _xmlData.giftbagArray)
+         for each(var giftInfo in _xmlData.giftbagArray)
          {
-            if(_loc2_.giftbagOrder >= (param1 - 1) * 6 && _loc2_.giftbagOrder <= param1 * 6 - 1)
+            if(giftInfo.giftbagOrder >= (curPage - 1) * 6 && giftInfo.giftbagOrder <= curPage * 6 - 1)
             {
-               _loc3_.push(_loc2_);
+               arr.push(giftInfo);
             }
          }
-         return _loc3_;
+         return arr;
       }
       
       private function getGiftBagTotal() : int
@@ -586,12 +580,12 @@ package panicBuying.views
          return Math.ceil(_xmlData.giftbagArray.length / 6);
       }
       
-      private function dateTrim(param1:String) : String
+      private function dateTrim(dateStr:String) : String
       {
-         var _loc2_:String = "";
-         var _loc3_:Array = param1.split(" ");
-         _loc2_ = _loc3_[0].replace(/\//g,".");
-         return _loc2_;
+         var str:String = "";
+         var temp:Array = dateStr.split(" ");
+         str = temp[0].replace(/\//g,".");
+         return str;
       }
       
       private function updateFrameStyle() : void
@@ -625,7 +619,7 @@ package panicBuying.views
          }
       }
       
-      public function refreshActivity(param1:WonderfulActivityEvent = null) : void
+      public function refreshActivity(event:WonderfulActivityEvent = null) : void
       {
          if(PanicBuyingManager.instance.showIconFlag == tmpFlag)
          {
@@ -657,10 +651,10 @@ package panicBuying.views
          _tabGroup.addEventListener("change",__changeHandler);
       }
       
-      protected function __responseHandler(param1:FrameEvent) : void
+      protected function __responseHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(event.responseCode == 0 || event.responseCode == 1)
          {
             dispose();
          }
@@ -679,15 +673,14 @@ package panicBuying.views
       
       override public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          removeEvents();
          WonderfulActivityManager.Instance.delTimerFun("panicBuying");
-         _loc1_ = 0;
-         while(_loc1_ <= _itemVec.length - 1)
+         for(i = 0; i <= _itemVec.length - 1; )
          {
-            ObjectUtils.disposeObject(_itemVec[_loc1_]);
-            _itemVec[_loc1_] = null;
-            _loc1_++;
+            ObjectUtils.disposeObject(_itemVec[i]);
+            _itemVec[i] = null;
+            i++;
          }
          ObjectUtils.disposeObject(_bg);
          _bg = null;

@@ -40,8 +40,8 @@ package sanXiao.view
       
       private function init() : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
+         var i:int = 0;
+         var priseItem:* = null;
          _bg = ComponentFactory.Instance.creatBitmap("ast.sanxiao.bg.detail");
          addChild(_bg);
          _timeRemainText = ComponentFactory.Instance.creat("sanxiao.storeText.Txt");
@@ -59,16 +59,15 @@ package sanXiao.view
          _itemList = new Vector.<SXRewardItem>();
          _itemContainer = new VBox();
          _itemContainer.spacing = 0;
-         var _loc1_:Array = SanXiaoManager.getInstance().scoreRewardList;
-         var _loc2_:int = _loc1_.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc2_)
+         var rewardList:Array = SanXiaoManager.getInstance().scoreRewardList;
+         var len:int = rewardList.length;
+         for(i = 0; i < len; )
          {
-            _loc3_ = new SXRewardItem();
-            _loc3_.update(_loc1_[_loc4_]);
-            _itemContainer.addChild(_loc3_);
-            _itemList.push(_loc3_);
-            _loc4_++;
+            priseItem = new SXRewardItem();
+            priseItem.update(rewardList[i]);
+            _itemContainer.addChild(priseItem);
+            _itemList.push(priseItem);
+            i++;
          }
          _itemContainer.arrange();
          _scroll = ComponentFactory.Instance.creatComponentByStylename("sanxiao.Detail.scrollList");
@@ -86,17 +85,16 @@ package sanXiao.view
       
       public function update() : void
       {
-         var _loc3_:int = 0;
+         var i:int = 0;
          _timeRemainText.text = DateUtils.dateFormat(SanXiaoManager.getInstance().endTime);
          _detailText.text = LanguageMgr.GetTranslation("sanxiao.detailDescribe");
          _priseText.text = SanXiaoManager.getInstance().score.toString();
-         var _loc1_:Array = SanXiaoManager.getInstance().scoreRewardList;
-         var _loc2_:int = _itemList.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var rewardList:Array = SanXiaoManager.getInstance().scoreRewardList;
+         var len:int = _itemList.length;
+         for(i = 0; i < len; )
          {
-            _itemList[_loc3_].update(_loc1_[_loc3_]);
-            _loc3_++;
+            _itemList[i].update(rewardList[i]);
+            i++;
          }
       }
       

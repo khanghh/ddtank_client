@@ -23,9 +23,9 @@ package ddt.data.analyze
       
       private var _isOK:String;
       
-      public function CalendarSignAnalyze(param1:Function)
+      public function CalendarSignAnalyze(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
       public function get date() : Date
@@ -68,33 +68,33 @@ package ddt.data.analyze
          return _isOK;
       }
       
-      public function set isOK(param1:String) : void
+      public function set isOK(value:String) : void
       {
-         _isOK = param1;
+         _isOK = value;
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
+         var xml:* = null;
+         var date:* = null;
          try
          {
-            _loc2_ = new XML(param1);
-            if(_loc2_.@value == "true")
+            xml = new XML(data);
+            if(xml.@value == "true")
             {
-               _date = DateUtils.dealWithStringDate(_loc2_.@nowDate);
-               _signCount = _loc2_.DailyLogList.@UserAwardLog;
-               _dayLog = _loc2_.DailyLogList.@DayLog;
-               _times = _loc2_.DailyLogList.@Times;
-               _luckyNum = _loc2_.@luckyNum;
-               _myLuckyNum = _loc2_.@myLuckyNum;
-               _price = _loc2_.@Price;
-               _isOK = _loc2_.DailyLogList.@AwardMonth;
+               _date = DateUtils.dealWithStringDate(xml.@nowDate);
+               _signCount = xml.DailyLogList.@UserAwardLog;
+               _dayLog = xml.DailyLogList.@DayLog;
+               _times = xml.DailyLogList.@Times;
+               _luckyNum = xml.@luckyNum;
+               _myLuckyNum = xml.@myLuckyNum;
+               _price = xml.@Price;
+               _isOK = xml.DailyLogList.@AwardMonth;
                onAnalyzeComplete();
             }
             else
             {
-               message = _loc2_.@message;
+               message = xml.@message;
                onAnalyzeError();
                onAnalyzeComplete();
             }

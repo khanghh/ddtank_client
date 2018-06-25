@@ -13,31 +13,31 @@ package morn.editor
          super();
       }
       
-      override public function hasClass(param1:String) : Boolean
+      override public function hasClass(name:String) : Boolean
       {
-         return Sys.hasRes(param1);
+         return Sys.hasRes(name);
       }
       
-      override public function getClass(param1:String) : Class
+      override public function getClass(name:String) : Class
       {
-         return Sys.getResClass(param1);
+         return Sys.getResClass(name);
       }
       
-      override public function getAsset(param1:String) : *
+      override public function getAsset(name:String) : *
       {
-         return Sys.getRes(param1);
+         return Sys.getRes(name);
       }
       
-      override public function getBitmapData(param1:String, param2:Boolean = true) : BitmapData
+      override public function getBitmapData(name:String, cache:Boolean = true) : BitmapData
       {
-         return Sys.getResBitmapData(param1);
+         return Sys.getResBitmapData(name);
       }
       
-      override public function getClips(param1:String, param2:int, param3:int, param4:Boolean = true, param5:BitmapData = null) : Vector.<BitmapData>
+      override public function getClips(name:String, xNum:int, yNum:int, cache:Boolean = true, source:BitmapData = null) : Vector.<BitmapData>
       {
-         var _loc6_:BitmapData = this.getBitmapData(param1,false);
-         var _loc7_:Vector.<BitmapData> = BitmapUtils.createClips(_loc6_,param2,param3);
-         return _loc7_;
+         var bmd:BitmapData = getBitmapData(name,false);
+         var clips:Vector.<BitmapData> = BitmapUtils.createClips(bmd,xNum,yNum);
+         return clips;
       }
    }
 }

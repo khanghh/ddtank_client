@@ -38,15 +38,15 @@ package bagAndInfo.bag
          this.removeEventListener("click",clickthis);
       }
       
-      private function clickthis(param1:MouseEvent) : void
+      private function clickthis(e:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var dragAsset:* = null;
          SoundManager.instance.play("008");
          if(_isContinueGoods == false)
          {
             _isContinueGoods = true;
-            _loc2_ = ComponentFactory.Instance.creatBitmap("bagAndInfo.bag.continueIconAsset");
-            DragManager.startDrag(this,this,_loc2_,param1.stageX,param1.stageY,"move",false);
+            dragAsset = ComponentFactory.Instance.creatBitmap("bagAndInfo.bag.continueIconAsset");
+            DragManager.startDrag(this,this,dragAsset,e.stageX,e.stageY,"move",false);
          }
          else
          {
@@ -59,17 +59,17 @@ package bagAndInfo.bag
          return this;
       }
       
-      public function dragStop(param1:DragEffect) : void
+      public function dragStop(effect:DragEffect) : void
       {
-         var _loc2_:* = null;
-         if(_isContinueGoods && param1.target is BagCell)
+         var cell:* = null;
+         if(_isContinueGoods && effect.target is BagCell)
          {
-            _loc2_ = param1.target as BagCell;
-            _loc2_.locked = false;
+            cell = effect.target as BagCell;
+            cell.locked = false;
             _isContinueGoods = false;
-            if(ShopManager.Instance.canAddPrice(_loc2_.itemInfo.TemplateID) && _loc2_.itemInfo.getRemainDate() != 2147483647 && !EquipType.isProp(_loc2_.itemInfo))
+            if(ShopManager.Instance.canAddPrice(cell.itemInfo.TemplateID) && cell.itemInfo.getRemainDate() != 2147483647 && !EquipType.isProp(cell.itemInfo))
             {
-               AddPricePanel.Instance.setInfo(_loc2_.itemInfo,false);
+               AddPricePanel.Instance.setInfo(cell.itemInfo,false);
                AddPricePanel.Instance.show();
                return;
             }

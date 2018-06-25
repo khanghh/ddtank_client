@@ -67,16 +67,16 @@ package ddt.view.im
          addEventListener("click",__photoClick);
       }
       
-      private function __photoClick(param1:MouseEvent) : void
+      private function __photoClick(e:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var redirictURL:* = null;
          if(_websiteInfo["personWeb"] != null)
          {
             SoundManager.instance.play("008");
             if(ExternalInterface.available && !DesktopManager.Instance.isDesktop)
             {
-               _loc2_ = "function redict () {window.open(\"" + _websiteInfo["personWeb"] + "\", \"_blank\")}";
-               ExternalInterface.call(_loc2_);
+               redirictURL = "function redict () {window.open(\"" + _websiteInfo["personWeb"] + "\", \"_blank\")}";
+               ExternalInterface.call(redirictURL);
             }
             else
             {
@@ -85,21 +85,21 @@ package ddt.view.im
          }
       }
       
-      public function set userID(param1:String) : void
+      public function set userID(uid:String) : void
       {
-         var _loc2_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveWebPlayerInfoPath(param1),6);
-         _loc2_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingBuddyListFailure");
-         _loc2_.analyzer = new LoadPlayerWebsiteInfoAnalyze(__returnWebSiteInfoHandler);
-         LoadResourceManager.Instance.startLoad(_loc2_);
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveWebPlayerInfoPath(uid),6);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingBuddyListFailure");
+         loader.analyzer = new LoadPlayerWebsiteInfoAnalyze(__returnWebSiteInfoHandler);
+         LoadResourceManager.Instance.startLoad(loader);
          if(_name)
          {
             _name.text = "";
          }
       }
       
-      private function __returnWebSiteInfoHandler(param1:LoadPlayerWebsiteInfoAnalyze) : void
+      private function __returnWebSiteInfoHandler(action:LoadPlayerWebsiteInfoAnalyze) : void
       {
-         _websiteInfo = param1.info;
+         _websiteInfo = action.info;
          if(_websiteInfo["tinyHeadUrl"] != null && _websiteInfo["tinyHeadUrl"] != "")
          {
             loadImage(_websiteInfo["tinyHeadUrl"]);
@@ -113,13 +113,13 @@ package ddt.view.im
          }
       }
       
-      private function loadImage(param1:String) : void
+      private function loadImage($url:String) : void
       {
-         _url = new URLRequest(param1);
+         _url = new URLRequest($url);
          _load.load(_url,_loaderContext);
       }
       
-      private function __loadCompleteHandler(param1:Event) : void
+      private function __loadCompleteHandler(evt:Event) : void
       {
          addChild(_load.content);
          _load.content.x = 4;
@@ -138,7 +138,7 @@ package ddt.view.im
          this.graphics.clear();
       }
       
-      private function __loadIoErrorHandler(param1:IOErrorEvent) : void
+      private function __loadIoErrorHandler(evt:IOErrorEvent) : void
       {
       }
       

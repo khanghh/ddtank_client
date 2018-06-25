@@ -15,11 +15,11 @@ package gameCommon.view.propContainer
       
       private var _self:LocalPlayer;
       
-      public function BaseGamePropBarView(param1:LocalPlayer, param2:Number, param3:Number, param4:Boolean, param5:Boolean, param6:Boolean, param7:String = "")
+      public function BaseGamePropBarView(self:LocalPlayer, count:Number, column:Number, bgvisible:Boolean, ordinal:Boolean, clickable:Boolean, EffectType:String = "")
       {
          super();
-         _self = param1;
-         _itemContainer = new ItemContainer(param2,param3,param4,param5,param6,param7);
+         _self = self;
+         _itemContainer = new ItemContainer(count,column,bgvisible,ordinal,clickable,EffectType);
          addChild(_itemContainer);
          _self.addEventListener("energyChanged",__energyChange);
          _self.addEventListener("die",__die);
@@ -36,9 +36,9 @@ package gameCommon.view.propContainer
          return _self;
       }
       
-      public function setClickEnabled(param1:Boolean, param2:Boolean) : void
+      public function setClickEnabled(clickAble:Boolean, isGray:Boolean) : void
       {
-         _itemContainer.setState(param1,param2);
+         _itemContainer.setState(clickAble,isGray);
       }
       
       public function dispose() : void
@@ -60,7 +60,7 @@ package gameCommon.view.propContainer
          }
       }
       
-      private function __changeAttack(param1:LivingEvent) : void
+      private function __changeAttack(event:LivingEvent) : void
       {
          if(_self.isAttacking && _self.isLiving && !_self.LockState)
          {
@@ -68,12 +68,12 @@ package gameCommon.view.propContainer
          }
       }
       
-      private function __die(param1:LivingEvent) : void
+      private function __die(event:LivingEvent) : void
       {
          setClickEnabled(false,false);
       }
       
-      protected function __energyChange(param1:LivingEvent) : void
+      protected function __energyChange(event:LivingEvent) : void
       {
          if(_self.isLiving && !_self.LockState)
          {
@@ -85,28 +85,28 @@ package gameCommon.view.propContainer
          }
       }
       
-      protected function __move(param1:ItemEvent) : void
+      protected function __move(event:ItemEvent) : void
       {
       }
       
-      public function setVisible(param1:int, param2:Boolean) : void
+      public function setVisible(index:int, v:Boolean) : void
       {
-         _itemContainer.setVisible(param1,param2);
+         _itemContainer.setVisible(index,v);
       }
       
-      protected function __over(param1:ItemEvent) : void
-      {
-      }
-      
-      protected function __out(param1:ItemEvent) : void
+      protected function __over(event:ItemEvent) : void
       {
       }
       
-      protected function __click(param1:ItemEvent) : void
+      protected function __out(event:ItemEvent) : void
       {
       }
       
-      public function setLayerMode(param1:int) : void
+      protected function __click(event:ItemEvent) : void
+      {
+      }
+      
+      public function setLayerMode(mode:int) : void
       {
       }
    }

@@ -37,8 +37,8 @@ package bombKing.components
          _infoTxt.htmlText = LanguageMgr.GetTranslation("bombKing.log.infoTxt","冠军赛","今晚吃什么","铁板牛肉行不行");
          _logTxt = ComponentFactory.Instance.creatComponentByStylename("bombKing.Log.logTxt");
          addChild(_logTxt);
-         var _loc1_:String = LanguageMgr.GetTranslation("bombKing.log.logTxt","test");
-         _logTxt.htmlText = _loc1_;
+         var str:String = LanguageMgr.GetTranslation("bombKing.log.logTxt","test");
+         _logTxt.htmlText = str;
          _logTxt.mouseEnabled = true;
          _logTxt.setFocus();
       }
@@ -48,7 +48,7 @@ package bombKing.components
          _logTxt.addEventListener("link",__linkHandler);
       }
       
-      protected function __linkHandler(param1:TextEvent) : void
+      protected function __linkHandler(event:TextEvent) : void
       {
          if(BombKingControl.instance.status != 2)
          {
@@ -67,21 +67,21 @@ package bombKing.components
          return _info;
       }
       
-      public function set info(param1:BKingLogInfo) : void
+      public function set info(info:BKingLogInfo) : void
       {
-         if(_info == param1)
+         if(_info == info)
          {
             return;
          }
-         _info = param1;
-         var _loc2_:Array = getResultStr(_info.result);
-         _infoTxt.htmlText = LanguageMgr.GetTranslation("bombKing.log.infoTxt",getTitle(param1.stage),param1.name + _loc2_[0],param1.fightName + _loc2_[1]);
-         _logTxt.htmlText = LanguageMgr.GetTranslation("bombKing.log.logTxt",param1.reportId);
+         _info = info;
+         var arr:Array = getResultStr(_info.result);
+         _infoTxt.htmlText = LanguageMgr.GetTranslation("bombKing.log.infoTxt",getTitle(info.stage),info.name + arr[0],info.fightName + arr[1]);
+         _logTxt.htmlText = LanguageMgr.GetTranslation("bombKing.log.logTxt",info.reportId);
       }
       
-      private function getTitle(param1:int) : String
+      private function getTitle(stage:int) : String
       {
-         switch(int(param1) - 1)
+         switch(int(stage) - 1)
          {
             case 0:
                return LanguageMgr.GetTranslation("bombKing.log.stage1");
@@ -100,9 +100,9 @@ package bombKing.components
          }
       }
       
-      private function getResultStr(param1:Boolean) : Array
+      private function getResultStr(result:Boolean) : Array
       {
-         if(param1)
+         if(result)
          {
             return [LanguageMgr.GetTranslation("bombKing.win"),LanguageMgr.GetTranslation("bombKing.lose")];
          }

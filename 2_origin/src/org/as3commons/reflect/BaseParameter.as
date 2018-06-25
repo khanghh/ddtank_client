@@ -16,28 +16,28 @@ package org.as3commons.reflect
       
       protected var typeName:String;
       
-      public function BaseParameter(param1:String, param2:ApplicationDomain, param3:Boolean = false)
+      public function BaseParameter(type:String, applicationDomain:ApplicationDomain, isOptional:Boolean = false)
       {
          super();
-         this.typeName = param1;
-         this._applicationDomain = param2;
-         this._isOptional = param3;
+         this.typeName = type;
+         this._applicationDomain = applicationDomain;
+         this._isOptional = isOptional;
       }
       
-      public static function newInstance(param1:String, param2:ApplicationDomain, param3:Boolean = false) : BaseParameter
+      public static function newInstance(type:String, applicationDomain:ApplicationDomain, isOptional:Boolean = false) : BaseParameter
       {
-         var _loc4_:String = getCacheKey(param1,param2,param3);
-         if(!_cache[_loc4_])
+         var cacheKey:String = getCacheKey(type,applicationDomain,isOptional);
+         if(!_cache[cacheKey])
          {
-            _cache[_loc4_] = new BaseParameter(param1,param2,param3);
+            _cache[cacheKey] = new BaseParameter(type,applicationDomain,isOptional);
          }
-         return _cache[_loc4_];
+         return _cache[cacheKey];
       }
       
-      private static function getCacheKey(param1:String, param2:ApplicationDomain, param3:Boolean) : String
+      private static function getCacheKey(type:String, applicationDomain:ApplicationDomain, isOptional:Boolean) : String
       {
-         var _loc4_:int = CacheUtil.getApplicationDomainIndex(param2);
-         return [param1,_loc4_,param3].join(":");
+         var appDomainIndex:int = CacheUtil.getApplicationDomainIndex(applicationDomain);
+         return [type,appDomainIndex,isOptional].join(":");
       }
       
       public function get isOptional() : Boolean
@@ -50,29 +50,29 @@ package org.as3commons.reflect
          return this.typeName != null?Type.forName(this.typeName,this._applicationDomain):null;
       }
       
-      as3commons_reflect function setIsOptional(param1:Boolean) : void
+      as3commons_reflect function setIsOptional(value:Boolean) : void
       {
-         this._isOptional = param1;
+         this._isOptional = value;
       }
       
-      as3commons_reflect function setType(param1:String) : void
+      as3commons_reflect function setType(value:String) : void
       {
-         this.typeName = param1;
+         this.typeName = value;
       }
       
-      public function equals(param1:Object) : Boolean
+      public function equals(other:Object) : Boolean
       {
-         var _loc2_:BaseParameter = param1 as BaseParameter;
-         if(_loc2_)
+         var that:BaseParameter = other as BaseParameter;
+         if(that)
          {
-            return this.valuesAreEqual(_loc2_.typeName,_loc2_._applicationDomain,_loc2_.isOptional);
+            return this.valuesAreEqual(that.typeName,that._applicationDomain,that.isOptional);
          }
          return false;
       }
       
-      private function valuesAreEqual(param1:String, param2:ApplicationDomain, param3:Boolean) : Boolean
+      private function valuesAreEqual(typeName:String, appDomain:ApplicationDomain, isOptional:Boolean) : Boolean
       {
-         return param2 === this._applicationDomain && param1 == this.typeName && param3 == this.isOptional;
+         return appDomain === this._applicationDomain && typeName == this.typeName && isOptional == this.isOptional;
       }
    }
 }

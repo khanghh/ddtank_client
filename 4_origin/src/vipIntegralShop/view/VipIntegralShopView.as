@@ -53,8 +53,8 @@ package vipIntegralShop.view
       
       private function initData() : void
       {
-         var _loc1_:int = VipIntegralShopController.instance.goodsInfoList.length;
-         _totlePage = Math.ceil(_loc1_ / 4);
+         var tmpLen:int = VipIntegralShopController.instance.goodsInfoList.length;
+         _totlePage = Math.ceil(tmpLen / 4);
          _currentPage = 1;
       }
       
@@ -65,8 +65,8 @@ package vipIntegralShop.view
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var tmpCell:* = null;
          titleText = LanguageMgr.GetTranslation("vipIntegralShopView.titleText");
          _bg = ComponentFactory.Instance.creat("asset.vipIntegralShopView.viewBg");
          addToContent(_bg);
@@ -85,15 +85,14 @@ package vipIntegralShop.view
          _integralNum.text = PlayerManager.Instance.Self.VipIntegral.toString();
          addToContent(_integralNum);
          _shopCellList = new Vector.<VipIntegralShopCell>(4);
-         _loc2_ = 0;
-         while(_loc2_ < 4)
+         for(i = 0; i < 4; )
          {
-            _loc1_ = new VipIntegralShopCell();
-            _loc1_.x = 16 + _loc2_ % 2 * (_loc1_.width + 3);
-            _loc1_.y = 227 + int(_loc2_ / 2) * (_loc1_.height + 2);
-            addToContent(_loc1_);
-            _shopCellList[_loc2_] = _loc1_;
-            _loc2_++;
+            tmpCell = new VipIntegralShopCell();
+            tmpCell.x = 16 + i % 2 * (tmpCell.width + 3);
+            tmpCell.y = 227 + int(i / 2) * (tmpCell.height + 2);
+            addToContent(tmpCell);
+            _shopCellList[i] = tmpCell;
+            i++;
          }
       }
       
@@ -105,42 +104,41 @@ package vipIntegralShop.view
          PlayerManager.Instance.Self.addEventListener("propertychange",__onUpdatePlayerProperty);
       }
       
-      protected function __onUpdatePlayerProperty(param1:PlayerPropertyEvent) : void
+      protected function __onUpdatePlayerProperty(event:PlayerPropertyEvent) : void
       {
          _integralNum.text = PlayerManager.Instance.Self.VipIntegral.toString();
       }
       
       public function refreshView() : void
       {
-         var _loc1_:* = null;
-         var _loc5_:int = 0;
-         var _loc3_:int = 0;
+         var vipShopInfo:* = null;
+         var i:int = 0;
+         var tmpTag:int = 0;
          _pageTxt.text = _currentPage + "/" + _totlePage;
-         var _loc2_:int = (_currentPage - 1) * 4;
-         var _loc4_:int = VipIntegralShopController.instance.goodsInfoList.length;
-         _loc5_ = 0;
-         while(_loc5_ < 4)
+         var startIndex:int = (_currentPage - 1) * 4;
+         var tmpCount:int = VipIntegralShopController.instance.goodsInfoList.length;
+         for(i = 0; i < 4; )
          {
-            _loc3_ = _loc2_ + _loc5_;
-            if(_loc3_ >= _loc4_)
+            tmpTag = startIndex + i;
+            if(tmpTag >= tmpCount)
             {
-               _shopCellList[_loc5_].visible = false;
+               _shopCellList[i].visible = false;
             }
             else
             {
-               _shopCellList[_loc5_].visible = true;
-               _loc1_ = VipIntegralShopController.instance.goodsInfoList[_loc3_];
-               _shopCellList[_loc5_].refreshShow(_loc1_);
+               _shopCellList[i].visible = true;
+               vipShopInfo = VipIntegralShopController.instance.goodsInfoList[tmpTag];
+               _shopCellList[i].refreshShow(vipShopInfo);
             }
-            _loc5_++;
+            i++;
          }
       }
       
-      private function __changePageHandler(param1:MouseEvent) : void
+      private function __changePageHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:SimpleBitmapButton = param1.currentTarget as SimpleBitmapButton;
-         var _loc3_:* = _loc2_;
+         var tmp:SimpleBitmapButton = event.currentTarget as SimpleBitmapButton;
+         var _loc3_:* = tmp;
          if(_foreBtn !== _loc3_)
          {
             if(_nextBtn === _loc3_)
@@ -166,12 +164,12 @@ package vipIntegralShop.view
          sendPkg();
       }
       
-      protected function __onAlertResponse(param1:FrameEvent) : void
+      protected function __onAlertResponse(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onAlertResponse);
-         switch(int(param1.responseCode))
+         var alert:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",__onAlertResponse);
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -179,7 +177,7 @@ package vipIntegralShop.view
             case 3:
             case 4:
                SoundManager.instance.playButtonSound();
-               _loc2_.dispose();
+               alert.dispose();
          }
       }
       
@@ -191,10 +189,10 @@ package vipIntegralShop.view
          PlayerManager.Instance.Self.removeEventListener("propertychange",__onUpdatePlayerProperty);
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:

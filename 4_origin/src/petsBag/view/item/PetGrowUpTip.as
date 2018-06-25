@@ -2,6 +2,7 @@ package petsBag.view.item
 {
    import com.pickgliss.ui.ComponentFactory;
    import com.pickgliss.ui.image.ScaleBitmapImage;
+   import com.pickgliss.ui.image.ScaleFrameImage;
    import com.pickgliss.ui.text.FilterFrameText;
    import com.pickgliss.ui.tip.BaseTip;
    import com.pickgliss.utils.ObjectUtils;
@@ -9,6 +10,7 @@ package petsBag.view.item
    import ddt.manager.LanguageMgr;
    import flash.display.Sprite;
    import pet.data.PetInfo;
+   import petsBag.PetsBagManager;
    
    public class PetGrowUpTip extends BaseTip
    {
@@ -44,6 +46,8 @@ package petsBag.view.item
       
       private var _info:PetInfo;
       
+      private var _gradeImg:ScaleFrameImage;
+      
       private var LEADING:int = 5;
       
       public function PetGrowUpTip()
@@ -55,6 +59,8 @@ package petsBag.view.item
       {
          _name = ComponentFactory.Instance.creat("petbags.text.petName");
          _name.text = LanguageMgr.GetTranslation("ddt.petbags.text.petGrowUptipTitleName");
+         _gradeImg = ComponentFactory.Instance.creatComponentByStylename("petsBag.washBone.petGrade");
+         _gradeImg.setFrame(1);
          _attackLbl = ComponentFactory.Instance.creat("petbags.text.petGrowUpTipName");
          _attackLbl.text = LanguageMgr.GetTranslation("attack") + ":";
          _attackTxt = ComponentFactory.Instance.creat("petbags.text.petGrowUpTipValue");
@@ -74,6 +80,7 @@ package petsBag.view.item
          _splitImg = ComponentFactory.Instance.creatComponentByStylename("petGrowUpTips.line");
          _container = new Sprite();
          _container.addChild(_name);
+         _container.addChild(_gradeImg);
          _container.addChild(_attackLbl);
          _container.addChild(_attackTxt);
          _container.addChild(_defenceLbl);
@@ -91,6 +98,8 @@ package petsBag.view.item
       
       private function fixPos() : void
       {
+         _gradeImg.x = _name.x + _name.textWidth + LEADING * 2;
+         _gradeImg.y = 2;
          _splitImg.y = _name.y + _name.textHeight + LEADING * 1.5;
          _HPLbl.y = _splitImg.y + _splitImg.height + LEADING;
          _HPTxt.y = _HPLbl.y;
@@ -124,9 +133,9 @@ package petsBag.view.item
          return _info;
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         _info = param1 as PetInfo;
+         _info = data as PetInfo;
          if(_info)
          {
             updateView();
@@ -135,21 +144,48 @@ package petsBag.view.item
       
       private function updateView() : void
       {
-         var _loc5_:Number = PetconfigAnalyzer.PetCofnig.PropertiesRate;
-         var _loc2_:Number = _info.AttackGrow / _loc5_;
-         _attackTxt.text = _info.Attack > 0?"(" + _loc2_.toFixed(1) + ")":"";
-         var _loc4_:Number = _info.DefenceGrow / _loc5_;
-         _defenceTxt.text = _info.Defence > 0?"(" + _loc4_.toFixed(1) + ")":"";
-         var _loc3_:Number = _info.AgilityGrow / _loc5_;
-         _agilityTxt.text = _info.Agility > 0?"(" + _loc3_.toFixed(1) + ")":"";
-         _HPTxt.text = _info.Blood > 0?"(" + (_info.BloodGrow / _loc5_).toFixed(1) + ")":"";
-         var _loc1_:Number = _info.LuckGrow / _loc5_;
-         _luckTxt.text = _info.Luck > 0?"(" + _loc1_.toFixed(1) + ")":"";
+         var propertiesRate:Number = PetconfigAnalyzer.PetCofnig.PropertiesRate;
+         var attackRate:Number = _info.AttackGrow / propertiesRate;
+         _attackTxt.text = _info.Attack > 0?"(" + attackRate.toFixed(2) + ")":"";
+         var defenceRate:Number = _info.DefenceGrow / propertiesRate;
+         _defenceTxt.text = _info.Defence > 0?"(" + defenceRate.toFixed(2) + ")":"";
+         var agilityRate:Number = _info.AgilityGrow / propertiesRate;
+         _agilityTxt.text = _info.Agility > 0?"(" + agilityRate.toFixed(2) + ")":"";
+         _HPTxt.text = _info.Blood > 0?"(" + (_info.BloodGrow / propertiesRate).toFixed(2) + ")":"";
+         var luckRate:Number = _info.LuckGrow / propertiesRate;
+         _luckTxt.text = _info.Luck > 0?"(" + luckRate.toFixed(2) + ")":"";
          fixPos();
-         _bg.width = _container.width + 10;
+         _bg.width = _container.width + 15;
          _bg.height = _container.height + 20;
          _width = _bg.width;
          _height = _bg.height;
+         if(_info == null)
+         {
+            return;
+         }
+         var index:int = PetsBagManager.instance().getPetQualityIndex(_info.petGraded);
+         _gradeImg.setFrame(index + 1);
+         var attackIndex:int = getProDatumIndex(_info.AttackGrowDatum) + 1;
+         _attackLbl.setFrame(attackIndex);
+         _attackTxt.setFrame(attackIndex);
+         var defenceIndex:int = getProDatumIndex(_info.DefenceGrowDatum) + 1;
+         _defenceLbl.setFrame(defenceIndex);
+         _defenceTxt.setFrame(defenceIndex);
+         var agilityIndex:int = getProDatumIndex(_info.AgilityGrowDatum) + 1;
+         _agilitykLbl.setFrame(agilityIndex);
+         _agilityTxt.setFrame(agilityIndex);
+         var hpIndex:int = getProDatumIndex(_info.BloodGrowDatum) + 1;
+         _HPLbl.setFrame(hpIndex);
+         _HPTxt.setFrame(hpIndex);
+         var luckIndex:int = getProDatumIndex(_info.LuckGrowDatum) + 1;
+         _luckLbl.setFrame(luckIndex);
+         _luckTxt.setFrame(luckIndex);
+      }
+      
+      private function getProDatumIndex(datumValue:int) : int
+      {
+         var index:int = PetsBagManager.instance().getPetQualityIndex(datumValue);
+         return index;
       }
       
       override public function dispose() : void
@@ -225,6 +261,8 @@ package petsBag.view.item
             ObjectUtils.disposeObject(_name);
             _name = null;
          }
+         ObjectUtils.disposeObject(_gradeImg);
+         _gradeImg = null;
          super.dispose();
       }
    }

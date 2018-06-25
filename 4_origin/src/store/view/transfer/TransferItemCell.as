@@ -23,12 +23,12 @@ package store.view.transfer
       
       private var _refinery:int = -1;
       
-      public function TransferItemCell(param1:int)
+      public function TransferItemCell(i:int)
       {
-         var _loc2_:Sprite = new Sprite();
-         var _loc3_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtstore.EquipCellBG");
-         _loc2_.addChild(_loc3_);
-         super(_loc2_,param1);
+         var bg:Sprite = new Sprite();
+         var bgBit:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtstore.EquipCellBG");
+         bg.addChild(bgBit);
+         super(bg,i);
          _isComposeStrength = false;
          setContentSize(68,68);
          PicPos = new Point(-3,0);
@@ -41,9 +41,9 @@ package store.view.transfer
          super.addEnchantMc();
       }
       
-      public function set Refinery(param1:int) : void
+      public function set Refinery(value:int) : void
       {
-         _refinery = param1;
+         _refinery = value;
       }
       
       public function get Refinery() : int
@@ -51,14 +51,14 @@ package store.view.transfer
          return _refinery;
       }
       
-      public function set isComposeStrength(param1:Boolean) : void
+      public function set isComposeStrength(b:Boolean) : void
       {
-         this._isComposeStrength = param1;
+         this._isComposeStrength = b;
       }
       
-      public function set categoryId(param1:Number) : void
+      public function set categoryId(i:Number) : void
       {
-         this._categoryID = param1;
+         this._categoryID = i;
       }
       
       private function checkComposeStrengthen() : Boolean
@@ -86,27 +86,27 @@ package store.view.transfer
          return false;
       }
       
-      public function set index(param1:int) : void
+      public function set index(value:int) : void
       {
-         _index = param1;
+         _index = value;
       }
       
-      override public function dragDrop(param1:DragEffect) : void
+      override public function dragDrop(effect:DragEffect) : void
       {
          if(PlayerManager.Instance.Self.bagLocked)
          {
             return;
          }
-         var _loc2_:InventoryItemInfo = param1.data as InventoryItemInfo;
-         if(_loc2_ && param1.action != "split")
+         var info:InventoryItemInfo = effect.data as InventoryItemInfo;
+         if(info && effect.action != "split")
          {
-            param1.action = "none";
-            if(!_loc2_.CanCompose && !_loc2_.CanStrengthen && !_loc2_.isCanLatentEnergy && _loc2_.CategoryID != 70)
+            effect.action = "none";
+            if(!info.CanCompose && !info.CanStrengthen && !info.isCanLatentEnergy && info.CategoryID != 70)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.view.fusion.TransferItemCell.object"));
                return;
             }
-            if(_loc2_.Level != 3)
+            if(info.Level != 3)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.view.fusion.TransferItemCell.object"));
                return;
@@ -120,9 +120,9 @@ package store.view.transfer
             }
             if(_categoryID > 0)
             {
-               if(_loc2_.CategoryID != this._categoryID)
+               if(info.CategoryID != this._categoryID)
                {
-                  if(_loc2_.CanEquip == 0)
+                  if(info.CanEquip == 0)
                   {
                      MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.view.fusion.TransferItemCell.current"));
                      return;
@@ -131,9 +131,9 @@ package store.view.transfer
                   return;
                }
             }
-            if(_loc2_.CanEquip)
+            if(info.CanEquip)
             {
-               SocketManager.Instance.out.sendMoveGoods(_loc2_.BagType,_loc2_.Place,12,index,1);
+               SocketManager.Instance.out.sendMoveGoods(info.BagType,info.Place,12,index,1);
                DragManager.acceptDrag(this,"none");
                return;
             }

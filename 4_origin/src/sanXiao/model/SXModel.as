@@ -39,72 +39,67 @@ package sanXiao.model
          super();
       }
       
-      public function initMap(param1:Number = 7, param2:Number = 7) : void
+      public function initMap($row:Number = 7, $column:Number = 7) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         _row = param1;
-         _column = param2;
+         var i:int = 0;
+         var j:int = 0;
+         _row = $row;
+         _column = $column;
          _map = new Vector.<Vector.<SXCellData>>();
-         _loc4_ = 0;
-         while(_loc4_ < param1)
+         for(i = 0; i < $row; )
          {
-            _map[_loc4_] = new Vector.<SXCellData>();
-            _loc3_ = 0;
-            while(_loc3_ < param2)
+            _map[i] = new Vector.<SXCellData>();
+            for(j = 0; j < $column; )
             {
-               _map[_loc4_][_loc3_] = new SXCellData(_loc4_,_loc3_);
-               _loc3_++;
+               _map[i][j] = new SXCellData(i,j);
+               j++;
             }
-            _loc4_++;
+            i++;
          }
       }
       
       public function createNewMap() : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
-         _loc4_ = 0;
-         while(_loc4_ < _row)
+         var i:int = 0;
+         var j:int = 0;
+         var tempType:int = 0;
+         var preType:int = 0;
+         for(i = 0; i < _row; )
          {
-            _loc3_ = 0;
-            while(_loc3_ < _column)
+            for(j = 0; j < _column; )
             {
-               _loc2_ = Math.random() * typeCount + 1;
-               _loc1_ = _map[Math.max(0,_loc4_ - 1)][_loc3_].type;
-               if(_loc1_ == _loc2_)
+               tempType = Math.random() * typeCount + 1;
+               preType = _map[Math.max(0,i - 1)][j].type;
+               if(preType == tempType)
                {
-                  _loc2_ = (_loc1_ + 2) % typeCount + 1;
+                  tempType = (preType + 2) % typeCount + 1;
                }
-               _loc1_ = _map[_loc4_][Math.max(0,_loc3_ - 2)].type;
-               if(_loc1_ == _loc2_)
+               preType = _map[i][Math.max(0,j - 2)].type;
+               if(preType == tempType)
                {
-                  _loc2_ = (_loc2_ + 2) % typeCount + 1;
+                  tempType = (tempType + 2) % typeCount + 1;
                }
-               _map[_loc4_][_loc3_].type = _loc2_;
-               _loc3_++;
+               _map[i][j].type = tempType;
+               j++;
             }
-            _loc4_++;
+            i++;
          }
       }
       
-      public function setMap(param1:Array) : void
+      public function setMap(mapInfo:Array) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = param1.length;
-         _loc3_ = 2;
-         while(_loc3_ < _loc2_)
+         var i:int = 0;
+         var len:int = mapInfo.length;
+         for(i = 2; i < len; )
          {
-            _map[param1[_loc3_ - 2]][param1[_loc3_ - 1]].type = param1[_loc3_];
-            _loc3_ = _loc3_ + 3;
+            _map[mapInfo[i - 2]][mapInfo[i - 1]].type = mapInfo[i];
+            i = i + 3;
          }
       }
       
-      public function getData(param1:int, param2:int) : SXCellData
+      public function getData(r:int, c:int) : SXCellData
       {
-         return _map[param1][param2];
+         return _map[r][c];
       }
       
       public function map() : Vector.<Vector.<SXCellData>>
@@ -114,340 +109,334 @@ package sanXiao.model
       
       public function mapInfo() : Array
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         var _loc1_:Array = [];
-         _loc3_ = 0;
-         while(_loc3_ < _row)
+         var i:int = 0;
+         var j:int = 0;
+         var _mapInfo:Array = [];
+         for(i = 0; i < _row; )
          {
-            _loc2_ = 0;
-            while(_loc2_ < _column)
+            for(j = 0; j < _column; )
             {
-               _loc1_.push(_loc3_);
-               _loc1_.push(_loc2_);
-               _loc1_.push(_map[_loc3_][_loc2_].type);
-               _loc2_++;
+               _mapInfo.push(i);
+               _mapInfo.push(j);
+               _mapInfo.push(_map[i][j].type);
+               j++;
             }
-            _loc3_++;
+            i++;
          }
-         return _loc1_;
+         return _mapInfo;
       }
       
       public function mapDataArray() : Vector.<SXCellData>
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         var _loc1_:Vector.<SXCellData> = new Vector.<SXCellData>();
-         _loc3_ = 0;
-         while(_loc3_ < _row)
+         var i:int = 0;
+         var j:int = 0;
+         var _mapDataArr:Vector.<SXCellData> = new Vector.<SXCellData>();
+         for(i = 0; i < _row; )
          {
-            _loc2_ = 0;
-            while(_loc2_ < _column)
+            for(j = 0; j < _column; )
             {
-               _loc1_.push(new SXCellData(_loc3_,_loc2_,_map[_loc3_][_loc2_].type));
-               _loc2_++;
+               _mapDataArr.push(new SXCellData(i,j,_map[i][j].type));
+               j++;
             }
-            _loc3_++;
+            i++;
          }
-         return _loc1_;
+         return _mapDataArr;
       }
       
-      public function cellTypeExchange(param1:Pos, param2:int, param3:Pos, param4:int) : Boolean
+      public function cellTypeExchange(pos1:Pos, type1:int, pos2:Pos, type2:int) : Boolean
       {
-         var _loc5_:int = param1.row - param3.row;
-         var _loc6_:int = param1.column - param3.column;
-         if((_loc5_ == 1 || _loc5_ == -1) && _loc6_ == 0 || (_loc6_ == 1 || _loc6_ == -1) && _loc5_ == 0)
+         var xDis:int = pos1.row - pos2.row;
+         var yDis:int = pos1.column - pos2.column;
+         if((xDis == 1 || xDis == -1) && yDis == 0 || (yDis == 1 || yDis == -1) && xDis == 0)
          {
-            _map[param1.row][param1.column].type = param4;
-            _map[param3.row][param3.column].type = param2;
+            _map[pos1.row][pos1.column].type = type2;
+            _map[pos2.row][pos2.column].type = type1;
             return true;
          }
          return false;
       }
       
-      public function cellPropCrossBomb(param1:Pos) : Vector.<SXCellData>
+      public function cellPropCrossBomb(pos:Pos) : Vector.<SXCellData>
       {
-         var _loc3_:* = 0;
-         var _loc2_:* = 0;
-         var _loc5_:Vector.<SXCellData> = new Vector.<SXCellData>();
-         var _loc6_:int = param1.row;
-         var _loc4_:int = param1.column;
-         _loc3_ = _loc6_;
-         _loc2_ = 0;
-         while(_loc2_ < COLUMN_COUNT)
+         var r:* = 0;
+         var c:* = 0;
+         var boomList:Vector.<SXCellData> = new Vector.<SXCellData>();
+         var pR:int = pos.row;
+         var pC:int = pos.column;
+         r = pR;
+         c = 0;
+         while(c < COLUMN_COUNT)
          {
-            _loc5_.push(_map[_loc3_][_loc2_]);
-            _loc2_++;
+            boomList.push(_map[r][c]);
+            c++;
          }
-         _loc3_ = 0;
-         _loc2_ = _loc4_;
-         while(_loc3_ < _loc6_)
+         r = 0;
+         c = pC;
+         while(r < pR)
          {
-            _loc5_.push(_map[_loc3_][_loc2_]);
-            _loc3_++;
+            boomList.push(_map[r][c]);
+            r++;
          }
-         _loc3_++;
-         while(_loc3_ < ROW_COUNT)
+         for(r++; r < ROW_COUNT; )
          {
-            _loc5_.push(_map[_loc3_][_loc2_]);
-            _loc3_++;
+            boomList.push(_map[r][c]);
+            r++;
          }
-         return _loc5_;
+         return boomList;
       }
       
-      public function cellPropSquareBomb(param1:Pos) : Vector.<SXCellData>
+      public function cellPropSquareBomb(pos:Pos) : Vector.<SXCellData>
       {
-         var _loc6_:Vector.<SXCellData> = new Vector.<SXCellData>();
-         var _loc7_:int = param1.row;
-         var _loc5_:int = param1.column;
-         var _loc2_:* = COLUMN_COUNT > _loc5_ + 1;
-         var _loc3_:* = 0 < _loc5_;
-         var _loc8_:* = ROW_COUNT > _loc7_ + 1;
-         var _loc4_:* = 0 < _loc7_;
-         _loc4_ && _loc3_ && _loc6_.push(_map[_loc7_ - 1][_loc5_ - 1]);
-         _loc3_ && _loc6_.push(_map[_loc7_][_loc5_ - 1]);
-         _loc8_ && _loc3_ && _loc6_.push(_map[_loc7_ + 1][_loc5_ - 1]);
-         _loc4_ && _loc6_.push(_map[_loc7_ - 1][_loc5_]);
-         _loc6_.push(_map[_loc7_][_loc5_]);
-         _loc8_ && _loc6_.push(_map[_loc7_ + 1][_loc5_]);
-         _loc4_ && _loc2_ && _loc6_.push(_map[_loc7_ - 1][_loc5_ + 1]);
-         _loc2_ && _loc6_.push(_map[_loc7_][_loc5_ + 1]);
-         _loc8_ && _loc2_ && _loc6_.push(_map[_loc7_ + 1][_loc5_ + 1]);
-         return _loc6_;
+         var boomList:Vector.<SXCellData> = new Vector.<SXCellData>();
+         var pR:int = pos.row;
+         var pC:int = pos.column;
+         var pCAdd1:* = COLUMN_COUNT > pC + 1;
+         var pCSubtract1:* = 0 < pC;
+         var pRAdd1:* = ROW_COUNT > pR + 1;
+         var pRSubtract1:* = 0 < pR;
+         pRSubtract1 && pCSubtract1 && boomList.push(_map[pR - 1][pC - 1]);
+         pCSubtract1 && boomList.push(_map[pR][pC - 1]);
+         pRAdd1 && pCSubtract1 && boomList.push(_map[pR + 1][pC - 1]);
+         pRSubtract1 && boomList.push(_map[pR - 1][pC]);
+         boomList.push(_map[pR][pC]);
+         pRAdd1 && boomList.push(_map[pR + 1][pC]);
+         pRSubtract1 && pCAdd1 && boomList.push(_map[pR - 1][pC + 1]);
+         pCAdd1 && boomList.push(_map[pR][pC + 1]);
+         pRAdd1 && pCAdd1 && boomList.push(_map[pR + 1][pC + 1]);
+         return boomList;
       }
       
-      public function cellPropClearColor(param1:Pos) : Vector.<SXCellData>
+      public function cellPropClearColor(pos:Pos) : Vector.<SXCellData>
       {
-         var _loc3_:Vector.<SXCellData> = new Vector.<SXCellData>();
-         var _loc5_:int = _map[param1.row][param1.column].type;
+         var boomList:Vector.<SXCellData> = new Vector.<SXCellData>();
+         var type:int = _map[pos.row][pos.column].type;
          var _loc9_:int = 0;
          var _loc8_:* = _map;
-         for each(var _loc2_ in _map)
+         for each(var dataVec in _map)
          {
             var _loc7_:int = 0;
-            var _loc6_:* = _loc2_;
-            for each(var _loc4_ in _loc2_)
+            var _loc6_:* = dataVec;
+            for each(var data in dataVec)
             {
-               if(_loc4_.type == _loc5_)
+               if(data.type == type)
                {
-                  _loc3_.push(_loc4_);
+                  boomList.push(data);
                }
             }
          }
-         return _loc3_;
+         return boomList;
       }
       
-      public function cellPropChangeColor(param1:Pos) : Vector.<SXCellData>
+      public function cellPropChangeColor(pos:Pos) : Vector.<SXCellData>
       {
-         var _loc5_:int = 0;
-         var _loc3_:Vector.<SXCellData> = new Vector.<SXCellData>();
-         var _loc6_:int = _map[param1.row][param1.column].type;
+         var newType:int = 0;
+         var boomList:Vector.<SXCellData> = new Vector.<SXCellData>();
+         var type:int = _map[pos.row][pos.column].type;
          do
          {
-            _loc5_ = Math.random() * typeCount + 1;
+            newType = Math.random() * typeCount + 1;
          }
-         while(_loc5_ == _loc6_);
+         while(newType == type);
          
          var _loc10_:int = 0;
          var _loc9_:* = _map;
-         for each(var _loc2_ in _map)
+         for each(var dataVec in _map)
          {
             var _loc8_:int = 0;
-            var _loc7_:* = _loc2_;
-            for each(var _loc4_ in _loc2_)
+            var _loc7_:* = dataVec;
+            for each(var data in dataVec)
             {
-               if(_loc4_.type == _loc6_)
+               if(data.type == type)
                {
-                  _loc4_.type = _loc5_;
-                  _loc3_.push(_loc4_);
+                  data.type = newType;
+                  boomList.push(data);
                }
             }
          }
-         return _loc3_;
+         return boomList;
       }
       
-      private function checkBoomList(param1:Pos) : Vector.<SXCellData>
+      private function checkBoomList(pos:Pos) : Vector.<SXCellData>
       {
-         var _loc4_:* = null;
-         var _loc8_:int = 0;
-         var _loc6_:int = _map[param1.row][param1.column].type;
-         var _loc3_:Vector.<SXCellData> = new Vector.<SXCellData>();
-         var _loc9_:Vector.<SXCellData> = new Vector.<SXCellData>();
-         _loc8_ = param1.row - 1;
-         while(_loc8_ >= 0)
+         var curData:* = null;
+         var i:int = 0;
+         var type:int = _map[pos.row][pos.column].type;
+         var verticalCellList:Vector.<SXCellData> = new Vector.<SXCellData>();
+         var horizontalCellList:Vector.<SXCellData> = new Vector.<SXCellData>();
+         i = pos.row - 1;
+         while(i >= 0)
          {
-            _loc4_ = _map[_loc8_][param1.column];
-            var _loc10_:* = _loc4_.type;
-            if(_loc6_ !== _loc10_)
+            curData = _map[i][pos.column];
+            var _loc10_:* = curData.type;
+            if(type !== _loc10_)
             {
-               _loc8_ = 0;
+               i = 0;
             }
-            else if(!_loc4_.isLocked)
+            else if(!curData.isLocked)
             {
-               _loc4_.isLocked = true;
-               _loc3_.push(_loc4_);
+               curData.isLocked = true;
+               verticalCellList.push(curData);
             }
-            _loc8_ = _loc8_ - 1;
+            i = i - 1;
          }
-         _loc8_ = param1.row + 1;
-         while(_loc8_ < _row)
+         i = pos.row + 1;
+         while(i < _row)
          {
-            _loc4_ = _map[_loc8_][param1.column];
-            _loc10_ = _loc4_.type;
-            if(_loc6_ !== _loc10_)
+            curData = _map[i][pos.column];
+            _loc10_ = curData.type;
+            if(type !== _loc10_)
             {
-               _loc8_ = _row;
+               i = _row;
             }
-            else if(!_loc4_.isLocked)
+            else if(!curData.isLocked)
             {
-               _loc4_.isLocked = true;
-               _loc3_.push(_loc4_);
+               curData.isLocked = true;
+               verticalCellList.push(curData);
             }
-            _loc8_ = _loc8_ + 1;
+            i = i + 1;
          }
-         _loc8_ = param1.column - 1;
-         while(_loc8_ >= 0)
+         i = pos.column - 1;
+         while(i >= 0)
          {
-            _loc4_ = _map[param1.row][_loc8_];
-            _loc10_ = _loc4_.type;
-            if(_loc6_ !== _loc10_)
+            curData = _map[pos.row][i];
+            _loc10_ = curData.type;
+            if(type !== _loc10_)
             {
-               _loc8_ = 0;
+               i = 0;
             }
-            else if(!_loc4_.isLocked)
+            else if(!curData.isLocked)
             {
-               _loc4_.isLocked = true;
-               _loc9_.push(_loc4_);
+               curData.isLocked = true;
+               horizontalCellList.push(curData);
             }
-            _loc8_ = _loc8_ - 1;
+            i = i - 1;
          }
-         _loc8_ = param1.column + 1;
-         while(_loc8_ < _column)
+         i = pos.column + 1;
+         while(i < _column)
          {
-            _loc4_ = _map[param1.row][_loc8_];
-            _loc10_ = _loc4_.type;
-            if(_loc6_ !== _loc10_)
+            curData = _map[pos.row][i];
+            _loc10_ = curData.type;
+            if(type !== _loc10_)
             {
-               _loc8_ = _column;
+               i = _column;
             }
-            else if(!_loc4_.isLocked)
+            else if(!curData.isLocked)
             {
-               _loc4_.isLocked = true;
-               _loc9_.push(_loc4_);
+               curData.isLocked = true;
+               horizontalCellList.push(curData);
             }
-            _loc8_ = _loc8_ + 1;
+            i = i + 1;
          }
-         var _loc5_:Vector.<SXCellData> = new Vector.<SXCellData>();
-         if(_loc3_.length >= boomLength - 1)
+         var boomList:Vector.<SXCellData> = new Vector.<SXCellData>();
+         if(verticalCellList.length >= boomLength - 1)
          {
-            _loc5_ = _loc5_.concat(_loc3_);
+            boomList = boomList.concat(verticalCellList);
          }
          else
          {
             var _loc12_:int = 0;
-            var _loc11_:* = _loc3_;
-            for each(var _loc2_ in _loc3_)
+            var _loc11_:* = verticalCellList;
+            for each(var v in verticalCellList)
             {
-               _loc2_.isLocked = false;
+               v.isLocked = false;
             }
          }
-         if(_loc9_.length >= boomLength - 1)
+         if(horizontalCellList.length >= boomLength - 1)
          {
-            _loc5_ = _loc5_.concat(_loc9_);
+            boomList = boomList.concat(horizontalCellList);
          }
          else
          {
             var _loc14_:int = 0;
-            var _loc13_:* = _loc9_;
-            for each(var _loc7_ in _loc9_)
+            var _loc13_:* = horizontalCellList;
+            for each(var h in horizontalCellList)
             {
-               _loc7_.isLocked = false;
+               h.isLocked = false;
             }
          }
-         if(_loc5_.length > 0 && _map[param1.row][param1.column].isLocked == false)
+         if(boomList.length > 0 && _map[pos.row][pos.column].isLocked == false)
          {
-            _map[param1.row][param1.column].isLocked = true;
-            _loc5_.push(_map[param1.row][param1.column]);
+            _map[pos.row][pos.column].isLocked = true;
+            boomList.push(_map[pos.row][pos.column]);
          }
-         _loc4_ = null;
-         return _loc5_;
+         curData = null;
+         return boomList;
       }
       
-      public function canBoomCellsList(param1:Array) : Vector.<SXCellData>
+      public function canBoomCellsList(posArr:Array) : Vector.<SXCellData>
       {
-         var _loc3_:Vector.<SXCellData> = new Vector.<SXCellData>();
+         var boomList:Vector.<SXCellData> = new Vector.<SXCellData>();
          var _loc6_:int = 0;
-         var _loc5_:* = param1;
-         for each(var _loc2_ in param1)
+         var _loc5_:* = posArr;
+         for each(var v in posArr)
          {
-            _loc3_ = _loc3_.concat(checkBoomList(_loc2_.curPos));
+            boomList = boomList.concat(checkBoomList(v.curPos));
          }
          var _loc8_:int = 0;
-         var _loc7_:* = _loc3_;
-         for each(var _loc4_ in _loc3_)
+         var _loc7_:* = boomList;
+         for each(var sx in boomList)
          {
-            _loc4_.isLocked = false;
+            sx.isLocked = false;
          }
-         return _loc3_;
+         return boomList;
       }
       
-      private function spread(param1:Vector.<SXCellData>) : Vector.<SXCellData>
+      private function spread(boomList:Vector.<SXCellData>) : Vector.<SXCellData>
       {
-         boomList = param1;
-         check = function(param1:SXCellData):void
+         boomList = boomList;
+         check = function($data:SXCellData):void
          {
-            var _loc2_:* = null;
-            var _loc4_:int = 0;
-            var _loc3_:int = param1.type;
-            _loc4_ = param1.row - 1;
-            if(_loc4_ >= 0)
+            var cellData:* = null;
+            var i:int = 0;
+            var type:int = $data.type;
+            i = $data.row - 1;
+            if(i >= 0)
             {
-               _loc2_ = _map[_loc4_][param1.column];
-               if(_loc2_.type == _loc3_ && _loc2_.isLocked == false)
+               cellData = _map[i][$data.column];
+               if(cellData.type == type && cellData.isLocked == false)
                {
-                  _loc2_.isLocked = true;
-                  spreadList.push(_loc2_);
-                  check(_loc2_);
+                  cellData.isLocked = true;
+                  spreadList.push(cellData);
+                  check(cellData);
                }
             }
-            _loc4_ = param1.row + 1;
-            if(_loc4_ < _row)
+            i = $data.row + 1;
+            if(i < _row)
             {
-               _loc2_ = _map[_loc4_][param1.column];
-               if(_loc2_.type == _loc3_ && _loc2_.isLocked == false)
+               cellData = _map[i][$data.column];
+               if(cellData.type == type && cellData.isLocked == false)
                {
-                  _loc2_.isLocked = true;
-                  spreadList.push(_loc2_);
-                  check(_loc2_);
+                  cellData.isLocked = true;
+                  spreadList.push(cellData);
+                  check(cellData);
                }
             }
-            _loc4_ = param1.column - 1;
-            if(_loc4_ >= 0)
+            i = $data.column - 1;
+            if(i >= 0)
             {
-               _loc2_ = _map[param1.row][_loc4_];
-               if(_loc2_.type == _loc3_ && _loc2_.isLocked == false)
+               cellData = _map[$data.row][i];
+               if(cellData.type == type && cellData.isLocked == false)
                {
-                  _loc2_.isLocked = true;
-                  spreadList.push(_loc2_);
-                  check(_loc2_);
+                  cellData.isLocked = true;
+                  spreadList.push(cellData);
+                  check(cellData);
                }
             }
-            _loc4_ = param1.column + 1;
-            if(_loc4_ < _column)
+            i = $data.column + 1;
+            if(i < _column)
             {
-               _loc2_ = _map[param1.row][_loc4_];
-               if(_loc2_.type == _loc3_ && _loc2_.isLocked == false)
+               cellData = _map[$data.row][i];
+               if(cellData.type == type && cellData.isLocked == false)
                {
-                  _loc2_.isLocked = true;
-                  spreadList.push(_loc2_);
-                  check(_loc2_);
+                  cellData.isLocked = true;
+                  spreadList.push(cellData);
+                  check(cellData);
                }
             }
          };
          var spreadList:Vector.<SXCellData> = new Vector.<SXCellData>();
          var len:int = boomList.length;
-         var k:int = 0;
-         while(k < len)
+         for(var k:int = 0; k < len; )
          {
             check(boomList[k]);
             k = Number(k) + 1;
@@ -459,321 +448,314 @@ package sanXiao.model
          return boomList;
       }
       
-      public function boomAndFall(param1:Vector.<SXCellData>) : Vector.<SXCellData>
+      public function boomAndFall(posArr:Vector.<SXCellData>) : Vector.<SXCellData>
       {
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc6_:* = undefined;
-         var _loc7_:int = 0;
-         var _loc9_:int = 0;
-         _loc5_ = 0;
-         while(_loc5_ < 7)
+         var a:int = 0;
+         var b:int = 0;
+         var tempCellData:* = null;
+         var arrCol:* = undefined;
+         var j:int = 0;
+         var i:int = 0;
+         for(a = 0; a < 7; )
          {
-            _loc4_ = 0;
-            while(_loc4_ < 7)
+            for(b = 0; b < 7; )
             {
-               trace("==->",_loc5_,_loc4_,_map[_loc5_][_loc4_].type);
-               _loc4_++;
+               trace("==->",a,b,_map[a][b].type);
+               b++;
             }
-            _loc5_++;
+            a++;
          }
          var _loc11_:int = 0;
-         var _loc10_:* = param1;
-         for each(var _loc2_ in param1)
+         var _loc10_:* = posArr;
+         for each(var v in posArr)
          {
-            _loc2_.type = 0;
+            v.type = 0;
          }
-         var _loc8_:Vector.<SXCellData> = new Vector.<SXCellData>();
-         _loc7_ = 0;
-         while(_loc7_ < COLUMN_COUNT)
+         var newCellDataList:Vector.<SXCellData> = new Vector.<SXCellData>();
+         for(j = 0; j < COLUMN_COUNT; )
          {
-            _loc6_ = new Vector.<int>();
-            _loc9_ = ROW_COUNT - 1;
-            while(_loc9_ >= 0)
+            arrCol = new Vector.<int>();
+            for(i = ROW_COUNT - 1; i >= 0; )
             {
-               _loc3_ = _map[_loc9_][_loc7_];
-               if(_loc3_.type != 0)
+               tempCellData = _map[i][j];
+               if(tempCellData.type != 0)
                {
-                  _loc6_.push(_loc3_.type);
+                  arrCol.push(tempCellData.type);
                }
-               _loc3_.type = 0;
-               _loc9_--;
+               tempCellData.type = 0;
+               i--;
             }
-            _loc9_ = ROW_COUNT - 1;
-            while(_loc9_ >= 0)
+            for(i = ROW_COUNT - 1; i >= 0; )
             {
-               if(_loc6_.length == 0)
+               if(arrCol.length == 0)
                {
-                  _map[_loc9_][_loc7_].type = int(Math.random() * typeCount + 1);
-                  _loc8_.push(_map[_loc9_][_loc7_]);
+                  _map[i][j].type = int(Math.random() * typeCount + 1);
+                  newCellDataList.push(_map[i][j]);
                }
                else
                {
-                  _map[_loc9_][_loc7_].type = _loc6_.shift();
+                  _map[i][j].type = arrCol.shift();
                }
-               _loc9_--;
+               i--;
             }
-            _loc7_++;
+            j++;
          }
-         _loc3_ = null;
-         _loc6_ = null;
-         return _loc8_;
+         tempCellData = null;
+         arrCol = null;
+         return newCellDataList;
       }
       
       public function isDieMap() : Boolean
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < ROW_COUNT)
+         var i:int = 0;
+         var j:int = 0;
+         for(i = 0; i < ROW_COUNT; )
          {
-            _loc1_ = 0;
-            while(_loc1_ < COLUMN_COUNT)
+            for(j = 0; j < COLUMN_COUNT; )
             {
-               _map[_loc2_][_loc1_].row = _loc2_;
-               _map[_loc2_][_loc1_].column = _loc1_;
-               if(isDie(_loc2_,_loc1_) == false)
+               _map[i][j].row = i;
+               _map[i][j].column = j;
+               if(isDie(i,j) == false)
                {
                   return false;
                }
-               _loc1_++;
+               j++;
             }
-            _loc2_++;
+            i++;
          }
          return true;
       }
       
-      private function isDie(param1:Number, param2:Number) : Boolean
+      private function isDie($x:Number, $y:Number) : Boolean
       {
-         var _loc7_:* = param1 - 1 > -1;
-         var _loc9_:* = param1 - 2 > -1;
-         var _loc8_:* = param1 - 3 > -1;
-         var _loc10_:* = param1 + 1 < ROW_COUNT;
-         var _loc14_:* = param1 + 2 < ROW_COUNT;
-         var _loc15_:* = param1 + 3 < ROW_COUNT;
-         var _loc6_:* = param2 - 1 > -1;
-         var _loc5_:* = param2 - 2 > -1;
-         var _loc4_:* = param2 - 3 > -1;
-         var _loc11_:* = param2 + 1 < COLUMN_COUNT;
-         var _loc12_:* = param2 + 2 < COLUMN_COUNT;
-         var _loc13_:* = param2 + 3 < COLUMN_COUNT;
-         var _loc3_:int = _map[param1][param2].type;
-         if(_loc10_)
+         var lx1:* = $x - 1 > -1;
+         var lx2:* = $x - 2 > -1;
+         var lx3:* = $x - 3 > -1;
+         var bx1:* = $x + 1 < ROW_COUNT;
+         var bx2:* = $x + 2 < ROW_COUNT;
+         var bx3:* = $x + 3 < ROW_COUNT;
+         var ly1:* = $y - 1 > -1;
+         var ly2:* = $y - 2 > -1;
+         var ly3:* = $y - 3 > -1;
+         var by1:* = $y + 1 < COLUMN_COUNT;
+         var by2:* = $y + 2 < COLUMN_COUNT;
+         var by3:* = $y + 3 < COLUMN_COUNT;
+         var type:int = _map[$x][$y].type;
+         if(bx1)
          {
-            if(_map[param1 + 1][param2].type == _loc3_)
+            if(_map[$x + 1][$y].type == type)
             {
-               if(_loc15_)
+               if(bx3)
                {
-                  if(_map[param1 + 3][param2].type == _loc3_)
+                  if(_map[$x + 3][$y].type == type)
                   {
                      return false;
                   }
                }
-               if(_loc14_ && _loc11_)
+               if(bx2 && by1)
                {
-                  if(_map[param1 + 2][param2 + 1].type == _loc3_)
+                  if(_map[$x + 2][$y + 1].type == type)
                   {
                      return false;
                   }
                }
-               if(_loc14_ && _loc6_)
+               if(bx2 && ly1)
                {
-                  if(_map[param1 + 2][param2 - 1].type == _loc3_)
+                  if(_map[$x + 2][$y - 1].type == type)
                   {
                      return false;
                   }
                }
-               if(_loc9_)
+               if(lx2)
                {
-                  if(_map[param1 - 2][param2].type == _loc3_)
+                  if(_map[$x - 2][$y].type == type)
                   {
                      return false;
                   }
                }
-               if(_loc7_ && _loc6_)
+               if(lx1 && ly1)
                {
-                  if(_map[param1 - 1][param2 - 1].type == _loc3_)
+                  if(_map[$x - 1][$y - 1].type == type)
                   {
                      return false;
                   }
                }
-               if(_loc7_ && _loc11_)
+               if(lx1 && by1)
                {
-                  if(_map[param1 - 1][param2 + 1].type == _loc3_)
+                  if(_map[$x - 1][$y + 1].type == type)
                   {
                      return false;
                   }
                }
             }
-            if(_loc6_ && _loc11_)
+            if(ly1 && by1)
             {
-               if(_map[param1 + 1][param2 - 1].type == _loc3_ && _map[param1 + 1][param2 + 1].type == _loc3_)
+               if(_map[$x + 1][$y - 1].type == type && _map[$x + 1][$y + 1].type == type)
                {
                   return false;
                }
             }
          }
-         if(_loc7_)
+         if(lx1)
          {
-            if(_map[param1 - 1][param2].type == _loc3_)
+            if(_map[$x - 1][$y].type == type)
             {
-               if(_loc8_)
+               if(lx3)
                {
-                  if(_map[param1 - 3][param2].type == _loc3_)
+                  if(_map[$x - 3][$y].type == type)
                   {
                      return false;
                   }
                }
-               if(_loc9_ && _loc11_)
+               if(lx2 && by1)
                {
-                  if(_map[param1 - 2][param2 + 1].type == _loc3_)
+                  if(_map[$x - 2][$y + 1].type == type)
                   {
                      return false;
                   }
                }
-               if(_loc9_ && _loc6_)
+               if(lx2 && ly1)
                {
-                  if(_map[param1 - 2][param2 - 1].type == _loc3_)
+                  if(_map[$x - 2][$y - 1].type == type)
                   {
                      return false;
                   }
                }
-               if(_loc14_)
+               if(bx2)
                {
-                  if(_map[param1 + 2][param2].type == _loc3_)
+                  if(_map[$x + 2][$y].type == type)
                   {
                      return false;
                   }
                }
-               if(_loc10_ && _loc6_)
+               if(bx1 && ly1)
                {
-                  if(_map[param1 + 1][param2 - 1].type == _loc3_)
+                  if(_map[$x + 1][$y - 1].type == type)
                   {
                      return false;
                   }
                }
-               if(_loc10_ && _loc11_)
+               if(bx1 && by1)
                {
-                  if(_map[param1 + 1][param2 + 1].type == _loc3_)
+                  if(_map[$x + 1][$y + 1].type == type)
                   {
                      return false;
                   }
                }
             }
-            if(_loc6_ && _loc11_)
+            if(ly1 && by1)
             {
-               if(_map[param1 - 1][param2 - 1].type == _loc3_ && _map[param1 - 1][param2 + 1].type == _loc3_)
+               if(_map[$x - 1][$y - 1].type == type && _map[$x - 1][$y + 1].type == type)
                {
                   return false;
                }
             }
          }
-         if(_loc11_)
+         if(by1)
          {
-            if(_map[param1][param2 + 1].type == _loc3_)
+            if(_map[$x][$y + 1].type == type)
             {
-               if(_loc13_)
+               if(by3)
                {
-                  if(_map[param1][param2 + 3].type == _loc3_)
+                  if(_map[$x][$y + 3].type == type)
                   {
                      return false;
                   }
                }
-               if(_loc7_ && _loc12_)
+               if(lx1 && by2)
                {
-                  if(_map[param1 - 1][param2 + 2].type == _loc3_)
+                  if(_map[$x - 1][$y + 2].type == type)
                   {
                      return false;
                   }
                }
-               if(_loc10_ && _loc12_)
+               if(bx1 && by2)
                {
-                  if(_map[param1 + 1][param2 + 2].type == _loc3_)
+                  if(_map[$x + 1][$y + 2].type == type)
                   {
                      return false;
                   }
                }
-               if(_loc5_)
+               if(ly2)
                {
-                  if(_map[param1][param2 - 2].type == _loc3_)
+                  if(_map[$x][$y - 2].type == type)
                   {
                      return false;
                   }
                }
-               if(_loc10_ && _loc6_)
+               if(bx1 && ly1)
                {
-                  if(_map[param1 + 1][param2 - 1].type == _loc3_)
+                  if(_map[$x + 1][$y - 1].type == type)
                   {
                      return false;
                   }
                }
-               if(_loc7_ && _loc6_)
+               if(lx1 && ly1)
                {
-                  if(_map[param1 - 1][param2 - 1].type == _loc3_)
+                  if(_map[$x - 1][$y - 1].type == type)
                   {
                      return false;
                   }
                }
             }
-            if(_loc7_ && _loc10_)
+            if(lx1 && bx1)
             {
-               if(_map[param1 - 1][param2 + 1].type == _loc3_ && _map[param1 + 1][param2 + 1].type == _loc3_)
+               if(_map[$x - 1][$y + 1].type == type && _map[$x + 1][$y + 1].type == type)
                {
                   return false;
                }
             }
          }
-         if(_loc6_)
+         if(ly1)
          {
-            if(_map[param1][param2 - 1].type == _loc3_)
+            if(_map[$x][$y - 1].type == type)
             {
-               if(_loc4_)
+               if(ly3)
                {
-                  if(_map[param1][param2 - 3].type == _loc3_)
+                  if(_map[$x][$y - 3].type == type)
                   {
                      return false;
                   }
                }
-               if(_loc7_ && _loc5_)
+               if(lx1 && ly2)
                {
-                  if(_map[param1 - 1][param2 - 2].type == _loc3_)
+                  if(_map[$x - 1][$y - 2].type == type)
                   {
                      return false;
                   }
                }
-               if(_loc10_ && _loc5_)
+               if(bx1 && ly2)
                {
-                  if(_map[param1 + 1][param2 - 2].type == _loc3_)
+                  if(_map[$x + 1][$y - 2].type == type)
                   {
                      return false;
                   }
                }
-               if(_loc12_)
+               if(by2)
                {
-                  if(_map[param1][param2 + 2].type == _loc3_)
+                  if(_map[$x][$y + 2].type == type)
                   {
                      return false;
                   }
                }
-               if(_loc10_ && _loc11_)
+               if(bx1 && by1)
                {
-                  if(_map[param1 + 1][param2 + 1].type == _loc3_)
+                  if(_map[$x + 1][$y + 1].type == type)
                   {
                      return false;
                   }
                }
-               if(_loc7_ && _loc11_)
+               if(lx1 && by1)
                {
-                  if(_map[param1 - 1][param2 + 1].type == _loc3_)
+                  if(_map[$x - 1][$y + 1].type == type)
                   {
                      return false;
                   }
                }
             }
-            if(_loc7_ && _loc10_)
+            if(lx1 && bx1)
             {
-               if(_map[param1 - 1][param2 - 1].type == _loc3_ && _map[param1 + 1][param2 - 1].type == _loc3_)
+               if(_map[$x - 1][$y - 1].type == type && _map[$x + 1][$y - 1].type == type)
                {
                   return false;
                }

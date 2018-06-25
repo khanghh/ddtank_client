@@ -36,128 +36,123 @@ package ddt.manager
          return _instance;
       }
       
-      public function setup(param1:FineSuitAnalyze) : void
+      public function setup(analyze:FineSuitAnalyze) : void
       {
-         _model = param1.list;
-         _materialIDList = param1.materialIDList;
-         _data = param1.tipsData;
+         _model = analyze.list;
+         _materialIDList = analyze.materialIDList;
+         _data = analyze.tipsData;
       }
       
-      public function getSuitVoByExp(param1:int) : FineSuitVo
+      public function getSuitVoByExp(exp:int) : FineSuitVo
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         _loc3_ = 0;
-         while(_loc3_ < _model.length)
+         var i:int = 0;
+         var vo:* = null;
+         for(i = 0; i < _model.length; )
          {
-            _loc2_ = _model[_loc3_.toString()] as FineSuitVo;
-            if(param1 < _loc2_.exp)
+            vo = _model[i.toString()] as FineSuitVo;
+            if(exp < vo.exp)
             {
-               _loc2_ = _model[(_loc3_ - 1).toString()] as FineSuitVo;
-               return _loc2_;
+               vo = _model[(i - 1).toString()] as FineSuitVo;
+               return vo;
             }
-            _loc3_++;
+            i++;
          }
-         return _loc2_;
+         return vo;
       }
       
-      public function getNextLevelSuiteVo(param1:int) : FineSuitVo
+      public function getNextLevelSuiteVo(exp:int) : FineSuitVo
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         _loc3_ = 0;
-         while(_loc3_ < _model.length)
+         var i:int = 0;
+         var vo:* = null;
+         for(i = 0; i < _model.length; )
          {
-            _loc2_ = _model[_loc3_.toString()] as FineSuitVo;
-            if(param1 < _loc2_.exp)
+            vo = _model[i.toString()] as FineSuitVo;
+            if(exp < vo.exp)
             {
-               _loc2_ = _model[_loc3_.toString()] as FineSuitVo;
-               return _loc2_;
+               vo = _model[i.toString()] as FineSuitVo;
+               return vo;
             }
-            _loc3_++;
+            i++;
          }
          return null;
       }
       
-      public function getNextSuitVoByExp(param1:int) : FineSuitVo
+      public function getNextSuitVoByExp(exp:int) : FineSuitVo
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         _loc3_ = 0;
-         while(_loc3_ < _model.length)
+         var i:int = 0;
+         var vo:* = null;
+         for(i = 0; i < _model.length; )
          {
-            _loc2_ = _model[_loc3_.toString()] as FineSuitVo;
-            if(param1 < _loc2_.exp)
+            vo = _model[i.toString()] as FineSuitVo;
+            if(exp < vo.exp)
             {
-               return _loc2_;
+               return vo;
             }
-            _loc3_++;
+            i++;
          }
-         return _loc2_;
+         return vo;
       }
       
-      public function updateFineSuitProperty(param1:int, param2:DictionaryData) : void
+      public function updateFineSuitProperty(exp:int, dic:DictionaryData) : void
       {
-         var _loc3_:FineSuitVo = getFineSuitPropertyByExp(param1);
-         param2["Defence"]["FineSuit"] = _loc3_.Defence;
-         param2["Agility"]["FineSuit"] = _loc3_.Agility;
-         param2["Luck"]["FineSuit"] = _loc3_.Luck;
-         param2["HP"]["FineSuit"] = _loc3_.hp;
-         param2["MagicDefence"]["FineSuit"] = _loc3_.MagicDefence;
-         param2["Armor"]["FineSuit"] = _loc3_.Armor;
-         param2["MagicAttack"]["FineSuit"] = 0;
-         param2["Attack"]["FineSuit"] = 0;
+         var info:FineSuitVo = getFineSuitPropertyByExp(exp);
+         dic["Defence"]["FineSuit"] = info.Defence;
+         dic["Agility"]["FineSuit"] = info.Agility;
+         dic["Luck"]["FineSuit"] = info.Luck;
+         dic["HP"]["FineSuit"] = info.hp;
+         dic["MagicDefence"]["FineSuit"] = info.MagicDefence;
+         dic["Armor"]["FineSuit"] = info.Armor;
+         dic["MagicAttack"]["FineSuit"] = 0;
+         dic["Attack"]["FineSuit"] = 0;
       }
       
-      public function getFineSuitPropertyByExp(param1:int) : FineSuitVo
+      public function getFineSuitPropertyByExp(exp:int) : FineSuitVo
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc2_:int = getSuitVoByExp(param1).level;
-         var _loc3_:FineSuitVo = new FineSuitVo();
-         _loc5_ = 1;
-         while(_loc5_ <= _loc2_)
+         var i:int = 0;
+         var vo:* = null;
+         var level:int = getSuitVoByExp(exp).level;
+         var dataVo:FineSuitVo = new FineSuitVo();
+         for(i = 1; i <= level; )
          {
-            _loc4_ = _model[_loc5_.toString()] as FineSuitVo;
-            _loc3_.Defence = _loc3_.Defence + _loc4_.Defence;
-            _loc3_.hp = _loc3_.hp + _loc4_.hp;
-            _loc3_.Luck = _loc3_.Luck + _loc4_.Luck;
-            _loc3_.Agility = _loc3_.Agility + _loc4_.Agility;
-            _loc3_.MagicDefence = _loc3_.MagicDefence + _loc4_.MagicDefence;
-            _loc3_.Armor = _loc3_.Armor + _loc4_.Armor;
-            _loc5_++;
+            vo = _model[i.toString()] as FineSuitVo;
+            dataVo.Defence = dataVo.Defence + vo.Defence;
+            dataVo.hp = dataVo.hp + vo.hp;
+            dataVo.Luck = dataVo.Luck + vo.Luck;
+            dataVo.Agility = dataVo.Agility + vo.Agility;
+            dataVo.MagicDefence = dataVo.MagicDefence + vo.MagicDefence;
+            dataVo.Armor = dataVo.Armor + vo.Armor;
+            i++;
          }
-         return _loc3_;
+         return dataVo;
       }
       
-      public function getTipsPropertyInfoList(param1:int, param2:String) : Array
+      public function getTipsPropertyInfoList(type:int, level:String) : Array
       {
-         var _loc6_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:int = 0;
-         var _loc7_:FineSuitVo = _data[param1][param2] as FineSuitVo;
-         var _loc5_:Array = [];
-         _loc6_ = 0;
-         while(_loc6_ < propertyList.length)
+         var j:int = 0;
+         var propname:* = null;
+         var value:int = 0;
+         var vo:FineSuitVo = _data[type][level] as FineSuitVo;
+         var valueList:Array = [];
+         for(j = 0; j < propertyList.length; )
          {
-            _loc3_ = propertyList[_loc6_];
-            if(_loc7_.hasOwnProperty(_loc3_))
+            propname = propertyList[j];
+            if(vo.hasOwnProperty(propname))
             {
-               _loc4_ = _loc7_[_loc3_];
-               if(_loc4_ != 0)
+               value = vo[propname];
+               if(value != 0)
                {
-                  _loc5_.push(nameList[_loc6_] + _loc4_);
+                  valueList.push(nameList[j] + value);
                }
             }
-            _loc6_++;
+            j++;
          }
-         return _loc5_;
+         return valueList;
       }
       
-      public function getTipsPropertyInfoListToString(param1:int, param2:String) : String
+      public function getTipsPropertyInfoListToString(type:int, level:String) : String
       {
-         var _loc3_:Array = getTipsPropertyInfoList(param1,param2);
-         return _loc3_.toString().replace(/,/g," ");
+         var list:Array = getTipsPropertyInfoList(type,level);
+         return list.toString().replace(/,/g," ");
       }
       
       public function get materialIDList() : Array
@@ -170,9 +165,9 @@ package ddt.manager
          return _data;
       }
       
-      public function getSuitVoByLevel(param1:int) : FineSuitVo
+      public function getSuitVoByLevel(value:int) : FineSuitVo
       {
-         return _model[param1];
+         return _model[value];
       }
    }
 }

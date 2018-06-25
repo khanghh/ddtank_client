@@ -35,9 +35,9 @@ package roulette
          LeftGunRouletteManager.instance.addEventListener("openview",__onOpenView);
       }
       
-      private function __onOpenView(param1:CEvent) : void
+      private function __onOpenView(e:CEvent) : void
       {
-         _content = param1.data as Sprite;
+         _content = e.data as Sprite;
          new HelperUIModuleLoad().loadUIModule(["roulette"],loadComplete);
       }
       
@@ -61,7 +61,7 @@ package roulette
          PositionUtils.setPos(_rouletteView,"asset.rouletteFramePos");
       }
       
-      private function __onCloseView(param1:CEvent) : void
+      private function __onCloseView(e:CEvent) : void
       {
          if(_rouletteView)
          {
@@ -74,15 +74,15 @@ package roulette
          _content = null;
       }
       
-      private function __buttonClick(param1:RouletteFrameEvent) : void
+      private function __buttonClick(event:RouletteFrameEvent) : void
       {
          LeftGunRouletteManager.instance.showTipFrame(LeftGunRouletteManager.instance.reward);
       }
       
-      private function __isVisible(param1:RouletteFrameEvent) : void
+      private function __isVisible(event:RouletteFrameEvent) : void
       {
          LeftGunRouletteManager.instance.isvisible = false;
-         LeftGunRouletteManager.instance.reward = param1.reward;
+         LeftGunRouletteManager.instance.reward = event.reward;
       }
       
       public function setRouletteFramenull() : void

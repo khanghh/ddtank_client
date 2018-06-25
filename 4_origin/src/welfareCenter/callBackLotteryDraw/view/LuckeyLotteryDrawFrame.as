@@ -91,7 +91,7 @@ package welfareCenter.callBackLotteryDraw.view
          onInfoChange(null);
       }
       
-      private function onInfoChange(param1:Event) : void
+      private function onInfoChange(evt:Event) : void
       {
          _leftSec = _manager.getLuckeyLeftSec();
          if(_leftSec > 0)
@@ -114,7 +114,7 @@ package welfareCenter.callBackLotteryDraw.view
          updateNextCDTimeTf();
       }
       
-      private function onTimerTick(param1:TimerEvent) : void
+      private function onTimerTick(evt:TimerEvent) : void
       {
          _leftSec = Number(_leftSec) - 1;
          if(_leftSec <= 0)
@@ -128,10 +128,10 @@ package welfareCenter.callBackLotteryDraw.view
       
       private function updateNextCDTimeTf() : void
       {
-         var _loc1_:Array = TimeManager.getHHMMSSArr(_leftSec);
-         if(_loc1_)
+         var timeArr:Array = TimeManager.getHHMMSSArr(_leftSec);
+         if(timeArr)
          {
-            _nextCDTimeTf.text = LanguageMgr.GetTranslation("callbacklotterdraw.nextCDTimeTxt") + _loc1_.join(":");
+            _nextCDTimeTf.text = LanguageMgr.GetTranslation("callbacklotterdraw.nextCDTimeTxt") + timeArr.join(":");
          }
          else
          {
@@ -147,47 +147,46 @@ package welfareCenter.callBackLotteryDraw.view
          _cardShowMC.addEventListener("enterFrame",onCardShowEnterFrame);
       }
       
-      private function onCardShowEnterFrame(param1:Event) : void
+      private function onCardShowEnterFrame(evt:Event) : void
       {
-         var _loc5_:* = null;
-         var _loc2_:* = null;
-         var _loc10_:int = 0;
-         var _loc9_:* = null;
-         var _loc6_:* = null;
-         var _loc3_:* = null;
-         var _loc7_:* = null;
-         var _loc4_:* = null;
-         var _loc8_:int = _cardShowMC.currentFrame;
-         if(_loc8_ == 5)
+         var award:* = null;
+         var discountStr:* = null;
+         var i:int = 0;
+         var cardFont3:* = null;
+         var cName:* = null;
+         var cardFont:* = null;
+         var cName2:* = null;
+         var buyBtn:* = null;
+         var currentFrame:int = _cardShowMC.currentFrame;
+         if(currentFrame == 5)
          {
             _cardShowMC.gotoAndStop(5);
-            _loc5_ = _radomAwardArr[2];
-            _loc9_ = CallBackLotteryDrawController.instance.getCardShowFont(_loc5_,"luckeylotterydraw");
-            _loc9_.x = -5;
-            _loc9_.y = 18;
-            _cardShowMC["c3"].addChild(_loc9_);
+            award = _radomAwardArr[2];
+            cardFont3 = CallBackLotteryDrawController.instance.getCardShowFont(award,"luckeylotterydraw");
+            cardFont3.x = -5;
+            cardFont3.y = 18;
+            _cardShowMC["c3"].addChild(cardFont3);
             _cardShowMC.play();
          }
-         else if(_loc8_ == 10)
+         else if(currentFrame == 10)
          {
             _cardShowMC.gotoAndStop(10);
-            _loc10_ = 1;
-            while(_loc10_ < 6)
+            for(i = 1; i < 6; )
             {
-               if(_loc10_ != 3)
+               if(i != 3)
                {
-                  _loc6_ = "c" + _loc10_;
-                  _loc5_ = _radomAwardArr[_loc10_ - 1];
-                  _loc3_ = CallBackLotteryDrawController.instance.getCardShowFont(_loc5_,"luckeylotterydraw");
-                  _loc3_.x = -5;
-                  _loc3_.y = 18;
-                  _cardShowMC[_loc6_].addChild(_loc3_);
+                  cName = "c" + i;
+                  award = _radomAwardArr[i - 1];
+                  cardFont = CallBackLotteryDrawController.instance.getCardShowFont(award,"luckeylotterydraw");
+                  cardFont.x = -5;
+                  cardFont.y = 18;
+                  _cardShowMC[cName].addChild(cardFont);
                }
-               _loc10_++;
+               i++;
             }
             _cardShowMC.play();
          }
-         else if(_loc8_ == _cardShowMC.totalFrames)
+         else if(currentFrame == _cardShowMC.totalFrames)
          {
             _cardShowMC.stop();
             _cardShowMC.removeEventListener("enterFrame",onCardShowEnterFrame);
@@ -196,23 +195,22 @@ package welfareCenter.callBackLotteryDraw.view
             {
                _startDrawBtn.enable = false;
                _buyBtnArr = [];
-               _loc10_ = 1;
-               while(_loc10_ < 6)
+               for(i = 1; i < 6; )
                {
-                  _loc7_ = "c" + _loc10_;
-                  _loc5_ = _model.awardArr[_loc10_ - 1];
-                  if(_loc5_["IsCanGet"])
+                  cName2 = "c" + i;
+                  award = _model.awardArr[i - 1];
+                  if(award["IsCanGet"])
                   {
-                     _loc4_ = UICreatShortcut.creatAndAdd("luckeylotterydraw.buyBtn",_cardShowMC[_loc7_]);
-                     _loc4_.addEventListener("click",onBtnClick);
-                     _buyBtnArr.push(_loc4_);
+                     buyBtn = UICreatShortcut.creatAndAdd("luckeylotterydraw.buyBtn",_cardShowMC[cName2]);
+                     buyBtn.addEventListener("click",onBtnClick);
+                     _buyBtnArr.push(buyBtn);
                   }
                   else
                   {
                      _buyBtnArr.push(null);
-                     UICreatShortcut.creatAndAdd("luckeylotterydraw.pic7",_cardShowMC[_loc7_]);
+                     UICreatShortcut.creatAndAdd("luckeylotterydraw.pic7",_cardShowMC[cName2]);
                   }
-                  _loc10_++;
+                  i++;
                }
             }
          }
@@ -227,10 +225,10 @@ package welfareCenter.callBackLotteryDraw.view
          _cardShuffleMC.addEventListener("enterFrame",onCardShuffleEnterFrame);
       }
       
-      private function onCardShuffleEnterFrame(param1:Event) : void
+      private function onCardShuffleEnterFrame(evt:Event) : void
       {
-         var _loc2_:int = _cardShuffleMC.currentFrame;
-         if(_loc2_ == _cardShuffleMC.totalFrames)
+         var currentFrame:int = _cardShuffleMC.currentFrame;
+         if(currentFrame == _cardShuffleMC.totalFrames)
          {
             _cardShuffleMC.removeEventListener("enterFrame",onCardShuffleEnterFrame);
             _cardShuffleMC.parent.removeChild(_cardShuffleMC);
@@ -240,52 +238,51 @@ package welfareCenter.callBackLotteryDraw.view
       
       private function onCardShuffleOver() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var cardOpenItem:* = null;
          _cardOpenItemArr = [];
-         _loc2_ = 0;
-         while(_loc2_ < 5)
+         for(i = 0; i < 5; )
          {
-            _loc1_ = new LuckeyCardOpenItem(_loc2_,47 + _loc2_ * 123,85);
-            addToContent(_loc1_);
-            _cardOpenItemArr.push(_loc1_);
-            _loc2_++;
+            cardOpenItem = new LuckeyCardOpenItem(i,47 + i * 123,85);
+            addToContent(cardOpenItem);
+            _cardOpenItemArr.push(cardOpenItem);
+            i++;
          }
       }
       
-      private function onClickCardOpenItem(param1:CEvent) : void
+      private function onClickCardOpenItem(evt:CEvent) : void
       {
-         _clickCardOpenItem = param1.data as LuckeyCardOpenItem;
+         _clickCardOpenItem = evt.data as LuckeyCardOpenItem;
          var _loc4_:int = 0;
          var _loc3_:* = _cardOpenItemArr;
-         for each(var _loc2_ in _cardOpenItemArr)
+         for each(var cardOpenItem in _cardOpenItemArr)
          {
-            _loc2_.mouseEnabled = false;
+            cardOpenItem.mouseEnabled = false;
          }
       }
       
-      private function onCardOpenPlayOver(param1:Event) : void
+      private function onCardOpenPlayOver(evt:Event) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = _cardOpenItemArr;
-         for each(var _loc2_ in _cardOpenItemArr)
+         for each(var cardOpenItem in _cardOpenItemArr)
          {
-            if(_loc2_ != _clickCardOpenItem)
+            if(cardOpenItem != _clickCardOpenItem)
             {
-               _loc2_.playCardOpen();
+               cardOpenItem.playCardOpen();
             }
          }
-         TweenLite.delayedCall(_loc2_.getMCTotalFrames() + 5,onAllCardOpenPlayOver,null,true);
+         TweenLite.delayedCall(cardOpenItem.getMCTotalFrames() + 5,onAllCardOpenPlayOver,null,true);
       }
       
       private function onAllCardOpenPlayOver() : void
       {
          var _loc3_:int = 0;
          var _loc2_:* = _cardOpenItemArr;
-         for each(var _loc1_ in _cardOpenItemArr)
+         for each(var cardOpenItem in _cardOpenItemArr)
          {
-            _loc1_.mouseEnabled = true;
-            _loc1_.mouseChildren = true;
+            cardOpenItem.mouseEnabled = true;
+            cardOpenItem.mouseChildren = true;
          }
       }
       
@@ -316,16 +313,16 @@ package welfareCenter.callBackLotteryDraw.view
          {
             var _loc3_:int = 0;
             var _loc2_:* = _buyBtnArr;
-            for each(var _loc1_ in _buyBtnArr)
+            for each(var buyBtn in _buyBtnArr)
             {
-               _loc1_ && _loc1_.removeEventListener("click",onBtnClick);
+               buyBtn && buyBtn.removeEventListener("click",onBtnClick);
             }
          }
       }
       
-      private function onBtnClick(param1:MouseEvent) : void
+      private function onBtnClick(evt:MouseEvent) : void
       {
-         evt = param1;
+         evt = evt;
          SoundManager.instance.playButtonSound();
          var target:* = evt.target;
          if(target == _startDrawBtn)
@@ -335,9 +332,9 @@ package welfareCenter.callBackLotteryDraw.view
          }
          else
          {
-            onAlertFrameResponse = function(param1:FrameEvent):void
+            onAlertFrameResponse = function(evt:FrameEvent):void
             {
-               if(param1.responseCode == 3 || param1.responseCode == 2)
+               if(evt.responseCode == 3 || evt.responseCode == 2)
                {
                   CheckMoneyUtils.instance.checkMoney(_payAlert.isBand,newPrice,onCheckComplete);
                }
@@ -365,25 +362,25 @@ package welfareCenter.callBackLotteryDraw.view
          }
       }
       
-      private function onBuy(param1:CEvent) : void
+      private function onBuy(evt:CEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:Object = param1.data;
-         if(_loc3_.index == _buyBtnClickIndex)
+         var buyBtn:* = null;
+         var data:Object = evt.data;
+         if(data.index == _buyBtnClickIndex)
          {
-            if(_loc3_.res)
+            if(data.res)
             {
-               _loc2_ = _buyBtnArr[_buyBtnClickIndex];
-               _loc2_.visible = false;
-               UICreatShortcut.creatAndAdd("luckeylotterydraw.pic7",_loc2_.parent);
+               buyBtn = _buyBtnArr[_buyBtnClickIndex];
+               buyBtn.visible = false;
+               UICreatShortcut.creatAndAdd("luckeylotterydraw.pic7",buyBtn.parent);
             }
             _maskSp.parent.removeChild(_maskSp);
          }
       }
       
-      private function responseHandler(param1:FrameEvent) : void
+      private function responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.playButtonSound();
             CallBackLotteryDrawController.instance.disposeFrame();

@@ -8,9 +8,9 @@ package fightLib.cell
    {
        
       
-      public function TaskAwardCell(param1:DisplayObject, param2:ItemTemplateInfo = null, param3:Boolean = true, param4:Boolean = true)
+      public function TaskAwardCell(bg:DisplayObject, $info:ItemTemplateInfo = null, showLoading:Boolean = true, showTip:Boolean = true)
       {
-         super(param1,param2,param3,param4);
+         super(bg,$info,showLoading,showTip);
       }
    }
 }

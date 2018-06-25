@@ -9,33 +9,32 @@ package labyrinth.data
       
       public var list:Array;
       
-      public function RankingAnalyzer(param1:Function)
+      public function RankingAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc5_:* = null;
-         var _loc4_:int = 0;
+         var info:* = null;
+         var i:int = 0;
          list = [];
-         var _loc3_:XML = new XML(param1);
-         var _loc2_:XMLList = _loc3_..Item;
-         if(_loc3_.@value == "true")
+         var xml:XML = new XML(data);
+         var items:XMLList = xml..Item;
+         if(xml.@value == "true")
          {
-            _loc4_ = 0;
-            while(_loc4_ < _loc2_.length())
+            for(i = 0; i < items.length(); )
             {
-               _loc5_ = new RankingInfo();
-               ObjectUtils.copyPorpertiesByXML(_loc5_,_loc2_[_loc4_]);
-               list.push(_loc5_);
-               _loc4_++;
+               info = new RankingInfo();
+               ObjectUtils.copyPorpertiesByXML(info,items[i]);
+               list.push(info);
+               i++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc3_.@message;
+            message = xml.@message;
             onAnalyzeError();
             onAnalyzeComplete();
          }

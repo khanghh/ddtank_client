@@ -13,11 +13,11 @@ package gameCommon.motions
          super();
       }
       
-      public function addMotion(param1:BaseMotionFunc) : void
+      public function addMotion(motion:BaseMotionFunc) : void
       {
       }
       
-      public function removeMotion(param1:BaseMotionFunc) : void
+      public function removeMotion(motion:BaseMotionFunc) : void
       {
       }
       
@@ -25,9 +25,9 @@ package gameCommon.motions
       {
          var _loc3_:int = 0;
          var _loc2_:* = _motions;
-         for each(var _loc1_ in _motions)
+         for each(var motion in _motions)
          {
-            _loc1_.getResult();
+            motion.getResult();
          }
       }
    }

@@ -40,30 +40,30 @@ package starling.textures
       
       private var mSupport:RenderSupport;
       
-      public function RenderTexture(param1:int, param2:int, param3:Boolean = true, param4:Number = -1, param5:String = "bgra", param6:Boolean = false)
+      public function RenderTexture(width:int, height:int, persistent:Boolean = true, scale:Number = -1, format:String = "bgra", repeat:Boolean = false)
       {
-         if(param4 <= 0)
+         if(scale <= 0)
          {
-            param4 = Starling.contentScaleFactor;
+            scale = Starling.contentScaleFactor;
          }
-         var _loc7_:Number = param1;
-         var _loc10_:Number = param2;
+         var legalWidth:Number = width;
+         var legalHeight:Number = height;
          if(!supportsNonPotDimensions)
          {
-            _loc7_ = getNextPowerOfTwo(param1 * param4) / param4;
-            _loc10_ = getNextPowerOfTwo(param2 * param4) / param4;
+            legalWidth = getNextPowerOfTwo(width * scale) / scale;
+            legalHeight = getNextPowerOfTwo(height * scale) / scale;
          }
-         mActiveTexture = Texture.empty(_loc7_,_loc10_,true,false,true,param4,param5,param6);
+         mActiveTexture = Texture.empty(legalWidth,legalHeight,true,false,true,scale,format,repeat);
          mActiveTexture.root.onRestore = mActiveTexture.root.clear;
-         super(mActiveTexture,new Rectangle(0,0,param1,param2),true,null,false);
-         var _loc8_:Number = mActiveTexture.root.width;
-         var _loc9_:Number = mActiveTexture.root.height;
-         mIsPersistent = param3;
+         super(mActiveTexture,new Rectangle(0,0,width,height),true,null,false);
+         var rootWidth:Number = mActiveTexture.root.width;
+         var rootHeight:Number = mActiveTexture.root.height;
+         mIsPersistent = persistent;
          mSupport = new RenderSupport();
-         mSupport.setProjectionMatrix(0,0,_loc8_,_loc9_,param1,param2);
-         if(param3 && (!optimizePersistentBuffers || !SystemUtil.supportsRelaxedTargetClearRequirement))
+         mSupport.setProjectionMatrix(0,0,rootWidth,rootHeight,width,height);
+         if(persistent && (!optimizePersistentBuffers || !SystemUtil.supportsRelaxedTargetClearRequirement))
          {
-            mBufferTexture = Texture.empty(_loc7_,_loc10_,true,false,true,param4,param5,param6);
+            mBufferTexture = Texture.empty(legalWidth,legalHeight,true,false,true,scale,format,repeat);
             mBufferTexture.root.onRestore = mBufferTexture.root.clear;
             mHelperImage = new Image(mBufferTexture);
             mHelperImage.smoothing = "none";
@@ -82,64 +82,64 @@ package starling.textures
          super.dispose();
       }
       
-      public function draw(param1:DisplayObject, param2:Matrix = null, param3:Number = 1.0, param4:int = 0) : void
+      public function draw(object:DisplayObject, matrix:Matrix = null, alpha:Number = 1.0, antiAliasing:int = 0) : void
       {
-         if(param1 == null)
+         if(object == null)
          {
             return;
          }
          if(mDrawing)
          {
-            render(param1,param2,param3);
+            render(object,matrix,alpha);
          }
          else
          {
-            renderBundled(render,param1,param2,param3,param4);
+            renderBundled(render,object,matrix,alpha,antiAliasing);
          }
       }
       
-      public function drawBundled(param1:Function, param2:int = 0) : void
+      public function drawBundled(drawingBlock:Function, antiAliasing:int = 0) : void
       {
-         renderBundled(param1,null,null,1,param2);
+         renderBundled(drawingBlock,null,null,1,antiAliasing);
       }
       
-      private function render(param1:DisplayObject, param2:Matrix = null, param3:Number = 1.0) : void
+      private function render(object:DisplayObject, matrix:Matrix = null, alpha:Number = 1.0) : void
       {
-         var _loc5_:FragmentFilter = param1.filter;
-         var _loc4_:DisplayObject = param1.mask;
+         var filter:FragmentFilter = object.filter;
+         var mask:DisplayObject = object.mask;
          mSupport.loadIdentity();
-         mSupport.blendMode = param1.blendMode == "auto"?"normal":param1.blendMode;
-         if(param2)
+         mSupport.blendMode = object.blendMode == "auto"?"normal":object.blendMode;
+         if(matrix)
          {
-            mSupport.prependMatrix(param2);
+            mSupport.prependMatrix(matrix);
          }
          else
          {
-            mSupport.transformMatrix(param1);
+            mSupport.transformMatrix(object);
          }
-         if(_loc4_)
+         if(mask)
          {
-            mSupport.pushMask(_loc4_);
+            mSupport.pushMask(mask);
          }
-         if(_loc5_)
+         if(filter)
          {
-            _loc5_.render(param1,mSupport,param3);
+            filter.render(object,mSupport,alpha);
          }
          else
          {
-            param1.render(mSupport,param3);
+            object.render(mSupport,alpha);
          }
-         if(_loc4_)
+         if(mask)
          {
             mSupport.popMask();
          }
       }
       
-      private function renderBundled(param1:Function, param2:DisplayObject = null, param3:Matrix = null, param4:Number = 1.0, param5:int = 0) : void
+      private function renderBundled(renderBlock:Function, object:DisplayObject = null, matrix:Matrix = null, alpha:Number = 1.0, antiAliasing:int = 0) : void
       {
-         var _loc7_:* = null;
-         var _loc8_:Context3D = Starling.context;
-         if(_loc8_ == null)
+         var tmpTexture:* = null;
+         var context:Context3D = Starling.context;
+         if(context == null)
          {
             throw new MissingContextError();
          }
@@ -149,15 +149,15 @@ package starling.textures
          }
          if(isDoubleBuffered)
          {
-            _loc7_ = mActiveTexture;
+            tmpTexture = mActiveTexture;
             mActiveTexture = mBufferTexture;
-            mBufferTexture = _loc7_;
+            mBufferTexture = tmpTexture;
             mHelperImage.texture = mBufferTexture;
          }
-         var _loc6_:Texture = mSupport.renderTarget;
+         var previousRenderTarget:Texture = mSupport.renderTarget;
          sClipRect.setTo(0,0,mActiveTexture.width,mActiveTexture.height);
          mSupport.pushClipRect(sClipRect);
-         mSupport.setRenderTarget(mActiveTexture,param5);
+         mSupport.setRenderTarget(mActiveTexture,antiAliasing);
          if(isDoubleBuffered || !isPersistent || !mBufferReady)
          {
             mSupport.clear();
@@ -174,7 +174,7 @@ package starling.textures
          try
          {
             mDrawing = true;
-            execute(param1,param2,param3,param4);
+            execute(renderBlock,object,matrix,alpha);
          }
          catch(_loc10_:*)
          {
@@ -183,7 +183,7 @@ package starling.textures
          mDrawing = false;
          mSupport.finishQuadBatch();
          mSupport.nextFrame();
-         mSupport.renderTarget = _loc6_;
+         mSupport.renderTarget = previousRenderTarget;
          mSupport.popClipRect();
          if(!int(_loc9_))
          {
@@ -192,53 +192,53 @@ package starling.textures
          throw _loc10_;
       }
       
-      public function clear(param1:uint = 0, param2:Number = 0.0) : void
+      public function clear(rgb:uint = 0, alpha:Number = 0.0) : void
       {
          if(!Starling.current.contextValid)
          {
             return;
          }
-         var _loc3_:Texture = mSupport.renderTarget;
+         var previousRenderTarget:Texture = mSupport.renderTarget;
          mSupport.renderTarget = mActiveTexture;
-         mSupport.clear(param1,param2);
-         mSupport.renderTarget = _loc3_;
+         mSupport.clear(rgb,alpha);
+         mSupport.renderTarget = previousRenderTarget;
          mBufferReady = true;
       }
       
       private function get supportsNonPotDimensions() : Boolean
       {
-         var _loc3_:* = null;
-         var _loc1_:* = null;
-         var _loc5_:Starling = Starling.current;
-         var _loc4_:Context3D = Starling.context;
-         var _loc2_:Object = _loc5_.contextData["RenderTexture.supportsNonPotDimensions"];
-         if(_loc2_ == null)
+         var texture:* = null;
+         var buffer:* = null;
+         var target:Starling = Starling.current;
+         var context:Context3D = Starling.context;
+         var support:Object = target.contextData["RenderTexture.supportsNonPotDimensions"];
+         if(support == null)
          {
-            if(_loc5_.profile != "baselineConstrained" && "createRectangleTexture" in _loc4_)
+            if(target.profile != "baselineConstrained" && "createRectangleTexture" in context)
             {
                var _loc6_:int = 0;
                try
                {
-                  _loc3_ = _loc4_["createRectangleTexture"](2,3,"bgra",true);
-                  _loc4_.setRenderToTexture(_loc3_);
-                  _loc4_.clear();
-                  _loc4_.setRenderToBackBuffer();
-                  _loc4_.createVertexBuffer(1,1);
-                  _loc2_ = true;
+                  texture = context["createRectangleTexture"](2,3,"bgra",true);
+                  context.setRenderToTexture(texture);
+                  context.clear();
+                  context.setRenderToBackBuffer();
+                  context.createVertexBuffer(1,1);
+                  support = true;
                }
                catch(e:Error)
                {
-                  _loc2_ = false;
+                  support = false;
                   _loc6_ = 0;
                }
             }
             else
             {
-               _loc2_ = false;
+               support = false;
             }
-            _loc5_.contextData["RenderTexture.supportsNonPotDimensions"] = _loc2_;
+            target.contextData["RenderTexture.supportsNonPotDimensions"] = support;
          }
-         return _loc2_;
+         return support;
       }
       
       private function get isDoubleBuffered() : Boolean

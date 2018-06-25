@@ -12,10 +12,10 @@ package funnyGames.event
       
       private var _data:Object;
       
-      public function FunnyGamesEvent(param1:String, param2:Object = null, param3:Boolean = false, param4:Boolean = false)
+      public function FunnyGamesEvent(type:String, data:Object = null, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         this._data = param2;
-         super(param1,param3,param4);
+         this._data = data;
+         super(type,bubbles,cancelable);
       }
       
       public function get data() : Object

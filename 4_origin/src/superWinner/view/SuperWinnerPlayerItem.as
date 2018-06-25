@@ -60,7 +60,7 @@ package superWinner.view
          return _sexIcon;
       }
       
-      public function setListCellStatus(param1:List, param2:Boolean, param3:int) : void
+      public function setListCellStatus(list:List, isSelected:Boolean, index:int) : void
       {
       }
       
@@ -69,9 +69,9 @@ package superWinner.view
          return null;
       }
       
-      public function setCellValue(param1:*) : void
+      public function setCellValue(value:*) : void
       {
-         _info = param1;
+         _info = value;
          update();
       }
       

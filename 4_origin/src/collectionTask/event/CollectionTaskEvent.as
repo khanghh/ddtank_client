@@ -30,10 +30,10 @@ package collectionTask.event
       
       public var robertNickName:String;
       
-      public function CollectionTaskEvent(param1:String, param2:String = "")
+      public function CollectionTaskEvent(type:String, nickName:String = "")
       {
-         super(param1);
-         robertNickName = param2;
+         super(type);
+         robertNickName = nickName;
       }
    }
 }

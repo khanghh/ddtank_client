@@ -21,18 +21,18 @@ package moneyTree.ui
          super();
       }
       
-      public function setPanel(param1:ListPanel) : void
+      public function setPanel(listPanel:ListPanel) : void
       {
-         _listPanel = param1;
+         _listPanel = listPanel;
       }
       
-      public function refresh(param1:int, param2:int = 0) : void
+      public function refresh(type:int, count:int = 0) : void
       {
-         type = param1;
-         count = param2;
-         hasMounts = function(param1:*, param2:int, param3:Array):Boolean
+         type = type;
+         count = count;
+         hasMounts = function(item:*, index:int, array:Array):Boolean
          {
-            return param1.Grade >= 25;
+            return item.Grade >= 25;
          };
          var titleList:Array = PlayerManager.Instance.friendList.slice();
          titleList = titleList.filter(hasMounts);
@@ -40,46 +40,45 @@ package moneyTree.ui
          updateList(0,titleList);
       }
       
-      private function updateList(param1:int, param2:Array) : void
+      private function updateList(type:int, list:Array) : void
       {
-         var _loc6_:* = null;
-         var _loc7_:int = 0;
-         var _loc3_:* = null;
-         var _loc8_:int = _listPanel.list.viewPosition.y;
+         var invitePlayer:* = null;
+         var i:int = 0;
+         var cpInfo:* = null;
+         var tmpPosY:int = _listPanel.list.viewPosition.y;
          clearList();
          _invitePlayerInfos = [];
-         _loc7_ = 0;
-         while(_loc7_ < param2.length)
+         for(i = 0; i < list.length; )
          {
-            _loc3_ = param2[_loc7_] as BasePlayer;
-            if(_loc3_.ID != PlayerManager.Instance.Self.ID)
+            cpInfo = list[i] as BasePlayer;
+            if(cpInfo.ID != PlayerManager.Instance.Self.ID)
             {
-               _loc6_ = new InvitePlayerInfo();
-               _loc6_.NickName = _loc3_.NickName;
-               _loc6_.typeVIP = _loc3_.typeVIP;
-               _loc6_.Sex = _loc3_.Sex;
-               _loc6_.Grade = _loc3_.Grade;
-               _loc6_.Repute = _loc3_.Repute;
-               _loc6_.WinCount = _loc3_.WinCount;
-               _loc6_.TotalCount = _loc3_.TotalCount;
-               _loc6_.FightPower = _loc3_.FightPower;
-               _loc6_.ID = _loc3_.ID;
-               _loc6_.Offer = _loc3_.Offer;
-               _loc6_.isOld = _loc3_.isOld;
-               _loc6_.titleType = (_loc3_ as FriendListPlayer).titleType;
-               _loc6_.type = (_loc3_ as FriendListPlayer).type;
-               _loc6_.titleText = (_loc3_ as FriendListPlayer).titleText;
-               _loc6_.titleNumText = (_loc3_ as FriendListPlayer).titleNumText;
-               _invitePlayerInfos.push(_loc6_);
+               invitePlayer = new InvitePlayerInfo();
+               invitePlayer.NickName = cpInfo.NickName;
+               invitePlayer.typeVIP = cpInfo.typeVIP;
+               invitePlayer.Sex = cpInfo.Sex;
+               invitePlayer.Grade = cpInfo.Grade;
+               invitePlayer.Repute = cpInfo.Repute;
+               invitePlayer.WinCount = cpInfo.WinCount;
+               invitePlayer.TotalCount = cpInfo.TotalCount;
+               invitePlayer.FightPower = cpInfo.FightPower;
+               invitePlayer.ID = cpInfo.ID;
+               invitePlayer.Offer = cpInfo.Offer;
+               invitePlayer.isOld = cpInfo.isOld;
+               invitePlayer.titleType = (cpInfo as FriendListPlayer).titleType;
+               invitePlayer.type = (cpInfo as FriendListPlayer).type;
+               invitePlayer.titleText = (cpInfo as FriendListPlayer).titleText;
+               invitePlayer.titleNumText = (cpInfo as FriendListPlayer).titleNumText;
+               _invitePlayerInfos.push(invitePlayer);
             }
-            _loc7_++;
+            i++;
          }
-         var _loc5_:Array = _invitePlayerInfos;
+         var friendList:Array = _invitePlayerInfos;
          _listPanel.vectorListModel.clear();
-         _listPanel.vectorListModel.appendAll(_loc5_);
+         _listPanel.vectorListModel.appendAll(friendList);
          _listPanel.list.updateListView();
-         var _loc4_:IntPoint = new IntPoint(0,_loc8_);
-         _listPanel.list.viewPosition = _loc4_;
+         var intPoint:IntPoint = new IntPoint(0,tmpPosY);
+         _listPanel.list.viewPosition = intPoint;
       }
       
       private function clearList() : void
@@ -89,14 +88,13 @@ package moneyTree.ui
       
       public function reset() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:Vector.<IListCell> = _listPanel.list.cell;
-         var _loc1_:int = _loc2_.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc1_)
+         var i:int = 0;
+         var cellList:Vector.<IListCell> = _listPanel.list.cell;
+         var len:int = cellList.length;
+         for(i = 0; i < len; )
          {
-            (_loc2_[_loc3_] as MoneyTreeSendRedPkgCell).reset();
-            _loc3_++;
+            (cellList[i] as MoneyTreeSendRedPkgCell).reset();
+            i++;
          }
       }
    }

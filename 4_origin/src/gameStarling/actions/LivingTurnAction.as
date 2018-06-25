@@ -23,24 +23,24 @@ package gameStarling.actions
       
       private var _turnRo:int;
       
-      public function LivingTurnAction(param1:GameLiving3D, param2:int, param3:int, param4:String)
+      public function LivingTurnAction(movie:GameLiving3D, $rotation:int, speed:int, endPlay:String)
       {
          super();
          _isFinished = false;
-         _movie = param1;
-         _rotation = param2;
-         _speed = param3;
-         _endPlay = param4;
+         _movie = movie;
+         _rotation = $rotation;
+         _speed = speed;
+         _endPlay = endPlay;
       }
       
-      override public function connect(param1:BaseAction) : Boolean
+      override public function connect(action:BaseAction) : Boolean
       {
-         var _loc2_:LivingTurnAction = param1 as LivingTurnAction;
-         if(_loc2_)
+         var turn:LivingTurnAction = action as LivingTurnAction;
+         if(turn)
          {
-            _rotation = _loc2_._rotation;
-            _speed = _loc2_._speed;
-            _endPlay = _loc2_._endPlay;
+            _rotation = turn._rotation;
+            _speed = turn._speed;
+            _endPlay = turn._endPlay;
             _dir = _movie.angle > _rotation?1:0;
             return true;
          }

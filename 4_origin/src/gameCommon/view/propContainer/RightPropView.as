@@ -25,9 +25,9 @@ package gameCommon.view.propContainer
       private static const PROP_ID:int = 10;
        
       
-      public function RightPropView(param1:LocalPlayer)
+      public function RightPropView(self:LocalPlayer)
       {
-         super(param1,8,1,false,false,false,"rightPropView");
+         super(self,8,1,false,false,false,"rightPropView");
          initView();
          setItem();
       }
@@ -37,9 +37,9 @@ package gameCommon.view.propContainer
          _itemContainer.vSpace = 4;
       }
       
-      private function __keyDown(param1:KeyboardEvent) : void
+      private function __keyDown(event:KeyboardEvent) : void
       {
-         var _loc2_:* = param1.keyCode;
+         var _loc2_:* = event.keyCode;
          if(KeyStroke.VK_1.getCode() !== _loc2_)
          {
             if(KeyStroke.VK_NUMPAD_1.getCode() !== _loc2_)
@@ -94,67 +94,67 @@ package gameCommon.view.propContainer
                }
                _itemContainer.mouseClickAt(1);
             }
-            addr134:
+            addr162:
             return;
          }
          _itemContainer.mouseClickAt(0);
-         §§goto(addr134);
+         §§goto(addr162);
       }
       
       public function setItem() : void
       {
-         var _loc7_:* = null;
-         var _loc2_:* = null;
+         var info:* = null;
+         var items:* = null;
          _itemContainer.clear();
-         var _loc1_:Boolean = false;
-         var _loc5_:InventoryItemInfo = PlayerManager.Instance.Self.PropBag.findFistItemByTemplateId(10200,true,true);
-         var _loc3_:Object = SharedManager.Instance.GameKeySets;
+         var hasItem:Boolean = false;
+         var propAllProp:InventoryItemInfo = PlayerManager.Instance.Self.PropBag.findFistItemByTemplateId(10200,true,true);
+         var _sets:Object = SharedManager.Instance.GameKeySets;
          var _loc11_:int = 0;
-         var _loc10_:* = _loc3_;
-         for(var _loc4_ in _loc3_)
+         var _loc10_:* = _sets;
+         for(var propId in _sets)
          {
-            if(int(_loc4_) != 9)
+            if(int(propId) != 9)
             {
-               _loc7_ = new PropInfo(ItemManager.Instance.getTemplateById(_loc3_[_loc4_]));
-               if(_loc5_ || PlayerManager.Instance.Self.hasBuff(15))
+               info = new PropInfo(ItemManager.Instance.getTemplateById(_sets[propId]));
+               if(propAllProp || PlayerManager.Instance.Self.hasBuff(15))
                {
-                  if(_loc5_)
+                  if(propAllProp)
                   {
-                     _loc7_.Place = _loc5_.Place;
+                     info.Place = propAllProp.Place;
                   }
                   else
                   {
-                     _loc7_.Place = -1;
+                     info.Place = -1;
                   }
-                  _loc7_.Count = -1;
-                  _itemContainer.appendItemAt(new PropItemView(_loc7_,true,false,-1),int(_loc4_) - 1);
-                  _loc1_ = true;
+                  info.Count = -1;
+                  _itemContainer.appendItemAt(new PropItemView(info,true,false,-1),int(propId) - 1);
+                  hasItem = true;
                }
                else
                {
-                  _loc2_ = PlayerManager.Instance.Self.PropBag.findItemsByTempleteID(_loc3_[_loc4_]);
-                  if(_loc2_.length > 0)
+                  items = PlayerManager.Instance.Self.PropBag.findItemsByTempleteID(_sets[propId]);
+                  if(items.length > 0)
                   {
-                     _loc7_.Place = _loc2_[0].Place;
+                     info.Place = items[0].Place;
                      var _loc9_:int = 0;
-                     var _loc8_:* = _loc2_;
-                     for each(var _loc6_ in _loc2_)
+                     var _loc8_:* = items;
+                     for each(var i in items)
                      {
-                        _loc7_.Count = _loc7_.Count + _loc6_.Count;
+                        info.Count = info.Count + i.Count;
                      }
-                     _itemContainer.appendItemAt(new PropItemView(_loc7_,true,false),int(_loc4_) - 1);
-                     _loc1_ = true;
+                     _itemContainer.appendItemAt(new PropItemView(info,true,false),int(propId) - 1);
+                     hasItem = true;
                   }
                   else
                   {
-                     _itemContainer.appendItemAt(new PropItemView(_loc7_,false,false),int(_loc4_) - 1);
+                     _itemContainer.appendItemAt(new PropItemView(info,false,false),int(propId) - 1);
                   }
                }
                continue;
             }
             break;
          }
-         if(_loc1_)
+         if(hasItem)
          {
             _itemContainer.setClickByEnergy(self.energy);
          }
@@ -166,11 +166,11 @@ package gameCommon.view.propContainer
          KeyboardManager.getInstance().removeEventListener("keyDown",__keyDown);
       }
       
-      override protected function __click(param1:ItemEvent) : void
+      override protected function __click(event:ItemEvent) : void
       {
-         var _loc2_:PropItemView = param1.item as PropItemView;
-         var _loc3_:PropInfo = _loc2_.info;
-         if(_loc2_.isExist)
+         var itemView:PropItemView = event.item as PropItemView;
+         var item:PropInfo = itemView.info;
+         if(itemView.isExist)
          {
             if(self.isLiving == false)
             {
@@ -187,13 +187,13 @@ package gameCommon.view.propContainer
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.game.cantUseItem"));
                return;
             }
-            if(self.energy < _loc3_.needEnergy)
+            if(self.energy < item.needEnergy)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.game.actions.SelfPlayerWalkAction"));
                return;
             }
-            self.useItem(_loc3_.Template);
-            GameInSocketOut.sendUseProp(1,_loc3_.Place,_loc3_.Template.TemplateID);
+            self.useItem(item.Template);
+            GameInSocketOut.sendUseProp(1,item.Place,item.Template.TemplateID);
          }
          else
          {

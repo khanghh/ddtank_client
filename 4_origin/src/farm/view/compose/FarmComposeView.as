@@ -52,9 +52,9 @@ package farm.view.compose
          return _info;
       }
       
-      public function set info(param1:SelfInfo) : void
+      public function set info(value:SelfInfo) : void
       {
-         _info = param1;
+         _info = value;
       }
       
       private function initView() : void
@@ -82,10 +82,10 @@ package farm.view.compose
          addEventListener("response",__frameHandler);
       }
       
-      private function __frameHandler(param1:FrameEvent) : void
+      private function __frameHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -98,17 +98,17 @@ package farm.view.compose
          }
       }
       
-      private function __composeHelp(param1:MouseEvent) : void
+      private function __composeHelp(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:DisplayObject = ComponentFactory.Instance.creat("farmHouse.HelpPrompt");
-         var _loc3_:HelpFrame = ComponentFactory.Instance.creat("farm.HelpFrame");
-         _loc3_.setView(_loc2_);
-         _loc3_.titleText = LanguageMgr.GetTranslation("ddt.farmHouse.readme");
-         LayerManager.Instance.addToLayer(_loc3_,1,true,1);
+         var helpBd:DisplayObject = ComponentFactory.Instance.creat("farmHouse.HelpPrompt");
+         var helpPage:HelpFrame = ComponentFactory.Instance.creat("farm.HelpFrame");
+         helpPage.setView(helpBd);
+         helpPage.titleText = LanguageMgr.GetTranslation("ddt.farmHouse.readme");
+         LayerManager.Instance.addToLayer(helpPage,1,true,1);
       }
       
-      private function __changeHandler(param1:Event) : void
+      private function __changeHandler(event:Event) : void
       {
          SoundManager.instance.play("008");
          switch(int(_btnGroup.selectIndex))
@@ -127,16 +127,16 @@ package farm.view.compose
          _currentType = _btnGroup.selectIndex;
       }
       
-      private function switchView(param1:Boolean) : void
+      private function switchView(bool:Boolean) : void
       {
-         _hosePnl.visible = param1;
+         _hosePnl.visible = bool;
          if(_composePnl == null)
          {
             _composePnl = new FarmComposePnl();
             addToContent(_composePnl);
             _composePnl.y = -15;
          }
-         _composePnl.visible = !param1;
+         _composePnl.visible = !bool;
          _composePnl.clearInfo();
       }
       

@@ -100,14 +100,14 @@ package com.pickgliss.ui.controls
          super();
       }
       
-      public function set button(param1:BaseButton) : void
+      public function set button($button:BaseButton) : void
       {
-         if(_button == param1)
+         if(_button == $button)
          {
             return;
          }
          ObjectUtils.disposeObject(_button);
-         _button = param1;
+         _button = $button;
          onPropertiesChanged("button");
       }
       
@@ -116,13 +116,13 @@ package com.pickgliss.ui.controls
          return _button;
       }
       
-      public function set buttonStyle(param1:String) : void
+      public function set buttonStyle(stylename:String) : void
       {
-         if(_buttonStyle == param1)
+         if(_buttonStyle == stylename)
          {
             return;
          }
-         _buttonStyle = param1;
+         _buttonStyle = stylename;
          button = ComponentFactory.Instance.creat(_buttonStyle);
       }
       
@@ -136,9 +136,9 @@ package com.pickgliss.ui.controls
          return _currentSelectedIndex;
       }
       
-      public function set currentSelectedIndex(param1:int) : void
+      public function set currentSelectedIndex(val:int) : void
       {
-         _listPanel.list.currentSelectedIndex = param1;
+         _listPanel.list.currentSelectedIndex = val;
       }
       
       public function get currentSelectedItem() : *
@@ -146,13 +146,13 @@ package com.pickgliss.ui.controls
          return _currentSelectedItem;
       }
       
-      public function set defaultShowState(param1:int) : void
+      public function set defaultShowState(state:int) : void
       {
-         if(_defaultShowState == param1)
+         if(_defaultShowState == state)
          {
             return;
          }
-         _defaultShowState = param1;
+         _defaultShowState = state;
          onPropertiesChanged("currentShowState");
       }
       
@@ -234,23 +234,23 @@ package com.pickgliss.ui.controls
          _state = SHOW;
       }
       
-      public function set listInnerRect(param1:InnerRectangle) : void
+      public function set listInnerRect(rect:InnerRectangle) : void
       {
-         if(_listInnerRect != null && _listInnerRect.equals(param1))
+         if(_listInnerRect != null && _listInnerRect.equals(rect))
          {
             return;
          }
-         _listInnerRect = param1;
+         _listInnerRect = rect;
          onPropertiesChanged("listInnerRect");
       }
       
-      public function set listInnerRectString(param1:String) : void
+      public function set listInnerRectString(value:String) : void
       {
-         if(_listInnerRectString == param1)
+         if(_listInnerRectString == value)
          {
             return;
          }
-         _listInnerRectString = param1;
+         _listInnerRectString = value;
          listInnerRect = ClassUtils.CreatInstance("com.pickgliss.geom.InnerRectangle",ComponentFactory.parasArgs(_listInnerRectString));
       }
       
@@ -259,9 +259,9 @@ package com.pickgliss.ui.controls
          return _listPanel;
       }
       
-      public function set listPanel(param1:ListPanel) : void
+      public function set listPanel($list:ListPanel) : void
       {
-         if(_listPanel == param1)
+         if(_listPanel == $list)
          {
             return;
          }
@@ -270,28 +270,28 @@ package com.pickgliss.ui.controls
             _listPanel.list.removeEventListener("listItemClick",__onItemChanged);
          }
          ObjectUtils.disposeObject(_listPanel);
-         _listPanel = param1;
+         _listPanel = $list;
          _listPanel.list.addEventListener("listItemClick",__onItemChanged);
          onPropertiesChanged("listPanel");
       }
       
-      public function set listPanelStyle(param1:String) : void
+      public function set listPanelStyle(stylename:String) : void
       {
-         if(_listPanelStyle == param1)
+         if(_listPanelStyle == stylename)
          {
             return;
          }
-         _listPanelStyle = param1;
+         _listPanelStyle = stylename;
          listPanel = ComponentFactory.Instance.creat(_listPanelStyle);
       }
       
-      public function set selctedPropName(param1:String) : void
+      public function set selctedPropName(propname:String) : void
       {
-         if(_selctedPropName == param1)
+         if(_selctedPropName == propname)
          {
             return;
          }
-         _selctedPropName = param1;
+         _selctedPropName = propname;
       }
       
       public function get textField() : TextField
@@ -299,50 +299,50 @@ package com.pickgliss.ui.controls
          return _textField;
       }
       
-      public function set textField(param1:TextField) : void
+      public function set textField(field:TextField) : void
       {
-         if(_textField == param1)
+         if(_textField == field)
          {
             return;
          }
-         _textField = param1;
+         _textField = field;
          onPropertiesChanged("textField");
       }
       
-      public function set textInnerRect(param1:InnerRectangle) : void
+      public function set textInnerRect(rect:InnerRectangle) : void
       {
-         if(_textInnerRect != null && _textInnerRect.equals(param1))
+         if(_textInnerRect != null && _textInnerRect.equals(rect))
          {
             return;
          }
-         _textInnerRect = param1;
+         _textInnerRect = rect;
          onPropertiesChanged("textInnerRect");
       }
       
-      public function set textInnerRectString(param1:String) : void
+      public function set textInnerRectString(rectvalue:String) : void
       {
-         if(_textRectString == param1)
+         if(_textRectString == rectvalue)
          {
             return;
          }
-         _textRectString = param1;
+         _textRectString = rectvalue;
          textInnerRect = ClassUtils.CreatInstance("com.pickgliss.geom.InnerRectangle",ComponentFactory.parasArgs(_textRectString));
       }
       
-      public function set textStyle(param1:String) : void
+      public function set textStyle(stylename:String) : void
       {
-         if(_textStyle == param1)
+         if(_textStyle == stylename)
          {
             return;
          }
-         _textStyle = param1;
+         _textStyle = stylename;
          textField = ComponentFactory.Instance.creat(_textStyle);
       }
       
-      public function set enable(param1:Boolean) : void
+      public function set enable(value:Boolean) : void
       {
-         this._button.enable = param1;
-         if(!param1)
+         this._button.enable = value;
+         if(!value)
          {
             mGrayLayer = new Sprite();
             mGrayLayer.width = 500;
@@ -361,14 +361,14 @@ package com.pickgliss.ui.controls
          return this._button.enable;
       }
       
-      protected function __onItemChanged(param1:ListItemEvent) : void
+      protected function __onItemChanged(event:ListItemEvent) : void
       {
-         _currentSelectedItem = param1.cell;
-         _currentSelectedCellValue = param1.cellValue;
-         _currentSelectedIndex = param1.index;
+         _currentSelectedItem = event.cell;
+         _currentSelectedCellValue = event.cellValue;
+         _currentSelectedIndex = event.index;
          if(_selctedPropName != null)
          {
-            _textField.text = param1.cell[_selctedPropName];
+            _textField.text = event.cell[_selctedPropName];
          }
          dispatchEvent(new InteractiveEvent("stateChange"));
       }
@@ -395,14 +395,14 @@ package com.pickgliss.ui.controls
          super.init();
       }
       
-      protected function __onStageClick(param1:MouseEvent) : void
+      protected function __onStageClick(event:MouseEvent) : void
       {
-         var _loc2_:DisplayObject = param1.target as DisplayObject;
-         if(!DisplayUtils.isTargetOrContain(_loc2_,this) && !DisplayUtils.isTargetOrContain(_loc2_,_listPanel))
+         var target:DisplayObject = event.target as DisplayObject;
+         if(!DisplayUtils.isTargetOrContain(target,this) && !DisplayUtils.isTargetOrContain(target,_listPanel))
          {
             return;
          }
-         if(DisplayUtils.isTargetOrContain(_loc2_,_button) || DisplayUtils.isTargetOrContain(_loc2_,_listPanel.list))
+         if(DisplayUtils.isTargetOrContain(target,_button) || DisplayUtils.isTargetOrContain(target,_listPanel.list))
          {
             if(_state == HIDE)
             {
@@ -415,10 +415,10 @@ package com.pickgliss.ui.controls
          }
       }
       
-      protected function __onStageDown(param1:MouseEvent) : void
+      protected function __onStageDown(event:MouseEvent) : void
       {
-         var _loc2_:DisplayObject = param1.target as DisplayObject;
-         if(DisplayUtils.isTargetOrContain(_loc2_,_listPanel) || DisplayUtils.isTargetOrContain(_loc2_,this))
+         var target:DisplayObject = event.target as DisplayObject;
+         if(DisplayUtils.isTargetOrContain(target,_listPanel) || DisplayUtils.isTargetOrContain(target,this))
          {
             return;
          }
@@ -485,9 +485,9 @@ package com.pickgliss.ui.controls
          {
             return;
          }
-         var _loc1_:Rectangle = _listInnerRect.getInnerRect(_width,_height);
-         _listPanel.x = _comboboxZeroPos.x + _loc1_.x;
-         _listPanel.y = _comboboxZeroPos.y + _loc1_.y;
+         var listRect:Rectangle = _listInnerRect.getInnerRect(_width,_height);
+         _listPanel.x = _comboboxZeroPos.x + listRect.x;
+         _listPanel.y = _comboboxZeroPos.y + listRect.y;
          if(_defaultShowState == 0)
          {
             if(_easeType == 1)
@@ -505,22 +505,22 @@ package com.pickgliss.ui.controls
          }
       }
       
-      protected function updateListSize(param1:InteractiveEvent = null) : void
+      protected function updateListSize(event:InteractiveEvent = null) : void
       {
          if(_listPanel == null)
          {
             return;
          }
-         var _loc2_:Rectangle = _listInnerRect.getInnerRect(_width,_height);
+         var listRect:Rectangle = _listInnerRect.getInnerRect(_width,_height);
          if(_snapItemHeight)
          {
             _listPanel.height = _listPanel.list.getViewSize().height + _listPanel.getShowHScrollbarExtendHeight();
          }
          else
          {
-            _listPanel.height = _loc2_.height;
+            _listPanel.height = listRect.height;
          }
-         _listPanel.width = _loc2_.width;
+         _listPanel.width = listRect.width;
          _maskShape = DisplayUtils.drawRectShape(_listPanel.width + 2 * _maskExtends,_listPanel.height + _maskExtends * 2,_maskShape);
          updateMask();
       }
@@ -536,17 +536,17 @@ package com.pickgliss.ui.controls
          _maskShape.y = _easeType == 1?_comboboxZeroPos.y + _height:Number(_comboboxZeroPos.y - _maskShape.height);
       }
       
-      public function set snapItemHeight(param1:Boolean) : void
+      public function set snapItemHeight(value:Boolean) : void
       {
-         if(_snapItemHeight == param1)
+         if(_snapItemHeight == value)
          {
             return;
          }
-         _snapItemHeight = param1;
+         _snapItemHeight = value;
          onPropertiesChanged("snapItemHeight");
       }
       
-      protected function __onAddToStage(param1:Event) : void
+      protected function __onAddToStage(event:Event) : void
       {
          onPosChanged();
       }

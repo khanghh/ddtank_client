@@ -34,10 +34,10 @@ package consortion.view.boss
       
       private var _helpBtn:SimpleBitmapButton;
       
-      public function ConsortiaGuardBossView(param1:ConsortiaBossFrame)
+      public function ConsortiaGuardBossView(frame:ConsortiaBossFrame)
       {
          super();
-         _frame = param1;
+         _frame = frame;
          init();
          initEvent();
       }
@@ -83,31 +83,30 @@ package consortion.view.boss
       
       private function updateRank() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var vo:* = null;
          if(_frame.cellList == null || _frame.currentPage != 1)
          {
             return;
          }
-         var _loc1_:DictionaryData = ConsortiaGuardControl.Instance.model.rankList;
-         _loc3_ = 0;
-         while(_loc3_ < 11)
+         var list:DictionaryData = ConsortiaGuardControl.Instance.model.rankList;
+         for(i = 0; i < 11; )
          {
-            _loc2_ = _loc1_[_loc3_] as ConsortiaBossDataVo;
-            if(_loc2_)
+            vo = list[i] as ConsortiaBossDataVo;
+            if(vo)
             {
-               _frame.cellList[_loc3_].info = _loc2_;
-               _frame.cellList[_loc3_].visible = true;
+               _frame.cellList[i].info = vo;
+               _frame.cellList[i].visible = true;
             }
             else
             {
-               _frame.cellList[_loc3_].visible = false;
+               _frame.cellList[i].visible = false;
             }
-            _loc3_++;
+            i++;
          }
       }
       
-      private function __onClickEnterGuard(param1:MouseEvent) : void
+      private function __onClickEnterGuard(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(ConsortiaGuardControl.Instance.model.isOpen)
@@ -116,25 +115,25 @@ package consortion.view.boss
          }
       }
       
-      private function __onOpenGurad(param1:MouseEvent) : void
+      private function __onOpenGurad(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:int = ServerConfigManager.instance.consortiaGuardOpenRiches * _frame.levelView.selectedLevel;
-         var _loc3_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.consortiaGurad.openConfirmTxt",_loc2_),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
-         _loc3_.moveEnable = false;
-         _loc3_.addEventListener("response",__confirmOpenGuard,false,0,true);
+         var costRich:int = ServerConfigManager.instance.consortiaGuardOpenRiches * _frame.levelView.selectedLevel;
+         var confirmFrame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.consortiaGurad.openConfirmTxt",costRich),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
+         confirmFrame.moveEnable = false;
+         confirmFrame.addEventListener("response",__confirmOpenGuard,false,0,true);
       }
       
-      private function __confirmOpenGuard(param1:FrameEvent) : void
+      private function __confirmOpenGuard(evt:FrameEvent) : void
       {
-         var _loc2_:int = 0;
+         var costRich:int = 0;
          SoundManager.instance.play("008");
-         var _loc3_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc3_.removeEventListener("response",__confirmOpenGuard);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",__confirmOpenGuard);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
-            _loc2_ = ServerConfigManager.instance.consortiaGuardOpenRiches * _frame.levelView.selectedLevel;
-            if(PlayerManager.Instance.Self.consortiaInfo.Riches < _loc2_)
+            costRich = ServerConfigManager.instance.consortiaGuardOpenRiches * _frame.levelView.selectedLevel;
+            if(PlayerManager.Instance.Self.consortiaInfo.Riches < costRich)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.consortia.bossFrame.unenoughRiches"));
                return;
@@ -159,7 +158,7 @@ package consortion.view.boss
          ConsortiaGuardControl.Instance.removeEventListener("updateRank",__onUpdateRank);
       }
       
-      private function __onUpdateActivity(param1:ConsortiaGuardEvent) : void
+      private function __onUpdateActivity(e:ConsortiaGuardEvent) : void
       {
          if(ConsortiaGuardControl.Instance.model.isOpen)
          {
@@ -168,7 +167,7 @@ package consortion.view.boss
          update();
       }
       
-      private function __onUpdateRank(param1:ConsortiaGuardEvent) : void
+      private function __onUpdateRank(e:ConsortiaGuardEvent) : void
       {
          updateRank();
       }

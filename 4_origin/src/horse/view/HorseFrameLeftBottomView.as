@@ -31,11 +31,7 @@ package horse.view
       
       private var _progressCover:Bitmap;
       
-      private var _progressCoverTemp:Bitmap;
-      
       private var _progressBarMask:Shape;
-      
-      private var _progressBarMaskTemp:Shape;
       
       private var _progressTxt:FilterFrameText;
       
@@ -49,8 +45,8 @@ package horse.view
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var tmp:* = null;
          _levelStarTxtImage = ComponentFactory.Instance.creatBitmap("asset.horse.frame.levelStarTxtImage");
          _levelTxt = ComponentFactory.Instance.creatComponentByStylename("horse.frame.levelStarTxt");
          _starTxt = ComponentFactory.Instance.creatComponentByStylename("horse.frame.levelStarTxt");
@@ -59,43 +55,38 @@ package horse.view
          addChild(_levelTxt);
          addChild(_starTxt);
          _starCellList = new Vector.<HorseFrameLeftBottomStarCell>();
-         _loc2_ = 0;
-         while(_loc2_ < 9)
+         for(i = 0; i < 9; )
          {
-            _loc1_ = new HorseFrameLeftBottomStarCell();
-            _loc1_.x = 76 + 35 * _loc2_;
-            _loc1_.y = 345;
-            addChild(_loc1_);
-            _starCellList.push(_loc1_);
-            _loc2_++;
+            tmp = new HorseFrameLeftBottomStarCell();
+            tmp.x = 76 + 43 * i;
+            tmp.y = 345;
+            addChild(tmp);
+            _starCellList.push(tmp);
+            i++;
          }
          _progressTxtImage = ComponentFactory.Instance.creatBitmap("asset.horse.frame.progressTxtImage");
          _progressBg = ComponentFactory.Instance.creatBitmap("asset.horse.frame.progressBg");
          _progressCover = ComponentFactory.Instance.creatBitmap("asset.horse.frame.progressCover");
          _progressBarMask = creatMask(_progressCover);
-         _progressCoverTemp = ComponentFactory.Instance.creatBitmap("asset.horse.frame.progressCover2");
-         _progressBarMaskTemp = creatMask(_progressCoverTemp);
          _progressTxt = ComponentFactory.Instance.creatComponentByStylename("horse.frame.progressTxt");
          _progressTxt.text = "0/0";
          addChild(_progressTxtImage);
          addChild(_progressBg);
-         addChild(_progressCoverTemp);
          addChild(_progressCover);
-         addChild(_progressBarMaskTemp);
          addChild(_progressBarMask);
          addChild(_progressTxt);
       }
       
-      private function creatMask(param1:DisplayObject) : Shape
+      private function creatMask(source:DisplayObject) : Shape
       {
-         var _loc2_:Shape = new Shape();
-         _loc2_.graphics.beginFill(16711680,1);
-         _loc2_.graphics.drawRect(0,0,param1.width,param1.height);
-         _loc2_.graphics.endFill();
-         _loc2_.x = param1.x;
-         _loc2_.y = param1.y;
-         param1.mask = _loc2_;
-         return _loc2_;
+         var result:Shape = new Shape();
+         result.graphics.beginFill(16711680,1);
+         result.graphics.drawRect(0,0,source.width,source.height);
+         result.graphics.endFill();
+         result.x = source.x;
+         result.y = source.y;
+         source.mask = result;
+         return result;
       }
       
       private function initEvent() : void
@@ -103,30 +94,29 @@ package horse.view
          HorseManager.instance.addEventListener("horseUpHorseStep2",upHorseHandler);
       }
       
-      private function upHorseHandler(param1:Event) : void
+      private function upHorseHandler(event:Event) : void
       {
          refreshView();
       }
       
       private function refreshView() : void
       {
-         var _loc8_:int = 0;
-         var _loc5_:int = 0;
-         var _loc2_:int = 0;
-         var _loc6_:int = 0;
-         var _loc7_:int = 0;
-         var _loc1_:int = 0;
-         var _loc4_:int = HorseManager.instance.curLevel;
-         _levelTxt.text = (int(_loc4_ / 10 + 1)).toString();
-         _starTxt.text = String(_loc4_ % 10);
-         var _loc3_:int = int(_loc4_ / 10) * 10;
-         _loc8_ = 0;
-         while(_loc8_ < 9)
+         var i:int = 0;
+         var nextNeedTotalExp:int = 0;
+         var curNeedTotalExp:int = 0;
+         var curHasExp:int = 0;
+         var curTempExp:int = 0;
+         var nextNeedExp:int = 0;
+         var curLevel:int = HorseManager.instance.curLevel;
+         _levelTxt.text = (int(curLevel / 10 + 1)).toString();
+         _starTxt.text = String(curLevel % 10);
+         var startIndex:int = int(curLevel / 10) * 10;
+         for(i = 0; i < 9; )
          {
-            _starCellList[_loc8_].refreshView(_loc3_ + _loc8_ + 1,_loc4_);
-            _loc8_++;
+            _starCellList[i].refreshView(startIndex + i + 1,curLevel);
+            i++;
          }
-         if(_loc4_ >= 89)
+         if(curLevel >= 89)
          {
             _progressTxt.text = "0/0";
             _progressBarMask.scaleX = 1;
@@ -134,20 +124,15 @@ package horse.view
          }
          else
          {
-            _loc5_ = HorseManager.instance.nextHorseTemplateInfo.Experience;
-            _loc2_ = HorseManager.instance.curHorseTemplateInfo.Experience;
-            _loc6_ = HorseManager.instance.curExp - _loc2_;
-            _loc7_ = HorseManager.instance.curExp + HorseManager.instance.tempExp - _loc2_;
-            _loc1_ = _loc5_ - _loc2_;
-            _progressTxt.text = _loc6_ + HorseManager.instance.tempExp + "/" + _loc1_;
-            _progressBarMask.scaleX = _loc6_ / _loc1_;
-            if(_loc7_ / _loc1_ <= 1)
+            nextNeedTotalExp = HorseManager.instance.nextHorseTemplateInfo.Experience;
+            curNeedTotalExp = HorseManager.instance.curHorseTemplateInfo.Experience;
+            curHasExp = HorseManager.instance.curExp - curNeedTotalExp;
+            curTempExp = HorseManager.instance.curExp + HorseManager.instance.tempExp - curNeedTotalExp;
+            nextNeedExp = nextNeedTotalExp - curNeedTotalExp;
+            _progressTxt.text = curHasExp + HorseManager.instance.tempExp + "/" + nextNeedExp;
+            _progressBarMask.scaleX = curHasExp / nextNeedExp;
+            if(curTempExp / nextNeedExp > 1)
             {
-               _progressBarMaskTemp.scaleX = _loc7_ / _loc1_;
-            }
-            else
-            {
-               _progressCoverTemp.scaleX = 1;
             }
          }
       }
@@ -168,10 +153,8 @@ package horse.view
          _progressTxtImage = null;
          _progressBg = null;
          _progressCover = null;
-         _progressCoverTemp = null;
          _progressTxt = null;
          _progressBarMask = null;
-         _progressBarMaskTemp = null;
          if(parent)
          {
             parent.removeChild(this);

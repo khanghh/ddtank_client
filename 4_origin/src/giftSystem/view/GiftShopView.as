@@ -152,10 +152,10 @@ package giftSystem.view
          addChild(_prompt);
          addChild(_turnPage);
          addChild(_goodsList);
-         var _loc1_:Object = {};
-         _loc1_["blurWidth"] = 12;
-         _loc1_["color"] = "gold";
-         _thisShine = EffectManager.Instance.creatEffect(3,container,_loc1_);
+         var data:Object = {};
+         data["blurWidth"] = 12;
+         data["color"] = "gold";
+         _thisShine = EffectManager.Instance.creatEffect(3,container,data);
          _thisShine.stop();
          _prompt.text = LanguageMgr.GetTranslation("ddt.giftSystem.GiftShopView.chooseGiftForFriend");
          __changeHandler(null);
@@ -183,19 +183,19 @@ package giftSystem.view
          _shopMoneyGroup.addEventListener("change",__moneySelectBtnChangeHandler);
       }
       
-      private function __moneySelectBtnChangeHandler(param1:Event) : void
+      private function __moneySelectBtnChangeHandler(e:Event) : void
       {
-         var _loc2_:int = _shopMoneyGroup.selectIndex + 1;
-         if(CURRENT_MONEY_TYPE == _loc2_)
+         var idx:int = _shopMoneyGroup.selectIndex + 1;
+         if(CURRENT_MONEY_TYPE == idx)
          {
             return;
          }
-         CURRENT_MONEY_TYPE = _loc2_;
+         CURRENT_MONEY_TYPE = idx;
          __upView(null);
          SoundManager.instance.play("008");
       }
       
-      private function __showLight(param1:GiftEvent) : void
+      private function __showLight(event:GiftEvent) : void
       {
          _thisShine.play();
          time = new Timer(4500,1);
@@ -203,13 +203,13 @@ package giftSystem.view
          time.addEventListener("timerComplete",__timeOver);
       }
       
-      private function __timeOver(param1:TimerEvent) : void
+      private function __timeOver(event:TimerEvent) : void
       {
          time.removeEventListener("timerComplete",__timeOver);
          _thisShine.stop();
       }
       
-      private function __changeHandler(param1:Event) : void
+      private function __changeHandler(event:Event) : void
       {
          _turnPage.current = 1;
          _turnPage.total = ShopManager.Instance.getResultPages(getType(),6);
@@ -217,7 +217,7 @@ package giftSystem.view
          _hbox.arrange();
       }
       
-      private function __upView(param1:Event) : void
+      private function __upView(evt:Event) : void
       {
          _goodsList.setList(ShopManager.Instance.getValidSortedGoodsByType(getType(),_turnPage.current,6));
       }
@@ -243,8 +243,8 @@ package giftSystem.view
       
       private function getType() : int
       {
-         var _loc1_:Array = CURRENT_MONEY_TYPE == 2?ShopType.GIFT_DDTMONEY_TYPE:ShopType.GIFT_MONEY_TYPE;
-         return _btnGroup.selectIndex > -1?_loc1_[_btnGroup.selectIndex]:-1;
+         var shopType:Array = CURRENT_MONEY_TYPE == 2?ShopType.GIFT_DDTMONEY_TYPE:ShopType.GIFT_MONEY_TYPE;
+         return _btnGroup.selectIndex > -1?shopType[_btnGroup.selectIndex]:-1;
       }
       
       public function dispose() : void
@@ -353,7 +353,7 @@ package giftSystem.view
          }
       }
       
-      protected function __soundPlay(param1:MouseEvent) : void
+      protected function __soundPlay(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }

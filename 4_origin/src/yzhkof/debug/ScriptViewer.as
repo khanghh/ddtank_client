@@ -55,10 +55,10 @@ package yzhkof.debug
          ScriptRuner.init();
       }
       
-      public function setTarget(param1:Object) : void
+      public function setTarget(target:Object) : void
       {
-         ScriptRuner.target = param1;
-         this.target_btn.text = getQualifiedClassName(param1);
+         ScriptRuner.target = target;
+         this.target_btn.text = getQualifiedClassName(target);
       }
       
       private function init() : void
@@ -86,9 +86,9 @@ package yzhkof.debug
          this.textField.width = this.textWidth;
          this.textField.height = this.textHeight;
          this.textField.multiline = true;
-         var _loc1_:TextFormat = this.textField.getTextFormat();
-         _loc1_.size = 15;
-         this.textField.defaultTextFormat = _loc1_;
+         var t_format:TextFormat = this.textField.getTextFormat();
+         t_format.size = 15;
+         this.textField.defaultTextFormat = t_format;
          drawBackGround();
          this.run_btn.addEventListener(MouseEvent.CLICK,this.__onRunBtnClick);
          this.target_btn.addEventListener(MouseEvent.CLICK,this.__onTargetClick);
@@ -98,34 +98,33 @@ package yzhkof.debug
          this.target_btn.addEventListener(ComponentEvent.DRAW_COMPLETE,this.__btnSizeChange);
       }
       
-      private function __btnSizeChange(param1:Event) : void
+      private function __btnSizeChange(e:Event) : void
       {
          this.btn_container.draw();
       }
       
-      private function __onSaveClick(param1:Event) : void
+      private function __onSaveClick(e:Event) : void
       {
-         var _loc2_:FileReference = new FileReference();
-         _loc2_.save(this.textField.text,"script.txt");
+         var file:FileReference = new FileReference();
+         file.save(this.textField.text,"script.txt");
       }
       
-      private function __onLoadClick(param1:Event) : void
+      private function __onLoadClick(e:Event) : void
       {
          var file:FileReference = null;
-         var e:Event = param1;
          file = new FileReference();
          file.browse([new FileFilter("script txt","*.txt")]);
-         file.addEventListener(Event.SELECT,function(param1:Event):void
+         file.addEventListener(Event.SELECT,function(e:Event):void
          {
             file.load();
          });
-         file.addEventListener(Event.COMPLETE,function(param1:Event):void
+         file.addEventListener(Event.COMPLETE,function(e:Event):void
          {
             textField.text = String(file.data);
          });
       }
       
-      private function __onImportClick(param1:Event) : void
+      private function __onImportClick(e:Event) : void
       {
          this.textField.text = StringUtil.addString(this.textField.text,"namespace n" + this.importCount + " = \"" + this.getPackageName() + "\"; use namespace n" + this.importCount + ";\n",0);
          this.importCount++;
@@ -140,13 +139,13 @@ package yzhkof.debug
          return "****";
       }
       
-      private function __onTargetClick(param1:Event) : void
+      private function __onTargetClick(e:Event) : void
       {
-         var _loc2_:String = this.textField.text;
+         var text_content:String = this.textField.text;
          this.textField.text = StringUtil.replaceString(this.textField.text,"ScriptRuner.target",this.textField.selectionBeginIndex,this.textField.selectionEndIndex);
       }
       
-      private function __onRunBtnClick(param1:Event) : void
+      private function __onRunBtnClick(e:Event) : void
       {
          if(this.textField.text)
          {

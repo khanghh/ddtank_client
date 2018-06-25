@@ -104,8 +104,8 @@ package kingBless
             return;
          }
          _isChecked = true;
-         var _loc1_:SelfInfo = PlayerManager.Instance.Self;
-         if(_loc1_.Grade < 10 || _loc1_.isSameDay)
+         var selfInfo:SelfInfo = PlayerManager.Instance.Self;
+         if(selfInfo.Grade < 10 || selfInfo.isSameDay)
          {
             return;
          }
@@ -119,7 +119,7 @@ package kingBless
             _confirmFrame.moveEnable = false;
             _confirmFrame.addEventListener("response",__confirmOneDay);
          }
-         else if(_openType == 0 && _loc1_.LastDate.valueOf() < _endTime.valueOf())
+         else if(_openType == 0 && selfInfo.LastDate.valueOf() < _endTime.valueOf())
          {
             _confirmFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.kingBless.dueTipTxt"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
             _confirmFrame.moveEnable = false;
@@ -127,23 +127,23 @@ package kingBless
          }
       }
       
-      private function __confirmOneDay(param1:FrameEvent) : void
+      private function __confirmOneDay(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          _confirmFrame.removeEventListener("response",__confirmOneDay);
          _confirmFrame = null;
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             show();
          }
       }
       
-      private function __confirmDue(param1:FrameEvent) : void
+      private function __confirmDue(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          _confirmFrame.removeEventListener("response",__confirmDue);
          _confirmFrame = null;
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             show();
          }
@@ -162,69 +162,69 @@ package kingBless
       
       public function getRemainTimeTxt() : Object
       {
-         var _loc15_:* = null;
-         var _loc17_:int = 0;
-         var _loc8_:* = null;
-         var _loc16_:Number = _endTime.getTime();
-         var _loc7_:Number = TimeManager.Instance.Now().getTime();
-         var _loc12_:Number = _loc16_ - _loc7_;
-         if(_openType == 0 || _loc12_ < 1000)
+         var obj:* = null;
+         var restHelpStraw:int = 0;
+         var timeTxtStr:* = null;
+         var endTimestamp:Number = _endTime.getTime();
+         var nowTimestamp:Number = TimeManager.Instance.Now().getTime();
+         var differ:Number = endTimestamp - nowTimestamp;
+         if(_openType == 0 || differ < 1000)
          {
-            _loc15_ = {};
-            _loc15_.isOpen = false;
-            _loc15_.content = LanguageMgr.GetTranslation("ddt.kingBlessFrame.noOpenIconBtnTipTxt");
-            return _loc15_;
+            obj = {};
+            obj.isOpen = false;
+            obj.content = LanguageMgr.GetTranslation("ddt.kingBlessFrame.noOpenIconBtnTipTxt");
+            return obj;
          }
-         var _loc9_:String = LanguageMgr.GetTranslation("ddt.kingBlessFrame.awardNameStateTxt") + "\r";
-         var _loc10_:String = LanguageMgr.GetTranslation("ddt.kingBlessFrame.awardNameTxt5") + "\r";
-         var _loc3_:String = LanguageMgr.GetTranslation("ddt.kingBlessFrame.awardNameTxt1",getOneBuffData(2)) + "\r";
-         var _loc11_:String = LanguageMgr.GetTranslation("ddt.kingBlessFrame.awardNameTxt2",getOneBuffData(3)) + "\r";
-         var _loc13_:int = getOneBuffData(4);
-         var _loc14_:BuffInfo = PlayerManager.Instance.Self.buffInfo[51] as BuffInfo;
-         if(_loc14_)
+         var stateTipStr:String = LanguageMgr.GetTranslation("ddt.kingBlessFrame.awardNameStateTxt") + "\r";
+         var strengthTipStr:String = LanguageMgr.GetTranslation("ddt.kingBlessFrame.awardNameTxt5") + "\r";
+         var petTipStr:String = LanguageMgr.GetTranslation("ddt.kingBlessFrame.awardNameTxt1",getOneBuffData(2)) + "\r";
+         var beadTipStr:String = LanguageMgr.GetTranslation("ddt.kingBlessFrame.awardNameTxt2",getOneBuffData(3)) + "\r";
+         var tmpHelpStraw:int = getOneBuffData(4);
+         var tmpBuffInfo:BuffInfo = PlayerManager.Instance.Self.buffInfo[51] as BuffInfo;
+         if(tmpBuffInfo)
          {
-            _loc17_ = _loc14_.ValidCount > _loc13_?_loc13_:int(_loc14_.ValidCount);
-         }
-         else
-         {
-            _loc17_ = 0;
-         }
-         var _loc6_:String = LanguageMgr.GetTranslation("ddt.kingBlessFrame.awardNameTxt3",_loc17_) + "\r";
-         var _loc2_:String = LanguageMgr.GetTranslation("ddt.kingBlessFrame.awardNameTxt4",getOneBuffData(5)) + "\r";
-         var _loc5_:String = LanguageMgr.GetTranslation("ddt.kingBlessFrame.awardNameTxt6") + "\r";
-         var _loc4_:String = _loc11_ + _loc6_ + _loc2_ + _loc10_ + _loc5_ + _loc3_;
-         var _loc1_:int = 0;
-         if(_loc12_ / 86400000 > 1)
-         {
-            _loc1_ = _loc12_ / 86400000;
-            _loc8_ = _loc1_ + LanguageMgr.GetTranslation("day");
-         }
-         else if(_loc12_ / 3600000 > 1)
-         {
-            _loc1_ = _loc12_ / 3600000;
-            _loc8_ = _loc1_ + LanguageMgr.GetTranslation("hour");
-         }
-         else if(_loc12_ / 60000 > 1)
-         {
-            _loc1_ = _loc12_ / 60000;
-            _loc8_ = _loc1_ + LanguageMgr.GetTranslation("minute");
+            restHelpStraw = tmpBuffInfo.ValidCount > tmpHelpStraw?tmpHelpStraw:int(tmpBuffInfo.ValidCount);
          }
          else
          {
-            _loc1_ = _loc12_ / 1000;
-            _loc8_ = _loc1_ + LanguageMgr.GetTranslation("second");
+            restHelpStraw = 0;
          }
-         _loc15_ = {};
+         var helpTipStr:String = LanguageMgr.GetTranslation("ddt.kingBlessFrame.awardNameTxt3",restHelpStraw) + "\r";
+         var dungeonTipStr:String = LanguageMgr.GetTranslation("ddt.kingBlessFrame.awardNameTxt4",getOneBuffData(5)) + "\r";
+         var taskSpiritTipStr:String = LanguageMgr.GetTranslation("ddt.kingBlessFrame.awardNameTxt6") + "\r";
+         var sumStr:String = beadTipStr + helpTipStr + dungeonTipStr + strengthTipStr + taskSpiritTipStr + petTipStr;
+         var count:int = 0;
+         if(differ / 86400000 > 1)
+         {
+            count = differ / 86400000;
+            timeTxtStr = count + LanguageMgr.GetTranslation("day");
+         }
+         else if(differ / 3600000 > 1)
+         {
+            count = differ / 3600000;
+            timeTxtStr = count + LanguageMgr.GetTranslation("hour");
+         }
+         else if(differ / 60000 > 1)
+         {
+            count = differ / 60000;
+            timeTxtStr = count + LanguageMgr.GetTranslation("minute");
+         }
+         else
+         {
+            count = differ / 1000;
+            timeTxtStr = count + LanguageMgr.GetTranslation("second");
+         }
+         obj = {};
          var _loc18_:Boolean = true;
-         _loc15_.isOpen = _loc18_;
-         _loc15_.isSelf = _loc18_;
-         _loc15_.title = _loc9_;
-         _loc15_.content = _loc4_;
-         _loc15_.bottom = LanguageMgr.GetTranslation("ddt.kingBlessFrame.remainTimeTxt") + _loc8_;
-         return _loc15_;
+         obj.isOpen = _loc18_;
+         obj.isSelf = _loc18_;
+         obj.title = stateTipStr;
+         obj.content = sumStr;
+         obj.bottom = LanguageMgr.GetTranslation("ddt.kingBlessFrame.remainTimeTxt") + timeTxtStr;
+         return obj;
       }
       
-      private function timerHandler(param1:TimerEvent) : void
+      private function timerHandler(event:TimerEvent) : void
       {
          _count = Number(_count) - 1;
          if(_count <= 0)
@@ -236,24 +236,23 @@ package kingBless
          }
       }
       
-      private function updateAllData(param1:PkgEvent) : void
+      private function updateAllData(event:PkgEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:PackageIn = param1.pkg;
-         _openType = _loc3_.readInt();
-         _endTime = _loc3_.readDate();
+         var count:int = 0;
+         var i:int = 0;
+         var tmpkey:int = 0;
+         var pkg:PackageIn = event.pkg;
+         _openType = pkg.readInt();
+         _endTime = pkg.readDate();
          if(_openType > 0)
          {
-            _loc2_ = _loc3_.readInt();
+            count = pkg.readInt();
             _buffData = {};
-            _loc5_ = 0;
-            while(_loc5_ < _loc2_)
+            for(i = 0; i < count; )
             {
-               _loc4_ = _loc3_.readInt();
-               _buffData[_loc4_] = _loc3_.readInt();
-               _loc5_++;
+               tmpkey = pkg.readInt();
+               _buffData[tmpkey] = pkg.readInt();
+               i++;
             }
             _count = int((_endTime.getTime() - TimeManager.Instance.Now().getTime()) / 1000);
             if(_count > 0)
@@ -272,26 +271,26 @@ package kingBless
       
       private function helpStrawShowHandler() : void
       {
-         var _loc1_:BuffInfo = PlayerManager.Instance.Self.getBuff(51);
-         if(_loc1_)
+         var buffInfo:BuffInfo = PlayerManager.Instance.Self.getBuff(51);
+         if(buffInfo)
          {
-            _loc1_.additionCount = getOneBuffData(4);
+            buffInfo.additionCount = getOneBuffData(4);
          }
       }
       
-      private function updateBuffData(param1:PkgEvent) : void
+      private function updateBuffData(event:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         var _loc3_:int = _loc2_.readInt();
-         _buffData[_loc3_] = _loc2_.readInt();
+         var pkg:PackageIn = event.pkg;
+         var tmpkey:int = pkg.readInt();
+         _buffData[tmpkey] = pkg.readInt();
          dispatchEvent(new Event("update_buff_data_event"));
       }
       
-      public function getOneBuffData(param1:int) : int
+      public function getOneBuffData(type:int) : int
       {
          if(_openType > 0 && _buffData)
          {
-            return _buffData[param1];
+            return _buffData[type];
          }
          return 0;
       }

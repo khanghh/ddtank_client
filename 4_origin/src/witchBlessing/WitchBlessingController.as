@@ -38,7 +38,7 @@ package witchBlessing
          return _frame;
       }
       
-      private function __onShowFrame(param1:Event) : void
+      private function __onShowFrame(e:Event) : void
       {
          if(_frame)
          {
@@ -52,7 +52,7 @@ package witchBlessing
          _frame.flushData();
       }
       
-      private function __onHide(param1:Event) : void
+      private function __onHide(e:Event) : void
       {
          if(_frame)
          {

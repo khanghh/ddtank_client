@@ -19,14 +19,14 @@ package auctionHouse.view
       
       protected var _type_txt:GradientText;
       
-      public function BrowserLeftStripAsset(param1:ScaleFrameImage)
+      public function BrowserLeftStripAsset(img:ScaleFrameImage)
       {
          super();
-         _filterTextImage = param1;
+         _filterTextImage = img;
          initView();
       }
       
-      public function set selectState(param1:Boolean) : void
+      public function set selectState(value:Boolean) : void
       {
       }
       
@@ -40,19 +40,19 @@ package auctionHouse.view
          addChild(_filterTextImage);
       }
       
-      public function set bg(param1:ScaleFrameImage) : void
+      public function set bg(value:ScaleFrameImage) : void
       {
-         _bg = param1;
+         _bg = value;
       }
       
-      public function set icon(param1:ScaleFrameImage) : void
+      public function set icon(value:ScaleFrameImage) : void
       {
-         _icon = param1;
+         _icon = value;
       }
       
-      public function set type_txt(param1:GradientText) : void
+      public function set type_txt(value:GradientText) : void
       {
-         _type_txt = param1;
+         _type_txt = value;
       }
       
       public function get bg() : ScaleFrameImage
@@ -70,11 +70,11 @@ package auctionHouse.view
          return _type_txt;
       }
       
-      public function setFrameOnImage(param1:int) : void
+      public function setFrameOnImage(index:int) : void
       {
          if(_filterTextImage)
          {
-            _filterTextImage.setFrame(param1);
+            _filterTextImage.setFrame(index);
          }
       }
       
@@ -102,11 +102,11 @@ package auctionHouse.view
          }
       }
       
-      public function set type_text(param1:String) : void
+      public function set type_text(str:String) : void
       {
       }
       
-      public function set type_text1(param1:String) : void
+      public function set type_text1(str:String) : void
       {
       }
    }

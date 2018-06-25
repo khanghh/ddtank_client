@@ -29,18 +29,18 @@ package labyrinth.view
       
       private var _selectType:int;
       
-      public function RankingListFrame(param1:int = 0)
+      public function RankingListFrame(selectType:int = 0)
       {
-         _selectType = param1;
+         _selectType = selectType;
          super();
       }
       
       override protected function init() : void
       {
          super.init();
-         var _loc2_:String = _selectType == 0?LanguageMgr.GetTranslation("ddt.labyrinth.RankingListFrame.title0"):LanguageMgr.GetTranslation("ddt.labyrinth.RankingListFrame.title1");
-         var _loc1_:AlertInfo = new AlertInfo(_loc2_);
-         info = _loc1_;
+         var titleName:String = _selectType == 0?LanguageMgr.GetTranslation("ddt.labyrinth.RankingListFrame.title0"):LanguageMgr.GetTranslation("ddt.labyrinth.RankingListFrame.title1");
+         var alerInfo:AlertInfo = new AlertInfo(titleName);
+         info = alerInfo;
          _bg = ComponentFactory.Instance.creatBitmap("ddt.labyrinth.RankingListFrame.BG");
          addToContent(_bg);
          _rankingTitle = ComponentFactory.Instance.creatComponentByStylename("labyrinth.rankingListFrame.titleText");
@@ -63,11 +63,11 @@ package labyrinth.view
          LabyrinthControl.Instance.addEventListener("rankingLoadComplete",__updateList);
       }
       
-      protected function __updateList(param1:Event) : void
+      protected function __updateList(event:Event) : void
       {
-         var _loc2_:Array = LabyrinthManager.Instance.model.rankingList;
+         var list:Array = LabyrinthManager.Instance.model.rankingList;
          _list.vectorListModel.clear();
-         _list.vectorListModel.appendAll(_loc2_);
+         _list.vectorListModel.appendAll(list);
       }
       
       public function show() : void

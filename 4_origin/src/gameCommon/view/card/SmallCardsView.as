@@ -85,7 +85,7 @@ package gameCommon.view.card
       
       protected function init() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _selectedCnt = 0;
          _selectCompleted = false;
          _timerForView = new Timer(1000,_viewTime);
@@ -102,11 +102,10 @@ package gameCommon.view.card
          _countDownView.tick(_countDownTime);
          addChild(_title);
          createCards();
-         _loc1_ = 0;
-         while(_loc1_ < _resultCards.length)
+         for(i = 0; i < _resultCards.length; )
          {
-            __takeOut(_resultCards[_loc1_]);
-            _loc1_++;
+            __takeOut(_resultCards[i]);
+            i++;
          }
          initEvent();
          if(!PlayerManager.Instance.Self.IsWeakGuildFinish(24))
@@ -143,7 +142,7 @@ package gameCommon.view.card
          _timerForView.removeEventListener("timerComplete",__timerForViewComplete);
       }
       
-      protected function __countDownComplete(param1:Event) : void
+      protected function __countDownComplete(event:Event) : void
       {
          _onAllComplete = Number(_onAllComplete) + 1;
          if(_countDownView)
@@ -166,7 +165,7 @@ package gameCommon.view.card
          }
       }
       
-      protected function __timerForViewComplete(param1:* = null) : void
+      protected function __timerForViewComplete(event:* = null) : void
       {
          if(_gameInfo)
          {
@@ -186,75 +185,74 @@ package gameCommon.view.card
       
       protected function createCards() : void
       {
-         var _loc4_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:* = null;
-         var _loc3_:Point = new Point(26,25);
-         _loc4_ = 0;
-         while(_loc4_ < _cardCnt)
+         var i:int = 0;
+         var point:* = null;
+         var item:* = null;
+         var offset:Point = new Point(26,25);
+         for(i = 0; i < _cardCnt; )
          {
-            _loc1_ = new Point();
+            point = new Point();
             if(_roomInfo.type == 4 || _roomInfo.type == 10 || _roomInfo.type == 11 || _roomInfo.type == 123)
             {
-               _loc2_ = new LuckyCard(_loc4_,1);
+               item = new LuckyCard(i,1);
                _canTakeOut = _gameInfo.selfGamePlayer.BossCardCount > 0;
-               _loc2_.allowClick = _gameInfo.selfGamePlayer.BossCardCount > 0;
+               item.allowClick = _gameInfo.selfGamePlayer.BossCardCount > 0;
             }
             else if(_roomInfo.type == 5)
             {
-               _loc2_ = new LuckyCard(_loc4_,0);
+               item = new LuckyCard(i,0);
                _canTakeOut = true;
-               _loc2_.allowClick = true;
+               item.allowClick = true;
             }
             else
             {
-               _loc2_ = new LuckyCard(_loc4_,0);
+               item = new LuckyCard(i,0);
                _canTakeOut = _gameInfo.selfGamePlayer.GetCardCount > 0;
-               _loc2_.allowClick = _gameInfo.selfGamePlayer.GetCardCount > 0;
+               item.allowClick = _gameInfo.selfGamePlayer.GetCardCount > 0;
             }
-            _loc1_.x = _loc4_ % _cardColumns * (_loc3_.x + _loc2_.width) + 87;
-            _loc1_.y = int(_loc4_ / _cardColumns) * (_loc3_.y + _loc2_.height) + 32;
-            _loc2_.x = _loc3_.x + _loc2_.width + 87;
-            _loc2_.y = _loc3_.y + _loc2_.height + 32;
-            _loc2_.msg = LanguageMgr.GetTranslation("tank.gameover.DisableGetCard");
-            addChild(_loc2_);
-            _posArr.push(_loc1_);
-            _cards.push(_loc2_);
-            _loc4_++;
+            point.x = i % _cardColumns * (offset.x + item.width) + 87;
+            point.y = int(i / _cardColumns) * (offset.y + item.height) + 32;
+            item.x = offset.x + item.width + 87;
+            item.y = offset.y + item.height + 32;
+            item.msg = LanguageMgr.GetTranslation("tank.gameover.DisableGetCard");
+            addChild(item);
+            _posArr.push(point);
+            _cards.push(item);
+            i++;
          }
       }
       
-      protected function __takeOut(param1:CrazyTankSocketEvent) : void
+      protected function __takeOut(e:CrazyTankSocketEvent) : void
       {
-         var _loc4_:* = null;
-         var _loc6_:Boolean = false;
-         var _loc5_:Number = NaN;
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         var _loc7_:* = null;
+         var pkg:* = null;
+         var isSysTake:Boolean = false;
+         var place:Number = NaN;
+         var templateID:int = 0;
+         var count:int = 0;
+         var info:* = null;
          if(_cards.length > 0)
          {
-            _loc4_ = param1.pkg;
-            _loc6_ = _loc4_.readBoolean();
-            _loc5_ = _loc4_.readByte();
-            if(_loc5_ == 50)
+            pkg = e.pkg;
+            isSysTake = pkg.readBoolean();
+            place = pkg.readByte();
+            if(place == 50)
             {
                return;
             }
-            _loc2_ = _loc4_.readInt();
-            _loc3_ = _loc4_.readInt();
-            _loc7_ = _gameInfo.findPlayer(_loc4_.extend1);
-            if(_loc7_)
+            templateID = pkg.readInt();
+            count = pkg.readInt();
+            info = _gameInfo.findPlayer(pkg.extend1);
+            if(info)
             {
-               if(_loc2_ != -1)
+               if(templateID != -1)
                {
                   if(_gameInfo.gameMode == 46)
                   {
-                     MapManager.Instance.curMapCardLabelType = _loc7_._expObj.isDouble;
+                     MapManager.Instance.curMapCardLabelType = info._expObj.isDouble;
                   }
-                  _cards[_loc5_].play(_loc7_,_loc2_,_loc3_,false);
+                  _cards[place].play(info,templateID,count,false);
                }
-               if(_loc7_.isSelf)
+               if(info.isSelf)
                {
                   _onAllComplete = Number(_onAllComplete) + 1;
                   _selectedCnt = Number(_selectedCnt) + 1;
@@ -272,43 +270,41 @@ package gameCommon.view.card
          }
       }
       
-      protected function __disabledAllCards(param1:Event = null) : void
+      protected function __disabledAllCards(e:Event = null) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _cards.length)
+         var i:int = 0;
+         for(i = 0; i < _cards.length; )
          {
-            _cards[_loc2_].enabled = false;
-            _loc2_++;
+            _cards[i].enabled = false;
+            i++;
          }
       }
       
-      protected function startTween(param1:Event = null) : void
+      protected function startTween(e:Event = null) : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          removeEventListener("addedToStage",startTween);
-         _loc2_ = 0;
-         while(_loc2_ < 9)
+         for(i = 0; i < 9; )
          {
-            TweenLite.to(_cards[_loc2_],0.8,{
+            TweenLite.to(_cards[i],0.8,{
                "startAt":{
                   "x":_posArr[4].x,
                   "y":_posArr[4].y
                },
-               "x":_posArr[_loc2_].x,
-               "y":_posArr[_loc2_].y,
+               "x":_posArr[i].x,
+               "y":_posArr[i].y,
                "ease":Quint.easeOut,
                "onComplete":cardTweenComplete,
-               "onCompleteParams":[_cards[_loc2_]]
+               "onCompleteParams":[_cards[i]]
             });
-            _loc2_++;
+            i++;
          }
       }
       
-      protected function cardTweenComplete(param1:LuckyCard) : void
+      protected function cardTweenComplete(card:LuckyCard) : void
       {
-         TweenLite.killTweensOf(param1);
-         param1.enabled = true;
+         TweenLite.killTweensOf(card);
+         card.enabled = true;
       }
       
       public function dispose() : void
@@ -316,9 +312,9 @@ package gameCommon.view.card
          removeEvents();
          var _loc3_:int = 0;
          var _loc2_:* = _cards;
-         for each(var _loc1_ in _cards)
+         for each(var card in _cards)
          {
-            _loc1_.dispose();
+            card.dispose();
          }
          ObjectUtils.disposeObject(_countDownView);
          ObjectUtils.disposeObject(_title);

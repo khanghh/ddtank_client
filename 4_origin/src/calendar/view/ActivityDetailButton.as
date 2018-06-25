@@ -17,16 +17,16 @@ package calendar.view
          super();
       }
       
-      public function set state(param1:int) : void
+      public function set state(state:int) : void
       {
-         if(_state == param1)
+         if(_state == state)
          {
             return;
          }
-         _state = param1;
+         _state = state;
          if(backgound)
          {
-            DisplayUtils.setFrame(backgound,param1);
+            DisplayUtils.setFrame(backgound,state);
             TweenMax.killChildTweensOf(this);
             backgound.filters = null;
             if(_state == 1)
@@ -62,7 +62,7 @@ package calendar.view
          return _state;
       }
       
-      override public function setFrame(param1:int) : void
+      override public function setFrame(frameIndex:int) : void
       {
       }
    }

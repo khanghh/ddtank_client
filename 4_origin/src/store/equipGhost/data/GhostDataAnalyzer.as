@@ -8,34 +8,33 @@ package store.equipGhost.data
       
       private var _dataList:Vector.<GhostData>;
       
-      public function GhostDataAnalyzer(param1:Function)
+      public function GhostDataAnalyzer(onCompleteCall:Function)
       {
          _dataList = new Vector.<GhostData>();
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc5_:int = 0;
-         var _loc2_:XML = new XML(param1);
-         if(_loc2_.@value == "true")
+         var ghostData:* = null;
+         var xmllist:* = null;
+         var i:int = 0;
+         var xml:XML = new XML(data);
+         if(xml.@value == "true")
          {
-            _loc3_ = _loc2_..Item;
-            _loc5_ = 0;
-            while(_loc5_ < _loc3_.length())
+            xmllist = xml..Item;
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc4_ = new GhostData();
-               _loc4_.parseXML(_loc3_[_loc5_]);
-               _dataList.push(_loc4_);
-               _loc5_++;
+               ghostData = new GhostData();
+               ghostData.parseXML(xmllist[i]);
+               _dataList.push(ghostData);
+               i++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc2_.@message;
+            message = xml.@message;
             onAnalyzeError();
          }
       }

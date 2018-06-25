@@ -65,9 +65,9 @@ package church.view.weddingRoom.frame
          addToContent(_txtMoney);
       }
       
-      public function set txtMoney(param1:String) : void
+      public function set txtMoney(m:String) : void
       {
-         _txtMoney.text = param1;
+         _txtMoney.text = m;
       }
       
       private function setEvent() : void
@@ -77,19 +77,19 @@ package church.view.weddingRoom.frame
       
       private function checkMoney() : void
       {
-         var _loc1_:uint = Math.floor(PlayerManager.Instance.Self.Money / 200);
-         var _loc2_:* = uint(Math.ceil(_txtMoney.text / 200) == 0?1:Number(Math.ceil(_txtMoney.text / 200)));
-         if(_loc2_ >= _loc1_)
+         var total:uint = Math.floor(PlayerManager.Instance.Self.Money / 200);
+         var current:* = uint(Math.ceil(_txtMoney.text / 200) == 0?1:Number(Math.ceil(_txtMoney.text / 200)));
+         if(current >= total)
          {
-            _loc2_ = _loc1_;
+            current = total;
          }
-         _txtMoney.text = String(_loc2_ * 200);
+         _txtMoney.text = String(current * 200);
       }
       
-      private function onFrameResponse(param1:FrameEvent) : void
+      private function onFrameResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:

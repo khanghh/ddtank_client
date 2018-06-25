@@ -27,24 +27,24 @@ package gameCommon.view.control
       
       private var _next:ControlState;
       
-      public function FightControlBar(param1:LocalPlayer, param2:DisplayObjectContainer)
+      public function FightControlBar(self:LocalPlayer, container:DisplayObjectContainer)
       {
          _statePool = {};
-         _self = param1;
-         _container = param2;
+         _self = self;
+         _container = container;
          configUI();
          addEvent();
          super();
       }
       
-      private static function getFightControlState(param1:int, param2:LocalPlayer) : ControlState
+      private static function getFightControlState(state:int, self:LocalPlayer) : ControlState
       {
-         switch(int(param1))
+         switch(int(state))
          {
             case 0:
-               return new LiveState(param2);
+               return new LiveState(self);
             case 1:
-               return new SoulState(param2);
+               return new SoulState(self);
          }
       }
       
@@ -56,7 +56,7 @@ package gameCommon.view.control
       {
       }
       
-      private function __die(param1:LivingEvent) : void
+      private function __die(event:LivingEvent) : void
       {
          setState(1);
       }
@@ -65,18 +65,18 @@ package gameCommon.view.control
       {
       }
       
-      public function setState(param1:int) : ControlState
+      public function setState(state:int) : ControlState
       {
-         var _loc2_:* = null;
-         if(!hasState(param1))
+         var cs:* = null;
+         if(!hasState(state))
          {
-            _loc2_ = getFightControlState(param1,_self);
-            _next = _loc2_;
-            _statePool[param1] = _loc2_;
+            cs = getFightControlState(state,_self);
+            _next = cs;
+            _statePool[state] = cs;
          }
          else
          {
-            _next = _statePool[param1];
+            _next = _statePool[state];
          }
          if(_current == _next)
          {
@@ -94,16 +94,21 @@ package gameCommon.view.control
          return _current;
       }
       
-      private function hasState(param1:int) : Boolean
+      public function get curControlState() : ControlState
       {
-         return _statePool.hasOwnProperty(String(param1)) && _statePool[param1];
+         return _current;
       }
       
-      private function enterNext(param1:ControlState) : void
+      private function hasState(state:int) : Boolean
       {
-         if(param1)
+         return _statePool.hasOwnProperty(String(state)) && _statePool[state];
+      }
+      
+      private function enterNext(next:ControlState) : void
+      {
+         if(next)
          {
-            _current = param1;
+            _current = next;
          }
          if(_current)
          {
@@ -112,7 +117,7 @@ package gameCommon.view.control
          _next = null;
       }
       
-      private function __stateClicked(param1:MouseEvent) : void
+      private function __stateClicked(event:MouseEvent) : void
       {
          setState(1);
       }
@@ -131,10 +136,10 @@ package gameCommon.view.control
          removeEvent();
          var _loc3_:int = 0;
          var _loc2_:* = _statePool;
-         for(var _loc1_ in _statePool)
+         for(var key in _statePool)
          {
-            ObjectUtils.disposeObject(_statePool[_loc1_]);
-            delete _statePool[_loc1_];
+            ObjectUtils.disposeObject(_statePool[key]);
+            delete _statePool[key];
          }
       }
    }

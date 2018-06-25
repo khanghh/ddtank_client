@@ -67,8 +67,8 @@ package newYearRice.view
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var cell:* = null;
          NewYearRiceManager.IsOpenFrame = true;
          InviteManager.Instance.enabled = false;
          if(RoomManager.Instance.current != null)
@@ -86,61 +86,59 @@ package newYearRice.view
          _inviteBtn = ComponentFactory.Instance.creat("NewYearRiceOpenFrameView.inviteBtn");
          addToContent(_inviteBtn);
          _playerItems = new Vector.<PlayerCell>();
-         _loc2_ = 0;
-         while(_loc2_ < 6)
+         for(i = 0; i < 6; )
          {
-            _loc1_ = ComponentFactory.Instance.creatCustomObject("NewYearRiceOpenFrameView.playerCell." + _loc2_);
-            _loc1_.mouseEnabled = true;
-            addToContent(_loc1_);
-            _loc1_.addEventListener("click",__cellClick);
-            _playerItems.push(_loc1_);
-            _loc2_++;
+            cell = ComponentFactory.Instance.creatCustomObject("NewYearRiceOpenFrameView.playerCell." + i);
+            cell.mouseEnabled = true;
+            addToContent(cell);
+            cell.addEventListener("click",__cellClick);
+            _playerItems.push(cell);
+            i++;
          }
       }
       
-      private function __cellClick(param1:MouseEvent) : void
+      private function __cellClick(e:MouseEvent) : void
       {
-         var _loc2_:PlayerCell = param1.currentTarget as PlayerCell;
-         if(_loc2_.info != null && _loc2_.info.ID != _roomPlayerID && _roomPlayerID > 0)
+         var cell:PlayerCell = e.currentTarget as PlayerCell;
+         if(cell.info != null && cell.info.ID != _roomPlayerID && _roomPlayerID > 0)
          {
-            _nameID = _loc2_.info.ID;
-            _alert1 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("NewYearRiceOpenFrameView.view.QuitPlayer",_loc2_.nikeName),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
+            _nameID = cell.info.ID;
+            _alert1 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("NewYearRiceOpenFrameView.view.QuitPlayer",cell.nikeName),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
             _alert1.addEventListener("response",__quitPlayer);
          }
       }
       
-      private function __quitPlayer(param1:FrameEvent) : void
+      private function __quitPlayer(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__quitPlayer);
-         _loc2_.disposeChildren = true;
-         _loc2_.dispose();
-         _loc2_ = null;
-         if(param1.responseCode == 3)
+         var alert:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",__quitPlayer);
+         alert.disposeChildren = true;
+         alert.dispose();
+         alert = null;
+         if(e.responseCode == 3)
          {
             SocketManager.Instance.out.sendQuitNewYearRiceRoom(_nameID);
          }
       }
       
-      public function roomPlayerItem(param1:int) : void
+      public function roomPlayerItem(id:int) : void
       {
-         _roomPlayerID = param1;
-         _playerItems[0].setNickName(param1,"right");
+         _roomPlayerID = id;
+         _playerItems[0].setNickName(id,"right");
       }
       
-      public function updatePlayerItem(param1:Array) : void
+      public function updatePlayerItem(players:Array) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < param1.length)
+         var i:int = 0;
+         for(i = 0; i < players.length; )
          {
-            _playerItems[_loc2_].removePlayerCell();
-            if(_playerItems[_loc2_].info == null)
+            _playerItems[i].removePlayerCell();
+            if(_playerItems[i].info == null)
             {
-               _playerItems[_loc2_].setNickName(param1[_loc2_].ID,_loc2_ <= 2?"right":"left",param1[_loc2_].Style,param1[_loc2_].NikeName,param1[_loc2_].Sex);
+               _playerItems[i].setNickName(players[i].ID,i <= 2?"right":"left",players[i].Style,players[i].NikeName,players[i].Sex);
             }
-            _loc2_++;
+            i++;
          }
       }
       
@@ -164,24 +162,23 @@ package newYearRice.view
          NewYearRiceManager.instance.addEventListener("yearFoodCreateFood",__quitYearFoodRoom);
       }
       
-      private function __quitYearFoodRoom(param1:CrazyTankSocketEvent) : void
+      private function __quitYearFoodRoom(event:CrazyTankSocketEvent) : void
       {
          dispose();
       }
       
-      private function __updateView(param1:Event) : void
+      private function __updateView(e:Event) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:Array = NewYearRiceManager.instance.model.playersArray;
-         _loc3_ = 1;
-         while(_loc3_ < _loc2_.length)
+         var i:int = 0;
+         var playerArr:Array = NewYearRiceManager.instance.model.playersArray;
+         for(i = 1; i < playerArr.length; )
          {
-            _playerItems[_loc3_].removePlayerCell();
-            if(_playerItems[_loc3_].info == null)
+            _playerItems[i].removePlayerCell();
+            if(_playerItems[i].info == null)
             {
-               _playerItems[_loc3_].setNickName(_loc2_[_loc3_].ID,_loc3_ <= 2?"right":"left",_loc2_[_loc3_].Style,_loc2_[_loc3_].NikeName,_loc2_[_loc3_].Sex);
+               _playerItems[i].setNickName(playerArr[i].ID,i <= 2?"right":"left",playerArr[i].Style,playerArr[i].NikeName,playerArr[i].Sex);
             }
-            _loc3_++;
+            i++;
          }
       }
       
@@ -199,12 +196,12 @@ package newYearRice.view
          _inviteBtn.enable = _loc1_;
       }
       
-      private function __exitYearFoodRoom(param1:CrazyTankSocketEvent) : void
+      private function __exitYearFoodRoom(event:CrazyTankSocketEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:PackageIn = param1.pkg;
-         _isRoomPlayer = _loc2_.readBoolean();
-         _playerID = _loc2_.readInt();
+         var i:int = 0;
+         var pkg:PackageIn = event.pkg;
+         _isRoomPlayer = pkg.readBoolean();
+         _playerID = pkg.readInt();
          if(_isRoomPlayer)
          {
             if(_inviteFrame)
@@ -218,30 +215,29 @@ package newYearRice.view
          }
          else if(_playerItems && _playerItems.length > 1)
          {
-            _loc3_ = 1;
-            while(_loc3_ < _playerItems.length)
+            for(i = 1; i < _playerItems.length; )
             {
-               if(_playerItems[_loc3_].playerID == _playerID)
+               if(_playerItems[i].playerID == _playerID)
                {
-                  _playerItems[_loc3_].removePlayerCell();
+                  _playerItems[i].removePlayerCell();
                }
-               _loc3_++;
+               i++;
             }
          }
       }
       
-      public function setViewFrame(param1:int) : void
+      public function setViewFrame(index:int) : void
       {
          if(_bg)
          {
             ObjectUtils.disposeObject(_bg);
          }
          _bg = null;
-         if(param1 == 1)
+         if(index == 1)
          {
             _bg = ComponentFactory.Instance.creatBitmap("asset.newYearRice.DinnerBG");
          }
-         else if(param1 == 2)
+         else if(index == 2)
          {
             _bg = ComponentFactory.Instance.creatBitmap("asset.newYearRice.BanquetBG");
          }
@@ -254,14 +250,14 @@ package newYearRice.view
          addToContent(_bg);
       }
       
-      private function __openBtnHandler(param1:MouseEvent) : void
+      private function __openBtnHandler(evt:MouseEvent) : void
       {
          _startInvite = false;
          NewYearRiceManager.instance.model.yearFoodInfo = 0;
          SocketManager.Instance.out.sendNewYearRiceOpen(NewYearRiceManager.instance.model.playerNum);
       }
       
-      private function __inviteBtnHandler(param1:MouseEvent) : void
+      private function __inviteBtnHandler(evt:MouseEvent) : void
       {
          if(_inviteFrame != null)
          {
@@ -293,7 +289,7 @@ package newYearRice.view
          UIModuleLoader.Instance.addUIModuleImp("ddtinvite");
       }
       
-      private function __onClose(param1:Event) : void
+      private function __onClose(event:Event) : void
       {
          UIModuleLoader.Instance.removeEventListener("uiModuleComplete",__onInviteResComplete);
          UIModuleLoader.Instance.removeEventListener("uiModuleError",__onInviteResError);
@@ -301,9 +297,9 @@ package newYearRice.view
          UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);
       }
       
-      private function __onInviteResComplete(param1:UIModuleEvent) : void
+      private function __onInviteResComplete(evt:UIModuleEvent) : void
       {
-         if(param1.module == "ddtinvite")
+         if(evt.module == "ddtinvite")
          {
             UIModuleSmallLoading.Instance.hide();
             UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);
@@ -319,22 +315,22 @@ package newYearRice.view
          }
       }
       
-      private function __onInviteComplete(param1:Event) : void
+      private function __onInviteComplete(evt:Event) : void
       {
          _inviteFrame.removeEventListener("complete",__onInviteComplete);
          ObjectUtils.disposeObject(_inviteFrame);
          _inviteFrame = null;
       }
       
-      private function __onInviteResError(param1:UIModuleEvent) : void
+      private function __onInviteResError(evt:UIModuleEvent) : void
       {
          UIModuleLoader.Instance.removeEventListener("uiModuleComplete",__onInviteResComplete);
          UIModuleLoader.Instance.removeEventListener("uiModuleError",__onInviteResError);
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
             SocketManager.Instance.out.sendExitYearFoodRoom();

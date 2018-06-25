@@ -18,56 +18,55 @@ package par.renderer
          layers = new Dictionary();
       }
       
-      public function renderParticles(param1:Vector.<Particle>) : void
+      public function renderParticles(particles:Vector.<Particle>) : void
       {
          var _loc4_:int = 0;
-         var _loc3_:* = param1;
-         for each(var _loc2_ in param1)
+         var _loc3_:* = particles;
+         for each(var p in particles)
          {
-            _loc2_.image.transform.colorTransform = _loc2_.colorTransform;
-            _loc2_.image.transform.matrix = _loc2_.matrixTransform;
+            p.image.transform.colorTransform = p.colorTransform;
+            p.image.transform.matrix = p.matrixTransform;
          }
       }
       
-      public function addParticle(param1:Particle) : void
+      public function addParticle(particle:Particle) : void
       {
-         var _loc2_:Sprite = layers[param1.info];
-         if(_loc2_ == null)
+         var ly:Sprite = layers[particle.info];
+         if(ly == null)
          {
-            _loc2_ = new Sprite();
-            layers[param1.info] = new Sprite();
-            _loc2_.blendMode = "layer";
-            addChild(_loc2_);
+            ly = new Sprite();
+            layers[particle.info] = new Sprite();
+            ly.blendMode = "layer";
+            addChild(ly);
          }
-         if(param1.info.keepOldFirst)
+         if(particle.info.keepOldFirst)
          {
-            _loc2_.addChild(param1.image);
+            ly.addChild(particle.image);
          }
          else
          {
-            _loc2_.addChildAt(param1.image,0);
+            ly.addChildAt(particle.image,0);
          }
       }
       
-      public function removeParticle(param1:Particle) : void
+      public function removeParticle(particle:Particle) : void
       {
-         var _loc2_:Sprite = layers[param1.info];
-         if(_loc2_ && _loc2_.contains(param1.image))
+         var ly:Sprite = layers[particle.info];
+         if(ly && ly.contains(particle.image))
          {
-            _loc2_.removeChild(param1.image);
+            ly.removeChild(particle.image);
          }
       }
       
       public function reset() : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          layers = new Dictionary();
-         var _loc1_:Number = numChildren;
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_)
+         var len:Number = numChildren;
+         for(i = 0; i < len; )
          {
             this.removeChildAt(0);
-            _loc2_++;
+            i++;
          }
       }
       

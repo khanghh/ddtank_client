@@ -41,130 +41,130 @@ package com.pickgliss.loader
          LoadResourceManager.Instance.dispatchEvent(new LoaderResourceEvent("init complete"));
       }
       
-      private static function __checkHandler(... rest) : void
+      private static function __checkHandler(... args) : void
       {
-         _eventDispatcher.dispatchEvent(new LoadInterfaceEvent("checkComplete",rest));
+         _eventDispatcher.dispatchEvent(new LoadInterfaceEvent("checkComplete",args));
       }
       
-      private static function __deleteHandler(... rest) : void
+      private static function __deleteHandler(... args) : void
       {
-         _eventDispatcher.dispatchEvent(new LoadInterfaceEvent("deleteComplete",rest));
+         _eventDispatcher.dispatchEvent(new LoadInterfaceEvent("deleteComplete",args));
       }
       
-      private static function __flashGotoAndPlayHandler(... rest) : void
+      private static function __flashGotoAndPlayHandler(... args) : void
       {
-         _eventDispatcher.dispatchEvent(new LoadInterfaceEvent("flashGotoAndPlay",rest));
+         _eventDispatcher.dispatchEvent(new LoadInterfaceEvent("flashGotoAndPlay",args));
       }
       
-      private static function __setSoundHandler(... rest) : void
+      private static function __setSoundHandler(... args) : void
       {
-         _eventDispatcher.dispatchEvent(new LoadInterfaceEvent("setSound",rest));
+         _eventDispatcher.dispatchEvent(new LoadInterfaceEvent("setSound",args));
       }
       
-      public static function setVersion(param1:int) : void
+      public static function setVersion(version:int) : void
       {
          if(ExternalInterface.available)
          {
             if(LoadResourceManager.Instance.isMicroClient)
             {
-               fscommand("setVersion",param1.toString());
+               fscommand("setVersion",version.toString());
             }
          }
       }
       
-      public static function checkResource(param1:int, param2:String, param3:String, param4:Boolean = false) : void
+      public static function checkResource(loaderID:int, infoSite:String, path:String, loadImp:Boolean = false) : void
       {
          if(ExternalInterface.available)
          {
             if(LoadResourceManager.Instance.isMicroClient)
             {
-               fscommand("checkResource",[param1,param2,param3,param4].join("|"));
+               fscommand("checkResource",[loaderID,infoSite,path,loadImp].join("|"));
             }
          }
       }
       
-      public static function deleteResource(param1:String) : void
+      public static function deleteResource(path:String) : void
       {
          if(ExternalInterface.available)
          {
             if(LoadResourceManager.Instance.isMicroClient)
             {
-               fscommand("deleteResource",param1);
+               fscommand("deleteResource",path);
             }
          }
       }
       
-      public static function traceMsg(param1:String) : void
+      public static function traceMsg(msg:String) : void
       {
-         trace(param1);
+         trace(msg);
          if(ExternalInterface.available)
          {
             if(LoadResourceManager.Instance.isMicroClient)
             {
-               fscommand("printTest",param1);
+               fscommand("printTest",msg);
             }
          }
       }
       
-      public static function alertAndRestart(param1:String) : void
+      public static function alertAndRestart(msg:String) : void
       {
-         trace(param1);
+         trace(msg);
          if(ExternalInterface.available)
          {
             if(LoadResourceManager.Instance.isMicroClient)
             {
-               traceMsg("alertAndRestart:" + param1);
-               fscommand("alertAndRestart",param1);
+               traceMsg("alertAndRestart:" + msg);
+               fscommand("alertAndRestart",msg);
             }
          }
       }
       
-      public static function setDailyTask(param1:String) : void
+      public static function setDailyTask(value:String) : void
       {
-         trace("setDailyTask:" + param1);
+         trace("setDailyTask:" + value);
          if(ExternalInterface.available)
          {
             if(LoadResourceManager.Instance.isMicroClient)
             {
-               fscommand("setDailyTask",param1);
+               fscommand("setDailyTask",value);
             }
          }
       }
       
-      public static function setDailyActivity(param1:String) : void
+      public static function setDailyActivity(value:String) : void
       {
-         trace("setDailyActivity:" + param1);
+         trace("setDailyActivity:" + value);
          if(ExternalInterface.available)
          {
             if(LoadResourceManager.Instance.isMicroClient)
             {
-               fscommand("setDailyActivity",param1);
+               fscommand("setDailyActivity",value);
             }
          }
       }
       
-      public static function setFatigue(param1:String) : void
+      public static function setFatigue(value:String) : void
       {
-         trace("setFatigue:" + param1);
+         trace("setFatigue:" + value);
          if(ExternalInterface.available)
          {
             if(LoadResourceManager.Instance.isMicroClient)
             {
-               traceMsg("setFatigue:" + param1);
-               fscommand("setFatigue",param1);
+               traceMsg("setFatigue:" + value);
+               fscommand("setFatigue",value);
             }
          }
       }
       
-      public static function setSound(param1:String) : void
+      public static function setSound(value:String) : void
       {
-         trace("setSound:" + param1);
+         trace("setSound:" + value);
          if(ExternalInterface.available)
          {
             if(LoadResourceManager.Instance.isMicroClient)
             {
-               traceMsg("setSound:" + param1);
-               fscommand("setSound",param1);
+               traceMsg("setSound:" + value);
+               fscommand("setSound",value);
             }
          }
       }

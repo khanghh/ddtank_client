@@ -26,19 +26,18 @@ package kingDivision.view
          spacing = 3;
       }
       
-      public function setGoodsListItem(param1:int) : void
+      public function setGoodsListItem(index:int) : void
       {
-         var _loc2_:int = 0;
-         _goodsArr = KingDivisionManager.Instance.model.getLevelGoodsItems(param1);
+         var i:int = 0;
+         _goodsArr = KingDivisionManager.Instance.model.getLevelGoodsItems(index);
          items = new Vector.<RewardGoodsListItem>(_goodsArr.length);
-         _loc2_ = 0;
-         while(_loc2_ < _goodsArr.length)
+         for(i = 0; i < _goodsArr.length; )
          {
-            items[_loc2_] = new RewardGoodsListItem();
-            items[_loc2_].buttonMode = true;
-            items[_loc2_].goodsInfo(_goodsArr[_loc2_].TemplateID,_goodsArr[_loc2_].AttackCompose,_goodsArr[_loc2_].DefendCompose,_goodsArr[_loc2_].AgilityCompose,_goodsArr[_loc2_].LuckCompose,_goodsArr[_loc2_].Count,_goodsArr[_loc2_].IsBind,_goodsArr[_loc2_].ValidDate);
-            addChild(items[_loc2_]);
-            _loc2_++;
+            items[i] = new RewardGoodsListItem();
+            items[i].buttonMode = true;
+            items[i].goodsInfo(_goodsArr[i].TemplateID,_goodsArr[i].AttackCompose,_goodsArr[i].DefendCompose,_goodsArr[i].AgilityCompose,_goodsArr[i].LuckCompose,_goodsArr[i].Count,_goodsArr[i].IsBind,_goodsArr[i].ValidDate);
+            addChild(items[i]);
+            i++;
          }
       }
    }

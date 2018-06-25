@@ -36,19 +36,19 @@ package AvatarCollection
          AvatarCollectionManager.instance.addEventListener("openview",__onOpenView);
       }
       
-      private function __onOpenView(param1:CEvent) : void
+      private function __onOpenView(e:CEvent) : void
       {
-         new HelperDataModuleLoad().loadDataModule([LoaderCreate.Instance.createAvatarCollectionUnitDataLoader(),LoaderCreate.Instance.createHorsePicCherishDataLoader()],createFrame,[param1]);
+         new HelperDataModuleLoad().loadDataModule([LoaderCreate.Instance.createAvatarCollectionUnitDataLoader(),LoaderCreate.Instance.createHorsePicCherishDataLoader()],createFrame,[e]);
       }
       
-      private function createFrame(param1:CEvent) : void
+      private function createFrame(e:CEvent) : void
       {
-         var _loc2_:* = null;
+         var parent:* = null;
          if(!_view)
          {
-            _loc2_ = param1.data.parent as Sprite;
+            parent = e.data.parent as Sprite;
             _view = new AvatarCollectionMainView();
-            _loc2_.addChild(_view);
+            parent.addChild(_view);
             AvatarCollectionManager.instance.addEventListener("closeView",__onCloseView);
             AvatarCollectionManager.instance.addEventListener("visible",__onVisible);
             AvatarCollectionManager.instance.addEventListener("avatar_collection_select_all",__onSelectAll);
@@ -56,39 +56,38 @@ package AvatarCollection
          }
       }
       
-      protected function __onResetLeft(param1:CEvent) : void
+      protected function __onResetLeft(e:CEvent) : void
       {
          _view.reset();
       }
       
-      protected function __onSelectAll(param1:CEvent) : void
+      protected function __onSelectAll(e:CEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = undefined;
-         var _loc3_:int = _view.unitList.length;
-         _loc5_ = 0;
-         while(_loc5_ < _loc3_)
+         var i:int = 0;
+         var cellList:* = undefined;
+         var len:int = _view.unitList.length;
+         for(i = 0; i < len; )
          {
-            _loc4_ = _view.unitList[_loc5_].list.list.cell;
+            cellList = _view.unitList[i].list.list.cell;
             var _loc7_:int = 0;
-            var _loc6_:* = _loc4_;
-            for each(var _loc2_ in _loc4_)
+            var _loc6_:* = cellList;
+            for each(var value in cellList)
             {
-               _loc2_.select = param1.data;
+               value.select = e.data;
             }
-            _loc5_++;
+            i++;
          }
       }
       
-      private function __onVisible(param1:CEvent) : void
+      private function __onVisible(e:CEvent) : void
       {
          if(_view)
          {
-            _view.visible = param1.data.visible;
+            _view.visible = e.data.visible;
          }
       }
       
-      private function __onCloseView(param1:CEvent) : void
+      private function __onCloseView(e:CEvent) : void
       {
          AvatarCollectionManager.instance.removeEventListener("closeView",__onCloseView);
          AvatarCollectionManager.instance.removeEventListener("visible",__onVisible);

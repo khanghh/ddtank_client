@@ -19,18 +19,18 @@ package ddt.view.bossbox
       
       private var _stepSecond:int;
       
-      public function TimeCountDown(param1:int)
+      public function TimeCountDown(stepSecond:int)
       {
          super();
-         _stepSecond = param1;
+         _stepSecond = stepSecond;
          _time = TimerManager.getInstance().addTimerJuggler(_stepSecond);
          _time.stop();
       }
       
-      public function setTimeOnMinute(param1:Number) : void
+      public function setTimeOnMinute(minute:Number) : void
       {
-         param1 = param1 < 0?0:Number(param1);
-         _count = param1 * 60 * 1000 / _stepSecond;
+         minute = minute < 0?0:Number(minute);
+         _count = minute * 60 * 1000 / _stepSecond;
          if(_count > 0)
          {
             _time.repeatCount = _count;
@@ -41,12 +41,12 @@ package ddt.view.bossbox
          }
       }
       
-      private function _timer(param1:Event) : void
+      private function _timer(e:Event) : void
       {
          dispatchEvent(new Event("countdown_one"));
       }
       
-      private function _timerComplete(param1:Event) : void
+      private function _timerComplete(e:Event) : void
       {
          dispatchEvent(new Event("TIME_countdown_complete"));
       }

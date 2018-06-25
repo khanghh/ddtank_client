@@ -117,11 +117,11 @@ package roomLoading.view
       
       protected var _unloadedmsg:String = "";
       
-      public function RoomLoadingView(param1:GameInfo)
+      public function RoomLoadingView($info:GameInfo)
       {
          _hasLoadedFinished = new DictionaryData();
          super();
-         _gameInfo = param1;
+         _gameInfo = $info;
          init();
       }
       
@@ -143,7 +143,7 @@ package roomLoading.view
          {
             _bg = ComponentFactory.Instance.creatBitmap("asset.roomloading.vsBg");
          }
-         var _loc2_:int = RoomManager.Instance.current.gameMode;
+         var mode:int = RoomManager.Instance.current.gameMode;
          _versus = ComponentFactory.Instance.creatCustomObject("roomLoading.VersusItem",[RoomManager.Instance.current.gameMode]);
          _countDownTxt = ComponentFactory.Instance.creatCustomObject("roomLoading.CountDownItem");
          _battleField = ComponentFactory.Instance.creatCustomObject("roomLoading.BattleFieldItem",[_gameInfo.mapIndex]);
@@ -158,7 +158,7 @@ package roomLoading.view
          addChild(_battleField);
          addChild(_tipsItem);
          initLoadingItems();
-         if(_gameInfo.gameMode == 7 || _gameInfo.gameMode == 31 || _gameInfo.gameMode == 4 || _gameInfo.gameMode == 8 || _gameInfo.gameMode == 10 || _gameInfo.gameMode == 17 || _gameInfo.gameMode == 19 || _gameInfo.gameMode == 24 || _gameInfo.gameMode == 25 || _gameInfo.gameMode == 40 || _gameInfo.gameMode == 50 || _gameInfo.gameMode == 31 || _gameInfo.gameMode == 52 || _gameInfo.gameMode == 55 || _gameInfo.gameMode == 55 || _gameInfo.gameMode == 47 || _gameInfo.gameMode == 49 || _gameInfo.gameMode == 151 || _gameInfo.gameMode == 155)
+         if(_gameInfo.gameMode == 7 || _gameInfo.gameMode == 31 || _gameInfo.gameMode == 4 || _gameInfo.gameMode == 8 || _gameInfo.gameMode == 10 || _gameInfo.gameMode == 17 || _gameInfo.gameMode == 19 || _gameInfo.gameMode == 24 || _gameInfo.gameMode == 25 || _gameInfo.gameMode == 40 || _gameInfo.gameMode == 50 || _gameInfo.gameMode == 31 || _gameInfo.gameMode == 52 || _gameInfo.gameMode == 55 || _gameInfo.gameMode == 55 || _gameInfo.gameMode == 70 || _gameInfo.gameMode == 47 || _gameInfo.gameMode == 49 || _gameInfo.gameMode == 151 || _gameInfo.gameMode == 155)
          {
             if(!redBig)
             {
@@ -169,8 +169,8 @@ package roomLoading.view
          {
             addChild(_dungeonMapItem);
          }
-         var _loc1_:int = RoomManager.Instance.current.type == 4 || RoomManager.Instance.current.type == 11 || RoomManager.Instance.current.type == 25 || RoomManager.Instance.current.type == 43 || RoomManager.Instance.current.type == 123?94:64;
-         _countDownTimer = new Timer(1000,_loc1_);
+         var time:int = RoomManager.Instance.current.type == 4 || RoomManager.Instance.current.type == 11 || RoomManager.Instance.current.type == 25 || RoomManager.Instance.current.type == 43 || RoomManager.Instance.current.type == 123?94:64;
+         _countDownTimer = new Timer(1000,time);
          _countDownTimer.addEventListener("timer",__countDownTick);
          _countDownTimer.addEventListener("timerComplete",__countDownComplete);
          _countDownTimer.start();
@@ -204,7 +204,7 @@ package roomLoading.view
          }
       }
       
-      private function __onCancelLinkClick(param1:TextEvent) : void
+      private function __onCancelLinkClick(event:TextEvent) : void
       {
          BombKingControl.instance.reset();
          StateManager.setState("main");
@@ -212,57 +212,56 @@ package roomLoading.view
       
       protected function initLoadingItems() : void
       {
-         var _loc7_:int = 0;
-         var _loc11_:int = 0;
-         var _loc12_:* = null;
-         var _loc9_:int = 0;
-         var _loc10_:int = 0;
-         var _loc3_:* = null;
-         var _loc13_:* = null;
-         var _loc4_:* = null;
-         var _loc5_:* = null;
-         var _loc6_:* = null;
-         var _loc8_:int = _gameInfo.roomPlayers.length;
-         _loc12_ = _gameInfo.roomPlayers;
+         var blueLen:int = 0;
+         var redLen:int = 0;
+         var roomPlayers:* = null;
+         var team:int = 0;
+         var i:int = 0;
+         var roomPlayer:* = null;
+         var item:* = null;
+         var gameplayer:* = null;
+         var currentPet:* = null;
+         var horseSkillEquipList:* = null;
+         var len:int = _gameInfo.roomPlayers.length;
+         roomPlayers = _gameInfo.roomPlayers;
          loadingBombAsset();
          var _loc15_:int = 0;
-         var _loc14_:* = _loc12_;
-         for each(var _loc1_ in _loc12_)
+         var _loc14_:* = roomPlayers;
+         for each(var rp1 in roomPlayers)
          {
-            if(PlayerManager.Instance.Self.ID == _loc1_.playerInfo.ID)
+            if(PlayerManager.Instance.Self.ID == rp1.playerInfo.ID)
             {
-               _loc9_ = _loc1_.team;
+               team = rp1.team;
             }
          }
          var _loc17_:int = 0;
-         var _loc16_:* = _loc12_;
-         for each(var _loc2_ in _loc12_)
+         var _loc16_:* = roomPlayers;
+         for each(var rp in roomPlayers)
          {
-            if(!_loc2_.isViewer)
+            if(!rp.isViewer)
             {
-               if(_loc2_.team == 1)
+               if(rp.team == 1)
                {
-                  _loc7_++;
-                  §§push(_loc7_);
+                  blueLen++;
+                  §§push(blueLen);
                }
                else
                {
-                  _loc11_++;
-                  §§push(int(_loc11_));
+                  redLen++;
+                  §§push(int(redLen));
                }
                §§pop();
-               if(!(RoomManager.Instance.current.type == 0 && _loc2_.team != _loc9_))
+               if(!(RoomManager.Instance.current.type == 0 && rp.team != team))
                {
-                  IMManager.Instance.saveRecentContactsID(_loc2_.playerInfo.ID);
+                  IMManager.Instance.saveRecentContactsID(rp.playerInfo.ID);
                }
             }
          }
-         _loc10_ = 0;
-         while(_loc10_ < _loc8_)
+         for(i = 0; i < len; )
          {
-            _loc3_ = _gameInfo.roomPlayers[_loc10_];
-            _loc3_.addEventListener("progressChange",__onLoadingFinished);
-            if(_loc3_.isViewer)
+            roomPlayer = _gameInfo.roomPlayers[i];
+            roomPlayer.addEventListener("progressChange",__onLoadingFinished);
+            if(roomPlayer.isViewer)
             {
                if(contains(_tipsItem))
                {
@@ -272,24 +271,24 @@ package roomLoading.view
             }
             else
             {
-               _loc13_ = new RoomLoadingCharacterItem(_loc3_,RoomManager.Instance.current.type == 121);
-               _loc4_ = _gameInfo.findLivingByPlayerID(_loc3_.playerInfo.ID,_loc3_.playerInfo.ZoneID);
+               item = new RoomLoadingCharacterItem(roomPlayer,RoomManager.Instance.current.type == 121);
+               gameplayer = _gameInfo.findLivingByPlayerID(roomPlayer.playerInfo.ID,roomPlayer.playerInfo.ZoneID);
                if(RoomManager.Instance.current.type == 121)
                {
-                  setSurvivalRoomItemPos(_loc13_,_loc4_.team);
-                  setSurvivalCharacter(_loc4_,_loc13_,_loc4_.team - 1);
+                  setSurvivalRoomItemPos(item,gameplayer.team);
+                  setSurvivalCharacter(gameplayer,item,gameplayer.team - 1);
                }
                else
                {
-                  initRoomItem(_loc13_);
-                  initCharacter(_loc4_,_loc13_);
+                  initRoomItem(item);
+                  initCharacter(gameplayer,item);
                }
-               _loc5_ = _loc4_.playerInfo.currentPet;
-               loadingPetAsset(_loc5_);
-               _loc6_ = _loc3_.horseSkillEquipList;
-               loadingHorseAsset(_loc6_);
+               currentPet = gameplayer.playerInfo.currentPet;
+               loadingPetAsset(currentPet);
+               horseSkillEquipList = roomPlayer.horseSkillEquipList;
+               loadingHorseAsset(horseSkillEquipList);
             }
-            _loc10_++;
+            i++;
          }
          if(blueBig)
          {
@@ -342,30 +341,29 @@ package roomLoading.view
       {
          var _loc3_:int = 0;
          var _loc2_:* = _gameInfo.neededPetSkillResource;
-         for each(var _loc1_ in _gameInfo.neededPetSkillResource)
+         for each(var skillRes in _gameInfo.neededPetSkillResource)
          {
-            _loc1_.startLoad();
+            skillRes.startLoad();
          }
       }
       
       protected function loadingNeededMovies() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _gameInfo.neededMovies.length)
+         var j:int = 0;
+         for(j = 0; j < _gameInfo.neededMovies.length; )
          {
-            if(_gameInfo.neededMovies[_loc1_].type == 1)
+            if(_gameInfo.neededMovies[j].type == 1)
             {
-               _gameInfo.neededMovies[_loc1_].startLoad();
+               _gameInfo.neededMovies[j].startLoad();
             }
-            _loc1_++;
+            j++;
          }
       }
       
       protected function loadingBombAsset() : void
       {
-         var _loc1_:Array = _gameInfo.roomPlayers;
-         LoadBombManager.Instance.loadFullRoomPlayersBomb(_loc1_);
+         var roomPlayers:Array = _gameInfo.roomPlayers;
+         LoadBombManager.Instance.loadFullRoomPlayersBomb(roomPlayers);
          if(!StartupResourceLoader.firstEnterHall)
          {
             LoadBombManager.Instance.loadSpecialBomb();
@@ -378,163 +376,163 @@ package roomLoading.view
          }
       }
       
-      protected function loadingPetAsset(param1:PetInfo) : void
+      protected function loadingPetAsset(currentPet:PetInfo) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         if(param1)
+         var skill:* = null;
+         var ball:* = null;
+         if(currentPet)
          {
-            LoadResourceManager.Instance.creatAndStartLoad(PathManager.solvePetGameAssetUrl(param1.GameAssetUrl),4);
+            LoadResourceManager.Instance.creatAndStartLoad(PathManager.solvePetGameAssetUrl(currentPet.GameAssetUrl),4);
             var _loc6_:int = 0;
-            var _loc5_:* = param1.equipdSkills;
-            for each(var _loc4_ in param1.equipdSkills)
+            var _loc5_:* = currentPet.equipdSkills;
+            for each(var skillid in currentPet.equipdSkills)
             {
-               if(_loc4_ > 0)
+               if(skillid > 0)
                {
-                  _loc3_ = PetSkillManager.getSkillByID(_loc4_);
-                  if(_loc3_.EffectPic)
+                  skill = PetSkillManager.getSkillByID(skillid);
+                  if(skill.EffectPic)
                   {
-                     LoadResourceManager.Instance.creatAndStartLoad(PathManager.solvePetSkillEffect(_loc3_.EffectPic),4);
+                     LoadResourceManager.Instance.creatAndStartLoad(PathManager.solvePetSkillEffect(skill.EffectPic),4);
                   }
-                  if(_loc3_.NewBallID != -1)
+                  if(skill.NewBallID != -1)
                   {
-                     _loc2_ = BallManager.instance.findBall(_loc3_.NewBallID);
-                     _loc2_.loadBombAsset();
-                     _loc2_.loadCraterBitmap();
+                     ball = BallManager.instance.findBall(skill.NewBallID);
+                     ball.loadBombAsset();
+                     ball.loadCraterBitmap();
                   }
                }
             }
          }
       }
       
-      protected function loadingHorseAsset(param1:Array) : void
+      protected function loadingHorseAsset(horseSkillEquipList:Array) : void
       {
-         var _loc4_:* = null;
-         var _loc2_:* = null;
+         var horseSkillInfo:* = null;
+         var ball2:* = null;
          var _loc6_:int = 0;
-         var _loc5_:* = param1;
-         for each(var _loc3_ in param1)
+         var _loc5_:* = horseSkillEquipList;
+         for each(var horseSkillId in horseSkillEquipList)
          {
-            if(_loc3_ > 0)
+            if(horseSkillId > 0)
             {
-               _loc4_ = HorseManager.instance.getHorseSkillInfoById(_loc3_);
-               if(_loc4_.EffectPic)
+               horseSkillInfo = HorseManager.instance.getHorseSkillInfoById(horseSkillId);
+               if(horseSkillInfo.EffectPic)
                {
-                  LoadResourceManager.Instance.creatAndStartLoad(PathManager.solvePetSkillEffect(_loc4_.EffectPic),4);
+                  LoadResourceManager.Instance.creatAndStartLoad(PathManager.solvePetSkillEffect(horseSkillInfo.EffectPic),4);
                }
-               if(_loc4_.NewBallID != -1)
+               if(horseSkillInfo.NewBallID != -1)
                {
-                  _loc2_ = BallManager.instance.findBall(_loc4_.NewBallID);
-                  _loc2_.loadBombAsset();
-                  _loc2_.loadCraterBitmap();
+                  ball2 = BallManager.instance.findBall(horseSkillInfo.NewBallID);
+                  ball2.loadBombAsset();
+                  ball2.loadCraterBitmap();
                }
             }
          }
       }
       
-      private function setSurvivalCharacter(param1:Player, param2:RoomLoadingCharacterItem, param3:int) : void
+      private function setSurvivalCharacter(gameplayer:Player, item:RoomLoadingCharacterItem, index:int) : void
       {
-         var _loc5_:Rectangle = ComponentFactory.Instance.creatCustomObject("asset.roomloading.BigCharacterSize");
-         var _loc4_:Rectangle = ComponentFactory.Instance.creatCustomObject("asset.roomloading.SuitCharacterSize");
-         param1.movie = param2.info.movie;
-         param1.character = param2.info.character;
-         param1.character.showGun = false;
-         param1.character.showWing = false;
-         if(param3 % 2 == 0)
+         var size:Rectangle = ComponentFactory.Instance.creatCustomObject("asset.roomloading.BigCharacterSize");
+         var suitSize:Rectangle = ComponentFactory.Instance.creatCustomObject("asset.roomloading.SuitCharacterSize");
+         gameplayer.movie = item.info.movie;
+         gameplayer.character = item.info.character;
+         gameplayer.character.showGun = false;
+         gameplayer.character.showWing = false;
+         if(index % 2 == 0)
          {
-            param2.appear(blueCharacterIndex.toString());
-            param2.index = blueCharacterIndex;
+            item.appear(blueCharacterIndex.toString());
+            item.index = blueCharacterIndex;
             blueCharacterIndex = Number(blueCharacterIndex) + 1;
-            PositionUtils.setPos(param2.displayMc,"asset.roomloading.SurvivalCharacterLeftPos");
+            PositionUtils.setPos(item.displayMc,"asset.roomloading.SurvivalCharacterLeftPos");
          }
          else
          {
-            param2.appear(redCharacterIndex.toString());
-            param2.index = redCharacterIndex;
+            item.appear(redCharacterIndex.toString());
+            item.index = redCharacterIndex;
             redCharacterIndex = Number(redCharacterIndex) + 1;
-            PositionUtils.setPos(param2.displayMc,"asset.roomloading.SurvivalCharacterRightPos");
+            PositionUtils.setPos(item.displayMc,"asset.roomloading.SurvivalCharacterRightPos");
          }
-         param1.character.show(false,-1);
-         param1.movie.show(true,-1);
+         gameplayer.character.show(false,-1);
+         gameplayer.movie.show(true,-1);
       }
       
-      private function setSurvivalRoomItemPos(param1:RoomLoadingCharacterItem, param2:int) : void
+      private function setSurvivalRoomItemPos(item:RoomLoadingCharacterItem, index:int) : void
       {
-         PositionUtils.setPos(param1,"asset.roomLoading.CharacterItemSurvivalPos_" + param2.toString());
-         param1.addWeapon(true,-1);
-         _characterItems.push(param1);
-         addChild(param1);
+         PositionUtils.setPos(item,"asset.roomLoading.CharacterItemSurvivalPos_" + index.toString());
+         item.addWeapon(true,-1);
+         _characterItems.push(item);
+         addChild(item);
       }
       
-      protected function __onLoadingFinished(param1:Event) : void
+      protected function __onLoadingFinished(event:Event) : void
       {
-         var _loc2_:RoomPlayer = param1.currentTarget as RoomPlayer;
-         if(_loc2_.progress < 100 || _hasLoadedFinished.hasKey(_loc2_))
+         var player:RoomPlayer = event.currentTarget as RoomPlayer;
+         if(player.progress < 100 || _hasLoadedFinished.hasKey(player))
          {
             return;
          }
          _amountOfFinishedPlayer = Number(_amountOfFinishedPlayer) + 1;
-         _hasLoadedFinished.add(_loc2_,_loc2_);
+         _hasLoadedFinished.add(player,player);
          if(_amountOfFinishedPlayer == _gameInfo.roomPlayers.length)
          {
             leave();
          }
       }
       
-      protected function initCharacter(param1:Player, param2:RoomLoadingCharacterItem) : void
+      protected function initCharacter(gameplayer:Player, item:RoomLoadingCharacterItem) : void
       {
-         var _loc4_:Rectangle = ComponentFactory.Instance.creatCustomObject("asset.roomloading.BigCharacterSize");
-         var _loc3_:Rectangle = ComponentFactory.Instance.creatCustomObject("asset.roomloading.SuitCharacterSize");
-         param1.movie = param2.info.movie;
-         param1.character = param2.info.character;
-         param1.character.showGun = false;
-         param1.character.showWing = false;
-         if(param2.info.team == 1)
+         var size:Rectangle = ComponentFactory.Instance.creatCustomObject("asset.roomloading.BigCharacterSize");
+         var suitSize:Rectangle = ComponentFactory.Instance.creatCustomObject("asset.roomloading.SuitCharacterSize");
+         gameplayer.movie = item.info.movie;
+         gameplayer.character = item.info.character;
+         gameplayer.character.showGun = false;
+         gameplayer.character.showWing = false;
+         if(item.info.team == 1)
          {
-            if(param1.isSelf || blueCharacterIndex == 1 && _gameInfo.selfGamePlayer.team != 1)
+            if(gameplayer.isSelf || blueCharacterIndex == 1 && _gameInfo.selfGamePlayer.team != 1)
             {
-               PositionUtils.setPos(param2.displayMc,"asset.roomloading.BigCharacterBluePos");
-               param1.character.showWithSize(false,-1,_loc4_.width,_loc4_.height);
+               PositionUtils.setPos(item.displayMc,"asset.roomloading.BigCharacterBluePos");
+               gameplayer.character.showWithSize(false,-1,size.width,size.height);
             }
             else
             {
-               PositionUtils.setPos(param2.displayMc,"asset.roomloading.SmallCharacterBluePos");
-               param1.character.show(false,-1);
+               PositionUtils.setPos(item.displayMc,"asset.roomloading.SmallCharacterBluePos");
+               gameplayer.character.show(false,-1);
             }
-            param2.appear(blueCharacterIndex.toString());
-            param2.index = blueCharacterIndex;
+            item.appear(blueCharacterIndex.toString());
+            item.index = blueCharacterIndex;
             blueCharacterIndex = Number(blueCharacterIndex) + 1;
          }
          else
          {
-            if(param1.isSelf || redCharacterIndex == 1 && _gameInfo.selfGamePlayer.team != 2)
+            if(gameplayer.isSelf || redCharacterIndex == 1 && _gameInfo.selfGamePlayer.team != 2)
             {
-               param1.character.showWithSize(false,-1,_loc4_.width,_loc4_.height);
-               PositionUtils.setPos(param2.displayMc,"asset.roomloading.BigCharacterRedPos");
+               gameplayer.character.showWithSize(false,-1,size.width,size.height);
+               PositionUtils.setPos(item.displayMc,"asset.roomloading.BigCharacterRedPos");
             }
             else
             {
-               PositionUtils.setPos(param2.displayMc,"asset.roomloading.SmallCharacterRedPos");
-               param1.character.show(false,-1);
+               PositionUtils.setPos(item.displayMc,"asset.roomloading.SmallCharacterRedPos");
+               gameplayer.character.show(false,-1);
             }
-            param2.appear(redCharacterIndex.toString());
-            param2.index = redCharacterIndex;
+            item.appear(redCharacterIndex.toString());
+            item.index = redCharacterIndex;
             redCharacterIndex = Number(redCharacterIndex) + 1;
          }
-         param1.movie.show(true,-1);
+         gameplayer.movie.show(true,-1);
       }
       
-      protected function initRoomItem(param1:RoomLoadingCharacterItem) : void
+      protected function initRoomItem(item:RoomLoadingCharacterItem) : void
       {
-         var _loc2_:* = null;
-         if(param1.info.team == 1)
+         var fromPos:* = null;
+         if(item.info.team == 1)
          {
-            if(param1.info.isSelf || blueIdx == 1 && _gameInfo.selfGamePlayer.team != 1)
+            if(item.info.isSelf || blueIdx == 1 && _gameInfo.selfGamePlayer.team != 1)
             {
-               PositionUtils.setPos(param1,"asset.roomLoading.CharacterItemBluePos_1");
-               _loc2_ = ComponentFactory.Instance.creatCustomObject("asset.roomLoading.CharacterItemBlueFromPos_1");
-               blueBig = param1;
-               param1.addWeapon(false,-1);
+               PositionUtils.setPos(item,"asset.roomLoading.CharacterItemBluePos_1");
+               fromPos = ComponentFactory.Instance.creatCustomObject("asset.roomLoading.CharacterItemBlueFromPos_1");
+               blueBig = item;
+               item.addWeapon(false,-1);
                if(_gameInfo.selfGamePlayer.team != 1)
                {
                   blueIdx = Number(blueIdx) + 1;
@@ -546,18 +544,18 @@ package roomLoading.view
                {
                   blueIdx = Number(blueIdx) + 1;
                }
-               PositionUtils.setPos(param1,"asset.roomLoading.CharacterItemBluePos_" + blueIdx.toString());
-               _loc2_ = ComponentFactory.Instance.creatCustomObject("asset.roomLoading.CharacterItemBlueFromPos_" + blueIdx.toString());
+               PositionUtils.setPos(item,"asset.roomLoading.CharacterItemBluePos_" + blueIdx.toString());
+               fromPos = ComponentFactory.Instance.creatCustomObject("asset.roomLoading.CharacterItemBlueFromPos_" + blueIdx.toString());
                blueIdx = Number(blueIdx) + 1;
-               param1.addWeapon(true,-1);
+               item.addWeapon(true,-1);
             }
          }
-         else if(param1.info.isSelf || redIdx == 1 && _gameInfo.selfGamePlayer.team != 2)
+         else if(item.info.isSelf || redIdx == 1 && _gameInfo.selfGamePlayer.team != 2)
          {
-            PositionUtils.setPos(param1,"asset.roomLoading.CharacterItemRedPos_1");
-            _loc2_ = ComponentFactory.Instance.creatCustomObject("asset.roomLoading.CharacterItemRedFromPos_1");
-            redBig = param1;
-            param1.addWeapon(false,1);
+            PositionUtils.setPos(item,"asset.roomLoading.CharacterItemRedPos_1");
+            fromPos = ComponentFactory.Instance.creatCustomObject("asset.roomLoading.CharacterItemRedFromPos_1");
+            redBig = item;
+            item.addWeapon(false,1);
             if(_gameInfo.selfGamePlayer.team != 2)
             {
                redIdx = Number(redIdx) + 1;
@@ -569,22 +567,22 @@ package roomLoading.view
             {
                redIdx = Number(redIdx) + 1;
             }
-            PositionUtils.setPos(param1,"asset.roomLoading.CharacterItemRedPos_" + redIdx.toString());
-            _loc2_ = ComponentFactory.Instance.creatCustomObject("asset.roomLoading.CharacterItemRedFromPos_" + redIdx.toString());
+            PositionUtils.setPos(item,"asset.roomLoading.CharacterItemRedPos_" + redIdx.toString());
+            fromPos = ComponentFactory.Instance.creatCustomObject("asset.roomLoading.CharacterItemRedFromPos_" + redIdx.toString());
             redIdx = Number(redIdx) + 1;
-            param1.addWeapon(true,1);
+            item.addWeapon(true,1);
          }
-         _characterItems.push(param1);
-         addChild(param1);
+         _characterItems.push(item);
+         addChild(item);
       }
       
       protected function leave() : void
       {
          if(!_leaving)
          {
-            _characterItems.forEach(function(param1:RoomLoadingCharacterItem, param2:int, param3:Vector.<RoomLoadingCharacterItem>):void
+            _characterItems.forEach(function(item:RoomLoadingCharacterItem, index:int, array:Vector.<RoomLoadingCharacterItem>):void
             {
-               param1.disappear(param1.index.toString());
+               item.disappear(item.index.toString());
             });
             if(_dungeonMapItem)
             {
@@ -594,7 +592,7 @@ package roomLoading.view
          }
       }
       
-      protected function __countDownTick(param1:TimerEvent) : void
+      protected function __countDownTick(evt:TimerEvent) : void
       {
          _selfFinish = checkProgress();
          _countDownTxt.updateNum();
@@ -608,10 +606,10 @@ package roomLoading.view
          }
       }
       
-      protected function __countDownComplete(param1:TimerEvent) : void
+      protected function __countDownComplete(event:TimerEvent) : void
       {
-         var _loc2_:int = RoomManager.Instance.current.type == 4 || RoomManager.Instance.current.type == 11?94:64;
-         if(_countDownTimer.currentCount == _loc2_ && RoomManager.Instance.current.type == 14)
+         var tempTime:int = RoomManager.Instance.current.type == 4 || RoomManager.Instance.current.type == 11?94:64;
+         if(_countDownTimer.currentCount == tempTime && RoomManager.Instance.current.type == 14)
          {
             WorldBossManager.IsSuccessStartGame = false;
             StateManager.setState("main");
@@ -699,9 +697,9 @@ package roomLoading.view
       {
          var _loc3_:int = 0;
          var _loc2_:* = _characterItems;
-         for each(var _loc1_ in _characterItems)
+         for each(var item in _characterItems)
          {
-            if(!_loc1_.isAnimationFinished)
+            if(!item.isAnimationFinished)
             {
                return false;
             }
@@ -715,224 +713,223 @@ package roomLoading.view
       
       protected function checkProgress() : Boolean
       {
-         var _loc10_:* = null;
-         var _loc5_:* = null;
-         var _loc7_:* = null;
-         var _loc14_:* = null;
-         var _loc3_:* = null;
-         var _loc8_:* = null;
-         var _loc17_:* = null;
-         var _loc13_:* = null;
-         var _loc11_:int = 0;
+         var gameInfoTest:* = null;
+         var gameplayer:* = null;
+         var currentPet:* = null;
+         var skill:* = null;
+         var ball:* = null;
+         var horseSkillEquipList:* = null;
+         var horseSkillInfo:* = null;
+         var ball2:* = null;
+         var i:int = 0;
          _unloadedmsg = "";
-         var _loc1_:int = 0;
-         var _loc9_:int = 0;
+         var total:int = 0;
+         var finished:int = 0;
          if(_gameInfo == null)
          {
             _gameInfo = GameControl.Instance.Current;
          }
          var _loc23_:int = 0;
          var _loc22_:* = _gameInfo.roomPlayers;
-         for each(var _loc12_ in _gameInfo.roomPlayers)
+         for each(var info in _gameInfo.roomPlayers)
          {
-            if(!_loc12_.isViewer)
+            if(!info.isViewer)
             {
-               _loc10_ = GameControl.Instance.Current;
-               _loc5_ = _gameInfo.findLivingByPlayerID(_loc12_.playerInfo.ID,_loc12_.playerInfo.ZoneID);
-               if(LoadBombManager.Instance.getLoadBombComplete(_loc12_.currentWeapInfo))
+               gameInfoTest = GameControl.Instance.Current;
+               gameplayer = _gameInfo.findLivingByPlayerID(info.playerInfo.ID,info.playerInfo.ZoneID);
+               if(LoadBombManager.Instance.getLoadBombComplete(info.currentWeapInfo))
                {
-                  _loc9_++;
+                  finished++;
                }
                else
                {
-                  _unloadedmsg = _unloadedmsg + ("LoadBombManager.getLoadBombComplete(info.currentWeapInfo) false" + LoadBombManager.Instance.getUnloadedBombString(_loc12_.currentWeapInfo) + "\n");
+                  _unloadedmsg = _unloadedmsg + ("LoadBombManager.getLoadBombComplete(info.currentWeapInfo) false" + LoadBombManager.Instance.getUnloadedBombString(info.currentWeapInfo) + "\n");
                }
-               _loc1_++;
-               _loc7_ = _loc5_.playerInfo.currentPet;
-               if(_loc7_)
+               total++;
+               currentPet = gameplayer.playerInfo.currentPet;
+               if(currentPet)
                {
-                  if(_loc7_.assetReady)
+                  if(currentPet.assetReady)
                   {
-                     _loc9_++;
+                     finished++;
                   }
-                  _loc1_++;
+                  total++;
                   var _loc19_:int = 0;
-                  var _loc18_:* = _loc7_.equipdSkills;
-                  for each(var _loc4_ in _loc7_.equipdSkills)
+                  var _loc18_:* = currentPet.equipdSkills;
+                  for each(var skillid in currentPet.equipdSkills)
                   {
-                     if(_loc4_ > 0)
+                     if(skillid > 0)
                      {
-                        _loc14_ = PetSkillManager.getSkillByID(_loc4_);
-                        if(_loc14_.EffectPic)
+                        skill = PetSkillManager.getSkillByID(skillid);
+                        if(skill.EffectPic)
                         {
-                           if(ModuleLoader.hasDefinition(_loc14_.EffectClassLink))
+                           if(ModuleLoader.hasDefinition(skill.EffectClassLink))
                            {
-                              _loc9_++;
+                              finished++;
                            }
                            else
                            {
-                              _unloadedmsg = _unloadedmsg + ("ModuleLoader.hasDefinition(skill.EffectClassLink):" + _loc14_.EffectClassLink + " false\n");
+                              _unloadedmsg = _unloadedmsg + ("ModuleLoader.hasDefinition(skill.EffectClassLink):" + skill.EffectClassLink + " false\n");
                            }
-                           _loc1_++;
+                           total++;
                         }
-                        if(_loc14_.NewBallID != -1)
+                        if(skill.NewBallID != -1)
                         {
-                           _loc3_ = BallManager.instance.findBall(_loc14_.NewBallID);
-                           if(_loc3_.isComplete())
+                           ball = BallManager.instance.findBall(skill.NewBallID);
+                           if(ball.isComplete())
                            {
-                              _loc9_++;
+                              finished++;
                            }
                            else
                            {
-                              _unloadedmsg = _unloadedmsg + ("BallManager.findBall(skill.NewBallID):" + _loc14_.NewBallID + "false\n");
+                              _unloadedmsg = _unloadedmsg + ("BallManager.findBall(skill.NewBallID):" + skill.NewBallID + "false\n");
                            }
-                           _loc1_++;
+                           total++;
                         }
                      }
                   }
                }
                if(_gameInfo.roomType == 18 && _gameInfo.gameMode == 20)
                {
-                  _loc8_ = _loc12_.battleSkillEquipList;
+                  horseSkillEquipList = info.battleSkillEquipList;
                }
                else
                {
-                  _loc8_ = _loc12_.horseSkillEquipList;
+                  horseSkillEquipList = info.horseSkillEquipList;
                }
                var _loc21_:int = 0;
-               var _loc20_:* = _loc8_;
-               for each(var _loc16_ in _loc8_)
+               var _loc20_:* = horseSkillEquipList;
+               for each(var horseSkillId in horseSkillEquipList)
                {
-                  if(_loc16_ > 0)
+                  if(horseSkillId > 0)
                   {
-                     _loc17_ = HorseManager.instance.getHorseSkillInfoById(_loc16_);
-                     if(_loc17_.EffectPic)
+                     horseSkillInfo = HorseManager.instance.getHorseSkillInfoById(horseSkillId);
+                     if(horseSkillInfo.EffectPic)
                      {
-                        if(ModuleLoader.hasDefinition(_loc17_.EffectClassLink))
+                        if(ModuleLoader.hasDefinition(horseSkillInfo.EffectClassLink))
                         {
-                           _loc9_++;
+                           finished++;
                         }
                         else
                         {
-                           _unloadedmsg = _unloadedmsg + ("ModuleLoader.hasDefinition(horseSkillInfo.EffectClassLink):" + _loc17_.EffectClassLink + " false\n");
+                           _unloadedmsg = _unloadedmsg + ("ModuleLoader.hasDefinition(horseSkillInfo.EffectClassLink):" + horseSkillInfo.EffectClassLink + " false\n");
                         }
-                        _loc1_++;
+                        total++;
                      }
-                     if(_loc17_.NewBallID != -1)
+                     if(horseSkillInfo.NewBallID != -1)
                      {
-                        _loc13_ = BallManager.instance.findBall(_loc17_.NewBallID);
-                        if(_loc13_.isComplete())
+                        ball2 = BallManager.instance.findBall(horseSkillInfo.NewBallID);
+                        if(ball2.isComplete())
                         {
-                           _loc9_++;
+                           finished++;
                         }
                         else
                         {
-                           _unloadedmsg = _unloadedmsg + ("BallManager.findBall(horseSkillInfo.NewBallID):" + _loc17_.NewBallID + "false\n");
+                           _unloadedmsg = _unloadedmsg + ("BallManager.findBall(horseSkillInfo.NewBallID):" + horseSkillInfo.NewBallID + "false\n");
                         }
-                        _loc1_++;
+                        total++;
                      }
                   }
                }
                continue;
             }
          }
-         _loc11_ = 0;
-         while(_loc11_ < _gameInfo.neededMovies.length)
+         for(i = 0; i < _gameInfo.neededMovies.length; )
          {
-            if(_gameInfo.neededMovies[_loc11_].type == 1)
+            if(_gameInfo.neededMovies[i].type == 1)
             {
-               if(LoadBombManager.Instance.getLivingBombComplete(_gameInfo.neededMovies[_loc11_].bombId))
+               if(LoadBombManager.Instance.getLivingBombComplete(_gameInfo.neededMovies[i].bombId))
                {
-                  _loc9_++;
+                  finished++;
                }
                else
                {
-                  _unloadedmsg = _unloadedmsg + ("LoadBombManager.getLivingBombComplete(_gameInfo.neededMovies[i].bombId):" + _gameInfo.neededMovies[_loc11_].bombId + " false\n");
+                  _unloadedmsg = _unloadedmsg + ("LoadBombManager.getLivingBombComplete(_gameInfo.neededMovies[i].bombId):" + _gameInfo.neededMovies[i].bombId + " false\n");
                }
-               _loc1_++;
+               total++;
             }
-            _loc11_++;
+            i++;
          }
          var _loc25_:int = 0;
          var _loc24_:* = _gameInfo.neededPetSkillResource;
-         for each(var _loc6_ in _gameInfo.neededPetSkillResource)
+         for each(var skillRes in _gameInfo.neededPetSkillResource)
          {
-            if(_loc6_.effect)
+            if(skillRes.effect)
             {
-               if(ModuleLoader.hasDefinition(_loc6_.effectClassLink))
+               if(ModuleLoader.hasDefinition(skillRes.effectClassLink))
                {
-                  _loc9_++;
+                  finished++;
                }
                else
                {
-                  _unloadedmsg = _unloadedmsg + ("ModuleLoader.hasDefinition(" + _loc6_.effectClassLink + ") false\n");
+                  _unloadedmsg = _unloadedmsg + ("ModuleLoader.hasDefinition(" + skillRes.effectClassLink + ") false\n");
                }
-               _loc1_++;
+               total++;
             }
          }
          if(_gameInfo.loaderMap.completed)
          {
-            _loc9_++;
+            finished++;
          }
          else
          {
             _unloadedmsg = _unloadedmsg + ("_gameInfo.loaderMap.completed false,id:" + _gameInfo.loaderMap.info.ID + "\n");
          }
-         _loc1_++;
+         total++;
          if(!StartupResourceLoader.firstEnterHall)
          {
             if(LoadBombManager.Instance.getLoadSpecialBombComplete())
             {
-               _loc9_++;
+               finished++;
             }
             else
             {
                _unloadedmsg = _unloadedmsg + ("LoadBombManager.getLoadSpecialBombComplete() false  " + LoadBombManager.Instance.getUnloadedSpecialBombString() + "\n");
             }
-            _loc1_++;
+            total++;
          }
          if(_trainerLoad)
          {
             if(_trainerLoad.completed)
             {
-               _loc9_++;
+               finished++;
             }
             else
             {
                _unloadedmsg = _unloadedmsg + "_trainerLoad.completed false\n";
             }
-            _loc1_++;
+            total++;
          }
          if(BuffManager.buffTemplateData)
          {
-            _loc9_++;
+            finished++;
          }
          else
          {
             _unloadedmsg = _unloadedmsg + "buffTemplateData false\n";
          }
-         _loc1_++;
-         var _loc15_:* = Number(int(_loc9_ / _loc1_ * 100));
-         var _loc2_:* = _loc1_ == _loc9_;
-         if(_loc2_ && (!checkAnimationIsFinished() || !checkIsEnoughDelayTime()))
+         total++;
+         var pro:* = Number(int(finished / total * 100));
+         var res:* = total == finished;
+         if(res && (!checkAnimationIsFinished() || !checkIsEnoughDelayTime()))
          {
-            _loc15_ = 99;
-            _loc2_ = false;
+            pro = 99;
+            res = false;
          }
-         GameInSocketOut.sendLoadingProgress(_loc15_);
-         RoomManager.Instance.current.selfRoomPlayer.progress = _loc15_;
-         return _loc2_;
+         GameInSocketOut.sendLoadingProgress(pro);
+         RoomManager.Instance.current.selfRoomPlayer.progress = pro;
+         return res;
       }
       
       protected function checkIsEnoughDelayTime() : Boolean
       {
-         var _loc1_:Number = new Date().time;
-         return _loc1_ - _delayBeginTime >= 1000;
+         var time:Number = new Date().time;
+         return time - _delayBeginTime >= 1000;
       }
       
       public function dispose() : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          KeyboardShortcutsManager.Instance.cancelForbidden();
          _countDownTimer.removeEventListener("timer",__countDownTick);
          _countDownTimer.removeEventListener("timerComplete",__countDownComplete);
@@ -949,17 +946,16 @@ package roomLoading.view
          ObjectUtils.disposeObject(_cancelLink);
          var _loc4_:int = 0;
          var _loc3_:* = _gameInfo.roomPlayers;
-         for each(var _loc1_ in _gameInfo.roomPlayers)
+         for each(var rp in _gameInfo.roomPlayers)
          {
-            _loc1_.removeEventListener("progressChange",__onLoadingFinished);
+            rp.removeEventListener("progressChange",__onLoadingFinished);
          }
-         _loc2_ = 0;
-         while(_loc2_ < _characterItems.length)
+         for(i = 0; i < _characterItems.length; )
          {
-            TweenMax.killTweensOf(_characterItems[_loc2_]);
-            _characterItems[_loc2_].dispose();
-            _characterItems[_loc2_] = null;
-            _loc2_++;
+            TweenMax.killTweensOf(_characterItems[i]);
+            _characterItems[i].dispose();
+            _characterItems[i] = null;
+            i++;
          }
          if(_dungeonMapItem)
          {

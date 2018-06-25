@@ -33,12 +33,12 @@ package petsBag.view.item
       
       protected var _shiner:DisplayObject;
       
-      public function PetSmallItem(param1:PetInfo = null)
+      public function PetSmallItem(info:PetInfo = null)
       {
          super();
          this.buttonMode = true;
          this.useHandCursor = true;
-         _info = param1;
+         _info = info;
          initView();
          initEvent();
       }
@@ -53,7 +53,7 @@ package petsBag.view.item
          removeEventListener("click",clickHandler);
       }
       
-      protected function clickHandler(param1:MouseEvent) : void
+      protected function clickHandler(e:MouseEvent) : void
       {
          selected = !selected;
       }
@@ -63,7 +63,7 @@ package petsBag.view.item
          return _info;
       }
       
-      public function set info(param1:PetInfo) : void
+      public function set info(value:PetInfo) : void
       {
          if(_petIcon)
          {
@@ -73,7 +73,7 @@ package petsBag.view.item
          }
          isFight = false;
          _shiner.visible = false;
-         _info = param1;
+         _info = value;
          if(_info)
          {
             _petIcon = new BitmapLoaderProxy(PathManager.solvePetIconUrl(PetsBagManager.instance().getPicStrByLv(_info)),null,true);
@@ -83,7 +83,7 @@ package petsBag.view.item
          }
       }
       
-      private function __fixPetIconPostion(param1:Event) : void
+      private function __fixPetIconPostion(e:Event) : void
       {
          if(_petIcon)
          {
@@ -111,16 +111,16 @@ package petsBag.view.item
          _fightIcon.visible = false;
       }
       
-      public function set isFight(param1:Boolean) : void
+      public function set isFight(value:Boolean) : void
       {
-         _isFight = param1;
+         _isFight = value;
          _fightIcon.visible = _isFight;
          addChild(_fightIcon);
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         _isSelect = param1;
+         _isSelect = value;
          _shiner.visible = _isSelect;
          dispatchEvent(new Event("selected"));
       }

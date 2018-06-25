@@ -58,9 +58,9 @@ package ddt.data.effort
          super();
       }
       
-      public function set CompleteStateInfo(param1:EffortCompleteStateInfo) : void
+      public function set CompleteStateInfo(info:EffortCompleteStateInfo) : void
       {
-         effortCompleteState = param1;
+         effortCompleteState = info;
       }
       
       public function get CompleteStateInfo() : EffortCompleteStateInfo
@@ -77,23 +77,23 @@ package ddt.data.effort
       {
       }
       
-      public function addEffortQualification(param1:EffortQualificationInfo) : void
+      public function addEffortQualification(info:EffortQualificationInfo) : void
       {
          if(!EffortQualificationList)
          {
             EffortQualificationList = new DictionaryData();
          }
-         EffortQualificationList[param1.CondictionType] = param1;
+         EffortQualificationList[info.CondictionType] = info;
          update();
       }
       
-      public function addEffortReward(param1:EffortRewardInfo) : void
+      public function addEffortReward(info:EffortRewardInfo) : void
       {
          if(!effortRewardArray)
          {
             effortRewardArray = [];
          }
-         effortRewardArray.push(param1);
+         effortRewardArray.push(info);
       }
       
       public function getCellHeight() : Number

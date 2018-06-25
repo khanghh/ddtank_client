@@ -40,9 +40,9 @@ package wantstrong.data
          return _iconUrl;
       }
       
-      public function set iconUrl(param1:String) : void
+      public function set iconUrl(value:String) : void
       {
-         _iconUrl = param1;
+         _iconUrl = value;
       }
       
       public function get moneyNum() : int
@@ -50,9 +50,9 @@ package wantstrong.data
          return _moneyNum;
       }
       
-      public function set moneyNum(param1:int) : void
+      public function set moneyNum(value:int) : void
       {
-         _moneyNum = param1;
+         _moneyNum = value;
       }
       
       public function get awardType() : int
@@ -60,9 +60,9 @@ package wantstrong.data
          return _awardType;
       }
       
-      public function set awardType(param1:int) : void
+      public function set awardType(value:int) : void
       {
-         _awardType = param1;
+         _awardType = value;
       }
       
       public function get awardNum() : int
@@ -70,9 +70,9 @@ package wantstrong.data
          return _awardNum;
       }
       
-      public function set awardNum(param1:int) : void
+      public function set awardNum(value:int) : void
       {
-         _awardNum = param1;
+         _awardNum = value;
       }
       
       public function get allBackBtnEnable() : Boolean
@@ -80,9 +80,9 @@ package wantstrong.data
          return _allBackBtnEnable;
       }
       
-      public function set allBackBtnEnable(param1:Boolean) : void
+      public function set allBackBtnEnable(value:Boolean) : void
       {
-         _allBackBtnEnable = param1;
+         _allBackBtnEnable = value;
       }
       
       public function get freeBackBtnEnable() : Boolean
@@ -90,9 +90,9 @@ package wantstrong.data
          return _freeBackBtnEnable;
       }
       
-      public function set freeBackBtnEnable(param1:Boolean) : void
+      public function set freeBackBtnEnable(value:Boolean) : void
       {
-         _freeBackBtnEnable = param1;
+         _freeBackBtnEnable = value;
       }
       
       public function get bossType() : int
@@ -100,9 +100,9 @@ package wantstrong.data
          return _bossType;
       }
       
-      public function set bossType(param1:int) : void
+      public function set bossType(value:int) : void
       {
-         _bossType = param1;
+         _bossType = value;
       }
       
       public function get type() : int
@@ -110,9 +110,9 @@ package wantstrong.data
          return _type;
       }
       
-      public function set type(param1:int) : void
+      public function set type(value:int) : void
       {
-         _type = param1;
+         _type = value;
       }
       
       public function get needLevel() : int
@@ -120,9 +120,9 @@ package wantstrong.data
          return _needLevel;
       }
       
-      public function set needLevel(param1:int) : void
+      public function set needLevel(value:int) : void
       {
-         _needLevel = param1;
+         _needLevel = value;
       }
       
       public function get description() : String
@@ -130,9 +130,9 @@ package wantstrong.data
          return _description;
       }
       
-      public function set description(param1:String) : void
+      public function set description(value:String) : void
       {
-         _description = param1;
+         _description = value;
       }
       
       public function get starNum() : int
@@ -140,9 +140,9 @@ package wantstrong.data
          return _starNum;
       }
       
-      public function set starNum(param1:int) : void
+      public function set starNum(value:int) : void
       {
-         _starNum = param1;
+         _starNum = value;
       }
       
       public function get title() : String
@@ -150,9 +150,9 @@ package wantstrong.data
          return _title;
       }
       
-      public function set title(param1:String) : void
+      public function set title(value:String) : void
       {
-         _title = param1;
+         _title = value;
       }
       
       public function get id() : int
@@ -160,9 +160,9 @@ package wantstrong.data
          return _id;
       }
       
-      public function set id(param1:int) : void
+      public function set id(value:int) : void
       {
-         _id = param1;
+         _id = value;
       }
    }
 }

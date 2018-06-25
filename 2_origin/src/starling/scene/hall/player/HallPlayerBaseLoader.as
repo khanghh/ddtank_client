@@ -18,17 +18,16 @@ package starling.scene.hall.player
          super();
       }
       
-      public function load(param1:Function) : void
+      public function load(callBack:Function) : void
       {
-         var _loc2_:int = 0;
-         _cellBack = param1;
+         var i:int = 0;
+         _cellBack = callBack;
          _loaders = new Vector.<ILayer>();
          setLoaderData();
-         _loc2_ = 0;
-         while(_loc2_ < _loaders.length)
+         for(i = 0; i < _loaders.length; )
          {
-            _loaders[_loc2_].load(layerComplete);
-            _loc2_++;
+            _loaders[i].load(layerComplete);
+            i++;
          }
       }
       
@@ -36,20 +35,19 @@ package starling.scene.hall.player
       {
       }
       
-      private function layerComplete(param1:ILayer) : void
+      private function layerComplete(layer:ILayer) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:Boolean = true;
-         _loc3_ = 0;
-         while(_loc3_ < _loaders.length)
+         var i:int = 0;
+         var isAllLayerComplete:Boolean = true;
+         for(i = 0; i < _loaders.length; )
          {
-            if(!_loaders[_loc3_].isComplete)
+            if(!_loaders[i].isComplete)
             {
-               _loc2_ = false;
+               isAllLayerComplete = false;
             }
-            _loc3_++;
+            i++;
          }
-         if(_loc2_)
+         if(isAllLayerComplete)
          {
             _isAllLoadSucceed = true;
             drawCharacter();
@@ -81,14 +79,13 @@ package starling.scene.hall.player
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(_loaders)
          {
-            _loc1_ = 0;
-            while(_loc1_ < _loaders.length)
+            for(i = 0; i < _loaders.length; )
             {
-               _loaders[_loc1_].dispose();
-               _loc1_++;
+               _loaders[i].dispose();
+               i++;
             }
          }
          _loaders = null;

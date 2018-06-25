@@ -81,16 +81,16 @@ package bombKing
          BombKingManager.instance.addEventListener("bombkingOpenView",__onOpenView);
       }
       
-      protected function __onStartLoadBattleXml(param1:BombKingEvent) : void
+      protected function __onStartLoadBattleXml(event:BombKingEvent) : void
       {
-         var _loc2_:BaseLoader = getFightReportLoader(ReportID);
-         LoadResourceManager.Instance.startLoad(_loc2_);
+         var loader:BaseLoader = getFightReportLoader(ReportID);
+         LoadResourceManager.Instance.startLoad(loader);
       }
       
-      protected function __showTip(param1:PkgEvent) : void
+      protected function __showTip(event:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         isOpen = _loc2_.readBoolean();
+         var pkg:PackageIn = event.pkg;
+         isOpen = pkg.readBoolean();
          if(isOpen && _showMsg)
          {
             ChatManager.Instance.sysChatAmaranth(LanguageMgr.GetTranslation("bombKing.battling"));
@@ -102,15 +102,15 @@ package bombKing
          }
       }
       
-      protected function __onEnterFrame(param1:Event) : void
+      protected function __onEnterFrame(evt:Event) : void
       {
-         var _loc2_:CrazyTankSocketEvent = null;
+         var event:CrazyTankSocketEvent = null;
          if(_cmdID < _cmdVec.length)
          {
-            _loc2_ = creatGameEvent(_cmdID);
-            if(_loc2_)
+            event = creatGameEvent(_cmdID);
+            if(event)
             {
-               QueueManager.addQueue(_loc2_);
+               QueueManager.addQueue(event);
                _cmdID = Number(_cmdID) + 1;
             }
          }
@@ -120,10 +120,10 @@ package bombKing
          }
       }
       
-      private function creatGameEvent(param1:int) : CrazyTankSocketEvent
+      private function creatGameEvent(id:int) : CrazyTankSocketEvent
       {
-         var _loc2_:CrazyTankSocketEvent = null;
-         var _loc3_:* = _cmdVec[param1];
+         var event:CrazyTankSocketEvent = null;
+         var _loc3_:* = _cmdVec[id];
          if(129 !== _loc3_)
          {
             if(128 !== _loc3_)
@@ -336,337 +336,337 @@ package bombKing
                                                                                                                                                                                                                                                                                                                               }
                                                                                                                                                                                                                                                                                                                               else
                                                                                                                                                                                                                                                                                                                               {
-                                                                                                                                                                                                                                                                                                                                 _loc2_ = new CrazyTankSocketEvent("roundOneEnd",_pkgVec[param1]);
+                                                                                                                                                                                                                                                                                                                                 event = new CrazyTankSocketEvent("roundOneEnd",_pkgVec[id]);
                                                                                                                                                                                                                                                                                                                               }
                                                                                                                                                                                                                                                                                                                            }
                                                                                                                                                                                                                                                                                                                            else
                                                                                                                                                                                                                                                                                                                            {
-                                                                                                                                                                                                                                                                                                                              _loc2_ = new CrazyTankSocketEvent("singleBattle_forecdExit",_pkgVec[param1]);
+                                                                                                                                                                                                                                                                                                                              event = new CrazyTankSocketEvent("singleBattle_forecdExit",_pkgVec[id]);
                                                                                                                                                                                                                                                                                                                            }
                                                                                                                                                                                                                                                                                                                         }
                                                                                                                                                                                                                                                                                                                         else
                                                                                                                                                                                                                                                                                                                         {
-                                                                                                                                                                                                                                                                                                                           _loc2_ = new CrazyTankSocketEvent("add_animation",_pkgVec[param1]);
+                                                                                                                                                                                                                                                                                                                           event = new CrazyTankSocketEvent("add_animation",_pkgVec[id]);
                                                                                                                                                                                                                                                                                                                         }
                                                                                                                                                                                                                                                                                                                      }
                                                                                                                                                                                                                                                                                                                      else
                                                                                                                                                                                                                                                                                                                      {
-                                                                                                                                                                                                                                                                                                                        _loc2_ = new CrazyTankSocketEvent("gameClearDebuff",_pkgVec[param1]);
+                                                                                                                                                                                                                                                                                                                        event = new CrazyTankSocketEvent("gameClearDebuff",_pkgVec[id]);
                                                                                                                                                                                                                                                                                                                      }
                                                                                                                                                                                                                                                                                                                   }
                                                                                                                                                                                                                                                                                                                   else
                                                                                                                                                                                                                                                                                                                   {
-                                                                                                                                                                                                                                                                                                                     _loc2_ = new CrazyTankSocketEvent("gameSkipNext",_pkgVec[param1]);
+                                                                                                                                                                                                                                                                                                                     event = new CrazyTankSocketEvent("gameSkipNext",_pkgVec[id]);
                                                                                                                                                                                                                                                                                                                   }
                                                                                                                                                                                                                                                                                                                }
                                                                                                                                                                                                                                                                                                                else
                                                                                                                                                                                                                                                                                                                {
-                                                                                                                                                                                                                                                                                                                  _loc2_ = new CrazyTankSocketEvent("gameFightStatus",_pkgVec[param1]);
+                                                                                                                                                                                                                                                                                                                  event = new CrazyTankSocketEvent("gameFightStatus",_pkgVec[id]);
                                                                                                                                                                                                                                                                                                                }
                                                                                                                                                                                                                                                                                                             }
                                                                                                                                                                                                                                                                                                             else
                                                                                                                                                                                                                                                                                                             {
-                                                                                                                                                                                                                                                                                                               _loc2_ = new CrazyTankSocketEvent("gameRevive",_pkgVec[param1]);
+                                                                                                                                                                                                                                                                                                               event = new CrazyTankSocketEvent("gameRevive",_pkgVec[id]);
                                                                                                                                                                                                                                                                                                             }
                                                                                                                                                                                                                                                                                                          }
                                                                                                                                                                                                                                                                                                          else
                                                                                                                                                                                                                                                                                                          {
-                                                                                                                                                                                                                                                                                                            _loc2_ = new CrazyTankSocketEvent("singleBattleStartMatch",_pkgVec[param1]);
+                                                                                                                                                                                                                                                                                                            event = new CrazyTankSocketEvent("singleBattleStartMatch",_pkgVec[id]);
                                                                                                                                                                                                                                                                                                          }
                                                                                                                                                                                                                                                                                                       }
                                                                                                                                                                                                                                                                                                       else
                                                                                                                                                                                                                                                                                                       {
-                                                                                                                                                                                                                                                                                                         _loc2_ = new CrazyTankSocketEvent("game_trusteeship",_pkgVec[param1]);
+                                                                                                                                                                                                                                                                                                         event = new CrazyTankSocketEvent("game_trusteeship",_pkgVec[id]);
                                                                                                                                                                                                                                                                                                       }
                                                                                                                                                                                                                                                                                                    }
                                                                                                                                                                                                                                                                                                    else
                                                                                                                                                                                                                                                                                                    {
-                                                                                                                                                                                                                                                                                                      _loc2_ = new CrazyTankSocketEvent("game_in_color_change",_pkgVec[param1]);
+                                                                                                                                                                                                                                                                                                      event = new CrazyTankSocketEvent("game_in_color_change",_pkgVec[id]);
                                                                                                                                                                                                                                                                                                    }
                                                                                                                                                                                                                                                                                                 }
                                                                                                                                                                                                                                                                                                 else
                                                                                                                                                                                                                                                                                                 {
-                                                                                                                                                                                                                                                                                                   _loc2_ = new CrazyTankSocketEvent("selectObject",_pkgVec[param1]);
+                                                                                                                                                                                                                                                                                                   event = new CrazyTankSocketEvent("selectObject",_pkgVec[id]);
                                                                                                                                                                                                                                                                                                 }
                                                                                                                                                                                                                                                                                              }
                                                                                                                                                                                                                                                                                              else
                                                                                                                                                                                                                                                                                              {
-                                                                                                                                                                                                                                                                                                _loc2_ = new CrazyTankSocketEvent("PickBox",_pkgVec[param1]);
+                                                                                                                                                                                                                                                                                                event = new CrazyTankSocketEvent("PickBox",_pkgVec[id]);
                                                                                                                                                                                                                                                                                              }
                                                                                                                                                                                                                                                                                           }
                                                                                                                                                                                                                                                                                           else
                                                                                                                                                                                                                                                                                           {
-                                                                                                                                                                                                                                                                                             _loc2_ = new CrazyTankSocketEvent("wishofdd",_pkgVec[param1]);
+                                                                                                                                                                                                                                                                                             event = new CrazyTankSocketEvent("wishofdd",_pkgVec[id]);
                                                                                                                                                                                                                                                                                           }
                                                                                                                                                                                                                                                                                        }
                                                                                                                                                                                                                                                                                        else
                                                                                                                                                                                                                                                                                        {
-                                                                                                                                                                                                                                                                                          _loc2_ = new CrazyTankSocketEvent("add_terrace",_pkgVec[param1]);
+                                                                                                                                                                                                                                                                                          event = new CrazyTankSocketEvent("add_terrace",_pkgVec[id]);
                                                                                                                                                                                                                                                                                        }
                                                                                                                                                                                                                                                                                     }
                                                                                                                                                                                                                                                                                     else
                                                                                                                                                                                                                                                                                     {
-                                                                                                                                                                                                                                                                                       _loc2_ = new CrazyTankSocketEvent("add_new_player",_pkgVec[param1]);
+                                                                                                                                                                                                                                                                                       event = new CrazyTankSocketEvent("add_new_player",_pkgVec[id]);
                                                                                                                                                                                                                                                                                     }
                                                                                                                                                                                                                                                                                  }
                                                                                                                                                                                                                                                                                  else
                                                                                                                                                                                                                                                                                  {
-                                                                                                                                                                                                                                                                                    _loc2_ = new CrazyTankSocketEvent("petSkillCD",_pkgVec[param1]);
+                                                                                                                                                                                                                                                                                    event = new CrazyTankSocketEvent("petSkillCD",_pkgVec[id]);
                                                                                                                                                                                                                                                                                  }
                                                                                                                                                                                                                                                                               }
                                                                                                                                                                                                                                                                               else
                                                                                                                                                                                                                                                                               {
-                                                                                                                                                                                                                                                                                 _loc2_ = new CrazyTankSocketEvent("petBeat",_pkgVec[param1]);
+                                                                                                                                                                                                                                                                                 event = new CrazyTankSocketEvent("petBeat",_pkgVec[id]);
                                                                                                                                                                                                                                                                               }
                                                                                                                                                                                                                                                                            }
                                                                                                                                                                                                                                                                            else
                                                                                                                                                                                                                                                                            {
-                                                                                                                                                                                                                                                                              _loc2_ = new CrazyTankSocketEvent("petBuff",_pkgVec[param1]);
+                                                                                                                                                                                                                                                                              event = new CrazyTankSocketEvent("petBuff",_pkgVec[id]);
                                                                                                                                                                                                                                                                            }
                                                                                                                                                                                                                                                                         }
                                                                                                                                                                                                                                                                         else
                                                                                                                                                                                                                                                                         {
-                                                                                                                                                                                                                                                                           _loc2_ = new CrazyTankSocketEvent("usePetSkill",_pkgVec[param1]);
+                                                                                                                                                                                                                                                                           event = new CrazyTankSocketEvent("usePetSkill",_pkgVec[id]);
                                                                                                                                                                                                                                                                         }
                                                                                                                                                                                                                                                                      }
                                                                                                                                                                                                                                                                      else
                                                                                                                                                                                                                                                                      {
-                                                                                                                                                                                                                                                                        _loc2_ = new CrazyTankSocketEvent("LivingChangeAngele",_pkgVec[param1]);
+                                                                                                                                                                                                                                                                        event = new CrazyTankSocketEvent("LivingChangeAngele",_pkgVec[id]);
                                                                                                                                                                                                                                                                      }
                                                                                                                                                                                                                                                                   }
                                                                                                                                                                                                                                                                   else
                                                                                                                                                                                                                                                                   {
-                                                                                                                                                                                                                                                                     _loc2_ = new CrazyTankSocketEvent("gamesysmessage",_pkgVec[param1]);
+                                                                                                                                                                                                                                                                     event = new CrazyTankSocketEvent("gamesysmessage",_pkgVec[id]);
                                                                                                                                                                                                                                                                   }
                                                                                                                                                                                                                                                                }
                                                                                                                                                                                                                                                                else
                                                                                                                                                                                                                                                                {
-                                                                                                                                                                                                                                                                  _loc2_ = new CrazyTankSocketEvent("windPic",_pkgVec[param1]);
+                                                                                                                                                                                                                                                                  event = new CrazyTankSocketEvent("windPic",_pkgVec[id]);
                                                                                                                                                                                                                                                                }
                                                                                                                                                                                                                                                             }
                                                                                                                                                                                                                                                             else
                                                                                                                                                                                                                                                             {
-                                                                                                                                                                                                                                                               _loc2_ = new CrazyTankSocketEvent("changedMaxForce",_pkgVec[param1]);
+                                                                                                                                                                                                                                                               event = new CrazyTankSocketEvent("changedMaxForce",_pkgVec[id]);
                                                                                                                                                                                                                                                             }
                                                                                                                                                                                                                                                          }
                                                                                                                                                                                                                                                          else
                                                                                                                                                                                                                                                          {
-                                                                                                                                                                                                                                                            _loc2_ = new CrazyTankSocketEvent("removeSkill",_pkgVec[param1]);
+                                                                                                                                                                                                                                                            event = new CrazyTankSocketEvent("removeSkill",_pkgVec[id]);
                                                                                                                                                                                                                                                          }
                                                                                                                                                                                                                                                       }
                                                                                                                                                                                                                                                       else
                                                                                                                                                                                                                                                       {
-                                                                                                                                                                                                                                                         _loc2_ = new CrazyTankSocketEvent("applySkill",_pkgVec[param1]);
+                                                                                                                                                                                                                                                         event = new CrazyTankSocketEvent("applySkill",_pkgVec[id]);
                                                                                                                                                                                                                                                       }
                                                                                                                                                                                                                                                    }
                                                                                                                                                                                                                                                    else
                                                                                                                                                                                                                                                    {
-                                                                                                                                                                                                                                                      _loc2_ = new CrazyTankSocketEvent("fightAchievement",_pkgVec[param1]);
+                                                                                                                                                                                                                                                      event = new CrazyTankSocketEvent("fightAchievement",_pkgVec[id]);
                                                                                                                                                                                                                                                    }
                                                                                                                                                                                                                                                 }
                                                                                                                                                                                                                                                 else
                                                                                                                                                                                                                                                 {
-                                                                                                                                                                                                                                                   _loc2_ = new CrazyTankSocketEvent("actionMapping",_pkgVec[param1]);
+                                                                                                                                                                                                                                                   event = new CrazyTankSocketEvent("actionMapping",_pkgVec[id]);
                                                                                                                                                                                                                                                 }
                                                                                                                                                                                                                                              }
                                                                                                                                                                                                                                              else
                                                                                                                                                                                                                                              {
-                                                                                                                                                                                                                                                _loc2_ = new CrazyTankSocketEvent("tempStyle",_pkgVec[param1]);
+                                                                                                                                                                                                                                                event = new CrazyTankSocketEvent("tempStyle",_pkgVec[id]);
                                                                                                                                                                                                                                              }
                                                                                                                                                                                                                                           }
                                                                                                                                                                                                                                           else
                                                                                                                                                                                                                                           {
-                                                                                                                                                                                                                                             _loc2_ = new CrazyTankSocketEvent("livingShowBlood",_pkgVec[param1]);
+                                                                                                                                                                                                                                             event = new CrazyTankSocketEvent("livingShowBlood",_pkgVec[id]);
                                                                                                                                                                                                                                           }
                                                                                                                                                                                                                                        }
                                                                                                                                                                                                                                        else
                                                                                                                                                                                                                                        {
-                                                                                                                                                                                                                                          _loc2_ = new CrazyTankSocketEvent("changeTarget",_pkgVec[param1]);
+                                                                                                                                                                                                                                          event = new CrazyTankSocketEvent("changeTarget",_pkgVec[id]);
                                                                                                                                                                                                                                        }
                                                                                                                                                                                                                                     }
                                                                                                                                                                                                                                     else
                                                                                                                                                                                                                                     {
-                                                                                                                                                                                                                                       _loc2_ = new CrazyTankSocketEvent("livingBoltmove",_pkgVec[param1]);
+                                                                                                                                                                                                                                       event = new CrazyTankSocketEvent("livingBoltmove",_pkgVec[id]);
                                                                                                                                                                                                                                     }
                                                                                                                                                                                                                                  }
                                                                                                                                                                                                                                  else
                                                                                                                                                                                                                                  {
-                                                                                                                                                                                                                                    _loc2_ = new CrazyTankSocketEvent("showPassStoryBtn",_pkgVec[param1]);
+                                                                                                                                                                                                                                    event = new CrazyTankSocketEvent("showPassStoryBtn",_pkgVec[id]);
                                                                                                                                                                                                                                  }
                                                                                                                                                                                                                               }
                                                                                                                                                                                                                               else
                                                                                                                                                                                                                               {
-                                                                                                                                                                                                                                 _loc2_ = new CrazyTankSocketEvent("popupQuestionFrame",_pkgVec[param1]);
+                                                                                                                                                                                                                                 event = new CrazyTankSocketEvent("popupQuestionFrame",_pkgVec[id]);
                                                                                                                                                                                                                               }
                                                                                                                                                                                                                            }
                                                                                                                                                                                                                            else
                                                                                                                                                                                                                            {
-                                                                                                                                                                                                                              _loc2_ = new CrazyTankSocketEvent("fightLibInfoChange",_pkgVec[param1]);
+                                                                                                                                                                                                                              event = new CrazyTankSocketEvent("fightLibInfoChange",_pkgVec[id]);
                                                                                                                                                                                                                            }
                                                                                                                                                                                                                         }
                                                                                                                                                                                                                         else
                                                                                                                                                                                                                         {
-                                                                                                                                                                                                                           _loc2_ = new CrazyTankSocketEvent("Use_Deputy_Weapon",_pkgVec[param1]);
+                                                                                                                                                                                                                           event = new CrazyTankSocketEvent("Use_Deputy_Weapon",_pkgVec[id]);
                                                                                                                                                                                                                         }
                                                                                                                                                                                                                      }
                                                                                                                                                                                                                      else
                                                                                                                                                                                                                      {
-                                                                                                                                                                                                                        _loc2_ = new CrazyTankSocketEvent("controlBGM",_pkgVec[param1]);
+                                                                                                                                                                                                                        event = new CrazyTankSocketEvent("controlBGM",_pkgVec[id]);
                                                                                                                                                                                                                      }
                                                                                                                                                                                                                   }
                                                                                                                                                                                                                   else
                                                                                                                                                                                                                   {
-                                                                                                                                                                                                                     _loc2_ = new CrazyTankSocketEvent("topLayer",_pkgVec[param1]);
+                                                                                                                                                                                                                     event = new CrazyTankSocketEvent("topLayer",_pkgVec[id]);
                                                                                                                                                                                                                   }
                                                                                                                                                                                                                }
                                                                                                                                                                                                                else
                                                                                                                                                                                                                {
-                                                                                                                                                                                                                  _loc2_ = new CrazyTankSocketEvent("forbidDrag",_pkgVec[param1]);
+                                                                                                                                                                                                                  event = new CrazyTankSocketEvent("forbidDrag",_pkgVec[id]);
                                                                                                                                                                                                                }
                                                                                                                                                                                                             }
                                                                                                                                                                                                             else
                                                                                                                                                                                                             {
-                                                                                                                                                                                                               _loc2_ = new CrazyTankSocketEvent("playWordTip",_pkgVec[param1]);
+                                                                                                                                                                                                               event = new CrazyTankSocketEvent("playWordTip",_pkgVec[id]);
                                                                                                                                                                                                             }
                                                                                                                                                                                                          }
                                                                                                                                                                                                          else
                                                                                                                                                                                                          {
-                                                                                                                                                                                                            _loc2_ = new CrazyTankSocketEvent("addTipLayer",_pkgVec[param1]);
+                                                                                                                                                                                                            event = new CrazyTankSocketEvent("addTipLayer",_pkgVec[id]);
                                                                                                                                                                                                          }
                                                                                                                                                                                                       }
                                                                                                                                                                                                       else
                                                                                                                                                                                                       {
-                                                                                                                                                                                                         _loc2_ = new CrazyTankSocketEvent("gameRoomInfo",_pkgVec[param1]);
+                                                                                                                                                                                                         event = new CrazyTankSocketEvent("gameRoomInfo",_pkgVec[id]);
                                                                                                                                                                                                       }
                                                                                                                                                                                                    }
                                                                                                                                                                                                    else
                                                                                                                                                                                                    {
-                                                                                                                                                                                                      _loc2_ = new CrazyTankSocketEvent("playInfoInGame",_pkgVec[param1]);
+                                                                                                                                                                                                      event = new CrazyTankSocketEvent("playInfoInGame",_pkgVec[id]);
                                                                                                                                                                                                    }
                                                                                                                                                                                                 }
                                                                                                                                                                                                 else
                                                                                                                                                                                                 {
-                                                                                                                                                                                                   _loc2_ = new CrazyTankSocketEvent("gameMissionTryAgain",_pkgVec[param1]);
+                                                                                                                                                                                                   event = new CrazyTankSocketEvent("gameMissionTryAgain",_pkgVec[id]);
                                                                                                                                                                                                 }
                                                                                                                                                                                              }
                                                                                                                                                                                              else
                                                                                                                                                                                              {
-                                                                                                                                                                                                _loc2_ = new CrazyTankSocketEvent("focusOnObject",_pkgVec[param1]);
+                                                                                                                                                                                                event = new CrazyTankSocketEvent("focusOnObject",_pkgVec[id]);
                                                                                                                                                                                              }
                                                                                                                                                                                           }
                                                                                                                                                                                           else
                                                                                                                                                                                           {
-                                                                                                                                                                                             _loc2_ = new CrazyTankSocketEvent("showCard",_pkgVec[param1]);
+                                                                                                                                                                                             event = new CrazyTankSocketEvent("showCard",_pkgVec[id]);
                                                                                                                                                                                           }
                                                                                                                                                                                        }
                                                                                                                                                                                        else
                                                                                                                                                                                        {
-                                                                                                                                                                                          _loc2_ = new CrazyTankSocketEvent("livingRangeAttacking",_pkgVec[param1]);
+                                                                                                                                                                                          event = new CrazyTankSocketEvent("livingRangeAttacking",_pkgVec[id]);
                                                                                                                                                                                        }
                                                                                                                                                                                     }
                                                                                                                                                                                     else
                                                                                                                                                                                     {
-                                                                                                                                                                                       _loc2_ = new CrazyTankSocketEvent("livingSay",_pkgVec[param1]);
+                                                                                                                                                                                       event = new CrazyTankSocketEvent("livingSay",_pkgVec[id]);
                                                                                                                                                                                     }
                                                                                                                                                                                  }
                                                                                                                                                                                  else
                                                                                                                                                                                  {
-                                                                                                                                                                                    _loc2_ = new CrazyTankSocketEvent("livingMoveTo",_pkgVec[param1]);
+                                                                                                                                                                                    event = new CrazyTankSocketEvent("livingMoveTo",_pkgVec[id]);
                                                                                                                                                                                  }
                                                                                                                                                                               }
                                                                                                                                                                               else
                                                                                                                                                                               {
-                                                                                                                                                                                 _loc2_ = new CrazyTankSocketEvent("livingJump",_pkgVec[param1]);
+                                                                                                                                                                                 event = new CrazyTankSocketEvent("livingJump",_pkgVec[id]);
                                                                                                                                                                               }
                                                                                                                                                                            }
                                                                                                                                                                            else
                                                                                                                                                                            {
-                                                                                                                                                                              _loc2_ = new CrazyTankSocketEvent("livingFalling",_pkgVec[param1]);
+                                                                                                                                                                              event = new CrazyTankSocketEvent("livingFalling",_pkgVec[id]);
                                                                                                                                                                            }
                                                                                                                                                                         }
                                                                                                                                                                         else
                                                                                                                                                                         {
-                                                                                                                                                                           _loc2_ = new CrazyTankSocketEvent("livingBeat",_pkgVec[param1]);
+                                                                                                                                                                           event = new CrazyTankSocketEvent("livingBeat",_pkgVec[id]);
                                                                                                                                                                         }
                                                                                                                                                                      }
                                                                                                                                                                      else
                                                                                                                                                                      {
-                                                                                                                                                                        _loc2_ = new CrazyTankSocketEvent("addMapThing",_pkgVec[param1]);
+                                                                                                                                                                        event = new CrazyTankSocketEvent("addMapThing",_pkgVec[id]);
                                                                                                                                                                      }
                                                                                                                                                                   }
                                                                                                                                                                   else
                                                                                                                                                                   {
-                                                                                                                                                                     _loc2_ = new CrazyTankSocketEvent("loadResource",_pkgVec[param1]);
+                                                                                                                                                                     event = new CrazyTankSocketEvent("loadResource",_pkgVec[id]);
                                                                                                                                                                   }
                                                                                                                                                                }
                                                                                                                                                                else
                                                                                                                                                                {
-                                                                                                                                                                  _loc2_ = new CrazyTankSocketEvent("playSound",_pkgVec[param1]);
+                                                                                                                                                                  event = new CrazyTankSocketEvent("playSound",_pkgVec[id]);
                                                                                                                                                                }
                                                                                                                                                             }
                                                                                                                                                             else
                                                                                                                                                             {
-                                                                                                                                                               _loc2_ = new CrazyTankSocketEvent("playMovie",_pkgVec[param1]);
+                                                                                                                                                               event = new CrazyTankSocketEvent("playMovie",_pkgVec[id]);
                                                                                                                                                             }
                                                                                                                                                          }
                                                                                                                                                          else
                                                                                                                                                          {
-                                                                                                                                                            _loc2_ = new CrazyTankSocketEvent("addLiving",_pkgVec[param1]);
+                                                                                                                                                            event = new CrazyTankSocketEvent("addLiving",_pkgVec[id]);
                                                                                                                                                          }
                                                                                                                                                       }
                                                                                                                                                       else
                                                                                                                                                       {
-                                                                                                                                                         _loc2_ = new CrazyTankSocketEvent("gameTakeOut",_pkgVec[param1]);
+                                                                                                                                                         event = new CrazyTankSocketEvent("gameTakeOut",_pkgVec[id]);
                                                                                                                                                       }
                                                                                                                                                    }
                                                                                                                                                    else
                                                                                                                                                    {
-                                                                                                                                                      _loc2_ = new CrazyTankSocketEvent("boxdisappear",_pkgVec[param1]);
+                                                                                                                                                      event = new CrazyTankSocketEvent("boxdisappear",_pkgVec[id]);
                                                                                                                                                    }
                                                                                                                                                 }
                                                                                                                                                 else
                                                                                                                                                 {
-                                                                                                                                                   _loc2_ = new CrazyTankSocketEvent("playerBeat",_pkgVec[param1]);
+                                                                                                                                                   event = new CrazyTankSocketEvent("playerBeat",_pkgVec[id]);
                                                                                                                                                 }
                                                                                                                                              }
                                                                                                                                              else
                                                                                                                                              {
-                                                                                                                                                _loc2_ = new CrazyTankSocketEvent("bombDie",_pkgVec[param1]);
+                                                                                                                                                event = new CrazyTankSocketEvent("bombDie",_pkgVec[id]);
                                                                                                                                              }
                                                                                                                                           }
                                                                                                                                           else
                                                                                                                                           {
-                                                                                                                                             _loc2_ = new CrazyTankSocketEvent("playerPick",_pkgVec[param1]);
+                                                                                                                                             event = new CrazyTankSocketEvent("playerPick",_pkgVec[id]);
                                                                                                                                           }
                                                                                                                                        }
                                                                                                                                        else
                                                                                                                                        {
-                                                                                                                                          _loc2_ = new CrazyTankSocketEvent("changeBall",_pkgVec[param1]);
+                                                                                                                                          event = new CrazyTankSocketEvent("changeBall",_pkgVec[id]);
                                                                                                                                        }
                                                                                                                                     }
                                                                                                                                     else
                                                                                                                                     {
-                                                                                                                                       _loc2_ = new CrazyTankSocketEvent("playerShootTag",_pkgVec[param1]);
+                                                                                                                                       event = new CrazyTankSocketEvent("playerShootTag",_pkgVec[id]);
                                                                                                                                     }
                                                                                                                                  }
                                                                                                                                  else
                                                                                                                                  {
-                                                                                                                                    _loc2_ = new CrazyTankSocketEvent("suicide",_pkgVec[param1]);
+                                                                                                                                    event = new CrazyTankSocketEvent("suicide",_pkgVec[id]);
                                                                                                                                  }
                                                                                                                               }
                                                                                                                               else
                                                                                                                               {
-                                                                                                                                 _loc2_ = new CrazyTankSocketEvent("shootStaight",_pkgVec[param1]);
+                                                                                                                                 event = new CrazyTankSocketEvent("shootStaight",_pkgVec[id]);
                                                                                                                               }
                                                                                                                            }
                                                                                                                            else
                                                                                                                            {
-                                                                                                                              _loc2_ = new CrazyTankSocketEvent("playerAddBall",_pkgVec[param1]);
+                                                                                                                              event = new CrazyTankSocketEvent("playerAddBall",_pkgVec[id]);
                                                                                                                            }
                                                                                                                         }
                                                                                                                         else
                                                                                                                         {
-                                                                                                                           _loc2_ = new CrazyTankSocketEvent("playerAddAttack",_pkgVec[param1]);
+                                                                                                                           event = new CrazyTankSocketEvent("playerAddAttack",_pkgVec[id]);
                                                                                                                         }
                                                                                                                      }
                                                                                                                      else
@@ -676,92 +676,92 @@ package bombKing
                                                                                                                   }
                                                                                                                   else
                                                                                                                   {
-                                                                                                                     _loc2_ = new CrazyTankSocketEvent("reduceDander",_pkgVec[param1]);
+                                                                                                                     event = new CrazyTankSocketEvent("reduceDander",_pkgVec[id]);
                                                                                                                   }
                                                                                                                }
                                                                                                                else
                                                                                                                {
-                                                                                                                  _loc2_ = new CrazyTankSocketEvent("playerDander",_pkgVec[param1]);
+                                                                                                                  event = new CrazyTankSocketEvent("playerDander",_pkgVec[id]);
                                                                                                                }
                                                                                                             }
                                                                                                             else
                                                                                                             {
-                                                                                                               _loc2_ = new CrazyTankSocketEvent("playerProp",_pkgVec[param1]);
+                                                                                                               event = new CrazyTankSocketEvent("playerProp",_pkgVec[id]);
                                                                                                             }
                                                                                                          }
                                                                                                          else
                                                                                                          {
-                                                                                                            _loc2_ = new CrazyTankSocketEvent("playerStunt",_pkgVec[param1]);
+                                                                                                            event = new CrazyTankSocketEvent("playerStunt",_pkgVec[id]);
                                                                                                          }
                                                                                                       }
                                                                                                       else
                                                                                                       {
-                                                                                                         _loc2_ = new CrazyTankSocketEvent("playerFightProp",_pkgVec[param1]);
+                                                                                                         event = new CrazyTankSocketEvent("playerFightProp",_pkgVec[id]);
                                                                                                       }
                                                                                                    }
                                                                                                    else
                                                                                                    {
-                                                                                                      _loc2_ = new CrazyTankSocketEvent("playerBeckon",_pkgVec[param1]);
+                                                                                                      event = new CrazyTankSocketEvent("playerBeckon",_pkgVec[id]);
                                                                                                    }
                                                                                                 }
                                                                                                 else
                                                                                                 {
-                                                                                                   param1++;
+                                                                                                   id++;
                                                                                                 }
                                                                                              }
                                                                                              else
                                                                                              {
-                                                                                                _loc2_ = new CrazyTankSocketEvent("playerHide",_pkgVec[param1]);
+                                                                                                event = new CrazyTankSocketEvent("playerHide",_pkgVec[id]);
                                                                                              }
                                                                                           }
                                                                                           else
                                                                                           {
-                                                                                             _loc2_ = new CrazyTankSocketEvent("playerVane",_pkgVec[param1]);
+                                                                                             event = new CrazyTankSocketEvent("playerVane",_pkgVec[id]);
                                                                                           }
                                                                                        }
                                                                                        else
                                                                                        {
-                                                                                          _loc2_ = new CrazyTankSocketEvent("playerInvincibly",_pkgVec[param1]);
+                                                                                          event = new CrazyTankSocketEvent("playerInvincibly",_pkgVec[id]);
                                                                                        }
                                                                                     }
                                                                                     else
                                                                                     {
-                                                                                       _loc2_ = new CrazyTankSocketEvent("playerProperty",_pkgVec[param1]);
+                                                                                       event = new CrazyTankSocketEvent("playerProperty",_pkgVec[id]);
                                                                                     }
                                                                                  }
                                                                                  else
                                                                                  {
-                                                                                    _loc2_ = new CrazyTankSocketEvent("changeState",_pkgVec[param1]);
+                                                                                    event = new CrazyTankSocketEvent("changeState",_pkgVec[id]);
                                                                                  }
                                                                               }
                                                                               else
                                                                               {
-                                                                                 _loc2_ = new CrazyTankSocketEvent("playerNoNole",_pkgVec[param1]);
+                                                                                 event = new CrazyTankSocketEvent("playerNoNole",_pkgVec[id]);
                                                                               }
                                                                            }
                                                                            else
                                                                            {
-                                                                              _loc2_ = new CrazyTankSocketEvent("playerFrost",_pkgVec[param1]);
+                                                                              event = new CrazyTankSocketEvent("playerFrost",_pkgVec[id]);
                                                                            }
                                                                         }
                                                                         else
                                                                         {
-                                                                           _loc2_ = new CrazyTankSocketEvent("playerBlood",_pkgVec[param1]);
+                                                                           event = new CrazyTankSocketEvent("playerBlood",_pkgVec[id]);
                                                                         }
                                                                      }
                                                                      else
                                                                      {
-                                                                        _loc2_ = new CrazyTankSocketEvent("playerChange",_pkgVec[param1]);
+                                                                        event = new CrazyTankSocketEvent("playerChange",_pkgVec[id]);
                                                                      }
                                                                   }
                                                                   else
                                                                   {
-                                                                     _loc2_ = new CrazyTankSocketEvent("playerStopMove",_pkgVec[param1]);
+                                                                     event = new CrazyTankSocketEvent("playerStopMove",_pkgVec[id]);
                                                                   }
                                                                }
                                                                else
                                                                {
-                                                                  _loc2_ = new CrazyTankSocketEvent("playerStartMove",_pkgVec[param1]);
+                                                                  event = new CrazyTankSocketEvent("playerStartMove",_pkgVec[id]);
                                                                }
                                                             }
                                                             else if(QueueManager._waitlist.length <= 0)
@@ -771,124 +771,123 @@ package bombKing
                                                          }
                                                          else
                                                          {
-                                                            _loc2_ = new CrazyTankSocketEvent("playerShoot",_pkgVec[param1]);
+                                                            event = new CrazyTankSocketEvent("playerShoot",_pkgVec[id]);
                                                          }
                                                       }
                                                       else
                                                       {
-                                                         _loc2_ = new CrazyTankSocketEvent("playerGunAngle",_pkgVec[param1]);
+                                                         event = new CrazyTankSocketEvent("playerGunAngle",_pkgVec[id]);
                                                       }
                                                    }
                                                    else
                                                    {
-                                                      _loc2_ = new CrazyTankSocketEvent("playerDirection",_pkgVec[param1]);
+                                                      event = new CrazyTankSocketEvent("playerDirection",_pkgVec[id]);
                                                    }
                                                 }
                                                 else
                                                 {
-                                                   _loc2_ = new CrazyTankSocketEvent("gameAllMissionOver",_pkgVec[param1]);
+                                                   event = new CrazyTankSocketEvent("gameAllMissionOver",_pkgVec[id]);
                                                 }
                                              }
                                              else
                                              {
-                                                _loc2_ = new CrazyTankSocketEvent("missionOver",_pkgVec[param1]);
+                                                event = new CrazyTankSocketEvent("missionOver",_pkgVec[id]);
                                              }
                                           }
                                           else
                                           {
-                                             _loc2_ = new CrazyTankSocketEvent("gameOver",_pkgVec[param1]);
+                                             event = new CrazyTankSocketEvent("gameOver",_pkgVec[id]);
                                           }
                                        }
                                        else
                                        {
-                                          _loc2_ = new CrazyTankSocketEvent("gameMissionInfo",_pkgVec[param1]);
+                                          event = new CrazyTankSocketEvent("gameMissionInfo",_pkgVec[id]);
                                        }
                                     }
                                     else
                                     {
-                                       _loc2_ = new CrazyTankSocketEvent("gameLoad",_pkgVec[param1]);
+                                       event = new CrazyTankSocketEvent("gameLoad",_pkgVec[id]);
                                     }
                                  }
                                  else
                                  {
-                                    _loc2_ = new CrazyTankSocketEvent("gameWannaLeader",_pkgVec[param1]);
+                                    event = new CrazyTankSocketEvent("gameWannaLeader",_pkgVec[id]);
                                  }
                               }
                               else if(RoomManager.Instance.current && RoomManager.Instance.current.selfRoomPlayer.progress >= 100)
                               {
-                                 _loc2_ = new CrazyTankSocketEvent("gameStart",_pkgVec[param1]);
+                                 event = new CrazyTankSocketEvent("gameStart",_pkgVec[id]);
                               }
                            }
                            else
                            {
-                              _loc2_ = new CrazyTankSocketEvent("gameCreate",_pkgVec[param1]);
+                              event = new CrazyTankSocketEvent("gameCreate",_pkgVec[id]);
                            }
                         }
                         else
                         {
-                           _loc2_ = new CrazyTankSocketEvent("barrierInfo",_pkgVec[param1]);
+                           event = new CrazyTankSocketEvent("barrierInfo",_pkgVec[id]);
                         }
                      }
                      else
                      {
-                        _loc2_ = new CrazyTankSocketEvent("addMapThing",_pkgVec[param1]);
+                        event = new CrazyTankSocketEvent("addMapThing",_pkgVec[id]);
                      }
                   }
                   else
                   {
-                     _loc2_ = new CrazyTankSocketEvent("updateBoardState",_pkgVec[param1]);
+                     event = new CrazyTankSocketEvent("updateBoardState",_pkgVec[id]);
                   }
                }
                else
                {
-                  _loc2_ = new CrazyTankSocketEvent("gameMissionPrepare",_pkgVec[param1]);
+                  event = new CrazyTankSocketEvent("gameMissionPrepare",_pkgVec[id]);
                }
             }
             else
             {
-               _loc2_ = new CrazyTankSocketEvent("updateBuff",_pkgVec[param1]);
+               event = new CrazyTankSocketEvent("updateBuff",_pkgVec[id]);
             }
          }
          else
          {
-            _loc2_ = new CrazyTankSocketEvent("gemGlow",_pkgVec[param1]);
+            event = new CrazyTankSocketEvent("gemGlow",_pkgVec[id]);
          }
-         return _loc2_;
+         return event;
       }
       
-      public function getFightReportLoader(param1:String) : BaseLoader
+      public function getFightReportLoader(reportID:String) : BaseLoader
       {
-         var _loc3_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         _loc3_["ID"] = param1;
-         var _loc2_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("GetFightReport.ashx"),7,_loc3_);
-         _loc2_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingFightReportFailure");
-         _loc2_.analyzer = new FightReportAnalyze(getFightInfo);
-         return _loc2_;
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         args["ID"] = reportID;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("GetFightReport.ashx"),7,args);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.LoadingFightReportFailure");
+         loader.analyzer = new FightReportAnalyze(getFightInfo);
+         return loader;
       }
       
-      public function getFightInfo(param1:FightReportAnalyze) : void
+      public function getFightInfo(analyzer:FightReportAnalyze) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:uint = 0;
-         _pkgVec = param1.pkgVec;
-         _loc3_ = 0;
-         while(_loc3_ < _pkgVec.length)
+         var i:int = 0;
+         var code:uint = 0;
+         _pkgVec = analyzer.pkgVec;
+         for(i = 0; i < _pkgVec.length; )
          {
-            _loc2_ = _pkgVec[_loc3_].readUnsignedByte();
-            if((_loc2_ == 101 || _loc2_ == 103 || _loc2_ == 99) && _cmdVec.indexOf(_loc2_) != -1)
+            code = _pkgVec[i].readUnsignedByte();
+            if((code == 101 || code == 103 || code == 99) && _cmdVec.indexOf(code) != -1)
             {
-               _pkgVec.splice(_loc3_,1);
-               _loc3_--;
+               _pkgVec.splice(i,1);
+               i--;
             }
             else
             {
-               if(_loc2_ == 99)
+               if(code == 99)
                {
-                  _startGameId = _loc3_ + 1;
+                  _startGameId = i + 1;
                }
-               _cmdVec.push(_loc2_);
+               _cmdVec.push(code);
             }
-            _loc3_++;
+            i++;
          }
          play();
       }
@@ -912,61 +911,59 @@ package bombKing
       
       public function getFightTime() : int
       {
-         var _loc1_:int = 0;
+         var time:int = 0;
          if(_pkgVec && _pkgVec.length > 0)
          {
-            _loc1_ = _pkgVec[_pkgVec.length - 1].extend2;
+            time = _pkgVec[_pkgVec.length - 1].extend2;
          }
-         return _loc1_;
+         return time;
       }
       
-      public function playByCmdId(param1:int) : int
+      public function playByCmdId(time:int) : int
       {
-         var _loc6_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:int = 0;
-         var _loc5_:int = _pkgVec.length;
-         _loc6_ = _cmdID;
-         while(_loc6_ < _loc5_)
+         var i:int = 0;
+         var event:* = null;
+         var res:int = 0;
+         var length:int = _pkgVec.length;
+         for(i = _cmdID; i < length; )
          {
-            if(param1 <= _pkgVec[_loc6_].extend2)
+            if(time <= _pkgVec[i].extend2)
             {
-               _cmdID = _loc6_;
+               _cmdID = i;
                break;
             }
-            _loc4_ = creatGameEvent(_loc6_);
-            if(_loc4_)
+            event = creatGameEvent(i);
+            if(event)
             {
-               QueueManager.addQueue(_loc4_);
+               QueueManager.addQueue(event);
             }
-            _loc6_++;
+            i++;
          }
          QueueManager.setLifeTime(_pkgVec[_cmdID].extend2);
-         var _loc2_:int = 1;
-         while(_cmdID - _loc2_ >= _startGameId && _pkgVec[_cmdID - _loc2_].extend2 <= 0)
+         var id:int = 1;
+         while(_cmdID - id >= _startGameId && _pkgVec[_cmdID - id].extend2 <= 0)
          {
-            _loc2_++;
+            id++;
          }
-         _loc3_ = _pkgVec[_cmdID - _loc2_].extend2;
-         return _loc3_;
+         res = _pkgVec[_cmdID - id].extend2;
+         return res;
       }
       
       public function printVec() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = _pkgVec.length;
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_)
+         var i:int = 0;
+         var length:int = _pkgVec.length;
+         for(i = 0; i < length; )
          {
-            if(_pkgVec[_loc2_].position == _pkgVec[_loc2_].length)
+            if(_pkgVec[i].position == _pkgVec[i].length)
             {
-               trace("协议号是：" + _cmdVec[_loc2_].toString(16) + "  时间是：" + _pkgVec[_loc2_].extend2);
+               trace("协议号是：" + _cmdVec[i].toString(16) + "  时间是：" + _pkgVec[i].extend2);
             }
-            _loc2_++;
+            i++;
          }
       }
       
-      private function __onOpenView(param1:BombKingEvent) : void
+      private function __onOpenView(event:BombKingEvent) : void
       {
          if(!_frame)
          {
@@ -984,7 +981,7 @@ package bombKing
          }
       }
       
-      protected function onSmallLoadingClose(param1:Event) : void
+      protected function onSmallLoadingClose(event:Event) : void
       {
          UIModuleSmallLoading.Instance.hide();
          UIModuleSmallLoading.Instance.removeEventListener("close",onSmallLoadingClose);
@@ -992,17 +989,17 @@ package bombKing
          UIModuleLoader.Instance.removeEventListener("uiMoudleProgress",onUIProgress);
       }
       
-      protected function onUIProgress(param1:UIModuleEvent) : void
+      protected function onUIProgress(event:UIModuleEvent) : void
       {
-         if(param1.module == "bombKing")
+         if(event.module == "bombKing")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
       
-      protected function createBombKingFrame(param1:UIModuleEvent) : void
+      protected function createBombKingFrame(event:UIModuleEvent) : void
       {
-         if(param1.module != "bombKing")
+         if(event.module != "bombKing")
          {
             return;
          }
@@ -1019,9 +1016,9 @@ package bombKing
          return _frame;
       }
       
-      public function set frame(param1:BombKingMainFrame) : void
+      public function set frame(value:BombKingMainFrame) : void
       {
-         _frame = param1;
+         _frame = value;
       }
    }
 }

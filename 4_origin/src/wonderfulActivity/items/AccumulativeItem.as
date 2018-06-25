@@ -50,15 +50,15 @@ package wonderfulActivity.items
       {
          tempfilters = [];
          grayFilters = ComponentFactory.Instance.creatFilters("grayFilter");
-         var _loc1_:ColorMatrix = new ColorMatrix();
+         var colorMatrix:ColorMatrix = new ColorMatrix();
          lightFilter = new ColorMatrixFilter();
-         _loc1_.adjustColor(50,4,4,2);
-         lightFilter.matrix = _loc1_;
+         colorMatrix.adjustColor(50,4,4,2);
+         lightFilter.matrix = colorMatrix;
       }
       
-      public function initView(param1:int) : void
+      public function initView(index:int) : void
       {
-         this.index = param1;
+         this.index = index;
          _numberBG = ComponentFactory.Instance.creat("wonderful.accumulative.numberBG");
          addChild(_numberBG);
          _questionMark = ComponentFactory.Instance.creatComponentByStylename("wonderful.accumulative.questionMark");
@@ -69,7 +69,7 @@ package wonderfulActivity.items
          addChild(_number);
          _box = ComponentFactory.Instance.creat("wonderful.accumulative.box");
          PositionUtils.setPos(_box,"wonderful.Accumulative.boxPos");
-         _box.gotoAndStop(param1);
+         _box.gotoAndStop(index);
          _progressPoint = ComponentFactory.Instance.creat("wonderful.accumulative.progress1");
          _progressPoint.visible = false;
          addChild(_progressPoint);
@@ -81,27 +81,27 @@ package wonderfulActivity.items
          _progressPoint.visible = true;
       }
       
-      public function setNumber(param1:int) : void
+      public function setNumber(num:int) : void
       {
          _questionMark.visible = false;
          _number.visible = true;
-         var _loc2_:int = 0;
-         if(param1 >= 100000)
+         var displayNum:int = 0;
+         if(num >= 100000)
          {
-            _loc2_ = Math.floor(param1 / 10000);
-            _number.text = _loc2_.toString() + "w";
+            displayNum = Math.floor(num / 10000);
+            _number.text = displayNum.toString() + "w";
          }
          else
          {
-            _number.text = param1.toString();
+            _number.text = num.toString();
          }
       }
       
-      public function turnGray(param1:Boolean) : void
+      public function turnGray(flag:Boolean) : void
       {
          glint(false);
-         var _loc2_:int = tempfilters.indexOf(lightFilter);
-         if(_loc2_ >= 0)
+         var tmp:int = tempfilters.indexOf(lightFilter);
+         if(tmp >= 0)
          {
             tempfilters = [lightFilter];
          }
@@ -109,26 +109,26 @@ package wonderfulActivity.items
          {
             tempfilters = [];
          }
-         if(param1)
+         if(flag)
          {
             tempfilters = tempfilters.concat(grayFilters);
          }
          _box.filters = tempfilters;
       }
       
-      public function turnLight(param1:Boolean) : void
+      public function turnLight(flag:Boolean) : void
       {
-         var _loc2_:int = tempfilters.indexOf(lightFilter);
-         if(param1)
+         var tmp:int = tempfilters.indexOf(lightFilter);
+         if(flag)
          {
-            if(_loc2_ == -1)
+            if(tmp == -1)
             {
                tempfilters.push(lightFilter);
             }
          }
-         else if(_loc2_ >= 0)
+         else if(tmp >= 0)
          {
-            tempfilters.splice(_loc2_,1);
+            tempfilters.splice(tmp,1);
          }
          if(glintFilter)
          {
@@ -140,9 +140,9 @@ package wonderfulActivity.items
          }
       }
       
-      public function glint(param1:Boolean) : void
+      public function glint(flag:Boolean) : void
       {
-         if(param1)
+         if(flag)
          {
             addEventListener("enterFrame",__enterFrame);
             glintFilter = new GlowFilter(16768512,1,10,10,2.7,3);
@@ -159,7 +159,7 @@ package wonderfulActivity.items
          }
       }
       
-      private function __enterFrame(param1:Event) : void
+      private function __enterFrame(event:Event) : void
       {
          if(glintFlag)
          {

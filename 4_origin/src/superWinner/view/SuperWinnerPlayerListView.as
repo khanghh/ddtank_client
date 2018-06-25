@@ -18,9 +18,9 @@ package superWinner.view
       
       private var _playerList:ListPanel;
       
-      public function SuperWinnerPlayerListView(param1:DictionaryData)
+      public function SuperWinnerPlayerListView(data:DictionaryData)
       {
-         _data = param1;
+         _data = data;
          super();
          initbg();
          initView();
@@ -29,8 +29,8 @@ package superWinner.view
       
       private function initbg() : void
       {
-         var _loc1_:Image = ComponentFactory.Instance.creat("superWinner.playerList.bg");
-         addChild(_loc1_);
+         var bg:Image = ComponentFactory.Instance.creat("superWinner.playerList.bg");
+         addChild(bg);
       }
       
       private function initView() : void
@@ -48,61 +48,60 @@ package superWinner.view
          _data.addEventListener("update",__updatePlayer);
       }
       
-      private function __addPlayer(param1:DictionaryEvent) : void
+      private function __addPlayer(event:DictionaryEvent) : void
       {
-         var _loc2_:PlayerInfo = param1.data as PlayerInfo;
-         _playerList.vectorListModel.insertElementAt(_loc2_,getInsertIndex(_loc2_));
+         var player:PlayerInfo = event.data as PlayerInfo;
+         _playerList.vectorListModel.insertElementAt(player,getInsertIndex(player));
       }
       
-      private function __removePlayer(param1:DictionaryEvent) : void
+      private function __removePlayer(event:DictionaryEvent) : void
       {
-         var _loc2_:PlayerInfo = param1.data as PlayerInfo;
-         _playerList.vectorListModel.remove(_loc2_);
+         var player:PlayerInfo = event.data as PlayerInfo;
+         _playerList.vectorListModel.remove(player);
       }
       
-      private function __updatePlayer(param1:DictionaryEvent) : void
+      private function __updatePlayer(event:DictionaryEvent) : void
       {
-         var _loc2_:PlayerInfo = param1.data as PlayerInfo;
-         _playerList.vectorListModel.remove(_loc2_);
-         _playerList.vectorListModel.insertElementAt(_loc2_,getInsertIndex(_loc2_));
+         var player:PlayerInfo = event.data as PlayerInfo;
+         _playerList.vectorListModel.remove(player);
+         _playerList.vectorListModel.insertElementAt(player,getInsertIndex(player));
          _playerList.list.updateListView();
       }
       
-      private function getInsertIndex(param1:PlayerInfo) : int
+      private function getInsertIndex(info:PlayerInfo) : int
       {
-         var _loc4_:* = null;
-         var _loc5_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:Array = _playerList.vectorListModel.elements;
-         if(_loc3_.length == 0)
+         var tempInfo:* = null;
+         var i:int = 0;
+         var tempIndex:int = 0;
+         var tempArray:Array = _playerList.vectorListModel.elements;
+         if(tempArray.length == 0)
          {
             return 0;
          }
-         _loc5_ = _loc3_.length - 1;
-         while(_loc5_ >= 0)
+         for(i = tempArray.length - 1; i >= 0; )
          {
-            _loc4_ = _loc3_[_loc5_] as PlayerInfo;
-            if(!(param1.IsVIP && !_loc4_.IsVIP))
+            tempInfo = tempArray[i] as PlayerInfo;
+            if(!(info.IsVIP && !tempInfo.IsVIP))
             {
-               if(!param1.IsVIP && _loc4_.IsVIP)
+               if(!info.IsVIP && tempInfo.IsVIP)
                {
-                  return _loc5_ + 1;
+                  return i + 1;
                }
-               if(param1.IsVIP == _loc4_.IsVIP)
+               if(info.IsVIP == tempInfo.IsVIP)
                {
-                  if(param1.Grade > _loc4_.Grade)
+                  if(info.Grade > tempInfo.Grade)
                   {
-                     _loc2_ = _loc5_ - 1;
+                     tempIndex = i - 1;
                   }
                   else
                   {
-                     return _loc5_ + 1;
+                     return i + 1;
                   }
                }
             }
-            _loc5_--;
+            i--;
          }
-         return _loc2_ < 0?0:_loc2_;
+         return tempIndex < 0?0:tempIndex;
       }
       
       public function dispose() : void

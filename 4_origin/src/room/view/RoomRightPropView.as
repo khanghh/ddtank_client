@@ -66,9 +66,9 @@ package room.view
       
       protected var equalitySkill:Boolean;
       
-      public function RoomRightPropView(param1:Boolean = false)
+      public function RoomRightPropView(isEqual:Boolean = false)
       {
-         equalitySkill = param1;
+         equalitySkill = isEqual;
          super();
          initView();
          initEvents();
@@ -76,10 +76,10 @@ package room.view
       
       protected function initView() : void
       {
-         var _loc9_:int = 0;
-         var _loc5_:* = null;
-         var _loc8_:int = 0;
-         var _loc6_:* = null;
+         var i:int = 0;
+         var cell:* = null;
+         var j:int = 0;
+         var cell1:* = null;
          _bg = ClassUtils.CreatInstance("asset.background.room.left") as MovieClip;
          addChild(_bg);
          _secBg = ComponentFactory.Instance.creatComponentByStylename("asset.ddtroom.roomRightPropView.secbg");
@@ -90,26 +90,24 @@ package room.view
          _downCellsScrollPanel = ComponentFactory.Instance.creatComponentByStylename("asset.ddtroom.downCellsScrollPanel");
          addChild(_downCellsScrollPanel);
          _upCells = new Vector.<RoomPropCell>();
-         _loc9_ = 0;
-         while(_loc9_ < 3)
+         for(i = 0; i < 3; )
          {
-            _loc5_ = new RoomPropCell(true,_loc9_);
-            _upCellsContainer.addChild(_loc5_);
-            _upCells.push(_loc5_);
-            _loc9_++;
+            cell = new RoomPropCell(true,i);
+            _upCellsContainer.addChild(cell);
+            _upCells.push(cell);
+            i++;
          }
          _downCellsSprite = new Sprite();
-         var _loc1_:Vector.<HorseSkillExpVo> = HorseManager.instance.curHasSkillList;
-         var _loc3_:int = _loc1_.length;
-         _loc8_ = 0;
-         while(_loc8_ < _loc3_)
+         var tmpHasSkillList:Vector.<HorseSkillExpVo> = HorseManager.instance.curHasSkillList;
+         var tmpLen:int = tmpHasSkillList.length;
+         for(j = 0; j < tmpLen; )
          {
-            _loc6_ = new RoomPropCell(false,_loc9_);
-            _loc6_.x = 2 + _loc8_ % 3 * 54;
-            _loc6_.y = 2 + int(_loc8_ / 3) * 49;
-            _downCellsSprite.addChild(_loc6_);
-            _loc6_.skillId = _loc1_[_loc8_].skillId;
-            _loc8_++;
+            cell1 = new RoomPropCell(false,i);
+            cell1.x = 2 + j % 3 * 54;
+            cell1.y = 2 + int(j / 3) * 49;
+            _downCellsSprite.addChild(cell1);
+            cell1.skillId = tmpHasSkillList[j].skillId;
+            j++;
          }
          _downCellsScrollPanel.setView(_downCellsSprite);
          _chanelNameTxt = ComponentFactory.Instance.creatComponentByStylename("asset.ddtroom.ChanelNameText");
@@ -124,22 +122,22 @@ package room.view
          _energyNum = ComponentFactory.Instance.creatComponentByStylename("room.lastEnergy.numText");
          _energyNum.text = PlayerManager.Instance.Self.energy.toString();
          _energySprite.addChild(_energyNum);
-         var _loc2_:DictionaryData = HorseManager.instance.curUseSkillList;
+         var tmpUseSkillList:DictionaryData = HorseManager.instance.curUseSkillList;
          var _loc11_:int = 0;
-         var _loc10_:* = _loc2_;
-         for(var _loc7_ in _loc2_)
+         var _loc10_:* = tmpUseSkillList;
+         for(var place in tmpUseSkillList)
          {
-            _upCells[int(_loc7_) - 1].skillId = _loc2_[_loc7_];
+            _upCells[int(place) - 1].skillId = tmpUseSkillList[place];
          }
-         var _loc4_:RoomInfo = RoomManager.Instance.current;
-         if(_loc4_)
+         var roomInfo:RoomInfo = RoomManager.Instance.current;
+         if(roomInfo)
          {
             _roomIdTxt = ComponentFactory.Instance.creatComponentByStylename("room.roomID.text");
-            _roomIdTxt.text = _loc4_.ID.toString();
+            _roomIdTxt.text = roomInfo.ID.toString();
             addChild(_roomIdTxt);
-            if(_loc4_.type != 4 && _loc4_.type != 123)
+            if(roomInfo.type != 4 && roomInfo.type != 123)
             {
-               _roomNameTxt.text = _loc4_.Name;
+               _roomNameTxt.text = roomInfo.Name;
                _energySprite.visible = false;
             }
             else
@@ -172,7 +170,7 @@ package room.view
          }
       }
       
-      protected function _roomNameChanged(param1:RoomEvent) : void
+      protected function _roomNameChanged(evt:RoomEvent) : void
       {
          if(RoomManager.Instance.current.type != 4 && RoomManager.Instance.current.type != 123)
          {
@@ -190,40 +188,39 @@ package room.view
          addChild(_downCellsStripTip);
       }
       
-      protected function __updateGold(param1:PlayerPropertyEvent) : void
+      protected function __updateGold(evt:PlayerPropertyEvent) : void
       {
-         if(!param1.changedProperties["Gold"])
+         if(!evt.changedProperties["Gold"])
          {
          }
       }
       
-      protected function updateSkillStatus(param1:Event) : void
+      protected function updateSkillStatus(event:Event) : void
       {
-         var _loc4_:* = null;
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
+         var tmpUseSkillList:* = null;
+         var i:int = 0;
+         var tmpKey:* = null;
          if(equalitySkill)
          {
-            _loc4_ = HorseManager.instance.curUseBattleSkillList;
+            tmpUseSkillList = HorseManager.instance.curUseBattleSkillList;
          }
          else
          {
-            _loc4_ = HorseManager.instance.curUseSkillList;
+            tmpUseSkillList = HorseManager.instance.curUseSkillList;
          }
-         var _loc3_:int = _upCells.length;
-         _loc5_ = 0;
-         while(_loc5_ < _loc3_)
+         var tmplen:int = _upCells.length;
+         for(i = 0; i < tmplen; )
          {
-            _loc2_ = (_loc5_ + 1).toString();
-            if(_loc4_.hasKey(_loc2_))
+            tmpKey = (i + 1).toString();
+            if(tmpUseSkillList.hasKey(tmpKey))
             {
-               _upCells[_loc5_].skillId = _loc4_[_loc2_];
+               _upCells[i].skillId = tmpUseSkillList[tmpKey];
             }
             else
             {
-               _upCells[_loc5_].skillId = 0;
+               _upCells[i].skillId = 0;
             }
-            _loc5_++;
+            i++;
          }
       }
       

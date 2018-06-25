@@ -55,14 +55,14 @@ package worldboss.player
          return _buffLevel;
       }
       
-      public function set buffLevel(param1:int) : void
+      public function set buffLevel(value:int) : void
       {
-         _buffLevel = param1;
+         _buffLevel = value;
       }
       
-      public function set myDamage(param1:int) : void
+      public function set myDamage(value:int) : void
       {
-         _myDamage = param1;
+         _myDamage = value;
       }
       
       public function get myDamage() : int
@@ -70,9 +70,9 @@ package worldboss.player
          return _myDamage;
       }
       
-      public function set myHonor(param1:int) : void
+      public function set myHonor(value:int) : void
       {
-         _myHonor = param1;
+         _myHonor = value;
       }
       
       public function get myHonor() : int
@@ -85,14 +85,14 @@ package worldboss.player
          return _buffInjure;
       }
       
-      public function set buffInjure(param1:int) : void
+      public function set buffInjure(value:int) : void
       {
-         _buffInjure = param1;
+         _buffInjure = value;
       }
       
-      public function set playerStauts(param1:int) : void
+      public function set playerStauts(value:int) : void
       {
-         _playerStauts = param1;
+         _playerStauts = value;
       }
       
       public function get playerStauts() : int
@@ -105,9 +105,9 @@ package worldboss.player
          return _playerPos;
       }
       
-      public function set playerPos(param1:Point) : void
+      public function set playerPos(value:Point) : void
       {
-         _playerPos = param1;
+         _playerPos = value;
          if(_playerInfo)
          {
             dispatchEvent(new WorldBossScenePlayerEvent("playerPosChange",_playerInfo.ID));
@@ -119,9 +119,9 @@ package worldboss.player
          return _reviveCD;
       }
       
-      public function set reviveCD(param1:int) : void
+      public function set reviveCD(value:int) : void
       {
-         _reviveCD = param1;
+         _reviveCD = value;
       }
       
       public function get buffs() : Array
@@ -129,18 +129,18 @@ package worldboss.player
          return _buffs;
       }
       
-      public function set buffs(param1:Array) : void
+      public function set buffs(value:Array) : void
       {
-         _buffs = param1;
+         _buffs = value;
       }
       
-      public function set buffID(param1:int) : void
+      public function set buffID(value:int) : void
       {
          if(!_buffs)
          {
             _buffs = [];
          }
-         _buffs.push(param1);
+         _buffs.push(value);
       }
       
       public function get playerInfo() : PlayerInfo
@@ -148,9 +148,9 @@ package worldboss.player
          return _playerInfo;
       }
       
-      public function set playerInfo(param1:PlayerInfo) : void
+      public function set playerInfo(value:PlayerInfo) : void
       {
-         _playerInfo = param1;
+         _playerInfo = value;
       }
       
       public function get walkPath() : Array
@@ -158,9 +158,9 @@ package worldboss.player
          return _walkPath;
       }
       
-      public function set walkPath(param1:Array) : void
+      public function set walkPath(value:Array) : void
       {
-         _walkPath = param1;
+         _walkPath = value;
       }
       
       public function get scenePlayerDirection() : SceneCharacterDirection
@@ -172,9 +172,9 @@ package worldboss.player
          return _sceneCharacterDirection;
       }
       
-      public function set scenePlayerDirection(param1:SceneCharacterDirection) : void
+      public function set scenePlayerDirection(value:SceneCharacterDirection) : void
       {
-         _sceneCharacterDirection = param1;
+         _sceneCharacterDirection = value;
          var _loc2_:* = _sceneCharacterDirection;
          if(SceneCharacterDirection.RT !== _loc2_)
          {
@@ -208,9 +208,9 @@ package worldboss.player
          return _playerDirection;
       }
       
-      public function set playerDirection(param1:int) : void
+      public function set playerDirection(value:int) : void
       {
-         _playerDirection = param1;
+         _playerDirection = value;
          switch(int(_playerDirection) - 1)
          {
             case 0:
@@ -232,25 +232,25 @@ package worldboss.player
          return _playerMoveSpeed;
       }
       
-      public function set playerMoveSpeed(param1:Number) : void
+      public function set playerMoveSpeed(value:Number) : void
       {
-         if(_playerMoveSpeed == param1)
+         if(_playerMoveSpeed == value)
          {
             return;
          }
-         _playerMoveSpeed = param1;
+         _playerMoveSpeed = value;
          dispatchEvent(new WorldBossScenePlayerEvent("playerMoveSpeedChange",_playerInfo.ID));
       }
       
       public function clone() : PlayerVO
       {
-         var _loc1_:PlayerVO = new PlayerVO();
-         _loc1_.playerInfo = _playerInfo;
-         _loc1_.playerPos = _playerPos;
-         _loc1_.walkPath = _walkPath;
-         _loc1_.playerDirection = _playerDirection;
-         _loc1_.playerMoveSpeed = _playerMoveSpeed;
-         return _loc1_;
+         var playerVO:PlayerVO = new PlayerVO();
+         playerVO.playerInfo = _playerInfo;
+         playerVO.playerPos = _playerPos;
+         playerVO.walkPath = _walkPath;
+         playerVO.playerDirection = _playerDirection;
+         playerVO.playerMoveSpeed = _playerMoveSpeed;
+         return playerVO;
       }
       
       public function dispose() : void

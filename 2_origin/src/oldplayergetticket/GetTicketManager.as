@@ -38,9 +38,9 @@ package oldplayergetticket
          addEventListener("getTicket_data",getTicketData);
       }
       
-      protected function getTicketData(param1:CEvent) : void
+      protected function getTicketData(event:CEvent) : void
       {
-         ticketInfo = param1.data as Array;
+         ticketInfo = event.data as Array;
          dispatchEvent(new CEvent("updateTicket_data"));
       }
       

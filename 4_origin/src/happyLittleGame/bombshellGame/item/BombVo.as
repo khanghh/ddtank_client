@@ -54,12 +54,12 @@ package happyLittleGame.bombshellGame.item
       
       private var sx:int = 0;
       
-      public function BombVo(param1:int)
+      public function BombVo(state:int)
       {
          super();
-         _state = param1;
-         _stateMirror = param1;
-         if(param1 != BombState.Bomb_Obs)
+         _state = state;
+         _stateMirror = state;
+         if(state != BombState.Bomb_Obs)
          {
             _scoresNum = ComponentFactory.Instance.creatComponentByStylename("bombgame.NumberC");
             _bomb = ClassUtils.CreatInstance("asset.bombgame.bomb");
@@ -73,7 +73,7 @@ package happyLittleGame.bombshellGame.item
             _bomb.scaleY = 0.8;
             this.addChild(_bomb);
          }
-         else if(param1 == BombState.Bomb_Obs)
+         else if(state == BombState.Bomb_Obs)
          {
             _bomb = ClassUtils.CreatInstance("asset.bombgame.stone");
             this.addChild(_bomb);
@@ -93,9 +93,9 @@ package happyLittleGame.bombshellGame.item
          return _orderParent;
       }
       
-      public function set orderParent(param1:int) : void
+      public function set orderParent(value:int) : void
       {
-         _orderParent = param1;
+         _orderParent = value;
       }
       
       public function get IsLock() : Boolean
@@ -103,9 +103,9 @@ package happyLittleGame.bombshellGame.item
          return _isLock;
       }
       
-      public function set IsLock(param1:Boolean) : void
+      public function set IsLock(value:Boolean) : void
       {
-         _isLock = param1;
+         _isLock = value;
       }
       
       public function get stateMirror() : int
@@ -113,9 +113,9 @@ package happyLittleGame.bombshellGame.item
          return _stateMirror;
       }
       
-      public function set stateMirror(param1:int) : void
+      public function set stateMirror(value:int) : void
       {
-         _stateMirror = param1 <= BombState.Bomb_5?param1:int(BombState.Bomb_5);
+         _stateMirror = value <= BombState.Bomb_5?value:int(BombState.Bomb_5);
       }
       
       public function get order() : int
@@ -123,23 +123,23 @@ package happyLittleGame.bombshellGame.item
          return _order;
       }
       
-      public function set order(param1:int) : void
+      public function set order(value:int) : void
       {
-         _order = param1;
+         _order = value;
       }
       
       public function get scores() : int
       {
-         var _loc1_:int = 1;
+         var multiplier:int = 1;
          if(HappyLittleGameManager.instance.bombManager.doubleScore)
          {
-            _loc1_ = 2;
+            multiplier = 2;
          }
          if(order == 1)
          {
-            return _scoresBasic * _loc1_;
+            return _scoresBasic * multiplier;
          }
-         return (_scoresBasic + 5 * (order - 1) + order) * _loc1_;
+         return (_scoresBasic + 5 * (order - 1) + order) * multiplier;
       }
       
       public function get canClick() : Boolean
@@ -147,9 +147,9 @@ package happyLittleGame.bombshellGame.item
          return _canClick;
       }
       
-      public function set canClick(param1:Boolean) : void
+      public function set canClick(value:Boolean) : void
       {
-         _canClick = param1;
+         _canClick = value;
       }
       
       public function get state() : int
@@ -162,9 +162,9 @@ package happyLittleGame.bombshellGame.item
          return _vy;
       }
       
-      public function set vy(param1:int) : void
+      public function set vy(value:int) : void
       {
-         _vy = param1;
+         _vy = value;
       }
       
       public function get MC() : MovieClip
@@ -177,9 +177,9 @@ package happyLittleGame.bombshellGame.item
          return _vx;
       }
       
-      public function set vx(param1:int) : void
+      public function set vx(value:int) : void
       {
-         _vx = param1;
+         _vx = value;
       }
       
       public function showNextBomb() : Boolean
@@ -232,7 +232,7 @@ package happyLittleGame.bombshellGame.item
          }
       }
       
-      private function __bombMcComplete(param1:Event) : void
+      private function __bombMcComplete(evt:Event) : void
       {
          this.dispatchEvent(new Event("shootbullet"));
          _scoresNum.visible = true;
@@ -245,7 +245,7 @@ package happyLittleGame.bombshellGame.item
          _timer.start();
       }
       
-      private function onEndTimeTimer(param1:Event) : void
+      private function onEndTimeTimer(evt:Event) : void
       {
          _timer.stop();
          TimerManager.getInstance().removeTimer1000ms(_timer);
@@ -254,7 +254,7 @@ package happyLittleGame.bombshellGame.item
          dispose();
       }
       
-      private function __mcComplete(param1:Event) : void
+      private function __mcComplete(evt:Event) : void
       {
          if(_state <= BombState.Bomb_5 && _state != BombState.Bomb)
          {

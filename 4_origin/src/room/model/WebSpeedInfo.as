@@ -19,10 +19,10 @@ package room.model
       
       private var _delay:int;
       
-      public function WebSpeedInfo(param1:int)
+      public function WebSpeedInfo(delay:int)
       {
          super();
-         _delay = param1;
+         _delay = delay;
       }
       
       public function get fps() : int
@@ -30,13 +30,13 @@ package room.model
          return _fps;
       }
       
-      public function set fps(param1:int) : void
+      public function set fps(value:int) : void
       {
-         if(_fps == param1)
+         if(_fps == value)
          {
             return;
          }
-         _fps = param1;
+         _fps = value;
          dispatchEvent(new WebSpeedEvent("stateChange"));
       }
       
@@ -45,13 +45,13 @@ package room.model
          return _delay;
       }
       
-      public function set delay(param1:int) : void
+      public function set delay(value:int) : void
       {
-         if(_delay == param1)
+         if(_delay == value)
          {
             return;
          }
-         _delay = param1;
+         _delay = value;
          dispatchEvent(new WebSpeedEvent("stateChange"));
       }
       

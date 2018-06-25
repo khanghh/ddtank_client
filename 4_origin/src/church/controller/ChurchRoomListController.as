@@ -43,9 +43,9 @@ package church.controller
          super.prepare();
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
-         super.enter(param1,param2);
+         super.enter(prev,data);
          init();
          addEvent();
          MainToolBar.Instance.show();
@@ -73,130 +73,130 @@ package church.controller
          SocketManager.Instance.removeEventListener(PkgEvent.format(255),__updateRoom);
       }
       
-      private function __addRoom(param1:PkgEvent) : void
+      private function __addRoom(event:PkgEvent) : void
       {
-         var _loc5_:* = null;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:Boolean = _loc4_.readBoolean();
-         if(!_loc2_)
+         var self:* = null;
+         var pkg:PackageIn = event.pkg;
+         var result:Boolean = pkg.readBoolean();
+         if(!result)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("church.weddingRoom.WeddingRoomControler.addRoom"));
             return;
          }
-         var _loc3_:ChurchRoomInfo = new ChurchRoomInfo();
-         _loc3_.id = _loc4_.readInt();
-         _loc3_.isStarted = _loc4_.readBoolean();
-         _loc3_.roomName = _loc4_.readUTF();
-         _loc3_.isLocked = _loc4_.readBoolean();
-         _loc3_.mapID = _loc4_.readInt();
-         _loc3_.valideTimes = _loc4_.readInt();
-         _loc3_.currentNum = _loc4_.readInt();
-         _loc3_.createID = _loc4_.readInt();
-         _loc3_.createName = _loc4_.readUTF();
-         _loc3_.groomID = _loc4_.readInt();
-         _loc3_.groomName = _loc4_.readUTF();
-         _loc3_.brideID = _loc4_.readInt();
-         _loc3_.brideName = _loc4_.readUTF();
-         _loc3_.creactTime = _loc4_.readDate();
-         var _loc6_:int = _loc4_.readByte();
-         if(_loc6_ == 1)
+         var roomInfo:ChurchRoomInfo = new ChurchRoomInfo();
+         roomInfo.id = pkg.readInt();
+         roomInfo.isStarted = pkg.readBoolean();
+         roomInfo.roomName = pkg.readUTF();
+         roomInfo.isLocked = pkg.readBoolean();
+         roomInfo.mapID = pkg.readInt();
+         roomInfo.valideTimes = pkg.readInt();
+         roomInfo.currentNum = pkg.readInt();
+         roomInfo.createID = pkg.readInt();
+         roomInfo.createName = pkg.readUTF();
+         roomInfo.groomID = pkg.readInt();
+         roomInfo.groomName = pkg.readUTF();
+         roomInfo.brideID = pkg.readInt();
+         roomInfo.brideName = pkg.readUTF();
+         roomInfo.creactTime = pkg.readDate();
+         var statu:int = pkg.readByte();
+         if(statu == 1)
          {
-            _loc3_.status = "wedding_none";
+            roomInfo.status = "wedding_none";
          }
          else
          {
-            _loc3_.status = "wedding_ing";
+            roomInfo.status = "wedding_ing";
          }
          if(PathManager.solveExternalInterfaceEnabel())
          {
-            _loc5_ = PlayerManager.Instance.Self;
-            ExternalInterfaceManager.sendToAgent(8,_loc5_.ID,_loc5_.NickName,ServerManager.Instance.zoneName,-1,"",_loc5_.SpouseName);
+            self = PlayerManager.Instance.Self;
+            ExternalInterfaceManager.sendToAgent(8,self.ID,self.NickName,ServerManager.Instance.zoneName,-1,"",self.SpouseName);
          }
-         _loc3_.discription = _loc4_.readUTF();
-         _loc3_.seniorType = _loc4_.readInt();
-         _model.addRoom(_loc3_);
+         roomInfo.discription = pkg.readUTF();
+         roomInfo.seniorType = pkg.readInt();
+         _model.addRoom(roomInfo);
       }
       
-      private function __removeRoom(param1:PkgEvent) : void
+      private function __removeRoom(event:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         _loc3_.position = 20;
-         var _loc2_:int = _loc3_.readInt();
-         _model.removeRoom(_loc2_);
+         var pkg:PackageIn = event.pkg;
+         pkg.position = 20;
+         var id:int = pkg.readInt();
+         _model.removeRoom(id);
       }
       
-      private function __updateRoom(param1:PkgEvent) : void
+      private function __updateRoom(event:PkgEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc5_:int = 0;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:Boolean = _loc4_.readBoolean();
-         if(_loc2_)
+         var roomInfo:* = null;
+         var statu:int = 0;
+         var pkg:PackageIn = event.pkg;
+         var result:Boolean = pkg.readBoolean();
+         if(result)
          {
-            _loc3_ = new ChurchRoomInfo();
-            _loc3_.id = _loc4_.readInt();
-            _loc3_.isStarted = _loc4_.readBoolean();
-            _loc3_.roomName = _loc4_.readUTF();
-            _loc3_.isLocked = _loc4_.readBoolean();
-            _loc3_.mapID = _loc4_.readInt();
-            _loc3_.valideTimes = _loc4_.readInt();
-            _loc3_.currentNum = _loc4_.readInt();
-            _loc3_.createID = _loc4_.readInt();
-            _loc3_.createName = _loc4_.readUTF();
-            _loc3_.groomID = _loc4_.readInt();
-            _loc3_.groomName = _loc4_.readUTF();
-            _loc3_.brideID = _loc4_.readInt();
-            _loc3_.brideName = _loc4_.readUTF();
-            _loc3_.creactTime = _loc4_.readDate();
-            _loc5_ = _loc4_.readByte();
-            if(_loc5_ == 1)
+            roomInfo = new ChurchRoomInfo();
+            roomInfo.id = pkg.readInt();
+            roomInfo.isStarted = pkg.readBoolean();
+            roomInfo.roomName = pkg.readUTF();
+            roomInfo.isLocked = pkg.readBoolean();
+            roomInfo.mapID = pkg.readInt();
+            roomInfo.valideTimes = pkg.readInt();
+            roomInfo.currentNum = pkg.readInt();
+            roomInfo.createID = pkg.readInt();
+            roomInfo.createName = pkg.readUTF();
+            roomInfo.groomID = pkg.readInt();
+            roomInfo.groomName = pkg.readUTF();
+            roomInfo.brideID = pkg.readInt();
+            roomInfo.brideName = pkg.readUTF();
+            roomInfo.creactTime = pkg.readDate();
+            statu = pkg.readByte();
+            if(statu == 1)
             {
-               _loc3_.status = "wedding_none";
+               roomInfo.status = "wedding_none";
             }
             else
             {
-               _loc3_.status = "wedding_ing";
+               roomInfo.status = "wedding_ing";
             }
-            _loc3_.discription = _loc4_.readUTF();
-            _loc3_.seniorType = _loc4_.readInt();
-            _model.updateRoom(_loc3_);
+            roomInfo.discription = pkg.readUTF();
+            roomInfo.seniorType = pkg.readInt();
+            _model.updateRoom(roomInfo);
          }
       }
       
-      public function createRoom(param1:ChurchRoomInfo) : void
+      public function createRoom(roomInfo:ChurchRoomInfo) : void
       {
-         var _loc2_:int = 0;
+         var type:int = 0;
          if(ChurchManager.instance.selfRoom)
          {
-            _loc2_ = 0;
-            if(param1.seniorType == 0)
+            type = 0;
+            if(roomInfo.seniorType == 0)
             {
-               _loc2_ = 1;
+               type = 1;
             }
-            else if(param1.seniorType == 4)
+            else if(roomInfo.seniorType == 4)
             {
-               _loc2_ = 3;
+               type = 3;
             }
             else
             {
-               _loc2_ = 2;
+               type = 2;
             }
-            SocketManager.Instance.out.sendEnterRoom(0,"",_loc2_);
+            SocketManager.Instance.out.sendEnterRoom(0,"",type);
          }
          else
          {
-            SocketManager.Instance.out.sendCreateRoom(param1.roomName,!!param1.password?param1.password:"",param1.mapID,2,param1.canInvite,param1.discription,param1.seniorType);
+            SocketManager.Instance.out.sendCreateRoom(roomInfo.roomName,!!roomInfo.password?roomInfo.password:"",roomInfo.mapID,2,roomInfo.canInvite,roomInfo.discription,roomInfo.seniorType);
          }
       }
       
-      public function unmarry(param1:Boolean = false) : void
+      public function unmarry(isPlayMovie:Boolean = false) : void
       {
          if(ChurchManager.instance.selfRoom)
          {
             if(ChurchManager.instance.selfRoom.status == "wedding_ing")
             {
                SocketManager.Instance.out.sendUnmarry(true);
-               SocketManager.Instance.out.sendUnmarry(param1);
+               SocketManager.Instance.out.sendUnmarry(isPlayMovie);
                if(_model && ChurchManager.instance.selfRoom)
                {
                   _model.removeRoom(ChurchManager.instance.selfRoom.id);
@@ -205,7 +205,7 @@ package church.controller
                return;
             }
          }
-         SocketManager.Instance.out.sendUnmarry(param1);
+         SocketManager.Instance.out.sendUnmarry(isPlayMovie);
          if(_model && ChurchManager.instance.selfRoom)
          {
             _model.removeRoom(ChurchManager.instance.selfRoom.id);
@@ -213,14 +213,14 @@ package church.controller
          dispatchEvent(new Event("unmarry"));
       }
       
-      public function changeViewState(param1:String) : void
+      public function changeViewState(state:String) : void
       {
-         _view.changeState(param1);
+         _view.changeState(state);
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
-         super.leaving(param1);
+         super.leaving(next);
          SocketManager.Instance.out.sendExitMarryRoom();
          MainToolBar.Instance.backFunction = null;
          MainToolBar.Instance.hide();

@@ -22,14 +22,14 @@ package dragonBones.cache
       {
       }
       
-      public function update(param1:int) : void
+      public function update(frameIndex:int) : void
       {
-         currentFrameCache.copy(frameCacheList[param1]);
+         currentFrameCache.copy(frameCacheList[frameIndex]);
       }
       
-      public function bindCacheUser(param1:ICacheUser) : void
+      public function bindCacheUser(cacheUser:ICacheUser) : void
       {
-         param1.frameCache = currentFrameCache;
+         cacheUser.frameCache = currentFrameCache;
       }
    }
 }

@@ -31,11 +31,11 @@ package ddt.events
       
       public var Pkg:PackageIn;
       
-      public function PyramidEvent(param1:String, param2:Object = null, param3:PackageIn = null)
+      public function PyramidEvent(type:String, _resultData:Object = null, pkg:PackageIn = null)
       {
-         resultData = param2;
-         Pkg = param3;
-         super(param1,bubbles,cancelable);
+         resultData = _resultData;
+         Pkg = pkg;
+         super(type,bubbles,cancelable);
       }
    }
 }

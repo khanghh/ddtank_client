@@ -61,7 +61,7 @@ package kingDivision
       
       public var dataDic:Dictionary;
       
-      public function KingDivisionManager(param1:PrivateClass)
+      public function KingDivisionManager(pct:PrivateClass)
       {
          super();
       }
@@ -86,12 +86,12 @@ package kingDivision
          SocketManager.Instance.addEventListener(PkgEvent.format(328,"consortiaMatchAreaRankInfo"),__consortiaMatchAreaRankInfo);
       }
       
-      private function __activityOpen(param1:PkgEvent) : void
+      private function __activityOpen(evt:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _model.isOpen = _loc2_.readBoolean();
-         _model.states = _loc2_.readByte();
-         _model.level = _loc2_.readInt();
+         var pkg:PackageIn = evt.pkg;
+         _model.isOpen = pkg.readBoolean();
+         _model.states = pkg.readByte();
+         _model.level = pkg.readInt();
          _model.dateArr = ServerConfigManager.instance.localConsortiaMatchDays;
          _model.allDateArr = ServerConfigManager.instance.areaConsortiaMatchDays;
          _model.consortiaMatchStartTime = ServerConfigManager.instance.consortiaMatchStartTime;
@@ -102,12 +102,12 @@ package kingDivision
       
       public function updateConsotionMessage() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:* = null;
+         var dates:* = null;
+         var datesArea:* = null;
          if(_model.states == 1)
          {
-            _loc1_ = TimeManager.Instance.Now();
-            if(_model.dateArr[0] == _loc1_.date)
+            dates = TimeManager.Instance.Now();
+            if(_model.dateArr[0] == dates.date)
             {
                GameInSocketOut.sendGetConsortionMessageThisZone();
             }
@@ -120,8 +120,8 @@ package kingDivision
          {
             loaderConsortionMessage();
             loaderAreaNameMessage();
-            _loc2_ = TimeManager.Instance.Now();
-            if(_model.allDateArr[0] == _loc2_.date)
+            datesArea = TimeManager.Instance.Now();
+            if(_model.allDateArr[0] == datesArea.date)
             {
                GameInSocketOut.sendGetConsortionMessageAllZone();
             }
@@ -134,49 +134,49 @@ package kingDivision
       
       public function loaderConsortionMessage() : void
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ConsortiaMatchHistory.ashx"),6);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("tank.auctionHouse.controller.AuctionHouseListError");
-         _loc1_.analyzer = new KingDivisionConsortionMessageAnalyze(__searchResult);
-         LoadResourceManager.Instance.startLoad(_loc1_);
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ConsortiaMatchHistory.ashx"),6);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("tank.auctionHouse.controller.AuctionHouseListError");
+         loader.analyzer = new KingDivisionConsortionMessageAnalyze(__searchResult);
+         LoadResourceManager.Instance.startLoad(loader);
       }
       
       public function loaderAreaNameMessage() : void
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.getAreaNameInfoPath(),2);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("tank.auctionHouse.controller.KingDivisionAreaNameError");
-         _loc1_.analyzer = new AreaNameMessageAnalyze(loadAreaNameDataComplete);
-         LoadResourceManager.Instance.startLoad(_loc1_);
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.getAreaNameInfoPath(),2);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("tank.auctionHouse.controller.KingDivisionAreaNameError");
+         loader.analyzer = new AreaNameMessageAnalyze(loadAreaNameDataComplete);
+         LoadResourceManager.Instance.startLoad(loader);
       }
       
-      private function loadAreaNameDataComplete(param1:AreaNameMessageAnalyze) : void
+      private function loadAreaNameDataComplete(analyzer:AreaNameMessageAnalyze) : void
       {
-         dataDic = param1.kingDivisionAreaNameDataDic;
+         dataDic = analyzer.kingDivisionAreaNameDataDic;
       }
       
-      private function __onLoadError(param1:LoaderEvent) : void
+      private function __onLoadError(event:LoaderEvent) : void
       {
-         var _loc3_:String = param1.loader.loadErrorMessage;
-         if(param1.loader.analyzer)
+         var msg:String = event.loader.loadErrorMessage;
+         if(event.loader.analyzer)
          {
-            _loc3_ = param1.loader.loadErrorMessage + "\n" + param1.loader.analyzer.message;
+            msg = event.loader.loadErrorMessage + "\n" + event.loader.analyzer.message;
          }
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("alert"),param1.loader.loadErrorMessage,LanguageMgr.GetTranslation("tank.view.bagII.baglocked.sure"));
-         _loc2_.addEventListener("response",__onAlertResponse);
+         var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("alert"),event.loader.loadErrorMessage,LanguageMgr.GetTranslation("tank.view.bagII.baglocked.sure"));
+         alert.addEventListener("response",__onAlertResponse);
       }
       
-      private function __onAlertResponse(param1:FrameEvent) : void
+      private function __onAlertResponse(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         param1.currentTarget.removeEventListener("response",__onAlertResponse);
-         ObjectUtils.disposeObject(param1.currentTarget);
+         event.currentTarget.removeEventListener("response",__onAlertResponse);
+         ObjectUtils.disposeObject(event.currentTarget);
       }
       
-      private function __searchResult(param1:KingDivisionConsortionMessageAnalyze) : void
+      private function __searchResult(analyzer:KingDivisionConsortionMessageAnalyze) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var conItem:* = null;
          isThisZoneWin = true;
-         analyzerArr = param1._list;
+         analyzerArr = analyzer._list;
          if(_model.eliminateInfo != null)
          {
             ObjectUtils.disposeObject(_model.eliminateInfo);
@@ -187,38 +187,38 @@ package kingDivision
          {
             return;
          }
-         _loc3_ = 0;
-         while(_loc3_ < analyzerArr.length)
+         i = 0;
+         while(i < analyzerArr.length)
          {
-            _loc2_ = new KingDivisionConsortionItemInfo();
-            _loc2_.conID = analyzerArr[_loc3_].ConsortiaID;
-            _loc2_.conName = analyzerArr[_loc3_].ConsortiaName;
-            _loc2_.score = analyzerArr[_loc3_].Score;
-            _loc2_.conState = analyzerArr[_loc3_].State;
-            _loc2_.conStyle = analyzerArr[_loc3_].Style;
-            _loc2_.conSex = analyzerArr[_loc3_].Sex;
-            _model.eliminateInfo.push(_loc2_);
-            _loc3_++;
+            conItem = new KingDivisionConsortionItemInfo();
+            conItem.conID = analyzerArr[i].ConsortiaID;
+            conItem.conName = analyzerArr[i].ConsortiaName;
+            conItem.score = analyzerArr[i].Score;
+            conItem.conState = analyzerArr[i].State;
+            conItem.conStyle = analyzerArr[i].Style;
+            conItem.conSex = analyzerArr[i].Sex;
+            _model.eliminateInfo.push(conItem);
+            i++;
          }
          dispatchEvent(new Event("searchResult"));
       }
       
-      private function __consortiaMatchInfo(param1:PkgEvent) : void
+      private function __consortiaMatchInfo(evt:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _model.gameNum = _loc2_.readInt();
-         _model.points = _loc2_.readInt();
+         var pkg:PackageIn = evt.pkg;
+         _model.gameNum = pkg.readInt();
+         _model.points = pkg.readInt();
          dispatchEvent(new Event("matchinfo"));
       }
       
-      private function __consortiaMatchScore(param1:PkgEvent) : void
+      private function __consortiaMatchScore(evt:PkgEvent) : void
       {
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc4_:int = _loc3_.readByte();
-         var _loc2_:int = _loc3_.readByte();
-         _model.conLen = _loc3_.readInt();
+         var i:int = 0;
+         var conItem:* = null;
+         var pkg:PackageIn = evt.pkg;
+         var __stage:int = pkg.readByte();
+         var rankStage:int = pkg.readByte();
+         _model.conLen = pkg.readInt();
          if(_model.conItemInfo != null)
          {
             ObjectUtils.disposeObject(_model.conItemInfo);
@@ -229,63 +229,63 @@ package kingDivision
          {
             return;
          }
-         _loc6_ = 0;
-         while(_loc6_ < _model.conLen)
+         i = 0;
+         while(i < _model.conLen)
          {
-            _loc5_ = new KingDivisionConsortionItemInfo();
-            _loc5_.rang = _loc3_.readInt();
-            _loc5_.consortionName = _loc3_.readUTF();
-            _loc5_.consortionLevel = _loc3_.readInt();
-            _loc5_.num = _loc3_.readInt();
-            _loc5_.points = _loc3_.readInt();
-            _model.conItemInfo.push(_loc5_);
-            _loc6_++;
+            conItem = new KingDivisionConsortionItemInfo();
+            conItem.rang = pkg.readInt();
+            conItem.consortionName = pkg.readUTF();
+            conItem.consortionLevel = pkg.readInt();
+            conItem.num = pkg.readInt();
+            conItem.points = pkg.readInt();
+            _model.conItemInfo.push(conItem);
+            i++;
          }
          dispatchEvent(new Event("matchscore"));
       }
       
-      private function __consortiaMatchRank(param1:PkgEvent) : void
+      private function __consortiaMatchRank(evt:PkgEvent) : void
       {
-         var _loc7_:int = 0;
-         var _loc6_:* = null;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc5_:int = _loc4_.readByte();
-         var _loc2_:int = _loc4_.readByte();
+         var i:int = 0;
+         var conItem:* = null;
+         var pkg:PackageIn = evt.pkg;
+         var __stage:int = pkg.readByte();
+         var rankStage:int = pkg.readByte();
          if(_model.eliminateInfo != null)
          {
             ObjectUtils.disposeObject(_model.eliminateInfo);
             _model.eliminateInfo = null;
          }
          _model.eliminateInfo = new Vector.<KingDivisionConsortionItemInfo>();
-         var _loc3_:int = _loc4_.readInt();
-         if(_loc3_ < 1)
+         var length:int = pkg.readInt();
+         if(length < 1)
          {
             return;
          }
-         _loc7_ = 0;
-         while(_loc7_ < _loc3_)
+         i = 0;
+         while(i < length)
          {
-            _loc6_ = new KingDivisionConsortionItemInfo();
-            _loc6_.conID = _loc4_.readInt();
-            _loc6_.conName = _loc4_.readUTF();
-            _loc6_.name = _loc4_.readUTF();
-            _loc6_.score = _loc4_.readInt();
-            _loc6_.conState = _loc4_.readByte();
-            _loc6_.isGame = _loc4_.readBoolean();
-            _model.eliminateInfo.push(_loc6_);
-            _loc7_++;
+            conItem = new KingDivisionConsortionItemInfo();
+            conItem.conID = pkg.readInt();
+            conItem.conName = pkg.readUTF();
+            conItem.name = pkg.readUTF();
+            conItem.score = pkg.readInt();
+            conItem.conState = pkg.readByte();
+            conItem.isGame = pkg.readBoolean();
+            _model.eliminateInfo.push(conItem);
+            i++;
          }
          dispatchEvent(new Event("matchrank"));
       }
       
-      private function __consortiaMatchAreaRank(param1:PkgEvent) : void
+      private function __consortiaMatchAreaRank(evt:PkgEvent) : void
       {
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc4_:int = _loc3_.readByte();
-         var _loc2_:int = _loc3_.readByte();
-         _model.conLen = _loc3_.readInt();
+         var i:int = 0;
+         var conItem:* = null;
+         var pkg:PackageIn = evt.pkg;
+         var __stage:int = pkg.readByte();
+         var rankStage:int = pkg.readByte();
+         _model.conLen = pkg.readInt();
          if(_model.conItemInfo != null)
          {
             ObjectUtils.disposeObject(_model.conItemInfo);
@@ -296,61 +296,61 @@ package kingDivision
          {
             return;
          }
-         _loc6_ = 0;
-         while(_loc6_ < _model.conLen)
+         i = 0;
+         while(i < _model.conLen)
          {
-            _loc5_ = new KingDivisionConsortionItemInfo();
-            _loc5_.consortionIDArea = _loc3_.readInt();
-            _loc5_.areaID = _loc3_.readInt();
-            _loc5_.consortionLevel = _loc3_.readInt();
-            _loc5_.num = _loc3_.readInt();
-            _loc5_.consortionName = _loc3_.readUTF();
-            _loc5_.points = _loc3_.readInt();
-            _model.conItemInfo.push(_loc5_);
-            _loc6_++;
+            conItem = new KingDivisionConsortionItemInfo();
+            conItem.consortionIDArea = pkg.readInt();
+            conItem.areaID = pkg.readInt();
+            conItem.consortionLevel = pkg.readInt();
+            conItem.num = pkg.readInt();
+            conItem.consortionName = pkg.readUTF();
+            conItem.points = pkg.readInt();
+            _model.conItemInfo.push(conItem);
+            i++;
          }
          dispatchEvent(new Event("matcharearank"));
       }
       
-      private function __consortiaMatchAreaRankInfo(param1:PkgEvent) : void
+      private function __consortiaMatchAreaRankInfo(evt:PkgEvent) : void
       {
-         var _loc7_:int = 0;
-         var _loc6_:* = null;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc5_:int = _loc4_.readByte();
-         var _loc2_:int = _loc4_.readByte();
+         var i:int = 0;
+         var conItem:* = null;
+         var pkg:PackageIn = evt.pkg;
+         var __stage:int = pkg.readByte();
+         var rankStage:int = pkg.readByte();
          if(_model.eliminateAllZoneInfo != null)
          {
             ObjectUtils.disposeObject(_model.eliminateAllZoneInfo);
             _model.eliminateAllZoneInfo = null;
          }
          _model.eliminateAllZoneInfo = new Vector.<KingDivisionConsortionItemInfo>();
-         var _loc3_:int = _loc4_.readInt();
-         if(_loc3_ < 1)
+         var length:int = pkg.readInt();
+         if(length < 1)
          {
             return;
          }
-         _loc7_ = 0;
-         while(_loc7_ < _loc3_)
+         i = 0;
+         while(i < length)
          {
-            _loc6_ = new KingDivisionConsortionItemInfo();
-            _loc6_.consortionIDArea = _loc4_.readInt();
-            _loc6_.areaID = _loc4_.readInt();
-            _loc6_.consortionStyle = _loc4_.readUTF();
-            _loc6_.consortionSex = _loc4_.readBoolean();
-            _loc6_.consortionNameArea = _loc4_.readUTF();
-            _loc6_.consortionState = _loc4_.readByte();
-            _loc6_.consortionScoreArea = _loc4_.readInt();
-            _loc6_.consortionIsGame = _loc4_.readBoolean();
-            _model.eliminateAllZoneInfo.push(_loc6_);
-            _loc7_++;
+            conItem = new KingDivisionConsortionItemInfo();
+            conItem.consortionIDArea = pkg.readInt();
+            conItem.areaID = pkg.readInt();
+            conItem.consortionStyle = pkg.readUTF();
+            conItem.consortionSex = pkg.readBoolean();
+            conItem.consortionNameArea = pkg.readUTF();
+            conItem.consortionState = pkg.readByte();
+            conItem.consortionScoreArea = pkg.readInt();
+            conItem.consortionIsGame = pkg.readBoolean();
+            _model.eliminateAllZoneInfo.push(conItem);
+            i++;
          }
          dispatchEvent(new Event("matcharearankinfo"));
       }
       
-      public function templateDataSetup(param1:Array) : void
+      public function templateDataSetup(dataList:Array) : void
       {
-         _model.goods = param1;
+         _model.goods = dataList;
       }
       
       public function get model() : KingDivisionModel
@@ -358,9 +358,9 @@ package kingDivision
          return _model;
       }
       
-      public function kingDivisionIcon(param1:Boolean) : void
+      public function kingDivisionIcon(flag:Boolean) : void
       {
-         HallIconManager.instance.updateSwitchHandler("kingDivision",param1);
+         HallIconManager.instance.updateSwitchHandler("kingDivision",flag);
       }
       
       public function onClickIcon() : void
@@ -376,61 +376,61 @@ package kingDivision
          dispatchEvent(new Event("kingdivision_openframe"));
       }
       
-      public function returnComponent(param1:Bitmap, param2:String) : Component
+      public function returnComponent(cell:Bitmap, tipName:String) : Component
       {
-         var _loc3_:Component = new Component();
-         _loc3_.tipData = param2;
-         _loc3_.tipDirctions = "0,1,2";
-         _loc3_.tipStyle = "ddt.view.tips.OneLineTip";
-         _loc3_.tipGapH = 20;
-         _loc3_.width = param1.width;
-         _loc3_.x = param1.x;
-         _loc3_.y = param1.y;
-         param1.x = 0;
-         param1.y = 0;
-         _loc3_.addChild(param1);
-         return _loc3_;
+         var compoent:Component = new Component();
+         compoent.tipData = tipName;
+         compoent.tipDirctions = "0,1,2";
+         compoent.tipStyle = "ddt.view.tips.OneLineTip";
+         compoent.tipGapH = 20;
+         compoent.width = cell.width;
+         compoent.x = cell.x;
+         compoent.y = cell.y;
+         cell.x = 0;
+         cell.y = 0;
+         compoent.addChild(cell);
+         return compoent;
       }
       
       public function checkCanStartGame() : Boolean
       {
-         var _loc1_:Boolean = true;
+         var result:Boolean = true;
          if(PlayerManager.Instance.Self.Bag.getItemAt(6) == null)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.room.RoomIIController.weapon"));
-            _loc1_ = false;
+            result = false;
          }
-         return _loc1_;
+         return result;
       }
       
       public function checkGameTimeIsOpen() : Boolean
       {
-         var _loc3_:Date = TimeManager.Instance.Now();
-         var _loc2_:int = _loc3_.hours;
-         var _loc1_:int = _loc3_.minutes;
-         if(_loc2_ > int(_model.consortiaMatchEndTime[0]) || _loc2_ < int(_model.consortiaMatchStartTime[0]))
+         var date:Date = TimeManager.Instance.Now();
+         var hour:int = date.hours;
+         var minutes:int = date.minutes;
+         if(hour > int(_model.consortiaMatchEndTime[0]) || hour < int(_model.consortiaMatchStartTime[0]))
          {
             return false;
          }
-         if(_loc2_ <= int(_model.consortiaMatchEndTime[0]) && _loc2_ >= int(_model.consortiaMatchStartTime[0]))
+         if(hour <= int(_model.consortiaMatchEndTime[0]) && hour >= int(_model.consortiaMatchStartTime[0]))
          {
-            if(_loc2_ == int(_model.consortiaMatchEndTime[0]))
+            if(hour == int(_model.consortiaMatchEndTime[0]))
             {
-               if(_loc1_ >= int(_model.consortiaMatchEndTime[1]))
+               if(minutes >= int(_model.consortiaMatchEndTime[1]))
                {
                   return false;
                }
                return true;
             }
-            if(_loc2_ == int(_model.consortiaMatchStartTime[0]))
+            if(hour == int(_model.consortiaMatchStartTime[0]))
             {
-               if(_loc1_ <= int(_model.consortiaMatchStartTime[1]))
+               if(minutes <= int(_model.consortiaMatchStartTime[1]))
                {
                   return false;
                }
                return true;
             }
-            if(_loc2_ < int(_model.consortiaMatchEndTime[0]) && _loc2_ > int(_model.consortiaMatchStartTime[0]))
+            if(hour < int(_model.consortiaMatchEndTime[0]) && hour > int(_model.consortiaMatchStartTime[0]))
             {
                return true;
             }
@@ -443,9 +443,9 @@ package kingDivision
          return _model == null?false:Boolean(_model.isOpen);
       }
       
-      public function set zoneIndex(param1:int) : void
+      public function set zoneIndex(value:int) : void
       {
-         _model.zoneIndex = param1;
+         _model.zoneIndex = value;
       }
       
       public function get zoneIndex() : int
@@ -458,9 +458,9 @@ package kingDivision
          return _model.dateArr;
       }
       
-      public function set dateArr(param1:Array) : void
+      public function set dateArr(value:Array) : void
       {
-         _model.dateArr = param1;
+         _model.dateArr = value;
       }
       
       public function get allDateArr() : Array
@@ -468,9 +468,9 @@ package kingDivision
          return _model.allDateArr;
       }
       
-      public function set allDateArr(param1:Array) : void
+      public function set allDateArr(value:Array) : void
       {
-         _model.allDateArr = param1;
+         _model.allDateArr = value;
       }
       
       public function get thisZoneNickName() : String
@@ -478,9 +478,9 @@ package kingDivision
          return _model.thisZoneNickName;
       }
       
-      public function set thisZoneNickName(param1:String) : void
+      public function set thisZoneNickName(value:String) : void
       {
-         _model.thisZoneNickName = param1;
+         _model.thisZoneNickName = value;
       }
       
       public function get allZoneNickName() : String
@@ -488,9 +488,9 @@ package kingDivision
          return _model.allZoneNickName;
       }
       
-      public function set allZoneNickName(param1:String) : void
+      public function set allZoneNickName(value:String) : void
       {
-         _model.allZoneNickName = param1;
+         _model.allZoneNickName = value;
       }
       
       public function get points() : int
@@ -498,9 +498,9 @@ package kingDivision
          return _model.points;
       }
       
-      public function set points(param1:int) : void
+      public function set points(value:int) : void
       {
-         _model.points = param1;
+         _model.points = value;
       }
       
       public function get gameNum() : int
@@ -508,9 +508,9 @@ package kingDivision
          return _model.gameNum;
       }
       
-      public function set gameNum(param1:int) : void
+      public function set gameNum(value:int) : void
       {
-         _model.gameNum = param1;
+         _model.gameNum = value;
       }
       
       public function get states() : int
@@ -518,9 +518,9 @@ package kingDivision
          return _model.states;
       }
       
-      public function set states(param1:int) : void
+      public function set states(value:int) : void
       {
-         _model.states = param1;
+         _model.states = value;
       }
       
       public function get level() : int
@@ -528,9 +528,9 @@ package kingDivision
          return _model.level;
       }
       
-      public function set level(param1:int) : void
+      public function set level(value:int) : void
       {
-         _model.level = param1;
+         _model.level = value;
       }
    }
 }

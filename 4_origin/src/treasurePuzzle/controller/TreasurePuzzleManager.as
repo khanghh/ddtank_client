@@ -56,38 +56,38 @@ package treasurePuzzle.controller
          SocketManager.Instance.addEventListener("treasurePuzzle_system",pkgHandler);
       }
       
-      private function pkgHandler(param1:CrazyTankSocketEvent) : void
+      private function pkgHandler(event:CrazyTankSocketEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = param1._cmd;
-         switch(int(_loc2_) - 102)
+         var pkg:PackageIn = event.pkg;
+         var cmd:int = event._cmd;
+         switch(int(cmd) - 102)
          {
             case 0:
-               openOrclose(_loc3_);
+               openOrclose(pkg);
                break;
             case 1:
-               enterView(_loc3_);
+               enterView(pkg);
                break;
             case 2:
-               seeReward(_loc3_);
+               seeReward(pkg);
                break;
             case 3:
-               getReward(_loc3_);
+               getReward(pkg);
                break;
             default:
-               getReward(_loc3_);
+               getReward(pkg);
                break;
             default:
-               getReward(_loc3_);
+               getReward(pkg);
                break;
             case 6:
-               flushData(_loc3_);
+               flushData(pkg);
          }
       }
       
-      private function openOrclose(param1:PackageIn) : void
+      private function openOrclose(pkg:PackageIn) : void
       {
-         _isShowIcon = param1.readBoolean();
+         _isShowIcon = pkg.readBoolean();
          if(_isShowIcon)
          {
             addEnterIcon();
@@ -98,34 +98,33 @@ package treasurePuzzle.controller
          }
       }
       
-      private function enterView(param1:PackageIn) : void
+      private function enterView(pkg:PackageIn) : void
       {
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:Array = [];
-         var _loc2_:int = param1.readInt();
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_)
+         var i:int = 0;
+         var piceData:* = null;
+         var modelArr:Array = [];
+         var totol:int = pkg.readInt();
+         for(i = 0; i < totol; )
          {
-            _loc3_ = new TreasurePuzzlePiceData();
-            _loc3_.id = param1.readInt();
-            _loc3_.hole1Need = param1.readInt();
-            _loc3_.hole1Have = param1.readInt();
-            _loc3_.hole2Need = param1.readInt();
-            _loc3_.hole2Have = param1.readInt();
-            _loc3_.hole3Need = param1.readInt();
-            _loc3_.hole3Have = param1.readInt();
-            _loc3_.hole4Need = param1.readInt();
-            _loc3_.hole4Have = param1.readInt();
-            _loc3_.hole5Need = param1.readInt();
-            _loc3_.hole5Have = param1.readInt();
-            _loc3_.hole6Need = param1.readInt();
-            _loc3_.hole6Have = param1.readInt();
-            _loc3_._canGetReward = param1.readBoolean();
-            _loc4_.push(_loc3_);
-            _loc5_++;
+            piceData = new TreasurePuzzlePiceData();
+            piceData.id = pkg.readInt();
+            piceData.hole1Need = pkg.readInt();
+            piceData.hole1Have = pkg.readInt();
+            piceData.hole2Need = pkg.readInt();
+            piceData.hole2Have = pkg.readInt();
+            piceData.hole3Need = pkg.readInt();
+            piceData.hole3Have = pkg.readInt();
+            piceData.hole4Need = pkg.readInt();
+            piceData.hole4Have = pkg.readInt();
+            piceData.hole5Need = pkg.readInt();
+            piceData.hole5Have = pkg.readInt();
+            piceData.hole6Need = pkg.readInt();
+            piceData.hole6Have = pkg.readInt();
+            piceData._canGetReward = pkg.readBoolean();
+            modelArr.push(piceData);
+            i++;
          }
-         _model.dataArr = _loc4_;
+         _model.dataArr = modelArr;
          if(loadComplete)
          {
             showTreasurePuzzleMainView();
@@ -141,98 +140,94 @@ package treasurePuzzle.controller
          }
       }
       
-      private function flushData(param1:PackageIn) : void
+      private function flushData(pkg:PackageIn) : void
       {
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:Array = [];
-         var _loc2_:int = param1.readInt();
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_)
+         var i:int = 0;
+         var piceData:* = null;
+         var modelArr:Array = [];
+         var totol:int = pkg.readInt();
+         for(i = 0; i < totol; )
          {
-            _loc3_ = new TreasurePuzzlePiceData();
-            _loc3_.id = param1.readInt();
-            _loc3_.hole1Need = param1.readInt();
-            _loc3_.hole1Have = param1.readInt();
-            _loc3_.hole2Need = param1.readInt();
-            _loc3_.hole2Have = param1.readInt();
-            _loc3_.hole3Need = param1.readInt();
-            _loc3_.hole3Have = param1.readInt();
-            _loc3_.hole4Need = param1.readInt();
-            _loc3_.hole4Have = param1.readInt();
-            _loc3_.hole5Need = param1.readInt();
-            _loc3_.hole5Have = param1.readInt();
-            _loc3_.hole6Need = param1.readInt();
-            _loc3_.hole6Have = param1.readInt();
-            _loc3_._canGetReward = param1.readBoolean();
-            _loc4_.push(_loc3_);
-            _loc5_++;
+            piceData = new TreasurePuzzlePiceData();
+            piceData.id = pkg.readInt();
+            piceData.hole1Need = pkg.readInt();
+            piceData.hole1Have = pkg.readInt();
+            piceData.hole2Need = pkg.readInt();
+            piceData.hole2Have = pkg.readInt();
+            piceData.hole3Need = pkg.readInt();
+            piceData.hole3Have = pkg.readInt();
+            piceData.hole4Need = pkg.readInt();
+            piceData.hole4Have = pkg.readInt();
+            piceData.hole5Need = pkg.readInt();
+            piceData.hole5Have = pkg.readInt();
+            piceData.hole6Need = pkg.readInt();
+            piceData.hole6Have = pkg.readInt();
+            piceData._canGetReward = pkg.readBoolean();
+            modelArr.push(piceData);
+            i++;
          }
-         _model.dataArr = _loc4_;
+         _model.dataArr = modelArr;
          _treasurePuzzleView.flushRewardBnt();
       }
       
-      private function seeReward(param1:PackageIn) : void
+      private function seeReward(pkg:PackageIn) : void
       {
-         var _loc12_:int = 0;
-         var _loc4_:int = 0;
-         var _loc7_:* = null;
-         var _loc9_:int = 0;
-         var _loc3_:* = null;
-         var _loc6_:Boolean = false;
-         var _loc2_:* = null;
-         var _loc11_:int = 0;
-         var _loc8_:* = null;
-         var _loc10_:Array = [];
-         var _loc5_:int = param1.readInt();
-         _loc12_ = 0;
-         while(_loc12_ < _loc5_)
+         var i:int = 0;
+         var id:int = 0;
+         var piceData:* = null;
+         var j:int = 0;
+         var picData2:* = null;
+         var isShiwu:Boolean = false;
+         var rewardList:* = null;
+         var k:int = 0;
+         var rewardData:* = null;
+         var modelArr:Array = [];
+         var totol:int = pkg.readInt();
+         for(i = 0; i < totol; )
          {
-            _loc4_ = param1.readInt();
-            _loc9_ = 0;
-            while(_loc9_ < _model.dataArr.length)
+            id = pkg.readInt();
+            for(j = 0; j < _model.dataArr.length; )
             {
-               _loc3_ = _model.dataArr[_loc9_];
-               if(_loc4_ == _loc3_.id)
+               picData2 = _model.dataArr[j];
+               if(id == picData2.id)
                {
-                  _loc7_ = _model.dataArr[_loc9_];
+                  piceData = _model.dataArr[j];
                }
-               _loc9_++;
+               j++;
             }
-            _loc6_ = param1.readBoolean();
-            if(_loc6_)
+            isShiwu = pkg.readBoolean();
+            if(isShiwu)
             {
-               _loc7_.isShiwu = true;
+               piceData.isShiwu = true;
             }
             else
             {
-               _loc7_.isShiwu = false;
-               _loc7_.rewardNum = param1.readInt();
-               _loc2_ = [];
-               _loc11_ = 0;
-               while(_loc11_ < _loc7_.rewardNum)
+               piceData.isShiwu = false;
+               piceData.rewardNum = pkg.readInt();
+               rewardList = [];
+               for(k = 0; k < piceData.rewardNum; )
                {
-                  _loc8_ = new TreasurePuzzleRewardData();
-                  _loc8_.rewardId = param1.readInt();
-                  _loc8_.rewardNum = param1.readInt();
-                  _loc2_.push(_loc8_);
-                  _loc11_++;
+                  rewardData = new TreasurePuzzleRewardData();
+                  rewardData.rewardId = pkg.readInt();
+                  rewardData.rewardNum = pkg.readInt();
+                  rewardList.push(rewardData);
+                  k++;
                }
-               _loc7_.rewardList = _loc2_;
+               piceData.rewardList = rewardList;
             }
-            _loc12_++;
+            i++;
          }
          _treasurePuzzleView.showHelpView();
       }
       
-      private function getReward(param1:PackageIn) : void
+      private function getReward(pkg:PackageIn) : void
       {
-         var _loc2_:Boolean = false;
-         var _loc3_:Boolean = param1.readBoolean();
-         if(_loc3_)
+         var isShiwu:Boolean = false;
+         var success:Boolean = pkg.readBoolean();
+         if(success)
          {
-            _loc2_ = param1.readBoolean();
-            if(_loc2_)
+            isShiwu = pkg.readBoolean();
+            if(isShiwu)
             {
                _treasurePuzzleView.showShiwuInfoView();
             }
@@ -254,7 +249,7 @@ package treasurePuzzle.controller
          SocketManager.Instance.out.treasurePuzzle_enter();
       }
       
-      protected function __onClose(param1:Event) : void
+      protected function __onClose(event:Event) : void
       {
          UIModuleSmallLoading.Instance.hide();
          UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);
@@ -262,17 +257,17 @@ package treasurePuzzle.controller
          UIModuleLoader.Instance.removeEventListener("uiModuleComplete",__completeShow);
       }
       
-      private function __progressShow(param1:UIModuleEvent) : void
+      private function __progressShow(event:UIModuleEvent) : void
       {
-         if(param1.module == "treasurePuzzle")
+         if(event.module == "treasurePuzzle")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
       
-      private function __completeShow(param1:UIModuleEvent) : void
+      private function __completeShow(event:UIModuleEvent) : void
       {
-         if(param1.module == "treasurePuzzle")
+         if(event.module == "treasurePuzzle")
          {
             UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);
             UIModuleLoader.Instance.removeEventListener("uiMoudleProgress",__progressShow);

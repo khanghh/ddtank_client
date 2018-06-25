@@ -23,25 +23,25 @@ package mx.events
       
       public var source:Object;
       
-      public function PropertyChangeEvent(param1:String, param2:Boolean = false, param3:Boolean = false, param4:String = null, param5:Object = null, param6:Object = null, param7:Object = null, param8:Object = null)
+      public function PropertyChangeEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false, kind:String = null, property:Object = null, oldValue:Object = null, newValue:Object = null, source:Object = null)
       {
-         super(param1,param2,param3);
-         this.kind = param4;
-         this.property = param5;
-         this.oldValue = param6;
-         this.newValue = param7;
-         this.source = param8;
+         super(type,bubbles,cancelable);
+         this.kind = kind;
+         this.property = property;
+         this.oldValue = oldValue;
+         this.newValue = newValue;
+         this.source = source;
       }
       
-      public static function createUpdateEvent(param1:Object, param2:Object, param3:Object, param4:Object) : PropertyChangeEvent
+      public static function createUpdateEvent(source:Object, property:Object, oldValue:Object, newValue:Object) : PropertyChangeEvent
       {
-         var _loc5_:PropertyChangeEvent = new PropertyChangeEvent(PROPERTY_CHANGE);
-         _loc5_.kind = PropertyChangeEventKind.UPDATE;
-         _loc5_.oldValue = param3;
-         _loc5_.newValue = param4;
-         _loc5_.source = param1;
-         _loc5_.property = param2;
-         return _loc5_;
+         var event:PropertyChangeEvent = new PropertyChangeEvent(PROPERTY_CHANGE);
+         event.kind = PropertyChangeEventKind.UPDATE;
+         event.oldValue = oldValue;
+         event.newValue = newValue;
+         event.source = source;
+         event.property = property;
+         return event;
       }
       
       override public function clone() : Event

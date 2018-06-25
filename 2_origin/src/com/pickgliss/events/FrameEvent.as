@@ -22,9 +22,9 @@ package com.pickgliss.events
       
       public var responseCode:int = -1;
       
-      public function FrameEvent(param1:int)
+      public function FrameEvent(responseCode:int)
       {
-         this.responseCode = param1;
+         this.responseCode = responseCode;
          super("response");
       }
    }

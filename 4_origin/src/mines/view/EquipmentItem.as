@@ -10,9 +10,9 @@ package mines.view
       
       public var type:int;
       
-      public function EquipmentItem(param1:int)
+      public function EquipmentItem(index:int)
       {
-         type = param1;
+         type = index;
          super();
       }
       

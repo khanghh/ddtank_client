@@ -162,33 +162,31 @@ package bombKing.view
       
       private function initView() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var place:int = 0;
+         var line:* = null;
+         var item:* = null;
          titleText = LanguageMgr.GetTranslation("bombKing.title");
          _bg = ComponentFactory.Instance.creat("bombKing.BG");
          addToContent(_bg);
-         _loc3_ = 2;
-         while(_loc3_ <= 31)
+         for(place = 2; place <= 31; )
          {
-            _loc2_ = new BKingLine(_loc3_);
-            PositionUtils.setPos(_loc2_,"bombKing.linePos" + _loc3_);
-            addToContent(_loc2_);
-            _lineArr.push(_loc2_);
-            _lineDic[_loc3_] = _loc2_;
-            _loc3_++;
+            line = new BKingLine(place);
+            PositionUtils.setPos(line,"bombKing.linePos" + place);
+            addToContent(line);
+            _lineArr.push(line);
+            _lineDic[place] = line;
+            place++;
          }
-         _loc3_ = 2;
-         while(_loc3_ <= 31)
+         for(place = 2; place <= 31; )
          {
-            _loc1_ = new BKingPlayerItem(_loc3_);
-            PositionUtils.setPos(_loc1_,"bombKing.itemPos" + _loc3_);
-            _loc1_.addEventListener("click",__playerItemClick);
-            _loc1_.buttonMode = true;
-            addToContent(_loc1_);
-            _itemArr.push(_loc1_);
-            _itemDic[_loc3_] = _loc1_;
-            _loc3_++;
+            item = new BKingPlayerItem(place);
+            PositionUtils.setPos(item,"bombKing.itemPos" + place);
+            item.addEventListener("click",__playerItemClick);
+            item.buttonMode = true;
+            addToContent(item);
+            _itemArr.push(item);
+            _itemDic[place] = item;
+            place++;
          }
          _startBtn = ComponentFactory.Instance.creatComponentByStylename("bombKing.startBtn");
          addToContent(_startBtn);
@@ -275,40 +273,40 @@ package bombKing.view
          StageReferance.stage.addEventListener("click",__onStageClick);
       }
       
-      protected function __waitGameRecv(param1:CrazyTankSocketEvent) : void
+      protected function __waitGameRecv(event:CrazyTankSocketEvent) : void
       {
          SocketManager.Instance.out.updateBombKingMainFrame();
       }
       
-      protected function __waitGameFailed(param1:CrazyTankSocketEvent) : void
+      protected function __waitGameFailed(event:CrazyTankSocketEvent) : void
       {
          SocketManager.Instance.out.updateBombKingMainFrame();
       }
       
-      protected function __playerItemClick(param1:MouseEvent) : void
+      protected function __playerItemClick(event:MouseEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:BKingPlayerItem = param1.currentTarget as BKingPlayerItem;
-         if(_loc2_ && _loc2_.info && _loc2_.info.userId != 0)
+         var gp:* = null;
+         var item:BKingPlayerItem = event.currentTarget as BKingPlayerItem;
+         if(item && item.info && item.info.userId != 0)
          {
-            param1.stopPropagation();
+            event.stopPropagation();
             _playerTips.visible = true;
             _container.setChildIndex(_playerTips,_container.numChildren - 1);
-            _loc3_ = globalToLocal(new Point(param1.stageX,param1.stageY));
-            if(_loc3_.x + _playerTips.width > 1000)
+            gp = globalToLocal(new Point(event.stageX,event.stageY));
+            if(gp.x + _playerTips.width > 1000)
             {
-               _loc3_.x = 990 - _playerTips.width;
+               gp.x = 990 - _playerTips.width;
             }
-            _playerTips.x = _loc3_.x;
-            _playerTips.y = _loc3_.y;
-            _playerTips.setUserId(_loc2_.info.userId,_loc2_.info.areaId);
+            _playerTips.x = gp.x;
+            _playerTips.y = gp.y;
+            _playerTips.setUserId(item.info.userId,item.info.areaId);
             var _loc4_:Boolean = true;
             _playerTips.mouseEnabled = _loc4_;
             _playerTips.mouseChildren = _loc4_;
          }
       }
       
-      protected function __onStageClick(param1:MouseEvent) : void
+      protected function __onStageClick(event:MouseEvent) : void
       {
          var _loc2_:Boolean = false;
          _playerTips.mouseEnabled = _loc2_;
@@ -316,121 +314,119 @@ package bombKing.view
          _playerTips.visible = false;
       }
       
-      protected function __startBtnClick(param1:MouseEvent) : void
+      protected function __startBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          SocketManager.Instance.out.sendBombKingStartBattle();
       }
       
-      protected function __rankBtnClick(param1:MouseEvent) : void
+      protected function __rankBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _rankFrame = ComponentFactory.Instance.creatComponentByStylename("bombKing.BombKingRankFrame");
          LayerManager.Instance.addToLayer(_rankFrame,3,true,1);
       }
       
-      protected function __prizeBtnClick(param1:MouseEvent) : void
+      protected function __prizeBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _prizeFrame = ComponentFactory.Instance.creatComponentByStylename("bombKing.BombKingPrizeFrame");
          LayerManager.Instance.addToLayer(_prizeFrame,3,true,1);
       }
       
-      protected function __update(param1:PkgEvent) : void
+      protected function __update(event:PkgEvent) : void
       {
-         var _loc7_:int = 0;
-         var _loc3_:Boolean = false;
-         var _loc8_:* = null;
-         var _loc6_:int = 0;
-         var _loc9_:Boolean = false;
-         var _loc14_:* = null;
-         var _loc15_:* = null;
-         var _loc10_:* = null;
-         var _loc12_:* = null;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:Array = [];
-         _loc7_ = 0;
-         while(_loc7_ < 16)
+         var i:int = 0;
+         var isExist:Boolean = false;
+         var info:* = null;
+         var j:int = 0;
+         var isExist2:Boolean = false;
+         var info2:* = null;
+         var characterLoader:* = null;
+         var style:* = null;
+         var playerInfo:* = null;
+         var pkg:PackageIn = event.pkg;
+         var arr:Array = [];
+         for(i = 0; i < 16; )
          {
-            _loc3_ = _loc4_.readBoolean();
-            _loc8_ = new BKingPlayerInfo();
-            if(_loc3_)
+            isExist = pkg.readBoolean();
+            info = new BKingPlayerInfo();
+            if(isExist)
             {
-               _loc8_.userId = _loc4_.readInt();
-               _loc8_.areaId = _loc4_.readInt();
-               _loc8_.name = _loc4_.readUTF();
-               _loc8_.rankType = _loc4_.readInt();
+               info.userId = pkg.readInt();
+               info.areaId = pkg.readInt();
+               info.name = pkg.readUTF();
+               info.rankType = pkg.readInt();
             }
-            _loc2_.push(_loc8_);
-            _loc7_++;
+            arr.push(info);
+            i++;
          }
          _top3InfoArr = [];
          _loaderArr = [];
-         _loc6_ = 0;
-         while(_loc6_ < 3)
+         for(j = 0; j < 3; )
          {
-            _loc9_ = _loc4_.readBoolean();
-            _loc14_ = new BKingPlayerInfo();
-            _loc15_ = null;
-            if(_loc9_)
+            isExist2 = pkg.readBoolean();
+            info2 = new BKingPlayerInfo();
+            characterLoader = null;
+            if(isExist2)
             {
-               _loc14_.userId = _loc4_.readInt();
-               _loc14_.areaId = _loc4_.readInt();
-               _loc14_.name = _loc4_.readUTF();
-               _loc10_ = _loc4_.readUTF();
-               _loc14_.style = BombKingManager.instance.cutSuitStr(_loc10_);
-               _loc14_.color = _loc4_.readUTF();
-               _loc14_.sex = _loc4_.readBoolean();
-               _loc12_ = new PlayerInfo();
-               _loc12_.Style = _loc14_.style;
-               _loc12_.Colors = _loc14_.color;
-               _loc12_.Sex = _loc14_.sex;
-               _loc15_ = CharactoryFactory.createCharacter(_loc12_) as ShowCharacter;
-               _loc15_.addEventListener("complete",__characterComplete);
-               _loc15_.showGun = false;
-               _loc15_.setShowLight(false,null);
-               _loc15_.stopAnimation();
-               _loc15_.show(true,1);
+               info2.userId = pkg.readInt();
+               info2.areaId = pkg.readInt();
+               info2.name = pkg.readUTF();
+               style = pkg.readUTF();
+               info2.style = BombKingManager.instance.cutSuitStr(style);
+               info2.color = pkg.readUTF();
+               info2.sex = pkg.readBoolean();
+               playerInfo = new PlayerInfo();
+               playerInfo.Style = info2.style;
+               playerInfo.Colors = info2.color;
+               playerInfo.Sex = info2.sex;
+               characterLoader = CharactoryFactory.createCharacter(playerInfo) as ShowCharacter;
+               characterLoader.addEventListener("complete",__characterComplete);
+               characterLoader.showGun = false;
+               characterLoader.setShowLight(false,null);
+               characterLoader.stopAnimation();
+               characterLoader.show(true,1);
                var _loc16_:* = false;
-               _loc15_.mouseChildren = _loc16_;
+               characterLoader.mouseChildren = _loc16_;
                _loc16_ = _loc16_;
-               _loc15_.mouseEnabled = _loc16_;
-               _loc15_.buttonMode = _loc16_;
+               characterLoader.mouseEnabled = _loc16_;
+               characterLoader.buttonMode = _loc16_;
             }
-            _loaderArr.push(_loc15_);
-            _top3InfoArr.push(_loc14_);
-            _top3NameArr[_loc6_].text = _loc14_.name;
-            _loc6_++;
+            _loaderArr.push(characterLoader);
+            _top3InfoArr.push(info2);
+            _top3NameArr[j].text = info2.name;
+            j++;
          }
-         fillRankDic(_loc2_);
+         fillRankDic(arr);
          updateItems();
-         var _loc5_:int = _loc4_.readInt();
-         var _loc11_:int = _loc4_.readInt();
-         if(_loc11_ <= 0)
+         var myScore:int = pkg.readInt();
+         var myRank:int = pkg.readInt();
+         if(myRank <= 0)
          {
             _rankTxt.text = LanguageMgr.GetTranslation("bombKing.outOfRank1");
          }
          else
          {
-            _rankTxt.text = LanguageMgr.GetTranslation("bombKing.myRank",_loc11_);
+            _rankTxt.text = LanguageMgr.GetTranslation("bombKing.myRank",myRank);
          }
-         _scoreTxt.text = LanguageMgr.GetTranslation("bombKing.myScore",_loc5_);
-         _battleStage = _loc4_.readInt();
-         _turn = _loc4_.readInt() + 1;
-         _status = _loc4_.readInt();
-         var _loc13_:Date = _loc4_.readDate();
-         _battleEndDate = _loc4_.readDate();
+         _scoreTxt.text = LanguageMgr.GetTranslation("bombKing.myScore",myScore);
+         _battleStage = pkg.readInt();
+         _turn = pkg.readInt() + 1;
+         _status = pkg.readInt();
+         var deadline:Date = pkg.readDate();
+         _battleEndDate = pkg.readDate();
          BombKingControl.instance.status = _status;
-         setStartBtnStatus(_loc13_);
+         setStartBtnStatus(deadline);
          setDateOfNext();
       }
       
       public function setDateOfNext() : void
       {
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
-         var _loc1_:int = 0;
-         var _loc3_:Date = TimeManager.Instance.Now();
+         var diff:int = 0;
+         var m:int = 0;
+         var s:int = 0;
+         var now:Date = TimeManager.Instance.Now();
          if(BombKingControl.instance.isOpen)
          {
             if(!_battleEndDate)
@@ -438,10 +434,10 @@ package bombKing.view
                return;
             }
             PositionUtils.setPos(_timeTxt,"bombKing.timeTxt2");
-            _loc2_ = (_battleEndDate.getTime() - _loc3_.getTime()) / 1000;
-            _loc4_ = Math.floor(_loc2_ / 60);
-            _loc1_ = _loc2_ % 60;
-            _timeTxt.text = LanguageMgr.GetTranslation("bombKing.nextTime",fillZero(_loc4_),fillZero(_loc1_),getTurnStr());
+            diff = (_battleEndDate.getTime() - now.getTime()) / 1000;
+            m = Math.floor(diff / 60);
+            s = diff % 60;
+            _timeTxt.text = LanguageMgr.GetTranslation("bombKing.nextTime",fillZero(m),fillZero(s),getTurnStr());
             if(nextTimer)
             {
                nextTimer.stop();
@@ -477,9 +473,9 @@ package bombKing.view
          }
       }
       
-      private function getDayStr(param1:int) : String
+      private function getDayStr(openDay:int) : String
       {
-         switch(int(param1))
+         switch(int(openDay))
          {
             case 0:
                return "周日";
@@ -498,36 +494,35 @@ package bombKing.view
          }
       }
       
-      private function __characterComplete(param1:Event) : void
+      private function __characterComplete(event:Event) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:ShowCharacter = param1.target as ShowCharacter;
-         _loc3_.removeEventListener("complete",__characterComplete);
-         _loc4_ = 0;
-         while(_loc4_ <= _loaderArr.length - 1)
+         var i:int = 0;
+         var figure:* = null;
+         var loader:ShowCharacter = event.target as ShowCharacter;
+         loader.removeEventListener("complete",__characterComplete);
+         for(i = 0; i <= _loaderArr.length - 1; )
          {
-            if(_loc3_ != _loaderArr[_loc4_])
+            if(loader != _loaderArr[i])
             {
-               _loc4_++;
+               i++;
                continue;
             }
             break;
          }
-         _loc2_ = new Bitmap(new BitmapData(200,170));
-         _loc2_.bitmapData.copyPixels(_loc3_.characterBitmapdata,new Rectangle(0,60,200,170),new Point(0,0));
-         PositionUtils.setPos(_loc2_,"bombKing.figurePos" + _loc4_);
-         _loc2_.scaleX = 0.3;
-         _loc2_.scaleY = 0.3;
-         _loc2_.smoothing = true;
-         addToContent(_loc2_);
-         _headImgArr.push(_loc2_);
+         figure = new Bitmap(new BitmapData(200,170));
+         figure.bitmapData.copyPixels(loader.characterBitmapdata,new Rectangle(0,60,200,170),new Point(0,0));
+         PositionUtils.setPos(figure,"bombKing.figurePos" + i);
+         figure.scaleX = 0.3;
+         figure.scaleY = 0.3;
+         figure.smoothing = true;
+         addToContent(figure);
+         _headImgArr.push(figure);
       }
       
-      private function setStartBtnStatus(param1:Date) : void
+      private function setStartBtnStatus(deadLine:Date) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:int = 0;
+         var now:* = null;
+         var diff:int = 0;
          if(PlayerManager.Instance.Self.Grade < 30)
          {
             _startBtn.visible = true;
@@ -570,9 +565,9 @@ package bombKing.view
                _battleSoon.visible = true;
                _remain.visible = true;
                _tipSprite.visible = false;
-               _loc3_ = TimeManager.Instance.Now();
-               _loc2_ = (param1.getTime() - _loc3_.getTime()) / 1000;
-               _remain.text = _loc2_.toString();
+               now = TimeManager.Instance.Now();
+               diff = (deadLine.getTime() - now.getTime()) / 1000;
+               _remain.text = diff.toString();
                if(remainTimer)
                {
                   remainTimer.stop();
@@ -611,13 +606,13 @@ package bombKing.view
          }
       }
       
-      protected function onNextTimer(param1:TimerEvent) : void
+      protected function onNextTimer(event:TimerEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc2_:int = 0;
-         var _loc4_:Date = TimeManager.Instance.Now();
-         var _loc3_:int = (_battleEndDate.getTime() - _loc4_.getTime()) / 1000;
-         if(_loc3_ <= 0)
+         var m:int = 0;
+         var s:int = 0;
+         var now:Date = TimeManager.Instance.Now();
+         var diff:int = (_battleEndDate.getTime() - now.getTime()) / 1000;
+         if(diff <= 0)
          {
             nextTimer.stop();
             nextTimer.removeEventListener("timer",onRemainTimer);
@@ -625,28 +620,28 @@ package bombKing.view
          }
          else
          {
-            _loc5_ = Math.floor(_loc3_ / 60);
-            _loc2_ = _loc3_ % 60;
-            _timeTxt.text = LanguageMgr.GetTranslation("bombKing.nextTime",fillZero(_loc5_),fillZero(_loc2_),getTurnStr());
+            m = Math.floor(diff / 60);
+            s = diff % 60;
+            _timeTxt.text = LanguageMgr.GetTranslation("bombKing.nextTime",fillZero(m),fillZero(s),getTurnStr());
          }
       }
       
-      private function fillZero(param1:int) : String
+      private function fillZero(num:int) : String
       {
-         if(param1 >= 0 && param1 <= 9)
+         if(num >= 0 && num <= 9)
          {
-            return "0" + param1;
+            return "0" + num;
          }
-         return "" + param1;
+         return "" + num;
       }
       
-      protected function onRemainTimer(param1:TimerEvent) : void
+      protected function onRemainTimer(event:TimerEvent) : void
       {
-         var _loc2_:int = 0;
+         var remainTime:int = 0;
          if(_remain)
          {
-            _loc2_ = parseInt(_remain.text);
-            if(_loc2_ <= 0)
+            remainTime = parseInt(_remain.text);
+            if(remainTime <= 0)
             {
                remainTimer.stop();
                remainTimer.removeEventListener("timer",onRemainTimer);
@@ -654,73 +649,69 @@ package bombKing.view
             }
             else
             {
-               _loc2_--;
-               _remain.text = _loc2_.toString();
+               remainTime--;
+               _remain.text = remainTime.toString();
             }
          }
       }
       
-      private function fillRankDic(param1:Array) : void
+      private function fillRankDic(arr:Array) : void
       {
-         var _loc9_:int = 0;
-         var _loc2_:int = 0;
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         var _loc8_:* = null;
-         var _loc3_:int = 0;
-         var _loc7_:* = null;
-         var _loc6_:int = 0;
+         var i:int = 0;
+         var count:int = 0;
+         var place:int = 0;
+         var j:int = 0;
+         var info:* = null;
+         var l:int = 0;
+         var info2:* = null;
+         var k:int = 0;
          _rankDic = new Dictionary();
-         _loc9_ = 0;
-         while(_loc9_ <= param1.length - 1)
+         for(i = 0; i <= arr.length - 1; )
          {
-            _rankDic[_loc9_ + 16] = param1[_loc9_];
-            _loc2_ = (param1[_loc9_] as BKingPlayerInfo).rankType - 2;
-            _loc5_ = _loc9_ + 16;
-            _loc4_ = 0;
-            while(_loc4_ <= _loc2_ - 1)
+            _rankDic[i + 16] = arr[i];
+            count = (arr[i] as BKingPlayerInfo).rankType - 2;
+            place = i + 16;
+            for(j = 0; j <= count - 1; )
             {
-               _loc5_ = Math.floor(_loc5_ / 2);
-               _loc8_ = new BKingPlayerInfo();
-               ObjectUtils.copyProperties(_loc8_,param1[_loc9_]);
-               _rankDic[_loc5_] = _loc8_;
-               _loc4_++;
+               place = Math.floor(place / 2);
+               info = new BKingPlayerInfo();
+               ObjectUtils.copyProperties(info,arr[i]);
+               _rankDic[place] = info;
+               j++;
             }
-            _loc9_++;
+            i++;
          }
-         _loc3_ = 2;
-         while(_loc3_ <= 31)
+         for(l = 2; l <= 31; )
          {
-            if(!_rankDic[_loc3_])
+            if(!_rankDic[l])
             {
-               _loc7_ = new BKingPlayerInfo();
-               _rankDic[_loc3_] = _loc7_;
+               info2 = new BKingPlayerInfo();
+               _rankDic[l] = info2;
             }
-            _loc3_++;
+            l++;
          }
-         _loc6_ = 2;
-         while(_loc6_ <= 15)
+         for(k = 2; k <= 15; )
          {
-            if(_rankDic[_loc6_].userId != 0)
+            if(_rankDic[k].userId != 0)
             {
-               if(_rankDic[2 * _loc6_].userId == _rankDic[_loc6_].userId)
+               if(_rankDic[2 * k].userId == _rankDic[k].userId)
                {
-                  _rankDic[2 * _loc6_].status = 1;
-                  if(_rankDic[2 * _loc6_ + 1].userId != 0)
+                  _rankDic[2 * k].status = 1;
+                  if(_rankDic[2 * k + 1].userId != 0)
                   {
-                     _rankDic[2 * _loc6_ + 1].status = -1;
+                     _rankDic[2 * k + 1].status = -1;
                   }
                }
                else
                {
-                  if(_rankDic[2 * _loc6_].userId != 0)
+                  if(_rankDic[2 * k].userId != 0)
                   {
-                     _rankDic[2 * _loc6_].status = -1;
+                     _rankDic[2 * k].status = -1;
                   }
-                  _rankDic[2 * _loc6_ + 1].status = 1;
+                  _rankDic[2 * k + 1].status = 1;
                }
             }
-            _loc6_++;
+            k++;
          }
          if(_top3InfoArr[0].userId != 0)
          {
@@ -739,99 +730,95 @@ package bombKing.view
       
       private function updateItems() : void
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
-         _loc3_ = 0;
-         while(_loc3_ <= _stampArr.length - 1)
+         var j:int = 0;
+         var i:int = 0;
+         var item:* = null;
+         var loseStamp:* = null;
+         for(j = 0; j <= _stampArr.length - 1; )
          {
-            ObjectUtils.disposeObject(_stampArr[_loc3_]);
-            _stampArr[_loc3_] = null;
-            _loc3_++;
+            ObjectUtils.disposeObject(_stampArr[j]);
+            _stampArr[j] = null;
+            j++;
          }
-         _loc4_ = 2;
-         while(_loc4_ <= 31)
+         for(i = 2; i <= 31; )
          {
-            _loc2_ = _itemDic[_loc4_] as BKingPlayerItem;
-            _loc2_.info = _rankDic[_loc4_];
-            (_lineDic[_loc4_] as BKingLine).info = _rankDic[_loc4_];
-            if(_rankDic[_loc4_] && _rankDic[_loc4_].status == -1)
+            item = _itemDic[i] as BKingPlayerItem;
+            item.info = _rankDic[i];
+            (_lineDic[i] as BKingLine).info = _rankDic[i];
+            if(_rankDic[i] && _rankDic[i].status == -1)
             {
-               _loc1_ = ComponentFactory.Instance.creat("bombKing.loseStamp");
-               addToContent(_loc1_);
-               _loc1_.x = _loc2_.x - 15;
-               _loc1_.y = _loc2_.y - 20;
-               _stampArr.push(_loc1_);
+               loseStamp = ComponentFactory.Instance.creat("bombKing.loseStamp");
+               addToContent(loseStamp);
+               loseStamp.x = item.x - 15;
+               loseStamp.y = item.y - 20;
+               _stampArr.push(loseStamp);
             }
-            _loc4_++;
+            i++;
          }
       }
       
-      protected function __updateRequest(param1:PkgEvent) : void
+      protected function __updateRequest(event:PkgEvent) : void
       {
          SocketManager.Instance.out.updateBombKingMainFrame();
          SocketManager.Instance.out.updateBombKingBattleLog();
       }
       
-      protected function __battleLog(param1:PkgEvent) : void
+      protected function __battleLog(event:PkgEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc7_:int = 0;
-         var _loc6_:* = null;
-         var _loc3_:* = null;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc4_.readInt();
-         _loc5_ = 0;
-         while(_loc5_ <= _logArr.length - 1)
+         var k:int = 0;
+         var i:int = 0;
+         var info:* = null;
+         var item:* = null;
+         var pkg:PackageIn = event.pkg;
+         var count:int = pkg.readInt();
+         for(k = 0; k <= _logArr.length - 1; )
          {
-            ObjectUtils.disposeObject(_logArr[_loc5_]);
-            _logArr[_loc5_] = null;
-            _loc5_++;
+            ObjectUtils.disposeObject(_logArr[k]);
+            _logArr[k] = null;
+            k++;
          }
          _logArr = [];
-         _loc7_ = 0;
-         while(_loc7_ <= _loc2_ - 1)
+         for(i = 0; i <= count - 1; )
          {
-            _loc6_ = new BKingLogInfo();
-            _loc6_.stage = _loc4_.readInt();
-            _loc6_.userId = _loc4_.readInt();
-            _loc6_.areaId = _loc4_.readInt();
-            _loc6_.name = _loc4_.readUTF();
-            _loc6_.fightId = _loc4_.readInt();
-            _loc6_.fightAreaId = _loc4_.readInt();
-            _loc6_.fightName = _loc4_.readUTF();
-            _loc6_.reportId = _loc4_.readUTF();
-            _loc6_.result = _loc4_.readBoolean();
-            _loc3_ = new BKingbattleLogItem();
-            _loc3_.info = _loc6_;
-            _logVBox.addChild(_loc3_);
-            _logArr.push(_loc3_);
-            _loc7_++;
+            info = new BKingLogInfo();
+            info.stage = pkg.readInt();
+            info.userId = pkg.readInt();
+            info.areaId = pkg.readInt();
+            info.name = pkg.readUTF();
+            info.fightId = pkg.readInt();
+            info.fightAreaId = pkg.readInt();
+            info.fightName = pkg.readUTF();
+            info.reportId = pkg.readUTF();
+            info.result = pkg.readBoolean();
+            item = new BKingbattleLogItem();
+            item.info = info;
+            _logVBox.addChild(item);
+            _logArr.push(item);
+            i++;
          }
          _scrollPanel.invalidateViewport(true);
       }
       
-      private function __startLoading(param1:Event) : void
+      private function __startLoading(e:Event) : void
       {
          StateManager.getInGame_Step_6 = true;
          StateManager.setState("roomLoading",GameControl.Instance.Current);
          StateManager.getInGame_Step_7 = true;
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
-         var _loc2_:* = null;
+         var alert:* = null;
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
                if(_status == 2)
                {
-                  _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("bombKing.cancelBattle"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
-                  _loc2_.moveEnable = false;
-                  _loc2_.addEventListener("response",_response);
+                  alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("bombKing.cancelBattle"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
+                  alert.moveEnable = false;
+                  alert.addEventListener("response",_response);
                   break;
                }
                dispose();
@@ -839,17 +826,17 @@ package bombKing.view
          }
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         param1.stopPropagation();
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",_response);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         evt.stopPropagation();
+         (evt.currentTarget as BaseAlerFrame).removeEventListener("response",_response);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             GameInSocketOut.sendCancelWait();
             dispose();
          }
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(evt.currentTarget);
       }
       
       private function removeEvents() : void
@@ -881,7 +868,7 @@ package bombKing.view
       
       override public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          BombKingManager.instance.ShowFlag = false;
          removeEvents();
          BombKingControl.instance.frame = null;
@@ -889,60 +876,55 @@ package bombKing.view
          {
             GameInSocketOut.sendCancelWait();
          }
-         _loc1_ = 0;
-         while(_loc1_ <= _itemArr.length - 1)
+         i = 0;
+         while(i <= _itemArr.length - 1)
          {
-            _itemArr[_loc1_].removeEventListener("click",__playerItemClick);
-            ObjectUtils.disposeObject(_itemArr[_loc1_]);
-            _itemArr[_loc1_] = null;
-            ObjectUtils.disposeObject(_lineArr[_loc1_]);
-            _lineArr[_loc1_] = null;
-            _loc1_++;
+            _itemArr[i].removeEventListener("click",__playerItemClick);
+            ObjectUtils.disposeObject(_itemArr[i]);
+            _itemArr[i] = null;
+            ObjectUtils.disposeObject(_lineArr[i]);
+            _lineArr[i] = null;
+            i++;
          }
          _itemArr = null;
          _itemDic = null;
          _lineArr = null;
          _lineDic = null;
-         _loc1_ = 0;
-         while(_loc1_ <= _stampArr.length - 1)
+         for(i = 0; i <= _stampArr.length - 1; )
          {
-            ObjectUtils.disposeObject(_stampArr[_loc1_]);
-            _stampArr[_loc1_] = null;
-            _loc1_++;
+            ObjectUtils.disposeObject(_stampArr[i]);
+            _stampArr[i] = null;
+            i++;
          }
-         _loc1_ = 0;
-         while(_loc1_ <= _logArr.length - 1)
+         for(i = 0; i <= _logArr.length - 1; )
          {
-            ObjectUtils.disposeObject(_logArr[_loc1_]);
-            _logArr[_loc1_] = null;
-            _loc1_++;
+            ObjectUtils.disposeObject(_logArr[i]);
+            _logArr[i] = null;
+            i++;
          }
-         _loc1_ = 0;
-         while(_loc1_ <= _headImgArr.length - 1)
+         for(i = 0; i <= _headImgArr.length - 1; )
          {
-            ObjectUtils.disposeObject(_headImgArr[_loc1_]);
-            _headImgArr[_loc1_] = null;
-            _loc1_++;
+            ObjectUtils.disposeObject(_headImgArr[i]);
+            _headImgArr[i] = null;
+            i++;
          }
-         _loc1_ = 0;
-         while(_loc1_ <= _top3NameArr.length - 1)
+         for(i = 0; i <= _top3NameArr.length - 1; )
          {
-            ObjectUtils.disposeObject(_top3NameArr[_loc1_]);
-            _top3NameArr[_loc1_] = null;
-            _loc1_++;
+            ObjectUtils.disposeObject(_top3NameArr[i]);
+            _top3NameArr[i] = null;
+            i++;
          }
          if(_loaderArr)
          {
-            _loc1_ = 0;
-            while(_loc1_ <= _loaderArr.length - 1)
+            for(i = 0; i <= _loaderArr.length - 1; )
             {
-               if(_loaderArr[_loc1_])
+               if(_loaderArr[i])
                {
-                  (_loaderArr[_loc1_] as ShowCharacter).removeEventListener("complete",__characterComplete);
-                  ObjectUtils.disposeObject(_loaderArr[_loc1_]);
-                  _loaderArr[_loc1_] = null;
+                  (_loaderArr[i] as ShowCharacter).removeEventListener("complete",__characterComplete);
+                  ObjectUtils.disposeObject(_loaderArr[i]);
+                  _loaderArr[i] = null;
                }
-               _loc1_++;
+               i++;
             }
          }
          if(remainTimer)

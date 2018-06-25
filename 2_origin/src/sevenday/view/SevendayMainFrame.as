@@ -74,14 +74,14 @@ package sevenday.view
       
       private function initview() : void
       {
-         var _loc9_:int = 0;
-         var _loc2_:* = null;
-         var _loc7_:* = false;
-         var _loc3_:* = null;
-         var _loc4_:int = 0;
-         var _loc6_:* = null;
-         var _loc1_:* = null;
-         var _loc5_:int = 0;
+         var i:int = 0;
+         var dayBtn:* = null;
+         var enable:* = false;
+         var gift:* = null;
+         var level:int = 0;
+         var description:* = null;
+         var content:* = null;
+         var shengyu:int = 0;
          _bg = ComponentFactory.Instance.creatBitmap("asset.sevenday.bg");
          addToContent(_bg);
          _title = ComponentFactory.Instance.creatBitmap("asset.sevenday.title");
@@ -89,15 +89,14 @@ package sevenday.view
          _dayHBox = ComponentFactory.Instance.creatComponentByStylename("sevendayHBox");
          addToContent(_dayHBox);
          _dayBtnGroup = new SelectedButtonGroup();
-         _loc9_ = 0;
-         while(_loc9_ < 7)
+         for(i = 0; i < 7; )
          {
-            _loc2_ = ComponentFactory.Instance.creatComponentByStylename("ddt.sevenday.dayBtn" + _loc9_);
-            _loc7_ = _loc9_ <= SevendayManager.instance.day;
-            _loc2_.enable = _loc7_;
-            _dayBtnGroup.addSelectItem(_loc2_);
-            _dayHBox.addChild(_loc2_);
-            _loc9_++;
+            dayBtn = ComponentFactory.Instance.creatComponentByStylename("ddt.sevenday.dayBtn" + i);
+            enable = i <= SevendayManager.instance.day;
+            dayBtn.enable = enable;
+            _dayBtnGroup.addSelectItem(dayBtn);
+            _dayHBox.addChild(dayBtn);
+            i++;
          }
          _smalltitle = ComponentFactory.Instance.creatComponentByStylename("ddt.sevenday.smalltitle");
          addToContent(_smalltitle);
@@ -124,24 +123,23 @@ package sevenday.view
          _progress = ComponentFactory.Instance.creatComponentByStylename("ddt.sevenday.taskprogress");
          addToContent(_progress);
          _contentArr = [];
-         var _loc8_:Array = ServerConfigManager.instance.sevendayProgressGift;
-         _loc9_ = 0;
-         while(_loc9_ < 3)
+         var giftList:Array = ServerConfigManager.instance.sevendayProgressGift;
+         for(i = 0; i < 3; )
          {
-            _loc3_ = String(_loc8_[_loc9_]).split(",");
-            _loc4_ = _loc3_[0];
-            _loc6_ = ItemManager.Instance.getTemplateById(int(_loc3_[1])).Description;
-            _loc1_ = ComponentFactory.Instance.creatComponentByStylename("ddt.sevenday.content" + _loc9_);
-            _loc1_.addChild(ComponentFactory.Instance.creatBitmap("asset.sevenday.gift" + (_loc9_ + 1)));
-            _loc1_.tipData = LanguageMgr.GetTranslation("tank.sevenday.gift",_loc4_,_loc6_);
-            addToContent(_loc1_);
-            _contentArr[_loc9_] = _loc1_;
-            _loc9_++;
+            gift = String(giftList[i]).split(",");
+            level = gift[0];
+            description = ItemManager.Instance.getTemplateById(int(gift[1])).Description;
+            content = ComponentFactory.Instance.creatComponentByStylename("ddt.sevenday.content" + i);
+            content.addChild(ComponentFactory.Instance.creatBitmap("asset.sevenday.gift" + (i + 1)));
+            content.tipData = LanguageMgr.GetTranslation("tank.sevenday.gift",level,description);
+            addToContent(content);
+            _contentArr[i] = content;
+            i++;
          }
          if(SevendayManager.instance.day <= 5)
          {
-            _loc5_ = 7 - SevendayManager.instance.day - 1;
-            _endTimeText.text = LanguageMgr.GetTranslation("ddt.sevenday.text1",_loc5_);
+            shengyu = 7 - SevendayManager.instance.day - 1;
+            _endTimeText.text = LanguageMgr.GetTranslation("ddt.sevenday.text1",shengyu);
          }
          else
          {
@@ -159,14 +157,14 @@ package sevenday.view
          SocketManager.Instance.addEventListener(PkgEvent.format(363,1),__onGetProgressCount);
       }
       
-      private function __onGetProgressCount(param1:PkgEvent) : void
+      private function __onGetProgressCount(e:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readInt();
-         _progress.setProgress(_loc2_,105);
+         var pkg:PackageIn = e.pkg;
+         var count:int = pkg.readInt();
+         _progress.setProgress(count,105);
       }
       
-      private function __onTargetBtnChangeHandler(param1:Event) : void
+      private function __onTargetBtnChangeHandler(e:Event) : void
       {
          SoundManager.instance.playButtonSound();
          updateView();
@@ -174,11 +172,11 @@ package sevenday.view
       
       private function updateView() : void
       {
-         var _loc4_:Array = [SevendayManager.QUEST_LIST_1,SevendayManager.QUEST_LIST_2];
-         var _loc2_:Array = _loc4_[_targetBtnGroup.selectIndex];
-         var _loc1_:int = _loc2_[_dayBtnGroup.selectIndex];
-         var _loc3_:QuestInfo = TaskManager.instance.getQuestByID(_loc1_);
-         _sevendayTaskLeftView.update(_loc3_);
+         var questIDList:Array = [SevendayManager.QUEST_LIST_1,SevendayManager.QUEST_LIST_2];
+         var currentTarget:Array = questIDList[_targetBtnGroup.selectIndex];
+         var questID:int = currentTarget[_dayBtnGroup.selectIndex];
+         var questInfo:QuestInfo = TaskManager.instance.getQuestByID(questID);
+         _sevendayTaskLeftView.update(questInfo);
       }
       
       private function removeEvent() : void
@@ -188,7 +186,7 @@ package sevenday.view
          _targetBtnGroup.removeEventListener("change",__onTargetBtnChangeHandler);
       }
       
-      private function ___onDayBtnChangeHandler(param1:Event) : void
+      private function ___onDayBtnChangeHandler(e:Event) : void
       {
          SoundManager.instance.playButtonSound();
          _smalltitle.setFrame(_dayBtnGroup.selectIndex + 1);
@@ -215,13 +213,13 @@ package sevenday.view
       
       override public function dispose() : void
       {
-         var _loc1_:* = null;
+         var com:* = null;
          removeEvent();
          while(_contentArr.length)
          {
-            _loc1_ = _contentArr.pop();
-            ObjectUtils.disposeAllChildren(_loc1_);
-            ObjectUtils.disposeObject(_loc1_);
+            com = _contentArr.pop();
+            ObjectUtils.disposeAllChildren(com);
+            ObjectUtils.disposeObject(com);
          }
          _contentArr = null;
          ObjectUtils.disposeObject(_bg);

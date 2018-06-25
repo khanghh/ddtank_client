@@ -50,47 +50,46 @@ package dayActivity.view.dayActtivityView
          _panel.invalidateViewport();
       }
       
-      public function initList(param1:Vector.<ActivityData>, param2:Vector.<ActivityData>) : void
+      public function initList(overList:Vector.<ActivityData>, noOverList:Vector.<ActivityData>) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
+         var i:int = 0;
+         var list:* = null;
          clearList();
-         var _loc3_:Array = [];
-         _loc3_.push(param2);
-         _loc3_.push(param1);
-         _loc5_ = 0;
-         while(_loc5_ < 2)
+         var arr:Array = [];
+         arr.push(noOverList);
+         arr.push(overList);
+         for(i = 0; i < 2; )
          {
-            _loc4_ = new DayActivityLeftList(_resArray[_loc5_],_loc3_[_loc5_],_boolArray[_loc5_]);
-            _loc4_.y = (_loc4_.height + 4) * _loc5_ + 36;
-            _loc4_.setTxt(_wordArray[_loc5_]);
-            _loc4_.x = 18;
-            _list.addChild(_loc4_);
-            _itemList.push(_loc4_);
-            _loc5_++;
+            list = new DayActivityLeftList(_resArray[i],arr[i],_boolArray[i]);
+            list.y = (list.height + 4) * i + 36;
+            list.setTxt(_wordArray[i]);
+            list.x = 18;
+            _list.addChild(list);
+            _itemList.push(list);
+            i++;
          }
          _panel.invalidateViewport();
       }
       
       private function clearList() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(!_itemList)
          {
             return;
          }
-         _loc1_ = 0;
-         while(_loc1_ < 2)
+         i = 0;
+         while(i < 2)
          {
             if(_itemList.length > 0)
             {
-               while(_itemList[_loc1_].numChildren)
+               while(_itemList[i].numChildren)
                {
-                  ObjectUtils.disposeObject(_itemList[_loc1_].getChildAt(0));
+                  ObjectUtils.disposeObject(_itemList[i].getChildAt(0));
                }
-               ObjectUtils.disposeObject(_itemList[_loc1_]);
+               ObjectUtils.disposeObject(_itemList[i]);
             }
-            _loc1_++;
+            i++;
          }
          _itemList.splice(0,_itemList.length);
       }

@@ -50,11 +50,11 @@ package shop.view
       
       private var moneyValue:int;
       
-      public function BuyJewelryExperienceView(param1:int = 1)
+      public function BuyJewelryExperienceView(type:int = 1)
       {
          _moneyPrice = ServerConfigManager.instance.ItemDevelopPrice;
          _bindMoneyPrice = ServerConfigManager.instance.ItemDevelopPrice;
-         super(param1);
+         super(type);
       }
       
       override protected function initView() : void
@@ -63,39 +63,39 @@ package shop.view
          super.initView();
       }
       
-      public function goodsData(param1:int, param2:int) : void
+      public function goodsData(curExp:int, NextLvExp:int) : void
       {
-         var _loc6_:* = null;
-         var _loc4_:* = null;
-         var _loc5_:* = null;
-         var _loc3_:* = null;
+         var _bg:* = null;
+         var _itemCellBg:* = null;
+         var _verticalLine:* = null;
+         var icon:* = null;
          if(_shopCartItem)
          {
             _shopCartItem.removeEventListener("conditionchange",__shopCartItemChange);
             _shopCartItem.dispose();
          }
-         _curExp = param1;
-         _NextLvExp = param2;
-         _loc6_ = ComponentFactory.Instance.creatComponentByStylename("ddtshop.CartItemBg");
-         _loc6_.x = _loc6_.x + 29;
-         _loc6_.y = _loc6_.y + 51;
-         _loc4_ = ComponentFactory.Instance.creat("ddtshop.CartItemCellBg");
-         _loc4_.x = _loc4_.x + 29;
-         _loc4_.y = _loc4_.y + 51;
-         _loc5_ = ComponentFactory.Instance.creatComponentByStylename("ddtshop.VerticalLine");
-         _loc5_.x = _loc5_.x + 29;
-         _loc5_.y = _loc5_.y + 51;
-         _frame.addToContent(_loc6_);
-         _frame.addToContent(_loc5_);
-         _frame.addToContent(_loc4_);
-         _loc3_ = ComponentFactory.Instance.creatBitmap("asset.store.bringup.buyExp.icon");
-         PositionUtils.setPos(_loc3_,"ddtshop.shopCartItemPos");
-         _loc3_.x = _loc4_.x + 2;
-         _loc3_.y = _loc4_.y + 2;
+         _curExp = curExp;
+         _NextLvExp = NextLvExp;
+         _bg = ComponentFactory.Instance.creatComponentByStylename("ddtshop.CartItemBg");
+         _bg.x = _bg.x + 29;
+         _bg.y = _bg.y + 51;
+         _itemCellBg = ComponentFactory.Instance.creat("ddtshop.CartItemCellBg");
+         _itemCellBg.x = _itemCellBg.x + 29;
+         _itemCellBg.y = _itemCellBg.y + 51;
+         _verticalLine = ComponentFactory.Instance.creatComponentByStylename("ddtshop.VerticalLine");
+         _verticalLine.x = _verticalLine.x + 29;
+         _verticalLine.y = _verticalLine.y + 51;
+         _frame.addToContent(_bg);
+         _frame.addToContent(_verticalLine);
+         _frame.addToContent(_itemCellBg);
+         icon = ComponentFactory.Instance.creatBitmap("asset.store.bringup.buyExp.icon");
+         PositionUtils.setPos(icon,"ddtshop.shopCartItemPos");
+         icon.x = _itemCellBg.x + 2;
+         icon.y = _itemCellBg.y + 2;
          var _loc7_:int = 66;
-         _loc3_.height = _loc7_;
-         _loc3_.width = _loc7_;
-         _frame.addToContent(_loc3_);
+         icon.height = _loc7_;
+         icon.width = _loc7_;
+         _frame.addToContent(icon);
          _itemName = ComponentFactory.Instance.creat("ddtshop.CartItemName");
          _itemName.x = 126;
          _itemName.y = 72;
@@ -131,7 +131,7 @@ package shop.view
          updateCommodityPrices();
       }
       
-      protected function onUpToNxtLvChange(param1:Event) : void
+      protected function onUpToNxtLvChange(e:Event) : void
       {
          if(_upToNextLevel.selected)
          {
@@ -159,12 +159,12 @@ package shop.view
          updateCommodityPrices();
       }
       
-      protected function onNumberSelecterChange(param1:Event) : void
+      protected function onNumberSelecterChange(e:Event) : void
       {
          updateCommodityPrices();
       }
       
-      protected function __cartItemGroupChange(param1:Event) : void
+      protected function __cartItemGroupChange(e:Event) : void
       {
          SoundManager.instance.play("008");
          updateCommodityPrices();
@@ -172,30 +172,30 @@ package shop.view
       
       override protected function updateCommodityPrices() : void
       {
-         var _loc1_:int = 0;
+         var num:int = 0;
          if(_upToNextLevel.selected)
          {
-            _loc1_ = _NextLvExp - _curExp;
+            num = _NextLvExp - _curExp;
          }
          else
          {
-            _loc1_ = _numberSelecter.currentValue;
+            num = _numberSelecter.currentValue;
          }
          switch(int(_group.selectIndex))
          {
             case 0:
-               moneyValue = _moneyPrice * _loc1_;
+               moneyValue = _moneyPrice * num;
                _commodityPricesText1.text = moneyValue.toString();
                _commodityPricesText2.text = "0";
                break;
             case 1:
-               moneyValue = _bindMoneyPrice * _loc1_;
+               moneyValue = _bindMoneyPrice * num;
                _commodityPricesText1.text = "0";
                _commodityPricesText2.text = moneyValue.toString();
          }
       }
       
-      override protected function __purchaseConfirmationBtnClick(param1:MouseEvent) : void
+      override protected function __purchaseConfirmationBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -203,8 +203,8 @@ package shop.view
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:int = _group.selectIndex;
-         switch(int(_loc2_))
+         var type:int = _group.selectIndex;
+         switch(int(type))
          {
             case 0:
                if(PlayerManager.Instance.Self.Money < moneyValue)
@@ -227,11 +227,11 @@ package shop.view
       
       override protected function onCheckComplete() : void
       {
-         var _loc2_:int = _group.selectIndex;
-         var _loc1_:int = !!_upToNextLevel.selected?_NextLvExp - _curExp:Number(_numberSelecter.currentValue);
+         var type:int = _group.selectIndex;
+         var num:int = !!_upToNextLevel.selected?_NextLvExp - _curExp:Number(_numberSelecter.currentValue);
          onBuy && onBuy({
-            "type":_loc2_,
-            "num":_loc1_
+            "type":type,
+            "num":num
          });
          ObjectUtils.disposeObject(this);
          _group = null;

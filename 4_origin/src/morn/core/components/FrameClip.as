@@ -2,7 +2,6 @@ package morn.core.components
 {
    import flash.display.MovieClip;
    import flash.events.Event;
-   import morn.core.events.UIEvent;
    import morn.core.handlers.Handler;
    import morn.editor.core.IClip;
    
@@ -29,120 +28,120 @@ package morn.core.components
       
       protected var _isPlaying:Boolean;
       
-      public function FrameClip(param1:String = null)
+      public function FrameClip(skin:String = null)
       {
-         this._interval = Config.MOVIE_INTERVAL;
+         _interval = Config.MOVIE_INTERVAL;
          super();
-         this.skin = param1;
+         this.skin = skin;
       }
       
       override protected function initialize() : void
       {
-         addEventListener(Event.ADDED_TO_STAGE,this.onAddedToStage);
-         addEventListener(Event.REMOVED_FROM_STAGE,this.onRemovedFromStage);
+         addEventListener("addedToStage",onAddedToStage);
+         addEventListener("removedFromStage",onRemovedFromStage);
       }
       
-      protected function onAddedToStage(param1:Event) : void
+      protected function onAddedToStage(e:Event) : void
       {
-         if(this._autoPlay)
+         if(_autoPlay)
          {
-            this.play();
+            play();
          }
       }
       
-      protected function onRemovedFromStage(param1:Event) : void
+      protected function onRemovedFromStage(e:Event) : void
       {
-         if(this._autoStopAtRemoved)
+         if(_autoStopAtRemoved)
          {
-            this.stop();
+            stop();
          }
       }
       
       public function get skin() : String
       {
-         return this._skin;
+         return _skin;
       }
       
-      public function set skin(param1:String) : void
+      public function set skin(value:String) : void
       {
-         if(param1 != null && param1 != "")
+         if(value != null && value != "")
          {
-            if(this._skin != param1)
+            if(_skin != value)
             {
-               this._skin = param1;
-               this.mc = App.asset.getAsset(param1);
+               _skin = value;
+               mc = App.asset.getAsset(value);
             }
          }
          else
          {
-            this.clear();
+            clear();
          }
       }
       
       public function get mc() : MovieClip
       {
-         return this._mc;
+         return _mc;
       }
       
-      public function set mc(param1:MovieClip) : void
+      public function set mc(value:MovieClip) : void
       {
-         if(this._mc != param1)
+         if(_mc != value)
          {
-            this.clear();
-            this._mc = param1;
-            if(this._mc)
+            clear();
+            _mc = value;
+            if(_mc)
             {
-               this._mc.stop();
-               addChild(this._mc);
-               _contentWidth = this.mc.width;
-               _contentHeight = this.mc.height;
-               this.mc.width = width;
-               this.mc.height = height;
+               _mc.stop();
+               addChild(_mc);
+               _contentWidth = mc.width;
+               _contentHeight = mc.height;
+               mc.width = width;
+               mc.height = height;
             }
          }
       }
       
-      override public function set width(param1:Number) : void
+      override public function set width(value:Number) : void
       {
-         super.width = param1;
-         if(this._mc)
+         .super.width = value;
+         if(_mc)
          {
-            this._mc.width = _width;
+            _mc.width = _width;
          }
       }
       
-      override public function set height(param1:Number) : void
+      override public function set height(value:Number) : void
       {
-         super.height = param1;
-         if(this._mc)
+         .super.height = value;
+         if(_mc)
          {
-            this._mc.height = _height;
+            _mc.height = _height;
          }
       }
       
       public function get frame() : int
       {
-         return this._frame;
+         return _frame;
       }
       
-      public function set frame(param1:int) : void
+      public function set frame(value:int) : void
       {
-         var _loc2_:Handler = null;
-         this._frame = param1;
-         if(this._mc)
+         var handler:* = null;
+         _frame = value;
+         if(_mc)
          {
-            this._frame = this._frame < this._mc.totalFrames && this._frame > -1?int(this._frame):0;
-            this._mc.gotoAndStop(this._frame + 1);
-            sendEvent(UIEvent.FRAME_CHANGED);
-            if(this._to && (this._frame == this._to || this._mc.currentLabel == this._to))
+            _frame = _frame < _mc.totalFrames && _frame > -1?_frame:0;
+            _mc.gotoAndStop(_frame + 1);
+            sendEvent("frameChanged");
+            if(_to && (_frame == _to || _mc.currentLabel == _to))
             {
-               this.stop();
-               this._to = null;
-               if(this._complete != null)
+               stop();
+               _to = null;
+               if(_complete != null)
                {
-                  _loc2_ = this._complete;
-                  this._complete = null;
-                  _loc2_.execute();
+                  handler = _complete;
+                  _complete = null;
+                  handler.execute();
                }
             }
          }
@@ -150,153 +149,149 @@ package morn.core.components
       
       public function get index() : int
       {
-         return this._frame;
+         return _frame;
       }
       
-      public function set index(param1:int) : void
+      public function set index(value:int) : void
       {
-         this.frame = param1;
+         frame = value;
       }
       
       public function get totalFrame() : int
       {
-         return !!this._mc?int(this._mc.totalFrames):0;
+         return !!_mc?_mc.totalFrames:0;
       }
       
       public function get autoStopAtRemoved() : Boolean
       {
-         return this._autoStopAtRemoved;
+         return _autoStopAtRemoved;
       }
       
-      public function set autoStopAtRemoved(param1:Boolean) : void
+      public function set autoStopAtRemoved(value:Boolean) : void
       {
-         this._autoStopAtRemoved = param1;
+         _autoStopAtRemoved = value;
       }
       
       public function get autoPlay() : Boolean
       {
-         return this._autoPlay;
+         return _autoPlay;
       }
       
-      public function set autoPlay(param1:Boolean) : void
+      public function set autoPlay(value:Boolean) : void
       {
-         if(this._autoPlay != param1)
+         if(_autoPlay != value)
          {
-            this._autoPlay = param1;
-            if(this._autoPlay)
-            {
-               this.play();
-            }
-            else
-            {
-               this.stop();
-            }
+            _autoPlay = value;
+            !!_autoPlay?play():stop();
          }
       }
       
       public function get interval() : int
       {
-         return this._interval;
+         return _interval;
       }
       
-      public function set interval(param1:int) : void
+      public function set interval(value:int) : void
       {
-         if(this._interval != param1)
+         if(_interval != value)
          {
-            this._interval = param1;
-            if(this._isPlaying)
+            _interval = value;
+            if(_isPlaying)
             {
-               this.play();
+               play();
             }
          }
       }
       
       public function get isPlaying() : Boolean
       {
-         return this._isPlaying;
+         return _isPlaying;
       }
       
-      public function set isPlaying(param1:Boolean) : void
+      public function set isPlaying(value:Boolean) : void
       {
-         this._isPlaying = param1;
+         _isPlaying = value;
       }
       
       public function play() : void
       {
-         this._isPlaying = true;
-         this.frame = this._frame;
-         App.timer.doLoop(this._interval,this.loop);
+         _isPlaying = true;
+         frame = _frame;
+         App.timer.doLoop(_interval,loop);
       }
       
       protected function loop() : void
       {
-         this.frame++;
+         frame = Number(frame) + 1;
       }
       
       public function stop() : void
       {
-         App.timer.clearTimer(this.loop);
-         this._isPlaying = false;
+         App.timer.clearTimer(loop);
+         _isPlaying = false;
       }
       
-      public function gotoAndPlay(param1:int) : void
+      public function gotoAndPlay(frame:int) : void
       {
-         this.frame = param1;
-         this.play();
+         this.frame = frame;
+         play();
       }
       
-      public function gotoAndStop(param1:int) : void
+      public function gotoAndStop(frame:int) : void
       {
-         this.stop();
-         this.frame = param1;
+         stop();
+         this.frame = frame;
       }
       
-      public function playFromTo(param1:Object = null, param2:Object = null, param3:Handler = null) : void
+      public function playFromTo(from:Object = null, to:Object = null, complete:Handler = null) : void
       {
-         param1 = param1 || 0;
-         this._to = param2 == null?this._mc.totalFrames - 1:param2;
-         this._complete = param3;
-         if(param1 is int)
+         if(!from)
          {
-            this.gotoAndPlay(param1 as int);
+            from = 0;
+         }
+         _to = to == null?_mc.totalFrames - 1:to;
+         _complete = complete;
+         if(from is int)
+         {
+            gotoAndPlay(from as int);
          }
          else
          {
-            this._mc.gotoAndStop(param1);
-            this.gotoAndPlay(this._mc.currentFrame - 1);
+            _mc.gotoAndStop(from);
+            gotoAndPlay(_mc.currentFrame - 1);
          }
       }
       
-      override public function set dataSource(param1:Object) : void
+      override public function set dataSource(value:Object) : void
       {
-         _dataSource = param1;
-         if(param1 is int || param1 is String)
+         _dataSource = value;
+         if(value is int || value is String)
          {
-            this.frame = int(param1);
+            frame = int(value);
          }
          else
          {
-            super.dataSource = param1;
+            .super.dataSource = value;
          }
       }
       
       private function clear() : void
       {
-         this.stop();
-         if(this._mc && this._mc.parent)
+         stop();
+         if(_mc && _mc.parent)
          {
-            this._mc.stop();
-            removeChild(this._mc);
+            _mc.stop();
+            removeChild(_mc);
          }
-         this._skin = null;
+         _skin = null;
       }
       
       override public function dispose() : void
       {
          super.dispose();
-         this._mc = null;
-         this._to = null;
-         this._complete = null;
+         _mc = null;
+         _to = null;
+         _complete = null;
       }
    }
 }

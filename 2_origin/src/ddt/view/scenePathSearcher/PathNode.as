@@ -21,9 +21,9 @@ package ddt.view.scenePathSearcher
          super();
       }
       
-      public function equals(param1:PathNode) : Boolean
+      public function equals(node:PathNode) : Boolean
       {
-         return param1.location.equals(location);
+         return node.location.equals(location);
       }
       
       public function toString() : String

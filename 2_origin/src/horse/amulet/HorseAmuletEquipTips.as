@@ -45,7 +45,7 @@ package horse.amulet
       
       override protected function init() : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          _bg = ComponentFactory.Instance.creatComponentByStylename("horseAmulet.equipTips.bg");
          _vBox = ComponentFactory.Instance.creatComponentByStylename("horseAmulet.equipTips.vBox");
          _titleText = ComponentFactory.Instance.creatComponentByStylename("horseAmulet.equipTips.titleText");
@@ -63,89 +63,85 @@ package horse.amulet
          _vBox.addChild(_extendText);
          _propertyList = new Vector.<FilterFrameText>();
          _property = LanguageMgr.GetTranslation("tank.horseAmulet.propertyList").split(",");
-         _loc2_ = 0;
-         while(_loc2_ < _property.length)
+         for(i = 0; i < _property.length; )
          {
-            _propertyList[_loc2_] = ComponentFactory.Instance.creatComponentByStylename("horseAmulet.equipTips.propertyText");
-            _propertyList[_loc2_].text = _property[_loc2_] + "      +0";
-            _vBox.addChild(_propertyList[_loc2_]);
-            _loc2_++;
+            _propertyList[i] = ComponentFactory.Instance.creatComponentByStylename("horseAmulet.equipTips.propertyText");
+            _propertyList[i].text = _property[i] + "      +0";
+            _vBox.addChild(_propertyList[i]);
+            i++;
          }
          _vBox.addChild(ComponentFactory.Instance.creatComponentByStylename("horseAmulet.equipTips.line"));
-         var _loc1_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("horseAmulet.equipTips.tipsHelpText");
-         _loc1_.text = LanguageMgr.GetTranslation("tank.horseAmulet.tipsHelp");
-         _vBox.addChild(_loc1_);
+         var tipsHelpText:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("horseAmulet.equipTips.tipsHelpText");
+         tipsHelpText.text = LanguageMgr.GetTranslation("tank.horseAmulet.tipsHelp");
+         _vBox.addChild(tipsHelpText);
          super.init();
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(value:Object) : void
       {
-         var _loc2_:PlayerInfo = param1 as PlayerInfo;
-         if(_loc2_.isSelf)
+         var player:PlayerInfo = value as PlayerInfo;
+         if(player.isSelf)
          {
             updateSelfTips();
          }
          else
          {
-            updateTips(_loc2_);
+            updateTips(player);
          }
       }
       
       private function updateSelfTips() : void
       {
-         var _loc1_:int = 0;
-         var _loc9_:int = 0;
-         var _loc8_:* = null;
-         var _loc7_:* = null;
-         var _loc5_:int = 0;
-         var _loc6_:* = null;
-         var _loc3_:int = 0;
-         var _loc2_:BagInfo = PlayerManager.Instance.Self.horseAmuletBag;
-         var _loc4_:Dictionary = new Dictionary();
-         _loc9_ = 0;
-         while(_loc9_ < 9)
+         var hp:int = 0;
+         var i:int = 0;
+         var info:* = null;
+         var vo:* = null;
+         var j:int = 0;
+         var key:* = null;
+         var p:int = 0;
+         var bag:BagInfo = PlayerManager.Instance.Self.horseAmuletBag;
+         var data:Dictionary = new Dictionary();
+         for(i = 0; i < 9; )
          {
-            _loc8_ = _loc2_.getItemAt(_loc9_) as InventoryItemInfo;
-            if(_loc8_)
+            info = bag.getItemAt(i) as InventoryItemInfo;
+            if(info)
             {
-               _loc7_ = HorseAmuletManager.instance.getHorseAmuletVo(_loc8_.TemplateID);
-               _loc1_ = _loc1_ + _loc7_.BaseType1Value;
-               if(_loc4_[_loc7_.ExtendType1])
+               vo = HorseAmuletManager.instance.getHorseAmuletVo(info.TemplateID);
+               hp = hp + vo.BaseType1Value;
+               if(data[vo.ExtendType1])
                {
-                  var _loc10_:* = _loc7_.ExtendType1;
-                  var _loc11_:* = _loc4_[_loc10_] + _loc8_.Hole1;
-                  _loc4_[_loc10_] = _loc11_;
+                  var _loc10_:* = vo.ExtendType1;
+                  var _loc11_:* = data[_loc10_] + info.Hole1;
+                  data[_loc10_] = _loc11_;
                }
                else
                {
-                  _loc4_[_loc7_.ExtendType1] = _loc8_.Hole1;
+                  data[vo.ExtendType1] = info.Hole1;
                }
             }
-            _loc9_++;
+            i++;
          }
-         _addHpText.text = LanguageMgr.GetTranslation("MaxHp") + "      +" + _loc1_;
-         _loc5_ = 0;
-         while(_loc5_ < 9)
+         _addHpText.text = LanguageMgr.GetTranslation("MaxHp") + "      +" + hp;
+         for(j = 0; j < 9; )
          {
-            _loc6_ = (_loc5_ + 1).toString();
-            _loc3_ = _loc4_[_loc6_] || 0;
-            _propertyList[_loc5_].text = _property[_loc5_] + "      +" + _loc3_;
-            _loc5_++;
+            key = (j + 1).toString();
+            p = data[key] || 0;
+            _propertyList[j].text = _property[j] + "      +" + p;
+            j++;
          }
          _vBox.arrange();
       }
       
-      private function updateTips(param1:PlayerInfo) : void
+      private function updateTips(info:PlayerInfo) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         _addHpText.text = LanguageMgr.GetTranslation("MaxHp") + "      +" + param1.horseAmuletHp;
-         _loc3_ = 0;
-         while(_loc3_ < 9)
+         var j:int = 0;
+         var p:int = 0;
+         _addHpText.text = LanguageMgr.GetTranslation("MaxHp") + "      +" + info.horseAmuletHp;
+         for(j = 0; j < 9; )
          {
-            _loc2_ = param1.horseAmuletProperty.length > _loc3_?param1.horseAmuletProperty[_loc3_]:0;
-            _propertyList[_loc3_].text = _property[_loc3_] + "      +" + _loc2_;
-            _loc3_++;
+            p = info.horseAmuletProperty.length > j?info.horseAmuletProperty[j]:0;
+            _propertyList[j].text = _property[j] + "      +" + p;
+            j++;
          }
          _vBox.arrange();
       }

@@ -44,17 +44,16 @@ package ddt.view.academyCommon.recommend
       
       override protected function initPlayerContainer() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          _items = [];
-         _loc2_ = 0;
-         while(_loc2_ < 3)
+         for(i = 0; i < 3; )
          {
-            _loc1_ = new RecommendMasterPlayerCellView();
-            _loc1_.addEventListener("click",__itemClick);
-            _playerContainer.addChild(_loc1_);
-            _items.push(_loc1_);
-            _loc2_++;
+            item = new RecommendMasterPlayerCellView();
+            item.addEventListener("click",__itemClick);
+            _playerContainer.addChild(item);
+            _items.push(item);
+            i++;
          }
          _players = AcademyManager.Instance.recommendPlayers;
          updateItem();

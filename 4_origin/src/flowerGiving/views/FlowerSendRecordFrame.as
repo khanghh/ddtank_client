@@ -19,9 +19,9 @@ package flowerGiving.views
       
       private var _infoArr:Array;
       
-      public function FlowerSendRecordFrame(param1:Array)
+      public function FlowerSendRecordFrame(infoArr:Array)
       {
-         _infoArr = param1;
+         _infoArr = infoArr;
          super();
          initView();
          addEvent();
@@ -29,22 +29,21 @@ package flowerGiving.views
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          _bg = ComponentFactory.Instance.creat("flowerGiving.flowerSendRecordFrame.bg");
          addToContent(_bg);
          _vbox = ComponentFactory.Instance.creatComponentByStylename("flowerGiving.flowerSendRecordFrame.vBox");
          addToContent(_vbox);
-         _loc2_ = 0;
-         while(_loc2_ < _infoArr.length)
+         for(i = 0; i < _infoArr.length; )
          {
-            _loc1_ = new FlowerSendRecordItem(_loc2_);
-            if(_infoArr[_loc2_])
+            item = new FlowerSendRecordItem(i);
+            if(_infoArr[i])
             {
-               _loc1_.setData(_infoArr[_loc2_]);
+               item.setData(_infoArr[i]);
             }
-            _vbox.addChild(_loc1_);
-            _loc2_++;
+            _vbox.addChild(item);
+            i++;
          }
       }
       
@@ -53,10 +52,10 @@ package flowerGiving.views
          addEventListener("response",_responseHandle);
       }
       
-      protected function _responseHandle(param1:FrameEvent) : void
+      protected function _responseHandle(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:

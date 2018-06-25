@@ -13,28 +13,27 @@ package store.view.strength.analyzer
       
       private var _xml:XML;
       
-      public function ItemStrengthenGoodsInfoAnalyzer(param1:Function)
+      public function ItemStrengthenGoodsInfoAnalyzer(onCompleteCall:Function)
       {
          list = new Dictionary();
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         _xml = new XML(param1);
+         var i:int = 0;
+         var itemInfo:* = null;
+         _xml = new XML(data);
          list = new Dictionary();
-         var _loc3_:XMLList = _xml..Item;
+         var xmllist:XMLList = _xml..Item;
          if(_xml.@value == "true")
          {
-            _loc4_ = 0;
-            while(_loc4_ < _loc3_.length())
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc2_ = new ItemStrengthenGoodsInfo();
-               ObjectUtils.copyPorpertiesByXML(_loc2_,_loc3_[_loc4_]);
-               list[_loc2_.CurrentEquip + "," + _loc2_.Level] = _loc2_;
-               _loc4_++;
+               itemInfo = new ItemStrengthenGoodsInfo();
+               ObjectUtils.copyPorpertiesByXML(itemInfo,xmllist[i]);
+               list[itemInfo.CurrentEquip + "," + itemInfo.Level] = itemInfo;
+               i++;
             }
             onAnalyzeComplete();
          }

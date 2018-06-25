@@ -15,39 +15,38 @@ package com.pickgliss.loader
          super();
       }
       
-      public static function setLoadNameContent(param1:XML) : void
+      public static function setLoadNameContent(xml:XML) : void
       {
-         var _loc7_:int = 0;
-         var _loc2_:* = null;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
+         var i:int = 0;
+         var name:* = null;
+         var loadName:* = null;
+         var path:* = null;
          _loadNameList = new Dictionary();
          _pathList = new Dictionary();
-         var _loc6_:XMLList = param1..Item;
-         var _loc5_:int = _loc6_.length();
-         _loc7_ = 0;
-         while(_loc7_ < _loc5_)
+         var xmlList:XMLList = xml..Item;
+         var len:int = xmlList.length();
+         for(i = 0; i < len; )
          {
-            _loc2_ = _loc6_[_loc7_].@name;
-            _loc4_ = _loc6_[_loc7_].@loadName;
-            _loc3_ = (String(_loc6_[_loc7_].@path) + _loc2_).replace(/\\|\//g,"_");
-            _loadNameList[_loc2_] = _loc4_;
-            if(_loc3_ != "" && _pathList[_loc3_] == null)
+            name = xmlList[i].@name;
+            loadName = xmlList[i].@loadName;
+            path = (String(xmlList[i].@path) + name).replace(/\\|\//g,"_");
+            _loadNameList[name] = loadName;
+            if(path != "" && _pathList[path] == null)
             {
-               _pathList[_loc3_] = true;
+               _pathList[path] = true;
             }
-            _loc7_++;
+            i++;
          }
       }
       
-      private static function isFilter(param1:String) : Boolean
+      private static function isFilter(value:String) : Boolean
       {
-         var _loc3_:String = param1.replace(/\\|\//g,"_").toLocaleLowerCase();
+         var filterPath:String = value.replace(/\\|\//g,"_").toLocaleLowerCase();
          var _loc5_:int = 0;
          var _loc4_:* = _pathList;
-         for(var _loc2_ in _pathList)
+         for(var path in _pathList)
          {
-            if(_loc3_.indexOf(_loc2_.toLocaleLowerCase()) != -1)
+            if(filterPath.indexOf(path.toLocaleLowerCase()) != -1)
             {
                return true;
             }
@@ -55,46 +54,46 @@ package com.pickgliss.loader
          return false;
       }
       
-      public static function getLoadFilePath(param1:String) : String
+      public static function getLoadFilePath(path:String) : String
       {
-         var _loc2_:* = null;
-         if(_loadNameList == null || !isFilter(param1))
+         var real:* = null;
+         if(_loadNameList == null || !isFilter(path))
          {
-            return param1;
+            return path;
          }
-         var _loc3_:* = param1;
+         var loadPath:* = path;
          var _loc6_:int = 0;
          var _loc5_:* = _loadNameList;
-         for(var _loc4_ in _loadNameList)
+         for(var realName in _loadNameList)
          {
-            _loc2_ = "/" + _loc4_;
-            if(_loc3_.indexOf(_loc2_) != -1)
+            real = "/" + realName;
+            if(loadPath.indexOf(real) != -1)
             {
-               _loc3_ = _loc3_.replace(_loc4_,_loadNameList[_loc4_]);
+               loadPath = loadPath.replace(realName,_loadNameList[realName]);
                break;
             }
          }
-         return _loc3_;
+         return loadPath;
       }
       
-      public static function getRealFilePath(param1:String) : String
+      public static function getRealFilePath(path:String) : String
       {
          if(_loadNameList == null)
          {
-            return param1;
+            return path;
          }
-         var _loc3_:* = param1;
+         var realPath:* = path;
          var _loc5_:int = 0;
          var _loc4_:* = _loadNameList;
-         for(var _loc2_ in _loadNameList)
+         for(var realName in _loadNameList)
          {
-            if(param1.indexOf(_loadNameList[_loc2_]) != -1)
+            if(path.indexOf(_loadNameList[realName]) != -1)
             {
-               _loc3_ = param1.replace(_loadNameList[_loc2_],_loc2_);
+               realPath = path.replace(_loadNameList[realName],realName);
                break;
             }
          }
-         return _loc3_;
+         return realPath;
       }
    }
 }

@@ -29,31 +29,31 @@ package beadSystem
          beadSystemManager.Instance.addEventListener("openview",__onOpenView);
       }
       
-      private function __onOpenView(param1:CEvent) : void
+      private function __onOpenView(e:CEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = param1.data.type;
+         var _spr:* = null;
+         var _loc3_:* = e.data.type;
          if("infoframe" !== _loc3_)
          {
             if("infoview" !== _loc3_)
             {
                if("mainView" === _loc3_)
                {
-                  _loc2_ = ComponentFactory.Instance.creatCustomObject("beadInfoView");
+                  _spr = ComponentFactory.Instance.creatCustomObject("beadInfoView");
                }
             }
             else
             {
-               _loc2_ = ComponentFactory.Instance.creatCustomObject("playerBeadInfoView");
+               _spr = ComponentFactory.Instance.creatCustomObject("playerBeadInfoView");
             }
          }
          else
          {
-            _loc2_ = ComponentFactory.Instance.creat("BeadFeedInfoFrame");
+            _spr = ComponentFactory.Instance.creat("BeadFeedInfoFrame");
          }
          beadSystemManager.Instance.dispatchEvent(new CEvent("createComplete",{
-            "type":param1.data.type,
-            "spr":_loc2_
+            "type":e.data.type,
+            "spr":_spr
          }));
       }
    }

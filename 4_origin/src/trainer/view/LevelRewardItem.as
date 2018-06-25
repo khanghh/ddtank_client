@@ -35,9 +35,9 @@ package trainer.view
          super();
       }
       
-      public function setStyle(param1:int) : void
+      public function setStyle(level:int) : void
       {
-         _level = param1;
+         _level = level;
          initView();
       }
       
@@ -54,24 +54,23 @@ package trainer.view
       
       private function currentLevel() : void
       {
-         var _loc6_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc5_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:* = null;
+         var k:int = 0;
+         var it0:* = null;
+         var cell0:* = null;
+         var j:int = 0;
+         var it1:* = null;
+         var cell1:* = null;
          if(_item2 != null)
          {
             if(_item2.items.length > 0)
             {
                _levelRewardListII = ComponentFactory.Instance.creatCustomObject("trainer.currentLevel.levelRewardListII");
-               _loc6_ = 0;
-               while(_loc6_ < _item2.items.length)
+               for(k = 0; k < _item2.items.length; )
                {
-                  _loc4_ = ItemManager.Instance.getTemplateById(int(_item2.items[_loc6_]));
-                  _loc3_ = new LevelRewardCell(_loc4_);
-                  _levelRewardListII.addCell(_loc3_);
-                  _loc6_++;
+                  it0 = ItemManager.Instance.getTemplateById(int(_item2.items[k]));
+                  cell0 = new LevelRewardCell(it0);
+                  _levelRewardListII.addCell(cell0);
+                  k++;
                }
                addChild(_levelRewardListII);
             }
@@ -81,13 +80,12 @@ package trainer.view
             if(_item3.items.length > 0)
             {
                _levelRewardListIII = ComponentFactory.Instance.creatCustomObject("trainer.currentLevel.levelRewardListIII");
-               _loc5_ = 0;
-               while(_loc5_ < _item3.items.length)
+               for(j = 0; j < _item3.items.length; )
                {
-                  _loc1_ = ItemManager.Instance.getTemplateById(int(_item3.items[_loc5_]));
-                  _loc2_ = new LevelRewardCell(_loc1_);
-                  _levelRewardListIII.addCell(_loc2_);
-                  _loc5_++;
+                  it1 = ItemManager.Instance.getTemplateById(int(_item3.items[j]));
+                  cell1 = new LevelRewardCell(it1);
+                  _levelRewardListIII.addCell(cell1);
+                  j++;
                }
                addChild(_levelRewardListIII);
             }
@@ -119,9 +117,9 @@ package trainer.view
          }
       }
       
-      private function __onListOver(param1:MouseEvent) : void
+      private function __onListOver(event:MouseEvent) : void
       {
-         addChild(param1.currentTarget as DisplayObject);
+         addChild(event.currentTarget as DisplayObject);
       }
       
       public function dispose() : void

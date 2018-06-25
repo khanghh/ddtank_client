@@ -25,38 +25,36 @@ package store
       
       override protected function onProppertiesUpdate() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var content:* = null;
          super.onProppertiesUpdate();
          _bg9Scale = ComponentFactory.Instance.creat(bg9ScalseStyle);
          addChild(_bg9Scale);
-         var _loc2_:Array = contentStyle.split(/,/g);
+         var styleArr:Array = contentStyle.split(/,/g);
          contentArr = [];
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_.length)
+         for(i = 0; i < styleArr.length; )
          {
-            _loc1_ = ComponentFactory.Instance.creat(_loc2_[_loc3_]);
-            addChild(_loc1_);
-            contentArr.push(_loc1_);
-            _loc3_++;
+            content = ComponentFactory.Instance.creat(styleArr[i]);
+            addChild(content);
+            contentArr.push(content);
+            i++;
          }
       }
       
       override public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          super.dispose();
          if(_bg9Scale)
          {
             ObjectUtils.disposeObject(_bg9Scale);
          }
          _bg9Scale = null;
-         _loc1_ = 0;
-         while(_loc1_ < contentArr.length)
+         for(i = 0; i < contentArr.length; )
          {
-            ObjectUtils.disposeObject(contentArr[_loc1_]);
-            contentArr[_loc1_] = null;
-            _loc1_++;
+            ObjectUtils.disposeObject(contentArr[i]);
+            contentArr[i] = null;
+            i++;
          }
          contentArr = null;
       }

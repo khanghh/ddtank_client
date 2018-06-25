@@ -130,11 +130,11 @@ package ddtmatch.view
          }
       }
       
-      private function checkCloseHandler(param1:DDTMatchEvent) : void
+      private function checkCloseHandler(e:DDTMatchEvent) : void
       {
       }
       
-      private function __helpBtnClickHandler(param1:MouseEvent) : void
+      private function __helpBtnClickHandler(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(!_helpframe)
@@ -167,22 +167,22 @@ package ddtmatch.view
          LayerManager.Instance.addToLayer(_helpframe,3,true,2);
       }
       
-      private function __helpFrameRespose(param1:FrameEvent) : void
+      private function __helpFrameRespose(e:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(e.responseCode == 0 || e.responseCode == 1)
          {
             SoundManager.instance.play("008");
             _helpframe.parent.removeChild(_helpframe);
          }
       }
       
-      private function __closeHelpFrame(param1:MouseEvent) : void
+      private function __closeHelpFrame(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _helpframe.parent.removeChild(_helpframe);
       }
       
-      protected function __changeHandler(param1:MouseEvent) : void
+      protected function __changeHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(!DDTMatchManager.outsideRedPacket)
@@ -195,7 +195,7 @@ package ddtmatch.view
          ObjectUtils.disposeObject(_view);
          _view = null;
          _helpBtn.visible = true;
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = event.currentTarget;
          if(_matchBtn !== _loc2_)
          {
             if(_expertBtn !== _loc2_)
@@ -231,9 +231,9 @@ package ddtmatch.view
          }
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();

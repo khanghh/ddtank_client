@@ -50,56 +50,55 @@ package login
          super();
       }
       
-      public static function creatLoginLoader(param1:String, param2:Function) : RequestLoader
+      public static function creatLoginLoader(nickname:String, callBack:Function) : RequestLoader
       {
-         var _loc11_:int = 0;
-         var _loc9_:AccountInfo = PlayerManager.Instance.Account;
-         var _loc8_:Date = new Date();
-         var _loc6_:ByteArray = new ByteArray();
-         _loc6_.writeShort(_loc8_.fullYearUTC);
-         _loc6_.writeByte(_loc8_.monthUTC + 1);
-         _loc6_.writeByte(_loc8_.dateUTC);
-         _loc6_.writeByte(_loc8_.hoursUTC);
-         _loc6_.writeByte(_loc8_.minutesUTC);
-         _loc6_.writeByte(_loc8_.secondsUTC);
-         var _loc5_:String = "";
-         _loc11_ = 0;
-         while(_loc11_ < 6)
+         var i:int = 0;
+         var acc:AccountInfo = PlayerManager.Instance.Account;
+         var date:Date = new Date();
+         var temp:ByteArray = new ByteArray();
+         temp.writeShort(date.fullYearUTC);
+         temp.writeByte(date.monthUTC + 1);
+         temp.writeByte(date.dateUTC);
+         temp.writeByte(date.hoursUTC);
+         temp.writeByte(date.minutesUTC);
+         temp.writeByte(date.secondsUTC);
+         var tempPassword:String = "";
+         for(i = 0; i < 6; )
          {
-            _loc5_ = _loc5_ + w.charAt(int(Math.random() * 26));
-            _loc11_++;
+            tempPassword = tempPassword + w.charAt(int(Math.random() * 26));
+            i++;
          }
-         _loc6_.writeUTFBytes(_loc9_.Account + "," + _loc9_.Password + "," + _loc5_ + "," + param1);
-         var _loc4_:String = CrytoUtils.rsaEncry4(_loc9_.Key,_loc6_);
-         var _loc10_:URLVariables = RequestVairableCreater.creatWidthKey(false);
-         _loc10_["p"] = _loc4_;
-         _loc10_["v"] = 5498628;
-         _loc10_["site"] = PathManager.solveConfigSite();
-         _loc10_["rid"] = PlayerManager.Instance.Self.rid;
-         var _loc3_:RequestLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("Login.ashx"),6,_loc10_);
-         _loc3_.addEventListener("loadError",__onLoadLoginError);
-         var _loc7_:LoginAnalyzer = new LoginAnalyzer(param2);
-         _loc7_.tempPassword = _loc5_;
-         _loc3_.analyzer = _loc7_;
-         return _loc3_;
+         temp.writeUTFBytes(acc.Account + "," + acc.Password + "," + tempPassword + "," + nickname);
+         var p:String = CrytoUtils.rsaEncry4(acc.Key,temp);
+         var variables:URLVariables = RequestVairableCreater.creatWidthKey(false);
+         variables["p"] = p;
+         variables["v"] = 5498628;
+         variables["site"] = PathManager.solveConfigSite();
+         variables["rid"] = PlayerManager.Instance.Self.rid;
+         var loader:RequestLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("Login.ashx"),6,variables);
+         loader.addEventListener("loadError",__onLoadLoginError);
+         var analyzer:LoginAnalyzer = new LoginAnalyzer(callBack);
+         analyzer.tempPassword = tempPassword;
+         loader.analyzer = analyzer;
+         return loader;
       }
       
-      private static function __onLoadLoginError(param1:LoaderEvent) : void
+      private static function __onLoadLoginError(event:LoaderEvent) : void
       {
          LeavePageManager.leaveToLoginPurely();
-         param1.loader.removeEventListener("loadError",__onLoadLoginError);
+         event.loader.removeEventListener("loadError",__onLoadLoginError);
       }
       
-      private static function onLoginComplete(param1:LoginAnalyzer) : void
+      private static function onLoginComplete(analyzer:LoginAnalyzer) : void
       {
-         var _loc2_:ShowCharacterLoader = new ShowCharacterLoader(PlayerManager.Instance.Self);
-         _loc2_.needMultiFrames = false;
-         _loc2_.setFactory(LayerFactory.instance);
-         _loc2_.load(onPreLoadComplete);
-         var _loc4_:BaseLightLayer = new BaseLightLayer(PlayerManager.Instance.Self.Nimbus);
-         _loc4_.load(onLayerComplete);
-         var _loc3_:SinpleLightLayer = new SinpleLightLayer(PlayerManager.Instance.Self.Nimbus);
-         _loc3_.load(onLayerComplete);
+         var perloader:ShowCharacterLoader = new ShowCharacterLoader(PlayerManager.Instance.Self);
+         perloader.needMultiFrames = false;
+         perloader.setFactory(LayerFactory.instance);
+         perloader.load(onPreLoadComplete);
+         var light:BaseLightLayer = new BaseLightLayer(PlayerManager.Instance.Self.Nimbus);
+         light.load(onLayerComplete);
+         var sinple:SinpleLightLayer = new SinpleLightLayer(PlayerManager.Instance.Self.Nimbus);
+         sinple.load(onLayerComplete);
          if(WeakGuildManager.Instance.switchUserGuide && !PlayerManager.Instance.Self.IsWeakGuildFinish(950) && !StartupResourceLoader.firstEnterHall)
          {
             StartupResourceLoader.Instance.addEventListener("userGuildResourceComplete",onUserGuildResourceComplete);
@@ -115,7 +114,7 @@ package login
          }
       }
       
-      private static function onUserGuildResourceComplete(param1:Event) : void
+      private static function onUserGuildResourceComplete(evt:Event) : void
       {
          StartupResourceLoader.Instance.removeEventListener("userGuildResourceComplete",onUserGuildResourceComplete);
          if(ServerManager.Instance.canAutoLogin())
@@ -128,14 +127,14 @@ package login
          }
       }
       
-      private static function onLayerComplete(param1:ILayer) : void
+      private static function onLayerComplete(layer:ILayer) : void
       {
-         param1.dispose();
+         layer.dispose();
       }
       
-      private static function onPreLoadComplete(param1:ShowCharacterLoader) : void
+      private static function onPreLoadComplete(loader:ShowCharacterLoader) : void
       {
-         param1.destory();
+         loader.destory();
       }
       
       override public function getType() : String
@@ -143,7 +142,7 @@ package login
          return "login";
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
          _shape = new Shape();
          _shape.graphics.beginFill(0,1);
@@ -160,9 +159,9 @@ package login
          }
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
-         super.leaving(param1);
+         super.leaving(next);
          if(_shape)
          {
             ObjectUtils.disposeObject(_shape);
@@ -170,7 +169,7 @@ package login
          _shape = null;
       }
       
-      private function __onShareAlertResponse(param1:FrameEvent) : void
+      private function __onShareAlertResponse(event:FrameEvent) : void
       {
          LoaderSavingManager.loadFilesInLocal();
          if(LoaderSavingManager.ReadShareError)
@@ -193,7 +192,7 @@ package login
          UIModuleSmallLoading.Instance.addEventListener("close",__onClose);
       }
       
-      private function __onClose(param1:Event) : void
+      private function __onClose(event:Event) : void
       {
          UIModuleLoader.Instance.removeEventListener("uiModuleComplete",__onLoginResComplete);
          UIModuleLoader.Instance.removeEventListener("uiModuleError",__onLoginResError);
@@ -201,22 +200,22 @@ package login
          UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);
       }
       
-      private function __onLoginResComplete(param1:UIModuleEvent) : void
+      private function __onLoginResComplete(evt:UIModuleEvent) : void
       {
-         var _loc2_:* = null;
-         if(param1.module == "login")
+         var chooseRoleFrame:* = null;
+         if(evt.module == "login")
          {
             UIModuleLoader.Instance.removeEventListener("uiModuleComplete",__onLoginResComplete);
             UIModuleLoader.Instance.removeEventListener("uiModuleError",__onLoginResError);
             UIModuleSmallLoading.Instance.hide();
-            _loc2_ = ComponentFactory.Instance.creatComponentByStylename("ChooseRoleFrame");
-            _loc2_.addEventListener("complete",__onChooseRoleComplete);
-            LayerManager.Instance.addToLayer(_loc2_,0,true,2);
+            chooseRoleFrame = ComponentFactory.Instance.creatComponentByStylename("ChooseRoleFrame");
+            chooseRoleFrame.addEventListener("complete",__onChooseRoleComplete);
+            LayerManager.Instance.addToLayer(chooseRoleFrame,0,true,2);
             NoviceDataManager.instance.saveNoviceData(210,PathManager.userName(),PathManager.solveRequestPath());
          }
       }
       
-      private function __onLoginResError(param1:UIModuleEvent) : void
+      private function __onLoginResError(evt:UIModuleEvent) : void
       {
          UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);
          UIModuleLoader.Instance.removeEventListener("uiModuleComplete",__onLoginResComplete);
@@ -225,15 +224,15 @@ package login
       
       private function loginCurrentRole() : void
       {
-         var _loc1_:RequestLoader = creatLoginLoader(SelectListManager.Instance.currentLoginRole.NickName,onLoginComplete);
-         LoadResourceManager.Instance.startLoad(_loc1_);
+         var loader:RequestLoader = creatLoginLoader(SelectListManager.Instance.currentLoginRole.NickName,onLoginComplete);
+         LoadResourceManager.Instance.startLoad(loader);
       }
       
-      private function __onChooseRoleComplete(param1:Event) : void
+      private function __onChooseRoleComplete(event:Event) : void
       {
-         var _loc2_:ChooseRoleFrame = param1.currentTarget as ChooseRoleFrame;
-         _loc2_.removeEventListener("complete",__onChooseRoleComplete);
-         _loc2_.dispose();
+         var chooseRoleFrame:ChooseRoleFrame = event.currentTarget as ChooseRoleFrame;
+         chooseRoleFrame.removeEventListener("complete",__onChooseRoleComplete);
+         chooseRoleFrame.dispose();
          loginCurrentRole();
       }
    }

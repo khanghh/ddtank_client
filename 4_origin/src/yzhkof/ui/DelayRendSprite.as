@@ -48,7 +48,7 @@ package yzhkof.ui
       {
       }
       
-      private function __addToStage(param1:Event) : void
+      private function __addToStage(e:Event) : void
       {
          this.upDateNextRend();
       }
@@ -62,7 +62,7 @@ package yzhkof.ui
          removeEventListener(Event.RENDER,this.__onScreenRend);
       }
       
-      private function __onScreenRend(param1:Event) : void
+      private function __onScreenRend(e:Event) : void
       {
          this.beforDraw();
          if(this._isCanceled == false)

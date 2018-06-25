@@ -43,14 +43,14 @@ package team.view.rank
          teamText9.text = LanguageMgr.GetTranslation("ddt.team.allView.text8");
       }
       
-      protected function __selectedServer(param1:Event) : void
+      protected function __selectedServer(event:Event) : void
       {
-         var _loc2_:* = null;
+         var currentRank:* = null;
          SoundManager.instance.playButtonSound();
-         if(param1.target == btn_theServer)
+         if(event.target == btn_theServer)
          {
-            _loc2_ = TeamManager.instance.model.rankList[0][_gradeIndex];
-            if(!_loc2_ || _loc2_.length <= 0)
+            currentRank = TeamManager.instance.model.rankList[0][_gradeIndex];
+            if(!currentRank || currentRank.length <= 0)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.team.noServerTeamRank"));
                btn_theServer.selected = false;
@@ -65,7 +65,7 @@ package team.view.rank
             }
             _serverIndex = 0;
          }
-         else if(param1.target == btn_crossServer)
+         else if(event.target == btn_crossServer)
          {
             btn_theServer.selected = false;
             btn_crossServer.selected = true;
@@ -85,8 +85,8 @@ package team.view.rank
          {
             _gradeIndex = PlayerManager.Instance.Self.teamDivision - 1;
          }
-         var _loc1_:Array = TeamManager.instance.model.rankList[0][_gradeIndex];
-         if(!_loc1_ || _loc1_.length <= 0)
+         var currentRank:Array = TeamManager.instance.model.rankList[0][_gradeIndex];
+         if(!currentRank || currentRank.length <= 0)
          {
             _gradeIndex = 0;
          }
@@ -99,86 +99,86 @@ package team.view.rank
          updateSlefRank();
       }
       
-      private function __listRankSelectRander(param1:int) : void
+      private function __listRankSelectRander(index:int) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         if(param1 < list_rank.array.length)
+         var item:* = null;
+         var curreItem:* = null;
+         if(index < list_rank.array.length)
          {
             if(_index <= list_rank.startIndex + list_rank.repeatY && _index >= list_rank.startIndex)
             {
-               _loc2_ = list_rank.getCell(_index) as TeamRankItem;
-               _loc2_.isClick = false;
+               item = list_rank.getCell(_index) as TeamRankItem;
+               item.isClick = false;
             }
-            if(param1 <= list_rank.startIndex + list_rank.repeatY && param1 >= list_rank.startIndex)
+            if(index <= list_rank.startIndex + list_rank.repeatY && index >= list_rank.startIndex)
             {
-               _loc3_ = list_rank.getCell(param1) as TeamRankItem;
-               _loc3_.isClick = true;
+               curreItem = list_rank.getCell(index) as TeamRankItem;
+               curreItem.isClick = true;
             }
-            if(_index == param1)
+            if(_index == index)
             {
                return;
             }
             SoundManager.instance.playButtonSound();
-            _index = param1;
+            _index = index;
             updateTeaminfo(_index);
          }
       }
       
-      private function updateTeaminfo(param1:int) : void
+      private function updateTeaminfo(index:int) : void
       {
-         teamInfoBox.updateInfo(list_rank.array[param1]);
+         teamInfoBox.updateInfo(list_rank.array[index]);
          teamInfoBox.enabled = _serverIndex == 1?false:true;
       }
       
-      private function __listLeftSelectRander(param1:int) : void
+      private function __listLeftSelectRander(index:int) : void
       {
-         var _loc3_:TeamRankLeftItem = list_left.getCell(_gradeIndex) as TeamRankLeftItem;
-         var _loc4_:TeamRankLeftItem = list_left.getCell(param1) as TeamRankLeftItem;
+         var item:TeamRankLeftItem = list_left.getCell(_gradeIndex) as TeamRankLeftItem;
+         var curreItem:TeamRankLeftItem = list_left.getCell(index) as TeamRankLeftItem;
          SoundManager.instance.playButtonSound();
-         var _loc2_:Array = TeamManager.instance.model.rankList[_serverIndex][param1];
-         if(!_loc2_ || _loc2_.length <= 0)
+         var currentRank:Array = TeamManager.instance.model.rankList[_serverIndex][index];
+         if(!currentRank || currentRank.length <= 0)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.team.noTeamRank"));
             return;
          }
-         _gradeIndex = param1;
-         _loc3_.isClick = false;
-         _loc4_.isClick = true;
+         _gradeIndex = index;
+         item.isClick = false;
+         curreItem.isClick = true;
          updateRankList();
          updateSlefRank();
       }
       
-      private function __listLeftRender(param1:Component, param2:int) : void
+      private function __listLeftRender(item:Component, index:int) : void
       {
-         var _loc3_:* = null;
-         if(param2 < list_left.length)
+         var render:* = null;
+         if(index < list_left.length)
          {
-            _loc3_ = param1 as TeamRankLeftItem;
-            _loc3_.index = param2;
+            render = item as TeamRankLeftItem;
+            render.index = index;
          }
       }
       
-      private function __listRankRender(param1:Component, param2:int) : void
+      private function __listRankRender(item:Component, index:int) : void
       {
-         var _loc3_:TeamRankItem = param1 as TeamRankItem;
-         if(param2 < list_rank.length)
+         var render:TeamRankItem = item as TeamRankItem;
+         if(index < list_rank.length)
          {
-            if(param2 == _index)
+            if(index == _index)
             {
-               _loc3_.isClick = true;
+               render.isClick = true;
             }
             else
             {
-               _loc3_.isClick = false;
+               render.isClick = false;
             }
-            _loc3_.index = param2 + 1;
-            _loc3_.updaInfo(list_rank.array[param2]);
+            render.index = index + 1;
+            render.updaInfo(list_rank.array[index]);
          }
          else
          {
-            _loc3_.isShow = false;
-            _loc3_.isClick = false;
+            render.isShow = false;
+            render.isClick = false;
          }
       }
       
@@ -192,39 +192,37 @@ package team.view.rank
       
       private function updateSlefRank() : void
       {
-         var _loc5_:* = null;
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
+         var info:* = null;
+         var i:int = 0;
+         var j:int = 0;
          label_currentRank.text = LanguageMgr.GetTranslation("tank.team.no");
          label_totolRank.text = LanguageMgr.GetTranslation("tank.team.no");
-         var _loc2_:Array = TeamManager.instance.model.rankList[0][_gradeIndex];
-         var _loc1_:Array = TeamManager.instance.model.rankList[1][_gradeIndex];
-         if(_loc2_ != null)
+         var list1:Array = TeamManager.instance.model.rankList[0][_gradeIndex];
+         var list2:Array = TeamManager.instance.model.rankList[1][_gradeIndex];
+         if(list1 != null)
          {
-            _loc4_ = 0;
-            while(_loc4_ < _loc2_.length)
+            for(i = 0; i < list1.length; )
             {
-               _loc5_ = _loc2_[_loc4_] as TeamRankInfo;
-               if(_loc5_.TeamID == PlayerManager.Instance.Self.teamID)
+               info = list1[i] as TeamRankInfo;
+               if(info.TeamID == PlayerManager.Instance.Self.teamID)
                {
-                  label_currentRank.text = String(_loc4_ + 1);
+                  label_currentRank.text = String(i + 1);
                   break;
                }
-               _loc4_++;
+               i++;
             }
          }
-         if(_loc1_ != null)
+         if(list2 != null)
          {
-            _loc3_ = 0;
-            while(_loc3_ < _loc1_.length)
+            for(j = 0; j < list2.length; )
             {
-               _loc5_ = _loc1_[_loc3_] as TeamRankInfo;
-               if(_loc5_.TeamID == PlayerManager.Instance.Self.teamID && _loc5_.FromAreaName == TeamManager.instance.model.currentAreaName)
+               info = list2[j] as TeamRankInfo;
+               if(info.TeamID == PlayerManager.Instance.Self.teamID && info.FromAreaName == TeamManager.instance.model.currentAreaName)
                {
-                  label_totolRank.text = String(_loc3_ + 1);
+                  label_totolRank.text = String(j + 1);
                   break;
                }
-               _loc3_++;
+               j++;
             }
          }
       }

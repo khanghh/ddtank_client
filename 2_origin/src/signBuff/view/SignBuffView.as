@@ -62,15 +62,15 @@ package signBuff.view
          _btnGroup.removeEventListener("change",__selectedChangeHandler);
       }
       
-      private function __selectedChangeHandler(param1:Event) : void
+      private function __selectedChangeHandler(e:Event) : void
       {
          _showView(_btnGroup.selectIndex);
       }
       
-      private function _showView(param1:int) : void
+      private function _showView(type:int) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1))
+         switch(int(type))
          {
             case 0:
                if(_signView == null)
@@ -105,10 +105,10 @@ package signBuff.view
          }
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:

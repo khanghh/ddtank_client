@@ -82,19 +82,19 @@ package fightLib.view
       
       private var _startTime:int = 0;
       
-      public function FightLibQuestionFrame(param1:int, param2:String = "", param3:int = 0, param4:int = 0, param5:int = 0, param6:String = "", param7:String = "", param8:String = "", param9:String = "", param10:int = 30)
+      public function FightLibQuestionFrame(id:int, title:String = "", hasAnswered:int = 0, needAnswer:int = 0, totalQuestion:int = 0, question:String = "", answer1:String = "", answer2:String = "", answer3:String = "", timeLimit:int = 30)
       {
          super();
-         _id = param1;
-         titleText = param2;
-         _hasAnswered = param3;
-         _needAnswer = param4;
-         _totalQuestion = param5;
-         _question = param6;
-         _answer1 = param7;
-         _answer2 = param8;
-         _answer3 = param9;
-         _timeLimit = param10 + 1;
+         _id = id;
+         titleText = title;
+         _hasAnswered = hasAnswered;
+         _needAnswer = needAnswer;
+         _totalQuestion = totalQuestion;
+         _question = question;
+         _answer1 = answer1;
+         _answer2 = answer2;
+         _answer3 = answer3;
+         _timeLimit = timeLimit + 1;
          updateInfo();
       }
       
@@ -105,10 +105,10 @@ package fightLib.view
          _answerField1.text = _answer1;
          _answerField2.text = _answer2;
          _answerField3.text = _answer3;
-         var _loc1_:Point = ComponentFactory.Instance.creatCustomObject("fightLib.Question.Time.TopRight");
+         var postion:Point = ComponentFactory.Instance.creatCustomObject("fightLib.Question.Time.TopRight");
          _timeField.text = String(_timeLimit) + LanguageMgr.GetTranslation("second");
-         _timeField.x = _loc1_.x - _timeField.width;
-         _timeField.y = _loc1_.y;
+         _timeField.x = postion.x - _timeField.width;
+         _timeField.y = postion.y;
       }
       
       private function configUI() : void
@@ -194,7 +194,7 @@ package fightLib.view
          }
       }
       
-      private function __addedToStage(param1:Event) : void
+      private function __addedToStage(evt:Event) : void
       {
          removeEventListener("addedToStage",__addedToStage);
          startupMark();
@@ -218,11 +218,11 @@ package fightLib.view
          _markStart = false;
       }
       
-      private function __enterFrame(param1:Event) : void
+      private function __enterFrame(evt:Event) : void
       {
-         var _loc2_:int = getTimer();
-         var _loc3_:int = _loc2_ - _elapsed;
-         _elapsed = _loc2_ - _startTime;
+         var now:int = getTimer();
+         var markRate:int = now - _elapsed;
+         _elapsed = now - _startTime;
          if(_elapsed >= _timeLimit * 1000)
          {
             shutdownMark();
@@ -230,7 +230,7 @@ package fightLib.view
          }
          else
          {
-            _markBlank = _markBlank + _loc3_;
+            _markBlank = _markBlank + markRate;
             if(_markBlank >= 1000)
             {
                if(_timeField)
@@ -249,7 +249,7 @@ package fightLib.view
          close();
       }
       
-      private function __selectAnswer(param1:MouseEvent) : void
+      private function __selectAnswer(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          var _loc2_:* = false;
@@ -257,11 +257,11 @@ package fightLib.view
          _loc2_ = _loc2_;
          _answerBtn2.enable = _loc2_;
          _answerBtn1.enable = _loc2_;
-         if(param1.currentTarget == _answerBtn1)
+         if(evt.currentTarget == _answerBtn1)
          {
             GameInSocketOut.sendFightLibAnswer(_id,0);
          }
-         else if(param1.currentTarget == _answerBtn2)
+         else if(evt.currentTarget == _answerBtn2)
          {
             GameInSocketOut.sendFightLibAnswer(_id,1);
          }
@@ -273,14 +273,14 @@ package fightLib.view
          close();
       }
       
-      private function __reAnswer(param1:MouseEvent) : void
+      private function __reAnswer(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          GameInSocketOut.sendFightLibReanswer();
          FightLibManager.Instance.reAnswerNum--;
       }
       
-      private function __viewTutorial(param1:MouseEvent) : void
+      private function __viewTutorial(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          FightLibControl.Instance.script.restart();

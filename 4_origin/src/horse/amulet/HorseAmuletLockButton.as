@@ -21,7 +21,7 @@ package horse.amulet
          super();
       }
       
-      override protected function __onMouseClick(param1:MouseEvent) : void
+      override protected function __onMouseClick(event:MouseEvent) : void
       {
          if(_enable)
          {
@@ -30,10 +30,10 @@ package horse.amulet
          }
       }
       
-      public function dragStart(param1:Number, param2:Number) : void
+      public function dragStart(stageX:Number, stageY:Number) : void
       {
-         var _loc3_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.beadSystem.beadInset.lockIcon");
-         DragManager.startDrag(this,this,_loc3_,param1,param2,"move",false);
+         var dragAsset:Bitmap = ComponentFactory.Instance.creatBitmap("asset.beadSystem.beadInset.lockIcon");
+         DragManager.startDrag(this,this,dragAsset,stageX,stageY,"move",false);
       }
       
       public function getSource() : IDragable
@@ -41,7 +41,7 @@ package horse.amulet
          return this;
       }
       
-      public function dragStop(param1:DragEffect) : void
+      public function dragStop(effect:DragEffect) : void
       {
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.bagLocked)
@@ -49,9 +49,9 @@ package horse.amulet
             BaglockedManager.Instance.show();
             return;
          }
-         if(param1.target is HorseAmuletCell)
+         if(effect.target is HorseAmuletCell)
          {
-            if((param1.target as HorseAmuletCell).Lock())
+            if((effect.target as HorseAmuletCell).Lock())
             {
                setTimeout(continueDrag,75);
             }

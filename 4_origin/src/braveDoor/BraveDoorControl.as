@@ -66,7 +66,7 @@ package braveDoor
          BraveDoorManager.instance.addEventListener("openBraveDoorView",openView_Handler);
       }
       
-      public function openView_Handler(param1:CEvent) : void
+      public function openView_Handler(evt:CEvent) : void
       {
          enter();
       }
@@ -86,7 +86,7 @@ package braveDoor
          StateManager.createStateAsync("braveDoorRoom",initBraveDoorView);
       }
       
-      private function initBraveDoorView(param1:CEvent) : void
+      private function initBraveDoorView(event:CEvent) : void
       {
          if(_frame != null)
          {
@@ -115,62 +115,61 @@ package braveDoor
          }
       }
       
-      private function __updateRoom(param1:CrazyTankSocketEvent) : void
+      private function __updateRoom(evt:CrazyTankSocketEvent) : void
       {
-         var _loc7_:int = 0;
-         var _loc2_:int = 0;
-         var _loc6_:* = null;
-         var _loc3_:Array = [];
-         var _loc4_:PackageIn = param1.pkg;
-         _model.roomTotal = _loc4_.readInt();
-         var _loc5_:int = _loc4_.readInt();
-         _loc7_ = 0;
-         while(_loc7_ < _loc5_)
+         var i:int = 0;
+         var id:int = 0;
+         var info:* = null;
+         var tempArray:Array = [];
+         var pkg:PackageIn = evt.pkg;
+         _model.roomTotal = pkg.readInt();
+         var len:int = pkg.readInt();
+         for(i = 0; i < len; )
          {
-            _loc2_ = _loc4_.readInt();
-            _loc6_ = _model.getRoomById(_loc2_);
-            if(_loc6_ == null)
+            id = pkg.readInt();
+            info = _model.getRoomById(id);
+            if(info == null)
             {
-               _loc6_ = new RoomInfo();
+               info = new RoomInfo();
             }
-            _loc6_.ID = _loc2_;
-            _loc6_.type = _loc4_.readByte();
-            _loc6_.timeType = _loc4_.readByte();
-            _loc6_.totalPlayer = _loc4_.readByte();
-            _loc6_.viewerCnt = _loc4_.readByte();
-            _loc6_.maxViewerCnt = _loc4_.readByte();
-            _loc6_.placeCount = _loc4_.readByte();
-            _loc6_.IsLocked = _loc4_.readBoolean();
-            _loc6_.mapId = _loc4_.readInt();
-            _loc6_.isPlaying = _loc4_.readBoolean();
-            _loc6_.Name = _loc4_.readUTF();
-            _loc6_.gameMode = _loc4_.readByte();
-            _loc6_.hardLevel = _loc4_.readByte();
-            _loc6_.levelLimits = _loc4_.readInt();
-            _loc6_.isOpenBoss = _loc4_.readBoolean();
-            if(_loc6_.type != 10)
+            info.ID = id;
+            info.type = pkg.readByte();
+            info.timeType = pkg.readByte();
+            info.totalPlayer = pkg.readByte();
+            info.viewerCnt = pkg.readByte();
+            info.maxViewerCnt = pkg.readByte();
+            info.placeCount = pkg.readByte();
+            info.IsLocked = pkg.readBoolean();
+            info.mapId = pkg.readInt();
+            info.isPlaying = pkg.readBoolean();
+            info.Name = pkg.readUTF();
+            info.gameMode = pkg.readByte();
+            info.hardLevel = pkg.readByte();
+            info.levelLimits = pkg.readInt();
+            info.isOpenBoss = pkg.readBoolean();
+            if(info.type != 10)
             {
-               _loc3_.push(_loc6_);
+               tempArray.push(info);
             }
-            _loc7_++;
+            i++;
          }
-         updateRoomInfo(_loc3_);
+         updateRoomInfo(tempArray);
       }
       
-      private function updateRoomInfo(param1:Array) : void
+      private function updateRoomInfo(tempArray:Array) : void
       {
-         _model.updateRoom(param1);
+         _model.updateRoom(tempArray);
       }
       
-      public function updateRoomMap(param1:int) : void
+      public function updateRoomMap($duplicateId:int) : void
       {
-         $duplicateId = param1;
+         $duplicateId = $duplicateId;
          this.dispatchEvent(new BraveDoorEvent("updateSelectDuplicate",$duplicateId));
       }
       
-      private function sendSetRoom(param1:int) : void
+      private function sendSetRoom(dupId:int) : void
       {
-         GameInSocketOut.sendGameRoomSetUp(param1,49,false,"","",1,0,0,false,0);
+         GameInSocketOut.sendGameRoomSetUp(dupId,49,false,"","",1,0,0,false,0);
       }
       
       protected function initEvents() : void
@@ -183,9 +182,9 @@ package braveDoor
          addEventListener("selectedDuplicate",setRoomMap);
       }
       
-      private function setRoomMap(param1:BraveDoorEvent) : void
+      private function setRoomMap(evt:BraveDoorEvent) : void
       {
-         updateRoomMap(int(param1.data));
+         updateRoomMap(int(evt.data));
       }
       
       protected function removeEvents() : void
@@ -198,9 +197,9 @@ package braveDoor
          removeEventListener("selectedDuplicate",setRoomMap);
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1 && currentRoomType == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1 && currentRoomType == 1)
          {
             SoundManager.instance.playButtonSound();
             if(_frame)
@@ -212,10 +211,10 @@ package braveDoor
          }
       }
       
-      public function lockSwitchView(param1:int) : void
+      public function lockSwitchView(type:int) : void
       {
          _isLockSwitchView = true;
-         _enterRoomType = param1;
+         _enterRoomType = type;
       }
       
       public function unLockSwitchView() : void
@@ -224,9 +223,9 @@ package braveDoor
          _enterRoomType = 0;
       }
       
-      public function switchView(param1:int) : void
+      public function switchView(type:int) : void
       {
-         _currentRoomType = param1;
+         _currentRoomType = type;
          if(_frame)
          {
             _frame.closeButton.enable = _currentRoomType == 1;

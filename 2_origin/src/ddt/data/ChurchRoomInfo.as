@@ -63,9 +63,9 @@ package ddt.data
          return _isStarted;
       }
       
-      public function set isStarted(param1:Boolean) : void
+      public function set isStarted(value:Boolean) : void
       {
-         _isStarted = param1;
+         _isStarted = value;
       }
       
       public function get valideTimes() : uint
@@ -73,9 +73,9 @@ package ddt.data
          return _validTimes;
       }
       
-      public function set valideTimes(param1:uint) : void
+      public function set valideTimes(value:uint) : void
       {
-         _validTimes = param1;
+         _validTimes = value;
          dispatchEvent(new WeddingRoomEvent("valide time change",this));
       }
       
@@ -84,9 +84,9 @@ package ddt.data
          return _currentNum;
       }
       
-      public function set currentNum(param1:uint) : void
+      public function set currentNum(value:uint) : void
       {
-         _currentNum = param1;
+         _currentNum = value;
       }
       
       public function get status() : String
@@ -94,13 +94,13 @@ package ddt.data
          return _status;
       }
       
-      public function set status(param1:String) : void
+      public function set status(value:String) : void
       {
-         if(_status == param1)
+         if(_status == value)
          {
             return;
          }
-         _status = param1;
+         _status = value;
          dispatchEvent(new WeddingRoomEvent("wedding status change",this));
       }
    }

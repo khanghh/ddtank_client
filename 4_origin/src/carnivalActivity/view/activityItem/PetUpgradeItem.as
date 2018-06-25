@@ -9,25 +9,25 @@ package carnivalActivity.view.activityItem
    {
        
       
-      public function PetUpgradeItem(param1:int, param2:GiftBagInfo, param3:int)
+      public function PetUpgradeItem(type:int, info:GiftBagInfo, index:int)
       {
-         super(param1,param2,param3);
+         super(type,info,index);
       }
       
       override public function updateView() : void
       {
-         var _loc1_:Object = WonderfulActivityManager.Instance.activityInitData[_info.activityId];
-         if(_loc1_)
+         var infoDic:Object = WonderfulActivityManager.Instance.activityInitData[_info.activityId];
+         if(infoDic)
          {
-            _giftCurInfo = _loc1_.giftInfoDic[_info.giftbagId];
-            _statusArr = _loc1_.statusArr;
+            _giftCurInfo = infoDic.giftInfoDic[_info.giftbagId];
+            _statusArr = infoDic.statusArr;
             var _loc4_:int = 0;
             var _loc3_:* = _statusArr;
-            for each(var _loc2_ in _statusArr)
+            for each(var info in _statusArr)
             {
-               if(_loc2_.statusID == _condtion)
+               if(info.statusID == _condtion)
                {
-                  _currentCondtion = _loc2_.statusValue;
+                  _currentCondtion = info.statusValue;
                   break;
                }
             }

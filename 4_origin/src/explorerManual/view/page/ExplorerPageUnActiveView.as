@@ -14,9 +14,9 @@ package explorerManual.view.page
       
       private var _unActiveItem:Bitmap;
       
-      public function ExplorerPageUnActiveView(param1:int, param2:ExplorerManualInfo, param3:ExplorerManualController)
+      public function ExplorerPageUnActiveView(chapterID:int, model:ExplorerManualInfo, ctrl:ExplorerManualController)
       {
-         super(param1,param2,param3);
+         super(chapterID,model,ctrl);
       }
       
       override protected function initView() : void
@@ -27,7 +27,7 @@ package explorerManual.view.page
          PositionUtils.setPos(_associationBtn,"explorerManual.associationBtnPos");
       }
       
-      override protected function __modelUpdateHandler(param1:Event) : void
+      override protected function __modelUpdateHandler(evt:Event) : void
       {
       }
       

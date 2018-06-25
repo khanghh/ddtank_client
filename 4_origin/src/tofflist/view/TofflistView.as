@@ -19,9 +19,9 @@ package tofflist.view
       
       private var _rightView:TofflistRightView;
       
-      public function TofflistView(param1:TofflistController)
+      public function TofflistView($contro:TofflistController)
       {
-         this._contro = param1;
+         this._contro = $contro;
          super();
          init();
       }
@@ -57,10 +57,10 @@ package tofflist.view
          TofflistModel.removeEventListener("crossServerTofflistDataChange",__crossServerTofflistDataChange);
       }
       
-      private function __crossServerTofflistDataChange(param1:TofflistEvent) : void
+      private function __crossServerTofflistDataChange(evt:TofflistEvent) : void
       {
-         _rightView.updateTime(param1.data.data.lastUpdateTime);
-         var _loc2_:String = param1.data.flag;
+         _rightView.updateTime(evt.data.data.lastUpdateTime);
+         var _loc2_:String = evt.data.flag;
          if("individualMountsaccumulate" !== _loc2_)
          {
             if("individualGradeDay" !== _loc2_)
@@ -242,10 +242,10 @@ package tofflist.view
          }
       }
       
-      private function __tofflistDataChange(param1:TofflistEvent) : void
+      private function __tofflistDataChange(evt:TofflistEvent) : void
       {
-         _rightView.updateTime(param1.data.data.lastUpdateTime);
-         var _loc2_:String = param1.data.flag;
+         _rightView.updateTime(evt.data.data.lastUpdateTime);
+         var _loc2_:String = evt.data.flag;
          if("individualGradeDay" !== _loc2_)
          {
             if("individualgradeWeek" !== _loc2_)

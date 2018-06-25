@@ -43,25 +43,25 @@ package petsBag.petsAdvanced
       
       private function initView() : void
       {
-         var _loc1_:InventoryItemInfo = new InventoryItemInfo();
+         var info:InventoryItemInfo = new InventoryItemInfo();
          switch(int(PetsAdvancedControl.Instance.currentViewType) - 1)
          {
             case 0:
-               _loc1_.TemplateID = 11162;
+               info.TemplateID = 11162;
                break;
             case 1:
-               _loc1_.TemplateID = 11163;
+               info.TemplateID = 11163;
                break;
             default:
-               _loc1_.TemplateID = 11163;
+               info.TemplateID = 11163;
                break;
             case 3:
-               _loc1_.TemplateID = 201567;
+               info.TemplateID = 201567;
          }
-         _loc1_ = ItemManager.fill(_loc1_);
-         _loc1_.BindType = 4;
+         info = ItemManager.fill(info);
+         info.BindType = 4;
          _bagCell = new BagCell(0);
-         _bagCell.info = _loc1_;
+         _bagCell.info = info;
          _bagCell.setBgVisible(false);
          var _loc2_:int = 6;
          _bagCell.y = _loc2_;
@@ -73,11 +73,11 @@ package petsBag.petsAdvanced
          _buyBtn.visible = false;
       }
       
-      public function set info(param1:InventoryItemInfo) : void
+      public function set info(value:InventoryItemInfo) : void
       {
-         param1 = ItemManager.fill(param1);
-         param1.BindType = 4;
-         _bagCell.info = param1;
+         value = ItemManager.fill(value);
+         value.BindType = 4;
+         _bagCell.info = value;
          _bagCell.PicPos = new Point(9,9);
          updateCount();
       }
@@ -104,8 +104,8 @@ package petsBag.petsAdvanced
       
       public function updateCount() : void
       {
-         var _loc1_:BagInfo = PlayerManager.Instance.Self.getBag(1);
-         _count = _loc1_.getItemCountByTemplateId(_bagCell.info.TemplateID);
+         var bagInfo:BagInfo = PlayerManager.Instance.Self.getBag(1);
+         _count = bagInfo.getItemCountByTemplateId(_bagCell.info.TemplateID);
          _bagCell.setCount(_count);
          _bagCell.refreshTbxPos();
          dispatchEvent(new Event("pac_updated"));
@@ -119,38 +119,38 @@ package petsBag.petsAdvanced
          PlayerManager.Instance.Self.PropBag.addEventListener("update",__updateBag);
       }
       
-      protected function __updateBag(param1:BagEvent) : void
+      protected function __updateBag(event:BagEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:BagInfo = param1.target as BagInfo;
-         var _loc5_:Dictionary = param1.changedSlots;
+         var info:* = null;
+         var bag:BagInfo = event.target as BagInfo;
+         var changes:Dictionary = event.changedSlots;
          var _loc7_:int = 0;
-         var _loc6_:* = _loc5_;
-         for each(var _loc4_ in _loc5_)
+         var _loc6_:* = changes;
+         for each(var i in changes)
          {
-            _loc3_ = _loc2_.getItemAt(_loc4_.Place);
-            if(_loc3_ && (_loc3_.TemplateID == 11162 || _loc3_.TemplateID == 11163 || _loc3_.TemplateID == 11167 || _loc3_.TemplateID == 201567))
+            info = bag.getItemAt(i.Place);
+            if(info && (info.TemplateID == 11162 || info.TemplateID == 11163 || info.TemplateID == 11167 || info.TemplateID == 201567))
             {
                updateCount();
             }
-            else if(_loc3_)
+            else if(info)
             {
                updateCount();
             }
          }
       }
       
-      protected function __outHandler(param1:MouseEvent) : void
+      protected function __outHandler(event:MouseEvent) : void
       {
          _buyBtn.visible = false;
       }
       
-      protected function __overHandler(param1:MouseEvent) : void
+      protected function __overHandler(event:MouseEvent) : void
       {
          _buyBtn.visible = true;
       }
       
-      protected function __buyHandler(param1:MouseEvent) : void
+      protected function __buyHandler(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.bagLocked)
@@ -158,10 +158,10 @@ package petsBag.petsAdvanced
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:ShopItemInfo = ShopManager.Instance.getShopItemByGoodsID(int(_bagCell.info.TemplateID + "01"));
-         var _loc3_:QuickBuyAlertBase = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickBuyAlert");
-         _loc3_.setData(_loc2_.TemplateID,_loc2_.GoodsID,_loc2_.AValue1);
-         LayerManager.Instance.addToLayer(_loc3_,3,true,1);
+         var shopInfo:ShopItemInfo = ShopManager.Instance.getShopItemByGoodsID(int(_bagCell.info.TemplateID + "01"));
+         var quickBuyFrame:QuickBuyAlertBase = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickBuyAlert");
+         quickBuyFrame.setData(shopInfo.TemplateID,shopInfo.GoodsID,shopInfo.AValue1);
+         LayerManager.Instance.addToLayer(quickBuyFrame,3,true,1);
       }
       
       private function removeEvent() : void
@@ -177,9 +177,9 @@ package petsBag.petsAdvanced
          return _buyBtn;
       }
       
-      public function set buyBtn(param1:SimpleBitmapButton) : void
+      public function set buyBtn(value:SimpleBitmapButton) : void
       {
-         _buyBtn = param1;
+         _buyBtn = value;
       }
       
       public function dispose() : void

@@ -16,49 +16,49 @@ package dragonBones.objects
       
       public function dispose() : void
       {
-         var _loc1_:int = _slotDataList.length;
+         var i:int = _slotDataList.length;
          while(true)
          {
-            _loc1_--;
-            if(!_loc1_)
+            i--;
+            if(!i)
             {
                break;
             }
-            _slotDataList[_loc1_].dispose();
+            _slotDataList[i].dispose();
          }
          _slotDataList.fixed = false;
          _slotDataList.length = 0;
          _slotDataList = null;
       }
       
-      public function getSlotData(param1:String) : SlotData
+      public function getSlotData(slotName:String) : SlotData
       {
-         var _loc2_:int = _slotDataList.length;
+         var i:int = _slotDataList.length;
          while(true)
          {
-            _loc2_--;
-            if(!_loc2_)
+            i--;
+            if(!i)
             {
                break;
             }
-            if(_slotDataList[_loc2_].name == param1)
+            if(_slotDataList[i].name == slotName)
             {
-               return _slotDataList[_loc2_];
+               return _slotDataList[i];
             }
          }
          return null;
       }
       
-      public function addSlotData(param1:SlotData) : void
+      public function addSlotData(slotData:SlotData) : void
       {
-         if(!param1)
+         if(!slotData)
          {
             throw new ArgumentError();
          }
-         if(_slotDataList.indexOf(param1) < 0)
+         if(_slotDataList.indexOf(slotData) < 0)
          {
             _slotDataList.fixed = false;
-            _slotDataList[_slotDataList.length] = param1;
+            _slotDataList[_slotDataList.length] = slotData;
             _slotDataList.fixed = true;
             return;
          }

@@ -37,7 +37,7 @@ package gypsyShop.ctrl
       
       private var _gypsyShopFrameIsShowing:Boolean;
       
-      public function GypsyShopManager(param1:inner)
+      public function GypsyShopManager(single:inner)
       {
          super();
          _npcBehavior = new GypsyNPCAdapter(null);
@@ -52,11 +52,11 @@ package gypsyShop.ctrl
          return instance;
       }
       
-      public function init(param1:HallStateView) : void
+      public function init($hall:HallStateView) : void
       {
-         var _loc2_:GypsyNPCBhvr = new GypsyNPCBhvr(null);
-         _loc2_.hallView = param1;
-         npcBehavior = _loc2_;
+         var behavior:GypsyNPCBhvr = new GypsyNPCBhvr(null);
+         behavior.hallView = $hall;
+         npcBehavior = behavior;
       }
       
       public function setup() : void
@@ -81,59 +81,59 @@ package gypsyShop.ctrl
          _gypsyShopFrameIsShowing = true;
       }
       
-      public function isAvatarActivated(param1:int) : Boolean
+      public function isAvatarActivated(templeteID:int) : Boolean
       {
-         var _loc3_:Array = AvatarCollectionManager.instance.maleUnitList;
-         var _loc10_:Array = AvatarCollectionManager.instance.femaleUnitList;
-         var _loc11_:Array = AvatarCollectionManager.instance.weaponUnitList;
+         var listMale:Array = AvatarCollectionManager.instance.maleUnitList;
+         var listFemale:Array = AvatarCollectionManager.instance.femaleUnitList;
+         var listWeapon:Array = AvatarCollectionManager.instance.weaponUnitList;
          var _loc16_:int = 0;
-         var _loc15_:* = _loc3_;
-         for each(var _loc8_ in _loc3_)
+         var _loc15_:* = listMale;
+         for each(var vMale in listMale)
          {
             var _loc14_:int = 0;
-            var _loc13_:* = _loc8_.totalItemList;
-            for each(var _loc2_ in _loc8_.totalItemList)
+            var _loc13_:* = vMale.totalItemList;
+            for each(var voM in vMale.totalItemList)
             {
-               if(_loc2_.itemInfo.TemplateID == param1)
+               if(voM.itemInfo.TemplateID == templeteID)
                {
-                  return _loc2_.isActivity;
+                  return voM.isActivity;
                }
             }
          }
          var _loc20_:int = 0;
-         var _loc19_:* = _loc10_;
-         for each(var _loc6_ in _loc10_)
+         var _loc19_:* = listFemale;
+         for each(var vFemale in listFemale)
          {
             var _loc18_:int = 0;
-            var _loc17_:* = _loc6_.totalItemList;
-            for each(var _loc9_ in _loc6_.totalItemList)
+            var _loc17_:* = vFemale.totalItemList;
+            for each(var voF in vFemale.totalItemList)
             {
-               if(_loc9_.itemInfo.TemplateID == param1)
+               if(voF.itemInfo.TemplateID == templeteID)
                {
-                  return _loc9_.isActivity;
+                  return voF.isActivity;
                }
             }
          }
          var _loc24_:int = 0;
-         var _loc23_:* = _loc11_;
-         for each(var _loc12_ in _loc11_)
+         var _loc23_:* = listWeapon;
+         for each(var vWeapon in listWeapon)
          {
             var _loc22_:int = 0;
-            var _loc21_:* = _loc12_.totalItemList;
-            for each(var _loc7_ in _loc12_.totalItemList)
+            var _loc21_:* = vWeapon.totalItemList;
+            for each(var voW in vWeapon.totalItemList)
             {
-               if(_loc7_.itemInfo.TemplateID == param1)
+               if(voW.itemInfo.TemplateID == templeteID)
                {
-                  return _loc7_.isActivity;
+                  return voW.isActivity;
                }
             }
          }
-         var _loc4_:DictionaryData = PlayerManager.Instance.Self.Bag.items;
+         var items:DictionaryData = PlayerManager.Instance.Self.Bag.items;
          var _loc26_:int = 0;
-         var _loc25_:* = _loc4_;
-         for each(var _loc5_ in _loc4_)
+         var _loc25_:* = items;
+         for each(var item in items)
          {
-            if(_loc5_.TemplateID == param1)
+            if(item.TemplateID == templeteID)
             {
                return true;
             }
@@ -185,7 +185,7 @@ package gypsyShop.ctrl
          dispatchEvent(new GypsyShopEvent("gyps_buy_result"));
       }
       
-      public function itemBuyBtnClicked(param1:int) : void
+      public function itemBuyBtnClicked(id:int) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -193,27 +193,27 @@ package gypsyShop.ctrl
             BaglockedManager.Instance.show();
             return;
          }
-         if(GypsyPurchaseModel.getInstance().getUseBind() && !GypsyPurchaseModel.getInstance().isBindMoneyEnough(param1))
+         if(GypsyPurchaseModel.getInstance().getUseBind() && !GypsyPurchaseModel.getInstance().isBindMoneyEnough(id))
          {
             GypsyPurchaseModel.getInstance().updateShowAlertRmbTicketBuy(true);
          }
-         else if(!GypsyPurchaseModel.getInstance().getUseBind() && !GypsyPurchaseModel.getInstance().isMoneyEnough(param1))
+         else if(!GypsyPurchaseModel.getInstance().getUseBind() && !GypsyPurchaseModel.getInstance().isMoneyEnough(id))
          {
             GypsyPurchaseModel.getInstance().updateShowAlertRmbTicketBuy(true);
          }
          if(GypsyPurchaseModel.getInstance().isShowRmbTicketBuyAgain())
          {
-            dispatchEvent(new GypsyShopEvent("gyps_money_needed",param1));
+            dispatchEvent(new GypsyShopEvent("gyps_money_needed",id));
          }
          else
          {
-            confirmToBuy(param1);
+            confirmToBuy(id);
          }
       }
       
-      public function confirmToBuy(param1:int) : void
+      public function confirmToBuy(id:int) : void
       {
-         _modelShop.requestBuyItem(param1);
+         _modelShop.requestBuyItem(id);
       }
       
       public function refreshBtnClicked() : void
@@ -277,9 +277,9 @@ package gypsyShop.ctrl
          _npcBehavior.dispose();
       }
       
-      public function set npcBehavior(param1:IGypsyNPCBehavior) : void
+      public function set npcBehavior(value:IGypsyNPCBehavior) : void
       {
-         _npcBehavior = param1;
+         _npcBehavior = value;
       }
       
       public function get npcBehavior() : IGypsyNPCBehavior

@@ -25,27 +25,27 @@ package nationDay.view
       
       private var _resPath:String;
       
-      public function NationDayWord(param1:String, param2:int, param3:int)
+      public function NationDayWord(res:String, type:int, num:int)
       {
          super();
-         _resPath = param1;
-         _wordType = param2;
-         _wordCount = param3;
+         _resPath = res;
+         _wordType = type;
+         _wordCount = num;
          loadWord();
       }
       
       private function loadWord() : void
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.SITE_MAIN + "image\\writing\\" + _resPath + "\\icon.png?rnd=" + new Date().time.toString(),0);
-         _loc1_.addEventListener("complete",__onLoadComplete);
-         LoadResourceManager.Instance.startLoad(_loc1_,true);
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.SITE_MAIN + "image\\writing\\" + _resPath + "\\icon.png?rnd=" + new Date().time.toString(),0);
+         loader.addEventListener("complete",__onLoadComplete);
+         LoadResourceManager.Instance.startLoad(loader,true);
       }
       
-      protected function __onLoadComplete(param1:LoaderEvent) : void
+      protected function __onLoadComplete(event:LoaderEvent) : void
       {
-         var _loc2_:BaseLoader = param1.loader;
-         _loc2_.removeEventListener("complete",__onLoadComplete);
-         _word = _loc2_.content as Bitmap;
+         var loader:BaseLoader = event.loader;
+         loader.removeEventListener("complete",__onLoadComplete);
+         _word = loader.content as Bitmap;
          var _loc3_:* = 0.5;
          _word.scaleY = _loc3_;
          _word.scaleX = _loc3_;
@@ -55,9 +55,9 @@ package nationDay.view
          updateWordNum(_wordCount);
       }
       
-      public function updateWordNum(param1:int) : void
+      public function updateWordNum(num:int) : void
       {
-         _wordCount = param1;
+         _wordCount = num;
          if(_wordNum)
          {
             _wordNum.text = _wordCount.toString();

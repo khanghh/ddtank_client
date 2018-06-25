@@ -40,9 +40,9 @@ package battleSkill
       
       public var curUpSkillId:int;
       
-      public function BattleSkillManager(param1:IEventDispatcher = null)
+      public function BattleSkillManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : BattleSkillManager
@@ -102,29 +102,25 @@ package battleSkill
          initEvent();
       }
       
-      public function loadTempleResource(param1:Function) : void
+      public function loadTempleResource(callBack:Function) : void
       {
-         callBack = param1;
+         callBack = callBack;
          if(_skillTemplateList != null && _skillUpdateTempList != null)
          {
+            callBack();
             return;
-            §§push(callBack());
          }
-         else
+         new HelperDataModuleLoad().loadDataModule([LoaderCreate.Instance.createBattleSkillUpdateTemplate],function():*
          {
-            new HelperDataModuleLoad().loadDataModule([LoaderCreate.Instance.createBattleSkillUpdateTemplate],function():*
+            var /*UnknownSlot*/:* = function():void
             {
-               var /*UnknownSlot*/:* = function():void
-               {
-                  skillSort();
-               };
-               return function():void
-               {
-                  skillSort();
-               };
-            }());
-            return;
-         }
+               skillSort();
+            };
+            return function():void
+            {
+               skillSort();
+            };
+         }());
       }
       
       private function initEvent() : void
@@ -134,105 +130,104 @@ package battleSkill
          SocketManager.Instance.addEventListener(PkgEvent.format(132,7),bringBattleSkill_Handler);
       }
       
-      private function battleSkillInfo_Handler(param1:PkgEvent) : void
+      private function battleSkillInfo_Handler(evt:PkgEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc3_:int = 0;
-         var _loc6_:int = 0;
+         var skillId:int = 0;
+         var skillPlace:int = 0;
+         var i:int = 0;
          clearSkillCacheData();
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc4_.readInt();
-         _loc6_ = 0;
-         while(_loc6_ < _loc2_)
+         var pkg:PackageIn = evt.pkg;
+         var skillNum:int = pkg.readInt();
+         for(i = 0; i < skillNum; )
          {
-            _loc5_ = _loc4_.readInt();
-            _loc3_ = _loc4_.readInt();
-            _activatedSkillList.push(_loc5_);
-            if(_loc3_ > 0)
+            skillId = pkg.readInt();
+            skillPlace = pkg.readInt();
+            _activatedSkillList.push(skillId);
+            if(skillPlace > 0)
             {
-               _bringSkillList[_loc3_] = _loc5_;
+               _bringSkillList[skillPlace] = skillId;
             }
-            _loc6_++;
+            i++;
          }
          dispatchEvent(new BattleSkillEvent(BattleSkillEvent.BATTLESKILL_INFO));
       }
       
-      private function updateBattleSkill_Handler(param1:PkgEvent) : void
+      private function updateBattleSkill_Handler(evt:PkgEvent) : void
       {
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc5_:int = _loc4_.readInt();
-         var _loc2_:int = _activatedSkillList.indexOf(_loc5_);
-         if(_loc2_ != -1)
+         var pkg:PackageIn = evt.pkg;
+         var skillId:int = pkg.readInt();
+         var index:int = _activatedSkillList.indexOf(skillId);
+         if(index != -1)
          {
-            _activatedSkillList.splice(_loc2_,1);
+            _activatedSkillList.splice(index,1);
          }
-         _activatedSkillList.push(_loc5_);
+         _activatedSkillList.push(skillId);
          var _loc7_:int = 0;
          var _loc6_:* = _bringSkillList;
-         for(var _loc3_ in _bringSkillList)
+         for(var p in _bringSkillList)
          {
-            if(_bringSkillList[_loc3_] == curUpSkillId)
+            if(_bringSkillList[p] == curUpSkillId)
             {
-               _bringSkillList[_loc3_] = _loc5_;
+               _bringSkillList[p] = skillId;
                break;
             }
          }
-         dispatchEvent(new BattleSkillEvent(BattleSkillEvent.UPDATE_SKILL,_loc5_));
+         dispatchEvent(new BattleSkillEvent(BattleSkillEvent.UPDATE_SKILL,skillId));
       }
       
-      private function bringBattleSkill_Handler(param1:PkgEvent) : void
+      private function bringBattleSkill_Handler(evt:PkgEvent) : void
       {
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:Array = [];
-         var _loc5_:int = _loc4_.readInt();
-         var _loc6_:int = _loc4_.readInt();
-         _loc2_.push(_loc5_);
-         _loc2_.push(_loc6_);
-         if(_loc6_ == 0)
+         var pkg:PackageIn = evt.pkg;
+         var skillArr:Array = [];
+         var skillId:int = pkg.readInt();
+         var place:int = pkg.readInt();
+         skillArr.push(skillId);
+         skillArr.push(place);
+         if(place == 0)
          {
             var _loc8_:int = 0;
             var _loc7_:* = _bringSkillList;
-            for(var _loc3_ in _bringSkillList)
+            for(var p in _bringSkillList)
             {
-               if(_bringSkillList[_loc3_] == _loc5_)
+               if(_bringSkillList[p] == skillId)
                {
-                  _bringSkillList[_loc3_] = 0;
+                  _bringSkillList[p] = 0;
                   break;
                }
             }
          }
          else
          {
-            _bringSkillList[_loc6_] = _loc5_;
+            _bringSkillList[place] = skillId;
          }
-         dispatchEvent(new BattleSkillEvent(BattleSkillEvent.BRIGHT_SKILL,_loc2_));
+         dispatchEvent(new BattleSkillEvent(BattleSkillEvent.BRIGHT_SKILL,skillArr));
       }
       
-      public function isEquipFull(param1:int) : int
+      public function isEquipFull(skillId:int) : int
       {
-         var _loc2_:int = !!isInitiaveSkill(param1)?1:4;
-         var _loc4_:int = _loc2_ + 2;
-         var _loc3_:* = 0;
-         _loc2_;
-         while(_loc2_ <= _loc4_)
+         var starIndex:int = !!isInitiaveSkill(skillId)?1:4;
+         var endIndex:int = starIndex + 2;
+         var newPlace:* = 0;
+         starIndex;
+         while(starIndex <= endIndex)
          {
-            if(_bringSkillList[_loc2_] <= 0)
+            if(_bringSkillList[starIndex] <= 0)
             {
-               _loc3_ = _loc2_;
+               newPlace = starIndex;
                break;
             }
-            _loc2_++;
+            starIndex++;
          }
-         return _loc3_;
+         return newPlace;
       }
       
-      public function isSkillHasEquip(param1:int) : Boolean
+      public function isSkillHasEquip(skillId:int) : Boolean
       {
          var _loc4_:int = 0;
          var _loc3_:* = _bringSkillList;
-         for(var _loc2_ in _bringSkillList)
+         for(var place in _bringSkillList)
          {
-            if(_bringSkillList[_loc2_] == param1)
+            if(_bringSkillList[place] == skillId)
             {
                return true;
             }
@@ -247,18 +242,17 @@ package battleSkill
       
       public function get curUseSkillList() : DictionaryData
       {
-         var _loc2_:int = 0;
-         var _loc1_:DictionaryData = new DictionaryData();
+         var i:int = 0;
+         var dic:DictionaryData = new DictionaryData();
          if(_bringSkillList)
          {
-            _loc2_ = 1;
-            while(_loc2_ <= 3)
+            for(i = 1; i <= 3; )
             {
-               _loc1_[_loc2_] = _bringSkillList[_loc2_];
-               _loc2_++;
+               dic[i] = _bringSkillList[i];
+               i++;
             }
          }
-         return _loc1_;
+         return dic;
       }
       
       public function getActivatedSkillArr() : Array
@@ -266,39 +260,38 @@ package battleSkill
          return _activatedSkillList;
       }
       
-      public function getBattleSKillInfoBySkillID(param1:int) : BattleSkillSkillInfo
+      public function getBattleSKillInfoBySkillID(skillId:int) : BattleSkillSkillInfo
       {
-         var _loc2_:Array = _initiativeSkillList.concat(_passiveSkillList);
+         var allSkill:Array = _initiativeSkillList.concat(_passiveSkillList);
          var _loc5_:int = 0;
-         var _loc4_:* = _loc2_;
-         for each(var _loc3_ in _loc2_)
+         var _loc4_:* = allSkill;
+         for each(var info in allSkill)
          {
-            if(_loc3_.SkillID == param1)
+            if(info.SkillID == skillId)
             {
-               return _loc3_;
+               return info;
             }
          }
          return null;
       }
       
-      public function isActivateBySkillID(param1:int) : Boolean
+      public function isActivateBySkillID(skillId:int) : Boolean
       {
-         return _activatedSkillList.indexOf(param1) != -1;
+         return _activatedSkillList.indexOf(skillId) != -1;
       }
       
-      public function getActivateSkillInfoByType(param1:int) : BattleSkillSkillInfo
+      public function getActivateSkillInfoByType(type:int) : BattleSkillSkillInfo
       {
-         var _loc3_:* = null;
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _activatedSkillList.length)
+         var info:* = null;
+         var i:int = 0;
+         for(i = 0; i < _activatedSkillList.length; )
          {
-            _loc3_ = getBattleSKillInfoBySkillID(_activatedSkillList[_loc2_]);
-            if(_loc3_.Type == param1)
+            info = getBattleSKillInfoBySkillID(_activatedSkillList[i]);
+            if(info.Type == type)
             {
-               return _loc3_;
+               return info;
             }
-            _loc2_++;
+            i++;
          }
          return null;
       }
@@ -321,47 +314,47 @@ package battleSkill
          return _passiveSkillList;
       }
       
-      public function loadSkillTemplateList(param1:BattleSkillSkillTemplateAnalyzer) : void
+      public function loadSkillTemplateList(anlyzer:BattleSkillSkillTemplateAnalyzer) : void
       {
-         _skillTemplateList = param1.list;
+         _skillTemplateList = anlyzer.list;
          skillSort();
       }
       
-      public function loadSkillUpdateTemplateList(param1:BattleSKillUpdateTemplateAnalyzer) : void
+      public function loadSkillUpdateTemplateList(anlyzer:BattleSKillUpdateTemplateAnalyzer) : void
       {
-         _skillUpdateTempList = param1.list;
+         _skillUpdateTempList = anlyzer.list;
       }
       
-      public function getUpMaterialArr(param1:int) : BattleSkillUpdateInfo
+      public function getUpMaterialArr(skillId:int) : BattleSkillUpdateInfo
       {
-         var _loc3_:* = null;
+         var info:* = null;
          var _loc5_:int = 0;
          var _loc4_:* = _skillUpdateTempList;
-         for each(var _loc2_ in _skillUpdateTempList)
+         for each(var upInfo in _skillUpdateTempList)
          {
-            if(_loc2_.SkillID == param1)
+            if(upInfo.SkillID == skillId)
             {
-               _loc3_ = _loc2_;
+               info = upInfo;
                break;
             }
          }
-         return _loc3_;
+         return info;
       }
       
-      public function getNextlevelSkillInfo(param1:int) : BattleSkillSkillInfo
+      public function getNextlevelSkillInfo(skillId:int) : BattleSkillSkillInfo
       {
-         var _loc2_:* = null;
-         var _loc4_:BattleSkillSkillInfo = getBattleSKillInfoBySkillID(param1);
+         var tempInfo:* = null;
+         var skillInfo:BattleSkillSkillInfo = getBattleSKillInfoBySkillID(skillId);
          var _loc6_:int = 0;
          var _loc5_:* = _skillTemplateList;
-         for each(var _loc3_ in _skillTemplateList)
+         for each(var info in _skillTemplateList)
          {
-            if(_loc4_.NextID == _loc3_.SkillID)
+            if(skillInfo.NextID == info.SkillID)
             {
-               _loc2_ = _loc3_;
+               tempInfo = info;
             }
          }
-         return _loc2_;
+         return tempInfo;
       }
       
       private function skillSort() : void
@@ -378,58 +371,57 @@ package battleSkill
          {
             _passiveSkillList = [];
          }
-         var _loc1_:Array = ServerConfigManager.instance.getBattleSkillDefaultActivate();
+         var sortArr:Array = ServerConfigManager.instance.getBattleSkillDefaultActivate();
          var _loc4_:int = 0;
          var _loc3_:* = _skillTemplateList;
-         for each(var _loc2_ in _skillTemplateList)
+         for each(var info in _skillTemplateList)
          {
-            if(isInitiaveSkill(_loc2_.SkillID))
+            if(isInitiaveSkill(info.SkillID))
             {
-               if(_loc1_.indexOf(_loc2_.SkillID.toString()) == -1)
+               if(sortArr.indexOf(info.SkillID.toString()) == -1)
                {
-                  _initiativeSkillList.push(_loc2_);
+                  _initiativeSkillList.push(info);
                }
                else
                {
-                  _initiativeSkillList.unshift(_loc2_);
+                  _initiativeSkillList.unshift(info);
                }
             }
-            else if(isPassivitySkill(_loc2_.SkillID))
+            else if(isPassivitySkill(info.SkillID))
             {
-               _passiveSkillList.push(_loc2_);
+               _passiveSkillList.push(info);
             }
          }
       }
       
       private function clearSkillCacheData() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _activatedSkillList = [];
          _bringSkillList = new Dictionary();
-         _loc1_ = 1;
-         while(_loc1_ <= 6)
+         for(i = 1; i <= 6; )
          {
-            _bringSkillList[_loc1_] = 0;
-            _loc1_++;
+            _bringSkillList[i] = 0;
+            i++;
          }
       }
       
-      private function isInitiaveSkill(param1:int) : Boolean
+      private function isInitiaveSkill(skillId:int) : Boolean
       {
-         var _loc2_:HorseSkillVo = HorseManager.instance.getHorseSkillInfoById(param1);
-         return _loc2_ && _loc2_.Probability == -1;
+         var horseSkillInfo:HorseSkillVo = HorseManager.instance.getHorseSkillInfoById(skillId);
+         return horseSkillInfo && horseSkillInfo.Probability == -1;
       }
       
-      private function isPassivitySkill(param1:int) : Boolean
+      private function isPassivitySkill(skillId:int) : Boolean
       {
-         var _loc2_:HorseSkillVo = HorseManager.instance.getHorseSkillInfoById(param1);
-         return _loc2_ && _loc2_.Probability == 10000;
+         var horseSkillInfo:HorseSkillVo = HorseManager.instance.getHorseSkillInfoById(skillId);
+         return horseSkillInfo && horseSkillInfo.Probability == 10000;
       }
       
-      public function sendUpSkill(param1:int) : void
+      public function sendUpSkill(skillId:int) : void
       {
-         curUpSkillId = param1;
-         GameInSocketOut.sendUpdateBattleSkill(param1);
+         curUpSkillId = skillId;
+         GameInSocketOut.sendUpdateBattleSkill(skillId);
       }
    }
 }

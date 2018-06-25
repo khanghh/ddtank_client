@@ -34,14 +34,14 @@ package invite
          InviteManager.Instance.addEventListener("clearResponseInviteFrame",__clearResponseInviteFrameHandler);
       }
       
-      private function __showResponseInviteFrameHandler(param1:CEvent) : void
+      private function __showResponseInviteFrameHandler(event:CEvent) : void
       {
-         var _loc3_:InviteInfo = param1.data as InviteInfo;
-         var _loc2_:ResponseInviteFrame = ResponseInviteFrame.newInvite(_loc3_);
-         _loc2_.show();
+         var info:InviteInfo = event.data as InviteInfo;
+         var response:ResponseInviteFrame = ResponseInviteFrame.newInvite(info);
+         response.show();
       }
       
-      private function __clearResponseInviteFrameHandler(param1:CEvent) : void
+      private function __clearResponseInviteFrameHandler(event:CEvent) : void
       {
          ResponseInviteFrame.clearInviteFrame();
       }
@@ -51,13 +51,13 @@ package invite
          return _enabled;
       }
       
-      public function set enabled(param1:Boolean) : void
+      public function set enabled(value:Boolean) : void
       {
-         if(_enabled == param1)
+         if(_enabled == value)
          {
             return;
          }
-         _enabled = param1;
+         _enabled = value;
       }
       
       public function clearResponseInviteFrame() : void
@@ -65,9 +65,9 @@ package invite
          dispatchEvent(new CEvent("clearResponseInviteFrame"));
       }
       
-      public function showResponseInviteFrame(param1:InviteInfo) : void
+      public function showResponseInviteFrame(info:InviteInfo) : void
       {
-         _inviteFrameInfo = param1;
+         _inviteFrameInfo = info;
          dispatchEvent(new CEvent("showResponseInviteFrame",_inviteFrameInfo));
       }
    }

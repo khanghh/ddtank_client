@@ -45,12 +45,12 @@ package groupPurchase.view
       
       private function initView() : void
       {
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,75,75);
-         _loc1_.graphics.endFill();
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(16777215,0);
+         sp.graphics.drawRect(0,0,75,75);
+         sp.graphics.endFill();
          _shopItemId = GroupPurchaseManager.instance.itemId;
-         _itemCell = new BagCell(1,ItemManager.Instance.getTemplateById(_shopItemId),true,_loc1_,false);
+         _itemCell = new BagCell(1,ItemManager.Instance.getTemplateById(_shopItemId),true,sp,false);
          addChild(_itemCell);
          _buyTipBg = ComponentFactory.Instance.creatBitmap("asset.groupPurchase.itemBuyTipBg");
          _buyTipTxt = ComponentFactory.Instance.creatComponentByStylename("groupPurchase.buyTipTxt");
@@ -73,7 +73,7 @@ package groupPurchase.view
          this.addEventListener("click",clickHandler,false,0,true);
       }
       
-      private function clickHandler(param1:MouseEvent) : void
+      private function clickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -81,20 +81,20 @@ package groupPurchase.view
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc4_:GroupPurchaseQuickBuyFrame = ComponentFactory.Instance.creatComponentByStylename("groupPurchase.QuickFrame");
-         _loc4_.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
-         _loc4_.itemID = _shopItemId;
-         var _loc2_:Boolean = GroupPurchaseManager.instance.isUseMoney;
-         var _loc3_:Boolean = GroupPurchaseManager.instance.isUseBandMoney;
-         if(_loc2_ && !_loc3_)
+         var _quick:GroupPurchaseQuickBuyFrame = ComponentFactory.Instance.creatComponentByStylename("groupPurchase.QuickFrame");
+         _quick.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
+         _quick.itemID = _shopItemId;
+         var isMoney:Boolean = GroupPurchaseManager.instance.isUseMoney;
+         var isBandMoney:Boolean = GroupPurchaseManager.instance.isUseBandMoney;
+         if(isMoney && !isBandMoney)
          {
-            _loc4_.hideSelectedBand();
+            _quick.hideSelectedBand();
          }
-         else if(!_loc2_ && _loc3_)
+         else if(!isMoney && isBandMoney)
          {
-            _loc4_.hideSelected();
+            _quick.hideSelected();
          }
-         LayerManager.Instance.addToLayer(_loc4_,2,true,1);
+         LayerManager.Instance.addToLayer(_quick,2,true,1);
       }
       
       private function removeEvent() : void

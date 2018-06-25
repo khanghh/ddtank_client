@@ -32,9 +32,9 @@ package dragonBoat
       
       private var _frame:DragonBoatFrame;
       
-      public function DragonBoatControl(param1:IEventDispatcher = null)
+      public function DragonBoatControl(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
          KingStatueHighBuildView;
          KingStatueNormalBuildView;
          DragonBoatSelfRankItem;
@@ -56,9 +56,9 @@ package dragonBoat
          DragonBoatManager.instance.addEventListener("dragonOpenView",__onOpenView);
       }
       
-      protected function __onOpenView(param1:DragonBoatEvent) : void
+      protected function __onOpenView(event:DragonBoatEvent) : void
       {
-         var _loc2_:* = null;
+         var loader:* = null;
          if(PlayerManager.Instance.Self.Grade < 20)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("laurel.gradeLimit",20));
@@ -66,9 +66,9 @@ package dragonBoat
          }
          if(!_frame)
          {
-            _loc2_ = LoadResourceManager.Instance.createLoader(PathManager.getUIPath() + "/swf/dragonboatboatres.swf",4);
-            _loc2_.addEventListener("complete",onLoadComplete);
-            LoadResourceManager.Instance.startLoad(_loc2_);
+            loader = LoadResourceManager.Instance.createLoader(PathManager.getUIPath() + "/swf/dragonboatboatres.swf",4);
+            loader.addEventListener("complete",onLoadComplete);
+            LoadResourceManager.Instance.startLoad(loader);
          }
          else
          {
@@ -78,9 +78,9 @@ package dragonBoat
          }
       }
       
-      private function onLoadComplete(param1:LoaderEvent) : void
+      private function onLoadComplete(event:LoaderEvent) : void
       {
-         param1.loader.removeEventListener("complete",onLoadComplete);
+         event.loader.removeEventListener("complete",onLoadComplete);
          UIModuleSmallLoading.Instance.progress = 0;
          UIModuleSmallLoading.Instance.show();
          UIModuleSmallLoading.Instance.addEventListener("close",onSmallLoadingClose);
@@ -89,7 +89,7 @@ package dragonBoat
          UIModuleLoader.Instance.addUIModuleImp("dragonboat");
       }
       
-      protected function onSmallLoadingClose(param1:Event) : void
+      protected function onSmallLoadingClose(event:Event) : void
       {
          UIModuleSmallLoading.Instance.hide();
          UIModuleSmallLoading.Instance.removeEventListener("close",onSmallLoadingClose);
@@ -97,17 +97,17 @@ package dragonBoat
          UIModuleLoader.Instance.removeEventListener("uiMoudleProgress",onUIProgress);
       }
       
-      protected function onUIProgress(param1:UIModuleEvent) : void
+      protected function onUIProgress(event:UIModuleEvent) : void
       {
-         if(param1.module == "dragonboat")
+         if(event.module == "dragonboat")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
       
-      protected function createLaurelFrame(param1:UIModuleEvent) : void
+      protected function createLaurelFrame(event:UIModuleEvent) : void
       {
-         if(param1.module != "dragonboat")
+         if(event.module != "dragonboat")
          {
             return;
          }

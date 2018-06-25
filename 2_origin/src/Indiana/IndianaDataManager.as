@@ -61,9 +61,9 @@ package Indiana
       
       private var _timer:TimerJuggler;
       
-      public function IndianaDataManager(param1:IEventDispatcher = null)
+      public function IndianaDataManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
          _model = new IndianaModel();
          indianaDic = new Vector.<IndianaData>();
          historyIndiana = new Vector.<HistoryIndianaData>();
@@ -92,23 +92,23 @@ package Indiana
          SocketManager.Instance.addEventListener(PkgEvent.format(385,IndianaEPackageType.JOIN_HISTORY),__joinIndianaInfoHandler);
       }
       
-      public function __joinIndianaInfoHandler(param1:PkgEvent) : void
+      public function __joinIndianaInfoHandler(pkg:PkgEvent) : void
       {
-         currentShowData.state = param1.pkg.readInt();
-         totleCount = param1.pkg.readInt();
+         currentShowData.state = pkg.pkg.readInt();
+         totleCount = pkg.pkg.readInt();
          currentShowData.buyNumber = totleCount;
-         beginCode = param1.pkg.readInt();
-         joinCount = param1.pkg.readInt();
-         currentShowData.humanFullTime = param1.pkg.readDate();
-         currentShowData.joinCount = param1.pkg.readInt();
-         currentShowData.luckCode = param1.pkg.readLong();
-         currentShowData.annTime = param1.pkg.readDate();
-         currentShowData.useId = param1.pkg.readInt();
-         currentShowData.nickName = param1.pkg.readUTF();
-         currentShowData.buyTimes = param1.pkg.readInt();
-         currentShowData.areaId = param1.pkg.readInt();
-         currentShowData.areaName = param1.pkg.readUTF();
-         currentShowData.joinTime = param1.pkg.readDate();
+         beginCode = pkg.pkg.readInt();
+         joinCount = pkg.pkg.readInt();
+         currentShowData.humanFullTime = pkg.pkg.readDate();
+         currentShowData.joinCount = pkg.pkg.readInt();
+         currentShowData.luckCode = pkg.pkg.readLong();
+         currentShowData.annTime = pkg.pkg.readDate();
+         currentShowData.useId = pkg.pkg.readInt();
+         currentShowData.nickName = pkg.pkg.readUTF();
+         currentShowData.buyTimes = pkg.pkg.readInt();
+         currentShowData.areaId = pkg.pkg.readInt();
+         currentShowData.areaName = pkg.pkg.readUTF();
+         currentShowData.joinTime = pkg.pkg.readDate();
          if(currentShowData.state != 0)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("Indiana.buy.hasfull"));
@@ -119,41 +119,39 @@ package Indiana
          }
       }
       
-      private function __historyIndianaInfoHandler(param1:PkgEvent) : void
+      private function __historyIndianaInfoHandler(pkg:PkgEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:int = 0;
-         var _loc5_:int = 0;
-         var _loc4_:int = historyIndiana.length;
-         if(_loc4_ > 0)
+         var data:* = null;
+         var a:int = 0;
+         var i:int = 0;
+         var len:int = historyIndiana.length;
+         if(len > 0)
          {
-            _loc2_ = 0;
-            while(_loc2_ < _loc4_)
+            for(a = 0; a < len; )
             {
-               historyIndiana[_loc2_] = null;
-               _loc2_++;
+               historyIndiana[a] = null;
+               a++;
             }
             historyIndiana.length = 0;
          }
-         _loc4_ = param1.pkg.extend2;
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         len = pkg.pkg.extend2;
+         for(i = 0; i < len; )
          {
-            _loc3_ = new HistoryIndianaData();
-            _loc3_.per_Id = param1.pkg.readInt();
-            _loc3_.per_name = param1.pkg.readUTF();
-            _loc3_.goodsId = param1.pkg.readInt();
-            _loc3_.goodsName = param1.pkg.readUTF();
-            _loc3_.campaign = param1.pkg.readUTF();
-            _loc3_.winningCode = param1.pkg.readLong();
-            _loc3_.AnnTime = param1.pkg.readDate();
-            _loc3_.useId = param1.pkg.readInt();
-            _loc3_.nickName = param1.pkg.readUTF();
-            _loc3_.joinCount = param1.pkg.readInt();
-            _loc3_.areaId = param1.pkg.readInt();
-            _loc3_.areaName = param1.pkg.readUTF();
-            historyIndiana.push(_loc3_);
-            _loc5_++;
+            data = new HistoryIndianaData();
+            data.per_Id = pkg.pkg.readInt();
+            data.per_name = pkg.pkg.readUTF();
+            data.goodsId = pkg.pkg.readInt();
+            data.goodsName = pkg.pkg.readUTF();
+            data.campaign = pkg.pkg.readUTF();
+            data.winningCode = pkg.pkg.readLong();
+            data.AnnTime = pkg.pkg.readDate();
+            data.useId = pkg.pkg.readInt();
+            data.nickName = pkg.pkg.readUTF();
+            data.joinCount = pkg.pkg.readInt();
+            data.areaId = pkg.pkg.readInt();
+            data.areaName = pkg.pkg.readUTF();
+            historyIndiana.push(data);
+            i++;
          }
          historyIndiana.reverse();
          dispatchEvent(new IndianaEvent("historyiteminfo"));
@@ -164,34 +162,32 @@ package Indiana
          return historyIndiana;
       }
       
-      private function __currentIndianaInfoHandler(param1:PkgEvent) : void
+      private function __currentIndianaInfoHandler(pkg:PkgEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:* = null;
-         var _loc5_:int = 0;
-         var _loc4_:int = indianaDic.length;
-         _loc2_ = 0;
-         while(_loc2_ < _loc4_)
+         var a:int = 0;
+         var data:* = null;
+         var i:int = 0;
+         var len:int = indianaDic.length;
+         for(a = 0; a < len; )
          {
-            indianaDic[_loc2_] = null;
-            _loc2_++;
+            indianaDic[a] = null;
+            a++;
          }
          indianaDic.length = 0;
-         _loc4_ = param1.pkg.readInt();
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         len = pkg.pkg.readInt();
+         for(i = 0; i < len; )
          {
-            _loc3_ = new IndianaData();
-            _loc3_.per_Id = param1.pkg.readInt();
-            _loc3_.per_name = param1.pkg.readUTF();
-            _loc3_.joinCount = param1.pkg.readInt();
-            _loc3_.joinTime = param1.pkg.readUTF();
-            _loc3_.useId = param1.pkg.readInt();
-            _loc3_.nickName = param1.pkg.readUTF();
-            _loc3_.areaId = param1.pkg.readInt();
-            _loc3_.areaName = param1.pkg.readUTF();
-            indianaDic.push(_loc3_);
-            _loc5_++;
+            data = new IndianaData();
+            data.per_Id = pkg.pkg.readInt();
+            data.per_name = pkg.pkg.readUTF();
+            data.joinCount = pkg.pkg.readInt();
+            data.joinTime = pkg.pkg.readUTF();
+            data.useId = pkg.pkg.readInt();
+            data.nickName = pkg.pkg.readUTF();
+            data.areaId = pkg.pkg.readInt();
+            data.areaName = pkg.pkg.readUTF();
+            indianaDic.push(data);
+            i++;
          }
          dispatchEvent(new IndianaEvent("recodeiteminfo"));
       }
@@ -201,44 +197,44 @@ package Indiana
          return indianaDic;
       }
       
-      private function __enterGameHandler(param1:PkgEvent) : void
+      private function __enterGameHandler(pkg:PkgEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:int = param1.pkg.extend2;
-         if(_loc2_ == 0)
+         var perid:int = 0;
+         var i:int = 0;
+         var len:int = pkg.pkg.extend2;
+         if(len == 0)
          {
             return;
          }
-         _loc4_ = 0;
-         while(_loc4_ < _loc2_)
+         i = 0;
+         while(i < len)
          {
-            _loc3_ = param1.pkg.readInt();
-            currentShowData = getIndianaShowDataByPerId(_loc3_);
+            perid = pkg.pkg.readInt();
+            currentShowData = getIndianaShowDataByPerId(perid);
             if(currentShowData == null)
             {
                currentShowData = new IndianaShowData();
                _shopItems.push(currentShowData);
             }
-            currentShowData.per_id = _loc3_;
-            currentShowData.state = param1.pkg.readInt();
-            var _loc5_:* = param1.pkg.readInt();
+            currentShowData.per_id = perid;
+            currentShowData.state = pkg.pkg.readInt();
+            var _loc5_:* = pkg.pkg.readInt();
             currentShowData.buyNumber = _loc5_;
             totleCount = _loc5_;
-            currentShowData.joinCount = param1.pkg.readInt();
-            currentShowData.fulltime = param1.pkg.readDate();
-            currentShowData.luckCode = param1.pkg.readLong();
-            currentShowData.annTime = param1.pkg.readDate();
-            currentShowData.useId = param1.pkg.readInt();
-            currentShowData.nickName = param1.pkg.readUTF();
-            currentShowData.buyTimes = param1.pkg.readInt();
-            currentShowData.areaId = param1.pkg.readInt();
-            currentShowData.areaName = param1.pkg.readUTF();
-            currentShowData.joinTime = param1.pkg.readDate();
-            currentShowData.humanFullTime = param1.pkg.readDate();
-            _loc4_++;
+            currentShowData.joinCount = pkg.pkg.readInt();
+            currentShowData.fulltime = pkg.pkg.readDate();
+            currentShowData.luckCode = pkg.pkg.readLong();
+            currentShowData.annTime = pkg.pkg.readDate();
+            currentShowData.useId = pkg.pkg.readInt();
+            currentShowData.nickName = pkg.pkg.readUTF();
+            currentShowData.buyTimes = pkg.pkg.readInt();
+            currentShowData.areaId = pkg.pkg.readInt();
+            currentShowData.areaName = pkg.pkg.readUTF();
+            currentShowData.joinTime = pkg.pkg.readDate();
+            currentShowData.humanFullTime = pkg.pkg.readDate();
+            i++;
          }
-         if(_loc2_ > 1)
+         if(len > 1)
          {
             sortShowData();
             currentShowData = _shopItems[0];
@@ -254,113 +250,110 @@ package Indiana
       
       private function sortShowData() : void
       {
-         var _loc8_:* = null;
-         var _loc7_:* = null;
-         var _loc2_:* = null;
-         var _loc6_:* = 0;
-         var _loc9_:* = 0;
-         var _loc5_:int = _shopItems.length;
-         var _loc4_:Vector.<IndianaShowData> = _shopItems;
+         var tempdata:* = null;
+         var tempdataII:* = null;
+         var tempshowdata:* = null;
+         var j:* = 0;
+         var k:* = 0;
+         var len:int = _shopItems.length;
+         var temp:Vector.<IndianaShowData> = _shopItems;
          _shopItems = new Vector.<IndianaShowData>();
-         var _loc3_:Vector.<IndianaShowData> = new Vector.<IndianaShowData>();
-         var _loc1_:Vector.<IndianaShowData> = new Vector.<IndianaShowData>();
-         var _loc10_:int = 0;
-         _loc10_;
-         while(_loc10_ < _loc5_)
+         var doing:Vector.<IndianaShowData> = new Vector.<IndianaShowData>();
+         var over:Vector.<IndianaShowData> = new Vector.<IndianaShowData>();
+         var i:int = 0;
+         i;
+         while(i < len)
          {
-            if(_loc4_[_loc10_].state == IndianaModel.INDIANA_DOING)
+            if(temp[i].state == IndianaModel.INDIANA_DOING)
             {
-               _loc3_.push(_loc4_[_loc10_]);
+               doing.push(temp[i]);
             }
             else
             {
-               _loc1_.push(_loc4_[_loc10_]);
+               over.push(temp[i]);
             }
-            _loc10_++;
+            i++;
          }
-         _loc10_ = 0;
-         _loc5_ = _loc3_.length;
-         _loc10_;
-         while(_loc10_ < _loc5_)
+         i = 0;
+         len = doing.length;
+         i;
+         while(i < len)
          {
-            _loc6_ = _loc10_;
-            while(_loc6_ < _loc5_)
+            for(j = i; j < len; )
             {
-               _loc8_ = _model.getShopItemByid(_loc3_[_loc10_].per_id);
-               _loc7_ = _model.getShopItemByid(_loc3_[_loc6_].per_id);
-               if(_loc8_.Order > _loc7_.Order)
+               tempdata = _model.getShopItemByid(doing[i].per_id);
+               tempdataII = _model.getShopItemByid(doing[j].per_id);
+               if(tempdata.Order > tempdataII.Order)
                {
-                  _loc2_ = _loc3_[_loc10_];
-                  _loc3_[_loc10_] = _loc3_[_loc6_];
-                  _loc3_[_loc6_] = _loc2_;
+                  tempshowdata = doing[i];
+                  doing[i] = doing[j];
+                  doing[j] = tempshowdata;
                }
-               _loc6_++;
+               j++;
             }
-            _loc10_++;
+            i++;
          }
-         _loc10_ = 0;
-         _loc5_ = _loc1_.length;
-         _loc10_;
-         while(_loc10_ < _loc5_)
+         i = 0;
+         len = over.length;
+         i;
+         while(i < len)
          {
-            _loc9_ = _loc10_;
-            while(_loc9_ < _loc5_)
+            for(k = i; k < len; )
             {
-               _loc8_ = _model.getShopItemByid(_loc1_[_loc10_].per_id);
-               _loc7_ = _model.getShopItemByid(_loc1_[_loc9_].per_id);
-               if(_loc8_.Order > _loc7_.Order)
+               tempdata = _model.getShopItemByid(over[i].per_id);
+               tempdataII = _model.getShopItemByid(over[k].per_id);
+               if(tempdata.Order > tempdataII.Order)
                {
-                  _loc2_ = _loc1_[_loc10_];
-                  _loc1_[_loc10_] = _loc1_[_loc9_];
-                  _loc1_[_loc9_] = _loc2_;
+                  tempshowdata = over[i];
+                  over[i] = over[k];
+                  over[k] = tempshowdata;
                }
-               _loc9_++;
+               k++;
             }
-            _loc10_++;
+            i++;
          }
-         _loc5_ = _loc3_.length;
-         _loc10_ = 0;
-         _loc10_;
-         while(_loc10_ < _loc5_)
+         len = doing.length;
+         i = 0;
+         i;
+         while(i < len)
          {
-            _shopItems.push(_loc3_[_loc10_]);
-            _loc10_++;
+            _shopItems.push(doing[i]);
+            i++;
          }
-         _loc5_ = _loc1_.length;
-         _loc10_ = 0;
-         _loc10_;
-         while(_loc10_ < _loc5_)
+         len = over.length;
+         i = 0;
+         i;
+         while(i < len)
          {
-            _shopItems.push(_loc1_[_loc10_]);
-            _loc10_++;
+            _shopItems.push(over[i]);
+            i++;
          }
       }
       
-      private function sortState(param1:IndianaShowData, param2:IndianaShowData) : int
+      private function sortState(x:IndianaShowData, y:IndianaShowData) : int
       {
-         if(param1.state < param2.state)
+         if(x.state < y.state)
          {
             return -1;
          }
-         if(param1.state > param2.state)
+         if(x.state > y.state)
          {
             return 1;
          }
          return 0;
       }
       
-      private function getIndianaShowDataByPerId(param1:int) : IndianaShowData
+      private function getIndianaShowDataByPerId(id:int) : IndianaShowData
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = _shopItems.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var i:int = 0;
+         var len:int = _shopItems.length;
+         for(i = 0; i < len; )
          {
-            if(_shopItems[_loc3_].per_id == param1)
+            if(_shopItems[i].per_id == id)
             {
-               return _shopItems[_loc3_];
+               return _shopItems[i];
             }
-            _loc3_++;
+            i++;
          }
          return null;
       }
@@ -374,26 +367,26 @@ package Indiana
          }
       }
       
-      public function goodsItemAnalyzer(param1:IndianaGoodsItemAnalyzer) : void
+      public function goodsItemAnalyzer(analyzer:IndianaGoodsItemAnalyzer) : void
       {
-         _model.Items = param1.data;
+         _model.Items = analyzer.data;
       }
       
-      public function shopItemAnalyzer(param1:IndianaShopItemsAnalyzer) : void
+      public function shopItemAnalyzer(analyzer:IndianaShopItemsAnalyzer) : void
       {
-         _model.ShopItems = param1.data;
+         _model.ShopItems = analyzer.data;
       }
       
       public function tickTime() : void
       {
-         var _loc1_:int = _model.getActivateState();
-         if(_loc1_ > 0)
+         var state:int = _model.getActivateState();
+         if(state > 0)
          {
-            if(_showBtn == false && _loc1_ == IndianaModel.INDIANA_START)
+            if(_showBtn == false && state == IndianaModel.INDIANA_START)
             {
                _showBtn = true;
             }
-            if(_showBtn && _loc1_ == IndianaModel.INDIANA_END)
+            if(_showBtn && state == IndianaModel.INDIANA_END)
             {
                _showBtn = false;
                disposeTimer();
@@ -419,7 +412,7 @@ package Indiana
          }
       }
       
-      private function __completeHander(param1:Event) : void
+      private function __completeHander(evt:Event) : void
       {
          if(_showBtn)
          {
@@ -428,33 +421,32 @@ package Indiana
          }
       }
       
-      public function getTemplatesByShopId(param1:int) : ItemTemplateInfo
+      public function getTemplatesByShopId(shopId:int) : ItemTemplateInfo
       {
-         var _loc2_:* = null;
-         var _loc3_:IndianaGoodsItemInfo = getIndianaGoodsItemInfoByshopId(param1);
-         if(_loc3_)
+         var data:* = null;
+         var info:IndianaGoodsItemInfo = getIndianaGoodsItemInfoByshopId(shopId);
+         if(info)
          {
-            _loc2_ = ItemManager.Instance.getTemplateById(_loc3_.GoodsID);
+            data = ItemManager.Instance.getTemplateById(info.GoodsID);
          }
-         return _loc2_;
+         return data;
       }
       
-      public function getIndianaGoodsItemInfoByshopId(param1:int) : IndianaGoodsItemInfo
+      public function getIndianaGoodsItemInfoByshopId(shopId:int) : IndianaGoodsItemInfo
       {
-         var _loc2_:* = null;
-         var _loc4_:int = 0;
-         var _loc3_:int = _model.Items.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var data:* = null;
+         var i:int = 0;
+         var len:int = _model.Items.length;
+         for(i = 0; i < len; )
          {
-            if(param1 == _model.Items[_loc4_].Id)
+            if(shopId == _model.Items[i].Id)
             {
-               _loc2_ = _model.Items[_loc4_];
-               return _loc2_;
+               data = _model.Items[i];
+               return data;
             }
-            _loc4_++;
+            i++;
          }
-         return _loc2_;
+         return data;
       }
       
       public function get getCurrentShopItem() : IndianaShopItemInfo
@@ -468,63 +460,62 @@ package Indiana
       
       public function get leftShopItem() : IndianaShowData
       {
-         var _loc1_:int = 0;
-         var _loc2_:* = null;
+         var index:int = 0;
+         var data:* = null;
          if(currentShowData)
          {
-            _loc1_ = _shopItems.indexOf(currentShowData);
-            if(_loc1_ > 0)
+            index = _shopItems.indexOf(currentShowData);
+            if(index > 0)
             {
-               _loc1_--;
-               _loc2_ = _shopItems[_loc1_];
+               index--;
+               data = _shopItems[index];
             }
             else
             {
-               _loc2_ = _shopItems[_shopItems.length - 1];
+               data = _shopItems[_shopItems.length - 1];
             }
-            return _loc2_;
+            return data;
          }
          return null;
       }
       
       public function get rightShopItem() : IndianaShowData
       {
-         var _loc1_:int = 0;
-         var _loc2_:* = null;
+         var index:int = 0;
+         var data:* = null;
          if(currentShowData)
          {
-            _loc1_ = _shopItems.indexOf(currentShowData);
-            if(_loc1_ < _shopItems.length - 1)
+            index = _shopItems.indexOf(currentShowData);
+            if(index < _shopItems.length - 1)
             {
-               _loc1_++;
-               _loc2_ = _shopItems[_loc1_];
+               index++;
+               data = _shopItems[index];
             }
             else
             {
-               _loc2_ = _shopItems[0];
+               data = _shopItems[0];
             }
-            return _loc2_;
+            return data;
          }
          return null;
       }
       
       public function getShopItem() : Array
       {
-         var _loc4_:* = null;
-         var _loc3_:int = 0;
-         var _loc1_:Array = [];
-         var _loc2_:int = _shopItems.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var info:* = null;
+         var i:int = 0;
+         var arr:Array = [];
+         var len:int = _shopItems.length;
+         for(i = 0; i < len; )
          {
-            _loc4_ = _model.getShopItemByid(_shopItems[_loc3_].per_id);
-            if(_loc4_ && _loc4_.Putaway == 1)
+            info = _model.getShopItemByid(_shopItems[i].per_id);
+            if(info && info.Putaway == 1)
             {
-               _loc1_.push(_loc4_);
+               arr.push(info);
             }
-            _loc3_++;
+            i++;
          }
-         return _loc1_;
+         return arr;
       }
       
       private function onComplete() : void

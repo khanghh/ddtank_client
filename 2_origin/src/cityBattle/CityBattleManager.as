@@ -59,10 +59,10 @@ package cityBattle
       
       private var _joinView:JoinCityBattleView;
       
-      public function CityBattleManager(param1:IEventDispatcher = null)
+      public function CityBattleManager(target:IEventDispatcher = null)
       {
          myExchangeInfo = new Vector.<WelfareInfo>();
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : CityBattleManager
@@ -84,89 +84,86 @@ package cityBattle
          SocketManager.Instance.addEventListener(PkgEvent.format(368,8),_scoreAndRankHandler);
       }
       
-      public function CityBattleSystemsHandler(param1:CityBattleAnalyze) : void
+      public function CityBattleSystemsHandler(analyzer:CityBattleAnalyze) : void
       {
-         welfareList = param1.list;
+         welfareList = analyzer.list;
       }
       
-      private function _scoreAndRankHandler(param1:PkgEvent) : void
+      private function _scoreAndRankHandler(e:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         blueTotalScore = _loc2_.readInt();
-         redTotalScore = _loc2_.readInt();
-         myRankScore = _loc2_.readInt();
-         myRank = _loc2_.readInt();
+         var pkg:PackageIn = e.pkg;
+         blueTotalScore = pkg.readInt();
+         redTotalScore = pkg.readInt();
+         myRankScore = pkg.readInt();
+         myRank = pkg.readInt();
          dispatchEvent(new CityBattleEvent("score_rank"));
       }
       
-      private function _joinBattleHandler(param1:PkgEvent) : void
+      private function _joinBattleHandler(e:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         mySide = _loc2_.readInt();
+         var pkg:PackageIn = e.pkg;
+         mySide = pkg.readInt();
          dispatchEvent(new CityBattleEvent("joinBattle"));
       }
       
-      private function _playerEnterHandler(param1:PkgEvent) : void
+      private function _playerEnterHandler(e:PkgEvent) : void
       {
-         var _loc12_:* = null;
-         var _loc10_:int = 0;
-         var _loc13_:int = 0;
-         var _loc7_:int = 0;
-         var _loc9_:* = null;
-         var _loc11_:int = 0;
-         var _loc2_:* = null;
-         var _loc6_:* = 0;
-         var _loc8_:int = 0;
-         var _loc3_:int = 0;
+         var castellan:* = null;
+         var i:int = 0;
+         var citySide:int = 0;
+         var zoneID:int = 0;
+         var zoneName:* = null;
+         var id:int = 0;
+         var sp:* = null;
+         var j:* = 0;
+         var k:int = 0;
+         var whoWin:int = 0;
          castellanList = new Vector.<CastellanInfo>();
-         var _loc4_:PackageIn = param1.pkg;
-         now = _loc4_.readInt();
-         var _loc5_:int = _loc4_.readInt();
-         _loc10_ = 0;
-         while(_loc10_ < _loc5_)
+         var pkg:PackageIn = e.pkg;
+         now = pkg.readInt();
+         var len:int = pkg.readInt();
+         for(i = 0; i < len; )
          {
-            _loc12_ = new CastellanInfo();
-            _loc13_ = _loc4_.readInt();
-            _loc7_ = _loc4_.readInt();
-            _loc9_ = _loc4_.readUTF();
-            _loc11_ = _loc4_.readInt();
-            _loc2_ = PlayerManager.Instance.findPlayer(_loc11_,_loc7_);
-            _loc2_.zoneName = _loc9_;
-            _loc2_.NickName = _loc4_.readUTF();
-            _loc2_.Sex = _loc4_.readBoolean();
-            _loc2_.Hide = _loc4_.readInt();
-            _loc2_.Style = _loc4_.readUTF();
-            _loc2_.Colors = _loc4_.readUTF();
-            _loc2_.Skin = _loc4_.readUTF();
-            _loc12_.winner = _loc2_;
-            _loc12_.side = _loc13_;
-            castellanList[_loc10_] = _loc12_;
-            _loc10_++;
+            castellan = new CastellanInfo();
+            citySide = pkg.readInt();
+            zoneID = pkg.readInt();
+            zoneName = pkg.readUTF();
+            id = pkg.readInt();
+            sp = PlayerManager.Instance.findPlayer(id,zoneID);
+            sp.zoneName = zoneName;
+            sp.NickName = pkg.readUTF();
+            sp.Sex = pkg.readBoolean();
+            sp.Hide = pkg.readInt();
+            sp.Style = pkg.readUTF();
+            sp.Colors = pkg.readUTF();
+            sp.Skin = pkg.readUTF();
+            castellan.winner = sp;
+            castellan.side = citySide;
+            castellanList[i] = castellan;
+            i++;
          }
-         _loc6_ = _loc5_;
-         while(_loc6_ < 7)
+         for(j = len; j < 7; )
          {
-            _loc12_ = new CastellanInfo();
-            _loc12_.side = 0;
-            castellanList[_loc6_] = _loc12_;
-            _loc6_++;
+            castellan = new CastellanInfo();
+            castellan.side = 0;
+            castellanList[j] = castellan;
+            j++;
          }
          winnerExchangeInfo = [];
-         _loc8_ = 0;
-         while(_loc8_ < 7)
+         for(k = 0; k < 7; )
          {
-            _loc3_ = _loc4_.readInt();
-            winnerExchangeInfo.push(_loc3_);
-            _loc8_++;
+            whoWin = pkg.readInt();
+            winnerExchangeInfo.push(whoWin);
+            k++;
          }
          show();
       }
       
-      private function _activityOpenHandler(param1:PkgEvent) : void
+      private function _activityOpenHandler(e:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         isOpen = _loc2_.readBoolean();
-         mySide = _loc2_.readInt();
+         var pkg:PackageIn = e.pkg;
+         isOpen = pkg.readBoolean();
+         mySide = pkg.readInt();
          updateIcon();
       }
       
@@ -175,75 +172,72 @@ package cityBattle
          HallIconManager.instance.updateSwitchHandler("cityBattle",isOpen);
       }
       
-      private function _contentionHandler(param1:PkgEvent) : void
+      private function _contentionHandler(e:PkgEvent) : void
       {
-         var _loc4_:* = null;
-         var _loc7_:int = 0;
-         var _loc6_:int = 0;
-         var _loc5_:PackageIn = param1.pkg;
+         var rankinfo:* = null;
+         var i:int = 0;
+         var j:int = 0;
+         var pkg:PackageIn = e.pkg;
          contentionFirstData = true;
          blueList = new Vector.<ContentionInfo>();
-         var _loc3_:int = _loc5_.readInt();
-         _loc7_ = 0;
-         while(_loc7_ < _loc3_)
+         var lenBlue:int = pkg.readInt();
+         for(i = 0; i < lenBlue; )
          {
-            _loc4_ = new ContentionInfo();
-            _loc4_.rank = _loc7_ + 1;
-            _loc4_.name = _loc5_.readUTF();
-            _loc4_.socre = _loc5_.readInt();
-            _loc4_.server = _loc5_.readUTF();
-            blueList.push(_loc4_);
-            _loc7_++;
+            rankinfo = new ContentionInfo();
+            rankinfo.rank = i + 1;
+            rankinfo.name = pkg.readUTF();
+            rankinfo.socre = pkg.readInt();
+            rankinfo.server = pkg.readUTF();
+            blueList.push(rankinfo);
+            i++;
          }
          redList = new Vector.<ContentionInfo>();
-         var _loc2_:int = _loc5_.readInt();
-         _loc6_ = 0;
-         while(_loc6_ < _loc2_)
+         var lenRed:int = pkg.readInt();
+         for(j = 0; j < lenRed; )
          {
-            _loc4_ = new ContentionInfo();
-            _loc4_.rank = _loc6_ + 1;
-            _loc4_.name = _loc5_.readUTF();
-            _loc4_.socre = _loc5_.readInt();
-            _loc4_.server = _loc5_.readUTF();
-            redList.push(_loc4_);
-            _loc6_++;
+            rankinfo = new ContentionInfo();
+            rankinfo.rank = j + 1;
+            rankinfo.name = pkg.readUTF();
+            rankinfo.socre = pkg.readInt();
+            rankinfo.server = pkg.readUTF();
+            redList.push(rankinfo);
+            j++;
          }
          _mainFrame.changeView(2);
       }
       
-      private function _exchangeHandler(param1:PkgEvent) : void
+      private function _exchangeHandler(e:PkgEvent) : void
       {
-         var _loc7_:int = 0;
-         var _loc6_:* = null;
-         var _loc4_:int = 0;
-         var _loc5_:* = null;
-         var _loc2_:PackageIn = param1.pkg;
-         var _loc3_:int = _loc2_.readInt();
-         _loc7_ = 0;
-         while(_loc7_ < _loc3_)
+         var i:int = 0;
+         var info:* = null;
+         var j:int = 0;
+         var myInfo:* = null;
+         var pkg:PackageIn = e.pkg;
+         var len:int = pkg.readInt();
+         for(i = 0; i < len; )
          {
-            _loc6_ = new WelfareInfo();
-            _loc6_.ID = _loc2_.readInt();
-            _loc6_.myExchangeCount = _loc2_.readInt();
-            _loc4_ = 0;
+            info = new WelfareInfo();
+            info.ID = pkg.readInt();
+            info.myExchangeCount = pkg.readInt();
+            j = 0;
             while(true)
             {
-               if(_loc4_ >= myExchangeInfo.length)
+               if(j >= myExchangeInfo.length)
                {
-                  myExchangeInfo.push(_loc6_);
+                  myExchangeInfo.push(info);
                   break;
                }
-               _loc5_ = myExchangeInfo[_loc4_];
-               if(_loc6_.ID == _loc5_.ID)
+               myInfo = myExchangeInfo[j];
+               if(info.ID == myInfo.ID)
                {
-                  myExchangeInfo[_loc4_].myExchangeCount = _loc6_.myExchangeCount;
+                  myExchangeInfo[j].myExchangeCount = info.myExchangeCount;
                   break;
                }
-               _loc4_++;
+               j++;
             }
-            _loc7_++;
+            i++;
          }
-         myScore = _loc2_.readInt();
+         myScore = pkg.readInt();
          dispatchEvent(new CityBattleEvent("scoreChange"));
          if(_mainFrame.changeBtn)
          {

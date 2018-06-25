@@ -18,50 +18,50 @@ package starling.animation
       
       private var mRepeatCount:int;
       
-      public function DelayedCall(param1:Function, param2:Number, param3:Array = null)
+      public function DelayedCall(call:Function, delay:Number, args:Array = null)
       {
          super();
-         reset(param1,param2,param3);
+         reset(call,delay,args);
       }
       
-      static function fromPool(param1:Function, param2:Number, param3:Array = null) : DelayedCall
+      static function fromPool(call:Function, delay:Number, args:Array = null) : DelayedCall
       {
          if(sPool.length)
          {
-            return sPool.pop().reset(param1,param2,param3);
+            return sPool.pop().reset(call,delay,args);
          }
-         return new DelayedCall(param1,param2,param3);
+         return new DelayedCall(call,delay,args);
       }
       
-      static function toPool(param1:DelayedCall) : void
+      static function toPool(delayedCall:DelayedCall) : void
       {
-         param1.mCall = null;
-         param1.mArgs = null;
-         param1.removeEventListeners();
-         sPool.push(param1);
+         delayedCall.mCall = null;
+         delayedCall.mArgs = null;
+         delayedCall.removeEventListeners();
+         sPool.push(delayedCall);
       }
       
-      public function reset(param1:Function, param2:Number, param3:Array = null) : DelayedCall
+      public function reset(call:Function, delay:Number, args:Array = null) : DelayedCall
       {
          mCurrentTime = 0;
-         mTotalTime = Math.max(param2,0.0001);
-         mCall = param1;
-         mArgs = param3;
+         mTotalTime = Math.max(delay,0.0001);
+         mCall = call;
+         mArgs = args;
          mRepeatCount = 1;
          return this;
       }
       
-      public function advanceTime(param1:Number) : void
+      public function advanceTime(time:Number) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         var _loc4_:Number = mCurrentTime;
-         mCurrentTime = mCurrentTime + param1;
+         var call:* = null;
+         var args:* = null;
+         var previousTime:Number = mCurrentTime;
+         mCurrentTime = mCurrentTime + time;
          if(mCurrentTime > mTotalTime)
          {
             mCurrentTime = mTotalTime;
          }
-         if(_loc4_ < mTotalTime && mCurrentTime >= mTotalTime)
+         if(previousTime < mTotalTime && mCurrentTime >= mTotalTime)
          {
             if(mRepeatCount == 0 || mRepeatCount > 1)
             {
@@ -71,24 +71,24 @@ package starling.animation
                   mRepeatCount = mRepeatCount - 1;
                }
                mCurrentTime = 0;
-               advanceTime(_loc4_ + param1 - mTotalTime);
+               advanceTime(previousTime + time - mTotalTime);
             }
             else
             {
-               _loc2_ = mCall;
-               _loc3_ = mArgs;
+               call = mCall;
+               args = mArgs;
                dispatchEventWith("removeFromJuggler");
-               _loc2_.apply(null,_loc3_);
+               call.apply(null,args);
             }
          }
       }
       
       public function complete() : void
       {
-         var _loc1_:Number = mTotalTime - mCurrentTime;
-         if(_loc1_ > 0)
+         var restTime:Number = mTotalTime - mCurrentTime;
+         if(restTime > 0)
          {
-            advanceTime(_loc1_);
+            advanceTime(restTime);
          }
       }
       
@@ -112,9 +112,9 @@ package starling.animation
          return mRepeatCount;
       }
       
-      public function set repeatCount(param1:int) : void
+      public function set repeatCount(value:int) : void
       {
-         mRepeatCount = param1;
+         mRepeatCount = value;
       }
    }
 }

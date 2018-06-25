@@ -105,16 +105,16 @@ package horseRace.view
          InviteManager.Instance.enabled = false;
       }
       
-      private function startCountDown(param1:int) : void
+      private function startCountDown(count:int) : void
       {
-         var _loc2_:HorseRaceStartCountDown = new HorseRaceStartCountDown(param1);
-         LayerManager.Instance.addToLayer(_loc2_,2,false,1);
+         var countDown:HorseRaceStartCountDown = new HorseRaceStartCountDown(count);
+         LayerManager.Instance.addToLayer(countDown,2,false,1);
       }
       
-      private function endCountDown(param1:int, param2:String, param3:Function) : void
+      private function endCountDown(count:int, type:String, _callBack:Function) : void
       {
-         var _loc4_:HorseRaceStartCountDown = new HorseRaceStartCountDown(param1,param2,param3);
-         LayerManager.Instance.addToLayer(_loc4_,2,false,1);
+         var countDown:HorseRaceStartCountDown = new HorseRaceStartCountDown(count,type,_callBack);
+         LayerManager.Instance.addToLayer(countDown,2,false,1);
       }
       
       private function initView() : void
@@ -124,8 +124,8 @@ package horseRace.view
          addChild(_backBg);
          createMap();
          racePlayerPos = ComponentFactory.Instance.creatComponentByStylename("horseRace.race.raceView.Pos");
-         var _loc1_:String = racePlayerPos.text;
-         racePlayerIntPosArr = getPosArr(_loc1_);
+         var t:String = racePlayerPos.text;
+         racePlayerIntPosArr = getPosArr(t);
       }
       
       private function addBuffMsg() : void
@@ -139,24 +139,23 @@ package horseRace.view
       
       private function createMap() : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
+         var i:int = 0;
+         var middle:* = null;
          _foreBg = new MovieClip();
-         var _loc2_:int = headLinePosX;
-         _loc5_ = 0;
-         while(_loc5_ < 40)
+         var posX:int = headLinePosX;
+         for(i = 0; i < 40; )
          {
-            _loc4_ = ComponentFactory.Instance.creat("horseRace.raceView.foB");
-            _loc4_.x = _loc2_;
-            _loc2_ = _loc2_ + _loc4_.width;
-            _foreBg.addChild(_loc4_);
-            _loc5_++;
+            middle = ComponentFactory.Instance.creat("horseRace.raceView.foB");
+            middle.x = posX;
+            posX = posX + middle.width;
+            _foreBg.addChild(middle);
+            i++;
          }
-         var _loc1_:Bitmap = ComponentFactory.Instance.creat("horseRace.raceView.forA");
-         var _loc3_:Bitmap = ComponentFactory.Instance.creat("horseRace.raceView.forC");
-         _foreBg.addChildAt(_loc1_,_foreBg.numChildren);
-         _loc3_.x = maxForeMapWidth - _loc3_.width;
-         _foreBg.addChildAt(_loc3_,_foreBg.numChildren);
+         var headLine:Bitmap = ComponentFactory.Instance.creat("horseRace.raceView.forA");
+         var endLine:Bitmap = ComponentFactory.Instance.creat("horseRace.raceView.forC");
+         _foreBg.addChildAt(headLine,_foreBg.numChildren);
+         endLine.x = maxForeMapWidth - endLine.width;
+         _foreBg.addChildAt(endLine,_foreBg.numChildren);
          addChild(_foreBg);
          _foreBg.y = -70;
          _foreBg.height = 674;
@@ -164,36 +163,35 @@ package horseRace.view
       
       private function startRace() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         _loc2_ = 0;
-         while(_loc2_ < racePlayerList.length)
+         var i:int = 0;
+         var walkingPlayer:* = null;
+         for(i = 0; i < racePlayerList.length; )
          {
-            _loc1_ = racePlayerList[_loc2_] as HorseRaceWalkPlayer;
-            if(_loc1_.id == PlayerManager.Instance.Self.ID)
+            walkingPlayer = racePlayerList[i] as HorseRaceWalkPlayer;
+            if(walkingPlayer.id == PlayerManager.Instance.Self.ID)
             {
-               _selfPlayer = _loc1_;
+               _selfPlayer = walkingPlayer;
                _selfPlayer.addEventListener("enterFrame",_setSelfCenter);
                _selfPlayer.gameId = gameId;
             }
             else
             {
-               _loc1_.addEventListener("enterFrame",_setOtherPlayerWithSelf);
+               walkingPlayer.addEventListener("enterFrame",_setOtherPlayerWithSelf);
             }
-            _loc1_.startRace();
-            _loc2_++;
+            walkingPlayer.startRace();
+            i++;
          }
       }
       
-      private function _setTimer(param1:Timer) : void
+      private function _setTimer(e:Timer) : void
       {
       }
       
-      private function _setSelfCenter(param1:Event) : void
+      private function _setSelfCenter(e:Event) : void
       {
-         var _loc4_:* = NaN;
-         var _loc2_:Number = NaN;
-         var _loc3_:int = _selfPlayer.speed / 25;
+         var xf:* = NaN;
+         var yf:Number = NaN;
+         var mySpeedIncreace:int = _selfPlayer.speed / 25;
          if(_selfPlayer.raceLen >= maxRaceLen)
          {
             _selfPlayer.removeEventListener("enterFrame",_setSelfCenter);
@@ -222,31 +220,31 @@ package horseRace.view
          else if(_selfPlayer.raceLen + _selfPlayer.initPosX >= _foreBg.width - (1000 / 2 - _selfPlayer.initPosX))
          {
          }
-         _loc4_ = Number(1000 / 2 - _selfPlayer.raceLen - _selfPlayer.initPosX);
-         if(_loc4_ > 0)
+         xf = Number(1000 / 2 - _selfPlayer.raceLen - _selfPlayer.initPosX);
+         if(xf > 0)
          {
-            _loc4_ = 0;
+            xf = 0;
          }
-         if(_loc4_ <= 1000 - _foreBg.width)
+         if(xf <= 1000 - _foreBg.width)
          {
-            _loc4_ = Number(1000 - _foreBg.width);
+            xf = Number(1000 - _foreBg.width);
             canRanBySpeedToEND = true;
          }
-         if(_loc4_ > 0 && _loc4_ <= 1000 - _foreBg.width)
+         if(xf > 0 && xf <= 1000 - _foreBg.width)
          {
             selfRanBySpeed = false;
          }
-         _foreBg.x = _loc4_;
-         forBgPos = _loc4_;
+         _foreBg.x = xf;
+         forBgPos = xf;
       }
       
-      private function _setOtherPlayerWithSelf(param1:Event) : void
+      private function _setOtherPlayerWithSelf(e:Event) : void
       {
-         var _loc3_:HorseRaceWalkPlayer = param1.currentTarget as HorseRaceWalkPlayer;
+         var other:HorseRaceWalkPlayer = e.currentTarget as HorseRaceWalkPlayer;
          mycount = Number(mycount) + 1;
-         var _loc5_:Number = _loc3_.raceLen - _selfPlayer.raceLen;
-         var _loc4_:int = (_loc3_.speed - _selfPlayer.speed) / 25;
-         var _loc2_:int = _loc3_.speed / 25;
+         var len:Number = other.raceLen - _selfPlayer.raceLen;
+         var len1:int = (other.speed - _selfPlayer.speed) / 25;
+         var otherSpeedIncreate:int = other.speed / 25;
          if(mycount > 25)
          {
             getRankByRaceLen();
@@ -254,161 +252,158 @@ package horseRace.view
          }
          if(canRanBySpeedToEND)
          {
-            if(_loc3_.x < _selfPlayer.x)
+            if(other.x < _selfPlayer.x)
             {
-               _loc3_.x = _loc3_.x + _loc3_.speed / 25;
-               if(_loc3_.x >= _selfPlayer.x)
+               other.x = other.x + other.speed / 25;
+               if(other.x >= _selfPlayer.x)
                {
-                  _loc3_.isGetEnd = true;
-                  _loc3_.x = _selfPlayer.x;
-                  _loc3_.removeEventListener("enterFrame",_setOtherPlayerWithSelf);
-                  _loc3_.stopRace();
+                  other.isGetEnd = true;
+                  other.x = _selfPlayer.x;
+                  other.removeEventListener("enterFrame",_setOtherPlayerWithSelf);
+                  other.stopRace();
                   mycount = 0;
                }
             }
-            else if(_loc3_.x > _selfPlayer.x)
+            else if(other.x > _selfPlayer.x)
             {
-               _loc3_.x = _loc3_.x + _loc3_.speed / 25;
-               if(_loc3_.raceLen >= maxRaceLen)
+               other.x = other.x + other.speed / 25;
+               if(other.raceLen >= maxRaceLen)
                {
-                  _loc3_.isGetEnd = true;
-                  _loc3_.x = 1000 / 2 + _loc3_.initPosX;
-                  _loc3_.removeEventListener("enterFrame",_setOtherPlayerWithSelf);
-                  _loc3_.stopRace();
+                  other.isGetEnd = true;
+                  other.x = 1000 / 2 + other.initPosX;
+                  other.removeEventListener("enterFrame",_setOtherPlayerWithSelf);
+                  other.stopRace();
                   mycount = 0;
                }
             }
             return;
          }
-         if(_loc3_.raceLen >= maxRaceLen)
+         if(other.raceLen >= maxRaceLen)
          {
-            _loc3_.raceLen = maxRaceLen;
-            _loc3_.isGetEnd = true;
+            other.raceLen = maxRaceLen;
+            other.isGetEnd = true;
             return;
          }
-         _loc3_.x = _selfPlayer.x + _loc5_;
+         other.x = _selfPlayer.x + len;
       }
       
-      private function getPosArr(param1:String) : Array
+      private function getPosArr(str:String) : Array
       {
-         var _loc9_:int = 0;
-         var _loc2_:* = null;
-         var _loc4_:* = null;
-         var _loc8_:int = 0;
-         var _loc6_:int = 0;
-         var _loc7_:* = null;
-         if(param1 == "" || param1 == null)
+         var i:int = 0;
+         var str2:* = null;
+         var arr3:* = null;
+         var x:int = 0;
+         var y:int = 0;
+         var pos:* = null;
+         if(str == "" || str == null)
          {
             return null;
          }
-         var _loc3_:Array = param1.split("|");
-         var _loc5_:Array = [];
-         _loc9_ = 0;
-         while(_loc9_ < _loc3_.length)
+         var arr:Array = str.split("|");
+         var arr1:Array = [];
+         for(i = 0; i < arr.length; )
          {
-            _loc2_ = _loc3_[_loc9_];
-            _loc4_ = _loc2_.split(",");
-            _loc8_ = _loc4_[0];
-            _loc6_ = _loc4_[1];
-            _loc7_ = new Point(_loc8_,_loc6_);
-            _loc5_.push(_loc7_);
-            _loc9_++;
+            str2 = arr[i];
+            arr3 = str2.split(",");
+            x = arr3[0];
+            y = arr3[1];
+            pos = new Point(x,y);
+            arr1.push(pos);
+            i++;
          }
-         return _loc5_;
+         return arr1;
       }
       
-      public function addPlayer(param1:PlayerInfo, param2:int, param3:int) : void
+      public function addPlayer(playerInfo:PlayerInfo, raceIndex:int, $speed:int) : void
       {
-         var _loc5_:* = null;
-         var _loc4_:PlayerVO = new PlayerVO();
-         _loc4_.playerInfo = param1;
-         param1.MountsType = Math.max(1,param1.MountsType);
-         param1.PetsID = 0;
-         _loc5_ = new HorseRaceWalkPlayer(_loc4_,callBack);
-         _loc5_.index = param2;
-         _loc5_.rank = param2 + 1;
-         _loc5_.speed = param3;
-         _loc5_.id = param1.ID;
-         if(_loc5_.id == PlayerManager.Instance.Self.ID)
+         var walkingPlayer:* = null;
+         var playerVo:PlayerVO = new PlayerVO();
+         playerVo.playerInfo = playerInfo;
+         playerInfo.MountsType = Math.max(1,playerInfo.MountsType);
+         playerInfo.PetsID = 0;
+         walkingPlayer = new HorseRaceWalkPlayer(playerVo,callBack);
+         walkingPlayer.index = raceIndex;
+         walkingPlayer.rank = raceIndex + 1;
+         walkingPlayer.speed = $speed;
+         walkingPlayer.id = playerInfo.ID;
+         if(walkingPlayer.id == PlayerManager.Instance.Self.ID)
          {
-            _loc5_.isSelf = true;
+            walkingPlayer.isSelf = true;
          }
          else
          {
-            _loc5_.isSelf = false;
+            walkingPlayer.isSelf = false;
          }
-         var _loc6_:Point = racePlayerIntPosArr[param2];
-         _loc5_.playerPoint = _loc6_;
-         _loc5_.initPosX = _loc6_.x;
-         addChild(_loc5_);
-         racePlayerList.push(_loc5_);
-         _loc5_.stand();
+         var pos:Point = racePlayerIntPosArr[raceIndex];
+         walkingPlayer.playerPoint = pos;
+         walkingPlayer.initPosX = pos.x;
+         addChild(walkingPlayer);
+         racePlayerList.push(walkingPlayer);
+         walkingPlayer.stand();
       }
       
-      private function removePlayer(param1:int) : void
+      private function removePlayer(raceIndex:int) : void
       {
-         var _loc2_:HorseRaceWalkPlayer = racePlayerList[param1] as HorseRaceWalkPlayer;
-         _loc2_.stop();
-         removeChild(_loc2_);
+         var walkingPlayer:HorseRaceWalkPlayer = racePlayerList[raceIndex] as HorseRaceWalkPlayer;
+         walkingPlayer.stop();
+         removeChild(walkingPlayer);
       }
       
       private function removeAllPlayer() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var walkingPlayer:* = null;
          if(racePlayerList == null)
          {
             return;
          }
-         _loc2_ = 0;
-         while(_loc2_ < racePlayerList.length)
+         for(i = 0; i < racePlayerList.length; )
          {
-            _loc1_ = racePlayerList[_loc2_] as HorseRaceWalkPlayer;
-            if(_loc1_.id == PlayerManager.Instance.Self.ID)
+            walkingPlayer = racePlayerList[i] as HorseRaceWalkPlayer;
+            if(walkingPlayer.id == PlayerManager.Instance.Self.ID)
             {
                _selfPlayer.removeEventListener("enterFrame",_setSelfCenter);
             }
             else
             {
-               _loc1_.removeEventListener("enterFrame",_setOtherPlayerWithSelf);
+               walkingPlayer.removeEventListener("enterFrame",_setOtherPlayerWithSelf);
             }
-            _loc1_.stop();
-            removeChild(_loc1_);
-            _loc1_.dispose();
-            _loc2_++;
+            walkingPlayer.stop();
+            removeChild(walkingPlayer);
+            walkingPlayer.dispose();
+            i++;
          }
          racePlayerList = null;
       }
       
-      private function findPlayerByID(param1:int) : HorseRaceWalkPlayer
+      private function findPlayerByID(id:int) : HorseRaceWalkPlayer
       {
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < racePlayerList.length)
+         var walkingPlayer:* = null;
+         var i:int = 0;
+         for(i = 0; i < racePlayerList.length; )
          {
-            _loc2_ = racePlayerList[_loc3_] as HorseRaceWalkPlayer;
-            if(_loc2_.id == param1)
+            walkingPlayer = racePlayerList[i] as HorseRaceWalkPlayer;
+            if(walkingPlayer.id == id)
             {
-               return _loc2_;
+               return walkingPlayer;
             }
-            _loc3_++;
+            i++;
          }
          return null;
       }
       
-      private function callBack(param1:HorseRaceWalkPlayer, param2:Boolean, param3:int) : void
+      private function callBack($walkingPlayer:HorseRaceWalkPlayer, isLoadSucceed:Boolean, vFlag:int) : void
       {
-         if(param3 == 0)
+         if(vFlag == 0)
          {
-            var _loc4_:* = param1.playerVO.scenePlayerDirection;
-            param1.sceneCharacterDirection = _loc4_;
-            param1.setSceneCharacterDirectionDefault = _loc4_;
-            param1.mouseEnabled = false;
-            param1.showPlayerTitle();
-            param1.sceneCharacterStateType = "natural";
-            param1.showPlayerTitle();
-            param1.showVipName();
+            var _loc4_:* = $walkingPlayer.playerVO.scenePlayerDirection;
+            $walkingPlayer.sceneCharacterDirection = _loc4_;
+            $walkingPlayer.setSceneCharacterDirectionDefault = _loc4_;
+            $walkingPlayer.mouseEnabled = false;
+            $walkingPlayer.showPlayerTitle();
+            $walkingPlayer.sceneCharacterStateType = "natural";
+            $walkingPlayer.showPlayerTitle();
+            $walkingPlayer.showVipName();
          }
       }
       
@@ -450,15 +445,15 @@ package horseRace.view
          }
       }
       
-      private function _use_pingzhang(param1:HorseRaceEvents) : void
+      private function _use_pingzhang(e:HorseRaceEvents) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
+         var price:int = 0;
+         var content:* = null;
          if(HorseRaceManager.Instance.showPingzhangBuyFram)
          {
-            _loc3_ = ServerConfigManager.instance.HorseGameUsePapawMoney;
-            _loc2_ = LanguageMgr.GetTranslation("horseRace.match.usePingzhangDescription",_loc3_);
-            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc2_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
+            price = ServerConfigManager.instance.HorseGameUsePapawMoney;
+            content = LanguageMgr.GetTranslation("horseRace.match.usePingzhangDescription",price);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),content,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
             _selectBtn = ComponentFactory.Instance.creatComponentByStylename("ddtGame.buyConfirmNo.scb");
             _selectBtn.text = LanguageMgr.GetTranslation("horseRace.match.notTip");
             _selectBtn.addEventListener("click",__onClickSelectedBtn);
@@ -475,52 +470,52 @@ package horseRace.view
          }
       }
       
-      private function __onRecoverResponse(param1:FrameEvent) : void
+      private function __onRecoverResponse(e:FrameEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:int = ServerConfigManager.instance.HorseGameUsePapawMoney;
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var price:int = ServerConfigManager.instance.HorseGameUsePapawMoney;
+         if(e.responseCode == 3 || e.responseCode == 2)
          {
             if(PlayerManager.Instance.Self.bagLocked)
             {
                BaglockedManager.Instance.show();
                return;
             }
-            if(PlayerManager.Instance.Self.Money < _loc2_)
+            if(PlayerManager.Instance.Self.Money < price)
             {
                LeavePageManager.showFillFrame();
                return;
             }
             SocketManager.Instance.out.sendHorseRaceItemUse2(_selfPlayer.gameId,_selfPlayer.id);
          }
-         else if(param1.responseCode == 4 || param1.responseCode == 0 || param1.responseCode == 1)
+         else if(e.responseCode == 4 || e.responseCode == 0 || e.responseCode == 1)
          {
             HorseRaceManager.Instance.showPingzhangBuyFram = true;
          }
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",__onRecoverResponse);
+         (e.currentTarget as BaseAlerFrame).removeEventListener("response",__onRecoverResponse);
          if(_selectBtn)
          {
             _selectBtn.removeEventListener("click",__onClickSelectedBtn);
          }
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(e.currentTarget);
       }
       
-      private function __onClickSelectedBtn(param1:MouseEvent) : void
+      private function __onClickSelectedBtn(e:MouseEvent) : void
       {
          HorseRaceManager.Instance.showPingzhangBuyFram = !_selectBtn.selected;
       }
       
-      private function _use_daoju(param1:HorseRaceEvents) : void
+      private function _use_daoju(e:HorseRaceEvents) : void
       {
-         var _loc2_:int = param1.data;
-         if(_loc2_ == 1)
+         var type:int = e.data;
+         if(type == 1)
          {
             if(_buffView.buffItemType1 != 0)
             {
                SocketManager.Instance.out.sendHorseRaceItemUse(_selfPlayer.gameId,_buffView.buffItemType1,_selfPlayer.id,_playerInfoView.selectItemId);
             }
          }
-         else if(_loc2_ == 2)
+         else if(type == 2)
          {
             if(_buffView.buffItemType2 != 0)
             {
@@ -529,9 +524,9 @@ package horseRace.view
          }
       }
       
-      private function __keyDown(param1:KeyboardEvent) : void
+      private function __keyDown(event:KeyboardEvent) : void
       {
-         var _loc2_:* = param1.keyCode;
+         var _loc2_:* = event.keyCode;
          if(KeyStroke.VK_1.getCode() !== _loc2_)
          {
             if(KeyStroke.VK_2.getCode() === _loc2_)
@@ -548,103 +543,101 @@ package horseRace.view
          }
       }
       
-      private function _keyShut(param1:TimerEvent) : void
+      private function _keyShut(e:TimerEvent) : void
       {
          canKeyDown = true;
       }
       
-      private function _show_msg(param1:HorseRaceEvents) : void
+      private function _show_msg(e:HorseRaceEvents) : void
       {
-         var _loc4_:PackageIn = param1.data as PackageIn;
-         var _loc6_:String = _loc4_.readUTF();
-         var _loc3_:String = _loc4_.readUTF();
-         var _loc2_:String = _loc4_.readUTF();
-         var _loc5_:String = LanguageMgr.GetTranslation("horseRace.raceView.msgTxt",_loc6_,_loc3_,_loc2_);
-         _msgView.addMsg(_loc5_);
+         var pkg:PackageIn = e.data as PackageIn;
+         var who:String = pkg.readUTF();
+         var target:String = pkg.readUTF();
+         var itemName:String = pkg.readUTF();
+         var msg:String = LanguageMgr.GetTranslation("horseRace.raceView.msgTxt",who,target,itemName);
+         _msgView.addMsg(msg);
       }
       
-      private function _buffItem_flush(param1:HorseRaceEvents) : void
+      private function _buffItem_flush(e:HorseRaceEvents) : void
       {
-         var _loc3_:PackageIn = param1.data as PackageIn;
-         var _loc4_:int = _loc3_.readInt();
-         var _loc5_:int = _loc3_.readInt();
-         _buffView.buffItemType1 = _loc4_;
-         _buffView.buffItemType2 = _loc5_;
-         var _loc2_:Boolean = _loc3_.readBoolean();
-         _buffView.pingzhangUseSuccess = _loc2_;
-         if(_loc2_)
+         var pkg:PackageIn = e.data as PackageIn;
+         var buffItem1:int = pkg.readInt();
+         var buffItem2:int = pkg.readInt();
+         _buffView.buffItemType1 = buffItem1;
+         _buffView.buffItemType2 = buffItem2;
+         var pingzhangSuccess:Boolean = pkg.readBoolean();
+         _buffView.pingzhangUseSuccess = pingzhangSuccess;
+         if(pingzhangSuccess)
          {
             _buffView.showPingzhangDaojishi();
          }
       }
       
-      private function _synonesecond(param1:HorseRaceEvents) : void
+      private function _synonesecond(e:HorseRaceEvents) : void
       {
-         var _loc11_:int = 0;
-         var _loc12_:int = 0;
-         var _loc15_:* = null;
-         var _loc14_:int = 0;
-         var _loc18_:int = 0;
-         var _loc17_:int = 0;
-         var _loc2_:int = 0;
-         var _loc7_:* = null;
-         var _loc9_:* = null;
-         var _loc10_:* = null;
-         var _loc4_:int = 0;
-         var _loc16_:* = null;
-         var _loc6_:int = 0;
-         var _loc8_:int = 0;
-         var _loc5_:PackageIn = param1.data as PackageIn;
-         var _loc13_:int = _loc5_.readInt();
-         _buffView.timeSyn = _loc13_;
+         var i:int = 0;
+         var id:int = 0;
+         var walkingPlayer:* = null;
+         var rank:int = 0;
+         var raceLen2:int = 0;
+         var serverRaceLen:int = 0;
+         var raceDic:int = 0;
+         var msg:* = null;
+         var msg1:* = null;
+         var msg2:* = null;
+         var buffCount:int = 0;
+         var buffList:* = null;
+         var j:int = 0;
+         var buffType:int = 0;
+         var pkg:PackageIn = e.data as PackageIn;
+         var timeSyn:int = pkg.readInt();
+         _buffView.timeSyn = timeSyn;
          _buffView.flushBuffItem();
          _tenCount = Number(_tenCount) + 1;
-         var _loc3_:int = _loc5_.readInt();
-         _loc11_ = 0;
-         while(_loc11_ < _loc3_)
+         var count:int = pkg.readInt();
+         for(i = 0; i < count; )
          {
-            _loc12_ = _loc5_.readInt();
-            _loc15_ = findPlayerByID(_loc12_);
-            _loc5_.readInt();
-            _loc14_ = _loc5_.readInt();
-            if(_loc14_ != 0)
+            id = pkg.readInt();
+            walkingPlayer = findPlayerByID(id);
+            pkg.readInt();
+            rank = pkg.readInt();
+            if(rank != 0)
             {
-               _loc15_.rank = _loc14_;
-               _loc15_.isRankByCilent = false;
+               walkingPlayer.rank = rank;
+               walkingPlayer.isRankByCilent = false;
             }
-            _loc18_ = _loc15_.raceLen;
-            _loc17_ = _loc5_.readInt();
-            _loc2_ = _loc17_ - _loc18_;
-            _loc7_ = _loc15_.id + "客：" + _loc18_ + "服：" + _loc17_ + "差：" + _loc2_;
-            if(_loc17_ > maxRaceLen)
+            raceLen2 = walkingPlayer.raceLen;
+            serverRaceLen = pkg.readInt();
+            raceDic = serverRaceLen - raceLen2;
+            msg = walkingPlayer.id + "客：" + raceLen2 + "服：" + serverRaceLen + "差：" + raceDic;
+            if(serverRaceLen > maxRaceLen)
             {
-               _loc17_ = maxRaceLen;
+               serverRaceLen = maxRaceLen;
             }
             if(_tenCount > 5)
             {
-               _loc15_.raceLen = _loc17_;
+               walkingPlayer.raceLen = serverRaceLen;
             }
-            _loc9_ = _loc15_.id + "原：" + _loc15_.speed + "----" + _loc15_.raceLen;
-            _loc10_ = _loc15_.id + "改：" + _loc15_.speed + "----" + _loc15_.raceLen;
-            _loc15_.isGoToEnd = _loc5_.readBoolean();
-            _loc4_ = _loc5_.readInt();
-            _loc16_ = [];
-            _loc6_ = 0;
-            while(_loc6_ < _loc4_)
+            msg1 = walkingPlayer.id + "原：" + walkingPlayer.speed + "----" + walkingPlayer.raceLen;
+            msg2 = walkingPlayer.id + "改：" + walkingPlayer.speed + "----" + walkingPlayer.raceLen;
+            walkingPlayer.isGoToEnd = pkg.readBoolean();
+            buffCount = pkg.readInt();
+            buffList = [];
+            for(j = 0; j < buffCount; )
             {
-               _loc8_ = _loc5_.readByte();
-               _loc16_.push(_loc8_);
-               _loc5_.readInt();
-               _loc5_.readInt();
-               _loc5_.readInt();
-               _loc6_++;
+               buffType = pkg.readByte();
+               buffList.push(buffType);
+               pkg.readInt();
+               pkg.readInt();
+               pkg.readInt();
+               j++;
             }
-            if(_loc15_.isGoToEnd)
+            if(walkingPlayer.isGoToEnd)
             {
-               _loc16_ = [];
+               buffList = [];
             }
-            _loc15_.buffList = _loc16_;
-            _loc11_++;
+            walkingPlayer.buffList = buffList;
+            i++;
          }
          getRankByRaceLen();
          _playerInfoView.flushBuffList();
@@ -653,189 +646,177 @@ package horseRace.view
       
       public function getRankByRaceLen() : void
       {
-         var _loc9_:* = null;
-         var _loc11_:* = null;
-         var _loc12_:* = null;
-         var _loc8_:int = 0;
-         var _loc6_:int = 0;
-         var _loc7_:* = 0;
-         var _loc14_:* = null;
-         var _loc4_:int = 0;
-         var _loc13_:int = 0;
-         var _loc5_:int = 0;
-         var _loc10_:int = 0;
-         var _loc2_:Array = [];
-         var _loc3_:Array = [];
-         _loc8_ = 0;
-         while(_loc8_ < racePlayerList.length)
+         var walkingPlayer:* = null;
+         var walkingPlayer1:* = null;
+         var walkingPlayer2:* = null;
+         var i:int = 0;
+         var j:int = 0;
+         var k:* = 0;
+         var temp:* = null;
+         var n:int = 0;
+         var walkRank:int = 0;
+         var m:int = 0;
+         var p:int = 0;
+         var raceLenList:Array = [];
+         var raceLenUnRank:Array = [];
+         for(i = 0; i < racePlayerList.length; )
          {
-            _loc9_ = racePlayerList[_loc8_] as HorseRaceWalkPlayer;
-            if(_loc9_.isRankByCilent)
+            walkingPlayer = racePlayerList[i] as HorseRaceWalkPlayer;
+            if(walkingPlayer.isRankByCilent)
             {
-               _loc2_.push(_loc9_);
+               raceLenList.push(walkingPlayer);
             }
             else
             {
-               _loc3_.push(_loc9_);
+               raceLenUnRank.push(walkingPlayer);
             }
-            _loc8_++;
+            i++;
          }
-         _loc6_ = 0;
-         while(_loc6_ < _loc2_.length)
+         for(j = 0; j < raceLenList.length; )
          {
-            _loc7_ = _loc6_;
-            while(_loc7_ < _loc2_.length)
+            for(k = j; k < raceLenList.length; )
             {
-               if(_loc2_[_loc6_].raceLen < _loc2_[_loc7_].raceLen)
+               if(raceLenList[j].raceLen < raceLenList[k].raceLen)
                {
-                  _loc14_ = _loc2_[_loc6_];
-                  _loc2_[_loc6_] = _loc2_[_loc7_];
-                  _loc2_[_loc7_] = _loc14_;
+                  temp = raceLenList[j];
+                  raceLenList[j] = raceLenList[k];
+                  raceLenList[k] = temp;
                }
-               _loc7_++;
+               k++;
             }
-            _loc6_++;
+            j++;
          }
-         var _loc1_:Array = [0,0,0,0,0];
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_.length)
+         var myRankList:Array = [0,0,0,0,0];
+         for(n = 0; n < raceLenUnRank.length; )
          {
-            _loc12_ = _loc3_[_loc4_] as HorseRaceWalkPlayer;
-            _loc13_ = _loc12_.rank;
-            _loc1_[_loc13_ - 1] = _loc12_;
-            _loc4_++;
+            walkingPlayer2 = raceLenUnRank[n] as HorseRaceWalkPlayer;
+            walkRank = walkingPlayer2.rank;
+            myRankList[walkRank - 1] = walkingPlayer2;
+            n++;
          }
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_.length)
+         for(m = 0; m < raceLenList.length; )
          {
-            _loc11_ = _loc2_[_loc5_] as HorseRaceWalkPlayer;
-            _loc10_ = 0;
-            while(_loc10_ < _loc1_.length)
+            walkingPlayer1 = raceLenList[m] as HorseRaceWalkPlayer;
+            for(p = 0; p < myRankList.length; )
             {
-               if(_loc1_[_loc10_] == 0)
+               if(myRankList[p] == 0)
                {
-                  _loc1_[_loc10_] = _loc11_;
-                  _loc11_.rank = _loc10_ + 1;
+                  myRankList[p] = walkingPlayer1;
+                  walkingPlayer1.rank = p + 1;
                   break;
                }
-               _loc10_++;
+               p++;
             }
-            _loc5_++;
+            m++;
          }
       }
       
-      public function getRankByRaceLen2(param1:Array) : Array
+      public function getRankByRaceLen2(arr:Array) : Array
       {
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:* = 0;
-         _loc4_ = 0;
-         while(_loc4_ < param1.length)
+         var temp:int = 0;
+         var i:int = 0;
+         var j:* = 0;
+         for(i = 0; i < arr.length; )
          {
-            _loc3_ = _loc4_;
-            while(_loc3_ < param1.length)
+            for(j = i; j < arr.length; )
             {
-               if(param1[_loc4_] < param1[_loc3_])
+               if(arr[i] < arr[j])
                {
-                  _loc2_ = param1[_loc4_];
-                  param1[_loc4_] = param1[_loc3_];
-                  param1[_loc3_] = _loc2_;
+                  temp = arr[i];
+                  arr[i] = arr[j];
+                  arr[j] = temp;
                }
-               _loc3_++;
+               j++;
             }
-            _loc4_++;
+            i++;
          }
-         return param1;
+         return arr;
       }
       
-      private function _allRaceEnd(param1:HorseRaceEvents) : void
+      private function _allRaceEnd(e:HorseRaceEvents) : void
       {
-         var _loc6_:int = 0;
-         var _loc2_:int = 0;
-         var _loc4_:* = null;
-         var _loc5_:PackageIn = param1.data as PackageIn;
-         var _loc3_:int = _loc5_.readInt();
-         _loc6_ = 0;
-         while(_loc6_ < _loc3_)
+         var i:int = 0;
+         var id:int = 0;
+         var walkingPlayer:* = null;
+         var pkg:PackageIn = e.data as PackageIn;
+         var count:int = pkg.readInt();
+         for(i = 0; i < count; )
          {
-            _loc2_ = _loc5_.readInt();
-            _loc4_ = findPlayerByID(_loc2_);
-            _loc6_++;
+            id = pkg.readInt();
+            walkingPlayer = findPlayerByID(id);
+            i++;
          }
       }
       
-      private function _raceEnd(param1:HorseRaceEvents) : void
+      private function _raceEnd(e:HorseRaceEvents) : void
       {
-         var _loc6_:int = 0;
-         var _loc2_:int = 0;
-         var _loc4_:* = null;
-         var _loc5_:PackageIn = param1.data as PackageIn;
-         var _loc3_:int = _loc5_.readInt();
-         _loc6_ = 0;
-         while(_loc6_ < _loc3_)
+         var i:int = 0;
+         var id:int = 0;
+         var walkingPlayer:* = null;
+         var pkg:PackageIn = e.data as PackageIn;
+         var count:int = pkg.readInt();
+         for(i = 0; i < count; )
          {
-            _loc2_ = _loc5_.readInt();
-            _loc4_ = findPlayerByID(_loc2_);
-            _loc6_++;
+            id = pkg.readInt();
+            walkingPlayer = findPlayerByID(id);
+            i++;
          }
       }
       
-      private function _speedChange(param1:HorseRaceEvents) : void
+      private function _speedChange(e:HorseRaceEvents) : void
       {
-         var _loc7_:int = 0;
-         var _loc2_:int = 0;
-         var _loc5_:* = null;
-         var _loc4_:int = 0;
-         var _loc6_:PackageIn = param1.data as PackageIn;
-         var _loc3_:int = _loc6_.readInt();
-         _loc7_ = 0;
-         while(_loc7_ < _loc3_)
+         var i:int = 0;
+         var id:int = 0;
+         var walkingPlayer:* = null;
+         var speed:int = 0;
+         var pkg:PackageIn = e.data as PackageIn;
+         var count:int = pkg.readInt();
+         for(i = 0; i < count; )
          {
-            _loc2_ = _loc6_.readInt();
-            _loc5_ = findPlayerByID(_loc2_);
-            _loc4_ = _loc6_.readInt();
-            _loc5_.speed = _loc4_;
-            _loc7_++;
+            id = pkg.readInt();
+            walkingPlayer = findPlayerByID(id);
+            speed = pkg.readInt();
+            walkingPlayer.speed = speed;
+            i++;
          }
       }
       
-      private function _beginRace(param1:HorseRaceEvents) : void
+      private function _beginRace(e:HorseRaceEvents) : void
       {
          startRace();
       }
       
-      private function _startFiveCountDown(param1:HorseRaceEvents) : void
+      private function _startFiveCountDown(e:HorseRaceEvents) : void
       {
-         var _loc3_:PackageIn = param1.data as PackageIn;
-         var _loc2_:int = _loc3_.readInt();
-         startCountDown(_loc2_ / 1000);
+         var pkg:PackageIn = e.data as PackageIn;
+         var count:int = pkg.readInt();
+         startCountDown(count / 1000);
       }
       
-      private function _initPlayerInfo(param1:HorseRaceEvents) : void
+      private function _initPlayerInfo(e:HorseRaceEvents) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
+         var i:int = 0;
+         var info:* = null;
          racePlayerList = [];
-         var _loc3_:PackageIn = param1.data as PackageIn;
-         gameId = _loc3_.readInt();
-         var _loc2_:int = _loc3_.readInt();
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_)
+         var pkg:PackageIn = e.data as PackageIn;
+         gameId = pkg.readInt();
+         var count:int = pkg.readInt();
+         for(i = 0; i < count; )
          {
-            _loc4_ = new HorseRacePlayerInfo();
-            _loc4_.ID = _loc3_.readInt();
-            _loc4_.NickName = _loc3_.readUTF();
-            _loc4_.Sex = _loc3_.readBoolean();
-            _loc4_.Hide = _loc3_.readInt();
-            _loc4_.Style = _loc3_.readUTF();
-            _loc4_.Colors = _loc3_.readUTF();
-            _loc4_.Skin = _loc3_.readUTF();
-            _loc4_.Grade = _loc3_.readInt();
-            _loc4_.horseRaceIndex = _loc3_.readInt();
-            _loc4_.horseRaceSpeed = _loc3_.readInt();
-            _loc4_.MountsType = _loc3_.readInt();
-            addPlayer(_loc4_,_loc4_.horseRaceIndex - 1,_loc4_.horseRaceSpeed);
-            _loc5_++;
+            info = new HorseRacePlayerInfo();
+            info.ID = pkg.readInt();
+            info.NickName = pkg.readUTF();
+            info.Sex = pkg.readBoolean();
+            info.Hide = pkg.readInt();
+            info.Style = pkg.readUTF();
+            info.Colors = pkg.readUTF();
+            info.Skin = pkg.readUTF();
+            info.Grade = pkg.readInt();
+            info.horseRaceIndex = pkg.readInt();
+            info.horseRaceSpeed = pkg.readInt();
+            info.MountsType = pkg.readInt();
+            addPlayer(info,info.horseRaceIndex - 1,info.horseRaceSpeed);
+            i++;
          }
          initPlayerInfoView();
          initMsgView();
@@ -858,19 +839,18 @@ package horseRace.view
       
       private function initPlayerInfoView() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var walkingPlayer:* = null;
+         var itemView:* = null;
          _playerInfoView = new HorseRacePlayerInfoView();
          PositionUtils.setPos(_playerInfoView,"horseRace.raceView.playerInfoViewPos");
          addChild(_playerInfoView);
-         _loc3_ = 0;
-         while(_loc3_ < racePlayerList.length)
+         for(i = 0; i < racePlayerList.length; )
          {
-            _loc2_ = racePlayerList[_loc3_] as HorseRaceWalkPlayer;
-            _loc1_ = new HorseRacePlayerItemView(_loc2_);
-            _playerInfoView.addPlayerItem(_loc1_);
-            _loc3_++;
+            walkingPlayer = racePlayerList[i] as HorseRaceWalkPlayer;
+            itemView = new HorseRacePlayerItemView(walkingPlayer);
+            _playerInfoView.addPlayerItem(itemView);
+            i++;
          }
       }
       

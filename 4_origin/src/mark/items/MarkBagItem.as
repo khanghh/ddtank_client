@@ -35,10 +35,10 @@ package mark.items
          imgStatus.visible = false;
       }
       
-      private function clickHandler(param1:InteractiveEvent) : void
+      private function clickHandler(evt:InteractiveEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:* = null;
+         var index:int = 0;
+         var menu:* = null;
          if(_id < 0)
          {
             return;
@@ -57,10 +57,10 @@ package mark.items
             else
             {
                imgStatus.visible = false;
-               _loc2_ = MarkMgr.inst.model.sellList.indexOf(_id);
-               if(_loc2_ > -1)
+               index = MarkMgr.inst.model.sellList.indexOf(_id);
+               if(index > -1)
                {
-                  MarkMgr.inst.model.sellList.splice(_loc2_,1);
+                  MarkMgr.inst.model.sellList.splice(index,1);
                }
             }
             MarkMgr.inst.dispatchEvent(new MarkEvent("sellStatus"));
@@ -68,82 +68,79 @@ package mark.items
          else
          {
             imgStatus.visible = false;
-            _loc3_ = new MarkBagMenu(_id);
-            _loc3_.x = parent.x + x + _cell.x + _cell.width - 8;
-            _loc3_.y = parent.y + y + _cell.y + _cell.height - 10;
-            parent.parent.addChild(_loc3_);
+            menu = new MarkBagMenu(_id);
+            menu.x = parent.x + x + _cell.x + _cell.width - 8;
+            menu.y = parent.y + y + _cell.y + _cell.height - 10;
+            parent.parent.addChild(menu);
          }
-         param1.stopImmediatePropagation();
+         evt.stopImmediatePropagation();
       }
       
-      public function set data(param1:MarkChipData) : void
+      public function set data(value:MarkChipData) : void
       {
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
-         var _loc8_:int = 0;
-         var _loc7_:* = null;
-         var _loc4_:int = 0;
-         this.tipData = param1;
-         var _loc9_:* = param1 != null;
+         var k:int = 0;
+         var cellBG:* = null;
+         var i:int = 0;
+         var starArr:* = null;
+         var j:int = 0;
+         this.tipData = value;
+         var _loc9_:* = value != null;
          this.mouseEnabled = _loc9_;
          this.mouseChildren = _loc9_;
-         var _loc2_:Array = ["",conStars1,conStars2,conStars3,conStars4,conStars5];
-         var _loc3_:Array = ["",[clipStar11],[clipStar21,clipStar22],[clipStar31,clipStar32,clipStar33],[clipStar41,clipStar42,clipStar43,clipStar44],[clipStar51,clipStar52,clipStar53,clipStar54,clipStar55]];
-         if(!param1)
+         var containers:Array = ["",conStars1,conStars2,conStars3,conStars4,conStars5];
+         var stars:Array = ["",[clipStar11],[clipStar21,clipStar22],[clipStar31,clipStar32,clipStar33],[clipStar41,clipStar42,clipStar43,clipStar44],[clipStar51,clipStar52,clipStar53,clipStar54,clipStar55]];
+         if(!value)
          {
             if(_cell)
             {
                _cell.info = null;
             }
-            _loc6_ = 1;
-            while(_loc6_ < _loc2_.length)
+            for(k = 1; k < containers.length; )
             {
-               _loc2_[_loc6_].visible = false;
-               _loc6_++;
+               containers[k].visible = false;
+               k++;
             }
             imgStatus.visible = false;
             return;
          }
-         _id = param1.itemID;
+         _id = value.itemID;
          imgStatus.visible = MarkMgr.inst.model.sellList && MarkMgr.inst.model.sellList.indexOf(_id) > -1;
          if(!_cell)
          {
-            _loc5_ = new Shape();
-            _loc5_.graphics.beginFill(16777215,0);
-            _loc5_.graphics.drawRect(0,0,56,56);
-            _loc5_.graphics.endFill();
-            _cell = new BaseCell(_loc5_);
+            cellBG = new Shape();
+            cellBG.graphics.beginFill(16777215,0);
+            cellBG.graphics.drawRect(0,0,56,56);
+            cellBG.graphics.endFill();
+            _cell = new BaseCell(cellBG);
             _cell.setContentSize(46,46);
             itemBox.addChild(_cell);
             _cell.addEventListener("interactive_click",clickHandler);
             _cell.addEventListener("interactive_double_click",doubleClickHandler);
             DoubleClickManager.Instance.enableDoubleClick(_cell);
          }
-         _cell.info = ItemManager.Instance.getTemplateById(param1.templateId);
-         _cell.tipData = null;
-         _loc8_ = 1;
-         while(_loc8_ < _loc2_.length)
+         _cell.info = ItemManager.Instance.getTemplateById(value.templateId);
+         _cell.tipData = value;
+         for(i = 1; i < containers.length; )
          {
-            if(_loc8_ == param1.bornLv + param1.hammerLv)
+            if(i == value.bornLv + value.hammerLv)
             {
-               _loc2_[_loc8_].visible = true;
-               _loc7_ = _loc3_[_loc8_];
-               _loc4_ = 0;
-               while(_loc4_ < _loc7_.length)
+               containers[i].visible = true;
+               starArr = stars[i];
+               for(j = 0; j < starArr.length; )
                {
-                  _loc7_[_loc4_].index = _loc4_ < param1.bornLv?0:1;
-                  _loc4_++;
+                  starArr[j].index = j < value.bornLv?0:1;
+                  j++;
                }
             }
             else
             {
-               _loc2_[_loc8_].visible = false;
+               containers[i].visible = false;
             }
-            _loc8_++;
+            i++;
          }
       }
       
-      protected function doubleClickHandler(param1:InteractiveEvent) : void
+      protected function doubleClickHandler(evt:InteractiveEvent) : void
       {
          if(!MarkMgr.inst.model.sellStatus)
          {
@@ -153,7 +150,7 @@ package mark.items
                return;
             }
             MarkMgr.inst.moveChip(_id);
-            param1.stopImmediatePropagation();
+            evt.stopImmediatePropagation();
          }
       }
       

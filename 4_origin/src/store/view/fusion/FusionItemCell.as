@@ -35,20 +35,20 @@ package store.view.fusion
       
       private var _autoSplit:Boolean;
       
-      public function FusionItemCell(param1:int)
+      public function FusionItemCell($index:int)
       {
          bg = new Sprite();
          canMouseEvt = true;
          _cellBg = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreIIFusionBG.Material");
          _cellBg.label = LanguageMgr.GetTranslation("store.view.fusion.StoreIIFusionBG.MaterialCellText");
          bg.addChild(_cellBg);
-         super(bg,param1);
+         super(bg,$index);
          PicPos = new Point(10,10);
       }
       
-      public function set bgVisible(param1:Boolean) : void
+      public function set bgVisible(boo:Boolean) : void
       {
-         bg.alpha = int(param1);
+         bg.alpha = int(boo);
       }
       
       override public function startShine() : void
@@ -61,12 +61,12 @@ package store.view.fusion
          super.startShine();
       }
       
-      public function set mouseEvt(param1:Boolean) : void
+      public function set mouseEvt(boo:Boolean) : void
       {
-         canMouseEvt = param1;
+         canMouseEvt = boo;
       }
       
-      override protected function __doubleClickHandler(param1:InteractiveEvent) : void
+      override protected function __doubleClickHandler(evt:InteractiveEvent) : void
       {
          if(!canMouseEvt)
          {
@@ -80,9 +80,9 @@ package store.view.fusion
          {
             return;
          }
-         if((param1.currentTarget as BagCell).info != null)
+         if((evt.currentTarget as BagCell).info != null)
          {
-            if((param1.currentTarget as BagCell).info != null)
+            if((evt.currentTarget as BagCell).info != null)
             {
                if(StrengthDataManager.instance.autoFusion)
                {
@@ -100,7 +100,7 @@ package store.view.fusion
          }
       }
       
-      override protected function __clickHandler(param1:InteractiveEvent) : void
+      override protected function __clickHandler(evt:InteractiveEvent) : void
       {
          if(!canMouseEvt)
          {
@@ -119,33 +119,33 @@ package store.view.fusion
          StoreIIFusionBG.lastIndexFusion = index;
       }
       
-      override public function dragStop(param1:DragEffect) : void
+      override public function dragStop(effect:DragEffect) : void
       {
-         super.dragStop(param1);
+         super.dragStop(effect);
          StoreIIFusionBG.lastIndexFusion = -1;
       }
       
-      override protected function updateSize(param1:Sprite) : void
+      override protected function updateSize(sp:Sprite) : void
       {
-         if(param1)
+         if(sp)
          {
-            param1.width = _contentWidth - 18;
-            param1.height = _contentHeight - 18;
+            sp.width = _contentWidth - 18;
+            sp.height = _contentHeight - 18;
             if(_picPos != null)
             {
-               param1.x = _picPos.x;
+               sp.x = _picPos.x;
             }
             else
             {
-               param1.x = Math.abs(param1.width - _contentWidth) / 2;
+               sp.x = Math.abs(sp.width - _contentWidth) / 2;
             }
             if(_picPos != null)
             {
-               param1.y = _picPos.y;
+               sp.y = _picPos.y;
             }
             else
             {
-               param1.y = Math.abs(param1.height - _contentHeight) / 2;
+               sp.y = Math.abs(sp.height - _contentHeight) / 2;
             }
          }
       }
@@ -162,9 +162,9 @@ package store.view.fusion
          addChild(_tbxCount);
       }
       
-      override public function dragDrop(param1:DragEffect) : void
+      override public function dragDrop(effect:DragEffect) : void
       {
-         var _loc2_:* = null;
+         var _aler:* = null;
          if(!canMouseEvt)
          {
             return;
@@ -174,24 +174,24 @@ package store.view.fusion
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc3_:InventoryItemInfo = param1.data as InventoryItemInfo;
-         if(_loc3_.BagType == 12 && this.info != null)
+         var sourceInfo:InventoryItemInfo = effect.data as InventoryItemInfo;
+         if(sourceInfo.BagType == 12 && this.info != null)
          {
             return;
          }
-         if(_loc3_ && param1.action != "split")
+         if(sourceInfo && effect.action != "split")
          {
-            param1.action = "none";
-            if(_loc3_.getRemainDate() <= 0)
+            effect.action = "none";
+            if(sourceInfo.getRemainDate() <= 0)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.view.fusion.AccessoryItemCell.overdue"));
                return;
             }
-            if(_loc3_.Property1 == "8")
+            if(sourceInfo.Property1 == "8")
             {
                return;
             }
-            if(_loc3_.FusionType == 0 || _loc3_.FusionRate == 0)
+            if(sourceInfo.FusionType == 0 || sourceInfo.FusionRate == 0)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.view.fusion.AccessoryItemCell.fusion"));
                return;
@@ -199,61 +199,61 @@ package store.view.fusion
             if(StrengthDataManager.instance.autoFusion)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.fusion.donMoveGoods"));
-               param1.action = "none";
+               effect.action = "none";
                DragManager.acceptDrag(this);
                return;
             }
-            if(_loc3_.Count > 1)
+            if(sourceInfo.Count > 1)
             {
                _autoSplit = (this.parent as StoreIIFusionBG).isAutoSplit;
                if(_autoSplit && StoreIIFusionBG.lastIndexFusion == -1)
                {
-                  StoreIIFusionBG.autoSplitSend(_loc3_.BagType,_loc3_.Place,12,StoreIIFusionBG.getRemainIndexByEmpty(_loc3_.Count,this.parent as StoreIIFusionBG),_loc3_.Count,true,this.parent as StoreIIFusionBG);
+                  StoreIIFusionBG.autoSplitSend(sourceInfo.BagType,sourceInfo.Place,12,StoreIIFusionBG.getRemainIndexByEmpty(sourceInfo.Count,this.parent as StoreIIFusionBG),sourceInfo.Count,true,this.parent as StoreIIFusionBG);
                }
                else
                {
-                  _loc2_ = ComponentFactory.Instance.creat("ddtstore.FusionSelectNumAlertFrame");
-                  _loc2_.goodsinfo = _loc3_;
-                  _loc2_.index = index;
-                  _loc2_.show(_loc3_.Count);
-                  _loc2_.addEventListener("sell",_alerSell);
-                  _loc2_.addEventListener("notsell",_alerNotSell);
+                  _aler = ComponentFactory.Instance.creat("ddtstore.FusionSelectNumAlertFrame");
+                  _aler.goodsinfo = sourceInfo;
+                  _aler.index = index;
+                  _aler.show(sourceInfo.Count);
+                  _aler.addEventListener("sell",_alerSell);
+                  _aler.addEventListener("notsell",_alerNotSell);
                }
             }
             else
             {
-               SocketManager.Instance.out.sendMoveGoods(_loc3_.BagType,_loc3_.Place,12,index,_loc3_.Count,true);
+               SocketManager.Instance.out.sendMoveGoods(sourceInfo.BagType,sourceInfo.Place,12,index,sourceInfo.Count,true);
             }
-            param1.action = "none";
+            effect.action = "none";
             DragManager.acceptDrag(this);
          }
       }
       
-      private function _alerSell(param1:FusionSelectEvent) : void
+      private function _alerSell(e:FusionSelectEvent) : void
       {
-         var _loc2_:FusionSelectNumAlertFrame = param1.currentTarget as FusionSelectNumAlertFrame;
-         SocketManager.Instance.out.sendMoveGoods(param1.info.BagType,param1.info.Place,12,param1.index,param1.sellCount,true);
-         _loc2_.removeEventListener("sell",_alerSell);
-         _loc2_.removeEventListener("notsell",_alerNotSell);
-         _loc2_.dispose();
-         if(_loc2_ && _loc2_.parent)
+         var _aler:FusionSelectNumAlertFrame = e.currentTarget as FusionSelectNumAlertFrame;
+         SocketManager.Instance.out.sendMoveGoods(e.info.BagType,e.info.Place,12,e.index,e.sellCount,true);
+         _aler.removeEventListener("sell",_alerSell);
+         _aler.removeEventListener("notsell",_alerNotSell);
+         _aler.dispose();
+         if(_aler && _aler.parent)
          {
-            removeChild(_loc2_);
+            removeChild(_aler);
          }
-         _loc2_ = null;
+         _aler = null;
       }
       
-      private function _alerNotSell(param1:FusionSelectEvent) : void
+      private function _alerNotSell(e:FusionSelectEvent) : void
       {
-         var _loc2_:FusionSelectNumAlertFrame = param1.currentTarget as FusionSelectNumAlertFrame;
-         _loc2_.removeEventListener("sell",_alerSell);
-         _loc2_.removeEventListener("notsell",_alerNotSell);
-         _loc2_.dispose();
-         if(_loc2_ && _loc2_.parent)
+         var _aler:FusionSelectNumAlertFrame = e.currentTarget as FusionSelectNumAlertFrame;
+         _aler.removeEventListener("sell",_alerSell);
+         _aler.removeEventListener("notsell",_alerNotSell);
+         _aler.dispose();
+         if(_aler && _aler.parent)
          {
-            removeChild(_loc2_);
+            removeChild(_aler);
          }
-         _loc2_ = null;
+         _aler = null;
       }
       
       override public function dispose() : void

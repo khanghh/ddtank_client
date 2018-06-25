@@ -59,10 +59,10 @@ package ddtmatch.view
       
       private function initView() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
+         var j:int = 0;
+         var buyCell:* = null;
+         var i:int = 0;
+         var buyCell1:* = null;
          _bg = ComponentFactory.Instance.creatBitmap("ddtmatch.matchBg");
          addChild(_bg);
          _watchGameBtn = ComponentFactory.Instance.creatComponentByStylename("asset.ddtmatch.match.watchGameBtn");
@@ -76,13 +76,12 @@ package ddtmatch.view
          _cellVec = new Vector.<DDTMatchBuyCell>();
          _vBox = new VBox();
          _vBox.spacing = 3;
-         _loc3_ = 0;
-         while(_loc3_ < 4)
+         for(j = 0; j < 4; )
          {
-            _loc1_ = new DDTMatchBuyCell(_loc3_,0);
-            _vBox.addChild(_loc1_);
-            _cellVec.push(_loc1_);
-            _loc3_++;
+            buyCell = new DDTMatchBuyCell(j,0);
+            _vBox.addChild(buyCell);
+            _cellVec.push(buyCell);
+            j++;
          }
          _listPanel = ComponentFactory.Instance.creatComponentByStylename("ddtmatch.match.scrollPanel");
          _listPanel.setView(_vBox);
@@ -91,13 +90,12 @@ package ddtmatch.view
          _cellTeamVec = new Vector.<DDTMatchBuyCell>();
          _vBoxTeam = new VBox();
          _vBoxTeam.spacing = 3;
-         _loc4_ = 0;
-         while(_loc4_ < 4)
+         for(i = 0; i < 4; )
          {
-            _loc2_ = new DDTMatchBuyCell(_loc4_,1);
-            _vBoxTeam.addChild(_loc2_);
-            _cellTeamVec.push(_loc2_);
-            _loc4_++;
+            buyCell1 = new DDTMatchBuyCell(i,1);
+            _vBoxTeam.addChild(buyCell1);
+            _cellTeamVec.push(buyCell1);
+            i++;
          }
          _listTeamPanel = ComponentFactory.Instance.creatComponentByStylename("ddtmatch.match.scrollPanel");
          _listTeamPanel.setView(_vBoxTeam);
@@ -112,31 +110,29 @@ package ddtmatch.view
          DDTMatchManager.instance.addEventListener("matchInfo",__matchInfoHandler);
       }
       
-      protected function __matchInfoHandler(param1:CrazyTankSocketEvent) : void
+      protected function __matchInfoHandler(event:CrazyTankSocketEvent) : void
       {
-         var _loc3_:int = 0;
+         var i:int = 0;
          countryList = [];
          moneyList = [];
-         var _loc2_:PackageIn = param1.pkg;
-         _loc3_ = 0;
-         while(_loc3_ < 8)
+         var pkg:PackageIn = event.pkg;
+         for(i = 0; i < 8; )
          {
-            countryList.push(_loc2_.readInt());
-            moneyList.push(_loc2_.readInt());
-            _loc3_++;
+            countryList.push(pkg.readInt());
+            moneyList.push(pkg.readInt());
+            i++;
          }
-         _loc3_ = 0;
-         while(_loc3_ < 4)
+         for(i = 0; i < 4; )
          {
-            _cellVec[_loc3_].setinfo(countryList[_loc3_],moneyList[_loc3_]);
-            _cellTeamVec[_loc3_].setinfo(countryList[_loc3_ + 4],moneyList[_loc3_ + 4]);
-            _loc3_++;
+            _cellVec[i].setinfo(countryList[i],moneyList[i]);
+            _cellTeamVec[i].setinfo(countryList[i + 4],moneyList[i + 4]);
+            i++;
          }
       }
       
-      private function _watchGameBtnClickHandler(param1:MouseEvent) : void
+      private function _watchGameBtnClickHandler(e:MouseEvent) : void
       {
-         var _loc2_:String = PathManager.solveRequestPath("Record/recording.html");
+         var str:String = PathManager.solveRequestPath("Record/recording.html");
       }
       
       private function removeEvent() : void
@@ -181,16 +177,16 @@ class ScoreCell extends BagCell
    
    private var _scoreTxt:FilterFrameText;
    
-   function ScoreCell(param1:int = 0, param2:ItemTemplateInfo = null, param3:Boolean = true)
+   function ScoreCell(index:int = 0, info:ItemTemplateInfo = null, showLoading:Boolean = true)
    {
-      super(param1,param2,param3);
+      super(index,info,showLoading);
       _scoreTxt = ComponentFactory.Instance.creatComponentByStylename("ddtmatch.match.scoreCellTxt");
       addChild(_scoreTxt);
    }
    
-   public function setScore(param1:int) : void
+   public function setScore(score:int) : void
    {
-      _scoreTxt.text = LanguageMgr.GetTranslation("ddt.DDTMatch.matchView.scoreCell",param1);
+      _scoreTxt.text = LanguageMgr.GetTranslation("ddt.DDTMatch.matchView.scoreCell",score);
    }
    
    override public function dispose() : void

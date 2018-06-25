@@ -52,9 +52,9 @@ package kingDivision.model
          super();
       }
       
-      public function getLevelGoodsItems(param1:int) : Array
+      public function getLevelGoodsItems(level:int) : Array
       {
-         return goods[param1];
+         return goods[level];
       }
       
       public function get isOpen() : Boolean
@@ -62,9 +62,9 @@ package kingDivision.model
          return _isOpen;
       }
       
-      public function set isOpen(param1:Boolean) : void
+      public function set isOpen(value:Boolean) : void
       {
-         _isOpen = param1;
+         _isOpen = value;
       }
       
       public function get zoneIndex() : int
@@ -72,9 +72,9 @@ package kingDivision.model
          return _zoneIndex;
       }
       
-      public function set zoneIndex(param1:int) : void
+      public function set zoneIndex(value:int) : void
       {
-         _zoneIndex = param1;
+         _zoneIndex = value;
       }
       
       public function get dateArr() : Array
@@ -82,9 +82,9 @@ package kingDivision.model
          return _dateArr;
       }
       
-      public function set dateArr(param1:Array) : void
+      public function set dateArr(value:Array) : void
       {
-         _dateArr = param1;
+         _dateArr = value;
       }
       
       public function get allDateArr() : Array
@@ -92,9 +92,9 @@ package kingDivision.model
          return _allDateArr;
       }
       
-      public function set allDateArr(param1:Array) : void
+      public function set allDateArr(value:Array) : void
       {
-         _allDateArr = param1;
+         _allDateArr = value;
       }
       
       public function get thisZoneNickName() : String
@@ -102,9 +102,9 @@ package kingDivision.model
          return _thisZoneNickName;
       }
       
-      public function set thisZoneNickName(param1:String) : void
+      public function set thisZoneNickName(value:String) : void
       {
-         _thisZoneNickName = param1;
+         _thisZoneNickName = value;
       }
       
       public function get allZoneNickName() : String
@@ -112,9 +112,9 @@ package kingDivision.model
          return _allZoneNickName;
       }
       
-      public function set allZoneNickName(param1:String) : void
+      public function set allZoneNickName(value:String) : void
       {
-         _allZoneNickName = param1;
+         _allZoneNickName = value;
       }
       
       public function get points() : int
@@ -122,9 +122,9 @@ package kingDivision.model
          return _points;
       }
       
-      public function set points(param1:int) : void
+      public function set points(value:int) : void
       {
-         _points = param1;
+         _points = value;
       }
       
       public function get gameNum() : int
@@ -132,9 +132,9 @@ package kingDivision.model
          return _gameNum;
       }
       
-      public function set gameNum(param1:int) : void
+      public function set gameNum(value:int) : void
       {
-         _gameNum = param1;
+         _gameNum = value;
       }
       
       public function get states() : int
@@ -142,9 +142,9 @@ package kingDivision.model
          return _states;
       }
       
-      public function set states(param1:int) : void
+      public function set states(value:int) : void
       {
-         _states = param1;
+         _states = value;
       }
       
       public function get level() : int
@@ -152,9 +152,9 @@ package kingDivision.model
          return _level;
       }
       
-      public function set level(param1:int) : void
+      public function set level(value:int) : void
       {
-         _level = param1;
+         _level = value;
       }
    }
 }

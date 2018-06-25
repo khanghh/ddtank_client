@@ -18,43 +18,43 @@ package ddt.view.sceneCharacter
       
       private var _type:String;
       
-      public function SceneCharacterDirection(param1:String, param2:Boolean)
+      public function SceneCharacterDirection(type:String, isMirror:Boolean)
       {
          super();
-         _type = param1;
-         this._isMirror = param2;
+         _type = type;
+         this._isMirror = isMirror;
       }
       
-      public static function getDirection(param1:Point, param2:Point) : SceneCharacterDirection
+      public static function getDirection(thisP:Point, nextP:Point) : SceneCharacterDirection
       {
-         var _loc3_:Number = getDegrees(param1,param2);
-         if(_loc3_ >= 0 && _loc3_ < 90)
+         var degrees:Number = getDegrees(thisP,nextP);
+         if(degrees >= 0 && degrees < 90)
          {
             return SceneCharacterDirection.RT;
          }
-         if(_loc3_ >= 90 && _loc3_ < 180)
+         if(degrees >= 90 && degrees < 180)
          {
             return SceneCharacterDirection.LT;
          }
-         if(_loc3_ >= 180 && _loc3_ < 270)
+         if(degrees >= 180 && degrees < 270)
          {
             return SceneCharacterDirection.LB;
          }
-         if(_loc3_ >= 270 && _loc3_ < 360)
+         if(degrees >= 270 && degrees < 360)
          {
             return SceneCharacterDirection.RB;
          }
          return SceneCharacterDirection.RB;
       }
       
-      private static function getDegrees(param1:Point, param2:Point) : Number
+      private static function getDegrees(thisP:Point, nextP:Point) : Number
       {
-         var _loc3_:Number = Math.atan2(param1.y - param2.y,param2.x - param1.x) * 180 / 3.14159265358979;
-         if(_loc3_ < 0)
+         var degrees:Number = Math.atan2(thisP.y - nextP.y,nextP.x - thisP.x) * 180 / 3.14159265358979;
+         if(degrees < 0)
          {
-            _loc3_ = _loc3_ + 360;
+            degrees = degrees + 360;
          }
-         return _loc3_;
+         return degrees;
       }
       
       public function get isMirror() : Boolean

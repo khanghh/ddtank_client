@@ -29,9 +29,9 @@ package hallIcon
       
       public var model:HallIconModel;
       
-      public function HallIconManager(param1:IEventDispatcher = null)
+      public function HallIconManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : HallIconManager
@@ -83,7 +83,7 @@ package hallIcon
          model.dataChange("updateLeftIconView",new HallIconInfo("firstrecharge"));
       }
       
-      private function __vipLvlIsOpenHandler(param1:Event) : void
+      private function __vipLvlIsOpenHandler(evt:Event) : void
       {
          if(PlayerManager.Instance.Self.Grade < 30 && !PlayerManager.Instance.Self.IsVIP)
          {
@@ -96,15 +96,15 @@ package hallIcon
          model.dataChange("updateLeftIconView",new HallIconInfo("viplvl"));
       }
       
-      private function cacheRightIcon(param1:String, param2:HallIconInfo) : void
+      private function cacheRightIcon($icontype:String, $iconInfo:HallIconInfo) : void
       {
-         if(param2.isopen)
+         if($iconInfo.isopen)
          {
-            model.cacheRightIconDic[param1] = param2;
+            model.cacheRightIconDic[$icontype] = $iconInfo;
          }
-         else if(model.cacheRightIconDic[param1])
+         else if(model.cacheRightIconDic[$icontype])
          {
-            delete model.cacheRightIconDic[param1];
+            delete model.cacheRightIconDic[$icontype];
          }
       }
       
@@ -113,50 +113,50 @@ package hallIcon
          model.dispatchEvent(new HallIconEvent("updateBatchRightIconView"));
       }
       
-      public function executeCacheRightIconLevelLimit(param1:String, param2:Boolean, param3:int = 0) : void
+      public function executeCacheRightIconLevelLimit($icontype:String, $isCache:Boolean, $level:int = 0) : void
       {
-         if(param2)
+         if($isCache)
          {
-            model.cacheRightIconLevelLimit[param1] = param3;
+            model.cacheRightIconLevelLimit[$icontype] = $level;
          }
-         else if(model.cacheRightIconLevelLimit[param1])
+         else if(model.cacheRightIconLevelLimit[$icontype])
          {
-            delete model.cacheRightIconLevelLimit[param1];
+            delete model.cacheRightIconLevelLimit[$icontype];
          }
       }
       
-      private function __onPlayerPropertyChange(param1:PlayerPropertyEvent) : void
+      private function __onPlayerPropertyChange(event:PlayerPropertyEvent) : void
       {
-         var _loc2_:int = 0;
-         if(param1.changedProperties["Grade"] && PlayerManager.Instance.Self.IsUpGrade)
+         var tempValue:int = 0;
+         if(event.changedProperties["Grade"] && PlayerManager.Instance.Self.IsUpGrade)
          {
             var _loc5_:int = 0;
             var _loc4_:* = model.cacheRightIconLevelLimit;
-            for(var _loc3_ in model.cacheRightIconLevelLimit)
+            for(var tempKey in model.cacheRightIconLevelLimit)
             {
-               _loc2_ = model.cacheRightIconLevelLimit[_loc3_];
-               if(PlayerManager.Instance.Self.Grade >= _loc2_)
+               tempValue = model.cacheRightIconLevelLimit[tempKey];
+               if(PlayerManager.Instance.Self.Grade >= tempValue)
                {
-                  updateSwitchHandler(_loc3_,true);
-                  delete model.cacheRightIconLevelLimit[_loc3_];
+                  updateSwitchHandler(tempKey,true);
+                  delete model.cacheRightIconLevelLimit[tempKey];
                }
             }
          }
       }
       
-      public function updateSwitchHandler(param1:String, param2:Boolean, param3:String = null, param4:int = -1, param5:Boolean = false) : void
+      public function updateSwitchHandler($icontype:String, $isopen:Boolean, $timemsg:String = null, $num:int = -1, $timeShow:Boolean = false) : void
       {
-         var _loc6_:HallIconInfo = convertIconInfo(param1,param2,param3,param4,param5);
-         cacheRightIcon(param1,_loc6_);
-         model.dispatchEvent(new HallIconEvent("updateRightIconView",_loc6_));
+         var iconInfo:HallIconInfo = convertIconInfo($icontype,$isopen,$timemsg,$num,$timeShow);
+         cacheRightIcon($icontype,iconInfo);
+         model.dispatchEvent(new HallIconEvent("updateRightIconView",iconInfo));
       }
       
-      private function convertIconInfo(param1:String, param2:Boolean, param3:String, param4:int, param5:Boolean) : HallIconInfo
+      private function convertIconInfo($icontype:String, $isopen:Boolean, $timemsg:String, $num:int, $timeShow:Boolean) : HallIconInfo
       {
-         var _loc6_:Boolean = false;
-         var _loc8_:int = 0;
-         var _loc7_:int = 99;
-         var _loc10_:* = param1;
+         var fightover:Boolean = false;
+         var halltype:int = 0;
+         var orderid:int = 99;
+         var _loc10_:* = $icontype;
          if("worldbossentrance1" !== _loc10_)
          {
             if("worldbossentrance4" !== _loc10_)
@@ -337,597 +337,629 @@ package hallIcon
                                                                                                                                                                                                                                                                                  {
                                                                                                                                                                                                                                                                                     if("mines" !== _loc10_)
                                                                                                                                                                                                                                                                                     {
-                                                                                                                                                                                                                                                                                       if("teamBattle" === _loc10_)
+                                                                                                                                                                                                                                                                                       if("teamBattle" !== _loc10_)
                                                                                                                                                                                                                                                                                        {
-                                                                                                                                                                                                                                                                                          _loc8_ = 1;
-                                                                                                                                                                                                                                                                                          _loc7_ = 70;
+                                                                                                                                                                                                                                                                                          if("devilTurn" !== _loc10_)
+                                                                                                                                                                                                                                                                                          {
+                                                                                                                                                                                                                                                                                             if("worldcupGuess" !== _loc10_)
+                                                                                                                                                                                                                                                                                             {
+                                                                                                                                                                                                                                                                                                if("dreamLandChallenge" !== _loc10_)
+                                                                                                                                                                                                                                                                                                {
+                                                                                                                                                                                                                                                                                                   if("oldPlayer" === _loc10_)
+                                                                                                                                                                                                                                                                                                   {
+                                                                                                                                                                                                                                                                                                      halltype = 2;
+                                                                                                                                                                                                                                                                                                      orderid = 74;
+                                                                                                                                                                                                                                                                                                   }
+                                                                                                                                                                                                                                                                                                }
+                                                                                                                                                                                                                                                                                                else
+                                                                                                                                                                                                                                                                                                {
+                                                                                                                                                                                                                                                                                                   halltype = 2;
+                                                                                                                                                                                                                                                                                                   orderid = 73;
+                                                                                                                                                                                                                                                                                                }
+                                                                                                                                                                                                                                                                                             }
+                                                                                                                                                                                                                                                                                             else
+                                                                                                                                                                                                                                                                                             {
+                                                                                                                                                                                                                                                                                                halltype = 2;
+                                                                                                                                                                                                                                                                                                orderid = 72;
+                                                                                                                                                                                                                                                                                             }
+                                                                                                                                                                                                                                                                                          }
+                                                                                                                                                                                                                                                                                          else
+                                                                                                                                                                                                                                                                                          {
+                                                                                                                                                                                                                                                                                             halltype = 2;
+                                                                                                                                                                                                                                                                                             orderid = 71;
+                                                                                                                                                                                                                                                                                          }
+                                                                                                                                                                                                                                                                                       }
+                                                                                                                                                                                                                                                                                       else
+                                                                                                                                                                                                                                                                                       {
+                                                                                                                                                                                                                                                                                          halltype = 1;
+                                                                                                                                                                                                                                                                                          orderid = 70;
                                                                                                                                                                                                                                                                                        }
                                                                                                                                                                                                                                                                                     }
                                                                                                                                                                                                                                                                                     else
                                                                                                                                                                                                                                                                                     {
-                                                                                                                                                                                                                                                                                       _loc8_ = 1;
-                                                                                                                                                                                                                                                                                       _loc7_ = 69;
+                                                                                                                                                                                                                                                                                       halltype = 1;
+                                                                                                                                                                                                                                                                                       orderid = 69;
                                                                                                                                                                                                                                                                                     }
                                                                                                                                                                                                                                                                                  }
                                                                                                                                                                                                                                                                                  else
                                                                                                                                                                                                                                                                                  {
-                                                                                                                                                                                                                                                                                    _loc8_ = 2;
-                                                                                                                                                                                                                                                                                    _loc7_ = 68;
+                                                                                                                                                                                                                                                                                    halltype = 2;
+                                                                                                                                                                                                                                                                                    orderid = 68;
                                                                                                                                                                                                                                                                                  }
                                                                                                                                                                                                                                                                               }
                                                                                                                                                                                                                                                                               else
                                                                                                                                                                                                                                                                               {
-                                                                                                                                                                                                                                                                                 _loc8_ = 2;
-                                                                                                                                                                                                                                                                                 _loc7_ = 67;
+                                                                                                                                                                                                                                                                                 halltype = 2;
+                                                                                                                                                                                                                                                                                 orderid = 67;
                                                                                                                                                                                                                                                                               }
                                                                                                                                                                                                                                                                            }
                                                                                                                                                                                                                                                                            else
                                                                                                                                                                                                                                                                            {
-                                                                                                                                                                                                                                                                              _loc8_ = 2;
-                                                                                                                                                                                                                                                                              _loc7_ = 66;
+                                                                                                                                                                                                                                                                              halltype = 2;
+                                                                                                                                                                                                                                                                              orderid = 66;
                                                                                                                                                                                                                                                                            }
                                                                                                                                                                                                                                                                         }
                                                                                                                                                                                                                                                                         else
                                                                                                                                                                                                                                                                         {
-                                                                                                                                                                                                                                                                           _loc8_ = 2;
-                                                                                                                                                                                                                                                                           _loc7_ = 65;
+                                                                                                                                                                                                                                                                           halltype = 2;
+                                                                                                                                                                                                                                                                           orderid = 65;
                                                                                                                                                                                                                                                                         }
                                                                                                                                                                                                                                                                      }
                                                                                                                                                                                                                                                                      else
                                                                                                                                                                                                                                                                      {
-                                                                                                                                                                                                                                                                        _loc8_ = 2;
-                                                                                                                                                                                                                                                                        _loc7_ = 64;
+                                                                                                                                                                                                                                                                        halltype = 2;
+                                                                                                                                                                                                                                                                        orderid = 64;
                                                                                                                                                                                                                                                                      }
                                                                                                                                                                                                                                                                   }
                                                                                                                                                                                                                                                                   else
                                                                                                                                                                                                                                                                   {
-                                                                                                                                                                                                                                                                     _loc8_ = 2;
-                                                                                                                                                                                                                                                                     _loc7_ = 63;
+                                                                                                                                                                                                                                                                     halltype = 2;
+                                                                                                                                                                                                                                                                     orderid = 63;
                                                                                                                                                                                                                                                                   }
                                                                                                                                                                                                                                                                }
                                                                                                                                                                                                                                                                else
                                                                                                                                                                                                                                                                {
-                                                                                                                                                                                                                                                                  _loc8_ = 2;
-                                                                                                                                                                                                                                                                  _loc7_ = 62;
+                                                                                                                                                                                                                                                                  halltype = 2;
+                                                                                                                                                                                                                                                                  orderid = 62;
                                                                                                                                                                                                                                                                }
                                                                                                                                                                                                                                                             }
                                                                                                                                                                                                                                                             else
                                                                                                                                                                                                                                                             {
-                                                                                                                                                                                                                                                               _loc8_ = 1;
-                                                                                                                                                                                                                                                               _loc7_ = 61;
+                                                                                                                                                                                                                                                               halltype = 1;
+                                                                                                                                                                                                                                                               orderid = 61;
                                                                                                                                                                                                                                                             }
                                                                                                                                                                                                                                                          }
                                                                                                                                                                                                                                                          else
                                                                                                                                                                                                                                                          {
-                                                                                                                                                                                                                                                            _loc8_ = 2;
-                                                                                                                                                                                                                                                            _loc7_ = 60;
+                                                                                                                                                                                                                                                            halltype = 2;
+                                                                                                                                                                                                                                                            orderid = 60;
                                                                                                                                                                                                                                                          }
                                                                                                                                                                                                                                                       }
                                                                                                                                                                                                                                                       else
                                                                                                                                                                                                                                                       {
-                                                                                                                                                                                                                                                         _loc8_ = 1;
-                                                                                                                                                                                                                                                         _loc7_ = 59;
+                                                                                                                                                                                                                                                         halltype = 1;
+                                                                                                                                                                                                                                                         orderid = 59;
                                                                                                                                                                                                                                                       }
                                                                                                                                                                                                                                                    }
                                                                                                                                                                                                                                                    else
                                                                                                                                                                                                                                                    {
-                                                                                                                                                                                                                                                      _loc8_ = 2;
-                                                                                                                                                                                                                                                      _loc7_ = 58;
+                                                                                                                                                                                                                                                      halltype = 2;
+                                                                                                                                                                                                                                                      orderid = 58;
                                                                                                                                                                                                                                                    }
                                                                                                                                                                                                                                                 }
                                                                                                                                                                                                                                                 else
                                                                                                                                                                                                                                                 {
-                                                                                                                                                                                                                                                   _loc8_ = 2;
-                                                                                                                                                                                                                                                   _loc7_ = 57;
+                                                                                                                                                                                                                                                   halltype = 2;
+                                                                                                                                                                                                                                                   orderid = 57;
                                                                                                                                                                                                                                                 }
                                                                                                                                                                                                                                              }
                                                                                                                                                                                                                                              else
                                                                                                                                                                                                                                              {
-                                                                                                                                                                                                                                                _loc8_ = 2;
-                                                                                                                                                                                                                                                _loc7_ = 56;
+                                                                                                                                                                                                                                                halltype = 2;
+                                                                                                                                                                                                                                                orderid = 56;
                                                                                                                                                                                                                                              }
                                                                                                                                                                                                                                           }
                                                                                                                                                                                                                                           else
                                                                                                                                                                                                                                           {
-                                                                                                                                                                                                                                             _loc8_ = 2;
-                                                                                                                                                                                                                                             _loc7_ = 55;
+                                                                                                                                                                                                                                             halltype = 2;
+                                                                                                                                                                                                                                             orderid = 55;
                                                                                                                                                                                                                                           }
                                                                                                                                                                                                                                        }
                                                                                                                                                                                                                                        else
                                                                                                                                                                                                                                        {
-                                                                                                                                                                                                                                          _loc8_ = 2;
-                                                                                                                                                                                                                                          _loc7_ = 54;
+                                                                                                                                                                                                                                          halltype = 2;
+                                                                                                                                                                                                                                          orderid = 54;
                                                                                                                                                                                                                                        }
                                                                                                                                                                                                                                     }
                                                                                                                                                                                                                                     else
                                                                                                                                                                                                                                     {
-                                                                                                                                                                                                                                       _loc8_ = 2;
-                                                                                                                                                                                                                                       _loc7_ = 53;
+                                                                                                                                                                                                                                       halltype = 2;
+                                                                                                                                                                                                                                       orderid = 53;
                                                                                                                                                                                                                                     }
                                                                                                                                                                                                                                  }
                                                                                                                                                                                                                                  else
                                                                                                                                                                                                                                  {
-                                                                                                                                                                                                                                    _loc6_ = false;
-                                                                                                                                                                                                                                    param5 = true;
-                                                                                                                                                                                                                                    _loc8_ = 2;
-                                                                                                                                                                                                                                    _loc7_ = 52;
+                                                                                                                                                                                                                                    fightover = false;
+                                                                                                                                                                                                                                    $timeShow = true;
+                                                                                                                                                                                                                                    halltype = 2;
+                                                                                                                                                                                                                                    orderid = 52;
                                                                                                                                                                                                                                  }
                                                                                                                                                                                                                               }
                                                                                                                                                                                                                               else
                                                                                                                                                                                                                               {
-                                                                                                                                                                                                                                 _loc8_ = 2;
-                                                                                                                                                                                                                                 _loc7_ = 51;
+                                                                                                                                                                                                                                 halltype = 2;
+                                                                                                                                                                                                                                 orderid = 51;
                                                                                                                                                                                                                               }
                                                                                                                                                                                                                            }
                                                                                                                                                                                                                            else
                                                                                                                                                                                                                            {
-                                                                                                                                                                                                                              _loc8_ = 2;
-                                                                                                                                                                                                                              _loc7_ = 50;
+                                                                                                                                                                                                                              halltype = 2;
+                                                                                                                                                                                                                              orderid = 50;
                                                                                                                                                                                                                            }
                                                                                                                                                                                                                         }
                                                                                                                                                                                                                         else
                                                                                                                                                                                                                         {
-                                                                                                                                                                                                                           _loc8_ = 2;
-                                                                                                                                                                                                                           _loc7_ = 49;
+                                                                                                                                                                                                                           halltype = 2;
+                                                                                                                                                                                                                           orderid = 49;
                                                                                                                                                                                                                         }
                                                                                                                                                                                                                      }
                                                                                                                                                                                                                      else
                                                                                                                                                                                                                      {
-                                                                                                                                                                                                                        _loc8_ = 2;
-                                                                                                                                                                                                                        _loc7_ = 48;
+                                                                                                                                                                                                                        halltype = 2;
+                                                                                                                                                                                                                        orderid = 48;
                                                                                                                                                                                                                      }
                                                                                                                                                                                                                   }
                                                                                                                                                                                                                   else
                                                                                                                                                                                                                   {
-                                                                                                                                                                                                                     _loc8_ = 2;
-                                                                                                                                                                                                                     _loc7_ = 47;
+                                                                                                                                                                                                                     halltype = 2;
+                                                                                                                                                                                                                     orderid = 47;
                                                                                                                                                                                                                   }
                                                                                                                                                                                                                }
                                                                                                                                                                                                                else
                                                                                                                                                                                                                {
-                                                                                                                                                                                                                  _loc8_ = 2;
-                                                                                                                                                                                                                  _loc7_ = 46;
+                                                                                                                                                                                                                  halltype = 2;
+                                                                                                                                                                                                                  orderid = 46;
                                                                                                                                                                                                                }
                                                                                                                                                                                                             }
                                                                                                                                                                                                             else
                                                                                                                                                                                                             {
-                                                                                                                                                                                                               _loc8_ = 2;
-                                                                                                                                                                                                               _loc7_ = 45;
+                                                                                                                                                                                                               halltype = 2;
+                                                                                                                                                                                                               orderid = 45;
                                                                                                                                                                                                             }
                                                                                                                                                                                                          }
                                                                                                                                                                                                          else
                                                                                                                                                                                                          {
-                                                                                                                                                                                                            _loc8_ = 2;
-                                                                                                                                                                                                            _loc7_ = 44;
+                                                                                                                                                                                                            halltype = 2;
+                                                                                                                                                                                                            orderid = 44;
                                                                                                                                                                                                          }
                                                                                                                                                                                                       }
                                                                                                                                                                                                    }
                                                                                                                                                                                                    else
                                                                                                                                                                                                    {
-                                                                                                                                                                                                      _loc8_ = 2;
-                                                                                                                                                                                                      _loc7_ = 42;
+                                                                                                                                                                                                      halltype = 2;
+                                                                                                                                                                                                      orderid = 42;
                                                                                                                                                                                                    }
-                                                                                                                                                                                                   _loc8_ = 2;
-                                                                                                                                                                                                   _loc7_ = 43;
+                                                                                                                                                                                                   halltype = 2;
+                                                                                                                                                                                                   orderid = 43;
                                                                                                                                                                                                 }
                                                                                                                                                                                                 else
                                                                                                                                                                                                 {
-                                                                                                                                                                                                   _loc8_ = 2;
-                                                                                                                                                                                                   _loc7_ = 41;
+                                                                                                                                                                                                   halltype = 2;
+                                                                                                                                                                                                   orderid = 41;
                                                                                                                                                                                                 }
                                                                                                                                                                                              }
                                                                                                                                                                                              else
                                                                                                                                                                                              {
-                                                                                                                                                                                                _loc8_ = 2;
-                                                                                                                                                                                                _loc7_ = 35;
+                                                                                                                                                                                                halltype = 2;
+                                                                                                                                                                                                orderid = 35;
                                                                                                                                                                                              }
                                                                                                                                                                                           }
                                                                                                                                                                                        }
                                                                                                                                                                                        else
                                                                                                                                                                                        {
-                                                                                                                                                                                          _loc8_ = 2;
-                                                                                                                                                                                          _loc7_ = 33;
+                                                                                                                                                                                          halltype = 2;
+                                                                                                                                                                                          orderid = 33;
                                                                                                                                                                                        }
-                                                                                                                                                                                       _loc8_ = 2;
-                                                                                                                                                                                       _loc7_ = 40;
+                                                                                                                                                                                       halltype = 2;
+                                                                                                                                                                                       orderid = 40;
                                                                                                                                                                                     }
                                                                                                                                                                                     else
                                                                                                                                                                                     {
-                                                                                                                                                                                       _loc8_ = 2;
-                                                                                                                                                                                       _loc7_ = 37;
+                                                                                                                                                                                       halltype = 2;
+                                                                                                                                                                                       orderid = 37;
                                                                                                                                                                                     }
                                                                                                                                                                                  }
                                                                                                                                                                                  else
                                                                                                                                                                                  {
-                                                                                                                                                                                    _loc8_ = 2;
-                                                                                                                                                                                    _loc7_ = 36;
+                                                                                                                                                                                    halltype = 2;
+                                                                                                                                                                                    orderid = 36;
                                                                                                                                                                                  }
                                                                                                                                                                               }
                                                                                                                                                                               else
                                                                                                                                                                               {
-                                                                                                                                                                                 _loc8_ = 2;
-                                                                                                                                                                                 _loc7_ = 32;
+                                                                                                                                                                                 halltype = 2;
+                                                                                                                                                                                 orderid = 32;
                                                                                                                                                                               }
                                                                                                                                                                            }
                                                                                                                                                                            else
                                                                                                                                                                            {
-                                                                                                                                                                              _loc8_ = 2;
-                                                                                                                                                                              _loc7_ = 35;
+                                                                                                                                                                              halltype = 2;
+                                                                                                                                                                              orderid = 35;
                                                                                                                                                                            }
                                                                                                                                                                         }
                                                                                                                                                                         else
                                                                                                                                                                         {
-                                                                                                                                                                           _loc8_ = 2;
-                                                                                                                                                                           _loc7_ = 34;
+                                                                                                                                                                           halltype = 2;
+                                                                                                                                                                           orderid = 34;
                                                                                                                                                                         }
                                                                                                                                                                      }
                                                                                                                                                                      else
                                                                                                                                                                      {
-                                                                                                                                                                        _loc8_ = 2;
-                                                                                                                                                                        _loc7_ = 33;
+                                                                                                                                                                        halltype = 2;
+                                                                                                                                                                        orderid = 33;
                                                                                                                                                                      }
                                                                                                                                                                   }
                                                                                                                                                                   else
                                                                                                                                                                   {
-                                                                                                                                                                     _loc8_ = 2;
-                                                                                                                                                                     _loc7_ = 32;
+                                                                                                                                                                     halltype = 2;
+                                                                                                                                                                     orderid = 32;
                                                                                                                                                                   }
                                                                                                                                                                }
                                                                                                                                                                else
                                                                                                                                                                {
-                                                                                                                                                                  _loc8_ = 3;
-                                                                                                                                                                  _loc7_ = 31;
+                                                                                                                                                                  halltype = 3;
+                                                                                                                                                                  orderid = 31;
                                                                                                                                                                }
                                                                                                                                                             }
                                                                                                                                                             else
                                                                                                                                                             {
-                                                                                                                                                               _loc8_ = 2;
-                                                                                                                                                               _loc7_ = 30;
+                                                                                                                                                               halltype = 2;
+                                                                                                                                                               orderid = 30;
                                                                                                                                                             }
                                                                                                                                                          }
                                                                                                                                                          else
                                                                                                                                                          {
-                                                                                                                                                            _loc8_ = 2;
-                                                                                                                                                            _loc7_ = 29;
+                                                                                                                                                            halltype = 2;
+                                                                                                                                                            orderid = 29;
                                                                                                                                                          }
                                                                                                                                                       }
                                                                                                                                                       else
                                                                                                                                                       {
-                                                                                                                                                         _loc8_ = 2;
-                                                                                                                                                         _loc7_ = 29;
+                                                                                                                                                         halltype = 2;
+                                                                                                                                                         orderid = 29;
                                                                                                                                                       }
                                                                                                                                                    }
                                                                                                                                                 }
                                                                                                                                                 else
                                                                                                                                                 {
-                                                                                                                                                   _loc8_ = 2;
-                                                                                                                                                   _loc7_ = 28;
+                                                                                                                                                   halltype = 2;
+                                                                                                                                                   orderid = 28;
                                                                                                                                                 }
-                                                                                                                                                _loc8_ = 2;
-                                                                                                                                                _loc7_ = 29;
+                                                                                                                                                halltype = 2;
+                                                                                                                                                orderid = 29;
                                                                                                                                              }
                                                                                                                                              else
                                                                                                                                              {
-                                                                                                                                                _loc8_ = 2;
-                                                                                                                                                _loc7_ = 27;
+                                                                                                                                                halltype = 2;
+                                                                                                                                                orderid = 27;
                                                                                                                                              }
                                                                                                                                           }
                                                                                                                                           else
                                                                                                                                           {
-                                                                                                                                             _loc8_ = 2;
-                                                                                                                                             _loc7_ = 26;
+                                                                                                                                             halltype = 2;
+                                                                                                                                             orderid = 26;
                                                                                                                                           }
                                                                                                                                        }
                                                                                                                                        else
                                                                                                                                        {
-                                                                                                                                          _loc8_ = 2;
-                                                                                                                                          _loc7_ = 25;
+                                                                                                                                          halltype = 2;
+                                                                                                                                          orderid = 25;
                                                                                                                                        }
                                                                                                                                     }
                                                                                                                                     else
                                                                                                                                     {
-                                                                                                                                       _loc8_ = 2;
-                                                                                                                                       _loc7_ = 24;
+                                                                                                                                       halltype = 2;
+                                                                                                                                       orderid = 24;
                                                                                                                                     }
                                                                                                                                  }
                                                                                                                                  else
                                                                                                                                  {
-                                                                                                                                    _loc8_ = 2;
-                                                                                                                                    _loc7_ = 23;
+                                                                                                                                    halltype = 2;
+                                                                                                                                    orderid = 23;
                                                                                                                                  }
                                                                                                                               }
                                                                                                                               else
                                                                                                                               {
-                                                                                                                                 _loc8_ = 2;
-                                                                                                                                 _loc7_ = 22;
+                                                                                                                                 halltype = 2;
+                                                                                                                                 orderid = 22;
                                                                                                                               }
                                                                                                                            }
                                                                                                                            else
                                                                                                                            {
-                                                                                                                              _loc8_ = 2;
-                                                                                                                              _loc7_ = 21;
+                                                                                                                              halltype = 2;
+                                                                                                                              orderid = 21;
                                                                                                                            }
                                                                                                                         }
                                                                                                                         else
                                                                                                                         {
-                                                                                                                           _loc8_ = 2;
-                                                                                                                           _loc7_ = 20;
+                                                                                                                           halltype = 2;
+                                                                                                                           orderid = 20;
                                                                                                                         }
                                                                                                                      }
                                                                                                                      else
                                                                                                                      {
-                                                                                                                        _loc8_ = 2;
-                                                                                                                        _loc7_ = 19;
+                                                                                                                        halltype = 2;
+                                                                                                                        orderid = 19;
                                                                                                                      }
                                                                                                                   }
                                                                                                                   else
                                                                                                                   {
-                                                                                                                     _loc8_ = 2;
-                                                                                                                     _loc7_ = 18;
+                                                                                                                     halltype = 2;
+                                                                                                                     orderid = 18;
                                                                                                                   }
                                                                                                                }
                                                                                                                else
                                                                                                                {
-                                                                                                                  _loc8_ = 2;
-                                                                                                                  _loc7_ = 17;
+                                                                                                                  halltype = 2;
+                                                                                                                  orderid = 17;
                                                                                                                }
                                                                                                             }
                                                                                                             else
                                                                                                             {
-                                                                                                               _loc8_ = 2;
-                                                                                                               _loc7_ = 16;
+                                                                                                               halltype = 2;
+                                                                                                               orderid = 16;
                                                                                                             }
                                                                                                          }
                                                                                                          else
                                                                                                          {
-                                                                                                            _loc8_ = 2;
-                                                                                                            _loc7_ = 15;
+                                                                                                            halltype = 2;
+                                                                                                            orderid = 15;
                                                                                                          }
                                                                                                       }
                                                                                                       else
                                                                                                       {
-                                                                                                         _loc8_ = 2;
-                                                                                                         _loc7_ = 14;
+                                                                                                         halltype = 2;
+                                                                                                         orderid = 14;
                                                                                                       }
                                                                                                    }
                                                                                                    else
                                                                                                    {
-                                                                                                      _loc8_ = 2;
-                                                                                                      _loc7_ = 13;
+                                                                                                      halltype = 2;
+                                                                                                      orderid = 13;
                                                                                                    }
                                                                                                 }
                                                                                                 else
                                                                                                 {
-                                                                                                   _loc8_ = 2;
-                                                                                                   _loc7_ = 12;
+                                                                                                   halltype = 2;
+                                                                                                   orderid = 12;
                                                                                                 }
                                                                                              }
                                                                                              else
                                                                                              {
-                                                                                                _loc8_ = 2;
-                                                                                                _loc7_ = 11;
+                                                                                                halltype = 2;
+                                                                                                orderid = 11;
                                                                                              }
                                                                                           }
                                                                                           else
                                                                                           {
-                                                                                             _loc8_ = 2;
-                                                                                             _loc7_ = 10;
+                                                                                             halltype = 2;
+                                                                                             orderid = 10;
                                                                                           }
                                                                                        }
                                                                                        else
                                                                                        {
-                                                                                          _loc8_ = 2;
-                                                                                          _loc7_ = 9;
+                                                                                          halltype = 2;
+                                                                                          orderid = 9;
                                                                                        }
                                                                                     }
                                                                                     else
                                                                                     {
-                                                                                       _loc8_ = 2;
-                                                                                       _loc7_ = 8;
+                                                                                       halltype = 2;
+                                                                                       orderid = 8;
                                                                                     }
                                                                                  }
                                                                                  else
                                                                                  {
-                                                                                    _loc8_ = 2;
-                                                                                    _loc7_ = 7;
+                                                                                    halltype = 2;
+                                                                                    orderid = 7;
                                                                                  }
                                                                               }
                                                                               else
                                                                               {
-                                                                                 _loc8_ = 2;
-                                                                                 _loc7_ = 6;
+                                                                                 halltype = 2;
+                                                                                 orderid = 6;
                                                                               }
                                                                            }
                                                                            else
                                                                            {
-                                                                              _loc8_ = 2;
-                                                                              _loc7_ = 5;
+                                                                              halltype = 2;
+                                                                              orderid = 5;
                                                                            }
                                                                         }
                                                                         else
                                                                         {
-                                                                           _loc8_ = 2;
-                                                                           _loc7_ = 4;
+                                                                           halltype = 2;
+                                                                           orderid = 4;
                                                                         }
                                                                      }
                                                                      else
                                                                      {
-                                                                        _loc8_ = 2;
-                                                                        _loc7_ = 3;
+                                                                        halltype = 2;
+                                                                        orderid = 3;
                                                                      }
                                                                   }
                                                                   else
                                                                   {
-                                                                     _loc8_ = 2;
-                                                                     _loc7_ = 2;
+                                                                     halltype = 2;
+                                                                     orderid = 2;
                                                                   }
                                                                }
                                                                else
                                                                {
-                                                                  _loc8_ = 2;
-                                                                  _loc7_ = 1;
+                                                                  halltype = 2;
+                                                                  orderid = 1;
                                                                }
                                                             }
                                                             else
                                                             {
-                                                               _loc8_ = 1;
-                                                               _loc7_ = 16;
+                                                               halltype = 1;
+                                                               orderid = 16;
                                                             }
                                                          }
                                                          else
                                                          {
-                                                            _loc8_ = 3;
-                                                            _loc7_ = 16;
+                                                            halltype = 3;
+                                                            orderid = 16;
                                                          }
                                                       }
                                                       else
                                                       {
-                                                         _loc8_ = 1;
-                                                         _loc7_ = 17;
+                                                         halltype = 1;
+                                                         orderid = 17;
                                                       }
                                                    }
                                                    else
                                                    {
-                                                      _loc8_ = 1;
-                                                      _loc7_ = 15;
+                                                      halltype = 1;
+                                                      orderid = 15;
                                                    }
                                                 }
                                                 else
                                                 {
-                                                   _loc8_ = 1;
-                                                   _loc7_ = 14;
+                                                   halltype = 1;
+                                                   orderid = 14;
                                                 }
                                              }
                                              else
                                              {
-                                                _loc8_ = 1;
-                                                _loc7_ = 13;
+                                                halltype = 1;
+                                                orderid = 13;
                                              }
                                           }
                                           else
                                           {
-                                             _loc8_ = 1;
-                                             _loc7_ = 12;
+                                             halltype = 1;
+                                             orderid = 12;
                                           }
                                        }
                                        else
                                        {
-                                          _loc8_ = 1;
-                                          _loc7_ = 11;
+                                          halltype = 1;
+                                          orderid = 11;
                                        }
                                     }
                                     else
                                     {
-                                       _loc8_ = 1;
-                                       _loc7_ = 10;
+                                       halltype = 1;
+                                       orderid = 10;
                                     }
                                  }
                                  else
                                  {
-                                    _loc8_ = 1;
-                                    _loc7_ = 9;
+                                    halltype = 1;
+                                    orderid = 9;
                                  }
                               }
                               else
                               {
-                                 _loc8_ = 1;
-                                 _loc7_ = 8;
+                                 halltype = 1;
+                                 orderid = 8;
                               }
                            }
                            else
                            {
-                              _loc8_ = 1;
-                              _loc7_ = 7;
+                              halltype = 1;
+                              orderid = 7;
                            }
                         }
                         else
                         {
-                           _loc8_ = 1;
-                           _loc7_ = 6;
+                           halltype = 1;
+                           orderid = 6;
                         }
                      }
                      else
                      {
-                        _loc8_ = 1;
-                        _loc7_ = 5;
+                        halltype = 1;
+                        orderid = 5;
                      }
                   }
                   else
                   {
-                     _loc8_ = 1;
-                     _loc7_ = 4;
+                     halltype = 1;
+                     orderid = 4;
                   }
                }
                else
                {
-                  _loc8_ = 1;
-                  _loc7_ = 3;
+                  halltype = 1;
+                  orderid = 3;
                }
             }
             else
             {
-               _loc8_ = 1;
+               halltype = 1;
                if(WorldBossManager.Instance.bossInfo)
                {
-                  _loc6_ = WorldBossManager.Instance.bossInfo.fightOver;
+                  fightover = WorldBossManager.Instance.bossInfo.fightOver;
                }
-               _loc7_ = 2;
+               orderid = 2;
             }
          }
          else
          {
-            _loc8_ = 1;
+            halltype = 1;
             if(WorldBossManager.Instance.bossInfo)
             {
-               _loc6_ = WorldBossManager.Instance.bossInfo.fightOver;
+               fightover = WorldBossManager.Instance.bossInfo.fightOver;
             }
-            _loc7_ = 1;
+            orderid = 1;
          }
-         var _loc9_:HallIconInfo = new HallIconInfo();
-         _loc9_.halltype = _loc8_;
-         _loc9_.icontype = param1;
-         _loc9_.isopen = param2;
-         _loc9_.timemsg = param3;
-         _loc9_.fightover = _loc6_;
-         _loc9_.orderid = _loc7_;
-         _loc9_.num = param4;
-         _loc9_.timeShow = param5;
-         return _loc9_;
+         var iconInfo:HallIconInfo = new HallIconInfo();
+         iconInfo.halltype = halltype;
+         iconInfo.icontype = $icontype;
+         iconInfo.isopen = $isopen;
+         iconInfo.timemsg = $timemsg;
+         iconInfo.fightover = fightover;
+         iconInfo.orderid = orderid;
+         iconInfo.num = $num;
+         iconInfo.timeShow = $timeShow;
+         return iconInfo;
       }
       
-      public function showCommonFrame(param1:DisplayObject, param2:String = "", param3:Number = 530, param4:Number = 545) : Frame
+      public function showCommonFrame($content:DisplayObject, $titleLink:String = "", $width:Number = 530, $height:Number = 545) : Frame
       {
-         var _loc5_:Frame = ComponentFactory.Instance.creatCustomObject("hallIcon.commonFrame");
-         _loc5_.titleText = LanguageMgr.GetTranslation(param2);
-         _loc5_.width = param3;
-         _loc5_.height = param4;
-         _loc5_.addToContent(param1);
-         _loc5_.addEventListener("response",__commonFrameResponse);
-         LayerManager.Instance.addToLayer(_loc5_,3,true,1,true);
-         return _loc5_;
+         var _frame:Frame = ComponentFactory.Instance.creatCustomObject("hallIcon.commonFrame");
+         _frame.titleText = LanguageMgr.GetTranslation($titleLink);
+         _frame.width = $width;
+         _frame.height = $height;
+         _frame.addToContent($content);
+         _frame.addEventListener("response",__commonFrameResponse);
+         LayerManager.Instance.addToLayer(_frame,3,true,1,true);
+         return _frame;
       }
       
-      private function __commonFrameResponse(param1:FrameEvent) : void
+      private function __commonFrameResponse(evt:FrameEvent) : void
       {
-         var _loc2_:Frame = param1.currentTarget as Frame;
-         if(_loc2_)
+         var _frame:Frame = evt.currentTarget as Frame;
+         if(_frame)
          {
-            _loc2_.removeEventListener("response",__commonFrameResponse);
-            ObjectUtils.disposeAllChildren(_loc2_);
-            ObjectUtils.disposeObject(_loc2_);
-            _loc2_ = null;
+            _frame.removeEventListener("response",__commonFrameResponse);
+            ObjectUtils.disposeAllChildren(_frame);
+            ObjectUtils.disposeObject(_frame);
+            _frame = null;
          }
       }
       
-      public function checkHallIconExperienceTask(param1:Boolean = true) : void
+      public function checkHallIconExperienceTask($isCompleted:Boolean = true) : void
       {
-         if(param1)
+         if($isCompleted)
          {
             model.cacheRightIconTask = null;
          }
          else
          {
-            model.cacheRightIconTask = {"isCompleted":param1};
+            model.cacheRightIconTask = {"isCompleted":$isCompleted};
          }
          dispatchEvent(new HallIconEvent("checkHallIconExperienceOpen"));
       }

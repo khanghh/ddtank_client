@@ -41,14 +41,14 @@ package gemstone.views
          addToContent(_btn);
       }
       
-      protected function clickHander(param1:MouseEvent) : void
+      protected function clickHander(event:MouseEvent) : void
       {
          ObjectUtils.disposeObject(this);
       }
       
-      private function response(param1:FrameEvent) : void
+      private function response(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             ObjectUtils.disposeObject(this);
          }

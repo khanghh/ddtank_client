@@ -37,410 +37,401 @@ package starling.display
          mChildren = new Vector.<DisplayObject>(0);
       }
       
-      private static function mergeSort(param1:Vector.<DisplayObject>, param2:Function, param3:int, param4:int, param5:Vector.<DisplayObject>) : void
+      private static function mergeSort(input:Vector.<DisplayObject>, compareFunc:Function, startIndex:int, length:int, buffer:Vector.<DisplayObject>) : void
       {
-         var _loc10_:* = 0;
-         var _loc9_:int = 0;
-         var _loc7_:int = 0;
-         var _loc8_:* = 0;
-         var _loc6_:int = 0;
-         if(param4 <= 1)
+         var i:* = 0;
+         var endIndex:int = 0;
+         var halfLength:int = 0;
+         var l:* = 0;
+         var r:int = 0;
+         if(length <= 1)
          {
             return;
          }
-         _loc10_ = 0;
-         _loc9_ = param3 + param4;
-         _loc7_ = param4 / 2;
-         _loc8_ = param3;
-         _loc6_ = param3 + _loc7_;
-         mergeSort(param1,param2,param3,_loc7_,param5);
-         mergeSort(param1,param2,param3 + _loc7_,param4 - _loc7_,param5);
-         _loc10_ = 0;
-         while(_loc10_ < param4)
+         i = 0;
+         endIndex = startIndex + length;
+         halfLength = length / 2;
+         l = startIndex;
+         r = startIndex + halfLength;
+         mergeSort(input,compareFunc,startIndex,halfLength,buffer);
+         mergeSort(input,compareFunc,startIndex + halfLength,length - halfLength,buffer);
+         for(i = 0; i < length; )
          {
-            if(_loc8_ < param3 + _loc7_ && (_loc6_ == _loc9_ || param2(param1[_loc8_],param1[_loc6_]) <= 0))
+            if(l < startIndex + halfLength && (r == endIndex || compareFunc(input[l],input[r]) <= 0))
             {
-               param5[_loc10_] = param1[_loc8_];
-               _loc8_++;
+               buffer[i] = input[l];
+               l++;
             }
             else
             {
-               param5[_loc10_] = param1[_loc6_];
-               _loc6_++;
+               buffer[i] = input[r];
+               r++;
             }
-            _loc10_++;
+            i++;
          }
-         _loc10_ = param3;
-         while(_loc10_ < _loc9_)
+         for(i = startIndex; i < endIndex; )
          {
-            param1[_loc10_] = param5[int(_loc10_ - param3)];
-            _loc10_++;
+            input[i] = buffer[int(i - startIndex)];
+            i++;
          }
       }
       
       override public function dispose() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = mChildren.length - 1;
-         while(_loc1_ >= 0)
+         var i:int = 0;
+         for(i = mChildren.length - 1; i >= 0; )
          {
-            mChildren[_loc1_].dispose();
-            _loc1_--;
+            mChildren[i].dispose();
+            i--;
          }
          super.dispose();
       }
       
-      public function addChild(param1:DisplayObject) : DisplayObject
+      public function addChild(child:DisplayObject) : DisplayObject
       {
-         return addChildAt(param1,mChildren.length);
+         return addChildAt(child,mChildren.length);
       }
       
-      public function addChildAt(param1:DisplayObject, param2:int) : DisplayObject
+      public function addChildAt(child:DisplayObject, index:int) : DisplayObject
       {
-         var _loc3_:* = null;
-         var _loc4_:int = mChildren.length;
-         if(param2 >= 0 && param2 <= _loc4_)
+         var container:* = null;
+         var numChildren:int = mChildren.length;
+         if(index >= 0 && index <= numChildren)
          {
-            if(param1.parent == this)
+            if(child.parent == this)
             {
-               setChildIndex(param1,param2);
+               setChildIndex(child,index);
             }
             else
             {
-               param1.removeFromParent();
-               if(param2 == _loc4_)
+               child.removeFromParent();
+               if(index == numChildren)
                {
-                  mChildren[_loc4_] = param1;
+                  mChildren[numChildren] = child;
                }
                else
                {
-                  spliceChildren(param2,0,param1);
+                  spliceChildren(index,0,child);
                }
-               param1.setParent(this);
-               param1.dispatchEventWith("added",true);
+               child.setParent(this);
+               child.dispatchEventWith("added",true);
                if(stage)
                {
-                  _loc3_ = param1 as DisplayObjectContainer;
-                  if(_loc3_)
+                  container = child as DisplayObjectContainer;
+                  if(container)
                   {
-                     _loc3_.broadcastEventWith("addedToStage");
+                     container.broadcastEventWith("addedToStage");
                   }
                   else
                   {
-                     param1.dispatchEventWith("addedToStage");
+                     child.dispatchEventWith("addedToStage");
                   }
                }
             }
-            return param1;
+            return child;
          }
          throw new RangeError("Invalid child index");
       }
       
-      public function removeChild(param1:DisplayObject, param2:Boolean = false) : DisplayObject
+      public function removeChild(child:DisplayObject, dispose:Boolean = false) : DisplayObject
       {
-         var _loc3_:int = getChildIndex(param1);
-         if(_loc3_ != -1)
+         var childIndex:int = getChildIndex(child);
+         if(childIndex != -1)
          {
-            removeChildAt(_loc3_,param2);
+            removeChildAt(childIndex,dispose);
          }
-         return param1;
+         return child;
       }
       
-      public function removeChildAt(param1:int, param2:Boolean = false) : DisplayObject
+      public function removeChildAt(index:int, dispose:Boolean = false) : DisplayObject
       {
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         if(param1 >= 0 && param1 < mChildren.length)
+         var child:* = null;
+         var container:* = null;
+         if(index >= 0 && index < mChildren.length)
          {
-            _loc3_ = mChildren[param1];
-            _loc3_.dispatchEventWith("removed",true);
+            child = mChildren[index];
+            child.dispatchEventWith("removed",true);
             if(stage)
             {
-               _loc4_ = _loc3_ as DisplayObjectContainer;
-               if(_loc4_)
+               container = child as DisplayObjectContainer;
+               if(container)
                {
-                  _loc4_.broadcastEventWith("removedFromStage");
+                  container.broadcastEventWith("removedFromStage");
                }
                else
                {
-                  _loc3_.dispatchEventWith("removedFromStage");
+                  child.dispatchEventWith("removedFromStage");
                }
             }
-            _loc3_.setParent(null);
-            param1 = mChildren.indexOf(_loc3_);
-            if(param1 >= 0)
+            child.setParent(null);
+            index = mChildren.indexOf(child);
+            if(index >= 0)
             {
-               spliceChildren(param1,1);
+               spliceChildren(index,1);
             }
-            if(param2)
+            if(dispose)
             {
-               _loc3_.dispose();
+               child.dispose();
             }
-            return _loc3_;
+            return child;
          }
          throw new RangeError("Invalid child index");
       }
       
-      public function removeChildren(param1:int = 0, param2:int = -1, param3:Boolean = false) : void
+      public function removeChildren(beginIndex:int = 0, endIndex:int = -1, dispose:Boolean = false) : void
       {
-         var _loc4_:* = 0;
-         if(param2 < 0 || param2 >= numChildren)
+         var i:* = 0;
+         if(endIndex < 0 || endIndex >= numChildren)
          {
-            param2 = numChildren - 1;
+            endIndex = numChildren - 1;
          }
-         _loc4_ = param1;
-         while(_loc4_ <= param2)
+         for(i = beginIndex; i <= endIndex; )
          {
-            removeChildAt(param1,param3);
-            _loc4_++;
+            removeChildAt(beginIndex,dispose);
+            i++;
          }
       }
       
-      public function getChildAt(param1:int) : DisplayObject
+      public function getChildAt(index:int) : DisplayObject
       {
-         var _loc2_:int = mChildren.length;
-         if(param1 < 0)
+         var numChildren:int = mChildren.length;
+         if(index < 0)
          {
-            param1 = _loc2_ + param1;
+            index = numChildren + index;
          }
-         if(param1 >= 0 && param1 < _loc2_)
+         if(index >= 0 && index < numChildren)
          {
-            return mChildren[param1];
+            return mChildren[index];
          }
          throw new RangeError("Invalid child index");
       }
       
-      public function getChildByName(param1:String) : DisplayObject
+      public function getChildByName(name:String) : DisplayObject
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = mChildren.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var i:int = 0;
+         var numChildren:int = mChildren.length;
+         for(i = 0; i < numChildren; )
          {
-            if(mChildren[_loc3_].name == param1)
+            if(mChildren[i].name == name)
             {
-               return mChildren[_loc3_];
+               return mChildren[i];
             }
-            _loc3_++;
+            i++;
          }
          return null;
       }
       
-      public function getChildIndex(param1:DisplayObject) : int
+      public function getChildIndex(child:DisplayObject) : int
       {
-         return mChildren.indexOf(param1);
+         return mChildren.indexOf(child);
       }
       
-      public function setChildIndex(param1:DisplayObject, param2:int) : void
+      public function setChildIndex(child:DisplayObject, index:int) : void
       {
-         var _loc3_:int = getChildIndex(param1);
-         if(_loc3_ == param2)
+         var oldIndex:int = getChildIndex(child);
+         if(oldIndex == index)
          {
             return;
          }
-         if(_loc3_ == -1)
+         if(oldIndex == -1)
          {
             throw new ArgumentError("Not a child of this container");
          }
-         spliceChildren(_loc3_,1);
-         spliceChildren(param2,0,param1);
+         spliceChildren(oldIndex,1);
+         spliceChildren(index,0,child);
       }
       
-      public function swapChildren(param1:DisplayObject, param2:DisplayObject) : void
+      public function swapChildren(child1:DisplayObject, child2:DisplayObject) : void
       {
-         var _loc3_:int = getChildIndex(param1);
-         var _loc4_:int = getChildIndex(param2);
-         if(_loc3_ == -1 || _loc4_ == -1)
+         var index1:int = getChildIndex(child1);
+         var index2:int = getChildIndex(child2);
+         if(index1 == -1 || index2 == -1)
          {
             throw new ArgumentError("Not a child of this container");
          }
-         swapChildrenAt(_loc3_,_loc4_);
+         swapChildrenAt(index1,index2);
       }
       
-      public function swapChildrenAt(param1:int, param2:int) : void
+      public function swapChildrenAt(index1:int, index2:int) : void
       {
-         var _loc3_:DisplayObject = getChildAt(param1);
-         var _loc4_:DisplayObject = getChildAt(param2);
-         mChildren[param1] = _loc4_;
-         mChildren[param2] = _loc3_;
+         var child1:DisplayObject = getChildAt(index1);
+         var child2:DisplayObject = getChildAt(index2);
+         mChildren[index1] = child2;
+         mChildren[index2] = child1;
       }
       
-      public function sortChildren(param1:Function) : void
+      public function sortChildren(compareFunction:Function) : void
       {
          sSortBuffer.length = mChildren.length;
-         mergeSort(mChildren,param1,0,mChildren.length,sSortBuffer);
+         mergeSort(mChildren,compareFunction,0,mChildren.length,sSortBuffer);
          sSortBuffer.length = 0;
       }
       
-      public function contains(param1:DisplayObject) : Boolean
+      public function contains(child:DisplayObject) : Boolean
       {
-         while(param1)
+         while(child)
          {
-            if(param1 == this)
+            if(child == this)
             {
                return true;
             }
-            param1 = param1.parent;
+            child = child.parent;
          }
          return false;
       }
       
-      override public function getBounds(param1:DisplayObject, param2:Rectangle = null) : Rectangle
+      override public function getBounds(targetSpace:DisplayObject, resultRect:Rectangle = null) : Rectangle
       {
-         var _loc6_:* = NaN;
-         var _loc8_:* = NaN;
-         var _loc7_:int = 0;
-         if(param2 == null)
+         var minX:* = NaN;
+         var minY:* = NaN;
+         var i:int = 0;
+         if(resultRect == null)
          {
-            param2 = new Rectangle();
+            resultRect = new Rectangle();
          }
-         var _loc4_:int = mChildren.length;
-         if(_loc4_ == 0)
+         var numChildren:int = mChildren.length;
+         if(numChildren == 0)
          {
-            getTransformationMatrix(param1,sHelperMatrix);
+            getTransformationMatrix(targetSpace,sHelperMatrix);
             MatrixUtil.transformCoords(sHelperMatrix,0,0,sHelperPoint);
-            param2.setTo(sHelperPoint.x,sHelperPoint.y,0,0);
+            resultRect.setTo(sHelperPoint.x,sHelperPoint.y,0,0);
          }
-         else if(_loc4_ == 1)
+         else if(numChildren == 1)
          {
-            mChildren[0].getBounds(param1,param2);
+            mChildren[0].getBounds(targetSpace,resultRect);
          }
          else
          {
-            _loc6_ = 1.79769313486232e308;
-            var _loc5_:* = -1.79769313486232e308;
-            _loc8_ = 1.79769313486232e308;
-            var _loc3_:* = -1.79769313486232e308;
-            _loc7_ = 0;
-            while(_loc7_ < _loc4_)
+            minX = 1.79769313486232e308;
+            var maxX:* = -1.79769313486232e308;
+            minY = 1.79769313486232e308;
+            var maxY:* = -1.79769313486232e308;
+            for(i = 0; i < numChildren; )
             {
-               mChildren[_loc7_].getBounds(param1,param2);
-               if(_loc6_ > param2.x)
+               mChildren[i].getBounds(targetSpace,resultRect);
+               if(minX > resultRect.x)
                {
-                  _loc6_ = Number(param2.x);
+                  minX = Number(resultRect.x);
                }
-               if(_loc5_ < param2.right)
+               if(maxX < resultRect.right)
                {
-                  _loc5_ = Number(param2.right);
+                  maxX = Number(resultRect.right);
                }
-               if(_loc8_ > param2.y)
+               if(minY > resultRect.y)
                {
-                  _loc8_ = Number(param2.y);
+                  minY = Number(resultRect.y);
                }
-               if(_loc3_ < param2.bottom)
+               if(maxY < resultRect.bottom)
                {
-                  _loc3_ = Number(param2.bottom);
+                  maxY = Number(resultRect.bottom);
                }
-               _loc7_++;
+               i++;
             }
-            param2.setTo(_loc6_,_loc8_,_loc5_ - _loc6_,_loc3_ - _loc8_);
+            resultRect.setTo(minX,minY,maxX - minX,maxY - minY);
          }
-         return param2;
+         return resultRect;
       }
       
-      override public function hitTest(param1:Point, param2:Boolean = false) : DisplayObject
+      override public function hitTest(localPoint:Point, forTouch:Boolean = false) : DisplayObject
       {
-         var _loc8_:int = 0;
-         var _loc3_:* = null;
-         if(param2 && (!visible || !touchable))
+         var i:int = 0;
+         var child:* = null;
+         if(forTouch && (!visible || !touchable))
          {
             return null;
          }
-         if(!hitTestMask(param1))
+         if(!hitTestMask(localPoint))
          {
             return null;
          }
-         var _loc6_:DisplayObject = null;
-         var _loc4_:Number = param1.x;
-         var _loc5_:Number = param1.y;
-         var _loc7_:int = mChildren.length;
-         _loc8_ = _loc7_ - 1;
-         while(_loc8_ >= 0)
+         var target:DisplayObject = null;
+         var localX:Number = localPoint.x;
+         var localY:Number = localPoint.y;
+         var numChildren:int = mChildren.length;
+         for(i = numChildren - 1; i >= 0; )
          {
-            _loc3_ = mChildren[_loc8_];
-            if(!_loc3_.isMask)
+            child = mChildren[i];
+            if(!child.isMask)
             {
-               sHelperMatrix.copyFrom(_loc3_.transformationMatrix);
+               sHelperMatrix.copyFrom(child.transformationMatrix);
                sHelperMatrix.invert();
-               MatrixUtil.transformCoords(sHelperMatrix,_loc4_,_loc5_,sHelperPoint);
-               _loc6_ = _loc3_.hitTest(sHelperPoint,param2);
-               if(_loc6_)
+               MatrixUtil.transformCoords(sHelperMatrix,localX,localY,sHelperPoint);
+               target = child.hitTest(sHelperPoint,forTouch);
+               if(target)
                {
-                  return param2 && mTouchGroup?this:_loc6_;
+                  return forTouch && mTouchGroup?this:target;
                }
             }
-            _loc8_--;
+            i--;
          }
          return null;
       }
       
-      override public function render(param1:RenderSupport, param2:Number) : void
+      override public function render(support:RenderSupport, parentAlpha:Number) : void
       {
-         var _loc9_:int = 0;
-         var _loc3_:* = null;
-         var _loc8_:* = null;
-         var _loc6_:* = null;
-         var _loc5_:Number = param2 * this.alpha;
-         var _loc7_:int = mChildren.length;
-         var _loc4_:String = param1.blendMode;
-         _loc9_ = 0;
-         while(_loc9_ < _loc7_)
+         var i:int = 0;
+         var child:* = null;
+         var filter:* = null;
+         var mask:* = null;
+         var alpha:Number = parentAlpha * this.alpha;
+         var numChildren:int = mChildren.length;
+         var blendMode:String = support.blendMode;
+         for(i = 0; i < numChildren; )
          {
-            _loc3_ = mChildren[_loc9_];
-            if(_loc3_.hasVisibleArea)
+            child = mChildren[i];
+            if(child.hasVisibleArea)
             {
-               _loc8_ = _loc3_.filter;
-               _loc6_ = _loc3_.mask;
-               param1.pushMatrix();
-               param1.transformMatrix(_loc3_);
-               param1.blendMode = _loc3_.blendMode;
-               if(_loc6_)
+               filter = child.filter;
+               mask = child.mask;
+               support.pushMatrix();
+               support.transformMatrix(child);
+               support.blendMode = child.blendMode;
+               if(mask)
                {
-                  param1.pushMask(_loc6_);
+                  support.pushMask(mask);
                }
-               if(_loc8_)
+               if(filter)
                {
-                  _loc8_.render(_loc3_,param1,_loc5_);
+                  filter.render(child,support,alpha);
                }
                else
                {
-                  _loc3_.render(param1,_loc5_);
+                  child.render(support,alpha);
                }
-               if(_loc6_)
+               if(mask)
                {
-                  param1.popMask();
+                  support.popMask();
                }
-               param1.blendMode = _loc4_;
-               param1.popMatrix();
+               support.blendMode = blendMode;
+               support.popMatrix();
             }
-            _loc9_++;
+            i++;
          }
       }
       
-      public function broadcastEvent(param1:Event) : void
+      public function broadcastEvent(event:Event) : void
       {
-         var _loc4_:* = 0;
-         if(param1.bubbles)
+         var i:* = 0;
+         if(event.bubbles)
          {
             throw new ArgumentError("Broadcast of bubbling events is prohibited");
          }
-         var _loc2_:int = sBroadcastListeners.length;
-         getChildEventListeners(this,param1.type,sBroadcastListeners);
-         var _loc3_:int = sBroadcastListeners.length;
-         _loc4_ = _loc2_;
-         while(_loc4_ < _loc3_)
+         var fromIndex:int = sBroadcastListeners.length;
+         getChildEventListeners(this,event.type,sBroadcastListeners);
+         var toIndex:int = sBroadcastListeners.length;
+         for(i = fromIndex; i < toIndex; )
          {
-            sBroadcastListeners[_loc4_].dispatchEvent(param1);
-            _loc4_++;
+            sBroadcastListeners[i].dispatchEvent(event);
+            i++;
          }
-         sBroadcastListeners.length = _loc2_;
+         sBroadcastListeners.length = fromIndex;
       }
       
-      public function broadcastEventWith(param1:String, param2:Object = null) : void
+      public function broadcastEventWith(type:String, data:Object = null) : void
       {
-         var _loc3_:Event = Event.fromPool(param1,false,param2);
-         broadcastEvent(_loc3_);
-         Event.toPool(_loc3_);
+         var event:Event = Event.fromPool(type,false,data);
+         broadcastEvent(event);
+         Event.toPool(event);
       }
       
       public function get numChildren() : int
@@ -453,83 +444,82 @@ package starling.display
          return mTouchGroup;
       }
       
-      public function set touchGroup(param1:Boolean) : void
+      public function set touchGroup(value:Boolean) : void
       {
-         mTouchGroup = param1;
+         mTouchGroup = value;
       }
       
-      private function spliceChildren(param1:int, param2:uint = 4294967295, param3:DisplayObject = null) : void
+      private function spliceChildren(startIndex:int, deleteCount:uint = 4294967295, insertee:DisplayObject = null) : void
       {
-         var _loc10_:int = 0;
-         var _loc6_:Vector.<DisplayObject> = mChildren;
-         var _loc8_:uint = _loc6_.length;
-         if(param1 < 0)
+         var i:int = 0;
+         var vector:Vector.<DisplayObject> = mChildren;
+         var oldLength:uint = vector.length;
+         if(startIndex < 0)
          {
-            param1 = param1 + _loc8_;
+            startIndex = startIndex + oldLength;
          }
-         if(param1 < 0)
+         if(startIndex < 0)
          {
-            param1 = 0;
+            startIndex = 0;
          }
-         else if(param1 > _loc8_)
+         else if(startIndex > oldLength)
          {
-            param1 = _loc8_;
+            startIndex = oldLength;
          }
-         if(param1 + param2 > _loc8_)
+         if(startIndex + deleteCount > oldLength)
          {
-            param2 = _loc8_ - param1;
+            deleteCount = oldLength - startIndex;
          }
-         var _loc7_:int = !!param3?1:0;
-         var _loc9_:int = _loc7_ - param2;
-         var _loc5_:uint = _loc8_ + _loc9_;
-         var _loc4_:int = _loc8_ - param1 - param2;
-         if(_loc9_ < 0)
+         var insertCount:int = !!insertee?1:0;
+         var deltaLength:int = insertCount - deleteCount;
+         var newLength:uint = oldLength + deltaLength;
+         var shiftCount:int = oldLength - startIndex - deleteCount;
+         if(deltaLength < 0)
          {
-            _loc10_ = param1 + _loc7_;
-            while(_loc4_)
+            i = startIndex + insertCount;
+            while(shiftCount)
             {
-               _loc6_[_loc10_] = _loc6_[int(_loc10_ - _loc9_)];
-               _loc4_--;
-               _loc10_++;
+               vector[i] = vector[int(i - deltaLength)];
+               shiftCount--;
+               i++;
             }
-            _loc6_.length = _loc5_;
+            vector.length = newLength;
          }
-         else if(_loc9_ > 0)
+         else if(deltaLength > 0)
          {
-            _loc10_ = 1;
-            while(_loc4_)
+            i = 1;
+            while(shiftCount)
             {
-               _loc6_[int(_loc5_ - _loc10_)] = _loc6_[int(_loc8_ - _loc10_)];
-               _loc4_--;
-               _loc10_++;
+               vector[int(newLength - i)] = vector[int(oldLength - i)];
+               shiftCount--;
+               i++;
             }
-            _loc6_.length = _loc5_;
+            vector.length = newLength;
          }
-         if(param3)
+         if(insertee)
          {
-            _loc6_[param1] = param3;
+            vector[startIndex] = insertee;
          }
       }
       
-      function getChildEventListeners(param1:DisplayObject, param2:String, param3:Vector.<DisplayObject>) : void
+      function getChildEventListeners(object:DisplayObject, eventType:String, listeners:Vector.<DisplayObject>) : void
       {
-         var _loc5_:* = undefined;
-         var _loc6_:int = 0;
-         var _loc7_:int = 0;
-         var _loc4_:DisplayObjectContainer = param1 as DisplayObjectContainer;
-         if(param1.hasEventListener(param2))
+         var children:* = undefined;
+         var numChildren:int = 0;
+         var i:int = 0;
+         var container:DisplayObjectContainer = object as DisplayObjectContainer;
+         if(object.hasEventListener(eventType))
          {
-            param3[param3.length] = param1;
+            listeners[listeners.length] = object;
          }
-         if(_loc4_)
+         if(container)
          {
-            _loc5_ = _loc4_.mChildren;
-            _loc6_ = _loc5_.length;
-            _loc7_ = 0;
-            while(_loc7_ < _loc6_)
+            children = container.mChildren;
+            numChildren = children.length;
+            for(i = 0; i < numChildren; )
             {
-               getChildEventListeners(_loc5_[_loc7_],param2,param3);
-               _loc7_++;
+               getChildEventListeners(children[i],eventType,listeners);
+               i++;
             }
          }
       }

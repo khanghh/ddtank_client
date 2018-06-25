@@ -154,9 +154,9 @@ package shop.view
          return _genderGroup;
       }
       
-      public function setup(param1:ShopController) : void
+      public function setup(controller:ShopController) : void
       {
-         _controller = param1;
+         _controller = controller;
          init();
       }
       
@@ -195,11 +195,11 @@ package shop.view
          _topBtnsContainer = ComponentFactory.Instance.creat("ddtshop.TopBtnContainer");
          var topBtnStyleName:Array = ["ddtshop.TopBtnRecommend","ddtshop.TopBtnEquipment","ddtshop.TopBtnBeautyup","ddtshop.TopBtnProp","ddtshop.TopBtnDisCount"];
          var topBtnTextTranslation:Array = ["shop.ShopRightView.TopBtn.recommend","shop.ShopRightView.TopBtn.equipment","shop.ShopRightView.TopBtn.beautyup","shop.ShopRightView.TopBtn.prop","shop.ShopRightView.TopBtn.discount"];
-         topBtnStyleName.forEach(function(param1:*, param2:int, param3:Array):void
+         topBtnStyleName.forEach(function(pItem:*, pIndex:int, pArray:Array):void
          {
-            var _loc4_:SelectedTextButton = ComponentFactory.Instance.creat(param1 as String);
-            _loc4_.text = LanguageMgr.GetTranslation(topBtnTextTranslation[param2]);
-            _topBtns.push(_loc4_);
+            var btn:SelectedTextButton = ComponentFactory.Instance.creat(pItem as String);
+            btn.text = LanguageMgr.GetTranslation(topBtnTextTranslation[pIndex]);
+            _topBtns.push(btn);
          });
          _genderContainer = ComponentFactory.Instance.creat("ddtshop.GenderBtnContainer");
          _maleBtn = ComponentFactory.Instance.creat("ddtshop.GenderBtnMale");
@@ -208,8 +208,7 @@ package shop.view
          _goodItemContainerBg = ComponentFactory.Instance.creatComponentByStylename("ddtshop.GoodItemContainerBg");
          _goodItemContainerTwoLine = ComponentFactory.Instance.creatComponentByStylename("ddtshop.TwoLine");
          _goodItemContainerAll = ComponentFactory.Instance.creatCustomObject("ddtshop.GoodItemContainerAll");
-         i = 0;
-         while(i < 8)
+         for(i = 0; i < 8; )
          {
             _goodItems[i] = ComponentFactory.Instance.creatCustomObject("ddtshop.GoodItem");
             var dx:Number = _goodItems[i].width;
@@ -231,8 +230,7 @@ package shop.view
          _genderContainer.addChild(_maleBtn);
          _genderGroup.addSelectItem(_maleBtn);
          _genderGroup.addSelectItem(_femaleBtn);
-         i = 0;
-         while(i < _topBtns.length)
+         for(i = 0; i < _topBtns.length; )
          {
             _topBtns[i].addEventListener("click",__topBtnClick);
             _topBtnsContainer.addChild(_topBtns[i]);
@@ -251,16 +249,15 @@ package shop.view
          _subBtnsContainers.push(ComponentFactory.Instance.creat("ddtshop.SubBtnContainerExchange"));
          var subBtnStyleName:Array = ["ddtshop.SubBtnHotSaleIcon","ddtshop.SubBtnRecommend","ddtshop.SubBtnDiscount","ddtshop.SubBtnGiftMedalWeapon","ddtshop.SubBtnCloth","ddtshop.SubBtnHat","ddtshop.SubBtnGlasses","ddtshop.SubBtnRing","ddtshop.SubBtnHair","ddtshop.SubBtnEye","ddtshop.SubBtnFace","ddtshop.SubBtnSuit","ddtshop.SubBtnWing","ddtshop.SubBtnFunc","ddtshop.SubBtnSpecial","ddtshop.SubBtnGiftMedalAll"];
          var subBtnTextTranslation:Array = ["shop.ShopRightView.SubBtn.hotSale","shop.ShopRightView.SubBtn.recommend","shop.ShopRightView.SubBtn.discount","shop.ShopRightView.SubBtn.weapon","shop.ShopRightView.SubBtn.cloth","shop.ShopRightView.SubBtn.hat","shop.ShopRightView.SubBtn.glasses","shop.ShopRightView.SubBtn.ring","shop.ShopRightView.SubBtn.hair","shop.ShopRightView.SubBtn.eye","shop.ShopRightView.SubBtn.face","shop.ShopRightView.SubBtn.suit","shop.ShopRightView.SubBtn.wing","shop.ShopRightView.SubBtn.func","shop.ShopRightView.SubBtn.special","shop.ShopRightView.SubBtn.giftMedalAll"];
-         subBtnStyleName.forEach(function(param1:*, param2:int, param3:Array):void
+         subBtnStyleName.forEach(function(pItem:*, pIndex:int, pArray:Array):void
          {
-            var _loc4_:SelectedTextButton = ComponentFactory.Instance.creat(param1 as String);
-            _loc4_.text = LanguageMgr.GetTranslation(subBtnTextTranslation[param2]);
-            _subBtns.push(_loc4_);
+            var btn:SelectedTextButton = ComponentFactory.Instance.creat(pItem as String);
+            btn.text = LanguageMgr.GetTranslation(subBtnTextTranslation[pIndex]);
+            _subBtns.push(btn);
          });
          var controlArr:Array = [3,8,13,15];
          k = 0;
-         i = 0;
-         while(i < _subBtns.length)
+         for(i = 0; i < _subBtns.length; )
          {
             if(i == controlArr[k])
             {
@@ -291,8 +288,7 @@ package shop.view
          addChild(_goodItemContainerTwoLine);
          addChild(_goodItemContainerAll);
          addChild(_topBtnsContainer);
-         i = 0;
-         while(i < _subBtnsContainers.length)
+         for(i = 0; i < _subBtnsContainers.length; )
          {
             if(_subBtnsContainers[i])
             {
@@ -352,7 +348,7 @@ package shop.view
          }
       }
       
-      private function subButtonSelectedChangeHandler(param1:Event) : void
+      private function subButtonSelectedChangeHandler(evt:Event) : void
       {
          _subBtnsContainers[_currentSubBtnContainerIndex].arrange();
       }
@@ -371,10 +367,10 @@ package shop.view
          _shopMoneyGroup.addEventListener("change",__moneySelectBtnChangeHandler);
       }
       
-      protected function __moneySelectBtnChangeHandler(param1:Event) : void
+      protected function __moneySelectBtnChangeHandler(e:Event) : void
       {
-         var _loc2_:int = _shopMoneyGroup.selectIndex + 1;
-         if(CURRENT_MONEY_TYPE == _loc2_)
+         var idx:int = _shopMoneyGroup.selectIndex + 1;
+         if(CURRENT_MONEY_TYPE == idx)
          {
             return;
          }
@@ -382,7 +378,7 @@ package shop.view
          {
             CURRENT_PAGE = 1;
          }
-         CURRENT_MONEY_TYPE = _loc2_;
+         CURRENT_MONEY_TYPE = idx;
          if(!ShopManager.Instance.isHasDisCountGoods(CURRENT_MONEY_TYPE) && TOP_TYPE == 4)
          {
             TOP_TYPE = 0;
@@ -392,7 +388,7 @@ package shop.view
             _subBtnsGroups[TOP_TYPE].selectIndex = 0;
             isDiscountType = false;
          }
-         if(_loc2_ == 2 && TOP_TYPE == 0)
+         if(idx == 2 && TOP_TYPE == 0)
          {
             SUB_TYPE = 0;
             _subBtnsGroups[TOP_TYPE].selectIndex = 0;
@@ -402,12 +398,12 @@ package shop.view
          SoundManager.instance.play("008");
       }
       
-      protected function __topBtnChangeHandler(param1:Event) : void
+      protected function __topBtnChangeHandler(event:Event) : void
       {
          _topBtnsContainer.arrange();
       }
       
-      private function __userGuide(param1:Event) : void
+      private function __userGuide(evt:Event) : void
       {
          removeEventListener("addedToStage",__userGuide);
          if(!PlayerManager.Instance.Self.IsWeakGuildFinish(73) && PlayerManager.Instance.Self.Grade >= 9)
@@ -421,7 +417,7 @@ package shop.view
          NewHandContainer.Instance.clearArrowByID(17);
       }
       
-      protected function __shopSearchColseBtnClick(param1:MouseEvent) : void
+      protected function __shopSearchColseBtnClick(event:MouseEvent) : void
       {
          _isSearch = false;
          _shopSearchBox.visible = false;
@@ -462,48 +458,47 @@ package shop.view
       
       private function getType() : int
       {
-         var _loc2_:Array = [];
+         var shopType:Array = [];
          if(CURRENT_MONEY_TYPE == 1)
          {
-            _loc2_ = CURRENT_GENDER == 1?ShopType.MALE_MONEY_TYPE:ShopType.FEMALE_MONEY_TYPE;
+            shopType = CURRENT_GENDER == 1?ShopType.MALE_MONEY_TYPE:ShopType.FEMALE_MONEY_TYPE;
             _subBtns[1].visible = true;
             _subBtns[2].visible = true;
          }
          else if(CURRENT_MONEY_TYPE == 2)
          {
-            _loc2_ = CURRENT_GENDER == 1?ShopType.MALE_DDTMONEY_TYPE:ShopType.FEMALE_DDTMONEY_TYPE;
+            shopType = CURRENT_GENDER == 1?ShopType.MALE_DDTMONEY_TYPE:ShopType.FEMALE_DDTMONEY_TYPE;
             _subBtns[1].visible = false;
             _subBtns[2].visible = false;
          }
-         var _loc1_:* = _loc2_[TOP_TYPE];
-         if(_loc1_ is Array && SUB_TYPE > -1)
+         var result:* = shopType[TOP_TYPE];
+         if(result is Array && SUB_TYPE > -1)
          {
-            _loc1_ = _loc1_[SUB_TYPE];
+            result = result[SUB_TYPE];
          }
-         return int(_loc1_);
+         return int(result);
       }
       
-      public function setCurrentSex(param1:int) : void
+      public function setCurrentSex(sex:int) : void
       {
-         CURRENT_GENDER = param1;
+         CURRENT_GENDER = sex;
          _genderGroup.selectIndex = CURRENT_GENDER - 1;
       }
       
-      public function setList(param1:Vector.<ShopItemInfo>) : void
+      public function setList(list:Vector.<ShopItemInfo>) : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          clearitems();
-         _loc2_ = 0;
-         while(_loc2_ < 8)
+         for(i = 0; i < 8; )
          {
-            _goodItems[_loc2_].selected = false;
-            if(param1)
+            _goodItems[i].selected = false;
+            if(list)
             {
-               if(_loc2_ < param1.length && param1[_loc2_])
+               if(i < list.length && list[i])
                {
-                  _goodItems[_loc2_].shopItemInfo = param1[_loc2_];
+                  _goodItems[i].shopItemInfo = list[i];
                }
-               _loc2_++;
+               i++;
                continue;
             }
             break;
@@ -518,15 +513,15 @@ package shop.view
          }
       }
       
-      public function searchList(param1:Vector.<ShopItemInfo>) : void
+      public function searchList($list:Vector.<ShopItemInfo>) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         if(_searchShopItemList == param1 && _isSearch)
+         var i:int = 0;
+         var hBox:* = null;
+         if(_searchShopItemList == $list && _isSearch)
          {
             return;
          }
-         _searchShopItemList = param1;
+         _searchShopItemList = $list;
          if(!_isSearch)
          {
             _tempTopType = TOP_TYPE;
@@ -537,15 +532,14 @@ package shop.view
          _topBtnsGroup.selectIndex = -1;
          _topBtnsContainer.arrange();
          CURRENT_PAGE = 1;
-         _loc3_ = 0;
-         while(_loc3_ < _subBtnsContainers.length)
+         for(i = 0; i < _subBtnsContainers.length; )
          {
-            _loc2_ = _subBtnsContainers[_loc3_] as HBox;
-            if(_loc2_)
+            hBox = _subBtnsContainers[i] as HBox;
+            if(hBox)
             {
-               _loc2_.visible = false;
+               hBox.visible = false;
             }
-            _loc3_++;
+            i++;
          }
          _shopSearchBox.visible = true;
          runSearch();
@@ -553,37 +547,36 @@ package shop.view
       
       private function runSearch() : void
       {
-         var _loc1_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
+         var startIndex:int = 0;
+         var len:int = 0;
+         var i:int = 0;
          clearitems();
          _searchItemTotalPage = Math.ceil(_searchShopItemList.length / 8);
          if(CURRENT_PAGE > 0 && CURRENT_PAGE <= _searchItemTotalPage)
          {
-            _loc1_ = 8 * (CURRENT_PAGE - 1);
-            _loc2_ = Math.min(_searchShopItemList.length - _loc1_,8);
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_)
+            startIndex = 8 * (CURRENT_PAGE - 1);
+            len = Math.min(_searchShopItemList.length - startIndex,8);
+            for(i = 0; i < len; )
             {
-               _goodItems[_loc3_].selected = false;
-               if(_searchShopItemList[_loc3_ + _loc1_])
+               _goodItems[i].selected = false;
+               if(_searchShopItemList[i + startIndex])
                {
-                  _goodItems[_loc3_].shopItemInfo = _searchShopItemList[_loc3_ + _loc1_];
+                  _goodItems[i].shopItemInfo = _searchShopItemList[i + startIndex];
                }
-               _loc3_++;
+               i++;
             }
          }
          _currentPageTxt.text = CURRENT_PAGE + "/" + _searchItemTotalPage;
       }
       
-      private function __genderClick(param1:MouseEvent) : void
+      private function __genderClick(evt:MouseEvent) : void
       {
-         var _loc2_:int = param1.currentTarget as SelectedButton == _maleBtn?1:2;
-         if(CURRENT_GENDER == _loc2_)
+         var idx:int = evt.currentTarget as SelectedButton == _maleBtn?1:2;
+         if(CURRENT_GENDER == idx)
          {
             return;
          }
-         setCurrentSex(_loc2_);
+         setCurrentSex(idx);
          if(!_isSearch)
          {
             CURRENT_PAGE = 1;
@@ -592,139 +585,139 @@ package shop.view
          SoundManager.instance.play("008");
       }
       
-      private function __itemSelect(param1:ItemEvent) : void
+      private function __itemSelect(evt:ItemEvent) : void
       {
-         param1.stopImmediatePropagation();
-         var _loc2_:ShopGoodItem = param1.currentTarget as ShopGoodItem;
+         evt.stopImmediatePropagation();
+         var item:ShopGoodItem = evt.currentTarget as ShopGoodItem;
          var _loc5_:int = 0;
          var _loc4_:* = _goodItems;
-         for each(var _loc3_ in _goodItems)
+         for each(var j in _goodItems)
          {
-            _loc3_.selected = false;
+            j.selected = false;
          }
-         _loc2_.selected = true;
+         item.selected = true;
       }
       
-      private function __itemClick(param1:ItemEvent) : void
+      private function __itemClick(evt:ItemEvent) : void
       {
-         var _loc3_:Boolean = false;
-         var _loc2_:int = 0;
-         var _loc5_:* = null;
-         var _loc7_:Boolean = false;
-         var _loc4_:ShopGoodItem = param1.currentTarget as ShopGoodItem;
-         if(_controller.model.isOverCount(_loc4_.shopItemInfo))
+         var isAdd:Boolean = false;
+         var sexId:int = 0;
+         var shopItem:* = null;
+         var isColorEditorVisble:Boolean = false;
+         var item:ShopGoodItem = evt.currentTarget as ShopGoodItem;
+         if(_controller.model.isOverCount(item.shopItemInfo))
          {
             var _loc10_:int = 0;
             var _loc9_:* = _goodItems;
-            for each(var _loc8_ in _goodItems)
+            for each(var i in _goodItems)
             {
-               _loc8_.selected = _loc8_ == _loc4_;
+               i.selected = i == item;
             }
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("shop.ShopIIModel.GoodsNumberLimit"));
             return;
          }
-         if(_loc4_.shopItemInfo && _loc4_.shopItemInfo.TemplateInfo)
+         if(item.shopItemInfo && item.shopItemInfo.TemplateInfo)
          {
             var _loc12_:int = 0;
             var _loc11_:* = _goodItems;
-            for each(var _loc6_ in _goodItems)
+            for each(var j in _goodItems)
             {
-               _loc6_.selected = _loc6_ == _loc4_;
+               j.selected = j == item;
             }
-            if(EquipType.dressAble(_loc4_.shopItemInfo.TemplateInfo))
+            if(EquipType.dressAble(item.shopItemInfo.TemplateInfo))
             {
-               _loc2_ = _loc4_.shopItemInfo.TemplateInfo.NeedSex != 2?0:1;
-               if(_loc4_.shopItemInfo.TemplateInfo.NeedSex != 0 && _genderGroup.selectIndex != _loc2_)
+               sexId = item.shopItemInfo.TemplateInfo.NeedSex != 2?0:1;
+               if(item.shopItemInfo.TemplateInfo.NeedSex != 0 && _genderGroup.selectIndex != sexId)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.changeColor.sexAlert"));
                   return;
                }
-               _controller.addTempEquip(_loc4_.shopItemInfo);
+               _controller.addTempEquip(item.shopItemInfo);
             }
             else
             {
-               _loc5_ = new ShopCarItemInfo(_loc4_.shopItemInfo.GoodsID,_loc4_.shopItemInfo.TemplateID);
-               ObjectUtils.copyProperties(_loc5_,_loc4_.shopItemInfo);
-               _loc3_ = _controller.addToCar(_loc5_);
+               shopItem = new ShopCarItemInfo(item.shopItemInfo.GoodsID,item.shopItemInfo.TemplateID);
+               ObjectUtils.copyProperties(shopItem,item.shopItemInfo);
+               isAdd = _controller.addToCar(shopItem);
             }
-            itemClick(_loc4_);
-            _loc7_ = _controller.leftView.getColorEditorVisble();
-            if(_loc3_ && !_loc7_)
+            itemClick(item);
+            isColorEditorVisble = _controller.leftView.getColorEditorVisble();
+            if(isAdd && !isColorEditorVisble)
             {
-               addCartEffects(_loc4_.itemCell);
+               addCartEffects(item.itemCell);
             }
          }
          dispatchEvent(new Event("SHOW_LIGHT"));
       }
       
-      private function addCartEffects(param1:DisplayObject) : void
+      private function addCartEffects($item:DisplayObject) : void
       {
-         var _loc5_:* = null;
-         var _loc6_:* = null;
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         if(!param1)
+         var tp:* = null;
+         var timeline:* = null;
+         var tw:* = null;
+         var tw1:* = null;
+         if(!$item)
          {
             return;
          }
-         var _loc7_:BitmapData = new BitmapData(param1.width,param1.height,true,0);
-         _loc7_.draw(param1);
-         var _loc2_:Bitmap = new Bitmap(_loc7_,"auto",true);
-         parent.addChild(_loc2_);
-         _loc5_ = TweenProxy.create(_loc2_);
-         _loc5_.registrationX = _loc5_.width / 2;
-         _loc5_.registrationY = _loc5_.height / 2;
-         var _loc8_:Point = DisplayUtils.localizePoint(parent,param1);
-         _loc5_.x = _loc8_.x + _loc5_.width / 2;
-         _loc5_.y = _loc8_.y + _loc5_.height / 2;
-         _loc6_ = new TimelineLite();
-         _loc6_.vars.onComplete = twComplete;
-         _loc6_.vars.onCompleteParams = [_loc6_,_loc5_,_loc2_];
-         _loc3_ = new TweenLite(_loc5_,0.3,{
+         var tempBitmapD:BitmapData = new BitmapData($item.width,$item.height,true,0);
+         tempBitmapD.draw($item);
+         var bitmap:Bitmap = new Bitmap(tempBitmapD,"auto",true);
+         parent.addChild(bitmap);
+         tp = TweenProxy.create(bitmap);
+         tp.registrationX = tp.width / 2;
+         tp.registrationY = tp.height / 2;
+         var pos:Point = DisplayUtils.localizePoint(parent,$item);
+         tp.x = pos.x + tp.width / 2;
+         tp.y = pos.y + tp.height / 2;
+         timeline = new TimelineLite();
+         timeline.vars.onComplete = twComplete;
+         timeline.vars.onCompleteParams = [timeline,tp,bitmap];
+         tw = new TweenLite(tp,0.3,{
             "x":220,
             "y":430
          });
-         _loc4_ = new TweenLite(_loc5_,0.3,{
+         tw1 = new TweenLite(tp,0.3,{
             "scaleX":0.1,
             "scaleY":0.1
          });
-         _loc6_.append(_loc3_);
-         _loc6_.append(_loc4_,-0.2);
+         timeline.append(tw);
+         timeline.append(tw1,-0.2);
       }
       
-      private function twComplete(param1:TimelineLite, param2:TweenProxy, param3:Bitmap) : void
+      private function twComplete(timeline:TimelineLite, tp:TweenProxy, bitmap:Bitmap) : void
       {
-         if(param1)
+         if(timeline)
          {
-            param1.kill();
+            timeline.kill();
          }
-         if(param2)
+         if(tp)
          {
-            param2.destroy();
+            tp.destroy();
          }
-         if(param3.parent)
+         if(bitmap.parent)
          {
-            param3.parent.removeChild(param3);
-            param3.bitmapData.dispose();
+            bitmap.parent.removeChild(bitmap);
+            bitmap.bitmapData.dispose();
          }
-         param2 = null;
-         param3 = null;
-         param1 = null;
+         tp = null;
+         bitmap = null;
+         timeline = null;
       }
       
-      private function itemClick(param1:ShopGoodItem) : void
+      private function itemClick(item:ShopGoodItem) : void
       {
-         if(param1.shopItemInfo.TemplateInfo != null)
+         if(item.shopItemInfo.TemplateInfo != null)
          {
-            if(CURRENT_GENDER != param1.shopItemInfo.TemplateInfo.NeedSex && param1.shopItemInfo.TemplateInfo.NeedSex != 0)
+            if(CURRENT_GENDER != item.shopItemInfo.TemplateInfo.NeedSex && item.shopItemInfo.TemplateInfo.NeedSex != 0)
             {
-               setCurrentSex(param1.shopItemInfo.TemplateInfo.NeedSex);
+               setCurrentSex(item.shopItemInfo.TemplateInfo.NeedSex);
                _controller.setFittingModel(CURRENT_GENDER == 1);
             }
          }
       }
       
-      private function __pageBtnClick(param1:MouseEvent) : void
+      private function __pageBtnClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(!_isSearch)
@@ -740,7 +733,7 @@ package shop.view
             {
                return;
             }
-            var _loc2_:* = param1.currentTarget;
+            var _loc2_:* = evt.currentTarget;
             if(_firstPage !== _loc2_)
             {
                if(_prePageBtn !== _loc2_)
@@ -802,7 +795,7 @@ package shop.view
          }
          else
          {
-            _loc2_ = param1.currentTarget;
+            _loc2_ = evt.currentTarget;
             if(_firstPage !== _loc2_)
             {
                if(_prePageBtn !== _loc2_)
@@ -843,34 +836,34 @@ package shop.view
          }
       }
       
-      private function __subBtnClick(param1:MouseEvent) : void
+      private function __subBtnClick(event:MouseEvent) : void
       {
          reoveArrow();
-         var _loc2_:int = _subBtnsContainers[TOP_TYPE].getChildIndex(param1.currentTarget as SelectedButton);
-         if(_loc2_ != SUB_TYPE)
+         var idx:int = _subBtnsContainers[TOP_TYPE].getChildIndex(event.currentTarget as SelectedButton);
+         if(idx != SUB_TYPE)
          {
-            SUB_TYPE = _loc2_;
+            SUB_TYPE = idx;
             CURRENT_PAGE = 1;
             loadList();
             SoundManager.instance.play("008");
          }
       }
       
-      private function __topBtnClick(param1:MouseEvent) : void
+      private function __topBtnClick(event:MouseEvent) : void
       {
          _topBtnsContainer.arrange();
-         var _loc2_:int = _topBtns.indexOf(param1.currentTarget as SelectedTextButton);
+         var idx:int = _topBtns.indexOf(event.currentTarget as SelectedTextButton);
          _isSearch = false;
          _shopSearchBox.visible = false;
          _tempTopType = -1;
          _tempCurrentPage = -1;
-         if(_loc2_ != TOP_TYPE)
+         if(idx != TOP_TYPE)
          {
-            TOP_TYPE = _loc2_;
+            TOP_TYPE = idx;
             SUB_TYPE = 0;
             CURRENT_PAGE = 1;
-            showSubBtns(_loc2_);
-            _currentSubBtnContainerIndex = _loc2_;
+            showSubBtns(idx);
+            _currentSubBtnContainerIndex = idx;
             if(TOP_TYPE == 4)
             {
                isDiscountType = true;
@@ -896,103 +889,97 @@ package shop.view
       
       private function clearitems() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < 8)
+         var i:int = 0;
+         for(i = 0; i < 8; )
          {
-            _goodItems[_loc1_].shopItemInfo = null;
-            _loc1_++;
+            _goodItems[i].shopItemInfo = null;
+            i++;
          }
       }
       
       private function removeEvent() : void
       {
-         var _loc1_:* = 0;
+         var i:* = 0;
          _topBtnsGroup.removeEventListener("change",__topBtnChangeHandler);
          _maleBtn.removeEventListener("click",__genderClick);
          _femaleBtn.removeEventListener("click",__genderClick);
          _prePageBtn.removeEventListener("click",__pageBtnClick);
          _nextPageBtn.removeEventListener("click",__pageBtnClick);
-         _loc1_ = uint(0);
-         while(_loc1_ < 8)
+         for(i = uint(0); i < 8; )
          {
-            _goodItems[_loc1_].removeEventListener("itemClick",__itemClick);
-            _goodItems[_loc1_].removeEventListener("itemSelect",__itemSelect);
-            _loc1_++;
+            _goodItems[i].removeEventListener("itemClick",__itemClick);
+            _goodItems[i].removeEventListener("itemSelect",__itemSelect);
+            i++;
          }
-         _loc1_ = uint(0);
-         while(_loc1_ < _topBtns.length)
+         for(i = uint(0); i < _topBtns.length; )
          {
-            _topBtns[_loc1_].removeEventListener("click",__topBtnClick);
-            _loc1_++;
+            _topBtns[i].removeEventListener("click",__topBtnClick);
+            i++;
          }
-         _loc1_ = uint(0);
-         while(_loc1_ < _subBtns.length)
+         for(i = uint(0); i < _subBtns.length; )
          {
-            _subBtns[_loc1_].removeEventListener("click",__subBtnClick);
-            _loc1_++;
+            _subBtns[i].removeEventListener("click",__subBtnClick);
+            i++;
          }
          removeEventListener("addedToStage",__userGuide);
          _shopSearchColseBtn.removeEventListener("click",__shopSearchColseBtnClick);
          _shopMoneyGroup.removeEventListener("change",__moneySelectBtnChangeHandler);
       }
       
-      private function showSubBtns(param1:int) : void
+      private function showSubBtns(topIdx:int) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         _loc3_ = 0;
-         while(_loc3_ < _subBtnsContainers.length)
+         var i:int = 0;
+         var hBox:* = null;
+         for(i = 0; i < _subBtnsContainers.length; )
          {
-            _loc2_ = _subBtnsContainers[_loc3_] as HBox;
-            if(_loc2_)
+            hBox = _subBtnsContainers[i] as HBox;
+            if(hBox)
             {
-               _loc2_.visible = false;
+               hBox.visible = false;
             }
-            _loc3_++;
+            i++;
          }
-         if(_subBtnsContainers[param1])
+         if(_subBtnsContainers[topIdx])
          {
-            _subBtnsContainers[param1].visible = true;
-            _tempSubBtnHBox = _subBtnsContainers[param1];
-            _subBtnsGroups[param1].selectIndex = SUB_TYPE;
-            _subBtnsContainers[param1].arrange();
+            _subBtnsContainers[topIdx].visible = true;
+            _tempSubBtnHBox = _subBtnsContainers[topIdx];
+            _subBtnsGroups[topIdx].selectIndex = SUB_TYPE;
+            _subBtnsContainers[topIdx].arrange();
          }
       }
       
-      public function gotoPage(param1:int = -1, param2:int = -1, param3:int = 1, param4:int = 1) : void
+      public function gotoPage(topType:int = -1, subType:int = -1, currentPage:int = 1, currentGender:int = 1) : void
       {
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
-         if(param1 == 4 && !ShopManager.Instance.isHasDisCountGoods(CURRENT_MONEY_TYPE))
+         var i:int = 0;
+         var hBox:* = null;
+         if(topType == 4 && !ShopManager.Instance.isHasDisCountGoods(CURRENT_MONEY_TYPE))
          {
-            param1 = 0;
-            param2 = 2;
+            topType = 0;
+            subType = 2;
          }
-         if(param1 != -1)
+         if(topType != -1)
          {
-            TOP_TYPE = param1;
+            TOP_TYPE = topType;
          }
-         if(param2 != -1)
+         if(subType != -1)
          {
-            SUB_TYPE = param2;
+            SUB_TYPE = subType;
          }
-         CURRENT_PAGE = param3;
-         CURRENT_GENDER = param4;
+         CURRENT_PAGE = currentPage;
+         CURRENT_GENDER = currentGender;
          _topBtnsGroup.selectIndex = TOP_TYPE;
          _subBtnsGroups[TOP_TYPE].selectIndex = SUB_TYPE;
          _genderGroup.selectIndex = CURRENT_GENDER - 1;
          setCurrentSex(CURRENT_GENDER);
          _currentPageTxt.text = CURRENT_PAGE + "/" + _searchItemTotalPage;
-         _loc6_ = 0;
-         while(_loc6_ < _subBtnsContainers.length)
+         for(i = 0; i < _subBtnsContainers.length; )
          {
-            _loc5_ = _subBtnsContainers[_loc6_] as HBox;
-            if(_loc5_)
+            hBox = _subBtnsContainers[i] as HBox;
+            if(hBox)
             {
-               _loc5_.visible = false;
+               hBox.visible = false;
             }
-            _loc6_++;
+            i++;
          }
          if(_subBtnsContainers[TOP_TYPE])
          {
@@ -1005,7 +992,7 @@ package shop.view
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(_tempCurrentPage > -1)
          {
             CURRENT_PAGE = _tempCurrentPage;
@@ -1022,38 +1009,34 @@ package shop.view
             _currentPageTxt.dispose();
          }
          _currentPageTxt = null;
-         _loc1_ = 0;
-         while(_loc1_ < _goodItems.length)
+         for(i = 0; i < _goodItems.length; )
          {
-            ObjectUtils.disposeObject(_goodItems[_loc1_]);
-            _goodItems[_loc1_] = null;
-            _loc1_++;
+            ObjectUtils.disposeObject(_goodItems[i]);
+            _goodItems[i] = null;
+            i++;
          }
          _goodItems = null;
-         _loc1_ = 0;
-         while(_loc1_ < _topBtns.length)
+         for(i = 0; i < _topBtns.length; )
          {
-            ObjectUtils.disposeObject(_topBtns[_loc1_]);
-            _topBtns[_loc1_] = null;
-            _loc1_++;
+            ObjectUtils.disposeObject(_topBtns[i]);
+            _topBtns[i] = null;
+            i++;
          }
          _topBtns = null;
-         _loc1_ = 0;
-         while(_loc1_ < _subBtns.length)
+         for(i = 0; i < _subBtns.length; )
          {
-            ObjectUtils.disposeObject(_subBtns[_loc1_]);
-            _subBtns[_loc1_] = null;
-            _loc1_++;
+            ObjectUtils.disposeObject(_subBtns[i]);
+            _subBtns[i] = null;
+            i++;
          }
          _subBtns = null;
-         _loc1_ = 0;
-         while(_loc1_ < _subBtnsGroups.length)
+         for(i = 0; i < _subBtnsGroups.length; )
          {
-            ObjectUtils.disposeObject(_subBtnsGroups[_loc1_]);
-            _subBtnsGroups[_loc1_] = null;
-            ObjectUtils.disposeObject(_subBtnsContainers[_loc1_]);
-            _subBtnsContainers[_loc1_] = null;
-            _loc1_++;
+            ObjectUtils.disposeObject(_subBtnsGroups[i]);
+            _subBtnsGroups[i] = null;
+            ObjectUtils.disposeObject(_subBtnsContainers[i]);
+            _subBtnsContainers[i] = null;
+            i++;
          }
          _subBtnsContainers = null;
          _subBtnsGroups = null;

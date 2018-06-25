@@ -60,17 +60,17 @@ package farm.player
       
       private var _clickFlag:Boolean;
       
-      public function FarmPlayer(param1:PlayerVO, param2:Function = null)
+      public function FarmPlayer(playerVO:PlayerVO, callBack:Function = null)
       {
-         _playerVO = param1;
+         _playerVO = playerVO;
          _currentWalkStartPoint = _playerVO.playerPos;
-         super(param1.playerInfo,param2);
+         super(playerVO.playerInfo,callBack);
          initialize();
       }
       
       private function initialize() : void
       {
-         var _loc1_:int = 0;
+         var spWidth:int = 0;
          moveSpeed = _playerVO.playerMoveSpeed;
          if(_isShowName)
          {
@@ -121,13 +121,13 @@ package farm.player
             _spName.x = (playerWitdh - _spName.width) / 2 - playerWitdh / 2;
             _spName.y = -playerHeight;
             _spName.graphics.beginFill(0,0.5);
-            _loc1_ = !!_vipIcon?_lblName.textWidth + _vipIcon.width:Number(_lblName.textWidth + 8);
+            spWidth = !!_vipIcon?_lblName.textWidth + _vipIcon.width:Number(_lblName.textWidth + 8);
             if(playerVO.playerInfo.IsVIP)
             {
-               _loc1_ = !!_vipIcon?_vipName.width + _vipIcon.width + 8:Number(_vipName.width + 8);
+               spWidth = !!_vipIcon?_vipName.width + _vipIcon.width + 8:Number(_vipName.width + 8);
                _spName.x = (playerWitdh - (_vipIcon.width + _vipName.width)) / 2 - playerWitdh / 2;
             }
-            _spName.graphics.drawRoundRect(-4,0,_loc1_,22,5,5);
+            _spName.graphics.drawRoundRect(-4,0,spWidth,22,5,5);
             _spName.graphics.endFill();
             addChildAt(_spName,0);
             _spName.visible = _isShowName;
@@ -142,11 +142,11 @@ package farm.player
          initEvent();
       }
       
-      public function set isChatBall(param1:Boolean) : void
+      public function set isChatBall(value:Boolean) : void
       {
-         if(param1)
+         if(value)
          {
-            _isChatBall = param1;
+            _isChatBall = value;
             if(!_chatTimer)
             {
                _chatTimer = new Timer(8000);
@@ -188,7 +188,7 @@ package farm.player
          addEventListener("click",__onClick);
       }
       
-      protected function __onTimerHandle(param1:TimerEvent) : void
+      protected function __onTimerHandle(event:TimerEvent) : void
       {
          deleteChatBallView();
          _chatBallView = new ChatBallPlayer();
@@ -203,24 +203,24 @@ package farm.player
          addEventListener("characterDirectionChange",characterDirectionChange);
       }
       
-      protected function __onClick(param1:MouseEvent) : void
+      protected function __onClick(event:MouseEvent) : void
       {
          if(_giftPacks)
          {
             SoundManager.instance.play("008");
-            param1.stopImmediatePropagation();
+            event.stopImmediatePropagation();
             _giftPacks.visible = true;
             _giftPacks.addEventListener("click",__onGiftPacksClick);
             StageReferance.stage.addEventListener("click",__clearGiftPacks);
          }
       }
       
-      protected function __clearGiftPacks(param1:MouseEvent) : void
+      protected function __clearGiftPacks(event:MouseEvent) : void
       {
          _giftPacks.visible = false;
       }
       
-      protected function __onGiftPacksClick(param1:MouseEvent) : void
+      protected function __onGiftPacksClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _giftPacks.removeEventListener("click",__onGiftPacksClick);
@@ -230,27 +230,27 @@ package farm.player
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.farms.playerGiftPacksText"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2);
-         _loc2_.addEventListener("response",__onResponse);
+         var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.farms.playerGiftPacksText"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2);
+         alert.addEventListener("response",__onResponse);
       }
       
-      private function __onResponse(param1:FrameEvent) : void
+      private function __onResponse(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.target as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onResponse);
-         _loc2_.dispose();
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var alert:BaseAlerFrame = event.target as BaseAlerFrame;
+         alert.removeEventListener("response",__onResponse);
+         alert.dispose();
+         if(event.responseCode == 2 || event.responseCode == 3)
          {
             SocketManager.Instance.out.giftPacks(_playerVO.playerInfo.ID);
          }
       }
       
-      private function characterDirectionChange(param1:SceneCharacterEvent) : void
+      private function characterDirectionChange(evt:SceneCharacterEvent) : void
       {
          SoundManager.instance.play("008");
          _playerVO.scenePlayerDirection = sceneCharacterDirection;
-         if(param1.data)
+         if(evt.data)
          {
             if(sceneCharacterDirection == SceneCharacterDirection.LT || sceneCharacterDirection == SceneCharacterDirection.RT)
             {
@@ -332,9 +332,9 @@ package farm.player
          playerWalk(_playerVO.walkPath);
       }
       
-      override public function playerWalk(param1:Array) : void
+      override public function playerWalk(walkPath:Array) : void
       {
-         var _loc2_:Number = NaN;
+         var dis:Number = NaN;
          if(_walkPath != null && _tween.isPlaying && _walkPath == _playerVO.walkPath)
          {
             return;
@@ -345,8 +345,8 @@ package farm.player
             _currentWalkStartPoint = _walkPath[0];
             sceneCharacterDirection = SceneCharacterDirection.getDirection(playerPoint,_currentWalkStartPoint);
             dispatchEvent(new SceneCharacterEvent("characterDirectionChange",true));
-            _loc2_ = Point.distance(_currentWalkStartPoint,playerPoint);
-            _tween.start(_loc2_ / _moveSpeed,"x",_currentWalkStartPoint.x,"y",_currentWalkStartPoint.y);
+            dis = Point.distance(_currentWalkStartPoint,playerPoint);
+            _tween.start(dis / _moveSpeed,"x",_currentWalkStartPoint.x,"y",_currentWalkStartPoint.y);
             _walkPath.shift();
          }
          else
@@ -355,16 +355,16 @@ package farm.player
          }
       }
       
-      public function set setSceneCharacterDirectionDefault(param1:SceneCharacterDirection) : void
+      public function set setSceneCharacterDirectionDefault(value:SceneCharacterDirection) : void
       {
-         if(param1 == SceneCharacterDirection.LT || param1 == SceneCharacterDirection.RT)
+         if(value == SceneCharacterDirection.LT || value == SceneCharacterDirection.RT)
          {
             if(sceneCharacterStateType == "natural")
             {
                sceneCharacterActionType = "naturalStandBack";
             }
          }
-         else if(param1 == SceneCharacterDirection.LB || param1 == SceneCharacterDirection.RB)
+         else if(value == SceneCharacterDirection.LB || value == SceneCharacterDirection.RB)
          {
             if(sceneCharacterStateType == "natural")
             {
@@ -375,27 +375,26 @@ package farm.player
       
       private function fixPlayerPath() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var lastPath:* = null;
          if(_playerVO.currentWalkStartPoint == null)
          {
             return;
          }
-         var _loc2_:* = -1;
-         _loc3_ = 0;
-         while(_loc3_ < _walkPath.length)
+         var startPointIndex:* = -1;
+         for(i = 0; i < _walkPath.length; )
          {
-            if(_walkPath[_loc3_].x == _playerVO.currentWalkStartPoint.x && _walkPath[_loc3_].y == _playerVO.currentWalkStartPoint.y)
+            if(_walkPath[i].x == _playerVO.currentWalkStartPoint.x && _walkPath[i].y == _playerVO.currentWalkStartPoint.y)
             {
-               _loc2_ = _loc3_;
+               startPointIndex = i;
                break;
             }
-            _loc3_++;
+            i++;
          }
-         if(_loc2_ > 0)
+         if(startPointIndex > 0)
          {
-            _loc1_ = _walkPath.slice(0,_loc2_);
-            _playerVO.walkPath = _loc1_.concat(_playerVO.walkPath);
+            lastPath = _walkPath.slice(0,startPointIndex);
+            _playerVO.walkPath = lastPath.concat(_playerVO.walkPath);
          }
       }
       
@@ -447,9 +446,9 @@ package farm.player
          return _isShowName;
       }
       
-      public function set isShowName(param1:Boolean) : void
+      public function set isShowName(value:Boolean) : void
       {
-         _isShowName = param1;
+         _isShowName = value;
          if(!_spName)
          {
             return;
@@ -462,9 +461,9 @@ package farm.player
          return _playerVO;
       }
       
-      public function set playerVO(param1:PlayerVO) : void
+      public function set playerVO(value:PlayerVO) : void
       {
-         _playerVO = param1;
+         _playerVO = value;
       }
       
       public function get sceneScene() : SceneScene
@@ -472,9 +471,9 @@ package farm.player
          return _sceneScene;
       }
       
-      public function set sceneScene(param1:SceneScene) : void
+      public function set sceneScene(value:SceneScene) : void
       {
-         _sceneScene = param1;
+         _sceneScene = value;
       }
       
       override public function dispose() : void

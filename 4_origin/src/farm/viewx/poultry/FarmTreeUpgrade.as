@@ -92,29 +92,29 @@ package farm.viewx.poultry
          FarmModelController.instance.addEventListener("farmPoultry_upgrading",__onUpgrading);
       }
       
-      protected function __onUpgrading(param1:FarmEvent) : void
+      protected function __onUpgrading(event:FarmEvent) : void
       {
-         _upgradingFlag = param1.obj[0];
+         _upgradingFlag = event.obj[0];
       }
       
-      protected function __onSetCallBtnEnable(param1:FarmEvent) : void
+      protected function __onSetCallBtnEnable(event:FarmEvent) : void
       {
          _callBtn.enable = false;
       }
       
-      protected function __onInitData(param1:PkgEvent) : void
+      protected function __onInitData(event:PkgEvent) : void
       {
-         var _loc2_:int = 0;
-         var _loc5_:PackageIn = param1.pkg;
-         _levelNum = _loc5_.readInt();
-         var _loc3_:int = _loc5_.readInt();
-         var _loc4_:int = _loc5_.readInt() - FarmModelController.instance.model.farmPoultryInfo[_levelNum].Exp;
-         var _loc6_:int = _loc5_.readInt();
-         var _loc7_:int = FarmModelController.instance.model.farmPoultryInfo[_levelNum].CostExp;
+         var needExp:int = 0;
+         var pkg:PackageIn = event.pkg;
+         _levelNum = pkg.readInt();
+         var loveNum:int = pkg.readInt();
+         var treeExp:int = pkg.readInt() - FarmModelController.instance.model.farmPoultryInfo[_levelNum].Exp;
+         var condenserExp:int = pkg.readInt();
+         var needCondenserExp:int = FarmModelController.instance.model.farmPoultryInfo[_levelNum].CostExp;
          FarmModelController.instance.model.FarmTreeLevel = _levelNum;
          FarmModelController.instance.dispatchEvent(new FarmEvent("farmTree_updateTreeLevel"));
-         _loveNum.text = _loc3_.toString();
-         if(_levelNum > 0 && _levelNum % 10 == 0 && _loc4_ == 0 && _loc6_ < _loc7_)
+         _loveNum.text = loveNum.toString();
+         if(_levelNum > 0 && _levelNum % 10 == 0 && treeExp == 0 && condenserExp < needCondenserExp)
          {
             if(_control)
             {
@@ -128,7 +128,7 @@ package farm.viewx.poultry
             {
                _control = new TreeUpgradeCondenser();
             }
-            TreeUpgradeCondenser(_control).setExp(_loc6_,_loc7_,_levelNum);
+            TreeUpgradeCondenser(_control).setExp(condenserExp,needCondenserExp,_levelNum);
          }
          else
          {
@@ -144,38 +144,38 @@ package farm.viewx.poultry
             {
                _control = new TreeUpgradeWater();
             }
-            _loc2_ = 0;
+            needExp = 0;
             if(_levelNum >= FarmModelController.MAXLEVEL)
             {
-               _loc2_ = 1;
-               _loc4_ = 1;
+               needExp = 1;
+               treeExp = 1;
             }
             else
             {
-               _loc2_ = FarmModelController.instance.model.farmPoultryInfo[_levelNum + 1].Exp - FarmModelController.instance.model.farmPoultryInfo[_levelNum].Exp;
+               needExp = FarmModelController.instance.model.farmPoultryInfo[_levelNum + 1].Exp - FarmModelController.instance.model.farmPoultryInfo[_levelNum].Exp;
             }
             TreeUpgradeWater(_control).setLevelNum(_levelNum);
-            TreeUpgradeWater(_control).setExp(_loc4_,_loc2_);
-            TreeUpgradeWater(_control).setLoveNum(_loc3_);
+            TreeUpgradeWater(_control).setExp(treeExp,needExp);
+            TreeUpgradeWater(_control).setLoveNum(loveNum);
          }
          PositionUtils.setPos(_control,"asset.farm.controlPos");
          addToContent(_control);
       }
       
-      protected function __onCallBtnClick(param1:MouseEvent) : void
+      protected function __onCallBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:CallPoultryView = ComponentFactory.Instance.creatComponentByStylename("farm.poultry.callView");
-         LayerManager.Instance.addToLayer(_loc2_,2,true,1);
+         var callView:CallPoultryView = ComponentFactory.Instance.creatComponentByStylename("farm.poultry.callView");
+         LayerManager.Instance.addToLayer(callView,2,true,1);
       }
       
-      protected function __onHelpBtnClick(param1:MouseEvent) : void
+      protected function __onHelpBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          HelpFrameUtils.Instance.simpleHelpFrame(LanguageMgr.GetTranslation("ddt.consortia.bossFrame.helpTitle"),ComponentFactory.Instance.creatCustomObject("farm.treeUpgrade.helpInfo"),408,488);
       }
       
-      private function __closeFarm(param1:FrameEvent) : void
+      private function __closeFarm(event:FrameEvent) : void
       {
          if(!_upgradingFlag)
          {

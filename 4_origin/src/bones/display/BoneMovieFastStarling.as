@@ -43,17 +43,17 @@ package bones.display
       
       private var defaultFilter:FragmentFilter = null;
       
-      public function BoneMovieFastStarling(param1:String = "")
+      public function BoneMovieFastStarling(styleName:String = "")
       {
          super();
-         _styleName = param1;
+         _styleName = styleName;
       }
       
-      public function setArmature(param1:FastArmature, param2:ArmatureData = null) : BoneMovieFastStarling
+      public function setArmature(armature:FastArmature, data:ArmatureData = null) : BoneMovieFastStarling
       {
          clearArmature();
-         _armature = param1;
-         _armatureData = param2 || param1.armatureData;
+         _armature = armature;
+         _armatureData = data || armature.armatureData;
          if(_argsData)
          {
             _argsData.clear();
@@ -61,10 +61,10 @@ package bones.display
          _movie = _armature.display as DisplayObject;
          _movie.touchable = false;
          addChildAt(_movie,0);
-         var _loc3_:AnimationData = _armatureData.animationDataList[0];
+         var animationData:AnimationData = _armatureData.animationDataList[0];
          if(_defaultBoneActionType == null || _defaultBoneActionType == "")
          {
-            _defaultBoneActionType = _loc3_.name;
+            _defaultBoneActionType = animationData.name;
          }
          gotoAndPlay(_defaultBoneActionType);
          startClock();
@@ -74,10 +74,10 @@ package bones.display
       public function loadWait() : void
       {
          _loadComplete = false;
-         var _loc1_:String = BoneMovieFactory.instance.model.getBonesStyle(_styleName).boneType;
-         if(_loc1_ != "none")
+         var type:String = BoneMovieFactory.instance.model.getBonesStyle(_styleName).boneType;
+         if(type != "none")
          {
-            _deafultImage = StarlingMain.instance.createImage("image_deafult_" + _loc1_);
+            _deafultImage = StarlingMain.instance.createImage("image_deafult_" + type);
             _deafultImage.x = -60;
             _deafultImage.y = -100;
             addChild(_deafultImage);
@@ -85,18 +85,18 @@ package bones.display
          BonesLoaderManager.instance.addEventListener("complete",__onLoaderComplete);
       }
       
-      public function gotoAndPlay(param1:String, param2:Number = -1, param3:Number = -1, param4:Number = NaN) : FastAnimationState
+      public function gotoAndPlay(animationName:String, fadeInTime:Number = -1, duration:Number = -1, playTimes:Number = NaN) : FastAnimationState
       {
-         return _armature.animation.gotoAndPlay(param1,param2,param3,param4);
+         return _armature.animation.gotoAndPlay(animationName,fadeInTime,duration,playTimes);
       }
       
-      public function play(param1:String = "") : void
+      public function play(action:String = "") : void
       {
          if(_armature)
          {
-            gotoAndPlay(param1 == ""?_defaultBoneActionType:param1);
+            gotoAndPlay(action == ""?_defaultBoneActionType:action);
          }
-         _defaultBoneActionType = param1;
+         _defaultBoneActionType = action;
       }
       
       public function stop() : void
@@ -107,21 +107,21 @@ package bones.display
          }
       }
       
-      public function getBoneByName(param1:String) : FastBone
+      public function getBoneByName(boneName:String) : FastBone
       {
-         var _loc2_:FastBone = _armature.getBone(param1);
-         return _loc2_;
+         var bone:FastBone = _armature.getBone(boneName);
+         return bone;
       }
       
-      public function getBoneDataByName(param1:String) : BoneData
+      public function getBoneDataByName(boneName:String) : BoneData
       {
-         var _loc2_:BoneData = null;
+         var boneData:BoneData = null;
          if(_armatureData != null)
          {
-            _loc2_ = _armatureData.getBoneData(name);
-            if(_loc2_ != null)
+            boneData = _armatureData.getBoneData(name);
+            if(boneData != null)
             {
-               return _loc2_;
+               return boneData;
             }
          }
          return null;
@@ -159,13 +159,13 @@ package bones.display
          return _armature;
       }
       
-      public function set direction(param1:int) : void
+      public function set direction(value:int) : void
       {
-         if(_direction == param1)
+         if(_direction == value)
          {
             return;
          }
-         _direction = param1;
+         _direction = value;
          this.scaleX = _direction;
       }
       
@@ -189,9 +189,9 @@ package bones.display
          WorldClock.clock.add(_armature);
       }
       
-      override public function set filter(param1:FragmentFilter) : void
+      override public function set filter(value:FragmentFilter) : void
       {
-         .super.filter = param1;
+         .super.filter = value;
       }
       
       private function clearArmature() : void
@@ -221,9 +221,9 @@ package bones.display
          return _loadComplete;
       }
       
-      private function __onLoaderComplete(param1:BonesLoaderEvent) : void
+      private function __onLoaderComplete(e:BonesLoaderEvent) : void
       {
-         if(_styleName == param1.vo.styleName)
+         if(_styleName == e.vo.styleName)
          {
             _loadComplete = true;
             BonesLoaderManager.instance.removeEventListener("complete",__onLoaderComplete);
@@ -232,9 +232,9 @@ package bones.display
          }
       }
       
-      public function getValueByAttribute(param1:String) : String
+      public function getValueByAttribute(attribute:String) : String
       {
-         return _argsData[param1];
+         return _argsData[attribute];
       }
       
       override public function dispose() : void

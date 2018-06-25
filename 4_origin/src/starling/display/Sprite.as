@@ -48,25 +48,23 @@ package starling.display
       
       private function disposeFlattenedContents() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
+         var i:int = 0;
+         var max:int = 0;
          if(mFlattenedContents)
          {
-            _loc2_ = 0;
-            _loc1_ = mFlattenedContents.length;
-            while(_loc2_ < _loc1_)
+            for(i = 0,max = mFlattenedContents.length; i < max; )
             {
-               mFlattenedContents[_loc2_].dispose();
-               _loc2_++;
+               mFlattenedContents[i].dispose();
+               i++;
             }
             mFlattenedContents = null;
          }
       }
       
-      public function flatten(param1:Boolean = false) : void
+      public function flatten(ignoreChildOrder:Boolean = false) : void
       {
          mFlattenRequested = true;
-         mFlattenOptimized = param1;
+         mFlattenOptimized = ignoreChildOrder;
          broadcastEventWith("flatten");
       }
       
@@ -86,115 +84,114 @@ package starling.display
          return mClipRect;
       }
       
-      public function set clipRect(param1:Rectangle) : void
+      public function set clipRect(value:Rectangle) : void
       {
-         if(mClipRect && param1)
+         if(mClipRect && value)
          {
-            mClipRect.copyFrom(param1);
+            mClipRect.copyFrom(value);
          }
          else
          {
-            mClipRect = !!param1?param1.clone():null;
+            mClipRect = !!value?value.clone():null;
          }
       }
       
-      public function getClipRect(param1:DisplayObject, param2:Rectangle = null) : Rectangle
+      public function getClipRect(targetSpace:DisplayObject, resultRect:Rectangle = null) : Rectangle
       {
-         var _loc8_:Number = NaN;
-         var _loc11_:Number = NaN;
-         var _loc9_:int = 0;
-         var _loc4_:* = null;
+         var y:Number = NaN;
+         var x:Number = NaN;
+         var i:int = 0;
+         var transformedPoint:* = null;
          if(mClipRect == null)
          {
             return null;
          }
-         if(param2 == null)
+         if(resultRect == null)
          {
-            param2 = new Rectangle();
+            resultRect = new Rectangle();
          }
-         var _loc7_:* = 1.79769313486232e308;
-         var _loc6_:* = -1.79769313486232e308;
-         var _loc10_:* = 1.79769313486232e308;
-         var _loc5_:* = -1.79769313486232e308;
-         var _loc3_:Matrix = getTransformationMatrix(param1,sHelperMatrix);
-         _loc9_ = 0;
-         while(_loc9_ < 4)
+         var minX:* = 1.79769313486232e308;
+         var maxX:* = -1.79769313486232e308;
+         var minY:* = 1.79769313486232e308;
+         var maxY:* = -1.79769313486232e308;
+         var transMatrix:Matrix = getTransformationMatrix(targetSpace,sHelperMatrix);
+         for(i = 0; i < 4; )
          {
-            switch(int(_loc9_))
+            switch(int(i))
             {
                case 0:
-                  _loc11_ = mClipRect.left;
-                  _loc8_ = mClipRect.top;
+                  x = mClipRect.left;
+                  y = mClipRect.top;
                   break;
                case 1:
-                  _loc11_ = mClipRect.left;
-                  _loc8_ = mClipRect.bottom;
+                  x = mClipRect.left;
+                  y = mClipRect.bottom;
                   break;
                case 2:
-                  _loc11_ = mClipRect.right;
-                  _loc8_ = mClipRect.top;
+                  x = mClipRect.right;
+                  y = mClipRect.top;
                   break;
                case 3:
-                  _loc11_ = mClipRect.right;
-                  _loc8_ = mClipRect.bottom;
+                  x = mClipRect.right;
+                  y = mClipRect.bottom;
             }
-            _loc4_ = MatrixUtil.transformCoords(_loc3_,_loc11_,_loc8_,sHelperPoint);
-            if(_loc7_ > _loc4_.x)
+            transformedPoint = MatrixUtil.transformCoords(transMatrix,x,y,sHelperPoint);
+            if(minX > transformedPoint.x)
             {
-               _loc7_ = Number(_loc4_.x);
+               minX = Number(transformedPoint.x);
             }
-            if(_loc6_ < _loc4_.x)
+            if(maxX < transformedPoint.x)
             {
-               _loc6_ = Number(_loc4_.x);
+               maxX = Number(transformedPoint.x);
             }
-            if(_loc10_ > _loc4_.y)
+            if(minY > transformedPoint.y)
             {
-               _loc10_ = Number(_loc4_.y);
+               minY = Number(transformedPoint.y);
             }
-            if(_loc5_ < _loc4_.y)
+            if(maxY < transformedPoint.y)
             {
-               _loc5_ = Number(_loc4_.y);
+               maxY = Number(transformedPoint.y);
             }
-            _loc9_++;
+            i++;
          }
-         param2.setTo(_loc7_,_loc10_,_loc6_ - _loc7_,_loc5_ - _loc10_);
-         return param2;
+         resultRect.setTo(minX,minY,maxX - minX,maxY - minY);
+         return resultRect;
       }
       
-      override public function getBounds(param1:DisplayObject, param2:Rectangle = null) : Rectangle
+      override public function getBounds(targetSpace:DisplayObject, resultRect:Rectangle = null) : Rectangle
       {
-         var _loc3_:Rectangle = super.getBounds(param1,param2);
+         var bounds:Rectangle = super.getBounds(targetSpace,resultRect);
          if(mClipRect)
          {
-            RectangleUtil.intersect(_loc3_,getClipRect(param1,sHelperRect),_loc3_);
+            RectangleUtil.intersect(bounds,getClipRect(targetSpace,sHelperRect),bounds);
          }
-         return _loc3_;
+         return bounds;
       }
       
-      override public function hitTest(param1:Point, param2:Boolean = false) : DisplayObject
+      override public function hitTest(localPoint:Point, forTouch:Boolean = false) : DisplayObject
       {
-         if(mClipRect != null && !mClipRect.containsPoint(param1))
+         if(mClipRect != null && !mClipRect.containsPoint(localPoint))
          {
             return null;
          }
-         return super.hitTest(param1,param2);
+         return super.hitTest(localPoint,forTouch);
       }
       
-      override public function render(param1:RenderSupport, param2:Number) : void
+      override public function render(support:RenderSupport, parentAlpha:Number) : void
       {
-         var _loc7_:* = null;
-         var _loc5_:Number = NaN;
-         var _loc8_:int = 0;
-         var _loc4_:* = null;
-         var _loc9_:int = 0;
-         var _loc6_:* = null;
-         var _loc3_:* = null;
+         var clipRect:* = null;
+         var alpha:Number = NaN;
+         var numBatches:int = 0;
+         var mvpMatrix:* = null;
+         var i:int = 0;
+         var quadBatch:* = null;
+         var blendMode:* = null;
          if(mClipRect)
          {
-            _loc7_ = param1.pushClipRect(getClipRect(stage,sHelperRect));
-            if(_loc7_.isEmpty())
+            clipRect = support.pushClipRect(getClipRect(stage,sHelperRect));
+            if(clipRect.isEmpty())
             {
-               param1.popClipRect();
+               support.popClipRect();
                return;
             }
          }
@@ -211,30 +208,29 @@ package starling.display
                {
                   QuadBatch.optimize(mFlattenedContents);
                }
-               param1.applyClipRect();
+               support.applyClipRect();
                mFlattenRequested = false;
             }
-            _loc5_ = param2 * this.alpha;
-            _loc8_ = mFlattenedContents.length;
-            _loc4_ = param1.mvpMatrix3D;
-            param1.finishQuadBatch();
-            param1.raiseDrawCount(_loc8_);
-            _loc9_ = 0;
-            while(_loc9_ < _loc8_)
+            alpha = parentAlpha * this.alpha;
+            numBatches = mFlattenedContents.length;
+            mvpMatrix = support.mvpMatrix3D;
+            support.finishQuadBatch();
+            support.raiseDrawCount(numBatches);
+            for(i = 0; i < numBatches; )
             {
-               _loc6_ = mFlattenedContents[_loc9_];
-               _loc3_ = _loc6_.blendMode == "auto"?param1.blendMode:_loc6_.blendMode;
-               _loc6_.renderCustom(_loc4_,_loc5_,_loc3_);
-               _loc9_++;
+               quadBatch = mFlattenedContents[i];
+               blendMode = quadBatch.blendMode == "auto"?support.blendMode:quadBatch.blendMode;
+               quadBatch.renderCustom(mvpMatrix,alpha,blendMode);
+               i++;
             }
          }
          else
          {
-            super.render(param1,param2);
+            super.render(support,parentAlpha);
          }
          if(mClipRect)
          {
-            param1.popClipRect();
+            support.popClipRect();
          }
       }
    }

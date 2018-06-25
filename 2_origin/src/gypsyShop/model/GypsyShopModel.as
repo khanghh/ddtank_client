@@ -27,7 +27,7 @@ package gypsyShop.model
       
       private var _listRareItemTempleteIDs:Vector.<int>;
       
-      public function GypsyShopModel(param1:inner)
+      public function GypsyShopModel(single:inner)
       {
          super();
       }
@@ -51,9 +51,9 @@ package gypsyShop.model
          GameInSocketOut.sendGypsyManualRefreshItemListWithRMB(isBind);
       }
       
-      public function requestBuyItem(param1:int) : void
+      public function requestBuyItem(id:int) : void
       {
-         GameInSocketOut.sendGypsyBuy(param1,GypsyPurchaseModel.getInstance().getUseBind());
+         GameInSocketOut.sendGypsyBuy(id,GypsyPurchaseModel.getInstance().getUseBind());
       }
       
       public function requestRareList() : void
@@ -68,88 +68,87 @@ package gypsyShop.model
       
       public function init() : void
       {
-         var _loc1_:int = 278;
-         var _loc2_:String = PkgEvent.format(_loc1_,2);
-         var _loc4_:String = PkgEvent.format(_loc1_,3);
-         var _loc3_:String = PkgEvent.format(_loc1_,4);
-         SocketManager.Instance.addEventListener(_loc2_,onItemListUpdated);
-         SocketManager.Instance.addEventListener(_loc4_,onBuyResult);
-         SocketManager.Instance.addEventListener(_loc3_,onRareItemListUpdated);
+         var L1:int = 278;
+         var type1:String = PkgEvent.format(L1,2);
+         var type2:String = PkgEvent.format(L1,3);
+         var type3:String = PkgEvent.format(L1,4);
+         SocketManager.Instance.addEventListener(type1,onItemListUpdated);
+         SocketManager.Instance.addEventListener(type2,onBuyResult);
+         SocketManager.Instance.addEventListener(type3,onRareItemListUpdated);
       }
       
-      protected function onRareItemListUpdated(param1:PkgEvent) : void
+      protected function onRareItemListUpdated(e:PkgEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:ByteArray = param1.pkg;
-         var _loc3_:int = _loc2_.readInt();
+         var templeteID:int = 0;
+         var bytes:ByteArray = e.pkg;
+         var rareItemNum:int = bytes.readInt();
          _listRareItemTempleteIDs = new Vector.<int>();
-         while(_loc2_.bytesAvailable)
+         while(bytes.bytesAvailable)
          {
-            _loc4_ = _loc2_.readInt();
-            _listRareItemTempleteIDs.push(_loc4_);
+            templeteID = bytes.readInt();
+            _listRareItemTempleteIDs.push(templeteID);
          }
          GypsyShopManager.getInstance().newRareItemsUpdate();
       }
       
-      protected function onBuyResult(param1:PkgEvent) : void
+      protected function onBuyResult(e:PkgEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc3_:ByteArray = param1.pkg;
-         var _loc4_:int = _loc3_.readInt();
-         var _loc2_:Boolean = _loc3_.readBoolean();
+         var _canBuy:int = 0;
+         var bytes:ByteArray = e.pkg;
+         var _id:int = bytes.readInt();
+         var _isSucc:Boolean = bytes.readBoolean();
          _buyResult = null;
-         if(_loc2_)
+         if(_isSucc)
          {
-            _loc5_ = _loc3_.readInt();
+            _canBuy = bytes.readInt();
             _buyResult = {
-               "id":_loc4_,
-               "canBuy":_loc5_
+               "id":_id,
+               "canBuy":_canBuy
             };
             GypsyShopManager.getInstance().updateBuyResult();
          }
       }
       
-      protected function onItemListUpdated(param1:PkgEvent) : void
+      protected function onItemListUpdated(e:PkgEvent) : void
       {
-         var _loc11_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         var _loc10_:int = 0;
-         var _loc9_:int = 0;
-         var _loc7_:int = 0;
-         var _loc8_:int = 0;
-         var _loc6_:ByteArray = param1.pkg;
-         _curRefreshedTimes = _loc6_.readInt();
-         _itemCount = _loc6_.readInt();
+         var i:int = 0;
+         var id:int = 0;
+         var unit:int = 0;
+         var price:int = 0;
+         var num:int = 0;
+         var type:int = 0;
+         var templeteID:int = 0;
+         var canBuy:int = 0;
+         var quality:int = 0;
+         var bytes:ByteArray = e.pkg;
+         _curRefreshedTimes = bytes.readInt();
+         _itemCount = bytes.readInt();
          _itemDataList = new Vector.<GypsyItemData>();
-         _loc11_ = 0;
-         while(_loc11_ < _itemCount)
+         for(i = 0; i < _itemCount; )
          {
-            _loc2_ = _loc6_.readInt();
-            _loc3_ = _loc6_.readInt();
-            _loc5_ = _loc6_.readInt();
-            _loc4_ = _loc6_.readInt();
-            _loc10_ = _loc6_.readInt();
-            _loc9_ = _loc6_.readInt();
-            _loc7_ = _loc6_.readInt();
-            _loc8_ = _loc6_.readInt();
-            _itemDataList.push(new GypsyItemData(_loc2_,_loc3_,_loc5_,_loc10_,_loc9_,_loc4_,_loc7_,_loc8_));
-            _loc11_++;
+            id = bytes.readInt();
+            unit = bytes.readInt();
+            price = bytes.readInt();
+            num = bytes.readInt();
+            type = bytes.readInt();
+            templeteID = bytes.readInt();
+            canBuy = bytes.readInt();
+            quality = bytes.readInt();
+            _itemDataList.push(new GypsyItemData(id,unit,price,type,templeteID,num,canBuy,quality));
+            i++;
          }
          GypsyShopManager.getInstance().newItemListUpdate();
       }
       
       public function dispose() : void
       {
-         var _loc1_:int = 278;
-         var _loc2_:String = PkgEvent.format(_loc1_,2);
-         var _loc4_:String = PkgEvent.format(_loc1_,3);
-         var _loc3_:String = PkgEvent.format(_loc1_,4);
-         SocketManager.Instance.removeEventListener(_loc2_,onItemListUpdated);
-         SocketManager.Instance.removeEventListener(_loc4_,onBuyResult);
-         SocketManager.Instance.removeEventListener(_loc3_,onRareItemListUpdated);
+         var L1:int = 278;
+         var type1:String = PkgEvent.format(L1,2);
+         var type2:String = PkgEvent.format(L1,3);
+         var type3:String = PkgEvent.format(L1,4);
+         SocketManager.Instance.removeEventListener(type1,onItemListUpdated);
+         SocketManager.Instance.removeEventListener(type2,onBuyResult);
+         SocketManager.Instance.removeEventListener(type3,onRareItemListUpdated);
       }
       
       public function getNeedMoneyTotal() : int

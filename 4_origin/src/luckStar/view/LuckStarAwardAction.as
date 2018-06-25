@@ -53,10 +53,10 @@ package luckStar.view
          super();
       }
       
-      public function playAction(param1:Function, param2:DisplayObject, param3:Point, param4:Boolean = false) : void
+      public function playAction(cell:Function, btm:DisplayObject, move:Point, isMaxAward:Boolean = false) : void
       {
-         _cell = param1;
-         _isMaxAward = param4;
+         _cell = cell;
+         _isMaxAward = isMaxAward;
          if(_isMaxAward)
          {
             playMaxAwardAction();
@@ -64,16 +64,16 @@ package luckStar.view
          }
          _content = new Sprite();
          addChild(_content);
-         _image = param2 as Bitmap;
-         _move = param3;
-         var _loc5_:Rectangle = ComponentFactory.Instance.creatCustomObject("luckyStar.view.AwardLightRec");
+         _image = btm as Bitmap;
+         _move = move;
+         var rect:Rectangle = ComponentFactory.Instance.creatCustomObject("luckyStar.view.AwardLightRec");
          _mc = ComponentFactory.Instance.creat("luckyStar.view.TurnMC");
          _mc.stop();
-         var _loc6_:* = _loc5_.width;
+         var _loc6_:* = rect.width;
          _mc.height = _loc6_;
          _mc.width = _loc6_;
-         _mc.x = _loc5_.x;
-         _mc.y = _loc5_.y;
+         _mc.x = rect.x;
+         _mc.y = rect.y;
          _mc.gotoAndPlay(1);
          _mc.addEventListener("enterFrame",__onEnter);
          _content.addChild(_mc);
@@ -93,7 +93,7 @@ package luckStar.view
          }
       }
       
-      private function __onEnter(param1:Event) : void
+      private function __onEnter(e:Event) : void
       {
          if(_mc.currentFrame == 40)
          {
@@ -164,7 +164,7 @@ package luckStar.view
       
       private function setupCount() : void
       {
-         var _loc3_:int = 0;
+         var i:int = 0;
          while(len > _num.length)
          {
             _num.unshift(createCoinsNum(0));
@@ -173,15 +173,14 @@ package luckStar.view
          {
             ObjectUtils.disposeObject(_num.shift());
          }
-         var _loc2_:int = 8 - len;
-         var _loc1_:int = _loc2_ / 2 * 25;
-         _loc3_ = 0;
-         while(_loc3_ < len)
+         var cha:int = 8 - len;
+         var numX:int = cha / 2 * 25;
+         for(i = 0; i < len; )
          {
-            _num[_loc3_].x = _loc1_ + 280;
-            _num[_loc3_].y = 200;
-            _loc1_ = _loc1_ + 25;
-            _loc3_++;
+            _num[i].x = numX + 280;
+            _num[i].y = 200;
+            numX = numX + 25;
+            i++;
          }
       }
       
@@ -192,26 +191,25 @@ package luckStar.view
          {
             return;
          }
-         var _loc1_:int = Math.random() * int(arr[len - 1]);
-         updateCoinsView(_loc1_.toString().split(""));
+         var random:int = Math.random() * int(arr[len - 1]);
+         updateCoinsView(random.toString().split(""));
       }
       
-      private function updateCoinsView(param1:Array) : void
+      private function updateCoinsView(arr:Array) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < len)
+         var i:int = 0;
+         for(i = 0; i < len; )
          {
-            if(param1[_loc2_] == 0)
+            if(arr[i] == 0)
             {
-               param1[_loc2_] = 10;
+               arr[i] = 10;
             }
-            _num[_loc2_].setFrame(param1[_loc2_]);
-            _loc2_++;
+            _num[i].setFrame(arr[i]);
+            i++;
          }
       }
       
-      private function __onAction(param1:Event) : void
+      private function __onAction(e:Event) : void
       {
          updateCoinsView(_count.toString().split(""));
          if(_action.currentFrame < 165)
@@ -245,38 +243,37 @@ package luckStar.view
       
       private function coinsDrop() : void
       {
-         var _loc1_:int = Math.random() * 3;
-         var _loc2_:Bitmap = ComponentFactory.Instance.creatBitmap("luckyStar.view.CoinsRain" + _loc1_);
-         _loc2_.x = Math.random() * 700 + 100;
-         _list.push(_loc2_);
-         addChildAt(_loc2_,0);
+         var index:int = Math.random() * 3;
+         var btm:Bitmap = ComponentFactory.Instance.creatBitmap("luckyStar.view.CoinsRain" + index);
+         btm.x = Math.random() * 700 + 100;
+         _list.push(btm);
+         addChildAt(btm,0);
       }
       
       private function checkDrop() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _list.length)
+         var i:int = 0;
+         for(i = 0; i < _list.length; )
          {
-            _list[_loc1_].y = _list[_loc1_].y + 30;
-            if(_list[_loc1_].y > 500)
+            _list[i].y = _list[i].y + 30;
+            if(_list[i].y > 500)
             {
-               ObjectUtils.disposeObject(_list[_loc1_]);
-               _list.splice(_list.indexOf(_list[_loc1_]),_list.indexOf(_list[_loc1_]));
+               ObjectUtils.disposeObject(_list[i]);
+               _list.splice(_list.indexOf(_list[i]),_list.indexOf(_list[i]));
             }
-            _loc1_++;
+            i++;
          }
       }
       
-      private function createCoinsNum(param1:int = 0) : ScaleFrameImage
+      private function createCoinsNum(frame:int = 0) : ScaleFrameImage
       {
-         var _loc2_:ScaleFrameImage = ComponentFactory.Instance.creatComponentByStylename("luckyStar.view.CoinsNum");
-         _loc2_.setFrame(param1);
+         var num:ScaleFrameImage = ComponentFactory.Instance.creatComponentByStylename("luckyStar.view.CoinsNum");
+         num.setFrame(frame);
          if(_action)
          {
-            _action.addChild(_loc2_);
+            _action.addChild(num);
          }
-         return _loc2_;
+         return num;
       }
       
       public function dispose() : void

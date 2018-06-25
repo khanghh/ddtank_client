@@ -42,7 +42,7 @@ package Indiana
          IndianaDataManager.instance.addEventListener("turn_to_announced",__turntoannouncedHandler);
       }
       
-      private function __turntoannouncedHandler(param1:Event) : void
+      private function __turntoannouncedHandler(e:Event) : void
       {
          updataState();
          _currentView.setInfo(_info);

@@ -27,11 +27,11 @@ package gameCommon.view.experience
       
       public var maxValue:int = 2147483647;
       
-      public function ExpCountingTxt(param1:String, param2:String)
+      public function ExpCountingTxt(textStyle:String, textFilterStr:String)
       {
          super();
-         _style = param1;
-         _filters = param2.split(",");
+         _style = textStyle;
+         _filters = textFilterStr.split(",");
          init();
       }
       
@@ -40,9 +40,9 @@ package gameCommon.view.experience
          return _value;
       }
       
-      public function set value(param1:Number) : void
+      public function set value(value:Number) : void
       {
-         _value = param1;
+         _value = value;
       }
       
       public function get targetValue() : Number
@@ -52,35 +52,34 @@ package gameCommon.view.experience
       
       protected function init() : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          _text = ComponentFactory.Instance.creatComponentByStylename(_style);
          _value = 0;
          _targetValue = 0;
          _plus = "+";
          _text.text = _plus + String(_value) + " ";
-         var _loc1_:Array = [];
-         _loc2_ = 0;
-         while(_loc2_ < _filters.length)
+         var arr:Array = [];
+         for(i = 0; i < _filters.length; )
          {
-            _loc1_.push(ComponentFactory.Instance.model.getSet(_filters[_loc2_]));
-            _loc2_++;
+            arr.push(ComponentFactory.Instance.model.getSet(_filters[i]));
+            i++;
          }
-         _text.filters = _loc1_;
+         _text.filters = arr;
          addChild(_text);
       }
       
-      public function updateNum(param1:Number, param2:Boolean = true) : void
+      public function updateNum(newValue:Number, isAdd:Boolean = true) : void
       {
-         if(param2)
+         if(isAdd)
          {
-            var _loc3_:* = _targetValue + param1;
+            var _loc3_:* = _targetValue + newValue;
             _targetValue = _loc3_;
             §§push(_loc3_);
          }
          else
          {
-            _targetValue = param1;
-            §§push(Number(param1));
+            _targetValue = newValue;
+            §§push(Number(newValue));
          }
          §§pop();
          if(_targetValue > maxValue)
@@ -99,32 +98,32 @@ package gameCommon.view.experience
       
       protected function updateText() : void
       {
-         var _loc1_:* = null;
+         var tempStr:* = null;
          if(!_text)
          {
             return;
          }
-         var _loc2_:String = _text.text;
+         var str:String = _text.text;
          if(_value < 0)
          {
-            _loc1_ = String(Math.round(_value)) + " ";
+            tempStr = String(Math.round(_value)) + " ";
          }
          else
          {
-            _loc1_ = _plus + String(Math.round(_value)) + " ";
+            tempStr = _plus + String(Math.round(_value)) + " ";
          }
-         if(_loc1_.indexOf("+") && int(_loc1_.indexOf("-")))
+         if(tempStr.indexOf("+") && int(tempStr.indexOf("-")))
          {
-            _loc1_ = _loc1_.replace("-");
+            tempStr = tempStr.replace("-");
          }
-         if(_loc2_ != "+0 " && _loc1_ != _loc2_)
+         if(str != "+0 " && tempStr != str)
          {
             SoundManager.instance.play("143");
          }
-         _text.text = _loc1_;
+         _text.text = tempStr;
       }
       
-      public function complete(param1:Event = null) : void
+      public function complete(e:Event = null) : void
       {
          _value = _targetValue;
          updateText();

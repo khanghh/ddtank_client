@@ -124,10 +124,10 @@ package witchBlessing.view
          expArr = [0,500,1200,2200];
          awardsNums = [3,3,3];
          doubleMoney = [0,0,0];
-         var _loc1_:WitchBlessingModel = WitchBlessingManager.Instance.model;
-         expArr = _loc1_.ExpArr;
-         awardsNums = _loc1_.AwardsNums;
-         doubleMoney = _loc1_.DoubleMoney;
+         var model:WitchBlessingModel = WitchBlessingManager.Instance.model;
+         expArr = model.ExpArr;
+         awardsNums = model.AwardsNums;
+         doubleMoney = model.DoubleMoney;
          super();
          initView();
          initEvent();
@@ -152,11 +152,11 @@ package witchBlessing.view
          PositionUtils.setPos(_leftView,"witchBlessing.leftViewPos");
          PositionUtils.setPos(_rightView,"witchBlessing.rightViewPos");
          _bottom = ComponentFactory.Instance.creatComponentByStylename("witchBlessing.frameBottom");
-         var _loc3_:Bitmap = ComponentFactory.Instance.creat("asset.witchBlessing.leftBg");
-         var _loc2_:Bitmap = ComponentFactory.Instance.creat("asset.witchBlessing.rightBg");
-         var _loc4_:Bitmap = ComponentFactory.Instance.creat("asset.witchBlessing.rightViewBigBg");
-         var _loc6_:Bitmap = ComponentFactory.Instance.creat("asset.witchBlessing.purpleBg");
-         var _loc1_:Bitmap = ComponentFactory.Instance.creat("asset.witchBlessing.nextTimeBg");
+         var _leftBg:Bitmap = ComponentFactory.Instance.creat("asset.witchBlessing.leftBg");
+         var _rightBg:Bitmap = ComponentFactory.Instance.creat("asset.witchBlessing.rightBg");
+         var _rightViewBigBg:Bitmap = ComponentFactory.Instance.creat("asset.witchBlessing.rightViewBigBg");
+         var _purpleBg:Bitmap = ComponentFactory.Instance.creat("asset.witchBlessing.purpleBg");
+         var _nextTimeBg:Bitmap = ComponentFactory.Instance.creat("asset.witchBlessing.nextTimeBg");
          lv1Btn = ComponentFactory.Instance.creatComponentByStylename("blessingLv1.btn");
          lv2Btn = ComponentFactory.Instance.creatComponentByStylename("blessingLv2.btn");
          lv3Btn = ComponentFactory.Instance.creatComponentByStylename("blessingLv3.btn");
@@ -189,12 +189,12 @@ package witchBlessing.view
          cell.setCount(maxNumInBag);
          PositionUtils.setPos(cell,"witchBlessing.cellPos");
          talkBoxMc = ComponentFactory.Instance.creat("asset.witchBlessing.talkBoxMc");
-         var _loc5_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("witchBlessing.talkTxt");
-         talkBoxMc.addChild(_loc5_);
-         _loc5_.text = LanguageMgr.GetTranslation("witchBlessing.view.doubleBlessing");
+         var talkTxt:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("witchBlessing.talkTxt");
+         talkBoxMc.addChild(talkTxt);
+         talkTxt.text = LanguageMgr.GetTranslation("witchBlessing.view.doubleBlessing");
          talkBoxMc.visible = false;
          PositionUtils.setPos(talkBoxMc,"witchBlessing.talkBoxMcPos");
-         _leftView.addChild(_loc3_);
+         _leftView.addChild(_leftBg);
          _leftView.addChild(_timeOpenTxt);
          _leftView.addChild(_doubleTimeTxt);
          _leftView.addChild(_progressTxtImage);
@@ -210,68 +210,67 @@ package witchBlessing.view
          _rightView.addChild(lv1Btn);
          _rightView.addChild(lv2Btn);
          _rightView.addChild(lv3Btn);
-         _rightView.addChild(_loc4_);
-         _rightView.addChild(_loc1_);
+         _rightView.addChild(_rightViewBigBg);
+         _rightView.addChild(_nextTimeBg);
          _rightView.addChild(lv1View);
          _rightView.addChild(lv2View);
          _rightView.addChild(lv3View);
          _rightView.addChild(titleMc);
          addToContent(_bottom);
-         addToContent(_loc2_);
+         addToContent(_rightBg);
          addToContent(_leftView);
          addToContent(_rightView);
       }
       
       public function flushData() : void
       {
-         var _loc3_:int = 0;
+         var i:int = 0;
          talkBoxMc.visible = WitchBlessingManager.Instance.model.isDouble;
-         var _loc2_:int = WitchBlessingManager.Instance.model.totalExp;
-         var _loc1_:Array = [lv1View,lv2View,lv3View];
-         _loc3_ = 3;
-         while(_loc3_ > 0)
+         var nowExp:int = WitchBlessingManager.Instance.model.totalExp;
+         var viewArr:Array = [lv1View,lv2View,lv3View];
+         for(i = 3; i > 0; )
          {
-            if(_loc2_ == expArr[3])
+            if(nowExp == expArr[3])
             {
                nowLv = 3;
                needExp = 0;
                break;
             }
-            if(_loc2_ < expArr[_loc3_] && _loc2_ >= expArr[_loc3_ - 1])
+            if(nowExp < expArr[i] && nowExp >= expArr[i - 1])
             {
-               nowLv = _loc3_ - 1;
-               needExp = expArr[_loc3_] - _loc2_;
+               nowLv = i - 1;
+               needExp = expArr[i] - nowExp;
                break;
             }
-            if(_loc2_ == expArr[0])
+            if(nowExp == expArr[0])
             {
                nowLv = 0;
                needExp = expArr[1];
                break;
             }
-            _loc3_--;
+            i--;
          }
          if(WitchBlessingManager.Instance.model.isDouble)
          {
-            allHarderBlessMax = Math.ceil((expArr[3] - _loc2_) / (ONCE_HARDER_BLESS_EXP * 2));
-            allBlessMax = Math.ceil((expArr[3] - _loc2_) / (ONCE_BLESS_EXP * 2));
+            allHarderBlessMax = Math.ceil((expArr[3] - nowExp) / (ONCE_HARDER_BLESS_EXP * 2));
+            allBlessMax = Math.ceil((expArr[3] - nowExp) / (ONCE_BLESS_EXP * 2));
             if(nowLv != 3)
             {
-               nextLvHarderBlessMax = Math.ceil((expArr[nowLv + 1] - _loc2_) / (ONCE_HARDER_BLESS_EXP * 2));
-               nextLvBlessMax = Math.ceil((expArr[nowLv + 1] - _loc2_) / (ONCE_BLESS_EXP * 2));
+               nextLvHarderBlessMax = Math.ceil((expArr[nowLv + 1] - nowExp) / (ONCE_HARDER_BLESS_EXP * 2));
+               nextLvBlessMax = Math.ceil((expArr[nowLv + 1] - nowExp) / (ONCE_BLESS_EXP * 2));
             }
          }
          else
          {
-            allHarderBlessMax = Math.ceil((expArr[3] - _loc2_) / ONCE_HARDER_BLESS_EXP);
-            allBlessMax = Math.ceil((expArr[3] - _loc2_) / ONCE_BLESS_EXP);
+            allHarderBlessMax = Math.ceil((expArr[3] - nowExp) / ONCE_HARDER_BLESS_EXP);
+            allBlessMax = Math.ceil((expArr[3] - nowExp) / ONCE_BLESS_EXP);
             if(nowLv != 3)
             {
-               nextLvHarderBlessMax = Math.ceil((expArr[nowLv + 1] - _loc2_) / ONCE_HARDER_BLESS_EXP);
-               nextLvBlessMax = Math.ceil((expArr[nowLv + 1] - _loc2_) / ONCE_BLESS_EXP);
+               nextLvHarderBlessMax = Math.ceil((expArr[nowLv + 1] - nowExp) / ONCE_HARDER_BLESS_EXP);
+               nextLvBlessMax = Math.ceil((expArr[nowLv + 1] - nowExp) / ONCE_BLESS_EXP);
             }
          }
-         flushEXP(_loc2_);
+         flushEXP(nowExp);
          maxNumInBag = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(itemInfo.TemplateID);
          maxMoneyCount = int(PlayerManager.Instance.Self.Money / ONCE_BLESS_MONEY);
          cell.setCount(maxNumInBag);
@@ -284,10 +283,10 @@ package witchBlessing.view
          lv3View.flushCDTime(WitchBlessingManager.Instance.model.lv3CD);
       }
       
-      private function flushEXP(param1:int) : void
+      private function flushEXP(nowExp:int) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
+         var curHasExp:int = 0;
+         var nowLvNeedExp:int = 0;
          if(nowLv == 3)
          {
             _progressTxt.text = "0/0";
@@ -295,10 +294,10 @@ package witchBlessing.view
          }
          else
          {
-            _loc3_ = param1 - expArr[nowLv];
-            _loc2_ = _loc3_ + needExp;
-            _progressTxt.text = _loc3_ + "/" + _loc2_;
-            _progressCover.scaleX = _loc3_ / _loc2_;
+            curHasExp = nowExp - expArr[nowLv];
+            nowLvNeedExp = curHasExp + needExp;
+            _progressTxt.text = curHasExp + "/" + nowLvNeedExp;
+            _progressCover.scaleX = curHasExp / nowLvNeedExp;
          }
       }
       
@@ -342,17 +341,17 @@ package witchBlessing.view
          }
       }
       
-      private function __changeHandler(param1:Event) : void
+      private function __changeHandler(event:Event) : void
       {
-         var _loc2_:int = _btnGroup.selectIndex + 1;
+         var index:int = _btnGroup.selectIndex + 1;
          hideRightAllView();
-         titleMc.gotoAndStop(_loc2_);
-         (this["lv" + _loc2_ + "View"] as WitchBlessingRightView).visible = true;
+         titleMc.gotoAndStop(index);
+         (this["lv" + index + "View"] as WitchBlessingRightView).visible = true;
       }
       
-      private function __blessFunc(param1:MouseEvent) : void
+      private function __blessFunc(e:MouseEvent) : void
       {
-         var _loc2_:int = 0;
+         var sendNum:int = 0;
          if(nowLv == 3)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("witchBlessing.view.nowLvIsThree"));
@@ -360,12 +359,12 @@ package witchBlessing.view
          }
          if(maxNumInBag > 0)
          {
-            _loc2_ = 1;
+            sendNum = 1;
             if(_allIn.selected)
             {
-               _loc2_ = nextLvBlessMax;
+               sendNum = nextLvBlessMax;
             }
-            SocketManager.Instance.out.sendWitchBless(_loc2_);
+            SocketManager.Instance.out.sendWitchBless(sendNum);
          }
          else
          {
@@ -373,7 +372,7 @@ package witchBlessing.view
          }
       }
       
-      private function __blessHarderFunc(param1:MouseEvent) : void
+      private function __blessHarderFunc(e:MouseEvent) : void
       {
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -398,10 +397,10 @@ package witchBlessing.view
          }
       }
       
-      private function __framResponse(param1:FrameEvent) : void
+      private function __framResponse(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -417,8 +416,8 @@ package witchBlessing.view
       
       private function getNeedCount() : int
       {
-         var _loc1_:int = needExp / ONCE_BLESS_EXP;
-         return _loc1_;
+         var count:int = needExp / ONCE_BLESS_EXP;
+         return count;
       }
       
       private function hideRightAllView() : void
@@ -433,10 +432,10 @@ package witchBlessing.view
          LayerManager.Instance.addToLayer(this,3,true,2);
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -444,7 +443,7 @@ package witchBlessing.view
          }
       }
       
-      private function __soundPlay(param1:MouseEvent) : void
+      private function __soundPlay(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }

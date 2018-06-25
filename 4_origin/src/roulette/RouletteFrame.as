@@ -131,17 +131,17 @@ package roulette
       
       private function initView() : void
       {
-         var _loc6_:int = 0;
-         var _loc7_:* = null;
-         var _loc9_:int = 0;
-         var _loc8_:* = null;
-         var _loc5_:* = null;
+         var a:int = 0;
+         var bg:* = null;
+         var j:int = 0;
+         var bg1:* = null;
+         var cell:* = null;
          getAllNumPoint();
          getAllGoodsPoint();
-         var _loc10_:Array = [];
-         _loc10_.push(0,0,0,0,60,60,60,80,-60,-60,-70,-60,0,0,0,0,60,60,50,60);
-         var _loc2_:Array = [];
-         _loc2_.push(0,60,120,180,240,300);
+         var rotationsNum:Array = [];
+         rotationsNum.push(0,0,0,0,60,60,60,80,-60,-60,-70,-60,0,0,0,0,60,60,50,60);
+         var rotations:Array = [];
+         rotations.push(0,60,120,180,240,300);
          _goodsList = new Vector.<RouletteCell>();
          _sound = new TurnSoundControl();
          _timer = new Timer(100,1);
@@ -157,17 +157,16 @@ package roulette
          _arrNum = [];
          _arrNum = LeftGunRouletteManager.instance.ArrNum;
          _numbmpVec = new Vector.<Bitmap>();
-         _loc6_ = 0;
-         while(_loc6_ < _arrNum.length)
+         for(a = 0; a < _arrNum.length; )
          {
-            _loc7_ = ComponentFactory.Instance.creatBitmap("asset.roulette.number.bg" + _arrNum[_loc6_]);
-            _loc7_.x = _pointNumArr[_loc6_].x;
-            _loc7_.y = _pointNumArr[_loc6_].y;
-            _loc7_.rotation = _loc10_[_loc6_];
-            _loc7_.smoothing = true;
-            addChild(_loc7_);
-            _numbmpVec.push(_loc7_);
-            _loc6_++;
+            bg = ComponentFactory.Instance.creatBitmap("asset.roulette.number.bg" + _arrNum[a]);
+            bg.x = _pointNumArr[a].x;
+            bg.y = _pointNumArr[a].y;
+            bg.rotation = rotationsNum[a];
+            bg.smoothing = true;
+            addChild(bg);
+            _numbmpVec.push(bg);
+            a++;
          }
          _start = ComponentFactory.Instance.creatComponentByStylename("roulette.startBtn");
          _exchange = ComponentFactory.Instance.creatComponentByStylename("roulette.exchangeBtn");
@@ -177,26 +176,25 @@ package roulette
          addChild(_exchange);
          _exchange.transparentEnable = true;
          addChild(_close);
-         var _loc4_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("roulette.helpConent.ticketText");
-         _loc4_.text = ServerConfigManager.instance.RouletteMaxTicket;
-         _help = HelpFrameUtils.Instance.simpleHelpButton(this,"roulette.helpBtn",null,LanguageMgr.GetTranslation("tank.roulette.helpView.tltle"),["roulette.helpConent.bg",_loc4_],410,510,false) as SelectedButton;
-         _loc9_ = 0;
-         while(_loc9_ <= 5)
+         var _maxTicket:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("roulette.helpConent.ticketText");
+         _maxTicket.text = ServerConfigManager.instance.RouletteMaxTicket;
+         _help = HelpFrameUtils.Instance.simpleHelpButton(this,"roulette.helpBtn",null,LanguageMgr.GetTranslation("tank.roulette.helpView.tltle"),["roulette.helpConent.bg",_maxTicket],410,510,false) as SelectedButton;
+         for(j = 0; j <= 5; )
          {
-            _loc8_ = ComponentFactory.Instance.creatBitmap("asset.awardSystem.roulette.CellBGAsset");
-            _loc5_ = new RouletteCell(_loc8_);
-            _loc5_.x = _pointArray[_loc9_].x;
-            _loc5_.y = _pointArray[_loc9_].y;
-            _loc5_.rotation = _loc2_[_loc9_];
-            _loc5_.selected = false;
-            addChild(_loc5_);
-            _goodsList.push(_loc5_);
-            _loc9_++;
+            bg1 = ComponentFactory.Instance.creatBitmap("asset.awardSystem.roulette.CellBGAsset");
+            cell = new RouletteCell(bg1);
+            cell.x = _pointArray[j].x;
+            cell.y = _pointArray[j].y;
+            cell.rotation = rotations[j];
+            cell.selected = false;
+            addChild(cell);
+            _goodsList.push(cell);
+            j++;
          }
          _glintView = new LeftRouletteGlintView(_pointArray);
          addChild(_glintView);
-         var _loc1_:int = LeftGunRouletteManager.instance.gCount;
-         var _loc3_:String = LeftGunRouletteManager.instance.reward;
+         var gCount:int = LeftGunRouletteManager.instance.gCount;
+         var reward:String = LeftGunRouletteManager.instance.reward;
          if(LeftGunRouletteManager.instance.gCount == 0 && LeftGunRouletteManager.instance.reward != "0")
          {
             _start.visible = false;
@@ -220,35 +218,35 @@ package roulette
          _endDayTimer.start();
       }
       
-      private function updateServerTime(param1:TimerEvent = null) : void
+      private function updateServerTime(evt:TimerEvent = null) : void
       {
-         var _loc8_:Number = NaN;
-         var _loc7_:* = NaN;
-         var _loc3_:* = NaN;
-         var _loc6_:* = NaN;
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:int = 0;
+         var tempTime:Number = NaN;
+         var tempDay:* = NaN;
+         var tempHour:* = NaN;
+         var tempMinute:* = NaN;
+         var day:int = 0;
+         var hour:int = 0;
+         var minute:int = 0;
          if(_endDayTxt)
          {
-            _loc8_ = LeftGunRouletteManager.instance.endTime.time - TimeManager.Instance.Now().time;
-            _loc7_ = 86400000;
-            _loc3_ = 3600000;
-            _loc6_ = 60000;
-            _loc5_ = _loc8_ / _loc7_;
-            _loc4_ = _loc8_ % _loc7_ / _loc3_;
-            _loc2_ = _loc8_ % _loc7_ % _loc3_ / _loc6_;
-            if(_loc5_ > 0)
+            tempTime = LeftGunRouletteManager.instance.endTime.time - TimeManager.Instance.Now().time;
+            tempDay = 86400000;
+            tempHour = 3600000;
+            tempMinute = 60000;
+            day = tempTime / tempDay;
+            hour = tempTime % tempDay / tempHour;
+            minute = tempTime % tempDay % tempHour / tempMinute;
+            if(day > 0)
             {
-               _endDayTxt.text = _loc5_ + LanguageMgr.GetTranslation("ddt.roulette.endDayMsg");
+               _endDayTxt.text = day + LanguageMgr.GetTranslation("ddt.roulette.endDayMsg");
             }
-            else if(_loc4_ > 0)
+            else if(hour > 0)
             {
-               _endDayTxt.text = _loc4_ + LanguageMgr.GetTranslation("ddt.roulette.endHourMsg");
+               _endDayTxt.text = hour + LanguageMgr.GetTranslation("ddt.roulette.endHourMsg");
             }
-            else if(_loc2_ > 0)
+            else if(minute > 0)
             {
-               _endDayTxt.text = _loc2_ + LanguageMgr.GetTranslation("ddt.roulette.endMinuteMsg");
+               _endDayTxt.text = minute + LanguageMgr.GetTranslation("ddt.roulette.endMinuteMsg");
             }
          }
       }
@@ -263,45 +261,43 @@ package roulette
          addEventListener("keyDown",__keyDownHandler);
       }
       
-      private function __keyDownHandler(param1:KeyboardEvent) : void
+      private function __keyDownHandler(event:KeyboardEvent) : void
       {
          SoundManager.instance.play("008");
       }
       
       private function getAllGoodsPoint() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var point:* = null;
          _pointArray = [];
-         _loc2_ = 0;
-         while(_loc2_ < _pointLength[0])
+         for(i = 0; i < _pointLength[0]; )
          {
-            _loc1_ = ComponentFactory.Instance.creatCustomObject("roulette.aperture.point" + _loc2_);
-            _pointArray.push(_loc1_);
-            _loc2_++;
+            point = ComponentFactory.Instance.creatCustomObject("roulette.aperture.point" + i);
+            _pointArray.push(point);
+            i++;
          }
       }
       
       private function getAllNumPoint() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var point:* = null;
          _pointNumArr = [];
-         _loc2_ = 0;
-         while(_loc2_ < _pointLength[1])
+         for(i = 0; i < _pointLength[1]; )
          {
-            _loc1_ = ComponentFactory.Instance.creatCustomObject("roulette.number.point" + _loc2_);
-            _pointNumArr.push(_loc1_);
-            _loc2_++;
+            point = ComponentFactory.Instance.creatCustomObject("roulette.number.point" + i);
+            _pointNumArr.push(point);
+            i++;
          }
       }
       
-      private function test(param1:int, param2:String) : void
+      private function test(num:int, str:String) : void
       {
-         var _loc4_:* = param1;
-         var _loc3_:* = param2;
-         _isSend = isSendNotice(_loc3_);
-         if(_loc4_ <= 0)
+         var count:* = num;
+         var result:* = str;
+         _isSend = isSendNotice(result);
+         if(count <= 0)
          {
             var _loc11_:Boolean = false;
             _start.mouseEnabled = _loc11_;
@@ -309,16 +305,16 @@ package roulette
             _loc11_ = true;
             _exchange.mouseEnabled = _loc11_;
             _exchange.visible = _loc11_;
-            dispatchEvent(new RouletteFrameEvent("roulette_visible",_loc3_,null));
+            dispatchEvent(new RouletteFrameEvent("roulette_visible",result,null));
          }
-         var _loc6_:Array = [];
-         var _loc10_:String = _arrNum[0] + "." + _arrNum[2];
-         var _loc8_:String = _arrNum[4] + "." + _arrNum[6];
-         var _loc9_:String = _arrNum[8] + "." + _arrNum[10];
-         var _loc5_:String = _arrNum[12] + "." + _arrNum[14];
-         var _loc7_:String = _arrNum[16] + "." + _arrNum[18];
-         _loc6_.push(_loc10_,_loc8_,_loc9_,_loc5_,_loc7_,"0");
-         turnSlectedNumber = _loc6_.indexOf(_loc3_);
+         var rewards:Array = [];
+         var num1:String = _arrNum[0] + "." + _arrNum[2];
+         var num2:String = _arrNum[4] + "." + _arrNum[6];
+         var num3:String = _arrNum[8] + "." + _arrNum[10];
+         var num4:String = _arrNum[12] + "." + _arrNum[14];
+         var num5:String = _arrNum[16] + "." + _arrNum[18];
+         rewards.push(num1,num2,num3,num4,num5,"0");
+         turnSlectedNumber = rewards.indexOf(result);
          if(turnSlectedNumber == -1)
          {
             return;
@@ -328,15 +324,15 @@ package roulette
          _glintView.showThreeCell(turnSlectedNumber);
       }
       
-      private function _getItem(param1:PkgEvent) : void
+      private function _getItem(event:PkgEvent) : void
       {
-         var _loc7_:PackageIn = param1.pkg;
-         var _loc3_:int = _loc7_.readInt();
-         var _loc2_:String = _loc7_.readUTF();
-         LeftGunRouletteManager.instance.gCount = _loc3_;
-         LeftGunRouletteManager.instance.reward = _loc2_;
-         _isSend = isSendNotice(_loc2_);
-         if(_loc3_ <= 0)
+         var pkg:PackageIn = event.pkg;
+         var count:int = pkg.readInt();
+         var result:String = pkg.readUTF();
+         LeftGunRouletteManager.instance.gCount = count;
+         LeftGunRouletteManager.instance.reward = result;
+         _isSend = isSendNotice(result);
+         if(count <= 0)
          {
             var _loc11_:Boolean = false;
             _start.mouseEnabled = _loc11_;
@@ -344,16 +340,16 @@ package roulette
             _loc11_ = true;
             _exchange.mouseEnabled = _loc11_;
             _exchange.visible = _loc11_;
-            dispatchEvent(new RouletteFrameEvent("roulette_visible",_loc2_,null));
+            dispatchEvent(new RouletteFrameEvent("roulette_visible",result,null));
          }
-         var _loc5_:Array = [];
-         var _loc10_:String = _arrNum[0] + "." + _arrNum[2];
-         var _loc8_:String = _arrNum[4] + "." + _arrNum[6];
-         var _loc9_:String = _arrNum[8] + "." + _arrNum[10];
-         var _loc4_:String = _arrNum[12] + "." + _arrNum[14];
-         var _loc6_:String = _arrNum[16] + "." + _arrNum[18];
-         _loc5_.push(_loc10_,_loc8_,_loc9_,_loc4_,_loc6_,"0");
-         turnSlectedNumber = _loc5_.indexOf(_loc2_);
+         var rewards:Array = [];
+         var num1:String = _arrNum[0] + "." + _arrNum[2];
+         var num2:String = _arrNum[4] + "." + _arrNum[6];
+         var num3:String = _arrNum[8] + "." + _arrNum[10];
+         var num4:String = _arrNum[12] + "." + _arrNum[14];
+         var num5:String = _arrNum[16] + "." + _arrNum[18];
+         rewards.push(num1,num2,num3,num4,num5,"0");
+         turnSlectedNumber = rewards.indexOf(result);
          if(turnSlectedNumber == -1)
          {
             return;
@@ -386,23 +382,23 @@ package roulette
          }
       }
       
-      private function onMaskClick(param1:MouseEvent) : void
+      private function onMaskClick(event:MouseEvent) : void
       {
          MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.roulette.running"));
       }
       
-      private function isSendNotice(param1:String) : Boolean
+      private function isSendNotice(str:String) : Boolean
       {
-         var _loc3_:Array = param1.split(".");
-         var _loc2_:int = _loc3_[0];
-         if(_loc2_ >= 2)
+         var arr:Array = str.split(".");
+         var num:int = arr[0];
+         if(num >= 2)
          {
             return true;
          }
          return false;
       }
       
-      private function _timeComplete(param1:TimerEvent) : void
+      private function _timeComplete(e:TimerEvent) : void
       {
          updateTurnType(nowDelayTime);
          nowDelayTime = nowDelayTime + _stepTime;
@@ -410,7 +406,7 @@ package roulette
          startTimer(nowDelayTime);
       }
       
-      private function __startHandler(param1:MouseEvent) : void
+      private function __startHandler(event:MouseEvent) : void
       {
          SoundManager.instance.stopMusic();
          SoundManager.instance.play("008");
@@ -421,7 +417,7 @@ package roulette
          SocketManager.Instance.out.sendStartTurn_LeftGun();
       }
       
-      private function __exchangeHandler(param1:MouseEvent) : void
+      private function __exchangeHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          var _loc2_:Boolean = false;
@@ -430,19 +426,19 @@ package roulette
          dispatchEvent(new RouletteFrameEvent("button_click"));
       }
       
-      private function __closeHandler(param1:MouseEvent) : void
+      private function __closeHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          dispose();
       }
       
-      private function updateTurnType(param1:int) : void
+      private function updateTurnType(value:int) : void
       {
-         var _loc2_:int = turnSlectedNumber;
+         var i:int = turnSlectedNumber;
          switch(int(turnType) - 1)
          {
             case 0:
-               if(param1 <= _delay[1])
+               if(value <= _delay[1])
                {
                   turnType = 2;
                }
@@ -463,11 +459,11 @@ package roulette
          }
       }
       
-      private function startTimer(param1:int) : void
+      private function startTimer(time:int) : void
       {
          if(!_isStopTurn)
          {
-            _timer.delay = param1;
+            _timer.delay = time;
             _timer.reset();
             _timer.start();
          }
@@ -501,10 +497,10 @@ package roulette
          }
       }
       
-      private function turnPlate(param1:int, param2:int = 1) : void
+      private function turnPlate(_select:int, type:int = 1) : void
       {
-         turnType = param2;
-         selectedGoodsNumber = param1;
+         turnType = type;
+         selectedGoodsNumber = _select;
          startTurn();
          startTimer(nowDelayTime);
       }
@@ -553,19 +549,19 @@ package roulette
          removeMask();
       }
       
-      private function clearPrevSelct(param1:int, param2:int) : void
+      private function clearPrevSelct(now:int, prev:int) : void
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = param1 - param2 < 0?param1 - param2 + _goodsList.length:Number(param1 - param2);
-         if(_loc4_ == 1)
+         var one:int = 0;
+         var between:int = now - prev < 0?now - prev + _goodsList.length:Number(now - prev);
+         if(between == 1)
          {
-            _goodsList[param2].selected = false;
+            _goodsList[prev].selected = false;
          }
          else
          {
-            _loc3_ = param1 - 1 < 0?param1 - 1 + _goodsList.length:Number(param1 - 1);
-            _goodsList[_loc3_].setGreep();
-            _goodsList[param2].selected = false;
+            one = now - 1 < 0?now - 1 + _goodsList.length:Number(now - 1);
+            _goodsList[one].setGreep();
+            _goodsList[prev].selected = false;
          }
       }
       
@@ -580,8 +576,8 @@ package roulette
       
       public function dispose() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
+         var i:int = 0;
+         var j:int = 0;
          removeEvent();
          if(_mask != null)
          {
@@ -621,15 +617,14 @@ package roulette
          _recurBG = null;
          if(_goodsList && _goodsList.length > 0)
          {
-            _loc2_ = 0;
-            while(_loc2_ < _goodsList.length)
+            for(i = 0; i < _goodsList.length; )
             {
-               if(_goodsList[_loc2_])
+               if(_goodsList[i])
                {
-                  ObjectUtils.disposeObject(_goodsList[_loc2_]);
+                  ObjectUtils.disposeObject(_goodsList[i]);
                }
-               _goodsList[_loc2_] = null;
-               _loc2_++;
+               _goodsList[i] = null;
+               i++;
             }
          }
          _goodsList = null;
@@ -660,15 +655,14 @@ package roulette
          _exchange = null;
          if(_numbmpVec && _numbmpVec.length > 0)
          {
-            _loc1_ = 0;
-            while(_loc1_ < _numbmpVec.length)
+            for(j = 0; j < _numbmpVec.length; )
             {
-               if(_numbmpVec[_loc1_])
+               if(_numbmpVec[j])
                {
-                  ObjectUtils.disposeObject(_numbmpVec[_loc1_]);
+                  ObjectUtils.disposeObject(_numbmpVec[j]);
                }
-               _numbmpVec[_loc1_] = null;
-               _loc1_++;
+               _numbmpVec[j] = null;
+               j++;
             }
          }
          _numbmpVec = null;
@@ -695,14 +689,14 @@ package roulette
          return _turnSlectedNumber;
       }
       
-      public function set turnSlectedNumber(param1:int) : void
+      public function set turnSlectedNumber(value:int) : void
       {
-         _turnSlectedNumber = param1;
+         _turnSlectedNumber = value;
       }
       
-      public function set sparkleNumber(param1:int) : void
+      public function set sparkleNumber(value:int) : void
       {
-         _sparkleNumber = param1;
+         _sparkleNumber = value;
          if(_sparkleNumber >= _goodsList.length)
          {
             _sparkleNumber = 0;
@@ -714,10 +708,10 @@ package roulette
          return _sparkleNumber;
       }
       
-      public function set nowDelayTime(param1:int) : void
+      public function set nowDelayTime(value:int) : void
       {
          _turnTypeTimeSum = _turnTypeTimeSum + _nowDelayTime;
-         _nowDelayTime = param1;
+         _nowDelayTime = value;
       }
       
       public function get nowDelayTime() : int
@@ -725,9 +719,9 @@ package roulette
          return _nowDelayTime;
       }
       
-      public function set turnType(param1:int) : void
+      public function set turnType(value:int) : void
       {
-         _turnType = param1;
+         _turnType = value;
          _turnTypeTimeSum = 0;
          switch(int(_turnType) - 1)
          {
@@ -750,46 +744,46 @@ package roulette
          return _turnType;
       }
       
-      public function set selectedGoodsNumber(param1:int) : void
+      public function set selectedGoodsNumber(value:int) : void
       {
-         _selectedGoodsNumber = param1;
+         _selectedGoodsNumber = value;
          _moderationNumber = (_delay[2] - _delay[1]) / 40;
-         var _loc2_:int = _selectedGoodsNumber - _moderationNumber;
-         while(_loc2_ < 0)
+         var m:int = _selectedGoodsNumber - _moderationNumber;
+         while(m < 0)
          {
-            _loc2_ = _loc2_ + _goodsList.length;
+            m = m + _goodsList.length;
          }
-         _startModerationNumber = _loc2_;
+         _startModerationNumber = m;
       }
       
       private function get prevSelected() : int
       {
-         var _loc1_:int = 0;
-         var _loc2_:int = 0;
+         var step:int = 0;
+         var prev:int = 0;
          switch(int(_turnType) - 1)
          {
             case 0:
-               _loc2_ = sparkleNumber == 0?_goodsList.length - 1:Number(_sparkleNumber - 1);
+               prev = sparkleNumber == 0?_goodsList.length - 1:Number(_sparkleNumber - 1);
                break;
             case 1:
-               _loc2_ = sparkleNumber - 1 < 0?sparkleNumber - 1 + _goodsList.length:Number(sparkleNumber - 1);
+               prev = sparkleNumber - 1 < 0?sparkleNumber - 1 + _goodsList.length:Number(sparkleNumber - 1);
                break;
             case 2:
                if(_moderationNumber > 3)
                {
-                  _loc2_ = sparkleNumber - 1 < 0?sparkleNumber - 1 + _goodsList.length:Number(sparkleNumber - 1);
+                  prev = sparkleNumber - 1 < 0?sparkleNumber - 1 + _goodsList.length:Number(sparkleNumber - 1);
                   break;
                }
-               _loc1_ = _moderationNumber >= 3?_moderationNumber - 2:1;
-               _loc2_ = sparkleNumber - _loc1_ < 0?sparkleNumber - _loc1_ + _goodsList.length:Number(_sparkleNumber - _loc1_);
+               step = _moderationNumber >= 3?_moderationNumber - 2:1;
+               prev = sparkleNumber - step < 0?sparkleNumber - step + _goodsList.length:Number(_sparkleNumber - step);
                if(_moderationNumber >= 6)
                {
-                  _goodsList[_loc2_ + 1 >= _goodsList.length?0:Number(_loc2_ + 1)].selected = false;
+                  _goodsList[prev + 1 >= _goodsList.length?0:Number(prev + 1)].selected = false;
                   break;
                }
                break;
          }
-         return _loc2_;
+         return prev;
       }
    }
 }

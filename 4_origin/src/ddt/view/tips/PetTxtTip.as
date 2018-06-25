@@ -36,10 +36,10 @@ package ddt.view.tips
          _bg = ComponentFactory.Instance.creat("core.GoodsTipBg");
          property_txt = ComponentFactory.Instance.creat("core.PerpertyTxt");
          detail_txt = ComponentFactory.Instance.creat("core.DetailTxt");
-         var _loc1_:int = detail_txt.width;
+         var txtW:int = detail_txt.width;
          detail_txt.multiline = true;
          detail_txt.wordWrap = true;
-         detail_txt.width = _loc1_;
+         detail_txt.width = txtW;
          detail_txt.selectable = false;
          property_txt.selectable = false;
          this.tipbackgound = _bg;
@@ -66,15 +66,15 @@ package ddt.view.tips
          return _tempData;
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         if(param1 is PropTxtTipInfo)
+         if(data is PropTxtTipInfo)
          {
-            _tempData = param1;
+            _tempData = data;
             this.visible = true;
-            this.propertyText(param1.property);
-            this.detailText(param1.detail);
-            this.propertyTextColor(param1.color);
+            this.propertyText(data.property);
+            this.detailText(data.detail);
+            this.propertyTextColor(data.color);
          }
          else
          {
@@ -91,16 +91,16 @@ package ddt.view.tips
          super.dispose();
       }
       
-      private function propertyTextColor(param1:uint) : void
+      private function propertyTextColor(color:uint) : void
       {
-         var _loc2_:TextFormat = property_txt.getTextFormat();
-         _loc2_.color = param1;
-         property_txt.setTextFormat(_loc2_);
+         var format:TextFormat = property_txt.getTextFormat();
+         format.color = color;
+         property_txt.setTextFormat(format);
       }
       
-      private function propertyText(param1:String) : void
+      private function propertyText(value:String) : void
       {
-         property_txt.text = param1;
+         property_txt.text = value;
          updateWidth();
       }
       
@@ -117,9 +117,9 @@ package ddt.view.tips
          _width = _bg.width;
       }
       
-      private function detailText(param1:String) : void
+      private function detailText(value:String) : void
       {
-         detail_txt.text = param1;
+         detail_txt.text = value;
          updateWH();
       }
       

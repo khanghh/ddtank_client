@@ -91,9 +91,9 @@ package times
          _statistics = new TimesStatistics();
       }
       
-      public function showButton(param1:HallStateView) : void
+      public function showButton(hallView:HallStateView) : void
       {
-         _hallView = param1;
+         _hallView = hallView;
          if(_isThumbnailComplete)
          {
             if(_timesBtn && _timesBtn.parent || !_hallView)
@@ -107,7 +107,7 @@ package times
          }
       }
       
-      private function __onThumbnailComplete(param1:TimesEvent) : void
+      private function __onThumbnailComplete(event:TimesEvent) : void
       {
          _isThumbnailComplete = true;
          if(StateManager.currentStateType == "main")
@@ -153,41 +153,40 @@ package times
          }
       }
       
-      public function showByQQtips(param1:int) : void
+      public function showByQQtips(page:int) : void
       {
          _isQQshow = true;
-         _page = param1;
+         _page = page;
          __onBtnClick(null);
       }
       
       private function _QQshowComplete() : void
       {
-         var _loc5_:int = 0;
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         var _loc4_:Array = _controller.model.contentInfos;
-         var _loc1_:TimesPicInfo = new TimesPicInfo();
-         while(_loc5_ < _loc4_.length)
+         var i:int = 0;
+         var j:int = 0;
+         var sum:int = 0;
+         var contentArr:Array = _controller.model.contentInfos;
+         var tempInfo:TimesPicInfo = new TimesPicInfo();
+         while(i < contentArr.length)
          {
-            _loc3_ = 0;
-            while(_loc3_ < _loc4_[_loc5_].length)
+            for(j = 0; j < contentArr[i].length; )
             {
-               _loc2_++;
-               if(_loc2_ == _page)
+               sum++;
+               if(sum == _page)
                {
-                  _loc1_.targetCategory = _loc5_;
-                  _loc1_.targetPage = _loc3_;
+                  tempInfo.targetCategory = i;
+                  tempInfo.targetPage = j;
                }
-               _loc3_++;
+               j++;
             }
-            _loc5_++;
+            i++;
          }
-         _controller.dispatchEvent(new TimesEvent("gotoContent",_loc1_));
+         _controller.dispatchEvent(new TimesEvent("gotoContent",tempInfo));
       }
       
-      private function __keyBoardEventHandler(param1:KeyboardEvent) : void
+      private function __keyBoardEventHandler(event:KeyboardEvent) : void
       {
-         if(param1.keyCode == 27)
+         if(event.keyCode == 27)
          {
             SoundManager.instance.play("008");
             hide();
@@ -222,35 +221,34 @@ package times
       
       private function sendStatistics() : void
       {
-         var _loc4_:int = 0;
-         var _loc5_:int = 0;
-         var _loc1_:Vector.<int> = _statistics.stayTime;
-         _loc5_ = 0;
-         while(_loc5_ < _loc1_.length)
+         var sum:int = 0;
+         var i:int = 0;
+         var stayTime:Vector.<int> = _statistics.stayTime;
+         for(i = 0; i < stayTime.length; )
          {
-            _loc4_ = _loc4_ + _loc1_[_loc5_];
-            _loc5_++;
+            sum = sum + stayTime[i];
+            i++;
          }
-         if(_loc4_ == 0)
+         if(sum == 0)
          {
             _statistics.stopTick();
             return;
          }
-         var _loc3_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         _loc3_["Versions"] = _controller.model.edition;
-         _loc3_["Forum1"] = _loc1_[0];
-         _loc3_["Forum2"] = _loc1_[1];
-         _loc3_["Forum3"] = _loc1_[2];
-         _loc3_["Forum4"] = _loc1_[3];
-         _loc3_["Forum5"] = _loc1_[4];
-         var _loc2_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("CommitWeeklyUserRecord.ashx"),6,_loc3_);
-         LoadResourceManager.Instance.startLoad(_loc2_);
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         args["Versions"] = _controller.model.edition;
+         args["Forum1"] = stayTime[0];
+         args["Forum2"] = stayTime[1];
+         args["Forum3"] = stayTime[2];
+         args["Forum4"] = stayTime[3];
+         args["Forum5"] = stayTime[4];
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("CommitWeeklyUserRecord.ashx"),6,args);
+         LoadResourceManager.Instance.startLoad(loader);
          _statistics.stopTick();
       }
       
-      private function __timesEventHandler(param1:TimesEvent) : void
+      private function __timesEventHandler(event:TimesEvent) : void
       {
-         var _loc2_:* = param1.type;
+         var _loc2_:* = event.type;
          if("closeView" !== _loc2_)
          {
             if("playSound" !== _loc2_)
@@ -260,7 +258,7 @@ package times
                   if("purchase" === _loc2_)
                   {
                      SoundManager.instance.play("008");
-                     ShopBuyManager.Instance.buy(int(param1.info.templateID));
+                     ShopBuyManager.Instance.buy(int(event.info.templateID));
                   }
                }
                else
@@ -282,7 +280,7 @@ package times
          }
       }
       
-      private function __onBtnClick(param1:MouseEvent) : void
+      private function __onBtnClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          ComponentSetting.SEND_USELOG_ID(24);
@@ -303,23 +301,23 @@ package times
          }
       }
       
-      private function __canGenerateEgg(param1:PkgEvent) : void
+      private function __canGenerateEgg(event:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _controller.model.isShowEgg = _loc2_.readBoolean();
+         var pkg:PackageIn = event.pkg;
+         _controller.model.isShowEgg = pkg.readBoolean();
          _isReturn = true;
          show();
       }
       
-      private function __onUIProgress(param1:UIModuleEvent) : void
+      private function __onUIProgress(e:UIModuleEvent) : void
       {
-         if(param1.module == "times")
+         if(e.module == "times")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = e.loader.progress * 100;
          }
       }
       
-      private function __onSmallLoadingClose(param1:Event) : void
+      private function __onSmallLoadingClose(e:Event) : void
       {
          UIModuleSmallLoading.Instance.hide();
          UIModuleSmallLoading.Instance.removeEventListener("close",__onSmallLoadingClose);
@@ -327,13 +325,13 @@ package times
          UIModuleLoader.Instance.removeEventListener("uiMoudleProgress",__onUIProgress);
       }
       
-      private function __onUIComplete(param1:UIModuleEvent) : void
+      private function __onUIComplete(e:UIModuleEvent) : void
       {
-         if(param1.module == "times")
+         if(e.module == "times")
          {
             _isUIComplete = true;
          }
-         if(param1.module == "timesupdate")
+         if(e.module == "timesupdate")
          {
             _isUpdateResComplete = true;
          }
@@ -350,10 +348,10 @@ package times
       
       private function createTimesInfo() : void
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.SITE_WEEKLY + "weekly/weeklyInfo.xml",2);
-         _loc1_.loadErrorMessage = "Error occur when loading times pic! Please refer to webmaster!";
-         _loc1_.analyzer = new TimesAnalyzer(TimesController.Instance.setup);
-         LoadResourceManager.Instance.startLoad(_loc1_,true);
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.SITE_WEEKLY + "weekly/weeklyInfo.xml",2);
+         loader.loadErrorMessage = "Error occur when loading times pic! Please refer to webmaster!";
+         loader.analyzer = new TimesAnalyzer(TimesController.Instance.setup);
+         LoadResourceManager.Instance.startLoad(loader,true);
       }
       
       public function get updateContentList() : Array
@@ -369,23 +367,23 @@ package times
          }
       }
       
-      public function checkLoadUpdateRes(param1:Array, param2:Array) : void
+      public function checkLoadUpdateRes(updateContentList:Array, idList:Array) : void
       {
-         _updateContentList = param1;
-         var _loc4_:String = SharedManager.Instance.edictumVersion;
-         var _loc3_:String = param2.join("|");
-         if(_loc4_ != _loc3_)
+         _updateContentList = updateContentList;
+         var strLoction:String = SharedManager.Instance.edictumVersion;
+         var idStr:String = idList.join("|");
+         if(strLoction != idStr)
          {
             _isNeedOpenUpdateFrame = true;
-            SharedManager.Instance.edictumVersion = _loc3_;
+            SharedManager.Instance.edictumVersion = idStr;
             UIModuleLoader.Instance.addEventListener("uiModuleComplete",loadCompleteHandler);
             UIModuleLoader.Instance.addUIModuleImp("timesupdate");
          }
       }
       
-      private function loadCompleteHandler(param1:UIModuleEvent) : void
+      private function loadCompleteHandler(event:UIModuleEvent) : void
       {
-         if(param1.module == "timesupdate")
+         if(event.module == "timesupdate")
          {
             UIModuleLoader.Instance.removeEventListener("uiModuleComplete",loadCompleteHandler);
             if(StateManager.currentStateType == "main")
@@ -398,8 +396,8 @@ package times
       private function doOpenUpdateFrame() : void
       {
          _isNeedOpenUpdateFrame = false;
-         var _loc1_:TimesUpdateFrame = ComponentFactory.Instance.creatComponentByStylename("TimesUpdateFrame");
-         LayerManager.Instance.addToLayer(_loc1_,3,true,1);
+         var frame:TimesUpdateFrame = ComponentFactory.Instance.creatComponentByStylename("TimesUpdateFrame");
+         LayerManager.Instance.addToLayer(frame,3,true,1);
          isShowActivityAdvView = true;
       }
       

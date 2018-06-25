@@ -71,11 +71,11 @@ package vip.view
       
       private var _moneyConfirm:BaseAlerFrame;
       
-      public function GiveOthersOpenedView(param1:Boolean, param2:int)
+      public function GiveOthersOpenedView(bool:Boolean, $discountCode:int)
       {
-         super(param2);
+         super($discountCode);
          init();
-         isBand = param1;
+         isBand = bool;
       }
       
       private function init() : void
@@ -134,7 +134,7 @@ package vip.view
          PlayerManager.Instance.Self.addEventListener("propertychange",__propertyChangedHandler);
       }
       
-      protected function __propertyChangedHandler(param1:Event) : void
+      protected function __propertyChangedHandler(event:Event) : void
       {
          _amountOfMoney.text = PlayerManager.Instance.Self.Money + LanguageMgr.GetTranslation("ddt.vip.amountOfMoneyUnit");
       }
@@ -151,14 +151,14 @@ package vip.view
          PlayerManager.Instance.Self.removeEventListener("propertychange",__propertyChangedHandler);
       }
       
-      private function __seletected(param1:Event) : void
+      private function __seletected(e:Event) : void
       {
          _repeatName.text = _friendName.text;
       }
       
-      private function __listAction(param1:MouseEvent) : void
+      private function __listAction(evt:MouseEvent) : void
       {
-         if(param1.target is FriendDropListTarget)
+         if(evt.target is FriendDropListTarget)
          {
             return;
          }
@@ -168,75 +168,73 @@ package vip.view
          }
       }
       
-      private function __textChange(param1:Event) : void
+      private function __textChange(evt:Event) : void
       {
          if(_friendName.text == "")
          {
             _dropList.dataList = null;
             return;
          }
-         var _loc2_:Array = PlayerManager.Instance.onlineFriendList.concat(PlayerManager.Instance.offlineFriendList).concat(ConsortionModelManager.Instance.model.onlineConsortiaMemberList).concat(ConsortionModelManager.Instance.model.offlineConsortiaMemberList);
-         _dropList.dataList = filterSearch(filterRepeatInArray(_loc2_),_friendName.text);
+         var list:Array = PlayerManager.Instance.onlineFriendList.concat(PlayerManager.Instance.offlineFriendList).concat(ConsortionModelManager.Instance.model.onlineConsortiaMemberList).concat(ConsortionModelManager.Instance.model.offlineConsortiaMemberList);
+         _dropList.dataList = filterSearch(filterRepeatInArray(list),_friendName.text);
       }
       
-      private function filterSearch(param1:Array, param2:String) : Array
+      private function filterSearch(list:Array, targetStr:String) : Array
       {
-         var _loc4_:int = 0;
-         var _loc3_:Array = [];
-         _loc4_ = 0;
-         while(_loc4_ < param1.length)
+         var i:int = 0;
+         var result:Array = [];
+         for(i = 0; i < list.length; )
          {
-            if(param1[_loc4_].NickName.indexOf(param2) != -1)
+            if(list[i].NickName.indexOf(targetStr) != -1)
             {
-               _loc3_.push(param1[_loc4_]);
+               result.push(list[i]);
             }
-            _loc4_++;
+            i++;
          }
-         return _loc3_;
+         return result;
       }
       
-      private function filterRepeatInArray(param1:Array) : Array
+      private function filterRepeatInArray(filterArr:Array) : Array
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         var _loc2_:Array = [];
-         _loc4_ = 0;
-         while(_loc4_ < param1.length)
+         var i:int = 0;
+         var j:int = 0;
+         var arr:Array = [];
+         for(i = 0; i < filterArr.length; )
          {
-            if(_loc4_ == 0)
+            if(i == 0)
             {
-               _loc2_.push(param1[_loc4_]);
+               arr.push(filterArr[i]);
             }
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_.length)
+            j = 0;
+            while(j < arr.length)
             {
-               if(_loc2_[_loc3_].NickName != param1[_loc4_].NickName)
+               if(arr[j].NickName != filterArr[i].NickName)
                {
-                  if(_loc3_ == _loc2_.length - 1)
+                  if(j == arr.length - 1)
                   {
-                     _loc2_.push(param1[_loc4_]);
+                     arr.push(filterArr[i]);
                   }
-                  _loc3_++;
+                  j++;
                   continue;
                }
                break;
             }
-            _loc4_++;
+            i++;
          }
-         return _loc2_;
+         return arr;
       }
       
-      private function __textInputHandler(param1:TextEvent) : void
+      private function __textInputHandler(evt:TextEvent) : void
       {
          StringHelper.checkTextFieldLength(_friendName,14);
       }
       
-      private function __repeattextInputHandler(param1:TextEvent) : void
+      private function __repeattextInputHandler(evt:TextEvent) : void
       {
          StringHelper.checkTextFieldLength(_repeatName.textField,14);
       }
       
-      override protected function __openVip(param1:MouseEvent) : void
+      override protected function __openVip(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -261,16 +259,16 @@ package vip.view
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.vip.vipView.checkName"));
             return;
          }
-         var _loc2_:String = LanguageMgr.GetTranslation("ddt.vip.vipView.confirmforOther",_friendName.text,time,payNum);
-         _confirmFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("ddt.vip.vipFrame.ConfirmTitle"),_loc2_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,1);
+         var msg:String = LanguageMgr.GetTranslation("ddt.vip.vipView.confirmforOther",_friendName.text,time,payNum);
+         _confirmFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("ddt.vip.vipFrame.ConfirmTitle"),msg,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,1);
          _confirmFrame.moveEnable = false;
          _confirmFrame.addEventListener("response",__confirm);
       }
       
-      private function __moneyConfirmHandler(param1:FrameEvent) : void
+      private function __moneyConfirmHandler(evt:FrameEvent) : void
       {
          _moneyConfirm.removeEventListener("response",__moneyConfirmHandler);
-         switch(int(param1.responseCode) - 2)
+         switch(int(evt.responseCode) - 2)
          {
             case 0:
             case 1:
@@ -284,11 +282,11 @@ package vip.view
          _moneyConfirm = null;
       }
       
-      private function __confirm(param1:FrameEvent) : void
+      private function __confirm(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          _confirmFrame.removeEventListener("response",__confirm);
-         switch(int(param1.responseCode) - 2)
+         switch(int(evt.responseCode) - 2)
          {
             case 0:
             case 1:
@@ -309,19 +307,19 @@ package vip.view
          VipController.instance.sendOpenVip(_friendName.text,days,false);
       }
       
-      private function selectName(param1:String, param2:int = 0) : void
+      private function selectName(nick:String, id:int = 0) : void
       {
-         _friendName.text = param1;
-         _repeatName.text = param1;
+         _friendName.text = nick;
+         _repeatName.text = nick;
          _friendList.setVisible = false;
       }
       
-      private function __friendListView(param1:MouseEvent) : void
+      private function __friendListView(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:Point = _friendListBtn.localToGlobal(new Point(0,0));
-         _friendList.x = _loc2_.x;
-         _friendList.y = _loc2_.y + _friendListBtn.height;
+         var pos:Point = _friendListBtn.localToGlobal(new Point(0,0));
+         _friendList.x = pos.x;
+         _friendList.y = pos.y + _friendListBtn.height;
          _friendList.setVisible = true;
       }
       

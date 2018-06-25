@@ -61,17 +61,17 @@ package farm.viewx
       
       private var _countdown:CountdownView;
       
-      public function FarmFieldBlock(param1:int)
+      public function FarmFieldBlock(id:int)
       {
          super();
-         _fieldId = param1;
+         _fieldId = id;
          initView();
          initEvent();
       }
       
-      public function set flag(param1:Boolean) : void
+      public function set flag(value:Boolean) : void
       {
-         if(param1)
+         if(value)
          {
             if(_flag == null)
             {
@@ -95,13 +95,13 @@ package farm.viewx
          return _info;
       }
       
-      public function set info(param1:FieldVO) : void
+      public function set info(info:FieldVO) : void
       {
-         if(_info != param1)
+         if(_info != info)
          {
             _type = -1;
          }
-         _info = param1;
+         _info = info;
          if(_info)
          {
             if(_info.isDig)
@@ -149,38 +149,38 @@ package farm.viewx
          }
       }
       
-      protected function __onMouseClick(param1:MouseEvent) : void
+      protected function __onMouseClick(event:MouseEvent) : void
       {
          this.dispatchEvent(new FarmEvent("fieldblockclick"));
       }
       
       private function upTips() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var name:* = null;
+         var str:* = null;
          if(_info && _info.seedID != 0)
          {
-            _loc2_ = ItemManager.Instance.getTemplateById(info.seedID).Name;
-            _loc1_ = "";
+            name = ItemManager.Instance.getTemplateById(info.seedID).Name;
+            str = "";
             if(_info.plantGrownPhase == 2)
             {
-               _loc1_ = LanguageMgr.GetTranslation("ddt.farm.goods.grown",_info.gainCount,ItemManager.Instance.getTemplateById(_info.seedID).Property2);
+               str = LanguageMgr.GetTranslation("ddt.farm.goods.grown",_info.gainCount,ItemManager.Instance.getTemplateById(_info.seedID).Property2);
             }
             else if(_info.realNeedTime > 0)
             {
                if(_info.realNeedTime / 60 == 0)
                {
-                  _loc1_ = LanguageMgr.GetTranslation("ddt.farm.goods.mini",_info.realNeedTime % 60);
+                  str = LanguageMgr.GetTranslation("ddt.farm.goods.mini",_info.realNeedTime % 60);
                }
                else
                {
-                  _loc1_ = LanguageMgr.GetTranslation("ddt.farm.goods.houer",int(_info.realNeedTime / 60),_info.realNeedTime % 60);
+                  str = LanguageMgr.GetTranslation("ddt.farm.goods.houer",int(_info.realNeedTime / 60),_info.realNeedTime % 60);
                }
                _countdown.setCountdown(_info.fieldID);
             }
             else
             {
-               _loc1_ = LanguageMgr.GetTranslation("ddt.farm.goods.houer",0,0);
+               str = LanguageMgr.GetTranslation("ddt.farm.goods.houer",0,0);
             }
             if(FarmModelController.instance.model.currentFarmerId == PlayerManager.Instance.Self.ID && _info.realNeedTime > 0)
             {
@@ -190,7 +190,7 @@ package farm.viewx
             {
                _countdown.setFastBtnEnable(false);
             }
-            _plant.tipData = LanguageMgr.GetTranslation("ddt.farm.goods.name",_loc2_,_loc1_);
+            _plant.tipData = LanguageMgr.GetTranslation("ddt.farm.goods.name",name,str);
          }
       }
       
@@ -198,14 +198,14 @@ package farm.viewx
       {
       }
       
-      public function setBeginHelper(param1:int) : void
+      public function setBeginHelper(seedID:int) : void
       {
-         _picPath = ItemManager.Instance.getTemplateById(param1).Pic;
+         _picPath = ItemManager.Instance.getTemplateById(seedID).Pic;
          loadIcon(0);
          _plant.tipData = LanguageMgr.GetTranslation("ddt.farms.fieldBlockSeedTips");
       }
       
-      private function __onMouseOver(param1:MouseEvent) : void
+      private function __onMouseOver(evt:MouseEvent) : void
       {
          if(_info)
          {
@@ -213,7 +213,7 @@ package farm.viewx
          }
       }
       
-      private function __onMouseOut(param1:MouseEvent) : void
+      private function __onMouseOut(evt:MouseEvent) : void
       {
          filters = [];
       }
@@ -238,7 +238,7 @@ package farm.viewx
          _countdown.visible = false;
       }
       
-      protected function __accelerate(param1:Event) : void
+      protected function __accelerate(event:Event) : void
       {
          if(FarmModelController.instance.model.matureId == _fieldId)
          {
@@ -246,12 +246,12 @@ package farm.viewx
          }
       }
       
-      protected function __frush(param1:Event) : void
+      protected function __frush(event:Event) : void
       {
          upTips();
       }
       
-      private function __plantClickHandler(param1:MouseEvent) : void
+      private function __plantClickHandler(event:MouseEvent) : void
       {
          if(PlayerManager.Instance.Self.isFarmHelper && PlayerManager.Instance.Self.ID == FarmModelController.instance.model.currentFarmerId)
          {
@@ -270,13 +270,13 @@ package farm.viewx
          }
          else
          {
-            param1.stopImmediatePropagation();
+            event.stopImmediatePropagation();
             _countdown.visible = true;
             stage.addEventListener("click",__onClick);
          }
       }
       
-      protected function __onClick(param1:MouseEvent) : void
+      protected function __onClick(event:MouseEvent) : void
       {
          if(_countdown)
          {
@@ -294,13 +294,13 @@ package farm.viewx
          }
       }
       
-      private function loadIcon(param1:int) : void
+      private function loadIcon(type:int) : void
       {
-         if(_type == param1)
+         if(_type == type)
          {
             return;
          }
-         _type = param1;
+         _type = type;
          _loadingasset = ComponentFactory.Instance.creat("bagAndInfo.cell.BaseCellLoadingAsset");
          PositionUtils.setPos(_loadingasset,"farm.farmFieldBlock.pos");
          addChild(_loadingasset);
@@ -319,12 +319,12 @@ package farm.viewx
             addChildAt(_plant,this.numChildren - 2);
             _plant.addEventListener("click",__plantClickHandler);
          }
-         _loader = LoadResourceManager.Instance.createLoader(PathManager.solveFieldPlantPath(_picPath,param1),0);
+         _loader = LoadResourceManager.Instance.createLoader(PathManager.solveFieldPlantPath(_picPath,type),0);
          _loader.addEventListener("complete",__complete);
          LoadResourceManager.Instance.startLoad(_loader);
       }
       
-      private function __complete(param1:LoaderEvent) : void
+      private function __complete(event:LoaderEvent) : void
       {
          _loader.removeEventListener("complete",__complete);
          if(_loader.isSuccess)
@@ -339,17 +339,17 @@ package farm.viewx
          }
       }
       
-      public function dragDrop(param1:DragEffect) : void
+      public function dragDrop(effect:DragEffect) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:int = 0;
+         var seedInfo:* = null;
+         var type:int = 0;
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:String = getQualifiedClassName(param1.source);
-         if(param1.source is FarmKillCropCell)
+         var linkCls:String = getQualifiedClassName(effect.source);
+         if(effect.source is FarmKillCropCell)
          {
             if(_info && _info.seedID != 0)
             {
@@ -360,28 +360,28 @@ package farm.viewx
                DragManager.acceptDrag(this);
             }
          }
-         else if(param1.source && getQualifiedClassName(param1.source) == "farm.viewx::FarmCell")
+         else if(effect.source && getQualifiedClassName(effect.source) == "farm.viewx::FarmCell")
          {
-            _loc4_ = param1.data as InventoryItemInfo;
-            if(_loc4_)
+            seedInfo = effect.data as InventoryItemInfo;
+            if(seedInfo)
             {
-               if(_info && _info.seedID == 0 && _info.isDig && _loc4_.CategoryID == 32 && _loc4_.Count > 0)
+               if(_info && _info.seedID == 0 && _info.isDig && seedInfo.CategoryID == 32 && seedInfo.Count > 0)
                {
-                  FarmModelController.instance.sowSeed(_fieldId,_loc4_.TemplateID);
-                  if(_loc4_.Count == 1)
+                  FarmModelController.instance.sowSeed(_fieldId,seedInfo.TemplateID);
+                  if(seedInfo.Count == 1)
                   {
                      return;
                   }
                }
-               else if(_info && _info.seedID != 0 && _loc4_.CategoryID == 33 && _loc4_.Count > 0)
+               else if(_info && _info.seedID != 0 && seedInfo.CategoryID == 33 && seedInfo.Count > 0)
                {
-                  _loc3_ = 0;
-                  FarmModelController.instance.accelerateField(_loc3_,_fieldId,_loc4_.TemplateID);
+                  type = 0;
+                  FarmModelController.instance.accelerateField(type,_fieldId,seedInfo.TemplateID);
                   if(PetsBagManager.instance().haveTaskOrderByID(369))
                   {
                      PetsBagManager.instance().clearCurrentPetFarmGuildeArrow(106);
                   }
-                  if(_loc4_.Count == 1)
+                  if(seedInfo.Count == 1)
                   {
                      return;
                   }
@@ -395,7 +395,7 @@ package farm.viewx
          }
       }
       
-      private function __flagClickHandler(param1:MouseEvent) : void
+      private function __flagClickHandler(event:MouseEvent) : void
       {
          if(PlayerManager.Instance.Self.isFarmHelper)
          {

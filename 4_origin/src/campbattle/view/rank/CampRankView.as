@@ -42,9 +42,9 @@ package campbattle.view.rank
          PositionUtils.setPos(_totalScroeTxt,"ddtCampBattle.rankView.totalScroeTxtPos");
       }
       
-      public function setList(param1:Array) : void
+      public function setList(arr:Array) : void
       {
-         _rankList = param1;
+         _rankList = arr;
          setPageTxt(_rankList);
          setPageArr();
          setMyrank();
@@ -52,51 +52,50 @@ package campbattle.view.rank
       
       private function setMyrank() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var data:* = null;
          if(!_rankList)
          {
             return;
          }
-         var _loc2_:int = _rankList.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var len:int = _rankList.length;
+         for(i = 0; i < len; )
          {
-            _loc1_ = _rankList[_loc3_] as RankData;
-            if(_loc1_.ZoneID == PlayerManager.Instance.Self.ZoneID && _loc1_.UserID == PlayerManager.Instance.Self.ID)
+            data = _rankList[i] as RankData;
+            if(data.ZoneID == PlayerManager.Instance.Self.ZoneID && data.UserID == PlayerManager.Instance.Self.ID)
             {
-               _totalRank.text = _loc1_.Rank.toString();
-               _totalScroeTxt.text = _loc1_.Score.toString();
+               _totalRank.text = data.Rank.toString();
+               _totalScroeTxt.text = data.Score.toString();
                break;
             }
-            _loc3_++;
+            i++;
          }
       }
       
-      override protected function initItemList(param1:Array) : void
+      override protected function initItemList(arr:Array) : void
       {
-         var _loc6_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
+         var i:int = 0;
+         var data:* = null;
+         var item:* = null;
          clearItemList();
          _itemContent.x = 34;
          _itemContent.y = 95;
-         var _loc5_:int = param1.length;
-         var _loc2_:int = 0;
-         while(_loc6_ < _loc5_)
+         var len:int = arr.length;
+         var index:int = 0;
+         while(i < len)
          {
-            _loc4_ = param1[_loc6_] as RankData;
-            setRankTxt(_loc4_);
-            if(_loc4_.Rank != -1)
+            data = arr[i] as RankData;
+            setRankTxt(data);
+            if(data.Rank != -1)
             {
-               _loc3_ = new RankItem(_loc4_);
-               _loc3_.setView(_loc6_);
-               _loc3_.setCampBattleStlye(false);
-               _loc3_.y = (_loc3_.height + 4) * _loc2_;
-               _itemContent.addChild(_loc3_);
-               _loc2_++;
+               item = new RankItem(data);
+               item.setView(i);
+               item.setCampBattleStlye(false);
+               item.y = (item.height + 4) * index;
+               _itemContent.addChild(item);
+               index++;
             }
-            _loc6_++;
+            i++;
          }
       }
       

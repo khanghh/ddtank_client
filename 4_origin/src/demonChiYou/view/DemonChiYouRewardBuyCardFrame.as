@@ -53,16 +53,16 @@ package demonChiYou.view
       
       private function initView() : void
       {
-         var _loc6_:int = 0;
-         var _loc1_:* = null;
-         var _loc3_:* = null;
+         var i:int = 0;
+         var itemData:* = null;
+         var rewardBuyCartItem:* = null;
          titleText = LanguageMgr.GetTranslation("demonChiYou.rewardBuyCardFrame.title");
          UICreatShortcut.creatAndAdd("DemonChiYou.Pic14",_container);
-         var _loc5_:int = DemonChiYouManager.instance.model.rankInfo.myConsortiaRank;
-         var _loc2_:Bitmap = UICreatShortcut.creatAndAdd("DemonChiYou.Pic" + (6 + _loc5_),_container);
-         PositionUtils.setPos(_loc2_,"demonChiYou.rewardBuyCardRankPos1");
-         var _loc4_:Bitmap = UICreatShortcut.creatAndAdd("DemonChiYou.Pic" + (6 + _loc5_),_container);
-         PositionUtils.setPos(_loc4_,"demonChiYou.rewardBuyCardRankPos2");
+         var myConsortiaRank:int = DemonChiYouManager.instance.model.rankInfo.myConsortiaRank;
+         var rankPic1:Bitmap = UICreatShortcut.creatAndAdd("DemonChiYou.Pic" + (6 + myConsortiaRank),_container);
+         PositionUtils.setPos(rankPic1,"demonChiYou.rewardBuyCardRankPos1");
+         var rankPic2:Bitmap = UICreatShortcut.creatAndAdd("DemonChiYou.Pic" + (6 + myConsortiaRank),_container);
+         PositionUtils.setPos(rankPic2,"demonChiYou.rewardBuyCardRankPos2");
          UICreatShortcut.creatAndAdd("demonChiYou.CheckOutViewBg",_container);
          UICreatShortcut.creatAndAdd("demonChiYou.TotalMoneyPanelBg",_container);
          UICreatShortcut.creatAndAdd("demonChiYou.rewardBuyCard.TotalMoneyPanel.InputBg",_container);
@@ -73,18 +73,17 @@ package demonChiYou.view
          _list = new VBox();
          _list.spacing = 1;
          _rewardBuyCartItemArr = [];
-         _loc6_ = 0;
-         while(_loc6_ < 9)
+         for(i = 0; i < 9; )
          {
-            _loc1_ = DemonChiYouManager.instance.model.shopInfoArr[_loc6_];
-            if(_loc1_["PlayerId"] == PlayerManager.Instance.Self.ID && !_loc1_["HasBuy"])
+            itemData = DemonChiYouManager.instance.model.shopInfoArr[i];
+            if(itemData["PlayerId"] == PlayerManager.Instance.Self.ID && !itemData["HasBuy"])
             {
-               _loc3_ = new RewardBuyCartItem(_loc6_);
-               _loc3_.y = _loc6_ * 85;
-               _list.addChild(_loc3_);
-               _rewardBuyCartItemArr.push(_loc3_);
+               rewardBuyCartItem = new RewardBuyCartItem(i);
+               rewardBuyCartItem.y = i * 85;
+               _list.addChild(rewardBuyCartItem);
+               _rewardBuyCartItemArr.push(rewardBuyCartItem);
             }
-            _loc6_++;
+            i++;
          }
          _panel = ComponentFactory.Instance.creatComponentByStylename("demonChiYou.rewardBuyCard.scrollPanel");
          _panel.setView(_list);
@@ -105,26 +104,26 @@ package demonChiYou.view
          DemonChiYouManager.instance.removeEventListener("event_buy_card_remove_item",onRemoveItem);
       }
       
-      private function responseHandler(param1:FrameEvent) : void
+      private function responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.playButtonSound();
             DemonChiYouController.instance.disposeRewardBuyCardFrame();
          }
       }
       
-      private function onClick(param1:MouseEvent) : void
+      private function onClick(evt:MouseEvent) : void
       {
-         evt = param1;
+         evt = evt;
          onUsePropCheckOut = function():void
          {
-            alertResponse = function(param1:FrameEvent):void
+            alertResponse = function(e:FrameEvent):void
             {
                SoundManager.instance.play("008");
-               var _loc3_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-               _loc3_.removeEventListener("response",alertResponse);
-               switch(int(param1.responseCode))
+               var alert:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+               alert.removeEventListener("response",alertResponse);
+               switch(int(e.responseCode))
                {
                   default:
                   default:
@@ -132,23 +131,23 @@ package demonChiYou.view
                   case 3:
                      var _loc5_:int = 0;
                      var _loc4_:* = _rewardBuyCartItemArr;
-                     for each(var _loc2_ in _rewardBuyCartItemArr)
+                     for each(var rewardBuyCartItem in _rewardBuyCartItemArr)
                      {
-                        SocketManager.Instance.out.buyDemonChiYouShopItem(_loc2_.data["ID"]);
+                        SocketManager.Instance.out.buyDemonChiYouShopItem(rewardBuyCartItem.data["ID"]);
                      }
                      MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("home.homeBank.buySucessMsg"));
                      DemonChiYouController.instance.disposeRewardBuyCardFrame();
                   default:
                      var _loc5_:int = 0;
                      var _loc4_:* = _rewardBuyCartItemArr;
-                     for each(var _loc2_ in _rewardBuyCartItemArr)
+                     for each(var rewardBuyCartItem in _rewardBuyCartItemArr)
                      {
-                        SocketManager.Instance.out.buyDemonChiYouShopItem(_loc2_.data["ID"]);
+                        SocketManager.Instance.out.buyDemonChiYouShopItem(rewardBuyCartItem.data["ID"]);
                      }
                      MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("home.homeBank.buySucessMsg"));
                      DemonChiYouController.instance.disposeRewardBuyCardFrame();
                }
-               _loc3_.dispose();
+               alert.dispose();
             };
             var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("demonChiYou.buyGoodsMoneyAlertMsg",_needMoney),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
             alert.addEventListener("response",alertResponse);
@@ -162,25 +161,25 @@ package demonChiYou.view
          CheckMoneyUtils.instance.checkMoney(false,_needMoney,onUsePropCheckOut,null);
       }
       
-      private function onRemoveItem(param1:CEvent) : void
+      private function onRemoveItem(evt:CEvent) : void
       {
-         var _loc2_:RewardBuyCartItem = param1.data as RewardBuyCartItem;
-         _list.removeChild(_loc2_);
+         var rewardBuyCartItem:RewardBuyCartItem = evt.data as RewardBuyCartItem;
+         _list.removeChild(rewardBuyCartItem);
          _panel.invalidateViewport();
-         _rewardBuyCartItemArr.splice(_rewardBuyCartItemArr.indexOf(_loc2_),1);
+         _rewardBuyCartItemArr.splice(_rewardBuyCartItemArr.indexOf(rewardBuyCartItem),1);
          updateMoney();
       }
       
       private function updateMoney() : void
       {
          _rewardBuyCardTotalNumTf.text = _rewardBuyCartItemArr.length.toString();
-         var _loc2_:int = DemonChiYouManager.instance.model.rankInfo.myConsortiaRank;
+         var myConsortiaRank:int = DemonChiYouManager.instance.model.rankInfo.myConsortiaRank;
          _needMoney = 0;
          var _loc4_:int = 0;
          var _loc3_:* = _rewardBuyCartItemArr;
-         for each(var _loc1_ in _rewardBuyCartItemArr)
+         for each(var rewardBuyCartItem in _rewardBuyCartItemArr)
          {
-            _needMoney = _needMoney + Math.floor(_loc2_ / 10 * _loc1_.data["Cost"]);
+            _needMoney = _needMoney + Math.floor(myConsortiaRank / 10 * rewardBuyCartItem.data["Cost"]);
          }
          _rewardBuyCardTotalMoneyTf.text = _needMoney.toString();
          if(_needMoney == 0)

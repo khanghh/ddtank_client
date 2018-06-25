@@ -45,9 +45,9 @@ package boguAdventure.cell
          this.addEventListener("mouseOut",__onOut);
       }
       
-      public function set info(param1:BoguAdventureCellInfo) : void
+      public function set info(value:BoguAdventureCellInfo) : void
       {
-         _info = param1;
+         _info = value;
          _info.state == 2?open():close();
          ObjectUtils.disposeObject(_goodsBg);
          _goodsBg = null;
@@ -77,12 +77,12 @@ package boguAdventure.cell
          }
       }
       
-      private function __onMove(param1:MouseEvent) : void
+      private function __onMove(e:MouseEvent) : void
       {
          lightFilter = true;
       }
       
-      private function __onOut(param1:MouseEvent) : void
+      private function __onOut(e:MouseEvent) : void
       {
          lightFilter = false;
       }
@@ -98,17 +98,17 @@ package boguAdventure.cell
          _shine.play();
       }
       
-      private function set lightFilter(param1:Boolean) : void
+      private function set lightFilter(value:Boolean) : void
       {
-         if(_isMove == param1)
+         if(_isMove == value)
          {
             return;
          }
-         _isMove = param1;
+         _isMove = value;
          this.filters = !!_isMove?[_lightFilter]:null;
       }
       
-      private function __onPlayComplete(param1:Event) : void
+      private function __onPlayComplete(e:Event) : void
       {
          if(_shine.currentFrame == _shine.totalFrames)
          {
@@ -120,7 +120,7 @@ package boguAdventure.cell
          }
       }
       
-      private function __onClick(param1:MouseEvent) : void
+      private function __onClick(e:MouseEvent) : void
       {
          dispatchEvent(new MouseEvent("click"));
       }

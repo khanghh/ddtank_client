@@ -60,19 +60,19 @@ package starling.display
       
       protected var _precisionHitTestDistance:Number = 0;
       
-      public function Graphics(param1:DisplayObjectContainer)
+      public function Graphics(displayObjectContainer:DisplayObjectContainer)
       {
          super();
-         _container = param1;
+         _container = displayObjectContainer;
       }
       
       public function clear() : void
       {
-         var _loc1_:* = null;
+         var child:* = null;
          while(_container.numChildren > 0)
          {
-            _loc1_ = _container.getChildAt(0);
-            _loc1_.dispose();
+            child = _container.getChildAt(0);
+            child.dispose();
             _container.removeChildAt(0);
          }
          _penPosX = NaN;
@@ -83,11 +83,11 @@ package starling.display
       
       public function dispose() : void
       {
-         var _loc1_:* = null;
+         var child:* = null;
          while(_container.numChildren > 0)
          {
-            _loc1_ = _container.getChildAt(0);
-            _loc1_.dispose();
+            child = _container.getChildAt(0);
+            child.dispose();
             _container.removeChildAt(0);
          }
          _penPosX = NaN;
@@ -96,58 +96,58 @@ package starling.display
          disposeFill();
       }
       
-      public function beginFill(param1:uint, param2:Number = 1.0) : void
+      public function beginFill(color:uint, alpha:Number = 1.0) : void
       {
          endFill();
          _fillStyleSet = true;
-         _fillColor = param1;
-         _fillAlpha = param2;
+         _fillColor = color;
+         _fillAlpha = alpha;
          _fillTexture = null;
          _fillMaterial = null;
          _fillMatrix = null;
       }
       
-      public function beginTextureFill(param1:Texture, param2:Matrix = null, param3:uint = 16777215, param4:Number = 1.0) : void
+      public function beginTextureFill(texture:Texture, uvMatrix:Matrix = null, color:uint = 16777215, alpha:Number = 1.0) : void
       {
          endFill();
          _fillStyleSet = true;
-         _fillColor = param3;
-         _fillAlpha = param4;
-         _fillTexture = param1;
+         _fillColor = color;
+         _fillAlpha = alpha;
+         _fillTexture = texture;
          _fillMaterial = null;
          _fillMatrix = new Matrix();
-         if(param2)
+         if(uvMatrix)
          {
-            _fillMatrix = param2.clone();
+            _fillMatrix = uvMatrix.clone();
             _fillMatrix.invert();
          }
          else
          {
             _fillMatrix = new Matrix();
          }
-         _fillMatrix.scale(1 / param1.width,1 / param1.height);
+         _fillMatrix.scale(1 / texture.width,1 / texture.height);
       }
       
-      public function beginMaterialFill(param1:IMaterial, param2:Matrix = null) : void
+      public function beginMaterialFill(material:IMaterial, uvMatrix:Matrix = null) : void
       {
          endFill();
          _fillStyleSet = true;
-         _fillColor = param1.color;
-         _fillAlpha = param1.alpha;
+         _fillColor = material.color;
+         _fillAlpha = material.alpha;
          _fillTexture = null;
-         _fillMaterial = param1;
-         if(param2)
+         _fillMaterial = material;
+         if(uvMatrix)
          {
-            _fillMatrix = param2.clone();
+            _fillMatrix = uvMatrix.clone();
             _fillMatrix.invert();
          }
          else
          {
             _fillMatrix = new Matrix();
          }
-         if(param1.textures.length > 0)
+         if(material.textures.length > 0)
          {
-            _fillMatrix.scale(1 / param1.textures[0].width,1 / param1.textures[0].height);
+            _fillMatrix.scale(1 / material.textures[0].width,1 / material.textures[0].height);
          }
       }
       
@@ -183,37 +183,37 @@ package starling.display
          _currentFill = null;
       }
       
-      public function lineStyle(param1:Number = NaN, param2:uint = 0, param3:Number = 1.0) : void
+      public function lineStyle(thickness:Number = NaN, color:uint = 0, alpha:Number = 1.0) : void
       {
          endStroke();
-         _strokeStyleSet = !isNaN(param1) && param1 > 0;
-         _strokeThickness = param1;
-         _strokeColor = param2;
-         _strokeAlpha = param3;
+         _strokeStyleSet = !isNaN(thickness) && thickness > 0;
+         _strokeThickness = thickness;
+         _strokeColor = color;
+         _strokeAlpha = alpha;
          _strokeTexture = null;
          _strokeMaterial = null;
       }
       
-      public function lineTexture(param1:Number = NaN, param2:Texture = null) : void
+      public function lineTexture(thickness:Number = NaN, texture:Texture = null) : void
       {
          endStroke();
-         _strokeStyleSet = !isNaN(param1) && param1 > 0 && param2;
-         _strokeThickness = param1;
+         _strokeStyleSet = !isNaN(thickness) && thickness > 0 && texture;
+         _strokeThickness = thickness;
          _strokeColor = 16777215;
          _strokeAlpha = 1;
-         _strokeTexture = param2;
+         _strokeTexture = texture;
          _strokeMaterial = null;
       }
       
-      public function lineMaterial(param1:Number = NaN, param2:IMaterial = null) : void
+      public function lineMaterial(thickness:Number = NaN, material:IMaterial = null) : void
       {
          endStroke();
-         _strokeStyleSet = !isNaN(param1) && param1 > 0 && param2;
-         _strokeThickness = param1;
-         _strokeColor = param2 != null?param2.color:16777215;
-         _strokeAlpha = param2 != null?param2.alpha:1;
+         _strokeStyleSet = !isNaN(thickness) && thickness > 0 && material;
+         _strokeThickness = thickness;
+         _strokeColor = material != null?material.color:16777215;
+         _strokeAlpha = material != null?material.alpha:1;
          _strokeTexture = null;
-         _strokeMaterial = param2;
+         _strokeMaterial = material;
       }
       
       protected function endStroke() : void
@@ -246,30 +246,30 @@ package starling.display
          _currentStroke = null;
       }
       
-      public function moveTo(param1:Number, param2:Number) : void
+      public function moveTo(x:Number, y:Number) : void
       {
          if(_strokeStyleSet && _currentStroke)
          {
-            _currentStroke.addDegenerates(param1,param2);
+            _currentStroke.addDegenerates(x,y);
          }
          if(_fillStyleSet)
          {
             if(_currentFill == null)
             {
                createFill();
-               _currentFill.addVertex(param1,param2);
+               _currentFill.addVertex(x,y);
             }
             else
             {
-               _currentFill.addDegenerates(param1,param2);
+               _currentFill.addDegenerates(x,y);
             }
          }
-         _penPosX = param1;
-         _penPosY = param2;
+         _penPosX = x;
+         _penPosY = y;
          _strokeInterrupted = true;
       }
       
-      public function lineTo(param1:Number, param2:Number) : void
+      public function lineTo(x:Number, y:Number) : void
       {
          if(isNaN(_penPosX))
          {
@@ -295,11 +295,11 @@ package starling.display
             }
             if(_strokeMaterial)
             {
-               _currentStroke.lineTo(param1,param2,_strokeThickness);
+               _currentStroke.lineTo(x,y,_strokeThickness);
             }
             else
             {
-               _currentStroke.lineTo(param1,param2,_strokeThickness,_strokeColor,_strokeAlpha);
+               _currentStroke.lineTo(x,y,_strokeThickness,_strokeColor,_strokeAlpha);
             }
          }
          if(_fillStyleSet)
@@ -308,276 +308,272 @@ package starling.display
             {
                createFill();
             }
-            _currentFill.addVertex(param1,param2);
+            _currentFill.addVertex(x,y);
          }
-         _penPosX = param1;
-         _penPosY = param2;
+         _penPosX = x;
+         _penPosY = y;
       }
       
-      public function curveTo(param1:Number, param2:Number, param3:Number, param4:Number, param5:Number = 0.75) : void
+      public function curveTo(cx:Number, cy:Number, a2x:Number, a2y:Number, error:Number = 0.75) : void
       {
-         var _loc12_:int = 0;
-         var _loc11_:Number = NaN;
-         var _loc10_:Number = NaN;
-         var _loc6_:* = Number(_penPosX);
-         var _loc7_:* = Number(_penPosY);
-         if(isNaN(_loc6_))
+         var i:int = 0;
+         var x:Number = NaN;
+         var y:Number = NaN;
+         var startX:* = Number(_penPosX);
+         var startY:* = Number(_penPosY);
+         if(isNaN(startX))
          {
-            _loc6_ = 0;
-            _loc7_ = 0;
+            startX = 0;
+            startY = 0;
          }
-         var _loc9_:Vector.<Number> = CurveUtil.quadraticCurve(_loc6_,_loc7_,param1,param2,param3,param4,param5);
-         var _loc8_:int = _loc9_.length;
-         _loc12_ = 0;
-         while(_loc12_ < _loc8_)
+         var points:Vector.<Number> = CurveUtil.quadraticCurve(startX,startY,cx,cy,a2x,a2y,error);
+         var L:int = points.length;
+         for(i = 0; i < L; )
          {
-            _loc11_ = _loc9_[_loc12_];
-            _loc10_ = _loc9_[_loc12_ + 1];
-            if(_loc12_ == 0 && isNaN(_penPosX))
+            x = points[i];
+            y = points[i + 1];
+            if(i == 0 && isNaN(_penPosX))
             {
-               moveTo(_loc11_,_loc10_);
+               moveTo(x,y);
             }
             else
             {
-               lineTo(_loc11_,_loc10_);
+               lineTo(x,y);
             }
-            _loc12_ = _loc12_ + 2;
+            i = i + 2;
          }
-         _penPosX = param3;
-         _penPosY = param4;
+         _penPosX = a2x;
+         _penPosY = a2y;
       }
       
-      public function cubicCurveTo(param1:Number, param2:Number, param3:Number, param4:Number, param5:Number, param6:Number, param7:Number = 0.75) : void
+      public function cubicCurveTo(c1x:Number, c1y:Number, c2x:Number, c2y:Number, a2x:Number, a2y:Number, error:Number = 0.75) : void
       {
-         var _loc9_:int = 0;
-         var _loc14_:Number = NaN;
-         var _loc13_:Number = NaN;
-         var _loc10_:* = Number(_penPosX);
-         var _loc11_:* = Number(_penPosY);
-         if(isNaN(_loc10_))
+         var i:int = 0;
+         var x:Number = NaN;
+         var y:Number = NaN;
+         var startX:* = Number(_penPosX);
+         var startY:* = Number(_penPosY);
+         if(isNaN(startX))
          {
-            _loc10_ = 0;
-            _loc11_ = 0;
+            startX = 0;
+            startY = 0;
          }
-         var _loc12_:Vector.<Number> = CurveUtil.cubicCurve(_loc10_,_loc11_,param1,param2,param3,param4,param5,param6,param7);
-         var _loc8_:int = _loc12_.length;
-         _loc9_ = 0;
-         while(_loc9_ < _loc8_)
+         var points:Vector.<Number> = CurveUtil.cubicCurve(startX,startY,c1x,c1y,c2x,c2y,a2x,a2y,error);
+         var L:int = points.length;
+         for(i = 0; i < L; )
          {
-            _loc14_ = _loc12_[_loc9_];
-            _loc13_ = _loc12_[_loc9_ + 1];
-            if(_loc9_ == 0 && isNaN(_penPosX))
+            x = points[i];
+            y = points[i + 1];
+            if(i == 0 && isNaN(_penPosX))
             {
-               moveTo(_loc14_,_loc13_);
+               moveTo(x,y);
             }
             else
             {
-               lineTo(_loc14_,_loc13_);
+               lineTo(x,y);
             }
-            _loc9_ = _loc9_ + 2;
+            i = i + 2;
          }
-         _penPosX = param5;
-         _penPosY = param6;
+         _penPosX = a2x;
+         _penPosY = a2y;
       }
       
-      public function drawCircle(param1:Number, param2:Number, param3:Number) : void
+      public function drawCircle(x:Number, y:Number, radius:Number) : void
       {
-         drawEllipse(param1,param2,param3 * 2,param3 * 2);
+         drawEllipse(x,y,radius * 2,radius * 2);
       }
       
-      public function drawEllipse(param1:Number, param2:Number, param3:Number, param4:Number) : void
+      public function drawEllipse(x:Number, y:Number, width:Number, height:Number) : void
       {
-         var _loc19_:* = null;
-         var _loc10_:* = null;
-         var _loc12_:* = null;
-         var _loc21_:Boolean = false;
-         var _loc18_:Number = NaN;
-         var _loc16_:Number = NaN;
-         var _loc6_:Number = NaN;
-         var _loc9_:Number = NaN;
-         var _loc7_:Number = NaN;
-         var _loc14_:* = NaN;
-         var _loc8_:* = NaN;
-         var _loc11_:int = 0;
-         var _loc20_:Number = NaN;
-         var _loc17_:Number = NaN;
+         var nGon:* = null;
+         var m:* = null;
+         var storedFill:* = null;
+         var storedFillStyleSet:Boolean = false;
+         var halfWidth:Number = NaN;
+         var halfHeight:Number = NaN;
+         var anglePerSide:Number = NaN;
+         var a:Number = NaN;
+         var b:Number = NaN;
+         var s:* = NaN;
+         var c:* = NaN;
+         var i:int = 0;
+         var sx:Number = NaN;
+         var sy:Number = NaN;
          var _loc5_:Number = NaN;
          var _loc15_:Number = NaN;
-         var _loc13_:int = 3.14159265358979 * (param3 * 0.5 + param4 * 0.5) * 0.25;
-         _loc13_ = _loc13_ < 6?6:_loc13_;
+         var numSides:int = 3.14159265358979 * (width * 0.5 + height * 0.5) * 0.25;
+         numSides = numSides < 6?6:numSides;
          if(_fillStyleSet)
          {
-            _loc19_ = new NGon(param3 * 0.5,_loc13_);
-            _loc19_.x = param1;
-            _loc19_.y = param2;
-            _loc19_.scaleY = param4 / param3;
-            applyFillStyleToGraphic(_loc19_);
-            _loc10_ = new Matrix();
-            _loc10_.scale(param3,param4);
+            nGon = new NGon(width * 0.5,numSides);
+            nGon.x = x;
+            nGon.y = y;
+            nGon.scaleY = height / width;
+            applyFillStyleToGraphic(nGon);
+            m = new Matrix();
+            m.scale(width,height);
             if(_fillMatrix)
             {
-               _loc10_.concat(_fillMatrix);
+               m.concat(_fillMatrix);
             }
-            _loc19_.uvMatrix = _loc10_;
-            _loc19_.precisionHitTest = _precisionHitTest;
-            _loc19_.precisionHitTestDistance = _precisionHitTestDistance;
-            _container.addChild(_loc19_);
+            nGon.uvMatrix = m;
+            nGon.precisionHitTest = _precisionHitTest;
+            nGon.precisionHitTestDistance = _precisionHitTestDistance;
+            _container.addChild(nGon);
          }
          if(_strokeStyleSet)
          {
-            _loc12_ = _currentFill;
+            storedFill = _currentFill;
             _currentFill = null;
-            _loc21_ = _fillStyleSet;
+            storedFillStyleSet = _fillStyleSet;
             _fillStyleSet = false;
-            _loc18_ = param3 * 0.5;
-            _loc16_ = param4 * 0.5;
-            _loc6_ = 3.14159265358979 * 2 / _loc13_;
-            _loc9_ = Math.cos(_loc6_);
-            _loc7_ = Math.sin(_loc6_);
-            _loc14_ = 0;
-            _loc8_ = 1;
-            _loc11_ = 0;
-            while(_loc11_ <= _loc13_)
+            halfWidth = width * 0.5;
+            halfHeight = height * 0.5;
+            anglePerSide = 3.14159265358979 * 2 / numSides;
+            a = Math.cos(anglePerSide);
+            b = Math.sin(anglePerSide);
+            s = 0;
+            c = 1;
+            for(i = 0; i <= numSides; )
             {
-               _loc20_ = _loc14_ * _loc18_ + param1;
-               _loc17_ = -_loc8_ * _loc16_ + param2;
-               if(_loc11_ == 0)
+               sx = s * halfWidth + x;
+               sy = -c * halfHeight + y;
+               if(i == 0)
                {
-                  moveTo(_loc20_,_loc17_);
+                  moveTo(sx,sy);
                }
                else
                {
-                  lineTo(_loc20_,_loc17_);
+                  lineTo(sx,sy);
                }
-               _loc5_ = _loc7_ * _loc8_ + _loc9_ * _loc14_;
-               _loc15_ = _loc9_ * _loc8_ - _loc7_ * _loc14_;
-               _loc8_ = _loc15_;
-               _loc14_ = _loc5_;
-               _loc11_++;
+               _loc5_ = b * c + a * s;
+               _loc15_ = a * c - b * s;
+               c = _loc15_;
+               s = _loc5_;
+               i++;
             }
-            _currentFill = _loc12_;
-            _fillStyleSet = _loc21_;
+            _currentFill = storedFill;
+            _fillStyleSet = storedFillStyleSet;
          }
       }
       
-      public function drawRect(param1:Number, param2:Number, param3:Number, param4:Number) : void
+      public function drawRect(x:Number, y:Number, width:Number, height:Number) : void
       {
-         var _loc5_:* = null;
-         var _loc6_:* = null;
-         var _loc8_:* = null;
-         var _loc7_:Boolean = false;
+         var plane:* = null;
+         var m:* = null;
+         var storedFill:* = null;
+         var storedFillStyleSet:Boolean = false;
          if(_fillStyleSet)
          {
-            _loc5_ = new Plane(param3,param4);
-            applyFillStyleToGraphic(_loc5_);
-            _loc6_ = new Matrix();
-            _loc6_.scale(param3,param4);
+            plane = new Plane(width,height);
+            applyFillStyleToGraphic(plane);
+            m = new Matrix();
+            m.scale(width,height);
             if(_fillMatrix)
             {
-               _loc6_.concat(_fillMatrix);
+               m.concat(_fillMatrix);
             }
-            _loc5_.uvMatrix = _loc6_;
-            _loc5_.x = param1;
-            _loc5_.y = param2;
-            _container.addChild(_loc5_);
+            plane.uvMatrix = m;
+            plane.x = x;
+            plane.y = y;
+            _container.addChild(plane);
          }
          if(_strokeStyleSet)
          {
-            _loc8_ = _currentFill;
+            storedFill = _currentFill;
             _currentFill = null;
-            _loc7_ = _fillStyleSet;
+            storedFillStyleSet = _fillStyleSet;
             _fillStyleSet = false;
-            moveTo(param1,param2);
-            lineTo(param1 + param3,param2);
-            lineTo(param1 + param3,param2 + param4);
-            lineTo(param1,param2 + param4);
-            lineTo(param1,param2 - _strokeThickness * 0.5);
-            _currentFill = _loc8_;
-            _fillStyleSet = _loc7_;
+            moveTo(x,y);
+            lineTo(x + width,y);
+            lineTo(x + width,y + height);
+            lineTo(x,y + height);
+            lineTo(x,y - _strokeThickness * 0.5);
+            _currentFill = storedFill;
+            _fillStyleSet = storedFillStyleSet;
          }
       }
       
-      public function drawRoundRect(param1:Number, param2:Number, param3:Number, param4:Number, param5:Number) : void
+      public function drawRoundRect(x:Number, y:Number, width:Number, height:Number, radius:Number) : void
       {
-         drawRoundRectComplex(param1,param2,param3,param4,param5,param5,param5,param5);
+         drawRoundRectComplex(x,y,width,height,radius,radius,radius,radius);
       }
       
-      public function drawRoundRectComplex(param1:Number, param2:Number, param3:Number, param4:Number, param5:Number, param6:Number, param7:Number, param8:Number) : void
+      public function drawRoundRectComplex(x:Number, y:Number, width:Number, height:Number, topLeftRadius:Number, topRightRadius:Number, bottomLeftRadius:Number, bottomRightRadius:Number) : void
       {
-         var _loc11_:* = null;
-         var _loc13_:* = null;
-         var _loc15_:Boolean = false;
-         var _loc9_:* = undefined;
-         var _loc12_:int = 0;
-         var _loc10_:* = NaN;
+         var m:* = null;
+         var storedFill:* = null;
+         var storedFillStyleSet:Boolean = false;
+         var strokePoints:* = undefined;
+         var i:int = 0;
+         var lastYPointOffset:* = NaN;
          if(!_fillStyleSet && !_strokeStyleSet)
          {
             return;
          }
-         var _loc14_:RoundedRectangle = new RoundedRectangle(param3,param4,param5,param6,param7,param8);
+         var roundedRect:RoundedRectangle = new RoundedRectangle(width,height,topLeftRadius,topRightRadius,bottomLeftRadius,bottomRightRadius);
          if(_fillStyleSet)
          {
-            applyFillStyleToGraphic(_loc14_);
-            _loc11_ = new Matrix();
-            _loc11_.scale(param3,param4);
+            applyFillStyleToGraphic(roundedRect);
+            m = new Matrix();
+            m.scale(width,height);
             if(_fillMatrix)
             {
-               _loc11_.concat(_fillMatrix);
+               m.concat(_fillMatrix);
             }
-            _loc14_.uvMatrix = _loc11_;
-            _loc14_.x = param1;
-            _loc14_.y = param2;
-            _container.addChild(_loc14_);
+            roundedRect.uvMatrix = m;
+            roundedRect.x = x;
+            roundedRect.y = y;
+            _container.addChild(roundedRect);
          }
-         _currentFill = _loc13_;
+         _currentFill = storedFill;
          if(_strokeStyleSet)
          {
-            _loc13_ = _currentFill;
+            storedFill = _currentFill;
             _currentFill = null;
-            _loc15_ = _fillStyleSet;
+            storedFillStyleSet = _fillStyleSet;
             _fillStyleSet = false;
-            _loc9_ = _loc14_.getStrokePoints();
-            _loc12_ = 0;
-            while(_loc12_ < _loc9_.length)
+            strokePoints = roundedRect.getStrokePoints();
+            for(i = 0; i < strokePoints.length; )
             {
-               if(_loc12_ == 0)
+               if(i == 0)
                {
-                  moveTo(param1 + _loc9_[_loc12_],param2 + _loc9_[_loc12_ + 1]);
+                  moveTo(x + strokePoints[i],y + strokePoints[i + 1]);
                }
-               else if(_loc12_ == _loc9_.length - 2)
+               else if(i == strokePoints.length - 2)
                {
-                  _loc10_ = 0;
-                  if(param5 < _strokeThickness)
+                  lastYPointOffset = 0;
+                  if(topLeftRadius < _strokeThickness)
                   {
-                     _loc10_ = Number(param5 * 0.5);
+                     lastYPointOffset = Number(topLeftRadius * 0.5);
                   }
                   else
                   {
-                     _loc10_ = Number(_strokeThickness * 0.5);
+                     lastYPointOffset = Number(_strokeThickness * 0.5);
                   }
-                  lineTo(param1 + _loc9_[_loc12_],param2 + _loc9_[_loc12_ + 1] - _loc10_);
+                  lineTo(x + strokePoints[i],y + strokePoints[i + 1] - lastYPointOffset);
                }
                else
                {
-                  lineTo(param1 + _loc9_[_loc12_],param2 + _loc9_[_loc12_ + 1]);
+                  lineTo(x + strokePoints[i],y + strokePoints[i + 1]);
                }
-               _loc12_ = _loc12_ + 2;
+               i = i + 2;
             }
-            _currentFill = _loc13_;
-            _fillStyleSet = _loc15_;
+            _currentFill = storedFill;
+            _fillStyleSet = storedFillStyleSet;
          }
       }
       
-      public function set precisionHitTest(param1:Boolean) : void
+      public function set precisionHitTest(value:Boolean) : void
       {
-         _precisionHitTest = param1;
+         _precisionHitTest = value;
          if(_currentFill)
          {
-            _currentFill.precisionHitTest = param1;
+            _currentFill.precisionHitTest = value;
          }
          if(_currentStroke)
          {
-            _currentStroke.precisionHitTest = param1;
+            _currentStroke.precisionHitTest = value;
          }
       }
       
@@ -586,16 +582,16 @@ package starling.display
          return _precisionHitTest;
       }
       
-      public function set precisionHitTestDistance(param1:Number) : void
+      public function set precisionHitTestDistance(value:Number) : void
       {
-         _precisionHitTestDistance = param1;
+         _precisionHitTestDistance = value;
          if(_currentFill)
          {
-            _currentFill.precisionHitTestDistance = param1;
+            _currentFill.precisionHitTestDistance = value;
          }
          if(_currentStroke)
          {
-            _currentStroke.precisionHitTestDistance = param1;
+            _currentStroke.precisionHitTestDistance = value;
          }
       }
       
@@ -644,38 +640,38 @@ package starling.display
          _container.addChild(_currentFill);
       }
       
-      protected function applyStrokeStyleToGraphic(param1:Graphic) : void
+      protected function applyStrokeStyleToGraphic(graphic:Graphic) : void
       {
          if(_strokeMaterial)
          {
-            param1.material = _strokeMaterial;
+            graphic.material = _strokeMaterial;
          }
          else if(_strokeTexture)
          {
-            param1.material.fragmentShader = s_textureFragmentShader;
-            param1.material.textures[0] = _strokeTexture;
+            graphic.material.fragmentShader = s_textureFragmentShader;
+            graphic.material.textures[0] = _strokeTexture;
          }
-         param1.material.color = _strokeColor;
-         param1.material.alpha = _strokeAlpha;
+         graphic.material.color = _strokeColor;
+         graphic.material.alpha = _strokeAlpha;
       }
       
-      protected function applyFillStyleToGraphic(param1:Graphic) : void
+      protected function applyFillStyleToGraphic(graphic:Graphic) : void
       {
          if(_fillMaterial)
          {
-            param1.material = _fillMaterial;
+            graphic.material = _fillMaterial;
          }
          else if(_fillTexture)
          {
-            param1.material.fragmentShader = s_textureFragmentShader;
-            param1.material.textures[0] = _fillTexture;
+            graphic.material.fragmentShader = s_textureFragmentShader;
+            graphic.material.textures[0] = _fillTexture;
          }
          if(_fillMatrix)
          {
-            param1.uvMatrix = _fillMatrix;
+            graphic.uvMatrix = _fillMatrix;
          }
-         param1.material.color = _fillColor;
-         param1.material.alpha = _fillAlpha;
+         graphic.material.color = _fillColor;
+         graphic.material.alpha = _fillAlpha;
       }
    }
 }

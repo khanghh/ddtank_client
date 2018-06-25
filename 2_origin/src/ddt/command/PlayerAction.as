@@ -14,23 +14,23 @@ package ddt.command
       
       public var replaceSame:Boolean;
       
-      public function PlayerAction(param1:String, param2:Array, param3:Boolean, param4:Boolean, param5:Boolean)
+      public function PlayerAction(type:String, frames:Array, replaceSame:Boolean, repeat:Boolean, stopAtEnd:Boolean)
       {
          super();
-         this.type = param1;
-         this.frames = param2;
-         this.replaceSame = param3;
-         this.repeat = param4;
-         this.stopAtEnd = param5;
+         this.type = type;
+         this.frames = frames;
+         this.replaceSame = replaceSame;
+         this.repeat = repeat;
+         this.stopAtEnd = stopAtEnd;
       }
       
-      public function canReplace(param1:PlayerAction) : Boolean
+      public function canReplace(action:PlayerAction) : Boolean
       {
-         if(type == "handclip" && param1.type == "walk")
+         if(type == "handclip" && action.type == "walk")
          {
             return false;
          }
-         return param1.type != this.type || replaceSame;
+         return action.type != this.type || replaceSame;
       }
       
       public function toString() : String

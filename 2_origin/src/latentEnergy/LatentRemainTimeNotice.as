@@ -21,7 +21,7 @@ package latentEnergy
       
       private var dressModelSet:Boolean = false;
       
-      public function LatentRemainTimeNotice(param1:inner)
+      public function LatentRemainTimeNotice(single:inner)
       {
          super();
       }
@@ -62,7 +62,7 @@ package latentEnergy
          SocketManager.Instance.removeEventListener("currentmodel_set",onDressSet);
       }
       
-      protected function onDressSet(param1:Event) : void
+      protected function onDressSet(e:Event) : void
       {
          dressModelSet = true;
          if(!bagUpdated)
@@ -72,7 +72,7 @@ package latentEnergy
          checkItems();
       }
       
-      protected function onBagUpdated(param1:Event) : void
+      protected function onBagUpdated(e:Event) : void
       {
          PlayerManager.Instance.removeEventListener("bag_update",onBagUpdated);
          bagUpdated = true;
@@ -110,8 +110,7 @@ package latentEnergy
             if(v.latentEnergyEndTime && v.latentEnergyEndTime.getTime() <= TimeManager.Instance.Now().getTime() && v.latentEnergyEndTime.getTime() > TimeManager.Instance.Now().getTime() - 259200000)
             {
                var dressArrLen:int = curDressArr.length;
-               var key:int = 0;
-               while(key < dressArrLen)
+               for(var key:int = 0; key < dressArrLen; )
                {
                   if(curDressArr[key].itemId == v.ItemID)
                   {

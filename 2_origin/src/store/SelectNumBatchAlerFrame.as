@@ -38,25 +38,25 @@ package store
          initEvent();
       }
       
-      public function set item(param1:InventoryItemInfo) : void
+      public function set item(value:InventoryItemInfo) : void
       {
-         _item = param1;
+         _item = value;
       }
       
-      public function set callback(param1:Function) : void
+      public function set callback(call:Function) : void
       {
-         _callBack = param1;
+         _callBack = call;
       }
       
       private function initView() : void
       {
          cancelButtonStyle = "core.simplebt";
          submitButtonStyle = "core.simplebt";
-         var _loc1_:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("ddt.bag.item.openBatch.titleStr"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"));
-         _loc1_.moveEnable = false;
-         _loc1_.autoDispose = false;
-         _loc1_.sound = "008";
-         info = _loc1_;
+         var _alertInfo:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("ddt.bag.item.openBatch.titleStr"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"));
+         _alertInfo.moveEnable = false;
+         _alertInfo.autoDispose = false;
+         _alertInfo.sound = "008";
+         info = _alertInfo;
          _txt = ComponentFactory.Instance.creatComponentByStylename("openBatchView.promptTxt");
          PositionUtils.setPos(_txt,"ddtstore.FineEvolution.SelectTxtPos");
          _txt.text = LanguageMgr.GetTranslation("ddt.bag.item.openBatch.promptStr");
@@ -71,16 +71,16 @@ package store
          addToContent(_maxBtn);
       }
       
-      public function set TitleTxt(param1:String) : void
+      public function set TitleTxt(msg:String) : void
       {
-         this.titleText = param1;
+         this.titleText = msg;
       }
       
-      public function set ContentTxt(param1:String) : void
+      public function set ContentTxt(msg:String) : void
       {
          if(_txt)
          {
-            _txt.text = param1;
+            _txt.text = msg;
          }
       }
       
@@ -96,7 +96,7 @@ package store
          _inputText.removeEventListener("change",inputTextChangeHandler);
       }
       
-      private function changeMaxHandler(param1:MouseEvent) : void
+      private function changeMaxHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_item)
@@ -106,19 +106,19 @@ package store
          }
       }
       
-      private function inputTextChangeHandler(param1:Event) : void
+      private function inputTextChangeHandler(event:Event) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
+         var num:int = 0;
+         var count:int = 0;
          if(_item)
          {
-            _loc2_ = _inputText.text;
-            _loc3_ = _item.Count > 99?99:_item.Count;
-            if(_loc2_ > _loc3_)
+            num = _inputText.text;
+            count = _item.Count > 99?99:_item.Count;
+            if(num > count)
             {
-               _inputText.text = _loc3_.toString();
+               _inputText.text = count.toString();
             }
-            if(_loc2_ < 1)
+            if(num < 1)
             {
                _inputText.text = "1";
             }

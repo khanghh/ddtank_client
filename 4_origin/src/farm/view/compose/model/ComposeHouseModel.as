@@ -13,9 +13,9 @@ package farm.view.compose.model
       
       private var _foodComposeList:Dictionary;
       
-      public function ComposeHouseModel(param1:IEventDispatcher = null)
+      public function ComposeHouseModel(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public function get foodComposeList() : Dictionary
@@ -23,9 +23,9 @@ package farm.view.compose.model
          return _foodComposeList;
       }
       
-      public function set foodComposeList(param1:Dictionary) : void
+      public function set foodComposeList(value:Dictionary) : void
       {
-         _foodComposeList = param1;
+         _foodComposeList = value;
       }
       
       public function get items() : DictionaryData
@@ -33,9 +33,9 @@ package farm.view.compose.model
          return _items;
       }
       
-      public function set items(param1:DictionaryData) : void
+      public function set items(value:DictionaryData) : void
       {
-         _items = param1;
+         _items = value;
       }
    }
 }

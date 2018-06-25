@@ -84,7 +84,7 @@ package store.view
          _fineStoreBtn.addEventListener("click",__soundPlay,false,0,true);
       }
       
-      private function __changeHandler(param1:Event) : void
+      private function __changeHandler(event:Event) : void
       {
          SocketManager.Instance.out.sendClearStoreBag();
          if(_storeView)
@@ -134,21 +134,21 @@ package store.view
          }
       }
       
-      private function __soundPlay(param1:MouseEvent) : void
+      private function __soundPlay(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }
       
-      public function set controller(param1:StoreController) : void
+      public function set controller(con:StoreController) : void
       {
-         _controller = param1;
+         _controller = con;
       }
       
-      public function show(param1:String) : void
+      public function show(type:String) : void
       {
          _fightPower = PlayerManager.Instance.Self.FightPower;
          _controller.startupEvent();
-         var _loc2_:* = param1;
+         var _loc2_:* = type;
          if("bag_store" !== _loc2_)
          {
             if("forge_store" !== _loc2_)
@@ -171,26 +171,26 @@ package store.view
          LayerManager.Instance.addToLayer(this,3,false,1);
       }
       
-      private function getStoreType(param1:String) : String
+      private function getStoreType(type:String) : String
       {
-         if(param1 == "bag_store")
+         if(type == "bag_store")
          {
             if(PlayerManager.Instance.Self.ConsortiaID != 0)
             {
-               param1 = "consortia";
+               type = "consortia";
             }
             else
             {
-               param1 = "general";
+               type = "general";
             }
          }
-         return param1;
+         return type;
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(e.responseCode == 0 || e.responseCode == 1)
          {
             if(!FusionNewManager.instance.isInContinuousFusion)
             {

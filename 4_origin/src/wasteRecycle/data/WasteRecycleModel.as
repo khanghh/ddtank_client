@@ -27,14 +27,14 @@ package wasteRecycle.data
          return _data;
       }
       
-      public function set data(param1:DictionaryData) : void
+      public function set data(value:DictionaryData) : void
       {
-         _data = param1;
+         _data = value;
       }
       
-      public function set trophyList(param1:Vector.<InventoryItemInfo>) : void
+      public function set trophyList(value:Vector.<InventoryItemInfo>) : void
       {
-         _trophyList = param1;
+         _trophyList = value;
       }
       
       public function get trophyList() : Vector.<InventoryItemInfo>

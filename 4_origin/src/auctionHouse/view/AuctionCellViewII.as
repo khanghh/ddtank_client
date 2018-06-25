@@ -19,12 +19,12 @@ package auctionHouse.view
       
       public function AuctionCellViewII()
       {
-         var _loc1_:Sprite = new Sprite();
-         var _loc2_:MovieClip = ClassUtils.CreatInstance("asset.core.ItemCellUnSelected");
-         _loc2_.width = 50;
-         _loc2_.height = 50;
-         _loc1_.addChild(_loc2_);
-         super(_loc1_);
+         var bgSprite:Sprite = new Sprite();
+         var _bg:MovieClip = ClassUtils.CreatInstance("asset.core.ItemCellUnSelected");
+         _bg.width = 50;
+         _bg.height = 50;
+         bgSprite.addChild(_bg);
+         super(bgSprite);
          tipDirctions = "7,5,2,6,4,1";
          PicPos = new Point(2,1);
       }
@@ -41,19 +41,19 @@ package auctionHouse.view
          _tbxCount = null;
       }
       
-      override public function dragDrop(param1:DragEffect) : void
+      override public function dragDrop(effect:DragEffect) : void
       {
       }
       
-      override protected function onMouseClick(param1:MouseEvent) : void
+      override protected function onMouseClick(evt:MouseEvent) : void
       {
       }
       
-      override protected function onMouseOver(param1:MouseEvent) : void
+      override protected function onMouseOver(evt:MouseEvent) : void
       {
       }
       
-      override protected function onMouseOut(param1:MouseEvent) : void
+      override protected function onMouseOut(evt:MouseEvent) : void
       {
       }
       

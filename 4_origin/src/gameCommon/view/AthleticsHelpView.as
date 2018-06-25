@@ -19,34 +19,34 @@ package gameCommon.view
       
       private var _closeRect:Rectangle;
       
-      public function AthleticsHelpView(param1:GameTurnButton, param2:DungeonInfoView, param3:DisplayObjectContainer)
+      public function AthleticsHelpView(button:GameTurnButton, barrier:DungeonInfoView, gameContainer:DisplayObjectContainer)
       {
-         super(param1,param2,param3);
+         super(button,barrier,gameContainer);
       }
       
       override protected function init() : void
       {
-         var _loc1_:* = null;
+         var bg:* = null;
          if(GameControl.Instance.Current.gameMode == 56)
          {
-            _loc1_ = ComponentFactory.Instance.creatBitmap("asset.game.escapeBattle.help");
+            bg = ComponentFactory.Instance.creatBitmap("asset.game.escapeBattle.help");
             _turnButton.text = LanguageMgr.GetTranslation("tank.game.escapeBattle");
          }
          else if(GameControl.Instance.Current.gameMode == 57)
          {
-            _loc1_ = ComponentFactory.Instance.creatBitmap("asset.game.flagBattle.help");
+            bg = ComponentFactory.Instance.creatBitmap("asset.game.flagBattle.help");
             _turnButton.text = LanguageMgr.GetTranslation("tank.game.flagBattle");
          }
-         _container.addChild(_loc1_);
+         _container.addChild(bg);
          _closeBtn = ComponentFactory.Instance.creat("asset.game.DungeonHelpView.closeBtn");
          PositionUtils.setPos(_closeBtn,"game.DungeonHelpView.closeBtnPos");
          _container.addChild(_closeBtn);
-         _sourceRect = new Rectangle(0,0,_loc1_.width,_loc1_.height);
+         _sourceRect = new Rectangle(0,0,bg.width,bg.height);
          PositionUtils.setPos(_sourceRect,"game.DungeonHelpView.closeTragetPos");
          _closeRect = new Rectangle(950,-50,2,2);
       }
       
-      override protected function __timerComplete(param1:TimerEvent) : void
+      override protected function __timerComplete(evt:TimerEvent) : void
       {
          defaultClose();
          clearTime();
@@ -57,7 +57,7 @@ package gameCommon.view
          close(_closeRect);
       }
       
-      override protected function __closeHandler(param1:MouseEvent) : void
+      override protected function __closeHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          close(_closeRect);

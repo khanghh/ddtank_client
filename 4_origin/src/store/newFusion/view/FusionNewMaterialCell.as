@@ -30,10 +30,10 @@ package store.newFusion.view
       
       private var _needCount:int;
       
-      public function FusionNewMaterialCell(param1:int)
+      public function FusionNewMaterialCell(index:int)
       {
          super();
-         _index = param1;
+         _index = index;
          initView();
       }
       
@@ -54,11 +54,11 @@ package store.newFusion.view
          addChild(_itemCountTxt);
       }
       
-      public function refreshView(param1:FusionNewVo) : void
+      public function refreshView(data:FusionNewVo) : void
       {
-         _data = param1;
-         var _loc2_:ItemTemplateInfo = !!_data?_data.getItemInfoByIndex(_index):null;
-         if(!_loc2_)
+         _data = data;
+         var itemInfo:ItemTemplateInfo = !!_data?_data.getItemInfoByIndex(_index):null;
+         if(!itemInfo)
          {
             _itemCell.visible = false;
             _itemCountTxt.visible = false;
@@ -66,7 +66,7 @@ package store.newFusion.view
          else
          {
             _itemCell.visible = true;
-            _itemCell.info = _loc2_;
+            _itemCell.info = itemInfo;
             _itemCell.x = 20;
             _itemCell.y = 20;
             _itemCountTxt.visible = true;

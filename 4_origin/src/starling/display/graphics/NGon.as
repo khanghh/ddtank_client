@@ -26,19 +26,19 @@ package starling.display.graphics
       
       private var _textureAlongPath:Boolean = false;
       
-      public function NGon(param1:Number = 100, param2:int = 10, param3:Number = 0, param4:Number = 0, param5:Number = 360, param6:Boolean = false)
+      public function NGon(radius:Number = 100, numSides:int = 10, innerRadius:Number = 0, startAngle:Number = 0, endAngle:Number = 360, textureAlongPath:Boolean = false)
       {
          super();
-         this.radius = param1;
-         this.numSides = param2;
-         this.innerRadius = param3;
-         this.startAngle = param4;
-         this.endAngle = param5;
-         this._textureAlongPath = param6;
-         var _loc7_:* = -param1;
+         this.radius = radius;
+         this.numSides = numSides;
+         this.innerRadius = innerRadius;
+         this.startAngle = startAngle;
+         this.endAngle = endAngle;
+         this._textureAlongPath = textureAlongPath;
+         var _loc7_:* = -radius;
          minBounds.y = _loc7_;
          minBounds.x = _loc7_;
-         _loc7_ = param1;
+         _loc7_ = radius;
          maxBounds.y = _loc7_;
          maxBounds.x = _loc7_;
          if(!_uv)
@@ -47,306 +47,302 @@ package starling.display.graphics
          }
       }
       
-      private static function buildSimpleNGon(param1:Number, param2:int, param3:Vector.<Number>, param4:Vector.<uint>, param5:Matrix, param6:uint) : void
+      private static function buildSimpleNGon(radius:Number, numSides:int, vertices:Vector.<Number>, indices:Vector.<uint>, uvMatrix:Matrix, color:uint) : void
       {
-         var _loc13_:int = 0;
-         var _loc19_:Number = NaN;
-         var _loc18_:Number = NaN;
+         var i:int = 0;
+         var x:Number = NaN;
+         var y:Number = NaN;
          var _loc8_:Number = NaN;
          var _loc15_:Number = NaN;
-         var _loc12_:int = 0;
+         var numVertices:int = 0;
          _uv.x = 0;
          _uv.y = 0;
-         if(param5)
+         if(uvMatrix)
          {
-            _uv = param5.transformPoint(_uv);
+            _uv = uvMatrix.transformPoint(_uv);
          }
-         var _loc16_:Number = (param6 >> 16) / 255;
-         var _loc7_:Number = ((param6 & 65280) >> 8) / 255;
-         var _loc10_:Number = (param6 & 255) / 255;
-         param3.push(0,0,0,_loc16_,_loc7_,_loc10_,1,_uv.x,_uv.y);
-         _loc12_++;
-         var _loc9_:Number = 3.14159265358979 * 2 / param2;
-         var _loc20_:Number = Math.cos(_loc9_);
-         var _loc17_:Number = Math.sin(_loc9_);
-         var _loc14_:* = 0;
-         var _loc11_:* = 1;
-         _loc13_ = 0;
-         while(_loc13_ < param2)
+         var r:Number = (color >> 16) / 255;
+         var g:Number = ((color & 65280) >> 8) / 255;
+         var b:Number = (color & 255) / 255;
+         vertices.push(0,0,0,r,g,b,1,_uv.x,_uv.y);
+         numVertices++;
+         var anglePerSide:Number = 3.14159265358979 * 2 / numSides;
+         var cosA:Number = Math.cos(anglePerSide);
+         var sinB:Number = Math.sin(anglePerSide);
+         var s:* = 0;
+         var c:* = 1;
+         for(i = 0; i < numSides; )
          {
-            _loc19_ = _loc14_ * param1;
-            _loc18_ = -_loc11_ * param1;
-            _uv.x = _loc19_;
-            _uv.y = _loc18_;
-            if(param5)
+            x = s * radius;
+            y = -c * radius;
+            _uv.x = x;
+            _uv.y = y;
+            if(uvMatrix)
             {
-               _uv = param5.transformPoint(_uv);
+               _uv = uvMatrix.transformPoint(_uv);
             }
-            param3.push(_loc19_,_loc18_,0,_loc16_,_loc7_,_loc10_,1,_uv.x,_uv.y);
-            _loc12_++;
-            param4.push(0,_loc12_ - 1,_loc13_ == param2 - 1?1:_loc12_);
-            _loc8_ = _loc17_ * _loc11_ + _loc20_ * _loc14_;
-            _loc15_ = _loc20_ * _loc11_ - _loc17_ * _loc14_;
-            _loc11_ = _loc15_;
-            _loc14_ = _loc8_;
-            _loc13_++;
+            vertices.push(x,y,0,r,g,b,1,_uv.x,_uv.y);
+            numVertices++;
+            indices.push(0,numVertices - 1,i == numSides - 1?1:numVertices);
+            _loc8_ = sinB * c + cosA * s;
+            _loc15_ = cosA * c - sinB * s;
+            c = _loc15_;
+            s = _loc8_;
+            i++;
          }
       }
       
-      private static function buildHoop(param1:Number, param2:Number, param3:int, param4:Vector.<Number>, param5:Vector.<uint>, param6:Matrix, param7:uint, param8:Boolean) : void
+      private static function buildHoop(innerRadius:Number, radius:Number, numSides:int, vertices:Vector.<Number>, indices:Vector.<uint>, uvMatrix:Matrix, color:uint, textureAlongPath:Boolean) : void
       {
-         var _loc15_:int = 0;
-         var _loc21_:Number = NaN;
-         var _loc20_:Number = NaN;
+         var i:int = 0;
+         var x:Number = NaN;
+         var y:Number = NaN;
          var _loc10_:Number = NaN;
          var _loc17_:Number = NaN;
-         var _loc14_:int = 0;
-         var _loc11_:Number = 3.14159265358979 * 2 / param3;
-         var _loc22_:Number = Math.cos(_loc11_);
-         var _loc19_:Number = Math.sin(_loc11_);
-         var _loc16_:* = 0;
-         var _loc13_:* = 1;
-         var _loc18_:Number = (param7 >> 16) / 255;
-         var _loc9_:Number = ((param7 & 65280) >> 8) / 255;
-         var _loc12_:Number = (param7 & 255) / 255;
-         _loc15_ = 0;
-         while(_loc15_ < param3)
+         var numVertices:int = 0;
+         var anglePerSide:Number = 3.14159265358979 * 2 / numSides;
+         var cosA:Number = Math.cos(anglePerSide);
+         var sinB:Number = Math.sin(anglePerSide);
+         var s:* = 0;
+         var c:* = 1;
+         var r:Number = (color >> 16) / 255;
+         var g:Number = ((color & 65280) >> 8) / 255;
+         var b:Number = (color & 255) / 255;
+         for(i = 0; i < numSides; )
          {
-            _loc21_ = _loc16_ * param2;
-            _loc20_ = -_loc13_ * param2;
-            if(param8)
+            x = s * radius;
+            y = -c * radius;
+            if(textureAlongPath)
             {
-               _uv.x = _loc15_ / param3;
+               _uv.x = i / numSides;
                _uv.y = 0;
             }
             else
             {
-               _uv.x = _loc21_;
-               _uv.y = _loc20_;
+               _uv.x = x;
+               _uv.y = y;
             }
-            if(param6)
+            if(uvMatrix)
             {
-               _uv = param6.transformPoint(_uv);
+               _uv = uvMatrix.transformPoint(_uv);
             }
-            param4.push(_loc21_,_loc20_,0,_loc18_,_loc9_,_loc12_,1,_uv.x,_uv.y);
-            _loc14_++;
-            _loc21_ = _loc16_ * param1;
-            _loc20_ = -_loc13_ * param1;
-            if(param8)
+            vertices.push(x,y,0,r,g,b,1,_uv.x,_uv.y);
+            numVertices++;
+            x = s * innerRadius;
+            y = -c * innerRadius;
+            if(textureAlongPath)
             {
-               _uv.x = _loc15_ / param3;
+               _uv.x = i / numSides;
                _uv.y = 1;
             }
             else
             {
-               _uv.x = _loc21_;
-               _uv.y = _loc20_;
+               _uv.x = x;
+               _uv.y = y;
             }
-            if(param6)
+            if(uvMatrix)
             {
-               _uv = param6.transformPoint(_uv);
+               _uv = uvMatrix.transformPoint(_uv);
             }
-            param4.push(_loc21_,_loc20_,0,_loc18_,_loc9_,_loc12_,1,_uv.x,_uv.y);
-            _loc14_++;
-            if(_loc15_ == param3 - 1)
+            vertices.push(x,y,0,r,g,b,1,_uv.x,_uv.y);
+            numVertices++;
+            if(i == numSides - 1)
             {
-               param5.push(_loc14_ - 2,_loc14_ - 1,0,0,_loc14_ - 1,1);
+               indices.push(numVertices - 2,numVertices - 1,0,0,numVertices - 1,1);
             }
             else
             {
-               param5.push(_loc14_ - 2,_loc14_,_loc14_ - 1,_loc14_,_loc14_ + 1,_loc14_ - 1);
+               indices.push(numVertices - 2,numVertices,numVertices - 1,numVertices,numVertices + 1,numVertices - 1);
             }
-            _loc10_ = _loc19_ * _loc13_ + _loc22_ * _loc16_;
-            _loc17_ = _loc22_ * _loc13_ - _loc19_ * _loc16_;
-            _loc13_ = _loc17_;
-            _loc16_ = _loc10_;
-            _loc15_++;
+            _loc10_ = sinB * c + cosA * s;
+            _loc17_ = cosA * c - sinB * s;
+            c = _loc17_;
+            s = _loc10_;
+            i++;
          }
       }
       
-      private static function buildFan(param1:Number, param2:Number, param3:Number, param4:int, param5:Vector.<Number>, param6:Vector.<uint>, param7:Matrix, param8:uint) : void
+      private static function buildFan(radius:Number, startAngle:Number, endAngle:Number, numSides:int, vertices:Vector.<Number>, indices:Vector.<uint>, uvMatrix:Matrix, color:uint) : void
       {
-         var _loc18_:int = 0;
-         var _loc13_:Number = NaN;
-         var _loc23_:Number = NaN;
-         var _loc25_:Number = NaN;
-         var _loc24_:Number = NaN;
-         var _loc22_:Number = NaN;
-         var _loc20_:Number = NaN;
-         var _loc11_:Number = NaN;
-         var _loc12_:Number = NaN;
-         var _loc9_:Number = NaN;
-         var _loc10_:Number = NaN;
-         var _loc17_:int = 0;
-         var _loc21_:Number = (param8 >> 16) / 255;
-         var _loc14_:Number = ((param8 & 65280) >> 8) / 255;
-         var _loc15_:Number = (param8 & 255) / 255;
-         param5.push(0,0,0,_loc21_,_loc14_,_loc15_,1,0.5,0.5);
-         _loc17_++;
-         var _loc19_:Number = 3.14159265358979 * 2 / param4;
-         var _loc16_:Number = param2 / _loc19_;
-         _loc16_ = _loc16_ < 0?-Math.ceil(-_loc16_):int(_loc16_);
-         _loc16_ = _loc16_ * _loc19_;
-         _loc18_ = 0;
-         while(_loc18_ <= param4 + 1)
+         var i:int = 0;
+         var radians:Number = NaN;
+         var nextRadians:Number = NaN;
+         var x:Number = NaN;
+         var y:Number = NaN;
+         var prevRadians:Number = NaN;
+         var t:Number = NaN;
+         var nextX:Number = NaN;
+         var nextY:Number = NaN;
+         var prevX:Number = NaN;
+         var prevY:Number = NaN;
+         var numVertices:int = 0;
+         var r:Number = (color >> 16) / 255;
+         var g:Number = ((color & 65280) >> 8) / 255;
+         var b:Number = (color & 255) / 255;
+         vertices.push(0,0,0,r,g,b,1,0.5,0.5);
+         numVertices++;
+         var radiansPerDivision:Number = 3.14159265358979 * 2 / numSides;
+         var startRadians:Number = startAngle / radiansPerDivision;
+         startRadians = startRadians < 0?-Math.ceil(-startRadians):int(startRadians);
+         startRadians = startRadians * radiansPerDivision;
+         for(i = 0; i <= numSides + 1; )
          {
-            _loc13_ = _loc16_ + _loc18_ * _loc19_;
-            _loc23_ = _loc13_ + _loc19_;
-            if(_loc23_ >= param2)
+            radians = startRadians + i * radiansPerDivision;
+            nextRadians = radians + radiansPerDivision;
+            if(nextRadians >= startAngle)
             {
-               _loc25_ = Math.sin(_loc13_) * param1;
-               _loc24_ = -Math.cos(_loc13_) * param1;
-               _loc22_ = _loc13_ - _loc19_;
-               if(_loc13_ < param2 && _loc23_ > param2)
+               x = Math.sin(radians) * radius;
+               y = -Math.cos(radians) * radius;
+               prevRadians = radians - radiansPerDivision;
+               if(radians < startAngle && nextRadians > startAngle)
                {
-                  _loc11_ = Math.sin(_loc23_) * param1;
-                  _loc12_ = -Math.cos(_loc23_) * param1;
-                  _loc20_ = (param2 - _loc13_) / _loc19_;
-                  _loc25_ = _loc25_ + _loc20_ * (_loc11_ - _loc25_);
-                  _loc24_ = _loc24_ + _loc20_ * (_loc12_ - _loc24_);
+                  nextX = Math.sin(nextRadians) * radius;
+                  nextY = -Math.cos(nextRadians) * radius;
+                  t = (startAngle - radians) / radiansPerDivision;
+                  x = x + t * (nextX - x);
+                  y = y + t * (nextY - y);
                }
-               else if(_loc13_ > param3 && _loc22_ < param3)
+               else if(radians > endAngle && prevRadians < endAngle)
                {
-                  _loc9_ = Math.sin(_loc22_) * param1;
-                  _loc10_ = -Math.cos(_loc22_) * param1;
-                  _loc20_ = (param3 - _loc22_) / _loc19_;
-                  _loc25_ = _loc9_ + _loc20_ * (_loc25_ - _loc9_);
-                  _loc24_ = _loc10_ + _loc20_ * (_loc24_ - _loc10_);
+                  prevX = Math.sin(prevRadians) * radius;
+                  prevY = -Math.cos(prevRadians) * radius;
+                  t = (endAngle - prevRadians) / radiansPerDivision;
+                  x = prevX + t * (x - prevX);
+                  y = prevY + t * (y - prevY);
                }
-               _uv.x = _loc25_;
-               _uv.y = _loc24_;
-               if(param7)
+               _uv.x = x;
+               _uv.y = y;
+               if(uvMatrix)
                {
-                  _uv = param7.transformPoint(_uv);
+                  _uv = uvMatrix.transformPoint(_uv);
                }
-               param5.push(_loc25_,_loc24_,0,_loc21_,_loc14_,_loc15_,1,_uv.x,_uv.y);
-               _loc17_++;
-               if(param5.length > 18)
+               vertices.push(x,y,0,r,g,b,1,_uv.x,_uv.y);
+               numVertices++;
+               if(vertices.length > 18)
                {
-                  param6.push(0,_loc17_ - 2,_loc17_ - 1);
+                  indices.push(0,numVertices - 2,numVertices - 1);
                }
-               if(_loc13_ >= param3)
+               if(radians >= endAngle)
                {
                   break;
                }
             }
-            _loc18_++;
+            i++;
          }
       }
       
-      private static function buildArc(param1:Number, param2:Number, param3:Number, param4:Number, param5:int, param6:Vector.<Number>, param7:Vector.<uint>, param8:Matrix, param9:uint, param10:Boolean) : void
+      private static function buildArc(innerRadius:Number, radius:Number, startAngle:Number, endAngle:Number, numSides:int, vertices:Vector.<Number>, indices:Vector.<uint>, uvMatrix:Matrix, color:uint, textureAlongPath:Boolean) : void
       {
-         var _loc28_:int = 0;
-         var _loc27_:Number = NaN;
-         var _loc23_:Number = NaN;
-         var _loc32_:Number = NaN;
-         var _loc12_:Number = NaN;
-         var _loc35_:Number = NaN;
-         var _loc34_:Number = NaN;
-         var _loc15_:Number = NaN;
-         var _loc26_:Number = NaN;
-         var _loc17_:Number = NaN;
-         var _loc30_:Number = NaN;
-         var _loc18_:Number = NaN;
-         var _loc20_:Number = NaN;
-         var _loc11_:Number = NaN;
-         var _loc22_:Number = NaN;
-         var _loc13_:Number = NaN;
-         var _loc14_:Number = NaN;
-         var _loc33_:Number = NaN;
-         var _loc19_:Number = NaN;
-         var _loc16_:int = 0;
-         var _loc29_:Number = 3.14159265358979 * 2 / param5;
-         var _loc25_:Number = param3 / _loc29_;
-         _loc25_ = _loc25_ < 0?-Math.ceil(-_loc25_):int(_loc25_);
-         _loc25_ = _loc25_ * _loc29_;
-         var _loc31_:Number = (param9 >> 16) / 255;
-         var _loc21_:Number = ((param9 & 65280) >> 8) / 255;
-         var _loc24_:Number = (param9 & 255) / 255;
-         _loc28_ = 0;
-         while(_loc28_ <= param5 + 1)
+         var i:int = 0;
+         var angle:Number = NaN;
+         var nextAngle:Number = NaN;
+         var sin:Number = NaN;
+         var cos:Number = NaN;
+         var x:Number = NaN;
+         var y:Number = NaN;
+         var x2:Number = NaN;
+         var y2:Number = NaN;
+         var prevAngle:Number = NaN;
+         var t:Number = NaN;
+         var nextX:Number = NaN;
+         var nextY:Number = NaN;
+         var nextX2:Number = NaN;
+         var nextY2:Number = NaN;
+         var prevX:Number = NaN;
+         var prevY:Number = NaN;
+         var prevX2:Number = NaN;
+         var prevY2:Number = NaN;
+         var nv:int = 0;
+         var radiansPerDivision:Number = 3.14159265358979 * 2 / numSides;
+         var startRadians:Number = startAngle / radiansPerDivision;
+         startRadians = startRadians < 0?-Math.ceil(-startRadians):int(startRadians);
+         startRadians = startRadians * radiansPerDivision;
+         var r:Number = (color >> 16) / 255;
+         var g:Number = ((color & 65280) >> 8) / 255;
+         var b:Number = (color & 255) / 255;
+         for(i = 0; i <= numSides + 1; )
          {
-            _loc27_ = _loc25_ + _loc28_ * _loc29_;
-            _loc23_ = _loc27_ + _loc29_;
-            if(_loc23_ >= param3)
+            angle = startRadians + i * radiansPerDivision;
+            nextAngle = angle + radiansPerDivision;
+            if(nextAngle >= startAngle)
             {
-               _loc32_ = Math.sin(_loc27_);
-               _loc12_ = Math.cos(_loc27_);
-               _loc35_ = _loc32_ * param2;
-               _loc34_ = -_loc12_ * param2;
-               _loc15_ = _loc32_ * param1;
-               _loc26_ = -_loc12_ * param1;
-               _loc17_ = _loc27_ - _loc29_;
-               if(_loc27_ < param3 && _loc23_ > param3)
+               sin = Math.sin(angle);
+               cos = Math.cos(angle);
+               x = sin * radius;
+               y = -cos * radius;
+               x2 = sin * innerRadius;
+               y2 = -cos * innerRadius;
+               prevAngle = angle - radiansPerDivision;
+               if(angle < startAngle && nextAngle > startAngle)
                {
-                  _loc32_ = Math.sin(_loc23_);
-                  _loc12_ = Math.cos(_loc23_);
-                  _loc18_ = _loc32_ * param2;
-                  _loc20_ = -_loc12_ * param2;
-                  _loc11_ = _loc32_ * param1;
-                  _loc22_ = -_loc12_ * param1;
-                  _loc30_ = (param3 - _loc27_) / _loc29_;
-                  _loc35_ = _loc35_ + _loc30_ * (_loc18_ - _loc35_);
-                  _loc34_ = _loc34_ + _loc30_ * (_loc20_ - _loc34_);
-                  _loc15_ = _loc15_ + _loc30_ * (_loc11_ - _loc15_);
-                  _loc26_ = _loc26_ + _loc30_ * (_loc22_ - _loc26_);
+                  sin = Math.sin(nextAngle);
+                  cos = Math.cos(nextAngle);
+                  nextX = sin * radius;
+                  nextY = -cos * radius;
+                  nextX2 = sin * innerRadius;
+                  nextY2 = -cos * innerRadius;
+                  t = (startAngle - angle) / radiansPerDivision;
+                  x = x + t * (nextX - x);
+                  y = y + t * (nextY - y);
+                  x2 = x2 + t * (nextX2 - x2);
+                  y2 = y2 + t * (nextY2 - y2);
                }
-               else if(_loc27_ > param4 && _loc17_ < param4)
+               else if(angle > endAngle && prevAngle < endAngle)
                {
-                  _loc32_ = Math.sin(_loc17_);
-                  _loc12_ = Math.cos(_loc17_);
-                  _loc13_ = _loc32_ * param2;
-                  _loc14_ = -_loc12_ * param2;
-                  _loc33_ = _loc32_ * param1;
-                  _loc19_ = -_loc12_ * param1;
-                  _loc30_ = (param4 - _loc17_) / _loc29_;
-                  _loc35_ = _loc13_ + _loc30_ * (_loc35_ - _loc13_);
-                  _loc34_ = _loc14_ + _loc30_ * (_loc34_ - _loc14_);
-                  _loc15_ = _loc33_ + _loc30_ * (_loc15_ - _loc33_);
-                  _loc26_ = _loc19_ + _loc30_ * (_loc26_ - _loc19_);
+                  sin = Math.sin(prevAngle);
+                  cos = Math.cos(prevAngle);
+                  prevX = sin * radius;
+                  prevY = -cos * radius;
+                  prevX2 = sin * innerRadius;
+                  prevY2 = -cos * innerRadius;
+                  t = (endAngle - prevAngle) / radiansPerDivision;
+                  x = prevX + t * (x - prevX);
+                  y = prevY + t * (y - prevY);
+                  x2 = prevX2 + t * (x2 - prevX2);
+                  y2 = prevY2 + t * (y2 - prevY2);
                }
-               if(param10)
+               if(textureAlongPath)
                {
-                  _uv.x = _loc28_ / param5;
+                  _uv.x = i / numSides;
                   _uv.y = 0;
                }
                else
                {
-                  _uv.x = _loc35_;
-                  _uv.y = _loc34_;
+                  _uv.x = x;
+                  _uv.y = y;
                }
-               if(param8)
+               if(uvMatrix)
                {
-                  _uv = param8.transformPoint(_uv);
+                  _uv = uvMatrix.transformPoint(_uv);
                }
-               param6.push(_loc35_,_loc34_,0,_loc31_,_loc21_,_loc24_,1,_uv.x,_uv.y);
-               _loc16_++;
-               if(param10)
+               vertices.push(x,y,0,r,g,b,1,_uv.x,_uv.y);
+               nv++;
+               if(textureAlongPath)
                {
-                  _uv.x = _loc28_ / param5;
+                  _uv.x = i / numSides;
                   _uv.y = 1;
                }
                else
                {
-                  _uv.x = _loc15_;
-                  _uv.y = _loc26_;
+                  _uv.x = x2;
+                  _uv.y = y2;
                }
-               if(param8)
+               if(uvMatrix)
                {
-                  _uv = param8.transformPoint(_uv);
+                  _uv = uvMatrix.transformPoint(_uv);
                }
-               param6.push(_loc15_,_loc26_,0,_loc31_,_loc21_,_loc24_,1,_uv.x,_uv.y);
-               _loc16_++;
-               if(param6.length > 27)
+               vertices.push(x2,y2,0,r,g,b,1,_uv.x,_uv.y);
+               nv++;
+               if(vertices.length > 27)
                {
-                  param7.push(_loc16_ - 3,_loc16_ - 2,_loc16_ - 1,_loc16_ - 3,_loc16_ - 4,_loc16_ - 2);
+                  indices.push(nv - 3,nv - 2,nv - 1,nv - 3,nv - 4,nv - 2);
                }
-               if(_loc27_ >= param4)
+               if(angle >= endAngle)
                {
                   break;
                }
             }
-            _loc28_++;
+            i++;
          }
       }
       
@@ -355,9 +351,9 @@ package starling.display.graphics
          return _endAngle;
       }
       
-      public function set endAngle(param1:Number) : void
+      public function set endAngle(value:Number) : void
       {
-         _endAngle = param1;
+         _endAngle = value;
          setGeometryInvalid();
       }
       
@@ -366,9 +362,9 @@ package starling.display.graphics
          return _startAngle;
       }
       
-      public function set startAngle(param1:Number) : void
+      public function set startAngle(value:Number) : void
       {
-         _startAngle = param1;
+         _startAngle = value;
          setGeometryInvalid();
       }
       
@@ -377,21 +373,21 @@ package starling.display.graphics
          return _radius;
       }
       
-      public function set color(param1:uint) : void
+      public function set color(value:uint) : void
       {
-         _color = param1;
+         _color = value;
          setGeometryInvalid();
       }
       
-      public function set radius(param1:Number) : void
+      public function set radius(value:Number) : void
       {
-         param1 = param1 < 0?0:Number(param1);
-         _radius = param1;
-         var _loc2_:Number = Math.max(_radius,_innerRadius);
-         var _loc3_:* = -_loc2_;
+         value = value < 0?0:Number(value);
+         _radius = value;
+         var maxRadius:Number = Math.max(_radius,_innerRadius);
+         var _loc3_:* = -maxRadius;
          minBounds.y = _loc3_;
          minBounds.x = _loc3_;
-         _loc3_ = _loc2_;
+         _loc3_ = maxRadius;
          maxBounds.y = _loc3_;
          maxBounds.x = _loc3_;
          setGeometryInvalid();
@@ -402,15 +398,15 @@ package starling.display.graphics
          return _innerRadius;
       }
       
-      public function set innerRadius(param1:Number) : void
+      public function set innerRadius(value:Number) : void
       {
-         param1 = param1 < 0?0:Number(param1);
-         _innerRadius = param1;
-         var _loc2_:Number = Math.max(_radius,_innerRadius);
-         var _loc3_:* = -_loc2_;
+         value = value < 0?0:Number(value);
+         _innerRadius = value;
+         var maxRadius:Number = Math.max(_radius,_innerRadius);
+         var _loc3_:* = -maxRadius;
          minBounds.y = _loc3_;
          minBounds.x = _loc3_;
-         _loc3_ = _loc2_;
+         _loc3_ = maxRadius;
          maxBounds.y = _loc3_;
          maxBounds.x = _loc3_;
          setGeometryInvalid();
@@ -421,10 +417,10 @@ package starling.display.graphics
          return _numSides;
       }
       
-      public function set numSides(param1:int) : void
+      public function set numSides(value:int) : void
       {
-         param1 = param1 < 3?3:param1;
-         _numSides = param1;
+         value = value < 3?3:value;
+         _numSides = value;
          setGeometryInvalid();
       }
       
@@ -432,98 +428,98 @@ package starling.display.graphics
       {
          vertices = new Vector.<Number>();
          indices = new Vector.<uint>();
-         var _loc4_:Number = _startAngle;
-         var _loc7_:Number = _endAngle;
-         var _loc3_:* = _loc4_ == _loc7_;
-         var _loc5_:int = _loc4_ < 0?-1:1;
-         var _loc2_:int = _loc7_ < 0?-1:1;
-         _loc4_ = _loc4_ * _loc5_;
-         _loc7_ = _loc7_ * _loc2_;
-         _loc7_ = _loc7_ % 360;
-         _loc7_ = _loc7_ * _loc2_;
-         _loc4_ = _loc4_ % 360;
-         if(_loc7_ < _loc4_)
+         var sa:Number = _startAngle;
+         var ea:Number = _endAngle;
+         var isEqual:* = sa == ea;
+         var sSign:int = sa < 0?-1:1;
+         var eSign:int = ea < 0?-1:1;
+         sa = sa * sSign;
+         ea = ea * eSign;
+         ea = ea % 360;
+         ea = ea * eSign;
+         sa = sa % 360;
+         if(ea < sa)
          {
-            _loc7_ = _loc7_ + 360;
+            ea = ea + 360;
          }
-         _loc4_ = _loc4_ * (_loc5_ * 0.0174532925199433);
-         _loc7_ = _loc7_ * 0.0174532925199433;
-         if(_loc7_ - _loc4_ > 3.14159265358979 * 2)
+         sa = sa * (sSign * 0.0174532925199433);
+         ea = ea * 0.0174532925199433;
+         if(ea - sa > 3.14159265358979 * 2)
          {
-            _loc7_ = _loc7_ - 3.14159265358979 * 2;
+            ea = ea - 3.14159265358979 * 2;
          }
-         var _loc1_:Number = _innerRadius < _radius?_innerRadius:Number(_radius);
-         var _loc6_:Number = _radius > _innerRadius?_radius:Number(_innerRadius);
-         var _loc8_:* = Boolean(_loc4_ != 0 || _loc7_ != 0);
-         if(_loc8_ == false)
+         var innerRadius:Number = _innerRadius < _radius?_innerRadius:Number(_radius);
+         var radius:Number = _radius > _innerRadius?_radius:Number(_innerRadius);
+         var isSegment:* = Boolean(sa != 0 || ea != 0);
+         if(isSegment == false)
          {
-            _loc8_ = _loc3_;
+            isSegment = isEqual;
          }
-         if(_loc1_ == 0 && !_loc8_)
+         if(innerRadius == 0 && !isSegment)
          {
-            buildSimpleNGon(_loc6_,_numSides,vertices,indices,_uvMatrix,_color);
+            buildSimpleNGon(radius,_numSides,vertices,indices,_uvMatrix,_color);
          }
-         else if(_loc1_ != 0 && !_loc8_)
+         else if(innerRadius != 0 && !isSegment)
          {
-            buildHoop(_loc1_,_loc6_,_numSides,vertices,indices,_uvMatrix,_color,_textureAlongPath);
+            buildHoop(innerRadius,radius,_numSides,vertices,indices,_uvMatrix,_color,_textureAlongPath);
          }
-         else if(_loc1_ == 0)
+         else if(innerRadius == 0)
          {
-            buildFan(_loc6_,_loc4_,_loc7_,_numSides,vertices,indices,_uvMatrix,_color);
+            buildFan(radius,sa,ea,_numSides,vertices,indices,_uvMatrix,_color);
          }
          else
          {
-            buildArc(_loc1_,_loc6_,_loc4_,_loc7_,_numSides,vertices,indices,_uvMatrix,_color,_textureAlongPath);
+            buildArc(innerRadius,radius,sa,ea,_numSides,vertices,indices,_uvMatrix,_color,_textureAlongPath);
          }
       }
       
-      override protected function shapeHitTestLocalInternal(param1:Number, param2:Number) : Boolean
+      override protected function shapeHitTestLocalInternal(localX:Number, localY:Number) : Boolean
       {
-         var _loc4_:int = 0;
-         var _loc5_:int = 0;
-         var _loc13_:int = 0;
-         var _loc12_:int = 0;
-         var _loc6_:Number = NaN;
-         var _loc7_:Number = NaN;
-         var _loc11_:Number = NaN;
-         var _loc8_:Number = NaN;
-         var _loc9_:Number = NaN;
-         var _loc10_:Number = NaN;
-         var _loc3_:int = indices.length;
-         if(_loc3_ < 2)
+         var i:int = 0;
+         var i0:int = 0;
+         var i1:int = 0;
+         var i2:int = 0;
+         var v0x:Number = NaN;
+         var v0y:Number = NaN;
+         var v1x:Number = NaN;
+         var v1y:Number = NaN;
+         var v2x:Number = NaN;
+         var v2y:Number = NaN;
+         var numIndices:int = indices.length;
+         if(numIndices < 2)
          {
             validateNow();
-            _loc3_ = indices.length;
-            if(_loc3_ < 2)
+            numIndices = indices.length;
+            if(numIndices < 2)
             {
                return false;
             }
          }
          if(_innerRadius == 0 && _radius > 0 && _startAngle == 0 && _endAngle == 360 && _numSides > 20)
          {
-            if(Math.sqrt(param1 * param1 + param2 * param2) < _radius)
+            if(Math.sqrt(localX * localX + localY * localY) < _radius)
             {
                return true;
             }
             return false;
          }
-         _loc4_ = 2;
-         while(_loc4_ < _loc3_)
+         i = 2;
+         while(i < numIndices)
          {
-            _loc5_ = indices[_loc4_ - 2];
-            _loc13_ = indices[_loc4_ - 1];
-            _loc12_ = indices[_loc4_ - 0];
-            _loc6_ = vertices[9 * _loc5_ + 0];
-            _loc7_ = vertices[9 * _loc5_ + 1];
-            _loc11_ = vertices[9 * _loc13_ + 0];
-            _loc8_ = vertices[9 * _loc13_ + 1];
-            _loc9_ = vertices[9 * _loc12_ + 0];
-            _loc10_ = vertices[9 * _loc12_ + 1];
-            if(TriangleUtil.isPointInTriangle(_loc6_,_loc7_,_loc11_,_loc8_,_loc9_,_loc10_,param1,param2))
+            i0 = indices[i - 2];
+            i1 = indices[i - 1];
+            i2 = indices[i - 0];
+            v0x = vertices[9 * i0 + 0];
+            v0y = vertices[9 * i0 + 1];
+            v1x = vertices[9 * i1 + 0];
+            v1y = vertices[9 * i1 + 1];
+            v2x = vertices[9 * i2 + 0];
+            v2y = vertices[9 * i2 + 1];
+            if(TriangleUtil.isPointInTriangle(v0x,v0y,v1x,v1y,v2x,v2y,localX,localY))
             {
                return true;
             }
-            _loc4_ = _loc4_ + 3;
+            i = i + 3;
          }
          return false;
       }

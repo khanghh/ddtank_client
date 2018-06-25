@@ -14,13 +14,13 @@ package gemstone.items
       
       private var _txt:FilterFrameText;
       
-      public function FigSoulItem(param1:String, param2:String)
+      public function FigSoulItem(_bitStr:String, _str:String)
       {
          super();
-         _content = ComponentFactory.Instance.creatBitmap(param1);
+         _content = ComponentFactory.Instance.creatBitmap(_bitStr);
          addChild(_content);
          _txt = ComponentFactory.Instance.creatComponentByStylename("zhanhunName");
-         _txt.text = param2;
+         _txt.text = _str;
          addChild(_txt);
          tipStyle = "gemstone.items.GemstoneTip";
          tipGapV = 170;

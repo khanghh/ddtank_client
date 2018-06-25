@@ -30,10 +30,10 @@ package chickActivation
          ChickActivationManager.instance.addEventListener("ChickActivationShowFrame",__onShowFrame);
       }
       
-      private function __onShowFrame(param1:Event) : void
+      private function __onShowFrame(e:Event) : void
       {
-         var _loc2_:ChickActivationViewFrame = ComponentFactory.Instance.creatComponentByStylename("ChickActivationViewFrame");
-         LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+         var frame:ChickActivationViewFrame = ComponentFactory.Instance.creatComponentByStylename("ChickActivationViewFrame");
+         LayerManager.Instance.addToLayer(frame,3,true,1);
       }
    }
 }

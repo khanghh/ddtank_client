@@ -119,166 +119,157 @@ package store.view.fusion
          initEvent();
       }
       
-      public static function autoSplitSend(param1:int, param2:int, param3:int, param4:String, param5:int, param6:Boolean = false, param7:IStoreViewBG = null) : void
+      public static function autoSplitSend(bagtype:int, place:int, tobagType:int, position:String, countNum:int, allMove:Boolean = false, cellParent:IStoreViewBG = null) : void
       {
-         var _loc10_:Array = getAutoSplitSendParam(param4,param5);
-         var _loc8_:int = 0;
-         var _loc9_:Array = param4.split(",");
-         if(_loc9_.length == 4)
+         var sendParam:Array = getAutoSplitSendParam(position,countNum);
+         var index:int = 0;
+         var positionEmptyArray:Array = position.split(",");
+         if(positionEmptyArray.length == 4)
          {
-            if(_loc10_)
+            if(sendParam)
             {
-               clearFusion(param7);
-               _loc8_ = 0;
-               while(_loc8_ < _loc10_.length)
+               clearFusion(cellParent);
+               for(index = 0; index < sendParam.length; )
                {
-                  if(_loc10_[_loc8_] > 0)
+                  if(sendParam[index] > 0)
                   {
-                     SocketManager.Instance.out.sendMoveGoods(param1,param2,param3,_loc8_ + 1,_loc10_[_loc8_],param6);
+                     SocketManager.Instance.out.sendMoveGoods(bagtype,place,tobagType,index + 1,sendParam[index],allMove);
                   }
-                  _loc8_++;
+                  index++;
                }
             }
          }
-         else if(_loc10_)
+         else if(sendParam)
          {
-            clearFusion(param7,_loc9_);
-            _loc8_ = 0;
-            while(_loc8_ < _loc10_.length)
+            clearFusion(cellParent,positionEmptyArray);
+            for(index = 0; index < sendParam.length; )
             {
-               if(_loc10_[_loc8_] > 0)
+               if(sendParam[index] > 0)
                {
-                  SocketManager.Instance.out.sendMoveGoods(param1,param2,param3,_loc9_[_loc8_],_loc10_[_loc8_],param6);
+                  SocketManager.Instance.out.sendMoveGoods(bagtype,place,tobagType,positionEmptyArray[index],sendParam[index],allMove);
                }
-               _loc8_++;
+               index++;
             }
          }
          lastIndexFusion = -1;
       }
       
-      public static function getRemainIndexByEmpty(param1:int, param2:IStoreViewBG) : String
+      public static function getRemainIndexByEmpty(fusionCount:int, cellParent:IStoreViewBG) : String
       {
-         var _loc5_:* = null;
-         var _loc6_:int = 0;
-         if(param1 >= 4)
+         var ds:* = null;
+         var i:int = 0;
+         if(fusionCount >= 4)
          {
             return "1,2,3,4";
          }
-         var _loc3_:String = "";
-         var _loc4_:Array = [];
-         if(param2 is StoreIIFusionBG)
+         var resultStr:String = "";
+         var emptyPostion:Array = [];
+         if(cellParent is StoreIIFusionBG)
          {
-            _loc6_ = 1;
-            while(_loc6_ < 5)
+            for(i = 1; i < 5; )
             {
-               _loc5_ = (param2 as StoreIIFusionBG).area[_loc6_];
-               if(!_loc5_.info)
+               ds = (cellParent as StoreIIFusionBG).area[i];
+               if(!ds.info)
                {
-                  _loc4_.push(_loc5_.index);
+                  emptyPostion.push(ds.index);
                }
-               _loc6_++;
+               i++;
             }
-            switch(int(param1) - 2)
+            switch(int(fusionCount) - 2)
             {
                case 0:
-                  _loc3_ = _loc4_.concat(findDiff(_loc4_)).slice(0,param1).splice(",");
+                  resultStr = emptyPostion.concat(findDiff(emptyPostion)).slice(0,fusionCount).splice(",");
                   break;
                case 1:
-                  _loc3_ = _loc4_.concat(findDiff(_loc4_)).slice(0,param1).splice(",");
+                  resultStr = emptyPostion.concat(findDiff(emptyPostion)).slice(0,fusionCount).splice(",");
             }
          }
-         return _loc3_;
+         return resultStr;
       }
       
-      private static function findDiff(param1:Array) : Array
+      private static function findDiff(searchArray:Array) : Array
       {
-         var _loc2_:int = 0;
-         var _loc3_:Boolean = false;
-         var _loc4_:int = 0;
-         var _loc5_:Array = [];
-         _loc2_ = 1;
-         while(_loc2_ < 5)
+         var index:int = 0;
+         var flag:Boolean = false;
+         var value:int = 0;
+         var resultArray:Array = [];
+         for(index = 1; index < 5; )
          {
-            _loc3_ = false;
-            _loc4_ = 0;
-            while(_loc4_ < param1.length)
+            flag = false;
+            for(value = 0; value < searchArray.length; )
             {
-               if(_loc2_ == int(param1[_loc4_]))
+               if(index == int(searchArray[value]))
                {
-                  _loc3_ = true;
+                  flag = true;
                }
-               _loc4_++;
+               value++;
             }
-            if(!_loc3_)
+            if(!flag)
             {
-               _loc5_.push(_loc2_);
+               resultArray.push(index);
             }
-            _loc2_++;
+            index++;
          }
-         return _loc5_;
+         return resultArray;
       }
       
-      private static function getAutoSplitSendParam(param1:String, param2:int) : Array
+      private static function getAutoSplitSendParam(position:String, countNum:int) : Array
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         var _loc7_:int = 0;
-         var _loc6_:Array = [];
-         var _loc5_:Array = param1.split(",");
-         if(_loc5_ && param2 >= 1)
+         var remainNum:int = 0;
+         var perNum:int = 0;
+         var i:int = 0;
+         var resultSend:Array = [];
+         var posArray:Array = position.split(",");
+         if(posArray && countNum >= 1)
          {
-            _loc3_ = param2 % _loc5_.length;
-            _loc4_ = param2 / _loc5_.length;
-            _loc7_ = 0;
-            while(_loc7_ < _loc5_.length)
+            remainNum = countNum % posArray.length;
+            perNum = countNum / posArray.length;
+            for(i = 0; i < posArray.length; )
             {
-               _loc3_--;
-               _loc6_.push(_loc4_ + getRemainCellNumber(_loc3_));
-               _loc7_++;
+               remainNum--;
+               resultSend.push(perNum + getRemainCellNumber(remainNum));
+               i++;
             }
          }
-         return _loc6_;
+         return resultSend;
       }
       
-      private static function getRemainCellNumber(param1:int) : int
+      private static function getRemainCellNumber(remainNum:int) : int
       {
-         return param1 > 0?1:0;
+         return remainNum > 0?1:0;
       }
       
-      private static function clearFusion(param1:IStoreViewBG, param2:Array = null) : void
+      private static function clearFusion(cellParent:IStoreViewBG, removePosition:Array = null) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:int = 0;
-         var _loc5_:int = 0;
-         if(!param2)
+         var ds:* = null;
+         var j:int = 0;
+         var i:int = 0;
+         if(!removePosition)
          {
-            _loc5_ = 1;
-            while(_loc5_ < 5)
+            for(i = 1; i < 5; )
             {
-               _loc4_ = (param1 as StoreIIFusionBG).area[_loc5_];
-               if(_loc4_.info)
+               ds = (cellParent as StoreIIFusionBG).area[i];
+               if(ds.info)
                {
-                  SocketManager.Instance.out.sendMoveGoods(12,_loc4_.index,_loc4_.itemBagType,-1);
+                  SocketManager.Instance.out.sendMoveGoods(12,ds.index,ds.itemBagType,-1);
                }
-               _loc5_++;
+               i++;
             }
             return;
          }
-         _loc3_ = 0;
-         while(_loc3_ < param2.length)
+         for(j = 0; j < removePosition.length; )
          {
-            _loc5_ = 1;
-            while(_loc5_ < 5)
+            for(i = 1; i < 5; )
             {
-               _loc4_ = (param1 as StoreIIFusionBG).area[_loc5_];
-               if(_loc4_.info && _loc4_.index == int(param2[_loc3_]))
+               ds = (cellParent as StoreIIFusionBG).area[i];
+               if(ds.info && ds.index == int(removePosition[j]))
                {
-                  SocketManager.Instance.out.sendMoveGoods(12,_loc4_.index,_loc4_.itemBagType,-1);
+                  SocketManager.Instance.out.sendMoveGoods(12,ds.index,ds.itemBagType,-1);
                   break;
                }
-               _loc5_++;
+               i++;
             }
-            _loc3_++;
+            j++;
          }
       }
       
@@ -289,8 +280,8 @@ package store.view.fusion
       
       private function init() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          _bg = ComponentFactory.Instance.creatComponentByStylename("ddtstore.StoreIIFusionBG.FusionBg");
          addChild(_bg);
          _fusionTitle = ComponentFactory.Instance.creatBitmap("asset.ddtstore.FusionTitle");
@@ -305,35 +296,34 @@ package store.view.fusion
          addChild(_previewRateLabel);
          _items = [];
          getCellsPoint();
-         _loc2_ = 0;
-         while(_loc2_ < 6)
+         for(i = 0; i < 6; )
          {
-            if(_loc2_ == 0)
+            if(i == 0)
             {
-               _loc1_ = new FusionItemCellII(_loc2_);
+               item = new FusionItemCellII(i);
             }
-            else if(_loc2_ == 5)
+            else if(i == 5)
             {
-               _loc1_ = new FusionItemCell(_loc2_);
+               item = new FusionItemCell(i);
                var _loc3_:* = 0.75;
-               _loc1_.scaleY = _loc3_;
-               _loc1_.scaleX = _loc3_;
-               FusionItemCell(_loc1_).mouseEvt = false;
-               FusionItemCell(_loc1_).bgVisible = false;
+               item.scaleY = _loc3_;
+               item.scaleX = _loc3_;
+               FusionItemCell(item).mouseEvt = false;
+               FusionItemCell(item).bgVisible = false;
             }
             else
             {
-               _loc1_ = new FusionItemCell(_loc2_);
+               item = new FusionItemCell(i);
             }
-            _loc1_.x = _pointArray[_loc2_].x;
-            _loc1_.y = _pointArray[_loc2_].y;
-            addChild(_loc1_);
-            if(_loc2_ != 5)
+            item.x = _pointArray[i].x;
+            item.y = _pointArray[i].y;
+            addChild(item);
+            if(i != 5)
             {
-               _loc1_.addEventListener("change",__itemInfoChange);
+               item.addEventListener("change",__itemInfoChange);
             }
-            _items.push(_loc1_);
-            _loc2_++;
+            _items.push(item);
+            i++;
          }
          _accessoryFrameII = new AccessoryFrameII();
          _area = new StoreDragInArea(_items);
@@ -377,13 +367,12 @@ package store.view.fusion
       
       private function removeEvents() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _items.length)
+         var i:int = 0;
+         for(i = 0; i < _items.length; )
          {
-            _items[_loc1_].removeEventListener("change",__itemInfoChange);
-            _items[_loc1_].dispose();
-            _loc1_++;
+            _items[i].removeEventListener("change",__itemInfoChange);
+            _items[i].dispose();
+            i++;
          }
          _fusion_btn.removeEventListener("click",__fusionClick);
          _accessoryFrameII.removeEventListener("itemclick",__accessoryItemClick);
@@ -411,19 +400,18 @@ package store.view.fusion
       
       private function exeItemTip() : Boolean
       {
-         var _loc1_:int = 0;
-         var _loc2_:int = 0;
+         var fusionType:int = 0;
+         var i:int = 0;
          if(checkItemEmpty() >= 4)
          {
-            _loc1_ = PlayerManager.Instance.Self.StoreBag.items[1].FusionType;
-            _loc2_ = 2;
-            while(_loc2_ <= 4)
+            fusionType = PlayerManager.Instance.Self.StoreBag.items[1].FusionType;
+            for(i = 2; i <= 4; )
             {
-               if(_loc1_ != PlayerManager.Instance.Self.StoreBag.items[_loc2_].FusionType)
+               if(fusionType != PlayerManager.Instance.Self.StoreBag.items[i].FusionType)
                {
                   return false;
                }
-               _loc2_++;
+               i++;
             }
             return true;
          }
@@ -443,75 +431,73 @@ package store.view.fusion
       
       private function getCellsPoint() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var point:* = null;
          _pointArray = new Vector.<Point>();
-         _loc2_ = 0;
-         while(_loc2_ < 6)
+         for(i = 0; i < 6; )
          {
-            _loc1_ = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreIIFusionBG.Fusionpoint" + _loc2_);
-            _pointArray.push(_loc1_);
-            _loc2_++;
+            point = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreIIFusionBG.Fusionpoint" + i);
+            _pointArray.push(point);
+            i++;
          }
       }
       
-      private function __buyBtnClickHandler(param1:MouseEvent) : void
+      private function __buyBtnClickHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         param1.stopImmediatePropagation();
+         evt.stopImmediatePropagation();
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:ShortcutBuyFrame = ComponentFactory.Instance.creatCustomObject("ddtstore.ShortcutBuyFrame");
-         _loc2_.show(ITEMS,true,LanguageMgr.GetTranslation("store.view.fusion.buyFormula"),4);
+         var quickBuy:ShortcutBuyFrame = ComponentFactory.Instance.creatCustomObject("ddtstore.ShortcutBuyFrame");
+         quickBuy.show(ITEMS,true,LanguageMgr.GetTranslation("store.view.fusion.buyFormula"),4);
       }
       
-      public function dragDrop(param1:BagCell) : void
+      public function dragDrop(source:BagCell) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
-         if(param1 == null)
+         var ds:* = null;
+         var i:int = 0;
+         if(source == null)
          {
             return;
          }
-         if(_accessoryFrameII.containsItem(param1.itemInfo))
+         if(_accessoryFrameII.containsItem(source.itemInfo))
          {
             return;
          }
-         var _loc4_:InventoryItemInfo = param1.info as InventoryItemInfo;
+         var info:InventoryItemInfo = source.info as InventoryItemInfo;
          var _loc6_:int = 0;
          var _loc5_:* = _items;
-         for each(_loc2_ in _items)
+         for each(ds in _items)
          {
-            if(_loc2_.info == _loc4_)
+            if(ds.info == info)
             {
-               _loc2_.info = null;
-               param1.locked = false;
+               ds.info = null;
+               source.locked = false;
                return;
             }
          }
-         _loc3_ = 1;
-         while(_loc3_ < 5)
+         for(i = 1; i < 5; )
          {
-            _loc2_ = _items[_loc3_];
-            if(_loc2_ is FusionItemCell)
+            ds = _items[i];
+            if(ds is FusionItemCell)
             {
-               if(_loc4_.getRemainDate() <= 0)
+               if(info.getRemainDate() <= 0)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.view.fusion.AccessoryDragInArea.overdue"));
                }
-               else if(_loc4_.FusionType != 0 && _loc4_.FusionRate != 0)
+               else if(info.FusionType != 0 && info.FusionRate != 0)
                {
                   if(_items[1].info != null && _items[2].info != null && _items[3].info != null && _items[4].info != null)
                   {
-                     __moveGoods(_loc4_,1);
+                     __moveGoods(info,1);
                      return;
                   }
-                  if(_loc2_.info == null)
+                  if(ds.info == null)
                   {
-                     __moveGoods(_loc4_,_loc2_.index);
+                     __moveGoods(info,ds.index);
                      return;
                   }
                }
@@ -521,104 +507,102 @@ package store.view.fusion
                   return;
                }
             }
-            _loc3_++;
+            i++;
          }
       }
       
-      private function __moveGoods(param1:InventoryItemInfo, param2:int) : void
+      private function __moveGoods(info:InventoryItemInfo, index:int) : void
       {
-         var _loc3_:* = null;
+         var _aler:* = null;
          if(StrengthDataManager.instance.autoFusion)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.fusion.donMoveGoods"));
             return;
          }
-         if(param1.Count > 1 && !_isAutoSplit)
+         if(info.Count > 1 && !_isAutoSplit)
          {
-            _loc3_ = ComponentFactory.Instance.creat("ddtstore.FusionSelectNumAlertFrame");
-            _loc3_.goodsinfo = param1;
-            _loc3_.index = param2;
-            _loc3_.show(param1.Count);
-            _loc3_.addEventListener("sell",_alerSell);
-            _loc3_.addEventListener("notsell",_alerNotSell);
+            _aler = ComponentFactory.Instance.creat("ddtstore.FusionSelectNumAlertFrame");
+            _aler.goodsinfo = info;
+            _aler.index = index;
+            _aler.show(info.Count);
+            _aler.addEventListener("sell",_alerSell);
+            _aler.addEventListener("notsell",_alerNotSell);
          }
-         else if(param1.Count > 1 && _isAutoSplit)
+         else if(info.Count > 1 && _isAutoSplit)
          {
-            autoSplitSend(param1.BagType,param1.Place,12,getRemainIndexByEmpty(param1.Count,this),param1.Count,true,this);
+            autoSplitSend(info.BagType,info.Place,12,getRemainIndexByEmpty(info.Count,this),info.Count,true,this);
          }
          else
          {
-            SocketManager.Instance.out.sendMoveGoods(param1.BagType,param1.Place,12,param2,param1.Count,true);
+            SocketManager.Instance.out.sendMoveGoods(info.BagType,info.Place,12,index,info.Count,true);
          }
       }
       
-      private function _alerSell(param1:FusionSelectEvent) : void
+      private function _alerSell(e:FusionSelectEvent) : void
       {
-         var _loc2_:FusionSelectNumAlertFrame = param1.currentTarget as FusionSelectNumAlertFrame;
-         SocketManager.Instance.out.sendMoveGoods(param1.info.BagType,param1.info.Place,12,param1.index,param1.sellCount,true);
-         _loc2_.removeEventListener("sell",_alerSell);
-         _loc2_.removeEventListener("notsell",_alerNotSell);
-         _loc2_.dispose();
-         if(_loc2_ && _loc2_.parent)
+         var _aler:FusionSelectNumAlertFrame = e.currentTarget as FusionSelectNumAlertFrame;
+         SocketManager.Instance.out.sendMoveGoods(e.info.BagType,e.info.Place,12,e.index,e.sellCount,true);
+         _aler.removeEventListener("sell",_alerSell);
+         _aler.removeEventListener("notsell",_alerNotSell);
+         _aler.dispose();
+         if(_aler && _aler.parent)
          {
-            removeChild(_loc2_);
+            removeChild(_aler);
          }
-         _loc2_ = null;
+         _aler = null;
       }
       
-      private function _alerNotSell(param1:FusionSelectEvent) : void
+      private function _alerNotSell(e:FusionSelectEvent) : void
       {
-         var _loc2_:FusionSelectNumAlertFrame = param1.currentTarget as FusionSelectNumAlertFrame;
-         _loc2_.removeEventListener("sell",_alerSell);
-         _loc2_.removeEventListener("notsell",_alerNotSell);
-         _loc2_.dispose();
-         if(_loc2_ && _loc2_.parent)
+         var _aler:FusionSelectNumAlertFrame = e.currentTarget as FusionSelectNumAlertFrame;
+         _aler.removeEventListener("sell",_alerSell);
+         _aler.removeEventListener("notsell",_alerNotSell);
+         _aler.dispose();
+         if(_aler && _aler.parent)
          {
-            removeChild(_loc2_);
+            removeChild(_aler);
          }
-         _loc2_ = null;
+         _aler = null;
       }
       
       private function _showDontClickTip() : Boolean
       {
-         var _loc1_:int = 0;
-         var _loc2_:int = 0;
-         var _loc5_:int = 0;
-         var _loc3_:int = 0;
-         var _loc4_:int = checkItemEmpty();
-         if(_loc4_ == 0)
+         var fusionType:int = 0;
+         var len:int = 0;
+         var i:int = 0;
+         var j:int = 0;
+         var stones:int = checkItemEmpty();
+         if(stones == 0)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.showTips.fusion.noEquip"));
             return true;
          }
-         if(_loc4_ < 4)
+         if(stones < 4)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.showTips.fusion.notEnoughStone"));
             return true;
          }
-         if(_loc4_ == 4)
+         if(stones == 4)
          {
-            _loc1_ = PlayerManager.Instance.Self.StoreBag.items[1].FusionType;
-            _loc2_ = 5;
-            _loc5_ = 2;
-            while(_loc5_ < _loc2_)
+            fusionType = PlayerManager.Instance.Self.StoreBag.items[1].FusionType;
+            len = 5;
+            for(i = 2; i < len; )
             {
-               if(_loc1_ != PlayerManager.Instance.Self.StoreBag.items[_loc5_].FusionType)
+               if(fusionType != PlayerManager.Instance.Self.StoreBag.items[i].FusionType)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.showTips.fusion.notSameStone"));
                   return true;
                }
-               _loc5_++;
+               i++;
             }
-            _loc3_ = 2;
-            while(_loc3_ < _loc2_)
+            for(j = 2; j < len; )
             {
-               if(_items[1].info.TemplateID != _items[_loc3_].info.TemplateID)
+               if(_items[1].info.TemplateID != _items[j].info.TemplateID)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.showTips.fusion.notSameLevelStone"));
                   return true;
                }
-               _loc3_++;
+               j++;
             }
          }
          return false;
@@ -634,23 +618,23 @@ package store.view.fusion
          return this._items;
       }
       
-      public function refreshData(param1:Dictionary) : void
+      public function refreshData(items:Dictionary) : void
       {
-         var _loc3_:* = 0;
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
-         var _loc6_:int = 0;
+         var itemPlace:* = 0;
+         var fusionType:int = 0;
+         var len:int = 0;
+         var i:int = 0;
          var _loc8_:int = 0;
-         var _loc7_:* = param1;
-         for(_loc3_ in param1)
+         var _loc7_:* = items;
+         for(itemPlace in items)
          {
-            if(_loc3_ < 5)
+            if(itemPlace < 5)
             {
-               _items[_loc3_].info = PlayerManager.Instance.Self.StoreBag.items[_loc3_];
+               _items[itemPlace].info = PlayerManager.Instance.Self.StoreBag.items[itemPlace];
             }
             else
             {
-               _accessoryFrameII.setItemInfo(_loc3_,PlayerManager.Instance.Self.StoreBag.items[_loc3_]);
+               _accessoryFrameII.setItemInfo(itemPlace,PlayerManager.Instance.Self.StoreBag.items[itemPlace]);
             }
          }
          if(_items[1].info != null && _items[2].info != null && _items[3].info != null && _items[4].info != null)
@@ -660,16 +644,15 @@ package store.view.fusion
                SocketManager.Instance.out.sendMoveGoods(12,FusionItemCellII(_items[0]).index,FusionItemCellII(_items[0]).itemBagType,-1);
             }
             __previewRequest();
-            _loc2_ = PlayerManager.Instance.Self.StoreBag.items[1].FusionType;
-            _loc4_ = 5;
-            _loc6_ = 2;
-            while(_loc6_ < _loc4_)
+            fusionType = PlayerManager.Instance.Self.StoreBag.items[1].FusionType;
+            len = 5;
+            for(i = 2; i < len; )
             {
-               if(_loc2_ != PlayerManager.Instance.Self.StoreBag.items[_loc6_].FusionType)
+               if(fusionType != PlayerManager.Instance.Self.StoreBag.items[i].FusionType)
                {
                   _clearPreview();
                }
-               _loc6_++;
+               i++;
             }
          }
          else
@@ -679,7 +662,7 @@ package store.view.fusion
          }
       }
       
-      private function __fusionFinish(param1:Event) : void
+      private function __fusionFinish(e:Event) : void
       {
          if(_items[1].info != null && _items[2].info != null && _items[3].info != null && _items[4].info != null)
          {
@@ -706,35 +689,32 @@ package store.view.fusion
       
       public function updateData() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < 5)
+         var i:int = 0;
+         var j:int = 0;
+         for(i = 0; i < 5; )
          {
-            _items[_loc2_].info = PlayerManager.Instance.Self.StoreBag.items[_loc2_];
-            _loc2_++;
+            _items[i].info = PlayerManager.Instance.Self.StoreBag.items[i];
+            i++;
          }
-         _loc1_ = 5;
-         while(_loc1_ < 11)
+         for(j = 5; j < 11; )
          {
-            _accessoryFrameII.setItemInfo(_loc1_,PlayerManager.Instance.Self.StoreBag.items[_loc1_ + 5]);
-            _loc1_++;
+            _accessoryFrameII.setItemInfo(j,PlayerManager.Instance.Self.StoreBag.items[j + 5]);
+            j++;
          }
       }
       
-      public function startShine(param1:int) : void
+      public function startShine(cellId:int) : void
       {
-         _items[param1].startShine();
+         _items[cellId].startShine();
       }
       
       public function stopShine() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < 5)
+         var i:int = 0;
+         for(i = 0; i < 5; )
          {
-            _items[_loc1_].stopShine();
-            _loc1_++;
+            _items[i].stopShine();
+            i++;
          }
       }
       
@@ -772,32 +752,30 @@ package store.view.fusion
          disposeUserGuide();
       }
       
-      private function __upPreview(param1:PkgEvent) : void
+      private function __upPreview(evt:PkgEvent) : void
       {
-         var _loc2_:Boolean = false;
-         var _loc7_:int = 0;
-         var _loc6_:* = null;
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
+         var isBin:Boolean = false;
+         var i:int = 0;
+         var info:* = null;
+         var j:int = 0;
+         var info1:* = null;
          hideArr();
-         var _loc3_:int = param1.pkg.readInt();
+         var count:int = evt.pkg.readInt();
          _itemsPreview = [];
-         _loc7_ = 0;
-         while(_loc7_ < _loc3_)
+         for(i = 0; i < count; )
          {
-            _loc6_ = new PreviewInfoII();
-            _loc6_.data(param1.pkg.readInt(),param1.pkg.readInt());
-            _loc6_.rate = param1.pkg.readInt();
-            _itemsPreview.push(_loc6_);
-            _loc7_++;
+            info = new PreviewInfoII();
+            info.data(evt.pkg.readInt(),evt.pkg.readInt());
+            info.rate = evt.pkg.readInt();
+            _itemsPreview.push(info);
+            i++;
          }
-         _loc2_ = param1.pkg.readBoolean();
-         _loc5_ = 0;
-         while(_loc5_ < _itemsPreview.length)
+         isBin = evt.pkg.readBoolean();
+         for(j = 0; j < _itemsPreview.length; )
          {
-            _loc4_ = _itemsPreview[_loc5_] as PreviewInfoII;
-            _loc4_.info.IsBinds = _loc2_;
-            _loc5_++;
+            info1 = _itemsPreview[j] as PreviewInfoII;
+            info1.info.IsBinds = isBin;
+            j++;
          }
          _showPreview();
          showArr();
@@ -817,69 +795,69 @@ package store.view.fusion
          _goodRate.text = "0%";
       }
       
-      private function __accessoryItemClick(param1:StoreIIEvent) : void
+      private function __accessoryItemClick(evt:StoreIIEvent) : void
       {
          gold_txt.text = String((checkItemEmpty() + _accessoryFrameII.getCount()) * _gold);
       }
       
-      private function __itemInfoChange(param1:Event) : void
+      private function __itemInfoChange(evt:Event) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = checkItemEmpty();
-         gold_txt.text = String((_loc2_ + _accessoryFrameII.getCount()) * _gold);
+         var stones:int = 0;
+         stones = checkItemEmpty();
+         gold_txt.text = String((stones + _accessoryFrameII.getCount()) * _gold);
          _clearPreview();
          hideArr();
       }
       
       private function checkItemEmpty() : int
       {
-         var _loc1_:int = 0;
+         var stones:int = 0;
          if(PlayerManager.Instance.Self.StoreBag.items[1] != null)
          {
-            _loc1_++;
+            stones++;
          }
          if(PlayerManager.Instance.Self.StoreBag.items[2] != null)
          {
-            _loc1_++;
+            stones++;
          }
          if(PlayerManager.Instance.Self.StoreBag.items[3] != null)
          {
-            _loc1_++;
+            stones++;
          }
          if(PlayerManager.Instance.Self.StoreBag.items[4] != null)
          {
-            _loc1_++;
+            stones++;
          }
-         return _loc1_;
+         return stones;
       }
       
       private function isAllBinds() : int
       {
-         var _loc1_:int = 0;
+         var stones:int = 0;
          if(_items[1].info != null && _items[1].info.IsBinds)
          {
-            _loc1_++;
+            stones++;
          }
          if(_items[2].info != null && _items[2].info.IsBinds)
          {
-            _loc1_++;
+            stones++;
          }
          if(_items[3].info != null && _items[3].info.IsBinds)
          {
-            _loc1_++;
+            stones++;
          }
          if(_items[4].info != null && _items[4].info.IsBinds)
          {
-            _loc1_++;
+            stones++;
          }
-         return _loc1_;
+         return stones;
       }
       
-      private function __fusionClick(param1:MouseEvent) : void
+      private function __fusionClick(evt:MouseEvent) : void
       {
-         if(param1 != null)
+         if(evt != null)
          {
-            param1.stopImmediatePropagation();
+            evt.stopImmediatePropagation();
          }
          SoundManager.instance.play("008");
          _alertBand = false;
@@ -888,9 +866,9 @@ package store.view.fusion
       
       private function checkfunsion() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
+         var alert:* = null;
+         var alert1:* = null;
+         var alert2:* = null;
          if(_showDontClickTip())
          {
             return;
@@ -898,73 +876,72 @@ package store.view.fusion
          if(PlayerManager.Instance.Self.Gold < (_accessoryFrameII.getCount() + 4) * _gold)
          {
             autoFusion = false;
-            _loc1_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.title"),LanguageMgr.GetTranslation("tank.view.GoldInadequate"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
-            _loc1_.moveEnable = false;
-            _loc1_.addEventListener("response",_responseV);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.title"),LanguageMgr.GetTranslation("tank.view.GoldInadequate"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
+            alert.moveEnable = false;
+            alert.addEventListener("response",_responseV);
             return;
          }
          if(isAllBinds() != 0 && isAllBinds() != 4 && !_alertBand)
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("store.view.fusion.StoreIIFusionBG.use"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
-            _loc2_.addEventListener("response",_response);
+            alert1 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("store.view.fusion.StoreIIFusionBG.use"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
+            alert1.addEventListener("response",_response);
             _alertBand = true;
             return;
          }
          if(this._accessoryFrameII.isBinds && isAllBinds() != 4)
          {
-            _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("store.view.fusion.StoreIIFusionBG.use"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
-            _loc3_.addEventListener("response",_response);
+            alert2 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("store.view.fusion.StoreIIFusionBG.use"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
+            alert2.addEventListener("response",_response);
             return;
          }
          sendFusionRequest();
       }
       
-      private function _responseV(param1:FrameEvent) : void
+      private function _responseV(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",_responseV);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         (evt.currentTarget as BaseAlerFrame).removeEventListener("response",_responseV);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             okFastPurchaseGold();
          }
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(evt.currentTarget);
       }
       
       private function okFastPurchaseGold() : void
       {
-         var _loc1_:QuickBuyFrame = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
-         _loc1_.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
-         _loc1_.itemID = 11233;
-         LayerManager.Instance.addToLayer(_loc1_,2,true,1);
+         var _quick:QuickBuyFrame = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
+         _quick.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
+         _quick.itemID = 11233;
+         LayerManager.Instance.addToLayer(_quick,2,true,1);
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = BaseAlerFrame(param1.currentTarget);
-         _loc2_.removeEventListener("response",_response);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var alert:BaseAlerFrame = BaseAlerFrame(e.currentTarget);
+         alert.removeEventListener("response",_response);
+         if(e.responseCode == 3 || e.responseCode == 2)
          {
             sendFusionRequest();
          }
-         ObjectUtils.disposeObject(param1.target);
+         ObjectUtils.disposeObject(e.target);
       }
       
       private function testingSXJ() : Boolean
       {
-         var _loc2_:int = 0;
-         var _loc1_:Boolean = false;
-         _loc2_ = 0;
-         while(_loc2_ < _items.length)
+         var i:int = 0;
+         var b:Boolean = false;
+         for(i = 0; i < _items.length; )
          {
-            if(EquipType.isRongLing(_items[_loc2_].info))
+            if(EquipType.isRongLing(_items[i].info))
             {
-               _loc1_ = true;
+               b = true;
                break;
             }
-            _loc2_++;
+            i++;
          }
-         return _loc1_;
+         return b;
       }
       
       private function sendFusionRequest() : void
@@ -985,7 +962,7 @@ package store.view.fusion
       {
       }
       
-      private function __selectedChanged(param1:Event) : void
+      private function __selectedChanged(event:Event) : void
       {
          SoundManager.instance.play("008");
          autoSelect = _autoCheck.selected;
@@ -995,16 +972,16 @@ package store.view.fusion
          }
       }
       
-      private function __autoSplit(param1:Event) : void
+      private function __autoSplit(e:Event) : void
       {
          SoundManager.instance.play("008");
          _isAutoSplit = _ckAutoSplit.selected;
          StoreIIFusionBG.lastIndexFusion = -1;
       }
       
-      public function set autoSelect(param1:Boolean) : void
+      public function set autoSelect(value:Boolean) : void
       {
-         _autoSelect = param1;
+         _autoSelect = value;
       }
       
       public function get autoSelect() : Boolean
@@ -1012,9 +989,9 @@ package store.view.fusion
          return _autoSelect;
       }
       
-      public function set autoFusion(param1:Boolean) : void
+      public function set autoFusion(value:Boolean) : void
       {
-         _autoFusion = param1;
+         _autoFusion = value;
          StrengthDataManager.instance.autoFusion = _autoFusion;
          if(!_autoFusion)
          {

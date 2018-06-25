@@ -12,10 +12,10 @@ package homeTemple.event
       
       private var _data:Array;
       
-      public function HomeTempleEvent(param1:String, param2:Array = null)
+      public function HomeTempleEvent(type:String, data:Array = null)
       {
-         _data = param2;
-         super(param1,bubbles,cancelable);
+         _data = data;
+         super(type,bubbles,cancelable);
       }
       
       public function get data() : Array

@@ -37,7 +37,7 @@ package beadSystem.controls
          this.removeEventListener("click",clickthis);
       }
       
-      private function clickthis(param1:MouseEvent) : void
+      private function clickthis(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          this.dragStart(stage.mouseX,stage.mouseY);
@@ -57,18 +57,18 @@ package beadSystem.controls
          }
       }
       
-      public function dragStop(param1:DragEffect) : void
+      public function dragStop(effect:DragEffect) : void
       {
          isActive = true;
-         if(PlayerManager.Instance.Self.bagLocked && param1.target is ICell)
+         if(PlayerManager.Instance.Self.bagLocked && effect.target is ICell)
          {
             BaglockedManager.Instance.show();
             return;
          }
          SoundManager.instance.play("008");
-         if(param1.target is BeadCell)
+         if(effect.target is BeadCell)
          {
-            (param1.target as BeadCell).FeedBead();
+            (effect.target as BeadCell).FeedBead();
          }
          else
          {
@@ -76,10 +76,10 @@ package beadSystem.controls
          }
       }
       
-      public function dragStart(param1:Number, param2:Number) : void
+      public function dragStart(stageX:Number, stageY:Number) : void
       {
-         var _loc3_:Bitmap = ComponentFactory.Instance.creatBitmap("beadSystem.feedIcon");
-         DragManager.startDrag(this,this,_loc3_,param1,param2,"move",false);
+         var dragAsset:Bitmap = ComponentFactory.Instance.creatBitmap("beadSystem.feedIcon");
+         DragManager.startDrag(this,this,dragAsset,stageX,stageY,"move",false);
       }
       
       public function getSource() : IDragable

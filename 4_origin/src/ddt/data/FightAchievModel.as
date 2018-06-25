@@ -38,9 +38,9 @@ package ddt.data
          return _ins;
       }
       
-      public function isNumAchiev(param1:int) : Boolean
+      public function isNumAchiev(id:int) : Boolean
       {
-         switch(int(param1) - 1)
+         switch(int(id) - 1)
          {
             case 0:
                return true;
@@ -52,18 +52,18 @@ package ddt.data
          }
       }
       
-      public function getAchievColor(param1:int) : int
+      public function getAchievColor(id:int) : int
       {
-         if(_colors && param1 <= _colors.length)
+         if(_colors && id <= _colors.length)
          {
-            return _colors[param1 - 1];
+            return _colors[id - 1];
          }
          return 16711680;
       }
       
-      public function set colors(param1:String) : void
+      public function set colors(val:String) : void
       {
-         _colors = param1.split(",");
+         _colors = val.split(",");
       }
    }
 }

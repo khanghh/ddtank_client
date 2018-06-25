@@ -32,7 +32,7 @@ package consortionBattle.view
       
       private function update() : void
       {
-         var _loc1_:* = 0;
+         var tmpColor:* = 0;
          _nameTxt.text = _data.rank + "." + _data.name;
          _scoreTxt.text = _data.score;
          var _loc2_:* = _data.rank;
@@ -42,24 +42,24 @@ package consortionBattle.view
             {
                if(3 !== _loc2_)
                {
-                  _loc1_ = uint(16777215);
+                  tmpColor = uint(16777215);
                }
                else
                {
-                  _loc1_ = uint(1292038);
+                  tmpColor = uint(1292038);
                }
             }
             else
             {
-               _loc1_ = uint(967126);
+               tmpColor = uint(967126);
             }
          }
          else
          {
-            _loc1_ = uint(16775296);
+            tmpColor = uint(16775296);
          }
-         _nameTxt.textColor = _loc1_;
-         _scoreTxt.textColor = _loc1_;
+         _nameTxt.textColor = tmpColor;
+         _scoreTxt.textColor = tmpColor;
       }
       
       public function getCellValue() : *
@@ -67,9 +67,9 @@ package consortionBattle.view
          return _data;
       }
       
-      public function setCellValue(param1:*) : void
+      public function setCellValue(value:*) : void
       {
-         _data = param1;
+         _data = value;
          update();
       }
       
@@ -84,7 +84,7 @@ package consortionBattle.view
          }
       }
       
-      public function setListCellStatus(param1:List, param2:Boolean, param3:int) : void
+      public function setListCellStatus(list:List, isSelected:Boolean, index:int) : void
       {
       }
       

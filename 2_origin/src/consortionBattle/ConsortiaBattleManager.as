@@ -100,9 +100,9 @@ package consortionBattle
       
       private var _isHadShowOpenTip:Boolean = false;
       
-      public function ConsortiaBattleManager(param1:IEventDispatcher = null)
+      public function ConsortiaBattleManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
          _playerDataList = new DictionaryData();
          _buffPlayerList = new DictionaryData();
          _buffCreatePlayerList = new DictionaryData();
@@ -159,70 +159,69 @@ package consortionBattle
          return _isCanEnter;
       }
       
-      private function timerHandler(param1:Event) : void
+      private function timerHandler(event:Event) : void
       {
          if(_buffCreatePlayerList.length <= 0)
          {
             _timer.stop();
             return;
          }
-         var _loc2_:ConsortiaBattlePlayerInfo = _buffCreatePlayerList.list[0];
-         _buffCreatePlayerList.remove(_loc2_.id);
+         var tmpData:ConsortiaBattlePlayerInfo = _buffCreatePlayerList.list[0];
+         _buffCreatePlayerList.remove(tmpData.id);
          if(_playerDataList.length < 80)
          {
-            _playerDataList.add(_loc2_.id,_loc2_);
+            _playerDataList.add(tmpData.id,tmpData);
          }
       }
       
-      public function judgeCreatePlayer(param1:Number, param2:Number) : void
+      public function judgeCreatePlayer(posX:Number, posY:Number) : void
       {
-         var _loc6_:Number = NaN;
-         var _loc7_:Number = NaN;
-         var _loc5_:* = null;
-         var _loc8_:Array = [];
+         var playerPosX:Number = NaN;
+         var playerPosY:Number = NaN;
+         var tmpData:* = null;
+         var deleteIdList:Array = [];
          var _loc10_:int = 0;
          var _loc9_:* = _buffPlayerList;
-         for each(var _loc4_ in _buffPlayerList)
+         for each(var tmpPlayerData in _buffPlayerList)
          {
-            _loc6_ = _loc4_.pos.x + param1;
-            _loc7_ = _loc4_.pos.y + param2;
-            if(_loc6_ > 0 && _loc6_ < 1000 && _loc7_ > 10 && _loc7_ <= 650)
+            playerPosX = tmpPlayerData.pos.x + posX;
+            playerPosY = tmpPlayerData.pos.y + posY;
+            if(playerPosX > 0 && playerPosX < 1000 && playerPosY > 10 && playerPosY <= 650)
             {
-               _loc8_.push(_loc4_.id);
+               deleteIdList.push(tmpPlayerData.id);
             }
          }
          var _loc12_:int = 0;
-         var _loc11_:* = _loc8_;
-         for each(var _loc3_ in _loc8_)
+         var _loc11_:* = deleteIdList;
+         for each(var id in deleteIdList)
          {
-            _loc5_ = _buffPlayerList[_loc3_];
-            _buffPlayerList.remove(_loc3_);
-            _buffCreatePlayerList.add(_loc5_.id,_loc5_);
+            tmpData = _buffPlayerList[id];
+            _buffPlayerList.remove(id);
+            _buffCreatePlayerList.add(tmpData.id,tmpData);
          }
-         if(_loc8_.length > 0 && !_timer.running)
+         if(deleteIdList.length > 0 && !_timer.running)
          {
             _timer.start();
          }
       }
       
-      public function getBuyRecordStatus(param1:int) : Object
+      public function getBuyRecordStatus(index:int) : Object
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var obj:* = null;
          if(!_buyRecordStatus)
          {
             _buyRecordStatus = [];
-            _loc3_ = 0;
-            while(_loc3_ < 4)
+            for(i = 0; i < 4; )
             {
-               _loc2_ = {};
-               _loc2_.isNoPrompt = false;
-               _loc2_.isBand = false;
-               _buyRecordStatus.push(_loc2_);
-               _loc3_++;
+               obj = {};
+               obj.isNoPrompt = false;
+               obj.isBand = false;
+               _buyRecordStatus.push(obj);
+               i++;
             }
          }
-         return _buyRecordStatus[param1];
+         return _buyRecordStatus[index];
       }
       
       public function get isOpen() : Boolean
@@ -258,81 +257,81 @@ package consortionBattle
          SocketManager.Instance.addEventListener(PkgEvent.format(153),pkgHandler);
       }
       
-      private function getDateHourTime(param1:Date) : int
+      private function getDateHourTime(date:Date) : int
       {
-         return int(param1.hours * 3600 + param1.minutes * 60 + param1.seconds);
+         return int(date.hours * 3600 + date.minutes * 60 + date.seconds);
       }
       
-      public function changeHideRecord(param1:int, param2:Boolean) : void
+      public function changeHideRecord(index:int, isHide:Boolean) : void
       {
-         var _loc3_:int = 0;
-         if(param2)
+         var tmp:int = 0;
+         if(isHide)
          {
-            if(param1 == 1)
+            if(index == 1)
             {
-               _loc3_ = 4;
+               tmp = 4;
             }
-            else if(param1 == 2)
+            else if(index == 2)
             {
-               _loc3_ = 2;
+               tmp = 2;
             }
             else
             {
-               _loc3_ = 1;
+               tmp = 1;
             }
-            _hideRecord = _hideRecord | _loc3_;
+            _hideRecord = _hideRecord | tmp;
          }
          else
          {
-            if(param1 == 1)
+            if(index == 1)
             {
-               _loc3_ = 3;
+               tmp = 3;
             }
-            else if(param1 == 2)
+            else if(index == 2)
             {
-               _loc3_ = 5;
+               tmp = 5;
             }
             else
             {
-               _loc3_ = 6;
+               tmp = 6;
             }
-            _hideRecord = _hideRecord & _loc3_;
+            _hideRecord = _hideRecord & tmp;
          }
          dispatchEvent(new Event("consortiaBattleHideRecordChange"));
       }
       
-      public function isHide(param1:int) : Boolean
+      public function isHide(index:int) : Boolean
       {
-         var _loc2_:int = 0;
-         if(param1 == 1)
+         var tmp:int = 0;
+         if(index == 1)
          {
-            _loc2_ = 4;
+            tmp = 4;
          }
-         else if(param1 == 2)
+         else if(index == 2)
          {
-            _loc2_ = 2;
+            tmp = 2;
          }
          else
          {
-            _loc2_ = 1;
+            tmp = 1;
          }
-         if((_hideRecord & _loc2_) == 0)
+         if((_hideRecord & tmp) == 0)
          {
             return false;
          }
          return true;
       }
       
-      public function addEntryBtn(param1:Boolean, param2:String = null) : void
+      public function addEntryBtn($isOpen:Boolean, $timeStr:String = null) : void
       {
          ConsortiaBattleManager.instance.addEventListener("consortiaBattleClose",closeHandler);
-         if(param2 != "" && param2 != null)
+         if($timeStr != "" && $timeStr != null)
          {
-            HallIconManager.instance.updateSwitchHandler("consortiabattle",param1,param2);
+            HallIconManager.instance.updateSwitchHandler("consortiabattle",$isOpen,$timeStr);
          }
          if(ConsortiaBattleManager.instance.isLoadIconMapComplete)
          {
-            HallIconManager.instance.updateSwitchHandler("consortiabattle",param1,param2);
+            HallIconManager.instance.updateSwitchHandler("consortiabattle",$isOpen,$timeStr);
          }
          if(!_isHadLoadRes)
          {
@@ -341,7 +340,7 @@ package consortionBattle
          }
       }
       
-      private function closeHandler(param1:Event) : void
+      private function closeHandler(event:Event) : void
       {
          HallIconManager.instance.updateSwitchHandler("consortiabattle",false);
       }
@@ -356,86 +355,86 @@ package consortionBattle
          }
       }
       
-      private function pkgHandler(param1:PkgEvent) : void
+      private function pkgHandler(event:PkgEvent) : void
       {
-         var _loc3_:Boolean = false;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc4_.readByte();
-         switch(int(_loc2_) - 1)
+         var tmpIsJump:Boolean = false;
+         var pkg:PackageIn = event.pkg;
+         var cmd:int = pkg.readByte();
+         switch(int(cmd) - 1)
          {
             case 0:
-               openOrCloseHandler(_loc4_);
+               openOrCloseHandler(pkg);
                break;
             case 1:
-               _loc3_ = _loc4_.readBoolean();
-               initSelfInfo(_loc4_);
-               if(_loc3_)
+               tmpIsJump = pkg.readBoolean();
+               initSelfInfo(pkg);
+               if(tmpIsJump)
                {
                   StateManager.setState("consortiaBattleScene");
                }
                break;
             case 2:
-               addPlayerInfo(_loc4_);
+               addPlayerInfo(pkg);
                break;
             case 3:
-               movePlayer(_loc4_);
+               movePlayer(pkg);
                break;
             case 4:
-               deletePlayer(_loc4_);
+               deletePlayer(pkg);
                break;
             default:
-               deletePlayer(_loc4_);
+               deletePlayer(pkg);
                break;
             case 6:
-               updatePlayerStatus(_loc4_);
+               updatePlayerStatus(pkg);
                break;
             case 7:
                splitMergeHandler();
                break;
             case 8:
-               updateSceneInfo(_loc4_);
+               updateSceneInfo(pkg);
                break;
             default:
-               updateSceneInfo(_loc4_);
+               updateSceneInfo(pkg);
                break;
             default:
-               updateSceneInfo(_loc4_);
+               updateSceneInfo(pkg);
                break;
             default:
-               updateSceneInfo(_loc4_);
+               updateSceneInfo(pkg);
                break;
             default:
-               updateSceneInfo(_loc4_);
+               updateSceneInfo(pkg);
                break;
             default:
-               updateSceneInfo(_loc4_);
+               updateSceneInfo(pkg);
                break;
             default:
-               updateSceneInfo(_loc4_);
+               updateSceneInfo(pkg);
                break;
             case 15:
-               updateScore(_loc4_);
+               updateScore(pkg);
                break;
             default:
-               updateScore(_loc4_);
+               updateScore(pkg);
                break;
             default:
-               updateScore(_loc4_);
+               updateScore(pkg);
                break;
             case 18:
-               broadcastHandler(_loc4_);
+               broadcastHandler(pkg);
          }
       }
       
-      private function broadcastHandler(param1:PackageIn) : void
+      private function broadcastHandler(pkg:PackageIn) : void
       {
          if(!isInMainView)
          {
             return;
          }
-         var _loc2_:ConsBatEvent = new ConsBatEvent("consortiaBattleBroadcast");
-         _loc2_.data = param1;
-         dispatchEvent(_loc2_);
+         var tmp:ConsBatEvent = new ConsBatEvent("consortiaBattleBroadcast");
+         tmp.data = pkg;
+         dispatchEvent(tmp);
       }
       
       private function splitMergeHandler() : void
@@ -446,11 +445,11 @@ package consortionBattle
          }
          var _loc3_:int = 0;
          var _loc2_:* = _playerDataList;
-         for(var _loc1_ in _playerDataList)
+         for(var key in _playerDataList)
          {
-            if(int(_loc1_) != PlayerManager.Instance.Self.ID)
+            if(int(key) != PlayerManager.Instance.Self.ID)
             {
-               _playerDataList.remove(_loc1_);
+               _playerDataList.remove(key);
             }
          }
          _buffPlayerList = new DictionaryData();
@@ -458,236 +457,234 @@ package consortionBattle
          SocketManager.Instance.out.sendConsBatRequestPlayerInfo();
       }
       
-      private function updateScore(param1:PackageIn) : void
+      private function updateScore(pkg:PackageIn) : void
       {
          if(!isInMainView)
          {
             return;
          }
-         var _loc2_:ConsBatEvent = new ConsBatEvent("consortiaBattleUpdateScore");
-         _loc2_.data = param1;
-         dispatchEvent(_loc2_);
+         var tmp:ConsBatEvent = new ConsBatEvent("consortiaBattleUpdateScore");
+         tmp.data = pkg;
+         dispatchEvent(tmp);
       }
       
-      private function updateSceneInfo(param1:PackageIn) : void
+      private function updateSceneInfo(pkg:PackageIn) : void
       {
-         _curHp = param1.readInt();
-         _victoryCount = param1.readInt();
-         _winningStreak = param1.readInt();
-         _score = param1.readInt();
-         _isPowerFullUsed = param1.readBoolean();
-         _isDoubleScoreUsed = param1.readBoolean();
-         var _loc2_:ConsortiaBattlePlayerInfo = _playerDataList[PlayerManager.Instance.Self.ID] as ConsortiaBattlePlayerInfo;
-         if(_loc2_)
+         _curHp = pkg.readInt();
+         _victoryCount = pkg.readInt();
+         _winningStreak = pkg.readInt();
+         _score = pkg.readInt();
+         _isPowerFullUsed = pkg.readBoolean();
+         _isDoubleScoreUsed = pkg.readBoolean();
+         var tmp:ConsortiaBattlePlayerInfo = _playerDataList[PlayerManager.Instance.Self.ID] as ConsortiaBattlePlayerInfo;
+         if(tmp)
          {
-            _loc2_.tombstoneEndTime = param1.readDate();
+            tmp.tombstoneEndTime = pkg.readDate();
          }
          dispatchEvent(new Event("consortiaBattleUpdateSceneInfo"));
       }
       
-      private function updatePlayerStatus(param1:PackageIn) : void
+      private function updatePlayerStatus(pkg:PackageIn) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:int = param1.readInt();
-         if(!isInMainView && _loc2_ != PlayerManager.Instance.Self.ID)
+         var tmpData:* = null;
+         var id:int = pkg.readInt();
+         if(!isInMainView && id != PlayerManager.Instance.Self.ID)
          {
             return;
          }
-         if(_playerDataList[_loc2_])
+         if(_playerDataList[id])
          {
-            _loc3_ = _playerDataList[_loc2_];
+            tmpData = _playerDataList[id];
          }
-         else if(_buffPlayerList[_loc2_])
+         else if(_buffPlayerList[id])
          {
-            _loc3_ = _buffPlayerList[_loc2_];
+            tmpData = _buffPlayerList[id];
          }
          else
          {
-            _loc3_ = _buffCreatePlayerList[_loc2_];
+            tmpData = _buffCreatePlayerList[id];
          }
-         if(_loc3_)
+         if(tmpData)
          {
-            _loc3_.tombstoneEndTime = param1.readDate();
-            _loc3_.status = param1.readByte();
-            _loc3_.pos = new Point(param1.readInt(),param1.readInt());
-            _loc3_.winningStreak = param1.readInt();
-            _loc3_.failBuffCount = param1.readInt();
-            _loc3_.MountsType = param1.readInt();
-            _loc3_.PetsID = param1.readInt();
-            _loc3_.Sex = param1.readBoolean();
-            _loc3_.Style = param1.readUTF();
-            _loc3_.Colors = param1.readUTF();
-            if(_loc3_ == _playerDataList[_loc2_])
+            tmpData.tombstoneEndTime = pkg.readDate();
+            tmpData.status = pkg.readByte();
+            tmpData.pos = new Point(pkg.readInt(),pkg.readInt());
+            tmpData.winningStreak = pkg.readInt();
+            tmpData.failBuffCount = pkg.readInt();
+            tmpData.MountsType = pkg.readInt();
+            tmpData.PetsID = pkg.readInt();
+            tmpData.Sex = pkg.readBoolean();
+            tmpData.Style = pkg.readUTF();
+            tmpData.Colors = pkg.readUTF();
+            if(tmpData == _playerDataList[id])
             {
-               _playerDataList.add(_loc3_.id,_loc3_);
+               _playerDataList.add(tmpData.id,tmpData);
             }
          }
       }
       
-      private function deletePlayer(param1:PackageIn) : void
+      private function deletePlayer(pkg:PackageIn) : void
       {
-         var _loc2_:int = param1.readInt();
-         if(_loc2_ == PlayerManager.Instance.Self.ID)
+         var id:int = pkg.readInt();
+         if(id == PlayerManager.Instance.Self.ID)
          {
             StateManager.setState("main");
             return;
          }
          if(isInMainView)
          {
-            _playerDataList.remove(_loc2_);
-            _buffPlayerList.remove(_loc2_);
-            _buffCreatePlayerList.remove(_loc2_);
+            _playerDataList.remove(id);
+            _buffPlayerList.remove(id);
+            _buffCreatePlayerList.remove(id);
          }
       }
       
-      private function movePlayer(param1:PackageIn) : void
+      private function movePlayer(pkg:PackageIn) : void
       {
-         var _loc11_:* = 0;
-         var _loc8_:* = null;
-         var _loc7_:* = null;
-         var _loc3_:* = null;
+         var i:* = 0;
+         var p:* = null;
+         var event:* = null;
+         var tmpData:* = null;
          if(!isInMainView)
          {
             return;
          }
-         var _loc2_:int = param1.readInt();
-         var _loc6_:int = param1.readInt();
-         var _loc4_:int = param1.readInt();
-         var _loc10_:String = param1.readUTF();
-         if(_loc2_ == PlayerManager.Instance.Self.ID)
+         var id:int = pkg.readInt();
+         var posX:int = pkg.readInt();
+         var posY:int = pkg.readInt();
+         var pathStr:String = pkg.readUTF();
+         if(id == PlayerManager.Instance.Self.ID)
          {
             return;
          }
-         var _loc5_:Array = _loc10_.split(",");
-         var _loc9_:Array = [];
-         _loc11_ = uint(0);
-         while(_loc11_ < _loc5_.length)
+         var arr:Array = pathStr.split(",");
+         var path:Array = [];
+         for(i = uint(0); i < arr.length; )
          {
-            _loc8_ = new Point(_loc5_[_loc11_],_loc5_[_loc11_ + 1]);
-            _loc9_.push(_loc8_);
-            _loc11_ = uint(_loc11_ + 2);
+            p = new Point(arr[i],arr[i + 1]);
+            path.push(p);
+            i = uint(i + 2);
          }
-         if(_playerDataList[_loc2_])
+         if(_playerDataList[id])
          {
-            _loc7_ = new ConsBatEvent("consortiaBattleMovePlayer");
-            _loc7_.data = {
-               "id":_loc2_,
-               "path":_loc9_
+            event = new ConsBatEvent("consortiaBattleMovePlayer");
+            event.data = {
+               "id":id,
+               "path":path
             };
-            dispatchEvent(_loc7_);
+            dispatchEvent(event);
          }
          else
          {
-            if(_buffPlayerList[_loc2_])
+            if(_buffPlayerList[id])
             {
-               _loc3_ = _buffPlayerList[_loc2_];
+               tmpData = _buffPlayerList[id];
             }
             else
             {
-               _loc3_ = _buffCreatePlayerList[_loc2_];
+               tmpData = _buffCreatePlayerList[id];
             }
-            if(_loc3_)
+            if(tmpData)
             {
-               _loc3_.pos = _loc9_[_loc9_.length - 1];
+               tmpData.pos = path[path.length - 1];
             }
          }
       }
       
-      private function addPlayerInfo(param1:PackageIn) : void
+      private function addPlayerInfo(pkg:PackageIn) : void
       {
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
-         var _loc4_:int = 0;
+         var i:int = 0;
+         var tmpData:* = null;
+         var tmpConsId:int = 0;
          if(!isInMainView)
          {
             return;
          }
-         var _loc3_:int = param1.readInt();
-         _loc5_ = 0;
-         while(_loc5_ < _loc3_)
+         var count:int = pkg.readInt();
+         for(i = 0; i < count; )
          {
-            _loc2_ = new ConsortiaBattlePlayerInfo();
-            _loc2_.id = param1.readInt();
-            _loc2_.tombstoneEndTime = param1.readDate();
-            _loc2_.status = param1.readByte();
-            _loc2_.pos = new Point(param1.readInt(),param1.readInt());
-            _loc2_.sex = param1.readBoolean();
-            _loc4_ = param1.readInt();
-            if(_loc4_ == PlayerManager.Instance.Self.ConsortiaID)
+            tmpData = new ConsortiaBattlePlayerInfo();
+            tmpData.id = pkg.readInt();
+            tmpData.tombstoneEndTime = pkg.readDate();
+            tmpData.status = pkg.readByte();
+            tmpData.pos = new Point(pkg.readInt(),pkg.readInt());
+            tmpData.sex = pkg.readBoolean();
+            tmpConsId = pkg.readInt();
+            if(tmpConsId == PlayerManager.Instance.Self.ConsortiaID)
             {
-               _loc2_.selfOrEnemy = 1;
+               tmpData.selfOrEnemy = 1;
             }
             else
             {
-               _loc2_.selfOrEnemy = 2;
+               tmpData.selfOrEnemy = 2;
             }
-            _loc2_.clothIndex = 2;
-            _loc2_.consortiaName = param1.readUTF();
-            _loc2_.winningStreak = param1.readInt();
-            _loc2_.failBuffCount = param1.readInt();
-            _loc2_.MountsType = param1.readInt();
-            _loc2_.PetsID = param1.readInt();
-            _loc2_.Sex = param1.readBoolean();
-            _loc2_.Style = param1.readUTF();
-            _loc2_.Colors = param1.readUTF();
-            if(_loc2_.id != PlayerManager.Instance.Self.ID)
+            tmpData.clothIndex = 2;
+            tmpData.consortiaName = pkg.readUTF();
+            tmpData.winningStreak = pkg.readInt();
+            tmpData.failBuffCount = pkg.readInt();
+            tmpData.MountsType = pkg.readInt();
+            tmpData.PetsID = pkg.readInt();
+            tmpData.Sex = pkg.readBoolean();
+            tmpData.Style = pkg.readUTF();
+            tmpData.Colors = pkg.readUTF();
+            if(tmpData.id != PlayerManager.Instance.Self.ID)
             {
-               _buffPlayerList.add(_loc2_.id,_loc2_);
+               _buffPlayerList.add(tmpData.id,tmpData);
             }
-            _loc5_++;
+            i++;
          }
       }
       
-      private function initSelfInfo(param1:PackageIn) : void
+      private function initSelfInfo(pkg:PackageIn) : void
       {
-         var _loc2_:SelfInfo = PlayerManager.Instance.Self;
-         var _loc3_:ConsortiaBattlePlayerInfo = new ConsortiaBattlePlayerInfo();
-         _loc3_.id = _loc2_.ID;
-         _loc3_.tombstoneEndTime = param1.readDate();
-         _loc3_.pos = new Point(param1.readInt(),param1.readInt());
-         _loc3_.clothIndex = 1;
-         _loc3_.selfOrEnemy = 1;
-         _loc3_.consortiaName = _loc2_.ConsortiaName;
-         _loc3_.MountsType = _loc2_.MountsType;
-         _loc3_.PetsID = _loc2_.PetsID;
-         _loc3_.sex = _loc2_.Sex;
-         _loc3_.Style = _loc2_.Style;
-         _loc3_.Colors = _loc2_.Colors;
-         _loc3_.isSelf = _loc2_.isSelf;
+         var self:SelfInfo = PlayerManager.Instance.Self;
+         var tmpSelfData:ConsortiaBattlePlayerInfo = new ConsortiaBattlePlayerInfo();
+         tmpSelfData.id = self.ID;
+         tmpSelfData.tombstoneEndTime = pkg.readDate();
+         tmpSelfData.pos = new Point(pkg.readInt(),pkg.readInt());
+         tmpSelfData.clothIndex = 1;
+         tmpSelfData.selfOrEnemy = 1;
+         tmpSelfData.consortiaName = self.ConsortiaName;
+         tmpSelfData.MountsType = self.MountsType;
+         tmpSelfData.PetsID = self.PetsID;
+         tmpSelfData.sex = self.Sex;
+         tmpSelfData.Style = self.Style;
+         tmpSelfData.Colors = self.Colors;
+         tmpSelfData.isSelf = self.isSelf;
          _playerDataList = new DictionaryData();
-         _playerDataList.add(_loc2_.ID,_loc3_);
-         _curHp = param1.readInt();
-         _victoryCount = param1.readInt();
-         _winningStreak = param1.readInt();
-         _score = param1.readInt();
-         _isPowerFullUsed = param1.readBoolean();
-         _isDoubleScoreUsed = param1.readBoolean();
+         _playerDataList.add(self.ID,tmpSelfData);
+         _curHp = pkg.readInt();
+         _victoryCount = pkg.readInt();
+         _winningStreak = pkg.readInt();
+         _score = pkg.readInt();
+         _isPowerFullUsed = pkg.readBoolean();
+         _isDoubleScoreUsed = pkg.readBoolean();
       }
       
-      public function getPlayerInfo(param1:int) : ConsortiaBattlePlayerInfo
+      public function getPlayerInfo(id:int) : ConsortiaBattlePlayerInfo
       {
-         return _playerDataList[param1];
+         return _playerDataList[id];
       }
       
       public function clearPlayerInfo() : void
       {
-         var _loc1_:ConsortiaBattlePlayerInfo = _playerDataList[PlayerManager.Instance.Self.ID];
+         var tmp:ConsortiaBattlePlayerInfo = _playerDataList[PlayerManager.Instance.Self.ID];
          _playerDataList = new DictionaryData();
-         if(_loc1_)
+         if(tmp)
          {
-            _playerDataList.add(_loc1_.id,_loc1_);
+            _playerDataList.add(tmp.id,tmp);
          }
          _buffPlayerList = new DictionaryData();
          _buffCreatePlayerList = new DictionaryData();
       }
       
-      private function openOrCloseHandler(param1:PackageIn) : void
+      private function openOrCloseHandler(pkg:PackageIn) : void
       {
-         if(param1.readBoolean())
+         if(pkg.readBoolean())
          {
-            _startTime = param1.readDate();
-            _endTime = param1.readDate();
-            _isCanEnter = param1.readBoolean();
+            _startTime = pkg.readDate();
+            _endTime = pkg.readDate();
+            _isCanEnter = pkg.readBoolean();
             open();
          }
          else
@@ -722,21 +719,21 @@ package consortionBattle
       
       private function loadMap() : void
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(resourcePrUrl + "map/factionwarmap.swf",4);
-         _loc1_.addEventListener("complete",onMapLoadComplete);
-         LoadResourceManager.Instance.startLoad(_loc1_);
+         var mapLoader:BaseLoader = LoadResourceManager.Instance.createLoader(resourcePrUrl + "map/factionwarmap.swf",4);
+         mapLoader.addEventListener("complete",onMapLoadComplete);
+         LoadResourceManager.Instance.startLoad(mapLoader);
       }
       
       private function loadIcon() : void
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(resourcePrUrl + "icon/factionwaricon.swf",4);
-         _loc1_.addEventListener("complete",onIconLoadComplete);
-         LoadResourceManager.Instance.startLoad(_loc1_);
+         var iconLoader:BaseLoader = LoadResourceManager.Instance.createLoader(resourcePrUrl + "icon/factionwaricon.swf",4);
+         iconLoader.addEventListener("complete",onIconLoadComplete);
+         LoadResourceManager.Instance.startLoad(iconLoader);
       }
       
-      private function onIconLoadComplete(param1:LoaderEvent) : void
+      private function onIconLoadComplete(event:LoaderEvent) : void
       {
-         param1.loader.removeEventListener("complete",onIconLoadComplete);
+         event.loader.removeEventListener("complete",onIconLoadComplete);
          _isLoadIconComplete = true;
          if(isLoadIconMapComplete)
          {
@@ -749,9 +746,9 @@ package consortionBattle
          }
       }
       
-      private function onMapLoadComplete(param1:LoaderEvent) : void
+      private function onMapLoadComplete(event:LoaderEvent) : void
       {
-         param1.loader.removeEventListener("complete",onMapLoadComplete);
+         event.loader.removeEventListener("complete",onMapLoadComplete);
          _isLoadMapComplete = true;
          if(isLoadIconMapComplete)
          {
@@ -764,10 +761,10 @@ package consortionBattle
          }
       }
       
-      public function createLoader(param1:String) : BitmapLoader
+      public function createLoader(url:String) : BitmapLoader
       {
-         var _loc2_:BitmapLoader = LoadResourceManager.Instance.createLoader(param1,0);
-         return _loc2_;
+         var bl:BitmapLoader = LoadResourceManager.Instance.createLoader(url,0);
+         return bl;
       }
    }
 }

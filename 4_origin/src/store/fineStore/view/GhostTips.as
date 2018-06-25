@@ -27,42 +27,42 @@ package store.fineStore.view
          _laterEquipmentView = null;
       }
       
-      override protected function laterEquipment(param1:GoodTipInfo) : void
+      override protected function laterEquipment(goodTipInfo:GoodTipInfo) : void
       {
-         var _loc4_:* = 0;
-         var _loc7_:* = null;
-         var _loc3_:* = 0;
-         var _loc6_:* = null;
-         var _loc2_:* = null;
-         var _loc5_:InventoryItemInfo = null;
-         if(param1)
+         var curGhostLv:* = 0;
+         var equipGhost:* = null;
+         var maxLv:* = 0;
+         var nextTipInfo:* = null;
+         var nextData:* = null;
+         var curData:InventoryItemInfo = null;
+         if(goodTipInfo)
          {
-            _loc5_ = param1.itemInfo as InventoryItemInfo;
+            curData = goodTipInfo.itemInfo as InventoryItemInfo;
          }
-         if(_loc5_ == null)
+         if(curData == null)
          {
             clearNextTip();
          }
          else
          {
-            _loc4_ = uint(0);
-            _loc7_ = PlayerManager.Instance.Self.getGhostDataByCategoryID(_loc5_.CategoryID);
-            if(_loc7_)
+            curGhostLv = uint(0);
+            equipGhost = PlayerManager.Instance.Self.getGhostDataByCategoryID(curData.CategoryID);
+            if(equipGhost)
             {
-               _loc4_ = uint(_loc7_.level);
+               curGhostLv = uint(equipGhost.level);
             }
-            _loc3_ = uint(EquipGhostManager.getInstance().model.topLvDic[_loc5_.CategoryID]);
-            if(_loc4_ >= _loc3_)
+            maxLv = uint(EquipGhostManager.getInstance().model.topLvDic[curData.CategoryID]);
+            if(curGhostLv >= maxLv)
             {
                clearNextTip();
             }
             else
             {
-               _loc6_ = new GoodTipInfo();
-               _loc2_ = new InventoryItemInfo();
-               ObjectUtils.copyProperties(_loc2_,_loc5_);
-               _loc6_.ghostLv = _loc4_ + 1;
-               _loc6_.itemInfo = _loc2_;
+               nextTipInfo = new GoodTipInfo();
+               nextData = new InventoryItemInfo();
+               ObjectUtils.copyProperties(nextData,curData);
+               nextTipInfo.ghostLv = curGhostLv + 1;
+               nextTipInfo.itemInfo = nextData;
                if(!_laterEquipmentView)
                {
                   _laterEquipmentView = new LaterEquipmentView();
@@ -72,7 +72,7 @@ package store.fineStore.view
                {
                   addChild(_laterEquipmentView);
                }
-               _laterEquipmentView.tipData = _loc6_;
+               _laterEquipmentView.tipData = nextTipInfo;
             }
          }
       }

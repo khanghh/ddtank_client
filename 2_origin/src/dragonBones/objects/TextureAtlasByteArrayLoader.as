@@ -17,10 +17,10 @@ package dragonBones.objects
          loaderContext.allowCodeImport = true;
       }
       
-      override public function loadBytes(param1:ByteArray, param2:LoaderContext = null) : void
+      override public function loadBytes(bytes:ByteArray, context:LoaderContext = null) : void
       {
-         param2 = param2 == null?loaderContext:param2;
-         super.loadBytes(param1,param2);
+         context = context == null?loaderContext:context;
+         super.loadBytes(bytes,context);
       }
    }
 }

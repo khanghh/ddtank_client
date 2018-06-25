@@ -178,7 +178,7 @@ package calendar.view.goodsExchange
          _exchangGoodsCount.addEventListener("change",__countChangeHandler);
       }
       
-      private function __clickBtn(param1:MouseEvent) : void
+      private function __clickBtn(event:MouseEvent) : void
       {
          _exchangGoodsCount.text = "1";
          this.count = 0;
@@ -186,36 +186,36 @@ package calendar.view.goodsExchange
          _awardIndex = _awardBtnGroup.selectIndex;
       }
       
-      private function __changeHandler(param1:Event) : void
+      private function __changeHandler(event:Event) : void
       {
-         var _loc2_:int = _awardBtnGroup.selectIndex;
+         var index:int = _awardBtnGroup.selectIndex;
          _haveGoodsCount = 0;
-         updateHaveGoodsBox(_loc2_);
-         updateExchangeGoodsBox(_loc2_);
+         updateHaveGoodsBox(index);
+         updateExchangeGoodsBox(index);
       }
       
-      private function __countClickHandler(param1:MouseEvent) : void
+      private function __countClickHandler(event:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
+         event.stopImmediatePropagation();
       }
       
-      private function __countOnKeyDown(param1:KeyboardEvent) : void
+      private function __countOnKeyDown(event:KeyboardEvent) : void
       {
          SoundManager.instance.play("008");
-         param1.stopImmediatePropagation();
+         event.stopImmediatePropagation();
       }
       
-      private function __countChangeHandler(param1:Event) : void
+      private function __countChangeHandler(event:Event) : void
       {
-         var _loc2_:* = null;
+         var temp:* = null;
          if(_exchangGoodsCount.text == "")
          {
             _exchangGoodsCount.text = "1";
          }
          else if(_exchangGoodsCount.text != "0")
          {
-            _loc2_ = _exchangGoodsCount.text.substr(0,1);
-            if(_loc2_ == "0")
+            temp = _exchangGoodsCount.text.substr(0,1);
+            if(temp == "0")
             {
                _exchangGoodsCount.text = _exchangGoodsCount.text.substring(1);
             }
@@ -234,21 +234,20 @@ package calendar.view.goodsExchange
          this.count = int(_exchangGoodsCount.text);
       }
       
-      public function setData(param1:ActiveEventsInfo) : void
+      public function setData(info:ActiveEventsInfo) : void
       {
-         var _loc4_:int = 0;
-         _activeEventsInfo = param1;
+         var i:int = 0;
+         _activeEventsInfo = info;
          _goodsExchangeInfoVector = new Vector.<GoodsExchangeInfo>();
-         var _loc3_:Array = CalendarManager.getInstance().activeExchange;
-         var _loc2_:int = _loc3_.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc2_)
+         var tempArray:Array = CalendarManager.getInstance().activeExchange;
+         var count:int = tempArray.length;
+         for(i = 0; i < count; )
          {
-            if(_activeEventsInfo.ActiveID == _loc3_[_loc4_].ActiveID)
+            if(_activeEventsInfo.ActiveID == tempArray[i].ActiveID)
             {
-               _goodsExchangeInfoVector.push(_loc3_[_loc4_]);
+               _goodsExchangeInfoVector.push(tempArray[i]);
             }
-            _loc4_++;
+            i++;
          }
          updateTimeShow();
          updateHaveGoodsBox(0);
@@ -257,31 +256,31 @@ package calendar.view.goodsExchange
       
       private function updateTimeShow() : void
       {
-         var _loc1_:Date = DateUtils.getDateByStr(_activeEventsInfo.StartDate);
-         var _loc2_:Date = DateUtils.getDateByStr(_activeEventsInfo.EndDate);
-         _actTime.text = addZero(_loc1_.fullYear) + "." + addZero(_loc1_.month + 1) + "." + addZero(_loc1_.date);
-         _actTime.text = _actTime.text + ("-" + addZero(_loc2_.fullYear) + "." + addZero(_loc2_.month + 1) + "." + addZero(_loc2_.date));
+         var startDate:Date = DateUtils.getDateByStr(_activeEventsInfo.StartDate);
+         var endDate:Date = DateUtils.getDateByStr(_activeEventsInfo.EndDate);
+         _actTime.text = addZero(startDate.fullYear) + "." + addZero(startDate.month + 1) + "." + addZero(startDate.date);
+         _actTime.text = _actTime.text + ("-" + addZero(endDate.fullYear) + "." + addZero(endDate.month + 1) + "." + addZero(endDate.date));
       }
       
-      private function addZero(param1:Number) : String
+      private function addZero(value:Number) : String
       {
-         var _loc2_:* = null;
-         if(param1 < 10)
+         var result:* = null;
+         if(value < 10)
          {
-            _loc2_ = "0" + param1.toString();
+            result = "0" + value.toString();
          }
          else
          {
-            _loc2_ = param1.toString();
+            result = value.toString();
          }
-         return _loc2_;
+         return result;
       }
       
-      private function updateHaveGoodsBox(param1:int) : void
+      private function updateHaveGoodsBox(index:int) : void
       {
-         var _loc6_:int = 0;
-         var _loc3_:* = null;
-         var _loc5_:* = 0;
+         var i:int = 0;
+         var cell:* = null;
+         var j:* = 0;
          if(!_goodsExchangeInfoVector)
          {
             return;
@@ -290,32 +289,30 @@ package calendar.view.goodsExchange
          cleanCell();
          _haveGoodsBox.disposeAllChildren();
          ObjectUtils.removeChildAllChildren(_haveGoodsBox);
-         var _loc2_:int = _goodsExchangeInfoVector.length;
-         var _loc4_:int = 0;
-         _loc6_ = 0;
-         while(_loc6_ < _loc2_)
+         var count:int = _goodsExchangeInfoVector.length;
+         var tempCount:int = 0;
+         for(i = 0; i < count; )
          {
-            if(_goodsExchangeInfoVector[_loc6_].ItemType == param1 * 2)
+            if(_goodsExchangeInfoVector[i].ItemType == index * 2)
             {
-               _goodsExchangeInfoVector[_loc6_].Num = this.count;
-               _loc3_ = new GoodsExchangeCell(_goodsExchangeInfoVector[_loc6_]);
-               getLeastCount(_loc3_);
-               _haveGoodsBox.addChild(_loc3_);
-               _loc4_ = _loc4_ + 1;
-               _cellVector.push(_loc3_);
+               _goodsExchangeInfoVector[i].Num = this.count;
+               cell = new GoodsExchangeCell(_goodsExchangeInfoVector[i]);
+               getLeastCount(cell);
+               _haveGoodsBox.addChild(cell);
+               tempCount = tempCount + 1;
+               _cellVector.push(cell);
             }
-            _loc6_++;
+            i++;
          }
-         if(_loc4_ < HAVE_GOODS_CELL_COUNT)
+         if(tempCount < HAVE_GOODS_CELL_COUNT)
          {
-            _loc5_ = _loc4_;
-            while(_loc5_ < HAVE_GOODS_CELL_COUNT)
+            for(j = tempCount; j < HAVE_GOODS_CELL_COUNT; )
             {
                _haveGoodsBox.addChild(new GoodsExchangeCell(null));
-               _loc5_++;
+               j++;
             }
          }
-         if(_loc4_ == 0)
+         if(tempCount == 0)
          {
             getLeastCount(null);
             _exchangGoodsCount.text = "0";
@@ -323,36 +320,34 @@ package calendar.view.goodsExchange
          checkBtn();
       }
       
-      private function updateExchangeGoodsBox(param1:int) : void
+      private function updateExchangeGoodsBox(index:int) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = 0;
+         var i:int = 0;
+         var j:* = 0;
          if(!_goodsExchangeInfoVector)
          {
             return;
          }
          _exchangGoodsBox.disposeAllChildren();
          ObjectUtils.removeChildAllChildren(_exchangGoodsBox);
-         var _loc2_:int = _goodsExchangeInfoVector.length;
-         var _loc3_:int = 0;
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_)
+         var count:int = _goodsExchangeInfoVector.length;
+         var tempCount:int = 0;
+         for(i = 0; i < count; )
          {
-            if(_goodsExchangeInfoVector[_loc5_].ItemType == param1 * 2 + 1)
+            if(_goodsExchangeInfoVector[i].ItemType == index * 2 + 1)
             {
-               _goodsExchangeInfoVector[_loc5_].Num = this.count;
-               _exchangGoodsBox.addChild(new GoodsExchangeCell(_goodsExchangeInfoVector[_loc5_],_activeEventsInfo.ActiveType,false));
-               _loc3_ = _loc3_ + 1;
+               _goodsExchangeInfoVector[i].Num = this.count;
+               _exchangGoodsBox.addChild(new GoodsExchangeCell(_goodsExchangeInfoVector[i],_activeEventsInfo.ActiveType,false));
+               tempCount = tempCount + 1;
             }
-            _loc5_++;
+            i++;
          }
-         if(_loc2_ < EXCHANGE_GOODS_CELL_COUNT)
+         if(count < EXCHANGE_GOODS_CELL_COUNT)
          {
-            _loc4_ = _loc3_;
-            while(_loc4_ < EXCHANGE_GOODS_CELL_COUNT)
+            for(j = tempCount; j < EXCHANGE_GOODS_CELL_COUNT; )
             {
                _exchangGoodsBox.addChild(new GoodsExchangeCell(null));
-               _loc4_++;
+               j++;
             }
          }
       }
@@ -361,51 +356,50 @@ package calendar.view.goodsExchange
       {
          var _loc3_:int = 0;
          var _loc2_:* = _cellVector;
-         for each(var _loc1_ in _cellVector)
+         for each(var cell in _cellVector)
          {
-            ObjectUtils.disposeObject(_loc1_);
-            _loc1_ = null;
+            ObjectUtils.disposeObject(cell);
+            cell = null;
          }
          _cellVector = new Vector.<GoodsExchangeCell>();
       }
       
       public function sendGoods() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:Boolean = false;
-         var _loc4_:Vector.<SendGoodsExchangeInfo> = new Vector.<SendGoodsExchangeInfo>();
-         _loc3_ = 0;
-         while(_loc3_ < _cellVector.length)
+         var i:int = 0;
+         var sendGoodsExchangeInfo:* = null;
+         var boo:Boolean = false;
+         var sendGoodsExchangeInfos:Vector.<SendGoodsExchangeInfo> = new Vector.<SendGoodsExchangeInfo>();
+         for(i = 0; i < _cellVector.length; )
          {
-            _loc1_ = new SendGoodsExchangeInfo();
-            if(!_cellVector[_loc3_].info || !_cellVector[_loc3_].itemInfo)
+            sendGoodsExchangeInfo = new SendGoodsExchangeInfo();
+            if(!_cellVector[i].info || !_cellVector[i].itemInfo)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("calendar.view.goodsExchange.warningIII"));
                return;
             }
-            _loc1_.id = _cellVector[_loc3_].info.TemplateID;
-            _loc1_.place = _cellVector[_loc3_].itemInfo.Place;
-            _loc1_.bagType = _cellVector[_loc3_].itemInfo.BagType;
-            _loc4_.push(_loc1_);
-            if(_cellVector[_loc3_].needCount - this.count <= 0)
+            sendGoodsExchangeInfo.id = _cellVector[i].info.TemplateID;
+            sendGoodsExchangeInfo.place = _cellVector[i].itemInfo.Place;
+            sendGoodsExchangeInfo.bagType = _cellVector[i].itemInfo.BagType;
+            sendGoodsExchangeInfos.push(sendGoodsExchangeInfo);
+            if(_cellVector[i].needCount - this.count <= 0)
             {
-               _loc2_ = true;
+               boo = true;
             }
-            _loc3_++;
+            i++;
          }
          _exchangGoodsCount.text = "1";
-         SocketManager.Instance.out.sendGoodsExchange(_loc4_,_activeEventsInfo.ActiveID,this.count,_awardIndex);
+         SocketManager.Instance.out.sendGoodsExchange(sendGoodsExchangeInfos,_activeEventsInfo.ActiveID,this.count,_awardIndex);
          _count = 1;
-         if(_loc2_)
+         if(boo)
          {
             dispatchEvent(new CalendarEvent("ExchangeGoodsChange",false));
          }
       }
       
-      private function getLeastCount(param1:GoodsExchangeCell) : void
+      private function getLeastCount(cell:GoodsExchangeCell) : void
       {
-         if(param1 == null)
+         if(cell == null)
          {
             _haveGoodsCount = 0;
             if(_count != 0)
@@ -414,23 +408,23 @@ package calendar.view.goodsExchange
             }
             return;
          }
-         var _loc2_:int = param1.needCount;
+         var itemCount:int = cell.needCount;
          if(_ifNoneGoods == true)
          {
             return;
          }
-         if(_loc2_ == 0)
+         if(itemCount == 0)
          {
             _ifNoneGoods = true;
             _haveGoodsCount = 0;
          }
          else if(_haveGoodsCount == 0)
          {
-            _haveGoodsCount = _loc2_;
+            _haveGoodsCount = itemCount;
          }
          else
          {
-            _haveGoodsCount = _haveGoodsCount > _loc2_?_loc2_:int(_haveGoodsCount);
+            _haveGoodsCount = _haveGoodsCount > itemCount?itemCount:int(_haveGoodsCount);
          }
       }
       
@@ -439,9 +433,9 @@ package calendar.view.goodsExchange
          return _count;
       }
       
-      private function set count(param1:int) : void
+      private function set count(value:int) : void
       {
-         _count = param1 == 0?1:param1;
+         _count = value == 0?1:value;
          __changeHandler(null);
       }
       

@@ -20,19 +20,19 @@ package baglocked
       
       private var _index:int;
       
-      public function BagLockPSWNeededSelecterListCell(param1:int, param2:int, param3:String, param4:Boolean = false)
+      public function BagLockPSWNeededSelecterListCell($index:int, $selected:int, $text:String, textIsID:Boolean = false)
       {
          super();
          init();
-         _index = param1;
-         _checkBox.selected = param2 == 1?false:true;
-         if(param4)
+         _index = $index;
+         _checkBox.selected = $selected == 1?false:true;
+         if(textIsID)
          {
-            _checkBox.text = LanguageMgr.GetTranslation(param3);
+            _checkBox.text = LanguageMgr.GetTranslation($text);
          }
          else
          {
-            _checkBox.text = param3;
+            _checkBox.text = $text;
          }
       }
       
@@ -43,7 +43,7 @@ package baglocked
          addChild(_checkBox);
       }
       
-      protected function onCheckClick(param1:MouseEvent) : void
+      protected function onCheckClick(me:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }
@@ -62,9 +62,9 @@ package baglocked
          }
       }
       
-      public function setText(param1:String) : void
+      public function setText(value:String) : void
       {
-         _titleText.text = param1;
+         _titleText.text = value;
       }
       
       public function get index() : int
@@ -72,14 +72,14 @@ package baglocked
          return _index;
       }
       
-      public function set index(param1:int) : void
+      public function set index(value:int) : void
       {
-         _index = param1;
+         _index = value;
       }
       
-      public function set selected(param1:int) : void
+      public function set selected(value:int) : void
       {
-         _checkBox.selected = param1 == 1?false:true;
+         _checkBox.selected = value == 1?false:true;
       }
       
       public function get selected() : int

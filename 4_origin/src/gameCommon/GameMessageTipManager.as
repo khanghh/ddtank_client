@@ -65,10 +65,10 @@ package gameCommon
          return instance;
       }
       
-      private function setGhostPropContent(param1:String) : DisplayObject
+      private function setGhostPropContent(str:String) : DisplayObject
       {
          cleanContent();
-         _ghostPropContent.setContent(param1);
+         _ghostPropContent.setContent(str);
          _tipBg.width = _ghostPropContent.width + 260;
          _tipBg.height = _ghostPropContent.height + 20;
          _tipBg.x = StageReferance.stageWidth - _tipBg.width >> 1;
@@ -78,10 +78,10 @@ package gameCommon
          return _tipContainer;
       }
       
-      private function setAutoUsePropContent(param1:String) : DisplayObject
+      private function setAutoUsePropContent(playerID:String) : DisplayObject
       {
          cleanContent();
-         _autoUsePropContent.setContent(param1);
+         _autoUsePropContent.setContent(playerID);
          _tipBg.width = _autoUsePropContent.width + 260;
          _tipBg.height = _autoUsePropContent.height + 20;
          _tipBg.x = StageReferance.stageWidth - _tipBg.width >> 1;
@@ -99,9 +99,9 @@ package gameCommon
          }
       }
       
-      private function showTip(param1:DisplayObject, param2:Boolean = false, param3:Number = 0.3) : void
+      private function showTip(tipContent:DisplayObject, replace:Boolean = false, duration:Number = 0.3) : void
       {
-         if(!param2 && _isPlaying)
+         if(!replace && _isPlaying)
          {
             return;
          }
@@ -110,62 +110,62 @@ package gameCommon
             TweenMax.killChildTweensOf(_tipContainer.parent);
          }
          _isPlaying = true;
-         _duration = param3;
-         var _loc4_:int = (StageReferance.stageHeight - param1.height) / 2 - 10;
-         TweenMax.fromTo(param1,0.3,{
+         _duration = duration;
+         var tempY:int = (StageReferance.stageHeight - tipContent.height) / 2 - 10;
+         TweenMax.fromTo(tipContent,0.3,{
             "y":StageReferance.stageHeight / 2 + 20,
             "alpha":0,
             "ease":Quint.easeIn,
             "onComplete":onTipToCenter,
-            "onCompleteParams":[param1]
+            "onCompleteParams":[tipContent]
          },{
-            "y":_loc4_,
+            "y":tempY,
             "alpha":1
          });
-         LayerManager.Instance.addToLayer(param1,1,false,0,false);
+         LayerManager.Instance.addToLayer(tipContent,1,false,0,false);
       }
       
-      public function show(param1:String, param2:int = 0, param3:Boolean = false, param4:Number = 0.3) : void
+      public function show(str:String, type:int = 0, replace:Boolean = false, duration:Number = 0.3) : void
       {
-         var _loc5_:* = null;
-         if(!param3 && _isPlaying)
+         var content:* = null;
+         if(!replace && _isPlaying)
          {
             return;
          }
-         _tipString = param1;
-         switch(int(param2) - 1)
+         _tipString = str;
+         switch(int(type) - 1)
          {
             case 0:
-               _loc5_ = setGhostPropContent(param1);
+               content = setGhostPropContent(str);
                break;
             case 1:
                break;
             case 2:
-               _loc5_ = setAutoUsePropContent(param1);
+               content = setAutoUsePropContent(str);
          }
-         showTip(_loc5_,param3,param4);
+         showTip(content,replace,duration);
       }
       
-      private function onTipToCenter(param1:DisplayObject) : void
+      private function onTipToCenter(content:DisplayObject) : void
       {
-         TweenMax.to(param1,_duration,{
+         TweenMax.to(content,_duration,{
             "alpha":0,
             "ease":Quint.easeOut,
             "onComplete":hide,
-            "onCompleteParams":[param1],
+            "onCompleteParams":[content],
             "delay":1.2
          });
       }
       
-      public function hide(param1:DisplayObject) : void
+      public function hide(content:DisplayObject) : void
       {
          _isPlaying = false;
          _tipString = null;
-         if(param1.parent)
+         if(content.parent)
          {
-            param1.parent.removeChild(param1);
+            content.parent.removeChild(content);
          }
-         TweenMax.killTweensOf(param1);
+         TweenMax.killTweensOf(content);
       }
    }
 }
@@ -203,13 +203,13 @@ class PropMessageHolder extends Sprite
       addChild(_item);
    }
    
-   public function setContent(param1:String) : void
+   public function setContent(str:String) : void
    {
-      var _loc2_:Array = param1.split("|");
-      var _loc4_:Living = GameControl.Instance.Current.findLiving(_loc2_[0]);
-      _head.setInfo(_loc4_);
-      var _loc3_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(_loc2_[1]);
-      _item.setInfo(_loc3_);
+      var arr:Array = str.split("|");
+      var living:Living = GameControl.Instance.Current.findLiving(arr[0]);
+      _head.setInfo(living);
+      var item:ItemTemplateInfo = ItemManager.Instance.getTemplateById(arr[1]);
+      _item.setInfo(item);
       _textField.x = _head.width - 3;
       _item.x = _textField.x + _textField.width - 4;
    }
@@ -247,14 +247,14 @@ class AutoUsePropMessage extends Sprite
       addChild(_item);
    }
    
-   public function setContent(param1:String) : void
+   public function setContent(id:String) : void
    {
-      var _loc3_:Living = GameControl.Instance.Current.findLiving(int(param1));
-      _head.setInfo(_loc3_);
-      var _loc2_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(10029);
-      _item.setInfo(_loc2_);
+      var living:Living = GameControl.Instance.Current.findLiving(int(id));
+      _head.setInfo(living);
+      var item:ItemTemplateInfo = ItemManager.Instance.getTemplateById(10029);
+      _item.setInfo(item);
       _textField.x = _head.width - 3;
-      _textField.text = _loc3_.name + LanguageMgr.GetTranslation("tank.MessageTip.AutoGuide");
+      _textField.text = living.name + LanguageMgr.GetTranslation("tank.MessageTip.AutoGuide");
       _item.x = _textField.x + _textField.width - 4;
    }
 }
@@ -290,12 +290,12 @@ class PropHolder extends Sprite
       addChild(_nameField);
    }
    
-   public function setInfo(param1:ItemTemplateInfo) : void
+   public function setInfo(item:ItemTemplateInfo) : void
    {
-      _nameField.text = param1.Name;
+      _nameField.text = item.Name;
       _itemCell.x = _nameField.x + _nameField.textWidth + 4;
       _fore.x = _itemCell.x + 1;
-      _itemCell.info = param1;
+      _itemCell.info = item;
    }
 }
 
@@ -331,7 +331,7 @@ class HeadHolder extends Sprite implements Disposeable
    
    private var _nameField:FilterFrameText;
    
-   function HeadHolder(param1:Boolean = true)
+   function HeadHolder(isDeath:Boolean = true)
    {
       _drawRect = new Rectangle(0,0,36,36);
       _drawMatrix = new Matrix();
@@ -340,11 +340,11 @@ class HeadHolder extends Sprite implements Disposeable
       addChild(_back);
       _buff = new BitmapData(36,36,true,0);
       _headShape = new Shape();
-      var _loc2_:Graphics = _headShape.graphics;
-      _loc2_.beginBitmapFill(_buff);
-      _loc2_.drawRect(0,0,36,36);
-      _loc2_.endFill();
-      if(param1)
+      var pen:Graphics = _headShape.graphics;
+      pen.beginBitmapFill(_buff);
+      pen.drawRect(0,0,36,36);
+      pen.endFill();
+      if(isDeath)
       {
          _headShape.filters = [new ColorMatrixFilter([0.3086,0.6094,0.082,0,0,0.3086,0.6094,0.082,0,0,0.3086,0.6094,0.082,0,0,0,0,0,1,0])];
       }
@@ -358,28 +358,28 @@ class HeadHolder extends Sprite implements Disposeable
       addChild(_nameField);
    }
    
-   public function setInfo(param1:Living) : void
+   public function setInfo(living:Living) : void
    {
       _buff.fillRect(_drawRect,0);
-      var _loc2_:Rectangle = getHeadRect(param1);
+      var rect:Rectangle = getHeadRect(living);
       _drawMatrix.identity();
-      _drawMatrix.scale(_buff.width / _loc2_.width,_buff.height / _loc2_.height);
-      _drawMatrix.translate(-_loc2_.x * _drawMatrix.a + 4,-_loc2_.y * _drawMatrix.d + 6);
-      _buff.draw((param1.character as ShowCharacter).characterBitmapdata,_drawMatrix);
-      if(param1.playerInfo != null)
+      _drawMatrix.scale(_buff.width / rect.width,_buff.height / rect.height);
+      _drawMatrix.translate(-rect.x * _drawMatrix.a + 4,-rect.y * _drawMatrix.d + 6);
+      _buff.draw((living.character as ShowCharacter).characterBitmapdata,_drawMatrix);
+      if(living.playerInfo != null)
       {
-         _nameField.text = param1.playerInfo.NickName;
+         _nameField.text = living.playerInfo.NickName;
       }
       else
       {
-         _nameField.text = param1.name;
+         _nameField.text = living.name;
       }
-      _nameField.setFrame(param1.team);
+      _nameField.setFrame(living.team);
    }
    
-   private function getHeadRect(param1:Living) : Rectangle
+   private function getHeadRect(living:Living) : Rectangle
    {
-      if(param1.playerInfo.getShowSuits() && param1.playerInfo.getSuitsType() == 1)
+      if(living.playerInfo.getShowSuits() && living.playerInfo.getSuitsType() == 1)
       {
          return new Rectangle(21,12,167,165);
       }

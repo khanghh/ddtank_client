@@ -61,18 +61,18 @@ package ddtmatch.view
       
       private var _num:int;
       
-      public function DDTMatchBuyCell(param1:int, param2:int)
+      public function DDTMatchBuyCell(index:int, type:int)
       {
-         var _loc3_:* = null;
-         var _loc4_:int = 0;
+         var rec:* = null;
+         var i:int = 0;
          countryNameList = LanguageMgr.GetTranslation("ddt.DDTMatch.matchView.countryList").split("|");
          list = ServerConfigManager.instance.getDDTKingQuizCityList().split("|");
          super();
-         _index = param1;
-         _type = param2;
-         if(param2 == 0)
+         _index = index;
+         _type = type;
+         if(type == 0)
          {
-            if(param1 % 2 == 0)
+            if(index % 2 == 0)
             {
                _bg = ComponentFactory.Instance.creatBitmap("ddtmatch.match.lightbg");
             }
@@ -80,11 +80,11 @@ package ddtmatch.view
             {
                _bg = ComponentFactory.Instance.creatBitmap("ddtmatch.match.darkbg");
             }
-            maxBuy = int(ServerConfigManager.instance.getDDTKingQuizPersonMaxCount().split("|")[param1]);
+            maxBuy = int(ServerConfigManager.instance.getDDTKingQuizPersonMaxCount().split("|")[index]);
          }
          else
          {
-            if(param1 % 2 == 0)
+            if(index % 2 == 0)
             {
                _bg = ComponentFactory.Instance.creatBitmap("ddtmatch.match.team.lightbg");
             }
@@ -92,12 +92,12 @@ package ddtmatch.view
             {
                _bg = ComponentFactory.Instance.creatBitmap("ddtmatch.match.team.darkbg");
             }
-            maxBuy = int(ServerConfigManager.instance.getDDTKingQuizTeamMaxCount().split("|")[param1]);
+            maxBuy = int(ServerConfigManager.instance.getDDTKingQuizTeamMaxCount().split("|")[index]);
          }
          addChild(_bg);
          roundNumberMc = ClassUtils.CreatInstance("ddtmatch.match.roundNumber");
          addChild(roundNumberMc);
-         roundNumberMc.gotoAndStop(param1 + 1);
+         roundNumberMc.gotoAndStop(index + 1);
          PositionUtils.setPos(roundNumberMc,"ddtmatch.match.roundNumberMc.pos");
          _zhuTxt = ComponentFactory.Instance.creatComponentByStylename("ddtmatch.match.zhutxt");
          addChild(_zhuTxt);
@@ -128,17 +128,16 @@ package ddtmatch.view
          addChild(loseCell);
          PositionUtils.setPos(loseCell,"ddtmatch.match.loseCell.pos");
          _combox = ComponentFactory.Instance.creatComponentByStylename("ddtmatch.match.combox");
-         _loc3_ = ComponentFactory.Instance.creatCustomObject("ddtmatch.match.comboxRec");
-         ObjectUtils.copyPropertyByRectangle(_combox,_loc3_);
+         rec = ComponentFactory.Instance.creatCustomObject("ddtmatch.match.comboxRec");
+         ObjectUtils.copyPropertyByRectangle(_combox,rec);
          _combox.beginChanges();
          addChild(_combox);
          _combox.textField.text = "";
          _combox.selctedPropName = "text";
-         _loc4_ = 0;
-         while(_loc4_ < list.length)
+         for(i = 0; i < list.length; )
          {
-            _combox.listPanel.vectorListModel.append(countryNameList[int(list[_loc4_]) - 1]);
-            _loc4_++;
+            _combox.listPanel.vectorListModel.append(countryNameList[int(list[i]) - 1]);
+            i++;
          }
          _combox.commitChanges();
          _num = 1;
@@ -151,35 +150,35 @@ package ddtmatch.view
          _countTxt.addEventListener("change",changeHandler);
       }
       
-      public function setinfo(param1:int, param2:int) : void
+      public function setinfo(country:int, money:int) : void
       {
-         if(param1 != 0 && param2 != 0)
+         if(country != 0 && money != 0)
          {
-            _combox.textField.text = countryNameList[int(list[param1 - 1]) - 1];
+            _combox.textField.text = countryNameList[int(list[country - 1]) - 1];
             _combox.enable = false;
-            _countTxt.text = String(param2);
+            _countTxt.text = String(money);
             _countTxt.type = "dynamic";
             _hostBuy.enable = false;
             _hostBuy.filters = ComponentFactory.Instance.creatFilters("grayFilter");
          }
       }
       
-      private function changeHandler(param1:Event) : void
+      private function changeHandler(e:Event) : void
       {
-         var _loc2_:int = _countTxt.text;
-         if(_loc2_ < 1)
+         var value:int = _countTxt.text;
+         if(value < 1)
          {
-            _loc2_ = 1;
+            value = 1;
          }
-         else if(_loc2_ > maxBuy)
+         else if(value > maxBuy)
          {
-            _loc2_ = maxBuy;
+            value = maxBuy;
          }
-         _countTxt.text = _loc2_.toString();
-         _num = _loc2_;
+         _countTxt.text = value.toString();
+         _num = value;
       }
       
-      private function clickHandler(param1:MouseEvent) : void
+      private function clickHandler(e:MouseEvent) : void
       {
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -191,10 +190,10 @@ package ddtmatch.view
             LeavePageManager.showFillFrame();
             return;
          }
-         var _loc2_:int = countryNameList.indexOf(_combox.textField.text);
-         if(_loc2_ != -1)
+         var selectedIndex:int = countryNameList.indexOf(_combox.textField.text);
+         if(selectedIndex != -1)
          {
-            SocketManager.Instance.out.buybuybuy(_type + 1,_index + 1,_loc2_ + 1,_num);
+            SocketManager.Instance.out.buybuybuy(_type + 1,_index + 1,selectedIndex + 1,_num);
          }
       }
       

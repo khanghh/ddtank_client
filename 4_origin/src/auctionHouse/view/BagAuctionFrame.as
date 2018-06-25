@@ -24,7 +24,7 @@ package auctionHouse.view
          _bagView.addEventListener("tabChange",__onTabChanged);
       }
       
-      protected function __onTabChanged(param1:Event) : void
+      protected function __onTabChanged(event:Event) : void
       {
          if(_bagView.bagType == 21)
          {
@@ -50,15 +50,15 @@ package auctionHouse.view
          PositionUtils.setPos(_bagView,"AutionBagView.Pos");
       }
       
-      override protected function __onCloseClick(param1:MouseEvent) : void
+      override protected function __onCloseClick(event:MouseEvent) : void
       {
          super.__onCloseClick(null);
       }
       
-      override protected function onResponse(param1:int) : void
+      override protected function onResponse(type:int) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1))
+         switch(int(type))
          {
             case 0:
             case 1:

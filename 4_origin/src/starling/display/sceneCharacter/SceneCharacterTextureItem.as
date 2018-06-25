@@ -24,18 +24,18 @@ package starling.display.sceneCharacter
       
       private var _parseType:int;
       
-      public function SceneCharacterTextureItem(param1:String, param2:String, param3:int, param4:int, param5:int, param6:Number, param7:Number, param8:int = 0, param9:int = 0)
+      public function SceneCharacterTextureItem(type:String, sourceName:String, amount:int, rowNumber:int, rowCellNumber:int, cellWitdh:Number, cellHeight:Number, sortOrder:int = 0, parseType:int = 0)
       {
          super();
-         _type = param1;
-         _sourceName = param2;
-         _amount = param3;
-         _rowNumber = param4;
-         _rowCellNumber = param5;
-         _cellWitdh = param6;
-         _cellHeight = param7;
-         _sortOrder = param8;
-         _parseType = param9;
+         _type = type;
+         _sourceName = sourceName;
+         _amount = amount;
+         _rowNumber = rowNumber;
+         _rowCellNumber = rowCellNumber;
+         _cellWitdh = cellWitdh;
+         _cellHeight = cellHeight;
+         _sortOrder = sortOrder;
+         _parseType = parseType;
       }
       
       public function get type() : String
@@ -48,9 +48,9 @@ package starling.display.sceneCharacter
          return _sourceName;
       }
       
-      public function set sourceName(param1:String) : void
+      public function set sourceName(value:String) : void
       {
-         _sourceName = param1;
+         _sourceName = value;
       }
       
       public function get cellWitdh() : Number
@@ -68,9 +68,9 @@ package starling.display.sceneCharacter
          return _rowNumber;
       }
       
-      public function set rowNumber(param1:int) : void
+      public function set rowNumber(value:int) : void
       {
-         _rowNumber = param1;
+         _rowNumber = value;
       }
       
       public function get rowCellNumber() : int
@@ -78,9 +78,9 @@ package starling.display.sceneCharacter
          return _rowCellNumber;
       }
       
-      public function set rowCellNumber(param1:int) : void
+      public function set rowCellNumber(value:int) : void
       {
-         _rowCellNumber = param1;
+         _rowCellNumber = value;
       }
       
       public function get sortOrder() : int
@@ -98,9 +98,9 @@ package starling.display.sceneCharacter
          return _amount;
       }
       
-      public function set parseType(param1:int) : void
+      public function set parseType(value:int) : void
       {
-         _parseType = param1;
+         _parseType = value;
       }
       
       public function get parseType() : int

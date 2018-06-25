@@ -36,10 +36,10 @@ package RechargeRank.views
       
       private var vo:RechargeRankVo;
       
-      public function RechargeRankItem(param1:int)
+      public function RechargeRankItem(index:int)
       {
          super();
-         this.index = param1;
+         this.index = index;
          initView();
       }
       
@@ -71,50 +71,49 @@ package RechargeRank.views
          addChild(_prizeHBox);
       }
       
-      public function setData(param1:RechargeRankVo, param2:GiftBagInfo) : void
+      public function setData(vo:RechargeRankVo, giftInfo:GiftBagInfo) : void
       {
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
-         var _loc4_:* = null;
-         this.vo = param1;
+         var i:int = 0;
+         var gift:* = null;
+         var prizeItem:* = null;
+         this.vo = vo;
          setRankNum(index + 1);
          addNickName();
-         if(!param2)
+         if(!giftInfo)
          {
             return;
          }
-         var _loc3_:Vector.<GiftRewardInfo> = param2.giftRewardArr;
-         _loc6_ = 0;
-         while(_loc6_ <= _loc3_.length - 1)
+         var rewardArr:Vector.<GiftRewardInfo> = giftInfo.giftRewardArr;
+         for(i = 0; i <= rewardArr.length - 1; )
          {
-            _loc5_ = _loc3_[_loc6_];
-            _loc4_ = new PrizeListItem();
-            _loc4_.initView(_loc6_);
-            _loc4_.setCellData(_loc5_);
-            _prizeHBox.addChild(_loc4_);
-            _loc6_++;
+            gift = rewardArr[i];
+            prizeItem = new PrizeListItem();
+            prizeItem.initView(i);
+            prizeItem.setCellData(gift);
+            _prizeHBox.addChild(prizeItem);
+            i++;
          }
       }
       
-      private function setRankNum(param1:int) : void
+      private function setRankNum(num:int) : void
       {
-         if(param1 <= 3)
+         if(num <= 3)
          {
             _placeTxt.visible = false;
             _topThreeIcon.visible = true;
-            _topThreeIcon.setFrame(param1);
+            _topThreeIcon.setFrame(num);
          }
          else
          {
             _placeTxt.visible = true;
             _topThreeIcon.visible = false;
-            _placeTxt.text = param1 + "th";
+            _placeTxt.text = num + "th";
          }
       }
       
       private function addNickName() : void
       {
-         var _loc1_:* = null;
+         var textFormat:* = null;
          if(_vipName)
          {
             _vipName.dispose();
@@ -124,10 +123,10 @@ package RechargeRank.views
          if(vo.isVIP)
          {
             _vipName = VipController.instance.getVipNameTxt(1,1);
-            _loc1_ = new TextFormat();
-            _loc1_.align = "center";
-            _loc1_.bold = true;
-            _vipName.textField.defaultTextFormat = _loc1_;
+            textFormat = new TextFormat();
+            textFormat.align = "center";
+            textFormat.bold = true;
+            _vipName.textField.defaultTextFormat = textFormat;
             _vipName.textSize = 16;
             _vipName.textField.width = _nameTxt.width;
             _vipName.x = _nameTxt.x;

@@ -36,104 +36,104 @@ package dragonBones.factories
          scaleForTexture = 1;
       }
       
-      override protected function generateTextureAtlas(param1:Object, param2:Object) : ITextureAtlas
+      override protected function generateTextureAtlas(content:Object, textureAtlasRawData:Object) : ITextureAtlas
       {
-         var _loc6_:* = null;
-         var _loc4_:* = null;
-         var _loc7_:int = 0;
-         var _loc3_:int = 0;
-         var _loc8_:* = null;
-         if(param1 is BitmapData)
+         var texture:* = null;
+         var bitmapData:* = null;
+         var width:int = 0;
+         var height:int = 0;
+         var movieClip:* = null;
+         if(content is BitmapData)
          {
-            _loc4_ = param1 as BitmapData;
-            _loc6_ = Texture.fromBitmapData(_loc4_,generateMipMaps,optimizeForRenderToTexture);
+            bitmapData = content as BitmapData;
+            texture = Texture.fromBitmapData(bitmapData,generateMipMaps,optimizeForRenderToTexture);
          }
-         else if(param1 is MovieClip)
+         else if(content is MovieClip)
          {
-            _loc7_ = getNearest2N(param1.width) * scaleForTexture;
-            _loc3_ = getNearest2N(param1.height) * scaleForTexture;
+            width = getNearest2N(content.width) * scaleForTexture;
+            height = getNearest2N(content.height) * scaleForTexture;
             _helpMatrix.scale(scaleForTexture,scaleForTexture);
             _helpMatrix.tx = 0;
             _helpMatrix.ty = 0;
-            _loc8_ = param1 as MovieClip;
-            _loc8_.gotoAndStop(1);
-            _loc4_ = new BitmapData(_loc7_,_loc3_,true,16711935);
-            _loc4_.draw(_loc8_,_helpMatrix);
-            _loc8_.gotoAndStop(_loc8_.totalFrames);
-            _loc6_ = Texture.fromBitmapData(_loc4_,generateMipMaps,optimizeForRenderToTexture,scaleForTexture);
+            movieClip = content as MovieClip;
+            movieClip.gotoAndStop(1);
+            bitmapData = new BitmapData(width,height,true,16711935);
+            bitmapData.draw(movieClip,_helpMatrix);
+            movieClip.gotoAndStop(movieClip.totalFrames);
+            texture = Texture.fromBitmapData(bitmapData,generateMipMaps,optimizeForRenderToTexture,scaleForTexture);
          }
          else
          {
             throw new Error();
          }
-         var _loc5_:StarlingTextureAtlas = new StarlingTextureAtlas(_loc6_,param2,false);
+         var textureAtlas:StarlingTextureAtlas = new StarlingTextureAtlas(texture,textureAtlasRawData,false);
          if(Starling.handleLostContext)
          {
-            _loc5_._bitmapData = _loc4_;
+            textureAtlas._bitmapData = bitmapData;
          }
          else
          {
-            _loc4_.dispose();
+            bitmapData.dispose();
          }
-         return _loc5_;
+         return textureAtlas;
       }
       
       override protected function generateArmature() : Armature
       {
-         var _loc1_:Armature = new Armature(new Sprite());
-         return _loc1_;
+         var armature:Armature = new Armature(new Sprite());
+         return armature;
       }
       
       override protected function generateFastArmature() : FastArmature
       {
-         var _loc1_:FastArmature = new FastArmature(new Sprite());
-         return _loc1_;
+         var armature:FastArmature = new FastArmature(new Sprite());
+         return armature;
       }
       
       override protected function generateSlot() : Slot
       {
-         var _loc1_:Slot = new StarlingSlot();
-         return _loc1_;
+         var slot:Slot = new StarlingSlot();
+         return slot;
       }
       
       override protected function generateFastSlot() : FastSlot
       {
-         var _loc1_:FastSlot = new StarlingFastSlot();
-         return _loc1_;
+         var slot:FastSlot = new StarlingFastSlot();
+         return slot;
       }
       
-      override protected function generateDisplay(param1:Object, param2:String, param3:Number, param4:Number) : Object
+      override protected function generateDisplay(textureAtlas:Object, fullName:String, pivotX:Number, pivotY:Number) : Object
       {
-         var _loc6_:* = null;
-         var _loc5_:* = null;
-         var _loc7_:SubTexture = (param1 as TextureAtlas).getTexture(param2) as SubTexture;
-         if(_loc7_)
+         var image:* = null;
+         var subTextureFrame:* = null;
+         var subTexture:SubTexture = (textureAtlas as TextureAtlas).getTexture(fullName) as SubTexture;
+         if(subTexture)
          {
-            _loc6_ = new Image(_loc7_);
-            if(isNaN(param3) || isNaN(param4))
+            image = new Image(subTexture);
+            if(isNaN(pivotX) || isNaN(pivotY))
             {
-               _loc5_ = (param1 as TextureAtlas).getFrame(param2);
-               if(_loc5_)
+               subTextureFrame = (textureAtlas as TextureAtlas).getFrame(fullName);
+               if(subTextureFrame)
                {
-                  param3 = _loc5_.width / 2;
-                  param4 = _loc5_.height / 2;
+                  pivotX = subTextureFrame.width / 2;
+                  pivotY = subTextureFrame.height / 2;
                }
                else
                {
-                  param3 = _loc7_.width / 2;
-                  param4 = _loc7_.height / 2;
+                  pivotX = subTexture.width / 2;
+                  pivotY = subTexture.height / 2;
                }
             }
-            _loc6_.pivotX = param3;
-            _loc6_.pivotY = param4;
-            return _loc6_;
+            image.pivotX = pivotX;
+            image.pivotY = pivotY;
+            return image;
          }
          return null;
       }
       
-      private function getNearest2N(param1:uint) : uint
+      private function getNearest2N(_n:uint) : uint
       {
-         return !!(param1 & param1 - 1)?1 << param1.toString(2).length:param1;
+         return !!(_n & _n - 1)?1 << _n.toString(2).length:_n;
       }
       
       override protected function get textureAtlasDic() : Dictionary

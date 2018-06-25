@@ -27,12 +27,12 @@ package starling.scene.common
       
       private var _uvImage2Rect:Rectangle;
       
-      public function BgLayer(param1:Rectangle, param2:SubTexture, param3:SubTexture = null)
+      public function BgLayer(viewRect:Rectangle, texture1:SubTexture, texture2:SubTexture = null)
       {
          super();
-         _viewRect = param1;
-         _texture1 = param2;
-         _texture2 = param3;
+         _viewRect = viewRect;
+         _texture1 = texture1;
+         _texture2 = texture2;
          _frame1 = _texture1.region;
          _uvImage1 = new UVImage(_texture1);
          _uvImage1Rect = new Rectangle();

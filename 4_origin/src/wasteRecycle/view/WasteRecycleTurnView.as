@@ -31,60 +31,59 @@ package wasteRecycle.view
       
       private function init() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _list = new Vector.<WasteRecycleTurnItem>(3);
-         var _loc2_:Array = [0,107,213];
-         _loc1_ = 0;
-         while(_loc1_ < 3)
+         var pos:Array = [0,107,213];
+         for(i = 0; i < 3; )
          {
-            _list[_loc1_] = new WasteRecycleTurnItem();
-            _list[_loc1_].x = _loc2_[_loc1_];
-            _list[_loc1_].addEventListener("playComplete",__onPlayComplete);
-            _list[_loc1_].addEventListener("shineComplete",__onShineComplete);
-            addChild(_list[_loc1_]);
-            _loc1_++;
+            _list[i] = new WasteRecycleTurnItem();
+            _list[i].x = pos[i];
+            _list[i].addEventListener("playComplete",__onPlayComplete);
+            _list[i].addEventListener("shineComplete",__onShineComplete);
+            addChild(_list[i]);
+            i++;
          }
          _timer = new Timer(500,3);
          _timer.addEventListener("timer",__onTimer,false,0,true);
       }
       
-      public function playAction(param1:int, param2:String) : void
+      public function playAction(type:int, str:String) : void
       {
          _playCount = 0;
-         setPlayLabel(param1);
-         _str = param2;
+         setPlayLabel(type);
+         _str = str;
          _timer.reset();
          _timer.start();
       }
       
-      private function setPlayLabel(param1:int) : void
+      private function setPlayLabel(type:int) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         var _loc5_:int = 0;
-         while(_loc4_ == _loc3_ || _loc4_ == _loc5_ || _loc3_ == _loc5_)
+         var random1:int = 0;
+         var random2:int = 0;
+         var random3:int = 0;
+         while(random1 == random2 || random1 == random3 || random2 == random3)
          {
-            _loc4_ = int(Math.random() * 14) + 1;
-            _loc3_ = int(Math.random() * 14) + 1;
-            _loc5_ = int(Math.random() * 14) + 1;
+            random1 = int(Math.random() * 14) + 1;
+            random2 = int(Math.random() * 14) + 1;
+            random3 = int(Math.random() * 14) + 1;
          }
-         if(param1 == 1)
+         if(type == 1)
          {
-            _playLabel = [_loc4_,_loc3_,_loc5_];
+            _playLabel = [random1,random2,random3];
          }
-         else if(param1 == 2)
+         else if(type == 2)
          {
-            _playLabel = [_loc4_,_loc4_,_loc3_];
+            _playLabel = [random1,random1,random2];
          }
-         else if(param1 == 3)
+         else if(type == 3)
          {
-            _playLabel = [_loc4_,_loc4_,_loc4_];
+            _playLabel = [random1,random1,random1];
          }
-         var _loc2_:int = _playLabel.length;
+         var index:int = _playLabel.length;
          while(true)
          {
-            _loc2_--;
-            if(!_loc2_)
+            index--;
+            if(!index)
             {
                break;
             }
@@ -92,29 +91,28 @@ package wasteRecycle.view
          }
       }
       
-      private function __onTimer(param1:Event) : void
+      private function __onTimer(e:Event) : void
       {
-         var _loc2_:int = _timer.currentCount - 1;
-         _list[_loc2_].turn(_playLabel[_loc2_]);
+         var index:int = _timer.currentCount - 1;
+         _list[index].turn(_playLabel[index]);
       }
       
-      private function __onPlayComplete(param1:Event) : void
+      private function __onPlayComplete(e:Event) : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          _playCount = Number(_playCount) + 1;
          if(Number(_playCount) >= 2)
          {
             _playCount = 0;
-            _loc2_ = 0;
-            while(_loc2_ < _list.length)
+            for(i = 0; i < _list.length; )
             {
-               _list[_loc2_].shine();
-               _loc2_++;
+               _list[i].shine();
+               i++;
             }
          }
       }
       
-      private function __onShineComplete(param1:Event) : void
+      private function __onShineComplete(e:Event) : void
       {
          _playCount = Number(_playCount) + 1;
          if(Number(_playCount) >= 2)
@@ -128,7 +126,7 @@ package wasteRecycle.view
       
       public function dispose() : void
       {
-         var _loc1_:* = null;
+         var item:* = null;
          if(_timer)
          {
             _timer.stop();
@@ -136,9 +134,9 @@ package wasteRecycle.view
          }
          while(_list.length)
          {
-            _loc1_ = _list.pop();
-            _loc1_.removeEventListener("playComplete",__onPlayComplete);
-            _loc1_.removeEventListener("shineComplete",__onShineComplete);
+            item = _list.pop();
+            item.removeEventListener("playComplete",__onPlayComplete);
+            item.removeEventListener("shineComplete",__onShineComplete);
          }
          ObjectUtils.disposeAllChildren(this);
          _list = null;

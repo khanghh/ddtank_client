@@ -92,15 +92,15 @@ package store.forge
          addChild(giftTxt);
          _giftButton = ComponentFactory.Instance.creatCustomObject("bagAndInfo.bag.GiftButton");
          _giftButton = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreBagView.GiftButton");
-         var _loc2_:int = 6000;
-         var _loc1_:int = ServerConfigManager.instance.VIPExtraBindMoneyUpper[PlayerManager.Instance.Self.VIPLevel - 1];
+         var levelNum:int = 6000;
+         var vipNum:int = ServerConfigManager.instance.VIPExtraBindMoneyUpper[PlayerManager.Instance.Self.VIPLevel - 1];
          if(PlayerManager.Instance.Self.IsVIP)
          {
-            _giftButton.tipData = LanguageMgr.GetTranslation("tank.view.bagII.GiftDirections",(_loc2_ + _loc1_).toString());
+            _giftButton.tipData = LanguageMgr.GetTranslation("tank.view.bagII.GiftDirections",(levelNum + vipNum).toString());
          }
          else
          {
-            _giftButton.tipData = LanguageMgr.GetTranslation("tank.view.bagII.GiftDirections",_loc2_.toString());
+            _giftButton.tipData = LanguageMgr.GetTranslation("tank.view.bagII.GiftDirections",levelNum.toString());
          }
          addChild(_giftButton);
          _moneyButton = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreBagView.MoneyButton");
@@ -111,27 +111,27 @@ package store.forge
          updateMoney();
       }
       
-      private function __propertyChange(param1:PlayerPropertyEvent) : void
+      private function __propertyChange(evt:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["Money"] || param1.changedProperties["Gold"] || param1.changedProperties["Money"] || param1.changedProperties["BandMoney"])
+         if(evt.changedProperties["Money"] || evt.changedProperties["Gold"] || evt.changedProperties["Money"] || evt.changedProperties["BandMoney"])
          {
             updateMoney();
          }
       }
       
-      public function title1(param1:String) : void
+      public function title1(value:String) : void
       {
-         _equipmentTitleText.htmlText = param1;
+         _equipmentTitleText.htmlText = value;
       }
       
-      public function title2(param1:String) : void
+      public function title2(value:String) : void
       {
-         _itemTitleText.htmlText = param1;
+         _itemTitleText.htmlText = value;
       }
       
-      public function bgFrame(param1:int) : void
+      public function bgFrame(frame:int) : void
       {
-         bagBg.setFrame(param1);
+         bagBg.setFrame(frame);
       }
       
       public function equipmentTipText() : FilterFrameText
@@ -151,15 +151,15 @@ package store.forge
          ObjectUtils.disposeObject(showMoneyBG);
       }
       
-      public function showStoreBagViewText(param1:String, param2:String, param3:Boolean = true) : void
+      public function showStoreBagViewText(equipmentTip:String, itemTip:String, isShowItemTip:Boolean = true) : void
       {
-         _equipmentTipText.text = LanguageMgr.GetTranslation(param1);
-         if(param3)
+         _equipmentTipText.text = LanguageMgr.GetTranslation(equipmentTip);
+         if(isShowItemTip)
          {
-            _itemTipText.text = LanguageMgr.GetTranslation(param2);
+            _itemTipText.text = LanguageMgr.GetTranslation(itemTip);
          }
-         _itemTipText.visible = param3;
-         _itemTitleText.visible = param3;
+         _itemTipText.visible = isShowItemTip;
+         _itemTitleText.visible = isShowItemTip;
       }
       
       private function updateMoney() : void

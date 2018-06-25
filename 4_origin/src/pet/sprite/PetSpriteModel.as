@@ -21,9 +21,9 @@ package pet.sprite
       
       private var _petSwitcher:Boolean = true;
       
-      public function PetSpriteModel(param1:IEventDispatcher = null)
+      public function PetSpriteModel(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
          initEvents();
       }
       
@@ -32,9 +32,9 @@ package pet.sprite
          return _petSwitcher;
       }
       
-      public function set petSwitcher(param1:Boolean) : void
+      public function set petSwitcher(value:Boolean) : void
       {
-         _petSwitcher = param1;
+         _petSwitcher = value;
       }
       
       private function initEvents() : void
@@ -42,9 +42,9 @@ package pet.sprite
          PlayerManager.Instance.Self.addEventListener("propertychange",__updatePet);
       }
       
-      protected function __updatePet(param1:PlayerPropertyEvent) : void
+      protected function __updatePet(event:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["Pets"] != null)
+         if(event.changedProperties["Pets"] != null)
          {
             return;
          }
@@ -54,13 +54,13 @@ package pet.sprite
          }
       }
       
-      public function set currentPet(param1:PetInfo) : void
+      public function set currentPet(val:PetInfo) : void
       {
-         if(param1 == _currentPet)
+         if(val == _currentPet)
          {
             return;
          }
-         _currentPet = param1;
+         _currentPet = val;
          dispatchEvent(new Event("currentPetChanged"));
       }
       
@@ -69,7 +69,7 @@ package pet.sprite
          dispatchEvent(new Event("gpChanged"));
       }
       
-      protected function __hungerChanged(param1:Event) : void
+      protected function __hungerChanged(event:Event) : void
       {
          dispatchEvent(new Event("hungerChanged"));
       }

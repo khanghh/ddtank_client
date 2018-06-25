@@ -35,11 +35,11 @@ package dice
          return _instance;
       }
       
-      public function setup(param1:Function = null) : void
+      public function setup(callBack:Function = null) : void
       {
-         if(param1 != null)
+         if(callBack != null)
          {
-            _callBack = param1;
+            _callBack = callBack;
             if(DiceController.Instance.canUseModel)
             {
                _callBack(true);
@@ -57,10 +57,10 @@ package dice
          new HelperUIModuleLoad().loadUIModule(["dice"],loaderDice);
       }
       
-      public function __showEnterIcon(param1:CrazyTankSocketEvent) : void
+      public function __showEnterIcon(event:CrazyTankSocketEvent) : void
       {
          _isopen = true;
-         _pkg = param1.pkg;
+         _pkg = event.pkg;
          show();
       }
       
@@ -73,7 +73,7 @@ package dice
          }
       }
       
-      private function __hideEnterIcon(param1:CrazyTankSocketEvent) : void
+      private function __hideEnterIcon(event:CrazyTankSocketEvent) : void
       {
          _isopen = false;
          if(_callBack != null)

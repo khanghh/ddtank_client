@@ -18,19 +18,19 @@ package memoryGame.view
       
       public function MemoryGameRewardCell()
       {
-         var _loc1_:Shape = new Shape();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,65,65);
-         _loc1_.graphics.endFill();
-         super(0,null,true,_loc1_,false);
+         var shape:Shape = new Shape();
+         shape.graphics.beginFill(16777215,0);
+         shape.graphics.drawRect(0,0,65,65);
+         shape.graphics.endFill();
+         super(0,null,true,shape,false);
          _tips = ComponentFactory.Instance.creatBitmap("asset.memoryGame.gain");
          addChild(_tips);
          isGain = false;
       }
       
-      public function set isGain(param1:Boolean) : void
+      public function set isGain(value:Boolean) : void
       {
-         _tips.visible = param1;
+         _tips.visible = value;
       }
       
       public function get isGain() : Boolean
@@ -38,13 +38,13 @@ package memoryGame.view
          return _tips.visible;
       }
       
-      override public function set info(param1:ItemTemplateInfo) : void
+      override public function set info(value:ItemTemplateInfo) : void
       {
          if(_info != null)
          {
             playAction();
          }
-         .super.info = param1;
+         .super.info = value;
          if(_tips)
          {
             addChild(_tips);

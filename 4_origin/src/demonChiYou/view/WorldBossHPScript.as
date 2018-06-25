@@ -70,14 +70,14 @@ package demonChiYou.view
          _hp_text.text = _model.bossBlood + "/" + _model.bossMaxBlood;
       }
       
-      private function updateBloodStrip(param1:Event) : void
+      private function updateBloodStrip(event:Event) : void
       {
          refreshBlood();
       }
       
-      private function playCutHpMC(param1:Number) : void
+      private function playCutHpMC(value:Number) : void
       {
-         _bloodStrip["red_hp"]["red_mask"].x = -1 * _scale * param1 - 1;
+         _bloodStrip["red_hp"]["red_mask"].x = -1 * _scale * value - 1;
          if(!_iscuting)
          {
             _iscuting = true;
@@ -85,7 +85,7 @@ package demonChiYou.view
          }
       }
       
-      private function cutHpred2(param1:Event) : void
+      private function cutHpred2(e:Event) : void
       {
          if(!_bloodStrip || !_bloodStrip["red_hp"]["red_mask"] || !_bloodStrip["red2_hp"]["red2_mask"])
          {
@@ -103,14 +103,14 @@ package demonChiYou.view
          }
       }
       
-      private function offset(param1:int = 30) : int
+      private function offset(off:int = 30) : int
       {
-         var _loc2_:int = Math.random() * 10;
-         if(_loc2_ % 2 == 0)
+         var i:int = Math.random() * 10;
+         if(i % 2 == 0)
          {
-            return -(int(Math.random() * param1));
+            return -(int(Math.random() * off));
          }
-         return int(Math.random() * param1);
+         return int(Math.random() * off);
       }
       
       public function dispose() : void

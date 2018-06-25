@@ -13,30 +13,29 @@ package game.actions.SkillActions
       
       private var _src:Living;
       
-      public function RevertAction(param1:IAnimate, param2:Living, param3:PackageIn)
+      public function RevertAction(animate:IAnimate, src:Living, pkg:PackageIn)
       {
-         _pkg = param3;
-         _src = param2;
-         super(param1);
+         _pkg = pkg;
+         _src = src;
+         super(animate);
       }
       
       override protected function finish() : void
       {
-         var _loc5_:int = 0;
-         var _loc2_:int = _pkg.readInt();
-         var _loc3_:Vector.<Living> = new Vector.<Living>();
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_)
+         var i:int = 0;
+         var count:int = _pkg.readInt();
+         var livings:Vector.<Living> = new Vector.<Living>();
+         for(i = 0; i < count; )
          {
-            _loc3_.push(GameControl.Instance.Current.findLiving(_pkg.readInt()));
-            _loc5_++;
+            livings.push(GameControl.Instance.Current.findLiving(_pkg.readInt()));
+            i++;
          }
-         var _loc1_:int = _pkg.readInt();
+         var addValue:int = _pkg.readInt();
          var _loc7_:int = 0;
-         var _loc6_:* = _loc3_;
-         for each(var _loc4_ in _loc3_)
+         var _loc6_:* = livings;
+         for each(var living in livings)
          {
-            _loc4_.updateBlood(_loc4_.blood + _loc1_,0,_loc1_);
+            living.updateBlood(living.blood + addValue,0,addValue);
          }
          super.finish();
       }

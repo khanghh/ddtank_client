@@ -79,11 +79,11 @@ package bombKing.view
          addEventListener("response",__frameEventHandler);
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         param1.currentTarget.removeEventListener("response",__frameEventHandler);
-         switch(int(param1.responseCode))
+         event.currentTarget.removeEventListener("response",__frameEventHandler);
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:

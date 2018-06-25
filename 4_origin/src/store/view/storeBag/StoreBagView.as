@@ -82,9 +82,9 @@ package store.view.storeBag
          super();
       }
       
-      public function setup(param1:StoreBagController) : void
+      public function setup(controller:StoreBagController) : void
       {
-         _controller = param1;
+         _controller = controller;
          _model = _controller.model;
          init();
          initEvents();
@@ -107,8 +107,8 @@ package store.view.storeBag
          addChild(_equipmentTipText);
          addChild(_itemTipText);
          showStoreBagViewText("store.StoreBagView.EquipmentTip.StrengthText","store.StoreBagView.ItemTip.Text1");
-         var _loc1_:MutipleImage = ComponentFactory.Instance.creatComponentByStylename("ddtstore.StoreBagView.MoneyPanelBg");
-         addChild(_loc1_);
+         var showMoneyBG:MutipleImage = ComponentFactory.Instance.creatComponentByStylename("ddtstore.StoreBagView.MoneyPanelBg");
+         addChild(showMoneyBG);
          moneyTxt = ComponentFactory.Instance.creatComponentByStylename("ddtstore.StoreBagView.TicketText");
          addChild(moneyTxt);
          _goldButton = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreBagView.GoldButton");
@@ -118,15 +118,15 @@ package store.view.storeBag
          addChild(giftTxt);
          _giftButton = ComponentFactory.Instance.creatCustomObject("bagAndInfo.bag.GiftButton");
          _giftButton = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreBagView.GiftButton");
-         var _loc3_:int = 6000;
-         var _loc2_:int = ServerConfigManager.instance.VIPExtraBindMoneyUpper[PlayerManager.Instance.Self.VIPLevel - 1];
+         var levelNum:int = 6000;
+         var vipNum:int = ServerConfigManager.instance.VIPExtraBindMoneyUpper[PlayerManager.Instance.Self.VIPLevel - 1];
          if(PlayerManager.Instance.Self.IsVIP)
          {
-            _giftButton.tipData = LanguageMgr.GetTranslation("tank.view.bagII.GiftDirections",(_loc3_ + _loc2_).toString());
+            _giftButton.tipData = LanguageMgr.GetTranslation("tank.view.bagII.GiftDirections",(levelNum + vipNum).toString());
          }
          else
          {
-            _giftButton.tipData = LanguageMgr.GetTranslation("tank.view.bagII.GiftDirections",_loc3_.toString());
+            _giftButton.tipData = LanguageMgr.GetTranslation("tank.view.bagII.GiftDirections",levelNum.toString());
          }
          addChild(_giftButton);
          _moneyButton = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreBagView.MoneyButton");
@@ -150,15 +150,15 @@ package store.view.storeBag
          updateMoney();
       }
       
-      private function showStoreBagViewText(param1:String, param2:String, param3:Boolean = true) : void
+      private function showStoreBagViewText(equipmentTip:String, itemTip:String, isShowItemTip:Boolean = true) : void
       {
-         _equipmentTipText.text = LanguageMgr.GetTranslation(param1);
-         if(param3)
+         _equipmentTipText.text = LanguageMgr.GetTranslation(equipmentTip);
+         if(isShowItemTip)
          {
-            _itemTipText.text = LanguageMgr.GetTranslation(param2);
+            _itemTipText.text = LanguageMgr.GetTranslation(itemTip);
          }
-         _itemTipText.visible = param3;
-         _itemTitleText.visible = param3;
+         _itemTipText.visible = isShowItemTip;
+         _itemTitleText.visible = isShowItemTip;
       }
       
       private function initEvents() : void
@@ -172,17 +172,17 @@ package store.view.storeBag
          _model.info.addEventListener("propertychange",__propertyChange);
       }
       
-      public function enableCellDoubleClick(param1:Boolean, param2:Function) : void
+      public function enableCellDoubleClick(value:Boolean, handler:Function) : void
       {
-         if(param1 && param2)
+         if(value && handler)
          {
-            _equipmentView.addEventListener("doubleclick",param2);
-            _propView.addEventListener("doubleclick",param2);
+            _equipmentView.addEventListener("doubleclick",handler);
+            _propView.addEventListener("doubleclick",handler);
          }
          else
          {
-            _equipmentView.removeEventListener("doubleclick",param2);
-            _propView.removeEventListener("doubleclick",param2);
+            _equipmentView.removeEventListener("doubleclick",handler);
+            _propView.removeEventListener("doubleclick",handler);
          }
       }
       
@@ -197,7 +197,7 @@ package store.view.storeBag
          _model.info.removeEventListener("propertychange",__propertyChange);
       }
       
-      public function setData(param1:StoreModel) : void
+      public function setData(storeModel:StoreModel) : void
       {
          this.visible = true;
          if(_controller.currentPanel == 0)
@@ -273,65 +273,65 @@ package store.view.storeBag
          _transerViewUp.visible = _loc1_;
       }
       
-      private function __cellClick(param1:CellEvent) : void
+      private function __cellClick(evt:CellEvent) : void
       {
-         var _loc3_:* = null;
-         param1.stopImmediatePropagation();
-         var _loc2_:BagCell = param1.data as BagCell;
-         if(_loc2_)
+         var info:* = null;
+         evt.stopImmediatePropagation();
+         var cell:BagCell = evt.data as BagCell;
+         if(cell)
          {
-            _loc3_ = _loc2_.info as InventoryItemInfo;
+            info = cell.info as InventoryItemInfo;
          }
-         if(_loc3_ == null)
+         if(info == null)
          {
             return;
          }
-         if(!_loc2_.locked)
+         if(!cell.locked)
          {
             SoundManager.instance.play("008");
-            if(!EquipType.isPackage(_loc3_))
+            if(!EquipType.isPackage(info))
             {
-               _loc2_.dragStart();
+               cell.dragStart();
             }
          }
       }
       
-      private function createBreakWin(param1:BagCell) : void
+      private function createBreakWin(cell:BagCell) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BreakGoodsView = new BreakGoodsView();
-         _loc2_.cell = param1;
-         _loc2_.show();
+         var win:BreakGoodsView = new BreakGoodsView();
+         win.cell = cell;
+         win.show();
       }
       
-      private function __cellAddPrice(param1:Event) : void
+      private function __cellAddPrice(evt:Event) : void
       {
-         var _loc2_:BagCell = CellMenu.instance.cell;
-         if(_loc2_)
+         var cell:BagCell = CellMenu.instance.cell;
+         if(cell)
          {
-            AddPricePanel.Instance.setInfo(_loc2_.itemInfo,false);
+            AddPricePanel.Instance.setInfo(cell.itemInfo,false);
             LayerManager.Instance.addToLayer(AddPricePanel.Instance,1,true);
          }
       }
       
-      private function __cellMove(param1:Event) : void
+      private function __cellMove(evt:Event) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BagCell = CellMenu.instance.cell;
-         if(_loc2_)
+         var cell:BagCell = CellMenu.instance.cell;
+         if(cell)
          {
-            _loc2_.dragStart();
+            cell.dragStart();
          }
       }
       
-      public function getPropCell(param1:int) : BagCell
+      public function getPropCell(pos:int) : BagCell
       {
-         return _propView.getCellByPos(param1);
+         return _propView.getCellByPos(pos);
       }
       
-      public function getEquipCell(param1:int) : BagCell
+      public function getEquipCell(pos:int) : BagCell
       {
-         return _equipmentView.getCellByPos(param1);
+         return _equipmentView.getCellByPos(pos);
       }
       
       public function get EquipList() : StoreBagListView
@@ -344,9 +344,9 @@ package store.view.storeBag
          return _propView;
       }
       
-      public function __propertyChange(param1:PlayerPropertyEvent) : void
+      public function __propertyChange(evt:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["Money"] || param1.changedProperties["Gold"] || param1.changedProperties["Money"] || param1.changedProperties["BandMoney"])
+         if(evt.changedProperties["Money"] || evt.changedProperties["Gold"] || evt.changedProperties["Money"] || evt.changedProperties["BandMoney"])
          {
             updateMoney();
          }

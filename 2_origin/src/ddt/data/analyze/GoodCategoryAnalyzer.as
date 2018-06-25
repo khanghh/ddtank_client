@@ -12,28 +12,27 @@ package ddt.data.analyze
       
       private var _xml:XML;
       
-      public function GoodCategoryAnalyzer(param1:Function)
+      public function GoodCategoryAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc2_:* = null;
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         _xml = new XML(param1);
+         var xmllist:* = null;
+         var i:int = 0;
+         var info:* = null;
+         _xml = new XML(data);
          if(_xml.@value == "true")
          {
             list = new Vector.<CateCoryInfo>();
-            _loc2_ = _xml..Item;
-            _loc4_ = 0;
-            while(_loc4_ < _loc2_.length())
+            xmllist = _xml..Item;
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc3_ = new CateCoryInfo();
-               ObjectUtils.copyPorpertiesByXML(_loc3_,_loc2_[_loc4_]);
-               list.push(_loc3_);
-               _loc4_++;
+               info = new CateCoryInfo();
+               ObjectUtils.copyPorpertiesByXML(info,xmllist[i]);
+               list.push(info);
+               i++;
             }
             onAnalyzeComplete();
          }

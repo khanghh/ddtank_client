@@ -86,8 +86,8 @@ package bagAndInfo.ddtKingGrade
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var text:* = null;
          _btnHelp = HelpFrameUtils.Instance.simpleHelpButton(this,"coreii.helpBtn",{
             "x":539,
             "y":5
@@ -106,13 +106,12 @@ package bagAndInfo.ddtKingGrade
          _rotateBg = new MovieClipWrapper(ComponentFactory.Instance.creat("asset.ddtKingGrade.rotateBg"));
          PositionUtils.setPos(_rotateBg.movie,"ddtKingGrade.rotateBgPos");
          _propertyTextList = new Vector.<FilterFrameText>();
-         _loc2_ = 0;
-         while(_loc2_ < 6)
+         for(i = 0; i < 6; )
          {
-            _loc1_ = ComponentFactory.Instance.creatComponentByStylename("ddtkinggrade.propertyText");
-            _propertyVBox.addChild(_loc1_);
-            _propertyTextList.push(_loc1_);
-            _loc2_++;
+            text = ComponentFactory.Instance.creatComponentByStylename("ddtkinggrade.propertyText");
+            _propertyVBox.addChild(text);
+            _propertyTextList.push(text);
+            i++;
          }
          addToContent(_viewBg);
          addToContent(_viewTitle);
@@ -162,10 +161,10 @@ package bagAndInfo.ddtKingGrade
          updateView();
       }
       
-      private function __onBreak(param1:PkgEvent) : void
+      private function __onBreak(e:PkgEvent) : void
       {
-         var _loc2_:Boolean = param1.pkg.readBoolean();
-         if(_loc2_)
+         var complete:Boolean = e.pkg.readBoolean();
+         if(complete)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddtKingGrade.break"));
             playAction();
@@ -176,42 +175,41 @@ package bagAndInfo.ddtKingGrade
          }
       }
       
-      private function __onUpdateInfo(param1:PkgEvent) : void
+      private function __onUpdateInfo(e:PkgEvent) : void
       {
-         var _loc4_:* = NaN;
-         var _loc6_:int = 0;
-         var _loc3_:* = null;
-         var _loc5_:int = 0;
-         var _loc2_:Number = NaN;
-         _usableNum = param1.pkg.readInt();
-         _currentExp = param1.pkg.readLong();
-         _nextExp = param1.pkg.readLong();
+         var p:* = NaN;
+         var i:int = 0;
+         var item:* = null;
+         var cost:int = 0;
+         var ratio:Number = NaN;
+         _usableNum = e.pkg.readInt();
+         _currentExp = e.pkg.readLong();
+         _nextExp = e.pkg.readLong();
          _progressTips.tipData = _currentExp + "/" + _nextExp;
          if(_nextExp > 0)
          {
-            _loc4_ = Number(Math.floor(_currentExp / _nextExp * 10000) / 100);
+            p = Number(Math.floor(_currentExp / _nextExp * 10000) / 100);
          }
          else
          {
-            _loc4_ = 0;
+            p = 0;
          }
-         _progressText.text = _loc4_ + "%";
+         _progressText.text = p + "%";
          _gradeText.text = LanguageMgr.GetTranslation("ddtKingGrade.grade",PlayerManager.Instance.Self.ddtKingGrade);
-         _progress.gotoAndStop(int(_loc4_));
-         _loc6_ = 0;
-         while(_loc6_ < 6)
+         _progress.gotoAndStop(int(p));
+         for(i = 0; i < 6; )
          {
-            _loc3_ = _btnGroup.getItemByIndex(_loc6_) as DDTKingGradeSelectedButton;
-            _loc5_ = param1.pkg.readInt();
-            _loc3_.cost = _loc5_;
-            _loc3_.tipData = {
-               "cost":_loc5_,
+            item = _btnGroup.getItemByIndex(i) as DDTKingGradeSelectedButton;
+            cost = e.pkg.readInt();
+            item.cost = cost;
+            item.tipData = {
+               "cost":cost,
                "currentCost":_usableNum,
-               "type":_loc6_
+               "type":i
             };
-            _loc2_ = param1.pkg.readInt() / 10;
-            _propertyTextList[_loc6_].text = _loc2_ + "%";
-            _loc6_++;
+            ratio = e.pkg.readInt() / 10;
+            _propertyTextList[i].text = ratio + "%";
+            i++;
          }
          updateView();
       }
@@ -231,12 +229,12 @@ package bagAndInfo.ddtKingGrade
          }
       }
       
-      private function __onPlayActionComplete(param1:Event) : void
+      private function __onPlayActionComplete(e:Event) : void
       {
          _rotateBg.movie.visible = false;
       }
       
-      private function __onClickReset(param1:MouseEvent) : void
+      private function __onClickReset(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.bagLocked)
@@ -254,15 +252,15 @@ package bagAndInfo.ddtKingGrade
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddtKingGrade.propertyNotReset"));
             return;
          }
-         var _loc3_:Array = ["attack","defence","agility","luck","magicAttack","magicDefend"];
-         var _loc4_:String = LanguageMgr.GetTranslation(_loc3_[_btnGroup.selectIndex]);
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddtKingGrade.reset",ServerConfigManager.instance.maxLevelResetCost,_loc4_),"",LanguageMgr.GetTranslation("cancel"),true,true,false,2);
-         _loc2_.addEventListener("response",__onReset);
+         var arr:Array = ["attack","defence","agility","luck","magicAttack","magicDefend"];
+         var p:String = LanguageMgr.GetTranslation(arr[_btnGroup.selectIndex]);
+         var frame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddtKingGrade.reset",ServerConfigManager.instance.maxLevelResetCost,p),"",LanguageMgr.GetTranslation("cancel"),true,true,false,2);
+         frame.addEventListener("response",__onReset);
       }
       
-      private function __onReset(param1:FrameEvent) : void
+      private function __onReset(e:FrameEvent) : void
       {
-         e = param1;
+         e = e;
          var frame:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
          frame.removeEventListener("response",__onReset);
          if(e.responseCode == 3 || e.responseCode == 2)
@@ -274,33 +272,32 @@ package bagAndInfo.ddtKingGrade
          }
       }
       
-      private function __onClickAllReset(param1:MouseEvent) : void
+      private function __onClickAllReset(e:MouseEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var button:* = null;
+         var frame:* = null;
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc4_:Boolean = false;
-         _loc5_ = 0;
-         while(_loc5_ < _btnGroup.length())
+         var isReset:Boolean = false;
+         for(i = 0; i < _btnGroup.length(); )
          {
-            _loc3_ = _btnGroup.getItemByIndex(_loc5_) as DDTKingGradeSelectedButton;
-            if(_loc3_.level > 0)
+            button = _btnGroup.getItemByIndex(i) as DDTKingGradeSelectedButton;
+            if(button.level > 0)
             {
-               _loc4_ = true;
+               isReset = true;
                break;
             }
-            _loc5_++;
+            i++;
          }
-         if(_loc4_)
+         if(isReset)
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddtKingGrade.allReset",ServerConfigManager.instance.maxLevelAllResetCost),"",LanguageMgr.GetTranslation("cancel"),true,true,false,2);
-            _loc2_.addEventListener("response",__onAllReset);
+            frame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddtKingGrade.allReset",ServerConfigManager.instance.maxLevelAllResetCost),"",LanguageMgr.GetTranslation("cancel"),true,true,false,2);
+            frame.addEventListener("response",__onAllReset);
          }
          else
          {
@@ -308,9 +305,9 @@ package bagAndInfo.ddtKingGrade
          }
       }
       
-      private function __onAllReset(param1:FrameEvent) : void
+      private function __onAllReset(e:FrameEvent) : void
       {
-         e = param1;
+         e = e;
          var frame:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
          frame.removeEventListener("response",__onAllReset);
          if(e.responseCode == 3 || e.responseCode == 2)
@@ -322,7 +319,7 @@ package bagAndInfo.ddtKingGrade
          }
       }
       
-      private function __onClickBreak(param1:MouseEvent) : void
+      private function __onClickBreak(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(getTimer() - _currentTime < 2000)
@@ -341,13 +338,13 @@ package bagAndInfo.ddtKingGrade
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddtKingGrade.selectBreak"));
             return;
          }
-         var _loc2_:DDTKingGradeInfo = DDTKingGradeManager.Instance.data[_currentButton.level + 1];
-         if(_loc2_ == null)
+         var nextInfo:DDTKingGradeInfo = DDTKingGradeManager.Instance.data[_currentButton.level + 1];
+         if(nextInfo == null)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddtKingGrade.maxProperty"));
             return;
          }
-         if(_usableNum + _currentButton.cost < _loc2_.Cost)
+         if(_usableNum + _currentButton.cost < nextInfo.Cost)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddtKingGrade.breakTip"));
             return;
@@ -355,7 +352,7 @@ package bagAndInfo.ddtKingGrade
          SocketManager.Instance.out.sendDDTKingGradeUp(_btnGroup.selectIndex + 1);
       }
       
-      private function __onButtonChange(param1:Event) : void
+      private function __onButtonChange(e:Event) : void
       {
          _currentButton = _btnGroup.getItemByIndex(_btnGroup.selectIndex) as DDTKingGradeSelectedButton;
       }
@@ -388,7 +385,7 @@ package bagAndInfo.ddtKingGrade
          SocketManager.Instance.removeEventListener(PkgEvent.format(370,1),__onBreak);
       }
       
-      override protected function onResponse(param1:int) : void
+      override protected function onResponse(type:int) : void
       {
          DDTKingGradeManager.Instance.isOpen = false;
          dispose();
